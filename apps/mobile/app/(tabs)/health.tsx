@@ -522,17 +522,25 @@ export default function HealthScreen() {
   const authStatus = useAuthStore((s) => s.status);
   const user = useAuthStore((s) => s.user);
 
+  const inExpoGo = isExpoGo();
+
+  // Only check permissions in native builds — getHealthService crashes in Expo Go
   useEffect(() => {
-    checkPermissions();
-  }, [checkPermissions]);
+    if (!inExpoGo) {
+      checkPermissions();
+    }
+  }, [checkPermissions, inExpoGo]);
 
   const platformName = Platform.OS === 'ios' ? 'Apple HealthKit' : 'Health Connect';
-  const isAvailable = permissions?.available ?? false;
-  const anyAuthorized = permissions
-    ? Object.values(permissions.permissions).some((s) => s === 'authorized')
-    : false;
+  const isAvailable = inExpoGo ? false : (permissions?.available ?? false);
+  const anyAuthorized = inExpoGo
+    ? false
+    : permissions
+      ? Object.values(permissions.permissions).some((s) => s === 'authorized')
+      : false;
 
   const handleConnect = async () => {
+    if (inExpoGo) return;
     const granted = await requestPermissions();
     if (granted && user?.id) {
       syncData(user.id);
@@ -540,6 +548,7 @@ export default function HealthScreen() {
   };
 
   const handleSync = () => {
+    if (inExpoGo) return;
     if (user?.id) syncData(user.id);
   };
 
