@@ -19,6 +19,7 @@ import type {
 import { useAuthStore } from './auth-store';
 import { useHealthStore } from './health-store';
 import { useTrainingStore } from './training-store';
+import { useConsentStore } from './consent-store';
 
 type SyncStatus = 'idle' | 'syncing' | 'synced' | 'failed';
 
@@ -155,6 +156,10 @@ export const useFeedbackStore = create<FeedbackState>((set, get) => ({
       : null;
     const nextDay = checkins.find((c) => c.training_date === date) ?? null;
 
+    // Build eligibility from current consent
+    const userId = useAuthStore.getState().user?.id ?? null;
+    const eligibility = useConsentStore.getState().getEligibility(userId);
+
     const example = assembleTrainingExample(
       date,
       dayMetrics,
@@ -164,6 +169,7 @@ export const useFeedbackStore = create<FeedbackState>((set, get) => ({
       feedback,
       outcome,
       nextDay,
+      eligibility,
     );
 
     // Replace existing example for this date

@@ -417,6 +417,12 @@ function RecentExamplesCard() {
             {ex.next_day_outcome && (
               <Text style={styles.badge}>next-day</Text>
             )}
+            {ex.eligibility?.training_eligible && (
+              <Text style={[styles.badge, styles.badgeGreen]}>eligible</Text>
+            )}
+            {ex.eligibility && !ex.eligibility.training_eligible && (
+              <Text style={[styles.badge, styles.badgeRed]}>ineligible</Text>
+            )}
           </View>
           <Text style={styles.exampleReadiness}>
             {ex.recommendation.readiness}
@@ -596,5 +602,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     overflow: 'hidden',
   },
+  badgeGreen: { color: '#4ade80', backgroundColor: 'rgba(74,222,128,0.1)' },
+  badgeRed: { color: '#ff6b6b', backgroundColor: 'rgba(255,107,107,0.1)' },
   exampleReadiness: { fontSize: 12, opacity: 0.5, width: 50, textAlign: 'right' },
 });

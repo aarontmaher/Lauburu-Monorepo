@@ -15,6 +15,7 @@ import type {
   SessionOutcome,
   NextDayCheckin,
 } from '../types/feedback';
+import type { DataEligibility } from '../types/consent';
 import type { AIPayload } from './ai-payload';
 import type { CoachingResponse } from './coaching';
 
@@ -27,11 +28,13 @@ export function assembleTrainingExample(
   feedback: RecommendationFeedback | null,
   outcome: SessionOutcome | null,
   nextDay: NextDayCheckin | null,
+  eligibility?: DataEligibility,
 ): TrainingExample {
   return {
     version: 1,
     date,
     generated_at: new Date().toISOString(),
+    eligibility: eligibility ?? undefined,
 
     health_inputs: {
       recovery_score: dayMetrics?.recovery_score ?? null,

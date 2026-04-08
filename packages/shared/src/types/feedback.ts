@@ -131,6 +131,16 @@ export interface TrainingExample {
   date: string;
   generated_at: string;
 
+  /** Data governance — eligibility for training/research use */
+  eligibility?: {
+    user_id: string | null;
+    training_eligible: boolean;
+    deidentified_eligible: boolean;
+    analytics_eligible: boolean;
+    consent_version: number;
+    tagged_at: string;
+  };
+
   /** Health inputs (snapshot of what was available) */
   health_inputs: {
     recovery_score: number | null;

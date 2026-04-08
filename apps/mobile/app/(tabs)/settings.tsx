@@ -10,6 +10,7 @@ import {
 import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../../src/store/auth-store';
 import { usePreferencesStore } from '../../src/store/preferences-store';
+import { useConsentStore } from '../../src/store/consent-store';
 import { DEFAULT_PREFERENCES } from '@lauburu/shared';
 import type { CoachingPreferences } from '@lauburu/shared';
 
@@ -261,6 +262,112 @@ function PreferencesSection() {
 }
 
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Data & Privacy
+// ---------------------------------------------------------------------------
+
+function ConsentToggle({
+  label,
+  description,
+  value,
+  onChange,
+  required,
+}: {
+  label: string;
+  description: string;
+  value: boolean;
+  onChange: (v: boolean) => void;
+  required?: boolean;
+}) {
+  return (
+    <Pressable
+      style={styles.consentRow}
+      onPress={() => !required && onChange(!value)}>
+      <View style={styles.consentText}>
+        <Text style={styles.consentLabel}>
+          {label}
+          {required ? ' (required)' : ''}
+        </Text>
+        <Text style={styles.consentDesc}>{description}</Text>
+      </View>
+      <View
+        style={[
+          styles.consentToggle,
+          value && styles.consentToggleOn,
+        ]}>
+        <Text style={styles.consentToggleText}>{value ? 'ON' : 'OFF'}</Text>
+      </View>
+    </Pressable>
+  );
+}
+
+function ConsentSection() {
+  const consent = useConsentStore((s) => s.consent);
+  const updateConsent = useConsentStore((s) => s.updateConsent);
+  const revokeAll = useConsentStore((s) => s.revokeAll);
+  const restoreDefaults = useConsentStore((s) => s.restoreDefaults);
+
+  const handleRevokeAll = () => {
+    Alert.alert(
+      'Revoke Data Consent',
+      'This will stop all data collection for coaching improvement. Your existing data will be flagged for deletion.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Revoke All', style: 'destructive', onPress: revokeAll },
+      ],
+    );
+  };
+
+  if (consent.revoked) {
+    return (
+      <View style={styles.consentRevokedCard}>
+        <Text style={styles.consentRevokedText}>
+          All data-use consent has been revoked. No training examples will be collected or used.
+        </Text>
+        <Pressable style={styles.button} onPress={restoreDefaults}>
+          <Text style={styles.buttonText}>Restore Defaults</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  return (
+    <>
+      <Text style={styles.consentIntro}>
+        Your health and training data is used to provide personalized coaching.
+        You control how your data is used beyond your own account.
+      </Text>
+
+      <ConsentToggle
+        label="Personal coaching"
+        description="Use your data to improve recommendations for you. Data stays in your account."
+        value={consent.personal_coaching}
+        onChange={(v) => updateConsent({ personal_coaching: v })}
+      />
+
+      <ConsentToggle
+        label="Improve global models"
+        description="Allow de-identified data to improve coaching for all users. Your identity is stripped."
+        value={consent.deidentified_models}
+        onChange={(v) => updateConsent({ deidentified_models: v })}
+      />
+
+      <ConsentToggle
+        label="Research & analytics"
+        description="Allow aggregated, anonymous data for research. No individual records are exposed."
+        value={consent.analytics_research}
+        onChange={(v) => updateConsent({ analytics_research: v })}
+      />
+
+      <Pressable style={styles.resetButton} onPress={handleRevokeAll}>
+        <Text style={[styles.resetText, { color: '#ff6b6b' }]}>
+          Revoke All Data Consent
+        </Text>
+      </Pressable>
+    </>
+  );
+}
+
 // Main screen
 // ---------------------------------------------------------------------------
 
@@ -282,6 +389,11 @@ export default function SettingsScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Coaching Preferences</Text>
         <PreferencesSection />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Data & Privacy</Text>
+        <ConsentSection />
       </View>
 
       <View style={styles.section}>
@@ -374,4 +486,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   resetText: { color: '#999', fontSize: 14 },
+
+  // Consent
+  consentIntro: { fontSize: 13, opacity: 0.6, lineHeight: 18 },
+  consentRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    gap: 12,
+  },
+  consentText: { flex: 1, gap: 2 },
+  consentLabel: { fontSize: 14, fontWeight: '600' },
+  consentDesc: { fontSize: 12, opacity: 0.5, lineHeight: 16 },
+  consentToggle: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#666',
+  },
+  consentToggleOn: {
+    borderColor: '#4ade80',
+    backgroundColor: 'rgba(74,222,128,0.15)',
+  },
+  consentToggleText: { fontSize: 12, fontWeight: '600', color: '#999' },
+  consentRevokedCard: {
+    padding: 16,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,107,107,0.1)',
+    borderWidth: 1,
+    borderColor: '#ff6b6b',
+    gap: 12,
+  },
+  consentRevokedText: { fontSize: 13, color: '#ff6b6b', lineHeight: 18 },
 });
