@@ -1,11 +1,14 @@
 /**
  * Platform-agnostic health service factory.
- * Returns HealthKit on iOS, Health Connect on Android.
  *
  * EXPO GO SAFETY:
- * Native health modules (NitroModules) crash in Expo Go.
- * We detect Expo Go at runtime and return the unavailable stub instead.
- * Native modules only load in dev builds (`expo prebuild` + `expo run:ios`).
+ * metro.config.js blocks @kingstinct/react-native-healthkit and
+ * react-native-health-connect from being bundled. This means
+ * health.ios.ts and health.android.ts can safely require() them —
+ * the require resolves to an empty module in Expo Go.
+ *
+ * The isExpoGo() check provides an additional runtime guard so
+ * we never even try to instantiate native services in Expo Go.
  */
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
@@ -13,19 +16,16 @@ import type { IHealthService } from '@lauburu/shared';
 
 let _instance: IHealthService | null = null;
 
-/** True when running inside Expo Go (not a dev build or standalone) */
-function isExpoGo(): boolean {
+/** True when running inside Expo Go */
+export function isExpoGo(): boolean {
   return Constants.appOwnership === 'expo';
 }
-
-export { isExpoGo };
 
 export function getHealthService(): IHealthService {
   if (_instance) return _instance;
 
-  // In Expo Go, native health modules are not available — return stub
   if (isExpoGo()) {
-    _instance = createUnavailableStub();
+    _instance = STUB;
     return _instance;
   }
 
@@ -37,39 +37,43 @@ export function getHealthService(): IHealthService {
       const { HealthConnectService } = require('./health.android');
       _instance = new HealthConnectService();
     } else {
-      _instance = createUnavailableStub();
+      _instance = STUB;
     }
   } catch (e) {
-    // Fallback if native module fails to load for any reason
     console.warn('Native health module unavailable:', e);
-    _instance = createUnavailableStub();
+    _instance = STUB;
   }
 
   return _instance!;
 }
 
-function createUnavailableStub(): IHealthService {
-  const unavailable: Record<string, 'unavailable'> = {
-    heart_rate: 'unavailable',
-    resting_heart_rate: 'unavailable',
-    hrv: 'unavailable',
-    sleep: 'unavailable',
-    steps: 'unavailable',
-    active_calories: 'unavailable',
-    workouts: 'unavailable',
-  };
-  return {
-    isAvailable: async () => false,
-    checkPermissions: async () => ({
-      available: false,
-      permissions: unavailable as any,
-    }),
-    requestPermissions: async () => ({
-      available: false,
-      permissions: unavailable as any,
-    }),
-    fetchSamples: async () => [],
-    fetchWorkouts: async () => [],
-    fetchSleep: async () => [],
-  };
-}
+const STUB: IHealthService = {
+  isAvailable: async () => false,
+  checkPermissions: async () => ({
+    available: false,
+    permissions: {
+      heart_rate: 'unavailable' as const,
+      resting_heart_rate: 'unavailable' as const,
+      hrv: 'unavailable' as const,
+      sleep: 'unavailable' as const,
+      steps: 'unavailable' as const,
+      active_calories: 'unavailable' as const,
+      workouts: 'unavailable' as const,
+    },
+  }),
+  requestPermissions: async () => ({
+    available: false,
+    permissions: {
+      heart_rate: 'unavailable' as const,
+      resting_heart_rate: 'unavailable' as const,
+      hrv: 'unavailable' as const,
+      sleep: 'unavailable' as const,
+      steps: 'unavailable' as const,
+      active_calories: 'unavailable' as const,
+      workouts: 'unavailable' as const,
+    },
+  }),
+  fetchSamples: async () => [],
+  fetchWorkouts: async () => [],
+  fetchSleep: async () => [],
+};
