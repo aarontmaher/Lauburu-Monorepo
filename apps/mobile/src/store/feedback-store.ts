@@ -20,6 +20,7 @@ import { useAuthStore } from './auth-store';
 import { useHealthStore } from './health-store';
 import { useTrainingStore } from './training-store';
 import { useConsentStore } from './consent-store';
+import { useTierStore } from './tier-store';
 
 type SyncStatus = 'idle' | 'syncing' | 'synced' | 'failed';
 
@@ -190,6 +191,12 @@ export const useFeedbackStore = create<FeedbackState>((set, get) => ({
   },
 
   syncToBackend: async () => {
+    // Tier gate
+    if (!useTierStore.getState().can('backend_persistence')) {
+      set({ syncStatus: 'failed', lastSyncError: 'Cloud sync requires Starter plan' });
+      return false;
+    }
+
     const { examples } = get();
     if (examples.length === 0) return true;
 

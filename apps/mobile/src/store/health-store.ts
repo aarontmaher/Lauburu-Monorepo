@@ -32,6 +32,7 @@ import { getHealthService } from '../services/health';
 import { useAuthStore } from './auth-store';
 import { useTrainingStore } from './training-store';
 import { usePreferencesStore } from './preferences-store';
+import { useTierStore } from './tier-store';
 
 interface HealthState {
   /** Current permission state */
@@ -225,6 +226,12 @@ export const useHealthStore = create<HealthState>((set, get) => ({
   },
 
   persistToBackend: async () => {
+    // Tier gate: backend persistence requires low_cost+
+    if (!useTierStore.getState().can('backend_persistence')) {
+      set({ error: 'Cloud sync requires Starter plan or higher' });
+      return false;
+    }
+
     const { days } = get();
     if (days.length === 0) {
       set({ error: 'No health data to persist' });

@@ -9,6 +9,7 @@ import {
 import { Text, View } from '@/components/Themed';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
+import { useTierStore } from '../../src/store/tier-store';
 import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures, CoachingResponse } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 
@@ -436,8 +437,20 @@ function BackendSyncCard() {
   const lastPersistResult = useHealthStore((s) => s.lastPersistResult);
   const persistToBackend = useHealthStore((s) => s.persistToBackend);
   const authStatus = useAuthStore((s) => s.status);
+  const canPersist = useTierStore((s) => s.can)('backend_persistence');
 
   if (authStatus !== 'member') return null;
+
+  if (!canPersist) {
+    return (
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Cloud Sync</Text>
+        <Text style={styles.gateText}>
+          Save health data to your account with the Starter plan.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.card}>
@@ -880,6 +893,7 @@ const styles = StyleSheet.create({
   coachPrefs: { gap: 2, marginTop: 4 },
   coachPrefText: { fontSize: 11, color: '#e8ff47', opacity: 0.6 },
   coachConfidence: { fontSize: 10, opacity: 0.3, marginTop: 6 },
+  gateText: { fontSize: 13, opacity: 0.5, lineHeight: 18 },
 
   // Flags
   flagText: { fontSize: 13, lineHeight: 18 },
