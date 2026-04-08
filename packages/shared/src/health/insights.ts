@@ -165,6 +165,65 @@ export function generateInsights(ctx: AIHealthContext): TrainingInsight {
     readinessScore -= 5;
     concerns.push('HRV trending down');
   }
+  if (ctx.trends.resting_hr === 'declining') {
+    // declining resting HR = improving (we inverted in ai-context)
+    readinessScore += 3;
+    positives.push('Resting HR trending down (good)');
+  }
+
+  // --- Consecutive training days ---
+  let consecutiveTraining = 0;
+  const recentSorted = [...(ctx.recent_workouts || [])];
+  // Count consecutive days with workouts from most recent
+  const daySet = new Set(recentSorted.map((w) => w.date));
+  const sortedDates = Array.from(daySet).sort().reverse();
+  const todayDate = ctx.today?.date;
+  if (todayDate && sortedDates[0] === todayDate) {
+    for (let i = 0; i < sortedDates.length; i++) {
+      const expected = new Date(todayDate);
+      expected.setDate(expected.getDate() - i);
+      if (sortedDates[i] === expected.toISOString().slice(0, 10)) {
+        consecutiveTraining++;
+      } else break;
+    }
+  }
+  if (consecutiveTraining >= 4) {
+    readinessScore -= 10;
+    concerns.push(`${consecutiveTraining} consecutive training days`);
+    reasons.push('Extended consecutive training without rest');
+  } else if (consecutiveTraining === 3) {
+    readinessScore -= 5;
+    concerns.push('3 consecutive training days — consider rest tomorrow');
+  }
+
+  // --- Sleep quality (deep + REM if available) ---
+  if (t.sleep_deep_hours != null && t.sleep_rem_hours != null && t.sleep_hours != null && t.sleep_hours > 0) {
+    const qualityRatio = (t.sleep_deep_hours + t.sleep_rem_hours) / t.sleep_hours;
+    if (qualityRatio >= 0.4) {
+      readinessScore += 5;
+      positives.push(`Good sleep quality (${Math.round(qualityRatio * 100)}% deep+REM)`);
+    } else if (qualityRatio < 0.25) {
+      readinessScore -= 5;
+      concerns.push(`Low sleep quality (${Math.round(qualityRatio * 100)}% deep+REM)`);
+      reasons.push('Poor sleep quality — low deep and REM sleep');
+    }
+  }
+
+  // --- Weekly training consistency ---
+  if (ctx.data_quality.days_available >= 7) {
+    const wk = ctx.recent_7d;
+    if (wk.workout_count >= 3 && wk.workout_count <= 5 && wk.rest_days >= 2) {
+      positives.push(`Good training consistency (${wk.workout_count} sessions, ${wk.rest_days} rest days)`);
+    } else if (wk.workout_count <= 1 && !ctx.data_quality.missing.workout_detail) {
+      concerns.push('Low training frequency this week');
+    }
+  }
+
+  // --- Weekly grappling load ---
+  if (ctx.recent_7d.grappling_count >= 4) {
+    concerns.push(`${ctx.recent_7d.grappling_count} grappling sessions this week — watch for accumulated fatigue`);
+    readinessScore -= 5;
+  }
 
   // --- Clamp and classify ---
   readinessScore = Math.max(0, Math.min(100, readinessScore));

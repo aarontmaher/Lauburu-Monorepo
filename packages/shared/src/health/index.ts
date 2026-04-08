@@ -6,3 +6,5 @@ export { buildAIHealthContext } from './ai-context';
 export type { AIHealthContext } from './ai-context';
 export { generateInsights } from './insights';
 export type { TrainingInsight, ReadinessLevel } from './insights';
+export { exportAIPayload } from './ai-payload';
+export type { AIPayload } from './ai-payload';

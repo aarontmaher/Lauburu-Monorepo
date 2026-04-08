@@ -14,6 +14,7 @@ import {
   importHealthData,
   buildAIHealthContext,
   generateInsights,
+  exportAIPayload,
 } from '@lauburu/shared';
 import type {
   DailyMetrics,
@@ -21,6 +22,7 @@ import type {
   HealthPermissions,
   AIHealthContext,
   TrainingInsight,
+  AIPayload,
 } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 import { getHealthService } from '../services/health';
@@ -63,6 +65,9 @@ interface HealthState {
   /** Rules-based training insights */
   insights: TrainingInsight | null;
 
+  /** Exportable AI payload for MCP/coaching consumption */
+  aiPayload: AIPayload | null;
+
   /** Error from last operation */
   error: string | null;
 
@@ -94,6 +99,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
   flags: [],
   aiContext: null,
   insights: null,
+  aiPayload: null,
   error: null,
 
   checkPermissions: async () => {
@@ -174,6 +180,14 @@ export const useHealthStore = create<HealthState>((set, get) => ({
       const aiContext = buildAIHealthContext(days, features, flags);
       const insights = generateInsights(aiContext);
 
+      const now = new Date().toISOString();
+      const { lastPersistedAt } = get();
+
+      // Build exportable AI payload
+      const aiPayload = exportAIPayload(
+        days, features, flags, insights, aiContext, now, lastPersistedAt,
+      );
+
       set({
         days,
         today,
@@ -181,8 +195,9 @@ export const useHealthStore = create<HealthState>((set, get) => ({
         flags,
         aiContext,
         insights,
+        aiPayload,
         syncing: false,
-        lastSyncAt: new Date().toISOString(),
+        lastSyncAt: now,
         error: null,
       });
     } catch (e: any) {
