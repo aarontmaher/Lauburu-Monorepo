@@ -353,6 +353,10 @@ function SyncCard() {
     failed: '#ff6b6b',
   };
 
+  const handleSync = async () => {
+    await syncToBackend();
+  };
+
   return (
     <View style={styles.card}>
       <View style={styles.syncRow}>
@@ -362,26 +366,30 @@ function SyncCard() {
             {examples.length} example{examples.length !== 1 ? 's' : ''} assembled
           </Text>
         </View>
-        {authStatus === 'member' && (
+        {authStatus === 'member' && examples.length > 0 && (
           <Pressable
-            style={styles.syncBtn}
-            onPress={syncToBackend}
-            disabled={syncStatus === 'syncing' || examples.length === 0}>
+            style={[styles.syncBtn, syncStatus === 'syncing' && { opacity: 0.5 }]}
+            onPress={handleSync}
+            disabled={syncStatus === 'syncing'}>
             <Text style={styles.syncBtnText}>
               {syncStatus === 'syncing' ? 'Syncing...' : 'Sync'}
             </Text>
           </Pressable>
         )}
       </View>
+
+      {/* Status feedback */}
       <View style={styles.statusRow}>
         <View style={[styles.statusDot, { backgroundColor: statusColors[syncStatus] }]} />
         <Text style={[styles.statusText, { color: statusColors[syncStatus] }]}>
-          {syncStatus === 'idle' && 'Not synced yet'}
+          {syncStatus === 'idle' && examples.length === 0 && 'Log a session or rate coaching to create training data'}
+          {syncStatus === 'idle' && examples.length > 0 && 'Ready to sync'}
           {syncStatus === 'syncing' && 'Syncing...'}
           {syncStatus === 'synced' && `Synced ${lastSyncAt ? new Date(lastSyncAt).toLocaleTimeString() : ''}`}
           {syncStatus === 'failed' && (lastSyncError ?? 'Sync failed')}
         </Text>
       </View>
+
       {authStatus !== 'member' && (
         <Text style={styles.guestNote}>Sign in to sync training data to your account.</Text>
       )}

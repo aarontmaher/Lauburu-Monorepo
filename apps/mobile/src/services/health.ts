@@ -2,24 +2,18 @@
  * Platform-agnostic health service factory.
  *
  * EXPO GO SAFETY:
- * metro.config.js blocks @kingstinct/react-native-healthkit and
- * react-native-health-connect from being bundled. This means
- * health.ios.ts and health.android.ts can safely require() them —
- * the require resolves to an empty module in Expo Go.
- *
- * The isExpoGo() check provides an additional runtime guard so
- * we never even try to instantiate native services in Expo Go.
+ * 1. isExpoGo() is in a separate file (expo-detect.ts) with no native deps
+ * 2. metro.config.js blocks native health packages from the bundle
+ * 3. Runtime guard returns stub before any native code path
  */
 import { Platform } from 'react-native';
-import Constants from 'expo-constants';
+import { isExpoGo } from './expo-detect';
 import type { IHealthService } from '@lauburu/shared';
 
-let _instance: IHealthService | null = null;
+// Re-export for use in UI components
+export { isExpoGo };
 
-/** True when running inside Expo Go */
-export function isExpoGo(): boolean {
-  return Constants.appOwnership === 'expo';
-}
+let _instance: IHealthService | null = null;
 
 export function getHealthService(): IHealthService {
   if (_instance) return _instance;
