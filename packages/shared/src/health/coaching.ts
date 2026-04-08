@@ -41,7 +41,7 @@
  */
 import type { AIPayload } from './ai-payload';
 import type { CoachingPreferences } from '../types/preferences';
-import { DEFAULT_PREFERENCES } from '../types/preferences';
+import { DEFAULT_PREFERENCES, getTargetSessionsPerWeek, getTodayPlan, SCHEDULE_SESSION_LABELS } from '../types/preferences';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -258,6 +258,9 @@ function buildTodayRec(
 ): CoachingResponse['today_recommendation'] {
   const { readiness, training_context: tc } = p;
   const action = mapLevel(readiness.level);
+  const todayPlan = getTodayPlan(prefs.schedule);
+  const isPlannedDay = todayPlan.length > 0;
+  const plannedTypes = todayPlan.map((s) => s.type);
 
   let detail: string;
   const goalCtx = prefs.goal === 'competition'
@@ -297,6 +300,17 @@ function buildTodayRec(
       break;
     default:
       detail = 'Connect a health source and sync to get personalized training guidance.';
+  }
+
+  // Add schedule context
+  if (isPlannedDay && action !== 'unknown') {
+    const typeStr = plannedTypes.length === 1
+      ? SCHEDULE_SESSION_LABELS[plannedTypes[0]] ?? plannedTypes[0]
+      : `${plannedTypes.length} sessions`;
+    const timeStr = todayPlan[0]?.time ? ` at ${todayPlan[0].time}` : '';
+    detail += ` Planned: ${typeStr}${timeStr}.`;
+  } else if (!isPlannedDay && action === 'push') {
+    detail += ' No session planned today — rest day on your schedule.';
   }
 
   return {
@@ -406,17 +420,17 @@ function buildTrainingLoad(
     status = 'overreaching';
   } else if (tc.workouts_7d >= highThreshold || tc.consecutive_training_days >= consecutiveThreshold) {
     status = 'high';
-  } else if (tc.workouts_7d >= Math.max(2, prefs.target_sessions_per_week - 1) && tc.rest_days_7d >= 1) {
+  } else if (tc.workouts_7d >= Math.max(2, getTargetSessionsPerWeek(prefs) - 1) && tc.rest_days_7d >= 1) {
     status = 'balanced';
-  } else if (tc.workouts_7d < Math.max(1, prefs.target_sessions_per_week - 2)) {
+  } else if (tc.workouts_7d < Math.max(1, getTargetSessionsPerWeek(prefs) - 2)) {
     status = 'low';
   } else {
     status = 'balanced';
   }
 
   // Add target context
-  if (tc.workouts_7d < prefs.target_sessions_per_week) {
-    parts.push(`target: ${prefs.target_sessions_per_week}/week`);
+  if (tc.workouts_7d < getTargetSessionsPerWeek(prefs)) {
+    parts.push(`target: ${getTargetSessionsPerWeek(prefs)}/week`);
   }
 
   return { status, summary: parts.join(', ') + '.' };

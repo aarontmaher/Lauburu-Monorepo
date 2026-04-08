@@ -12,8 +12,11 @@ import { useAuthStore } from '../../src/store/auth-store';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useConsentStore } from '../../src/store/consent-store';
 import { useTierStore } from '../../src/store/tier-store';
-import { DEFAULT_PREFERENCES, TIER_INFO, CAPABILITY_INFO, getTierCapabilities, minimumTierFor } from '@lauburu/shared';
-import type { CoachingPreferences, Tier, Capability } from '@lauburu/shared';
+import {
+  DEFAULT_PREFERENCES, TIER_INFO, CAPABILITY_INFO, getTierCapabilities, minimumTierFor,
+  DAYS_ORDER, DAY_LABELS, SCHEDULE_SESSION_LABELS, countPlannedSessions,
+} from '@lauburu/shared';
+import type { CoachingPreferences, Tier, Capability, DayOfWeek, ScheduleSessionType } from '@lauburu/shared';
 
 // ---------------------------------------------------------------------------
 // Reusable components
@@ -222,25 +225,26 @@ function PreferencesSection() {
       />
 
       <View style={styles.prefRow}>
-        <Text style={styles.prefLabel}>Target sessions/week</Text>
-        <View style={styles.pillRow}>
-          {[2, 3, 4, 5, 6].map((n) => (
-            <Pressable
-              key={n}
-              style={[
-                styles.pill,
-                prefs.target_sessions_per_week === n && styles.pillActive,
-              ]}
-              onPress={() => update({ target_sessions_per_week: n })}>
-              <Text
-                style={[
-                  styles.pillText,
-                  prefs.target_sessions_per_week === n && styles.pillTextActive,
-                ]}>
-                {n}
-              </Text>
-            </Pressable>
-          ))}
+        <Text style={styles.prefLabel}>
+          Weekly schedule ({countPlannedSessions(prefs.schedule)} sessions planned)
+        </Text>
+        <View style={styles.scheduleGrid}>
+          {DAYS_ORDER.map((day) => {
+            const sessions = prefs.schedule[day];
+            const hasSession = sessions.some((s) => s.enabled);
+            return (
+              <View key={day} style={[styles.scheduleDay, hasSession && styles.scheduleDayActive]}>
+                <Text style={[styles.scheduleDayLabel, hasSession && styles.scheduleDayLabelActive]}>
+                  {DAY_LABELS[day]}
+                </Text>
+                {sessions.filter((s) => s.enabled).map((s) => (
+                  <Text key={s.id} style={styles.scheduleSessionTag}>
+                    {SCHEDULE_SESSION_LABELS[s.type]?.slice(0, 4) ?? s.type.slice(0, 4)}
+                  </Text>
+                ))}
+              </View>
+            );
+          })}
         </View>
       </View>
 
@@ -654,4 +658,19 @@ const styles = StyleSheet.create({
   capMore: { fontSize: 11, opacity: 0.3, paddingLeft: 26 },
   devSection: { gap: 6, marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
   devLabel: { fontSize: 11, opacity: 0.4, textTransform: 'uppercase', letterSpacing: 0.5 },
+
+  // Schedule
+  scheduleGrid: { flexDirection: 'row', gap: 4, justifyContent: 'space-between' },
+  scheduleDay: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    gap: 2,
+  },
+  scheduleDayActive: { backgroundColor: 'rgba(232,255,71,0.08)', borderWidth: 1, borderColor: 'rgba(232,255,71,0.2)' },
+  scheduleDayLabel: { fontSize: 10, opacity: 0.4, fontWeight: '600' },
+  scheduleDayLabelActive: { opacity: 0.8, color: '#e8ff47' },
+  scheduleSessionTag: { fontSize: 8, color: '#e8ff47', opacity: 0.7 },
 });
