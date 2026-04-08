@@ -149,6 +149,92 @@ function RecentDays({ days }: { days: DailyMetrics[] }) {
 
 // --- Main screen ---
 
+// --- Insights card (main training guidance) ---
+
+import type { TrainingInsight, ReadinessLevel } from '@lauburu/shared';
+
+const READINESS_COLORS: Record<ReadinessLevel, string> = {
+  green: '#4ade80',
+  yellow: '#e8ff47',
+  red: '#ff6b6b',
+  grey: '#666',
+};
+
+function InsightsCard({ insights }: { insights: TrainingInsight }) {
+  const color = READINESS_COLORS[insights.readiness];
+  const statusColors: Record<string, string> = {
+    good: '#4ade80',
+    caution: '#e8ff47',
+    warning: '#ff6b6b',
+    neutral: '#999',
+  };
+
+  return (
+    <View style={styles.card}>
+      {/* Readiness header */}
+      <View style={styles.readinessHeader}>
+        <View style={[styles.readinessDot, { backgroundColor: color }]} />
+        <View style={styles.readinessText}>
+          <Text style={[styles.readinessLabel, { color }]}>
+            {insights.readiness_label}
+          </Text>
+          <Text style={styles.readinessSummary}>
+            {insights.recommendation.summary}
+          </Text>
+        </View>
+      </View>
+
+      {/* Key metrics row */}
+      {insights.key_metrics.length > 0 && (
+        <View style={styles.keyMetricsRow}>
+          {insights.key_metrics.map((m, i) => (
+            <View key={i} style={styles.keyMetric}>
+              <Text style={[styles.keyMetricValue, { color: statusColors[m.status] }]}>
+                {m.value}
+              </Text>
+              <Text style={styles.keyMetricLabel}>{m.label}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* Reasons */}
+      {insights.recommendation.reasons.length > 0 && (
+        <View style={styles.reasonsList}>
+          {insights.recommendation.reasons.map((r, i) => (
+            <Text key={i} style={styles.reasonText}>• {r}</Text>
+          ))}
+        </View>
+      )}
+
+      {/* Positives */}
+      {insights.positives.length > 0 && (
+        <View style={styles.reasonsList}>
+          {insights.positives.map((p, i) => (
+            <Text key={i} style={[styles.reasonText, { color: '#4ade80' }]}>
+              ✓ {p}
+            </Text>
+          ))}
+        </View>
+      )}
+
+      {/* Concerns */}
+      {insights.concerns.length > 0 && (
+        <View style={styles.reasonsList}>
+          {insights.concerns.map((c, i) => (
+            <Text key={i} style={[styles.reasonText, { color: '#ff6b6b' }]}>
+              ⚠ {c}
+            </Text>
+          ))}
+        </View>
+      )}
+
+      {/* Data note */}
+      <Text style={styles.dataNoteText}>{insights.data_note}</Text>
+    </View>
+  );
+}
+
 // --- Flags card ---
 
 function FlagsCard({ flags }: { flags: HealthFlag[] }) {
@@ -312,6 +398,7 @@ export default function HealthScreen() {
   const days = useHealthStore((s) => s.days);
   const features = useHealthStore((s) => s.features);
   const flags = useHealthStore((s) => s.flags);
+  const insights = useHealthStore((s) => s.insights);
   const error = useHealthStore((s) => s.error);
   const checkPermissions = useHealthStore((s) => s.checkPermissions);
   const requestPermissions = useHealthStore((s) => s.requestPermissions);
@@ -417,6 +504,9 @@ export default function HealthScreen() {
           )}
         </View>
       )}
+
+      {/* Training insights — main guidance card */}
+      {insights && <InsightsCard insights={insights} />}
 
       {/* Flags */}
       {flags.length > 0 && <FlagsCard flags={flags} />}
@@ -655,6 +745,27 @@ const styles = StyleSheet.create({
   statusDotRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   statusDotSmall: { width: 6, height: 6, borderRadius: 3 },
   syncTimestamp: { fontSize: 11, opacity: 0.4, marginTop: 4 },
+
+  // Insights
+  readinessHeader: { flexDirection: 'row', gap: 12, alignItems: 'flex-start' },
+  readinessDot: { width: 14, height: 14, borderRadius: 7, marginTop: 3 },
+  readinessText: { flex: 1, gap: 4 },
+  readinessLabel: { fontSize: 18, fontWeight: '700' },
+  readinessSummary: { fontSize: 14, opacity: 0.8, lineHeight: 20 },
+  keyMetricsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.06)',
+    marginTop: 4,
+  },
+  keyMetric: { alignItems: 'center', gap: 2 },
+  keyMetricValue: { fontSize: 18, fontWeight: '700' },
+  keyMetricLabel: { fontSize: 11, opacity: 0.5 },
+  reasonsList: { gap: 3, marginTop: 2 },
+  reasonText: { fontSize: 13, opacity: 0.8, lineHeight: 18 },
+  dataNoteText: { fontSize: 11, opacity: 0.35, marginTop: 6 },
 
   // Flags
   flagText: { fontSize: 13, lineHeight: 18 },

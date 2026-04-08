@@ -12,11 +12,15 @@ import {
   computeFlags,
   toBackendPayload,
   importHealthData,
+  buildAIHealthContext,
+  generateInsights,
 } from '@lauburu/shared';
 import type {
   DailyMetrics,
   DerivedFeatures,
   HealthPermissions,
+  AIHealthContext,
+  TrainingInsight,
 } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 import { getHealthService } from '../services/health';
@@ -53,6 +57,12 @@ interface HealthState {
   /** Notable flags / conditions for UI display */
   flags: HealthFlag[];
 
+  /** Compact AI health context (for future MCP/AI consumption) */
+  aiContext: AIHealthContext | null;
+
+  /** Rules-based training insights */
+  insights: TrainingInsight | null;
+
   /** Error from last operation */
   error: string | null;
 
@@ -82,6 +92,8 @@ export const useHealthStore = create<HealthState>((set, get) => ({
   today: null,
   features: null,
   flags: [],
+  aiContext: null,
+  insights: null,
   error: null,
 
   checkPermissions: async () => {
@@ -158,11 +170,17 @@ export const useHealthStore = create<HealthState>((set, get) => ({
       const features = deriveFeatures(days);
       const flags = computeFlags(features, today);
 
+      // Build AI context + generate insights
+      const aiContext = buildAIHealthContext(days, features, flags);
+      const insights = generateInsights(aiContext);
+
       set({
         days,
         today,
         features,
         flags,
+        aiContext,
+        insights,
         syncing: false,
         lastSyncAt: new Date().toISOString(),
         error: null,

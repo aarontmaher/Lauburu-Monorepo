@@ -2,3 +2,7 @@ export { normalizeDayFromSamples, normalizeHealthData } from './normalize';
 export { deriveFeatures, computeFlags } from './derive-features';
 export type { HealthFlag } from './derive-features';
 export { toBackendPayload } from './persist';
+export { buildAIHealthContext } from './ai-context';
+export type { AIHealthContext } from './ai-context';
+export { generateInsights } from './insights';
+export type { TrainingInsight, ReadinessLevel } from './insights';
