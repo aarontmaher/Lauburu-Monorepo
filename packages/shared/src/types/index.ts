@@ -6,3 +6,4 @@ export * from './training';
 export * from './feedback';
 export * from './preferences';
 export * from './consent';
+export * from './tiers';

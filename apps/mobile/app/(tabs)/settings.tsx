@@ -11,8 +11,9 @@ import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../../src/store/auth-store';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useConsentStore } from '../../src/store/consent-store';
-import { DEFAULT_PREFERENCES } from '@lauburu/shared';
-import type { CoachingPreferences } from '@lauburu/shared';
+import { useTierStore } from '../../src/store/tier-store';
+import { DEFAULT_PREFERENCES, TIER_INFO, CAPABILITY_INFO, getTierCapabilities, minimumTierFor } from '@lauburu/shared';
+import type { CoachingPreferences, Tier, Capability } from '@lauburu/shared';
 
 // ---------------------------------------------------------------------------
 // Reusable components
@@ -368,6 +369,108 @@ function ConsentSection() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Tier & Capabilities
+// ---------------------------------------------------------------------------
+
+const ALL_TIERS: Tier[] = ['free', 'low_cost', 'pro', 'ai_premium'];
+
+function TierSection() {
+  const effectiveTier = useTierStore((s) => s.effectiveTier());
+  const devOverride = useTierStore((s) => s.devOverride);
+  const setDevOverride = useTierStore((s) => s.setDevOverride);
+  const capabilities = useTierStore((s) => s.capabilities());
+  const tierInfo = TIER_INFO[effectiveTier];
+
+  // Group capabilities by tier for display
+  const enabledCaps = capabilities;
+  const allCaps: Capability[] = [
+    'local_coaching', 'manual_training_log', 'feedback_capture',
+    'local_health_view', 'basic_insights', 'health_sync',
+    'backend_persistence', 'export_ai_payload', 'preference_coaching',
+    'training_history', 'byo_ai', 'advanced_reports', 'cronometer_sync',
+    'ergzone_sync', 'data_export_full', 'model_training_participation',
+    'hosted_ai_coaching', 'daily_ai_recommendations',
+    'advanced_ai_insights', 'priority_model_training',
+  ];
+  const disabledCaps = allCaps.filter((c) => !enabledCaps.includes(c));
+
+  return (
+    <>
+      <View style={styles.tierHeader}>
+        <Text style={[styles.tierBadge, { color: tierInfo.color, borderColor: tierInfo.color }]}>
+          {tierInfo.label}
+        </Text>
+        <Text style={styles.tierNote}>
+          {devOverride ? '(dev override)' : ''}
+        </Text>
+      </View>
+
+      {/* Enabled capabilities */}
+      <View style={styles.capList}>
+        {enabledCaps.slice(0, 8).map((cap) => {
+          const info = CAPABILITY_INFO[cap];
+          return (
+            <View key={cap} style={styles.capRow}>
+              <Text style={styles.capEnabled}>✓</Text>
+              <Text style={styles.capLabel}>{info.label}</Text>
+            </View>
+          );
+        })}
+        {enabledCaps.length > 8 && (
+          <Text style={styles.capMore}>+{enabledCaps.length - 8} more</Text>
+        )}
+      </View>
+
+      {/* Hidden premium capabilities */}
+      {disabledCaps.length > 0 && (
+        <View style={styles.capList}>
+          <Text style={styles.capSectionLabel}>Premium</Text>
+          {disabledCaps.slice(0, 5).map((cap) => {
+            const info = CAPABILITY_INFO[cap];
+            const minTier = minimumTierFor(cap);
+            return (
+              <View key={cap} style={styles.capRow}>
+                <Text style={styles.capLocked}>✗</Text>
+                <Text style={styles.capLabelLocked}>{info.label}</Text>
+                <Text style={styles.capTierReq}>{TIER_INFO[minTier].label}</Text>
+              </View>
+            );
+          })}
+          {disabledCaps.length > 5 && (
+            <Text style={styles.capMore}>+{disabledCaps.length - 5} more in higher tiers</Text>
+          )}
+        </View>
+      )}
+
+      {/* Dev tier override */}
+      <View style={styles.devSection}>
+        <Text style={styles.devLabel}>Dev Override</Text>
+        <View style={styles.pillRow}>
+          <Pressable
+            style={[styles.pill, devOverride === null && styles.pillActive]}
+            onPress={() => setDevOverride(null)}>
+            <Text style={[styles.pillText, devOverride === null && styles.pillTextActive]}>
+              None
+            </Text>
+          </Pressable>
+          {ALL_TIERS.map((t) => (
+            <Pressable
+              key={t}
+              style={[styles.pill, devOverride === t && { borderColor: TIER_INFO[t].color, backgroundColor: TIER_INFO[t].color + '15' }]}
+              onPress={() => setDevOverride(t)}>
+              <Text
+                style={[styles.pillText, devOverride === t && { color: TIER_INFO[t].color, fontWeight: '600' }]}>
+                {TIER_INFO[t].label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </View>
+    </>
+  );
+}
+
 // Main screen
 // ---------------------------------------------------------------------------
 
@@ -389,6 +492,11 @@ export default function SettingsScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Coaching Preferences</Text>
         <PreferencesSection />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Subscription & Features</Text>
+        <TierSection />
       </View>
 
       <View style={styles.section}>
@@ -523,4 +631,27 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   consentRevokedText: { fontSize: 13, color: '#ff6b6b', lineHeight: 18 },
+
+  // Tier
+  tierHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  tierBadge: {
+    fontSize: 16,
+    fontWeight: '700',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+  },
+  tierNote: { fontSize: 12, opacity: 0.4 },
+  capList: { gap: 4 },
+  capSectionLabel: { fontSize: 11, opacity: 0.4, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 },
+  capRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 2 },
+  capEnabled: { fontSize: 13, color: '#4ade80', width: 18 },
+  capLocked: { fontSize: 13, color: '#666', width: 18 },
+  capLabel: { fontSize: 13, flex: 1 },
+  capLabelLocked: { fontSize: 13, opacity: 0.4, flex: 1 },
+  capTierReq: { fontSize: 10, opacity: 0.3 },
+  capMore: { fontSize: 11, opacity: 0.3, paddingLeft: 26 },
+  devSection: { gap: 6, marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
+  devLabel: { fontSize: 11, opacity: 0.4, textTransform: 'uppercase', letterSpacing: 0.5 },
 });
