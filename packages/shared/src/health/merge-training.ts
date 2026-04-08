@@ -10,6 +10,7 @@
  */
 import type { DailyMetrics, GrapplingSession, Workout } from '../types/health';
 import type { TrainingSession } from '../types/training';
+import { SESSION_TYPE_LABELS } from '../types/training';
 
 /**
  * Merge manual training sessions into existing daily metrics.
@@ -64,21 +65,23 @@ export function mergeTrainingSessions(
 }
 
 function sessionToGrappling(s: TrainingSession): GrapplingSession {
+  const sessionType = s.type === 'wrestling' ? 'wrestling' : 'bjj';
   return {
-    type: 'bjj',
+    type: sessionType,
     intensity: s.intensity,
     duration_min: s.duration_min,
     rounds: s.rounds,
-    sparring: s.type === 'sparring' || s.type === 'comp',
+    sparring: s.type === 'sparring' || s.type === 'comp' || s.type === 'wrestling',
     rpe: s.rpe,
     notes: s.notes || undefined,
   };
 }
 
 function sessionToWorkout(s: TrainingSession): Workout {
+  const isWrestling = s.type === 'wrestling';
   return {
-    type: 'martial_arts',
-    sport_label: `BJJ ${s.type}`,
+    type: isWrestling ? 'wrestling' : 'martial_arts',
+    sport_label: isWrestling ? `Wrestling ${s.intensity}` : `No-gi ${SESSION_TYPE_LABELS[s.type] ?? s.type}`,
     source: 'manual',
     source_id: `manual-${s.id}`,
     duration_min: s.duration_min,

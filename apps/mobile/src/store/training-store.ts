@@ -8,13 +8,9 @@ import type { TrainingSession, TrainingSessionInput } from '@lauburu/shared';
 interface TrainingState {
   sessions: TrainingSession[];
 
-  /** Add a new manually logged session */
   addSession: (input: TrainingSessionInput) => TrainingSession;
-
-  /** Remove a session by ID */
+  editSession: (id: string, input: Partial<TrainingSessionInput>) => void;
   removeSession: (id: string) => void;
-
-  /** Get sessions for a date range */
   getSessionsForRange: (startDate: string, endDate: string) => TrainingSession[];
 }
 
@@ -39,12 +35,23 @@ export const useTrainingStore = create<TrainingState>((set, get) => ({
       notes: input.notes ?? '',
       persisted: false,
     };
-
-    set((state) => ({
-      sessions: [...state.sessions, session],
-    }));
-
+    set((state) => ({ sessions: [...state.sessions, session] }));
     return session;
+  },
+
+  editSession: (id, input) => {
+    set((state) => ({
+      sessions: state.sessions.map((s) =>
+        s.id === id
+          ? {
+              ...s,
+              ...input,
+              tags: input.tags ?? s.tags,
+              notes: input.notes ?? s.notes,
+            }
+          : s,
+      ),
+    }));
   },
 
   removeSession: (id) => {

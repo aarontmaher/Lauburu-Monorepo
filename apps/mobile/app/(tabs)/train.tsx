@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -11,34 +11,60 @@ import { Text, View } from '@/components/Themed';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
-import type { SessionType, SessionIntensity } from '@lauburu/shared';
-import { SESSION_TYPE_LABELS, INTENSITY_LABELS } from '@lauburu/shared';
+import type { SessionType, SessionIntensity, TrainingSession } from '@lauburu/shared';
+import { SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS } from '@lauburu/shared';
 
-const SESSION_TYPES: SessionType[] = ['class', 'sparring', 'drilling', 'comp', 'open_mat', 'other'];
+const SESSION_TYPES: SessionType[] = ['class', 'sparring', 'drilling', 'wrestling', 'comp', 'open_mat', 'other'];
 const INTENSITIES: SessionIntensity[] = ['light', 'moderate', 'hard'];
 const DURATION_PRESETS = [30, 45, 60, 90, 120];
-const TAG_OPTIONS = ['gi', 'no-gi', 'positional', 'technique', 'comp-prep', 'flow'];
+
+const INTENSITY_COLORS: Record<string, string> = {
+  light: '#4ade80',
+  moderate: '#e8ff47',
+  hard: '#ff6b6b',
+};
 
 function todayDate() {
   return new Date().toISOString().slice(0, 10);
 }
 
-export default function TrainScreen() {
-  const [sessionType, setSessionType] = useState<SessionType>('class');
-  const [intensity, setIntensity] = useState<SessionIntensity>('moderate');
-  const [duration, setDuration] = useState(60);
-  const [rounds, setRounds] = useState('');
-  const [rpe, setRpe] = useState('');
-  const [notes, setNotes] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>(['no-gi']);
-  const [submitted, setSubmitted] = useState(false);
+function daysAgo(n: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  return d.toISOString().slice(0, 10);
+}
 
+function formatDateLabel(date: string): string {
+  const today = todayDate();
+  if (date === today) return 'Today';
+  if (date === daysAgo(1)) return 'Yesterday';
+  const d = new Date(date + 'T12:00:00');
+  return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+// ---------------------------------------------------------------------------
+// Entry form
+// ---------------------------------------------------------------------------
+
+function EntryForm({
+  editing,
+  onDone,
+}: {
+  editing: TrainingSession | null;
+  onDone: () => void;
+}) {
   const addSession = useTrainingStore((s) => s.addSession);
-  const sessions = useTrainingStore((s) => s.sessions);
+  const editSession = useTrainingStore((s) => s.editSession);
   const syncData = useHealthStore((s) => s.syncData);
   const user = useAuthStore((s) => s.user);
 
-  const todaySessions = sessions.filter((s) => s.date === todayDate());
+  const [sessionType, setSessionType] = useState<SessionType>(editing?.type ?? 'class');
+  const [intensity, setIntensity] = useState<SessionIntensity>(editing?.intensity ?? 'moderate');
+  const [duration, setDuration] = useState(editing?.duration_min ?? 60);
+  const [rounds, setRounds] = useState(editing?.rounds?.toString() ?? '');
+  const [rpe, setRpe] = useState(editing?.rpe?.toString() ?? '');
+  const [notes, setNotes] = useState(editing?.notes ?? '');
+  const [selectedTags, setSelectedTags] = useState<string[]>(editing?.tags ?? ['no-gi']);
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -48,9 +74,8 @@ export default function TrainScreen() {
 
   const handleSubmit = () => {
     Keyboard.dismiss();
-
-    const session = addSession({
-      date: todayDate(),
+    const input = {
+      date: editing?.date ?? todayDate(),
       type: sessionType,
       intensity,
       duration_min: duration,
@@ -58,37 +83,21 @@ export default function TrainScreen() {
       rpe: rpe ? parseInt(rpe, 10) : undefined,
       tags: selectedTags,
       notes,
-    });
+    };
 
-    // Trigger health pipeline recomputation with the new session
-    if (user?.id) {
-      syncData(user.id);
+    if (editing) {
+      editSession(editing.id, input);
+    } else {
+      addSession(input);
     }
 
-    setSubmitted(true);
-    setNotes('');
-    setRounds('');
-    setRpe('');
-
-    // Reset after a moment
-    setTimeout(() => setSubmitted(false), 3000);
+    if (user?.id) syncData(user.id);
+    onDone();
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      keyboardShouldPersistTaps="handled">
-      <Text style={styles.heading}>Log Training</Text>
-
-      {/* Success banner */}
-      {submitted && (
-        <View style={styles.successBanner}>
-          <Text style={styles.successText}>Session logged — coaching updated</Text>
-        </View>
-      )}
-
-      {/* Session type */}
+    <View style={styles.formSection}>
+      {/* Type */}
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>Type</Text>
         <View style={styles.pillRow}>
@@ -97,8 +106,7 @@ export default function TrainScreen() {
               key={t}
               style={[styles.pill, sessionType === t && styles.pillActive]}
               onPress={() => setSessionType(t)}>
-              <Text
-                style={[styles.pillText, sessionType === t && styles.pillTextActive]}>
+              <Text style={[styles.pillText, sessionType === t && styles.pillTextActive]}>
                 {SESSION_TYPE_LABELS[t]}
               </Text>
             </Pressable>
@@ -110,30 +118,23 @@ export default function TrainScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>Intensity</Text>
         <View style={styles.pillRow}>
-          {INTENSITIES.map((i) => {
-            const colors: Record<string, string> = {
-              light: '#4ade80',
-              moderate: '#e8ff47',
-              hard: '#ff6b6b',
-            };
-            return (
-              <Pressable
-                key={i}
+          {INTENSITIES.map((i) => (
+            <Pressable
+              key={i}
+              style={[
+                styles.pill,
+                intensity === i && { borderColor: INTENSITY_COLORS[i], backgroundColor: INTENSITY_COLORS[i] + '15' },
+              ]}
+              onPress={() => setIntensity(i)}>
+              <Text
                 style={[
-                  styles.pill,
-                  intensity === i && { borderColor: colors[i], backgroundColor: colors[i] + '15' },
-                ]}
-                onPress={() => setIntensity(i)}>
-                <Text
-                  style={[
-                    styles.pillText,
-                    intensity === i && { color: colors[i], fontWeight: '600' },
-                  ]}>
-                  {INTENSITY_LABELS[i]}
-                </Text>
-              </Pressable>
-            );
-          })}
+                  styles.pillText,
+                  intensity === i && { color: INTENSITY_COLORS[i], fontWeight: '600' },
+                ]}>
+                {INTENSITY_LABELS[i]}
+              </Text>
+            </Pressable>
+          ))}
         </View>
       </View>
 
@@ -146,8 +147,7 @@ export default function TrainScreen() {
               key={d}
               style={[styles.pill, duration === d && styles.pillActive]}
               onPress={() => setDuration(d)}>
-              <Text
-                style={[styles.pillText, duration === d && styles.pillTextActive]}>
+              <Text style={[styles.pillText, duration === d && styles.pillTextActive]}>
                 {d}min
               </Text>
             </Pressable>
@@ -162,16 +162,9 @@ export default function TrainScreen() {
           {TAG_OPTIONS.map((tag) => (
             <Pressable
               key={tag}
-              style={[
-                styles.pill,
-                selectedTags.includes(tag) && styles.pillActive,
-              ]}
+              style={[styles.pill, selectedTags.includes(tag) && styles.pillActive]}
               onPress={() => toggleTag(tag)}>
-              <Text
-                style={[
-                  styles.pillText,
-                  selectedTags.includes(tag) && styles.pillTextActive,
-                ]}>
+              <Text style={[styles.pillText, selectedTags.includes(tag) && styles.pillTextActive]}>
                 {tag}
               </Text>
             </Pressable>
@@ -179,7 +172,7 @@ export default function TrainScreen() {
         </View>
       </View>
 
-      {/* Rounds + RPE row */}
+      {/* Rounds + RPE */}
       <View style={styles.rowInputs}>
         <View style={styles.halfInput}>
           <Text style={styles.sectionLabel}>Rounds</Text>
@@ -221,29 +214,164 @@ export default function TrainScreen() {
 
       {/* Submit */}
       <Pressable style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitText}>Log Session</Text>
+        <Text style={styles.submitText}>
+          {editing ? 'Save Changes' : 'Log Session'}
+        </Text>
       </Pressable>
 
-      {/* Today's sessions */}
-      {todaySessions.length > 0 && (
-        <View style={styles.todaySection}>
-          <Text style={styles.todayHeader}>Today's Sessions</Text>
-          {todaySessions.map((s) => (
-            <View key={s.id} style={styles.sessionCard}>
-              <View style={styles.sessionRow}>
-                <Text style={styles.sessionType}>
-                  {SESSION_TYPE_LABELS[s.type]} · {s.duration_min}min · {s.intensity}
-                </Text>
-                {s.rpe && (
-                  <Text style={styles.sessionRpe}>RPE {s.rpe}</Text>
-                )}
-              </View>
-              {s.tags.length > 0 && (
-                <Text style={styles.sessionTags}>{s.tags.join(', ')}</Text>
-              )}
-              {s.notes ? (
-                <Text style={styles.sessionNotes}>{s.notes}</Text>
-              ) : null}
+      {editing && (
+        <Pressable style={styles.cancelButton} onPress={onDone}>
+          <Text style={styles.cancelText}>Cancel</Text>
+        </Pressable>
+      )}
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Session card
+// ---------------------------------------------------------------------------
+
+function SessionCard({
+  session,
+  onEdit,
+  onDelete,
+}: {
+  session: TrainingSession;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const handleDelete = () => {
+    Alert.alert(
+      'Delete Session',
+      `Delete ${SESSION_TYPE_LABELS[session.type]} on ${session.date}?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: onDelete },
+      ],
+    );
+  };
+
+  return (
+    <View style={styles.sessionCard}>
+      <View style={styles.sessionHeader}>
+        <View>
+          <Text style={styles.sessionType}>
+            {SESSION_TYPE_LABELS[session.type]}
+          </Text>
+          <Text style={styles.sessionMeta}>
+            {session.duration_min}min ·{' '}
+            <Text style={{ color: INTENSITY_COLORS[session.intensity] }}>
+              {session.intensity}
+            </Text>
+            {session.rounds ? ` · ${session.rounds} rounds` : ''}
+            {session.rpe ? ` · RPE ${session.rpe}` : ''}
+          </Text>
+        </View>
+        <View style={styles.sessionActions}>
+          <Pressable onPress={onEdit} style={styles.actionBtn}>
+            <Text style={styles.actionText}>Edit</Text>
+          </Pressable>
+          <Pressable onPress={handleDelete} style={styles.actionBtn}>
+            <Text style={[styles.actionText, { color: '#ff6b6b' }]}>Delete</Text>
+          </Pressable>
+        </View>
+      </View>
+      {session.tags.length > 0 && (
+        <Text style={styles.sessionTags}>{session.tags.join(' · ')}</Text>
+      )}
+      {session.notes ? (
+        <Text style={styles.sessionNotes}>{session.notes}</Text>
+      ) : null}
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main screen
+// ---------------------------------------------------------------------------
+
+export default function TrainScreen() {
+  const sessions = useTrainingStore((s) => s.sessions);
+  const removeSession = useTrainingStore((s) => s.removeSession);
+  const syncData = useHealthStore((s) => s.syncData);
+  const user = useAuthStore((s) => s.user);
+  const [editingSession, setEditingSession] = useState<TrainingSession | null>(null);
+  const [showForm, setShowForm] = useState(true);
+  const [submitted, setSubmitted] = useState(false);
+
+  // Group sessions by date (last 7 days)
+  const groupedSessions = useMemo(() => {
+    const sevenDaysAgo = daysAgo(7);
+    const recent = sessions
+      .filter((s) => s.date >= sevenDaysAgo)
+      .sort((a, b) => b.date.localeCompare(a.date) || b.created_at.localeCompare(a.created_at));
+
+    const groups: { date: string; label: string; sessions: TrainingSession[] }[] = [];
+    let currentDate = '';
+    for (const s of recent) {
+      if (s.date !== currentDate) {
+        currentDate = s.date;
+        groups.push({ date: s.date, label: formatDateLabel(s.date), sessions: [] });
+      }
+      groups[groups.length - 1].sessions.push(s);
+    }
+    return groups;
+  }, [sessions]);
+
+  const handleFormDone = () => {
+    setEditingSession(null);
+    setShowForm(true);
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 3000);
+  };
+
+  const handleEdit = (session: TrainingSession) => {
+    setEditingSession(session);
+    setShowForm(true);
+  };
+
+  const handleDelete = (id: string) => {
+    removeSession(id);
+    if (user?.id) syncData(user.id);
+  };
+
+  return (
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      keyboardShouldPersistTaps="handled">
+      <Text style={styles.heading}>Log Training</Text>
+
+      {submitted && !editingSession && (
+        <View style={styles.successBanner}>
+          <Text style={styles.successText}>Session logged — coaching updated</Text>
+        </View>
+      )}
+
+      {/* Entry form */}
+      {showForm && (
+        <EntryForm
+          editing={editingSession}
+          onDone={handleFormDone}
+        />
+      )}
+
+      {/* History */}
+      {groupedSessions.length > 0 && (
+        <View style={styles.historySection}>
+          <Text style={styles.historyTitle}>Recent Sessions</Text>
+          {groupedSessions.map((group) => (
+            <View key={group.date} style={styles.dateGroup}>
+              <Text style={styles.dateLabel}>{group.label}</Text>
+              {group.sessions.map((s) => (
+                <SessionCard
+                  key={s.id}
+                  session={s}
+                  onEdit={() => handleEdit(s)}
+                  onDelete={() => handleDelete(s.id)}
+                />
+              ))}
             </View>
           ))}
         </View>
@@ -257,6 +385,7 @@ const styles = StyleSheet.create({
   content: { padding: 20, gap: 16, paddingBottom: 40 },
   heading: { fontSize: 24, fontWeight: '700' },
 
+  formSection: { gap: 16 },
   section: { gap: 8 },
   sectionLabel: {
     fontSize: 13,
@@ -303,6 +432,15 @@ const styles = StyleSheet.create({
   },
   submitText: { color: '#0a0a0a', fontSize: 17, fontWeight: '700' },
 
+  cancelButton: {
+    borderRadius: 12,
+    padding: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#666',
+  },
+  cancelText: { color: '#999', fontSize: 15 },
+
   successBanner: {
     backgroundColor: 'rgba(74,222,128,0.15)',
     borderWidth: 1,
@@ -313,21 +451,29 @@ const styles = StyleSheet.create({
   },
   successText: { color: '#4ade80', fontSize: 14, fontWeight: '600' },
 
-  todaySection: { gap: 8, marginTop: 8 },
-  todayHeader: { fontSize: 16, fontWeight: '600' },
+  // History
+  historySection: { gap: 12, marginTop: 8 },
+  historyTitle: { fontSize: 18, fontWeight: '600' },
+  dateGroup: { gap: 8 },
+  dateLabel: { fontSize: 14, fontWeight: '600', opacity: 0.6 },
+
+  // Session card
   sessionCard: {
     padding: 12,
     borderRadius: 10,
     backgroundColor: 'rgba(255,255,255,0.05)',
-    gap: 4,
+    gap: 6,
   },
-  sessionRow: {
+  sessionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
-  sessionType: { fontSize: 14, fontWeight: '600' },
-  sessionRpe: { fontSize: 13, color: '#e8ff47' },
+  sessionType: { fontSize: 15, fontWeight: '600' },
+  sessionMeta: { fontSize: 13, opacity: 0.7, marginTop: 2 },
+  sessionActions: { flexDirection: 'row', gap: 12 },
+  actionBtn: { paddingVertical: 2, paddingHorizontal: 4 },
+  actionText: { fontSize: 13, color: '#e8ff47' },
   sessionTags: { fontSize: 12, opacity: 0.5 },
-  sessionNotes: { fontSize: 13, opacity: 0.7 },
+  sessionNotes: { fontSize: 13, opacity: 0.6, lineHeight: 18 },
 });

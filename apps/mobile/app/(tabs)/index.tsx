@@ -2,8 +2,10 @@ import { StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useHealthStore } from '../../src/store/health-store';
+import { useTrainingStore } from '../../src/store/training-store';
 import { useProgress } from '../../src/hooks/useProgress';
 import type { ReadinessLevel } from '@lauburu/shared';
+import { SESSION_TYPE_LABELS } from '@lauburu/shared';
 
 const READINESS_COLORS: Record<ReadinessLevel, string> = {
   green: '#4ade80',
@@ -136,6 +138,39 @@ function RecentActivityCard() {
   );
 }
 
+function TrainingContextCard() {
+  const coaching = useHealthStore((s) => s.coaching);
+  const sessions = useTrainingStore((s) => s.sessions);
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const todaySessions = sessions.filter((s) => s.date === todayStr);
+
+  if (!coaching && todaySessions.length === 0) return null;
+
+  return (
+    <View style={styles.card}>
+      <Text style={styles.cardTitle}>Training This Week</Text>
+      {coaching && coaching.readiness.level !== 'grey' && (
+        <>
+          <Text style={styles.cardBody}>{coaching.training_load.summary}</Text>
+          <Text style={styles.cardBody}>{coaching.grappling.summary}</Text>
+          {coaching.grappling.suggestion ? (
+            <Text style={[styles.cardBody, { color: '#e8ff47', opacity: 0.9 }]}>
+              {coaching.grappling.suggestion}
+            </Text>
+          ) : null}
+        </>
+      )}
+      {todaySessions.length > 0 && (
+        <View style={styles.todayBadge}>
+          <Text style={styles.todayBadgeText}>
+            Today: {todaySessions.map((s) => SESSION_TYPE_LABELS[s.type]).join(', ')}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
 export default function HomeScreen() {
   const status = useAuthStore((s) => s.status);
   const user = useAuthStore((s) => s.user);
@@ -156,6 +191,8 @@ export default function HomeScreen() {
 
       {/* Readiness — the most important thing on Home */}
       {isMember && <ReadinessCard />}
+
+      {isMember && <TrainingContextCard />}
 
       {isMember && <ProgressCard />}
 
@@ -214,4 +251,14 @@ const styles = StyleSheet.create({
   activityName: { fontSize: 14 },
   activityDate: { fontSize: 11, opacity: 0.4 },
   activityMeta: { fontSize: 12, opacity: 0.5 },
+
+  // Training context
+  todayBadge: {
+    backgroundColor: 'rgba(232,255,71,0.1)',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    alignSelf: 'flex-start',
+  },
+  todayBadgeText: { fontSize: 12, color: '#e8ff47', fontWeight: '600' },
 });

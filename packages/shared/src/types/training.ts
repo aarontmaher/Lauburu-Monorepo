@@ -1,11 +1,20 @@
 /**
  * Manual training session entry types.
+ * NO-GI ONLY — this app does not track gi training.
  *
  * These coexist with health-derived workouts in the unified model.
  * Source is always 'manual' — never confused with HealthKit/HC workouts.
  */
 
-export type SessionType = 'class' | 'sparring' | 'drilling' | 'comp' | 'open_mat' | 'other';
+export type SessionType =
+  | 'class'
+  | 'sparring'
+  | 'drilling'
+  | 'wrestling'
+  | 'comp'
+  | 'open_mat'
+  | 'other';
+
 export type SessionIntensity = 'light' | 'moderate' | 'hard';
 
 /**
@@ -13,41 +22,20 @@ export type SessionIntensity = 'light' | 'moderate' | 'hard';
  * Stored locally and optionally persisted to backend.
  */
 export interface TrainingSession {
-  /** Unique ID (uuid-style) */
   id: string;
-
-  /** When entered */
   created_at: string;
-
-  /** Session date (YYYY-MM-DD) */
-  date: string;
-
-  /** What kind of session */
+  date: string; // YYYY-MM-DD
   type: SessionType;
-
-  /** Intensity level */
   intensity: SessionIntensity;
-
-  /** Duration in minutes */
   duration_min: number;
-
-  /** Number of rounds (sparring/comp) */
   rounds?: number;
-
-  /** Rate of perceived exertion 1-10 */
-  rpe?: number;
-
-  /** Tags for categorization */
+  rpe?: number; // 1-10
   tags: string[];
-
-  /** Free-text notes */
   notes: string;
-
-  /** Whether this has been persisted to backend */
   persisted: boolean;
 }
 
-/** Input shape for creating a new session (id and timestamps are auto-generated) */
+/** Input shape for creating a new session */
 export interface TrainingSessionInput {
   date: string;
   type: SessionType;
@@ -63,6 +51,7 @@ export const SESSION_TYPE_LABELS: Record<SessionType, string> = {
   class: 'Class',
   sparring: 'Sparring',
   drilling: 'Drilling',
+  wrestling: 'Wrestling',
   comp: 'Competition',
   open_mat: 'Open Mat',
   other: 'Other',
@@ -73,3 +62,15 @@ export const INTENSITY_LABELS: Record<SessionIntensity, string> = {
   moderate: 'Moderate',
   hard: 'Hard',
 };
+
+/** No-gi + wrestling focused tag options */
+export const TAG_OPTIONS = [
+  'no-gi',
+  'wrestling',
+  'takedowns',
+  'scrambling',
+  'positional',
+  'technique',
+  'comp-prep',
+  'flow',
+] as const;

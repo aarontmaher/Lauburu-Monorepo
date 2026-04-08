@@ -292,15 +292,49 @@ function buildGrappling(p: AIPayload): CoachingResponse['grappling'] {
     };
   }
 
-  const summary = `${tc.grappling_sessions_7d} grappling session${tc.grappling_sessions_7d !== 1 ? 's' : ''} this week.`;
+  // Build rich summary using session-specific detail
+  const parts: string[] = [];
+  parts.push(`${tc.grappling_sessions_7d} session${tc.grappling_sessions_7d !== 1 ? 's' : ''} this week`);
+  if (tc.hard_sessions_7d > 0) parts.push(`${tc.hard_sessions_7d} hard`);
+  if (tc.sparring_sessions_7d > 0) parts.push(`${tc.sparring_sessions_7d} sparring/comp`);
+  if (tc.avg_rpe_7d != null) parts.push(`avg RPE ${tc.avg_rpe_7d}`);
+  const summary = parts.join(' · ') + '.';
+
   let suggestion: string;
 
-  if (tc.grappling_sessions_7d >= 4 && p.readiness.level !== 'green') {
-    suggestion = 'High grappling frequency with suboptimal recovery — consider a technique-only session or rest day.';
-  } else if (p.readiness.level === 'green') {
-    suggestion = 'Body is ready for hard rolling. Good day for competition-style sparring.';
-  } else {
-    suggestion = 'Keep it technical — positional rounds and drilling over hard sparring.';
+  // High hard/sparring load with poor recovery
+  if (tc.hard_sessions_7d >= 3 && p.readiness.level !== 'green') {
+    suggestion = 'Multiple hard sessions this week with suboptimal recovery. Switch to drilling or light positional rounds today.';
+  }
+  // High sparring accumulation
+  else if (tc.sparring_sessions_7d >= 3) {
+    suggestion = p.readiness.level === 'green'
+      ? 'Heavy sparring week but recovery is good. One more hard session is fine, then plan a lighter day.'
+      : 'Sparring load is high. Prioritize technique and flow today.';
+  }
+  // High RPE trend
+  else if (tc.avg_rpe_7d != null && tc.avg_rpe_7d >= 8) {
+    suggestion = 'Average RPE is high this week. Consider a technique-focused session to give your body a break.';
+  }
+  // Green + moderate load — can push
+  else if (p.readiness.level === 'green' && tc.grappling_sessions_7d < 4) {
+    suggestion = 'Body is ready for hard rolling. Good day for competition-style sparring or intensive drilling.';
+  }
+  // High frequency but green
+  else if (tc.grappling_sessions_7d >= 4 && p.readiness.level === 'green') {
+    suggestion = 'High frequency but recovery is strong. You can push today — just plan a rest day soon.';
+  }
+  // Yellow — moderate approach
+  else if (p.readiness.level === 'yellow') {
+    suggestion = 'Keep it technical today — positional rounds and drilling over hard sparring.';
+  }
+  // Red — recovery
+  else if (p.readiness.level === 'red') {
+    suggestion = 'Recovery signals are low. If you must train, keep it light — flow rolling or video study.';
+  }
+  // Default moderate
+  else {
+    suggestion = 'Moderate approach today. Mix technique work with light positional sparring.';
   }
 
   return { summary, suggestion };

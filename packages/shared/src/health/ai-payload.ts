@@ -102,7 +102,18 @@ export interface AIPayload {
       date: string;
       duration_min: number;
       source?: string;
+      session_type?: string; // class/sparring/drilling/comp/open_mat
+      intensity?: string; // light/moderate/hard
+      rpe?: number;
+      sparring?: boolean;
+      tags?: string[];
     }>;
+    /** Count of hard-intensity sessions in last 7d */
+    hard_sessions_7d: number;
+    /** Count of sparring/comp sessions in last 7d */
+    sparring_sessions_7d: number;
+    /** Average RPE across sessions with RPE logged */
+    avg_rpe_7d: number | null;
   };
 
   /** Baselines for personalization */
@@ -138,11 +149,24 @@ export function exportAIPayload(
     }
   }
 
-  // Recent grappling sessions
+  // Recent grappling sessions — with session-specific detail
   const recentGrappling: AIPayload['training_context']['recent_grappling'] = [];
   for (const day of last7) {
+    // From grappling_session (manual entry — has rich detail)
+    if (day.grappling_session) {
+      const gs = day.grappling_session;
+      recentGrappling.push({
+        date: day.date,
+        duration_min: gs.duration_min,
+        session_type: gs.type,
+        intensity: gs.intensity,
+        rpe: gs.rpe,
+        sparring: gs.sparring,
+      });
+    }
+    // From workouts array (HealthKit/HC detected grappling)
     for (const w of day.workouts ?? []) {
-      if (w.is_grappling) {
+      if (w.is_grappling && w.source !== 'manual') {
         recentGrappling.push({
           date: day.date,
           duration_min: w.duration_min,
@@ -150,13 +174,22 @@ export function exportAIPayload(
         });
       }
     }
+  }
+
+  // Aggregate grappling session stats for coaching
+  let hardSessions = 0;
+  let sparringSessions = 0;
+  const rpeValues: number[] = [];
+  for (const day of last7) {
     if (day.grappling_session) {
-      recentGrappling.push({
-        date: day.date,
-        duration_min: day.grappling_session.duration_min,
-      });
+      if (day.grappling_session.intensity === 'hard') hardSessions++;
+      if (day.grappling_session.sparring) sparringSessions++;
+      if (day.grappling_session.rpe != null) rpeValues.push(day.grappling_session.rpe);
     }
   }
+  const avgRpe = rpeValues.length > 0
+    ? Math.round((rpeValues.reduce((a, b) => a + b, 0) / rpeValues.length) * 10) / 10
+    : null;
 
   // Data age
   const dataAgeHours = lastSyncAt
@@ -209,6 +242,9 @@ export function exportAIPayload(
       avg_strain_7d: aiContext.recent_7d.strain_mean,
       avg_sleep_7d: aiContext.recent_7d.sleep_mean,
       recent_grappling: recentGrappling,
+      hard_sessions_7d: hardSessions,
+      sparring_sessions_7d: sparringSessions,
+      avg_rpe_7d: avgRpe,
     },
 
     baselines: aiContext.baselines,
