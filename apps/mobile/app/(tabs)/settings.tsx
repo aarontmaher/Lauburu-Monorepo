@@ -131,15 +131,6 @@ export default function SettingsScreen() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Health Connections</Text>
-        <SettingsRow label="Apple Health" value="Not connected" />
-        <SettingsRow label="Health Connect" value="Not connected" />
-        <SettingsRow label="WHOOP" value="Not connected" />
-        <SettingsRow label="Polar" value="Not connected" />
-        <SettingsRow label="Cronometer" value="Not connected" />
-      </View>
-
-      <View style={styles.section}>
         <Text style={styles.sectionTitle}>About</Text>
         <SettingsRow label="Version" value="0.1.0" />
         <SettingsRow label="Website" value="lauburugrapplingmap.com" />

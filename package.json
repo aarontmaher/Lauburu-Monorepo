@@ -7,8 +7,12 @@
     "apps/*"
   ],
   "dependencies": {
+    "@kingstinct/react-native-healthkit": "^13.4.0",
     "@supabase/supabase-js": "^2.102.1",
+    "expo-build-properties": "^55.0.12",
+    "expo-health-connect": "^0.1.1",
     "expo-secure-store": "^55.0.12",
+    "react-native-health-connect": "^3.5.0",
     "zustand": "^5.0.12"
   }
 }
