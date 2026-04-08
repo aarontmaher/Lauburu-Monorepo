@@ -4,3 +4,4 @@ export * from './grappling';
 export * from './control-centre';
 export * from './training';
 export * from './feedback';
+export * from './preferences';

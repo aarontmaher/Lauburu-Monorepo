@@ -11,6 +11,7 @@ import { Text, View } from '@/components/Themed';
 import { useFeedbackStore } from '../../src/store/feedback-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useTrainingStore } from '../../src/store/training-store';
+import { useAuthStore } from '../../src/store/auth-store';
 import { SESSION_TYPE_LABELS } from '@lauburu/shared';
 
 function todayDate() {
@@ -334,6 +335,99 @@ function NextDayCheckinCard() {
 }
 
 // ---------------------------------------------------------------------------
+// Sync status + review
+// ---------------------------------------------------------------------------
+
+function SyncCard() {
+  const syncStatus = useFeedbackStore((s) => s.syncStatus);
+  const lastSyncAt = useFeedbackStore((s) => s.lastSyncAt);
+  const lastSyncError = useFeedbackStore((s) => s.lastSyncError);
+  const examples = useFeedbackStore((s) => s.examples);
+  const syncToBackend = useFeedbackStore((s) => s.syncToBackend);
+  const authStatus = useAuthStore((s) => s.status);
+
+  const statusColors: Record<string, string> = {
+    idle: '#999',
+    syncing: '#e8ff47',
+    synced: '#4ade80',
+    failed: '#ff6b6b',
+  };
+
+  return (
+    <View style={styles.card}>
+      <View style={styles.syncRow}>
+        <View>
+          <Text style={styles.cardTitle}>Training Data</Text>
+          <Text style={styles.cardSubtitle}>
+            {examples.length} example{examples.length !== 1 ? 's' : ''} assembled
+          </Text>
+        </View>
+        {authStatus === 'member' && (
+          <Pressable
+            style={styles.syncBtn}
+            onPress={syncToBackend}
+            disabled={syncStatus === 'syncing' || examples.length === 0}>
+            <Text style={styles.syncBtnText}>
+              {syncStatus === 'syncing' ? 'Syncing...' : 'Sync'}
+            </Text>
+          </Pressable>
+        )}
+      </View>
+      <View style={styles.statusRow}>
+        <View style={[styles.statusDot, { backgroundColor: statusColors[syncStatus] }]} />
+        <Text style={[styles.statusText, { color: statusColors[syncStatus] }]}>
+          {syncStatus === 'idle' && 'Not synced yet'}
+          {syncStatus === 'syncing' && 'Syncing...'}
+          {syncStatus === 'synced' && `Synced ${lastSyncAt ? new Date(lastSyncAt).toLocaleTimeString() : ''}`}
+          {syncStatus === 'failed' && (lastSyncError ?? 'Sync failed')}
+        </Text>
+      </View>
+      {authStatus !== 'member' && (
+        <Text style={styles.guestNote}>Sign in to sync training data to your account.</Text>
+      )}
+    </View>
+  );
+}
+
+function RecentExamplesCard() {
+  const examples = useFeedbackStore((s) => s.examples);
+  const recent = examples.slice(-5).reverse();
+
+  if (recent.length === 0) return null;
+
+  return (
+    <View style={styles.card}>
+      <Text style={styles.cardTitle}>Recent Examples</Text>
+      {recent.map((ex) => (
+        <View key={ex.date} style={styles.exampleRow}>
+          <Text style={styles.exampleDate}>{ex.date}</Text>
+          <View style={styles.exampleBadges}>
+            {ex.health_inputs.sleep_hours != null && (
+              <Text style={styles.badge}>sleep</Text>
+            )}
+            {ex.behavior.session_type && (
+              <Text style={styles.badge}>{ex.behavior.session_type}</Text>
+            )}
+            {ex.feedback && (
+              <Text style={styles.badge}>rated</Text>
+            )}
+            {ex.same_day_outcome && (
+              <Text style={styles.badge}>outcome</Text>
+            )}
+            {ex.next_day_outcome && (
+              <Text style={styles.badge}>next-day</Text>
+            )}
+          </View>
+          <Text style={styles.exampleReadiness}>
+            {ex.recommendation.readiness}
+          </Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main screen
 // ---------------------------------------------------------------------------
 
@@ -352,9 +446,11 @@ export default function FeedbackScreen() {
         {feedbackCount + outcomeCount + checkinCount} entries captured
       </Text>
 
+      <SyncCard />
       <NextDayCheckinCard />
       <RecommendationFeedbackCard />
       <SessionOutcomeCard />
+      <RecentExamplesCard />
 
       <View style={styles.infoCard}>
         <Text style={styles.infoTitle}>Why this matters</Text>
@@ -460,4 +556,45 @@ const styles = StyleSheet.create({
   },
   infoTitle: { fontSize: 14, fontWeight: '600', opacity: 0.6 },
   infoBody: { fontSize: 13, opacity: 0.4, lineHeight: 18 },
+
+  // Sync card
+  syncRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  syncBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e8ff47',
+  },
+  syncBtnText: { color: '#e8ff47', fontSize: 13, fontWeight: '600' },
+  statusRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  statusDot: { width: 8, height: 8, borderRadius: 4 },
+  statusText: { fontSize: 12 },
+  guestNote: { fontSize: 12, color: '#e8ff47', opacity: 0.7 },
+
+  // Recent examples
+  exampleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.04)',
+  },
+  exampleDate: { fontSize: 13, fontWeight: '600', width: 80 },
+  exampleBadges: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, flex: 1 },
+  badge: {
+    fontSize: 10,
+    color: '#e8ff47',
+    backgroundColor: 'rgba(232,255,71,0.1)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  exampleReadiness: { fontSize: 12, opacity: 0.5, width: 50, textAlign: 'right' },
 });
