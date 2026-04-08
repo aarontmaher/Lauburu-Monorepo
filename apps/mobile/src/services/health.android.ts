@@ -144,9 +144,11 @@ export class HealthConnectService implements IHealthService {
           type: String(r.exerciseType ?? 'unknown'),
           name: r.title ?? exerciseTypeName(r.exerciseType),
           duration_min: Math.round((endMs - startMs) / 60_000),
+          distance_m: r.segments?.[0]?.distance?.inMeters,
           startDate: r.startTime,
           endDate: r.endTime,
           source: r.metadata?.dataOrigin,
+          source_id: r.metadata?.id,
         };
       });
     } catch {

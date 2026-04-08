@@ -112,15 +112,24 @@ export function normalizeDayFromSamples(
   const dailyStrain =
     activeCal != null ? Math.min(Math.round((activeCal / 100) * 10) / 10, 21) : undefined;
 
-  // Normalize workouts
+  // Normalize workouts — pass through all available fields.
+  // HealthKit/HC provide summaries only. detail is left undefined;
+  // richer providers (ErgZone, Garmin) can populate it later.
   const normalizedWorkouts: Workout[] = workouts.map((w) => ({
     type: w.type,
     sport_label: w.name,
+    source: w.source,
+    source_id: w.source_id,
+    start_time: w.startDate,
+    end_time: w.endDate,
     duration_min: w.duration_min,
     calories: w.calories,
     avg_hr: w.avg_hr,
     max_hr: w.max_hr,
+    steps: w.steps,
+    distance_m: w.distance_m,
     is_grappling: isGrapplingWorkout(w.name),
+    detail: undefined, // Not available from HealthKit/HC — future extension point
   }));
 
   return {

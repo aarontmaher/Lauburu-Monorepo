@@ -1,15 +1,99 @@
 import type { HealthProvider, ReadinessState } from '../constants/enums';
 
-/** Workout entry — matches website workout shape */
+/**
+ * Workout entry — normalized shape consumed by both website and AI layer.
+ *
+ * Design notes:
+ * - HealthKit / Health Connect provide the base fields reliably.
+ * - Richer workout apps (ErgZone, intervals.icu, Garmin) may provide
+ *   detailed interval/structure data later via `detail`.
+ * - Apple Health does NOT preserve full interval structure from devices
+ *   like Assault Bike — only summary metrics. Model this honestly.
+ * - `detail` is a future-proof extension point, not populated by
+ *   HealthKit/HC. Leave null until a richer source is wired.
+ */
 export interface Workout {
+  // Identity
   type: string;
   sport_label?: string;
+  source?: string; // e.g. 'Apple Watch', 'WHOOP', 'ErgZone'
+
+  // Timing
+  start_time?: string; // ISO8601
+  end_time?: string; // ISO8601
   duration_min: number;
-  strain?: number;
+
+  // Effort
+  strain?: number; // WHOOP 0-21
   avg_hr?: number;
   max_hr?: number;
   calories?: number;
+
+  // Movement
+  steps?: number;
+  distance_m?: number;
+
+  // Classification
   is_grappling: boolean;
+
+  // Notes / metadata from source
+  notes?: string;
+  source_id?: string; // upstream workout ID for dedup
+
+  /**
+   * Extended workout detail — populated by richer providers later.
+   * HealthKit/HC will NOT fill this. It exists so the schema does not
+   * need a breaking change when ErgZone, intervals.icu, or a coach
+   * platform starts providing structured interval data.
+   *
+   * When populated, `intervals` contains the work/rest block sequence.
+   * Machine-specific metrics (watts, pace, cadence) live per-interval.
+   */
+  detail?: WorkoutDetail;
+}
+
+/**
+ * Extended workout structure for richer providers.
+ * Not populated by HealthKit or Health Connect — they only provide summaries.
+ * Future sources (ErgZone, Garmin, intervals.icu) can populate this.
+ */
+export interface WorkoutDetail {
+  /** Ordered list of work/rest intervals */
+  intervals?: WorkoutInterval[];
+  /** Machine or modality (e.g. 'assault_bike', 'rower', 'ski_erg') */
+  machine_type?: string;
+  /** Summary power in watts (if available from device) */
+  avg_watts?: number;
+  max_watts?: number;
+  /** Summary pace (seconds per unit, e.g. /500m for rower) */
+  avg_pace_s?: number;
+  /** Summary cadence (RPM) */
+  avg_cadence?: number;
+  /** Raw payload from upstream — preserved for AI training without schema loss */
+  raw_payload?: Record<string, unknown>;
+}
+
+/**
+ * Single interval within a structured workout.
+ * Supports work/rest blocks with per-interval metrics.
+ */
+export interface WorkoutInterval {
+  type: 'work' | 'rest' | 'warmup' | 'cooldown';
+  duration_s: number;
+  /** Heart rate */
+  avg_hr?: number;
+  max_hr?: number;
+  /** Power (watts) */
+  avg_watts?: number;
+  max_watts?: number;
+  /** Pace (seconds per distance unit, e.g. /500m) */
+  avg_pace_s?: number;
+  /** Cadence (RPM) */
+  avg_cadence?: number;
+  /** Calories burned in this interval */
+  calories?: number;
+  /** Distance in meters */
+  distance_m?: number;
 }
 
 /** Grappling session details */
@@ -175,9 +259,12 @@ export interface RawWorkoutSample {
   calories?: number;
   avg_hr?: number;
   max_hr?: number;
+  steps?: number;
+  distance_m?: number;
   startDate: string;
   endDate: string;
   source?: string;
+  source_id?: string; // platform-specific ID for dedup
 }
 
 /** Raw sleep session from native platform */

@@ -147,9 +147,13 @@ export class HealthKitService implements IHealthService {
           name: workoutTypeName(w.workoutActivityType),
           duration_min: Math.round((endMs - startMs) / 60_000),
           calories: w.totalEnergyBurned?.quantity,
+          distance_m: w.totalDistance?.quantity
+            ? Math.round(w.totalDistance.quantity * 1000) // km → m
+            : undefined,
           startDate: new Date(w.startDate).toISOString(),
           endDate: new Date(w.endDate).toISOString(),
           source: w.sourceRevision?.source?.name,
+          source_id: w.uuid,
         };
       });
     } catch {

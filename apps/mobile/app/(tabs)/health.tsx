@@ -71,14 +71,28 @@ function TodayCard({ today }: { today: DailyMetrics }) {
           </Text>
           {today.workouts.map((w, i) => (
             <View key={i} style={styles.workoutRow}>
-              <Text style={styles.workoutName}>
-                {w.sport_label ?? w.type}
-                {w.is_grappling ? ' 🥋' : ''}
-              </Text>
-              <Text style={styles.workoutMeta}>
-                {w.duration_min}min
-                {w.calories ? ` · ${w.calories}cal` : ''}
-              </Text>
+              <View>
+                <Text style={styles.workoutName}>
+                  {w.sport_label ?? w.type}
+                  {w.is_grappling ? ' 🥋' : ''}
+                </Text>
+                {w.source ? (
+                  <Text style={styles.workoutSource}>{w.source}</Text>
+                ) : null}
+              </View>
+              <View style={styles.workoutMetaCol}>
+                <Text style={styles.workoutMeta}>
+                  {w.duration_min}min
+                  {w.calories ? ` · ${Math.round(w.calories)}cal` : ''}
+                </Text>
+                {(w.avg_hr || w.distance_m) ? (
+                  <Text style={styles.workoutMeta}>
+                    {w.avg_hr ? `${Math.round(w.avg_hr)}bpm avg` : ''}
+                    {w.avg_hr && w.distance_m ? ' · ' : ''}
+                    {w.distance_m ? `${(w.distance_m / 1000).toFixed(1)}km` : ''}
+                  </Text>
+                ) : null}
+              </View>
             </View>
           ))}
         </View>
@@ -253,6 +267,32 @@ export default function HealthScreen() {
       {/* Recent days */}
       {days.length > 0 && <RecentDays days={days} />}
 
+      {/* Sync status summary */}
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Data Status</Text>
+        <StatusRow
+          label={platformName}
+          status={
+            !isAvailable
+              ? 'unavailable'
+              : !anyAuthorized
+                ? 'not_connected'
+                : days.length > 0
+                  ? 'live'
+                  : 'authorized_no_data'
+          }
+        />
+        <StatusRow label="WHOOP" status="via_website" />
+        <StatusRow label="Polar" status="via_website" />
+        <StatusRow label="ErgZone" status="future" />
+        <StatusRow label="Cronometer" status="future" />
+        {lastSyncAt && (
+          <Text style={styles.syncTimestamp}>
+            Last sync: {new Date(lastSyncAt).toLocaleString()}
+          </Text>
+        )}
+      </View>
+
       {/* Supported sources info */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Supported Sources</Text>
@@ -271,6 +311,38 @@ export default function HealthScreen() {
         </View>
       </View>
     </ScrollView>
+  );
+}
+
+type DataStatus =
+  | 'live'
+  | 'authorized_no_data'
+  | 'not_connected'
+  | 'unavailable'
+  | 'denied'
+  | 'via_website'
+  | 'future';
+
+const DATA_STATUS_LABELS: Record<DataStatus, { text: string; color: string }> = {
+  live: { text: 'Live', color: '#4ade80' },
+  authorized_no_data: { text: 'Connected — no data yet', color: '#e8ff47' },
+  not_connected: { text: 'Not connected', color: '#999' },
+  unavailable: { text: 'Not available', color: '#666' },
+  denied: { text: 'Denied', color: '#ff6b6b' },
+  via_website: { text: 'Via website sync', color: '#e8ff47' },
+  future: { text: 'Coming soon', color: '#555' },
+};
+
+function StatusRow({ label, status }: { label: string; status: DataStatus }) {
+  const info = DATA_STATUS_LABELS[status];
+  return (
+    <View style={styles.sourceRow}>
+      <Text style={styles.sourceName}>{label}</Text>
+      <View style={styles.statusDotRow}>
+        <View style={[styles.statusDotSmall, { backgroundColor: info.color }]} />
+        <Text style={[styles.sourceStatus, { color: info.color }]}>{info.text}</Text>
+      </View>
+    </View>
   );
 }
 
@@ -388,6 +460,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.03)',
   },
   workoutName: { fontSize: 13 },
+  workoutSource: { fontSize: 10, opacity: 0.35, marginTop: 1 },
+  workoutMetaCol: { alignItems: 'flex-end' as const, gap: 1 },
   workoutMeta: { fontSize: 12, opacity: 0.5 },
 
   // Recent days
@@ -412,4 +486,7 @@ const styles = StyleSheet.create({
   },
   sourceName: { fontSize: 14 },
   sourceStatus: { fontSize: 13, fontWeight: '600' },
+  statusDotRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  statusDotSmall: { width: 6, height: 6, borderRadius: 3 },
+  syncTimestamp: { fontSize: 11, opacity: 0.4, marginTop: 4 },
 });
