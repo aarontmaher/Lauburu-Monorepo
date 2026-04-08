@@ -15,6 +15,7 @@ import {
   buildAIHealthContext,
   generateInsights,
   exportAIPayload,
+  generateCoaching,
 } from '@lauburu/shared';
 import type {
   DailyMetrics,
@@ -23,6 +24,7 @@ import type {
   AIHealthContext,
   TrainingInsight,
   AIPayload,
+  CoachingResponse,
 } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 import { getHealthService } from '../services/health';
@@ -68,6 +70,9 @@ interface HealthState {
   /** Exportable AI payload for MCP/coaching consumption */
   aiPayload: AIPayload | null;
 
+  /** Structured coaching response */
+  coaching: CoachingResponse | null;
+
   /** Error from last operation */
   error: string | null;
 
@@ -100,6 +105,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
   aiContext: null,
   insights: null,
   aiPayload: null,
+  coaching: null,
   error: null,
 
   checkPermissions: async () => {
@@ -183,10 +189,11 @@ export const useHealthStore = create<HealthState>((set, get) => ({
       const now = new Date().toISOString();
       const { lastPersistedAt } = get();
 
-      // Build exportable AI payload
+      // Build exportable AI payload + coaching
       const aiPayload = exportAIPayload(
         days, features, flags, insights, aiContext, now, lastPersistedAt,
       );
+      const coaching = generateCoaching(aiPayload);
 
       set({
         days,
@@ -196,6 +203,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
         aiContext,
         insights,
         aiPayload,
+        coaching,
         syncing: false,
         lastSyncAt: now,
         error: null,

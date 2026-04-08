@@ -9,7 +9,7 @@ import {
 import { Text, View } from '@/components/Themed';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
-import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures } from '@lauburu/shared';
+import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures, CoachingResponse } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 
 // --- Permission status row ---
@@ -148,6 +148,80 @@ function RecentDays({ days }: { days: DailyMetrics[] }) {
 }
 
 // --- Main screen ---
+
+// --- Coaching card (structured training guidance) ---
+
+function CoachingCard({ coaching }: { coaching: CoachingResponse }) {
+  const statusColors: Record<string, string> = {
+    recovered: '#4ade80',
+    recovering: '#e8ff47',
+    fatigued: '#ff6b6b',
+    unknown: '#666',
+    good: '#4ade80',
+    adequate: '#e8ff47',
+    poor: '#ff6b6b',
+    balanced: '#4ade80',
+    high: '#e8ff47',
+    low: '#999',
+    overreaching: '#ff6b6b',
+  };
+
+  return (
+    <View style={styles.card}>
+      <Text style={styles.cardTitle}>Training Coaching</Text>
+
+      {/* Today's recommendation */}
+      <View style={styles.coachSection}>
+        <Text style={styles.coachSectionLabel}>Today</Text>
+        <Text style={styles.coachDetail}>{coaching.today_recommendation.detail}</Text>
+      </View>
+
+      {/* Recovery + Sleep + Load row */}
+      <View style={styles.coachStatusRow}>
+        <View style={styles.coachStatusItem}>
+          <Text style={[styles.coachStatusValue, { color: statusColors[coaching.recovery.status] }]}>
+            {coaching.recovery.status}
+          </Text>
+          <Text style={styles.coachStatusLabel}>Recovery</Text>
+        </View>
+        <View style={styles.coachStatusItem}>
+          <Text style={[styles.coachStatusValue, { color: statusColors[coaching.sleep.status] }]}>
+            {coaching.sleep.status}
+          </Text>
+          <Text style={styles.coachStatusLabel}>Sleep</Text>
+        </View>
+        <View style={styles.coachStatusItem}>
+          <Text style={[styles.coachStatusValue, { color: statusColors[coaching.training_load.status] }]}>
+            {coaching.training_load.status}
+          </Text>
+          <Text style={styles.coachStatusLabel}>Load</Text>
+        </View>
+      </View>
+
+      {/* Grappling guidance */}
+      <View style={styles.coachSection}>
+        <Text style={styles.coachSectionLabel}>Grappling</Text>
+        <Text style={styles.coachBody}>{coaching.grappling.summary}</Text>
+        <Text style={styles.coachSuggestion}>{coaching.grappling.suggestion}</Text>
+      </View>
+
+      {/* Recovery actions */}
+      {coaching.recovery.actions.length > 0 && (
+        <View style={styles.coachSection}>
+          <Text style={styles.coachSectionLabel}>Recovery Actions</Text>
+          {coaching.recovery.actions.map((a, i) => (
+            <Text key={i} style={styles.coachAction}>• {a}</Text>
+          ))}
+        </View>
+      )}
+
+      {/* Confidence */}
+      <Text style={styles.coachConfidence}>
+        Confidence: {coaching.confidence.level} — {coaching.confidence.note}
+      </Text>
+    </View>
+  );
+}
 
 // --- Insights card (main training guidance) ---
 
@@ -399,6 +473,7 @@ export default function HealthScreen() {
   const features = useHealthStore((s) => s.features);
   const flags = useHealthStore((s) => s.flags);
   const insights = useHealthStore((s) => s.insights);
+  const coaching = useHealthStore((s) => s.coaching);
   const error = useHealthStore((s) => s.error);
   const checkPermissions = useHealthStore((s) => s.checkPermissions);
   const requestPermissions = useHealthStore((s) => s.requestPermissions);
@@ -507,6 +582,11 @@ export default function HealthScreen() {
 
       {/* Training insights — main guidance card */}
       {insights && <InsightsCard insights={insights} />}
+
+      {/* Structured coaching */}
+      {coaching && coaching.readiness.level !== 'grey' && (
+        <CoachingCard coaching={coaching} />
+      )}
 
       {/* Flags */}
       {flags.length > 0 && <FlagsCard flags={flags} />}
@@ -766,6 +846,29 @@ const styles = StyleSheet.create({
   reasonsList: { gap: 3, marginTop: 2 },
   reasonText: { fontSize: 13, opacity: 0.8, lineHeight: 18 },
   dataNoteText: { fontSize: 11, opacity: 0.35, marginTop: 6 },
+
+  // Coaching
+  coachSection: { gap: 4 },
+  coachSectionLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    textTransform: 'uppercase' as const,
+    opacity: 0.5,
+    letterSpacing: 0.5,
+  },
+  coachDetail: { fontSize: 14, opacity: 0.85, lineHeight: 20 },
+  coachBody: { fontSize: 13, opacity: 0.7 },
+  coachSuggestion: { fontSize: 13, color: '#e8ff47', opacity: 0.9 },
+  coachStatusRow: {
+    flexDirection: 'row' as const,
+    justifyContent: 'space-around' as const,
+    paddingVertical: 8,
+  },
+  coachStatusItem: { alignItems: 'center' as const, gap: 2 },
+  coachStatusValue: { fontSize: 14, fontWeight: '700', textTransform: 'capitalize' as const },
+  coachStatusLabel: { fontSize: 10, opacity: 0.5 },
+  coachAction: { fontSize: 13, opacity: 0.7, lineHeight: 18 },
+  coachConfidence: { fontSize: 10, opacity: 0.3, marginTop: 6 },
 
   // Flags
   flagText: { fontSize: 13, lineHeight: 18 },
