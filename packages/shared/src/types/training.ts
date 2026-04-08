@@ -1,10 +1,11 @@
 /**
  * Manual training session entry types.
  * NO-GI ONLY — this app does not track gi training.
- *
- * These coexist with health-derived workouts in the unified model.
- * Source is always 'manual' — never confused with HealthKit/HC workouts.
  */
+
+// ---------------------------------------------------------------------------
+// Session types
+// ---------------------------------------------------------------------------
 
 export type SessionType =
   | 'class'
@@ -13,39 +14,10 @@ export type SessionType =
   | 'wrestling'
   | 'comp'
   | 'open_mat'
+  | 'conditioning'
   | 'other';
 
 export type SessionIntensity = 'light' | 'moderate' | 'hard';
-
-/**
- * A manually logged training session.
- * Stored locally and optionally persisted to backend.
- */
-export interface TrainingSession {
-  id: string;
-  created_at: string;
-  date: string; // YYYY-MM-DD
-  type: SessionType;
-  intensity: SessionIntensity;
-  duration_min: number;
-  rounds?: number;
-  rpe?: number; // 1-10
-  tags: string[];
-  notes: string;
-  persisted: boolean;
-}
-
-/** Input shape for creating a new session */
-export interface TrainingSessionInput {
-  date: string;
-  type: SessionType;
-  intensity: SessionIntensity;
-  duration_min: number;
-  rounds?: number;
-  rpe?: number;
-  tags?: string[];
-  notes?: string;
-}
 
 export const SESSION_TYPE_LABELS: Record<SessionType, string> = {
   class: 'Class',
@@ -54,6 +26,7 @@ export const SESSION_TYPE_LABELS: Record<SessionType, string> = {
   wrestling: 'Wrestling',
   comp: 'Competition',
   open_mat: 'Open Mat',
+  conditioning: 'Conditioning',
   other: 'Other',
 };
 
@@ -63,7 +36,6 @@ export const INTENSITY_LABELS: Record<SessionIntensity, string> = {
   hard: 'Hard',
 };
 
-/** No-gi + wrestling focused tag options */
 export const TAG_OPTIONS = [
   'no-gi',
   'wrestling',
@@ -74,3 +46,166 @@ export const TAG_OPTIONS = [
   'comp-prep',
   'flow',
 ] as const;
+
+// ---------------------------------------------------------------------------
+// Conditioning subtypes
+// ---------------------------------------------------------------------------
+
+export type ConditioningSubtype =
+  | 'hiit'
+  | 'steady_state'
+  | 'intervals'
+  | 'sprint_intervals'
+  | 'tempo'
+  | 'zone2'
+  | 'weight_training'
+  | 'circuit'
+  | 'mobility'
+  | 'recovery_cardio'
+  | 'respiratory_training'
+  | 'breathing_warmup'
+  | 'recovery_breathing'
+  | 'other';
+
+export const CONDITIONING_SUBTYPE_LABELS: Record<ConditioningSubtype, string> = {
+  hiit: 'HIIT',
+  steady_state: 'Steady State',
+  intervals: 'Intervals',
+  sprint_intervals: 'Sprint Intervals',
+  tempo: 'Tempo',
+  zone2: 'Zone 2',
+  weight_training: 'Weight Training',
+  circuit: 'Circuit',
+  mobility: 'Mobility',
+  recovery_cardio: 'Recovery Cardio',
+  respiratory_training: 'Respiratory',
+  breathing_warmup: 'Breathing Warmup',
+  recovery_breathing: 'Recovery Breathing',
+  other: 'Other',
+};
+
+export type Modality =
+  | 'assault_bike'
+  | 'rower'
+  | 'skierg'
+  | 'running'
+  | 'bike'
+  | 'bodyweight'
+  | 'kettlebell'
+  | 'barbell'
+  | 'other';
+
+export const MODALITY_LABELS: Record<Modality, string> = {
+  assault_bike: 'Assault Bike',
+  rower: 'Rower',
+  skierg: 'SkiErg',
+  running: 'Running',
+  bike: 'Bike',
+  bodyweight: 'Bodyweight',
+  kettlebell: 'Kettlebell',
+  barbell: 'Barbell',
+  other: 'Other',
+};
+
+export type LiftingFocus =
+  | 'upper'
+  | 'lower'
+  | 'full_body'
+  | 'pull'
+  | 'push'
+  | 'posterior_chain'
+  | 'power'
+  | 'hypertrophy'
+  | 'other';
+
+export const LIFTING_FOCUS_LABELS: Record<LiftingFocus, string> = {
+  upper: 'Upper',
+  lower: 'Lower',
+  full_body: 'Full Body',
+  pull: 'Pull',
+  push: 'Push',
+  posterior_chain: 'Posterior Chain',
+  power: 'Power',
+  hypertrophy: 'Hypertrophy',
+  other: 'Other',
+};
+
+export type RespiratoryType = 'inspiratory' | 'expiratory' | 'mixed';
+
+// ---------------------------------------------------------------------------
+// Conditioning detail — subtype-specific fields
+// ---------------------------------------------------------------------------
+
+/** HIIT / intervals structure */
+export interface IntervalDetail {
+  work_duration_s: number;
+  rest_duration_s: number;
+  rounds: number;
+  sets?: number;
+  modality?: Modality;
+}
+
+/** Steady state / zone 2 */
+export interface SteadyStateDetail {
+  modality?: Modality;
+  intensity_note?: string;
+}
+
+/** Weight training */
+export interface WeightTrainingDetail {
+  focus: LiftingFocus;
+}
+
+/** Respiratory / breathing training */
+export interface RespiratoryDetail {
+  respiratory_type: RespiratoryType;
+  device_used?: string;
+  resistance_level?: number;
+  breaths?: number;
+  sets?: number;
+  duration_minutes?: number;
+  timing: 'pre_training' | 'post_training' | 'standalone';
+}
+
+/** Union of all conditioning detail types */
+export interface ConditioningDetail {
+  subtype: ConditioningSubtype;
+  modality?: Modality;
+  interval?: IntervalDetail;
+  steady_state?: SteadyStateDetail;
+  weight_training?: WeightTrainingDetail;
+  respiratory?: RespiratoryDetail;
+}
+
+// ---------------------------------------------------------------------------
+// Training session
+// ---------------------------------------------------------------------------
+
+export interface TrainingSession {
+  id: string;
+  created_at: string;
+  date: string;
+  type: SessionType;
+  intensity: SessionIntensity;
+  duration_min: number;
+  rounds?: number;
+  rpe?: number;
+  tags: string[];
+  notes: string;
+  persisted: boolean;
+
+  /** Conditioning-specific detail (only when type === 'conditioning') */
+  conditioning?: ConditioningDetail;
+}
+
+export interface TrainingSessionInput {
+  date: string;
+  type: SessionType;
+  intensity: SessionIntensity;
+  duration_min: number;
+  rounds?: number;
+  rpe?: number;
+  tags?: string[];
+  notes?: string;
+  conditioning?: ConditioningDetail;
+}

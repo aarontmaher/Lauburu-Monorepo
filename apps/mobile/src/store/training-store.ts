@@ -33,6 +33,7 @@ export const useTrainingStore = create<TrainingState>((set, get) => ({
       rpe: input.rpe,
       tags: input.tags ?? [],
       notes: input.notes ?? '',
+      conditioning: input.conditioning,
       persisted: false,
     };
     set((state) => ({ sessions: [...state.sessions, session] }));

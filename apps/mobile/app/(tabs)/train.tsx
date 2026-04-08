@@ -11,10 +11,10 @@ import { Text, View } from '@/components/Themed';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
-import type { SessionType, SessionIntensity, TrainingSession } from '@lauburu/shared';
-import { SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS } from '@lauburu/shared';
+import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus } from '@lauburu/shared';
+import { SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS, CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, LIFTING_FOCUS_LABELS } from '@lauburu/shared';
 
-const SESSION_TYPES: SessionType[] = ['class', 'sparring', 'drilling', 'wrestling', 'comp', 'open_mat', 'other'];
+const SESSION_TYPES: SessionType[] = ['class', 'sparring', 'drilling', 'wrestling', 'comp', 'open_mat', 'conditioning', 'other'];
 const INTENSITIES: SessionIntensity[] = ['light', 'moderate', 'hard'];
 const DURATION_PRESETS = [30, 45, 60, 90, 120];
 
@@ -66,10 +66,48 @@ function EntryForm({
   const [notes, setNotes] = useState(editing?.notes ?? '');
   const [selectedTags, setSelectedTags] = useState<string[]>(editing?.tags ?? ['no-gi']);
 
+  // Conditioning state
+  const [condSubtype, setCondSubtype] = useState<ConditioningSubtype>(
+    editing?.conditioning?.subtype ?? 'hiit',
+  );
+  const [condModality, setCondModality] = useState<Modality>(
+    editing?.conditioning?.modality ?? 'assault_bike',
+  );
+  const [workDur, setWorkDur] = useState(editing?.conditioning?.interval?.work_duration_s?.toString() ?? '30');
+  const [restDur, setRestDur] = useState(editing?.conditioning?.interval?.rest_duration_s?.toString() ?? '30');
+  const [intervalRounds, setIntervalRounds] = useState(editing?.conditioning?.interval?.rounds?.toString() ?? '10');
+  const [liftFocus, setLiftFocus] = useState<LiftingFocus>(
+    editing?.conditioning?.weight_training?.focus ?? 'full_body',
+  );
+
+  const isConditioning = sessionType === 'conditioning';
+  const isInterval = isConditioning && ['hiit', 'intervals', 'sprint_intervals', 'circuit'].includes(condSubtype);
+  const isWeightTraining = isConditioning && condSubtype === 'weight_training';
+  const isRespiratory = isConditioning && ['respiratory_training', 'breathing_warmup', 'recovery_breathing'].includes(condSubtype);
+
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
+  };
+
+  const buildConditioning = (): ConditioningDetail | undefined => {
+    if (!isConditioning) return undefined;
+    const detail: ConditioningDetail = {
+      subtype: condSubtype,
+      modality: condModality,
+    };
+    if (isInterval) {
+      detail.interval = {
+        work_duration_s: parseInt(workDur, 10) || 30,
+        rest_duration_s: parseInt(restDur, 10) || 30,
+        rounds: parseInt(intervalRounds, 10) || 10,
+      };
+    }
+    if (isWeightTraining) {
+      detail.weight_training = { focus: liftFocus };
+    }
+    return detail;
   };
 
   const handleSubmit = () => {
@@ -83,6 +121,7 @@ function EntryForm({
       rpe: rpe ? parseInt(rpe, 10) : undefined,
       tags: selectedTags,
       notes,
+      conditioning: buildConditioning(),
     };
 
     if (editing) {
@@ -113,6 +152,104 @@ function EntryForm({
           ))}
         </View>
       </View>
+
+      {/* Conditioning subtype */}
+      {isConditioning && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Conditioning Type</Text>
+          <View style={styles.pillRow}>
+            {(['hiit', 'intervals', 'sprint_intervals', 'steady_state', 'zone2', 'tempo',
+              'weight_training', 'circuit', 'mobility', 'recovery_cardio',
+              'respiratory_training', 'other'] as ConditioningSubtype[]).map((st) => (
+              <Pressable
+                key={st}
+                style={[styles.pill, condSubtype === st && styles.pillActive]}
+                onPress={() => setCondSubtype(st)}>
+                <Text style={[styles.pillText, condSubtype === st && styles.pillTextActive]}>
+                  {CONDITIONING_SUBTYPE_LABELS[st]}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Modality (for conditioning with equipment) */}
+      {isConditioning && !isWeightTraining && !isRespiratory && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Modality</Text>
+          <View style={styles.pillRow}>
+            {(['assault_bike', 'rower', 'skierg', 'running', 'bike', 'bodyweight', 'kettlebell', 'other'] as Modality[]).map((m) => (
+              <Pressable
+                key={m}
+                style={[styles.pill, condModality === m && styles.pillActive]}
+                onPress={() => setCondModality(m)}>
+                <Text style={[styles.pillText, condModality === m && styles.pillTextActive]}>
+                  {MODALITY_LABELS[m]}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Interval detail */}
+      {isInterval && (
+        <View style={styles.rowInputs}>
+          <View style={styles.halfInput}>
+            <Text style={styles.sectionLabel}>Work (s)</Text>
+            <TextInput
+              style={styles.input}
+              value={workDur}
+              onChangeText={setWorkDur}
+              keyboardType="number-pad"
+              placeholder="30"
+              placeholderTextColor="#666"
+            />
+          </View>
+          <View style={styles.halfInput}>
+            <Text style={styles.sectionLabel}>Rest (s)</Text>
+            <TextInput
+              style={styles.input}
+              value={restDur}
+              onChangeText={setRestDur}
+              keyboardType="number-pad"
+              placeholder="30"
+              placeholderTextColor="#666"
+            />
+          </View>
+          <View style={styles.halfInput}>
+            <Text style={styles.sectionLabel}>Rounds</Text>
+            <TextInput
+              style={styles.input}
+              value={intervalRounds}
+              onChangeText={setIntervalRounds}
+              keyboardType="number-pad"
+              placeholder="10"
+              placeholderTextColor="#666"
+            />
+          </View>
+        </View>
+      )}
+
+      {/* Weight training focus */}
+      {isWeightTraining && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Lifting Focus</Text>
+          <View style={styles.pillRow}>
+            {(['upper', 'lower', 'full_body', 'pull', 'push', 'posterior_chain', 'power', 'hypertrophy'] as LiftingFocus[]).map((f) => (
+              <Pressable
+                key={f}
+                style={[styles.pill, liftFocus === f && styles.pillActive]}
+                onPress={() => setLiftFocus(f)}>
+                <Text style={[styles.pillText, liftFocus === f && styles.pillTextActive]}>
+                  {LIFTING_FOCUS_LABELS[f]}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      )}
 
       {/* Intensity */}
       <View style={styles.section}>
