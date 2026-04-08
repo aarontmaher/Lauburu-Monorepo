@@ -10,7 +10,7 @@ import { Text, View } from '@/components/Themed';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useTierStore } from '../../src/store/tier-store';
-import { isExpoGo } from '../../src/services/health';
+import { isExpoGo } from '../../src/services/expo-detect';
 import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures, CoachingResponse } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 

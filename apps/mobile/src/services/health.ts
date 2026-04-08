@@ -10,9 +10,6 @@ import { Platform } from 'react-native';
 import { isExpoGo } from './expo-detect';
 import type { IHealthService } from '@lauburu/shared';
 
-// Re-export for use in UI components
-export { isExpoGo };
-
 let _instance: IHealthService | null = null;
 
 export function getHealthService(): IHealthService {
