@@ -12,29 +12,38 @@ config.resolver.nodeModulesPaths = [
   path.resolve(__dirname, 'node_modules'),
 ];
 
-// Block native health packages from being bundled in Expo Go.
-// Redirect them to an empty stub module instead of { type: 'empty' }.
-const NATIVE_BLOCKED = [
-  '@kingstinct/react-native-healthkit',
-  'react-native-health-connect',
-  'react-native-nitro-modules',
-];
+// Block native health packages ONLY in Expo Go.
+// In dev builds (expo run:ios), native packages must resolve normally.
+//
+// Detection: Expo Go sets EXPO_GO=1 or we can check for the absence
+// of ios/android build directories as a heuristic. The safest approach:
+// set NATIVE_BUILD=1 env var when running expo run:ios.
+//
+// Default: block (safe for Expo Go). Set NATIVE_BUILD=1 to allow.
+const isNativeBuild = process.env.NATIVE_BUILD === '1';
 
-const STUB_PATH = path.resolve(__dirname, 'src/services/native-stub.js');
+if (!isNativeBuild) {
+  const NATIVE_BLOCKED = [
+    '@kingstinct/react-native-healthkit',
+    'react-native-health-connect',
+    'react-native-nitro-modules',
+  ];
 
-const origResolve = config.resolver.resolveRequest;
+  const STUB_PATH = path.resolve(__dirname, 'src/services/native-stub.js');
+  const origResolve = config.resolver.resolveRequest;
 
-config.resolver.resolveRequest = (context, moduleName, platform) => {
-  if (NATIVE_BLOCKED.some((pkg) => moduleName === pkg || moduleName.startsWith(pkg + '/'))) {
-    return {
-      type: 'sourceFile',
-      filePath: STUB_PATH,
-    };
-  }
-  if (origResolve) {
-    return origResolve(context, moduleName, platform);
-  }
-  return context.resolveRequest(context, moduleName, platform);
-};
+  config.resolver.resolveRequest = (context, moduleName, platform) => {
+    if (NATIVE_BLOCKED.some((pkg) => moduleName === pkg || moduleName.startsWith(pkg + '/'))) {
+      return {
+        type: 'sourceFile',
+        filePath: STUB_PATH,
+      };
+    }
+    if (origResolve) {
+      return origResolve(context, moduleName, platform);
+    }
+    return context.resolveRequest(context, moduleName, platform);
+  };
+}
 
 module.exports = config;
