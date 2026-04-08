@@ -31,6 +31,7 @@ import type { HealthFlag } from '@lauburu/shared';
 import { getHealthService } from '../services/health';
 import { useAuthStore } from './auth-store';
 import { useTrainingStore } from './training-store';
+import { usePreferencesStore } from './preferences-store';
 
 interface HealthState {
   /** Current permission state */
@@ -199,7 +200,8 @@ export const useHealthStore = create<HealthState>((set, get) => ({
       const aiPayload = exportAIPayload(
         days, features, flags, insights, aiContext, now, lastPersistedAt,
       );
-      const coaching = generateCoaching(aiPayload);
+      const prefs = usePreferencesStore.getState().preferences;
+      const coaching = generateCoaching(aiPayload, prefs);
 
       set({
         days,

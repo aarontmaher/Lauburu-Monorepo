@@ -40,6 +40,19 @@
  *   Fallback: if model unavailable, return local coaching
  */
 import type { AIPayload } from './ai-payload';
+import type { CoachingPreferences } from '../types/preferences';
+import { DEFAULT_PREFERENCES } from '../types/preferences';
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const readinessLabels: Record<string, string> = {
+  green: 'Good to push',
+  yellow: 'Moderate effort',
+  red: 'Recovery day',
+  grey: 'Insufficient data',
+};
 
 // ---------------------------------------------------------------------------
 // Types
@@ -51,6 +64,9 @@ export interface CoachingResponse {
 
   /** Source of this coaching */
   source: 'local' | 'server';
+
+  /** Which preferences shaped this output (for explainability) */
+  preference_effects?: string[];
 
   /** Overall readiness (mirrors insights but with coaching framing) */
   readiness: {
@@ -105,73 +121,179 @@ export interface CoachingResponse {
 // ---------------------------------------------------------------------------
 
 /**
- * Generate coaching from AI payload.
+ * Generate coaching from AI payload + user preferences.
  * Deterministic, explainable, offline-capable.
  */
-export function generateCoaching(payload: AIPayload): CoachingResponse {
-  const { readiness, coverage, training_context, trends, sync } = payload;
+export function generateCoaching(
+  payload: AIPayload,
+  prefs: CoachingPreferences = DEFAULT_PREFERENCES,
+): CoachingResponse {
+  const { readiness, coverage } = payload;
 
-  // Insufficient data path
   if (!coverage.has_today || coverage.days_available < 2) {
     return insufficientDataCoaching(payload);
   }
 
+  // Apply preference adjustments to readiness level
+  const adjustedLevel = adjustReadiness(readiness.level, payload, prefs);
+  const prefEffects = collectPreferenceEffects(readiness.level, adjustedLevel, prefs);
+
+  const adjustedPayload = {
+    ...payload,
+    readiness: { ...payload.readiness, level: adjustedLevel },
+  };
+
   return {
     generated_at: new Date().toISOString(),
     source: 'local',
+    preference_effects: prefEffects.length > 0 ? prefEffects : undefined,
 
     readiness: {
-      level: readiness.level,
-      headline: readiness.label,
+      level: adjustedLevel,
+      headline: readinessLabels[adjustedLevel],
     },
 
-    today_recommendation: buildTodayRec(payload),
-    recovery: buildRecovery(payload),
-    sleep: buildSleep(payload),
-    training_load: buildTrainingLoad(payload),
-    grappling: buildGrappling(payload),
+    today_recommendation: buildTodayRec(adjustedPayload, prefs),
+    recovery: buildRecovery(adjustedPayload, prefs),
+    sleep: buildSleep(adjustedPayload),
+    training_load: buildTrainingLoad(adjustedPayload, prefs),
+    grappling: buildGrappling(adjustedPayload, prefs),
     cautions: payload.concerns,
-    confidence: buildConfidence(payload),
+    confidence: buildConfidence(adjustedPayload),
   };
+}
+
+/**
+ * Adjust readiness level based on preferences.
+ */
+function adjustReadiness(
+  base: string,
+  payload: AIPayload,
+  prefs: CoachingPreferences,
+): CoachingResponse['readiness']['level'] {
+  let level = base as 'green' | 'yellow' | 'red' | 'grey';
+
+  // Conservative recovery: shift yellow → red, green stays green
+  if (prefs.recovery_conservatism === 'conservative' && level === 'yellow') {
+    level = 'red';
+  }
+  // Aggressive recovery: shift yellow → green
+  if (prefs.recovery_conservatism === 'aggressive' && level === 'yellow') {
+    level = 'green';
+  }
+
+  // Train-through bias: shift red → yellow (never skip entirely)
+  if (prefs.hard_day_bias === 'train_through' && level === 'red') {
+    level = 'yellow';
+  }
+  // Err-on-rest bias: shift yellow → red
+  if (prefs.hard_day_bias === 'err_on_rest' && level === 'yellow') {
+    level = 'red';
+  }
+
+  // Comp prep: allow higher load (don't downgrade green for high frequency)
+  if (prefs.comp_prep && level === 'yellow') {
+    const tc = payload.training_context;
+    // In comp prep, only go red if genuinely fatigued, not just high volume
+    if (tc.rest_days_7d >= 1 && tc.hard_sessions_7d <= 4) {
+      level = 'green';
+    }
+  }
+
+  return level;
+}
+
+/**
+ * Explain which preferences affected the output.
+ */
+function collectPreferenceEffects(
+  originalLevel: string,
+  adjustedLevel: string,
+  prefs: CoachingPreferences,
+): string[] {
+  const effects: string[] = [];
+
+  if (originalLevel !== adjustedLevel) {
+    effects.push(
+      `Readiness shifted ${originalLevel} → ${adjustedLevel}`,
+    );
+  }
+
+  if (prefs.recovery_conservatism !== 'moderate') {
+    effects.push(
+      prefs.recovery_conservatism === 'conservative'
+        ? 'Conservative recovery mode — erring on rest'
+        : 'Aggressive recovery mode — pushing through',
+    );
+  }
+
+  if (prefs.comp_prep) {
+    effects.push('Competition prep mode — higher load tolerance');
+  }
+
+  if (prefs.hard_day_bias !== 'balanced') {
+    effects.push(
+      prefs.hard_day_bias === 'train_through'
+        ? 'Train-through bias active'
+        : 'Rest-first bias active',
+    );
+  }
+
+  if (prefs.goal === 'competition') {
+    effects.push('Goal: competition — prioritizing performance');
+  } else if (prefs.goal === 'skill_development') {
+    effects.push('Goal: skill development — technique focus');
+  }
+
+  return effects;
 }
 
 // ---------------------------------------------------------------------------
 // Builders
 // ---------------------------------------------------------------------------
 
-function buildTodayRec(p: AIPayload): CoachingResponse['today_recommendation'] {
+function buildTodayRec(
+  p: AIPayload,
+  prefs: CoachingPreferences,
+): CoachingResponse['today_recommendation'] {
   const { readiness, training_context: tc } = p;
-
-  const actionMap: Record<string, CoachingResponse['today_recommendation']['action']> = {
-    push: 'push',
-    moderate: 'moderate',
-    light: 'light',
-    rest: 'rest',
-    unknown: 'unknown',
-  };
-
-  // Base from insights
-  const action = actionMap[readiness.recommendation.split(' ')[0]?.toLowerCase()] ?? mapLevel(readiness.level);
+  const action = mapLevel(readiness.level);
 
   let detail: string;
+  const goalCtx = prefs.goal === 'competition'
+    ? 'competition-style '
+    : prefs.goal === 'skill_development'
+      ? 'technique-focused '
+      : '';
+
   switch (action) {
     case 'push':
       detail = tc.grappling_sessions_7d > 0
-        ? `Your body is recovered. Good day for hard sparring, competition prep, or a high-intensity drilling session. You've had ${tc.rest_days_7d} rest day${tc.rest_days_7d !== 1 ? 's' : ''} this week.`
-        : 'Recovery signals are strong. If you train today, you can push intensity. Consider adding a grappling session.';
+        ? `Your body is recovered. Good day for ${goalCtx}hard sparring or high-intensity drilling. You've had ${tc.rest_days_7d} rest day${tc.rest_days_7d !== 1 ? 's' : ''} this week.`
+        : `Recovery signals are strong. Good day to push intensity${prefs.goal === 'skill_development' ? ' — consider focused technique work at higher pace' : ''}.`;
       break;
     case 'moderate':
-      detail = tc.consecutive_training_days >= 3
-        ? `${tc.consecutive_training_days} consecutive training days. Focus on technique and positional drilling today — save hard sparring for when you've recovered.`
-        : 'Some signals are suboptimal. Keep intensity moderate — technique work, light rolling, or focused positional rounds.';
+      if (prefs.goal === 'skill_development') {
+        detail = 'Good day for drilling and positional work. Save hard sparring for when recovery is stronger.';
+      } else if (prefs.comp_prep) {
+        detail = 'Comp prep mode: keep a technical session today. Save intensity for a better recovery day.';
+      } else {
+        detail = tc.consecutive_training_days >= 3
+          ? `${tc.consecutive_training_days} consecutive training days. Focus on technique and positional rounds.`
+          : 'Some signals are suboptimal. Keep intensity moderate — technique work or focused positional rounds.';
+      }
       break;
     case 'light':
-      detail = 'Recovery indicators suggest taking it easy. Light flow rolling, stretching, mobility work, or video study would be ideal today.';
+      detail = prefs.hard_day_bias === 'train_through'
+        ? 'Recovery indicators are low, but train-through mode is on. Keep it very light — flow rolling or mobility only.'
+        : 'Recovery indicators suggest taking it easy. Light flow rolling, stretching, mobility, or video study.';
       break;
     case 'rest':
-      detail = tc.rest_days_7d === 0
-        ? 'No rest days this week. Your body needs recovery. A full rest day will improve your next training session.'
-        : 'Multiple recovery indicators are low. Rest today to avoid accumulated fatigue.';
+      detail = prefs.hard_day_bias === 'train_through'
+        ? 'Even in train-through mode, today warrants rest. Your body needs recovery to perform.'
+        : tc.rest_days_7d === 0
+          ? 'No rest days this week. A full rest day will improve your next training session.'
+          : 'Multiple recovery indicators are low. Rest today to avoid accumulated fatigue.';
       break;
     default:
       detail = 'Connect a health source and sync to get personalized training guidance.';
@@ -179,12 +301,15 @@ function buildTodayRec(p: AIPayload): CoachingResponse['today_recommendation'] {
 
   return {
     action,
-    summary: p.readiness.recommendation,
+    summary: readinessLabels[readiness.level as keyof typeof readinessLabels] ?? readiness.label,
     detail,
   };
 }
 
-function buildRecovery(p: AIPayload): CoachingResponse['recovery'] {
+function buildRecovery(
+  p: AIPayload,
+  prefs: CoachingPreferences,
+): CoachingResponse['recovery'] {
   const { readiness, trends, baselines, metrics } = p;
 
   const hrvMetric = metrics.find((m) => m.label === 'HRV');
@@ -199,10 +324,15 @@ function buildRecovery(p: AIPayload): CoachingResponse['recovery'] {
     status = 'recovering';
     actions.push('Prioritize sleep tonight');
     if (trends.hrv === 'declining') actions.push('Monitor HRV over the next 2-3 days');
+    if (prefs.recovery_conservatism === 'conservative') {
+      actions.push('Consider lighter intensity tomorrow');
+    }
   } else if (readiness.level === 'red') {
     status = 'fatigued';
     actions.push('Aim for 8+ hours of sleep');
-    actions.push('Reduce training intensity for 1-2 days');
+    if (prefs.hard_day_bias !== 'train_through') {
+      actions.push('Reduce training intensity for 1-2 days');
+    }
     actions.push('Consider active recovery (walking, stretching)');
   }
 
@@ -249,7 +379,10 @@ function buildSleep(p: AIPayload): CoachingResponse['sleep'] {
   return { status, summary };
 }
 
-function buildTrainingLoad(p: AIPayload): CoachingResponse['training_load'] {
+function buildTrainingLoad(
+  p: AIPayload,
+  prefs: CoachingPreferences,
+): CoachingResponse['training_load'] {
   const tc = p.training_context;
 
   if (tc.workouts_7d === 0) {
@@ -265,20 +398,34 @@ function buildTrainingLoad(p: AIPayload): CoachingResponse['training_load'] {
   }
   parts.push(`${tc.rest_days_7d} rest day${tc.rest_days_7d !== 1 ? 's' : ''}`);
 
-  if (tc.rest_days_7d === 0 && tc.workouts_7d >= 6) {
+  // Thresholds adjust for comp prep and target sessions
+  const highThreshold = prefs.comp_prep ? 7 : 6;
+  const consecutiveThreshold = prefs.comp_prep ? 5 : 4;
+
+  if (tc.rest_days_7d === 0 && tc.workouts_7d >= highThreshold) {
     status = 'overreaching';
-  } else if (tc.workouts_7d >= 6 || tc.consecutive_training_days >= 4) {
+  } else if (tc.workouts_7d >= highThreshold || tc.consecutive_training_days >= consecutiveThreshold) {
     status = 'high';
-  } else if (tc.workouts_7d >= 3 && tc.rest_days_7d >= 1) {
+  } else if (tc.workouts_7d >= Math.max(2, prefs.target_sessions_per_week - 1) && tc.rest_days_7d >= 1) {
     status = 'balanced';
-  } else {
+  } else if (tc.workouts_7d < Math.max(1, prefs.target_sessions_per_week - 2)) {
     status = 'low';
+  } else {
+    status = 'balanced';
+  }
+
+  // Add target context
+  if (tc.workouts_7d < prefs.target_sessions_per_week) {
+    parts.push(`target: ${prefs.target_sessions_per_week}/week`);
   }
 
   return { status, summary: parts.join(', ') + '.' };
 }
 
-function buildGrappling(p: AIPayload): CoachingResponse['grappling'] {
+function buildGrappling(
+  p: AIPayload,
+  prefs: CoachingPreferences,
+): CoachingResponse['grappling'] {
   const tc = p.training_context;
 
   if (tc.grappling_sessions_7d === 0) {
@@ -318,7 +465,11 @@ function buildGrappling(p: AIPayload): CoachingResponse['grappling'] {
   }
   // Green + moderate load — can push
   else if (p.readiness.level === 'green' && tc.grappling_sessions_7d < 4) {
-    suggestion = 'Body is ready for hard rolling. Good day for competition-style sparring or intensive drilling.';
+    suggestion = prefs.goal === 'skill_development'
+      ? 'Body is ready. Good day for focused technique drilling or hard positional rounds.'
+      : prefs.comp_prep
+        ? 'Body is ready. Good day for competition-style sparring — match intensity and timing.'
+        : 'Body is ready for hard rolling. Good day for competition-style sparring or intensive drilling.';
   }
   // High frequency but green
   else if (tc.grappling_sessions_7d >= 4 && p.readiness.level === 'green') {

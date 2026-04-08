@@ -215,6 +215,15 @@ function CoachingCard({ coaching }: { coaching: CoachingResponse }) {
         </View>
       )}
 
+      {/* Preference effects */}
+      {coaching.preference_effects && coaching.preference_effects.length > 0 && (
+        <View style={styles.coachPrefs}>
+          {coaching.preference_effects.map((e, i) => (
+            <Text key={i} style={styles.coachPrefText}>⚙ {e}</Text>
+          ))}
+        </View>
+      )}
+
       {/* Confidence */}
       <Text style={styles.coachConfidence}>
         Confidence: {coaching.confidence.level} — {coaching.confidence.note}
@@ -868,6 +877,8 @@ const styles = StyleSheet.create({
   coachStatusValue: { fontSize: 14, fontWeight: '700', textTransform: 'capitalize' as const },
   coachStatusLabel: { fontSize: 10, opacity: 0.5 },
   coachAction: { fontSize: 13, opacity: 0.7, lineHeight: 18 },
+  coachPrefs: { gap: 2, marginTop: 4 },
+  coachPrefText: { fontSize: 11, color: '#e8ff47', opacity: 0.6 },
   coachConfidence: { fontSize: 10, opacity: 0.3, marginTop: 6 },
 
   // Flags
