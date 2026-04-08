@@ -224,29 +224,7 @@ function PreferencesSection() {
         onChange={(v) => update({ tone: v })}
       />
 
-      <View style={styles.prefRow}>
-        <Text style={styles.prefLabel}>
-          Weekly schedule ({countPlannedSessions(prefs.schedule)} sessions planned)
-        </Text>
-        <View style={styles.scheduleGrid}>
-          {DAYS_ORDER.map((day) => {
-            const sessions = prefs.schedule[day];
-            const hasSession = sessions.some((s) => s.enabled);
-            return (
-              <View key={day} style={[styles.scheduleDay, hasSession && styles.scheduleDayActive]}>
-                <Text style={[styles.scheduleDayLabel, hasSession && styles.scheduleDayLabelActive]}>
-                  {DAY_LABELS[day]}
-                </Text>
-                {sessions.filter((s) => s.enabled).map((s) => (
-                  <Text key={s.id} style={styles.scheduleSessionTag}>
-                    {SCHEDULE_SESSION_LABELS[s.type]?.slice(0, 4) ?? s.type.slice(0, 4)}
-                  </Text>
-                ))}
-              </View>
-            );
-          })}
-        </View>
-      </View>
+      <ScheduleEditor />
 
       <Pressable
         style={[styles.row, { justifyContent: 'space-between' }]}
@@ -270,6 +248,98 @@ function PreferencesSection() {
 // ---------------------------------------------------------------------------
 // Data & Privacy
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Schedule Editor
+// ---------------------------------------------------------------------------
+
+const SCHEDULE_TYPES: import('@lauburu/shared').ScheduleSessionType[] = [
+  'drilling', 'sparring', 'wrestling', 'takedowns', 'positional',
+  'open_mat', 'comp_prep', 'conditioning', 'other',
+];
+
+function ScheduleEditor() {
+  const prefs = usePreferencesStore((s) => s.preferences);
+  const addSess = usePreferencesStore((s) => s.addSession);
+  const removeSess = usePreferencesStore((s) => s.removeSession);
+  const toggleSess = usePreferencesStore((s) => s.toggleSession);
+  const [expandedDay, setExpandedDay] = useState<import('@lauburu/shared').DayOfWeek | null>(null);
+  const [addingType, setAddingType] = useState<import('@lauburu/shared').ScheduleSessionType>('drilling');
+
+  return (
+    <View style={styles.prefRow}>
+      <Text style={styles.prefLabel}>
+        Weekly schedule ({countPlannedSessions(prefs.schedule)} sessions)
+      </Text>
+
+      {DAYS_ORDER.map((day) => {
+        const sessions = prefs.schedule[day];
+        const isExpanded = expandedDay === day;
+        return (
+          <View key={day}>
+            <Pressable
+              style={[styles.scheduleDayRow, isExpanded && styles.scheduleDayRowExpanded]}
+              onPress={() => setExpandedDay(isExpanded ? null : day)}>
+              <Text style={styles.scheduleDayName}>{DAY_LABELS[day]}</Text>
+              <Text style={styles.scheduleDayCount}>
+                {sessions.filter((s) => s.enabled).length > 0
+                  ? sessions.filter((s) => s.enabled).map((s) =>
+                      SCHEDULE_SESSION_LABELS[s.type] ?? s.type
+                    ).join(', ')
+                  : 'Rest'}
+              </Text>
+              <Text style={styles.scheduleChevron}>{isExpanded ? '▾' : '▸'}</Text>
+            </Pressable>
+
+            {isExpanded && (
+              <View style={styles.scheduleDayExpanded}>
+                {sessions.map((s) => (
+                  <View key={s.id} style={styles.scheduleSessionRow}>
+                    <Pressable onPress={() => toggleSess(day, s.id)}>
+                      <Text style={[styles.scheduleSessionCheck, !s.enabled && { opacity: 0.3 }]}>
+                        {s.enabled ? '✓' : '○'}
+                      </Text>
+                    </Pressable>
+                    <Text style={[styles.scheduleSessionName, !s.enabled && { opacity: 0.3 }]}>
+                      {SCHEDULE_SESSION_LABELS[s.type] ?? s.type}
+                      {s.time ? ` · ${s.time}` : ''}
+                    </Text>
+                    <Pressable onPress={() => removeSess(day, s.id)}>
+                      <Text style={styles.scheduleRemove}>✕</Text>
+                    </Pressable>
+                  </View>
+                ))}
+
+                {/* Add session */}
+                <View style={styles.scheduleAddRow}>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <View style={styles.pillRow}>
+                      {SCHEDULE_TYPES.map((st) => (
+                        <Pressable
+                          key={st}
+                          style={[styles.pillSmall, addingType === st && styles.pillActive]}
+                          onPress={() => setAddingType(st)}>
+                          <Text style={[styles.pillSmallText, addingType === st && styles.pillTextActive]}>
+                            {SCHEDULE_SESSION_LABELS[st]}
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  </ScrollView>
+                  <Pressable
+                    style={styles.scheduleAddBtn}
+                    onPress={() => addSess(day, addingType)}>
+                    <Text style={styles.scheduleAddBtnText}>+ Add</Text>
+                  </Pressable>
+                </View>
+              </View>
+            )}
+          </View>
+        );
+      })}
+    </View>
+  );
+}
 
 function ConsentToggle({
   label,
@@ -659,18 +729,48 @@ const styles = StyleSheet.create({
   devSection: { gap: 6, marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
   devLabel: { fontSize: 11, opacity: 0.4, textTransform: 'uppercase', letterSpacing: 0.5 },
 
-  // Schedule
-  scheduleGrid: { flexDirection: 'row', gap: 4, justifyContent: 'space-between' },
-  scheduleDay: {
-    flex: 1,
+  // Schedule editor
+  scheduleDayRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     borderRadius: 8,
     backgroundColor: 'rgba(255,255,255,0.03)',
-    gap: 2,
+    marginBottom: 2,
+    gap: 8,
   },
-  scheduleDayActive: { backgroundColor: 'rgba(232,255,71,0.08)', borderWidth: 1, borderColor: 'rgba(232,255,71,0.2)' },
-  scheduleDayLabel: { fontSize: 10, opacity: 0.4, fontWeight: '600' },
-  scheduleDayLabelActive: { opacity: 0.8, color: '#e8ff47' },
-  scheduleSessionTag: { fontSize: 8, color: '#e8ff47', opacity: 0.7 },
+  scheduleDayRowExpanded: { backgroundColor: 'rgba(232,255,71,0.06)', borderBottomLeftRadius: 0, borderBottomRightRadius: 0 },
+  scheduleDayName: { fontSize: 14, fontWeight: '600', width: 36 },
+  scheduleDayCount: { flex: 1, fontSize: 12, opacity: 0.6 },
+  scheduleChevron: { fontSize: 12, opacity: 0.4 },
+  scheduleDayExpanded: {
+    backgroundColor: 'rgba(255,255,255,0.02)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    marginBottom: 2,
+    gap: 6,
+  },
+  scheduleSessionRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  scheduleSessionCheck: { fontSize: 16, color: '#4ade80', width: 20 },
+  scheduleSessionName: { flex: 1, fontSize: 13 },
+  scheduleRemove: { fontSize: 14, color: '#ff6b6b', padding: 4 },
+  scheduleAddRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 },
+  scheduleAddBtn: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    backgroundColor: 'rgba(232,255,71,0.15)',
+  },
+  scheduleAddBtnText: { color: '#e8ff47', fontSize: 12, fontWeight: '600' },
+  pillSmall: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  pillSmallText: { fontSize: 11, color: '#999' },
 });

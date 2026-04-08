@@ -42,8 +42,10 @@ export function mergeTrainingSessions(
       dayMap.set(session.date, day);
     }
 
-    // Add as grappling_session (last one wins if multiple on same day)
-    day.grappling_session = sessionToGrappling(session);
+    // Add as grappling_session only for grappling types (not conditioning)
+    if (session.type !== 'conditioning' && session.type !== 'other') {
+      day.grappling_session = sessionToGrappling(session);
+    }
 
     // Add as a workout entry (always append — dedup by source_id)
     const existingWorkouts = day.workouts ?? [];
@@ -79,13 +81,30 @@ function sessionToGrappling(s: TrainingSession): GrapplingSession {
 
 function sessionToWorkout(s: TrainingSession): Workout {
   const isWrestling = s.type === 'wrestling';
+  const isConditioning = s.type === 'conditioning';
+  const isGrappling = !isConditioning && s.type !== 'other';
+
+  let sportLabel: string;
+  if (isConditioning && s.conditioning) {
+    const { CONDITIONING_SUBTYPE_LABELS: CSL } = require('../types/training');
+    sportLabel = CSL[s.conditioning.subtype] ?? s.conditioning.subtype;
+    if (s.conditioning.modality) {
+      const { MODALITY_LABELS: ML } = require('../types/training');
+      sportLabel += ` (${ML[s.conditioning.modality] ?? s.conditioning.modality})`;
+    }
+  } else if (isWrestling) {
+    sportLabel = `Wrestling ${s.intensity}`;
+  } else {
+    sportLabel = `No-gi ${SESSION_TYPE_LABELS[s.type] ?? s.type}`;
+  }
+
   return {
-    type: isWrestling ? 'wrestling' : 'martial_arts',
-    sport_label: isWrestling ? `Wrestling ${s.intensity}` : `No-gi ${SESSION_TYPE_LABELS[s.type] ?? s.type}`,
+    type: isConditioning ? 'conditioning' : isWrestling ? 'wrestling' : 'martial_arts',
+    sport_label: sportLabel,
     source: 'manual',
     source_id: `manual-${s.id}`,
     duration_min: s.duration_min,
-    is_grappling: true,
+    is_grappling: isGrappling,
     notes: s.notes || undefined,
   };
 }

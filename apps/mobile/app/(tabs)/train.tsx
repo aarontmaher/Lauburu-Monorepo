@@ -414,6 +414,18 @@ function SessionCard({
           </Pressable>
         </View>
       </View>
+      {session.conditioning && (
+        <Text style={styles.sessionCondDetail}>
+          {CONDITIONING_SUBTYPE_LABELS[session.conditioning.subtype]}
+          {session.conditioning.modality ? ` · ${MODALITY_LABELS[session.conditioning.modality]}` : ''}
+          {session.conditioning.interval
+            ? ` · ${session.conditioning.interval.work_duration_s}s/${session.conditioning.interval.rest_duration_s}s × ${session.conditioning.interval.rounds}`
+            : ''}
+          {session.conditioning.weight_training
+            ? ` · ${LIFTING_FOCUS_LABELS[session.conditioning.weight_training.focus]}`
+            : ''}
+        </Text>
+      )}
       {session.tags.length > 0 && (
         <Text style={styles.sessionTags}>{session.tags.join(' · ')}</Text>
       )}
@@ -611,6 +623,7 @@ const styles = StyleSheet.create({
   sessionActions: { flexDirection: 'row', gap: 12 },
   actionBtn: { paddingVertical: 2, paddingHorizontal: 4 },
   actionText: { fontSize: 13, color: '#e8ff47' },
+  sessionCondDetail: { fontSize: 12, color: '#e8ff47', opacity: 0.7 },
   sessionTags: { fontSize: 12, opacity: 0.5 },
   sessionNotes: { fontSize: 13, opacity: 0.6, lineHeight: 18 },
 });
