@@ -16,6 +16,7 @@ import {
   generateInsights,
   exportAIPayload,
   generateCoaching,
+  mergeTrainingSessions,
 } from '@lauburu/shared';
 import type {
   DailyMetrics,
@@ -29,6 +30,7 @@ import type {
 import type { HealthFlag } from '@lauburu/shared';
 import { getHealthService } from '../services/health';
 import { useAuthStore } from './auth-store';
+import { useTrainingStore } from './training-store';
 
 interface HealthState {
   /** Current permission state */
@@ -168,7 +170,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
           : HealthProvider.MANUAL;
 
       // Normalize through shared layer
-      const days = normalizeHealthData(
+      const nativeDays = normalizeHealthData(
         userId,
         provider,
         allSamples,
@@ -176,9 +178,13 @@ export const useHealthStore = create<HealthState>((set, get) => ({
         sleep,
       );
 
+      // Merge manual training sessions
+      const trainingSessions = useTrainingStore.getState().sessions;
+      const days = mergeTrainingSessions(nativeDays, trainingSessions);
+
       const today = days.find((d) => d.date === todayStr()) ?? null;
 
-      // Derive AI-ready features
+      // Derive AI-ready features (includes manual grappling context)
       const features = deriveFeatures(days);
       const flags = computeFlags(features, today);
 
