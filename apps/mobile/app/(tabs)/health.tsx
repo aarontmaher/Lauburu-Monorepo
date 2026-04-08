@@ -9,7 +9,8 @@ import {
 import { Text, View } from '@/components/Themed';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
-import type { HealthMetricType, PermissionStatus, DailyMetrics } from '@lauburu/shared';
+import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures } from '@lauburu/shared';
+import type { HealthFlag } from '@lauburu/shared';
 
 // --- Permission status row ---
 
@@ -148,12 +149,169 @@ function RecentDays({ days }: { days: DailyMetrics[] }) {
 
 // --- Main screen ---
 
+// --- Flags card ---
+
+function FlagsCard({ flags }: { flags: HealthFlag[] }) {
+  if (flags.length === 0) return null;
+  const colors: Record<string, string> = {
+    warning: '#ff6b6b',
+    info: '#e8ff47',
+    positive: '#4ade80',
+  };
+  const icons: Record<string, string> = {
+    warning: '⚠',
+    info: 'ℹ',
+    positive: '✓',
+  };
+  return (
+    <View style={styles.card}>
+      <Text style={styles.cardTitle}>Flags</Text>
+      {flags.map((f, i) => (
+        <Text key={i} style={[styles.flagText, { color: colors[f.type] }]}>
+          {icons[f.type]} {f.label}
+        </Text>
+      ))}
+    </View>
+  );
+}
+
+// --- Trends card ---
+
+const TREND_ARROWS: Record<string, string> = {
+  improving: '↑',
+  declining: '↓',
+  stable: '→',
+  increasing: '↑',
+  decreasing: '↓',
+};
+const TREND_COLORS: Record<string, string> = {
+  improving: '#4ade80',
+  declining: '#ff6b6b',
+  stable: '#999',
+  increasing: '#e8ff47',
+  decreasing: '#4ade80', // decreasing strain is good
+};
+
+function TrendsCard({ features }: { features: DerivedFeatures }) {
+  return (
+    <View style={styles.card}>
+      <Text style={styles.cardTitle}>7-Day Trends</Text>
+      <View style={styles.trendsGrid}>
+        <TrendItem
+          label="Recovery"
+          trend={features.recovery_trend}
+          value={features.last_7d_recovery_mean}
+          unit="%"
+        />
+        <TrendItem
+          label="Strain"
+          trend={features.strain_trend}
+          value={features.last_7d_strain_mean}
+          unit=""
+        />
+        <TrendItem
+          label="HRV"
+          trend={features.baseline_hrv_mean != null ? 'stable' : 'stable'}
+          value={features.baseline_hrv_mean}
+          unit="ms"
+        />
+        <TrendItem
+          label="Sleep"
+          trend={features.baseline_sleep_mean != null ? 'stable' : 'stable'}
+          value={features.baseline_sleep_mean}
+          unit="h"
+        />
+      </View>
+      <View style={styles.trendMeta}>
+        <Text style={styles.trendMetaText}>
+          {features.workouts} workouts · {features.grappling_sessions} grappling
+        </Text>
+        <Text style={styles.trendMetaText}>
+          Sources: {features.provenance.join(', ') || 'none'}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+function TrendItem({
+  label,
+  trend,
+  value,
+  unit,
+}: {
+  label: string;
+  trend: string;
+  value: number | null;
+  unit: string;
+}) {
+  const arrow = TREND_ARROWS[trend] ?? '→';
+  const color = TREND_COLORS[trend] ?? '#999';
+  return (
+    <View style={styles.trendItem}>
+      <Text style={styles.trendLabel}>{label}</Text>
+      <Text style={[styles.trendValue, { color }]}>
+        {value != null ? `${Math.round(value * 10) / 10}${unit}` : '—'}
+        {' '}
+        {arrow}
+      </Text>
+    </View>
+  );
+}
+
+// --- Backend sync card ---
+
+function BackendSyncCard() {
+  const persisting = useHealthStore((s) => s.persisting);
+  const lastPersistedAt = useHealthStore((s) => s.lastPersistedAt);
+  const lastPersistResult = useHealthStore((s) => s.lastPersistResult);
+  const persistToBackend = useHealthStore((s) => s.persistToBackend);
+  const authStatus = useAuthStore((s) => s.status);
+
+  if (authStatus !== 'member') return null;
+
+  return (
+    <View style={styles.card}>
+      <View style={styles.cardHeaderRow}>
+        <Text style={styles.cardTitle}>Backend Sync</Text>
+        <Pressable
+          style={styles.syncButton}
+          onPress={persistToBackend}
+          disabled={persisting}>
+          {persisting ? (
+            <ActivityIndicator size="small" color="#e8ff47" />
+          ) : (
+            <Text style={styles.syncButtonText}>Save to Account</Text>
+          )}
+        </Pressable>
+      </View>
+      {lastPersistedAt && (
+        <Text style={styles.syncTimestamp}>
+          Last saved: {new Date(lastPersistedAt).toLocaleString()}
+          {lastPersistResult
+            ? ` · ${lastPersistResult.recordCount} days (${lastPersistResult.dateRange})`
+            : ''}
+        </Text>
+      )}
+      {!lastPersistedAt && (
+        <Text style={styles.syncTimestamp}>
+          Not yet saved to your account. Tap to persist.
+        </Text>
+      )}
+    </View>
+  );
+}
+
+// --- Main screen ---
+
 export default function HealthScreen() {
   const permissions = useHealthStore((s) => s.permissions);
   const syncing = useHealthStore((s) => s.syncing);
   const lastSyncAt = useHealthStore((s) => s.lastSyncAt);
   const today = useHealthStore((s) => s.today);
   const days = useHealthStore((s) => s.days);
+  const features = useHealthStore((s) => s.features);
+  const flags = useHealthStore((s) => s.flags);
   const error = useHealthStore((s) => s.error);
   const checkPermissions = useHealthStore((s) => s.checkPermissions);
   const requestPermissions = useHealthStore((s) => s.requestPermissions);
@@ -162,7 +320,6 @@ export default function HealthScreen() {
   const authStatus = useAuthStore((s) => s.status);
   const user = useAuthStore((s) => s.user);
 
-  // Check permissions on mount
   useEffect(() => {
     checkPermissions();
   }, [checkPermissions]);
@@ -261,8 +418,17 @@ export default function HealthScreen() {
         </View>
       )}
 
+      {/* Flags */}
+      {flags.length > 0 && <FlagsCard flags={flags} />}
+
       {/* Today's data */}
       {today && <TodayCard today={today} />}
+
+      {/* 7-day trends */}
+      {features && <TrendsCard features={features} />}
+
+      {/* Backend persistence */}
+      <BackendSyncCard />
 
       {/* Recent days */}
       {days.length > 0 && <RecentDays days={days} />}
@@ -489,4 +655,15 @@ const styles = StyleSheet.create({
   statusDotRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   statusDotSmall: { width: 6, height: 6, borderRadius: 3 },
   syncTimestamp: { fontSize: 11, opacity: 0.4, marginTop: 4 },
+
+  // Flags
+  flagText: { fontSize: 13, lineHeight: 18 },
+
+  // Trends
+  trendsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
+  trendItem: { width: '45%', gap: 2 },
+  trendLabel: { fontSize: 12, opacity: 0.6 },
+  trendValue: { fontSize: 16, fontWeight: '600' },
+  trendMeta: { marginTop: 8, gap: 2 },
+  trendMetaText: { fontSize: 11, opacity: 0.4 },
 });

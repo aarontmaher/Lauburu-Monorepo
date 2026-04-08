@@ -105,21 +105,53 @@ export async function logSuccess(
 
 // --- Health ---
 
-export async function getHealthStatus(
-  getToken: GetAccessToken,
-): Promise<DailyMetricsRow[] | null> {
-  const data = await apiFetch<{ items: DailyMetricsRow[] }>('health-status', getToken);
-  return data?.items ?? null;
+/** Response from GET /health-status?provider=... */
+export interface HealthStatusResponse {
+  ok: boolean;
+  provider: string;
+  status: string; // 'not_connected' | 'manual_import' | 'oauth' | etc
+  connection_mode?: string;
+  last_sync_at: string | null;
+  last_error: string | null;
+  sync_failed_count?: number;
 }
 
+export async function getHealthStatus(
+  getToken: GetAccessToken,
+  provider: string,
+): Promise<HealthStatusResponse | null> {
+  return apiFetch<HealthStatusResponse>(
+    `health-status?provider=${encodeURIComponent(provider)}`,
+    getToken,
+  );
+}
+
+/** Response from POST /health-import */
+export interface HealthImportResult {
+  ok: boolean;
+  import_id: string;
+  record_count: number;
+  date_range: { start: string; end: string };
+  connection_status: string;
+}
+
+/**
+ * Import health data to backend.
+ * Matches the edge function contract: { provider, import_mode, raw_payload }.
+ * raw_payload is an array of daily records with date + metric fields.
+ */
 export async function importHealthData(
   getToken: GetAccessToken,
   provider: string,
-  metrics: Record<string, unknown>,
-): Promise<boolean> {
-  const result = await apiFetch('health-import', getToken, {
+  importMode: string,
+  rawPayload: Record<string, unknown>[],
+): Promise<HealthImportResult | null> {
+  return apiFetch<HealthImportResult>('health-import', getToken, {
     method: 'POST',
-    body: JSON.stringify({ provider, ...metrics }),
+    body: JSON.stringify({
+      provider,
+      import_mode: importMode,
+      raw_payload: rawPayload,
+    }),
   });
-  return result !== null;
 }
