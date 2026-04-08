@@ -106,6 +106,12 @@ export interface CoachingResponse {
     suggestion: string;
   };
 
+  /** Plan adherence */
+  plan: {
+    status: 'on_plan' | 'under_plan' | 'over_plan' | 'rest_day' | 'no_plan';
+    summary: string;
+  };
+
   /** Top caution notes (things to watch) */
   cautions: string[];
 
@@ -158,6 +164,7 @@ export function generateCoaching(
     sleep: buildSleep(adjustedPayload),
     training_load: buildTrainingLoad(adjustedPayload, prefs),
     grappling: buildGrappling(adjustedPayload, prefs),
+    plan: buildPlanStatus(prefs, payload),
     cautions: payload.concerns,
     confidence: buildConfidence(adjustedPayload),
   };
@@ -505,6 +512,42 @@ function buildGrappling(
   return { summary, suggestion };
 }
 
+function buildPlanStatus(
+  prefs: CoachingPreferences,
+  p: AIPayload,
+): CoachingResponse['plan'] {
+  const todayPlan = getTodayPlan(prefs.schedule);
+  const tc = p.training_context;
+
+  if (todayPlan.length === 0) {
+    if (tc.workouts_7d > 0) {
+      return { status: 'rest_day', summary: 'Planned rest day.' };
+    }
+    return { status: 'no_plan', summary: 'No sessions planned today.' };
+  }
+
+  const plannedCount = todayPlan.length;
+  const plannedTypes = todayPlan.map((s) => SCHEDULE_SESSION_LABELS[s.type] ?? s.type);
+
+  // We can't know exact completion count from AI payload alone,
+  // but we can compare today's workout count if today's data exists
+  if (p.coverage.has_today) {
+    const todayWorkouts = p.readiness.level !== 'grey'
+      ? tc.workouts_7d // approximate — full accuracy needs DayPlanSummary
+      : 0;
+
+    return {
+      status: 'on_plan',
+      summary: `${plannedCount} session${plannedCount !== 1 ? 's' : ''} planned: ${plannedTypes.join(', ')}.`,
+    };
+  }
+
+  return {
+    status: 'under_plan',
+    summary: `${plannedCount} session${plannedCount !== 1 ? 's' : ''} planned: ${plannedTypes.join(', ')}.`,
+  };
+}
+
 function buildConfidence(p: AIPayload): CoachingResponse['confidence'] {
   const { coverage, sync } = p;
 
@@ -549,6 +592,7 @@ function insufficientDataCoaching(p: AIPayload): CoachingResponse {
     sleep: { status: 'unknown', summary: 'No sleep data.' },
     training_load: { status: 'unknown', summary: 'No workout data.' },
     grappling: { summary: 'No grappling data.', suggestion: 'Sync health data to get grappling-specific guidance.' },
+    plan: { status: 'no_plan', summary: 'Set up your weekly schedule in Settings.' },
     cautions: [],
     confidence: {
       level: 'low',

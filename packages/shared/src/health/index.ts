@@ -12,3 +12,5 @@ export { generateCoaching } from './coaching';
 export type { CoachingResponse } from './coaching';
 export { mergeTrainingSessions } from './merge-training';
 export { assembleTrainingExample } from './training-example';
+export { buildDayPlanSummary, getDayOfWeek } from './plan-status';
+export type { PlannedWithStatus, DayPlanSummary, DayPlanStatus, PlannedSessionStatus } from './plan-status';

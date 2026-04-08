@@ -11,8 +11,13 @@ import { Text, View } from '@/components/Themed';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
-import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus } from '@lauburu/shared';
-import { SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS, CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, LIFTING_FOCUS_LABELS } from '@lauburu/shared';
+import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary } from '@lauburu/shared';
+import {
+  SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS,
+  CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, LIFTING_FOCUS_LABELS,
+  buildDayPlanSummary, SCHEDULE_SESSION_LABELS,
+} from '@lauburu/shared';
+import { usePreferencesStore } from '../../src/store/preferences-store';
 
 const SESSION_TYPES: SessionType[] = ['class', 'sparring', 'drilling', 'wrestling', 'comp', 'open_mat', 'conditioning', 'other'];
 const INTENSITIES: SessionIntensity[] = ['light', 'moderate', 'hard'];
@@ -437,6 +442,84 @@ function SessionCard({
 }
 
 // ---------------------------------------------------------------------------
+// Today's plan card with quick-log
+// ---------------------------------------------------------------------------
+
+function TodayPlanCard({
+  onQuickLog,
+}: {
+  onQuickLog: (type: SessionType, intensity: SessionIntensity) => void;
+}) {
+  const schedule = usePreferencesStore((s) => s.preferences.schedule);
+  const sessions = useTrainingStore((s) => s.sessions);
+  const summary = buildDayPlanSummary(todayDate(), schedule, sessions);
+
+  if (summary.status === 'rest_day' || summary.status === 'no_plan') {
+    return (
+      <View style={styles.planCard}>
+        <Text style={styles.planTitle}>Today's Plan</Text>
+        <Text style={styles.planEmpty}>
+          {summary.status === 'rest_day' ? 'Rest day — no sessions planned.' : 'No sessions planned.'}
+        </Text>
+      </View>
+    );
+  }
+
+  const statusColors: Record<string, string> = {
+    completed: '#4ade80',
+    missed: '#ff6b6b',
+    upcoming: '#e8ff47',
+  };
+  const statusIcons: Record<string, string> = {
+    completed: '✓',
+    missed: '✕',
+    upcoming: '○',
+  };
+
+  return (
+    <View style={styles.planCard}>
+      <View style={styles.planHeader}>
+        <Text style={styles.planTitle}>Today's Plan</Text>
+        <Text style={styles.planCount}>
+          {summary.completedCount}/{summary.plannedCount}
+        </Text>
+      </View>
+      {summary.planned.map((p) => (
+        <View key={p.planned.id} style={styles.planRow}>
+          <Text style={[styles.planIcon, { color: statusColors[p.status] }]}>
+            {statusIcons[p.status]}
+          </Text>
+          <View style={styles.planInfo}>
+            <Text style={[styles.planType, p.status === 'completed' && styles.planCompleted]}>
+              {SCHEDULE_SESSION_LABELS[p.planned.type] ?? p.planned.type}
+              {p.planned.time ? ` · ${p.planned.time}` : ''}
+            </Text>
+          </View>
+          {p.status === 'upcoming' && (
+            <Pressable
+              style={styles.quickLogBtn}
+              onPress={() => onQuickLog(
+                p.planned.type as SessionType,
+                p.planned.intensity ?? 'moderate',
+              )}>
+              <Text style={styles.quickLogText}>Log</Text>
+            </Pressable>
+          )}
+          {p.status === 'completed' && (
+            <Text style={styles.planDoneLabel}>Done</Text>
+          )}
+        </View>
+      ))}
+      {summary.unplannedSessions.length > 0 && (
+        <Text style={styles.planExtra}>
+          +{summary.unplannedSessions.length} unplanned session{summary.unplannedSessions.length !== 1 ? 's' : ''}
+        </Text>
+      )}
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main screen
 // ---------------------------------------------------------------------------
 
@@ -445,9 +528,23 @@ export default function TrainScreen() {
   const removeSession = useTrainingStore((s) => s.removeSession);
   const syncData = useHealthStore((s) => s.syncData);
   const user = useAuthStore((s) => s.user);
+  const addSession = useTrainingStore((s) => s.addSession);
   const [editingSession, setEditingSession] = useState<TrainingSession | null>(null);
-  const [showForm, setShowForm] = useState(true);
+  const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  // Quick-log: prefill form from planned session
+  const handleQuickLog = (type: SessionType, intensity: SessionIntensity) => {
+    addSession({
+      date: todayDate(),
+      type,
+      intensity,
+      duration_min: 60,
+    });
+    if (user?.id) syncData(user.id);
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 3000);
+  };
 
   // Group sessions by date (last 7 days)
   const groupedSessions = useMemo(() => {
@@ -496,6 +593,16 @@ export default function TrainScreen() {
         <View style={styles.successBanner}>
           <Text style={styles.successText}>Session logged — coaching updated</Text>
         </View>
+      )}
+
+      {/* Today's plan with quick-log */}
+      <TodayPlanCard onQuickLog={handleQuickLog} />
+
+      {/* Toggle form */}
+      {!showForm && (
+        <Pressable style={styles.showFormBtn} onPress={() => setShowForm(true)}>
+          <Text style={styles.showFormText}>+ New Session</Text>
+        </Pressable>
       )}
 
       {/* Entry form */}
@@ -624,6 +731,41 @@ const styles = StyleSheet.create({
   actionBtn: { paddingVertical: 2, paddingHorizontal: 4 },
   actionText: { fontSize: 13, color: '#e8ff47' },
   sessionCondDetail: { fontSize: 12, color: '#e8ff47', opacity: 0.7 },
+
+  // Plan card
+  planCard: {
+    padding: 14,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    gap: 8,
+  },
+  planHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  planTitle: { fontSize: 16, fontWeight: '600' },
+  planCount: { fontSize: 14, color: '#e8ff47', fontWeight: '600' },
+  planEmpty: { fontSize: 13, opacity: 0.5 },
+  planRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 },
+  planIcon: { fontSize: 16, width: 20, textAlign: 'center' },
+  planInfo: { flex: 1 },
+  planType: { fontSize: 14 },
+  planCompleted: { opacity: 0.5, textDecorationLine: 'line-through' },
+  planDoneLabel: { fontSize: 11, color: '#4ade80', opacity: 0.7 },
+  planExtra: { fontSize: 12, opacity: 0.5, marginTop: 2 },
+  quickLogBtn: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    backgroundColor: 'rgba(232,255,71,0.15)',
+  },
+  quickLogText: { color: '#e8ff47', fontSize: 12, fontWeight: '600' },
+  showFormBtn: {
+    padding: 14,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#444',
+    borderStyle: 'dashed',
+    alignItems: 'center',
+  },
+  showFormText: { color: '#999', fontSize: 15 },
   sessionTags: { fontSize: 12, opacity: 0.5 },
   sessionNotes: { fontSize: 13, opacity: 0.6, lineHeight: 18 },
 });
