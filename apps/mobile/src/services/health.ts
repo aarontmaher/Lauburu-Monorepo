@@ -2,9 +2,13 @@
  * Platform-agnostic health service factory.
  *
  * EXPO GO SAFETY:
- * 1. isExpoGo() is in a separate file (expo-detect.ts) with no native deps
- * 2. metro.config.js blocks native health packages from the bundle
- * 3. Runtime guard returns stub before any native code path
+ * This file is the ONLY entry point for health services.
+ * It NEVER directly requires native modules at the top level.
+ *
+ * In Expo Go: returns the STUB immediately. The native files
+ * (health.ios.ts, health.android.ts) are never loaded.
+ *
+ * In dev builds: lazily loads native modules via require().
  */
 import { Platform } from 'react-native';
 import { isExpoGo } from './expo-detect';
@@ -20,24 +24,30 @@ export function getHealthService(): IHealthService {
     return _instance;
   }
 
+  // Only in native dev builds — load native modules
+  _instance = loadNative();
+  return _instance;
+}
+
+function loadNative(): IHealthService {
   try {
     if (Platform.OS === 'ios') {
+      // This require is only reached in dev builds, never in Expo Go.
+      // health.ios.ts uses lazy require() for the native healthkit package.
       const { HealthKitService } = require('./health.ios');
-      _instance = new HealthKitService();
-    } else if (Platform.OS === 'android') {
+      return new HealthKitService();
+    }
+    if (Platform.OS === 'android') {
       const { HealthConnectService } = require('./health.android');
-      _instance = new HealthConnectService();
-    } else {
-      _instance = STUB;
+      return new HealthConnectService();
     }
   } catch (e) {
     console.warn('Native health module unavailable:', e);
-    _instance = STUB;
   }
-
-  return _instance!;
+  return STUB;
 }
 
+/** Safe stub — works everywhere, returns "unavailable" for all metrics */
 const STUB: IHealthService = {
   isAvailable: async () => false,
   checkPermissions: async () => ({
