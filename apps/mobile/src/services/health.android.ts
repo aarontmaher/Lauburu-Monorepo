@@ -1,22 +1,11 @@
 /**
  * Android Health Connect implementation of IHealthService.
- * Uses react-native-health-connect.
  *
- * REQUIRES: expo prebuild + Health Connect app installed on device.
- * EMULATOR: Health Connect available on Android 14+ emulators. Add sample data
- *   in Health Connect app > Data and access > Browse data.
- * DEVICE: Full Health Connect access. On Android <14, user must install HC from Play Store.
+ * ALL native imports are lazy (inside methods) to prevent Expo Go crash.
+ * react-native-health-connect crashes at import time in Expo Go.
  *
- * WARNING: If user denies permissions twice, app is permanently locked out.
- * Handle denial gracefully and explain before re-requesting.
+ * REQUIRES: expo prebuild + Health Connect app on device.
  */
-import {
-  initialize,
-  requestPermission,
-  readRecords,
-  getSdkStatus,
-  SdkAvailabilityStatus,
-} from 'react-native-health-connect';
 import type {
   IHealthService,
   HealthPermissions,
@@ -28,7 +17,11 @@ import type {
   PermissionStatus,
 } from '@lauburu/shared';
 
-/** Permissions we need from Health Connect */
+/** Lazy-load the native module */
+function hc() {
+  return require('react-native-health-connect');
+}
+
 const HC_PERMISSIONS = [
   { accessType: 'read' as const, recordType: 'RestingHeartRate' as const },
   { accessType: 'read' as const, recordType: 'HeartRateVariabilityRmssd' as const },
@@ -45,7 +38,7 @@ export class HealthConnectService implements IHealthService {
   private async ensureInit(): Promise<boolean> {
     if (this.initialized) return true;
     try {
-      const result = await initialize();
+      const result = await hc().initialize();
       this.initialized = result;
       return result;
     } catch {
@@ -55,7 +48,8 @@ export class HealthConnectService implements IHealthService {
 
   async isAvailable(): Promise<boolean> {
     try {
-      const status = await getSdkStatus();
+      const { SdkAvailabilityStatus } = hc();
+      const status = await hc().getSdkStatus();
       return status === SdkAvailabilityStatus.SDK_AVAILABLE;
     } catch {
       return false;
@@ -67,9 +61,6 @@ export class HealthConnectService implements IHealthService {
     if (!available) {
       return { available: false, permissions: makeAllStatus('unavailable') };
     }
-
-    // Health Connect doesn't have a "check without request" API in the RN lib.
-    // We return not_determined and let the request flow handle it.
     return { available: true, permissions: makeAllStatus('not_determined') };
   }
 
@@ -78,12 +69,9 @@ export class HealthConnectService implements IHealthService {
     if (!available) {
       return { available: false, permissions: makeAllStatus('unavailable') };
     }
-
     await this.ensureInit();
-
     try {
-      const granted = await requestPermission(HC_PERMISSIONS);
-      // Map granted permissions to our metric types
+      const granted = await hc().requestPermission(HC_PERMISSIONS);
       const result = makeAllStatus('denied');
       for (const p of granted) {
         const metric = recordTypeToMetric(p.recordType);
@@ -102,16 +90,14 @@ export class HealthConnectService implements IHealthService {
     await this.ensureInit();
     const recordType = metricToRecordType(metric);
     if (!recordType) return [];
-
     try {
-      const { records } = await readRecords(recordType as any, {
+      const { records } = await hc().readRecords(recordType as any, {
         timeRangeFilter: {
           operator: 'between',
           startTime: range.start.toISOString(),
           endTime: range.end.toISOString(),
         },
       });
-
       return (records as any[]).map((r) => ({
         metric,
         value: extractValue(r, metric),
@@ -127,16 +113,14 @@ export class HealthConnectService implements IHealthService {
 
   async fetchWorkouts(range: DateRange): Promise<RawWorkoutSample[]> {
     await this.ensureInit();
-
     try {
-      const { records } = await readRecords('ExerciseSession', {
+      const { records } = await hc().readRecords('ExerciseSession', {
         timeRangeFilter: {
           operator: 'between',
           startTime: range.start.toISOString(),
           endTime: range.end.toISOString(),
         },
       });
-
       return (records as any[]).map((r) => {
         const startMs = new Date(r.startTime).getTime();
         const endMs = new Date(r.endTime).getTime();
@@ -158,19 +142,16 @@ export class HealthConnectService implements IHealthService {
 
   async fetchSleep(range: DateRange): Promise<RawSleepSample[]> {
     await this.ensureInit();
-
     try {
-      const { records } = await readRecords('SleepSession', {
+      const { records } = await hc().readRecords('SleepSession', {
         timeRangeFilter: {
           operator: 'between',
           startTime: range.start.toISOString(),
           endTime: range.end.toISOString(),
         },
       });
-
       const samples: RawSleepSample[] = [];
       for (const session of records as any[]) {
-        // Health Connect sleep sessions contain stages
         if (session.stages && Array.isArray(session.stages)) {
           for (const stage of session.stages) {
             samples.push({
@@ -181,7 +162,6 @@ export class HealthConnectService implements IHealthService {
             });
           }
         } else {
-          // No stage detail — treat entire session as asleep
           samples.push({
             stage: 'asleep',
             startDate: session.startTime,
@@ -271,13 +251,8 @@ function extractUnit(metric: HealthMetricType): string {
 
 function mapHCStage(stage: number | string): string {
   const stageMap: Record<string, string> = {
-    '1': 'awake',
-    '2': 'asleep', // sleeping
-    '3': 'light',  // out_of_bed → light (approximate)
-    '4': 'light',
-    '5': 'deep',
-    '6': 'rem',
-    '7': 'awake', // awake_in_bed
+    '1': 'awake', '2': 'asleep', '3': 'light',
+    '4': 'light', '5': 'deep', '6': 'rem', '7': 'awake',
   };
   return stageMap[String(stage)] ?? 'asleep';
 }

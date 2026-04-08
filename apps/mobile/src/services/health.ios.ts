@@ -1,22 +1,13 @@
 /**
  * iOS HealthKit implementation of IHealthService.
- * Uses @kingstinct/react-native-healthkit.
+ *
+ * ALL native imports are lazy (inside methods) to prevent Expo Go crash.
+ * @kingstinct/react-native-healthkit uses NitroModules which crash at
+ * import time in Expo Go. By deferring require() to method calls,
+ * the module is never loaded unless actually used in a dev build.
  *
  * REQUIRES: expo prebuild + Xcode HealthKit capability enabled.
- * SIMULATOR: HealthKit is available but has no real data. Add sample data in
- *   Health app > Browse > category > Add Data.
- * DEVICE: Full HealthKit access with real wearable data.
  */
-import {
-  isHealthDataAvailable,
-  requestAuthorization,
-  getRequestStatusForAuthorization,
-  queryQuantitySamples,
-  queryCategorySamples,
-  queryWorkoutSamples,
-  AuthorizationRequestStatus,
-  WorkoutActivityType,
-} from '@kingstinct/react-native-healthkit';
 import type {
   IHealthService,
   HealthPermissions,
@@ -28,7 +19,11 @@ import type {
   PermissionStatus,
 } from '@lauburu/shared';
 
-/** HealthKit quantity type identifier strings */
+/** Lazy-load the native module. Only called in dev builds, never in Expo Go. */
+function hk() {
+  return require('@kingstinct/react-native-healthkit');
+}
+
 const QTY = {
   restingHeartRate: 'HKQuantityTypeIdentifierRestingHeartRate' as const,
   hrv: 'HKQuantityTypeIdentifierHeartRateVariabilitySDNN' as const,
@@ -39,7 +34,6 @@ const QTY = {
 
 const SLEEP_ID = 'HKCategoryTypeIdentifierSleepAnalysis' as const;
 
-/** Map our metric types to HealthKit identifiers */
 const METRIC_TO_QTY: Partial<Record<HealthMetricType, string>> = {
   resting_heart_rate: QTY.restingHeartRate,
   hrv: QTY.hrv,
@@ -48,7 +42,6 @@ const METRIC_TO_QTY: Partial<Record<HealthMetricType, string>> = {
   heart_rate: QTY.heartRate,
 };
 
-/** All types we request read access for */
 const READ_TYPES = [
   QTY.restingHeartRate,
   QTY.hrv,
@@ -62,7 +55,7 @@ const READ_TYPES = [
 export class HealthKitService implements IHealthService {
   async isAvailable(): Promise<boolean> {
     try {
-      return await isHealthDataAvailable();
+      return await hk().isHealthDataAvailable();
     } catch {
       return false;
     }
@@ -73,9 +66,9 @@ export class HealthKitService implements IHealthService {
     if (!available) {
       return { available: false, permissions: makeAllStatus('unavailable') };
     }
-
     try {
-      const status = await getRequestStatusForAuthorization({
+      const { AuthorizationRequestStatus } = hk();
+      const status = await hk().getRequestStatusForAuthorization({
         toRead: [...READ_TYPES],
       });
       const granted = status === AuthorizationRequestStatus.unnecessary;
@@ -93,9 +86,8 @@ export class HealthKitService implements IHealthService {
     if (!available) {
       return { available: false, permissions: makeAllStatus('unavailable') };
     }
-
     try {
-      await requestAuthorization({ toRead: [...READ_TYPES] });
+      await hk().requestAuthorization({ toRead: [...READ_TYPES] });
       return this.checkPermissions();
     } catch {
       return { available: true, permissions: makeAllStatus('denied') };
@@ -108,15 +100,11 @@ export class HealthKitService implements IHealthService {
   ): Promise<RawHealthSample[]> {
     const identifier = METRIC_TO_QTY[metric];
     if (!identifier) return [];
-
     try {
-      const results = await queryQuantitySamples(identifier as any, {
-        limit: 0, // 0 = no limit
-        filter: {
-          date: { startDate: range.start, endDate: range.end },
-        },
+      const results = await hk().queryQuantitySamples(identifier as any, {
+        limit: 0,
+        filter: { date: { startDate: range.start, endDate: range.end } },
       });
-
       return results.map((sample: any) => ({
         metric,
         value: sample.quantity,
@@ -132,23 +120,21 @@ export class HealthKitService implements IHealthService {
 
   async fetchWorkouts(range: DateRange): Promise<RawWorkoutSample[]> {
     try {
-      const results = await queryWorkoutSamples({
+      const { WorkoutActivityType } = hk();
+      const results = await hk().queryWorkoutSamples({
         limit: 0,
-        filter: {
-          date: { startDate: range.start, endDate: range.end },
-        },
+        filter: { date: { startDate: range.start, endDate: range.end } },
       });
-
       return results.map((w: any) => {
         const startMs = new Date(w.startDate).getTime();
         const endMs = new Date(w.endDate).getTime();
         return {
           type: String(w.workoutActivityType ?? 'unknown'),
-          name: workoutTypeName(w.workoutActivityType),
+          name: workoutTypeName(w.workoutActivityType, WorkoutActivityType),
           duration_min: Math.round((endMs - startMs) / 60_000),
           calories: w.totalEnergyBurned?.quantity,
           distance_m: w.totalDistance?.quantity
-            ? Math.round(w.totalDistance.quantity * 1000) // km → m
+            ? Math.round(w.totalDistance.quantity * 1000)
             : undefined,
           startDate: new Date(w.startDate).toISOString(),
           endDate: new Date(w.endDate).toISOString(),
@@ -163,13 +149,10 @@ export class HealthKitService implements IHealthService {
 
   async fetchSleep(range: DateRange): Promise<RawSleepSample[]> {
     try {
-      const results = await queryCategorySamples(SLEEP_ID, {
+      const results = await hk().queryCategorySamples(SLEEP_ID, {
         limit: 0,
-        filter: {
-          date: { startDate: range.start, endDate: range.end },
-        },
+        filter: { date: { startDate: range.start, endDate: range.end } },
       });
-
       return results.map((s: any) => ({
         stage: mapSleepValue(s.value),
         startDate: new Date(s.startDate).toISOString(),
@@ -181,8 +164,6 @@ export class HealthKitService implements IHealthService {
     }
   }
 }
-
-// --- Helpers ---
 
 function makeAllStatus(
   status: PermissionStatus,
@@ -210,19 +191,19 @@ function mapSleepValue(value: number): string {
   }
 }
 
-function workoutTypeName(type?: number): string {
+function workoutTypeName(type: number | undefined, WAT: any): string {
   if (type == null) return 'Unknown';
   const names: Partial<Record<number, string>> = {
-    [WorkoutActivityType.martialArts]: 'Martial Arts',
-    [WorkoutActivityType.wrestling]: 'Wrestling',
-    [WorkoutActivityType.running]: 'Running',
-    [WorkoutActivityType.cycling]: 'Cycling',
-    [WorkoutActivityType.swimming]: 'Swimming',
-    [WorkoutActivityType.yoga]: 'Yoga',
-    [WorkoutActivityType.functionalStrengthTraining]: 'Strength Training',
-    [WorkoutActivityType.traditionalStrengthTraining]: 'Strength Training',
-    [WorkoutActivityType.walking]: 'Walking',
-    [WorkoutActivityType.hiking]: 'Hiking',
+    [WAT.martialArts]: 'Martial Arts',
+    [WAT.wrestling]: 'Wrestling',
+    [WAT.running]: 'Running',
+    [WAT.cycling]: 'Cycling',
+    [WAT.swimming]: 'Swimming',
+    [WAT.yoga]: 'Yoga',
+    [WAT.functionalStrengthTraining]: 'Strength Training',
+    [WAT.traditionalStrengthTraining]: 'Strength Training',
+    [WAT.walking]: 'Walking',
+    [WAT.hiking]: 'Hiking',
   };
   return names[type] ?? `Workout (${type})`;
 }
