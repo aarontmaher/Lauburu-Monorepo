@@ -29,6 +29,7 @@ export default function TabLayout() {
         headerTintColor: colors.text,
         headerShadowVisible: false,
       }}>
+      {/* Daily workflow tabs */}
       <Tabs.Screen
         name="index"
         options={{
@@ -51,17 +52,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="suggest"
+        name="feedback"
         options={{
-          title: 'Suggest',
-          tabBarIcon: ({ color }) => <TabBarIcon name="lightbulb-o" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="control"
-        options={{
-          title: 'Control',
-          tabBarIcon: ({ color }) => <TabBarIcon name="dashboard" color={color} />,
+          title: 'Check-in',
+          tabBarIcon: ({ color }) => <TabBarIcon name="check-circle" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -70,6 +64,15 @@ export default function TabLayout() {
           title: 'Settings',
           tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
         }}
+      />
+      {/* Hidden tabs — still navigable but not in tab bar */}
+      <Tabs.Screen
+        name="suggest"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="control"
+        options={{ href: null }}
       />
     </Tabs>
   );

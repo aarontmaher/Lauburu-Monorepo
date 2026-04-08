@@ -11,3 +11,4 @@ export type { AIPayload } from './ai-payload';
 export { generateCoaching } from './coaching';
 export type { CoachingResponse } from './coaching';
 export { mergeTrainingSessions } from './merge-training';
+export { assembleTrainingExample } from './training-example';
