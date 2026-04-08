@@ -10,6 +10,7 @@ import { Text, View } from '@/components/Themed';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useTierStore } from '../../src/store/tier-store';
+import { isExpoGo } from '../../src/services/health';
 import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures, CoachingResponse } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 
@@ -484,6 +485,23 @@ function BackendSyncCard() {
   );
 }
 
+// --- Expo Go notice ---
+
+function ExpoGoNotice() {
+  return (
+    <View style={styles.expoGoCard}>
+      <Text style={styles.expoGoTitle}>Expo Go Mode</Text>
+      <Text style={styles.expoGoBody}>
+        Native health sync (HealthKit / Health Connect) requires a development
+        build. Manual training logging, coaching, and check-ins work here.
+      </Text>
+      <Text style={styles.expoGoCommand}>
+        npx expo prebuild --clean{'\n'}npx expo run:ios
+      </Text>
+    </View>
+  );
+}
+
 // --- Main screen ---
 
 export default function HealthScreen() {
@@ -530,6 +548,8 @@ export default function HealthScreen() {
       style={styles.container}
       contentContainerStyle={styles.content}>
       <Text style={styles.heading}>Health</Text>
+
+      {isExpoGo() && <ExpoGoNotice />}
 
       {/* Source info */}
       <View style={styles.card}>
@@ -894,6 +914,27 @@ const styles = StyleSheet.create({
   coachPrefText: { fontSize: 11, color: '#e8ff47', opacity: 0.6 },
   coachConfidence: { fontSize: 10, opacity: 0.3, marginTop: 6 },
   gateText: { fontSize: 13, opacity: 0.5, lineHeight: 18 },
+
+  // Expo Go
+  expoGoCard: {
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: 'rgba(232,255,71,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(232,255,71,0.2)',
+    gap: 8,
+  },
+  expoGoTitle: { fontSize: 16, fontWeight: '600', color: '#e8ff47' },
+  expoGoBody: { fontSize: 13, opacity: 0.7, lineHeight: 18 },
+  expoGoCommand: {
+    fontSize: 11,
+    fontFamily: 'SpaceMono',
+    opacity: 0.5,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    padding: 8,
+    borderRadius: 6,
+    overflow: 'hidden',
+  },
 
   // Flags
   flagText: { fontSize: 13, lineHeight: 18 },
