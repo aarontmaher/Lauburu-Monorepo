@@ -70,11 +70,13 @@ function EntryForm({
   const timerSetup = useTimerStore((s) => s.setup);
   const router = useRouter();
 
-  // Top-level mode: Grappling / HIIT / Steady State
-  type TopMode = 'grappling' | 'hiit' | 'zone2' | null;
+  // Top-level mode: Grappling / HIIT / Steady State / Weights
+  type TopMode = 'grappling' | 'hiit' | 'zone2' | 'weights' | null;
   const [topMode, setTopMode] = useState<TopMode>(
     editing ? (editing.type === 'conditioning'
-      ? (editing.conditioning?.subtype === 'zone2' || editing.conditioning?.subtype === 'steady_state' || editing.conditioning?.subtype === 'recovery_cardio' ? 'zone2' : 'hiit')
+      ? (editing.conditioning?.subtype === 'weight_training' ? 'weights'
+        : editing.conditioning?.subtype === 'zone2' || editing.conditioning?.subtype === 'steady_state' || editing.conditioning?.subtype === 'recovery_cardio' ? 'zone2'
+        : 'hiit')
       : 'grappling')
     : null,
   );
@@ -157,6 +159,10 @@ function EntryForm({
       setSessionType('conditioning');
       setCondSubtype('zone2');
       setDuration(30);
+    } else if (mode === 'weights') {
+      setSessionType('conditioning');
+      setCondSubtype('weight_training');
+      setDuration(45);
     }
   };
 
@@ -223,9 +229,9 @@ function EntryForm({
 
   return (
     <View style={styles.formSection}>
-      {/* Top-level choice: Grappling / HIIT / Steady State */}
+      {/* Top-level choice */}
       {!editing && !topMode && (
-        <View style={styles.quickRow}>
+        <View style={styles.quickGrid}>
           <Pressable style={styles.quickBtn} onPress={() => selectTopMode('grappling')}>
             <Text style={styles.quickBtnEmoji}>🥋</Text>
             <Text style={styles.quickBtnText}>Grappling</Text>
@@ -238,6 +244,10 @@ function EntryForm({
             <Text style={styles.quickBtnEmoji}>🫀</Text>
             <Text style={styles.quickBtnText}>Steady State</Text>
           </Pressable>
+          <Pressable style={styles.quickBtn} onPress={() => selectTopMode('weights')}>
+            <Text style={styles.quickBtnEmoji}>🏋️</Text>
+            <Text style={styles.quickBtnText}>Weights</Text>
+          </Pressable>
         </View>
       )}
 
@@ -245,7 +255,10 @@ function EntryForm({
       {topMode && !editing && (
         <Pressable onPress={() => setTopMode(null)}>
           <Text style={styles.modeHeader}>
-            {topMode === 'grappling' ? '🥋 Grappling' : topMode === 'hiit' ? '⚡ HIIT' : '🫀 Steady State'}
+            {topMode === 'grappling' ? '🥋 Grappling'
+              : topMode === 'hiit' ? '⚡ HIIT'
+              : topMode === 'weights' ? '🏋️ Weights'
+              : '🫀 Steady State'}
             <Text style={styles.modeChange}> (change)</Text>
           </Text>
         </Pressable>
@@ -363,15 +376,15 @@ function EntryForm({
         </View>
       )}
 
-      {/* HIIT — preset selection */}
+      {/* HIIT — protocol selector (compact) */}
       {topMode === 'hiit' && (
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>Protocol</Text>
-          <View style={styles.presetRow}>
+          <View style={styles.pillRow}>
             {HIIT_PRESETS.map((p) => (
               <Pressable
                 key={p.id}
-                style={[styles.presetCard, selectedHIITPreset === p.id && styles.presetCardActive]}
+                style={[styles.pill, selectedHIITPreset === p.id && styles.pillActive]}
                 onPress={() => {
                   setSelectedHIITPreset(p.id);
                   if (p.id !== 'custom') {
@@ -380,13 +393,17 @@ function EntryForm({
                     setIntervalRounds(String(p.rounds));
                   }
                 }}>
-                <Text style={[styles.presetLabel, selectedHIITPreset === p.id && styles.presetLabelActive]}>
+                <Text style={[styles.pillText, selectedHIITPreset === p.id && styles.pillTextActive]}>
                   {p.label}
                 </Text>
-                <Text style={styles.presetDesc}>{p.description}</Text>
               </Pressable>
             ))}
           </View>
+          {selectedHIITPreset !== 'custom' && (
+            <Text style={styles.protocolNote}>
+              {HIIT_PRESETS.find((p) => p.id === selectedHIITPreset)?.description}
+            </Text>
+          )}
         </View>
       )}
 
@@ -405,6 +422,44 @@ function EntryForm({
               </Pressable>
             ))}
           </View>
+        </View>
+      )}
+
+      {/* Weights — focus selector */}
+      {topMode === 'weights' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Focus</Text>
+          <View style={styles.pillRow}>
+            {(['upper', 'lower', 'full_body', 'push', 'pull', 'posterior_chain', 'power'] as LiftingFocus[]).map((f) => (
+              <Pressable
+                key={f}
+                style={[styles.pill, liftFocus === f && styles.pillActive]}
+                onPress={() => setLiftFocus(f)}>
+                <Text style={[styles.pillText, liftFocus === f && styles.pillTextActive]}>
+                  {LIFTING_FOCUS_LABELS[f]}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* AI suggestion — shown after mode selection */}
+      {topMode && !editing && (
+        <View style={styles.suggestionCard}>
+          <Text style={styles.suggestionLabel}>Coach suggestion</Text>
+          <Text style={styles.suggestionText}>
+            {topMode === 'hiit' ? 'Based on your recovery, 30/30 intervals are a good match today.'
+              : topMode === 'zone2' ? 'Zone 2 for 30min would build your aerobic base without impacting tomorrow.'
+              : topMode === 'weights' ? 'Moderate intensity for 45min fits your current recovery.'
+              : 'Your usual structure looks good for today.'}
+          </Text>
+          <Text style={styles.suggestionNote}>
+            {topMode === 'hiit' ? 'Adjust protocol above if you prefer a different format.'
+              : topMode === 'zone2' ? 'Increase duration as your base improves.'
+              : topMode === 'weights' ? 'Adjust focus above to target specific muscle groups.'
+              : 'Edit segments to match what you actually did.'}
+          </Text>
         </View>
       )}
 
@@ -1123,7 +1178,22 @@ const styles = StyleSheet.create({
   modeHeader: { fontSize: 18, fontWeight: '700', color: '#d4e157', paddingVertical: 4 },
   modeChange: { fontSize: 12, fontWeight: '400', color: '#888' },
 
+  quickGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, justifyContent: 'center' },
   quickRow: { flexDirection: 'row', gap: 10, justifyContent: 'center' },
+
+  // Coach suggestion
+  suggestionCard: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(212,225,87,0.06)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#d4e157',
+    gap: 4,
+  },
+  suggestionLabel: { fontSize: 11, color: '#d4e157', fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 },
+  suggestionText: { fontSize: 13, color: '#ccc', lineHeight: 18 },
+  suggestionNote: { fontSize: 11, opacity: 0.4 },
+  protocolNote: { fontSize: 12, opacity: 0.5, marginTop: 4 },
   quickBtn: {
     flex: 1,
     alignItems: 'center',
