@@ -94,6 +94,7 @@ function EntryForm({
   const isInterval = isConditioning && ['hiit', 'intervals', 'sprint_intervals', 'circuit'].includes(condSubtype);
   const isWeightTraining = isConditioning && condSubtype === 'weight_training';
   const isRespiratory = isConditioning && ['respiratory_training', 'breathing_warmup', 'recovery_breathing'].includes(condSubtype);
+  const [showMore, setShowMore] = useState(false);
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -313,62 +314,73 @@ function EntryForm({
         </View>
       </View>
 
-      {/* Tags */}
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Tags</Text>
-        <View style={styles.pillRow}>
-          {TAG_OPTIONS.map((tag) => (
-            <Pressable
-              key={tag}
-              style={[styles.pill, selectedTags.includes(tag) && styles.pillActive]}
-              onPress={() => toggleTag(tag)}>
-              <Text style={[styles.pillText, selectedTags.includes(tag) && styles.pillTextActive]}>
-                {tag}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-      </View>
+      {/* More options — collapsed by default */}
+      <Pressable onPress={() => setShowMore(!showMore)}>
+        <Text style={styles.moreToggle}>
+          {showMore ? '▾ Less options' : '▸ More options (tags, RPE, notes)'}
+        </Text>
+      </Pressable>
 
-      {/* Rounds + RPE */}
-      <View style={styles.rowInputs}>
-        <View style={styles.halfInput}>
-          <Text style={styles.sectionLabel}>Rounds</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="—"
-            placeholderTextColor="#666"
-            value={rounds}
-            onChangeText={setRounds}
-            keyboardType="number-pad"
-          />
-        </View>
-        <View style={styles.halfInput}>
-          <Text style={styles.sectionLabel}>RPE (1-10)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="—"
-            placeholderTextColor="#666"
-            value={rpe}
-            onChangeText={setRpe}
-            keyboardType="number-pad"
-          />
-        </View>
-      </View>
+      {showMore && (
+        <>
+          {/* Tags */}
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>Tags</Text>
+            <View style={styles.pillRow}>
+              {TAG_OPTIONS.map((tag) => (
+                <Pressable
+                  key={tag}
+                  style={[styles.pill, selectedTags.includes(tag) && styles.pillActive]}
+                  onPress={() => toggleTag(tag)}>
+                  <Text style={[styles.pillText, selectedTags.includes(tag) && styles.pillTextActive]}>
+                    {tag}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
 
-      {/* Notes */}
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Notes</Text>
-        <TextInput
-          style={[styles.input, styles.textArea]}
-          placeholder="Techniques worked, how it felt..."
-          placeholderTextColor="#666"
-          value={notes}
-          onChangeText={setNotes}
-          multiline
-          textAlignVertical="top"
-        />
-      </View>
+          {/* Rounds + RPE */}
+          <View style={styles.rowInputs}>
+            <View style={styles.halfInput}>
+              <Text style={styles.sectionLabel}>Rounds</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="—"
+                placeholderTextColor="#666"
+                value={rounds}
+                onChangeText={setRounds}
+                keyboardType="number-pad"
+              />
+            </View>
+            <View style={styles.halfInput}>
+              <Text style={styles.sectionLabel}>RPE (1-10)</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="—"
+                placeholderTextColor="#666"
+                value={rpe}
+                onChangeText={setRpe}
+                keyboardType="number-pad"
+              />
+            </View>
+          </View>
+
+          {/* Notes */}
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>Notes</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Techniques worked, how it felt..."
+              placeholderTextColor="#666"
+              value={notes}
+              onChangeText={setNotes}
+              multiline
+              textAlignVertical="top"
+            />
+          </View>
+        </>
+      )}
 
       {/* Submit + Start Timer */}
       <View style={styles.submitRow}>
@@ -721,6 +733,7 @@ const styles = StyleSheet.create({
   },
   textArea: { minHeight: 80 },
 
+  moreToggle: { fontSize: 13, color: '#888', paddingVertical: 4 },
   submitRow: { flexDirection: 'row', gap: 10 },
   submitButton: {
     backgroundColor: '#d4e157',

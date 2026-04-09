@@ -1,17 +1,12 @@
 /**
- * Live session timer — full-screen modal overlay.
+ * Live session timer — full-screen modal with phase-colored backgrounds.
  *
- * Modes:
- * - Interval: work/rest countdown with round tracking
- * - Duration: simple countdown
- * - Stopwatch: count up
- *
- * Designed to be usable mid-workout on a phone near the bike/mat.
- * Large text, high contrast, minimal controls.
- *
- * Future: bike-connected mode adds live RPM/watts/calories alongside timer.
+ * WORK = green background (go hard)
+ * REST = red background (stop/recover)
+ * Haptic feedback on every phase transition.
+ * HR zone placeholder for future live data.
  */
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { StyleSheet, Pressable, View as RNView } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
@@ -20,6 +15,20 @@ import { useTrainingStore } from '../src/store/training-store';
 import { useHealthStore } from '../src/store/health-store';
 import { useAuthStore } from '../src/store/auth-store';
 import { CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS } from '@lauburu/shared';
+
+// Haptic feedback — lazy loaded, gracefully degraded
+function triggerHaptic(type: 'transition' | 'complete') {
+  try {
+    const Haptics = require('expo-haptics');
+    if (type === 'complete') {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } else {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    }
+  } catch {
+    // Haptics not available — silent fallback
+  }
+}
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -35,22 +44,32 @@ function formatElapsed(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-const PHASE_COLORS: Record<string, string> = {
+// Full-screen background colors per phase
+const BG_COLORS: Record<string, string> = {
+  idle: '#0a0a0a',
+  work: '#1a3a1a',     // dark green
+  rest: '#3a1a1a',     // dark red
+  running: '#1a2a1a',  // subtle green
+  paused: '#1a1a1a',
+  complete: '#0a0a0a',
+};
+
+const ACCENT_COLORS: Record<string, string> = {
   idle: '#666',
-  work: '#d4e157',
-  rest: '#4ade80',
-  running: '#d4e157',
+  work: '#4ade80',     // bright green
+  rest: '#ff6b6b',     // bright red
+  running: '#4ade80',
   paused: '#999',
   complete: '#4ade80',
 };
 
 const PHASE_LABELS: Record<string, string> = {
-  idle: 'Ready',
+  idle: 'READY',
   work: 'WORK',
   rest: 'REST',
   running: 'GO',
-  paused: 'Paused',
-  complete: 'Done',
+  paused: 'PAUSED',
+  complete: 'DONE',
 };
 
 export default function TimerScreen() {
@@ -70,9 +89,21 @@ export default function TimerScreen() {
   const syncData = useHealthStore((s) => s.syncData);
   const user = useAuthStore((s) => s.user);
 
+  // Haptic on phase change
+  const prevPhase = useRef(phase);
+  useEffect(() => {
+    if (prevPhase.current !== phase) {
+      if (phase === 'complete') {
+        triggerHaptic('complete');
+      } else if (phase === 'work' || phase === 'rest') {
+        triggerHaptic('transition');
+      }
+      prevPhase.current = phase;
+    }
+  }, [phase]);
+
   // Tick every second
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
   useEffect(() => {
     if (phase === 'work' || phase === 'rest' || phase === 'running') {
       intervalRef.current = setInterval(tick, 1000);
@@ -86,21 +117,21 @@ export default function TimerScreen() {
 
   if (!config) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.noConfig}>No timer configured</Text>
+      <RNView style={[styles.container, { backgroundColor: '#0a0a0a' }]}>
+        <Text style={{ fontSize: 18, color: '#666' }}>No timer configured</Text>
         <Pressable style={styles.closeBtn} onPress={() => router.back()}>
           <Text style={styles.closeBtnText}>Close</Text>
         </Pressable>
-      </View>
+      </RNView>
     );
   }
 
-  const color = PHASE_COLORS[phase];
-  const label = PHASE_LABELS[phase];
+  const bg = BG_COLORS[phase] ?? '#0a0a0a';
+  const accent = ACCENT_COLORS[phase] ?? '#666';
+  const label = PHASE_LABELS[phase] ?? '';
   const isActive = phase === 'work' || phase === 'rest' || phase === 'running';
 
   const handleComplete = () => {
-    // Log the session
     const durationMin = Math.max(1, Math.round(elapsed / 60));
     addSession({
       date: new Date().toISOString().slice(0, 10),
@@ -128,45 +159,54 @@ export default function TimerScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <RNView style={[styles.container, { backgroundColor: bg }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.subtypeLabel}>
+      <RNView style={styles.header}>
+        <Text style={[styles.subtypeLabel, { color: '#fff', opacity: 0.5 }]}>
           {CONDITIONING_SUBTYPE_LABELS[config.subtype]}
           {config.modality ? ` · ${MODALITY_LABELS[config.modality]}` : ''}
         </Text>
         {config.mode === 'interval' && (
-          <Text style={styles.roundLabel}>
+          <Text style={[styles.roundLabel, { color: accent }]}>
             Round {currentRound}/{config.rounds ?? 1}
           </Text>
         )}
-      </View>
+      </RNView>
 
-      {/* Phase indicator */}
-      <Text style={[styles.phaseLabel, { color }]}>{label}</Text>
+      {/* Phase label */}
+      <Text style={[styles.phaseLabel, { color: accent }]}>{label}</Text>
 
-      {/* Main timer display */}
+      {/* Main timer */}
       {config.mode === 'stopwatch' ? (
-        <Text style={[styles.timer, { color }]}>{formatElapsed(elapsed)}</Text>
+        <Text style={[styles.timer, { color: '#fff' }]}>{formatElapsed(elapsed)}</Text>
       ) : (
-        <Text style={[styles.timer, { color }]}>{formatTime(remaining)}</Text>
+        <Text style={[styles.timer, { color: '#fff' }]}>{formatTime(remaining)}</Text>
       )}
 
-      {/* Elapsed (for interval/duration modes) */}
+      {/* Elapsed */}
       {config.mode !== 'stopwatch' && (
         <Text style={styles.elapsed}>Total: {formatElapsed(elapsed)}</Text>
       )}
 
+      {/* HR zone placeholder — future live data */}
+      {isActive && (
+        <RNView style={styles.hrZone}>
+          <Text style={styles.hrZoneLabel}>HR Zone</Text>
+          <Text style={styles.hrZoneValue}>—</Text>
+          <Text style={styles.hrZoneNote}>Connect Apple Watch for live HR</Text>
+        </RNView>
+      )}
+
       {/* Controls */}
-      <View style={styles.controls}>
+      <RNView style={styles.controls}>
         {phase === 'idle' && (
-          <Pressable style={[styles.mainBtn, { backgroundColor: '#d4e157' }]} onPress={start}>
+          <Pressable style={[styles.mainBtn, { backgroundColor: '#4ade80' }]} onPress={start}>
             <Text style={styles.mainBtnText}>Start</Text>
           </Pressable>
         )}
 
         {isActive && (
-          <View style={styles.controlRow}>
+          <RNView style={styles.controlRow}>
             <Pressable style={styles.secondaryBtn} onPress={pause}>
               <Text style={styles.secondaryBtnText}>Pause</Text>
             </Pressable>
@@ -175,24 +215,23 @@ export default function TimerScreen() {
                 <Text style={styles.secondaryBtnText}>Skip</Text>
               </Pressable>
             )}
-          </View>
+          </RNView>
         )}
 
         {phase === 'paused' && (
-          <View style={styles.controlRow}>
-            <Pressable style={[styles.mainBtn, { backgroundColor: '#d4e157' }]} onPress={start}>
+          <RNView style={styles.controlRow}>
+            <Pressable style={[styles.mainBtn, { backgroundColor: '#4ade80' }]} onPress={start}>
               <Text style={styles.mainBtnText}>Resume</Text>
             </Pressable>
             <Pressable style={styles.secondaryBtn} onPress={handleComplete}>
               <Text style={styles.secondaryBtnText}>Finish</Text>
             </Pressable>
-          </View>
+          </RNView>
         )}
 
         {phase === 'complete' && (
-          <View style={styles.completeSection}>
-            {/* Session summary */}
-            <View style={styles.summaryCard}>
+          <RNView style={styles.completeSection}>
+            <RNView style={styles.summaryCard}>
               <Text style={styles.summaryTitle}>Session Complete</Text>
               <Text style={styles.summaryLine}>
                 {CONDITIONING_SUBTYPE_LABELS[config.subtype]}
@@ -202,58 +241,67 @@ export default function TimerScreen() {
                 {formatElapsed(elapsed)} total
                 {config.mode === 'interval' ? ` · ${config.rounds ?? 1} rounds` : ''}
               </Text>
-              <Text style={styles.summaryLine}>
-                Will log as: {Math.max(1, Math.round(elapsed / 60))}min conditioning
-              </Text>
-            </View>
+            </RNView>
             <Pressable style={[styles.mainBtn, { backgroundColor: '#4ade80' }]} onPress={handleComplete}>
               <Text style={styles.mainBtnText}>Save & Close</Text>
             </Pressable>
             <Pressable style={styles.secondaryBtn} onPress={handleDiscard}>
               <Text style={styles.secondaryBtnText}>Discard</Text>
             </Pressable>
-          </View>
+          </RNView>
         )}
-      </View>
+      </RNView>
 
-      {/* Close / discard */}
+      {/* Close */}
       {phase !== 'complete' && (
         <Pressable style={styles.closeBtn} onPress={handleDiscard}>
           <Text style={styles.closeBtnText}>
-            {phase === 'idle' ? 'Cancel' : 'Discard & Close'}
+            {phase === 'idle' ? 'Cancel' : 'Discard'}
           </Text>
         </Pressable>
       )}
 
-      {/* Future machine connection indicator */}
-      <View style={styles.machineStatus}>
-        <Text style={styles.machineText}>Phone timer · No machine connected</Text>
-      </View>
-    </View>
+      {/* Machine status */}
+      <RNView style={styles.machineStatus}>
+        <Text style={styles.machineText}>Phone timer</Text>
+      </RNView>
+    </RNView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0a0a0a',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 30,
   },
-  noConfig: { fontSize: 18, opacity: 0.5 },
 
-  header: { alignItems: 'center', gap: 4, marginBottom: 20 },
-  subtypeLabel: { fontSize: 16, opacity: 0.6 },
-  roundLabel: { fontSize: 20, fontWeight: '600', opacity: 0.8 },
+  header: { alignItems: 'center', gap: 4, marginBottom: 16 },
+  subtypeLabel: { fontSize: 15 },
+  roundLabel: { fontSize: 22, fontWeight: '700' },
 
-  phaseLabel: { fontSize: 28, fontWeight: '800', letterSpacing: 4, marginBottom: 8 },
+  phaseLabel: { fontSize: 32, fontWeight: '900', letterSpacing: 6, marginBottom: 4 },
 
-  timer: { fontSize: 96, fontWeight: '200', fontVariant: ['tabular-nums'] },
+  timer: { fontSize: 88, fontWeight: '200', fontVariant: ['tabular-nums'] },
 
-  elapsed: { fontSize: 16, opacity: 0.4, marginTop: 8 },
+  elapsed: { fontSize: 15, color: '#999', opacity: 0.5, marginTop: 6 },
 
-  controls: { marginTop: 40, alignItems: 'center', gap: 16 },
+  // HR zone placeholder
+  hrZone: {
+    alignItems: 'center',
+    marginTop: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    gap: 2,
+  },
+  hrZoneLabel: { fontSize: 10, color: '#999', textTransform: 'uppercase', letterSpacing: 1 },
+  hrZoneValue: { fontSize: 20, fontWeight: '700', color: '#666' },
+  hrZoneNote: { fontSize: 10, color: '#555' },
+
+  controls: { marginTop: 32, alignItems: 'center', gap: 16 },
   controlRow: { flexDirection: 'row', gap: 16 },
 
   mainBtn: {
@@ -270,17 +318,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#444',
+    borderColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
   },
-  secondaryBtnText: { fontSize: 16, color: '#999' },
+  secondaryBtnText: { fontSize: 16, color: '#ccc' },
 
   closeBtn: { position: 'absolute', bottom: 50, padding: 12 },
-  closeBtnText: { fontSize: 14, color: '#666' },
+  closeBtnText: { fontSize: 14, color: '#555' },
 
   completeSection: { alignItems: 'center', gap: 16, width: '100%' },
   summaryCard: {
-    backgroundColor: 'rgba(74,222,128,0.1)',
+    backgroundColor: 'rgba(74,222,128,0.08)',
     borderRadius: 12,
     padding: 20,
     width: '100%',
@@ -288,13 +336,8 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   summaryTitle: { fontSize: 20, fontWeight: '700', color: '#4ade80' },
-  summaryLine: { fontSize: 14, opacity: 0.7 },
+  summaryLine: { fontSize: 14, color: '#999' },
 
-  machineStatus: {
-    position: 'absolute',
-    top: 60,
-    right: 20,
-    opacity: 0.3,
-  },
-  machineText: { fontSize: 11 },
+  machineStatus: { position: 'absolute', top: 56, right: 20 },
+  machineText: { fontSize: 11, color: '#444' },
 });
