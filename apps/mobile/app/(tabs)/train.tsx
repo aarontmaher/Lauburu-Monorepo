@@ -1088,7 +1088,7 @@ export default function TrainScreen() {
       {/* Toggle form */}
       {!showForm && (
         <Pressable style={styles.showFormBtn} onPress={() => setShowForm(true)}>
-          <Text style={styles.showFormText}>+ New Session</Text>
+          <Text style={styles.showFormText}>+ Log a new session</Text>
         </Pressable>
       )}
 

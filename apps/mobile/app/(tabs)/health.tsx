@@ -584,7 +584,7 @@ export default function HealthScreen() {
         {!isAvailable && !inExpoGo && (
           <Text style={styles.unavailNote}>
             {Platform.OS === 'ios'
-              ? 'HealthKit is not available on this device. Try running on a device or simulator with the Health app.'
+              ? 'Apple Health is not available. Ensure the Health app is installed and permissions are enabled in Settings.'
               : 'Health Connect is not available. Requires Android 14+ or the Health Connect app.'}
           </Text>
         )}

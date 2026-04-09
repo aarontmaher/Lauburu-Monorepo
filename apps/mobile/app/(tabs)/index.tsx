@@ -17,10 +17,9 @@ const READINESS_COLORS: Record<ReadinessLevel, string> = {
 function GuestBanner() {
   return (
     <View style={styles.card}>
-      <Text style={styles.cardTitle}>Welcome</Text>
+      <Text style={styles.cardTitle}>Welcome to Lauburu</Text>
       <Text style={styles.cardBody}>
-        Sign in on the Settings tab to sync your training progress and health
-        data.
+        Sign in on Settings to save your training data and get personalized coaching.
       </Text>
     </View>
   );

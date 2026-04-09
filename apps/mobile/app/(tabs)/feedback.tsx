@@ -457,7 +457,9 @@ export default function FeedbackScreen() {
       keyboardShouldPersistTaps="handled">
       <Text style={styles.heading}>Daily Check-in</Text>
       <Text style={styles.subtitle}>
-        {feedbackCount + outcomeCount + checkinCount} entries captured
+        {feedbackCount + outcomeCount + checkinCount > 0
+          ? `${feedbackCount + outcomeCount + checkinCount} entries — improving your coaching`
+          : 'Rate sessions and coaching to personalize your experience'}
       </Text>
 
       <SyncCard />
