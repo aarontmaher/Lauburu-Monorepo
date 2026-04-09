@@ -152,7 +152,50 @@ export interface IntervalDetail {
   rounds: number;
   sets?: number;
   modality?: Modality;
+  /** Preset ID if a standard protocol was used */
+  preset_id?: string;
 }
+
+/** Standard HIIT interval presets */
+export interface HIITPreset {
+  id: string;
+  label: string;
+  work_s: number;
+  rest_s: number;
+  rounds: number;
+  description: string;
+}
+
+export const HIIT_PRESETS: HIITPreset[] = [
+  { id: '15_45', label: '15/45', work_s: 15, rest_s: 45, rounds: 10, description: '10 × 15s work / 45s rest' },
+  { id: '30_30', label: '30/30', work_s: 30, rest_s: 30, rounds: 10, description: '10 × 30s work / 30s rest' },
+  { id: '15_30', label: '15/30', work_s: 15, rest_s: 30, rounds: 12, description: '12 × 15s work / 30s rest' },
+  { id: '4x4', label: '4×4min', work_s: 240, rest_s: 180, rounds: 4, description: '4 × 4min work / 3min rest' },
+  { id: 'custom', label: 'Custom', work_s: 30, rest_s: 30, rounds: 10, description: 'Set your own intervals' },
+];
+
+/**
+ * Conditioning coaching categories — simplified for coach reasoning.
+ * Each conditioning subtype maps to one of these.
+ */
+export type ConditioningCategory = 'hiit' | 'zone2' | 'recovery';
+
+export const CONDITIONING_CATEGORY_MAP: Record<ConditioningSubtype, ConditioningCategory> = {
+  hiit: 'hiit',
+  intervals: 'hiit',
+  sprint_intervals: 'hiit',
+  circuit: 'hiit',
+  steady_state: 'zone2',
+  zone2: 'zone2',
+  tempo: 'zone2',
+  recovery_cardio: 'recovery',
+  weight_training: 'hiit', // strength ≈ high-intensity
+  mobility: 'recovery',
+  respiratory_training: 'recovery',
+  breathing_warmup: 'recovery',
+  recovery_breathing: 'recovery',
+  other: 'zone2',
+};
 
 /** Steady state / zone 2 */
 export interface SteadyStateDetail {

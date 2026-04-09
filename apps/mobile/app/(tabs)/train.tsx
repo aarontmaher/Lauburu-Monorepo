@@ -15,7 +15,7 @@ import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtyp
 import {
   SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS,
   CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, LIFTING_FOCUS_LABELS,
-  RESPIRATORY_DEVICE_LABELS,
+  RESPIRATORY_DEVICE_LABELS, HIIT_PRESETS,
   buildDayPlanSummary, SCHEDULE_SESSION_LABELS,
   SESSION_PRESETS, SEGMENT_TYPE_LABELS,
 } from '@lauburu/shared';
@@ -119,6 +119,7 @@ function EntryForm({
   const isWeightTraining = isConditioning && condSubtype === 'weight_training';
   const isRespiratory = isConditioning && ['respiratory_training', 'breathing_warmup', 'recovery_breathing'].includes(condSubtype);
   const [showMore, setShowMore] = useState(false);
+  const [selectedHIITPreset, setSelectedHIITPreset] = useState('30_30');
 
   // Segment state (grappling custom segments)
   const [segments, setSegments] = useState<SessionSegment[]>(editing?.segments ?? []);
@@ -286,12 +287,39 @@ function EntryForm({
         </View>
       )}
 
-      {/* HIIT — interval options */}
+      {/* HIIT — preset selection */}
       {topMode === 'hiit' && (
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>HIIT Type</Text>
+          <Text style={styles.sectionLabel}>Protocol</Text>
+          <View style={styles.presetRow}>
+            {HIIT_PRESETS.map((p) => (
+              <Pressable
+                key={p.id}
+                style={[styles.presetCard, selectedHIITPreset === p.id && styles.presetCardActive]}
+                onPress={() => {
+                  setSelectedHIITPreset(p.id);
+                  if (p.id !== 'custom') {
+                    setWorkDur(String(p.work_s));
+                    setRestDur(String(p.rest_s));
+                    setIntervalRounds(String(p.rounds));
+                  }
+                }}>
+                <Text style={[styles.presetLabel, selectedHIITPreset === p.id && styles.presetLabelActive]}>
+                  {p.label}
+                </Text>
+                <Text style={styles.presetDesc}>{p.description}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Zone 2 */}
+      {topMode === 'zone2' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Aerobic</Text>
           <View style={styles.pillRow}>
-            {(['hiit', 'intervals', 'sprint_intervals', 'circuit'] as ConditioningSubtype[]).map((st) => (
+            {(['zone2', 'steady_state', 'tempo'] as ConditioningSubtype[]).map((st) => (
               <Pressable
                 key={st}
                 style={[styles.pill, condSubtype === st && styles.pillActive]}
@@ -302,16 +330,9 @@ function EntryForm({
               </Pressable>
             ))}
           </View>
-        </View>
-      )}
-
-      {/* Zone 2 — steady state options */}
-      {topMode === 'zone2' && (
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Zone 2 / Recovery</Text>
+          <Text style={[styles.sectionLabel, { marginTop: 8 }]}>Recovery / Support</Text>
           <View style={styles.pillRow}>
-            {(['zone2', 'steady_state', 'tempo', 'recovery_cardio',
-              'respiratory_training', 'breathing_warmup', 'recovery_breathing', 'mobility'] as ConditioningSubtype[]).map((st) => (
+            {(['recovery_cardio', 'mobility', 'respiratory_training', 'recovery_breathing'] as ConditioningSubtype[]).map((st) => (
               <Pressable
                 key={st}
                 style={[styles.pill, condSubtype === st && styles.pillActive]}
@@ -395,8 +416,8 @@ function EntryForm({
         </View>
       )}
 
-      {/* Interval detail */}
-      {isInterval && (
+      {/* Interval detail — only editable for Custom preset or non-HIIT-mode intervals */}
+      {isInterval && (topMode !== 'hiit' || selectedHIITPreset === 'custom') && (
         <View style={styles.rowInputs}>
           <View style={styles.halfInput}>
             <Text style={styles.sectionLabel}>Work (s)</Text>
