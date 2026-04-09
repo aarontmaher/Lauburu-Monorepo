@@ -53,6 +53,65 @@ function formatDateLabel(date: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// Selector row — compact stacked selector with AI suggestion
+// ---------------------------------------------------------------------------
+
+function SelectorRow<T extends string>({
+  label,
+  options,
+  labels,
+  value,
+  onChange,
+  suggestion,
+  suggestionLabel,
+}: {
+  label: string;
+  options: T[];
+  labels: Record<T, string>;
+  value: T;
+  onChange: (v: T) => void;
+  suggestion?: T;
+  suggestionLabel?: string;
+}) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <View style={styles.selectorRow}>
+      <Pressable style={styles.selectorHeader} onPress={() => setExpanded(!expanded)}>
+        <Text style={styles.selectorLabel}>{label}</Text>
+        <View style={styles.selectorValueRow}>
+          <Text style={styles.selectorValue}>{labels[value]}</Text>
+          <Text style={styles.selectorChevron}>{expanded ? '▾' : '▸'}</Text>
+        </View>
+      </Pressable>
+
+      {suggestion && suggestion !== value && (
+        <Pressable style={styles.aiSuggestionBubble} onPress={() => { onChange(suggestion); setExpanded(false); }}>
+          <Text style={styles.aiSuggestionText}>
+            AI coach suggestion: {suggestionLabel ?? labels[suggestion]}
+          </Text>
+        </Pressable>
+      )}
+
+      {expanded && (
+        <View style={styles.selectorOptions}>
+          {options.map((opt) => (
+            <Pressable
+              key={opt}
+              style={[styles.selectorOption, value === opt && styles.selectorOptionActive]}
+              onPress={() => { onChange(opt); setExpanded(false); }}>
+              <Text style={[styles.selectorOptionText, value === opt && styles.selectorOptionTextActive]}>
+                {labels[opt]}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Entry form
 // ---------------------------------------------------------------------------
 
@@ -376,82 +435,67 @@ function EntryForm({
         </View>
       )}
 
-      {/* HIIT — protocol selector (compact) */}
+      {/* HIIT — protocol */}
       {topMode === 'hiit' && (
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Protocol</Text>
-          <View style={styles.pillRow}>
-            {HIIT_PRESETS.map((p) => (
-              <Pressable
-                key={p.id}
-                style={[styles.pill, selectedHIITPreset === p.id && styles.pillActive]}
-                onPress={() => {
-                  setSelectedHIITPreset(p.id);
-                  if (p.id !== 'custom') {
-                    setWorkDur(String(p.work_s));
-                    setRestDur(String(p.rest_s));
-                    setIntervalRounds(String(p.rounds));
-                  }
-                }}>
-                <Text style={[styles.pillText, selectedHIITPreset === p.id && styles.pillTextActive]}>
-                  {p.label}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-          {selectedHIITPreset !== 'custom' && (
-            <Text style={styles.protocolNote}>
-              {HIIT_PRESETS.find((p) => p.id === selectedHIITPreset)?.description}
-            </Text>
-          )}
-        </View>
+        <SelectorRow
+          label="Protocol"
+          options={HIIT_PRESETS.map((p) => p.id) as string[]}
+          labels={Object.fromEntries(HIIT_PRESETS.map((p) => [p.id, p.id === 'custom' ? 'Custom' : `${p.label} — ${p.description}`])) as Record<string, string>}
+          value={selectedHIITPreset}
+          onChange={(id) => {
+            setSelectedHIITPreset(id);
+            const preset = HIIT_PRESETS.find((p) => p.id === id);
+            if (preset && id !== 'custom') {
+              setWorkDur(String(preset.work_s));
+              setRestDur(String(preset.rest_s));
+              setIntervalRounds(String(preset.rounds));
+            }
+          }}
+          suggestion="30_30"
+          suggestionLabel="30/30 — matches your recovery"
+        />
       )}
 
       {/* Steady State */}
       {topMode === 'zone2' && (
-        <View style={styles.section}>
-          <View style={styles.pillRow}>
-            {(['zone2', 'tempo', 'recovery_cardio'] as ConditioningSubtype[]).map((st) => (
-              <Pressable
-                key={st}
-                style={[styles.pill, condSubtype === st && styles.pillActive]}
-                onPress={() => setCondSubtype(st)}>
-                <Text style={[styles.pillText, condSubtype === st && styles.pillTextActive]}>
-                  {st === 'zone2' ? 'Zone 2' : st === 'recovery_cardio' ? 'Recovery Session' : CONDITIONING_SUBTYPE_LABELS[st]}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        </View>
+        <SelectorRow
+          label="Type"
+          options={['zone2', 'tempo', 'recovery_cardio'] as ConditioningSubtype[]}
+          labels={{ zone2: 'Zone 2', tempo: 'Tempo', recovery_cardio: 'Recovery Session' } as any}
+          value={condSubtype}
+          onChange={setCondSubtype as any}
+          suggestion={'zone2' as any}
+          suggestionLabel="Zone 2 builds aerobic base"
+        />
       )}
 
       {/* Weights — focus + custom duration */}
       {topMode === 'weights' && (
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Focus</Text>
-          <View style={styles.pillRow}>
-            {(['strength', 'functional_muscle', 'rehab'] as LiftingFocus[]).map((f) => (
-              <Pressable
-                key={f}
-                style={[styles.pill, liftFocus === f && styles.pillActive]}
-                onPress={() => setLiftFocus(f)}>
-                <Text style={[styles.pillText, liftFocus === f && styles.pillTextActive]}>
-                  {LIFTING_FOCUS_LABELS[f]}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-
-          <Text style={[styles.sectionLabel, { marginTop: 8 }]}>Duration (minutes)</Text>
-          <TextInput
-            style={[styles.input, { width: 100 }]}
-            value={String(duration)}
-            onChangeText={(t) => setDuration(parseInt(t, 10) || 0)}
-            keyboardType="number-pad"
-            placeholder="45"
-            placeholderTextColor="#666"
+        <>
+          <SelectorRow
+            label="Focus"
+            options={['strength', 'functional_muscle', 'rehab'] as LiftingFocus[]}
+            labels={LIFTING_FOCUS_LABELS as any}
+            value={liftFocus}
+            onChange={setLiftFocus as any}
+            suggestion={'strength' as any}
+            suggestionLabel="Strength matches your training goal"
           />
-        </View>
+          <View style={styles.selectorRow}>
+            <View style={styles.selectorHeader}>
+              <Text style={styles.selectorLabel}>Duration</Text>
+              <TextInput
+                style={[styles.input, { width: 80, marginLeft: 8 }]}
+                value={String(duration)}
+                onChangeText={(t) => setDuration(parseInt(t, 10) || 0)}
+                keyboardType="number-pad"
+                placeholder="45"
+                placeholderTextColor="#666"
+              />
+              <Text style={styles.selectorLabel}> min</Text>
+            </View>
+          </View>
+        </>
       )}
 
       {/* AI suggestion — shown after mode selection */}
@@ -663,28 +707,17 @@ function EntryForm({
       )}
 
       {/* Intensity — only after selection */}
-      {(topMode || editing) && <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Intensity</Text>
-        <View style={styles.pillRow}>
-          {INTENSITIES.map((i) => (
-            <Pressable
-              key={i}
-              style={[
-                styles.pill,
-                intensity === i && { borderColor: INTENSITY_COLORS[i], backgroundColor: INTENSITY_COLORS[i] + '15' },
-              ]}
-              onPress={() => setIntensity(i)}>
-              <Text
-                style={[
-                  styles.pillText,
-                  intensity === i && { color: INTENSITY_COLORS[i], fontWeight: '600' },
-                ]}>
-                {INTENSITY_LABELS[i]}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-      </View>}
+      {(topMode || editing) && (
+        <SelectorRow
+          label="Intensity"
+          options={INTENSITIES}
+          labels={INTENSITY_LABELS as Record<string, string>}
+          value={intensity}
+          onChange={setIntensity as any}
+          suggestion="moderate"
+          suggestionLabel="Moderate fits your recovery today"
+        />
+      )}
 
       {/* Duration — hidden for preset HIIT and weights (weights has its own input) */}
       {(topMode || editing) && topMode !== 'weights' && !(topMode === 'hiit' && selectedHIITPreset !== 'custom') && (
@@ -1204,6 +1237,40 @@ const styles = StyleSheet.create({
   suggestionText: { fontSize: 13, color: '#ccc', lineHeight: 18 },
   suggestionNote: { fontSize: 11, opacity: 0.4 },
   protocolNote: { fontSize: 12, opacity: 0.5, marginTop: 4 },
+
+  // Stacked selector row
+  selectorRow: {
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    borderRadius: 10,
+    padding: 12,
+    gap: 8,
+  },
+  selectorHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  selectorLabel: { fontSize: 14, opacity: 0.6 },
+  selectorValueRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  selectorValue: { fontSize: 15, fontWeight: '600', color: '#d4e157' },
+  selectorChevron: { fontSize: 12, opacity: 0.4 },
+  selectorOptions: { gap: 2 },
+  selectorOption: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  selectorOptionActive: { backgroundColor: 'rgba(212,225,87,0.1)' },
+  selectorOptionText: { fontSize: 14, color: '#999' },
+  selectorOptionTextActive: { color: '#d4e157', fontWeight: '600' },
+  aiSuggestionBubble: {
+    backgroundColor: 'rgba(212,225,87,0.08)',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    alignSelf: 'flex-start',
+  },
+  aiSuggestionText: { fontSize: 11, color: '#d4e157', opacity: 0.8 },
   quickBtn: {
     flex: 1,
     alignItems: 'center',
