@@ -230,7 +230,7 @@ function PreferencesSection() {
         style={[styles.row, { justifyContent: 'space-between' }]}
         onPress={() => update({ comp_prep: !prefs.comp_prep })}>
         <Text style={styles.rowLabel}>Competition prep mode</Text>
-        <Text style={[styles.rowValue, prefs.comp_prep && { color: '#e8ff47' }]}>
+        <Text style={[styles.rowValue, prefs.comp_prep && { color: '#d4e157' }]}>
           {prefs.comp_prep ? 'ON' : 'OFF'}
         </Text>
       </Pressable>
@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.05)',
   },
   button: {
-    backgroundColor: '#e8ff47',
+    backgroundColor: '#d4e157',
     borderRadius: 10,
     padding: 14,
     alignItems: 'center',
@@ -638,7 +638,7 @@ const styles = StyleSheet.create({
   buttonDangerText: { color: '#ff4444', fontSize: 16, fontWeight: '600' },
   switchText: {
     textAlign: 'center',
-    color: '#e8ff47',
+    color: '#d4e157',
     fontSize: 14,
     paddingVertical: 4,
   },
@@ -655,11 +655,11 @@ const styles = StyleSheet.create({
     borderColor: '#444',
   },
   pillActive: {
-    borderColor: '#e8ff47',
-    backgroundColor: 'rgba(232,255,71,0.1)',
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.1)',
   },
   pillText: { fontSize: 13, color: '#999' },
-  pillTextActive: { color: '#e8ff47', fontWeight: '600' },
+  pillTextActive: { color: '#d4e157', fontWeight: '600' },
   resetButton: {
     borderWidth: 1,
     borderColor: '#666',
@@ -740,7 +740,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     gap: 8,
   },
-  scheduleDayRowExpanded: { backgroundColor: 'rgba(232,255,71,0.06)', borderBottomLeftRadius: 0, borderBottomRightRadius: 0 },
+  scheduleDayRowExpanded: { backgroundColor: 'rgba(212,225,87,0.06)', borderBottomLeftRadius: 0, borderBottomRightRadius: 0 },
   scheduleDayName: { fontSize: 14, fontWeight: '600', width: 36 },
   scheduleDayCount: { flex: 1, fontSize: 12, opacity: 0.6 },
   scheduleChevron: { fontSize: 12, opacity: 0.4 },
@@ -762,9 +762,9 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 10,
     borderRadius: 6,
-    backgroundColor: 'rgba(232,255,71,0.15)',
+    backgroundColor: 'rgba(212,225,87,0.15)',
   },
-  scheduleAddBtnText: { color: '#e8ff47', fontSize: 12, fontWeight: '600' },
+  scheduleAddBtnText: { color: '#d4e157', fontSize: 12, fontWeight: '600' },
   pillSmall: {
     paddingVertical: 4,
     paddingHorizontal: 8,

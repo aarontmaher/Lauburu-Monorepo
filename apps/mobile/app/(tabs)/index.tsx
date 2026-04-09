@@ -9,7 +9,7 @@ import { SESSION_TYPE_LABELS } from '@lauburu/shared';
 
 const READINESS_COLORS: Record<ReadinessLevel, string> = {
   green: '#4ade80',
-  yellow: '#e8ff47',
+  yellow: '#d4e157',
   red: '#ff6b6b',
   grey: '#666',
 };
@@ -91,7 +91,7 @@ function ProgressCard() {
     <View style={styles.card}>
       <Text style={styles.cardTitle}>Training Progress</Text>
       {loading ? (
-        <ActivityIndicator size="small" color="#e8ff47" />
+        <ActivityIndicator size="small" color="#d4e157" />
       ) : error ? (
         <Text style={styles.cardError}>{error}</Text>
       ) : (
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   metricItem: { alignItems: 'center', gap: 2 },
-  metricValue: { fontSize: 16, fontWeight: '700', color: '#e8ff47' },
+  metricValue: { fontSize: 16, fontWeight: '700', color: '#d4e157' },
   metricLabel: { fontSize: 10, opacity: 0.5 },
   signalsRow: { gap: 2, marginTop: 4 },
   signalPositive: { fontSize: 12, color: '#4ade80', opacity: 0.8 },
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   stat: { alignItems: 'center', gap: 4 },
-  statNumber: { fontSize: 28, fontWeight: '700', color: '#e8ff47' },
+  statNumber: { fontSize: 28, fontWeight: '700', color: '#d4e157' },
   statLabel: { fontSize: 13, opacity: 0.6 },
 
   // Activity
@@ -288,14 +288,14 @@ const styles = StyleSheet.create({
 
   // Training context
   todayBadge: {
-    backgroundColor: 'rgba(232,255,71,0.1)',
+    backgroundColor: 'rgba(212,225,87,0.1)',
     borderRadius: 8,
     paddingVertical: 6,
     paddingHorizontal: 10,
     alignSelf: 'flex-start',
   },
-  todayBadgeText: { fontSize: 12, color: '#e8ff47', fontWeight: '600' },
-  suggestion: { fontSize: 13, color: '#b8cc39', opacity: 0.9, lineHeight: 18 },
+  todayBadgeText: { fontSize: 12, color: '#d4e157', fontWeight: '600' },
+  suggestion: { fontSize: 13, color: '#a8b84a', opacity: 0.9, lineHeight: 18 },
   whySection: { gap: 2, marginTop: 4, paddingTop: 6, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
   whyLabel: { fontSize: 11, opacity: 0.4, textTransform: 'uppercase', letterSpacing: 0.5 },
   whyItem: { fontSize: 12, opacity: 0.6, lineHeight: 16 },

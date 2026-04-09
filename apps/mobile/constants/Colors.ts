@@ -1,9 +1,16 @@
 /**
  * Lauburu Grappling Map color palette.
- * Dark theme primary — matches the website's dark UI.
+ * Dark theme primary. Accent is a muted warm yellow-green.
  */
-const accent = '#e8ff47'; // Wrestling yellow from website SECTIONS
-const accentDim = '#b8cc39';
+
+/** Primary accent — warmer and less neon than the website's #e8ff47 */
+const accent = '#d4e157';
+/** Dimmed accent for secondary text, suggestions */
+const accentDim = '#a8b84a';
+/** Subtle accent for backgrounds/borders */
+const accentSubtle = 'rgba(212, 225, 87, 0.12)';
+
+export { accent, accentDim, accentSubtle };
 
 export default {
   light: {
@@ -11,9 +18,9 @@ export default {
     textSecondary: '#666',
     background: '#f5f5f5',
     card: '#fff',
-    tint: '#2d6a4f',
+    tint: '#5d7a3a',
     tabIconDefault: '#999',
-    tabIconSelected: '#2d6a4f',
+    tabIconSelected: '#5d7a3a',
     border: '#e0e0e0',
     accent,
   },
@@ -23,9 +30,9 @@ export default {
     background: '#0a0a0a',
     card: '#1a1a1a',
     tint: accent,
-    tabIconDefault: '#666',
+    tabIconDefault: '#555',
     tabIconSelected: accent,
-    border: '#333',
+    border: '#2a2a2a',
     accent,
   },
 };

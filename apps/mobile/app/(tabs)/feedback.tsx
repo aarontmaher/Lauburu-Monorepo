@@ -348,7 +348,7 @@ function SyncCard() {
 
   const statusColors: Record<string, string> = {
     idle: '#999',
-    syncing: '#e8ff47',
+    syncing: '#d4e157',
     synced: '#4ade80',
     failed: '#ff6b6b',
   };
@@ -511,11 +511,11 @@ const styles = StyleSheet.create({
     borderColor: '#444',
   },
   pillActive: {
-    borderColor: '#e8ff47',
-    backgroundColor: 'rgba(232,255,71,0.1)',
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.1)',
   },
   pillText: { fontSize: 14, color: '#999' },
-  pillTextActive: { color: '#e8ff47', fontWeight: '600' },
+  pillTextActive: { color: '#d4e157', fontWeight: '600' },
   pillDanger: {
     borderColor: '#ff6b6b',
     backgroundColor: 'rgba(255,107,107,0.1)',
@@ -538,11 +538,11 @@ const styles = StyleSheet.create({
     borderColor: '#444',
   },
   ratingDotActive: {
-    backgroundColor: '#e8ff47',
-    borderColor: '#e8ff47',
+    backgroundColor: '#d4e157',
+    borderColor: '#d4e157',
   },
   ratingNum: { fontSize: 10, opacity: 0.4 },
-  ratingNumActive: { opacity: 0.8, color: '#e8ff47' },
+  ratingNumActive: { opacity: 0.8, color: '#d4e157' },
 
   input: {
     borderWidth: 1,
@@ -555,7 +555,7 @@ const styles = StyleSheet.create({
   },
 
   saveButton: {
-    backgroundColor: '#e8ff47',
+    backgroundColor: '#d4e157',
     borderRadius: 10,
     padding: 14,
     alignItems: 'center',
@@ -582,13 +582,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e8ff47',
+    borderColor: '#d4e157',
   },
-  syncBtnText: { color: '#e8ff47', fontSize: 13, fontWeight: '600' },
+  syncBtnText: { color: '#d4e157', fontSize: 13, fontWeight: '600' },
   statusRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
   statusDot: { width: 8, height: 8, borderRadius: 4 },
   statusText: { fontSize: 12 },
-  guestNote: { fontSize: 12, color: '#e8ff47', opacity: 0.7 },
+  guestNote: { fontSize: 12, color: '#d4e157', opacity: 0.7 },
 
   // Recent examples
   exampleRow: {
@@ -603,8 +603,8 @@ const styles = StyleSheet.create({
   exampleBadges: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, flex: 1 },
   badge: {
     fontSize: 10,
-    color: '#e8ff47',
-    backgroundColor: 'rgba(232,255,71,0.1)',
+    color: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.1)',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,

@@ -19,7 +19,7 @@ import type { HealthFlag } from '@lauburu/shared';
 const STATUS_LABELS: Record<PermissionStatus, { text: string; color: string }> = {
   authorized: { text: 'Authorized', color: '#4ade80' },
   denied: { text: 'Denied', color: '#ff6b6b' },
-  not_determined: { text: 'Not requested', color: '#e8ff47' },
+  not_determined: { text: 'Not requested', color: '#d4e157' },
   unavailable: { text: 'Unavailable', color: '#666' },
 };
 
@@ -156,14 +156,14 @@ function RecentDays({ days }: { days: DailyMetrics[] }) {
 function CoachingCard({ coaching }: { coaching: CoachingResponse }) {
   const statusColors: Record<string, string> = {
     recovered: '#4ade80',
-    recovering: '#e8ff47',
+    recovering: '#d4e157',
     fatigued: '#ff6b6b',
     unknown: '#666',
     good: '#4ade80',
-    adequate: '#e8ff47',
+    adequate: '#d4e157',
     poor: '#ff6b6b',
     balanced: '#4ade80',
-    high: '#e8ff47',
+    high: '#d4e157',
     low: '#999',
     overreaching: '#ff6b6b',
   };
@@ -248,7 +248,7 @@ import type { TrainingInsight, ReadinessLevel } from '@lauburu/shared';
 
 const READINESS_COLORS: Record<ReadinessLevel, string> = {
   green: '#4ade80',
-  yellow: '#e8ff47',
+  yellow: '#d4e157',
   red: '#ff6b6b',
   grey: '#666',
 };
@@ -257,7 +257,7 @@ function InsightsCard({ insights }: { insights: TrainingInsight }) {
   const color = READINESS_COLORS[insights.readiness];
   const statusColors: Record<string, string> = {
     good: '#4ade80',
-    caution: '#e8ff47',
+    caution: '#d4e157',
     warning: '#ff6b6b',
     neutral: '#999',
   };
@@ -334,7 +334,7 @@ function FlagsCard({ flags }: { flags: HealthFlag[] }) {
   if (flags.length === 0) return null;
   const colors: Record<string, string> = {
     warning: '#ff6b6b',
-    info: '#e8ff47',
+    info: '#d4e157',
     positive: '#4ade80',
   };
   const icons: Record<string, string> = {
@@ -367,7 +367,7 @@ const TREND_COLORS: Record<string, string> = {
   improving: '#4ade80',
   declining: '#ff6b6b',
   stable: '#999',
-  increasing: '#e8ff47',
+  increasing: '#d4e157',
   decreasing: '#4ade80', // decreasing strain is good
 };
 
@@ -470,7 +470,7 @@ function BackendSyncCard() {
           onPress={persistToBackend}
           disabled={persisting}>
           {persisting ? (
-            <ActivityIndicator size="small" color="#e8ff47" />
+            <ActivityIndicator size="small" color="#d4e157" />
           ) : (
             <Text style={styles.syncButtonText}>Save to Account</Text>
           )}
@@ -622,7 +622,7 @@ export default function HealthScreen() {
                 onPress={handleSync}
                 disabled={syncing}>
                 {syncing ? (
-                  <ActivityIndicator size="small" color="#e8ff47" />
+                  <ActivityIndicator size="small" color="#d4e157" />
                 ) : (
                   <Text style={styles.syncButtonText}>
                     {lastSyncAt ? 'Refresh' : 'Sync Now'}
@@ -714,11 +714,11 @@ type DataStatus =
 
 const DATA_STATUS_LABELS: Record<DataStatus, { text: string; color: string }> = {
   live: { text: 'Live', color: '#4ade80' },
-  authorized_no_data: { text: 'Connected — no data yet', color: '#e8ff47' },
+  authorized_no_data: { text: 'Connected — no data yet', color: '#d4e157' },
   not_connected: { text: 'Not connected', color: '#999' },
   unavailable: { text: 'Not available', color: '#666' },
   denied: { text: 'Denied', color: '#ff6b6b' },
-  via_website: { text: 'Via website sync', color: '#e8ff47' },
+  via_website: { text: 'Via website sync', color: '#d4e157' },
   future: { text: 'Coming soon', color: '#555' },
 };
 
@@ -744,12 +744,12 @@ function SourceRow({
 }) {
   const labels: Record<string, { text: string; color: string }> = {
     connected: { text: 'Connected', color: '#4ade80' },
-    available: { text: 'Available', color: '#b8cc39' },
+    available: { text: 'Available', color: '#a8b84a' },
     not_available: { text: 'Not available', color: '#666' },
     supported: { text: 'Native', color: '#4ade80' },
     ios_only: { text: 'iOS only', color: '#555' },
     android_only: { text: 'Android only', color: '#555' },
-    via_backend: { text: 'Via website sync', color: '#b8cc39' },
+    via_backend: { text: 'Via website sync', color: '#a8b84a' },
     coming_soon: { text: 'Coming soon', color: '#555' },
   };
   const info = labels[status] ?? { text: status, color: '#666' };
@@ -783,7 +783,7 @@ const styles = StyleSheet.create({
   unavailNote: { fontSize: 13, opacity: 0.6, lineHeight: 18 },
 
   connectButton: {
-    backgroundColor: '#e8ff47',
+    backgroundColor: '#d4e157',
     borderRadius: 10,
     padding: 14,
     alignItems: 'center',
@@ -802,13 +802,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#e8ff47',
+    borderColor: '#d4e157',
   },
-  syncButtonText: { color: '#e8ff47', fontSize: 13, fontWeight: '600' },
+  syncButtonText: { color: '#d4e157', fontSize: 13, fontWeight: '600' },
 
   guestWarning: {
     fontSize: 12,
-    color: '#e8ff47',
+    color: '#d4e157',
     opacity: 0.8,
   },
 
@@ -836,7 +836,7 @@ const styles = StyleSheet.create({
     gap: 2,
     paddingVertical: 8,
   },
-  metricValue: { fontSize: 24, fontWeight: '700', color: '#e8ff47' },
+  metricValue: { fontSize: 24, fontWeight: '700', color: '#d4e157' },
   metricUnit: { fontSize: 11, opacity: 0.5 },
   metricLabel: { fontSize: 11, opacity: 0.6, textAlign: 'center' },
 
@@ -914,7 +914,7 @@ const styles = StyleSheet.create({
   },
   coachDetail: { fontSize: 14, opacity: 0.85, lineHeight: 20 },
   coachBody: { fontSize: 13, opacity: 0.7 },
-  coachSuggestion: { fontSize: 13, color: '#e8ff47', opacity: 0.9 },
+  coachSuggestion: { fontSize: 13, color: '#d4e157', opacity: 0.9 },
   coachStatusRow: {
     flexDirection: 'row' as const,
     justifyContent: 'space-around' as const,
@@ -925,7 +925,7 @@ const styles = StyleSheet.create({
   coachStatusLabel: { fontSize: 10, opacity: 0.5 },
   coachAction: { fontSize: 13, opacity: 0.7, lineHeight: 18 },
   coachPrefs: { gap: 2, marginTop: 4 },
-  coachPrefText: { fontSize: 11, color: '#e8ff47', opacity: 0.6 },
+  coachPrefText: { fontSize: 11, color: '#d4e157', opacity: 0.6 },
   coachConfidence: { fontSize: 10, opacity: 0.3, marginTop: 6 },
   gateText: { fontSize: 13, opacity: 0.5, lineHeight: 18 },
   connectNote: { fontSize: 13, opacity: 0.6, lineHeight: 18 },
@@ -936,12 +936,12 @@ const styles = StyleSheet.create({
   expoGoCard: {
     padding: 16,
     borderRadius: 12,
-    backgroundColor: 'rgba(232,255,71,0.08)',
+    backgroundColor: 'rgba(212,225,87,0.08)',
     borderWidth: 1,
-    borderColor: 'rgba(232,255,71,0.2)',
+    borderColor: 'rgba(212,225,87,0.2)',
     gap: 8,
   },
-  expoGoTitle: { fontSize: 16, fontWeight: '600', color: '#e8ff47' },
+  expoGoTitle: { fontSize: 16, fontWeight: '600', color: '#d4e157' },
   expoGoBody: { fontSize: 13, opacity: 0.7, lineHeight: 18 },
   expoGoCommand: {
     fontSize: 11,

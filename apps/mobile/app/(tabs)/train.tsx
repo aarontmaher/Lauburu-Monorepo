@@ -28,7 +28,7 @@ const DURATION_PRESETS = [30, 45, 60, 90, 120];
 
 const INTENSITY_COLORS: Record<string, string> = {
   light: '#4ade80',
-  moderate: '#e8ff47',
+  moderate: '#d4e157',
   hard: '#ff6b6b',
 };
 
@@ -509,7 +509,7 @@ function TodayPlanCard({
   const statusColors: Record<string, string> = {
     completed: '#4ade80',
     missed: '#ff6b6b',
-    upcoming: '#e8ff47',
+    upcoming: '#d4e157',
   };
   const statusIcons: Record<string, string> = {
     completed: '✓',
@@ -701,11 +701,11 @@ const styles = StyleSheet.create({
     borderColor: '#444',
   },
   pillActive: {
-    borderColor: '#e8ff47',
-    backgroundColor: 'rgba(232,255,71,0.1)',
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.1)',
   },
   pillText: { fontSize: 14, color: '#999' },
-  pillTextActive: { color: '#e8ff47', fontWeight: '600' },
+  pillTextActive: { color: '#d4e157', fontWeight: '600' },
 
   rowInputs: { flexDirection: 'row', gap: 12 },
   halfInput: { flex: 1, gap: 8 },
@@ -723,7 +723,7 @@ const styles = StyleSheet.create({
 
   submitRow: { flexDirection: 'row', gap: 10 },
   submitButton: {
-    backgroundColor: '#e8ff47',
+    backgroundColor: '#d4e157',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -780,8 +780,8 @@ const styles = StyleSheet.create({
   sessionMeta: { fontSize: 13, opacity: 0.7, marginTop: 2 },
   sessionActions: { flexDirection: 'row', gap: 12 },
   actionBtn: { paddingVertical: 2, paddingHorizontal: 4 },
-  actionText: { fontSize: 13, color: '#e8ff47' },
-  sessionCondDetail: { fontSize: 12, color: '#e8ff47', opacity: 0.7 },
+  actionText: { fontSize: 13, color: '#d4e157' },
+  sessionCondDetail: { fontSize: 12, color: '#d4e157', opacity: 0.7 },
 
   // Plan card
   planCard: {
@@ -792,7 +792,7 @@ const styles = StyleSheet.create({
   },
   planHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   planTitle: { fontSize: 16, fontWeight: '600' },
-  planCount: { fontSize: 14, color: '#e8ff47', fontWeight: '600' },
+  planCount: { fontSize: 14, color: '#d4e157', fontWeight: '600' },
   planEmpty: { fontSize: 13, opacity: 0.5 },
   planRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 },
   planIcon: { fontSize: 16, width: 20, textAlign: 'center' },
@@ -805,9 +805,9 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 10,
     borderRadius: 6,
-    backgroundColor: 'rgba(232,255,71,0.15)',
+    backgroundColor: 'rgba(212,225,87,0.15)',
   },
-  quickLogText: { color: '#e8ff47', fontSize: 12, fontWeight: '600' },
+  quickLogText: { color: '#d4e157', fontSize: 12, fontWeight: '600' },
   showFormBtn: {
     padding: 14,
     borderRadius: 10,

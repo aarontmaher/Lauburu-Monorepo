@@ -37,9 +37,9 @@ function formatElapsed(seconds: number): string {
 
 const PHASE_COLORS: Record<string, string> = {
   idle: '#666',
-  work: '#e8ff47',
+  work: '#d4e157',
   rest: '#4ade80',
-  running: '#e8ff47',
+  running: '#d4e157',
   paused: '#999',
   complete: '#4ade80',
 };
@@ -160,7 +160,7 @@ export default function TimerScreen() {
       {/* Controls */}
       <View style={styles.controls}>
         {phase === 'idle' && (
-          <Pressable style={[styles.mainBtn, { backgroundColor: '#e8ff47' }]} onPress={start}>
+          <Pressable style={[styles.mainBtn, { backgroundColor: '#d4e157' }]} onPress={start}>
             <Text style={styles.mainBtnText}>Start</Text>
           </Pressable>
         )}
@@ -180,7 +180,7 @@ export default function TimerScreen() {
 
         {phase === 'paused' && (
           <View style={styles.controlRow}>
-            <Pressable style={[styles.mainBtn, { backgroundColor: '#e8ff47' }]} onPress={start}>
+            <Pressable style={[styles.mainBtn, { backgroundColor: '#d4e157' }]} onPress={start}>
               <Text style={styles.mainBtnText}>Resume</Text>
             </Pressable>
             <Pressable style={styles.secondaryBtn} onPress={handleComplete}>

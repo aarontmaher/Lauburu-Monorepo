@@ -10,7 +10,7 @@ const STATUS_COLORS: Record<string, string> = {
   active: '#4ade80',
   idle: '#666',
   blocked: '#ff6b6b',
-  working: '#e8ff47',
+  working: '#d4e157',
 };
 
 function AgentCard({ name, agent }: { name: string; agent: AgentWorkStatus }) {
@@ -44,7 +44,7 @@ function AgentSection() {
     return (
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Agent Status</Text>
-        <ActivityIndicator size="small" color="#e8ff47" />
+        <ActivityIndicator size="small" color="#d4e157" />
       </View>
     );
   }
@@ -80,7 +80,7 @@ function AgentSection() {
 
 function JobRow({ job }: { job: PromptJob }) {
   const statusColors: Record<string, string> = {
-    pending: '#e8ff47',
+    pending: '#d4e157',
     claimed: '#4ade80',
     completed: '#666',
     failed: '#ff6b6b',
@@ -111,7 +111,7 @@ function PromptJobsSection() {
     return (
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Prompt Jobs</Text>
-        <ActivityIndicator size="small" color="#e8ff47" />
+        <ActivityIndicator size="small" color="#d4e157" />
       </View>
     );
   }
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     fontSize: 12,
-    color: '#e8ff47',
+    color: '#d4e157',
     fontWeight: '600',
   },
 
@@ -270,10 +270,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#e8ff47',
+    borderColor: '#d4e157',
   },
   retryText: {
-    color: '#e8ff47',
+    color: '#d4e157',
     fontSize: 13,
     fontWeight: '600',
   },

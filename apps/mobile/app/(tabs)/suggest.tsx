@@ -170,14 +170,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   areaPillActive: {
-    borderColor: '#e8ff47',
-    backgroundColor: 'rgba(232,255,71,0.1)',
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.1)',
   },
   areaPillText: { fontSize: 13, color: '#999' },
-  areaPillTextActive: { color: '#e8ff47', fontWeight: '600' },
+  areaPillTextActive: { color: '#d4e157', fontWeight: '600' },
 
   button: {
-    backgroundColor: '#e8ff47',
+    backgroundColor: '#d4e157',
     borderRadius: 10,
     padding: 16,
     alignItems: 'center',
