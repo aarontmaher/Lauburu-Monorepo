@@ -7,3 +7,5 @@ export * from './feedback';
 export * from './preferences';
 export * from './consent';
 export * from './tiers';
+export * from './devices';
+export * from './health-records';
