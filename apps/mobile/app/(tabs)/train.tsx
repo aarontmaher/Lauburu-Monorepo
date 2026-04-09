@@ -99,6 +99,18 @@ function EntryForm({
     editing?.conditioning?.weight_training?.focus ?? 'full_body',
   );
 
+  // Respiratory state
+  const [respType, setRespType] = useState<import('@lauburu/shared').RespiratoryType>(
+    editing?.conditioning?.respiratory?.respiratory_type ?? 'inspiratory',
+  );
+  const [respDevice, setRespDevice] = useState(editing?.conditioning?.respiratory?.device_used ?? '');
+  const [respResistance, setRespResistance] = useState(editing?.conditioning?.respiratory?.resistance_level?.toString() ?? '');
+  const [respBreaths, setRespBreaths] = useState(editing?.conditioning?.respiratory?.breaths?.toString() ?? '30');
+  const [respSets, setRespSets] = useState(editing?.conditioning?.respiratory?.sets?.toString() ?? '3');
+  const [respTiming, setRespTiming] = useState<'pre_training' | 'post_training' | 'standalone'>(
+    editing?.conditioning?.respiratory?.timing ?? 'standalone',
+  );
+
   const isConditioning = sessionType === 'conditioning';
   const isInterval = isConditioning && ['hiit', 'intervals', 'sprint_intervals', 'circuit'].includes(condSubtype);
   const isWeightTraining = isConditioning && condSubtype === 'weight_training';
@@ -156,6 +168,16 @@ function EntryForm({
     }
     if (isWeightTraining) {
       detail.weight_training = { focus: liftFocus };
+    }
+    if (isRespiratory) {
+      detail.respiratory = {
+        respiratory_type: respType,
+        device_used: respDevice || undefined,
+        resistance_level: respResistance ? parseInt(respResistance, 10) : undefined,
+        breaths: respBreaths ? parseInt(respBreaths, 10) : undefined,
+        sets: respSets ? parseInt(respSets, 10) : undefined,
+        timing: respTiming,
+      };
     }
     return detail;
   };
@@ -283,9 +305,10 @@ function EntryForm({
       {/* Zone 2 — steady state options */}
       {topMode === 'zone2' && (
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Zone 2 Type</Text>
+          <Text style={styles.sectionLabel}>Zone 2 / Recovery</Text>
           <View style={styles.pillRow}>
-            {(['zone2', 'steady_state', 'tempo', 'recovery_cardio'] as ConditioningSubtype[]).map((st) => (
+            {(['zone2', 'steady_state', 'tempo', 'recovery_cardio',
+              'respiratory_training', 'breathing_warmup', 'recovery_breathing', 'mobility'] as ConditioningSubtype[]).map((st) => (
               <Pressable
                 key={st}
                 style={[styles.pill, condSubtype === st && styles.pillActive]}
@@ -423,6 +446,52 @@ function EntryForm({
                 </Text>
               </Pressable>
             ))}
+          </View>
+        </View>
+      )}
+
+      {/* Respiratory detail */}
+      {isRespiratory && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Breathing Type</Text>
+          <View style={styles.pillRow}>
+            {(['inspiratory', 'expiratory', 'mixed'] as const).map((t) => (
+              <Pressable
+                key={t}
+                style={[styles.pill, respType === t && styles.pillActive]}
+                onPress={() => setRespType(t)}>
+                <Text style={[styles.pillText, respType === t && styles.pillTextActive]}>
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+          <Text style={styles.sectionLabel}>Timing</Text>
+          <View style={styles.pillRow}>
+            {(['pre_training', 'post_training', 'standalone'] as const).map((t) => (
+              <Pressable
+                key={t}
+                style={[styles.pill, respTiming === t && styles.pillActive]}
+                onPress={() => setRespTiming(t)}>
+                <Text style={[styles.pillText, respTiming === t && styles.pillTextActive]}>
+                  {t === 'pre_training' ? 'Pre-training' : t === 'post_training' ? 'Post-training' : 'Standalone'}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+          <View style={styles.rowInputs}>
+            <View style={styles.halfInput}>
+              <Text style={styles.sectionLabel}>Breaths</Text>
+              <TextInput style={styles.input} value={respBreaths} onChangeText={setRespBreaths} keyboardType="number-pad" placeholder="30" placeholderTextColor="#666" />
+            </View>
+            <View style={styles.halfInput}>
+              <Text style={styles.sectionLabel}>Sets</Text>
+              <TextInput style={styles.input} value={respSets} onChangeText={setRespSets} keyboardType="number-pad" placeholder="3" placeholderTextColor="#666" />
+            </View>
+            <View style={styles.halfInput}>
+              <Text style={styles.sectionLabel}>Resistance</Text>
+              <TextInput style={styles.input} value={respResistance} onChangeText={setRespResistance} keyboardType="number-pad" placeholder="—" placeholderTextColor="#666" />
+            </View>
           </View>
         </View>
       )}
