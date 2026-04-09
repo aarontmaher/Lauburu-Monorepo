@@ -69,10 +69,13 @@ function EntryForm({
   const timerSetup = useTimerStore((s) => s.setup);
   const router = useRouter();
 
-  // Quick mode: simplified first choice
-  type QuickMode = 'grappling' | 'hiit' | 'zone2' | 'other' | null;
-  const [quickMode, setQuickMode] = useState<QuickMode>(
-    editing ? null : null, // start fresh
+  // Top-level mode: Grappling / HIIT / Zone 2
+  type TopMode = 'grappling' | 'hiit' | 'zone2' | null;
+  const [topMode, setTopMode] = useState<TopMode>(
+    editing ? (editing.type === 'conditioning'
+      ? (editing.conditioning?.subtype === 'zone2' || editing.conditioning?.subtype === 'steady_state' || editing.conditioning?.subtype === 'recovery_cardio' ? 'zone2' : 'hiit')
+      : 'grappling')
+    : null,
   );
 
   const [sessionType, setSessionType] = useState<SessionType>(editing?.type ?? 'class');
@@ -102,33 +105,26 @@ function EntryForm({
   const isRespiratory = isConditioning && ['respiratory_training', 'breathing_warmup', 'recovery_breathing'].includes(condSubtype);
   const [showMore, setShowMore] = useState(false);
 
-  // Segment state
+  // Segment state (grappling custom segments)
   const [segments, setSegments] = useState<SessionSegment[]>(editing?.segments ?? []);
-  const [selectedPreset, setSelectedPreset] = useState<string | null>(editing?.preset_id ?? null);
+  const [addingSegType, setAddingSegType] = useState<import('@lauburu/shared').SegmentType>('technique');
 
-  const applyPreset = (preset: typeof SESSION_PRESETS[0]) => {
-    setSelectedPreset(preset.id);
-    setSessionType('class');
-    setDuration(preset.totalDuration);
-    setSegments(
-      preset.segments.map((s, i) => ({
-        ...s,
-        id: `seg-${Date.now()}-${i}`,
-      })),
-    );
+  const addSegment = () => {
+    setSegments((prev) => [
+      ...prev,
+      { id: `seg-${Date.now()}`, type: addingSegType, duration_min: 15, tags: [] },
+    ]);
   };
 
   const removeSegment = (id: string) => {
     setSegments((prev) => prev.filter((s) => s.id !== id));
-    setSelectedPreset(null);
   };
 
-  // Quick mode handlers
-  const selectQuickMode = (mode: QuickMode) => {
-    setQuickMode(mode);
+  // Top mode handlers
+  const selectTopMode = (mode: TopMode) => {
+    setTopMode(mode);
     if (mode === 'grappling') {
       setSessionType('class');
-      setCondSubtype('hiit');
     } else if (mode === 'hiit') {
       setSessionType('conditioning');
       setCondSubtype('hiit');
@@ -136,8 +132,6 @@ function EntryForm({
       setSessionType('conditioning');
       setCondSubtype('zone2');
       setDuration(30);
-    } else if (mode === 'other') {
-      // Show full type selector
     }
   };
 
@@ -179,7 +173,7 @@ function EntryForm({
       notes,
       conditioning: buildConditioning(),
       segments: segments.length > 0 ? segments : undefined,
-      preset_id: selectedPreset ?? undefined,
+      preset_id: undefined,
     };
 
     if (editing) {
@@ -194,82 +188,119 @@ function EntryForm({
 
   return (
     <View style={styles.formSection}>
-      {/* Quick mode — simplified first choice */}
-      {!editing && !quickMode && (
+      {/* Top-level choice: Grappling / HIIT / Zone 2 */}
+      {!editing && !topMode && (
+        <View style={styles.quickRow}>
+          <Pressable style={styles.quickBtn} onPress={() => selectTopMode('grappling')}>
+            <Text style={styles.quickBtnEmoji}>🥋</Text>
+            <Text style={styles.quickBtnText}>Grappling</Text>
+          </Pressable>
+          <Pressable style={styles.quickBtn} onPress={() => selectTopMode('hiit')}>
+            <Text style={styles.quickBtnEmoji}>⚡</Text>
+            <Text style={styles.quickBtnText}>HIIT</Text>
+          </Pressable>
+          <Pressable style={styles.quickBtn} onPress={() => selectTopMode('zone2')}>
+            <Text style={styles.quickBtnEmoji}>🫀</Text>
+            <Text style={styles.quickBtnText}>Zone 2</Text>
+          </Pressable>
+        </View>
+      )}
+
+      {/* Mode header — tap to change */}
+      {topMode && !editing && (
+        <Pressable onPress={() => setTopMode(null)}>
+          <Text style={styles.modeHeader}>
+            {topMode === 'grappling' ? '🥋 Grappling' : topMode === 'hiit' ? '⚡ HIIT' : '🫀 Zone 2'}
+            <Text style={styles.modeChange}> (change)</Text>
+          </Text>
+        </Pressable>
+      )}
+
+      {/* Grappling — custom segment building */}
+      {topMode === 'grappling' && (
         <View style={styles.section}>
-          <View style={styles.quickRow}>
-            <Pressable style={styles.quickBtn} onPress={() => selectQuickMode('grappling')}>
-              <Text style={styles.quickBtnEmoji}>🥋</Text>
-              <Text style={styles.quickBtnText}>Grappling</Text>
+          {/* Current segments */}
+          {segments.map((seg, i) => (
+            <View key={seg.id} style={styles.segmentRow}>
+              <Text style={styles.segmentNum}>{i + 1}</Text>
+              <View style={styles.segmentInfo}>
+                <Text style={styles.segmentType}>{SEGMENT_TYPE_LABELS[seg.type]}</Text>
+                <Text style={styles.segmentMeta}>{seg.duration_min}min</Text>
+              </View>
+              <Pressable onPress={() => removeSegment(seg.id)}>
+                <Text style={styles.segmentRemove}>✕</Text>
+              </Pressable>
+            </View>
+          ))}
+
+          {/* Add segment */}
+          <View style={styles.addSegRow}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flex: 1 }}>
+              <View style={styles.pillRow}>
+                {(['technique', 'drilling', 'positional', 'wrestling', 'takedowns',
+                  'live_rounds', 'open_mat', 'comp_prep', 'conditioning_finisher'] as import('@lauburu/shared').SegmentType[]).map((st) => (
+                  <Pressable
+                    key={st}
+                    style={[styles.pillSmall, addingSegType === st && styles.pillActive]}
+                    onPress={() => setAddingSegType(st)}>
+                    <Text style={[styles.pillSmallText, addingSegType === st && styles.pillTextActive]}>
+                      {SEGMENT_TYPE_LABELS[st]}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </ScrollView>
+            <Pressable style={styles.scheduleAddBtn} onPress={addSegment}>
+              <Text style={styles.scheduleAddBtnText}>+ Add</Text>
             </Pressable>
-            <Pressable style={styles.quickBtn} onPress={() => selectQuickMode('hiit')}>
-              <Text style={styles.quickBtnEmoji}>⚡</Text>
-              <Text style={styles.quickBtnText}>HIIT</Text>
-            </Pressable>
-            <Pressable style={styles.quickBtn} onPress={() => selectQuickMode('zone2')}>
-              <Text style={styles.quickBtnEmoji}>🫀</Text>
-              <Text style={styles.quickBtnText}>Zone 2</Text>
-            </Pressable>
-            <Pressable style={styles.quickBtn} onPress={() => selectQuickMode('other')}>
-              <Text style={styles.quickBtnEmoji}>+</Text>
-              <Text style={styles.quickBtnText}>Other</Text>
-            </Pressable>
+          </View>
+
+          {segments.length === 0 && (
+            <Text style={styles.segmentHint}>Add parts to build your session</Text>
+          )}
+        </View>
+      )}
+
+      {/* HIIT — interval options */}
+      {topMode === 'hiit' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>HIIT Type</Text>
+          <View style={styles.pillRow}>
+            {(['hiit', 'intervals', 'sprint_intervals', 'circuit'] as ConditioningSubtype[]).map((st) => (
+              <Pressable
+                key={st}
+                style={[styles.pill, condSubtype === st && styles.pillActive]}
+                onPress={() => setCondSubtype(st)}>
+                <Text style={[styles.pillText, condSubtype === st && styles.pillTextActive]}>
+                  {CONDITIONING_SUBTYPE_LABELS[st]}
+                </Text>
+              </Pressable>
+            ))}
           </View>
         </View>
       )}
 
-      {/* Grappling — preset selection + segment view */}
-      {quickMode === 'grappling' && (
-        <>
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>Session Structure</Text>
-            <View style={styles.presetRow}>
-              {SESSION_PRESETS.map((p) => (
-                <Pressable
-                  key={p.id}
-                  style={[styles.presetCard, selectedPreset === p.id && styles.presetCardActive]}
-                  onPress={() => applyPreset(p)}>
-                  <Text style={[styles.presetLabel, selectedPreset === p.id && styles.presetLabelActive]}>
-                    {p.label}
-                  </Text>
-                  <Text style={styles.presetDesc}>{p.description}</Text>
-                  <Text style={styles.presetDur}>{p.totalDuration}min</Text>
-                </Pressable>
-              ))}
-            </View>
+      {/* Zone 2 — steady state options */}
+      {topMode === 'zone2' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Zone 2 Type</Text>
+          <View style={styles.pillRow}>
+            {(['zone2', 'steady_state', 'tempo', 'recovery_cardio'] as ConditioningSubtype[]).map((st) => (
+              <Pressable
+                key={st}
+                style={[styles.pill, condSubtype === st && styles.pillActive]}
+                onPress={() => setCondSubtype(st)}>
+                <Text style={[styles.pillText, condSubtype === st && styles.pillTextActive]}>
+                  {CONDITIONING_SUBTYPE_LABELS[st]}
+                </Text>
+              </Pressable>
+            ))}
           </View>
-
-          {/* Segment breakdown */}
-          {segments.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionLabel}>
-                Segments ({segments.length})
-              </Text>
-              {segments.map((seg, i) => (
-                <View key={seg.id} style={styles.segmentRow}>
-                  <Text style={styles.segmentNum}>{i + 1}</Text>
-                  <View style={styles.segmentInfo}>
-                    <Text style={styles.segmentType}>
-                      {SEGMENT_TYPE_LABELS[seg.type]}
-                    </Text>
-                    <Text style={styles.segmentMeta}>
-                      {seg.duration_min}min
-                      {seg.intensity ? ` · ${seg.intensity}` : ''}
-                      {seg.tags.length > 0 ? ` · ${seg.tags.join(', ')}` : ''}
-                    </Text>
-                  </View>
-                  <Pressable onPress={() => removeSegment(seg.id)}>
-                    <Text style={styles.segmentRemove}>✕</Text>
-                  </Pressable>
-                </View>
-              ))}
-            </View>
-          )}
-        </>
+        </View>
       )}
 
-      {/* Full type selector for editing or "other" mode */}
-      {(editing || quickMode === 'other') && (
+      {/* Full type selector for editing */}
+      {editing && (
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>Type</Text>
           <View style={styles.pillRow}>
@@ -287,8 +318,8 @@ function EntryForm({
         </View>
       )}
 
-      {/* Conditioning subtype — grouped for readability */}
-      {isConditioning && (
+      {/* Conditioning subtype — only for editing or when not using top-mode flow */}
+      {isConditioning && editing && (
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>Cardio</Text>
           <View style={styles.pillRow}>
@@ -895,6 +926,14 @@ const styles = StyleSheet.create({
   segmentType: { fontSize: 13, fontWeight: '600' },
   segmentMeta: { fontSize: 11, opacity: 0.5 },
   segmentRemove: { fontSize: 13, color: '#ff6b6b', padding: 4 },
+  segmentHint: { fontSize: 12, opacity: 0.4, textAlign: 'center', paddingVertical: 8 },
+  addSegRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 },
+  pillSmall: { paddingVertical: 4, paddingHorizontal: 8, borderRadius: 12, borderWidth: 1, borderColor: '#444' },
+  pillSmallText: { fontSize: 11, color: '#999' },
+  scheduleAddBtn: { paddingVertical: 4, paddingHorizontal: 10, borderRadius: 6, backgroundColor: 'rgba(212,225,87,0.15)' },
+  scheduleAddBtnText: { color: '#d4e157', fontSize: 12, fontWeight: '600' },
+  modeHeader: { fontSize: 18, fontWeight: '700', color: '#d4e157', paddingVertical: 4 },
+  modeChange: { fontSize: 12, fontWeight: '400', color: '#888' },
 
   quickRow: { flexDirection: 'row', gap: 10, justifyContent: 'center' },
   quickBtn: {

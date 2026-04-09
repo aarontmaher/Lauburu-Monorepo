@@ -75,7 +75,7 @@ const PHASE_LABELS: Record<string, string> = {
 
 /**
  * HR zone display — shows colored zone badge when HR is available.
- * When HR is null (no Apple Watch / no connected device), shows
+ * When HR is null (no HR monitor connected), shows
  * a placeholder with zone color strip for context.
  */
 function HRZoneDisplay({ currentHR }: { currentHR: number | null }) {
@@ -100,7 +100,7 @@ function HRZoneDisplay({ currentHR }: { currentHR: number | null }) {
           <RNView key={z.zone} style={[styles.zoneDot, { backgroundColor: z.color }]} />
         ))}
       </RNView>
-      <Text style={styles.hrZoneNote}>Apple Watch for live HR zones</Text>
+      <Text style={styles.hrZoneNote}>Heart rate monitor for live zones</Text>
     </RNView>
   );
 }
