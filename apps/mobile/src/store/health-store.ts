@@ -28,7 +28,21 @@ import type {
   CoachingResponse,
 } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
-import { getHealthService } from '../services/health';
+// Lazy-safe: getHealthService may be undefined if health.ts module fails
+let _getHealthService: typeof import('../services/health').getHealthService | null = null;
+try {
+  _getHealthService = require('../services/health').getHealthService;
+} catch {
+  _getHealthService = null;
+}
+function safeGetHealthService() {
+  if (!_getHealthService) return null;
+  try {
+    return _getHealthService();
+  } catch {
+    return null;
+  }
+}
 import { useAuthStore } from './auth-store';
 import { useTrainingStore } from './training-store';
 import { usePreferencesStore } from './preferences-store';
@@ -114,7 +128,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
 
   checkPermissions: async () => {
     try {
-      const service = getHealthService();
+      const service = safeGetHealthService(); if (!service) { set({ error: "Health service unavailable" }); return; }
       const perms = await service.checkPermissions();
       set({ permissions: perms, error: null });
     } catch (e: any) {
@@ -124,7 +138,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
 
   requestPermissions: async () => {
     try {
-      const service = getHealthService();
+      const service = safeGetHealthService(); if (!service) { set({ error: "Health service unavailable" }); return false; }
       const perms = await service.requestPermissions();
       set({ permissions: perms, error: null });
       const anyAuthorized = Object.values(perms.permissions).some(
@@ -147,7 +161,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
     set({ syncing: true, error: null });
 
     try {
-      const service = getHealthService();
+      const service = safeGetHealthService(); if (!service) { set({ error: "Health service unavailable" }); return; }
       const end = new Date();
       const start = new Date();
       start.setDate(start.getDate() - daysBack);

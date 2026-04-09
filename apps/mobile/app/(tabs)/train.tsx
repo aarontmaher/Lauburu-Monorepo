@@ -70,7 +70,7 @@ function EntryForm({
   const timerSetup = useTimerStore((s) => s.setup);
   const router = useRouter();
 
-  // Top-level mode: Grappling / HIIT / Zone 2
+  // Top-level mode: Grappling / HIIT / Steady State
   type TopMode = 'grappling' | 'hiit' | 'zone2' | null;
   const [topMode, setTopMode] = useState<TopMode>(
     editing ? (editing.type === 'conditioning'
@@ -223,7 +223,7 @@ function EntryForm({
 
   return (
     <View style={styles.formSection}>
-      {/* Top-level choice: Grappling / HIIT / Zone 2 */}
+      {/* Top-level choice: Grappling / HIIT / Steady State */}
       {!editing && !topMode && (
         <View style={styles.quickRow}>
           <Pressable style={styles.quickBtn} onPress={() => selectTopMode('grappling')}>
@@ -236,7 +236,7 @@ function EntryForm({
           </Pressable>
           <Pressable style={styles.quickBtn} onPress={() => selectTopMode('zone2')}>
             <Text style={styles.quickBtnEmoji}>🫀</Text>
-            <Text style={styles.quickBtnText}>Zone 2</Text>
+            <Text style={styles.quickBtnText}>Steady State</Text>
           </Pressable>
         </View>
       )}
@@ -245,7 +245,7 @@ function EntryForm({
       {topMode && !editing && (
         <Pressable onPress={() => setTopMode(null)}>
           <Text style={styles.modeHeader}>
-            {topMode === 'grappling' ? '🥋 Grappling' : topMode === 'hiit' ? '⚡ HIIT' : '🫀 Zone 2'}
+            {topMode === 'grappling' ? '🥋 Grappling' : topMode === 'hiit' ? '⚡ HIIT' : '🫀 Steady State'}
             <Text style={styles.modeChange}> (change)</Text>
           </Text>
         </Pressable>
@@ -390,31 +390,17 @@ function EntryForm({
         </View>
       )}
 
-      {/* Zone 2 */}
+      {/* Steady State */}
       {topMode === 'zone2' && (
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Aerobic</Text>
           <View style={styles.pillRow}>
-            {(['zone2', 'steady_state', 'tempo'] as ConditioningSubtype[]).map((st) => (
+            {(['zone2', 'tempo', 'recovery_cardio'] as ConditioningSubtype[]).map((st) => (
               <Pressable
                 key={st}
                 style={[styles.pill, condSubtype === st && styles.pillActive]}
                 onPress={() => setCondSubtype(st)}>
                 <Text style={[styles.pillText, condSubtype === st && styles.pillTextActive]}>
-                  {CONDITIONING_SUBTYPE_LABELS[st]}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-          <Text style={[styles.sectionLabel, { marginTop: 8 }]}>Recovery / Support</Text>
-          <View style={styles.pillRow}>
-            {(['recovery_cardio', 'mobility', 'respiratory_training', 'recovery_breathing'] as ConditioningSubtype[]).map((st) => (
-              <Pressable
-                key={st}
-                style={[styles.pill, condSubtype === st && styles.pillActive]}
-                onPress={() => setCondSubtype(st)}>
-                <Text style={[styles.pillText, condSubtype === st && styles.pillTextActive]}>
-                  {CONDITIONING_SUBTYPE_LABELS[st]}
+                  {st === 'zone2' ? 'Zone 2' : st === 'recovery_cardio' ? 'Recovery Session' : CONDITIONING_SUBTYPE_LABELS[st]}
                 </Text>
               </Pressable>
             ))}
@@ -633,11 +619,17 @@ function EntryForm({
         </View>
       </View>
 
-      {/* Duration */}
+      {/* Duration — hidden for preset HIIT (duration implied by protocol) */}
+      {!(topMode === 'hiit' && selectedHIITPreset !== 'custom') && (
       <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Duration</Text>
+        <Text style={styles.sectionLabel}>
+          {topMode === 'zone2' ? 'Suggested duration' : 'Duration'}
+        </Text>
         <View style={styles.pillRow}>
-          {DURATION_PRESETS.map((d) => (
+          {(topMode === 'zone2'
+            ? [20, 30, 45, 60, 90]
+            : DURATION_PRESETS
+          ).map((d) => (
             <Pressable
               key={d}
               style={[styles.pill, duration === d && styles.pillActive]}
@@ -649,6 +641,7 @@ function EntryForm({
           ))}
         </View>
       </View>
+      )}
 
       {/* More options — collapsed by default */}
       <Pressable onPress={() => setShowMore(!showMore)}>
