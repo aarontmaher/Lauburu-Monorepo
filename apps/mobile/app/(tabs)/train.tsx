@@ -99,7 +99,7 @@ function EntryForm({
   const [restDur, setRestDur] = useState(editing?.conditioning?.interval?.rest_duration_s?.toString() ?? '30');
   const [intervalRounds, setIntervalRounds] = useState(editing?.conditioning?.interval?.rounds?.toString() ?? '10');
   const [liftFocus, setLiftFocus] = useState<LiftingFocus>(
-    editing?.conditioning?.weight_training?.focus ?? 'full_body',
+    editing?.conditioning?.weight_training?.focus ?? 'strength',
   );
 
   // Respiratory state
@@ -425,12 +425,12 @@ function EntryForm({
         </View>
       )}
 
-      {/* Weights — focus selector */}
+      {/* Weights — focus + custom duration */}
       {topMode === 'weights' && (
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>Focus</Text>
           <View style={styles.pillRow}>
-            {(['upper', 'lower', 'full_body', 'push', 'pull', 'posterior_chain', 'power'] as LiftingFocus[]).map((f) => (
+            {(['strength', 'functional_muscle', 'rehab'] as LiftingFocus[]).map((f) => (
               <Pressable
                 key={f}
                 style={[styles.pill, liftFocus === f && styles.pillActive]}
@@ -441,13 +441,23 @@ function EntryForm({
               </Pressable>
             ))}
           </View>
+
+          <Text style={[styles.sectionLabel, { marginTop: 8 }]}>Duration (minutes)</Text>
+          <TextInput
+            style={[styles.input, { width: 100 }]}
+            value={String(duration)}
+            onChangeText={(t) => setDuration(parseInt(t, 10) || 0)}
+            keyboardType="number-pad"
+            placeholder="45"
+            placeholderTextColor="#666"
+          />
         </View>
       )}
 
       {/* AI suggestion — shown after mode selection */}
       {topMode && !editing && (
         <View style={styles.suggestionCard}>
-          <Text style={styles.suggestionLabel}>Coach suggestion</Text>
+          <Text style={styles.suggestionLabel}>AI coach suggestion</Text>
           <Text style={styles.suggestionText}>
             {topMode === 'hiit' ? 'Based on your recovery, 30/30 intervals are a good match today.'
               : topMode === 'zone2' ? 'Zone 2 for 30min would build your aerobic base without impacting tomorrow.'
@@ -575,11 +585,11 @@ function EntryForm({
       )}
 
       {/* Weight training focus */}
-      {isWeightTraining && (
+      {isWeightTraining && editing && (
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Lifting Focus</Text>
+          <Text style={styles.sectionLabel}>Focus</Text>
           <View style={styles.pillRow}>
-            {(['upper', 'lower', 'full_body', 'pull', 'push', 'posterior_chain', 'power', 'hypertrophy'] as LiftingFocus[]).map((f) => (
+            {(['strength', 'functional_muscle', 'rehab'] as LiftingFocus[]).map((f) => (
               <Pressable
                 key={f}
                 style={[styles.pill, liftFocus === f && styles.pillActive]}
@@ -676,8 +686,8 @@ function EntryForm({
         </View>
       </View>}
 
-      {/* Duration — hidden until selection, and hidden for preset HIIT */}
-      {(topMode || editing) && !(topMode === 'hiit' && selectedHIITPreset !== 'custom') && (
+      {/* Duration — hidden for preset HIIT and weights (weights has its own input) */}
+      {(topMode || editing) && topMode !== 'weights' && !(topMode === 'hiit' && selectedHIITPreset !== 'custom') && (
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>
           {topMode === 'zone2' ? 'Suggested duration' : 'Duration'}
@@ -1181,7 +1191,7 @@ const styles = StyleSheet.create({
   quickGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, justifyContent: 'center' },
   quickRow: { flexDirection: 'row', gap: 10, justifyContent: 'center' },
 
-  // Coach suggestion
+  // AI coach suggestion
   suggestionCard: {
     padding: 12,
     borderRadius: 10,

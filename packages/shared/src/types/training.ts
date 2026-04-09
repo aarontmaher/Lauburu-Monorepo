@@ -108,26 +108,14 @@ export const MODALITY_LABELS: Record<Modality, string> = {
 };
 
 export type LiftingFocus =
-  | 'upper'
-  | 'lower'
-  | 'full_body'
-  | 'pull'
-  | 'push'
-  | 'posterior_chain'
-  | 'power'
-  | 'hypertrophy'
-  | 'other';
+  | 'strength'
+  | 'functional_muscle'
+  | 'rehab';
 
 export const LIFTING_FOCUS_LABELS: Record<LiftingFocus, string> = {
-  upper: 'Upper',
-  lower: 'Lower',
-  full_body: 'Full Body',
-  pull: 'Pull',
-  push: 'Push',
-  posterior_chain: 'Posterior Chain',
-  power: 'Power',
-  hypertrophy: 'Hypertrophy',
-  other: 'Other',
+  strength: 'Strength',
+  functional_muscle: 'Functional muscle building',
+  rehab: 'Rehab',
 };
 
 export type RespiratoryType = 'inspiratory' | 'expiratory' | 'mixed';
