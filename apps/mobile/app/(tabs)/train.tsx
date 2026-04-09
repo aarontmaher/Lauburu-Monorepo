@@ -459,8 +459,10 @@ function EntryForm({
         </View>
       )}
 
+      {/* === Everything below only shows after a top-level choice === */}
+
       {/* Modality (for conditioning with equipment) */}
-      {isConditioning && !isWeightTraining && !isRespiratory && (
+      {topMode && isConditioning && !isWeightTraining && !isRespiratory && (
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>Modality</Text>
           <View style={styles.pillRow}>
@@ -595,8 +597,8 @@ function EntryForm({
         </View>
       )}
 
-      {/* Intensity */}
-      <View style={styles.section}>
+      {/* Intensity — only after selection */}
+      {(topMode || editing) && <View style={styles.section}>
         <Text style={styles.sectionLabel}>Intensity</Text>
         <View style={styles.pillRow}>
           {INTENSITIES.map((i) => (
@@ -617,10 +619,10 @@ function EntryForm({
             </Pressable>
           ))}
         </View>
-      </View>
+      </View>}
 
-      {/* Duration — hidden for preset HIIT (duration implied by protocol) */}
-      {!(topMode === 'hiit' && selectedHIITPreset !== 'custom') && (
+      {/* Duration — hidden until selection, and hidden for preset HIIT */}
+      {(topMode || editing) && !(topMode === 'hiit' && selectedHIITPreset !== 'custom') && (
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>
           {topMode === 'zone2' ? 'Suggested duration' : 'Duration'}
@@ -643,14 +645,14 @@ function EntryForm({
       </View>
       )}
 
-      {/* More options — collapsed by default */}
-      <Pressable onPress={() => setShowMore(!showMore)}>
+      {/* More options — only after selection */}
+      {(topMode || editing) && <Pressable onPress={() => setShowMore(!showMore)}>
         <Text style={styles.moreToggle}>
           {showMore ? '▾ Less options' : '▸ More options (tags, RPE, notes)'}
         </Text>
-      </Pressable>
+      </Pressable>}
 
-      {showMore && (
+      {(topMode || editing) && showMore && (
         <>
           {/* Tags */}
           <View style={styles.section}>
@@ -711,8 +713,8 @@ function EntryForm({
         </>
       )}
 
-      {/* Submit + Start Timer */}
-      <View style={styles.submitRow}>
+      {/* Submit + Start Timer — only after selection */}
+      {(topMode || editing) && <View style={styles.submitRow}>
         <Pressable style={[styles.submitButton, { flex: 1 }]} onPress={handleSubmit}>
           <Text style={styles.submitText}>
             {editing ? 'Save Changes' : 'Log Session'}
@@ -741,7 +743,7 @@ function EntryForm({
             <Text style={styles.timerButtonText}>Start Timer</Text>
           </Pressable>
         )}
-      </View>
+      </View>}
 
       {editing && (
         <Pressable style={styles.cancelButton} onPress={onDone}>
