@@ -68,12 +68,24 @@ export function mergeTrainingSessions(
 
 function sessionToGrappling(s: TrainingSession): GrapplingSession {
   const sessionType = s.type === 'wrestling' ? 'wrestling' : 'bjj';
+
+  // Derive sparring flag from segments if available
+  const hasSparring = s.segments
+    ? s.segments.some((seg) => ['live_rounds', 'comp_prep', 'wrestling'].includes(seg.type))
+    : s.type === 'sparring' || s.type === 'comp' || s.type === 'wrestling';
+
+  // Derive techniques from segment tags
+  const techniques = s.segments
+    ? [...new Set(s.segments.flatMap((seg) => seg.tags))]
+    : undefined;
+
   return {
     type: sessionType,
     intensity: s.intensity,
     duration_min: s.duration_min,
     rounds: s.rounds,
-    sparring: s.type === 'sparring' || s.type === 'comp' || s.type === 'wrestling',
+    sparring: hasSparring,
+    techniques_practiced: techniques?.length ? techniques : undefined,
     rpe: s.rpe,
     notes: s.notes || undefined,
   };

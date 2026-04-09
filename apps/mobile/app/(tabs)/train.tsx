@@ -11,11 +11,12 @@ import { Text, View } from '@/components/Themed';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
-import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary } from '@lauburu/shared';
+import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment } from '@lauburu/shared';
 import {
   SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS,
   CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, LIFTING_FOCUS_LABELS,
   buildDayPlanSummary, SCHEDULE_SESSION_LABELS,
+  SESSION_PRESETS, SEGMENT_TYPE_LABELS,
 } from '@lauburu/shared';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useTimerStore } from '../../src/store/timer-store';
@@ -101,6 +102,27 @@ function EntryForm({
   const isRespiratory = isConditioning && ['respiratory_training', 'breathing_warmup', 'recovery_breathing'].includes(condSubtype);
   const [showMore, setShowMore] = useState(false);
 
+  // Segment state
+  const [segments, setSegments] = useState<SessionSegment[]>(editing?.segments ?? []);
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(editing?.preset_id ?? null);
+
+  const applyPreset = (preset: typeof SESSION_PRESETS[0]) => {
+    setSelectedPreset(preset.id);
+    setSessionType('class');
+    setDuration(preset.totalDuration);
+    setSegments(
+      preset.segments.map((s, i) => ({
+        ...s,
+        id: `seg-${Date.now()}-${i}`,
+      })),
+    );
+  };
+
+  const removeSegment = (id: string) => {
+    setSegments((prev) => prev.filter((s) => s.id !== id));
+    setSelectedPreset(null);
+  };
+
   // Quick mode handlers
   const selectQuickMode = (mode: QuickMode) => {
     setQuickMode(mode);
@@ -156,6 +178,8 @@ function EntryForm({
       tags: selectedTags,
       notes,
       conditioning: buildConditioning(),
+      segments: segments.length > 0 ? segments : undefined,
+      preset_id: selectedPreset ?? undefined,
     };
 
     if (editing) {
@@ -194,23 +218,54 @@ function EntryForm({
         </View>
       )}
 
-      {/* Grappling sub-types */}
+      {/* Grappling — preset selection + segment view */}
       {quickMode === 'grappling' && (
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Grappling</Text>
-          <View style={styles.pillRow}>
-            {(['class', 'sparring', 'drilling', 'wrestling', 'comp', 'open_mat'] as SessionType[]).map((t) => (
-              <Pressable
-                key={t}
-                style={[styles.pill, sessionType === t && styles.pillActive]}
-                onPress={() => setSessionType(t)}>
-                <Text style={[styles.pillText, sessionType === t && styles.pillTextActive]}>
-                  {SESSION_TYPE_LABELS[t]}
-                </Text>
-              </Pressable>
-            ))}
+        <>
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>Session Structure</Text>
+            <View style={styles.presetRow}>
+              {SESSION_PRESETS.map((p) => (
+                <Pressable
+                  key={p.id}
+                  style={[styles.presetCard, selectedPreset === p.id && styles.presetCardActive]}
+                  onPress={() => applyPreset(p)}>
+                  <Text style={[styles.presetLabel, selectedPreset === p.id && styles.presetLabelActive]}>
+                    {p.label}
+                  </Text>
+                  <Text style={styles.presetDesc}>{p.description}</Text>
+                  <Text style={styles.presetDur}>{p.totalDuration}min</Text>
+                </Pressable>
+              ))}
+            </View>
           </View>
-        </View>
+
+          {/* Segment breakdown */}
+          {segments.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>
+                Segments ({segments.length})
+              </Text>
+              {segments.map((seg, i) => (
+                <View key={seg.id} style={styles.segmentRow}>
+                  <Text style={styles.segmentNum}>{i + 1}</Text>
+                  <View style={styles.segmentInfo}>
+                    <Text style={styles.segmentType}>
+                      {SEGMENT_TYPE_LABELS[seg.type]}
+                    </Text>
+                    <Text style={styles.segmentMeta}>
+                      {seg.duration_min}min
+                      {seg.intensity ? ` · ${seg.intensity}` : ''}
+                      {seg.tags.length > 0 ? ` · ${seg.tags.join(', ')}` : ''}
+                    </Text>
+                  </View>
+                  <Pressable onPress={() => removeSegment(seg.id)}>
+                    <Text style={styles.segmentRemove}>✕</Text>
+                  </Pressable>
+                </View>
+              ))}
+            </View>
+          )}
+        </>
       )}
 
       {/* Full type selector for editing or "other" mode */}
@@ -552,6 +607,11 @@ function SessionCard({
             : ''}
         </Text>
       )}
+      {session.segments && session.segments.length > 0 && (
+        <Text style={styles.sessionSegments}>
+          {session.segments.map((s) => SEGMENT_TYPE_LABELS[s.type]).join(' → ')}
+        </Text>
+      )}
       {session.tags.length > 0 && (
         <Text style={styles.sessionTags}>{session.tags.join(' · ')}</Text>
       )}
@@ -801,6 +861,41 @@ const styles = StyleSheet.create({
   },
   textArea: { minHeight: 80 },
 
+  // Presets
+  presetRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  presetCard: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#333',
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    gap: 2,
+    minWidth: '30%',
+  },
+  presetCardActive: { borderColor: '#d4e157', backgroundColor: 'rgba(212,225,87,0.08)' },
+  presetLabel: { fontSize: 13, fontWeight: '600', color: '#ccc' },
+  presetLabelActive: { color: '#d4e157' },
+  presetDesc: { fontSize: 10, opacity: 0.5 },
+  presetDur: { fontSize: 10, opacity: 0.4 },
+
+  // Segments
+  segmentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    marginBottom: 4,
+  },
+  segmentNum: { fontSize: 12, fontWeight: '700', color: '#555', width: 16 },
+  segmentInfo: { flex: 1 },
+  segmentType: { fontSize: 13, fontWeight: '600' },
+  segmentMeta: { fontSize: 11, opacity: 0.5 },
+  segmentRemove: { fontSize: 13, color: '#ff6b6b', padding: 4 },
+
   quickRow: { flexDirection: 'row', gap: 10, justifyContent: 'center' },
   quickBtn: {
     flex: 1,
@@ -876,6 +971,7 @@ const styles = StyleSheet.create({
   actionBtn: { paddingVertical: 2, paddingHorizontal: 4 },
   actionText: { fontSize: 13, color: '#d4e157' },
   sessionCondDetail: { fontSize: 12, color: '#d4e157', opacity: 0.7 },
+  sessionSegments: { fontSize: 12, color: '#64b5f6', opacity: 0.7 },
 
   // Plan card
   planCard: {
