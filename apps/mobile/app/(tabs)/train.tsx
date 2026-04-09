@@ -570,23 +570,17 @@ function EntryForm({
 
       {/* === Everything below only shows after a top-level choice === */}
 
-      {/* Modality (for conditioning with equipment) */}
+      {/* Modality — selector row */}
       {topMode && isConditioning && !isWeightTraining && !isRespiratory && (
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Modality</Text>
-          <View style={styles.pillRow}>
-            {(['assault_bike', 'rower', 'skierg', 'running', 'bike', 'bodyweight', 'kettlebell', 'other'] as Modality[]).map((m) => (
-              <Pressable
-                key={m}
-                style={[styles.pill, condModality === m && styles.pillActive]}
-                onPress={() => setCondModality(m)}>
-                <Text style={[styles.pillText, condModality === m && styles.pillTextActive]}>
-                  {MODALITY_LABELS[m]}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        </View>
+        <SelectorRow
+          label="Modality"
+          options={['assault_bike', 'rower', 'skierg', 'running', 'bike', 'bodyweight', 'kettlebell', 'other'] as Modality[]}
+          labels={MODALITY_LABELS as any}
+          value={condModality}
+          onChange={setCondModality as any}
+          suggestion={'assault_bike' as any}
+          suggestionLabel="Assault Bike for your session type"
+        />
       )}
 
       {/* Interval detail — only editable for Custom preset or non-HIIT-mode intervals */}
@@ -719,27 +713,37 @@ function EntryForm({
         />
       )}
 
-      {/* Duration — hidden for preset HIIT and weights (weights has its own input) */}
+      {/* Duration — custom input for all non-preset modes */}
       {(topMode || editing) && topMode !== 'weights' && !(topMode === 'hiit' && selectedHIITPreset !== 'custom') && (
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>
-          {topMode === 'zone2' ? 'Suggested duration' : 'Duration'}
-        </Text>
-        <View style={styles.pillRow}>
-          {(topMode === 'zone2'
-            ? [20, 30, 45, 60, 90]
-            : DURATION_PRESETS
-          ).map((d) => (
-            <Pressable
-              key={d}
-              style={[styles.pill, duration === d && styles.pillActive]}
-              onPress={() => setDuration(d)}>
-              <Text style={[styles.pillText, duration === d && styles.pillTextActive]}>
-                {d}min
-              </Text>
-            </Pressable>
-          ))}
+      <View style={styles.selectorRow}>
+        <View style={styles.selectorHeader}>
+          <Text style={styles.selectorLabel}>Duration</Text>
+          <View style={styles.selectorValueRow}>
+            <TextInput
+              style={[styles.input, { width: 70, textAlign: 'center', paddingVertical: 6 }]}
+              value={String(duration)}
+              onChangeText={(t) => setDuration(parseInt(t, 10) || 0)}
+              keyboardType="number-pad"
+              placeholder="60"
+              placeholderTextColor="#666"
+            />
+            <Text style={styles.selectorLabel}> min</Text>
+          </View>
         </View>
+        {topMode === 'zone2' && (
+          <View style={styles.aiSuggestionBubble}>
+            <Text style={styles.aiSuggestionText}>
+              AI coach suggestion: 30min for aerobic base building
+            </Text>
+          </View>
+        )}
+        {topMode === 'grappling' && (
+          <View style={styles.aiSuggestionBubble}>
+            <Text style={styles.aiSuggestionText}>
+              AI coach suggestion: 60–90min for a full session
+            </Text>
+          </View>
+        )}
       </View>
       )}
 
