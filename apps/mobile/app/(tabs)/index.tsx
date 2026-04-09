@@ -64,6 +64,17 @@ function ReadinessCard() {
           ))}
         </View>
       )}
+      {/* Key signals */}
+      {(insights.positives.length > 0 || insights.concerns.length > 0) && (
+        <View style={styles.signalsRow}>
+          {insights.positives.slice(0, 2).map((p, i) => (
+            <Text key={`p${i}`} style={styles.signalPositive}>✓ {p}</Text>
+          ))}
+          {insights.concerns.slice(0, 2).map((c, i) => (
+            <Text key={`c${i}`} style={styles.signalConcern}>⚠ {c}</Text>
+          ))}
+        </View>
+      )}
       {lastSyncAt && (
         <Text style={styles.syncNote}>
           Synced {new Date(lastSyncAt).toLocaleTimeString()}
@@ -141,26 +152,45 @@ function RecentActivityCard() {
 
 function TrainingContextCard() {
   const coaching = useHealthStore((s) => s.coaching);
+  const insights = useHealthStore((s) => s.insights);
   const sessions = useTrainingStore((s) => s.sessions);
   const todayStr = new Date().toISOString().slice(0, 10);
   const todaySessions = sessions.filter((s) => s.date === todayStr);
 
   if (!coaching && todaySessions.length === 0) return null;
 
+  const hasCoaching = coaching && coaching.readiness.level !== 'grey';
+
   return (
     <View style={styles.card}>
-      <Text style={styles.cardTitle}>Training This Week</Text>
-      {coaching && coaching.readiness.level !== 'grey' && (
+      <Text style={styles.cardTitle}>Training Context</Text>
+
+      {/* Plan status */}
+      {hasCoaching && coaching.plan && coaching.plan.status !== 'no_plan' && (
+        <Text style={styles.cardBody}>{coaching.plan.summary}</Text>
+      )}
+
+      {/* Load + grappling */}
+      {hasCoaching && (
         <>
           <Text style={styles.cardBody}>{coaching.training_load.summary}</Text>
-          <Text style={styles.cardBody}>{coaching.grappling.summary}</Text>
           {coaching.grappling.suggestion ? (
-            <Text style={[styles.cardBody, { color: '#e8ff47', opacity: 0.9 }]}>
-              {coaching.grappling.suggestion}
-            </Text>
+            <Text style={styles.suggestion}>{coaching.grappling.suggestion}</Text>
           ) : null}
         </>
       )}
+
+      {/* Why this recommendation */}
+      {insights && insights.recommendation.reasons.length > 0 && (
+        <View style={styles.whySection}>
+          <Text style={styles.whyLabel}>Why</Text>
+          {insights.recommendation.reasons.slice(0, 3).map((r, i) => (
+            <Text key={i} style={styles.whyItem}>• {r}</Text>
+          ))}
+        </View>
+      )}
+
+      {/* Today's sessions */}
       {todaySessions.length > 0 && (
         <View style={styles.todayBadge}>
           <Text style={styles.todayBadgeText}>
@@ -230,7 +260,10 @@ const styles = StyleSheet.create({
   metricItem: { alignItems: 'center', gap: 2 },
   metricValue: { fontSize: 16, fontWeight: '700', color: '#e8ff47' },
   metricLabel: { fontSize: 10, opacity: 0.5 },
-  syncNote: { fontSize: 10, opacity: 0.3 },
+  signalsRow: { gap: 2, marginTop: 4 },
+  signalPositive: { fontSize: 12, color: '#4ade80', opacity: 0.8 },
+  signalConcern: { fontSize: 12, color: '#ff8a80', opacity: 0.8 },
+  syncNote: { fontSize: 10, opacity: 0.3, marginTop: 4 },
 
   // Progress
   statsRow: {
@@ -262,4 +295,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   todayBadgeText: { fontSize: 12, color: '#e8ff47', fontWeight: '600' },
+  suggestion: { fontSize: 13, color: '#b8cc39', opacity: 0.9, lineHeight: 18 },
+  whySection: { gap: 2, marginTop: 4, paddingTop: 6, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
+  whyLabel: { fontSize: 11, opacity: 0.4, textTransform: 'uppercase', letterSpacing: 0.5 },
+  whyItem: { fontSize: 12, opacity: 0.6, lineHeight: 16 },
 });

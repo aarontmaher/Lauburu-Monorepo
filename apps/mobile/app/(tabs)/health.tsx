@@ -683,46 +683,19 @@ export default function HealthScreen() {
       {/* Recent days */}
       {days.length > 0 && <RecentDays days={days} />}
 
-      {/* Sync status summary */}
+      {/* Data sources */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Data Status</Text>
-        <StatusRow
-          label={platformName}
-          status={
-            !isAvailable
-              ? 'unavailable'
-              : !anyAuthorized
-                ? 'not_connected'
-                : days.length > 0
-                  ? 'live'
-                  : 'authorized_no_data'
-          }
-        />
-        <StatusRow label="WHOOP" status="via_website" />
-        <StatusRow label="Polar" status="via_website" />
-        <StatusRow label="ErgZone" status="future" />
-        <StatusRow label="Cronometer" status="future" />
-        {lastSyncAt && (
-          <Text style={styles.syncTimestamp}>
-            Last sync: {new Date(lastSyncAt).toLocaleString()}
-          </Text>
-        )}
-      </View>
-
-      {/* Supported sources info */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Supported Sources</Text>
+        <Text style={styles.cardTitle}>Data Sources</Text>
         <View style={styles.sourceList}>
           <SourceRow
-            name="Apple HealthKit"
-            status={Platform.OS === 'ios' ? 'supported' : 'ios_only'}
-          />
-          <SourceRow
-            name="Health Connect"
-            status={Platform.OS === 'android' ? 'supported' : 'android_only'}
+            name="Apple Health"
+            status={Platform.OS === 'ios'
+              ? anyAuthorized ? 'connected' : isAvailable ? 'available' : 'not_available'
+              : 'ios_only'}
           />
           <SourceRow name="WHOOP" status="via_backend" />
           <SourceRow name="Polar" status="via_backend" />
+          <SourceRow name="ErgZone" status="coming_soon" />
           <SourceRow name="Cronometer" status="coming_soon" />
         </View>
       </View>
@@ -767,16 +740,19 @@ function SourceRow({
   status,
 }: {
   name: string;
-  status: 'supported' | 'ios_only' | 'android_only' | 'via_backend' | 'coming_soon';
+  status: string;
 }) {
   const labels: Record<string, { text: string; color: string }> = {
+    connected: { text: 'Connected', color: '#4ade80' },
+    available: { text: 'Available', color: '#b8cc39' },
+    not_available: { text: 'Not available', color: '#666' },
     supported: { text: 'Native', color: '#4ade80' },
-    ios_only: { text: 'iOS only', color: '#666' },
-    android_only: { text: 'Android only', color: '#666' },
-    via_backend: { text: 'Via website', color: '#e8ff47' },
-    coming_soon: { text: 'Coming soon', color: '#666' },
+    ios_only: { text: 'iOS only', color: '#555' },
+    android_only: { text: 'Android only', color: '#555' },
+    via_backend: { text: 'Via website sync', color: '#b8cc39' },
+    coming_soon: { text: 'Coming soon', color: '#555' },
   };
-  const info = labels[status];
+  const info = labels[status] ?? { text: status, color: '#666' };
   return (
     <View style={styles.sourceRow}>
       <Text style={styles.sourceName}>{name}</Text>
