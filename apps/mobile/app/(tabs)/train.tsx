@@ -18,6 +18,9 @@ import {
   buildDayPlanSummary, SCHEDULE_SESSION_LABELS,
 } from '@lauburu/shared';
 import { usePreferencesStore } from '../../src/store/preferences-store';
+import { useTimerStore } from '../../src/store/timer-store';
+import type { TimerConfig } from '../../src/store/timer-store';
+import { useRouter } from 'expo-router';
 
 const SESSION_TYPES: SessionType[] = ['class', 'sparring', 'drilling', 'wrestling', 'comp', 'open_mat', 'conditioning', 'other'];
 const INTENSITIES: SessionIntensity[] = ['light', 'moderate', 'hard'];
@@ -62,6 +65,8 @@ function EntryForm({
   const editSession = useTrainingStore((s) => s.editSession);
   const syncData = useHealthStore((s) => s.syncData);
   const user = useAuthStore((s) => s.user);
+  const timerSetup = useTimerStore((s) => s.setup);
+  const router = useRouter();
 
   const [sessionType, setSessionType] = useState<SessionType>(editing?.type ?? 'class');
   const [intensity, setIntensity] = useState<SessionIntensity>(editing?.intensity ?? 'moderate');
@@ -365,12 +370,37 @@ function EntryForm({
         />
       </View>
 
-      {/* Submit */}
-      <Pressable style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitText}>
-          {editing ? 'Save Changes' : 'Log Session'}
-        </Text>
-      </Pressable>
+      {/* Submit + Start Timer */}
+      <View style={styles.submitRow}>
+        <Pressable style={[styles.submitButton, { flex: 1 }]} onPress={handleSubmit}>
+          <Text style={styles.submitText}>
+            {editing ? 'Save Changes' : 'Log Session'}
+          </Text>
+        </Pressable>
+
+        {isConditioning && !editing && (
+          <Pressable
+            style={styles.timerButton}
+            onPress={() => {
+              const timerMode = isInterval ? 'interval'
+                : ['steady_state', 'zone2', 'tempo'].includes(condSubtype) ? 'duration'
+                : 'stopwatch';
+              const cfg: TimerConfig = {
+                mode: timerMode,
+                subtype: condSubtype,
+                modality: condModality,
+                work_s: isInterval ? parseInt(workDur, 10) || 30 : undefined,
+                rest_s: isInterval ? parseInt(restDur, 10) || 30 : undefined,
+                rounds: isInterval ? parseInt(intervalRounds, 10) || 10 : undefined,
+                total_s: timerMode === 'duration' ? duration * 60 : undefined,
+              };
+              timerSetup(cfg);
+              router.push('/timer');
+            }}>
+            <Text style={styles.timerButtonText}>Start Timer</Text>
+          </Pressable>
+        )}
+      </View>
 
       {editing && (
         <Pressable style={styles.cancelButton} onPress={onDone}>
@@ -691,6 +721,7 @@ const styles = StyleSheet.create({
   },
   textArea: { minHeight: 80 },
 
+  submitRow: { flexDirection: 'row', gap: 10 },
   submitButton: {
     backgroundColor: '#e8ff47',
     borderRadius: 12,
@@ -698,6 +729,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   submitText: { color: '#0a0a0a', fontSize: 17, fontWeight: '700' },
+  timerButton: {
+    backgroundColor: '#4ade80',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  timerButtonText: { color: '#0a0a0a', fontSize: 15, fontWeight: '700' },
 
   cancelButton: {
     borderRadius: 12,
