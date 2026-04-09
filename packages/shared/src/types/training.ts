@@ -132,6 +132,15 @@ export const LIFTING_FOCUS_LABELS: Record<LiftingFocus, string> = {
 
 export type RespiratoryType = 'inspiratory' | 'expiratory' | 'mixed';
 
+export type RespiratoryDevice = 'airofit' | 'wello2' | 'other' | 'none';
+
+export const RESPIRATORY_DEVICE_LABELS: Record<RespiratoryDevice, string> = {
+  none: 'No device',
+  airofit: 'Airofit',
+  wello2: 'WellO2',
+  other: 'Other',
+};
+
 // ---------------------------------------------------------------------------
 // Conditioning detail — subtype-specific fields
 // ---------------------------------------------------------------------------

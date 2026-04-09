@@ -15,6 +15,7 @@ import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtyp
 import {
   SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS,
   CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, LIFTING_FOCUS_LABELS,
+  RESPIRATORY_DEVICE_LABELS,
   buildDayPlanSummary, SCHEDULE_SESSION_LABELS,
   SESSION_PRESETS, SEGMENT_TYPE_LABELS,
 } from '@lauburu/shared';
@@ -103,7 +104,9 @@ function EntryForm({
   const [respType, setRespType] = useState<import('@lauburu/shared').RespiratoryType>(
     editing?.conditioning?.respiratory?.respiratory_type ?? 'inspiratory',
   );
-  const [respDevice, setRespDevice] = useState(editing?.conditioning?.respiratory?.device_used ?? '');
+  const [respDevice, setRespDevice] = useState<import('@lauburu/shared').RespiratoryDevice>(
+    (editing?.conditioning?.respiratory?.device_used as any) ?? 'none',
+  );
   const [respResistance, setRespResistance] = useState(editing?.conditioning?.respiratory?.resistance_level?.toString() ?? '');
   const [respBreaths, setRespBreaths] = useState(editing?.conditioning?.respiratory?.breaths?.toString() ?? '30');
   const [respSets, setRespSets] = useState(editing?.conditioning?.respiratory?.sets?.toString() ?? '3');
@@ -172,7 +175,7 @@ function EntryForm({
     if (isRespiratory) {
       detail.respiratory = {
         respiratory_type: respType,
-        device_used: respDevice || undefined,
+        device_used: respDevice !== 'none' ? respDevice : undefined,
         resistance_level: respResistance ? parseInt(respResistance, 10) : undefined,
         breaths: respBreaths ? parseInt(respBreaths, 10) : undefined,
         sets: respSets ? parseInt(respSets, 10) : undefined,
@@ -453,6 +456,19 @@ function EntryForm({
       {/* Respiratory detail */}
       {isRespiratory && (
         <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Device</Text>
+          <View style={styles.pillRow}>
+            {(['none', 'airofit', 'wello2', 'other'] as import('@lauburu/shared').RespiratoryDevice[]).map((d) => (
+              <Pressable
+                key={d}
+                style={[styles.pill, respDevice === d && styles.pillActive]}
+                onPress={() => setRespDevice(d)}>
+                <Text style={[styles.pillText, respDevice === d && styles.pillTextActive]}>
+                  {RESPIRATORY_DEVICE_LABELS[d]}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
           <Text style={styles.sectionLabel}>Breathing Type</Text>
           <View style={styles.pillRow}>
             {(['inspiratory', 'expiratory', 'mixed'] as const).map((t) => (
