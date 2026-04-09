@@ -5,11 +5,9 @@
  * - interval: work/rest cycles (HIIT, intervals, sprint intervals, circuit)
  * - duration: simple countdown (steady state, zone 2, tempo)
  * - stopwatch: count up (weight training, other)
- *
- * Future: bike-connected mode adds live metrics alongside the timer.
  */
 import { create } from 'zustand';
-import type { IntervalDetail, Modality, ConditioningSubtype } from '@lauburu/shared';
+import type { ConditioningSubtype, Modality } from '@lauburu/shared';
 
 export type TimerMode = 'interval' | 'duration' | 'stopwatch';
 export type TimerPhase = 'idle' | 'work' | 'rest' | 'running' | 'paused' | 'complete';
@@ -18,47 +16,36 @@ export interface TimerConfig {
   mode: TimerMode;
   subtype: ConditioningSubtype;
   modality?: Modality;
-  /** Interval mode */
   work_s?: number;
   rest_s?: number;
   rounds?: number;
-  /** Duration mode */
   total_s?: number;
 }
 
 interface TimerState {
   config: TimerConfig | null;
   phase: TimerPhase;
-  /** Seconds remaining in current interval/phase */
+  /** Phase before pause (for correct resume) */
+  pausedFrom: TimerPhase;
   remaining_s: number;
-  /** Current round (1-indexed) */
   currentRound: number;
-  /** Total elapsed seconds */
   elapsed_s: number;
-  /** Timestamp when timer was last started/resumed */
-  startedAt: number | null;
 
-  /** Configure and prepare timer */
   setup: (config: TimerConfig) => void;
-  /** Start or resume */
   start: () => void;
-  /** Pause */
   pause: () => void;
-  /** Skip to next interval/round */
   skip: () => void;
-  /** Tick — called every second by the UI interval */
   tick: () => void;
-  /** Reset to idle */
   reset: () => void;
 }
 
 export const useTimerStore = create<TimerState>((set, get) => ({
   config: null,
   phase: 'idle',
+  pausedFrom: 'idle',
   remaining_s: 0,
   currentRound: 0,
   elapsed_s: 0,
-  startedAt: null,
 
   setup: (config) => {
     let remaining = 0;
@@ -70,64 +57,56 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     set({
       config,
       phase: 'idle',
+      pausedFrom: 'idle',
       remaining_s: remaining,
       currentRound: config.mode === 'interval' ? 1 : 0,
       elapsed_s: 0,
-      startedAt: null,
     });
   },
 
   start: () => {
-    const { config, phase } = get();
+    const { config, phase, pausedFrom } = get();
     if (!config) return;
 
     if (phase === 'idle') {
-      // First start
-      const initialPhase: TimerPhase =
-        config.mode === 'interval' ? 'work' :
-        config.mode === 'duration' ? 'running' : 'running';
-      set({ phase: initialPhase, startedAt: Date.now() });
+      const initial: TimerPhase =
+        config.mode === 'interval' ? 'work' : 'running';
+      set({ phase: initial, pausedFrom: 'idle' });
     } else if (phase === 'paused') {
-      set({ phase: get().remaining_s > 0 ? (config.mode === 'interval' ? 'work' : 'running') : 'complete', startedAt: Date.now() });
+      // Resume to the phase we were in before pause
+      set({ phase: pausedFrom });
     }
   },
 
   pause: () => {
-    set({ phase: 'paused', startedAt: null });
+    const { phase } = get();
+    if (phase === 'work' || phase === 'rest' || phase === 'running') {
+      set({ phase: 'paused', pausedFrom: phase });
+    }
   },
 
   skip: () => {
     const { config, phase, currentRound } = get();
     if (!config || phase === 'idle' || phase === 'complete') return;
 
+    // Resolve actual phase (might be paused)
+    const activePhase = phase === 'paused' ? get().pausedFrom : phase;
+
     if (config.mode === 'interval') {
       const maxRounds = config.rounds ?? 1;
-      if (phase === 'work') {
-        // Skip to rest
+      if (activePhase === 'work') {
         if (config.rest_s && config.rest_s > 0) {
-          set({ phase: 'rest', remaining_s: config.rest_s });
+          set({ phase: 'rest', remaining_s: config.rest_s, pausedFrom: 'rest' });
+        } else if (currentRound >= maxRounds) {
+          set({ phase: 'complete', remaining_s: 0 });
         } else {
-          // No rest — next round or complete
-          if (currentRound >= maxRounds) {
-            set({ phase: 'complete', remaining_s: 0 });
-          } else {
-            set({
-              phase: 'work',
-              remaining_s: config.work_s ?? 30,
-              currentRound: currentRound + 1,
-            });
-          }
+          set({ phase: 'work', remaining_s: config.work_s ?? 30, currentRound: currentRound + 1 });
         }
-      } else if (phase === 'rest') {
-        // Skip to next round
+      } else if (activePhase === 'rest') {
         if (currentRound >= maxRounds) {
           set({ phase: 'complete', remaining_s: 0 });
         } else {
-          set({
-            phase: 'work',
-            remaining_s: config.work_s ?? 30,
-            currentRound: currentRound + 1,
-          });
+          set({ phase: 'work', remaining_s: config.work_s ?? 30, currentRound: currentRound + 1 });
         }
       }
     } else {
@@ -146,7 +125,6 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       return;
     }
 
-    // Countdown modes
     const newRemaining = remaining_s - 1;
 
     if (newRemaining > 0) {
@@ -154,13 +132,13 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       return;
     }
 
-    // Timer hit zero
+    // Hit zero — transition
     if (config.mode === 'duration') {
       set({ phase: 'complete', remaining_s: 0, elapsed_s: newElapsed });
       return;
     }
 
-    // Interval mode — transition
+    // Interval transitions
     const maxRounds = config.rounds ?? 1;
     if (phase === 'work') {
       if (config.rest_s && config.rest_s > 0) {
@@ -168,23 +146,13 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       } else if (currentRound >= maxRounds) {
         set({ phase: 'complete', remaining_s: 0, elapsed_s: newElapsed });
       } else {
-        set({
-          phase: 'work',
-          remaining_s: config.work_s ?? 30,
-          currentRound: currentRound + 1,
-          elapsed_s: newElapsed,
-        });
+        set({ phase: 'work', remaining_s: config.work_s ?? 30, currentRound: currentRound + 1, elapsed_s: newElapsed });
       }
     } else if (phase === 'rest') {
       if (currentRound >= maxRounds) {
         set({ phase: 'complete', remaining_s: 0, elapsed_s: newElapsed });
       } else {
-        set({
-          phase: 'work',
-          remaining_s: config.work_s ?? 30,
-          currentRound: currentRound + 1,
-          elapsed_s: newElapsed,
-        });
+        set({ phase: 'work', remaining_s: config.work_s ?? 30, currentRound: currentRound + 1, elapsed_s: newElapsed });
       }
     }
   },
@@ -193,10 +161,10 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     set({
       config: null,
       phase: 'idle',
+      pausedFrom: 'idle',
       remaining_s: 0,
       currentRound: 0,
       elapsed_s: 0,
-      startedAt: null,
     });
   },
 }));

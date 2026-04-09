@@ -190,7 +190,22 @@ export default function TimerScreen() {
         )}
 
         {phase === 'complete' && (
-          <View style={styles.controlRow}>
+          <View style={styles.completeSection}>
+            {/* Session summary */}
+            <View style={styles.summaryCard}>
+              <Text style={styles.summaryTitle}>Session Complete</Text>
+              <Text style={styles.summaryLine}>
+                {CONDITIONING_SUBTYPE_LABELS[config.subtype]}
+                {config.modality ? ` · ${MODALITY_LABELS[config.modality]}` : ''}
+              </Text>
+              <Text style={styles.summaryLine}>
+                {formatElapsed(elapsed)} total
+                {config.mode === 'interval' ? ` · ${config.rounds ?? 1} rounds` : ''}
+              </Text>
+              <Text style={styles.summaryLine}>
+                Will log as: {Math.max(1, Math.round(elapsed / 60))}min conditioning
+              </Text>
+            </View>
             <Pressable style={[styles.mainBtn, { backgroundColor: '#4ade80' }]} onPress={handleComplete}>
               <Text style={styles.mainBtnText}>Save & Close</Text>
             </Pressable>
@@ -201,7 +216,7 @@ export default function TimerScreen() {
         )}
       </View>
 
-      {/* Close button (always visible) */}
+      {/* Close / discard */}
       {phase !== 'complete' && (
         <Pressable style={styles.closeBtn} onPress={handleDiscard}>
           <Text style={styles.closeBtnText}>
@@ -210,8 +225,10 @@ export default function TimerScreen() {
         </Pressable>
       )}
 
-      {/* Future: bike metrics would appear here */}
-      {/* <BikeMetrics rpm={null} watts={null} calories={null} /> */}
+      {/* Future machine connection indicator */}
+      <View style={styles.machineStatus}>
+        <Text style={styles.machineText}>Phone timer · No machine connected</Text>
+      </View>
     </View>
   );
 }
@@ -260,4 +277,24 @@ const styles = StyleSheet.create({
 
   closeBtn: { position: 'absolute', bottom: 50, padding: 12 },
   closeBtnText: { fontSize: 14, color: '#666' },
+
+  completeSection: { alignItems: 'center', gap: 16, width: '100%' },
+  summaryCard: {
+    backgroundColor: 'rgba(74,222,128,0.1)',
+    borderRadius: 12,
+    padding: 20,
+    width: '100%',
+    alignItems: 'center',
+    gap: 6,
+  },
+  summaryTitle: { fontSize: 20, fontWeight: '700', color: '#4ade80' },
+  summaryLine: { fontSize: 14, opacity: 0.7 },
+
+  machineStatus: {
+    position: 'absolute',
+    top: 60,
+    right: 20,
+    opacity: 0.3,
+  },
+  machineText: { fontSize: 11 },
 });
