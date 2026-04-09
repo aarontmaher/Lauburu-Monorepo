@@ -14,7 +14,8 @@ import { useTimerStore } from '../src/store/timer-store';
 import { useTrainingStore } from '../src/store/training-store';
 import { useHealthStore } from '../src/store/health-store';
 import { useAuthStore } from '../src/store/auth-store';
-import { CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS } from '@lauburu/shared';
+import { CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, HR_ZONES, getHRZone, REST_COLOR } from '@lauburu/shared';
+import type { HRZone } from '@lauburu/shared';
 
 // Haptic feedback — lazy loaded, gracefully degraded
 function triggerHaptic(type: 'transition' | 'complete') {
@@ -71,6 +72,38 @@ const PHASE_LABELS: Record<string, string> = {
   paused: 'PAUSED',
   complete: 'DONE',
 };
+
+/**
+ * HR zone display — shows colored zone badge when HR is available.
+ * When HR is null (no Apple Watch / no connected device), shows
+ * a placeholder with zone color strip for context.
+ */
+function HRZoneDisplay({ currentHR }: { currentHR: number | null }) {
+  if (currentHR != null) {
+    const zone = getHRZone(currentHR);
+    return (
+      <RNView style={[styles.hrZone, { borderColor: zone.color + '40' }]}>
+        <Text style={styles.hrZoneLabel}>Zone {zone.zone}</Text>
+        <Text style={[styles.hrZoneValue, { color: zone.color }]}>
+          {Math.round(currentHR)} bpm
+        </Text>
+        <Text style={[styles.hrZoneNote, { color: zone.color }]}>{zone.label}</Text>
+      </RNView>
+    );
+  }
+
+  // No HR data — show zone strip as reference
+  return (
+    <RNView style={styles.hrZone}>
+      <RNView style={styles.zoneStrip}>
+        {HR_ZONES.map((z) => (
+          <RNView key={z.zone} style={[styles.zoneDot, { backgroundColor: z.color }]} />
+        ))}
+      </RNView>
+      <Text style={styles.hrZoneNote}>Apple Watch for live HR zones</Text>
+    </RNView>
+  );
+}
 
 export default function TimerScreen() {
   const router = useRouter();
@@ -188,12 +221,14 @@ export default function TimerScreen() {
         <Text style={styles.elapsed}>Total: {formatElapsed(elapsed)}</Text>
       )}
 
-      {/* HR zone placeholder — future live data */}
-      {isActive && (
-        <RNView style={styles.hrZone}>
-          <Text style={styles.hrZoneLabel}>HR Zone</Text>
-          <Text style={styles.hrZoneValue}>—</Text>
-          <Text style={styles.hrZoneNote}>Connect Apple Watch for live HR</Text>
+      {/* HR zone — shows live zone when HR available, placeholder otherwise */}
+      {isActive && phase !== 'rest' && (
+        <HRZoneDisplay currentHR={null} />
+      )}
+      {phase === 'rest' && (
+        <RNView style={[styles.hrZone, { borderColor: REST_COLOR + '30' }]}>
+          <Text style={[styles.hrZoneValue, { color: REST_COLOR }]}>REST</Text>
+          <Text style={styles.hrZoneNote}>Recover</Text>
         </RNView>
       )}
 
@@ -300,6 +335,8 @@ const styles = StyleSheet.create({
   hrZoneLabel: { fontSize: 10, color: '#999', textTransform: 'uppercase', letterSpacing: 1 },
   hrZoneValue: { fontSize: 20, fontWeight: '700', color: '#666' },
   hrZoneNote: { fontSize: 10, color: '#555' },
+  zoneStrip: { flexDirection: 'row', gap: 4, marginBottom: 4 },
+  zoneDot: { width: 16, height: 6, borderRadius: 3 },
 
   controls: { marginTop: 32, alignItems: 'center', gap: 16 },
   controlRow: { flexDirection: 'row', gap: 16 },

@@ -14,3 +14,5 @@ export { mergeTrainingSessions } from './merge-training';
 export { assembleTrainingExample } from './training-example';
 export { buildDayPlanSummary, getDayOfWeek } from './plan-status';
 export type { PlannedWithStatus, DayPlanSummary, DayPlanStatus, PlannedSessionStatus } from './plan-status';
+export { HR_ZONES, REST_COLOR, getHRZone, getHRZoneColor, estimateMaxHR } from './hr-zones';
+export type { HRZone } from './hr-zones';

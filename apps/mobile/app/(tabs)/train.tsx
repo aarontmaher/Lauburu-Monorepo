@@ -68,6 +68,12 @@ function EntryForm({
   const timerSetup = useTimerStore((s) => s.setup);
   const router = useRouter();
 
+  // Quick mode: simplified first choice
+  type QuickMode = 'grappling' | 'hiit' | 'zone2' | 'other' | null;
+  const [quickMode, setQuickMode] = useState<QuickMode>(
+    editing ? null : null, // start fresh
+  );
+
   const [sessionType, setSessionType] = useState<SessionType>(editing?.type ?? 'class');
   const [intensity, setIntensity] = useState<SessionIntensity>(editing?.intensity ?? 'moderate');
   const [duration, setDuration] = useState(editing?.duration_min ?? 60);
@@ -76,7 +82,6 @@ function EntryForm({
   const [notes, setNotes] = useState(editing?.notes ?? '');
   const [selectedTags, setSelectedTags] = useState<string[]>(editing?.tags ?? ['no-gi']);
 
-  // Conditioning state
   const [condSubtype, setCondSubtype] = useState<ConditioningSubtype>(
     editing?.conditioning?.subtype ?? 'hiit',
   );
@@ -95,6 +100,24 @@ function EntryForm({
   const isWeightTraining = isConditioning && condSubtype === 'weight_training';
   const isRespiratory = isConditioning && ['respiratory_training', 'breathing_warmup', 'recovery_breathing'].includes(condSubtype);
   const [showMore, setShowMore] = useState(false);
+
+  // Quick mode handlers
+  const selectQuickMode = (mode: QuickMode) => {
+    setQuickMode(mode);
+    if (mode === 'grappling') {
+      setSessionType('class');
+      setCondSubtype('hiit');
+    } else if (mode === 'hiit') {
+      setSessionType('conditioning');
+      setCondSubtype('hiit');
+    } else if (mode === 'zone2') {
+      setSessionType('conditioning');
+      setCondSubtype('zone2');
+      setDuration(30);
+    } else if (mode === 'other') {
+      // Show full type selector
+    }
+  };
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -147,22 +170,67 @@ function EntryForm({
 
   return (
     <View style={styles.formSection}>
-      {/* Type */}
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Type</Text>
-        <View style={styles.pillRow}>
-          {SESSION_TYPES.map((t) => (
-            <Pressable
-              key={t}
-              style={[styles.pill, sessionType === t && styles.pillActive]}
-              onPress={() => setSessionType(t)}>
-              <Text style={[styles.pillText, sessionType === t && styles.pillTextActive]}>
-                {SESSION_TYPE_LABELS[t]}
-              </Text>
+      {/* Quick mode — simplified first choice */}
+      {!editing && !quickMode && (
+        <View style={styles.section}>
+          <View style={styles.quickRow}>
+            <Pressable style={styles.quickBtn} onPress={() => selectQuickMode('grappling')}>
+              <Text style={styles.quickBtnEmoji}>🥋</Text>
+              <Text style={styles.quickBtnText}>Grappling</Text>
             </Pressable>
-          ))}
+            <Pressable style={styles.quickBtn} onPress={() => selectQuickMode('hiit')}>
+              <Text style={styles.quickBtnEmoji}>⚡</Text>
+              <Text style={styles.quickBtnText}>HIIT</Text>
+            </Pressable>
+            <Pressable style={styles.quickBtn} onPress={() => selectQuickMode('zone2')}>
+              <Text style={styles.quickBtnEmoji}>🫀</Text>
+              <Text style={styles.quickBtnText}>Zone 2</Text>
+            </Pressable>
+            <Pressable style={styles.quickBtn} onPress={() => selectQuickMode('other')}>
+              <Text style={styles.quickBtnEmoji}>+</Text>
+              <Text style={styles.quickBtnText}>Other</Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
+      )}
+
+      {/* Grappling sub-types */}
+      {quickMode === 'grappling' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Grappling</Text>
+          <View style={styles.pillRow}>
+            {(['class', 'sparring', 'drilling', 'wrestling', 'comp', 'open_mat'] as SessionType[]).map((t) => (
+              <Pressable
+                key={t}
+                style={[styles.pill, sessionType === t && styles.pillActive]}
+                onPress={() => setSessionType(t)}>
+                <Text style={[styles.pillText, sessionType === t && styles.pillTextActive]}>
+                  {SESSION_TYPE_LABELS[t]}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Full type selector for editing or "other" mode */}
+      {(editing || quickMode === 'other') && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Type</Text>
+          <View style={styles.pillRow}>
+            {SESSION_TYPES.map((t) => (
+              <Pressable
+                key={t}
+                style={[styles.pill, sessionType === t && styles.pillActive]}
+                onPress={() => setSessionType(t)}>
+                <Text style={[styles.pillText, sessionType === t && styles.pillTextActive]}>
+                  {SESSION_TYPE_LABELS[t]}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      )}
 
       {/* Conditioning subtype — grouped for readability */}
       {isConditioning && (
@@ -733,6 +801,19 @@ const styles = StyleSheet.create({
   },
   textArea: { minHeight: 80 },
 
+  quickRow: { flexDirection: 'row', gap: 10, justifyContent: 'center' },
+  quickBtn: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    gap: 4,
+  },
+  quickBtnEmoji: { fontSize: 24 },
+  quickBtnText: { fontSize: 13, fontWeight: '600', color: '#ccc' },
   moreToggle: { fontSize: 13, color: '#888', paddingVertical: 4 },
   submitRow: { flexDirection: 'row', gap: 10 },
   submitButton: {
