@@ -262,6 +262,23 @@ export const SEGMENT_TYPE_LABELS: Record<SegmentType, string> = {
   other: 'Other',
 };
 
+export type PartnerFormat =
+  | 'group_training'
+  | 'group_of_3'
+  | 'one_partner'
+  | 'rotating_partners'
+  | 'solo'
+  | 'other';
+
+export const PARTNER_FORMAT_LABELS: Record<PartnerFormat, string> = {
+  group_training: 'Group',
+  group_of_3: 'Group of 3',
+  one_partner: 'One partner',
+  rotating_partners: 'Rotating',
+  solo: 'Solo',
+  other: 'Other',
+};
+
 /** A single segment within a session */
 export interface SessionSegment {
   id: string;
@@ -270,6 +287,40 @@ export interface SessionSegment {
   intensity?: SessionIntensity;
   tags: string[];
   notes?: string;
+
+  /** Optional deeper detail — progressive disclosure */
+  partner_format?: PartnerFormat;
+  rounds?: number;
+  round_length_min?: number;
+  topic_worked?: string;
+  positional_scenario?: string;
+
+  /**
+   * Future mapping to grappling map / control centre.
+   * Not populated yet — insertion point for future integration.
+   * When populated, links this segment to a specific technique/position
+   * in the Lauburu Grappling Map.
+   */
+  map_ref?: {
+    technique_key?: string;
+    position_key?: string;
+    node_id?: string;
+  };
+}
+
+/** Default auto-detected grappling session structure */
+export const DEFAULT_GRAPPLING_SEGMENTS: Omit<SessionSegment, 'id'>[] = [
+  { type: 'technique', duration_min: 25, tags: [] },
+  { type: 'positional', duration_min: 20, tags: [] },
+  { type: 'live_rounds', duration_min: 25, tags: [] },
+];
+
+/** Generate segments with IDs */
+export function createDefaultSegments(): SessionSegment[] {
+  return DEFAULT_GRAPPLING_SEGMENTS.map((s, i) => ({
+    ...s,
+    id: `seg-${Date.now()}-${i}`,
+  }));
 }
 
 // ---------------------------------------------------------------------------

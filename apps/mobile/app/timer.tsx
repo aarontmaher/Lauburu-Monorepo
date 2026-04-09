@@ -181,7 +181,7 @@ export default function TimerScreen() {
         } : undefined,
       },
     });
-    if (user?.id) syncData(user.id);
+    if (user?.id) syncData(user.id).catch(() => {});
     reset();
     router.back();
   };

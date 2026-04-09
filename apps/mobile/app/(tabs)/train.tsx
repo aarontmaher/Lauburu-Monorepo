@@ -11,13 +11,13 @@ import { Text, View } from '@/components/Themed';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
-import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment } from '@lauburu/shared';
+import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat } from '@lauburu/shared';
 import {
   SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS,
   CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, LIFTING_FOCUS_LABELS,
-  RESPIRATORY_DEVICE_LABELS, HIIT_PRESETS,
+  RESPIRATORY_DEVICE_LABELS, HIIT_PRESETS, PARTNER_FORMAT_LABELS,
   buildDayPlanSummary, SCHEDULE_SESSION_LABELS,
-  SESSION_PRESETS, SEGMENT_TYPE_LABELS,
+  SESSION_PRESETS, SEGMENT_TYPE_LABELS, createDefaultSegments,
 } from '@lauburu/shared';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useTimerStore } from '../../src/store/timer-store';
@@ -121,19 +121,24 @@ function EntryForm({
   const [showMore, setShowMore] = useState(false);
   const [selectedHIITPreset, setSelectedHIITPreset] = useState('30_30');
 
-  // Segment state (grappling custom segments)
+  // Segment state — auto-populated for grappling
   const [segments, setSegments] = useState<SessionSegment[]>(editing?.segments ?? []);
-  const [addingSegType, setAddingSegType] = useState<import('@lauburu/shared').SegmentType>('technique');
+  const [expandedSegId, setExpandedSegId] = useState<string | null>(null);
 
-  const addSegment = () => {
+  const addSegment = (type: import('@lauburu/shared').SegmentType) => {
     setSegments((prev) => [
       ...prev,
-      { id: `seg-${Date.now()}`, type: addingSegType, duration_min: 15, tags: [] },
+      { id: `seg-${Date.now()}`, type, duration_min: 15, tags: [] },
     ]);
   };
 
   const removeSegment = (id: string) => {
     setSegments((prev) => prev.filter((s) => s.id !== id));
+    if (expandedSegId === id) setExpandedSegId(null);
+  };
+
+  const updateSegment = (id: string, updates: Partial<SessionSegment>) => {
+    setSegments((prev) => prev.map((s) => s.id === id ? { ...s, ...updates } : s));
   };
 
   // Top mode handlers
@@ -141,6 +146,10 @@ function EntryForm({
     setTopMode(mode);
     if (mode === 'grappling') {
       setSessionType('class');
+      // Auto-detect common structure
+      if (segments.length === 0 && !editing) {
+        setSegments(createDefaultSegments());
+      }
     } else if (mode === 'hiit') {
       setSessionType('conditioning');
       setCondSubtype('hiit');
@@ -208,7 +217,7 @@ function EntryForm({
       addSession(input);
     }
 
-    if (user?.id) syncData(user.id);
+    if (user?.id) syncData(user.id).catch(() => {});
     onDone();
   };
 
@@ -242,48 +251,115 @@ function EntryForm({
         </Pressable>
       )}
 
-      {/* Grappling — custom segment building */}
+      {/* Grappling — auto-detected structure, editable */}
       {topMode === 'grappling' && (
         <View style={styles.section}>
-          {/* Current segments */}
-          {segments.map((seg, i) => (
-            <View key={seg.id} style={styles.segmentRow}>
-              <Text style={styles.segmentNum}>{i + 1}</Text>
-              <View style={styles.segmentInfo}>
-                <Text style={styles.segmentType}>{SEGMENT_TYPE_LABELS[seg.type]}</Text>
-                <Text style={styles.segmentMeta}>{seg.duration_min}min</Text>
-              </View>
-              <Pressable onPress={() => removeSegment(seg.id)}>
-                <Text style={styles.segmentRemove}>✕</Text>
-              </Pressable>
-            </View>
-          ))}
+          <Text style={styles.sectionLabel}>Session parts</Text>
+          <Text style={styles.segmentHint}>
+            {segments.length > 0 ? 'Tap to relabel · expand for details' : 'Common structure auto-filled'}
+          </Text>
 
-          {/* Add segment */}
-          <View style={styles.addSegRow}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flex: 1 }}>
-              <View style={styles.pillRow}>
-                {(['technique', 'drilling', 'positional', 'wrestling', 'takedowns',
-                  'live_rounds', 'open_mat', 'comp_prep', 'conditioning_finisher'] as import('@lauburu/shared').SegmentType[]).map((st) => (
-                  <Pressable
-                    key={st}
-                    style={[styles.pillSmall, addingSegType === st && styles.pillActive]}
-                    onPress={() => setAddingSegType(st)}>
-                    <Text style={[styles.pillSmallText, addingSegType === st && styles.pillTextActive]}>
-                      {SEGMENT_TYPE_LABELS[st]}
+          {/* Editable segment cards */}
+          {segments.map((seg, i) => {
+            const isExpanded = expandedSegId === seg.id;
+            return (
+              <View key={seg.id}>
+                {/* Compact row — tap type to cycle, tap card to expand */}
+                <Pressable
+                  style={[styles.segmentRow, isExpanded && styles.segmentRowExpanded]}
+                  onPress={() => setExpandedSegId(isExpanded ? null : seg.id)}>
+                  <Text style={styles.segmentNum}>{i + 1}</Text>
+                  <View style={styles.segmentInfo}>
+                    <Text style={styles.segmentType}>{SEGMENT_TYPE_LABELS[seg.type]}</Text>
+                    <Text style={styles.segmentMeta}>
+                      {seg.duration_min}min
+                      {seg.partner_format ? ` · ${PARTNER_FORMAT_LABELS[seg.partner_format]}` : ''}
+                      {seg.rounds ? ` · ${seg.rounds}rds` : ''}
                     </Text>
+                  </View>
+                  <Text style={styles.segmentChevron}>{isExpanded ? '▾' : '▸'}</Text>
+                  <Pressable onPress={() => removeSegment(seg.id)} hitSlop={8}>
+                    <Text style={styles.segmentRemove}>✕</Text>
                   </Pressable>
-                ))}
-              </View>
-            </ScrollView>
-            <Pressable style={styles.scheduleAddBtn} onPress={addSegment}>
-              <Text style={styles.scheduleAddBtnText}>+ Add</Text>
-            </Pressable>
-          </View>
+                </Pressable>
 
-          {segments.length === 0 && (
-            <Text style={styles.segmentHint}>Add parts to build your session</Text>
-          )}
+                {/* Expanded detail — progressive disclosure */}
+                {isExpanded && (
+                  <View style={styles.segmentDetail}>
+                    {/* Quick relabel */}
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                      <View style={styles.pillRow}>
+                        {(['technique', 'drilling', 'positional', 'wrestling', 'takedowns',
+                          'live_rounds', 'open_mat', 'comp_prep', 'conditioning_finisher', 'other'] as import('@lauburu/shared').SegmentType[]).map((st) => (
+                          <Pressable
+                            key={st}
+                            style={[styles.pillSmall, seg.type === st && styles.pillActive]}
+                            onPress={() => updateSegment(seg.id, { type: st })}>
+                            <Text style={[styles.pillSmallText, seg.type === st && styles.pillTextActive]}>
+                              {SEGMENT_TYPE_LABELS[st]}
+                            </Text>
+                          </Pressable>
+                        ))}
+                      </View>
+                    </ScrollView>
+
+                    {/* Duration + rounds */}
+                    <View style={styles.rowInputs}>
+                      <View style={styles.halfInput}>
+                        <Text style={styles.sectionLabel}>Duration</Text>
+                        <View style={styles.pillRow}>
+                          {[10, 15, 20, 25, 30].map((d) => (
+                            <Pressable key={d}
+                              style={[styles.pillSmall, seg.duration_min === d && styles.pillActive]}
+                              onPress={() => updateSegment(seg.id, { duration_min: d })}>
+                              <Text style={[styles.pillSmallText, seg.duration_min === d && styles.pillTextActive]}>{d}m</Text>
+                            </Pressable>
+                          ))}
+                        </View>
+                      </View>
+                    </View>
+
+                    {/* Partner format */}
+                    <View>
+                      <Text style={styles.sectionLabel}>Format</Text>
+                      <View style={styles.pillRow}>
+                        {(['group_training', 'one_partner', 'rotating_partners', 'solo'] as PartnerFormat[]).map((pf) => (
+                          <Pressable key={pf}
+                            style={[styles.pillSmall, seg.partner_format === pf && styles.pillActive]}
+                            onPress={() => updateSegment(seg.id, { partner_format: seg.partner_format === pf ? undefined : pf })}>
+                            <Text style={[styles.pillSmallText, seg.partner_format === pf && styles.pillTextActive]}>
+                              {PARTNER_FORMAT_LABELS[pf]}
+                            </Text>
+                          </Pressable>
+                        ))}
+                      </View>
+                    </View>
+
+                    {/* Topic worked — free text */}
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Position or topic worked"
+                      placeholderTextColor="#555"
+                      value={seg.topic_worked ?? ''}
+                      onChangeText={(t) => updateSegment(seg.id, { topic_worked: t || undefined })}
+                    />
+                  </View>
+                )}
+              </View>
+            );
+          })}
+
+          {/* Add segment — compact */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={styles.pillRow}>
+              {(['technique', 'drilling', 'positional', 'wrestling', 'takedowns',
+                'live_rounds', 'conditioning_finisher'] as import('@lauburu/shared').SegmentType[]).map((st) => (
+                <Pressable key={st} style={styles.pillSmall} onPress={() => addSegment(st)}>
+                  <Text style={styles.pillSmallText}>+ {SEGMENT_TYPE_LABELS[st]}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </ScrollView>
         </View>
       )}
 
@@ -859,7 +935,7 @@ export default function TrainScreen() {
       intensity,
       duration_min: 60,
     });
-    if (user?.id) syncData(user.id);
+    if (user?.id) syncData(user.id).catch(() => {});
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 3000);
   };
@@ -897,7 +973,7 @@ export default function TrainScreen() {
 
   const handleDelete = (id: string) => {
     removeSession(id);
-    if (user?.id) syncData(user.id);
+    if (user?.id) syncData(user.id).catch(() => {});
   };
 
   return (
@@ -1031,8 +1107,19 @@ const styles = StyleSheet.create({
   segmentInfo: { flex: 1 },
   segmentType: { fontSize: 13, fontWeight: '600' },
   segmentMeta: { fontSize: 11, opacity: 0.5 },
+  segmentRowExpanded: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, marginBottom: 0 },
+  segmentChevron: { fontSize: 12, opacity: 0.4, marginRight: 4 },
   segmentRemove: { fontSize: 13, color: '#ff6b6b', padding: 4 },
-  segmentHint: { fontSize: 12, opacity: 0.4, textAlign: 'center', paddingVertical: 8 },
+  segmentDetail: {
+    backgroundColor: 'rgba(255,255,255,0.02)',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    marginBottom: 4,
+    gap: 8,
+  },
+  segmentHint: { fontSize: 12, opacity: 0.4, marginBottom: 4 },
   addSegRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 },
   pillSmall: { paddingVertical: 4, paddingHorizontal: 8, borderRadius: 12, borderWidth: 1, borderColor: '#444' },
   pillSmallText: { fontSize: 11, color: '#999' },
