@@ -158,14 +158,25 @@ function EntryForm({
         </View>
       </View>
 
-      {/* Conditioning subtype */}
+      {/* Conditioning subtype — grouped for readability */}
       {isConditioning && (
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Conditioning Type</Text>
+          <Text style={styles.sectionLabel}>Cardio</Text>
           <View style={styles.pillRow}>
-            {(['hiit', 'intervals', 'sprint_intervals', 'steady_state', 'zone2', 'tempo',
-              'weight_training', 'circuit', 'mobility', 'recovery_cardio',
-              'respiratory_training', 'other'] as ConditioningSubtype[]).map((st) => (
+            {(['hiit', 'intervals', 'sprint_intervals', 'steady_state', 'zone2', 'tempo', 'circuit', 'recovery_cardio'] as ConditioningSubtype[]).map((st) => (
+              <Pressable
+                key={st}
+                style={[styles.pill, condSubtype === st && styles.pillActive]}
+                onPress={() => setCondSubtype(st)}>
+                <Text style={[styles.pillText, condSubtype === st && styles.pillTextActive]}>
+                  {CONDITIONING_SUBTYPE_LABELS[st]}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+          <Text style={[styles.sectionLabel, { marginTop: 8 }]}>Strength / Recovery</Text>
+          <View style={styles.pillRow}>
+            {(['weight_training', 'mobility', 'respiratory_training', 'other'] as ConditioningSubtype[]).map((st) => (
               <Pressable
                 key={st}
                 style={[styles.pill, condSubtype === st && styles.pillActive]}

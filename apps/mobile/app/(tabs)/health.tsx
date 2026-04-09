@@ -207,6 +207,14 @@ function CoachingCard({ coaching }: { coaching: CoachingResponse }) {
         <Text style={styles.coachSuggestion}>{coaching.grappling.suggestion}</Text>
       </View>
 
+      {/* Plan status */}
+      {coaching.plan && coaching.plan.status !== 'no_plan' && (
+        <View style={styles.coachSection}>
+          <Text style={styles.coachSectionLabel}>Schedule</Text>
+          <Text style={styles.coachBody}>{coaching.plan.summary}</Text>
+        </View>
+      )}
+
       {/* Recovery actions */}
       {coaching.recovery.actions.length > 0 && (
         <View style={styles.coachSection}>
@@ -573,44 +581,65 @@ export default function HealthScreen() {
           </Text>
         </View>
 
-        {!isAvailable && (
+        {!isAvailable && !inExpoGo && (
           <Text style={styles.unavailNote}>
             {Platform.OS === 'ios'
-              ? 'HealthKit requires a real device or simulator with Health app. Run expo prebuild first.'
-              : 'Health Connect requires Android 14+ or the Health Connect app from Play Store.'}
+              ? 'HealthKit is not available on this device. Try running on a device or simulator with the Health app.'
+              : 'Health Connect is not available. Requires Android 14+ or the Health Connect app.'}
           </Text>
         )}
 
         {isAvailable && !anyAuthorized && (
-          <Pressable style={styles.connectButton} onPress={handleConnect}>
-            <Text style={styles.connectText}>Connect {platformName}</Text>
-          </Pressable>
+          <>
+            <Text style={styles.connectNote}>
+              Connect to read heart rate, HRV, sleep, steps, calories, and workouts.
+            </Text>
+            <Pressable style={styles.connectButton} onPress={handleConnect}>
+              <Text style={styles.connectText}>Connect {platformName}</Text>
+            </Pressable>
+          </>
         )}
 
         {isAvailable && anyAuthorized && (
           <>
             <View style={styles.syncRow}>
-              <Text style={styles.syncLabel}>
-                Last sync:{' '}
-                {lastSyncAt
-                  ? new Date(lastSyncAt).toLocaleTimeString()
-                  : 'Never'}
-              </Text>
+              <View>
+                <Text style={styles.syncLabel}>
+                  {syncing
+                    ? 'Syncing health data...'
+                    : lastSyncAt
+                      ? `Last sync: ${new Date(lastSyncAt).toLocaleTimeString()}`
+                      : 'Not synced yet'}
+                </Text>
+                {days.length > 0 && !syncing && (
+                  <Text style={styles.syncDayCount}>
+                    {days.length} day{days.length !== 1 ? 's' : ''} of data
+                  </Text>
+                )}
+              </View>
               <Pressable
-                style={styles.syncButton}
+                style={[styles.syncButton, syncing && { opacity: 0.5 }]}
                 onPress={handleSync}
                 disabled={syncing}>
                 {syncing ? (
                   <ActivityIndicator size="small" color="#e8ff47" />
                 ) : (
-                  <Text style={styles.syncButtonText}>Sync Now</Text>
+                  <Text style={styles.syncButtonText}>
+                    {lastSyncAt ? 'Refresh' : 'Sync Now'}
+                  </Text>
                 )}
               </Pressable>
             </View>
 
+            {days.length === 0 && !syncing && lastSyncAt && (
+              <Text style={styles.noDataNote}>
+                No health data found. Add sample data in the Health app, then sync again.
+              </Text>
+            )}
+
             {authStatus !== 'member' && (
               <Text style={styles.guestWarning}>
-                Sign in on Settings tab to save health data to your account.
+                Sign in to save health data to your account.
               </Text>
             )}
           </>
@@ -923,6 +952,9 @@ const styles = StyleSheet.create({
   coachPrefText: { fontSize: 11, color: '#e8ff47', opacity: 0.6 },
   coachConfidence: { fontSize: 10, opacity: 0.3, marginTop: 6 },
   gateText: { fontSize: 13, opacity: 0.5, lineHeight: 18 },
+  connectNote: { fontSize: 13, opacity: 0.6, lineHeight: 18 },
+  syncDayCount: { fontSize: 11, opacity: 0.4, marginTop: 2 },
+  noDataNote: { fontSize: 13, opacity: 0.5, lineHeight: 18, fontStyle: 'italic' },
 
   // Expo Go
   expoGoCard: {

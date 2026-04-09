@@ -35,8 +35,9 @@ function ReadinessCard() {
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Today's Readiness</Text>
         <Text style={styles.cardBody}>
-          Connect a health source on the Health tab to see your training
-          readiness.
+          {lastSyncAt
+            ? 'Sync more health data for personalized readiness.'
+            : 'Connect Apple Health on the Health tab, then sync to see your training readiness.'}
         </Text>
       </View>
     );
