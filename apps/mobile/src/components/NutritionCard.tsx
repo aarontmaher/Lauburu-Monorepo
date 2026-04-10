@@ -16,7 +16,7 @@
  * renders for fields that actually have a target AND a value.
  */
 import { useState } from 'react';
-import { StyleSheet, Pressable, TextInput, ActivityIndicator } from 'react-native';
+import { StyleSheet, Pressable, TextInput, ActivityIndicator, ScrollView } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useNutritionStore } from '../store/nutrition-store';
 import { NUTRITION_SOURCE_LABELS } from '@lauburu/shared';
@@ -101,6 +101,9 @@ export function NutritionCard() {
   const targets = useNutritionStore((s) => s.targets);
   const updateToday = useNutritionStore((s) => s.updateToday);
   const addToToday = useNutritionStore((s) => s.addToToday);
+  const favorites = useNutritionStore((s) => s.favorites);
+  const addFavorite = useNutritionStore((s) => s.addFavorite);
+  const removeFavorite = useNutritionStore((s) => s.removeFavorite);
 
   const [editing, setEditing] = useState(false);
   const [entryMode, setEntryMode] = useState<EntryMode>('manual');
@@ -144,11 +147,35 @@ export function NutritionCard() {
     if (!Number.isFinite(grams) || grams <= 0) return;
     const macros = macrosForGrams(barcodeLookup.product, grams);
     addToToday(macros, 'barcode');
+    // Save the product to favorites for quick re-add next time —
+    // dedupe + MRU ordering + grams memory is handled by the store.
+    addFavorite(barcodeLookup.product, grams);
     // Reset barcode state and exit editing so the user sees updated totals.
     setBarcodeInput('');
     setBarcodeLookup({ phase: 'idle' });
     setEntryMode('manual');
     setEditing(false);
+  };
+
+  /**
+   * Tap a saved favorite → skip the network lookup and go straight to
+   * the review state with the cached product + its last grams, so
+   * re-adding a regular food is instant and offline-friendly.
+   */
+  const openFavoriteForReview = (favoriteIndex: number) => {
+    const fav = favorites[favoriteIndex];
+    if (!fav) return;
+    setBarcodeInput(fav.product.barcode);
+    setBarcodeLookup({
+      phase: 'found',
+      product: fav.product,
+      grams:
+        fav.last_grams != null
+          ? String(fav.last_grams)
+          : fav.product.serving_size_g != null
+            ? String(fav.product.serving_size_g)
+            : '100',
+    });
   };
 
   const resetBarcodeLookup = () => {
@@ -304,10 +331,59 @@ export function NutritionCard() {
           {/* Barcode flow — real Open Food Facts lookup + review + add */}
           {entryMode === 'barcode' && (
             <View style={styles.barcodePanel}>
-              {/* Idle / error state — barcode input + Lookup button */}
+              {/* Idle / error state — favorites strip + barcode input + Lookup */}
               {(barcodeLookup.phase === 'idle' ||
                 barcodeLookup.phase === 'error') && (
                 <>
+                  {/* Quick-add favorites strip — saved products from
+                      previous scans. Tap to jump straight to review
+                      with the cached product + last grams, no network.
+                      Most-recently-used first, capped at 12 in the
+                      store. Hidden entirely when the list is empty. */}
+                  {favorites.length > 0 && (
+                    <View style={styles.favoritesBlock}>
+                      <Text style={styles.favoritesLabel}>Quick add</Text>
+                      <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        keyboardShouldPersistTaps="handled">
+                        <View style={styles.favoritesRow}>
+                          {favorites.map((fav, i) => (
+                            <Pressable
+                              key={fav.product.barcode}
+                              style={styles.favoritePill}
+                              onPress={() => openFavoriteForReview(i)}
+                              onLongPress={() =>
+                                removeFavorite(fav.product.barcode)
+                              }
+                              delayLongPress={500}>
+                              <Text
+                                style={styles.favoritePillName}
+                                numberOfLines={1}>
+                                {fav.product.name}
+                              </Text>
+                              {fav.product.brand ? (
+                                <Text
+                                  style={styles.favoritePillBrand}
+                                  numberOfLines={1}>
+                                  {fav.product.brand}
+                                </Text>
+                              ) : null}
+                              {fav.last_grams != null ? (
+                                <Text style={styles.favoritePillGrams}>
+                                  {fav.last_grams}g
+                                </Text>
+                              ) : null}
+                            </Pressable>
+                          ))}
+                        </View>
+                      </ScrollView>
+                      <Text style={styles.favoritesHint}>
+                        Long-press a favorite to remove it.
+                      </Text>
+                    </View>
+                  )}
+
                   <Text style={styles.barcodeHint}>
                     Type the barcode from a packaged item. Lookup uses the
                     free Open Food Facts database — accurate for well-known
@@ -670,6 +746,40 @@ const styles = StyleSheet.create({
   productBrand: { fontSize: 12, opacity: 0.5, marginTop: 2 },
   productServing: { fontSize: 11, opacity: 0.4, marginTop: 2 },
   productResetText: { color: '#ff6b6b', fontSize: 16, padding: 4 },
+
+  // Barcode favorites strip
+  favoritesBlock: {
+    gap: 6,
+    paddingBottom: 4,
+    marginBottom: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.06)',
+  },
+  favoritesLabel: {
+    fontSize: 10,
+    opacity: 0.4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  favoritesRow: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingVertical: 2,
+  },
+  favoritePill: {
+    maxWidth: 140,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#444',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    gap: 1,
+  },
+  favoritePillName: { fontSize: 12, fontWeight: '600', color: '#e0e0e0' },
+  favoritePillBrand: { fontSize: 10, opacity: 0.5 },
+  favoritePillGrams: { fontSize: 10, color: '#d4e157', opacity: 0.8, marginTop: 2 },
+  favoritesHint: { fontSize: 10, opacity: 0.35, fontStyle: 'italic' },
 
   editGrid: {
     flexDirection: 'row',

@@ -22,9 +22,29 @@
 import { create } from 'zustand';
 import type { NutritionRecord, NutritionTargets, NutritionSource } from '@lauburu/shared';
 import { secureStorage } from './secure-storage';
+import type { OpenFoodFactsProduct } from '../services/openfoodfacts';
 
 const STORAGE_KEY_TODAY = 'nutrition_today_v1';
 const STORAGE_KEY_TARGETS = 'nutrition_targets_v1';
+const STORAGE_KEY_FAVORITES = 'barcode_favorites_v1';
+
+/** Max favorites kept in the MRU list — older items drop off. */
+const MAX_FAVORITES = 12;
+
+/**
+ * A barcode product the user has scanned and confirmed. We keep the full
+ * OpenFoodFactsProduct payload (small, per-100g macros + metadata) so a
+ * favorite tap goes directly to the review state with zero network — the
+ * user can re-add a regular food instantly, offline-friendly.
+ */
+export interface StoredBarcodeFavorite {
+  product: OpenFoodFactsProduct;
+  /** ISO timestamp of the most recent add-to-today from this favorite. */
+  last_used_at: string;
+  /** Grams the user consumed on the most recent add, if any. Lets the
+   *  UI pre-fill the serving input with a sensible default. */
+  last_grams?: number;
+}
 
 function todayIsoDate(): string {
   return new Date().toISOString().slice(0, 10);
@@ -57,6 +77,18 @@ async function persistTargetsSafely(targets: NutritionTargets | null): Promise<v
       return;
     }
     await secureStorage.setItem(STORAGE_KEY_TARGETS, JSON.stringify(targets));
+  } catch {
+    // Intentionally swallowed — see helper doc comment.
+  }
+}
+
+async function persistFavoritesSafely(favorites: StoredBarcodeFavorite[]): Promise<void> {
+  try {
+    if (!favorites || favorites.length === 0) {
+      await secureStorage.removeItem(STORAGE_KEY_FAVORITES);
+      return;
+    }
+    await secureStorage.setItem(STORAGE_KEY_FAVORITES, JSON.stringify(favorites));
   } catch {
     // Intentionally swallowed — see helper doc comment.
   }
@@ -117,6 +149,32 @@ interface NutritionState {
 
   /** Wipe today's record. */
   clearToday: () => void;
+
+  // ---------------------------------------------------------------------
+  // Barcode favorites — MRU list of scanned products for quick re-add
+  // ---------------------------------------------------------------------
+
+  /**
+   * MRU list of products the user has scanned and confirmed via the
+   * barcode flow. Capped at MAX_FAVORITES, deduped by barcode, ordered
+   * by last_used_at descending. Persisted to secureStorage so the list
+   * survives app kill.
+   */
+  favorites: StoredBarcodeFavorite[];
+
+  /**
+   * Add a product to favorites (or update it if already present).
+   * Dedupes by barcode, bumps the matching entry to the front of the
+   * list with a fresh `last_used_at`, and drops the oldest entries
+   * beyond MAX_FAVORITES. `grams` is the serving size the user just
+   * confirmed so the next tap on this favorite pre-fills the same
+   * amount. Called automatically from the NutritionCard barcode
+   * confirm path — nothing else needs to call it directly.
+   */
+  addFavorite: (product: OpenFoodFactsProduct, grams?: number) => void;
+
+  /** Remove a favorite by its barcode. No-op if not present. */
+  removeFavorite: (barcode: string) => void;
 }
 
 export const useNutritionStore = create<NutritionState>((set, get) => ({
@@ -125,12 +183,14 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
   loading: false,
   error: null,
   hydrated: false,
+  favorites: [],
 
   hydrate: async () => {
     try {
-      const [rawToday, rawTargets] = await Promise.all([
+      const [rawToday, rawTargets, rawFavorites] = await Promise.all([
         secureStorage.getItem(STORAGE_KEY_TODAY),
         secureStorage.getItem(STORAGE_KEY_TARGETS),
+        secureStorage.getItem(STORAGE_KEY_FAVORITES),
       ]);
 
       let today: NutritionRecord | null = null;
@@ -161,7 +221,29 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
         }
       }
 
-      set({ today, targets, hydrated: true, error: null });
+      let favorites: StoredBarcodeFavorite[] = [];
+      if (rawFavorites) {
+        try {
+          const parsed = JSON.parse(rawFavorites);
+          if (Array.isArray(parsed)) {
+            // Defensive filter — drop anything that doesn't have at
+            // least a product with a barcode (corrupt or old shape).
+            favorites = parsed
+              .filter(
+                (f: any) =>
+                  f &&
+                  f.product &&
+                  typeof f.product.barcode === 'string' &&
+                  f.product.barcode.length > 0,
+              )
+              .slice(0, MAX_FAVORITES);
+          }
+        } catch {
+          void secureStorage.removeItem(STORAGE_KEY_FAVORITES);
+        }
+      }
+
+      set({ today, targets, favorites, hydrated: true, error: null });
     } catch {
       // Any unexpected failure — leave state empty, mark hydrated so
       // the UI stops waiting.
@@ -243,5 +325,35 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
   clearToday: () => {
     set({ today: null });
     void persistTodaySafely(null);
+  },
+
+  addFavorite: (product, grams) => {
+    let nextFavorites: StoredBarcodeFavorite[] = [];
+    set((state) => {
+      const now = new Date().toISOString();
+      // Remove any existing entry for this barcode so the bump-to-front
+      // dedupe is a single array rewrite.
+      const filtered = state.favorites.filter(
+        (f) => f.product.barcode !== product.barcode,
+      );
+      const fresh: StoredBarcodeFavorite = {
+        product,
+        last_used_at: now,
+        last_grams: grams,
+      };
+      // Most-recent-first ordering, then cap.
+      nextFavorites = [fresh, ...filtered].slice(0, MAX_FAVORITES);
+      return { favorites: nextFavorites };
+    });
+    void persistFavoritesSafely(nextFavorites);
+  },
+
+  removeFavorite: (barcode) => {
+    let nextFavorites: StoredBarcodeFavorite[] = [];
+    set((state) => {
+      nextFavorites = state.favorites.filter((f) => f.product.barcode !== barcode);
+      return { favorites: nextFavorites };
+    });
+    void persistFavoritesSafely(nextFavorites);
   },
 }));
