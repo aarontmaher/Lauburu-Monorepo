@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -11,6 +11,7 @@ import { Text, View } from '@/components/Themed';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
+import { useWhoopStore } from '../../src/store/whoop-store';
 import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat, SessionSummary, SegmentType } from '@lauburu/shared';
 import {
   SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS,
@@ -18,7 +19,7 @@ import {
   RESPIRATORY_DEVICE_LABELS, PARTNER_FORMAT_LABELS,
   buildDayPlanSummary, SCHEDULE_SESSION_LABELS,
   SESSION_PRESETS, SEGMENT_TYPE_LABELS, createDefaultSegments,
-  summarizeSession,
+  summarizeSession, suggestTrainIntensity,
 } from '@lauburu/shared';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useTimerStore } from '../../src/store/timer-store';
@@ -126,9 +127,24 @@ function EntryForm({
   const addSession = useTrainingStore((s) => s.addSession);
   const editSession = useTrainingStore((s) => s.editSession);
   const syncData = useHealthStore((s) => s.syncData);
+  const insights = useHealthStore((s) => s.insights);
   const user = useAuthStore((s) => s.user);
   const timerSetup = useTimerStore((s) => s.setup);
   const router = useRouter();
+
+  // Reactive AI intensity suggestion — reads WHOOP + insights + recent load
+  const whoopDay = useWhoopStore((s) => s.day);
+  const recentSessions = useTrainingStore((s) => s.sessions);
+  const aiIntensity = useMemo(
+    () =>
+      suggestTrainIntensity({
+        whoopDay,
+        insights,
+        recentSessions,
+        todayIsoDate: todayDate(),
+      }),
+    [whoopDay, insights, recentSessions],
+  );
 
   // Top-level mode: Grappling / HIIT / Steady State / Weights
   type TopMode = 'grappling' | 'hiit' | 'zone2' | 'weights' | null;
@@ -738,7 +754,7 @@ function EntryForm({
         </View>
       )}
 
-      {/* Intensity — only after selection */}
+      {/* Intensity — only after selection. AI suggestion is reactive. */}
       {(topMode || editing) && (
         <SelectorRow
           label="Intensity"
@@ -746,8 +762,8 @@ function EntryForm({
           labels={INTENSITY_LABELS as Record<string, string>}
           value={intensity}
           onChange={setIntensity as any}
-          suggestion="moderate"
-          suggestionLabel="Moderate fits your recovery today"
+          suggestion={aiIntensity.intensity}
+          suggestionLabel={`${INTENSITY_LABELS[aiIntensity.intensity]} — ${aiIntensity.reason}`}
         />
       )}
 
@@ -1098,13 +1114,34 @@ export default function TrainScreen() {
     return groups;
   }, [sessions]);
 
+  const schedule = usePreferencesStore((s) => s.preferences.schedule);
+
   const handleFormDone = () => {
     setEditingSession(null);
     setShowForm(true);
     setSubmitted(true);
-    // Pick the most-recently created session to render its headline
+    // Pick the most-recently created session to render its headline.
+    // Extend with a plan-alignment clause using buildDayPlanSummary — the
+    // user instantly sees whether what they just logged matches their plan.
     const latest = [...sessions].sort((a, b) => b.created_at.localeCompare(a.created_at))[0];
-    setLastLoggedHeadline(latest ? summarizeSession(latest).headline : null);
+    if (latest) {
+      const base = summarizeSession(latest).headline;
+      const dayPlan = buildDayPlanSummary(latest.date, schedule, sessions);
+      let suffix = '';
+      if (dayPlan.status === 'on_plan' && dayPlan.completedCount > 0) {
+        suffix = ' · matches today\'s plan';
+      } else if (dayPlan.status === 'over_plan') {
+        suffix = ' · off-plan session';
+      } else if (dayPlan.status === 'under_plan') {
+        const remaining = dayPlan.plannedCount - dayPlan.completedCount;
+        if (remaining > 0) {
+          suffix = ` · ${remaining} more planned today`;
+        }
+      }
+      setLastLoggedHeadline(base + suffix);
+    } else {
+      setLastLoggedHeadline(null);
+    }
     setTimeout(() => setSubmitted(false), 3500);
   };
 

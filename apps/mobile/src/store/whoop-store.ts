@@ -17,7 +17,11 @@ import { SUPABASE_FUNCTIONS_URL, SUPABASE_ANON_KEY } from '@lauburu/shared';
 
 const WHOOP_BRIDGE_URL = `${SUPABASE_FUNCTIONS_URL}/whoop-bridge?path=${encodeURIComponent('/data/today')}`;
 
-/** Normalized WHOOP day object as rendered in the mobile app. */
+/**
+ * Normalized WHOOP day object as rendered in the mobile app.
+ * Structurally compatible with `@lauburu/shared` `WhoopSnapshot` so it can
+ * be passed directly into `buildDailyCoachingBrief()` without conversion.
+ */
 export interface WhoopDay {
   /** Local WHOOP cycle date (YYYY-MM-DD). */
   date: string;
@@ -35,6 +39,8 @@ export interface WhoopDay {
   daily_strain: number | null;
   /** Workout summaries for the day (may be empty even when recovery is present). */
   workouts: WhoopWorkout[];
+  /** Derived workout count — convenience mirror of `workouts.length`. */
+  workout_count: number;
   /**
    * Upstream freshness timestamp from the WHOOP MCP ingest layer.
    * Distinct from `fetchedAt` — this is when the Railway service last
@@ -111,6 +117,7 @@ function normalize(raw: any): WhoopDay | null {
   }));
 
   return {
+    workout_count: workouts.length,
     date,
     recovery_score:
       recovery.score != null ? recovery.score : src.recovery_score ?? null,

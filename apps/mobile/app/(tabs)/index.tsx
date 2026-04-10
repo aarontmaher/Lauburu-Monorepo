@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { StyleSheet, ScrollView, ActivityIndicator, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
@@ -6,14 +6,19 @@ import { useAuthStore } from '../../src/store/auth-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useWhoopStore } from '../../src/store/whoop-store';
+import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useProgress } from '../../src/hooks/useProgress';
 import {
   REFERENCE_TOTAL_POSITIONS,
   REFERENCE_BUILT_OUT_COUNT,
   REFERENCE_SECTIONS,
 } from '../../src/data/reference-seed';
-import type { ReadinessLevel } from '@lauburu/shared';
-import { SESSION_TYPE_LABELS } from '@lauburu/shared';
+import type { ReadinessLevel, DailyCoachingBrief } from '@lauburu/shared';
+import {
+  SESSION_TYPE_LABELS,
+  buildDailyCoachingBrief,
+  getTodayPlan,
+} from '@lauburu/shared';
 
 const READINESS_COLORS: Record<ReadinessLevel, string> = {
   green: '#4ade80',
@@ -82,58 +87,125 @@ function WhoopHeadline() {
   );
 }
 
-function ReadinessCard() {
+const INTENSITY_LABEL: Record<string, string> = {
+  light: 'Light',
+  moderate: 'Moderate',
+  hard: 'Hard',
+};
+
+const MODE_LABEL: Record<string, string> = {
+  grappling: 'Grappling',
+  hiit: 'HIIT',
+  zone2: 'Zone 2',
+  weights: 'Weights',
+  rest: 'Rest',
+};
+
+/**
+ * Today's Coach — unified daily guidance card that prefers WHOOP recovery
+ * over HealthKit when present, falls back to insights when WHOOP is absent,
+ * and shows today's plan + intensity recommendation + explainable reasons.
+ */
+function TodayCoachCard() {
+  const whoopDay = useWhoopStore((s) => s.day);
+  const whoopStatus = useWhoopStore((s) => s.status);
+  const fetchWhoop = useWhoopStore((s) => s.fetchToday);
   const insights = useHealthStore((s) => s.insights);
-  const lastSyncAt = useHealthStore((s) => s.lastSyncAt);
+  const sessions = useTrainingStore((s) => s.sessions);
+  const schedule = usePreferencesStore((s) => s.preferences.schedule);
 
-  if (!insights || insights.readiness === 'grey') {
-    return (
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Today's Readiness</Text>
-        <Text style={styles.cardBody}>
-          {lastSyncAt
-            ? 'Sync more health data for personalized readiness.'
-            : 'Connect Apple Health on the Health tab, then sync to see your training readiness.'}
-        </Text>
-      </View>
-    );
-  }
+  useEffect(() => {
+    if (whoopStatus === 'idle') fetchWhoop();
+  }, [whoopStatus, fetchWhoop]);
 
-  const color = READINESS_COLORS[insights.readiness];
+  const brief = useMemo<DailyCoachingBrief>(() => {
+    const todayIsoDate = new Date().toISOString().slice(0, 10);
+    const todayPlan = getTodayPlan(schedule);
+    return buildDailyCoachingBrief({
+      whoopDay,
+      insights,
+      todayPlan,
+      recentSessions: sessions,
+      todayIsoDate,
+    });
+  }, [whoopDay, insights, sessions, schedule]);
+
+  const color = READINESS_COLORS[brief.readiness];
+  const sourceLabel =
+    brief.primary_source === 'whoop'
+      ? 'WHOOP'
+      : brief.primary_source === 'insights'
+        ? 'Apple Health'
+        : 'no source';
 
   return (
     <View style={styles.card}>
+      <View style={styles.coachHeaderRow}>
+        <Text style={styles.cardTitle}>Today's Coach</Text>
+        <Text style={styles.coachSourceLabel}>from {sourceLabel}</Text>
+      </View>
+
       <View style={styles.readinessRow}>
         <View style={[styles.readinessDot, { backgroundColor: color }]} />
-        <Text style={[styles.readinessLabel, { color }]}>
-          {insights.readiness_label}
-        </Text>
+        <Text style={[styles.readinessLabel, { color }]}>{brief.headline}</Text>
       </View>
-      <Text style={styles.cardBody}>{insights.recommendation.summary}</Text>
-      {insights.key_metrics.length > 0 && (
-        <View style={styles.metricsRow}>
-          {insights.key_metrics.slice(0, 4).map((m, i) => (
-            <View key={i} style={styles.metricItem}>
-              <Text style={styles.metricValue}>{m.value}</Text>
-              <Text style={styles.metricLabel}>{m.label}</Text>
-            </View>
+
+      {/* Plan hint — real schedule for today (with times if set) */}
+      {brief.plan_hint ? (
+        <View style={styles.coachPlanRow}>
+          <Text style={styles.coachPlanLabel}>Plan</Text>
+          <Text style={styles.coachPlanValue}>{brief.plan_hint}</Text>
+        </View>
+      ) : (
+        <View style={styles.coachPlanRow}>
+          <Text style={styles.coachPlanLabel}>Plan</Text>
+          <Text style={styles.coachPlanValueMuted}>
+            Rest day — no sessions scheduled
+          </Text>
+        </View>
+      )}
+
+      {/* Suggested intensity + modes */}
+      <View style={styles.coachSuggestionRow}>
+        <View style={styles.coachChip}>
+          <Text style={styles.coachChipLabel}>Intensity</Text>
+          <Text style={styles.coachChipValue}>
+            {INTENSITY_LABEL[brief.suggested_intensity]}
+          </Text>
+        </View>
+        {brief.suggested_modes.length > 0 && (
+          <View style={styles.coachChip}>
+            <Text style={styles.coachChipLabel}>Good for</Text>
+            <Text style={styles.coachChipValue}>
+              {brief.suggested_modes.slice(0, 3).map((m) => MODE_LABEL[m]).join(' · ')}
+            </Text>
+          </View>
+        )}
+      </View>
+
+      {/* Reasons — explainability */}
+      {brief.reasons.length > 0 && (
+        <View style={styles.coachReasons}>
+          {brief.reasons.map((r, i) => (
+            <Text key={i} style={styles.coachReasonItem}>
+              • {r}
+            </Text>
           ))}
         </View>
       )}
-      {/* Key signals */}
-      {(insights.positives.length > 0 || insights.concerns.length > 0) && (
-        <View style={styles.signalsRow}>
-          {insights.positives.slice(0, 2).map((p, i) => (
-            <Text key={`p${i}`} style={styles.signalPositive}>✓ {p}</Text>
-          ))}
-          {insights.concerns.slice(0, 2).map((c, i) => (
-            <Text key={`c${i}`} style={styles.signalConcern}>⚠ {c}</Text>
-          ))}
-        </View>
+
+      {/* Honest WHOOP missing-workout hint */}
+      {brief.whoop_workouts_missing_today && (
+        <Text style={styles.coachMissingHint}>
+          Today's WHOOP workout hasn't synced yet — recovery and sleep are logged.
+        </Text>
       )}
-      {lastSyncAt && (
-        <Text style={styles.syncNote}>
-          Synced {new Date(lastSyncAt).toLocaleTimeString()}
+
+      {/* Empty-state fallback */}
+      {brief.primary_source === 'none' && (
+        <Text style={styles.cardBody}>
+          Connect WHOOP on the backend or sync Apple Health to get personalized
+          guidance.
         </Text>
       )}
     </View>
@@ -276,10 +348,10 @@ export default function HomeScreen() {
 
       {!isMember && <GuestBanner />}
 
-      {/* Readiness — the most important thing on Home */}
-      {isMember && <ReadinessCard />}
+      {/* Today's Coach — unified daily guidance (WHOOP + plan + insights) */}
+      {isMember && <TodayCoachCard />}
 
-      {/* Tiny backend-fed WHOOP headline — shown only when data is ready */}
+      {/* Tiny backend-fed WHOOP metrics chip — shown only when data is ready */}
       {isMember && <WhoopHeadline />}
 
       {isMember && <TrainingContextCard />}
@@ -361,6 +433,64 @@ const styles = StyleSheet.create({
   whySection: { gap: 2, marginTop: 4, paddingTop: 6, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
   whyLabel: { fontSize: 11, opacity: 0.4, textTransform: 'uppercase', letterSpacing: 0.5 },
   whyItem: { fontSize: 12, opacity: 0.6, lineHeight: 16 },
+
+  // Today's Coach
+  coachHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+  },
+  coachSourceLabel: {
+    fontSize: 11,
+    opacity: 0.4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  coachPlanRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    paddingTop: 6,
+    paddingBottom: 2,
+  },
+  coachPlanLabel: {
+    fontSize: 11,
+    opacity: 0.4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    width: 44,
+    paddingTop: 2,
+  },
+  coachPlanValue: { fontSize: 13, flex: 1, lineHeight: 18 },
+  coachPlanValueMuted: { fontSize: 13, flex: 1, lineHeight: 18, opacity: 0.4 },
+  coachSuggestionRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 4,
+  },
+  coachChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: 'rgba(212,225,87,0.08)',
+    gap: 2,
+  },
+  coachChipLabel: {
+    fontSize: 10,
+    opacity: 0.5,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  coachChipValue: { fontSize: 13, color: '#d4e157', fontWeight: '600' },
+  coachReasons: { gap: 2, marginTop: 4 },
+  coachReasonItem: { fontSize: 11, opacity: 0.5, lineHeight: 15 },
+  coachMissingHint: {
+    fontSize: 11,
+    opacity: 0.5,
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
 
   // Reference entry card
   referenceCard: {

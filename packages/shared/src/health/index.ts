@@ -13,6 +13,14 @@ export type { CoachingResponse } from './coaching';
 export { mergeTrainingSessions } from './merge-training';
 export { summarizeSession } from './session-summary';
 export type { SessionSummary, SessionKind, SessionShape } from './session-summary';
+export { buildDailyCoachingBrief, suggestTrainIntensity } from './coach-layer';
+export type {
+  DailyCoachingBrief,
+  WhoopSnapshot,
+  PrimaryReadinessSource,
+  CoachedMode,
+  BuildDailyCoachingBriefInputs,
+} from './coach-layer';
 export { assembleTrainingExample } from './training-example';
 export { buildDayPlanSummary, getDayOfWeek } from './plan-status';
 export type { PlannedWithStatus, DayPlanSummary, DayPlanStatus, PlannedSessionStatus } from './plan-status';
