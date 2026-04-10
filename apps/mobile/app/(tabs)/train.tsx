@@ -15,7 +15,7 @@ import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtyp
 import {
   SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS,
   CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, LIFTING_FOCUS_LABELS,
-  RESPIRATORY_DEVICE_LABELS, HIIT_PRESETS, PARTNER_FORMAT_LABELS,
+  RESPIRATORY_DEVICE_LABELS, PARTNER_FORMAT_LABELS,
   buildDayPlanSummary, SCHEDULE_SESSION_LABELS,
   SESSION_PRESETS, SEGMENT_TYPE_LABELS, createDefaultSegments,
 } from '@lauburu/shared';
@@ -180,7 +180,6 @@ function EntryForm({
   const isWeightTraining = isConditioning && condSubtype === 'weight_training';
   const isRespiratory = isConditioning && ['respiratory_training', 'breathing_warmup', 'recovery_breathing'].includes(condSubtype);
   const [showMore, setShowMore] = useState(false);
-  const [selectedHIITPreset, setSelectedHIITPreset] = useState('30_30');
 
   // Segment state — auto-populated for grappling
   const [segments, setSegments] = useState<SessionSegment[]>(editing?.segments ?? []);
@@ -375,19 +374,18 @@ function EntryForm({
                       </View>
                     </ScrollView>
 
-                    {/* Duration + rounds */}
+                    {/* Duration — typed */}
                     <View style={styles.rowInputs}>
                       <View style={styles.halfInput}>
-                        <Text style={styles.sectionLabel}>Duration</Text>
-                        <View style={styles.pillRow}>
-                          {[10, 15, 20, 25, 30].map((d) => (
-                            <Pressable key={d}
-                              style={[styles.pillSmall, seg.duration_min === d && styles.pillActive]}
-                              onPress={() => updateSegment(seg.id, { duration_min: d })}>
-                              <Text style={[styles.pillSmallText, seg.duration_min === d && styles.pillTextActive]}>{d}m</Text>
-                            </Pressable>
-                          ))}
-                        </View>
+                        <Text style={styles.sectionLabel}>Duration (min)</Text>
+                        <TextInput
+                          style={styles.input}
+                          value={String(seg.duration_min)}
+                          onChangeText={(t) => updateSegment(seg.id, { duration_min: parseInt(t, 10) || 0 })}
+                          keyboardType="number-pad"
+                          placeholder="15"
+                          placeholderTextColor="#666"
+                        />
                       </View>
                     </View>
 
@@ -435,25 +433,15 @@ function EntryForm({
         </View>
       )}
 
-      {/* HIIT — protocol */}
+      {/* HIIT — direct work/rest/rounds entry (no presets) */}
       {topMode === 'hiit' && (
-        <SelectorRow
-          label="Protocol"
-          options={HIIT_PRESETS.map((p) => p.id) as string[]}
-          labels={Object.fromEntries(HIIT_PRESETS.map((p) => [p.id, p.id === 'custom' ? 'Custom' : `${p.label} — ${p.description}`])) as Record<string, string>}
-          value={selectedHIITPreset}
-          onChange={(id) => {
-            setSelectedHIITPreset(id);
-            const preset = HIIT_PRESETS.find((p) => p.id === id);
-            if (preset && id !== 'custom') {
-              setWorkDur(String(preset.work_s));
-              setRestDur(String(preset.rest_s));
-              setIntervalRounds(String(preset.rounds));
-            }
-          }}
-          suggestion="30_30"
-          suggestionLabel="30/30 — matches your recovery"
-        />
+        <Pressable
+          style={styles.aiSuggestionBubble}
+          onPress={() => { setWorkDur('30'); setRestDur('30'); setIntervalRounds('10'); }}>
+          <Text style={styles.aiSuggestionText}>
+            AI coach suggestion: 30s work / 30s rest × 10 — matches your recovery
+          </Text>
+        </Pressable>
       )}
 
       {/* Steady State */}
@@ -583,8 +571,8 @@ function EntryForm({
         />
       )}
 
-      {/* Interval detail — only editable for Custom preset or non-HIIT-mode intervals */}
-      {isInterval && (topMode !== 'hiit' || selectedHIITPreset === 'custom') && (
+      {/* Interval detail — always editable */}
+      {isInterval && (
         <View style={styles.rowInputs}>
           <View style={styles.halfInput}>
             <Text style={styles.sectionLabel}>Work (s)</Text>
@@ -713,8 +701,8 @@ function EntryForm({
         />
       )}
 
-      {/* Duration — custom input for all non-preset modes */}
-      {(topMode || editing) && topMode !== 'weights' && !(topMode === 'hiit' && selectedHIITPreset !== 'custom') && (
+      {/* Duration — custom input; HIIT derives duration from work/rest/rounds, Weights has its own */}
+      {(topMode || editing) && topMode !== 'weights' && topMode !== 'hiit' && (
       <View style={styles.selectorRow}>
         <View style={styles.selectorHeader}>
           <Text style={styles.selectorLabel}>Duration</Text>
