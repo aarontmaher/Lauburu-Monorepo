@@ -106,13 +106,37 @@ export function buildDayPlanSummary(
   };
 }
 
-/** Check if an actual session matches a planned session by type */
+/** Check if an actual session matches a planned session under the new
+ *  coarser taxonomy: grappling / conditioning / recovery / other. */
 function sessionMatchesPlan(session: TrainingSession, planned: PlannedSession): boolean {
-  // Direct type match
-  if (session.type === planned.type) return true;
-  // Conditioning subtype match
-  if (session.type === 'conditioning' && planned.type === 'conditioning') return true;
-  // Class/open_mat can match drilling/sparring/positional plans
-  if (session.type === 'class' && ['drilling', 'sparring', 'positional', 'open_mat'].includes(planned.type)) return true;
+  // Grappling schedule slots match any mat session type from Train logging
+  if (planned.type === 'grappling') {
+    if (['class', 'sparring', 'drilling', 'wrestling', 'comp', 'open_mat'].includes(session.type)) {
+      // If the plan has a specific grappling subtype, prefer a closer match
+      if (planned.grappling_subtype === 'wrestling') return session.type === 'wrestling';
+      if (planned.grappling_subtype === 'open_mat') return session.type === 'open_mat';
+      if (planned.grappling_subtype === 'comp_prep') return session.type === 'comp';
+      // jiu_jitsu / class / no-subtype → any grappling type counts
+      return true;
+    }
+    return false;
+  }
+  // Conditioning plan matches any conditioning session
+  if (planned.type === 'conditioning') return session.type === 'conditioning';
+  // Recovery plan matches a conditioning session with recovery subtype, or
+  // any other session logged at light intensity
+  if (planned.type === 'recovery') {
+    if (
+      session.type === 'conditioning' &&
+      session.conditioning?.subtype &&
+      ['recovery_cardio', 'mobility', 'recovery_breathing'].includes(
+        session.conditioning.subtype,
+      )
+    ) {
+      return true;
+    }
+    return session.intensity === 'light';
+  }
+  // Other plan never auto-matches; user reconciles manually
   return false;
 }

@@ -15,8 +15,11 @@ import { useTierStore } from '../../src/store/tier-store';
 import {
   DEFAULT_PREFERENCES, TIER_INFO, CAPABILITY_INFO, getTierCapabilities, minimumTierFor,
   DAYS_ORDER, DAY_LABELS, SCHEDULE_SESSION_LABELS, countPlannedSessions,
+  GRAPPLING_SCHEDULE_SUBTYPE_LABELS, GRAPPLING_SCHEDULE_SUBTYPES,
 } from '@lauburu/shared';
-import type { CoachingPreferences, Tier, Capability, DayOfWeek, ScheduleSessionType } from '@lauburu/shared';
+import type {
+  CoachingPreferences, Tier, Capability, DayOfWeek, ScheduleSessionType, GrapplingScheduleSubtype,
+} from '@lauburu/shared';
 
 // ---------------------------------------------------------------------------
 // Reusable components
@@ -253,9 +256,8 @@ function PreferencesSection() {
 // Schedule Editor
 // ---------------------------------------------------------------------------
 
-const SCHEDULE_TYPES: import('@lauburu/shared').ScheduleSessionType[] = [
-  'drilling', 'sparring', 'wrestling', 'takedowns', 'positional',
-  'open_mat', 'comp_prep', 'conditioning', 'other',
+const SCHEDULE_TYPES: ScheduleSessionType[] = [
+  'grappling', 'conditioning', 'recovery', 'other',
 ];
 
 /**
@@ -326,8 +328,20 @@ function ScheduleEditor() {
   const removeSess = usePreferencesStore((s) => s.removeSession);
   const toggleSess = usePreferencesStore((s) => s.toggleSession);
   const updateSess = usePreferencesStore((s) => s.updateSession);
-  const [expandedDay, setExpandedDay] = useState<import('@lauburu/shared').DayOfWeek | null>(null);
-  const [addingType, setAddingType] = useState<import('@lauburu/shared').ScheduleSessionType>('drilling');
+  const [expandedDay, setExpandedDay] = useState<DayOfWeek | null>(null);
+  const [addingType, setAddingType] = useState<ScheduleSessionType>('grappling');
+
+  /**
+   * Render a planned session as a label for the collapsed day summary.
+   * Grappling with a subtype shows the subtype name only (the parent
+   * category is implied), otherwise shows the top-level label.
+   */
+  const plannedLabel = (s: { type: ScheduleSessionType; grappling_subtype?: GrapplingScheduleSubtype }) => {
+    if (s.type === 'grappling' && s.grappling_subtype) {
+      return GRAPPLING_SCHEDULE_SUBTYPE_LABELS[s.grappling_subtype];
+    }
+    return SCHEDULE_SESSION_LABELS[s.type] ?? s.type;
+  };
 
   return (
     <View style={styles.prefRow}>
@@ -349,7 +363,7 @@ function ScheduleEditor() {
                   ? sessions
                       .filter((s) => s.enabled)
                       .map((s) => {
-                        const label = SCHEDULE_SESSION_LABELS[s.type] ?? s.type;
+                        const label = plannedLabel(s);
                         return s.time ? `${s.time} ${label}` : label;
                       })
                       .join(' · ')
@@ -361,22 +375,53 @@ function ScheduleEditor() {
             {isExpanded && (
               <View style={styles.scheduleDayExpanded}>
                 {sessions.map((s) => (
-                  <View key={s.id} style={styles.scheduleSessionRow}>
-                    <Pressable onPress={() => toggleSess(day, s.id)}>
-                      <Text style={[styles.scheduleSessionCheck, !s.enabled && { opacity: 0.3 }]}>
-                        {s.enabled ? '✓' : '○'}
+                  <View key={s.id} style={styles.scheduleSessionBlock}>
+                    <View style={styles.scheduleSessionRow}>
+                      <Pressable onPress={() => toggleSess(day, s.id)}>
+                        <Text style={[styles.scheduleSessionCheck, !s.enabled && { opacity: 0.3 }]}>
+                          {s.enabled ? '✓' : '○'}
+                        </Text>
+                      </Pressable>
+                      <Text style={[styles.scheduleSessionName, !s.enabled && { opacity: 0.3 }]}>
+                        {plannedLabel(s)}
                       </Text>
-                    </Pressable>
-                    <Text style={[styles.scheduleSessionName, !s.enabled && { opacity: 0.3 }]}>
-                      {SCHEDULE_SESSION_LABELS[s.type] ?? s.type}
-                    </Text>
-                    <TimeField
-                      value={s.time}
-                      onCommit={(t) => updateSess(day, s.id, { time: t })}
-                    />
-                    <Pressable onPress={() => removeSess(day, s.id)} hitSlop={6}>
-                      <Text style={styles.scheduleRemove}>✕</Text>
-                    </Pressable>
+                      <TimeField
+                        value={s.time}
+                        onCommit={(t) => updateSess(day, s.id, { time: t })}
+                      />
+                      <Pressable onPress={() => removeSess(day, s.id)} hitSlop={6}>
+                        <Text style={styles.scheduleRemove}>✕</Text>
+                      </Pressable>
+                    </View>
+
+                    {/* Grappling subtype picker — only for grappling sessions */}
+                    {s.type === 'grappling' && (
+                      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        <View style={styles.pillRow}>
+                          {GRAPPLING_SCHEDULE_SUBTYPES.map((gs) => {
+                            const isActive = s.grappling_subtype === gs;
+                            return (
+                              <Pressable
+                                key={gs}
+                                style={[styles.pillSmall, isActive && styles.pillActive]}
+                                onPress={() =>
+                                  updateSess(day, s.id, {
+                                    grappling_subtype: isActive ? undefined : gs,
+                                  })
+                                }>
+                                <Text
+                                  style={[
+                                    styles.pillSmallText,
+                                    isActive && styles.pillTextActive,
+                                  ]}>
+                                  {GRAPPLING_SCHEDULE_SUBTYPE_LABELS[gs]}
+                                </Text>
+                              </Pressable>
+                            );
+                          })}
+                        </View>
+                      </ScrollView>
+                    )}
                   </View>
                 ))}
 
@@ -823,6 +868,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     gap: 6,
   },
+  scheduleSessionBlock: { gap: 6 },
   scheduleSessionRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   scheduleSessionCheck: { fontSize: 16, color: '#4ade80', width: 20 },
   scheduleSessionName: { flex: 1, fontSize: 13 },

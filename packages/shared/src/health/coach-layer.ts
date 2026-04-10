@@ -17,6 +17,10 @@
  */
 import type { TrainingSession, SessionIntensity } from '../types/training';
 import type { PlannedSession } from '../types/preferences';
+import {
+  SCHEDULE_SESSION_LABELS,
+  GRAPPLING_SCHEDULE_SUBTYPE_LABELS,
+} from '../types/preferences';
 import type { ReadinessLevel, TrainingInsight } from './insights';
 
 /**
@@ -231,31 +235,22 @@ function renderPlanHint(planned: PlannedSession[]): string | null {
   });
   return sorted
     .map((p) => {
-      const label = scheduleLabelFor(p.type);
+      const label = renderPlannedLabel(p);
       return p.time ? `${p.time} ${label}` : label;
     })
     .join(' · ');
 }
 
-function scheduleLabelFor(type: string): string {
-  switch (type) {
-    case 'drilling':
-      return 'Drilling';
-    case 'sparring':
-      return 'Sparring';
-    case 'positional':
-      return 'Positional';
-    case 'class':
-      return 'Class';
-    case 'open_mat':
-      return 'Open mat';
-    case 'conditioning':
-      return 'Conditioning';
-    case 'rest':
-      return 'Rest';
-    default:
-      return type;
+/**
+ * Render a planned session as a single readable label. For grappling with
+ * a subtype, show the subtype name only (e.g. "Jiu Jitsu") since grappling
+ * is implied by context. For everything else, show the top-level label.
+ */
+function renderPlannedLabel(p: PlannedSession): string {
+  if (p.type === 'grappling' && p.grappling_subtype) {
+    return GRAPPLING_SCHEDULE_SUBTYPE_LABELS[p.grappling_subtype];
   }
+  return SCHEDULE_SESSION_LABELS[p.type] ?? p.type;
 }
 
 // ---------------------------------------------------------------------------
