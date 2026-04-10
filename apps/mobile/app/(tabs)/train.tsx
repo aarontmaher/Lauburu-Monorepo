@@ -13,6 +13,7 @@ import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useWhoopStore } from '../../src/store/whoop-store';
 import { useMachineStore } from '../../src/store/machine-store';
+import { useHIITProtocolsStore } from '../../src/store/hiit-protocols-store';
 import { modalitySupportsMachineData } from '../../src/services/machine-connector';
 import { ReferencePositionPicker } from '../../src/components/ReferencePositionPicker';
 import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat, SessionSummary, SegmentType, MachineMetrics, WorkoutSource } from '@lauburu/shared';
@@ -273,6 +274,13 @@ function EntryForm({
   const lastMachineSource = useMachineStore((s) => s.lastSessionSource);
   const setLastSessionMetrics = useMachineStore((s) => s.setLastSessionMetrics);
 
+  // HIIT saved protocols — named library of recurring interval recipes.
+  // Quick-tap recall from a pill strip, auto-saved on every HIIT log
+  // that carries a user-provided label.
+  const savedHIITProtocols = useHIITProtocolsStore((s) => s.protocols);
+  const saveHIITProtocol = useHIITProtocolsStore((s) => s.saveProtocol);
+  const removeHIITProtocol = useHIITProtocolsStore((s) => s.removeProtocol);
+
   const isConditioning = sessionType === 'conditioning';
   const isInterval = isConditioning && ['hiit', 'intervals', 'sprint_intervals', 'circuit'].includes(condSubtype);
   const isWeightTraining = isConditioning && condSubtype === 'weight_training';
@@ -445,6 +453,23 @@ function EntryForm({
         input.conditioning.machine_metrics,
         input.conditioning.source ?? 'manual_machine_entry',
       );
+    }
+
+    // If this is a HIIT session WITH a user-provided protocol label,
+    // auto-save (or bump the existing entry) in the HIIT protocols
+    // library so the user can recall this recipe with a single tap
+    // from the pill strip on their next session. Dedupe by normalized
+    // label, MRU ordering, cap at 12 entries — all handled by the
+    // store action.
+    const iv = input.conditioning?.interval;
+    if (iv && iv.label && iv.label.trim().length > 0) {
+      saveHIITProtocol({
+        label: iv.label,
+        work_s: iv.work_duration_s,
+        rest_s: iv.rest_duration_s,
+        rounds: iv.rounds,
+        modality: input.conditioning?.modality,
+      });
     }
 
     if (user?.id) syncData(user.id).catch(() => {});
@@ -683,6 +708,45 @@ function EntryForm({
                   `${lastHIITSession.conditioning.interval.work_duration_s}/${lastHIITSession.conditioning.interval.rest_duration_s} × ${lastHIITSession.conditioning.interval.rounds}`}
               </Text>
             </Pressable>
+          )}
+
+          {/* Saved protocols — named library recalled with one tap.
+              Rendered only when the store has entries. Tap a pill to
+              fill in work/rest/rounds/label/modality; long-press to
+              remove the protocol from the library. Auto-saved on
+              session log when the current protocol has a label. */}
+          {savedHIITProtocols.length > 0 && (
+            <View style={styles.savedProtocolsBlock}>
+              <Text style={styles.savedProtocolsLabel}>Saved protocols</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={styles.pillRow}>
+                  {savedHIITProtocols.map((p) => (
+                    <Pressable
+                      key={p.id}
+                      style={styles.savedProtocolPill}
+                      onPress={() => {
+                        setWorkDur(String(p.work_s));
+                        setRestDur(String(p.rest_s));
+                        setIntervalRounds(String(p.rounds));
+                        setIntervalLabel(p.label);
+                        if (p.modality) setCondModality(p.modality);
+                      }}
+                      onLongPress={() => removeHIITProtocol(p.id)}
+                      delayLongPress={500}>
+                      <Text style={styles.savedProtocolPillName}>
+                        {p.label}
+                      </Text>
+                      <Text style={styles.savedProtocolPillDetail}>
+                        {p.work_s}/{p.rest_s} × {p.rounds}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </ScrollView>
+              <Text style={styles.savedProtocolsHint}>
+                Long-press a protocol to remove it.
+              </Text>
+            </View>
           )}
 
           <TextInput
@@ -1901,6 +1965,42 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(212,225,87,0.04)',
   },
   repeatBtnText: { fontSize: 12, color: '#d4e157', fontWeight: '500' },
+  savedProtocolsBlock: {
+    gap: 6,
+    marginTop: 2,
+  },
+  savedProtocolsLabel: {
+    fontSize: 10,
+    opacity: 0.5,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  savedProtocolPill: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.35)',
+    backgroundColor: 'rgba(212,225,87,0.05)',
+    marginRight: 6,
+    minWidth: 90,
+  },
+  savedProtocolPillName: {
+    fontSize: 12,
+    color: '#d4e157',
+    fontWeight: '600',
+  },
+  savedProtocolPillDetail: {
+    fontSize: 10,
+    color: '#d4e157',
+    opacity: 0.65,
+    marginTop: 2,
+  },
+  savedProtocolsHint: {
+    fontSize: 10,
+    opacity: 0.4,
+    fontStyle: 'italic',
+  },
   derivedTotalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
