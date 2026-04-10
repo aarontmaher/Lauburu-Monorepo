@@ -706,9 +706,9 @@ export default function HealthScreen() {
               : 'ios_only'}
           />
           <SourceRow name="WHOOP" status="live_backend" />
-          <SourceRow name="Polar" status="via_backend" />
+          <SourceRow name="Polar" status="scaffolded" />
           <SourceRow name="ErgZone" status="coming_soon" />
-          <SourceRow name="Cronometer" status="coming_soon" />
+          <SourceRow name="Cronometer (nutrition)" status="scaffolded" />
         </View>
       </View>
     </ScrollView>
@@ -764,6 +764,7 @@ function SourceRow({
     android_only: { text: 'Android only', color: '#555' },
     via_backend: { text: 'Via website sync', color: '#a8b84a' },
     live_backend: { text: 'Live · backend', color: '#4ade80' },
+    scaffolded: { text: 'Scaffolded', color: '#7a8b3a' },
     coming_soon: { text: 'Coming soon', color: '#555' },
   };
   const info = labels[status] ?? { text: status, color: '#666' };

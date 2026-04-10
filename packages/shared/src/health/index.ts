@@ -21,6 +21,7 @@ export {
 export type {
   DailyCoachingBrief,
   WhoopSnapshot,
+  PolarSnapshot,
   PrimaryReadinessSource,
   CoachedMode,
   LoadBand,

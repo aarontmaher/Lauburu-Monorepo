@@ -40,6 +40,38 @@ export interface WhoopSnapshot {
   source_updated_at: string | null;
 }
 
+/**
+ * Polar snapshot — first-slice scaffolding for a future Polar integration.
+ *
+ * Status as of 2026-04-10: NO live ingestion path. Polar data today flows
+ * through Apple HealthKit / Health Connect when the user has the Polar app
+ * set to write there, which means it arrives as generic HealthKit metrics
+ * with no Polar-specific richness. This type reserves the shape that a
+ * future direct Polar path (Polar AccessLink API, Polar Flow web sync, or
+ * a Polar sensor BLE path) will target.
+ *
+ * Structurally mirrors WhoopSnapshot so downstream consumers can choose
+ * "whoopDay ?? polarDay" as a readiness source fallback without knowing
+ * which vendor provided the numbers.
+ */
+export interface PolarSnapshot {
+  date: string;
+  /** Polar's "Recovery Pro" score 0-100 when available. */
+  recovery_score: number | null;
+  /** Orthostatic HRV (ms) or overnight RMSSD. */
+  hrv_ms: number | null;
+  /** Overnight resting heart rate (bpm). */
+  resting_hr: number | null;
+  /** Total sleep in hours (Polar Sleep Plus Stages). */
+  sleep_hours: number | null;
+  /** Polar Nightly Recharge status ("very good" → 5, "very poor" → 1). */
+  nightly_recharge?: number | null;
+  /** Count of workouts Polar has uploaded for today. */
+  workout_count: number;
+  /** Last upstream update timestamp. */
+  source_updated_at: string | null;
+}
+
 /** Where the readiness assessment ultimately came from. */
 export type PrimaryReadinessSource = 'whoop' | 'insights' | 'none';
 
