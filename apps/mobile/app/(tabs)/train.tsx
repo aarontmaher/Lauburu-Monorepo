@@ -246,6 +246,32 @@ function EntryForm({
   const [mMaxHr, setMMaxHr] = useState(
     editing?.conditioning?.machine_metrics?.max_hr_bpm?.toString() ?? '',
   );
+  // Extended machine fields — modality-specific. Added in the HIIT
+  // machine-metrics first-slice 02 batch.
+  const [mMaxPower, setMMaxPower] = useState(
+    editing?.conditioning?.machine_metrics?.max_power_w?.toString() ?? '',
+  );
+  const [mKilojoules, setMKilojoules] = useState(
+    editing?.conditioning?.machine_metrics?.kilojoules?.toString() ?? '',
+  );
+  const [mAvgPace, setMAvgPace] = useState(
+    editing?.conditioning?.machine_metrics?.avg_pace_s?.toString() ?? '',
+  );
+  const [mAvgSpeed, setMAvgSpeed] = useState(
+    editing?.conditioning?.machine_metrics?.avg_speed_kmh?.toString() ?? '',
+  );
+  const [mMaxSpeed, setMMaxSpeed] = useState(
+    editing?.conditioning?.machine_metrics?.max_speed_kmh?.toString() ?? '',
+  );
+  const [mStrokes, setMStrokes] = useState(
+    editing?.conditioning?.machine_metrics?.strokes?.toString() ?? '',
+  );
+
+  // Machine-store write + recall — lets the user reuse previous machine
+  // metrics across sessions, complementary to Repeat last HIIT.
+  const lastMachineMetrics = useMachineStore((s) => s.lastSessionMetrics);
+  const lastMachineSource = useMachineStore((s) => s.lastSessionSource);
+  const setLastSessionMetrics = useMachineStore((s) => s.setLastSessionMetrics);
 
   const isConditioning = sessionType === 'conditioning';
   const isInterval = isConditioning && ['hiit', 'intervals', 'sprint_intervals', 'circuit'].includes(condSubtype);
@@ -340,11 +366,22 @@ function EntryForm({
       const n = parseInt(s, 10);
       return Number.isFinite(n) ? n : undefined;
     };
+    const parseOptFloat = (s: string) => {
+      if (!s) return undefined;
+      const n = parseFloat(s);
+      return Number.isFinite(n) ? n : undefined;
+    };
     const metrics: MachineMetrics = {
       distance_m: parseOptInt(mDistance),
       calories: parseOptInt(mCalories),
+      kilojoules: parseOptInt(mKilojoules),
       avg_power_w: parseOptInt(mAvgPower),
+      max_power_w: parseOptInt(mMaxPower),
       avg_cadence: parseOptInt(mAvgCadence),
+      avg_pace_s: parseOptInt(mAvgPace),
+      avg_speed_kmh: parseOptFloat(mAvgSpeed),
+      max_speed_kmh: parseOptFloat(mMaxSpeed),
+      strokes: parseOptInt(mStrokes),
       avg_hr_bpm: parseOptInt(mAvgHr),
       max_hr_bpm: parseOptInt(mMaxHr),
     };
@@ -398,6 +435,16 @@ function EntryForm({
       editSession(editing.id, input);
     } else {
       addSession(input);
+    }
+
+    // If this session actually carried machine metrics, cache them on the
+    // machine-store so the next session can reuse them via "Repeat last
+    // machine metrics". Provenance follows the session's source.
+    if (input.conditioning?.machine_metrics) {
+      setLastSessionMetrics(
+        input.conditioning.machine_metrics,
+        input.conditioning.source ?? 'manual_machine_entry',
+      );
     }
 
     if (user?.id) syncData(user.id).catch(() => {});
@@ -941,10 +988,41 @@ function EntryForm({
             )}
           </View>
 
-          {/* Manual-entry fields — collapsible area, shown when the user
-              picks manual entry so the common phone-timer path stays clean. */}
+          {/* Manual-entry fields — collapsible area, modality-aware.
+              Each modality shows only the fields the machine would plausibly
+              expose, so a rower gets pace + strokes and a bike gets
+              power + cadence without either looking at irrelevant rows. */}
           {machineSource === 'manual_machine_entry' && (
             <>
+              {/* Repeat-last-machine — only when the machine-store has a
+                  previous cached metrics record. Analogous to Repeat last HIIT. */}
+              {lastMachineMetrics && (
+                <Pressable
+                  style={styles.repeatBtn}
+                  onPress={() => {
+                    const m = lastMachineMetrics;
+                    if (m.distance_m != null) setMDistance(String(m.distance_m));
+                    if (m.calories != null) setMCalories(String(m.calories));
+                    if (m.kilojoules != null) setMKilojoules(String(m.kilojoules));
+                    if (m.avg_power_w != null) setMAvgPower(String(m.avg_power_w));
+                    if (m.max_power_w != null) setMMaxPower(String(m.max_power_w));
+                    if (m.avg_cadence != null) setMAvgCadence(String(m.avg_cadence));
+                    if (m.avg_pace_s != null) setMAvgPace(String(m.avg_pace_s));
+                    if (m.avg_speed_kmh != null) setMAvgSpeed(String(m.avg_speed_kmh));
+                    if (m.max_speed_kmh != null) setMMaxSpeed(String(m.max_speed_kmh));
+                    if (m.strokes != null) setMStrokes(String(m.strokes));
+                    if (m.avg_hr_bpm != null) setMAvgHr(String(m.avg_hr_bpm));
+                    if (m.max_hr_bpm != null) setMMaxHr(String(m.max_hr_bpm));
+                  }}>
+                  <Text style={styles.repeatBtnText}>
+                    ↺ Repeat last machine metrics
+                    {lastMachineSource ? ` · ${lastMachineSource === 'machine_connected' ? 'live' : 'manual'}` : ''}
+                  </Text>
+                </Pressable>
+              )}
+
+              {/* Always-relevant fields — distance / calories. Shown for
+                  every cardio modality. */}
               <View style={styles.rowInputs}>
                 <View style={styles.halfInput}>
                   <Text style={styles.sectionLabel}>Distance (m)</Text>
@@ -969,30 +1047,179 @@ function EntryForm({
                   />
                 </View>
               </View>
-              <View style={styles.rowInputs}>
-                <View style={styles.halfInput}>
-                  <Text style={styles.sectionLabel}>Avg power (W)</Text>
-                  <TextInput
-                    style={styles.input}
-                    value={mAvgPower}
-                    onChangeText={setMAvgPower}
-                    keyboardType="number-pad"
-                    placeholder="—"
-                    placeholderTextColor="#666"
-                  />
+
+              {/* Bike / Assault bike → power + cadence pair */}
+              {(condModality === 'assault_bike' || condModality === 'bike') && (
+                <>
+                  <View style={styles.rowInputs}>
+                    <View style={styles.halfInput}>
+                      <Text style={styles.sectionLabel}>Avg power (W)</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={mAvgPower}
+                        onChangeText={setMAvgPower}
+                        keyboardType="number-pad"
+                        placeholder="—"
+                        placeholderTextColor="#666"
+                      />
+                    </View>
+                    <View style={styles.halfInput}>
+                      <Text style={styles.sectionLabel}>Max power (W)</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={mMaxPower}
+                        onChangeText={setMMaxPower}
+                        keyboardType="number-pad"
+                        placeholder="—"
+                        placeholderTextColor="#666"
+                      />
+                    </View>
+                  </View>
+                  <View style={styles.rowInputs}>
+                    <View style={styles.halfInput}>
+                      <Text style={styles.sectionLabel}>Avg cadence (rpm)</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={mAvgCadence}
+                        onChangeText={setMAvgCadence}
+                        keyboardType="number-pad"
+                        placeholder="—"
+                        placeholderTextColor="#666"
+                      />
+                    </View>
+                    <View style={styles.halfInput} />
+                  </View>
+                </>
+              )}
+
+              {/* Rower → pace + strokes + kilojoules */}
+              {condModality === 'rower' && (
+                <>
+                  <View style={styles.rowInputs}>
+                    <View style={styles.halfInput}>
+                      <Text style={styles.sectionLabel}>Avg pace (s/500m)</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={mAvgPace}
+                        onChangeText={setMAvgPace}
+                        keyboardType="number-pad"
+                        placeholder="—"
+                        placeholderTextColor="#666"
+                      />
+                    </View>
+                    <View style={styles.halfInput}>
+                      <Text style={styles.sectionLabel}>Strokes</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={mStrokes}
+                        onChangeText={setMStrokes}
+                        keyboardType="number-pad"
+                        placeholder="—"
+                        placeholderTextColor="#666"
+                      />
+                    </View>
+                  </View>
+                  <View style={styles.rowInputs}>
+                    <View style={styles.halfInput}>
+                      <Text style={styles.sectionLabel}>Avg stroke rate (spm)</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={mAvgCadence}
+                        onChangeText={setMAvgCadence}
+                        keyboardType="number-pad"
+                        placeholder="—"
+                        placeholderTextColor="#666"
+                      />
+                    </View>
+                    <View style={styles.halfInput}>
+                      <Text style={styles.sectionLabel}>kJ</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={mKilojoules}
+                        onChangeText={setMKilojoules}
+                        keyboardType="number-pad"
+                        placeholder="—"
+                        placeholderTextColor="#666"
+                      />
+                    </View>
+                  </View>
+                </>
+              )}
+
+              {/* SkiErg → pace + kilojoules */}
+              {condModality === 'skierg' && (
+                <View style={styles.rowInputs}>
+                  <View style={styles.halfInput}>
+                    <Text style={styles.sectionLabel}>Avg pace (s/500m)</Text>
+                    <TextInput
+                      style={styles.input}
+                      value={mAvgPace}
+                      onChangeText={setMAvgPace}
+                      keyboardType="number-pad"
+                      placeholder="—"
+                      placeholderTextColor="#666"
+                    />
+                  </View>
+                  <View style={styles.halfInput}>
+                    <Text style={styles.sectionLabel}>kJ</Text>
+                    <TextInput
+                      style={styles.input}
+                      value={mKilojoules}
+                      onChangeText={setMKilojoules}
+                      keyboardType="number-pad"
+                      placeholder="—"
+                      placeholderTextColor="#666"
+                    />
+                  </View>
                 </View>
-                <View style={styles.halfInput}>
-                  <Text style={styles.sectionLabel}>Avg cadence</Text>
-                  <TextInput
-                    style={styles.input}
-                    value={mAvgCadence}
-                    onChangeText={setMAvgCadence}
-                    keyboardType="number-pad"
-                    placeholder="—"
-                    placeholderTextColor="#666"
-                  />
-                </View>
-              </View>
+              )}
+
+              {/* Treadmill / running → speed + cadence */}
+              {condModality === 'running' && (
+                <>
+                  <View style={styles.rowInputs}>
+                    <View style={styles.halfInput}>
+                      <Text style={styles.sectionLabel}>Avg speed (km/h)</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={mAvgSpeed}
+                        onChangeText={setMAvgSpeed}
+                        keyboardType="numbers-and-punctuation"
+                        placeholder="—"
+                        placeholderTextColor="#666"
+                      />
+                    </View>
+                    <View style={styles.halfInput}>
+                      <Text style={styles.sectionLabel}>Max speed (km/h)</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={mMaxSpeed}
+                        onChangeText={setMMaxSpeed}
+                        keyboardType="numbers-and-punctuation"
+                        placeholder="—"
+                        placeholderTextColor="#666"
+                      />
+                    </View>
+                  </View>
+                  <View style={styles.rowInputs}>
+                    <View style={styles.halfInput}>
+                      <Text style={styles.sectionLabel}>Cadence (spm)</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={mAvgCadence}
+                        onChangeText={setMAvgCadence}
+                        keyboardType="number-pad"
+                        placeholder="—"
+                        placeholderTextColor="#666"
+                      />
+                    </View>
+                    <View style={styles.halfInput} />
+                  </View>
+                </>
+              )}
+
+              {/* HR pair — always shown last, plausible on any cardio modality
+                  whether read off the machine or a paired chest strap. */}
               <View style={styles.rowInputs}>
                 <View style={styles.halfInput}>
                   <Text style={styles.sectionLabel}>Avg HR (bpm)</Text>
@@ -1017,6 +1244,7 @@ function EntryForm({
                   />
                 </View>
               </View>
+
               <Text style={styles.machineComplementHint}>
                 Machine metrics complement WHOOP — WHOOP gives readiness,
                 the machine gives the in-session output.
@@ -1253,8 +1481,14 @@ function SessionCard({
                 const parts: string[] = [];
                 if (m.distance_m != null) parts.push(`${m.distance_m}m`);
                 if (m.calories != null) parts.push(`${m.calories}kcal`);
-                if (m.avg_power_w != null) parts.push(`${m.avg_power_w}W`);
-                if (m.avg_hr_bpm != null) parts.push(`${m.avg_hr_bpm}bpm`);
+                if (m.kilojoules != null) parts.push(`${m.kilojoules}kJ`);
+                if (m.avg_power_w != null) parts.push(`${m.avg_power_w}W avg`);
+                if (m.max_power_w != null) parts.push(`${m.max_power_w}W peak`);
+                if (m.avg_pace_s != null) parts.push(`${m.avg_pace_s}s pace`);
+                if (m.avg_speed_kmh != null) parts.push(`${m.avg_speed_kmh}km/h`);
+                if (m.strokes != null) parts.push(`${m.strokes} strokes`);
+                if (m.avg_hr_bpm != null) parts.push(`${m.avg_hr_bpm}bpm avg`);
+                if (m.max_hr_bpm != null) parts.push(`${m.max_hr_bpm}bpm peak`);
                 return parts.length ? ` · ${parts.join(' · ')}` : '';
               })()
             : ''}
