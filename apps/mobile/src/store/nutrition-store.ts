@@ -27,9 +27,18 @@ import type { OpenFoodFactsProduct } from '../services/openfoodfacts';
 const STORAGE_KEY_TODAY = 'nutrition_today_v1';
 const STORAGE_KEY_TARGETS = 'nutrition_targets_v1';
 const STORAGE_KEY_FAVORITES = 'barcode_favorites_v1';
+const STORAGE_KEY_HISTORY = 'nutrition_history_v1';
 
 /** Max favorites kept in the MRU list — older items drop off. */
 const MAX_FAVORITES = 12;
+
+/**
+ * Max rolling-window length for nutrition history.
+ * 14 days gives enough signal for weekly trend rules without blowing up
+ * the secureStorage entry size — each record is ~200 bytes, so the
+ * whole history is a few KB worst-case.
+ */
+const MAX_HISTORY_DAYS = 14;
 
 /**
  * A barcode product the user has scanned and confirmed. We keep the full
@@ -92,6 +101,34 @@ async function persistFavoritesSafely(favorites: StoredBarcodeFavorite[]): Promi
   } catch {
     // Intentionally swallowed — see helper doc comment.
   }
+}
+
+async function persistHistorySafely(history: NutritionRecord[]): Promise<void> {
+  try {
+    if (!history || history.length === 0) {
+      await secureStorage.removeItem(STORAGE_KEY_HISTORY);
+      return;
+    }
+    await secureStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(history));
+  } catch {
+    // Intentionally swallowed — see helper doc comment.
+  }
+}
+
+/**
+ * Merge a single NutritionRecord into a history array.
+ * Dedupe by date (upsert), sort descending by date (newest first),
+ * and trim to MAX_HISTORY_DAYS. Pure function — no I/O, no mutation
+ * of the input array.
+ */
+function mergeIntoHistory(
+  history: NutritionRecord[],
+  record: NutritionRecord,
+): NutritionRecord[] {
+  const filtered = history.filter((h) => h.date !== record.date);
+  const next = [record, ...filtered];
+  next.sort((a, b) => b.date.localeCompare(a.date));
+  return next.slice(0, MAX_HISTORY_DAYS);
 }
 
 interface NutritionState {
@@ -175,6 +212,30 @@ interface NutritionState {
 
   /** Remove a favorite by its barcode. No-op if not present. */
   removeFavorite: (barcode: string) => void;
+
+  // ---------------------------------------------------------------------
+  // Nutrition history — rolling window of past days for trend coaching
+  // ---------------------------------------------------------------------
+
+  /**
+   * Rolling window of past nutrition records, newest first, deduped by
+   * date, capped at MAX_HISTORY_DAYS. Does NOT include today — today
+   * lives in `today`. On date rollover (next app launch on a new day),
+   * the previous day's `today` is automatically moved into this array
+   * by `hydrate()`.
+   */
+  historyDays: NutritionRecord[];
+
+  /**
+   * Manually snapshot the current `today` record into history without
+   * waiting for the next date rollover. Useful for "commit partial
+   * day" flows. After snapshot, today is preserved — the snapshot is
+   * purely additive. Primary automatic snapshot path is `hydrate()`.
+   */
+  snapshotTodayToHistory: () => void;
+
+  /** Wipe the full history array. Today and targets are untouched. */
+  clearHistory: () => void;
 }
 
 export const useNutritionStore = create<NutritionState>((set, get) => ({
@@ -184,24 +245,50 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
   error: null,
   hydrated: false,
   favorites: [],
+  historyDays: [],
 
   hydrate: async () => {
     try {
-      const [rawToday, rawTargets, rawFavorites] = await Promise.all([
+      const [rawToday, rawTargets, rawFavorites, rawHistory] = await Promise.all([
         secureStorage.getItem(STORAGE_KEY_TODAY),
         secureStorage.getItem(STORAGE_KEY_TARGETS),
         secureStorage.getItem(STORAGE_KEY_FAVORITES),
+        secureStorage.getItem(STORAGE_KEY_HISTORY),
       ]);
+
+      // Load history first so we can fold a stale today into it
+      // during the date-rollover branch below.
+      let historyDays: NutritionRecord[] = [];
+      if (rawHistory) {
+        try {
+          const parsed = JSON.parse(rawHistory);
+          if (Array.isArray(parsed)) {
+            historyDays = parsed
+              .filter(
+                (h: any) => h && typeof h.date === 'string' && h.date.length > 0,
+              )
+              .slice(0, MAX_HISTORY_DAYS);
+            historyDays.sort((a, b) => b.date.localeCompare(a.date));
+          }
+        } catch {
+          void secureStorage.removeItem(STORAGE_KEY_HISTORY);
+        }
+      }
 
       let today: NutritionRecord | null = null;
       if (rawToday) {
         try {
           const parsed = JSON.parse(rawToday) as NutritionRecord;
           // Date-aware: drop stale records from previous days so the
-          // user starts fresh for the new day.
+          // user starts fresh for the new day — but first, fold the
+          // stale record into history so yesterday's numbers survive.
           if (parsed && parsed.date === todayIsoDate()) {
             today = parsed;
           } else {
+            if (parsed && parsed.date) {
+              historyDays = mergeIntoHistory(historyDays, parsed);
+              void persistHistorySafely(historyDays);
+            }
             // Clean up stale data eagerly so the keychain doesn't
             // accumulate old-day records forever.
             void secureStorage.removeItem(STORAGE_KEY_TODAY);
@@ -243,7 +330,7 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
         }
       }
 
-      set({ today, targets, favorites, hydrated: true, error: null });
+      set({ today, targets, favorites, historyDays, hydrated: true, error: null });
     } catch {
       // Any unexpected failure — leave state empty, mark hydrated so
       // the UI stops waiting.
@@ -355,5 +442,22 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
       return { favorites: nextFavorites };
     });
     void persistFavoritesSafely(nextFavorites);
+  },
+
+  snapshotTodayToHistory: () => {
+    let nextHistory: NutritionRecord[] = [];
+    set((state) => {
+      if (!state.today) return {};
+      nextHistory = mergeIntoHistory(state.historyDays, state.today);
+      return { historyDays: nextHistory };
+    });
+    if (nextHistory.length > 0) {
+      void persistHistorySafely(nextHistory);
+    }
+  },
+
+  clearHistory: () => {
+    set({ historyDays: [] });
+    void persistHistorySafely([]);
   },
 }));

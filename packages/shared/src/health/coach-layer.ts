@@ -204,19 +204,28 @@ function countHardSessionsInLastDays(
  *
  * Rule priority (high → low):
  *   1. under-fuelling at high load (strong signal, most actionable)
- *   2. calories very low for the time of day (fuel before training)
- *   3. protein behind target (simple macro shortfall)
- *   4. nothing logged yet after mid-afternoon (log-gap nag)
+ *   2. multi-day trend: calories chronically low
+ *   3. multi-day trend: protein chronically behind
+ *   4. calories very low for the time of day (fuel before training)
+ *   5. protein behind target (simple macro shortfall)
+ *   6. nothing logged yet after mid-afternoon (log-gap nag)
  */
 function buildNutritionReason(inputs: {
   nutritionToday: NutritionRecord | null | undefined;
   nutritionTargets: NutritionTargets | null | undefined;
+  nutritionHistory: NutritionRecord[] | null | undefined;
   readiness: ReadinessLevel;
   recentHard: number;
   currentHour: number;
 }): string | null {
-  const { nutritionToday, nutritionTargets, readiness, recentHard, currentHour } =
-    inputs;
+  const {
+    nutritionToday,
+    nutritionTargets,
+    nutritionHistory,
+    readiness,
+    recentHard,
+    currentHour,
+  } = inputs;
   const cals = nutritionToday?.calories_kcal ?? null;
   const protein = nutritionToday?.protein_g ?? null;
   const calTarget = nutritionTargets?.calories_kcal ?? null;
@@ -238,19 +247,58 @@ function buildNutritionReason(inputs: {
     return 'Training load rising but intake is still low';
   }
 
-  // Rule 2 — calories very low for the time of day. Fires after 14:00
+  // Multi-day trend rules — only fire when we have at least 3 history
+  // entries AND a target for the field being judged. Trend rules are
+  // ranked above single-day rules (except rule 1) because a pattern
+  // is more actionable than a one-off miss. Each rule requires the
+  // most-recent N history days all fail the threshold.
+  const hasTrend =
+    !!nutritionHistory &&
+    nutritionHistory.length >= 3 &&
+    nutritionTargets != null;
+
+  if (hasTrend) {
+    // Rule 2 — calories chronically low. Last 3 history days all under
+    // 70% of target (conservative threshold for a trend call) AND
+    // calories target exists.
+    if (calTarget != null) {
+      const recent3 = nutritionHistory!.slice(0, 3);
+      const allLow = recent3.every((d) => {
+        if (d.calories_kcal == null) return false;
+        return d.calories_kcal / calTarget < 0.7;
+      });
+      if (allLow) {
+        return 'Calories behind target for 3 days running — consider a bigger day';
+      }
+    }
+
+    // Rule 3 — protein chronically behind. Last 3 history days all under
+    // 80% of target.
+    if (proteinTarget != null) {
+      const recent3 = nutritionHistory!.slice(0, 3);
+      const allLow = recent3.every((d) => {
+        if (d.protein_g == null) return false;
+        return d.protein_g / proteinTarget < 0.8;
+      });
+      if (allLow) {
+        return 'Protein behind target for 3 days running — add a protein-dense meal';
+      }
+    }
+  }
+
+  // Rule 4 — calories very low for the time of day. Fires after 14:00
   // local when calories are below 40% of target. Simple fuel nudge.
   if (calsPct != null && calsPct < 0.4 && currentHour >= 14) {
     return 'Fuel is still low for today — eat before training';
   }
 
-  // Rule 3 — protein behind target. Fires any time of day once we're
+  // Rule 5 — protein behind target. Fires any time of day once we're
   // past 10am if protein is under 80%.
   if (proteinPct != null && proteinPct < 0.8 && currentHour >= 10) {
     return 'Protein is behind target — add another meal or shake';
   }
 
-  // Rule 4 — nothing logged yet after mid-afternoon. Only when the user
+  // Rule 6 — nothing logged yet after mid-afternoon. Only when the user
   // has targets set (opted into this level of coaching) but hasn't
   // entered anything for today.
   const hasAnyTarget =
@@ -412,6 +460,13 @@ export interface BuildDailyCoachingBriefInputs {
   /** Daily calorie/macro targets. Optional — reasons are only added when both
    *  a record and targets exist for a given field. */
   nutritionTargets?: NutritionTargets | null;
+  /**
+   * Rolling window of past nutrition records (newest first), NOT including
+   * today. Enables multi-day trend reasons like "protein behind target for
+   * 3 days running". Optional — reasons only fire when both targets and
+   * at least one history entry exist.
+   */
+  nutritionHistory?: NutritionRecord[] | null;
   /** Hour of day in the user's local timezone (0-23). Defaults to the
    *  machine clock. Passed explicitly so tests can simulate specific times. */
   currentHour?: number;
@@ -428,6 +483,7 @@ export function buildDailyCoachingBrief(
     todayIsoDate,
     nutritionToday,
     nutritionTargets,
+    nutritionHistory,
     currentHour: currentHourOverride,
   } = inputs;
   const currentHour =
@@ -487,6 +543,7 @@ export function buildDailyCoachingBrief(
   const nutritionReason = buildNutritionReason({
     nutritionToday,
     nutritionTargets,
+    nutritionHistory,
     readiness,
     recentHard,
     currentHour,

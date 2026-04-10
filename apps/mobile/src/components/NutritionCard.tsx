@@ -104,6 +104,7 @@ export function NutritionCard() {
   const favorites = useNutritionStore((s) => s.favorites);
   const addFavorite = useNutritionStore((s) => s.addFavorite);
   const removeFavorite = useNutritionStore((s) => s.removeFavorite);
+  const historyDays = useNutritionStore((s) => s.historyDays);
 
   const [editing, setEditing] = useState(false);
   const [entryMode, setEntryMode] = useState<EntryMode>('manual');
@@ -282,6 +283,34 @@ export function NutritionCard() {
           <Text style={styles.updatedAt}>
             Updated {formatRelative(today.updated_at)}
           </Text>
+          {/* Multi-day trend cue — single line, shown only when at least
+              2 history days exist so a brand-new user doesn't see it. */}
+          {historyDays.length >= 2 && (() => {
+            const recent = historyDays.slice(0, 7);
+            const cals = recent
+              .map((d) => d.calories_kcal)
+              .filter((v): v is number => v != null);
+            const protein = recent
+              .map((d) => d.protein_g)
+              .filter((v): v is number => v != null);
+            const avgCal =
+              cals.length > 0
+                ? Math.round(cals.reduce((a, b) => a + b, 0) / cals.length)
+                : null;
+            const avgProtein =
+              protein.length > 0
+                ? Math.round(protein.reduce((a, b) => a + b, 0) / protein.length)
+                : null;
+            if (avgCal == null && avgProtein == null) return null;
+            const parts: string[] = [];
+            if (avgCal != null) parts.push(`${avgCal} kcal`);
+            if (avgProtein != null) parts.push(`${avgProtein}g protein`);
+            return (
+              <Text style={styles.trendLine}>
+                {recent.length}-day avg: {parts.join(' · ')}
+              </Text>
+            );
+          })()}
         </>
       )}
 
@@ -675,6 +704,7 @@ const styles = StyleSheet.create({
   metricPct: { fontSize: 10, color: '#a8b84a', opacity: 0.8 },
 
   updatedAt: { fontSize: 11, opacity: 0.4 },
+  trendLine: { fontSize: 11, opacity: 0.5, color: '#a8b84a', marginTop: 2 },
 
   modeRow: {
     flexDirection: 'row',
