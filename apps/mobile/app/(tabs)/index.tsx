@@ -245,6 +245,10 @@ function TodayCoachCard() {
   const nutritionTargets = useNutritionStore((s) => s.targets);
   const nutritionHistory = useNutritionStore((s) => s.historyDays);
   const startPendingCase = useCoachingCasesStore((s) => s.startPending);
+  // Optional user-typed question carried into the prompt packet's
+  // "My question" section. Empty = default fallback "Given the context
+  // above, what should I actually do today?" inside the packet builder.
+  const [userQuestion, setUserQuestion] = useState('');
 
   useEffect(() => {
     if (whoopStatus === 'idle') fetchWhoop();
@@ -291,7 +295,17 @@ function TodayCoachCard() {
    * outcome comes back via the follow-up banner.
    */
   const handleAskChatGPT = async () => {
-    const { text, context } = buildCoachingPromptPacket(briefInputs);
+    // Thread the user's typed question through the shared packet
+    // builder via its optional `userQuestion` input. Empty string
+    // means the builder falls back to its default generic prompt
+    // ("Given the context above, what should I actually do today?")
+    // so the feature is strictly additive — existing "just tap the
+    // button" flow continues to work.
+    const trimmedQuestion = userQuestion.trim();
+    const { text, context } = buildCoachingPromptPacket({
+      ...briefInputs,
+      userQuestion: trimmedQuestion || null,
+    });
     try {
       await Share.share({
         message: text,
@@ -304,8 +318,12 @@ function TodayCoachCard() {
         prompt_packet: text,
         source: 'external_chatgpt',
       });
+      // Clear the question once it's been captured into the case
+      // so the field is empty for the next ask.
+      setUserQuestion('');
     } catch {
-      // Share dismissed or failed — don't save a draft.
+      // Share dismissed or failed — don't save a draft, and don't
+      // clear the question so the user can retry without retyping.
     }
   };
 
@@ -393,13 +411,27 @@ function TodayCoachCard() {
         </Text>
       )}
 
-      {/* Ask ChatGPT fallback — builds a structured packet from the
-          brief inputs above and hands it off to the native share sheet.
-          Intentionally positioned at the bottom of the card so it's
-          available but never crowds out the app's own guidance. */}
-      <Pressable style={styles.askAiBtn} onPress={handleAskChatGPT}>
-        <Text style={styles.askAiBtnText}>Ask ChatGPT for a second opinion →</Text>
-      </Pressable>
+      {/* Ask ChatGPT fallback — optional user-question textarea threaded
+          through the shared packet builder + the button that opens the
+          native share sheet. Intentionally positioned at the bottom of
+          the card so it's available but never crowds out the app's own
+          guidance. The textarea is optional; leaving it blank falls
+          back to the shared builder's default generic prompt. */}
+      <View style={styles.askAiBlock}>
+        <TextInput
+          style={styles.askAiQuestionInput}
+          value={userQuestion}
+          onChangeText={setUserQuestion}
+          placeholder="What do you want to ask? (optional)"
+          placeholderTextColor="#666"
+          multiline
+          textAlignVertical="top"
+          maxLength={500}
+        />
+        <Pressable style={styles.askAiBtn} onPress={handleAskChatGPT}>
+          <Text style={styles.askAiBtnText}>Ask ChatGPT for a second opinion →</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -703,8 +735,20 @@ const styles = StyleSheet.create({
   },
 
   // Ask ChatGPT fallback
+  askAiBlock: { marginTop: 10, gap: 8 },
+  askAiQuestionInput: {
+    borderWidth: 1,
+    borderColor: '#333',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    fontSize: 12,
+    color: '#e6ecf3',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    minHeight: 48,
+    lineHeight: 17,
+  },
   askAiBtn: {
-    marginTop: 10,
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
