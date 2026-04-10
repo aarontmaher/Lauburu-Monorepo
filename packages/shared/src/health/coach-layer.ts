@@ -21,6 +21,7 @@ import {
   SCHEDULE_SESSION_LABELS,
   GRAPPLING_SCHEDULE_SUBTYPE_LABELS,
 } from '../types/preferences';
+import type { NutritionRecord, NutritionTargets } from '../types/nutrition';
 import type { ReadinessLevel, TrainingInsight } from './insights';
 
 /**
@@ -189,6 +190,88 @@ function countHardSessionsInLastDays(
 }
 
 // ---------------------------------------------------------------------------
+// Nutrition reason — concise, time-aware, target-gated
+// ---------------------------------------------------------------------------
+
+/**
+ * Build at most one concise nutrition-aware reason for the brief.
+ *
+ * Rules fire top-down; the first match wins. All rules require the
+ * corresponding target to be set — we never fake precision by guessing
+ * a target. The "time of day" rules are deliberately conservative
+ * (late afternoon onwards) so the brief doesn't nag at 9am when a
+ * light breakfast is fine.
+ *
+ * Rule priority (high → low):
+ *   1. under-fuelling at high load (strong signal, most actionable)
+ *   2. calories very low for the time of day (fuel before training)
+ *   3. protein behind target (simple macro shortfall)
+ *   4. nothing logged yet after mid-afternoon (log-gap nag)
+ */
+function buildNutritionReason(inputs: {
+  nutritionToday: NutritionRecord | null | undefined;
+  nutritionTargets: NutritionTargets | null | undefined;
+  readiness: ReadinessLevel;
+  recentHard: number;
+  currentHour: number;
+}): string | null {
+  const { nutritionToday, nutritionTargets, readiness, recentHard, currentHour } =
+    inputs;
+  const cals = nutritionToday?.calories_kcal ?? null;
+  const protein = nutritionToday?.protein_g ?? null;
+  const calTarget = nutritionTargets?.calories_kcal ?? null;
+  const proteinTarget = nutritionTargets?.protein_g ?? null;
+
+  const calsPct = cals != null && calTarget ? cals / calTarget : null;
+  const proteinPct =
+    protein != null && proteinTarget ? protein / proteinTarget : null;
+
+  // Rule 1 — under-fuelling + high training load. Only fires when we have
+  // real numbers AND the user's readiness is already yellow/red OR there
+  // have been multiple hard sessions recently. Highest-priority signal.
+  if (
+    calsPct != null &&
+    calsPct < 0.5 &&
+    (recentHard >= 2 || readiness === 'yellow' || readiness === 'red') &&
+    currentHour >= 14
+  ) {
+    return 'Training load rising but intake is still low';
+  }
+
+  // Rule 2 — calories very low for the time of day. Fires after 14:00
+  // local when calories are below 40% of target. Simple fuel nudge.
+  if (calsPct != null && calsPct < 0.4 && currentHour >= 14) {
+    return 'Fuel is still low for today — eat before training';
+  }
+
+  // Rule 3 — protein behind target. Fires any time of day once we're
+  // past 10am if protein is under 80%.
+  if (proteinPct != null && proteinPct < 0.8 && currentHour >= 10) {
+    return 'Protein is behind target — add another meal or shake';
+  }
+
+  // Rule 4 — nothing logged yet after mid-afternoon. Only when the user
+  // has targets set (opted into this level of coaching) but hasn't
+  // entered anything for today.
+  const hasAnyTarget =
+    nutritionTargets != null &&
+    (nutritionTargets.calories_kcal != null ||
+      nutritionTargets.protein_g != null);
+  const nothingLoggedToday =
+    nutritionToday == null ||
+    (nutritionToday.calories_kcal == null &&
+      nutritionToday.protein_g == null &&
+      nutritionToday.carbs_g == null &&
+      nutritionToday.fat_g == null);
+  if (hasAnyTarget && nothingLoggedToday && currentHour >= 15) {
+    return 'No fuel logged yet today — quick entry on the Health tab';
+  }
+
+  // Nothing worth saying yet.
+  return null;
+}
+
+// ---------------------------------------------------------------------------
 // Load interpretation — strain against readiness, not against /21
 // ---------------------------------------------------------------------------
 
@@ -324,12 +407,31 @@ export interface BuildDailyCoachingBriefInputs {
   todayPlan: PlannedSession[];
   recentSessions: TrainingSession[];
   todayIsoDate: string;
+  /** Today's nutrition record (manual/Cronometer/AI). Optional. */
+  nutritionToday?: NutritionRecord | null;
+  /** Daily calorie/macro targets. Optional — reasons are only added when both
+   *  a record and targets exist for a given field. */
+  nutritionTargets?: NutritionTargets | null;
+  /** Hour of day in the user's local timezone (0-23). Defaults to the
+   *  machine clock. Passed explicitly so tests can simulate specific times. */
+  currentHour?: number;
 }
 
 export function buildDailyCoachingBrief(
   inputs: BuildDailyCoachingBriefInputs,
 ): DailyCoachingBrief {
-  const { whoopDay, insights, todayPlan, recentSessions, todayIsoDate } = inputs;
+  const {
+    whoopDay,
+    insights,
+    todayPlan,
+    recentSessions,
+    todayIsoDate,
+    nutritionToday,
+    nutritionTargets,
+    currentHour: currentHourOverride,
+  } = inputs;
+  const currentHour =
+    currentHourOverride != null ? currentHourOverride : new Date().getHours();
 
   // 1. Determine readiness source, preferring WHOOP when present.
   let readiness: ReadinessLevel;
@@ -377,6 +479,22 @@ export function buildDailyCoachingBrief(
   ) {
     reasons.push(`Only ${whoopDay.sleep_hours.toFixed(1)}h sleep last night`);
   }
+
+  // Nutrition-aware reasons — only fire when we have BOTH today's record
+  // and a target for the field being judged. Never fakes precision, never
+  // turns Home into a nutrition dashboard; max one nutrition reason per
+  // brief so it doesn't crowd out readiness and load.
+  const nutritionReason = buildNutritionReason({
+    nutritionToday,
+    nutritionTargets,
+    readiness,
+    recentHard,
+    currentHour,
+  });
+  if (nutritionReason) {
+    reasons.push(nutritionReason);
+  }
+
   // Cap at 3
   const cappedReasons = reasons.slice(0, 3);
 

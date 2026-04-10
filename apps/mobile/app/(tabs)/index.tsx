@@ -147,6 +147,8 @@ function TodayCoachCard() {
   const insights = useHealthStore((s) => s.insights);
   const sessions = useTrainingStore((s) => s.sessions);
   const schedule = usePreferencesStore((s) => s.preferences.schedule);
+  const nutritionToday = useNutritionStore((s) => s.today);
+  const nutritionTargets = useNutritionStore((s) => s.targets);
 
   useEffect(() => {
     if (whoopStatus === 'idle') fetchWhoop();
@@ -161,8 +163,10 @@ function TodayCoachCard() {
       todayPlan,
       recentSessions: sessions,
       todayIsoDate,
+      nutritionToday,
+      nutritionTargets,
     });
-  }, [whoopDay, insights, sessions, schedule]);
+  }, [whoopDay, insights, sessions, schedule, nutritionToday, nutritionTargets]);
 
   const color = READINESS_COLORS[brief.readiness];
   const sourceLabel =
