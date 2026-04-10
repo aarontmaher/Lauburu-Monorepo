@@ -46,6 +46,12 @@ export interface SessionSummary {
   sparring_minutes?: number;
   intensity: SessionIntensity;
   headline: string;
+  /**
+   * For HIIT / interval sessions, a compact post-session takeaway combining
+   * protocol, modality, and any captured machine metrics. Null for sessions
+   * without interval detail or machine data.
+   */
+  interval_takeaway?: string;
 }
 
 /**
@@ -213,6 +219,23 @@ export function summarizeSession(s: TrainingSession): SessionSummary {
       const intervalMin = iv
         ? Math.round(((iv.work_duration_s + iv.rest_duration_s) * iv.rounds) / 60)
         : totalMin;
+      // Build the post-session interval takeaway from protocol + machine
+      // metrics, only if there's at least one piece of real detail.
+      const takeawayParts: string[] = [];
+      if (iv) {
+        takeawayParts.push(
+          `${iv.work_duration_s}s/${iv.rest_duration_s}s × ${iv.rounds}`,
+        );
+      }
+      const mm = cd.machine_metrics;
+      if (mm) {
+        if (mm.distance_m != null) takeawayParts.push(`${mm.distance_m}m`);
+        if (mm.calories != null) takeawayParts.push(`${mm.calories}kcal`);
+        if (mm.avg_power_w != null) takeawayParts.push(`${mm.avg_power_w}W avg`);
+        if (mm.max_hr_bpm != null) takeawayParts.push(`${mm.max_hr_bpm}bpm peak`);
+      }
+      const interval_takeaway =
+        takeawayParts.length > 0 ? takeawayParts.join(' · ') : undefined;
       return {
         kind: 'hiit',
         shape: 'interval',
@@ -224,6 +247,7 @@ export function summarizeSession(s: TrainingSession): SessionSummary {
           minutes: intervalMin,
           modality,
         }),
+        interval_takeaway,
       };
     }
 

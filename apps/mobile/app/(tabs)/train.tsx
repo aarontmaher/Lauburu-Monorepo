@@ -22,7 +22,7 @@ import {
   RESPIRATORY_DEVICE_LABELS, PARTNER_FORMAT_LABELS,
   buildDayPlanSummary, SCHEDULE_SESSION_LABELS,
   SESSION_PRESETS, SEGMENT_TYPE_LABELS, createDefaultSegments,
-  summarizeSession, suggestTrainIntensity,
+  summarizeSession, suggestTrainIntensity, suggestHIITProtocol,
 } from '@lauburu/shared';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useTimerStore } from '../../src/store/timer-store';
@@ -149,6 +149,31 @@ function EntryForm({
     [whoopDay, insights, recentSessions],
   );
 
+  // Recovery-aware HIIT protocol suggestion — only computed when relevant,
+  // but useMemo keeps it stable across renders.
+  const hiitSuggestion = useMemo(
+    () =>
+      suggestHIITProtocol({
+        whoopDay,
+        insights,
+        recentSessions,
+        todayIsoDate: todayDate(),
+      }),
+    [whoopDay, insights, recentSessions],
+  );
+
+  // Most recent previous HIIT session (for the Repeat-last quick action).
+  const lastHIITSession = useMemo(() => {
+    return [...recentSessions]
+      .filter(
+        (s) =>
+          s.type === 'conditioning' &&
+          s.conditioning?.subtype === 'hiit' &&
+          s.conditioning.interval != null,
+      )
+      .sort((a, b) => b.created_at.localeCompare(a.created_at))[0];
+  }, [recentSessions]);
+
   // Top-level mode: Grappling / HIIT / Steady State / Weights
   type TopMode = 'grappling' | 'hiit' | 'zone2' | 'weights' | null;
   const [topMode, setTopMode] = useState<TopMode>(
@@ -177,6 +202,7 @@ function EntryForm({
   const [workDur, setWorkDur] = useState(editing?.conditioning?.interval?.work_duration_s?.toString() ?? '30');
   const [restDur, setRestDur] = useState(editing?.conditioning?.interval?.rest_duration_s?.toString() ?? '30');
   const [intervalRounds, setIntervalRounds] = useState(editing?.conditioning?.interval?.rounds?.toString() ?? '10');
+  const [intervalLabel, setIntervalLabel] = useState(editing?.conditioning?.interval?.label ?? '');
   const [liftFocus, setLiftFocus] = useState<LiftingFocus>(
     editing?.conditioning?.weight_training?.focus ?? 'strength',
   );
@@ -291,6 +317,7 @@ function EntryForm({
         work_duration_s: parseInt(workDur, 10) || 30,
         rest_duration_s: parseInt(restDur, 10) || 30,
         rounds: parseInt(intervalRounds, 10) || 10,
+        ...(intervalLabel.trim() ? { label: intervalLabel.trim() } : {}),
       };
     }
     if (isWeightTraining) {
@@ -573,15 +600,52 @@ function EntryForm({
         </View>
       )}
 
-      {/* HIIT — direct work/rest/rounds entry (no presets) */}
+      {/* HIIT — direct work/rest/rounds entry, recovery-aware suggestion,
+          and a quick Repeat-last-HIIT action that reuses the exact
+          protocol (and label) of the most recent logged HIIT session. */}
       {topMode === 'hiit' && (
-        <Pressable
-          style={styles.aiSuggestionBubble}
-          onPress={() => { setWorkDur('30'); setRestDur('30'); setIntervalRounds('10'); }}>
-          <Text style={styles.aiSuggestionText}>
-            AI coach suggestion: 30s work / 30s rest × 10 — matches your recovery
-          </Text>
-        </Pressable>
+        <View style={styles.section}>
+          <Pressable
+            style={styles.aiSuggestionBubble}
+            onPress={() => {
+              setWorkDur(String(hiitSuggestion.work_s));
+              setRestDur(String(hiitSuggestion.rest_s));
+              setIntervalRounds(String(hiitSuggestion.rounds));
+            }}>
+            <Text style={styles.aiSuggestionText}>
+              Suggested: {hiitSuggestion.label} — {hiitSuggestion.reason}
+            </Text>
+          </Pressable>
+
+          {lastHIITSession?.conditioning?.interval && (
+            <Pressable
+              style={styles.repeatBtn}
+              onPress={() => {
+                const iv = lastHIITSession.conditioning!.interval!;
+                setWorkDur(String(iv.work_duration_s));
+                setRestDur(String(iv.rest_duration_s));
+                setIntervalRounds(String(iv.rounds));
+                setIntervalLabel(iv.label ?? '');
+                if (lastHIITSession.conditioning!.modality) {
+                  setCondModality(lastHIITSession.conditioning!.modality);
+                }
+              }}>
+              <Text style={styles.repeatBtnText}>
+                ↺ Repeat last HIIT ·{' '}
+                {lastHIITSession.conditioning.interval.label ??
+                  `${lastHIITSession.conditioning.interval.work_duration_s}/${lastHIITSession.conditioning.interval.rest_duration_s} × ${lastHIITSession.conditioning.interval.rounds}`}
+              </Text>
+            </Pressable>
+          )}
+
+          <TextInput
+            style={styles.input}
+            placeholder="Protocol label (optional) — Tabata, Bike HIIT, etc."
+            placeholderTextColor="#555"
+            value={intervalLabel}
+            onChangeText={setIntervalLabel}
+          />
+        </View>
       )}
 
       {/* Steady State */}
@@ -1173,6 +1237,9 @@ function SessionCard({
       {session.conditioning && (
         <Text style={styles.sessionCondDetail}>
           {CONDITIONING_SUBTYPE_LABELS[session.conditioning.subtype]}
+          {session.conditioning.interval?.label
+            ? ` · ${session.conditioning.interval.label}`
+            : ''}
           {session.conditioning.modality ? ` · ${MODALITY_LABELS[session.conditioning.modality]}` : ''}
           {session.conditioning.interval
             ? ` · ${session.conditioning.interval.work_duration_s}s/${session.conditioning.interval.rest_duration_s}s × ${session.conditioning.interval.rounds}`
@@ -1192,6 +1259,9 @@ function SessionCard({
               })()
             : ''}
         </Text>
+      )}
+      {summary.interval_takeaway && (
+        <Text style={styles.sessionTakeaway}>{summary.interval_takeaway}</Text>
       )}
       {session.segments && session.segments.length > 0 && (
         <Text style={styles.sessionSegments}>
@@ -1587,6 +1657,16 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   aiSuggestionText: { fontSize: 11, color: '#d4e157', opacity: 0.8 },
+  repeatBtn: {
+    alignSelf: 'flex-start',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.4)',
+    backgroundColor: 'rgba(212,225,87,0.04)',
+  },
+  repeatBtnText: { fontSize: 12, color: '#d4e157', fontWeight: '500' },
   derivedTotalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1690,6 +1770,7 @@ const styles = StyleSheet.create({
   actionBtn: { paddingVertical: 2, paddingHorizontal: 4 },
   actionText: { fontSize: 13, color: '#d4e157' },
   sessionCondDetail: { fontSize: 12, color: '#d4e157', opacity: 0.7 },
+  sessionTakeaway: { fontSize: 12, color: '#d4e157', opacity: 0.85, fontWeight: '500' },
   sessionSegments: { fontSize: 12, color: '#64b5f6', opacity: 0.7 },
   sessionMapRefs: { fontSize: 11, color: '#d4e157', opacity: 0.7, fontStyle: 'italic' },
 

@@ -142,6 +142,8 @@ export interface IntervalDetail {
   modality?: Modality;
   /** Preset ID if a standard protocol was used */
   preset_id?: string;
+  /** Optional user-provided label for this protocol ("Tabata", "Bike HIIT"). */
+  label?: string;
   /** Per-interval machine metrics when a connected or parsed machine is used. */
   per_interval?: IntervalMachineSample[];
 }

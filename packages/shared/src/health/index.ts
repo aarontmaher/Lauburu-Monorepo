@@ -13,7 +13,11 @@ export type { CoachingResponse } from './coaching';
 export { mergeTrainingSessions } from './merge-training';
 export { summarizeSession } from './session-summary';
 export type { SessionSummary, SessionKind, SessionShape } from './session-summary';
-export { buildDailyCoachingBrief, suggestTrainIntensity } from './coach-layer';
+export {
+  buildDailyCoachingBrief,
+  suggestTrainIntensity,
+  suggestHIITProtocol,
+} from './coach-layer';
 export type {
   DailyCoachingBrief,
   WhoopSnapshot,
@@ -21,6 +25,7 @@ export type {
   CoachedMode,
   LoadBand,
   BuildDailyCoachingBriefInputs,
+  HIITProtocolSuggestion,
 } from './coach-layer';
 export { assembleTrainingExample } from './training-example';
 export { buildDayPlanSummary, getDayOfWeek } from './plan-status';

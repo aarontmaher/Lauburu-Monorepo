@@ -428,3 +428,95 @@ export function suggestTrainIntensity(inputs: {
       : 'Based on today\'s readiness');
   return { intensity: brief.suggested_intensity, reason };
 }
+
+// ---------------------------------------------------------------------------
+// HIIT protocol suggestion — recovery-aware work/rest/rounds recipe
+// ---------------------------------------------------------------------------
+
+export interface HIITProtocolSuggestion {
+  work_s: number;
+  rest_s: number;
+  rounds: number;
+  /** Short explanation for the UI bubble ("Green recovery — push harder"). */
+  reason: string;
+  /** Human label for the protocol ("30/30 × 12"). */
+  label: string;
+}
+
+/**
+ * Suggest a HIIT work/rest/rounds recipe tailored to today's recovery.
+ *
+ * Rules are deliberately simple and explainable:
+ *   green  → 30 / 30 × 12  (longer session, balanced rest, push available)
+ *   yellow → 30 / 45 × 10  (standard interval, longer rest, moderate load)
+ *   red    → 20 / 60 × 6   (short work, long rest, fewer rounds — maintain)
+ *   grey   → 30 / 30 × 10  (default, no readiness signal)
+ *
+ * These are starting points, not mandates. The UI renders this as a
+ * tappable "Suggested: 30/30 × 12" bubble that seeds the inputs on tap.
+ */
+export function suggestHIITProtocol(inputs: {
+  whoopDay: WhoopSnapshot | null;
+  insights: TrainingInsight | null;
+  recentSessions: TrainingSession[];
+  todayIsoDate: string;
+}): HIITProtocolSuggestion {
+  const brief = buildDailyCoachingBrief({
+    whoopDay: inputs.whoopDay,
+    insights: inputs.insights,
+    todayPlan: [],
+    recentSessions: inputs.recentSessions,
+    todayIsoDate: inputs.todayIsoDate,
+  });
+
+  let work_s: number;
+  let rest_s: number;
+  let rounds: number;
+  let reason: string;
+
+  switch (brief.readiness) {
+    case 'green':
+      work_s = 30;
+      rest_s = 30;
+      rounds = 12;
+      reason =
+        brief.primary_source === 'whoop' &&
+        inputs.whoopDay?.recovery_score != null
+          ? `Recovery ${inputs.whoopDay.recovery_score}% — push harder`
+          : 'Green recovery — push harder';
+      break;
+    case 'yellow':
+      work_s = 30;
+      rest_s = 45;
+      rounds = 10;
+      reason = 'Moderate recovery — balanced intervals';
+      break;
+    case 'red':
+      work_s = 20;
+      rest_s = 60;
+      rounds = 6;
+      reason = 'Low recovery — short work, long rest';
+      break;
+    default:
+      work_s = 30;
+      rest_s = 30;
+      rounds = 10;
+      reason = 'Default protocol — no readiness signal yet';
+  }
+
+  // Load-band override: if the day is already over target, back off hard.
+  if (brief.load_band === 'over') {
+    work_s = 20;
+    rest_s = 60;
+    rounds = Math.min(rounds, 6);
+    reason = 'Load already over target — dial it back';
+  }
+
+  return {
+    work_s,
+    rest_s,
+    rounds,
+    reason,
+    label: `${work_s}/${rest_s} × ${rounds}`,
+  };
+}
