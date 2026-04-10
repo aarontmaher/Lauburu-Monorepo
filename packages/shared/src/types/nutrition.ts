@@ -1,31 +1,73 @@
 /**
  * Nutrition types — first-slice scaffolding for Cronometer (and future
- * FatSecret / MyFitnessPal / manual) integrations.
+ * FatSecret / MyFitnessPal / manual / AI) integrations.
  *
- * Status as of 2026-04-10: NO live ingestion. These types exist so the
- * mobile app has a stable contract for the next batch to fill in. Nothing
- * in the current coaching pipeline reads from them yet, so adding fields
- * or flipping sources later is additive and safe.
+ * ARCHITECTURE
+ *
+ * Explicit layering — each layer has one job, and they don't compete:
+ *
+ *   Cronometer  → canonical structured nutrition source of truth.
+ *                 When live, this is the authoritative daily record.
+ *                 The app does NOT try to outgrow Cronometer — it
+ *                 builds on top of it.
+ *
+ *   Manual      → the first usable in-app layer, shipped today.
+ *                 Fast fallback entry when the user is away from
+ *                 Cronometer or just wants to log one number quickly.
+ *
+ *   AI estimate → future convenience layer. Photo-based macro estimate,
+ *                 voice-to-macros, barcode lookups, meal description
+ *                 parsing, etc. Always marked as 'ai_estimate' so the
+ *                 coaching layer can weight it lower than manual or
+ *                 cronometer data. NEVER the source of truth on its own.
+ *
+ *   AI corrected → an AI estimate the user has reviewed/edited. Higher
+ *                 trust than raw AI but still distinct from manual so
+ *                 provenance is auditable.
+ *
+ *   Targets     → the coaching usefulness layer on top of any of the
+ *                 above. Lives in NutritionTargets, unrelated to source.
+ *
+ * Status as of 2026-04-10: manual entry is live via the mobile
+ * nutrition-store; all other sources are scaffolded but not wired.
+ * The type union above is the stable contract — adding live paths
+ * later (Cronometer API client, AI estimator, file import, etc.)
+ * is additive and does not touch the NutritionRecord shape or any
+ * UI that already reads through useNutritionStore.
  */
 
 /**
  * Where nutrition data came from. Explicit provenance mirrors the
  * WorkoutSource pattern in training.ts — coaching decisions need to
- * know if a number was hand-entered vs pulled from a tracked source.
+ * know if a number was hand-entered vs pulled from a tracked source
+ * vs estimated by AI vs corrected by the user after an AI estimate.
+ *
+ * Ordered by "trust for coaching", highest first:
+ *   cronometer    → tracked, structured, canonical
+ *   manual        → user-asserted, lower freshness risk
+ *   ai_corrected  → AI estimate the user reviewed and accepted/edited
+ *   imported      → generic file/export import
+ *   myfitnesspal  → tracked third party
+ *   fatsecret     → tracked third party
+ *   ai_estimate   → raw AI estimate, lowest auto-trust
  */
 export type NutritionSource =
-  | 'manual' // User typed it into the app
-  | 'cronometer' // Pulled from Cronometer (future)
+  | 'cronometer' // Pulled from Cronometer (future, canonical target)
+  | 'manual' // User typed it into the app (today's default)
+  | 'ai_corrected' // AI estimate the user reviewed + accepted/edited (future)
+  | 'imported' // Generic file / export import (future)
   | 'myfitnesspal' // Pulled from MyFitnessPal (future)
   | 'fatsecret' // Pulled from FatSecret (future)
-  | 'imported'; // Generic file import (future)
+  | 'ai_estimate'; // Raw AI estimate (photo, voice, parsed description) (future)
 
 export const NUTRITION_SOURCE_LABELS: Record<NutritionSource, string> = {
-  manual: 'Manual',
   cronometer: 'Cronometer',
+  manual: 'Manual',
+  ai_corrected: 'AI (corrected)',
+  imported: 'Imported',
   myfitnesspal: 'MyFitnessPal',
   fatsecret: 'FatSecret',
-  imported: 'Imported',
+  ai_estimate: 'AI estimate',
 };
 
 /**
