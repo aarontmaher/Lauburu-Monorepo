@@ -70,21 +70,38 @@ function isToday(date: string): boolean {
   return date === today;
 }
 
+/**
+ * Format a WHOOP numeric metric sensibly:
+ *   - integers rendered as integers (no trailing .0)
+ *   - `decimals` (default 1) for floats
+ *   - null/undefined/NaN → em-dash
+ */
+function formatNumber(
+  value: number | string | null | undefined,
+  decimals = 1,
+): string {
+  if (value == null || value === '') return '—';
+  const n = typeof value === 'number' ? value : Number(value);
+  if (Number.isNaN(n)) return '—';
+  if (Number.isInteger(n)) return String(n);
+  return n.toFixed(decimals);
+}
+
 function MetricBox({
   label,
   value,
   unit,
 }: {
   label: string;
-  value: number | string | null;
+  value: string;
   unit?: string;
 }) {
-  const display = value == null || value === '' ? '—' : String(value);
+  const hasValue = value !== '—';
   return (
     <View style={styles.metricBox}>
       <Text style={styles.metricValue}>
-        {display}
-        {unit && value != null ? <Text style={styles.metricUnit}>{unit}</Text> : null}
+        {value}
+        {unit && hasValue ? <Text style={styles.metricUnit}>{unit}</Text> : null}
       </Text>
       <Text style={styles.metricLabel}>{label}</Text>
     </View>
@@ -119,7 +136,7 @@ export function WhoopCard() {
       <View style={styles.headerRow}>
         <View style={styles.titleBlock}>
           <Text style={styles.cardTitle}>WHOOP</Text>
-          <Text style={styles.sourceLabel}>Backend-fed · read-only</Text>
+          <Text style={styles.sourceLabel}>from backend sync</Text>
         </View>
         <Pressable
           onPress={fetchToday}
@@ -180,29 +197,35 @@ export function WhoopCard() {
 
           {/* Key metrics grid */}
           <View style={styles.metricsGrid}>
-            <MetricBox label="HRV" value={day.hrv_ms} unit="ms" />
-            <MetricBox label="Resting HR" value={day.resting_hr} unit="bpm" />
-            <MetricBox label="Sleep" value={day.sleep_hours} unit="h" />
+            <MetricBox label="HRV" value={formatNumber(day.hrv_ms, 1)} unit=" ms" />
+            <MetricBox
+              label="Resting HR"
+              value={formatNumber(day.resting_hr, 0)}
+              unit=" bpm"
+            />
+            <MetricBox label="Sleep" value={formatNumber(day.sleep_hours, 1)} unit=" h" />
             <MetricBox
               label="Sleep perf"
-              value={day.sleep_performance_pct}
+              value={formatNumber(day.sleep_performance_pct, 0)}
               unit="%"
             />
             <MetricBox
               label="Strain"
-              value={day.daily_strain}
-              unit="/21"
+              value={formatNumber(day.daily_strain, 1)}
+              unit=" /21"
             />
-            <MetricBox label="Workouts" value={workoutCount} />
+            <MetricBox label="Workouts" value={String(workoutCount)} />
           </View>
 
-          {/* Honest freshness + gap notices */}
+          {/* Honest freshness line. If the upstream timestamp exists we use
+              it; otherwise we fall back to when WE last fetched (still real). */}
           <View style={styles.footerRow}>
             <Text style={styles.freshnessText}>
               {day.source_updated_at
-                ? `Source updated ${formatRelative(day.source_updated_at)}`
-                : 'Source freshness unknown'}
-              {fetchedAt ? ` · fetched ${formatRelative(fetchedAt)}` : ''}
+                ? `Synced ${formatRelative(day.source_updated_at)}`
+                : fetchedAt
+                  ? `Refreshed ${formatRelative(fetchedAt)}`
+                  : 'Not refreshed yet'}
             </Text>
           </View>
 
@@ -210,18 +233,8 @@ export function WhoopCard() {
             <View style={styles.noticeRow}>
               <View style={[styles.statusDot, { backgroundColor: '#d4e157' }]} />
               <Text style={styles.noticeWarn}>
-                Source is stale (&gt;{STALE_SOURCE_HOURS}h). Backend tail-poll
-                runs every 15 min — try Refresh in a moment.
-              </Text>
-            </View>
-          )}
-
-          {freshness === 'unknown' && (
-            <View style={styles.noticeRow}>
-              <View style={[styles.statusDot, { backgroundColor: '#666' }]} />
-              <Text style={styles.noticeMuted}>
-                Backend payload didn't include a freshness timestamp. Showing
-                the latest day record as-is.
+                Backend data is more than {STALE_SOURCE_HOURS} hours old. The
+                tail-poll refreshes every 15 min — pull Refresh to retry now.
               </Text>
             </View>
           )}
@@ -230,9 +243,8 @@ export function WhoopCard() {
             <View style={styles.noticeRow}>
               <View style={[styles.statusDot, { backgroundColor: '#d4e157' }]} />
               <Text style={styles.noticeWarn}>
-                Recovery and sleep are here, but today's workout hasn't reached
-                the backend yet. Ends and uploads from the WHOOP strap surface
-                on the next sync tick.
+                Today's workout hasn't synced yet. Recovery and sleep are
+                logged — the workout will appear on the next backend refresh.
               </Text>
             </View>
           )}

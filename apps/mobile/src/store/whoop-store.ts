@@ -76,8 +76,13 @@ function unwrap(payload: any): any {
 /**
  * Pure normalizer. Mirrors website `normalizeWhoopDailyForApp` but keeps
  * `source_updated_at` from the raw record so the UI can show staleness.
+ *
+ * `envelope` is the full decoded response body (before unwrap). Some Railway
+ * payload shapes surface freshness at the envelope level rather than inside
+ * the day object, so we check both.
  */
 function normalize(raw: any): WhoopDay | null {
+  const envelope: any = raw ?? {};
   const src = unwrap(raw);
   if (!src || src.error) return null;
 
@@ -122,10 +127,16 @@ function normalize(raw: any): WhoopDay | null {
       strain.day_strain != null ? strain.day_strain : src.daily_strain ?? null,
     workouts,
     // Upstream freshness: try every plausible field name the Railway MCP /
-    // WHOOP schema might expose. Falls back to null if none match; the UI
-    // treats null as "freshness unknown" and shows an explicit hint rather
-    // than a silent stale state.
+    // WHOOP schema might expose, checking the envelope (response root) first
+    // and the unwrapped day object second. The MCP daily_summary response
+    // surfaces source_updated_at at the envelope level for some shapes.
     source_updated_at:
+      envelope.source_updated_at ??
+      envelope.updated_at ??
+      envelope.last_updated ??
+      envelope.cycle_updated_at ??
+      envelope.as_of ??
+      envelope.synced_at ??
       src.source_updated_at ??
       src.updated_at ??
       src.last_updated ??

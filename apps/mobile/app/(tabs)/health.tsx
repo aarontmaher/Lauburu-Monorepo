@@ -576,17 +576,17 @@ export default function HealthScreen() {
           <Text
             style={[
               styles.availBadge,
-              { color: isAvailable ? '#4ade80' : '#ff6b6b' },
+              { color: isAvailable ? '#4ade80' : '#888' },
             ]}>
-            {isAvailable ? 'Available' : 'Not Available'}
+            {isAvailable ? 'Available' : 'Not set up'}
           </Text>
         </View>
 
         {!isAvailable && !inExpoGo && (
           <Text style={styles.unavailNote}>
             {Platform.OS === 'ios'
-              ? 'Apple Health is not available. Ensure the Health app is installed and permissions are enabled in Settings.'
-              : 'Health Connect is not available. Requires Android 14+ or the Health Connect app.'}
+              ? "On-device Apple Health isn't connected here. Open the iOS Health app and grant Lauburu the metrics you want to sync."
+              : "Health Connect isn't connected here. Requires Android 14+ or the Health Connect app."}
           </Text>
         )}
 
@@ -646,7 +646,13 @@ export default function HealthScreen() {
           </>
         )}
 
-        {error && <Text style={styles.errorText}>{error}</Text>}
+        {/* Only show the error line for genuine runtime errors. The
+            "Health service unavailable" placeholder is already conveyed
+            by the red Not Available badge + the explanatory note above,
+            so duplicating it as a red error line reads like a crash. */}
+        {error && error !== 'Health service unavailable' && (
+          <Text style={styles.errorText}>{error}</Text>
+        )}
       </View>
 
       {/* Permissions detail */}
@@ -687,17 +693,19 @@ export default function HealthScreen() {
       {/* Recent days */}
       {days.length > 0 && <RecentDays days={days} />}
 
-      {/* Data sources */}
+      {/* Data sources — summary of where Lauburu pulls signal from.
+          WHOOP has its own live card above, so it only appears here as a
+          pointer row. Apple Health status mirrors the card above. */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Data Sources</Text>
         <View style={styles.sourceList}>
           <SourceRow
             name="Apple Health"
             status={Platform.OS === 'ios'
-              ? anyAuthorized ? 'connected' : isAvailable ? 'available' : 'not_available'
+              ? anyAuthorized ? 'connected' : isAvailable ? 'available' : 'not_set_up'
               : 'ios_only'}
           />
-          {/* WHOOP has its own live card above — keep other backend-fed sources listed here */}
+          <SourceRow name="WHOOP" status="live_backend" />
           <SourceRow name="Polar" status="via_backend" />
           <SourceRow name="ErgZone" status="coming_soon" />
           <SourceRow name="Cronometer" status="coming_soon" />
@@ -750,10 +758,12 @@ function SourceRow({
     connected: { text: 'Connected', color: '#4ade80' },
     available: { text: 'Available', color: '#a8b84a' },
     not_available: { text: 'Not available', color: '#666' },
+    not_set_up: { text: 'Not set up', color: '#888' },
     supported: { text: 'Native', color: '#4ade80' },
     ios_only: { text: 'iOS only', color: '#555' },
     android_only: { text: 'Android only', color: '#555' },
     via_backend: { text: 'Via website sync', color: '#a8b84a' },
+    live_backend: { text: 'Live · backend', color: '#4ade80' },
     coming_soon: { text: 'Coming soon', color: '#555' },
   };
   const info = labels[status] ?? { text: status, color: '#666' };
