@@ -23,6 +23,13 @@ import {
 
 function PositionRow({ position }: { position: ReferencePosition }) {
   const [expanded, setExpanded] = useState(false);
+  // Selected perspective index — defaults to 0 (first role in the pair).
+  // Future role-specific heading/technique data drops in behind
+  // `position.perspectives[selectedRoleIdx]` without changing the UI.
+  const [selectedRoleIdx, setSelectedRoleIdx] = useState(0);
+  const hasMultipleRoles = position.perspectives.length > 1;
+  const selectedRole = position.perspectives[selectedRoleIdx] ?? '';
+
   return (
     <View style={styles.positionWrap}>
       <Pressable
@@ -35,15 +42,59 @@ function PositionRow({ position }: { position: ReferencePosition }) {
               <Text style={styles.builtBadge}> · built out</Text>
             ) : null}
           </Text>
-          <Text style={styles.positionPersp}>
-            {position.perspectives.join(' · ')}
-          </Text>
+          {/* Role toggles — real pressable pills when there are multiple
+              perspectives, static text when there's only one (the seed
+              type enforces 2 today but the UI stays robust to future
+              single-role positions). Tapping a pill selects that role
+              without toggling the expand state. */}
+          {hasMultipleRoles ? (
+            <View style={styles.rolePillRow}>
+              {position.perspectives.map((role, idx) => {
+                const isActive = idx === selectedRoleIdx;
+                return (
+                  <Pressable
+                    key={role}
+                    style={[
+                      styles.rolePill,
+                      isActive && styles.rolePillActive,
+                    ]}
+                    onPress={(ev) => {
+                      ev.stopPropagation();
+                      setSelectedRoleIdx(idx);
+                      // Auto-expand on first role tap so the user sees
+                      // the effect of the selection immediately.
+                      if (!expanded) setExpanded(true);
+                    }}>
+                    <Text
+                      style={[
+                        styles.rolePillText,
+                        isActive && styles.rolePillTextActive,
+                      ]}>
+                      {role}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          ) : (
+            <Text style={styles.positionPersp}>{selectedRole}</Text>
+          )}
         </View>
         <Text style={styles.chevron}>{expanded ? '▾' : '▸'}</Text>
       </Pressable>
 
       {expanded && (
         <View style={styles.positionDetail}>
+          {/* "Viewing as" subtitle — makes the toggle's effect explicit
+              even when the underlying headings are the same for both
+              roles in the current bundled seed. Once role-specific
+              heading data lands, this subtitle stays and the headings
+              list below will swap per-role without any UI change. */}
+          {hasMultipleRoles && (
+            <Text style={styles.viewingAs}>
+              Viewing as <Text style={styles.viewingAsName}>{selectedRole}</Text>
+            </Text>
+          )}
           <Text style={styles.detailLabel}>Headings</Text>
           {position.headings.map((h) => (
             <Text key={h} style={styles.detailItem}>
@@ -51,8 +102,8 @@ function PositionRow({ position }: { position: ReferencePosition }) {
             </Text>
           ))}
           <Text style={styles.emptyNote}>
-            Technique content and media live in the full map — coming to
-            mobile next.
+            Technique content and media for {selectedRole || 'this position'}
+            {' '}live in the full map — coming to mobile next.
           </Text>
         </View>
       )}
@@ -252,6 +303,38 @@ const styles = StyleSheet.create({
   positionName: { fontSize: 14, fontWeight: '500' },
   builtBadge: { fontSize: 11, color: '#d4e157', opacity: 0.8 },
   positionPersp: { fontSize: 11, opacity: 0.4, marginTop: 2 },
+
+  // Role toggle pills
+  rolePillRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginTop: 6,
+  },
+  rolePill: {
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#333',
+    backgroundColor: 'rgba(255,255,255,0.02)',
+  },
+  rolePillActive: {
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.1)',
+  },
+  rolePillText: { fontSize: 11, color: '#888' },
+  rolePillTextActive: { color: '#d4e157', fontWeight: '600' },
+
+  viewingAs: {
+    fontSize: 11,
+    opacity: 0.6,
+    marginBottom: 4,
+  },
+  viewingAsName: {
+    color: '#d4e157',
+    fontWeight: '600',
+  },
+
   chevron: { fontSize: 12, opacity: 0.4, paddingHorizontal: 4 },
 
   positionDetail: {
