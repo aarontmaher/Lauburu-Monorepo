@@ -4,29 +4,39 @@
  *
  * ARCHITECTURE
  *
- * Explicit layering — each layer has one job, and they don't compete:
+ * Explicit layering — each layer has one job, and they don't compete.
+ * Order matters: higher layers = higher accuracy / higher trust.
  *
- *   Cronometer  → canonical structured nutrition source of truth.
- *                 When live, this is the authoritative daily record.
- *                 The app does NOT try to outgrow Cronometer — it
- *                 builds on top of it.
+ *   Cronometer      → canonical structured nutrition source of truth.
+ *                     When live, this is the authoritative daily record.
+ *                     The app does NOT try to outgrow Cronometer — it
+ *                     builds on top of it.
  *
- *   Manual      → the first usable in-app layer, shipped today.
- *                 Fast fallback entry when the user is away from
- *                 Cronometer or just wants to log one number quickly.
+ *   Manual          → the first usable in-app layer, shipped today.
+ *                     Fast fallback entry when the user is away from
+ *                     Cronometer or just wants to log one number quickly.
  *
- *   AI estimate → future convenience layer. Photo-based macro estimate,
- *                 voice-to-macros, barcode lookups, meal description
- *                 parsing, etc. Always marked as 'ai_estimate' so the
- *                 coaching layer can weight it lower than manual or
- *                 cronometer data. NEVER the source of truth on its own.
+ *   Label scan      → OCR read straight off a package's nutrition label.
+ *                     As accurate as the package print itself for
+ *                     packaged foods. Ranks ABOVE photo AI for packaged
+ *                     items — photo AI is not the default truth source.
  *
- *   AI corrected → an AI estimate the user has reviewed/edited. Higher
- *                 trust than raw AI but still distinct from manual so
- *                 provenance is auditable.
+ *   Barcode         → barcode → product database lookup. Accurate for
+ *                     well-known products, constrained by the database.
+ *                     Ranks ABOVE photo AI for packaged items.
  *
- *   Targets     → the coaching usefulness layer on top of any of the
- *                 above. Lives in NutritionTargets, unrelated to source.
+ *   AI corrected    → an AI estimate the user has reviewed/edited. Higher
+ *                     trust than raw AI but still distinct from manual so
+ *                     provenance is auditable.
+ *
+ *   AI estimate     → convenience layer for unpackaged / restaurant /
+ *                     ambiguous meals. Photo-based macro estimate,
+ *                     voice-to-macros, meal description parsing.
+ *                     Always marked as 'ai_estimate' so coaching can
+ *                     weight it lowest. NEVER the sole source of truth.
+ *
+ *   Targets         → the coaching usefulness layer on top of any of the
+ *                     above. Lives in NutritionTargets, unrelated to source.
  *
  * Status as of 2026-04-10: manual entry is live via the mobile
  * nutrition-store; all other sources are scaffolded but not wired.
@@ -39,35 +49,55 @@
 /**
  * Where nutrition data came from. Explicit provenance mirrors the
  * WorkoutSource pattern in training.ts — coaching decisions need to
- * know if a number was hand-entered vs pulled from a tracked source
+ * know if a number was hand-entered vs read off an actual package
  * vs estimated by AI vs corrected by the user after an AI estimate.
  *
- * Ordered by "trust for coaching", highest first:
- *   cronometer    → tracked, structured, canonical
- *   manual        → user-asserted, lower freshness risk
- *   ai_corrected  → AI estimate the user reviewed and accepted/edited
- *   imported      → generic file/export import
- *   myfitnesspal  → tracked third party
- *   fatsecret     → tracked third party
- *   ai_estimate   → raw AI estimate, lowest auto-trust
+ * ACCURACY HIERARCHY (highest trust first):
+ *
+ *   cronometer           → tracked, structured, canonical source of truth
+ *   manual               → user-asserted, usually deliberate
+ *   nutrition_label_scan → OCR read straight off the package label.
+ *                          As accurate as the package print itself for
+ *                          packaged foods. Preferred over photo AI for
+ *                          anything with a real nutrition label.
+ *   barcode              → barcode → product database lookup. Accurate
+ *                          for well-known products, only as current as
+ *                          the database. Preferred over photo AI.
+ *   ai_corrected         → AI estimate the user reviewed and accepted/
+ *                          edited. Provenance preserved so coaching can
+ *                          still weight it lower than direct sources.
+ *   imported             → generic file / export import
+ *   myfitnesspal         → tracked third party
+ *   fatsecret            → tracked third party
+ *   ai_estimate          → raw AI estimate (photo, voice, meal description
+ *                          parsing). Lowest auto-trust. NEVER the sole
+ *                          source of truth — always a convenience layer.
+ *
+ * Key product rule: label scan and barcode ALWAYS rank above photo AI
+ * in the accuracy hierarchy for packaged foods. Photo AI is a fallback
+ * convenience layer for unpackaged / restaurant / ambiguous meals only.
  */
 export type NutritionSource =
   | 'cronometer' // Pulled from Cronometer (future, canonical target)
   | 'manual' // User typed it into the app (today's default)
+  | 'nutrition_label_scan' // OCR from a real package label (future)
+  | 'barcode' // Barcode lookup against a product database (future)
   | 'ai_corrected' // AI estimate the user reviewed + accepted/edited (future)
   | 'imported' // Generic file / export import (future)
   | 'myfitnesspal' // Pulled from MyFitnessPal (future)
   | 'fatsecret' // Pulled from FatSecret (future)
-  | 'ai_estimate'; // Raw AI estimate (photo, voice, parsed description) (future)
+  | 'ai_estimate'; // Raw AI estimate (photo, voice, description) (future)
 
 export const NUTRITION_SOURCE_LABELS: Record<NutritionSource, string> = {
   cronometer: 'Cronometer',
   manual: 'Manual',
+  nutrition_label_scan: 'Label scan',
+  barcode: 'Barcode',
   ai_corrected: 'AI (corrected)',
   imported: 'Imported',
   myfitnesspal: 'MyFitnessPal',
   fatsecret: 'FatSecret',
-  ai_estimate: 'AI estimate',
+  ai_estimate: 'AI photo',
 };
 
 /**

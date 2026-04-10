@@ -20,6 +20,23 @@ import { StyleSheet, Pressable, TextInput } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useNutritionStore } from '../store/nutrition-store';
 import { NUTRITION_SOURCE_LABELS } from '@lauburu/shared';
+import type { NutritionSource } from '@lauburu/shared';
+
+/**
+ * Entry modes exposed to the user. Manual is the only live path today.
+ * Label scan and barcode are accuracy-first scanner seams (both rank
+ * above photo AI in the shared architecture — see nutrition.ts header).
+ * AI photo is deliberately the last option and framed as a convenience
+ * layer, not the default truth source.
+ */
+type EntryMode = 'manual' | 'label_scan' | 'barcode' | 'ai_photo';
+
+const ENTRY_MODES: { id: EntryMode; label: string; source: NutritionSource }[] = [
+  { id: 'manual', label: 'Manual', source: 'manual' },
+  { id: 'label_scan', label: 'Label scan', source: 'nutrition_label_scan' },
+  { id: 'barcode', label: 'Barcode', source: 'barcode' },
+  { id: 'ai_photo', label: 'AI photo', source: 'ai_estimate' },
+];
 
 function formatInt(value: number | undefined | null): string {
   if (value == null) return '—';
@@ -74,6 +91,7 @@ export function NutritionCard() {
   const updateToday = useNutritionStore((s) => s.updateToday);
 
   const [editing, setEditing] = useState(false);
+  const [entryMode, setEntryMode] = useState<EntryMode>('manual');
   const [draftCalories, setDraftCalories] = useState('');
   const [draftProtein, setDraftProtein] = useState('');
   const [draftCarbs, setDraftCarbs] = useState('');
@@ -186,6 +204,82 @@ export function NutritionCard() {
       {/* Edit mode */}
       {editing && (
         <>
+          {/* Entry mode picker — accuracy-first ordering. Manual is the
+              only live path today; label scan + barcode + AI photo are
+              scaffolded with honest placeholders. Label scan and barcode
+              RANK ABOVE AI photo per the shared architecture. */}
+          <View style={styles.modeRow}>
+            {ENTRY_MODES.map((m) => {
+              const isActive = entryMode === m.id;
+              return (
+                <Pressable
+                  key={m.id}
+                  style={[styles.modePill, isActive && styles.modePillActive]}
+                  onPress={() => setEntryMode(m.id)}>
+                  <Text
+                    style={[
+                      styles.modePillText,
+                      isActive && styles.modePillTextActive,
+                    ]}>
+                    {m.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          {/* Label scan placeholder — accuracy-first seam */}
+          {entryMode === 'label_scan' && (
+            <View style={styles.placeholderPanel}>
+              <Text style={styles.placeholderTitle}>Label scan · coming soon</Text>
+              <Text style={styles.placeholderBody}>
+                Point the camera at a package's nutrition label. Values
+                come straight from the package print — most accurate for
+                packaged foods, ranks above AI photo estimates.
+              </Text>
+              <Text style={styles.placeholderHint}>
+                Use Manual for now. The scan flow will write records with
+                source "Label scan" so coaching can trust them directly.
+              </Text>
+            </View>
+          )}
+
+          {/* Barcode placeholder */}
+          {entryMode === 'barcode' && (
+            <View style={styles.placeholderPanel}>
+              <Text style={styles.placeholderTitle}>Barcode · coming soon</Text>
+              <Text style={styles.placeholderBody}>
+                Scan the barcode on a packaged item. The app looks up a
+                product database for structured macros. Accurate for
+                well-known products, ranks above AI photo estimates.
+              </Text>
+              <Text style={styles.placeholderHint}>
+                Use Manual for now. Scanned records will be tagged with
+                source "Barcode".
+              </Text>
+            </View>
+          )}
+
+          {/* AI photo placeholder — framed as convenience */}
+          {entryMode === 'ai_photo' && (
+            <View style={styles.placeholderPanel}>
+              <Text style={styles.placeholderTitle}>AI photo · convenience layer</Text>
+              <Text style={styles.placeholderBody}>
+                A future option for unpackaged or restaurant meals where
+                no label or barcode exists. AI photo is NOT the default
+                truth source — coaching will weight it below Manual,
+                Label scan, and Barcode, and you'll always be able to
+                review and correct each estimate.
+              </Text>
+              <Text style={styles.placeholderHint}>
+                Use Manual for now. Corrected AI records will be tagged
+                with source "AI (corrected)" for audit.
+              </Text>
+            </View>
+          )}
+
+          {/* Manual entry grid — the only live entry path today */}
+          {entryMode === 'manual' && (
           <View style={styles.editGrid}>
             <View style={styles.editField}>
               <Text style={styles.editLabel}>Calories (kcal)</Text>
@@ -243,13 +337,21 @@ export function NutritionCard() {
               />
             </View>
           </View>
+          )}
+
+          {/* Action row — Save only shows for Manual; scanner modes
+              show just Cancel while they're placeholders. */}
           <View style={styles.editActions}>
             <Pressable onPress={cancelEdit} style={styles.cancelBtn}>
-              <Text style={styles.cancelBtnText}>Cancel</Text>
+              <Text style={styles.cancelBtnText}>
+                {entryMode === 'manual' ? 'Cancel' : 'Close'}
+              </Text>
             </Pressable>
-            <Pressable onPress={saveEdit} style={styles.saveBtn}>
-              <Text style={styles.saveBtnText}>Save</Text>
-            </Pressable>
+            {entryMode === 'manual' && (
+              <Pressable onPress={saveEdit} style={styles.saveBtn}>
+                <Text style={styles.saveBtnText}>Save</Text>
+              </Pressable>
+            )}
           </View>
         </>
       )}
@@ -307,6 +409,43 @@ const styles = StyleSheet.create({
   metricPct: { fontSize: 10, color: '#a8b84a', opacity: 0.8 },
 
   updatedAt: { fontSize: 11, opacity: 0.4 },
+
+  modeRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  modePill: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  modePillActive: {
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.1)',
+  },
+  modePillText: { fontSize: 12, color: '#999' },
+  modePillTextActive: { color: '#d4e157', fontWeight: '600' },
+
+  placeholderPanel: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(212,225,87,0.05)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#d4e157',
+    gap: 6,
+  },
+  placeholderTitle: {
+    fontSize: 12,
+    color: '#d4e157',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  placeholderBody: { fontSize: 12, opacity: 0.7, lineHeight: 17 },
+  placeholderHint: { fontSize: 11, opacity: 0.45, lineHeight: 15, fontStyle: 'italic' },
 
   editGrid: {
     flexDirection: 'row',
