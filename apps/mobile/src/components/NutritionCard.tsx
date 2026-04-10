@@ -16,11 +16,16 @@
  * renders for fields that actually have a target AND a value.
  */
 import { useState } from 'react';
-import { StyleSheet, Pressable, TextInput } from 'react-native';
+import { StyleSheet, Pressable, TextInput, ActivityIndicator } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useNutritionStore } from '../store/nutrition-store';
 import { NUTRITION_SOURCE_LABELS } from '@lauburu/shared';
 import type { NutritionSource } from '@lauburu/shared';
+import {
+  lookupBarcode,
+  macrosForGrams,
+  type OpenFoodFactsProduct,
+} from '../services/openfoodfacts';
 
 /**
  * Entry modes exposed to the user. Manual is the only live path today.
@@ -85,10 +90,17 @@ function MetricCell({
   );
 }
 
+type BarcodeLookupState =
+  | { phase: 'idle' }
+  | { phase: 'loading' }
+  | { phase: 'found'; product: OpenFoodFactsProduct; grams: string }
+  | { phase: 'error'; message: string };
+
 export function NutritionCard() {
   const today = useNutritionStore((s) => s.today);
   const targets = useNutritionStore((s) => s.targets);
   const updateToday = useNutritionStore((s) => s.updateToday);
+  const addToToday = useNutritionStore((s) => s.addToToday);
 
   const [editing, setEditing] = useState(false);
   const [entryMode, setEntryMode] = useState<EntryMode>('manual');
@@ -97,6 +109,51 @@ export function NutritionCard() {
   const [draftCarbs, setDraftCarbs] = useState('');
   const [draftFat, setDraftFat] = useState('');
   const [draftWater, setDraftWater] = useState('');
+
+  // Barcode flow state — lives alongside the manual draft state so
+  // switching between modes preserves both independently.
+  const [barcodeInput, setBarcodeInput] = useState('');
+  const [barcodeLookup, setBarcodeLookup] = useState<BarcodeLookupState>({
+    phase: 'idle',
+  });
+
+  const runBarcodeLookup = async () => {
+    setBarcodeLookup({ phase: 'loading' });
+    const result = await lookupBarcode(barcodeInput);
+    if (!result.ok) {
+      setBarcodeLookup({ phase: 'error', message: result.error });
+      return;
+    }
+    // Default the serving to the product's own serving size if it has
+    // one in grams, otherwise fall back to 100g so the user sees per-100g
+    // numbers until they override.
+    const defaultGrams =
+      result.product.serving_size_g != null
+        ? String(result.product.serving_size_g)
+        : '100';
+    setBarcodeLookup({
+      phase: 'found',
+      product: result.product,
+      grams: defaultGrams,
+    });
+  };
+
+  const confirmBarcodeAdd = () => {
+    if (barcodeLookup.phase !== 'found') return;
+    const grams = Number(barcodeLookup.grams);
+    if (!Number.isFinite(grams) || grams <= 0) return;
+    const macros = macrosForGrams(barcodeLookup.product, grams);
+    addToToday(macros, 'barcode');
+    // Reset barcode state and exit editing so the user sees updated totals.
+    setBarcodeInput('');
+    setBarcodeLookup({ phase: 'idle' });
+    setEntryMode('manual');
+    setEditing(false);
+  };
+
+  const resetBarcodeLookup = () => {
+    setBarcodeLookup({ phase: 'idle' });
+  };
 
   const startEdit = () => {
     setDraftCalories(today?.calories_kcal?.toString() ?? '');
@@ -244,19 +301,148 @@ export function NutritionCard() {
             </View>
           )}
 
-          {/* Barcode placeholder */}
+          {/* Barcode flow — real Open Food Facts lookup + review + add */}
           {entryMode === 'barcode' && (
-            <View style={styles.placeholderPanel}>
-              <Text style={styles.placeholderTitle}>Barcode · coming soon</Text>
-              <Text style={styles.placeholderBody}>
-                Scan the barcode on a packaged item. The app looks up a
-                product database for structured macros. Accurate for
-                well-known products, ranks above AI photo estimates.
-              </Text>
-              <Text style={styles.placeholderHint}>
-                Use Manual for now. Scanned records will be tagged with
-                source "Barcode".
-              </Text>
+            <View style={styles.barcodePanel}>
+              {/* Idle / error state — barcode input + Lookup button */}
+              {(barcodeLookup.phase === 'idle' ||
+                barcodeLookup.phase === 'error') && (
+                <>
+                  <Text style={styles.barcodeHint}>
+                    Type the barcode from a packaged item. Lookup uses the
+                    free Open Food Facts database — accurate for well-known
+                    products, ranks above AI photo estimates for packaged
+                    foods.
+                  </Text>
+                  <TextInput
+                    style={styles.editInput}
+                    value={barcodeInput}
+                    onChangeText={setBarcodeInput}
+                    keyboardType="number-pad"
+                    placeholder="Barcode (6–14 digits)"
+                    placeholderTextColor="#555"
+                    maxLength={14}
+                  />
+                  {barcodeLookup.phase === 'error' && (
+                    <Text style={styles.barcodeError}>
+                      {barcodeLookup.message}
+                    </Text>
+                  )}
+                  <Pressable
+                    style={[
+                      styles.barcodeLookupBtn,
+                      !barcodeInput.trim() && { opacity: 0.4 },
+                    ]}
+                    onPress={runBarcodeLookup}
+                    disabled={!barcodeInput.trim()}>
+                    <Text style={styles.barcodeLookupBtnText}>Look up</Text>
+                  </Pressable>
+                </>
+              )}
+
+              {/* Loading state */}
+              {barcodeLookup.phase === 'loading' && (
+                <View style={styles.barcodeLoadingRow}>
+                  <ActivityIndicator size="small" color="#d4e157" />
+                  <Text style={styles.barcodeHint}>
+                    Looking up {barcodeInput}…
+                  </Text>
+                </View>
+              )}
+
+              {/* Found state — review panel with grams input + computed macros */}
+              {barcodeLookup.phase === 'found' && (
+                <>
+                  <View style={styles.productHeaderRow}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.productName}>
+                        {barcodeLookup.product.name}
+                      </Text>
+                      {barcodeLookup.product.brand && (
+                        <Text style={styles.productBrand}>
+                          {barcodeLookup.product.brand}
+                        </Text>
+                      )}
+                      {barcodeLookup.product.serving_size_raw && (
+                        <Text style={styles.productServing}>
+                          Package serving · {barcodeLookup.product.serving_size_raw}
+                        </Text>
+                      )}
+                    </View>
+                    <Pressable onPress={resetBarcodeLookup} hitSlop={6}>
+                      <Text style={styles.productResetText}>✕</Text>
+                    </Pressable>
+                  </View>
+
+                  <View style={styles.editField}>
+                    <Text style={styles.editLabel}>Grams consumed</Text>
+                    <TextInput
+                      style={styles.editInput}
+                      value={barcodeLookup.grams}
+                      onChangeText={(t) =>
+                        setBarcodeLookup({
+                          phase: 'found',
+                          product: barcodeLookup.product,
+                          grams: t,
+                        })
+                      }
+                      keyboardType="number-pad"
+                      placeholder="100"
+                      placeholderTextColor="#555"
+                    />
+                  </View>
+
+                  {/* Live-computed macros for the current grams value */}
+                  {(() => {
+                    const grams = Number(barcodeLookup.grams);
+                    const valid = Number.isFinite(grams) && grams > 0;
+                    const macros = valid
+                      ? macrosForGrams(barcodeLookup.product, grams)
+                      : null;
+                    return (
+                      <View style={styles.metricsGrid}>
+                        <MetricCell
+                          label="Calories"
+                          value={formatInt(macros?.calories_kcal)}
+                          unit=" kcal"
+                          targetPct={null}
+                        />
+                        <MetricCell
+                          label="Protein"
+                          value={formatInt(macros?.protein_g)}
+                          unit=" g"
+                          targetPct={null}
+                        />
+                        <MetricCell
+                          label="Carbs"
+                          value={formatInt(macros?.carbs_g)}
+                          unit=" g"
+                          targetPct={null}
+                        />
+                        <MetricCell
+                          label="Fat"
+                          value={formatInt(macros?.fat_g)}
+                          unit=" g"
+                          targetPct={null}
+                        />
+                      </View>
+                    );
+                  })()}
+
+                  <Text style={styles.barcodeHint}>
+                    Confirm to add these macros to today's total. Provenance
+                    will be recorded as Barcode for audit.
+                  </Text>
+                  <View style={styles.editActions}>
+                    <Pressable onPress={resetBarcodeLookup} style={styles.cancelBtn}>
+                      <Text style={styles.cancelBtnText}>Back</Text>
+                    </Pressable>
+                    <Pressable onPress={confirmBarcodeAdd} style={styles.saveBtn}>
+                      <Text style={styles.saveBtnText}>Add to today</Text>
+                    </Pressable>
+                  </View>
+                </>
+              )}
             </View>
           )}
 
@@ -339,20 +525,24 @@ export function NutritionCard() {
           </View>
           )}
 
-          {/* Action row — Save only shows for Manual; scanner modes
-              show just Cancel while they're placeholders. */}
-          <View style={styles.editActions}>
-            <Pressable onPress={cancelEdit} style={styles.cancelBtn}>
-              <Text style={styles.cancelBtnText}>
-                {entryMode === 'manual' ? 'Cancel' : 'Close'}
-              </Text>
-            </Pressable>
-            {entryMode === 'manual' && (
-              <Pressable onPress={saveEdit} style={styles.saveBtn}>
-                <Text style={styles.saveBtnText}>Save</Text>
+          {/* Action row — Save only shows for Manual; Label scan / AI photo
+              placeholders show just Close; Barcode mode has its own internal
+              Back + Add to today buttons so the shared action row is hidden
+              for that mode entirely. */}
+          {entryMode !== 'barcode' && (
+            <View style={styles.editActions}>
+              <Pressable onPress={cancelEdit} style={styles.cancelBtn}>
+                <Text style={styles.cancelBtnText}>
+                  {entryMode === 'manual' ? 'Cancel' : 'Close'}
+                </Text>
               </Pressable>
-            )}
-          </View>
+              {entryMode === 'manual' && (
+                <Pressable onPress={saveEdit} style={styles.saveBtn}>
+                  <Text style={styles.saveBtnText}>Save</Text>
+                </Pressable>
+              )}
+            </View>
+          )}
         </>
       )}
     </View>
@@ -446,6 +636,40 @@ const styles = StyleSheet.create({
   },
   placeholderBody: { fontSize: 12, opacity: 0.7, lineHeight: 17 },
   placeholderHint: { fontSize: 11, opacity: 0.45, lineHeight: 15, fontStyle: 'italic' },
+
+  // Barcode flow
+  barcodePanel: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(212,225,87,0.05)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#d4e157',
+    gap: 8,
+  },
+  barcodeHint: { fontSize: 12, opacity: 0.6, lineHeight: 17 },
+  barcodeError: { fontSize: 12, color: '#ff6b6b', lineHeight: 16 },
+  barcodeLookupBtn: {
+    alignSelf: 'flex-start',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    backgroundColor: '#d4e157',
+  },
+  barcodeLookupBtnText: { color: '#0a0a0a', fontSize: 13, fontWeight: '700' },
+  barcodeLoadingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  productHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  productName: { fontSize: 14, fontWeight: '600' },
+  productBrand: { fontSize: 12, opacity: 0.5, marginTop: 2 },
+  productServing: { fontSize: 11, opacity: 0.4, marginTop: 2 },
+  productResetText: { color: '#ff6b6b', fontSize: 16, padding: 4 },
 
   editGrid: {
     flexDirection: 'row',
