@@ -1,11 +1,17 @@
 import { useEffect } from 'react';
-import { StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { StyleSheet, ScrollView, ActivityIndicator, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useWhoopStore } from '../../src/store/whoop-store';
 import { useProgress } from '../../src/hooks/useProgress';
+import {
+  REFERENCE_TOTAL_POSITIONS,
+  REFERENCE_BUILT_OUT_COUNT,
+  REFERENCE_SECTIONS,
+} from '../../src/data/reference-seed';
 import type { ReadinessLevel } from '@lauburu/shared';
 import { SESSION_TYPE_LABELS } from '@lauburu/shared';
 
@@ -24,6 +30,24 @@ function GuestBanner() {
         Sign in on Settings to save your training data and get personalized coaching.
       </Text>
     </View>
+  );
+}
+
+function ReferenceEntryCard() {
+  const router = useRouter();
+  return (
+    <Pressable
+      style={styles.referenceCard}
+      onPress={() => router.push('/reference')}>
+      <View style={styles.referenceHeader}>
+        <Text style={styles.cardTitle}>Reference</Text>
+        <Text style={styles.referenceChevron}>→</Text>
+      </View>
+      <Text style={styles.cardBody}>
+        Browse the canonical Grappling Map structure: {REFERENCE_SECTIONS.length} sections,{' '}
+        {REFERENCE_TOTAL_POSITIONS} positions, {REFERENCE_BUILT_OUT_COUNT} built out.
+      </Text>
+    </Pressable>
   );
 }
 
@@ -263,6 +287,9 @@ export default function HomeScreen() {
       {isMember && <ProgressCard />}
 
       {isMember && <RecentActivityCard />}
+
+      {/* Reference — always visible entry point, even for guests */}
+      <ReferenceEntryCard />
     </ScrollView>
   );
 }
@@ -334,6 +361,22 @@ const styles = StyleSheet.create({
   whySection: { gap: 2, marginTop: 4, paddingTop: 6, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
   whyLabel: { fontSize: 11, opacity: 0.4, textTransform: 'uppercase', letterSpacing: 0.5 },
   whyItem: { fontSize: 12, opacity: 0.6, lineHeight: 16 },
+
+  // Reference entry card
+  referenceCard: {
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: 'rgba(212,225,87,0.05)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#d4e157',
+    gap: 6,
+  },
+  referenceHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  referenceChevron: { fontSize: 20, color: '#d4e157', opacity: 0.6 },
 
   // WHOOP headline
   whoopHeadline: {

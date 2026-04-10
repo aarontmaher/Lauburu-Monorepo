@@ -74,6 +74,10 @@ export default function TabLayout() {
         name="control"
         options={{ href: null }}
       />
+      <Tabs.Screen
+        name="reference"
+        options={{ href: null, title: 'Reference' }}
+      />
     </Tabs>
   );
 }

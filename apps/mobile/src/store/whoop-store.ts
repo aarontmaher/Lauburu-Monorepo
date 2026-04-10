@@ -121,7 +121,18 @@ function normalize(raw: any): WhoopDay | null {
     daily_strain:
       strain.day_strain != null ? strain.day_strain : src.daily_strain ?? null,
     workouts,
-    source_updated_at: src.source_updated_at ?? src.updated_at ?? null,
+    // Upstream freshness: try every plausible field name the Railway MCP /
+    // WHOOP schema might expose. Falls back to null if none match; the UI
+    // treats null as "freshness unknown" and shows an explicit hint rather
+    // than a silent stale state.
+    source_updated_at:
+      src.source_updated_at ??
+      src.updated_at ??
+      src.last_updated ??
+      src.cycle_updated_at ??
+      src.as_of ??
+      src.synced_at ??
+      null,
   };
 }
 

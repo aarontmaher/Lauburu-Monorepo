@@ -51,11 +51,18 @@ function formatRelative(iso: string | null): string {
   return `${days}d ago`;
 }
 
-function isSourceStale(day: WhoopDay): boolean {
-  if (!day.source_updated_at) return true;
+/**
+ * Returns:
+ *   'unknown' — no freshness timestamp in the payload at all
+ *   'stale'   — timestamp is older than STALE_SOURCE_HOURS
+ *   'fresh'   — timestamp is within the stale window
+ */
+function sourceFreshness(day: WhoopDay): 'unknown' | 'stale' | 'fresh' {
+  if (!day.source_updated_at) return 'unknown';
   const t = new Date(day.source_updated_at).getTime();
-  if (Number.isNaN(t)) return true;
-  return Date.now() - t > STALE_SOURCE_HOURS * 60 * 60 * 1000;
+  if (Number.isNaN(t)) return 'unknown';
+  const age = Date.now() - t;
+  return age > STALE_SOURCE_HOURS * 60 * 60 * 1000 ? 'stale' : 'fresh';
 }
 
 function isToday(date: string): boolean {
@@ -102,7 +109,7 @@ export function WhoopCard() {
   const isLoading = status === 'loading';
   const isReady = status === 'ready' && day != null;
   const isError = status === 'error';
-  const stale = isReady && day ? isSourceStale(day) : false;
+  const freshness = isReady && day ? sourceFreshness(day) : 'unknown';
   const workoutCount = day?.workouts?.length ?? 0;
   const missingWorkoutToday =
     isReady && day && isToday(day.date) && workoutCount === 0;
@@ -192,12 +199,14 @@ export function WhoopCard() {
           {/* Honest freshness + gap notices */}
           <View style={styles.footerRow}>
             <Text style={styles.freshnessText}>
-              Source updated {formatRelative(day.source_updated_at)}
+              {day.source_updated_at
+                ? `Source updated ${formatRelative(day.source_updated_at)}`
+                : 'Source freshness unknown'}
               {fetchedAt ? ` · fetched ${formatRelative(fetchedAt)}` : ''}
             </Text>
           </View>
 
-          {stale && (
+          {freshness === 'stale' && (
             <View style={styles.noticeRow}>
               <View style={[styles.statusDot, { backgroundColor: '#d4e157' }]} />
               <Text style={styles.noticeWarn}>
@@ -207,7 +216,17 @@ export function WhoopCard() {
             </View>
           )}
 
-          {missingWorkoutToday && !stale && (
+          {freshness === 'unknown' && (
+            <View style={styles.noticeRow}>
+              <View style={[styles.statusDot, { backgroundColor: '#666' }]} />
+              <Text style={styles.noticeMuted}>
+                Backend payload didn't include a freshness timestamp. Showing
+                the latest day record as-is.
+              </Text>
+            </View>
+          )}
+
+          {missingWorkoutToday && freshness !== 'stale' && (
             <View style={styles.noticeRow}>
               <View style={[styles.statusDot, { backgroundColor: '#d4e157' }]} />
               <Text style={styles.noticeWarn}>
@@ -297,4 +316,5 @@ const styles = StyleSheet.create({
   statusDot: { width: 8, height: 8, borderRadius: 4, marginTop: 5 },
   noticeWarn: { fontSize: 12, color: '#d4e157', flex: 1, lineHeight: 16 },
   noticeError: { fontSize: 12, color: '#ff6b6b', flex: 1, lineHeight: 16 },
+  noticeMuted: { fontSize: 12, color: '#999', flex: 1, lineHeight: 16 },
 });
