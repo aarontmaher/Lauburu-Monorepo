@@ -59,6 +59,27 @@ function ReferenceEntryCard() {
   );
 }
 
+function CoachingHistoryEntryCard() {
+  const router = useRouter();
+  const cases = useCoachingCasesStore((s) => s.cases);
+  const helped = cases.filter((c) => c.usefulness === 'helped').length;
+  return (
+    <Pressable
+      style={styles.referenceCard}
+      onPress={() => router.push('/coaching-history')}>
+      <View style={styles.referenceHeader}>
+        <Text style={styles.cardTitle}>Coaching history</Text>
+        <Text style={styles.referenceChevron}>→</Text>
+      </View>
+      <Text style={styles.cardBody}>
+        {cases.length === 0
+          ? 'No cases yet. Ask ChatGPT from the coach card above to start one.'
+          : `${cases.length} saved ${cases.length === 1 ? 'case' : 'cases'}${helped > 0 ? ` · ${helped} marked helpful` : ''}.`}
+      </Text>
+    </Pressable>
+  );
+}
+
 function NutritionHeadline() {
   const today = useNutritionStore((s) => s.today);
   const targets = useNutritionStore((s) => s.targets);
@@ -512,6 +533,11 @@ export default function HomeScreen() {
 
       {/* Reference — always visible entry point, even for guests */}
       <ReferenceEntryCard />
+
+      {/* Coaching history — only shown when signed in since cases are
+          per-user and secureStorage-backed. Visible even when the list
+          is empty so the user can discover the feature. */}
+      {isMember && <CoachingHistoryEntryCard />}
     </ScrollView>
   );
 }

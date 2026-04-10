@@ -78,6 +78,10 @@ export default function TabLayout() {
         name="reference"
         options={{ href: null, title: 'Reference' }}
       />
+      <Tabs.Screen
+        name="coaching-history"
+        options={{ href: null, title: 'Coaching history' }}
+      />
     </Tabs>
   );
 }
