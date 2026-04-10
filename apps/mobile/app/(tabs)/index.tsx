@@ -59,16 +59,32 @@ function ReferenceEntryCard() {
 
 function NutritionHeadline() {
   const today = useNutritionStore((s) => s.today);
+  const targets = useNutritionStore((s) => s.targets);
   if (!today) return null;
   const cal = today.calories_kcal;
   const protein = today.protein_g;
   if (cal == null && protein == null) return null;
+  // When targets are set, surface the "X / Y" progress form so the
+  // Home chip mirrors the percent-of-target badges on the Health tab's
+  // NutritionCard. Falls back to the plain value when no target exists.
+  const calDisplay =
+    cal != null
+      ? targets?.calories_kcal
+        ? `${Math.round(cal)} / ${Math.round(targets.calories_kcal)} kcal`
+        : `${Math.round(cal)} kcal`
+      : '—';
+  const proteinDisplay =
+    protein != null
+      ? targets?.protein_g
+        ? ` · ${Math.round(protein)} / ${Math.round(targets.protein_g)}g protein`
+        : ` · ${Math.round(protein)}g protein`
+      : '';
   return (
     <View style={styles.fuelHeadline}>
       <Text style={styles.fuelLabel}>Today's fuel</Text>
       <Text style={styles.fuelValue}>
-        {cal != null ? `${Math.round(cal)} kcal` : '—'}
-        {protein != null ? ` · ${Math.round(protein)}g protein` : ''}
+        {calDisplay}
+        {proteinDisplay}
       </Text>
     </View>
   );

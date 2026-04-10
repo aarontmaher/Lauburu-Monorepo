@@ -12,6 +12,7 @@ import { useAuthStore } from '../../src/store/auth-store';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useConsentStore } from '../../src/store/consent-store';
 import { useTierStore } from '../../src/store/tier-store';
+import { useNutritionStore } from '../../src/store/nutrition-store';
 import {
   DEFAULT_PREFERENCES, TIER_INFO, CAPABILITY_INFO, getTierCapabilities, minimumTierFor,
   DAYS_ORDER, DAY_LABELS, SCHEDULE_SESSION_LABELS, countPlannedSessions,
@@ -228,6 +229,8 @@ function PreferencesSection() {
       />
 
       <ScheduleEditor />
+
+      <NutritionTargetsEditor />
 
       <Pressable
         style={[styles.row, { justifyContent: 'space-between' }]}
@@ -452,6 +455,149 @@ function ScheduleEditor() {
           </View>
         );
       })}
+    </View>
+  );
+}
+
+/**
+ * Daily nutrition targets editor — lightweight Settings section that
+ * writes through `useNutritionStore.setTargets()`. When targets land,
+ * the existing NutritionCard's "% of target" badges light up instantly;
+ * clearing targets (Clear button) hides the badges without touching any
+ * logged values. Uses local draft state so the user can edit all four
+ * fields before committing with Save.
+ */
+function NutritionTargetsEditor() {
+  const targets = useNutritionStore((s) => s.targets);
+  const setTargets = useNutritionStore((s) => s.setTargets);
+
+  const [draftCalories, setDraftCalories] = useState(
+    targets?.calories_kcal?.toString() ?? '',
+  );
+  const [draftProtein, setDraftProtein] = useState(
+    targets?.protein_g?.toString() ?? '',
+  );
+  const [draftCarbs, setDraftCarbs] = useState(
+    targets?.carbs_g?.toString() ?? '',
+  );
+  const [draftFat, setDraftFat] = useState(targets?.fat_g?.toString() ?? '');
+  const [dirty, setDirty] = useState(false);
+
+  const parseOpt = (s: string): number | undefined => {
+    if (!s.trim()) return undefined;
+    const n = Number(s);
+    return Number.isFinite(n) ? n : undefined;
+  };
+
+  const handleSave = () => {
+    const next = {
+      calories_kcal: parseOpt(draftCalories),
+      protein_g: parseOpt(draftProtein),
+      carbs_g: parseOpt(draftCarbs),
+      fat_g: parseOpt(draftFat),
+    };
+    // If every field parses to undefined, treat it as a clear.
+    const anySet = Object.values(next).some((v) => v != null);
+    setTargets(anySet ? next : null);
+    setDirty(false);
+  };
+
+  const handleClear = () => {
+    setDraftCalories('');
+    setDraftProtein('');
+    setDraftCarbs('');
+    setDraftFat('');
+    setTargets(null);
+    setDirty(false);
+  };
+
+  const hasAnyDraft =
+    draftCalories.trim() !== '' ||
+    draftProtein.trim() !== '' ||
+    draftCarbs.trim() !== '' ||
+    draftFat.trim() !== '';
+  const hasAnySaved = !!targets;
+
+  return (
+    <View style={styles.prefRow}>
+      <Text style={styles.prefLabel}>
+        Daily nutrition targets
+        {!hasAnySaved ? <Text style={styles.prefLabelMuted}> · not set</Text> : null}
+      </Text>
+      <Text style={styles.targetsHint}>
+        Used by the Nutrition card on the Health tab to show % of target
+        for today's calories and macros.
+      </Text>
+      <View style={styles.targetsGrid}>
+        <View style={styles.targetsField}>
+          <Text style={styles.targetsFieldLabel}>Calories (kcal)</Text>
+          <TextInput
+            style={styles.targetsInput}
+            value={draftCalories}
+            onChangeText={(t) => {
+              setDraftCalories(t);
+              setDirty(true);
+            }}
+            keyboardType="number-pad"
+            placeholder="—"
+            placeholderTextColor="#555"
+          />
+        </View>
+        <View style={styles.targetsField}>
+          <Text style={styles.targetsFieldLabel}>Protein (g)</Text>
+          <TextInput
+            style={styles.targetsInput}
+            value={draftProtein}
+            onChangeText={(t) => {
+              setDraftProtein(t);
+              setDirty(true);
+            }}
+            keyboardType="number-pad"
+            placeholder="—"
+            placeholderTextColor="#555"
+          />
+        </View>
+        <View style={styles.targetsField}>
+          <Text style={styles.targetsFieldLabel}>Carbs (g)</Text>
+          <TextInput
+            style={styles.targetsInput}
+            value={draftCarbs}
+            onChangeText={(t) => {
+              setDraftCarbs(t);
+              setDirty(true);
+            }}
+            keyboardType="number-pad"
+            placeholder="—"
+            placeholderTextColor="#555"
+          />
+        </View>
+        <View style={styles.targetsField}>
+          <Text style={styles.targetsFieldLabel}>Fat (g)</Text>
+          <TextInput
+            style={styles.targetsInput}
+            value={draftFat}
+            onChangeText={(t) => {
+              setDraftFat(t);
+              setDirty(true);
+            }}
+            keyboardType="number-pad"
+            placeholder="—"
+            placeholderTextColor="#555"
+          />
+        </View>
+      </View>
+      <View style={styles.targetsActions}>
+        {(hasAnySaved || hasAnyDraft) && (
+          <Pressable style={styles.targetsClearBtn} onPress={handleClear}>
+            <Text style={styles.targetsClearText}>Clear</Text>
+          </Pressable>
+        )}
+        {dirty && (
+          <Pressable style={styles.targetsSaveBtn} onPress={handleSave}>
+            <Text style={styles.targetsSaveText}>Save targets</Text>
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 }
@@ -761,6 +907,52 @@ const styles = StyleSheet.create({
   // Preferences
   prefRow: { gap: 8 },
   prefLabel: { fontSize: 14 },
+  prefLabelMuted: { fontSize: 12, opacity: 0.4, fontWeight: '400' },
+
+  // Nutrition targets editor
+  targetsHint: { fontSize: 11, opacity: 0.5, lineHeight: 16 },
+  targetsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  targetsField: { minWidth: '30%', flexGrow: 1, gap: 4 },
+  targetsFieldLabel: {
+    fontSize: 11,
+    opacity: 0.5,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  targetsInput: {
+    borderWidth: 1,
+    borderColor: '#333',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    fontSize: 14,
+    color: '#f0f0f0',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+  },
+  targetsActions: {
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'flex-end',
+  },
+  targetsClearBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#666',
+  },
+  targetsClearText: { color: '#999', fontSize: 12 },
+  targetsSaveBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    backgroundColor: '#d4e157',
+  },
+  targetsSaveText: { color: '#0a0a0a', fontSize: 12, fontWeight: '700' },
   pillRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   pill: {
     paddingVertical: 7,
