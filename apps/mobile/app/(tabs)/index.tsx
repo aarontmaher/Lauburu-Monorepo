@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from 'react';
-import { StyleSheet, ScrollView, ActivityIndicator, Pressable, Share } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { StyleSheet, ScrollView, ActivityIndicator, Pressable, Share, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../../src/store/auth-store';
@@ -174,31 +174,59 @@ function PendingFollowupBanner() {
   const pending = useCoachingCasesStore((s) => s.pending);
   const completePending = useCoachingCasesStore((s) => s.completePending);
   const dismissPending = useCoachingCasesStore((s) => s.dismissPending);
+  // Optional "What did ChatGPT say?" free-text captured alongside the
+  // usefulness verdict. Stored locally until a verdict button is tapped,
+  // then passed through to completePending(outcomeSummary). Cleared
+  // automatically when the banner unmounts (pending goes null).
+  const [outcomeNotes, setOutcomeNotes] = useState('');
   if (!pending) return null;
+
+  const handleComplete = (
+    usefulness: 'helped' | 'neutral' | 'unhelpful',
+  ) => {
+    const trimmed = outcomeNotes.trim();
+    completePending(usefulness, trimmed || undefined);
+    setOutcomeNotes('');
+  };
+  const handleDismiss = () => {
+    setOutcomeNotes('');
+    dismissPending();
+  };
+
   return (
     <View style={styles.followupBanner}>
       <Text style={styles.followupTitle}>
         You asked ChatGPT earlier — how did it go?
       </Text>
+      <TextInput
+        style={styles.followupNotesInput}
+        value={outcomeNotes}
+        onChangeText={setOutcomeNotes}
+        placeholder="What did ChatGPT say? (optional — paste the key recommendation)"
+        placeholderTextColor="#666"
+        multiline
+        textAlignVertical="top"
+        maxLength={2000}
+      />
       <View style={styles.followupActions}>
         <Pressable
           style={styles.followupBtnHelp}
-          onPress={() => completePending('helped')}>
+          onPress={() => handleComplete('helped')}>
           <Text style={styles.followupBtnHelpText}>Helped</Text>
         </Pressable>
         <Pressable
           style={styles.followupBtnNeutral}
-          onPress={() => completePending('neutral')}>
+          onPress={() => handleComplete('neutral')}>
           <Text style={styles.followupBtnNeutralText}>Neutral</Text>
         </Pressable>
         <Pressable
           style={styles.followupBtnNo}
-          onPress={() => completePending('unhelpful')}>
+          onPress={() => handleComplete('unhelpful')}>
           <Text style={styles.followupBtnNoText}>Not useful</Text>
         </Pressable>
         <Pressable
           style={styles.followupBtnDismiss}
-          onPress={() => dismissPending()}>
+          onPress={handleDismiss}>
           <Text style={styles.followupBtnDismissText}>Dismiss</Text>
         </Pressable>
       </View>
@@ -697,6 +725,17 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   followupTitle: { fontSize: 13, color: '#e6ecf3', fontWeight: '600' },
+  followupNotesInput: {
+    borderWidth: 1,
+    borderColor: '#333',
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 12,
+    color: '#e6ecf3',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    minHeight: 60,
+    lineHeight: 17,
+  },
   followupActions: {
     flexDirection: 'row',
     flexWrap: 'wrap',
