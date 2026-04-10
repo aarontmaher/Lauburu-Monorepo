@@ -14,6 +14,7 @@ import { useAuthStore } from '../../src/store/auth-store';
 import { useWhoopStore } from '../../src/store/whoop-store';
 import { useMachineStore } from '../../src/store/machine-store';
 import { modalitySupportsMachineData } from '../../src/services/machine-connector';
+import { ReferencePositionPicker } from '../../src/components/ReferencePositionPicker';
 import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat, SessionSummary, SegmentType, MachineMetrics, WorkoutSource } from '@lauburu/shared';
 import {
   SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS,
@@ -438,6 +439,11 @@ function EntryForm({
                       {seg.partner_format ? ` · ${PARTNER_FORMAT_LABELS[seg.partner_format]}` : ''}
                       {seg.rounds ? ` · ${seg.rounds}rds` : ''}
                     </Text>
+                    {seg.map_ref?.position_key && (
+                      <Text style={styles.segmentMapRef}>
+                        ↳ {seg.map_ref.position_key}
+                      </Text>
+                    )}
                   </View>
                   <Text style={styles.segmentChevron}>{isExpanded ? '▾' : '▸'}</Text>
                   <Pressable onPress={() => removeSegment(seg.id)} hitSlop={8}>
@@ -524,10 +530,25 @@ function EntryForm({
                       </View>
                     )}
 
-                    {/* Topic worked — free text */}
+                    {/* Reference position link — optional, links the segment
+                        to a canonical Grappling Map position via
+                        SessionSegment.map_ref.position_key. Collapsed until
+                        tapped so the normal logging flow stays clean. */}
+                    <ReferencePositionPicker
+                      value={seg.map_ref?.position_key}
+                      onChange={(name) =>
+                        updateSegment(seg.id, {
+                          map_ref: name
+                            ? { ...(seg.map_ref ?? {}), position_key: name }
+                            : undefined,
+                        })
+                      }
+                    />
+
+                    {/* Topic worked — free text; stays for non-canonical notes */}
                     <TextInput
                       style={styles.input}
-                      placeholder="Position or topic worked"
+                      placeholder="Free notes (topic, context, partner, etc.)"
                       placeholderTextColor="#555"
                       value={seg.topic_worked ?? ''}
                       onChangeText={(t) => updateSegment(seg.id, { topic_worked: t || undefined })}
@@ -1177,6 +1198,14 @@ function SessionCard({
           {session.segments.map((s) => SEGMENT_TYPE_LABELS[s.type]).join(' → ')}
         </Text>
       )}
+      {session.segments && session.segments.some((s) => s.map_ref?.position_key) && (
+        <Text style={styles.sessionMapRefs}>
+          Positions: {session.segments
+            .map((s) => s.map_ref?.position_key)
+            .filter((k): k is string => !!k)
+            .join(' · ')}
+        </Text>
+      )}
       {session.tags.length > 0 && (
         <Text style={styles.sessionTags}>{session.tags.join(' · ')}</Text>
       )}
@@ -1486,6 +1515,7 @@ const styles = StyleSheet.create({
   segmentInfo: { flex: 1 },
   segmentType: { fontSize: 13, fontWeight: '600' },
   segmentMeta: { fontSize: 11, opacity: 0.5 },
+  segmentMapRef: { fontSize: 11, color: '#d4e157', opacity: 0.8, marginTop: 2 },
   segmentRowExpanded: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, marginBottom: 0 },
   segmentChevron: { fontSize: 12, opacity: 0.4, marginRight: 4 },
   segmentRemove: { fontSize: 13, color: '#ff6b6b', padding: 4 },
@@ -1661,6 +1691,7 @@ const styles = StyleSheet.create({
   actionText: { fontSize: 13, color: '#d4e157' },
   sessionCondDetail: { fontSize: 12, color: '#d4e157', opacity: 0.7 },
   sessionSegments: { fontSize: 12, color: '#64b5f6', opacity: 0.7 },
+  sessionMapRefs: { fontSize: 11, color: '#d4e157', opacity: 0.7, fontStyle: 'italic' },
 
   // Plan card
   planCard: {
