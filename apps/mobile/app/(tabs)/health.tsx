@@ -11,6 +11,7 @@ import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useTierStore } from '../../src/store/tier-store';
 import { isExpoGo } from '../../src/services/expo-detect';
+import { WhoopCard } from '../../src/components/WhoopCard';
 import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures, CoachingResponse } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 
@@ -674,6 +675,9 @@ export default function HealthScreen() {
       {/* Today's data */}
       {today && <TodayCard today={today} />}
 
+      {/* WHOOP — backend-fed, independent of on-device HealthKit */}
+      <WhoopCard />
+
       {/* 7-day trends */}
       {features && <TrendsCard features={features} />}
 
@@ -693,7 +697,7 @@ export default function HealthScreen() {
               ? anyAuthorized ? 'connected' : isAvailable ? 'available' : 'not_available'
               : 'ios_only'}
           />
-          <SourceRow name="WHOOP" status="via_backend" />
+          {/* WHOOP has its own live card above — keep other backend-fed sources listed here */}
           <SourceRow name="Polar" status="via_backend" />
           <SourceRow name="ErgZone" status="coming_soon" />
           <SourceRow name="Cronometer" status="coming_soon" />

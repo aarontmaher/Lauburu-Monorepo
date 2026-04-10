@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import { StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useTrainingStore } from '../../src/store/training-store';
+import { useWhoopStore } from '../../src/store/whoop-store';
 import { useProgress } from '../../src/hooks/useProgress';
 import type { ReadinessLevel } from '@lauburu/shared';
 import { SESSION_TYPE_LABELS } from '@lauburu/shared';
@@ -21,6 +23,37 @@ function GuestBanner() {
       <Text style={styles.cardBody}>
         Sign in on Settings to save your training data and get personalized coaching.
       </Text>
+    </View>
+  );
+}
+
+function WhoopHeadline() {
+  const status = useWhoopStore((s) => s.status);
+  const day = useWhoopStore((s) => s.day);
+  const fetchToday = useWhoopStore((s) => s.fetchToday);
+
+  useEffect(() => {
+    if (status === 'idle') fetchToday();
+  }, [status, fetchToday]);
+
+  if (status !== 'ready' || !day || day.recovery_score == null) return null;
+
+  const score = day.recovery_score;
+  const color =
+    score >= 67 ? '#4ade80' : score >= 34 ? '#d4e157' : '#ff6b6b';
+  const label = score >= 67 ? 'Recovered' : score >= 34 ? 'Moderate' : 'Low';
+
+  return (
+    <View style={styles.whoopHeadline}>
+      <View style={[styles.whoopDot, { backgroundColor: color }]} />
+      <Text style={[styles.whoopLabel, { color }]}>
+        WHOOP {score}% · {label}
+      </Text>
+      {day.daily_strain != null && (
+        <Text style={styles.whoopMeta}>
+          strain {day.daily_strain.toFixed(1)}
+        </Text>
+      )}
     </View>
   );
 }
@@ -222,6 +255,9 @@ export default function HomeScreen() {
       {/* Readiness — the most important thing on Home */}
       {isMember && <ReadinessCard />}
 
+      {/* Tiny backend-fed WHOOP headline — shown only when data is ready */}
+      {isMember && <WhoopHeadline />}
+
       {isMember && <TrainingContextCard />}
 
       {isMember && <ProgressCard />}
@@ -298,4 +334,18 @@ const styles = StyleSheet.create({
   whySection: { gap: 2, marginTop: 4, paddingTop: 6, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
   whyLabel: { fontSize: 11, opacity: 0.4, textTransform: 'uppercase', letterSpacing: 0.5 },
   whyItem: { fontSize: 12, opacity: 0.6, lineHeight: 16 },
+
+  // WHOOP headline
+  whoopHeadline: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+  },
+  whoopDot: { width: 10, height: 10, borderRadius: 5 },
+  whoopLabel: { fontSize: 14, fontWeight: '600' },
+  whoopMeta: { fontSize: 12, opacity: 0.5, marginLeft: 'auto' },
 });
