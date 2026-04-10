@@ -13,6 +13,7 @@ import { useTierStore } from '../../src/store/tier-store';
 import { isExpoGo } from '../../src/services/expo-detect';
 import { WhoopCard } from '../../src/components/WhoopCard';
 import { NutritionCard } from '../../src/components/NutritionCard';
+import { PolarCard } from '../../src/components/PolarCard';
 import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures, CoachingResponse } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 
@@ -688,6 +689,9 @@ export default function HealthScreen() {
       {/* Nutrition — manual entry today, Cronometer API swap later */}
       <NutritionCard />
 
+      {/* Polar — scaffolded, three future paths documented in the card */}
+      <PolarCard />
+
       {/* 7-day trends */}
       {features && <TrendsCard features={features} />}
 
@@ -697,11 +701,16 @@ export default function HealthScreen() {
       {/* Recent days */}
       {days.length > 0 && <RecentDays days={days} />}
 
-      {/* Data sources — summary of where Lauburu pulls signal from.
-          WHOOP has its own live card above, so it only appears here as a
-          pointer row. Apple Health status mirrors the card above. */}
+      {/* Data sources — categorized by ingestion path so the user can
+          see at a glance which sources are phone-side, which ride the
+          backend, and which need a direct device pairing. */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Data Sources</Text>
+
+        {/* Phone-side ingestion (HealthKit on iOS, Health Connect on Android).
+            Both platforms list both rows so the matrix is honest regardless
+            of which OS the user is currently on. */}
+        <Text style={styles.sourceGroupLabel}>Phone-side</Text>
         <View style={styles.sourceList}>
           <SourceRow
             name="Apple Health"
@@ -709,10 +718,28 @@ export default function HealthScreen() {
               ? anyAuthorized ? 'connected' : isAvailable ? 'available' : 'not_set_up'
               : 'ios_only'}
           />
+          <SourceRow
+            name="Health Connect (Android)"
+            status={Platform.OS === 'android'
+              ? anyAuthorized ? 'connected' : isAvailable ? 'available' : 'not_set_up'
+              : 'android_only'}
+          />
+        </View>
+
+        {/* Backend-fed — WHOOP has its own live card above, Cronometer
+            is reserved for the future API sync. */}
+        <Text style={styles.sourceGroupLabel}>Backend-fed</Text>
+        <View style={styles.sourceList}>
           <SourceRow name="WHOOP" status="live_backend" />
+          <SourceRow name="Cronometer (nutrition)" status="scaffolded" />
+        </View>
+
+        {/* Direct device — Polar and ErgZone both need either direct API
+            or direct BLE pairing, neither of which is live yet. */}
+        <Text style={styles.sourceGroupLabel}>Direct device</Text>
+        <View style={styles.sourceList}>
           <SourceRow name="Polar" status="scaffolded" />
           <SourceRow name="ErgZone" status="coming_soon" />
-          <SourceRow name="Cronometer (nutrition)" status="scaffolded" />
         </View>
       </View>
     </ScrollView>
@@ -765,7 +792,7 @@ function SourceRow({
     not_set_up: { text: 'Not set up', color: '#888' },
     supported: { text: 'Native', color: '#4ade80' },
     ios_only: { text: 'iOS only', color: '#555' },
-    android_only: { text: 'Android only', color: '#555' },
+    android_only: { text: 'Android only here', color: '#555' },
     via_backend: { text: 'Via website sync', color: '#a8b84a' },
     live_backend: { text: 'Live · backend', color: '#4ade80' },
     scaffolded: { text: 'Scaffolded', color: '#7a8b3a' },
@@ -888,6 +915,13 @@ const styles = StyleSheet.create({
   dayMetrics: { fontSize: 12, opacity: 0.6 },
 
   // Sources
+  sourceGroupLabel: {
+    fontSize: 11,
+    opacity: 0.4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginTop: 8,
+  },
   sourceList: { gap: 6 },
   sourceRow: {
     flexDirection: 'row',
