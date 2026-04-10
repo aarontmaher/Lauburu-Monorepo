@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { useAuthStore } from '../src/store/auth-store';
+import { useNutritionStore } from '../src/store/nutrition-store';
 
 export {
   ErrorBoundary,
@@ -27,11 +28,16 @@ export default function RootLayout() {
 
   const authStatus = useAuthStore((s) => s.status);
   const initialize = useAuthStore((s) => s.initialize);
+  const hydrateNutrition = useNutritionStore((s) => s.hydrate);
 
-  // Initialize auth session on app launch.
+  // Initialize auth session on app launch, and hydrate nutrition
+  // from secureStorage in parallel so today's logged fuel + daily
+  // targets survive app kill. Both run independently — a nutrition
+  // hydrate failure must not block auth and vice versa.
   useEffect(() => {
     initialize();
-  }, [initialize]);
+    hydrateNutrition();
+  }, [initialize, hydrateNutrition]);
 
   useEffect(() => {
     if (error) throw error;
