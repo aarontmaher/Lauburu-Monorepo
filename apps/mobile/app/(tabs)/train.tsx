@@ -11,13 +11,14 @@ import { Text, View } from '@/components/Themed';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
-import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat } from '@lauburu/shared';
+import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat, SessionSummary, SegmentType } from '@lauburu/shared';
 import {
   SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS,
   CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, LIFTING_FOCUS_LABELS,
   RESPIRATORY_DEVICE_LABELS, PARTNER_FORMAT_LABELS,
   buildDayPlanSummary, SCHEDULE_SESSION_LABELS,
   SESSION_PRESETS, SEGMENT_TYPE_LABELS, createDefaultSegments,
+  summarizeSession,
 } from '@lauburu/shared';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useTimerStore } from '../../src/store/timer-store';
@@ -213,6 +214,7 @@ function EntryForm({
     } else if (mode === 'hiit') {
       setSessionType('conditioning');
       setCondSubtype('hiit');
+      // Modality stays as user-selected (default assault_bike is fine for cardio HIIT)
     } else if (mode === 'zone2') {
       setSessionType('conditioning');
       setCondSubtype('zone2');
@@ -221,6 +223,8 @@ function EntryForm({
       setSessionType('conditioning');
       setCondSubtype('weight_training');
       setDuration(45);
+      // Lifting modality — barbell is the sensible default
+      setCondModality('barbell');
     }
   };
 
@@ -234,7 +238,8 @@ function EntryForm({
     if (!isConditioning) return undefined;
     const detail: ConditioningDetail = {
       subtype: condSubtype,
-      modality: condModality,
+      // Modality is only meaningful for cardio-style work, not lifting
+      ...(isWeightTraining ? {} : { modality: condModality }),
     };
     if (isInterval) {
       detail.interval = {
@@ -259,13 +264,30 @@ function EntryForm({
     return detail;
   };
 
+  // Derive total duration from the most specific source available.
+  // - Grappling with segments → sum of segment durations (segments are source of truth)
+  // - HIIT with interval config → (work + rest) × rounds, rounded up to minutes
+  // - Everything else → the user-entered top-level duration
+  const derivedDuration = (() => {
+    if (topMode === 'grappling' && segments.length > 0) {
+      return segments.reduce((acc, s) => acc + (s.duration_min || 0), 0);
+    }
+    if (topMode === 'hiit' || (isInterval && !editing)) {
+      const w = parseInt(workDur, 10) || 30;
+      const r = parseInt(restDur, 10) || 30;
+      const n = parseInt(intervalRounds, 10) || 10;
+      return Math.max(1, Math.ceil(((w + r) * n) / 60));
+    }
+    return duration;
+  })();
+
   const handleSubmit = () => {
     Keyboard.dismiss();
     const input = {
       date: editing?.date ?? todayDate(),
       type: sessionType,
       intensity,
-      duration_min: duration,
+      duration_min: derivedDuration,
       rounds: rounds ? parseInt(rounds, 10) : undefined,
       rpe: rpe ? parseInt(rpe, 10) : undefined,
       tags: selectedTags,
@@ -404,6 +426,34 @@ function EntryForm({
                         ))}
                       </View>
                     </View>
+
+                    {/* Rounds + round length — only meaningful for live-type segments */}
+                    {(['live_rounds', 'comp_prep', 'wrestling', 'positional'] as SegmentType[]).includes(seg.type) && (
+                      <View style={styles.rowInputs}>
+                        <View style={styles.halfInput}>
+                          <Text style={styles.sectionLabel}>Rounds</Text>
+                          <TextInput
+                            style={styles.input}
+                            value={seg.rounds ? String(seg.rounds) : ''}
+                            onChangeText={(t) => updateSegment(seg.id, { rounds: t ? parseInt(t, 10) || undefined : undefined })}
+                            keyboardType="number-pad"
+                            placeholder="—"
+                            placeholderTextColor="#666"
+                          />
+                        </View>
+                        <View style={styles.halfInput}>
+                          <Text style={styles.sectionLabel}>Round length (min)</Text>
+                          <TextInput
+                            style={styles.input}
+                            value={seg.round_length_min ? String(seg.round_length_min) : ''}
+                            onChangeText={(t) => updateSegment(seg.id, { round_length_min: t ? parseInt(t, 10) || undefined : undefined })}
+                            keyboardType="number-pad"
+                            placeholder="—"
+                            placeholderTextColor="#666"
+                          />
+                        </View>
+                      </View>
+                    )}
 
                     {/* Topic worked — free text */}
                     <TextInput
@@ -701,8 +751,9 @@ function EntryForm({
         />
       )}
 
-      {/* Duration — custom input; HIIT derives duration from work/rest/rounds, Weights has its own */}
-      {(topMode || editing) && topMode !== 'weights' && topMode !== 'hiit' && (
+      {/* Duration — typed input for Zone 2 only. Grappling derives from segments;
+          HIIT derives from work/rest/rounds; Weights has its own input. */}
+      {(topMode || editing) && topMode !== 'weights' && topMode !== 'hiit' && topMode !== 'grappling' && (
       <View style={styles.selectorRow}>
         <View style={styles.selectorHeader}>
           <Text style={styles.selectorLabel}>Duration</Text>
@@ -712,7 +763,7 @@ function EntryForm({
               value={String(duration)}
               onChangeText={(t) => setDuration(parseInt(t, 10) || 0)}
               keyboardType="number-pad"
-              placeholder="60"
+              placeholder="30"
               placeholderTextColor="#666"
             />
             <Text style={styles.selectorLabel}> min</Text>
@@ -725,14 +776,17 @@ function EntryForm({
             </Text>
           </View>
         )}
-        {topMode === 'grappling' && (
-          <View style={styles.aiSuggestionBubble}>
-            <Text style={styles.aiSuggestionText}>
-              AI coach suggestion: 60–90min for a full session
-            </Text>
-          </View>
-        )}
       </View>
+      )}
+
+      {/* Derived total readout — Grappling (from segments) and HIIT (from work/rest/rounds) */}
+      {topMode && (topMode === 'grappling' || topMode === 'hiit') && (
+        <View style={styles.derivedTotalRow}>
+          <Text style={styles.derivedTotalLabel}>
+            {topMode === 'grappling' ? 'Total from segments' : 'Total from intervals'}
+          </Text>
+          <Text style={styles.derivedTotalValue}>{derivedDuration} min</Text>
+        </View>
       )}
 
       {/* More options — only after selection */}
@@ -857,6 +911,8 @@ function SessionCard({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  const summary = useMemo(() => summarizeSession(session), [session]);
+
   const handleDelete = () => {
     Alert.alert(
       'Delete Session',
@@ -871,16 +927,13 @@ function SessionCard({
   return (
     <View style={styles.sessionCard}>
       <View style={styles.sessionHeader}>
-        <View>
-          <Text style={styles.sessionType}>
-            {SESSION_TYPE_LABELS[session.type]}
-          </Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.sessionType}>{summary.headline}</Text>
           <Text style={styles.sessionMeta}>
-            {session.duration_min}min ·{' '}
             <Text style={{ color: INTENSITY_COLORS[session.intensity] }}>
               {session.intensity}
             </Text>
-            {session.rounds ? ` · ${session.rounds} rounds` : ''}
+            {summary.sparring_minutes ? ` · ${summary.sparring_minutes}min live` : ''}
             {session.rpe ? ` · RPE ${session.rpe}` : ''}
           </Text>
         </View>
@@ -1011,6 +1064,7 @@ export default function TrainScreen() {
   const [editingSession, setEditingSession] = useState<TrainingSession | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [lastLoggedHeadline, setLastLoggedHeadline] = useState<string | null>(null);
 
   // Quick-log: prefill form from planned session
   const handleQuickLog = (type: SessionType, intensity: SessionIntensity) => {
@@ -1048,7 +1102,10 @@ export default function TrainScreen() {
     setEditingSession(null);
     setShowForm(true);
     setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    // Pick the most-recently created session to render its headline
+    const latest = [...sessions].sort((a, b) => b.created_at.localeCompare(a.created_at))[0];
+    setLastLoggedHeadline(latest ? summarizeSession(latest).headline : null);
+    setTimeout(() => setSubmitted(false), 3500);
   };
 
   const handleEdit = (session: TrainingSession) => {
@@ -1070,7 +1127,9 @@ export default function TrainScreen() {
 
       {submitted && !editingSession && (
         <View style={styles.successBanner}>
-          <Text style={styles.successText}>Session logged — coaching updated</Text>
+          <Text style={styles.successText}>
+            Logged: {lastLoggedHeadline ?? 'session — coaching updated'}
+          </Text>
         </View>
       )}
 
@@ -1263,6 +1322,17 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   aiSuggestionText: { fontSize: 11, color: '#d4e157', opacity: 0.8 },
+  derivedTotalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.02)',
+  },
+  derivedTotalLabel: { fontSize: 12, opacity: 0.5, textTransform: 'uppercase', letterSpacing: 0.5 },
+  derivedTotalValue: { fontSize: 14, fontWeight: '600', color: '#d4e157' },
   quickBtn: {
     flex: 1,
     alignItems: 'center',

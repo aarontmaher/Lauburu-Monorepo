@@ -11,6 +11,8 @@ export type { AIPayload } from './ai-payload';
 export { generateCoaching } from './coaching';
 export type { CoachingResponse } from './coaching';
 export { mergeTrainingSessions } from './merge-training';
+export { summarizeSession } from './session-summary';
+export type { SessionSummary, SessionKind, SessionShape } from './session-summary';
 export { assembleTrainingExample } from './training-example';
 export { buildDayPlanSummary, getDayOfWeek } from './plan-status';
 export type { PlannedWithStatus, DayPlanSummary, DayPlanStatus, PlannedSessionStatus } from './plan-status';
