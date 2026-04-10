@@ -12,7 +12,9 @@ import { useTrainingStore } from '../../src/store/training-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useWhoopStore } from '../../src/store/whoop-store';
-import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat, SessionSummary, SegmentType } from '@lauburu/shared';
+import { useMachineStore } from '../../src/store/machine-store';
+import { modalitySupportsMachineData } from '../../src/services/machine-connector';
+import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat, SessionSummary, SegmentType, MachineMetrics, WorkoutSource } from '@lauburu/shared';
 import {
   SESSION_TYPE_LABELS, INTENSITY_LABELS, TAG_OPTIONS,
   CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, LIFTING_FOCUS_LABELS,
@@ -192,6 +194,32 @@ function EntryForm({
     editing?.conditioning?.respiratory?.timing ?? 'standalone',
   );
 
+  // Machine-data entry — optional numbers read off a cardio machine
+  // (distance, calories, power, cadence, HR). Complementary to WHOOP:
+  // WHOOP gives readiness and post-session strain; the machine gives
+  // the in-session output detail WHOOP cannot see.
+  const [machineSource, setMachineSource] = useState<WorkoutSource>(
+    editing?.conditioning?.source ?? 'phone_timer',
+  );
+  const [mDistance, setMDistance] = useState(
+    editing?.conditioning?.machine_metrics?.distance_m?.toString() ?? '',
+  );
+  const [mCalories, setMCalories] = useState(
+    editing?.conditioning?.machine_metrics?.calories?.toString() ?? '',
+  );
+  const [mAvgPower, setMAvgPower] = useState(
+    editing?.conditioning?.machine_metrics?.avg_power_w?.toString() ?? '',
+  );
+  const [mAvgCadence, setMAvgCadence] = useState(
+    editing?.conditioning?.machine_metrics?.avg_cadence?.toString() ?? '',
+  );
+  const [mAvgHr, setMAvgHr] = useState(
+    editing?.conditioning?.machine_metrics?.avg_hr_bpm?.toString() ?? '',
+  );
+  const [mMaxHr, setMMaxHr] = useState(
+    editing?.conditioning?.machine_metrics?.max_hr_bpm?.toString() ?? '',
+  );
+
   const isConditioning = sessionType === 'conditioning';
   const isInterval = isConditioning && ['hiit', 'intervals', 'sprint_intervals', 'circuit'].includes(condSubtype);
   const isWeightTraining = isConditioning && condSubtype === 'weight_training';
@@ -276,6 +304,31 @@ function EntryForm({
         sets: respSets ? parseInt(respSets, 10) : undefined,
         timing: respTiming,
       };
+    }
+    // Machine metrics — only attach if the user actually entered something.
+    // Every field is optional, and we never synthesise values.
+    const parseOptInt = (s: string) => {
+      if (!s) return undefined;
+      const n = parseInt(s, 10);
+      return Number.isFinite(n) ? n : undefined;
+    };
+    const metrics: MachineMetrics = {
+      distance_m: parseOptInt(mDistance),
+      calories: parseOptInt(mCalories),
+      avg_power_w: parseOptInt(mAvgPower),
+      avg_cadence: parseOptInt(mAvgCadence),
+      avg_hr_bpm: parseOptInt(mAvgHr),
+      max_hr_bpm: parseOptInt(mMaxHr),
+    };
+    const hasAnyMetric = Object.values(metrics).some((v) => v != null);
+    if (hasAnyMetric) {
+      detail.machine_metrics = metrics;
+      // If the user entered machine numbers, the source defaults to
+      // manual entry unless they explicitly picked something else.
+      detail.source =
+        machineSource === 'phone_timer' ? 'manual_machine_entry' : machineSource;
+    } else {
+      detail.source = machineSource;
     }
     return detail;
   };
@@ -754,6 +807,140 @@ function EntryForm({
         </View>
       )}
 
+      {/* Machine data (optional) — WHOOP does not expose machine-level
+          output, so this is where the user captures distance, calories,
+          power, cadence, HR etc. Only shown for cardio modes that could
+          plausibly expose machine metrics. Lifting + respiratory + rest
+          modes hide this section entirely. */}
+      {topMode && isConditioning && !isWeightTraining && !isRespiratory &&
+        modalitySupportsMachineData(condModality) && (
+        <View style={styles.section}>
+          <View style={styles.machineHeaderRow}>
+            <Text style={styles.sectionLabel}>Machine data (optional)</Text>
+            <Text style={styles.machineSourceHint}>
+              {machineSource === 'machine_connected'
+                ? 'Live'
+                : machineSource === 'manual_machine_entry'
+                  ? 'Manual'
+                  : 'Phone timer'}
+            </Text>
+          </View>
+
+          {/* Source row — phone timer is default, manual entry + live
+              (disabled today) are future-ready sources. */}
+          <View style={styles.pillRow}>
+            {(['phone_timer', 'manual_machine_entry', 'machine_connected'] as WorkoutSource[]).map(
+              (src) => {
+                const isActive = machineSource === src;
+                const isLive = src === 'machine_connected';
+                return (
+                  <Pressable
+                    key={src}
+                    style={[
+                      styles.pillSmall,
+                      isActive && styles.pillActive,
+                      isLive && { opacity: 0.4 },
+                    ]}
+                    disabled={isLive}
+                    onPress={() => setMachineSource(src)}>
+                    <Text style={[styles.pillSmallText, isActive && styles.pillTextActive]}>
+                      {src === 'phone_timer'
+                        ? 'Phone timer'
+                        : src === 'manual_machine_entry'
+                          ? 'Manual'
+                          : 'Live (soon)'}
+                    </Text>
+                  </Pressable>
+                );
+              },
+            )}
+          </View>
+
+          {/* Manual-entry fields — collapsible area, shown when the user
+              picks manual entry so the common phone-timer path stays clean. */}
+          {machineSource === 'manual_machine_entry' && (
+            <>
+              <View style={styles.rowInputs}>
+                <View style={styles.halfInput}>
+                  <Text style={styles.sectionLabel}>Distance (m)</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={mDistance}
+                    onChangeText={setMDistance}
+                    keyboardType="number-pad"
+                    placeholder="—"
+                    placeholderTextColor="#666"
+                  />
+                </View>
+                <View style={styles.halfInput}>
+                  <Text style={styles.sectionLabel}>Calories</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={mCalories}
+                    onChangeText={setMCalories}
+                    keyboardType="number-pad"
+                    placeholder="—"
+                    placeholderTextColor="#666"
+                  />
+                </View>
+              </View>
+              <View style={styles.rowInputs}>
+                <View style={styles.halfInput}>
+                  <Text style={styles.sectionLabel}>Avg power (W)</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={mAvgPower}
+                    onChangeText={setMAvgPower}
+                    keyboardType="number-pad"
+                    placeholder="—"
+                    placeholderTextColor="#666"
+                  />
+                </View>
+                <View style={styles.halfInput}>
+                  <Text style={styles.sectionLabel}>Avg cadence</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={mAvgCadence}
+                    onChangeText={setMAvgCadence}
+                    keyboardType="number-pad"
+                    placeholder="—"
+                    placeholderTextColor="#666"
+                  />
+                </View>
+              </View>
+              <View style={styles.rowInputs}>
+                <View style={styles.halfInput}>
+                  <Text style={styles.sectionLabel}>Avg HR (bpm)</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={mAvgHr}
+                    onChangeText={setMAvgHr}
+                    keyboardType="number-pad"
+                    placeholder="—"
+                    placeholderTextColor="#666"
+                  />
+                </View>
+                <View style={styles.halfInput}>
+                  <Text style={styles.sectionLabel}>Max HR (bpm)</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={mMaxHr}
+                    onChangeText={setMMaxHr}
+                    keyboardType="number-pad"
+                    placeholder="—"
+                    placeholderTextColor="#666"
+                  />
+                </View>
+              </View>
+              <Text style={styles.machineComplementHint}>
+                Machine metrics complement WHOOP — WHOOP gives readiness,
+                the machine gives the in-session output.
+              </Text>
+            </>
+          )}
+        </View>
+      )}
+
       {/* Intensity — only after selection. AI suggestion is reactive. */}
       {(topMode || editing) && (
         <SelectorRow
@@ -971,6 +1158,17 @@ function SessionCard({
             : ''}
           {session.conditioning.weight_training
             ? ` · ${LIFTING_FOCUS_LABELS[session.conditioning.weight_training.focus]}`
+            : ''}
+          {session.conditioning.machine_metrics
+            ? (() => {
+                const m = session.conditioning.machine_metrics;
+                const parts: string[] = [];
+                if (m.distance_m != null) parts.push(`${m.distance_m}m`);
+                if (m.calories != null) parts.push(`${m.calories}kcal`);
+                if (m.avg_power_w != null) parts.push(`${m.avg_power_w}W`);
+                if (m.avg_hr_bpm != null) parts.push(`${m.avg_hr_bpm}bpm`);
+                return parts.length ? ` · ${parts.join(' · ')}` : '';
+              })()
             : ''}
         </Text>
       )}
@@ -1370,6 +1568,24 @@ const styles = StyleSheet.create({
   },
   derivedTotalLabel: { fontSize: 12, opacity: 0.5, textTransform: 'uppercase', letterSpacing: 0.5 },
   derivedTotalValue: { fontSize: 14, fontWeight: '600', color: '#d4e157' },
+  machineHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+  },
+  machineSourceHint: {
+    fontSize: 11,
+    opacity: 0.4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  machineComplementHint: {
+    fontSize: 11,
+    fontStyle: 'italic',
+    opacity: 0.4,
+    marginTop: 4,
+    lineHeight: 15,
+  },
   quickBtn: {
     flex: 1,
     alignItems: 'center',

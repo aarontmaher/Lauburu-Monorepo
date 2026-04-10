@@ -142,6 +142,99 @@ export interface IntervalDetail {
   modality?: Modality;
   /** Preset ID if a standard protocol was used */
   preset_id?: string;
+  /** Per-interval machine metrics when a connected or parsed machine is used. */
+  per_interval?: IntervalMachineSample[];
+}
+
+/** Per-interval machine sample — one entry per completed work interval. */
+export interface IntervalMachineSample {
+  /** 1-indexed interval number within the session. */
+  index: number;
+  /** Actual work duration in seconds (may differ from planned if manually cut). */
+  work_duration_s?: number;
+  /** Distance covered during this interval (metres). */
+  distance_m?: number;
+  /** Calories burned during this interval (kcal). */
+  calories?: number;
+  /** Average power during this interval (watts). */
+  avg_power_w?: number;
+  /** Peak power during this interval (watts). */
+  max_power_w?: number;
+  /** Average cadence (rpm for bikes, spm for rowers, stride for running). */
+  avg_cadence?: number;
+  /** Peak cadence (same units as avg_cadence). */
+  max_cadence?: number;
+  /** Average HR during this interval (bpm). Chest strap or paired machine. */
+  avg_hr_bpm?: number;
+  /** Peak HR during this interval (bpm). */
+  max_hr_bpm?: number;
+}
+
+// ---------------------------------------------------------------------------
+// Machine-originated session data
+// ---------------------------------------------------------------------------
+
+/**
+ * Where the workout detail came from. Explicit provenance matters because
+ * the app combines WHOOP (readiness / physiology) with machine output —
+ * the two are complementary sources, not the same source, and honest
+ * provenance keeps coaching decisions auditable.
+ */
+export type WorkoutSource =
+  | 'phone_timer' // App's built-in interval timer — no machine detail
+  | 'machine_connected' // Live BLE/FTMS connection (future, stub today)
+  | 'manual_machine_entry' // User typed the machine's end-of-session numbers
+  | 'imported'; // Pulled from a third-party file/import (future)
+
+export const WORKOUT_SOURCE_LABELS: Record<WorkoutSource, string> = {
+  phone_timer: 'Phone timer',
+  machine_connected: 'Machine connected',
+  manual_machine_entry: 'Manual entry',
+  imported: 'Imported',
+};
+
+/**
+ * Whole-session machine metrics captured from a cardio machine.
+ *
+ * Every field is optional — different machines expose different subsets
+ * (e.g. the Assault Bike exposes power + cadence + calories + distance
+ * but not pace; a rower exposes pace + stroke rate + distance; a
+ * treadmill exposes distance + speed + cadence). We store what's
+ * available and leave the rest null. NO field is synthesised.
+ *
+ * This layer is deliberately WHOOP-independent: WHOOP is the readiness
+ * and physiology trend source; the cardio machine is the workout-
+ * execution source. Both can be present simultaneously.
+ */
+export interface MachineMetrics {
+  /** Total distance covered (metres). Rower, bike, treadmill, skierg. */
+  distance_m?: number;
+  /** Total calories (kcal). Most machines expose this. */
+  calories?: number;
+  /** Total work output (kJ). Rower-specific but some bikes expose too. */
+  kilojoules?: number;
+  /** Average power across the session (watts). */
+  avg_power_w?: number;
+  /** Peak power (watts). */
+  max_power_w?: number;
+  /** Average pace (seconds per 500m for rowers, seconds per km for running). */
+  avg_pace_s?: number;
+  /** Best pace (same units as avg_pace_s). */
+  max_pace_s?: number;
+  /** Average cadence — rpm for bikes, spm for rowers, stride/min running. */
+  avg_cadence?: number;
+  /** Peak cadence (same units). */
+  max_cadence?: number;
+  /** Average speed (km/h). Treadmill, bike, skierg. */
+  avg_speed_kmh?: number;
+  /** Peak speed (km/h). */
+  max_speed_kmh?: number;
+  /** Average HR across the session (bpm). Paired chest strap or machine. */
+  avg_hr_bpm?: number;
+  /** Peak HR (bpm). */
+  max_hr_bpm?: number;
+  /** Total stroke count (rower-specific). */
+  strokes?: number;
 }
 
 /** Standard HIIT interval presets */
@@ -215,6 +308,20 @@ export interface ConditioningDetail {
   steady_state?: SteadyStateDetail;
   weight_training?: WeightTrainingDetail;
   respiratory?: RespiratoryDetail;
+  /**
+   * Provenance of the workout detail. `phone_timer` is the default for
+   * sessions logged through the app's own interval timer. When the user
+   * enters numbers read off a cardio machine, or a future BLE/FTMS
+   * connection lands, this flips to `manual_machine_entry` or
+   * `machine_connected` respectively.
+   */
+  source?: WorkoutSource;
+  /**
+   * Whole-session metrics captured from the cardio machine. Complementary
+   * to WHOOP — WHOOP gives readiness and post-session strain; this gives
+   * the in-session output detail that WHOOP cannot see.
+   */
+  machine_metrics?: MachineMetrics;
 }
 
 // ---------------------------------------------------------------------------
