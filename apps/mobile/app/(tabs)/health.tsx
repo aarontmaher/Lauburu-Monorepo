@@ -12,6 +12,7 @@ import { useAuthStore } from '../../src/store/auth-store';
 import { useTierStore } from '../../src/store/tier-store';
 import { isExpoGo } from '../../src/services/expo-detect';
 import { WhoopCard } from '../../src/components/WhoopCard';
+import { NutritionCard } from '../../src/components/NutritionCard';
 import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures, CoachingResponse } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 
@@ -683,6 +684,9 @@ export default function HealthScreen() {
 
       {/* WHOOP — backend-fed, independent of on-device HealthKit */}
       <WhoopCard />
+
+      {/* Nutrition — manual entry today, Cronometer API swap later */}
+      <NutritionCard />
 
       {/* 7-day trends */}
       {features && <TrendsCard features={features} />}

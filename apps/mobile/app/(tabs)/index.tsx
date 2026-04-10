@@ -6,6 +6,7 @@ import { useAuthStore } from '../../src/store/auth-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useWhoopStore } from '../../src/store/whoop-store';
+import { useNutritionStore } from '../../src/store/nutrition-store';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useProgress } from '../../src/hooks/useProgress';
 import {
@@ -53,6 +54,23 @@ function ReferenceEntryCard() {
         {REFERENCE_TOTAL_POSITIONS} positions, {REFERENCE_BUILT_OUT_COUNT} built out.
       </Text>
     </Pressable>
+  );
+}
+
+function NutritionHeadline() {
+  const today = useNutritionStore((s) => s.today);
+  if (!today) return null;
+  const cal = today.calories_kcal;
+  const protein = today.protein_g;
+  if (cal == null && protein == null) return null;
+  return (
+    <View style={styles.fuelHeadline}>
+      <Text style={styles.fuelLabel}>Today's fuel</Text>
+      <Text style={styles.fuelValue}>
+        {cal != null ? `${Math.round(cal)} kcal` : '—'}
+        {protein != null ? ` · ${Math.round(protein)}g protein` : ''}
+      </Text>
+    </View>
   );
 }
 
@@ -359,6 +377,9 @@ export default function HomeScreen() {
       {/* Tiny backend-fed WHOOP metrics chip — shown only when data is ready */}
       {isMember && <WhoopHeadline />}
 
+      {/* Tiny nutrition chip — shown only when the user has logged fuel today */}
+      {isMember && <NutritionHeadline />}
+
       {isMember && <TrainingContextCard />}
 
       {isMember && <ProgressCard />}
@@ -532,4 +553,22 @@ const styles = StyleSheet.create({
   whoopDot: { width: 10, height: 10, borderRadius: 5 },
   whoopLabel: { fontSize: 14, fontWeight: '600' },
   whoopMeta: { fontSize: 12, opacity: 0.5, marginLeft: 'auto' },
+
+  // Nutrition headline
+  fuelHeadline: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+  },
+  fuelLabel: {
+    fontSize: 11,
+    opacity: 0.4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  fuelValue: { fontSize: 13, color: '#d4e157', fontWeight: '600', marginLeft: 'auto' },
 });
