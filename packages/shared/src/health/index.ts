@@ -17,6 +17,7 @@ export {
   buildDailyCoachingBrief,
   suggestTrainIntensity,
   suggestHIITProtocol,
+  buildCoachingPromptPacket,
 } from './coach-layer';
 export type {
   DailyCoachingBrief,
@@ -27,6 +28,8 @@ export type {
   LoadBand,
   BuildDailyCoachingBriefInputs,
   HIITProtocolSuggestion,
+  BuildCoachingPromptPacketInputs,
+  CoachingPromptPacketResult,
 } from './coach-layer';
 export { assembleTrainingExample } from './training-example';
 export { buildDayPlanSummary, getDayOfWeek } from './plan-status';

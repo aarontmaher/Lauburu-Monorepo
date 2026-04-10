@@ -9,6 +9,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useAuthStore } from '../src/store/auth-store';
 import { useNutritionStore } from '../src/store/nutrition-store';
+import { useCoachingCasesStore } from '../src/store/coaching-cases-store';
 
 export {
   ErrorBoundary,
@@ -29,15 +30,18 @@ export default function RootLayout() {
   const authStatus = useAuthStore((s) => s.status);
   const initialize = useAuthStore((s) => s.initialize);
   const hydrateNutrition = useNutritionStore((s) => s.hydrate);
+  const hydrateCoachingCases = useCoachingCasesStore((s) => s.hydrate);
 
-  // Initialize auth session on app launch, and hydrate nutrition
-  // from secureStorage in parallel so today's logged fuel + daily
-  // targets survive app kill. Both run independently — a nutrition
-  // hydrate failure must not block auth and vice versa.
+  // Initialize auth session on app launch, and hydrate nutrition +
+  // coaching-case state from secureStorage in parallel so today's
+  // logged fuel + daily targets + any un-captured "Ask ChatGPT"
+  // follow-up draft survive app kill. All three run independently —
+  // failures in any one must not block the others.
   useEffect(() => {
     initialize();
     hydrateNutrition();
-  }, [initialize, hydrateNutrition]);
+    hydrateCoachingCases();
+  }, [initialize, hydrateNutrition, hydrateCoachingCases]);
 
   useEffect(() => {
     if (error) throw error;

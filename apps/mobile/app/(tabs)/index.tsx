@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { StyleSheet, ScrollView, ActivityIndicator, Pressable } from 'react-native';
+import { StyleSheet, ScrollView, ActivityIndicator, Pressable, Share } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../../src/store/auth-store';
@@ -8,6 +8,7 @@ import { useTrainingStore } from '../../src/store/training-store';
 import { useWhoopStore } from '../../src/store/whoop-store';
 import { useNutritionStore } from '../../src/store/nutrition-store';
 import { usePreferencesStore } from '../../src/store/preferences-store';
+import { useCoachingCasesStore } from '../../src/store/coaching-cases-store';
 import { useProgress } from '../../src/hooks/useProgress';
 import {
   REFERENCE_TOTAL_POSITIONS,
@@ -18,6 +19,7 @@ import type { ReadinessLevel, DailyCoachingBrief } from '@lauburu/shared';
 import {
   SESSION_TYPE_LABELS,
   buildDailyCoachingBrief,
+  buildCoachingPromptPacket,
   getTodayPlan,
 } from '@lauburu/shared';
 
@@ -140,6 +142,49 @@ const MODE_LABEL: Record<string, string> = {
  * over HealthKit when present, falls back to insights when WHOOP is absent,
  * and shows today's plan + intensity recommendation + explainable reasons.
  */
+/**
+ * Banner shown above the Today's Coach card when the user has a
+ * previously-started "Ask ChatGPT" case that hasn't been captured yet.
+ * Asks the three-button question "How did that go?" and completes the
+ * case with the chosen usefulness verdict. Dismiss = drop the draft
+ * without saving (useful if the user never actually asked ChatGPT).
+ */
+function PendingFollowupBanner() {
+  const pending = useCoachingCasesStore((s) => s.pending);
+  const completePending = useCoachingCasesStore((s) => s.completePending);
+  const dismissPending = useCoachingCasesStore((s) => s.dismissPending);
+  if (!pending) return null;
+  return (
+    <View style={styles.followupBanner}>
+      <Text style={styles.followupTitle}>
+        You asked ChatGPT earlier — how did it go?
+      </Text>
+      <View style={styles.followupActions}>
+        <Pressable
+          style={styles.followupBtnHelp}
+          onPress={() => completePending('helped')}>
+          <Text style={styles.followupBtnHelpText}>Helped</Text>
+        </Pressable>
+        <Pressable
+          style={styles.followupBtnNeutral}
+          onPress={() => completePending('neutral')}>
+          <Text style={styles.followupBtnNeutralText}>Neutral</Text>
+        </Pressable>
+        <Pressable
+          style={styles.followupBtnNo}
+          onPress={() => completePending('unhelpful')}>
+          <Text style={styles.followupBtnNoText}>Not useful</Text>
+        </Pressable>
+        <Pressable
+          style={styles.followupBtnDismiss}
+          onPress={() => dismissPending()}>
+          <Text style={styles.followupBtnDismissText}>Dismiss</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
 function TodayCoachCard() {
   const whoopDay = useWhoopStore((s) => s.day);
   const whoopStatus = useWhoopStore((s) => s.status);
@@ -150,15 +195,16 @@ function TodayCoachCard() {
   const nutritionToday = useNutritionStore((s) => s.today);
   const nutritionTargets = useNutritionStore((s) => s.targets);
   const nutritionHistory = useNutritionStore((s) => s.historyDays);
+  const startPendingCase = useCoachingCasesStore((s) => s.startPending);
 
   useEffect(() => {
     if (whoopStatus === 'idle') fetchWhoop();
   }, [whoopStatus, fetchWhoop]);
 
-  const brief = useMemo<DailyCoachingBrief>(() => {
+  const briefInputs = useMemo(() => {
     const todayIsoDate = new Date().toISOString().slice(0, 10);
     const todayPlan = getTodayPlan(schedule);
-    return buildDailyCoachingBrief({
+    return {
       whoopDay,
       insights,
       todayPlan,
@@ -167,7 +213,7 @@ function TodayCoachCard() {
       nutritionToday,
       nutritionTargets,
       nutritionHistory,
-    });
+    };
   }, [
     whoopDay,
     insights,
@@ -177,6 +223,42 @@ function TodayCoachCard() {
     nutritionTargets,
     nutritionHistory,
   ]);
+
+  const brief = useMemo<DailyCoachingBrief>(() => {
+    return buildDailyCoachingBrief(briefInputs);
+  }, [briefInputs]);
+
+  /**
+   * Ask ChatGPT fallback — builds a structured prompt packet from the
+   * same inputs the coach card is already reading, opens the native
+   * share sheet so the user can pick ChatGPT/Claude/any installed app
+   * or copy to clipboard, and saves a pending draft case via the
+   * coaching-cases-store so the Home banner can prompt for outcome
+   * capture when the user returns.
+   *
+   * Zero new deps, zero native modules — Share.share is core RN.
+   * Zero paid API calls. The handoff is honest: the app prepares the
+   * context, the user + their chosen AI do the actual thinking, the
+   * outcome comes back via the follow-up banner.
+   */
+  const handleAskChatGPT = async () => {
+    const { text, context } = buildCoachingPromptPacket(briefInputs);
+    try {
+      await Share.share({
+        message: text,
+        title: 'Lauburu coaching context',
+      });
+      // Regardless of which share target the user picked, save the
+      // draft so the follow-up banner appears next time.
+      startPendingCase({
+        context,
+        prompt_packet: text,
+        source: 'external_chatgpt',
+      });
+    } catch {
+      // Share dismissed or failed — don't save a draft.
+    }
+  };
 
   const color = READINESS_COLORS[brief.readiness];
   const sourceLabel =
@@ -261,6 +343,14 @@ function TodayCoachCard() {
           guidance.
         </Text>
       )}
+
+      {/* Ask ChatGPT fallback — builds a structured packet from the
+          brief inputs above and hands it off to the native share sheet.
+          Intentionally positioned at the bottom of the card so it's
+          available but never crowds out the app's own guidance. */}
+      <Pressable style={styles.askAiBtn} onPress={handleAskChatGPT}>
+        <Text style={styles.askAiBtnText}>Ask ChatGPT for a second opinion →</Text>
+      </Pressable>
     </View>
   );
 }
@@ -400,6 +490,10 @@ export default function HomeScreen() {
       </View>
 
       {!isMember && <GuestBanner />}
+
+      {/* Pending coaching-case follow-up — only appears when the user
+          has an un-captured "Ask ChatGPT" draft. */}
+      {isMember && <PendingFollowupBanner />}
 
       {/* Today's Coach — unified daily guidance (WHOOP + plan + insights) */}
       {isMember && <TodayCoachCard />}
@@ -553,6 +647,70 @@ const styles = StyleSheet.create({
     marginTop: 6,
     lineHeight: 17,
   },
+
+  // Ask ChatGPT fallback
+  askAiBtn: {
+    marginTop: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.3)',
+    backgroundColor: 'rgba(212,225,87,0.04)',
+    alignSelf: 'flex-start',
+  },
+  askAiBtnText: { color: '#d4e157', fontSize: 12, fontWeight: '600' },
+
+  // Pending follow-up banner
+  followupBanner: {
+    padding: 14,
+    borderRadius: 12,
+    backgroundColor: 'rgba(212,225,87,0.06)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#d4e157',
+    gap: 10,
+  },
+  followupTitle: { fontSize: 13, color: '#e6ecf3', fontWeight: '600' },
+  followupActions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  followupBtnHelp: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: 'rgba(74,222,128,0.15)',
+    borderWidth: 1,
+    borderColor: '#4ade80',
+  },
+  followupBtnHelpText: { color: '#4ade80', fontSize: 12, fontWeight: '600' },
+  followupBtnNeutral: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.08)',
+  },
+  followupBtnNeutralText: { color: '#d4e157', fontSize: 12, fontWeight: '600' },
+  followupBtnNo: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ff8a80',
+    backgroundColor: 'rgba(255,138,128,0.08)',
+  },
+  followupBtnNoText: { color: '#ff8a80', fontSize: 12, fontWeight: '600' },
+  followupBtnDismiss: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  followupBtnDismissText: { color: '#888', fontSize: 11 },
 
   // Reference entry card
   referenceCard: {

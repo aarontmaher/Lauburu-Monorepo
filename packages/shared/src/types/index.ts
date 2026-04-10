@@ -10,3 +10,4 @@ export * from './tiers';
 export * from './devices';
 export * from './health-records';
 export * from './nutrition';
+export * from './coaching-case';

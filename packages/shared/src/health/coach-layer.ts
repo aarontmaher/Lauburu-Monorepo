@@ -22,6 +22,7 @@ import {
   GRAPPLING_SCHEDULE_SUBTYPE_LABELS,
 } from '../types/preferences';
 import type { NutritionRecord, NutritionTargets } from '../types/nutrition';
+import type { CoachingCaseContext } from '../types/coaching-case';
 import type { ReadinessLevel, TrainingInsight } from './insights';
 
 /**
@@ -726,4 +727,194 @@ export function suggestHIITProtocol(inputs: {
     reason,
     label: `${work_s}/${rest_s} × ${rounds}`,
   };
+}
+
+// ---------------------------------------------------------------------------
+// ChatGPT / external-AI fallback prompt packet
+// ---------------------------------------------------------------------------
+
+export interface BuildCoachingPromptPacketInputs
+  extends BuildDailyCoachingBriefInputs {
+  /**
+   * Optional short free-text the user wants to ask about ("should I
+   * train tonight?", "is my protein enough?"). Included verbatim in
+   * the packet when present.
+   */
+  userQuestion?: string | null;
+}
+
+export interface CoachingPromptPacketResult {
+  /** Full rendered text ready to share to ChatGPT / any AI surface. */
+  text: string;
+  /** Compact context snapshot suitable for CoachingCase persistence. */
+  context: CoachingCaseContext;
+}
+
+/**
+ * Build a structured text packet describing the user's current state
+ * for external-AI coaching (ChatGPT, Claude, any share target).
+ *
+ * Design intent:
+ * - Self-contained — the packet is a single paste-able block, no links,
+ *   no follow-up clarifications needed before the AI can respond.
+ * - Concise but specific — names real numbers (recovery %, grams of
+ *   protein, planned session at specific time) rather than vague labels.
+ * - Honest — never claims a field the user hasn't logged. Missing data
+ *   is simply omitted rather than rendered as "N/A" or "unknown".
+ * - Consistent — same inputs produce byte-identical output, so future
+ *   eval pipelines can diff packets reliably.
+ * - NOT a chat log — one request, no history. The AI reply belongs in
+ *   the CoachingCase outcome_summary field once the user captures it.
+ *
+ * Honest non-goal: this packet is NOT a training dataset entry. It's a
+ * user-facing prompt. Eval/training artifacts live in the
+ * CoachingCaseExportLine shape, which captures the packet alongside
+ * the outcome.
+ */
+export function buildCoachingPromptPacket(
+  inputs: BuildCoachingPromptPacketInputs,
+): CoachingPromptPacketResult {
+  // Build the brief first so the packet can quote its readiness +
+  // reasons + plan hint + load interpretation directly.
+  const brief = buildDailyCoachingBrief(inputs);
+  const now = new Date();
+  const whoopDay = inputs.whoopDay;
+  const nutritionToday = inputs.nutritionToday;
+  const nutritionTargets = inputs.nutritionTargets;
+
+  // Count recent hard sessions — same window as the brief uses
+  // internally (3 days) so the packet and the brief agree.
+  let recentHard = 0;
+  if (inputs.recentSessions && inputs.recentSessions.length > 0) {
+    const today = new Date(inputs.todayIsoDate + 'T00:00:00');
+    const floor = new Date(today);
+    floor.setDate(floor.getDate() - 3);
+    const floorIso = floor.toISOString().slice(0, 10);
+    recentHard = inputs.recentSessions.filter(
+      (s) =>
+        s.date >= floorIso &&
+        s.date <= inputs.todayIsoDate &&
+        s.intensity === 'hard',
+    ).length;
+  }
+
+  const lines: string[] = [];
+  lines.push('Lauburu coaching context — please give me one clear recommendation.');
+  lines.push('');
+
+  // Readiness block
+  lines.push('## Readiness');
+  if (whoopDay && whoopDay.recovery_score != null) {
+    lines.push(`- WHOOP recovery: ${whoopDay.recovery_score}%`);
+  }
+  if (whoopDay && whoopDay.hrv_ms != null) {
+    lines.push(`- HRV: ${whoopDay.hrv_ms.toFixed(1)} ms`);
+  }
+  if (whoopDay && whoopDay.resting_hr != null) {
+    lines.push(`- Resting HR: ${whoopDay.resting_hr} bpm`);
+  }
+  if (whoopDay && whoopDay.sleep_hours != null) {
+    lines.push(`- Sleep: ${whoopDay.sleep_hours.toFixed(1)} hours last night`);
+  }
+  if (whoopDay && whoopDay.daily_strain != null) {
+    lines.push(`- Day strain so far: ${whoopDay.daily_strain.toFixed(1)}`);
+  }
+  lines.push(`- Coach readiness: ${brief.readiness}`);
+
+  // Load + recent training block
+  if (recentHard > 0 || brief.load_band !== 'unknown') {
+    lines.push('');
+    lines.push('## Recent load');
+    if (recentHard > 0) {
+      lines.push(`- ${recentHard} hard sessions in the last 3 days`);
+    }
+    if (brief.load_band !== 'unknown') {
+      lines.push(`- Load interpretation: ${brief.load_line}`);
+    }
+  }
+
+  // Plan block
+  if (brief.plan_hint) {
+    lines.push('');
+    lines.push("## Today's plan");
+    lines.push(`- ${brief.plan_hint}`);
+  } else if (brief.planned_count === 0) {
+    lines.push('');
+    lines.push("## Today's plan");
+    lines.push('- Rest day, no sessions scheduled');
+  }
+
+  // Nutrition block — only render when we have real numbers
+  const hasNutrition =
+    nutritionToday &&
+    (nutritionToday.calories_kcal != null ||
+      nutritionToday.protein_g != null ||
+      nutritionToday.carbs_g != null ||
+      nutritionToday.fat_g != null);
+  if (hasNutrition) {
+    lines.push('');
+    lines.push('## Nutrition today');
+    if (nutritionToday!.calories_kcal != null) {
+      const tgt = nutritionTargets?.calories_kcal;
+      lines.push(
+        `- Calories: ${Math.round(nutritionToday!.calories_kcal)} kcal${
+          tgt ? ` (target ${Math.round(tgt)})` : ''
+        }`,
+      );
+    }
+    if (nutritionToday!.protein_g != null) {
+      const tgt = nutritionTargets?.protein_g;
+      lines.push(
+        `- Protein: ${Math.round(nutritionToday!.protein_g)} g${
+          tgt ? ` (target ${Math.round(tgt)})` : ''
+        }`,
+      );
+    }
+    if (nutritionToday!.carbs_g != null) {
+      lines.push(`- Carbs: ${Math.round(nutritionToday!.carbs_g)} g`);
+    }
+    if (nutritionToday!.fat_g != null) {
+      lines.push(`- Fat: ${Math.round(nutritionToday!.fat_g)} g`);
+    }
+  }
+
+  // Coach brief reasons
+  if (brief.reasons.length > 0) {
+    lines.push('');
+    lines.push("## What the app's built-in coach thinks");
+    lines.push(`- Headline: ${brief.headline}`);
+    lines.push(`- Suggested intensity: ${brief.suggested_intensity}`);
+    brief.reasons.forEach((r) => lines.push(`- Reason: ${r}`));
+  }
+
+  // User question
+  if (inputs.userQuestion && inputs.userQuestion.trim().length > 0) {
+    lines.push('');
+    lines.push('## My question');
+    lines.push(inputs.userQuestion.trim());
+  } else {
+    lines.push('');
+    lines.push('## My question');
+    lines.push('Given the context above, what should I actually do today?');
+  }
+
+  const text = lines.join('\n');
+
+  const context: CoachingCaseContext = {
+    generated_at: now.toISOString(),
+    local_date: inputs.todayIsoDate,
+    whoop_recovery: whoopDay?.recovery_score ?? null,
+    whoop_strain: whoopDay?.daily_strain ?? null,
+    readiness: brief.readiness,
+    plan_hint: brief.plan_hint ?? null,
+    planned_count: brief.planned_count,
+    recent_hard: recentHard,
+    nutrition_calories: nutritionToday?.calories_kcal ?? null,
+    nutrition_protein_g: nutritionToday?.protein_g ?? null,
+    nutrition_calorie_target: nutritionTargets?.calories_kcal ?? null,
+    nutrition_protein_target: nutritionTargets?.protein_g ?? null,
+    user_question: inputs.userQuestion ?? null,
+  };
+
+  return { text, context };
 }
