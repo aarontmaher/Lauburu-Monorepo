@@ -258,11 +258,74 @@ const SCHEDULE_TYPES: import('@lauburu/shared').ScheduleSessionType[] = [
   'open_mat', 'comp_prep', 'conditioning', 'other',
 ];
 
+/**
+ * Normalize a user-typed time string into a canonical HH:MM.
+ * Accepts "7", "7:30", "730", "19:5", "19:30", with or without colon.
+ * Returns '' (empty) if the input cannot be parsed into a valid 24h time.
+ * Never throws — invalid input becomes empty (no time set), which the
+ * schedule model already treats as "no time" for backward compatibility.
+ */
+function normalizeTimeInput(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return '';
+  // Strip everything that isn't a digit or colon
+  const cleaned = trimmed.replace(/[^\d:]/g, '');
+  let hours: string;
+  let minutes: string;
+  if (cleaned.includes(':')) {
+    const [h, m = ''] = cleaned.split(':');
+    hours = h;
+    minutes = m;
+  } else if (cleaned.length <= 2) {
+    hours = cleaned;
+    minutes = '00';
+  } else {
+    // e.g. "730" → 7:30, "1930" → 19:30
+    hours = cleaned.slice(0, cleaned.length - 2);
+    minutes = cleaned.slice(-2);
+  }
+  const h = parseInt(hours, 10);
+  const m = parseInt(minutes || '0', 10);
+  if (Number.isNaN(h) || Number.isNaN(m)) return '';
+  if (h < 0 || h > 23 || m < 0 || m > 59) return '';
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+function TimeField({
+  value,
+  onCommit,
+}: {
+  value: string | undefined;
+  onCommit: (normalized: string) => void;
+}) {
+  const [text, setText] = useState(value ?? '');
+  const display = text;
+  return (
+    <TextInput
+      style={styles.scheduleTimeInput}
+      value={display}
+      placeholder="--:--"
+      placeholderTextColor="#555"
+      keyboardType="numbers-and-punctuation"
+      maxLength={5}
+      onChangeText={setText}
+      onBlur={() => {
+        const normalized = normalizeTimeInput(text);
+        setText(normalized);
+        if (normalized !== (value ?? '')) {
+          onCommit(normalized);
+        }
+      }}
+    />
+  );
+}
+
 function ScheduleEditor() {
   const prefs = usePreferencesStore((s) => s.preferences);
   const addSess = usePreferencesStore((s) => s.addSession);
   const removeSess = usePreferencesStore((s) => s.removeSession);
   const toggleSess = usePreferencesStore((s) => s.toggleSession);
+  const updateSess = usePreferencesStore((s) => s.updateSession);
   const [expandedDay, setExpandedDay] = useState<import('@lauburu/shared').DayOfWeek | null>(null);
   const [addingType, setAddingType] = useState<import('@lauburu/shared').ScheduleSessionType>('drilling');
 
@@ -283,9 +346,13 @@ function ScheduleEditor() {
               <Text style={styles.scheduleDayName}>{DAY_LABELS[day]}</Text>
               <Text style={styles.scheduleDayCount}>
                 {sessions.filter((s) => s.enabled).length > 0
-                  ? sessions.filter((s) => s.enabled).map((s) =>
-                      SCHEDULE_SESSION_LABELS[s.type] ?? s.type
-                    ).join(', ')
+                  ? sessions
+                      .filter((s) => s.enabled)
+                      .map((s) => {
+                        const label = SCHEDULE_SESSION_LABELS[s.type] ?? s.type;
+                        return s.time ? `${s.time} ${label}` : label;
+                      })
+                      .join(' · ')
                   : 'Rest'}
               </Text>
               <Text style={styles.scheduleChevron}>{isExpanded ? '▾' : '▸'}</Text>
@@ -302,9 +369,12 @@ function ScheduleEditor() {
                     </Pressable>
                     <Text style={[styles.scheduleSessionName, !s.enabled && { opacity: 0.3 }]}>
                       {SCHEDULE_SESSION_LABELS[s.type] ?? s.type}
-                      {s.time ? ` · ${s.time}` : ''}
                     </Text>
-                    <Pressable onPress={() => removeSess(day, s.id)}>
+                    <TimeField
+                      value={s.time}
+                      onCommit={(t) => updateSess(day, s.id, { time: t })}
+                    />
+                    <Pressable onPress={() => removeSess(day, s.id)} hitSlop={6}>
                       <Text style={styles.scheduleRemove}>✕</Text>
                     </Pressable>
                   </View>
@@ -756,6 +826,18 @@ const styles = StyleSheet.create({
   scheduleSessionRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   scheduleSessionCheck: { fontSize: 16, color: '#4ade80', width: 20 },
   scheduleSessionName: { flex: 1, fontSize: 13 },
+  scheduleTimeInput: {
+    width: 60,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#333',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    color: '#f0f0f0',
+    fontSize: 13,
+    textAlign: 'center',
+  },
   scheduleRemove: { fontSize: 14, color: '#ff6b6b', padding: 4 },
   scheduleAddRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 },
   scheduleAddBtn: {
