@@ -19,6 +19,7 @@ export type {
   WhoopSnapshot,
   PrimaryReadinessSource,
   CoachedMode,
+  LoadBand,
   BuildDailyCoachingBriefInputs,
 } from './coach-layer';
 export { assembleTrainingExample } from './training-example';

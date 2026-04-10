@@ -210,9 +210,8 @@ export function WhoopCard() {
               unit="%"
             />
             <MetricBox
-              label="Strain"
+              label="Day strain"
               value={formatNumber(day.daily_strain, 1)}
-              unit=" /21"
             />
             <MetricBox label="Workouts" value={String(workoutCount)} />
           </View>

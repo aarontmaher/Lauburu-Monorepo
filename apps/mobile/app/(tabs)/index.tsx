@@ -183,6 +183,11 @@ function TodayCoachCard() {
         )}
       </View>
 
+      {/* Load interpretation — strain as a coaching word, not /21 */}
+      {brief.load_band !== 'unknown' && (
+        <Text style={styles.coachLoadLine}>{brief.load_line}</Text>
+      )}
+
       {/* Reasons — explainability */}
       {brief.reasons.length > 0 && (
         <View style={styles.coachReasons}>
@@ -490,6 +495,12 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     marginTop: 4,
     fontStyle: 'italic',
+  },
+  coachLoadLine: {
+    fontSize: 12,
+    opacity: 0.6,
+    marginTop: 6,
+    lineHeight: 17,
   },
 
   // Reference entry card

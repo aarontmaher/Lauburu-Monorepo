@@ -42,6 +42,21 @@ export type PrimaryReadinessSource = 'whoop' | 'insights' | 'none';
 /** High-level training modes the brief can recommend. */
 export type CoachedMode = 'grappling' | 'hiit' | 'zone2' | 'weights' | 'rest';
 
+/**
+ * Coaching-level interpretation of today's accumulated load.
+ *
+ * Explicitly NOT a "strain / 21" progress bar — raw WHOOP strain is a
+ * scale metric, not a personal target. We interpret it against the
+ * user's current readiness to describe whether there's room for more.
+ *
+ * 'low'        — very little load accumulated so far
+ * 'building'   — a normal amount, room for more
+ * 'at_target'  — an appropriate amount for today's readiness
+ * 'over'       — already past what today's readiness supports
+ * 'unknown'    — no strain signal yet
+ */
+export type LoadBand = 'low' | 'building' | 'at_target' | 'over' | 'unknown';
+
 export interface DailyCoachingBrief {
   /** One-line headline for the card header (e.g. "67% recovered — push hard today"). */
   headline: string;
@@ -81,6 +96,16 @@ export interface DailyCoachingBrief {
 
   /** True if WHOOP has today's recovery but zero workouts logged so far. */
   whoop_workouts_missing_today: boolean;
+
+  /**
+   * Coaching interpretation of today's accumulated load. Derived from
+   * WHOOP day strain + current readiness — NOT a raw `/21` progress bar.
+   * UI should render this as words ("building", "at target", "over") so
+   * the user thinks about load as personal, not as a WHOOP scale target.
+   */
+  load_band: LoadBand;
+  /** One-line load interpretation for the card ("Room for more today"). */
+  load_line: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -125,6 +150,70 @@ function countHardSessionsInLastDays(
   return sessions.filter(
     (s) => s.date >= floorIso && s.date <= todayIsoDate && s.intensity === 'hard',
   ).length;
+}
+
+// ---------------------------------------------------------------------------
+// Load interpretation — strain against readiness, not against /21
+// ---------------------------------------------------------------------------
+
+/**
+ * Interpret today's accumulated load relative to readiness.
+ *
+ * Thresholds are intentionally rough — the point is to turn a scale
+ * number into a coaching word ("building" vs "over"), not to claim
+ * sub-decimal precision. Recovery determines the "target" band:
+ *   green  → target ~14, over ~18
+ *   yellow → target ~10, over ~14
+ *   red    → target ~6,  over ~10
+ * These are heuristics, not measurements.
+ */
+function interpretLoad(
+  strain: number | null,
+  readiness: ReadinessLevel,
+): { band: LoadBand; line: string } {
+  if (strain == null) {
+    return { band: 'unknown', line: 'No load signal yet today' };
+  }
+
+  const targetHigh =
+    readiness === 'green' ? 14 : readiness === 'yellow' ? 10 : 6;
+  const overHigh =
+    readiness === 'green' ? 18 : readiness === 'yellow' ? 14 : 10;
+
+  if (strain < targetHigh * 0.5) {
+    return {
+      band: 'low',
+      line:
+        readiness === 'red'
+          ? 'Plenty of room — keep it light'
+          : 'Load is low so far — room for a real session',
+    };
+  }
+  if (strain < targetHigh) {
+    return {
+      band: 'building',
+      line:
+        readiness === 'green'
+          ? 'Load is building — you can still push'
+          : 'Load is building — stay on target',
+    };
+  }
+  if (strain < overHigh) {
+    return {
+      band: 'at_target',
+      line:
+        readiness === 'green'
+          ? 'Near target for a hard day — last push is fine'
+          : 'Already at a sensible load for today',
+    };
+  }
+  return {
+    band: 'over',
+    line:
+      readiness === 'red'
+        ? 'Already well over what recovery supports — back off'
+        : 'Past target for today — prioritise recovery',
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -280,16 +369,38 @@ export function buildDailyCoachingBrief(
   const whoop_workouts_missing_today =
     !!whoopDay && whoopDay.date === todayIsoDate && whoopDay.workout_count === 0;
 
+  // 8. Load interpretation — turns raw WHOOP strain into a coaching word
+  //    relative to today's readiness. Never exposes "/21".
+  const { band: load_band, line: load_line } = interpretLoad(
+    whoopDay?.daily_strain ?? null,
+    readiness,
+  );
+
+  // 9. If load is already over target and we were going to push, dial down
+  //    and fold that into the reasons list (capped at 3 total).
+  let finalIntensity = suggested_intensity;
+  let finalModes = suggested_modes;
+  const finalReasons = [...cappedReasons];
+  if (load_band === 'over' && finalIntensity === 'hard') {
+    finalIntensity = 'moderate';
+    finalModes = ['zone2', 'grappling', 'weights'];
+    if (finalReasons.length < 3) {
+      finalReasons.push('Load is already past today\'s target');
+    }
+  }
+
   return {
     headline,
     readiness,
     primary_source,
-    suggested_intensity,
-    suggested_modes,
+    suggested_intensity: finalIntensity,
+    suggested_modes: finalModes,
     plan_hint,
     planned_count,
-    reasons: cappedReasons,
+    reasons: finalReasons,
     whoop_workouts_missing_today,
+    load_band,
+    load_line,
   };
 }
 

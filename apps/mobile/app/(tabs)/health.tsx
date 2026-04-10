@@ -63,9 +63,9 @@ function TodayCard({ today }: { today: DailyMetrics }) {
         <MetricBox label="Steps" value={today.step_count} unit="" />
         <MetricBox label="Active Cal" value={today.active_calories} unit="kcal" />
         <MetricBox
-          label="Strain"
+          label="Day strain"
           value={today.daily_strain}
-          unit="/21"
+          unit=""
         />
       </View>
       {today.workouts && today.workouts.length > 0 && (
