@@ -179,17 +179,31 @@ function PendingFollowupBanner() {
   // then passed through to completePending(outcomeSummary). Cleared
   // automatically when the banner unmounts (pending goes null).
   const [outcomeNotes, setOutcomeNotes] = useState('');
+  // Optional "Did you follow it?" tri-state — null = not answered,
+  // true = followed the advice, false = did not follow. Threaded
+  // through to completePending() as the third argument so the case
+  // record carries both the verdict and the compliance signal.
+  // Compliance-without-verdict is the most interesting learning
+  // signal: "I did what it said but it didn't help" vs "I ignored
+  // it and was fine anyway" are different failure modes.
+  const [followed, setFollowed] = useState<boolean | null>(null);
   if (!pending) return null;
 
   const handleComplete = (
     usefulness: 'helped' | 'neutral' | 'unhelpful',
   ) => {
     const trimmed = outcomeNotes.trim();
-    completePending(usefulness, trimmed || undefined);
+    completePending(
+      usefulness,
+      trimmed || undefined,
+      followed ?? undefined,
+    );
     setOutcomeNotes('');
+    setFollowed(null);
   };
   const handleDismiss = () => {
     setOutcomeNotes('');
+    setFollowed(null);
     dismissPending();
   };
 
@@ -208,6 +222,41 @@ function PendingFollowupBanner() {
         textAlignVertical="top"
         maxLength={2000}
       />
+      {/* Did you follow it? — tri-state toggle. Independent of the
+          usefulness verdict so we can distinguish "followed and it
+          helped" from "ignored and was fine anyway". Optional — the
+          user can leave it unset and still log a verdict. */}
+      <View style={styles.followupFollowedRow}>
+        <Text style={styles.followupFollowedLabel}>Did you follow it?</Text>
+        <Pressable
+          onPress={() => setFollowed(followed === true ? null : true)}
+          style={[
+            styles.followupToggleBtn,
+            followed === true && styles.followupToggleBtnYesOn,
+          ]}>
+          <Text
+            style={[
+              styles.followupToggleBtnText,
+              followed === true && styles.followupToggleBtnYesOnText,
+            ]}>
+            Yes
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setFollowed(followed === false ? null : false)}
+          style={[
+            styles.followupToggleBtn,
+            followed === false && styles.followupToggleBtnNoOn,
+          ]}>
+          <Text
+            style={[
+              styles.followupToggleBtnText,
+              followed === false && styles.followupToggleBtnNoOnText,
+            ]}>
+            No
+          </Text>
+        </Pressable>
+      </View>
       <View style={styles.followupActions}>
         <Pressable
           style={styles.followupBtnHelp}
@@ -820,6 +869,34 @@ const styles = StyleSheet.create({
     borderColor: '#444',
   },
   followupBtnDismissText: { color: '#888', fontSize: 11 },
+  followupFollowedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  followupFollowedLabel: {
+    fontSize: 11,
+    color: '#b0b8c3',
+    opacity: 0.7,
+  },
+  followupToggleBtn: {
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  followupToggleBtnText: { color: '#888', fontSize: 11, fontWeight: '600' },
+  followupToggleBtnYesOn: {
+    borderColor: '#4ade80',
+    backgroundColor: 'rgba(74,222,128,0.15)',
+  },
+  followupToggleBtnYesOnText: { color: '#4ade80' },
+  followupToggleBtnNoOn: {
+    borderColor: '#ff8a80',
+    backgroundColor: 'rgba(255,138,128,0.12)',
+  },
+  followupToggleBtnNoOnText: { color: '#ff8a80' },
 
   // Reference entry card
   referenceCard: {
