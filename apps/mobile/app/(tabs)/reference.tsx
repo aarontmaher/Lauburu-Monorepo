@@ -48,6 +48,12 @@ import {
   REFERENCE_TECHNIQUES,
   REFERENCE_TECHNIQUE_COUNT,
 } from '../../src/data/reference-techniques';
+import {
+  useReferenceProgressStore,
+  buildTechniqueProgressKey,
+  buildTransitionProgressKey,
+  type ProgressStatus,
+} from '../../src/store/reference-progress-store';
 
 /**
  * Normalize a position name for lookup into REFERENCE_TECHNIQUES.
@@ -161,6 +167,18 @@ const POSITION_BY_NAME: ReadonlyMap<string, ReferencePosition> = (() => {
   const m = new Map<string, ReferencePosition>();
   for (const section of REFERENCE_SECTIONS) {
     for (const p of section.positions) m.set(p.name, p);
+  }
+  return m;
+})();
+
+/** Build a position-name → section-label lookup once at module load.
+ *  Used by the progress store's transition key builder to keep the
+ *  inbound and outbound views of the same edge rooted at the same
+ *  storage slot. */
+const SECTION_LABEL_BY_POSITION_NAME: ReadonlyMap<string, string> = (() => {
+  const m = new Map<string, string>();
+  for (const section of REFERENCE_SECTIONS) {
+    for (const p of section.positions) m.set(p.name, section.label);
   }
   return m;
 })();
@@ -416,6 +434,53 @@ function openFullMap(args: FullMapDeepLinkArgs = {}): void {
   });
 }
 
+/**
+ * Compact progress pill — one tap cycles through
+ * none → drilling → learned → tracking → none. Displays a single
+ * glyph per state so it fits cleanly at the right edge of technique
+ * and transition rows without eating horizontal space. Uses
+ * stopPropagation on its onPress so the parent row's Pressable
+ * (which handles tap-to-expand for techniques and tap-to-jump for
+ * transitions) doesn't fire alongside the progress update.
+ */
+const PROGRESS_GLYPH: Record<ProgressStatus, string> = {
+  none: '+',
+  drilling: 'D',
+  learned: '✓',
+  tracking: '◎',
+};
+
+function ProgressPill({ progressKey }: { progressKey: string }) {
+  const status = useReferenceProgressStore(
+    (s) => s.progress[progressKey] ?? 'none',
+  );
+  const cycleProgress = useReferenceProgressStore((s) => s.cycleProgress);
+  return (
+    <Pressable
+      hitSlop={8}
+      onPress={(ev) => {
+        ev.stopPropagation();
+        cycleProgress(progressKey);
+      }}
+      style={[
+        styles.progressPill,
+        status === 'drilling' && styles.progressPillDrilling,
+        status === 'learned' && styles.progressPillLearned,
+        status === 'tracking' && styles.progressPillTracking,
+      ]}>
+      <Text
+        style={[
+          styles.progressPillText,
+          status === 'drilling' && styles.progressPillTextDrilling,
+          status === 'learned' && styles.progressPillTextLearned,
+          status === 'tracking' && styles.progressPillTextTracking,
+        ]}>
+        {PROGRESS_GLYPH[status]}
+      </Text>
+    </Pressable>
+  );
+}
+
 function PositionRow({
   position,
   sectionLabel,
@@ -658,6 +723,13 @@ function PositionRow({
                 {techs.map((t, i) => {
                   const techKey = `${selectedRole}|${heading}|${i}`;
                   const isOpen = expandedTechKey === techKey;
+                  const progressKey = buildTechniqueProgressKey(
+                    sectionLabel,
+                    position.name,
+                    selectedRole,
+                    heading,
+                    t,
+                  );
                   return (
                     <View key={techKey}>
                       <Pressable
@@ -671,6 +743,7 @@ function PositionRow({
                         <Text style={styles.techniqueItem} numberOfLines={2}>
                           • {t}
                         </Text>
+                        <ProgressPill progressKey={progressKey} />
                         <Text style={styles.techniqueChevron}>
                           {isOpen ? '▾' : '▸'}
                         </Text>
@@ -745,6 +818,19 @@ function PositionRow({
               </Text>
               {transitionsForRole.map((edge, i) => {
                 const navigable = edge.destinationKnown;
+                // Outbound edges are rooted at THIS position/role;
+                // the transition-progress key uses (sectionLabel,
+                // position.name, selectedRole, label, destination).
+                // Inbound rendering below reuses the same key for
+                // the same edge so marking on either side reflects
+                // on both.
+                const progressKey = buildTransitionProgressKey(
+                  sectionLabel,
+                  position.name,
+                  selectedRole,
+                  edge.label,
+                  edge.destination,
+                );
                 return (
                   <Pressable
                     key={`${edge.label}|${edge.destination}|${i}`}
@@ -770,6 +856,7 @@ function PositionRow({
                       numberOfLines={1}>
                       {edge.destination}
                     </Text>
+                    <ProgressPill progressKey={progressKey} />
                   </Pressable>
                 );
               })}
@@ -794,24 +881,43 @@ function PositionRow({
                   {'  '}{inboundEdges.length}
                 </Text>
               </Text>
-              {inboundEdges.map((edge, i) => (
-                <Pressable
-                  key={`${edge.sourceName}|${edge.label}|${i}`}
-                  style={styles.inboundRow}
-                  onPress={() => onRequestFocus(edge.sourceName)}>
-                  <Text
-                    style={styles.inboundSource}
-                    numberOfLines={1}>
-                    {edge.sourceName}
-                  </Text>
-                  <Text style={styles.inboundArrow}>←</Text>
-                  <Text
-                    style={styles.inboundLabel}
-                    numberOfLines={2}>
-                    {edge.label}
-                  </Text>
-                </Pressable>
-              ))}
+              {inboundEdges.map((edge, i) => {
+                // Look up the source position's section so the
+                // inbound key matches the corresponding outbound
+                // key built on the source-side render. Falls back
+                // to empty string on the rare case a source
+                // position isn't in the mobile seed (shouldn't
+                // happen since INBOUND_TRANSITIONS is gated on
+                // KNOWN_POSITION_NAMES at build time).
+                const sourceSectionLabel =
+                  SECTION_LABEL_BY_POSITION_NAME.get(edge.sourceName) ?? '';
+                const progressKey = buildTransitionProgressKey(
+                  sourceSectionLabel,
+                  edge.sourceName,
+                  edge.sourceRole,
+                  edge.label,
+                  position.name,
+                );
+                return (
+                  <Pressable
+                    key={`${edge.sourceName}|${edge.label}|${i}`}
+                    style={styles.inboundRow}
+                    onPress={() => onRequestFocus(edge.sourceName)}>
+                    <Text
+                      style={styles.inboundSource}
+                      numberOfLines={1}>
+                      {edge.sourceName}
+                    </Text>
+                    <Text style={styles.inboundArrow}>←</Text>
+                    <Text
+                      style={styles.inboundLabel}
+                      numberOfLines={2}>
+                      {edge.label}
+                    </Text>
+                    <ProgressPill progressKey={progressKey} />
+                  </Pressable>
+                );
+              })}
             </View>
           )}
 
@@ -1371,6 +1477,41 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     paddingTop: 2,
   },
+
+  // Progress pill — compact Drilling/Learned/Tracking chip used
+  // across technique rows, outbound transition rows, and inbound
+  // transition rows. Single-glyph so rows stay uncluttered.
+  progressPill: {
+    width: 24,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.18)',
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 6,
+  },
+  progressPillDrilling: {
+    borderColor: '#7fb8ff',
+    backgroundColor: 'rgba(74,158,255,0.18)',
+  },
+  progressPillLearned: {
+    borderColor: '#4ade80',
+    backgroundColor: 'rgba(74,222,128,0.2)',
+  },
+  progressPillTracking: {
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.18)',
+  },
+  progressPillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#777',
+  },
+  progressPillTextDrilling: { color: '#7fb8ff' },
+  progressPillTextLearned: { color: '#4ade80' },
+  progressPillTextTracking: { color: '#d4e157' },
   techniqueDetail: {
     marginTop: 2,
     marginLeft: 14,

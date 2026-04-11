@@ -11,6 +11,7 @@ import { useAuthStore } from '../src/store/auth-store';
 import { useNutritionStore } from '../src/store/nutrition-store';
 import { useCoachingCasesStore } from '../src/store/coaching-cases-store';
 import { useHIITProtocolsStore } from '../src/store/hiit-protocols-store';
+import { useReferenceProgressStore } from '../src/store/reference-progress-store';
 
 export {
   ErrorBoundary,
@@ -33,19 +34,28 @@ export default function RootLayout() {
   const hydrateNutrition = useNutritionStore((s) => s.hydrate);
   const hydrateCoachingCases = useCoachingCasesStore((s) => s.hydrate);
   const hydrateHIITProtocols = useHIITProtocolsStore((s) => s.hydrate);
+  const hydrateReferenceProgress = useReferenceProgressStore((s) => s.hydrate);
 
   // Initialize auth session on app launch, and hydrate nutrition +
-  // coaching-case + saved-HIIT-protocol state from secureStorage in
-  // parallel so today's logged fuel + daily targets + any un-captured
-  // "Ask ChatGPT" follow-up draft + the named HIIT protocol library
-  // all survive app kill. Each runs independently — failures in any
-  // one must not block the others.
+  // coaching-case + saved-HIIT-protocol + reference-progress state
+  // from secureStorage in parallel so today's logged fuel + daily
+  // targets + any un-captured "Ask ChatGPT" follow-up draft + the
+  // named HIIT protocol library + per-technique Drilling/Learned/
+  // Tracking flags all survive app kill. Each runs independently —
+  // failures in any one must not block the others.
   useEffect(() => {
     initialize();
     hydrateNutrition();
     hydrateCoachingCases();
     hydrateHIITProtocols();
-  }, [initialize, hydrateNutrition, hydrateCoachingCases, hydrateHIITProtocols]);
+    hydrateReferenceProgress();
+  }, [
+    initialize,
+    hydrateNutrition,
+    hydrateCoachingCases,
+    hydrateHIITProtocols,
+    hydrateReferenceProgress,
+  ]);
 
   useEffect(() => {
     if (error) throw error;
