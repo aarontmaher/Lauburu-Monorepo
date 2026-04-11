@@ -1,18 +1,26 @@
 /**
  * Reference — mobile knowledge entry point for the Lauburu Grappling Map.
  *
- * First slice: bundled canonical preview. Shows the locked section/position
- * schema from CLAUDE.md so the user can browse the canonical structure
- * without blocking on OPML sync. Technique content and media intentionally
- * live behind an explicit "coming soon" line — this screen never invents
- * BJJ content, that's the website's OPML pipeline.
+ * Real technique content is now bundled via REFERENCE_TECHNIQUES,
+ * generated from the web repo's canonical SECTIONS table (itself built
+ * from the OPML pipeline). The screen no longer shows an empty
+ * headings-only scaffold — each expanded position renders the actual
+ * techniques for the selected role, headings with no content are
+ * hidden, and the role toggle really does swap content between
+ * perspectives.
  *
- * Future drop-in: swap REFERENCE_SECTIONS for a live feed without changing
- * the UI shape. `ReferencePosition` is the stable contract.
+ * Content authority still = Aaron via the OPML pipeline. To refresh
+ * the bundle, re-run the extractor described in the header of
+ * reference-techniques.ts.
  */
 import { useMemo, useState } from 'react';
-import { StyleSheet, ScrollView, Pressable, TextInput } from 'react-native';
+import { StyleSheet, ScrollView, Pressable, TextInput, Linking } from 'react-native';
 import { Text, View } from '@/components/Themed';
+
+/** Live website base URL — the full Reference tree, 3D graph, and
+ *  attached media all live here today. The mobile Reference screen
+ *  bridges to it via the "Open in full map" CTAs. */
+const FULL_MAP_URL = 'https://aarontmaher.github.io/lauburugrapplingmap/';
 import {
   REFERENCE_SECTIONS,
   REFERENCE_TOTAL_POSITIONS,
@@ -20,15 +28,176 @@ import {
   type ReferenceSection,
   type ReferencePosition,
 } from '../../src/data/reference-seed';
+import {
+  REFERENCE_TECHNIQUES,
+  REFERENCE_TECHNIQUE_COUNT,
+} from '../../src/data/reference-techniques';
+
+/**
+ * Normalize a position name for lookup into REFERENCE_TECHNIQUES.
+ * Hand Fighting positions in the seed are clean ("Outside tie") but
+ * in the web data they carry a "(You)" suffix ("Outside tie (You)")
+ * because they disambiguate the grip-holder side. We try the exact
+ * name first, then the "(You)"-suffixed form.
+ */
+function lookupPositionTechniques(
+  positionName: string,
+): Record<string, Record<string, string[]>> | null {
+  const direct = REFERENCE_TECHNIQUES[positionName];
+  if (direct) return direct;
+  const withYou = REFERENCE_TECHNIQUES[`${positionName} (You)`];
+  if (withYou) return withYou;
+  return null;
+}
+
+/** Normalize a heading name so spacing differences AND the
+ *  "Defence" vs "Defence/Escapes" inconsistency in the source data
+ *  don't break lookups. Reduces a heading to its first significant
+ *  word before any slash. Mobile seed's 6 canonical headings each
+ *  start with a distinct word so this collision-free:
+ *    "Setups/Entries"          → "setups"
+ *    "Setups / Entries"        → "setups"
+ *    "Control"                 → "control"
+ *    "Offence"                 → "offence"
+ *    "Defence"                 → "defence"
+ *    "Defence/Escapes"         → "defence"
+ *    "Defence / Escapes"       → "defence"
+ *    "Submissions"             → "submissions"
+ *    "Offensive transitions"   → "offensive transitions"
+ */
+function normalizeHeading(h: string): string {
+  const base = h.split('/')[0]!.trim().toLowerCase();
+  return base;
+}
+
+/** Look up a specific heading's technique list for a role, with the
+ *  spacing-tolerant match above. Returns an empty array when the
+ *  heading has no content for the given role. */
+function techniquesForHeading(
+  positionTechs: Record<string, Record<string, string[]>> | null,
+  role: string,
+  heading: string,
+): string[] {
+  if (!positionTechs) return [];
+  const roleMap = positionTechs[role];
+  if (!roleMap) return [];
+  // Fast path — exact match.
+  if (roleMap[heading]) return roleMap[heading];
+  // Slow path — normalize and scan.
+  const want = normalizeHeading(heading);
+  for (const key of Object.keys(roleMap)) {
+    if (normalizeHeading(key) === want) return roleMap[key];
+  }
+  return [];
+}
+
+/** True when at least one role for this position has at least one
+ *  technique under any heading. Used to gate the "no content yet"
+ *  footer distinction. */
+function positionHasAnyContent(
+  positionTechs: Record<string, Record<string, string[]>> | null,
+): boolean {
+  if (!positionTechs) return false;
+  for (const role of Object.keys(positionTechs)) {
+    for (const h of Object.keys(positionTechs[role])) {
+      if (positionTechs[role][h].length > 0) return true;
+    }
+  }
+  return false;
+}
+
+/** Count the total techniques available for a specific role on a
+ *  position. Used to badge role toggle pills with per-role counts
+ *  and to de-emphasize role pills whose side of the catalogue is
+ *  still empty, so the toggle stops feeling decorative. */
+function countTechniquesForRole(
+  positionTechs: Record<string, Record<string, string[]>> | null,
+  role: string,
+): number {
+  if (!positionTechs) return 0;
+  const roleMap = positionTechs[role];
+  if (!roleMap) return 0;
+  let total = 0;
+  for (const h of Object.keys(roleMap)) total += roleMap[h].length;
+  return total;
+}
+
+/** Open the full website Reference at the top (optionally scrolled
+ *  to a specific position label). Best-effort; on failure the promise
+ *  rejection is swallowed. The web app supports a `?focus=` query
+ *  param on the search box so we include that as a hint even though
+ *  it's not a structured deep link. */
+function openFullMap(positionName?: string): void {
+  let url = FULL_MAP_URL;
+  if (positionName) {
+    url += `?focus=${encodeURIComponent(positionName)}`;
+  }
+  Linking.openURL(url).catch(() => {
+    // Silent — openURL rejects when no browser is available on the
+    // device, which is rare enough on iOS to ignore here.
+  });
+}
 
 function PositionRow({ position }: { position: ReferencePosition }) {
   const [expanded, setExpanded] = useState(false);
-  // Selected perspective index — defaults to 0 (first role in the pair).
-  // Future role-specific heading/technique data drops in behind
-  // `position.perspectives[selectedRoleIdx]` without changing the UI.
+  // Selected perspective index — defaults to 0 (first role in the pair),
+  // but switches on mount to whichever role actually has content.
   const [selectedRoleIdx, setSelectedRoleIdx] = useState(0);
+  // Inline technique detail expansion — the single technique row that
+  // is currently expanded, or null when collapsed. Keyed by
+  // `${role}|${heading}|${index}` so switching role/heading resets
+  // the expansion cleanly.
+  const [expandedTechKey, setExpandedTechKey] = useState<string | null>(null);
+
   const hasMultipleRoles = position.perspectives.length > 1;
-  const selectedRole = position.perspectives[selectedRoleIdx] ?? '';
+
+  // Position-level technique lookup happens once per render — cheap
+  // (single dictionary read, normalized position name). Returns null
+  // when the position has no content in the bundled catalogue yet.
+  const positionTechs = useMemo(
+    () => lookupPositionTechniques(position.name),
+    [position.name],
+  );
+  const anyContent = useMemo(
+    () => positionHasAnyContent(positionTechs),
+    [positionTechs],
+  );
+
+  // Per-role technique counts. Used to (a) badge role pills with
+  // "Passer · 12" style chips and (b) grey out pills whose role
+  // side of the catalogue is empty so the toggle stops looking
+  // decorative.
+  const roleCounts = useMemo(() => {
+    return position.perspectives.map((role) =>
+      countTechniquesForRole(positionTechs, role),
+    );
+  }, [positionTechs, position.perspectives]);
+
+  // Auto-pivot to the role that actually has content. If both roles
+  // have content, the user's manual selection wins. If only one has
+  // content, silently flip to that side so the expanded view is never
+  // "Viewing as Passer — 0 techniques" when Guard player has 14.
+  const effectiveRoleIdx = useMemo(() => {
+    if (roleCounts[selectedRoleIdx] > 0) return selectedRoleIdx;
+    const firstWithContent = roleCounts.findIndex((n) => n > 0);
+    return firstWithContent >= 0 ? firstWithContent : selectedRoleIdx;
+  }, [roleCounts, selectedRoleIdx]);
+  const selectedRole = position.perspectives[effectiveRoleIdx] ?? '';
+
+  // Count of techniques rendered for the CURRENTLY selected role.
+  const headingsWithContent = useMemo(() => {
+    return position.headings
+      .map((h) => ({
+        heading: h,
+        techs: techniquesForHeading(positionTechs, selectedRole, h),
+      }))
+      .filter((entry) => entry.techs.length > 0);
+  }, [positionTechs, selectedRole, position.headings]);
+
+  const totalForRole = headingsWithContent.reduce(
+    (acc, e) => acc + e.techs.length,
+    0,
+  );
 
   return (
     <View style={styles.positionWrap}>
@@ -50,27 +219,33 @@ function PositionRow({ position }: { position: ReferencePosition }) {
           {hasMultipleRoles ? (
             <View style={styles.rolePillRow}>
               {position.perspectives.map((role, idx) => {
-                const isActive = idx === selectedRoleIdx;
+                const isActive = idx === effectiveRoleIdx;
+                const count = roleCounts[idx];
+                const isEmpty = count === 0;
                 return (
                   <Pressable
                     key={role}
                     style={[
                       styles.rolePill,
                       isActive && styles.rolePillActive,
+                      isEmpty && !isActive && styles.rolePillEmpty,
                     ]}
                     onPress={(ev) => {
                       ev.stopPropagation();
                       setSelectedRoleIdx(idx);
-                      // Auto-expand on first role tap so the user sees
-                      // the effect of the selection immediately.
+                      setExpandedTechKey(null);
                       if (!expanded) setExpanded(true);
                     }}>
                     <Text
                       style={[
                         styles.rolePillText,
                         isActive && styles.rolePillTextActive,
+                        isEmpty && !isActive && styles.rolePillTextEmpty,
                       ]}>
                       {role}
+                      {count > 0 && (
+                        <Text style={styles.rolePillCount}>{'  '}{count}</Text>
+                      )}
                     </Text>
                   </Pressable>
                 );
@@ -85,26 +260,106 @@ function PositionRow({ position }: { position: ReferencePosition }) {
 
       {expanded && (
         <View style={styles.positionDetail}>
-          {/* "Viewing as" subtitle — makes the toggle's effect explicit
-              even when the underlying headings are the same for both
-              roles in the current bundled seed. Once role-specific
-              heading data lands, this subtitle stays and the headings
-              list below will swap per-role without any UI change. */}
           {hasMultipleRoles && (
             <Text style={styles.viewingAs}>
               Viewing as <Text style={styles.viewingAsName}>{selectedRole}</Text>
+              {totalForRole > 0 && (
+                <Text style={styles.viewingAsCount}>
+                  {' '}· {totalForRole} technique{totalForRole === 1 ? '' : 's'}
+                </Text>
+              )}
             </Text>
           )}
-          <Text style={styles.detailLabel}>Headings</Text>
-          {position.headings.map((h) => (
-            <Text key={h} style={styles.detailItem}>
-              • {h}
+
+          {/* Real techniques — grouped by heading. Each row is
+              pressable: tapping expands a lightweight inline detail
+              block below it showing the full "position → role →
+              heading → name" breadcrumb and a "View in full map"
+              action that opens the website Reference at this
+              position. Headings with zero content are hidden. */}
+          {headingsWithContent.length > 0 ? (
+            headingsWithContent.map(({ heading, techs }) => (
+              <View key={heading} style={styles.headingBlock}>
+                <Text style={styles.headingLabel}>
+                  {heading}
+                  <Text style={styles.headingLabelCount}>
+                    {'  '}{techs.length}
+                  </Text>
+                </Text>
+                {techs.map((t, i) => {
+                  const techKey = `${selectedRole}|${heading}|${i}`;
+                  const isOpen = expandedTechKey === techKey;
+                  return (
+                    <View key={techKey}>
+                      <Pressable
+                        style={[
+                          styles.techniqueRow,
+                          isOpen && styles.techniqueRowOpen,
+                        ]}
+                        onPress={() =>
+                          setExpandedTechKey(isOpen ? null : techKey)
+                        }>
+                        <Text style={styles.techniqueItem} numberOfLines={2}>
+                          • {t}
+                        </Text>
+                        <Text style={styles.techniqueChevron}>
+                          {isOpen ? '▾' : '▸'}
+                        </Text>
+                      </Pressable>
+                      {isOpen && (
+                        <View style={styles.techniqueDetail}>
+                          <Text style={styles.techniqueDetailCrumb}>
+                            {position.name}
+                            {' '}·{' '}
+                            <Text style={styles.techniqueDetailCrumbRole}>
+                              {selectedRole}
+                            </Text>
+                            {' '}·{' '}
+                            {heading}
+                          </Text>
+                          <Text style={styles.techniqueDetailName}>{t}</Text>
+                          <Text style={styles.techniqueDetailMeta}>
+                            {position.built_out
+                              ? 'Part of a built-out position — full text and video live on the web map.'
+                              : 'Text and any attached video live on the web map.'}
+                          </Text>
+                          <Pressable
+                            style={styles.techniqueDetailBridgeBtn}
+                            onPress={() => openFullMap(position.name)}>
+                            <Text style={styles.techniqueDetailBridgeBtnText}>
+                              View in full map ↗
+                            </Text>
+                          </Pressable>
+                        </View>
+                      )}
+                    </View>
+                  );
+                })}
+              </View>
+            ))
+          ) : anyContent && hasMultipleRoles ? (
+            <Text style={styles.emptyNote}>
+              No techniques catalogued for {selectedRole} yet — try the
+              other role.
             </Text>
-          ))}
-          <Text style={styles.emptyNote}>
-            Technique content and media for {selectedRole || 'this position'}
-            {' '}live in the full map — coming to mobile next.
-          </Text>
+          ) : (
+            <Text style={styles.emptyNote}>
+              No techniques catalogued for this position yet. Content
+              flows from the website OPML pipeline.
+            </Text>
+          )}
+
+          {/* Position-level full-map bridge. Always rendered on
+              expanded positions so the separation between mobile
+              Reference and the full web 3D map feels intentional,
+              not like a missing feature. */}
+          <Pressable
+            style={styles.positionBridgeBtn}
+            onPress={() => openFullMap(position.name)}>
+            <Text style={styles.positionBridgeBtnText}>
+              Open {position.name} in full map ↗
+            </Text>
+          </Pressable>
         </View>
       )}
     </View>
@@ -114,17 +369,20 @@ function PositionRow({ position }: { position: ReferencePosition }) {
 function SectionBlock({
   section,
   filter,
+  builtOutOnly,
 }: {
   section: ReferenceSection;
   filter: string;
+  builtOutOnly: boolean;
 }) {
   const filtered = useMemo(() => {
     const q = filter.trim().toLowerCase();
-    if (!q) return section.positions;
-    return section.positions.filter((p) =>
-      p.name.toLowerCase().includes(q),
-    );
-  }, [section.positions, filter]);
+    return section.positions.filter((p) => {
+      if (builtOutOnly && !p.built_out) return false;
+      if (q && !p.name.toLowerCase().includes(q)) return false;
+      return true;
+    });
+  }, [section.positions, filter, builtOutOnly]);
 
   if (filtered.length === 0) return null;
 
@@ -153,16 +411,24 @@ function SectionBlock({
 
 export default function ReferenceScreen() {
   const [query, setQuery] = useState('');
+  // Built-out filter — when on, hides positions that are not yet
+  // built out on the website. Reuses the same built_out flag the
+  // pill badges use so the two signals stay consistent.
+  const [builtOutOnly, setBuiltOutOnly] = useState(false);
 
   const totalFiltered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return REFERENCE_TOTAL_POSITIONS;
     return REFERENCE_SECTIONS.reduce(
       (acc, s) =>
-        acc + s.positions.filter((p) => p.name.toLowerCase().includes(q)).length,
+        acc +
+        s.positions.filter((p) => {
+          if (builtOutOnly && !p.built_out) return false;
+          if (q && !p.name.toLowerCase().includes(q)) return false;
+          return true;
+        }).length,
       0,
     );
-  }, [query]);
+  }, [query, builtOutOnly]);
 
   return (
     <ScrollView
@@ -179,18 +445,16 @@ export default function ReferenceScreen() {
       {/* Summary strip */}
       <View style={styles.summaryStrip}>
         <View style={styles.summaryItem}>
-          <Text style={styles.summaryValue}>
-            {REFERENCE_SECTIONS.length}
-          </Text>
-          <Text style={styles.summaryLabel}>sections</Text>
-        </View>
-        <View style={styles.summaryItem}>
           <Text style={styles.summaryValue}>{REFERENCE_TOTAL_POSITIONS}</Text>
           <Text style={styles.summaryLabel}>positions</Text>
         </View>
         <View style={styles.summaryItem}>
           <Text style={styles.summaryValue}>{REFERENCE_BUILT_OUT_COUNT}</Text>
           <Text style={styles.summaryLabel}>built out</Text>
+        </View>
+        <View style={styles.summaryItem}>
+          <Text style={styles.summaryValue}>{REFERENCE_TECHNIQUE_COUNT}</Text>
+          <Text style={styles.summaryLabel}>techniques</Text>
         </View>
       </View>
 
@@ -205,36 +469,70 @@ export default function ReferenceScreen() {
         autoCapitalize="none"
       />
 
-      {query.trim().length > 0 && (
-        <Text style={styles.searchMeta}>
-          {totalFiltered} position{totalFiltered === 1 ? '' : 's'} match
-        </Text>
-      )}
+      {/* Filter toggles — built-out only. Extensible to more toggles
+          later (e.g. role-aware filter, has-video filter) without
+          rewiring the screen layout. */}
+      <View style={styles.filterRow}>
+        <Pressable
+          onPress={() => setBuiltOutOnly((v) => !v)}
+          style={[
+            styles.filterPill,
+            builtOutOnly && styles.filterPillActive,
+          ]}>
+          <Text
+            style={[
+              styles.filterPillText,
+              builtOutOnly && styles.filterPillTextActive,
+            ]}>
+            Built out only
+          </Text>
+        </Pressable>
+        {(query.trim().length > 0 || builtOutOnly) && (
+          <Text style={styles.searchMeta}>
+            {totalFiltered} position{totalFiltered === 1 ? '' : 's'}
+          </Text>
+        )}
+      </View>
 
       {/* Empty match state */}
-      {query.trim().length > 0 && totalFiltered === 0 && (
+      {(query.trim().length > 0 || builtOutOnly) && totalFiltered === 0 && (
         <View style={styles.emptyCard}>
           <Text style={styles.emptyTitle}>No positions match</Text>
           <Text style={styles.emptyBody}>
-            Try a broader search. Techniques and media are not yet in the
-            mobile preview.
+            Try a broader search or turn off "Built out only".
           </Text>
         </View>
       )}
 
       {/* Sections */}
       {REFERENCE_SECTIONS.map((s) => (
-        <SectionBlock key={s.id} section={s} filter={query} />
+        <SectionBlock
+          key={s.id}
+          section={s}
+          filter={query}
+          builtOutOnly={builtOutOnly}
+        />
       ))}
 
-      {/* Honest footer about scope */}
+      {/* Full-map bridge footer — stops pretending the 3D map is a
+          week away and makes the separation intentional. Tap opens
+          the live website Reference + 3D graph in the system browser. */}
       <View style={styles.footerCard}>
-        <Text style={styles.footerTitle}>Preview catalogue</Text>
+        <Text style={styles.footerTitle}>Full 3D map</Text>
         <Text style={styles.footerBody}>
-          This is the canonical structure from the Grappling Map schema.
-          Technique text, videos, and the interactive 3D graph live on the
-          website today — a mobile version is coming in a later batch.
+          The interactive 3D graph, position-to-position transitions,
+          full technique text, and attached videos live on the website.
+          Mobile Reference shows the bundled technique list for quick
+          review; the full map is where the graph tools and media
+          playback live.
         </Text>
+        <Pressable
+          style={styles.footerBridgeBtn}
+          onPress={() => openFullMap()}>
+          <Text style={styles.footerBridgeBtnText}>
+            Open full map ↗
+          </Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
@@ -268,7 +566,28 @@ const styles = StyleSheet.create({
     color: '#f0f0f0',
     backgroundColor: 'rgba(255,255,255,0.05)',
   },
-  searchMeta: { fontSize: 12, opacity: 0.5, marginTop: -8 },
+  searchMeta: { fontSize: 12, opacity: 0.5 },
+
+  filterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: -6,
+  },
+  filterPill: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#333',
+    backgroundColor: 'rgba(255,255,255,0.02)',
+  },
+  filterPillActive: {
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.1)',
+  },
+  filterPillText: { fontSize: 11, color: '#888', fontWeight: '600' },
+  filterPillTextActive: { color: '#d4e157' },
 
   sectionCard: {
     padding: 14,
@@ -322,8 +641,17 @@ const styles = StyleSheet.create({
     borderColor: '#d4e157',
     backgroundColor: 'rgba(212,225,87,0.1)',
   },
+  rolePillEmpty: {
+    opacity: 0.35,
+  },
   rolePillText: { fontSize: 11, color: '#888' },
   rolePillTextActive: { color: '#d4e157', fontWeight: '600' },
+  rolePillTextEmpty: { fontStyle: 'italic' },
+  rolePillCount: {
+    fontSize: 10,
+    opacity: 0.6,
+    fontWeight: '700',
+  },
 
   viewingAs: {
     fontSize: 11,
@@ -351,6 +679,116 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   detailItem: { fontSize: 13, opacity: 0.7, lineHeight: 18 },
+
+  // Real technique content — grouped by heading
+  headingBlock: {
+    marginTop: 8,
+    backgroundColor: 'transparent',
+  },
+  headingLabel: {
+    fontSize: 11,
+    color: '#d4e157',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  headingLabelCount: {
+    fontSize: 10,
+    opacity: 0.55,
+    fontWeight: '700',
+  },
+  techniqueRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    paddingVertical: 3,
+    paddingHorizontal: 4,
+    borderRadius: 6,
+    backgroundColor: 'transparent',
+  },
+  techniqueRowOpen: {
+    backgroundColor: 'rgba(212,225,87,0.06)',
+  },
+  techniqueItem: {
+    flex: 1,
+    fontSize: 13,
+    color: '#d4dce6',
+    opacity: 0.85,
+    lineHeight: 19,
+  },
+  techniqueChevron: {
+    fontSize: 11,
+    opacity: 0.4,
+    paddingLeft: 8,
+    paddingTop: 2,
+  },
+  techniqueDetail: {
+    marginTop: 2,
+    marginLeft: 14,
+    marginBottom: 6,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    borderLeftWidth: 2,
+    borderLeftColor: 'rgba(212,225,87,0.5)',
+    gap: 4,
+  },
+  techniqueDetailCrumb: {
+    fontSize: 10,
+    opacity: 0.5,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+  },
+  techniqueDetailCrumbRole: {
+    color: '#d4e157',
+    fontWeight: '600',
+  },
+  techniqueDetailName: {
+    fontSize: 14,
+    color: '#e6ecf3',
+    fontWeight: '600',
+    lineHeight: 19,
+  },
+  techniqueDetailMeta: {
+    fontSize: 11,
+    opacity: 0.55,
+    lineHeight: 16,
+    marginTop: 2,
+  },
+  techniqueDetailBridgeBtn: {
+    alignSelf: 'flex-start',
+    marginTop: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.5)',
+    backgroundColor: 'rgba(212,225,87,0.08)',
+  },
+  techniqueDetailBridgeBtnText: {
+    color: '#d4e157',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  positionBridgeBtn: {
+    marginTop: 12,
+    paddingVertical: 9,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.04)',
+    alignItems: 'center',
+  },
+  positionBridgeBtnText: {
+    color: '#d4e157',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  viewingAsCount: {
+    opacity: 0.5,
+    fontSize: 11,
+  },
   emptyNote: {
     fontSize: 11,
     fontStyle: 'italic',
@@ -384,4 +822,18 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   footerBody: { fontSize: 12, opacity: 0.6, lineHeight: 18 },
+  footerBridgeBtn: {
+    marginTop: 10,
+    paddingVertical: 11,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.1)',
+    alignItems: 'center',
+  },
+  footerBridgeBtnText: {
+    color: '#d4e157',
+    fontSize: 14,
+    fontWeight: '700',
+  },
 });
