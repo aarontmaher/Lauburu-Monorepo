@@ -297,3 +297,150 @@ export function summarizeSession(s: TrainingSession): SessionSummary {
     headline: buildHeadline({ kind: 'other', shape: 'other', minutes: totalMin }),
   };
 }
+
+// ---------------------------------------------------------------------------
+// Post-session interval coaching note — one interpretive sentence that
+// layers over the raw `interval_takeaway` facts. Surfaces ONLY when we
+// have enough signal to say something honest: a machine-metrics value,
+// a WHOOP recovery, or a suggested-intensity mismatch. Returns null
+// when there's nothing meaningful to say (the UI then falls back to
+// the raw takeaway alone).
+//
+// Pure function — no mutation, no WHOOP-store coupling. The UI passes
+// whatever context it actually has at render time; if the session is
+// historical, the UI passes `ctx` undefined and only session-internal
+// signals (HR zone, metrics presence) are used.
+// ---------------------------------------------------------------------------
+
+/** Minimal context the note-builder needs from the outside world. */
+export interface IntervalCoachingContext {
+  /**
+   * WHOOP recovery score (0-100) for the session's date. The UI should
+   * only pass this when the session is today — historical WHOOP is not
+   * reliably available and passing today's recovery to a 5-day-old
+   * session would be a lie.
+   */
+  whoopRecovery?: number;
+  /**
+   * The intensity the coaching layer recommended for the session's
+   * date. Used to build "harder/lighter than suggested" messaging.
+   * Derived from WHOOP or planner signals by the caller; this function
+   * is agnostic about how it was computed.
+   */
+  suggestedIntensity?: SessionIntensity;
+}
+
+/** Compare two intensities by order rank. Returns -1/0/1. */
+function compareIntensity(a: SessionIntensity, b: SessionIntensity): number {
+  const rank: Record<SessionIntensity, number> = {
+    light: 1,
+    moderate: 2,
+    hard: 3,
+  };
+  return Math.sign(rank[a] - rank[b]);
+}
+
+/**
+ * Build a compact 1-sentence coaching interpretation of a HIIT session,
+ * combining protocol, machine metrics, and any available daily context.
+ *
+ * Returns null when the session is not a HIIT/interval session or when
+ * there is insufficient signal to say anything beyond the raw facts.
+ */
+export function buildIntervalCoachingNote(
+  session: TrainingSession,
+  ctx?: IntervalCoachingContext,
+): string | null {
+  if (session.type !== 'conditioning' || !session.conditioning) return null;
+  const cd = session.conditioning;
+  const isHIIT = ['hiit', 'intervals', 'sprint_intervals', 'circuit'].includes(
+    cd.subtype,
+  );
+  if (!isHIIT || !cd.interval) return null;
+
+  const mm = cd.machine_metrics;
+  const rec = ctx?.whoopRecovery;
+  const suggested = ctx?.suggestedIntensity;
+  const actual = session.intensity;
+
+  // -- Priority 1: suggested-vs-actual mismatch ----------------------------
+  // Highest-signal path. Use machine metrics as supporting detail when
+  // present, otherwise a generic mismatch note.
+  if (suggested && suggested !== actual) {
+    const cmp = compareIntensity(actual, suggested);
+    if (cmp > 0) {
+      // Went harder than suggested.
+      if (mm?.distance_m != null && mm.avg_power_w != null) {
+        return `Logged ${mm.distance_m}m @ ${mm.avg_power_w}W avg — harder than the suggested ${suggested} day.`;
+      }
+      if (mm?.distance_m != null) {
+        return `Logged ${mm.distance_m}m — harder than the suggested ${suggested} day.`;
+      }
+      if (mm?.avg_power_w != null) {
+        return `Avg ${mm.avg_power_w}W — harder than the suggested ${suggested} day.`;
+      }
+      if (mm?.max_hr_bpm != null && mm.max_hr_bpm >= 170) {
+        return `Peaked at ${mm.max_hr_bpm}bpm — harder than the suggested ${suggested} day.`;
+      }
+      return `Logged harder than the suggested ${suggested} day — expect a bigger strain hit.`;
+    } else {
+      // Went lighter than suggested — usually a good thing.
+      if (mm?.distance_m != null && mm.avg_power_w != null) {
+        return `${mm.distance_m}m @ ${mm.avg_power_w}W — controlled, pulled back from the suggested ${suggested} day.`;
+      }
+      return `Pulled back from the suggested ${suggested} day — controlled effort.`;
+    }
+  }
+
+  // -- Priority 2: low recovery + hard effort (strain warning) -------------
+  if (rec != null && rec < 34 && actual === 'hard') {
+    if (mm?.avg_power_w != null) {
+      return `Hard ${mm.avg_power_w}W avg on low recovery (${Math.round(rec)}%) — expect a bigger strain hit.`;
+    }
+    return `Hard session on low recovery (${Math.round(rec)}%) — expect a bigger strain hit.`;
+  }
+
+  // -- Priority 3: high recovery + light effort (had room) -----------------
+  if (rec != null && rec >= 67 && actual === 'light') {
+    return `Recovery was high (${Math.round(rec)}%) — room to push harder next time if you want.`;
+  }
+
+  // -- Priority 4: matched the suggested day (positive reinforcement) ------
+  if (suggested && suggested === actual) {
+    if (mm?.distance_m != null && mm.avg_power_w != null) {
+      return `${mm.distance_m}m @ ${mm.avg_power_w}W — matched the suggested ${suggested} recommendation.`;
+    }
+    if (mm?.distance_m != null) {
+      return `${mm.distance_m}m logged — matched the suggested ${suggested} recommendation.`;
+    }
+  }
+
+  // -- Priority 5: HR zone interpretation (no external context needed) ----
+  // Only when avg HR is present and sits clearly in one zone — avoid
+  // fake precision in the middle bands.
+  if (mm?.avg_hr_bpm != null) {
+    const bpm = mm.avg_hr_bpm;
+    if (bpm >= 165) {
+      return `Avg HR ${bpm}bpm — sustained threshold effort, high strain likely.`;
+    }
+    if (bpm >= 145) {
+      return `Avg HR ${bpm}bpm — tempo zone, controlled hard effort.`;
+    }
+    if (bpm <= 130 && bpm >= 90) {
+      return `Avg HR ${bpm}bpm — aerobic, low-strain session.`;
+    }
+  }
+
+  // -- Priority 6: machine output without physiology ----------------------
+  // Last-resort shape note so sessions with partial metrics still get
+  // something beyond the raw facts line.
+  if (mm?.avg_power_w != null && cd.interval) {
+    const iv = cd.interval;
+    const workRatio = iv.work_duration_s / (iv.work_duration_s + iv.rest_duration_s);
+    if (workRatio >= 0.5) {
+      return `${mm.avg_power_w}W avg across ${iv.rounds} rounds — high work-to-rest ratio, expect fatigue.`;
+    }
+  }
+
+  return null;
+}

@@ -24,7 +24,9 @@ import {
   buildDayPlanSummary, SCHEDULE_SESSION_LABELS,
   SESSION_PRESETS, SEGMENT_TYPE_LABELS, createDefaultSegments,
   summarizeSession, suggestTrainIntensity, suggestHIITProtocol,
+  buildIntervalCoachingNote,
 } from '@lauburu/shared';
+import type { IntervalCoachingContext } from '@lauburu/shared';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useTimerStore } from '../../src/store/timer-store';
 import type { TimerConfig } from '../../src/store/timer-store';
@@ -1486,12 +1488,24 @@ function SessionCard({
   session,
   onEdit,
   onDelete,
+  coachingCtx,
 }: {
   session: TrainingSession;
   onEdit: () => void;
   onDelete: () => void;
+  /**
+   * Optional daily coaching context used only to build the interpretive
+   * post-session note. Parent passes this only when the session is
+   * today (historical sessions get undefined — using today's WHOOP to
+   * interpret a week-old session would be dishonest).
+   */
+  coachingCtx?: IntervalCoachingContext;
 }) {
   const summary = useMemo(() => summarizeSession(session), [session]);
+  const coachingNote = useMemo(
+    () => buildIntervalCoachingNote(session, coachingCtx),
+    [session, coachingCtx],
+  );
 
   const handleDelete = () => {
     Alert.alert(
@@ -1560,6 +1574,9 @@ function SessionCard({
       )}
       {summary.interval_takeaway && (
         <Text style={styles.sessionTakeaway}>{summary.interval_takeaway}</Text>
+      )}
+      {coachingNote && (
+        <Text style={styles.sessionCoachingNote}>{coachingNote}</Text>
       )}
       {session.segments && session.segments.length > 0 && (
         <Text style={styles.sessionSegments}>
@@ -1672,10 +1689,32 @@ export default function TrainScreen() {
   const syncData = useHealthStore((s) => s.syncData);
   const user = useAuthStore((s) => s.user);
   const addSession = useTrainingStore((s) => s.addSession);
+  const whoopDayForCoaching = useWhoopStore((s) => s.day);
   const [editingSession, setEditingSession] = useState<TrainingSession | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [lastLoggedHeadline, setLastLoggedHeadline] = useState<string | null>(null);
+
+  // Today's coaching context used to interpret today's logged HIIT
+  // sessions in SessionCard. Historical sessions deliberately receive
+  // `undefined` — today's WHOOP recovery is not a valid signal for a
+  // session logged a week ago, and the note-builder falls back to
+  // session-internal signals (HR zone, metrics-only) in that case.
+  const todayCoachingCtx = useMemo<IntervalCoachingContext | undefined>(() => {
+    const recovery = whoopDayForCoaching?.recovery_score;
+    if (recovery == null) return undefined;
+    // Lightweight recovery → suggested-intensity bucket. Mirrors the
+    // shape of coach-layer.readinessToIntensity without requiring the
+    // full daily brief. Green/yellow/red thresholds match the WHOOP
+    // industry convention used elsewhere in the app.
+    let suggestedIntensity: SessionIntensity;
+    if (recovery >= 67) suggestedIntensity = 'hard';
+    else if (recovery >= 34) suggestedIntensity = 'moderate';
+    else suggestedIntensity = 'light';
+    return { whoopRecovery: recovery, suggestedIntensity };
+  }, [whoopDayForCoaching]);
+
+  const todayIsoDateForCtx = todayDate();
 
   // Quick-log: prefill form from planned session
   const handleQuickLog = (type: SessionType, intensity: SessionIntensity) => {
@@ -1796,6 +1835,9 @@ export default function TrainScreen() {
                   session={s}
                   onEdit={() => handleEdit(s)}
                   onDelete={() => handleDelete(s.id)}
+                  coachingCtx={
+                    s.date === todayIsoDateForCtx ? todayCoachingCtx : undefined
+                  }
                 />
               ))}
             </View>
@@ -2105,6 +2147,14 @@ const styles = StyleSheet.create({
   actionText: { fontSize: 13, color: '#d4e157' },
   sessionCondDetail: { fontSize: 12, color: '#d4e157', opacity: 0.7 },
   sessionTakeaway: { fontSize: 12, color: '#d4e157', opacity: 0.85, fontWeight: '500' },
+  sessionCoachingNote: {
+    fontSize: 12,
+    color: '#b0b8c3',
+    opacity: 0.85,
+    lineHeight: 17,
+    marginTop: 2,
+    fontStyle: 'italic',
+  },
   sessionSegments: { fontSize: 12, color: '#64b5f6', opacity: 0.7 },
   sessionMapRefs: { fontSize: 11, color: '#d4e157', opacity: 0.7, fontStyle: 'italic' },
 
