@@ -27,6 +27,7 @@ import {
   Share,
   TextInput,
   Linking,
+  Alert,
   findNodeHandle,
   View as RNView,
 } from 'react-native';
@@ -1439,9 +1440,12 @@ export default function ReferenceScreen() {
   // inline paste-and-apply panel. `importText` is the user's
   // pasted payload. `importResultNote` is a transient confirmation
   // sentence shown after a successful import so the user knows
-  // how many entries landed.
+  // how many entries landed. `importReplaceMode` gates the
+  // destructive replace-all path behind a native Alert
+  // confirmation when the user opts in.
   const [importPaneOpen, setImportPaneOpen] = useState(false);
   const [importText, setImportText] = useState('');
+  const [importReplaceMode, setImportReplaceMode] = useState(false);
   const [importResultNote, setImportResultNote] = useState<string | null>(
     null,
   );
@@ -1588,6 +1592,36 @@ export default function ReferenceScreen() {
     setImportPaneOpen((v) => !v);
   }, []);
 
+  /**
+   * Commit a parsed payload to the store via the requested mode.
+   * Pulled out of handleApplyImport so both the direct merge
+   * path and the Alert-confirmed replace path share identical
+   * completion behaviour (result note, state cleanup, pane
+   * close). Result note wording adapts to the mode so "replaced
+   * local progress" reads clearly vs "merged on top of existing".
+   */
+  const commitImport = useCallback(
+    (
+      entries: Record<string, ProgressStatus>,
+      mode: 'merge' | 'replace',
+    ) => {
+      const result = importProgress(entries, mode);
+      if (mode === 'replace') {
+        setImportResultNote(
+          `Replaced local progress — ${result.added} entries now tracked (${result.skipped} skipped).`,
+        );
+      } else {
+        setImportResultNote(
+          `Imported ${result.added} new + ${result.updated} updated (${result.skipped} skipped).`,
+        );
+      }
+      setImportText('');
+      setImportReplaceMode(false);
+      setImportPaneOpen(false);
+    },
+    [importProgress],
+  );
+
   const handleApplyImport = useCallback(() => {
     const parsed = parseProgressImportPayload(importText);
     if (!parsed) {
@@ -1603,13 +1637,34 @@ export default function ReferenceScreen() {
       );
       return;
     }
-    const result = importProgress(parsed.entries, 'merge');
-    setImportResultNote(
-      `Imported ${result.added} new + ${result.updated} updated (${result.skipped} skipped).`,
-    );
-    setImportText('');
-    setImportPaneOpen(false);
-  }, [importText, importProgress]);
+
+    // Replace mode is destructive — gate it behind a native
+    // Alert.alert so the user has to positively confirm wiping
+    // their existing local state. Cancel leaves the pane + the
+    // pasted payload + the replace-mode checkbox intact so the
+    // user can adjust without losing their paste.
+    if (importReplaceMode) {
+      Alert.alert(
+        'Replace existing progress?',
+        `This will wipe your current ${totalProgressItems} locally-tracked item${
+          totalProgressItems === 1 ? '' : 's'
+        } and install the ${keyCount} entr${
+          keyCount === 1 ? 'y' : 'ies'
+        } from the pasted payload in their place. Any local items not in the payload will be LOST.`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Replace',
+            style: 'destructive',
+            onPress: () => commitImport(parsed.entries, 'replace'),
+          },
+        ],
+      );
+      return;
+    }
+
+    commitImport(parsed.entries, 'merge');
+  }, [importText, importReplaceMode, totalProgressItems, commitImport]);
 
   // Auto-dismiss the import result confirmation after 4.5s so
   // the note doesn't linger. Timer is scoped to the note's
@@ -1943,9 +1998,47 @@ export default function ReferenceScreen() {
               {importText.trim().length === 0
                 ? 'Waiting for payload…'
                 : isValid
-                  ? `Found ${previewCount} entr${previewCount === 1 ? 'y' : 'ies'} — tap Apply to merge.`
+                  ? importReplaceMode
+                    ? `Found ${previewCount} entr${previewCount === 1 ? 'y' : 'ies'} — Apply will REPLACE local progress.`
+                    : `Found ${previewCount} entr${previewCount === 1 ? 'y' : 'ies'} — tap Apply to merge.`
                   : "Couldn't read that payload."}
             </Text>
+
+            {/* Replace-mode toggle — compact checkbox-style row
+                positioned BELOW the TextInput and ABOVE the Apply
+                action so the user sees the destructive choice
+                before tapping Apply. Defaults to OFF (merge) —
+                turning it ON routes Apply through a native
+                Alert.alert confirmation instead of the one-tap
+                merge path. */}
+            <Pressable
+              onPress={() => setImportReplaceMode((v) => !v)}
+              style={styles.importReplaceRow}>
+              <View
+                style={[
+                  styles.importReplaceBox,
+                  importReplaceMode && styles.importReplaceBoxActive,
+                ]}>
+                {importReplaceMode && (
+                  <Text style={styles.importReplaceBoxMark}>✓</Text>
+                )}
+              </View>
+              <View style={styles.importReplaceTextWrap}>
+                <Text
+                  style={[
+                    styles.importReplaceLabel,
+                    importReplaceMode && styles.importReplaceLabelActive,
+                  ]}>
+                  Replace existing progress
+                </Text>
+                <Text style={styles.importReplaceHint}>
+                  {importReplaceMode
+                    ? 'Destructive — your local items not in the payload will be lost.'
+                    : 'Leave off to merge (safest). Turn on to wipe and restore.'}
+                </Text>
+              </View>
+            </Pressable>
+
             <View style={styles.importPaneActions}>
               <Pressable
                 onPress={handleApplyImport}
@@ -1953,13 +2046,17 @@ export default function ReferenceScreen() {
                 style={[
                   styles.importPaneApplyBtn,
                   !isValid && styles.importPaneApplyBtnDisabled,
+                  importReplaceMode && isValid && styles.importPaneApplyBtnReplace,
                 ]}>
                 <Text
                   style={[
                     styles.importPaneApplyBtnText,
                     !isValid && styles.importPaneApplyBtnTextDisabled,
+                    importReplaceMode &&
+                      isValid &&
+                      styles.importPaneApplyBtnTextReplace,
                   ]}>
-                  Apply import
+                  {importReplaceMode ? 'Replace local…' : 'Apply import'}
                 </Text>
               </Pressable>
               <Pressable
@@ -2882,6 +2979,61 @@ const styles = StyleSheet.create({
   },
   importPaneApplyBtnTextDisabled: {
     color: '#555',
+  },
+  importPaneApplyBtnReplace: {
+    borderColor: '#ff8a80',
+    backgroundColor: 'rgba(255,138,128,0.14)',
+  },
+  importPaneApplyBtnTextReplace: {
+    color: '#ff8a80',
+  },
+
+  // Replace-mode checkbox row
+  importReplaceRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 2,
+  },
+  importReplaceBox: {
+    width: 18,
+    height: 18,
+    borderRadius: 4,
+    borderWidth: 1.5,
+    borderColor: '#555',
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 1,
+  },
+  importReplaceBoxActive: {
+    borderColor: '#ff8a80',
+    backgroundColor: 'rgba(255,138,128,0.18)',
+  },
+  importReplaceBoxMark: {
+    fontSize: 11,
+    color: '#ff8a80',
+    fontWeight: '800',
+  },
+  importReplaceTextWrap: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    gap: 1,
+  },
+  importReplaceLabel: {
+    fontSize: 12,
+    color: '#d4dce6',
+    fontWeight: '600',
+  },
+  importReplaceLabelActive: {
+    color: '#ff8a80',
+  },
+  importReplaceHint: {
+    fontSize: 10,
+    color: '#888',
+    opacity: 0.85,
+    lineHeight: 14,
   },
   importPaneClearBtn: {
     paddingVertical: 10,
