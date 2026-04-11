@@ -300,6 +300,83 @@ function parseTransitionEdges(
   return out;
 }
 
+/**
+ * Test whether a position has at least one technique, outbound
+ * transition, or inbound transition whose stored progress status
+ * matches the active filter. Used by SectionBlock to hide position
+ * cards that would render empty under a progress filter, and by
+ * PositionRow to auto-expand when it does match.
+ *
+ * Scans all perspectives on the position AND all inbound edges
+ * pointing at it. Transitions are intentionally counted on BOTH
+ * the source and the destination side so users can find the same
+ * edge from either card in the filtered view. The global
+ * screen-top aggregate count in ReferenceScreen uses a different
+ * path (Object.values(progress).filter(...)) which is already
+ * dedupe-safe because a single storage key represents one edge.
+ */
+function positionHasMatchingProgress(
+  position: ReferencePosition,
+  progress: Record<string, ProgressStatus>,
+  filter: ProgressStatus | null,
+): boolean {
+  if (!filter) return true;
+  const sectionLabel =
+    SECTION_LABEL_BY_POSITION_NAME.get(position.name) ?? '';
+  const posTechs = lookupPositionTechniques(position.name);
+  if (posTechs) {
+    for (const [role, headings] of Object.entries(posTechs)) {
+      for (const [heading, techs] of Object.entries(headings)) {
+        if (heading === 'Offensive transitions') {
+          for (const raw of techs) {
+            const idx = raw.indexOf('→');
+            if (idx < 0) continue;
+            const label = raw.slice(0, idx).trim();
+            const destRaw = raw.slice(idx + 1).trim();
+            if (!label || !destRaw) continue;
+            const dest = canonicalizeTransitionDestination(destRaw);
+            const key = buildTransitionProgressKey(
+              sectionLabel,
+              position.name,
+              role,
+              label,
+              dest,
+            );
+            if (progress[key] === filter) return true;
+          }
+        } else {
+          for (const t of techs) {
+            const key = buildTechniqueProgressKey(
+              sectionLabel,
+              position.name,
+              role,
+              heading,
+              t,
+            );
+            if (progress[key] === filter) return true;
+          }
+        }
+      }
+    }
+  }
+  // Inbound edges — count if the edge was flagged from the source
+  // side (inbound + outbound share a key rooted at the source).
+  const inbound = INBOUND_TRANSITIONS.get(position.name) ?? [];
+  for (const e of inbound) {
+    const srcSection =
+      SECTION_LABEL_BY_POSITION_NAME.get(e.sourceName) ?? '';
+    const key = buildTransitionProgressKey(
+      srcSection,
+      e.sourceName,
+      e.sourceRole,
+      e.label,
+      position.name,
+    );
+    if (progress[key] === filter) return true;
+  }
+  return false;
+}
+
 /** Count the total techniques available for a specific role on a
  *  position. Used to badge role toggle pills with per-role counts
  *  and to de-emphasize role pills whose side of the catalogue is
@@ -487,6 +564,7 @@ function PositionRow({
   focusTarget,
   onRequestFocus,
   registerOuterRef,
+  progressFilter,
 }: {
   position: ReferencePosition;
   /** Mobile-seed section label the position belongs to. Threaded
@@ -504,7 +582,17 @@ function PositionRow({
    *  the parent ScrollView can measureLayout + scrollTo this card
    *  when focusTarget changes. */
   registerOuterRef: (name: string, ref: RNView | null) => void;
+  /** Active progress-status filter from the top-of-screen summary
+   *  strip, or null when no progress filter is applied. When set,
+   *  only items whose stored status matches are rendered, and the
+   *  card auto-expands so results are visible without tapping. */
+  progressFilter: ProgressStatus | null;
 }) {
+  // Subscribe to the progress store so filter changes re-render
+  // this card. Selector keeps the dependency scoped to the map
+  // itself; individual pill subscribers still scope their own
+  // re-renders via per-key selectors elsewhere.
+  const progress = useReferenceProgressStore((s) => s.progress);
   const [expanded, setExpanded] = useState(false);
   // Selected perspective index — defaults to 0 (first role in the pair),
   // but switches on mount to whichever role actually has content.
@@ -558,16 +646,38 @@ function PositionRow({
   // the "Offensive transitions" heading is deliberately EXCLUDED
   // from this list because transitions render as their own
   // distinct "Transitions out" block below (tappable cross-tree
-  // navigation), not as plain technique bullets.
+  // navigation), not as plain technique bullets. When a progress
+  // filter is active, techs are additionally filtered to only
+  // those matching the selected progress state.
   const headingsWithContent = useMemo(() => {
     return position.headings
       .filter((h) => h !== 'Offensive transitions')
-      .map((h) => ({
-        heading: h,
-        techs: techniquesForHeading(positionTechs, selectedRole, h),
-      }))
+      .map((h) => {
+        let techs = techniquesForHeading(positionTechs, selectedRole, h);
+        if (progressFilter) {
+          techs = techs.filter((t) => {
+            const key = buildTechniqueProgressKey(
+              sectionLabel,
+              position.name,
+              selectedRole,
+              h,
+              t,
+            );
+            return progress[key] === progressFilter;
+          });
+        }
+        return { heading: h, techs };
+      })
       .filter((entry) => entry.techs.length > 0);
-  }, [positionTechs, selectedRole, position.headings]);
+  }, [
+    positionTechs,
+    selectedRole,
+    position.headings,
+    progressFilter,
+    progress,
+    sectionLabel,
+    position.name,
+  ]);
 
   const totalForRole = headingsWithContent.reduce(
     (acc, e) => acc + e.techs.length,
@@ -600,27 +710,71 @@ function PositionRow({
     return () => clearTimeout(t);
   }, [focusTarget, position.name]);
 
+  // Auto-expand when a progress filter is active so filtered items
+  // are visible immediately without the user having to tap every
+  // card. When the filter clears, user expansion state is preserved
+  // (we only set expanded=true, we never force collapse).
+  useEffect(() => {
+    if (progressFilter) setExpanded(true);
+  }, [progressFilter]);
+
   // Parsed offensive-transition edges for the currently selected
   // role. Derived from whatever "Offensive transitions" entries the
   // web data already carries for this (position, perspective)
-  // tuple — no second parallel dataset, no invented content.
+  // tuple — no second parallel dataset, no invented content. When
+  // a progress filter is active, edges are additionally filtered
+  // to only those matching the selected progress state.
   const transitionsForRole = useMemo(() => {
     const raw = techniquesForHeading(
       positionTechs,
       selectedRole,
       'Offensive transitions',
     );
-    return parseTransitionEdges(raw);
-  }, [positionTechs, selectedRole]);
+    let edges = parseTransitionEdges(raw);
+    if (progressFilter) {
+      edges = edges.filter((edge) => {
+        const key = buildTransitionProgressKey(
+          sectionLabel,
+          position.name,
+          selectedRole,
+          edge.label,
+          edge.destination,
+        );
+        return progress[key] === progressFilter;
+      });
+    }
+    return edges;
+  }, [
+    positionTechs,
+    selectedRole,
+    progressFilter,
+    progress,
+    sectionLabel,
+    position.name,
+  ]);
 
   // Inbound transition edges — every source position that feeds
   // INTO this position. Derived once at module load and stable
-  // across renders, so this useMemo is a single ReadonlyMap lookup.
-  // Returns an empty array when the position is not a destination
-  // for any transition (so the header chip + block both hide).
+  // across renders, so this useMemo is a single ReadonlyMap lookup
+  // (plus an optional progress filter pass). Returns an empty
+  // array when the position is not a destination for any
+  // transition (so the header chip + block both hide).
   const inboundEdges = useMemo(() => {
-    return INBOUND_TRANSITIONS.get(position.name) ?? [];
-  }, [position.name]);
+    const edges = INBOUND_TRANSITIONS.get(position.name) ?? [];
+    if (!progressFilter) return edges;
+    return edges.filter((e) => {
+      const srcSection =
+        SECTION_LABEL_BY_POSITION_NAME.get(e.sourceName) ?? '';
+      const key = buildTransitionProgressKey(
+        srcSection,
+        e.sourceName,
+        e.sourceRole,
+        e.label,
+        position.name,
+      );
+      return progress[key] === progressFilter;
+    });
+  }, [position.name, progressFilter, progress]);
 
   return (
     <RNView
@@ -951,6 +1105,7 @@ function SectionBlock({
   focusTarget,
   onRequestFocus,
   registerOuterRef,
+  progressFilter,
 }: {
   section: ReferenceSection;
   filter: string;
@@ -958,15 +1113,27 @@ function SectionBlock({
   focusTarget: string | null;
   onRequestFocus: (destination: string) => void;
   registerOuterRef: (name: string, ref: RNView | null) => void;
+  progressFilter: ProgressStatus | null;
 }) {
+  // Read the progress store here so filter-induced visibility
+  // checks react when a user marks/unmarks an item while a
+  // progress filter is active. Only used in the progress-filter
+  // branch of the filter closure below.
+  const progress = useReferenceProgressStore((s) => s.progress);
+
   const filtered = useMemo(() => {
     const q = filter.trim().toLowerCase();
     return section.positions.filter((p) => {
       if (builtOutOnly && !p.built_out) return false;
       if (q && !p.name.toLowerCase().includes(q)) return false;
+      if (progressFilter) {
+        if (!positionHasMatchingProgress(p, progress, progressFilter)) {
+          return false;
+        }
+      }
       return true;
     });
-  }, [section.positions, filter, builtOutOnly]);
+  }, [section.positions, filter, builtOutOnly, progressFilter, progress]);
 
   if (filtered.length === 0) return null;
 
@@ -993,6 +1160,7 @@ function SectionBlock({
             focusTarget={focusTarget}
             onRequestFocus={onRequestFocus}
             registerOuterRef={registerOuterRef}
+            progressFilter={progressFilter}
           />
         ))}
       </View>
@@ -1018,6 +1186,32 @@ export default function ReferenceScreen() {
   // card could mount and receive focus. Null when no escape was
   // needed. Auto-dismisses via a timeout so the note never lingers.
   const [filterEscapeNote, setFilterEscapeNote] = useState<string | null>(null);
+
+  // Progress-state filter — when set, the Reference view shows only
+  // techniques/transitions whose stored progress status matches.
+  // Null means no filter (normal full view). Composes with the
+  // existing search + built-out filter via AND.
+  const [progressFilter, setProgressFilter] = useState<ProgressStatus | null>(
+    null,
+  );
+
+  // Aggregate counts across the entire persisted progress store.
+  // Derived from Object.values so each storage key contributes
+  // exactly once — transitions tracked from source side and shown
+  // on both source/destination UI surfaces never double-count in
+  // the screen-top strip.
+  const progressMap = useReferenceProgressStore((s) => s.progress);
+  const progressCounts = useMemo(() => {
+    const c = { drilling: 0, learned: 0, tracking: 0 };
+    for (const v of Object.values(progressMap)) {
+      if (v === 'drilling') c.drilling++;
+      else if (v === 'learned') c.learned++;
+      else if (v === 'tracking') c.tracking++;
+    }
+    return c;
+  }, [progressMap]);
+  const totalProgressItems =
+    progressCounts.drilling + progressCounts.learned + progressCounts.tracking;
 
   // Outer scroll container ref + per-position native wrapper refs.
   // measureLayout off the position ref against the scroll container
@@ -1150,11 +1344,16 @@ export default function ReferenceScreen() {
         s.positions.filter((p) => {
           if (builtOutOnly && !p.built_out) return false;
           if (q && !p.name.toLowerCase().includes(q)) return false;
+          if (progressFilter) {
+            if (!positionHasMatchingProgress(p, progressMap, progressFilter)) {
+              return false;
+            }
+          }
           return true;
         }).length,
       0,
     );
-  }, [query, builtOutOnly]);
+  }, [query, builtOutOnly, progressFilter, progressMap]);
 
   return (
     <ScrollView
@@ -1247,6 +1446,101 @@ export default function ReferenceScreen() {
         </Pressable>
       )}
 
+      {/* Progress summary strip — shows aggregate counts of items
+          marked Drilling / Learned / Tracking across the whole
+          persisted progress store, and each chip is tappable as a
+          filter. Tapping the same chip again clears the filter.
+          Hidden entirely when no progress has been flagged yet so
+          brand-new users don't see an empty row of zero chips. */}
+      {totalProgressItems > 0 && (
+        <View style={styles.progressSummaryStrip}>
+          <Pressable
+            onPress={() =>
+              setProgressFilter((v) => (v === 'drilling' ? null : 'drilling'))
+            }
+            style={[
+              styles.progressSummaryChip,
+              progressFilter === 'drilling' &&
+                styles.progressSummaryChipDrillingActive,
+            ]}>
+            <Text
+              style={[
+                styles.progressSummaryCount,
+                { color: '#7fb8ff' },
+              ]}>
+              {progressCounts.drilling}
+            </Text>
+            <Text style={styles.progressSummaryLabel}>drilling</Text>
+          </Pressable>
+          <Pressable
+            onPress={() =>
+              setProgressFilter((v) => (v === 'learned' ? null : 'learned'))
+            }
+            style={[
+              styles.progressSummaryChip,
+              progressFilter === 'learned' &&
+                styles.progressSummaryChipLearnedActive,
+            ]}>
+            <Text
+              style={[
+                styles.progressSummaryCount,
+                { color: '#4ade80' },
+              ]}>
+              {progressCounts.learned}
+            </Text>
+            <Text style={styles.progressSummaryLabel}>learned</Text>
+          </Pressable>
+          <Pressable
+            onPress={() =>
+              setProgressFilter((v) => (v === 'tracking' ? null : 'tracking'))
+            }
+            style={[
+              styles.progressSummaryChip,
+              progressFilter === 'tracking' &&
+                styles.progressSummaryChipTrackingActive,
+            ]}>
+            <Text
+              style={[
+                styles.progressSummaryCount,
+                { color: '#d4e157' },
+              ]}>
+              {progressCounts.tracking}
+            </Text>
+            <Text style={styles.progressSummaryLabel}>tracking</Text>
+          </Pressable>
+          {progressFilter && (
+            <Pressable
+              onPress={() => setProgressFilter(null)}
+              style={styles.progressSummaryClearBtn}>
+              <Text style={styles.progressSummaryClearText}>
+                Show all ×
+              </Text>
+            </Pressable>
+          )}
+        </View>
+      )}
+
+      {/* Progress-filter empty state — when the user activates a
+          filter that currently matches zero items, the sections map
+          below would render nothing. Explain and offer a reset. */}
+      {progressFilter && totalFiltered === 0 && (
+        <View style={styles.emptyCard}>
+          <Text style={styles.emptyTitle}>
+            No items currently marked {progressFilter}
+          </Text>
+          <Text style={styles.emptyBody}>
+            Tap the pill on any technique or transition to flag it.
+          </Text>
+          <Pressable
+            style={styles.emptyResetBtn}
+            onPress={() => setProgressFilter(null)}>
+            <Text style={styles.emptyResetBtnText}>
+              Show all ×
+            </Text>
+          </Pressable>
+        </View>
+      )}
+
       {/* Sections */}
       {REFERENCE_SECTIONS.map((s) => (
         <SectionBlock
@@ -1257,6 +1551,7 @@ export default function ReferenceScreen() {
           focusTarget={focusTarget}
           onRequestFocus={handleRequestFocus}
           registerOuterRef={registerOuterRef}
+          progressFilter={progressFilter}
         />
       ))}
 
@@ -1710,6 +2005,80 @@ const styles = StyleSheet.create({
   },
   emptyTitle: { fontSize: 14, fontWeight: '600' },
   emptyBody: { fontSize: 12, opacity: 0.5, lineHeight: 16 },
+
+  // Progress summary strip — aggregate drilling/learned/tracking
+  // counts across the whole persisted progress store, each chip
+  // tappable as a filter.
+  progressSummaryStrip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    flexWrap: 'wrap',
+  },
+  progressSummaryChip: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#333',
+    backgroundColor: 'rgba(255,255,255,0.02)',
+  },
+  progressSummaryChipDrillingActive: {
+    borderColor: '#7fb8ff',
+    backgroundColor: 'rgba(74,158,255,0.15)',
+  },
+  progressSummaryChipLearnedActive: {
+    borderColor: '#4ade80',
+    backgroundColor: 'rgba(74,222,128,0.15)',
+  },
+  progressSummaryChipTrackingActive: {
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.15)',
+  },
+  progressSummaryCount: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  progressSummaryLabel: {
+    fontSize: 10,
+    opacity: 0.55,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  progressSummaryClearBtn: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#666',
+    marginLeft: 'auto',
+  },
+  progressSummaryClearText: {
+    fontSize: 10,
+    color: '#aaa',
+    fontWeight: '600',
+  },
+  emptyResetBtn: {
+    alignSelf: 'flex-start',
+    marginTop: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#888',
+  },
+  emptyResetBtnText: {
+    fontSize: 11,
+    color: '#ccc',
+    fontWeight: '600',
+  },
 
   // Filter/search auto-escape note when a transition jump revealed
   // a hidden destination. Blue-accented to match the transition-
