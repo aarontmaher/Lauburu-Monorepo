@@ -894,7 +894,7 @@ function PositionRow({
                         onPress={() =>
                           setExpandedTechKey(isOpen ? null : techKey)
                         }>
-                        <Text style={styles.techniqueItem} numberOfLines={2}>
+                        <Text style={styles.techniqueItem}>
                           • {t}
                         </Text>
                         <ProgressPill progressKey={progressKey} />
@@ -996,18 +996,13 @@ function PositionRow({
                     onPress={() => {
                       if (navigable) onRequestFocus(edge.destination);
                     }}>
-                    <Text
-                      style={styles.transitionLabel}
-                      numberOfLines={2}>
-                      {edge.label}
-                    </Text>
+                    <Text style={styles.transitionLabel}>{edge.label}</Text>
                     <Text style={styles.transitionArrow}>→</Text>
                     <Text
                       style={[
                         styles.transitionDest,
                         navigable && styles.transitionDestNavigable,
-                      ]}
-                      numberOfLines={1}>
+                      ]}>
                       {edge.destination}
                     </Text>
                     <ProgressPill progressKey={progressKey} />
@@ -1057,17 +1052,11 @@ function PositionRow({
                     key={`${edge.sourceName}|${edge.label}|${i}`}
                     style={styles.inboundRow}
                     onPress={() => onRequestFocus(edge.sourceName)}>
-                    <Text
-                      style={styles.inboundSource}
-                      numberOfLines={1}>
+                    <Text style={styles.inboundSource}>
                       {edge.sourceName}
                     </Text>
                     <Text style={styles.inboundArrow}>←</Text>
-                    <Text
-                      style={styles.inboundLabel}
-                      numberOfLines={2}>
-                      {edge.label}
-                    </Text>
+                    <Text style={styles.inboundLabel}>{edge.label}</Text>
                     <ProgressPill progressKey={progressKey} />
                   </Pressable>
                 );
@@ -1944,16 +1933,25 @@ const styles = StyleSheet.create({
   },
   transitionRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // Top-align so arrow + pill stay at the first line of text when
+    // labels / destinations wrap to multiple lines. Previously this
+    // was `center` which caused the right-side controls to float
+    // mid-block on long wrapping rows.
+    alignItems: 'flex-start',
     gap: 6,
-    paddingVertical: 4,
+    paddingVertical: 5,
     paddingHorizontal: 2,
   },
   transitionRowMuted: {
     opacity: 0.45,
   },
   transitionLabel: {
-    flexShrink: 1,
+    // flex:1 + flexBasis:0 so label and destination share row space
+    // proportionally and can wrap freely instead of competing for
+    // a natural-width pixel allocation that triggered truncation.
+    flex: 1,
+    flexBasis: 0,
+    minWidth: 0,
     fontSize: 12,
     color: '#d4dce6',
     lineHeight: 17,
@@ -1963,12 +1961,18 @@ const styles = StyleSheet.create({
     color: '#7fb8ff',
     fontWeight: '700',
     paddingHorizontal: 2,
+    // Nudge the arrow to sit on the same baseline as the first
+    // line of wrapped label text.
+    paddingTop: 1,
   },
   transitionDest: {
+    flex: 1,
+    flexBasis: 0,
+    minWidth: 0,
     fontSize: 12,
     color: '#aab4c2',
     fontWeight: '600',
-    flexShrink: 1,
+    lineHeight: 17,
   },
   transitionDestNavigable: {
     color: '#7fb8ff',
@@ -2009,17 +2013,23 @@ const styles = StyleSheet.create({
   },
   inboundRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // Top-align — same reasoning as transitionRow. Source position
+    // names and technique labels both wrap freely now, so arrow +
+    // pill stay on the first line.
+    alignItems: 'flex-start',
     gap: 6,
-    paddingVertical: 4,
+    paddingVertical: 5,
     paddingHorizontal: 2,
   },
   inboundSource: {
+    flex: 1,
+    flexBasis: 0,
+    minWidth: 0,
     fontSize: 12,
     color: '#7fb8ff',
     fontWeight: '600',
     textDecorationLine: 'underline',
-    flexShrink: 1,
+    lineHeight: 17,
   },
   inboundArrow: {
     fontSize: 13,
@@ -2027,9 +2037,12 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     paddingHorizontal: 2,
     opacity: 0.7,
+    paddingTop: 1,
   },
   inboundLabel: {
-    flexShrink: 1,
+    flex: 1,
+    flexBasis: 0,
+    minWidth: 0,
     fontSize: 12,
     color: '#aab4c2',
     lineHeight: 17,
