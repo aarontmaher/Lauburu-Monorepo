@@ -6,16 +6,19 @@
  * Haptic feedback on every phase transition.
  * HR zone placeholder for future live data.
  */
-import { useEffect, useRef, useCallback } from 'react';
-import { StyleSheet, Pressable, View as RNView } from 'react-native';
+import { useEffect, useRef, useState, useMemo } from 'react';
+import { StyleSheet, Pressable, View as RNView, ScrollView } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
 import { useTimerStore } from '../src/store/timer-store';
 import { useTrainingStore } from '../src/store/training-store';
 import { useHealthStore } from '../src/store/health-store';
 import { useAuthStore } from '../src/store/auth-store';
+import { useMachineStore } from '../src/store/machine-store';
+import { MachineMetricsReview } from '../src/components/MachineMetricsReview';
+import { modalitySupportsMachineData } from '../src/services/machine-connector';
 import { CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, HR_ZONES, getHRZone, REST_COLOR } from '@lauburu/shared';
-import type { HRZone } from '@lauburu/shared';
+import type { HRZone, MachineMetrics, ConditioningDetail, WorkoutSource } from '@lauburu/shared';
 
 // Haptic feedback — lazy loaded, gracefully degraded
 function triggerHaptic(type: 'transition' | 'complete') {
@@ -121,6 +124,20 @@ export default function TimerScreen() {
   const addSession = useTrainingStore((s) => s.addSession);
   const syncData = useHealthStore((s) => s.syncData);
   const user = useAuthStore((s) => s.user);
+  const setLastMachineMetrics = useMachineStore((s) => s.setLastSessionMetrics);
+
+  // Post-session machine-metrics capture — only meaningful for cardio
+  // modalities that would plausibly expose these numbers on a console
+  // (bike/rower/skierg/treadmill). Parent-owned state so the review
+  // component stays controlled; empty object means nothing was typed
+  // and the session saves with source: phone_timer. Any field typed
+  // flips the source to manual_machine_entry on save.
+  const [reviewMetrics, setReviewMetrics] = useState<Partial<MachineMetrics>>({});
+
+  const supportsMachineData = useMemo(
+    () => modalitySupportsMachineData(config?.modality),
+    [config?.modality],
+  );
 
   // Haptic on phase change
   const prevPhase = useRef(phase);
@@ -166,28 +183,54 @@ export default function TimerScreen() {
 
   const handleComplete = () => {
     const durationMin = Math.max(1, Math.round(elapsed / 60));
+
+    // Only attach machine metrics if the user actually typed at least
+    // one value — an empty review object stays as `phone_timer` to
+    // keep provenance honest. We don't fabricate zeros.
+    const typedMetrics: MachineMetrics = { ...reviewMetrics } as MachineMetrics;
+    const anyTyped = Object.values(typedMetrics).some((v) => v != null);
+    const source: WorkoutSource = anyTyped
+      ? 'manual_machine_entry'
+      : 'phone_timer';
+
+    const conditioning: ConditioningDetail = {
+      subtype: config.subtype,
+      modality: config.modality,
+      interval: config.mode === 'interval'
+        ? {
+            work_duration_s: config.work_s ?? 30,
+            rest_duration_s: config.rest_s ?? 30,
+            rounds: config.rounds ?? 1,
+          }
+        : undefined,
+      source,
+      machine_metrics: anyTyped ? typedMetrics : undefined,
+    };
+
     addSession({
       date: new Date().toISOString().slice(0, 10),
       type: 'conditioning',
       intensity: durationMin >= 30 ? 'hard' : durationMin >= 15 ? 'moderate' : 'light',
       duration_min: durationMin,
-      conditioning: {
-        subtype: config.subtype,
-        modality: config.modality,
-        interval: config.mode === 'interval' ? {
-          work_duration_s: config.work_s ?? 30,
-          rest_duration_s: config.rest_s ?? 30,
-          rounds: config.rounds ?? 1,
-        } : undefined,
-      },
+      conditioning,
     });
+
+    // Cache last session's machine metrics so the next manual entry
+    // flow in train.tsx can offer "Repeat last machine metrics" with
+    // correct provenance.
+    if (anyTyped) {
+      setLastMachineMetrics(typedMetrics, 'manual_machine_entry');
+    }
+
     if (user?.id) syncData(user.id).catch(() => {});
     reset();
+    setReviewMetrics({});
     router.back();
   };
 
   const handleDiscard = () => {
     reset();
+    setReviewMetrics({});
     router.back();
   };
 
@@ -265,7 +308,11 @@ export default function TimerScreen() {
         )}
 
         {phase === 'complete' && (
-          <RNView style={styles.completeSection}>
+          <ScrollView
+            style={styles.completeScroll}
+            contentContainerStyle={styles.completeSection}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
             <RNView style={styles.summaryCard}>
               <Text style={styles.summaryTitle}>Session Complete</Text>
               <Text style={styles.summaryLine}>
@@ -277,13 +324,27 @@ export default function TimerScreen() {
                 {config.mode === 'interval' ? ` · ${config.rounds ?? 1} rounds` : ''}
               </Text>
             </RNView>
+
+            {/* Compact machine-metrics review — optional, skippable.
+                Only shown for modalities a cardio console would
+                plausibly expose (bike/rower/skierg/treadmill). Empty
+                fields leave source as phone_timer; any typed field
+                flips provenance to manual_machine_entry on save. */}
+            {supportsMachineData && (
+              <MachineMetricsReview
+                modality={config.modality}
+                value={reviewMetrics}
+                onChange={setReviewMetrics}
+              />
+            )}
+
             <Pressable style={[styles.mainBtn, { backgroundColor: '#4ade80' }]} onPress={handleComplete}>
               <Text style={styles.mainBtnText}>Save & Close</Text>
             </Pressable>
             <Pressable style={styles.secondaryBtn} onPress={handleDiscard}>
               <Text style={styles.secondaryBtnText}>Discard</Text>
             </Pressable>
-          </RNView>
+          </ScrollView>
         )}
       </RNView>
 
@@ -363,7 +424,17 @@ const styles = StyleSheet.create({
   closeBtn: { position: 'absolute', bottom: 50, padding: 12 },
   closeBtnText: { fontSize: 14, color: '#555' },
 
-  completeSection: { alignItems: 'center', gap: 16, width: '100%' },
+  completeScroll: {
+    width: '100%',
+    marginTop: 8,
+    maxHeight: '70%',
+  },
+  completeSection: {
+    alignItems: 'center',
+    gap: 14,
+    width: '100%',
+    paddingBottom: 80,
+  },
   summaryCard: {
     backgroundColor: 'rgba(74,222,128,0.08)',
     borderRadius: 12,
