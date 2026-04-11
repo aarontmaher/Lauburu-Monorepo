@@ -13,8 +13,22 @@
  * the bundle, re-run the extractor described in the header of
  * reference-techniques.ts.
  */
-import { useMemo, useState } from 'react';
-import { StyleSheet, ScrollView, Pressable, TextInput, Linking } from 'react-native';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  TextInput,
+  Linking,
+  findNodeHandle,
+  View as RNView,
+} from 'react-native';
 import { Text, View } from '@/components/Themed';
 
 /** Live website base URL — the full Reference tree, 3D graph, and
@@ -106,6 +120,79 @@ function positionHasAnyContent(
     }
   }
   return false;
+}
+
+/**
+ * Parsed offensive-transition edge derived from an "Offensive
+ * transitions" heading entry. The raw data strings have the format
+ * `<source label> → <destination label>` — we split on the arrow,
+ * strip Hand Fighting's "(You)" disambiguation suffix, and record
+ * whether the destination matches a known mobile-seed position
+ * (i.e. whether tapping the row can jump somewhere useful in the
+ * mobile tree).
+ */
+export interface TransitionEdge {
+  /** Left-hand side of the arrow — the technique doing the transition. */
+  label: string;
+  /** Right-hand side of the arrow with "(You)" suffix stripped. */
+  destination: string;
+  /** True when `destination` matches a known mobile-seed position
+   *  name so tapping can navigate the mobile Reference tree. When
+   *  false, the row still renders (preserves information) but is
+   *  non-tappable. */
+  destinationKnown: boolean;
+}
+
+/** Build the set of known mobile-seed position names once at module
+ *  load. Used by parseTransitionEdges to decide which destinations
+ *  can be navigated to. */
+const KNOWN_POSITION_NAMES: ReadonlySet<string> = (() => {
+  const s = new Set<string>();
+  for (const section of REFERENCE_SECTIONS) {
+    for (const p of section.positions) s.add(p.name);
+  }
+  return s;
+})();
+
+/** Normalize a raw destination string into a canonical mobile-seed
+ *  position name. Strips the "(You)" suffix used by Hand Fighting
+ *  positions in the web data and trims whitespace. Does NOT invent
+ *  names — if the result still doesn't match a known position the
+ *  caller marks the edge as non-navigable. */
+function canonicalizeTransitionDestination(raw: string): string {
+  let s = raw.trim();
+  s = s.replace(/\s*\(You\)\s*$/, '');
+  return s;
+}
+
+/**
+ * Parse an array of "Offensive transitions" heading entries into
+ * structured TransitionEdge rows. Entries that don't contain a
+ * " → " arrow are skipped silently (occasional stray non-arrow
+ * lines show up in the upstream data, filtering them out keeps
+ * the mobile UI honest). The same source label feeding two
+ * different destinations yields two separate edges.
+ */
+function parseTransitionEdges(
+  rawEntries: string[] | undefined,
+): TransitionEdge[] {
+  if (!rawEntries) return [];
+  const out: TransitionEdge[] = [];
+  for (const raw of rawEntries) {
+    if (!raw || typeof raw !== 'string') continue;
+    const idx = raw.indexOf('→');
+    if (idx < 0) continue;
+    const label = raw.slice(0, idx).trim();
+    const destRaw = raw.slice(idx + 1).trim();
+    if (!label || !destRaw) continue;
+    const destination = canonicalizeTransitionDestination(destRaw);
+    out.push({
+      label,
+      destination,
+      destinationKnown: KNOWN_POSITION_NAMES.has(destination),
+    });
+  }
+  return out;
 }
 
 /** Count the total techniques available for a specific role on a
@@ -245,12 +332,26 @@ function openFullMap(args: FullMapDeepLinkArgs = {}): void {
 function PositionRow({
   position,
   sectionLabel,
+  focusTarget,
+  onRequestFocus,
+  registerOuterRef,
 }: {
   position: ReferencePosition;
   /** Mobile-seed section label the position belongs to. Threaded
    *  through to the full-map deep link so the web hash handler
    *  receives the correct section segment. */
   sectionLabel: string;
+  /** Cross-tree navigation target. When it matches this position's
+   *  name the card auto-expands and flashes its border for a moment
+   *  so the user sees where they landed. */
+  focusTarget: string | null;
+  /** Called when a transition row is tapped. Triggers a tree-level
+   *  navigation to the destination position's card. */
+  onRequestFocus: (destination: string) => void;
+  /** Registers the outer wrapper's native ref with the parent so
+   *  the parent ScrollView can measureLayout + scrollTo this card
+   *  when focusTarget changes. */
+  registerOuterRef: (name: string, ref: RNView | null) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   // Selected perspective index — defaults to 0 (first role in the pair),
@@ -261,6 +362,10 @@ function PositionRow({
   // `${role}|${heading}|${index}` so switching role/heading resets
   // the expansion cleanly.
   const [expandedTechKey, setExpandedTechKey] = useState<string | null>(null);
+  // Temporary flash after a cross-tree navigation jump lands on
+  // this card. Drives the gold border highlight and clears itself
+  // after ~1.8s so stale highlights don't persist.
+  const [jumpFlash, setJumpFlash] = useState(false);
 
   const hasMultipleRoles = position.perspectives.length > 1;
 
@@ -297,9 +402,14 @@ function PositionRow({
   }, [roleCounts, selectedRoleIdx]);
   const selectedRole = position.perspectives[effectiveRoleIdx] ?? '';
 
-  // Count of techniques rendered for the CURRENTLY selected role.
+  // Count of techniques rendered for the CURRENTLY selected role —
+  // the "Offensive transitions" heading is deliberately EXCLUDED
+  // from this list because transitions render as their own
+  // distinct "Transitions out" block below (tappable cross-tree
+  // navigation), not as plain technique bullets.
   const headingsWithContent = useMemo(() => {
     return position.headings
+      .filter((h) => h !== 'Offensive transitions')
       .map((h) => ({
         heading: h,
         techs: techniquesForHeading(positionTechs, selectedRole, h),
@@ -312,8 +422,53 @@ function PositionRow({
     0,
   );
 
+  // Outer wrapper ref — registered with the parent ScrollView so
+  // cross-tree navigation jumps can measureLayout + scroll to this
+  // card.
+  const outerRef = useRef<RNView | null>(null);
+  const handleOuterRef = useCallback(
+    (ref: RNView | null) => {
+      outerRef.current = ref;
+      registerOuterRef(position.name, ref);
+    },
+    [position.name, registerOuterRef],
+  );
+
+  // React to cross-tree focus signal. When the user taps a
+  // transition row elsewhere in the tree, the parent sets
+  // focusTarget to this position's name; we auto-expand the card
+  // and flash a gold border for ~1.8s so the user clearly sees
+  // where they landed. The parent ScrollView separately measures
+  // and scrolls to the card.
+  useEffect(() => {
+    if (focusTarget !== position.name) return;
+    setExpanded(true);
+    setJumpFlash(true);
+    const t = setTimeout(() => setJumpFlash(false), 1800);
+    return () => clearTimeout(t);
+  }, [focusTarget, position.name]);
+
+  // Parsed offensive-transition edges for the currently selected
+  // role. Derived from whatever "Offensive transitions" entries the
+  // web data already carries for this (position, perspective)
+  // tuple — no second parallel dataset, no invented content.
+  const transitionsForRole = useMemo(() => {
+    const raw = techniquesForHeading(
+      positionTechs,
+      selectedRole,
+      'Offensive transitions',
+    );
+    return parseTransitionEdges(raw);
+  }, [positionTechs, selectedRole]);
+
   return (
-    <View style={styles.positionWrap}>
+    <RNView
+      ref={handleOuterRef}
+      style={[
+        styles.positionWrap,
+        jumpFlash && styles.positionWrapJumpFlash,
+      ]}
+      collapsable={false}>
       <Pressable
         style={styles.positionRow}
         onPress={() => setExpanded(!expanded)}>
@@ -470,6 +625,56 @@ function PositionRow({
             </Text>
           )}
 
+          {/* Transitions out — arrow-format "label → destination"
+              rows parsed from the Offensive transitions heading.
+              Only rendered when at least one edge exists for the
+              current role. Each row is a tappable link that jumps
+              the mobile Reference tree to the destination position's
+              card when the destination resolves to a known mobile-
+              seed position. Non-navigable destinations (submissions,
+              non-canonical names) render as muted italic rows that
+              preserve the information without claiming a jump path. */}
+          {transitionsForRole.length > 0 && (
+            <View style={styles.transitionsBlock}>
+              <Text style={styles.transitionsLabel}>
+                Transitions out
+                <Text style={styles.transitionsLabelCount}>
+                  {'  '}{transitionsForRole.length}
+                </Text>
+              </Text>
+              {transitionsForRole.map((edge, i) => {
+                const navigable = edge.destinationKnown;
+                return (
+                  <Pressable
+                    key={`${edge.label}|${edge.destination}|${i}`}
+                    style={[
+                      styles.transitionRow,
+                      !navigable && styles.transitionRowMuted,
+                    ]}
+                    disabled={!navigable}
+                    onPress={() => {
+                      if (navigable) onRequestFocus(edge.destination);
+                    }}>
+                    <Text
+                      style={styles.transitionLabel}
+                      numberOfLines={2}>
+                      {edge.label}
+                    </Text>
+                    <Text style={styles.transitionArrow}>→</Text>
+                    <Text
+                      style={[
+                        styles.transitionDest,
+                        navigable && styles.transitionDestNavigable,
+                      ]}
+                      numberOfLines={1}>
+                      {edge.destination}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
+
           {/* Position-level full-map bridge. Always rendered on
               expanded positions so the separation between mobile
               Reference and the full web 3D map feels intentional,
@@ -489,7 +694,7 @@ function PositionRow({
           </Pressable>
         </View>
       )}
-    </View>
+    </RNView>
   );
 }
 
@@ -497,10 +702,16 @@ function SectionBlock({
   section,
   filter,
   builtOutOnly,
+  focusTarget,
+  onRequestFocus,
+  registerOuterRef,
 }: {
   section: ReferenceSection;
   filter: string;
   builtOutOnly: boolean;
+  focusTarget: string | null;
+  onRequestFocus: (destination: string) => void;
+  registerOuterRef: (name: string, ref: RNView | null) => void;
 }) {
   const filtered = useMemo(() => {
     const q = filter.trim().toLowerCase();
@@ -529,7 +740,14 @@ function SectionBlock({
       </View>
       <View style={styles.positionsList}>
         {filtered.map((p) => (
-          <PositionRow key={p.name} position={p} sectionLabel={section.label} />
+          <PositionRow
+            key={p.name}
+            position={p}
+            sectionLabel={section.label}
+            focusTarget={focusTarget}
+            onRequestFocus={onRequestFocus}
+            registerOuterRef={registerOuterRef}
+          />
         ))}
       </View>
     </View>
@@ -542,6 +760,78 @@ export default function ReferenceScreen() {
   // built out on the website. Reuses the same built_out flag the
   // pill badges use so the two signals stay consistent.
   const [builtOutOnly, setBuiltOutOnly] = useState(false);
+
+  // Cross-tree navigation — set by PositionRow transition rows via
+  // onRequestFocus, consumed by the target PositionRow's focus
+  // effect. Cleared on a short delay so subsequent taps on the same
+  // destination still re-fire the effect.
+  const [focusTarget, setFocusTarget] = useState<string | null>(null);
+
+  // Outer scroll container ref + per-position native wrapper refs.
+  // measureLayout off the position ref against the scroll container
+  // gives us a y offset in the scroll coordinate space so we can
+  // smoothly scroll the target card into view regardless of how
+  // deep it is inside the section hierarchy.
+  const scrollViewRef = useRef<ScrollView>(null);
+  const positionRefs = useRef<Map<string, RNView>>(new Map());
+
+  const registerOuterRef = useCallback(
+    (name: string, ref: RNView | null) => {
+      if (ref) {
+        positionRefs.current.set(name, ref);
+      } else {
+        positionRefs.current.delete(name);
+      }
+    },
+    [],
+  );
+
+  const handleRequestFocus = useCallback((destination: string) => {
+    // Always set to null first so the useEffect subscription in
+    // the destination PositionRow re-fires even when the user taps
+    // two transition rows pointing to the same destination back-to-
+    // back. Without this, React's reference-equality check would
+    // swallow the second event.
+    setFocusTarget(null);
+    setTimeout(() => setFocusTarget(destination), 0);
+  }, []);
+
+  // Whenever focusTarget changes, measureLayout the destination
+  // card's native ref against the scroll container and scrollTo
+  // its offset (with an 80px header breathing room). The inner
+  // setTimeout gives the destination card's expand-on-focus effect
+  // a tick to re-render before we measure; otherwise the newly-
+  // expanded content would shift the position we scrolled to.
+  useEffect(() => {
+    if (!focusTarget) return;
+    const cardRef = positionRefs.current.get(focusTarget);
+    const sv = scrollViewRef.current;
+    if (!cardRef || !sv) return;
+    const scrollNode = findNodeHandle(sv);
+    if (scrollNode == null) return;
+    const timer = setTimeout(() => {
+      try {
+        cardRef.measureLayout(
+          scrollNode as unknown as number,
+          (_x, y) => {
+            sv.scrollTo({
+              y: Math.max(0, y - 80),
+              animated: true,
+            });
+          },
+          () => {
+            // measureLayout can reject if the destination card has
+            // been unmounted mid-navigation — silent swallow is
+            // acceptable since the card's own focus effect still
+            // handled the expand+flash fallback.
+          },
+        );
+      } catch {
+        // Defensive — never let a scroll failure crash Reference.
+      }
+    }, 120);
+    return () => clearTimeout(timer);
+  }, [focusTarget]);
 
   const totalFiltered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -559,6 +849,7 @@ export default function ReferenceScreen() {
 
   return (
     <ScrollView
+      ref={scrollViewRef}
       style={styles.container}
       contentContainerStyle={styles.content}
       keyboardShouldPersistTaps="handled">
@@ -639,6 +930,9 @@ export default function ReferenceScreen() {
           section={s}
           filter={query}
           builtOutOnly={builtOutOnly}
+          focusTarget={focusTarget}
+          onRequestFocus={handleRequestFocus}
+          registerOuterRef={registerOuterRef}
         />
       ))}
 
@@ -741,6 +1035,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: 'rgba(255,255,255,0.02)',
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  positionWrapJumpFlash: {
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.06)',
   },
   positionRow: {
     flexDirection: 'row',
@@ -901,6 +1201,62 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
   },
+  // Transitions out — arrow-format edge rows
+  transitionsBlock: {
+    marginTop: 12,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(74,158,255,0.06)',
+    borderLeftWidth: 2,
+    borderLeftColor: 'rgba(74,158,255,0.45)',
+    gap: 4,
+  },
+  transitionsLabel: {
+    fontSize: 11,
+    color: '#7fb8ff',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  transitionsLabelCount: {
+    fontSize: 10,
+    opacity: 0.6,
+    fontWeight: '700',
+  },
+  transitionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 2,
+  },
+  transitionRowMuted: {
+    opacity: 0.45,
+  },
+  transitionLabel: {
+    flexShrink: 1,
+    fontSize: 12,
+    color: '#d4dce6',
+    lineHeight: 17,
+  },
+  transitionArrow: {
+    fontSize: 13,
+    color: '#7fb8ff',
+    fontWeight: '700',
+    paddingHorizontal: 2,
+  },
+  transitionDest: {
+    fontSize: 12,
+    color: '#aab4c2',
+    fontWeight: '600',
+    flexShrink: 1,
+  },
+  transitionDestNavigable: {
+    color: '#7fb8ff',
+    textDecorationLine: 'underline',
+  },
+
   positionBridgeBtn: {
     marginTop: 12,
     paddingVertical: 9,
