@@ -199,10 +199,24 @@ function CaseRow({ c }: { c: CoachingCase }) {
   );
 }
 
+type UsefulnessFilter = 'all' | CoachingCaseUsefulness;
+
+const FILTER_LABEL: Record<UsefulnessFilter, string> = {
+  all: 'All',
+  helped: 'Helped',
+  neutral: 'Neutral',
+  unhelpful: 'Not useful',
+};
+
 export default function CoachingHistoryScreen() {
   const cases = useCoachingCasesStore((s) => s.cases);
   const clearAll = useCoachingCasesStore((s) => s.clearAll);
   const exportJsonlLines = useCoachingCasesStore((s) => s.exportJsonlLines);
+
+  // Filter by usefulness verdict — pure local UI state, persists
+  // nothing. "all" is the default so the screen opens in the same
+  // shape it did before this batch.
+  const [filter, setFilter] = useState<UsefulnessFilter>('all');
 
   const summary = useMemo(() => {
     const total = cases.length;
@@ -216,6 +230,13 @@ export default function CoachingHistoryScreen() {
     }
     return { total, helped, neutral, unhelpful };
   }, [cases]);
+
+  // Visible cases = cases filtered by the current verdict pill.
+  // Cheap derivation — cases list is capped at MAX_CASES already.
+  const visibleCases = useMemo(() => {
+    if (filter === 'all') return cases;
+    return cases.filter((c) => c.usefulness === filter);
+  }, [cases, filter]);
 
   const handleExportAll = () => {
     const lines = exportJsonlLines();
@@ -264,7 +285,44 @@ export default function CoachingHistoryScreen() {
         </View>
       </View>
 
-      {/* Empty state */}
+      {/* Filter pills — only shown once there's data. Tapping a
+          pill narrows the list to that verdict; tapping the active
+          pill (or All) clears the filter. */}
+      {cases.length > 0 && (
+        <View style={styles.filterRow}>
+          {(['all', 'helped', 'neutral', 'unhelpful'] as UsefulnessFilter[]).map(
+            (f) => {
+              const active = filter === f;
+              const tint =
+                f === 'all'
+                  ? '#d4e157'
+                  : USEFULNESS_COLOR[f as CoachingCaseUsefulness];
+              return (
+                <Pressable
+                  key={f}
+                  onPress={() => setFilter(f)}
+                  style={[
+                    styles.filterPill,
+                    active && {
+                      borderColor: tint,
+                      backgroundColor: 'rgba(212,225,87,0.08)',
+                    },
+                  ]}>
+                  <Text
+                    style={[
+                      styles.filterPillText,
+                      active && { color: tint },
+                    ]}>
+                    {FILTER_LABEL[f]}
+                  </Text>
+                </Pressable>
+              );
+            },
+          )}
+        </View>
+      )}
+
+      {/* Empty state — no cases at all */}
       {cases.length === 0 && (
         <View style={styles.emptyCard}>
           <Text style={styles.emptyTitle}>No cases yet</Text>
@@ -276,8 +334,18 @@ export default function CoachingHistoryScreen() {
         </View>
       )}
 
-      {/* Case list */}
-      {cases.map((c) => (
+      {/* Filter-empty state — has cases, but none match filter */}
+      {cases.length > 0 && visibleCases.length === 0 && (
+        <View style={styles.emptyCard}>
+          <Text style={styles.emptyTitle}>No "{FILTER_LABEL[filter]}" cases</Text>
+          <Text style={styles.emptyBody}>
+            Tap "All" above to see every case.
+          </Text>
+        </View>
+      )}
+
+      {/* Case list — filtered */}
+      {visibleCases.map((c) => (
         <CaseRow key={c.id} c={c} />
       ))}
 
@@ -329,6 +397,20 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     marginTop: 2,
   },
+
+  filterRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  filterPill: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  filterPillText: { fontSize: 11, color: '#888', fontWeight: '600' },
 
   emptyCard: {
     padding: 16,
