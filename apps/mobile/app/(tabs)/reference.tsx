@@ -154,6 +154,17 @@ const KNOWN_POSITION_NAMES: ReadonlySet<string> = (() => {
   return s;
 })();
 
+/** Build a name → ReferencePosition lookup once at module load so
+ *  transition-jump filter-escape logic can check built_out status
+ *  in O(1) without re-walking REFERENCE_SECTIONS on every tap. */
+const POSITION_BY_NAME: ReadonlyMap<string, ReferencePosition> = (() => {
+  const m = new Map<string, ReferencePosition>();
+  for (const section of REFERENCE_SECTIONS) {
+    for (const p of section.positions) m.set(p.name, p);
+  }
+  return m;
+})();
+
 /** Normalize a raw destination string into a canonical mobile-seed
  *  position name. Strips the "(You)" suffix used by Hand Fighting
  *  positions in the web data and trims whitespace. Does NOT invent
@@ -767,6 +778,12 @@ export default function ReferenceScreen() {
   // destination still re-fire the effect.
   const [focusTarget, setFocusTarget] = useState<string | null>(null);
 
+  // Escape-hatch note shown when a transition jump had to clear
+  // search and/or disable the Built-out filter so the destination
+  // card could mount and receive focus. Null when no escape was
+  // needed. Auto-dismisses via a timeout so the note never lingers.
+  const [filterEscapeNote, setFilterEscapeNote] = useState<string | null>(null);
+
   // Outer scroll container ref + per-position native wrapper refs.
   // measureLayout off the position ref against the scroll container
   // gives us a y offset in the scroll coordinate space so we can
@@ -786,15 +803,72 @@ export default function ReferenceScreen() {
     [],
   );
 
-  const handleRequestFocus = useCallback((destination: string) => {
-    // Always set to null first so the useEffect subscription in
-    // the destination PositionRow re-fires even when the user taps
-    // two transition rows pointing to the same destination back-to-
-    // back. Without this, React's reference-equality check would
-    // swallow the second event.
-    setFocusTarget(null);
-    setTimeout(() => setFocusTarget(destination), 0);
-  }, []);
+  const handleRequestFocus = useCallback(
+    (destination: string) => {
+      // Filter / search escape hatch — before kicking off the jump,
+      // check whether the destination card would actually be mounted
+      // under the current filter/search state. If not, clear the
+      // minimum set of state needed to make it visible, show a brief
+      // explanatory note so the user understands why the filters
+      // changed, then fall through to the normal jump path.
+      //
+      // This fixes the one remaining silent no-op in the transition
+      // system: prior to this batch, a user with "Built out only"
+      // toggled on who tapped a transition pointing at a
+      // not-yet-built-out position (or a search query mismatching
+      // the destination) would see nothing happen — the
+      // positionRefs.current.get(destination) lookup inside the
+      // jump effect would return undefined because SectionBlock had
+      // filtered that card out.
+      const targetPos = POSITION_BY_NAME.get(destination);
+      if (!targetPos) {
+        // Destination not in the mobile seed at all — shouldn't
+        // happen since transition rows are only enabled when
+        // destinationKnown is true, but we fail safe here and skip
+        // the jump instead of changing filters for nothing.
+        return;
+      }
+      const q = query.trim().toLowerCase();
+      const hiddenBySearch =
+        q.length > 0 && !destination.toLowerCase().includes(q);
+      const hiddenByBuiltOut = builtOutOnly && !targetPos.built_out;
+      let escapeNote: string | null = null;
+      if (hiddenBySearch && hiddenByBuiltOut) {
+        setQuery('');
+        setBuiltOutOnly(false);
+        escapeNote = `Cleared search and turned off Built-out filter to reach ${destination}.`;
+      } else if (hiddenBySearch) {
+        setQuery('');
+        escapeNote = `Cleared search to reach ${destination}.`;
+      } else if (hiddenByBuiltOut) {
+        setBuiltOutOnly(false);
+        escapeNote = `Turned off Built-out filter to reach ${destination}.`;
+      }
+      if (escapeNote) setFilterEscapeNote(escapeNote);
+
+      // Always set to null first so the useEffect subscription in
+      // the destination PositionRow re-fires even when the user taps
+      // two transition rows pointing to the same destination back-to-
+      // back. Without this, React's reference-equality check would
+      // swallow the second event. Delay bumped to 50ms when filters
+      // were cleared so React has time to commit the state updates
+      // and re-render the (now-visible) destination card before the
+      // focus effect tries to measureLayout it.
+      const jumpDelay = escapeNote ? 80 : 0;
+      setFocusTarget(null);
+      setTimeout(() => setFocusTarget(destination), jumpDelay);
+    },
+    [query, builtOutOnly],
+  );
+
+  // Auto-dismiss the filter-escape note after 4.5s so it never
+  // becomes permanent visual noise. The timer is scoped to each
+  // fresh note so overlapping jumps reset the timer cleanly.
+  useEffect(() => {
+    if (!filterEscapeNote) return;
+    const t = setTimeout(() => setFilterEscapeNote(null), 4500);
+    return () => clearTimeout(t);
+  }, [filterEscapeNote]);
 
   // Whenever focusTarget changes, measureLayout the destination
   // card's native ref against the scroll container and scrollTo
@@ -921,6 +995,21 @@ export default function ReferenceScreen() {
             Try a broader search or turn off "Built out only".
           </Text>
         </View>
+      )}
+
+      {/* Filter-escape note — rendered when a transition jump had
+          to clear search and/or disable Built-out filter so the
+          destination card could mount. Auto-dismisses after 4.5s
+          via the useEffect timer above. Tap to dismiss manually. */}
+      {filterEscapeNote && (
+        <Pressable
+          onPress={() => setFilterEscapeNote(null)}
+          style={styles.filterEscapeNoteBanner}>
+          <Text style={styles.filterEscapeNoteText}>
+            {filterEscapeNote}
+          </Text>
+          <Text style={styles.filterEscapeNoteDismiss}>Tap to dismiss</Text>
+        </Pressable>
       )}
 
       {/* Sections */}
@@ -1291,6 +1380,31 @@ const styles = StyleSheet.create({
   },
   emptyTitle: { fontSize: 14, fontWeight: '600' },
   emptyBody: { fontSize: 12, opacity: 0.5, lineHeight: 16 },
+
+  // Filter/search auto-escape note when a transition jump revealed
+  // a hidden destination. Blue-accented to match the transition-
+  // block palette — reads as continuation of the transition action,
+  // not as an error banner.
+  filterEscapeNoteBanner: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(74,158,255,0.1)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#7fb8ff',
+    gap: 3,
+  },
+  filterEscapeNoteText: {
+    fontSize: 12,
+    color: '#cfe3ff',
+    fontWeight: '600',
+    lineHeight: 17,
+  },
+  filterEscapeNoteDismiss: {
+    fontSize: 10,
+    color: '#7fb8ff',
+    opacity: 0.6,
+    fontStyle: 'italic',
+  },
 
   footerCard: {
     padding: 14,
