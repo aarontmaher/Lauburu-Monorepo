@@ -884,12 +884,16 @@ function PositionRow({
                     heading,
                     t,
                   );
+                  const rowStatus = progress[progressKey] ?? 'none';
                   return (
                     <View key={techKey}>
                       <Pressable
                         style={[
                           styles.techniqueRow,
                           isOpen && styles.techniqueRowOpen,
+                          rowStatus === 'drilling' && styles.rowAccentDrilling,
+                          rowStatus === 'learned' && styles.rowAccentLearned,
+                          rowStatus === 'tracking' && styles.rowAccentTracking,
                         ]}
                         onPress={() =>
                           setExpandedTechKey(isOpen ? null : techKey)
@@ -985,12 +989,16 @@ function PositionRow({
                   edge.label,
                   edge.destination,
                 );
+                const rowStatus = progress[progressKey] ?? 'none';
                 return (
                   <Pressable
                     key={`${edge.label}|${edge.destination}|${i}`}
                     style={[
                       styles.transitionRow,
                       !navigable && styles.transitionRowMuted,
+                      rowStatus === 'drilling' && styles.rowAccentDrilling,
+                      rowStatus === 'learned' && styles.rowAccentLearned,
+                      rowStatus === 'tracking' && styles.rowAccentTracking,
                     ]}
                     disabled={!navigable}
                     onPress={() => {
@@ -1047,10 +1055,16 @@ function PositionRow({
                   edge.label,
                   position.name,
                 );
+                const rowStatus = progress[progressKey] ?? 'none';
                 return (
                   <Pressable
                     key={`${edge.sourceName}|${edge.label}|${i}`}
-                    style={styles.inboundRow}
+                    style={[
+                      styles.inboundRow,
+                      rowStatus === 'drilling' && styles.rowAccentDrilling,
+                      rowStatus === 'learned' && styles.rowAccentLearned,
+                      rowStatus === 'tracking' && styles.rowAccentTracking,
+                    ]}
                     onPress={() => onRequestFocus(edge.sourceName)}>
                     <Text style={styles.inboundSource}>
                       {edge.sourceName}
@@ -1805,9 +1819,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     paddingVertical: 3,
-    paddingHorizontal: 4,
+    paddingLeft: 6,
+    paddingRight: 4,
     borderRadius: 6,
     backgroundColor: 'transparent',
+    // Reserve 3px of left border on every row — transparent by
+    // default, flipped to a status colour by rowAccentDrilling /
+    // rowAccentLearned / rowAccentTracking variants below. Keeps
+    // all rows in a block aligned whether or not they're flagged.
+    borderLeftWidth: 3,
+    borderLeftColor: 'transparent',
   },
   techniqueRowOpen: {
     backgroundColor: 'rgba(212,225,87,0.06)',
@@ -1860,6 +1881,27 @@ const styles = StyleSheet.create({
   progressPillTextDrilling: { color: '#7fb8ff' },
   progressPillTextLearned: { color: '#4ade80' },
   progressPillTextTracking: { color: '#d4e157' },
+
+  // Row-level progress accents — restrained left-rail colour +
+  // subtle matching tinted fill so scanning an expanded card
+  // instantly surfaces which items have a drilling/learned/
+  // tracking state. The base techniqueRow / transitionRow /
+  // inboundRow styles reserve a 3px transparent borderLeft so
+  // these variants only flip the colour, never the layout — no
+  // horizontal shift between accented and non-accented rows
+  // inside the same block.
+  rowAccentDrilling: {
+    borderLeftColor: '#7fb8ff',
+    backgroundColor: 'rgba(74,158,255,0.06)',
+  },
+  rowAccentLearned: {
+    borderLeftColor: '#4ade80',
+    backgroundColor: 'rgba(74,222,128,0.07)',
+  },
+  rowAccentTracking: {
+    borderLeftColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.06)',
+  },
   techniqueDetail: {
     marginTop: 2,
     marginLeft: 14,
@@ -1940,7 +1982,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: 6,
     paddingVertical: 5,
-    paddingHorizontal: 2,
+    paddingLeft: 4,
+    paddingRight: 2,
+    borderLeftWidth: 3,
+    borderLeftColor: 'transparent',
+    borderRadius: 4,
   },
   transitionRowMuted: {
     opacity: 0.45,
@@ -2019,7 +2065,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: 6,
     paddingVertical: 5,
-    paddingHorizontal: 2,
+    paddingLeft: 4,
+    paddingRight: 2,
+    borderLeftWidth: 3,
+    borderLeftColor: 'transparent',
+    borderRadius: 4,
   },
   inboundSource: {
     flex: 1,
