@@ -119,6 +119,15 @@ function formatLibraryMetricsLine(
 const PR_BADGE_MAX_AGE_DAYS = 14;
 
 /**
+ * Window (in days, measured from expiry) during which a PR shows a
+ * behavioral "fades in Nd" countdown instead of just the badge.
+ * Chosen at 3 so the nudge only appears in the last ~20% of the
+ * PR's life — enough runway to plan a session that defends or
+ * beats it, without turning every pill into a countdown sign.
+ */
+const PR_FADE_COUNTDOWN_WARNING_DAYS = 3;
+
+/**
  * Check whether a saved protocol has a best_metrics snapshot that is
  * (a) populated with at least one PR-eligible field and (b) captured
  * within the PR_BADGE_MAX_AGE_DAYS window. Pure function — no date
@@ -141,6 +150,44 @@ function hasRecentPR(
   if (!Number.isFinite(capturedMs)) return false;
   const ageDays = (nowMs - capturedMs) / (24 * 60 * 60 * 1000);
   return ageDays >= 0 && ageDays <= PR_BADGE_MAX_AGE_DAYS;
+}
+
+/**
+ * Compute a compact "PR fades …" countdown string when a saved
+ * protocol's PR is inside the fade-warning window (the last
+ * PR_FADE_COUNTDOWN_WARNING_DAYS days of the 14-day recency window).
+ * Returns null otherwise so the UI can safely suppress the line.
+ *
+ * Behavior:
+ * - Must pass hasRecentPR first (PR exists + within 14-day window).
+ * - daysRemaining is floor-based so a PR captured exactly 11 days
+ *   ago (daysRemaining = 3) triggers the countdown; a 10-day-old
+ *   PR does not.
+ * - Wording scales with remaining days:
+ *     0  → "PR fades today"
+ *     1  → "PR fades tomorrow"
+ *     2  → "PR fades in 2d"
+ *     3  → "PR fades in 3d"
+ * - Capped at PR_FADE_COUNTDOWN_WARNING_DAYS so the nudge never
+ *   appears earlier — noise prevention.
+ *
+ * Pure function — no mutation, no side effects beyond reading
+ * `nowMs` the caller passes in.
+ */
+function getPRFadeCountdown(
+  best: SavedHIITProtocolMetrics | undefined,
+  nowMs: number,
+): string | null {
+  if (!hasRecentPR(best, nowMs)) return null;
+  const capturedMs = Date.parse(best!.captured_at);
+  // hasRecentPR already verified Date.parse — this re-parse is cheap.
+  const ageDays = (nowMs - capturedMs) / (24 * 60 * 60 * 1000);
+  const daysRemainingRaw = PR_BADGE_MAX_AGE_DAYS - ageDays;
+  const daysRemaining = Math.max(0, Math.floor(daysRemainingRaw));
+  if (daysRemaining > PR_FADE_COUNTDOWN_WARNING_DAYS) return null;
+  if (daysRemaining === 0) return 'PR fades today';
+  if (daysRemaining === 1) return 'PR fades tomorrow';
+  return `PR fades in ${daysRemaining}d`;
 }
 
 /**
@@ -983,6 +1030,10 @@ function EntryForm({
                   <View style={styles.libraryList}>
                     {savedHIITProtocols.map((p) => {
                       const recentPR = hasRecentPR(p.best_metrics, nowMs);
+                      const fadeCountdown = getPRFadeCountdown(
+                        p.best_metrics,
+                        nowMs,
+                      );
                       const lastLine = formatLibraryMetricsLine(p.last_metrics);
                       const bestLine = formatLibraryMetricsLine(p.best_metrics);
                       const lastAge =
@@ -1051,6 +1102,16 @@ function EntryForm({
                               <Text style={styles.libraryRowMetricValuePR}>
                                 {bestLine}
                               </Text>
+                              {/* PR fade countdown — behavioral nudge
+                                  surfaced only in the last 3 days of
+                                  the 14-day recency window. Renders
+                                  amber italic to signal time pressure
+                                  without screaming at the user. */}
+                              {fadeCountdown && (
+                                <Text style={styles.libraryRowFadeCountdown}>
+                                  ⏳ {fadeCountdown} — defend or beat it
+                                </Text>
+                              )}
                             </View>
                           )}
 
@@ -2561,6 +2622,13 @@ const styles = StyleSheet.create({
     color: '#ffd866',
     fontWeight: '700',
     marginTop: 1,
+  },
+  libraryRowFadeCountdown: {
+    fontSize: 11,
+    color: '#ffa94d',
+    fontWeight: '600',
+    fontStyle: 'italic',
+    marginTop: 3,
   },
   libraryRowMetricMuted: {
     fontSize: 11,
