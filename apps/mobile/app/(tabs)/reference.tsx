@@ -1396,9 +1396,9 @@ export default function ReferenceScreen() {
         autoCapitalize="none"
       />
 
-      {/* Filter toggles — built-out only. Extensible to more toggles
-          later (e.g. role-aware filter, has-video filter) without
-          rewiring the screen layout. */}
+      {/* Filter toggles — built-out only. The active-filter banner
+          below handles result counts + tappable clear actions, so
+          this row focuses just on the toggle itself. */}
       <View style={styles.filterRow}>
         <Pressable
           onPress={() => setBuiltOutOnly((v) => !v)}
@@ -1414,22 +1414,7 @@ export default function ReferenceScreen() {
             Built out only
           </Text>
         </Pressable>
-        {(query.trim().length > 0 || builtOutOnly) && (
-          <Text style={styles.searchMeta}>
-            {totalFiltered} position{totalFiltered === 1 ? '' : 's'}
-          </Text>
-        )}
       </View>
-
-      {/* Empty match state */}
-      {(query.trim().length > 0 || builtOutOnly) && totalFiltered === 0 && (
-        <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>No positions match</Text>
-          <Text style={styles.emptyBody}>
-            Try a broader search or turn off "Built out only".
-          </Text>
-        </View>
-      )}
 
       {/* Filter-escape note — rendered when a transition jump had
           to clear search and/or disable Built-out filter so the
@@ -1538,6 +1523,85 @@ export default function ReferenceScreen() {
               Show all ×
             </Text>
           </Pressable>
+        </View>
+      )}
+
+      {/* Active filter context banner — renders ONLY when at least
+          one filter is active (search, built-out, or a progress
+          status). Each active filter shows as a small token chip
+          with an × tap target that clears only that filter, so
+          users can see and peel off filters individually without
+          having to remember which of the three switches did what.
+          Result count sits on the right so scanability reads
+          "what's on → what matches" left-to-right. When the combo
+          filters to zero matches, the banner stays visible and
+          tints red-muted to make the empty state obvious. */}
+      {(progressFilter != null ||
+        builtOutOnly ||
+        query.trim().length > 0) && (
+        <View
+          style={[
+            styles.activeFilterBanner,
+            totalFiltered === 0 && styles.activeFilterBannerEmpty,
+          ]}>
+          <Text style={styles.activeFilterBannerLabel}>Showing</Text>
+          <View style={styles.activeFilterTokenRow}>
+            {progressFilter && (
+              <Pressable
+                style={[
+                  styles.activeFilterToken,
+                  progressFilter === 'drilling' &&
+                    styles.activeFilterTokenDrilling,
+                  progressFilter === 'learned' &&
+                    styles.activeFilterTokenLearned,
+                  progressFilter === 'tracking' &&
+                    styles.activeFilterTokenTracking,
+                ]}
+                onPress={() => setProgressFilter(null)}>
+                <Text
+                  style={[
+                    styles.activeFilterTokenText,
+                    progressFilter === 'drilling' && {
+                      color: '#7fb8ff',
+                    },
+                    progressFilter === 'learned' && { color: '#4ade80' },
+                    progressFilter === 'tracking' && {
+                      color: '#d4e157',
+                    },
+                  ]}>
+                  {progressFilter} ×
+                </Text>
+              </Pressable>
+            )}
+            {builtOutOnly && (
+              <Pressable
+                style={styles.activeFilterToken}
+                onPress={() => setBuiltOutOnly(false)}>
+                <Text style={styles.activeFilterTokenText}>
+                  built out only ×
+                </Text>
+              </Pressable>
+            )}
+            {query.trim().length > 0 && (
+              <Pressable
+                style={styles.activeFilterToken}
+                onPress={() => setQuery('')}>
+                <Text
+                  style={styles.activeFilterTokenText}
+                  numberOfLines={1}>
+                  “{query.trim()}” ×
+                </Text>
+              </Pressable>
+            )}
+          </View>
+          <Text
+            style={[
+              styles.activeFilterCount,
+              totalFiltered === 0 && styles.activeFilterCountEmpty,
+            ]}>
+            {totalFiltered}{' '}
+            {totalFiltered === 1 ? 'position' : 'positions'}
+          </Text>
         </View>
       )}
 
@@ -2078,6 +2142,75 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#ccc',
     fontWeight: '600',
+  },
+
+  // Active-filter context banner — shown whenever any combination
+  // of search / built-out / progressFilter is on, so users can see
+  // AND peel off filters without guessing which toggle did what.
+  activeFilterBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    borderLeftWidth: 2,
+    borderLeftColor: '#d4e157',
+  },
+  activeFilterBannerEmpty: {
+    borderLeftColor: '#ff8a80',
+    backgroundColor: 'rgba(255,138,128,0.07)',
+  },
+  activeFilterBannerLabel: {
+    fontSize: 10,
+    opacity: 0.5,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    fontWeight: '700',
+  },
+  activeFilterTokenRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    flexShrink: 1,
+  },
+  activeFilterToken: {
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#555',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    maxWidth: 180,
+  },
+  activeFilterTokenText: {
+    fontSize: 11,
+    color: '#ccc',
+    fontWeight: '600',
+    textTransform: 'capitalize',
+  },
+  activeFilterTokenDrilling: {
+    borderColor: '#7fb8ff',
+    backgroundColor: 'rgba(74,158,255,0.12)',
+  },
+  activeFilterTokenLearned: {
+    borderColor: '#4ade80',
+    backgroundColor: 'rgba(74,222,128,0.12)',
+  },
+  activeFilterTokenTracking: {
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.12)',
+  },
+  activeFilterCount: {
+    marginLeft: 'auto',
+    fontSize: 12,
+    color: '#d4e157',
+    fontWeight: '700',
+  },
+  activeFilterCountEmpty: {
+    color: '#ff8a80',
   },
 
   // Filter/search auto-escape note when a transition jump revealed
