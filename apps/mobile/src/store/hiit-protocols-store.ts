@@ -103,9 +103,35 @@ async function persistSafely(protocols: SavedHIITProtocol[]): Promise<void> {
   }
 }
 
+/**
+ * Ephemeral handoff payload used when a HIIT session is logged from
+ * the live timer modal. The timer completion path cannot render a
+ * post-save success banner itself (it immediately routes back to the
+ * previous screen), so it stashes a compact payload here and the
+ * Train screen picks it up on its next render via a store subscription
+ * and clears it. Not persisted — lives only for the round-trip between
+ * timer completion and Train re-focusing.
+ */
+export interface PendingTimerLogHandoff {
+  /**
+   * Progression-vs-last delta string computed by buildProgressionDelta,
+   * or null if no delta is meaningful (no prior snapshot, no comparable
+   * fields, first-ever session for this protocol).
+   */
+  delta: string | null;
+}
+
 interface HIITProtocolsState {
   protocols: SavedHIITProtocol[];
   hydrated: boolean;
+  /**
+   * Ephemeral handoff set by the timer completion path, consumed by
+   * TrainScreen. Null when there is no pending timer log to surface.
+   * Not persisted to secureStorage on purpose — if the user kills the
+   * app between timer completion and re-opening Train, the banner is
+   * silently lost (the session itself is still saved via training-store).
+   */
+  pendingTimerLog: PendingTimerLogHandoff | null;
 
   hydrate: () => Promise<void>;
 
@@ -140,6 +166,22 @@ interface HIITProtocolsState {
 
   /** Wipe the full library. */
   clearAll: () => void;
+
+  /**
+   * Stash a pending timer-log handoff. Called by timer.tsx
+   * handleComplete after saveHIITProtocol runs, so the Train screen
+   * can pop the same success banner + delta UI that the in-form
+   * submit path uses. Setting a non-null payload bumps the store
+   * state identity so TrainScreen's useEffect subscription fires.
+   */
+  setPendingTimerLog: (handoff: PendingTimerLogHandoff) => void;
+
+  /**
+   * Clear the pending timer-log handoff. Called by TrainScreen after
+   * it renders the banner so subsequent Train visits don't re-show a
+   * stale delta.
+   */
+  clearPendingTimerLog: () => void;
 }
 
 /**
@@ -263,6 +305,7 @@ export function buildProgressionDelta(
 export const useHIITProtocolsStore = create<HIITProtocolsState>((set, get) => ({
   protocols: [],
   hydrated: false,
+  pendingTimerLog: null,
 
   hydrate: async () => {
     try {
@@ -386,5 +429,15 @@ export const useHIITProtocolsStore = create<HIITProtocolsState>((set, get) => ({
   clearAll: () => {
     set({ protocols: [] });
     void persistSafely([]);
+  },
+
+  setPendingTimerLog: (handoff) => {
+    // Fresh object each time so zustand selector subscribers compare
+    // by identity and always fire, even for repeated identical deltas.
+    set({ pendingTimerLog: { ...handoff } });
+  },
+
+  clearPendingTimerLog: () => {
+    set({ pendingTimerLog: null });
   },
 }));

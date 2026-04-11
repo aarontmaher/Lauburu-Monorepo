@@ -1791,6 +1791,13 @@ export default function TrainScreen() {
   // comparable numeric fields.
   const [lastLoggedDelta, setLastLoggedDelta] = useState<string | null>(null);
 
+  // Ephemeral handoff from the timer completion path — set by
+  // timer.tsx when a HIIT session is logged through the live timer.
+  // Consumed here via the effect below and then cleared so a later
+  // Train visit doesn't re-show a stale banner.
+  const pendingTimerLog = useHIITProtocolsStore((s) => s.pendingTimerLog);
+  const clearPendingTimerLog = useHIITProtocolsStore((s) => s.clearPendingTimerLog);
+
   // Today's coaching context used to interpret today's logged HIIT
   // sessions in SessionCard. Historical sessions deliberately receive
   // `undefined` — today's WHOOP recovery is not a valid signal for a
@@ -1875,6 +1882,55 @@ export default function TrainScreen() {
     setLastLoggedDelta(progressionDelta ?? null);
     setTimeout(() => setSubmitted(false), 3500);
   };
+
+  // Consume the ephemeral timer-log handoff. When timer.tsx finishes
+  // a HIIT session and stashes `pendingTimerLog`, this effect pops
+  // the same success banner + delta line the in-form submit path
+  // uses, then clears the handoff so subsequent Train visits don't
+  // re-show a stale delta. Intentionally leaves `showForm` /
+  // `editingSession` untouched — the user may have left the Train
+  // form mid-entry before tapping Start Timer, and we don't want to
+  // reset their state.
+  useEffect(() => {
+    if (pendingTimerLog == null) return;
+    const delta = pendingTimerLog.delta;
+
+    // Compose the banner headline from the most recent training
+    // session — the timer path has just added it via addSession, so
+    // it sits at the top of the sessions array by created_at.
+    const latest = [...sessions].sort((a, b) =>
+      b.created_at.localeCompare(a.created_at),
+    )[0];
+    if (latest) {
+      const base = summarizeSession(latest).headline;
+      const dayPlan = buildDayPlanSummary(latest.date, schedule, sessions);
+      let suffix = '';
+      if (dayPlan.status === 'on_plan' && dayPlan.completedCount > 0) {
+        suffix = ' · matches today\'s plan';
+      } else if (dayPlan.status === 'over_plan') {
+        suffix = ' · off-plan session';
+      } else if (dayPlan.status === 'under_plan') {
+        const remaining = dayPlan.plannedCount - dayPlan.completedCount;
+        if (remaining > 0) {
+          suffix = ` · ${remaining} more planned today`;
+        }
+      }
+      setLastLoggedHeadline(base + suffix);
+    } else {
+      setLastLoggedHeadline('timer session');
+    }
+
+    setLastLoggedDelta(delta);
+    setSubmitted(true);
+    // Clear the handoff immediately so re-entering Train later
+    // (e.g. tab switch) does not re-trigger this effect.
+    clearPendingTimerLog();
+    const t = setTimeout(() => setSubmitted(false), 3500);
+    return () => clearTimeout(t);
+    // Intentionally only depends on pendingTimerLog identity — we
+    // want exactly one banner pop per timer completion.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingTimerLog]);
 
   const handleEdit = (session: TrainingSession) => {
     setEditingSession(session);

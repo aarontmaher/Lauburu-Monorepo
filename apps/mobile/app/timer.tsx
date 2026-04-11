@@ -15,7 +15,7 @@ import { useTrainingStore } from '../src/store/training-store';
 import { useHealthStore } from '../src/store/health-store';
 import { useAuthStore } from '../src/store/auth-store';
 import { useMachineStore } from '../src/store/machine-store';
-import { useHIITProtocolsStore } from '../src/store/hiit-protocols-store';
+import { useHIITProtocolsStore, buildProgressionDelta } from '../src/store/hiit-protocols-store';
 import { MachineMetricsReview } from '../src/components/MachineMetricsReview';
 import { modalitySupportsMachineData } from '../src/services/machine-connector';
 import { CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, HR_ZONES, getHRZone, REST_COLOR } from '@lauburu/shared';
@@ -127,6 +127,8 @@ export default function TimerScreen() {
   const user = useAuthStore((s) => s.user);
   const setLastMachineMetrics = useMachineStore((s) => s.setLastSessionMetrics);
   const saveHIITProtocol = useHIITProtocolsStore((s) => s.saveProtocol);
+  const hiitProtocols = useHIITProtocolsStore((s) => s.protocols);
+  const setPendingTimerLog = useHIITProtocolsStore((s) => s.setPendingTimerLog);
 
   // Post-session machine-metrics capture — only meaningful for cardio
   // modalities that would plausibly expose these numbers on a console
@@ -230,7 +232,24 @@ export default function TimerScreen() {
     // Mirrors the EntryForm submit path — metrics-less sessions still
     // bump use_count and preserve any previously-captured snapshot via
     // the store's own merge logic.
+    //
+    // Compute progression delta BEFORE calling saveHIITProtocol, using
+    // the same buildProgressionDelta helper the Train submit path uses.
+    // saveHIITProtocol will overwrite last_metrics with the fresh
+    // numbers, so the prior snapshot must be captured first.
+    //
+    // Then stash the delta into the store's ephemeral pendingTimerLog
+    // handoff — TrainScreen subscribes to that field and pops its
+    // existing success banner/delta UI on the next render. Non-HIIT
+    // sessions and sessions without a timer label skip this path
+    // entirely, leaving the Train banner unaffected.
     if (config.mode === 'interval' && config.label) {
+      const normLabel = config.label.trim().toLowerCase();
+      const priorProtocol = hiitProtocols.find(
+        (p) => p.label.trim().toLowerCase() === normLabel,
+      );
+      const priorMetrics = priorProtocol?.last_metrics;
+
       saveHIITProtocol({
         label: config.label,
         work_s: config.work_s ?? 30,
@@ -240,6 +259,19 @@ export default function TimerScreen() {
         metrics: anyTyped ? typedMetrics : undefined,
         duration_min: durationMin,
       });
+
+      const delta = buildProgressionDelta(
+        {
+          metrics: anyTyped ? typedMetrics : undefined,
+          duration_min: durationMin,
+        },
+        priorMetrics,
+      );
+
+      // Always set the handoff — even a null delta lets TrainScreen
+      // know "a timer session just landed" so it can pop the banner
+      // in its generic form (no delta line).
+      setPendingTimerLog({ delta });
     }
 
     if (user?.id) syncData(user.id).catch(() => {});
