@@ -19,7 +19,9 @@ import { Text, View } from '@/components/Themed';
 
 /** Live website base URL — the full Reference tree, 3D graph, and
  *  attached media all live here today. The mobile Reference screen
- *  bridges to it via the "Open in full map" CTAs. */
+ *  bridges to it via explicit "Open ... in 3D map (web)" CTAs that
+ *  launch the system browser so users don't expect an in-app 3D
+ *  renderer. */
 const FULL_MAP_URL = 'https://aarontmaher.github.io/lauburugrapplingmap/';
 import {
   REFERENCE_SECTIONS,
@@ -431,8 +433,8 @@ function PositionRow({
                           <Text style={styles.techniqueDetailName}>{t}</Text>
                           <Text style={styles.techniqueDetailMeta}>
                             {position.built_out
-                              ? 'Part of a built-out position — full text and video live on the web map.'
-                              : 'Text and any attached video live on the web map.'}
+                              ? 'Full text, transitions, and any attached video live in the interactive 3D map on web.'
+                              : 'Full text and any attached video live in the interactive 3D map on web.'}
                           </Text>
                           <Pressable
                             style={styles.techniqueDetailBridgeBtn}
@@ -446,7 +448,7 @@ function PositionRow({
                               })
                             }>
                             <Text style={styles.techniqueDetailBridgeBtnText}>
-                              View in full map ↗
+                              Open this technique in 3D map (web) ↗
                             </Text>
                           </Pressable>
                         </View>
@@ -471,7 +473,8 @@ function PositionRow({
           {/* Position-level full-map bridge. Always rendered on
               expanded positions so the separation between mobile
               Reference and the full web 3D map feels intentional,
-              not like a missing feature. */}
+              not like a missing feature. Copy explicitly says "web"
+              so users don't expect an in-app 3D renderer. */}
           <Pressable
             style={styles.positionBridgeBtn}
             onPress={() =>
@@ -481,7 +484,7 @@ function PositionRow({
               })
             }>
             <Text style={styles.positionBridgeBtnText}>
-              Open {position.name} in full map ↗
+              Open {position.name} in 3D map (web) ↗
             </Text>
           </Pressable>
         </View>
@@ -562,7 +565,8 @@ export default function ReferenceScreen() {
       <View style={styles.header}>
         <Text style={styles.heading}>Reference</Text>
         <Text style={styles.subtitle}>
-          Canonical positions from the Lauburu Grappling Map.
+          Canonical positions and techniques from the Lauburu Grappling Map.
+          The interactive 3D graph opens in your browser.
         </Text>
       </View>
 
@@ -639,22 +643,24 @@ export default function ReferenceScreen() {
       ))}
 
       {/* Full-map bridge footer — stops pretending the 3D map is a
-          week away and makes the separation intentional. Tap opens
-          the live website Reference + 3D graph in the system browser. */}
+          week away and makes the separation intentional. Copy is
+          explicit: the 3D graph is a web experience, and tapping
+          Open launches it in the system browser. */}
       <View style={styles.footerCard}>
-        <Text style={styles.footerTitle}>Full 3D map</Text>
+        <Text style={styles.footerTitle}>Interactive 3D map (web)</Text>
         <Text style={styles.footerBody}>
-          The interactive 3D graph, position-to-position transitions,
-          full technique text, and attached videos live on the website.
-          Mobile Reference shows the bundled technique list for quick
-          review; the full map is where the graph tools and media
-          playback live.
+          Mobile Reference is the fast lookup view — positions,
+          techniques, role breakdowns, and built-out filters. The
+          full interactive 3D graph (transitions, position physics,
+          filter modes, attached video playback) is a browser
+          experience that opens outside the app in your default
+          browser.
         </Text>
         <Pressable
           style={styles.footerBridgeBtn}
           onPress={() => openFullMap({})}>
           <Text style={styles.footerBridgeBtnText}>
-            Open full map ↗
+            Open 3D map in browser ↗
           </Text>
         </Pressable>
       </View>
