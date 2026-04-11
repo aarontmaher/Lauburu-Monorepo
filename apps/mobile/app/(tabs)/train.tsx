@@ -62,6 +62,40 @@ function formatDateLabel(date: string): string {
 }
 
 /**
+ * Days-ago threshold below which a saved protocol's best_metrics is
+ * still considered a "recent PR" worth surfacing on the pill. Beyond
+ * this window the 🏆 badge stops rendering — an eight-week-old PR is
+ * history, not a live target, and showing it on every pill forever
+ * would dilute the signal.
+ */
+const PR_BADGE_MAX_AGE_DAYS = 14;
+
+/**
+ * Check whether a saved protocol has a best_metrics snapshot that is
+ * (a) populated with at least one PR-eligible field and (b) captured
+ * within the PR_BADGE_MAX_AGE_DAYS window. Pure function — no date
+ * side effects beyond reading `now`.
+ */
+function hasRecentPR(
+  best: SavedHIITProtocolMetrics | undefined,
+  nowMs: number,
+): boolean {
+  if (!best) return false;
+  // Must carry at least one PR-eligible field. Avg HR and duration
+  // are intentionally excluded — see PR_ELIGIBLE_FIELDS in the store.
+  const hasPRField =
+    best.distance_m != null ||
+    best.avg_power_w != null ||
+    best.calories != null ||
+    best.kilojoules != null;
+  if (!hasPRField) return false;
+  const capturedMs = Date.parse(best.captured_at);
+  if (!Number.isFinite(capturedMs)) return false;
+  const ageDays = (nowMs - capturedMs) / (24 * 60 * 60 * 1000);
+  return ageDays >= 0 && ageDays <= PR_BADGE_MAX_AGE_DAYS;
+}
+
+/**
  * Format a saved-HIIT-protocol last-session metrics snapshot into a
  * compact "last: 5.2km · 185W · 18min" line for the Train saved-
  * protocol pill. Picks at most 3 fields in priority order so the pill
@@ -813,49 +847,68 @@ function EntryForm({
               fill in work/rest/rounds/label/modality; long-press to
               remove the protocol from the library. Auto-saved on
               session log when the current protocol has a label. */}
-          {savedHIITProtocols.length > 0 && (
-            <View style={styles.savedProtocolsBlock}>
-              <Text style={styles.savedProtocolsLabel}>Saved protocols</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View style={styles.pillRow}>
-                  {savedHIITProtocols.map((p) => {
-                    const lastMetricsLine = formatSavedProtocolLastMetrics(
-                      p.last_metrics,
-                    );
-                    return (
-                      <Pressable
-                        key={p.id}
-                        style={styles.savedProtocolPill}
-                        onPress={() => {
-                          setWorkDur(String(p.work_s));
-                          setRestDur(String(p.rest_s));
-                          setIntervalRounds(String(p.rounds));
-                          setIntervalLabel(p.label);
-                          if (p.modality) setCondModality(p.modality);
-                        }}
-                        onLongPress={() => removeHIITProtocol(p.id)}
-                        delayLongPress={500}>
-                        <Text style={styles.savedProtocolPillName}>
-                          {p.label}
-                        </Text>
-                        <Text style={styles.savedProtocolPillDetail}>
-                          {p.work_s}/{p.rest_s} × {p.rounds}
-                        </Text>
-                        {lastMetricsLine.length > 0 && (
-                          <Text style={styles.savedProtocolPillTarget}>
-                            {lastMetricsLine}
+          {savedHIITProtocols.length > 0 && (() => {
+            // Compute "now" once outside the map so every pill's
+            // recency check uses the same reference. Cheap — Date.now
+            // is a single syscall and the pill list is tiny (max 12).
+            const nowMs = Date.now();
+            return (
+              <View style={styles.savedProtocolsBlock}>
+                <Text style={styles.savedProtocolsLabel}>Saved protocols</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View style={styles.pillRow}>
+                    {savedHIITProtocols.map((p) => {
+                      const lastMetricsLine = formatSavedProtocolLastMetrics(
+                        p.last_metrics,
+                      );
+                      const recentPR = hasRecentPR(p.best_metrics, nowMs);
+                      return (
+                        <Pressable
+                          key={p.id}
+                          style={[
+                            styles.savedProtocolPill,
+                            recentPR && styles.savedProtocolPillPR,
+                          ]}
+                          onPress={() => {
+                            setWorkDur(String(p.work_s));
+                            setRestDur(String(p.rest_s));
+                            setIntervalRounds(String(p.rounds));
+                            setIntervalLabel(p.label);
+                            if (p.modality) setCondModality(p.modality);
+                          }}
+                          onLongPress={() => removeHIITProtocol(p.id)}
+                          delayLongPress={500}>
+                          <View style={styles.savedProtocolPillNameRow}>
+                            <Text
+                              style={styles.savedProtocolPillName}
+                              numberOfLines={1}>
+                              {p.label}
+                            </Text>
+                            {recentPR && (
+                              <Text style={styles.savedProtocolPillBadge}>
+                                🏆
+                              </Text>
+                            )}
+                          </View>
+                          <Text style={styles.savedProtocolPillDetail}>
+                            {p.work_s}/{p.rest_s} × {p.rounds}
                           </Text>
-                        )}
-                      </Pressable>
-                    );
-                  })}
-                </View>
-              </ScrollView>
-              <Text style={styles.savedProtocolsHint}>
-                Long-press a protocol to remove it.
-              </Text>
-            </View>
-          )}
+                          {lastMetricsLine.length > 0 && (
+                            <Text style={styles.savedProtocolPillTarget}>
+                              {lastMetricsLine}
+                            </Text>
+                          )}
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </ScrollView>
+                <Text style={styles.savedProtocolsHint}>
+                  Long-press a protocol to remove it.
+                </Text>
+              </View>
+            );
+          })()}
 
           <TextInput
             style={styles.input}
@@ -2225,10 +2278,28 @@ const styles = StyleSheet.create({
     minWidth: 110,
     maxWidth: 200,
   },
+  // Subtle gold-tinted border + fill when the protocol carries a
+  // recent PR. Additive on top of the base pill so the recall tap
+  // target, backgrounds, and layout remain identical — no layout
+  // shift between PR-marked and plain pills.
+  savedProtocolPillPR: {
+    borderColor: 'rgba(255,216,102,0.6)',
+    backgroundColor: 'rgba(255,216,102,0.08)',
+  },
+  savedProtocolPillNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'transparent',
+  },
   savedProtocolPillName: {
     fontSize: 12,
     color: '#d4e157',
     fontWeight: '600',
+    flexShrink: 1,
+  },
+  savedProtocolPillBadge: {
+    fontSize: 11,
   },
   savedProtocolPillDetail: {
     fontSize: 10,
