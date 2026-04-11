@@ -14,7 +14,7 @@ import { useAuthStore } from '../../src/store/auth-store';
 import { useWhoopStore } from '../../src/store/whoop-store';
 import { useMachineStore } from '../../src/store/machine-store';
 import { useHIITProtocolsStore, buildProgressionDelta, detectNewBest } from '../../src/store/hiit-protocols-store';
-import type { SavedHIITProtocolMetrics } from '../../src/store/hiit-protocols-store';
+import type { SavedHIITProtocol, SavedHIITProtocolMetrics } from '../../src/store/hiit-protocols-store';
 import { modalitySupportsMachineData } from '../../src/services/machine-connector';
 import { ReferencePositionPicker } from '../../src/components/ReferencePositionPicker';
 import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat, SessionSummary, SegmentType, MachineMetrics, WorkoutSource } from '@lauburu/shared';
@@ -59,6 +59,54 @@ function formatDateLabel(date: string): string {
   if (date === daysAgo(1)) return 'Yesterday';
   const d = new Date(date + 'T12:00:00');
   return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+/**
+ * Format a SavedHIITProtocolMetrics.captured_at ISO timestamp into
+ * a compact relative label for the My HIIT Library browser — "today",
+ * "yesterday", "3d ago", "2w ago". Returns an empty string on parse
+ * failure so the UI can safely suppress the line.
+ */
+function formatCapturedAtRelative(isoTimestamp: string, nowMs: number): string {
+  const captured = Date.parse(isoTimestamp);
+  if (!Number.isFinite(captured)) return '';
+  const ageMs = nowMs - captured;
+  if (ageMs < 0) return 'today'; // clock skew — treat future as now
+  const day = 24 * 60 * 60 * 1000;
+  const days = Math.floor(ageMs / day);
+  if (days === 0) return 'today';
+  if (days === 1) return 'yesterday';
+  if (days < 7) return `${days}d ago`;
+  if (days < 30) return `${Math.floor(days / 7)}w ago`;
+  if (days < 365) return `${Math.floor(days / 30)}mo ago`;
+  return `${Math.floor(days / 365)}y ago`;
+}
+
+/**
+ * Format a SavedHIITProtocolMetrics snapshot into a compact multi-
+ * field line suitable for the My HIIT Library browser rows. Shows
+ * all meaningful fields (not capped at 3 like the pill formatter)
+ * because rows have more horizontal room than pills. Returns an
+ * empty string when no numeric field is populated.
+ */
+function formatLibraryMetricsLine(
+  m: SavedHIITProtocolMetrics | undefined,
+): string {
+  if (!m) return '';
+  const parts: string[] = [];
+  if (m.distance_m != null) {
+    if (m.distance_m >= 1000) {
+      parts.push(`${(m.distance_m / 1000).toFixed(1)}km`);
+    } else {
+      parts.push(`${Math.round(m.distance_m)}m`);
+    }
+  }
+  if (m.avg_power_w != null) parts.push(`${Math.round(m.avg_power_w)}W`);
+  if (m.calories != null) parts.push(`${Math.round(m.calories)}kcal`);
+  if (m.kilojoules != null) parts.push(`${Math.round(m.kilojoules)}kJ`);
+  if (m.avg_hr_bpm != null) parts.push(`${Math.round(m.avg_hr_bpm)}bpm`);
+  if (m.duration_min != null) parts.push(`${Math.round(m.duration_min)}min`);
+  return parts.join(' · ');
 }
 
 /**
@@ -376,6 +424,11 @@ function EntryForm({
   const savedHIITProtocols = useHIITProtocolsStore((s) => s.protocols);
   const saveHIITProtocol = useHIITProtocolsStore((s) => s.saveProtocol);
   const removeHIITProtocol = useHIITProtocolsStore((s) => s.removeProtocol);
+  // Local toggle for the expanded "My HIIT library" browser —
+  // collapsed by default so the fast pill-strip recall path is
+  // the first thing the user sees. Persists nothing; each fresh
+  // Train visit starts collapsed.
+  const [showHIITLibrary, setShowHIITLibrary] = useState(false);
 
   const isConditioning = sessionType === 'conditioning';
   const isInterval = isConditioning && ['hiit', 'intervals', 'sprint_intervals', 'circuit'].includes(condSubtype);
@@ -852,9 +905,27 @@ function EntryForm({
             // recency check uses the same reference. Cheap — Date.now
             // is a single syscall and the pill list is tiny (max 12).
             const nowMs = Date.now();
+            // Shared recall handler used by both pill tap and library
+            // row tap so the two surfaces never drift.
+            const recallProtocol = (p: SavedHIITProtocol) => {
+              setWorkDur(String(p.work_s));
+              setRestDur(String(p.rest_s));
+              setIntervalRounds(String(p.rounds));
+              setIntervalLabel(p.label);
+              if (p.modality) setCondModality(p.modality);
+            };
             return (
               <View style={styles.savedProtocolsBlock}>
-                <Text style={styles.savedProtocolsLabel}>Saved protocols</Text>
+                <View style={styles.savedProtocolsHeaderRow}>
+                  <Text style={styles.savedProtocolsLabel}>Saved protocols</Text>
+                  <Pressable
+                    onPress={() => setShowHIITLibrary((v) => !v)}
+                    style={styles.libraryToggleBtn}>
+                    <Text style={styles.libraryToggleBtnText}>
+                      {showHIITLibrary ? 'Hide library ▴' : 'Browse library ▾'}
+                    </Text>
+                  </Pressable>
+                </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View style={styles.pillRow}>
                     {savedHIITProtocols.map((p) => {
@@ -869,13 +940,7 @@ function EntryForm({
                             styles.savedProtocolPill,
                             recentPR && styles.savedProtocolPillPR,
                           ]}
-                          onPress={() => {
-                            setWorkDur(String(p.work_s));
-                            setRestDur(String(p.rest_s));
-                            setIntervalRounds(String(p.rounds));
-                            setIntervalLabel(p.label);
-                            if (p.modality) setCondModality(p.modality);
-                          }}
+                          onPress={() => recallProtocol(p)}
                           onLongPress={() => removeHIITProtocol(p.id)}
                           delayLongPress={500}>
                           <View style={styles.savedProtocolPillNameRow}>
@@ -906,6 +971,111 @@ function EntryForm({
                 <Text style={styles.savedProtocolsHint}>
                   Long-press a protocol to remove it.
                 </Text>
+
+                {/* My HIIT library — full-width expanded view.
+                    Toggled via Browse library, collapsed by default
+                    so the pill strip stays the primary fast-path.
+                    Each row shows the label + PR badge, schedule,
+                    modality, last-session and best-ever metric
+                    lines side-by-side with captured-at relative
+                    dates, a Recall button, and a Remove button. */}
+                {showHIITLibrary && (
+                  <View style={styles.libraryList}>
+                    {savedHIITProtocols.map((p) => {
+                      const recentPR = hasRecentPR(p.best_metrics, nowMs);
+                      const lastLine = formatLibraryMetricsLine(p.last_metrics);
+                      const bestLine = formatLibraryMetricsLine(p.best_metrics);
+                      const lastAge =
+                        p.last_metrics?.captured_at
+                          ? formatCapturedAtRelative(
+                              p.last_metrics.captured_at,
+                              nowMs,
+                            )
+                          : '';
+                      const bestAge =
+                        p.best_metrics?.captured_at
+                          ? formatCapturedAtRelative(
+                              p.best_metrics.captured_at,
+                              nowMs,
+                            )
+                          : '';
+                      return (
+                        <View
+                          key={p.id}
+                          style={[
+                            styles.libraryRow,
+                            recentPR && styles.libraryRowPR,
+                          ]}>
+                          <View style={styles.libraryRowHeader}>
+                            <Text
+                              style={styles.libraryRowLabel}
+                              numberOfLines={1}>
+                              {p.label}
+                            </Text>
+                            {recentPR && (
+                              <Text style={styles.libraryRowBadge}>🏆</Text>
+                            )}
+                          </View>
+                          <Text style={styles.libraryRowSchedule}>
+                            {p.work_s}s / {p.rest_s}s × {p.rounds}
+                            {p.modality ? ` · ${MODALITY_LABELS[p.modality]}` : ''}
+                            {p.use_count > 0 ? ` · ${p.use_count}× logged` : ''}
+                          </Text>
+
+                          {/* Last session — always rendered when any
+                              snapshot exists, falls back to a muted
+                              "no data yet" line otherwise. */}
+                          <View style={styles.libraryRowMetricBlock}>
+                            <Text style={styles.libraryRowMetricLabel}>
+                              LAST{lastAge ? ` · ${lastAge}` : ''}
+                            </Text>
+                            {lastLine.length > 0 ? (
+                              <Text style={styles.libraryRowMetricValue}>
+                                {lastLine}
+                              </Text>
+                            ) : (
+                              <Text style={styles.libraryRowMetricMuted}>
+                                no machine data yet
+                              </Text>
+                            )}
+                          </View>
+
+                          {/* Best ever — only shown when best_metrics
+                              is populated. No fake placeholder when
+                              absent — honest about missing data. */}
+                          {p.best_metrics && bestLine.length > 0 && (
+                            <View style={styles.libraryRowMetricBlock}>
+                              <Text style={styles.libraryRowMetricLabel}>
+                                BEST EVER{bestAge ? ` · ${bestAge}` : ''}
+                              </Text>
+                              <Text style={styles.libraryRowMetricValuePR}>
+                                {bestLine}
+                              </Text>
+                            </View>
+                          )}
+
+                          {/* Actions — Recall + Remove */}
+                          <View style={styles.libraryRowActions}>
+                            <Pressable
+                              style={styles.libraryRowRecallBtn}
+                              onPress={() => recallProtocol(p)}>
+                              <Text style={styles.libraryRowRecallBtnText}>
+                                ↺ Recall
+                              </Text>
+                            </Pressable>
+                            <Pressable
+                              style={styles.libraryRowRemoveBtn}
+                              onPress={() => removeHIITProtocol(p.id)}>
+                              <Text style={styles.libraryRowRemoveBtnText}>
+                                Remove
+                              </Text>
+                            </Pressable>
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                )}
               </View>
             );
           })()}
@@ -2319,6 +2489,114 @@ const styles = StyleSheet.create({
     opacity: 0.4,
     fontStyle: 'italic',
   },
+  savedProtocolsHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+  },
+  libraryToggleBtn: {
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+  },
+  libraryToggleBtnText: {
+    fontSize: 11,
+    color: '#d4e157',
+    fontWeight: '600',
+  },
+
+  // My HIIT Library — full-width expanded browser
+  libraryList: {
+    marginTop: 8,
+    gap: 8,
+  },
+  libraryRow: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderWidth: 1,
+    borderColor: '#2a2f38',
+    gap: 6,
+  },
+  libraryRowPR: {
+    borderColor: 'rgba(255,216,102,0.5)',
+    backgroundColor: 'rgba(255,216,102,0.06)',
+  },
+  libraryRowHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'transparent',
+  },
+  libraryRowLabel: {
+    fontSize: 15,
+    color: '#e6ecf3',
+    fontWeight: '700',
+    flexShrink: 1,
+  },
+  libraryRowBadge: { fontSize: 14 },
+  libraryRowSchedule: {
+    fontSize: 11,
+    color: '#b0b8c3',
+    opacity: 0.7,
+  },
+  libraryRowMetricBlock: {
+    marginTop: 2,
+    backgroundColor: 'transparent',
+  },
+  libraryRowMetricLabel: {
+    fontSize: 9,
+    opacity: 0.4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  libraryRowMetricValue: {
+    fontSize: 12,
+    color: '#d4e157',
+    fontWeight: '600',
+    marginTop: 1,
+  },
+  libraryRowMetricValuePR: {
+    fontSize: 12,
+    color: '#ffd866',
+    fontWeight: '700',
+    marginTop: 1,
+  },
+  libraryRowMetricMuted: {
+    fontSize: 11,
+    opacity: 0.35,
+    fontStyle: 'italic',
+    marginTop: 1,
+  },
+  libraryRowActions: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 6,
+    backgroundColor: 'transparent',
+  },
+  libraryRowRecallBtn: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.08)',
+    alignItems: 'center',
+  },
+  libraryRowRecallBtnText: {
+    color: '#d4e157',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  libraryRowRemoveBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#444',
+    alignItems: 'center',
+  },
+  libraryRowRemoveBtnText: { color: '#888', fontSize: 12 },
   derivedTotalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
