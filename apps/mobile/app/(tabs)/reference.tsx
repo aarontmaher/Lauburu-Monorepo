@@ -165,6 +165,82 @@ const POSITION_BY_NAME: ReadonlyMap<string, ReferencePosition> = (() => {
   return m;
 })();
 
+/**
+ * A single inbound transition edge — represents the fact that some
+ * source position transitions INTO this destination. Used by the
+ * "Coming in from" block and the inbound-count chip on position
+ * headers. Dedupe key is (sourceName, label) so the same source
+ * technique cited twice against the same destination doesn't
+ * inflate counts.
+ */
+export interface InboundTransitionEdge {
+  /** Mobile-seed canonical source position name (no "(You)" suffix). */
+  sourceName: string;
+  /** Role/perspective on the source side that emits the transition. */
+  sourceRole: string;
+  /** Technique label that performs the transition. */
+  label: string;
+}
+
+/**
+ * Inverse transition index — keyed by destination position name,
+ * built ONCE at module load by walking every (position, perspective)
+ * tuple in REFERENCE_TECHNIQUES, parsing each "Offensive transitions"
+ * heading's arrow entries, and appending each edge to the map keyed
+ * by its canonical destination. Deduped by (sourceName, label) so
+ * the same source technique cited twice doesn't double-count. This
+ * keeps the per-position inbound lookup O(1) at render time.
+ */
+const INBOUND_TRANSITIONS: ReadonlyMap<string, InboundTransitionEdge[]> = (() => {
+  const map = new Map<string, InboundTransitionEdge[]>();
+  // Strip Hand Fighting's "(You)" suffix to get the mobile-seed
+  // canonical source name. Mirrors resolveWebPositionName's reverse.
+  const canonicalizeSourceName = (raw: string): string =>
+    raw.replace(/\s*\(You\)\s*$/, '').trim();
+
+  for (const [posKey, persps] of Object.entries(REFERENCE_TECHNIQUES)) {
+    const sourceName = canonicalizeSourceName(posKey);
+    for (const [role, headings] of Object.entries(persps)) {
+      const raw = headings['Offensive transitions'];
+      if (!raw) continue;
+      for (const entry of raw) {
+        if (typeof entry !== 'string') continue;
+        const idx = entry.indexOf('→');
+        if (idx < 0) continue;
+        const label = entry.slice(0, idx).trim();
+        const destRaw = entry.slice(idx + 1).trim();
+        if (!label || !destRaw) continue;
+        const destination = canonicalizeTransitionDestination(destRaw);
+        // Only index edges whose destination is a known mobile-seed
+        // position — unknown destinations (e.g. submissions like
+        // "D'Arce", "Anaconda") have no landing card to render into.
+        if (!KNOWN_POSITION_NAMES.has(destination)) continue;
+        // Self-loops (source == destination) aren't useful as
+        // inbound hints — skip them so the count stays meaningful.
+        if (sourceName === destination) continue;
+        const bucket = map.get(destination) ?? [];
+        // Dedupe by (sourceName, label) — same technique mentioned
+        // twice under two different perspectives shouldn't inflate.
+        const isDuplicate = bucket.some(
+          (e) => e.sourceName === sourceName && e.label === label,
+        );
+        if (!isDuplicate) {
+          bucket.push({ sourceName, sourceRole: role, label });
+        }
+        if (!map.has(destination)) map.set(destination, bucket);
+      }
+    }
+  }
+  // Sort each bucket by source name for stable, readable rendering.
+  for (const bucket of map.values()) {
+    bucket.sort((a, b) =>
+      a.sourceName.localeCompare(b.sourceName) ||
+      a.label.localeCompare(b.label),
+    );
+  }
+  return map;
+})();
+
 /** Normalize a raw destination string into a canonical mobile-seed
  *  position name. Strips the "(You)" suffix used by Hand Fighting
  *  positions in the web data and trims whitespace. Does NOT invent
@@ -472,6 +548,15 @@ function PositionRow({
     return parseTransitionEdges(raw);
   }, [positionTechs, selectedRole]);
 
+  // Inbound transition edges — every source position that feeds
+  // INTO this position. Derived once at module load and stable
+  // across renders, so this useMemo is a single ReadonlyMap lookup.
+  // Returns an empty array when the position is not a destination
+  // for any transition (so the header chip + block both hide).
+  const inboundEdges = useMemo(() => {
+    return INBOUND_TRANSITIONS.get(position.name) ?? [];
+  }, [position.name]);
+
   return (
     <RNView
       ref={handleOuterRef}
@@ -488,6 +573,11 @@ function PositionRow({
             {position.name}
             {position.built_out ? (
               <Text style={styles.builtBadge}> · built out</Text>
+            ) : null}
+            {inboundEdges.length > 0 ? (
+              <Text style={styles.inboundChip}>
+                {'  '}← {inboundEdges.length} inbound
+              </Text>
             ) : null}
           </Text>
           {/* Role toggles — real pressable pills when there are multiple
@@ -683,6 +773,45 @@ function PositionRow({
                   </Pressable>
                 );
               })}
+            </View>
+          )}
+
+          {/* Coming in from — inverse transition view. Source
+              positions that feed INTO this position (derived once
+              at module load from REFERENCE_TECHNIQUES). Each row
+              is a tappable back-jump that reuses the same
+              cross-tree navigation model as Transitions out:
+              onRequestFocus(source), card auto-expands, scrolls,
+              flashes. Not role-filtered on the destination side —
+              the set of inbound sources is a property of the
+              position as a graph node, not of the role you're
+              currently viewing. Hidden entirely when empty. */}
+          {inboundEdges.length > 0 && (
+            <View style={styles.inboundBlock}>
+              <Text style={styles.inboundBlockLabel}>
+                Coming in from
+                <Text style={styles.inboundBlockLabelCount}>
+                  {'  '}{inboundEdges.length}
+                </Text>
+              </Text>
+              {inboundEdges.map((edge, i) => (
+                <Pressable
+                  key={`${edge.sourceName}|${edge.label}|${i}`}
+                  style={styles.inboundRow}
+                  onPress={() => onRequestFocus(edge.sourceName)}>
+                  <Text
+                    style={styles.inboundSource}
+                    numberOfLines={1}>
+                    {edge.sourceName}
+                  </Text>
+                  <Text style={styles.inboundArrow}>←</Text>
+                  <Text
+                    style={styles.inboundLabel}
+                    numberOfLines={2}>
+                    {edge.label}
+                  </Text>
+                </Pressable>
+              ))}
             </View>
           )}
 
@@ -1344,6 +1473,66 @@ const styles = StyleSheet.create({
   transitionDestNavigable: {
     color: '#7fb8ff',
     textDecorationLine: 'underline',
+  },
+
+  // Inbound count chip on the position header row
+  inboundChip: {
+    fontSize: 11,
+    color: '#7fb8ff',
+    opacity: 0.75,
+    fontWeight: '600',
+  },
+
+  // Coming in from — inverse transition block
+  inboundBlock: {
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(74,158,255,0.04)',
+    borderLeftWidth: 2,
+    borderLeftColor: 'rgba(74,158,255,0.3)',
+    gap: 4,
+  },
+  inboundBlockLabel: {
+    fontSize: 11,
+    color: '#7fb8ff',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 4,
+    opacity: 0.85,
+  },
+  inboundBlockLabelCount: {
+    fontSize: 10,
+    opacity: 0.6,
+    fontWeight: '700',
+  },
+  inboundRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 2,
+  },
+  inboundSource: {
+    fontSize: 12,
+    color: '#7fb8ff',
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+    flexShrink: 1,
+  },
+  inboundArrow: {
+    fontSize: 13,
+    color: '#7fb8ff',
+    fontWeight: '700',
+    paddingHorizontal: 2,
+    opacity: 0.7,
+  },
+  inboundLabel: {
+    flexShrink: 1,
+    fontSize: 12,
+    color: '#aab4c2',
+    lineHeight: 17,
   },
 
   positionBridgeBtn: {
