@@ -122,23 +122,134 @@ function countTechniquesForRole(
   return total;
 }
 
-/** Open the full website Reference at the top (optionally scrolled
- *  to a specific position label). Best-effort; on failure the promise
- *  rejection is swallowed. The web app supports a `?focus=` query
- *  param on the search box so we include that as a hint even though
- *  it's not a structured deep link. */
-function openFullMap(positionName?: string): void {
-  let url = FULL_MAP_URL;
-  if (positionName) {
-    url += `?focus=${encodeURIComponent(positionName)}`;
+/**
+ * Map a mobile-seed section label to the web site's section name.
+ * The web SECTIONS bundle has no top-level "Hand Fighting" — those
+ * positions live inside the "Wrestling" section under the
+ * "Hand fighting" container — so we redirect Hand Fighting deep
+ * links to Wrestling to match the web DOM's data-section attribute.
+ * Every other section label is a passthrough.
+ */
+function resolveWebSectionName(mobileSectionLabel: string): string {
+  if (mobileSectionLabel === 'Hand Fighting') return 'Wrestling';
+  return mobileSectionLabel;
+}
+
+/**
+ * Map a mobile-seed position name to the web site's canonical
+ * position name. Hand Fighting positions on mobile are clean
+ * ("Outside tie") but on the web carry a "(You)" suffix
+ * ("Outside tie (You)") — we check the REFERENCE_TECHNIQUES map
+ * to find which variant the web side recognises, preferring the
+ * direct name and falling back to the suffixed form. This is the
+ * same resolution order used by `lookupPositionTechniques`.
+ */
+function resolveWebPositionName(mobilePositionName: string): string {
+  if (REFERENCE_TECHNIQUES[mobilePositionName]) return mobilePositionName;
+  if (REFERENCE_TECHNIQUES[`${mobilePositionName} (You)`]) {
+    return `${mobilePositionName} (You)`;
   }
+  return mobilePositionName;
+}
+
+/**
+ * Encode a single path segment for the web's `#tech=` deep-link
+ * format. The web's hash parser does `replace(/_/g, ' ')` on each
+ * segment, so we need to round-trip spaces → underscores BEFORE
+ * URI-encoding the whole key. Pipe characters in label strings
+ * would break the segment split; we replace them defensively.
+ */
+function encodeDeepLinkSegment(s: string): string {
+  return s.replace(/\|/g, '').replace(/\s+/g, '_');
+}
+
+export interface FullMapDeepLinkArgs {
+  /** Mobile-seed section label for the position (e.g. "Guard",
+   *  "Hand Fighting"). Optional — omit for a plain site-root link. */
+  section?: string;
+  /** Mobile-seed position name. Omit for a plain site-root link. */
+  position?: string;
+  /** Role/perspective name for the expanded card. Only used when
+   *  building a technique-level deep link. */
+  role?: string;
+  /** Heading name containing the technique. Only used for
+   *  technique-level deep links. */
+  heading?: string;
+  /** Exact technique name for technique-level deep links. */
+  technique?: string;
+}
+
+/**
+ * Build a hash-based deep link URL for the full-web Reference that
+ * matches the existing web hash handlers:
+ *   • technique present → `#tech=section|position|role|heading|technique`
+ *     (web: parses segment 0 as section, last segment as technique label,
+ *      falls back to position focus when no exact match is found)
+ *   • position only → `#pos=<position>&sec=<section>`
+ *     (web: direct position focus via switchToReferenceNode)
+ *   • nothing → plain FULL_MAP_URL
+ *
+ * Mobile always builds the link with the WEB-resolved section +
+ * position name via resolveWebSectionName / resolveWebPositionName
+ * so Hand Fighting and other cross-repo naming differences don't
+ * silently break focus.
+ */
+function buildFullMapDeepLink(args: FullMapDeepLinkArgs): string {
+  const { section, position, role, heading, technique } = args;
+  if (!position) return FULL_MAP_URL;
+
+  const webSection = section ? resolveWebSectionName(section) : '';
+  const webPosition = resolveWebPositionName(position);
+
+  // Technique-level deep link — build a 5-segment pipe key that
+  // matches the web's KEY_VERSION=2 convention. Segment 0 must be
+  // the section so the web hash handler picks it up; segment 1
+  // must be the position so the fallback path can focus it when
+  // the leaf technique isn't found in the DOM.
+  if (technique && webSection) {
+    const segs = [
+      encodeDeepLinkSegment(webSection),
+      encodeDeepLinkSegment(webPosition),
+      encodeDeepLinkSegment(role ?? ''),
+      encodeDeepLinkSegment(heading ?? ''),
+      encodeDeepLinkSegment(technique),
+    ];
+    const key = segs.join('|');
+    return `${FULL_MAP_URL}#tech=${encodeURIComponent(key)}`;
+  }
+
+  // Position-level fallback — matches `#pos=<label>&sec=<section>`
+  // which the web's applyHashRoute already parses and forwards to
+  // switchToReferenceNode.
+  const posPart = `pos=${encodeURIComponent(webPosition)}`;
+  const secPart = webSection
+    ? `&sec=${encodeURIComponent(webSection)}`
+    : '';
+  return `${FULL_MAP_URL}#${posPart}${secPart}`;
+}
+
+/**
+ * Open the full website Reference, optionally focused on a specific
+ * position/technique via the deep-link format above. Best-effort —
+ * `Linking.openURL` rejection (rare on iOS) is swallowed silently.
+ */
+function openFullMap(args: FullMapDeepLinkArgs = {}): void {
+  const url = buildFullMapDeepLink(args);
   Linking.openURL(url).catch(() => {
-    // Silent — openURL rejects when no browser is available on the
-    // device, which is rare enough on iOS to ignore here.
+    // Silent — rare on iOS.
   });
 }
 
-function PositionRow({ position }: { position: ReferencePosition }) {
+function PositionRow({
+  position,
+  sectionLabel,
+}: {
+  position: ReferencePosition;
+  /** Mobile-seed section label the position belongs to. Threaded
+   *  through to the full-map deep link so the web hash handler
+   *  receives the correct section segment. */
+  sectionLabel: string;
+}) {
   const [expanded, setExpanded] = useState(false);
   // Selected perspective index — defaults to 0 (first role in the pair),
   // but switches on mount to whichever role actually has content.
@@ -325,7 +436,15 @@ function PositionRow({ position }: { position: ReferencePosition }) {
                           </Text>
                           <Pressable
                             style={styles.techniqueDetailBridgeBtn}
-                            onPress={() => openFullMap(position.name)}>
+                            onPress={() =>
+                              openFullMap({
+                                section: sectionLabel,
+                                position: position.name,
+                                role: selectedRole,
+                                heading,
+                                technique: t,
+                              })
+                            }>
                             <Text style={styles.techniqueDetailBridgeBtnText}>
                               View in full map ↗
                             </Text>
@@ -355,7 +474,12 @@ function PositionRow({ position }: { position: ReferencePosition }) {
               not like a missing feature. */}
           <Pressable
             style={styles.positionBridgeBtn}
-            onPress={() => openFullMap(position.name)}>
+            onPress={() =>
+              openFullMap({
+                section: sectionLabel,
+                position: position.name,
+              })
+            }>
             <Text style={styles.positionBridgeBtnText}>
               Open {position.name} in full map ↗
             </Text>
@@ -402,7 +526,7 @@ function SectionBlock({
       </View>
       <View style={styles.positionsList}>
         {filtered.map((p) => (
-          <PositionRow key={p.name} position={p} />
+          <PositionRow key={p.name} position={p} sectionLabel={section.label} />
         ))}
       </View>
     </View>
@@ -528,7 +652,7 @@ export default function ReferenceScreen() {
         </Text>
         <Pressable
           style={styles.footerBridgeBtn}
-          onPress={() => openFullMap()}>
+          onPress={() => openFullMap({})}>
           <Text style={styles.footerBridgeBtnText}>
             Open full map ↗
           </Text>
