@@ -185,6 +185,24 @@ const SECTION_LABEL_BY_POSITION_NAME: ReadonlyMap<string, string> = (() => {
 })();
 
 /**
+ * Structural hub metadata for a single canonical position —
+ * inbound edge count + outbound edge count + a combined score
+ * (simple sum) used to rank positions as "most structurally
+ * important graph hubs" for the Top hubs quick-jump strip.
+ *
+ * Outbound counts are deduped per position by (label|destination)
+ * so a transition listed under two perspectives doesn't inflate
+ * the score. Self-loops and unknown destinations are already
+ * filtered out by KNOWN_POSITION_NAMES gating upstream.
+ */
+export interface PositionHubEntry {
+  name: string;
+  inbound: number;
+  outbound: number;
+  score: number;
+}
+
+/**
  * A single inbound transition edge — represents the fact that some
  * source position transitions INTO this destination. Used by the
  * "Coming in from" block and the inbound-count chip on position
@@ -258,6 +276,75 @@ const INBOUND_TRANSITIONS: ReadonlyMap<string, InboundTransitionEdge[]> = (() =>
     );
   }
   return map;
+})();
+
+/**
+ * Structural hub ranking — top N positions by combined
+ * inbound + outbound transition-edge count, sorted descending
+ * and sliced at TOP_HUBS_LIMIT. Built ONCE at module load from
+ * INBOUND_TRANSITIONS plus a deduped pass through each
+ * position's outbound "Offensive transitions" across all
+ * perspectives. Serves the Top hubs overview strip at the top
+ * of the Reference screen.
+ *
+ * Outbound dedupe key is (label|destination) per position so a
+ * transition listed under two source perspectives contributes
+ * once, not twice. Self-loops (source === destination) and
+ * edges pointing at non-mobile-seed positions (submissions
+ * like D'Arce / Anaconda) are already filtered out by the
+ * same KNOWN_POSITION_NAMES gating used by INBOUND_TRANSITIONS
+ * and the transition-row render path.
+ *
+ * Tie-break order: higher combined score first, then higher
+ * inbound (more "hub-like"), then alphabetical by name for
+ * stable render.
+ *
+ * Positions with score === 0 are filtered out entirely so the
+ * strip never surfaces leaf positions as "top hubs".
+ */
+const TOP_HUBS_LIMIT = 5;
+
+const TOP_HUBS: ReadonlyArray<PositionHubEntry> = (() => {
+  const entries: PositionHubEntry[] = [];
+  for (const section of REFERENCE_SECTIONS) {
+    for (const p of section.positions) {
+      const inbound = INBOUND_TRANSITIONS.get(p.name)?.length ?? 0;
+      const posTechs = lookupPositionTechniques(p.name);
+      let outbound = 0;
+      if (posTechs) {
+        const seen = new Set<string>();
+        for (const headings of Object.values(posTechs)) {
+          const raw = headings['Offensive transitions'];
+          if (!raw) continue;
+          for (const entry of raw) {
+            if (typeof entry !== 'string') continue;
+            const arrowIdx = entry.indexOf('→');
+            if (arrowIdx < 0) continue;
+            const label = entry.slice(0, arrowIdx).trim();
+            const destRaw = entry.slice(arrowIdx + 1).trim();
+            if (!label || !destRaw) continue;
+            const dest = canonicalizeTransitionDestination(destRaw);
+            if (!KNOWN_POSITION_NAMES.has(dest)) continue;
+            if (dest === p.name) continue; // no self-loops
+            const edgeKey = `${label}|${dest}`;
+            if (seen.has(edgeKey)) continue;
+            seen.add(edgeKey);
+            outbound += 1;
+          }
+        }
+      }
+      const score = inbound + outbound;
+      if (score > 0) {
+        entries.push({ name: p.name, inbound, outbound, score });
+      }
+    }
+  }
+  entries.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    if (b.inbound !== a.inbound) return b.inbound - a.inbound;
+    return a.name.localeCompare(b.name);
+  });
+  return entries.slice(0, TOP_HUBS_LIMIT);
 })();
 
 /** Normalize a raw destination string into a canonical mobile-seed
@@ -1545,6 +1632,50 @@ export default function ReferenceScreen() {
         </View>
       </View>
 
+      {/* Top hubs — compact quick-jump strip showing the top N
+          positions by combined inbound+outbound transition edge
+          count. Each chip taps into the same onRequestFocus
+          pipeline used by Transitions out and Coming in from,
+          so jumps auto-expand + scroll + flash the destination
+          card, and the filter-escape hatch automatically clears
+          search / Built-out only when a hub is hidden by an
+          active filter. Ranking is computed once at module load
+          from INBOUND_TRANSITIONS + a deduped outbound scan —
+          no per-render cost, fully deterministic. */}
+      {TOP_HUBS.length > 0 && (
+        <View style={styles.topHubsBlock}>
+          <Text style={styles.topHubsLabel}>
+            Top hubs
+            <Text style={styles.topHubsLabelHint}>
+              {'  '}most connected
+            </Text>
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.topHubsRow}>
+            {TOP_HUBS.map((hub) => (
+              <Pressable
+                key={hub.name}
+                style={styles.topHubChip}
+                onPress={() => handleRequestFocus(hub.name)}>
+                <Text
+                  style={styles.topHubChipName}
+                  numberOfLines={1}>
+                  {hub.name}
+                </Text>
+                <View style={styles.topHubChipScoreRow}>
+                  <Text style={styles.topHubChipScoreValue}>
+                    {hub.score}
+                  </Text>
+                  <Text style={styles.topHubChipScoreLabel}>edges</Text>
+                </View>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+      )}
+
       {/* Search */}
       <TextInput
         style={styles.search}
@@ -1832,6 +1963,63 @@ const styles = StyleSheet.create({
   summaryItem: { flex: 1, alignItems: 'center' },
   summaryValue: { fontSize: 22, fontWeight: '700', color: '#d4e157' },
   summaryLabel: { fontSize: 11, opacity: 0.5, textTransform: 'uppercase', letterSpacing: 0.5 },
+
+  // Top hubs — compact quick-jump strip near the top of Reference
+  topHubsBlock: {
+    gap: 6,
+    marginTop: -4,
+  },
+  topHubsLabel: {
+    fontSize: 10,
+    opacity: 0.5,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    fontWeight: '700',
+  },
+  topHubsLabelHint: {
+    opacity: 0.55,
+    fontWeight: '500',
+  },
+  topHubsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingRight: 4,
+  },
+  topHubChip: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(74,158,255,0.45)',
+    backgroundColor: 'rgba(74,158,255,0.08)',
+    minWidth: 110,
+    maxWidth: 180,
+    gap: 4,
+  },
+  topHubChipName: {
+    fontSize: 13,
+    color: '#cfe3ff',
+    fontWeight: '700',
+  },
+  topHubChipScoreRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 4,
+    backgroundColor: 'transparent',
+  },
+  topHubChipScoreValue: {
+    fontSize: 14,
+    color: '#7fb8ff',
+    fontWeight: '700',
+  },
+  topHubChipScoreLabel: {
+    fontSize: 9,
+    color: '#7fb8ff',
+    opacity: 0.6,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+    fontWeight: '600',
+  },
 
   search: {
     borderWidth: 1,
