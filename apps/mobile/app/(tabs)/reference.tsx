@@ -1772,7 +1772,9 @@ const styles = StyleSheet.create({
   viewingAs: {
     fontSize: 11,
     opacity: 0.6,
-    marginBottom: 4,
+    // marginBottom removed — parent `positionDetail.gap` now
+    // provides consistent inter-child spacing across every block
+    // inside the expanded card.
   },
   viewingAsName: {
     color: '#d4e157',
@@ -1783,9 +1785,15 @@ const styles = StyleSheet.create({
 
   positionDetail: {
     paddingHorizontal: 12,
-    paddingBottom: 10,
-    paddingTop: 2,
-    gap: 4,
+    paddingBottom: 12,
+    paddingTop: 4,
+    // Parent gap owns the vertical rhythm between every direct
+    // child (viewingAs, heading blocks, Transitions out, Coming
+    // in from, position bridge button). Bumped from 4 → 12 so
+    // individual blocks no longer need per-block marginTop
+    // values — inter-block spacing is now consistent 12px
+    // wherever the scroll reaches.
+    gap: 12,
   },
   detailLabel: {
     fontSize: 11,
@@ -1798,8 +1806,11 @@ const styles = StyleSheet.create({
 
   // Real technique content — grouped by heading
   headingBlock: {
-    marginTop: 8,
+    // marginTop removed — parent positionDetail.gap (12) drives
+    // inter-block spacing consistently across ALL blocks inside
+    // an expanded card.
     backgroundColor: 'transparent',
+    gap: 2,
   },
   headingLabel: {
     fontSize: 11,
@@ -1818,7 +1829,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    paddingVertical: 3,
+    // Normalized to match transitionRow + inboundRow so row
+    // density is consistent across all three block types —
+    // visual rhythm doesn't change when scanning from techniques
+    // into Transitions out into Coming in from.
+    paddingVertical: 4,
     paddingLeft: 6,
     paddingRight: 4,
     borderRadius: 6,
@@ -1952,13 +1967,14 @@ const styles = StyleSheet.create({
   },
   // Transitions out — arrow-format edge rows
   transitionsBlock: {
-    marginTop: 12,
+    // marginTop removed — positionDetail.gap (12) provides the
+    // inter-block rhythm.
     padding: 10,
     borderRadius: 8,
     backgroundColor: 'rgba(74,158,255,0.06)',
     borderLeftWidth: 2,
     borderLeftColor: 'rgba(74,158,255,0.45)',
-    gap: 4,
+    gap: 2,
   },
   transitionsLabel: {
     fontSize: 11,
@@ -1981,7 +1997,9 @@ const styles = StyleSheet.create({
     // mid-block on long wrapping rows.
     alignItems: 'flex-start',
     gap: 6,
-    paddingVertical: 5,
+    // Normalized from 5 → 4 to match techniqueRow and inboundRow —
+    // one consistent row height across all three block types.
+    paddingVertical: 4,
     paddingLeft: 4,
     paddingRight: 2,
     borderLeftWidth: 3,
@@ -2035,13 +2053,15 @@ const styles = StyleSheet.create({
 
   // Coming in from — inverse transition block
   inboundBlock: {
-    marginTop: 10,
+    // marginTop removed — positionDetail.gap (12) provides the
+    // inter-block rhythm and keeps Transitions out → Coming in
+    // from spacing identical to every other block pair.
     padding: 10,
     borderRadius: 8,
     backgroundColor: 'rgba(74,158,255,0.04)',
     borderLeftWidth: 2,
     borderLeftColor: 'rgba(74,158,255,0.3)',
-    gap: 4,
+    gap: 2,
   },
   inboundBlockLabel: {
     fontSize: 11,
@@ -2064,7 +2084,8 @@ const styles = StyleSheet.create({
     // pill stay on the first line.
     alignItems: 'flex-start',
     gap: 6,
-    paddingVertical: 5,
+    // Normalized from 5 → 4 to match techniqueRow + transitionRow.
+    paddingVertical: 4,
     paddingLeft: 4,
     paddingRight: 2,
     borderLeftWidth: 3,
@@ -2099,8 +2120,13 @@ const styles = StyleSheet.create({
   },
 
   positionBridgeBtn: {
-    marginTop: 12,
-    paddingVertical: 9,
+    // Parent positionDetail.gap (12) already provides the inter-
+    // block rhythm. A small extra marginTop (4) gives the CTA a
+    // little more breathing room so it reads as a distinct
+    // terminal action rather than "another block", reaching a
+    // 16px gap from the last block above it.
+    marginTop: 4,
+    paddingVertical: 10,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#d4e157',
