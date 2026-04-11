@@ -17,13 +17,42 @@
  * persists across sessions and can be recalled in any order.
  */
 import { create } from 'zustand';
-import type { Modality } from '@lauburu/shared';
+import type { MachineMetrics, Modality } from '@lauburu/shared';
 import { secureStorage } from './secure-storage';
 
 const STORAGE_KEY = 'hiit_protocols_v1';
 
 /** Cap the library so the keychain entry stays bounded. */
 const MAX_PROTOCOLS = 12;
+
+/**
+ * Compact progression snapshot carried on a saved protocol — the
+ * last-session machine metrics and duration worth remembering when
+ * the user recalls this protocol. Only fields that were actually
+ * present at log time are populated; missing fields are omitted
+ * rather than zero-filled so the UI can tell the difference
+ * between "no data" and "recorded zero".
+ *
+ * Intentionally narrower than MachineMetrics — we keep only the
+ * few fields that make sense as "target to beat" numbers. This
+ * keeps the secureStorage entry small and the UI line readable.
+ */
+export interface SavedHIITProtocolMetrics {
+  /** Total distance in metres, if the machine console showed it. */
+  distance_m?: number;
+  /** Total calories (kcal), if the machine console showed it. */
+  calories?: number;
+  /** Total work output (kJ), rower-biased fallback alongside calories. */
+  kilojoules?: number;
+  /** Average power across the session (W), if present. */
+  avg_power_w?: number;
+  /** Average HR across the session (bpm), if present. */
+  avg_hr_bpm?: number;
+  /** Session duration in minutes — always present even without a machine. */
+  duration_min?: number;
+  /** ISO timestamp of the session this snapshot came from. */
+  captured_at: string;
+}
 
 /**
  * Saved HIIT protocol — a named recipe for a recurring interval
@@ -43,6 +72,14 @@ export interface SavedHIITProtocol {
   last_used_at: string;
   /** How many times the protocol has been saved/used. */
   use_count: number;
+  /**
+   * Last-session progression snapshot. Preserved across no-metrics
+   * saves so the "last: 5.2km · 185W" target line keeps showing
+   * even after a session logged without machine numbers. Only
+   * overwritten when a newer snapshot carries at least one
+   * meaningful numeric field.
+   */
+  last_metrics?: SavedHIITProtocolMetrics;
 }
 
 function genId(): string {
@@ -77,6 +114,16 @@ interface HIITProtocolsState {
    * already exists, it's replaced (bumping last_used_at to now and
    * incrementing use_count). Called automatically from the Train
    * HIIT log path when a session with a label is logged.
+   *
+   * `metrics` is optional and partial — pass whatever the session
+   * actually captured. If at least one meaningful field is present
+   * the snapshot is stored; otherwise any existing snapshot on the
+   * matching protocol is preserved (so a no-metrics session doesn't
+   * wipe a previously-captured target).
+   *
+   * `duration_min` is passed separately because it's always known
+   * (from the session's duration), even when no machine metrics
+   * were entered.
    */
   saveProtocol: (args: {
     label: string;
@@ -84,6 +131,8 @@ interface HIITProtocolsState {
     rest_s: number;
     rounds: number;
     modality?: Modality;
+    metrics?: Partial<MachineMetrics>;
+    duration_min?: number;
   }) => void;
 
   /** Remove a protocol by id. Called from long-press on a pill. */
@@ -129,7 +178,15 @@ export const useHIITProtocolsStore = create<HIITProtocolsState>((set, get) => ({
     }
   },
 
-  saveProtocol: ({ label, work_s, rest_s, rounds, modality }) => {
+  saveProtocol: ({
+    label,
+    work_s,
+    rest_s,
+    rounds,
+    modality,
+    metrics,
+    duration_min,
+  }) => {
     const trimmed = label.trim();
     if (!trimmed) return;
     let nextProtocols: SavedHIITProtocol[] = [];
@@ -144,6 +201,44 @@ export const useHIITProtocolsStore = create<HIITProtocolsState>((set, get) => ({
       const filtered = state.protocols.filter(
         (p) => normalizeLabel(p.label) !== norm,
       );
+
+      // Build the new progression snapshot from whatever numeric fields
+      // the caller actually passed. `duration_min` is kept separately
+      // because every session has a duration even without a machine,
+      // but it alone is not enough to qualify as "meaningful metrics" —
+      // a session with only a duration would otherwise wipe a
+      // previously-captured output snapshot.
+      const mm = metrics ?? {};
+      const hasOutputField =
+        mm.distance_m != null ||
+        mm.calories != null ||
+        mm.kilojoules != null ||
+        mm.avg_power_w != null ||
+        mm.avg_hr_bpm != null;
+
+      let nextLastMetrics: SavedHIITProtocolMetrics | undefined =
+        existing?.last_metrics;
+      if (hasOutputField) {
+        nextLastMetrics = {
+          distance_m: mm.distance_m,
+          calories: mm.calories,
+          kilojoules: mm.kilojoules,
+          avg_power_w: mm.avg_power_w,
+          avg_hr_bpm: mm.avg_hr_bpm,
+          duration_min: duration_min,
+          captured_at: now,
+        };
+      } else if (duration_min != null && existing?.last_metrics == null) {
+        // Duration-only fallback ONLY when there's no prior snapshot
+        // to preserve. This gives freshly-created protocols something
+        // minimal to display ("last: 18 min") before any machine data
+        // ever lands.
+        nextLastMetrics = {
+          duration_min,
+          captured_at: now,
+        };
+      }
+
       const fresh: SavedHIITProtocol = {
         id: existing?.id ?? genId(),
         label: trimmed,
@@ -153,6 +248,7 @@ export const useHIITProtocolsStore = create<HIITProtocolsState>((set, get) => ({
         modality,
         last_used_at: now,
         use_count: (existing?.use_count ?? 0) + 1,
+        last_metrics: nextLastMetrics,
       };
       nextProtocols = [fresh, ...filtered].slice(0, MAX_PROTOCOLS);
       return { protocols: nextProtocols };

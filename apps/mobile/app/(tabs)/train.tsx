@@ -14,6 +14,7 @@ import { useAuthStore } from '../../src/store/auth-store';
 import { useWhoopStore } from '../../src/store/whoop-store';
 import { useMachineStore } from '../../src/store/machine-store';
 import { useHIITProtocolsStore } from '../../src/store/hiit-protocols-store';
+import type { SavedHIITProtocolMetrics } from '../../src/store/hiit-protocols-store';
 import { modalitySupportsMachineData } from '../../src/services/machine-connector';
 import { ReferencePositionPicker } from '../../src/components/ReferencePositionPicker';
 import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat, SessionSummary, SegmentType, MachineMetrics, WorkoutSource } from '@lauburu/shared';
@@ -58,6 +59,49 @@ function formatDateLabel(date: string): string {
   if (date === daysAgo(1)) return 'Yesterday';
   const d = new Date(date + 'T12:00:00');
   return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+/**
+ * Format a saved-HIIT-protocol last-session metrics snapshot into a
+ * compact "last: 5.2km · 185W · 18min" line for the Train saved-
+ * protocol pill. Picks at most 3 fields in priority order so the pill
+ * stays readable. Returns an empty string when nothing meaningful is
+ * present — the caller should not render the line in that case.
+ */
+function formatSavedProtocolLastMetrics(
+  m: SavedHIITProtocolMetrics | undefined,
+): string {
+  if (!m) return '';
+  const parts: string[] = [];
+  // Priority 1: distance — most universal output metric.
+  if (m.distance_m != null) {
+    if (m.distance_m >= 1000) {
+      parts.push(`${(m.distance_m / 1000).toFixed(1)}km`);
+    } else {
+      parts.push(`${Math.round(m.distance_m)}m`);
+    }
+  }
+  // Priority 2: avg power — the key HIIT effort signal.
+  if (m.avg_power_w != null && parts.length < 3) {
+    parts.push(`${Math.round(m.avg_power_w)}W`);
+  }
+  // Priority 3: calories (or kJ fallback) — a universal effort proxy
+  // when no power is available.
+  if (m.avg_power_w == null && parts.length < 3) {
+    if (m.calories != null) parts.push(`${Math.round(m.calories)}kcal`);
+    else if (m.kilojoules != null) parts.push(`${Math.round(m.kilojoules)}kJ`);
+  }
+  // Priority 4: avg HR when still under the cap — physiology-only
+  // fallback for non-power modalities.
+  if (parts.length < 3 && m.avg_hr_bpm != null) {
+    parts.push(`${Math.round(m.avg_hr_bpm)}bpm`);
+  }
+  // Priority 5: duration, always last — provides a floor metric so
+  // even duration-only snapshots render something.
+  if (parts.length < 3 && m.duration_min != null) {
+    parts.push(`${Math.round(m.duration_min)}min`);
+  }
+  return parts.length > 0 ? `last: ${parts.join(' · ')}` : '';
 }
 
 // ---------------------------------------------------------------------------
@@ -462,7 +506,9 @@ function EntryForm({
     // library so the user can recall this recipe with a single tap
     // from the pill strip on their next session. Dedupe by normalized
     // label, MRU ordering, cap at 12 entries — all handled by the
-    // store action.
+    // store action. Pass the session's machine metrics + duration so
+    // the saved protocol carries a "last: 5.2km · 185W · 18min"
+    // target-to-beat snapshot.
     const iv = input.conditioning?.interval;
     if (iv && iv.label && iv.label.trim().length > 0) {
       saveHIITProtocol({
@@ -471,6 +517,8 @@ function EntryForm({
         rest_s: iv.rest_duration_s,
         rounds: iv.rounds,
         modality: input.conditioning?.modality,
+        metrics: input.conditioning?.machine_metrics,
+        duration_min: input.duration_min,
       });
     }
 
@@ -722,27 +770,37 @@ function EntryForm({
               <Text style={styles.savedProtocolsLabel}>Saved protocols</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.pillRow}>
-                  {savedHIITProtocols.map((p) => (
-                    <Pressable
-                      key={p.id}
-                      style={styles.savedProtocolPill}
-                      onPress={() => {
-                        setWorkDur(String(p.work_s));
-                        setRestDur(String(p.rest_s));
-                        setIntervalRounds(String(p.rounds));
-                        setIntervalLabel(p.label);
-                        if (p.modality) setCondModality(p.modality);
-                      }}
-                      onLongPress={() => removeHIITProtocol(p.id)}
-                      delayLongPress={500}>
-                      <Text style={styles.savedProtocolPillName}>
-                        {p.label}
-                      </Text>
-                      <Text style={styles.savedProtocolPillDetail}>
-                        {p.work_s}/{p.rest_s} × {p.rounds}
-                      </Text>
-                    </Pressable>
-                  ))}
+                  {savedHIITProtocols.map((p) => {
+                    const lastMetricsLine = formatSavedProtocolLastMetrics(
+                      p.last_metrics,
+                    );
+                    return (
+                      <Pressable
+                        key={p.id}
+                        style={styles.savedProtocolPill}
+                        onPress={() => {
+                          setWorkDur(String(p.work_s));
+                          setRestDur(String(p.rest_s));
+                          setIntervalRounds(String(p.rounds));
+                          setIntervalLabel(p.label);
+                          if (p.modality) setCondModality(p.modality);
+                        }}
+                        onLongPress={() => removeHIITProtocol(p.id)}
+                        delayLongPress={500}>
+                        <Text style={styles.savedProtocolPillName}>
+                          {p.label}
+                        </Text>
+                        <Text style={styles.savedProtocolPillDetail}>
+                          {p.work_s}/{p.rest_s} × {p.rounds}
+                        </Text>
+                        {lastMetricsLine.length > 0 && (
+                          <Text style={styles.savedProtocolPillTarget}>
+                            {lastMetricsLine}
+                          </Text>
+                        )}
+                      </Pressable>
+                    );
+                  })}
                 </View>
               </ScrollView>
               <Text style={styles.savedProtocolsHint}>
@@ -1454,6 +1512,7 @@ function EntryForm({
               const timerMode = isInterval ? 'interval'
                 : ['steady_state', 'zone2', 'tempo'].includes(condSubtype) ? 'duration'
                 : 'stopwatch';
+              const trimmedIvLabel = intervalLabel.trim();
               const cfg: TimerConfig = {
                 mode: timerMode,
                 subtype: condSubtype,
@@ -1462,6 +1521,7 @@ function EntryForm({
                 rest_s: isInterval ? parseInt(restDur, 10) || 30 : undefined,
                 rounds: isInterval ? parseInt(intervalRounds, 10) || 10 : undefined,
                 total_s: timerMode === 'duration' ? duration * 60 : undefined,
+                label: trimmedIvLabel.length > 0 ? trimmedIvLabel : undefined,
               };
               timerSetup(cfg);
               router.push('/timer');
@@ -2025,7 +2085,8 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(212,225,87,0.35)',
     backgroundColor: 'rgba(212,225,87,0.05)',
     marginRight: 6,
-    minWidth: 90,
+    minWidth: 110,
+    maxWidth: 200,
   },
   savedProtocolPillName: {
     fontSize: 12,
@@ -2037,6 +2098,13 @@ const styles = StyleSheet.create({
     color: '#d4e157',
     opacity: 0.65,
     marginTop: 2,
+  },
+  savedProtocolPillTarget: {
+    fontSize: 10,
+    color: '#b0b8c3',
+    opacity: 0.75,
+    marginTop: 2,
+    fontStyle: 'italic',
   },
   savedProtocolsHint: {
     fontSize: 10,

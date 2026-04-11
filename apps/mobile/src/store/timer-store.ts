@@ -20,6 +20,13 @@ export interface TimerConfig {
   rest_s?: number;
   rounds?: number;
   total_s?: number;
+  /**
+   * Optional user-provided protocol label, carried through the timer
+   * flow so the completion path can auto-update the matching saved
+   * HIIT protocol with this session's metrics. Undefined when the
+   * user launched the timer without naming the protocol.
+   */
+  label?: string;
 }
 
 interface TimerState {

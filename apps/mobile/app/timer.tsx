@@ -15,6 +15,7 @@ import { useTrainingStore } from '../src/store/training-store';
 import { useHealthStore } from '../src/store/health-store';
 import { useAuthStore } from '../src/store/auth-store';
 import { useMachineStore } from '../src/store/machine-store';
+import { useHIITProtocolsStore } from '../src/store/hiit-protocols-store';
 import { MachineMetricsReview } from '../src/components/MachineMetricsReview';
 import { modalitySupportsMachineData } from '../src/services/machine-connector';
 import { CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, HR_ZONES, getHRZone, REST_COLOR } from '@lauburu/shared';
@@ -125,6 +126,7 @@ export default function TimerScreen() {
   const syncData = useHealthStore((s) => s.syncData);
   const user = useAuthStore((s) => s.user);
   const setLastMachineMetrics = useMachineStore((s) => s.setLastSessionMetrics);
+  const saveHIITProtocol = useHIITProtocolsStore((s) => s.saveProtocol);
 
   // Post-session machine-metrics capture — only meaningful for cardio
   // modalities that would plausibly expose these numbers on a console
@@ -220,6 +222,24 @@ export default function TimerScreen() {
     // correct provenance.
     if (anyTyped) {
       setLastMachineMetrics(typedMetrics, 'manual_machine_entry');
+    }
+
+    // If the user launched this timer with a protocol label, auto-bump
+    // the matching entry in the saved HIIT protocols library and attach
+    // this session's metrics + duration as the "last-session" snapshot.
+    // Mirrors the EntryForm submit path — metrics-less sessions still
+    // bump use_count and preserve any previously-captured snapshot via
+    // the store's own merge logic.
+    if (config.mode === 'interval' && config.label) {
+      saveHIITProtocol({
+        label: config.label,
+        work_s: config.work_s ?? 30,
+        rest_s: config.rest_s ?? 30,
+        rounds: config.rounds ?? 1,
+        modality: config.modality,
+        metrics: anyTyped ? typedMetrics : undefined,
+        duration_min: durationMin,
+      });
     }
 
     if (user?.id) syncData(user.id).catch(() => {});
