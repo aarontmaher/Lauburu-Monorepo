@@ -69,6 +69,19 @@ async function persistSafely(
   }
 }
 
+/**
+ * Result of a progress import — counts of keys that were newly
+ * added to the store, keys that overwrote existing entries
+ * (status changed), and keys that were skipped (payload entry
+ * had an unknown status value). The UI uses these counts to
+ * surface a compact confirmation line after the import lands.
+ */
+export interface ProgressImportResult {
+  added: number;
+  updated: number;
+  skipped: number;
+}
+
 interface ReferenceProgressState {
   progress: Record<string, ProgressStatus>;
   hydrated: boolean;
@@ -82,6 +95,21 @@ interface ReferenceProgressState {
    *  and return the new status. Primary UX entry point for pill
    *  taps in the Reference screen. */
   cycleProgress: (key: string) => ProgressStatus;
+
+  /**
+   * Import a batch of progress entries (keyed by the same format
+   * the store itself uses). When `mode === 'merge'` the incoming
+   * entries are added on top of existing state, overwriting any
+   * matching keys. When `mode === 'replace'` existing state is
+   * wiped first. Returns the per-key add/update/skip counts so
+   * the UI can surface a confirmation line. Only 'drilling' /
+   * 'learned' / 'tracking' values are accepted — 'none' and
+   * unknown statuses are skipped.
+   */
+  importProgress: (
+    entries: Record<string, string>,
+    mode: 'merge' | 'replace',
+  ) => ProgressImportResult;
 
   /** Wipe all per-item progress. */
   clearAll: () => void;
@@ -147,12 +175,159 @@ export const useReferenceProgressStore = create<ReferenceProgressState>(
       return nextStatus;
     },
 
+    importProgress: (entries, mode) => {
+      const result: ProgressImportResult = {
+        added: 0,
+        updated: 0,
+        skipped: 0,
+      };
+      let next: Record<string, ProgressStatus> = {};
+      set((state) => {
+        const base: Record<string, ProgressStatus> =
+          mode === 'replace' ? {} : { ...state.progress };
+        for (const [rawKey, rawValue] of Object.entries(entries)) {
+          if (typeof rawKey !== 'string' || !rawKey.trim()) {
+            result.skipped++;
+            continue;
+          }
+          if (
+            typeof rawValue !== 'string' ||
+            !VALID_STATUSES.has(rawValue as ProgressStatus) ||
+            rawValue === 'none'
+          ) {
+            result.skipped++;
+            continue;
+          }
+          const status = rawValue as ProgressStatus;
+          const existing = state.progress[rawKey];
+          if (existing == null) {
+            result.added++;
+          } else if (existing !== status) {
+            result.updated++;
+          } else {
+            // Identical existing entry — merge mode keeps it,
+            // replace mode is already rebuilding from empty so
+            // it still counts as a fresh write. Track as added
+            // under replace so the count is meaningful.
+            if (mode === 'replace') result.added++;
+          }
+          base[rawKey] = status;
+        }
+        next = base;
+        return { progress: base };
+      });
+      void persistSafely(next);
+      return result;
+    },
+
     clearAll: () => {
       set({ progress: {} });
       void persistSafely({});
     },
   }),
 );
+
+/**
+ * Current schema version for the JSON export/import payload. The
+ * parser refuses unknown versions so a future schema change has
+ * a clean migration point instead of silently drifting.
+ */
+export const PROGRESS_EXPORT_VERSION = 1;
+
+/** Shape of the JSON export payload. Intentionally small — just
+ *  a version stamp, a capture timestamp, and the same key/status
+ *  shape the store already uses at the top of its state. */
+export interface ProgressExportPayload {
+  version: number;
+  exported_at: string;
+  entries: Record<string, ProgressStatus>;
+}
+
+/**
+ * Build a deterministic JSON export string for the user's current
+ * progress. Includes only non-'none' entries (matches the
+ * persist-safely contract elsewhere in this file). Stable key
+ * ordering via Object.keys sort so the same inputs always yield
+ * the same output string — useful for tests and for stable diffs
+ * if the user pastes the same export twice.
+ */
+export function buildProgressExportJSON(
+  progressMap: Record<string, ProgressStatus>,
+): string {
+  const entries: Record<string, ProgressStatus> = {};
+  const keys = Object.keys(progressMap).sort();
+  for (const k of keys) {
+    const v = progressMap[k];
+    if (v && v !== 'none') entries[k] = v;
+  }
+  const payload: ProgressExportPayload = {
+    version: PROGRESS_EXPORT_VERSION,
+    exported_at: new Date().toISOString(),
+    entries,
+  };
+  return JSON.stringify(payload);
+}
+
+/**
+ * Attempt to parse a pasted import payload. Accepts the full
+ * text export (the JSON block is found by scanning for the first
+ * `{"version"` occurrence), a bare JSON string, or even a
+ * loosely-pasted block that contains extra whitespace at the
+ * edges. Returns null on any parse failure so the UI can show
+ * a clean "couldn't read that" error without crashing.
+ */
+export function parseProgressImportPayload(
+  raw: string,
+): ProgressExportPayload | null {
+  if (typeof raw !== 'string') return null;
+  let text = raw.trim();
+  if (!text) return null;
+  // If the user pasted the full text export (human + JSON),
+  // strip everything before the first `{"version"` occurrence
+  // so JSON.parse has a clean top-level object to chew on.
+  const anchor = text.indexOf('{"version"');
+  if (anchor > 0) text = text.slice(anchor);
+  // Try a direct parse first.
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    // Second attempt — scan for the last `}` and try the
+    // substring. Handles exports wrapped in extra text the
+    // user forgot to delete.
+    const lastBrace = text.lastIndexOf('}');
+    if (lastBrace < 0) return null;
+    try {
+      parsed = JSON.parse(text.slice(0, lastBrace + 1));
+    } catch {
+      return null;
+    }
+  }
+  if (!parsed || typeof parsed !== 'object') return null;
+  const obj = parsed as Record<string, unknown>;
+  if (typeof obj.version !== 'number') return null;
+  if (obj.version !== PROGRESS_EXPORT_VERSION) return null;
+  if (!obj.entries || typeof obj.entries !== 'object') return null;
+  // Sanitize entries — keep only valid string-to-status pairs.
+  const cleanEntries: Record<string, ProgressStatus> = {};
+  for (const [k, v] of Object.entries(obj.entries as Record<string, unknown>)) {
+    if (
+      typeof k === 'string' &&
+      k.length > 0 &&
+      typeof v === 'string' &&
+      VALID_STATUSES.has(v as ProgressStatus) &&
+      v !== 'none'
+    ) {
+      cleanEntries[k] = v as ProgressStatus;
+    }
+  }
+  return {
+    version: PROGRESS_EXPORT_VERSION,
+    exported_at:
+      typeof obj.exported_at === 'string' ? obj.exported_at : '',
+    entries: cleanEntries,
+  };
+}
 
 /**
  * Build a stable progress key for a technique row. Deterministic

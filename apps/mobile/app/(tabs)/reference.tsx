@@ -53,6 +53,8 @@ import {
   useReferenceProgressStore,
   buildTechniqueProgressKey,
   buildTransitionProgressKey,
+  buildProgressExportJSON,
+  parseProgressImportPayload,
   type ProgressStatus,
 } from '../../src/store/reference-progress-store';
 
@@ -512,6 +514,17 @@ function buildProgressExportText(
 
   lines.push('');
   lines.push(`— Exported ${new Date().toLocaleDateString()}`);
+
+  // Machine-readable import payload — appended at the bottom of
+  // the human export so a single share string can be either read
+  // by a human or re-imported on another device. The Import pane
+  // parser scans for the first `{"version"` anchor so the JSON
+  // survives any leading human-readable content.
+  lines.push('');
+  lines.push(
+    '--- Import payload (paste below into Import on another device) ---',
+  );
+  lines.push(buildProgressExportJSON(progressMap));
 
   return lines.join('\n');
 }
@@ -1420,6 +1433,18 @@ export default function ReferenceScreen() {
   // on both source/destination UI surfaces never double-count in
   // the screen-top strip.
   const progressMap = useReferenceProgressStore((s) => s.progress);
+  const importProgress = useReferenceProgressStore((s) => s.importProgress);
+
+  // Import pane state. `importPaneOpen` gates visibility of the
+  // inline paste-and-apply panel. `importText` is the user's
+  // pasted payload. `importResultNote` is a transient confirmation
+  // sentence shown after a successful import so the user knows
+  // how many entries landed.
+  const [importPaneOpen, setImportPaneOpen] = useState(false);
+  const [importText, setImportText] = useState('');
+  const [importResultNote, setImportResultNote] = useState<string | null>(
+    null,
+  );
   const progressCounts = useMemo(() => {
     const c = { drilling: 0, learned: 0, tracking: 0 };
     for (const v of Object.values(progressMap)) {
@@ -1545,6 +1570,55 @@ export default function ReferenceScreen() {
       // iOS/Android simulators.
     }
   }, [progressMap, progressCounts, progressFilter]);
+
+  // Import open/close/apply handlers. The user-facing flow is:
+  //   1. Tap "Import ↓" on the summary strip → opens inline
+  //      pastebox panel below the strip.
+  //   2. Paste the exported payload (full text export OR bare
+  //      JSON block) into the textarea.
+  //   3. A live preview line parses the current text and shows
+  //      "Found N entries" or "Couldn't read that payload".
+  //   4. Tap "Apply import" → merges entries into the local
+  //      progress store (existing keys are overwritten on
+  //      conflict, other keys survive), shows a confirmation
+  //      count, auto-closes the pane after 3.5s.
+  // Close-without-applying leaves the pastebox state intact so
+  // the user can reopen without re-pasting.
+  const handleToggleImport = useCallback(() => {
+    setImportPaneOpen((v) => !v);
+  }, []);
+
+  const handleApplyImport = useCallback(() => {
+    const parsed = parseProgressImportPayload(importText);
+    if (!parsed) {
+      setImportResultNote(
+        "Couldn't read that payload — paste the full text export or just the JSON block.",
+      );
+      return;
+    }
+    const keyCount = Object.keys(parsed.entries).length;
+    if (keyCount === 0) {
+      setImportResultNote(
+        'Payload parsed, but contained zero valid entries.',
+      );
+      return;
+    }
+    const result = importProgress(parsed.entries, 'merge');
+    setImportResultNote(
+      `Imported ${result.added} new + ${result.updated} updated (${result.skipped} skipped).`,
+    );
+    setImportText('');
+    setImportPaneOpen(false);
+  }, [importText, importProgress]);
+
+  // Auto-dismiss the import result confirmation after 4.5s so
+  // the note doesn't linger. Timer is scoped to the note's
+  // identity so overlapping imports reset cleanly.
+  useEffect(() => {
+    if (!importResultNote) return;
+    const t = setTimeout(() => setImportResultNote(null), 4500);
+    return () => clearTimeout(t);
+  }, [importResultNote]);
 
   // Whenever focusTarget changes, measureLayout the destination
   // card's native ref against the scroll container and scrollTo
@@ -1801,8 +1875,131 @@ export default function ReferenceScreen() {
                 Share ↗
               </Text>
             </Pressable>
+            <Pressable
+              onPress={handleToggleImport}
+              style={[
+                styles.progressSummaryImportBtn,
+                importPaneOpen && styles.progressSummaryImportBtnActive,
+              ]}>
+              <Text
+                style={[
+                  styles.progressSummaryImportText,
+                  importPaneOpen && styles.progressSummaryImportTextActive,
+                ]}>
+                {importPaneOpen ? 'Close ×' : 'Import ↓'}
+              </Text>
+            </Pressable>
           </View>
         </View>
+      )}
+
+      {/* Import pastebox pane — rendered below the summary strip
+          when open. Contains a multiline TextInput for the
+          payload paste, a live parse preview line, and Apply /
+          Cancel buttons. Always mounts when importPaneOpen is
+          true, regardless of whether the summary strip is
+          currently visible, so a brand-new user with zero
+          flagged items can still paste an import payload to
+          restore state from another device. That case still
+          needs a way to open it — we render a small "Import
+          progress ↓" pill in the filter row when the strip is
+          hidden, below. */}
+      {importPaneOpen && (() => {
+        // Live preview — parse the current textbox contents and
+        // surface a one-line hint so the user sees whether the
+        // paste is good before they apply it.
+        const preview = parseProgressImportPayload(importText);
+        const previewCount = preview
+          ? Object.keys(preview.entries).length
+          : 0;
+        const isValid = preview != null && previewCount > 0;
+        return (
+          <View style={styles.importPane}>
+            <Text style={styles.importPaneLabel}>Import progress</Text>
+            <Text style={styles.importPaneHelp}>
+              Paste the full text export from Share, or just the
+              JSON block. Existing entries are merged — your
+              local unmatched items are kept.
+            </Text>
+            <TextInput
+              style={styles.importPaneInput}
+              value={importText}
+              onChangeText={setImportText}
+              placeholder="Paste export here…"
+              placeholderTextColor="#555"
+              multiline
+              textAlignVertical="top"
+              autoCorrect={false}
+              autoCapitalize="none"
+            />
+            <Text
+              style={[
+                styles.importPanePreview,
+                isValid && styles.importPanePreviewValid,
+                importText.trim().length > 0 &&
+                  !isValid &&
+                  styles.importPanePreviewInvalid,
+              ]}>
+              {importText.trim().length === 0
+                ? 'Waiting for payload…'
+                : isValid
+                  ? `Found ${previewCount} entr${previewCount === 1 ? 'y' : 'ies'} — tap Apply to merge.`
+                  : "Couldn't read that payload."}
+            </Text>
+            <View style={styles.importPaneActions}>
+              <Pressable
+                onPress={handleApplyImport}
+                disabled={!isValid}
+                style={[
+                  styles.importPaneApplyBtn,
+                  !isValid && styles.importPaneApplyBtnDisabled,
+                ]}>
+                <Text
+                  style={[
+                    styles.importPaneApplyBtnText,
+                    !isValid && styles.importPaneApplyBtnTextDisabled,
+                  ]}>
+                  Apply import
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setImportText('');
+                }}
+                style={styles.importPaneClearBtn}>
+                <Text style={styles.importPaneClearBtnText}>Clear</Text>
+              </Pressable>
+            </View>
+          </View>
+        );
+      })()}
+
+      {/* Zero-progress-state import entry point — when there are
+          no flagged items the summary strip doesn't render, so
+          the Import button inside it is invisible. This fallback
+          pill in the filter row gives new users a way to open
+          the import pane without first having to flag something. */}
+      {totalProgressItems === 0 && !importPaneOpen && (
+        <Pressable
+          onPress={handleToggleImport}
+          style={styles.zeroStateImportBtn}>
+          <Text style={styles.zeroStateImportText}>
+            Import progress ↓
+          </Text>
+        </Pressable>
+      )}
+
+      {/* Import result note — transient confirmation of added /
+          updated / skipped counts after a successful import,
+          auto-dismisses via the useEffect timer above. */}
+      {importResultNote && (
+        <Pressable
+          onPress={() => setImportResultNote(null)}
+          style={styles.importResultNoteBanner}>
+          <Text style={styles.importResultNoteText}>
+            {importResultNote}
+          </Text>
+        </Pressable>
       )}
 
       {/* Progress-filter empty state — when the user activates a
@@ -2589,6 +2786,143 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#d4e157',
     fontWeight: '700',
+  },
+  progressSummaryImportBtn: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(127,184,255,0.5)',
+    backgroundColor: 'rgba(74,158,255,0.06)',
+  },
+  progressSummaryImportBtnActive: {
+    borderColor: '#7fb8ff',
+    backgroundColor: 'rgba(74,158,255,0.18)',
+  },
+  progressSummaryImportText: {
+    fontSize: 10,
+    color: '#7fb8ff',
+    fontWeight: '700',
+  },
+  progressSummaryImportTextActive: {
+    color: '#cfe3ff',
+  },
+
+  // Import pastebox pane — inline panel shown below the
+  // summary strip when the Import button is active.
+  importPane: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(74,158,255,0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(74,158,255,0.35)',
+    gap: 8,
+  },
+  importPaneLabel: {
+    fontSize: 11,
+    color: '#7fb8ff',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  importPaneHelp: {
+    fontSize: 11,
+    color: '#b0b8c3',
+    opacity: 0.7,
+    lineHeight: 15,
+  },
+  importPaneInput: {
+    minHeight: 84,
+    maxHeight: 180,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 12,
+    color: '#e6ecf3',
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    fontFamily: 'SpaceMono',
+    lineHeight: 16,
+  },
+  importPanePreview: {
+    fontSize: 11,
+    color: '#888',
+    fontStyle: 'italic',
+  },
+  importPanePreviewValid: {
+    color: '#4ade80',
+    fontStyle: 'normal',
+    fontWeight: '600',
+  },
+  importPanePreviewInvalid: {
+    color: '#ff8a80',
+    fontStyle: 'normal',
+    fontWeight: '600',
+  },
+  importPaneActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  importPaneApplyBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#7fb8ff',
+    backgroundColor: 'rgba(74,158,255,0.1)',
+    alignItems: 'center',
+  },
+  importPaneApplyBtnDisabled: {
+    opacity: 0.35,
+  },
+  importPaneApplyBtnText: {
+    color: '#7fb8ff',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  importPaneApplyBtnTextDisabled: {
+    color: '#555',
+  },
+  importPaneClearBtn: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#444',
+    alignItems: 'center',
+  },
+  importPaneClearBtnText: {
+    color: '#888',
+    fontSize: 12,
+  },
+
+  zeroStateImportBtn: {
+    alignSelf: 'flex-start',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(127,184,255,0.45)',
+    backgroundColor: 'rgba(74,158,255,0.05)',
+  },
+  zeroStateImportText: {
+    fontSize: 11,
+    color: '#7fb8ff',
+    fontWeight: '600',
+  },
+
+  importResultNoteBanner: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(74,222,128,0.08)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#4ade80',
+  },
+  importResultNoteText: {
+    fontSize: 12,
+    color: '#d8fbe0',
+    fontWeight: '600',
+    lineHeight: 17,
   },
   emptyResetBtn: {
     alignSelf: 'flex-start',
