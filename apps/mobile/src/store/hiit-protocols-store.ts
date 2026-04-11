@@ -142,6 +142,124 @@ interface HIITProtocolsState {
   clearAll: () => void;
 }
 
+/**
+ * Pure helper: compute a single compact "progression vs last" string
+ * for a freshly-logged session versus a prior saved-protocol snapshot.
+ *
+ * Design goals:
+ * - Only ever return ONE delta — the highest-priority field for which
+ *   both the current and prior session have a value. Multiple deltas
+ *   in one banner is noise.
+ * - Never invent precision. A delta is only computed when BOTH values
+ *   are present on the same field.
+ * - Rounded-zero deltas render as "matched last" so users get explicit
+ *   positive feedback for repeating exactly.
+ * - Returns null when there is nothing meaningful to say (no prior
+ *   snapshot, no comparable fields) — the UI should then render the
+ *   existing success banner alone.
+ *
+ * Field priority (first match wins):
+ *   distance_m → avg_power_w → calories → kilojoules → avg_hr_bpm → duration_min
+ *
+ * HR deltas intentionally show as raw "+3bpm vs last" without valence
+ * coloring — higher HR is not automatically "better" (could indicate
+ * under-recovery) and we don't have the context to judge here.
+ */
+export function buildProgressionDelta(
+  current: {
+    metrics?: Partial<MachineMetrics>;
+    duration_min?: number;
+  },
+  prior: SavedHIITProtocolMetrics | undefined,
+): string | null {
+  if (!prior) return null;
+
+  const m = current.metrics ?? {};
+
+  /**
+   * Format a signed number with an explicit sign. `+123`, `-5`, `0`.
+   * Always passes through Math.round so the output never shows fake
+   * fractional precision.
+   */
+  const signed = (n: number): string => {
+    const r = Math.round(n);
+    if (r > 0) return `+${r}`;
+    return `${r}`;
+  };
+
+  // Ordered list of picks to try. First one with both values wins.
+  const picks: Array<{
+    cur: number;
+    old: number;
+    format: (delta: number) => string;
+  }> = [];
+
+  if (m.distance_m != null && prior.distance_m != null) {
+    picks.push({
+      cur: m.distance_m,
+      old: prior.distance_m,
+      format: (d) => {
+        const abs = Math.abs(d);
+        // Switch to km when the delta or prior total lives in km range
+        // — keeps the banner compact for real cardio distances.
+        if (abs >= 1000 || prior.distance_m! >= 1000) {
+          const km = d / 1000;
+          const sign = km > 0 ? '+' : km < 0 ? '' : '';
+          return `${sign}${km.toFixed(1)}km vs last`;
+        }
+        return `${signed(d)}m vs last`;
+      },
+    });
+  }
+  if (m.avg_power_w != null && prior.avg_power_w != null) {
+    picks.push({
+      cur: m.avg_power_w,
+      old: prior.avg_power_w,
+      format: (d) => `${signed(d)}W vs last`,
+    });
+  }
+  if (m.calories != null && prior.calories != null) {
+    picks.push({
+      cur: m.calories,
+      old: prior.calories,
+      format: (d) => `${signed(d)}kcal vs last`,
+    });
+  }
+  if (m.kilojoules != null && prior.kilojoules != null) {
+    picks.push({
+      cur: m.kilojoules,
+      old: prior.kilojoules,
+      format: (d) => `${signed(d)}kJ vs last`,
+    });
+  }
+  if (m.avg_hr_bpm != null && prior.avg_hr_bpm != null) {
+    picks.push({
+      cur: m.avg_hr_bpm,
+      old: prior.avg_hr_bpm,
+      format: (d) => `${signed(d)}bpm avg vs last`,
+    });
+  }
+  if (current.duration_min != null && prior.duration_min != null) {
+    picks.push({
+      cur: current.duration_min,
+      old: prior.duration_min,
+      format: (d) => `${signed(d)}min vs last`,
+    });
+  }
+
+  if (picks.length === 0) return null;
+
+  const best = picks[0];
+  const delta = best.cur - best.old;
+
+  // Rounded-zero comparison — anything that rounds to 0 on the chosen
+  // field is "matched", not a fake "+0W" delta. For distance we use a
+  // slightly wider tolerance (±1m rounds to 0 anyway, but allow ±2m).
+  if (Math.round(delta) === 0) return 'matched last';
+
+  return best.format(delta);
+}
+
 export const useHIITProtocolsStore = create<HIITProtocolsState>((set, get) => ({
   protocols: [],
   hydrated: false,

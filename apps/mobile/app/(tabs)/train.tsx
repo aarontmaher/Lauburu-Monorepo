@@ -13,7 +13,7 @@ import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useWhoopStore } from '../../src/store/whoop-store';
 import { useMachineStore } from '../../src/store/machine-store';
-import { useHIITProtocolsStore } from '../../src/store/hiit-protocols-store';
+import { useHIITProtocolsStore, buildProgressionDelta } from '../../src/store/hiit-protocols-store';
 import type { SavedHIITProtocolMetrics } from '../../src/store/hiit-protocols-store';
 import { modalitySupportsMachineData } from '../../src/services/machine-connector';
 import { ReferencePositionPicker } from '../../src/components/ReferencePositionPicker';
@@ -172,7 +172,15 @@ function EntryForm({
   onDone,
 }: {
   editing: TrainingSession | null;
-  onDone: () => void;
+  /**
+   * Called after a successful submit. Optional `progressionDelta`
+   * carries a compact "progression vs last" string when the session
+   * updated a saved protocol that already had a prior snapshot — the
+   * parent uses this to decorate the post-save success banner. Null
+   * when no delta is meaningful (first-ever session for the protocol,
+   * non-HIIT session, no comparable fields).
+   */
+  onDone: (progressionDelta?: string | null) => void;
 }) {
   const addSession = useTrainingStore((s) => s.addSession);
   const editSession = useTrainingStore((s) => s.editSession);
@@ -509,8 +517,22 @@ function EntryForm({
     // store action. Pass the session's machine metrics + duration so
     // the saved protocol carries a "last: 5.2km · 185W · 18min"
     // target-to-beat snapshot.
+    //
+    // Compute a progression delta BEFORE calling saveHIITProtocol by
+    // capturing the existing protocol's `last_metrics` snapshot first
+    // (saveHIITProtocol will overwrite it with the current session's
+    // numbers). The delta is then passed through onDone so the parent
+    // screen's success banner can show "+400m vs last" / "matched last"
+    // as immediate progression feedback.
     const iv = input.conditioning?.interval;
+    let progressionDelta: string | null = null;
     if (iv && iv.label && iv.label.trim().length > 0) {
+      const normLabel = iv.label.trim().toLowerCase();
+      const priorProtocol = savedHIITProtocols.find(
+        (p) => p.label.trim().toLowerCase() === normLabel,
+      );
+      const priorMetrics = priorProtocol?.last_metrics;
+
       saveHIITProtocol({
         label: iv.label,
         work_s: iv.work_duration_s,
@@ -520,10 +542,18 @@ function EntryForm({
         metrics: input.conditioning?.machine_metrics,
         duration_min: input.duration_min,
       });
+
+      progressionDelta = buildProgressionDelta(
+        {
+          metrics: input.conditioning?.machine_metrics,
+          duration_min: input.duration_min,
+        },
+        priorMetrics,
+      );
     }
 
     if (user?.id) syncData(user.id).catch(() => {});
-    onDone();
+    onDone(progressionDelta);
   };
 
   return (
@@ -1532,7 +1562,7 @@ function EntryForm({
       </View>}
 
       {editing && (
-        <Pressable style={styles.cancelButton} onPress={onDone}>
+        <Pressable style={styles.cancelButton} onPress={() => onDone()}>
           <Text style={styles.cancelText}>Cancel</Text>
         </Pressable>
       )}
@@ -1754,6 +1784,12 @@ export default function TrainScreen() {
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [lastLoggedHeadline, setLastLoggedHeadline] = useState<string | null>(null);
+  // Compact "progression vs last" string returned from the EntryForm
+  // submit path when a HIIT session updated a saved protocol that
+  // already had a prior snapshot. Null for non-HIIT sessions, first-
+  // ever HIIT sessions on a new protocol, or sessions with no
+  // comparable numeric fields.
+  const [lastLoggedDelta, setLastLoggedDelta] = useState<string | null>(null);
 
   // Today's coaching context used to interpret today's logged HIIT
   // sessions in SessionCard. Historical sessions deliberately receive
@@ -1810,7 +1846,7 @@ export default function TrainScreen() {
 
   const schedule = usePreferencesStore((s) => s.preferences.schedule);
 
-  const handleFormDone = () => {
+  const handleFormDone = (progressionDelta?: string | null) => {
     setEditingSession(null);
     setShowForm(true);
     setSubmitted(true);
@@ -1836,6 +1872,7 @@ export default function TrainScreen() {
     } else {
       setLastLoggedHeadline(null);
     }
+    setLastLoggedDelta(progressionDelta ?? null);
     setTimeout(() => setSubmitted(false), 3500);
   };
 
@@ -1861,6 +1898,17 @@ export default function TrainScreen() {
           <Text style={styles.successText}>
             Logged: {lastLoggedHeadline ?? 'session — coaching updated'}
           </Text>
+          {lastLoggedDelta && (
+            <Text
+              style={[
+                styles.successDelta,
+                lastLoggedDelta.startsWith('+') && styles.successDeltaUp,
+                lastLoggedDelta.startsWith('-') && styles.successDeltaDown,
+                lastLoggedDelta === 'matched last' && styles.successDeltaMatched,
+              ]}>
+              Progression: {lastLoggedDelta}
+            </Text>
+          )}
         </View>
       )}
 
@@ -2187,8 +2235,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
     alignItems: 'center',
+    gap: 4,
   },
   successText: { color: '#4ade80', fontSize: 14, fontWeight: '600' },
+  successDelta: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#b0b8c3',
+  },
+  successDeltaUp: { color: '#4ade80' },
+  successDeltaDown: { color: '#ff8a80' },
+  successDeltaMatched: { color: '#d4e157' },
 
   // History
   historySection: { gap: 12, marginTop: 8 },
