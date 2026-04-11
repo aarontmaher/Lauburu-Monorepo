@@ -24,6 +24,7 @@ import {
   StyleSheet,
   ScrollView,
   Pressable,
+  Share,
   TextInput,
   Linking,
   findNodeHandle,
@@ -298,6 +299,134 @@ function parseTransitionEdges(
     });
   }
   return out;
+}
+
+/**
+ * Build a compact, human-readable text summary of the user's
+ * stored Reference progress for Share.share export. Output is
+ * deterministic and local-only — no network calls, no auth, no
+ * backend sync — and safe to paste into ChatGPT, notes apps,
+ * messages, or a coach DM.
+ *
+ * Output structure:
+ *   Lauburu Grappling Map — training status
+ *
+ *   12 drilling · 47 learned · 8 tracking
+ *
+ *   Top positions:
+ *     · Back Control (7)
+ *     · Mount (5)
+ *     · Crab ride (3)
+ *
+ *   [when a filter is active]
+ *   All learned items:
+ *     · Back Control · Submissions: Rear naked choke
+ *     · Mount · Offence: Knee through to mounted triangle
+ *     · <source>: <label> → <destination>
+ *     ...
+ *
+ *   — Exported <locale date>
+ *
+ * Scope semantics:
+ *   When `activeFilter` is null the export is the aggregate
+ *   summary (counts + top positions, no per-item list).
+ *   When `activeFilter` is set the export layers a full
+ *   filtered list ON TOP of the aggregate so the user gets
+ *   both "what I've flagged overall" AND "this specific
+ *   status list I'm currently viewing". No scope switch — the
+ *   aggregate header is always present so the recipient of
+ *   the shared text sees the whole training context in one
+ *   paste.
+ */
+function buildProgressExportText(
+  progressMap: Record<string, ProgressStatus>,
+  counts: { drilling: number; learned: number; tracking: number },
+  activeFilter: ProgressStatus | null,
+): string {
+  const lines: string[] = [];
+  lines.push('Lauburu Grappling Map — training status');
+  lines.push('');
+
+  // Aggregate count line
+  const countParts: string[] = [];
+  if (counts.drilling > 0) countParts.push(`${counts.drilling} drilling`);
+  if (counts.learned > 0) countParts.push(`${counts.learned} learned`);
+  if (counts.tracking > 0) countParts.push(`${counts.tracking} tracking`);
+  if (countParts.length === 0) {
+    lines.push('No items flagged yet.');
+  } else {
+    lines.push(countParts.join(' · '));
+  }
+
+  // Top positions — parsed from the progress key format. Both
+  // technique keys ('tech|section|position|role|heading|label')
+  // and transition keys ('tx|sourceSection|sourcePosition|
+  // sourceRole|label|destination') put the position / source
+  // position at index 2, so the scan is a single split + read
+  // per entry.
+  const byPosition = new Map<string, number>();
+  for (const [key, status] of Object.entries(progressMap)) {
+    if (status === 'none') continue;
+    const parts = key.split('|');
+    if (
+      (parts[0] === 'tech' || parts[0] === 'tx') &&
+      parts.length >= 3 &&
+      parts[2]
+    ) {
+      const pos = parts[2];
+      byPosition.set(pos, (byPosition.get(pos) ?? 0) + 1);
+    }
+  }
+  const topPositions = Array.from(byPosition.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+  if (topPositions.length > 0) {
+    lines.push('');
+    lines.push('Top positions:');
+    for (const [pos, count] of topPositions) {
+      lines.push(`  · ${pos} (${count})`);
+    }
+  }
+
+  // Filtered list — when a filter is active, list every item
+  // currently in that state with a readable breadcrumb. Parses
+  // the key format into human-readable breadcrumbs so the
+  // recipient doesn't see raw `tech|Guard|K guard|...` keys.
+  if (activeFilter) {
+    const filteredKeys = Object.entries(progressMap)
+      .filter(([, v]) => v === activeFilter)
+      .map(([k]) => k);
+    if (filteredKeys.length > 0) {
+      lines.push('');
+      lines.push(`All ${activeFilter} items (${filteredKeys.length}):`);
+      for (const key of filteredKeys) {
+        const parts = key.split('|');
+        let readable = key;
+        if (parts[0] === 'tech' && parts.length >= 6) {
+          // tech|section|position|role|heading|label
+          const pos = parts[2];
+          const heading = parts[4];
+          // Label may contain pipes in edge cases — rejoin
+          // any trailing segments just in case so we never
+          // drop data.
+          const label = parts.slice(5).join('|');
+          readable = `${pos} · ${heading}: ${label}`;
+        } else if (parts[0] === 'tx' && parts.length >= 6) {
+          // tx|sourceSection|sourcePosition|sourceRole|label|destination
+          const src = parts[2];
+          const label = parts[4];
+          const dest = parts.slice(5).join('|');
+          readable = `${src}: ${label} → ${dest}`;
+        }
+        lines.push(`  · ${readable}`);
+      }
+    }
+  }
+
+  lines.push('');
+  lines.push(`— Exported ${new Date().toLocaleDateString()}`);
+
+  return lines.join('\n');
 }
 
 /**
@@ -1302,6 +1431,34 @@ export default function ReferenceScreen() {
     return () => clearTimeout(t);
   }, [filterEscapeNote]);
 
+  // Progress export share — builds a compact plain-text summary
+  // of the user's stored Reference progress and opens the native
+  // share sheet so they can send it to a coach / chat / notes
+  // without requiring any backend sync. Behaviour is
+  // scope-aware: when a progressFilter is active, the aggregate
+  // summary is followed by a per-item breakdown of the filtered
+  // status list, so the recipient sees "overall state AND this
+  // specific list I'm currently looking at". Share rejection
+  // (e.g. user dismisses the share sheet) is silently swallowed
+  // since it's not an error.
+  const handleShareProgress = useCallback(async () => {
+    const text = buildProgressExportText(
+      progressMap,
+      progressCounts,
+      progressFilter,
+    );
+    try {
+      await Share.share({
+        message: text,
+        title: 'Lauburu training status',
+      });
+    } catch {
+      // Silent — RN Share.share only rejects on hard failure
+      // (no share sheet available on device) which is rare on
+      // iOS/Android simulators.
+    }
+  }, [progressMap, progressCounts, progressFilter]);
+
   // Whenever focusTarget changes, measureLayout the destination
   // card's native ref against the scroll container and scrollTo
   // its offset (with an 80px header breathing room). The inner
@@ -1496,15 +1653,24 @@ export default function ReferenceScreen() {
             </Text>
             <Text style={styles.progressSummaryLabel}>tracking</Text>
           </Pressable>
-          {progressFilter && (
+          <View style={styles.progressSummaryRightGroup}>
+            {progressFilter && (
+              <Pressable
+                onPress={() => setProgressFilter(null)}
+                style={styles.progressSummaryClearBtn}>
+                <Text style={styles.progressSummaryClearText}>
+                  Show all ×
+                </Text>
+              </Pressable>
+            )}
             <Pressable
-              onPress={() => setProgressFilter(null)}
-              style={styles.progressSummaryClearBtn}>
-              <Text style={styles.progressSummaryClearText}>
-                Show all ×
+              onPress={handleShareProgress}
+              style={styles.progressSummaryShareBtn}>
+              <Text style={styles.progressSummaryShareText}>
+                Share ↗
               </Text>
             </Pressable>
-          )}
+          </View>
         </View>
       )}
 
@@ -2205,18 +2371,36 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
+  progressSummaryRightGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginLeft: 'auto',
+  },
   progressSummaryClearBtn: {
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#666',
-    marginLeft: 'auto',
   },
   progressSummaryClearText: {
     fontSize: 10,
     color: '#aaa',
     fontWeight: '600',
+  },
+  progressSummaryShareBtn: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.5)',
+    backgroundColor: 'rgba(212,225,87,0.05)',
+  },
+  progressSummaryShareText: {
+    fontSize: 10,
+    color: '#d4e157',
+    fontWeight: '700',
   },
   emptyResetBtn: {
     alignSelf: 'flex-start',
