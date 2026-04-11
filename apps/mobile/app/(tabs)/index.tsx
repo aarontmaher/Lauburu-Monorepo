@@ -9,6 +9,7 @@ import { useWhoopStore } from '../../src/store/whoop-store';
 import { useNutritionStore } from '../../src/store/nutrition-store';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useCoachingCasesStore } from '../../src/store/coaching-cases-store';
+import { buildLastHIITHomeNote } from '../../src/services/hiit-home-note';
 import { useProgress } from '../../src/hooks/useProgress';
 import {
   REFERENCE_TOTAL_POSITIONS,
@@ -330,6 +331,22 @@ function TodayCoachCard() {
     return buildDailyCoachingBrief(briefInputs);
   }, [briefInputs]);
 
+  // Compact continuity cue from the most recent HIIT session within
+  // the last 3 days. Priority: retrospective PR beat → vs-last delta
+  // → interpretive coaching note. Null when nothing meaningful exists
+  // (the UI branch then renders nothing). Computed from sessions[]
+  // directly so it never races with the ephemeral save/timer handoff
+  // state that lives in Train.
+  const lastHIITHomeNote = useMemo(() => {
+    return buildLastHIITHomeNote({
+      sessions,
+      todayIsoDate: briefInputs.todayIsoDate,
+      whoopRecovery: whoopDay?.recovery_score ?? undefined,
+      suggestedIntensity: brief.suggested_intensity,
+      maxAgeDays: 3,
+    });
+  }, [sessions, briefInputs.todayIsoDate, whoopDay, brief.suggested_intensity]);
+
   /**
    * Ask ChatGPT fallback — builds a structured prompt packet from the
    * same inputs the coach card is already reading, opens the native
@@ -442,6 +459,29 @@ function TodayCoachCard() {
               • {r}
             </Text>
           ))}
+        </View>
+      )}
+
+      {/* Last HIIT continuity cue — PR beat, vs-last delta, or
+          machine-metrics-aware coaching note from the most recent
+          HIIT session within the last 3 days. Null-safe: the whole
+          block is hidden when no meaningful signal exists, so
+          non-HIIT users and HIIT users on rest cycles see Home
+          identical to before. Valence-aware styling picks up on
+          the 🏆 PR beat and the +/- delta prefixes. */}
+      {lastHIITHomeNote && (
+        <View style={styles.lastHIITNoteBlock}>
+          <Text style={styles.lastHIITNoteLabel}>From your last HIIT</Text>
+          <Text
+            style={[
+              styles.lastHIITNoteText,
+              lastHIITHomeNote.startsWith('🏆') && styles.lastHIITNotePr,
+              lastHIITHomeNote.startsWith('+') && styles.lastHIITNoteUp,
+              lastHIITHomeNote.startsWith('-') && styles.lastHIITNoteDown,
+              lastHIITHomeNote === 'matched last' && styles.lastHIITNoteMatched,
+            ]}>
+            {lastHIITHomeNote}
+          </Text>
         </View>
       )}
 
@@ -782,6 +822,36 @@ const styles = StyleSheet.create({
     marginTop: 6,
     lineHeight: 17,
   },
+
+  // Last HIIT continuity cue block
+  lastHIITNoteBlock: {
+    marginTop: 8,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    borderLeftWidth: 2,
+    borderLeftColor: 'rgba(212,225,87,0.4)',
+    gap: 2,
+  },
+  lastHIITNoteLabel: {
+    fontSize: 10,
+    opacity: 0.4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  lastHIITNoteText: {
+    fontSize: 12,
+    color: '#c4cdd8',
+    lineHeight: 17,
+    fontWeight: '500',
+  },
+  lastHIITNotePr: {
+    color: '#ffd866',
+    fontWeight: '700',
+  },
+  lastHIITNoteUp: { color: '#4ade80' },
+  lastHIITNoteDown: { color: '#ff8a80' },
+  lastHIITNoteMatched: { color: '#d4e157' },
 
   // Ask ChatGPT fallback
   askAiBlock: { marginTop: 10, gap: 8 },
