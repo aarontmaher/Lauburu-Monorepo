@@ -55,6 +55,34 @@ export interface SavedHIITProtocolMetrics {
 }
 
 /**
+ * PR-eligible fields — higher values count as "better" for these
+ * fields on a HIIT/interval session. Used by mergeBestMetrics and
+ * detectNewBest to decide which fields are worth tracking as
+ * personal bests vs those that are ambiguous (higher HR is not
+ * automatically better, longer duration is not automatically better).
+ */
+const PR_ELIGIBLE_FIELDS: Array<'distance_m' | 'calories' | 'kilojoules' | 'avg_power_w'> = [
+  'distance_m',
+  'avg_power_w',
+  'calories',
+  'kilojoules',
+];
+
+/** Human-readable labels for each PR-eligible field, used in the
+ * "🏆 New best X" celebration line. Priority order matches the
+ * PR_ELIGIBLE_FIELDS array so the most meaningful improvement wins
+ * when a session beats multiple fields at once. */
+const PR_FIELD_LABELS: Record<
+  'distance_m' | 'calories' | 'kilojoules' | 'avg_power_w',
+  string
+> = {
+  distance_m: 'distance',
+  avg_power_w: 'avg power',
+  calories: 'calories',
+  kilojoules: 'kJ',
+};
+
+/**
  * Saved HIIT protocol — a named recipe for a recurring interval
  * session. Label is user-provided and mandatory (the store only
  * auto-saves when the user has explicitly named a protocol).
@@ -80,6 +108,21 @@ export interface SavedHIITProtocol {
    * meaningful numeric field.
    */
   last_metrics?: SavedHIITProtocolMetrics;
+  /**
+   * Personal-best snapshot — the highest value ever recorded on
+   * each PR-eligible field (distance_m, avg_power_w, calories,
+   * kilojoules). Updated field-by-field independently so a session
+   * that beats only distance keeps the prior avg_power_w best alive.
+   * Ambiguous fields (avg_hr_bpm, duration_min) are never stored
+   * on best_metrics because higher-is-better is not honest for
+   * those signals. `captured_at` moves forward to the most recent
+   * session that improved ANY PR field.
+   *
+   * Absent on brand-new protocols and on protocols that have never
+   * recorded a numeric output field. The UI treats undefined as
+   * "no PR yet" and simply does not show the celebration line.
+   */
+  best_metrics?: SavedHIITProtocolMetrics;
 }
 
 function genId(): string {
@@ -119,6 +162,13 @@ export interface PendingTimerLogHandoff {
    * fields, first-ever session for this protocol).
    */
   delta: string | null;
+  /**
+   * Personal-best celebration label from detectNewBest, or null when
+   * the session did not beat any PR-eligible field on the matched
+   * protocol. Rendered as a stronger positive-reinforcement line
+   * above the standard vs-last delta.
+   */
+  newBestLabel: string | null;
 }
 
 interface HIITProtocolsState {
@@ -182,6 +232,91 @@ interface HIITProtocolsState {
    * stale delta.
    */
   clearPendingTimerLog: () => void;
+}
+
+/**
+ * Pure helper: merge an incoming session's metrics into a protocol's
+ * existing best_metrics snapshot, field-by-field, keeping the higher
+ * value on each PR-eligible field. Returns both the next snapshot
+ * and a flag indicating whether at least one field improved.
+ *
+ * Field-level independence is intentional: a session that beats only
+ * distance must preserve the prior avg_power_w best rather than wipe
+ * it. The returned `captured_at` moves forward only when at least
+ * one field improved — otherwise the previous snapshot is returned
+ * unchanged and the caller can skip a re-persist.
+ */
+function mergeBestMetrics(
+  existing: SavedHIITProtocolMetrics | undefined,
+  incoming: Partial<MachineMetrics>,
+  nowIso: string,
+): { next: SavedHIITProtocolMetrics | undefined; improved: boolean } {
+  let improved = false;
+  // Start from the existing best so we preserve fields the new
+  // session didn't improve on.
+  const next: SavedHIITProtocolMetrics = existing
+    ? { ...existing }
+    : { captured_at: nowIso };
+
+  for (const f of PR_ELIGIBLE_FIELDS) {
+    const cur = incoming[f];
+    if (cur == null || !Number.isFinite(cur)) continue;
+    const old = existing?.[f];
+    if (old == null || cur > old) {
+      (next as unknown as Record<string, number>)[f] = cur;
+      improved = true;
+    }
+  }
+
+  if (improved) {
+    next.captured_at = nowIso;
+    return { next, improved: true };
+  }
+  return { next: existing, improved: false };
+}
+
+/**
+ * Pure helper: detect whether a freshly-logged session set a new
+ * personal best on any PR-eligible field relative to a PRIOR
+ * best_metrics snapshot (captured BEFORE the session was saved).
+ * Returns a compact "🏆 New best X" label string for the highest-
+ * priority improvement, or null if nothing improved.
+ *
+ * Priority order matches PR_ELIGIBLE_FIELDS: distance → avg power →
+ * calories → kilojoules. A session that beats multiple fields at
+ * once shows only the highest-priority one — multi-PR banners get
+ * noisy and dilute the positive-reinforcement signal.
+ *
+ * Returns null when:
+ *   - `priorBest` is undefined (first-ever session — not a "new best",
+ *     just a baseline being established; the vs-last delta path is
+ *     suppressed by buildProgressionDelta in the same case so the
+ *     banner shows a single clean headline).
+ *   - No PR-eligible field in the incoming session exceeds the prior
+ *     best on that field.
+ */
+export function detectNewBest(
+  current: { metrics?: Partial<MachineMetrics> },
+  priorBest: SavedHIITProtocolMetrics | undefined,
+): string | null {
+  // Pure "baseline" case: no prior best means nothing to beat. We
+  // deliberately do NOT announce "new best" on a first-ever session
+  // since there's nothing to celebrate — the user has no personal
+  // history yet on this protocol.
+  if (!priorBest) return null;
+  const m = current.metrics;
+  if (!m) return null;
+
+  for (const f of PR_ELIGIBLE_FIELDS) {
+    const cur = m[f];
+    if (cur == null || !Number.isFinite(cur)) continue;
+    const old = priorBest[f];
+    if (old == null) continue; // no prior value on this field — not a beat
+    if (cur > old) {
+      return `🏆 New best ${PR_FIELD_LABELS[f]}`;
+    }
+  }
+  return null;
 }
 
 /**
@@ -400,6 +535,17 @@ export const useHIITProtocolsStore = create<HIITProtocolsState>((set, get) => ({
         };
       }
 
+      // Merge best_metrics field-by-field against the incoming
+      // session's PR-eligible fields. A sparse session (only
+      // duration, or no metrics at all) leaves the existing best
+      // untouched — mergeBestMetrics returns existing unchanged
+      // when no field improved.
+      const { next: nextBestMetrics } = mergeBestMetrics(
+        existing?.best_metrics,
+        mm,
+        now,
+      );
+
       const fresh: SavedHIITProtocol = {
         id: existing?.id ?? genId(),
         label: trimmed,
@@ -410,6 +556,7 @@ export const useHIITProtocolsStore = create<HIITProtocolsState>((set, get) => ({
         last_used_at: now,
         use_count: (existing?.use_count ?? 0) + 1,
         last_metrics: nextLastMetrics,
+        best_metrics: nextBestMetrics,
       };
       nextProtocols = [fresh, ...filtered].slice(0, MAX_PROTOCOLS);
       return { protocols: nextProtocols };

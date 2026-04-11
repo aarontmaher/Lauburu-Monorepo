@@ -15,7 +15,7 @@ import { useTrainingStore } from '../src/store/training-store';
 import { useHealthStore } from '../src/store/health-store';
 import { useAuthStore } from '../src/store/auth-store';
 import { useMachineStore } from '../src/store/machine-store';
-import { useHIITProtocolsStore, buildProgressionDelta } from '../src/store/hiit-protocols-store';
+import { useHIITProtocolsStore, buildProgressionDelta, detectNewBest } from '../src/store/hiit-protocols-store';
 import { MachineMetricsReview } from '../src/components/MachineMetricsReview';
 import { modalitySupportsMachineData } from '../src/services/machine-connector';
 import { CONDITIONING_SUBTYPE_LABELS, MODALITY_LABELS, HR_ZONES, getHRZone, REST_COLOR } from '@lauburu/shared';
@@ -248,7 +248,12 @@ export default function TimerScreen() {
       const priorProtocol = hiitProtocols.find(
         (p) => p.label.trim().toLowerCase() === normLabel,
       );
-      const priorMetrics = priorProtocol?.last_metrics;
+      // Snapshot BOTH prior last_metrics and prior best_metrics
+      // before saveHIITProtocol mutates the matched entry. The
+      // delta helper reads last_metrics; detectNewBest reads
+      // best_metrics.
+      const priorLastMetrics = priorProtocol?.last_metrics;
+      const priorBestMetrics = priorProtocol?.best_metrics;
 
       saveHIITProtocol({
         label: config.label,
@@ -265,13 +270,17 @@ export default function TimerScreen() {
           metrics: anyTyped ? typedMetrics : undefined,
           duration_min: durationMin,
         },
-        priorMetrics,
+        priorLastMetrics,
+      );
+      const newBestLabel = detectNewBest(
+        { metrics: anyTyped ? typedMetrics : undefined },
+        priorBestMetrics,
       );
 
-      // Always set the handoff — even a null delta lets TrainScreen
-      // know "a timer session just landed" so it can pop the banner
-      // in its generic form (no delta line).
-      setPendingTimerLog({ delta });
+      // Always set the handoff — even null delta + null PR lets
+      // TrainScreen know "a timer session just landed" so it can
+      // pop the banner in its generic headline-only form.
+      setPendingTimerLog({ delta, newBestLabel });
     }
 
     if (user?.id) syncData(user.id).catch(() => {});

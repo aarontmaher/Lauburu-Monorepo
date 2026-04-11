@@ -13,7 +13,7 @@ import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useWhoopStore } from '../../src/store/whoop-store';
 import { useMachineStore } from '../../src/store/machine-store';
-import { useHIITProtocolsStore, buildProgressionDelta } from '../../src/store/hiit-protocols-store';
+import { useHIITProtocolsStore, buildProgressionDelta, detectNewBest } from '../../src/store/hiit-protocols-store';
 import type { SavedHIITProtocolMetrics } from '../../src/store/hiit-protocols-store';
 import { modalitySupportsMachineData } from '../../src/services/machine-connector';
 import { ReferencePositionPicker } from '../../src/components/ReferencePositionPicker';
@@ -175,12 +175,20 @@ function EntryForm({
   /**
    * Called after a successful submit. Optional `progressionDelta`
    * carries a compact "progression vs last" string when the session
-   * updated a saved protocol that already had a prior snapshot — the
+   * updated a saved protocol that already had a prior snapshot; the
    * parent uses this to decorate the post-save success banner. Null
    * when no delta is meaningful (first-ever session for the protocol,
    * non-HIIT session, no comparable fields).
+   *
+   * `newBestLabel` is the stronger positive-reinforcement signal —
+   * set when the current session beat a PR-eligible field on the
+   * matched protocol's prior best_metrics snapshot. Rendered above
+   * the delta line in the banner when present.
    */
-  onDone: (progressionDelta?: string | null) => void;
+  onDone: (
+    progressionDelta?: string | null,
+    newBestLabel?: string | null,
+  ) => void;
 }) {
   const addSession = useTrainingStore((s) => s.addSession);
   const editSession = useTrainingStore((s) => s.editSession);
@@ -526,12 +534,18 @@ function EntryForm({
     // as immediate progression feedback.
     const iv = input.conditioning?.interval;
     let progressionDelta: string | null = null;
+    let newBestLabel: string | null = null;
     if (iv && iv.label && iv.label.trim().length > 0) {
       const normLabel = iv.label.trim().toLowerCase();
       const priorProtocol = savedHIITProtocols.find(
         (p) => p.label.trim().toLowerCase() === normLabel,
       );
-      const priorMetrics = priorProtocol?.last_metrics;
+      // Snapshot BOTH prior last_metrics and prior best_metrics before
+      // saveHIITProtocol runs — it mutates both fields on the matched
+      // entry. The delta helper reads last_metrics (vs-last signal);
+      // detectNewBest reads best_metrics (PR signal).
+      const priorLastMetrics = priorProtocol?.last_metrics;
+      const priorBestMetrics = priorProtocol?.best_metrics;
 
       saveHIITProtocol({
         label: iv.label,
@@ -548,12 +562,16 @@ function EntryForm({
           metrics: input.conditioning?.machine_metrics,
           duration_min: input.duration_min,
         },
-        priorMetrics,
+        priorLastMetrics,
+      );
+      newBestLabel = detectNewBest(
+        { metrics: input.conditioning?.machine_metrics },
+        priorBestMetrics,
       );
     }
 
     if (user?.id) syncData(user.id).catch(() => {});
-    onDone(progressionDelta);
+    onDone(progressionDelta, newBestLabel);
   };
 
   return (
@@ -1790,6 +1808,12 @@ export default function TrainScreen() {
   // ever HIIT sessions on a new protocol, or sessions with no
   // comparable numeric fields.
   const [lastLoggedDelta, setLastLoggedDelta] = useState<string | null>(null);
+  // Personal-best celebration label — set when the just-logged HIIT
+  // session beat a PR-eligible field on the matched protocol's
+  // prior best_metrics snapshot. Null for non-HIIT sessions, first-
+  // ever sessions on a new protocol, or sessions that didn't beat
+  // any prior record.
+  const [lastLoggedNewBest, setLastLoggedNewBest] = useState<string | null>(null);
 
   // Ephemeral handoff from the timer completion path — set by
   // timer.tsx when a HIIT session is logged through the live timer.
@@ -1853,7 +1877,10 @@ export default function TrainScreen() {
 
   const schedule = usePreferencesStore((s) => s.preferences.schedule);
 
-  const handleFormDone = (progressionDelta?: string | null) => {
+  const handleFormDone = (
+    progressionDelta?: string | null,
+    newBestLabel?: string | null,
+  ) => {
     setEditingSession(null);
     setShowForm(true);
     setSubmitted(true);
@@ -1880,6 +1907,7 @@ export default function TrainScreen() {
       setLastLoggedHeadline(null);
     }
     setLastLoggedDelta(progressionDelta ?? null);
+    setLastLoggedNewBest(newBestLabel ?? null);
     setTimeout(() => setSubmitted(false), 3500);
   };
 
@@ -1894,6 +1922,7 @@ export default function TrainScreen() {
   useEffect(() => {
     if (pendingTimerLog == null) return;
     const delta = pendingTimerLog.delta;
+    const newBestLabel = pendingTimerLog.newBestLabel;
 
     // Compose the banner headline from the most recent training
     // session — the timer path has just added it via addSession, so
@@ -1921,6 +1950,7 @@ export default function TrainScreen() {
     }
 
     setLastLoggedDelta(delta);
+    setLastLoggedNewBest(newBestLabel);
     setSubmitted(true);
     // Clear the handoff immediately so re-entering Train later
     // (e.g. tab switch) does not re-trigger this effect.
@@ -1954,6 +1984,9 @@ export default function TrainScreen() {
           <Text style={styles.successText}>
             Logged: {lastLoggedHeadline ?? 'session — coaching updated'}
           </Text>
+          {lastLoggedNewBest && (
+            <Text style={styles.successNewBest}>{lastLoggedNewBest}</Text>
+          )}
           {lastLoggedDelta && (
             <Text
               style={[
@@ -2294,6 +2327,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   successText: { color: '#4ade80', fontSize: 14, fontWeight: '600' },
+  successNewBest: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#ffd866',
+    letterSpacing: 0.3,
+  },
   successDelta: {
     fontSize: 12,
     fontWeight: '600',
