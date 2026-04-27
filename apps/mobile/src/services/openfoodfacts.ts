@@ -48,6 +48,32 @@ export type LookupResult =
   | { ok: false; error: string };
 
 /**
+ * Source/confidence tier for a nutrition hit. Keeps web/retailer results
+ * clearly below barcode-confirmed rows so Coach and the UI can rank them.
+ */
+export type ProductMatchSource =
+  | 'verified_barcode'  // confirmed product row keyed by UPC/EAN — highest trust
+  | 'database_match'    // product-name search hit in OpenFoodFacts
+  | 'retailer_web'      // generic web/retailer fallback — not used yet, reserved
+  | 'estimated';        // AI / loose guess — lowest trust
+
+export interface ProductSearchHit {
+  product: OpenFoodFactsProduct;
+  source: ProductMatchSource;
+  confidence: 'high' | 'medium' | 'low';
+  /**
+   * For local/favourite hits — the last grams the user actually ate.
+   * Makes one-tap re-add snappier: jump straight to that serving size
+   * instead of the package-default. Null for fresh database rows.
+   */
+  lastGrams?: number | null;
+}
+
+export type SearchResult =
+  | { ok: true; hits: ProductSearchHit[] }
+  | { ok: false; error: string };
+
+/**
  * Parse "15 g" → 15, "100 ml" → null (we only want grams), "15" → 15.
  * Returns null on anything we can't confidently read as grams.
  */
@@ -71,6 +97,78 @@ function readNumber(obj: any, key: string): number | null {
   if (v == null) return null;
   const n = typeof v === 'number' ? v : Number(v);
   return Number.isFinite(n) ? n : null;
+}
+
+const OFF_SEARCH_BASE = 'https://world.openfoodfacts.org/cgi/search.pl';
+
+/**
+ * Product-name search via Open Food Facts. Typed queries like
+ * "golden gaytime vegan" or "greek yogurt woolworths" hit the same
+ * database as barcode lookup, but return an ordered array of hits
+ * ranked by OFF's relevance scoring. Confidence is capped at
+ * 'database_match' tier (never 'verified_barcode') because an OFF row
+ * can be crowd-edited; only a confirmed barcode scan fills a UPC/EAN
+ * to that highest trust tier.
+ *
+ * Hits that already have a numeric barcode from OFF are still
+ * database_match — upgrading them to verified_barcode would require
+ * an actual scan against a package.
+ */
+export async function searchByName(query: string, pageSize = 12): Promise<SearchResult> {
+  const clean = String(query ?? '').trim();
+  if (clean.length < 2) {
+    return { ok: false, error: 'Type at least two characters to search.' };
+  }
+  try {
+    const url = `${OFF_SEARCH_BASE}?search_terms=${encodeURIComponent(clean)}&search_simple=1&action=process&json=1&page_size=${pageSize}&fields=code,product_name,product_name_en,brands,serving_size,nutriments`;
+    const resp = await fetch(url, { method: 'GET', headers: { Accept: 'application/json' } });
+    if (!resp.ok) return { ok: false, error: `Open Food Facts search returned HTTP ${resp.status}` };
+    const payload = await resp.json();
+    const products: any[] = Array.isArray(payload?.products) ? payload.products : [];
+    if (products.length === 0) return { ok: true, hits: [] };
+    const hits: ProductSearchHit[] = [];
+    for (const p of products) {
+      const n = p?.nutriments ?? {};
+      const rawBarcode = (p?.code ?? '').toString().trim();
+      const name = p?.product_name || p?.product_name_en || p?.abbreviated_product_name || '';
+      if (!name) continue; // skip unnamed rows — they're unusable
+      const product: OpenFoodFactsProduct = {
+        barcode: /^\d{6,14}$/.test(rawBarcode) ? rawBarcode : `off-name-${Math.random().toString(36).slice(2, 10)}`,
+        name,
+        brand: (p?.brands ?? '').split(',')[0]?.trim() || null,
+        serving_size_g: parseServingSizeGrams(p?.serving_size),
+        serving_size_raw: p?.serving_size ?? null,
+        per_100g: {
+          calories_kcal: readNumber(n, 'energy-kcal_100g'),
+          protein_g: readNumber(n, 'proteins_100g'),
+          carbs_g: readNumber(n, 'carbohydrates_100g'),
+          fat_g: readNumber(n, 'fat_100g'),
+          fibre_g: readNumber(n, 'fiber_100g'),
+          sugar_g: readNumber(n, 'sugars_100g'),
+          sodium_mg: (() => {
+            const g = readNumber(n, 'sodium_100g');
+            return g == null ? null : Math.round(g * 1000);
+          })(),
+        },
+      };
+      // Skip rows with zero usable macros — OFF occasionally returns
+      // empty stubs for regions with thin data.
+      const hasAnyMacro =
+        product.per_100g.calories_kcal != null ||
+        product.per_100g.protein_g != null ||
+        product.per_100g.carbs_g != null ||
+        product.per_100g.fat_g != null;
+      if (!hasAnyMacro) continue;
+      hits.push({
+        product,
+        source: 'database_match',
+        confidence: product.per_100g.calories_kcal != null && product.per_100g.protein_g != null ? 'high' : 'medium',
+      });
+    }
+    return { ok: true, hits };
+  } catch (e: any) {
+    return { ok: false, error: e?.message ?? 'Network error reaching Open Food Facts search' };
+  }
 }
 
 export async function lookupBarcode(barcode: string): Promise<LookupResult> {

@@ -22,6 +22,8 @@
 import { create } from 'zustand';
 import type { NutritionRecord, NutritionTargets, NutritionSource } from '@lauburu/shared';
 import { secureStorage } from './secure-storage';
+import { syncNutritionToAiBackend } from '../services/ai-nutrition-sync';
+import { useAuthStore } from './auth-store';
 import type { OpenFoodFactsProduct } from '../services/openfoodfacts';
 
 const STORAGE_KEY_TODAY = 'nutrition_today_v1';
@@ -38,7 +40,14 @@ const MAX_FAVORITES = 12;
  * the secureStorage entry size — each record is ~200 bytes, so the
  * whole history is a few KB worst-case.
  */
-const MAX_HISTORY_DAYS = 14;
+// Widened from 14 → 60 days so the in-store history actually
+// supports trend analysis. Apple Health dietary backfill already
+// writes up to 14 days on every sync; extending the cap lets repeat
+// syncs (and future Railway re-hydration) accumulate a true trend
+// window without hitting the cap mid-fetch. Each daily record is
+// small (tens of bytes) so 60 days of nutrition totals is
+// negligible even on low-storage devices.
+const MAX_HISTORY_DAYS = 60;
 
 /**
  * A barcode product the user has scanned and confirmed. We keep the full
@@ -236,6 +245,21 @@ interface NutritionState {
 
   /** Wipe the full history array. Today and targets are untouched. */
   clearHistory: () => void;
+
+  /**
+   * Merge an Apple Health / Health Connect dietary daily-totals payload
+   * into today's nutrition record. "Manual wins": fields already set
+   * by the user are preserved; null/undefined fields are filled from
+   * the hub. Provenance is explicit:
+   *   - empty record + hub fills → source = 'apple_health' / 'health_connect'
+   *   - user-sourced record + hub fills at least one gap → source = 'mixed'
+   *   - user-sourced record + hub adds nothing → user source unchanged
+   */
+  mergeHubDailyTotals: (
+    date: string,
+    totals: Partial<Omit<NutritionRecord, 'date' | 'source' | 'updated_at'>>,
+    hubSource: 'apple_health' | 'health_connect',
+  ) => void;
 }
 
 export const useNutritionStore = create<NutritionState>((set, get) => ({
@@ -362,6 +386,11 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
     // Fire-and-forget persist after the state update — failures are
     // silently swallowed and the in-memory store remains authoritative.
     void persistTodaySafely(nextRecord);
+    // Fire-and-forget AI backend sync
+        if (nextRecord) {
+      const uid = useAuthStore.getState().user?.id;
+      if (uid) void syncNutritionToAiBackend(uid, nextRecord).catch(() => {});
+    }
   },
 
   addToToday: (partial, source) => {
@@ -402,6 +431,10 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
       return { today: next, error: null };
     });
     void persistTodaySafely(nextRecord);
+        if (nextRecord) {
+      const uid = useAuthStore.getState().user?.id;
+      if (uid) void syncNutritionToAiBackend(uid, nextRecord).catch(() => {});
+    }
   },
 
   setTargets: (targets) => {
@@ -459,5 +492,55 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
   clearHistory: () => {
     set({ historyDays: [] });
     void persistHistorySafely([]);
+  },
+
+  mergeHubDailyTotals: (date, totals, hubSource) => {
+    let nextRecord: NutritionRecord | null = null;
+    set((state) => {
+      if (state.today && state.today.date !== date) return {};
+      const now = new Date().toISOString();
+      const base: NutritionRecord = state.today ?? {
+        date,
+        source: hubSource,
+        updated_at: now,
+      };
+      const fillIfEmpty = <T,>(existing: T | undefined, incoming: T | undefined): {
+        value: T | undefined; filled: boolean;
+      } => existing != null ? { value: existing, filled: false } : { value: incoming, filled: incoming != null };
+      const cal = fillIfEmpty(base.calories_kcal, totals.calories_kcal);
+      const pro = fillIfEmpty(base.protein_g, totals.protein_g);
+      const carb = fillIfEmpty(base.carbs_g, totals.carbs_g);
+      const fat = fillIfEmpty(base.fat_g, totals.fat_g);
+      const fibre = fillIfEmpty(base.fibre_g, totals.fibre_g);
+      const sugar = fillIfEmpty(base.sugar_g, totals.sugar_g);
+      const sodium = fillIfEmpty(base.sodium_mg, totals.sodium_mg);
+      const water = fillIfEmpty(base.water_ml, totals.water_ml);
+      const hubFilledAny = [cal, pro, carb, fat, fibre, sugar, sodium, water].some((f) => f.filled);
+      // Provenance: empty record → hub source. Existing user-sourced
+      // record that the hub filled additional gaps in → 'mixed'.
+      // Existing user-sourced record with no hub contribution → keep
+      // user's source unchanged.
+      const nextSource: NutritionRecord['source'] =
+        !state.today ? hubSource
+        : hubFilledAny && state.today.source !== hubSource ? 'mixed'
+        : state.today.source;
+      const next: NutritionRecord = {
+        ...base,
+        date,
+        calories_kcal: cal.value,
+        protein_g: pro.value,
+        carbs_g: carb.value,
+        fat_g: fat.value,
+        fibre_g: fibre.value,
+        sugar_g: sugar.value,
+        sodium_mg: sodium.value,
+        water_ml: water.value,
+        source: nextSource,
+        updated_at: now,
+      };
+      nextRecord = next;
+      return { today: next };
+    });
+    if (nextRecord) void persistTodaySafely(nextRecord);
   },
 }));

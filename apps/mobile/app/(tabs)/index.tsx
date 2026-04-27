@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, ScrollView, ActivityIndicator, Pressable, Share, TextInput } from 'react-native';
+import { StyleSheet, ScrollView, ActivityIndicator, Pressable, TextInput, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../../src/store/auth-store';
@@ -9,18 +9,30 @@ import { useWhoopStore } from '../../src/store/whoop-store';
 import { useNutritionStore } from '../../src/store/nutrition-store';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useCoachingCasesStore } from '../../src/store/coaching-cases-store';
-import { buildLastHIITHomeNote } from '../../src/services/hiit-home-note';
-import { useProgress } from '../../src/hooks/useProgress';
+import { useFeedbackStore } from '../../src/store/feedback-store';
 import {
-  REFERENCE_TOTAL_POSITIONS,
-  REFERENCE_BUILT_OUT_COUNT,
-  REFERENCE_SECTIONS,
-} from '../../src/data/reference-seed';
+  useReferenceProgressStore,
+  buildTechniqueProgressKey,
+  parseProgressKey,
+  type ProgressStatus,
+} from '../../src/store/reference-progress-store';
+import { buildLastHIITHomeNote } from '../../src/services/hiit-home-note';
+import {
+  ATHLETE_CAPABILITY_COPY,
+  formatSeedWhoopLabel,
+} from '../../src/services/athlete-capability-display';
+import { useProgress } from '../../src/hooks/useProgress';
+import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
+import { BacklogAnalysisCard } from '../../src/components/BacklogAnalysisCard';
+import { SuggestedMetricsCard } from '../../src/components/SuggestedMetricsCard';
+import { AthleteStateStrip } from '../../src/components/AthleteStateStrip';
+import { LiveHrPill } from '../../src/components/LiveHrPill';
+import { REFERENCE_SECTIONS } from '../../src/data/reference-seed';
+import { REFERENCE_TECHNIQUES } from '../../src/data/reference-techniques';
 import type { ReadinessLevel, DailyCoachingBrief } from '@lauburu/shared';
 import {
   SESSION_TYPE_LABELS,
   buildDailyCoachingBrief,
-  buildCoachingPromptPacket,
   getTodayPlan,
 } from '@lauburu/shared';
 
@@ -42,22 +54,353 @@ function GuestBanner() {
   );
 }
 
-function ReferenceEntryCard() {
-  const router = useRouter();
-  return (
-    <Pressable
-      style={styles.referenceCard}
-      onPress={() => router.push('/reference')}>
-      <View style={styles.referenceHeader}>
-        <Text style={styles.cardTitle}>Reference</Text>
-        <Text style={styles.referenceChevron}>→</Text>
-      </View>
-      <Text style={styles.cardBody}>
-        Browse the canonical Grappling Map structure: {REFERENCE_SECTIONS.length} sections,{' '}
-        {REFERENCE_TOTAL_POSITIONS} positions, {REFERENCE_BUILT_OUT_COUNT} built out.
-      </Text>
-    </Pressable>
-  );
+type TechniqueRecommendation = {
+  section: string;
+  position: string;
+  role: string;
+  heading: string;
+  technique: string;
+  reason: string;
+};
+
+const POSITION_META = (() => {
+  const map = new Map<string, {
+    section: string;
+    builtOut: boolean;
+    headings: ReadonlyArray<string>;
+    perspectives: ReadonlyArray<string>;
+  }>();
+  for (const section of REFERENCE_SECTIONS) {
+    for (const position of section.positions) {
+      map.set(position.name, {
+        section: section.label,
+        builtOut: !!position.built_out,
+        headings: position.headings,
+        perspectives: position.perspectives,
+      });
+    }
+  }
+  return map;
+})();
+
+const GENERIC_TECHNIQUE_LABELS = new Set(['Defence', 'Subtopic', '`']);
+
+function lookupPositionTechniques(
+  positionName: string,
+): Record<string, Record<string, string[]>> | null {
+  const direct = REFERENCE_TECHNIQUES[positionName];
+  if (direct) return direct;
+  const withYou = REFERENCE_TECHNIQUES[`${positionName} (You)`];
+  if (withYou) return withYou;
+  return null;
+}
+
+function normalizeHeading(heading: string): string {
+  return heading.split('/')[0]!.trim().toLowerCase();
+}
+
+function techniquesForHeading(
+  positionTechs: Record<string, Record<string, string[]>> | null,
+  role: string,
+  heading: string,
+): string[] {
+  if (!positionTechs) return [];
+  const roleMap = positionTechs[role];
+  if (!roleMap) return [];
+  if (roleMap[heading]) return roleMap[heading];
+  const want = normalizeHeading(heading);
+  for (const key of Object.keys(roleMap)) {
+    if (normalizeHeading(key) === want) return roleMap[key];
+  }
+  return [];
+}
+
+function parseTransitionEdges(labels: string[]): Array<{ label: string; destination: string }> {
+  const edges: Array<{ label: string; destination: string }> = [];
+  for (const raw of labels) {
+    const idx = raw.indexOf('→');
+    if (idx < 0) continue;
+    const label = raw.slice(0, idx).trim();
+    const destination = raw.slice(idx + 1).trim();
+    if (!label || !destination) continue;
+    edges.push({ label, destination });
+  }
+  return edges;
+}
+
+function headingPriority(
+  heading: string,
+  goal: ReturnType<typeof usePreferencesStore.getState>['preferences']['goal'],
+): number {
+  const normalized = normalizeHeading(heading);
+  let score = 0;
+  if (normalized === 'offence') score += 8;
+  else if (normalized === 'control') score += 6;
+  else if (normalized === 'setups') score += 5;
+  else if (normalized === 'submissions') score += 7;
+  else if (normalized === 'defence') score += 2;
+
+  if (goal === 'competition' && (normalized === 'offence' || normalized === 'submissions')) {
+    score += 5;
+  } else if (goal === 'skill_development' && (normalized === 'control' || normalized === 'setups')) {
+    score += 3;
+  }
+  return score;
+}
+
+function chooseRoleForPosition(positionName: string): string | null {
+  const meta = POSITION_META.get(positionName);
+  const techs = lookupPositionTechniques(positionName);
+  if (!meta || !techs) return null;
+
+  let bestRole: string | null = null;
+  let bestScore = -1;
+  for (const role of meta.perspectives) {
+    let score = 0;
+    for (const heading of meta.headings) {
+      if (heading === 'Offensive transitions') continue;
+      score += techniquesForHeading(techs, role, heading).filter(
+        (label) => !GENERIC_TECHNIQUE_LABELS.has(label),
+      ).length;
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestRole = role;
+    }
+  }
+  return bestRole;
+}
+
+function buildNextTechniqueRecommendation(args: {
+  progressMap: Record<string, ProgressStatus>;
+  updatedAtMap: Record<string, string>;
+  goal: ReturnType<typeof usePreferencesStore.getState>['preferences']['goal'];
+}): TechniqueRecommendation | null {
+  const { progressMap, updatedAtMap, goal } = args;
+  const seedScores = new Map<string, number>();
+  const seedReasons = new Map<string, string[]>();
+  const learnedCounts = new Map<string, number>();
+  const roleCounts = new Map<string, number>();
+
+  const addSeed = (
+    position: string,
+    role: string,
+    score: number,
+    reason: string,
+  ) => {
+    const key = `${position}|${role}`;
+    seedScores.set(key, (seedScores.get(key) ?? 0) + score);
+    const reasons = seedReasons.get(key) ?? [];
+    if (!reasons.includes(reason)) reasons.push(reason);
+    seedReasons.set(key, reasons);
+    roleCounts.set(key, (roleCounts.get(key) ?? 0) + 1);
+  };
+
+  for (const [key, status] of Object.entries(progressMap)) {
+    const parsed = parseProgressKey(key);
+    if (!parsed) continue;
+    const seedWeight =
+      status === 'drilling' ? 42 : status === 'learned' ? 24 : 12;
+    if (parsed.kind === 'tech') {
+      addSeed(
+        parsed.position,
+        parsed.role,
+        seedWeight,
+        status === 'drilling'
+          ? `you're drilling from ${parsed.position}`
+          : status === 'learned'
+            ? `you already know core material from ${parsed.position}`
+            : `you're tracking options from ${parsed.position}`,
+      );
+      if (status === 'learned') {
+        learnedCounts.set(
+          parsed.position,
+          (learnedCounts.get(parsed.position) ?? 0) + 1,
+        );
+      }
+    } else {
+      addSeed(
+        parsed.sourcePosition,
+        parsed.sourceRole,
+        seedWeight,
+        status === 'drilling'
+          ? `you're drilling transitions out of ${parsed.sourcePosition}`
+          : `you've built familiarity around ${parsed.sourcePosition}`,
+      );
+      const destRole = chooseRoleForPosition(parsed.destination);
+      if (destRole) {
+        addSeed(
+          parsed.destination,
+          destRole,
+          Math.max(8, seedWeight - 10),
+          `${parsed.label} connects naturally into ${parsed.destination}`,
+        );
+      }
+    }
+  }
+
+  const recentBoosts = [14, 10, 7, 5, 3];
+  const recentEntries = Object.entries(updatedAtMap)
+    .map(([key, iso]) => ({ key, ts: Date.parse(iso) }))
+    .filter((entry) => Number.isFinite(entry.ts))
+    .sort((a, b) => b.ts - a.ts)
+    .slice(0, recentBoosts.length);
+
+  recentEntries.forEach((entry, idx) => {
+    const parsed = parseProgressKey(entry.key);
+    if (!parsed) return;
+    const boost = recentBoosts[idx] ?? 0;
+    if (parsed.kind === 'tech') {
+      addSeed(parsed.position, parsed.role, boost, `you touched ${parsed.position} recently`);
+    } else {
+      addSeed(
+        parsed.sourcePosition,
+        parsed.sourceRole,
+        boost,
+        `you touched ${parsed.sourcePosition} recently`,
+      );
+      const destRole = chooseRoleForPosition(parsed.destination);
+      if (destRole) {
+        addSeed(
+          parsed.destination,
+          destRole,
+          Math.max(2, Math.floor(boost / 2)),
+          `${parsed.destination} is adjacent to your recent work`,
+        );
+      }
+    }
+  });
+
+  const topGamePositions = [...learnedCounts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+  for (const [position, count] of topGamePositions) {
+    const role = [...roleCounts.keys()]
+      .find((key) => key.startsWith(`${position}|`))
+      ?.split('|')[1] ?? chooseRoleForPosition(position);
+    if (!role) continue;
+    addSeed(
+      position,
+      role,
+      8 + count * 2,
+      `most of your learned game is already around ${position}`,
+    );
+  }
+
+  const candidateMap = new Map<string, TechniqueRecommendation & { score: number }>();
+
+  const considerTechnique = (
+    section: string,
+    position: string,
+    role: string,
+    heading: string,
+    technique: string,
+    score: number,
+    reason: string,
+  ) => {
+    const key = buildTechniqueProgressKey(section, position, role, heading, technique);
+    const status = progressMap[key] ?? 'none';
+    if (status === 'drilling' || status === 'learned') return;
+    let adjusted = score + headingPriority(heading, goal);
+    if (status === 'tracking') adjusted += 10;
+    adjusted += Math.min(learnedCounts.get(position) ?? 0, 3) * 2;
+    const existing = candidateMap.get(key);
+    if (!existing || adjusted > existing.score) {
+      candidateMap.set(key, {
+        section,
+        position,
+        role,
+        heading,
+        technique,
+        reason,
+        score: adjusted,
+      });
+    }
+  };
+
+  for (const [seedKey, seedScore] of seedScores.entries()) {
+    const [position, role] = seedKey.split('|');
+    const meta = POSITION_META.get(position);
+    const techs = lookupPositionTechniques(position);
+    if (!meta || !techs) continue;
+
+    const seedReason = seedReasons.get(seedKey)?.[0] ?? `your work is already centered on ${position}`;
+    for (const heading of meta.headings) {
+      if (heading === 'Offensive transitions') continue;
+      for (const technique of techniquesForHeading(techs, role, heading)) {
+        if (GENERIC_TECHNIQUE_LABELS.has(technique)) continue;
+        considerTechnique(
+          meta.section,
+          position,
+          role,
+          heading,
+          technique,
+          seedScore,
+          `It fits because ${seedReason}.`,
+        );
+      }
+    }
+
+    const transitions = parseTransitionEdges(
+      techniquesForHeading(techs, role, 'Offensive transitions'),
+    );
+    for (const edge of transitions) {
+      const destMeta = POSITION_META.get(edge.destination);
+      const destRole = chooseRoleForPosition(edge.destination);
+      const destTechs = lookupPositionTechniques(edge.destination);
+      if (!destMeta || !destRole || !destTechs) continue;
+      for (const heading of destMeta.headings) {
+        if (heading === 'Offensive transitions') continue;
+        for (const technique of techniquesForHeading(destTechs, destRole, heading)) {
+          if (GENERIC_TECHNIQUE_LABELS.has(technique)) continue;
+          considerTechnique(
+            destMeta.section,
+            edge.destination,
+            destRole,
+            heading,
+            technique,
+            seedScore + 14,
+            `It builds naturally off ${position} through ${edge.label}.`,
+          );
+        }
+      }
+    }
+  }
+
+  const ranked = [...candidateMap.values()].sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    if (a.position !== b.position) return a.position.localeCompare(b.position);
+    return a.technique.localeCompare(b.technique);
+  });
+  if (ranked.length > 0) {
+    const { score: _score, ...best } = ranked[0]!;
+    return best;
+  }
+
+  for (const [position, meta] of POSITION_META.entries()) {
+    if (!meta.builtOut) continue;
+    const role = chooseRoleForPosition(position);
+    const techs = lookupPositionTechniques(position);
+    if (!role || !techs) continue;
+    for (const heading of meta.headings) {
+      if (heading === 'Offensive transitions') continue;
+      const technique = techniquesForHeading(techs, role, heading).find(
+        (label) => !GENERIC_TECHNIQUE_LABELS.has(label),
+      );
+      if (technique) {
+        return {
+          section: meta.section,
+          position,
+          role,
+          heading,
+          technique,
+          reason: 'This is a solid built-out starting point until more of your own game is tracked.',
+        };
+      }
+    }
+  }
+
+  return null;
 }
 
 function CoachingHistoryEntryCard() {
@@ -74,7 +417,7 @@ function CoachingHistoryEntryCard() {
       </View>
       <Text style={styles.cardBody}>
         {cases.length === 0
-          ? 'No cases yet. Ask ChatGPT from the coach card above to start one.'
+          ? 'No cases yet. Use the AI launcher to start one.'
           : `${cases.length} saved ${cases.length === 1 ? 'case' : 'cases'}${helped > 0 ? ` · ${helped} marked helpful` : ''}.`}
       </Text>
     </Pressable>
@@ -88,9 +431,6 @@ function NutritionHeadline() {
   const cal = today.calories_kcal;
   const protein = today.protein_g;
   if (cal == null && protein == null) return null;
-  // When targets are set, surface the "X / Y" progress form so the
-  // Home chip mirrors the percent-of-target badges on the Health tab's
-  // NutritionCard. Falls back to the plain value when no target exists.
   const calDisplay =
     cal != null
       ? targets?.calories_kcal
@@ -103,46 +443,72 @@ function NutritionHeadline() {
         ? ` · ${Math.round(protein)} / ${Math.round(targets.protein_g)}g protein`
         : ` · ${Math.round(protein)}g protein`
       : '';
+  // Bodyweight-relative protein-per-kg — the most useful fueling number
+  // for a strength/grappling athlete. Shown inline when both weight +
+  // protein are logged today. Green ≥1.6 g/kg, amber 1.2–1.6, red <1.2.
+  const perKgDisplay = (() => {
+    const w = (today as any).body_weight_kg as number | undefined;
+    if (w == null || w <= 0 || protein == null) return null;
+    const perKg = protein / w;
+    return `${perKg.toFixed(1)} g/kg`;
+  })();
+  const waterDisplay = today.water_ml ? ` · ${Math.round(today.water_ml / 100) / 10}L` : '';
   return (
     <View style={styles.fuelHeadline}>
       <Text style={styles.fuelLabel}>Today's fuel</Text>
       <Text style={styles.fuelValue}>
         {calDisplay}
         {proteinDisplay}
+        {perKgDisplay ? ` · ${perKgDisplay}` : ''}
+        {waterDisplay}
+      </Text>
+    </View>
+  );
+}
+
+/**
+ * Compact Home-screen chip showing Apple Health / Health Connect
+ * connection state at a glance — matches the "source-status must be
+ * truthful on Home" requirement. Only renders when we have real
+ * synced data, so it never lies.
+ */
+function AppleHealthHeadline() {
+  const days = useHealthStore((s) => s.days);
+  const lastSyncAt = useHealthStore((s) => s.lastSyncAt);
+  const historyWindowDays = useHealthStore((s) => s.historyWindowDays);
+  const lastBackfillAt = useHealthStore((s) => s.lastBackfillAt);
+  const isIos = Platform.OS === 'ios';
+  if (!lastSyncAt || days.length === 0) return null;
+  const label = isIos ? 'Apple Health' : 'Health Connect';
+  const window = historyWindowDays != null ? `${historyWindowDays}d` : '—';
+  const ageMin = Math.max(0, Math.round((Date.now() - new Date(lastSyncAt).getTime()) / 60_000));
+  const recency = ageMin < 1 ? 'synced just now' : ageMin < 60 ? `synced ${ageMin}m ago` : ageMin < 1440 ? `synced ${Math.round(ageMin / 60)}h ago` : `synced ${Math.round(ageMin / 1440)}d ago`;
+  const backfillNote = lastBackfillAt ? ' · backfilled' : '';
+  return (
+    <View style={styles.fuelHeadline}>
+      <Text style={styles.fuelLabel}>{label}</Text>
+      <Text style={styles.fuelValue}>
+        {days.length} days · {window} window · {recency}{backfillNote}
       </Text>
     </View>
   );
 }
 
 function WhoopHeadline() {
+  // Home no longer surfaces a standalone WHOOP recovery/seed
+  // headline. WHOOP remains an optional reference/calibration source
+  // that can be viewed under the Health → WHOOP card. Custom
+  // readiness on the Home strip is the visible product score now.
+  // Keeping this component as an explicit no-op preserves call sites
+  // without prop-drilling churn.
+  // Still trigger the background fetch so calibration data arrives
+  // and feeds AppAthleteState — silent fetch only.
   const status = useWhoopStore((s) => s.status);
-  const day = useWhoopStore((s) => s.day);
   const fetchToday = useWhoopStore((s) => s.fetchToday);
-
   useEffect(() => {
     if (status === 'idle') fetchToday();
   }, [status, fetchToday]);
-
-  if (status !== 'ready' || !day || day.recovery_score == null) return null;
-
-  const score = day.recovery_score;
-  const color =
-    score >= 67 ? '#4ade80' : score >= 34 ? '#d4e157' : '#ff6b6b';
-  const label = score >= 67 ? 'Recovered' : score >= 34 ? 'Moderate' : 'Low';
-
-  return (
-    <View style={styles.whoopHeadline}>
-      <View style={[styles.whoopDot, { backgroundColor: color }]} />
-      <Text style={[styles.whoopLabel, { color }]}>
-        WHOOP {score}% · {label}
-      </Text>
-      {day.daily_strain != null && (
-        <Text style={styles.whoopMeta}>
-          strain {day.daily_strain.toFixed(1)}
-        </Text>
-      )}
-    </View>
-  );
+  return null;
 }
 
 const INTENSITY_LABEL: Record<string, string> = {
@@ -211,13 +577,13 @@ function PendingFollowupBanner() {
   return (
     <View style={styles.followupBanner}>
       <Text style={styles.followupTitle}>
-        You asked ChatGPT earlier — how did it go?
+        You used AI Coach earlier — how did it go?
       </Text>
       <TextInput
         style={styles.followupNotesInput}
         value={outcomeNotes}
         onChangeText={setOutcomeNotes}
-        placeholder="What did ChatGPT say? (optional — paste the key recommendation)"
+        placeholder="What did AI Coach suggest? (optional — paste the key recommendation)"
         placeholderTextColor="#666"
         multiline
         textAlignVertical="top"
@@ -285,20 +651,20 @@ function PendingFollowupBanner() {
 }
 
 function TodayCoachCard() {
+  const router = useRouter();
   const whoopDay = useWhoopStore((s) => s.day);
   const whoopStatus = useWhoopStore((s) => s.status);
   const fetchWhoop = useWhoopStore((s) => s.fetchToday);
+  const coaching = useHealthStore((s) => s.coaching);
   const insights = useHealthStore((s) => s.insights);
   const sessions = useTrainingStore((s) => s.sessions);
-  const schedule = usePreferencesStore((s) => s.preferences.schedule);
+  const preferences = usePreferencesStore((s) => s.preferences);
+  const schedule = preferences.schedule;
+  const progressMap = useReferenceProgressStore((s) => s.progress);
+  const updatedAtMap = useReferenceProgressStore((s) => s.updatedAt);
   const nutritionToday = useNutritionStore((s) => s.today);
   const nutritionTargets = useNutritionStore((s) => s.targets);
   const nutritionHistory = useNutritionStore((s) => s.historyDays);
-  const startPendingCase = useCoachingCasesStore((s) => s.startPending);
-  // Optional user-typed question carried into the prompt packet's
-  // "My question" section. Empty = default fallback "Given the context
-  // above, what should I actually do today?" inside the packet builder.
-  const [userQuestion, setUserQuestion] = useState('');
 
   useEffect(() => {
     if (whoopStatus === 'idle') fetchWhoop();
@@ -347,56 +713,17 @@ function TodayCoachCard() {
     });
   }, [sessions, briefInputs.todayIsoDate, whoopDay, brief.suggested_intensity]);
 
-  /**
-   * Ask ChatGPT fallback — builds a structured prompt packet from the
-   * same inputs the coach card is already reading, opens the native
-   * share sheet so the user can pick ChatGPT/Claude/any installed app
-   * or copy to clipboard, and saves a pending draft case via the
-   * coaching-cases-store so the Home banner can prompt for outcome
-   * capture when the user returns.
-   *
-   * Zero new deps, zero native modules — Share.share is core RN.
-   * Zero paid API calls. The handoff is honest: the app prepares the
-   * context, the user + their chosen AI do the actual thinking, the
-   * outcome comes back via the follow-up banner.
-   */
-  const handleAskChatGPT = async () => {
-    // Thread the user's typed question through the shared packet
-    // builder via its optional `userQuestion` input. Empty string
-    // means the builder falls back to its default generic prompt
-    // ("Given the context above, what should I actually do today?")
-    // so the feature is strictly additive — existing "just tap the
-    // button" flow continues to work.
-    const trimmedQuestion = userQuestion.trim();
-    const { text, context } = buildCoachingPromptPacket({
-      ...briefInputs,
-      userQuestion: trimmedQuestion || null,
+  const nextTechnique = useMemo(() => {
+    return buildNextTechniqueRecommendation({
+      progressMap,
+      updatedAtMap,
+      goal: preferences.goal,
     });
-    try {
-      await Share.share({
-        message: text,
-        title: 'Lauburu coaching context',
-      });
-      // Regardless of which share target the user picked, save the
-      // draft so the follow-up banner appears next time.
-      startPendingCase({
-        context,
-        prompt_packet: text,
-        source: 'external_chatgpt',
-      });
-      // Clear the question once it's been captured into the case
-      // so the field is empty for the next ask.
-      setUserQuestion('');
-    } catch {
-      // Share dismissed or failed — don't save a draft, and don't
-      // clear the question so the user can retry without retyping.
-    }
-  };
-
+  }, [progressMap, updatedAtMap, preferences.goal]);
   const color = READINESS_COLORS[brief.readiness];
   const sourceLabel =
     brief.primary_source === 'whoop'
-      ? 'WHOOP'
+      ? ATHLETE_CAPABILITY_COPY.whoopSourceLabel
       : brief.primary_source === 'insights'
         ? 'Apple Health'
         : 'no source';
@@ -412,6 +739,13 @@ function TodayCoachCard() {
         <View style={[styles.readinessDot, { backgroundColor: color }]} />
         <Text style={[styles.readinessLabel, { color }]}>{brief.headline}</Text>
       </View>
+
+      {/* Only badge as "missing native readiness" when we literally
+          don't have a recovery_score yet. When WHOOP is connected and
+          has scored the cycle, this badge is stale and misleading. */}
+      {brief.primary_source === 'whoop' && whoopDay?.recovery_score == null && (
+        <AthleteCapabilitySummary mode="missing_whoop_native" showNote={false} />
+      )}
 
       {/* Plan hint — real schedule for today (with times if set) */}
       {brief.plan_hint ? (
@@ -462,6 +796,35 @@ function TodayCoachCard() {
         </View>
       )}
 
+      {nextTechnique && (
+        <View style={styles.nextTechniqueBlock}>
+          <Text style={styles.nextTechniqueLabel}>Work on this next</Text>
+          <Text style={styles.nextTechniqueName}>{nextTechnique.technique}</Text>
+          <Text style={styles.nextTechniqueMeta}>
+            {nextTechnique.position} · {nextTechnique.role} · {nextTechnique.heading}
+          </Text>
+          <Text style={styles.nextTechniqueReason}>{nextTechnique.reason}</Text>
+          <Pressable
+            style={styles.nextTechniqueBtn}
+            onPress={() =>
+              router.navigate({
+                pathname: '/reference',
+                params: {
+                  focus: nextTechnique.position,
+                  focusRole: nextTechnique.role,
+                  focusHeading: nextTechnique.heading,
+                  focusTechnique: nextTechnique.technique,
+                  focusReason: nextTechnique.reason,
+                  focusSource: 'coach',
+                  focusNonce: `${Date.now()}`,
+                },
+              })
+            }>
+            <Text style={styles.nextTechniqueBtnText}>Open Reference →</Text>
+          </Pressable>
+        </View>
+      )}
+
       {/* Last HIIT continuity cue — PR beat, vs-last delta, or
           machine-metrics-aware coaching note from the most recent
           HIIT session within the last 3 days. Null-safe: the whole
@@ -485,42 +848,18 @@ function TodayCoachCard() {
         </View>
       )}
 
-      {/* Honest WHOOP missing-workout hint */}
-      {brief.whoop_workouts_missing_today && (
-        <Text style={styles.coachMissingHint}>
-          Today's WHOOP workout hasn't synced yet — recovery and sleep are logged.
-        </Text>
-      )}
+      {/* WHOOP-specific missing-workout hint hidden — WHOOP is now
+          an optional background reference, not the visible product
+          source. Workout missingness is surfaced via Custom readiness
+          confidence on the Home strip. */}
 
-      {/* Empty-state fallback */}
+      {/* Empty-state fallback — sync Apple Health is the primary
+          live source; WHOOP only matters when calibration is desired. */}
       {brief.primary_source === 'none' && (
         <Text style={styles.cardBody}>
-          Connect WHOOP on the backend or sync Apple Health to get personalized
-          guidance.
+          Sync Apple Health (or log a session) to get personalized guidance. WHOOP reference is optional.
         </Text>
       )}
-
-      {/* Ask ChatGPT fallback — optional user-question textarea threaded
-          through the shared packet builder + the button that opens the
-          native share sheet. Intentionally positioned at the bottom of
-          the card so it's available but never crowds out the app's own
-          guidance. The textarea is optional; leaving it blank falls
-          back to the shared builder's default generic prompt. */}
-      <View style={styles.askAiBlock}>
-        <TextInput
-          style={styles.askAiQuestionInput}
-          value={userQuestion}
-          onChangeText={setUserQuestion}
-          placeholder="What do you want to ask? (optional)"
-          placeholderTextColor="#666"
-          multiline
-          textAlignVertical="top"
-          maxLength={500}
-        />
-        <Pressable style={styles.askAiBtn} onPress={handleAskChatGPT}>
-          <Text style={styles.askAiBtnText}>Ask ChatGPT for a second opinion →</Text>
-        </Pressable>
-      </View>
     </View>
   );
 }
@@ -563,7 +902,7 @@ function RecentActivityCard() {
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Recent Activity</Text>
         <Text style={styles.cardBody}>
-          Recent workouts will appear here after syncing health data.
+          Log a session from the Train tab or sync Apple Health / Health Connect. Saved sessions show up here instantly.
         </Text>
       </View>
     );
@@ -659,17 +998,39 @@ export default function HomeScreen() {
         </Text>
       </View>
 
+      {/* First-run tour is now a global full-screen modal in _layout.tsx */}
+
       {!isMember && <GuestBanner />}
+
+      {/* Readiness — primary Home surface. App-owned readiness band
+          + sources. Promoted above coach/insights/training-context
+          so the visible product score is the first thing users see
+          after the header on every Home open. */}
+      {isMember && <AthleteStateStrip />}
+
+      {/* First-run backlog analysis permission + summary card. Renders
+          only when signed in; hides itself when status is 'skipped'
+          or when there's nothing to show. The card handles its own
+          data lifecycle via useBacklogAnalysisStore. */}
+      {isMember && <BacklogAnalysisCard />}
 
       {/* Pending coaching-case follow-up — only appears when the user
           has an un-captured "Ask ChatGPT" draft. */}
       {isMember && <PendingFollowupBanner />}
 
-      {/* Today's Coach — unified daily guidance (WHOOP + plan + insights) */}
+      {/* Today's Coach — unified daily guidance (plan + insights) */}
       {isMember && <TodayCoachCard />}
+
+      {/* Live BLE HR/power chip — appears only during an active BLE
+          stream. Self-hides when idle. Build 9+ only. */}
+      {isMember && <LiveHrPill />}
 
       {/* Tiny backend-fed WHOOP metrics chip — shown only when data is ready */}
       {isMember && <WhoopHeadline />}
+
+      {/* Apple Health / Health Connect at-a-glance chip — shown only
+          when we have real synced data, so it never lies. */}
+      {isMember && <AppleHealthHeadline />}
 
       {/* Tiny nutrition chip — shown only when the user has logged fuel today */}
       {isMember && <NutritionHeadline />}
@@ -679,14 +1040,14 @@ export default function HomeScreen() {
       {isMember && <ProgressCard />}
 
       {isMember && <RecentActivityCard />}
-
-      {/* Reference — always visible entry point, even for guests */}
-      <ReferenceEntryCard />
-
       {/* Coaching history — only shown when signed in since cases are
           per-user and secureStorage-backed. Visible even when the list
           is empty so the user can discover the feature. */}
       {isMember && <CoachingHistoryEntryCard />}
+
+      {/* Suggested metrics — optional blind-spot prompts. Self-gated:
+          only renders when at least one suggestion is justified. */}
+      {isMember && <SuggestedMetricsCard />}
     </ScrollView>
   );
 }
@@ -810,6 +1171,49 @@ const styles = StyleSheet.create({
   coachChipValue: { fontSize: 13, color: '#d4e157', fontWeight: '600' },
   coachReasons: { gap: 2, marginTop: 4 },
   coachReasonItem: { fontSize: 11, opacity: 0.5, lineHeight: 15 },
+  nextTechniqueBlock: {
+    marginTop: 8,
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(212,225,87,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.16)',
+    gap: 4,
+  },
+  nextTechniqueLabel: {
+    fontSize: 10,
+    opacity: 0.5,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  nextTechniqueName: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#e6ec9a',
+  },
+  nextTechniqueMeta: {
+    fontSize: 12,
+    opacity: 0.62,
+    lineHeight: 17,
+  },
+  nextTechniqueReason: {
+    fontSize: 12,
+    lineHeight: 17,
+    opacity: 0.78,
+  },
+  nextTechniqueBtn: {
+    alignSelf: 'flex-start',
+    marginTop: 2,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+  },
+  nextTechniqueBtnText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#d4e157',
+  },
   coachMissingHint: {
     fontSize: 11,
     opacity: 0.5,
@@ -876,7 +1280,146 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(212,225,87,0.04)',
     alignSelf: 'flex-start',
   },
+  askAiBtnSending: {
+    opacity: 0.5,
+    borderColor: 'rgba(212,225,87,0.15)',
+  },
   askAiBtnText: { color: '#d4e157', fontSize: 12, fontWeight: '600' },
+  evidenceAiBlock: {
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(123,196,255,0.22)',
+    backgroundColor: 'rgba(123,196,255,0.05)',
+    gap: 8,
+  },
+  evidenceAiTitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#b8dcff',
+  },
+  evidenceAiBody: {
+    fontSize: 12,
+    lineHeight: 17,
+    color: '#d6e5f5',
+    opacity: 0.86,
+  },
+  evidenceAiChipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  evidenceAiModeRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  evidenceAiChip: {
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.14)',
+    backgroundColor: 'rgba(255,255,255,0.03)',
+  },
+  evidenceAiChipActive: {
+    borderColor: 'rgba(123,196,255,0.5)',
+    backgroundColor: 'rgba(123,196,255,0.14)',
+  },
+  evidenceAiChipText: {
+    fontSize: 11,
+    color: '#b8c4d0',
+    fontWeight: '600',
+  },
+  evidenceAiChipTextActive: {
+    color: '#b8dcff',
+  },
+  evidenceAiUsingLine: {
+    fontSize: 11,
+    color: '#9bb7d1',
+    opacity: 0.9,
+  },
+  evidenceAiPolicyLine: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: '#cfdcf0',
+    opacity: 0.88,
+  },
+  evidenceAiAllowanceCard: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    gap: 3,
+  },
+  evidenceAiAllowanceTitle: {
+    fontSize: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    color: '#8fb3d1',
+    opacity: 0.8,
+  },
+  evidenceAiAllowanceState: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#e6ecf3',
+  },
+  evidenceAiAllowanceBody: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: '#bfd0e3',
+    opacity: 0.88,
+  },
+  evidenceAiAllowanceUpgrade: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: '#d4e157',
+    opacity: 0.95,
+  },
+  evidenceAiFeatureStateCard: {
+    paddingVertical: 2,
+    gap: 2,
+  },
+  evidenceAiFeatureStateLine: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: '#d6e5f5',
+    opacity: 0.88,
+  },
+  evidenceAiChoiceCard: {
+    paddingTop: 2,
+    gap: 6,
+  },
+  evidenceAiChoiceTitle: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#e6ecf3',
+  },
+  evidenceAiChoiceRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  evidenceAiChoiceBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.22)',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+  },
+  evidenceAiChoiceBtnText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#d4e157',
+  },
+  evidenceAiChoiceNote: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: '#cfdcf0',
+    opacity: 0.84,
+  },
 
   // Pending follow-up banner
   followupBanner: {
@@ -968,7 +1511,7 @@ const styles = StyleSheet.create({
   },
   followupToggleBtnNoOnText: { color: '#ff8a80' },
 
-  // Reference entry card
+  // Compact linked-entry card
   referenceCard: {
     padding: 16,
     borderRadius: 12,

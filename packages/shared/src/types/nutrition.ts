@@ -86,7 +86,10 @@ export type NutritionSource =
   | 'imported' // Generic file / export import (future)
   | 'myfitnesspal' // Pulled from MyFitnessPal (future)
   | 'fatsecret' // Pulled from FatSecret (future)
-  | 'ai_estimate'; // Raw AI estimate (photo, voice, description) (future)
+  | 'ai_estimate' // Raw AI estimate (photo, voice, description) (future)
+  | 'apple_health' // Sum of dietary samples read from HealthKit
+  | 'health_connect' // Sum of nutrition records read from Android Health Connect
+  | 'mixed'; // Record was filled by more than one source
 
 export const NUTRITION_SOURCE_LABELS: Record<NutritionSource, string> = {
   cronometer: 'Cronometer',
@@ -98,6 +101,9 @@ export const NUTRITION_SOURCE_LABELS: Record<NutritionSource, string> = {
   myfitnesspal: 'MyFitnessPal',
   fatsecret: 'FatSecret',
   ai_estimate: 'AI photo',
+  apple_health: 'Apple Health',
+  health_connect: 'Health Connect',
+  mixed: 'Mixed sources',
 };
 
 /**
@@ -127,6 +133,10 @@ export interface NutritionRecord {
   sodium_mg?: number;
   /** Total water intake (ml). */
   water_ml?: number;
+  /** Body weight reading for this date (kg). Optional: not every
+   *  day includes a weigh-in. When present, Coach can compute
+   *  protein-per-kg + track body-composition trend. */
+  body_weight_kg?: number;
   /** Provenance flag — defaults to 'manual' at the call site. */
   source: NutritionSource;
   /** When the record was last updated (client-local ISO). */

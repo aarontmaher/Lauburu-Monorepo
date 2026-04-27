@@ -20,6 +20,8 @@ import { useEffect } from 'react';
 import { StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useWhoopStore, type WhoopDay } from '../store/whoop-store';
+import { ATHLETE_CAPABILITY_COPY } from '../services/athlete-capability-display';
+import { AthleteCapabilitySummary } from './AthleteCapabilitySummary';
 
 const STALE_SOURCE_HOURS = 6;
 
@@ -28,13 +30,6 @@ function readinessColor(score: number | null): string {
   if (score >= 67) return '#4ade80'; // green
   if (score >= 34) return '#d4e157'; // yellow
   return '#ff6b6b'; // red
-}
-
-function readinessLabel(score: number | null): string {
-  if (score == null) return 'No data';
-  if (score >= 67) return 'Recovered';
-  if (score >= 34) return 'Moderate';
-  return 'Low';
 }
 
 function formatRelative(iso: string | null): string {
@@ -124,19 +119,19 @@ export function WhoopCard() {
   }, [status, fetchToday]);
 
   const isLoading = status === 'loading';
-  const isReady = status === 'ready' && day != null;
+  const hasDay = day != null;
+  const isReady = status === 'ready' && hasDay;
   const isError = status === 'error';
-  const freshness = isReady && day ? sourceFreshness(day) : 'unknown';
+  const freshness = hasDay && day ? sourceFreshness(day) : 'unknown';
   const workoutCount = day?.workouts?.length ?? 0;
-  const missingWorkoutToday =
-    isReady && day && isToday(day.date) && workoutCount === 0;
+  const latestDayIsToday = hasDay && day ? isToday(day.date) : false;
 
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
         <View style={styles.titleBlock}>
-          <Text style={styles.cardTitle}>WHOOP</Text>
-          <Text style={styles.sourceLabel}>from backend sync</Text>
+          <Text style={styles.cardTitle}>WHOOP reference</Text>
+          <Text style={styles.sourceLabel}>Optional calibration source — not required</Text>
         </View>
         <Pressable
           onPress={fetchToday}
@@ -155,15 +150,36 @@ export function WhoopCard() {
       {isError && (
         <View style={styles.noticeRow}>
           <View style={[styles.statusDot, { backgroundColor: '#ff6b6b' }]} />
-          <Text style={styles.noticeError}>
+          <Text selectable style={styles.noticeError}>
             {error ?? 'WHOOP fetch failed'}
           </Text>
+          {hasDay && day && (
+            <Text style={styles.noticeStale}>
+              Using last available reference data ({day.date}). Readiness keeps working from Apple Health, training, and imported history.
+            </Text>
+          )}
         </View>
       )}
 
-      {/* Idle / first-load state */}
+      {/* Idle / first-load state — never use generic "waiting for
+          backend" copy that can read as a stuck failure. Frame the
+          card explicitly as optional reference, with custom readiness
+          as the working primary. */}
       {!isReady && !isError && !isLoading && (
-        <Text style={styles.cardBody}>Waiting to fetch backend WHOOP data…</Text>
+        <>
+          <Text style={styles.cardBody}>Optional WHOOP reference — not required.</Text>
+          <Text style={[styles.cardBody, { fontSize: 11, opacity: 0.55 }]}>
+            Readiness is your primary score, derived from Apple Health, training, nutrition, and imported WHOOP history. Tap Refresh to attempt a WHOOP calibration pull.
+          </Text>
+        </>
+      )}
+      {/* Persistent error state — make the optional/fallback framing
+          explicit so a non-allowlisted account doesn't read the empty
+          card as "the app is broken". Custom readiness keeps running. */}
+      {isError && (
+        <Text style={[styles.cardBody, { fontSize: 11, opacity: 0.55, marginTop: -4 }]}>
+          WHOOP Direct unavailable — using your readiness from Apple Health, training, and imported history.
+        </Text>
       )}
 
       {/* Loading with no prior data */}
@@ -171,8 +187,18 @@ export function WhoopCard() {
         <Text style={styles.cardBody}>Fetching latest WHOOP day…</Text>
       )}
 
-      {/* Ready state */}
-      {isReady && day && (
+      {/* Loading with cached data */}
+      {isLoading && hasDay && day && (
+        <View style={styles.noticeRow}>
+          <View style={[styles.statusDot, { backgroundColor: '#d4e157' }]} />
+          <Text style={styles.noticeWarn}>
+            Checking backend. Showing last available WHOOP record for {day.date}.
+          </Text>
+        </View>
+      )}
+
+      {/* Any available day */}
+      {hasDay && day && (
         <>
           {/* Headline readiness */}
           <View style={styles.readinessRow}>
@@ -190,10 +216,20 @@ export function WhoopCard() {
               {day.recovery_score != null
                 ? `${day.recovery_score}%`
                 : '—'}{' '}
-              {readinessLabel(day.recovery_score)}
+              recovery score
             </Text>
             <Text style={styles.readinessDate}>{day.date}</Text>
           </View>
+
+          {/* Only badge as "seed-backed / provisional" when recovery_score
+              is missing. When the score is present, this IS a live
+              scored cycle from the WHOOP API — no need to hedge. */}
+          {day.recovery_score == null && (
+            <AthleteCapabilitySummary
+              mode="missing_whoop_native"
+              detail="Recovery score not in this cycle yet. WHOOP will score it after your next sleep."
+            />
+          )}
 
           {/* Key metrics grid */}
           <View style={styles.metricsGrid}>
@@ -216,15 +252,46 @@ export function WhoopCard() {
             <MetricBox label="Workouts" value={String(workoutCount)} />
           </View>
 
-          {/* Honest freshness line. If the upstream timestamp exists we use
-              it; otherwise we fall back to when WE last fetched (still real). */}
+          {/* Per-domain missingness line — makes "partial" actionable
+              by naming exactly which domains the bridge returned null
+              for. Testers can see at a glance whether it's a cycle-
+              not-scored-yet case (normal, time-of-day) vs a genuine
+              fetch/mapping gap. Hidden when everything is present. */}
+          {(() => {
+            const missing: string[] = [];
+            if (day.recovery_score == null) missing.push('recovery');
+            if (day.hrv_ms == null) missing.push('HRV');
+            if (day.resting_hr == null) missing.push('RHR');
+            if (day.sleep_hours == null) missing.push('sleep');
+            if (workoutCount === 0) missing.push('workouts');
+            if (missing.length === 0) return null;
+            const allMissing = missing.length >= 4;
+            return (
+              <Text style={[styles.freshnessText, { color: allMissing ? '#ff6b6b' : '#d4e157' }]}>
+                {allMissing
+                  ? `Missing ${missing.join(', ')} — likely WHOOP bridge isn\u2019t linked to this account. Check EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS contains your user.id.`
+                  : `Missing: ${missing.join(', ')}. WHOOP scores these after your next sleep / workout sync.`}
+              </Text>
+            );
+          })()}
+
+          {/* Honest freshness line — labels a scored cycle as "cycle"
+              when recovery_score is present (live WHOOP Direct), else
+              falls back to "snapshot" wording for raw payload-only
+              states. "Seed" was the old seed-only era — dropped now
+              that WHOOP Direct API is live. */}
           <View style={styles.footerRow}>
             <Text style={styles.freshnessText}>
-              {day.source_updated_at
-                ? `Synced ${formatRelative(day.source_updated_at)}`
-                : fetchedAt
-                  ? `Refreshed ${formatRelative(fetchedAt)}`
-                  : 'Not refreshed yet'}
+              {(() => {
+                const label = day.recovery_score != null ? 'cycle' : 'snapshot';
+                if (isToday(day.date)) {
+                  if (day.source_updated_at) return `Today\u2019s ${label} · updated ${formatRelative(day.source_updated_at)}`;
+                  if (fetchedAt) return `Today\u2019s ${label} · fetched ${formatRelative(fetchedAt)}`;
+                  return `Today\u2019s ${label}`;
+                }
+                if (day.source_updated_at) return `${day.date} ${label} · updated ${formatRelative(day.source_updated_at)}`;
+                return `${day.date} ${label}`;
+              })()}
             </Text>
           </View>
 
@@ -232,18 +299,16 @@ export function WhoopCard() {
             <View style={styles.noticeRow}>
               <View style={[styles.statusDot, { backgroundColor: '#d4e157' }]} />
               <Text style={styles.noticeWarn}>
-                Backend data is more than {STALE_SOURCE_HOURS} hours old. The
-                tail-poll refreshes every 15 min — pull Refresh to retry now.
+                WHOOP snapshot is more than {STALE_SOURCE_HOURS} hours old. Tap Refresh to re-pull from WHOOP.
               </Text>
             </View>
           )}
 
-          {missingWorkoutToday && freshness !== 'stale' && (
+          {!latestDayIsToday && (
             <View style={styles.noticeRow}>
               <View style={[styles.statusDot, { backgroundColor: '#d4e157' }]} />
               <Text style={styles.noticeWarn}>
-                Today's workout hasn't synced yet. Recovery and sleep are
-                logged — the workout will appear on the next backend refresh.
+                Awaiting today’s cycle. Latest scored cycle is {day.date}. WHOOP scores the new cycle after your next sleep.
               </Text>
             </View>
           )}
@@ -293,7 +358,6 @@ const styles = StyleSheet.create({
   readinessDot: { width: 12, height: 12, borderRadius: 6 },
   readinessLabel: { fontSize: 18, fontWeight: '700' },
   readinessDate: { fontSize: 12, opacity: 0.4, marginLeft: 'auto' },
-
   metricsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -327,5 +391,6 @@ const styles = StyleSheet.create({
   statusDot: { width: 8, height: 8, borderRadius: 4, marginTop: 5 },
   noticeWarn: { fontSize: 12, color: '#d4e157', flex: 1, lineHeight: 16 },
   noticeError: { fontSize: 12, color: '#ff6b6b', flex: 1, lineHeight: 16 },
+  noticeStale: { fontSize: 11, color: '#999', marginTop: 2 },
   noticeMuted: { fontSize: 12, color: '#999', flex: 1, lineHeight: 16 },
 });

@@ -26,19 +26,25 @@ import {
   Pressable,
   Share,
   TextInput,
-  Linking,
   Alert,
-  findNodeHandle,
+  Linking,
   View as RNView,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Text, View } from '@/components/Themed';
+import { useProfile } from '../../src/hooks/useProfile';
+import { useVideoAttachmentSummaries } from '../../src/hooks/useVideoAttachmentSummaries';
+import {
+  deriveTechniqueVideoDisplayState,
+  fallbackVideoAttachmentSummary,
+} from '../../src/services/video-attachment-display';
 
 /** Live website base URL — the full Reference tree, 3D graph, and
  *  attached media all live here today. The mobile Reference screen
- *  bridges to it via explicit "Open ... in 3D map (web)" CTAs that
- *  launch the system browser so users don't expect an in-app 3D
- *  renderer. */
-const FULL_MAP_URL = 'https://aarontmaher.github.io/lauburugrapplingmap/';
+ *  bridges to it via explicit "Open ... in 3D map" CTAs that
+ *  deep-link into a dedicated in-app scene. */
+const FULL_MAP_URL = 'https://www.lauburugrapplingmap.com/';
 import {
   REFERENCE_SECTIONS,
   REFERENCE_TOTAL_POSITIONS,
@@ -51,13 +57,58 @@ import {
   REFERENCE_TECHNIQUE_COUNT,
 } from '../../src/data/reference-techniques';
 import {
+  BELT_SYLLABUS,
+  type BeltLevel,
+} from '../../src/data/belt-syllabus';
+import {
   useReferenceProgressStore,
   buildTechniqueProgressKey,
   buildTransitionProgressKey,
   buildProgressExportJSON,
   parseProgressImportPayload,
+  parseProgressKey,
   type ProgressStatus,
+  type ProgressExportPayload,
 } from '../../src/store/reference-progress-store';
+import type { VideoAttachmentSummary } from '@lauburu/shared';
+
+interface CoachingTechniqueFocus {
+  position: string;
+  role: string | null;
+  heading: string | null;
+  technique: string | null;
+}
+
+interface CoachRecommendedTechniqueTarget {
+  position: string;
+  role: string | null;
+  heading: string | null;
+  technique: string | null;
+  reason: string | null;
+}
+
+function isBeltLevel(value: string | null | undefined): value is BeltLevel {
+  return value === 'white' || value === 'blue' || value === 'purple' || value === 'brown' || value === 'black';
+}
+
+function findTechniqueVideoTargetId(args: {
+  belt: BeltLevel | null;
+  position: string;
+  role: string;
+  heading: string;
+  technique: string;
+}): string | null {
+  if (!args.belt) return null;
+  const match = BELT_SYLLABUS.find(
+    (item) =>
+      item.belt === args.belt &&
+      item.position === args.position &&
+      item.role === args.role &&
+      item.heading === args.heading &&
+      item.technique === args.technique,
+  );
+  return match?.id ?? null;
+}
 
 /**
  * Normalize a position name for lookup into REFERENCE_TECHNIQUES.
@@ -186,6 +237,143 @@ const SECTION_LABEL_BY_POSITION_NAME: ReadonlyMap<string, string> = (() => {
   }
   return m;
 })();
+
+/**
+ * Per-position search payload — flat lowercase corpus joined
+ * across position name + every catalogued technique label +
+ * every transition label/destination, for both perspectives.
+ * Lets the search input match content INSIDE positions, not
+ * just position names. One fast substring check per filter
+ * pass. Built ONCE at module load and never mutated.
+ *
+ * Storage shape is intentionally simple — one big lowercase
+ * string per position, joined by `||` so substrings can't
+ * accidentally bleed across boundaries (a query like "guard
+ * pass" won't false-match against "Closed guard||Pass to side
+ * control" because the `||` between segments breaks the
+ * adjacency). The structured per-row match index below
+ * (`POSITION_SEARCH_INDEX`) handles the highlight-which-row
+ * problem; this haystack is just the gate for "is this
+ * position a search hit at all".
+ */
+const POSITION_SEARCH_HAYSTACK: ReadonlyMap<string, string> = (() => {
+  const map = new Map<string, string>();
+  for (const section of REFERENCE_SECTIONS) {
+    for (const position of section.positions) {
+      const parts: string[] = [position.name];
+      const techs = lookupPositionTechniques(position.name);
+      if (techs) {
+        for (const role of position.perspectives) {
+          for (const heading of position.headings) {
+            const list = techniquesForHeading(techs, role, heading);
+            for (const item of list) parts.push(item);
+          }
+        }
+      }
+      map.set(position.name, parts.join('||').toLowerCase());
+    }
+  }
+  return map;
+})();
+
+/**
+ * Structured per-position match index — for each position,
+ * the set of technique-row keys (`role|heading|index`) and
+ * transition-edge keys (`role|label|destination`) whose
+ * lowercased label contains the active query. Built lazily on
+ * the consumer side via `buildPositionQueryMatchIndex` keyed by
+ * position + query, so it costs nothing while no search is
+ * active. Drives the row-level highlight + the role-pivot
+ * logic so an "armbar" search auto-flips to whichever
+ * perspective actually has armbars catalogued.
+ */
+interface PositionQueryMatchIndex {
+  /** `${role}|${heading}|${index}` keys for matching technique rows. */
+  techKeys: ReadonlySet<string>;
+  /** `${role}|${label}|${destination}` keys for matching transition rows. */
+  transitionKeys: ReadonlySet<string>;
+  /** Per-role total match counts (techniques + transitions on that role). */
+  roleMatchCounts: ReadonlyMap<string, number>;
+  /** Total matches across both roles. */
+  total: number;
+}
+
+function buildPositionQueryMatchIndex(
+  position: ReferencePosition,
+  query: string,
+): PositionQueryMatchIndex {
+  const empty: PositionQueryMatchIndex = {
+    techKeys: new Set(),
+    transitionKeys: new Set(),
+    roleMatchCounts: new Map(),
+    total: 0,
+  };
+  const q = query.trim().toLowerCase();
+  if (!q) return empty;
+  const positionTechs = lookupPositionTechniques(position.name);
+  if (!positionTechs) return empty;
+
+  const techKeys = new Set<string>();
+  const transitionKeys = new Set<string>();
+  const roleMatchCounts = new Map<string, number>();
+  let total = 0;
+
+  for (const role of position.perspectives) {
+    let roleHits = 0;
+    // Technique rows — match against the technique label.
+    for (const heading of position.headings) {
+      if (heading === 'Offensive transitions') continue;
+      const list = techniquesForHeading(positionTechs, role, heading);
+      list.forEach((item, idx) => {
+        if (item.toLowerCase().includes(q)) {
+          techKeys.add(`${role}|${heading}|${idx}`);
+          roleHits += 1;
+          total += 1;
+        }
+      });
+    }
+    // Transition rows — match against label OR destination, since
+    // a user searching "mount" expects to find "armbar finish →
+    // Mount" too, not only transitions whose label contains
+    // "mount" verbatim.
+    const rawTransitions = techniquesForHeading(
+      positionTechs,
+      role,
+      'Offensive transitions',
+    );
+    const edges = parseTransitionEdges(rawTransitions);
+    for (const edge of edges) {
+      if (
+        edge.label.toLowerCase().includes(q) ||
+        edge.destination.toLowerCase().includes(q)
+      ) {
+        transitionKeys.add(`${role}|${edge.label}|${edge.destination}`);
+        roleHits += 1;
+        total += 1;
+      }
+    }
+    if (roleHits > 0) roleMatchCounts.set(role, roleHits);
+  }
+
+  return { techKeys, transitionKeys, roleMatchCounts, total };
+}
+
+/**
+ * True when a position should appear in the search results for
+ * the given query. Matches on the position name OR on any
+ * catalogued technique / transition content inside the
+ * position. Empty queries always pass.
+ */
+function positionMatchesQuery(
+  positionName: string,
+  query: string,
+): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  const haystack = POSITION_SEARCH_HAYSTACK.get(positionName);
+  if (!haystack) return false;
+  return haystack.includes(q);
+}
 
 /**
  * Structural hub metadata for a single canonical position —
@@ -432,6 +620,8 @@ function buildProgressExportText(
   progressMap: Record<string, ProgressStatus>,
   counts: { drilling: number; learned: number; tracking: number },
   activeFilter: ProgressStatus | null,
+  notesMap: Record<string, string> = {},
+  updatedAtMap: Record<string, string> = {},
 ): string {
   const lines: string[] = [];
   lines.push('Lauburu Grappling Map — training status');
@@ -482,6 +672,9 @@ function buildProgressExportText(
   // currently in that state with a readable breadcrumb. Parses
   // the key format into human-readable breadcrumbs so the
   // recipient doesn't see raw `tech|Guard|K guard|...` keys.
+  // Notes attached to a flagged item are folded inline as a
+  // second indented line so a coach reading the share text sees
+  // the user's annotation right next to the move.
   if (activeFilter) {
     const filteredKeys = Object.entries(progressMap)
       .filter(([, v]) => v === activeFilter)
@@ -509,8 +702,32 @@ function buildProgressExportText(
           readable = `${src}: ${label} → ${dest}`;
         }
         lines.push(`  · ${readable}`);
+        const note = notesMap[key];
+        if (typeof note === 'string' && note.length > 0) {
+          // Wrap long notes by indenting continuation lines two
+          // extra spaces. Plain text export — no markdown — so
+          // recipients in any chat app see clean alignment.
+          const noteLines = note.split('\n');
+          for (const ln of noteLines) {
+            lines.push(`      ↳ ${ln}`);
+          }
+        }
       }
     }
+  }
+
+  // Notes-included aggregate count (only when there are notes
+  // outside the active filter, so an aggregate-only export still
+  // surfaces the fact that the user has annotations). Stays out
+  // of the way for users who haven't started using notes yet.
+  const totalNotes = Object.values(notesMap).filter(
+    (v) => typeof v === 'string' && v.length > 0,
+  ).length;
+  if (totalNotes > 0 && !activeFilter) {
+    lines.push('');
+    lines.push(
+      `Notes attached to ${totalNotes} item${totalNotes === 1 ? '' : 's'}.`,
+    );
   }
 
   lines.push('');
@@ -520,12 +737,14 @@ function buildProgressExportText(
   // the human export so a single share string can be either read
   // by a human or re-imported on another device. The Import pane
   // parser scans for the first `{"version"` anchor so the JSON
-  // survives any leading human-readable content.
+  // survives any leading human-readable content. Now passes the
+  // notes and updated_at maps so a v2 export carries the full
+  // tracked context across devices.
   lines.push('');
   lines.push(
     '--- Import payload (paste below into Import on another device) ---',
   );
-  lines.push(buildProgressExportJSON(progressMap));
+  lines.push(buildProgressExportJSON(progressMap, notesMap, updatedAtMap));
 
   return lines.join('\n');
 }
@@ -730,15 +949,51 @@ function buildFullMapDeepLink(args: FullMapDeepLinkArgs): string {
 }
 
 /**
- * Open the full website Reference, optionally focused on a specific
- * position/technique via the deep-link format above. Best-effort —
- * `Linking.openURL` rejection (rare on iOS) is swallowed silently.
+ * Open the in-app 3D map tab, optionally focused on a specific
+ * position/technique via the deep-link URL fragment. Uses
+ * `router.navigate` so tapping the Map tab bar icon and tapping
+ * a Reference CTA both end up on the same screen without
+ * stacking duplicate routes.
  */
 function openFullMap(args: FullMapDeepLinkArgs = {}): void {
   const url = buildFullMapDeepLink(args);
-  Linking.openURL(url).catch(() => {
-    // Silent — rare on iOS.
+  router.navigate({
+    pathname: '/(tabs)/map-3d',
+    params: { url },
   });
+}
+
+function SyllabusEntryCard() {
+  return (
+    <Pressable
+      style={styles.footerCard}
+      onPress={() => router.push('/syllabus')}>
+      <Text style={styles.footerTitle}>Belt syllabus</Text>
+      <Text style={styles.footerBody}>
+        Track a compact belt roadmap in-app, then jump straight into Reference or the 3D map for each linked position.
+      </Text>
+    </Pressable>
+  );
+}
+
+/**
+ * Compact relative-time formatter for the Recent activity strip.
+ * Returns "just now", "5m ago", "3h ago", "2d ago", or a locale
+ * date for anything older than a week. Tolerant of malformed
+ * timestamps — returns an empty string so the chip can render
+ * without a stale relative reading.
+ */
+function formatRelativeTime(iso: string | undefined): string {
+  if (!iso) return '';
+  const t = Date.parse(iso);
+  if (!Number.isFinite(t)) return '';
+  const diff = Date.now() - t;
+  if (diff < 0) return 'just now';
+  if (diff < 60_000) return 'just now';
+  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)}m ago`;
+  if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)}h ago`;
+  if (diff < 7 * 86_400_000) return `${Math.floor(diff / 86_400_000)}d ago`;
+  return new Date(t).toLocaleDateString();
 }
 
 /**
@@ -788,6 +1043,109 @@ function ProgressPill({ progressKey }: { progressKey: string }) {
   );
 }
 
+/**
+ * Tiny "has a note" indicator — renders a pencil glyph when the
+ * given progress key has a non-empty note attached. Subscribes to
+ * just that single key's note slot so it only re-renders when the
+ * note for THIS row changes, not on every store mutation. Returns
+ * null when there's no note, so an unannotated row stays visually
+ * untouched.
+ */
+function NoteIndicator({ progressKey }: { progressKey: string }) {
+  const hasNote = useReferenceProgressStore(
+    (s) => typeof s.notes[progressKey] === 'string' && s.notes[progressKey]!.length > 0,
+  );
+  if (!hasNote) return null;
+  return <Text style={styles.noteIndicator}>✎</Text>;
+}
+
+/**
+ * Inline note editor for a single progress key — rendered inside
+ * the technique-row expanded detail. Holds a local draft so each
+ * keystroke doesn't bounce through Zustand and re-render every
+ * subscriber; commits the draft to the store on blur. The store
+ * subscription syncs the draft back when the underlying note
+ * changes from elsewhere (e.g. an import that overwrites this
+ * key) so the editor never goes stale relative to the store.
+ *
+ * Empty draft on blur clears the note via setNote('') — same
+ * one-call-clears semantics as the rest of the progress store.
+ *
+ * Notes can attach to ANY technique key — the row doesn't have to
+ * be flagged first. Untracked-with-note is a meaningful state
+ * (e.g. "haven't started this yet but coach said it's important")
+ * and the store's setNote / persistSafely combo handles it.
+ */
+function NoteEditor({ progressKey }: { progressKey: string }) {
+  const storedNote = useReferenceProgressStore(
+    (s) => s.notes[progressKey] ?? '',
+  );
+  const setNote = useReferenceProgressStore((s) => s.setNote);
+  const [draft, setDraft] = useState<string>(storedNote);
+  const [isFocused, setIsFocused] = useState(false);
+  const prevStoredNoteRef = useRef(storedNote);
+  const prevProgressKeyRef = useRef(progressKey);
+
+  // Resync the local draft when the stored note changes from
+  // outside (import, share-import, replace mode). The progressKey
+  // dependency also handles the case where the same NoteEditor
+  // instance is recycled across different rows during scroll.
+  useEffect(() => {
+    const prevStoredNote = prevStoredNoteRef.current;
+    const keyChanged = prevProgressKeyRef.current !== progressKey;
+    const localMatchesPreviousStore = draft === prevStoredNote;
+    if (!isFocused || localMatchesPreviousStore || keyChanged) {
+      setDraft(storedNote);
+    }
+    prevStoredNoteRef.current = storedNote;
+    prevProgressKeyRef.current = progressKey;
+  }, [storedNote, progressKey, draft, isFocused]);
+
+  const dirty = draft !== storedNote;
+
+  const handleCommit = useCallback(() => {
+    if (!dirty) return;
+    setNote(progressKey, draft);
+  }, [dirty, draft, progressKey, setNote]);
+
+  return (
+    <View style={styles.noteEditorWrap}>
+      <View style={styles.noteEditorHeaderRow}>
+        <Text style={styles.noteEditorLabel}>Note</Text>
+        {dirty && (
+          <Text style={styles.noteEditorDirtyHint}>unsaved · tap away to save</Text>
+        )}
+        {!dirty && draft.length > 0 && (
+          <Pressable
+            onPress={() => {
+              setDraft('');
+              setNote(progressKey, '');
+            }}
+            hitSlop={8}>
+            <Text style={styles.noteEditorClearLink}>clear</Text>
+          </Pressable>
+        )}
+      </View>
+      <TextInput
+        style={styles.noteEditorInput}
+        value={draft}
+        onChangeText={setDraft}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => {
+          setIsFocused(false);
+          handleCommit();
+        }}
+        placeholder="Coach said, what to focus on, drill counts…"
+        placeholderTextColor="#555"
+        multiline
+        textAlignVertical="top"
+        autoCorrect={false}
+        autoCapitalize="sentences"
+      />
+    </View>
+  );
+}
+
 function PositionRow({
   position,
   sectionLabel,
@@ -795,6 +1153,13 @@ function PositionRow({
   onRequestFocus,
   registerOuterRef,
   progressFilter,
+  query,
+  coachingFocus,
+  coachRecommendedTarget,
+  onDismissCoachRecommendation,
+  onConsumeCoachingFocus,
+  currentBelt,
+  videoByTargetId,
 }: {
   position: ReferencePosition;
   /** Mobile-seed section label the position belongs to. Threaded
@@ -817,6 +1182,19 @@ function PositionRow({
    *  only items whose stored status matches are rendered, and the
    *  card auto-expands so results are visible without tapping. */
   progressFilter: ProgressStatus | null;
+  /** Active search query from the top-of-screen TextInput. Drives
+   *  the structured per-row match index — when non-empty and at
+   *  least one technique/transition row inside this position has
+   *  a label or destination containing the query, the card auto-
+   *  expands, the role pivots to whichever side has the match,
+   *  and matching rows render with a gold search-match accent. */
+  query: string;
+  coachingFocus: CoachingTechniqueFocus | null;
+  coachRecommendedTarget: CoachRecommendedTechniqueTarget | null;
+  onDismissCoachRecommendation: () => void;
+  onConsumeCoachingFocus: () => void;
+  currentBelt: BeltLevel | null;
+  videoByTargetId: ReadonlyMap<string, VideoAttachmentSummary>;
 }) {
   // Subscribe to the progress store so filter changes re-render
   // this card. Selector keeps the dependency scoped to the map
@@ -836,6 +1214,10 @@ function PositionRow({
   // this card. Drives the gold border highlight and clears itself
   // after ~1.8s so stale highlights don't persist.
   const [jumpFlash, setJumpFlash] = useState(false);
+  const [coachingFlashTechKey, setCoachingFlashTechKey] = useState<string | null>(
+    null,
+  );
+  const [playbackFailedKeys, setPlaybackFailedKeys] = useState<Record<string, true>>({});
 
   const hasMultipleRoles = position.perspectives.length > 1;
 
@@ -861,15 +1243,54 @@ function PositionRow({
     );
   }, [positionTechs, position.perspectives]);
 
-  // Auto-pivot to the role that actually has content. If both roles
-  // have content, the user's manual selection wins. If only one has
-  // content, silently flip to that side so the expanded view is never
-  // "Viewing as Passer — 0 techniques" when Guard player has 14.
+  // Structured per-position search-match index. Empty when no
+  // query is active (cheap path — early returns inside the
+  // builder), otherwise contains the per-row keys + per-role
+  // match counts that drive auto-pivot, auto-expand, and the
+  // gold row highlights below. Memoised on (position, query)
+  // so repeat renders during scroll/expansion are free.
+  const queryMatchIndex = useMemo(
+    () => buildPositionQueryMatchIndex(position, query),
+    [position, query],
+  );
+  const queryActive = query.trim().length > 0;
+  const hasQueryMatches = queryMatchIndex.total > 0;
+
+  // Auto-pivot rule order:
+  //   1. If a query is active and the user's manually selected
+  //      role has zero search matches, but another role does,
+  //      pivot to the first role that does — search hits should
+  //      always be visible without an extra tap.
+  //   2. Otherwise fall back to the existing rule: if the
+  //      manually selected role has zero techniques at all, pivot
+  //      to the first role that has any. (Prevents "Viewing as
+  //      Passer — 0 techniques" when Guard player has 14.)
+  //   3. Otherwise honour the manual selection.
   const effectiveRoleIdx = useMemo(() => {
+    if (queryActive && hasQueryMatches) {
+      const selectedRoleName = position.perspectives[selectedRoleIdx];
+      const selectedRoleHits =
+        (selectedRoleName &&
+          queryMatchIndex.roleMatchCounts.get(selectedRoleName)) ||
+        0;
+      if (selectedRoleHits === 0) {
+        const pivotIdx = position.perspectives.findIndex(
+          (r) => (queryMatchIndex.roleMatchCounts.get(r) ?? 0) > 0,
+        );
+        if (pivotIdx >= 0) return pivotIdx;
+      }
+    }
     if (roleCounts[selectedRoleIdx] > 0) return selectedRoleIdx;
     const firstWithContent = roleCounts.findIndex((n) => n > 0);
     return firstWithContent >= 0 ? firstWithContent : selectedRoleIdx;
-  }, [roleCounts, selectedRoleIdx]);
+  }, [
+    roleCounts,
+    selectedRoleIdx,
+    queryActive,
+    hasQueryMatches,
+    queryMatchIndex,
+    position.perspectives,
+  ]);
   const selectedRole = position.perspectives[effectiveRoleIdx] ?? '';
 
   // Count of techniques rendered for the CURRENTLY selected role —
@@ -940,6 +1361,56 @@ function PositionRow({
     return () => clearTimeout(t);
   }, [focusTarget, position.name]);
 
+  useEffect(() => {
+    if (coachingFocus?.position !== position.name) return;
+    setExpanded(true);
+    setJumpFlash(true);
+    const flashTimer = setTimeout(() => setJumpFlash(false), 1800);
+
+    const desiredRole = coachingFocus.role;
+    if (desiredRole) {
+      const roleIdx = position.perspectives.findIndex((role) => role === desiredRole);
+      if (roleIdx >= 0) setSelectedRoleIdx(roleIdx);
+    }
+
+    const targetRole = desiredRole ?? position.perspectives[0] ?? null;
+    const targetHeading = coachingFocus.heading;
+    const targetTechnique = coachingFocus.technique;
+    if (!targetRole || !targetHeading || !targetTechnique) {
+      return () => clearTimeout(flashTimer);
+    }
+
+    const headingEntry = position.headings.find(
+      (heading) => normalizeHeading(heading) === normalizeHeading(targetHeading),
+    );
+    if (!headingEntry) {
+      return () => clearTimeout(flashTimer);
+    }
+
+    const techs = techniquesForHeading(positionTechs, targetRole, headingEntry);
+    const techIdx = techs.findIndex((label) => label === targetTechnique);
+    if (techIdx < 0) {
+      return () => clearTimeout(flashTimer);
+    }
+
+    const techKey = `${targetRole}|${headingEntry}|${techIdx}`;
+    setExpandedTechKey(techKey);
+    setCoachingFlashTechKey(techKey);
+    onConsumeCoachingFocus();
+    const rowTimer = setTimeout(() => setCoachingFlashTechKey(null), 2600);
+    return () => {
+      clearTimeout(flashTimer);
+      clearTimeout(rowTimer);
+    };
+  }, [
+    coachingFocus,
+    position.name,
+    position.perspectives,
+    position.headings,
+    positionTechs,
+    onConsumeCoachingFocus,
+  ]);
+
   // Auto-expand when a progress filter is active so filtered items
   // are visible immediately without the user having to tap every
   // card. When the filter clears, user expansion state is preserved
@@ -947,6 +1418,17 @@ function PositionRow({
   useEffect(() => {
     if (progressFilter) setExpanded(true);
   }, [progressFilter]);
+
+  // Auto-expand on a search-match the same way. Without this, a
+  // user typing "armbar" would see Closed guard surface in the
+  // results list (because parseTransitionEdges has armbar in
+  // there) but the card would still be collapsed and they'd have
+  // to tap to see why it matched. Combined with the role-pivot
+  // rule above, the matching row is always one render away from
+  // the search input.
+  useEffect(() => {
+    if (hasQueryMatches) setExpanded(true);
+  }, [hasQueryMatches]);
 
   // Parsed offensive-transition edges for the currently selected
   // role. Derived from whatever "Offensive transitions" entries the
@@ -983,6 +1465,34 @@ function PositionRow({
     position.name,
   ]);
 
+  // Per-position aggregate progress counts. Derived from a single
+  // pass over the persisted progress map, scoped by storage-key
+  // prefix to keys rooted at THIS position (techniques + outbound
+  // transitions). Inbound edges are intentionally excluded — they
+  // belong to the source position's prefix, not this one — so
+  // section-wide totals stay consistent and an edge isn't double-
+  // counted on its destination card. Drives the small colored
+  // count chips rendered on the collapsed header so users can scan
+  // a section and immediately see which positions they've actually
+  // been working on, without having to expand every card.
+  const positionProgressCounts = useMemo(() => {
+    const techPrefix = `tech|${sectionLabel}|${position.name}|`;
+    const txPrefix = `tx|${sectionLabel}|${position.name}|`;
+    const counts = { drilling: 0, learned: 0, tracking: 0 };
+    for (const key of Object.keys(progress)) {
+      if (!key.startsWith(techPrefix) && !key.startsWith(txPrefix)) continue;
+      const v = progress[key];
+      if (v === 'drilling') counts.drilling++;
+      else if (v === 'learned') counts.learned++;
+      else if (v === 'tracking') counts.tracking++;
+    }
+    return counts;
+  }, [progress, sectionLabel, position.name]);
+  const positionProgressTotal =
+    positionProgressCounts.drilling +
+    positionProgressCounts.learned +
+    positionProgressCounts.tracking;
+
   // Inbound transition edges — every source position that feeds
   // INTO this position. Derived once at module load and stable
   // across renders, so this useMemo is a single ReadonlyMap lookup
@@ -1016,7 +1526,10 @@ function PositionRow({
       collapsable={false}>
       <Pressable
         style={styles.positionRow}
-        onPress={() => setExpanded(!expanded)}>
+        onPress={() => {
+          if (expanded) onDismissCoachRecommendation();
+          setExpanded(!expanded);
+        }}>
         <View style={{ flex: 1 }}>
           <Text style={styles.positionName}>
             {position.name}
@@ -1026,6 +1539,48 @@ function PositionRow({
             {inboundEdges.length > 0 ? (
               <Text style={styles.inboundChip}>
                 {'  '}← {inboundEdges.length} inbound
+              </Text>
+            ) : null}
+            {/* Search-match chip — surfaces "this card is in the
+                results because of N hits inside it" so the user
+                isn't confused when "armbar" matches Closed guard
+                even though "armbar" doesn't appear anywhere in
+                the title. Only renders when the match came from
+                content (not from the position name itself), since
+                a name match needs no explanation. */}
+            {queryActive &&
+              hasQueryMatches &&
+              !position.name.toLowerCase().includes(query.trim().toLowerCase()) ? (
+              <Text style={styles.searchMatchChip}>
+                {'  '}⌕ {queryMatchIndex.total} match
+                {queryMatchIndex.total === 1 ? '' : 'es'}
+              </Text>
+            ) : null}
+            {/* Per-position progress chips — render only the
+                statuses that have at least one flagged item rooted
+                at this position so the header stays quiet on
+                untouched cards but lights up the moment you start
+                investing study time. Each chip uses the same
+                colour as the corresponding ProgressPill so the
+                visual language is consistent across the screen
+                (drilling=blue, learned=green, tracking=yellow). */}
+            {positionProgressTotal > 0 ? (
+              <Text style={styles.positionProgressChip}>
+                {positionProgressCounts.drilling > 0 ? (
+                  <Text style={styles.positionProgressDrilling}>
+                    {'  '}● {positionProgressCounts.drilling}
+                  </Text>
+                ) : null}
+                {positionProgressCounts.learned > 0 ? (
+                  <Text style={styles.positionProgressLearned}>
+                    {'  '}● {positionProgressCounts.learned}
+                  </Text>
+                ) : null}
+                {positionProgressCounts.tracking > 0 ? (
+                  <Text style={styles.positionProgressTracking}>
+                    {'  '}● {positionProgressCounts.tracking}
+                  </Text>
+                ) : null}
               </Text>
             ) : null}
           </Text>
@@ -1050,6 +1605,7 @@ function PositionRow({
                     ]}
                     onPress={(ev) => {
                       ev.stopPropagation();
+                      onDismissCoachRecommendation();
                       setSelectedRoleIdx(idx);
                       setExpandedTechKey(null);
                       if (!expanded) setExpanded(true);
@@ -1115,6 +1671,24 @@ function PositionRow({
                     t,
                   );
                   const rowStatus = progress[progressKey] ?? 'none';
+                  // Search-match accent — gold left border + faint
+                  // gold background, applied in addition to (not
+                  // instead of) the existing progress accent so a
+                  // technique that's both flagged AND a search
+                  // match still reads as flagged. The progress
+                  // accent uses a 3px left border and the search
+                  // accent overlays a 2px right border so neither
+                  // signal hides the other.
+                  const isQueryMatch =
+                    queryActive && queryMatchIndex.techKeys.has(techKey);
+                  const isCoachingMatch = coachingFlashTechKey === techKey;
+                  const isCoachRecommendedDetail =
+                    coachRecommendedTarget?.position === position.name &&
+                    (coachRecommendedTarget.role ?? selectedRole) === selectedRole &&
+                    coachRecommendedTarget?.technique === t &&
+                    coachRecommendedTarget?.heading != null &&
+                    normalizeHeading(coachRecommendedTarget.heading) ===
+                      normalizeHeading(heading);
                   return (
                     <View key={techKey}>
                       <Pressable
@@ -1124,13 +1698,20 @@ function PositionRow({
                           rowStatus === 'drilling' && styles.rowAccentDrilling,
                           rowStatus === 'learned' && styles.rowAccentLearned,
                           rowStatus === 'tracking' && styles.rowAccentTracking,
+                          isQueryMatch && styles.rowAccentSearchMatch,
+                          isCoachingMatch && styles.rowAccentCoachingTarget,
                         ]}
-                        onPress={() =>
-                          setExpandedTechKey(isOpen ? null : techKey)
-                        }>
+                        onPress={() => {
+                          const nextExpandedTechKey = isOpen ? null : techKey;
+                          if (!nextExpandedTechKey || !isCoachRecommendedDetail) {
+                            onDismissCoachRecommendation();
+                          }
+                          setExpandedTechKey(nextExpandedTechKey);
+                        }}>
                         <Text style={styles.techniqueItem}>
                           • {t}
                         </Text>
+                        <NoteIndicator progressKey={progressKey} />
                         <ProgressPill progressKey={progressKey} />
                         <Text style={styles.techniqueChevron}>
                           {isOpen ? '▾' : '▸'}
@@ -1138,6 +1719,20 @@ function PositionRow({
                       </Pressable>
                       {isOpen && (
                         <View style={styles.techniqueDetail}>
+                          {isCoachRecommendedDetail && (
+                            <View style={styles.coachRecommendedBlock}>
+                              <View style={styles.coachRecommendedBadge}>
+                                <Text style={styles.coachRecommendedBadgeText}>
+                                  Recommended by coach
+                                </Text>
+                              </View>
+                              {coachRecommendedTarget?.reason ? (
+                                <Text style={styles.coachRecommendedReason}>
+                                  Why: {coachRecommendedTarget.reason}
+                                </Text>
+                              ) : null}
+                            </View>
+                          )}
                           <Text style={styles.techniqueDetailCrumb}>
                             {position.name}
                             {' '}·{' '}
@@ -1148,11 +1743,66 @@ function PositionRow({
                             {heading}
                           </Text>
                           <Text style={styles.techniqueDetailName}>{t}</Text>
+                          {(() => {
+                            const videoTargetId = findTechniqueVideoTargetId({
+                              belt: currentBelt,
+                              position: position.name,
+                              role: selectedRole,
+                              heading,
+                              technique: t,
+                            });
+                            const videoState = deriveTechniqueVideoDisplayState(
+                              (videoTargetId
+                                ? videoByTargetId.get(videoTargetId)
+                                : null) ?? fallbackVideoAttachmentSummary(progressKey),
+                              { playbackFailed: Boolean(playbackFailedKeys[progressKey]) },
+                            );
+                            const handleOpenVideo = async () => {
+                              if (!videoState.ctaUrl) return;
+                              try {
+                                await Linking.openURL(videoState.ctaUrl);
+                              } catch {
+                                setPlaybackFailedKeys((current) => ({
+                                  ...current,
+                                  [progressKey]: true,
+                                }));
+                                Alert.alert(
+                                  'Playback failed',
+                                  'Use the 3D map for the full technique path.',
+                                );
+                              }
+                            };
+                            return (
+                              <>
+                          <View style={styles.techniqueVideoStatePill}>
+                            <Text style={styles.techniqueVideoStatePillText}>
+                              {videoState.badge}
+                            </Text>
+                          </View>
                           <Text style={styles.techniqueDetailMeta}>
-                            {position.built_out
-                              ? 'Full text, transitions, and any attached video live in the interactive 3D map on web.'
-                              : 'Full text and any attached video live in the interactive 3D map on web.'}
+                            {videoState.note}
                           </Text>
+                          {position.built_out ? (
+                            <Text style={styles.techniqueDetailMeta}>
+                              Explore full details and transitions in the 3D map.
+                            </Text>
+                          ) : null}
+                          {/* Inline note editor — saves to the
+                              progress store on blur. Local draft
+                              prevents per-keystroke re-renders
+                              outside this single subtree. Notes
+                              can attach to any tech row whether
+                              or not it's been flagged. */}
+                          <NoteEditor progressKey={progressKey} />
+                          {videoState.ctaLabel ? (
+                            <Pressable
+                              style={styles.techniqueDetailBridgeBtn}
+                              onPress={handleOpenVideo}>
+                              <Text style={styles.techniqueDetailBridgeBtnText}>
+                                {videoState.ctaLabel}
+                              </Text>
+                            </Pressable>
+                          ) : null}
                           <Pressable
                             style={styles.techniqueDetailBridgeBtn}
                             onPress={() =>
@@ -1165,9 +1815,12 @@ function PositionRow({
                               })
                             }>
                             <Text style={styles.techniqueDetailBridgeBtnText}>
-                              Open this technique in 3D map (web) ↗
+                              Open technique in 3D map
                             </Text>
                           </Pressable>
+                              </>
+                            );
+                          })()}
                         </View>
                       )}
                     </View>
@@ -1220,6 +1873,10 @@ function PositionRow({
                   edge.destination,
                 );
                 const rowStatus = progress[progressKey] ?? 'none';
+                const transitionMatchKey = `${selectedRole}|${edge.label}|${edge.destination}`;
+                const isQueryMatch =
+                  queryActive &&
+                  queryMatchIndex.transitionKeys.has(transitionMatchKey);
                 return (
                   <Pressable
                     key={`${edge.label}|${edge.destination}|${i}`}
@@ -1229,10 +1886,14 @@ function PositionRow({
                       rowStatus === 'drilling' && styles.rowAccentDrilling,
                       rowStatus === 'learned' && styles.rowAccentLearned,
                       rowStatus === 'tracking' && styles.rowAccentTracking,
+                      isQueryMatch && styles.rowAccentSearchMatch,
                     ]}
                     disabled={!navigable}
                     onPress={() => {
-                      if (navigable) onRequestFocus(edge.destination);
+                      if (navigable) {
+                        onDismissCoachRecommendation();
+                        onRequestFocus(edge.destination);
+                      }
                     }}>
                     <Text style={styles.transitionLabel}>{edge.label}</Text>
                     <Text style={styles.transitionArrow}>→</Text>
@@ -1243,6 +1904,7 @@ function PositionRow({
                       ]}>
                       {edge.destination}
                     </Text>
+                    <NoteIndicator progressKey={progressKey} />
                     <ProgressPill progressKey={progressKey} />
                   </Pressable>
                 );
@@ -1295,12 +1957,16 @@ function PositionRow({
                       rowStatus === 'learned' && styles.rowAccentLearned,
                       rowStatus === 'tracking' && styles.rowAccentTracking,
                     ]}
-                    onPress={() => onRequestFocus(edge.sourceName)}>
+                    onPress={() => {
+                      onDismissCoachRecommendation();
+                      onRequestFocus(edge.sourceName);
+                    }}>
                     <Text style={styles.inboundSource}>
                       {edge.sourceName}
                     </Text>
                     <Text style={styles.inboundArrow}>←</Text>
                     <Text style={styles.inboundLabel}>{edge.label}</Text>
+                    <NoteIndicator progressKey={progressKey} />
                     <ProgressPill progressKey={progressKey} />
                   </Pressable>
                 );
@@ -1310,9 +1976,8 @@ function PositionRow({
 
           {/* Position-level full-map bridge. Always rendered on
               expanded positions so the separation between mobile
-              Reference and the full web 3D map feels intentional,
-              not like a missing feature. Copy explicitly says "web"
-              so users don't expect an in-app 3D renderer. */}
+              Reference and the full 3D map feels intentional,
+              not like a missing feature. */}
           <Pressable
             style={styles.positionBridgeBtn}
             onPress={() =>
@@ -1322,7 +1987,7 @@ function PositionRow({
               })
             }>
             <Text style={styles.positionBridgeBtnText}>
-              Open {position.name} in 3D map (web) ↗
+              Open {position.name} in 3D map
             </Text>
           </Pressable>
         </View>
@@ -1339,6 +2004,13 @@ function SectionBlock({
   onRequestFocus,
   registerOuterRef,
   progressFilter,
+  query,
+  coachingFocus,
+  coachRecommendedTarget,
+  onDismissCoachRecommendation,
+  onConsumeCoachingFocus,
+  currentBelt,
+  videoByTargetId,
 }: {
   section: ReferenceSection;
   filter: string;
@@ -1347,6 +2019,17 @@ function SectionBlock({
   onRequestFocus: (destination: string) => void;
   registerOuterRef: (name: string, ref: RNView | null) => void;
   progressFilter: ProgressStatus | null;
+  /** Same value as `filter` — passed through to PositionRow so
+   *  the row can run the structured search-match index for
+   *  per-row highlights and role-pivot logic. Kept as a separate
+   *  prop name purely for clarity at the call site. */
+  query: string;
+  coachingFocus: CoachingTechniqueFocus | null;
+  coachRecommendedTarget: CoachRecommendedTechniqueTarget | null;
+  onDismissCoachRecommendation: () => void;
+  onConsumeCoachingFocus: () => void;
+  currentBelt: BeltLevel | null;
+  videoByTargetId: ReadonlyMap<string, VideoAttachmentSummary>;
 }) {
   // Read the progress store here so filter-induced visibility
   // checks react when a user marks/unmarks an item while a
@@ -1355,10 +2038,14 @@ function SectionBlock({
   const progress = useReferenceProgressStore((s) => s.progress);
 
   const filtered = useMemo(() => {
-    const q = filter.trim().toLowerCase();
     return section.positions.filter((p) => {
       if (builtOutOnly && !p.built_out) return false;
-      if (q && !p.name.toLowerCase().includes(q)) return false;
+      // Search match — now content-aware. Falls through to
+      // positionMatchesQuery which checks position name AND every
+      // catalogued technique/transition label inside via the
+      // precomputed POSITION_SEARCH_HAYSTACK. Empty filter always
+      // passes.
+      if (!positionMatchesQuery(p.name, filter)) return false;
       if (progressFilter) {
         if (!positionHasMatchingProgress(p, progress, progressFilter)) {
           return false;
@@ -1368,6 +2055,37 @@ function SectionBlock({
     });
   }, [section.positions, filter, builtOutOnly, progressFilter, progress]);
 
+  // Section-scope aggregate progress counts. Single prefix-scan
+  // pass over the persisted progress map, scoped to keys rooted
+  // in this section (technique + outbound transition keys both
+  // start with `<kind>|<sectionLabel>|`). Drives the small
+  // colored count strip in the section header so users get a
+  // mid-tier readout between the global summary strip at the top
+  // of the screen and the per-position chips inside each card.
+  // The per-section view is intentionally NOT filter-aware — it
+  // reflects what you've flagged in the whole section, not what's
+  // currently visible under the active query/filter, so the
+  // numbers stay stable as you peel filters on and off and a
+  // hidden card never silently subtracts from the section's
+  // sense of "where am I invested".
+  const sectionProgressCounts = useMemo(() => {
+    const techPrefix = `tech|${section.label}|`;
+    const txPrefix = `tx|${section.label}|`;
+    const counts = { drilling: 0, learned: 0, tracking: 0 };
+    for (const key of Object.keys(progress)) {
+      if (!key.startsWith(techPrefix) && !key.startsWith(txPrefix)) continue;
+      const v = progress[key];
+      if (v === 'drilling') counts.drilling++;
+      else if (v === 'learned') counts.learned++;
+      else if (v === 'tracking') counts.tracking++;
+    }
+    return counts;
+  }, [progress, section.label]);
+  const sectionProgressTotal =
+    sectionProgressCounts.drilling +
+    sectionProgressCounts.learned +
+    sectionProgressCounts.tracking;
+
   if (filtered.length === 0) return null;
 
   return (
@@ -1376,6 +2094,36 @@ function SectionBlock({
         <View style={{ flex: 1 }}>
           <Text style={styles.sectionTitle}>{section.label}</Text>
           <Text style={styles.sectionDescription}>{section.description}</Text>
+          {/* Section-level progress strip — small colored count
+              chips below the description, mirroring the per-
+              position chip language. Only renders when at least
+              one item in the section has been flagged so brand-
+              new sections stay quiet. Each chip shows only when
+              its status has at least one entry, so a section
+              you've only drilled (no learned/tracking) shows a
+              single blue dot instead of three pills with two
+              zeroes. Completes the tiered progress visibility
+              model: top-of-screen summary → section header →
+              position header → row pill. */}
+          {sectionProgressTotal > 0 && (
+            <View style={styles.sectionProgressStrip}>
+              {sectionProgressCounts.drilling > 0 && (
+                <Text style={styles.sectionProgressDrilling}>
+                  ● {sectionProgressCounts.drilling} drilling
+                </Text>
+              )}
+              {sectionProgressCounts.learned > 0 && (
+                <Text style={styles.sectionProgressLearned}>
+                  ● {sectionProgressCounts.learned} learned
+                </Text>
+              )}
+              {sectionProgressCounts.tracking > 0 && (
+                <Text style={styles.sectionProgressTracking}>
+                  ● {sectionProgressCounts.tracking} tracking
+                </Text>
+              )}
+            </View>
+          )}
         </View>
         <View style={styles.sectionCountBlock}>
           <Text style={styles.sectionCountValue}>{filtered.length}</Text>
@@ -1386,15 +2134,22 @@ function SectionBlock({
       </View>
       <View style={styles.positionsList}>
         {filtered.map((p) => (
-          <PositionRow
-            key={p.name}
-            position={p}
-            sectionLabel={section.label}
-            focusTarget={focusTarget}
-            onRequestFocus={onRequestFocus}
-            registerOuterRef={registerOuterRef}
-            progressFilter={progressFilter}
-          />
+        <PositionRow
+          key={p.name}
+          position={p}
+          sectionLabel={section.label}
+          focusTarget={focusTarget}
+          onRequestFocus={onRequestFocus}
+          registerOuterRef={registerOuterRef}
+          progressFilter={progressFilter}
+          query={query}
+          coachingFocus={coachingFocus}
+          coachRecommendedTarget={coachRecommendedTarget}
+          onDismissCoachRecommendation={onDismissCoachRecommendation}
+          onConsumeCoachingFocus={onConsumeCoachingFocus}
+          currentBelt={currentBelt}
+          videoByTargetId={videoByTargetId}
+        />
         ))}
       </View>
     </View>
@@ -1402,6 +2157,25 @@ function SectionBlock({
 }
 
 export default function ReferenceScreen() {
+  const { profile } = useProfile();
+  const currentBelt = isBeltLevel(profile?.current_belt) ? profile.current_belt : null;
+  const { byTargetId: videoByTargetId } = useVideoAttachmentSummaries(currentBelt);
+  const insets = useSafeAreaInsets();
+  const params = useLocalSearchParams<{
+    focus?: string | string[];
+    focusRole?: string | string[];
+    focusHeading?: string | string[];
+    focusTechnique?: string | string[];
+    focusReason?: string | string[];
+    focusSource?: string | string[];
+    focusNonce?: string | string[];
+  }>();
+  const consumedRouteFocusRef = useRef<string | null>(null);
+  const [coachingFocus, setCoachingFocus] = useState<CoachingTechniqueFocus | null>(
+    null,
+  );
+  const [coachRecommendedTarget, setCoachRecommendedTarget] =
+    useState<CoachRecommendedTechniqueTarget | null>(null);
   const [query, setQuery] = useState('');
   // Built-out filter — when on, hides positions that are not yet
   // built out on the website. Reuses the same built_out flag the
@@ -1434,6 +2208,8 @@ export default function ReferenceScreen() {
   // on both source/destination UI surfaces never double-count in
   // the screen-top strip.
   const progressMap = useReferenceProgressStore((s) => s.progress);
+  const notesMap = useReferenceProgressStore((s) => s.notes);
+  const updatedAtMap = useReferenceProgressStore((s) => s.updatedAt);
   const importProgress = useReferenceProgressStore((s) => s.importProgress);
 
   // Import pane state. `importPaneOpen` gates visibility of the
@@ -1482,6 +2258,7 @@ export default function ReferenceScreen() {
 
   const handleRequestFocus = useCallback(
     (destination: string) => {
+      setCoachRecommendedTarget(null);
       // Filter / search escape hatch — before kicking off the jump,
       // check whether the destination card would actually be mounted
       // under the current filter/search state. If not, clear the
@@ -1507,19 +2284,38 @@ export default function ReferenceScreen() {
       }
       const q = query.trim().toLowerCase();
       const hiddenBySearch =
-        q.length > 0 && !destination.toLowerCase().includes(q);
+        q.length > 0 && !positionMatchesQuery(destination, query);
       const hiddenByBuiltOut = builtOutOnly && !targetPos.built_out;
+      const hiddenByProgress =
+        progressFilter != null &&
+        !positionHasMatchingProgress(targetPos, progressMap, progressFilter);
       let escapeNote: string | null = null;
-      if (hiddenBySearch && hiddenByBuiltOut) {
+      if (hiddenBySearch && hiddenByBuiltOut && hiddenByProgress) {
+        setQuery('');
+        setBuiltOutOnly(false);
+        setProgressFilter(null);
+        escapeNote = `Cleared search, Built-out filter, and progress filter to reach ${destination}.`;
+      } else if (hiddenBySearch && hiddenByBuiltOut) {
         setQuery('');
         setBuiltOutOnly(false);
         escapeNote = `Cleared search and turned off Built-out filter to reach ${destination}.`;
+      } else if (hiddenBySearch && hiddenByProgress) {
+        setQuery('');
+        setProgressFilter(null);
+        escapeNote = `Cleared search and progress filter to reach ${destination}.`;
+      } else if (hiddenByBuiltOut && hiddenByProgress) {
+        setBuiltOutOnly(false);
+        setProgressFilter(null);
+        escapeNote = `Turned off Built-out filter and cleared progress filter to reach ${destination}.`;
       } else if (hiddenBySearch) {
         setQuery('');
         escapeNote = `Cleared search to reach ${destination}.`;
       } else if (hiddenByBuiltOut) {
         setBuiltOutOnly(false);
         escapeNote = `Turned off Built-out filter to reach ${destination}.`;
+      } else if (hiddenByProgress) {
+        setProgressFilter(null);
+        escapeNote = `Cleared progress filter to reach ${destination}.`;
       }
       if (escapeNote) setFilterEscapeNote(escapeNote);
 
@@ -1535,8 +2331,81 @@ export default function ReferenceScreen() {
       setFocusTarget(null);
       setTimeout(() => setFocusTarget(destination), jumpDelay);
     },
-    [query, builtOutOnly],
+    [query, builtOutOnly, progressFilter, progressMap],
   );
+
+  useEffect(() => {
+    const routeFocus = Array.isArray(params.focus)
+      ? params.focus[0]
+      : params.focus;
+    const routeRole = Array.isArray(params.focusRole)
+      ? params.focusRole[0]
+      : params.focusRole;
+    const routeHeading = Array.isArray(params.focusHeading)
+      ? params.focusHeading[0]
+      : params.focusHeading;
+    const routeTechnique = Array.isArray(params.focusTechnique)
+      ? params.focusTechnique[0]
+      : params.focusTechnique;
+    const routeReason = Array.isArray(params.focusReason)
+      ? params.focusReason[0]
+      : params.focusReason;
+    const routeSource = Array.isArray(params.focusSource)
+      ? params.focusSource[0]
+      : params.focusSource;
+    const routeNonce = Array.isArray(params.focusNonce)
+      ? params.focusNonce[0]
+      : params.focusNonce;
+    const routeKey = [
+      routeFocus ?? '',
+      routeRole ?? '',
+      routeHeading ?? '',
+      routeTechnique ?? '',
+      routeNonce ?? '',
+    ].join('|');
+    if (!routeFocus) {
+      consumedRouteFocusRef.current = null;
+      return;
+    }
+    if (routeKey === consumedRouteFocusRef.current) return;
+    consumedRouteFocusRef.current = routeKey;
+    setCoachingFocus({
+      position: routeFocus,
+      role: routeRole ?? null,
+      heading: routeHeading ?? null,
+      technique: routeTechnique ?? null,
+    });
+    handleRequestFocus(routeFocus);
+    if (routeSource === 'coach') {
+      setCoachRecommendedTarget({
+        position: routeFocus,
+        role: routeRole ?? null,
+        heading: routeHeading ?? null,
+        technique: routeTechnique ?? null,
+        reason: routeReason ?? null,
+      });
+    } else {
+      setCoachRecommendedTarget(null);
+    }
+    router.setParams({
+      focus: undefined,
+      focusRole: undefined,
+      focusHeading: undefined,
+      focusTechnique: undefined,
+      focusReason: undefined,
+      focusSource: undefined,
+      focusNonce: undefined,
+    });
+  }, [
+    params.focus,
+    params.focusRole,
+    params.focusHeading,
+    params.focusTechnique,
+    params.focusReason,
+    params.focusSource,
+    params.focusNonce,
+    handleRequestFocus,
+  ]);
 
   // Auto-dismiss the filter-escape note after 4.5s so it never
   // becomes permanent visual noise. The timer is scoped to each
@@ -1562,6 +2431,8 @@ export default function ReferenceScreen() {
       progressMap,
       progressCounts,
       progressFilter,
+      notesMap,
+      updatedAtMap,
     );
     try {
       await Share.share({
@@ -1573,7 +2444,7 @@ export default function ReferenceScreen() {
       // (no share sheet available on device) which is rare on
       // iOS/Android simulators.
     }
-  }, [progressMap, progressCounts, progressFilter]);
+  }, [progressMap, progressCounts, progressFilter, notesMap, updatedAtMap]);
 
   // Import open/close/apply handlers. The user-facing flow is:
   //   1. Tap "Import ↓" on the summary strip → opens inline
@@ -1587,9 +2458,25 @@ export default function ReferenceScreen() {
   //      conflict, other keys survive), shows a confirmation
   //      count, auto-closes the pane after 3.5s.
   // Close-without-applying leaves the pastebox state intact so
-  // the user can reopen without re-pasting.
+  // the user can reopen without re-pasting, but resets the
+  // destructive replace toggle so reopening always defaults to
+  // the safer merge path.
   const handleToggleImport = useCallback(() => {
-    setImportPaneOpen((v) => !v);
+    setImportPaneOpen((v) => {
+      if (v) setImportReplaceMode(false);
+      else setImportResultNote(null);
+      return !v;
+    });
+  }, []);
+
+  const handleImportTextChange = useCallback((text: string) => {
+    setImportText(text);
+    setImportResultNote(null);
+  }, []);
+
+  const handleToggleImportReplaceMode = useCallback(() => {
+    setImportReplaceMode((v) => !v);
+    setImportResultNote(null);
   }, []);
 
   /**
@@ -1599,20 +2486,28 @@ export default function ReferenceScreen() {
    * completion behaviour (result note, state cleanup, pane
    * close). Result note wording adapts to the mode so "replaced
    * local progress" reads clearly vs "merged on top of existing".
+   * Now passes the FULL parsed payload through to the store so
+   * v2 imports carry notes + timestamps; v1 payloads still work
+   * because the store reads `payload.notes` / `payload.updated_at`
+   * defensively (both undefined in v1).
    */
   const commitImport = useCallback(
-    (
-      entries: Record<string, ProgressStatus>,
-      mode: 'merge' | 'replace',
-    ) => {
-      const result = importProgress(entries, mode);
+    (payload: ProgressExportPayload, mode: 'merge' | 'replace') => {
+      const result = importProgress(payload, mode);
+      // Notes-included suffix — only mention when the v2 payload
+      // actually carried notes, so v1 payload imports still read
+      // exactly the same as before this batch.
+      const notesSuffix =
+        result.notesAdded > 0
+          ? ` + ${result.notesAdded} note${result.notesAdded === 1 ? '' : 's'}`
+          : '';
       if (mode === 'replace') {
         setImportResultNote(
-          `Replaced local progress — ${result.added} entries now tracked (${result.skipped} skipped).`,
+          `Replaced local progress — ${result.added} entries now tracked${notesSuffix} (${result.skipped} skipped).`,
         );
       } else {
         setImportResultNote(
-          `Imported ${result.added} new + ${result.updated} updated (${result.skipped} skipped).`,
+          `Imported ${result.added} new + ${result.updated} updated${notesSuffix} (${result.skipped} skipped).`,
         );
       }
       setImportText('');
@@ -1656,14 +2551,14 @@ export default function ReferenceScreen() {
           {
             text: 'Replace',
             style: 'destructive',
-            onPress: () => commitImport(parsed.entries, 'replace'),
+            onPress: () => commitImport(parsed, 'replace'),
           },
         ],
       );
       return;
     }
 
-    commitImport(parsed.entries, 'merge');
+    commitImport(parsed, 'merge');
   }, [importText, importReplaceMode, totalProgressItems, commitImport]);
 
   // Auto-dismiss the import result confirmation after 4.5s so
@@ -1677,49 +2572,82 @@ export default function ReferenceScreen() {
 
   // Whenever focusTarget changes, measureLayout the destination
   // card's native ref against the scroll container and scrollTo
-  // its offset (with an 80px header breathing room). The inner
-  // setTimeout gives the destination card's expand-on-focus effect
-  // a tick to re-render before we measure; otherwise the newly-
-  // expanded content would shift the position we scrolled to.
+  // its offset (with an 80px header breathing room). The target
+  // card may expand in a sibling effect first, so we wait until
+  // after layout has committed (double RAF) and retry a couple of
+  // times if measureLayout still races the expansion. This keeps
+  // recent-activity / hub / transition jumps landing reliably
+  // without changing the visible jump behavior.
   useEffect(() => {
     if (!focusTarget) return;
-    const cardRef = positionRefs.current.get(focusTarget);
-    const sv = scrollViewRef.current;
-    if (!cardRef || !sv) return;
-    const scrollNode = findNodeHandle(sv);
-    if (scrollNode == null) return;
-    const timer = setTimeout(() => {
+    let cancelled = false;
+    let frameA: number | null = null;
+    let frameB: number | null = null;
+
+    const measureAndScroll = (attempt: number) => {
+      if (cancelled) return;
+      const cardRef = positionRefs.current.get(focusTarget);
+      const sv = scrollViewRef.current;
+      if (!cardRef || !sv) return;
+      const scrollContainerRef =
+        typeof sv.getNativeScrollRef === 'function'
+          ? sv.getNativeScrollRef()
+          : null;
+      if (!scrollContainerRef) return;
       try {
         cardRef.measureLayout(
-          scrollNode as unknown as number,
+          scrollContainerRef,
           (_x, y) => {
+            if (cancelled) return;
             sv.scrollTo({
               y: Math.max(0, y - 80),
               animated: true,
             });
           },
           () => {
-            // measureLayout can reject if the destination card has
-            // been unmounted mid-navigation — silent swallow is
-            // acceptable since the card's own focus effect still
-            // handled the expand+flash fallback.
+            // Layout may still be settling after the target card
+            // expanded. Retry on the next frame a couple of times
+            // before giving up silently.
+            if (attempt < 2 && !cancelled) {
+              frameA = requestAnimationFrame(() =>
+                measureAndScroll(attempt + 1),
+              );
+            }
           },
         );
       } catch {
-        // Defensive — never let a scroll failure crash Reference.
+        if (attempt < 2 && !cancelled) {
+          frameA = requestAnimationFrame(() =>
+            measureAndScroll(attempt + 1),
+          );
+        }
       }
-    }, 120);
-    return () => clearTimeout(timer);
+    };
+
+    frameA = requestAnimationFrame(() => {
+      frameB = requestAnimationFrame(() => {
+        measureAndScroll(0);
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      if (frameA != null) cancelAnimationFrame(frameA);
+      if (frameB != null) cancelAnimationFrame(frameB);
+    };
   }, [focusTarget]);
 
   const totalFiltered = useMemo(() => {
-    const q = query.trim().toLowerCase();
     return REFERENCE_SECTIONS.reduce(
       (acc, s) =>
         acc +
         s.positions.filter((p) => {
           if (builtOutOnly && !p.built_out) return false;
-          if (q && !p.name.toLowerCase().includes(q)) return false;
+          // Mirror SectionBlock's content-aware filter so the
+          // active-filter banner's count agrees with what actually
+          // renders below — if a position only matches because of
+          // a technique inside, it still counts here.
+          if (!positionMatchesQuery(p.name, query)) return false;
           if (progressFilter) {
             if (!positionHasMatchingProgress(p, progressMap, progressFilter)) {
               return false;
@@ -1731,18 +2659,90 @@ export default function ReferenceScreen() {
     );
   }, [query, builtOutOnly, progressFilter, progressMap]);
 
+  /**
+   * Recent activity descriptor — one entry per recently-touched
+   * progress key, sorted newest first, capped at RECENT_ACTIVITY_LIMIT.
+   * Drives the Recent activity strip below the progress summary
+   * row. Each entry carries everything the chip needs to render
+   * without re-deriving (parsed key parts, status, target position
+   * for the jump, formatted relative time).
+   *
+   * Built from `updatedAtMap` which is the union of "any key with
+   * a status" and "any key with a note" — so a user who attaches
+   * a note to an unflagged technique still sees that activity
+   * surface here. Stale keys (parseProgressKey returns null) are
+   * silently dropped so a malformed key from a corrupted import
+   * never crashes the strip.
+   *
+   * Total dependency footprint: progress map, notes map, updated_at
+   * map. The current-time component (which would otherwise tick
+   * every minute and force re-renders) is intentionally NOT a
+   * dependency — the relative time string is recomputed on each
+   * full screen render, which happens often enough during normal
+   * use that "5m ago" stays accurate without a setInterval.
+   */
+  const recentActivity = useMemo(() => {
+    const RECENT_ACTIVITY_LIMIT = 5;
+    type Entry = {
+      key: string;
+      iso: string;
+      ts: number;
+      status: ProgressStatus | null;
+      hasNote: boolean;
+      jumpTo: string;
+      title: string;
+      subtitle: string;
+    };
+    const entries: Entry[] = [];
+    for (const [key, iso] of Object.entries(updatedAtMap)) {
+      if (typeof iso !== 'string' || iso.length === 0) continue;
+      const ts = Date.parse(iso);
+      if (!Number.isFinite(ts)) continue;
+      const parsed = parseProgressKey(key);
+      if (!parsed) continue;
+      const status = (progressMap[key] as ProgressStatus | undefined) ?? null;
+      const hasNote =
+        typeof notesMap[key] === 'string' && notesMap[key]!.length > 0;
+      // Skip entries that have no status AND no note — these are
+      // ghosts (timestamps left behind by a bug or by a clear-and-
+      // resave race). Defensive but cheap.
+      if (!status && !hasNote) continue;
+      let jumpTo = '';
+      let title = '';
+      let subtitle = '';
+      if (parsed.kind === 'tech') {
+        jumpTo = parsed.position;
+        title = parsed.label;
+        subtitle = `${parsed.position} · ${parsed.heading}`;
+      } else {
+        jumpTo = parsed.sourcePosition;
+        title = `${parsed.label} → ${parsed.destination}`;
+        subtitle = parsed.sourcePosition;
+      }
+      entries.push({
+        key,
+        iso,
+        ts,
+        status,
+        hasNote,
+        jumpTo,
+        title,
+        subtitle,
+      });
+    }
+    entries.sort((a, b) => b.ts - a.ts);
+    return entries.slice(0, RECENT_ACTIVITY_LIMIT);
+  }, [updatedAtMap, progressMap, notesMap]);
+
   return (
+    <View style={styles.container}>
     <ScrollView
       ref={scrollViewRef}
-      style={styles.container}
+      style={styles.scrollView}
       contentContainerStyle={styles.content}
       keyboardShouldPersistTaps="handled">
       <View style={styles.header}>
         <Text style={styles.heading}>Reference</Text>
-        <Text style={styles.subtitle}>
-          Canonical positions and techniques from the Lauburu Grappling Map.
-          The interactive 3D graph opens in your browser.
-        </Text>
       </View>
 
       {/* Summary strip */}
@@ -1805,13 +2805,23 @@ export default function ReferenceScreen() {
         </View>
       )}
 
-      {/* Search */}
+      {/* Search — now content-aware. Matches against position
+          names AND every catalogued technique label / transition
+          label / transition destination via the precomputed
+          POSITION_SEARCH_HAYSTACK at module load. A query like
+          "armbar" surfaces every position whose corpus mentions
+          armbar, auto-expands those cards, pivots to the role
+          that has the match, and highlights the matching rows
+          with a gold search-match accent. */}
       <TextInput
         style={styles.search}
-        placeholder="Search positions…"
+        placeholder="Search positions or techniques…"
         placeholderTextColor="#666"
         value={query}
-        onChangeText={setQuery}
+        onChangeText={(value) => {
+          setCoachRecommendedTarget(null);
+          setQuery(value);
+        }}
         autoCorrect={false}
         autoCapitalize="none"
       />
@@ -1821,7 +2831,10 @@ export default function ReferenceScreen() {
           this row focuses just on the toggle itself. */}
       <View style={styles.filterRow}>
         <Pressable
-          onPress={() => setBuiltOutOnly((v) => !v)}
+          onPress={() => {
+            setCoachRecommendedTarget(null);
+            setBuiltOutOnly((v) => !v);
+          }}
           style={[
             styles.filterPill,
             builtOutOnly && styles.filterPillActive,
@@ -1860,9 +2873,10 @@ export default function ReferenceScreen() {
       {totalProgressItems > 0 && (
         <View style={styles.progressSummaryStrip}>
           <Pressable
-            onPress={() =>
-              setProgressFilter((v) => (v === 'drilling' ? null : 'drilling'))
-            }
+            onPress={() => {
+              setCoachRecommendedTarget(null);
+              setProgressFilter((v) => (v === 'drilling' ? null : 'drilling'));
+            }}
             style={[
               styles.progressSummaryChip,
               progressFilter === 'drilling' &&
@@ -1878,9 +2892,10 @@ export default function ReferenceScreen() {
             <Text style={styles.progressSummaryLabel}>drilling</Text>
           </Pressable>
           <Pressable
-            onPress={() =>
-              setProgressFilter((v) => (v === 'learned' ? null : 'learned'))
-            }
+            onPress={() => {
+              setCoachRecommendedTarget(null);
+              setProgressFilter((v) => (v === 'learned' ? null : 'learned'));
+            }}
             style={[
               styles.progressSummaryChip,
               progressFilter === 'learned' &&
@@ -1896,9 +2911,10 @@ export default function ReferenceScreen() {
             <Text style={styles.progressSummaryLabel}>learned</Text>
           </Pressable>
           <Pressable
-            onPress={() =>
-              setProgressFilter((v) => (v === 'tracking' ? null : 'tracking'))
-            }
+            onPress={() => {
+              setCoachRecommendedTarget(null);
+              setProgressFilter((v) => (v === 'tracking' ? null : 'tracking'));
+            }}
             style={[
               styles.progressSummaryChip,
               progressFilter === 'tracking' &&
@@ -1916,7 +2932,10 @@ export default function ReferenceScreen() {
           <View style={styles.progressSummaryRightGroup}>
             {progressFilter && (
               <Pressable
-                onPress={() => setProgressFilter(null)}
+                onPress={() => {
+                  setCoachRecommendedTarget(null);
+                  setProgressFilter(null);
+                }}
                 style={styles.progressSummaryClearBtn}>
                 <Text style={styles.progressSummaryClearText}>
                   Show all ×
@@ -1979,7 +2998,7 @@ export default function ReferenceScreen() {
             <TextInput
               style={styles.importPaneInput}
               value={importText}
-              onChangeText={setImportText}
+              onChangeText={handleImportTextChange}
               placeholder="Paste export here…"
               placeholderTextColor="#555"
               multiline
@@ -2012,7 +3031,7 @@ export default function ReferenceScreen() {
                 Alert.alert confirmation instead of the one-tap
                 merge path. */}
             <Pressable
-              onPress={() => setImportReplaceMode((v) => !v)}
+              onPress={handleToggleImportReplaceMode}
               style={styles.importReplaceRow}>
               <View
                 style={[
@@ -2061,7 +3080,7 @@ export default function ReferenceScreen() {
               </Pressable>
               <Pressable
                 onPress={() => {
-                  setImportText('');
+                  handleImportTextChange('');
                 }}
                 style={styles.importPaneClearBtn}>
                 <Text style={styles.importPaneClearBtnText}>Clear</Text>
@@ -2084,6 +3103,70 @@ export default function ReferenceScreen() {
             Import progress ↓
           </Text>
         </Pressable>
+      )}
+
+      {/* Recent activity strip — last N keys touched (status set
+          OR note saved), newest first. Each chip shows the
+          technique label, its position context, the status, a
+          note glyph if annotated, and a relative timestamp. Tap
+          a chip to jump to the source position via the same
+          handleRequestFocus pipeline used by Top hubs and
+          transitions, with the filter-escape hatch automatically
+          clearing search/Built-out only when needed. Hidden
+          entirely when there's no recent activity yet so brand-
+          new users don't see an empty row. */}
+      {recentActivity.length > 0 && (
+        <View style={styles.recentActivityBlock}>
+          <Text style={styles.recentActivityLabel}>
+            Recent activity
+            <Text style={styles.recentActivityLabelHint}>
+              {'  '}last {recentActivity.length} touched
+            </Text>
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.recentActivityRow}>
+            {recentActivity.map((entry) => (
+              <Pressable
+                key={entry.key}
+                style={styles.recentActivityChip}
+                onPress={() => handleRequestFocus(entry.jumpTo)}>
+                <View style={styles.recentActivityChipHeaderRow}>
+                  {entry.status && (
+                    <Text
+                      style={[
+                        styles.recentActivityStatusDot,
+                        entry.status === 'drilling' && { color: '#7fb8ff' },
+                        entry.status === 'learned' && { color: '#4ade80' },
+                        entry.status === 'tracking' && { color: '#d4e157' },
+                      ]}>
+                      ●
+                    </Text>
+                  )}
+                  {entry.hasNote && (
+                    <Text style={styles.recentActivityNoteGlyph}>✎</Text>
+                  )}
+                  <Text
+                    style={styles.recentActivityWhen}
+                    numberOfLines={1}>
+                    {formatRelativeTime(entry.iso)}
+                  </Text>
+                </View>
+                <Text
+                  style={styles.recentActivityTitle}
+                  numberOfLines={1}>
+                  {entry.title}
+                </Text>
+                <Text
+                  style={styles.recentActivitySubtitle}
+                  numberOfLines={1}>
+                  {entry.subtitle}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
       )}
 
       {/* Import result note — transient confirmation of added /
@@ -2199,6 +3282,8 @@ export default function ReferenceScreen() {
         </View>
       )}
 
+      <SyllabusEntryCard />
+
       {/* Sections */}
       {REFERENCE_SECTIONS.map((s) => (
         <SectionBlock
@@ -2210,43 +3295,74 @@ export default function ReferenceScreen() {
           onRequestFocus={handleRequestFocus}
           registerOuterRef={registerOuterRef}
           progressFilter={progressFilter}
+          query={query}
+          coachingFocus={coachingFocus}
+          coachRecommendedTarget={coachRecommendedTarget}
+          onDismissCoachRecommendation={() => setCoachRecommendedTarget(null)}
+          onConsumeCoachingFocus={() => setCoachingFocus(null)}
+          currentBelt={currentBelt}
+          videoByTargetId={videoByTargetId}
         />
       ))}
 
-      {/* Full-map bridge footer — stops pretending the 3D map is a
-          week away and makes the separation intentional. Copy is
-          explicit: the 3D graph is a web experience, and tapping
-          Open launches it in the system browser. */}
+      {/* Full-map bridge footer — keeps the full graph as a dedicated
+          embedded experience without collapsing Reference into it. */}
       <View style={styles.footerCard}>
-        <Text style={styles.footerTitle}>Interactive 3D map (web)</Text>
+        <Text style={styles.footerTitle}>Interactive 3D map</Text>
         <Text style={styles.footerBody}>
           Mobile Reference is the fast lookup view — positions,
           techniques, role breakdowns, and built-out filters. The
           full interactive 3D graph (transitions, position physics,
-          filter modes, attached video playback) is a browser
-          experience that opens outside the app in your default
-          browser.
+          filter modes) opens as a dedicated in-app scene.
         </Text>
         <Pressable
           style={styles.footerBridgeBtn}
           onPress={() => openFullMap({})}>
           <Text style={styles.footerBridgeBtnText}>
-            Open 3D map in browser ↗
+            Open 3D map
           </Text>
         </Pressable>
       </View>
     </ScrollView>
+    <Pressable
+      style={styles.floatingMapPill}
+      onPress={() => router.navigate({ pathname: '/(tabs)/map-3d' })}>
+      <Text style={styles.floatingMapPillText}>3D Map</Text>
+    </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { padding: 20, gap: 16, paddingBottom: 40 },
+  scrollView: { flex: 1 },
+  content: { padding: 20, gap: 16, paddingBottom: 60 },
 
   header: { gap: 4 },
   heading: { fontSize: 28, fontWeight: '700' },
   subtitle: { fontSize: 14, opacity: 0.6 },
 
+  floatingMapPill: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    height: 36,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 18,
+    backgroundColor: 'rgba(212,225,87,0.92)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  floatingMapPillText: {
+    color: '#0b0b0b',
+    fontSize: 12,
+    fontWeight: '700',
+  },
   summaryStrip: {
     flexDirection: 'row',
     gap: 10,
@@ -2363,6 +3479,37 @@ const styles = StyleSheet.create({
   sectionCountBlock: { alignItems: 'center', minWidth: 46 },
   sectionCountValue: { fontSize: 18, fontWeight: '700', color: '#d4e157' },
   sectionCountLabel: { fontSize: 10, opacity: 0.4 },
+
+  // Section-level progress strip — sits under the section
+  // description, above the positions list. Horizontal row of
+  // colored count chips that mirrors the per-position chip
+  // language one tier up. Slight top margin pulls it away from
+  // the description without competing with the count block on
+  // the right.
+  sectionProgressStrip: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginTop: 6,
+  },
+  sectionProgressDrilling: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#7fb8ff',
+    opacity: 0.9,
+  },
+  sectionProgressLearned: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#4ade80',
+    opacity: 0.9,
+  },
+  sectionProgressTracking: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#d4e157',
+    opacity: 0.9,
+  },
 
   positionsList: { gap: 2 },
   positionWrap: {
@@ -2565,6 +3712,178 @@ const styles = StyleSheet.create({
     borderLeftColor: '#d4e157',
     backgroundColor: 'rgba(212,225,87,0.06)',
   },
+  // Search-match accent — gold left rail + warm gold tint, applied
+  // AFTER the progress accent in the style array so search matches
+  // visually dominate while the search is active. The progress
+  // pill on the right remains visible so the persistent progress
+  // state isn't lost — just the row-level rail temporarily reads
+  // as "this is your search hit" instead of "this is your drilling
+  // state". When the user clears the query the rail reverts.
+  rowAccentSearchMatch: {
+    borderLeftColor: '#facc15',
+    backgroundColor: 'rgba(250,204,21,0.12)',
+  },
+  rowAccentCoachingTarget: {
+    borderLeftColor: '#ffd866',
+    backgroundColor: 'rgba(255,216,102,0.16)',
+  },
+
+  // Note-attached indicator — small pencil glyph rendered between
+  // the row's main label and the ProgressPill on any row whose
+  // progressKey has a non-empty note in the store. Subtly tinted
+  // so it reads as "metadata" rather than competing with status
+  // colour.
+  noteIndicator: {
+    fontSize: 12,
+    color: '#facc15',
+    opacity: 0.8,
+    marginLeft: 4,
+    marginRight: -2,
+  },
+  coachRecommendedBlock: {
+    alignSelf: 'stretch',
+    marginBottom: 6,
+    gap: 4,
+  },
+  coachRecommendedBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,216,102,0.14)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,216,102,0.3)',
+  },
+  coachRecommendedBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#ffd866',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  coachRecommendedReason: {
+    fontSize: 12,
+    lineHeight: 17,
+    color: 'rgba(255,216,102,0.92)',
+    opacity: 0.9,
+  },
+
+  // Inline note editor — sits inside the technique-row expanded
+  // detail block alongside the breadcrumb and bridge button.
+  // Header row for the "Note" label + dirty hint + clear button.
+  // Input is multiline, top-aligned, and uses a darker fill so
+  // it reads as a distinct interactive surface inside the already-
+  // dark detail card.
+  noteEditorWrap: {
+    marginTop: 4,
+    gap: 4,
+  },
+  noteEditorHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  noteEditorLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#facc15',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  noteEditorDirtyHint: {
+    fontSize: 10,
+    color: '#facc15',
+    opacity: 0.65,
+    fontStyle: 'italic',
+  },
+  noteEditorClearLink: {
+    fontSize: 10,
+    color: '#888',
+    textDecorationLine: 'underline',
+  },
+  noteEditorInput: {
+    minHeight: 56,
+    maxHeight: 140,
+    padding: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(250,204,21,0.25)',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    color: '#e6e9ef',
+    fontSize: 12,
+    lineHeight: 17,
+  },
+
+  // Recent activity strip — horizontal scroll of chips below the
+  // progress summary strip. Each chip is a compact pill showing
+  // status colour, optional note glyph, relative time, the
+  // touched item's title, and a position-context subtitle.
+  recentActivityBlock: {
+    gap: 8,
+  },
+  recentActivityLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#aab4c2',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  recentActivityLabelHint: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#aab4c2',
+    opacity: 0.5,
+    textTransform: 'none',
+    letterSpacing: 0,
+  },
+  recentActivityRow: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingVertical: 2,
+    paddingRight: 4,
+  },
+  recentActivityChip: {
+    minWidth: 160,
+    maxWidth: 220,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    gap: 2,
+  },
+  recentActivityChipHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 2,
+  },
+  recentActivityStatusDot: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  recentActivityNoteGlyph: {
+    fontSize: 11,
+    color: '#facc15',
+    opacity: 0.85,
+  },
+  recentActivityWhen: {
+    flex: 1,
+    fontSize: 10,
+    color: '#888',
+    textAlign: 'right',
+  },
+  recentActivityTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#e6e9ef',
+  },
+  recentActivitySubtitle: {
+    fontSize: 11,
+    color: '#888',
+    opacity: 0.85,
+  },
   techniqueDetail: {
     marginTop: 2,
     marginLeft: 14,
@@ -2597,6 +3916,21 @@ const styles = StyleSheet.create({
     opacity: 0.55,
     lineHeight: 16,
     marginTop: 2,
+  },
+  techniqueVideoStatePill: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    marginTop: 2,
+  },
+  techniqueVideoStatePillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    opacity: 0.82,
+    textTransform: 'uppercase',
+    letterSpacing: 0.35,
   },
   techniqueDetailBridgeBtn: {
     alignSelf: 'flex-start',
@@ -2697,6 +4031,44 @@ const styles = StyleSheet.create({
     color: '#7fb8ff',
     opacity: 0.75,
     fontWeight: '600',
+  },
+
+  // Search-match chip on the position header — same idiom as
+  // inboundChip but in the gold search palette. Only renders when
+  // the position is in the results because of an internal content
+  // match (technique or transition label) rather than a position-
+  // name match, so the user understands why the card surfaced
+  // even though the title doesn't contain the query.
+  searchMatchChip: {
+    fontSize: 11,
+    color: '#facc15',
+    opacity: 0.85,
+    fontWeight: '700',
+  },
+
+  // Per-position progress chips on the collapsed header. Wrapper
+  // is a bare Text so the per-status colored chunks below can be
+  // nested inline without breaking the parent positionName layout.
+  // Each colored chunk uses the same colour as the corresponding
+  // ProgressPill (drilling=blue, learned=green, tracking=yellow)
+  // so users recognise the language immediately. Slightly muted
+  // at rest via opacity so a fully-flagged card doesn't shout
+  // over the position name itself.
+  positionProgressChip: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  positionProgressDrilling: {
+    color: '#7fb8ff',
+    opacity: 0.85,
+  },
+  positionProgressLearned: {
+    color: '#4ade80',
+    opacity: 0.85,
+  },
+  positionProgressTracking: {
+    color: '#d4e157',
+    opacity: 0.85,
   },
 
   // Coming in from — inverse transition block

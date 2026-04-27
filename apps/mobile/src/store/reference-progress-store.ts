@@ -1,6 +1,7 @@
 /**
- * Reference progress store — local per-item training status for
- * mobile Reference techniques and transitions.
+ * Reference progress store — local per-item training status,
+ * notes, and timestamps for mobile Reference techniques and
+ * transitions.
  *
  * Mirrors the web Reference's STATE.progress concept (tracked on
  * each node in the DOM tree) so that future cross-device sync can
@@ -14,13 +15,26 @@
  *   'learned'  — the user considers this landed in their game
  *   'tracking' — on a watch-list to come back to later
  *
+ * Per-key data tracked alongside status:
+ *   - notes:      free-text annotation ("coach said start with
+ *                 hip out", "drilled 3x with M today", etc.).
+ *                 Empty string clears the note.
+ *   - updated_at: ISO timestamp of the last mutation that touched
+ *                 this key (status set OR note set). Drives the
+ *                 Recent activity strip on the Reference screen.
+ *
  * Storage strategy:
- *   - Only non-'none' entries are persisted so the blob stays
- *     small as users move techniques between states.
- *   - Hydration is lenient: unknown keys or non-status values
- *     from a future / past schema are dropped silently.
- *   - Empty progress map removes the secureStorage entry entirely
- *     so clearAll leaves zero trace.
+ *   - The persisted blob is now a versioned wrapper:
+ *       { schema: 2, progress, notes, updated_at }
+ *     with hydrate falling back to the legacy v1 raw progress
+ *     map shape (`Record<string, ProgressStatus>` at the top
+ *     level) so existing users keep their data on first launch.
+ *   - Only non-'none' progress entries are persisted; notes and
+ *     timestamps survive even when status is cleared so a user
+ *     can keep a note about something they've stopped actively
+ *     drilling without losing the context.
+ *   - Empty wrapper (no progress, no notes) removes the
+ *     secureStorage entry entirely so clearAll leaves zero trace.
  *
  * Key format (mobile-stable):
  *   Technique rows:  `tech|<section>|<position>|<role>|<heading>|<label>`
@@ -35,6 +49,7 @@ import { create } from 'zustand';
 import { secureStorage } from './secure-storage';
 
 const STORAGE_KEY = 'reference_progress_v1';
+const STORAGE_SCHEMA_VERSION = 2;
 
 export type ProgressStatus = 'none' | 'drilling' | 'learned' | 'tracking';
 
@@ -48,22 +63,65 @@ export const PROGRESS_CYCLE: readonly ProgressStatus[] = [
 
 const VALID_STATUSES: ReadonlySet<ProgressStatus> = new Set(PROGRESS_CYCLE);
 
+/**
+ * Wrapped persistence shape (schema v2). Contains the three
+ * parallel maps the store tracks:
+ *   - progress:   non-'none' status entries only
+ *   - notes:      non-empty free-text annotations
+ *   - updated_at: ISO timestamps for any key in either map
+ * On hydrate the parser also accepts the legacy v1 shape
+ * (a flat `Record<string, ProgressStatus>` at the top level)
+ * so existing users don't lose their progress on first launch
+ * after the schema bump.
+ */
+interface PersistedProgressBlob {
+  schema: number;
+  progress: Record<string, ProgressStatus>;
+  notes: Record<string, string>;
+  updated_at: Record<string, string>;
+}
+
 async function persistSafely(
   progress: Record<string, ProgressStatus>,
+  notes: Record<string, string>,
+  updatedAt: Record<string, string>,
 ): Promise<void> {
   try {
-    // Drop 'none' entries before persisting so the blob only carries
-    // meaningful state. Store size stays bounded to the set of
-    // items the user has actually interacted with.
-    const filtered: Record<string, ProgressStatus> = {};
+    // Drop 'none' entries from progress and empty notes before
+    // persisting so the blob only carries meaningful state.
+    // Timestamps follow the same rule — only kept for keys that
+    // still have status OR a non-empty note.
+    const filteredProgress: Record<string, ProgressStatus> = {};
     for (const [k, v] of Object.entries(progress)) {
-      if (v !== 'none') filtered[k] = v;
+      if (v !== 'none') filteredProgress[k] = v;
     }
-    if (Object.keys(filtered).length === 0) {
+    const filteredNotes: Record<string, string> = {};
+    for (const [k, v] of Object.entries(notes)) {
+      if (typeof v === 'string' && v.length > 0) filteredNotes[k] = v;
+    }
+    const liveKeys = new Set([
+      ...Object.keys(filteredProgress),
+      ...Object.keys(filteredNotes),
+    ]);
+    const filteredUpdatedAt: Record<string, string> = {};
+    for (const k of liveKeys) {
+      const v = updatedAt[k];
+      if (typeof v === 'string' && v.length > 0) filteredUpdatedAt[k] = v;
+    }
+    if (
+      Object.keys(filteredProgress).length === 0 &&
+      Object.keys(filteredNotes).length === 0
+    ) {
       await secureStorage.removeItem(STORAGE_KEY);
       return;
     }
-    await secureStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+    const blob: PersistedProgressBlob = {
+      schema: STORAGE_SCHEMA_VERSION,
+      progress: filteredProgress,
+      notes: filteredNotes,
+      updated_at: filteredUpdatedAt,
+    };
+    await secureStorage.setItem(STORAGE_KEY, JSON.stringify(blob));
   } catch {
     // Silent — same pattern as other mobile stores.
   }
@@ -75,15 +133,25 @@ async function persistSafely(
  * (status changed), and keys that were skipped (payload entry
  * had an unknown status value). The UI uses these counts to
  * surface a compact confirmation line after the import lands.
+ *
+ * `notesAdded` is reported separately so v2 imports can tell the
+ * user "merged 12 statuses + 5 notes" without conflating the
+ * two signals. Pre-v2 imports always report 0 here.
  */
 export interface ProgressImportResult {
   added: number;
   updated: number;
   skipped: number;
+  notesAdded: number;
 }
 
 interface ReferenceProgressState {
   progress: Record<string, ProgressStatus>;
+  /** Free-text per-key annotations. Empty string deletes. */
+  notes: Record<string, string>;
+  /** ISO timestamps of the last mutation for each live key.
+   *  Used by the Recent activity strip and by export schema v2. */
+  updatedAt: Record<string, string>;
   hydrated: boolean;
 
   hydrate: () => Promise<void>;
@@ -96,6 +164,10 @@ interface ReferenceProgressState {
    *  taps in the Reference screen. */
   cycleProgress: (key: string) => ProgressStatus;
 
+  /** Set or clear the free-text note for a key. Empty string
+   *  removes the note. Bumps `updatedAt` regardless. */
+  setNote: (key: string, note: string) => void;
+
   /**
    * Import a batch of progress entries (keyed by the same format
    * the store itself uses). When `mode === 'merge'` the incoming
@@ -104,66 +176,132 @@ interface ReferenceProgressState {
    * wiped first. Returns the per-key add/update/skip counts so
    * the UI can surface a confirmation line. Only 'drilling' /
    * 'learned' / 'tracking' values are accepted — 'none' and
-   * unknown statuses are skipped.
+   * unknown statuses are skipped. v2 payloads with `notes` and
+   * `updated_at` maps merge those alongside the status entries.
    */
   importProgress: (
-    entries: Record<string, string>,
+    payload: ProgressExportPayload,
     mode: 'merge' | 'replace',
   ) => ProgressImportResult;
 
-  /** Wipe all per-item progress. */
+  /** Wipe all per-item progress, notes, and timestamps. */
   clearAll: () => void;
 }
 
 export const useReferenceProgressStore = create<ReferenceProgressState>(
   (set, get) => ({
     progress: {},
+    notes: {},
+    updatedAt: {},
     hydrated: false,
 
     hydrate: async () => {
       try {
         const raw = await secureStorage.getItem(STORAGE_KEY);
-        const progress: Record<string, ProgressStatus> = {};
+        let progress: Record<string, ProgressStatus> = {};
+        let notes: Record<string, string> = {};
+        let updatedAt: Record<string, string> = {};
         if (raw) {
           try {
             const parsed = JSON.parse(raw);
             if (parsed && typeof parsed === 'object') {
-              for (const [k, v] of Object.entries(parsed)) {
-                if (
-                  typeof k === 'string' &&
-                  typeof v === 'string' &&
-                  VALID_STATUSES.has(v as ProgressStatus) &&
-                  v !== 'none'
-                ) {
-                  progress[k] = v as ProgressStatus;
+              const obj = parsed as Record<string, unknown>;
+              // Schema v2: wrapped blob with progress/notes/updated_at.
+              // Detected by the explicit `schema` field — v1 blobs
+              // never had a top-level `schema` key.
+              if (typeof obj.schema === 'number' && obj.schema >= 2) {
+                if (obj.progress && typeof obj.progress === 'object') {
+                  for (const [k, v] of Object.entries(
+                    obj.progress as Record<string, unknown>,
+                  )) {
+                    if (
+                      typeof k === 'string' &&
+                      typeof v === 'string' &&
+                      VALID_STATUSES.has(v as ProgressStatus) &&
+                      v !== 'none'
+                    ) {
+                      progress[k] = v as ProgressStatus;
+                    }
+                  }
                 }
+                if (obj.notes && typeof obj.notes === 'object') {
+                  for (const [k, v] of Object.entries(
+                    obj.notes as Record<string, unknown>,
+                  )) {
+                    if (typeof k === 'string' && typeof v === 'string' && v.length > 0) {
+                      notes[k] = v;
+                    }
+                  }
+                }
+                if (obj.updated_at && typeof obj.updated_at === 'object') {
+                  for (const [k, v] of Object.entries(
+                    obj.updated_at as Record<string, unknown>,
+                  )) {
+                    if (typeof k === 'string' && typeof v === 'string' && v.length > 0) {
+                      updatedAt[k] = v;
+                    }
+                  }
+                }
+              } else {
+                // Legacy v1: top-level is the raw progress map
+                // (`Record<string, ProgressStatus>`). Migrate in
+                // place — notes/updatedAt start empty for these
+                // users, which is correct (they had no notes
+                // before this schema bump).
+                for (const [k, v] of Object.entries(obj)) {
+                  if (
+                    typeof k === 'string' &&
+                    typeof v === 'string' &&
+                    VALID_STATUSES.has(v as ProgressStatus) &&
+                    v !== 'none'
+                  ) {
+                    progress[k] = v as ProgressStatus;
+                  }
+                }
+                // Persist immediately in the v2 wrapper shape so
+                // the legacy blob is retired on first launch.
+                void persistSafely(progress, notes, updatedAt);
               }
             }
           } catch {
             // Corrupted blob — drop it on the floor and start fresh
             // rather than propagating the parse error up.
             void secureStorage.removeItem(STORAGE_KEY);
+            progress = {};
+            notes = {};
+            updatedAt = {};
           }
         }
-        set({ progress, hydrated: true });
+        set({ progress, notes, updatedAt, hydrated: true });
       } catch {
         set({ hydrated: true });
       }
     },
 
     setProgress: (key, status) => {
-      let next: Record<string, ProgressStatus> = {};
+      let nextProgress: Record<string, ProgressStatus> = {};
+      let nextNotes: Record<string, string> = {};
+      let nextUpdatedAt: Record<string, string> = {};
       set((state) => {
-        const copy = { ...state.progress };
+        const progress = { ...state.progress };
+        const notes = { ...state.notes };
+        const updatedAt = { ...state.updatedAt };
         if (status === 'none') {
-          delete copy[key];
+          delete progress[key];
+          // Status cleared but the user might still want their
+          // note. Only drop the timestamp when there's also no
+          // note left for this key.
+          if (!notes[key]) delete updatedAt[key];
         } else {
-          copy[key] = status;
+          progress[key] = status;
+          updatedAt[key] = new Date().toISOString();
         }
-        next = copy;
-        return { progress: copy };
+        nextProgress = progress;
+        nextNotes = notes;
+        nextUpdatedAt = updatedAt;
+        return { progress, notes, updatedAt };
       });
-      void persistSafely(next);
+      void persistSafely(nextProgress, nextNotes, nextUpdatedAt);
     },
 
     cycleProgress: (key) => {
@@ -175,17 +313,56 @@ export const useReferenceProgressStore = create<ReferenceProgressState>(
       return nextStatus;
     },
 
-    importProgress: (entries, mode) => {
+    setNote: (key, note) => {
+      let nextProgress: Record<string, ProgressStatus> = {};
+      let nextNotes: Record<string, string> = {};
+      let nextUpdatedAt: Record<string, string> = {};
+      set((state) => {
+        const progress = state.progress;
+        const notes = { ...state.notes };
+        const updatedAt = { ...state.updatedAt };
+        const trimmed = typeof note === 'string' ? note : '';
+        if (trimmed.length === 0) {
+          delete notes[key];
+          // Note cleared — drop the timestamp only when status
+          // is also gone (no live data left for this key).
+          if (progress[key] == null) {
+            delete updatedAt[key];
+          } else {
+            updatedAt[key] = new Date().toISOString();
+          }
+        } else {
+          notes[key] = trimmed;
+          updatedAt[key] = new Date().toISOString();
+        }
+        nextProgress = progress;
+        nextNotes = notes;
+        nextUpdatedAt = updatedAt;
+        return { notes, updatedAt };
+      });
+      void persistSafely(nextProgress, nextNotes, nextUpdatedAt);
+    },
+
+    importProgress: (payload, mode) => {
       const result: ProgressImportResult = {
         added: 0,
         updated: 0,
         skipped: 0,
+        notesAdded: 0,
       };
-      let next: Record<string, ProgressStatus> = {};
+      let nextProgress: Record<string, ProgressStatus> = {};
+      let nextNotes: Record<string, string> = {};
+      let nextUpdatedAt: Record<string, string> = {};
       set((state) => {
-        const base: Record<string, ProgressStatus> =
+        const progress: Record<string, ProgressStatus> =
           mode === 'replace' ? {} : { ...state.progress };
-        for (const [rawKey, rawValue] of Object.entries(entries)) {
+        const notes: Record<string, string> =
+          mode === 'replace' ? {} : { ...state.notes };
+        const updatedAt: Record<string, string> =
+          mode === 'replace' ? {} : { ...state.updatedAt };
+
+        // Status entries first.
+        for (const [rawKey, rawValue] of Object.entries(payload.entries)) {
           if (typeof rawKey !== 'string' || !rawKey.trim()) {
             result.skipped++;
             continue;
@@ -200,70 +377,124 @@ export const useReferenceProgressStore = create<ReferenceProgressState>(
           }
           const status = rawValue as ProgressStatus;
           const existing = state.progress[rawKey];
-          if (existing == null) {
+          if (mode === 'replace') {
+            result.added++;
+          } else if (existing == null) {
             result.added++;
           } else if (existing !== status) {
             result.updated++;
-          } else {
-            // Identical existing entry — merge mode keeps it,
-            // replace mode is already rebuilding from empty so
-            // it still counts as a fresh write. Track as added
-            // under replace so the count is meaningful.
-            if (mode === 'replace') result.added++;
           }
-          base[rawKey] = status;
+          progress[rawKey] = status;
+          // Prefer the payload's timestamp when present, fall
+          // back to import time so the entry doesn't sit at the
+          // epoch in the Recent activity strip.
+          const payloadTs = payload.updated_at?.[rawKey];
+          updatedAt[rawKey] =
+            typeof payloadTs === 'string' && payloadTs.length > 0
+              ? payloadTs
+              : new Date().toISOString();
         }
-        next = base;
-        return { progress: base };
+
+        // Notes — only present in v2 payloads. Skipped silently
+        // when missing.
+        if (payload.notes) {
+          for (const [rawKey, rawValue] of Object.entries(payload.notes)) {
+            if (typeof rawKey !== 'string' || !rawKey.trim()) continue;
+            if (typeof rawValue !== 'string' || rawValue.length === 0) continue;
+            notes[rawKey] = rawValue;
+            result.notesAdded++;
+            // Make sure the note's key has a timestamp even if it
+            // had no status entry in the payload.
+            if (!updatedAt[rawKey]) {
+              const payloadTs = payload.updated_at?.[rawKey];
+              updatedAt[rawKey] =
+                typeof payloadTs === 'string' && payloadTs.length > 0
+                  ? payloadTs
+                  : new Date().toISOString();
+            }
+          }
+        }
+
+        nextProgress = progress;
+        nextNotes = notes;
+        nextUpdatedAt = updatedAt;
+        return { progress, notes, updatedAt };
       });
-      void persistSafely(next);
+      void persistSafely(nextProgress, nextNotes, nextUpdatedAt);
       return result;
     },
 
     clearAll: () => {
-      set({ progress: {} });
-      void persistSafely({});
+      set({ progress: {}, notes: {}, updatedAt: {} });
+      void persistSafely({}, {}, {});
     },
   }),
 );
 
 /**
  * Current schema version for the JSON export/import payload. The
- * parser refuses unknown versions so a future schema change has
- * a clean migration point instead of silently drifting.
+ * parser accepts the current version AND the previous one (v1)
+ * so a v1 export pasted onto a v2-aware build still imports
+ * cleanly — it just lacks notes and timestamps.
  */
-export const PROGRESS_EXPORT_VERSION = 1;
+export const PROGRESS_EXPORT_VERSION = 2;
+const PROGRESS_EXPORT_LEGACY_VERSIONS: ReadonlySet<number> = new Set([1]);
 
-/** Shape of the JSON export payload. Intentionally small — just
- *  a version stamp, a capture timestamp, and the same key/status
- *  shape the store already uses at the top of its state. */
+/** Shape of the JSON export payload. v2 adds optional `notes`
+ *  and `updated_at` parallel maps alongside the existing
+ *  `entries` (status) map. v1 payloads parse to the same shape
+ *  with both new fields left undefined so the consumer doesn't
+ *  branch on version. */
 export interface ProgressExportPayload {
   version: number;
   exported_at: string;
   entries: Record<string, ProgressStatus>;
+  notes?: Record<string, string>;
+  updated_at?: Record<string, string>;
 }
 
 /**
  * Build a deterministic JSON export string for the user's current
- * progress. Includes only non-'none' entries (matches the
- * persist-safely contract elsewhere in this file). Stable key
- * ordering via Object.keys sort so the same inputs always yield
- * the same output string — useful for tests and for stable diffs
- * if the user pastes the same export twice.
+ * progress. Includes only non-'none' status entries and only
+ * non-empty notes. Stable key ordering via Object.keys sort so
+ * the same inputs always yield the same output string — useful
+ * for tests and for stable diffs if the user pastes the same
+ * export twice.
  */
 export function buildProgressExportJSON(
   progressMap: Record<string, ProgressStatus>,
+  notesMap: Record<string, string> = {},
+  updatedAtMap: Record<string, string> = {},
 ): string {
   const entries: Record<string, ProgressStatus> = {};
-  const keys = Object.keys(progressMap).sort();
-  for (const k of keys) {
+  const sortedProgressKeys = Object.keys(progressMap).sort();
+  for (const k of sortedProgressKeys) {
     const v = progressMap[k];
     if (v && v !== 'none') entries[k] = v;
+  }
+  const notes: Record<string, string> = {};
+  const sortedNoteKeys = Object.keys(notesMap).sort();
+  for (const k of sortedNoteKeys) {
+    const v = notesMap[k];
+    if (typeof v === 'string' && v.length > 0) notes[k] = v;
+  }
+  // Only emit updated_at for keys that ended up in entries OR
+  // notes — orphan timestamps would just bloat the payload.
+  const liveKeys = new Set([
+    ...Object.keys(entries),
+    ...Object.keys(notes),
+  ]);
+  const updated_at: Record<string, string> = {};
+  for (const k of Array.from(liveKeys).sort()) {
+    const v = updatedAtMap[k];
+    if (typeof v === 'string' && v.length > 0) updated_at[k] = v;
   }
   const payload: ProgressExportPayload = {
     version: PROGRESS_EXPORT_VERSION,
     exported_at: new Date().toISOString(),
     entries,
+    notes,
+    updated_at,
   };
   return JSON.stringify(payload);
 }
@@ -274,7 +505,9 @@ export function buildProgressExportJSON(
  * `{"version"` occurrence), a bare JSON string, or even a
  * loosely-pasted block that contains extra whitespace at the
  * edges. Returns null on any parse failure so the UI can show
- * a clean "couldn't read that" error without crashing.
+ * a clean "couldn't read that" error without crashing. Both v1
+ * and v2 payloads parse to the same `ProgressExportPayload`
+ * shape; v1 payloads have `notes` and `updated_at` undefined.
  */
 export function parseProgressImportPayload(
   raw: string,
@@ -306,7 +539,14 @@ export function parseProgressImportPayload(
   if (!parsed || typeof parsed !== 'object') return null;
   const obj = parsed as Record<string, unknown>;
   if (typeof obj.version !== 'number') return null;
-  if (obj.version !== PROGRESS_EXPORT_VERSION) return null;
+  // Accept the current version OR any explicitly-supported
+  // legacy version. Future bumps add their predecessors here.
+  if (
+    obj.version !== PROGRESS_EXPORT_VERSION &&
+    !PROGRESS_EXPORT_LEGACY_VERSIONS.has(obj.version)
+  ) {
+    return null;
+  }
   if (!obj.entries || typeof obj.entries !== 'object') return null;
   // Sanitize entries — keep only valid string-to-status pairs.
   const cleanEntries: Record<string, ProgressStatus> = {};
@@ -321,11 +561,35 @@ export function parseProgressImportPayload(
       cleanEntries[k] = v as ProgressStatus;
     }
   }
+  // Sanitize notes (v2 only — v1 has no notes field).
+  let cleanNotes: Record<string, string> | undefined;
+  if (obj.notes && typeof obj.notes === 'object') {
+    cleanNotes = {};
+    for (const [k, v] of Object.entries(obj.notes as Record<string, unknown>)) {
+      if (typeof k === 'string' && k.length > 0 && typeof v === 'string' && v.length > 0) {
+        cleanNotes[k] = v;
+      }
+    }
+  }
+  // Sanitize updated_at (v2 only).
+  let cleanUpdatedAt: Record<string, string> | undefined;
+  if (obj.updated_at && typeof obj.updated_at === 'object') {
+    cleanUpdatedAt = {};
+    for (const [k, v] of Object.entries(
+      obj.updated_at as Record<string, unknown>,
+    )) {
+      if (typeof k === 'string' && k.length > 0 && typeof v === 'string' && v.length > 0) {
+        cleanUpdatedAt[k] = v;
+      }
+    }
+  }
   return {
-    version: PROGRESS_EXPORT_VERSION,
+    version: obj.version,
     exported_at:
       typeof obj.exported_at === 'string' ? obj.exported_at : '',
     entries: cleanEntries,
+    notes: cleanNotes,
+    updated_at: cleanUpdatedAt,
   };
 }
 
@@ -360,4 +624,72 @@ export function buildTransitionProgressKey(
   destination: string,
 ): string {
   return `tx|${sourceSection}|${sourcePosition}|${sourceRole}|${label}|${destination}`;
+}
+
+/**
+ * Parsed-key descriptor — the structured tuple recovered from a
+ * stored progress key. Returned by `parseProgressKey` so the
+ * Recent activity strip and any other "list of keys" surface can
+ * render readable position + role + label info without having
+ * to hand-roll string splits at the call site.
+ */
+export type ParsedProgressKey =
+  | {
+      kind: 'tech';
+      section: string;
+      position: string;
+      role: string;
+      heading: string;
+      label: string;
+    }
+  | {
+      kind: 'tx';
+      sourceSection: string;
+      sourcePosition: string;
+      sourceRole: string;
+      label: string;
+      destination: string;
+    }
+  | null;
+
+/**
+ * Parse a stored progress key back into its structured tuple.
+ * Returns null on any malformed key — callers should treat null
+ * as "stale or unknown key, skip rendering" rather than crashing.
+ *
+ * The split is tolerant of position / heading / technique labels
+ * containing the `|` character only if those labels were never
+ * built by `buildTechniqueProgressKey` (which doesn't escape, so
+ * the canonical mobile-seed names — none of which contain pipes
+ * — round-trip cleanly). For tech keys we expect exactly 6 parts
+ * after the `tech` tag; for transition keys exactly 5 parts after
+ * the `tx` tag.
+ */
+export function parseProgressKey(key: string): ParsedProgressKey {
+  if (typeof key !== 'string' || key.length === 0) return null;
+  const parts = key.split('|');
+  const kind = parts[0];
+  if (kind === 'tech') {
+    if (parts.length !== 6) return null;
+    return {
+      kind: 'tech',
+      section: parts[1] ?? '',
+      position: parts[2] ?? '',
+      role: parts[3] ?? '',
+      heading: parts[4] ?? '',
+      label: parts[5] ?? '',
+    };
+  }
+  if (kind === 'tx') {
+    if (parts.length !== 6) return null;
+    return {
+      kind: 'tx',
+      sourceSection: parts[1] ?? '',
+      sourcePosition: parts[2] ?? '',
+      sourceRole: parts[3] ?? '',
+      label: parts[4] ?? '',
+      destination: parts[5] ?? '',
+    };
+  }
+  return null;
 }

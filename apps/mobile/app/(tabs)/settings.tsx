@@ -7,12 +7,25 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
+import { useAppTourStore } from '../../src/components/AppTour';
 import { useAuthStore } from '../../src/store/auth-store';
+import { useBacklogAnalysisStore } from '../../src/store/backlog-analysis-store';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useConsentStore } from '../../src/store/consent-store';
 import { useTierStore } from '../../src/store/tier-store';
 import { useNutritionStore } from '../../src/store/nutrition-store';
+import { useProfile } from '../../src/hooks/useProfile';
+import {
+  BELT_SYLLABUS,
+  type BeltLevel as LocalBeltLevel,
+} from '../../src/data/belt-syllabus';
+import {
+  buildTechniqueProgressKey,
+  useReferenceProgressStore,
+  type ProgressStatus,
+} from '../../src/store/reference-progress-store';
 import {
   DEFAULT_PREFERENCES, TIER_INFO, CAPABILITY_INFO, getTierCapabilities, minimumTierFor,
   DAYS_ORDER, DAY_LABELS, SCHEDULE_SESSION_LABELS, countPlannedSessions,
@@ -33,6 +46,49 @@ function SettingsRow({ label, value }: { label: string; value: string }) {
       <Text style={styles.rowValue}>{value}</Text>
     </View>
   );
+}
+
+function formatBeltRank(currentBelt: string | null): string {
+  if (!currentBelt) return 'Not set';
+  return `${currentBelt.charAt(0).toUpperCase()}${currentBelt.slice(1)} belt`;
+}
+
+function formatMembershipStatus(membershipStatus: string | null | undefined): string {
+  if (!membershipStatus) return 'Member';
+  return membershipStatus
+    .split('_')
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+}
+
+function isLocalBeltLevel(value: string | null | undefined): value is LocalBeltLevel {
+  return value === 'white' || value === 'blue' || value === 'purple' || value === 'brown' || value === 'black';
+}
+
+function formatSyllabusSummary(
+  belt: string | null | undefined,
+  progress: Record<string, ProgressStatus>,
+): string | null {
+  if (!isLocalBeltLevel(belt)) return null;
+  const items = BELT_SYLLABUS.filter((item) => item.belt === belt);
+  if (items.length === 0) return null;
+
+  let started = 0;
+  let learned = 0;
+  for (const item of items) {
+    const key = buildTechniqueProgressKey(
+      item.section,
+      item.position,
+      item.role,
+      item.heading,
+      item.technique,
+    );
+    const status = progress[key] ?? 'none';
+    if (status !== 'none') started += 1;
+    if (status === 'learned') learned += 1;
+  }
+
+  return `${belt.charAt(0).toUpperCase()}${belt.slice(1)} syllabus · ${started}/${items.length} started · ${learned} learned`;
 }
 
 function PrefPillRow<T extends string>({
@@ -89,9 +145,8 @@ function AuthForm() {
     setBusy(false);
     if (error) {
       Alert.alert(mode === 'login' ? 'Sign In Failed' : 'Sign Up Failed', error);
-    } else if (mode === 'signup') {
-      Alert.alert('Check your email', 'Confirm your email address to finish signing up.');
     }
+    // On success, onAuthStateChange updates the store and the form is replaced.
   };
 
   return (
@@ -141,6 +196,9 @@ function AuthForm() {
 function SignedInSection() {
   const user = useAuthStore((s) => s.user);
   const signOut = useAuthStore((s) => s.signOut);
+  const { profile, loading, error } = useProfile();
+  const progress = useReferenceProgressStore((s) => s.progress);
+  const syllabusSummary = formatSyllabusSummary(profile?.current_belt, progress);
 
   const handleSignOut = () => {
     Alert.alert('Log out?', undefined, [
@@ -151,12 +209,83 @@ function SignedInSection() {
 
   return (
     <>
-      <SettingsRow label="Status" value="Member" />
+      <SettingsRow
+        label="Status"
+        value={loading ? 'Loading…' : formatMembershipStatus(profile?.membership_status)}
+      />
       <SettingsRow label="Email" value={user?.email ?? '—'} />
+      <SettingsRow
+        label="Belt rank"
+        value={
+          loading
+            ? 'Loading…'
+            : error
+              ? 'Unavailable'
+              : formatBeltRank(profile?.current_belt ?? null)
+        }
+      />
+      {syllabusSummary ? (
+        <SettingsRow label="Syllabus" value={syllabusSummary} />
+      ) : null}
+      <BacklogReRunRow />
       <Pressable style={styles.buttonDanger} onPress={handleSignOut}>
         <Text style={styles.buttonDangerText}>Sign Out</Text>
       </Pressable>
     </>
+  );
+}
+
+/**
+ * "Analyse history again" — surfaces re-run + current status summary.
+ * Respects the current userId/athleteId (via the store) and never
+ * silently overwrites stable memory. Also shows the last run
+ * timestamp + current state so users know what they're doing.
+ */
+function BacklogReRunRow() {
+  const status = useBacklogAnalysisStore((s) => s.status);
+  const record = useBacklogAnalysisStore((s) => s.record);
+  const starting = useBacklogAnalysisStore((s) => s.starting);
+  const start = useBacklogAnalysisStore((s) => s.start);
+  const refresh = useBacklogAnalysisStore((s) => s.refresh);
+
+  const onPress = () => {
+    Alert.alert(
+      'Analyse history again?',
+      'Coach will re-read your connected sources for the last 30 days and update provisional patterns. Stable memory is never changed without your approval.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Analyse', onPress: () => void start({ windowDays: 30 }) },
+      ],
+    );
+  };
+
+  const label =
+    status === 'not_started' ? 'Analyse my history' :
+    status === 'running' ? 'Analysis running…' :
+    status === 'failed' ? 'Retry analysis' :
+    'Analyse history again';
+
+  const lastRun = record?.analysisCompletedAt
+    ? `Last run ${record.analysisCompletedAt.slice(0, 10)} · ${record.recordsAnalysed} records` :
+    status === 'skipped' ? 'Skipped — run it any time.' : 'Not run yet.';
+
+  return (
+    <View style={{ gap: 6, marginBottom: 12 }}>
+      <SettingsRow label="Coach backlog" value={lastRun} />
+      <Pressable
+        style={[styles.button, (starting || status === 'running') && styles.buttonDisabled]}
+        onPress={onPress}
+        disabled={starting || status === 'running'}>
+        <Text style={styles.buttonText}>
+          {starting ? 'Starting…' : label}
+        </Text>
+      </Pressable>
+      <Pressable onPress={() => void refresh()} hitSlop={6}>
+        <Text style={{ fontSize: 12, color: '#888', textAlign: 'center' }}>
+          Refresh status
+        </Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -724,7 +853,10 @@ function TierSection() {
     'local_health_view', 'basic_insights', 'health_sync',
     'backend_persistence', 'export_ai_payload', 'preference_coaching',
     'training_history', 'byo_ai', 'advanced_reports', 'cronometer_sync',
-    'ergzone_sync', 'data_export_full', 'model_training_participation',
+    // 'ergzone_sync' intentionally hidden — ErgZone is not a supported
+    // integration path. Machine input flows through our own BLE/FTMS
+    // capture (see Machine capture card in Health → Integrations).
+    'data_export_full', 'model_training_participation',
     'hosted_ai_coaching', 'daily_ai_recommendations',
     'advanced_ai_insights', 'priority_model_training',
   ];
@@ -809,8 +941,44 @@ function TierSection() {
 // Main screen
 // ---------------------------------------------------------------------------
 
+function ReplayTourButton() {
+  const replay = useAppTourStore((s) => s.replay);
+  return (
+    <Pressable style={styles.row} onPress={replay}>
+      <Text style={styles.rowLabel}>Replay app tour</Text>
+      <Text style={styles.rowValue}>Walk through all features</Text>
+    </Pressable>
+  );
+}
+
+/**
+ * Admin gate for the tester-tools section. The recent-feedback viewer
+ * hits an unauthenticated /api/feedback/recent endpoint, so all tester
+ * submissions are visible to whoever can reach it. Until the viewer is
+ * moved behind a real admin auth surface, gate the entry point to the
+ * account that actually reviews feedback.
+ */
+const ADMIN_EMAILS = new Set(['aaron.t.maher@gmail.com']);
+
+function TesterToolsSection() {
+  const router = useRouter();
+  return (
+    <Pressable
+      style={styles.row}
+      onPress={() => router.push('/feedback-viewer')}
+      accessibilityRole="button"
+      accessibilityLabel="Open recent tester feedback viewer"
+    >
+      <Text style={styles.rowLabel}>Recent feedback</Text>
+      <Text style={styles.rowValue}>View tester reports in-app</Text>
+    </Pressable>
+  );
+}
+
 export default function SettingsScreen() {
   const status = useAuthStore((s) => s.status);
+  const userEmail = useAuthStore((s) => s.user?.email ?? null);
+  const isAdmin = userEmail != null && ADMIN_EMAILS.has(userEmail.toLowerCase());
 
   return (
     <ScrollView
@@ -838,6 +1006,18 @@ export default function SettingsScreen() {
         <Text style={styles.sectionTitle}>Data & Privacy</Text>
         <ConsentSection />
       </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Help</Text>
+        <ReplayTourButton />
+      </View>
+
+      {isAdmin && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Tester tools</Text>
+          <TesterToolsSection />
+        </View>
+      )}
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>About</Text>
@@ -916,7 +1096,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 8,
   },
-  targetsField: { minWidth: '30%', flexGrow: 1, gap: 4 },
+  targetsField: { flexBasis: '48%', maxWidth: '48%', gap: 4 },
   targetsFieldLabel: {
     fontSize: 11,
     opacity: 0.5,

@@ -13,6 +13,8 @@ import { useHealthStore } from '../../src/store/health-store';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { SESSION_TYPE_LABELS } from '@lauburu/shared';
+import { ATHLETE_CAPABILITY_COPY } from '../../src/services/athlete-capability-display';
+import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
 
 function todayDate() {
   return new Date().toISOString().slice(0, 10);
@@ -128,11 +130,11 @@ function RecommendationFeedbackCard() {
   }
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.cardTitle}>Recommendation Feedback</Text>
-      <Text style={styles.cardSubtitle}>
-        Today's recommendation: {coaching.readiness.headline}
-      </Text>
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Recommendation Feedback</Text>
+        <Text style={styles.cardSubtitle}>
+        {ATHLETE_CAPABILITY_COPY.todaySeedSuggestionLabel}: {coaching.readiness.headline}
+        </Text>
 
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>Did you follow it?</Text>
@@ -461,6 +463,7 @@ export default function FeedbackScreen() {
           ? `${feedbackCount + outcomeCount + checkinCount} entries — improving your coaching`
           : 'Rate sessions and coaching to personalize your experience'}
       </Text>
+      <AthleteCapabilitySummary mode="seed" showNote={false} />
 
       <SyncCard />
       <NextDayCheckinCard />

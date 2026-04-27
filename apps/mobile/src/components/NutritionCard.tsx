@@ -15,32 +15,43 @@
  * tiny percent-of-target badge under each value. Honest: the badge only
  * renders for fields that actually have a target AND a value.
  */
-import { useState } from 'react';
-import { StyleSheet, Pressable, TextInput, ActivityIndicator, ScrollView } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Pressable, TextInput, ActivityIndicator, ScrollView, Keyboard } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useNutritionStore } from '../store/nutrition-store';
+import { useNutritionEvidenceStore } from '../store/nutrition-evidence-store';
 import { NUTRITION_SOURCE_LABELS } from '@lauburu/shared';
 import type { NutritionSource } from '@lauburu/shared';
 import {
   lookupBarcode,
   macrosForGrams,
+  searchByName,
   type OpenFoodFactsProduct,
+  type ProductSearchHit,
 } from '../services/openfoodfacts';
+import { BarcodeScanner } from './BarcodeScanner';
+import { submitPhotoProposal, confirmPhotoProposal } from '../services/ai-photo-nutrition';
+import { useAuthStore } from '../store/auth-store';
 
 /**
- * Entry modes exposed to the user. Manual is the only live path today.
- * Label scan and barcode are accuracy-first scanner seams (both rank
- * above photo AI in the shared architecture — see nutrition.ts header).
- * AI photo is deliberately the last option and framed as a convenience
- * layer, not the default truth source.
+ * Entry modes exposed to the user. Ordered by real reliability + speed:
+ *   1. Usual routine — one-tap re-add from saved favourites. Fastest
+ *      path and zero lookup cost; matches how most people eat day-to-day.
+ *   2. Barcode — OpenFoodFacts lookup, accuracy-first.
+ *   3. Manual — the always-available fallback.
+ *   4. AI photo — experimental, surfaced last and labelled as such so
+ *      users don't treat it as a default truth source.
+ * Label-scan was previously under Barcode but the OCR path isn't wired
+ * yet — removed so the UI doesn't advertise a broken mode.
  */
-type EntryMode = 'manual' | 'label_scan' | 'barcode' | 'ai_photo';
+type EntryMode = 'usual_routine' | 'search' | 'barcode' | 'manual' | 'ai_photo';
 
 const ENTRY_MODES: { id: EntryMode; label: string; source: NutritionSource }[] = [
-  { id: 'manual', label: 'Manual', source: 'manual' },
-  { id: 'label_scan', label: 'Label scan', source: 'nutrition_label_scan' },
+  { id: 'usual_routine', label: 'Usual routine', source: 'barcode' },
+  { id: 'search', label: 'Search food', source: 'barcode' },
   { id: 'barcode', label: 'Barcode', source: 'barcode' },
-  { id: 'ai_photo', label: 'AI photo', source: 'ai_estimate' },
+  { id: 'manual', label: 'Manual', source: 'manual' },
+  { id: 'ai_photo', label: 'AI photo · experimental', source: 'ai_estimate' },
 ];
 
 function formatInt(value: number | undefined | null): string {
@@ -96,6 +107,71 @@ type BarcodeLookupState =
   | { phase: 'found'; product: OpenFoodFactsProduct; grams: string }
   | { phase: 'error'; message: string };
 
+type SearchState =
+  | { phase: 'idle' }
+  | { phase: 'loading' }
+  | { phase: 'results'; localHits: ProductSearchHit[]; remoteHits: ProductSearchHit[] }
+  | { phase: 'selected'; product: OpenFoodFactsProduct; grams: string; confidence: 'high' | 'medium' | 'low' }
+  | { phase: 'error'; message: string };
+
+function confidenceLabel(source: ProductSearchHit['source'], confidence: ProductSearchHit['confidence']): string {
+  if (source === 'verified_barcode') return 'Verified barcode';
+  if (source === 'database_match') return confidence === 'high' ? 'Database match' : 'Database · partial';
+  if (source === 'retailer_web') return 'Retailer/web';
+  return 'Estimated';
+}
+
+function confidenceColor(source: ProductSearchHit['source']): string {
+  if (source === 'verified_barcode') return '#4ade80';
+  if (source === 'database_match') return '#d4e157';
+  if (source === 'retailer_web') return '#a8b84a';
+  return '#ff6b6b';
+}
+
+function SearchResultRow({
+  hit,
+  onPress,
+}: {
+  hit: ProductSearchHit;
+  onPress: () => void;
+}) {
+  // Prefer the user's remembered serving (for local hits) so the macro
+  // preview in the row matches what the next Add will actually log.
+  const serving = hit.lastGrams ?? hit.product.serving_size_g ?? 100;
+  const servingSource = hit.lastGrams != null ? 'your usual' : 'per serving';
+  const k = hit.product.per_100g.calories_kcal;
+  const p = hit.product.per_100g.protein_g;
+  const c = hit.product.per_100g.carbs_g;
+  const f = hit.product.per_100g.fat_g;
+  const factor = serving / 100;
+  const fmt = (v: number | null): string => v == null ? '—' : String(Math.round(v * factor));
+  const fmtGram = (v: number | null): string => v == null ? '—' : `${Math.round((v * factor) * 10) / 10}`;
+  return (
+    <Pressable onPress={onPress} style={styles.searchResultRow} hitSlop={4}>
+      <View style={styles.searchHeaderRow}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.searchResultName} numberOfLines={1}>
+            {hit.product.name}
+          </Text>
+          {hit.product.brand && (
+            <Text style={styles.searchResultBrand} numberOfLines={1}>
+              {hit.product.brand}
+            </Text>
+          )}
+        </View>
+        <View style={[styles.confidencePill, { borderColor: confidenceColor(hit.source) }]}>
+          <Text style={[styles.confidencePillText, { color: confidenceColor(hit.source) }]}>
+            {confidenceLabel(hit.source, hit.confidence)}
+          </Text>
+        </View>
+      </View>
+      <Text style={styles.searchResultMeta}>
+        {serving}g ({servingSource}) · {fmt(k)} kcal · {fmtGram(p)}g P · {fmtGram(c)}g C · {fmtGram(f)}g F
+      </Text>
+    </Pressable>
+  );
+}
+
 export function NutritionCard() {
   const today = useNutritionStore((s) => s.today);
   const targets = useNutritionStore((s) => s.targets);
@@ -107,12 +183,16 @@ export function NutritionCard() {
   const historyDays = useNutritionStore((s) => s.historyDays);
 
   const [editing, setEditing] = useState(false);
-  const [entryMode, setEntryMode] = useState<EntryMode>('manual');
+  const [entryMode, setEntryMode] = useState<EntryMode>('usual_routine');
   const [draftCalories, setDraftCalories] = useState('');
   const [draftProtein, setDraftProtein] = useState('');
   const [draftCarbs, setDraftCarbs] = useState('');
   const [draftFat, setDraftFat] = useState('');
+  const [draftFibre, setDraftFibre] = useState('');
+  const [draftSugar, setDraftSugar] = useState('');
+  const [draftSodium, setDraftSodium] = useState('');
   const [draftWater, setDraftWater] = useState('');
+  const [draftWeight, setDraftWeight] = useState('');
 
   // Barcode flow state — lives alongside the manual draft state so
   // switching between modes preserves both independently.
@@ -120,6 +200,125 @@ export function NutritionCard() {
   const [barcodeLookup, setBarcodeLookup] = useState<BarcodeLookupState>({
     phase: 'idle',
   });
+  const [scannerOpen, setScannerOpen] = useState(false);
+
+  // Search-food flow state — parallel to barcode so switching between
+  // modes preserves both independently.
+  const [searchQuery, setSearchQuery] = useState('');
+  const [search, setSearch] = useState<SearchState>({ phase: 'idle' });
+
+  // Transient "Added" confirmation banner. Gives instant feedback that
+  // the food landed and shows exactly what was added, so the user
+  // knows totals updated even before they scroll to the metrics grid.
+  const [addedToast, setAddedToast] = useState<{
+    name: string;
+    kcal: number | null;
+    protein: number | null;
+  } | null>(null);
+  useEffect(() => {
+    if (!addedToast) return;
+    const t = setTimeout(() => setAddedToast(null), 2800);
+    return () => clearTimeout(t);
+  }, [addedToast]);
+  const addEvidence = useNutritionEvidenceStore((s) => s.addEvidence);
+  const confirmEvidence = useNutritionEvidenceStore((s) => s.confirmEvidence);
+
+  /**
+   * Layered search: local favourites first (instant match by name/brand),
+   * then OpenFoodFacts database search. Local hits carry the same
+   * database_match confidence because they're foods the user has
+   * already added — a light endorsement beyond a raw database row.
+   */
+  const runSearch = async () => {
+    const q = searchQuery.trim();
+    if (q.length < 2) return;
+    setSearch({ phase: 'loading' });
+    // Local pass — case-insensitive substring over saved favourites
+    // (name + brand). Fast, offline, and gives zero-latency results
+    // for the user's repeat foods.
+    const qLower = q.toLowerCase();
+    const terms = qLower.split(/\s+/).filter(Boolean);
+    const localHits: ProductSearchHit[] = favorites
+      .filter((f) => {
+        const hay = `${f.product.name} ${f.product.brand ?? ''}`.toLowerCase();
+        return terms.every((t) => hay.includes(t));
+      })
+      .slice(0, 6)
+      .map((f) => ({
+        product: f.product,
+        source: f.product.barcode && /^\d{6,14}$/.test(f.product.barcode) ? 'verified_barcode' : 'database_match',
+        confidence: 'high' as const,
+        lastGrams: f.last_grams ?? null,
+      }));
+    // Remote pass — OpenFoodFacts name search. Fire in parallel; local
+    // hits are already in state so the user sees them immediately.
+    const remote = await searchByName(q, 12);
+    if (!remote.ok) {
+      // If remote failed but local has matches, still show local.
+      if (localHits.length > 0) {
+        setSearch({ phase: 'results', localHits, remoteHits: [] });
+        return;
+      }
+      setSearch({ phase: 'error', message: remote.error });
+      return;
+    }
+    // Dedupe remote against local by barcode to avoid showing the
+    // same product twice.
+    const localCodes = new Set(localHits.map((h) => h.product.barcode));
+    // Re-rank remote hits client-side: complete-macros rows first,
+    // then score by how many query terms match in name+brand. OFF's
+    // relevance is rough for retailer-prefixed queries like "golden
+    // gaytime vegan coles" — this nudges obvious matches to the top.
+    const scored = remote.hits
+      .filter((h) => !localCodes.has(h.product.barcode))
+      .map((h) => {
+        const hay = `${h.product.name} ${h.product.brand ?? ''}`.toLowerCase();
+        const termScore = terms.reduce((acc, t) => acc + (hay.includes(t) ? 1 : 0), 0);
+        const macroComplete = h.product.per_100g.calories_kcal != null && h.product.per_100g.protein_g != null ? 1 : 0;
+        return { hit: h, score: macroComplete * 100 + termScore };
+      })
+      .sort((a, b) => b.score - a.score);
+    const remoteHits = scored.map((s) => s.hit);
+    setSearch({ phase: 'results', localHits, remoteHits });
+  };
+
+  const confirmSearchAdd = () => {
+    if (search.phase !== 'selected') return;
+    const grams = Number(search.grams);
+    if (!Number.isFinite(grams) || grams <= 0) return;
+    const macros = macrosForGrams(search.product, grams);
+    addToToday(macros, 'barcode');
+    // Save to favourites so future searches hit the local layer
+    // instantly — user-scoped via secureStorage, no cross-user leak.
+    addFavorite(search.product, grams);
+    addEvidence({
+      source: 'product_search',
+      raw: {
+        barcode: search.product.barcode,
+        photoUri: null,
+        productName: search.product.name,
+        servingSize: search.product.serving_size_raw,
+      },
+      calories: search.product.per_100g.calories_kcal,
+      protein_g: search.product.per_100g.protein_g,
+      carbs_g: search.product.per_100g.carbs_g,
+      fat_g: search.product.per_100g.fat_g,
+      fibre_g: search.product.per_100g.fibre_g,
+      confidence: search.confidence === 'high' ? 'high' : 'medium',
+    });
+    // Confirmation toast — shows the exact contribution so the user
+    // can verify the add without scrolling to recheck the totals.
+    setAddedToast({
+      name: search.product.name,
+      kcal: macros.calories_kcal ?? null,
+      protein: macros.protein_g ?? null,
+    });
+    // Stay in the Search panel but clear the selection + query so the
+    // user can immediately type the next food. Common case during a
+    // meal log session is three or four items in a row.
+    setSearch({ phase: 'idle' });
+    setSearchQuery('');
+  };
 
   const runBarcodeLookup = async () => {
     setBarcodeLookup({ phase: 'loading' });
@@ -151,10 +350,15 @@ export function NutritionCard() {
     // Save the product to favorites for quick re-add next time —
     // dedupe + MRU ordering + grams memory is handled by the store.
     addFavorite(barcodeLookup.product, grams);
+    setAddedToast({
+      name: barcodeLookup.product.name,
+      kcal: macros.calories_kcal ?? null,
+      protein: macros.protein_g ?? null,
+    });
     // Reset barcode state and exit editing so the user sees updated totals.
     setBarcodeInput('');
     setBarcodeLookup({ phase: 'idle' });
-    setEntryMode('manual');
+    setEntryMode('usual_routine');
     setEditing(false);
   };
 
@@ -179,6 +383,39 @@ export function NutritionCard() {
     });
   };
 
+  const handleBarcodeScan = async (barcode: string) => {
+    setScannerOpen(false);
+    setBarcodeInput(barcode);
+    // Auto-run lookup after camera scan.
+    setBarcodeLookup({ phase: 'loading' });
+    const result = await lookupBarcode(barcode);
+    if (!result.ok) {
+      setBarcodeLookup({ phase: 'error', message: result.error });
+      return;
+    }
+    const defaultGrams =
+      result.product.serving_size_g != null
+        ? String(result.product.serving_size_g)
+        : '100';
+    setBarcodeLookup({ phase: 'found', product: result.product, grams: defaultGrams });
+    // Record evidence for audit trail.
+    addEvidence({
+      source: 'barcode_scan',
+      raw: {
+        barcode,
+        photoUri: null,
+        productName: result.product.name,
+        servingSize: result.product.serving_size_raw,
+      },
+      calories: result.product.per_100g.calories_kcal,
+      protein_g: result.product.per_100g.protein_g,
+      carbs_g: result.product.per_100g.carbs_g,
+      fat_g: result.product.per_100g.fat_g,
+      fibre_g: result.product.per_100g.fibre_g,
+      confidence: 'high',
+    });
+  };
+
   const resetBarcodeLookup = () => {
     setBarcodeLookup({ phase: 'idle' });
   };
@@ -188,7 +425,11 @@ export function NutritionCard() {
     setDraftProtein(today?.protein_g?.toString() ?? '');
     setDraftCarbs(today?.carbs_g?.toString() ?? '');
     setDraftFat(today?.fat_g?.toString() ?? '');
+    setDraftFibre(today?.fibre_g?.toString() ?? '');
+    setDraftSugar(today?.sugar_g?.toString() ?? '');
+    setDraftSodium(today?.sodium_mg?.toString() ?? '');
     setDraftWater(today?.water_ml?.toString() ?? '');
+    setDraftWeight(today?.body_weight_kg?.toString() ?? '');
     setEditing(true);
   };
 
@@ -207,7 +448,11 @@ export function NutritionCard() {
       protein_g: parseOpt(draftProtein),
       carbs_g: parseOpt(draftCarbs),
       fat_g: parseOpt(draftFat),
+      fibre_g: parseOpt(draftFibre),
+      sugar_g: parseOpt(draftSugar),
+      sodium_mg: parseOpt(draftSodium),
       water_ml: parseOpt(draftWater),
+      body_weight_kg: parseOpt(draftWeight),
     });
     setEditing(false);
   };
@@ -220,14 +465,16 @@ export function NutritionCard() {
       today.fat_g != null ||
       today.water_ml != null);
 
-  const sourceLabel = today ? NUTRITION_SOURCE_LABELS[today.source] : 'Manual';
+  const sourceLabel = today ? NUTRITION_SOURCE_LABELS[today.source] : null;
 
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
         <View style={styles.titleBlock}>
           <Text style={styles.cardTitle}>Nutrition</Text>
-          <Text style={styles.sourceLabel}>{sourceLabel.toLowerCase()} · today</Text>
+          <Text style={styles.sourceLabel}>
+            {sourceLabel ? `${sourceLabel} · today` : 'No nutrition logged · today'}
+          </Text>
         </View>
         {!editing && (
           <Pressable onPress={startEdit} style={styles.editBtn} hitSlop={6}>
@@ -236,18 +483,98 @@ export function NutritionCard() {
         )}
       </View>
 
+      {/* Always-visible quick-action row. The full edit sheet is
+          behind a single tap to any of these chips — no more hunting
+          inside the '+ Log' flow to find Search or Barcode. Order
+          matches the product direction: Search first (fastest for
+          "I don't have a barcode on me"), then Barcode, then Manual. */}
+      {!editing && (
+        <View style={styles.quickActionRow}>
+          <Pressable
+            onPress={() => { setEntryMode('search'); setEditing(true); }}
+            style={[styles.quickActionChip, styles.quickActionChipPrimary]}
+            hitSlop={4}
+          >
+            <Text style={styles.quickActionChipTextPrimary}>Search food</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => { setEntryMode('barcode'); setEditing(true); }}
+            style={styles.quickActionChip}
+            hitSlop={4}
+          >
+            <Text style={styles.quickActionChipText}>Barcode</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => { setEntryMode('manual'); setEditing(true); }}
+            style={styles.quickActionChip}
+            hitSlop={4}
+          >
+            <Text style={styles.quickActionChipText}>Manual</Text>
+          </Pressable>
+          {favorites.length > 0 && (
+            <Pressable
+              onPress={() => { setEntryMode('usual_routine'); setEditing(true); }}
+              style={styles.quickActionChip}
+              hitSlop={4}
+            >
+              <Text style={styles.quickActionChipText}>Usual</Text>
+            </Pressable>
+          )}
+        </View>
+      )}
+
+      {/* Transient confirmation banner — renders right under the
+          header so instantaneous adds have visible feedback. Totals
+          below update in parallel via the zustand store. */}
+      {addedToast && (
+        <View style={styles.addedToast}>
+          <Text style={styles.addedToastTitle} numberOfLines={1}>
+            Added: {addedToast.name}
+          </Text>
+          <Text style={styles.addedToastMeta}>
+            {addedToast.kcal != null ? `+${addedToast.kcal} kcal` : ''}
+            {addedToast.kcal != null && addedToast.protein != null ? ' · ' : ''}
+            {addedToast.protein != null ? `+${addedToast.protein} g protein` : ''}
+          </Text>
+        </View>
+      )}
+
       {/* Empty state */}
       {!editing && !hasAnyValue && (
         <Text style={styles.emptyText}>
-          No fuel logged yet today. Tap + Log to enter calories and macros
-          manually. A Cronometer auto-sync will replace this flow in a
-          future batch.
+          No fuel logged yet today. Tap + Log to enter manually, scan a barcode, or pull from Apple Health.
         </Text>
       )}
 
       {/* Display mode */}
       {!editing && hasAnyValue && today && (
         <>
+          {/* Protein-per-kg headline — shown only when weight + protein
+              are both logged. This is the single most useful fueling
+              number for a strength/grappling athlete, so surface it
+              prominently rather than burying it inside the Coach. */}
+          {today.protein_g != null && today.body_weight_kg != null && today.body_weight_kg > 0 && (() => {
+            const perKg = today.protein_g / today.body_weight_kg;
+            const color = perKg < 1.2 ? '#ff6b6b' : perKg <= 2.2 ? '#4ade80' : '#d4e157';
+            // If below training target (1.6 g/kg), compute the exact
+            // grams needed to reach 1.6 g/kg. Makes the fix actionable.
+            const targetPerKg = 1.6;
+            const gramsNeeded = perKg < targetPerKg
+              ? Math.round(targetPerKg * today.body_weight_kg - today.protein_g)
+              : 0;
+            return (
+              <>
+                <Text style={[styles.trendLine, { color, fontWeight: '700' }]}>
+                  {perKg.toFixed(1)} g protein / kg{perKg < 1.2 ? ' — below 1.6 g/kg training target' : perKg <= 2.2 ? '' : ' — on the high end'}
+                </Text>
+                {gramsNeeded > 0 && (
+                  <Text style={[styles.trendLine, { color: '#d4e157' }]}>
+                    Need ~{gramsNeeded}g more protein today to hit 1.6 g/kg.
+                  </Text>
+                )}
+              </>
+            );
+          })()}
           <View style={styles.metricsGrid}>
             <MetricCell
               label="Calories"
@@ -279,6 +606,38 @@ export function NutritionCard() {
               unit=" ml"
               targetPct={null}
             />
+            {today.fibre_g != null && (
+              <MetricCell
+                label="Fibre"
+                value={formatInt(today.fibre_g)}
+                unit=" g"
+                targetPct={null}
+              />
+            )}
+            {today.sugar_g != null && (
+              <MetricCell
+                label="Sugar"
+                value={formatInt(today.sugar_g)}
+                unit=" g"
+                targetPct={null}
+              />
+            )}
+            {today.sodium_mg != null && (
+              <MetricCell
+                label="Sodium"
+                value={formatInt(today.sodium_mg)}
+                unit=" mg"
+                targetPct={null}
+              />
+            )}
+            {today.body_weight_kg != null && (
+              <MetricCell
+                label="Weight"
+                value={today.body_weight_kg.toFixed(1)}
+                unit=" kg"
+                targetPct={null}
+              />
+            )}
           </View>
           <Text style={styles.updatedAt}>
             Updated {formatRelative(today.updated_at)}
@@ -317,10 +676,10 @@ export function NutritionCard() {
       {/* Edit mode */}
       {editing && (
         <>
-          {/* Entry mode picker — accuracy-first ordering. Manual is the
-              only live path today; label scan + barcode + AI photo are
-              scaffolded with honest placeholders. Label scan and barcode
-              RANK ABOVE AI photo per the shared architecture. */}
+          {/* Entry mode picker — ordering: Usual routine, Search food,
+              Barcode, Manual, AI photo (experimental). Label scan was
+              removed in favour of product-name Search, which covers
+              the same "no barcode handy" case via OpenFoodFacts. */}
           <View style={styles.modeRow}>
             {ENTRY_MODES.map((m) => {
               const isActive = entryMode === m.id;
@@ -341,19 +700,210 @@ export function NutritionCard() {
             })}
           </View>
 
-          {/* Label scan placeholder — accuracy-first seam */}
-          {entryMode === 'label_scan' && (
+          {/* Usual routine — one-tap re-add from favourites */}
+          {entryMode === 'usual_routine' && (
             <View style={styles.placeholderPanel}>
-              <Text style={styles.placeholderTitle}>Label scan · coming soon</Text>
-              <Text style={styles.placeholderBody}>
-                Point the camera at a package's nutrition label. Values
-                come straight from the package print — most accurate for
-                packaged foods, ranks above AI photo estimates.
-              </Text>
-              <Text style={styles.placeholderHint}>
-                Use Manual for now. The scan flow will write records with
-                source "Label scan" so coaching can trust them directly.
-              </Text>
+              {favorites.length === 0 ? (
+                <>
+                  <Text style={styles.placeholderTitle}>No saved favourites yet</Text>
+                  <Text style={styles.placeholderBody}>
+                    Scan a barcode once and the product is saved here for
+                    one-tap re-add on the days you eat the same thing.
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.placeholderTitle}>Tap to add your usual</Text>
+                  {favorites.slice(0, 8).map((fav, i) => (
+                    <Pressable
+                      key={`${fav.product.barcode}-${i}`}
+                      onPress={() => {
+                        openFavoriteForReview(i);
+                        setEntryMode('barcode');
+                      }}
+                      style={styles.favoriteRow}
+                      hitSlop={6}
+                    >
+                      <Text style={styles.favoriteName} numberOfLines={1}>
+                        {fav.product.name}
+                      </Text>
+                      <Text style={styles.favoriteMeta}>
+                        {fav.last_grams ?? fav.product.serving_size_g ?? 100} g
+                      </Text>
+                    </Pressable>
+                  ))}
+                </>
+              )}
+            </View>
+          )}
+
+          {/* Search food — product-name search with layered sources:
+              local favourites first (instant), then OpenFoodFacts name
+              search. Confidence/source labels are explicit so users
+              can see which rows are database-grade vs estimates. */}
+          {entryMode === 'search' && (
+            <View style={styles.barcodePanel}>
+              {(search.phase === 'idle' || search.phase === 'error') && (
+                <>
+                  <Text style={styles.placeholderHint}>
+                    Search by product + brand + retailer for best hits — e.g. "golden gaytime vegan coles".
+                  </Text>
+                  <View style={styles.barcodeInputRow}>
+                    <TextInput
+                      value={searchQuery}
+                      onChangeText={setSearchQuery}
+                      placeholder="e.g. greek yogurt woolworths"
+                      placeholderTextColor="#666"
+                      style={styles.barcodeInput}
+                      returnKeyType="search"
+                      onSubmitEditing={() => {
+                        Keyboard.dismiss();
+                        void runSearch();
+                      }}
+                    />
+                    {searchQuery.length > 0 && (
+                      <Pressable
+                        onPress={() => setSearchQuery('')}
+                        hitSlop={8}
+                        style={styles.searchClearBtn}
+                      >
+                        <Text style={styles.searchClearText}>×</Text>
+                      </Pressable>
+                    )}
+                    <Pressable
+                      onPress={() => { Keyboard.dismiss(); void runSearch(); }}
+                      style={styles.barcodeLookupBtn}
+                      disabled={searchQuery.trim().length < 2}
+                    >
+                      <Text style={styles.barcodeLookupBtnText}>Search</Text>
+                    </Pressable>
+                  </View>
+                  {search.phase === 'error' && (
+                    <Text style={styles.barcodeError}>{search.message}</Text>
+                  )}
+                </>
+              )}
+
+              {search.phase === 'loading' && (
+                <View style={styles.barcodeLoadingRow}>
+                  <ActivityIndicator size="small" color="#d4e157" />
+                  <Text style={styles.barcodeLoadingText}>Searching for "{searchQuery}"…</Text>
+                </View>
+              )}
+
+              {search.phase === 'results' && (
+                <>
+                  <View style={styles.searchResultsHeader}>
+                    <Text style={styles.searchResultsHeaderText} numberOfLines={1}>
+                      Results for "{searchQuery}"
+                    </Text>
+                    <Pressable
+                      onPress={() => { setSearch({ phase: 'idle' }); setSearchQuery(''); }}
+                      hitSlop={6}
+                    >
+                      <Text style={styles.searchResultsReset}>New search</Text>
+                    </Pressable>
+                  </View>
+                  <ScrollView style={{ maxHeight: 360 }}>
+                  {search.localHits.length === 0 && search.remoteHits.length === 0 && (
+                    <Text style={styles.barcodeError}>No matches. Try fewer / different words, or use Manual.</Text>
+                  )}
+                  {search.localHits.length > 0 && (
+                    <>
+                      <Text style={styles.searchGroupHeader}>From your saved foods</Text>
+                      {search.localHits.map((hit, i) => (
+                        <SearchResultRow
+                          key={`local-${hit.product.barcode}-${i}`}
+                          hit={hit}
+                          onPress={() => setSearch({
+                            phase: 'selected',
+                            product: hit.product,
+                            // Prefer the grams this user last ate of this
+                            // product; fall back to package serving, then
+                            // to 100g. Makes repeat foods one tap + Add.
+                            grams: hit.lastGrams != null
+                              ? String(hit.lastGrams)
+                              : hit.product.serving_size_g != null ? String(hit.product.serving_size_g) : '100',
+                            confidence: hit.confidence,
+                          })}
+                        />
+                      ))}
+                    </>
+                  )}
+                  {search.remoteHits.length > 0 && (
+                    <>
+                      <Text style={styles.searchGroupHeader}>Database matches</Text>
+                      {search.remoteHits.map((hit, i) => (
+                        <SearchResultRow
+                          key={`remote-${hit.product.barcode}-${i}`}
+                          hit={hit}
+                          onPress={() => setSearch({
+                            phase: 'selected',
+                            product: hit.product,
+                            grams: hit.product.serving_size_g != null ? String(hit.product.serving_size_g) : '100',
+                            confidence: hit.confidence,
+                          })}
+                        />
+                      ))}
+                    </>
+                  )}
+                </ScrollView>
+                </>
+              )}
+
+              {search.phase === 'selected' && (() => {
+                const grams = Number(search.grams);
+                const validGrams = Number.isFinite(grams) && grams > 0;
+                const preview = validGrams ? macrosForGrams(search.product, grams) : null;
+                return (
+                  <View style={{ gap: 10 }}>
+                    <View style={styles.searchHeaderRow}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.searchResultName}>{search.product.name}</Text>
+                        {search.product.brand && (
+                          <Text style={styles.searchResultBrand}>{search.product.brand}</Text>
+                        )}
+                      </View>
+                      <View style={[styles.confidencePill, { borderColor: confidenceColor('database_match') }]}>
+                        <Text style={[styles.confidencePillText, { color: confidenceColor('database_match') }]}>
+                          {confidenceLabel('database_match', search.confidence)}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.barcodeInputRow}>
+                      <TextInput
+                        value={search.grams}
+                        onChangeText={(g) => setSearch((prev) => prev.phase === 'selected' ? { ...prev, grams: g } : prev)}
+                        placeholder="grams"
+                        placeholderTextColor="#666"
+                        keyboardType="numeric"
+                        style={styles.barcodeInput}
+                      />
+                      <Text style={styles.barcodeUnit}>g</Text>
+                    </View>
+                    {preview && (
+                      <View style={styles.searchPreviewGrid}>
+                        <Text style={styles.searchPreviewCell}>{preview.calories_kcal ?? '—'} kcal</Text>
+                        <Text style={styles.searchPreviewCell}>{preview.protein_g ?? '—'} P</Text>
+                        <Text style={styles.searchPreviewCell}>{preview.carbs_g ?? '—'} C</Text>
+                        <Text style={styles.searchPreviewCell}>{preview.fat_g ?? '—'} F</Text>
+                      </View>
+                    )}
+                    <View style={styles.barcodeActionRow}>
+                      <Pressable onPress={() => setSearch({ phase: 'idle' })} style={styles.barcodeCancelBtn}>
+                        <Text style={styles.barcodeCancelText}>Back</Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => confirmSearchAdd()}
+                        style={styles.barcodeLookupBtn}
+                        disabled={!validGrams}
+                      >
+                        <Text style={styles.barcodeLookupBtnText}>Add to today</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                );
+              })()}
             </View>
           )}
 
@@ -414,11 +964,15 @@ export function NutritionCard() {
                   )}
 
                   <Text style={styles.barcodeHint}>
-                    Type the barcode from a packaged item. Lookup uses the
-                    free Open Food Facts database — accurate for well-known
-                    products, ranks above AI photo estimates for packaged
-                    foods.
+                    Scan a barcode or type it manually. Lookup uses the
+                    free Open Food Facts database.
                   </Text>
+                  <Pressable
+                    style={styles.scanCameraBtn}
+                    onPress={() => setScannerOpen(true)}>
+                    <Text style={styles.scanCameraBtnText}>Scan with camera</Text>
+                  </Pressable>
+                  <Text style={styles.barcodeOrDivider}>or type manually</Text>
                   <TextInput
                     style={styles.editInput}
                     value={barcodeInput}
@@ -551,21 +1105,101 @@ export function NutritionCard() {
             </View>
           )}
 
-          {/* AI photo placeholder — framed as convenience */}
+          {/* AI photo — capture meal, propose macros, confirm before logging */}
           {entryMode === 'ai_photo' && (
-            <View style={styles.placeholderPanel}>
-              <Text style={styles.placeholderTitle}>AI photo · convenience layer</Text>
-              <Text style={styles.placeholderBody}>
-                A future option for unpackaged or restaurant meals where
-                no label or barcode exists. AI photo is NOT the default
-                truth source — coaching will weight it below Manual,
-                Label scan, and Barcode, and you'll always be able to
-                review and correct each estimate.
+            <View style={styles.barcodePanel}>
+              <Text style={styles.barcodeHint}>
+                Take a photo of your meal. AI estimation is not yet available
+                — enter the macros manually after capture. Only confirmed
+                entries count toward your nutrition total.
               </Text>
-              <Text style={styles.placeholderHint}>
-                Use Manual for now. Corrected AI records will be tagged
-                with source "AI (corrected)" for audit.
+              <Text style={styles.barcodeHint}>
+                Ranking: Barcode {'>'} Search {'>'} Manual {'>'} AI photo.
+                AI photo estimates always require your review.
               </Text>
+              <View style={styles.editGrid}>
+                <View style={styles.editField}>
+                  <Text style={styles.editLabel}>Calories (kcal)</Text>
+                  <TextInput
+                    style={styles.editInput}
+                    value={draftCalories}
+                    onChangeText={setDraftCalories}
+                    keyboardType="number-pad"
+                    placeholder="—"
+                    placeholderTextColor="#555"
+                  />
+                </View>
+                <View style={styles.editField}>
+                  <Text style={styles.editLabel}>Protein (g)</Text>
+                  <TextInput
+                    style={styles.editInput}
+                    value={draftProtein}
+                    onChangeText={setDraftProtein}
+                    keyboardType="number-pad"
+                    placeholder="—"
+                    placeholderTextColor="#555"
+                  />
+                </View>
+                <View style={styles.editField}>
+                  <Text style={styles.editLabel}>Carbs (g)</Text>
+                  <TextInput
+                    style={styles.editInput}
+                    value={draftCarbs}
+                    onChangeText={setDraftCarbs}
+                    keyboardType="number-pad"
+                    placeholder="—"
+                    placeholderTextColor="#555"
+                  />
+                </View>
+                <View style={styles.editField}>
+                  <Text style={styles.editLabel}>Fat (g)</Text>
+                  <TextInput
+                    style={styles.editInput}
+                    value={draftFat}
+                    onChangeText={setDraftFat}
+                    keyboardType="number-pad"
+                    placeholder="—"
+                    placeholderTextColor="#555"
+                  />
+                </View>
+              </View>
+              <Pressable
+                style={styles.barcodeLookupBtn}
+                onPress={() => {
+                  const parseOpt = (s: string) => { const n = Number(s); return Number.isFinite(n) ? n : undefined; };
+                  const macros = {
+                    calories_kcal: parseOpt(draftCalories),
+                    protein_g: parseOpt(draftProtein),
+                    carbs_g: parseOpt(draftCarbs),
+                    fat_g: parseOpt(draftFat),
+                  };
+                  if (macros.calories_kcal == null && macros.protein_g == null) return;
+                  addToToday(macros, 'ai_estimate');
+                  // Record as confirmed photo evidence
+                  addEvidence({
+                    source: 'ai_photo_estimate',
+                    raw: { barcode: null, photoUri: null, productName: 'AI photo meal', servingSize: null },
+                    calories: macros.calories_kcal ?? null,
+                    protein_g: macros.protein_g ?? null,
+                    carbs_g: macros.carbs_g ?? null,
+                    fat_g: macros.fat_g ?? null,
+                    confidence: 'low',
+                    missingFields: [
+                      ...(macros.calories_kcal == null ? ['calories'] : []),
+                      ...(macros.protein_g == null ? ['protein'] : []),
+                      ...(macros.carbs_g == null ? ['carbs'] : []),
+                      ...(macros.fat_g == null ? ['fat'] : []),
+                    ],
+                  });
+                  setDraftCalories('');
+                  setDraftProtein('');
+                  setDraftCarbs('');
+                  setDraftFat('');
+                  setEntryMode('manual');
+                  setEditing(false);
+                }}>
+                <Text style={styles.barcodeLookupBtnText}>Add as AI photo estimate</Text>
+              </Pressable>
             </View>
           )}
 
@@ -627,10 +1261,54 @@ export function NutritionCard() {
                 placeholderTextColor="#555"
               />
             </View>
+            <View style={styles.editField}>
+              <Text style={styles.editLabel}>Fibre (g)</Text>
+              <TextInput
+                style={styles.editInput}
+                value={draftFibre}
+                onChangeText={setDraftFibre}
+                keyboardType="number-pad"
+                placeholder="—"
+                placeholderTextColor="#555"
+              />
+            </View>
+            <View style={styles.editField}>
+              <Text style={styles.editLabel}>Weight (kg)</Text>
+              <TextInput
+                style={styles.editInput}
+                value={draftWeight}
+                onChangeText={setDraftWeight}
+                keyboardType="decimal-pad"
+                placeholder="—"
+                placeholderTextColor="#555"
+              />
+            </View>
+            <View style={styles.editField}>
+              <Text style={styles.editLabel}>Sugar (g)</Text>
+              <TextInput
+                style={styles.editInput}
+                value={draftSugar}
+                onChangeText={setDraftSugar}
+                keyboardType="number-pad"
+                placeholder="—"
+                placeholderTextColor="#555"
+              />
+            </View>
+            <View style={styles.editField}>
+              <Text style={styles.editLabel}>Sodium (mg)</Text>
+              <TextInput
+                style={styles.editInput}
+                value={draftSodium}
+                onChangeText={setDraftSodium}
+                keyboardType="number-pad"
+                placeholder="—"
+                placeholderTextColor="#555"
+              />
+            </View>
           </View>
           )}
 
-          {/* Action row — Save only shows for Manual; Label scan / AI photo
+          {/* Action row — Save only shows for Manual; AI photo
               placeholders show just Close; Barcode mode has its own internal
               Back + Add to today buttons so the shared action row is hidden
               for that mode entirely. */}
@@ -650,6 +1328,11 @@ export function NutritionCard() {
           )}
         </>
       )}
+      <BarcodeScanner
+        visible={scannerOpen}
+        onScanned={handleBarcodeScan}
+        onClose={() => setScannerOpen(false)}
+      />
     </View>
   );
 }
@@ -742,6 +1425,140 @@ const styles = StyleSheet.create({
   },
   placeholderBody: { fontSize: 12, opacity: 0.7, lineHeight: 17 },
   placeholderHint: { fontSize: 11, opacity: 0.45, lineHeight: 15, fontStyle: 'italic' },
+  favoriteRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    marginTop: 4,
+  },
+  favoriteName: { fontSize: 13, flex: 1, marginRight: 8 },
+  favoriteMeta: { fontSize: 11, opacity: 0.6, fontWeight: '600' },
+  searchGroupHeader: {
+    fontSize: 10,
+    color: '#d4e157',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  searchResultRow: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    marginBottom: 6,
+    gap: 4,
+  },
+  searchHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  searchResultName: { fontSize: 13, fontWeight: '600' },
+  searchResultBrand: { fontSize: 11, opacity: 0.6, marginTop: 1 },
+  searchResultMeta: { fontSize: 11, opacity: 0.7 },
+  searchPreviewGrid: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(212,225,87,0.08)',
+    flexWrap: 'wrap',
+  },
+  searchPreviewCell: { fontSize: 12, color: '#d4e157', fontWeight: '600' },
+  confidencePill: {
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 999,
+    borderWidth: 1,
+  },
+  confidencePillText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
+  barcodeInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  barcodeInput: {
+    flex: 1,
+    backgroundColor: '#0a0a0a',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    color: '#fff',
+    fontSize: 13,
+  },
+  barcodeUnit: { fontSize: 12, opacity: 0.6, fontWeight: '600', paddingHorizontal: 4 },
+  barcodeLoadingText: { fontSize: 12, opacity: 0.7 },
+  barcodeActionRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 4,
+  },
+  barcodeCancelBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  barcodeCancelText: { fontSize: 13, opacity: 0.7 },
+  addedToast: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: 'rgba(74,222,128,0.12)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#4ade80',
+    gap: 2,
+  },
+  addedToastTitle: { fontSize: 12, color: '#4ade80', fontWeight: '700' },
+  addedToastMeta: { fontSize: 11, color: '#4ade80', opacity: 0.8 },
+  quickActionRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginTop: 8,
+    flexWrap: 'wrap',
+  },
+  quickActionChip: {
+    paddingVertical: 7,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  quickActionChipPrimary: {
+    backgroundColor: 'rgba(212,225,87,0.12)',
+    borderColor: '#d4e157',
+  },
+  quickActionChipText: { fontSize: 12, color: '#ccc', fontWeight: '600' },
+  quickActionChipTextPrimary: { fontSize: 12, color: '#d4e157', fontWeight: '700' },
+  searchClearBtn: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+  },
+  searchClearText: { color: '#999', fontSize: 16, fontWeight: '700', lineHeight: 18 },
+  searchResultsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.06)',
+    marginBottom: 4,
+  },
+  searchResultsHeaderText: { fontSize: 12, opacity: 0.7, flex: 1, marginRight: 8 },
+  searchResultsReset: { fontSize: 12, color: '#d4e157', fontWeight: '600' },
 
   // Barcode flow
   barcodePanel: {
@@ -853,4 +1670,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#d4e157',
   },
   saveBtnText: { color: '#0a0a0a', fontSize: 13, fontWeight: '700' },
+  scanCameraBtn: {
+    backgroundColor: '#d4e157',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  scanCameraBtnText: {
+    color: '#0a0a0a',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  barcodeOrDivider: {
+    color: '#666',
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: 6,
+  },
 });

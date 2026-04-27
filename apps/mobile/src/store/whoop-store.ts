@@ -161,12 +161,49 @@ export const useWhoopStore = create<WhoopState>((set) => ({
   error: null,
 
   fetchToday: async () => {
+    // Always flip to 'loading' first so every Refresh tap produces
+    // visible feedback — without this, a user stuck in the non-owner
+    // error state taps Refresh and sees nothing change (the resulting
+    // error text is identical to what's already on screen), making
+    // the button feel dead. One frame of spinner is plenty.
     set({ status: 'loading', error: null });
+    // Give React a tick to render the spinner before we block on the
+    // owner check. Otherwise the synchronous ownership resolution can
+    // race the state flip on fast devices.
+    await new Promise((r) => setTimeout(r, 50));
+    // CRITICAL: only fetch the bridge if the current user owns the WHOOP connection.
+    // The Supabase bridge is a single-user proxy; displaying its data to a non-owner
+    // would leak Aaron's WHOOP data to other accounts (e.g. girlfriend's account).
+    const { useAuthStore } = require('./auth-store');
+    const userId = useAuthStore.getState().user?.id as string | undefined;
+    const ownershipMod = require('../services/whoop-ownership');
+    const { isWhoopBridgeOwner, whoopBridgeOwnerCount, whoopBridgeOwnerSources } = ownershipMod;
+    if (!isWhoopBridgeOwner(userId)) {
+      const count = typeof whoopBridgeOwnerCount === 'function' ? whoopBridgeOwnerCount() : 0;
+      const sources = typeof whoopBridgeOwnerSources === 'function' ? whoopBridgeOwnerSources() : [];
+      // Previously set status='ready' + day=null silently, which made
+      // the card render as "partial: missing recovery/HRV/RHR/sleep/
+      // workouts" with no reason given. The actual cause is that the
+      // WHOOP bridge is pinned to a specific Supabase user.id via
+      // EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS, and this account isn't on
+      // the allowlist. Surface that plainly so the user knows it's a
+      // config gate, not a data gap.
+      set({
+        status: 'error',
+        day: null,
+        fetchedAt: new Date().toISOString(),
+        // Full user.id (not truncated) so the tester can copy it
+        // verbatim into EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS without
+        // digging through Supabase. iOS lets users long-press-select
+        // text in an error message to copy it.
+        error: userId
+          ? `WHOOP bridge not linked to this account.\nAllowlist: ${count} id(s) from ${sources.join('+')}.\nYour user.id:\n\n${userId}\n\nAdd it to EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS in apps/mobile/.env.production (or app.json extra.whoopBridgeOwnerIds), then rebuild or OTA.`
+          : 'WHOOP bridge: sign in first, then check EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS in apps/mobile/.env.production.',
+      });
+      return;
+    }
+    // Already set status='loading' above — no need to flip again.
     try {
-      // Note: whoop-bridge has verify_jwt=false so this anon-key header is
-      // purely to satisfy Supabase's default function ingress. No user JWT
-      // is required — we are reading backend-canonical WHOOP data that is
-      // already de-identified at this layer.
       const resp = await fetch(WHOOP_BRIDGE_URL, {
         method: 'GET',
         headers: {
@@ -176,11 +213,16 @@ export const useWhoopStore = create<WhoopState>((set) => ({
         },
       });
       if (!resp.ok) {
-        set({
+        const label = resp.status === 504 ? 'WHOOP bridge timed out'
+          : resp.status === 502 ? 'WHOOP bridge unavailable'
+          : `WHOOP bridge returned HTTP ${resp.status}`;
+        set((prev) => ({
           status: 'error',
-          error: `WHOOP bridge returned HTTP ${resp.status}`,
+          // Preserve existing day data so the card can show "Using last available data"
+          day: prev.day,
+          error: label,
           fetchedAt: new Date().toISOString(),
-        });
+        }));
         return;
       }
       const payload = await resp.json();
@@ -200,11 +242,14 @@ export const useWhoopStore = create<WhoopState>((set) => ({
         error: null,
       });
     } catch (e: any) {
-      set({
+      const msg = e?.name === 'AbortError' ? 'WHOOP bridge timed out'
+        : e?.message ?? 'WHOOP fetch failed';
+      set((prev) => ({
         status: 'error',
-        error: e?.message ?? 'WHOOP fetch failed',
+        day: prev.day, // preserve cached data
+        error: msg,
         fetchedAt: new Date().toISOString(),
-      });
+      }));
     }
   },
 }));

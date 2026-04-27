@@ -16,9 +16,20 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.lauburu.grapplingmap",
+      "buildNumber": "11",
       "infoPlist": {
-        "NSHealthShareUsageDescription": "Lauburu reads your health data to track recovery, sleep, and training readiness alongside your grappling progress.",
-        "NSHealthUpdateUsageDescription": "Lauburu can log grappling sessions to your Health data."
+        "NSHealthShareUsageDescription": "Lauburu reads sleep, steps, heart rate, HRV, resting heart rate, active energy, workouts, and distance from Apple Health so Coach can tailor recovery and training suggestions to your grappling sessions. You choose which metrics to share.",
+        "NSHealthUpdateUsageDescription": "Lauburu can log grappling sessions to Apple Health if you choose.",
+        "NSCameraUsageDescription": "Lauburu uses the camera to scan food barcodes for nutrition tracking and to attach photos of issues to tester feedback.",
+        "NSPhotoLibraryUsageDescription": "Lauburu lets testers attach screenshots or photos to feedback so bug reports and suggestions are easier to understand.",
+        "NSBluetoothAlwaysUsageDescription": "Lauburu connects to FTMS bikes, rowers, ski ergs, and Concept2 PM5 over Bluetooth to capture live power, cadence, and calorie data during your HIIT or conditioning sessions. You choose when to scan and connect.",
+        "NSBluetoothPeripheralUsageDescription": "Lauburu uses Bluetooth to discover and connect to HIIT machines during a session. Required for live machine data capture.",
+        "UIRequiredDeviceCapabilities": ["arm64", "healthkit"],
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "entitlements": {
+        "com.apple.developer.healthkit": true,
+        "com.apple.developer.healthkit.background-delivery": true
       }
     },
     "android": {
@@ -28,7 +39,14 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.lauburu.grapplingmap"
+      "package": "com.lauburu.grapplingmap",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -38,18 +56,38 @@
     "plugins": [
       "expo-router",
       [
-        "@kingstinct/react-native-healthkit",
+        "react-native-ble-plx",
         {
-          "NSHealthShareUsageDescription": "Lauburu reads your health data to track recovery, sleep, and training readiness alongside your grappling progress.",
-          "NSHealthUpdateUsageDescription": "Lauburu can log grappling sessions to your Health data."
+          "isBackgroundEnabled": false,
+          "modes": ["peripheral", "central"],
+          "bluetoothAlwaysPermission": "Lauburu connects to FTMS bikes, rowers, ski ergs, HR straps, and Concept2 PM5 over Bluetooth to capture live power, cadence, HR, and calories during HIIT/conditioning sessions."
         }
       ],
-      "expo-health-connect",
+      [
+        "@kingstinct/react-native-healthkit",
+        {
+          "NSHealthShareUsageDescription": "Lauburu reads sleep, steps, heart rate, HRV, resting heart rate, active energy, workouts, and distance from Apple Health so Coach can tailor recovery and training suggestions to your grappling sessions. You choose which metrics to share.",
+          "NSHealthUpdateUsageDescription": "Lauburu can log grappling sessions to Apple Health if you choose."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Lauburu uses the camera to scan food barcodes for nutrition tracking and to attach photos to tester feedback."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Lauburu lets testers attach screenshots or photos to feedback.",
+          "cameraPermission": "Lauburu lets testers take photos to attach to feedback."
+        }
+      ],
       [
         "expo-build-properties",
         {
           "android": {
-            "compileSdkVersion": 34,
+            "compileSdkVersion": 35,
             "targetSdkVersion": 34,
             "minSdkVersion": 26
           }
@@ -58,6 +96,19 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "dc901a16-772d-49e5-a8ba-dff2fb4e21bd"
+      },
+      "whoopBridgeOwnerIds": "4c809976-a00c-448a-aa3b-392bc94b63fb"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/dc901a16-772d-49e5-a8ba-dff2fb4e21bd"
     }
   }
 }

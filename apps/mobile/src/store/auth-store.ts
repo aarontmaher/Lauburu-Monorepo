@@ -8,10 +8,22 @@ import { supabase } from './supabase';
 
 type AuthStatus = 'loading' | 'guest' | 'member';
 
+/**
+ * Email verification status for the current user.
+ *   not_configured — Supabase project has email confirmation disabled;
+ *                    account is usable immediately, no email is sent
+ *   pending         — confirmation required; user must click email link
+ *   verified        — email confirmed
+ *   unknown         — no session / indeterminate
+ */
+export type EmailVerificationStatus = 'not_configured' | 'pending' | 'verified' | 'unknown';
+
 interface AuthState {
   status: AuthStatus;
   user: User | null;
   session: Session | null;
+  /** Verification status derived from Supabase user metadata. */
+  emailVerificationStatus: EmailVerificationStatus;
 
   /** Restore persisted session on app launch. */
   initialize: () => Promise<void>;
@@ -29,10 +41,32 @@ interface AuthState {
   getAccessToken: () => Promise<string | null>;
 }
 
+/**
+ * Derive verification status from a Supabase User.
+ * If Supabase returns email_confirmed_at, the email is verified.
+ * If the user has a session but no email_confirmed_at, email pending.
+ * Our project currently has email confirmation DISABLED (auto-confirm),
+ * so we surface this as "not_configured" when email_confirmed_at is
+ * populated immediately on signup — meaning no email was actually sent.
+ */
+function deriveEmailVerificationStatus(user: User | null): EmailVerificationStatus {
+  if (!user) return 'unknown';
+  // If email_confirmed_at is set, it's either auto-confirmed (not_configured)
+  // or user clicked the email link (verified). Distinguish by timing:
+  // if confirmed within 5 seconds of created_at, treat as auto-confirm.
+  const confirmed = user.email_confirmed_at;
+  const created = user.created_at;
+  if (!confirmed) return 'pending';
+  if (!created) return 'verified';
+  const diff = Math.abs(new Date(confirmed).getTime() - new Date(created).getTime());
+  return diff < 5000 ? 'not_configured' : 'verified';
+}
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   status: 'loading',
   user: null,
   session: null,
+  emailVerificationStatus: 'unknown',
 
   initialize: async () => {
     try {
@@ -44,20 +78,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           status: 'member',
           user: data.session.user,
           session: data.session,
+          emailVerificationStatus: deriveEmailVerificationStatus(data.session.user),
         });
       } else {
-        set({ status: 'guest', user: null, session: null });
+        set({ status: 'guest', user: null, session: null, emailVerificationStatus: 'unknown' });
       }
     } catch {
-      set({ status: 'guest', user: null, session: null });
+      set({ status: 'guest', user: null, session: null, emailVerificationStatus: 'unknown' });
     }
 
     // Listen for future auth changes (token refresh, sign-in from another tab, etc.)
     supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
-        set({ status: 'member', user: session.user, session });
+        set({
+          status: 'member',
+          user: session.user,
+          session,
+          emailVerificationStatus: deriveEmailVerificationStatus(session.user),
+        });
       } else {
-        set({ status: 'guest', user: null, session: null });
+        set({ status: 'guest', user: null, session: null, emailVerificationStatus: 'unknown' });
       }
     });
   },
@@ -94,7 +134,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch {
       // Force local state clear even if network call fails.
     }
-    set({ status: 'guest', user: null, session: null });
+    set({ status: 'guest', user: null, session: null, emailVerificationStatus: 'unknown' });
+
+    // Clear all per-user local caches to prevent cross-user data leak.
+    // Uses dynamic require to avoid circular imports at module load.
+    try {
+      const { clearAllUserData } = require('./clear-user-data');
+      await clearAllUserData();
+    } catch {
+      // If the module isn't present, still sign out — just warn in dev.
+    }
   },
 
   getAccessToken: async () => {

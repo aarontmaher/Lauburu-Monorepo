@@ -21,11 +21,71 @@ import { useHealthStore } from './health-store';
 import { useTrainingStore } from './training-store';
 import { useConsentStore } from './consent-store';
 import { useTierStore } from './tier-store';
+import { secureStorage } from './secure-storage';
 
 type SyncStatus = 'idle' | 'syncing' | 'synced' | 'failed';
 
+const STORAGE_KEY = 'feedback_store_v1';
+
 function genId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+interface PersistedFeedbackBlob {
+  recommendations: RecommendationFeedback[];
+  outcomes: SessionOutcome[];
+  checkins: NextDayCheckin[];
+  examples: TrainingExample[];
+  lastSyncAt: string | null;
+  lastSyncError: string | null;
+}
+
+async function persistSafely(blob: PersistedFeedbackBlob): Promise<void> {
+  try {
+    const isEmpty =
+      blob.recommendations.length === 0 &&
+      blob.outcomes.length === 0 &&
+      blob.checkins.length === 0 &&
+      blob.examples.length === 0 &&
+      !blob.lastSyncAt &&
+      !blob.lastSyncError;
+    if (isEmpty) {
+      await secureStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+    await secureStorage.setItem(STORAGE_KEY, JSON.stringify(blob));
+  } catch {
+    // Silent — preserve UX even if local persistence fails.
+  }
+}
+
+function buildPersistedBlob(
+  state: Pick<
+    FeedbackState,
+    'recommendations' | 'outcomes' | 'checkins' | 'examples' | 'lastSyncAt' | 'lastSyncError'
+  >,
+): PersistedFeedbackBlob {
+  return {
+    recommendations: state.recommendations,
+    outcomes: state.outcomes,
+    checkins: state.checkins,
+    examples: state.examples,
+    lastSyncAt: state.lastSyncAt,
+    lastSyncError: state.lastSyncError,
+  };
+}
+
+function countPendingExamples(
+  examples: TrainingExample[],
+  recommendations: RecommendationFeedback[],
+): number {
+  return examples.filter(
+    (example) =>
+      !recommendations.find(
+        (recommendation) =>
+          recommendation.date === example.date && recommendation.persisted,
+      ),
+  ).length;
 }
 
 interface FeedbackState {
@@ -41,6 +101,9 @@ interface FeedbackState {
   lastSyncAt: string | null;
   lastSyncError: string | null;
   pendingCount: number;
+  hydrated: boolean;
+
+  hydrate: () => Promise<void>;
 
   addRecommendationFeedback: (input: RecommendationFeedbackInput) => RecommendationFeedback;
   addSessionOutcome: (input: SessionOutcomeInput) => SessionOutcome;
@@ -66,6 +129,37 @@ export const useFeedbackStore = create<FeedbackState>((set, get) => ({
   lastSyncAt: null,
   lastSyncError: null,
   pendingCount: 0,
+  hydrated: false,
+
+  hydrate: async () => {
+    try {
+      const raw = await secureStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        set({ hydrated: true });
+        return;
+      }
+      const parsed = JSON.parse(raw) as Partial<PersistedFeedbackBlob>;
+      const recommendations = Array.isArray(parsed.recommendations)
+        ? parsed.recommendations
+        : [];
+      const outcomes = Array.isArray(parsed.outcomes) ? parsed.outcomes : [];
+      const checkins = Array.isArray(parsed.checkins) ? parsed.checkins : [];
+      const examples = Array.isArray(parsed.examples) ? parsed.examples : [];
+      set({
+        recommendations,
+        outcomes,
+        checkins,
+        examples,
+        lastSyncAt: parsed.lastSyncAt ?? null,
+        lastSyncError: parsed.lastSyncError ?? null,
+        pendingCount: countPendingExamples(examples, recommendations),
+        syncStatus: 'idle',
+        hydrated: true,
+      });
+    } catch {
+      set({ hydrated: true, syncStatus: 'idle' });
+    }
+  },
 
   addRecommendationFeedback: (input) => {
     const entry: RecommendationFeedback = {
@@ -79,12 +173,14 @@ export const useFeedbackStore = create<FeedbackState>((set, get) => ({
       usefulness: input.usefulness,
       persisted: false,
     };
-    set((s) => ({
-      recommendations: [
+    set((s) => {
+      const recommendations = [
         ...s.recommendations.filter((r) => r.date !== input.date),
         entry,
-      ],
-    }));
+      ];
+      void persistSafely(buildPersistedBlob({ ...s, recommendations }));
+      return { recommendations };
+    });
     // Auto-assemble after adding feedback
     setTimeout(() => get().assembleForDate(input.date), 0);
     return entry;
@@ -104,12 +200,14 @@ export const useFeedbackStore = create<FeedbackState>((set, get) => ({
       notes: input.notes ?? '',
       persisted: false,
     };
-    set((s) => ({
-      outcomes: [
+    set((s) => {
+      const outcomes = [
         ...s.outcomes.filter((o) => o.session_ref !== input.session_ref),
         entry,
-      ],
-    }));
+      ];
+      void persistSafely(buildPersistedBlob({ ...s, outcomes }));
+      return { outcomes };
+    });
     setTimeout(() => get().assembleForDate(input.date), 0);
     return entry;
   },
@@ -127,12 +225,14 @@ export const useFeedbackStore = create<FeedbackState>((set, get) => ({
       injury_notes: input.injury_notes ?? '',
       persisted: false,
     };
-    set((s) => ({
-      checkins: [
+    set((s) => {
+      const checkins = [
         ...s.checkins.filter((c) => c.training_date !== input.training_date),
         entry,
-      ],
-    }));
+      ];
+      void persistSafely(buildPersistedBlob({ ...s, checkins }));
+      return { checkins };
+    });
     setTimeout(() => get().assembleForDate(input.training_date), 0);
     return entry;
   },
@@ -174,18 +274,25 @@ export const useFeedbackStore = create<FeedbackState>((set, get) => ({
     );
 
     // Replace existing example for this date
-    set((s) => ({
-      examples: [
+    set((s) => {
+      const examples = [
         ...s.examples.filter((e) => e.date !== date),
         example,
-      ],
-      pendingCount: s.examples.filter((e) => e.date !== date).length + 1 -
-        s.examples.filter((e) => e.date !== date).filter(() => false).length,
-    }));
-
-    // Recount pending
-    const updated = get().examples;
-    set({ pendingCount: updated.filter((e) => !get().recommendations.find((r) => r.date === e.date && r.persisted)).length });
+      ];
+      const pendingCount = countPendingExamples(examples, s.recommendations);
+      void persistSafely(
+        buildPersistedBlob({
+          ...s,
+          examples,
+          lastSyncError: null,
+        }),
+      );
+      return {
+        examples,
+        pendingCount,
+        lastSyncError: null,
+      };
+    });
 
     return example;
   },
@@ -215,20 +322,34 @@ export const useFeedbackStore = create<FeedbackState>((set, get) => ({
 
     if (result.ok) {
       // Mark all feedback as persisted
-      set((s) => ({
-        syncStatus: 'synced',
-        lastSyncAt: new Date().toISOString(),
-        lastSyncError: null,
-        pendingCount: 0,
-        recommendations: s.recommendations.map((r) => ({ ...r, persisted: true })),
-        outcomes: s.outcomes.map((o) => ({ ...o, persisted: true })),
-        checkins: s.checkins.map((c) => ({ ...c, persisted: true })),
-      }));
+      set((s) => {
+        const recommendations = s.recommendations.map((r) => ({
+          ...r,
+          persisted: true,
+        }));
+        const outcomes = s.outcomes.map((o) => ({ ...o, persisted: true }));
+        const checkins = s.checkins.map((c) => ({ ...c, persisted: true }));
+        const nextState = {
+          syncStatus: 'synced' as const,
+          lastSyncAt: new Date().toISOString(),
+          lastSyncError: null,
+          pendingCount: 0,
+          recommendations,
+          outcomes,
+          checkins,
+        };
+        void persistSafely(buildPersistedBlob({ ...s, ...nextState }));
+        return nextState;
+      });
       return true;
     } else {
-      set({
-        syncStatus: 'failed',
-        lastSyncError: result.error ?? 'Sync failed',
+      set((s) => {
+        const nextState = {
+          syncStatus: 'failed' as const,
+          lastSyncError: result.error ?? 'Sync failed',
+        };
+        void persistSafely(buildPersistedBlob({ ...s, ...nextState }));
+        return nextState;
       });
       return false;
     }

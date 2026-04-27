@@ -48,6 +48,23 @@ function avg(nums: (number | undefined | null)[]): number | undefined {
   return valid.reduce((a, b) => a + b, 0) / valid.length;
 }
 
+function providerDataSource(
+  provider:
+    | typeof HealthProvider.APPLE_HEALTH
+    | typeof HealthProvider.HEALTH_CONNECT
+    | typeof HealthProvider.MANUAL,
+): string {
+  switch (provider) {
+    case HealthProvider.APPLE_HEALTH:
+      return 'apple_health_native';
+    case HealthProvider.HEALTH_CONNECT:
+      return 'health_connect_native';
+    case HealthProvider.MANUAL:
+    default:
+      return 'manual';
+  }
+}
+
 /** Sum non-null numbers */
 function sum(nums: (number | undefined | null)[]): number | undefined {
   const valid = nums.filter((n): n is number => n != null);
@@ -75,7 +92,10 @@ function latestValue(
 export function normalizeDayFromSamples(
   userId: string,
   date: string,
-  provider: typeof HealthProvider.APPLE_HEALTH | typeof HealthProvider.MANUAL,
+  provider:
+    | typeof HealthProvider.APPLE_HEALTH
+    | typeof HealthProvider.HEALTH_CONNECT
+    | typeof HealthProvider.MANUAL,
   samples: RawHealthSample[],
   workouts: RawWorkoutSample[],
   sleepSessions: RawSleepSample[],
@@ -86,9 +106,57 @@ export function normalizeDayFromSamples(
 
   // Steps & calories
   const steps = sum(samples.filter((s) => s.metric === 'steps').map((s) => s.value));
-  const activeCal = sum(
-    samples.filter((s) => s.metric === 'active_calories').map((s) => s.value),
-  );
+  // Active calories: HealthKit returns many overlapping samples for the
+  // same time interval (ActivityRing minute-samples PLUS per-workout
+  // totalEnergyBurned PLUS third-party apps writing their own summary
+  // samples). Naive sum double- or triple-counts, producing absurd
+  // daily totals (e.g. 5400+ kcal for a normal training day).
+  //
+  // Mitigation:
+  //   1. Group samples into non-overlapping time windows; within an
+  //      overlapping window, take the MAX single-source contribution
+  //      rather than summing all sources.
+  //   2. Cap any absurd single sample (anything > 500 kcal for a
+  //      single sample is certainly a summary sample that also got
+  //      duplicated elsewhere — cap it to 500 so it doesn't dominate).
+  //   3. Then sum the reduced window totals.
+  const activeCalSamples = samples
+    .filter((s) => s.metric === 'active_calories')
+    .map((s) => ({
+      start: new Date(s.startDate).getTime(),
+      end: new Date(s.endDate ?? s.startDate).getTime(),
+      value: Math.min(s.value, 500),
+      source: (s.source ?? '').trim(),
+    }))
+    .filter((s) => s.value > 0 && Number.isFinite(s.start) && Number.isFinite(s.end))
+    .sort((a, b) => a.start - b.start);
+  const windows: Array<{ start: number; end: number; bySource: Map<string, number> }> = [];
+  for (const s of activeCalSamples) {
+    // Merge into an existing window if the sample overlaps OR starts
+    // within 60s of the last window (adjacent samples from the same
+    // minute-bucket ring).
+    const last = windows[windows.length - 1];
+    if (last && s.start <= last.end + 60_000) {
+      last.end = Math.max(last.end, s.end);
+      last.bySource.set(s.source, (last.bySource.get(s.source) ?? 0) + s.value);
+    } else {
+      const m = new Map<string, number>();
+      m.set(s.source, s.value);
+      windows.push({ start: s.start, end: s.end, bySource: m });
+    }
+  }
+  // For each window, take the MAX per-source total (the most-trusted
+  // single source for that interval) instead of summing overlapping
+  // sources. This correctly dedupes ring-vs-workout-vs-third-party.
+  const activeCalRaw = windows.reduce((acc, w) => {
+    let maxForWindow = 0;
+    for (const v of w.bySource.values()) if (v > maxForWindow) maxForWindow = v;
+    return acc + maxForWindow;
+  }, 0);
+  // Final guardrail: no single day should exceed 4000 kcal active
+  // energy for a non-elite-endurance athlete. Clamp anything higher
+  // to flag the data as likely duplicated upstream.
+  const activeCal = activeCalRaw > 0 ? Math.min(activeCalRaw, 4000) : undefined;
 
   // Sleep: total asleep hours
   const asleepMinutes = sleepSessions
@@ -147,7 +215,7 @@ export function normalizeDayFromSamples(
     step_count: steps != null ? Math.round(steps) : undefined,
     active_calories: activeCal != null ? Math.round(activeCal) : undefined,
     workouts: normalizedWorkouts.length > 0 ? normalizedWorkouts : undefined,
-    data_source: provider === 'apple_health' ? 'apple_health_native' : 'health_connect_native',
+    data_source: providerDataSource(provider),
     imported_at: new Date().toISOString(),
     last_updated: new Date().toISOString(),
   };
@@ -159,7 +227,10 @@ export function normalizeDayFromSamples(
  */
 export function normalizeHealthData(
   userId: string,
-  provider: typeof HealthProvider.APPLE_HEALTH | typeof HealthProvider.MANUAL,
+  provider:
+    | typeof HealthProvider.APPLE_HEALTH
+    | typeof HealthProvider.HEALTH_CONNECT
+    | typeof HealthProvider.MANUAL,
   samples: RawHealthSample[],
   workouts: RawWorkoutSample[],
   sleepSessions: RawSleepSample[],

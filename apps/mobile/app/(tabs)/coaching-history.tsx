@@ -21,6 +21,8 @@ import { StyleSheet, ScrollView, Pressable, Share } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useCoachingCasesStore } from '../../src/store/coaching-cases-store';
 import type { CoachingCase, CoachingCaseUsefulness } from '@lauburu/shared';
+import { formatSeedWhoopLabel } from '../../src/services/athlete-capability-display';
+import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
 
 const USEFULNESS_COLOR: Record<CoachingCaseUsefulness, string> = {
   helped: '#4ade80',
@@ -95,7 +97,7 @@ function CaseRow({ c }: { c: CoachingCase }) {
             )}
             {c.context.whoop_recovery != null && (
               <Text style={styles.caseMetaChip}>
-                WHOOP {Math.round(c.context.whoop_recovery)}%
+                {formatSeedWhoopLabel(c.context.whoop_recovery)}
               </Text>
             )}
             {c.context.plan_hint && (
@@ -134,12 +136,12 @@ function CaseRow({ c }: { c: CoachingCase }) {
           </Text>
           {c.context.whoop_recovery != null && (
             <Text style={styles.detailBody}>
-              WHOOP recovery: {Math.round(c.context.whoop_recovery)}%
+              WHOOP reference recovery (calibration): {Math.round(c.context.whoop_recovery)}%
             </Text>
           )}
           {c.context.whoop_strain != null && (
             <Text style={styles.detailBody}>
-              Day strain: {c.context.whoop_strain.toFixed(1)}
+              WHOOP reference day strain: {c.context.whoop_strain.toFixed(1)}
             </Text>
           )}
           {c.context.recent_hard != null && c.context.recent_hard > 0 && (
@@ -171,16 +173,16 @@ function CaseRow({ c }: { c: CoachingCase }) {
           )}
 
           {/* Full prompt packet — rendered in a pre-like monospace block
-              so the user can see exactly what was sent to ChatGPT. Long
+              so the user can see exactly what was sent to AI Coach. Long
               blocks scroll naturally with the parent ScrollView. */}
           <Text style={[styles.detailSectionLabel, { marginTop: 10 }]}>
-            Prompt sent to ChatGPT
+            Prompt sent to AI Coach
           </Text>
           <View style={styles.promptBlock}>
             <Text style={styles.promptText}>{c.prompt_packet}</Text>
           </View>
 
-          {/* Re-share — lets the user send the same packet to ChatGPT
+          {/* Re-share — lets the user send the same packet to AI Coach
               again without re-generating from current state. Useful for
               "I want to ask the same thing again later" flows. */}
           <Pressable
@@ -255,8 +257,9 @@ export default function CoachingHistoryScreen() {
       <View style={styles.header}>
         <Text style={styles.heading}>Coaching History</Text>
         <Text style={styles.subtitle}>
-          Past "Ask ChatGPT" sessions and what the app saw when you asked.
+          Past AI coach sessions and what the app saw when you asked.
         </Text>
+        <AthleteCapabilitySummary mode="seed" showNote={false} />
       </View>
 
       {/* Summary strip — three counts, same pattern as Reference */}
@@ -327,8 +330,7 @@ export default function CoachingHistoryScreen() {
         <View style={styles.emptyCard}>
           <Text style={styles.emptyTitle}>No cases yet</Text>
           <Text style={styles.emptyBody}>
-            Tap "Ask ChatGPT for a second opinion" on the Home coach card to
-            start a case. When you come back and record whether it helped,
+            Open the AI launcher to start a case. When you come back and record whether it helped,
             the case is saved here for self-review.
           </Text>
         </View>

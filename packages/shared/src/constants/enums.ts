@@ -2,6 +2,7 @@
 export const HealthProvider = {
   WHOOP: 'whoop',
   APPLE_HEALTH: 'apple_health',
+  HEALTH_CONNECT: 'health_connect',
   GARMIN: 'garmin',
   POLAR: 'polar',
   CRONOMETER: 'cronometer',

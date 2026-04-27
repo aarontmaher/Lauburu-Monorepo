@@ -24,7 +24,21 @@ import { StyleSheet } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { usePolarStore } from '../store/polar-store';
 
-export function PolarCard() {
+export interface PolarViaHealthConnect {
+  detected: boolean;
+  sourceApp: string | null;
+  domains: string[];
+  daysWithRecords: number;
+  lastSeenAt: string | null;
+}
+
+export interface PolarCardProps {
+  /** Polar-via-Health-Connect provenance for the most recent sync. Null
+   * or { detected: false } means no Polar-origin HC records surfaced. */
+  viaHealthConnect?: PolarViaHealthConnect | null;
+}
+
+export function PolarCard({ viaHealthConnect }: PolarCardProps = {}) {
   const status = usePolarStore((s) => s.status);
   const fetchToday = usePolarStore((s) => s.fetchToday);
 
@@ -34,21 +48,54 @@ export function PolarCard() {
     if (status === 'idle') fetchToday();
   }, [status, fetchToday]);
 
+  const viaHcDetected = !!viaHealthConnect?.detected;
+  const viaHcPartial = viaHcDetected && (viaHealthConnect?.domains.length ?? 0) < 2;
+  const sourceApp = viaHealthConnect?.sourceApp ?? 'Polar Flow';
+  const domains = viaHealthConnect?.domains ?? [];
+
+  const statusLabel = viaHcDetected
+    ? viaHcPartial
+      ? 'Partial Polar data via Health Connect'
+      : 'Polar via Health Connect detected'
+    : 'Direct Polar not live yet';
+
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
         <View style={styles.titleBlock}>
           <Text style={styles.cardTitle}>Polar</Text>
-          <Text style={styles.sourceLabel}>scaffolded · not connected</Text>
+          <Text style={[styles.sourceLabel, viaHcDetected && styles.sourceLabelActive]}>
+            {statusLabel}
+          </Text>
         </View>
       </View>
 
-      <Text style={styles.bodyText}>
-        Polar data today reaches the app only when the Polar Flow app is
-        set to write into Apple Health / Health Connect — so it arrives as
-        generic metrics without Polar's richer readiness fields. A direct
-        Polar integration is reserved for a future batch.
-      </Text>
+      {viaHcDetected ? (
+        <>
+          <Text style={styles.bodyText}>
+            {`Health Connect is receiving data from ${sourceApp}. `}
+            {domains.length > 0
+              ? `Domains: ${domains.join(', ')}.`
+              : 'No domains confirmed yet — sync again to confirm.'}
+            {' '}
+            This counts as Polar via Health Connect — not a direct Polar adapter.
+            Readiness still requires direct WHOOP data.
+          </Text>
+          <Text style={styles.bodyText}>
+            Direct Polar (AccessLink / BLE) is not live yet. If you want
+            recovery-pro, nightly-recharge, or per-minute HR, the direct
+            adapter is the path — coming in a future batch.
+          </Text>
+        </>
+      ) : (
+        <Text style={styles.bodyText}>
+          Polar data reaches the app only when the Polar Flow app is set
+          to write into Health Connect (Android) or Apple Health (iOS) —
+          so it arrives as generic metrics without Polar&apos;s richer
+          readiness fields. If you use Polar Flow on Android, open it,
+          enable &quot;Write to Health Connect&quot;, then sync here.
+        </Text>
+      )}
 
       <View style={styles.pathsBlock}>
         <Text style={styles.pathsHeader}>Future paths</Text>
@@ -91,6 +138,10 @@ const styles = StyleSheet.create({
     opacity: 0.4,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+  },
+  sourceLabelActive: {
+    opacity: 0.85,
+    color: '#a8d96a',
   },
   bodyText: { fontSize: 13, opacity: 0.65, lineHeight: 18 },
 

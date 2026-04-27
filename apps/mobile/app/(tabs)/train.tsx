@@ -8,6 +8,8 @@ import {
   Keyboard,
 } from 'react-native';
 import { Text, View } from '@/components/Themed';
+import { LiveHrPill } from '../../src/components/LiveHrPill';
+import { TrainMachineSection } from '../../src/components/TrainMachineSection';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
@@ -15,7 +17,11 @@ import { useWhoopStore } from '../../src/store/whoop-store';
 import { useMachineStore } from '../../src/store/machine-store';
 import { useHIITProtocolsStore, buildProgressionDelta, detectNewBest } from '../../src/store/hiit-protocols-store';
 import type { SavedHIITProtocol, SavedHIITProtocolMetrics } from '../../src/store/hiit-protocols-store';
+import { useHIITWorkoutStore } from '../../src/store/hiit-workout-store';
+import type { HIITWorkoutRecord, HIITSetMetrics } from '@lauburu/shared';
 import { modalitySupportsMachineData } from '../../src/services/machine-connector';
+import { ATHLETE_CAPABILITY_COPY } from '../../src/services/athlete-capability-display';
+import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
 import { ReferencePositionPicker } from '../../src/components/ReferencePositionPicker';
 import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat, SessionSummary, SegmentType, MachineMetrics, WorkoutSource } from '@lauburu/shared';
 import {
@@ -470,6 +476,7 @@ function EntryForm({
   // that carries a user-provided label.
   const savedHIITProtocols = useHIITProtocolsStore((s) => s.protocols);
   const saveHIITProtocol = useHIITProtocolsStore((s) => s.saveProtocol);
+  const saveHIITWorkout = useHIITWorkoutStore((s) => s.saveWorkout);
   const removeHIITProtocol = useHIITProtocolsStore((s) => s.removeProtocol);
   // Local toggle for the expanded "My HIIT library" browser —
   // collapsed by default so the fast pill-strip recall path is
@@ -702,6 +709,200 @@ function EntryForm({
         { metrics: input.conditioning?.machine_metrics },
         priorBestMetrics,
       );
+    }
+
+    // Build and persist a full HIITWorkoutRecord if this is a HIIT session.
+    if (isInterval && iv) {
+      const now = new Date().toISOString();
+      const workSets = iv.rounds;
+      const workDur = iv.work_duration_s;
+      const restDur = iv.rest_duration_s;
+      const mm = input.conditioning?.machine_metrics;
+      const sets: HIITSetMetrics[] = [];
+      for (let i = 0; i < workSets; i++) {
+        sets.push({
+          setIndex: i * 2,
+          type: 'work',
+          durationSeconds: workDur,
+          avgWatts: mm?.avg_power_w ?? null,
+          peakWatts: null,
+          calories: mm?.calories != null ? Math.round(mm.calories / workSets) : null,
+          hrMin: null,
+          hrMax: null,
+          hrAvg: mm?.avg_hr_bpm ?? null,
+          distanceM: mm?.distance_m != null ? Math.round(mm.distance_m / workSets) : null,
+          avgCadence: null,
+        });
+        if (i < workSets - 1) {
+          sets.push({
+            setIndex: i * 2 + 1,
+            type: 'rest',
+            durationSeconds: restDur,
+            avgWatts: null, peakWatts: null, calories: null,
+            hrMin: null, hrMax: null, hrAvg: null,
+            distanceM: null, avgCadence: null,
+          });
+        }
+      }
+      const totalDur = workSets * workDur + (workSets - 1) * restDur;
+      const protocolFormat = `${workDur}:${restDur}`;
+
+      // BLE live-session fallback: if the user had an HR strap or
+      // FTMS machine streaming during this session but didn't enter
+      // HR/watts manually, ble-connect has been buffering samples
+      // into a session ring. Use those to fill avgHr/peakHr/avgWatts
+      // so the saved record reflects the live capture. Manual-entry
+      // values still win when present.
+      let liveAvgHr: number | null = null;
+      let livePeakHr: number | null = null;
+      let liveAvgPower: number | null = null;
+      let livePeakPower: number | null = null;
+      let liveAvgCadence: number | null = null;
+      let liveDistanceM: number | null = null;
+      let liveEnergyKcal: number | null = null;
+      let liveEnergyKj: number | null = null;
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const ble = require('../../src/services/ble-connect');
+        if (typeof ble?.getSessionStats === 'function') {
+          const stats = ble.getSessionStats();
+          if (stats && stats.sampleCount > 0) {
+            liveAvgHr = stats.avgHrBpm ?? null;
+            livePeakHr = stats.peakHrBpm ?? null;
+            liveAvgPower = stats.avgPowerW ?? null;
+            livePeakPower = stats.peakPowerW ?? null;
+            liveAvgCadence = stats.avgCadenceRpm ?? null;
+            liveDistanceM = stats.totalDistanceM ?? null;
+            liveEnergyKcal = stats.totalEnergyKcal ?? null;
+            liveEnergyKj = stats.totalEnergyKj ?? null;
+          }
+        }
+      } catch { /* ble module not linked — safe fallback */ }
+
+      // Track whether each field came from a live BLE strap/machine
+      // vs manual entry. Any of HR / watts / cadence / distance /
+      // calories being live-sourced flips the record to ble_live.
+      const hrFromLive = (mm?.avg_hr_bpm == null) && (liveAvgHr != null);
+      const wattsFromLive = (mm?.avg_power_w == null) && (liveAvgPower != null);
+      const cadenceFromLive = (mm?.avg_cadence == null) && (liveAvgCadence != null);
+      const distanceFromLive = (mm?.distance_m == null) && (liveDistanceM != null && liveDistanceM > 0);
+      const caloriesFromLive = (mm?.calories == null) && (liveEnergyKcal != null && liveEnergyKcal > 0);
+      const anyLive = hrFromLive || wattsFromLive || cadenceFromLive || distanceFromLive || caloriesFromLive;
+
+      const workout: HIITWorkoutRecord = {
+        id: `hiit-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        athleteId: user?.id ?? 'unknown',
+        date: now.slice(0, 10),
+        createdAt: now,
+        templateId: iv.label?.trim() || null,
+        protocolFormat: protocolFormat as any,
+        machineType: (input.conditioning?.modality as any) ?? 'manual',
+        machineProvider: anyLive ? 'ble_live' as any : 'manual',
+        sets,
+        totalSets: sets.length,
+        workSets,
+        restSets: sets.filter((s) => s.type === 'rest').length,
+        totalDurationSeconds: totalDur,
+        totalCalories: mm?.calories ?? liveEnergyKcal,
+        totalWorkKj: mm?.kilojoules ?? liveEnergyKj,
+        avgWatts: mm?.avg_power_w ?? liveAvgPower,
+        peakWatts: livePeakPower,
+        avgHr: mm?.avg_hr_bpm ?? liveAvgHr,
+        peakHr: livePeakHr,
+        source: anyLive ? 'ble_live' as any : 'manual',
+        sourceRecordIds: [],
+        // Flag the "connected but no samples" case explicitly so Recent
+        // Sessions + Coach can see the intent even when live data
+        // never arrived (Echo Bike didn't respond to FTMS wake, HR
+        // strap dropped before samples, etc.). No fake metrics.
+        missingFields: ((): any[] => {
+          const out: any[] = [];
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            const ble = require('../../src/services/ble-connect');
+            const bleState = ble?.getBleMachineState?.();
+            const machineBound = !!bleState?.machineDevice;
+            const hrBound = !!bleState?.hrDevice;
+            if ((machineBound || hrBound) && !anyLive) {
+              out.push('connected_no_samples');
+            }
+          } catch { /* ignore */ }
+          return out;
+        })(),
+      };
+      // Clear the session ring so the next session doesn't inherit
+      // old samples. Defensive: we already just read from it.
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const ble = require('../../src/services/ble-connect');
+        if (typeof ble?.clearSession === 'function') ble.clearSession();
+      } catch { /* ignore */ }
+      const comparison = saveHIITWorkout(workout);
+      // Explicit post-save confirmation so the tap result is never
+      // silent. Captures the PR / delta info from the comparison
+      // return value and the basic session totals so the user sees
+      // what was persisted + what happened to Recent Days / Coach.
+      try {
+        const lines: string[] = [];
+        lines.push(`Saved. ${workout.totalSets} set${workout.totalSets === 1 ? '' : 's'} · ${Math.max(1, Math.round((workout.totalDurationSeconds ?? 0) / 60))} min total`);
+        // Summarize BLE capture scope so the user knows exactly what
+        // was auto-filled vs entered manually.
+        if (anyLive) {
+          const captured: string[] = [];
+          if (hrFromLive) captured.push('HR');
+          if (wattsFromLive) captured.push('watts');
+          if (cadenceFromLive) captured.push('cadence');
+          if (distanceFromLive) captured.push('distance');
+          if (caloriesFromLive) captured.push('calories');
+          lines.push(`Captured live ${captured.join(' + ')} from BLE`);
+        } else {
+          // Surface "connected but no samples" explicitly so the user
+          // understands why the saved session has no live metrics.
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            const ble = require('../../src/services/ble-connect');
+            const bleState = ble?.getBleMachineState?.();
+            if (bleState?.machineDevice && (bleState.status === 'connected' || bleState.status === 'receiving_data')) {
+              lines.push(`BLE machine connected but no live samples arrived — saved manual session only.`);
+            } else if (bleState?.hrDevice) {
+              lines.push(`HR strap bound but no samples arrived — saved manual session only.`);
+            }
+          } catch { /* ignore */ }
+        }
+        if (distanceFromLive && liveDistanceM != null) {
+          lines.push(`Distance: ${(liveDistanceM / 1000).toFixed(2)} km · from strap/machine`);
+        }
+        if (cadenceFromLive && liveAvgCadence != null) {
+          lines.push(`Avg cadence: ${liveAvgCadence} rpm · from strap/machine`);
+        }
+        if (workout.totalCalories) lines.push(`Calories: ${Math.round(workout.totalCalories)}`);
+        if (workout.avgWatts) lines.push(`Avg watts: ${Math.round(workout.avgWatts)}${workout.peakWatts ? ` · peak ${Math.round(workout.peakWatts)}` : ''}${wattsFromLive ? ' · from strap/machine' : ''}`);
+        if (workout.avgHr) lines.push(`Avg HR: ${Math.round(workout.avgHr)}${workout.peakHr ? ` · peak ${Math.round(workout.peakHr)}` : ''}${hrFromLive ? ' · from strap/machine' : ''}`);
+        if (comparison) {
+          if (typeof comparison.avgWattsDelta === 'number' && Math.abs(comparison.avgWattsDelta) >= 1) {
+            lines.push(`vs last: ${comparison.avgWattsDelta > 0 ? '+' : ''}${Math.round(comparison.avgWattsDelta)} avg watts`);
+          }
+          if (typeof comparison.totalCaloriesDelta === 'number' && Math.abs(comparison.totalCaloriesDelta) >= 5) {
+            lines.push(`vs last: ${comparison.totalCaloriesDelta > 0 ? '+' : ''}${Math.round(comparison.totalCaloriesDelta)} cal`);
+          }
+          if (typeof comparison.avgHrDelta === 'number' && Math.abs(comparison.avgHrDelta) >= 2) {
+            lines.push(`vs last: ${comparison.avgHrDelta > 0 ? '+' : ''}${Math.round(comparison.avgHrDelta)} bpm avg HR`);
+          }
+          const wd = (comparison as any).wattsDropOffPct;
+          if (typeof wd === 'number' && wd >= 5) {
+            lines.push(`Fatigue: ${Math.round(wd)}% power drop-off across sets`);
+          }
+          const hd = (comparison as any).hrDriftPct;
+          if (typeof hd === 'number' && hd >= 3) {
+            lines.push(`HR drift: +${Math.round(hd)}% across sets`);
+          }
+        } else if (workout.templateId) {
+          lines.push('First session on this protocol — baseline recorded.');
+        }
+        lines.push('');
+        lines.push('Now visible in Recent Days + Coach.');
+        Alert.alert('HIIT saved', lines.join('\n'));
+      } catch { /* silent fallback — save already succeeded */ }
     }
 
     if (user?.id) syncData(user.id).catch(() => {});
@@ -1198,17 +1399,23 @@ function EntryForm({
         <View style={styles.suggestionCard}>
           <Text style={styles.suggestionLabel}>AI coach suggestion</Text>
           <Text style={styles.suggestionText}>
-            {topMode === 'hiit' ? 'Based on your recovery, 30/30 intervals are a good match today.'
-              : topMode === 'zone2' ? 'Zone 2 for 30min would build your aerobic base without impacting tomorrow.'
-              : topMode === 'weights' ? 'Moderate intensity for 45min fits your current recovery.'
+            {topMode === 'hiit' ? `${ATHLETE_CAPABILITY_COPY.seedSuggestionLabel} 30/30 intervals are a reasonable match today.`
+              : topMode === 'zone2' ? `${ATHLETE_CAPABILITY_COPY.seedSuggestionLabel} Zone 2 for 30min as a lower-risk aerobic option.`
+              : topMode === 'weights' ? `${ATHLETE_CAPABILITY_COPY.seedSuggestionLabel} moderate lifting today instead of a hard session.`
               : 'Your usual structure looks good for today.'}
           </Text>
-          <Text style={styles.suggestionNote}>
-            {topMode === 'hiit' ? 'Adjust protocol above if you prefer a different format.'
-              : topMode === 'zone2' ? 'Increase duration as your base improves.'
-              : topMode === 'weights' ? 'Adjust focus above to target specific muscle groups.'
-              : 'Edit segments to match what you actually did.'}
-          </Text>
+          {topMode === 'hiit' ? (
+            <AthleteCapabilitySummary
+              mode="seed"
+              detail="Seed-mode guidance only — adjust the protocol above if the latest workout or fatigue picture feels incomplete."
+            />
+          ) : topMode === 'zone2' ? (
+            <AthleteCapabilitySummary mode="partial_confidence" />
+          ) : topMode === 'weights' ? (
+            <AthleteCapabilitySummary mode="provisional" />
+          ) : (
+            <Text style={styles.suggestionNote}>Edit segments to match what you actually did.</Text>
+          )}
         </View>
       )}
 
@@ -1406,43 +1613,86 @@ function EntryForm({
           <View style={styles.machineHeaderRow}>
             <Text style={styles.sectionLabel}>Machine data (optional)</Text>
             <Text style={styles.machineSourceHint}>
-              {machineSource === 'machine_connected'
-                ? 'Live'
-                : machineSource === 'manual_machine_entry'
-                  ? 'Manual'
-                  : 'Phone timer'}
+              {(() => {
+                if (machineSource === 'manual_machine_entry') return 'Manual';
+                if (machineSource === 'machine_connected') {
+                  try {
+                    // eslint-disable-next-line @typescript-eslint/no-require-imports
+                    const ble = require('../../src/services/ble-connect');
+                    const state = ble?.getBleMachineState?.();
+                    if (state?.status === 'receiving_data') return 'Live · streaming';
+                    if (state?.machineDevice || state?.hrDevice) return 'Live · waiting';
+                  } catch { /* ignore */ }
+                  return 'Live · no device';
+                }
+                return 'Phone timer';
+              })()}
             </Text>
           </View>
 
-          {/* Source row — phone timer is default, manual entry + live
-              (disabled today) are future-ready sources. */}
+          {/* Source row — phone timer / manual / live BLE. Live BLE
+              is available now (Build 11+); auto-fill happens at save
+              time via the ble-connect session ring. When no machine
+              is bound we still let the user pre-select Live BLE so
+              the chosen source matches the intent; the helper text
+              below points them at Machine capture to pair. */}
           <View style={styles.pillRow}>
             {(['phone_timer', 'manual_machine_entry', 'machine_connected'] as WorkoutSource[]).map(
               (src) => {
                 const isActive = machineSource === src;
-                const isLive = src === 'machine_connected';
                 return (
                   <Pressable
                     key={src}
-                    style={[
-                      styles.pillSmall,
-                      isActive && styles.pillActive,
-                      isLive && { opacity: 0.4 },
-                    ]}
-                    disabled={isLive}
+                    style={[styles.pillSmall, isActive && styles.pillActive]}
                     onPress={() => setMachineSource(src)}>
                     <Text style={[styles.pillSmallText, isActive && styles.pillTextActive]}>
                       {src === 'phone_timer'
                         ? 'Phone timer'
                         : src === 'manual_machine_entry'
                           ? 'Manual'
-                          : 'Live (soon)'}
+                          : 'Live BLE'}
                     </Text>
                   </Pressable>
                 );
               },
             )}
           </View>
+          {machineSource === 'machine_connected' && (() => {
+            // Compact live-capture status so the user knows whether
+            // the BLE ring is actively capturing. Reads from the
+            // ble-connect module directly — no state subscription
+            // needed for this static render; the chip re-renders on
+            // re-entry of the Train tab.
+            let liveLine = 'Connect a machine in Machine capture above to capture live metrics.';
+            try {
+              // eslint-disable-next-line @typescript-eslint/no-require-imports
+              const ble = require('../../src/services/ble-connect');
+              const state = ble?.getBleMachineState?.();
+              // Gate the "will auto-fill" promise behind actual sample
+              // arrival. Previously the line claimed auto-fill as soon
+              // as the bike was paired — but if FTMS notifications
+              // never arrived (Echo / Assault quirk, missing wake),
+              // Save landed with zero metrics and the copy felt like
+              // a lie. Read the live session stats to decide copy.
+              let sampleCount = 0;
+              try {
+                const stats = ble?.getSessionStats?.();
+                if (stats && typeof stats.sampleCount === 'number') sampleCount = stats.sampleCount;
+              } catch { /* ignore */ }
+              if (state?.machineDevice) {
+                liveLine = sampleCount > 0
+                  ? `Capturing live from ${state.machineDevice.name} (${sampleCount} samples). Save will attach HR / watts / cadence.`
+                  : `Connected to ${state.machineDevice.name}. Start pedaling — metrics attach once samples arrive. You can still save the manual session.`;
+              } else if (state?.hrDevice) {
+                liveLine = sampleCount > 0
+                  ? `HR strap streaming (${state.hrDevice.name}). Save will attach HR. Connect a machine for watts + cadence.`
+                  : `HR strap bound (${state.hrDevice.name}). No samples yet — start the session. Connect a machine for watts + cadence.`;
+              }
+            } catch { /* ignore */ }
+            return (
+              <Text style={[styles.machineSourceHint, { marginTop: 4 }]}>{liveLine}</Text>
+            );
+          })()}
 
           {/* Manual-entry fields — collapsible area, modality-aware.
               Each modality shows only the fields the machine would plausibly
@@ -1702,8 +1952,7 @@ function EntryForm({
               </View>
 
               <Text style={styles.machineComplementHint}>
-                Machine metrics complement WHOOP — WHOOP gives readiness,
-                the machine gives the in-session output.
+                Machine metrics give the in-session output that complements your readiness — Apple Health and recent training context only see big-picture signals.
               </Text>
             </>
           )}
@@ -2262,6 +2511,17 @@ export default function TrainScreen() {
       contentContainerStyle={styles.content}
       keyboardShouldPersistTaps="handled">
       <Text style={styles.heading}>Log Training</Text>
+
+      {/* Live HR / power chip — appears only when a BLE HR or FTMS
+          stream is actually flowing. Self-hides after 6s of no
+          samples. Build 9+ only. */}
+      <LiveHrPill />
+
+      {/* Machine capture owned entirely by Train now. Collapsed
+          header when nothing paired, full FTMS card when expanded
+          or when a device is connected/streaming. Auto-hides on
+          Build 8 (no native module). */}
+      <TrainMachineSection />
 
       {submitted && !editingSession && (
         <View style={styles.successBanner}>

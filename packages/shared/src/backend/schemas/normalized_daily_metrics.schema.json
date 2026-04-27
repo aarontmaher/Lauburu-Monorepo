@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "normalized_daily_metrics",
+  "title": "Normalized Daily Metrics",
+  "description": "Layer 2: deterministic transforms only. No athlete-baseline-dependent flags. No coaching interpretation.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "updatedAt", "derivationVersion", "athleteId", "date", "completeness", "provider"],
+  "properties": {
+    "id": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "derivationVersion": { "type": "string" },
+    "athleteId": { "type": "string" },
+    "date": { "type": "string", "format": "date" },
+    "recoveryScore": { "type": ["number", "null"] },
+    "hrvMs": { "type": ["number", "null"] },
+    "restingHrBpm": { "type": ["number", "null"] },
+    "totalSleepHours": { "type": ["number", "null"] },
+    "dailyStrain": { "type": ["number", "null"] },
+    "activeCaloriesKcal": { "type": ["number", "null"] },
+    "workoutCount": { "type": "integer" },
+    "grapplingSessionCount": { "type": "integer" },
+    "presentFields": { "type": "array", "items": { "type": "string" } },
+    "missingFields": { "type": "array", "items": { "type": "string" } },
+    "completeness": { "enum": ["complete", "partial", "minimal"] },
+    "sourceAgeHours": { "type": ["number", "null"] },
+    "sourceRecordIds": { "type": "array", "items": { "type": "string" } },
+    "provider": { "type": "string" }
+  }
+}

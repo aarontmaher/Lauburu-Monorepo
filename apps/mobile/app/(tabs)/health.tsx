@@ -1,19 +1,35 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import {
   StyleSheet,
   ScrollView,
   Pressable,
   ActivityIndicator,
   Platform,
+  Alert,
 } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useTierStore } from '../../src/store/tier-store';
 import { isExpoGo } from '../../src/services/expo-detect';
+import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
 import { WhoopCard } from '../../src/components/WhoopCard';
 import { NutritionCard } from '../../src/components/NutritionCard';
+import { getSeedBackendStatusCopy } from '../../src/services/athlete-capability-display';
 import { PolarCard } from '../../src/components/PolarCard';
+import {
+  AppleHealthCard,
+  PolarDirectCard,
+  WhoopDirectCard,
+  HealthConnectProvenanceCard,
+  SamsungHealthCard,
+} from '../../src/components/IntegrationCards';
+import { MemoryProposalReview } from '../../src/components/MemoryProposalReview';
+import { SyncDiagnosticsCard } from '../../src/components/SyncDiagnosticsCard';
+import { HealthKitDebugCard } from '../../src/components/HealthKitDebugCard';
+import { HealthActionsPanel } from '../../src/components/HealthActionsPanel';
+import { SafeErrorBoundary } from '../../src/components/SafeErrorBoundary';
+import { useWhoopStore } from '../../src/store/whoop-store';
 import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures, CoachingResponse } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 
@@ -36,6 +52,26 @@ const METRIC_LABELS: Record<HealthMetricType, string> = {
   workouts: 'Workouts',
 };
 
+const WHOOP_STALE_HOURS = 6;
+
+function whoopSourceStatus(
+  whoopStatus: 'idle' | 'loading' | 'ready' | 'error',
+  sourceUpdatedAt: string | null,
+  hasCachedDay: boolean,
+): string {
+  if (whoopStatus === 'error') {
+    return hasCachedDay ? 'degraded_backend' : 'backend_error';
+  }
+  if (whoopStatus === 'idle' || whoopStatus === 'loading') return 'checking_backend';
+  if (!sourceUpdatedAt) return 'seed_backend';
+  const updatedAt = new Date(sourceUpdatedAt).getTime();
+  if (Number.isNaN(updatedAt)) return 'seed_backend';
+  const ageMs = Date.now() - updatedAt;
+  return ageMs > WHOOP_STALE_HOURS * 60 * 60 * 1000
+    ? 'stale_seed_backend'
+    : 'fresh_seed_backend';
+}
+
 function PermissionRow({
   metric,
   status,
@@ -55,6 +91,13 @@ function PermissionRow({
 // --- Today's metrics card ---
 
 function TodayCard({ today }: { today: DailyMetrics }) {
+  // Prefer WHOOP's real strain from the live day object when available
+  // over Apple Health's active-cal/100 proxy (which pegs to 21 on any
+  // high-activity day and has no relationship to actual WHOOP strain).
+  const whoopDay = useWhoopStore((s) => s.day);
+  const whoopStrainToday = whoopDay?.date === today.date ? whoopDay.daily_strain : null;
+  const hasWhoopStrain = typeof whoopStrainToday === 'number';
+  const showProxyStrain = !hasWhoopStrain && today.daily_strain != null && today.daily_strain < 21;
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>Today — {today.date}</Text>
@@ -62,13 +105,21 @@ function TodayCard({ today }: { today: DailyMetrics }) {
         <MetricBox label="Resting HR" value={today.resting_hr} unit="bpm" />
         <MetricBox label="HRV" value={today.hrv_ms} unit="ms" />
         <MetricBox label="Sleep" value={today.sleep_hours} unit="hrs" />
-        <MetricBox label="Steps" value={today.step_count} unit="" />
         <MetricBox label="Active Cal" value={today.active_calories} unit="kcal" />
-        <MetricBox
-          label="Day strain"
-          value={today.daily_strain}
-          unit=""
-        />
+        {hasWhoopStrain && (
+          <MetricBox
+            label="WHOOP strain"
+            value={whoopStrainToday}
+            unit=""
+          />
+        )}
+        {showProxyStrain && (
+          <MetricBox
+            label="Day load (est.)"
+            value={today.daily_strain}
+            unit=""
+          />
+        )}
       </View>
       {today.workouts && today.workouts.length > 0 && (
         <View style={styles.workoutSection}>
@@ -136,18 +187,32 @@ function RecentDays({ days }: { days: DailyMetrics[] }) {
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>Recent Days</Text>
-      {recent.map((day) => (
-        <View key={day.date} style={styles.dayRow}>
-          <Text style={styles.dayDate}>{day.date}</Text>
-          <Text style={styles.dayMetrics}>
-            {day.resting_hr ? `${day.resting_hr}bpm` : '—'}
-            {' · '}
-            {day.sleep_hours ? `${Math.round(day.sleep_hours * 10) / 10}h sleep` : '—'}
-            {' · '}
-            {day.step_count ? `${day.step_count} steps` : '—'}
-          </Text>
-        </View>
-      ))}
+      {recent.map((day) => {
+        // Compact row: date · RHR · sleep · HRV · strain. Missing
+        // fields render as em-dash (or are dropped when trailing) so
+        // the row never breaks layout and stays readable whether a
+        // full set or just a couple of fields are present. Strain
+        // prefers the day's real daily_strain (WHOOP-sourced when
+        // merged); when it's only the Apple Health proxy pegged to
+        // 21, show "—" rather than the misleading cap value.
+        const rhr = day.resting_hr ? `${Math.round(day.resting_hr)} bpm` : '—';
+        const sleep = day.sleep_hours ? `${(Math.round(day.sleep_hours * 10) / 10).toFixed(1)}h` : '—';
+        const hrv = day.hrv_ms ? `${Math.round(day.hrv_ms)} ms` : '—';
+        const strainVal = day.daily_strain;
+        const strain = strainVal == null
+          ? '—'
+          : strainVal >= 20.9
+            ? '—'
+            : strainVal.toFixed(1);
+        return (
+          <View key={day.date} style={styles.dayRow}>
+            <Text style={styles.dayDate}>{day.date}</Text>
+            <Text style={styles.dayMetrics}>
+              {rhr} · {sleep} · {hrv} HRV · strain {strain}
+            </Text>
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -174,6 +239,7 @@ function CoachingCard({ coaching }: { coaching: CoachingResponse }) {
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>Training Coaching</Text>
+      <AthleteCapabilitySummary mode="missing_whoop_native" showNote={false} />
 
       {/* Today's recommendation */}
       <View style={styles.coachSection}>
@@ -409,7 +475,7 @@ function TrendsCard({ features }: { features: DerivedFeatures }) {
           {features.workouts} workouts · {features.grappling_sessions} grappling
         </Text>
         <Text style={styles.trendMetaText}>
-          Sources: {features.provenance.join(', ') || 'none'}
+          Sources: {(features.provenance ?? []).join(', ') || 'none'}
         </Text>
       </View>
     </View>
@@ -448,8 +514,165 @@ function BackendSyncCard() {
   const lastPersistedAt = useHealthStore((s) => s.lastPersistedAt);
   const lastPersistResult = useHealthStore((s) => s.lastPersistResult);
   const persistToBackend = useHealthStore((s) => s.persistToBackend);
+  const storeError = useHealthStore((s) => s.error);
   const authStatus = useAuthStore((s) => s.status);
   const canPersist = useTierStore((s) => s.can)('backend_persistence');
+  // Local in-progress state — flips true the instant the button is
+  // pressed so the user gets immediate feedback. Previously we only
+  // observed the health-store `persisting` flag, which doesn't flip
+  // true until AFTER the Railway fan-out completes, making the button
+  // look idle for the 2-5s Railway phase.
+  const [saving, setSaving] = useState<false | 'railway' | 'supabase'>(false);
+  // pressResult now tracks both halves of the fan-out independently.
+  // Previously only Supabase success/failure was rendered — which read
+  // as "Save failed" in red even when Railway primary had succeeded.
+  // Splitting the state lets the UI show "Railway primary saved · N
+  // items" in green while the Supabase line states its exact blocker.
+  // Three-state Railway result (ok+items / ok+empty / errored) means we
+  // can render all combinations truthfully: green when either path
+  // saved, red only when an actual error happened, yellow when the
+  // Supabase mirror is the only block, and neutral when there was
+  // genuinely nothing to push.
+  const [pressResult, setPressResult] = useState<
+    {
+      at: string;
+      railway: { status: 'saved' | 'empty' | 'error'; lines: string[]; error?: string };
+      supabase: { ok: boolean; recordCount?: number; dateRange?: string; error?: string };
+    } | null
+  >(null);
+
+  const handlePress = useCallback(async () => {
+    const startedAt = new Date().toISOString();
+    // Flip local saving state BEFORE any await so the button re-renders
+    // on the next frame. Health-store's own `persisting` only covers
+    // the Supabase leg and would leave the button looking idle during
+    // the Railway fan-out. Clear any prior result so stale green/red
+    // lines don't linger while the new save runs.
+    setSaving('railway');
+    setPressResult(null);
+    // STEP 1: Always run the Railway durable-persist path first. It's
+    // independent of Supabase's JWT flip and authenticated via the
+    // internal token — so even when the Supabase mirror is blocked,
+    // Save to Account still pushes Apple Health days + nutrition +
+    // HIIT sessions to the primary durable layer. This is what the
+    // AI actually learns from.
+    let railwayLines: string[] = [];
+    let railwayError: string | null = null;
+    let railwayCalled = false;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { persistDurableToRailway } = require('../../src/services/durable-persist');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const nutStore = require('../../src/store/nutrition-store');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const hiitStore = require('../../src/store/hiit-workout-store');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const trainingStore = require('../../src/store/training-store');
+      const authMod = require('../../src/store/auth-store');
+      const uid = authMod?.useAuthStore?.getState?.()?.user?.id;
+      const days = useHealthStore.getState().days;
+      const nut = nutStore?.useNutritionStore?.getState?.();
+      const hiitWorkouts = hiitStore?.useHIITWorkoutStore?.getState?.()?.workouts ?? [];
+      const trainingSessions = trainingStore?.useTrainingStore?.getState?.()?.sessions ?? [];
+
+      // Assemble the AppAthleteState snapshot so the merged, device-
+      // agnostic interpretation (recovery/load/sleep/fueling/source-
+      // roles) is persisted alongside raw days. Without this, AI
+      // learning only sees ingest — not the app's own reasoning.
+      let athleteStateSnapshot: unknown = null;
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const appState = require('../../src/services/app-athlete-state');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const whoopStore = require('../../src/store/whoop-store');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const secureStorage = require('../../src/store/secure-storage');
+        const whoop = whoopStore?.useWhoopStore?.getState?.();
+        const whoopCsv = await secureStorage.readStoredJson?.('whoop_csv_imported_v1').catch(() => null);
+        athleteStateSnapshot = appState.buildAppAthleteState?.({
+          todayIsoDate: new Date().toISOString().slice(0, 10),
+          days,
+          features: useHealthStore.getState().features,
+          sessions: trainingSessions,
+          whoopDay: whoop?.day ?? null,
+          whoopFetchedAt: whoop?.fetchedAt ?? null,
+          nutritionToday: nut?.today ?? null,
+          nutritionTargets: nut?.targets ?? null,
+          healthLastSyncAt: useHealthStore.getState().lastSyncAt,
+          whoopCsv: whoopCsv ? {
+            imported: !!whoopCsv.imported,
+            rowCount: whoopCsv.totalRowsIngested ?? null,
+            windowDays: null,
+          } : null,
+          whoopFetchStatus: whoop?.status,
+        });
+      } catch { /* non-fatal — snapshot is optional */ }
+
+      if (uid) {
+        railwayCalled = true;
+        const railway = await persistDurableToRailway(
+          uid, days, nut?.today ?? null, nut?.historyDays ?? [], hiitWorkouts, trainingSessions, athleteStateSnapshot,
+        );
+        if (railway.ok) {
+          if (railway.daysPushed > 0) railwayLines.push(`${railway.daysPushed} health days`);
+          if (railway.nutritionDaysPushed > 0) railwayLines.push(`${railway.nutritionDaysPushed} nutrition days`);
+          if (railway.hiitWorkoutsPushed > 0) railwayLines.push(`${railway.hiitWorkoutsPushed} HIIT sessions`);
+          if (railway.sessionsPushed > 0) railwayLines.push(`${railway.sessionsPushed} training sessions`);
+          if (railway.athleteStateSnapshotPushed) railwayLines.push('athlete-state snapshot');
+        } else {
+          railwayError = railway.error ?? 'Railway ingest returned error';
+        }
+      } else {
+        railwayError = 'Sign in required for Railway primary save';
+      }
+    } catch (e: any) {
+      // Swallowing this previously made the UI report "nothing new to
+      // push" when the fan-out helper actually threw — a silent lie.
+      railwayError = e?.message ?? 'Railway fan-out threw';
+    }
+
+    // STEP 2: Try the Supabase /health-import mirror. Under the new
+    // JWT Signing Keys model, signing-key issues surface as 401s; the
+    // app shows the JWT-Keys hint banner. Success = redundant backup.
+    setSaving('supabase');
+    const ok = await persistToBackend();
+    const railwayStatus: 'saved' | 'empty' | 'error' =
+      railwayError != null ? 'error'
+        : railwayLines.length > 0 ? 'saved'
+          : railwayCalled ? 'empty' : 'error';
+    const railwaySummary =
+      railwayStatus === 'saved' ? `Railway primary saved: ${railwayLines.join(', ')}`
+        : railwayStatus === 'empty' ? 'Railway primary: nothing new to push'
+          : `Railway primary error: ${railwayError ?? 'unknown'}`;
+
+    if (ok) {
+      const next = useHealthStore.getState();
+      setPressResult({
+        at: startedAt,
+        railway: { status: railwayStatus, lines: railwayLines, error: railwayError ?? undefined },
+        supabase: {
+          ok: true,
+          recordCount: next.lastPersistResult?.recordCount ?? 0,
+          dateRange: next.lastPersistResult?.dateRange ?? '—',
+        },
+      });
+      const supaLine = `Supabase mirror: ${next.lastPersistResult?.recordCount ?? 0} days (${next.lastPersistResult?.dateRange ?? '—'})`;
+      Alert.alert('Backend Sync', `${railwaySummary}\n${supaLine}`);
+    } else {
+      const err = useHealthStore.getState().error ?? 'Unknown error';
+      setPressResult({
+        at: startedAt,
+        railway: { status: railwayStatus, lines: railwayLines, error: railwayError ?? undefined },
+        supabase: { ok: false, error: err },
+      });
+      Alert.alert('Backend Sync',
+        `${railwaySummary}\n\n${railwayStatus === 'saved' ? 'Your data is durable on Railway.' : 'Primary path unavailable too — see the Railway error above.'} Supabase mirror is configured · source-state mirror is live · full per-day metric mirror is still pending. Railway primary remains the durable source.`,
+      );
+    }
+    // Flip button back to idle only when the whole fan-out (both legs)
+    // has landed a final result.
+    setSaving(false);
+  }, [persistToBackend]);
 
   if (authStatus !== 'member') return null;
 
@@ -469,17 +692,67 @@ function BackendSyncCard() {
       <View style={styles.cardHeaderRow}>
         <Text style={styles.cardTitle}>Backend Sync</Text>
         <Pressable
-          style={styles.syncButton}
-          onPress={persistToBackend}
-          disabled={persisting}>
-          {persisting ? (
+          style={[styles.syncButton, (saving || persisting) && { opacity: 0.7 }]}
+          onPress={handlePress}
+          disabled={!!saving || persisting}>
+          {saving ? (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <ActivityIndicator size="small" color="#d4e157" />
+              <Text style={[styles.syncButtonText, { fontSize: 11 }]}>
+                {saving === 'railway' ? 'Saving Railway…' : 'Saving Supabase…'}
+              </Text>
+            </View>
+          ) : persisting ? (
             <ActivityIndicator size="small" color="#d4e157" />
           ) : (
-            <Text style={styles.syncButtonText}>Save to Account</Text>
+            <Text style={styles.syncButtonText}>Save long-term data</Text>
           )}
         </Pressable>
       </View>
-      {lastPersistedAt && (
+      {saving && (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 6 }}>
+          <ActivityIndicator size="small" color="#d4e157" />
+          <Text style={[styles.syncTimestamp, { color: '#d4e157' }]}>
+            {saving === 'railway'
+              ? 'Saving Railway primary · pushing Apple Health days, nutrition, sessions…'
+              : 'Saving Supabase mirror · attempting redundant backup…'}
+          </Text>
+        </View>
+      )}
+      {pressResult?.railway.status === 'saved' && (
+        <Text style={[styles.syncTimestamp, { color: '#4ade80' }]}>
+          ✓ Synced to Railway this push · {pressResult.railway.lines.join(', ')} (server dedupes by date)
+        </Text>
+      )}
+      {pressResult?.railway.status === 'empty' && (
+        <Text style={styles.syncTimestamp}>
+          Railway primary: nothing new to push.
+        </Text>
+      )}
+      {pressResult?.railway.status === 'error' && (
+        <Text style={[styles.syncTimestamp, { color: '#ff6b6b' }]}>
+          Railway primary error: {pressResult.railway.error ?? 'unknown'}
+        </Text>
+      )}
+      {pressResult?.supabase.ok && (
+        <Text style={[styles.syncTimestamp, { color: '#4ade80', opacity: 0.8 }]}>
+          ✓ Supabase mirror saved: {pressResult.supabase.recordCount} day{pressResult.supabase.recordCount === 1 ? '' : 's'} ({pressResult.supabase.dateRange})
+        </Text>
+      )}
+      {pressResult && !pressResult.supabase.ok && (
+        <Text style={[styles.syncTimestamp, {
+          // Yellow when Supabase is the only block and Railway saved —
+          // this is the steady-state we expect until the JWT flip.
+          // Red only when both paths failed, because that IS a real
+          // total-failure worth flagging.
+          color: pressResult.railway.status === 'error' ? '#ff6b6b' : '#d4e157',
+        }]}>
+          {pressResult.railway.status === 'error'
+            ? 'Supabase mirror also blocked'
+            : 'Supabase mirror configured · source-state live · per-day mirror pending'}
+        </Text>
+      )}
+      {!saving && lastPersistedAt && (
         <Text style={styles.syncTimestamp}>
           Last saved: {new Date(lastPersistedAt).toLocaleString()}
           {lastPersistResult
@@ -487,11 +760,56 @@ function BackendSyncCard() {
             : ''}
         </Text>
       )}
-      {!lastPersistedAt && (
-        <Text style={styles.syncTimestamp}>
-          Not yet saved to your account. Tap to persist.
-        </Text>
+      {!saving && !lastPersistedAt && !pressResult && (
+        <>
+          <Text style={styles.syncTimestamp}>
+            {'Your Apple Health days, nutrition history, HIIT + training sessions, and the merged athlete-state snapshot already stream to the durable backend layer — they survive reinstall and feed long-term AI learning.'}
+          </Text>
+          <Text style={[styles.syncTimestamp, { opacity: 0.5 }]}>
+            {'Tap Save long-term data to push a fresh local snapshot to Railway. The server dedupes by date so re-pushing is safe and never overwrites older history.'}
+          </Text>
+        </>
       )}
+      {/* Supabase JWT algorithm mismatch is an admin-side blocker —
+          surface it explicitly so the user knows no amount of tapping
+          will fix it until the dashboard knob flips. Apple Health →
+          Coach still works via the Railway /ingest path regardless. */}
+      {(() => {
+        const err = (pressResult && !pressResult.supabase.ok ? (pressResult.supabase.error ?? '') : (storeError ?? '')) ?? '';
+        const isJwtError = /jwt|signing|unauthor|401/i.test(err);
+        if (!isJwtError) {
+          if (storeError && !pressResult) {
+            return (
+              <Text style={[styles.syncTimestamp, { color: '#ff6b6b' }]}>
+                Previous error: {storeError}
+              </Text>
+            );
+          }
+          return null;
+        }
+        return (
+          <View style={{
+            marginTop: 6, padding: 10, borderRadius: 8,
+            backgroundColor: 'rgba(255,107,107,0.08)',
+            borderWidth: 1, borderColor: 'rgba(255,107,107,0.25)', gap: 4,
+          }}>
+            <Text style={{ color: '#ff6b6b', fontSize: 12, fontWeight: '700' }}>
+              Supabase JWT key needs attention
+            </Text>
+            <Text style={{ color: '#e0e0e0', fontSize: 12, lineHeight: 16 }}>
+              The Supabase mirror rejected this access token.{'\n'}
+              {'\n'}
+              Operator steps:{'\n'}
+              1. Supabase dashboard → Project Settings → JWT Keys: confirm an active signing key exists. If you recently rotated to a standby, the old token can't verify until the standby is promoted.{'\n'}
+              2. Sign out and sign back in on this device so the next access-token is signed by the active key.{'\n'}
+              3. Tap Save to Account again.
+            </Text>
+            <Text style={{ color: '#888', fontSize: 11, lineHeight: 14 }}>
+              Apple Health → Coach still works via the Railway /ingest pipeline regardless — this blocker only affects the direct-to-Supabase persist path.
+            </Text>
+          </View>
+        );
+      })()}
     </View>
   );
 }
@@ -526,40 +844,75 @@ export default function HealthScreen() {
   const insights = useHealthStore((s) => s.insights);
   const coaching = useHealthStore((s) => s.coaching);
   const error = useHealthStore((s) => s.error);
+  const polarViaHc = useHealthStore((s) => s.polarViaHc);
+  const samsungViaHc = useHealthStore((s) => s.samsungHealthViaHc);
   const checkPermissions = useHealthStore((s) => s.checkPermissions);
   const requestPermissions = useHealthStore((s) => s.requestPermissions);
   const syncData = useHealthStore((s) => s.syncData);
+  const whoopStatus = useWhoopStore((s) => s.status);
+  const whoopSourceUpdatedAt = useWhoopStore((s) => s.day?.source_updated_at ?? null);
+  const whoopHasDay = useWhoopStore((s) => s.day != null);
 
   const authStatus = useAuthStore((s) => s.status);
   const user = useAuthStore((s) => s.user);
+  const isMember = authStatus === 'member';
 
   const inExpoGo = isExpoGo();
 
-  // Only check permissions in native builds — getHealthService crashes in Expo Go
+  // Live native-availability probe so the UI reflects actual HealthKit
+  // state without waiting for the async store checkPermissions to
+  // settle — which was causing "Not set up" to stick even after the
+  // module loaded successfully.
+  const [nativeAvailable, setNativeAvailable] = useState<boolean | null>(null);
+  const refreshNativeAvailability = useCallback(() => {
+    if (inExpoGo || Platform.OS !== 'ios') {
+      setNativeAvailable(null);
+      return;
+    }
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { getHealthKitNativeDebug } = require('../../src/services/health.ios');
+      const d = getHealthKitNativeDebug();
+      setNativeAvailable(d.isHealthDataAvailableResult ?? null);
+    } catch {
+      setNativeAvailable(null);
+    }
+  }, [inExpoGo]);
+
   useEffect(() => {
+    refreshNativeAvailability();
     if (!inExpoGo) {
       checkPermissions();
     }
-  }, [checkPermissions, inExpoGo]);
+  }, [checkPermissions, inExpoGo, refreshNativeAvailability]);
 
   const platformName = Platform.OS === 'ios' ? 'Apple HealthKit' : 'Health Connect';
-  const isAvailable = inExpoGo ? false : (permissions?.available ?? false);
+  // isAvailable prefers the live native probe on iOS — if HealthKit is
+  // ready on the device, the UI must not claim "not linked", even if
+  // the zustand permissions state hasn't populated yet.
+  const isAvailable = useMemo(() => {
+    if (inExpoGo) return false;
+    if (Platform.OS === 'ios' && nativeAvailable != null) return nativeAvailable;
+    return permissions?.available ?? false;
+  }, [inExpoGo, nativeAvailable, permissions?.available]);
   const anyAuthorized = inExpoGo
     ? false
-    : permissions
+    : permissions && permissions.permissions
       ? Object.values(permissions.permissions).some((s) => s === 'authorized')
       : false;
 
-  const handleConnect = async () => {
-    if (inExpoGo) return;
-    const granted = await requestPermissions();
-    if (granted && user?.id) {
-      syncData(user.id);
-    }
-  };
+  // handleConnect removed — the top HealthActionsPanel owns the connect
+  // path. Keeping a second Connect button here created two UX truths
+  // (top panel surfaced native errors; middle button did not) and made
+  // the middle card look unresponsive.
 
   const handleSync = () => {
-    if (inExpoGo) return;
+    // eslint-disable-next-line no-console
+    console.log('[AppleHealth] Sync tapped', { inExpoGo, isAvailable });
+    if (inExpoGo) {
+      Alert.alert('Expo Go', 'Sync requires a native build. Install the preview build.');
+      return;
+    }
     if (user?.id) syncData(user.id);
   };
 
@@ -568,6 +921,20 @@ export default function HealthScreen() {
       style={styles.container}
       contentContainerStyle={styles.content}>
       <Text style={styles.heading}>Health</Text>
+
+      {/* TOP action panel — unmistakable buttons for Apple Health +
+          WHOOP, plus a visible identity line (app version + build +
+          EAS update ID + channel + bundle timestamp) so we can prove
+          which code is actually running. Placed before every other
+          card so no debug panel or source card can cover it. */}
+      <SafeErrorBoundary label="Health actions panel">
+        <HealthActionsPanel />
+      </SafeErrorBoundary>
+
+      {/* HealthKit module-load / build diagnostics — collapsed by
+          default so it doesn't dominate the main screen. Testers can
+          still expand it when debugging. */}
+      {Platform.OS === 'ios' && <HealthKitDebugDisclosure />}
 
       {isExpoGo() && <ExpoGoNotice />}
 
@@ -578,29 +945,36 @@ export default function HealthScreen() {
           <Text
             style={[
               styles.availBadge,
-              { color: isAvailable ? '#4ade80' : '#888' },
+              { color: isAvailable ? (anyAuthorized ? '#4ade80' : '#d4e157') : '#888' },
             ]}>
-            {isAvailable ? 'Available' : 'Not set up'}
+            {isAvailable
+              ? anyAuthorized
+                ? lastSyncAt && days.length > 0
+                  ? 'Connected'
+                  : lastSyncAt
+                    ? 'Connected — no data'
+                    : 'Permission granted — sync needed'
+                : 'Ready to connect'
+              : 'Not available'}
           </Text>
         </View>
 
-        {!isAvailable && !inExpoGo && (
+        {!isAvailable && !inExpoGo && Platform.OS === 'ios' && (
           <Text style={styles.unavailNote}>
-            {Platform.OS === 'ios'
-              ? "On-device Apple Health isn't connected here. Open the iOS Health app and grant Lauburu the metrics you want to sync."
-              : "Health Connect isn't connected here. Requires Android 14+ or the Health Connect app."}
+            HealthKit reports as unavailable on this device. Open iOS Settings → Health and confirm Apple Health is available, then reopen Lauburu and tap Connect Apple Health at the top of this tab.
+          </Text>
+        )}
+
+        {!isAvailable && !inExpoGo && Platform.OS !== 'ios' && (
+          <Text style={styles.unavailNote}>
+            Health Connect isn't connected here. Requires Android 14+ or the Health Connect app.
           </Text>
         )}
 
         {isAvailable && !anyAuthorized && (
-          <>
-            <Text style={styles.connectNote}>
-              Connect to read heart rate, HRV, sleep, steps, calories, and workouts.
-            </Text>
-            <Pressable style={styles.connectButton} onPress={handleConnect}>
-              <Text style={styles.connectText}>Connect {platformName}</Text>
-            </Pressable>
-          </>
+          <Text style={styles.connectNote}>
+            Tap Manage health sources above to connect. Lauburu appears in iOS Settings → Health → Data Access & Devices after you grant at least one metric.
+          </Text>
         )}
 
         {isAvailable && anyAuthorized && (
@@ -611,8 +985,10 @@ export default function HealthScreen() {
                   {syncing
                     ? 'Syncing health data...'
                     : lastSyncAt
-                      ? `Last sync: ${new Date(lastSyncAt).toLocaleTimeString()}`
-                      : 'Not synced yet'}
+                      ? days.length > 0
+                        ? `Connected — last sync ${new Date(lastSyncAt).toLocaleTimeString()}`
+                        : `Connected — last sync ${new Date(lastSyncAt).toLocaleTimeString()} (no data found)`
+                      : 'Permission granted — tap Sync Now'}
                 </Text>
                 {days.length > 0 && !syncing && (
                   <Text style={styles.syncDayCount}>
@@ -635,9 +1011,27 @@ export default function HealthScreen() {
             </View>
 
             {days.length === 0 && !syncing && lastSyncAt && (
-              <Text style={styles.noDataNote}>
-                No health data found. Add sample data in the Health app, then sync again.
-              </Text>
+              <View style={{ gap: 6 }}>
+                <Text style={styles.noDataNote}>
+                  No health records found in the last 30 days.
+                </Text>
+                {Platform.OS === 'android' && (
+                  <Text style={styles.noDataNote}>
+                    If you use Samsung Health:{'\n'}
+                    1. Open Samsung Health → Settings → Health Connect{'\n'}
+                    2. Tap "App permissions" → allow Samsung Health to share data{'\n'}
+                    3. Go back to Samsung Health main screen to trigger a sync{'\n'}
+                    4. Return here and tap Refresh{'\n\n'}
+                    If you use another health app (Fitbit, Garmin, etc.):{'\n'}
+                    Check that it writes to Health Connect in its settings.
+                  </Text>
+                )}
+                {Platform.OS === 'ios' && (
+                  <Text style={styles.noDataNote}>
+                    Make sure Apple Health has data. Open the iOS Health app → Browse → check that metrics like Sleep, Steps, or Heart Rate have recent entries.
+                  </Text>
+                )}
+              </View>
             )}
 
             {authStatus !== 'member' && (
@@ -657,91 +1051,216 @@ export default function HealthScreen() {
         )}
       </View>
 
-      {/* Permissions detail */}
-      {permissions && isAvailable && (
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Permissions</Text>
-          {(Object.entries(permissions.permissions) as [HealthMetricType, PermissionStatus][]).map(
-            ([metric, status]) => (
-              <PermissionRow key={metric} metric={metric} status={status} />
-            ),
-          )}
-        </View>
+      {/* Permissions detail — collapsed by default. The list is
+          verbose and dominated the page; summary chip + disclosure
+          keeps the info available without clutter. */}
+      {permissions && permissions.permissions && isAvailable && (
+        <PermissionsDisclosure permissions={permissions.permissions} />
       )}
 
+      {/* Nutrition — promoted here from the old mid-page slot so it's
+          discoverable right under the source/connection area. The card
+          exposes Search food / Barcode / Manual / Usual routine / AI
+          photo modes and feeds the merged nutrition summary + Coach
+          read-path on every add. */}
+      <SafeErrorBoundary label="Nutrition card">
+        <NutritionCard />
+      </SafeErrorBoundary>
+
       {/* Training insights — main guidance card */}
-      {insights && <InsightsCard insights={insights} />}
+      {insights && (
+        <SafeErrorBoundary label="Insights card">
+          <InsightsCard insights={insights} />
+        </SafeErrorBoundary>
+      )}
 
       {/* Structured coaching */}
-      {coaching && coaching.readiness.level !== 'grey' && (
-        <CoachingCard coaching={coaching} />
+      {coaching && coaching.readiness?.level !== 'grey' && (
+        <SafeErrorBoundary label="Coaching card">
+          <CoachingCard coaching={coaching} />
+        </SafeErrorBoundary>
       )}
 
       {/* Flags */}
-      {flags.length > 0 && <FlagsCard flags={flags} />}
+      {flags.length > 0 && (
+        <SafeErrorBoundary label="Flags card">
+          <FlagsCard flags={flags} />
+        </SafeErrorBoundary>
+      )}
 
       {/* Today's data */}
-      {today && <TodayCard today={today} />}
+      {today && (
+        <SafeErrorBoundary label="Today card">
+          <TodayCard today={today} />
+        </SafeErrorBoundary>
+      )}
 
       {/* WHOOP — backend-fed, independent of on-device HealthKit */}
-      <WhoopCard />
+      <SafeErrorBoundary label="WHOOP card">
+        <WhoopCard />
+      </SafeErrorBoundary>
 
-      {/* Nutrition — manual entry today, Cronometer API swap later */}
-      <NutritionCard />
+      {/* Nutrition is app-first: Apple Health dietary import + manual
+          + search + barcode + AI photo. Rendered much higher on this
+          tab — it's one of the most-used surfaces, so it sits right
+          under the source/connection area, not buried at the bottom. */}
 
-      {/* Polar — scaffolded, three future paths documented in the card */}
-      <PolarCard />
+      {/* ── Primary / relevant source cards ─────────────────────
+          Shown by default:
+          - Apple Health card on iOS, Samsung/HC cards on Android
+          - WHOOP Direct (proprietary readiness — keep regardless of OS)
+          - Polar cards only when Polar-via-HC provenance was actually
+            detected or the user tapped Connect
+          Cronometer + Concept2 + FTMS/BLE machine capture are all OUT
+          of the Health screen. Machine capture moved to the Train tab
+          where it belongs as part of session execution. Cronometer and
+          Concept2 are not in the active product path. */}
+      {isMember && Platform.OS === 'ios' && (
+        <SafeErrorBoundary label="Apple Health card">
+          <AppleHealthCard />
+        </SafeErrorBoundary>
+      )}
+      {isMember && Platform.OS === 'android' && (
+        <SafeErrorBoundary label="Samsung Health card">
+          <SamsungHealthCard />
+        </SafeErrorBoundary>
+      )}
+      {isMember && (
+        <SafeErrorBoundary label="WHOOP Direct card">
+          <WhoopDirectCard />
+        </SafeErrorBoundary>
+      )}
+      {/* Polar: render only when there's real evidence the user uses
+          Polar — either Polar Flow is writing to Health Connect OR a
+          direct-Polar connection exists. Otherwise it's noise. */}
+      {isMember && polarViaHc?.detected && (
+        <SafeErrorBoundary label="Polar card">
+          <PolarCard viaHealthConnect={polarViaHc} />
+        </SafeErrorBoundary>
+      )}
+      {/* Polar Direct (OAuth) — surfaced for all signed-in users so
+          testers without Polar-via-Health-Connect provenance still
+          have a discoverable connect path. The card probes its own
+          status and renders truthfully (`Not connected` · `Partial`
+          · `Connected` · etc.) — never a dead button. */}
+      {isMember && (
+        <SafeErrorBoundary label="Polar Direct card">
+          <PolarDirectCard />
+        </SafeErrorBoundary>
+      )}
+      {/* Health Connect provenance card — Android-only + only when
+          provenance was actually detected. Hiding on iOS unconditionally. */}
+      {isMember && Platform.OS === 'android' && (polarViaHc?.detected || samsungViaHc?.detected) && (
+        <SafeErrorBoundary label="Health Connect provenance card">
+          <HealthConnectProvenanceCard />
+        </SafeErrorBoundary>
+      )}
+
+      {/* Machine capture is owned by the Train tab, not Health.
+          Pair BLE HR strap / FTMS machine, see live HR/power, and
+          save sessions all happen in Train. Health stays focused on
+          Apple Health / WHOOP / enrichment / source status. */}
+
+      {/* Long-term data sync — relocated into the connection-sources
+          area so it sits next to Apple Health / WHOOP / Polar / CSV
+          import rather than dominating the main metrics feed. Railway
+          primary save lives here; Supabase mirror remains optional
+          redundancy. */}
+      <SafeErrorBoundary label="Backend sync card">
+        <BackendSyncCard />
+      </SafeErrorBoundary>
+
+      {/* Advanced — reserved for future advanced source info. Empty
+          for now since Cronometer/Concept2/machine capture are all
+          out of the health-source path. Kept as a placeholder if we
+          need to reintroduce an advanced diagnostic later. */}
+      {isMember && (
+        <OtherSourcesDisclosure polarDetected={!!polarViaHc?.detected} samsungDetected={!!samsungViaHc?.detected} />
+      )}
+
+      {/* Memory proposal review — shows trend candidates + weekly promotion candidates */}
+      {isMember && (
+        <SafeErrorBoundary label="Memory proposal review">
+          <MemoryProposalReview />
+        </SafeErrorBoundary>
+      )}
+
+      {/* Sync diagnostics — tester-facing, collapsible */}
+      <SafeErrorBoundary label="Sync diagnostics card">
+        <SyncDiagnosticsCard />
+      </SafeErrorBoundary>
 
       {/* 7-day trends */}
-      {features && <TrendsCard features={features} />}
+      {features && (
+        <SafeErrorBoundary label="Trends card">
+          <TrendsCard features={features} />
+        </SafeErrorBoundary>
+      )}
 
-      {/* Backend persistence */}
-      <BackendSyncCard />
+      {/* Backend sync moved up into the connection-sources area. */}
 
       {/* Recent days */}
-      {days.length > 0 && <RecentDays days={days} />}
+      {days.length > 0 && (
+        <SafeErrorBoundary label="Recent days card">
+          <RecentDays days={days} />
+        </SafeErrorBoundary>
+      )}
 
       {/* Data sources — categorized by ingestion path so the user can
           see at a glance which sources are phone-side, which ride the
           backend, and which need a direct device pairing. */}
+      <SafeErrorBoundary label="Data sources card">
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Data Sources</Text>
+        <DataSourcesHistorySummary />
 
-        {/* Phone-side ingestion (HealthKit on iOS, Health Connect on Android).
-            Both platforms list both rows so the matrix is honest regardless
-            of which OS the user is currently on. */}
-        <Text style={styles.sourceGroupLabel}>Phone-side</Text>
+
+        {/* Only show rows for the user's current platform + connected
+            sources. Not-connected cross-platform ecosystems are hidden
+            by default; the full matrix lives in a disclosure below. */}
         <View style={styles.sourceList}>
+          {Platform.OS === 'ios' && (
+            <SourceRow
+              name="Apple Health"
+              status={deriveAppleHealthRowStatus({ isAvailable, anyAuthorized, syncing, lastSyncAt, hasAnyDays: days.length > 0, error })}
+            />
+          )}
+          {Platform.OS === 'android' && (
+            <SourceRow
+              name="Health Connect"
+              status={deriveHealthConnectRowStatus({
+                isAvailable,
+                anyAuthorized,
+                syncing,
+                lastSyncAt,
+                hasAnyDays: days.length > 0,
+                error,
+              })}
+            />
+          )}
           <SourceRow
-            name="Apple Health"
-            status={Platform.OS === 'ios'
-              ? anyAuthorized ? 'connected' : isAvailable ? 'available' : 'not_set_up'
-              : 'ios_only'}
+            name="WHOOP Direct"
+            status={whoopSourceStatus(whoopStatus, whoopSourceUpdatedAt, whoopHasDay)}
           />
-          <SourceRow
-            name="Health Connect (Android)"
-            status={Platform.OS === 'android'
-              ? anyAuthorized ? 'connected' : isAvailable ? 'available' : 'not_set_up'
-              : 'android_only'}
-          />
+          {Platform.OS === 'android' && samsungViaHc?.detected && (
+            <SourceRow
+              name="Samsung Health"
+              status={samsungViaHc.domains.length >= 2 ? 'samsung_via_hc_detected' : 'samsung_via_hc_partial'}
+            />
+          )}
+          {polarViaHc?.detected && (
+            <SourceRow
+              name="Polar via HC"
+              status={polarViaHc.domains.length >= 2 ? 'polar_via_hc_detected' : 'polar_via_hc_partial'}
+            />
+          )}
         </View>
 
-        {/* Backend-fed — WHOOP has its own live card above, Cronometer
-            is reserved for the future API sync. */}
-        <Text style={styles.sourceGroupLabel}>Backend-fed</Text>
-        <View style={styles.sourceList}>
-          <SourceRow name="WHOOP" status="live_backend" />
-          <SourceRow name="Cronometer (nutrition)" status="scaffolded" />
-        </View>
-
-        {/* Direct device — Polar and ErgZone both need either direct API
-            or direct BLE pairing, neither of which is live yet. */}
-        <Text style={styles.sourceGroupLabel}>Direct device</Text>
-        <View style={styles.sourceList}>
-          <SourceRow name="Polar" status="scaffolded" />
-          <SourceRow name="ErgZone" status="coming_soon" />
-        </View>
+        {/* Bluetooth direct device row — hidden until BLE module is
+            linked in a native build. Once build 8 ships with
+            react-native-ble-plx, this flips to "Ready to scan". */}
       </View>
+      </SafeErrorBoundary>
     </ScrollView>
   );
 }
@@ -778,6 +1297,78 @@ function StatusRow({ label, status }: { label: string; status: DataStatus }) {
   );
 }
 
+/**
+ * Derives the Health Connect source-row status from mobile-only signals.
+ * Intentionally stricter than just "authorized=true" — Health Connect is
+ * only "connected" once at least one sync has succeeded and surfaced
+ * data. Permission-granted-without-sync is its own state; it must not
+ * display as connected because the backend hasn't received an ingest.
+ */
+/**
+ * Derives Apple Health source-row status with sync-awareness.
+ * Same pattern as Health Connect — permission alone is not "connected."
+ */
+/**
+ * Small summary strip under the Data Sources header that exposes the
+ * current history depth in use. Per-source rows show connection state;
+ * this strip shows how deep the data actually goes, so users and Coach
+ * can tell whether the AI is reasoning on 30d / 365d / 5y of history.
+ */
+function DataSourcesHistorySummary() {
+  const historyWindowDays = useHealthStore((s) => s.historyWindowDays);
+  const lastBackfillAt = useHealthStore((s) => s.lastBackfillAt);
+  const normalizedDays = useHealthStore((s) => s.lastSyncDiagnostics?.normalizedDays ?? 0);
+  if (historyWindowDays == null && normalizedDays === 0) return null;
+  const window = historyWindowDays != null ? `${historyWindowDays}d` : '—';
+  const backfill = lastBackfillAt
+    ? ` · last backfill ${new Date(lastBackfillAt).toLocaleDateString()}`
+    : '';
+  return (
+    <Text style={styles.sourceGroupLabel}>
+      history window: {window} · {normalizedDays} days normalized{backfill}
+    </Text>
+  );
+}
+
+function deriveAppleHealthRowStatus(input: {
+  isAvailable: boolean;
+  anyAuthorized: boolean;
+  syncing: boolean;
+  lastSyncAt: string | null;
+  hasAnyDays: boolean;
+  error: string | null;
+}): string {
+  if (!input.isAvailable) return 'not_set_up';
+  // Successful sync wins over a stale error. The store's single `error`
+  // field is shared between sync + persist paths — so a failed backend
+  // persist used to flip this row to "error_retry" even when the
+  // on-device Apple Health sync itself succeeded. If we have synced
+  // records AND a lastSyncAt stamp, treat the source as connected.
+  if (input.error && !(input.hasAnyDays && input.lastSyncAt)) return 'error_retry';
+  if (input.syncing) return 'syncing';
+  if (!input.anyAuthorized) return 'available';
+  if (!input.lastSyncAt) return 'permission_granted_sync_needed';
+  if (!input.hasAnyDays) return 'partial_missing';
+  return 'connected_last_synced';
+}
+
+function deriveHealthConnectRowStatus(input: {
+  isAvailable: boolean;
+  anyAuthorized: boolean;
+  syncing: boolean;
+  lastSyncAt: string | null;
+  hasAnyDays: boolean;
+  error: string | null;
+}): string {
+  if (!input.isAvailable) return 'not_set_up';
+  if (input.error && !(input.hasAnyDays && input.lastSyncAt)) return 'error_retry';
+  if (input.syncing) return 'syncing';
+  if (!input.anyAuthorized) return 'available';
+  if (!input.lastSyncAt) return 'permission_granted_sync_needed';
+  if (!input.hasAnyDays) return 'partial_missing';
+  return 'connected_last_synced';
+}
+
 function SourceRow({
   name,
   status,
@@ -793,16 +1384,132 @@ function SourceRow({
     supported: { text: 'Native', color: '#4ade80' },
     ios_only: { text: 'iOS only', color: '#555' },
     android_only: { text: 'Android only here', color: '#555' },
-    via_backend: { text: 'Via website sync', color: '#a8b84a' },
-    live_backend: { text: 'Live · backend', color: '#4ade80' },
+    checking_backend: getSeedBackendStatusCopy('checking_backend'),
+    seed_backend: getSeedBackendStatusCopy('seed_backend'),
+    fresh_seed_backend: getSeedBackendStatusCopy('fresh_seed_backend'),
+    stale_seed_backend: getSeedBackendStatusCopy('stale_seed_backend'),
+    degraded_backend: getSeedBackendStatusCopy('degraded_backend'),
+    backend_error: { text: 'Backend error', color: '#ff6b6b' },
+    not_connected_backend: { text: 'Not connected yet', color: '#888' },
     scaffolded: { text: 'Scaffolded', color: '#7a8b3a' },
     coming_soon: { text: 'Coming soon', color: '#555' },
+    permission_granted_sync_needed: { text: 'Permission granted — sync needed', color: '#d4e157' },
+    syncing: { text: 'Syncing…', color: '#d4e157' },
+    connected_last_synced: { text: 'Connected · recently synced', color: '#4ade80' },
+    partial_missing: { text: 'Partial — some data missing', color: '#d4e157' },
+    error_retry: { text: 'Error — tap to retry', color: '#ff6b6b' },
+    polar_scaffold: { text: 'Direct Polar not live yet', color: '#888' },
+    polar_via_hc_detected: { text: 'Polar via Health Connect detected', color: '#4ade80' },
+    polar_via_hc_partial: { text: 'Partial Polar data via Health Connect', color: '#d4e157' },
+    samsung_via_hc_detected: { text: 'Samsung Health via Health Connect', color: '#4ade80' },
+    samsung_via_hc_partial: { text: 'Partial Samsung data via HC', color: '#d4e157' },
+    config_check_needed: { text: 'Check integration card below', color: '#666' },
+    ble_not_linked: { text: 'Machine capture lives in Train tab', color: '#888' },
+    ble_ready: { text: 'Ready to scan', color: '#d4e157' },
+    ble_scanning: { text: 'Scanning…', color: '#d4e157' },
+    ble_connected: { text: 'Connected', color: '#4ade80' },
+    ble_manual_fallback: { text: 'Manual fallback', color: '#a8b84a' },
   };
   const info = labels[status] ?? { text: status, color: '#666' };
   return (
     <View style={styles.sourceRow}>
       <Text style={styles.sourceName}>{name}</Text>
       <Text style={[styles.sourceStatus, { color: info.color }]}>{info.text}</Text>
+    </View>
+  );
+}
+
+/**
+ * Compact disclosure reserved for future advanced source diagnostics.
+ * Empty by design right now — Cronometer and Concept2 are out of the
+ * active product path; machine capture moved to the Train tab where
+ * session execution owns it.
+ */
+function PermissionsDisclosure({ permissions }: { permissions: Record<string, PermissionStatus> }) {
+  const [open, setOpen] = useState(false);
+  const entries = Object.entries(permissions) as [HealthMetricType, PermissionStatus][];
+  const authorized = entries.filter(([, s]) => s === 'authorized').length;
+  const summary = `${authorized}/${entries.length} metrics authorized`;
+  return (
+    <View style={[styles.card, { gap: 6 }]}>
+      <Pressable
+        onPress={() => setOpen((v) => !v)}
+        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel={open ? 'Hide permissions detail' : 'Show permissions detail'}
+        style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text style={styles.cardTitle}>Permissions</Text>
+        <Text style={{ fontSize: 12, color: '#d4e157' }}>{open ? '▾ Hide' : `▸ ${summary}`}</Text>
+      </Pressable>
+      {open && (
+        <View style={{ gap: 4, marginTop: 4 }}>
+          {entries.map(([metric, status]) => (
+            <PermissionRow key={metric} metric={metric} status={status} />
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
+function HealthKitDebugDisclosure() {
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={[styles.card, { gap: 6 }]}>
+      <Pressable
+        onPress={() => setOpen((v) => !v)}
+        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel={open ? 'Hide HealthKit debug' : 'Show HealthKit debug'}
+        style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text style={styles.cardTitle}>HealthKit debug</Text>
+        <Text style={{ fontSize: 12, color: '#d4e157' }}>{open ? '▾ Hide' : '▸ Show'}</Text>
+      </Pressable>
+      {!open && (
+        <Text style={styles.gateText}>
+          Module-load + build-number diagnostics for testers. Expand if Connect/Sync misbehaves.
+        </Text>
+      )}
+      {open && (
+        <SafeErrorBoundary label="HealthKit debug">
+          <HealthKitDebugCard />
+        </SafeErrorBoundary>
+      )}
+    </View>
+  );
+}
+
+function OtherSourcesDisclosure({
+  polarDetected: _polarDetected,
+  samsungDetected: _samsungDetected,
+}: {
+  polarDetected: boolean;
+  samsungDetected: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={[styles.card, { gap: 6 }]}>
+      <Pressable
+        onPress={() => setOpen((v) => !v)}
+        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel={open ? 'Hide advanced sources' : 'Show advanced sources'}
+        style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text style={styles.cardTitle}>Advanced</Text>
+        <Text style={{ fontSize: 12, color: '#d4e157' }}>{open ? '▾ Hide' : '▸ Show'}</Text>
+      </Pressable>
+      {!open && (
+        <Text style={styles.gateText}>
+          Reserved for future advanced source diagnostics. Machine capture lives in the Train tab. Tap Show to expand.
+        </Text>
+      )}
+      {open && (
+        <View style={{ gap: 12, marginTop: 6 }}>
+          <Text style={styles.gateText}>
+            No advanced options right now. Bluetooth machine capture moved to Train (tap Train → top of the tab to pair / start live read). Cronometer and Concept2 are not in the active product path.
+          </Text>
+        </View>
+      )}
     </View>
   );
 }

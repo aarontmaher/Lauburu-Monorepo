@@ -11,3 +11,5 @@ export * from './devices';
 export * from './health-records';
 export * from './nutrition';
 export * from './coaching-case';
+export * from './nutrition-evidence';
+export * from './hiit-workout';

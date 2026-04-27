@@ -32,8 +32,23 @@ const HC_PERMISSIONS = [
   { accessType: 'read' as const, recordType: 'ExerciseSession' as const },
 ];
 
+/**
+ * Health Connect history access on Android 14+.
+ *
+ * Default Health Connect read access is limited to ~30 days. The
+ * `PERMISSION_READ_HEALTH_DATA_HISTORY` permission unlocks full
+ * history reads. It's a runtime permission the user must explicitly
+ * grant — we cannot silently upgrade.
+ *
+ * On Android 13 and below, Health Connect may be the standalone app
+ * and this permission may not exist — we catch gracefully.
+ */
+const HC_HISTORY_PERMISSION_NAME = 'android.permission.health.READ_HEALTH_DATA_HISTORY';
+
 export class HealthConnectService implements IHealthService {
   private initialized = false;
+  /** Whether full-history permission was granted (Android 14+). */
+  private historyPermissionGranted = false;
 
   private async ensureInit(): Promise<boolean> {
     if (this.initialized) return true;
@@ -61,7 +76,25 @@ export class HealthConnectService implements IHealthService {
     if (!available) {
       return { available: false, permissions: makeAllStatus('unavailable') };
     }
-    return { available: true, permissions: makeAllStatus('not_determined') };
+    // Actually check which permissions are currently granted.
+    // react-native-health-connect exposes getGrantedPermissions()
+    // which returns the list of already-granted record types.
+    await this.ensureInit();
+    try {
+      const granted = await hc().getGrantedPermissions();
+      if (!granted || !Array.isArray(granted) || granted.length === 0) {
+        return { available: true, permissions: makeAllStatus('not_determined') };
+      }
+      const result = makeAllStatus('denied');
+      for (const p of granted) {
+        const metric = recordTypeToMetric(p.recordType);
+        if (metric && p.accessType === 'read') result[metric] = 'authorized';
+      }
+      return { available: true, permissions: result };
+    } catch {
+      // Fallback: can't determine — report not_determined
+      return { available: true, permissions: makeAllStatus('not_determined') };
+    }
   }
 
   async requestPermissions(): Promise<HealthPermissions> {
@@ -81,6 +114,71 @@ export class HealthConnectService implements IHealthService {
     } catch {
       return { available: true, permissions: makeAllStatus('denied') };
     }
+  }
+
+  /**
+   * Request the background/history permission that unlocks reads
+   * beyond the default ~30-day window. Android 14+ only.
+   *
+   * Returns true if the permission was granted, false otherwise.
+   * On Android 13 and below this always returns false gracefully
+   * (the permission doesn't exist in the manifest).
+   */
+  async requestHistoryPermission(): Promise<boolean> {
+    try {
+      await this.ensureInit();
+      // react-native-health-connect exposes requestPermission for
+      // standard record types. For the special history permission,
+      // we try to request it via the same API surface. If the
+      // library version doesn't support it, we fall back to PermissionsAndroid.
+      try {
+        const { PermissionsAndroid, Platform } = require('react-native');
+        if (Platform.Version < 34) {
+          // Android 13 and below: history permission doesn't exist.
+          this.historyPermissionGranted = false;
+          return false;
+        }
+        const result = await PermissionsAndroid.request(HC_HISTORY_PERMISSION_NAME);
+        this.historyPermissionGranted = result === PermissionsAndroid.RESULTS.GRANTED;
+        return this.historyPermissionGranted;
+      } catch {
+        this.historyPermissionGranted = false;
+        return false;
+      }
+    } catch {
+      this.historyPermissionGranted = false;
+      return false;
+    }
+  }
+
+  /**
+   * Check (without requesting) whether history permission is granted.
+   */
+  async checkHistoryPermission(): Promise<boolean> {
+    try {
+      const { PermissionsAndroid, Platform } = require('react-native');
+      if (Platform.Version < 34) return false;
+      const result = await PermissionsAndroid.check(HC_HISTORY_PERMISSION_NAME);
+      this.historyPermissionGranted = result;
+      return result;
+    } catch {
+      return false;
+    }
+  }
+
+  /** Whether the last check/request found history permission granted. */
+  hasHistoryPermission(): boolean {
+    return this.historyPermissionGranted;
+  }
+
+  /**
+   * Maximum days back this service can read, based on history
+   * permission state. 30 is the safe default; 90 when history
+   * permission is granted (arbitrary upper bound for the backlog
+   * analysis — Health Connect itself may have data going further).
+   */
+  getMaxHistoryDays(): number {
+    return this.historyPermissionGranted ? 90 : 30;
   }
 
   async fetchSamples(
@@ -258,11 +356,33 @@ function mapHCStage(stage: number | string): string {
 }
 
 function exerciseTypeName(type?: number): string {
-  if (type == null) return 'Unknown';
+  if (type == null) return 'Workout';
+  // Health Connect exerciseType enum — the most common values.
+  // No numeric fallback labels (those leaked as "Exercise (62)" in UI);
+  // unknown types degrade to a generic "Workout" string.
   const names: Record<number, string> = {
-    2: 'Badminton', 29: 'Martial Arts', 56: 'Running',
-    61: 'Strength Training', 75: 'Swimming', 79: 'Walking',
-    80: 'Cycling', 76: 'Wrestling',
+    2: 'Badminton',
+    7: 'Boxing',
+    8: 'Calisthenics',
+    13: 'Cross training',
+    14: 'Cycling',
+    24: 'HIIT',
+    25: 'Hiking',
+    28: 'Indoor bike',
+    29: 'Martial arts',
+    34: 'Paddleboarding',
+    37: 'Rowing',
+    48: 'Rugby',
+    56: 'Running',
+    60: 'Strength training',
+    61: 'Strength training',
+    62: 'Stretching',
+    65: 'Surfing',
+    75: 'Swimming',
+    76: 'Wrestling',
+    79: 'Walking',
+    80: 'Cycling',
+    81: 'Yoga',
   };
-  return names[type] ?? `Exercise (${type})`;
+  return names[type] ?? 'Workout';
 }

@@ -1,0 +1,9 @@
+[build]
+buildCommand = "cd chat-app && npm install"
+
+[deploy]
+startCommand = "cd chat-app && npm start"
+healthcheckPath = "/api/athlete-memory/tour"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3

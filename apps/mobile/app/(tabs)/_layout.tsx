@@ -59,6 +59,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="map-3d"
+        options={{
+          title: 'Map',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="globe" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
@@ -77,6 +85,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="reference"
         options={{ href: null, title: 'Reference' }}
+      />
+      <Tabs.Screen
+        name="syllabus"
+        options={{ href: null, title: 'Belt syllabus' }}
       />
       <Tabs.Screen
         name="coaching-history"
