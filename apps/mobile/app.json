@@ -29,8 +29,10 @@
       },
       "entitlements": {
         "com.apple.developer.healthkit": true,
-        "com.apple.developer.healthkit.background-delivery": true
-      }
+        "com.apple.developer.healthkit.background-delivery": true,
+        "com.apple.developer.applesignin": ["Default"]
+      },
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -40,12 +42,25 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.lauburu.grapplingmap",
-      "permissions": [
+      "versionCode": 8,
+      "blockedPermissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_EXTERNAL_STORAGE"
+      ],
+      "permissions": [
         "android.permission.BLUETOOTH_SCAN",
         "android.permission.BLUETOOTH_CONNECT",
-        "android.permission.ACCESS_FINE_LOCATION"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.health.READ_HEART_RATE",
+        "android.permission.health.READ_HEART_RATE_VARIABILITY",
+        "android.permission.health.READ_RESTING_HEART_RATE",
+        "android.permission.health.READ_STEPS",
+        "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
+        "android.permission.health.READ_SLEEP",
+        "android.permission.health.READ_EXERCISE",
+        "android.permission.health.READ_HEALTH_DATA_HISTORY"
       ]
     },
     "web": {
@@ -71,24 +86,20 @@
         }
       ],
       [
-        "expo-camera",
-        {
-          "cameraPermission": "Lauburu uses the camera to scan food barcodes for nutrition tracking and to attach photos to tester feedback."
-        }
-      ],
-      [
         "expo-image-picker",
         {
-          "photosPermission": "Lauburu lets testers attach screenshots or photos to feedback.",
-          "cameraPermission": "Lauburu lets testers take photos to attach to feedback."
+          "photosPermission": "Lauburu lets testers attach screenshots or photos to feedback."
         }
       ],
+      "expo-document-picker",
+      "expo-apple-authentication",
+      "react-native-health-connect",
       [
         "expo-build-properties",
         {
           "android": {
             "compileSdkVersion": 35,
-            "targetSdkVersion": 34,
+            "targetSdkVersion": 35,
             "minSdkVersion": 26
           }
         }

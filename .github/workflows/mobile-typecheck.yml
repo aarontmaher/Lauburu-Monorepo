@@ -1,0 +1,28 @@
+name: mobile-typecheck
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch / SHA to check'
+        required: false
+        default: 'main'
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || 'main' }}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install monorepo deps
+        run: npm install --no-audit --no-fund
+      - name: TypeScript check (mobile)
+        run: cd apps/mobile && npx tsc --noEmit
+      - name: TypeScript check (chat-app)
+        run: cd chat-app && npx tsc --noEmit -p tsconfig.server.json

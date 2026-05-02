@@ -1,0 +1,61 @@
+name: android-aab-build
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch / SHA to build'
+        required: false
+        default: 'main'
+      release_notes:
+        description: 'Optional release notes for downstream Play upload step'
+        required: false
+        default: 'Internal tester build.'
+      dry_run:
+        description: 'true → run typecheck only, do not start EAS build'
+        required: false
+        default: 'false'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || 'main' }}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm install --no-audit --no-fund
+      - name: TypeScript check (mobile)
+        run: cd apps/mobile && npx tsc --noEmit
+
+      - name: Configure EAS auth
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error::EXPO_TOKEN secret is not set."
+            exit 1
+          fi
+      - name: EAS Android build
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_BUILD_NO_EXPO_GO_WARNING: 'true'
+        run: |
+          cd apps/mobile
+          npx eas-cli build --platform android --profile production --non-interactive
+      - name: Summary
+        run: |
+          {
+            echo "## Android AAB build summary"
+            echo "Ref: ${{ inputs.ref || 'main' }}"
+            echo "Dry run: ${{ inputs.dry_run }}"
+            echo "Release notes: ${{ inputs.release_notes }}"
+            echo "Next: Play Console → Lauburu Grappling Map → Testing → Internal testing → Create new release → upload AAB."
+          } >> "$GITHUB_STEP_SUMMARY"

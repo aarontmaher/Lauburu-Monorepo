@@ -17,6 +17,7 @@ import { SEED_SYLLABUS, SEED_TOUR, deriveSyllabusProgress } from '../../../../pa
 import type { AthleteAccountProfile } from '../../../../packages/shared/src/syllabus/account-profile.types';
 import type { VideoAttachment, VideoAttachmentSummary } from '../../../../packages/shared/src/syllabus/video-attachment.types';
 import { buildCoachAnswer } from '../../../../packages/shared/src/backend/services/coach/build-coach-answer';
+import { computeLauburuReadiness } from '../../../../packages/shared/src/backend/services/readiness/lauburu-readiness';
 
 const router = Router();
 const store = new FileApiAiStateStore(
@@ -956,6 +957,260 @@ router.post('/:athleteId/coach/ask', requirePrivateAthleteAccess, async (req: an
       backlogSummary: await store.getLatestBacklogSummary(athleteId).catch(() => null),
     };
 
+    // Inject Lauburu Readiness onto the AI context. Pure compute over
+    // normalized metrics + acute/chronic load. Failure here is
+    // swallowed — Coach falls back to its existing daily-artifact
+    // path unchanged via the readinessFragment null-return path.
+    try {
+      // Lookback window: pull up to ~5 years (1825 d) of normalised
+      // metrics so the AI can build long-term / all-time artifacts.
+      // Daily-recommendation paths still emphasise the 7/30/90 windows
+      // — this only widens what's *available* for trend questions.
+      const lookback = await store.getNormalizedRecent(athleteId, 1825);
+      const sortedAsc = [...(lookback ?? [])].sort((a: any, b: any) => String(a.date).localeCompare(String(b.date)));
+      const todayRec = sortedAsc[sortedAsc.length - 1] ?? null;
+      const baseline = todayRec ? sortedAsc.filter((r: any) => r.date < (todayRec as any).date) : [];
+      const acuteVals = sortedAsc.slice(-7)
+        .map((r: any) => r.dailyStrain)
+        .filter((v: any) => typeof v === 'number' && Number.isFinite(v)) as number[];
+      const chronicVals = baseline.slice(-28)
+        .map((r: any) => r.dailyStrain)
+        .filter((v: any) => typeof v === 'number' && Number.isFinite(v)) as number[];
+      const acuteLoad = acuteVals.length > 0
+        ? { sum: acuteVals.reduce((s, v) => s + v, 0), avg: acuteVals.reduce((s, v) => s + v, 0) / acuteVals.length, days: acuteVals.length }
+        : null;
+      const chronicLoad = chronicVals.length > 0
+        ? { avg: chronicVals.reduce((s, v) => s + v, 0) / chronicVals.length, days: chronicVals.length }
+        : null;
+      let staleHours: number | null = null;
+      if ((todayRec as any)?.updatedAt) {
+        const ms = new Date((todayRec as any).updatedAt).getTime();
+        if (Number.isFinite(ms)) staleHours = Math.max(0, (Date.now() - ms) / (1000 * 60 * 60));
+      }
+      (aiContext as any).lauburu_readiness = computeLauburuReadiness({
+        today: todayRec as any,
+        baseline: baseline as any,
+        acuteLoad,
+        chronicLoad,
+        staleHours,
+      });
+
+      // Long-term trend bundle — same algorithm as the
+      // /v1/internal/athletes/:athleteId/ai-health-context endpoint.
+      // Lets buildCoachAnswer answer "what trends can you find" /
+      // "analyse my long-term data" with real coverage figures
+      // instead of falling through to "Limited context".
+      function trendSummary(records: any[], windowDays: number) {
+        const out: Record<string, any> = {};
+        const slice = records.slice(-windowDays);
+        const sources_seen = new Set<string>();
+        for (const r of slice) {
+          if (typeof r.provider === 'string' && r.provider.length > 0) sources_seen.add(r.provider);
+          // Multi-source records carry per-domain provenance flags.
+          if (Array.isArray(r.providerSources)) {
+            for (const p of r.providerSources) if (typeof p === 'string') sources_seen.add(p);
+          }
+        }
+        const map: Array<[string, (r: any) => number | null, boolean]> = [
+          ['hrv_ms', (r) => r.hrvMs, true],
+          ['rhr_bpm', (r) => r.restingHrBpm, false],
+          ['sleep_hours', (r) => r.totalSleepHours, true],
+          ['day_strain', (r) => r.dailyStrain, false],
+          ['recovery_score', (r) => r.recoveryScore, true],
+          ['steps', (r) => r.steps ?? null, true],
+          ['active_calories', (r) => r.activeCalories ?? null, true],
+          ['bodyweight_kg', (r) => r.bodyweightKg ?? null, true],
+          ['nutrition_calories', (r) => r.nutritionCalories ?? null, true],
+          ['nutrition_protein_g', (r) => r.nutritionProteinGrams ?? null, true],
+        ];
+        for (const [name, pick, higherBetter] of map) {
+          const vs: number[] = [];
+          for (const r of slice) {
+            const v = pick(r);
+            if (typeof v === 'number' && Number.isFinite(v)) vs.push(v);
+          }
+          if (vs.length === 0) {
+            out[name] = {
+              coverage_days: 0,
+              coverage_pct: 0,
+              direction: 'insufficient',
+              confidence: 'insufficient',
+              variability: 'insufficient',
+              consistency: 'insufficient',
+              spikes: 0,
+            };
+            continue;
+          }
+          const m = vs.reduce((s, v) => s + v, 0) / vs.length;
+          const sd = Math.sqrt(vs.reduce((s, v) => s + (v - m) ** 2, 0) / vs.length);
+          // Coefficient of variation for variability classification.
+          // Sleep / RHR / HRV use absolute scales — we still report cov_pct.
+          const cov_pct = m > 0 ? (sd / m) * 100 : 0;
+          let variability: 'low' | 'medium' | 'high' | 'insufficient' = 'insufficient';
+          if (vs.length >= 4) {
+            variability = cov_pct < 8 ? 'low' : cov_pct < 18 ? 'medium' : 'high';
+          }
+          // Spikes: count of points more than 2 SD from mean.
+          let spikes = 0;
+          if (vs.length >= 7 && sd > 0) {
+            for (const v of vs) if (Math.abs(v - m) / sd > 2) spikes += 1;
+          }
+          // Consistency: coverage_pct + variability => low/medium/high.
+          let consistency: 'low' | 'medium' | 'high' = 'low';
+          const cov_window_pct = (vs.length / windowDays) * 100;
+          if (cov_window_pct >= 80 && variability !== 'high') consistency = 'high';
+          else if (cov_window_pct >= 50 && variability !== 'high') consistency = 'medium';
+          let direction: 'improving' | 'worsening' | 'flat' | 'insufficient' = 'insufficient';
+          if (vs.length >= 7) {
+            const third = Math.max(1, Math.floor(vs.length / 3));
+            const oldM = vs.slice(0, third).reduce((s, v) => s + v, 0) / third;
+            const newM = vs.slice(-third).reduce((s, v) => s + v, 0) / third;
+            const delta = newM - oldM;
+            if (sd > 0 && Math.abs(delta) / sd > 0.5) {
+              direction = (higherBetter ? delta > 0 : delta < 0) ? 'improving' : 'worsening';
+            } else direction = 'flat';
+          }
+          // Confidence is a roll-up: needs both coverage AND signal.
+          let conf: 'high' | 'medium' | 'low' = 'low';
+          if (vs.length >= 30 && variability !== 'high') conf = 'high';
+          else if (vs.length >= 14) conf = 'medium';
+          out[name] = {
+            coverage_days: vs.length,
+            coverage_pct: Math.round((vs.length / windowDays) * 100),
+            direction,
+            confidence: conf,
+            variability,
+            consistency,
+            spikes,
+            mean: Number(m.toFixed(2)),
+            latest: Number(vs[vs.length - 1].toFixed(2)),
+            cov_pct: Number(cov_pct.toFixed(1)),
+          };
+        }
+        return { metrics: out, sources_used: Array.from(sources_seen) };
+      }
+      (aiContext as any).trends_short_7d   = trendSummary(sortedAsc, 7);
+      (aiContext as any).trends_short_14d  = trendSummary(sortedAsc, 14);
+      (aiContext as any).trends_medium_30d = trendSummary(sortedAsc, 30);
+      (aiContext as any).trends_long_90d   = trendSummary(sortedAsc, 90);
+      (aiContext as any).trends_long_180d  = trendSummary(sortedAsc, 180);
+      (aiContext as any).trends_long_365d  = trendSummary(sortedAsc, 365);
+      // All-available / all-time uses the entire normalised history we
+      // can see (capped at 1825 d above). Coverage figures already
+      // express "days with the metric"; this just stops capping by
+      // window length.
+      (aiContext as any).trends_all_time   = trendSummary(sortedAsc, sortedAsc.length || 1);
+      (aiContext as any).data_coverage = {
+        total_normalized_days: sortedAsc.length,
+        first_date: sortedAsc[0]?.date ?? null,
+        last_date: (todayRec as any)?.date ?? null,
+        baseline_days: baseline.length,
+      };
+
+      // ── Long-term baseline summary ──────────────────────────────
+      // Cheap stats over the 95-day window we already hold in memory.
+      // Stable-memory baselines (physiologyBaseline) are READ-ONLY here
+      // and are produced by the daily-refresh job. This summary is a
+      // separate, recomputable artifact for AI context only.
+      const longTermBaseline: Record<string, any> = {};
+      const baselineMetrics: Array<[string, (r: any) => number | null]> = [
+        ['hrv_ms', (r) => r.hrvMs ?? null],
+        ['rhr_bpm', (r) => r.restingHrBpm ?? null],
+        ['sleep_hours', (r) => r.totalSleepHours ?? null],
+        ['day_strain', (r) => r.dailyStrain ?? null],
+        ['recovery_score', (r) => r.recoveryScore ?? null],
+        ['steps', (r) => r.steps ?? null],
+        ['bodyweight_kg', (r) => r.bodyweightKg ?? null],
+      ];
+      for (const [name, pick] of baselineMetrics) {
+        const vs: number[] = [];
+        for (const r of sortedAsc) {
+          const v = pick(r);
+          if (typeof v === 'number' && Number.isFinite(v)) vs.push(v);
+        }
+        if (vs.length === 0) {
+          longTermBaseline[name] = { count: 0 };
+          continue;
+        }
+        const mean = vs.reduce((s, v) => s + v, 0) / vs.length;
+        const sd = Math.sqrt(vs.reduce((s, v) => s + (v - mean) ** 2, 0) / vs.length);
+        const sorted = [...vs].sort((a, b) => a - b);
+        const p10 = sorted[Math.floor(sorted.length * 0.1)];
+        const p50 = sorted[Math.floor(sorted.length * 0.5)];
+        const p90 = sorted[Math.floor(sorted.length * 0.9)];
+        longTermBaseline[name] = {
+          count: vs.length,
+          mean: Number(mean.toFixed(2)),
+          sd: Number(sd.toFixed(2)),
+          p10: Number(p10.toFixed(2)),
+          p50: Number(p50.toFixed(2)),
+          p90: Number(p90.toFixed(2)),
+        };
+      }
+      (aiContext as any).long_term_baseline = longTermBaseline;
+
+      // ── Memory promotion candidates ─────────────────────────────
+      // Surface recurring patterns the user could promote into stable
+      // memory after explicit review. Pure read; never mutates store.
+      // Each candidate carries: metric, pattern, evidence_window,
+      // source_coverage, confidence, why_it_matters, status.
+      const candidates: Array<Record<string, any>> = [];
+      const t30 = (aiContext as any).trends_medium_30d?.metrics ?? {};
+      const t90 = (aiContext as any).trends_long_90d?.metrics ?? {};
+      function pushCandidate(metric: string, pattern: string, win: '30d' | '90d', why: string) {
+        const t = (win === '90d' ? t90 : t30)[metric];
+        if (!t || t.confidence === 'insufficient' || t.coverage_days < (win === '90d' ? 30 : 14)) return;
+        candidates.push({
+          metric,
+          pattern,
+          evidence_window: win,
+          coverage_days: t.coverage_days,
+          coverage_pct: t.coverage_pct,
+          confidence: t.confidence,
+          variability: t.variability,
+          consistency: t.consistency,
+          source_coverage: (aiContext as any).trends_medium_30d?.sources_used ?? [],
+          why_it_matters: why,
+          status: 'pending_review',
+        });
+      }
+      // Pattern: 30d HRV worsening with non-trivial coverage.
+      if (t30?.hrv_ms?.direction === 'worsening' && t30?.hrv_ms?.confidence !== 'low') {
+        pushCandidate('hrv_ms', '30d_worsening', '30d', 'A 30-day HRV downtrend usually precedes recovery debt; worth flagging if it persists.');
+      }
+      // Pattern: 30d RHR rising — same idea, opposite direction polarity.
+      if (t30?.rhr_bpm?.direction === 'worsening' && t30?.rhr_bpm?.confidence !== 'low') {
+        pushCandidate('rhr_bpm', '30d_rising_rhr', '30d', 'A persistent RHR rise alongside flat strain often signals accumulated fatigue or under-recovery.');
+      }
+      // Pattern: chronic sleep shortage.
+      if (t30?.sleep_hours?.direction === 'worsening' || (t30?.sleep_hours?.mean != null && t30.sleep_hours.mean < 7)) {
+        pushCandidate('sleep_hours', '30d_short_sleep', '30d', 'Average sleep below 7 h over 30 days correlates with HRV/RHR drift in your data.');
+      }
+      // Pattern: 90d bodyweight drift (either direction).
+      if (t90?.bodyweight_kg && t90.bodyweight_kg.direction !== 'flat' && t90.bodyweight_kg.confidence === 'high') {
+        pushCandidate('bodyweight_kg', `90d_bodyweight_${t90.bodyweight_kg.direction}`, '90d', 'A 90-day bodyweight trend is a stable signal worth confirming with the user.');
+      }
+      // Pattern: 90d strain trend (either direction, high-confidence only).
+      if (t90?.day_strain && t90.day_strain.direction !== 'flat' && t90.day_strain.confidence === 'high') {
+        pushCandidate('day_strain', `90d_strain_${t90.day_strain.direction}`, '90d', 'Sustained strain change over 90 days reflects a real training-load shift.');
+      }
+      (aiContext as any).memory_candidates = candidates;
+
+      // ── Cost / context-size guard ───────────────────────────────
+      // Caps already in place: getNormalizedRecent(95) bounds rows.
+      // Surface a size summary so we can spot regressions in tests.
+      try {
+        const ctxBytes = Buffer.byteLength(JSON.stringify(aiContext));
+        (aiContext as any).context_size = {
+          rows_loaded: sortedAsc.length,
+          baseline_days: baseline.length,
+          ai_context_bytes: ctxBytes,
+          ai_context_kb: Math.round(ctxBytes / 1024),
+          memory_candidates_count: candidates.length,
+        };
+      } catch { /* sizing failure is non-fatal */ }
+    } catch { /* readiness/trends compute failure must not break Coach */ }
+
     const answer = buildCoachAnswer(question, aiContext as any, topic);
     res.status(200).json(answer);
   } catch (error) {
@@ -976,6 +1231,197 @@ router.post('/:athleteId/coach/ask', requirePrivateAthleteAccess, async (req: an
       missingFields: ['backend_error'],
       safetyFlags: ['backend_error'],
       upgradeHint: null,
+    });
+  }
+});
+
+// ── Admin / Dev Control Center status ──────────────────────────
+// GET /api/athlete-memory/admin/status
+//
+// Read-only summary for the in-app Admin/Dev Control Center. Returns
+// booleans / counts / public links only — no env values, no token
+// strings, no PHI. Protected by `requireAdminToken` (token-only;
+// the per-athlete JWT/ownership gate doesn't apply to admin routes).
+//
+// Workflow allowlist + dispatch endpoint live further down; the
+// allowlist is the source of truth for what the app can trigger.
+const ADMIN_WORKFLOW_ALLOWLIST = [
+  'mobile-typecheck',
+  'android-aab-build',
+  'ios-testflight-build',
+  'backend-smoke',
+  'release-audit',
+  'ota-diagnostic',
+] as const;
+
+function requireAdminToken(req: any, res: any, next: any) {
+  const expected = process.env.ATHLETE_MEMORY_API_TOKEN;
+  if (!expected) {
+    res.status(503).json({ ok: false, error: 'Admin routes disabled until ATHLETE_MEMORY_API_TOKEN is configured.' });
+    return;
+  }
+  if (req.header('x-athlete-memory-token') !== expected) {
+    res.status(403).json({ ok: false, error: 'Forbidden admin access.' });
+    return;
+  }
+  next();
+}
+
+router.get('/admin/status', requireAdminToken, async (_req: any, res: any) => {
+  try {
+    const blockers: string[] = [];
+    if (!process.env.GITHUB_DISPATCH_TOKEN) blockers.push('GITHUB_DISPATCH_TOKEN not set on backend; workflow triggers disabled.');
+    if (!process.env.GITHUB_REPO) blockers.push('GITHUB_REPO not set on backend (e.g. "aaronmaher/lauburu-grappling-map").');
+    res.status(200).json({
+      ok: true,
+      backendHealthy: true,
+      aiHealthContextAvailable: true,
+      workflowDispatchAvailable: !!process.env.GITHUB_DISPATCH_TOKEN && !!process.env.GITHUB_REPO,
+      workflowAllowlist: ADMIN_WORKFLOW_ALLOWLIST,
+      links: {
+        expoProject: 'https://expo.dev/accounts/aaronmaher/projects/lauburu-grappling-map',
+        railwayDashboard: 'https://railway.com/project',
+        playConsole: 'https://play.google.com/console',
+        appStoreConnect: 'https://appstoreconnect.apple.com/',
+      },
+      blockers,
+      generatedAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'unknown' });
+  }
+});
+
+// POST /api/athlete-memory/admin/workflows/:workflowId/dispatch
+//
+// Stub endpoint. Returns 503 until GITHUB_DISPATCH_TOKEN + GITHUB_REPO
+// are configured on the backend. When configured, will POST to
+// `https://api.github.com/repos/<owner>/<repo>/actions/workflows/<id>.yml/dispatches`
+// with the bearer token. Workflow ID must be on the allowlist.
+router.post('/admin/workflows/:workflowId/dispatch', requireAdminToken, async (req: any, res: any) => {
+  const { workflowId } = req.params;
+  const ref = (req.body?.ref as string | undefined) ?? 'main';
+  if (!(ADMIN_WORKFLOW_ALLOWLIST as readonly string[]).includes(workflowId)) {
+    res.status(400).json({ ok: false, error: 'Unknown workflow id.' });
+    return;
+  }
+  const token = process.env.GITHUB_DISPATCH_TOKEN;
+  const repo = process.env.GITHUB_REPO;
+  if (!token || !repo) {
+    res.status(503).json({
+      ok: false,
+      error: 'Workflow dispatch not configured on backend.',
+      needs: ['GITHUB_DISPATCH_TOKEN', 'GITHUB_REPO'],
+    });
+    return;
+  }
+  try {
+    const url = `https://api.github.com/repos/${repo}/actions/workflows/${encodeURIComponent(workflowId)}.yml/dispatches`;
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'authorization': `Bearer ${token}`,
+        'accept': 'application/vnd.github+json',
+        'content-type': 'application/json',
+        'x-github-api-version': '2022-11-28',
+      },
+      body: JSON.stringify({ ref, inputs: req.body?.inputs ?? {} }),
+    });
+    if (!resp.ok) {
+      const text = await resp.text().catch(() => '');
+      console.warn(`[admin-dispatch] workflow=${workflowId} ref=${ref} status=${resp.status}`);
+      res.status(502).json({ ok: false, error: `GitHub dispatch failed (${resp.status})`, detail: text.slice(0, 500) });
+      return;
+    }
+    // Audit line — token never logged. Repo is public knowledge.
+    console.log(`[admin-dispatch] workflow=${workflowId} ref=${ref} repo=${repo} ok=true`);
+    res.status(200).json({
+      ok: true,
+      workflowId,
+      ref,
+      dispatchedAt: new Date().toISOString(),
+      actionsUrl: `https://github.com/${repo}/actions/workflows/${encodeURIComponent(workflowId)}.yml`,
+    });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'unknown' });
+  }
+});
+
+// ── Polar export historical training-context import ───────────
+// POST /api/athlete-memory/:athleteId/polar-export/import
+//
+// Body: { sessions: PolarSession[] } (PolarSession shape from
+// packages/shared/src/backend/services/polar/parse-polar-export).
+//
+// Storage: writes a JSON file per session under
+//   athletes/<athleteId>/api-ai/polar_export_sessions/<startISO>.json
+// keyed by ISO start time. Dedupe is by (athleteId, startTime, sport)
+// — re-importing the same session is a no-op. Polar export is
+// historical training context only — not a recovery / readiness
+// signal. App-owned Lauburu Readiness remains product truth.
+router.post('/:athleteId/polar-export/import', requirePrivateAthleteAccess, async (req: any, res: any) => {
+  try {
+    const { athleteId } = req.params;
+    const sessions = Array.isArray(req.body?.sessions) ? req.body.sessions : [];
+    if (sessions.length === 0) {
+      res.status(400).json({ ok: false, error: 'No sessions in request body.' });
+      return;
+    }
+
+    // Soft cap to prevent a single request from writing thousands of
+    // files in one go. Real Polar exports are usually <200 sessions.
+    if (sessions.length > 1000) {
+      res.status(413).json({ ok: false, error: 'Too many sessions in one request (max 1000).' });
+      return;
+    }
+
+    const seen = new Set<string>();
+    let imported = 0;
+    let deduped = 0;
+    let skipped = 0;
+    const errors: string[] = [];
+
+    for (const raw of sessions) {
+      try {
+        const startTime = typeof raw?.startTime === 'string' ? raw.startTime : null;
+        const sport = typeof raw?.sport === 'string' ? raw.sport : null;
+        if (!startTime) { skipped += 1; continue; }
+        const key = `${startTime}__${sport ?? 'unknown'}`;
+        if (seen.has(key)) { deduped += 1; continue; }
+        seen.add(key);
+        // Dedupe vs. storage: best-effort idempotency. Filename keyed
+        // by start time + sport — same session reimported is no-op.
+        const safeKey = key.replace(/[^A-Za-z0-9._-]/g, '_');
+        const path = `athletes/${athleteId}/api-ai/polar_export_sessions/${safeKey}.json`;
+        const existing = await (store as any).readJson?.(path).catch(() => null);
+        if (existing) { deduped += 1; continue; }
+        const record = {
+          ...raw,
+          source: 'polar_export',
+          ingestedAt: new Date().toISOString(),
+          athleteId,
+        };
+        await (store as any).writeJson?.(path, record);
+        imported += 1;
+      } catch (e: any) {
+        errors.push(e?.message ?? 'unknown');
+      }
+    }
+
+    res.status(200).json({
+      ok: true,
+      imported,
+      deduped,
+      skipped,
+      total_received: sessions.length,
+      errors: errors.slice(0, 5),
+      note: 'Polar export sessions stored as historical training context only. Recovery/Readiness still uses your other sources.',
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: 'Polar export import failed.',
+      detail: error instanceof Error ? error.message : 'unknown',
     });
   }
 });

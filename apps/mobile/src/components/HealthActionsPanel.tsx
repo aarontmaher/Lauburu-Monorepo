@@ -35,10 +35,89 @@ import { useWhoopStore } from '../store/whoop-store';
 import * as IntegrationsClient from '../services/integrations-client';
 import { getWhoopCsvStatus, uploadWhoopCsv, uploadWhoopZip, clearWhoopCsv } from '../services/integrations-client';
 import { readStoredJson, writeStoredJson } from '../store/secure-storage';
+import { SafeErrorBoundary } from './SafeErrorBoundary';
+import { parsePolarExport, type PolarSession } from '../../../../packages/shared/src/backend/services/polar/parse-polar-export';
 
 const WHOOP_CSV_CACHE_KEY = 'whoop_csv_imported_v1';
+const WHOOP_UPLOAD_TRACE_KEY = 'whoop_upload_trace_v1';
+
+/**
+ * Native iOS document picker has been crashing the app on the current
+ * EAS build (expo-document-picker missing from `app.json` plugins[],
+ * so its config-plugin Info.plist + iCloud-Documents entitlement step
+ * never ran at prebuild — native presentation crashes the bridge
+ * before any JS try/catch can intercept). Until the next native EAS
+ * build re-enables it, the picker is gated entirely behind this flag.
+ *
+ * Default: OFF. To re-enable in a verified native build, set
+ *   EXPO_PUBLIC_ENABLE_WHOOP_FILE_PICKER=1
+ * in apps/mobile/.env.production and ship a new native build.
+ */
+const ENABLE_WHOOP_FILE_PICKER = process.env.EXPO_PUBLIC_ENABLE_WHOOP_FILE_PICKER === '1';
 
 type WhoopCsvCache = { imported: boolean; totalRowsIngested?: number; updatedAt: string };
+type WhoopUploadTrace = { at: string; step: string; detail?: string };
+
+/**
+ * Append a single breadcrumb to local storage so that if the next
+ * upload attempt crashes the JS bundle, the in-app diagnostics panel
+ * can show the last 30 steps from the previous run. We never log file
+ * contents, URIs (only scheme), or token values.
+ */
+function whoopTrace(step: string, detail?: string): void {
+  try {
+    // Fire-and-forget; never await in event handlers.
+    void (async () => {
+      try {
+        const prev = (await readStoredJson<WhoopUploadTrace[]>(WHOOP_UPLOAD_TRACE_KEY)) ?? [];
+        const next = [...prev.slice(-29), { at: new Date().toISOString(), step, detail }];
+        await writeStoredJson(WHOOP_UPLOAD_TRACE_KEY, next);
+      } catch { /* swallow — trace must never throw */ }
+    })();
+    // eslint-disable-next-line no-console
+    if (__DEV__) console.log(`[whoop-upload] ${step}`, detail ?? '');
+  } catch { /* swallow */ }
+}
+
+export interface NormalizedPickedFile {
+  ok: boolean;
+  canceled: boolean;
+  uri?: string;
+  name?: string;
+  mimeType?: string;
+  size?: number | null;
+  error?: string;
+}
+
+/**
+ * Normalize every shape expo-document-picker has shipped: legacy
+ * single-asset object, SDK 49+ `{canceled, assets[]}`, British-spelled
+ * `cancelled`, `type:'cancel'`, missing assets array, and assets with
+ * partial fields. Pure / no React, easy to test.
+ */
+export function normalizePickedWhoopFile(result: any): NormalizedPickedFile {
+  if (result == null) return { ok: false, canceled: false, error: 'no_result' };
+  if (result.canceled === true || result.cancelled === true || result.type === 'cancel') {
+    return { ok: false, canceled: true };
+  }
+  let asset: any = null;
+  if (Array.isArray(result.assets)) {
+    if (result.assets.length === 0) return { ok: false, canceled: false, error: 'no_assets' };
+    asset = result.assets[0];
+  } else {
+    asset = result;
+  }
+  const uri = typeof asset?.uri === 'string' && asset.uri.length > 0 ? asset.uri : undefined;
+  if (!uri) return { ok: false, canceled: false, error: 'no_uri' };
+  return {
+    ok: true,
+    canceled: false,
+    uri,
+    name: typeof asset.name === 'string' ? asset.name : undefined,
+    mimeType: typeof asset.mimeType === 'string' ? asset.mimeType : undefined,
+    size: typeof asset.size === 'number' ? asset.size : null,
+  };
+}
 // Static import of the iOS health module so Metro resolves it at bundle
 // time (the same mechanism HealthKitDebugCard uses, which is known to
 // work on this device) rather than going through the `./health` service
@@ -1356,6 +1435,12 @@ function HealthSourceSheet(props: SheetProps) {
   // through this render function.
   available.push(whoopCsvRow);
 
+  // Polar export historical training context (paste-only, repo-safe).
+  // Sister of WhoopCsvRow but Polar-specific — parses Polar Flow CSV
+  // or TCX and imports as historical training context only. Not a
+  // recovery/readiness source.
+  available.push(<PolarExportRow key="polar_export" />);
+
   // Placeholder row for the "Available to connect" section — the
   // detail for Polar via HC, Samsung via HC, and Bluetooth machine
   // capture lives further down the Health tab in the existing per-
@@ -1454,6 +1539,14 @@ interface PastedFile {
 }
 
 function WhoopCsvRow() {
+  return (
+    <SafeErrorBoundary label="WHOOP import">
+      <WhoopCsvRowInner />
+    </SafeErrorBoundary>
+  );
+}
+
+function WhoopCsvRowInner() {
   const userId = useAuthStore((s) => s.user?.id);
   const accessToken = useAuthStore((s) => s.session?.access_token);
   const cfg = useMemo(() => {
@@ -1518,12 +1611,12 @@ function WhoopCsvRow() {
         return;
       }
       // Hard cap: WHOOP single-domain CSVs are typically <2MB. Above
-      // 8MB the paste path is unreliable on iOS UITextView and the
+      // 2MB the paste path is unreliable on iOS UITextView and the
       // upload payload becomes huge; steer the user to the .zip path.
-      if (text.length > 8 * 1024 * 1024) {
+      if (text.length > 2 * 1024 * 1024) {
         Alert.alert(
           'Pasted CSV too large',
-          'This paste is over 8 MB. Use the “Pick WHOOP export .zip” button above instead — the zip path handles full exports without freezing.',
+          'This paste is over 2 MB. Use the “Upload WHOOP CSV/zip” button above instead — the zip path handles full exports without freezing.',
         );
         return;
       }
@@ -1578,10 +1671,27 @@ function WhoopCsvRow() {
         if (payload[name]) name = `${name.replace(/\.csv$/, '')}_${f.id.slice(-4)}.csv`;
         payload[name] = f.text;
       }
+      // Token-presence diagnostics — never log the value. We log only:
+      //   tokenLen     — non-zero proves the EAS env reached the bundle
+      //   athleteIdLen — non-zero proves auth resolved
+      //   endpoint     — confirms we're hitting the right host
+      whoopTrace('paste_import_start', `tokenLen=${cfg.token?.length ?? 0} athleteIdLen=${cfg.athleteId?.length ?? 0} hasJwt=${!!cfg.supabaseAccessToken} base=${(cfg.baseUrl || '').replace(/^https?:\/\//, '')}`);
       const res = await uploadWhoopCsv(cfg, payload);
+      whoopTrace('paste_import_done', `ok=${!!res.ok}`);
       if (!res.ok) {
-        setLastResult(`Upload failed: ${res.error ?? 'unknown'}`);
-        Alert.alert('Upload failed — try again', res.error ?? 'Backend route may not be deployed yet.');
+        const raw = res.error ?? '';
+        // Compact, non-scary copy. Detect 403/Forbidden specifically
+        // because that's the symptom when an OTA bundled without the
+        // EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN env (mobile sends an empty
+        // header → backend rejects). Stash the raw blob in lastResult
+        // so the diagnostics line still surfaces it for support.
+        const isForbidden = /forbidden/i.test(raw) || /\b403\b/.test(raw);
+        const friendly = isForbidden
+          ? 'App auth did not match the backend. Reopen the app to refresh, then try again.'
+          : 'Upload failed — backend rejected this request. Try again.';
+        const diag = isForbidden ? 'Import endpoint returned 403.' : (raw ? raw.slice(0, 60) : 'unknown');
+        setLastResult(`Upload failed: ${diag}`);
+        Alert.alert(isForbidden ? 'Upload blocked' : 'Upload failed — try again', friendly);
         return;
       }
       const d = res.data as any;
@@ -1632,6 +1742,28 @@ function WhoopCsvRow() {
       {lastResult && (
         <Text style={[styles.sourceMeta, { color: '#4ade80' }]}>{lastResult}</Text>
       )}
+      <Pressable
+        onPress={async () => {
+          try {
+            const trace = (await readStoredJson<WhoopUploadTrace[]>(WHOOP_UPLOAD_TRACE_KEY)) ?? [];
+            if (trace.length === 0) {
+              Alert.alert('Upload trace', 'No trace yet. Tap “Upload WHOOP CSV/zip” first.');
+              return;
+            }
+            const lines = trace
+              .slice(-15)
+              .map((t) => `${t.at.slice(11, 19)}  ${t.step}${t.detail ? ` · ${t.detail}` : ''}`)
+              .join('\n');
+            Alert.alert(`Upload trace (${trace.length})`, lines);
+          } catch (e: any) {
+            Alert.alert('Upload trace', e?.message ?? 'Could not read trace.');
+          }
+        }}
+        hitSlop={6}>
+        <Text style={[styles.sourceMeta, { opacity: 0.55, textDecorationLine: 'underline' }]}>
+          Show last upload trace
+        </Text>
+      </Pressable>
       <View style={styles.rowActions}>
         <Pressable
           style={[styles.rowBtn, styles.rowBtnPrimary]}
@@ -1693,37 +1825,54 @@ function WhoopCsvRow() {
         <SafeAreaView style={styles.sheetOverlay}>
           <View style={styles.sheet}>
             <View style={styles.sheetHeaderRow}>
-              <Text style={styles.sheetTitle}>Import WHOOP export</Text>
+              <Text style={styles.sheetTitle}>Import WHOOP export · v3</Text>
               <Pressable onPress={() => setModalOpen(false)} hitSlop={10}>
                 <Text style={styles.sheetClose}>Cancel</Text>
               </Pressable>
             </View>
             <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
               <Text style={styles.sourceMeta}>
-                {'WHOOP app → Settings → Your Data → Export Data → download the zip. Tap Pick WHOOP export .zip to upload the whole file. Paste-per-file is the fallback if the picker is unavailable on your build. Supported domains auto-detected: recoveries, sleeps, workouts, cycles. Optional · deeper historical analysis · not required for normal sync.'}
+                {'WHOOP app → Settings → Your Data → Export Data → download the zip → unzip on your phone (Files app) → open one CSV at a time → Select All → Copy → come back here and paste. The .zip picker is temporarily disabled (native crash on the current build); the next EAS build will re-enable it. Supported domains auto-detected: recoveries, sleeps, workouts, cycles. Optional · historical context for Readiness · not required for normal sync.'}
               </Text>
 
-              {/* Primary path: one-shot zip upload. Works on Build 11+
-                  where expo-document-picker is linked. On older builds
-                  the tap shows a clear "rebuild required" message and
-                  the paste path below still works. */}
+              {!ENABLE_WHOOP_FILE_PICKER && (
+                <Text style={[styles.sourceMeta, { color: '#d4e157', textAlign: 'center' }]}>
+                  File picker temporarily disabled in this build. Paste WHOOP CSV content below.
+                </Text>
+              )}
+
+              {/* Native picker path. Flag-gated so the crashable
+                  invocation cannot reach getDocumentAsync at all when
+                  ENABLE_WHOOP_FILE_PICKER is false. The handler ALSO
+                  re-checks the flag as a defense in depth — if the
+                  Pressable somehow rendered (e.g. flag toggled mid-
+                  session) the press still bails before any native
+                  call. */}
+              {ENABLE_WHOOP_FILE_PICKER && (
               <Pressable
                 style={[styles.rowBtn, styles.rowBtnPrimary, { alignSelf: 'stretch' }]}
                 onPress={async () => {
+                  whoopTrace('btn_pressed');
+                  if (!ENABLE_WHOOP_FILE_PICKER) {
+                    whoopTrace('picker_flag_off');
+                    Alert.alert('File picker disabled', 'Use the paste path below.');
+                    return;
+                  }
                   if (!cfg) { Alert.alert('WHOOP export', 'Sign in first.'); return; }
                   if (uploading) return; // re-tap guard
                   let picker: any = null;
                   let fs: any = null;
-                  try { picker = require('expo-document-picker'); } catch { picker = null; }
+                  try { picker = require('expo-document-picker'); } catch (e: any) { whoopTrace('require_picker_failed', e?.message); picker = null; }
                   // SDK 54 moved the file-system legacy API to a
                   // sub-module. Prefer legacy (stable readAsStringAsync
                   // + getInfoAsync + EncodingType), fall back to the
                   // new module, then to null. Null → bail cleanly.
-                  try { fs = require('expo-file-system/legacy'); } catch { /* fall through */ }
+                  try { fs = require('expo-file-system/legacy'); } catch (e: any) { whoopTrace('require_fs_legacy_failed', e?.message); /* fall through */ }
                   if (!fs || typeof fs.readAsStringAsync !== 'function') {
-                    try { fs = require('expo-file-system'); } catch { fs = null; }
+                    try { fs = require('expo-file-system'); } catch (e: any) { whoopTrace('require_fs_failed', e?.message); fs = null; }
                   }
                   if (!picker || typeof picker.getDocumentAsync !== 'function' || !fs || typeof fs.readAsStringAsync !== 'function') {
+                    whoopTrace('module_unavailable', `picker=${!!picker} fs=${!!fs}`);
                     Alert.alert(
                       'Zip upload not available on this build',
                       'The document picker or file reader isn\u2019t available in this build. Use the paste-per-file fallback below, or wait for the next TestFlight build.',
@@ -1736,33 +1885,35 @@ function WhoopCsvRow() {
                   try {
                     let res: any;
                     try {
+                      whoopTrace('picker_open');
                       res = await picker.getDocumentAsync({
                         type: ['application/zip', 'application/x-zip-compressed', 'application/octet-stream', '*/*'],
                         copyToCacheDirectory: true,
                         multiple: false,
                       });
+                      whoopTrace('picker_returned', `keys=${res ? Object.keys(res).join(',') : 'null'}`);
                     } catch (pickErr: any) {
                       // Picker launch itself threw (rare iOS scoped-
                       // URI case, permission deny). Alert + bail so
                       // button unsticks in finally.
+                      whoopTrace('picker_threw', pickErr?.message);
                       Alert.alert('File picker error', pickErr?.message ?? 'Could not open the file picker.');
                       return;
                     }
-                    // Handle every cancel shape across expo-document-picker
-                    // versions: SDK 49+ returns `{canceled:true}`, older
-                    // returns `{type:'cancel'}`, some shims use British
-                    // spelling `cancelled`. Treat all as a clean exit.
-                    if (!res || (res as any).canceled || (res as any).cancelled || res.type === 'cancel') return;
-                    const assetsArr = Array.isArray((res as any)?.assets) ? (res as any).assets : null;
-                    if (assetsArr != null && assetsArr.length === 0) {
-                      Alert.alert('No file selected', 'No file was returned from the picker. Try again.');
+                    const norm = normalizePickedWhoopFile(res);
+                    if (norm.canceled) { whoopTrace('picker_canceled'); return; }
+                    if (!norm.ok) {
+                      whoopTrace('picker_invalid', norm.error);
+                      const msg = norm.error === 'no_assets' ? 'No file was returned from the picker. Try again.'
+                        : norm.error === 'no_uri' ? 'The picker returned a file with no readable path. Try copying it to Files first, then re-pick.'
+                        : 'No file selected.';
+                      Alert.alert(norm.error === 'no_uri' ? 'Couldn’t access selected file' : 'No file selected', msg);
                       return;
                     }
-                    const asset = assetsArr && assetsArr.length > 0 ? assetsArr[0] : res;
-                    const uri = typeof asset?.uri === 'string' && asset.uri.length > 0 ? asset.uri : null;
-                    const name = typeof asset?.name === 'string' ? asset.name : '';
-                    const mimeType = typeof asset?.mimeType === 'string' ? asset.mimeType : '';
-                    if (!uri) { Alert.alert('Couldn’t access selected file', 'The picker returned a file with no readable path. Try copying it to Files first, then re-pick.'); return; }
+                    const uri = norm.uri!;
+                    const name = norm.name ?? '';
+                    const mimeType = norm.mimeType ?? '';
+                    whoopTrace('picker_ok', `name=${name.slice(0, 40)} mime=${mimeType.slice(0, 40)} size=${norm.size ?? 'unknown'} scheme=${uri.split(':')[0]}`);
                     // Allow .zip or anything that looks like a zip MIME.
                     // Reject individual .csv explicitly with a useful
                     // pointer toward the paste-fallback path.
@@ -1778,14 +1929,14 @@ function WhoopCsvRow() {
                     // triples memory use) was the main crash vector.
                     // WHOOP exports are typically 5-30MB. Reject above
                     // 80MB with a clear message rather than OOMing.
-                    let sizeBytes: number | null = null;
+                    let sizeBytes: number | null = norm.size ?? null;
                     try {
-                      if (typeof asset?.size === 'number') sizeBytes = asset.size;
-                      else if (typeof fs.getInfoAsync === 'function') {
+                      if (sizeBytes == null && typeof fs.getInfoAsync === 'function') {
                         const info = await fs.getInfoAsync(uri, { size: true });
                         if (info?.exists && typeof info.size === 'number') sizeBytes = info.size;
                       }
-                    } catch { /* size probe best-effort */ }
+                    } catch (e: any) { whoopTrace('size_probe_failed', e?.message); }
+                    whoopTrace('size_known', sizeBytes != null ? `${sizeBytes}` : 'null');
                     if (sizeBytes != null && sizeBytes > 80 * 1024 * 1024) {
                       Alert.alert(
                         'Zip too large',
@@ -1794,6 +1945,7 @@ function WhoopCsvRow() {
                       return;
                     }
                     setUploading(true);
+                    whoopTrace('read_start');
                     // Read as base64. Large but bounded by the 80MB
                     // guard above. Still the most compatible path for
                     // the current backend route (takes `zipBase64`).
@@ -1805,7 +1957,9 @@ function WhoopCsvRow() {
                     try {
                       const raw = await fs.readAsStringAsync(uri, { encoding: base64Encoding });
                       base64 = typeof raw === 'string' ? raw : null;
+                      whoopTrace('read_done', `b64_len=${base64?.length ?? 0}`);
                     } catch (readErr: any) {
+                      whoopTrace('read_failed', readErr?.message);
                       Alert.alert('Couldn’t read file', readErr?.message ?? 'The file system refused to read this file. Try copying it to Files first, then re-pick.');
                       return;
                     }
@@ -1815,8 +1969,11 @@ function WhoopCsvRow() {
                     }
                     let upResp: any;
                     try {
+                      whoopTrace('upload_start');
                       upResp = await uploadWhoopZip(cfg, base64);
+                      whoopTrace('upload_done', `ok=${!!upResp?.ok}`);
                     } catch (upErr: any) {
+                      whoopTrace('upload_threw', upErr?.message);
                       Alert.alert('Upload failed — try again', upErr?.message ?? 'Network error.');
                       return;
                     }
@@ -1843,9 +2000,11 @@ function WhoopCsvRow() {
                     setModalOpen(false);
                     await refresh();
                   } catch (e: any) {
+                    whoopTrace('outer_catch', e?.message);
                     Alert.alert('Zip upload failed', e?.message ?? 'Unknown error reading or uploading the zip.');
                   } finally {
                     setUploading(false);
+                    whoopTrace('flow_end');
                   }
                 }}
                 disabled={uploading}
@@ -1855,13 +2014,14 @@ function WhoopCsvRow() {
                   {uploading ? 'Uploading · don\u2019t close the app…' : 'Upload WHOOP CSV/zip'}
                 </Text>
               </Pressable>
+              )}
               {uploading && (
                 <Text style={[styles.sourceMeta, { color: '#d4e157', textAlign: 'center' }]}>
                   WHOOP exports can take 30-90s to transfer + extract on mobile. Keep the app in the foreground.
                 </Text>
               )}
 
-              <Text style={[styles.sourceMeta, { opacity: 0.55, textAlign: 'center' }]}>or paste CSVs one-by-one (fallback)</Text>
+              <Text style={[styles.sheetSectionHeader, { textAlign: 'center' }]}>Paste WHOOP CSVs one at a time</Text>
 
               {files.length > 0 && (
                 <View style={{ gap: 6 }}>
@@ -1897,16 +2057,19 @@ function WhoopCsvRow() {
                 value={draftText}
                 onChangeText={(t) => {
                   // Hard backstop on TextInput content — iOS
-                  // UITextView gets unstable past ~8-10MB and a
-                  // multiline paste of a real WHOOP export can crash
-                  // the app. Cap at 8MB and steer to the .zip path.
-                  if (typeof t === 'string' && t.length > 8 * 1024 * 1024) {
-                    setDraftText(t.slice(0, 8 * 1024 * 1024));
+                  // UITextView is unstable past ~2MB on multiline
+                  // paste; lower the cap and steer to the .zip path
+                  // for anything larger. The 8MB earlier cap was
+                  // generous enough that paste-induced layout could
+                  // still freeze the JS thread before the cap kicked
+                  // in.
+                  if (typeof t === 'string' && t.length > 2 * 1024 * 1024) {
+                    setDraftText(t.slice(0, 2 * 1024 * 1024));
                     return;
                   }
                   setDraftText(t);
                 }}
-                maxLength={8 * 1024 * 1024}
+                maxLength={2 * 1024 * 1024}
                 autoCorrect={false}
                 autoCapitalize="none"
               />
@@ -1929,15 +2092,10 @@ function WhoopCsvRow() {
                 </Text>
               )}
               <Pressable
-                style={[styles.rowBtn, styles.rowBtnPrimary, { alignSelf: 'stretch' }]}
+                style={[styles.rowBtn, styles.rowBtnPrimary, { alignSelf: 'stretch', opacity: draftText.trim().length === 0 ? 0.5 : 1 }]}
+                disabled={draftText.trim().length === 0}
                 onPress={() => {
-                  if (draftText.trim().length === 0) {
-                    Alert.alert(
-                      'Paste CSV first',
-                      'Open the WHOOP app → Settings → Your Data → Export Data. Open one of the exported CSV files on your phone (Files app), Select All → Copy, then come back here and paste into the text box above before tapping Add file.',
-                    );
-                    return;
-                  }
+                  if (draftText.trim().length === 0) return;
                   addDraftFile();
                 }}>
                 <Text style={[styles.rowBtnText, styles.rowBtnTextPrimary]}>
@@ -1950,7 +2108,7 @@ function WhoopCsvRow() {
                 onPress={onImport}
                 disabled={uploading || files.length === 0}>
                 <Text style={[styles.rowBtnText, styles.rowBtnTextPrimary]}>
-                  {uploading ? 'Uploading…' : files.length > 0 ? `Import ${files.length} file${files.length === 1 ? '' : 's'}` : 'Import — add a file first'}
+                  {uploading ? 'Uploading…' : files.length > 0 ? `Import pasted WHOOP CSV (${files.length})` : 'Import pasted WHOOP CSV — add a file first'}
                 </Text>
               </Pressable>
 
@@ -1961,6 +2119,183 @@ function WhoopCsvRow() {
           </View>
         </SafeAreaView>
       </Modal>
+    </View>
+  );
+}
+
+/**
+ * Polar export historical training import — paste-only.
+ *
+ * Sister of WhoopCsvRow. Polar Flow's "Export account data" is one
+ * file per training session (CSV or TCX). This row accepts a single
+ * paste, runs the shared parser, shows a preview, and POSTs the
+ * normalised PolarSession[] to the backend ingest endpoint when the
+ * user taps Import.
+ *
+ * Provenance: every session is stamped `source: 'polar_export'` and is
+ * historical training context only — never a recovery/readiness signal.
+ * Health Connect remains the primary live Android path.
+ */
+function PolarExportRow() {
+  return (
+    <SafeErrorBoundary label="Polar export import">
+      <PolarExportRowInner />
+    </SafeErrorBoundary>
+  );
+}
+
+function PolarExportRowInner() {
+  const userId = useAuthStore((s) => s.user?.id);
+  const accessToken = useAuthStore((s) => s.session?.access_token);
+  const [draftText, setDraftText] = useState('');
+  const [parsed, setParsed] = useState<{ sessions: PolarSession[]; format: string; diagnostics: string[] } | null>(null);
+  const [importing, setImporting] = useState(false);
+  const [lastResult, setLastResult] = useState<string | null>(null);
+  const [showPaste, setShowPaste] = useState(false);
+
+  const onParse = useCallback(() => {
+    const text = draftText.trim();
+    if (!text) {
+      Alert.alert('Nothing to parse', 'Paste a Polar Flow CSV or TCX export first.');
+      return;
+    }
+    if (text.length > 8 * 1024 * 1024) {
+      Alert.alert('Paste too large', 'Polar exports paste up to ~8 MB. Split into per-session files.');
+      return;
+    }
+    const result = parsePolarExport(text);
+    setParsed({ sessions: result.sessions, format: result.format, diagnostics: result.diagnostics });
+    if (!result.ok) {
+      const msg = result.diagnostics.join('\n') || 'Could not identify Polar export shape.';
+      Alert.alert('Polar import — needs a closer look', msg);
+    }
+  }, [draftText]);
+
+  const onImport = useCallback(async () => {
+    if (!parsed || parsed.sessions.length === 0 || importing) return;
+    setImporting(true);
+    try {
+      const apiBase = process.env.EXPO_PUBLIC_AI_PUBLIC_URL ?? '';
+      const athleteMemoryToken = process.env.EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN ?? '';
+      const athleteId = userId ?? process.env.EXPO_PUBLIC_ATHLETE_ID ?? '';
+      if (!apiBase || !athleteMemoryToken || !athleteId) {
+        throw new Error('Backend config missing — sign in and retry.');
+      }
+      const res = await fetch(`${apiBase.replace(/\/$/, '')}/${athleteId}/polar-export/import`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-athlete-memory-token': athleteMemoryToken,
+          ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}),
+        },
+        body: JSON.stringify({ sessions: parsed.sessions }),
+      });
+      const json: any = await res.json().catch(() => ({}));
+      if (!res.ok || json?.ok === false) {
+        throw new Error(json?.error ?? `Import failed (${res.status})`);
+      }
+      const summary = `${json.imported ?? 0} new · ${json.deduped ?? 0} dedup'd · ${parsed.sessions.length} parsed (${parsed.format}).`;
+      setLastResult(summary);
+      Alert.alert('Polar import complete', summary);
+      setDraftText('');
+      setParsed(null);
+      setShowPaste(false);
+    } catch (e: any) {
+      Alert.alert('Polar import failed', e?.message ?? 'Unknown error.');
+    } finally {
+      setImporting(false);
+    }
+  }, [parsed, importing, userId, accessToken]);
+
+  const sessionsCount = parsed?.sessions.length ?? 0;
+  const dateRange = (() => {
+    if (!parsed || parsed.sessions.length === 0) return null;
+    const starts = parsed.sessions.map((s) => s.startTime).filter((s): s is string => !!s).sort();
+    if (starts.length === 0) return null;
+    return `${starts[0].slice(0, 10)} → ${starts[starts.length - 1].slice(0, 10)}`;
+  })();
+  const fieldsFound = (() => {
+    if (!parsed || parsed.sessions.length === 0) return [];
+    const present = new Set<string>();
+    for (const s of parsed.sessions) {
+      if (s.hrAvg != null || s.hrMax != null) present.add('HR');
+      if (s.calories != null) present.add('calories');
+      if (s.distanceKm != null) present.add('distance');
+      if (s.cadenceAvg != null) present.add('cadence');
+      if (s.speedAvgKmh != null) present.add('speed');
+      if (s.powerAvgW != null) present.add('power');
+    }
+    return Array.from(present);
+  })();
+
+  return (
+    <View style={styles.sourceRow}>
+      <View style={styles.sourceRowHeader}>
+        <Text style={styles.sourceName}>Polar export import</Text>
+        <View style={[styles.sourceChip, { borderColor: parsed?.sessions.length ? '#d4e157' : '#888' }]}>
+          <Text style={[styles.sourceChipText, { color: parsed?.sessions.length ? '#d4e157' : '#888' }]}>
+            {parsed?.sessions.length ? 'Preview' : 'Optional'}
+          </Text>
+        </View>
+      </View>
+      <Text style={styles.sourceMeta}>
+        Paste Polar Flow CSV/TCX export for historical training context. Recovery/readiness still uses your other sources — Polar export is evidence-only.
+      </Text>
+      <Text style={[styles.sourceMeta, { opacity: 0.45 }]}>
+        For now, Polar users can sync through Health Connect for live Android data. Polar Direct (richer Polar-specific fields) is planned for a later release. FIT files are not yet supported — export TCX or CSV.
+      </Text>
+
+      {!showPaste ? (
+        <Pressable
+          style={[styles.rowBtn, { alignSelf: 'flex-start', marginTop: 6 }]}
+          onPress={() => setShowPaste(true)}>
+          <Text style={styles.rowBtnText}>Paste Polar export</Text>
+        </Pressable>
+      ) : (
+        <>
+          <TextInput
+            style={[styles.csvInput, { marginTop: 6 }]}
+            multiline
+            placeholder="Paste Polar Flow CSV or TCX content here…"
+            placeholderTextColor="#666"
+            value={draftText}
+            onChangeText={(t) => {
+              if (typeof t === 'string' && t.length > 2 * 1024 * 1024) {
+                setDraftText(t.slice(0, 2 * 1024 * 1024));
+                return;
+              }
+              setDraftText(t);
+            }}
+            maxLength={2 * 1024 * 1024}
+            autoCorrect={false}
+            autoCapitalize="none"
+          />
+          <View style={styles.rowActions}>
+            <Pressable style={styles.rowBtn} onPress={onParse}>
+              <Text style={styles.rowBtnText}>Parse / preview</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.rowBtn, styles.rowBtnPrimary, !sessionsCount && { opacity: 0.4 }]}
+              disabled={!sessionsCount || importing}
+              onPress={onImport}>
+              <Text style={styles.rowBtnText}>{importing ? 'Importing…' : `Import ${sessionsCount || ''}`.trim()}</Text>
+            </Pressable>
+            <Pressable style={[styles.rowBtn, styles.rowBtnDanger]} onPress={() => { setDraftText(''); setParsed(null); setShowPaste(false); }}>
+              <Text style={styles.rowBtnText}>Cancel</Text>
+            </Pressable>
+          </View>
+          {parsed && (
+            <Text style={[styles.sourceMeta, { marginTop: 4 }]}>
+              {sessionsCount > 0
+                ? `Parsed ${sessionsCount} session${sessionsCount === 1 ? '' : 's'} (${parsed.format})${dateRange ? ` · ${dateRange}` : ''}${fieldsFound.length ? ` · fields: ${fieldsFound.join(', ')}` : ''}`
+                : `No sessions parsed. ${parsed.diagnostics.join(' ') || 'Try a different file.'}`}
+            </Text>
+          )}
+        </>
+      )}
+      {lastResult && (
+        <Text style={[styles.sourceMeta, { marginTop: 4, opacity: 0.55 }]}>{lastResult}</Text>
+      )}
     </View>
   );
 }

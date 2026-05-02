@@ -33,6 +33,7 @@ import { Router } from 'express';
 import path from 'path';
 import { FileApiAiStateStore } from '../athlete-memory/file-api-ai-state-store';
 import { ingestWhoopBatch, type WhoopMcpDayPayload } from '../../../../packages/shared/src/backend/services/whoop/ingest-whoop';
+import { computeLauburuReadiness } from '../../../../packages/shared/src/backend/services/readiness/lauburu-readiness';
 import { normalizeWhoopBatch } from '../../../../packages/shared/src/backend/services/normalize/normalize-daily-metrics';
 import { buildDailyRefreshArtifact } from '../../../../packages/shared/src/backend/services/refresh/build-daily-refresh';
 import { buildWeeklySynthesisArtifact } from '../../../../packages/shared/src/backend/services/refresh/build-weekly-synthesis';
@@ -56,12 +57,32 @@ import type { SessionLogIngestPayload, NormalizedSessionSummary } from '../../..
 import { DefaultCronometerAdapter, normalizeCronometerDaily } from '../../../../packages/shared/src/backend/services/cronometer/cronometer-adapter';
 import { buildCronometerCoverage } from '../../../../packages/shared/src/backend/contracts/cronometer.types';
 import { recordSourceConnectionState, type SourceName } from '../lib/sourceConnectionStateSink';
+import { mirrorNormalizedDay } from '../lib/normalizedMetricsSink';
+import { mirrorRawSourceEvent } from '../lib/rawSourceEventsSink';
 
 const router = Router();
 
 const store = new FileApiAiStateStore(
   path.resolve(__dirname, '../../../data/private-athlete-memory'),
 );
+
+/**
+ * Save normalized day to Railway primary AND fire-and-forget mirror
+ * the same row to Supabase `normalized_daily_metrics`. Railway primary
+ * is the source of truth; the mirror is redundant cross-stack
+ * visibility (web/exports/future read paths). Mirror failures are
+ * never propagated — primary writes are unaffected.
+ *
+ * Centralizing the call here means every existing
+ * `store.saveNormalizedDay(...)` call site becomes a single line via
+ * search-replace, with no behavior change beyond the added mirror.
+ */
+async function saveAndMirrorNormalized(athleteId: string, record: NormalizedDailyMetrics): Promise<void> {
+  // Primary: Railway file storage (source of truth).
+  await store.saveNormalizedDay(athleteId, record);
+  // Mirror: Supabase normalized_daily_metrics (redundancy, fire-and-forget).
+  void mirrorNormalizedDay(athleteId, record);
+}
 
 // ── Auth guard ────────────────────────────────────────────────
 
@@ -171,6 +192,21 @@ router.post('/ingest/whoop/daily', async (req: any, res: any) => {
     const rawRecords = ingestWhoopBatch(days, athleteId);
     for (const record of rawRecords) {
       await store.saveRawDay(athleteId, record);
+      // Mirror raw evidence to Supabase raw_source_events.
+      // Idempotent on (user_id, source, source_record_id,
+      // source_record_type) — re-ingesting same cycle updates the
+      // payload_hash + ingested_at, no duplicate row.
+      void mirrorRawSourceEvent({
+        userId: athleteId,
+        source: 'whoop',
+        sourceRecordId: String((record as any).cycleId ?? record.localDate),
+        sourceRecordType: 'whoop_daily',
+        localDate: record.localDate,
+        startedAt: (record as any).cycleStart ?? null,
+        endedAt: (record as any).cycleEnd ?? null,
+        payload: record,
+        provenance: { ingest_route: '/ingest/whoop/daily' },
+      });
     }
 
     // Update source health after successful ingest
@@ -275,7 +311,7 @@ router.post('/normalize/daily-metrics', async (req: any, res: any) => {
     // normalizeWhoopBatch expects WhoopDailyMetricsRaw[]
     const normalized = normalizeWhoopBatch(rawRecords as any);
     for (const record of normalized) {
-      await store.saveNormalizedDay(athleteId, record);
+      await saveAndMirrorNormalized(athleteId, record);
     }
 
     res.status(200).json({
@@ -448,7 +484,7 @@ router.post('/athletes/:athleteId/pipeline/daily', async (req: any, res: any) =>
     // Step 2: Normalize (interpretation-free)
     const normalized = normalizeWhoopBatch(rawRecords as any);
     for (const record of normalized) {
-      await store.saveNormalizedDay(athleteId, record);
+      await saveAndMirrorNormalized(athleteId,record);
     }
     steps.push({ step: 'normalize', ok: true, detail: { count: normalized.length, completeness: normalized.map((r) => r.completeness) } });
 
@@ -504,6 +540,509 @@ router.post('/athletes/:athleteId/pipeline/daily', async (req: any, res: any) =>
 // GET /v1/internal/athletes/:athleteId/read
 // Query: ?date=YYYY-MM-DD&requiredFields=recovery,hrv&realtime=true
 // Returns the full cache-first resolved state with layer provenance.
+
+// ── Trends — windowed rolling stats over normalized daily metrics ──
+// GET /v1/internal/athletes/:athleteId/trends?windowDays=N
+//
+// Returns per-metric rolling stats over the most recent N days for
+// HRV, RHR, sleep hours, day strain, sleep debt. Pure compute over
+// `store.getNormalizedRecent`. Per-user only (athleteId in path; the
+// internal-token middleware gates access). Includes coverage % +
+// confidence + trend direction so a UI can surface "improving /
+// worsening / flat / insufficient data" without server-side state.
+// ── AI health-context bundle ──
+// GET /v1/internal/athletes/:athleteId/ai-health-context
+//
+// Aggregates the structured pieces an AI/Coach surface needs:
+//   - sources_connected[] (with last_sync_at + status)
+//   - last_sync_at (most recent across sources)
+//   - data_coverage (counts + window dates)
+//   - readiness (score + status + confidence + training_bias + factors)
+//   - trends_short (7d) + trends_medium (30d) + trends_long (90d)
+//   - missing_data caveats (composed from readiness + trends)
+//   - recent_session_count (last 30 d)
+//
+// Pure read — no writes. Per-user only (athleteId path scoped).
+// Stamps `not_medical_advice: true` + `experimental: true` so any
+// downstream consumer sees the safety contract.
+// ── Auto-sync plan ──
+// GET /v1/internal/athletes/:athleteId/auto-sync/plan
+//
+// Read-only orchestrator: tells mobile/app-open which sources are
+// eligible for foreground sync, which are in cooldown, which need
+// permission/reconnect, and which are client-driven (Apple Health /
+// HC) vs server-driven (WHOOP Direct OAuth).
+//
+// Cooldown: 6h since last successful ingest. Manual Sync Now buttons
+// in the app should bypass cooldown (the mobile UI controls that —
+// this endpoint never executes a sync, only plans it). Failed syncs
+// use a shorter 30-min retry cooldown so a transient network error
+// doesn't lock out a tester for 6h.
+//
+// Per-user only. Auth-gated by the existing internal-token middleware.
+// No writes from this endpoint — pure read of source_connection_state
+// + source_health files.
+router.get('/athletes/:athleteId/auto-sync/plan', async (req: any, res: any) => {
+  try {
+    const { athleteId } = req.params;
+    const COOLDOWN_OK_MS = 6 * 60 * 60 * 1000;        // 6h after success
+    const COOLDOWN_FAIL_MS = 30 * 60 * 1000;          // 30m after failure
+    const now = Date.now();
+
+    // Source kinds: client-driven means the mobile reads native data
+    // and POSTs to /ingest/health-source/daily; server-driven means
+    // chat-app pulls via OAuth (WHOOP Direct).
+    const KNOWN_SOURCES: Array<{ name: string; kind: 'client_driven' | 'server_driven' | 'manual_only' }> = [
+      { name: 'apple_health',                       kind: 'client_driven' },
+      { name: 'health_connect',                     kind: 'client_driven' },
+      { name: 'samsung_health_via_health_connect',  kind: 'client_driven' },
+      { name: 'polar_via_health_connect',           kind: 'client_driven' },
+      { name: 'whoop',                              kind: 'server_driven' },
+      { name: 'polar',                              kind: 'server_driven' },
+      { name: 'whoop_csv',                          kind: 'manual_only' },
+      { name: 'cronometer',                         kind: 'server_driven' },
+    ];
+
+    const plan: Array<{
+      source: string;
+      kind: 'client_driven' | 'server_driven' | 'manual_only';
+      action: 'sync_now' | 'cooldown' | 'permission_needed' | 'reconnect_needed' | 'not_connected' | 'manual_only_user_action' | 'unavailable';
+      reason: string;
+      last_success_at: string | null;
+      last_failure_at: string | null;
+      next_eligible_auto_sync_at: string | null;
+      cooldown_remaining_seconds: number | null;
+    }> = [];
+
+    for (const { name, kind } of KNOWN_SOURCES) {
+      const sh: any = await store.getSourceHealth(athleteId, name).catch(() => null);
+      const lastOk = sh?.lastSuccessfulIngestAt ? new Date(sh.lastSuccessfulIngestAt).getTime() : null;
+      const lastFail = sh?.lastFailedIngestAt ? new Date(sh.lastFailedIngestAt).getTime() : null;
+      const upstream = sh?.upstreamStatus ?? null;
+      const degraded = sh?.degradedReason ?? null;
+
+      // Manual-only sources never auto-sync — surface honest state.
+      if (kind === 'manual_only') {
+        plan.push({
+          source: name,
+          kind,
+          action: 'manual_only_user_action',
+          reason: name === 'whoop_csv'
+            ? 'WHOOP CSV/zip imports require user file paste/upload — auto-sync cannot pull new files.'
+            : 'Manual entry only.',
+          last_success_at: sh?.lastSuccessfulIngestAt ?? null,
+          last_failure_at: sh?.lastFailedIngestAt ?? null,
+          next_eligible_auto_sync_at: null,
+          cooldown_remaining_seconds: null,
+        });
+        continue;
+      }
+
+      // No prior connection at all → not_connected.
+      if (!sh || (!lastOk && !lastFail)) {
+        plan.push({
+          source: name,
+          kind,
+          action: 'not_connected',
+          reason: kind === 'client_driven'
+            ? `${name} not connected on this device yet — open the Health tab to connect.`
+            : `${name} OAuth not connected — visit the Connect screen to authorise.`,
+          last_success_at: null,
+          last_failure_at: null,
+          next_eligible_auto_sync_at: null,
+          cooldown_remaining_seconds: null,
+        });
+        continue;
+      }
+
+      // Token/permission failure shape (heuristic on degradedReason).
+      if (degraded && /unauthor|token|expired|reconnect/i.test(String(degraded))) {
+        plan.push({
+          source: name,
+          kind,
+          action: 'reconnect_needed',
+          reason: `Reconnect required: ${String(degraded).slice(0, 120)}`,
+          last_success_at: sh?.lastSuccessfulIngestAt ?? null,
+          last_failure_at: sh?.lastFailedIngestAt ?? null,
+          next_eligible_auto_sync_at: null,
+          cooldown_remaining_seconds: null,
+        });
+        continue;
+      }
+      if (degraded && /permission/i.test(String(degraded))) {
+        plan.push({
+          source: name,
+          kind,
+          action: 'permission_needed',
+          reason: `Permission missing: ${String(degraded).slice(0, 120)}`,
+          last_success_at: sh?.lastSuccessfulIngestAt ?? null,
+          last_failure_at: sh?.lastFailedIngestAt ?? null,
+          next_eligible_auto_sync_at: null,
+          cooldown_remaining_seconds: null,
+        });
+        continue;
+      }
+
+      // Cooldown calculation.
+      const sinceOk = lastOk != null ? now - lastOk : Infinity;
+      const sinceFail = lastFail != null ? now - lastFail : Infinity;
+      const okCooldownLeft = Math.max(0, COOLDOWN_OK_MS - sinceOk);
+      const failCooldownLeft = Math.max(0, COOLDOWN_FAIL_MS - sinceFail);
+      const cooldownRemaining = Math.max(okCooldownLeft, failCooldownLeft);
+
+      if (cooldownRemaining > 0) {
+        plan.push({
+          source: name,
+          kind,
+          action: 'cooldown',
+          reason: failCooldownLeft > okCooldownLeft
+            ? `In failure-retry cooldown (${Math.round(failCooldownLeft / 1000)}s remaining).`
+            : `Recently synced; next auto-sync allowed in ${Math.round(cooldownRemaining / 1000)}s. Manual Sync Now bypasses.`,
+          last_success_at: sh?.lastSuccessfulIngestAt ?? null,
+          last_failure_at: sh?.lastFailedIngestAt ?? null,
+          next_eligible_auto_sync_at: new Date(now + cooldownRemaining).toISOString(),
+          cooldown_remaining_seconds: Math.round(cooldownRemaining / 1000),
+        });
+        continue;
+      }
+
+      // Eligible for auto-sync.
+      plan.push({
+        source: name,
+        kind,
+        action: 'sync_now',
+        reason: kind === 'client_driven'
+          ? `Eligible for client-driven foreground sync. Mobile should call its native ${name} reader and POST to /v1/internal/ingest/health-source/daily.`
+          : `Eligible for server-driven OAuth sync. Backend would trigger ${name}'s pull route.`,
+        last_success_at: sh?.lastSuccessfulIngestAt ?? null,
+        last_failure_at: sh?.lastFailedIngestAt ?? null,
+        next_eligible_auto_sync_at: new Date(now + COOLDOWN_OK_MS).toISOString(),
+        cooldown_remaining_seconds: 0,
+      });
+    }
+
+    // Aggregate health flags so a UI can render at-a-glance.
+    const eligibleCount = plan.filter((p) => p.action === 'sync_now').length;
+    const cooldownCount = plan.filter((p) => p.action === 'cooldown').length;
+    const reconnectCount = plan.filter((p) => p.action === 'reconnect_needed').length;
+    const permCount = plan.filter((p) => p.action === 'permission_needed').length;
+    const notConnectedCount = plan.filter((p) => p.action === 'not_connected').length;
+    const lastAnyOk = plan.map((p) => p.last_success_at).filter((v): v is string => !!v).sort().pop() ?? null;
+
+    res.status(200).json({
+      athleteId,
+      computed_at: new Date().toISOString(),
+      cooldown_policy: {
+        success_cooldown_hours: 6,
+        failure_retry_cooldown_minutes: 30,
+        manual_sync_bypasses_cooldown: true,
+      },
+      summary: {
+        eligible_for_auto_sync: eligibleCount,
+        in_cooldown: cooldownCount,
+        reconnect_required: reconnectCount,
+        permission_required: permCount,
+        not_connected: notConnectedCount,
+        most_recent_sync_at: lastAnyOk,
+      },
+      plan,
+      not_medical_advice: true,
+      experimental: true,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Auto-sync plan compute failed.',
+      detail: error instanceof Error ? error.message : 'unknown',
+    });
+  }
+});
+
+router.get('/athletes/:athleteId/ai-health-context', async (req: any, res: any) => {
+  try {
+    const { athleteId } = req.params;
+    // 90 days is the longest window we expose for an AI context bundle.
+    // Anything older lives in athlete_memory / weekly artifacts.
+    const last90 = await store.getNormalizedRecent(athleteId, 95);
+    const sortedAsc = [...(last90 ?? [])].sort((a: any, b: any) => String(a.date).localeCompare(String(b.date)));
+    const today = sortedAsc[sortedAsc.length - 1] ?? null;
+    const baseline = today ? sortedAsc.filter((r: any) => r.date < (today as any).date) : sortedAsc;
+    // Readiness — same compute as the dedicated endpoint.
+    const last7 = sortedAsc.slice(-7);
+    const acuteVals: number[] = [];
+    for (const r of last7) {
+      const v = (r as any).dailyStrain;
+      if (typeof v === 'number' && Number.isFinite(v)) acuteVals.push(v);
+    }
+    const acuteLoad = acuteVals.length > 0
+      ? { sum: acuteVals.reduce((s, v) => s + v, 0), avg: acuteVals.reduce((s, v) => s + v, 0) / acuteVals.length, days: acuteVals.length }
+      : null;
+    const last28 = baseline.slice(-28);
+    const chronicVals: number[] = [];
+    for (const r of last28) {
+      const v = (r as any).dailyStrain;
+      if (typeof v === 'number' && Number.isFinite(v)) chronicVals.push(v);
+    }
+    const chronicLoad = chronicVals.length > 0
+      ? { avg: chronicVals.reduce((s, v) => s + v, 0) / chronicVals.length, days: chronicVals.length }
+      : null;
+    let staleHours: number | null = null;
+    if ((today as any)?.updatedAt) {
+      const ms = new Date((today as any).updatedAt).getTime();
+      if (Number.isFinite(ms)) staleHours = Math.max(0, (Date.now() - ms) / (1000 * 60 * 60));
+    }
+    const readiness = computeLauburuReadiness({
+      today: today as any,
+      baseline: baseline as any,
+      acuteLoad,
+      chronicLoad,
+      staleHours,
+    });
+    // Trend windows — reduced to compact summaries (direction +
+    // confidence + coverage_pct only) so the AI prompt stays small.
+    function trendSummary(records: any[], windowDays: number) {
+      const out: Record<string, any> = {};
+      const slice = records.slice(-windowDays);
+      const map: Array<[string, (r: any) => number | null, boolean]> = [
+        ['hrv_ms', (r) => r.hrvMs, true],
+        ['rhr_bpm', (r) => r.restingHrBpm, false],
+        ['sleep_hours', (r) => r.totalSleepHours, true],
+        ['day_strain', (r) => r.dailyStrain, false],
+        ['recovery_score', (r) => r.recoveryScore, true],
+      ];
+      for (const [name, pick, higherBetter] of map) {
+        const vs: number[] = [];
+        for (const r of slice) { const v = pick(r); if (typeof v === 'number' && Number.isFinite(v)) vs.push(v); }
+        if (vs.length === 0) { out[name] = { coverage_days: 0, direction: 'insufficient', confidence: 'insufficient' }; continue; }
+        const m = vs.reduce((s, v) => s + v, 0) / vs.length;
+        const sd = Math.sqrt(vs.reduce((s, v) => s + (v - m) ** 2, 0) / vs.length);
+        let direction: 'improving' | 'worsening' | 'flat' | 'insufficient' = 'insufficient';
+        if (vs.length >= 7) {
+          const third = Math.floor(vs.length / 3);
+          const oldM = vs.slice(0, third).reduce((s, v) => s + v, 0) / third;
+          const newM = vs.slice(-third).reduce((s, v) => s + v, 0) / third;
+          const delta = newM - oldM;
+          if (sd > 0 && Math.abs(delta) / sd > 0.5) {
+            direction = (higherBetter ? delta > 0 : delta < 0) ? 'improving' : 'worsening';
+          } else direction = 'flat';
+        }
+        const conf = vs.length >= 30 ? 'high' : vs.length >= 7 ? 'medium' : 'low';
+        out[name] = {
+          coverage_days: vs.length,
+          coverage_pct: Math.round((vs.length / windowDays) * 100),
+          direction,
+          confidence: conf,
+          mean: Number(m.toFixed(2)),
+          latest: Number((vs[vs.length - 1]).toFixed(2)),
+        };
+      }
+      return out;
+    }
+    // Sources connected — read source_health files for each known
+    // provider, return a compact list with last_sync_at + status.
+    const PROVIDERS = ['whoop', 'apple_health', 'health_connect', 'polar_via_health_connect',
+      'samsung_health_via_health_connect', 'samsung_health_direct', 'direct_polar', 'cronometer', 'polar', 'concept2_logbook'];
+    const sources: Array<{ provider: string; status: string; last_sync_at: string | null; coverage_domains: string[] }> = [];
+    for (const p of PROVIDERS) {
+      const sh: any = await store.getSourceHealth(athleteId, p);
+      if (sh) {
+        sources.push({
+          provider: p,
+          status: String(sh.freshnessStatus ?? sh.upstreamStatus ?? 'unknown'),
+          last_sync_at: sh.lastSuccessfulIngestAt ?? null,
+          coverage_domains: Object.keys(sh.coverageByDomain ?? {}).filter((k) => (sh.coverageByDomain[k]?.status === 'fresh' || sh.coverageByDomain[k]?.status === 'stale')),
+        });
+      }
+    }
+    const lastSyncAt = sources
+      .map((s) => s.last_sync_at)
+      .filter((v): v is string => !!v)
+      .sort()
+      .pop() ?? null;
+    res.status(200).json({
+      athleteId,
+      computed_at: new Date().toISOString(),
+      not_medical_advice: true,
+      experimental: true,
+      data_coverage: {
+        total_normalized_days: sortedAsc.length,
+        first_date: sortedAsc[0]?.date ?? null,
+        last_date: today ? (today as any).date : null,
+        baseline_days: baseline.length,
+      },
+      sources_connected: sources,
+      last_sync_at: lastSyncAt,
+      readiness,
+      trends_short_7d: trendSummary(sortedAsc, 7),
+      trends_medium_30d: trendSummary(sortedAsc, 30),
+      trends_long_90d: trendSummary(sortedAsc, 90),
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'AI health context compute failed.',
+      detail: error instanceof Error ? error.message : 'unknown',
+    });
+  }
+});
+
+// ── Lauburu Readiness — custom grappling-aware readiness score ──
+// GET /v1/internal/athletes/:athleteId/readiness?date=YYYY-MM-DD
+//
+// Pure compute over normalized metrics + acute/chronic load. Returns
+// a 0-100 score, status, confidence, training-bias, top contributing
+// factors, missing-data list, caveats, plain-English explanation.
+// NOT MEDICAL ADVICE — `not_medical_advice: true` flag on every
+// response. Conservative; surfaces low-confidence + insufficient_data
+// states explicitly.
+router.get('/athletes/:athleteId/readiness', async (req: any, res: any) => {
+  try {
+    const { athleteId } = req.params;
+    const requestedDate = (req.query.date as string | undefined) ?? new Date().toISOString().slice(0, 10);
+    // Pull last 35 days so we have today + 28-day baseline + a small
+    // pad for missing days. The compute module trims itself.
+    const window = await store.getNormalizedRecent(athleteId, 35);
+    if (!Array.isArray(window) || window.length === 0) {
+      const out = computeLauburuReadiness({ today: null, baseline: [] });
+      res.status(200).json({ athleteId, date: requestedDate, ...out });
+      return;
+    }
+    // Sort ascending so today is the last entry.
+    const sorted = [...window].sort((a: any, b: any) => String(a.date).localeCompare(String(b.date)));
+    // Find today (or the requested date) and split baseline = everything before it.
+    const todayIdx = sorted.findIndex((r: any) => r.date === requestedDate);
+    const today = todayIdx >= 0 ? (sorted[todayIdx] as any) : (sorted[sorted.length - 1] as any);
+    const baseline = sorted.filter((r: any) => r.date !== today.date && r.date < today.date);
+    // Acute load: last 7 days of strain ending today (inclusive).
+    const acuteSlice = sorted.filter((r: any) => r.date <= today.date).slice(-7);
+    const acuteVals: number[] = [];
+    for (const r of acuteSlice) {
+      const v = (r as any).dailyStrain;
+      if (typeof v === 'number' && Number.isFinite(v)) acuteVals.push(v);
+    }
+    const acuteLoad = acuteVals.length > 0
+      ? { sum: acuteVals.reduce((s, v) => s + v, 0), avg: acuteVals.reduce((s, v) => s + v, 0) / acuteVals.length, days: acuteVals.length }
+      : null;
+    // Chronic load: last 28 days of strain (incl baseline) excluding today.
+    const chronicSlice = baseline.slice(-28);
+    const chronicVals: number[] = [];
+    for (const r of chronicSlice) {
+      const v = (r as any).dailyStrain;
+      if (typeof v === 'number' && Number.isFinite(v)) chronicVals.push(v);
+    }
+    const chronicLoad = chronicVals.length > 0
+      ? { avg: chronicVals.reduce((s, v) => s + v, 0) / chronicVals.length, days: chronicVals.length }
+      : null;
+    // Stale hours: derive from today.updatedAt if available.
+    let staleHours: number | null = null;
+    if (today?.updatedAt) {
+      const updated = new Date(today.updatedAt).getTime();
+      if (Number.isFinite(updated)) {
+        staleHours = Math.max(0, (Date.now() - updated) / (1000 * 60 * 60));
+      }
+    }
+    const result = computeLauburuReadiness({
+      today,
+      baseline,
+      acuteLoad,
+      chronicLoad,
+      staleHours,
+    });
+    res.status(200).json({ athleteId, date: today.date, ...result });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Readiness compute failed.',
+      detail: error instanceof Error ? error.message : 'unknown',
+    });
+  }
+});
+
+router.get('/athletes/:athleteId/trends', async (req: any, res: any) => {
+  try {
+    const { athleteId } = req.params;
+    const windowDaysRaw = Number(req.query.windowDays ?? 30);
+    const windowDays = Number.isFinite(windowDaysRaw)
+      ? Math.max(7, Math.min(1825, Math.floor(windowDaysRaw)))
+      : 30;
+    const records = await store.getNormalizedRecent(athleteId, windowDays);
+    const out: any = { athleteId, windowDays, recordCount: records.length, metrics: {} };
+    if (records.length === 0) {
+      res.status(200).json(out);
+      return;
+    }
+    // Sort ascending so trend-direction comparisons are oldest→newest.
+    records.sort((a: any, b: any) => String(a.date).localeCompare(String(b.date)));
+    const metricMap: Array<[string, (r: any) => number | null]> = [
+      ['hrv_ms', (r) => r.hrvMs],
+      ['rhr_bpm', (r) => r.restingHrBpm],
+      ['sleep_hours', (r) => r.totalSleepHours],
+      ['day_strain', (r) => r.dailyStrain],
+      ['sleep_debt_hours', (r) => r.sleepDebtHours],
+      ['recovery_score', (r) => r.recoveryScore],
+      ['active_kcal', (r) => r.activeCaloriesKcal],
+      ['sleep_efficiency_pct', (r) => r.sleepEfficiencyPct],
+    ];
+    for (const [name, pick] of metricMap) {
+      const values: number[] = [];
+      for (const r of records) {
+        const v = pick(r);
+        if (typeof v === 'number' && Number.isFinite(v)) values.push(v);
+      }
+      if (values.length === 0) {
+        out.metrics[name] = { coverage_days: 0, confidence: 'insufficient', direction: 'insufficient' };
+        continue;
+      }
+      const sorted = [...values].sort((a, b) => a - b);
+      const mean = values.reduce((s, v) => s + v, 0) / values.length;
+      const variance = values.reduce((s, v) => s + (v - mean) ** 2, 0) / values.length;
+      const stdev = Math.sqrt(variance);
+      const p = (q: number) => sorted[Math.min(sorted.length - 1, Math.max(0, Math.floor(q * (sorted.length - 1))))];
+      // Trend direction: compare first-third mean vs last-third mean,
+      // require effect size > 0.5 stdev to count as a real shift.
+      let direction: 'improving' | 'worsening' | 'flat' | 'insufficient' = 'insufficient';
+      if (values.length >= 7) {
+        const third = Math.floor(values.length / 3);
+        const oldMean = values.slice(0, third).reduce((s, v) => s + v, 0) / third;
+        const newMean = values.slice(-third).reduce((s, v) => s + v, 0) / third;
+        const delta = newMean - oldMean;
+        const sig = stdev > 0 && Math.abs(delta) / stdev > 0.5;
+        if (!sig) direction = 'flat';
+        // Higher = better for HRV / sleep_hours / sleep_efficiency / recovery_score / active_kcal.
+        // Lower = better for RHR / day_strain / sleep_debt.
+        else {
+          const higherIsBetter = ['hrv_ms', 'sleep_hours', 'sleep_efficiency_pct', 'recovery_score', 'active_kcal'].includes(name);
+          if (higherIsBetter) direction = delta > 0 ? 'improving' : 'worsening';
+          else direction = delta < 0 ? 'improving' : 'worsening';
+        }
+      }
+      // Confidence: low if <7 days coverage, medium 7-29, high ≥30.
+      const confidence = values.length >= 30 ? 'high' : values.length >= 7 ? 'medium' : 'low';
+      // Latest-vs-baseline z (using window mean+stdev as baseline).
+      const latest = values[values.length - 1];
+      const z = stdev > 0 ? (latest - mean) / stdev : 0;
+      out.metrics[name] = {
+        coverage_days: values.length,
+        coverage_pct: Math.round((values.length / windowDays) * 100),
+        mean: Number(mean.toFixed(2)),
+        stdev: Number(stdev.toFixed(2)),
+        min: sorted[0],
+        max: sorted[sorted.length - 1],
+        p25: p(0.25),
+        p75: p(0.75),
+        latest: Number(latest.toFixed(2)),
+        latest_z: Number(z.toFixed(2)),
+        direction,
+        confidence,
+      };
+    }
+    out.firstDate = records[0].date;
+    out.lastDate = records[records.length - 1].date;
+    res.status(200).json(out);
+  } catch (error) {
+    res.status(500).json({
+      error: 'Trends compute failed.',
+      detail: error instanceof Error ? error.message : 'unknown',
+    });
+  }
+});
 
 router.get('/athletes/:athleteId/read', async (req: any, res: any) => {
   try {
@@ -797,7 +1336,7 @@ router.post('/athletes/:athleteId/reingest-from-whoop', async (req: any, res: an
     // Step 3: Normalize
     const normalized = normalizeWhoopBatch(rawRecords as any);
     for (const record of normalized) {
-      await store.saveNormalizedDay(athleteId, record); // No seedMode marker — live data
+      await saveAndMirrorNormalized(athleteId,record); // No seedMode marker — live data
     }
     steps.push({ step: 'normalize', ok: true, detail: { count: normalized.length, completeness: normalized.map((r) => r.completeness) } });
 
@@ -969,7 +1508,7 @@ router.post('/ingest/nutrition/daily', async (req: any, res: any) => {
     if (normalized) {
       // Merge nutrition into existing normalized record
       normalized = applyNutritionToNormalized(normalized, rawNutrition);
-      await store.saveNormalizedDay(athleteId, normalized);
+      await saveAndMirrorNormalized(athleteId,normalized);
     } else {
       // No WHOOP data for this date — create nutrition-only normalized
       const now = new Date().toISOString();
@@ -1015,7 +1554,7 @@ router.post('/ingest/nutrition/daily', async (req: any, res: any) => {
         sourceRefs: [{ layer: 'raw', recordId: rawNutrition.id, fieldPath: null, date: day.date }],
         provider: rawNutrition.source,
       };
-      await store.saveNormalizedDay(athleteId, nutritionOnly);
+      await saveAndMirrorNormalized(athleteId,nutritionOnly);
       normalized = nutritionOnly;
     }
 
@@ -1097,6 +1636,24 @@ router.post('/ingest/health-source/daily', async (req: any, res: any) => {
     const raw = ingestHealthSourceDay(day, athleteId);
     const normalized = normalizeHealthSourceDay(raw);
 
+    // Mirror raw evidence (Apple Health / Health Connect / Samsung /
+    // Polar-via-HC etc.) to Supabase. Source-tag from `raw.provider`,
+    // record-type qualifies the per-day record. Same fire-and-forget
+    // contract as elsewhere — primary Railway store is unaffected.
+    void mirrorRawSourceEvent({
+      userId: athleteId,
+      source: raw.provider,
+      sourceRecordId: String((raw as any).id ?? `${raw.provider}_${raw.date}`),
+      sourceRecordType: 'health_source_daily',
+      localDate: raw.date,
+      payload: raw,
+      provenance: {
+        ingest_route: '/ingest/health-source/daily',
+        source_app: (raw as any).sourceApp ?? null,
+        domains_from_polar: (raw as any).domainsFromPolar ?? null,
+      },
+    });
+
     // Merge with existing normalized (e.g. WHOOP data) if present
     const existing = await store.getNormalizedDay(athleteId, day.date);
     if (existing) {
@@ -1128,9 +1685,9 @@ router.post('/ingest/health-source/daily', async (req: any, res: any) => {
       merged.presentFields = present;
       merged.missingFields = ['recoveryScore','hrvMs','restingHrBpm','totalSleepHours','deepSleepHours','remSleepHours','activeCaloriesKcal','dailyStrain'].filter(f => !present.includes(f));
       merged.completeness = merged.missingFields.length === 0 ? 'complete' : present.length >= 4 ? 'partial' : 'minimal';
-      await store.saveNormalizedDay(athleteId, merged);
+      await saveAndMirrorNormalized(athleteId,merged);
     } else {
-      await store.saveNormalizedDay(athleteId, normalized);
+      await saveAndMirrorNormalized(athleteId,normalized);
     }
 
     // Update source health for this provider. For polar_via_health_connect,
@@ -1375,7 +1932,7 @@ router.post('/nutrition/photo-confirm', async (req: any, res: any) => {
       let normalized = await store.getNormalizedDay(athleteId, date);
       if (normalized) {
         normalized = applyNutritionToNormalized(normalized, rawNutrition);
-        await store.saveNormalizedDay(athleteId, normalized);
+        await saveAndMirrorNormalized(athleteId,normalized);
       } else {
         const now = new Date().toISOString();
         const nutritionOnly: NormalizedDailyMetrics = {
@@ -1400,7 +1957,7 @@ router.post('/nutrition/photo-confirm', async (req: any, res: any) => {
           sourceRefs: [{ layer: 'raw', recordId: rawNutrition.id, fieldPath: null, date }],
           provider: 'ai_photo',
         };
-        await store.saveNormalizedDay(athleteId, nutritionOnly);
+        await saveAndMirrorNormalized(athleteId,nutritionOnly);
       }
     }
 
@@ -1512,7 +2069,7 @@ router.post('/cronometer/:athleteId/sync', async (req: any, res: any) => {
       if (normalizedDay.provider !== 'cronometer') {
         (normalizedDay as any).provider = 'mixed';
       }
-      await store.saveNormalizedDay(athleteId, normalizedDay);
+      await saveAndMirrorNormalized(athleteId,normalizedDay);
     } else {
       const now = new Date().toISOString();
       const nutritionOnly: NormalizedDailyMetrics = {
@@ -1537,7 +2094,7 @@ router.post('/cronometer/:athleteId/sync', async (req: any, res: any) => {
         sourceRefs: [{ layer: 'raw', recordId: rawNutrition.id, fieldPath: null, date: targetDate }],
         provider: 'cronometer',
       };
-      await store.saveNormalizedDay(athleteId, nutritionOnly);
+      await saveAndMirrorNormalized(athleteId,nutritionOnly);
     }
 
     // Write fresh source-health record

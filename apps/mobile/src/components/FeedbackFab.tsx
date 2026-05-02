@@ -34,6 +34,7 @@ import {
 import { pickAttachment, type AttachmentSource } from '../services/feedback-attachments';
 
 const TYPES: { id: FeedbackType; label: string }[] = [
+  { id: 'ui_cleanup', label: 'UI cleanup' },
   { id: 'bug', label: 'Bug' },
   { id: 'app_error', label: 'App error' },
   { id: 'ai_answer_issue', label: 'AI answer' },
@@ -45,6 +46,58 @@ const TYPES: { id: FeedbackType; label: string }[] = [
   { id: 'suggestion', label: 'Suggestion' },
   { id: 'general', label: 'General' },
 ];
+
+/**
+ * Tester type — always tagged on every submission so Aaron can filter
+ * `/api/feedback/recent` by cohort. Distinct from feedback type: one
+ * tester can file UI-cleanup, bug, AND health issues across a session,
+ * but their tester role doesn't change.
+ */
+type TesterType = 'friend_ui_cleanup' | 'health_data_tester' | 'general_tester';
+const TESTER_TYPES: { id: TesterType; label: string; hint: string }[] = [
+  { id: 'friend_ui_cleanup', label: 'Friend · UI cleanup', hint: 'Helping clean up what feels confusing or cluttered' },
+  { id: 'health_data_tester', label: 'Health data tester', hint: 'Checking sync, metrics, trends' },
+  { id: 'general_tester', label: 'General', hint: 'Anything else' },
+];
+
+/** Friend-tester prompt — structured prompts the user listed. */
+const UI_CLEANUP_PLACEHOLDER = [
+  '• What did you try?',
+  '• What confused you?',
+  '• Duplicated or cluttered areas?',
+  '• Broken or unclear buttons?',
+  '• Tap targets / readability issues?',
+  '• Trust blockers (anything that felt off)?',
+  '• Top 5 cleanup suggestions',
+  '• What did you like?',
+].join('\n');
+
+/** Health/AI tester prompt — structured prompts to make submissions actionable. */
+const HEALTH_PLACEHOLDER = [
+  '• What were you trying to do?',
+  '• What happened? (e.g. sync failed, no data showed, wrong score)',
+  '• What did you expect to happen?',
+  '• Which health source? (Apple Health / Health Connect / WHOOP / Polar / BLE / manual)',
+  '• Was the data already synced? When did you last sync?',
+].join('\n');
+
+/** AI advice tester prompt. */
+const AI_PLACEHOLDER = [
+  '• What did you ask the AI?',
+  '• What did the AI say?',
+  '• Did the advice feel: useful / wrong / confusing / missing data?',
+  '• What would have been more useful?',
+  '• Was data missing or stale?',
+].join('\n');
+
+/** Bug placeholder. */
+const BUG_PLACEHOLDER = [
+  '• What were you trying to do?',
+  '• What screen were you on?',
+  '• What happened (error message? wrong result?)?',
+  '• What did you expect?',
+  '• Was the Feedback button easy to find?',
+].join('\n');
 
 const SEVERITIES: FeedbackSeverity[] = ['low', 'medium', 'high', 'blocking'];
 
@@ -63,6 +116,7 @@ export function FeedbackFab() {
   const healthDaysCount = useHealthStore((s) => s.days.length);
 
   const [open, setOpen] = useState(false);
+  const [testerType, setTesterType] = useState<TesterType>('general_tester');
   const [type, setType] = useState<FeedbackType>('bug');
   const [severity, setSeverity] = useState<FeedbackSeverity>('medium');
   const [message, setMessage] = useState('');
@@ -94,10 +148,32 @@ export function FeedbackFab() {
     setAttachments((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
+  // Some categories cannot be acted on without a written description —
+  // a screenshot alone is too hard to interpret. Enforce a minimum
+  // text length for these, surface a clear inline reason, and keep
+  // anonymous-but-described submissions allowed.
+  const requiresDescription =
+    severity === 'blocking' ||
+    type === 'health_source_issue' ||
+    type === 'ai_answer_issue' ||
+    type === 'apple_health_issue' ||
+    type === 'samsung_health_connect_issue';
+  const REQUIRED_DESCRIPTION_MIN = 20;
+  const trimmedMessage = message.trim();
+  const descriptionTooShort =
+    requiresDescription && trimmedMessage.length < REQUIRED_DESCRIPTION_MIN;
+
   const handleSubmit = useCallback(async () => {
     const trimmed = message.trim();
     if (!trimmed && attachments.length === 0) return;
     if (submitting) return;
+    if (requiresDescription && trimmed.length < REQUIRED_DESCRIPTION_MIN) {
+      setResult('error');
+      setErrorMsg(
+        `Please describe the issue in at least ${REQUIRED_DESCRIPTION_MIN} characters. Screenshots alone are hard to interpret for ${type === 'health_source_issue' ? 'health-source' : type === 'ai_answer_issue' ? 'AI advice' : 'blocking'} issues.`,
+      );
+      return;
+    }
     setSubmitting(true);
     setResult(null);
     setErrorMsg(null);
@@ -121,6 +197,11 @@ export function FeedbackFab() {
       context.health_last_error = healthLastError ?? null;
       context.health_days_count = healthDaysCount;
     }
+    // Tester-type cohort tag — always populated so Aaron can filter
+    // /api/feedback/recent by `friend_ui_cleanup` / `health_data_tester`
+    // / `general_tester` regardless of which feedback type the user
+    // chose. Picker default is 'general_tester' to avoid mislabelling.
+    context.tester_type = testerType;
 
     const res = await submitTesterFeedback({
       type,
@@ -156,7 +237,9 @@ export function FeedbackFab() {
   }, [submitting]);
 
   const attachmentsFull = attachments.length >= MAX_ATTACHMENTS;
-  const canSubmit = (message.trim().length > 0 || attachments.length > 0) && !submitting;
+  const canSubmit = (message.trim().length > 0 || attachments.length > 0)
+    && !submitting
+    && !descriptionTooShort;
 
   return (
     <>
@@ -164,8 +247,10 @@ export function FeedbackFab() {
         style={[styles.fab, { bottom: Math.max(insets.bottom, 10) + 72 + 56 }]}
         accessibilityRole="button"
         accessibilityLabel="Send feedback"
+        hitSlop={6}
         onPress={() => setOpen(true)}>
         <FontAwesome name="flag" size={14} color="#fff" />
+        <Text style={styles.fabLabel}>Feedback</Text>
       </Pressable>
 
       <Modal visible={open} transparent animationType="slide" onRequestClose={handleClose}>
@@ -181,6 +266,42 @@ export function FeedbackFab() {
             </View>
 
             <ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled">
+              {!user?.id && (
+                <View style={styles.anonNotice}>
+                  <Text style={styles.anonNoticeText}>
+                    You&apos;re not signed in — this submission will be anonymous and won&apos;t be linked to your account.{' '}
+                    Sign in first if you want this feedback tied to your account/data (helpful for health/AI issues).
+                  </Text>
+                </View>
+              )}
+              <Text style={[styles.sectionLabel, { marginBottom: 4 }]}>You are testing as</Text>
+              <View style={styles.typeRow}>
+                {TESTER_TYPES.map((t) => (
+                  <Pressable
+                    key={t.id}
+                    style={[styles.pill, testerType === t.id && styles.pillActive]}
+                    onPress={() => {
+                      setTesterType(t.id);
+                      // Auto-pivot the feedback type so the placeholder
+                      // matches: friend cleanup → ui_cleanup; health
+                      // tester → keep current health-related selection
+                      // if any, else apple_health_issue; general → bug.
+                      if (t.id === 'friend_ui_cleanup') setType('ui_cleanup');
+                      else if (t.id === 'health_data_tester' && type === 'ui_cleanup') setType('apple_health_issue');
+                      else if (t.id === 'general_tester' && type === 'ui_cleanup') setType('bug');
+                    }}>
+                    <Text style={[styles.pillText, testerType === t.id && styles.pillTextActive]}>
+                      {t.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+              <Text style={[styles.helpBody, { marginBottom: 8 }]}>
+                {TESTER_TYPES.find((t) => t.id === testerType)?.hint}
+                {testerType === 'friend_ui_cleanup' ? '. This is early app cleanup feedback — health-data correctness is not validated yet.' : ''}
+                {testerType === 'health_data_tester' ? '. Polar / Health Connect / Android / multi-person aggregation are NOT verified yet — please don\u2019t rely on those.' : ''}
+              </Text>
+
               <Text style={styles.sectionLabel}>Type</Text>
               <View style={styles.typeRow}>
                 {TYPES.map((t) => (
@@ -209,17 +330,35 @@ export function FeedbackFab() {
                 ))}
               </View>
 
-              <Text style={styles.sectionLabel}>What happened or what should change?</Text>
+              <Text style={styles.sectionLabel}>
+                What happened or what should change?{requiresDescription ? ' (required)' : ''}
+              </Text>
               <TextInput
-                style={styles.textArea}
+                style={[styles.textArea, descriptionTooShort && trimmedMessage.length > 0 && styles.textAreaError]}
                 value={message}
                 onChangeText={setMessage}
-                placeholder="Describe the issue, what you expected, and what actually happened."
+                placeholder={
+                  type === 'ui_cleanup' ? UI_CLEANUP_PLACEHOLDER
+                  : type === 'health_source_issue' || type === 'apple_health_issue' || type === 'samsung_health_connect_issue' ? HEALTH_PLACEHOLDER
+                  : type === 'ai_answer_issue' ? AI_PLACEHOLDER
+                  : type === 'bug' || type === 'app_error' ? BUG_PLACEHOLDER
+                  : 'Describe the issue, what you expected, and what actually happened.'
+                }
                 placeholderTextColor="#666"
                 multiline
                 numberOfLines={6}
                 textAlignVertical="top"
               />
+              {requiresDescription && (
+                <Text style={styles.requiredHint}>
+                  Please describe the issue too — screenshots can be hard to interpret. Min {REQUIRED_DESCRIPTION_MIN} characters.
+                  {trimmedMessage.length > 0 && (
+                    descriptionTooShort
+                      ? ` (${trimmedMessage.length}/${REQUIRED_DESCRIPTION_MIN})`
+                      : ' ✓'
+                  )}
+                </Text>
+              )}
 
               <Text style={styles.sectionLabel}>
                 Screenshots / photos ({attachments.length}/{MAX_ATTACHMENTS})
@@ -244,24 +383,21 @@ export function FeedbackFab() {
                 </ScrollView>
               )}
               <View style={styles.attachRow}>
+                {/* Camera-capture button removed by product decision —
+                    feedback flow only needs photo/screenshot upload.
+                    The underlying `pickAttachment('camera')` path is
+                    intentionally retained in feedback-attachments.ts
+                    so a future surface (e.g. tester-only debug menu)
+                    can re-enable it without re-implementing the
+                    permission/compress flow. */}
                 <Pressable
                   style={[styles.attachBtn, (attachmentsFull || pickingAttachment) && styles.attachBtnDisabled]}
                   onPress={() => handleAttach('library')}
                   disabled={attachmentsFull || pickingAttachment}
-                  accessibilityLabel="Attach from photos">
+                  accessibilityLabel="Upload a screenshot or photo from your library">
                   <FontAwesome name="image" size={14} color={attachmentsFull ? '#555' : '#d4e157'} />
                   <Text style={[styles.attachBtnText, attachmentsFull && styles.attachBtnTextDisabled]}>
-                    Attach photo
-                  </Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.attachBtn, (attachmentsFull || pickingAttachment) && styles.attachBtnDisabled]}
-                  onPress={() => handleAttach('camera')}
-                  disabled={attachmentsFull || pickingAttachment}
-                  accessibilityLabel="Take a photo">
-                  <FontAwesome name="camera" size={14} color={attachmentsFull ? '#555' : '#d4e157'} />
-                  <Text style={[styles.attachBtnText, attachmentsFull && styles.attachBtnTextDisabled]}>
-                    Take photo
+                    Upload screenshot/photo
                   </Text>
                 </Pressable>
                 {pickingAttachment && <ActivityIndicator size="small" color="#d4e157" />}
@@ -274,9 +410,11 @@ export function FeedbackFab() {
               </Pressable>
               {helpOpen && (
                 <View style={styles.helpBox}>
-                  <Text style={styles.helpLine}>• Send screenshots of bugs or confusing screens.</Text>
-                  <Text style={styles.helpLine}>• Apple Health / Samsung-HC issues — attach the Health card screenshot.</Text>
-                  <Text style={styles.helpLine}>• AI answer issues — include the question you asked and the answer you got.</Text>
+                  <Text style={styles.helpLine}>• Take a screenshot first, then upload it here.</Text>
+                  <Text style={styles.helpLine}>• "Upload screenshot/photo" opens your photo library — pick the screenshot you just took, or any existing photo.</Text>
+                  <Text style={styles.helpLine}>• No image needed — describe the screenshot/issue in the text box; that alone is fine.</Text>
+                  <Text style={styles.helpLine}>• Apple Health issues — a screenshot of the Health card helps.</Text>
+                  <Text style={styles.helpLine}>• AI answer issues — paste the question you asked + the answer you got.</Text>
                   <Text style={styles.helpLine}>• Suggestions — include what you expected to happen.</Text>
                 </View>
               )}
@@ -290,8 +428,7 @@ export function FeedbackFab() {
               )}
               {result === 'error' && (
                 <Text style={styles.errorText}>
-                  Couldn't send feedback. Please try again.
-                  {errorMsg ? ` (${errorMsg})` : ''}
+                  {errorMsg ?? 'Couldn\u2019t send feedback. Your draft is saved — tap Send to retry.'}
                 </Text>
               )}
             </ScrollView>
@@ -320,18 +457,26 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     left: 16,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: '#444',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 4,
     zIndex: 998,
+  },
+  fabLabel: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '600',
+    marginTop: 2,
+    letterSpacing: 0.2,
   },
   modalOverlay: {
     flex: 1,
@@ -362,6 +507,18 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     marginTop: 10,
   },
+  helpBody: { fontSize: 11, color: '#aaa', lineHeight: 15 },
+  textAreaError: { borderColor: '#ff6b6b', borderWidth: 1 },
+  requiredHint: { fontSize: 11, color: '#d4e157', marginTop: 4, marginBottom: 4 },
+  anonNotice: {
+    backgroundColor: 'rgba(212, 225, 87, 0.12)',
+    borderColor: '#d4e157',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 8,
+  },
+  anonNoticeText: { fontSize: 12, color: '#d4e157', lineHeight: 16 },
   typeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 4 },
   pill: {
     paddingHorizontal: 10,

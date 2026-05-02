@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -11,6 +11,7 @@ import { useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import { useAppTourStore } from '../../src/components/AppTour';
 import { useAuthStore } from '../../src/store/auth-store';
+import { useDevUnlockStore } from '../../src/store/dev-unlock-store';
 import { useBacklogAnalysisStore } from '../../src/store/backlog-analysis-store';
 import { usePreferencesStore } from '../../src/store/preferences-store';
 import { useConsentStore } from '../../src/store/consent-store';
@@ -39,7 +40,29 @@ import type {
 // Reusable components
 // ---------------------------------------------------------------------------
 
-function SettingsRow({ label, value }: { label: string; value: string }) {
+function SettingsRow({
+  label,
+  value,
+  onLongPress,
+  onPress,
+}: {
+  label: string;
+  value: string;
+  onLongPress?: () => void;
+  onPress?: () => void;
+}) {
+  if (onLongPress || onPress) {
+    return (
+      <Pressable
+        style={styles.row}
+        onLongPress={onLongPress}
+        delayLongPress={800}
+        onPress={onPress}>
+        <Text style={styles.rowLabel}>{label}</Text>
+        <Text style={styles.rowValue}>{value}</Text>
+      </Pressable>
+    );
+  }
   return (
     <View style={styles.row}>
       <Text style={styles.rowLabel}>{label}</Text>
@@ -130,10 +153,30 @@ function PrefPillRow<T extends string>({
 function AuthForm() {
   const signIn = useAuthStore((s) => s.signIn);
   const signUp = useAuthStore((s) => s.signUp);
+  const signInWithApple = useAuthStore((s) => s.signInWithApple);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
+  const [appleBusy, setAppleBusy] = useState(false);
+  const [appleVisible, setAppleVisible] = useState(false);
   const [mode, setMode] = useState<'login' | 'signup'>('login');
+
+  // Apple Sign-In availability probe runs once on mount. Hides the
+  // button entirely until the next native build ships
+  // expo-apple-authentication. No "Coming soon" stub — just absent.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const mod = require('../../src/services/social-auth');
+        const ok = typeof mod.appleSignInAvailable === 'function'
+          ? await mod.appleSignInAvailable()
+          : false;
+        if (!cancelled) setAppleVisible(Boolean(ok));
+      } catch { /* social-auth or native module missing — keep hidden */ }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const handleSubmit = async () => {
     if (!email || !password) return;
@@ -149,8 +192,31 @@ function AuthForm() {
     // On success, onAuthStateChange updates the store and the form is replaced.
   };
 
+  const handleApple = async () => {
+    if (appleBusy) return;
+    setAppleBusy(true);
+    const error = await signInWithApple();
+    setAppleBusy(false);
+    if (error) Alert.alert('Apple Sign-In', error);
+  };
+
   return (
     <View style={styles.authForm}>
+      {appleVisible && (
+        <>
+          <Pressable
+            style={[styles.button, { backgroundColor: '#000' }, appleBusy && styles.buttonDisabled]}
+            onPress={handleApple}
+            disabled={appleBusy}>
+            {appleBusy ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={[styles.buttonText, { color: '#fff' }]}> Sign in with Apple</Text>
+            )}
+          </Pressable>
+          <Text style={styles.switchText}>or use email</Text>
+        </>
+      )}
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -976,9 +1042,26 @@ function TesterToolsSection() {
 }
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const status = useAuthStore((s) => s.status);
   const userEmail = useAuthStore((s) => s.user?.email ?? null);
   const isAdmin = userEmail != null && ADMIN_EMAILS.has(userEmail.toLowerCase());
+  const devUnlocked = useDevUnlockStore((s) => s.unlocked);
+  const unlockDevTools = useDevUnlockStore((s) => s.unlock);
+  const showDevTools = isAdmin || devUnlocked;
+  const versionTapsRef = useState({ count: 0, ts: 0 })[0];
+  const handleVersionTap = () => {
+    if (showDevTools) return; // already unlocked, do nothing
+    const now = Date.now();
+    if (now - versionTapsRef.ts > 3000) versionTapsRef.count = 0;
+    versionTapsRef.ts = now;
+    versionTapsRef.count += 1;
+    if (versionTapsRef.count >= 7) {
+      versionTapsRef.count = 0;
+      void unlockDevTools();
+      Alert.alert('Developer tools unlocked', 'Open Settings → About → Developer tools.');
+    }
+  };
 
   return (
     <ScrollView
@@ -1021,8 +1104,19 @@ export default function SettingsScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>About</Text>
-        <SettingsRow label="Version" value="0.1.0" />
+        <SettingsRow
+          label="Version"
+          value="0.1.0"
+          onPress={handleVersionTap}
+          onLongPress={showDevTools ? () => router.push('/admin-dev') : undefined}
+        />
         <SettingsRow label="Website" value="lauburugrapplingmap.com" />
+        {showDevTools && (
+          <Pressable style={styles.row} onPress={() => router.push('/admin-dev')}>
+            <Text style={styles.rowLabel}>Developer tools</Text>
+            <Text style={[styles.rowValue, { color: '#d4e157' }]}>Open</Text>
+          </Pressable>
+        )}
       </View>
     </ScrollView>
   );
@@ -1030,7 +1124,9 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { padding: 20, gap: 24, paddingBottom: 40 },
+  // Bottom padding clears the global AI/Feedback/Dev FAB stack so
+  // About rows are not covered when scrolled to the foot.
+  content: { padding: 20, gap: 24, paddingBottom: 200 },
   heading: { fontSize: 24, fontWeight: '700' },
   section: { gap: 12 },
   sectionTitle: {

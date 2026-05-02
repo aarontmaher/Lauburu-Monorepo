@@ -23,6 +23,7 @@ function feedbackEndpoint(): string {
 }
 
 export type FeedbackType =
+  | 'ui_cleanup'
   | 'bug'
   | 'app_error'
   | 'ai_answer_issue'
@@ -81,9 +82,11 @@ export async function submitTesterFeedback(payload: FeedbackPayload): Promise<Fe
   try {
     const controller = new AbortController();
     // Longer timeout when attachments are present — base64 uploads
-    // over a slow cell connection can legitimately take longer than
-    // 10s for 3 × ~800KB images.
-    const timeoutMs = payload.attachments?.length ? 30_000 : 10_000;
+    // over a slow cell connection can legitimately take 30-60s for
+    // 3 × ~800KB images. Tester reports of "Aborted" came from the
+    // prior 30s ceiling firing during weak signal. Bumped to 60s with
+    // attachments / 30s without.
+    const timeoutMs = payload.attachments?.length ? 60_000 : 30_000;
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     const resp = await fetch(url, {
       method: 'POST',
@@ -98,6 +101,13 @@ export async function submitTesterFeedback(payload: FeedbackPayload): Promise<Fe
     }
     return { ok: true, id: (data as any).id };
   } catch (e: any) {
-    return { ok: false, error: e?.message ?? 'Network error' };
+    // Map AbortError → friendlier reason. Caller decides whether to
+    // surface it; FeedbackFab uses this to show "Submit timed out —
+    // your draft is saved. Tap Send to retry."
+    const msg = e?.message ?? 'Network error';
+    if (e?.name === 'AbortError' || /abort/i.test(msg)) {
+      return { ok: false, error: 'Submit timed out (slow connection?). Your draft is saved — tap Send to retry.' };
+    }
+    return { ok: false, error: msg };
   }
 }

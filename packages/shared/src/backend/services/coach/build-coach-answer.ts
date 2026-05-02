@@ -28,6 +28,60 @@ const RECOVERY_KEYWORDS = ['recovery', 'recovered', 'rest', 'sleep', 'hrv', 'res
 const TRAINING_KEYWORDS = ['train', 'session', 'drill', 'grappling', 'rolling', 'sparring', 'lifting', 'weights', 'technique', 'plan'];
 const SOURCE_STATUS_KEYWORDS = ['apple health', 'healthkit', 'health connect', 'android health', 'cronometer', 'polar', 'polar flow', 'polar via health connect', 'samsung', 'samsung health', 'galaxy watch', 'connected', 'data source', 'what data', 'missing data', 'what is missing', 'which source', 'what health data', 'what has health connect contributed', 'what should i track', 'how does my training look', 'training look today'];
 
+/**
+ * Build a Coach answer fragment from the Lauburu Readiness object on
+ * the AI context. Returns null when readiness is unavailable or in
+ * `insufficient_data` — Coach falls back to its existing path.
+ *
+ * Wording rules (do not change without ChatGPT/Aaron review):
+ * - No diagnosis. No medical advice. No drug/supplement/PED claims.
+ * - "based on the data available" instead of certainty claims.
+ * - "training bias" instead of prescriptions.
+ * - "consider" / "may indicate" instead of imperatives.
+ * - Always attach: "Not medical advice. If you feel unwell or
+ *   symptoms persist, seek professional advice."
+ * - Stale-data + low-confidence states reduce assertiveness.
+ */
+function readinessFragment(ctx: AthleteAiContextResponse): {
+  shortAddon: string;
+  whyAddon: string | null;
+  trainingBiasNextStep: string;
+  caveat: string;
+} | null {
+  const r = (ctx as any).lauburu_readiness as
+    | import('../readiness/lauburu-readiness').LauburuReadinessOutput
+    | null
+    | undefined;
+  if (!r || r.status === 'insufficient_data' || r.score == null) return null;
+  const biasPhrase: Record<string, string> = {
+    hard_training_possible: 'hard rounds look reasonable based on the data available',
+    normal_training: 'normal training is appropriate based on the data available',
+    technical_light: 'consider biasing toward technical drilling or lighter rounds',
+    recovery_biased: 'a recovery-biased day may be sensible',
+    insufficient_data: '',
+  };
+  const bias = biasPhrase[r.training_bias] ?? '';
+  const confLabel = r.confidence === 'high' ? 'high confidence'
+    : r.confidence === 'medium' ? 'medium confidence'
+    : 'low confidence';
+  const stale = (r.caveats ?? []).find((c) => /stale|hours? old/i.test(c));
+  const shortAddon = `Lauburu Readiness ${Math.round(r.score)}/100 — ${r.status} (${confLabel}). Suggestion: ${bias}.`;
+  // Compose training-bias next-step in non-prescriptive voice.
+  const biasNextStep = bias
+    ? `${bias.charAt(0).toUpperCase() + bias.slice(1)}. Adjust based on how you feel during warm-up.`
+    : '';
+  // Compose why explanation from compute module + stale warning if any.
+  const whyAddon = r.explanation
+    ? (stale ? `${r.explanation} ${stale}` : r.explanation)
+    : null;
+  return {
+    shortAddon,
+    whyAddon,
+    trainingBiasNextStep: biasNextStep,
+    caveat: 'Not medical advice. If you feel unwell or symptoms persist, seek professional advice.',
+  };
+}
+
 function hasAny(text: string, keywords: string[]): boolean {
   return keywords.some((k) => text.includes(k));
 }
@@ -606,12 +660,32 @@ function buildRecoveryAnswer(
         missingFields: ['live_recovery', 'live_hrv', 'live_strain'],
       };
     }
+    // No WHOOP-native data, no seed snapshot. Try Lauburu Readiness
+    // before falling back to "no data available" — readiness can
+    // still derive a low/medium-confidence read from sleep + RHR +
+    // acute/chronic load even when WHOOP fields are missing.
+    const readinessFallback = readinessFragment(ctx);
+    if (readinessFallback) {
+      const conf = (ctx as any).lauburu_readiness?.confidence;
+      return {
+        answer: {
+          short: readinessFallback.shortAddon,
+          why: readinessFallback.whyAddon ?? 'WHOOP-native recovery fields are missing; using Lauburu Readiness as a directional read.',
+          nextStep: readinessFallback.trainingBiasNextStep,
+          missingnessNote: readinessFallback.caveat,
+        },
+        status: 'answered',
+        confidence: conf === 'high' ? 'high' : conf === 'medium' ? 'medium' : 'low',
+        sources: ['lauburu_readiness'],
+        missingFields: ['live_recovery', 'live_hrv', 'live_strain', ...(((ctx as any).lauburu_readiness?.missing_data as string[] | undefined) ?? [])],
+      };
+    }
     return {
       answer: {
-        short: 'No WHOOP recovery data available.',
-        why: 'WHOOP-native recovery fields are missing. No seed or live data found.',
-        nextStep: 'Use the weekly trend summary for directional guidance instead.',
-        missingnessNote: 'Missing: live recovery, HRV, strain.',
+        short: 'No recovery data available yet.',
+        why: 'WHOOP-native recovery fields are missing and Lauburu Readiness needs more days of personal baseline.',
+        nextStep: 'Sync a health source (Apple Health / WHOOP CSV / WHOOP Direct) and check back in a few days. Not medical advice.',
+        missingnessNote: 'Missing: live recovery, HRV, strain. Personal baseline still building.',
       },
       status: 'downgraded',
       confidence: 'low',
@@ -656,6 +730,36 @@ function buildRecoveryAnswer(
     };
   }
 
+  // Tail-augment with Lauburu Readiness when available. Fragment
+  // returns null on insufficient_data → Coach falls back to the
+  // existing daily-artifact answer unchanged.
+  const readiness = readinessFragment(ctx);
+  if (readiness) {
+    const readinessConfRaw = (ctx as any).lauburu_readiness?.confidence as
+      | 'high' | 'medium' | 'low' | 'insufficient' | undefined;
+    const blendedConfidence: CoachConfidence =
+      readinessConfRaw === 'high' ? 'high'
+      : readinessConfRaw === 'medium' ? 'medium'
+      : 'low';
+    const seedSuffix = ctx.seedMode ? 'Seed-backed — not live WHOOP. ' : '';
+    return {
+      answer: {
+        short: readiness.shortAddon,
+        why: readiness.whyAddon
+          ? `${readiness.whyAddon} Day state: ${daily.dayState} (score ${daily.dayScore}).`
+          : daily.primaryRecommendation.reasons.slice(0, 2).join('. ') + '.',
+        nextStep: readiness.trainingBiasNextStep || daily.primaryRecommendation.guidance,
+        missingnessNote: `${seedSuffix}${readiness.caveat}`.trim(),
+      },
+      status: 'answered',
+      confidence: blendedConfidence,
+      sources: ['daily_refresh_artifact', 'lauburu_readiness'],
+      missingFields: uniqueStrings([
+        ...(ctx.seedMode ? missingWhoop : []),
+        ...(((ctx as any).lauburu_readiness?.missing_data as string[] | undefined) ?? []),
+      ]),
+    };
+  }
   return {
     answer: {
       short: `Day state: ${daily.dayState} (score ${daily.dayScore}).`,
@@ -1142,6 +1246,291 @@ function buildGeneralAnswer(
 }
 
 // ---------------------------------------------------------------------------
+// Long-term trend handling
+// ---------------------------------------------------------------------------
+
+const TREND_KEYWORDS = [
+  'trend', 'trends', 'long term', 'long-term', 'longterm', 'over time',
+  'patterns', 'pattern', 'consistency', 'progression',
+  'analyse', 'analyze', 'analysis', 'historical', 'history',
+  'logged data', 'long term data', 'long-term data', 'back log', 'backlog',
+  '7 day', '7-day', 'seven day',
+  '14 day', '14-day', 'fortnight', 'two week',
+  '30 day', '30-day', 'thirty day', 'past month', 'last month',
+  '60 day', '60-day', 'past two months',
+  '90 day', '90-day', 'ninety day', 'past three months', 'last three months',
+  '100 day', '100+ day', '100 days', 'hundred day',
+  '180 day', '180-day', 'six month', '6 month', '6-month', 'half year',
+  '365 day', '365-day', '12 month', '12-month', 'twelve month',
+  'last year', 'past year', 'a year', 'one year', 'annual', 'yearly',
+  'all time', 'all-time', 'lifetime', 'all my data', 'all available',
+  'all history', 'entire history', 'since', 'all data',
+];
+
+function isTrendQuestion(q: string): boolean {
+  return TREND_KEYWORDS.some((k) => q.includes(k));
+}
+
+/** Detect which window the user is asking for. Falls back to 'auto'
+ *  when the question is generically about trends. Returned by
+ *  pickRequestedWindow so buildTrendsAnswer can choose the right
+ *  artifact instead of always picking the longest one with coverage. */
+type RequestedWindow =
+  | '7d' | '14d' | '30d' | '90d' | '180d' | '365d' | 'all_time' | 'auto';
+
+function pickRequestedWindow(q: string): RequestedWindow {
+  if (/all[- ]?time|lifetime|all my data|all available|all history|entire history|all data/.test(q)) return 'all_time';
+  if (/365|12[- ]?month|twelve month|last year|past year|one year|a year|annual|yearly/.test(q)) return '365d';
+  if (/180|6[- ]?month|six month|half year/.test(q)) return '180d';
+  if (/(?:^|[^0-9])(90|ninety)\s*[- ]?day|past three months|last three months/.test(q)) return '90d';
+  if (/(?:^|[^0-9])(60)\s*[- ]?day|past two months/.test(q)) return '90d';
+  if (/(?:^|[^0-9])(30|thirty)\s*[- ]?day|past month|last month/.test(q)) return '30d';
+  if (/(?:^|[^0-9])(14|fortnight|two week)\s*[- ]?day?/.test(q)) return '14d';
+  if (/(?:^|[^0-9])(7|seven)\s*[- ]?day/.test(q)) return '7d';
+  if (/(?:^|[^0-9])(100|hundred)\s*[- ]?day|backlog/.test(q)) return 'all_time';
+  if (/since\s+\d{4}/.test(q)) return 'all_time';
+  return 'auto';
+}
+
+const PER_METRIC_LABEL: Record<string, string> = {
+  hrv_ms: 'HRV',
+  rhr_bpm: 'resting HR',
+  sleep_hours: 'sleep duration',
+  day_strain: 'day strain',
+  recovery_score: 'recovery score',
+  steps: 'daily steps',
+  active_calories: 'active calories',
+  bodyweight_kg: 'bodyweight',
+  nutrition_calories: 'logged calories',
+  nutrition_protein_g: 'logged protein',
+};
+
+interface TrendWindow {
+  metrics: Record<string, any>;
+  sources_used: string[];
+}
+
+function unwrap(window: any): TrendWindow | null {
+  if (!window) return null;
+  if (window.metrics && typeof window.metrics === 'object') {
+    return {
+      metrics: window.metrics,
+      sources_used: Array.isArray(window.sources_used) ? window.sources_used : [],
+    };
+  }
+  // Backwards-compat: older bundle shape was a flat metric map.
+  return { metrics: window, sources_used: [] };
+}
+
+function buildTrendsAnswer(ctx: AthleteAiContextResponse): {
+  answer: CoachAnswerBody;
+  status: CoachAnswerStatus;
+  confidence: CoachConfidence;
+  sources: string[];
+  missingFields: string[];
+  upgradeHint?: string | null;
+} {
+  const c = ctx as any;
+  const cov = c.data_coverage as { total_normalized_days?: number; first_date?: string | null; last_date?: string | null } | undefined;
+  const totalDays = cov?.total_normalized_days ?? 0;
+  const tAll = unwrap(c.trends_all_time);
+  const t365 = unwrap(c.trends_long_365d);
+  const t180 = unwrap(c.trends_long_180d);
+  const t90 = unwrap(c.trends_long_90d);
+  const t30 = unwrap(c.trends_medium_30d);
+  const t14 = unwrap(c.trends_short_14d);
+  const t7  = unwrap(c.trends_short_7d);
+
+  if (!t30 || totalDays === 0) {
+    return {
+      answer: {
+        short: 'No long-term trend data available yet.',
+        why: 'No normalised daily metrics have been written for this athlete. Imports may still be processing, or no source has been connected yet.',
+        nextStep: 'Connect Apple Health / Health Connect / WHOOP, or import a WHOOP CSV from Settings, then re-ask.',
+        missingnessNote: 'No normalised daily records.',
+      },
+      status: 'insufficient_data',
+      confidence: 'low',
+      sources: [],
+      missingFields: ['normalized_metrics_history'],
+      upgradeHint: 'Connect a health source or import WHOOP CSV.',
+    };
+  }
+
+  function bestCoverage(window: TrendWindow | null): number {
+    if (!window) return 0;
+    let best = 0;
+    for (const v of Object.values(window.metrics)) {
+      const days = (v as any)?.coverage_days ?? 0;
+      if (days > best) best = days;
+    }
+    return best;
+  }
+  const covAll = bestCoverage(tAll);
+  const cov365 = bestCoverage(t365);
+  const cov180 = bestCoverage(t180);
+  const cov90 = bestCoverage(t90);
+  const cov30 = bestCoverage(t30);
+
+  // Detect what the user explicitly asked for; honour it when there's
+  // any coverage. Falls back to the widest window with usable coverage
+  // for generic trend questions.
+  const requested = pickRequestedWindow((c.__lower_question as string) ?? '');
+
+  let chosen: TrendWindow;
+  let chosenLabel: string;
+  let chosenDays: number;
+  let chosenTitle: string;
+
+  function pick(win: TrendWindow | null, label: string, days: number, title: string, fallback?: TrendWindow): {
+    w: TrendWindow; l: string; d: number; t: string;
+  } {
+    return {
+      w: win ?? fallback ?? (t30 as TrendWindow),
+      l: label, d: days, t: title,
+    };
+  }
+
+  if (requested === 'all_time' && tAll && covAll > 0) {
+    ({ w: chosen, l: chosenLabel, d: chosenDays, t: chosenTitle } =
+      pick(tAll, 'all-available', totalDays, 'All available history'));
+  } else if (requested === '365d' && t365 && cov365 > 0) {
+    ({ w: chosen, l: chosenLabel, d: chosenDays, t: chosenTitle } =
+      pick(t365, '365-day', 365, 'Long-term baseline (365 days)'));
+  } else if (requested === '180d' && t180 && cov180 > 0) {
+    ({ w: chosen, l: chosenLabel, d: chosenDays, t: chosenTitle } =
+      pick(t180, '180-day', 180, '180-day trends'));
+  } else if (requested === '90d' && t90) {
+    ({ w: chosen, l: chosenLabel, d: chosenDays, t: chosenTitle } =
+      pick(t90, '90-day', 90, '90-day trends'));
+  } else if (requested === '30d' && t30) {
+    ({ w: chosen, l: chosenLabel, d: chosenDays, t: chosenTitle } =
+      pick(t30, '30-day', 30, '30-day trends'));
+  } else if (requested === '14d' && t14) {
+    ({ w: chosen, l: chosenLabel, d: chosenDays, t: chosenTitle } =
+      pick(t14, '14-day', 14, '14-day trends'));
+  } else if (requested === '7d' && t7) {
+    ({ w: chosen, l: chosenLabel, d: chosenDays, t: chosenTitle } =
+      pick(t7, '7-day', 7, '7-day trends'));
+  } else {
+    // Auto-pick widest window with usable coverage. Prefer broader
+    // context when the question is generic.
+    if (tAll && covAll >= 90) {
+      chosen = tAll; chosenLabel = 'all-available'; chosenDays = totalDays; chosenTitle = 'All available history';
+    } else if (t365 && cov365 >= 60) {
+      chosen = t365; chosenLabel = '365-day'; chosenDays = 365; chosenTitle = 'Long-term baseline (365 days)';
+    } else if (t180 && cov180 >= 45) {
+      chosen = t180; chosenLabel = '180-day'; chosenDays = 180; chosenTitle = '180-day trends';
+    } else if (t90 && cov90 >= 30) {
+      chosen = t90; chosenLabel = '90-day'; chosenDays = 90; chosenTitle = '90-day trends';
+    } else if (t30 && cov30 >= 7) {
+      chosen = t30; chosenLabel = '30-day'; chosenDays = 30; chosenTitle = '30-day trends';
+    } else if (t14) {
+      chosen = t14; chosenLabel = '14-day'; chosenDays = 14; chosenTitle = '14-day trends';
+    } else if (t7) {
+      chosen = t7; chosenLabel = '7-day'; chosenDays = 7; chosenTitle = '7-day trends';
+    } else {
+      chosen = t30 as TrendWindow; chosenLabel = '30-day'; chosenDays = 30; chosenTitle = '30-day trends';
+    }
+  }
+
+  const improving: string[] = [];
+  const worsening: string[] = [];
+  const flat: string[] = [];
+  const insufficient: string[] = [];
+  const variabilityNotes: string[] = [];
+  const spikeNotes: string[] = [];
+  for (const [metric, info] of Object.entries(chosen.metrics)) {
+    const i = info as any;
+    const label = PER_METRIC_LABEL[metric] ?? metric;
+    if (i.direction === 'improving') improving.push(`${label} (${i.coverage_days}d, ${i.confidence})`);
+    else if (i.direction === 'worsening') worsening.push(`${label} (${i.coverage_days}d, ${i.confidence})`);
+    else if (i.direction === 'flat') flat.push(`${label} (${i.coverage_days}d)`);
+    else insufficient.push(label);
+    if (i.variability === 'high') variabilityNotes.push(`${label} highly variable (cov ${i.cov_pct}%)`);
+    if (typeof i.spikes === 'number' && i.spikes >= 2) spikeNotes.push(`${label} ${i.spikes} spike${i.spikes === 1 ? '' : 's'}`);
+  }
+
+  const dateRange = cov?.first_date && cov?.last_date ? `${cov.first_date} → ${cov.last_date}` : null;
+
+  const anyHigh = Object.values(chosen.metrics).some((v: any) => v?.confidence === 'high');
+  const anyMedium = Object.values(chosen.metrics).some((v: any) => v?.confidence === 'medium');
+  const overallConfidence: CoachConfidence = anyHigh ? 'high' : anyMedium ? 'medium' : 'low';
+
+  const hasReal = improving.length + worsening.length + flat.length > 0;
+  const status: CoachAnswerStatus = hasReal ? 'answered' : 'downgraded';
+
+  const shortBits: string[] = [];
+  if (improving.length > 0) shortBits.push(`improving: ${improving.slice(0, 3).join(', ')}`);
+  if (worsening.length > 0) shortBits.push(`worsening: ${worsening.slice(0, 3).join(', ')}`);
+  if (flat.length > 0 && shortBits.length === 0) shortBits.push(`flat: ${flat.slice(0, 3).join(', ')}`);
+  const shortLine = shortBits.length > 0
+    ? `${chosenTitle} — ${shortBits.join('; ')}.`
+    : `${chosenTitle} — not enough variation to call a direction yet.`;
+
+  const whyParts: string[] = [];
+  if (chosenLabel === 'all-available') {
+    whyParts.push(`Analysed normalised daily metrics across all ${chosenDays} stored days.`);
+  } else {
+    whyParts.push(`Analysed normalised daily metrics across the last ${chosenDays} days (${chosenLabel} window).`);
+  }
+  if (dateRange) whyParts.push(`Total normalised coverage in store: ${totalDays} days (${dateRange}).`);
+  if (chosen.sources_used.length > 0) whyParts.push(`Sources blended: ${chosen.sources_used.join(', ')}.`);
+  if (variabilityNotes.length > 0) whyParts.push(`Variability: ${variabilityNotes.slice(0, 3).join('; ')}.`);
+  if (spikeNotes.length > 0) whyParts.push(`Notable spikes: ${spikeNotes.slice(0, 3).join('; ')}.`);
+  if (insufficient.length > 0) whyParts.push(`Low / no coverage: ${insufficient.join(', ')}.`);
+  // If the user asked for a wider window than the AI store actually
+  // holds, say so explicitly — local Apple Health / WHOOP CSV may have
+  // more days that haven't yet been normalised into the AI store.
+  if (
+    (requested === '365d' && totalDays < 200) ||
+    (requested === '180d' && totalDays < 100) ||
+    (requested === 'all_time' && totalDays < 200)
+  ) {
+    whyParts.push(`Note: only ${totalDays} normalised day${totalDays === 1 ? '' : 's'} are in the AI store. Local device data (Apple Health / Health Connect / WHOOP CSV) may go further back; running a backfill from the Health tab will widen what Coach can analyse.`);
+  }
+  whyParts.push('General population/app trends and evidence-based references are not blended into this answer — Coach is reporting personal data only.');
+
+  let nextStep: string;
+  if (worsening.length > 0) {
+    nextStep = `Watch ${worsening[0].split(' (')[0]} closely this week — pair recovery decisions with the daily Lauburu Readiness card.`;
+  } else if (improving.length > 0) {
+    nextStep = `Keep the routine that's helping ${improving[0].split(' (')[0]} steady; log nutrition and sleep to widen what trends Coach can read.`;
+  } else if (insufficient.length > 0) {
+    nextStep = `Log more days to unlock ${insufficient.slice(0, 2).join(' and ')} trend analysis.`;
+  } else {
+    nextStep = 'Keep logging — more days will let Coach pick out direction with higher confidence.';
+  }
+
+  const missingFields = Object.entries(chosen.metrics)
+    .filter(([, v]: any) => v?.coverage_days === 0)
+    .map(([k]) => k);
+
+  // Source dependencies always include the abstract layer and the
+  // chosen window; per-source provenance from the bundle is appended
+  // when present so the UI can label the answer correctly.
+  const sources = ['normalized_metrics_history', `trends_${chosenLabel.replace('-', '_')}`, ...chosen.sources_used];
+
+  return {
+    answer: {
+      short: shortLine,
+      why: whyParts.join(' '),
+      nextStep,
+      missingnessNote: insufficient.length > 0
+        ? `Personal-data-backed; insufficient coverage for: ${insufficient.join(', ')}.`
+        : 'Personal-data-backed.',
+    },
+    status,
+    confidence: overallConfidence,
+    sources,
+    missingFields,
+    upgradeHint: cov90 < 30
+      ? 'Once you have 30+ days of normalised history, Coach can analyse 90-day trends.'
+      : null,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Main builder
 // ---------------------------------------------------------------------------
 
@@ -1152,6 +1541,42 @@ export function buildCoachAnswer(
 ): CoachAnswerResponse {
   const { domain, questionClass } = classifyQuestion(question, topicHint);
   const mode = aiContext.capability?.mode ?? 'seed_partial';
+
+  // Long-term trend questions short-circuit before domain routing.
+  // Trend bundle is injected by the athleteMemory route; if absent,
+  // we fall through to the normal domain answer.
+  const qLower = question.toLowerCase();
+  if (
+    isTrendQuestion(qLower) &&
+    (aiContext as any).trends_medium_30d
+  ) {
+    // Stash the lowered question on aiContext so buildTrendsAnswer can
+    // honour explicit window words ("last year", "all my data").
+    (aiContext as any).__lower_question = qLower;
+    const trendsResult = buildTrendsAnswer(aiContext);
+    const safetyFlags: string[] = [];
+    if (aiContext.seedMode) safetyFlags.push('seed_mode');
+    if (trendsResult.status === 'downgraded') safetyFlags.push('answer_downgraded');
+    if (trendsResult.status === 'insufficient_data') safetyFlags.push('insufficient_data');
+    return {
+      ok: true,
+      domain: 'general',
+      mode: mode ?? 'seed_partial',
+      questionClass: 'long_term_trends',
+      status: trendsResult.status,
+      answer: {
+        short: trendsResult.answer.short ?? 'No answer available.',
+        why: trendsResult.answer.why ?? '',
+        nextStep: trendsResult.answer.nextStep ?? '',
+        missingnessNote: trendsResult.answer.missingnessNote ?? null,
+      },
+      confidence: trendsResult.confidence,
+      sourceDependencies: trendsResult.sources,
+      missingFields: trendsResult.missingFields,
+      safetyFlags,
+      upgradeHint: trendsResult.upgradeHint ?? null,
+    };
+  }
 
   let result: { answer: CoachAnswerBody; status: CoachAnswerStatus; confidence: CoachConfidence; sources: string[]; missingFields: string[]; upgradeHint?: string | null };
 

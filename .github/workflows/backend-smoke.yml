@@ -1,0 +1,46 @@
+name: backend-smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch / SHA to check from'
+        required: false
+        default: 'main'
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || 'main' }}
+
+      - name: Smoke /v1/internal/.../ai-health-context
+        env:
+          BACKEND_URL: https://lauburu-ai-backend-production.up.railway.app
+          INTERNAL_API_TOKEN: ${{ secrets.INTERNAL_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${INTERNAL_API_TOKEN}" ]; then
+            echo "::warning::INTERNAL_API_TOKEN not set; skipping protected smoke."
+            exit 0
+          fi
+          status=$(curl -sS -o /tmp/ai-health.json -w '%{http_code}' \
+            "${BACKEND_URL}/v1/internal/athletes/dev-athlete/ai-health-context" \
+            -H "x-internal-token: ${INTERNAL_API_TOKEN}")
+          echo "ai-health-context HTTP ${status}"
+          if [ "$status" != "200" ]; then
+            echo "::error::ai-health-context returned HTTP ${status}"
+            exit 1
+          fi
+          # Surface a couple of safe scalar fields. Never echo tokens.
+          jq -r '"normalized_days=\(.data_coverage.total_normalized_days // "null"); readiness=\(.readiness.status // "null")"' /tmp/ai-health.json
+      - name: Summary
+        run: |
+          {
+            echo "## Backend smoke"
+            echo "Endpoint: /v1/internal/athletes/dev-athlete/ai-health-context"
+            echo "Result: see step output above (HTTP 200 expected)."
+          } >> "$GITHUB_STEP_SUMMARY"

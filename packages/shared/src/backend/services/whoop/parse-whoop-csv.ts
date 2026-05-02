@@ -169,15 +169,15 @@ export function parseRecoveriesCsv(text: string, warnings: string[] = []): Whoop
     }
     return -1;
   };
-  const iEnd = col(['cycleendtime', 'cycleend', 'endtime']);
-  const iScore = col(['recoveryscore', 'recoveryscorepct', 'recoveryscorepercent', 'recovery']);
-  const iHrv = col(['hrvms', 'hrv', 'heartratevariabilityms']);
-  const iRhr = col(['restingheartrate', 'restinghr', 'restingheartratebpm']);
-  const iSpo2 = col(['bloodoxygen', 'spo2', 'spo2pct']);
-  const iResp = col(['respiratoryrate', 'respirationrate']);
-  const iSkin = col(['skintempcelsius', 'skintemperature', 'skintempc']);
+  const iEnd = col(['cycleendtime', 'cycleend', 'endtime', 'recoveryend', 'recoveryendtime', 'cyclestarttime']);
+  const iScore = col(['recoveryscore', 'recoveryscorepct', 'recoveryscorepercent', 'recoveryscorepercentage', 'recovery']);
+  const iHrv = col(['hrvms', 'hrv', 'heartratevariabilityms', 'heartratevariability', 'hrvrmssdms']);
+  const iRhr = col(['restingheartrate', 'restinghr', 'restingheartratebpm', 'rhrbpm']);
+  const iSpo2 = col(['bloodoxygen', 'bloodoxygenpercent', 'spo2', 'spo2pct', 'spo2percent']);
+  const iResp = col(['respiratoryrate', 'respirationrate', 'respiratoryratebrpm']);
+  const iSkin = col(['skintempcelsius', 'skintemperature', 'skintempc', 'skintempcelcius']);
   if (iEnd < 0) {
-    warnings.push('recoveries.csv: no Cycle end time column found; skipping file');
+    warnings.push(`recoveries.csv: no time column found; first headers were: ${headers.slice(0, 10).join(', ')}`);
     return [];
   }
   const out: WhoopCsvRecoveryRow[] = [];
@@ -252,15 +252,23 @@ export function parseWorkoutsCsv(text: string, warnings: string[] = []): WhoopCs
     for (const k of keys) { const i = headers.indexOf(k); if (i >= 0) return i; }
     return -1;
   };
-  const iEnd = col(['workoutend', 'endtime', 'activityend']);
-  const iSport = col(['activityname', 'sportname', 'workouttype']);
-  const iDur = col(['duration', 'durationmin', 'workoutduration']);
-  const iStrain = col(['activitystrain', 'strain', 'strainscore']);
-  const iAvgHr = col(['averagehr', 'avgheartrate', 'avghr']);
-  const iMaxHr = col(['maxhr', 'maxheartrate']);
+  // Each candidate list is normKey'd ('a-z0-9' only). WHOOP's export
+  // schema has shipped column names "Workout end time" → workoutendtime,
+  // "Cycle end time" → cycleendtime, "Activity name" → activityname,
+  // etc. Order: prefer workout-specific, fall back to cycle/end-time,
+  // finally legacy 'activity*' names.
+  const iEnd = col(['workoutendtime', 'workoutend', 'endtime', 'cycleendtime', 'activityend', 'activityendtime']);
+  const iSport = col(['activityname', 'sportname', 'workouttype', 'sport']);
+  const iDur = col(['durationmin', 'duration', 'workoutduration', 'workoutdurationmin']);
+  const iStrain = col(['activitystrain', 'strain', 'strainscore', 'workoutstrain']);
+  const iAvgHr = col(['averagehrbpm', 'averagehr', 'avgheartrate', 'avghr', 'avgheartratebpm']);
+  const iMaxHr = col(['maxhrbpm', 'maxhr', 'maxheartrate', 'maxheartratebpm']);
   const iKj = col(['energyburnedkj', 'kilojoules', 'kjburned']);
-  const iCal = col(['energyburnedcal', 'calories', 'caloriesburned']);
-  if (iEnd < 0) { warnings.push('workouts.csv: no end-time column found; skipping'); return []; }
+  const iCal = col(['energyburnedcal', 'energyburnedcalories', 'calories', 'caloriesburned']);
+  if (iEnd < 0) {
+    warnings.push(`workouts.csv: no end-time column found; first headers were: ${headers.slice(0, 10).join(', ')}`);
+    return [];
+  }
   const out: WhoopCsvWorkoutRow[] = [];
   for (let i = 1; i < lines.length; i++) {
     const parts = parseCsvLine(lines[i]);
@@ -315,6 +323,11 @@ export function parseCyclesCsv(text: string, warnings: string[] = []): WhoopCsvC
  * row. Filename wins if it clearly names a known type; otherwise
  * we fall back to header-signature matching so the user can paste
  * raw content without filename ceremony.
+ *
+ * Header-signature lookup order matters: we check the most specific
+ * sentinels first (sleeps' `asleepduration`, workouts' `activitystrain`)
+ * before generic ones (`cyclestarttime` lives in every WHOOP file, so
+ * it can only act as a tiebreaker after no specific match was found).
  */
 export function classifyCsvContent(name: string | null, text: string): WhoopCsvFileKind {
   const base = (name ?? '').toLowerCase().split('/').pop() ?? '';
@@ -323,13 +336,20 @@ export function classifyCsvContent(name: string | null, text: string): WhoopCsvF
   if (base.includes('workout') || base.includes('activity')) return 'workouts';
   if (base.includes('cycle') || base.includes('physiological')) return 'cycles';
   if (base.includes('journal')) return 'journal';
-  // Header signature fallback.
+  // Header signature fallback. Iterate in specificity order so a file
+  // with both 'cyclestarttime' AND 'recoveryscore' is recoveries, not
+  // cycles.
   const firstLine = text.split(/\r?\n/, 1)[0] ?? '';
   const headerKeys = parseCsvLine(firstLine).map(normKey);
   const has = (k: string) => headerKeys.includes(k);
-  if (has('recoveryscore') || has('recoveryscorepct') || has('recoveryscorepercent')) return 'recoveries';
-  if (has('asleepduration') || has('remsleepduration') || has('sleepperformance')) return 'sleeps';
-  if (has('activitystrain') || has('activityname') || has('workouttype')) return 'workouts';
+  // Recoveries — recovery-score column or HRV/RHR pair without strain.
+  if (has('recoveryscore') || has('recoveryscorepct') || has('recoveryscorepercent') || has('recoveryscorepercentage')) return 'recoveries';
+  if ((has('hrvms') || has('heartratevariabilityms') || has('heartratevariability')) && (has('restingheartrate') || has('restinghr') || has('restingheartratebpm'))) return 'recoveries';
+  // Sleeps — distinct sleep-stage durations.
+  if (has('asleepduration') || has('remsleepduration') || has('sleepperformance') || has('lightsleepduration') || has('deepslowwavesleepduration') || has('deepsleepduration') || has('sleepefficiency') || has('sleepefficiencypercent')) return 'sleeps';
+  // Workouts — per-activity records.
+  if (has('activitystrain') || has('activityname') || has('workouttype') || has('workoutstarttime') || has('workoutendtime') || (has('sport') && has('strain')) || (has('hrzone1') && has('hrzone2'))) return 'workouts';
+  // Cycles — daily strain.
   if (has('daystrain') || has('dailystrain')) return 'cycles';
   if (has('journalentry') || has('journalquestion')) return 'journal';
   return 'unknown';
@@ -373,7 +393,18 @@ export function parseWhoopCsvBundle(files: Record<string, string>): WhoopCsvPars
       filesDetected.push({ name, kind, rowCount: 0 });
       continue;
     } else {
-      filesSkipped.push({ name, reason: 'Unrecognised WHOOP CSV shape' });
+      // Surface the first 10 normalized headers so users can see why
+      // classification failed (and we can patch the classifier without
+      // another guessing round). We log normalized keys rather than
+      // raw cell content — no PII, just the column names.
+      const firstLine = text.split(/\r?\n/, 1)[0] ?? '';
+      const headerSample = parseCsvLine(firstLine).map(normKey).slice(0, 10).join(', ');
+      filesSkipped.push({
+        name,
+        reason: headerSample
+          ? `Unrecognised WHOOP CSV shape. Headers: ${headerSample}`
+          : 'Unrecognised WHOOP CSV shape (empty file)',
+      });
       continue;
     }
     filesDetected.push({ name, kind, rowCount });

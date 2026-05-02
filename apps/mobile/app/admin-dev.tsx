@@ -1,0 +1,442 @@
+/**
+ * Admin / Dev Control Center — MVP.
+ *
+ * Hidden screen reachable only by long-pressing the Settings → About →
+ * Version row when signed in as an admin. NOT a tab. NOT a public
+ * surface. Read-only this batch — no command execution, no token
+ * printing, no workflow_dispatch.
+ *
+ * Sections:
+ *   1. App build / runtime info (from expo-application + expo-updates)
+ *   2. Backend health (uses existing internal-token endpoint —
+ *      /v1/internal/athletes/:id/ai-health-context)
+ *   3. Data / AI status (counts and date range from the same call)
+ *   4. Release / status links (Expo, Railway, Play Console reminders)
+ *   5. Prompt library (clipboard copy)
+ *   6. Status handoff template (clipboard copy)
+ *   7. Workflow triggers — placeholders (disabled, copy explains why)
+ *
+ * Hard rules:
+ *   - No tokens or secret values rendered.
+ *   - No arbitrary shell. Disabled trigger buttons surface intent only.
+ *   - Admin gate by email allowlist (matches Settings tester-tools gate).
+ */
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Alert, Linking, Platform, Pressable, ScrollView, StyleSheet, Text as RNText } from 'react-native';
+import { Stack, useRouter } from 'expo-router';
+import * as Application from 'expo-application';
+import * as Updates from 'expo-updates';
+
+import { Text, View } from '@/components/Themed';
+import { useAuthStore } from '../src/store/auth-store';
+import { useDevUnlockStore } from '../src/store/dev-unlock-store';
+
+const ADMIN_EMAILS = new Set(['aaron.t.maher@gmail.com']);
+
+const EXPO_PROJECT_URL = 'https://expo.dev/accounts/aaronmaher/projects/lauburu-grappling-map';
+const EXPO_BUILDS_URL = `${EXPO_PROJECT_URL}/builds`;
+const EXPO_UPDATES_URL = `${EXPO_PROJECT_URL}/updates`;
+const RAILWAY_URL = 'https://railway.com/project';
+const GITHUB_REPO_URL = 'https://github.com/aaronmaher/lauburu-grappling-map';
+const GITHUB_ACTIONS_URL = `${GITHUB_REPO_URL}/actions`;
+const PLAY_CONSOLE_URL = 'https://play.google.com/console';
+const APPSTORE_CONNECT_URL = 'https://appstoreconnect.apple.com/';
+
+interface BackendHealth {
+  ok: boolean;
+  totalNormalizedDays: number | null;
+  firstDate: string | null;
+  lastDate: string | null;
+  sourcesConnected: number | null;
+  readinessStatus: string | null;
+  checkedAt: string;
+  error?: string;
+}
+
+interface AdminStatus {
+  workflowDispatchAvailable: boolean;
+  workflowAllowlist: string[];
+  blockers: string[];
+}
+
+const PROMPT_LIBRARY: Array<{ label: string; body: string }> = [
+  {
+    label: 'Compact ChatGPT status block',
+    body: [
+      'Print a compact status block for ChatGPT. No secrets, no long logs.',
+      '',
+      'CHATGPT_STATUS_START',
+      'Task:',
+      'Live:',
+      'Repo-only:',
+      'Verified:',
+      'Blocker:',
+      'Next:',
+      'CHATGPT_STATUS_END',
+    ].join('\n'),
+  },
+  {
+    label: 'Android AAB next build',
+    body: 'Continue automation. Bump apps/mobile/app.json android.versionCode by 1, run mobile typecheck, build a new Android production AAB on EAS, then verify the manifest (CAMERA absent, target API 35) and report the artifact link + Play Console upload steps. Do not touch iOS. Do not run Supabase db push.',
+  },
+  {
+    label: 'AI multi-timeframe trends',
+    body: 'Audit /coach/ask + buildTrendsAnswer for any remaining hard-coded windows. Confirm 7/14/30/90/180/365/all-time bundles are produced and the answer header reflects the requested window. If the AI store has fewer normalised days than requested, the answer must say so explicitly. Run typecheck and deploy chat-app to Railway only if backend changed.',
+  },
+  {
+    label: 'App-owned Readiness primary',
+    body: 'Verify Lauburu Readiness is the only product-truth readiness. WHOOP/Polar/Health Connect/Samsung must remain evidence sources only. No "Polar readiness" or "WHOOP recovery" surfaced as primary. Surface explicit "evidence-only" framing wherever a third-party readiness might leak through.',
+  },
+  {
+    label: 'Cloud runner workflow plan',
+    body: 'Push the local repo to a private GitHub repo, add .github/workflows/deploy-backend.yml (typecheck + railway up on push to main when chat-app or packages/shared changes), and add .github/workflows/eas-android.yml (workflow_dispatch + push to release/android-* triggers eas-cli build). Use ${{ secrets.EXPO_TOKEN }} and ${{ secrets.RAILWAY_TOKEN }} — do not commit any secret values. Output the workflow YAML and setup steps for me to run from my phone.',
+  },
+  {
+    label: 'Admin/Dev Control Center next stage',
+    body: 'Extend the in-app Admin/Dev screen: connect the Backend health card to a live /api/admin/status endpoint that returns booleans/counts/links only (no secrets), and wire the Workflow trigger placeholders to a GitHub Actions workflow_dispatch through a signed backend proxy (do not call GitHub directly from the app). Keep it admin-gated.',
+  },
+];
+
+const STATUS_HANDOFF_TEMPLATE = [
+  'CHATGPT_STATUS_START',
+  'Task:',
+  'Live:',
+  'Repo-only:',
+  'Verified:',
+  'Blocker:',
+  'Next:',
+  'CHATGPT_STATUS_END',
+].join('\n');
+
+async function fetchAdminStatus(): Promise<AdminStatus | null> {
+  try {
+    const apiBase = (process.env.EXPO_PUBLIC_AI_PUBLIC_URL ?? '').replace(/\/$/, '');
+    const memToken = process.env.EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN ?? '';
+    if (!apiBase || !memToken) return null;
+    const res = await fetch(`${apiBase}/admin/status`, { headers: { 'x-athlete-memory-token': memToken } });
+    if (!res.ok) return null;
+    const json: any = await res.json();
+    return {
+      workflowDispatchAvailable: !!json?.workflowDispatchAvailable,
+      workflowAllowlist: Array.isArray(json?.workflowAllowlist) ? json.workflowAllowlist : [],
+      blockers: Array.isArray(json?.blockers) ? json.blockers : [],
+    };
+  } catch { return null; }
+}
+
+async function fetchBackendHealth(): Promise<BackendHealth> {
+  const checkedAt = new Date().toISOString();
+  try {
+    const apiBase = (process.env.EXPO_PUBLIC_AI_BACKEND_URL ?? '').replace(/\/$/, '');
+    const internalToken = process.env.EXPO_PUBLIC_INTERNAL_API_TOKEN ?? '';
+    const athleteId = process.env.EXPO_PUBLIC_ATHLETE_ID ?? '';
+    if (!apiBase || !internalToken || !athleteId) {
+      return { ok: false, totalNormalizedDays: null, firstDate: null, lastDate: null, sourcesConnected: null, readinessStatus: null, checkedAt, error: 'Backend env not configured.' };
+    }
+    const res = await fetch(`${apiBase}/athletes/${encodeURIComponent(athleteId)}/ai-health-context`, {
+      headers: { 'x-internal-token': internalToken },
+    });
+    if (!res.ok) return { ok: false, totalNormalizedDays: null, firstDate: null, lastDate: null, sourcesConnected: null, readinessStatus: null, checkedAt, error: `HTTP ${res.status}` };
+    const json: any = await res.json();
+    return {
+      ok: true,
+      totalNormalizedDays: json?.data_coverage?.total_normalized_days ?? null,
+      firstDate: json?.data_coverage?.first_date ?? null,
+      lastDate: json?.data_coverage?.last_date ?? null,
+      sourcesConnected: Array.isArray(json?.sources_connected) ? json.sources_connected.length : null,
+      readinessStatus: json?.readiness?.status ?? null,
+      checkedAt,
+    };
+  } catch (e: any) {
+    return { ok: false, totalNormalizedDays: null, firstDate: null, lastDate: null, sourcesConnected: null, readinessStatus: null, checkedAt, error: e?.message ?? 'unknown' };
+  }
+}
+
+export default function AdminDevScreen() {
+  const router = useRouter();
+  const userEmail = useAuthStore((s) => s.user?.email ?? null);
+  const isAdmin = userEmail != null && ADMIN_EMAILS.has(userEmail.toLowerCase());
+  const devUnlocked = useDevUnlockStore((s) => s.unlocked);
+  const lockDevTools = useDevUnlockStore((s) => s.lock);
+  const accessGranted = isAdmin || devUnlocked;
+
+  const [health, setHealth] = useState<BackendHealth | null>(null);
+  const [adminStatus, setAdminStatus] = useState<AdminStatus | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [openPromptIdx, setOpenPromptIdx] = useState<number | null>(null);
+  const [handoffOpen, setHandoffOpen] = useState(false);
+
+  const refresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      const [h, a] = await Promise.all([fetchBackendHealth(), fetchAdminStatus()]);
+      setHealth(h);
+      setAdminStatus(a);
+    } finally { setRefreshing(false); }
+  }, []);
+
+  useEffect(() => { void refresh(); }, [refresh]);
+
+  const buildInfo = useMemo(() => {
+    return {
+      appVersion: Application.nativeApplicationVersion ?? '—',
+      buildNumber: Application.nativeBuildVersion ?? '—',
+      platform: Platform.OS,
+      runtimeVersion: Updates.runtimeVersion ?? '—',
+      updateId: (Updates as any).updateId ?? null,
+      channel: (Updates as any).channel ?? null,
+      isEmbeddedLaunch: (Updates as any).isEmbeddedLaunch ?? null,
+    };
+  }, []);
+
+  // expo-clipboard isn't bundled in the current native build, so we
+  // surface prompt text inside selectable RNText blocks. Users
+  // long-press to invoke the system copy menu — no new native dep.
+
+  if (!accessGranted) {
+    return (
+      <View style={styles.container}>
+        <Stack.Screen options={{ title: 'Admin / Dev', headerBackTitle: 'Settings' }} />
+        <Text style={styles.heading}>Admin / Dev</Text>
+        <Text style={styles.body}>
+          This screen is gated to the project admin account, or after a local 7-tap unlock on the Settings → About → Version row.
+        </Text>
+        <Pressable style={styles.btn} onPress={() => router.back()}>
+          <Text style={styles.btnText}>Back to Settings</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  const apiHost = (process.env.EXPO_PUBLIC_AI_BACKEND_URL ?? '').replace(/^https?:\/\//, '').split('/')[0] || '—';
+
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <Stack.Screen options={{ title: 'Admin / Dev', headerBackTitle: 'Settings' }} />
+      <Text style={styles.heading}>Admin / Dev</Text>
+      <Text style={styles.subtitle}>Read-only MVP. No remote shell. No secrets.</Text>
+
+      <Section title="App build / runtime">
+        <Row label="Version" value={buildInfo.appVersion} />
+        <Row label={Platform.OS === 'ios' ? 'iOS build number' : 'Android versionCode'} value={String(buildInfo.buildNumber)} />
+        <Row label="Platform" value={buildInfo.platform} />
+        <Row label="Runtime version" value={String(buildInfo.runtimeVersion)} />
+        <Row label="Update id" value={buildInfo.updateId ? String(buildInfo.updateId).slice(0, 18) + '…' : 'embedded'} />
+        <Row label="Channel" value={buildInfo.channel ?? 'production'} />
+        <Row label="OTA status" value="Blocked (EAS SDK 54 server gate)" />
+      </Section>
+
+      <Section title="Backend status">
+        <Row label="Host" value={apiHost} />
+        <Row label="Healthy" value={health == null ? '—' : health.ok ? 'yes' : 'no'} />
+        <Row label="Last checked" value={health?.checkedAt ? new Date(health.checkedAt).toLocaleTimeString() : '—'} />
+        {health?.error && <Row label="Error" value={health.error} />}
+        <Pressable style={[styles.btn, refreshing && { opacity: 0.5 }]} disabled={refreshing} onPress={refresh}>
+          <Text style={styles.btnText}>{refreshing ? 'Refreshing…' : 'Refresh status'}</Text>
+        </Pressable>
+      </Section>
+
+      <Section title="Data / AI status">
+        <Row label="Normalised days" value={health?.totalNormalizedDays != null ? String(health.totalNormalizedDays) : '—'} />
+        <Row label="Date range" value={health?.firstDate && health?.lastDate ? `${health.firstDate} → ${health.lastDate}` : '—'} />
+        <Row label="Sources connected" value={health?.sourcesConnected != null ? String(health.sourcesConnected) : '—'} />
+        <Row label="Readiness status" value={health?.readinessStatus ?? '—'} />
+        <Row label="Multi-window trends" value="7 / 14 / 30 / 90 / 180 / 365 / all-time (live)" />
+        {health?.totalNormalizedDays != null && health.totalNormalizedDays < 95 && (
+          <Text style={styles.note}>AI store coverage is &lt; 95 days — long-term answers will say so explicitly.</Text>
+        )}
+      </Section>
+
+      <Section title="Release / status links">
+        <LinkRow label="Expo project" url={EXPO_PROJECT_URL} />
+        <LinkRow label="Expo builds" url={EXPO_BUILDS_URL} />
+        <LinkRow label="Expo updates" url={EXPO_UPDATES_URL} />
+        <LinkRow label="Railway dashboard" url={RAILWAY_URL} />
+        <LinkRow label="GitHub repo" url={GITHUB_REPO_URL} />
+        <LinkRow label="GitHub Actions" url={GITHUB_ACTIONS_URL} />
+        <LinkRow label="Play Console" url={PLAY_CONSOLE_URL} />
+        <LinkRow label="App Store Connect" url={APPSTORE_CONNECT_URL} />
+        <Text style={styles.note}>
+          Reminders: Play Console → Lauburu Grappling Map → Testing → Internal testing → Create new release; TestFlight for iOS Build 12 stays separate.
+        </Text>
+      </Section>
+
+      <Section title="Prompt library">
+        <Text style={styles.note}>Tap to expand. Long-press text to copy.</Text>
+        {PROMPT_LIBRARY.map((p, idx) => (
+          <View key={p.label} style={{ gap: 6 }}>
+            <Pressable
+              style={styles.btn}
+              onPress={() => setOpenPromptIdx(openPromptIdx === idx ? null : idx)}>
+              <Text style={styles.btnText}>{openPromptIdx === idx ? '▾ ' : '▸ '}{p.label}</Text>
+            </Pressable>
+            {openPromptIdx === idx && (
+              <RNText selectable style={styles.copyBlock}>{p.body}</RNText>
+            )}
+          </View>
+        ))}
+      </Section>
+
+      <Section title="Status handoff template">
+        <Pressable style={styles.btn} onPress={() => setHandoffOpen((v) => !v)}>
+          <Text style={styles.btnText}>{handoffOpen ? '▾ Hide' : '▸ Show'} template</Text>
+        </Pressable>
+        {handoffOpen && (
+          <RNText selectable style={styles.copyBlock}>{STATUS_HANDOFF_TEMPLATE}</RNText>
+        )}
+      </Section>
+
+      <Section title="Access">
+        <Row label="Source" value={isAdmin ? 'admin email' : devUnlocked ? 'local unlock' : '—'} />
+        {!isAdmin && devUnlocked && (
+          <Pressable
+            style={[styles.btn, { backgroundColor: 'rgba(255,80,80,0.12)', borderColor: 'rgba(255,80,80,0.4)' }]}
+            onPress={async () => {
+              await lockDevTools();
+              router.back();
+            }}>
+            <Text style={[styles.btnText, { color: '#ff8a8a' }]}>Lock developer tools on this device</Text>
+          </Pressable>
+        )}
+      </Section>
+
+      <Section title="Workflow triggers">
+        <Row label="Dispatch available" value={adminStatus?.workflowDispatchAvailable ? 'yes' : 'no'} />
+        <Row label="Allowlist" value={adminStatus?.workflowAllowlist?.length ? `${adminStatus.workflowAllowlist.length} workflows` : '—'} />
+        <WorkflowTriggerButton id="mobile-typecheck" label="Run typecheck" enabled={!!adminStatus?.workflowDispatchAvailable} />
+        <WorkflowTriggerButton id="android-aab-build" label="Build Android AAB" enabled={!!adminStatus?.workflowDispatchAvailable} />
+        <WorkflowTriggerButton id="ios-testflight-build" label="Build iOS TestFlight" enabled={!!adminStatus?.workflowDispatchAvailable} />
+        <WorkflowTriggerButton id="backend-smoke" label="Run backend smoke" enabled={!!adminStatus?.workflowDispatchAvailable} />
+        <WorkflowTriggerButton id="release-audit" label="Run release audit" enabled={!!adminStatus?.workflowDispatchAvailable} />
+        <WorkflowTriggerButton id="ota-diagnostic" label="Run OTA diagnostic" enabled={!!adminStatus?.workflowDispatchAvailable} />
+        {adminStatus?.blockers && adminStatus.blockers.length > 0 && (
+          <Text style={styles.note}>
+            {adminStatus.blockers.join(' ')}
+          </Text>
+        )}
+        <Text style={styles.note}>
+          {adminStatus?.workflowDispatchAvailable
+            ? 'Each button posts to the protected dispatch endpoint, which calls a single GitHub Actions workflow_dispatch on main. Confirm before triggering.'
+            : 'Connect GitHub Actions trigger backend first — set GITHUB_DISPATCH_TOKEN and GITHUB_REPO on Railway, push the repo, and add EAS/Apple/Play secrets to GitHub Actions.'}
+        </Text>
+      </Section>
+    </ScrollView>
+  );
+}
+
+function WorkflowTriggerButton({
+  id,
+  label,
+  enabled,
+}: { id: string; label: string; enabled: boolean }) {
+  const [busy, setBusy] = useState(false);
+  const onPress = useCallback(() => {
+    if (!enabled || busy) return;
+    Alert.alert(
+      `Trigger "${id}"?`,
+      `Dispatches the GitHub Actions workflow on main. No app code change. Continue?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Dispatch',
+          style: 'default',
+          onPress: async () => {
+            setBusy(true);
+            try {
+              const apiBase = (process.env.EXPO_PUBLIC_AI_PUBLIC_URL ?? '').replace(/\/$/, '');
+              const memToken = process.env.EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN ?? '';
+              const res = await fetch(
+                `${apiBase}/admin/workflows/${encodeURIComponent(id)}/dispatch`,
+                {
+                  method: 'POST',
+                  headers: {
+                    'content-type': 'application/json',
+                    'x-athlete-memory-token': memToken,
+                  },
+                  body: JSON.stringify({ ref: 'main', inputs: {} }),
+                },
+              );
+              const json: any = await res.json().catch(() => ({}));
+              if (!res.ok || json?.ok === false) {
+                throw new Error(json?.error ?? `HTTP ${res.status}`);
+              }
+              Alert.alert(
+                'Dispatched',
+                `${id} workflow_dispatch accepted. Check GitHub Actions for the run.`,
+              );
+            } catch (e: any) {
+              Alert.alert('Dispatch failed', e?.message ?? 'Unknown error.');
+            } finally {
+              setBusy(false);
+            }
+          },
+        },
+      ],
+    );
+  }, [id, enabled, busy]);
+  return (
+    <Pressable
+      style={[styles.btn, (!enabled || busy) && { opacity: 0.4 }]}
+      disabled={!enabled || busy}
+      onPress={onPress}>
+      <Text style={styles.btnText}>{busy ? 'Dispatching…' : label}</Text>
+    </Pressable>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      {children}
+    </View>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowLabel}>{label}</Text>
+      <Text style={styles.rowValue} numberOfLines={2} ellipsizeMode="tail">{value}</Text>
+    </View>
+  );
+}
+
+function LinkRow({ label, url }: { label: string; url: string }) {
+  return (
+    <Pressable style={styles.row} onPress={() => Linking.openURL(url)}>
+      <Text style={styles.rowLabel}>{label}</Text>
+      <Text style={[styles.rowValue, { color: '#d4e157' }]} numberOfLines={1} ellipsizeMode="tail">Open</Text>
+    </Pressable>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  content: { padding: 20, gap: 18, paddingBottom: 40 },
+  heading: { fontSize: 22, fontWeight: '700' },
+  subtitle: { fontSize: 12, opacity: 0.55 },
+  section: { gap: 8 },
+  sectionTitle: { fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.5 },
+  body: { fontSize: 13, opacity: 0.7 },
+  row: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingVertical: 10, paddingHorizontal: 12, borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.05)', gap: 8,
+  },
+  rowLabel: { fontSize: 13, fontWeight: '600' },
+  rowValue: { fontSize: 12, opacity: 0.65, textAlign: 'right', flexShrink: 1 },
+  btn: {
+    paddingVertical: 10, paddingHorizontal: 14, borderRadius: 10,
+    backgroundColor: 'rgba(212,225,87,0.15)', borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.35)', alignItems: 'center',
+  },
+  btnText: { fontSize: 12, fontWeight: '700', color: '#d4e157' },
+  note: { fontSize: 11, opacity: 0.55, lineHeight: 15, marginTop: 2 },
+  copyBlock: {
+    fontSize: 11, lineHeight: 15, color: '#cfd3da',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    padding: 10, borderRadius: 8,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+  },
+});

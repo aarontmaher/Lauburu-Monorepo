@@ -7,12 +7,13 @@
  * the user sees only the 3D graph canvas and position panels.
  * The selectors target stable element IDs from the hosted page.
  */
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Text, View } from '@/components/Themed';
+import { useMapUiStore } from '../../src/store/map-ui-store';
 
 const FULL_MAP_URL = 'https://www.lauburugrapplingmap.com/';
 const MAP_FILTER_ACTIONS = [
@@ -441,10 +442,22 @@ const INJECTED_JS = `
       _diag({ event: 'selection_guard_armed', reason: reason });
     }
 
+    // Track visibility transitions so React Native can hide its
+    // global FABs while a node detail surface is on screen.
+    var lastDetailVisibleEmitted = false;
+    function emitDetailVisibility() {
+      var nowVisible = detailSurfaceVisible();
+      if (nowVisible !== lastDetailVisibleEmitted) {
+        lastDetailVisibleEmitted = nowVisible;
+        _diag({ event: nowVisible ? 'detail_open' : 'detail_close' });
+      }
+    }
+
     var detailObserver = new MutationObserver(function() {
       if (detailSurfaceVisible()) {
         markDetailVisible('detail_visible');
       }
+      emitDetailVisibility();
     });
     detailObserver.observe(document.documentElement, {
       childList: true,
@@ -452,6 +465,10 @@ const INJECTED_JS = `
       attributes: true,
       attributeFilter: ['class', 'style', 'hidden']
     });
+    // Also poll at 400ms — guards against the panel being shown via
+    // pure CSS class toggles that fire one observer event before we
+    // attach.
+    setInterval(emitDetailVisibility, 400);
 
     function guardDeselect(e) {
       if (isInsideDetail(e.target)) return;
@@ -519,14 +536,25 @@ export default function Map3DScreen() {
   const webviewRef = useRef<any>(null);
   const manualInjectedRef = useRef(false);
   const WebViewComponent = getWebViewComponent();
+  const setNodeDetailOpen = useMapUiStore((s) => s.setNodeDetailOpen);
 
   // ── RN-side lifecycle logging (appears even if WebView never loads) ──
   console.log('[MAP-DIAG] Map3DScreen mounted');
+
+  // Reset the global node-detail flag whenever the Map screen unmounts
+  // so the FABs reappear on every other tab.
+  useEffect(() => {
+    return () => setNodeDetailOpen(false);
+  }, [setNodeDetailOpen]);
 
   const handleMessage = (event: { nativeEvent: { data: string } }) => {
     console.log('[MAP-DIAG] onMessage received');
     try {
       const msg = JSON.parse(event.nativeEvent.data);
+      if (msg && typeof msg === 'object' && 'event' in msg) {
+        if (msg.event === 'detail_open') setNodeDetailOpen(true);
+        else if (msg.event === 'detail_close') setNodeDetailOpen(false);
+      }
       console.log('[MAP-DIAG]', JSON.stringify(msg, null, 2));
     } catch {
       console.log('[MAP-DIAG] raw:', event.nativeEvent.data);

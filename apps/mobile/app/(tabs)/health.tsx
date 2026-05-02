@@ -13,7 +13,6 @@ import { useAuthStore } from '../../src/store/auth-store';
 import { useTierStore } from '../../src/store/tier-store';
 import { isExpoGo } from '../../src/services/expo-detect';
 import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
-import { WhoopCard } from '../../src/components/WhoopCard';
 import { NutritionCard } from '../../src/components/NutritionCard';
 import { getSeedBackendStatusCopy } from '../../src/services/athlete-capability-display';
 import { PolarCard } from '../../src/components/PolarCard';
@@ -834,6 +833,11 @@ function ExpoGoNotice() {
 // --- Main screen ---
 
 export default function HealthScreen() {
+  // Inline source-info card collapse state. Default false because the
+  // platform-name card duplicates info already shown by HealthActions
+  // Panel + AppleHealthCard above. Testers can expand it for the
+  // no-data guidance / error detail when debugging.
+  const [sourceInfoOpen, setSourceInfoOpen] = useState(false);
   const permissions = useHealthStore((s) => s.permissions);
   const syncing = useHealthStore((s) => s.syncing);
   const lastSyncAt = useHealthStore((s) => s.lastSyncAt);
@@ -938,27 +942,42 @@ export default function HealthScreen() {
 
       {isExpoGo() && <ExpoGoNotice />}
 
-      {/* Source info */}
+      {/* Source info — folded behind a collapsed disclosure. The
+          platform-name + status pill, sync button, and no-data
+          guidance all already exist on AppleHealthCard / HealthActions
+          Panel; this disclosure preserves the legacy detail (notably
+          the iOS-specific "no data found" guidance + error line) for
+          tester debugging without making the Health tab look like a
+          duplicate dashboard. */}
       <View style={styles.card}>
-        <View style={styles.cardHeaderRow}>
+        <Pressable
+          onPress={() => setSourceInfoOpen((v) => !v)}
+          hitSlop={6}
+          accessibilityRole="button"
+          accessibilityLabel={sourceInfoOpen ? `Hide ${platformName} detail` : `Show ${platformName} detail`}
+          style={styles.cardHeaderRow}>
           <Text style={styles.cardTitle}>{platformName}</Text>
-          <Text
-            style={[
-              styles.availBadge,
-              { color: isAvailable ? (anyAuthorized ? '#4ade80' : '#d4e157') : '#888' },
-            ]}>
-            {isAvailable
-              ? anyAuthorized
-                ? lastSyncAt && days.length > 0
-                  ? 'Connected'
-                  : lastSyncAt
-                    ? 'Connected — no data'
-                    : 'Permission granted — sync needed'
-                : 'Ready to connect'
-              : 'Not available'}
-          </Text>
-        </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Text
+              style={[
+                styles.availBadge,
+                { color: isAvailable ? (anyAuthorized ? '#4ade80' : '#d4e157') : '#888' },
+              ]}>
+              {isAvailable
+                ? anyAuthorized
+                  ? lastSyncAt && days.length > 0
+                    ? 'Connected'
+                    : lastSyncAt
+                      ? 'Connected — no data'
+                      : 'Permission granted — sync needed'
+                  : 'Ready to connect'
+                : 'Not available'}
+            </Text>
+            <Text style={{ fontSize: 12, color: '#d4e157' }}>{sourceInfoOpen ? '▾' : '▸'}</Text>
+          </View>
+        </Pressable>
 
+        {sourceInfoOpen && (<>
         {!isAvailable && !inExpoGo && Platform.OS === 'ios' && (
           <Text style={styles.unavailNote}>
             HealthKit reports as unavailable on this device. Open iOS Settings → Health and confirm Apple Health is available, then reopen Lauburu and tap Connect Apple Health at the top of this tab.
@@ -1049,6 +1068,7 @@ export default function HealthScreen() {
         {error && error !== 'Health service unavailable' && (
           <Text style={styles.errorText}>{error}</Text>
         )}
+        </>)}
       </View>
 
       {/* Permissions detail — collapsed by default. The list is
@@ -1095,10 +1115,12 @@ export default function HealthScreen() {
         </SafeErrorBoundary>
       )}
 
-      {/* WHOOP — backend-fed, independent of on-device HealthKit */}
-      <SafeErrorBoundary label="WHOOP card">
-        <WhoopCard />
-      </SafeErrorBoundary>
+      {/* Legacy unified WhoopCard removed — WhoopDirectCard below is
+          the canonical WHOOP Direct surface (status pill + sync +
+          backfill + disconnect actions + truthful copy). Removing the
+          duplicate de-clutters the Health feed without losing any
+          user-facing functionality; readiness/today still displays
+          via TodayCard. */}
 
       {/* Nutrition is app-first: Apple Health dietary import + manual
           + search + barcode + AI photo. Rendered much higher on this
@@ -1206,60 +1228,18 @@ export default function HealthScreen() {
         </SafeErrorBoundary>
       )}
 
-      {/* Data sources — categorized by ingestion path so the user can
-          see at a glance which sources are phone-side, which ride the
-          backend, and which need a direct device pairing. */}
-      <SafeErrorBoundary label="Data sources card">
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Data Sources</Text>
-        <DataSourcesHistorySummary />
-
-
-        {/* Only show rows for the user's current platform + connected
-            sources. Not-connected cross-platform ecosystems are hidden
-            by default; the full matrix lives in a disclosure below. */}
-        <View style={styles.sourceList}>
-          {Platform.OS === 'ios' && (
-            <SourceRow
-              name="Apple Health"
-              status={deriveAppleHealthRowStatus({ isAvailable, anyAuthorized, syncing, lastSyncAt, hasAnyDays: days.length > 0, error })}
-            />
-          )}
-          {Platform.OS === 'android' && (
-            <SourceRow
-              name="Health Connect"
-              status={deriveHealthConnectRowStatus({
-                isAvailable,
-                anyAuthorized,
-                syncing,
-                lastSyncAt,
-                hasAnyDays: days.length > 0,
-                error,
-              })}
-            />
-          )}
-          <SourceRow
-            name="WHOOP Direct"
-            status={whoopSourceStatus(whoopStatus, whoopSourceUpdatedAt, whoopHasDay)}
-          />
-          {Platform.OS === 'android' && samsungViaHc?.detected && (
-            <SourceRow
-              name="Samsung Health"
-              status={samsungViaHc.domains.length >= 2 ? 'samsung_via_hc_detected' : 'samsung_via_hc_partial'}
-            />
-          )}
-          {polarViaHc?.detected && (
-            <SourceRow
-              name="Polar via HC"
-              status={polarViaHc.domains.length >= 2 ? 'polar_via_hc_detected' : 'polar_via_hc_partial'}
-            />
-          )}
+      {/* "Data Sources" status duplicate-card removed — the same per-
+          source status (Apple Health / Health Connect / WHOOP Direct /
+          Samsung via HC / Polar via HC) is already shown by the
+          source-specific cards higher up in the connections area. The
+          import-history summary that lived in this card is preserved
+          in a compact strip below so the totals/window remain visible
+          without re-listing every source. */}
+      <SafeErrorBoundary label="Data sources history">
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Imported history</Text>
+          <DataSourcesHistorySummary />
         </View>
-
-        {/* Bluetooth direct device row — hidden until BLE module is
-            linked in a native build. Once build 8 ships with
-            react-native-ble-plx, this flips to "Ready to scan". */}
-      </View>
       </SafeErrorBoundary>
     </ScrollView>
   );

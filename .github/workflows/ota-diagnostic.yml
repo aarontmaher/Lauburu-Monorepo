@@ -1,0 +1,70 @@
+name: ota-diagnostic
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch / SHA to diagnose'
+        required: false
+        default: 'main'
+      publish:
+        description: 'true → attempt ONE OTA publish (only if a real reason is given)'
+        required: false
+        default: 'false'
+      reason:
+        description: 'Why are you publishing? (recorded; required if publish=true)'
+        required: false
+        default: ''
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || 'main' }}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm install --no-audit --no-fund
+
+      - name: EAS configuration snapshot
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "${EXPO_TOKEN}" ]; then
+            echo "::warning::EXPO_TOKEN not set; skipping EAS calls."
+            exit 0
+          fi
+          cd apps/mobile
+          npx eas-cli branch:list || true
+          npx eas-cli channel:list || true
+          npx eas-cli update:list --branch production --json | head -200 || true
+
+      - name: Refuse blind publish
+        if: ${{ inputs.publish == 'true' && inputs.reason == '' }}
+        run: |
+          echo "::error::publish=true requires a non-empty reason input. Aborting to avoid OTA spam."
+          exit 1
+
+      - name: Attempt one OTA publish
+        if: ${{ inputs.publish == 'true' && inputs.reason != '' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_BUILD_NO_EXPO_GO_WARNING: 'true'
+        run: |
+          cd apps/mobile
+          npx eas-cli update --branch production --message "ota-diagnostic: ${{ inputs.reason }}" --non-interactive
+
+      - name: Summary
+        run: |
+          {
+            echo "## OTA diagnostic"
+            echo "Publish requested: ${{ inputs.publish }}"
+            echo "Reason: ${{ inputs.reason }}"
+            echo "Known blocker: EAS Update server rejects SDK 54 publishes with 'sdkVersion 54.0.0 is not supported' (Request IDs in Expo support ticket)."
+            echo "If still failing, file with Expo support; do not loop publish attempts."
+          } >> "$GITHUB_STEP_SUMMARY"

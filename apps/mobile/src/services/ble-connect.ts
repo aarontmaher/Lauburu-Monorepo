@@ -125,6 +125,20 @@ const ECHELON_STATUS_CHAR_UUID = '0bf669f4-45f2-11e7-9598-0800200c9a66';
 // installed before this module loads during app startup. Touching
 // Buffer here crashed the launch bundle.
 const ECHELON_ACTIVATE_PAYLOAD_B64 = '8LABAaI=';
+
+/**
+ * True when the device advertises a name that strongly suggests an
+ * Echelon-protocol bike (Echelon Connect, Echelon EX, Rogue Echo,
+ * Assault Echo). Used as a secondary trigger for the Echelon decoder
+ * + vendor-frame fan-in when the standard Echelon GATT service UUID
+ * (`0bf669f1-…`) isn't in the advertised service list — which we've
+ * observed on at least one Rogue Echo firmware that exposes the data
+ * characteristics under a different (vendor-specific) parent service.
+ */
+function isEchelonName(name: string | null | undefined): boolean {
+  if (!name) return false;
+  return /echelon|rogue.*echo|echo.?bike/i.test(name);
+}
 const PM5_PRIMARY_SERVICE_UUID = 'ce060000-43e5-11e4-916c-0800200c9a66';
 
 // Eagerly probe at module-import so the initial _state.status reflects
@@ -781,6 +795,22 @@ export function startBleSession(): LiveBleSessionHandle {
       onFtms: () => {},
     };
   }
+  // Capture the connected machine name once so the vendor-frame
+  // routing + Echelon-parser gate can fall back to name-matching when
+  // the device doesn't advertise the canonical Echelon service UUID
+  // (observed on at least one Rogue Echo firmware variant).
+  const machineName = String(machineDev?.name ?? _state.machineDevice?.name ?? '');
+  const machineLooksEchelon = isEchelonName(machineName);
+  if (__DEV__) {
+    // eslint-disable-next-line no-console
+    console.log('[ble] startBleSession', {
+      machineName,
+      machineLooksEchelon,
+      services: _lastConnectedServices,
+      ftmsNotifyChars: _lastConnectedFtmsNotifyChars,
+      vendorNotifyChars: _lastConnectedVendorNotifyChars,
+    });
+  }
   // Stamp so the UI can report "no samples after N seconds" when the
   // device doesn't advertise the standard HR or FTMS profiles (WHOOP,
   // most notably — it uses a proprietary BLE profile we can't read).
@@ -971,11 +1001,28 @@ export function startBleSession(): LiveBleSessionHandle {
               if (_vendorFrames.length > MAX_VENDOR_FRAMES) {
                 _vendorFrames.splice(0, _vendorFrames.length - MAX_VENDOR_FRAMES);
               }
+              // When the device name suggests Echelon/Rogue Echo, fan
+              // every vendor frame into the Echelon decoder too. The
+              // decoder validates the 0xF0 header so non-Echelon
+              // frames bail safely. This is the unblock for Rogue
+              // Echo firmware variants that publish workout data on a
+              // service whose UUID isn't the canonical 0bf669f1-…
+              // — without this, frames piled up in the debug ring
+              // buffer but no FtmsLiveSample was ever emitted, so the
+              // Train tab stayed "LIVE · WAITING" forever.
+              if (machineLooksEchelon) {
+                try { echelonFrameHandler(null, char); } catch { /* swallow */ }
+              }
             } catch { /* ignore bad frame */ }
           },
         );
         subs.push(s ?? null);
-      } catch { /* characteristic not subscribable */ }
+      } catch (e: any) {
+        if (__DEV__) {
+          // eslint-disable-next-line no-console
+          console.warn('[ble] vendor sub failed', vc, e?.message);
+        }
+      }
     }
   }
 
@@ -1136,7 +1183,14 @@ export function startBleSession(): LiveBleSessionHandle {
     } catch { /* ignore bad frame */ }
   };
 
-  if (machineDev && _lastConnectedServices.includes(ECHELON_SERVICE_UUID)) {
+  if (machineDev && (_lastConnectedServices.includes(ECHELON_SERVICE_UUID) || machineLooksEchelon)) {
+    if (__DEV__) {
+      // eslint-disable-next-line no-console
+      console.log('[ble] echelon path active', {
+        viaService: _lastConnectedServices.includes(ECHELON_SERVICE_UUID),
+        viaName: machineLooksEchelon,
+      });
+    }
     // Subscribe to the two data characteristics.
     for (const dataChar of [ECHELON_DATA_CHAR_UUID, ECHELON_STATUS_CHAR_UUID]) {
       try {
@@ -1146,7 +1200,12 @@ export function startBleSession(): LiveBleSessionHandle {
           echelonFrameHandler,
         );
         subs.push(s ?? null);
-      } catch { /* char not notifiable on this firmware */ }
+      } catch (e: any) {
+        if (__DEV__) {
+          // eslint-disable-next-line no-console
+          console.warn('[ble] echelon sub failed', dataChar, e?.message);
+        }
+      }
     }
     // Wake the data stream by writing the Echelon activation packet
     // to the write char. Schedule after the subscriptions are armed.

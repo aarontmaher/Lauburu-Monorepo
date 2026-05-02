@@ -145,13 +145,19 @@ export function PolarDirectCard() {
       <View style={styles.headerRow}>
         <Text style={styles.cardTitle}>Polar Direct</Text>
         {s === 'connected' && <StatusPill label="Connected" color="#4ade80" />}
-        {s === 'config_missing' && <StatusPill label="Setup required" color="#888" />}
-        {s === 'auth_required' && <StatusPill label="Not connected" color="#d4e157" />}
+        {s === 'config_missing' && <StatusPill label="Planned" color="#888" />}
+        {s === 'auth_required' && <StatusPill label="Planned" color="#888" />}
         {s === 'partial' && <StatusPill label="Partial" color="#d4e157" />}
         {s === 'stale' && <StatusPill label="Stale" color="#ffa500" />}
         {s === 'disconnected' && <StatusPill label="Disconnected" color="#888" />}
-        {(!s || s === 'error') && <StatusPill label={loading ? 'Loading…' : 'Unknown'} color="#666" />}
+        {(!s || s === 'error') && <StatusPill label={loading ? 'Loading…' : 'Planned'} color="#888" />}
       </View>
+
+      {s !== 'connected' && (
+        <Text style={[styles.bodyText, { opacity: 0.8 }]}>
+          For now, Polar users can sync through Health Connect — that&apos;s the supported Android path today. Polar Direct (AccessLink OAuth) is planned for a later release.
+        </Text>
+      )}
 
       {s === 'config_missing' && (
         <Text style={styles.bodyText}>
@@ -164,14 +170,9 @@ export function PolarDirectCard() {
       )}
 
       {s === 'auth_required' && (
-        <>
-          <Text style={styles.bodyText}>
-            Connect your Polar account for direct workout + activity data.
-          </Text>
-          <View style={styles.actions}>
-            <ActionBtn label="Connect Polar" onPress={handleConnect} loading={loading} />
-          </View>
-        </>
+        <Text style={styles.bodyText}>
+          Direct Polar AccessLink (OAuth) is planned. Use the Health Connect path above in the meantime.
+        </Text>
       )}
 
       {s === 'connected' && (
@@ -926,12 +927,15 @@ export function FTMSMachineCard() {
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
-        <Text style={styles.cardTitle}>Machine capture (Bluetooth)</Text>
+        <Text style={styles.cardTitle}>Bluetooth machine + HR strap</Text>
         <StatusPill label={pillLabel} color={pillColor} />
       </View>
 
       <Text style={styles.bodyText}>
-        Direct Bluetooth capture from FTMS bikes/rowers/ski ergs and Concept2 PM5. Manual session logging via the Train tab stays available regardless of device state.
+        Direct Bluetooth capture from FTMS bikes/rowers/ski ergs, Concept2 PM5, and any standard BLE heart-rate strap or armband (Polar H10/H9/Verity Sense, Wahoo TICKR FIT, Scosche Rhythm+, Garmin HRM straps). Manual session logging stays available regardless of device state.
+      </Text>
+      <Text style={[styles.bodyText, { opacity: 0.75, marginTop: 4 }]}>
+        Use a heart-rate strap if you don&apos;t have WHOOP or Polar Flow — you&apos;ll get live session HR + average/max HR for trends and training-load context. A strap alone won&apos;t capture sleep or all-day recovery data; pair it with Apple Health for those.
       </Text>
 
       {state.status === 'bluetooth_unavailable' && !state.moduleLinked && (

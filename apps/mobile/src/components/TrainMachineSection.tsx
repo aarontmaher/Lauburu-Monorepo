@@ -87,7 +87,7 @@ export function TrainMachineSection() {
       ? `Paired: ${state?.connectedDevice?.name ?? 'device'} · tap to start live read`
       : state?.status === 'scanning'
         ? 'Scanning for machines\u2026'
-        : 'Pair HR strap or FTMS machine';
+        : 'Pair Bluetooth HR strap / armband / FTMS machine';
   const headerSub = paired
     ? 'Live HR + power will flow into this session\u2019s save'
     : 'Live HR + watts auto-fill the HIIT save when available';

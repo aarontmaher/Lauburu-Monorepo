@@ -28,6 +28,7 @@ const FEEDBACK_DIR = path.resolve(__dirname, '../../../data/tester-feedback');
 const ATTACHMENT_DIR = path.join(FEEDBACK_DIR, 'attachments');
 
 const VALID_TYPES = new Set([
+  'ui_cleanup',
   'bug',
   'app_error',
   'ai_answer_issue',
@@ -155,15 +156,24 @@ router.post('/', async (req: any, res: any) => {
     }
 
     const now = new Date().toISOString();
+    const safeUserId = typeof userId === 'string' ? userId.slice(0, 200) : null;
+    const safeAthleteId = typeof athleteId === 'string' ? athleteId.slice(0, 200) : null;
+    // Augment the sanitized client context with a server-stamped
+    // signed_in boolean so triage can filter anonymous vs identified
+    // submissions cleanly without inferring from null userId. Matches
+    // the existing privacy contract — we never invent identity, just
+    // tag what the client already declared.
+    const sanitizedContext = sanitizeContext(context);
+    sanitizedContext.signed_in = !!safeUserId;
     const record = {
       id,
       createdAt: now,
       type: safeType,
       severity: safeSeverity,
       message: safeMessage,
-      userId: typeof userId === 'string' ? userId.slice(0, 200) : null,
-      athleteId: typeof athleteId === 'string' ? athleteId.slice(0, 200) : null,
-      context: sanitizeContext(context),
+      userId: safeUserId,
+      athleteId: safeAthleteId,
+      context: sanitizedContext,
       attachments: attachmentResult.stored,
     };
 
@@ -189,30 +199,196 @@ router.post('/', async (req: any, res: any) => {
   }
 });
 
+/** Archive statuses an admin can set on a record. Soft-delete only —
+ *  the JSON file remains on disk so we can audit decisions later. */
+const VALID_ARCHIVE_STATUSES = new Set([
+  'archived', 'dismissed', 'spam', 'test', 'not_actionable',
+]);
+
+/** Best-effort heuristic — flags records whose message + attachment
+ *  combo is unlikely to be actionable. Used by /triage-suggestions
+ *  to PROPOSE archiving, never auto-archive. */
+function classifyLikelyNotActionable(record: any): { suggested: boolean; reason: string | null } {
+  const msg = String(record?.message ?? '').trim().toLowerCase();
+  const attCount = (record?.attachments ?? []).length;
+  if (msg.length === 0 && attCount === 0) return { suggested: true, reason: 'empty_message_no_attachment' };
+  if (msg.length <= 3) return { suggested: true, reason: `near_empty_message_${msg.length}_chars` };
+  // Common smoke-test patterns.
+  if (/^(hi|hey|hello|test|testing|asdf|qwer|abc|123|\.+|\?+)\s*$/i.test(msg)) {
+    return { suggested: true, reason: 'placeholder_text' };
+  }
+  // Records the system itself created for verification.
+  if (msg.includes('e2e verification entry') || msg.includes('safe to delete') || msg.includes('signed_in flag verification')) {
+    return { suggested: true, reason: 'self_test_entry' };
+  }
+  return { suggested: false, reason: null };
+}
+
+/** Internal-only auth gate for archive operations. Reuses
+ *  ATHLETE_MEMORY_API_TOKEN — same shared-secret already in use for
+ *  /api/athlete-memory/* routes. Public users cannot archive. */
+function requireAdminToken(req: any, res: any, next: any): void {
+  const expected = process.env.ATHLETE_MEMORY_API_TOKEN;
+  if (!expected) {
+    res.status(503).json({ ok: false, error: 'Admin endpoints disabled until ATHLETE_MEMORY_API_TOKEN is configured.' });
+    return;
+  }
+  const presented = req.header('x-athlete-memory-token');
+  if (presented !== expected) {
+    res.status(403).json({ ok: false, error: 'Forbidden.' });
+    return;
+  }
+  next();
+}
+
 // GET /api/feedback/recent — admin/export helper.
 // Returns the last N feedback records with context + attachment refs so
 // Aaron can paste one into ChatGPT or compile a daily digest. Does not
 // include attachment bytes (paths only — fetch those via /attachments).
-router.get('/recent', async (_req: any, res: any) => {
+//
+// Hides archived/dismissed/spam/test/not_actionable records by default.
+// Pass ?includeArchived=true to see all records (e.g. for triage review
+// or restoring an accidentally-archived item).
+router.get('/recent', async (req: any, res: any) => {
   try {
+    const includeArchived = String(req.query.includeArchived ?? '') === 'true'
+      || String(req.query.includeArchived ?? '') === '1';
     await fs.mkdir(FEEDBACK_DIR, { recursive: true });
     const files = await fs.readdir(FEEDBACK_DIR);
-    const jsons = files.filter((f) => f.endsWith('.json')).sort().reverse().slice(0, 25);
-    const records = await Promise.all(
+    // Read more than 25 raw files because we may filter some out.
+    const jsons = files.filter((f) => f.endsWith('.json')).sort().reverse().slice(0, 100);
+    const records = (await Promise.all(
       jsons.map(async (f) => {
         try {
           const raw = await fs.readFile(path.join(FEEDBACK_DIR, f), 'utf8');
           return JSON.parse(raw);
-        } catch {
-          return null;
-        }
+        } catch { return null; }
       }),
-    );
-    res.status(200).json({ ok: true, records: records.filter(Boolean) });
+    )).filter(Boolean);
+    const visible = includeArchived
+      ? records
+      : records.filter((r) => !r.archived || !r.archived.status);
+    res.status(200).json({
+      ok: true,
+      records: visible.slice(0, 25),
+      hidden_count: records.length - visible.length,
+      include_archived: includeArchived,
+    });
   } catch (error) {
     res.status(500).json({
       ok: false,
       error: 'Failed to load feedback.',
+      detail: error instanceof Error ? error.message : 'unknown',
+    });
+  }
+});
+
+// POST /api/feedback/:id/archive — soft-delete a feedback record.
+// Body: { status: 'archived'|'dismissed'|'spam'|'test'|'not_actionable',
+//         reason?: string }
+// Auth: x-athlete-memory-token (admin-only). Public users get 403.
+//
+// Soft-delete: the JSON file stays on disk, just gets an `archived`
+// stanza appended. Future call to GET /recent will hide it unless
+// ?includeArchived=true. Reversible via /:id/unarchive.
+router.post('/:id/archive', requireAdminToken, async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    if (!/^fb_[A-Za-z0-9_]+$/.test(String(id))) {
+      res.status(400).json({ ok: false, error: 'Invalid feedback id.' });
+      return;
+    }
+    const { status, reason } = req.body ?? {};
+    const safeStatus = VALID_ARCHIVE_STATUSES.has(String(status)) ? String(status) : 'archived';
+    const safeReason = typeof reason === 'string' ? reason.slice(0, 500) : null;
+    const filePath = path.join(FEEDBACK_DIR, `${id}.json`);
+    const raw = await fs.readFile(filePath, 'utf8').catch(() => null);
+    if (!raw) { res.status(404).json({ ok: false, error: 'Feedback not found.' }); return; }
+    const record = JSON.parse(raw);
+    record.archived = {
+      status: safeStatus,
+      reason: safeReason,
+      archived_at: new Date().toISOString(),
+    };
+    await fs.writeFile(filePath, `${JSON.stringify(record, null, 2)}\n`, 'utf8');
+    res.status(200).json({ ok: true, id, archived: record.archived });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: 'Archive failed.',
+      detail: error instanceof Error ? error.message : 'unknown',
+    });
+  }
+});
+
+// POST /api/feedback/:id/unarchive — reverse a soft-delete.
+router.post('/:id/unarchive', requireAdminToken, async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    if (!/^fb_[A-Za-z0-9_]+$/.test(String(id))) {
+      res.status(400).json({ ok: false, error: 'Invalid feedback id.' });
+      return;
+    }
+    const filePath = path.join(FEEDBACK_DIR, `${id}.json`);
+    const raw = await fs.readFile(filePath, 'utf8').catch(() => null);
+    if (!raw) { res.status(404).json({ ok: false, error: 'Feedback not found.' }); return; }
+    const record = JSON.parse(raw);
+    delete record.archived;
+    await fs.writeFile(filePath, `${JSON.stringify(record, null, 2)}\n`, 'utf8');
+    res.status(200).json({ ok: true, id, restored: true });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: 'Unarchive failed.',
+      detail: error instanceof Error ? error.message : 'unknown',
+    });
+  }
+});
+
+// GET /api/feedback/triage-suggestions — admin helper. Returns a list
+// of feedback ids that look likely-not-actionable (placeholder text,
+// near-empty messages, self-test entries) so Aaron can review then
+// archive in bulk. Read-only — does NOT auto-archive.
+router.get('/triage-suggestions', requireAdminToken, async (_req: any, res: any) => {
+  try {
+    await fs.mkdir(FEEDBACK_DIR, { recursive: true });
+    const files = await fs.readdir(FEEDBACK_DIR);
+    const jsons = files.filter((f) => f.endsWith('.json'));
+    const records = (await Promise.all(
+      jsons.map(async (f) => {
+        try {
+          const raw = await fs.readFile(path.join(FEEDBACK_DIR, f), 'utf8');
+          return JSON.parse(raw);
+        } catch { return null; }
+      }),
+    )).filter(Boolean);
+    const suggestions = records
+      .filter((r) => !r.archived?.status)
+      .map((r) => {
+        const c = classifyLikelyNotActionable(r);
+        return c.suggested ? {
+          id: r.id,
+          createdAt: r.createdAt,
+          type: r.type,
+          severity: r.severity,
+          message: r.message,
+          attachment_count: (r.attachments ?? []).length,
+          suggested_archive_status: c.reason === 'self_test_entry' ? 'test' : 'not_actionable',
+          reason: c.reason,
+        } : null;
+      })
+      .filter(Boolean);
+    res.status(200).json({
+      ok: true,
+      total_records: records.length,
+      not_already_archived: records.filter((r) => !r.archived?.status).length,
+      suggestions,
+      hint: 'POST /api/feedback/<id>/archive {"status":"not_actionable"} to soft-delete each. Use ?includeArchived=true on /recent to see them again.',
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: 'Triage suggestions failed.',
       detail: error instanceof Error ? error.message : 'unknown',
     });
   }

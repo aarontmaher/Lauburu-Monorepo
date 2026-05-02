@@ -24,6 +24,8 @@ import { useNutritionEvidenceStore } from '../src/store/nutrition-evidence-store
 import { useHIITWorkoutStore } from '../src/store/hiit-workout-store';
 import { AppTour, useAppTourStore } from '../src/components/AppTour';
 import { FeedbackFab } from '../src/components/FeedbackFab';
+import { useMapUiStore } from '../src/store/map-ui-store';
+import { useDevUnlockStore } from '../src/store/dev-unlock-store';
 
 export {
   ErrorBoundary,
@@ -62,6 +64,7 @@ export default function RootLayout() {
   const hydrateNutritionEvidence = useNutritionEvidenceStore((s) => s.hydrate);
   const hydrateHIITWorkouts = useHIITWorkoutStore((s) => s.hydrate);
   const hydrateTour = useAppTourStore((s) => s.hydrate);
+  const hydrateDevUnlock = useDevUnlockStore((s) => s.hydrate);
 
   // Initialize auth session on app launch, and hydrate all stores
   // from secureStorage in parallel. Each runs independently —
@@ -82,6 +85,7 @@ export default function RootLayout() {
       hydrateNutritionEvidence,
       hydrateHIITWorkouts,
       hydrateTour,
+      hydrateDevUnlock,
     ]);
   }, [
     initialize,
@@ -98,6 +102,7 @@ export default function RootLayout() {
     hydrateNutritionEvidence,
     hydrateHIITWorkouts,
     hydrateTour,
+    hydrateDevUnlock,
   ]);
 
   useEffect(() => {
@@ -151,11 +156,88 @@ function RootLayoutNav() {
             headerBackTitle: 'Settings',
           }}
         />
+        <Stack.Screen
+          name="admin-dev"
+          options={{
+            title: 'Admin / Dev',
+            headerBackTitle: 'Settings',
+          }}
+        />
       </Stack>
-      {!tourVisible && <AiLauncherFab />}
-      {!tourVisible && <FeedbackFab />}
+      <FabsGate tourVisible={tourVisible} />
       <AppTour visible={tourVisible} onDismiss={tourDismiss} />
     </ThemeProvider>
+  );
+}
+
+/**
+ * Gate the global FABs on (a) tour not active and (b) the Map node
+ * detail panel not open. Reads the map-ui store directly so it
+ * subscribes to changes without lifting state into RootLayoutNav.
+ */
+function FabsGate({ tourVisible }: { tourVisible: boolean }) {
+  const pathname = usePathname();
+  const nodeDetailOpen = useMapUiStore((s) => s.nodeDetailOpen);
+  const onMap = pathname?.startsWith('/map') ?? false;
+  const hideForMapDetail = onMap && nodeDetailOpen;
+  if (tourVisible || hideForMapDetail) return null;
+  return (
+    <>
+      <AiLauncherFab />
+      <FeedbackFab />
+      <DevLauncherFab />
+    </>
+  );
+}
+
+/**
+ * Owner/dev-only floating launcher for the Admin/Dev Control Center.
+ * Hidden by default. Visible only when the signed-in user's email is
+ * on the admin allowlist — never to normal testers. Inherits the
+ * FabsGate visibility rules (tour + map detail panel) and adds the
+ * same modal-open guard the AI launcher uses.
+ */
+const DEV_FAB_ADMIN_EMAILS = new Set(['aaron.t.maher@gmail.com']);
+
+function DevLauncherFab() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const insets = useSafeAreaInsets();
+  const userEmail = useAuthStore((s) => s.user?.email ?? null);
+  const isAdmin = userEmail != null && DEV_FAB_ADMIN_EMAILS.has(userEmail.toLowerCase());
+  const devUnlocked = useDevUnlockStore((s) => s.unlocked);
+  const isModalOpen = pathname === '/ai-chat' || pathname === '/timer' || pathname === '/admin-dev';
+  if ((!isAdmin && !devUnlocked) || isModalOpen) return null;
+
+  return (
+    <Pressable
+      style={{
+        position: 'absolute',
+        // Stack above AiLauncherFab (which sits at bottom + 72) and
+        // FeedbackFab (which is right side) — keep on the left rail
+        // above AI so the two left-side FABs don't visually fight.
+        bottom: Math.max(insets.bottom, 10) + 72 + 56,
+        left: 16,
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: '#1f2937',
+        borderWidth: 1,
+        borderColor: 'rgba(212,225,87,0.45)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.35,
+        shadowRadius: 6,
+        elevation: 6,
+        zIndex: 999,
+      }}
+      accessibilityRole="button"
+      accessibilityLabel="Open Admin / Dev Control Center"
+      onPress={() => router.push('/admin-dev')}>
+      <FontAwesome name="wrench" size={16} color="#d4e157" />
+    </Pressable>
   );
 }
 

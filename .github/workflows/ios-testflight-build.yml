@@ -1,0 +1,72 @@
+name: ios-testflight-build
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch / SHA to build'
+        required: false
+        default: 'main'
+      submit:
+        description: 'true → run eas submit after build (requires Apple secrets)'
+        required: false
+        default: 'false'
+      dry_run:
+        description: 'true → run typecheck only, do not start EAS build'
+        required: false
+        default: 'false'
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || 'main' }}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm install --no-audit --no-fund
+      - name: TypeScript check (mobile)
+        run: cd apps/mobile && npx tsc --noEmit
+
+      - name: Configure EAS auth
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error::EXPO_TOKEN secret is not set."
+            exit 1
+          fi
+
+      - name: EAS iOS build
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_BUILD_NO_EXPO_GO_WARNING: 'true'
+        run: |
+          cd apps/mobile
+          npx eas-cli build --platform ios --profile production --non-interactive
+
+      - name: EAS submit (TestFlight)
+        if: ${{ inputs.dry_run != 'true' && inputs.submit == 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }}
+        run: |
+          cd apps/mobile
+          npx eas-cli submit --platform ios --latest --non-interactive
+
+      - name: Summary
+        run: |
+          {
+            echo "## iOS TestFlight build summary"
+            echo "Ref: ${{ inputs.ref || 'main' }}"
+            echo "Dry run: ${{ inputs.dry_run }}"
+            echo "Submit: ${{ inputs.submit }}"
+            echo "Next: TestFlight will surface the new build to internal testers after Apple processing (~10–30 min)."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -34,6 +34,22 @@ interface AuthState {
   /** Email/password sign-in. Returns error string or null on success. */
   signIn: (email: string, password: string) => Promise<string | null>;
 
+  /**
+   * Sign in with Apple. iOS-only. Returns error string or null on
+   * success. Returns 'not_available' (as the error string) when the
+   * native module isn't linked or platform isn't iOS — UI should
+   * hide the button rather than calling this.
+   */
+  signInWithApple: () => Promise<string | null>;
+
+  /**
+   * Hand a Google OIDC id_token to Supabase. The token itself is
+   * obtained via expo-auth-session's React-hook flow in the
+   * sign-in component (so the AuthForm calls this AFTER the hook
+   * resolves). Returns error string or null on success.
+   */
+  signInWithGoogleIdToken: (idToken: string) => Promise<string | null>;
+
   /** Sign out and clear state. */
   signOut: () => Promise<void>;
 
@@ -125,6 +141,38 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return null;
     } catch (e: any) {
       return e?.message ?? 'Sign-in failed';
+    }
+  },
+
+  signInWithApple: async () => {
+    // Lazy require keeps the OTA bundle from failing if the native
+    // module isn't linked yet (current TestFlight Build 11 doesn't
+    // ship expo-apple-authentication; Build 12 will).
+    let mod: any;
+    try { mod = require('../services/social-auth'); }
+    catch { return 'Apple Sign-In not available on this build.'; }
+    try {
+      const result = await mod.appleSignIn();
+      if (result.ok) return null;
+      if (result.reason === 'cancelled') return null; // user cancel — no error UI
+      if (result.reason === 'not_available') return 'Apple Sign-In needs the next app build.';
+      if (result.reason === 'no_id_token') return 'Apple did not return a usable token.';
+      return result.error ?? `Apple Sign-In failed (${result.reason ?? 'unknown'}).`;
+    } catch (e: any) {
+      return e?.message ?? 'Apple Sign-In failed';
+    }
+  },
+
+  signInWithGoogleIdToken: async (idToken: string) => {
+    let mod: any;
+    try { mod = require('../services/social-auth'); }
+    catch { return 'Google Sign-In not available on this build.'; }
+    try {
+      const result = await mod.exchangeGoogleIdToken(idToken);
+      if (result.ok) return null;
+      return result.error ?? `Google Sign-In failed (${result.reason ?? 'unknown'}).`;
+    } catch (e: any) {
+      return e?.message ?? 'Google Sign-In failed';
     }
   },
 

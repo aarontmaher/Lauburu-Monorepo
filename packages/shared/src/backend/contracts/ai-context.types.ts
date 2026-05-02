@@ -103,6 +103,18 @@ export interface AthleteAiContextResponse {
 
   /** Overall confidence for this context package. */
   confidence: ArtifactConfidence;
+
+  /**
+   * Lauburu Readiness — optional grappling-aware readiness score
+   * computed by `services/readiness/lauburu-readiness`. Only populated
+   * when normalized data depth + sources are sufficient. Coach reads
+   * this to surface conservative training-bias guidance; absence
+   * means Coach falls back to its existing daily-artifact path.
+   *
+   * Always experimental. Always not medical advice. The compute
+   * module sets these flags on the output object itself.
+   */
+  lauburu_readiness?: import('../services/readiness/lauburu-readiness').LauburuReadinessOutput | null;
 }
 
 /** Compact nutrition summary for prompt-time AI context. */

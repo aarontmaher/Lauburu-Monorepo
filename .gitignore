@@ -16,10 +16,17 @@ android/
 *.mobileprovision
 *.orig.*
 
-# Environment
+# Environment — never commit real values, anywhere in the tree
 .env
 .env.local
 .env.production
+.env.development
+**/.env
+**/.env.local
+**/.env.production
+**/.env.development
+# Allow committed example files only
+!**/.env.example
 
 # IDE
 .idea/
@@ -38,3 +45,9 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Claude Code workspace state — never commit
+.claude/
+
+# Stray root app.json artefact (real config lives at apps/mobile/app.json)
+/app.json
