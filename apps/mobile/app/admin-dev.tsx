@@ -247,6 +247,20 @@ export default function AdminDevScreen() {
         )}
       </Section>
 
+      <Section title="AI Coach">
+        <Row label="Backend reachable" value={health == null ? '—' : health.ok ? 'yes' : 'no'} />
+        <Row label="Multi-window analysis" value={health?.ok ? 'enabled' : '—'} />
+        <Row label="All-history support" value={health?.ok && health.totalNormalizedDays != null && health.totalNormalizedDays > 0 ? `yes (${health.totalNormalizedDays}d)` : 'no data yet'} />
+        <Row label="Trend windows" value="7d, 14d, 30d, 90d, 180d, 365d, all-time" />
+        <Row label="Personal-data-backed labelling" value="on" />
+        <Row label="Cross-user/general trends" value="off (consent + k-threshold pending)" />
+        {health?.ok && (health?.totalNormalizedDays ?? 0) === 0 && (
+          <Text style={styles.note}>
+            Backend healthy but AI store has 0 normalised days — connect Apple Health / Health Connect, or import WHOOP CSV / Polar export, then re-ask Coach.
+          </Text>
+        )}
+      </Section>
+
       <Section title="Release / status links">
         <LinkRow label="Expo project" url={EXPO_PROJECT_URL} />
         <LinkRow label="Expo builds" url={EXPO_BUILDS_URL} />
@@ -317,7 +331,7 @@ export default function AdminDevScreen() {
         <Text style={styles.note}>
           {adminStatus?.workflowDispatchAvailable
             ? 'Each button posts to the protected dispatch endpoint, which calls a single GitHub Actions workflow_dispatch on main. Confirm before triggering.'
-            : 'Connect GitHub Actions trigger backend first — set GITHUB_DISPATCH_TOKEN and GITHUB_REPO on Railway, push the repo, and add EAS/Apple/Play secrets to GitHub Actions.'}
+            : 'Buttons stay disabled until: (1) push the local repo to a private GitHub repo, (2) mint a fine-grained PAT with Actions:read/write + Contents/Metadata:read on that repo, (3) add it to Railway as GITHUB_DISPATCH_TOKEN with GITHUB_REPO=owner/repo. Each is a one-time browser/terminal step — no secrets pass through this app.'}
         </Text>
       </Section>
     </ScrollView>

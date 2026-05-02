@@ -14,6 +14,7 @@ import {
   Pressable,
   Share,
   KeyboardAvoidingView,
+  Keyboard,
   Platform,
   ScrollView,
   ActivityIndicator,
@@ -744,6 +745,9 @@ export default function AiChatScreen() {
     setAnswers((current) => [...current.filter((entry) => entry.question !== trimmed), answer].slice(-6));
     setQuestion('');
     setSending(false);
+    // Drop the keyboard so the new answer is fully visible without
+    // the user having to tap away.
+    Keyboard.dismiss();
   };
 
   return (
@@ -845,57 +849,25 @@ export default function AiChatScreen() {
                 <Text style={styles.answerClearText}>Clear</Text>
               </Pressable>
             </View>
-            {answers.map((answer) => {
-              // Split long "why" prose into bullet-sized fragments
-              // (2–4 sentences max) so the card reads as chat-style
-              // takeaways rather than a paragraph wall.
-              const whyBullets = (answer.why ?? '')
-                .split(/(?<=[.!?])\s+/)
-                .map((s) => s.trim())
-                .filter((s) => s.length > 0)
-                .slice(0, 4);
-              return (
-                <View key={answer.id} style={styles.answerCard}>
-                  <Text style={styles.answerQuestionCompact}>You · {answer.question}</Text>
-                  {answer.short && answer.short.trim().length > 0 && (
-                    <Text style={styles.answerShort}>{answer.short}</Text>
-                  )}
-                  {whyBullets.length > 0 && (
-                    <View style={{ gap: 2 }}>
-                      {whyBullets.map((b, i) => (
-                        <Text key={i} style={styles.answerWhy}>• {b}</Text>
-                      ))}
-                    </View>
-                  )}
-                  {answer.nextStep && answer.nextStep.trim().length > 0 && (
-                    <Text style={styles.answerNext}>→ {answer.nextStep}</Text>
-                  )}
-                  {answer.missingnessNote && answer.missingnessNote.trim().length > 4 && (
-                    <Text style={styles.answerMissing}>{answer.missingnessNote}</Text>
-                  )}
-                </View>
-              );
-            })}
+            {answers.map((answer) => (
+              <AnswerBlock
+                key={answer.id}
+                answer={answer}
+                onShare={() => handleShare(answer.question)}
+              />
+            ))}
             {latestAnswer && followUpPrompts.length > 0 && (
-              <View style={styles.followUpWrap}>
-                <Text style={styles.followUpLabel}>Follow up</Text>
-                <View style={styles.followUpRow}>
-                  {followUpPrompts.map((prompt) => (
-                    <Pressable
-                      key={prompt}
-                      style={styles.followUpChip}
-                      onPress={() => setQuestion(prompt)}>
-                      <Text style={styles.followUpText}>{prompt}</Text>
-                    </Pressable>
-                  ))}
-                </View>
+              <View style={styles.followUpRow}>
+                {followUpPrompts.slice(0, 2).map((prompt) => (
+                  <Pressable
+                    key={prompt}
+                    style={styles.followUpChipCompact}
+                    onPress={() => setQuestion(prompt)}>
+                    <Text style={styles.followUpTextCompact} numberOfLines={1} ellipsizeMode="tail">{prompt}</Text>
+                  </Pressable>
+                ))}
               </View>
             )}
-            <Pressable
-              style={styles.secondaryShareBtn}
-              onPress={() => handleShare(latestAnswer?.question)}>
-              <Text style={styles.secondaryShareText}>Share full context externally</Text>
-            </Pressable>
           </View>
         )}
       </ScrollView>
@@ -918,6 +890,75 @@ export default function AiChatScreen() {
         </Pressable>
       </View>
     </KeyboardAvoidingView>
+  );
+}
+
+/**
+ * Cleaner answer card. The visible default is:
+ *   - You: <question> bubble (right-aligned)
+ *   - AI: <short> headline + <nextStep> recommendation
+ * Why-bullets, missingness, and "Share full context" sit behind a
+ * "View details" disclosure so the card reads as chat-style
+ * takeaways rather than a wall of text.
+ */
+function AnswerBlock({
+  answer,
+  onShare,
+}: {
+  answer: CoachAnswerCard;
+  onShare: () => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const whyBullets = (answer.why ?? '')
+    .split(/(?<=[.!?])\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0)
+    .slice(0, 4);
+  const hasDetails = whyBullets.length > 0 || (!!answer.missingnessNote && answer.missingnessNote.trim().length > 4);
+
+  return (
+    <View style={styles.answerBlockWrap}>
+      <View style={styles.questionBubble}>
+        <Text style={styles.questionBubbleText} numberOfLines={3} ellipsizeMode="tail">
+          {answer.question}
+        </Text>
+      </View>
+      <View style={styles.answerCardClean}>
+        <View style={styles.answerHeaderTag}>
+          <Text style={styles.answerTagText}>AI Coach</Text>
+        </View>
+        {answer.short && answer.short.trim().length > 0 && (
+          <Text style={styles.answerShort}>{answer.short}</Text>
+        )}
+        {answer.nextStep && answer.nextStep.trim().length > 0 && (
+          <Text style={styles.answerNextClean}>→ {answer.nextStep}</Text>
+        )}
+        {hasDetails && (
+          <Pressable onPress={() => setExpanded((v) => !v)} hitSlop={6}>
+            <Text style={styles.detailsToggle}>
+              {expanded ? '▾ Hide details' : '▸ View details'}
+            </Text>
+          </Pressable>
+        )}
+        {expanded && hasDetails && (
+          <View style={{ gap: 6 }}>
+            {whyBullets.length > 0 && (
+              <View style={{ gap: 2 }}>
+                {whyBullets.map((b, i) => (
+                  <Text key={i} style={styles.answerWhy}>• {b}</Text>
+                ))}
+              </View>
+            )}
+            {answer.missingnessNote && answer.missingnessNote.trim().length > 4 && (
+              <Text style={styles.answerMissing}>{answer.missingnessNote}</Text>
+            )}
+            <Pressable onPress={onShare} hitSlop={6}>
+              <Text style={styles.shareInline}>Share full context externally</Text>
+            </Pressable>
+          </View>
+        )}
+      </View>
+    </View>
   );
 }
 
@@ -1132,10 +1173,80 @@ const styles = StyleSheet.create({
     borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)',
   },
   input: {
-    flex: 1, minHeight: 40, maxHeight: 100,
+    flex: 1, minHeight: 40, maxHeight: 160,
     paddingHorizontal: 12, paddingVertical: 10, borderRadius: 12,
     borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', backgroundColor: 'rgba(255,255,255,0.04)',
     color: '#f5f7f9', fontSize: 14,
+  },
+  // Cleaner answer card pieces — used by AnswerBlock above.
+  answerBlockWrap: { gap: 6 },
+  questionBubble: {
+    alignSelf: 'flex-end',
+    maxWidth: '85%',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 14,
+    backgroundColor: 'rgba(212,225,87,0.10)',
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.25)',
+  },
+  questionBubbleText: {
+    fontSize: 13,
+    color: '#eef1f3',
+    fontWeight: '600',
+  },
+  answerCardClean: {
+    padding: 12,
+    borderRadius: 12,
+    gap: 6,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)',
+  },
+  answerHeaderTag: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 999,
+    backgroundColor: 'rgba(212,225,87,0.14)',
+  },
+  answerTagText: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    color: '#d4e157',
+  },
+  answerNextClean: {
+    fontSize: 13,
+    lineHeight: 19,
+    color: '#d4e157',
+    fontWeight: '600',
+  },
+  detailsToggle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#9aa0a4',
+    paddingTop: 2,
+  },
+  shareInline: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#9aa0a4',
+    paddingTop: 4,
+  },
+  followUpChipCompact: {
+    flexShrink: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  followUpTextCompact: {
+    fontSize: 12,
+    color: '#d7d9dc',
   },
   sendBtn: {
     height: 40, paddingHorizontal: 16, alignItems: 'center', justifyContent: 'center',
