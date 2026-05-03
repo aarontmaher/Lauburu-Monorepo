@@ -50,6 +50,13 @@ interface AuthState {
    */
   signInWithGoogleIdToken: (idToken: string) => Promise<string | null>;
 
+  /**
+   * Send a Supabase password-reset email. The provider emails the
+   * user a recovery link — we never email or display the password
+   * itself. Returns error string or null on success.
+   */
+  requestPasswordReset: (email: string) => Promise<string | null>;
+
   /** Sign out and clear state. */
   signOut: () => Promise<void>;
 
@@ -173,6 +180,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return result.error ?? `Google Sign-In failed (${result.reason ?? 'unknown'}).`;
     } catch (e: any) {
       return e?.message ?? 'Google Sign-In failed';
+    }
+  },
+
+  requestPasswordReset: async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) return error.message;
+      return null;
+    } catch (e: any) {
+      return e?.message ?? 'Could not send reset email.';
     }
   },
 
