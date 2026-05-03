@@ -169,11 +169,15 @@ export function AthleteStateStrip() {
     <View style={styles.card}>
       <View style={styles.titleRow}>
         <Text style={styles.title}>Readiness</Text>
-        <Text style={styles.sub}>
-          provisional · confidence {effectiveState.readiness_confidence.level}
-        </Text>
+        {/* Surface confidence only when it isn't already high — there's
+            no value broadcasting "high confidence". The Health tab
+            still shows full provenance + per-source coverage. */}
+        {effectiveState.readiness_confidence.level !== 'high' && (
+          <Text style={styles.sub}>
+            {effectiveState.readiness_confidence.level} confidence
+          </Text>
+        )}
       </View>
-      <Text style={[styles.note, { opacity: 0.55 }]}>{Platform.OS === 'ios' ? 'Based on Apple Health, training, nutrition, and imported history.' : 'Based on Health Connect, training, nutrition, and imported history.'}</Text>
       {/* Headline band is the app's OWN derived readiness — blended
           from Apple Health baselines, WHOOP Direct when scored,
           WHOOP CSV enrichment when imported, plus recent training

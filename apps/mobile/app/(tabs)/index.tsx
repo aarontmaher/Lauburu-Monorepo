@@ -44,12 +44,39 @@ const READINESS_COLORS: Record<ReadinessLevel, string> = {
 };
 
 function GuestBanner() {
+  const router = useRouter();
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>Welcome to Lauburu</Text>
       <Text style={styles.cardBody}>
-        Sign in on Settings to save your training data and get personalized coaching.
+        Create an account to save your training, health sync, and AI Coach history.
       </Text>
+      <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
+        <Pressable
+          style={{
+            flex: 1,
+            paddingVertical: 12,
+            borderRadius: 10,
+            backgroundColor: '#d4e157',
+            alignItems: 'center',
+          }}
+          onPress={() => router.push({ pathname: '/(tabs)/settings', params: { auth: 'sign_up' } })}>
+          <Text style={{ color: '#0b0b0b', fontWeight: '700', fontSize: 14 }}>Create account</Text>
+        </Pressable>
+        <Pressable
+          style={{
+            flex: 1,
+            paddingVertical: 12,
+            borderRadius: 10,
+            backgroundColor: 'rgba(255,255,255,0.06)',
+            borderWidth: 1,
+            borderColor: 'rgba(255,255,255,0.16)',
+            alignItems: 'center',
+          }}
+          onPress={() => router.push({ pathname: '/(tabs)/settings', params: { auth: 'sign_in' } })}>
+          <Text style={{ color: '#f5f7f9', fontWeight: '700', fontSize: 14 }}>Sign in</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -994,7 +1021,7 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>Lauburu Grappling Map</Text>
         <Text style={styles.subtitle}>
-          {isMember ? `Signed in as ${user?.email}` : 'Your training companion'}
+          {isMember ? 'Your training companion' : 'Your training companion'}
         </Text>
       </View>
 

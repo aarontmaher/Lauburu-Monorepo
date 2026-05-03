@@ -6,6 +6,7 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
@@ -154,9 +155,11 @@ function AuthForm() {
   const signIn = useAuthStore((s) => s.signIn);
   const signUp = useAuthStore((s) => s.signUp);
   const signInWithApple = useAuthStore((s) => s.signInWithApple);
+  const requestPasswordReset = useAuthStore((s) => s.requestPasswordReset);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
+  const [resetBusy, setResetBusy] = useState(false);
   const [appleBusy, setAppleBusy] = useState(false);
   const [appleVisible, setAppleVisible] = useState(false);
   const [mode, setMode] = useState<'login' | 'signup'>('login');
@@ -198,6 +201,19 @@ function AuthForm() {
     const error = await signInWithApple();
     setAppleBusy(false);
     if (error) Alert.alert('Apple Sign-In', error);
+  };
+
+  const handleForgotPassword = async () => {
+    const trimmed = email.trim();
+    if (trimmed.length === 0) {
+      Alert.alert('Forgot password', 'Type your email above first, then tap Forgot password.');
+      return;
+    }
+    setResetBusy(true);
+    const error = await requestPasswordReset(trimmed);
+    setResetBusy(false);
+    if (error) Alert.alert('Couldn\u2019t send reset email', error);
+    else Alert.alert('Check your email', 'We sent a password reset link to your email.');
   };
 
   return (
@@ -255,6 +271,13 @@ function AuthForm() {
             : 'Already have an account? Sign in'}
         </Text>
       </Pressable>
+      {mode === 'login' && (
+        <Pressable onPress={handleForgotPassword} disabled={resetBusy}>
+          <Text style={[styles.switchText, { opacity: resetBusy ? 0.5 : 0.85 }]}>
+            {resetBusy ? 'Sending reset email…' : 'Forgot password?'}
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -1111,10 +1134,49 @@ export default function SettingsScreen() {
           onLongPress={showDevTools ? () => router.push('/admin-dev') : undefined}
         />
         <SettingsRow label="Website" value="lauburugrapplingmap.com" />
-        {showDevTools && (
+        <Pressable
+          style={styles.row}
+          onPress={() => Linking.openURL('https://www.lauburugrapplingmap.com/privacy/')}
+          accessibilityRole="link"
+          accessibilityLabel="Open privacy policy in browser">
+          <Text style={styles.rowLabel}>Privacy policy</Text>
+          <Text style={[styles.rowValue, { color: '#d4e157' }]}>Open</Text>
+        </Pressable>
+        <Pressable
+          style={styles.row}
+          onPress={() => Linking.openURL('https://www.lauburugrapplingmap.com/account-deletion/')}
+          accessibilityRole="link"
+          accessibilityLabel="Open data deletion request page in browser">
+          <Text style={styles.rowLabel}>Request account / data deletion</Text>
+          <Text style={[styles.rowValue, { color: '#d4e157' }]}>Open</Text>
+        </Pressable>
+        {showDevTools ? (
           <Pressable style={styles.row} onPress={() => router.push('/admin-dev')}>
             <Text style={styles.rowLabel}>Developer tools</Text>
             <Text style={[styles.rowValue, { color: '#d4e157' }]}>Open</Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            style={styles.row}
+            onPress={() => {
+              Alert.alert(
+                'Project owner mode',
+                'This enables the Lauburu Admin / Dev Control Center on this device — workflow triggers, backend status, prompt library. Only the project owner should enable this. Continue?',
+                [
+                  { text: 'Cancel', style: 'cancel' },
+                  {
+                    text: 'Enable on this device',
+                    style: 'destructive',
+                    onPress: async () => {
+                      await unlockDevTools();
+                      Alert.alert('Developer tools enabled', 'A Developer tools row now appears here. Open it any time, or use the wrench Dev FAB.');
+                    },
+                  },
+                ],
+              );
+            }}>
+            <Text style={[styles.rowLabel, { opacity: 0.55 }]}>Project owner mode</Text>
+            <Text style={[styles.rowValue, { opacity: 0.45 }]}>Off</Text>
           </Pressable>
         )}
       </View>
