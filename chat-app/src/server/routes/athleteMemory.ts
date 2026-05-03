@@ -18,6 +18,7 @@ import type { AthleteAccountProfile } from '../../../../packages/shared/src/syll
 import type { VideoAttachment, VideoAttachmentSummary } from '../../../../packages/shared/src/syllabus/video-attachment.types';
 import { buildCoachAnswer } from '../../../../packages/shared/src/backend/services/coach/build-coach-answer';
 import { computeLauburuReadiness } from '../../../../packages/shared/src/backend/services/readiness/lauburu-readiness';
+import { computeGrapplerReadiness } from '../../../../packages/shared/src/backend/services/readiness/grappler-readiness';
 
 const router = Router();
 const store = new FileApiAiStateStore(
@@ -994,6 +995,30 @@ router.post('/:athleteId/coach/ask', requirePrivateAthleteAccess, async (req: an
         chronicLoad,
         staleHours,
       });
+
+      // Grappler Readiness — the app-owned multi-bucket score that
+      // is the product number going forward. Wearable-native scores
+      // (WHOOP recovery, day_strain, etc.) are carried unmodified
+      // on `raw_source_scores` as supporting evidence, never primary.
+      // grappling + subjective buckets stay null until session
+      // intensity + check-in slider fields are extended (Batches B/C
+      // of the Grappler Readiness plan). Failure here must NOT
+      // break /coach/ask — wrap in try/catch.
+      try {
+        (aiContext as any).grappler_readiness = computeGrapplerReadiness({
+          today: todayRec as any,
+          baseline: baseline as any,
+          acuteLoad,
+          chronicLoad,
+          staleHours,
+          // latestCheckin + recentGrappling intentionally null —
+          // populated when Batches B/C land. Bucket compute returns
+          // `score: null` with `missing: [...]` so the UI can show
+          // "Log a check-in" prompts without faking a number.
+          latestCheckin: null,
+          recentGrappling: null,
+        });
+      } catch { /* grappler-readiness compute failure must not break Coach */ }
 
       // Long-term trend bundle — same algorithm as the
       // /v1/internal/athletes/:athleteId/ai-health-context endpoint.
