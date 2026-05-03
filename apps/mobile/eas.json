@@ -51,7 +51,8 @@
   "submit": {
     "production": {
       "ios": {
-        "appleTeamId": "DLVKNS75NJ"
+        "appleTeamId": "DLVKNS75NJ",
+        "ascAppId": "6762436447"
       },
       "android": {
         "serviceAccountKeyPath": "./google-services-key.json",
