@@ -66,6 +66,41 @@ Only use this if you can't use API keys.
 - Add it as a GitHub Actions secret: `EXPO_APPLE_APP_SPECIFIC_PASSWORD`.
 - The workflow's `submit` step already reads it.
 
+## 3a. Auto-assign every new build to a TestFlight internal group
+
+Without this, every new IPA lands on App Store Connect at status
+**Ready to Submit** and stays there until you manually open ASC →
+TestFlight → iOS Builds → tap the build → Add to test group → Save.
+That's a per-build click and was the standing manual blocker.
+
+Fix: list the group(s) under `submit.<profile>.ios.groups` in
+`eas.json`. EAS submit then forwards the build to that group at
+upload time. We've set this for the project's internal group
+**Team (Expo)**:
+
+```jsonc
+{
+  "submit": {
+    "production": {
+      "ios": {
+        "appleTeamId": "DLVKNS75NJ",
+        "ascAppId": "6762436447",
+        "groups": ["Team (Expo)"]
+      }
+    }
+  }
+}
+```
+
+Verification of effective behaviour: after the first submit with
+this config, the build's status moves from **Ready to Submit** →
+**Testing** without any ASC click. Apple notifies the group's
+testers and the app updates within minutes.
+
+If you create another internal group later (e.g. `Real Testers`),
+add it to the array — `eas submit` will assign new builds to all
+listed groups simultaneously.
+
 ## 4. Trigger from the Admin/Dev app
 
 Once credentials are cached on EAS:

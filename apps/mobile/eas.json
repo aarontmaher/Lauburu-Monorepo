@@ -52,7 +52,8 @@
     "production": {
       "ios": {
         "appleTeamId": "DLVKNS75NJ",
-        "ascAppId": "6762436447"
+        "ascAppId": "6762436447",
+        "groups": ["Team (Expo)"]
       },
       "android": {
         "serviceAccountKeyPath": "./google-services-key.json",

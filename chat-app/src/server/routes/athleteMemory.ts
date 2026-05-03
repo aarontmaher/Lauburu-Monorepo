@@ -1318,6 +1318,18 @@ router.get('/admin/status', requireAdminToken, async (_req: any, res: any) => {
       // and tells the user to confirm the secret in GitHub.
       playUploadConfigured: null,
       testflightSubmitConfigured: null,
+      // Group-assignment is now wired on the iOS side via
+      // eas.json submit.production.ios.groups (default ["Team (Expo)"]).
+      // Backend can't read eas.json from disk in production (no
+      // working-tree mount), so this is a static `true` reflecting
+      // the repo state at deploy time. Update if eas.json changes.
+      testflightGroupAssignmentConfigured: true,
+      // Android upload runs as DRAFT release (eas.json
+      // submit.production.android.releaseStatus = 'draft') — Play
+      // accepts the upload, but per-release Review/Start-rollout
+      // remains a manual Play Console click until the listing is
+      // fully filled and you opt in to COMPLETED status.
+      androidPlayPromoteAutomatic: false,
       otaAvailable: false,
       otaBlocked: true,
       otaBlockerReason: 'Expo SDK 54 publishes are server-rejected. Use Play / TestFlight native updates.',

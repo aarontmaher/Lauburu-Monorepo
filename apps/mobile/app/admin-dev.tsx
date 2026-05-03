@@ -62,6 +62,8 @@ interface AdminStatus {
   releaseAuditWorkflowAvailable?: boolean;
   playUploadConfigured?: boolean | null;
   testflightSubmitConfigured?: boolean | null;
+  testflightGroupAssignmentConfigured?: boolean | null;
+  androidPlayPromoteAutomatic?: boolean | null;
   otaBlocked?: boolean;
   otaBlockerReason?: string;
 }
@@ -132,6 +134,8 @@ async function fetchAdminStatus(): Promise<AdminStatus | null> {
       releaseAuditWorkflowAvailable: !!json?.releaseAuditWorkflowAvailable,
       playUploadConfigured: typeof json?.playUploadConfigured === 'boolean' ? json.playUploadConfigured : null,
       testflightSubmitConfigured: typeof json?.testflightSubmitConfigured === 'boolean' ? json.testflightSubmitConfigured : null,
+      testflightGroupAssignmentConfigured: typeof json?.testflightGroupAssignmentConfigured === 'boolean' ? json.testflightGroupAssignmentConfigured : null,
+      androidPlayPromoteAutomatic: typeof json?.androidPlayPromoteAutomatic === 'boolean' ? json.androidPlayPromoteAutomatic : null,
       otaBlocked: !!json?.otaBlocked,
       otaBlockerReason: typeof json?.otaBlockerReason === 'string' ? json.otaBlockerReason : undefined,
     };
@@ -330,14 +334,14 @@ export default function AdminDevScreen() {
 
       <Section title="Release automation">
         <Row label="Android build" value={adminStatus?.androidBuildWorkflowAvailable ? 'workflow available' : '—'} />
-        <Row label="Android upload to Play" value={adminStatus?.playUploadConfigured == null ? 'unverified — assume yes if PLAY_SA_JSON set' : adminStatus.playUploadConfigured ? 'yes (DRAFT releases)' : 'no'} />
-        <Row label="Android tester-live" value="needs Play Console manual promote per release" />
+        <Row label="Android upload to Play" value={adminStatus?.playUploadConfigured == null ? 'unverified — assume yes if PLAY_SA_JSON set' : adminStatus.playUploadConfigured ? 'yes (DRAFT)' : 'no'} />
+        <Row label="Android Play promote" value={adminStatus?.androidPlayPromoteAutomatic ? 'automatic' : 'manual per release (Play Console Review → Start rollout)'} />
         <Row label="iOS build" value={adminStatus?.iosBuildWorkflowAvailable ? 'workflow available' : '—'} />
         <Row label="iOS submit to ASC" value={adminStatus?.testflightSubmitConfigured == null ? 'unverified — assume yes if EAS API key cached' : adminStatus.testflightSubmitConfigured ? 'yes' : 'no'} />
-        <Row label="iOS TestFlight tester-live" value="needs ASC manual: assign each new build to internal tester group" />
+        <Row label="iOS TestFlight group" value={adminStatus?.testflightGroupAssignmentConfigured ? 'auto (Team (Expo))' : 'manual per build (ASC → Add to test group)'} />
         <Row label="OTA" value={adminStatus?.otaBlocked ? 'blocked (Play / TestFlight only)' : '—'} />
         <Text style={styles.note}>
-          Both pipelines: workflow uploads + initial submit are automated. Per-release tester rollout is still manual: Play Console "Review release → Start rollout" and ASC "Add to internal testing group". Keep Android versionCode + iOS buildNumber bumped together.
+          iOS: builds now auto-assign to the internal TestFlight group (eas.json `submit.production.ios.groups: ["Team (Expo)"]`). Android: builds upload as DRAFT; per-release Play Console "Review release → Start rollout" stays manual until store listing is fully filled. Keep Android versionCode + iOS buildNumber bumped together.
         </Text>
       </Section>
 
@@ -358,10 +362,10 @@ export default function AdminDevScreen() {
         <WorkflowTriggerButton id="ios-testflight-build" label="Build iOS TestFlight" enabled={!!adminStatus?.iosBuildWorkflowAvailable} />
         <WorkflowTriggerButton
           id="ios-testflight-build"
-          label="Build iOS + submit to ASC"
+          label="Build iOS + submit to TestFlight"
           enabled={!!adminStatus?.iosBuildWorkflowAvailable}
           inputs={{ submit_to_testflight: 'true' }}
-          confirmCopy="Builds the IPA and uploads it to App Store Connect. After workflow finishes the build sits as 'Ready to Submit'. To make it tester-live: ASC → TestFlight → iOS Builds → tap the new build → Add to internal testing group → Save."
+          confirmCopy="Builds the IPA, uploads to App Store Connect, and assigns to the internal TestFlight group 'Team (Expo)'. Internal testers receive a TestFlight notification after Apple processing (~10–30 min)."
         />
         <WorkflowTriggerButton id="ota-diagnostic" label="Run OTA diagnostic" enabled={!!adminStatus?.workflowDispatchAvailable} />
         {adminStatus?.blockers && adminStatus.blockers.length > 0 && (
