@@ -37,15 +37,30 @@ jobs:
       - name: TypeScript check (mobile)
         run: cd apps/mobile && npx tsc --noEmit
 
-      - name: Configure EAS auth
+      - name: Preflight — required secrets
         if: ${{ inputs.dry_run != 'true' }}
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          PLAY_SA_JSON: ${{ secrets.PLAY_SA_JSON }}
         run: |
+          set -euo pipefail
           if [ -z "$EXPO_TOKEN" ]; then
-            echo "::error::EXPO_TOKEN secret is not set."
+            echo "::error title=EXPO_TOKEN missing::Set EXPO_TOKEN as a GitHub Actions secret. See docs/ADMIN_RELEASE_AUTOMATION_PLAN.md."
             exit 1
           fi
+          if [ "${{ inputs.submit_to_play }}" = "true" ] && [ -z "$PLAY_SA_JSON" ]; then
+            echo "::error title=PLAY_SA_JSON missing::submit_to_play=true requires PLAY_SA_JSON. See docs/PLAY_SUBMIT_SETUP.md."
+            exit 1
+          fi
+          {
+            echo "## Preflight"
+            echo "- EXPO_TOKEN: present"
+            if [ "${{ inputs.submit_to_play }}" = "true" ]; then
+              echo "- submit_to_play: true · PLAY_SA_JSON: present"
+            else
+              echo "- submit_to_play: false (build-only, manual upload)"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: EAS Android build
         if: ${{ inputs.dry_run != 'true' }}

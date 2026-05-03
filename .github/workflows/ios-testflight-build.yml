@@ -33,15 +33,28 @@ jobs:
       - name: TypeScript check (mobile)
         run: cd apps/mobile && npx tsc --noEmit
 
-      - name: Configure EAS auth
+      - name: Preflight — required secrets + provisioning
         if: ${{ inputs.dry_run != 'true' }}
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
+          set -euo pipefail
           if [ -z "$EXPO_TOKEN" ]; then
-            echo "::error::EXPO_TOKEN secret is not set."
+            echo "::error title=EXPO_TOKEN missing::Set EXPO_TOKEN as a GitHub Actions secret."
             exit 1
           fi
+          {
+            echo "## Preflight"
+            echo "- EXPO_TOKEN: present"
+            echo "- submit_to_testflight: ${{ inputs.submit_to_testflight }}"
+            if [ "${{ inputs.submit_to_testflight }}" = "true" ]; then
+              echo "- TestFlight submit: requires App Store Connect API key cached on EAS or EXPO_APPLE_APP_SPECIFIC_PASSWORD secret. EAS submit will fail clearly if neither is configured."
+            fi
+            echo
+            echo "Note: if the EAS build step fails with 'provisioning profile doesn't include the com.apple.developer.applesignin entitlement', regenerate the profile with"
+            echo '`npx eas-cli credentials --platform ios` → Set up new provisioning profile.'
+            echo "See docs/IOS_TESTFLIGHT_AUTOMATION_SETUP.md."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: EAS iOS build
         if: ${{ inputs.dry_run != 'true' }}
