@@ -822,19 +822,43 @@ router.post('/whoop/sync', requireAuth, async (req: any, res: any) => {
   }
 
   // Update whoop_direct source-health with per-domain coverage.
+  //
+  // WHOOP scores recovery / sleep / HRV / RHR the MORNING AFTER the
+  // sleep completes — the strict latest day in dayMap therefore
+  // routinely has only strain (today's in-progress cycle). Walk back
+  // through the most recent 3 days so a domain still counts as
+  // "fresh" if it landed on yesterday or the day before. That's the
+  // realistic readiness signal. Strain is unaffected because cycles
+  // score in real time.
   const domains: Record<string, { lastDate: string | null; status: 'fresh' }> = {};
-  // Use the MOST RECENT day in dayMap, not strictly today — WHOOP's
-  // recovery/cycle for "today" only exists after the user's next
-  // sleep completes. Yesterday's fresh fields still unlock readiness.
   const sortedDates = Array.from(dayMap.keys()).sort();
   const latestDate = sortedDates[sortedDates.length - 1] ?? today;
-  const latestDay = dayMap.get(latestDate);
-  if (latestDay?.recoveryScore != null) domains.recovery = { lastDate: latestDate, status: 'fresh' };
-  if (latestDay?.totalSleepHours != null) domains.sleep = { lastDate: latestDate, status: 'fresh' };
-  if (latestDay?.dailyStrain != null) domains.strain = { lastDate: latestDate, status: 'fresh' };
-  if (latestDay?.hrvMs != null) domains.hrv = { lastDate: latestDate, status: 'fresh' };
-  if (latestDay?.restingHrBpm != null) domains.resting_hr = { lastDate: latestDate, status: 'fresh' };
-  if (latestDay?.workoutCount && latestDay.workoutCount > 0) domains.workouts = { lastDate: latestDate, status: 'fresh' };
+  const recentDates = sortedDates.slice(-3).reverse();
+  function findLatestWith(field: 'recoveryScore' | 'totalSleepHours' | 'dailyStrain' | 'hrvMs' | 'restingHrBpm'): string | null {
+    for (const d of recentDates) {
+      const day = dayMap.get(d);
+      const v = day ? (day as any)[field] : null;
+      if (typeof v === 'number' && Number.isFinite(v)) return d;
+    }
+    return null;
+  }
+  const recoveryAt = findLatestWith('recoveryScore');
+  if (recoveryAt) domains.recovery = { lastDate: recoveryAt, status: 'fresh' };
+  const sleepAt = findLatestWith('totalSleepHours');
+  if (sleepAt) domains.sleep = { lastDate: sleepAt, status: 'fresh' };
+  const strainAt = findLatestWith('dailyStrain');
+  if (strainAt) domains.strain = { lastDate: strainAt, status: 'fresh' };
+  const hrvAt = findLatestWith('hrvMs');
+  if (hrvAt) domains.hrv = { lastDate: hrvAt, status: 'fresh' };
+  const rhrAt = findLatestWith('restingHrBpm');
+  if (rhrAt) domains.resting_hr = { lastDate: rhrAt, status: 'fresh' };
+  for (const d of recentDates) {
+    const day = dayMap.get(d);
+    if (day?.workoutCount && day.workoutCount > 0) {
+      domains.workouts = { lastDate: d, status: 'fresh' };
+      break;
+    }
+  }
 
   const anyOk = results.some((r) => r.ok && r.count > 0);
   await storeInstance.saveSourceHealth(userId, 'whoop_direct', {

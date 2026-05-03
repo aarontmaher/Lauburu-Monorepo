@@ -444,12 +444,12 @@ export function WhoopDirectCard() {
           )}
           {Array.isArray(status?.missingDomains) && status.missingDomains.length > 0 && !isAwaitingTodaysCycle && (
             <Text style={[styles.subtleNote, { color: '#ffa500' }]}>
-              Missing: {status.missingDomains.join(', ')}. WHOOP hasn\u2019t scored those fields yet — tap Sync now after your next WHOOP sync, or leave it — it should fill in after the next cycle completes.
+              Missing: {status.missingDomains.join(', ')}. WHOOP hasn{"'"}t scored those fields yet — tap Sync now after your next WHOOP sync, or leave it; it fills in after the next cycle completes.
             </Text>
           )}
           {isAwaitingTodaysCycle && (
             <Text style={[styles.subtleNote, { color: '#4ade80' }]}>
-              Today\u2019s cycle is still in progress — WHOOP will score it after your next sleep. Recovery and strain appear then.
+              Today{"'"}s cycle is still in progress — WHOOP will score it after your next sleep. Recovery and strain appear then.
             </Text>
           )}
           {status?.readinessStatus === 'available' && (
