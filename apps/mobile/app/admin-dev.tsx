@@ -329,12 +329,16 @@ export default function AdminDevScreen() {
       </Section>
 
       <Section title="Release automation">
-        <Row label="Android build workflow" value={adminStatus?.androidBuildWorkflowAvailable ? 'available' : '—'} />
-        <Row label="iOS build workflow" value={adminStatus?.iosBuildWorkflowAvailable ? 'available' : '—'} />
-        <Row label="Play upload (PLAY_SA_JSON)" value={adminStatus?.playUploadConfigured == null ? 'check GitHub' : adminStatus.playUploadConfigured ? 'yes' : 'no'} />
-        <Row label="TestFlight submit" value={adminStatus?.testflightSubmitConfigured == null ? 'check EAS credentials' : adminStatus.testflightSubmitConfigured ? 'yes' : 'no'} />
+        <Row label="Android build" value={adminStatus?.androidBuildWorkflowAvailable ? 'workflow available' : '—'} />
+        <Row label="Android upload to Play" value={adminStatus?.playUploadConfigured == null ? 'unverified — assume yes if PLAY_SA_JSON set' : adminStatus.playUploadConfigured ? 'yes (DRAFT releases)' : 'no'} />
+        <Row label="Android tester-live" value="needs Play Console manual promote per release" />
+        <Row label="iOS build" value={adminStatus?.iosBuildWorkflowAvailable ? 'workflow available' : '—'} />
+        <Row label="iOS submit to ASC" value={adminStatus?.testflightSubmitConfigured == null ? 'unverified — assume yes if EAS API key cached' : adminStatus.testflightSubmitConfigured ? 'yes' : 'no'} />
+        <Row label="iOS TestFlight tester-live" value="needs ASC manual: assign each new build to internal tester group" />
         <Row label="OTA" value={adminStatus?.otaBlocked ? 'blocked (Play / TestFlight only)' : '—'} />
-        <Text style={styles.note}>Keep Android and iOS feature bundles synced — bump versionCode + buildNumber together.</Text>
+        <Text style={styles.note}>
+          Both pipelines: workflow uploads + initial submit are automated. Per-release tester rollout is still manual: Play Console "Review release → Start rollout" and ASC "Add to internal testing group". Keep Android versionCode + iOS buildNumber bumped together.
+        </Text>
       </Section>
 
       <Section title="Workflow triggers">
@@ -346,18 +350,18 @@ export default function AdminDevScreen() {
         <WorkflowTriggerButton id="android-aab-build" label="Build Android AAB" enabled={!!adminStatus?.workflowDispatchAvailable} />
         <WorkflowTriggerButton
           id="android-aab-build"
-          label="Build Android + upload to Internal Testing"
+          label="Build Android + upload to Internal Testing (DRAFT)"
           enabled={!!adminStatus?.workflowDispatchAvailable}
           inputs={{ submit_to_play: 'true' }}
-          confirmCopy="Builds the AAB and uploads it to Play Internal Testing. Requires PLAY_SA_JSON in GitHub Actions secrets."
+          confirmCopy="Builds the AAB and uploads it to Play Internal Testing as a DRAFT release. After workflow finishes you must open Play Console → Internal testing → open the draft → Review release → Start rollout, before testers see the new version."
         />
         <WorkflowTriggerButton id="ios-testflight-build" label="Build iOS TestFlight" enabled={!!adminStatus?.iosBuildWorkflowAvailable} />
         <WorkflowTriggerButton
           id="ios-testflight-build"
-          label="Build iOS + submit to TestFlight"
+          label="Build iOS + submit to ASC"
           enabled={!!adminStatus?.iosBuildWorkflowAvailable}
           inputs={{ submit_to_testflight: 'true' }}
-          confirmCopy="Builds the IPA and submits it to TestFlight. Requires Apple credentials cached on EAS (App Store Connect API key recommended)."
+          confirmCopy="Builds the IPA and uploads it to App Store Connect. After workflow finishes the build sits as 'Ready to Submit'. To make it tester-live: ASC → TestFlight → iOS Builds → tap the new build → Add to internal testing group → Save."
         />
         <WorkflowTriggerButton id="ota-diagnostic" label="Run OTA diagnostic" enabled={!!adminStatus?.workflowDispatchAvailable} />
         {adminStatus?.blockers && adminStatus.blockers.length > 0 && (
