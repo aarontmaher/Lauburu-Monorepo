@@ -1270,19 +1270,39 @@ function requireAdminToken(req: any, res: any, next: any) {
 router.get('/admin/status', requireAdminToken, async (_req: any, res: any) => {
   try {
     const blockers: string[] = [];
+    const dispatchAvailable = !!process.env.GITHUB_DISPATCH_TOKEN && !!process.env.GITHUB_REPO;
     if (!process.env.GITHUB_DISPATCH_TOKEN) blockers.push('GITHUB_DISPATCH_TOKEN not set on backend; workflow triggers disabled.');
-    if (!process.env.GITHUB_REPO) blockers.push('GITHUB_REPO not set on backend (e.g. "aaronmaher/lauburu-grappling-map").');
+    if (!process.env.GITHUB_REPO) blockers.push('GITHUB_REPO not set on backend (e.g. "aarontmaher/lauburu-grappling-map").');
     res.status(200).json({
       ok: true,
       backendHealthy: true,
       aiHealthContextAvailable: true,
-      workflowDispatchAvailable: !!process.env.GITHUB_DISPATCH_TOKEN && !!process.env.GITHUB_REPO,
+      githubDispatchAvailable: dispatchAvailable,
+      workflowDispatchAvailable: dispatchAvailable,
       workflowAllowlist: ADMIN_WORKFLOW_ALLOWLIST,
+      // Per-workflow availability — true when dispatch is wired AND
+      // the workflow id is on the allowlist. Does NOT verify the
+      // workflow file exists on the repo (that's a GitHub-side check
+      // at dispatch time) and does NOT verify GitHub Actions secrets
+      // (Play/TestFlight credentials live there, never on Railway).
+      androidBuildWorkflowAvailable: dispatchAvailable && (ADMIN_WORKFLOW_ALLOWLIST as readonly string[]).includes('android-aab-build'),
+      iosBuildWorkflowAvailable: dispatchAvailable && (ADMIN_WORKFLOW_ALLOWLIST as readonly string[]).includes('ios-testflight-build'),
+      releaseAuditWorkflowAvailable: dispatchAvailable && (ADMIN_WORKFLOW_ALLOWLIST as readonly string[]).includes('release-audit'),
+      // We never read GitHub Actions secret values — these flags are
+      // unknown from the backend. The UI surfaces them as "unknown"
+      // and tells the user to confirm the secret in GitHub.
+      playUploadConfigured: null,
+      testflightSubmitConfigured: null,
+      otaAvailable: false,
+      otaBlocked: true,
+      otaBlockerReason: 'Expo SDK 54 publishes are server-rejected. Use Play / TestFlight native updates.',
       links: {
         expoProject: 'https://expo.dev/accounts/aaronmaher/projects/lauburu-grappling-map',
         railwayDashboard: 'https://railway.com/project',
         playConsole: 'https://play.google.com/console',
         appStoreConnect: 'https://appstoreconnect.apple.com/',
+        githubRepo: process.env.GITHUB_REPO ? `https://github.com/${process.env.GITHUB_REPO}` : null,
+        githubActions: process.env.GITHUB_REPO ? `https://github.com/${process.env.GITHUB_REPO}/actions` : null,
       },
       blockers,
       generatedAt: new Date().toISOString(),

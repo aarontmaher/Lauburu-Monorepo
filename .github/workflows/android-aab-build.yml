@@ -15,6 +15,10 @@ on:
         description: 'true → run typecheck only, do not start EAS build'
         required: false
         default: 'false'
+      submit_to_play:
+        description: 'true → after build, submit AAB to Play Internal Testing (requires PLAY_SA_JSON secret)'
+        required: false
+        default: 'false'
 
 jobs:
   build:
@@ -42,6 +46,7 @@ jobs:
             echo "::error::EXPO_TOKEN secret is not set."
             exit 1
           fi
+
       - name: EAS Android build
         if: ${{ inputs.dry_run != 'true' }}
         env:
@@ -50,12 +55,43 @@ jobs:
         run: |
           cd apps/mobile
           npx eas-cli build --platform android --profile production --non-interactive
+
+      # ── Optional: upload AAB to Play Internal Testing ───────────
+      # Runs only when submit_to_play=true AND PLAY_SA_JSON secret is
+      # set. Otherwise the workflow finishes after the build and you
+      # upload manually. The service-account JSON is written to a
+      # tmpfile at the path eas.json's android.serviceAccountKeyPath
+      # references, then deleted after submit.
+      - name: Submit AAB to Play Internal Testing
+        if: ${{ inputs.dry_run != 'true' && inputs.submit_to_play == 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          PLAY_SA_JSON: ${{ secrets.PLAY_SA_JSON }}
+        run: |
+          set -euo pipefail
+          if [ -z "${PLAY_SA_JSON}" ]; then
+            echo "::error::PLAY_SA_JSON secret is not set; cannot upload to Play. See docs/PLAY_SUBMIT_SETUP.md."
+            exit 1
+          fi
+          # eas.json points at apps/mobile/google-services-key.json; write
+          # the secret there for the duration of this job only. The path
+          # is in .gitignore (*.key etc.) and is ephemeral on the runner.
+          printf '%s' "${PLAY_SA_JSON}" > apps/mobile/google-services-key.json
+          trap 'rm -f apps/mobile/google-services-key.json' EXIT
+          cd apps/mobile
+          npx eas-cli submit --platform android --profile production --latest --non-interactive
+
       - name: Summary
         run: |
           {
             echo "## Android AAB build summary"
             echo "Ref: ${{ inputs.ref || 'main' }}"
             echo "Dry run: ${{ inputs.dry_run }}"
+            echo "Submit to Play: ${{ inputs.submit_to_play }}"
             echo "Release notes: ${{ inputs.release_notes }}"
-            echo "Next: Play Console → Lauburu Grappling Map → Testing → Internal testing → Create new release → upload AAB."
+            if [ "${{ inputs.submit_to_play }}" = "true" ]; then
+              echo "Next: Play Console → Lauburu Grappling Map → Testing → Internal testing — release should appear within ~5–10 min."
+            else
+              echo "Next: Play Console → Lauburu Grappling Map → Testing → Internal testing → Create new release → upload AAB."
+            fi
           } >> "$GITHUB_STEP_SUMMARY"

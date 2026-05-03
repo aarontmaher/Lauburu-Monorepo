@@ -57,6 +57,13 @@ interface AdminStatus {
   workflowDispatchAvailable: boolean;
   workflowAllowlist: string[];
   blockers: string[];
+  androidBuildWorkflowAvailable?: boolean;
+  iosBuildWorkflowAvailable?: boolean;
+  releaseAuditWorkflowAvailable?: boolean;
+  playUploadConfigured?: boolean | null;
+  testflightSubmitConfigured?: boolean | null;
+  otaBlocked?: boolean;
+  otaBlockerReason?: string;
 }
 
 const PROMPT_LIBRARY: Array<{ label: string; body: string }> = [
@@ -120,6 +127,13 @@ async function fetchAdminStatus(): Promise<AdminStatus | null> {
       workflowDispatchAvailable: !!json?.workflowDispatchAvailable,
       workflowAllowlist: Array.isArray(json?.workflowAllowlist) ? json.workflowAllowlist : [],
       blockers: Array.isArray(json?.blockers) ? json.blockers : [],
+      androidBuildWorkflowAvailable: !!json?.androidBuildWorkflowAvailable,
+      iosBuildWorkflowAvailable: !!json?.iosBuildWorkflowAvailable,
+      releaseAuditWorkflowAvailable: !!json?.releaseAuditWorkflowAvailable,
+      playUploadConfigured: typeof json?.playUploadConfigured === 'boolean' ? json.playUploadConfigured : null,
+      testflightSubmitConfigured: typeof json?.testflightSubmitConfigured === 'boolean' ? json.testflightSubmitConfigured : null,
+      otaBlocked: !!json?.otaBlocked,
+      otaBlockerReason: typeof json?.otaBlockerReason === 'string' ? json.otaBlockerReason : undefined,
     };
   } catch { return null; }
 }
@@ -314,14 +328,37 @@ export default function AdminDevScreen() {
         )}
       </Section>
 
+      <Section title="Release automation">
+        <Row label="Android build workflow" value={adminStatus?.androidBuildWorkflowAvailable ? 'available' : '—'} />
+        <Row label="iOS build workflow" value={adminStatus?.iosBuildWorkflowAvailable ? 'available' : '—'} />
+        <Row label="Play upload (PLAY_SA_JSON)" value={adminStatus?.playUploadConfigured == null ? 'check GitHub' : adminStatus.playUploadConfigured ? 'yes' : 'no'} />
+        <Row label="TestFlight submit" value={adminStatus?.testflightSubmitConfigured == null ? 'check EAS credentials' : adminStatus.testflightSubmitConfigured ? 'yes' : 'no'} />
+        <Row label="OTA" value={adminStatus?.otaBlocked ? 'blocked (Play / TestFlight only)' : '—'} />
+        <Text style={styles.note}>Keep Android and iOS feature bundles synced — bump versionCode + buildNumber together.</Text>
+      </Section>
+
       <Section title="Workflow triggers">
         <Row label="Dispatch available" value={adminStatus?.workflowDispatchAvailable ? 'yes' : 'no'} />
         <Row label="Allowlist" value={adminStatus?.workflowAllowlist?.length ? `${adminStatus.workflowAllowlist.length} workflows` : '—'} />
         <WorkflowTriggerButton id="mobile-typecheck" label="Run typecheck" enabled={!!adminStatus?.workflowDispatchAvailable} />
-        <WorkflowTriggerButton id="android-aab-build" label="Build Android AAB" enabled={!!adminStatus?.workflowDispatchAvailable} />
-        <WorkflowTriggerButton id="ios-testflight-build" label="Build iOS TestFlight" enabled={!!adminStatus?.workflowDispatchAvailable} />
-        <WorkflowTriggerButton id="backend-smoke" label="Run backend smoke" enabled={!!adminStatus?.workflowDispatchAvailable} />
         <WorkflowTriggerButton id="release-audit" label="Run release audit" enabled={!!adminStatus?.workflowDispatchAvailable} />
+        <WorkflowTriggerButton id="backend-smoke" label="Run backend smoke" enabled={!!adminStatus?.workflowDispatchAvailable} />
+        <WorkflowTriggerButton id="android-aab-build" label="Build Android AAB" enabled={!!adminStatus?.workflowDispatchAvailable} />
+        <WorkflowTriggerButton
+          id="android-aab-build"
+          label="Build Android + upload to Internal Testing"
+          enabled={!!adminStatus?.workflowDispatchAvailable}
+          inputs={{ submit_to_play: 'true' }}
+          confirmCopy="Builds the AAB and uploads it to Play Internal Testing. Requires PLAY_SA_JSON in GitHub Actions secrets."
+        />
+        <WorkflowTriggerButton id="ios-testflight-build" label="Build iOS TestFlight" enabled={!!adminStatus?.iosBuildWorkflowAvailable} />
+        <WorkflowTriggerButton
+          id="ios-testflight-build"
+          label="Build iOS + submit to TestFlight"
+          enabled={!!adminStatus?.iosBuildWorkflowAvailable}
+          inputs={{ submit_to_testflight: 'true' }}
+          confirmCopy="Builds the IPA and submits it to TestFlight. Requires Apple credentials cached on EAS (App Store Connect API key recommended)."
+        />
         <WorkflowTriggerButton id="ota-diagnostic" label="Run OTA diagnostic" enabled={!!adminStatus?.workflowDispatchAvailable} />
         {adminStatus?.blockers && adminStatus.blockers.length > 0 && (
           <Text style={styles.note}>
@@ -342,13 +379,23 @@ function WorkflowTriggerButton({
   id,
   label,
   enabled,
-}: { id: string; label: string; enabled: boolean }) {
+  inputs,
+  confirmCopy,
+}: {
+  id: string;
+  label: string;
+  enabled: boolean;
+  /** Optional `inputs` to forward to GitHub Actions workflow_dispatch. */
+  inputs?: Record<string, string>;
+  /** Optional override for the confirm Alert body. */
+  confirmCopy?: string;
+}) {
   const [busy, setBusy] = useState(false);
   const onPress = useCallback(() => {
     if (!enabled || busy) return;
     Alert.alert(
-      `Trigger "${id}"?`,
-      `Dispatches the GitHub Actions workflow on main. No app code change. Continue?`,
+      `Trigger "${label}"?`,
+      confirmCopy ?? `Dispatches the GitHub Actions workflow "${id}" on main. No app code change. Continue?`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -367,7 +414,7 @@ function WorkflowTriggerButton({
                     'content-type': 'application/json',
                     'x-athlete-memory-token': memToken,
                   },
-                  body: JSON.stringify({ ref: 'main', inputs: {} }),
+                  body: JSON.stringify({ ref: 'main', inputs: inputs ?? {} }),
                 },
               );
               const json: any = await res.json().catch(() => ({}));
@@ -376,7 +423,7 @@ function WorkflowTriggerButton({
               }
               Alert.alert(
                 'Dispatched',
-                `${id} workflow_dispatch accepted. Check GitHub Actions for the run.`,
+                `${label} accepted. Check GitHub Actions for the run.`,
               );
             } catch (e: any) {
               Alert.alert('Dispatch failed', e?.message ?? 'Unknown error.');
@@ -387,7 +434,7 @@ function WorkflowTriggerButton({
         },
       ],
     );
-  }, [id, enabled, busy]);
+  }, [id, label, enabled, busy, inputs, confirmCopy]);
   return (
     <Pressable
       style={[styles.btn, (!enabled || busy) && { opacity: 0.4 }]}

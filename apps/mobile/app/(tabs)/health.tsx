@@ -1147,27 +1147,21 @@ export default function HealthScreen() {
           <SamsungHealthCard />
         </SafeErrorBoundary>
       )}
-      {isMember && (
+      {/* WHOOP Direct + Polar Direct moved into the "More sources"
+          disclosure to keep the default Health view focused on the
+          platform's primary source (Apple Health on iOS, Health
+          Connect / Samsung on Android). They surface at the top here
+          ONLY when there's already an active connection or detected
+          provenance — never as default clutter for users who don't
+          use those services. */}
+      {isMember && whoopStatus === 'ready' && (
         <SafeErrorBoundary label="WHOOP Direct card">
           <WhoopDirectCard />
         </SafeErrorBoundary>
       )}
-      {/* Polar: render only when there's real evidence the user uses
-          Polar — either Polar Flow is writing to Health Connect OR a
-          direct-Polar connection exists. Otherwise it's noise. */}
       {isMember && polarViaHc?.detected && (
         <SafeErrorBoundary label="Polar card">
           <PolarCard viaHealthConnect={polarViaHc} />
-        </SafeErrorBoundary>
-      )}
-      {/* Polar Direct (OAuth) — surfaced for all signed-in users so
-          testers without Polar-via-Health-Connect provenance still
-          have a discoverable connect path. The card probes its own
-          status and renders truthfully (`Not connected` · `Partial`
-          · `Connected` · etc.) — never a dead button. */}
-      {isMember && (
-        <SafeErrorBoundary label="Polar Direct card">
-          <PolarDirectCard />
         </SafeErrorBoundary>
       )}
       {/* Health Connect provenance card — Android-only + only when
@@ -1197,7 +1191,11 @@ export default function HealthScreen() {
           out of the health-source path. Kept as a placeholder if we
           need to reintroduce an advanced diagnostic later. */}
       {isMember && (
-        <OtherSourcesDisclosure polarDetected={!!polarViaHc?.detected} samsungDetected={!!samsungViaHc?.detected} />
+        <OtherSourcesDisclosure
+          polarDetected={!!polarViaHc?.detected}
+          samsungDetected={!!samsungViaHc?.detected}
+          whoopConnected={whoopStatus === 'ready'}
+        />
       )}
 
       {/* Memory proposal review — shows trend candidates + weekly promotion candidates */}
@@ -1460,11 +1458,13 @@ function HealthKitDebugDisclosure() {
 }
 
 function OtherSourcesDisclosure({
-  polarDetected: _polarDetected,
+  polarDetected,
   samsungDetected: _samsungDetected,
+  whoopConnected,
 }: {
   polarDetected: boolean;
   samsungDetected: boolean;
+  whoopConnected: boolean;
 }) {
   const [open, setOpen] = useState(false);
   return (
@@ -1473,20 +1473,30 @@ function OtherSourcesDisclosure({
         onPress={() => setOpen((v) => !v)}
         hitSlop={8}
         accessibilityRole="button"
-        accessibilityLabel={open ? 'Hide advanced sources' : 'Show advanced sources'}
+        accessibilityLabel={open ? 'Hide more sources' : 'Show more sources'}
         style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text style={styles.cardTitle}>Advanced</Text>
-        <Text style={{ fontSize: 12, color: '#d4e157' }}>{open ? '▾ Hide' : '▸ Show'}</Text>
+        <Text style={styles.cardTitle}>More sources</Text>
+        <Text style={{ fontSize: 12, color: '#d4e157' }}>{open ? '▾ Hide' : '▸ Add another source'}</Text>
       </Pressable>
       {!open && (
         <Text style={styles.gateText}>
-          Reserved for future advanced source diagnostics. Machine capture lives in the Train tab. Tap Show to expand.
+          Add WHOOP, Polar, or other less-common sources. Bluetooth machine capture lives in the Train tab.
         </Text>
       )}
       {open && (
         <View style={{ gap: 12, marginTop: 6 }}>
+          {!whoopConnected && (
+            <SafeErrorBoundary label="WHOOP Direct card">
+              <WhoopDirectCard />
+            </SafeErrorBoundary>
+          )}
+          {!polarDetected && (
+            <SafeErrorBoundary label="Polar Direct card">
+              <PolarDirectCard />
+            </SafeErrorBoundary>
+          )}
           <Text style={styles.gateText}>
-            No advanced options right now. Bluetooth machine capture moved to Train (tap Train → top of the tab to pair / start live read). Cronometer and Concept2 are not in the active product path.
+            Bluetooth heart-rate straps and FTMS bikes/rowers/ski-ergs live on the Train tab so they pair as part of a session. Cronometer and Concept2 are not in the active product path.
           </Text>
         </View>
       )}

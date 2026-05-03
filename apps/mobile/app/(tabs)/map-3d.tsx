@@ -115,6 +115,47 @@ const INJECTED_CSS = `
     z-index: 10 !important;
   }
 
+  /* ── Technique preview MVP — highlight any YouTube / Vimeo /
+     direct-video link inside the node detail panel as a "Preview
+     video" button so testers see they can tap straight through.
+     Pure CSS only — no DOM mutation, no API call, no local media. */
+  #g3dDetail a[href*="youtube.com"],
+  #g3dDetail a[href*="youtu.be"],
+  #g3dDetail a[href*="vimeo.com"],
+  #g3dDetail a[href$=".mp4"],
+  #g3dDetail a[href$=".webm"],
+  .node-popup a[href*="youtube.com"],
+  .node-popup a[href*="youtu.be"],
+  .node-popup a[href*="vimeo.com"],
+  .note-panel a[href*="youtube.com"],
+  .note-panel a[href*="youtu.be"],
+  .note-panel a[href*="vimeo.com"] {
+    display: inline-block !important;
+    padding: 8px 12px !important;
+    margin: 4px 0 !important;
+    background: rgba(212, 225, 87, 0.14) !important;
+    color: #d4e157 !important;
+    border: 1px solid rgba(212, 225, 87, 0.35) !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+  }
+  #g3dDetail a[href*="youtube.com"]::before,
+  #g3dDetail a[href*="youtu.be"]::before,
+  #g3dDetail a[href*="vimeo.com"]::before,
+  #g3dDetail a[href$=".mp4"]::before,
+  #g3dDetail a[href$=".webm"]::before,
+  .node-popup a[href*="youtube.com"]::before,
+  .node-popup a[href*="youtu.be"]::before,
+  .node-popup a[href*="vimeo.com"]::before,
+  .note-panel a[href*="youtube.com"]::before,
+  .note-panel a[href*="youtu.be"]::before,
+  .note-panel a[href*="vimeo.com"]::before {
+    content: "▶ Preview video — ";
+    opacity: 0.85;
+    margin-right: 4px;
+  }
+
   /* ── Replace hosted control surfaces with app-owned mobile controls ─ */
   #g3dToolbar,
   #g3dOptions,

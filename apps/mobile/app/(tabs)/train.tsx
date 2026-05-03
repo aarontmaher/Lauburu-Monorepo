@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -32,6 +32,7 @@ import {
   SESSION_PRESETS, SEGMENT_TYPE_LABELS, createDefaultSegments,
   summarizeSession, suggestTrainIntensity, suggestHIITProtocol,
   buildIntervalCoachingNote,
+  DAYS_ORDER, DAY_LABELS, countPlannedSessions,
 } from '@lauburu/shared';
 import type { IntervalCoachingContext } from '@lauburu/shared';
 import { usePreferencesStore } from '../../src/store/preferences-store';
@@ -304,9 +305,13 @@ function SelectorRow<T extends string>({
 
 function EntryForm({
   editing,
+  initialMode,
   onDone,
 }: {
   editing: TrainingSession | null;
+  /** Optional pre-seeded mode from the Train tab's session-type
+   *  chips. Ignored when editing an existing session. */
+  initialMode?: 'grappling' | 'hiit' | 'zone2' | 'weights' | null;
   /**
    * Called after a successful submit. Optional `progressionDelta`
    * carries a compact "progression vs last" string when the session
@@ -380,8 +385,13 @@ function EntryForm({
         : editing.conditioning?.subtype === 'zone2' || editing.conditioning?.subtype === 'steady_state' || editing.conditioning?.subtype === 'recovery_cardio' ? 'zone2'
         : 'hiit')
       : 'grappling')
-    : null,
+    : (initialMode ?? null),
   );
+  // When the Train tab pre-seeds a mode via the session-type chips,
+  // run the same cascading initialisation `selectTopMode` runs (sets
+  // sessionType, condSubtype, default segments, default duration,
+  // etc.). Fires exactly once on mount so manual re-selects still work.
+  const initialModeAppliedRef = useRef(false);
 
   const [sessionType, setSessionType] = useState<SessionType>(editing?.type ?? 'class');
   const [intensity, setIntensity] = useState<SessionIntensity>(editing?.intensity ?? 'moderate');
@@ -509,6 +519,14 @@ function EntryForm({
   const updateSegment = (id: string, updates: Partial<SessionSegment>) => {
     setSegments((prev) => prev.map((s) => s.id === id ? { ...s, ...updates } : s));
   };
+
+  useEffect(() => {
+    if (initialModeAppliedRef.current) return;
+    if (!editing && initialMode) {
+      initialModeAppliedRef.current = true;
+      selectTopMode(initialMode);
+    }
+  }, [editing, initialMode]);
 
   // Top mode handlers
   const selectTopMode = (mode: TopMode) => {
@@ -2243,6 +2261,50 @@ function SessionCard({
 }
 
 // ---------------------------------------------------------------------------
+// Weekly schedule summary card — compact view for the Train tab
+// ---------------------------------------------------------------------------
+
+function WeeklyScheduleSummary() {
+  const router = useRouter();
+  const schedule = usePreferencesStore((s) => s.preferences.schedule);
+  const totalPlanned = useMemo(() => countPlannedSessions(schedule), [schedule]);
+  const dayCounts = useMemo(() => {
+    return DAYS_ORDER.map((day) => ({ day, count: schedule[day]?.length ?? 0 }));
+  }, [schedule]);
+
+  return (
+    <View style={styles.weeklyScheduleCard}>
+      <View style={styles.weeklyScheduleHeader}>
+        <Text style={styles.weeklyScheduleTitle}>Weekly schedule</Text>
+        <Pressable
+          onPress={() => router.push('/(tabs)/settings')}
+          hitSlop={6}
+          accessibilityRole="button"
+          accessibilityLabel="Edit weekly schedule in Settings">
+          <Text style={styles.weeklyScheduleEdit}>{totalPlanned > 0 ? 'Edit' : 'Set schedule'}</Text>
+        </Pressable>
+      </View>
+      {totalPlanned === 0 ? (
+        <Text style={styles.weeklyScheduleEmpty}>
+          Plan your recurring training week. Tap Set schedule to add days in Settings → Coaching Preferences.
+        </Text>
+      ) : (
+        <View style={styles.weeklyScheduleRow}>
+          {dayCounts.map(({ day, count }) => (
+            <View key={day} style={styles.weeklyScheduleCell}>
+              <Text style={styles.weeklyScheduleDay}>{DAY_LABELS[day].slice(0, 3)}</Text>
+              <Text style={[styles.weeklyScheduleCount, count > 0 && styles.weeklyScheduleCountActive]}>
+                {count > 0 ? count : '·'}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Today's plan card with quick-log
 // ---------------------------------------------------------------------------
 
@@ -2333,6 +2395,11 @@ export default function TrainScreen() {
   const whoopDayForCoaching = useWhoopStore((s) => s.day);
   const [editingSession, setEditingSession] = useState<TrainingSession | null>(null);
   const [showForm, setShowForm] = useState(false);
+  // Top-level session-type chip selection. Drives whether the
+  // exercise-machine connect card renders (HIIT / Steady state only)
+  // and seeds the EntryForm's initial mode so the picker doesn't ask
+  // again. Cleared when the form is dismissed.
+  const [pendingMode, setPendingMode] = useState<'grappling' | 'hiit' | 'zone2' | 'weights' | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [lastLoggedHeadline, setLastLoggedHeadline] = useState<string | null>(null);
   // Compact "progression vs last" string returned from the EntryForm
@@ -2415,7 +2482,11 @@ export default function TrainScreen() {
     newBestLabel?: string | null,
   ) => {
     setEditingSession(null);
-    setShowForm(true);
+    // Close the form on successful submit so the always-visible
+    // session-type chip row reappears. User can pick a fresh mode
+    // for the next session in one tap.
+    setShowForm(false);
+    setPendingMode(null);
     setSubmitted(true);
     // Pick the most-recently created session to render its headline.
     // Extend with a plan-alignment clause using buildDayPlanSummary — the
@@ -2517,11 +2588,20 @@ export default function TrainScreen() {
           samples. Build 9+ only. */}
       <LiveHrPill />
 
-      {/* Machine capture owned entirely by Train now. Collapsed
-          header when nothing paired, full FTMS card when expanded
-          or when a device is connected/streaming. Auto-hides on
-          Build 8 (no native module). */}
-      <TrainMachineSection />
+      {/* Machine capture is exercise-machine specific (FTMS bikes,
+          rowers, ski-ergs, BLE HR straps). It is NOT how to connect
+          Apple Health / Health Connect / WHOOP / Polar — those live
+          on the Health tab. So only render this card after the user
+          picks HIIT or Steady state. */}
+      {showForm && (pendingMode === 'hiit' || pendingMode === 'zone2') && (
+        <View style={styles.machineConnectWrap}>
+          <Text style={styles.machineConnectHeading}>Connect exercise machine</Text>
+          <Text style={styles.machineConnectSubcopy}>
+            Optional for bikes, rowers, ski-ergs, or Bluetooth heart-rate straps during this session. Health source connections live on the Health tab.
+          </Text>
+          <TrainMachineSection />
+        </View>
+      )}
 
       {submitted && !editingSession && (
         <View style={styles.successBanner}>
@@ -2548,17 +2628,48 @@ export default function TrainScreen() {
       {/* Today's plan with quick-log */}
       <TodayPlanCard onQuickLog={handleQuickLog} />
 
-      {/* Toggle form */}
+      {/* Weekly schedule summary — compact card so the schedule lives
+          in Train (where you actually train) rather than buried in
+          Settings. The full editor still lives in Settings → Coaching
+          Preferences for now to avoid duplicating that big surface. */}
+      <WeeklyScheduleSummary />
+
+
+      {/* Session type picker — always visible at the top of the
+          Train tab so users don't need to tap a "Log session" button
+          first. Tapping a chip opens the form pre-seeded for that
+          mode. Hidden when an existing form is open or while editing
+          an existing session. */}
       {!showForm && (
-        <Pressable style={styles.showFormBtn} onPress={() => setShowForm(true)}>
-          <Text style={styles.showFormText}>+ Log a new session</Text>
-        </Pressable>
+        <View style={styles.sessionTypeRow}>
+          <Pressable
+            style={styles.sessionTypeChip}
+            onPress={() => { setPendingMode('grappling'); setShowForm(true); }}>
+            <Text style={styles.sessionTypeChipText}>🥋 Grappling</Text>
+          </Pressable>
+          <Pressable
+            style={styles.sessionTypeChip}
+            onPress={() => { setPendingMode('hiit'); setShowForm(true); }}>
+            <Text style={styles.sessionTypeChipText}>⚡ HIIT</Text>
+          </Pressable>
+          <Pressable
+            style={styles.sessionTypeChip}
+            onPress={() => { setPendingMode('zone2'); setShowForm(true); }}>
+            <Text style={styles.sessionTypeChipText}>🚴 Steady state</Text>
+          </Pressable>
+          <Pressable
+            style={styles.sessionTypeChip}
+            onPress={() => { setPendingMode('weights'); setShowForm(true); }}>
+            <Text style={styles.sessionTypeChipText}>🏋️ Weights</Text>
+          </Pressable>
+        </View>
       )}
 
       {/* Entry form */}
       {showForm && (
         <EntryForm
           editing={editingSession}
+          initialMode={pendingMode}
           onDone={handleFormDone}
         />
       )}
@@ -3054,6 +3165,73 @@ const styles = StyleSheet.create({
   },
   sessionSegments: { fontSize: 12, color: '#64b5f6', opacity: 0.7 },
   sessionMapRefs: { fontSize: 11, color: '#d4e157', opacity: 0.7, fontStyle: 'italic' },
+
+  // Top-level session-type picker on the Train tab
+  sessionTypeRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  sessionTypeChip: {
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    backgroundColor: 'rgba(212,225,87,0.10)',
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.28)',
+    flexGrow: 1,
+    flexBasis: '47%',
+    alignItems: 'center',
+  },
+  sessionTypeChipText: { fontSize: 14, fontWeight: '700', color: '#dce97b' },
+
+  machineConnectWrap: {
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)',
+    gap: 6,
+  },
+  machineConnectHeading: { fontSize: 14, fontWeight: '700' },
+  machineConnectSubcopy: { fontSize: 12, opacity: 0.6, lineHeight: 16 },
+
+  weeklyScheduleCard: {
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    gap: 10,
+  },
+  weeklyScheduleHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  weeklyScheduleTitle: { fontSize: 15, fontWeight: '700' },
+  weeklyScheduleEdit: { fontSize: 13, fontWeight: '700', color: '#d4e157' },
+  weeklyScheduleEmpty: { fontSize: 12, opacity: 0.6, lineHeight: 17 },
+  weeklyScheduleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  weeklyScheduleCell: {
+    alignItems: 'center',
+    flex: 1,
+    paddingVertical: 4,
+  },
+  weeklyScheduleDay: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    opacity: 0.55,
+  },
+  weeklyScheduleCount: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.4)',
+    marginTop: 2,
+  },
+  weeklyScheduleCountActive: { color: '#d4e157', fontWeight: '700' },
 
   // Plan card
   planCard: {
