@@ -26,6 +26,7 @@ import { AppTour, useAppTourStore } from '../src/components/AppTour';
 import { FeedbackFab } from '../src/components/FeedbackFab';
 import { useMapUiStore } from '../src/store/map-ui-store';
 import { useDevUnlockStore } from '../src/store/dev-unlock-store';
+import { useOwnerBacklogStore } from '../src/store/owner-backlog-store';
 
 export {
   ErrorBoundary,
@@ -65,6 +66,7 @@ export default function RootLayout() {
   const hydrateHIITWorkouts = useHIITWorkoutStore((s) => s.hydrate);
   const hydrateTour = useAppTourStore((s) => s.hydrate);
   const hydrateDevUnlock = useDevUnlockStore((s) => s.hydrate);
+  const hydrateOwnerBacklog = useOwnerBacklogStore((s) => s.hydrate);
 
   // Initialize auth session on app launch, and hydrate all stores
   // from secureStorage in parallel. Each runs independently —
@@ -86,6 +88,7 @@ export default function RootLayout() {
       hydrateHIITWorkouts,
       hydrateTour,
       hydrateDevUnlock,
+      hydrateOwnerBacklog,
     ]);
   }, [
     initialize,
@@ -103,6 +106,7 @@ export default function RootLayout() {
     hydrateHIITWorkouts,
     hydrateTour,
     hydrateDevUnlock,
+    hydrateOwnerBacklog,
   ]);
 
   useEffect(() => {

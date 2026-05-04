@@ -22,7 +22,7 @@
  *   - Admin gate by email allowlist (matches Settings tester-tools gate).
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, Linking, Platform, Pressable, ScrollView, StyleSheet, Text as RNText } from 'react-native';
+import { Alert, Linking, Platform, Pressable, ScrollView, StyleSheet, TextInput, Text as RNText } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import * as Application from 'expo-application';
 import * as Updates from 'expo-updates';
@@ -30,6 +30,21 @@ import * as Updates from 'expo-updates';
 import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../src/store/auth-store';
 import { useDevUnlockStore } from '../src/store/dev-unlock-store';
+import {
+  useOwnerBacklogStore,
+  type OwnerBacklogItem,
+  type OwnerBacklogPlatform,
+  type OwnerBacklogType,
+} from '../src/store/owner-backlog-store';
+import { useOwnerWorkflowStore } from '../src/store/owner-workflow-store';
+import {
+  buildClaudeCodePrompt,
+  buildClaudeChromePrompt,
+  buildChatGPTStatusPrompt,
+  buildCodexPrompt,
+  buildTerminalCheckPrompt,
+  buildTmuxAttachInstructions,
+} from '../src/services/prompt-templates';
 
 const ADMIN_EMAILS = new Set(['aaron.t.maher@gmail.com']);
 
@@ -128,42 +143,38 @@ const CURRENT_PRIORITY = "Aaron's Play Console listing pass on v13 draft, then f
 const CURRENT_BLOCKER = 'Play Console listing pass — repo-side wiring is done.';
 const NEXT_ACTION = 'Walk PLAY_SUBMIT_SETUP §6 → click Review release → Start rollout once → reply "flip releaseStatus to completed".';
 
-/** Bridge prompts copied to the in-app Prompt bridge. Short labels, terse bodies. */
-const BRIDGE_PROMPTS: Array<{ label: string; body: string }> = [
-  {
-    label: 'Copy next Claude prompt',
-    body: [
-      'Continue the standing tester-auto-update lane. Do not touch grappling.opml. Do not expose secrets. Do not run Supabase db push. Do not upgrade SDK. Do not run OTA. Do not implement paid AI yet.',
-      '',
-      '1. Verify Android tester auto-promote status (Play Console listing pass + releaseStatus flip).',
-      '2. Run npx tsc --noEmit in apps/mobile.',
-      '3. Report a CHATGPT_STATUS_START / CHATGPT_STATUS_END block covering: live / repo-only / blocked / verified / next.',
-    ].join('\n'),
-  },
-  {
-    label: 'Copy next ChatGPT status prompt',
-    body: [
-      'Print a compact ChatGPT status block summarising the lane Aaron is on, in this exact shape:',
-      '',
-      'CHATGPT_STATUS_START',
-      'Auto-update status:',
-      'Android auto-promote:',
-      'iOS status:',
-      'AI API implementation:',
-      'Files changed:',
-      'Verified:',
-      'Live:',
-      'Repo-only:',
-      'Blocked:',
-      'Manual steps for Aaron:',
-      'Next:',
-      'CHATGPT_STATUS_END',
-    ].join('\n'),
-  },
-  {
-    label: 'Copy current status block',
-    body: STATUS_HANDOFF_TEMPLATE,
-  },
+/** Static label list for the dynamic prompt-bridge buttons. The
+ * body of each prompt is computed at render time from the
+ * `useOwnerWorkflowStore` context so changes to priority / blocker
+ * / last status flow through without an app rebuild. */
+const BRIDGE_PROMPT_KINDS = [
+  'claude_code',
+  'claude_chrome',
+  'chatgpt_status',
+  'codex',
+  'current_status',
+  'terminal_check',
+] as const;
+type BridgePromptKind = typeof BRIDGE_PROMPT_KINDS[number];
+
+const BRIDGE_PROMPT_LABELS: Record<BridgePromptKind, string> = {
+  claude_code: 'Copy next Claude Code prompt',
+  claude_chrome: 'Copy Claude Chrome prompt',
+  chatgpt_status: 'Copy ChatGPT check / status prompt',
+  codex: 'Copy Codex prompt',
+  current_status: 'Copy current status block',
+  terminal_check: 'Copy terminal check prompt',
+};
+
+/** External dashboard / Termius shortcuts. Each is a `Linking.openURL`
+ * with a single fallback path documented inline. None of them store
+ * credentials; Termius / Play Console / ASC handle their own login. */
+const EXTERNAL_SHORTCUTS: Array<{ label: string; url: string; fallbackHint?: string }> = [
+  { label: 'Open Termius', url: 'termius://', fallbackHint: 'If Termius is not installed, the App Store opens. tmux attach instructions are also copyable below.' },
+  { label: 'Open GitHub Actions', url: GITHUB_ACTIONS_URL },
+  { label: 'Open EAS builds', url: EXPO_BUILDS_URL },
+  { label: 'Open Play Console', url: PLAY_CONSOLE_URL },
+  { label: 'Open App Store Connect', url: APPSTORE_CONNECT_URL },
 ];
 
 async function fetchAdminStatus(): Promise<AdminStatus | null> {
@@ -390,41 +401,23 @@ export default function AdminDevScreen() {
         />
       </Section>
 
-      <Section title="Prompt bridge">
+      <QuickCaptureSection />
+
+      <PromptBridgeSection statusBlock={STATUS_HANDOFF_TEMPLATE} />
+
+      <Section title="Open shortcuts">
         <Text style={styles.note}>
-          Long-press text after expanding to copy. The app can trigger workflows, show status, open dashboards, copy prompts, and store status summaries. Without API integration it cannot read your live ChatGPT conversation, type into Claude Code on your laptop, reason over screenshots/Notes, or run arbitrary terminal commands.
+          Termius is the manual-fallback terminal. Workflow buttons above are the safe automation path; raw shell stays out of the app intentionally — see docs/TERMINAL_WORKFLOW_STRATEGY.md.
         </Text>
-        {BRIDGE_PROMPTS.map((p, idx) => (
-          <View key={p.label} style={{ gap: 6 }}>
-            <Pressable
-              style={styles.btn}
-              onPress={() => setOpenPromptIdx(openPromptIdx === idx + 1000 ? null : idx + 1000)}>
-              <Text style={styles.btnText}>{openPromptIdx === idx + 1000 ? '▾ ' : '▸ '}{p.label}</Text>
-            </Pressable>
-            {openPromptIdx === idx + 1000 && (
-              <RNText selectable style={styles.copyBlock}>{p.body}</RNText>
-            )}
-          </View>
+        {EXTERNAL_SHORTCUTS.map((s) => (
+          <ExternalShortcutButton key={s.label} label={s.label} url={s.url} fallbackHint={s.fallbackHint} />
         ))}
       </Section>
 
-      <Section title="External dashboards">
-        <LinkRow label="Play Console" url={PLAY_CONSOLE_URL} />
-        <LinkRow label="App Store Connect" url={APPSTORE_CONNECT_URL} />
-        <LinkRow label="GitHub Actions" url={GITHUB_ACTIONS_URL} />
-        <LinkRow label="Expo builds" url={EXPO_BUILDS_URL} />
-        <LinkRow label="Railway dashboard" url={RAILWAY_URL} />
-      </Section>
-
-      <Section title="Backlog">
+      <Section title="Advanced details">
         <Text style={styles.note}>
-          Source of truth: docs/APP_DEVELOPMENTS.md. The list below mirrors the file at build time; the long-term shape is a backend route that serves the same fields.
+          Build / runtime / backend / data sections below. Read-only diagnostics — useful for handoffs to ChatGPT or Claude. Long-press any value to copy.
         </Text>
-        <Row label="Top 1" value="Play Console listing pass + releaseStatus flip" />
-        <Row label="Top 2" value="Paired tester build (v14 + Build 15)" />
-        <Row label="Top 3" value="Grappler Readiness Batch B (NextDayCheckin sliders)" />
-        <Row label="Top 4" value="Grappler Readiness Batch C (TrainingSession schema)" />
-        <Row label="Top 5" value="Grappler Readiness Batch D (bucket-ring UI)" />
       </Section>
 
       <Section title="App build / runtime">
@@ -547,6 +540,273 @@ export default function AdminDevScreen() {
         </Text>
       </Section>
     </ScrollView>
+  );
+}
+
+function PromptBridgeSection({ statusBlock }: { statusBlock: string }) {
+  const ctx = useOwnerWorkflowStore((s) => s.context);
+  const setSelectedTaskBundle = useOwnerWorkflowStore((s) => s.setSelectedTaskBundle);
+  const [openKind, setOpenKind] = useState<BridgePromptKind | null>(null);
+  const [taskBundleDraft, setTaskBundleDraft] = useState(ctx.selectedTaskBundle ?? '');
+
+  // Apply the user's typed task bundle to the store on blur — so the
+  // template builders pick it up. Local-only.
+  const onTaskBundleBlur = useCallback(() => {
+    setSelectedTaskBundle(taskBundleDraft);
+  }, [taskBundleDraft, setSelectedTaskBundle]);
+
+  const bodyFor = useCallback(
+    (kind: BridgePromptKind): string => {
+      switch (kind) {
+        case 'claude_code': return buildClaudeCodePrompt(ctx);
+        case 'claude_chrome': return buildClaudeChromePrompt(ctx);
+        case 'chatgpt_status': return buildChatGPTStatusPrompt(ctx);
+        case 'codex': return buildCodexPrompt(ctx);
+        case 'current_status': return statusBlock;
+        case 'terminal_check': return buildTerminalCheckPrompt(ctx);
+      }
+    },
+    [ctx, statusBlock],
+  );
+
+  return (
+    <Section title="Prompt bridge">
+      <Text style={styles.note}>
+        Templates are deterministic — no paid AI API. Long-press text after expanding to copy, then open Termius / Claude Code / ChatGPT and paste. Templates pull priority / blocker / last status / protected rules / manual steps from the workflow context; edit task bundle below to scope the prompt.
+      </Text>
+      <Text style={styles.captureLabel}>Selected task bundle (optional)</Text>
+      <TextInput
+        value={taskBundleDraft}
+        onChangeText={setTaskBundleDraft}
+        onBlur={onTaskBundleBlur}
+        placeholder='e.g. "Grappler Readiness Batch B"'
+        placeholderTextColor="#666"
+        style={styles.captureInput}
+      />
+      {BRIDGE_PROMPT_KINDS.map((kind) => (
+        <View key={kind} style={{ gap: 6 }}>
+          <Pressable
+            style={styles.btn}
+            onPress={() => setOpenKind(openKind === kind ? null : kind)}>
+            <Text style={styles.btnText}>{openKind === kind ? '▾ ' : '▸ '}{BRIDGE_PROMPT_LABELS[kind]}</Text>
+          </Pressable>
+          {openKind === kind && (
+            <>
+              <Text style={styles.btnSubtitle}>Long-press the block below to copy. Then open Termius / Claude Code and paste.</Text>
+              <RNText selectable style={styles.copyBlock}>{bodyFor(kind)}</RNText>
+            </>
+          )}
+        </View>
+      ))}
+    </Section>
+  );
+}
+
+/**
+ * External shortcut button. Tries the deep-link URL first; if the
+ * URL scheme isn't installed (most common case for `termius://`),
+ * shows a fallback Alert with the App Store hint and offers to copy
+ * a tmux attach snippet via the existing long-press-to-copy block.
+ */
+function ExternalShortcutButton({
+  label,
+  url,
+  fallbackHint,
+}: {
+  label: string;
+  url: string;
+  fallbackHint?: string;
+}) {
+  const [tmuxOpen, setTmuxOpen] = useState(false);
+  const isTermius = url.startsWith('termius:');
+  const onPress = useCallback(async () => {
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (!supported) throw new Error('not_supported');
+      await Linking.openURL(url);
+    } catch {
+      Alert.alert(
+        label,
+        fallbackHint ?? `Could not open ${url}. The app may not be installed on this device.`,
+      );
+    }
+  }, [url, label, fallbackHint]);
+  return (
+    <View style={{ gap: 4 }}>
+      <Pressable style={styles.btn} onPress={onPress}>
+        <Text style={styles.btnText}>{label}</Text>
+      </Pressable>
+      {isTermius && (
+        <>
+          <Pressable
+            style={[styles.btn, { backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.12)' }]}
+            onPress={() => setTmuxOpen((v) => !v)}>
+            <Text style={[styles.btnText, { color: '#cfd3da' }]}>{tmuxOpen ? '▾ Hide tmux attach instructions' : '▸ Copy tmux attach instructions'}</Text>
+          </Pressable>
+          {tmuxOpen && (
+            <RNText selectable style={styles.copyBlock}>{buildTmuxAttachInstructions()}</RNText>
+          )}
+        </>
+      )}
+    </View>
+  );
+}
+
+const QUICK_CAPTURE_TYPES: { id: OwnerBacklogType; label: string }[] = [
+  { id: 'bug', label: 'Bug' },
+  { id: 'ux', label: 'UX' },
+  { id: 'feature', label: 'Feature' },
+  { id: 'release_blocker', label: 'Release' },
+  { id: 'health_data', label: 'Health' },
+  { id: 'ai_coaching', label: 'AI' },
+  { id: 'monetisation', label: 'Money' },
+];
+
+const QUICK_CAPTURE_PLATFORMS: { id: OwnerBacklogPlatform; label: string }[] = [
+  { id: 'both', label: 'Both' },
+  { id: 'ios', label: 'iOS' },
+  { id: 'android', label: 'Android' },
+];
+
+const STANDING_TOP_FIVE: string[] = [
+  '1. Play Console listing pass + releaseStatus flip (Aaron-side)',
+  '2. Paired tester build (v14 + Build 15)',
+  '3. Grappler Readiness Batch B — NextDayCheckin sliders',
+  '4. Grappler Readiness Batch C — TrainingSession schema',
+  '5. Grappler Readiness Batch D — bucket-ring UI',
+];
+
+function QuickCaptureSection() {
+  const items = useOwnerBacklogStore((s) => s.items);
+  const add = useOwnerBacklogStore((s) => s.add);
+  const remove = useOwnerBacklogStore((s) => s.remove);
+  const updateStatus = useOwnerBacklogStore((s) => s.updateStatus);
+
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [details, setDetails] = useState('');
+  const [type, setType] = useState<OwnerBacklogType>('bug');
+  const [platform, setPlatform] = useState<OwnerBacklogPlatform>('both');
+  const [priority, setPriority] = useState<number>(7);
+
+  const canSubmit = title.trim().length > 0;
+
+  const onAdd = useCallback(async () => {
+    if (!canSubmit) return;
+    await add({ title: title.trim(), details: details.trim(), type, platform, priority });
+    setTitle('');
+    setDetails('');
+    setType('bug');
+    setPlatform('both');
+    setPriority(7);
+    setOpen(false);
+  }, [canSubmit, title, details, type, platform, priority, add]);
+
+  return (
+    <Section title="Backlog · Quick capture">
+      <Text style={styles.note}>
+        Standing top-5 mirrors docs/APP_DEVELOPMENTS.md. Quick capture stores ad-hoc items locally only — never synced. Backend sync is a separate batch.
+      </Text>
+      {STANDING_TOP_FIVE.map((line) => (
+        <Text key={line} style={styles.backlogStandingLine}>{line}</Text>
+      ))}
+
+      <Pressable style={styles.btn} onPress={() => setOpen((v) => !v)}>
+        <Text style={styles.btnText}>{open ? '▾ Close capture' : `▸ Quick capture${items.length > 0 ? ` (${items.length} stored)` : ''}`}</Text>
+      </Pressable>
+
+      {open && (
+        <View style={styles.captureBox}>
+          <Text style={styles.captureLabel}>Title</Text>
+          <TextInput
+            value={title}
+            onChangeText={setTitle}
+            placeholder="One-line summary"
+            placeholderTextColor="#666"
+            style={styles.captureInput}
+          />
+          <Text style={styles.captureLabel}>Details</Text>
+          <TextInput
+            value={details}
+            onChangeText={setDetails}
+            placeholder="Optional — repro, links, why it matters"
+            placeholderTextColor="#666"
+            multiline
+            numberOfLines={3}
+            textAlignVertical="top"
+            style={[styles.captureInput, styles.captureInputMulti]}
+          />
+          <Text style={styles.captureLabel}>Type</Text>
+          <View style={styles.captureRow}>
+            {QUICK_CAPTURE_TYPES.map((t) => (
+              <Pressable key={t.id} style={[styles.pill, type === t.id && styles.pillActive]} onPress={() => setType(t.id)}>
+                <Text style={[styles.pillText, type === t.id && styles.pillTextActive]}>{t.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+          <Text style={styles.captureLabel}>Platform</Text>
+          <View style={styles.captureRow}>
+            {QUICK_CAPTURE_PLATFORMS.map((p) => (
+              <Pressable key={p.id} style={[styles.pill, platform === p.id && styles.pillActive]} onPress={() => setPlatform(p.id)}>
+                <Text style={[styles.pillText, platform === p.id && styles.pillTextActive]}>{p.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+          <Text style={styles.captureLabel}>Priority — see docs/FEEDBACK_PRIORITY_MODEL.md</Text>
+          <View style={styles.captureRow}>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+              <Pressable key={n} style={[styles.pillSmall, priority === n && styles.pillActive]} onPress={() => setPriority(n)}>
+                <Text style={[styles.pillText, priority === n && styles.pillTextActive]}>{n}</Text>
+              </Pressable>
+            ))}
+          </View>
+          <Pressable
+            style={[styles.btn, !canSubmit && { opacity: 0.4 }]}
+            disabled={!canSubmit}
+            onPress={onAdd}>
+            <Text style={styles.btnText}>Save to backlog</Text>
+          </Pressable>
+        </View>
+      )}
+
+      {items.length > 0 && (
+        <View style={{ gap: 6 }}>
+          {items.map((it) => <BacklogItemRow key={it.id} item={it} onRemove={remove} onStatus={updateStatus} />)}
+        </View>
+      )}
+    </Section>
+  );
+}
+
+function BacklogItemRow({
+  item,
+  onRemove,
+  onStatus,
+}: {
+  item: OwnerBacklogItem;
+  onRemove: (id: string) => Promise<void>;
+  onStatus: (id: string, status: OwnerBacklogItem['status']) => Promise<void>;
+}) {
+  return (
+    <View style={styles.backlogItem}>
+      <View style={{ flex: 1, gap: 2 }}>
+        <Text style={styles.backlogTitle} numberOfLines={2}>P{item.priority} · {item.title}</Text>
+        <Text style={styles.backlogMeta}>
+          {item.type} · {item.platform} · {item.status} · {new Date(item.createdAt).toLocaleDateString()}
+        </Text>
+        {item.details.length > 0 && <Text style={styles.backlogDetails} numberOfLines={3}>{item.details}</Text>}
+      </View>
+      <View style={{ gap: 4 }}>
+        {item.status !== 'shipped' && (
+          <Pressable onPress={() => onStatus(item.id, 'shipped')} hitSlop={6}>
+            <Text style={[styles.backlogAction, { color: '#4ade80' }]}>Ship</Text>
+          </Pressable>
+        )}
+        <Pressable onPress={() => onRemove(item.id)} hitSlop={6}>
+          <Text style={[styles.backlogAction, { color: '#ff8a8a' }]}>Delete</Text>
+        </Pressable>
+      </View>
+    </View>
   );
 }
 
@@ -691,6 +951,40 @@ const styles = StyleSheet.create({
   },
   chipLabel: { fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.55 },
   chipBody: { fontSize: 13, lineHeight: 17 },
+  backlogStandingLine: { fontSize: 12, lineHeight: 17, opacity: 0.75 },
+  captureBox: {
+    gap: 8, padding: 10, borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+  },
+  captureLabel: { fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, opacity: 0.55 },
+  captureInput: {
+    backgroundColor: '#0f0f0f', color: '#e0e0e0',
+    borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, fontSize: 13,
+  },
+  captureInputMulti: { minHeight: 64 },
+  captureRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  pill: {
+    paddingHorizontal: 10, paddingVertical: 6, borderRadius: 14,
+    backgroundColor: '#2a2a2a',
+  },
+  pillSmall: {
+    paddingHorizontal: 9, paddingVertical: 5, borderRadius: 12,
+    backgroundColor: '#2a2a2a', minWidth: 30, alignItems: 'center',
+  },
+  pillActive: { backgroundColor: '#d4e157' },
+  pillText: { fontSize: 12, color: '#ccc', fontWeight: '600' },
+  pillTextActive: { color: '#0a0a0a', fontWeight: '700' },
+  backlogItem: {
+    flexDirection: 'row', gap: 10, padding: 10, borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+    alignItems: 'flex-start',
+  },
+  backlogTitle: { fontSize: 13, fontWeight: '700' },
+  backlogMeta: { fontSize: 11, opacity: 0.55 },
+  backlogDetails: { fontSize: 12, opacity: 0.75, lineHeight: 16 },
+  backlogAction: { fontSize: 11, fontWeight: '700' },
   copyBlock: {
     fontSize: 11, lineHeight: 15, color: '#cfd3da',
     backgroundColor: 'rgba(255,255,255,0.04)',
