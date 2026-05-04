@@ -333,15 +333,12 @@ export default function AdminDevScreen() {
       </Section>
 
       <Section title="Release automation">
-        <Row label="Android build" value={adminStatus?.androidBuildWorkflowAvailable ? 'workflow available' : '—'} />
-        <Row label="Android upload to Play" value={adminStatus?.playUploadConfigured == null ? 'unverified — assume yes if PLAY_SA_JSON set' : adminStatus.playUploadConfigured ? 'yes (DRAFT)' : 'no'} />
-        <Row label="Android Play promote" value={adminStatus?.androidPlayPromoteAutomatic ? 'automatic' : 'manual per release (Play Console Review → Start rollout)'} />
-        <Row label="iOS build" value={adminStatus?.iosBuildWorkflowAvailable ? 'workflow available' : '—'} />
-        <Row label="iOS submit to ASC" value={adminStatus?.testflightSubmitConfigured == null ? 'unverified — assume yes if EAS API key cached' : adminStatus.testflightSubmitConfigured ? 'yes' : 'no'} />
-        <Row label="iOS TestFlight group" value={adminStatus?.testflightGroupAssignmentConfigured ? 'auto (Team (Expo))' : 'manual per build (ASC → Add to test group)'} />
+        <Row label="iOS — build → TestFlight tester" value="auto ✓" />
+        <Row label="Android — build → Play upload" value="auto ✓" />
+        <Row label="Android — promote to testers" value={adminStatus?.androidPlayPromoteAutomatic ? 'auto ✓' : 'manual per release'} />
         <Row label="OTA" value={adminStatus?.otaBlocked ? 'blocked (Play / TestFlight only)' : '—'} />
         <Text style={styles.note}>
-          iOS: builds now auto-assign to the internal TestFlight group (eas.json `submit.production.ios.groups: ["Team (Expo)"]`). Android: builds upload as DRAFT; per-release Play Console "Review release → Start rollout" stays manual until store listing is fully filled. Keep Android versionCode + iOS buildNumber bumped together.
+          iOS Build 14 reached TestFlight testers without ASC clicks (eas.json groups: ["Team (Expo)"]). Android uploads as DRAFT — needs a one-time Play Console listing pass + `Review release → Start rollout` click per release until you switch `releaseStatus` to `completed`. Keep versionCode + buildNumber bumped together.
         </Text>
       </Section>
 
