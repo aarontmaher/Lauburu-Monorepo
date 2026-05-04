@@ -688,6 +688,7 @@ function QuickCaptureSection() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
+  const [blocker, setBlocker] = useState('');
   const [type, setType] = useState<OwnerBacklogType>('bug');
   const [platform, setPlatform] = useState<OwnerBacklogPlatform>('both');
   const [priority, setPriority] = useState<number>(7);
@@ -696,14 +697,24 @@ function QuickCaptureSection() {
 
   const onAdd = useCallback(async () => {
     if (!canSubmit) return;
-    await add({ title: title.trim(), details: details.trim(), type, platform, priority });
+    const trimmedBlocker = blocker.trim();
+    await add({
+      title: title.trim(),
+      details: details.trim(),
+      blocker: trimmedBlocker.length > 0 ? trimmedBlocker : undefined,
+      type,
+      platform,
+      priority,
+      status: trimmedBlocker.length > 0 ? 'blocked' : 'new',
+    });
     setTitle('');
     setDetails('');
+    setBlocker('');
     setType('bug');
     setPlatform('both');
     setPriority(7);
     setOpen(false);
-  }, [canSubmit, title, details, type, platform, priority, add]);
+  }, [canSubmit, title, details, blocker, type, platform, priority, add]);
 
   return (
     <Section title="Backlog · Quick capture">
@@ -738,6 +749,14 @@ function QuickCaptureSection() {
             numberOfLines={3}
             textAlignVertical="top"
             style={[styles.captureInput, styles.captureInputMulti]}
+          />
+          <Text style={styles.captureLabel}>Blocker (optional — sets status to blocked)</Text>
+          <TextInput
+            value={blocker}
+            onChangeText={setBlocker}
+            placeholder="e.g. needs Play listing screenshots"
+            placeholderTextColor="#666"
+            style={styles.captureInput}
           />
           <Text style={styles.captureLabel}>Type</Text>
           <View style={styles.captureRow}>
@@ -797,12 +816,20 @@ function BacklogItemRow({
         <Text style={styles.backlogMeta}>
           {item.type} · {item.platform} · {item.status} · {new Date(item.createdAt).toLocaleDateString()}
         </Text>
+        {item.blocker && item.blocker.length > 0 && (
+          <Text style={[styles.backlogMeta, { color: '#ff8a8a' }]} numberOfLines={2}>Blocker: {item.blocker}</Text>
+        )}
         {item.details.length > 0 && <Text style={styles.backlogDetails} numberOfLines={3}>{item.details}</Text>}
       </View>
       <View style={{ gap: 4 }}>
-        {item.status !== 'shipped' && (
-          <Pressable onPress={() => onStatus(item.id, 'shipped')} hitSlop={6}>
-            <Text style={[styles.backlogAction, { color: '#4ade80' }]}>Ship</Text>
+        {item.status !== 'tester_live' && item.status !== 'done' && (
+          <Pressable onPress={() => onStatus(item.id, 'tester_live')} hitSlop={6}>
+            <Text style={[styles.backlogAction, { color: '#4ade80' }]}>Tester-live</Text>
+          </Pressable>
+        )}
+        {item.status !== 'done' && (
+          <Pressable onPress={() => onStatus(item.id, 'done')} hitSlop={6}>
+            <Text style={[styles.backlogAction, { color: '#9ca3af' }]}>Done</Text>
           </Pressable>
         )}
         <Pressable onPress={() => onRemove(item.id)} hitSlop={6}>

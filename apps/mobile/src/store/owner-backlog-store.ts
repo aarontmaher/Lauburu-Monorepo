@@ -27,7 +27,21 @@ export type OwnerBacklogType =
   | 'monetisation';
 
 export type OwnerBacklogPlatform = 'android' | 'ios' | 'both';
-export type OwnerBacklogStatus = 'open' | 'in_progress' | 'shipped' | 'wont_fix';
+
+/** Status values map directly to docs/FEEDBACK_PRIORITY_MODEL.md
+ * status labels. `repo_only` / `built` / `tester_live` track the
+ * release pipeline stages; `blocked` / `do_not_build_yet` carry
+ * the corresponding blocker labels from the priority model. */
+export type OwnerBacklogStatus =
+  | 'new'
+  | 'accepted'
+  | 'in_progress'
+  | 'repo_only'
+  | 'built'
+  | 'tester_live'
+  | 'done'
+  | 'blocked'
+  | 'do_not_build_yet';
 
 export interface OwnerBacklogItem {
   id: string;
@@ -38,6 +52,9 @@ export interface OwnerBacklogItem {
   /** Priority 1–10 per docs/FEEDBACK_PRIORITY_MODEL.md. */
   priority: number;
   status: OwnerBacklogStatus;
+  /** Optional one-line description of what's blocking the item.
+   * Required when status === 'blocked' or 'do_not_build_yet'. */
+  blocker?: string;
   /** Always 'owner' from this store; shape-compatible with future
    * tester-feedback merge where source can also be a tester id. */
   source: 'owner';
@@ -48,7 +65,7 @@ interface OwnerBacklogState {
   items: OwnerBacklogItem[];
   hydrated: boolean;
   hydrate: () => Promise<void>;
-  add: (input: Omit<OwnerBacklogItem, 'id' | 'createdAt' | 'source' | 'status'> & { status?: OwnerBacklogStatus }) => Promise<OwnerBacklogItem>;
+  add: (input: Omit<OwnerBacklogItem, 'id' | 'createdAt' | 'source' | 'status'> & { status?: OwnerBacklogStatus; blocker?: string }) => Promise<OwnerBacklogItem>;
   updateStatus: (id: string, status: OwnerBacklogStatus) => Promise<void>;
   remove: (id: string) => Promise<void>;
   clear: () => Promise<void>;
@@ -78,7 +95,8 @@ export const useOwnerBacklogStore = create<OwnerBacklogState>((set, get) => ({
       type: input.type,
       platform: input.platform,
       priority: input.priority,
-      status: input.status ?? 'open',
+      status: input.status ?? 'new',
+      blocker: input.blocker,
       source: 'owner',
       createdAt: new Date().toISOString(),
     };
