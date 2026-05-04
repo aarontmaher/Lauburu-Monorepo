@@ -86,3 +86,82 @@ Mobile Admin/Dev → tap "Build Android AAB" → backend
 update through Play Store within ~15–60 min.
 
 No manual Play Console upload, no terminal, no Mac required.
+
+## 6. Play Console one-time listing pass — required to flip from DRAFT to COMPLETED
+
+Today `eas.json submit.production.android.releaseStatus = "draft"`.
+That means every workflow upload lands as a draft release Play accepts
+without listing metadata; you click **Review release → Start rollout**
+once per release. To remove that click, complete the listing fields
+below ONCE in Play Console, then change `releaseStatus` to
+`"completed"` (one-line edit + commit).
+
+Open Play Console → Lauburu Grappling Map. Each item below is a
+sidebar entry on the left; address them in this order so dependencies
+resolve first.
+
+### Required entries
+
+1. **App content → Privacy policy**
+   URL: `https://www.lauburugrapplingmap.com/privacy/`
+2. **App content → Account deletion / Data safety → Account deletion**
+   URL: `https://www.lauburugrapplingmap.com/account-deletion/`
+   (Already verified live HTTP 200.)
+3. **App content → Data safety**
+   - Tap **Manage** → fill the questionnaire honestly.
+   - Health Connect declaration: state purpose per data type (heart
+     rate, HRV, resting HR, sleep, steps, exercise, active calories,
+     historical data) — one-line each, focused on personal recovery /
+     readiness / training-load context.
+   - Mark "data is encrypted in transit" YES (HTTPS/TLS).
+   - "Users can request data deletion" YES → link the deletion page
+     above.
+   - "Selling data" NO. "Sharing for advertising" NO.
+4. **App content → Content rating**
+   - Run the IARC questionnaire. App is utility/health-fitness —
+     answer truthfully (no violence, no user-generated chat that's
+     visible to others, no gambling, no tracking-targeted ads).
+5. **App content → Target audience and content**
+   - Target age: 13+ (the app is not designed for children under 13).
+   - Mark "designed for families" NO.
+6. **Store listing → Main store listing**
+   - App name: `Lauburu Grappling Map`
+   - Short description (≤80 chars): something like
+     `Grappling map, training, AI Coach, Apple Health & WHOOP sync.`
+   - Full description (≤4000 chars): describe the product (3D
+     mind-map, training tracking, AI Coach, multi-source health
+     integration). Don't claim medical or readiness certification.
+   - **Graphics**: 1 feature graphic (1024×500), at least 2
+     phone screenshots (16:9), 1 app icon (the existing
+     `apps/mobile/assets/images/icon.png`).
+7. **Store listing → App category**
+   - Category: **Health & Fitness**
+   - Tags: pick `Fitness`, `Workout`, `Personal training`.
+   - Email: `support@lauburugrapplingmap.com`
+8. **Health Connect declaration** (separate from Data safety)
+   - Play Console → App content → Health Connect → fill purpose
+     justification. Reuse copy in `docs/PLAY_SUBMIT_SETUP.md`.
+9. **App access** (only required for public production track — skip
+   for Internal Testing).
+10. **News apps / Government apps**: NO.
+
+### After all the above are saved
+
+1. Open the latest draft release on the Internal testing track.
+2. **Review release → Start rollout to Internal Testing**. (Verifies
+   the listing pass took.)
+3. Edit `apps/mobile/eas.json`:
+   ```jsonc
+   "android": {
+     "serviceAccountKeyPath": "./google-services-key.json",
+     "track": "internal",
+     "releaseStatus": "completed"   // changed from "draft"
+   }
+   ```
+4. Commit + push. Future workflow dispatches of
+   `android-aab-build` with `submit_to_play=true` will create a
+   COMPLETED Internal Testing release directly — no Play Console
+   click required for releases after that.
+
+Public production release (closed/open testing → production) is a
+separate, larger pass — out of scope for this checklist.

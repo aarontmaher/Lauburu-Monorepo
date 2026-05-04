@@ -24,7 +24,7 @@
         "NSPhotoLibraryUsageDescription": "Lauburu lets testers attach screenshots or photos to feedback so bug reports and suggestions are easier to understand.",
         "NSBluetoothAlwaysUsageDescription": "Lauburu connects to FTMS bikes, rowers, ski ergs, and Concept2 PM5 over Bluetooth to capture live power, cadence, and calorie data during your HIIT or conditioning sessions. You choose when to scan and connect.",
         "NSBluetoothPeripheralUsageDescription": "Lauburu uses Bluetooth to discover and connect to HIIT machines during a session. Required for live machine data capture.",
-        "UIRequiredDeviceCapabilities": ["arm64", "healthkit"],
+        "UIRequiredDeviceCapabilities": ["arm64"],
         "ITSAppUsesNonExemptEncryption": false
       },
       "entitlements": {
