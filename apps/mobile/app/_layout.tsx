@@ -174,17 +174,27 @@ function RootLayoutNav() {
  * Gate the global FABs on (a) tour not active and (b) the Map node
  * detail panel not open. Reads the map-ui store directly so it
  * subscribes to changes without lifting state into RootLayoutNav.
+ *
+ * Owner/admin accounts see the Dev/Admin FAB instead of the
+ * Feedback FAB — Aaron does not need to submit feedback to himself,
+ * and the Dev FAB is the higher-value control for that account.
+ * Normal testers and signed-out users see Feedback only;
+ * signed-out users never see Dev/Admin regardless of allowlist.
  */
 function FabsGate({ tourVisible }: { tourVisible: boolean }) {
   const pathname = usePathname();
   const nodeDetailOpen = useMapUiStore((s) => s.nodeDetailOpen);
+  const userEmail = useAuthStore((s) => s.user?.email ?? null);
+  const devUnlocked = useDevUnlockStore((s) => s.unlocked);
+  const isAdmin = userEmail != null && DEV_FAB_ADMIN_EMAILS.has(userEmail.toLowerCase());
+  const ownerSurface = isAdmin || devUnlocked;
   const onMap = pathname?.startsWith('/map') ?? false;
   const hideForMapDetail = onMap && nodeDetailOpen;
   if (tourVisible || hideForMapDetail) return null;
   return (
     <>
       <AiLauncherFab />
-      <FeedbackFab />
+      {!ownerSurface && <FeedbackFab />}
       <DevLauncherFab />
     </>
   );

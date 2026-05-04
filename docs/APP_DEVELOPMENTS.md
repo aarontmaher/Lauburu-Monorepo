@@ -1,0 +1,147 @@
+# App developments — repo-backed backlog
+
+Single source of truth for the **active** backlog Aaron carries
+between the laptop terminal, ChatGPT chats, and Apple Notes. The
+in-app Admin/Dev "Backlog" card mirrors this file. When the file
+changes, the next paired build picks it up — no live-fetch required
+yet (the long-term shape is a backend route that serves this).
+
+Updated 2026-05-05.
+
+## Current #1 priority
+
+**Aaron's one-time Play Console listing pass on the v13 draft, then
+flip `eas.json submit.production.android.releaseStatus` from
+`'draft'` to `'completed'`.**
+
+Why: Android tester auto-promote is the last manual step in the
+end-to-end ship loop. Until this lands, every Android tester release
+needs one Play Console click.
+
+How to start: open `docs/PLAY_SUBMIT_SETUP.md` §6 and walk top-to-
+bottom. ~30–60 minutes.
+
+## Current blocker
+
+The Play Console listing pass above. Nothing in code is blocking;
+all repo-side wiring is done and verified.
+
+## Next action
+
+Aaron does Play Console pass → clicks `Review release → Start
+rollout` once on v13 → replies "flip releaseStatus to completed" →
+I edit `eas.json` (one line) and commit.
+
+## Can delete from notepad
+
+These items are spec'd or live and don't need to live in Apple Notes
+anymore:
+
+- "Wire iOS auto-group assignment" — DONE, Build 14 verified.
+- "Add Privacy / Account-deletion pages to website" — DONE, both
+  HTTP 200 at the live URLs.
+- "Document AI provider strategy" — DONE,
+  `docs/AI_PROVIDER_STRATEGY.md`.
+- "Document AI monetisation / cost guardrails" — DONE,
+  `docs/AI_MONETISATION_AND_USAGE_STRATEGY.md`.
+- "Audit which wearable claims are actually live" — DONE,
+  `docs/HEALTH_METRIC_APPS_DEVICES_AUDIT.md`.
+- "Fix iOS HealthKit Mac/Vision warning" — repo-only fix on main,
+  ships with next iOS build.
+- "Add /admin/status backend route + signed dispatch" — DONE.
+- "Hide Dev/Admin FAB from normal testers" — DONE (admin-email gate).
+- "Hide Feedback FAB from owner" — DONE (this batch).
+
+## Do not delete yet
+
+These remain in the backlog because they are NOT yet done:
+
+- Play Console listing pass (the #1 above).
+- Flip `releaseStatus: 'completed'` after the listing pass.
+- Next paired build (Android v14 + iOS Build 15) bundling the
+  standing repo-only UX work + iOS HealthKit warning fix.
+- Grappler Readiness Batches B/C/D (extend `NextDayCheckin` sliders,
+  extend `TrainingSession` with grappling-load fields, bucket-ring
+  UI on `AthleteStateStrip`). The audit doc explicitly recommends
+  shipping these BEFORE adding any new wearable integration.
+- AI provider implementation — gated. See triggers in
+  `docs/AI_PROVIDER_STRATEGY.md` AND
+  `docs/AI_MONETISATION_AND_USAGE_STRATEGY.md`.
+- Public production release for either platform — out of scope until
+  tester channels are fully auto-promote AND a separate listing pass
+  for production is done.
+
+## Next top 5
+
+In suggested order; each is "ready when" the prior item is unblocked.
+
+1. **Play Console listing pass + flip** (Aaron-side, then one-line
+   commit).
+2. **Paired tester build** (Android v14 + iOS Build 15) bundling the
+   standing repo-only UX work and the iOS Mac/Vision warning fix.
+   Triggered from Admin/Dev once releaseStatus is flipped.
+3. **Grappler Readiness Batch B**: extend `NextDayCheckin` with
+   subjective sliders (soreness, mood, perceived fatigue). Pure
+   schema + UI work; no backend.
+4. **Grappler Readiness Batch C**: extend `TrainingSession` schema
+   with grappling-specific fields (gi/no-gi, drilling vs live
+   minutes, perceived intensity).
+5. **Grappler Readiness Batch D**: bucket-ring UI on
+   `AthleteStateStrip` showing all 5 buckets (autonomic, sleep,
+   load, grappling, subjective) with provenance.
+
+After these five, the AI provider implementation gate opens.
+
+## Last CHATGPT_STATUS
+
+Latest known status block from a Claude Code run; updated by the
+agent at the end of each lane. Older blocks live in chat history.
+
+```
+CHATGPT_STATUS_START
+Auto-update status: iOS end-to-end auto-ship live (Build 14 reached
+TestFlight Team (Expo) testers via auto-group assignment, no ASC
+clicks). Android upload-to-Play DRAFT live; per-release promote
+click stays manual.
+Android auto-promote: NOT live yet. Gated on Play Console one-time
+listing pass + flipping eas.json releaseStatus from 'draft' to
+'completed'.
+iOS status: Auto-assign to Team (Expo) verified working on Build 14.
+Build 15+ adds the iOS HealthKit Mac/Vision warning fix.
+AI API implementation: NOT started. Gated on triggers in
+AI_PROVIDER_STRATEGY.md AND AI_MONETISATION_AND_USAGE_STRATEGY.md.
+AI monetisation strategy: design doc landed (commit dbb4a41).
+Health device/app audit: design doc landed (commit dbb4a41).
+Files changed (last lane): docs/AI_MONETISATION_AND_USAGE_STRATEGY.md,
+docs/HEALTH_METRIC_APPS_DEVICES_AUDIT.md.
+Verified: tsc --noEmit clean.
+Next: Aaron's Play Console listing pass.
+CHATGPT_STATUS_END
+```
+
+## Manual steps for Aaron
+
+The only steps that genuinely need a human + browser. Everything
+else is dispatchable from Admin/Dev.
+
+1. **Play Console listing pass** (one-time, ~30–60 min). See
+   `docs/PLAY_SUBMIT_SETUP.md` §6.
+2. **Click `Review release → Start rollout`** once on the v13 draft
+   to verify the listing pass took.
+3. **Reply "flip releaseStatus to completed"** so I edit `eas.json`
+   in a single commit.
+4. **Tester device install** (your own devices): TestFlight + Play
+   Store auto-update once notified — no action needed beyond
+   accepting the update prompt.
+
+Everything else (typecheck, release audit, backend smoke, Android
+build, Android upload, iOS build, iOS submit, OTA diagnostic) is
+dispatchable in-app via the Admin/Dev workflow buttons.
+
+## What's NOT in this file
+
+- Long-form architecture (lives in `docs/architecture/`).
+- Specific code TODOs (tracked in code, not here).
+- Per-batch task breakdowns (in conversation history; this file
+  carries the cross-conversation backlog only).
+- The grappling.opml content (untouched, off-limits).

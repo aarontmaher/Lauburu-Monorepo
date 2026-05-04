@@ -117,6 +117,55 @@ const STATUS_HANDOFF_TEMPLATE = [
   'CHATGPT_STATUS_END',
 ].join('\n');
 
+/**
+ * Top-of-screen workflow truths. These mirror docs/APP_DEVELOPMENTS.md
+ * and are intentionally hard-coded for now — the long-term shape is a
+ * backend route that serves the same fields. When the doc changes,
+ * update these in the next paired build. Keep each line short; the UI
+ * renders compact chips, not paragraphs.
+ */
+const CURRENT_PRIORITY = "Aaron's Play Console listing pass on v13 draft, then flip eas.json releaseStatus to completed.";
+const CURRENT_BLOCKER = 'Play Console listing pass — repo-side wiring is done.';
+const NEXT_ACTION = 'Walk PLAY_SUBMIT_SETUP §6 → click Review release → Start rollout once → reply "flip releaseStatus to completed".';
+
+/** Bridge prompts copied to the in-app Prompt bridge. Short labels, terse bodies. */
+const BRIDGE_PROMPTS: Array<{ label: string; body: string }> = [
+  {
+    label: 'Copy next Claude prompt',
+    body: [
+      'Continue the standing tester-auto-update lane. Do not touch grappling.opml. Do not expose secrets. Do not run Supabase db push. Do not upgrade SDK. Do not run OTA. Do not implement paid AI yet.',
+      '',
+      '1. Verify Android tester auto-promote status (Play Console listing pass + releaseStatus flip).',
+      '2. Run npx tsc --noEmit in apps/mobile.',
+      '3. Report a CHATGPT_STATUS_START / CHATGPT_STATUS_END block covering: live / repo-only / blocked / verified / next.',
+    ].join('\n'),
+  },
+  {
+    label: 'Copy next ChatGPT status prompt',
+    body: [
+      'Print a compact ChatGPT status block summarising the lane Aaron is on, in this exact shape:',
+      '',
+      'CHATGPT_STATUS_START',
+      'Auto-update status:',
+      'Android auto-promote:',
+      'iOS status:',
+      'AI API implementation:',
+      'Files changed:',
+      'Verified:',
+      'Live:',
+      'Repo-only:',
+      'Blocked:',
+      'Manual steps for Aaron:',
+      'Next:',
+      'CHATGPT_STATUS_END',
+    ].join('\n'),
+  },
+  {
+    label: 'Copy current status block',
+    body: STATUS_HANDOFF_TEMPLATE,
+  },
+];
+
 async function fetchAdminStatus(): Promise<AdminStatus | null> {
   try {
     const apiBase = (process.env.EXPO_PUBLIC_AI_PUBLIC_URL ?? '').replace(/\/$/, '');
@@ -228,11 +277,155 @@ export default function AdminDevScreen() {
 
   const apiHost = (process.env.EXPO_PUBLIC_AI_BACKEND_URL ?? '').replace(/^https?:\/\//, '').split('/')[0] || '—';
 
+  // Truth chips — derived from adminStatus + buildInfo so the UI can
+  // distinguish live / uploaded / repo-only / blocked at a glance.
+  const androidPromoteAuto = adminStatus?.androidPlayPromoteAutomatic === true;
+  const iosBuildAvailable = adminStatus?.iosBuildWorkflowAvailable === true;
+  const androidBuildAvailable = adminStatus?.androidBuildWorkflowAvailable === true;
+  const dispatchAvailable = adminStatus?.workflowDispatchAvailable === true;
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Stack.Screen options={{ title: 'Admin / Dev', headerBackTitle: 'Settings' }} />
       <Text style={styles.heading}>Admin / Dev</Text>
-      <Text style={styles.subtitle}>Read-only MVP. No remote shell. No secrets.</Text>
+      <Text style={styles.subtitle}>Owner control centre. Compact status. No secrets. No remote shell.</Text>
+
+      <Section title="Now">
+        <View style={styles.chipBlock}>
+          <Text style={styles.chipLabel}>Priority</Text>
+          <Text style={styles.chipBody}>{CURRENT_PRIORITY}</Text>
+        </View>
+        <View style={styles.chipBlock}>
+          <Text style={styles.chipLabel}>Blocker</Text>
+          <Text style={styles.chipBody}>{CURRENT_BLOCKER}</Text>
+        </View>
+        <View style={styles.chipBlock}>
+          <Text style={styles.chipLabel}>Next action</Text>
+          <Text style={styles.chipBody}>{NEXT_ACTION}</Text>
+        </View>
+      </Section>
+
+      <Section title="Android — Internal Testing">
+        <Row label="Tester-live versionCode" value={Platform.OS === 'android' ? String(buildInfo.buildNumber) : 'see Play Console'} />
+        <Row label="Build → Play upload" value={androidBuildAvailable ? 'auto ✓' : 'workflow not configured'} />
+        <Row label="Promote to testers" value={androidPromoteAuto ? 'auto ✓' : 'manual per release (DRAFT)'} />
+        <Row label="Play Console blocker" value={androidPromoteAuto ? 'none' : 'listing pass + releaseStatus flip'} />
+        <Text style={styles.note}>
+          Next: walk docs/PLAY_SUBMIT_SETUP.md §6, click Review release → Start rollout, then flip releaseStatus to completed.
+        </Text>
+        <WorkflowTriggerButton
+          id="android-aab-build"
+          label="Build Android AAB"
+          subtitle="Builds an AAB on EAS. Does NOT upload to Play."
+          enabled={androidBuildAvailable}
+          disabledReason={androidBuildAvailable ? undefined : 'Workflow android-aab-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
+          confirmCopy="Builds the Android AAB on EAS. Costs an EAS build credit. The AAB stays on EAS until you separately upload it. Continue?"
+        />
+        <WorkflowTriggerButton
+          id="android-aab-build"
+          label="Build Android + upload to Internal Testing"
+          subtitle="Builds AAB and uploads it to Play Internal Testing as DRAFT."
+          enabled={androidBuildAvailable}
+          disabledReason={androidBuildAvailable ? undefined : 'Workflow android-aab-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
+          inputs={{ submit_to_play: 'true' }}
+          confirmCopy="Builds the AAB and uploads as a DRAFT Internal Testing release. After workflow finishes you must open Play Console → Internal testing → Review release → Start rollout. Costs an EAS build credit. Continue?"
+        />
+      </Section>
+
+      <Section title="iOS — TestFlight">
+        <Row label="Latest build number" value={Platform.OS === 'ios' ? String(buildInfo.buildNumber) : 'see App Store Connect'} />
+        <Row label="Build / submit automation" value={iosBuildAvailable ? 'auto ✓' : 'workflow not configured'} />
+        <Row label="Auto-assign to Team (Expo)" value={adminStatus?.testflightGroupAssignmentConfigured === true ? 'auto ✓' : '—'} />
+        <Row label="HealthKit Mac/Vision warning" value="repo-only fix on main (ships with next iOS build)" />
+        <Text style={styles.note}>
+          Next: bump apps/mobile/app.json ios.buildNumber and dispatch the iOS build + submit workflow when ready.
+        </Text>
+        <WorkflowTriggerButton
+          id="ios-testflight-build"
+          label="Build iOS"
+          subtitle="Builds an IPA on EAS. Does NOT submit to TestFlight."
+          enabled={iosBuildAvailable}
+          disabledReason={iosBuildAvailable ? undefined : 'Workflow ios-testflight-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
+          confirmCopy="Builds the iOS IPA on EAS. Costs an EAS build credit. The IPA stays on EAS until you separately submit it. Continue?"
+        />
+        <WorkflowTriggerButton
+          id="ios-testflight-build"
+          label="Build iOS + submit to TestFlight"
+          subtitle="Builds, submits to App Store Connect, assigns to Team (Expo)."
+          enabled={iosBuildAvailable}
+          disabledReason={iosBuildAvailable ? undefined : 'Workflow ios-testflight-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
+          inputs={{ submit_to_testflight: 'true' }}
+          confirmCopy="Builds the IPA, uploads to App Store Connect, and assigns to internal group Team (Expo). Internal testers receive a TestFlight notification after Apple processing (~10–30 min). Costs an EAS build credit. Continue?"
+        />
+      </Section>
+
+      <Section title="OTA">
+        <Row label="Status" value="blocked (EAS SDK 54 server gate)" />
+        <Text style={styles.note}>
+          OTA is unavailable on the EAS Update server for SDK 54. Use the Play / TestFlight build buttons above instead — there is no OTA dispatch button intentionally.
+        </Text>
+      </Section>
+
+      <Section title="Fast workflow buttons">
+        <WorkflowTriggerButton
+          id="mobile-typecheck"
+          label="Run typecheck"
+          subtitle="Checks if app code still compiles."
+          enabled={dispatchAvailable}
+          disabledReason={dispatchAvailable ? undefined : 'GitHub dispatch not configured.'}
+        />
+        <WorkflowTriggerButton
+          id="release-audit"
+          label="Run release audit"
+          subtitle="Checks Android, iOS, EAS, GitHub Actions, and store blockers."
+          enabled={dispatchAvailable}
+          disabledReason={dispatchAvailable ? undefined : 'GitHub dispatch not configured.'}
+        />
+        <WorkflowTriggerButton
+          id="backend-smoke"
+          label="Run backend smoke"
+          subtitle="Pings the Railway backend health and AI context routes."
+          enabled={dispatchAvailable}
+          disabledReason={dispatchAvailable ? undefined : 'GitHub dispatch not configured.'}
+        />
+      </Section>
+
+      <Section title="Prompt bridge">
+        <Text style={styles.note}>
+          Long-press text after expanding to copy. The app can trigger workflows, show status, open dashboards, copy prompts, and store status summaries. Without API integration it cannot read your live ChatGPT conversation, type into Claude Code on your laptop, reason over screenshots/Notes, or run arbitrary terminal commands.
+        </Text>
+        {BRIDGE_PROMPTS.map((p, idx) => (
+          <View key={p.label} style={{ gap: 6 }}>
+            <Pressable
+              style={styles.btn}
+              onPress={() => setOpenPromptIdx(openPromptIdx === idx + 1000 ? null : idx + 1000)}>
+              <Text style={styles.btnText}>{openPromptIdx === idx + 1000 ? '▾ ' : '▸ '}{p.label}</Text>
+            </Pressable>
+            {openPromptIdx === idx + 1000 && (
+              <RNText selectable style={styles.copyBlock}>{p.body}</RNText>
+            )}
+          </View>
+        ))}
+      </Section>
+
+      <Section title="External dashboards">
+        <LinkRow label="Play Console" url={PLAY_CONSOLE_URL} />
+        <LinkRow label="App Store Connect" url={APPSTORE_CONNECT_URL} />
+        <LinkRow label="GitHub Actions" url={GITHUB_ACTIONS_URL} />
+        <LinkRow label="Expo builds" url={EXPO_BUILDS_URL} />
+        <LinkRow label="Railway dashboard" url={RAILWAY_URL} />
+      </Section>
+
+      <Section title="Backlog">
+        <Text style={styles.note}>
+          Source of truth: docs/APP_DEVELOPMENTS.md. The list below mirrors the file at build time; the long-term shape is a backend route that serves the same fields.
+        </Text>
+        <Row label="Top 1" value="Play Console listing pass + releaseStatus flip" />
+        <Row label="Top 2" value="Paired tester build (v14 + Build 15)" />
+        <Row label="Top 3" value="Grappler Readiness Batch B (NextDayCheckin sliders)" />
+        <Row label="Top 4" value="Grappler Readiness Batch C (TrainingSession schema)" />
+        <Row label="Top 5" value="Grappler Readiness Batch D (bucket-ring UI)" />
+      </Section>
 
       <Section title="App build / runtime">
         <Row label="Version" value={buildInfo.appVersion} />
@@ -332,48 +525,25 @@ export default function AdminDevScreen() {
         )}
       </Section>
 
-      <Section title="Release automation">
-        <Row label="iOS — build → TestFlight tester" value="auto ✓" />
-        <Row label="Android — build → Play upload" value="auto ✓" />
-        <Row label="Android — promote to testers" value={adminStatus?.androidPlayPromoteAutomatic ? 'auto ✓' : 'manual per release'} />
-        <Row label="OTA" value={adminStatus?.otaBlocked ? 'blocked (Play / TestFlight only)' : '—'} />
-        <Text style={styles.note}>
-          iOS Build 14 reached TestFlight testers without ASC clicks (eas.json groups: ["Team (Expo)"]). Android uploads as DRAFT — needs a one-time Play Console listing pass + `Review release → Start rollout` click per release until you switch `releaseStatus` to `completed`. Keep versionCode + buildNumber bumped together.
-        </Text>
-      </Section>
-
-      <Section title="Workflow triggers">
-        <Row label="Dispatch available" value={adminStatus?.workflowDispatchAvailable ? 'yes' : 'no'} />
+      <Section title="Workflow dispatch — diagnostics">
+        <Row label="Dispatch endpoint" value={dispatchAvailable ? 'reachable' : 'not configured'} />
         <Row label="Allowlist" value={adminStatus?.workflowAllowlist?.length ? `${adminStatus.workflowAllowlist.length} workflows` : '—'} />
-        <WorkflowTriggerButton id="mobile-typecheck" label="Run typecheck" enabled={!!adminStatus?.workflowDispatchAvailable} />
-        <WorkflowTriggerButton id="release-audit" label="Run release audit" enabled={!!adminStatus?.workflowDispatchAvailable} />
-        <WorkflowTriggerButton id="backend-smoke" label="Run backend smoke" enabled={!!adminStatus?.workflowDispatchAvailable} />
-        <WorkflowTriggerButton id="android-aab-build" label="Build Android AAB" enabled={!!adminStatus?.workflowDispatchAvailable} />
         <WorkflowTriggerButton
-          id="android-aab-build"
-          label="Build Android + upload to Internal Testing (DRAFT)"
-          enabled={!!adminStatus?.workflowDispatchAvailable}
-          inputs={{ submit_to_play: 'true' }}
-          confirmCopy="Builds the AAB and uploads it to Play Internal Testing as a DRAFT release. After workflow finishes you must open Play Console → Internal testing → open the draft → Review release → Start rollout, before testers see the new version."
+          id="ota-diagnostic"
+          label="Run OTA diagnostic"
+          subtitle="Reads-only — verifies the EAS Update server SDK 54 block."
+          enabled={dispatchAvailable}
+          disabledReason={dispatchAvailable ? undefined : 'GitHub dispatch not configured.'}
         />
-        <WorkflowTriggerButton id="ios-testflight-build" label="Build iOS TestFlight" enabled={!!adminStatus?.iosBuildWorkflowAvailable} />
-        <WorkflowTriggerButton
-          id="ios-testflight-build"
-          label="Build iOS + submit to TestFlight"
-          enabled={!!adminStatus?.iosBuildWorkflowAvailable}
-          inputs={{ submit_to_testflight: 'true' }}
-          confirmCopy="Builds the IPA, uploads to App Store Connect, and assigns to the internal TestFlight group 'Team (Expo)'. Internal testers receive a TestFlight notification after Apple processing (~10–30 min)."
-        />
-        <WorkflowTriggerButton id="ota-diagnostic" label="Run OTA diagnostic" enabled={!!adminStatus?.workflowDispatchAvailable} />
         {adminStatus?.blockers && adminStatus.blockers.length > 0 && (
           <Text style={styles.note}>
             {adminStatus.blockers.join(' ')}
           </Text>
         )}
         <Text style={styles.note}>
-          {adminStatus?.workflowDispatchAvailable
-            ? 'Each button posts to the protected dispatch endpoint, which calls a single GitHub Actions workflow_dispatch on main. Confirm before triggering.'
-            : 'Buttons stay disabled until: (1) push the local repo to a private GitHub repo, (2) mint a fine-grained PAT with Actions:read/write + Contents/Metadata:read on that repo, (3) add it to Railway as GITHUB_DISPATCH_TOKEN with GITHUB_REPO=owner/repo. Each is a one-time browser/terminal step — no secrets pass through this app.'}
+          {dispatchAvailable
+            ? 'Each workflow button posts to the protected dispatch endpoint, which triggers a single GitHub Actions workflow_dispatch on main. No secrets pass through this app.'
+            : 'Workflow buttons stay disabled until: (1) push repo to GitHub, (2) mint a fine-grained PAT with Actions:read/write + Contents/Metadata:read, (3) add it to Railway as GITHUB_DISPATCH_TOKEN with GITHUB_REPO=owner/repo. One-time setup.'}
         </Text>
       </Section>
     </ScrollView>
@@ -383,17 +553,24 @@ export default function AdminDevScreen() {
 function WorkflowTriggerButton({
   id,
   label,
+  subtitle,
   enabled,
   inputs,
   confirmCopy,
+  disabledReason,
 }: {
   id: string;
   label: string;
+  /** One-line plain-language explanation of what this button does. */
+  subtitle?: string;
   enabled: boolean;
   /** Optional `inputs` to forward to GitHub Actions workflow_dispatch. */
   inputs?: Record<string, string>;
   /** Optional override for the confirm Alert body. */
   confirmCopy?: string;
+  /** Shown beneath the label when `enabled` is false — must explain
+   * the exact blocker so the user knows what step to take next. */
+  disabledReason?: string;
 }) {
   const [busy, setBusy] = useState(false);
   const onPress = useCallback(() => {
@@ -440,13 +617,18 @@ function WorkflowTriggerButton({
       ],
     );
   }, [id, label, enabled, busy, inputs, confirmCopy]);
+  const dimmed = !enabled || busy;
   return (
-    <Pressable
-      style={[styles.btn, (!enabled || busy) && { opacity: 0.4 }]}
-      disabled={!enabled || busy}
-      onPress={onPress}>
-      <Text style={styles.btnText}>{busy ? 'Dispatching…' : label}</Text>
-    </Pressable>
+    <View style={{ gap: 2 }}>
+      <Pressable
+        style={[styles.btn, dimmed && { opacity: 0.4 }]}
+        disabled={dimmed}
+        onPress={onPress}>
+        <Text style={styles.btnText}>{busy ? 'Dispatching…' : label}</Text>
+      </Pressable>
+      {subtitle && enabled && <Text style={styles.btnSubtitle}>{subtitle}</Text>}
+      {!enabled && disabledReason && <Text style={styles.btnDisabledReason}>{disabledReason}</Text>}
+    </View>
   );
 }
 
@@ -498,7 +680,17 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(212,225,87,0.35)', alignItems: 'center',
   },
   btnText: { fontSize: 12, fontWeight: '700', color: '#d4e157' },
+  btnSubtitle: { fontSize: 11, opacity: 0.55, paddingHorizontal: 4, marginTop: 1, marginBottom: 2 },
+  btnDisabledReason: { fontSize: 11, color: '#ff8a8a', paddingHorizontal: 4, marginTop: 1, marginBottom: 2 },
   note: { fontSize: 11, opacity: 0.55, lineHeight: 15, marginTop: 2 },
+  chipBlock: {
+    paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10,
+    backgroundColor: 'rgba(212,225,87,0.06)',
+    borderWidth: 1, borderColor: 'rgba(212,225,87,0.2)',
+    gap: 4,
+  },
+  chipLabel: { fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.55 },
+  chipBody: { fontSize: 13, lineHeight: 17 },
   copyBlock: {
     fontSize: 11, lineHeight: 15, color: '#cfd3da',
     backgroundColor: 'rgba(255,255,255,0.04)',
