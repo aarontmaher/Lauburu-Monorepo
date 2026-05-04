@@ -15,14 +15,14 @@ import type { OwnerWorkflowContext } from '../services/prompt-templates';
 
 const DEFAULT_CONTEXT: OwnerWorkflowContext = {
   currentPriority:
-    'First proof Android build with releaseStatus=completed to confirm full auto-promote on Internal Testing track.',
+    'Android auto-promote proof build (v14) — verify result.',
   currentBlocker:
-    'No code blockers. Aaron-side: trigger Build Android + upload to Internal Testing once to verify the auto-promote path on a real release.',
+    'Proof workflow run 25349253529 in flight: preflight passed (PLAY_SA_JSON present), TypeScript clean, EAS Android build in progress, Play submit step pending downstream.',
   lastStatus: [
-    'Auto-update: iOS end-to-end auto-ship live. Android upload-to-Play DRAFT was live; releaseStatus now flipped to completed in eas.json.',
-    'Repo-only: iOS HealthKit Mac/Vision warning fix on main; Admin/Dev redesign on main; Android auto-promote flip on main.',
-    'Blocked: nothing in code; awaiting one proof Android build to confirm completed-status auto-promote.',
-    'Verified: tsc --noEmit clean.',
+    'Auto-update: iOS end-to-end auto-ship live. Android v11 last manual upload; v14 build dispatched for proof.',
+    'Repo-only: iOS HealthKit Mac/Vision warning fix; Admin/Dev redesign + Primary actions; Android auto-promote flip.',
+    'Live workflows: android-aab-build run 25349253529 (in_progress), ios-testflight-build run 25349256198 (in_progress).',
+    'Verified: tsc --noEmit clean across all commits this lane.',
   ].join(' '),
   selectedTaskBundle: undefined,
   protectedRules: [
@@ -37,8 +37,9 @@ const DEFAULT_CONTEXT: OwnerWorkflowContext = {
     'Use predefined GitHub Actions workflows only',
   ],
   manualStepsForAaron: [
-    'Trigger Build Android + upload to Internal Testing from Admin/Dev once to verify auto-promote',
-    'TestFlight + Play Store auto-update on Aaron\'s own devices — accept the prompts',
+    'Watch GitHub Actions runs 25349253529 (Android) and 25349256198 (iOS) to green',
+    'Once Android run is green, observe a tester device for v14 within 15–60 min — no Play Console click should be required',
+    'Once iOS run is green, accept the TestFlight update prompt to install Build 15',
   ],
   canDeleteFromNotepad: [
     'Wire iOS auto-group assignment (DONE — Build 14)',

@@ -10,24 +10,30 @@ Updated 2026-05-05.
 
 ## Current #1 priority
 
-**One proof Android build with `releaseStatus=completed` to confirm
-the full auto-promote path.**
+**Verify the result of the dispatched Android auto-promote proof
+build (v14, run `25349253529`).**
 
-Why: Play Console listing pass is complete (Aaron uploaded
-graphics, screenshots, and the listing-form questionnaire) and
-`eas.json submit.production.android.releaseStatus` is flipped to
-`'completed'`. The path is wired but not yet exercised on a real
-release.
+Status as of this commit:
 
-How to start: open Admin/Dev → Android card → tap **Build Android +
-upload to Internal Testing**. Wait ~25 min for the workflow to
-finish. Confirm a tester device picks up the new versionCode within
-~15–60 min without any Play Console click.
+- GitHub Actions run `25349253529` (workflow `android-aab-build`,
+  ref `main`, inputs `submit_to_play=true`, `release_status=''`):
+  in flight. URL:
+  https://github.com/aarontmaher/lauburu-grappling-map/actions/runs/25349253529
+- Steps already passed: Set up job, Checkout, Setup Node, Install
+  deps, TypeScript check, **Preflight — required secrets**
+  (confirms `PLAY_SA_JSON` is configured).
+- Step in progress: **EAS Android build** (typical 15–25 min).
+- Steps pending: **Submit AAB to Play Internal Testing**, Summary,
+  cleanup. The submit step is what proves auto-promote.
+
+Parallel iOS Build 15 dispatch (run `25349256198`,
+`submit_to_testflight=true`) is at the same step (EAS build in
+progress). It is not the proof build but rides the same window.
 
 ## Current blocker
 
-Nothing in code. One proof Android build remains the only thing
-between today's state and "Android auto-promote verified".
+Awaiting workflow completion (~25 min from dispatch). No code
+action available until the run finishes.
 
 ## Next action
 

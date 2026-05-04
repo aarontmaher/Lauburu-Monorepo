@@ -172,10 +172,15 @@ Future dispatches of `android-aab-build` with `submit_to_play=true`
 create a COMPLETED Internal Testing release directly — no Play
 Console click required.
 
-Proof build still required: trigger one Android build + upload
-from Admin/Dev (or via the workflow_dispatch UI) and confirm a
-tester device receives the new versionCode without any Play Console
-intervention. After that, the auto-promote path is verified.
+Proof build dispatched 2026-05-04: workflow `android-aab-build`
+run `25349253529`, ref `main`, `submit_to_play=true`. URL:
+https://github.com/aarontmaher/lauburu-grappling-map/actions/runs/25349253529.
+
+State at dispatch + ~30 sec: preflight passed (`PLAY_SA_JSON`
+confirmed present), TypeScript clean, EAS Android build in
+progress, submit-to-Play step pending. Auto-promote is "wired and
+dispatched" — verified only when a tester device picks up v14
+without any Play Console click after the run completes.
 
 Public production release (closed/open testing → production) is a
 separate, larger pass — out of scope for this checklist.

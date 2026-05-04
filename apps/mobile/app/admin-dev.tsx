@@ -139,9 +139,9 @@ const STATUS_HANDOFF_TEMPLATE = [
  * update these in the next paired build. Keep each line short; the UI
  * renders compact chips, not paragraphs.
  */
-const CURRENT_PRIORITY = 'Android auto-promote proof build.';
-const CURRENT_BLOCKER = 'Auto-promote is wired but unverified.';
-const NEXT_ACTION = 'Bump Android v14 + iOS Build 15, then run Build Android + upload to Internal Testing.';
+const CURRENT_PRIORITY = 'Android auto-promote proof build (v14).';
+const ANDROID_PROOF_RESULT = 'In flight — GitHub Actions run 25349253529. Preflight passed (PLAY_SA_JSON present), TypeScript clean, EAS Android build in progress, Play submit step pending downstream. Result lands in ~25 min.';
+const NEXT_ACTION = 'Wait for run 25349253529 to finish; on green, observe a tester device for v14 within 15–60 min.';
 
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
@@ -307,8 +307,8 @@ export default function AdminDevScreen() {
           <Text style={styles.chipBody}>{CURRENT_PRIORITY}</Text>
         </View>
         <View style={styles.chipBlock}>
-          <Text style={styles.chipLabel}>Blocker</Text>
-          <Text style={styles.chipBody}>{CURRENT_BLOCKER}</Text>
+          <Text style={styles.chipLabel}>Android proof result</Text>
+          <Text style={styles.chipBody}>{ANDROID_PROOF_RESULT}</Text>
         </View>
         <View style={styles.chipBlock}>
           <Text style={styles.chipLabel}>Next action</Text>
