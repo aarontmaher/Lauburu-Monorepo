@@ -139,9 +139,9 @@ const STATUS_HANDOFF_TEMPLATE = [
  * update these in the next paired build. Keep each line short; the UI
  * renders compact chips, not paragraphs.
  */
-const CURRENT_PRIORITY = 'First proof Android build with releaseStatus=completed to confirm full auto-promote on Internal Testing.';
-const CURRENT_BLOCKER = 'None in code — awaiting one proof Android build to verify the auto-promote path.';
-const NEXT_ACTION = 'Trigger Build Android + upload to Internal Testing once → tester device receives v14 without Play Console click.';
+const CURRENT_PRIORITY = 'Android auto-promote proof build.';
+const CURRENT_BLOCKER = 'Auto-promote is wired but unverified.';
+const NEXT_ACTION = 'Bump Android v14 + iOS Build 15, then run Build Android + upload to Internal Testing.';
 
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
@@ -316,68 +316,25 @@ export default function AdminDevScreen() {
         </View>
       </Section>
 
-      <Section title="Android — Internal Testing">
-        <Row label="Tester-live versionCode" value={Platform.OS === 'android' ? String(buildInfo.buildNumber) : 'v11 (last manual upload) — see Play Console'} />
-        <Row label="Build → Play upload" value={androidBuildAvailable ? 'auto ✓' : 'workflow not configured'} />
-        <Row label="Promote to testers" value="auto ✓ (eas.json releaseStatus=completed)" />
-        <Row label="Play Console blocker" value="none — listing pass complete" />
-        <Text style={styles.note}>
-          Future Internal Testing dispatches with `submit_to_play=true` create COMPLETED releases — no Play Console click required. First proof build will confirm the auto-promote path.
-        </Text>
-        <WorkflowTriggerButton
-          id="android-aab-build"
-          label="Build Android AAB"
-          subtitle="Builds an AAB on EAS. Does NOT upload to Play."
-          enabled={androidBuildAvailable}
-          disabledReason={androidBuildAvailable ? undefined : 'Workflow android-aab-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
-          confirmCopy="Builds the Android AAB on EAS. Costs an EAS build credit. The AAB stays on EAS until you separately upload it. Continue?"
-        />
+      <Section title="Primary actions">
         <WorkflowTriggerButton
           id="android-aab-build"
           label="Build Android + upload to Internal Testing"
-          subtitle="Builds AAB and uploads it to Play Internal Testing as DRAFT."
+          subtitle="Builds AAB and uploads as COMPLETED Internal Testing release (auto-promote)."
           enabled={androidBuildAvailable}
           disabledReason={androidBuildAvailable ? undefined : 'Workflow android-aab-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
           inputs={{ submit_to_play: 'true' }}
-          confirmCopy="Builds the AAB and uploads as a DRAFT Internal Testing release. After workflow finishes you must open Play Console → Internal testing → Review release → Start rollout. Costs an EAS build credit. Continue?"
-        />
-      </Section>
-
-      <Section title="iOS — TestFlight">
-        <Row label="Latest build number" value={Platform.OS === 'ios' ? String(buildInfo.buildNumber) : 'see App Store Connect'} />
-        <Row label="Build / submit automation" value={iosBuildAvailable ? 'auto ✓' : 'workflow not configured'} />
-        <Row label="Auto-assign to Team (Expo)" value={adminStatus?.testflightGroupAssignmentConfigured === true ? 'auto ✓' : '—'} />
-        <Row label="HealthKit Mac/Vision warning" value="repo-only fix on main (ships with next iOS build)" />
-        <Text style={styles.note}>
-          Next: bump apps/mobile/app.json ios.buildNumber and dispatch the iOS build + submit workflow when ready.
-        </Text>
-        <WorkflowTriggerButton
-          id="ios-testflight-build"
-          label="Build iOS"
-          subtitle="Builds an IPA on EAS. Does NOT submit to TestFlight."
-          enabled={iosBuildAvailable}
-          disabledReason={iosBuildAvailable ? undefined : 'Workflow ios-testflight-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
-          confirmCopy="Builds the iOS IPA on EAS. Costs an EAS build credit. The IPA stays on EAS until you separately submit it. Continue?"
+          confirmCopy="Builds the Android AAB and uploads as a COMPLETED Internal Testing release (releaseStatus=completed in eas.json). Tester devices auto-update within ~15–60 min — no Play Console click. Costs an EAS build credit. Continue?"
         />
         <WorkflowTriggerButton
           id="ios-testflight-build"
           label="Build iOS + submit to TestFlight"
-          subtitle="Builds, submits to App Store Connect, assigns to Team (Expo)."
+          subtitle="Builds IPA, submits to ASC, assigns Team (Expo)."
           enabled={iosBuildAvailable}
           disabledReason={iosBuildAvailable ? undefined : 'Workflow ios-testflight-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
           inputs={{ submit_to_testflight: 'true' }}
-          confirmCopy="Builds the IPA, uploads to App Store Connect, and assigns to internal group Team (Expo). Internal testers receive a TestFlight notification after Apple processing (~10–30 min). Costs an EAS build credit. Continue?"
+          confirmCopy="Builds the iOS IPA, uploads to App Store Connect, and assigns the build to internal group Team (Expo). Apple processing 5–30 min then TestFlight notifies testers. Costs an EAS build credit. Continue?"
         />
-      </Section>
-
-      <Section title="OTA">
-        <Row label="Status" value="blocked (EAS SDK 54 server gate)" />
-        <Text style={styles.note}>
-          OTA is unavailable on the EAS Update server for SDK 54. Use the Play / TestFlight build buttons above instead — there is no OTA dispatch button intentionally.
-        </Text>
-      </Section>
-
-      <Section title="Fast workflow buttons">
         <WorkflowTriggerButton
           id="mobile-typecheck"
           label="Run typecheck"
@@ -392,6 +349,52 @@ export default function AdminDevScreen() {
           enabled={dispatchAvailable}
           disabledReason={dispatchAvailable ? undefined : 'GitHub dispatch not configured.'}
         />
+      </Section>
+
+      <Section title="Android — Internal Testing">
+        <Row label="Tester-live versionCode" value={Platform.OS === 'android' ? String(buildInfo.buildNumber) : 'v11 (last manual upload) — see Play Console'} />
+        <Row label="Build → Play upload" value={androidBuildAvailable ? 'auto ✓' : 'workflow not configured'} />
+        <Row label="Promote to testers" value="auto ✓ (eas.json releaseStatus=completed)" />
+        <Row label="Play Console blocker" value="none — listing pass complete" />
+        <Text style={styles.note}>
+          Future Internal Testing dispatches with `submit_to_play=true` create COMPLETED releases — no Play Console click required. First proof build will confirm the auto-promote path. Build buttons live in "Primary actions" above.
+        </Text>
+        <WorkflowTriggerButton
+          id="android-aab-build"
+          label="Build Android AAB (no upload)"
+          subtitle="Builds an AAB on EAS only. For dry runs / external upload."
+          enabled={androidBuildAvailable}
+          disabledReason={androidBuildAvailable ? undefined : 'Workflow android-aab-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
+          confirmCopy="Builds the Android AAB on EAS. Costs an EAS build credit. The AAB stays on EAS until you separately upload it. Continue?"
+        />
+      </Section>
+
+      <Section title="iOS — TestFlight">
+        <Row label="Latest build number" value={Platform.OS === 'ios' ? String(buildInfo.buildNumber) : 'see App Store Connect'} />
+        <Row label="Build / submit automation" value={iosBuildAvailable ? 'auto ✓' : 'workflow not configured'} />
+        <Row label="Auto-assign to Team (Expo)" value={adminStatus?.testflightGroupAssignmentConfigured === true ? 'auto ✓' : '—'} />
+        <Row label="HealthKit Mac/Vision warning" value="repo-only fix on main (ships with next iOS build)" />
+        <Text style={styles.note}>
+          Build + submit button lives in "Primary actions" above. Build 15 ships the HealthKit Mac/Vision warning fix.
+        </Text>
+        <WorkflowTriggerButton
+          id="ios-testflight-build"
+          label="Build iOS (no submit)"
+          subtitle="Builds an IPA on EAS only. For dry runs / external submit."
+          enabled={iosBuildAvailable}
+          disabledReason={iosBuildAvailable ? undefined : 'Workflow ios-testflight-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
+          confirmCopy="Builds the iOS IPA on EAS. Costs an EAS build credit. The IPA stays on EAS until you separately submit it. Continue?"
+        />
+      </Section>
+
+      <Section title="OTA">
+        <Row label="Status" value="blocked (EAS SDK 54 server gate)" />
+        <Text style={styles.note}>
+          OTA is unavailable on the EAS Update server for SDK 54. Use the Play / TestFlight build buttons above instead — there is no OTA dispatch button intentionally.
+        </Text>
+      </Section>
+
+      <Section title="Diagnostics">
         <WorkflowTriggerButton
           id="backend-smoke"
           label="Run backend smoke"
