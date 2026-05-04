@@ -177,6 +177,36 @@ Hard caps must degrade gracefully:
   until {{cycle_reset}}." Single CTA to credit-pack purchase.
 - Global kill-switch active → "AI Coach narrative paused; structured
   answers still working." No CTA — the user can't fix this.
+- **Free user attempts a paid AI feature** → exactly one prompt:
+  "This needs a Member subscription or a credit pack. {{Buy
+  credits}} {{Subscribe}} {{No thanks}}." No second nag in the same
+  session; respect "No thanks" until app restart.
+
+## Reserve rule — keep one use accessible
+
+Even on `member` tier, **reserve at least one use per day of the
+core AI features that map to product-truth questions** (today: the
+daily Coach narrative). Without this rule a user can spend their
+whole budget on long-history `deep` calls in the morning and lose
+the daily Coach answer for the rest of the day, which is exactly
+the moment they most need it. The reserve is enforced server-side
+and is not visible to the user as a separate counter — it just
+means the daily Coach call always lands until the daily token cap
+is hit, regardless of which prior call ate the budget.
+
+If the daily token cap is reached AND the reserve has been used,
+the user gets the deterministic answer with the standard "Daily AI
+budget reached" line — they do NOT get a second upgrade nag.
+
+## Profit guardrails
+
+The cost guards above protect against runaway spend. The pricing
+math protects against negative margin. Combined rule: **the app
+must remain profitable per active user even at the per-tier cap,
+after store fees**. If a tier's cap × cost-per-call ratio compresses
+to less than 3× margin, the cap shrinks before the price moves.
+This rule is non-negotiable — no per-user loss-leaders, no "we'll
+make it up on volume".
 
 ## What this doc does NOT cover
 

@@ -219,17 +219,26 @@ export function buildTerminalCheckPrompt(ctx: OwnerWorkflowContext): string {
  */
 export function buildTmuxAttachInstructions(): string {
   return [
-    'tmux attach (run in your existing terminal — Termius, iTerm, anywhere):',
+    'tmux attach (paste into your existing terminal — Termius, iTerm, etc.):',
     '',
-    '  tmux attach || tmux new -s lauburu',
+    '  tmux attach -t lauburu',
     '',
-    'If you already have a named session:',
+    'Read-only attach (watch without typing — useful when Aaron is already',
+    'driving the session and the phone is just observing):',
+    '',
+    '  tmux attach -r -t lauburu',
+    '',
+    'Create the named session if it does not exist yet:',
+    '',
+    '  tmux new -s lauburu',
+    '',
+    'List existing sessions:',
     '',
     '  tmux ls',
-    '  tmux attach -t <session>',
     '',
-    'Termius can run this on first connect via the host\'s "Startup snippet"',
-    'setting — configure once per host in Termius itself, not in this app.',
-    'No SSH credentials are stored in or sent through this app.',
+    'Termius can run any of the above on first connect via the host\'s',
+    '"Startup snippet" setting — configure once per host in Termius itself,',
+    'not in this app. No SSH credentials are stored in or sent through this',
+    'app.',
   ].join('\n');
 }
