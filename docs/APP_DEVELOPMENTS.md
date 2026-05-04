@@ -10,33 +10,24 @@ Updated 2026-05-05.
 
 ## Current #1 priority
 
-**Aaron's one-time Play Console listing pass on the v13 draft, then
-flip `eas.json submit.production.android.releaseStatus` from
-`'draft'` to `'completed'`.**
+**One proof Android build with `releaseStatus=completed` to confirm
+the full auto-promote path.**
 
-Why: Android tester auto-promote is the last manual step in the
-end-to-end ship loop. Until this lands, every Android tester release
-needs one Play Console click after Aaron uploads the AAB.
+Why: Play Console listing pass is complete (Aaron uploaded
+graphics, screenshots, and the listing-form questionnaire) and
+`eas.json submit.production.android.releaseStatus` is flipped to
+`'completed'`. The path is wired but not yet exercised on a real
+release.
 
-How to start: open `docs/PLAY_SUBMIT_SETUP.md` §6 and walk top-to-
-bottom. ~30–60 minutes.
-
-Listing graphics — partially prepared:
-
-- `docs/store-assets/google-play/app-icon-512.png` — DONE, generated
-  by sips from the existing 1024×1024 icon.
-- `docs/store-assets/google-play/feature-graphic-1024x500.png` —
-  DONE, app icon centred on `#0A0A0A`.
-- `docs/store-assets/google-play/phone-screenshot-1.png` and
-  `phone-screenshot-2.png` — NOT done; require Simulator/device
-  capture per the README in that folder. Aaron must do this step.
+How to start: open Admin/Dev → Android card → tap **Build Android +
+upload to Internal Testing**. Wait ~25 min for the workflow to
+finish. Confirm a tester device picks up the new versionCode within
+~15–60 min without any Play Console click.
 
 ## Current blocker
 
-Play Console listing pass — specifically the two phone screenshots
-and the listing-form questionnaire. The icon and feature graphic
-are now in repo. Nothing in code is blocking; all repo-side wiring
-is done and verified.
+Nothing in code. One proof Android build remains the only thing
+between today's state and "Android auto-promote verified".
 
 ## Next action
 
@@ -61,8 +52,12 @@ anymore:
 - "Fix iOS HealthKit Mac/Vision warning" — repo-only fix on main
   (commit `a438070`), ships with next iOS build (Build 15).
 - "Generate Play app icon 512×512 and feature graphic 1024×500" —
-  DONE, in `docs/store-assets/google-play/`. Phone screenshots
-  still pending Aaron's manual capture.
+  DONE, in `docs/store-assets/google-play/`.
+- "Capture two phone screenshots for Play listing" — DONE
+  (Aaron-side, 2026-05-05).
+- "Play Console listing pass" — DONE (Aaron-side, 2026-05-05).
+- "Flip `releaseStatus` to `completed` after the listing pass" —
+  DONE (eas.json + workflow `release_status` override input).
 - "Add /admin/status backend route + signed dispatch" — DONE.
 - "Hide Dev/Admin FAB from normal testers" — DONE (admin-email gate).
 - "Hide Feedback FAB from owner" — DONE (this batch).
@@ -71,10 +66,11 @@ anymore:
 
 These remain in the backlog because they are NOT yet done:
 
-- Play Console listing pass (the #1 above).
-- Flip `releaseStatus: 'completed'` after the listing pass.
+- Proof Android build with releaseStatus=completed (the #1 above).
 - Next paired build (Android v14 + iOS Build 15) bundling the
-  standing repo-only UX work + iOS HealthKit warning fix.
+  standing repo-only UX work + iOS HealthKit warning fix. The
+  Android half of this paired build is exactly the proof build
+  above — they collapse into one workflow dispatch.
 - Grappler Readiness Batches B/C/D (extend `NextDayCheckin` sliders,
   extend `TrainingSession` with grappling-load fields, bucket-ring
   UI on `AthleteStateStrip`). The audit doc explicitly recommends

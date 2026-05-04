@@ -87,14 +87,20 @@ update through Play Store within ~15–60 min.
 
 No manual Play Console upload, no terminal, no Mac required.
 
-## 6. Play Console one-time listing pass — required to flip from DRAFT to COMPLETED
+## 6. Play Console one-time listing pass — DONE
 
-Today `eas.json submit.production.android.releaseStatus = "draft"`.
-That means every workflow upload lands as a draft release Play accepts
-without listing metadata; you click **Review release → Start rollout**
-once per release. To remove that click, complete the listing fields
-below ONCE in Play Console, then change `releaseStatus` to
-`"completed"` (one-line edit + commit).
+Listing pass completed and `eas.json
+submit.production.android.releaseStatus` is now `"completed"`.
+Future workflow dispatches with `submit_to_play=true` create
+COMPLETED Internal Testing releases — no Play Console click
+required for tester roll-out per release. The listing items below
+are kept for reference only.
+
+If a future release ever needs to land as a draft (e.g. listing
+re-review required after a metadata change), use the
+`release_status` workflow input and pass `draft`. The override is
+clamped to `internal` track only by the workflow `type: choice`
+enum.
 
 Open Play Console → Lauburu Grappling Map. Each item below is a
 sidebar entry on the left; address them in this order so dependencies
@@ -150,23 +156,26 @@ resolve first.
    for Internal Testing).
 10. **News apps / Government apps**: NO.
 
-### After all the above are saved
+### After all the above are saved — DONE on 2026-05-05
 
-1. Open the latest draft release on the Internal testing track.
-2. **Review release → Start rollout to Internal Testing**. (Verifies
-   the listing pass took.)
-3. Edit `apps/mobile/eas.json`:
-   ```jsonc
-   "android": {
-     "serviceAccountKeyPath": "./google-services-key.json",
-     "track": "internal",
-     "releaseStatus": "completed"   // changed from "draft"
-   }
-   ```
-4. Commit + push. Future workflow dispatches of
-   `android-aab-build` with `submit_to_play=true` will create a
-   COMPLETED Internal Testing release directly — no Play Console
-   click required for releases after that.
+`eas.json` now reads:
+
+```jsonc
+"android": {
+  "serviceAccountKeyPath": "./google-services-key.json",
+  "track": "internal",
+  "releaseStatus": "completed"
+}
+```
+
+Future dispatches of `android-aab-build` with `submit_to_play=true`
+create a COMPLETED Internal Testing release directly — no Play
+Console click required.
+
+Proof build still required: trigger one Android build + upload
+from Admin/Dev (or via the workflow_dispatch UI) and confirm a
+tester device receives the new versionCode without any Play Console
+intervention. After that, the auto-promote path is verified.
 
 Public production release (closed/open testing → production) is a
 separate, larger pass — out of scope for this checklist.

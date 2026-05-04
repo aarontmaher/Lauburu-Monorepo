@@ -12,16 +12,18 @@ State as of 2026-05-05:
   `a438070`, `UIRequiredDeviceCapabilities: ["arm64"]`). Repo-only
   until Build 15 ships.
 - **Android v11** reached internal testers after manual AAB upload
-  (last manually uploaded build). v13 is the latest repo
-  versionCode but has not yet been built/uploaded since the
-  listing-pass blocker exists.
-- **Android Play Console listing pass**: still required for full
-  auto-promote. Icon (512×512) and feature graphic (1024×500)
-  generated to `docs/store-assets/google-play/`. Phone screenshots
-  still need a Simulator/device capture (see folder README).
-- **`releaseStatus`** stays `'draft'` until the listing pass is
-  saved AND Aaron has clicked `Review release → Start rollout` on
-  one release successfully.
+  (last manually uploaded build).
+- **Play Console listing pass**: DONE (Aaron-side, 2026-05-05).
+  Graphics + screenshots + listing-form questionnaire all
+  uploaded.
+- **`eas.json` `releaseStatus`**: now `'completed'`. The
+  `android-aab-build.yml` workflow accepts a `release_status`
+  override (`completed` / `draft`) for the rare case a future
+  release should temporarily revert to draft.
+- **Proof build**: required once. Trigger Build Android + upload
+  to Internal Testing from Admin/Dev; tester device should
+  receive the new versionCode within 15–60 min with no Play
+  Console click.
 
 ## TL;DR
 
@@ -32,7 +34,7 @@ Tester channels work. Full auto-ship is partial.
 | Build (EAS) | ✅ workflow `android-aab-build.yml` | ✅ workflow `ios-testflight-build.yml` |
 | Upload to store | ✅ `eas submit` (PLAY_SA_JSON) | ✅ `eas submit` (App Store Connect API key cached on EAS) |
 | Tester group assignment | n/a — Internal Testing track | ✅ `eas.json submit.production.ios.groups: ["Team (Expo)"]` |
-| Promote / make tester-live | 🟡 manual Play Console "Review release → Start rollout" | ✅ automatic — Build 14 reached Testing without ASC clicks |
+| Promote / make tester-live | ✅ automatic via releaseStatus=completed (proof build pending) | ✅ automatic — Build 14 reached Testing without ASC clicks |
 | Tester device update | ✅ Play Store auto-update once promoted | ✅ TestFlight auto-update once Apple processing finishes |
 
 ## What "tester update channels work" means

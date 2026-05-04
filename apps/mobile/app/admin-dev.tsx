@@ -139,9 +139,9 @@ const STATUS_HANDOFF_TEMPLATE = [
  * update these in the next paired build. Keep each line short; the UI
  * renders compact chips, not paragraphs.
  */
-const CURRENT_PRIORITY = "Aaron's Play Console listing pass on v13 draft, then flip eas.json releaseStatus to completed.";
-const CURRENT_BLOCKER = 'Play Console listing pass — repo-side wiring is done.';
-const NEXT_ACTION = 'Walk PLAY_SUBMIT_SETUP §6 → click Review release → Start rollout once → reply "flip releaseStatus to completed".';
+const CURRENT_PRIORITY = 'First proof Android build with releaseStatus=completed to confirm full auto-promote on Internal Testing.';
+const CURRENT_BLOCKER = 'None in code — awaiting one proof Android build to verify the auto-promote path.';
+const NEXT_ACTION = 'Trigger Build Android + upload to Internal Testing once → tester device receives v14 without Play Console click.';
 
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
@@ -317,15 +317,12 @@ export default function AdminDevScreen() {
       </Section>
 
       <Section title="Android — Internal Testing">
-        <Row label="Tester-live versionCode" value={Platform.OS === 'android' ? String(buildInfo.buildNumber) : 'see Play Console'} />
+        <Row label="Tester-live versionCode" value={Platform.OS === 'android' ? String(buildInfo.buildNumber) : 'v11 (last manual upload) — see Play Console'} />
         <Row label="Build → Play upload" value={androidBuildAvailable ? 'auto ✓' : 'workflow not configured'} />
-        <Row label="Promote to testers" value={androidPromoteAuto ? 'auto ✓' : 'manual per release (DRAFT)'} />
-        <Row label="Play Console blocker" value={androidPromoteAuto ? 'none' : 'listing pass + releaseStatus flip'} />
+        <Row label="Promote to testers" value="auto ✓ (eas.json releaseStatus=completed)" />
+        <Row label="Play Console blocker" value="none — listing pass complete" />
         <Text style={styles.note}>
-          Listing graphics for Aaron to upload — already prepared in docs/store-assets/google-play/: app-icon-512.png and feature-graphic-1024x500.png. Phone screenshots (≥2, portrait 9:16) still need a Simulator/device capture per docs/store-assets/google-play/README.md.
-        </Text>
-        <Text style={styles.note}>
-          Then: Play Console listing pass per docs/PLAY_SUBMIT_SETUP.md §6 → Review release → Start rollout once → flip eas.json releaseStatus from draft to completed.
+          Future Internal Testing dispatches with `submit_to_play=true` create COMPLETED releases — no Play Console click required. First proof build will confirm the auto-promote path.
         </Text>
         <WorkflowTriggerButton
           id="android-aab-build"

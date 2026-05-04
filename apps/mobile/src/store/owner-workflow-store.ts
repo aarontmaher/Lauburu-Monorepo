@@ -15,13 +15,13 @@ import type { OwnerWorkflowContext } from '../services/prompt-templates';
 
 const DEFAULT_CONTEXT: OwnerWorkflowContext = {
   currentPriority:
-    "Aaron's Play Console listing pass on v13 draft, then flip eas.json submit.production.android.releaseStatus from 'draft' to 'completed'.",
+    'First proof Android build with releaseStatus=completed to confirm full auto-promote on Internal Testing track.',
   currentBlocker:
-    'Play Console listing pass — repo-side wiring is done. Nothing in code is blocking this.',
+    'No code blockers. Aaron-side: trigger Build Android + upload to Internal Testing once to verify the auto-promote path on a real release.',
   lastStatus: [
-    'Auto-update: iOS end-to-end auto-ship live. Android upload-to-Play DRAFT live.',
-    'Repo-only: iOS HealthKit Mac/Vision warning fix on main; Admin/Dev redesign on main.',
-    'Blocked: Play Console listing pass + releaseStatus flip.',
+    'Auto-update: iOS end-to-end auto-ship live. Android upload-to-Play DRAFT was live; releaseStatus now flipped to completed in eas.json.',
+    'Repo-only: iOS HealthKit Mac/Vision warning fix on main; Admin/Dev redesign on main; Android auto-promote flip on main.',
+    'Blocked: nothing in code; awaiting one proof Android build to confirm completed-status auto-promote.',
     'Verified: tsc --noEmit clean.',
   ].join(' '),
   selectedTaskBundle: undefined,
@@ -37,9 +37,7 @@ const DEFAULT_CONTEXT: OwnerWorkflowContext = {
     'Use predefined GitHub Actions workflows only',
   ],
   manualStepsForAaron: [
-    'Walk docs/PLAY_SUBMIT_SETUP.md §6 — Play Console listing pass',
-    'Click Review release → Start rollout once on the v13 draft',
-    'Reply "flip releaseStatus to completed" to confirm the listing pass took',
+    'Trigger Build Android + upload to Internal Testing from Admin/Dev once to verify auto-promote',
     'TestFlight + Play Store auto-update on Aaron\'s own devices — accept the prompts',
   ],
   canDeleteFromNotepad: [

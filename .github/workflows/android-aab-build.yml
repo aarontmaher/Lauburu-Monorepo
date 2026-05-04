@@ -19,6 +19,15 @@ on:
         description: 'true → after build, submit AAB to Play Internal Testing (requires PLAY_SA_JSON secret)'
         required: false
         default: 'false'
+      release_status:
+        description: 'Optional override for releaseStatus on the Internal Testing track. Default uses eas.json (currently completed). Use "draft" to revert to per-release manual rollout.'
+        required: false
+        default: ''
+        type: choice
+        options:
+          - ''
+          - completed
+          - draft
 
 jobs:
   build:
@@ -82,6 +91,7 @@ jobs:
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
           PLAY_SA_JSON: ${{ secrets.PLAY_SA_JSON }}
+          RELEASE_STATUS_OVERRIDE: ${{ inputs.release_status }}
         run: |
           set -euo pipefail
           if [ -z "${PLAY_SA_JSON}" ]; then
@@ -94,7 +104,17 @@ jobs:
           printf '%s' "${PLAY_SA_JSON}" > apps/mobile/google-services-key.json
           trap 'rm -f apps/mobile/google-services-key.json' EXIT
           cd apps/mobile
-          npx eas-cli submit --platform android --profile production --latest --non-interactive
+          # Build submit args. Optional release_status override safely
+          # clamped to {completed, draft} by the workflow input enum;
+          # any other value is rejected before this script runs.
+          SUBMIT_ARGS=( --platform android --profile production --latest --non-interactive )
+          if [ -n "${RELEASE_STATUS_OVERRIDE}" ]; then
+            SUBMIT_ARGS+=( --release-status "${RELEASE_STATUS_OVERRIDE}" )
+            echo "Using release_status override: ${RELEASE_STATUS_OVERRIDE}"
+          else
+            echo "Using eas.json default releaseStatus (completed for internal track)."
+          fi
+          npx eas-cli submit "${SUBMIT_ARGS[@]}"
 
       - name: Summary
         run: |
@@ -105,8 +125,12 @@ jobs:
             echo "Submit to Play: ${{ inputs.submit_to_play }}"
             echo "Release notes: ${{ inputs.release_notes }}"
             if [ "${{ inputs.submit_to_play }}" = "true" ]; then
-              echo "Next: Play Console → Lauburu Grappling Map → Testing → Internal testing — release should appear within ~5–10 min."
+              if [ "${{ inputs.release_status }}" = "draft" ]; then
+                echo "Next: Play Console → Internal testing → open the new draft → Review release → Start rollout (override: draft)."
+              else
+                echo "Next: nothing manual — release auto-promotes to Internal Testing testers within ~5–10 min (releaseStatus=completed)."
+              fi
             else
-              echo "Next: Play Console → Lauburu Grappling Map → Testing → Internal testing → Create new release → upload AAB."
+              echo "Next: Play Console → Internal testing → Create new release → upload AAB manually."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
