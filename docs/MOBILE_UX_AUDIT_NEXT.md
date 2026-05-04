@@ -135,6 +135,34 @@ on TestFlight Build 13 once tester-live.
 
 ---
 
+---
+
+## Standing Notes-derived UX rules (2026-05-05)
+
+Aggregated from Aaron's running notes; record them once here so
+future batches can reference the doc instead of rediscovering.
+Already on `main` where marked DONE; awaits next paired build.
+
+| Rule | State |
+|---|---|
+| Remove prominent "signed in as @mail" from Home | check on next paired build |
+| Remove "provisional confidence high" from Home | DONE — `AthleteStateStrip` drops the line when `level === 'high'` |
+| Remove "based on Apple Health/imported history" provenance from prominent Home UI | DONE — same component |
+| Signed-out Home shows Sign in / Create account CTAs | DONE — `GuestBanner` |
+| Feedback only needs severity + description + screenshot | DONE — `FeedbackFab` simplified |
+| Tab order: Home → Health → Train → Check-in → Map → Settings | DONE — `(tabs)/_layout.tsx` |
+| Weekly schedule visible in Train tab | DONE — `WeeklyScheduleSummary` |
+| Machine connect only after HIIT/Steady State picked | DONE — `<TrainMachineSection />` gated on `pendingMode in ('hiit', 'zone2')` |
+| AppleHealthCard iOS-only / SamsungHealthCard Android-only | DONE — Platform.OS gates |
+| WHOOP/Polar tucked under "More sources" disclosure unless connected | DONE — `OtherSourcesDisclosure` |
+| Owner sees Dev/Admin FAB instead of Feedback FAB | DONE — `FabsGate` ownerSurface |
+| Normal tester sees Feedback FAB; signed-out sees Feedback only | DONE — same gate |
+
+All "DONE" rows are repo-only until next paired build (Android v14
++ iOS Build 15) ships. No tester-visible regressions in this batch.
+
+---
+
 ## What's deliberately deferred (not P-numbered)
 
 - Grappler Readiness Batches B/C/D: extending NextDayCheckin sliders,

@@ -322,7 +322,10 @@ export default function AdminDevScreen() {
         <Row label="Promote to testers" value={androidPromoteAuto ? 'auto ✓' : 'manual per release (DRAFT)'} />
         <Row label="Play Console blocker" value={androidPromoteAuto ? 'none' : 'listing pass + releaseStatus flip'} />
         <Text style={styles.note}>
-          Next: walk docs/PLAY_SUBMIT_SETUP.md §6, click Review release → Start rollout, then flip releaseStatus to completed.
+          Listing graphics for Aaron to upload — already prepared in docs/store-assets/google-play/: app-icon-512.png and feature-graphic-1024x500.png. Phone screenshots (≥2, portrait 9:16) still need a Simulator/device capture per docs/store-assets/google-play/README.md.
+        </Text>
+        <Text style={styles.note}>
+          Then: Play Console listing pass per docs/PLAY_SUBMIT_SETUP.md §6 → Review release → Start rollout once → flip eas.json releaseStatus from draft to completed.
         </Text>
         <WorkflowTriggerButton
           id="android-aab-build"

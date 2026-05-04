@@ -131,9 +131,14 @@ resolve first.
    - Full description (≤4000 chars): describe the product (3D
      mind-map, training tracking, AI Coach, multi-source health
      integration). Don't claim medical or readiness certification.
-   - **Graphics**: 1 feature graphic (1024×500), at least 2
-     phone screenshots (16:9), 1 app icon (the existing
-     `apps/mobile/assets/images/icon.png`).
+   - **Graphics — already prepared in `docs/store-assets/google-play/`:**
+     - App icon 512×512 → `docs/store-assets/google-play/app-icon-512.png`
+     - Feature graphic 1024×500 → `docs/store-assets/google-play/feature-graphic-1024x500.png`
+     - Phone screenshots: at least 2 portrait 9:16 (≥1080 long edge).
+       NOT yet generated — capture from iOS Simulator or Android
+       device per `docs/store-assets/google-play/README.md` step 4
+       and save them next to the icon/graphic above before
+       uploading.
 7. **Store listing → App category**
    - Category: **Health & Fitness**
    - Tags: pick `Fitness`, `Workout`, `Personal training`.

@@ -16,15 +16,27 @@ flip `eas.json submit.production.android.releaseStatus` from
 
 Why: Android tester auto-promote is the last manual step in the
 end-to-end ship loop. Until this lands, every Android tester release
-needs one Play Console click.
+needs one Play Console click after Aaron uploads the AAB.
 
 How to start: open `docs/PLAY_SUBMIT_SETUP.md` §6 and walk top-to-
 bottom. ~30–60 minutes.
 
+Listing graphics — partially prepared:
+
+- `docs/store-assets/google-play/app-icon-512.png` — DONE, generated
+  by sips from the existing 1024×1024 icon.
+- `docs/store-assets/google-play/feature-graphic-1024x500.png` —
+  DONE, app icon centred on `#0A0A0A`.
+- `docs/store-assets/google-play/phone-screenshot-1.png` and
+  `phone-screenshot-2.png` — NOT done; require Simulator/device
+  capture per the README in that folder. Aaron must do this step.
+
 ## Current blocker
 
-The Play Console listing pass above. Nothing in code is blocking;
-all repo-side wiring is done and verified.
+Play Console listing pass — specifically the two phone screenshots
+and the listing-form questionnaire. The icon and feature graphic
+are now in repo. Nothing in code is blocking; all repo-side wiring
+is done and verified.
 
 ## Next action
 
@@ -46,8 +58,11 @@ anymore:
   `docs/AI_MONETISATION_AND_USAGE_STRATEGY.md`.
 - "Audit which wearable claims are actually live" — DONE,
   `docs/HEALTH_METRIC_APPS_DEVICES_AUDIT.md`.
-- "Fix iOS HealthKit Mac/Vision warning" — repo-only fix on main,
-  ships with next iOS build.
+- "Fix iOS HealthKit Mac/Vision warning" — repo-only fix on main
+  (commit `a438070`), ships with next iOS build (Build 15).
+- "Generate Play app icon 512×512 and feature graphic 1024×500" —
+  DONE, in `docs/store-assets/google-play/`. Phone screenshots
+  still pending Aaron's manual capture.
 - "Add /admin/status backend route + signed dispatch" — DONE.
 - "Hide Dev/Admin FAB from normal testers" — DONE (admin-email gate).
 - "Hide Feedback FAB from owner" — DONE (this batch).

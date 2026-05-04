@@ -1,8 +1,27 @@
 # Mobile release sync — what's auto vs manual today
 
 Single source of truth for the tester release pipeline. Updated
-2026-05-04 after Build 14 (iOS) and v11 (Android) reached internal
-testers.
+2026-05-05.
+
+State as of 2026-05-05:
+
+- **iOS Build 14** is live in TestFlight via auto-group assignment
+  (`groups: ["Team (Expo)"]` in `eas.json`). iOS auto-ship works
+  end-to-end.
+- **iOS HealthKit Mac/Vision warning fix** is on `main` (commit
+  `a438070`, `UIRequiredDeviceCapabilities: ["arm64"]`). Repo-only
+  until Build 15 ships.
+- **Android v11** reached internal testers after manual AAB upload
+  (last manually uploaded build). v13 is the latest repo
+  versionCode but has not yet been built/uploaded since the
+  listing-pass blocker exists.
+- **Android Play Console listing pass**: still required for full
+  auto-promote. Icon (512×512) and feature graphic (1024×500)
+  generated to `docs/store-assets/google-play/`. Phone screenshots
+  still need a Simulator/device capture (see folder README).
+- **`releaseStatus`** stays `'draft'` until the listing pass is
+  saved AND Aaron has clicked `Review release → Start rollout` on
+  one release successfully.
 
 ## TL;DR
 

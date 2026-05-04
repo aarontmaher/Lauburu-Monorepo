@@ -274,6 +274,55 @@ better.
 **Integration priority:** **defer indefinitely** unless a watch-
 free cohort emerges that genuinely can't get HRV any other way.
 
+## Grappling wearability matrix — explicit
+
+This is the part marketing and onboarding copy must respect — every
+device claim has a wearability reality check.
+
+| Device | Worn during rolling? | Why / why not |
+|---|---|---|
+| Apple Watch | NO | Rigid case, fragile screen, lanyard hazard. Tap-out conflicts with armbar setups. |
+| Galaxy Watch / Pixel Watch | NO | Same as Apple Watch. Pixel Watch even more fragile. |
+| Garmin Forerunner / Fenix | NO | Bulky case, scratched gi friction. |
+| Garmin Lily / Vivosmart | NO (mostly) | Smaller but still a watch — strap snag risk. |
+| Oura ring | NO | Tap-out hazard, finish strips off in 2–4 weeks of gi friction. |
+| Polar chest strap | NO | Strap rides up under pressure, buckle scrapes the partner. |
+| **WHOOP strap** | **YES** | Soft-band, no rigid case, the de-facto grappler standard. |
+| **Polar OH1 / Verity Sense (armband)** | **YES** | Optical armband on bicep — works for most positions; can slip in heavy clinch. |
+| Phone in pocket | NO | Won't fit in a gi; falls out in no-gi. Step counts on the mat are zero by design. |
+
+**Implication for primary UI:** the Health-tab default surface
+must work for users who WEAR NOTHING during rolling. Apple Health
++ Health Connect (resting / off-mat metrics) are mandatory primary;
+WHOOP + Polar OH1 are richer optional sources; Watch / Ring /
+Chest-strap data is supplementary and must NOT lead the UI.
+
+## Missingness rules — non-negotiable
+
+These follow `docs/FEEDBACK_PRIORITY_MODEL.md` rule 4 ("misleading
+health/readiness claim") and apply everywhere a metric is
+displayed:
+
+1. **Missing RHR / HRV / recovery / strain stays missing.** Never
+   substitute a value from a different source silently. Never
+   display a placeholder value. Empty states say "no data for
+   {{window}} from {{source}}".
+2. **WHOOP CSV is historical backfill, not a live source.** Once
+   imported, it lives in normalised metrics, but the UI must not
+   imply it represents today.
+3. **A wearable that is not worn produces no data.** Empty
+   wearable days are honest — do not infer "rest day" from a
+   missing strap, do not interpret zero steps on a mat day as
+   inactivity.
+4. **Source attribution is per-metric, not per-day.** A day can
+   have HRV from Apple Health, recovery from WHOOP, and steps
+   missing — the UI must show that combination accurately rather
+   than collapsing to a single source label.
+5. **Lauburu Readiness / Grappler Readiness are app-owned.** No
+   wearable's "recovery" / "readiness" / "body battery" is shown
+   as primary product truth; they are inputs only and labelled as
+   such.
+
 ## Cross-cutting UI/UX rules
 
 These hold across every source:
