@@ -75,3 +75,28 @@ export const AI_BACKEND_IS_LOCAL =
  */
 export const AI_BACKEND_DISABLED =
   !AI_BACKEND_CONFIGURED && AI_INTERNAL_BASE === DEV_INTERNAL;
+
+/**
+ * Future MCP / app-dev-centre Cloudflare Worker base URL.
+ *
+ * REPO-ONLY today: production traffic continues to hit the
+ * existing Railway-hosted backend at AI_PUBLIC_BASE /
+ * AI_INTERNAL_BASE. The Worker scaffold lives at
+ * `cloudflare-worker/` and is not deployed yet.
+ *
+ * Set EXPO_PUBLIC_MCP_BASE_URL when the Worker preview is live to
+ * route a future Admin/Dev "MCP probe" or specific connector
+ * checks at the new origin without flipping the whole app off
+ * Railway. The mobile app does NOT auto-fallback between the two
+ * — this is a deliberate switch the owner toggles once Worker
+ * verification is complete.
+ *
+ * See docs/CLOUDFLARE_MIGRATION.md for cutover steps.
+ */
+export const MCP_BASE_URL: string | null =
+  (process.env.EXPO_PUBLIC_MCP_BASE_URL ?? '').trim().length > 0
+    ? (process.env.EXPO_PUBLIC_MCP_BASE_URL ?? '').trim()
+    : null;
+
+/** True when the Cloudflare Worker MCP base URL is wired in env. */
+export const MCP_BACKEND_CONFIGURED = MCP_BASE_URL !== null;
