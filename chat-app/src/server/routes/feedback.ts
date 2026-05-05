@@ -249,7 +249,7 @@ function requireAdminToken(req: any, res: any, next: any): void {
 // Hides archived/dismissed/spam/test/not_actionable records by default.
 // Pass ?includeArchived=true to see all records (e.g. for triage review
 // or restoring an accidentally-archived item).
-router.get('/recent', async (req: any, res: any) => {
+router.get('/recent', requireAdminToken, async (req: any, res: any) => {
   try {
     const includeArchived = String(req.query.includeArchived ?? '') === 'true'
       || String(req.query.includeArchived ?? '') === '1';
@@ -397,7 +397,7 @@ router.get('/triage-suggestions', requireAdminToken, async (_req: any, res: any)
 // GET /api/feedback/attachments/:filename — serves a stored attachment
 // for inline viewing. Filenames are prefixed with feedback IDs and are
 // not user-controlled inputs from the client.
-router.get('/attachments/:filename', async (req: any, res: any) => {
+router.get('/attachments/:filename', requireAdminToken, async (req: any, res: any) => {
   try {
     const filename = String(req.params.filename ?? '');
     // Guard against path traversal — only allow fb_*_<n>.(jpg|png)

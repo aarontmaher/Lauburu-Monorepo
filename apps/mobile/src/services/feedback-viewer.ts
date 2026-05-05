@@ -20,12 +20,30 @@ function recentEndpoint(): string {
 }
 
 /**
- * Compose the public URL for a stored attachment. The server guards
- * filenames with a /^fb_[a-z0-9_]+_[0-9]+\.(jpg|png)$/ regex, so only
- * strings matching that pattern are worth sending.
+ * Compose the URL for a stored attachment. The server guards
+ * filenames with a /^fb_[a-z0-9_]+_[0-9]+\.(jpg|png)$/ regex, AND
+ * now requires the admin token (x-athlete-memory-token) on every
+ * GET. Returns a string URL — pair with `attachmentImageSource()`
+ * if you need a React Native <Image> source object that includes
+ * the admin token header.
  */
 export function attachmentUrl(filename: string): string {
   return `${baseOrigin()}/api/feedback/attachments/${encodeURIComponent(filename)}`;
+}
+
+/**
+ * React-Native `<Image source={...}>` helper that sets the admin
+ * token header. Required since the feedback attachments endpoint
+ * is admin-gated to prevent PII leak — the in-app Feedback Viewer
+ * is admin-only, so it has the same env token (`EXPO_PUBLIC_
+ * ATHLETE_MEMORY_TOKEN`) that the rest of the Admin/Dev surface
+ * uses.
+ */
+export function attachmentImageSource(filename: string): { uri: string; headers?: Record<string, string> } {
+  const token = process.env.EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN ?? '';
+  const uri = attachmentUrl(filename);
+  if (token.length === 0) return { uri };
+  return { uri, headers: { 'x-athlete-memory-token': token } };
 }
 
 export interface StoredAttachmentRef {
@@ -59,10 +77,18 @@ export async function fetchRecentFeedback(): Promise<FetchRecentResult> {
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 10_000);
+    const token = process.env.EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN ?? '';
     const resp = await fetch(url, {
       method: 'GET',
       signal: controller.signal,
-      headers: { Accept: 'application/json' },
+      headers: {
+        Accept: 'application/json',
+        // Admin-token gate on the server. The Feedback Viewer is
+        // owner/admin-only by route gate, so the admin token is the
+        // correct credential here. Public users cannot reach this
+        // route from the app.
+        ...(token.length > 0 ? { 'x-athlete-memory-token': token } : {}),
+      },
     });
     clearTimeout(timer);
     if (!resp.ok) {

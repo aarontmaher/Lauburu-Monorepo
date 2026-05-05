@@ -21,7 +21,7 @@ import {
 import { Stack, useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import {
-  attachmentUrl,
+  attachmentImageSource,
   fetchRecentFeedback,
   formatFullReport,
   type FeedbackRecord,
@@ -66,7 +66,10 @@ export default function FeedbackViewerScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fullImage, setFullImage] = useState<string | null>(null);
+  // Stores the URI string for accessibility (alt text / sharing) plus
+  // the headers needed for the admin-gated attachment endpoint, so the
+  // expanded <Image> can authenticate against the server.
+  const [fullImage, setFullImage] = useState<{ uri: string; headers?: Record<string, string> } | null>(null);
 
   const load = useCallback(async (mode: 'initial' | 'refresh') => {
     if (mode === 'initial') setLoading(true);
@@ -163,7 +166,7 @@ export default function FeedbackViewerScreen() {
         <Pressable style={styles.fullOverlay} onPress={() => setFullImage(null)}>
           {fullImage && (
             <Image
-              source={{ uri: fullImage }}
+              source={fullImage}
               style={styles.fullImage}
               resizeMode="contain"
             />
@@ -182,7 +185,7 @@ function FeedbackCard({
   onOpenImage,
 }: {
   item: FeedbackRecord;
-  onOpenImage: (url: string) => void;
+  onOpenImage: (source: { uri: string; headers?: Record<string, string> }) => void;
 }) {
   const typeColor = TYPE_COLORS[item.type] ?? '#888';
   const sevColor = SEVERITY_COLORS[item.severity] ?? '#888';
@@ -240,15 +243,15 @@ function FeedbackCard({
       {item.attachments && item.attachments.length > 0 && (
         <RNView style={styles.thumbRow}>
           {item.attachments.map((a) => {
-            const url = attachmentUrl(a.filename);
+            const source = attachmentImageSource(a.filename);
             return (
               <Pressable
                 key={a.filename}
-                onPress={() => onOpenImage(url)}
+                onPress={() => onOpenImage(source)}
                 accessibilityRole="imagebutton"
                 accessibilityLabel={`Open ${a.filename}`}
               >
-                <Image source={{ uri: url }} style={styles.thumb} />
+                <Image source={source} style={styles.thumb} />
               </Pressable>
             );
           })}
