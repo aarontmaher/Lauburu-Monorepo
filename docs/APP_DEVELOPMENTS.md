@@ -33,9 +33,47 @@ Updated 2026-05-05.
    `AI_MONETISATION_AND_USAGE_STRATEGY.md`).
 
 Grappler Readiness Batches B/C/D map onto priority (2). Tonight's
-prototype is the cautious first iteration — Batches B/C/D refine
-the underlying schema (subjective sliders, grappling-load fields,
-bucket-ring UI).
+prototype is doc-only (`docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md`)
+— Batches B/C/D refine the underlying schema (subjective sliders,
+grappling-load fields, bucket-ring UI).
+
+## Latest paired build (v15 / Build 16 — both `success`)
+
+- Android v15: run `25384901407` finished `success` 2026-05-05.
+  Bundles the un-gated AppleHealthCard / Health Connect card +
+  iOS HealthKit Mac/Vision warning fix + Admin/Dev redesign +
+  AI Coach UX cleanup + BLE CPS/CSC fix + Settings build/version
+  row + Railway audit + feedback PII fix. Should be propagating
+  to tester Android via Play Store auto-update.
+- iOS Build 16: run `25384907135` finished `success` 2026-05-05.
+  Same bundle on iOS via TestFlight — Apple processing window
+  (5–30 min) before testers see the prompt.
+
+Confirmation pending: Aaron walks Apple Health connect/sync on
+iPhone, girlfriend walks Health Connect connect/sync on Android.
+
+## Next paired build (v16 / Build 17 — repo-only changes ready)
+
+The following are on `main` after v15 / Build 16 dispatch and
+will surface only when the next paired build ships:
+
+- Friendly WHOOP / Polar error UI (commit `a036fd5`).
+- Settings build/version row (commit `774294c`).
+- In-app audit system + first capture site
+  (`health_source_visible` on Health-tab mount, this batch).
+- Connector `/admin/work-status` route (backend-side; ships with
+  Railway redeploy of `chat-app`).
+- The five new planning docs from this batch
+  (`WHOOP_POLAR_SYNC_STRATEGY.md`,
+  `GRAPPLER_READINESS_PROTOTYPE_PLAN.md`,
+  `NUTRITION_TRACKING_PLAN.md`,
+  `DEXA_BLOOD_TEST_UPLOAD_PLAN.md`,
+  `GRAPPLINGMAP_MCP_BRIDGE_PLAN.md`).
+
+Trigger from Admin/Dev → Primary actions when ready: bump
+`app.json android.versionCode` 15 → 16 + `ios.buildNumber` 16 →
+17, dispatch Build Android + upload + Build iOS + submit. Both
+paths are routine now (auto-promote proven).
 
 Auto-update lane CLOSED 2026-05-06:
 

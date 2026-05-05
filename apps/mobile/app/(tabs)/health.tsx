@@ -8,9 +8,11 @@ import {
   Alert,
 } from 'react-native';
 import { Text, View } from '@/components/Themed';
+import * as Application from 'expo-application';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useTierStore } from '../../src/store/tier-store';
+import { useAuditEventStore } from '../../src/store/audit-event-store';
 import { isExpoGo } from '../../src/services/expo-detect';
 import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
 import { NutritionCard } from '../../src/components/NutritionCard';
@@ -889,6 +891,38 @@ export default function HealthScreen() {
       checkPermissions();
     }
   }, [checkPermissions, inExpoGo, refreshNativeAvailability]);
+
+  // First audit capture site — `health_source_visible` on Health-tab
+  // mount per platform. Lets Aaron + the connector see post-build
+  // that the un-gated primary card is actually surfacing on a real
+  // device (vs a tier-store regression that hid it again). Local-
+  // only, no raw health values, no network call. Capped at 200 in
+  // the store so the buffer never grows unbounded.
+  // Fires once on first ready render — depends on `nativeAvailable`
+  // settling to a definitive boolean so the snapshot reflects the
+  // device's true probe result.
+  useEffect(() => {
+    if (nativeAvailable == null) return;
+    const platform = Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'unknown';
+    const sourceId = Platform.OS === 'ios' ? 'apple_health' : Platform.OS === 'android' ? 'health_connect' : null;
+    void useAuditEventStore.getState().add({
+      platform,
+      appVersion: Application.nativeApplicationVersion ?? null,
+      buildNumber: Application.nativeBuildVersion ?? null,
+      screen: '(tabs)/health',
+      eventType: nativeAvailable ? 'health_source_visible' : 'health_source_missing',
+      severity: nativeAvailable ? 'info' : 'warning',
+      sourceId,
+      sourceState: nativeAvailable ? 'native_available' : 'native_unavailable',
+      userVisibleMessage: nativeAvailable
+        ? `${Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect'} card is visible on this device.`
+        : `${Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect'} not available on this device.`,
+    });
+    // Intentional: capture only on the first definitive nativeAvailable
+    // value. Toggling it later (extremely rare on a real device) is
+    // a separate event class we'll wire when the rest of the capture
+    // sites land.
+  }, [nativeAvailable]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const platformName = Platform.OS === 'ios' ? 'Apple HealthKit' : 'Health Connect';
   // isAvailable prefers the live native probe on iOS — if HealthKit is
