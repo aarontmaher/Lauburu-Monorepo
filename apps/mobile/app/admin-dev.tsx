@@ -37,6 +37,7 @@ import {
   type OwnerBacklogType,
 } from '../src/store/owner-backlog-store';
 import { useOwnerWorkflowStore } from '../src/store/owner-workflow-store';
+import { useAuditEventStore } from '../src/store/audit-event-store';
 import {
   buildClaudeCodePrompt,
   buildClaudeChromePrompt,
@@ -434,6 +435,8 @@ export default function AdminDevScreen() {
 
       <QuickCaptureSection />
 
+      <AuditSummarySection />
+
       <PromptBridgeSection statusBlock={STATUS_HANDOFF_TEMPLATE} />
 
       <Section title="Open shortcuts">
@@ -701,6 +704,37 @@ const STANDING_TOP_FIVE: string[] = [
   '4. Grappler Readiness Batch C — TrainingSession schema',
   '5. Grappler Readiness Batch D — bucket-ring UI',
 ];
+
+function AuditSummarySection() {
+  const events = useAuditEventStore((s) => s.events);
+  const recent = events.slice(-8).reverse();
+  const counts = events.reduce<Record<string, number>>((acc, e) => {
+    acc[e.eventType] = (acc[e.eventType] ?? 0) + 1;
+    return acc;
+  }, {});
+  const totalErrors = events.filter((e) => e.severity === 'error').length;
+  const totalWarnings = events.filter((e) => e.severity === 'warning').length;
+  return (
+    <Section title="Audit · last events">
+      <Text style={styles.note}>
+        Local-only metadata about source state — never raw health values. Capped at 200 events. See docs/IN_APP_AUDIT_SYSTEM.md.
+      </Text>
+      <Row label="Total events" value={String(events.length)} />
+      <Row label="Errors / Warnings" value={`${totalErrors} / ${totalWarnings}`} />
+      {Object.keys(counts).length === 0 && (
+        <Text style={styles.note}>No events captured yet. Capture sites land in follow-up batches per the audit doc.</Text>
+      )}
+      {recent.map((e) => (
+        <View key={e.id} style={styles.row}>
+          <Text style={styles.rowLabel} numberOfLines={1}>{e.eventType}{e.sourceId ? ` · ${e.sourceId}` : ''}</Text>
+          <Text style={styles.rowValue} numberOfLines={2} ellipsizeMode="tail">
+            {e.severity}{e.userVisibleMessage ? ` · ${e.userVisibleMessage}` : ''}
+          </Text>
+        </View>
+      ))}
+    </Section>
+  );
+}
 
 function QuickCaptureSection() {
   const items = useOwnerBacklogStore((s) => s.items);
