@@ -71,6 +71,43 @@ export class HealthConnectService implements IHealthService {
     }
   }
 
+  /**
+   * Detailed availability probe so the UI can route to the right
+   * install/update hint instead of saying "unavailable" generically.
+   * Returns a stable string code that the SamsungHealthCard /
+   * Health Connect surface keys off:
+   *
+   *   - 'available'                    → SDK ready, proceed normally
+   *   - 'provider_update_required'     → Health Connect installed
+   *                                      but APK version too old;
+   *                                      route user to Play Store
+   *                                      to update
+   *   - 'sdk_unavailable'              → not installed at all on
+   *                                      Android 13 and below; route
+   *                                      to install Health Connect
+   *   - 'unknown'                      → probe threw / native module
+   *                                      not linked
+   */
+  async getAvailabilityDetail(): Promise<{
+    code: 'available' | 'provider_update_required' | 'sdk_unavailable' | 'unknown';
+    rawStatus?: string | null;
+  }> {
+    try {
+      const { SdkAvailabilityStatus } = hc();
+      const status = await hc().getSdkStatus();
+      // react-native-health-connect exposes the same constant set
+      // as the Android Health Connect SDK. Map to our stable codes.
+      if (status === SdkAvailabilityStatus.SDK_AVAILABLE) return { code: 'available', rawStatus: 'SDK_AVAILABLE' };
+      if (status === SdkAvailabilityStatus.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED) {
+        return { code: 'provider_update_required', rawStatus: 'SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED' };
+      }
+      if (status === SdkAvailabilityStatus.SDK_UNAVAILABLE) return { code: 'sdk_unavailable', rawStatus: 'SDK_UNAVAILABLE' };
+      return { code: 'unknown', rawStatus: typeof status === 'string' ? status : null };
+    } catch {
+      return { code: 'unknown', rawStatus: null };
+    }
+  }
+
   async checkPermissions(): Promise<HealthPermissions> {
     const available = await this.isAvailable();
     if (!available) {
