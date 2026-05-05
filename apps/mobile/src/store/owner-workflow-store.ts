@@ -15,9 +15,9 @@ import type { OwnerWorkflowContext } from '../services/prompt-templates';
 
 const DEFAULT_CONTEXT: OwnerWorkflowContext = {
   currentPriority:
-    'Grappler Readiness Batch B — extend NextDayCheckin with subjective sliders (soreness, mood, perceived fatigue).',
+    'Apple Health (iPhone — Aaron) + Health Connect (Android — girlfriend) usable for daily testing.',
   currentBlocker:
-    'None. Auto-update lane closed 2026-05-06: tester Android device received v14 via Play Store auto-update, no Play Console click.',
+    'Free-tier gate was hiding primary platform health cards from non-member users. Removed in this batch; ships with next paired build.',
   lastStatus: [
     'Auto-update PROVEN end-to-end: Android run 25361589282 → Play accepted COMPLETED release at 06:59:36 UTC → tester device received v14.',
     'iOS Build 15 + TestFlight submit SUCCEEDED earlier (run 25349256198) carrying iOS HealthKit Mac/Vision warning fix, owner FAB rule, Admin/Dev redesign, AI Coach UX cleanup, BLE CPS/CSC fix.',

@@ -8,12 +8,34 @@ yet (the long-term shape is a backend route that serves this).
 
 Updated 2026-05-05.
 
-## Current #1 priority
+## Active priority order (2026-05-06, after auto-update closure)
 
-**Grappler Readiness Batch B — extend `NextDayCheckin` with
-subjective sliders (soreness, mood, perceived fatigue) so the
-grappling + subjective buckets in `computeGrapplerReadiness`
-stop returning null.**
+1. **Apple Health (iPhone — Aaron) + Health Connect (Android —
+   girlfriend) usable for daily testing.** Real-tester
+   functionality is the top priority — the two devices in active
+   daily use must connect cleanly, surface what's available, and
+   stay honest about what's missing. Manual check-ins + training
+   logs as fallback when a source isn't connected.
+2. **Cautious early Grappler Readiness prototype** that only uses
+   available data (Apple Health / Health Connect + manual
+   check-ins + training logs) and clearly shows missingness.
+   No strong "you are ready" claims. Labelled provisional.
+3. **WHOOP / Polar / Garmin / Oura, raw exports, HIIT machine
+   capture, nutrition, DEXA / blood test uploads.** All below the
+   above two lanes. They matter, but they cannot block the
+   day-to-day usability for Aaron + girlfriend.
+4. **Admin/Dev workflow + Railway read-only / MCP-style bridge.**
+   Useful for owner workflow but secondary to (1) and (2).
+5. **Full mobile UX audit pass** once 1+2 are usable on both
+   devices.
+6. **Paid AI API** — deferred until monetisation + usage caps +
+   data readiness all exist (`AI_PROVIDER_STRATEGY.md` +
+   `AI_MONETISATION_AND_USAGE_STRATEGY.md`).
+
+Grappler Readiness Batches B/C/D map onto priority (2). Tonight's
+prototype is the cautious first iteration — Batches B/C/D refine
+the underlying schema (subjective sliders, grappling-load fields,
+bucket-ring UI).
 
 Auto-update lane CLOSED 2026-05-06:
 

@@ -1137,12 +1137,17 @@ export default function HealthScreen() {
           of the Health screen. Machine capture moved to the Train tab
           where it belongs as part of session execution. Cronometer and
           Concept2 are not in the active product path. */}
-      {isMember && Platform.OS === 'ios' && (
+      {/* PRIMARY platform health source. NOT tier-gated — Apple
+          Health on iOS and Health Connect on Android are the
+          baseline product, available to every signed-in user
+          regardless of tier. Tier gating goes around AI narrative
+          / paid features, never the primary source connection. */}
+      {Platform.OS === 'ios' && (
         <SafeErrorBoundary label="Apple Health card">
           <AppleHealthCard />
         </SafeErrorBoundary>
       )}
-      {isMember && Platform.OS === 'android' && (
+      {Platform.OS === 'android' && (
         <SafeErrorBoundary label="Samsung Health card">
           <SamsungHealthCard />
         </SafeErrorBoundary>

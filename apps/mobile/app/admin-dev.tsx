@@ -143,9 +143,9 @@ const STATUS_HANDOFF_TEMPLATE = [
  * update these in the next paired build. Keep each line short; the UI
  * renders compact chips, not paragraphs.
  */
-const CURRENT_PRIORITY = 'Grappler Readiness Batch B — extend NextDayCheckin with subjective sliders.';
-const ANDROID_PROOF_RESULT = 'PROVEN end-to-end. Run 25361589282 ✓ → Play accepted COMPLETED release at 06:59:36 UTC → tester device received v14 with no Play Console click. Auto-update lane CLOSED.';
-const NEXT_ACTION = 'Start Grappler Readiness Batch B (NextDayCheckin sliders for soreness / mood / perceived fatigue). Future Android dispatches are routine — Build Android + upload from Primary actions.';
+const CURRENT_PRIORITY = 'Apple Health (iPhone — Aaron) + Health Connect (Android — girlfriend) usable for daily testing.';
+const ANDROID_PROOF_RESULT = 'PROVEN end-to-end (run 25361589282 → tester v14 received). Auto-update lane CLOSED.';
+const NEXT_ACTION = 'Test Apple Health on iPhone + Health Connect on Android. Free-tier gate removed from primary health-source cards (commit pending) — both will surface for both users on next paired build.';
 
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
