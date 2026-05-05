@@ -186,6 +186,34 @@ Cloudflare deployment is purely additive. To roll back:
 
 Railway routes never depended on the Worker; nothing breaks.
 
+## 11.5 Verified state (2026-05-06, after Wrangler 4 bump)
+
+- `npm install` in `cloudflare-worker/` clean — 39 packages, 0
+  vulnerabilities.
+- `wrangler --version` reports `4.88.0` (bumped from `^3.50.0`
+  in this batch's commit).
+- `wrangler login` succeeded on Aaron's machine.
+- `wrangler deploy --dry-run --env preview` succeeds with no
+  warnings; bundle 5.19 KiB / gzip 1.71 KiB. No actual deploy
+  attempted.
+- `npm run dev` serves `http://127.0.0.1:8787`.
+- `GET /health` → 200; `GET /status` → 200.
+- Admin-gated routes return 403 without the header (correct
+  fail-closed behaviour). Real-token verification pending: the
+  `.dev.vars` may still carry the literal placeholder string
+  `<paste-from-Railway-env>`. Substitute the real token from
+  Railway env before expecting 200 from `/mcp/health`.
+- `wrangler.toml` updated for Wrangler 4: top-level `[vars]`
+  no longer auto-inherits, so `[env.preview.vars]` and
+  `[env.production.vars]` blocks now redeclare `WORKER_MODE` +
+  `RAILWAY_FALLBACK_URL` explicitly. Production env stays
+  reserved (no deploy).
+- Worker `tsc --noEmit` clean after a small `ConnectorMeta`
+  ordering fix.
+
+No production behaviour change. Mobile app and Railway
+unchanged.
+
 ## 12. Live now vs repo-only
 
 | Component | Status |

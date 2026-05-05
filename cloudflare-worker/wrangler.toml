@@ -25,16 +25,28 @@ compatibility_flags = ["nodejs_compat"]
 # When Supabase reads land, no Cloudflare-side state is needed —
 # the Worker hits Supabase REST directly.
 
-# Default vars (non-secret). Secrets go via `wrangler secret put`.
+# Default vars (non-secret) for the top-level / no-env runs.
+# Wrangler 4 does NOT inherit top-level [vars] into named envs —
+# each env block redeclares its own [env.X.vars] explicitly so
+# `wrangler deploy --env preview` sees what it expects.
+# Secrets go via `wrangler secret put` and never live here.
 [vars]
-WORKER_MODE = "preview"
+WORKER_MODE = "dev"
 RAILWAY_FALLBACK_URL = "https://lauburu-ai-backend-production.up.railway.app"
 
 # Env "preview" — for testing without touching production.
 [env.preview]
 name = "lauburu-mcp-preview"
 
+[env.preview.vars]
+WORKER_MODE = "preview"
+RAILWAY_FALLBACK_URL = "https://lauburu-ai-backend-production.up.railway.app"
+
 # Env "production" — reserved. Do NOT deploy here until cutover
 # is explicitly approved per docs/CLOUDFLARE_MIGRATION.md.
 [env.production]
 name = "lauburu-mcp-production"
+
+[env.production.vars]
+WORKER_MODE = "production"
+RAILWAY_FALLBACK_URL = "https://lauburu-ai-backend-production.up.railway.app"
