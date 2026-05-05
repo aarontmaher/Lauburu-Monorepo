@@ -7,7 +7,9 @@ import {
   Alert,
   ActivityIndicator,
   Linking,
+  Platform,
 } from 'react-native';
+import * as Application from 'expo-application';
 import { useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import { useAppTourStore } from '../../src/components/AppTour';
@@ -1129,9 +1131,13 @@ export default function SettingsScreen() {
         <Text style={styles.sectionTitle}>About</Text>
         <SettingsRow
           label="Version"
-          value="0.1.0"
+          value={Application.nativeApplicationVersion ?? '0.1.0'}
           onPress={handleVersionTap}
           onLongPress={showDevTools ? () => router.push('/admin-dev') : undefined}
+        />
+        <SettingsRow
+          label={Platform.OS === 'ios' ? 'Build' : 'Version code'}
+          value={Application.nativeBuildVersion ?? '—'}
         />
         <SettingsRow label="Website" value="lauburugrapplingmap.com" />
         <Pressable

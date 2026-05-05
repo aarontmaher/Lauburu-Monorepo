@@ -21,7 +21,17 @@ State as of 2026-05-05:
   Store auto-update with no Play Console click. Run
   `25361589282` succeeded end-to-end (EAS build → Play submit)
   at 06:59:36 UTC after Chrome closed the Play Console
-  app-content gap.
+  app-content gap. Note: Play Console "Release history" UI is
+  paginated and sometimes filters out releases promoted via the
+  EAS-COMPLETED path versus the manual "Review release → Start
+  rollout" flow — earlier screenshots showing only v11/10/8/7/5
+  on page 1 reflect that pagination, not a missing v14. Ground
+  truth is the tester device receiving v14, which is confirmed.
+- **Android v15** dispatched 2026-05-05T15:12:56Z (run
+  `25384901407`, `submit_to_play=true`) bundling the un-gated
+  AppleHealthCard / Health Connect primary cards. EAS build was
+  `in_progress` at last check; expected on tester devices within
+  ~25 min build + 15–60 min Play rollout.
 - **`eas.json` `releaseStatus`**: `'completed'`. The workflow
   `release_status` override (`completed` / `draft`) is available
   for emergency use only.

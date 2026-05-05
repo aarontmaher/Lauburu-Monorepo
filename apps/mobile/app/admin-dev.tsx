@@ -380,12 +380,12 @@ export default function AdminDevScreen() {
       </Section>
 
       <Section title="Android — Internal Testing">
-        <Row label="Tester-live" value="v14 ✓ (received via Play Store auto-update)" />
+        <Row label="Tester-live" value="v14 ✓ (received via Play Store auto-update); v15 dispatched run 25384901407" />
         <Row label="Auto-promote" value="PROVEN end-to-end — run 25361589282" />
         <Row label="Routine path" value="Build Android + upload → tester device updates within 15–60 min, no manual steps" />
         <Row label="releaseStatus" value="completed (eas.json)" />
         <Text style={styles.note}>
-          Auto-update lane closed 2026-05-06. Future Android paired builds: bump versionCode in app.json, dispatch Build Android + upload, done.
+          Play Console "Release history" UI paginates / filters EAS-COMPLETED releases differently from manual rollouts — if earlier pages don't show v14, that's a Play Console UI quirk, not a missing release. Ground truth: tester device receives the new versionCode. Settings → About → Version code on the device confirms which build is running.
         </Text>
         <WorkflowTriggerButton
           id="android-aab-build"
