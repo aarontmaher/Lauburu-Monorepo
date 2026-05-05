@@ -1349,6 +1349,114 @@ router.get('/admin/status', requireAdminToken, async (_req: any, res: any) => {
   }
 });
 
+// GET /api/athlete-memory/admin/work-status
+//
+// Connector-shaped read-only summary of the project's owner-side
+// state. Designed to be the structured source of truth that
+// ChatGPT / Claude / Codex connectors read via a single GET, with
+// the same `requireAdminToken` gate as the rest of /admin.
+//
+// CONTRACT: response shape never includes env values, secret
+// strings, raw athlete health rows, OAuth tokens, or per-tester
+// PII. Field values are short, structured, and stable across
+// deploys. New fields can be added at the end; existing fields
+// never change meaning.
+//
+// See docs/CONNECTOR_BACKLOG_TOOLS_PLAN.md for the wider tool spec
+// and docs/RAILWAY_CONNECTOR_TOOLS.md for the curl examples.
+router.get('/admin/work-status', requireAdminToken, async (_req: any, res: any) => {
+  try {
+    const dispatchAvailable = !!process.env.GITHUB_DISPATCH_TOKEN && !!process.env.GITHUB_REPO;
+    res.status(200).json({
+      ok: true,
+      generatedAt: new Date().toISOString(),
+      // Owner-curated current-state strings. The mobile Admin/Dev
+      // chips read the same values from
+      // `apps/mobile/src/store/owner-workflow-store.ts` — backend
+      // copy is the durable mirror so connectors don't need to
+      // fetch the device. Updated by repo deploys for now;
+      // POST /admin/work-status (write tool) lands in the second
+      // wave per CONNECTOR_BACKLOG_TOOLS_PLAN.md.
+      currentPriority:
+        'Apple Health (iPhone) + Health Connect (Android) usable for daily testing. Free-tier gate removed; ships in v15 / Build 16.',
+      currentBlocker:
+        'None code-side. Awaiting tester-device confirmation that the un-gated primary health cards surface and connect cleanly.',
+      nextAction:
+        'Aaron + girlfriend install v15 / Build 16 → confirm Apple Health / Health Connect cards visible and connectable. Reply with metrics that surface and which say missing.',
+      androidReleaseStatus: {
+        testerLive: 'v14 (auto-promoted via run 25361589282)',
+        autoPromote: 'proven',
+        eaSubmitTrack: 'internal',
+        releaseStatus: 'completed',
+        latestDispatch: { runId: '25384901407', state: 'in_progress', versionCode: 15 },
+      },
+      iosReleaseStatus: {
+        testerLive: 'Build 14 (TestFlight) / Build 15 processing',
+        autoSubmit: 'live (TestFlight auto-group Team (Expo))',
+        latestDispatch: { runId: '25384907135', state: 'in_progress', buildNumber: 16 },
+        healthKitMacVisionWarningFix: 'shipped on Build 15',
+      },
+      healthSourceStatus: {
+        appleHealth: 'live (iOS only) — primary card un-gated from free tier',
+        healthConnect: 'live (Android only) — primary card un-gated from free tier',
+        whoopDirect: 'planned — direct dev-portal app not registered yet; raw 404 surface fixed in commit a036fd5',
+        polarDirect: 'planned — same upstream state',
+        whoopCsv: 'live (historical backfill upload)',
+        polarExport: 'live (historical backfill upload)',
+        cronometer: 'scaffold (UI not wired)',
+      },
+      adminDevStatus: {
+        ownerFabRule: 'live (FabsGate hides Feedback for owner email)',
+        primaryActions: 'Build Android + upload, Build iOS + submit, Run typecheck, Run release audit',
+        promptBridge: 'live (5 deterministic templates + tmux instructions)',
+        backlogQuickCapture: 'live (local secure-storage; backend sync deferred)',
+        workflowDispatchAvailable: dispatchAvailable,
+        otaBlocked: true,
+        otaBlockerReason: 'Expo SDK 54 publishes are server-rejected. Use Play / TestFlight native updates.',
+      },
+      feedbackSummary: {
+        endpoint: '/api/feedback (public POST, admin-gated GET)',
+        recentRouteAdminGated: true,
+        attachmentsAdminGated: true,
+        approxRecordCount: null, // future: count files in FEEDBACK_DIR
+      },
+      backlogSummary: {
+        ownerLocalStore: 'apps/mobile/src/store/owner-backlog-store.ts (local secure-storage)',
+        backendSync: 'deferred (see docs/CONNECTOR_BACKLOG_TOOLS_PLAN.md)',
+      },
+      manualSteps: [
+        'Watch v15 + Build 16 to green; install on tester devices',
+        'Confirm Apple Health (Aaron) + Health Connect (girlfriend) primary cards visible without member gate',
+        'Reply with which metrics surface and which say missing',
+      ],
+      canDeleteFromNotes: [
+        'Auto-update lane / Play Console listing pass / phone screenshots / releaseStatus flip / proof workflow / tester device verification — all DONE',
+        'Why girlfriend cannot see Health Connect — root cause was the free-tier gate; fix on main',
+      ],
+      doNotDeleteYet: [
+        'Verify v15 + Build 16 land on real devices and the un-gated Health cards surface',
+        'Cautious early Grappler Readiness prototype (provisional label, low/medium/high confidence)',
+        'Health Connect Play-Store-deep-link install hint when SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED',
+        'Grappler Readiness Batches B/C/D',
+        'Admin/Dev Railway MCP-style read-only bridge (this route is the first iteration)',
+        'AI provider implementation — gated',
+        'Public production release — out of scope until production listing pass is done',
+      ],
+      // Reserved future fields — connector tools will fill these
+      // as they land. Listed in the response so connectors can
+      // probe presence without retry loops.
+      reserved: {
+        priorityDraft: null,
+        backlogReadRoute: '/api/athlete-memory/admin/backlog (TODO)',
+        handoffReadRoute: '/api/athlete-memory/admin/handoff (TODO)',
+        backlogWriteRoute: 'POST /api/athlete-memory/admin/backlog (TODO — second wave)',
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'unknown' });
+  }
+});
+
 // POST /api/athlete-memory/admin/workflows/:workflowId/dispatch
 //
 // Stub endpoint. Returns 503 until GITHUB_DISPATCH_TOKEN + GITHUB_REPO
