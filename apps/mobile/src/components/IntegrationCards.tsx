@@ -85,6 +85,53 @@ function useIntegrationConfig() {
   return buildIntegrationConfig(userId, accessToken);
 }
 
+/**
+ * Normalize a backend error string (which may be a stringified JSON
+ * body, an HTTP status line, or a network message) into a single
+ * user-safe sentence. Never returns raw JSON — that's the entire
+ * purpose. Returns null when the error is non-actionable for a
+ * normal user (e.g. upstream 404 on a not-yet-registered direct-sync
+ * integration), so the caller can hide the line entirely.
+ */
+function friendlyDirectSyncError(
+  raw: string | null,
+  kind: 'whoop' | 'polar',
+): string | null {
+  if (!raw || raw.trim().length === 0) return null;
+  // Quick test — does the body look like JSON? If yes, parse and
+  // map common upstream "application not found / configured" shapes
+  // to the silent / planned state.
+  let parsed: any = null;
+  try { parsed = JSON.parse(raw); } catch { /* not JSON */ }
+  const code = parsed?.code ?? parsed?.statusCode ?? null;
+  const upstreamMsg = String(parsed?.message ?? '').toLowerCase();
+  // Upstream "application not found" / dev-portal app missing → not
+  // actionable for the user, surface as planned/coming-soon and
+  // suppress the inline error line entirely. The card's StatusPill
+  // already says "Planned" for these states.
+  if (code === 404 || upstreamMsg.includes('application not found') || upstreamMsg.includes('not configured')) {
+    return null;
+  }
+  if (/timeout|timed out|network/i.test(raw)) {
+    return 'Network hiccup — pull to refresh.';
+  }
+  if (/\b401\b|unauthorized/i.test(raw)) {
+    return kind === 'whoop'
+      ? 'WHOOP session expired. Tap Reconnect WHOOP.'
+      : 'Polar session expired. Tap Reconnect Polar.';
+  }
+  if (/\b403\b/.test(raw)) {
+    return 'Access denied — sign out and back in.';
+  }
+  if (/\b5\d{2}\b/.test(raw)) {
+    return 'Direct sync is temporarily unavailable. Try again later.';
+  }
+  // Default: short generic — never the raw body.
+  return kind === 'whoop'
+    ? 'Direct WHOOP sync is not connected yet. Use Apple Health / Health Connect for now.'
+    : 'Direct Polar sync is not connected yet. Use Apple Health / Health Connect for now.';
+}
+
 // ═══════════════════════════════════════════════════════════════
 // POLAR DIRECT
 // ═══════════════════════════════════════════════════════════════
@@ -194,7 +241,10 @@ export function PolarDirectCard() {
         </Text>
       )}
 
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {(() => {
+        const friendly = friendlyDirectSyncError(error, 'polar');
+        return friendly ? <Text style={styles.subtleNote}>{friendly}</Text> : null;
+      })()}
     </View>
   );
 }
@@ -328,7 +378,7 @@ export function WhoopDirectCard() {
         {s === 'stale' && <StatusPill label="Stale — sync needed" color="#d4e157" />}
         {s === 'disconnected' && <StatusPill label="Disconnected" color="#888" />}
         {s === 'error' && <StatusPill label="Reconnect required" color="#ff6b6b" />}
-        {!s && <StatusPill label={loading ? 'Loading…' : 'Unknown'} color="#666" />}
+        {!s && <StatusPill label={loading ? 'Loading…' : (error ? 'Coming soon' : 'Unknown')} color="#666" />}
       </View>
 
       {s === 'config_missing' && (
@@ -388,16 +438,26 @@ export function WhoopDirectCard() {
       )}
 
       {/* Fallback: if status hasn't loaded or returned an unknown value,
-          surface a Retry button so the card is never non-interactive. */}
+          surface a Retry button so the card is never non-interactive.
+          When error is set (typically upstream 404 — direct WHOOP
+          isn't registered yet), explain in plain language instead of
+          leaving the user with a bare "Unknown" pill. */}
       {!s && !loading && (
-        <View style={styles.actions}>
-          <ActionBtn
-            label="Retry status"
-            onPress={() => void refresh()}
-            loading={loading}
-            variant="secondary"
-          />
-        </View>
+        <>
+          {error && (
+            <Text style={[styles.bodyText, { opacity: 0.8 }]}>
+              Direct WHOOP sync isn&apos;t connected yet. Use Apple Health on iOS or Health Connect on Android for now. WHOOP export upload can be added later.
+            </Text>
+          )}
+          <View style={styles.actions}>
+            <ActionBtn
+              label="Retry status"
+              onPress={() => void refresh()}
+              loading={loading}
+              variant="secondary"
+            />
+          </View>
+        </>
       )}
 
       {s === 'error' && (
@@ -493,7 +553,10 @@ export function WhoopDirectCard() {
         </>
       )}
 
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {(() => {
+        const friendly = friendlyDirectSyncError(error, 'whoop');
+        return friendly ? <Text style={styles.subtleNote}>{friendly}</Text> : null;
+      })()}
     </View>
   );
 }
