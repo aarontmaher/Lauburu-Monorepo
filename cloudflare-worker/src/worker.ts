@@ -40,7 +40,6 @@ export interface Env {
 }
 
 interface ConnectorMeta {
-  ok: true;
   generatedAt: string;
   provider: 'cloudflare-workers';
   mode: string;
@@ -52,7 +51,6 @@ interface ConnectorMeta {
 
 function buildMeta(env: Env): ConnectorMeta {
   return {
-    ok: true,
     generatedAt: new Date().toISOString(),
     provider: 'cloudflare-workers',
     mode: env.WORKER_MODE ?? 'unknown',
@@ -100,8 +98,8 @@ export default {
     // ── Public health check (no auth) ──────────────────────────────────
     if (request.method === 'GET' && (path === '' || path === '/' || path === '/health')) {
       return jsonResponse({
-        ok: true,
         ...buildMeta(env),
+        ok: true,
         message: 'Lauburu MCP Cloudflare Worker — repo-only until deployed and verified.',
       });
     }
@@ -110,6 +108,7 @@ export default {
     if (request.method === 'GET' && path === '/status') {
       return jsonResponse({
         ...buildMeta(env),
+        ok: true,
         endpoints: [
           'GET /health',
           'GET /status',
