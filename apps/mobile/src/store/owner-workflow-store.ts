@@ -15,13 +15,13 @@ import type { OwnerWorkflowContext } from '../services/prompt-templates';
 
 const DEFAULT_CONTEXT: OwnerWorkflowContext = {
   currentPriority:
-    'Confirm Android v14 lands on a tester device — workflow side of auto-update proof PASSED.',
+    'Grappler Readiness Batch B — extend NextDayCheckin with subjective sliders (soreness, mood, perceived fatigue).',
   currentBlocker:
-    'None code-side. Awaiting tester device to receive v14 within 15–60 min of run 25361589282 success at 06:59:36 UTC.',
+    'None. Auto-update lane closed 2026-05-06: tester Android device received v14 via Play Store auto-update, no Play Console click.',
   lastStatus: [
-    'Android proof PASSED end-to-end on retry: run 25361589282 → EAS build ✓ → Submit AAB to Play Internal Testing ✓ at 06:59:36 UTC. Play accepted the COMPLETED release.',
-    'iOS Build 15 + TestFlight submit SUCCEEDED earlier (run 25349256198).',
-    'iOS HealthKit Mac/Vision warning fix shipped on Build 15. Owner FAB rule + Admin/Dev redesign also live on Build 15. BLE CPS/CSC fix lands on next paired build.',
+    'Auto-update PROVEN end-to-end: Android run 25361589282 → Play accepted COMPLETED release at 06:59:36 UTC → tester device received v14.',
+    'iOS Build 15 + TestFlight submit SUCCEEDED earlier (run 25349256198) carrying iOS HealthKit Mac/Vision warning fix, owner FAB rule, Admin/Dev redesign, AI Coach UX cleanup, BLE CPS/CSC fix.',
+    'Future paired builds: bump versionCode + buildNumber and dispatch Build Android + upload + Build iOS + submit. No manual steps.',
     'Verified: tsc --noEmit clean across all commits this lane.',
   ].join(' '),
   selectedTaskBundle: undefined,
@@ -37,9 +37,8 @@ const DEFAULT_CONTEXT: OwnerWorkflowContext = {
     'Use predefined GitHub Actions workflows only',
   ],
   manualStepsForAaron: [
-    'Observe a tester device for v14 over the next 15–60 min — Play accepted the COMPLETED release on run 25361589282 at 06:59:36 UTC; no Play Console click should be required',
-    'Accept the TestFlight update prompt to install Build 15 (already on App Store Connect from run 25349256198)',
-    'When v14 confirmed on a tester device, reply "v14 received" — that closes the auto-update lane',
+    'Auto-update lane closed — no manual release steps for routine paired builds',
+    'Future paired build: bump app.json android.versionCode + ios.buildNumber, dispatch Build Android + upload + Build iOS + submit from Admin/Dev Primary actions',
   ],
   canDeleteFromNotepad: [
     'Wire iOS auto-group assignment (DONE — Build 14)',
@@ -47,18 +46,21 @@ const DEFAULT_CONTEXT: OwnerWorkflowContext = {
     'Document AI provider strategy (DONE)',
     'Document AI monetisation / cost guardrails (DONE)',
     'Audit which wearable claims are actually live (DONE)',
-    'Fix iOS HealthKit Mac/Vision warning (DONE — repo-only on main)',
+    'Fix iOS HealthKit Mac/Vision warning (DONE — shipped Build 15)',
     'Add /admin/status backend route + signed dispatch (DONE)',
     'Hide Dev/Admin FAB from normal testers (DONE)',
     'Hide Feedback FAB from owner (DONE)',
+    'Play Console listing pass (DONE — Aaron-side)',
+    'Flip releaseStatus to completed (DONE — eas.json)',
+    'Android auto-promote proof: workflow + Play API + tester device (DONE 2026-05-06 — run 25361589282 + v14 received)',
   ],
   doNotDeleteYet: [
-    'Play Console listing pass (Aaron-side)',
-    'Flip releaseStatus to completed after the listing pass',
-    'Next paired build (v14 + Build 15) bundling repo-only UX work + iOS warning fix',
-    'Grappler Readiness Batches B/C/D',
-    'AI provider implementation — gated',
-    'Public production release — out of scope until tester channels are fully auto',
+    'Grappler Readiness Batch B — extend NextDayCheckin sliders',
+    'Grappler Readiness Batch C — extend TrainingSession schema',
+    'Grappler Readiness Batch D — bucket-ring UI on AthleteStateStrip',
+    'AI provider implementation — gated by AI_PROVIDER_STRATEGY.md + AI_MONETISATION_AND_USAGE_STRATEGY.md triggers',
+    'Stage-5 local Mac/tmux bridge — eight hard rules required',
+    'Public production release — out of scope until production listing pass is done',
   ],
 };
 

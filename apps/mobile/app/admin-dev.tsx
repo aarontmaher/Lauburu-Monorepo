@@ -143,9 +143,9 @@ const STATUS_HANDOFF_TEMPLATE = [
  * update these in the next paired build. Keep each line short; the UI
  * renders compact chips, not paragraphs.
  */
-const CURRENT_PRIORITY = 'Confirm Android v14 lands on a tester device — workflow side of auto-update proof PASSED.';
-const ANDROID_PROOF_RESULT = 'PASSED end-to-end on retry (run 25361589282). EAS build ✓ → Submit AAB to Play Internal Testing ✓. Play accepted the COMPLETED release at 06:59:36 UTC. Tester device confirmation is the final step.';
-const NEXT_ACTION = 'Watch a tester device for v14 over the next 15–60 min. No Play Console click should be required. When v14 arrives, the auto-update lane closes and the next priority is Grappler Readiness Batch B.';
+const CURRENT_PRIORITY = 'Grappler Readiness Batch B — extend NextDayCheckin with subjective sliders.';
+const ANDROID_PROOF_RESULT = 'PROVEN end-to-end. Run 25361589282 ✓ → Play accepted COMPLETED release at 06:59:36 UTC → tester device received v14 with no Play Console click. Auto-update lane CLOSED.';
+const NEXT_ACTION = 'Start Grappler Readiness Batch B (NextDayCheckin sliders for soreness / mood / perceived fatigue). Future Android dispatches are routine — Build Android + upload from Primary actions.';
 
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
@@ -380,12 +380,12 @@ export default function AdminDevScreen() {
       </Section>
 
       <Section title="Android — Internal Testing">
-        <Row label="Tester-live" value="v14 uploaded as COMPLETED release — awaiting tester device confirmation" />
-        <Row label="Auto-promote" value="proven (workflow side) — run 25361589282 ✓" />
-        <Row label="Last proof" value="success at 06:59:36 UTC; tester rollout 15–60 min" />
-        <Row label="releaseStatus" value="completed — Play accepted on retry after app-content fully Submitted" />
+        <Row label="Tester-live" value="v14 ✓ (received via Play Store auto-update)" />
+        <Row label="Auto-promote" value="PROVEN end-to-end — run 25361589282" />
+        <Row label="Routine path" value="Build Android + upload → tester device updates within 15–60 min, no manual steps" />
+        <Row label="releaseStatus" value="completed (eas.json)" />
         <Text style={styles.note}>
-          Workflow + Play API path is verified. Final closure waits on a tester device receiving v14 within 15–60 min with no Play Console click. After that, Build Android + upload becomes the routine path with no manual steps.
+          Auto-update lane closed 2026-05-06. Future Android paired builds: bump versionCode in app.json, dispatch Build Android + upload, done.
         </Text>
         <WorkflowTriggerButton
           id="android-aab-build"

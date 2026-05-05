@@ -10,24 +10,23 @@ Updated 2026-05-05.
 
 ## Current #1 priority
 
-**Confirm Android v14 lands on a tester device — the workflow side
-of auto-update proof PASSED.**
+**Grappler Readiness Batch B — extend `NextDayCheckin` with
+subjective sliders (soreness, mood, perceived fatigue) so the
+grappling + subjective buckets in `computeGrapplerReadiness`
+stop returning null.**
 
-Run `25361589282` (re-dispatch after Chrome confirmed "play
-listing fully complete"): **SUCCESS end-to-end.**
+Auto-update lane CLOSED 2026-05-06:
 
-- EAS Android build: ✓
-- Submit AAB to Play Internal Testing: ✓ at 2026-05-05 06:59:36
-  UTC
-- Play accepted the COMPLETED release at the API layer
-- Workflow URL:
+- Run `25361589282`: SUCCESS end-to-end. EAS build ✓ → Submit AAB
+  to Play Internal Testing ✓ at 2026-05-05 06:59:36 UTC. Play
+  accepted the COMPLETED release.
+- Tester Android device received v14 via Play Store auto-update.
+  No Play Console click required.
+- Future paired builds dispatch routinely from Admin/Dev: bump
+  `app.json android.versionCode` + `ios.buildNumber` → tap Build
+  Android + upload + Build iOS + submit. No manual steps.
+- Workflow URL preserved:
   https://github.com/aarontmaher/lauburu-grappling-map/actions/runs/25361589282
-
-Final closure waits on a tester device receiving v14 within 15–60
-min of submit success — no Play Console click should be required.
-After that observation, the auto-update lane closes and the next
-priority moves to Grappler Readiness Batch B (extending
-NextDayCheckin sliders).
 
 Earlier failure preserved for context (run `25349253529`):
 
@@ -93,8 +92,8 @@ anymore:
   `docs/AI_MONETISATION_AND_USAGE_STRATEGY.md`.
 - "Audit which wearable claims are actually live" — DONE,
   `docs/HEALTH_METRIC_APPS_DEVICES_AUDIT.md`.
-- "Fix iOS HealthKit Mac/Vision warning" — repo-only fix on main
-  (commit `a438070`), ships with next iOS build (Build 15).
+- "Fix iOS HealthKit Mac/Vision warning" — DONE, shipped on
+  iOS Build 15 (run `25349256198`).
 - "Generate Play app icon 512×512 and feature graphic 1024×500" —
   DONE, in `docs/store-assets/google-play/`.
 - "Capture two phone screenshots for Play listing" — DONE
@@ -106,6 +105,9 @@ anymore:
 - "Advertising ID declaration" — DONE.
 - "Flip `releaseStatus` to `completed`" — DONE (eas.json +
   workflow `release_status` override input).
+- "Android auto-promote proof: workflow + Play API + tester
+  device" — DONE 2026-05-06. Run `25361589282` + tester Android
+  device confirmed v14 via Play Store auto-update.
 - "Add /admin/status backend route + signed dispatch" — DONE.
 - "Hide Dev/Admin FAB from normal testers" — DONE (admin-email gate).
 - "Hide Feedback FAB from owner" — DONE (this batch).
@@ -114,22 +116,20 @@ anymore:
 
 These remain in the backlog because they are NOT yet done:
 
-- Play Console **App content** completion: every left-sidebar
-  questionnaire must show Complete (not Saved): Privacy policy,
-  App access, Ads, Content rating IARC, Target audience, News
-  apps, Data safety (SUBMIT button), Health Connect declaration,
-  Government apps, Financial features. Chrome is currently
-  walking this.
-- Closed testing release (if Play required it): use the existing
-  v14 AAB from EAS run 25349253529; bundle is fine, only listing
-  metadata was rejected by Play. Path in
-  `docs/PLAY_SUBMIT_SETUP.md` §8.
-- Re-dispatch Android auto-promote proof workflow ONCE after
-  Chrome reports "play listing fully complete".
-- Next paired build (Android v14 + iOS Build 15) bundling the
-  standing repo-only UX work + iOS HealthKit warning fix. iOS
-  Build 15 already submitted (run 25349256198 succeeded);
-  Android half collapses with the re-dispatch above.
+- Grappler Readiness Batch B — extend NextDayCheckin sliders
+  (soreness, mood, perceived fatigue).
+- Grappler Readiness Batch C — extend TrainingSession schema
+  with grappling-specific fields (gi/no-gi, drilling vs live
+  minutes, perceived intensity).
+- Grappler Readiness Batch D — bucket-ring UI on
+  AthleteStateStrip showing all 5 buckets with provenance.
+- AI provider implementation — gated by triggers in
+  `AI_PROVIDER_STRATEGY.md` AND
+  `AI_MONETISATION_AND_USAGE_STRATEGY.md`.
+- Stage-5 local Mac/tmux bridge — eight hard rules required.
+- Public production release — out of scope until production
+  listing pass is done (separate from the now-complete
+  Internal Testing pass).
 - Grappler Readiness Batches B/C/D (extend `NextDayCheckin` sliders,
   extend `TrainingSession` with grappling-load fields, bucket-ring
   UI on `AthleteStateStrip`). The audit doc explicitly recommends
