@@ -10,8 +10,19 @@ Updated 2026-05-05.
 
 ## Current #1 priority
 
-**Close the Play Console listing-pass metadata gap that caused the
-v14 auto-promote proof to fail at the submit step.**
+**Tester auto-update — still the active priority. Specifically:
+finish Play Console app-content + (if Play required it) closed
+testing setup so the Android auto-promote workflow can land
+COMPLETED Internal Testing releases.**
+
+Status as Chrome works through Play Console:
+
+- Chrome is currently in Play Console → Create closed testing
+  release / App content. Do NOT re-dispatch the Android workflow
+  while Chrome is mid-flow.
+- Re-dispatch only after Chrome reports *"play listing fully
+  complete"*.
+- Production track stays untouched throughout.
 
 Result of run `25349253529`: **FAILED at submit step.** Detail:
 
@@ -83,9 +94,13 @@ anymore:
   DONE, in `docs/store-assets/google-play/`.
 - "Capture two phone screenshots for Play listing" — DONE
   (Aaron-side, 2026-05-05).
-- "Play Console listing pass" — DONE (Aaron-side, 2026-05-05).
-- "Flip `releaseStatus` to `completed` after the listing pass" —
-  DONE (eas.json + workflow `release_status` override input).
+- "Upload Play Console icon / feature graphic / screenshots /
+  default store listing" — DONE (Chrome confirmed).
+- "Privacy policy URL declared" — DONE
+  (`https://www.lauburugrapplingmap.com/privacy/`).
+- "Advertising ID declaration" — DONE.
+- "Flip `releaseStatus` to `completed`" — DONE (eas.json +
+  workflow `release_status` override input).
 - "Add /admin/status backend route + signed dispatch" — DONE.
 - "Hide Dev/Admin FAB from normal testers" — DONE (admin-email gate).
 - "Hide Feedback FAB from owner" — DONE (this batch).
@@ -94,11 +109,22 @@ anymore:
 
 These remain in the backlog because they are NOT yet done:
 
-- Proof Android build with releaseStatus=completed (the #1 above).
+- Play Console **App content** completion: every left-sidebar
+  questionnaire must show Complete (not Saved): Privacy policy,
+  App access, Ads, Content rating IARC, Target audience, News
+  apps, Data safety (SUBMIT button), Health Connect declaration,
+  Government apps, Financial features. Chrome is currently
+  walking this.
+- Closed testing release (if Play required it): use the existing
+  v14 AAB from EAS run 25349253529; bundle is fine, only listing
+  metadata was rejected by Play. Path in
+  `docs/PLAY_SUBMIT_SETUP.md` §8.
+- Re-dispatch Android auto-promote proof workflow ONCE after
+  Chrome reports "play listing fully complete".
 - Next paired build (Android v14 + iOS Build 15) bundling the
-  standing repo-only UX work + iOS HealthKit warning fix. The
-  Android half of this paired build is exactly the proof build
-  above — they collapse into one workflow dispatch.
+  standing repo-only UX work + iOS HealthKit warning fix. iOS
+  Build 15 already submitted (run 25349256198 succeeded);
+  Android half collapses with the re-dispatch above.
 - Grappler Readiness Batches B/C/D (extend `NextDayCheckin` sliders,
   extend `TrainingSession` with grappling-load fields, bucket-ring
   UI on `AthleteStateStrip`). The audit doc explicitly recommends

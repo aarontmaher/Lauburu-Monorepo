@@ -230,5 +230,110 @@ know from this run — auth + submission scheduling worked, only
 the COMPLETED validator rejected). Don't bother — the diagnostic
 value is zero.
 
+## 7. Current corrected state — Play metadata blocker
+
+Updated 2026-05-05. State as Chrome works through Play Console.
+
+What is DONE (confirmed):
+
+- iOS TestFlight channel works. Build 14 reached TestFlight; Build
+  15 submission succeeded via run `25349256198`.
+- Android Internal Testing track has v11 live to internal testers
+  (last manual upload).
+- Play Console listing graphics done: app icon 512×512, feature
+  graphic 1024×500, phone screenshots, default store listing
+  saved.
+- Privacy policy URL declared:
+  `https://www.lauburugrapplingmap.com/privacy/`.
+- Account deletion URL declared:
+  `https://www.lauburugrapplingmap.com/account-deletion/`.
+- Advertising ID declaration submitted.
+- `apps/mobile/eas.json submit.production.android.releaseStatus`
+  is `'completed'`.
+- `android-aab-build.yml` accepts a `release_status` choice
+  override, clamped to `''` / `completed` / `draft`.
+
+What is NOT done — the actual current blocker:
+
+- Play Console rejected the v14 auto-promote attempt (run
+  `25349253529`) with: *"The app is missing the required metadata
+  to submit the app to Google Play Store."*
+- Cause: Play's COMPLETED-release validator is stricter than its
+  DRAFT acceptance. Listing graphics + Privacy URL + Advertising
+  ID alone are NOT enough — every left-sidebar **App content**
+  questionnaire must also be **Submitted/Complete**, not just
+  Saved.
+- Chrome is currently handling that manual completion path.
+
+What Aaron must NOT do until Chrome reports back:
+
+- Do NOT re-dispatch the Android `submit_to_play=true` workflow.
+  Same metadata gap = same failure = wasted EAS build credit.
+- Do NOT switch `releaseStatus` back to `'draft'`. The flip is the
+  intended end state; it does not need to be reverted while
+  Chrome works the metadata.
+- Do NOT trigger a Production track release. Production stays
+  untouched.
+
+What Aaron CAN do while Chrome works:
+
+- Accept the TestFlight prompt for Build 15 once Apple finishes
+  processing it.
+- Open the existing v13/v14 draft in Play Console → Internal
+  testing if Chrome wants to inspect the Play API rejection inline.
+
+## 8. Closed testing release unblocker
+
+If Play Console asks Aaron / Chrome to **Create closed testing
+release** (the screen requires an "App bundles" upload), follow
+this rule set. Closed testing is a separate track from Internal
+Testing — it is **not** Production.
+
+**Hard rules:**
+
+- Closed testing is allowed; Production is not. Confirm the track
+  name in the URL bar / sidebar before uploading anything.
+- Use a valid current AAB from EAS/GitHub output. Today the latest
+  valid Android AAB is the one produced by GitHub Actions run
+  `25349253529` (build id
+  `ddbc98cd-fa72-49c4-ad85-e0c8d929a957`, artifact at
+  `https://expo.dev/artifacts/eas/to6EtkZB68rBopsR9JNYMV.aab`,
+  version `0.1.0` versionCode `14`). The build itself is fine —
+  Play rejected the surrounding listing metadata, not the bundle.
+- Do NOT upload an empty draft AAB. Closed testing must contain a
+  real, signed AAB.
+- Do NOT upload an old APK. The track only accepts AAB on this
+  app, and an old APK would also drag the version backwards.
+- Do NOT upload an unrelated AAB. Bundle id must match
+  `com.lauburu.grapplingmap`.
+
+**Path:**
+
+1. Open the v14 AAB URL above (or download the latest from EAS
+   builds → Android → production).
+2. Play Console → Lauburu → Testing → **Closed testing** → Create
+   new release → upload the AAB → fill the closed-testing tester
+   list (can reuse the internal-testing list) → Save → Review
+   release → Send for review.
+3. While Play reviews the closed-testing release, complete every
+   "App content" left-sidebar item to Complete (not Saved):
+   Privacy policy, App access, Ads, Content rating IARC, Target
+   audience, News apps, Data safety (SUBMIT button), Health apps
+   declaration / Health Connect declaration, Government apps,
+   Financial features. Each questionnaire has its own commit
+   step.
+4. When every left-sidebar item shows Complete, reply
+   *"play listing fully complete"*.
+5. Only after that reply, re-dispatch the Android workflow ONCE
+   with `submit_to_play=true` and `release_status=''` (default).
+   Tester device should receive v14 (or the next versionCode if
+   v14 has already been claimed by closed testing) within 15–60
+   min, no Play Console click.
+
+**If Chrome cannot access the AAB file directly:** Aaron may need
+to download it manually from the EAS artifact URL above and
+re-upload via Play Console. The link is public-readable for the
+EAS organisation; no secret is exposed in the URL.
+
 Public production release (closed/open testing → production) is a
 separate, larger pass — out of scope for this checklist.

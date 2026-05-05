@@ -85,6 +85,10 @@ interface AdminStatus {
 
 const PROMPT_LIBRARY: Array<{ label: string; body: string }> = [
   {
+    label: 'Play metadata blocker status',
+    body: 'Chrome is handling Play Console app-content / closed testing setup. Do not rerun Android proof until Chrome confirms play listing fully complete. If complete, rerun Android auto-promote proof once. Do not trigger Production.',
+  },
+  {
     label: 'Compact ChatGPT status block',
     body: [
       'Print a compact status block for ChatGPT. No secrets, no long logs.',
@@ -139,9 +143,9 @@ const STATUS_HANDOFF_TEMPLATE = [
  * update these in the next paired build. Keep each line short; the UI
  * renders compact chips, not paragraphs.
  */
-const CURRENT_PRIORITY = 'Android proof submit failed — Play metadata gap. Fix listing-pass remaining items (Aaron-side).';
-const ANDROID_PROOF_RESULT = 'FAILED at submit step. EAS build succeeded (AAB produced). Play API auth OK (service account authenticated). Play rejected releaseStatus=completed: "The app is missing the required metadata to submit the app to Google Play Store." iOS Build 15 + TestFlight submit SUCCEEDED in parallel.';
-const NEXT_ACTION = 'Open Play Console → Lauburu → Internal testing or Dashboard → fix any red/yellow listing items (Data safety, Content rating, Target audience, Health Connect declaration). Re-dispatch only after.';
+const CURRENT_PRIORITY = 'Tester auto-update — blocked by Play Console app-content / closed-testing setup (Chrome handling).';
+const ANDROID_PROOF_RESULT = 'FAILED at submit step (run 25349253529). Play API: "missing required metadata". Cause: App content questionnaires saved but not Submitted/Complete. Chrome is currently working through Play Console closed testing / app-content. Do NOT re-dispatch until Chrome confirms "play listing fully complete".';
+const NEXT_ACTION = 'Wait for Chrome to finish Play Console app-content + closed-testing setup. When Chrome confirms complete, re-dispatch Android workflow ONCE. iOS Build 15 already on App Store Connect — accept the TestFlight prompt.';
 
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
@@ -320,11 +324,11 @@ export default function AdminDevScreen() {
         <WorkflowTriggerButton
           id="android-aab-build"
           label="Build Android + upload to Internal Testing"
-          subtitle="Builds AAB and uploads as COMPLETED Internal Testing release (auto-promote)."
+          subtitle="Blocked: Play app-content incomplete — do not re-dispatch until Chrome confirms 'play listing fully complete'."
           enabled={androidBuildAvailable}
           disabledReason={androidBuildAvailable ? undefined : 'Workflow android-aab-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
           inputs={{ submit_to_play: 'true' }}
-          confirmCopy="Builds the Android AAB and uploads as a COMPLETED Internal Testing release (releaseStatus=completed in eas.json). Tester devices auto-update within ~15–60 min — no Play Console click. Costs an EAS build credit. Continue?"
+          confirmCopy="WARNING: the previous proof (run 25349253529) failed because Play Console app-content / metadata is incomplete. Chrome is currently working through that. Re-dispatching now will fail the same way and cost an EAS build credit. Only continue if Chrome has confirmed 'play listing fully complete'."
         />
         <WorkflowTriggerButton
           id="ios-testflight-build"
@@ -352,12 +356,15 @@ export default function AdminDevScreen() {
       </Section>
 
       <Section title="Android — Internal Testing">
-        <Row label="Tester-live versionCode" value={Platform.OS === 'android' ? String(buildInfo.buildNumber) : 'v11 (last manual upload) — see Play Console'} />
-        <Row label="Build → Play upload" value={androidBuildAvailable ? 'auto ✓' : 'workflow not configured'} />
-        <Row label="Promote to testers" value="auto ✓ (eas.json releaseStatus=completed)" />
-        <Row label="Play Console blocker" value="none — listing pass complete" />
+        <Row label="Tester-live" value="v11 (last manual upload)" />
+        <Row label="Auto-promote" value="blocked — Play app-content incomplete" />
+        <Row label="Last proof" value="run 25349253529 — failed at Play API metadata check" />
+        <Row label="releaseStatus" value="completed configured — blocked by Play metadata until manual setup clears" />
         <Text style={styles.note}>
-          Future Internal Testing dispatches with `submit_to_play=true` create COMPLETED releases — no Play Console click required. First proof build will confirm the auto-promote path. Build buttons live in "Primary actions" above.
+          Chrome is currently in Play Console working through closed-testing / app-content. Do NOT re-dispatch the Android workflow until Chrome reports "play listing fully complete". Same metadata gap = same failure = wasted EAS build credit.
+        </Text>
+        <Text style={styles.note}>
+          Closed-testing AAB unblocker: use the existing v14 AAB from EAS (build id ddbc98cd-…); bundle is fine, only listing metadata was rejected. Path in docs/PLAY_SUBMIT_SETUP.md §8.
         </Text>
         <WorkflowTriggerButton
           id="android-aab-build"
@@ -370,12 +377,12 @@ export default function AdminDevScreen() {
       </Section>
 
       <Section title="iOS — TestFlight">
-        <Row label="Latest build number" value={Platform.OS === 'ios' ? String(buildInfo.buildNumber) : 'see App Store Connect'} />
+        <Row label="TestFlight channel" value="works ✓ (Build 14 reached testers, Build 15 submitted run 25349256198)" />
         <Row label="Build / submit automation" value={iosBuildAvailable ? 'auto ✓' : 'workflow not configured'} />
         <Row label="Auto-assign to Team (Expo)" value={adminStatus?.testflightGroupAssignmentConfigured === true ? 'auto ✓' : '—'} />
-        <Row label="HealthKit Mac/Vision warning" value="repo-only fix on main (ships with next iOS build)" />
+        <Row label="HealthKit Mac/Vision warning" value="fix shipped with Build 15 — accept TestFlight prompt" />
         <Text style={styles.note}>
-          Build + submit button lives in "Primary actions" above. Build 15 ships the HealthKit Mac/Vision warning fix.
+          TestFlight is not silent OTA — testers update through the TestFlight app once Apple finishes processing each build (5–30 min after EAS submit).
         </Text>
         <WorkflowTriggerButton
           id="ios-testflight-build"
