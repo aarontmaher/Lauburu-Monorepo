@@ -831,6 +831,8 @@ import {
 
 const HR_SERVICE_UUID_LC = '0000180d-0000-1000-8000-00805f9b34fb';
 const FTMS_SERVICE_UUID_LC = '00001826-0000-1000-8000-00805f9b34fb';
+const CPS_SERVICE_UUID_LC = '00001818-0000-1000-8000-00805f9b34fb';
+const CSC_SERVICE_UUID_LC = '00001816-0000-1000-8000-00805f9b34fb';
 
 export function FTMSMachineCard() {
   const [state, setState] = useState<BleMachineState>(() => getBleMachineState());
@@ -1069,6 +1071,9 @@ export function FTMSMachineCard() {
         const services = liveHealth.servicesOnDevice;
         const advertisesHr = services.some((s) => s === HR_SERVICE_UUID_LC);
         const advertisesFtms = services.some((s) => s === FTMS_SERVICE_UUID_LC);
+        const advertisesCps = services.some((s) => s === CPS_SERVICE_UUID_LC);
+        const advertisesCsc = services.some((s) => s === CSC_SERVICE_UUID_LC);
+        const advertisesAnySupported = advertisesHr || advertisesFtms || advertisesCps || advertisesCsc;
         const waitedEnough = secsSinceStart >= 8;
         const longWait = secsSinceStart >= 20;
         const vendorFrames = (liveHealth as any).vendorFrames ?? [];
@@ -1086,7 +1091,7 @@ export function FTMSMachineCard() {
         //   - device advertises NEITHER HR nor FTMS → we cannot read it
         //   - device is named WHOOP-something → WHOOP uses proprietary BLE
         //   - waited > 8s with no sample and no expected services → warn
-        const proprietaryProbable = services.length > 0 && !advertisesHr && !advertisesFtms;
+        const proprietaryProbable = services.length > 0 && !advertisesAnySupported;
         return (
           <>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, paddingVertical: 8 }}>
@@ -1126,22 +1131,22 @@ export function FTMSMachineCard() {
             )}
             {!receiving && waitedEnough && !isWhoopLike && proprietaryProbable && (
               <Text style={[styles.subtleNote, { color: '#ffa500' }]}>
-                {`Connected to ${deviceName} but it does not advertise the standard Heart Rate (0x180D) or FTMS (0x1826) services. Live read only works with devices that support either profile.`}
+                {`Connected, but ${deviceName} does not expose any supported metric stream (Heart Rate 0x180D, FTMS 0x1826, Cycling Power 0x1818, or Cycling Speed/Cadence 0x1816). You can still save the manual session.`}
               </Text>
             )}
-            {!receiving && waitedEnough && !isWhoopLike && !proprietaryProbable && advertisesFtms && (
+            {!receiving && longWait && !isWhoopLike && advertisesAnySupported && (
+              <Text style={[styles.subtleNote, { color: '#ffa500' }]}>
+                {`Connected to ${deviceName}, but no samples after ${Math.round(secsSinceStart)}s. The bike advertises ${[advertisesFtms ? 'FTMS' : null, advertisesCps ? 'CPS' : null, advertisesCsc ? 'CSC' : null, advertisesHr ? 'HR' : null].filter(Boolean).join('/')} but isn't broadcasting yet. Pedal to wake the data stream — or save the manual session.`}
+              </Text>
+            )}
+            {!receiving && waitedEnough && !longWait && !isWhoopLike && !proprietaryProbable && (advertisesFtms || advertisesCps) && (
               <Text style={[styles.subtleNote, { color: '#d4e157' }]}>
-                {`Connected to ${deviceName}. Awaiting FTMS notifications — start pedaling to wake the bike's data stream.`}
+                {`Connected to ${deviceName}. Awaiting bike notifications — start pedaling to wake the data stream.`}
               </Text>
             )}
-            {!receiving && waitedEnough && !isWhoopLike && !proprietaryProbable && advertisesHr && !advertisesFtms && (
+            {!receiving && waitedEnough && !longWait && !isWhoopLike && !proprietaryProbable && advertisesHr && !advertisesFtms && !advertisesCps && (
               <Text style={[styles.subtleNote, { color: '#d4e157' }]}>
                 {`Connected to ${deviceName}. Awaiting HR notifications — touch the electrodes or strap to skin to wake it.`}
-              </Text>
-            )}
-            {!receiving && waitedEnough && !isWhoopLike && !proprietaryProbable && !advertisesFtms && !advertisesHr && (
-              <Text style={[styles.subtleNote, { color: '#d4e157' }]}>
-                Connected but no samples yet. Wake the device (pedal / touch the strap) and give it a few seconds.
               </Text>
             )}
             {!receiving && longWait && advertisesFtms && vendorCapturedFrame && (
@@ -1190,7 +1195,7 @@ export function FTMSMachineCard() {
       )}
 
       <Text style={styles.subtleNote}>
-        Supported: FTMS bike (0x1826) scan/connect, HR (0x180D) streaming, Concept2 PM5 advertised FTMS half. Full PM5 proprietary pace/stroke data is a follow-up.
+        Supported: HR strap (0x180D), FTMS bike (0x1826) Indoor Bike Data + Cross Trainer + Rower + Treadmill, Cycling Power (0x1818) instantaneous power, Cycling Speed/Cadence (0x1816), Concept2 PM5 (FTMS half), Echelon/Rogue Echo proprietary. PM5 proprietary pace/stroke and CSC cadence delta-tracking are follow-ups.
       </Text>
     </View>
   );

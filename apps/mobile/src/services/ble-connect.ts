@@ -107,6 +107,20 @@ export interface BleMachineState {
 // Well-known UUIDs.
 const HR_SERVICE_UUID = '0000180d-0000-1000-8000-00805f9b34fb';
 const FTMS_SERVICE_UUID = '00001826-0000-1000-8000-00805f9b34fb';
+// Cycling Power Service (CPS) — service 0x1818, measurement 0x2A63.
+// Many "Echo"-class bikes (Rogue Echo, AssaultBike firmware variants,
+// Wahoo KICKR, Tacx, Saris, Stages) publish power via CPS even when
+// they do NOT expose FTMS Indoor Bike Data. Without subscribing to
+// CPS the BLE session shows "Connected · waiting" indefinitely.
+const CPS_SERVICE_UUID = '00001818-0000-1000-8000-00805f9b34fb';
+const CPS_MEASUREMENT_UUID = '00002a63-0000-1000-8000-00805f9b34fb';
+// Cycling Speed and Cadence (CSC) — service 0x1816, measurement
+// 0x2A5B. Often paired with CPS on bikes; carries crank revolutions
+// for cadence. Cadence requires delta-tracking which is out of scope
+// for this iteration — we subscribe so we record samples-arrived
+// (proves liveness) but don't decode cadence yet.
+const CSC_SERVICE_UUID = '00001816-0000-1000-8000-00805f9b34fb';
+const CSC_MEASUREMENT_UUID = '00002a5b-0000-1000-8000-00805f9b34fb';
 // Echelon / Rogue Echo BLE — proprietary service used by Echelon
 // Connect Sport, EX-series, and (per community reports) Rogue Echo
 // Bike V3 firmware. Reverse-engineered by qdomyos-zwift and echbt.
@@ -260,6 +274,14 @@ function classifyDevice(rawName: string | null, serviceUUIDs: string[] | null): 
     if (name.includes('ski')) return 'ftms_skierg';
     return 'ftms_bike';
   }
+  // Bike-only services: Cycling Power (0x1818) or Cycling Speed and
+  // Cadence (0x1816). Many "Echo" bikes advertise these instead of (or
+  // alongside but ahead of) FTMS. Classify as ftms_bike for ranking
+  // purposes — the connect path doesn't care about the kind beyond
+  // sorting; subscription paths key off the actual services found.
+  if (uuids.includes(CPS_SERVICE_UUID) || uuids.includes(CSC_SERVICE_UUID)) {
+    return 'ftms_bike';
+  }
   if (uuids.includes(HR_SERVICE_UUID)) return 'hr_only';
   return 'unknown';
 }
@@ -388,7 +410,7 @@ export async function scanBleMachines(timeoutMs = 10_000): Promise<void> {
   const discovered = new Map<string, DiscoveredDevice>();
   try {
     manager.startDeviceScan(
-      [HR_SERVICE_UUID, FTMS_SERVICE_UUID, PM5_PRIMARY_SERVICE_UUID, ECHELON_SERVICE_UUID],
+      [HR_SERVICE_UUID, FTMS_SERVICE_UUID, PM5_PRIMARY_SERVICE_UUID, ECHELON_SERVICE_UUID, CPS_SERVICE_UUID, CSC_SERVICE_UUID],
       { allowDuplicates: false },
       (error: unknown, device: unknown) => {
         if (error || !device) return;
@@ -489,6 +511,8 @@ export async function connectBleMachine(deviceId: string): Promise<void> {
     // proprietary profile and we cannot read HR from it via BLE.
     _lastConnectedServices = [];
     _lastConnectedFtmsNotifyChars = [];
+    _lastConnectedCpsNotifyChars = [];
+    _lastConnectedCscNotifyChars = [];
     _lastConnectedVendorNotifyChars = [];
     _vendorFrames.length = 0;
     try {
@@ -515,6 +539,10 @@ export async function connectBleMachine(deviceId: string): Promise<void> {
                 if (!isNotify) continue;
                 if (svcUuid === FTMS_SERVICE_UUID) {
                   _lastConnectedFtmsNotifyChars.push(charUuid);
+                } else if (svcUuid === CPS_SERVICE_UUID) {
+                  _lastConnectedCpsNotifyChars.push(charUuid);
+                } else if (svcUuid === CSC_SERVICE_UUID) {
+                  _lastConnectedCscNotifyChars.push(charUuid);
                 } else if (svcUuid !== HR_SERVICE_UUID) {
                   // Skip HR — already handled by the standard HR path.
                   // Everything else is vendor/proprietary and gets
@@ -660,6 +688,8 @@ let _liveStartedAtMs: number | null = null;
 let _liveLastSampleAtMs: number | null = null;
 let _lastConnectedServices: string[] = [];
 let _lastConnectedFtmsNotifyChars: string[] = [];
+let _lastConnectedCpsNotifyChars: string[] = [];
+let _lastConnectedCscNotifyChars: string[] = [];
 // Characteristics outside FTMS/HR that we've discovered on the
 // connected device (vendor-specific or unknown). Surface via
 // getLiveStreamStatus so the Train card can render a debug log.
@@ -679,13 +709,22 @@ export function getLiveStreamStatus(): {
   hasEverReceivedSample: boolean;
   servicesOnDevice: string[];
   ftmsCharsOnDevice: string[];
+  cpsCharsOnDevice: string[];
+  cscCharsOnDevice: string[];
   vendorCharsOnDevice: Array<{ serviceUuid: string; charUuid: string }>;
   vendorFrames: VendorFrame[];
   hasFtmsService: boolean;
+  hasCpsService: boolean;
+  hasCscService: boolean;
   hasHrService: boolean;
+  hasAnySupportedService: boolean;
 } {
   const started = _liveStartedAtMs != null;
   const now = Date.now();
+  const hasFtms = _lastConnectedServices.includes(FTMS_SERVICE_UUID);
+  const hasCps = _lastConnectedServices.includes(CPS_SERVICE_UUID);
+  const hasCsc = _lastConnectedServices.includes(CSC_SERVICE_UUID);
+  const hasHr = _lastConnectedServices.includes(HR_SERVICE_UUID);
   return {
     started,
     startedAtMs: _liveStartedAtMs,
@@ -694,10 +733,15 @@ export function getLiveStreamStatus(): {
     hasEverReceivedSample: _liveLastSampleAtMs != null,
     servicesOnDevice: _lastConnectedServices,
     ftmsCharsOnDevice: _lastConnectedFtmsNotifyChars,
+    cpsCharsOnDevice: _lastConnectedCpsNotifyChars,
+    cscCharsOnDevice: _lastConnectedCscNotifyChars,
     vendorCharsOnDevice: _lastConnectedVendorNotifyChars,
     vendorFrames: _vendorFrames.slice(),
-    hasFtmsService: _lastConnectedServices.includes(FTMS_SERVICE_UUID),
-    hasHrService: _lastConnectedServices.includes(HR_SERVICE_UUID),
+    hasFtmsService: hasFtms,
+    hasCpsService: hasCps,
+    hasCscService: hasCsc,
+    hasHrService: hasHr,
+    hasAnySupportedService: hasFtms || hasCps || hasCsc || hasHr,
   };
 }
 
@@ -808,6 +852,8 @@ export function startBleSession(): LiveBleSessionHandle {
       machineLooksEchelon,
       services: _lastConnectedServices,
       ftmsNotifyChars: _lastConnectedFtmsNotifyChars,
+      cpsNotifyChars: _lastConnectedCpsNotifyChars,
+      cscNotifyChars: _lastConnectedCscNotifyChars,
       vendorNotifyChars: _lastConnectedVendorNotifyChars,
     });
   }
@@ -972,6 +1018,97 @@ export function startBleSession(): LiveBleSessionHandle {
           FTMS_SERVICE_UUID,
           uuid,
           ftmsFrameHandler,
+        );
+        subs.push(s ?? null);
+      } catch { /* characteristic not present on this device */ }
+    }
+    // Cycling Power Measurement (0x2A63) under Cycling Power Service
+    // (0x1818). The fixed layout per the BLE CPS spec is:
+    //   bytes 0–1  uint16 LE flags
+    //   bytes 2–3  sint16 LE instantaneous power (W) — ALWAYS present
+    //   conditional fields per flags follow (pedal balance / accumulated
+    //   torque / wheel revs / crank revs / max-min force).
+    // We only emit instantaneous power for now — that alone unblocks
+    // "connected · waiting" for every bike that speaks CPS but not
+    // FTMS Indoor Bike Data (Rogue Echo, AssaultBike firmware variants,
+    // Wahoo KICKR, Tacx, Saris, Stages). Cadence via crank-rev delta
+    // tracking is a follow-up.
+    const cpsHandler = (error: unknown, char: any) => {
+      if (error || !char?.value) return;
+      try {
+        const bytes = Buffer.from(String(char.value), 'base64');
+        if (bytes.length < 4) return;
+        const instantPower = bytes.readInt16LE(2);
+        const atEpochMs = Date.now();
+        const sample: FtmsLiveSample = {
+          atEpochMs,
+          instantaneousPowerW: instantPower,
+          heartRateBpm: null,
+          energyKj: null,
+          instantaneousCadenceRpm: null,
+          instantaneousSpeedKph: null,
+          totalDistanceM: null,
+          resistanceLevel: null,
+          elapsedTimeS: null,
+        };
+        _lastFtms = sample;
+        _liveLastSampleAtMs = atEpochMs;
+        if (_sessionStartAtMs != null) pushSessionSample({
+          atEpochMs,
+          hrBpm: null,
+          powerW: instantPower,
+          cadenceRpm: null,
+          distanceM: null,
+          energyKj: null,
+        });
+        if (ftmsCb) ftmsCb(sample);
+        for (const listener of _ftmsListeners) { try { listener(sample); } catch { /* ignore */ } }
+        _state = { ..._state, status: 'receiving_data' };
+      } catch { /* ignore bad frame */ }
+    };
+    const cpsCandidates = new Set<string>([
+      CPS_MEASUREMENT_UUID,
+      ...(_lastConnectedCpsNotifyChars ?? []),
+    ]);
+    for (const uuid of cpsCandidates) {
+      try {
+        const s = machineDev.monitorCharacteristicForService(
+          CPS_SERVICE_UUID,
+          uuid,
+          cpsHandler,
+        );
+        subs.push(s ?? null);
+      } catch { /* characteristic not present on this device */ }
+    }
+    // Cycling Speed and Cadence (0x2A5B). We subscribe primarily so
+    // sample-arrival proves liveness and feeds the no-supported-stream
+    // detector — full cadence decode requires delta tracking and is a
+    // follow-up. Frames are logged into the session ring as
+    // power=null / cadence=null so they count as "received" for the UI
+    // but don't fabricate metrics.
+    const cscHandler = (error: unknown, char: any) => {
+      if (error || !char?.value) return;
+      try {
+        const bytes = Buffer.from(String(char.value), 'base64');
+        if (bytes.length < 1) return;
+        const atEpochMs = Date.now();
+        _liveLastSampleAtMs = atEpochMs;
+        if (_sessionStartAtMs != null) pushSessionSample({
+          atEpochMs, hrBpm: null, powerW: null, cadenceRpm: null, distanceM: null, energyKj: null,
+        });
+        _state = { ..._state, status: 'receiving_data' };
+      } catch { /* ignore bad frame */ }
+    };
+    const cscCandidates = new Set<string>([
+      CSC_MEASUREMENT_UUID,
+      ...(_lastConnectedCscNotifyChars ?? []),
+    ]);
+    for (const uuid of cscCandidates) {
+      try {
+        const s = machineDev.monitorCharacteristicForService(
+          CSC_SERVICE_UUID,
+          uuid,
+          cscHandler,
         );
         subs.push(s ?? null);
       } catch { /* characteristic not present on this device */ }
