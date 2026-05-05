@@ -753,8 +753,8 @@ export default function AiChatScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={0}>
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 8 : 0}>
       <View style={[styles.header, { paddingTop: Math.max(insets.top, 12) }]}>
         <Text style={styles.headerTitle}>AI Coach</Text>
         <Pressable onPress={() => router.back()} hitSlop={12}>
@@ -881,6 +881,14 @@ export default function AiChatScreen() {
           placeholderTextColor="#666"
           multiline
           maxLength={500}
+          scrollEnabled
+          // iOS: move the keyboard to a clean dismiss-on-drag — prevents
+          // the long-message-typed-then-keyboard-stays case where the
+          // input bottom edge is hidden because the soft keyboard +
+          // input region together exceed the safe area.
+          textAlignVertical="top"
+          autoCorrect
+          blurOnSubmit={false}
         />
         <Pressable
           style={[styles.sendBtn, sending && styles.sendBtnDisabled]}
@@ -916,17 +924,22 @@ function AnswerBlock({
     .slice(0, 4);
   const hasDetails = whyBullets.length > 0 || (!!answer.missingnessNote && answer.missingnessNote.trim().length > 4);
 
+  // Share is only worth surfacing when the answer is genuinely
+  // partial / insufficient — that's when forwarding the full context
+  // to ChatGPT/Claude/Codex helps. For supported answers the Share
+  // button is noise. Hidden in details either way.
+  const shareWorthShowing = answer.tone !== 'supported';
+
   return (
     <View style={styles.answerBlockWrap}>
+      <Text style={styles.speakerLabelYou}>You asked</Text>
       <View style={styles.questionBubble}>
         <Text style={styles.questionBubbleText} numberOfLines={3} ellipsizeMode="tail">
           {answer.question}
         </Text>
       </View>
+      <Text style={styles.speakerLabelCoach}>Coach answered</Text>
       <View style={styles.answerCardClean}>
-        <View style={styles.answerHeaderTag}>
-          <Text style={styles.answerTagText}>AI Coach</Text>
-        </View>
         {answer.short && answer.short.trim().length > 0 && (
           <Text style={styles.answerShort}>{answer.short}</Text>
         )}
@@ -936,7 +949,9 @@ function AnswerBlock({
         {hasDetails && (
           <Pressable onPress={() => setExpanded((v) => !v)} hitSlop={6}>
             <Text style={styles.detailsToggle}>
-              {expanded ? '▾ Hide details' : '▸ View details'}
+              {expanded
+                ? '▾ Hide details'
+                : `▸ View details${whyBullets.length > 0 ? ` · ${whyBullets.length} ${whyBullets.length === 1 ? 'finding' : 'findings'}` : ''}`}
             </Text>
           </Pressable>
         )}
@@ -952,9 +967,11 @@ function AnswerBlock({
             {answer.missingnessNote && answer.missingnessNote.trim().length > 4 && (
               <Text style={styles.answerMissing}>{answer.missingnessNote}</Text>
             )}
-            <Pressable onPress={onShare} hitSlop={6}>
-              <Text style={styles.shareInline}>Share full context externally</Text>
-            </Pressable>
+            {shareWorthShowing && (
+              <Pressable onPress={onShare} hitSlop={6}>
+                <Text style={styles.shareInline}>Share full context externally</Text>
+              </Pressable>
+            )}
           </View>
         )}
       </View>
@@ -972,7 +989,7 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 18, fontWeight: '700', color: '#f5f7f9' },
   headerClose: { fontSize: 15, fontWeight: '600', color: '#d4e157' },
   body: { flex: 1 },
-  bodyContent: { padding: 16, gap: 12 },
+  bodyContent: { padding: 14, gap: 10 },
 
   capBadge: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
@@ -1171,15 +1188,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'flex-end', gap: 8,
     paddingHorizontal: 12, paddingTop: 10,
     borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#0e0e0e',
   },
   input: {
-    flex: 1, minHeight: 40, maxHeight: 160,
+    flex: 1, minHeight: 44, maxHeight: 140,
     paddingHorizontal: 12, paddingVertical: 10, borderRadius: 12,
     borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', backgroundColor: 'rgba(255,255,255,0.04)',
-    color: '#f5f7f9', fontSize: 14,
+    color: '#f5f7f9', fontSize: 14, lineHeight: 20,
   },
   // Cleaner answer card pieces — used by AnswerBlock above.
-  answerBlockWrap: { gap: 6 },
+  answerBlockWrap: { gap: 4 },
+  speakerLabelYou: {
+    alignSelf: 'flex-end',
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    color: '#9aa0a4',
+    paddingRight: 4,
+  },
+  speakerLabelCoach: {
+    alignSelf: 'flex-start',
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    color: '#d4e157',
+    paddingLeft: 4,
+    marginTop: 4,
+  },
   questionBubble: {
     alignSelf: 'flex-end',
     maxWidth: '85%',
@@ -1196,7 +1233,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   answerCardClean: {
-    padding: 12,
+    padding: 11,
     borderRadius: 12,
     gap: 6,
     backgroundColor: 'rgba(255,255,255,0.04)',
@@ -1249,7 +1286,7 @@ const styles = StyleSheet.create({
     color: '#d7d9dc',
   },
   sendBtn: {
-    height: 40, paddingHorizontal: 16, alignItems: 'center', justifyContent: 'center',
+    height: 44, paddingHorizontal: 16, alignItems: 'center', justifyContent: 'center',
     borderRadius: 12, backgroundColor: '#d4e157',
   },
   sendBtnDisabled: { opacity: 0.5 },

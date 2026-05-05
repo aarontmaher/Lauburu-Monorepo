@@ -15,13 +15,13 @@ import type { OwnerWorkflowContext } from '../services/prompt-templates';
 
 const DEFAULT_CONTEXT: OwnerWorkflowContext = {
   currentPriority:
-    'Fix Play Console listing-pass metadata gap so future Android dispatches can land releaseStatus=completed.',
+    'Confirm Android v14 lands on a tester device — workflow side of auto-update proof PASSED.',
   currentBlocker:
-    'Run 25349253529 FAILED at the submit step. Play API: "The app is missing the required metadata to submit the app to Google Play Store." Aaron-side fix only — Data safety / Content rating / Target audience / Health Connect declaration likely incomplete.',
+    'None code-side. Awaiting tester device to receive v14 within 15–60 min of run 25361589282 success at 06:59:36 UTC.',
   lastStatus: [
-    'Android proof FAILED at submit step. EAS build succeeded (AAB to6EtkZB68rBopsR9JNYMV.aab); Play API auth OK; Play rejected COMPLETED release for missing metadata.',
-    'iOS Build 15 + TestFlight submit SUCCEEDED (run 25349256198).',
-    'iOS HealthKit Mac/Vision warning fix shipped on Build 15. Owner FAB rule + Admin/Dev redesign also live on Build 15.',
+    'Android proof PASSED end-to-end on retry: run 25361589282 → EAS build ✓ → Submit AAB to Play Internal Testing ✓ at 06:59:36 UTC. Play accepted the COMPLETED release.',
+    'iOS Build 15 + TestFlight submit SUCCEEDED earlier (run 25349256198).',
+    'iOS HealthKit Mac/Vision warning fix shipped on Build 15. Owner FAB rule + Admin/Dev redesign also live on Build 15. BLE CPS/CSC fix lands on next paired build.',
     'Verified: tsc --noEmit clean across all commits this lane.',
   ].join(' '),
   selectedTaskBundle: undefined,
@@ -37,11 +37,9 @@ const DEFAULT_CONTEXT: OwnerWorkflowContext = {
     'Use predefined GitHub Actions workflows only',
   ],
   manualStepsForAaron: [
-    'iOS Build 15: SUCCEEDED — accept the TestFlight update prompt to install Build 15 on Aaron\'s device',
-    'Android: open Play Console → Lauburu → Dashboard or Internal testing for the v14 draft, look for any red/amber "complete this section" prompt',
-    'Most likely missing: Data safety final save, Content rating final save, Target audience final save, Health Connect declaration final save — Aaron may have started but not committed each questionnaire',
-    'Once each remaining listing-pass questionnaire shows "Saved" / "Complete", reply "play listing fully complete" so I can re-dispatch the Android workflow once',
-    'Do NOT re-dispatch the Android workflow yet — it will fail the same way until the metadata gap is closed',
+    'Observe a tester device for v14 over the next 15–60 min — Play accepted the COMPLETED release on run 25361589282 at 06:59:36 UTC; no Play Console click should be required',
+    'Accept the TestFlight update prompt to install Build 15 (already on App Store Connect from run 25349256198)',
+    'When v14 confirmed on a tester device, reply "v14 received" — that closes the auto-update lane',
   ],
   canDeleteFromNotepad: [
     'Wire iOS auto-group assignment (DONE — Build 14)',

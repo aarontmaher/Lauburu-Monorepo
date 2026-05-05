@@ -10,21 +10,26 @@ Updated 2026-05-05.
 
 ## Current #1 priority
 
-**Tester auto-update — still the active priority. Specifically:
-finish Play Console app-content + (if Play required it) closed
-testing setup so the Android auto-promote workflow can land
-COMPLETED Internal Testing releases.**
+**Confirm Android v14 lands on a tester device — the workflow side
+of auto-update proof PASSED.**
 
-Status as Chrome works through Play Console:
+Run `25361589282` (re-dispatch after Chrome confirmed "play
+listing fully complete"): **SUCCESS end-to-end.**
 
-- Chrome is currently in Play Console → Create closed testing
-  release / App content. Do NOT re-dispatch the Android workflow
-  while Chrome is mid-flow.
-- Re-dispatch only after Chrome reports *"play listing fully
-  complete"*.
-- Production track stays untouched throughout.
+- EAS Android build: ✓
+- Submit AAB to Play Internal Testing: ✓ at 2026-05-05 06:59:36
+  UTC
+- Play accepted the COMPLETED release at the API layer
+- Workflow URL:
+  https://github.com/aarontmaher/lauburu-grappling-map/actions/runs/25361589282
 
-Result of run `25349253529`: **FAILED at submit step.** Detail:
+Final closure waits on a tester device receiving v14 within 15–60
+min of submit success — no Play Console click should be required.
+After that observation, the auto-update lane closes and the next
+priority moves to Grappler Readiness Batch B (extending
+NextDayCheckin sliders).
+
+Earlier failure preserved for context (run `25349253529`):
 
 - EAS build: ✅ succeeded — AAB produced
   (`https://expo.dev/artifacts/eas/to6EtkZB68rBopsR9JNYMV.aab`,

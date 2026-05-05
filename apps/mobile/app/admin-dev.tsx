@@ -143,9 +143,9 @@ const STATUS_HANDOFF_TEMPLATE = [
  * update these in the next paired build. Keep each line short; the UI
  * renders compact chips, not paragraphs.
  */
-const CURRENT_PRIORITY = 'Tester auto-update — blocked by Play Console app-content / closed-testing setup (Chrome handling).';
-const ANDROID_PROOF_RESULT = 'FAILED at submit step (run 25349253529). Play API: "missing required metadata". Cause: App content questionnaires saved but not Submitted/Complete. Chrome is currently working through Play Console closed testing / app-content. Do NOT re-dispatch until Chrome confirms "play listing fully complete".';
-const NEXT_ACTION = 'Wait for Chrome to finish Play Console app-content + closed-testing setup. When Chrome confirms complete, re-dispatch Android workflow ONCE. iOS Build 15 already on App Store Connect — accept the TestFlight prompt.';
+const CURRENT_PRIORITY = 'Confirm Android v14 lands on a tester device — workflow side of auto-update proof PASSED.';
+const ANDROID_PROOF_RESULT = 'PASSED end-to-end on retry (run 25361589282). EAS build ✓ → Submit AAB to Play Internal Testing ✓. Play accepted the COMPLETED release at 06:59:36 UTC. Tester device confirmation is the final step.';
+const NEXT_ACTION = 'Watch a tester device for v14 over the next 15–60 min. No Play Console click should be required. When v14 arrives, the auto-update lane closes and the next priority is Grappler Readiness Batch B.';
 
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
@@ -320,15 +320,39 @@ export default function AdminDevScreen() {
         </View>
       </Section>
 
+      <Section title="AI Coach status">
+        <Row label="Backend reachable" value={health == null ? '—' : health.ok ? 'yes ✓' : 'no'} />
+        <Row label="Trend windows" value="7d / 14d / 30d / 90d / 180d / 365d / all-time" />
+        <Row
+          label="All-history analysis"
+          value={
+            health?.ok && health.totalNormalizedDays != null && health.totalNormalizedDays > 0
+              ? `enabled (${health.totalNormalizedDays} normalised days)`
+              : health?.ok ? 'no data yet — connect Apple Health / Health Connect / WHOOP'
+              : '—'
+          }
+        />
+        {health?.ok && (health?.totalNormalizedDays ?? 0) > 0 && (health?.totalNormalizedDays ?? 0) < 95 && (
+          <Text style={styles.note}>
+            Coverage {health?.totalNormalizedDays}d &lt; 95 — long-term answers say so explicitly.
+          </Text>
+        )}
+        {!health?.ok && (
+          <Text style={styles.note}>
+            Backend not reachable — Coach answers fall back to deterministic local templates. Trend windows still work over locally-cached normalized days.
+          </Text>
+        )}
+      </Section>
+
       <Section title="Primary actions">
         <WorkflowTriggerButton
           id="android-aab-build"
           label="Build Android + upload to Internal Testing"
-          subtitle="Blocked: Play app-content incomplete — do not re-dispatch until Chrome confirms 'play listing fully complete'."
+          subtitle="Routine: builds AAB, uploads as COMPLETED Internal Testing release, testers auto-update within 15–60 min."
           enabled={androidBuildAvailable}
           disabledReason={androidBuildAvailable ? undefined : 'Workflow android-aab-build.yml not available — push repo + add GITHUB_DISPATCH_TOKEN.'}
           inputs={{ submit_to_play: 'true' }}
-          confirmCopy="WARNING: the previous proof (run 25349253529) failed because Play Console app-content / metadata is incomplete. Chrome is currently working through that. Re-dispatching now will fail the same way and cost an EAS build credit. Only continue if Chrome has confirmed 'play listing fully complete'."
+          confirmCopy="Builds the Android AAB and uploads as a COMPLETED Internal Testing release (verified working on run 25361589282). Tester devices auto-update within 15–60 min — no Play Console click. Costs an EAS build credit. Continue?"
         />
         <WorkflowTriggerButton
           id="ios-testflight-build"
@@ -356,15 +380,12 @@ export default function AdminDevScreen() {
       </Section>
 
       <Section title="Android — Internal Testing">
-        <Row label="Tester-live" value="v11 (last manual upload)" />
-        <Row label="Auto-promote" value="blocked — Play app-content incomplete" />
-        <Row label="Last proof" value="run 25349253529 — failed at Play API metadata check" />
-        <Row label="releaseStatus" value="completed configured — blocked by Play metadata until manual setup clears" />
+        <Row label="Tester-live" value="v14 uploaded as COMPLETED release — awaiting tester device confirmation" />
+        <Row label="Auto-promote" value="proven (workflow side) — run 25361589282 ✓" />
+        <Row label="Last proof" value="success at 06:59:36 UTC; tester rollout 15–60 min" />
+        <Row label="releaseStatus" value="completed — Play accepted on retry after app-content fully Submitted" />
         <Text style={styles.note}>
-          Chrome is currently in Play Console working through closed-testing / app-content. Do NOT re-dispatch the Android workflow until Chrome reports "play listing fully complete". Same metadata gap = same failure = wasted EAS build credit.
-        </Text>
-        <Text style={styles.note}>
-          Closed-testing AAB unblocker: use the existing v14 AAB from EAS (build id ddbc98cd-…); bundle is fine, only listing metadata was rejected. Path in docs/PLAY_SUBMIT_SETUP.md §8.
+          Workflow + Play API path is verified. Final closure waits on a tester device receiving v14 within 15–60 min with no Play Console click. After that, Build Android + upload becomes the routine path with no manual steps.
         </Text>
         <WorkflowTriggerButton
           id="android-aab-build"
@@ -461,18 +482,13 @@ export default function AdminDevScreen() {
         )}
       </Section>
 
-      <Section title="AI Coach">
-        <Row label="Backend reachable" value={health == null ? '—' : health.ok ? 'yes' : 'no'} />
-        <Row label="Multi-window analysis" value={health?.ok ? 'enabled' : '—'} />
-        <Row label="All-history support" value={health?.ok && health.totalNormalizedDays != null && health.totalNormalizedDays > 0 ? `yes (${health.totalNormalizedDays}d)` : 'no data yet'} />
-        <Row label="Trend windows" value="7d, 14d, 30d, 90d, 180d, 365d, all-time" />
+      <Section title="AI Coach — provenance">
         <Row label="Personal-data-backed labelling" value="on" />
-        <Row label="Cross-user/general trends" value="off (consent + k-threshold pending)" />
-        {health?.ok && (health?.totalNormalizedDays ?? 0) === 0 && (
-          <Text style={styles.note}>
-            Backend healthy but AI store has 0 normalised days — connect Apple Health / Health Connect, or import WHOOP CSV / Polar export, then re-ask Coach.
-          </Text>
-        )}
+        <Row label="Cross-user / general trends" value="off (consent + k-threshold pending)" />
+        <Row label="Paid LLM API" value="not implemented (deferred — see docs/AI_PROVIDER_STRATEGY.md)" />
+        <Text style={styles.note}>
+          Top-of-screen "AI Coach status" is the live state (reachability, trend windows, all-history). This section carries the policy guarantees that don't change at runtime.
+        </Text>
       </Section>
 
       <Section title="Release / status links">

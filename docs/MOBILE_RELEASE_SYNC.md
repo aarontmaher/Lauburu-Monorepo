@@ -17,21 +17,18 @@ State as of 2026-05-05:
   TestFlight update prompt on his device. Build 15 carries: iOS
   HealthKit Mac/Vision warning fix, Admin/Dev redesign + Primary
   actions, owner-FAB rule (Feedback FAB hidden for admin email).
-- **Android v11** still tester-live (last manually uploaded build).
-  v14 build SUCCEEDED on EAS (AAB produced) but failed at the Play
-  submit step with "missing required metadata" — Play's COMPLETED
-  validator stricter than DRAFT. Listing-pass items partially
-  saved; one or more questionnaires (Data safety, Content rating,
-  Target audience, Health Connect declaration) need Save/Submit
-  buttons clicked through. See `docs/PLAY_SUBMIT_SETUP.md` §6 for
-  the exact left-sidebar checklist.
-- **`eas.json` `releaseStatus`**: stays `'completed'`. The
+- **Android v14** now uploaded to Internal Testing as a COMPLETED
+  release. Run `25361589282` succeeded end-to-end (EAS build → Play
+  submit) at 06:59:36 UTC after Chrome closed the Play Console
+  app-content gap. Tester device confirmation pending the 15–60 min
+  Play rollout window.
+- **`eas.json` `releaseStatus`**: `'completed'`. The
   workflow `release_status` override (`completed` / `draft`) is
-  available; using `draft` would bypass the validator but doesn't
-  prove auto-promote, so don't.
-- **Proof build**: needs ONE re-dispatch after Aaron closes the
-  Play Console metadata gap. Until then, every dispatch will fail
-  the same way.
+  available for emergency use only.
+- **Auto-update path**: PROVEN on the workflow + Play API side.
+  Final closure waits on a tester device receiving v14 with no
+  Play Console click within 15–60 min. After that, future paired
+  builds dispatch routinely with no manual steps.
 
 ## TL;DR
 
@@ -42,7 +39,7 @@ Tester channels work. Full auto-ship is partial.
 | Build (EAS) | ✅ workflow `android-aab-build.yml` | ✅ workflow `ios-testflight-build.yml` |
 | Upload to store | ✅ `eas submit` (PLAY_SA_JSON) | ✅ `eas submit` (App Store Connect API key cached on EAS) |
 | Tester group assignment | n/a — Internal Testing track | ✅ `eas.json submit.production.ios.groups: ["Team (Expo)"]` |
-| Promote / make tester-live | 🟡 wired (releaseStatus=completed) but Play API rejects "missing required metadata" until Data safety / Content rating / Target audience / Health Connect declaration questionnaires are SUBMITTED in Play Console | ✅ automatic — Build 14 then Build 15 reached Testing without ASC clicks |
+| Promote / make tester-live | ✅ automatic via releaseStatus=completed (verified by run 25361589282 — Play accepted v14 as COMPLETED at 06:59:36 UTC) | ✅ automatic — Build 14 then Build 15 reached Testing without ASC clicks |
 | Tester device update | ✅ Play Store auto-update once promoted | ✅ TestFlight auto-update once Apple processing finishes |
 
 ## What "tester update channels work" means
