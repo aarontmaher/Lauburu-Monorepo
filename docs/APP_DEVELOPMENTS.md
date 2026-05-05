@@ -10,30 +10,52 @@ Updated 2026-05-05.
 
 ## Current #1 priority
 
-**Verify the result of the dispatched Android auto-promote proof
-build (v14, run `25349253529`).**
+**Close the Play Console listing-pass metadata gap that caused the
+v14 auto-promote proof to fail at the submit step.**
 
-Status as of this commit:
+Result of run `25349253529`: **FAILED at submit step.** Detail:
 
-- GitHub Actions run `25349253529` (workflow `android-aab-build`,
-  ref `main`, inputs `submit_to_play=true`, `release_status=''`):
-  in flight. URL:
-  https://github.com/aarontmaher/lauburu-grappling-map/actions/runs/25349253529
-- Steps already passed: Set up job, Checkout, Setup Node, Install
-  deps, TypeScript check, **Preflight — required secrets**
-  (confirms `PLAY_SA_JSON` is configured).
-- Step in progress: **EAS Android build** (typical 15–25 min).
-- Steps pending: **Submit AAB to Play Internal Testing**, Summary,
-  cleanup. The submit step is what proves auto-promote.
+- EAS build: ✅ succeeded — AAB produced
+  (`https://expo.dev/artifacts/eas/to6EtkZB68rBopsR9JNYMV.aab`,
+  EAS build id `ddbc98cd-fa72-49c4-ad85-e0c8d929a957`).
+- Play API auth: ✅ succeeded — service account
+  `lauburu-play-release-461@lauburu-play-deploy.iam.gserviceaccount.com`
+  authenticated, scheduled the submission, track `internal`,
+  releaseStatus `COMPLETED`.
+- Play submission: ❌ rejected by Google Play with: *"The app is
+  missing the required metadata to submit the app to Google Play
+  Store."* (EAS submission record:
+  `https://expo.dev/accounts/aaronmaher/projects/lauburu-grappling-map/submissions/df5d79df-b91e-4711-ae41-053102d46324`)
+
+What this means: the listing-pass items Aaron uploaded
+(graphics + screenshots) are present, but Play's COMPLETED-release
+validator requires more saved fields than DRAFT mode does. The
+common gaps that produce this exact error are:
+
+- **Data safety** questionnaire started but not Saved → "Complete"
+- **Content rating** IARC questionnaire started but not finalised
+- **Target audience and content** unsaved
+- **Health Connect declaration** missing or unsaved
+- **App access** if Play needs review credentials (only required
+  for production / open testing — but check this hasn't been
+  flagged on Internal Testing too)
 
 Parallel iOS Build 15 dispatch (run `25349256198`,
-`submit_to_testflight=true`) is at the same step (EAS build in
-progress). It is not the proof build but rides the same window.
+`submit_to_testflight=true`): **SUCCEEDED.** Build 15 is on App
+Store Connect and assigned to the internal `Team (Expo)` group.
+Aaron should accept the TestFlight prompt on his device — Build
+15 carries the iOS HealthKit Mac/Vision warning fix, the Admin/Dev
+redesign + Primary actions, and the owner-FAB rule (Feedback FAB
+hidden for the admin email).
 
 ## Current blocker
 
-Awaiting workflow completion (~25 min from dispatch). No code
-action available until the run finishes.
+Aaron-side: open Play Console → Lauburu Grappling Map →
+**Dashboard** OR **Internal testing → v14 draft** and look for any
+"Complete this section" / red / amber prompt. Save each
+questionnaire to "Complete". Reply *"play listing fully complete"*
+when done; I will re-dispatch the Android workflow once. **Do NOT
+re-dispatch yet — it will fail the same way.**
 
 ## Next action
 

@@ -176,11 +176,59 @@ Proof build dispatched 2026-05-04: workflow `android-aab-build`
 run `25349253529`, ref `main`, `submit_to_play=true`. URL:
 https://github.com/aarontmaher/lauburu-grappling-map/actions/runs/25349253529.
 
-State at dispatch + ~30 sec: preflight passed (`PLAY_SA_JSON`
-confirmed present), TypeScript clean, EAS Android build in
-progress, submit-to-Play step pending. Auto-promote is "wired and
-dispatched" — verified only when a tester device picks up v14
-without any Play Console click after the run completes.
+**Result: FAILED at submit step.**
+
+- EAS build: succeeded — AAB
+  `https://expo.dev/artifacts/eas/to6EtkZB68rBopsR9JNYMV.aab`,
+  build id `ddbc98cd-fa72-49c4-ad85-e0c8d929a957`.
+- Play API auth: succeeded — service account
+  `lauburu-play-release-461@…iam.gserviceaccount.com`
+  authenticated; submission scheduled with track `internal`,
+  releaseStatus `COMPLETED`.
+- Play API rejection: *"The app is missing the required metadata
+  to submit the app to Google Play Store."* EAS submission record:
+  `https://expo.dev/accounts/aaronmaher/projects/lauburu-grappling-map/submissions/df5d79df-b91e-4711-ae41-053102d46324`.
+
+Diagnosis: Play's COMPLETED-release validator is strictly stricter
+than its DRAFT acceptance. The graphics + screenshots Aaron
+uploaded ARE accepted; what's still missing is one or more of the
+SAVED questionnaires. Each questionnaire has its own "Save" button;
+starting one without saving leaves the section in a state that
+DRAFT will accept but COMPLETED will not.
+
+Verify each of these in Play Console → Lauburu → App content (left
+sidebar):
+
+- **Privacy policy** — URL field saved.
+- **App access** — saved (mark "All functionality is available
+  without restrictions" if no login is required to review the
+  internal-testing build).
+- **Ads** — saved.
+- **Content rating** — IARC questionnaire submitted (will issue a
+  rating certificate within a few minutes).
+- **Target audience and content** — saved (13+, not designed for
+  families).
+- **News apps** — declared NO.
+- **Data safety** — questionnaire submitted (Submit button at the
+  bottom; merely Saving the form is not the same as Submitting).
+- **Health apps declaration** / **Health Connect declaration** —
+  per-data-type purpose justifications saved.
+- **Government apps** — declared NO if applicable.
+- **Financial features** — declared NO.
+
+When all show green/saved/complete, the next workflow dispatch with
+`submit_to_play=true` and `release_status=''` (default) should land
+the v14 release as COMPLETED on Internal Testing. **Do NOT
+re-dispatch until every left-sidebar item shows complete.** A
+re-dispatch with the same metadata gap will fail identically and
+cost an EAS build credit.
+
+Optional fast-path while diagnosing: dispatch with
+`release_status=draft`. This bypasses the COMPLETED validator and
+proves the rest of the upload pipeline works (which we already
+know from this run — auth + submission scheduling worked, only
+the COMPLETED validator rejected). Don't bother — the diagnostic
+value is zero.
 
 Public production release (closed/open testing → production) is a
 separate, larger pass — out of scope for this checklist.

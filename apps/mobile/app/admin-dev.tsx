@@ -139,9 +139,9 @@ const STATUS_HANDOFF_TEMPLATE = [
  * update these in the next paired build. Keep each line short; the UI
  * renders compact chips, not paragraphs.
  */
-const CURRENT_PRIORITY = 'Android auto-promote proof build (v14).';
-const ANDROID_PROOF_RESULT = 'In flight — GitHub Actions run 25349253529. Preflight passed (PLAY_SA_JSON present), TypeScript clean, EAS Android build in progress, Play submit step pending downstream. Result lands in ~25 min.';
-const NEXT_ACTION = 'Wait for run 25349253529 to finish; on green, observe a tester device for v14 within 15–60 min.';
+const CURRENT_PRIORITY = 'Android proof submit failed — Play metadata gap. Fix listing-pass remaining items (Aaron-side).';
+const ANDROID_PROOF_RESULT = 'FAILED at submit step. EAS build succeeded (AAB produced). Play API auth OK (service account authenticated). Play rejected releaseStatus=completed: "The app is missing the required metadata to submit the app to Google Play Store." iOS Build 15 + TestFlight submit SUCCEEDED in parallel.';
+const NEXT_ACTION = 'Open Play Console → Lauburu → Internal testing or Dashboard → fix any red/yellow listing items (Data safety, Content rating, Target audience, Health Connect declaration). Re-dispatch only after.';
 
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
