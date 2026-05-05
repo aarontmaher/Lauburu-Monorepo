@@ -25,6 +25,7 @@ import {
   HealthConnectProvenanceCard,
   SamsungHealthCard,
 } from '../../src/components/IntegrationCards';
+import { HealthConnectAvailabilityHint } from '../../src/components/HealthConnectAvailabilityHint';
 import { MemoryProposalReview } from '../../src/components/MemoryProposalReview';
 import { SyncDiagnosticsCard } from '../../src/components/SyncDiagnosticsCard';
 import { HealthKitDebugCard } from '../../src/components/HealthKitDebugCard';
@@ -1179,6 +1180,11 @@ export default function HealthScreen() {
       {Platform.OS === 'ios' && (
         <SafeErrorBoundary label="Apple Health card">
           <AppleHealthCard />
+        </SafeErrorBoundary>
+      )}
+      {Platform.OS === 'android' && (
+        <SafeErrorBoundary label="Health Connect availability hint">
+          <HealthConnectAvailabilityHint />
         </SafeErrorBoundary>
       )}
       {Platform.OS === 'android' && (

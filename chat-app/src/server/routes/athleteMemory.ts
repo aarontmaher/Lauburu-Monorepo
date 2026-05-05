@@ -1457,6 +1457,223 @@ router.get('/admin/work-status', requireAdminToken, async (_req: any, res: any) 
   }
 });
 
+// GET /api/athlete-memory/admin/health-sources-status
+//
+// Connector-shaped read-only summary of health-source state across
+// the supported sources. Designed for ChatGPT / Claude / Codex
+// connector polling. Same `requireAdminToken` gate. Mirrors the
+// shape from docs/IN_APP_AUDIT_SYSTEM.md and docs/HEALTH_SOURCE_
+// IMPLEMENTATION_AUDIT.md.
+//
+// HARD CONTRACT:
+//   - No raw athlete health values (step counts / HRV ms / sleep
+//     durations / workout details) ever appear in this response.
+//   - No secrets / tokens / env values.
+//   - No per-tester PII.
+//   - Per-source state describes the SOURCE itself
+//     (live / repo-only / planned / historical-only), not a
+//     specific user's connection state. The latter requires the
+//     per-athlete JWT-gated /:athleteId/source-health route.
+router.get('/admin/health-sources-status', requireAdminToken, async (_req: any, res: any) => {
+  try {
+    res.status(200).json({
+      ok: true,
+      generatedAt: new Date().toISOString(),
+      sources: [
+        {
+          sourceId: 'apple_health',
+          platform: 'ios',
+          displayName: 'Apple Health',
+          state: 'live',
+          syncMode: 'live_sync',
+          isPrimaryForPlatform: true,
+          notes: 'iOS-only via @kingstinct/react-native-healthkit. Permissions declared in app.json infoPlist.NSHealthShareUsageDescription. Un-gated from free tier (commit d4827ba).',
+          targetMetricKeys: ['workouts', 'sleep', 'heart_rate', 'resting_heart_rate', 'hrv', 'steps', 'distance', 'active_energy', 'respiratory_rate', 'spo2', 'body_weight'],
+        },
+        {
+          sourceId: 'health_connect',
+          platform: 'android',
+          displayName: 'Health Connect',
+          state: 'live',
+          syncMode: 'live_sync',
+          isPrimaryForPlatform: true,
+          notes: 'Android-only via react-native-health-connect. SDK availability detail surfaces via getAvailabilityDetail() returning available/provider_update_required/sdk_unavailable/unknown codes (commit 36581d9). Un-gated from free tier (commit d4827ba).',
+          targetMetricKeys: ['exercise_sessions', 'sleep', 'heart_rate', 'resting_heart_rate', 'hrv', 'steps', 'distance', 'active_calories', 'respiratory_rate', 'spo2', 'body_weight'],
+        },
+        {
+          sourceId: 'whoop_direct',
+          platform: 'both',
+          displayName: 'WHOOP Direct',
+          state: 'planned',
+          syncMode: 'live_sync',
+          isPrimaryForPlatform: false,
+          notes: 'OAuth wired in chat-app integrations route. Upstream WHOOP dev-portal app not yet registered → returns "Application not found" 404 today. Friendly UI suppresses the raw JSON (commit a036fd5).',
+          targetMetricKeys: ['recovery', 'hrv', 'resting_heart_rate', 'strain', 'sleep', 'workouts'],
+        },
+        {
+          sourceId: 'whoop_csv',
+          platform: 'both',
+          displayName: 'WHOOP export upload',
+          state: 'live',
+          syncMode: 'historical_upload',
+          isPrimaryForPlatform: false,
+          notes: 'Backfill only. Routes /api/integrations/whoop/csv/{upload,upload-zip,clear,status}. Never labelled live.',
+          targetMetricKeys: ['recovery', 'hrv', 'resting_heart_rate', 'strain', 'sleep', 'workouts'],
+        },
+        {
+          sourceId: 'polar_direct',
+          platform: 'both',
+          displayName: 'Polar Direct',
+          state: 'planned',
+          syncMode: 'live_sync',
+          isPrimaryForPlatform: false,
+          notes: 'AccessLink OAuth wired in chat-app. Upstream Polar AccessLink dev app not yet registered. Friendly UI hides raw 404. Polar OH1 / Verity Sense armband can be worn while grappling; chest strap cannot.',
+          targetMetricKeys: ['workouts', 'heart_rate', 'rr_intervals'],
+        },
+        {
+          sourceId: 'polar_export',
+          platform: 'both',
+          displayName: 'Polar export upload',
+          state: 'live',
+          syncMode: 'historical_upload',
+          isPrimaryForPlatform: false,
+          notes: 'Backfill only. Route /api/athlete-memory/:athleteId/polar-export/import. CSV/TCX parsed via shared parse-polar-export.ts. 8MB cap, FIT not supported.',
+          targetMetricKeys: ['workouts', 'heart_rate', 'zones'],
+        },
+        {
+          sourceId: 'polar_via_health_connect',
+          platform: 'android',
+          displayName: 'Polar via Health Connect',
+          state: 'live',
+          syncMode: 'live_sync',
+          isPrimaryForPlatform: false,
+          notes: 'Android only — when user enables Polar Flow → Write to Health Connect, workouts + HR re-export through the Health Connect path.',
+          targetMetricKeys: ['workouts', 'heart_rate'],
+        },
+        {
+          sourceId: 'manual_checkin',
+          platform: 'both',
+          displayName: 'Manual check-in',
+          state: 'live',
+          syncMode: 'manual',
+          isPrimaryForPlatform: false,
+          notes: 'NextDayCheckin slice in store/training-store.ts. Mandatory fallback when health source unavailable. Grappler Readiness Batch B extends sliders.',
+          targetMetricKeys: ['soreness', 'fatigue', 'sleep_quality', 'stress', 'mood', 'pain_injury', 'planned_training', 'completed_training', 'notes'],
+        },
+        {
+          sourceId: 'manual_training_log',
+          platform: 'both',
+          displayName: 'Manual training log',
+          state: 'live',
+          syncMode: 'manual',
+          isPrimaryForPlatform: false,
+          notes: 'training-store.ts. Grappler Readiness Batch C extends grappling-specific fields (gi/no-gi, drilling vs live, perceived intensity).',
+          targetMetricKeys: ['session_type', 'duration_min', 'intensity', 'rpe', 'notes'],
+        },
+        {
+          sourceId: 'ble_machine',
+          platform: 'both',
+          displayName: 'BLE machine capture',
+          state: 'live',
+          syncMode: 'live_sync',
+          isPrimaryForPlatform: false,
+          notes: 'Train tab only, gated on HIIT/Steady-State session type. FTMS + CPS + CSC + HR + Echelon proprietary subscriptions wired (commit a6c7079). Manual save unblocked when BLE fails.',
+          targetMetricKeys: ['heart_rate', 'power_w', 'cadence_rpm', 'speed_kmh', 'distance_m', 'energy_kj'],
+        },
+        {
+          sourceId: 'cronometer',
+          platform: 'both',
+          displayName: 'Cronometer',
+          state: 'repo-only',
+          syncMode: 'unavailable',
+          isPrimaryForPlatform: false,
+          notes: 'Backend route /api/integrations/cronometer/{status,import} exists; no mobile UI surface. Defer until cohort demand exists.',
+          targetMetricKeys: ['calories', 'macros'],
+        },
+        {
+          sourceId: 'pm5',
+          platform: 'both',
+          displayName: 'Concept2 PM5',
+          state: 'live',
+          syncMode: 'live_sync',
+          isPrimaryForPlatform: false,
+          notes: 'FTMS half captured via BLE. Proprietary PM5 protocol (pace/strokes/split) is a follow-up.',
+          targetMetricKeys: ['heart_rate', 'cadence_rpm', 'distance_m'],
+        },
+        {
+          sourceId: 'samsung_health_direct',
+          platform: 'android',
+          displayName: 'Samsung Health Direct',
+          state: 'docs-only',
+          syncMode: 'unavailable',
+          isPrimaryForPlatform: false,
+          notes: 'Galaxy users get Samsung Health → Health Connect re-export by default; Direct SDK is low-value, deferred.',
+          targetMetricKeys: [],
+        },
+        {
+          sourceId: 'garmin',
+          platform: 'both',
+          displayName: 'Garmin',
+          state: 'docs-only',
+          syncMode: 'future',
+          isPrimaryForPlatform: false,
+          notes: 'Defer per HEALTH_METRIC_APPS_DEVICES_AUDIT.md — small grappling-cohort overlap; high engineering cost.',
+          targetMetricKeys: [],
+        },
+        {
+          sourceId: 'oura',
+          platform: 'both',
+          displayName: 'Oura',
+          state: 'docs-only',
+          syncMode: 'future',
+          isPrimaryForPlatform: false,
+          notes: 'Defer per audit — ring is tap-out hazard, gi friction strips finish in 2–4 weeks.',
+          targetMetricKeys: [],
+        },
+        {
+          sourceId: 'phone_ppg',
+          platform: 'both',
+          displayName: 'Phone camera PPG',
+          state: 'docs-only',
+          syncMode: 'future',
+          isPrimaryForPlatform: false,
+          notes: 'Defer indefinitely — HRV from phone PPG is too noisy to add signal over watch-based HRV.',
+          targetMetricKeys: [],
+        },
+        {
+          sourceId: 'dexa',
+          platform: 'both',
+          displayName: 'DEXA upload',
+          state: 'docs-only',
+          syncMode: 'manual',
+          isPrimaryForPlatform: false,
+          notes: 'Plan in DEXA_BLOOD_TEST_UPLOAD_PLAN.md. Evidence/context only, never daily readiness, never clinical claim.',
+          targetMetricKeys: ['lean_mass_kg', 'fat_mass_kg', 'body_fat_pct', 'bmd'],
+        },
+        {
+          sourceId: 'blood_panel',
+          platform: 'both',
+          displayName: 'Blood panel upload',
+          state: 'docs-only',
+          syncMode: 'manual',
+          isPrimaryForPlatform: false,
+          notes: 'Plan in DEXA_BLOOD_TEST_UPLOAD_PLAN.md. Evidence/context only, never auto-interpreted, never auto-pulled from clinic portals.',
+          targetMetricKeys: ['ferritin', 'vitamin_d', 'b12', 'thyroid', 'inflammatory_markers', 'metabolic_markers'],
+        },
+      ],
+      summary: {
+        livePrimaryIos: 'apple_health',
+        livePrimaryAndroid: 'health_connect',
+        liveSecondary: ['whoop_csv', 'polar_export', 'polar_via_health_connect', 'manual_checkin', 'manual_training_log', 'ble_machine', 'pm5'],
+        plannedSecondary: ['whoop_direct', 'polar_direct'],
+        deferredFuture: ['samsung_health_direct', 'garmin', 'oura', 'phone_ppg', 'dexa', 'blood_panel', 'cronometer'],
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'unknown' });
+  }
+});
+
 // POST /api/athlete-memory/admin/workflows/:workflowId/dispatch
 //
 // Stub endpoint. Returns 503 until GITHUB_DISPATCH_TOKEN + GITHUB_REPO
