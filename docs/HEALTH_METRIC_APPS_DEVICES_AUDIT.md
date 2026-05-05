@@ -323,6 +323,42 @@ displayed:
    as primary product truth; they are inputs only and labelled as
    such.
 
+## Platform-default rules (non-negotiable)
+
+These hold above every per-source detail. Marketing, onboarding,
+and the Health-tab default surface must comply.
+
+1. **Apple Health is iOS-only.** It must NOT appear as a connect
+   button or "Available source" on Android. The
+   `AppleHealthCard` component is gated on `Platform.OS === 'ios'`
+   and that gate must stay.
+2. **Health Connect / "Android Health" is Android-only.** It must
+   NOT appear as a primary source on iOS. The
+   `SamsungHealthCard` (label generic for non-Samsung devices) is
+   gated on `Platform.OS === 'android'` and that gate must stay.
+3. **Default device source on Android is Health Connect**, not
+   Samsung Health. Galaxy Watch publishes to Health Connect.
+   Pixel Watch publishes to Health Connect. Any non-Galaxy phone
+   must still see a working "Health Connect" surface even if no
+   compatible watch is paired.
+4. **WHOOP / Polar / Garmin / Oura are optional richer sources.**
+   They must not be required, must not be primary, and must not
+   gate the readiness compute. The `OtherSourcesDisclosure`
+   ("More sources / Add another source") is the correct surface
+   for them when not connected.
+5. **WHOOP CSV is historical backfill, NOT a live source.** When
+   imported, it lives in normalised metrics, but the UI must not
+   imply it represents today's data. WHOOP-via-OAuth is the live
+   source.
+6. **Missing wearable data stays missing.** No silent
+   substitution from a different source. No "estimated"
+   placeholder when the truth is "no data".
+7. **App-owned readiness is product truth.** Lauburu Readiness
+   and Grappler Readiness compute deterministically. WHOOP
+   recovery, Body Battery (Garmin), Oura readiness etc. are
+   inputs only and must not be surfaced as primary readiness
+   numbers.
+
 ## Cross-cutting UI/UX rules
 
 These hold across every source:

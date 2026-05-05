@@ -157,6 +157,9 @@ Already on `main` where marked DONE; awaits next paired build.
 | WHOOP/Polar tucked under "More sources" disclosure unless connected | DONE — `OtherSourcesDisclosure` |
 | Owner sees Dev/Admin FAB instead of Feedback FAB | DONE — `FabsGate` ownerSurface |
 | Normal tester sees Feedback FAB; signed-out sees Feedback only | DONE — same gate |
+| Forgot password sends reset email; passwords never exposed in UI | DONE — `auth-store.ts` `requestPasswordReset` uses `supabase.auth.resetPasswordForEmail` |
+| Sign in with Google + Sign in with Apple available | iOS Apple Sign-In wired; Google Sign-In not yet implemented (deferred) |
+| "Log a new session" button removed from Train tab if redundant | DONE — Train tab session-type chip row replaces button |
 
 All "DONE" rows are repo-only until next paired build (Android v14
 + iOS Build 15) ships. No tester-visible regressions in this batch.
