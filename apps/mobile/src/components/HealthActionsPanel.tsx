@@ -41,6 +41,11 @@ import { SafeErrorBoundary } from './SafeErrorBoundary';
 import { HealthConnectAvailabilityHint } from './HealthConnectAvailabilityHint';
 import { PolarDirectCard } from './IntegrationCards';
 import { parsePolarExport, type PolarSession } from '../../../../packages/shared/src/backend/services/polar/parse-polar-export';
+import {
+  getNativeHealthSourceCopy,
+  getPolarDirectStateLabel,
+  getWhoopDirectStateLabel,
+} from '../services/health-source-ui';
 
 const WHOOP_CSV_CACHE_KEY = 'whoop_csv_imported_v1';
 const WHOOP_UPLOAD_TRACE_KEY = 'whoop_upload_trace_v1';
@@ -1030,9 +1035,13 @@ function Body() {
   const [showDiag, setShowDiag] = useState(false);
 
   // Live-derived source summary for the compact top-of-card line.
+  const permissions = useHealthStore((s) => s.permissions);
   const healthDays = useHealthStore((s) => s.days.length);
   const healthLastSyncAt = useHealthStore((s) => s.lastSyncAt);
   const appleHealthConnected = healthDays > 0 && !!healthLastSyncAt;
+  const nativeAnyAuthorized = permissions?.permissions
+    ? Object.values(permissions.permissions).some((s) => s === 'authorized')
+    : false;
   // Attention = actionable problem. Partial for TODAY's cycle is not
   // actionable — the cycle hasn't been scored yet (normal until after
   // tonight's sleep). Only surface amber when the user actually needs
@@ -1055,20 +1064,29 @@ function Body() {
     whoopState === 'auth_required' ||
     whoopState === 'config_missing' ||
     (whoopState === 'partial' && !bodyLatestIsToday && !bodyLiveCycleEmpty);
+  const nativeCopy = getNativeHealthSourceCopy(Platform.OS);
+  const whoopSummary = getWhoopDirectStateLabel(whoopState, {
+    awaitingCycle: bodyAwaiting,
+    stale: false,
+  });
+  const polarSummary = getPolarDirectStateLabel(false);
   const summaryLine = (() => {
-    const parts: string[] = [];
-    if (appleHealthConnected) parts.push(Platform.OS === 'ios' ? 'Apple Health / HealthKit' : 'Health Connect');
-    if (bodyAwaiting) parts.push('WHOOP · awaiting latest cycle');
-    else if (whoopState === 'connected') parts.push('WHOOP');
-    else if (whoopState === 'partial') parts.push('WHOOP · partial');
-    if (parts.length === 0) return 'No sources connected yet';
-    return parts.join(' · ');
+    const nativeStatus = appleHealthConnected
+      ? 'connected'
+      : healthLastSyncAt
+        ? 'synced with no recent data'
+        : nativeAnyAuthorized
+          ? 'sync needed'
+          : 'not connected';
+    return `Hub: ${nativeCopy.sourceName} ${nativeStatus}`;
   })();
+  const directSummaryLine = `Direct: ${whoopSummary.label} · ${polarSummary.label}`;
 
   return (
     <View style={styles.card}>
       <Text style={styles.title}>Health sources</Text>
       <Text style={styles.summaryLine}>{summaryLine}</Text>
+      <Text style={styles.summaryLineMuted}>{directSummaryLine}</Text>
 
       <Pressable
         style={[styles.manageBtn, needsAttention && styles.manageBtnAttention]}
@@ -1349,6 +1367,7 @@ const styles = StyleSheet.create({
   errorMsg: { fontSize: 13, fontFamily: 'SpaceMono', color: '#ff6b6b' },
   errorStack: { fontSize: 10, opacity: 0.6, fontFamily: 'SpaceMono' },
   summaryLine: { fontSize: 12, opacity: 0.65 },
+  summaryLineMuted: { fontSize: 12, opacity: 0.48, lineHeight: 17 },
   manageBtn: {
     backgroundColor: '#d4e157',
     paddingVertical: 12,
@@ -1777,7 +1796,8 @@ function HealthSourceSheet(props: SheetProps) {
   const samsungHcHint = Platform.OS === 'android'
     ? ' If you use Samsung Health or Galaxy Watch, enable Samsung Health → Health Connect sharing, then grant Health Connect permissions here.'
     : '';
-  const nativeHealthHubLabel = Platform.OS === 'ios' ? 'Apple Health / HealthKit hub data' : 'Health Connect hub data';
+  const nativeCopy = getNativeHealthSourceCopy(Platform.OS);
+  const nativeHealthHubLabel = nativeCopy.hubLabel;
   const nativeHealthMeta = appleHealthConnected
     ? `${nativeHealthHubLabel} · ${healthDays} day${healthDays === 1 ? '' : 's'} · ${ageLabel(healthLastSyncAt)}${samsungHcHint}`
     : healthLastSyncAt
@@ -1852,7 +1872,7 @@ function HealthSourceSheet(props: SheetProps) {
   const appleRow = (
     <SourceSheetRow
       key="apple"
-      name={isIos ? 'Apple Health / HealthKit' : 'Health Connect'}
+      name={nativeCopy.sourceName}
       status={nativeHealthStatusLabel}
       statusColor={nativeHealthStatusColor}
       meta={nativeHealthMeta}

@@ -23,6 +23,7 @@ import { HealthKitDebugCard } from '../../src/components/HealthKitDebugCard';
 import { HealthActionsPanel } from '../../src/components/HealthActionsPanel';
 import { SafeErrorBoundary } from '../../src/components/SafeErrorBoundary';
 import { useWhoopStore } from '../../src/store/whoop-store';
+import { getNativeHealthSourceCopy, getReadinessSeedBadge } from '../../src/services/health-source-ui';
 import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures, CoachingResponse } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 
@@ -95,7 +96,7 @@ function TodayCard({ today }: { today: DailyMetrics }) {
   const showProxyStrain = !hasWhoopStrain && today.daily_strain != null && today.daily_strain < 21;
   return (
     <View style={styles.card}>
-      <Text style={styles.cardTitle}>Today — {today.date}</Text>
+      <Text style={styles.cardTitle}>Recovery metrics — {today.date}</Text>
       <View style={styles.metricsGrid}>
         <MetricBox label="Resting HR" value={today.resting_hr} unit="bpm" />
         <MetricBox label="HRV" value={today.hrv_ms} unit="ms" />
@@ -319,6 +320,12 @@ const READINESS_COLORS: Record<ReadinessLevel, string> = {
 
 function InsightsCard({ insights }: { insights: TrainingInsight }) {
   const color = READINESS_COLORS[insights.readiness];
+  const whoopDay = useWhoopStore((s) => s.day);
+  const whoopFetchedAt = useWhoopStore((s) => s.fetchedAt);
+  const seedBadge = getReadinessSeedBadge({
+    hasLiveWhoopRecovery: whoopDay?.recovery_score != null,
+    confidenceLevel: insights.readiness === 'grey' ? 'low' : null,
+  });
   const statusColors: Record<string, string> = {
     good: '#4ade80',
     caution: '#d4e157',
@@ -328,6 +335,15 @@ function InsightsCard({ insights }: { insights: TrainingInsight }) {
 
   return (
     <View style={styles.card}>
+      <View style={styles.cardHeaderRow}>
+        <Text style={styles.cardTitle}>Grappler Readiness</Text>
+        <View style={[styles.seedBadge, seedBadge.provisional ? styles.seedBadgeProvisional : styles.seedBadgeLive]}>
+          <Text style={[styles.seedBadgeText, seedBadge.provisional ? styles.seedBadgeTextSeed : styles.seedBadgeTextLive]}>
+            {seedBadge.label}
+          </Text>
+        </View>
+      </View>
+
       {/* Readiness header */}
       <View style={styles.readinessHeader}>
         <View style={[styles.readinessDot, { backgroundColor: color }]} />
@@ -387,6 +403,10 @@ function InsightsCard({ insights }: { insights: TrainingInsight }) {
       )}
 
       {/* Data note */}
+      <Text style={styles.seedNoteText}>
+        {seedBadge.note}
+        {whoopFetchedAt && !seedBadge.provisional ? ` WHOOP checked ${new Date(whoopFetchedAt).toLocaleTimeString()}.` : ''}
+      </Text>
       <Text style={styles.dataNoteText}>{insights.data_note}</Text>
     </View>
   );
@@ -555,6 +575,7 @@ export default function HealthScreen() {
   );
 
   const inExpoGo = isExpoGo();
+  const nativeCopy = useMemo(() => getNativeHealthSourceCopy(Platform.OS), []);
 
   // Live native-availability probe so the UI reflects actual HealthKit
   // state without waiting for the async store checkPermissions to
@@ -621,7 +642,7 @@ export default function HealthScreen() {
     auditFiredRef.current = true;
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
     const sourceId = Platform.OS === 'ios' ? 'apple_health' : 'health_connect';
-    const sourceLabel = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
+    const sourceLabel = nativeCopy.sourceName;
     void useAuditEventStore.getState().add({
       platform,
       appVersion: Application.nativeApplicationVersion ?? null,
@@ -635,9 +656,9 @@ export default function HealthScreen() {
         ? `${sourceLabel} card is visible on this device.`
         : `${sourceLabel} not available on this device.`,
     });
-  }, [nativeAvailable, permissions]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [nativeAvailable, permissions, nativeCopy.sourceName]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const platformName = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
+  const platformName = nativeCopy.sourceName;
   // isAvailable prefers the live native probe on iOS — if HealthKit is
   // ready on the device, the UI must not claim "not linked", even if
   // the zustand permissions state hasn't populated yet.
@@ -686,13 +707,14 @@ export default function HealthScreen() {
 
       {isExpoGo() && <ExpoGoNotice />}
 
-      {/* Source info — folded behind a collapsed disclosure. The
+      {/* Source info — folded behind a dev-only collapsed disclosure. The
           platform-name + status pill, sync button, and no-data
           guidance all already exist on AppleHealthCard / HealthActions
           Panel; this disclosure preserves the legacy detail (notably
           the iOS-specific "no data found" guidance + error line) for
           tester debugging without making the Health tab look like a
           duplicate dashboard. */}
+      {showDeveloperDiagnostics && (
       <View style={styles.card}>
         <Pressable
           onPress={() => setSourceInfoOpen((v) => !v)}
@@ -816,12 +838,27 @@ export default function HealthScreen() {
         )}
         </>)}
       </View>
+      )}
 
       {/* Permissions detail — collapsed by default. The list is
           verbose and dominated the page; summary chip + disclosure
           keeps the info available without clutter. */}
-      {permissions && permissions.permissions && isAvailable && (
+      {showDeveloperDiagnostics && permissions && permissions.permissions && isAvailable && (
         <PermissionsDisclosure permissions={permissions.permissions} />
+      )}
+
+      {/* Today's recovery metrics */}
+      {today && (
+        <SafeErrorBoundary label="Today card">
+          <TodayCard today={today} />
+        </SafeErrorBoundary>
+      )}
+
+      {/* Provisional/app-owned readiness */}
+      {insights && (
+        <SafeErrorBoundary label="Insights card">
+          <InsightsCard insights={insights} />
+        </SafeErrorBoundary>
       )}
 
       {/* Nutrition — promoted here from the old mid-page slot so it's
@@ -832,13 +869,6 @@ export default function HealthScreen() {
       <SafeErrorBoundary label="Nutrition card">
         <NutritionCard />
       </SafeErrorBoundary>
-
-      {/* Training insights — main guidance card */}
-      {insights && (
-        <SafeErrorBoundary label="Insights card">
-          <InsightsCard insights={insights} />
-        </SafeErrorBoundary>
-      )}
 
       {/* Structured coaching */}
       {coaching && coaching.readiness?.level !== 'grey' && (
@@ -851,13 +881,6 @@ export default function HealthScreen() {
       {flags.length > 0 && (
         <SafeErrorBoundary label="Flags card">
           <FlagsCard flags={flags} />
-        </SafeErrorBoundary>
-      )}
-
-      {/* Today's data */}
-      {today && (
-        <SafeErrorBoundary label="Today card">
-          <TodayCard today={today} />
         </SafeErrorBoundary>
       )}
 
@@ -1258,6 +1281,18 @@ const styles = StyleSheet.create({
   readinessText: { flex: 1, gap: 4 },
   readinessLabel: { fontSize: 18, fontWeight: '700' },
   readinessSummary: { fontSize: 14, opacity: 0.8, lineHeight: 20 },
+  seedBadge: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  seedBadgeProvisional: { borderColor: '#d4e157', backgroundColor: 'rgba(212,225,87,0.08)' },
+  seedBadgeLive: { borderColor: '#4ade80', backgroundColor: 'rgba(74,222,128,0.08)' },
+  seedBadgeText: { fontSize: 11, fontWeight: '700' },
+  seedBadgeTextSeed: { color: '#d4e157' },
+  seedBadgeTextLive: { color: '#4ade80' },
+  seedNoteText: { fontSize: 12, opacity: 0.62, lineHeight: 17 },
   keyMetricsRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
