@@ -436,3 +436,223 @@ In a separate commit, when this plan is approved:
 Estimated size: one Worker file (~300 lines), one test
 (~150 lines), ≤30-line worker.ts edit, doc updates. Single
 review pass.
+
+## 14. MCP inventory audit — 2026-05-07
+
+Read-only audit sources:
+
+- Live MCP JSON-RPC calls to
+  `https://mcp.lauburugrapplingmap.com/mcp`:
+  `initialize`, `tools/list`, `resources/list`, `prompts/list`.
+- Local repo route definitions in `cloudflare-worker/src/mcp.ts`
+  and `cloudflare-worker/src/mcp-public.ts`.
+- Local WHOOP MCP implementation at
+  `~/whoop-integration/whoop_mcp.py`.
+- Local MCP client configuration in Codex / Claude / VS Code,
+  redacted in this doc. Do not publish credential values.
+
+### 14.1 Inventory table
+
+| MCP | Item | Kind | Data source | Live / repo-dev state | Known consumers | Classification | Unified mapping |
+|---|---|---|---|---|---|---|---|
+| Mobile public MCP | `get_public_mcp_health` | tool | Worker + Supabase config probe | live Worker, public-safe | ChatGPT connector, diagnostics | merge into unified | `project.get_overview` + `mobile.get_mcp_health` |
+| Mobile public MCP | `get_lane_overview` | tool | Supabase `connector_coder_lanes` counts | live Worker, public-safe | ChatGPT connector | merge into unified | `mobile.get_lane_overview` |
+| Mobile public MCP | `get_build_overview` | tool | Supabase `connector_build_status` enum projection | live Worker, public-safe | ChatGPT connector | merge into unified | `mobile.get_build_overview` |
+| Mobile public MCP | `get_repo_overview` | tool | Supabase `connector_work_status.payload.repoStatus` | live Worker, public-safe | ChatGPT connector | merge into unified | `mobile.get_repo_overview` |
+| Mobile public MCP | resources | resource list | none | live returns empty | none | keep empty / no migration | none |
+| Mobile public MCP | prompts | prompt list | none | live returns empty | none | keep empty / no migration | none |
+| Mobile private MCP | `get_work_status` | tool | Supabase `connector_work_status` | live Worker, admin-token gated | laptop curl / future authenticated clients | merge into unified | `mobile.get_work_status` |
+| Mobile private MCP | `get_coder_lanes` | tool | Supabase `connector_coder_lanes` | live Worker, admin-token gated | laptop curl / AdminDev-equivalent data | merge into unified | `mobile.get_coder_lanes` |
+| Mobile private MCP | `get_build_status` | tool | Supabase `connector_build_status` | live Worker, admin-token gated | laptop curl / AdminDev-equivalent data | merge into unified | `mobile.get_build_status` |
+| Mobile private MCP | `get_handoff` | tool | Supabase `connector_handoff` | live Worker, admin-token gated | laptop curl / AdminDev-equivalent data | merge into unified | `mobile.get_handoff` |
+| Mobile private MCP | `get_terminal_summary` | tool | Supabase `connector_terminal_summary` | live Worker, admin-token gated | laptop curl / AdminDev-equivalent data | merge into unified | `mobile.get_terminal_summary` |
+| Mobile private MCP | resources | resource list | none | live returns empty | none | keep empty / no migration | none |
+| Mobile private MCP | prompts | prompt list | none | live returns empty | none | keep empty / no migration | none |
+| Website MCP | `list_pending_suggestions` | tool | website suggestion queue | live production website MCP | ChatGPT, Codex app approvals, website automation | keep unique, proxy | `website.list_pending_suggestions` |
+| Website MCP | `get_suggestion` | tool | website suggestions / next / accepted files | live production website MCP | ChatGPT, website automation | keep unique, proxy | `website.get_suggestion` |
+| Website MCP | `submit_suggestion` | tool, write | website suggestion inbox | live production website MCP | ChatGPT / website suggestion flow | keep unique, proxy with write warning | `website.submit_suggestion` |
+| Website MCP | `approve_suggestion_for_preview` | tool, write | website markdown queue | live production website MCP | website automation | keep unique, proxy with write warning | `website.approve_suggestion_for_preview` |
+| Website MCP | `list_automation_batches` | tool | website automation batch files | live production website MCP | ChatGPT / automation | keep unique, proxy | `website.list_automation_batches` |
+| Website MCP | `get_automation_state` | tool | website `AUDIT_STATE.json` | live production website MCP | ChatGPT / automation | keep unique, proxy | `website.get_automation_state` |
+| Website MCP | `get_preview_status` | tool | website preview/implementation status | live production website MCP | website automation | keep unique, proxy | `website.get_preview_status` |
+| Website MCP | `start_preview_run` | tool, write | website automation state | live production website MCP | website automation | keep unique, proxy with write warning | `website.start_preview_run` |
+| Website MCP | `advance_phase` | tool, write | website orchestrate script | live production website MCP | website automation | keep unique, proxy with write warning | `website.advance_phase` |
+| Website MCP | `approve_batch` | tool, write | website orchestrate script / audit state | live production website MCP | website automation | keep unique, proxy with write warning | `website.approve_batch` |
+| Website MCP | `get_handoff` | tool | website handoff artifact | live production website MCP | ChatGPT / website handoff | duplicate name, unique data | `website.get_handoff` |
+| Website MCP | `create_handoff_artifact` | tool, write | website handoff artifact store | live production website MCP | website automation | keep unique, proxy with write warning | `website.create_handoff_artifact` |
+| Website MCP | `get_work_status` | tool | website agent work-status store | live production website MCP | ChatGPT, Codex app approvals | duplicate name, unique data | `website.get_work_status` |
+| Website MCP | `update_work_status` | tool, write | website agent work-status store | live production website MCP | Codex app approval configured | duplicate name, unique data | `website.update_work_status` |
+| Website MCP | `create_prompt_job` | tool, write | website prompt-job queue | live production website MCP | website automation / possible mobile hook via shared client | keep unique, proxy | `website.create_prompt_job` |
+| Website MCP | `list_prompt_jobs` | tool | website prompt-job queue | live production website MCP | website automation; mobile hook references shared prompt-job client | keep unique, proxy | `website.list_prompt_jobs` |
+| Website MCP | `get_prompt_job` | tool | website prompt-job queue | live production website MCP | website automation | keep unique, proxy | `website.get_prompt_job` |
+| Website MCP | `claim_prompt_job` | tool, write | website prompt-job queue | live production website MCP | website automation | keep unique, proxy with write warning | `website.claim_prompt_job` |
+| Website MCP | `complete_prompt_job` | tool, write | website prompt-job queue | live production website MCP | website automation | keep unique, proxy with write warning | `website.complete_prompt_job` |
+| Website MCP | `fail_prompt_job` | tool, write | website prompt-job queue | live production website MCP | website automation | keep unique, proxy with write warning | `website.fail_prompt_job` |
+| Website MCP | `cancel_prompt_job` | tool, write | website prompt-job queue | live production website MCP | website automation | keep unique, proxy with write warning | `website.cancel_prompt_job` |
+| Website MCP | `get_daily_performance_object` | tool | website WHOOP performance store | live production website MCP | ChatGPT / website health surfaces | keep unique for website, consider WHOOP overlap later | `website.get_daily_performance_object` |
+| Website MCP | `get_user_health_summary` | tool | website normalized multi-provider store | live production website MCP | ChatGPT / website user-health lookup | keep unique, auth review needed | `website.get_user_health_summary` |
+| Website MCP | `get_user_shared_memory` | tool | website per-user shared memory store | live production website MCP | ChatGPT / website memory lookup | keep unique, auth review needed | `website.get_user_shared_memory` |
+| Website MCP | `list_provider_registry` | tool | website provider registry | live production website MCP | ChatGPT / website docs | merge conceptually | `integrations.list_provider_registry` or `website.list_provider_registry` |
+| Website MCP | resources | resource list | none | live returns empty | none | keep empty / no migration | none |
+| Website MCP | prompts | prompt list | none | live returns empty | none | keep empty / no migration | none |
+| WHOOP MCP | `get_today_recovery` | tool | local SQLite WHOOP daily summaries | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_today_recovery` |
+| WHOOP MCP | `get_recovery_history` | tool | local SQLite recovery rows | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_recovery_history` |
+| WHOOP MCP | `get_hrv_trend` | tool | local SQLite HRV rows / derived rolling metrics | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_hrv_trend` |
+| WHOOP MCP | `get_sleep_last_night` | tool | local SQLite sleep rows | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_sleep_last_night` |
+| WHOOP MCP | `get_sleep_history` | tool | local SQLite sleep rows | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_sleep_history` |
+| WHOOP MCP | `get_cycle_history` | tool | local SQLite cycle rows | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_cycle_history` |
+| WHOOP MCP | `get_strain_history` | tool | local SQLite strain projection | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_strain_history` |
+| WHOOP MCP | `get_workout_history` | tool | local SQLite workout rows | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_workout_history` |
+| WHOOP MCP | `get_workout_zone_history` | tool | local SQLite workout zone rows | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_workout_zone_history` |
+| WHOOP MCP | `get_training_load_summary` | tool | local SQLite WHOOP workout/cycle aggregates | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_training_load_summary` |
+| WHOOP MCP | `get_recovery_vs_strain` | tool | local SQLite joined daily summaries | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_recovery_vs_strain` |
+| WHOOP MCP | `get_recovery_vs_sleep` | tool | local SQLite joined daily summaries | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_recovery_vs_sleep` |
+| WHOOP MCP | `get_daily_summary` | tool | local SQLite recovery/sleep/strain/workout/journal rows | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_daily_summary` |
+| WHOOP MCP | `get_stored_daily_metrics` | tool | local SQLite daily metrics / health flags | local authenticated/dev | Claude/Codex local MCP | unique authenticated WHOOP | `integrations.whoop.get_stored_daily_metrics` |
+| WHOOP MCP | `get_health_flags` | tool | local SQLite health flags | local authenticated/dev | Claude/Codex local MCP | unique but derived | `integrations.whoop.get_health_flags` |
+| WHOOP MCP | `get_correlation_snapshots` | tool | local SQLite correlation snapshots | local authenticated/dev | Claude/Codex local MCP | unique but derived/historical | `integrations.whoop.get_correlation_snapshots` |
+| WHOOP MCP | `get_grappling_sessions` | tool | local SQLite manual/grappling context linked to WHOOP dates | local authenticated/dev | Claude/Codex local MCP | unique but may overlap app training logs later | `integrations.whoop.get_grappling_sessions` |
+| WHOOP MCP | `get_manual_daily_context` | tool | local SQLite manual context | local authenticated/dev | Claude/Codex local MCP | unique but may overlap app check-ins later | `integrations.whoop.get_manual_daily_context` |
+| WHOOP MCP | `get_intelligence_ready_view` | tool | local SQLite joined WHOOP intelligence view | local authenticated/dev | Claude/Codex local MCP | unique; high privacy risk | `integrations.whoop.get_intelligence_ready_view` |
+| WHOOP MCP | `get_data_completeness_report` | tool | local SQLite + API/CSV/manual coverage state | local authenticated/dev | Claude/Codex local MCP | unique operator diagnostic | `integrations.whoop.get_data_completeness_report` |
+| WHOOP MCP | `get_sync_status` | tool | local SQLite sync status | local authenticated/dev | Claude/Codex local MCP | unique operator diagnostic | `integrations.whoop.get_sync_status` |
+| WHOOP MCP | `get_auth_status` | tool | local token/auth lifecycle diagnostics | local authenticated/dev | Claude/Codex local MCP | unique but sensitive | `integrations.whoop.get_auth_status` admin-only |
+| WHOOP MCP | `get_webhook_status` | tool | local SQLite webhook status | local authenticated/dev | Claude/Codex local MCP | unique operator diagnostic | `integrations.whoop.get_webhook_status` |
+| WHOOP MCP | `get_user_profile` | tool | local SQLite WHOOP profile | local authenticated/dev | Claude/Codex local MCP | unique but private/delete from public | `integrations.whoop.get_user_profile` admin-only |
+| WHOOP MCP | `get_body_measurements` | tool | local SQLite body measurements | local authenticated/dev | Claude/Codex local MCP | unique but private/delete from public | `integrations.whoop.get_body_measurements` admin-only |
+| WHOOP MCP | `get_sport_labels` | tool | static local sport-id mapping | local/dev | Claude/Codex local MCP | merge as static registry | `integrations.whoop.get_sport_labels` public-safe possible |
+| WHOOP MCP | `/health` | custom HTTP route | local SQLite + token/config presence booleans | local/dev or hosted WHOOP MCP | health checks | keep unique, admin/private if remote | `integrations.whoop.get_bridge_health` |
+| WHOOP MCP | `/data/today` | custom HTTP route | local SQLite latest daily snapshot | local/dev or website hydration | website frontend hydration | unique authenticated WHOOP data | `integrations.whoop.get_today_snapshot` admin-only |
+| WHOOP MCP | `/diag/token-check` | custom HTTP route | token file + live WHOOP API probe | local/dev | operator only | unsafe for public; keep admin/local only | `integrations.whoop.diag.token_check` admin-only |
+| WHOOP MCP | `/diag/trigger-sync` | custom HTTP route, write | live WHOOP API sync + SQLite writes | local/dev | operator only | unsafe to proxy publicly | `integrations.whoop.sync.trigger` disabled unless admin |
+| WHOOP MCP | `/diag/force-reseed` | custom HTTP route, write | env token seed + token file write | local/dev | operator only | unsafe/stale/delete candidate for unified public | do not expose in unified |
+| WHOOP MCP | `/whoop/authorize` / `/whoop/callback` | custom HTTP routes | WHOOP OAuth flow + token file | local/dev or hosted WHOOP MCP | operator OAuth | keep separate from unified until OAuth design | not in v1 unified |
+| WHOOP MCP | webhook route | custom HTTP route, write | WHOOP webhook validation + SQLite writes | hosted/local WHOOP bridge | WHOOP webhooks | keep separate ingress | not an MCP tool |
+| WHOOP MCP | resources | resource list | none found in code/tool registry | local/dev | none | no migration | none |
+| WHOOP MCP | prompts | prompt list | none found in code/tool registry | local/dev | none | no migration | none |
+
+### 14.2 Unique value assessment
+
+- Website MCP is not only project-status metadata. It is the live
+  website automation and suggestion-control surface. It has write
+  tools, prompt-job tools, website handoffs, website agent status,
+  provider registry, and user-health/memory lookups.
+- WHOOP MCP provides unique authenticated WHOOP functionality.
+  It is not merely project-status metadata: most tools read
+  local SQLite WHOOP-derived recovery, sleep, HRV, strain,
+  workout, webhook, auth, and completeness data. Some routes can
+  trigger sync or reseed tokens, so they are not safe for a
+  public unified MCP.
+- Mobile MCP is the current live control-centre status surface
+  for this repo. Its public endpoint is intentionally small and
+  sanitized. The Admin/Dev mobile app consumes `/api/*` REST,
+  not JSON-RPC MCP.
+
+### 14.3 Merge / delete recommendation by group
+
+| Group | Recommendation | Why |
+|---|---|---|
+| Mobile public MCP tools | Merge into unified `mobile.*`; keep legacy wrappers first | They are already sanitized and are the safest ChatGPT-readable status path. |
+| Mobile private MCP tools | Merge into unified `mobile.*` admin-only; keep `/api/*` forever | Mobile Admin/Dev depends on REST. MCP is an alternate client surface. |
+| Website suggestion / automation tools | Proxy under `website.*`; do not delete | Separate website data store and active/historical backlog. |
+| Website write tools | Proxy only with explicit write classification and confirmation policy | They mutate website queues/state. No silent execution from public clients. |
+| Website user health / memory tools | Keep under `website.*`; require auth review before public exposure | They may return per-user data. Treat No-Auth status as risk until audited. |
+| Website provider registry | Consider merging into `integrations.list_provider_registry` after compatibility wrapper | It is catalogue-like and can be public-safe if no private data. |
+| WHOOP read-only health data tools | Keep separate now; later expose as admin-only `integrations.whoop.*` if needed | Unique authenticated health data; high privacy risk. |
+| WHOOP diagnostics | Keep local/admin-only; do not expose through public unified MCP | Auth/token/webhook details are operationally sensitive. |
+| WHOOP write routes (`trigger-sync`, `force-reseed`, OAuth callback, webhook) | Do not fold into MCP v1; never expose No-Auth | They mutate tokens/data or receive vendor webhooks. |
+| Empty resources/prompts | Keep empty | No existing client depends on resources/prompts. |
+
+### 14.4 Risks of deletion
+
+- Deleting website MCP tools would lose access to the website
+  suggestion queue, automation batches, prompt jobs, and historic
+  handoffs. That would also break any ChatGPT/Codex workflow
+  currently bound to the GrapplingMap Control Centre connector.
+- Deleting mobile public MCP would remove ChatGPT's No-Auth view
+  of this repo's live lane/build/repo status.
+- Deleting mobile private MCP is lower risk than deleting `/api/*`,
+  but still breaks laptop curl / future authenticated MCP clients.
+- Deleting WHOOP MCP would remove local authenticated WHOOP
+  analysis, sync/auth/webhook diagnostics, and the only verified
+  source for several WHOOP-specific views. It may also break local
+  Claude/Codex tools.
+- Deleting WHOOP token/OAuth routes without a replacement risks
+  losing the ability to refresh or reseed authenticated WHOOP
+  access.
+
+### 14.5 Unified namespace mapping
+
+Recommended final namespaces:
+
+| Namespace | Owns | Examples |
+|---|---|---|
+| `project.*` | Cross-project overview, top priorities, live/repo-only rollups | `project.get_overview`, `project.list_priorities` |
+| `mobile.*` | This repo's control-centre, build, repo, lanes, terminal summaries | `mobile.get_lane_overview`, `mobile.get_control_centre` |
+| `website.*` | Website project suggestions, automation, website handoffs, website agent state | `website.list_pending_suggestions`, `website.get_work_status` |
+| `handoff.*` | Cross-project latest handoff summaries with source disambiguation | `handoff.get_latest`, `handoff.get_by_source` |
+| `integrations.*` | Provider registry and connection state | `integrations.list_sources`, `integrations.list_provider_registry` |
+| `integrations.whoop.*` | Authenticated WHOOP-only data and diagnostics | `integrations.whoop.get_daily_summary`, `integrations.whoop.get_sync_status` |
+| `integrations.polar.*` | Future Polar direct state | `integrations.polar.get_status` |
+| `integrations.health.*` | Apple Health / Health Connect source state | `integrations.health.get_overview` |
+
+### 14.6 Safe cutover plan
+
+1. Add `/mcp/v2` compatibility wrappers first. Do not remove
+   `/mcp/public`, `/mcp`, or `mcp.lauburugrapplingmap.com/mcp`.
+2. Test old endpoints:
+   - Mobile `/mcp/public`: `initialize`, `tools/list`, each
+     public tool call.
+   - Mobile `/mcp`: unauthenticated 403, authenticated
+     `tools/list`, each private read tool.
+   - Website `/mcp`: `initialize`, `tools/list`,
+     `resources/list`, `prompts/list`.
+   - WHOOP local MCP: tools list through local client only; do
+     not call data tools in a public audit unless explicitly
+     needed.
+3. Test new unified endpoint:
+   - `tools/list` includes namespaced wrappers.
+   - Public-safe tools contain no free text, file paths, tokens,
+     IDs, secrets, raw logs, or per-user health values.
+   - Admin-only tools reject unauthenticated calls.
+   - Website proxy preserves old website tool response shapes
+     under `website.*`.
+4. Mark old endpoints deprecated in docs only after `/mcp/v2`
+   works for ChatGPT, Claude, Codex, mobile Admin/Dev, and any
+   automation scripts.
+5. Delete or return `410 Gone` only after confirmed unused for
+   at least 30 days. Do not delete website MCP or WHOOP MCP from
+   this repo.
+
+### 14.7 Files/configs that would need changes
+
+| Path / config | Change needed |
+|---|---|
+| `cloudflare-worker/src/mcp-v2.ts` | New unified router and namespace registry. |
+| `cloudflare-worker/src/worker.ts` | Add `/mcp/v2` route; leave legacy routes intact. |
+| `cloudflare-worker/src/mcp-public.ts` | No immediate change; later compatibility wrapper/deprecation notice only. |
+| `cloudflare-worker/src/mcp.ts` | No immediate change; later compatibility wrapper/deprecation notice only. |
+| `chat-app/src/server/scripts/test-mcp-v2-live.ts` | New live integration test for public/admin behavior and website proxy. |
+| `cloudflare-worker/test/*` | Extend dangerous-pattern redaction tests to `/mcp/v2`. |
+| `docs/CHATGPT_CONNECTOR_SETUP.md` | Add unified connector entry after Phase 1 ships. |
+| `docs/MCP_CANONICAL_STATE.md` | Keep split-state doc until Phase 3; then add deprecation note. |
+| `apps/mobile/src/services/connector-status-client.ts` | No change required for MCP v2; mobile uses `/api/*` REST. Optional later: read `/api/control_centre` only. |
+| `~/.codex/config.toml` | Optional: update approval entries if tool names move to `website.*`. |
+| `~/Library/Application Support/Claude/claude_desktop_config.json` | Keep WHOOP MCP local; never publish credential values. |
+| `~/LauburuGrapplingMap/.vscode/mcp.json` | Optional: add unified URL after Phase 2, keep website URL during comparison. |
+
+### 14.8 Final recommendation
+
+Do **not** delete any MCP now.
+
+Merge by adding a unified compatibility layer, not by moving data
+stores:
+
+- `mobile.*` wraps this repo's current Worker/Supabase status.
+- `website.*` proxies the live website MCP unchanged.
+- `integrations.whoop.*` remains **out of v1 public scope**.
+  WHOOP MCP has unique authenticated WHOOP value and must stay
+  local/admin-only until a privacy/auth design is approved.
+
+The deletion target is only future legacy wrappers after proven
+cutover, not the underlying website or WHOOP MCPs.

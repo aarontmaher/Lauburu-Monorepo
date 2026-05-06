@@ -1,6 +1,7 @@
 # MCP canonical state — which MCP answers which question
 
-There are two live MCP servers in Aaron's orbit. They are **not
+There are two live HTTP MCP servers in Aaron's orbit, plus one
+local WHOOP MCP exposed to local MCP clients. They are **not
 duplicates**. They target different projects with different data
 stores, so a ChatGPT chat connected to one will not see the
 other's state. This doc names which is canonical for which
@@ -15,6 +16,7 @@ Updated 2026-05-07.
 |---|---|---|---|---|
 | **Lauburu mobile-app MCP** (this repo) | `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/public` | Mobile-app dev state — Claude / Codex lane status, `/api/control_centre` snapshot, build/repo state, manual steps, suggestions backlog | `LauburuGrapplingMap-mobile` (this repo) | **No Auth** |
 | **GrapplingMap System MCP** (website project) | `https://mcp.lauburugrapplingmap.com/mcp` | Website project — pending technique suggestions, automation batches, daily WHOOP performance objects, prompt jobs, project handoffs related to the website's automation loop | `grapplingmap` website project (separate repo) | **No Auth** |
+| **WHOOP MCP** (local) | local stdio via Claude/Codex MCP config | Authenticated WHOOP-derived local SQLite data: recovery, sleep, HRV, strain, workouts, webhook/auth/sync diagnostics | `~/whoop-integration/whoop_mcp.py` | **Not a ChatGPT public connector** |
 
 Both work. Both are reachable from ChatGPT. They expose tools
 with overlapping names like `get_work_status`, `get_handoff`,
@@ -128,6 +130,32 @@ ChatGPT lists them separately:
 |---|---|---|
 | `Lauburu MCP (mobile dev)` | `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/public` | Live Claude / Codex / build / repo / control-centre status for THIS repo. |
 | `GrapplingMap MCP (website)` | `https://mcp.lauburugrapplingmap.com/mcp` | Website automation, technique suggestions, website handoffs. |
+
+The WHOOP MCP should **not** be added to ChatGPT as a No-Auth
+public connector. It exposes personal health data and
+authenticated WHOOP-derived status. Keep it local or behind a
+private/authenticated namespace if it is ever folded into the
+unified MCP.
+
+## Read-only audit snapshot — 2026-05-07
+
+Verified live / local facts:
+
+- `https://mcp.lauburugrapplingmap.com/mcp` responds as
+  `serverInfo.name = "GrapplingMap System"`,
+  `version = "1.27.0"`.
+- The website MCP exposes **25 tools**, **0 resources**, and
+  **0 prompts** through `tools/list`, `resources/list`, and
+  `prompts/list`.
+- Local WHOOP MCP configuration exists in Claude Desktop as a
+  stdio server named `whoop`, backed by `~/whoop-integration`.
+  The config includes WHOOP client credentials; values must stay
+  out of docs, prompts, and app UI.
+- Codex's deferred MCP registry exposes WHOOP MCP tools, which
+  means Codex can call local WHOOP tools when explicitly needed.
+- Current mobile app code uses `/api/*` REST through
+  `EXPO_PUBLIC_MCP_BASE_URL`, not the MCP JSON-RPC endpoint, for
+  Admin/Dev phone cards.
 
 Cleanup: any existing connector pointing at the wrong host
 should be deleted per
