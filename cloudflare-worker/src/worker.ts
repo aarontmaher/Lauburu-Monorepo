@@ -42,6 +42,7 @@ import {
 } from './supabase';
 import { handleMcp } from './mcp';
 import { handleMcpPublic } from './mcp-public';
+import { handleMcpV2 } from './mcp-v2';
 import { buildControlCentreSnapshot } from './control-centre';
 
 interface ConnectorMeta {
@@ -333,6 +334,13 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '');
 
+    // ── /mcp/v2 — unified namespaced MCP (Phase 1 of UNIFIED_MCP_PLAN) ──
+    // Layered auth: public-safe tools No Auth, admin tools require
+    // ATHLETE_MEMORY_API_TOKEN. Implementation in ./mcp-v2.ts.
+    if (path === '/mcp/v2') {
+      return handleMcpV2(request, env);
+    }
+
     // ── /mcp/public — public-safe preview MCP (no auth) ────────────────
     // Sanitised aggregate-only tool surface for ChatGPT custom
     // connectors that don't support API-key / Bearer auth in the UI.
@@ -371,6 +379,8 @@ export default {
           'POST /mcp (private MCP — admin-token-gated; full coder lane / handoff / terminal data)',
           'GET /mcp/public (public-safe preview MCP server info; POST for JSON-RPC 2.0)',
           'POST /mcp/public (public-safe preview — sanitised aggregate overviews only, no auth required)',
+          'GET /mcp/v2 (unified namespaced MCP server info; POST for JSON-RPC 2.0)',
+          'POST /mcp/v2 (unified — project.* / mobile.* / website.* / integrations.* / handoff.*; layered auth)',
           'GET /supabase/health',
           'GET /mcp/health',
           'GET /app-dev-centre/status',
