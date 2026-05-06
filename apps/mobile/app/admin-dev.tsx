@@ -842,10 +842,31 @@ function ConnectorStatusSection({
   const build = snapshot?.buildStatus ?? null;
   const handoff = snapshot?.handoff ?? null;
   const lanes = snapshot?.coderLanes?.lanes ?? [];
+  const terminalEntries = snapshot?.terminalSummary?.entries ?? [];
+  const latestTerminal = terminalEntries[0] ?? null;
+  const claudeLane = lanes.find((lane) => lane.laneId.toLowerCase().includes('claude')) ?? null;
+  const codexLane = lanes.find((lane) => lane.laneId.toLowerCase().includes('codex')) ?? null;
+  const handoffSummary = snapshot ? [
+    'MOBILE_CONTROL_CENTRE_HANDOFF',
+    `Checked: ${snapshot.checkedAt}`,
+    `Source: ${snapshot.source}`,
+    `Priority: ${work?.currentPriority ?? '—'}`,
+    `Blocker: ${work?.currentBlocker ?? 'none'}`,
+    `Next action: ${work?.nextAction ?? '—'}`,
+    `Repo: ${work ? `${work.repoStatus.branch}@${work.repoStatus.head} · ${work.repoStatus.lastCommitMessage}` : '—'}`,
+    `Claude: ${claudeLane ? `${claudeLane.status} · ${claudeLane.lastSummary ?? 'no summary'}` : '—'}`,
+    `Codex: ${codexLane ? `${codexLane.status} · ${codexLane.lastSummary ?? 'no summary'}` : '—'}`,
+    `Android: ${build ? `v${build.android.versionCode ?? '—'} · ${build.android.githubStatus ?? '—'} · Play ${build.android.playStatus ?? '—'}` : '—'}`,
+    `iOS: ${build ? `${build.ios.buildNumber ?? '—'} · ${build.ios.githubStatus ?? '—'} · TestFlight ${build.ios.testflightStatus ?? '—'}` : '—'}`,
+    `Latest terminal: ${latestTerminal ? `${latestTerminal.laneId} · ${latestTerminal.summary}` : '—'}`,
+    `Safe to build: ${handoff ? (handoff.safeToBuild ? 'yes' : 'no') : '—'}`,
+    `Build gate: ${handoff?.safeToBuildReason ?? '—'}`,
+    `Manual steps: ${handoff?.manualSteps.slice(0, 3).join(' | ') || '—'}`,
+  ].join('\n') : null;
   return (
     <Section title="Connector control centre">
       <Text style={styles.note}>
-        Owner-only dummy route snapshot. No raw terminal logs, no shell execution, no secrets. Data stays provisional until the tmux bridge producer is live.
+        Owner-only connector snapshot. No raw terminal logs, no shell execution, no secrets. Terminal rows are compact summaries only.
       </Text>
       <Pressable style={[styles.btn, refreshing && { opacity: 0.5 }]} disabled={refreshing} onPress={onRefresh}>
         <Text style={styles.btnText}>{refreshing ? 'Refreshing…' : 'Refresh connector status'}</Text>
@@ -854,12 +875,21 @@ function ConnectorStatusSection({
         <Text style={styles.note}>Connector routes are not reachable or the admin token is not configured.</Text>
       )}
       {snapshot?.checkedAt && <Row label="Checked" value={new Date(snapshot.checkedAt).toLocaleTimeString()} />}
+      {snapshot && (
+        <Row
+          label="Status source"
+          value={snapshot.source === 'mcp' ? 'Cloudflare MCP / repo-only until verified' : 'Backend fallback / repo-only'}
+        />
+      )}
       {work && (
         <>
           <Row label="Priority" value={work.currentPriority ?? '—'} />
           <Row label="Blocker" value={work.currentBlocker ?? 'none'} />
           <Row label="Repo" value={`${work.repoStatus.branch}@${work.repoStatus.head} · ${work.repoStatus.dirtyFileCount} dirty / ${work.repoStatus.untrackedFileCount} untracked`} />
+          <Row label="Latest commit" value={work.repoStatus.lastCommitMessage || '—'} />
           <Row label="Next action" value={work.nextAction ?? '—'} />
+          <Row label="Live status" value={work.liveStatus.cloudflareWorkerDeployed ? 'Cloudflare worker marked live' : 'Repo-only / not marked live'} />
+          <Row label="Tester builds" value={`Android ${work.liveStatus.androidVersionCode ?? '—'} · iOS ${work.liveStatus.iosBuildNumber ?? '—'}`} />
         </>
       )}
       {lanes.length > 0 && (
@@ -872,6 +902,11 @@ function ConnectorStatusSection({
               <Text style={[styles.rowValue, { opacity: 0.6 }]}>
                 Typecheck: {lane.lastTypecheckResult ?? '—'} · Dirty files: {lane.dirtyFiles.length}
               </Text>
+              {lane.nextPrompt && (
+                <Text style={[styles.rowValue, { color: '#d4e157', opacity: 1, textAlign: 'left' }]} numberOfLines={2}>
+                  Next prompt: {lane.nextPrompt}
+                </Text>
+              )}
             </View>
           ))}
         </View>
@@ -893,7 +928,53 @@ function ConnectorStatusSection({
           ))}
         </>
       )}
+      {snapshot && (
+        <View style={{ gap: 6 }}>
+          <Text style={styles.rowLabel}>Phone copy prompts</Text>
+          <SelectableCopyButton
+            label="Copy next Claude prompt"
+            body={handoff?.latestClaudePrompt ?? claudeLane?.nextPrompt ?? 'No Claude prompt available yet.'}
+          />
+          <SelectableCopyButton
+            label="Copy next Codex prompt"
+            body={handoff?.latestCodexPrompt ?? codexLane?.nextPrompt ?? 'No Codex prompt available yet.'}
+          />
+          <SelectableCopyButton
+            label="Copy handoff summary"
+            body={handoffSummary ?? 'Connector snapshot is not available yet.'}
+          />
+        </View>
+      )}
+      {latestTerminal && (
+        <View style={[styles.row, { flexDirection: 'column', alignItems: 'flex-start', gap: 4 }]}>
+          <Text style={styles.rowLabel}>Latest terminal · {latestTerminal.laneId}</Text>
+          <Text style={[styles.rowValue, { textAlign: 'left' }]} numberOfLines={3}>{latestTerminal.summary}</Text>
+          <Text style={[styles.rowValue, { textAlign: 'left', opacity: 0.65 }]} numberOfLines={2}>
+            Verified: {latestTerminal.verification || '—'}
+          </Text>
+          <Text style={[styles.rowValue, { textAlign: 'left', color: '#d4e157', opacity: 1 }]} numberOfLines={2}>
+            Next: {latestTerminal.nextAction || '—'}
+          </Text>
+        </View>
+      )}
     </Section>
+  );
+}
+
+function SelectableCopyButton({ label, body }: { label: string; body: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={{ gap: 4 }}>
+      <Pressable style={styles.btn} onPress={() => setOpen((v) => !v)}>
+        <Text style={styles.btnText}>{open ? '▾ ' : '▸ '}{label}</Text>
+      </Pressable>
+      {open && (
+        <>
+          <Text style={styles.btnSubtitle}>Long-press the block below to copy from the phone.</Text>
+          <RNText selectable style={styles.copyBlock}>{body}</RNText>
+        </>
+      )}
+    </View>
   );
 }
 

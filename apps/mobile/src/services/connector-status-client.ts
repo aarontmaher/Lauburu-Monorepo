@@ -65,26 +65,46 @@ export interface ConnectorHandoff {
   safeToBuildReason: string;
 }
 
+export interface ConnectorTerminalSummaryEntry {
+  laneId: string;
+  at: string;
+  summary: string;
+  verification: string;
+  nextAction: string;
+  exitCode: number | null;
+}
+
+export interface ConnectorTerminalSummary {
+  schemaVersion: number;
+  generatedAt: string;
+  entries: ConnectorTerminalSummaryEntry[];
+}
+
 export interface ConnectorSnapshot {
   checkedAt: string;
+  source: 'mcp' | 'public_backend';
   workStatus: ConnectorWorkStatus | null;
   coderLanes: { schemaVersion: number; generatedAt: string; lanes: ConnectorLane[] } | null;
   buildStatus: ConnectorBuildStatus | null;
   handoff: ConnectorHandoff | null;
+  terminalSummary: ConnectorTerminalSummary | null;
 }
 
-function connectorApiBase(): string | null {
-  if (MCP_BASE_URL) return MCP_BASE_URL.replace(/\/$/, '');
+function connectorApiBase(): { baseUrl: string; source: ConnectorSnapshot['source'] } {
+  if (MCP_BASE_URL) {
+    const trimmed = MCP_BASE_URL.replace(/\/$/, '');
+    const apiBase = trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
+    return { baseUrl: apiBase, source: 'mcp' };
+  }
   const publicBase = AI_PUBLIC_BASE.replace(/\/$/, '');
-  return publicBase.replace(/\/athlete-memory$/, '');
+  return { baseUrl: publicBase.replace(/\/athlete-memory$/, ''), source: 'public_backend' };
 }
 
-async function fetchConnectorJson<T>(path: string): Promise<T | null> {
+async function fetchConnectorJson<T>(baseUrl: string, path: string): Promise<T | null> {
   try {
-    const apiBase = connectorApiBase();
     const memToken = process.env.EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN ?? '';
-    if (!apiBase || !memToken) return null;
-    const res = await fetch(`${apiBase}${path}`, {
+    if (!memToken) return null;
+    const res = await fetch(`${baseUrl}${path}`, {
       headers: {
         Accept: 'application/json',
         'x-athlete-memory-token': memToken,
@@ -98,19 +118,23 @@ async function fetchConnectorJson<T>(path: string): Promise<T | null> {
 }
 
 export async function fetchConnectorSnapshot(): Promise<ConnectorSnapshot | null> {
-  const [workStatus, coderLanes, buildStatus, handoff] = await Promise.all([
-    fetchConnectorJson<ConnectorWorkStatus>('/work_status'),
-    fetchConnectorJson<{ schemaVersion: number; generatedAt: string; lanes: ConnectorLane[] }>('/coder_lanes'),
-    fetchConnectorJson<ConnectorBuildStatus>('/build_status'),
-    fetchConnectorJson<ConnectorHandoff>('/handoff'),
+  const { baseUrl, source } = connectorApiBase();
+  const [workStatus, coderLanes, buildStatus, handoff, terminalSummary] = await Promise.all([
+    fetchConnectorJson<ConnectorWorkStatus>(baseUrl, '/work_status'),
+    fetchConnectorJson<{ schemaVersion: number; generatedAt: string; lanes: ConnectorLane[] }>(baseUrl, '/coder_lanes'),
+    fetchConnectorJson<ConnectorBuildStatus>(baseUrl, '/build_status'),
+    fetchConnectorJson<ConnectorHandoff>(baseUrl, '/handoff'),
+    fetchConnectorJson<ConnectorTerminalSummary>(baseUrl, '/terminal_summary'),
   ]);
 
-  if (!workStatus && !coderLanes && !buildStatus && !handoff) return null;
+  if (!workStatus && !coderLanes && !buildStatus && !handoff && !terminalSummary) return null;
   return {
     checkedAt: new Date().toISOString(),
+    source,
     workStatus,
     coderLanes,
     buildStatus,
     handoff,
+    terminalSummary,
   };
 }
