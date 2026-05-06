@@ -35,15 +35,39 @@ Wraps `./scripts/bridge-snapshot-lanes.sh`. Writes:
 - `data/agent-status/lanes/terminal_summary.json` (TerminalSummary)
 - `data/agent-status/lanes/handoff.json` (Handoff)
 
-Validate against the canonical TS types:
+If `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are present in
+the bridge's environment, the script ALSO upserts the same
+payloads to the four `connector_*` tables in Supabase using
+hardcoded paths only. When the env vars are unset (default), the
+bridge logs `supabase: skip (env_missing)` and stays
+local-artifact-only. To enable the upsert path:
+
+```sh
+export SUPABASE_URL="https://rejalrfmievikabgsakf.supabase.co"
+export SUPABASE_SERVICE_ROLE_KEY="…paste from Supabase dashboard…"
+npm run bridge:snapshot
+# supabase: upserting to https://…
+#   connector_work_status: HTTP 201
+#   connector_coder_lanes: HTTP 201
+#   connector_handoff: HTTP 201
+#   connector_terminal_summary: HTTP 201 (entries=N)
+```
+
+Don't paste the service-role key into shell history files;
+prefer a sourced env file or a keychain helper. The bridge runs
+from Aaron's Mac only — never from CI, never from the phone.
+
+Validate the local artifacts against the canonical TS types:
 
 ```sh
 npm run bridge:verify
 ```
 
-Both scripts are pure-read on the local repo: `tmux capture-pane`,
-`git status`, `git rev-parse`. No `eval`. No network. No build
-dispatch.
+Both scripts are pure-read on the local repo apart from the
+optional Supabase upsert: `tmux capture-pane`, `git status`,
+`git rev-parse`, plus PostgREST POSTs to the four hardcoded
+`connector_*` paths. No `eval`. No build dispatch. No
+caller-supplied table name reaches Supabase.
 
 ## How the phone consumes MCP routes
 
@@ -108,27 +132,24 @@ A `403 Forbidden admin access.` response means the
 | Worker admin-token gating | LIVE |
 | Worker routes `/api/*` (5 connector routes) | LIVE — placeholder fallback when Supabase unset |
 | `ATHLETE_MEMORY_API_TOKEN` Worker secret | LIVE |
-| Local tmux bridge (`scripts/bridge-snapshot-lanes.sh`) | LIVE — local artifacts only |
-| Bridge → Supabase upsert | NOT YET — needs `LaneStatusWritePayload` POST consumer or a small bridge daemon with the service-role key |
-| Worker → Supabase reads (5 fetch helpers, fallback path) | LIVE — returns Supabase data when tables exist + secrets set; placeholder otherwise |
-| `connector_*` Supabase tables | NOT YET — migration committed at `supabase/migrations/0003_connector_status_tables.sql`, awaiting manual apply |
+| Local tmux bridge (`scripts/bridge-snapshot-lanes.sh`) | LIVE — local artifacts always; Supabase upsert when env vars present |
+| Bridge → Supabase upsert | LIVE (env-gated) — hardcoded `connector_*` paths only, gated on `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` in env |
+| Worker → Supabase reads (5 fetch helpers, fallback path) | LIVE — code returns Supabase data when secrets set; placeholder otherwise |
+| `connector_*` Supabase tables | LIVE — applied via `supabase/migrations/0003_connector_status_tables.sql`; seeded with bridge artifacts |
 | `SUPABASE_URL` Worker secret | NOT YET — Aaron pastes via `wrangler secret put` |
 | `SUPABASE_SERVICE_ROLE_KEY` Worker secret | NOT YET — Aaron pastes via `wrangler secret put` |
 | Mobile `EXPO_PUBLIC_MCP_BASE_URL` switch | LIVE in code (`apps/mobile/src/services/ai-backend-config.ts`); env-var unset in current released build |
 
-## Manual Supabase steps (in order)
+## Manual Supabase steps (final remaining)
 
-The Worker is fully wired to read Supabase the moment these three
-manual steps are done. They are gated behind Aaron because the
-service-role key is dashboard-only:
+Step 1 (apply the migration) is **DONE** — the five
+`connector_*` tables exist in project `rejalrfmievikabgsakf`,
+seeded with the current bridge snapshot. Only the two Worker
+secrets remain:
 
-1. **Apply the migration.** Open Supabase project
-   `aarontmaher's Project` (`rejalrfmievikabgsakf`) → SQL Editor
-   → paste the contents of
-   `supabase/migrations/0003_connector_status_tables.sql` → Run.
-   The file is `begin; ... commit;`-wrapped and uses
-   `create table if not exists`, so a partial re-run is safe.
-2. **Set the Worker secrets.**
+1. ~~**Apply the migration.**~~ DONE.
+2. **Set the Worker secrets.** This is the single remaining
+   blocker for screenshot-free MCP reads.
    ```sh
    cd cloudflare-worker
    npx wrangler secret put SUPABASE_URL --name lauburu-mcp-preview
@@ -141,9 +162,16 @@ service-role key is dashboard-only:
    ```sh
    curl -sS -H "x-athlete-memory-token: $TOKEN" "$MCP/supabase/health" | jq
    # Expected: supabase.configured = true, supabase.ping.ok = true
+   curl -sS -H "x-athlete-memory-token: $TOKEN" "$MCP/api/coder_lanes" | jq '.dataSource.source'
+   # Expected: "supabase" (was "placeholder" before secrets)
    ```
 
-Until step 1 lands, the routes return `dataSource: { source: 'placeholder', schemaRequired: ... }`. That's the documented fallback — ChatGPT / the mobile app still get schema-shaped responses, just provisional ones.
+Until step 2 lands, the routes return
+`dataSource: { source: 'placeholder', schemaRequired: ... }`
+even though Supabase is fully populated — the Worker has no way
+to authenticate to Supabase without the service-role key. That
+is the only thing standing between today's state and full
+screenshot-free MCP reads.
 
 ## Safety model (cross-reference)
 

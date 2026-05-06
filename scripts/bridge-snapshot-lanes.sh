@@ -47,6 +47,8 @@ import os
 import re
 import subprocess
 import sys
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 
 ROOT = sys.argv[1]
@@ -460,4 +462,117 @@ for row in rows:
     )
 print(f"wrote {terminal_path} (entries={len(terminal_entries)})")
 print(f"wrote {handoff_path}")
+
+# ── Optional Supabase upsert (gated on env vars) ──────────────────────
+# Bridge stays local-only unless SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY
+# are present in env. The service-role key bypasses RLS, so callers
+# MUST source these vars only when running on Aaron's Mac (never in
+# CI, never in shell history).
+#
+# Hardcoded targets only — no caller-supplied table names. The five
+# connector_* tables in supabase/migrations/0003_connector_status_tables.sql
+# are the only write paths.
+
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
+SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+
+def _supabase_request(method, path, body):
+    url = f"{SUPABASE_URL}/rest/v1/{path}"
+    data = json.dumps(body).encode("utf-8")
+    req = urllib.request.Request(url, data=data, method=method)
+    req.add_header("apikey", SUPABASE_KEY)
+    req.add_header("Authorization", f"Bearer {SUPABASE_KEY}")
+    req.add_header("Content-Type", "application/json")
+    req.add_header("Accept", "application/json")
+    req.add_header("Prefer", "resolution=merge-duplicates,return=minimal")
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return resp.status, ""
+    except urllib.error.HTTPError as e:
+        return e.code, e.read().decode("utf-8", errors="replace")[:200]
+    except Exception as e:  # noqa: BLE001
+        return 0, str(e)[:200]
+
+def upsert_supabase():
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        print("supabase: skip (env_missing)")
+        return
+    if not SUPABASE_URL.startswith("https://"):
+        print("supabase: skip (env_url_invalid)")
+        return
+    if not SUPABASE_KEY.startswith("eyJ"):
+        print("supabase: skip (env_key_invalid)")
+        return
+
+    print(f"supabase: upserting to {SUPABASE_URL}")
+
+    # work_status (single row, id='current').
+    work_status_payload = {
+        "schemaVersion": 1,
+        "generatedAt": now_iso,
+        "currentPriority": "MCP terminal bridge live; Worker reads Supabase.",
+        "currentBlocker": None,
+        "liveStatus": {
+            "androidVersionCode": None,
+            "iosBuildNumber": None,
+            "androidPlayTrack": None,
+            "iosTestflightGroup": None,
+            "lastRailwayDeployAt": None,
+            "cloudflareWorkerDeployed": True,
+        },
+        "repoStatus": {
+            "head": short_head or "unknown",
+            "branch": "main",
+            "dirtyFileCount": len(dirty_files),
+            "untrackedFileCount": 0,
+            "lastCommitAt": now_iso,
+            "lastCommitMessage": "",
+        },
+        "nextAction": "Owner-tap workflow dispatch when ready.",
+    }
+    s, body = _supabase_request("POST", "connector_work_status", [{
+        "id": "current",
+        "generated_at": now_iso,
+        "source": "bridge",
+        "payload": work_status_payload,
+    }])
+    print(f"  connector_work_status: HTTP {s}{(' ' + body) if s >= 400 else ''}")
+
+    # coder_lanes (one row per lane_id).
+    lane_rows = [{
+        "lane_id": row["laneId"],
+        "generated_at": row["lastSeenAt"] or now_iso,
+        "source": "bridge",
+        "payload": row,
+    } for row in rows]
+    s, body = _supabase_request("POST", "connector_coder_lanes", lane_rows)
+    print(f"  connector_coder_lanes: HTTP {s}{(' ' + body) if s >= 400 else ''}")
+
+    # handoff (single row, id='current').
+    s, body = _supabase_request("POST", "connector_handoff", [{
+        "id": "current",
+        "generated_at": now_iso,
+        "source": "bridge",
+        "payload": handoff_payload,
+    }])
+    print(f"  connector_handoff: HTTP {s}{(' ' + body) if s >= 400 else ''}")
+
+    # terminal_summary (append-only). Only insert entries newer than the
+    # most recent existing entry to avoid duplicate inserts on every
+    # bridge run. For Stage 1 we just push every entry on the wire and
+    # rely on the retention sweep to trim — the entries are already
+    # capped at 50 in load_terminal_entries().
+    if terminal_entries:
+        ts_rows = [{
+            "lane_id": e["laneId"],
+            "generated_at": e["at"],
+            "source": "bridge",
+            "payload": e,
+        } for e in terminal_entries]
+        s, body = _supabase_request("POST", "connector_terminal_summary", ts_rows)
+        print(f"  connector_terminal_summary: HTTP {s}{(' ' + body) if s >= 400 else ''} (entries={len(ts_rows)})")
+    else:
+        print("  connector_terminal_summary: skip (0 entries)")
+
+upsert_supabase()
 PY
