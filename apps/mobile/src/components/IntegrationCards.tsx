@@ -788,28 +788,9 @@ export function SamsungHealthCard() {
   const samsungViaHc = useHealthStore((s) => s.samsungHealthViaHc);
   const viaHcDetected = !!samsungViaHc?.detected;
 
-  // Samsung Health direct store
-  const [directState, setDirectState] = useState<any>(null);
-  const [directLoading, setDirectLoading] = useState(false);
-
-  useEffect(() => {
-    if (Platform.OS !== 'android') return;
-    setDirectLoading(true);
-    import('../services/samsung-health-direct').then(async ({ checkSamsungHealthDirectStatus }) => {
-      const result = await checkSamsungHealthDirectStatus();
-      setDirectState(result);
-      setDirectLoading(false);
-    }).catch(() => setDirectLoading(false));
-  }, []);
-
-  const directStatus = directState?.status ?? 'not_checked';
-  const directConnected = directStatus === 'connected';
-  const sdkAvailable = directState?.sdkAvailable ?? false;
-  const anyConnected = viaHcDetected || directConnected;
-
   // Primary status label
-  const primaryLabel = directConnected ? 'Direct' : viaHcDetected ? 'Via Health Connect' : 'Not connected';
-  const primaryColor = anyConnected ? '#4ade80' : '#888';
+  const primaryLabel = viaHcDetected ? 'Via Health Connect' : 'Use Health Connect';
+  const primaryColor = viaHcDetected ? '#4ade80' : '#888';
 
   if (Platform.OS !== 'android') return null;
 
@@ -820,33 +801,6 @@ export function SamsungHealthCard() {
         <StatusPill label={primaryLabel} color={primaryColor} />
       </View>
 
-      {/* Direct SDK status */}
-      {sdkAvailable && directConnected && (
-        <Text style={styles.bodyText}>
-          Samsung Health direct is connected.
-          Domains: {directState?.domainsAvailable?.join(', ') ?? 'checking…'}.
-          {directState?.lastSyncAt ? ` Last sync: ${directState.lastSyncAt.slice(0, 16).replace('T', ' ')}.` : ''}
-        </Text>
-      )}
-
-      {sdkAvailable && !directConnected && directStatus !== 'not_checked' && (
-        <Text style={styles.bodyText}>
-          Samsung Health SDK detected but not connected.
-          {directStatus === 'developer_mode_required' ? ' Enable developer mode in Samsung Health to allow read access.' : ''}
-          {directStatus === 'permission_required' ? ' Grant Samsung Health permissions to continue.' : ''}
-          {directStatus === 'app_not_installed' ? ' Samsung Health app is not installed on this device.' : ''}
-          {directState?.reason ? ` ${directState.reason}` : ''}
-        </Text>
-      )}
-
-      {!sdkAvailable && (
-        <Text style={styles.subtleNote}>
-          Direct Samsung Health: SDK not installed.
-          {viaHcDetected ? ' Using Health Connect path instead (working).' : ' Add the Samsung Health Data SDK for direct access, or use Health Connect.'}
-        </Text>
-      )}
-
-      {/* Via Health Connect status */}
       {viaHcDetected && (
         <Text style={styles.bodyText}>
           Samsung Health via Health Connect: {samsungViaHc!.domains.join(', ')}.
@@ -854,21 +808,14 @@ export function SamsungHealthCard() {
         </Text>
       )}
 
-      {!anyConnected && (
-        <View style={{ gap: 4, marginTop: 4 }}>
-          <Text style={styles.subtleNote}>
-            Recommended: Samsung Health → Settings → Connected services → Health Connect → enable sync. Then grant Health Connect permissions and sync.
-          </Text>
-          {!sdkAvailable && (
-            <Text style={styles.subtleNote}>
-              Alternative: Add the Samsung Health Data SDK (native AAR) for direct access to steps, sleep, HR, SpO2, exercise, body metrics, and more.
-            </Text>
-          )}
-        </View>
+      {!viaHcDetected && (
+        <Text style={styles.subtleNote}>
+          If you use Samsung Health or Galaxy Watch, enable Samsung Health → Health Connect sharing, then grant Health Connect permissions here.
+        </Text>
       )}
 
       <Text style={styles.subtleNote}>
-        Samsung Health provides training and health context. It does not unlock direct WHOOP-style readiness clearance.
+        Samsung Health data reaches Lauburu through Health Connect.
       </Text>
     </View>
   );

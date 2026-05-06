@@ -11,21 +11,11 @@ import { Text, View } from '@/components/Themed';
 import * as Application from 'expo-application';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
-import { useTierStore } from '../../src/store/tier-store';
 import { useAuditEventStore } from '../../src/store/audit-event-store';
 import { isExpoGo } from '../../src/services/expo-detect';
 import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
 import { NutritionCard } from '../../src/components/NutritionCard';
 import { getSeedBackendStatusCopy } from '../../src/services/athlete-capability-display';
-import { PolarCard } from '../../src/components/PolarCard';
-import {
-  AppleHealthCard,
-  PolarDirectCard,
-  WhoopDirectCard,
-  HealthConnectProvenanceCard,
-  SamsungHealthCard,
-} from '../../src/components/IntegrationCards';
-import { HealthConnectAvailabilityHint } from '../../src/components/HealthConnectAvailabilityHint';
 import { MemoryProposalReview } from '../../src/components/MemoryProposalReview';
 import { SyncDiagnosticsCard } from '../../src/components/SyncDiagnosticsCard';
 import { HealthKitDebugCard } from '../../src/components/HealthKitDebugCard';
@@ -509,314 +499,6 @@ function TrendItem({
   );
 }
 
-// --- Backend sync card ---
-
-function BackendSyncCard() {
-  const persisting = useHealthStore((s) => s.persisting);
-  const lastPersistedAt = useHealthStore((s) => s.lastPersistedAt);
-  const lastPersistResult = useHealthStore((s) => s.lastPersistResult);
-  const persistToBackend = useHealthStore((s) => s.persistToBackend);
-  const storeError = useHealthStore((s) => s.error);
-  const authStatus = useAuthStore((s) => s.status);
-  const canPersist = useTierStore((s) => s.can)('backend_persistence');
-  const nativeSourceLabel = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
-  // Local in-progress state — flips true the instant the button is
-  // pressed so the user gets immediate feedback. Previously we only
-  // observed the health-store `persisting` flag, which doesn't flip
-  // true until AFTER the Railway fan-out completes, making the button
-  // look idle for the 2-5s Railway phase.
-  const [saving, setSaving] = useState<false | 'railway' | 'supabase'>(false);
-  // pressResult now tracks both halves of the fan-out independently.
-  // Previously only Supabase success/failure was rendered — which read
-  // as "Save failed" in red even when Railway primary had succeeded.
-  // Splitting the state lets the UI show "Railway primary saved · N
-  // items" in green while the Supabase line states its exact blocker.
-  // Three-state Railway result (ok+items / ok+empty / errored) means we
-  // can render all combinations truthfully: green when either path
-  // saved, red only when an actual error happened, yellow when the
-  // Supabase mirror is the only block, and neutral when there was
-  // genuinely nothing to push.
-  const [pressResult, setPressResult] = useState<
-    {
-      at: string;
-      railway: { status: 'saved' | 'empty' | 'error'; lines: string[]; error?: string };
-      supabase: { ok: boolean; recordCount?: number; dateRange?: string; error?: string };
-    } | null
-  >(null);
-
-  const handlePress = useCallback(async () => {
-    const startedAt = new Date().toISOString();
-    // Flip local saving state BEFORE any await so the button re-renders
-    // on the next frame. Health-store's own `persisting` only covers
-    // the Supabase leg and would leave the button looking idle during
-    // the Railway fan-out. Clear any prior result so stale green/red
-    // lines don't linger while the new save runs.
-    setSaving('railway');
-    setPressResult(null);
-    // STEP 1: Always run the Railway durable-persist path first. It's
-    // independent of Supabase's JWT flip and authenticated via the
-    // internal token — so even when the Supabase mirror is blocked,
-    // Save to Account still pushes Apple Health days + nutrition +
-    // HIIT sessions to the primary durable layer. This is what the
-    // AI actually learns from.
-    let railwayLines: string[] = [];
-    let railwayError: string | null = null;
-    let railwayCalled = false;
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { persistDurableToRailway } = require('../../src/services/durable-persist');
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const nutStore = require('../../src/store/nutrition-store');
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const hiitStore = require('../../src/store/hiit-workout-store');
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const trainingStore = require('../../src/store/training-store');
-      const authMod = require('../../src/store/auth-store');
-      const uid = authMod?.useAuthStore?.getState?.()?.user?.id;
-      const days = useHealthStore.getState().days;
-      const nut = nutStore?.useNutritionStore?.getState?.();
-      const hiitWorkouts = hiitStore?.useHIITWorkoutStore?.getState?.()?.workouts ?? [];
-      const trainingSessions = trainingStore?.useTrainingStore?.getState?.()?.sessions ?? [];
-
-      // Assemble the AppAthleteState snapshot so the merged, device-
-      // agnostic interpretation (recovery/load/sleep/fueling/source-
-      // roles) is persisted alongside raw days. Without this, AI
-      // learning only sees ingest — not the app's own reasoning.
-      let athleteStateSnapshot: unknown = null;
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const appState = require('../../src/services/app-athlete-state');
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const whoopStore = require('../../src/store/whoop-store');
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const secureStorage = require('../../src/store/secure-storage');
-        const whoop = whoopStore?.useWhoopStore?.getState?.();
-        const whoopCsv = await secureStorage.readStoredJson?.('whoop_csv_imported_v1').catch(() => null);
-        athleteStateSnapshot = appState.buildAppAthleteState?.({
-          todayIsoDate: new Date().toISOString().slice(0, 10),
-          days,
-          features: useHealthStore.getState().features,
-          sessions: trainingSessions,
-          whoopDay: whoop?.day ?? null,
-          whoopFetchedAt: whoop?.fetchedAt ?? null,
-          nutritionToday: nut?.today ?? null,
-          nutritionTargets: nut?.targets ?? null,
-          healthLastSyncAt: useHealthStore.getState().lastSyncAt,
-          whoopCsv: whoopCsv ? {
-            imported: !!whoopCsv.imported,
-            rowCount: whoopCsv.totalRowsIngested ?? null,
-            windowDays: null,
-          } : null,
-          whoopFetchStatus: whoop?.status,
-        });
-      } catch { /* non-fatal — snapshot is optional */ }
-
-      if (uid) {
-        railwayCalled = true;
-        const railway = await persistDurableToRailway(
-          uid, days, nut?.today ?? null, nut?.historyDays ?? [], hiitWorkouts, trainingSessions, athleteStateSnapshot,
-        );
-        if (railway.ok) {
-          if (railway.daysPushed > 0) railwayLines.push(`${railway.daysPushed} health days`);
-          if (railway.nutritionDaysPushed > 0) railwayLines.push(`${railway.nutritionDaysPushed} nutrition days`);
-          if (railway.hiitWorkoutsPushed > 0) railwayLines.push(`${railway.hiitWorkoutsPushed} HIIT sessions`);
-          if (railway.sessionsPushed > 0) railwayLines.push(`${railway.sessionsPushed} training sessions`);
-          if (railway.athleteStateSnapshotPushed) railwayLines.push('athlete-state snapshot');
-        } else {
-          railwayError = railway.error ?? 'Railway ingest returned error';
-        }
-      } else {
-        railwayError = 'Sign in required for Railway primary save';
-      }
-    } catch (e: any) {
-      // Swallowing this previously made the UI report "nothing new to
-      // push" when the fan-out helper actually threw — a silent lie.
-      railwayError = e?.message ?? 'Railway fan-out threw';
-    }
-
-    // STEP 2: Try the Supabase /health-import mirror. Under the new
-    // JWT Signing Keys model, signing-key issues surface as 401s; the
-    // app shows the JWT-Keys hint banner. Success = redundant backup.
-    setSaving('supabase');
-    const ok = await persistToBackend();
-    const railwayStatus: 'saved' | 'empty' | 'error' =
-      railwayError != null ? 'error'
-        : railwayLines.length > 0 ? 'saved'
-          : railwayCalled ? 'empty' : 'error';
-    const railwaySummary =
-      railwayStatus === 'saved' ? `Railway primary saved: ${railwayLines.join(', ')}`
-        : railwayStatus === 'empty' ? 'Railway primary: nothing new to push'
-          : `Railway primary error: ${railwayError ?? 'unknown'}`;
-
-    if (ok) {
-      const next = useHealthStore.getState();
-      setPressResult({
-        at: startedAt,
-        railway: { status: railwayStatus, lines: railwayLines, error: railwayError ?? undefined },
-        supabase: {
-          ok: true,
-          recordCount: next.lastPersistResult?.recordCount ?? 0,
-          dateRange: next.lastPersistResult?.dateRange ?? '—',
-        },
-      });
-      const supaLine = `Supabase mirror: ${next.lastPersistResult?.recordCount ?? 0} days (${next.lastPersistResult?.dateRange ?? '—'})`;
-      Alert.alert('Backend Sync', `${railwaySummary}\n${supaLine}`);
-    } else {
-      const err = useHealthStore.getState().error ?? 'Unknown error';
-      setPressResult({
-        at: startedAt,
-        railway: { status: railwayStatus, lines: railwayLines, error: railwayError ?? undefined },
-        supabase: { ok: false, error: err },
-      });
-      Alert.alert('Backend Sync',
-        `${railwaySummary}\n\n${railwayStatus === 'saved' ? 'Your data is durable on Railway.' : 'Primary path unavailable too — see the Railway error above.'} Supabase mirror is configured · source-state mirror is live · full per-day metric mirror is still pending. Railway primary remains the durable source.`,
-      );
-    }
-    // Flip button back to idle only when the whole fan-out (both legs)
-    // has landed a final result.
-    setSaving(false);
-  }, [persistToBackend]);
-
-  if (authStatus !== 'member') return null;
-
-  if (!canPersist) {
-    return (
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Cloud Sync</Text>
-        <Text style={styles.gateText}>
-          Save health data to your account with the Starter plan.
-        </Text>
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.card}>
-      <View style={styles.cardHeaderRow}>
-        <Text style={styles.cardTitle}>Backend Sync</Text>
-        <Pressable
-          style={[styles.syncButton, (saving || persisting) && { opacity: 0.7 }]}
-          onPress={handlePress}
-          disabled={!!saving || persisting}>
-          {saving ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <ActivityIndicator size="small" color="#d4e157" />
-              <Text style={[styles.syncButtonText, { fontSize: 11 }]}>
-                {saving === 'railway' ? 'Saving Railway…' : 'Saving Supabase…'}
-              </Text>
-            </View>
-          ) : persisting ? (
-            <ActivityIndicator size="small" color="#d4e157" />
-          ) : (
-            <Text style={styles.syncButtonText}>Save long-term data</Text>
-          )}
-        </Pressable>
-      </View>
-      {saving && (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 6 }}>
-          <ActivityIndicator size="small" color="#d4e157" />
-          <Text style={[styles.syncTimestamp, { color: '#d4e157' }]}>
-            {saving === 'railway'
-              ? `Saving Railway primary · pushing ${nativeSourceLabel} days, nutrition, sessions…`
-              : 'Saving Supabase mirror · attempting redundant backup…'}
-          </Text>
-        </View>
-      )}
-      {pressResult?.railway.status === 'saved' && (
-        <Text style={[styles.syncTimestamp, { color: '#4ade80' }]}>
-          ✓ Synced to Railway this push · {pressResult.railway.lines.join(', ')} (server dedupes by date)
-        </Text>
-      )}
-      {pressResult?.railway.status === 'empty' && (
-        <Text style={styles.syncTimestamp}>
-          Railway primary: nothing new to push.
-        </Text>
-      )}
-      {pressResult?.railway.status === 'error' && (
-        <Text style={[styles.syncTimestamp, { color: '#ff6b6b' }]}>
-          Railway primary error: {pressResult.railway.error ?? 'unknown'}
-        </Text>
-      )}
-      {pressResult?.supabase.ok && (
-        <Text style={[styles.syncTimestamp, { color: '#4ade80', opacity: 0.8 }]}>
-          ✓ Supabase mirror saved: {pressResult.supabase.recordCount} day{pressResult.supabase.recordCount === 1 ? '' : 's'} ({pressResult.supabase.dateRange})
-        </Text>
-      )}
-      {pressResult && !pressResult.supabase.ok && (
-        <Text style={[styles.syncTimestamp, {
-          // Yellow when Supabase is the only block and Railway saved —
-          // this is the steady-state we expect until the JWT flip.
-          // Red only when both paths failed, because that IS a real
-          // total-failure worth flagging.
-          color: pressResult.railway.status === 'error' ? '#ff6b6b' : '#d4e157',
-        }]}>
-          {pressResult.railway.status === 'error'
-            ? 'Supabase mirror also blocked'
-            : 'Supabase mirror configured · source-state live · per-day mirror pending'}
-        </Text>
-      )}
-      {!saving && lastPersistedAt && (
-        <Text style={styles.syncTimestamp}>
-          Last saved: {new Date(lastPersistedAt).toLocaleString()}
-          {lastPersistResult
-            ? ` · ${lastPersistResult.recordCount} days (${lastPersistResult.dateRange})`
-            : ''}
-        </Text>
-      )}
-      {!saving && !lastPersistedAt && !pressResult && (
-        <>
-          <Text style={styles.syncTimestamp}>
-            {`Your ${nativeSourceLabel} days, nutrition history, HIIT + training sessions, and the merged athlete-state snapshot already stream to the durable backend layer — they survive reinstall and feed long-term AI learning.`}
-          </Text>
-          <Text style={[styles.syncTimestamp, { opacity: 0.5 }]}>
-            {'Tap Save long-term data to push a fresh local snapshot to Railway. The server dedupes by date so re-pushing is safe and never overwrites older history.'}
-          </Text>
-        </>
-      )}
-      {/* Supabase JWT algorithm mismatch is an admin-side blocker —
-          surface it explicitly so the user knows no amount of tapping
-          will fix it until the dashboard knob flips. Native health →
-          Coach still works via the Railway /ingest path regardless. */}
-      {(() => {
-        const err = (pressResult && !pressResult.supabase.ok ? (pressResult.supabase.error ?? '') : (storeError ?? '')) ?? '';
-        const isJwtError = /jwt|signing|unauthor|401/i.test(err);
-        if (!isJwtError) {
-          if (storeError && !pressResult) {
-            return (
-              <Text style={[styles.syncTimestamp, { color: '#ff6b6b' }]}>
-                Previous error: {storeError}
-              </Text>
-            );
-          }
-          return null;
-        }
-        return (
-          <View style={{
-            marginTop: 6, padding: 10, borderRadius: 8,
-            backgroundColor: 'rgba(255,107,107,0.08)',
-            borderWidth: 1, borderColor: 'rgba(255,107,107,0.25)', gap: 4,
-          }}>
-            <Text style={{ color: '#ff6b6b', fontSize: 12, fontWeight: '700' }}>
-              Supabase JWT key needs attention
-            </Text>
-            <Text style={{ color: '#e0e0e0', fontSize: 12, lineHeight: 16 }}>
-              The Supabase mirror rejected this access token.{'\n'}
-              {'\n'}
-              Operator steps:{'\n'}
-              1. Supabase dashboard → Project Settings → JWT Keys: confirm an active signing key exists. If you recently rotated to a standby, the old token can't verify until the standby is promoted.{'\n'}
-              2. Sign out and sign back in on this device so the next access-token is signed by the active key.{'\n'}
-              3. Tap Save to Account again.
-            </Text>
-            <Text style={{ color: '#888', fontSize: 11, lineHeight: 14 }}>
-              {`${nativeSourceLabel} → Coach still works via the Railway /ingest pipeline regardless — this blocker only affects the direct-to-Supabase persist path.`}
-            </Text>
-          </View>
-        );
-      })()}
-    </View>
-  );
-}
-
 // --- Expo Go notice ---
 
 function ExpoGoNotice() {
@@ -839,8 +521,8 @@ function ExpoGoNotice() {
 export default function HealthScreen() {
   // Inline source-info card collapse state. Default false because the
   // platform-name card duplicates info already shown by HealthActions
-  // Panel + AppleHealthCard above. Testers can expand it for the
-  // no-data guidance / error detail when debugging.
+  // Panel. Testers can expand it for the no-data guidance / error
+  // detail when debugging.
   const [sourceInfoOpen, setSourceInfoOpen] = useState(false);
   const permissions = useHealthStore((s) => s.permissions);
   const syncing = useHealthStore((s) => s.syncing);
@@ -1175,98 +857,10 @@ export default function HealthScreen() {
         </SafeErrorBoundary>
       )}
 
-      {/* Legacy unified WhoopCard removed — WhoopDirectCard below is
-          the canonical WHOOP Direct surface (status pill + sync +
-          backfill + disconnect actions + truthful copy). Removing the
-          duplicate de-clutters the Health feed without losing any
-          user-facing functionality; readiness/today still displays
-          via TodayCard. */}
-
-      {/* Nutrition is app-first: Apple Health dietary import + manual
-          + search + barcode + AI photo. Rendered much higher on this
-          tab — it's one of the most-used surfaces, so it sits right
-          under the source/connection area, not buried at the bottom. */}
-
-      {/* ── Primary / relevant source cards ─────────────────────
-          Shown by default:
-          - Apple Health card on iOS, Samsung/HC cards on Android
-          - WHOOP Direct (proprietary readiness — keep regardless of OS)
-          - Polar cards only when Polar-via-HC provenance was actually
-            detected or the user tapped Connect
-          Cronometer + Concept2 + FTMS/BLE machine capture are all OUT
-          of the Health screen. Machine capture moved to the Train tab
-          where it belongs as part of session execution. Cronometer and
-          Concept2 are not in the active product path. */}
-      {/* PRIMARY platform health source. NOT tier-gated — Apple
-          Health on iOS and Health Connect on Android are the
-          baseline product, available to every signed-in user
-          regardless of tier. Tier gating goes around AI narrative
-          / paid features, never the primary source connection. */}
-      {Platform.OS === 'ios' && (
-        <SafeErrorBoundary label="Apple Health card">
-          <AppleHealthCard />
-        </SafeErrorBoundary>
-      )}
-      {Platform.OS === 'android' && (
-        <SafeErrorBoundary label="Health Connect availability hint">
-          <HealthConnectAvailabilityHint />
-        </SafeErrorBoundary>
-      )}
-      {Platform.OS === 'android' && (
-        <SafeErrorBoundary label="Samsung Health card">
-          <SamsungHealthCard />
-        </SafeErrorBoundary>
-      )}
-      {/* WHOOP Direct + Polar Direct moved into the "More sources"
-          disclosure to keep the default Health view focused on the
-          platform's primary source (Apple Health on iOS, Health
-          Connect / Samsung on Android). They surface at the top here
-          ONLY when there's already an active connection or detected
-          provenance — never as default clutter for users who don't
-          use those services. */}
-      {isMember && whoopStatus === 'ready' && (
-        <SafeErrorBoundary label="WHOOP Direct card">
-          <WhoopDirectCard />
-        </SafeErrorBoundary>
-      )}
-      {isMember && polarViaHc?.detected && (
-        <SafeErrorBoundary label="Polar card">
-          <PolarCard viaHealthConnect={polarViaHc} />
-        </SafeErrorBoundary>
-      )}
-      {/* Health Connect provenance card — Android-only + only when
-          provenance was actually detected. Hiding on iOS unconditionally. */}
-      {isMember && Platform.OS === 'android' && (polarViaHc?.detected || samsungViaHc?.detected) && (
-        <SafeErrorBoundary label="Health Connect provenance card">
-          <HealthConnectProvenanceCard />
-        </SafeErrorBoundary>
-      )}
-
-      {/* Machine capture is owned by the Train tab, not Health.
-          Pair BLE HR strap / FTMS machine, see live HR/power, and
-          save sessions all happen in Train. Health stays focused on
-          Apple Health / WHOOP / enrichment / source status. */}
-
-      {/* Long-term data sync — relocated into the connection-sources
-          area so it sits next to Apple Health / WHOOP / Polar / CSV
-          import rather than dominating the main metrics feed. Railway
-          primary save lives here; Supabase mirror remains optional
-          redundancy. */}
-      <SafeErrorBoundary label="Backend sync card">
-        <BackendSyncCard />
-      </SafeErrorBoundary>
-
-      {/* Advanced — reserved for future advanced source info. Empty
-          for now since Cronometer/Concept2/machine capture are all
-          out of the health-source path. Kept as a placeholder if we
-          need to reintroduce an advanced diagnostic later. */}
-      {isMember && (
-        <OtherSourcesDisclosure
-          polarDetected={!!polarViaHc?.detected}
-          samsungDetected={!!samsungViaHc?.detected}
-          whoopConnected={whoopStatus === 'ready'}
-        />
-      )}
+      {/* Source-management cards (Apple Health / Health Connect,
+          Backend Sync, WHOOP, Polar, exports) live inside the
+          Manage health sources sheet above. Keep this feed focused on
+          status, nutrition, coaching, trends, and history. */}
 
       {/* Memory proposal review — shows trend candidates + weekly promotion candidates */}
       {isMember && (
@@ -1287,7 +881,7 @@ export default function HealthScreen() {
         </SafeErrorBoundary>
       )}
 
-      {/* Backend sync moved up into the connection-sources area. */}
+      {/* Backend sync now lives inside Manage health sources. */}
 
       {/* Recent days */}
       {days.length > 0 && (
@@ -1296,13 +890,9 @@ export default function HealthScreen() {
         </SafeErrorBoundary>
       )}
 
-      {/* "Data Sources" status duplicate-card removed — the same per-
-          source status (Apple Health / Health Connect / WHOOP Direct /
-          Samsung via HC / Polar via HC) is already shown by the
-          source-specific cards higher up in the connections area. The
-          import-history summary that lived in this card is preserved
-          in a compact strip below so the totals/window remain visible
-          without re-listing every source. */}
+      {/* The old per-source status card was removed from the main tab.
+          The import-history summary stays visible without re-listing
+          every source-management action. */}
       <SafeErrorBoundary label="Data sources history">
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Imported history</Text>
@@ -1522,53 +1112,6 @@ function HealthKitDebugDisclosure() {
         <SafeErrorBoundary label="HealthKit debug">
           <HealthKitDebugCard />
         </SafeErrorBoundary>
-      )}
-    </View>
-  );
-}
-
-function OtherSourcesDisclosure({
-  polarDetected,
-  samsungDetected: _samsungDetected,
-  whoopConnected,
-}: {
-  polarDetected: boolean;
-  samsungDetected: boolean;
-  whoopConnected: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-  return (
-    <View style={[styles.card, { gap: 6 }]}>
-      <Pressable
-        onPress={() => setOpen((v) => !v)}
-        hitSlop={8}
-        accessibilityRole="button"
-        accessibilityLabel={open ? 'Hide more sources' : 'Show more sources'}
-        style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text style={styles.cardTitle}>More sources</Text>
-        <Text style={{ fontSize: 12, color: '#d4e157' }}>{open ? '▾ Hide' : '▸ Add another source'}</Text>
-      </Pressable>
-      {!open && (
-        <Text style={styles.gateText}>
-          Add WHOOP, Polar, or other less-common sources. Bluetooth machine capture lives in the Train tab.
-        </Text>
-      )}
-      {open && (
-        <View style={{ gap: 12, marginTop: 6 }}>
-          {!whoopConnected && (
-            <SafeErrorBoundary label="WHOOP Direct card">
-              <WhoopDirectCard />
-            </SafeErrorBoundary>
-          )}
-          {!polarDetected && (
-            <SafeErrorBoundary label="Polar Direct card">
-              <PolarDirectCard />
-            </SafeErrorBoundary>
-          )}
-          <Text style={styles.gateText}>
-            Bluetooth heart-rate straps and FTMS bikes/rowers/ski-ergs live on the Train tab so they pair as part of a session. Cronometer and Concept2 are not in the active product path.
-          </Text>
-        </View>
       )}
     </View>
   );

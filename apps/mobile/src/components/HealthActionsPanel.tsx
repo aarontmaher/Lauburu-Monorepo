@@ -14,6 +14,7 @@
  */
 import { Component, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   AppState,
   Linking,
@@ -31,11 +32,14 @@ import * as Updates from 'expo-updates';
 import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../store/auth-store';
 import { useHealthStore } from '../store/health-store';
+import { useTierStore } from '../store/tier-store';
 import { useWhoopStore } from '../store/whoop-store';
 import * as IntegrationsClient from '../services/integrations-client';
 import { getWhoopCsvStatus, uploadWhoopCsv, uploadWhoopZip, clearWhoopCsv } from '../services/integrations-client';
 import { readStoredJson, writeStoredJson } from '../store/secure-storage';
 import { SafeErrorBoundary } from './SafeErrorBoundary';
+import { HealthConnectAvailabilityHint } from './HealthConnectAvailabilityHint';
+import { PolarDirectCard } from './IntegrationCards';
 import { parsePolarExport, type PolarSession } from '../../../../packages/shared/src/backend/services/polar/parse-polar-export';
 
 const WHOOP_CSV_CACHE_KEY = 'whoop_csv_imported_v1';
@@ -1382,6 +1386,7 @@ const styles = StyleSheet.create({
   sheetTitle: { fontSize: 17, fontWeight: '700' },
   sheetClose: { fontSize: 14, color: '#d4e157', fontWeight: '600' },
   sheetScroll: { paddingBottom: 24 },
+  sheetInlineCard: { paddingHorizontal: 16, paddingTop: 12 },
   sheetSectionHeader: {
     fontSize: 11,
     opacity: 0.5,
@@ -1471,6 +1476,208 @@ const styles = StyleSheet.create({
 });
 
 // ── HealthSourceSheet ────────────────────────────────────────────────
+
+function BackendSyncRow() {
+  const persisting = useHealthStore((s) => s.persisting);
+  const lastPersistedAt = useHealthStore((s) => s.lastPersistedAt);
+  const lastPersistResult = useHealthStore((s) => s.lastPersistResult);
+  const persistToBackend = useHealthStore((s) => s.persistToBackend);
+  const storeError = useHealthStore((s) => s.error);
+  const authStatus = useAuthStore((s) => s.status);
+  const canPersist = useTierStore((s) => s.can)('backend_persistence');
+  const nativeSourceLabel = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
+  const [saving, setSaving] = useState<false | 'railway' | 'supabase'>(false);
+  const [pressResult, setPressResult] = useState<
+    {
+      at: string;
+      railway: { status: 'saved' | 'empty' | 'error'; lines: string[]; error?: string };
+      supabase: { ok: boolean; recordCount?: number; dateRange?: string; error?: string };
+    } | null
+  >(null);
+
+  const handlePress = useCallback(async () => {
+    const startedAt = new Date().toISOString();
+    setSaving('railway');
+    setPressResult(null);
+    let railwayLines: string[] = [];
+    let railwayError: string | null = null;
+    let railwayCalled = false;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { persistDurableToRailway } = require('../services/durable-persist');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const nutStore = require('../store/nutrition-store');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const hiitStore = require('../store/hiit-workout-store');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const trainingStore = require('../store/training-store');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const authMod = require('../store/auth-store');
+      const uid = authMod?.useAuthStore?.getState?.()?.user?.id;
+      const days = useHealthStore.getState().days;
+      const nut = nutStore?.useNutritionStore?.getState?.();
+      const hiitWorkouts = hiitStore?.useHIITWorkoutStore?.getState?.()?.workouts ?? [];
+      const trainingSessions = trainingStore?.useTrainingStore?.getState?.()?.sessions ?? [];
+
+      let athleteStateSnapshot: unknown = null;
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const appState = require('../services/app-athlete-state');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const whoopStore = require('../store/whoop-store');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const secureStorage = require('../store/secure-storage');
+        const whoop = whoopStore?.useWhoopStore?.getState?.();
+        const whoopCsv = await secureStorage.readStoredJson?.('whoop_csv_imported_v1').catch(() => null);
+        athleteStateSnapshot = appState.buildAppAthleteState?.({
+          todayIsoDate: new Date().toISOString().slice(0, 10),
+          days,
+          features: useHealthStore.getState().features,
+          sessions: trainingSessions,
+          whoopDay: whoop?.day ?? null,
+          whoopFetchedAt: whoop?.fetchedAt ?? null,
+          nutritionToday: nut?.today ?? null,
+          nutritionTargets: nut?.targets ?? null,
+          healthLastSyncAt: useHealthStore.getState().lastSyncAt,
+          whoopCsv: whoopCsv ? {
+            imported: !!whoopCsv.imported,
+            rowCount: whoopCsv.totalRowsIngested ?? null,
+            windowDays: null,
+          } : null,
+          whoopFetchStatus: whoop?.status,
+        });
+      } catch { /* non-fatal */ }
+
+      if (uid) {
+        railwayCalled = true;
+        const railway = await persistDurableToRailway(
+          uid, days, nut?.today ?? null, nut?.historyDays ?? [], hiitWorkouts, trainingSessions, athleteStateSnapshot,
+        );
+        if (railway.ok) {
+          if (railway.daysPushed > 0) railwayLines.push(`${railway.daysPushed} health days`);
+          if (railway.nutritionDaysPushed > 0) railwayLines.push(`${railway.nutritionDaysPushed} nutrition days`);
+          if (railway.hiitWorkoutsPushed > 0) railwayLines.push(`${railway.hiitWorkoutsPushed} HIIT sessions`);
+          if (railway.sessionsPushed > 0) railwayLines.push(`${railway.sessionsPushed} training sessions`);
+          if (railway.athleteStateSnapshotPushed) railwayLines.push('athlete-state snapshot');
+        } else {
+          railwayError = railway.error ?? 'Railway ingest returned error';
+        }
+      } else {
+        railwayError = 'Sign in required for Railway primary save';
+      }
+    } catch (e: any) {
+      railwayError = e?.message ?? 'Railway fan-out threw';
+    }
+
+    setSaving('supabase');
+    const ok = await persistToBackend();
+    const railwayStatus: 'saved' | 'empty' | 'error' =
+      railwayError != null ? 'error'
+        : railwayLines.length > 0 ? 'saved'
+          : railwayCalled ? 'empty' : 'error';
+    const railwaySummary =
+      railwayStatus === 'saved' ? `Railway primary saved: ${railwayLines.join(', ')}`
+        : railwayStatus === 'empty' ? 'Railway primary: nothing new to push'
+          : `Railway primary error: ${railwayError ?? 'unknown'}`;
+
+    if (ok) {
+      const next = useHealthStore.getState();
+      setPressResult({
+        at: startedAt,
+        railway: { status: railwayStatus, lines: railwayLines, error: railwayError ?? undefined },
+        supabase: {
+          ok: true,
+          recordCount: next.lastPersistResult?.recordCount ?? 0,
+          dateRange: next.lastPersistResult?.dateRange ?? '—',
+        },
+      });
+      Alert.alert('Backend Sync', `${railwaySummary}\nSupabase mirror: ${next.lastPersistResult?.recordCount ?? 0} days (${next.lastPersistResult?.dateRange ?? '—'})`);
+    } else {
+      const err = useHealthStore.getState().error ?? 'Unknown error';
+      setPressResult({
+        at: startedAt,
+        railway: { status: railwayStatus, lines: railwayLines, error: railwayError ?? undefined },
+        supabase: { ok: false, error: err },
+      });
+      Alert.alert(
+        'Backend Sync',
+        `${railwaySummary}\n\n${railwayStatus === 'saved' ? 'Your data is durable on Railway.' : 'Primary path unavailable too — see the Railway error above.'} Supabase mirror is configured · source-state mirror is live · full per-day metric mirror is still pending.`,
+      );
+    }
+    setSaving(false);
+  }, [persistToBackend]);
+
+  if (authStatus !== 'member') return null;
+
+  if (!canPersist) {
+    return (
+      <View style={styles.sourceRow}>
+        <Text style={styles.sourceName}>Backend sync</Text>
+        <Text style={styles.sourceMeta}>Save health data to your account with the Starter plan.</Text>
+      </View>
+    );
+  }
+
+  const err = (pressResult && !pressResult.supabase.ok ? (pressResult.supabase.error ?? '') : (storeError ?? '')) ?? '';
+  const isJwtError = /jwt|signing|unauthor|401/i.test(err);
+
+  return (
+    <View style={styles.sourceRow}>
+      <View style={styles.sourceRowHeader}>
+        <Text style={styles.sourceName}>Backend sync</Text>
+        <Pressable
+          style={[styles.rowBtn, styles.rowBtnPrimary, (saving || persisting) && { opacity: 0.6 }]}
+          onPress={handlePress}
+          disabled={!!saving || persisting}
+          accessibilityRole="button"
+          accessibilityLabel="Save long-term health data">
+          {saving || persisting ? (
+            <ActivityIndicator size="small" color="#0a0a0a" />
+          ) : (
+            <Text style={[styles.rowBtnText, styles.rowBtnTextPrimary]}>Save long-term data</Text>
+          )}
+        </Pressable>
+      </View>
+      <Text style={styles.sourceMeta}>
+        {saving === 'railway'
+          ? `Saving Railway primary · pushing ${nativeSourceLabel} days, nutrition, sessions…`
+          : saving === 'supabase'
+            ? 'Saving Supabase mirror…'
+            : lastPersistedAt
+              ? `Last saved ${formatLocalDateTime(lastPersistedAt)}${lastPersistResult ? ` · ${lastPersistResult.recordCount} days` : ''}`
+              : `Push ${nativeSourceLabel} days, nutrition, sessions, and athlete-state snapshot.`}
+      </Text>
+      {pressResult?.railway.status === 'saved' && (
+        <Text style={[styles.sourceMeta, { color: '#4ade80', opacity: 1 }]}>
+          Railway saved: {pressResult.railway.lines.join(', ')}
+        </Text>
+      )}
+      {pressResult?.railway.status === 'empty' && (
+        <Text style={styles.sourceMeta}>Railway primary: nothing new to push.</Text>
+      )}
+      {pressResult?.railway.status === 'error' && (
+        <Text style={[styles.sourceMeta, { color: '#ff6b6b', opacity: 1 }]}>
+          Railway error: {pressResult.railway.error ?? 'unknown'}
+        </Text>
+      )}
+      {pressResult?.supabase.ok && (
+        <Text style={[styles.sourceMeta, { color: '#4ade80', opacity: 1 }]}>
+          Supabase mirror saved: {pressResult.supabase.recordCount} day{pressResult.supabase.recordCount === 1 ? '' : 's'}.
+        </Text>
+      )}
+      {pressResult && !pressResult.supabase.ok && (
+        <Text style={[styles.sourceMeta, { color: pressResult.railway.status === 'error' ? '#ff6b6b' : '#d4e157', opacity: 1 }]}>
+          {pressResult.railway.status === 'error' ? 'Supabase mirror also blocked.' : 'Supabase mirror pending; Railway primary remains durable.'}
+        </Text>
+      )}
+      {isJwtError && (
+        <Text style={[styles.sourceMeta, { color: '#d4e157', opacity: 1 }]}>
+          Supabase JWT key needs attention. Sign out/in after the backend key is fixed, then save again.
+        </Text>
+      )}
+    </View>
+  );
+}
 
 interface SheetProps {
   visible: boolean;
@@ -1564,9 +1771,12 @@ function HealthSourceSheet(props: SheetProps) {
     return `synced ${Math.round(h / 24)}d ago`;
   };
 
+  const samsungHcHint = Platform.OS === 'android'
+    ? ' If you use Samsung Health or Galaxy Watch, enable Samsung Health → Health Connect sharing, then grant Health Connect permissions here.'
+    : '';
   const nativeHealthMeta = appleHealthConnected
-    ? `Default live health source · ${healthDays} day${healthDays === 1 ? '' : 's'} · ${ageLabel(healthLastSyncAt)}`
-    : 'Default live health source · not connected yet';
+    ? `Default live health source · ${healthDays} day${healthDays === 1 ? '' : 's'} · ${ageLabel(healthLastSyncAt)}${samsungHcHint}`
+    : `Default live health source · not connected yet.${samsungHcHint}`;
 
   // Stale detection — only when the freshest known date is more than
   // 2 days behind local today. WHOOP normally scores overnight, so
@@ -1763,16 +1973,15 @@ function HealthSourceSheet(props: SheetProps) {
   // or TCX and imports as historical training context only. Not a
   // recovery/readiness source.
   available.push(<PolarExportRow key="polar_export" />);
+  available.push(<BackendSyncRow key="backend_sync" />);
 
-  // Placeholder row for the "Available to connect" section — the
-  // detail for Polar via HC, Samsung via HC, and Bluetooth machine
-  // capture lives further down the Health tab in the existing per-
-  // source cards. Pointing users there keeps the sheet focused.
+  // Lightweight pointer for session-owned hardware so Bluetooth
+  // capture stays anchored to the Train tab.
   available.push(
     <View key="others" style={styles.sourceRow}>
-      <Text style={styles.sourceName}>Other sources</Text>
+      <Text style={styles.sourceName}>Training hardware</Text>
       <Text style={styles.sourceMeta}>
-        Polar via Health Connect and Samsung via Health Connect appear below this action card when detected. Bluetooth machine capture (HR strap, FTMS bike/rower) now lives in the Train tab.
+        Bluetooth heart-rate straps and FTMS bikes/rowers/ski-ergs live on the Train tab so they pair as part of a session.
       </Text>
     </View>,
   );
@@ -1788,6 +1997,11 @@ function HealthSourceSheet(props: SheetProps) {
             </Pressable>
           </View>
           <ScrollView contentContainerStyle={styles.sheetScroll}>
+            {Platform.OS === 'android' && (
+              <View style={styles.sheetInlineCard}>
+                <HealthConnectAvailabilityHint />
+              </View>
+            )}
             {connected.length > 0 && (
               <>
                 <Text style={styles.sheetSectionHeader}>Connected</Text>
@@ -1804,6 +2018,11 @@ function HealthSourceSheet(props: SheetProps) {
               <>
                 <Text style={styles.sheetSectionHeader}>Available to connect</Text>
                 {available}
+                <View style={styles.sheetInlineCard}>
+                  <SafeErrorBoundary label="Polar Direct card">
+                    <PolarDirectCard />
+                  </SafeErrorBoundary>
+                </View>
               </>
             )}
           </ScrollView>
