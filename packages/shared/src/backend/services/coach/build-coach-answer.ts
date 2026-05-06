@@ -635,11 +635,13 @@ function buildNutritionAnswer(
 
 function buildRecoveryAnswer(
   ctx: AthleteAiContextResponse,
+  question: string = '',
 ): { answer: CoachAnswerBody; status: CoachAnswerStatus; confidence: CoachConfidence; sources: string[]; missingFields: string[] } {
   const missingWhoop = ctx.capability?.missingWhoopNativeFields ?? [];
   const seedRecovery = ctx.normalizedDay?.recoveryScore ?? null;
   const seedHrv = ctx.normalizedDay?.hrvMs ?? null;
   const seedSleep = ctx.normalizedDay?.totalSleepHours ?? null;
+  const asksWhoopNative = question.toLowerCase().includes('whoop');
 
   if (ctx.capability?.notSafeFor?.includes('display_recovery_score_as_live')) {
     // Seed WHOOP data may still be available — show it as context
@@ -660,30 +662,34 @@ function buildRecoveryAnswer(
         missingFields: ['live_recovery', 'live_hrv', 'live_strain'],
       };
     }
-    // No WHOOP-native data, no seed snapshot. Try Lauburu Readiness
-    // before falling back to "no data available" — readiness can
-    // still derive a low/medium-confidence read from sleep + RHR +
-    // acute/chronic load even when WHOOP fields are missing.
-    const readinessFallback = readinessFragment(ctx);
-    if (readinessFallback) {
-      const conf = (ctx as any).lauburu_readiness?.confidence;
-      return {
-        answer: {
-          short: readinessFallback.shortAddon,
-          why: readinessFallback.whyAddon ?? 'WHOOP-native recovery fields are missing; using Lauburu Readiness as a directional read.',
-          nextStep: readinessFallback.trainingBiasNextStep,
-          missingnessNote: readinessFallback.caveat,
-        },
-        status: 'answered',
-        confidence: conf === 'high' ? 'high' : conf === 'medium' ? 'medium' : 'low',
-        sources: ['lauburu_readiness'],
-        missingFields: ['live_recovery', 'live_hrv', 'live_strain', ...(((ctx as any).lauburu_readiness?.missing_data as string[] | undefined) ?? [])],
-      };
+    if (!asksWhoopNative) {
+      // No WHOOP-native data, no seed snapshot. Try Lauburu Readiness
+      // before falling back to "no data available" — readiness can
+      // still derive a low/medium-confidence read from sleep + RHR +
+      // acute/chronic load even when WHOOP fields are missing.
+      const readinessFallback = readinessFragment(ctx);
+      if (readinessFallback) {
+        const conf = (ctx as any).lauburu_readiness?.confidence;
+        return {
+          answer: {
+            short: readinessFallback.shortAddon,
+            why: readinessFallback.whyAddon ?? 'WHOOP-native recovery fields are missing; using Lauburu Readiness as a directional read.',
+            nextStep: readinessFallback.trainingBiasNextStep,
+            missingnessNote: readinessFallback.caveat,
+          },
+          status: 'answered',
+          confidence: conf === 'high' ? 'high' : conf === 'medium' ? 'medium' : 'low',
+          sources: ['lauburu_readiness'],
+          missingFields: ['live_recovery', 'live_hrv', 'live_strain', ...(((ctx as any).lauburu_readiness?.missing_data as string[] | undefined) ?? [])],
+        };
+      }
     }
     return {
       answer: {
-        short: 'No recovery data available yet.',
-        why: 'WHOOP-native recovery fields are missing and Lauburu Readiness needs more days of personal baseline.',
+        short: asksWhoopNative ? 'No WHOOP recovery data available yet.' : 'No recovery data available yet.',
+        why: asksWhoopNative
+          ? 'WHOOP-native recovery fields are missing and there is no seed WHOOP snapshot for today.'
+          : 'WHOOP-native recovery fields are missing and Lauburu Readiness needs more days of personal baseline.',
         nextStep: 'Sync a health source (Apple Health / WHOOP CSV / WHOOP Direct) and check back in a few days. Not medical advice.',
         missingnessNote: 'Missing: live recovery, HRV, strain. Personal baseline still building.',
       },
@@ -1588,7 +1594,7 @@ export function buildCoachAnswer(
       result = buildNutritionAnswer(aiContext, question);
       break;
     case 'recovery':
-      result = buildRecoveryAnswer(aiContext);
+      result = buildRecoveryAnswer(aiContext, question);
       break;
     case 'training':
       result = buildTrainingAnswer(aiContext, question);

@@ -246,6 +246,10 @@ export interface HandoffWritePayload {
 // ---------------------------------------------------------------------------
 
 export interface ConnectorRouteMap {
+  'GET /api/work_status': WorkStatus;
+  'GET /api/coder_lanes': CoderLanes;
+  'GET /api/build_status': BuildStatus;
+  'GET /api/handoff': Handoff;
   'GET /api/athlete-memory/admin/work-status': WorkStatus;
   'GET /api/athlete-memory/admin/agent-status': CoderLanes;
   'GET /api/athlete-memory/admin/build-status': BuildStatus;

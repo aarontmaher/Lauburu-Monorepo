@@ -40,6 +40,7 @@ import {
 import { useOwnerWorkflowStore } from '../src/store/owner-workflow-store';
 import { useAuditEventStore } from '../src/store/audit-event-store';
 import { fetchAgentStatus, type AgentStatusEntry } from '../src/services/agent-status-client';
+import { fetchConnectorSnapshot, type ConnectorSnapshot } from '../src/services/connector-status-client';
 import {
   buildClaudeCodePrompt,
   buildClaudeChromePrompt,
@@ -255,6 +256,7 @@ export default function AdminDevScreen() {
 
   const [health, setHealth] = useState<BackendHealth | null>(null);
   const [adminStatus, setAdminStatus] = useState<AdminStatus | null>(null);
+  const [connectorSnapshot, setConnectorSnapshot] = useState<ConnectorSnapshot | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [openPromptIdx, setOpenPromptIdx] = useState<number | null>(null);
   const [handoffOpen, setHandoffOpen] = useState(false);
@@ -262,11 +264,16 @@ export default function AdminDevScreen() {
   const refresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      const [h, a] = await Promise.all([fetchBackendHealth(), fetchAdminStatus()]);
+      const [h, a, c] = await Promise.all([
+        fetchBackendHealth(),
+        fetchAdminStatus(),
+        isAdmin ? fetchConnectorSnapshot() : Promise.resolve(null),
+      ]);
       setHealth(h);
       setAdminStatus(a);
+      setConnectorSnapshot(c);
     } finally { setRefreshing(false); }
-  }, []);
+  }, [isAdmin]);
 
   useEffect(() => { void refresh(); }, [refresh]);
 
@@ -339,6 +346,7 @@ export default function AdminDevScreen() {
       </Section>
 
       <AgentStatusSection />
+      {isAdmin && <ConnectorStatusSection snapshot={connectorSnapshot} refreshing={refreshing} onRefresh={refresh} />}
 
       <Section title="AI Coach status">
         <Row label="Backend reachable" value={health == null ? '—' : health.ok ? 'yes ✓' : 'no'} />
@@ -817,6 +825,74 @@ function AgentStatusSection() {
           </View>
         );
       })}
+    </Section>
+  );
+}
+
+function ConnectorStatusSection({
+  snapshot,
+  refreshing,
+  onRefresh,
+}: {
+  snapshot: ConnectorSnapshot | null;
+  refreshing: boolean;
+  onRefresh: () => void;
+}) {
+  const work = snapshot?.workStatus ?? null;
+  const build = snapshot?.buildStatus ?? null;
+  const handoff = snapshot?.handoff ?? null;
+  const lanes = snapshot?.coderLanes?.lanes ?? [];
+  return (
+    <Section title="Connector control centre">
+      <Text style={styles.note}>
+        Owner-only dummy route snapshot. No raw terminal logs, no shell execution, no secrets. Data stays provisional until the tmux bridge producer is live.
+      </Text>
+      <Pressable style={[styles.btn, refreshing && { opacity: 0.5 }]} disabled={refreshing} onPress={onRefresh}>
+        <Text style={styles.btnText}>{refreshing ? 'Refreshing…' : 'Refresh connector status'}</Text>
+      </Pressable>
+      {snapshot == null && (
+        <Text style={styles.note}>Connector routes are not reachable or the admin token is not configured.</Text>
+      )}
+      {snapshot?.checkedAt && <Row label="Checked" value={new Date(snapshot.checkedAt).toLocaleTimeString()} />}
+      {work && (
+        <>
+          <Row label="Priority" value={work.currentPriority ?? '—'} />
+          <Row label="Blocker" value={work.currentBlocker ?? 'none'} />
+          <Row label="Repo" value={`${work.repoStatus.branch}@${work.repoStatus.head} · ${work.repoStatus.dirtyFileCount} dirty / ${work.repoStatus.untrackedFileCount} untracked`} />
+          <Row label="Next action" value={work.nextAction ?? '—'} />
+        </>
+      )}
+      {lanes.length > 0 && (
+        <View style={{ gap: 6 }}>
+          {lanes.map((lane) => (
+            <View key={lane.laneId} style={[styles.row, { flexDirection: 'column', alignItems: 'flex-start', gap: 4 }]}>
+              <Text style={styles.rowLabel}>{lane.laneId} · {lane.status}</Text>
+              {lane.currentPromptId && <Text style={styles.rowValue}>Prompt: {lane.currentPromptId}</Text>}
+              {lane.lastSummary && <Text style={[styles.rowValue, { textAlign: 'left' }]} numberOfLines={3}>{lane.lastSummary}</Text>}
+              <Text style={[styles.rowValue, { opacity: 0.6 }]}>
+                Typecheck: {lane.lastTypecheckResult ?? '—'} · Dirty files: {lane.dirtyFiles.length}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
+      {build && (
+        <>
+          <Row label="Android build" value={`v${build.android.versionCode ?? '—'} · ${build.android.githubStatus ?? '—'} · Play ${build.android.playStatus ?? '—'}`} />
+          <Row label="iOS build" value={`${build.ios.buildNumber ?? '—'} · ${build.ios.githubStatus ?? '—'} · TestFlight ${build.ios.testflightStatus ?? '—'}`} />
+        </>
+      )}
+      {handoff && (
+        <>
+          <Row label="Safe to build" value={handoff.safeToBuild ? 'yes' : 'no'} />
+          <Row label="Build gate reason" value={handoff.safeToBuildReason} />
+          <Row label="Latest Claude prompt" value={handoff.latestClaudePrompt ?? '—'} />
+          <Row label="Latest Codex prompt" value={handoff.latestCodexPrompt ?? '—'} />
+          {handoff.manualSteps.slice(0, 3).map((step, idx) => (
+            <Row key={`${idx}-${step}`} label={`Manual ${idx + 1}`} value={step} />
+          ))}
+        </>
+      )}
     </Section>
   );
 }

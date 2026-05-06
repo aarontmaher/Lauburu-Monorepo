@@ -8,6 +8,7 @@
     "dev": "tsx watch src/server/app.ts",
     "build": "echo 'Runtime TypeScript via tsx — no build step needed'",
     "build:server": "tsc -p tsconfig.server.json",
+    "test:mcp-routes": "tsx src/server/scripts/test-mcp-routes.ts",
     "test:contracts": "tsx src/server/scripts/test-nutrition-hiit-contracts.ts",
     "test:roundtrip": "tsx src/server/scripts/test-round-trip.ts",
     "test:roundtrip:deployed": "echo 'Set BACKEND_URL, INTERNAL_API_TOKEN, ATHLETE_MEMORY_API_TOKEN' && tsx src/server/scripts/test-round-trip.ts",
