@@ -58,7 +58,7 @@ export interface SupabaseAdapter {
   fetchCoderLaneRows(): Promise<Array<{ lane_id: string; status: string; payload: unknown }> | null>;
   /**
    * Fetches the most recent N entries from connector_terminal_summary,
-   * ordered by created_at desc.
+   * ordered by generated_at desc (matches the migration's index).
    */
   fetchTerminalEntries(limit: number): Promise<unknown[] | null>;
 }
@@ -144,7 +144,7 @@ export function getSupabaseAdapter(env: Env): SupabaseAdapter | SupabaseUnavaila
     async fetchTerminalEntries(limit: number) {
       const safeLimit = Math.max(1, Math.min(50, Math.floor(limit)));
       const rows = await safeJson<Array<{ payload: unknown }>>(
-        `connector_terminal_summary?select=payload&order=created_at.desc&limit=${safeLimit}`,
+        `connector_terminal_summary?select=payload&order=generated_at.desc&limit=${safeLimit}`,
       );
       if (!rows) return null;
       return rows.map((r) => r.payload);
@@ -158,8 +158,8 @@ export function getSupabaseAdapter(env: Env): SupabaseAdapter | SupabaseUnavaila
  * in the response payload when `supabaseConfigured` is false so
  * consumers can self-document why the data is provisional.
  *
- * Tables follow a thin envelope shape (id / scope / payload jsonb /
- * source / created_at / updated_at), defined in
+ * Tables follow a thin envelope shape (id / generated_at /
+ * updated_at / source / payload jsonb), defined in
  * `supabase/migrations/0003_connector_status_tables.sql`. The TS
  * shapes inside `payload` come from
  * `chat-app/src/server/types/connector.ts`.

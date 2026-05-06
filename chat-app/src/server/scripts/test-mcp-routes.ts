@@ -61,6 +61,30 @@ async function main() {
     assert(typeof handoff.safeToBuild === 'boolean', 'handoff safeToBuild missing');
     assert(typeof handoff.safeToBuildReason === 'string', 'handoff safeToBuildReason missing');
 
+    const terminalSummary = await getJson(baseUrl, '/api/terminal_summary');
+    assert(terminalSummary.schemaVersion === 1, 'terminal_summary schemaVersion mismatch');
+    assert(typeof terminalSummary.generatedAt === 'string', 'terminal_summary generatedAt missing');
+    assert(Array.isArray(terminalSummary.entries), 'terminal_summary entries missing');
+    assert(terminalSummary.entries.length <= 50, 'terminal_summary entry cap exceeded');
+    for (const entry of terminalSummary.entries) {
+      assert(typeof entry.laneId === 'string', 'terminal_summary entry laneId missing');
+      assert(typeof entry.at === 'string', 'terminal_summary entry at missing');
+      assert(typeof entry.summary === 'string' && entry.summary.length <= 1200, 'terminal_summary entry summary cap');
+      assert(typeof entry.verification === 'string' && entry.verification.length <= 240, 'terminal_summary entry verification cap');
+      assert(typeof entry.nextAction === 'string' && entry.nextAction.length <= 240, 'terminal_summary entry nextAction cap');
+      assert(entry.exitCode === null || typeof entry.exitCode === 'number', 'terminal_summary entry exitCode shape');
+    }
+
+    // Auth gating: every connector route must reject the wrong / missing token.
+    for (const path of ['/api/work_status', '/api/coder_lanes', '/api/build_status', '/api/handoff', '/api/terminal_summary']) {
+      const noToken = await fetch(`${baseUrl}${path}`, { headers: { Accept: 'application/json' } });
+      assert(noToken.status === 403, `${path} unauth expected 403, got ${noToken.status}`);
+      const wrongToken = await fetch(`${baseUrl}${path}`, {
+        headers: { Accept: 'application/json', 'x-athlete-memory-token': 'not-the-real-token' },
+      });
+      assert(wrongToken.status === 403, `${path} wrong-token expected 403, got ${wrongToken.status}`);
+    }
+
     console.log('MCP route schema tests passed.');
   } finally {
     await new Promise<void>((resolve, reject) => {

@@ -5,6 +5,7 @@ import {
   type BuildStatus,
   type CoderLanes,
   type Handoff,
+  type TerminalSummary,
   type WorkStatus,
 } from '../types/connector';
 
@@ -110,6 +111,15 @@ router.get('/handoff', (_req: any, res: any) => {
     ],
     safeToBuild: false,
     safeToBuildReason: 'Backend connector routes are provisional dummy data until tmux bridge output is live and reviewed.',
+  };
+  res.status(200).json(payload);
+});
+
+router.get('/terminal_summary', (_req: any, res: any) => {
+  const payload: TerminalSummary = {
+    schemaVersion: CONNECTOR_SCHEMA_VERSION,
+    generatedAt: new Date().toISOString(),
+    entries: [],
   };
   res.status(200).json(payload);
 });

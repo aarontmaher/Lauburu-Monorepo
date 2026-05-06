@@ -126,7 +126,7 @@ retention sweep at the bottom of the migration file (commented
 out by default; uncomment + run via pg_cron or attach to a
 Supabase scheduled task).
 
-Index: `connector_terminal_summary_lane_recent (lane_id, created_at desc)`.
+Index: `connector_terminal_summary_lane_recent (lane_id, generated_at desc)`.
 
 ## Required env on the Worker
 
