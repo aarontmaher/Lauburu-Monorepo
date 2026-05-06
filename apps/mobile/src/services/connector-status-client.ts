@@ -20,6 +20,7 @@ export interface ConnectorWorkStatus {
     lastCommitMessage: string;
   };
   nextAction: string | null;
+  dataSource?: ConnectorDataSource;
 }
 
 export interface ConnectorLane {
@@ -52,6 +53,7 @@ export interface ConnectorBuildStatus {
     testflightStatus: string | null;
     testflightGroup: string | null;
   };
+  dataSource?: ConnectorDataSource;
 }
 
 export interface ConnectorHandoff {
@@ -63,6 +65,7 @@ export interface ConnectorHandoff {
   doNotTouch: string[];
   safeToBuild: boolean;
   safeToBuildReason: string;
+  dataSource?: ConnectorDataSource;
 }
 
 export interface ConnectorTerminalSummaryEntry {
@@ -78,13 +81,21 @@ export interface ConnectorTerminalSummary {
   schemaVersion: number;
   generatedAt: string;
   entries: ConnectorTerminalSummaryEntry[];
+  dataSource?: ConnectorDataSource;
+}
+
+export interface ConnectorDataSource {
+  source?: string;
+  reason?: string;
+  message?: string;
+  schemaRequired?: boolean;
 }
 
 export interface ConnectorSnapshot {
   checkedAt: string;
   source: 'mcp' | 'public_backend';
   workStatus: ConnectorWorkStatus | null;
-  coderLanes: { schemaVersion: number; generatedAt: string; lanes: ConnectorLane[] } | null;
+  coderLanes: { schemaVersion: number; generatedAt: string; lanes: ConnectorLane[]; dataSource?: ConnectorDataSource } | null;
   buildStatus: ConnectorBuildStatus | null;
   handoff: ConnectorHandoff | null;
   terminalSummary: ConnectorTerminalSummary | null;

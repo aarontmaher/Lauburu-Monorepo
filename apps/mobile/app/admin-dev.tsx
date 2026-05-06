@@ -40,7 +40,11 @@ import {
 import { useOwnerWorkflowStore } from '../src/store/owner-workflow-store';
 import { useAuditEventStore } from '../src/store/audit-event-store';
 import { fetchAgentStatus, type AgentStatusEntry } from '../src/services/agent-status-client';
-import { fetchConnectorSnapshot, type ConnectorSnapshot } from '../src/services/connector-status-client';
+import {
+  fetchConnectorSnapshot,
+  type ConnectorDataSource,
+  type ConnectorSnapshot,
+} from '../src/services/connector-status-client';
 import {
   buildClaudeCodePrompt,
   buildClaudeChromePrompt,
@@ -147,8 +151,8 @@ const STATUS_HANDOFF_TEMPLATE = [
  * update these in the next paired build. Keep each line short; the UI
  * renders compact chips, not paragraphs.
  */
-const CURRENT_PRIORITY = 'Apple Health (iPhone — Aaron) + Health Connect (Android — girlfriend) usable for daily testing.';
-const NEXT_ACTION = 'Track Android v17 GitHub Actions / EAS result, then test Apple Health on iPhone + Health Connect on Android from the paired tester builds.';
+const CURRENT_PRIORITY = 'MCP connector consistency + Admin/Dev iPhone control centre.';
+const NEXT_ACTION = 'Verify live MCP data on iPhone, then promote the next approved candidate suggestion.';
 
 function compactGitCommit(value: unknown): string {
   if (typeof value !== 'string') return '—';
@@ -174,6 +178,30 @@ function connectorCheckedTime(checkedAt: string | null | undefined): string {
   return new Date(checkedAt).toLocaleTimeString();
 }
 
+function connectorIsStale(checkedAt: string | null | undefined): boolean {
+  if (!checkedAt) return false;
+  const checkedMs = new Date(checkedAt).getTime();
+  if (!Number.isFinite(checkedMs)) return false;
+  return Date.now() - checkedMs >= 10 * 60_000;
+}
+
+function connectorSnapshotLabel(snapshot: ConnectorSnapshot | null): string {
+  if (!snapshot) return 'Repo-only';
+  if (connectorIsStale(snapshot.checkedAt)) return 'Stale snapshot';
+  if (snapshot.source !== 'mcp') return 'Fallback placeholder';
+  const dataSources: Array<ConnectorDataSource | undefined> = [
+    snapshot.workStatus?.dataSource,
+    snapshot.coderLanes?.dataSource,
+    snapshot.buildStatus?.dataSource,
+    snapshot.handoff?.dataSource,
+    snapshot.terminalSummary?.dataSource,
+  ];
+  const hasPlaceholder = dataSources.some((source) =>
+    source?.source === 'placeholder' || source?.schemaRequired === true
+  );
+  return hasPlaceholder ? 'Fallback placeholder' : 'Live MCP data';
+}
+
 function buildAgentAuditPrompt(snapshot: ConnectorSnapshot | null): string {
   const work = snapshot?.workStatus ?? null;
   const lanes = snapshot?.coderLanes?.lanes ?? [];
@@ -195,7 +223,7 @@ function buildAgentAuditPrompt(snapshot: ConnectorSnapshot | null): string {
     `Priority: ${work?.currentPriority ?? '—'}`,
     `Blocker: ${work?.currentBlocker ?? 'none'}`,
     `Next action: ${work?.nextAction ?? '—'}`,
-    `MCP: ${snapshot ? `${snapshot.source} · ${connectorFreshnessLabel(snapshot.checkedAt)}` : 'not connected'}`,
+    `MCP: ${connectorSnapshotLabel(snapshot)} · ${snapshot ? connectorFreshnessLabel(snapshot.checkedAt) : 'not connected'}`,
     `Lanes: ${laneSummary}`,
     '',
     'TASK',
@@ -379,15 +407,29 @@ export default function AdminDevScreen() {
   const nowBlocker = connectorWork?.currentBlocker ?? 'No MCP blocker reported.';
   const nowNextAction = connectorWork?.nextAction ?? NEXT_ACTION;
   const nowLanes = connectorSnapshot?.coderLanes?.lanes ?? [];
+  const laneStatusCounts = nowLanes.reduce<Record<string, number>>((acc, lane) => {
+    acc[lane.status] = (acc[lane.status] ?? 0) + 1;
+    return acc;
+  }, {});
+  const laneCountSummary = Object.entries(laneStatusCounts)
+    .map(([status, count]) => `${count} ${status}`)
+    .join(' · ');
   const nowLaneSummary = nowLanes.length > 0
     ? nowLanes.map((lane) => `${lane.laneId}: ${lane.status}`).join(' · ')
     : 'No lane status yet.';
+  const nowRepoSummary = connectorWork
+    ? `${connectorWork.repoStatus.branch}@${connectorWork.repoStatus.head} · ${connectorWork.repoStatus.dirtyFileCount} dirty`
+    : 'Repo-only until MCP work status loads.';
+  const nowBuildSummary = connectorSnapshot?.buildStatus
+    ? `Android ${connectorSnapshot.buildStatus.android.versionCode ?? '—'} · ${connectorSnapshot.buildStatus.android.githubStatus ?? '—'} / iOS ${connectorSnapshot.buildStatus.ios.buildNumber ?? '—'} · ${connectorSnapshot.buildStatus.ios.githubStatus ?? '—'}`
+    : 'Build status not loaded.';
+  const nowSnapshotLabel = connectorSnapshotLabel(connectorSnapshot);
   const mcpStatus = isAdmin
     ? connectorSnapshot
-      ? `MCP ${connectorSnapshot.source === 'mcp' ? 'connected' : 'fallback'} · ${connectorFreshnessLabel(connectorSnapshot.checkedAt)} · updated ${connectorCheckedTime(connectorSnapshot.checkedAt)}`
+      ? `${nowSnapshotLabel} · ${connectorFreshnessLabel(connectorSnapshot.checkedAt)} · updated ${connectorCheckedTime(connectorSnapshot.checkedAt)}`
       : refreshing
         ? 'MCP refreshing…'
-        : 'MCP not connected'
+        : `${nowSnapshotLabel} · MCP not connected`
     : null;
 
   return (
@@ -397,6 +439,30 @@ export default function AdminDevScreen() {
       <Text style={styles.subtitle}>Owner control centre. Compact status. No secrets. No remote shell.</Text>
 
       <Section title="Now">
+        {isAdmin && (
+          <View style={styles.summaryGrid}>
+            <View style={styles.summaryTile}>
+              <Text style={styles.chipLabel}>MCP</Text>
+              <Text style={styles.summaryValue}>{refreshing && !connectorSnapshot ? 'Refreshing…' : nowSnapshotLabel}</Text>
+              <Text style={styles.summaryMeta}>{connectorSnapshot ? connectorFreshnessLabel(connectorSnapshot.checkedAt) : 'not connected'}</Text>
+            </View>
+            <View style={styles.summaryTile}>
+              <Text style={styles.chipLabel}>Updated</Text>
+              <Text style={styles.summaryValue}>{connectorSnapshot ? connectorCheckedTime(connectorSnapshot.checkedAt) : '—'}</Text>
+              <Text style={styles.summaryMeta}>{connectorSnapshot?.source === 'mcp' ? 'Worker' : 'Repo-only'}</Text>
+            </View>
+            <View style={styles.summaryTile}>
+              <Text style={styles.chipLabel}>Lanes</Text>
+              <Text style={styles.summaryValue}>{nowLanes.length}</Text>
+              <Text style={styles.summaryMeta}>{laneCountSummary || 'no status'}</Text>
+            </View>
+            <View style={styles.summaryTile}>
+              <Text style={styles.chipLabel}>Build / repo</Text>
+              <Text style={styles.summaryValue}>{connectorSnapshot?.buildStatus ? 'Loaded' : 'Repo-only'}</Text>
+              <Text style={styles.summaryMeta}>{connectorWork ? `${connectorWork.repoStatus.branch}@${connectorWork.repoStatus.head}` : buildInfo.repoHead}</Text>
+            </View>
+          </View>
+        )}
         <View style={styles.chipBlock}>
           <Text style={styles.chipLabel}>Priority</Text>
           <Text style={styles.chipBody}>{nowPriority}</Text>
@@ -413,6 +479,13 @@ export default function AdminDevScreen() {
           <View style={styles.chipBlock}>
             <Text style={styles.chipLabel}>Lanes</Text>
             <Text style={styles.chipBody}>{nowLaneSummary}</Text>
+          </View>
+        )}
+        {isAdmin && (
+          <View style={styles.chipBlock}>
+            <Text style={styles.chipLabel}>Build / repo</Text>
+            <Text style={styles.chipBody}>{nowBuildSummary}</Text>
+            <Text style={styles.note}>{nowRepoSummary}</Text>
           </View>
         )}
         {mcpStatus && (
@@ -803,11 +876,11 @@ const QUICK_CAPTURE_PLATFORMS: { id: OwnerBacklogPlatform; label: string }[] = [
 ];
 
 const STANDING_TOP_FIVE: string[] = [
-  '1. Play Console listing pass + releaseStatus flip (Aaron-side)',
-  '2. Paired tester build (v14 + Build 15)',
-  '3. Grappler Readiness Batch B — NextDayCheckin sliders',
-  '4. Grappler Readiness Batch C — TrainingSession schema',
-  '5. Grappler Readiness Batch D — bucket-ring UI',
+  '1. MCP connector consistency',
+  '2. Admin/Dev iPhone control centre',
+  '3. App live MCP consumer',
+  '4. Feedback suggestions approval workflow',
+  '5. Health / Data Source reliability',
 ];
 
 function AgentStatusSection() {
@@ -827,6 +900,7 @@ function AgentStatusSection() {
   const [agents, setAgents] = useState<Record<string, AgentStatusEntry | null> | null>(null);
   const [generatedAt, setGeneratedAt] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [open, setOpen] = useState(false);
 
   const refresh = useCallback(async () => {
     if (!isAdmin) return;  // never fetch for non-admin
@@ -861,10 +935,19 @@ function AgentStatusSection() {
     : [];
 
   return (
-    <Section title="Coder status">
+    <Section title="Legacy coder diagnostics">
       <Text style={styles.note}>
-        Owner-only. Reads `data/agent-status/*.json` written by `scripts/mark-agent-done.sh` on the backend. Refreshes every 30s.
+        Owner-only fallback source. Use Connector control centre first; open this only when debugging the older agent-status path.
       </Text>
+      <Pressable
+        style={[styles.btn, { backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.12)' }]}
+        onPress={() => setOpen((v) => !v)}>
+        <Text style={[styles.btnText, { color: '#cfd3da' }]}>{open ? '▾ Hide diagnostics' : '▸ Show diagnostics'}</Text>
+      </Pressable>
+      {!open && generatedAt && <Text style={styles.note}>Last fetched {new Date(generatedAt).toLocaleTimeString()}.</Text>}
+      {!open && agents != null && <Text style={styles.note}>{populated.length} legacy lanes available.</Text>}
+      {open && (
+        <>
       <Pressable style={[styles.btn, loading && { opacity: 0.5 }]} disabled={loading} onPress={refresh}>
         <Text style={styles.btnText}>{loading ? 'Refreshing…' : 'Refresh now'}</Text>
       </Pressable>
@@ -900,6 +983,8 @@ function AgentStatusSection() {
           </View>
         );
       })}
+        </>
+      )}
     </Section>
   );
 }
@@ -922,11 +1007,12 @@ function ConnectorStatusSection({
   const claudeLane = lanes.find((lane) => lane.laneId.toLowerCase().includes('claude')) ?? null;
   const codexLane = lanes.find((lane) => lane.laneId.toLowerCase().includes('codex')) ?? null;
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const stateLabel = connectorSnapshotLabel(snapshot);
   const mcpState = snapshot
-    ? `${snapshot.source === 'mcp' ? 'MCP connected' : 'Backend fallback'} · ${connectorFreshnessLabel(snapshot.checkedAt)} · updated ${connectorCheckedTime(snapshot.checkedAt)}`
+    ? `${stateLabel} · ${connectorFreshnessLabel(snapshot.checkedAt)} · updated ${connectorCheckedTime(snapshot.checkedAt)}`
     : refreshing
       ? 'MCP refreshing…'
-      : 'MCP not connected';
+      : `${stateLabel} · MCP not connected`;
   const summaryLine = snapshot
     ? `${lanes.length} lanes · ${terminalEntries.length} terminal summaries · ${handoff ? 'handoff ready' : 'no handoff'}`
     : 'Set EXPO_PUBLIC_MCP_BASE_URL + admin token, then refresh.';
@@ -957,6 +1043,20 @@ function ConnectorStatusSection({
         <Text style={styles.chipBody}>{mcpState}</Text>
         <Text style={styles.note}>{summaryLine}</Text>
       </View>
+      {snapshot && (
+        <View style={styles.summaryGrid}>
+          <View style={styles.summaryTile}>
+            <Text style={styles.chipLabel}>Lanes</Text>
+            <Text style={styles.summaryValue}>{lanes.length}</Text>
+            <Text style={styles.summaryMeta}>{lanes.map((lane) => lane.status).join(' · ') || 'none'}</Text>
+          </View>
+          <View style={styles.summaryTile}>
+            <Text style={styles.chipLabel}>Repo</Text>
+            <Text style={styles.summaryValue}>{work?.repoStatus.head ?? '—'}</Text>
+            <Text style={styles.summaryMeta}>{work ? `${work.repoStatus.dirtyFileCount} dirty` : 'repo-only'}</Text>
+          </View>
+        </View>
+      )}
       <Pressable style={[styles.btn, refreshing && { opacity: 0.5 }]} disabled={refreshing} onPress={onRefresh}>
         <Text style={styles.btnText}>{refreshing ? 'Refreshing…' : 'Refresh connector status'}</Text>
       </Pressable>
@@ -970,27 +1070,28 @@ function ConnectorStatusSection({
           value={snapshot.source === 'mcp' ? 'Cloudflare MCP / repo-only until verified' : 'Backend fallback / repo-only'}
         />
       )}
-      {snapshot && (
-        <View style={{ gap: 6 }}>
-          <Text style={styles.rowLabel}>Phone copy prompts</Text>
-          <SelectableCopyButton
-            label="Copy next Claude prompt"
-            body={handoff?.latestClaudePrompt ?? claudeLane?.nextPrompt ?? 'No Claude prompt available yet.'}
-          />
-          <SelectableCopyButton
-            label="Copy next Codex prompt"
-            body={handoff?.latestCodexPrompt ?? codexLane?.nextPrompt ?? 'No Codex prompt available yet.'}
-          />
-          <SelectableCopyButton
-            label="Copy handoff summary"
-            body={handoffSummary ?? 'Connector snapshot is not available yet.'}
-          />
-          <SelectableCopyButton
-            label="Copy Agent audit prompt"
-            body={buildAgentAuditPrompt(snapshot)}
-          />
-        </View>
-      )}
+      <View style={{ gap: 6 }}>
+        <Text style={styles.rowLabel}>Phone copy prompts</Text>
+        <SelectableCopyButton
+          label="Copy Claude prompt"
+          body={handoff?.latestClaudePrompt ?? claudeLane?.nextPrompt ?? null}
+          disabledReason="No Claude prompt in handoff or lane status yet."
+        />
+        <SelectableCopyButton
+          label="Copy Codex prompt"
+          body={handoff?.latestCodexPrompt ?? codexLane?.nextPrompt ?? null}
+          disabledReason="No Codex prompt in handoff or lane status yet."
+        />
+        <SelectableCopyButton
+          label="Copy Agent audit prompt"
+          body={buildAgentAuditPrompt(snapshot)}
+        />
+        <SelectableCopyButton
+          label="Copy handoff summary"
+          body={handoffSummary}
+          disabledReason="Connector snapshot is not available yet."
+        />
+      </View>
       {lanes.length > 0 && (
         <View style={{ gap: 6 }}>
           {lanes.map((lane) => (
@@ -1063,17 +1164,30 @@ function ConnectorStatusSection({
   );
 }
 
-function SelectableCopyButton({ label, body }: { label: string; body: string }) {
+function SelectableCopyButton({
+  label,
+  body,
+  disabledReason,
+}: {
+  label: string;
+  body: string | null;
+  disabledReason?: string;
+}) {
   const [open, setOpen] = useState(false);
+  const disabled = body == null || body.trim().length === 0;
   return (
     <View style={{ gap: 4 }}>
-      <Pressable style={styles.btn} onPress={() => setOpen((v) => !v)}>
+      <Pressable
+        style={[styles.btn, disabled && { opacity: 0.4 }]}
+        disabled={disabled}
+        onPress={() => setOpen((v) => !v)}>
         <Text style={styles.btnText}>{open ? '▾ ' : '▸ '}{label}</Text>
       </Pressable>
+      {disabled && <Text style={styles.btnDisabledReason}>{disabledReason ?? 'Prompt text unavailable.'}</Text>}
       {open && (
         <>
           <Text style={styles.btnSubtitle}>Long-press the block below to copy from the phone.</Text>
-          <RNText selectable style={styles.copyBlock}>{body}</RNText>
+          <RNText selectable style={styles.copyBlock}>{body ?? ''}</RNText>
         </>
       )}
     </View>
@@ -1445,6 +1559,16 @@ const styles = StyleSheet.create({
   btnSubtitle: { fontSize: 11, opacity: 0.55, paddingHorizontal: 4, marginTop: 1, marginBottom: 2 },
   btnDisabledReason: { fontSize: 11, color: '#ff8a8a', paddingHorizontal: 4, marginTop: 1, marginBottom: 2 },
   note: { fontSize: 11, opacity: 0.55, lineHeight: 15, marginTop: 2 },
+  summaryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  summaryTile: {
+    flexGrow: 1, flexBasis: '47%', minHeight: 58,
+    paddingVertical: 8, paddingHorizontal: 10, borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)',
+    gap: 2,
+  },
+  summaryValue: { fontSize: 13, fontWeight: '700' },
+  summaryMeta: { fontSize: 10, opacity: 0.55, lineHeight: 13 },
   chipBlock: {
     paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10,
     backgroundColor: 'rgba(212,225,87,0.06)',
