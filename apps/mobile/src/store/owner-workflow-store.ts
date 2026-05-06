@@ -15,14 +15,14 @@ import type { OwnerWorkflowContext } from '../services/prompt-templates';
 
 const DEFAULT_CONTEXT: OwnerWorkflowContext = {
   currentPriority:
-    'Apple Health (iPhone — Aaron) + Health Connect (Android — girlfriend) usable for daily testing.',
+    'MCP connector consistency + Admin/Dev iPhone control centre.',
   currentBlocker:
-    'Free-tier gate was hiding primary platform health cards from non-member users. Removed in this batch; ships with next paired build.',
+    'Phone verification is still pending for live MCP status, lane summary, copy prompts, and stale/fallback states.',
   lastStatus: [
-    'Auto-update PROVEN end-to-end: Android run 25361589282 → Play accepted COMPLETED release at 06:59:36 UTC → tester device received v14.',
-    'iOS Build 15 + TestFlight submit SUCCEEDED earlier (run 25349256198) carrying iOS HealthKit Mac/Vision warning fix, owner FAB rule, Admin/Dev redesign, AI Coach UX cleanup, BLE CPS/CSC fix.',
-    'Future paired builds: bump versionCode + buildNumber and dispatch Build Android + upload + Build iOS + submit. No manual steps.',
-    'Verified: tsc --noEmit clean across all commits this lane.',
+    'Cloudflare/Supabase MCP foundation exists; mobile Admin/Dev consumes the Worker through EXPO_PUBLIC_MCP_BASE_URL.',
+    'Recent Admin/Dev phone patches added first-screen MCP status, lane summary, build/repo summary, and copy prompts.',
+    'Health/Data Source reliability remains the next product lane after MCP/control-centre phone verification.',
+    'Verified: mobile typecheck passed for the latest Admin/Dev lane.',
   ].join(' '),
   selectedTaskBundle: undefined,
   protectedRules: [
@@ -34,11 +34,13 @@ const DEFAULT_CONTEXT: OwnerWorkflowContext = {
     'No paid AI API implementation',
     'No arbitrary shell execution from the app',
     'No raw terminal embedded in the app',
-    'Use predefined GitHub Actions workflows only',
+    'No backend, Cloudflare, Supabase, MCP auth, or health-source rewrites from this mobile lane',
+    'Use predefined GitHub Actions workflows only after owner confirmation',
   ],
   manualStepsForAaron: [
-    'Auto-update lane closed — no manual release steps for routine paired builds',
-    'Future paired build: bump app.json android.versionCode + ios.buildNumber, dispatch Build Android + upload + Build iOS + submit from Admin/Dev Primary actions',
+    'Install the next paired tester build on iPhone and open Admin/Dev.',
+    'Confirm MCP shows Live MCP data, Stale snapshot, Fallback placeholder, Repo-only, or error language correctly.',
+    'Confirm Copy Claude prompt, Copy Codex prompt, Copy Agent audit prompt, and Copy handoff summary are usable from the phone.',
   ],
   canDeleteFromNotepad: [
     'Wire iOS auto-group assignment (DONE — Build 14)',
@@ -55,9 +57,12 @@ const DEFAULT_CONTEXT: OwnerWorkflowContext = {
     'Android auto-promote proof: workflow + Play API + tester device (DONE 2026-05-06 — run 25361589282 + v14 received)',
   ],
   doNotDeleteYet: [
-    'Grappler Readiness Batch B — extend NextDayCheckin sliders',
-    'Grappler Readiness Batch C — extend TrainingSession schema',
-    'Grappler Readiness Batch D — bucket-ring UI on AthleteStateStrip',
+    'MCP connector consistency across private /mcp, public /mcp/public, REST /api/*, docs, tests, and mobile consumer',
+    'Admin/Dev iPhone control centre device verification',
+    'App live MCP consumer tester-build verification',
+    'Feedback suggestions approval workflow',
+    'Health/Data Source reliability: Apple Health on iOS and Health Connect on Android',
+    'Grappler Readiness architecture only — no user-facing UI',
     'AI provider implementation — gated by AI_PROVIDER_STRATEGY.md + AI_MONETISATION_AND_USAGE_STRATEGY.md triggers',
     'Stage-5 local Mac/tmux bridge — eight hard rules required',
     'Public production release — out of scope until production listing pass is done',

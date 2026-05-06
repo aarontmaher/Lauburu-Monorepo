@@ -202,6 +202,26 @@ function connectorSnapshotLabel(snapshot: ConnectorSnapshot | null): string {
   return hasPlaceholder ? 'Fallback placeholder' : 'Live MCP data';
 }
 
+function connectorDataSourceLabel(snapshot: ConnectorSnapshot | null): string {
+  if (!snapshot) return 'repo-only / error';
+  const dataSources: Array<ConnectorDataSource | undefined> = [
+    snapshot.workStatus?.dataSource,
+    snapshot.coderLanes?.dataSource,
+    snapshot.buildStatus?.dataSource,
+    snapshot.handoff?.dataSource,
+    snapshot.terminalSummary?.dataSource,
+  ].filter(Boolean);
+  if (dataSources.length === 0) {
+    return snapshot.source === 'mcp' ? 'supabase or worker' : 'fallback backend';
+  }
+  const sourceNames = Array.from(new Set(dataSources.map((source) => source?.source).filter(Boolean)));
+  if (sourceNames.includes('placeholder') || dataSources.some((source) => source?.schemaRequired === true)) {
+    return 'placeholder';
+  }
+  if (sourceNames.includes('supabase')) return 'supabase';
+  return sourceNames.join(' / ') || 'unknown';
+}
+
 function buildAgentAuditPrompt(snapshot: ConnectorSnapshot | null): string {
   const work = snapshot?.workStatus ?? null;
   const lanes = snapshot?.coderLanes?.lanes ?? [];
@@ -424,6 +444,7 @@ export default function AdminDevScreen() {
     ? `Android ${connectorSnapshot.buildStatus.android.versionCode ?? '—'} · ${connectorSnapshot.buildStatus.android.githubStatus ?? '—'} / iOS ${connectorSnapshot.buildStatus.ios.buildNumber ?? '—'} · ${connectorSnapshot.buildStatus.ios.githubStatus ?? '—'}`
     : 'Build status not loaded.';
   const nowSnapshotLabel = connectorSnapshotLabel(connectorSnapshot);
+  const nowSourceLabel = connectorDataSourceLabel(connectorSnapshot);
   const mcpStatus = isAdmin
     ? connectorSnapshot
       ? `${nowSnapshotLabel} · ${connectorFreshnessLabel(connectorSnapshot.checkedAt)} · updated ${connectorCheckedTime(connectorSnapshot.checkedAt)}`
@@ -449,7 +470,7 @@ export default function AdminDevScreen() {
             <View style={styles.summaryTile}>
               <Text style={styles.chipLabel}>Updated</Text>
               <Text style={styles.summaryValue}>{connectorSnapshot ? connectorCheckedTime(connectorSnapshot.checkedAt) : '—'}</Text>
-              <Text style={styles.summaryMeta}>{connectorSnapshot?.source === 'mcp' ? 'Worker' : 'Repo-only'}</Text>
+              <Text style={styles.summaryMeta}>{nowSourceLabel}</Text>
             </View>
             <View style={styles.summaryTile}>
               <Text style={styles.chipLabel}>Lanes</Text>
@@ -488,9 +509,7 @@ export default function AdminDevScreen() {
             <Text style={styles.note}>{nowRepoSummary}</Text>
           </View>
         )}
-        {mcpStatus && (
-          <Text style={styles.note}>{mcpStatus}</Text>
-        )}
+        {mcpStatus && <Text style={styles.note}>{mcpStatus} · source {nowSourceLabel}</Text>}
       </Section>
 
       {isAdmin && <ConnectorStatusSection snapshot={connectorSnapshot} refreshing={refreshing} onRefresh={refresh} />}
@@ -1008,6 +1027,7 @@ function ConnectorStatusSection({
   const codexLane = lanes.find((lane) => lane.laneId.toLowerCase().includes('codex')) ?? null;
   const [detailsOpen, setDetailsOpen] = useState(false);
   const stateLabel = connectorSnapshotLabel(snapshot);
+  const dataSourceLabel = connectorDataSourceLabel(snapshot);
   const mcpState = snapshot
     ? `${stateLabel} · ${connectorFreshnessLabel(snapshot.checkedAt)} · updated ${connectorCheckedTime(snapshot.checkedAt)}`
     : refreshing
@@ -1041,7 +1061,7 @@ function ConnectorStatusSection({
       <View style={styles.chipBlock}>
         <Text style={styles.chipLabel}>MCP status</Text>
         <Text style={styles.chipBody}>{mcpState}</Text>
-        <Text style={styles.note}>{summaryLine}</Text>
+        <Text style={styles.note}>{summaryLine} · source {dataSourceLabel}</Text>
       </View>
       {snapshot && (
         <View style={styles.summaryGrid}>
@@ -1067,7 +1087,7 @@ function ConnectorStatusSection({
       {snapshot && (
         <Row
           label="Status source"
-          value={snapshot.source === 'mcp' ? 'Cloudflare MCP / repo-only until verified' : 'Backend fallback / repo-only'}
+          value={snapshot.source === 'mcp' ? `Cloudflare MCP / ${dataSourceLabel}` : `Backend fallback / ${dataSourceLabel}`}
         />
       )}
       <View style={{ gap: 6 }}>
