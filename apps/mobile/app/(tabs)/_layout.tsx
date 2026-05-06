@@ -29,7 +29,7 @@ export default function TabLayout() {
         headerTintColor: colors.text,
         headerShadowVisible: false,
       }}>
-      {/* Daily workflow tabs */}
+      {/* Daily workflow tabs — order: Home, Health, Train, Check-in, Map, Settings */}
       <Tabs.Screen
         name="index"
         options={{
@@ -38,17 +38,17 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="train"
-        options={{
-          title: 'Train',
-          tabBarIcon: ({ color }) => <TabBarIcon name="plus-circle" color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="health"
         options={{
           title: 'Health',
           tabBarIcon: ({ color }) => <TabBarIcon name="heartbeat" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="train"
+        options={{
+          title: 'Train',
+          tabBarIcon: ({ color }) => <TabBarIcon name="plus-circle" color={color} />,
         }}
       />
       <Tabs.Screen

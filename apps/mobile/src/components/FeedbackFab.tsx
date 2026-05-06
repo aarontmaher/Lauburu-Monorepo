@@ -125,7 +125,6 @@ export function FeedbackFab() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<'ok' | 'error' | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [helpOpen, setHelpOpen] = useState(false);
 
   const handleAttach = useCallback(
     async (source: AttachmentSource) => {
@@ -229,7 +228,7 @@ export function FeedbackFab() {
     }
   }, [
     type, severity, message, attachments, submitting, user?.id, pathname,
-    healthPermAvailable, healthLastSyncAt, healthLastError, healthDaysCount,
+    healthPermAvailable, healthLastSyncAt, healthLastError, healthDaysCount, testerType,
   ]);
 
   const handleClose = useCallback(() => {
@@ -267,13 +266,11 @@ export function FeedbackFab() {
 
             <ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled">
               {!user?.id && (
-                <View style={styles.anonNotice}>
-                  <Text style={styles.anonNoticeText}>
-                    You&apos;re not signed in — this submission will be anonymous and won&apos;t be linked to your account.{' '}
-                    Sign in first if you want this feedback tied to your account/data (helpful for health/AI issues).
-                  </Text>
-                </View>
+                <Text style={[styles.helpBody, { marginBottom: 8 }]}>
+                  Not signed in — submission will be anonymous.
+                </Text>
               )}
+
               <Text style={[styles.sectionLabel, { marginBottom: 4 }]}>You are testing as</Text>
               <View style={styles.typeRow}>
                 {TESTER_TYPES.map((t) => (
@@ -282,10 +279,6 @@ export function FeedbackFab() {
                     style={[styles.pill, testerType === t.id && styles.pillActive]}
                     onPress={() => {
                       setTesterType(t.id);
-                      // Auto-pivot the feedback type so the placeholder
-                      // matches: friend cleanup → ui_cleanup; health
-                      // tester → keep current health-related selection
-                      // if any, else apple_health_issue; general → bug.
                       if (t.id === 'friend_ui_cleanup') setType('ui_cleanup');
                       else if (t.id === 'health_data_tester' && type === 'ui_cleanup') setType('apple_health_issue');
                       else if (t.id === 'general_tester' && type === 'ui_cleanup') setType('bug');
@@ -298,8 +291,6 @@ export function FeedbackFab() {
               </View>
               <Text style={[styles.helpBody, { marginBottom: 8 }]}>
                 {TESTER_TYPES.find((t) => t.id === testerType)?.hint}
-                {testerType === 'friend_ui_cleanup' ? '. This is early app cleanup feedback — health-data correctness is not validated yet.' : ''}
-                {testerType === 'health_data_tester' ? '. Polar / Health Connect / Android / multi-person aggregation are NOT verified yet — please don\u2019t rely on those.' : ''}
               </Text>
 
               <Text style={styles.sectionLabel}>Type</Text>
@@ -316,7 +307,7 @@ export function FeedbackFab() {
                 ))}
               </View>
 
-              <Text style={styles.sectionLabel}>Severity</Text>
+              <Text style={styles.sectionLabel}>Severity of bug</Text>
               <View style={styles.typeRow}>
                 {SEVERITIES.map((s) => (
                   <Pressable
@@ -324,14 +315,14 @@ export function FeedbackFab() {
                     style={[styles.pill, severity === s && styles.pillActive]}
                     onPress={() => setSeverity(s)}>
                     <Text style={[styles.pillText, severity === s && styles.pillTextActive]}>
-                      {s}
+                      {s.charAt(0).toUpperCase() + s.slice(1)}
                     </Text>
                   </Pressable>
                 ))}
               </View>
 
               <Text style={styles.sectionLabel}>
-                What happened or what should change?{requiresDescription ? ' (required)' : ''}
+                What happened, or what should change?{requiresDescription ? ' (required)' : ''}
               </Text>
               <TextInput
                 style={[styles.textArea, descriptionTooShort && trimmedMessage.length > 0 && styles.textAreaError]}
@@ -361,7 +352,7 @@ export function FeedbackFab() {
               )}
 
               <Text style={styles.sectionLabel}>
-                Screenshots / photos ({attachments.length}/{MAX_ATTACHMENTS})
+                Upload screenshot {attachments.length > 0 ? `(${attachments.length}/${MAX_ATTACHMENTS})` : ''}
               </Text>
               {attachments.length > 0 && (
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.thumbRow}>
@@ -397,31 +388,11 @@ export function FeedbackFab() {
                   accessibilityLabel="Upload a screenshot or photo from your library">
                   <FontAwesome name="image" size={14} color={attachmentsFull ? '#555' : '#d4e157'} />
                   <Text style={[styles.attachBtnText, attachmentsFull && styles.attachBtnTextDisabled]}>
-                    Upload screenshot/photo
+                    Upload screenshot
                   </Text>
                 </Pressable>
                 {pickingAttachment && <ActivityIndicator size="small" color="#d4e157" />}
               </View>
-
-              <Pressable onPress={() => setHelpOpen((v) => !v)} style={styles.helpToggle}>
-                <Text style={styles.helpToggleText}>
-                  {helpOpen ? '▾' : '▸'} For testers — tips
-                </Text>
-              </Pressable>
-              {helpOpen && (
-                <View style={styles.helpBox}>
-                  <Text style={styles.helpLine}>• Take a screenshot first, then upload it here.</Text>
-                  <Text style={styles.helpLine}>• "Upload screenshot/photo" opens your photo library — pick the screenshot you just took, or any existing photo.</Text>
-                  <Text style={styles.helpLine}>• No image needed — describe the screenshot/issue in the text box; that alone is fine.</Text>
-                  <Text style={styles.helpLine}>• Apple Health issues — a screenshot of the Health card helps.</Text>
-                  <Text style={styles.helpLine}>• AI answer issues — paste the question you asked + the answer you got.</Text>
-                  <Text style={styles.helpLine}>• Suggestions — include what you expected to happen.</Text>
-                </View>
-              )}
-
-              <Text style={styles.contextNote}>
-                Sent: screen ({pathname ?? 'unknown'}), platform ({Platform.OS}), build ({__DEV__ ? 'dev' : 'preview'}), user id (if signed in). No tokens or raw health data.
-              </Text>
 
               {result === 'ok' && (
                 <Text style={styles.success}>Thanks — feedback sent.</Text>

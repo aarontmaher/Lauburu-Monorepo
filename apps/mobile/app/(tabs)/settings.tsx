@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import * as Application from 'expo-application';
+import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import { useAppTourStore } from '../../src/components/AppTour';
@@ -89,6 +90,37 @@ function formatMembershipStatus(membershipStatus: string | null | undefined): st
 
 function isLocalBeltLevel(value: string | null | undefined): value is LocalBeltLevel {
   return value === 'white' || value === 'blue' || value === 'purple' || value === 'brown' || value === 'black';
+}
+
+function displayBuildValue(value: unknown): string {
+  if (typeof value === 'string' && value.trim().length > 0) return value;
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return 'Unavailable';
+}
+
+function getAppBuildInfo() {
+  const expoConfig = Constants.expoConfig;
+  const platformLabel =
+    Platform.OS === 'ios' ? 'iOS'
+    : Platform.OS === 'android' ? 'Android'
+    : Platform.OS;
+  const androidVersionCode = expoConfig?.android?.versionCode;
+  const iosBuildNumber = expoConfig?.ios?.buildNumber;
+  return {
+    platform: platformLabel,
+    version: displayBuildValue(Application.nativeApplicationVersion ?? expoConfig?.version),
+    build: displayBuildValue(Application.nativeBuildVersion),
+    androidVersionCode: displayBuildValue(
+      Platform.OS === 'android'
+        ? Application.nativeBuildVersion ?? androidVersionCode
+        : androidVersionCode,
+    ),
+    iosBuildNumber: displayBuildValue(
+      Platform.OS === 'ios'
+        ? Application.nativeBuildVersion ?? iosBuildNumber
+        : iosBuildNumber,
+    ),
+  };
 }
 
 function formatSyllabusSummary(
@@ -1074,6 +1106,7 @@ export default function SettingsScreen() {
   const devUnlocked = useDevUnlockStore((s) => s.unlocked);
   const unlockDevTools = useDevUnlockStore((s) => s.unlock);
   const showDevTools = isAdmin || devUnlocked;
+  const buildInfo = getAppBuildInfo();
   const versionTapsRef = useState({ count: 0, ts: 0 })[0];
   const handleVersionTap = () => {
     if (showDevTools) return; // already unlocked, do nothing
@@ -1129,15 +1162,21 @@ export default function SettingsScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>About</Text>
+        <SettingsRow label="Platform" value={buildInfo.platform} />
         <SettingsRow
           label="Version"
-          value={Application.nativeApplicationVersion ?? '0.1.0'}
+          value={buildInfo.version}
           onPress={handleVersionTap}
           onLongPress={showDevTools ? () => router.push('/admin-dev') : undefined}
         />
+        <SettingsRow label="Build" value={buildInfo.build} />
         <SettingsRow
-          label={Platform.OS === 'ios' ? 'Build' : 'Version code'}
-          value={Application.nativeBuildVersion ?? '—'}
+          label="Android version code"
+          value={buildInfo.androidVersionCode}
+        />
+        <SettingsRow
+          label="iOS build number"
+          value={buildInfo.iosBuildNumber}
         />
         <SettingsRow label="Website" value="lauburugrapplingmap.com" />
         <Pressable
