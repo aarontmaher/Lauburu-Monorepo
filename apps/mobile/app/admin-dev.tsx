@@ -26,6 +26,7 @@ import { Alert, Linking, Platform, Pressable, ScrollView, StyleSheet, TextInput,
 import { Stack, useRouter } from 'expo-router';
 import * as Application from 'expo-application';
 import * as Updates from 'expo-updates';
+import Constants from 'expo-constants';
 
 import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../src/store/auth-store';
@@ -149,6 +150,13 @@ const CURRENT_PRIORITY = 'Apple Health (iPhone — Aaron) + Health Connect (Andr
 const ANDROID_PROOF_RESULT = 'PROVEN end-to-end (tester v14 received). Current repo target: Android v17 / iOS Build 18.';
 const NEXT_ACTION = 'Track Android v17 GitHub Actions / EAS result, then test Apple Health on iPhone + Health Connect on Android from the paired tester builds.';
 
+function compactGitCommit(value: unknown): string {
+  if (typeof value !== 'string') return '—';
+  const trimmed = value.trim();
+  if (trimmed.length === 0 || trimmed === '${GITHUB_SHA}') return '—';
+  return trimmed.length > 12 ? trimmed.slice(0, 12) : trimmed;
+}
+
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
  * `useOwnerWorkflowStore` context so changes to priority / blocker
@@ -262,9 +270,16 @@ export default function AdminDevScreen() {
   useEffect(() => { void refresh(); }, [refresh]);
 
   const buildInfo = useMemo(() => {
+    const expoExtra = Constants.expoConfig?.extra as Record<string, unknown> | undefined;
+    const easExtra = expoExtra?.eas as Record<string, unknown> | undefined;
+    const gitCommit =
+      process.env.EXPO_PUBLIC_GIT_COMMIT
+      ?? expoExtra?.gitCommit
+      ?? easExtra?.gitCommit;
     return {
       appVersion: Application.nativeApplicationVersion ?? '—',
       buildNumber: Application.nativeBuildVersion ?? '—',
+      repoHead: compactGitCommit(gitCommit),
       platform: Platform.OS,
       runtimeVersion: Updates.runtimeVersion ?? '—',
       updateId: (Updates as any).updateId ?? null,
@@ -462,6 +477,7 @@ export default function AdminDevScreen() {
       <Section title="App build / runtime">
         <Row label="Version" value={buildInfo.appVersion} />
         <Row label={Platform.OS === 'ios' ? 'iOS build number' : 'Android versionCode'} value={String(buildInfo.buildNumber)} />
+        <Row label="Repo HEAD" value={buildInfo.repoHead} />
         <Row label="Platform" value={buildInfo.platform} />
         <Row label="Runtime version" value={String(buildInfo.runtimeVersion)} />
         <Row label="Update id" value={buildInfo.updateId ? String(buildInfo.updateId).slice(0, 18) + '…' : 'embedded'} />

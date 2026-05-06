@@ -98,7 +98,7 @@ function buildHealthConnectSyncAuditSnapshot() {
 }
 
 function addHealthConnectAuditEvent(input: {
-  eventType: 'sync_succeeded' | 'sync_failed' | 'missing_metrics';
+  eventType: 'sync_started' | 'sync_succeeded' | 'sync_failed' | 'missing_metrics';
   severity: 'info' | 'warning' | 'error';
   userVisibleMessage?: string;
   developerMessage?: string | null;
@@ -698,21 +698,10 @@ function Body() {
       // If granted and signed in, run the standard sync immediately so
       // the user sees data flow without a second tap.
       if (granted && user?.id && typeof syncData === 'function') {
-        try {
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
-          const aud = require('../store/audit-event-store');
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
-          const App = require('expo-application');
-          aud?.useAuditEventStore?.getState?.()?.add?.({
-            platform: 'android',
-            appVersion: App?.nativeApplicationVersion ?? null,
-            buildNumber: App?.nativeBuildVersion ?? null,
-            screen: '(tabs)/health',
-            eventType: 'sync_started',
-            severity: 'info',
-            sourceId: 'health_connect',
-          });
-        } catch { /* non-fatal */ }
+        addHealthConnectAuditEvent({
+          eventType: 'sync_started',
+          severity: 'info',
+        });
         try {
           await syncData(user.id);
           const snap = buildHealthConnectSyncAuditSnapshot();
@@ -786,25 +775,20 @@ function Body() {
     }
     setBusy('hc-sync');
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const aud = require('../store/audit-event-store');
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const App = require('expo-application');
-      aud?.useAuditEventStore?.getState?.()?.add?.({
-        platform: 'android',
-        appVersion: App?.nativeApplicationVersion ?? null,
-        buildNumber: App?.nativeBuildVersion ?? null,
-        screen: '(tabs)/health',
-        eventType: 'sync_started',
-        severity: 'info',
-        sourceId: 'health_connect',
-      });
-    } catch { /* non-fatal */ }
-    try {
       if (typeof syncData !== 'function') {
+        addHealthConnectAuditEvent({
+          eventType: 'sync_failed',
+          severity: 'error',
+          userVisibleMessage: 'Health Connect sync failed.',
+          developerMessage: 'Sync handler unavailable.',
+        });
         Alert.alert('Health Connect', 'Sync handler unavailable. Reopen the app.');
         return;
       }
+      addHealthConnectAuditEvent({
+        eventType: 'sync_started',
+        severity: 'info',
+      });
       await syncData(user.id);
       const snap = buildHealthConnectSyncAuditSnapshot();
       if (snap.error) {

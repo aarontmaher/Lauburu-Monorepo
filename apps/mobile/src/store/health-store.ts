@@ -772,8 +772,10 @@ export const useHealthStore = create<HealthState>((set, get) => ({
       }
     }
     if (days.length === 0) {
+      const sourceLabel = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
+      const permissionLabel = Platform.OS === 'ios' ? 'HealthKit' : 'Health Connect';
       set({
-        error: 'No health data to persist. Tap Sync Apple Health first, or grant HealthKit access if not yet granted.',
+        error: `No health data to persist. Tap Sync ${sourceLabel} first, or grant ${permissionLabel} access if not yet granted.`,
       });
       return false;
     }

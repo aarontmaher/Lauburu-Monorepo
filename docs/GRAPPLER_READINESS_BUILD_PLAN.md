@@ -17,6 +17,29 @@ passthrough. Each batch ships only what is honest given the
 current data shape; nothing claims more confidence than the data
 supports.
 
+## Architecture gates before user-facing UI
+
+Do not ship another user-facing readiness surface until these gates
+are true in a tester build:
+
+- Source hierarchy is explicit: manual check-ins and training logs are
+  the baseline; Apple Health on iOS and Health Connect on Android are
+  primary verified health sources; WHOOP/Polar direct or export data
+  are optional advanced evidence; CSV exports are historical backfill.
+- Missing health data stays missing. No bucket may substitute a vendor
+  score, inferred HRV, or generic activity shape when the real metric
+  is absent.
+- Confidence is separate from score. Manual-only can produce a
+  provisional low-confidence state, but cannot present as calibrated.
+- Readiness score display is gated behind verified source-state copy,
+  audit metadata, and explicit "provisional" labelling.
+- Apple Health verification is iOS-only. Health Connect verification is
+  Android-only. Cross-platform copy must use the platform source name.
+- WHOOP/Polar data can enrich provenance and confidence, but cannot
+  replace the app-owned readiness calculation.
+- Export/CSV historical backfill can improve baselines, but must be
+  labelled as historical evidence rather than live readiness.
+
 ## Batch A — Available now (no readiness engine work)
 
 Status: ready to ship in v16 / Build 17 alongside the other
