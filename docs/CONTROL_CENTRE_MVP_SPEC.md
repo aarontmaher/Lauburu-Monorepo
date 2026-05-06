@@ -35,6 +35,29 @@ interface ControlCentreSnapshot {
   /** ISO Z. When the Worker assembled this response. */
   generatedAt: string;
 
+  /**
+   * Single-glance connection state for the Status Banner. Always
+   * non-null. Values:
+   *   'connected'  — Worker reachable AND every connector_* read
+   *                  returned a row (`dataSource.source === 'supabase'`
+   *                  on every input route) AND data is fresh
+   *                  (`updatedAt` within the freshness window).
+   *   'stale'      — Worker reachable; some/all reads succeeded
+   *                  but `updatedAt` is older than the freshness
+   *                  window. UI shows an amber chip + "stale Xm ago".
+   *   'fallback'   — Worker reachable but at least one upstream read
+   *                  returned `dataSource.source === 'placeholder'`
+   *                  (table empty / Supabase env unset). UI shows a
+   *                  red chip with the placeholder reason.
+   *   'offline'    — Network fetch failed; phone rendered the last
+   *                  cached snapshot. Set by the mobile client, not
+   *                  the Worker.
+   */
+  mcpConnectionStatus: 'connected' | 'stale' | 'fallback' | 'offline';
+  /** Default freshness window: 10 minutes. Beyond this →
+   *  mcpConnectionStatus = 'stale'. */
+  freshnessWindowMs: number;
+
   /** What is currently being worked on. */
   priority: ControlCentreCard;
   /** What's stopping the priority. Null when nothing blocks. */
@@ -300,6 +323,9 @@ sections are read-only in the MVP (no taps mutate Supabase yet
 ```
 ┌────────────────────────────────────────┐
 │ [Status Banner]                        │
+│                                        │
+│  MCP: [connected | stale | fallback |  │
+│        offline] · last update Xm ago   │
 │                                        │
 │  PRIORITY                              │
 │   <priority.text>                      │

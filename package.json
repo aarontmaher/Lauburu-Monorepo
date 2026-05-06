@@ -9,7 +9,8 @@
   "scripts": {
     "bridge:snapshot": "./scripts/bridge-snapshot-lanes.sh",
     "bridge:verify": "cd chat-app && npx tsx src/server/scripts/test-bridge-artifacts.ts",
-    "mcp:test:live": "cd chat-app && npx tsx src/server/scripts/test-mcp-worker-live.ts"
+    "mcp:test:live": "cd chat-app && npx tsx src/server/scripts/test-mcp-worker-live.ts",
+    "mcp:test:public-redaction": "cd cloudflare-worker && npx tsx test/test-mcp-public-redaction.ts"
   },
   "dependencies": {
     "@kingstinct/react-native-healthkit": "^13.4.0",
