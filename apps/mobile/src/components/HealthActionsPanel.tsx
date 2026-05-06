@@ -564,6 +564,224 @@ function Body() {
     } finally { setBusy(null); }
   }, [stampTap, syncData, user?.id, bumpIdentity]);
 
+  // ── Android Health Connect handlers ────────────────────────────────
+  // These mirror the Apple Health handlers above but route through the
+  // platform-aware `useHealthStore.requestPermissions()` /
+  // `syncData()` paths (which dispatch through health-factory to
+  // health.android.ts → react-native-health-connect). They were
+  // previously missing — the appleRow on Android was firing
+  // `onConnectAppleHealth`, which short-circuits with "iOS only" and
+  // showed Apple-Health-branded alerts on an Android device. Each
+  // handler fires audit events so Admin/Dev → Audit can confirm the
+  // flow ran end-to-end on a real device.
+  const onConnectHealthConnect = useCallback(async () => {
+    if (Platform.OS !== 'android') {
+      Alert.alert('Health Connect', 'Android only.');
+      return;
+    }
+    setBusy('hc-connect');
+    try {
+      // Audit: permission_requested.
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const aud = require('../store/audit-event-store');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const App = require('expo-application');
+        aud?.useAuditEventStore?.getState?.()?.add?.({
+          platform: 'android',
+          appVersion: App?.nativeApplicationVersion ?? null,
+          buildNumber: App?.nativeBuildVersion ?? null,
+          screen: '(tabs)/health',
+          eventType: 'permission_requested',
+          severity: 'info',
+          sourceId: 'health_connect',
+          userVisibleMessage: 'Requesting Health Connect permissions.',
+        });
+      } catch { /* non-fatal */ }
+      if (typeof requestPermissions !== 'function') {
+        Alert.alert('Health Connect', 'Permission handler unavailable. Reopen the app.');
+        return;
+      }
+      await requestPermissions();
+      // Read back the resulting permission state so we can route to a
+      // granted vs denied audit event without a second permission probe.
+      const st: any = useHealthStore.getState();
+      const perms = st?.permissions?.permissions ?? {};
+      const granted = Object.values(perms).some((v) => v === 'authorized');
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const aud = require('../store/audit-event-store');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const App = require('expo-application');
+        aud?.useAuditEventStore?.getState?.()?.add?.({
+          platform: 'android',
+          appVersion: App?.nativeApplicationVersion ?? null,
+          buildNumber: App?.nativeBuildVersion ?? null,
+          screen: '(tabs)/health',
+          eventType: granted ? 'permission_granted' : 'permission_denied',
+          severity: granted ? 'info' : 'warning',
+          sourceId: 'health_connect',
+          permissionState: granted ? 'authorized' : 'denied',
+          userVisibleMessage: granted
+            ? 'Health Connect permissions granted (at least one metric).'
+            : 'Health Connect permissions not granted.',
+        });
+      } catch { /* non-fatal */ }
+      // If granted and signed in, run the standard sync immediately so
+      // the user sees data flow without a second tap.
+      if (granted && user?.id && typeof syncData === 'function') {
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          const aud = require('../store/audit-event-store');
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          const App = require('expo-application');
+          aud?.useAuditEventStore?.getState?.()?.add?.({
+            platform: 'android',
+            appVersion: App?.nativeApplicationVersion ?? null,
+            buildNumber: App?.nativeBuildVersion ?? null,
+            screen: '(tabs)/health',
+            eventType: 'sync_started',
+            severity: 'info',
+            sourceId: 'health_connect',
+          });
+        } catch { /* non-fatal */ }
+        try {
+          await syncData(user.id);
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            const aud = require('../store/audit-event-store');
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            const App = require('expo-application');
+            aud?.useAuditEventStore?.getState?.()?.add?.({
+              platform: 'android',
+              appVersion: App?.nativeApplicationVersion ?? null,
+              buildNumber: App?.nativeBuildVersion ?? null,
+              screen: '(tabs)/health',
+              eventType: 'sync_succeeded',
+              severity: 'info',
+              sourceId: 'health_connect',
+            });
+          } catch { /* non-fatal */ }
+        } catch (e: any) {
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            const aud = require('../store/audit-event-store');
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            const App = require('expo-application');
+            aud?.useAuditEventStore?.getState?.()?.add?.({
+              platform: 'android',
+              appVersion: App?.nativeApplicationVersion ?? null,
+              buildNumber: App?.nativeBuildVersion ?? null,
+              screen: '(tabs)/health',
+              eventType: 'sync_failed',
+              severity: 'error',
+              sourceId: 'health_connect',
+              developerMessage: e?.message ?? 'unknown',
+            });
+          } catch { /* non-fatal */ }
+        }
+      }
+      Alert.alert(
+        'Health Connect',
+        granted
+          ? user?.id
+            ? 'Permissions granted. Synced your latest metrics.'
+            : 'Permissions granted. Sign in to save synced data to your account.'
+          : 'Permissions not granted. Open Health Connect → App permissions → Lauburu and grant the metrics you want, then tap Sync.',
+      );
+    } catch (e: any) {
+      Alert.alert('Health Connect', `Error: ${e?.message ?? 'unknown'}`);
+    } finally {
+      setBusy(null);
+    }
+  }, [requestPermissions, syncData, user?.id]);
+
+  const onSyncHealthConnect = useCallback(async () => {
+    if (Platform.OS !== 'android') {
+      Alert.alert('Health Connect', 'Android only.');
+      return;
+    }
+    if (!user?.id) {
+      Alert.alert('Health Connect', 'Sign in first.');
+      return;
+    }
+    setBusy('hc-sync');
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const aud = require('../store/audit-event-store');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const App = require('expo-application');
+      aud?.useAuditEventStore?.getState?.()?.add?.({
+        platform: 'android',
+        appVersion: App?.nativeApplicationVersion ?? null,
+        buildNumber: App?.nativeBuildVersion ?? null,
+        screen: '(tabs)/health',
+        eventType: 'sync_started',
+        severity: 'info',
+        sourceId: 'health_connect',
+      });
+    } catch { /* non-fatal */ }
+    try {
+      if (typeof syncData !== 'function') {
+        Alert.alert('Health Connect', 'Sync handler unavailable. Reopen the app.');
+        return;
+      }
+      await syncData(user.id);
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const aud = require('../store/audit-event-store');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const App = require('expo-application');
+        aud?.useAuditEventStore?.getState?.()?.add?.({
+          platform: 'android',
+          appVersion: App?.nativeApplicationVersion ?? null,
+          buildNumber: App?.nativeBuildVersion ?? null,
+          screen: '(tabs)/health',
+          eventType: 'sync_succeeded',
+          severity: 'info',
+          sourceId: 'health_connect',
+        });
+      } catch { /* non-fatal */ }
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const hs = require('../store/health-store');
+        const store = hs?.useHealthStore?.getState?.();
+        const diag = store?.lastSyncDiagnostics;
+        const err = store?.error;
+        if (err) {
+          Alert.alert('Health Connect', `Sync error: ${err}`);
+        } else if (diag) {
+          const counts = diag.recordCounts || {};
+          const total = Object.values(counts).reduce((a: number, b: any) => a + (typeof b === 'number' ? b : 0), 0);
+          Alert.alert('Health Connect',
+            total > 0
+              ? `Sync ok. ${diag.normalizedDays} days · ${total} samples across ${Object.keys(counts).length} metrics.`
+              : 'Connected — no recent data. Open Health Connect → App permissions → Lauburu to enable more metrics.');
+        }
+      } catch { /* non-fatal */ }
+    } catch (e: any) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const aud = require('../store/audit-event-store');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const App = require('expo-application');
+        aud?.useAuditEventStore?.getState?.()?.add?.({
+          platform: 'android',
+          appVersion: App?.nativeApplicationVersion ?? null,
+          buildNumber: App?.nativeBuildVersion ?? null,
+          screen: '(tabs)/health',
+          eventType: 'sync_failed',
+          severity: 'error',
+          sourceId: 'health_connect',
+          developerMessage: e?.message ?? 'unknown',
+        });
+      } catch { /* non-fatal */ }
+      Alert.alert('Health Connect', `Sync error: ${e?.message ?? 'unknown'}`);
+    } finally {
+      setBusy(null);
+    }
+  }, [syncData, user?.id]);
+
   const onCheckWhoopStatus = useCallback(async () => {
     stampTap('whoopStatusAt');
     if (!cfg) {
@@ -798,6 +1016,8 @@ function Body() {
         onConnectAppleHealth={onConnectAppleHealth}
         onSyncAppleHealth={onSyncAppleHealth}
         onBackfillAppleHealth={onBackfillAppleHealth}
+        onConnectHealthConnect={onConnectHealthConnect}
+        onSyncHealthConnect={onSyncHealthConnect}
         onCheckWhoopStatus={onCheckWhoopStatus}
         onConnectWhoop={onConnectWhoop}
         onSyncWhoop={onSyncWhoop}
@@ -1191,6 +1411,10 @@ interface SheetProps {
   onConnectAppleHealth: () => void | Promise<void>;
   onSyncAppleHealth: () => void | Promise<void>;
   onBackfillAppleHealth: () => void | Promise<void>;
+  // Android Health Connect handlers — distinct from the iOS Apple
+  // Health handlers above. Sheet picks per-platform inside appleRow.
+  onConnectHealthConnect: () => void | Promise<void>;
+  onSyncHealthConnect: () => void | Promise<void>;
   onCheckWhoopStatus: () => void | Promise<void>;
   onConnectWhoop: () => void | Promise<void>;
   onSyncWhoop: () => void | Promise<void>;
@@ -1204,6 +1428,7 @@ function HealthSourceSheet(props: SheetProps) {
     appleHealthConnected, healthDays, healthLastSyncAt,
     whoopState, whoop, isWhoopConnected,
     onConnectAppleHealth, onSyncAppleHealth, onBackfillAppleHealth,
+    onConnectHealthConnect, onSyncHealthConnect,
     onCheckWhoopStatus, onConnectWhoop, onSyncWhoop, onBackfillWhoop, onDisconnectWhoop,
   } = props;
 
@@ -1312,14 +1537,22 @@ function HealthSourceSheet(props: SheetProps) {
   const attention: Array<React.ReactElement> = [];
   const available: Array<React.ReactElement> = [];
 
+  // Platform-aware native health row. iOS routes through the
+  // Apple-Health-specific handlers (which call HealthKit native);
+  // Android routes through the Health Connect handlers added above
+  // (which call react-native-health-connect via the platform-aware
+  // useHealthStore.requestPermissions / syncData paths). Without
+  // this split, an Android tap on "Connect" was firing the iOS
+  // handler and showing "iOS only" alerts.
+  const isIos = Platform.OS === 'ios';
   const appleRow = (
     <SourceSheetRow
       key="apple"
-      name={Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect'}
+      name={isIos ? 'Apple Health' : 'Health Connect'}
       status={appleHealthConnected ? 'Connected' : 'Not connected'}
       statusColor={appleHealthConnected ? '#4ade80' : '#888'}
       meta={appleHealthMeta}
-      actions={appleHealthConnected ? [
+      actions={appleHealthConnected ? (isIos ? [
         {
           label: busy === 'apple-sync' ? 'Syncing…' : 'Sync',
           onPress: onSyncAppleHealth,
@@ -1339,9 +1572,25 @@ function HealthSourceSheet(props: SheetProps) {
           kind: 'secondary',
         },
       ] : [
+        // Android — Health Connect connected actions.
         {
-          label: busy === 'apple-connect' ? 'Connecting…' : 'Connect',
-          onPress: onConnectAppleHealth,
+          label: busy === 'hc-sync' ? 'Syncing…' : 'Sync',
+          onPress: onSyncHealthConnect,
+          disabled: busy != null,
+          kind: 'primary',
+        },
+        {
+          label: 'Open Health Connect settings',
+          onPress: () => { Linking.openSettings().catch(() => { /* no-op */ }); },
+          disabled: busy != null,
+          kind: 'secondary',
+        },
+      ]) : [
+        {
+          label: isIos
+            ? (busy === 'apple-connect' ? 'Connecting…' : 'Connect')
+            : (busy === 'hc-connect' ? 'Connecting…' : 'Connect'),
+          onPress: isIos ? onConnectAppleHealth : onConnectHealthConnect,
           disabled: busy != null,
           kind: 'primary',
         },

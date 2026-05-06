@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -899,31 +899,53 @@ export default function HealthScreen() {
   // device (vs a tier-store regression that hid it again). Local-
   // only, no raw health values, no network call. Capped at 200 in
   // the store so the buffer never grows unbounded.
-  // Fires once on first ready render — depends on `nativeAvailable`
-  // settling to a definitive boolean so the snapshot reflects the
-  // device's true probe result.
+  //
+  // Platform-specific availability source:
+  //   - iOS: `nativeAvailable` (the live HealthKit probe via
+  //     refreshNativeAvailability) is the right signal.
+  //   - Android: `nativeAvailable` stays null because the iOS-only
+  //     refresh path doesn't run; instead we read `permissions?.
+  //     available` from the platform-aware health-store, which
+  //     reflects Health Connect's getSdkStatus() probe.
+  // Use a ref to fire-once per platform-availability state so the
+  // store doesn't fill with duplicate events on every re-render.
+  const auditFiredRef = useRef(false);
   useEffect(() => {
-    if (nativeAvailable == null) return;
-    const platform = Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'unknown';
-    const sourceId = Platform.OS === 'ios' ? 'apple_health' : Platform.OS === 'android' ? 'health_connect' : null;
+    if (auditFiredRef.current) return;
+    let availability: boolean | null = null;
+    if (Platform.OS === 'ios') {
+      // iOS: wait for the live native probe to settle.
+      if (nativeAvailable == null) return;
+      availability = nativeAvailable;
+    } else if (Platform.OS === 'android') {
+      // Android: read from the health-store permissions snapshot. The
+      // store calls health.android.ts isAvailable() during
+      // checkPermissions() (which runs in the same useEffect block
+      // above). When `permissions` is non-null, we have a definitive
+      // probe result; before that, wait.
+      if (permissions == null) return;
+      availability = !!permissions.available;
+    } else {
+      return;
+    }
+    auditFiredRef.current = true;
+    const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+    const sourceId = Platform.OS === 'ios' ? 'apple_health' : 'health_connect';
+    const sourceLabel = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
     void useAuditEventStore.getState().add({
       platform,
       appVersion: Application.nativeApplicationVersion ?? null,
       buildNumber: Application.nativeBuildVersion ?? null,
       screen: '(tabs)/health',
-      eventType: nativeAvailable ? 'health_source_visible' : 'health_source_missing',
-      severity: nativeAvailable ? 'info' : 'warning',
+      eventType: availability ? 'health_source_visible' : 'health_source_missing',
+      severity: availability ? 'info' : 'warning',
       sourceId,
-      sourceState: nativeAvailable ? 'native_available' : 'native_unavailable',
-      userVisibleMessage: nativeAvailable
-        ? `${Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect'} card is visible on this device.`
-        : `${Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect'} not available on this device.`,
+      sourceState: availability ? 'native_available' : 'native_unavailable',
+      userVisibleMessage: availability
+        ? `${sourceLabel} card is visible on this device.`
+        : `${sourceLabel} not available on this device.`,
     });
-    // Intentional: capture only on the first definitive nativeAvailable
-    // value. Toggling it later (extremely rare on a real device) is
-    // a separate event class we'll wire when the rest of the capture
-    // sites land.
-  }, [nativeAvailable]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [nativeAvailable, permissions]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const platformName = Platform.OS === 'ios' ? 'Apple HealthKit' : 'Health Connect';
   // isAvailable prefers the live native probe on iOS — if HealthKit is
