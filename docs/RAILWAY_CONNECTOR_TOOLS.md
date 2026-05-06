@@ -284,12 +284,17 @@ npx tsx src/server/scripts/test-mcp-routes.ts
 # Expected stdout: "MCP route schema tests passed."
 ```
 
-### Status (2026-05-06, HEAD `b6fe1ad`)
+### Status (2026-05-06)
 
 - **Local schema tests:** PASS (run via `npx tsx`).
-- **Live on Railway:** **NOT YET** — `b6fe1ad` is on `main`; the
-  next Railway deploy of `chat-app` is needed before the curls
-  above resolve to the new routes.
+- **Live on Railway:** **BLOCKED** — Railway service has been in
+  `FAILED` state since 2026-04-28. The Cloudflare Worker is the
+  live MCP surface during the suspension; see
+  `docs/CLOUDFLARE_MIGRATION.md` § 11.6 for the URL and curls.
+- **Live on Cloudflare:** **YES** —
+  `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/api/*`
+  serves the four routes admin-token gated. Same payload shapes
+  as documented above.
 - **Sanitization:** routes return static strings only; no
   user-content yet, so the redactor is not exercised. Once the
   tmux bridge populates real lane summaries, the route layer

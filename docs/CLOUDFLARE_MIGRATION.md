@@ -214,14 +214,76 @@ Railway routes never depended on the Worker; nothing breaks.
 No production behaviour change. Mobile app and Railway
 unchanged.
 
+## 11.6 Stage 2 live (2026-05-06)
+
+Cloudflare Worker `lauburu-mcp-preview` is **live** at
+`https://lauburu-mcp-preview.lauburu-aaron.workers.dev/`. This is
+the workers.dev preview URL — production cutover (Stage 5) still
+gated on every condition in §14.
+
+Verified curls (admin-token gated, returns 200 with the real
+`ATHLETE_MEMORY_API_TOKEN` from Mac Keychain — never paste in
+chat):
+
+```sh
+export MCP_WORKER_URL="https://lauburu-mcp-preview.lauburu-aaron.workers.dev"
+
+curl -sS -o /dev/null -w '%{http_code}\n' "$MCP_WORKER_URL/status"
+# Expected: 200
+
+curl -sS -o /dev/null -w '%{http_code}\n' "$MCP_WORKER_URL/api/work_status"
+# Expected: 403 (no token)
+
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H "x-athlete-memory-token: $ATHLETE_MEMORY_TOKEN" \
+  "$MCP_WORKER_URL/api/work_status"
+# Expected: 200
+
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H "x-athlete-memory-token: $ATHLETE_MEMORY_TOKEN" \
+  "$MCP_WORKER_URL/api/coder_lanes"
+# Expected: 200
+
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H "x-athlete-memory-token: $ATHLETE_MEMORY_TOKEN" \
+  "$MCP_WORKER_URL/api/build_status"
+# Expected: 200
+
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H "x-athlete-memory-token: $ATHLETE_MEMORY_TOKEN" \
+  "$MCP_WORKER_URL/api/handoff"
+# Expected: 200
+
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H "x-athlete-memory-token: not-the-real-token" \
+  "$MCP_WORKER_URL/api/work_status"
+# Expected: 403
+```
+
+Setup that landed in this batch:
+
+- Account-wide `workers.dev` subdomain registered: `lauburu-aaron`.
+- Worker `lauburu-mcp-preview` re-deployed (version
+  `03e8f97f-8563-4ea8-ac51-3774f3049eee`) and its `subdomain`
+  resource enabled (`enabled: true, previews_enabled: true`).
+- Secret `ATHLETE_MEMORY_API_TOKEN` set via `wrangler secret put`
+  using the same value the mobile app and Railway backend share.
+
+Payloads returned: provisional placeholders that match the
+schema in `chat-app/src/server/types/connector.ts`. Real
+data lands when the tmux bridge producer ships per
+`docs/CONNECTOR_SANITIZATION_RULES.md` § Lane-status detection.
+
 ## 12. Live now vs repo-only
 
 | Component | Status |
 |---|---|
-| Cloudflare Worker scaffold (`cloudflare-worker/`) | repo-only |
-| `wrangler.toml` config | repo-only |
+| Cloudflare Worker scaffold (`cloudflare-worker/`) | LIVE — `lauburu-mcp-preview` |
+| `wrangler.toml` config | LIVE — preview env deployed |
 | Local dev command | runs from repo (no deploy needed) |
-| Worker preview deploy | not deployed |
+| Worker preview deploy | LIVE — `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/` |
+| Worker secret `ATHLETE_MEMORY_API_TOKEN` | LIVE (set via `wrangler secret put`) |
+| MCP routes (`/api/work_status`, `/api/coder_lanes`, `/api/build_status`, `/api/handoff`) | LIVE — admin-token gated |
 | Supabase reads from Worker | not wired |
 | Mobile app pointing at Worker | not enabled (env var unset) |
 | Railway backend (`chat-app/`) | LIVE — unchanged |
@@ -235,9 +297,9 @@ parallel scaffold, not a replacement.
 
 | Stage | What | Trigger |
 |---|---|---|
-| Stage 0 — scaffold | Worker code + wrangler config + this doc | DONE this batch |
-| Stage 1 — local dev | `wrangler dev` works against the scaffold | DONE this batch |
-| Stage 2 — preview deploy | `*.workers.dev` URL responds to the public + admin endpoints | when Aaron has Cloudflare account + login |
+| Stage 0 — scaffold | Worker code + wrangler config + this doc | DONE |
+| Stage 1 — local dev | `wrangler dev` works against the scaffold | DONE |
+| Stage 2 — preview deploy | `*.workers.dev` URL responds to the public + admin endpoints | DONE 2026-05-06 — see §11.6 |
 | Stage 3 — Supabase reads | Worker reads owner-state from Supabase via the service-role key | after Stage 2 verified |
 | Stage 4 — mobile env switch | `EXPO_PUBLIC_MCP_BASE_URL` set in EAS env; mobile Admin/Dev MCP probe hits the Worker | after Stage 3 has 1+ week of green polling |
 | Stage 5 — full cutover | `AI_PUBLIC_BASE` flips to the Worker URL; Railway public endpoints turn off | after Stage 4 has 1+ month of green; explicit owner approval per doc commit |

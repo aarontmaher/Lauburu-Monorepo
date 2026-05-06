@@ -100,9 +100,9 @@ function buildWorkStatus(env: Env) {
     schemaVersion: CONNECTOR_SCHEMA_VERSION,
     generatedAt,
     currentPriority:
-      'Cloudflare Worker is now the live MCP connector surface (Railway suspended).',
+      'Cloudflare Worker is the live MCP connector surface; secret installed; routes admin-token gated.',
     currentBlocker:
-      'Tmux bridge producer not operational; coder_lanes data is provisional placeholder.',
+      'Tmux bridge producer not operational; coder_lanes / build_status / handoff payloads are provisional placeholders.',
     liveStatus: {
       androidVersionCode: 17,
       iosBuildNumber: '18',
@@ -119,9 +119,8 @@ function buildWorkStatus(env: Env) {
       lastCommitAt: generatedAt,
       lastCommitMessage: 'unknown until local bridge populates this field',
     },
-    nextAction: env.RAILWAY_FALLBACK_URL
-      ? 'Resolve Railway suspension or accept Cloudflare cutover. Bridge producer is the next safe code change.'
-      : 'Bridge producer is the next safe code change.',
+    nextAction:
+      'Stand up the tmux bridge producer to replace the placeholder coder_lanes / handoff payloads with live data.',
   };
 }
 
@@ -197,9 +196,8 @@ function buildHandoff() {
     latestClaudePrompt: 'CLAUDE-CLOUDFLARE-CUTOVER-MCP-ROUTES-01',
     latestCodexPrompt: 'CODEX-BACKEND-API-AI-IMPLEMENTATION-01',
     manualSteps: [
-      'Aaron: resolve Railway suspension OR accept Cloudflare cutover.',
-      'Aaron: set ATHLETE_MEMORY_API_TOKEN secret on the Worker via wrangler secret put.',
-      'Aaron: keep build dispatch owner-tap only.',
+      'Aaron: decide whether to resolve Railway suspension or stay on Cloudflare permanently.',
+      'Aaron: keep build dispatch owner-tap only — connector cannot tap.',
     ],
     doNotTouch: [
       'grappling.opml',
