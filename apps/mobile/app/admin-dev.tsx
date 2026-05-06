@@ -157,6 +157,16 @@ function compactGitCommit(value: unknown): string {
   return trimmed.length > 12 ? trimmed.slice(0, 12) : trimmed;
 }
 
+function connectorFreshnessLabel(checkedAt: string | null | undefined): string {
+  if (!checkedAt) return 'not checked';
+  const checkedMs = new Date(checkedAt).getTime();
+  if (!Number.isFinite(checkedMs)) return 'checked time unknown';
+  const ageMinutes = Math.max(0, Math.floor((Date.now() - checkedMs) / 60_000));
+  if (ageMinutes >= 10) return `stale · ${ageMinutes}m old`;
+  if (ageMinutes >= 1) return `fresh · ${ageMinutes}m old`;
+  return 'fresh · just now';
+}
+
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
  * `useOwnerWorkflowStore` context so changes to priority / blocker
@@ -328,7 +338,7 @@ export default function AdminDevScreen() {
   const nowNextAction = connectorWork?.nextAction ?? NEXT_ACTION;
   const mcpStatus = isAdmin
     ? connectorSnapshot
-      ? `MCP ${connectorSnapshot.source === 'mcp' ? 'connected' : 'fallback'} · ${new Date(connectorSnapshot.checkedAt).toLocaleTimeString()}`
+      ? `MCP ${connectorSnapshot.source === 'mcp' ? 'connected' : 'fallback'} · ${connectorFreshnessLabel(connectorSnapshot.checkedAt)}`
       : refreshing
         ? 'MCP refreshing…'
         : 'MCP not connected'
@@ -859,6 +869,14 @@ function ConnectorStatusSection({
   const latestTerminal = terminalEntries[0] ?? null;
   const claudeLane = lanes.find((lane) => lane.laneId.toLowerCase().includes('claude')) ?? null;
   const codexLane = lanes.find((lane) => lane.laneId.toLowerCase().includes('codex')) ?? null;
+  const mcpState = snapshot
+    ? `${snapshot.source === 'mcp' ? 'MCP connected' : 'Backend fallback'} · ${connectorFreshnessLabel(snapshot.checkedAt)}`
+    : refreshing
+      ? 'MCP refreshing…'
+      : 'MCP not connected';
+  const summaryLine = snapshot
+    ? `${lanes.length} lanes · ${terminalEntries.length} terminal summaries · ${handoff ? 'handoff ready' : 'no handoff'}`
+    : 'Set EXPO_PUBLIC_MCP_BASE_URL + admin token, then refresh.';
   const handoffSummary = snapshot ? [
     'MOBILE_CONTROL_CENTRE_HANDOFF',
     `Checked: ${snapshot.checkedAt}`,
@@ -881,6 +899,11 @@ function ConnectorStatusSection({
       <Text style={styles.note}>
         Owner-only connector snapshot. No raw terminal logs, no shell execution, no secrets. Terminal rows are compact summaries only.
       </Text>
+      <View style={styles.chipBlock}>
+        <Text style={styles.chipLabel}>MCP status</Text>
+        <Text style={styles.chipBody}>{mcpState}</Text>
+        <Text style={styles.note}>{summaryLine}</Text>
+      </View>
       <Pressable style={[styles.btn, refreshing && { opacity: 0.5 }]} disabled={refreshing} onPress={onRefresh}>
         <Text style={styles.btnText}>{refreshing ? 'Refreshing…' : 'Refresh connector status'}</Text>
       </Pressable>
@@ -893,6 +916,23 @@ function ConnectorStatusSection({
           label="Status source"
           value={snapshot.source === 'mcp' ? 'Cloudflare MCP / repo-only until verified' : 'Backend fallback / repo-only'}
         />
+      )}
+      {snapshot && (
+        <View style={{ gap: 6 }}>
+          <Text style={styles.rowLabel}>Phone copy prompts</Text>
+          <SelectableCopyButton
+            label="Copy next Claude prompt"
+            body={handoff?.latestClaudePrompt ?? claudeLane?.nextPrompt ?? 'No Claude prompt available yet.'}
+          />
+          <SelectableCopyButton
+            label="Copy next Codex prompt"
+            body={handoff?.latestCodexPrompt ?? codexLane?.nextPrompt ?? 'No Codex prompt available yet.'}
+          />
+          <SelectableCopyButton
+            label="Copy handoff summary"
+            body={handoffSummary ?? 'Connector snapshot is not available yet.'}
+          />
+        </View>
       )}
       {work && (
         <>
@@ -940,23 +980,6 @@ function ConnectorStatusSection({
             <Row key={`${idx}-${step}`} label={`Manual ${idx + 1}`} value={step} />
           ))}
         </>
-      )}
-      {snapshot && (
-        <View style={{ gap: 6 }}>
-          <Text style={styles.rowLabel}>Phone copy prompts</Text>
-          <SelectableCopyButton
-            label="Copy next Claude prompt"
-            body={handoff?.latestClaudePrompt ?? claudeLane?.nextPrompt ?? 'No Claude prompt available yet.'}
-          />
-          <SelectableCopyButton
-            label="Copy next Codex prompt"
-            body={handoff?.latestCodexPrompt ?? codexLane?.nextPrompt ?? 'No Codex prompt available yet.'}
-          />
-          <SelectableCopyButton
-            label="Copy handoff summary"
-            body={handoffSummary ?? 'Connector snapshot is not available yet.'}
-          />
-        </View>
       )}
       {latestTerminal && (
         <View style={[styles.row, { flexDirection: 'column', alignItems: 'flex-start', gap: 4 }]}>
