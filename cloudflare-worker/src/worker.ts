@@ -40,6 +40,7 @@ import {
   getSupabaseAdapter,
   type ConnectorRouteKey,
 } from './supabase';
+import { handleMcp } from './mcp';
 
 interface ConnectorMeta {
   generatedAt: string;
@@ -330,6 +331,14 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '');
 
+    // ── /mcp — JSON-RPC 2.0 MCP server (Streamable HTTP) ───────────────
+    // Read-only tool surface for ChatGPT / Claude.ai connectors.
+    // Implementation in ./mcp.ts. Auth via x-athlete-memory-token OR
+    // Authorization: Bearer <token>.
+    if (path === '/mcp') {
+      return handleMcp(request, env);
+    }
+
     // ── Public health check (no auth) ──────────────────────────────────
     if (request.method === 'GET' && (path === '' || path === '/' || path === '/health')) {
       return jsonResponse({
@@ -347,6 +356,8 @@ export default {
         endpoints: [
           'GET /health',
           'GET /status',
+          'GET /mcp (server info; POST for JSON-RPC 2.0)',
+          'POST /mcp (MCP protocol — initialize / tools/list / tools/call)',
           'GET /supabase/health',
           'GET /mcp/health',
           'GET /app-dev-centre/status',

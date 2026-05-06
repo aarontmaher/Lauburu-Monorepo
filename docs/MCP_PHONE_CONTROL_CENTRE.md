@@ -96,6 +96,74 @@ The same admin token used today
 `x-athlete-memory-token` header. No new secret needed; the same
 value is also the Worker's `ATHLETE_MEMORY_API_TOKEN` secret.
 
+## ChatGPT custom MCP connector
+
+The Worker exposes a **real MCP protocol endpoint** at `POST /mcp`,
+in addition to the REST routes under `/api/*`. Use this in
+ChatGPT's "Connectors" UI (or any MCP-compatible client).
+
+**MCP Server URL:**
+```
+https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp
+```
+
+**Authentication (any one of):**
+- `x-athlete-memory-token: <ATHLETE_MEMORY_API_TOKEN>` (existing custom header)
+- `Authorization: Bearer <ATHLETE_MEMORY_API_TOKEN>` (MCP-standard form)
+
+The token value is the same one stored in Mac Keychain as
+`ATHLETE_MEMORY_API_TOKEN` and bundled into the mobile app as
+`EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN`. ChatGPT's connector UI may
+prefer "API Key" or "Bearer" — pick whichever the form offers;
+both hit the same gate.
+
+**Transport:** Streamable HTTP, JSON-RPC 2.0. Returns plain
+`application/json` (no SSE in this minimal build).
+
+**Server info:** `name: lauburu-mcp`, `version: 0.1.0`,
+`protocolVersion: 2025-03-26`.
+
+**Tools (read-only; no writes, no terminal control, no shell):**
+
+| Tool | Returns |
+|---|---|
+| `get_work_status` | Current priority / blocker / live build state / repo state / next action. |
+| `get_coder_lanes` | One row per active lane (claude / codex / etc) with status, prompts, summary, dirtyFiles. |
+| `get_build_status` | Latest paired build snapshot — Android + iOS release rows. |
+| `get_handoff` | Latest owner handoff: prompts, manualSteps, doNotTouch, safeToBuild flag. |
+| `get_terminal_summary` | Recent mark-agent-done log entries (≤50, most recent first). |
+
+Each tool returns its data as a JSON-stringified `text` content
+block per the MCP spec (`{ content: [{ type: 'text', text: '...' }], isError: false }`).
+The text body is the same shape the corresponding `GET /api/<route>`
+endpoint returns, including the `dataSource` discriminator.
+
+**Quick test (curl):**
+
+```sh
+export TOKEN="<ATHLETE_MEMORY_API_TOKEN from Keychain>"
+export MCP="https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp"
+
+# Server info (no auth — public; just lists the tool surface):
+curl -sS "$MCP" | jq
+
+# initialize:
+curl -sS -X POST -H "Authorization: Bearer $TOKEN" -H "content-type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"curl","version":"0"}}}' "$MCP" | jq
+
+# list tools:
+curl -sS -X POST -H "Authorization: Bearer $TOKEN" -H "content-type: application/json" \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' "$MCP" | jq
+
+# call a tool:
+curl -sS -X POST -H "Authorization: Bearer $TOKEN" -H "content-type: application/json" \
+  -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_coder_lanes","arguments":{}}}' "$MCP" | jq
+```
+
+`POST /mcp` without a valid token returns HTTP 403 with a
+JSON-RPC error envelope. Any path other than `/mcp` and the
+explicit `/api/*` allowlist returns 404.
+
 ## Quick reference for ChatGPT / HTTP consumers
 
 The screenshot-free read path is **live**. Any HTTP client that
