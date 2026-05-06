@@ -113,21 +113,43 @@ Each row carries:
 - **inputs**: none. Lane → tmux session map is hardcoded:
   - `lauburu` → `claude`
   - `codex-lauburu` → `codex`
-- **effect**: writes
-  `data/agent-status/lanes/coder_lanes.json` (CoderLanes
-  payload) and per-lane snapshots
-  `data/agent-status/lanes/<laneId>.json` (CoderLaneRow). All
-  string fields pass through the two-pass redactor in
+- **effect**: writes the four connector artifacts under
+  `data/agent-status/lanes/` (atomic-replace via `.tmp` rename):
+  - `coder_lanes.json` — `CoderLanes` aggregate payload.
+  - `<laneId>.json` (one per captured lane) — `CoderLaneRow`.
+  - `terminal_summary.json` — `TerminalSummary` payload, lifted
+    from `data/agent-status/<agent>.json` rows that
+    `MARK_AGENT_DONE` produces (cap 50 entries, most recent
+    first). Empty array when no `mark-agent-done.sh` entries
+    exist yet.
+  - `handoff.json` — `Handoff` payload. The bridge fills
+    `latestClaudePrompt` / `latestCodexPrompt` from the
+    captured panes; owner-only fields (`manualSteps`,
+    `doNotTouch`, `safeToBuild`) stay empty / `false` —
+    the bridge MUST NOT fabricate them, since `safeToBuild`
+    gates the in-app Dispatch button.
+  All string fields pass through the two-pass redactor in
   `docs/CONNECTOR_SANITIZATION_RULES.md`. Path entries pass
   through the file-path masking rules; secret-shaped basenames
   are dropped, host-absolute paths are replaced with
   `<host_path>`. Long fields are truncated at word boundaries
-  (`lastSummary` ≤ 1200 chars).
-- **audit**: the JSON files ARE the audit row; future bridge
-  writers (planned `POST /admin/lane-status` route per
-  `chat-app/src/server/types/connector.ts`
-  `LaneStatusWritePayload`) will pick these up. No event log
-  yet.
+  (`lastSummary` ≤ 1200 chars; `verification` / `nextAction`
+  ≤ 240 chars).
+- **schema test**:
+  `cd chat-app && npx tsx src/server/scripts/test-bridge-artifacts.ts`
+  re-validates every artifact against
+  `chat-app/src/server/types/connector.ts`. Run after each
+  bridge invocation; exits non-zero on any shape drift.
+- **audit**: the JSON files ARE the audit row. The Cloudflare
+  Worker's `/api/coder_lanes` etc routes will switch from the
+  current placeholder + `dataSource.schemaRequired` payload to
+  reading these via Supabase once the
+  `connector_*` tables in
+  `docs/CONNECTOR_SUPABASE_SCHEMA.md` are created and the
+  `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` secrets are set.
+  Until then, the artifacts are local-read only — there is no
+  live Worker route serving them, and that's the documented
+  Stage 1 fallback per the prompt.
 - **safety**:
   - Subprocess calls are fixed-argv only (`tmux`, `git`).
     No `shell=True`, no `eval`, nothing from pane content

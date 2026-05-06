@@ -204,6 +204,35 @@ curl -sS -H "x-athlete-memory-token: $ATHLETE_MEMORY_TOKEN" \
 # }
 ```
 
+## Local artifact fallback (Stage 1)
+
+Until the tables above exist and the secrets are set, the
+Cloudflare Worker connector routes return placeholder payloads
+with the `dataSource.schemaRequired` field. The local tmux bridge
+(`scripts/bridge-snapshot-lanes.sh`) writes the same
+schema-compliant payloads to disk so ChatGPT / Codex / Claude
+can read them today via the local filesystem:
+
+```
+data/agent-status/lanes/coder_lanes.json       # CoderLanes
+data/agent-status/lanes/<laneId>.json          # CoderLaneRow per lane
+data/agent-status/lanes/terminal_summary.json  # TerminalSummary
+data/agent-status/lanes/handoff.json           # Handoff
+```
+
+These are `gitignored` (per-run snapshots; never committed). Run
+`./scripts/bridge-snapshot-lanes.sh` to refresh. Validate against
+the canonical types with:
+
+```sh
+cd chat-app
+npx tsx src/server/scripts/test-bridge-artifacts.ts
+```
+
+When the tables land and the secrets are set, the Worker reads
+the same shapes from Supabase; the local artifacts become a
+debug-only mirror.
+
 ## What this doc is NOT
 
 - A migration script. SQL above is the spec; running it is

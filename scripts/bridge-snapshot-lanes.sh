@@ -257,6 +257,57 @@ def git_short_head():
     out = run(["git", "rev-parse", "--short", "HEAD"])
     return out.strip() if out else None
 
+# ── mark-agent-done.sh ingest (terminal_summary source) ───────────────
+# scripts/mark-agent-done.sh writes data/agent-status/<agent>.json with
+# { agent, status, task, summary, verification, nextAction, updatedAt }.
+# That's the canonical owner-tap "I just finished X" trail; we lift
+# those rows into TerminalSummaryEntry[] so the same data feeds the
+# connector terminal_summary surface.
+
+MARK_DONE_DIR = os.path.join(ROOT, "data", "agent-status")
+AGENT_TO_LANE = {
+    "claude": "claude",
+    "codex": "codex",
+    "claude-code-guide": "claude_chat",
+    # "other" is intentionally NOT mapped — refuse unknown lanes at
+    # write time per docs/CONNECTOR_SECURITY_MODEL.md.
+}
+
+def load_terminal_entries():
+    entries = []
+    if not os.path.isdir(MARK_DONE_DIR):
+        return entries
+    for name in sorted(os.listdir(MARK_DONE_DIR)):
+        if not name.endswith(".json"):
+            continue
+        agent = name[:-5]  # strip ".json"
+        lane = AGENT_TO_LANE.get(agent)
+        if lane is None:
+            continue
+        path = os.path.join(MARK_DONE_DIR, name)
+        try:
+            with open(path) as f:
+                data = json.load(f)
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        at = data.get("updatedAt")
+        if not isinstance(at, str) or not at:
+            continue
+        entry = {
+            "laneId": lane,
+            "at": at,
+            "summary": redact(truncate(str(data.get("summary") or ""), 1200) or ""),
+            "verification": redact(truncate(str(data.get("verification") or ""), 240) or ""),
+            "nextAction": redact(truncate(str(data.get("nextAction") or ""), 240) or ""),
+            "exitCode": None,
+        }
+        entries.append(entry)
+    # Most recent first; cap 50 entries.
+    entries.sort(key=lambda e: e["at"], reverse=True)
+    return entries[:50]
+
 # ── Build payload ─────────────────────────────────────────────────────
 CAP_SUMMARY = 1200
 SUMMARY_TAIL_LINES = 12
@@ -328,26 +379,76 @@ for session, lane in SESSION_MAP:
 
     rows.append(row)
 
-payload = {
+coder_lanes_payload = {
     "schemaVersion": 1,
     "generatedAt": now_iso,
     "lanes": rows,
 }
 
+# ── terminal_summary ──────────────────────────────────────────────────
+terminal_entries = load_terminal_entries()
+terminal_summary_payload = {
+    "schemaVersion": 1,
+    "generatedAt": now_iso,
+    "entries": terminal_entries,
+}
+
+# ── handoff (bridge-derived; owner-only fields stay null/empty) ───────
+def lane_row(lane_id):
+    for r in rows:
+        if r["laneId"] == lane_id:
+            return r
+    return None
+
+claude_row = lane_row("claude")
+codex_row = lane_row("codex")
+
+handoff_payload = {
+    "schemaVersion": 1,
+    "generatedAt": now_iso,
+    "latestClaudePrompt": (claude_row or {}).get("lastPromptId"),
+    "latestCodexPrompt": (codex_row or {}).get("lastPromptId"),
+    # Owner-only fields. The bridge MUST NOT fabricate these — they
+    # gate the in-app Dispatch button. See docs/CHATGPT_CONNECTOR_STATE_CONTRACT.md.
+    "manualSteps": [],
+    "doNotTouch": [],
+    "safeToBuild": False,
+    "safeToBuildReason":
+        "Bridge-derived handoff. Owner has not flipped safeToBuild=true via the in-app Admin/Dev surface.",
+}
+
+# Defense-in-depth: redact every string in the bridge-derived payloads.
+def deep_redact(value):
+    if isinstance(value, str):
+        return redact(value)
+    if isinstance(value, list):
+        return [deep_redact(v) for v in value]
+    if isinstance(value, dict):
+        return {k: deep_redact(v) for k, v in value.items()}
+    return value
+
+handoff_payload = deep_redact(handoff_payload)
+terminal_summary_payload = deep_redact(terminal_summary_payload)
+
+# ── Atomic-replace writers ────────────────────────────────────────────
+def write_json(path, payload):
+    tmp = path + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump(payload, f, indent=2)
+        f.write("\n")
+    os.replace(tmp, path)
+
 agg_path = os.path.join(OUT_DIR, "coder_lanes.json")
-tmp_path = agg_path + ".tmp"
-with open(tmp_path, "w") as f:
-    json.dump(payload, f, indent=2)
-    f.write("\n")
-os.replace(tmp_path, agg_path)
+write_json(agg_path, coder_lanes_payload)
+
+terminal_path = os.path.join(OUT_DIR, "terminal_summary.json")
+write_json(terminal_path, terminal_summary_payload)
+
+handoff_path = os.path.join(OUT_DIR, "handoff.json")
+write_json(handoff_path, handoff_payload)
 
 for row in rows:
-    p = os.path.join(OUT_DIR, f"{row['laneId']}.json")
-    tmp = p + ".tmp"
-    with open(tmp, "w") as f:
-        json.dump(row, f, indent=2)
-        f.write("\n")
-    os.replace(tmp, p)
+    write_json(os.path.join(OUT_DIR, f"{row['laneId']}.json"), row)
 
 print(f"wrote {agg_path}")
 for row in rows:
@@ -357,4 +458,6 @@ for row in rows:
         f"currentPrompt={row['currentPromptId']} "
         f"lastPrompt={row['lastPromptId']}"
     )
+print(f"wrote {terminal_path} (entries={len(terminal_entries)})")
+print(f"wrote {handoff_path}")
 PY
