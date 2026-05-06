@@ -1717,6 +1717,10 @@ function HealthSourceSheet(props: SheetProps) {
   // is that these classifications are truthful.
   const appleHealthStatus: 'connected' | 'attention' | 'available' =
     appleHealthConnected ? 'connected' : 'available';
+  const nativePermissions = useHealthStore((s) => s.permissions);
+  const nativeAnyAuthorized =
+    !!nativePermissions?.permissions &&
+    Object.values(nativePermissions.permissions).some((p) => p === 'authorized');
 
   // "Partial" is only truthful when real required fields are missing
   // beyond the natural latest-cycle delay. WHOOP scores a cycle after
@@ -1776,7 +1780,23 @@ function HealthSourceSheet(props: SheetProps) {
     : '';
   const nativeHealthMeta = appleHealthConnected
     ? `Default live health source · ${healthDays} day${healthDays === 1 ? '' : 's'} · ${ageLabel(healthLastSyncAt)}${samsungHcHint}`
-    : `Default live health source · not connected yet.${samsungHcHint}`;
+    : healthLastSyncAt
+      ? `Default live health source · synced but no recent records found · ${ageLabel(healthLastSyncAt)}${samsungHcHint}`
+      : nativeAnyAuthorized
+        ? `Default live health source · permission granted, sync needed.${samsungHcHint}`
+        : `Default live health source · not connected yet.${samsungHcHint}`;
+  const nativeHealthStatusLabel = appleHealthConnected
+    ? 'Connected'
+    : healthLastSyncAt
+      ? 'Connected — no data'
+      : nativeAnyAuthorized
+        ? 'Sync needed'
+        : 'Not connected';
+  const nativeHealthStatusColor = appleHealthConnected
+    ? '#4ade80'
+    : healthLastSyncAt || nativeAnyAuthorized
+      ? '#d4e157'
+      : '#888';
 
   // Stale detection — only when the freshest known date is more than
   // 2 days behind local today. WHOOP normally scores overnight, so
@@ -1809,7 +1829,7 @@ function HealthSourceSheet(props: SheetProps) {
           : whoopState === 'partial' ? 'Partial sync' : 'Connected';
       return `${optionalPrefix}${head}${latest}${missStr}`;
     }
-    if (whoopState === 'config_missing') return 'Optional live calibration · setup required (Railway env missing)';
+    if (whoopState === 'config_missing') return 'Optional live calibration · setup required on the backend';
     if (whoopState === 'auth_required') return 'Optional live calibration · not connected';
     if (whoopState === 'error') return 'Optional live calibration · reconnect required (token expired)';
     if (whoopState === 'loading') return 'Optional live calibration · loading status…';
@@ -1833,10 +1853,10 @@ function HealthSourceSheet(props: SheetProps) {
     <SourceSheetRow
       key="apple"
       name={isIos ? 'Apple Health' : 'Health Connect'}
-      status={appleHealthConnected ? 'Connected' : 'Not connected'}
-      statusColor={appleHealthConnected ? '#4ade80' : '#888'}
+      status={nativeHealthStatusLabel}
+      statusColor={nativeHealthStatusColor}
       meta={nativeHealthMeta}
-      actions={appleHealthConnected ? (isIos ? [
+      actions={appleHealthConnected || healthLastSyncAt || nativeAnyAuthorized ? (isIos ? [
         {
           label: busy === 'apple-sync' ? 'Syncing…' : 'Sync',
           onPress: onSyncAppleHealth,

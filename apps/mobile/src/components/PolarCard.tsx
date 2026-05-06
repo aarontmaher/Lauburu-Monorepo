@@ -79,17 +79,17 @@ export function PolarCard({ viaHealthConnect }: PolarCardProps = {}) {
               : 'No domains confirmed yet — sync again to confirm.'}
             {' '}
             This counts as Polar via Health Connect — not a direct Polar adapter.
-            Readiness still requires direct WHOOP data.
+            It does not provide Polar Recovery Pro or Nightly Recharge.
           </Text>
           <Text style={styles.bodyText}>
-            Direct Polar (AccessLink / BLE) is not live yet. If you want
-            recovery-pro, nightly-recharge, or per-minute HR, the direct
-            adapter is the path — coming in a future batch.
+            Direct Polar (AccessLink / BLE) is not live yet. Recovery Pro,
+            Nightly Recharge, and richer Polar-specific fields require a
+            future direct adapter.
           </Text>
         </>
       ) : (
         <Text style={styles.bodyText}>
-          Polar data reaches the app only when the Polar Flow app is set
+          Direct Polar is not connected yet. Polar data reaches the app only when the Polar Flow app is set
           to write into Health Connect (Android) or Apple Health (iOS) —
           so it arrives as generic metrics without Polar&apos;s richer
           readiness fields. If you use Polar Flow on Android, open it,

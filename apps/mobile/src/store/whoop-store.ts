@@ -183,22 +183,15 @@ export const useWhoopStore = create<WhoopState>((set) => ({
       const sources = typeof whoopBridgeOwnerSources === 'function' ? whoopBridgeOwnerSources() : [];
       // Previously set status='ready' + day=null silently, which made
       // the card render as "partial: missing recovery/HRV/RHR/sleep/
-      // workouts" with no reason given. The actual cause is that the
-      // WHOOP bridge is pinned to a specific Supabase user.id via
-      // EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS, and this account isn't on
-      // the allowlist. Surface that plainly so the user knows it's a
-      // config gate, not a data gap.
+      // workouts" with no reason given. Keep the normal UI honest
+      // without exposing owner allowlist details or user IDs.
       set({
         status: 'error',
         day: null,
         fetchedAt: new Date().toISOString(),
-        // Full user.id (not truncated) so the tester can copy it
-        // verbatim into EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS without
-        // digging through Supabase. iOS lets users long-press-select
-        // text in an error message to copy it.
         error: userId
-          ? `WHOOP bridge not linked to this account.\nAllowlist: ${count} id(s) from ${sources.join('+')}.\nYour user.id:\n\n${userId}\n\nAdd it to EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS in apps/mobile/.env.production (or app.json extra.whoopBridgeOwnerIds), then rebuild or OTA.`
-          : 'WHOOP bridge: sign in first, then check EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS in apps/mobile/.env.production.',
+          ? `WHOOP Direct is not linked to this account yet. Ask Aaron to add this account to the WHOOP bridge allowlist. Config sources detected: ${count} (${sources.join('+') || 'none'}).`
+          : 'WHOOP Direct: sign in first, then ask Aaron to link this account if you use WHOOP.',
       });
       return;
     }
