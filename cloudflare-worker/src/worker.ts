@@ -90,6 +90,188 @@ function requireAdminToken(req: Request, env: Env): { ok: boolean; reason?: stri
   return { ok: true };
 }
 
+// ── Connector payload shapes (mirror chat-app/src/server/types/connector.ts) ──
+
+const CONNECTOR_SCHEMA_VERSION = 1 as const;
+
+function buildWorkStatus(env: Env) {
+  const generatedAt = new Date().toISOString();
+  return {
+    schemaVersion: CONNECTOR_SCHEMA_VERSION,
+    generatedAt,
+    currentPriority:
+      'Cloudflare Worker is now the live MCP connector surface (Railway suspended).',
+    currentBlocker:
+      'Tmux bridge producer not operational; coder_lanes data is provisional placeholder.',
+    liveStatus: {
+      androidVersionCode: 17,
+      iosBuildNumber: '18',
+      androidPlayTrack: 'internal' as const,
+      iosTestflightGroup: 'Team (Expo)',
+      lastRailwayDeployAt: null,
+      cloudflareWorkerDeployed: true,
+    },
+    repoStatus: {
+      head: 'unknown',
+      branch: 'main',
+      dirtyFileCount: 0,
+      untrackedFileCount: 0,
+      lastCommitAt: generatedAt,
+      lastCommitMessage: 'unknown until local bridge populates this field',
+    },
+    nextAction: env.RAILWAY_FALLBACK_URL
+      ? 'Resolve Railway suspension or accept Cloudflare cutover. Bridge producer is the next safe code change.'
+      : 'Bridge producer is the next safe code change.',
+  };
+}
+
+function buildCoderLanes() {
+  const generatedAt = new Date().toISOString();
+  return {
+    schemaVersion: CONNECTOR_SCHEMA_VERSION,
+    generatedAt,
+    lanes: [
+      {
+        laneId: 'claude' as const,
+        status: 'idle' as const,
+        lastSeenAt: generatedAt,
+        currentPromptId: null,
+        lastPromptId: 'CLAUDE-CLOUDFLARE-CUTOVER-MCP-ROUTES-01',
+        lastSummary:
+          'Claude lane parked after Cloudflare cutover deploy. Awaiting next owner-reviewed handoff.',
+        lastCommit: null,
+        lastTypecheckResult: null,
+        dirtyFiles: [],
+        nextPrompt: null,
+      },
+      {
+        laneId: 'codex' as const,
+        status: 'idle' as const,
+        lastSeenAt: generatedAt,
+        currentPromptId: null,
+        lastPromptId: 'CODEX-BACKEND-API-AI-IMPLEMENTATION-01',
+        lastSummary:
+          'Codex completed b6fe1ad (chat-app routes). Cloudflare mirror landed by Claude. Awaiting next prompt.',
+        lastCommit: null,
+        lastTypecheckResult: 'pass' as const,
+        dirtyFiles: [],
+        nextPrompt: null,
+      },
+    ],
+  };
+}
+
+function buildBuildStatus() {
+  return {
+    schemaVersion: CONNECTOR_SCHEMA_VERSION,
+    generatedAt: new Date().toISOString(),
+    android: {
+      versionCode: 17,
+      appVersion: '0.1.0',
+      githubRunId: '25417977756',
+      githubStatus: 'success' as const,
+      easBuildId: '92778b10-7023-4ce6-b665-398069fa9d28',
+      easBuildUrl: null,
+      playSubmissionId: '94cee638-97b3-4fcd-a2ba-5834b2d3be20',
+      playStatus: 'submitted_completed' as const,
+      playTrack: 'internal' as const,
+    },
+    ios: {
+      buildNumber: '18',
+      appVersion: '0.1.0',
+      githubRunId: '25417981099',
+      githubStatus: 'success' as const,
+      easBuildId: 'b05edd9a-0a16-42a2-9bf6-c04f95b2feea',
+      easBuildUrl: null,
+      testflightSubmissionId: 'badb173d-cf75-49ae-8be4-3d2e79088d4d',
+      testflightStatus: 'uploaded_processing' as const,
+      testflightGroup: 'Team (Expo)',
+    },
+  };
+}
+
+function buildHandoff() {
+  return {
+    schemaVersion: CONNECTOR_SCHEMA_VERSION,
+    generatedAt: new Date().toISOString(),
+    latestClaudePrompt: 'CLAUDE-CLOUDFLARE-CUTOVER-MCP-ROUTES-01',
+    latestCodexPrompt: 'CODEX-BACKEND-API-AI-IMPLEMENTATION-01',
+    manualSteps: [
+      'Aaron: resolve Railway suspension OR accept Cloudflare cutover.',
+      'Aaron: set ATHLETE_MEMORY_API_TOKEN secret on the Worker via wrangler secret put.',
+      'Aaron: keep build dispatch owner-tap only.',
+    ],
+    doNotTouch: [
+      'grappling.opml',
+      'apps/mobile/app.json',
+      'apps/mobile/eas.json',
+      '.github/workflows',
+    ],
+    safeToBuild: false,
+    safeToBuildReason:
+      'Connector cutover in flight; verify Worker live + bridge producer before next paired build.',
+  };
+}
+
+// ── Inline two-pass redactor (mirrors chat-app redactTokenLikeSubstrings) ──
+// Workers runtime can't import the chat-app code, so this is a small
+// re-implementation matching docs/CONNECTOR_SANITIZATION_RULES.md.
+// Pass 1 preserves labelled values (commit/sha/build/run_id/etc.) via
+// sentinel tags; Pass 2 strikes token-shaped substrings; final swap
+// restores the labelled values.
+
+const PRESERVE_LABELS = new Set([
+  'commit', 'commit_hash', 'sha', 'head', 'ref', 'branch', 'version',
+  'build', 'build_number', 'version_code', 'tag', 'prompt_id', 'lane',
+  'run_id', 'submission', 'eas_build', 'expo_build_id',
+  'androidversioncode', 'iosbuildnumber', 'githubrunid', 'easbuildid',
+  'playsubmissionid', 'testflightsubmissionid',
+]);
+
+const STRIKE_PATTERNS: RegExp[] = [
+  /eyJ[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+/g, // JWTs
+  /sk-[A-Za-z0-9_\-]{20,}/g,
+  /ghp_[A-Za-z0-9]{30,}/g,
+  /gho_[A-Za-z0-9]{30,}/g,
+  /ghs_[A-Za-z0-9]{30,}/g,
+  /whsec_[A-Za-z0-9]{20,}/g,
+  /AKIA[0-9A-Z]{16}/g,
+  /xox[abprs]-[A-Za-z0-9\-]{10,}/g,
+];
+
+function redactString(input: string): string {
+  if (typeof input !== 'string' || input.length === 0) return input;
+  // Pass 1: tag labelled values so Pass 2 doesn't strike them.
+  const preserved: string[] = [];
+  const labelRe = /(^|[^A-Za-z0-9_])([a-z_]+)(\s*[:=]\s*)([A-Za-z0-9.\-_]+)/g;
+  let tagged = input.replace(labelRe, (full, lead, label: string, sep, value: string) => {
+    if (!PRESERVE_LABELS.has(label.toLowerCase())) return full;
+    const idx = preserved.length;
+    preserved.push(value);
+    return `${lead}${label}${sep}\u0000PRESERVE_${idx}\u0000`;
+  });
+  // Pass 2: strike token-shaped substrings outside sentinels.
+  for (const re of STRIKE_PATTERNS) tagged = tagged.replace(re, '<redacted>');
+  // Restore preserved values.
+  tagged = tagged.replace(/\u0000PRESERVE_(\d+)\u0000/g, (_m, n) => preserved[Number(n)] ?? '');
+  return tagged;
+}
+
+function applyConnectorRedaction<T>(payload: T): T {
+  if (Array.isArray(payload)) {
+    return payload.map((v) => applyConnectorRedaction(v)) as unknown as T;
+  }
+  if (payload !== null && typeof payload === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(payload as Record<string, unknown>)) {
+      out[k] = applyConnectorRedaction(v);
+    }
+    return out as unknown as T;
+  }
+  if (typeof payload === 'string') return redactString(payload) as unknown as T;
+  return payload;
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -117,6 +299,10 @@ export default {
           'GET /handoff',
           'GET /automation-state',
           'GET /pending-suggestions',
+          'GET /api/work_status',
+          'GET /api/coder_lanes',
+          'GET /api/build_status',
+          'GET /api/handoff',
         ],
       });
     }
@@ -198,10 +384,42 @@ export default {
       });
     }
 
+    // ── MCP connector routes ───────────────────────────────────────────
+    // Mirror chat-app/src/server/routes/mcpRoutes.ts (commit b6fe1ad).
+    // Shape source of truth: chat-app/src/server/types/connector.ts.
+    // Sanitisation: docs/CONNECTOR_SANITIZATION_RULES.md.
+    //
+    // While Railway is suspended these four are the canonical
+    // connector surface; the mobile app + ChatGPT Connector both
+    // read from here.
+    if (request.method === 'GET' && path === '/api/work_status') {
+      const auth = requireAdminToken(request, env);
+      if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
+      return jsonResponse(applyConnectorRedaction(buildWorkStatus(env)));
+    }
+
+    if (request.method === 'GET' && path === '/api/coder_lanes') {
+      const auth = requireAdminToken(request, env);
+      if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
+      return jsonResponse(applyConnectorRedaction(buildCoderLanes()));
+    }
+
+    if (request.method === 'GET' && path === '/api/build_status') {
+      const auth = requireAdminToken(request, env);
+      if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
+      return jsonResponse(applyConnectorRedaction(buildBuildStatus()));
+    }
+
+    if (request.method === 'GET' && path === '/api/handoff') {
+      const auth = requireAdminToken(request, env);
+      if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
+      return jsonResponse(applyConnectorRedaction(buildHandoff()));
+    }
+
     // ── Write endpoints intentionally absent ───────────────────────────
-    // POST /suggestions stays unimplemented until an authenticated
-    // write path exists per docs/CONNECTOR_BACKLOG_TOOLS_PLAN.md
-    // second-wave spec.
+    // POST /suggestions / lane-status / terminal-summary stay unimplemented
+    // until the bridge producer ships per
+    // docs/CONNECTOR_SANITIZATION_RULES.md "Lane-status detection".
 
     return notFound();
   },
