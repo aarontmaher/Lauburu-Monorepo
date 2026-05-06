@@ -347,7 +347,6 @@ function SignedInSection() {
       {syllabusSummary ? (
         <SettingsRow label="Syllabus" value={syllabusSummary} />
       ) : null}
-      <BacklogReRunRow />
       <Pressable style={styles.buttonDanger} onPress={handleSignOut}>
         <Text style={styles.buttonDangerText}>Sign Out</Text>
       </Pressable>
@@ -356,12 +355,12 @@ function SignedInSection() {
 }
 
 /**
- * "Analyse history again" — surfaces re-run + current status summary.
+ * Rare manual refresh for the private athlete context Coach uses.
  * Respects the current userId/athleteId (via the store) and never
  * silently overwrites stable memory. Also shows the last run
  * timestamp + current state so users know what they're doing.
  */
-function BacklogReRunRow() {
+function AthleteContextRefreshRow() {
   const status = useBacklogAnalysisStore((s) => s.status);
   const record = useBacklogAnalysisStore((s) => s.record);
   const starting = useBacklogAnalysisStore((s) => s.starting);
@@ -370,20 +369,20 @@ function BacklogReRunRow() {
 
   const onPress = () => {
     Alert.alert(
-      'Analyse history again?',
+      'Update athlete context?',
       'Coach will re-read your connected sources for the last 30 days and update provisional patterns. Stable memory is never changed without your approval.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Analyse', onPress: () => void start({ windowDays: 30 }) },
+        { text: 'Update', onPress: () => void start({ windowDays: 30 }) },
       ],
     );
   };
 
   const label =
-    status === 'not_started' ? 'Analyse my history' :
-    status === 'running' ? 'Analysis running…' :
-    status === 'failed' ? 'Retry analysis' :
-    'Analyse history again';
+    status === 'not_started' ? 'Build athlete context' :
+    status === 'running' ? 'Updating…' :
+    status === 'failed' ? 'Retry update' :
+    'Update athlete context';
 
   const lastRun = record?.analysisCompletedAt
     ? `Last run ${record.analysisCompletedAt.slice(0, 10)} · ${record.recordsAnalysed} records` :
@@ -391,7 +390,7 @@ function BacklogReRunRow() {
 
   return (
     <View style={{ gap: 6, marginBottom: 12 }}>
-      <SettingsRow label="Coach backlog" value={lastRun} />
+      <SettingsRow label="Athlete context" value={lastRun} />
       <Pressable
         style={[styles.button, (starting || status === 'running') && styles.buttonDisabled]}
         onPress={onPress}
@@ -402,7 +401,7 @@ function BacklogReRunRow() {
       </Pressable>
       <Pressable onPress={() => void refresh()} hitSlop={6}>
         <Text style={{ fontSize: 12, color: '#888', textAlign: 'center' }}>
-          Refresh status
+          Refresh context status
         </Text>
       </Pressable>
     </View>
@@ -803,6 +802,7 @@ export default function SettingsScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Data & Privacy</Text>
         <ConsentSection />
+        {status === 'member' ? <AthleteContextRefreshRow /> : null}
       </View>
 
       <View style={styles.section}>
