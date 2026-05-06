@@ -43,6 +43,24 @@ export interface SupabaseAdapter {
   config: SupabaseConfig;
   /** Pings PostgREST `/rest/v1/` to confirm reachability + auth. */
   ping(): Promise<{ ok: true } | { ok: false; status: number; body: string }>;
+  /**
+   * Fetches the single-row envelope payload for tables keyed by
+   * `id = 'current'`. Returns `null` on any failure — never throws.
+   * Callers fall through to the placeholder. NEVER fabricate data.
+   */
+  fetchSingleRowPayload(table: string): Promise<unknown | null>;
+  /**
+   * Fetches every row for a key-per-row envelope (e.g.
+   * connector_coder_lanes keyed by lane_id). Returns the raw payload
+   * jsonb plus the row's lane_id / status so callers can synthesise
+   * a CoderLanes aggregate.
+   */
+  fetchCoderLaneRows(): Promise<Array<{ lane_id: string; status: string; payload: unknown }> | null>;
+  /**
+   * Fetches the most recent N entries from connector_terminal_summary,
+   * ordered by created_at desc.
+   */
+  fetchTerminalEntries(limit: number): Promise<unknown[] | null>;
 }
 
 /**
@@ -81,23 +99,55 @@ export function getSupabaseAdapter(env: Env): SupabaseAdapter | SupabaseUnavaila
 
   const config: SupabaseConfig = { url, serviceRoleKey: key };
 
+  const headers = {
+    apikey: key,
+    Authorization: `Bearer ${key}`,
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
+
+  async function safeJson<T>(path: string): Promise<T | null> {
+    try {
+      const res = await fetch(`${url}/rest/v1/${path}`, { headers });
+      if (!res.ok) return null;
+      return (await res.json()) as T;
+    } catch {
+      return null;
+    }
+  }
+
   return {
     configured: true,
     config,
     async ping() {
       try {
-        const res = await fetch(`${url}/rest/v1/`, {
-          headers: {
-            apikey: key,
-            Authorization: `Bearer ${key}`,
-          },
-        });
+        const res = await fetch(`${url}/rest/v1/`, { headers });
         if (res.ok) return { ok: true } as const;
         const body = await res.text();
         return { ok: false, status: res.status, body: body.slice(0, 200) } as const;
       } catch (err) {
         return { ok: false, status: 0, body: err instanceof Error ? err.message : 'unknown error' } as const;
       }
+    },
+    async fetchSingleRowPayload(table: string) {
+      const rows = await safeJson<Array<{ payload: unknown }>>(
+        `${encodeURIComponent(table)}?id=eq.current&select=payload&limit=1`,
+      );
+      if (!rows || rows.length === 0) return null;
+      return rows[0]?.payload ?? null;
+    },
+    async fetchCoderLaneRows() {
+      return safeJson<Array<{ lane_id: string; status: string; payload: unknown }>>(
+        'connector_coder_lanes?select=lane_id,status,payload&order=lane_id.asc',
+      );
+    },
+    async fetchTerminalEntries(limit: number) {
+      const safeLimit = Math.max(1, Math.min(50, Math.floor(limit)));
+      const rows = await safeJson<Array<{ payload: unknown }>>(
+        `connector_terminal_summary?select=payload&order=created_at.desc&limit=${safeLimit}`,
+      );
+      if (!rows) return null;
+      return rows.map((r) => r.payload);
     },
   };
 }
@@ -117,7 +167,7 @@ export function getSupabaseAdapter(env: Env): SupabaseAdapter | SupabaseUnavaila
 export const CONNECTOR_SCHEMA_REQUIREMENTS = {
   work_status: {
     table: 'connector_work_status',
-    envelope: ['id', 'scope', 'payload (jsonb = WorkStatus)', 'source', 'created_at', 'updated_at'],
+    envelope: ['id', 'generated_at', 'updated_at', 'source', 'payload (jsonb = WorkStatus)'],
     migration: 'supabase/migrations/0003_connector_status_tables.sql',
     notes: 'Single-row envelope (id = "current"). Owner / bridge upsert via service-role key.',
   },
@@ -125,12 +175,10 @@ export const CONNECTOR_SCHEMA_REQUIREMENTS = {
     table: 'connector_coder_lanes',
     envelope: [
       'lane_id (pk, enum: claude|codex|claude_chat|chatgpt|cowork)',
-      'scope',
-      'status (denormalised; enum: idle|working|blocked|needs_user|needs_review|done)',
-      'payload (jsonb = CoderLaneRow)',
-      'source',
-      'created_at',
+      'generated_at',
       'updated_at',
+      'source',
+      'payload (jsonb = CoderLaneRow)',
     ],
     migration: 'supabase/migrations/0003_connector_status_tables.sql',
     notes:
@@ -138,16 +186,22 @@ export const CONNECTOR_SCHEMA_REQUIREMENTS = {
   },
   build_status: {
     table: 'connector_build_status',
-    envelope: ['id', 'scope', 'payload (jsonb = BuildStatus)', 'source', 'created_at', 'updated_at'],
+    envelope: ['id', 'generated_at', 'updated_at', 'source', 'payload (jsonb = BuildStatus)'],
     migration: 'supabase/migrations/0003_connector_status_tables.sql',
     notes: 'Single-row envelope. Owner-tap or release-workflow updates.',
   },
   handoff: {
     table: 'connector_handoff',
-    envelope: ['id', 'scope', 'payload (jsonb = Handoff)', 'source', 'created_at', 'updated_at'],
+    envelope: ['id', 'generated_at', 'updated_at', 'source', 'payload (jsonb = Handoff)'],
     migration: 'supabase/migrations/0003_connector_status_tables.sql',
     notes:
       'Single-row envelope. Owner-tap only; safeToBuild flip to true requires owner confirmation.',
+  },
+  terminal_summary: {
+    table: 'connector_terminal_summary',
+    envelope: ['id (bigserial)', 'lane_id', 'generated_at', 'updated_at', 'source', 'payload (jsonb = TerminalSummaryEntry)'],
+    migration: 'supabase/migrations/0003_connector_status_tables.sql',
+    notes: 'Append-only event log. Cap 50 rows via retention sweep at the bottom of the migration file.',
   },
 } as const;
 

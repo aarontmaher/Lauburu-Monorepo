@@ -127,7 +127,22 @@ function requireAdminToken(req: Request, env: Env): { ok: boolean; reason?: stri
 
 const CONNECTOR_SCHEMA_VERSION = 1 as const;
 
-function buildWorkStatus(env: Env) {
+async function tryReadSingleRowPayload(
+  env: Env,
+  route: ConnectorRouteKey,
+  table: string,
+): Promise<{ source: 'supabase'; payload: unknown } | { source: 'placeholder'; descriptor: ReturnType<typeof dataSourceFor> }> {
+  const adapter = getSupabaseAdapter(env);
+  if (adapter.configured) {
+    const payload = await adapter.fetchSingleRowPayload(table);
+    if (payload && typeof payload === 'object') {
+      return { source: 'supabase', payload };
+    }
+  }
+  return { source: 'placeholder', descriptor: dataSourceFor(env, route) };
+}
+
+function placeholderWorkStatus(env: Env) {
   const generatedAt = new Date().toISOString();
   return {
     schemaVersion: CONNECTOR_SCHEMA_VERSION,
@@ -158,7 +173,7 @@ function buildWorkStatus(env: Env) {
   };
 }
 
-function buildCoderLanes(env: Env) {
+function placeholderCoderLanes(env: Env) {
   const generatedAt = new Date().toISOString();
   return {
     schemaVersion: CONNECTOR_SCHEMA_VERSION,
@@ -195,7 +210,7 @@ function buildCoderLanes(env: Env) {
   };
 }
 
-function buildBuildStatus(env: Env) {
+function placeholderBuildStatus(env: Env) {
   return {
     schemaVersion: CONNECTOR_SCHEMA_VERSION,
     generatedAt: new Date().toISOString(),
@@ -225,7 +240,7 @@ function buildBuildStatus(env: Env) {
   };
 }
 
-function buildHandoff(env: Env) {
+function placeholderHandoff(env: Env) {
   return {
     schemaVersion: CONNECTOR_SCHEMA_VERSION,
     generatedAt: new Date().toISOString(),
@@ -340,6 +355,7 @@ export default {
           'GET /api/coder_lanes',
           'GET /api/build_status',
           'GET /api/handoff',
+          'GET /api/terminal_summary',
         ],
       });
     }
@@ -462,25 +478,85 @@ export default {
     if (request.method === 'GET' && path === '/api/work_status') {
       const auth = requireAdminToken(request, env);
       if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
-      return jsonResponse(applyConnectorRedaction(buildWorkStatus(env)));
+      const fetched = await tryReadSingleRowPayload(env, 'work_status', 'connector_work_status');
+      if (fetched.source === 'supabase') {
+        return jsonResponse(applyConnectorRedaction({
+          ...(fetched.payload as object),
+          dataSource: { source: 'supabase' as const, table: 'connector_work_status' },
+          generatedAt: new Date().toISOString(),
+        }));
+      }
+      return jsonResponse(applyConnectorRedaction(placeholderWorkStatus(env)));
     }
 
     if (request.method === 'GET' && path === '/api/coder_lanes') {
       const auth = requireAdminToken(request, env);
       if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
-      return jsonResponse(applyConnectorRedaction(buildCoderLanes(env)));
+      const adapter = getSupabaseAdapter(env);
+      if (adapter.configured) {
+        const rows = await adapter.fetchCoderLaneRows();
+        if (rows && rows.length > 0) {
+          return jsonResponse(applyConnectorRedaction({
+            schemaVersion: CONNECTOR_SCHEMA_VERSION,
+            generatedAt: new Date().toISOString(),
+            dataSource: { source: 'supabase' as const, table: 'connector_coder_lanes' },
+            lanes: rows.map((r) => r.payload),
+          }));
+        }
+      }
+      return jsonResponse(applyConnectorRedaction(placeholderCoderLanes(env)));
     }
 
     if (request.method === 'GET' && path === '/api/build_status') {
       const auth = requireAdminToken(request, env);
       if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
-      return jsonResponse(applyConnectorRedaction(buildBuildStatus(env)));
+      const fetched = await tryReadSingleRowPayload(env, 'build_status', 'connector_build_status');
+      if (fetched.source === 'supabase') {
+        return jsonResponse(applyConnectorRedaction({
+          ...(fetched.payload as object),
+          dataSource: { source: 'supabase' as const, table: 'connector_build_status' },
+          generatedAt: new Date().toISOString(),
+        }));
+      }
+      return jsonResponse(applyConnectorRedaction(placeholderBuildStatus(env)));
     }
 
     if (request.method === 'GET' && path === '/api/handoff') {
       const auth = requireAdminToken(request, env);
       if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
-      return jsonResponse(applyConnectorRedaction(buildHandoff(env)));
+      const fetched = await tryReadSingleRowPayload(env, 'handoff', 'connector_handoff');
+      if (fetched.source === 'supabase') {
+        return jsonResponse(applyConnectorRedaction({
+          ...(fetched.payload as object),
+          dataSource: { source: 'supabase' as const, table: 'connector_handoff' },
+          generatedAt: new Date().toISOString(),
+        }));
+      }
+      return jsonResponse(applyConnectorRedaction(placeholderHandoff(env)));
+    }
+
+    if (request.method === 'GET' && path === '/api/terminal_summary') {
+      const auth = requireAdminToken(request, env);
+      if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
+      const adapter = getSupabaseAdapter(env);
+      const generatedAt = new Date().toISOString();
+      if (adapter.configured) {
+        const entries = await adapter.fetchTerminalEntries(50);
+        if (entries) {
+          return jsonResponse(applyConnectorRedaction({
+            schemaVersion: CONNECTOR_SCHEMA_VERSION,
+            generatedAt,
+            dataSource: { source: 'supabase' as const, table: 'connector_terminal_summary' },
+            entries,
+          }));
+        }
+      }
+      return jsonResponse(applyConnectorRedaction({
+        schemaVersion: CONNECTOR_SCHEMA_VERSION,
+        generatedAt,
+        dataSource: dataSourceFor(env, 'terminal_summary'),
+        entries: [],
+      }));
     }
 
     // ── Write endpoints intentionally absent ───────────────────────────

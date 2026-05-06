@@ -35,11 +35,10 @@ These tables intentionally use a thin **envelope shape**:
 | Column | Purpose |
 |---|---|
 | `id` (or `lane_id`, or `bigserial`) | primary key |
-| `scope` text default `'default'` | future multi-project support |
-| `payload` jsonb | the typed connector payload |
-| `source` text | who wrote the row (`bridge`/`owner`/`worker`/`cli`) |
-| `status` text (coder_lanes only) | denormalised lane status for indexed queries |
-| `created_at`, `updated_at` | timestamps |
+| `generated_at` timestamptz | when the writer assembled the snapshot |
+| `updated_at` timestamptz default `now()` | when the row was last upserted |
+| `source` text default `'bridge'` | who wrote the row (`bridge`/`owner`/`worker`/`cli`) |
+| `payload` jsonb not null | the typed connector payload |
 
 The TS shapes in `chat-app/src/server/types/connector.ts` are the
 source of truth for what's INSIDE `payload`. Keeping the SQL
@@ -53,19 +52,47 @@ secrets, or any per-user PII. Athlete data lives in
 `normalized_daily_metrics`, `raw_source_events`,
 `source_connection_state`, etc., which are outside this doc.
 
-## Auth model
+## Safety model
 
-- Worker reads use the **service-role key** (server-side only;
-  never bundled into the mobile app).
-- Bridge writes (planned) also use the service-role key (the
-  bridge runs on Aaron's Mac; the key lives in `.dev.vars`
-  locally and in Cloudflare secrets remotely).
-- Mobile app NEVER reads these tables directly — it only sees
-  the redacted JSON payloads returned by the Worker after
-  admin-token gating.
-- All tables enable RLS with **no policies**. Service-role
-  bypasses RLS; an anon JWT cannot read any of these rows. By
-  design.
+The Supabase service-role key **bypasses RLS**. Enabling RLS on
+these tables does NOT gate service-role access. Real safety
+comes from these layered controls, not from RLS:
+
+1. **Worker-only secret.** `SUPABASE_SERVICE_ROLE_KEY` lives only
+   as a Cloudflare Worker secret (set via `wrangler secret put`),
+   and locally in `.dev.vars` (gitignored). It is NEVER bundled
+   into the mobile app. The mobile `EXPO_PUBLIC_*` env layer is
+   designed to leak to clients; the service-role key is on the
+   opposite side of that boundary.
+2. **Strict route allowlist.** The Worker exposes exactly five
+   connector reads — `/api/work_status`, `/api/coder_lanes`,
+   `/api/build_status`, `/api/handoff`, `/api/terminal_summary`.
+   Every other path returns 404. There is no SQL passthrough,
+   no `query` parameter, no path-traversal opportunity.
+3. **No arbitrary Supabase queries.** The adapter in
+   `cloudflare-worker/src/supabase.ts` exposes only hardcoded
+   `fetch<TableName>` helpers that target the four named
+   `connector_*` tables. There is no public method that accepts
+   a free-form SQL string or a caller-supplied table name.
+4. **Connector-table-only code paths.** All Supabase calls in
+   the Worker target the `connector_*` set; there is no read
+   path to `auth.users`, `normalized_daily_metrics`,
+   `raw_source_events`, or any other user table. A future need
+   for those reads requires a new adapter method + doc commit.
+5. **Admin-token gate on every connector route.** Even with
+   the URL allowlist, every route requires the
+   `x-athlete-memory-token` header to match the Worker's
+   `ATHLETE_MEMORY_API_TOKEN` secret. Missing/wrong → 403 with
+   no body leak.
+
+RLS is still **enabled with no policies** as defence-in-depth: if
+a future caller swaps the Worker's service-role key for an
+`anon` key by mistake, RLS denies the read instead of silently
+returning rows.
+
+The mobile app NEVER reads these tables directly — it only sees
+the redacted JSON payloads returned by the Worker after
+admin-token gating.
 
 ## Tables
 
@@ -76,12 +103,11 @@ liveStatus / repoStatus / nextAction etc.).
 
 ### `connector_coder_lanes` (one row per `lane_id`)
 
-Holds one `CoderLaneRow` payload per lane. The `status` column
-is denormalised from `payload->>'status'` so the Worker can do
-"give me all blocked lanes" without a json-expression index. The
-allowed `lane_id` set is locked to the `LaneId` enum.
-
-Index: `connector_coder_lanes_status_updated (status, updated_at desc)`.
+Holds one `CoderLaneRow` payload per lane. The `lane_id` column
+is the primary key (the fixed-key equivalent of `id = 'current'`)
+and is locked to the `LaneId` enum via a `check` constraint.
+Status lives inside the payload jsonb; the Worker filters in
+code.
 
 ### `connector_build_status` (single row)
 
