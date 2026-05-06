@@ -38,6 +38,7 @@ import {
 } from '../src/store/owner-backlog-store';
 import { useOwnerWorkflowStore } from '../src/store/owner-workflow-store';
 import { useAuditEventStore } from '../src/store/audit-event-store';
+import { fetchAgentStatus, type AgentStatusEntry } from '../src/services/agent-status-client';
 import {
   buildClaudeCodePrompt,
   buildClaudeChromePrompt,
@@ -320,6 +321,8 @@ export default function AdminDevScreen() {
           <Text style={styles.chipBody}>{NEXT_ACTION}</Text>
         </View>
       </Section>
+
+      <AgentStatusSection />
 
       <Section title="AI Coach status">
         <Row label="Backend reachable" value={health == null ? '—' : health.ok ? 'yes ✓' : 'no'} />
@@ -704,6 +707,76 @@ const STANDING_TOP_FIVE: string[] = [
   '4. Grappler Readiness Batch C — TrainingSession schema',
   '5. Grappler Readiness Batch D — bucket-ring UI',
 ];
+
+function AgentStatusSection() {
+  const [agents, setAgents] = useState<Record<string, AgentStatusEntry | null> | null>(null);
+  const [generatedAt, setGeneratedAt] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    const data = await fetchAgentStatus();
+    if (data) {
+      setAgents(data.agents);
+      setGeneratedAt(data.generatedAt);
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    void refresh();
+    const t = setInterval(() => { void refresh(); }, 30_000);
+    return () => clearInterval(t);
+  }, [refresh]);
+
+  const order = ['claude', 'codex', 'claude-code-guide', 'other'] as const;
+  const populated = agents
+    ? order.filter((k) => agents[k] != null) as Array<typeof order[number]>
+    : [];
+
+  return (
+    <Section title="Coder status">
+      <Text style={styles.note}>
+        Owner-only. Reads `data/agent-status/*.json` written by `scripts/mark-agent-done.sh` on the backend. Refreshes every 30s.
+      </Text>
+      <Pressable style={[styles.btn, loading && { opacity: 0.5 }]} disabled={loading} onPress={refresh}>
+        <Text style={styles.btnText}>{loading ? 'Refreshing…' : 'Refresh now'}</Text>
+      </Pressable>
+      {generatedAt && <Row label="Last fetched" value={new Date(generatedAt).toLocaleTimeString()} />}
+      {agents == null && !loading && (
+        <Text style={styles.note}>Backend not reachable — connector route may not be deployed yet.</Text>
+      )}
+      {agents != null && populated.length === 0 && (
+        <Text style={styles.note}>No agent has reported a status yet. Run scripts/mark-agent-done.sh to seed one.</Text>
+      )}
+      {populated.map((agent) => {
+        const e = agents![agent]!;
+        const tone =
+          e.status === 'done' ? '#4ade80'
+          : e.status === 'in_progress' ? '#d4e157'
+          : e.status === 'needs_review' ? '#ffa500'
+          : e.status === 'blocked' ? '#ff8a8a'
+          : '#888';
+        return (
+          <View key={agent} style={[styles.row, { flexDirection: 'column', alignItems: 'flex-start', gap: 4 }]}>
+            <Text style={[styles.rowLabel, { color: tone }]}>
+              {agent} · {e.status}
+            </Text>
+            {e.task.length > 0 && <Text style={styles.rowValue}>Task: {e.task}</Text>}
+            {e.summary.length > 0 && <Text style={[styles.rowValue, { textAlign: 'left' }]} numberOfLines={4}>{e.summary}</Text>}
+            {e.verification.length > 0 && <Text style={styles.rowValue}>Verified: {e.verification}</Text>}
+            {e.nextAction.length > 0 && <Text style={[styles.rowValue, { color: '#d4e157' }]}>Next: {e.nextAction}</Text>}
+            {e.updatedAt && (
+              <Text style={[styles.rowValue, { opacity: 0.6, fontSize: 10 }]}>
+                Updated {new Date(e.updatedAt).toLocaleString()}
+              </Text>
+            )}
+          </View>
+        );
+      })}
+    </Section>
+  );
+}
 
 function AuditSummarySection() {
   const events = useAuditEventStore((s) => s.events);

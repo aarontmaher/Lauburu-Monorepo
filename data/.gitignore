@@ -1,0 +1,4 @@
+# Ignore actual agent-status writes (they may contain run summaries
+# that aren't useful in git history) but keep the dir + .gitkeep.
+agent-status/*.json
+!agent-status/.gitkeep

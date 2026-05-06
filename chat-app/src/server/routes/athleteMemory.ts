@@ -1457,6 +1457,54 @@ router.get('/admin/work-status', requireAdminToken, async (_req: any, res: any) 
   }
 });
 
+// GET /api/athlete-memory/admin/agent-status
+//
+// Owner-only "what is the AI agent doing right now" surface. Reads
+// per-agent status JSON files from `data/agent-status/<agent>.json`
+// (written by `scripts/mark-agent-done.sh`). Same `requireAdminToken`
+// gate as the rest of /admin.
+//
+// Hard contract:
+//   - response is structured, not free-form.
+//   - file shape is fixed: agent / status / task / summary /
+//     verification / nextAction / updatedAt.
+//   - no shell execution, no path traversal: agent name comes from
+//     a fixed allowlist matching the script's allowlist.
+//   - if no status file exists yet for an agent, returns null for
+//     that slot (mobile renders "no recent updates").
+router.get('/admin/agent-status', requireAdminToken, async (_req: any, res: any) => {
+  const fs = await import('fs/promises');
+  const path = await import('path');
+  const AGENTS = ['claude', 'codex', 'claude-code-guide', 'other'] as const;
+  const STATUS_DIR = path.resolve(__dirname, '../../../../data/agent-status');
+  const out: Record<string, any> = {};
+  for (const agent of AGENTS) {
+    try {
+      const file = path.join(STATUS_DIR, `${agent}.json`);
+      const raw = await fs.readFile(file, 'utf8');
+      const parsed = JSON.parse(raw);
+      // Defense-in-depth: only return the keys we expect, in case a
+      // future status writer adds fields we haven't reviewed.
+      out[agent] = {
+        agent: typeof parsed?.agent === 'string' ? parsed.agent : agent,
+        status: typeof parsed?.status === 'string' ? parsed.status : 'unknown',
+        task: typeof parsed?.task === 'string' ? parsed.task.slice(0, 240) : '',
+        summary: typeof parsed?.summary === 'string' ? parsed.summary.slice(0, 1200) : '',
+        verification: typeof parsed?.verification === 'string' ? parsed.verification.slice(0, 240) : '',
+        nextAction: typeof parsed?.nextAction === 'string' ? parsed.nextAction.slice(0, 240) : '',
+        updatedAt: typeof parsed?.updatedAt === 'string' ? parsed.updatedAt : null,
+      };
+    } catch {
+      out[agent] = null;
+    }
+  }
+  res.status(200).json({
+    ok: true,
+    generatedAt: new Date().toISOString(),
+    agents: out,
+  });
+});
+
 // GET /api/athlete-memory/admin/health-sources-status
 //
 // Connector-shaped read-only summary of health-source state across
