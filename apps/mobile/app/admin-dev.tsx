@@ -148,7 +148,6 @@ const STATUS_HANDOFF_TEMPLATE = [
  * renders compact chips, not paragraphs.
  */
 const CURRENT_PRIORITY = 'Apple Health (iPhone — Aaron) + Health Connect (Android — girlfriend) usable for daily testing.';
-const ANDROID_PROOF_RESULT = 'PROVEN end-to-end (tester v14 received). Current repo target: Android v17 / iOS Build 18.';
 const NEXT_ACTION = 'Track Android v17 GitHub Actions / EAS result, then test Apple Health on iPhone + Health Connect on Android from the paired tester builds.';
 
 function compactGitCommit(value: unknown): string {
@@ -323,6 +322,17 @@ export default function AdminDevScreen() {
   const iosBuildAvailable = adminStatus?.iosBuildWorkflowAvailable === true;
   const androidBuildAvailable = adminStatus?.androidBuildWorkflowAvailable === true;
   const dispatchAvailable = adminStatus?.workflowDispatchAvailable === true;
+  const connectorWork = connectorSnapshot?.workStatus ?? null;
+  const nowPriority = connectorWork?.currentPriority ?? CURRENT_PRIORITY;
+  const nowBlocker = connectorWork?.currentBlocker ?? 'No MCP blocker reported.';
+  const nowNextAction = connectorWork?.nextAction ?? NEXT_ACTION;
+  const mcpStatus = isAdmin
+    ? connectorSnapshot
+      ? `MCP ${connectorSnapshot.source === 'mcp' ? 'connected' : 'fallback'} · ${new Date(connectorSnapshot.checkedAt).toLocaleTimeString()}`
+      : refreshing
+        ? 'MCP refreshing…'
+        : 'MCP not connected'
+    : null;
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -333,20 +343,23 @@ export default function AdminDevScreen() {
       <Section title="Now">
         <View style={styles.chipBlock}>
           <Text style={styles.chipLabel}>Priority</Text>
-          <Text style={styles.chipBody}>{CURRENT_PRIORITY}</Text>
+          <Text style={styles.chipBody}>{nowPriority}</Text>
         </View>
         <View style={styles.chipBlock}>
-          <Text style={styles.chipLabel}>Android proof result</Text>
-          <Text style={styles.chipBody}>{ANDROID_PROOF_RESULT}</Text>
+          <Text style={styles.chipLabel}>Blocker</Text>
+          <Text style={styles.chipBody}>{nowBlocker}</Text>
         </View>
         <View style={styles.chipBlock}>
           <Text style={styles.chipLabel}>Next action</Text>
-          <Text style={styles.chipBody}>{NEXT_ACTION}</Text>
+          <Text style={styles.chipBody}>{nowNextAction}</Text>
         </View>
+        {mcpStatus && (
+          <Text style={styles.note}>{mcpStatus}</Text>
+        )}
       </Section>
 
-      <AgentStatusSection />
       {isAdmin && <ConnectorStatusSection snapshot={connectorSnapshot} refreshing={refreshing} onRefresh={refresh} />}
+      <AgentStatusSection />
 
       <Section title="AI Coach status">
         <Row label="Backend reachable" value={health == null ? '—' : health.ok ? 'yes ✓' : 'no'} />
