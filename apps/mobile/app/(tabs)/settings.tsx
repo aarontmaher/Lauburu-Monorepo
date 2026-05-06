@@ -1105,7 +1105,8 @@ export default function SettingsScreen() {
   const isAdmin = userEmail != null && ADMIN_EMAILS.has(userEmail.toLowerCase());
   const devUnlocked = useDevUnlockStore((s) => s.unlocked);
   const unlockDevTools = useDevUnlockStore((s) => s.unlock);
-  const showDevTools = isAdmin || devUnlocked;
+  const localDevAccess = __DEV__ && devUnlocked;
+  const showDevTools = isAdmin || localDevAccess;
   const buildInfo = getAppBuildInfo();
   const versionTapsRef = useState({ count: 0, ts: 0 })[0];
   const handleVersionTap = () => {
@@ -1200,7 +1201,7 @@ export default function SettingsScreen() {
             <Text style={styles.rowLabel}>Developer tools</Text>
             <Text style={[styles.rowValue, { color: '#d4e157' }]}>Open</Text>
           </Pressable>
-        ) : (
+        ) : __DEV__ ? (
           <Pressable
             style={styles.row}
             onPress={() => {
@@ -1223,7 +1224,7 @@ export default function SettingsScreen() {
             <Text style={[styles.rowLabel, { opacity: 0.55 }]}>Project owner mode</Text>
             <Text style={[styles.rowValue, { opacity: 0.45 }]}>Off</Text>
           </Pressable>
-        )}
+        ) : null}
       </View>
     </ScrollView>
   );

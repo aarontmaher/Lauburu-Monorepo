@@ -250,7 +250,8 @@ export default function AdminDevScreen() {
   const isAdmin = userEmail != null && ADMIN_EMAILS.has(userEmail.toLowerCase());
   const devUnlocked = useDevUnlockStore((s) => s.unlocked);
   const lockDevTools = useDevUnlockStore((s) => s.lock);
-  const accessGranted = isAdmin || devUnlocked;
+  const localDevAccess = __DEV__ && devUnlocked;
+  const accessGranted = isAdmin || localDevAccess;
 
   const [health, setHealth] = useState<BackendHealth | null>(null);
   const [adminStatus, setAdminStatus] = useState<AdminStatus | null>(null);
@@ -555,8 +556,8 @@ export default function AdminDevScreen() {
       </Section>
 
       <Section title="Access">
-        <Row label="Source" value={isAdmin ? 'admin email' : devUnlocked ? 'local unlock' : '—'} />
-        {!isAdmin && devUnlocked && (
+        <Row label="Source" value={isAdmin ? 'admin email' : localDevAccess ? 'local dev unlock' : '—'} />
+        {!isAdmin && localDevAccess && (
           <Pressable
             style={[styles.btn, { backgroundColor: 'rgba(255,80,80,0.12)', borderColor: 'rgba(255,80,80,0.4)' }]}
             onPress={async () => {
