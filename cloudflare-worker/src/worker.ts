@@ -42,6 +42,7 @@ import {
 } from './supabase';
 import { handleMcp } from './mcp';
 import { handleMcpPublic } from './mcp-public';
+import { buildControlCentreSnapshot } from './control-centre';
 
 interface ConnectorMeta {
   generatedAt: string;
@@ -381,6 +382,7 @@ export default {
           'GET /api/build_status',
           'GET /api/handoff',
           'GET /api/terminal_summary',
+          'GET /api/control_centre',
         ],
       });
     }
@@ -558,6 +560,13 @@ export default {
         }));
       }
       return jsonResponse(applyConnectorRedaction(placeholderHandoff(env)));
+    }
+
+    if (request.method === 'GET' && path === '/api/control_centre') {
+      const auth = requireAdminToken(request, env);
+      if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
+      const snapshot = await buildControlCentreSnapshot(env);
+      return jsonResponse(applyConnectorRedaction(snapshot));
     }
 
     if (request.method === 'GET' && path === '/api/terminal_summary') {
