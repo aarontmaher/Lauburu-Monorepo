@@ -202,3 +202,103 @@ curl -sS \
 ```
 
 Run after the next Railway deploy to confirm the route is live.
+
+## MCP connector routes (`/api/*` — added in commit `b6fe1ad`)
+
+Mounted under `/api/` (snake_case, distinct from the kebab-case
+`/api/athlete-memory/admin/*` family). Same admin token,
+different URL form. All four are GET-only today; the bridge
+writers (`POST /lane-status`, `POST /terminal-summary`) land
+when the tmux producer ships.
+
+```sh
+export RAILWAY_API_BASE="https://lauburu-ai-backend-production.up.railway.app"
+# ATHLETE_MEMORY_TOKEN: never paste in chat — load from your local
+# password manager / Mac Keychain.
+
+# 1. Work status
+curl -sS \
+  -H "Accept: application/json" \
+  -H "x-athlete-memory-token: $ATHLETE_MEMORY_TOKEN" \
+  "$RAILWAY_API_BASE/api/work_status" | jq
+
+# Expected (admin token elided, dummy data while bridge is offline):
+# {
+#   "schemaVersion": 1,
+#   "generatedAt": "2026-05-06T...Z",
+#   "currentPriority": "Backend/API connector dummy routes ...",
+#   "currentBlocker": "tmux bridge is not operational yet; ...",
+#   "liveStatus": {
+#     "androidVersionCode": 17,
+#     "iosBuildNumber": "18",
+#     "androidPlayTrack": "internal",
+#     "iosTestflightGroup": "Team (Expo)",
+#     "lastRailwayDeployAt": null,
+#     "cloudflareWorkerDeployed": false
+#   },
+#   "repoStatus": { "head": "unknown", ... },
+#   "nextAction": "Connect tmux bridge producer, ..."
+# }
+
+# 2. Coder lanes
+curl -sS \
+  -H "Accept: application/json" \
+  -H "x-athlete-memory-token: $ATHLETE_MEMORY_TOKEN" \
+  "$RAILWAY_API_BASE/api/coder_lanes" | jq '.lanes[] | {laneId, status, nextPrompt}'
+
+# Expected (placeholder while bridge is offline):
+# { "laneId": "claude", "status": "idle",    "nextPrompt": "CLAUDE-REVIEW-MCP-DUMMY-ROUTES-01" }
+# { "laneId": "codex",  "status": "working", "nextPrompt": null }
+
+# 3. Build status
+curl -sS \
+  -H "Accept: application/json" \
+  -H "x-athlete-memory-token: $ATHLETE_MEMORY_TOKEN" \
+  "$RAILWAY_API_BASE/api/build_status" | jq
+
+# 4. Handoff
+curl -sS \
+  -H "Accept: application/json" \
+  -H "x-athlete-memory-token: $ATHLETE_MEMORY_TOKEN" \
+  "$RAILWAY_API_BASE/api/handoff" | jq
+
+# 5. Refused without admin token
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H "Accept: application/json" \
+  "$RAILWAY_API_BASE/api/work_status"
+# Expected: 403
+
+# 6. Disabled when ATHLETE_MEMORY_API_TOKEN env unset on the server
+# Expected: 503 with `{ ok: false, error: 'Connector routes disabled until ATHLETE_MEMORY_API_TOKEN is configured.' }`
+```
+
+### Local schema test (no Railway needed)
+
+The repo ships a self-contained schema test that boots the
+Express app on an ephemeral port and asserts the response
+shapes match `chat-app/src/server/types/connector.ts`:
+
+```sh
+cd chat-app
+npx tsx src/server/scripts/test-mcp-routes.ts
+# Expected stdout: "MCP route schema tests passed."
+```
+
+### Status (2026-05-06, HEAD `b6fe1ad`)
+
+- **Local schema tests:** PASS (run via `npx tsx`).
+- **Live on Railway:** **NOT YET** — `b6fe1ad` is on `main`; the
+  next Railway deploy of `chat-app` is needed before the curls
+  above resolve to the new routes.
+- **Sanitization:** routes return static strings only; no
+  user-content yet, so the redactor is not exercised. Once the
+  tmux bridge populates real lane summaries, the route layer
+  must apply `redactTokenLikeSubstrings()` at the response
+  boundary per `docs/CONNECTOR_SANITIZATION_RULES.md`.
+- **Bridge state:** read-only stub (`getLaneSummaries()`
+  returns hardcoded rows). The Stage-1 producer
+  (`scripts/bridge-snapshot-lanes.sh`) is still planned per
+  `LOCAL_BRIDGE_COMMAND_ALLOWLIST.md`.
+- **Safe to deploy:** YES for the routes themselves (admin-token
+  gated, no writes, no secrets in the payload). The dummy data
+  is a docs-grade placeholder, not a security risk.
