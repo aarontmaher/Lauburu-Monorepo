@@ -1,9 +1,12 @@
 # App developments — repo-backed roadmap
 
 Single source of truth for the **active** roadmap Aaron carries
-between the laptop terminal, ChatGPT chats, and Apple Notes. The
-in-app Admin/Dev "Backlog" card mirrors this file. When the file
-changes, the next paired build picks it up — no live-fetch
+between the laptop terminal, ChatGPT chats, and the phone
+Admin/Dev control centre. Apple Notes is now stale as a roadmap:
+it is a human scratchpad only. Anything intended to drive work
+must be promoted into this repo-backed roadmap / backlog flow.
+The in-app Admin/Dev "Backlog" card mirrors this file. When the
+file changes, the next paired build picks it up — no live-fetch
 required yet (the long-term shape is the connector reading this
 via the MCP route layer once Supabase is wired).
 
@@ -20,23 +23,36 @@ Updated 2026-05-07.
 
 ## Active priority order
 
-The MCP terminal bridge moved to **Priority 1** because every
-other priority benefits from ChatGPT being able to read Claude /
-Codex lane status without screenshots. The remaining priorities
-keep their relative order from the previous backlog.
+The MCP connector/control-centre path is **Priority 1** because
+every other priority benefits from ChatGPT being able to read
+Claude / Codex lane status without screenshots. The remaining
+priorities keep their relative order below that app-control lane.
 
 ### 1. Screenshot-free MCP terminal bridge / control centre (Priority 1) — IN FLIGHT
 
 ChatGPT and the mobile Admin/Dev surface should read Claude /
 Codex lane status, build state, handoff, and recent terminal
-summaries from one admin-token-gated set of HTTP routes — no
-Termius screenshots, no manual paste.
+summaries from one admin-token-gated read path — no Termius
+screenshots, no manual paste, no raw terminal control.
+
+Priority 1 has three inseparable pieces:
+
+1. **ChatGPT-compatible MCP connector auth/read path** — the
+   Worker exposes the MCP protocol and REST `/api/*` read routes,
+   authenticated by the existing owner token.
+2. **Screenshot-free terminal status** — the local bridge writes
+   sanitized `coder_lanes`, `terminal_summary`, `handoff`, and
+   `work_status` state without storing raw pane logs.
+3. **App Admin/Dev status consumer** — the phone reads
+   `EXPO_PUBLIC_MCP_BASE_URL` and renders owner-only status cards
+   for Aaron.
 
 | Component | Status |
 |---|---|
 | Cloudflare Worker (`lauburu-mcp-preview`) | **live** — `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/` |
 | Worker admin-token gate | **live** — every connector route 403s without `x-athlete-memory-token` |
 | Worker routes (`/api/work_status`, `/api/coder_lanes`, `/api/build_status`, `/api/handoff`, `/api/terminal_summary`) | **live** — placeholder + `dataSource.schemaRequired` payload until Supabase wires |
+| MCP protocol endpoint (`POST /mcp`) | **live** — ChatGPT-compatible tool calls for the same five read objects |
 | Local tmux bridge (`scripts/bridge-snapshot-lanes.sh` / `npm run bridge:snapshot`) | **live** — writes 4 sanitised JSON artifacts to `data/agent-status/lanes/` |
 | Bridge artifact schema test (`npm run bridge:verify`) | **live** |
 | Live worker integration test (`npm run mcp:test:live`) | **live** — 11/11 assertions pass |
@@ -180,12 +196,17 @@ priority — they are the floor below every priority.
   redactor; Worker / chat-app responses pass through the same
   redactor at the boundary.
 - **Do not touch grappling.opml content** — off-limits.
+- **Agent role boundary.** Agent work is app UX audit worker work
+  only: observe screens, find clutter/regressions, and propose or
+  patch small mobile UX fixes when explicitly assigned. Agent is
+  not a backend deployer, not an MCP auth owner, not a Supabase
+  operator, and not a build dispatcher.
 
 ## Top 5 priorities (the answer to "what's next")
 
 In order:
 
-1. **MCP terminal bridge** — apply `supabase/migrations/0003_connector_status_tables.sql` and set the two Worker secrets so the connector routes flip from `placeholder` to `supabase`. Once that's done, the phone can read Claude / Codex status without screenshots.
+1. **MCP connector/control-centre read path** — ChatGPT-compatible MCP auth/read path, screenshot-free terminal status, and app Admin/Dev status consumer. Apply `supabase/migrations/0003_connector_status_tables.sql` and set the two Worker secrets so the connector routes flip from `placeholder` to `supabase`.
 2. **Health / Data Source reliability** — verify Apple Health on Aaron's iPhone + Health Connect on girlfriend's Android first; then continue WHOOP / Polar / exports / nutrition without blocking the primary daily sources.
 3. **UX / IA cleanup** — keep daily/frequent workflows in feature tabs and rare/admin/config/debug in Settings/AdminDev unless an urgent tester blocker jumps the queue.
 4. **Cautious Grappler Readiness Batches B / C / D** — architecture/schema + gated UI work only; no overclaiming and no user-facing readiness score until explicitly allowed.

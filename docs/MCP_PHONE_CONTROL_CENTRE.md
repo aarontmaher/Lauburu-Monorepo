@@ -3,6 +3,11 @@
 How Aaron (or ChatGPT) checks Claude / Codex lane status from the
 phone — no Termius screenshots required.
 
+This is the top app-control priority until Aaron can read
+ChatGPT-compatible MCP connector status, screenshot-free terminal
+status, and mobile Admin/Dev status from the same Worker-backed
+read path.
+
 This runbook is the bridge between three pieces:
 
 1. **Local tmux bridge** —
@@ -18,7 +23,13 @@ This runbook is the bridge between three pieces:
 3. **Mobile app Admin/Dev** —
    `apps/mobile/src/services/connector-status-client.ts` calls
    the Worker via `EXPO_PUBLIC_MCP_BASE_URL` and renders the
-   four lane summaries.
+   owner-only control-centre cards: work status, coder lanes,
+   build status, handoff, and terminal summary.
+
+Apple Notes is not part of this control loop. It can hold rough
+human notes, but status that should steer Claude / Codex / ChatGPT
+must land in repo docs, bridge artifacts, Supabase connector
+tables, or Admin/Dev.
 
 Updated 2026-05-07.
 

@@ -1,9 +1,11 @@
 # In-app Dev Backlog / Notepad — plan
 
 Replaces Apple Notes as the structured source of truth for owner
-backlog. Apple Notes stays as the raw brain-dump surface; the
-in-app Dev Backlog is the **structured** state that ChatGPT,
-Claude, Codex, and the connector tools read.
+backlog. Apple Notes is now a human scratchpad only; it is stale
+for planning until an item is promoted into the repo-backed
+roadmap/backlog or captured in Admin/Dev. The in-app Dev Backlog
+is the **structured** state that ChatGPT, Claude, Codex, and the
+connector tools read.
 
 Companion to `FEEDBACK_PRIORITY_MODEL.md` (the priority ladder),
 `CONNECTOR_BACKLOG_TOOLS_PLAN.md` (read/write tools spec),
@@ -25,7 +27,9 @@ Claude / Codex can read+write the same items without any human
 re-formatting.
 
 Apple Notes is NOT replaced for free-form thinking. It stays as
-the journal. The Dev Backlog is for items that will move forward.
+the journal/scratchpad. It is not authoritative, not
+machine-readable, and not a place to mark work done. The Dev
+Backlog is for items that will move forward.
 
 ## Sections (Admin/Dev → Dev Backlog)
 

@@ -13,6 +13,22 @@ Companion to `APP_DEVELOPMENTS.md` (the active priorities),
 
 Updated 2026-05-07.
 
+## Source of truth
+
+Repo docs are the source of truth for backlog and roadmap state:
+
+- `docs/APP_DEVELOPMENTS.md` — active top priorities and manual
+  owner steps.
+- `docs/BACKLOG_AUTOMATION_SYSTEM.md` — how items move through
+  capture, triage, prompt, coding, terminal bridge result, Aaron
+  approval, and done/return.
+- `docs/MCP_PHONE_CONTROL_CENTRE.md` — phone-first runbook for
+  the MCP connector/control-centre read path.
+
+Apple Notes is stale for planning. It remains a human scratchpad
+for rough thoughts only. A note does not become backlog until it
+is copied into the repo-backed flow or captured in Admin/Dev.
+
 ## Three lanes
 
 ### Lane 1 — Safe autopilot (no confirmation)
@@ -156,6 +172,23 @@ or a connector observation, but the promotion path is identical:
 No item is removed from the backlog solely because a coder claims
 it is done. Removal / archive requires Aaron approval or an
 explicit doc commit that names why the item is complete.
+
+Functional-result rule: do not remove an item from the active
+backlog until Aaron approves the functional in-app result. Passing
+typecheck, committing code, or seeing a green workflow is not
+enough when the item is user-facing. If Aaron has not confirmed
+the app behaviour on the relevant screen/device, mark the item
+`repo_only`, `built`, `needs_review`, or `blocked` and keep it in
+the backlog.
+
+## Agent role boundary
+
+Agent is an app UX audit worker only. Its job is to inspect normal
+tester screens, identify clutter/regressions, and produce focused
+UX cleanup prompts or small mobile UI patches when explicitly
+assigned. Agent must not own backend deploys, MCP auth/OAuth,
+Supabase migrations/secrets, build dispatches, billing, health
+source logic, or app version/build bumps.
 
 ## UX / IA placement rule
 
