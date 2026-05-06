@@ -104,6 +104,48 @@ Each row carries:
   specified window.
 - **audit**: none.
 
+### `BRIDGE_SNAPSHOT_LANES`
+
+- **script**: `scripts/bridge-snapshot-lanes.sh`
+- **state**: live (Stage 1 of the local tmux bridge).
+- **lane**: Lane 1 (read-only — captures tmux pane content,
+  classifies status, writes a JSON snapshot to disk).
+- **inputs**: none. Lane → tmux session map is hardcoded:
+  - `lauburu` → `claude`
+  - `codex-lauburu` → `codex`
+- **effect**: writes
+  `data/agent-status/lanes/coder_lanes.json` (CoderLanes
+  payload) and per-lane snapshots
+  `data/agent-status/lanes/<laneId>.json` (CoderLaneRow). All
+  string fields pass through the two-pass redactor in
+  `docs/CONNECTOR_SANITIZATION_RULES.md`. Path entries pass
+  through the file-path masking rules; secret-shaped basenames
+  are dropped, host-absolute paths are replaced with
+  `<host_path>`. Long fields are truncated at word boundaries
+  (`lastSummary` ≤ 1200 chars).
+- **audit**: the JSON files ARE the audit row; future bridge
+  writers (planned `POST /admin/lane-status` route per
+  `chat-app/src/server/types/connector.ts`
+  `LaneStatusWritePayload`) will pick these up. No event log
+  yet.
+- **safety**:
+  - Subprocess calls are fixed-argv only (`tmux`, `git`).
+    No `shell=True`, no `eval`, nothing from pane content
+    reaches a shell.
+  - Pane buffer is read but never executed.
+  - Lane id validated against the `LaneId` enum at write time;
+    unknown lanes are dropped.
+  - Status defaults to `idle` on any read failure (NEVER
+    fabricates `working` / `done`).
+  - Detection of `done` requires both a pane-claim signal AND
+    a clean `git status` per
+    `docs/CONNECTOR_SANITIZATION_RULES.md` § Lane-status
+    detection.
+- **rejection criteria**: tmux not installed → exit 1 with
+  `::error::tmux not installed`. python3 missing → exit 1 with
+  `::error::python3 not installed`. Any unknown lane id in the
+  hardcoded map → silently skipped (won't be written).
+
 ## Planned commands (NOT executed by any runtime today)
 
 Each entry below is documented for Phase 2 / Phase 3 of the

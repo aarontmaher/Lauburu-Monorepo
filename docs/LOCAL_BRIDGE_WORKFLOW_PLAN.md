@@ -78,9 +78,29 @@ matches what the route will accept — no migration when wired.
 Done when: capture stores items locally, lists them, allows ship
 / delete. Confirmed.
 
-## Stage 5 — Local Mac / tmux bridge (PLANNED, not started)
+## Stage 5 — Local Mac / tmux bridge (Stage 1 LIVE; Stages 2–5 PLANNED)
 
-Status: planned only. No code, no opt-in flag, no dependency.
+Status: **Stage 1 producer LIVE** —
+`scripts/bridge-snapshot-lanes.sh` reads pane content for the
+`lauburu` and `codex-lauburu` tmux sessions and writes
+sanitised CoderLanes JSON to
+`data/agent-status/lanes/`. No daemon, no network, no
+side-effecting actions yet — just read-only snapshots.
+See `docs/LOCAL_BRIDGE_COMMAND_ALLOWLIST.md` →
+`BRIDGE_SNAPSHOT_LANES`.
+
+Run it manually:
+
+```sh
+./scripts/bridge-snapshot-lanes.sh
+# wrote /Users/.../data/agent-status/lanes/coder_lanes.json
+#   lane=claude  status=working dirty=N currentPrompt=… lastPrompt=…
+#   lane=codex   status=working dirty=N currentPrompt=… lastPrompt=…
+```
+
+Stages 2–5 below remain planned — the daemon, push to the
+backend, the Tailscale URL, and the predefined action set are
+all gated by the eight hard rules below.
 
 Closes: "I want the phone to drop a single approved instruction
 into the laptop's tmux session that already has Claude Code
