@@ -70,20 +70,22 @@ function buildMeta(env: Env): ConnectorMeta {
 }
 
 /**
- * Returns the Supabase data-source descriptor for a connector
- * route. When Supabase is wired and the named table exists, the
- * descriptor flips to `{ source: 'supabase', table }`. Until then
- * it surfaces the schema requirement so consumers self-document
- * the gap.
+ * Placeholder data-source descriptor used by the placeholder
+ * builders. Always reports `source: 'placeholder'`. When the
+ * adapter is configured but the table is empty, reason is
+ * `'table_empty'`; when the adapter itself is not configured,
+ * reason mirrors the adapter's failure mode.
  */
 function dataSourceFor(env: Env, route: ConnectorRouteKey) {
   const adapter = getSupabaseAdapter(env);
   const schema = CONNECTOR_SCHEMA_REQUIREMENTS[route];
   if (adapter.configured) {
     return {
-      source: 'supabase' as const,
-      table: schema.table,
-      note: 'Supabase env configured. Table read attempted; falls back to placeholder if the table is missing.',
+      source: 'placeholder' as const,
+      reason: 'table_empty' as const,
+      message:
+        `Supabase env configured but ${schema.table} returned no rows. Bridge upsert needed before this route serves live data.`,
+      schemaRequired: schema,
     };
   }
   return {

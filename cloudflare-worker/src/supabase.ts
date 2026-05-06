@@ -52,10 +52,11 @@ export interface SupabaseAdapter {
   /**
    * Fetches every row for a key-per-row envelope (e.g.
    * connector_coder_lanes keyed by lane_id). Returns the raw payload
-   * jsonb plus the row's lane_id / status so callers can synthesise
-   * a CoderLanes aggregate.
+   * jsonb plus the row's lane_id so callers can synthesise a
+   * CoderLanes aggregate. Status lives inside `payload`, not as a
+   * column.
    */
-  fetchCoderLaneRows(): Promise<Array<{ lane_id: string; status: string; payload: unknown }> | null>;
+  fetchCoderLaneRows(): Promise<Array<{ lane_id: string; payload: unknown }> | null>;
   /**
    * Fetches the most recent N entries from connector_terminal_summary,
    * ordered by generated_at desc (matches the migration's index).
@@ -89,11 +90,17 @@ export function getSupabaseAdapter(env: Env): SupabaseAdapter | SupabaseUnavaila
     };
   }
 
-  if (!key.startsWith('eyJ')) {
+  // Accept both Supabase key formats:
+  //   - Legacy service-role JWT: starts with `eyJ`
+  //   - New secret API key:      starts with `sb_secret_`
+  // Both authenticate the same way (apikey + Authorization Bearer) and
+  // both bypass RLS, so the adapter behaviour is identical.
+  if (!key.startsWith('eyJ') && !key.startsWith('sb_secret_')) {
     return {
       configured: false,
       reason: 'env_key_invalid',
-      message: 'SUPABASE_SERVICE_ROLE_KEY does not look like a Supabase JWT (expected `eyJ…`).',
+      message:
+        'SUPABASE_SERVICE_ROLE_KEY does not look like a Supabase service-role key (expected `eyJ…` JWT or `sb_secret_…`).',
     };
   }
 
@@ -137,8 +144,8 @@ export function getSupabaseAdapter(env: Env): SupabaseAdapter | SupabaseUnavaila
       return rows[0]?.payload ?? null;
     },
     async fetchCoderLaneRows() {
-      return safeJson<Array<{ lane_id: string; status: string; payload: unknown }>>(
-        'connector_coder_lanes?select=lane_id,status,payload&order=lane_id.asc',
+      return safeJson<Array<{ lane_id: string; payload: unknown }>>(
+        'connector_coder_lanes?select=lane_id,payload&order=lane_id.asc',
       );
     },
     async fetchTerminalEntries(limit: number) {
