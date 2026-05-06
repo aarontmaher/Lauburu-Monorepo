@@ -10,6 +10,7 @@ import {
 import { Text, View } from '@/components/Themed';
 import { LiveHrPill } from '../../src/components/LiveHrPill';
 import { TrainMachineSection } from '../../src/components/TrainMachineSection';
+import { WeeklyScheduleEditor } from '../../src/components/WeeklyScheduleEditor';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
@@ -31,7 +32,6 @@ import {
   SESSION_PRESETS, SEGMENT_TYPE_LABELS, createDefaultSegments,
   summarizeSession, suggestTrainIntensity, suggestHIITProtocol,
   buildIntervalCoachingNote,
-  DAYS_ORDER, DAY_LABELS, countPlannedSessions,
 } from '@lauburu/shared';
 import type { IntervalCoachingContext } from '@lauburu/shared';
 import { usePreferencesStore } from '../../src/store/preferences-store';
@@ -2249,50 +2249,6 @@ function SessionCard({
 }
 
 // ---------------------------------------------------------------------------
-// Weekly schedule summary card — compact view for the Train tab
-// ---------------------------------------------------------------------------
-
-function WeeklyScheduleSummary() {
-  const router = useRouter();
-  const schedule = usePreferencesStore((s) => s.preferences.schedule);
-  const totalPlanned = useMemo(() => countPlannedSessions(schedule), [schedule]);
-  const dayCounts = useMemo(() => {
-    return DAYS_ORDER.map((day) => ({ day, count: schedule[day]?.length ?? 0 }));
-  }, [schedule]);
-
-  return (
-    <View style={styles.weeklyScheduleCard}>
-      <View style={styles.weeklyScheduleHeader}>
-        <Text style={styles.weeklyScheduleTitle}>Weekly schedule</Text>
-        <Pressable
-          onPress={() => router.push('/(tabs)/settings')}
-          hitSlop={6}
-          accessibilityRole="button"
-          accessibilityLabel="Edit weekly schedule in Settings">
-          <Text style={styles.weeklyScheduleEdit}>{totalPlanned > 0 ? 'Edit' : 'Set schedule'}</Text>
-        </Pressable>
-      </View>
-      {totalPlanned === 0 ? (
-        <Text style={styles.weeklyScheduleEmpty}>
-          Plan your recurring training week. Tap Set schedule to add days in Settings → Coaching Preferences.
-        </Text>
-      ) : (
-        <View style={styles.weeklyScheduleRow}>
-          {dayCounts.map(({ day, count }) => (
-            <View key={day} style={styles.weeklyScheduleCell}>
-              <Text style={styles.weeklyScheduleDay}>{DAY_LABELS[day].slice(0, 3)}</Text>
-              <Text style={[styles.weeklyScheduleCount, count > 0 && styles.weeklyScheduleCountActive]}>
-                {count > 0 ? count : '·'}
-              </Text>
-            </View>
-          ))}
-        </View>
-      )}
-    </View>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Today's plan card with quick-log
 // ---------------------------------------------------------------------------
 
@@ -2616,11 +2572,7 @@ export default function TrainScreen() {
       {/* Today's plan with quick-log */}
       <TodayPlanCard onQuickLog={handleQuickLog} />
 
-      {/* Weekly schedule summary — compact card so the schedule lives
-          in Train (where you actually train) rather than buried in
-          Settings. The full editor still lives in Settings → Coaching
-          Preferences for now to avoid duplicating that big surface. */}
-      <WeeklyScheduleSummary />
+      <WeeklyScheduleEditor />
 
 
       {/* Session type picker — always visible at the top of the

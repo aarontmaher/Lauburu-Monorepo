@@ -480,10 +480,6 @@ function PreferencesSection() {
         onChange={(v) => update({ tone: v })}
       />
 
-      <ScheduleEditor />
-
-      <NutritionTargetsEditor />
-
       <Pressable
         style={[styles.row, { justifyContent: 'space-between' }]}
         onPress={() => update({ comp_prep: !prefs.comp_prep })}>

@@ -748,11 +748,12 @@ function TodayCoachCard() {
     });
   }, [progressMap, updatedAtMap, preferences.goal]);
   const color = READINESS_COLORS[brief.readiness];
+  const platformHealthLabel = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
   const sourceLabel =
     brief.primary_source === 'whoop'
       ? ATHLETE_CAPABILITY_COPY.whoopSourceLabel
       : brief.primary_source === 'insights'
-        ? 'Apple Health'
+        ? platformHealthLabel
         : 'no source';
 
   return (
@@ -884,7 +885,7 @@ function TodayCoachCard() {
           live source; WHOOP only matters when calibration is desired. */}
       {brief.primary_source === 'none' && (
         <Text style={styles.cardBody}>
-          Sync Apple Health (or log a session) to get personalized guidance. WHOOP reference is optional.
+          Sync {platformHealthLabel} or log a session to get personalized guidance. WHOOP reference is optional.
         </Text>
       )}
     </View>

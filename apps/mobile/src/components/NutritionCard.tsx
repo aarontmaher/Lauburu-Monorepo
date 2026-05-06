@@ -32,6 +32,7 @@ import {
 import { BarcodeScanner } from './BarcodeScanner';
 import { submitPhotoProposal, confirmPhotoProposal } from '../services/ai-photo-nutrition';
 import { useAuthStore } from '../store/auth-store';
+import { NutritionTargetsEditor } from './NutritionTargetsEditor';
 
 /**
  * Entry modes exposed to the user. Ordered by real reliability + speed:
@@ -522,6 +523,8 @@ export function NutritionCard() {
           )}
         </View>
       )}
+
+      {!editing && <NutritionTargetsEditor />}
 
       {/* Transient confirmation banner — renders right under the
           header so instantaneous adds have visible feedback. Totals
