@@ -107,62 +107,47 @@ export function getSupabaseAdapter(env: Env): SupabaseAdapter | SupabaseUnavaila
  * issuing reads against Supabase for each connector route. Surfaced
  * in the response payload when `supabaseConfigured` is false so
  * consumers can self-document why the data is provisional.
+ *
+ * Tables follow a thin envelope shape (id / scope / payload jsonb /
+ * source / created_at / updated_at), defined in
+ * `supabase/migrations/0003_connector_status_tables.sql`. The TS
+ * shapes inside `payload` come from
+ * `chat-app/src/server/types/connector.ts`.
  */
 export const CONNECTOR_SCHEMA_REQUIREMENTS = {
   work_status: {
     table: 'connector_work_status',
-    columns: [
-      'id (text, single-row pk = "current")',
-      'updated_at (timestamptz)',
-      'current_priority (text, ≤ 280)',
-      'current_blocker (text, ≤ 280, nullable)',
-      'next_action (text, ≤ 280)',
-      'live_status (jsonb)',
-      'repo_status (jsonb)',
-    ],
-    notes: 'Single-row table. Owner upsert via service-role key.',
+    envelope: ['id', 'scope', 'payload (jsonb = WorkStatus)', 'source', 'created_at', 'updated_at'],
+    migration: 'supabase/migrations/0003_connector_status_tables.sql',
+    notes: 'Single-row envelope (id = "current"). Owner / bridge upsert via service-role key.',
   },
   coder_lanes: {
     table: 'connector_coder_lanes',
-    columns: [
-      'lane_id (text pk, enum: claude|codex|claude_chat|chatgpt|cowork)',
-      'updated_at (timestamptz)',
-      'status (text, enum: idle|working|blocked|needs_user|needs_review|done)',
-      'last_seen_at (timestamptz, nullable)',
-      'current_prompt_id (text, nullable)',
-      'last_prompt_id (text, nullable)',
-      'last_summary (text ≤ 1200, nullable)',
-      'last_commit (text, nullable)',
-      'last_typecheck_result (text, enum: pass|fail|unknown, nullable)',
-      'dirty_files (jsonb array of repo-relative paths)',
-      'next_prompt (text, nullable)',
+    envelope: [
+      'lane_id (pk, enum: claude|codex|claude_chat|chatgpt|cowork)',
+      'scope',
+      'status (denormalised; enum: idle|working|blocked|needs_user|needs_review|done)',
+      'payload (jsonb = CoderLaneRow)',
+      'source',
+      'created_at',
+      'updated_at',
     ],
+    migration: 'supabase/migrations/0003_connector_status_tables.sql',
     notes:
       'Bridge writer (scripts/bridge-snapshot-lanes.sh + future POST consumer) upserts one row per lane.',
   },
   build_status: {
     table: 'connector_build_status',
-    columns: [
-      'id (text, single-row pk = "current")',
-      'updated_at (timestamptz)',
-      'android (jsonb, AndroidBuildStatus shape)',
-      'ios (jsonb, IosBuildStatus shape)',
-    ],
-    notes: 'Owner-tap or release-workflow updates.',
+    envelope: ['id', 'scope', 'payload (jsonb = BuildStatus)', 'source', 'created_at', 'updated_at'],
+    migration: 'supabase/migrations/0003_connector_status_tables.sql',
+    notes: 'Single-row envelope. Owner-tap or release-workflow updates.',
   },
   handoff: {
     table: 'connector_handoff',
-    columns: [
-      'id (text, single-row pk = "current")',
-      'updated_at (timestamptz)',
-      'latest_claude_prompt (text, nullable)',
-      'latest_codex_prompt (text, nullable)',
-      'manual_steps (jsonb array of strings)',
-      'do_not_touch (jsonb array of strings)',
-      'safe_to_build (boolean)',
-      'safe_to_build_reason (text)',
-    ],
-    notes: 'Owner-tap only; safeToBuild flip to true requires owner confirmation.',
+    envelope: ['id', 'scope', 'payload (jsonb = Handoff)', 'source', 'created_at', 'updated_at'],
+    migration: 'supabase/migrations/0003_connector_status_tables.sql',
+    notes:
+      'Single-row envelope. Owner-tap only; safeToBuild flip to true requires owner confirmation.',
   },
 } as const;
 
