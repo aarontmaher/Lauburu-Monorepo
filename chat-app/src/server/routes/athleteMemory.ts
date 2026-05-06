@@ -1472,6 +1472,46 @@ router.get('/admin/work-status', requireAdminToken, async (_req: any, res: any) 
 //     a fixed allowlist matching the script's allowlist.
 //   - if no status file exists yet for an agent, returns null for
 //     that slot (mobile renders "no recent updates").
+/**
+ * Redact token-like substrings from agent-status free-text fields
+ * before serialising. Defense-in-depth: even though the writer
+ * (`scripts/mark-agent-done.sh`) is supposed to keep secrets out
+ * of `task` / `summary` / `verification` / `nextAction`, an
+ * accidental paste of a long random hex / base64 / JWT must not
+ * leak through this admin route. Patterns matched:
+ *   - hex strings ≥ 32 chars
+ *   - base64-ish strings ≥ 24 chars (alphanumeric + `+/=_-`)
+ *   - JWTs (`eyJ…` three-segment)
+ *   - sk-/whsec-/ghp_/ghs_/xoxb-/AKIA-shaped prefixed tokens
+ * Replaces the matched run with `[redacted]` so the surrounding
+ * text stays readable.
+ */
+function redactTokenLikeSubstrings(input: string): string {
+  if (typeof input !== 'string' || input.length === 0) return '';
+  let out = input;
+  // JWTs: header.payload.sig — three base64url segments separated by '.'
+  out = out.replace(/eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}/g, '[redacted]');
+  // Common prefixed secrets.
+  out = out.replace(/\b(?:sk|pk|rk)-[A-Za-z0-9_-]{16,}/g, '[redacted]');
+  out = out.replace(/\bwhsec_[A-Za-z0-9]{20,}/g, '[redacted]');
+  out = out.replace(/\b(?:ghp|ghs|gho|ghu|ghr)_[A-Za-z0-9]{20,}/g, '[redacted]');
+  out = out.replace(/\bxox[abposr]-[A-Za-z0-9-]{20,}/g, '[redacted]');
+  out = out.replace(/\bAKIA[0-9A-Z]{16}\b/g, '[redacted]');
+  // Generic high-entropy strings: hex ≥32 chars and base64-ish ≥24
+  // chars. Bound with word boundaries so legitimate UUIDs (which
+  // are 32 hex chars including dashes) aren't redacted — UUID hex
+  // segments are ≤12 chars between dashes.
+  out = out.replace(/\b[0-9a-fA-F]{32,}\b/g, '[redacted]');
+  out = out.replace(/\b[A-Za-z0-9+/=_-]{24,}\b/g, (match) => {
+    // Keep the match if it's actually a URL path or a UUID — both
+    // contain `-` or `/` patterns that the generic regex catches.
+    // UUID round-trip: 8-4-4-4-12 = 36 chars including dashes.
+    if (/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(match)) return match;
+    return '[redacted]';
+  });
+  return out;
+}
+
 router.get('/admin/agent-status', requireAdminToken, async (_req: any, res: any) => {
   const fs = await import('fs/promises');
   const path = await import('path');
@@ -1484,14 +1524,18 @@ router.get('/admin/agent-status', requireAdminToken, async (_req: any, res: any)
       const raw = await fs.readFile(file, 'utf8');
       const parsed = JSON.parse(raw);
       // Defense-in-depth: only return the keys we expect, in case a
-      // future status writer adds fields we haven't reviewed.
+      // future status writer adds fields we haven't reviewed. Each
+      // free-text field is sliced to a max length AND scrubbed for
+      // token-like substrings (hex / base64 / JWT / common
+      // prefixed-secret shapes) so an accidental paste in
+      // mark-agent-done.sh can't leak through this route.
       out[agent] = {
         agent: typeof parsed?.agent === 'string' ? parsed.agent : agent,
         status: typeof parsed?.status === 'string' ? parsed.status : 'unknown',
-        task: typeof parsed?.task === 'string' ? parsed.task.slice(0, 240) : '',
-        summary: typeof parsed?.summary === 'string' ? parsed.summary.slice(0, 1200) : '',
-        verification: typeof parsed?.verification === 'string' ? parsed.verification.slice(0, 240) : '',
-        nextAction: typeof parsed?.nextAction === 'string' ? parsed.nextAction.slice(0, 240) : '',
+        task: typeof parsed?.task === 'string' ? redactTokenLikeSubstrings(parsed.task.slice(0, 240)) : '',
+        summary: typeof parsed?.summary === 'string' ? redactTokenLikeSubstrings(parsed.summary.slice(0, 1200)) : '',
+        verification: typeof parsed?.verification === 'string' ? redactTokenLikeSubstrings(parsed.verification.slice(0, 240)) : '',
+        nextAction: typeof parsed?.nextAction === 'string' ? redactTokenLikeSubstrings(parsed.nextAction.slice(0, 240)) : '',
         updatedAt: typeof parsed?.updatedAt === 'string' ? parsed.updatedAt : null,
       };
     } catch {

@@ -709,11 +709,25 @@ const STANDING_TOP_FIVE: string[] = [
 ];
 
 function AgentStatusSection() {
+  // Hard gate: this surface is owner-email-allowlisted. The local
+  // 7-tap dev unlock alone is NOT enough — devUnlocked grants
+  // access to the rest of Admin/Dev (read-only diagnostics) but
+  // must NOT pull `Coder status` content because the underlying
+  // statuses can carry summaries Aaron writes (commit refs, run
+  // ids, work-in-progress notes) that are not for testers even if
+  // they've stumbled onto Admin/Dev via the unlock taps.
+  // Re-compute isAdmin here rather than trusting a prop so the
+  // surface is self-protective: if a future caller mounts this
+  // component outside Admin/Dev, the email gate still applies.
+  const userEmail = useAuthStore((s) => s.user?.email ?? null);
+  const isAdmin = userEmail != null && ADMIN_EMAILS.has(userEmail.toLowerCase());
+
   const [agents, setAgents] = useState<Record<string, AgentStatusEntry | null> | null>(null);
   const [generatedAt, setGeneratedAt] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const refresh = useCallback(async () => {
+    if (!isAdmin) return;  // never fetch for non-admin
     setLoading(true);
     const data = await fetchAgentStatus();
     if (data) {
@@ -721,13 +735,22 @@ function AgentStatusSection() {
       setGeneratedAt(data.generatedAt);
     }
     setLoading(false);
-  }, []);
+  }, [isAdmin]);
 
   useEffect(() => {
+    if (!isAdmin) return;  // never poll for non-admin
     void refresh();
     const t = setInterval(() => { void refresh(); }, 30_000);
     return () => clearInterval(t);
-  }, [refresh]);
+  }, [refresh, isAdmin]);
+
+  if (!isAdmin) {
+    return (
+      <Section title="Coder status">
+        <Text style={styles.note}>Coder status is owner-account only.</Text>
+      </Section>
+    );
+  }
 
   const order = ['claude', 'codex', 'claude-code-guide', 'other'] as const;
   const populated = agents
