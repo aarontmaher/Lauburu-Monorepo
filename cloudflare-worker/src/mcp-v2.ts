@@ -153,6 +153,40 @@ async function buildProjectOverview(env: Env): Promise<unknown> {
   };
 }
 
+async function buildProjectWorkStatus(env: Env): Promise<unknown> {
+  const generatedAt = new Date().toISOString();
+  const adapter = getSupabaseAdapter(env);
+  if (!adapter.configured) {
+    return {
+      schemaVersion: 1,
+      generatedAt,
+      currentPriority: null,
+      currentBlocker: null,
+      nextAction: null,
+      blocked: false,
+      publicSafe: true,
+    };
+  }
+  const work = await adapter.fetchSingleRowPayload('connector_work_status') as {
+    currentPriority?: string | null;
+    currentBlocker?: string | null;
+    nextAction?: string | null;
+  } | null;
+  const currentPriority = typeof work?.currentPriority === 'string' ? work.currentPriority.slice(0, 280) : null;
+  const currentBlocker = typeof work?.currentBlocker === 'string' && work.currentBlocker.length > 0
+    ? work.currentBlocker.slice(0, 280) : null;
+  const nextAction = typeof work?.nextAction === 'string' ? work.nextAction.slice(0, 280) : null;
+  return {
+    schemaVersion: 1,
+    generatedAt,
+    currentPriority,
+    currentBlocker,
+    nextAction,
+    blocked: !!currentBlocker,
+    publicSafe: true,
+  };
+}
+
 async function buildProjectListPriorities(env: Env): Promise<unknown> {
   const generatedAt = new Date().toISOString();
   const adapter = getSupabaseAdapter(env);
@@ -460,6 +494,13 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
     build: buildProjectOverview,
+  },
+  {
+    name: 'project.get_work_status',
+    description: 'Sanitised work status — currentPriority, currentBlocker, nextAction (each ≤280 char) plus a blocked boolean. No raw text fields beyond those three. Public-safe.',
+    inputSchema: { type: 'object', properties: {}, required: [] },
+    auth: 'public',
+    build: buildProjectWorkStatus,
   },
   {
     name: 'project.list_priorities',

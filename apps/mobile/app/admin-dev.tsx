@@ -46,6 +46,10 @@ import {
   type ConnectorSnapshot,
 } from '../src/services/connector-status-client';
 import {
+  fetchMcpV2DashboardSnapshot,
+  type McpV2DashboardSnapshot,
+} from '../src/services/mcp-v2-client';
+import {
   buildClaudeCodePrompt,
   buildClaudeChromePrompt,
   buildChatGPTStatusPrompt,
@@ -379,6 +383,8 @@ export default function AdminDevScreen() {
   const [health, setHealth] = useState<BackendHealth | null>(null);
   const [adminStatus, setAdminStatus] = useState<AdminStatus | null>(null);
   const [connectorSnapshot, setConnectorSnapshot] = useState<ConnectorSnapshot | null>(null);
+  const [mcpV2Snapshot, setMcpV2Snapshot] = useState<McpV2DashboardSnapshot | null>(null);
+  const [mcpV2Error, setMcpV2Error] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [openPromptIdx, setOpenPromptIdx] = useState<number | null>(null);
   const [handoffOpen, setHandoffOpen] = useState(false);
@@ -386,14 +392,20 @@ export default function AdminDevScreen() {
   const refresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      const [h, a, c] = await Promise.all([
+      const [h, a, c, m] = await Promise.all([
         fetchBackendHealth(),
         fetchAdminStatus(),
         isAdmin ? fetchConnectorSnapshot() : Promise.resolve(null),
+        isAdmin ? fetchMcpV2DashboardSnapshot().catch((err: unknown) => {
+          setMcpV2Error(err instanceof Error ? err.message : 'mcp_v2 fetch failed');
+          return null;
+        }) : Promise.resolve(null),
       ]);
       setHealth(h);
       setAdminStatus(a);
       setConnectorSnapshot(c);
+      setMcpV2Snapshot(m);
+      if (m) setMcpV2Error(null);
     } finally { setRefreshing(false); }
   }, [isAdmin]);
 
@@ -537,6 +549,14 @@ export default function AdminDevScreen() {
       </Section>
 
       {isAdmin && <ConnectorStatusSection snapshot={connectorSnapshot} refreshing={refreshing} onRefresh={refresh} />}
+      {isAdmin && (
+        <McpV2LiveSection
+          snapshot={mcpV2Snapshot}
+          fetchError={mcpV2Error}
+          refreshing={refreshing}
+          onRefresh={refresh}
+        />
+      )}
       <AgentStatusSection />
 
       <Section title="AI Coach status">
@@ -1212,6 +1232,208 @@ function ConnectorStatusSection({
       )}
     </Section>
   );
+}
+
+function McpV2LiveSection({
+  snapshot,
+  fetchError,
+  refreshing,
+  onRefresh,
+}: {
+  snapshot: McpV2DashboardSnapshot | null;
+  fetchError: string | null;
+  refreshing: boolean;
+  onRefresh: () => void;
+}) {
+  const fetchedLabel = snapshot ? mcpV2RelativeAge(snapshot.fetchedAt) : '—';
+  const stale = snapshot ? mcpV2IsStale(snapshot.fetchedAt) : false;
+  const baseUrl = snapshot?.baseUrl ?? null;
+  const serverName = snapshot?.serverInfo?.name ?? '—';
+  const protocolVersion = snapshot?.protocolVersion ?? '—';
+  const toolTotal = snapshot?.toolCounts.total ?? 0;
+  const namespaces = snapshot?.toolCounts.byNamespace ?? {};
+  const namespaceLabel = Object.keys(namespaces).length > 0
+    ? Object.entries(namespaces).map(([ns, n]) => `${ns}:${n}`).join(' · ')
+    : 'no tools loaded';
+  const nsCount = Object.keys(namespaces).length;
+  const overallState = !snapshot
+    ? 'loading'
+    : !snapshot.serverInfo
+      ? 'unreachable'
+      : stale
+        ? 'stale'
+        : 'connected';
+  const overallStateLabel = {
+    loading: 'Loading…',
+    unreachable: 'Unreachable',
+    stale: 'Stale',
+    connected: 'Connected',
+  }[overallState];
+
+  return (
+    <Section title="MCP Live (v2)">
+      <View style={styles.summaryGrid}>
+        <View style={styles.summaryTile}>
+          <Text style={styles.chipLabel}>State</Text>
+          <Text style={styles.summaryValue}>{refreshing && !snapshot ? 'Refreshing…' : overallStateLabel}</Text>
+          <Text style={styles.summaryMeta}>{`Fetched ${fetchedLabel}`}</Text>
+        </View>
+        <View style={styles.summaryTile}>
+          <Text style={styles.chipLabel}>Server</Text>
+          <Text style={styles.summaryValue} numberOfLines={1}>{serverName}</Text>
+          <Text style={styles.summaryMeta}>{`Protocol ${protocolVersion}`}</Text>
+        </View>
+        <View style={styles.summaryTile}>
+          <Text style={styles.chipLabel}>Tools</Text>
+          <Text style={styles.summaryValue}>{`${toolTotal} · ${nsCount}ns`}</Text>
+          <Text style={styles.summaryMeta} numberOfLines={2}>{namespaceLabel}</Text>
+        </View>
+        <View style={styles.summaryTile}>
+          <Text style={styles.chipLabel}>Endpoint</Text>
+          <Text style={styles.summaryValue}>{baseUrl ? '/mcp/v2' : 'not configured'}</Text>
+          <Text style={styles.summaryMeta} numberOfLines={2}>{baseUrl ? 'public + admin tools' : 'EXPO_PUBLIC_MCP_BASE_URL unset'}</Text>
+        </View>
+      </View>
+
+      {fetchError ? (
+        <View style={styles.chipBlock}>
+          <Text style={styles.chipLabel}>Fetch error</Text>
+          <Text style={styles.chipBody}>{fetchError}</Text>
+        </View>
+      ) : null}
+
+      {snapshot ? (
+        <>
+          <McpV2ToolRow label="project.get_overview" auth="public" result={snapshot.projectOverview} formatter={formatProjectOverview} />
+          <McpV2ToolRow label="project.get_work_status" auth="public" result={snapshot.projectWorkStatus} formatter={formatProjectWorkStatus} />
+          <McpV2ToolRow label="mobile.get_lane_overview" auth="public" result={snapshot.laneOverview} formatter={formatLaneOverview} />
+          <McpV2ToolRow label="mobile.get_build_overview" auth="public" result={snapshot.buildOverview} formatter={formatBuildOverview} />
+          <McpV2ToolRow label="handoff.get_latest" auth="public" result={snapshot.handoffLatest} formatter={formatHandoffLatest} />
+        </>
+      ) : (
+        <View style={styles.chipBlock}>
+          <Text style={styles.chipLabel}>State</Text>
+          <Text style={styles.chipBody}>{refreshing ? 'Loading MCP v2 snapshot…' : 'No snapshot. Tap refresh.'}</Text>
+        </View>
+      )}
+
+      <View style={styles.chipBlock}>
+        <Text style={styles.chipLabel}>Diagnostics</Text>
+        <Text style={styles.chipBody}>
+          {`Public-safe namespaces (project / mobile.*_overview / integrations / handoff / website): No Auth.`}
+        </Text>
+        <Text style={styles.chipBody}>
+          {`Private namespaces (mobile.get_<full>): admin token required. Token sourced from EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN; never displayed.`}
+        </Text>
+        <Text style={styles.chipBody}>
+          {`Source labels: dataSource.source = 'supabase' | 'placeholder'; mcpConnectionStatus = connected | stale | fallback | offline.`}
+        </Text>
+      </View>
+
+      <Pressable
+        accessibilityRole="button"
+        onPress={onRefresh}
+        disabled={refreshing}
+        style={[styles.btn, refreshing && { opacity: 0.5 }]}
+      >
+        <Text style={styles.btnText}>{refreshing ? 'Refreshing…' : 'Refresh MCP v2'}</Text>
+      </Pressable>
+    </Section>
+  );
+}
+
+function McpV2ToolRow({
+  label,
+  auth,
+  result,
+  formatter,
+}: {
+  label: string;
+  auth: 'public' | 'admin';
+  result: { ok: true; payload: unknown } | { ok: false; message: string };
+  formatter: (payload: unknown) => string;
+}) {
+  return (
+    <View style={styles.chipBlock}>
+      <Text style={styles.chipLabel}>{`${label}  ·  ${auth === 'public' ? 'No Auth' : 'admin'}`}</Text>
+      {result.ok ? (
+        <Text style={styles.chipBody}>{formatter(result.payload)}</Text>
+      ) : (
+        <Text style={styles.chipBody}>{`error: ${result.message}`}</Text>
+      )}
+    </View>
+  );
+}
+
+function mcpV2RelativeAge(iso: string): string {
+  const t = new Date(iso).getTime();
+  if (!Number.isFinite(t)) return '—';
+  const ageMs = Date.now() - t;
+  if (ageMs < 0) return 'just now';
+  if (ageMs < 60_000) return `${Math.floor(ageMs / 1000)}s ago`;
+  if (ageMs < 3600_000) return `${Math.floor(ageMs / 60_000)}m ago`;
+  return `${Math.floor(ageMs / 3600_000)}h ago`;
+}
+
+function mcpV2IsStale(iso: string): boolean {
+  const t = new Date(iso).getTime();
+  if (!Number.isFinite(t)) return true;
+  return Date.now() - t > 10 * 60 * 1000;
+}
+
+function formatProjectOverview(payload: unknown): string {
+  const p = payload as {
+    mobileTopPriority?: { source?: string; title?: string; status?: string } | null;
+    openManualStepsCount?: number;
+    websitePendingCount?: number | null;
+  };
+  const top = p.mobileTopPriority?.title ?? '—';
+  const status = p.mobileTopPriority?.status ?? '—';
+  const open = typeof p.openManualStepsCount === 'number' ? p.openManualStepsCount : 0;
+  const pending = p.websitePendingCount;
+  const pendingLabel = pending == null ? '—' : String(pending);
+  return `mobile top: ${top} (${status}) · open manual: ${open} · website pending: ${pendingLabel}`;
+}
+
+function formatProjectWorkStatus(payload: unknown): string {
+  const p = payload as { currentPriority?: string | null; currentBlocker?: string | null; nextAction?: string | null; blocked?: boolean };
+  const lines = [`priority: ${p.currentPriority ?? '—'}`];
+  if (p.currentBlocker) lines.push(`blocker: ${p.currentBlocker}`);
+  if (p.nextAction) lines.push(`next: ${p.nextAction}`);
+  return lines.join('\n');
+}
+
+function formatLaneOverview(payload: unknown): string {
+  const p = payload as { totalLanes?: number; byStatus?: Record<string, number> };
+  const total = p.totalLanes ?? 0;
+  const by = p.byStatus ?? {};
+  const parts = Object.entries(by).filter(([, v]) => v > 0).map(([k, v]) => `${k}=${v}`);
+  return `${total} lanes${parts.length ? ` · ${parts.join(' / ')}` : ' · all idle'}`;
+}
+
+function formatBuildOverview(payload: unknown): string {
+  const p = payload as {
+    android?: { versionCode?: number | null; githubStatus?: string | null; playStatus?: string | null; playTrack?: string | null };
+    ios?: { buildNumber?: string | null; githubStatus?: string | null; testflightStatus?: string | null };
+  };
+  const a = p.android ?? {};
+  const i = p.ios ?? {};
+  return [
+    `Android v${a.versionCode ?? '?'}: gh=${a.githubStatus ?? '—'} play=${a.playStatus ?? '—'} (${a.playTrack ?? '—'})`,
+    `iOS Build ${i.buildNumber ?? '?'}: gh=${i.githubStatus ?? '—'} tf=${i.testflightStatus ?? '—'}`,
+  ].join('\n');
+}
+
+function formatHandoffLatest(payload: unknown): string {
+  const p = payload as { entries?: Array<{ source?: string; generatedAt?: string | null; summary?: string }> };
+  const entries = p.entries ?? [];
+  if (entries.length === 0) return 'no handoff entries';
+  return entries.slice(0, 2).map((e) => {
+    const src = e.source ?? '—';
+    const at = e.generatedAt ? mcpV2RelativeAge(e.generatedAt) : '—';
+    const sum = (e.summary ?? '').slice(0, 80);
+    return `[${src}] ${at}: ${sum}`;
+  }).join('\n');
 }
 
 function SelectableCopyButton({
