@@ -1252,8 +1252,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'rgba(255,255,255,0.05)',
   },
-  rowLabel: { fontSize: 16 },
-  rowValue: { fontSize: 14, opacity: 0.5 },
+  rowLabel: { fontSize: 16, flexShrink: 1, paddingRight: 12 },
+  rowValue: { fontSize: 14, opacity: 0.5, flexShrink: 1, textAlign: 'right' },
   authForm: { gap: 12 },
   input: {
     borderWidth: 1,

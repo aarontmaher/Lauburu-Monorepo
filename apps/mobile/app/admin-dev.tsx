@@ -146,8 +146,8 @@ const STATUS_HANDOFF_TEMPLATE = [
  * renders compact chips, not paragraphs.
  */
 const CURRENT_PRIORITY = 'Apple Health (iPhone — Aaron) + Health Connect (Android — girlfriend) usable for daily testing.';
-const ANDROID_PROOF_RESULT = 'PROVEN end-to-end (run 25361589282 → tester v14 received). Auto-update lane CLOSED.';
-const NEXT_ACTION = 'Test Apple Health on iPhone + Health Connect on Android. Free-tier gate removed from primary health-source cards (commit pending) — both will surface for both users on next paired build.';
+const ANDROID_PROOF_RESULT = 'PROVEN end-to-end (tester v14 received). Current repo target: Android v17 / iOS Build 18.';
+const NEXT_ACTION = 'Track Android v17 GitHub Actions / EAS result, then test Apple Health on iPhone + Health Connect on Android from the paired tester builds.';
 
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
@@ -384,7 +384,7 @@ export default function AdminDevScreen() {
       </Section>
 
       <Section title="Android — Internal Testing">
-        <Row label="Tester-live" value="v14 ✓ (received via Play Store auto-update); v15 dispatched run 25384901407" />
+        <Row label="Tester-live" value="v14 ✓ received; repo target v17" />
         <Row label="Auto-promote" value="PROVEN end-to-end — run 25361589282" />
         <Row label="Routine path" value="Build Android + upload → tester device updates within 15–60 min, no manual steps" />
         <Row label="releaseStatus" value="completed (eas.json)" />
@@ -402,10 +402,10 @@ export default function AdminDevScreen() {
       </Section>
 
       <Section title="iOS — TestFlight">
-        <Row label="TestFlight channel" value="works ✓ (Build 14 reached testers, Build 15 submitted run 25349256198)" />
+        <Row label="TestFlight channel" value="works ✓; repo target Build 18" />
         <Row label="Build / submit automation" value={iosBuildAvailable ? 'auto ✓' : 'workflow not configured'} />
         <Row label="Auto-assign to Team (Expo)" value={adminStatus?.testflightGroupAssignmentConfigured === true ? 'auto ✓' : '—'} />
-        <Row label="HealthKit Mac/Vision warning" value="fix shipped with Build 15 — accept TestFlight prompt" />
+        <Row label="HealthKit Mac/Vision warning" value="fixed in prior TestFlight builds — accept any prompt" />
         <Text style={styles.note}>
           TestFlight is not silent OTA — testers update through the TestFlight app once Apple finishes processing each build (5–30 min after EAS submit).
         </Text>
