@@ -104,13 +104,9 @@ jobs:
           printf '%s' "${PLAY_SA_JSON}" > apps/mobile/google-services-key.json
           trap 'rm -f apps/mobile/google-services-key.json' EXIT
           cd apps/mobile
-          # Build submit args. Optional release_status override safely
-          # clamped to {completed, draft} by the workflow input enum;
-          # any other value is rejected before this script runs.
           SUBMIT_ARGS=( --platform android --profile production --latest --non-interactive )
           if [ -n "${RELEASE_STATUS_OVERRIDE}" ]; then
-            SUBMIT_ARGS+=( --release-status "${RELEASE_STATUS_OVERRIDE}" )
-            echo "Using release_status override: ${RELEASE_STATUS_OVERRIDE}"
+            echo "::warning title=release_status ignored::This eas-cli version does not support a submit --release-status flag; using eas.json submit.production.android.releaseStatus."
           else
             echo "Using eas.json default releaseStatus (completed for internal track)."
           fi
@@ -125,11 +121,7 @@ jobs:
             echo "Submit to Play: ${{ inputs.submit_to_play }}"
             echo "Release notes: ${{ inputs.release_notes }}"
             if [ "${{ inputs.submit_to_play }}" = "true" ]; then
-              if [ "${{ inputs.release_status }}" = "draft" ]; then
-                echo "Next: Play Console → Internal testing → open the new draft → Review release → Start rollout (override: draft)."
-              else
-                echo "Next: nothing manual — release auto-promotes to Internal Testing testers within ~5–10 min (releaseStatus=completed)."
-              fi
+              echo "Next: nothing manual — release uses eas.json submit.production.android.releaseStatus and should surface to Internal Testing testers after Play processing."
             else
               echo "Next: Play Console → Internal testing → Create new release → upload AAB manually."
             fi
