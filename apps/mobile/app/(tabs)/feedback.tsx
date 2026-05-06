@@ -14,7 +14,6 @@ import { useTrainingStore } from '../../src/store/training-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { SESSION_TYPE_LABELS } from '@lauburu/shared';
 import { ATHLETE_CAPABILITY_COPY } from '../../src/services/athlete-capability-display';
-import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
 
 function todayDate() {
   return new Date().toISOString().slice(0, 10);
@@ -363,9 +362,9 @@ function SyncCard() {
     <View style={styles.card}>
       <View style={styles.syncRow}>
         <View>
-          <Text style={styles.cardTitle}>Training Data</Text>
+          <Text style={styles.cardTitle}>Saved check-ins</Text>
           <Text style={styles.cardSubtitle}>
-            {examples.length} example{examples.length !== 1 ? 's' : ''} assembled
+            {examples.length} item{examples.length !== 1 ? 's' : ''} ready
           </Text>
         </View>
         {authStatus === 'member' && examples.length > 0 && (
@@ -384,7 +383,7 @@ function SyncCard() {
       <View style={styles.statusRow}>
         <View style={[styles.statusDot, { backgroundColor: statusColors[syncStatus] }]} />
         <Text style={[styles.statusText, { color: statusColors[syncStatus] }]}>
-          {syncStatus === 'idle' && examples.length === 0 && 'Log a session or rate coaching to create training data'}
+          {syncStatus === 'idle' && examples.length === 0 && 'Log a session or answer a check-in to start'}
           {syncStatus === 'idle' && examples.length > 0 && 'Ready to sync'}
           {syncStatus === 'syncing' && 'Syncing...'}
           {syncStatus === 'synced' && `Synced ${lastSyncAt ? new Date(lastSyncAt).toLocaleTimeString() : ''}`}
@@ -463,19 +462,16 @@ export default function FeedbackScreen() {
           ? `${feedbackCount + outcomeCount + checkinCount} entries — improving your coaching`
           : 'Rate sessions and coaching to personalize your experience'}
       </Text>
-      <AthleteCapabilitySummary mode="seed" showNote={false} />
-
       <SyncCard />
       <NextDayCheckinCard />
       <RecommendationFeedbackCard />
       <SessionOutcomeCard />
-      <RecentExamplesCard />
 
       <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>Why this matters</Text>
+        <Text style={styles.infoTitle}>Keep it simple</Text>
         <Text style={styles.infoBody}>
-          Your feedback trains the coaching system to be more accurate for you
-          personally. Every data point improves future recommendations.
+          Quick check-ins help the app match future suggestions to how
+          training actually felt.
         </Text>
       </View>
     </ScrollView>

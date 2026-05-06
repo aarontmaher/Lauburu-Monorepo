@@ -37,9 +37,9 @@ const TYPES: { id: FeedbackType; label: string }[] = [
   { id: 'ui_cleanup', label: 'UI cleanup' },
   { id: 'bug', label: 'Bug' },
   { id: 'app_error', label: 'App error' },
-  { id: 'ai_answer_issue', label: 'AI answer' },
+  { id: 'ai_answer_issue', label: 'Coach answer' },
   { id: 'apple_health_issue', label: 'Apple Health' },
-  { id: 'samsung_health_connect_issue', label: 'Samsung / HC' },
+  { id: 'samsung_health_connect_issue', label: 'Health Connect' },
   { id: 'health_source_issue', label: 'Other health' },
   { id: 'nutrition_issue', label: 'Nutrition' },
   { id: 'hiit_workout_issue', label: 'HIIT / workout' },
@@ -54,49 +54,33 @@ const TYPES: { id: FeedbackType; label: string }[] = [
  * but their tester role doesn't change.
  */
 type TesterType = 'friend_ui_cleanup' | 'health_data_tester' | 'general_tester';
-const TESTER_TYPES: { id: TesterType; label: string; hint: string }[] = [
-  { id: 'friend_ui_cleanup', label: 'Friend · UI cleanup', hint: 'Helping clean up what feels confusing or cluttered' },
-  { id: 'health_data_tester', label: 'Health data tester', hint: 'Checking sync, metrics, trends' },
-  { id: 'general_tester', label: 'General', hint: 'Anything else' },
-];
 
 /** Friend-tester prompt — structured prompts the user listed. */
 const UI_CLEANUP_PLACEHOLDER = [
-  '• What did you try?',
-  '• What confused you?',
-  '• Duplicated or cluttered areas?',
-  '• Broken or unclear buttons?',
-  '• Tap targets / readability issues?',
-  '• Trust blockers (anything that felt off)?',
-  '• Top 5 cleanup suggestions',
-  '• What did you like?',
+  'What felt cluttered, confusing, duplicated, or hard to tap?',
+  'What should change?',
 ].join('\n');
 
 /** Health/AI tester prompt — structured prompts to make submissions actionable. */
 const HEALTH_PLACEHOLDER = [
-  '• What were you trying to do?',
-  '• What happened? (e.g. sync failed, no data showed, wrong score)',
-  '• What did you expect to happen?',
-  '• Which health source? (Apple Health / Health Connect / WHOOP / Polar / BLE / manual)',
-  '• Was the data already synced? When did you last sync?',
+  'What were you trying to sync?',
+  'What happened?',
+  'What did you expect?',
+  'Which source? Apple Health, Health Connect, WHOOP, Polar, or manual?',
 ].join('\n');
 
 /** AI advice tester prompt. */
 const AI_PLACEHOLDER = [
-  '• What did you ask the AI?',
-  '• What did the AI say?',
-  '• Did the advice feel: useful / wrong / confusing / missing data?',
-  '• What would have been more useful?',
-  '• Was data missing or stale?',
+  'What did you ask?',
+  'What answer felt wrong, confusing, or missing context?',
+  'What would have helped?',
 ].join('\n');
 
 /** Bug placeholder. */
 const BUG_PLACEHOLDER = [
-  '• What were you trying to do?',
-  '• What screen were you on?',
-  '• What happened (error message? wrong result?)?',
-  '• What did you expect?',
-  '• Was the Feedback button easy to find?',
+  'What were you trying to do?',
+  'What happened?',
+  'What did you expect?',
 ].join('\n');
 
 const SEVERITIES: FeedbackSeverity[] = ['low', 'medium', 'high', 'blocking'];
@@ -116,7 +100,7 @@ export function FeedbackFab() {
   const healthDaysCount = useHealthStore((s) => s.days.length);
 
   const [open, setOpen] = useState(false);
-  const [testerType, setTesterType] = useState<TesterType>('general_tester');
+  const testerType: TesterType = 'general_tester';
   const [type, setType] = useState<FeedbackType>('bug');
   const [severity, setSeverity] = useState<FeedbackSeverity>('medium');
   const [message, setMessage] = useState('');
@@ -271,28 +255,6 @@ export function FeedbackFab() {
                 </Text>
               )}
 
-              <Text style={[styles.sectionLabel, { marginBottom: 4 }]}>You are testing as</Text>
-              <View style={styles.typeRow}>
-                {TESTER_TYPES.map((t) => (
-                  <Pressable
-                    key={t.id}
-                    style={[styles.pill, testerType === t.id && styles.pillActive]}
-                    onPress={() => {
-                      setTesterType(t.id);
-                      if (t.id === 'friend_ui_cleanup') setType('ui_cleanup');
-                      else if (t.id === 'health_data_tester' && type === 'ui_cleanup') setType('apple_health_issue');
-                      else if (t.id === 'general_tester' && type === 'ui_cleanup') setType('bug');
-                    }}>
-                    <Text style={[styles.pillText, testerType === t.id && styles.pillTextActive]}>
-                      {t.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-              <Text style={[styles.helpBody, { marginBottom: 8 }]}>
-                {TESTER_TYPES.find((t) => t.id === testerType)?.hint}
-              </Text>
-
               <Text style={styles.sectionLabel}>Type</Text>
               <View style={styles.typeRow}>
                 {TYPES.map((t) => (
@@ -307,7 +269,7 @@ export function FeedbackFab() {
                 ))}
               </View>
 
-              <Text style={styles.sectionLabel}>Severity of bug</Text>
+              <Text style={styles.sectionLabel}>Severity</Text>
               <View style={styles.typeRow}>
                 {SEVERITIES.map((s) => (
                   <Pressable

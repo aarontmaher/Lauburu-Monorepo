@@ -21,7 +21,6 @@ import { useHIITWorkoutStore } from '../../src/store/hiit-workout-store';
 import type { HIITWorkoutRecord, HIITSetMetrics } from '@lauburu/shared';
 import { modalitySupportsMachineData } from '../../src/services/machine-connector';
 import { ATHLETE_CAPABILITY_COPY } from '../../src/services/athlete-capability-display';
-import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
 import { ReferencePositionPicker } from '../../src/components/ReferencePositionPicker';
 import type { SessionType, SessionIntensity, TrainingSession, ConditioningSubtype, ConditioningDetail, Modality, LiftingFocus, DayPlanSummary, SessionSegment, PartnerFormat, SessionSummary, SegmentType, MachineMetrics, WorkoutSource } from '@lauburu/shared';
 import {
@@ -1422,18 +1421,7 @@ function EntryForm({
               : topMode === 'weights' ? `${ATHLETE_CAPABILITY_COPY.seedSuggestionLabel} moderate lifting today instead of a hard session.`
               : 'Your usual structure looks good for today.'}
           </Text>
-          {topMode === 'hiit' ? (
-            <AthleteCapabilitySummary
-              mode="seed"
-              detail="Seed-mode guidance only — adjust the protocol above if the latest workout or fatigue picture feels incomplete."
-            />
-          ) : topMode === 'zone2' ? (
-            <AthleteCapabilitySummary mode="partial_confidence" />
-          ) : topMode === 'weights' ? (
-            <AthleteCapabilitySummary mode="provisional" />
-          ) : (
-            <Text style={styles.suggestionNote}>Edit segments to match what you actually did.</Text>
-          )}
+          <Text style={styles.suggestionNote}>Edit the plan to match what you actually did.</Text>
         </View>
       )}
 
@@ -2597,7 +2585,7 @@ export default function TrainScreen() {
         <View style={styles.machineConnectWrap}>
           <Text style={styles.machineConnectHeading}>Connect exercise machine</Text>
           <Text style={styles.machineConnectSubcopy}>
-            Optional for bikes, rowers, ski-ergs, or Bluetooth heart-rate straps during this session. Health source connections live on the Health tab.
+            Optional for bikes, rowers, ski-ergs, or Bluetooth heart-rate straps during this session.
           </Text>
           <TrainMachineSection />
         </View>

@@ -195,7 +195,7 @@ function FabsGate({ tourVisible }: { tourVisible: boolean }) {
   const userEmail = useAuthStore((s) => s.user?.email ?? null);
   const devUnlocked = useDevUnlockStore((s) => s.unlocked);
   const isAdmin = userEmail != null && DEV_FAB_ADMIN_EMAILS.has(userEmail.toLowerCase());
-  const ownerSurface = isAdmin || devUnlocked;
+  const ownerSurface = isAdmin || (__DEV__ && devUnlocked);
   const onMap = pathname?.startsWith('/map') ?? false;
   const hideForMapDetail = onMap && nodeDetailOpen;
   if (tourVisible || hideForMapDetail) return null;
@@ -225,7 +225,7 @@ function DevLauncherFab() {
   const isAdmin = userEmail != null && DEV_FAB_ADMIN_EMAILS.has(userEmail.toLowerCase());
   const devUnlocked = useDevUnlockStore((s) => s.unlocked);
   const isModalOpen = pathname === '/ai-chat' || pathname === '/timer' || pathname === '/admin-dev';
-  if ((!isAdmin && !devUnlocked) || isModalOpen) return null;
+  if ((!isAdmin && !(__DEV__ && devUnlocked)) || isModalOpen) return null;
 
   return (
     <Pressable

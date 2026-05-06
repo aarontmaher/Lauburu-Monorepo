@@ -12,6 +12,7 @@ import * as Application from 'expo-application';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useAuditEventStore } from '../../src/store/audit-event-store';
+import { useDevUnlockStore } from '../../src/store/dev-unlock-store';
 import { isExpoGo } from '../../src/services/expo-detect';
 import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
 import { NutritionCard } from '../../src/components/NutritionCard';
@@ -24,6 +25,8 @@ import { SafeErrorBoundary } from '../../src/components/SafeErrorBoundary';
 import { useWhoopStore } from '../../src/store/whoop-store';
 import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures, CoachingResponse } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
+
+const ADMIN_EMAILS = new Set(['aaron.t.maher@gmail.com']);
 
 // --- Permission status row ---
 
@@ -504,13 +507,10 @@ function TrendItem({
 function ExpoGoNotice() {
   return (
     <View style={styles.expoGoCard}>
-      <Text style={styles.expoGoTitle}>Expo Go Mode</Text>
+      <Text style={styles.expoGoTitle}>Preview build needed</Text>
       <Text style={styles.expoGoBody}>
-        Native health sync (HealthKit / Health Connect) requires a development
-        build. Manual training logging, coaching, and check-ins work here.
-      </Text>
-      <Text style={styles.expoGoCommand}>
-        npx expo prebuild --clean{'\n'}npx expo run:ios
+        Health sync needs the installed preview app. Training logs,
+        coaching, and check-ins still work here.
       </Text>
     </View>
   );
@@ -546,6 +546,13 @@ export default function HealthScreen() {
   const authStatus = useAuthStore((s) => s.status);
   const user = useAuthStore((s) => s.user);
   const isMember = authStatus === 'member';
+  const devUnlocked = useDevUnlockStore((s) => s.unlocked);
+  const userEmail = user?.email?.toLowerCase() ?? null;
+  const isAdmin = userEmail != null && ADMIN_EMAILS.has(userEmail);
+  const showDeveloperDiagnostics = isAdmin || (__DEV__ && devUnlocked);
+  const hasImportedHistory = useHealthStore(
+    (s) => s.historyWindowDays != null || (s.lastSyncDiagnostics?.normalizedDays ?? 0) > 0,
+  );
 
   const inExpoGo = isExpoGo();
 
@@ -630,7 +637,7 @@ export default function HealthScreen() {
     });
   }, [nativeAvailable, permissions]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const platformName = Platform.OS === 'ios' ? 'Apple HealthKit' : 'Health Connect';
+  const platformName = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
   // isAvailable prefers the live native probe on iOS — if HealthKit is
   // ready on the device, the UI must not claim "not linked", even if
   // the zustand permissions state hasn't populated yet.
@@ -675,10 +682,7 @@ export default function HealthScreen() {
         <HealthActionsPanel />
       </SafeErrorBoundary>
 
-      {/* HealthKit module-load / build diagnostics — collapsed by
-          default so it doesn't dominate the main screen. Testers can
-          still expand it when debugging. */}
-      {Platform.OS === 'ios' && <HealthKitDebugDisclosure />}
+      {showDeveloperDiagnostics && Platform.OS === 'ios' && <HealthKitDebugDisclosure />}
 
       {isExpoGo() && <ExpoGoNotice />}
 
@@ -863,16 +867,17 @@ export default function HealthScreen() {
           status, nutrition, coaching, trends, and history. */}
 
       {/* Memory proposal review — shows trend candidates + weekly promotion candidates */}
-      {isMember && (
+      {showDeveloperDiagnostics && isMember && (
         <SafeErrorBoundary label="Memory proposal review">
           <MemoryProposalReview />
         </SafeErrorBoundary>
       )}
 
-      {/* Sync diagnostics — tester-facing, collapsible */}
-      <SafeErrorBoundary label="Sync diagnostics card">
-        <SyncDiagnosticsCard />
-      </SafeErrorBoundary>
+      {showDeveloperDiagnostics && (
+        <SafeErrorBoundary label="Sync diagnostics card">
+          <SyncDiagnosticsCard />
+        </SafeErrorBoundary>
+      )}
 
       {/* 7-day trends */}
       {features && (
@@ -893,12 +898,14 @@ export default function HealthScreen() {
       {/* The old per-source status card was removed from the main tab.
           The import-history summary stays visible without re-listing
           every source-management action. */}
-      <SafeErrorBoundary label="Data sources history">
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Imported history</Text>
-          <DataSourcesHistorySummary />
-        </View>
-      </SafeErrorBoundary>
+      {hasImportedHistory && (
+        <SafeErrorBoundary label="Data sources history">
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Imported history</Text>
+            <DataSourcesHistorySummary />
+          </View>
+        </SafeErrorBoundary>
+      )}
     </ScrollView>
   );
 }
