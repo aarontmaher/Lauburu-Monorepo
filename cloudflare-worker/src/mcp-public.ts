@@ -123,6 +123,41 @@ function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
   });
 }
 
+/**
+ * Wraps a JSON-RPC response in a single Server-Sent Event message
+ * frame. ChatGPT's MCP connector negotiates Streamable-HTTP via the
+ * Accept header — when the client signals `text/event-stream`, the
+ * spec lets the server return either plain JSON or an SSE stream.
+ * Connectors that hard-require SSE (ChatGPT) fail the connection
+ * if we return plain JSON, even though the JSON body is valid.
+ *
+ * Returning a single `event: message\ndata: …\n\n` frame satisfies
+ * both the spec and the strict client. We do not hold the stream
+ * open — one message, then close.
+ */
+function sseResponse(body: unknown, init: ResponseInit = {}): Response {
+  const frame = `event: message\ndata: ${JSON.stringify(body)}\n\n`;
+  return new Response(frame, {
+    ...init,
+    headers: {
+      'content-type': 'text/event-stream',
+      'cache-control': 'no-cache, no-transform',
+      ...(init.headers ?? {}),
+    },
+  });
+}
+
+function clientWantsSse(request: Request): boolean {
+  const accept = request.headers.get('accept') ?? request.headers.get('Accept') ?? '';
+  return /text\/event-stream/i.test(accept);
+}
+
+function negotiated(request: Request, body: unknown, init: ResponseInit = {}): Response {
+  return clientWantsSse(request)
+    ? sseResponse(body, init)
+    : jsonResponse(body, init);
+}
+
 // ── Strict-allowlist sanitisers ─────────────────────────────────────────
 // Each sanitiser returns ONLY the named primitive fields. Everything
 // else from the upstream payload is dropped. No regex on free text;
@@ -427,10 +462,10 @@ export async function handleMcpPublic(request: Request, env: Env): Promise<Respo
     );
     const filtered = responses.filter((r): r is JsonRpcResponse => r !== null);
     if (filtered.length === 0) return new Response(null, { status: 202 });
-    return jsonResponse(filtered);
+    return negotiated(request, filtered);
   }
 
   const response = await handleRpcRequest(body as JsonRpcRequest, env);
   if (response === null) return new Response(null, { status: 202 });
-  return jsonResponse(response);
+  return negotiated(request, response);
 }

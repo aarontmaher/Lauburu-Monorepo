@@ -98,6 +98,29 @@ function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
   });
 }
 
+function sseResponse(body: unknown, init: ResponseInit = {}): Response {
+  const frame = `event: message\ndata: ${JSON.stringify(body)}\n\n`;
+  return new Response(frame, {
+    ...init,
+    headers: {
+      'content-type': 'text/event-stream',
+      'cache-control': 'no-cache, no-transform',
+      ...(init.headers ?? {}),
+    },
+  });
+}
+
+function clientWantsSse(request: Request): boolean {
+  const accept = request.headers.get('accept') ?? request.headers.get('Accept') ?? '';
+  return /text\/event-stream/i.test(accept);
+}
+
+function negotiated(request: Request, body: unknown, init: ResponseInit = {}): Response {
+  return clientWantsSse(request)
+    ? sseResponse(body, init)
+    : jsonResponse(body, init);
+}
+
 async function fetchSinglePayload(env: Env, table: string): Promise<unknown | null> {
   const adapter = getSupabaseAdapter(env);
   if (!adapter.configured) return null;
@@ -284,11 +307,11 @@ export async function handleMcp(request: Request, env: Env): Promise<Response> {
     );
     const filtered = responses.filter((r): r is JsonRpcResponse => r !== null);
     if (filtered.length === 0) return new Response(null, { status: 202 });
-    return jsonResponse(filtered);
+    return negotiated(request, filtered);
   }
 
   // Single request.
   const response = await handleRpcRequest(body as JsonRpcRequest, env);
   if (response === null) return new Response(null, { status: 202 }); // notification
-  return jsonResponse(response);
+  return negotiated(request, response);
 }

@@ -10,6 +10,23 @@ Companion to:
 
 Updated 2026-05-07.
 
+## DO NOT USE — `mcp.lauburugrapplingmap.com`
+
+`mcp.lauburugrapplingmap.com/mcp` exists and resolves (Cloudflare),
+but it points at a **different** project — the website's
+"GrapplingMap System" MCP (server name reports as
+`GrapplingMap System v1.27.0`). It is **not** this codebase's
+control-centre MCP and does not expose
+`get_lane_overview` / `get_build_overview` / `get_repo_overview`
+or any Lauburu app-development tools. If a ChatGPT chat is
+configured against `mcp.lauburugrapplingmap.com/mcp` it will
+appear connected but the project-status tools will be missing.
+
+The canonical ChatGPT-facing URL is the workers.dev preview path
+documented in § 1 below. If a chat shows a connector named
+"GrapplingMap System" with weird tool names, it's wired to the
+wrong host — re-create per § 1.
+
 ## 1. Setup — what to paste into ChatGPT
 
 Open **ChatGPT → Settings → Connectors → Add custom connector**.
@@ -21,8 +38,24 @@ Use exactly these values:
 | **MCP Server URL** | `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/public` |
 | **Authentication** | **No Auth** |
 
-Save. ChatGPT runs `initialize` → `tools/list` immediately and
-should show four tools:
+Save. ChatGPT's connector negotiates the Streamable-HTTP MCP
+transport via the `Accept` header. As of Worker version
+`dc480b35` the `/mcp/public` endpoint:
+
+- Returns `text/event-stream` (SSE-framed JSON-RPC) when the
+  client sends `Accept: text/event-stream`. ChatGPT's connector
+  uses this path.
+- Returns plain `application/json` when the client sends a
+  plain `Accept: application/json`. curl / `npm run mcp:test:public-redaction`
+  use this path.
+
+Both paths return identical `tools/list` and `tools/call`
+results — they are different transports of the same JSON-RPC
+response. Aaron does not need to choose; ChatGPT picks the right
+one automatically.
+
+After save, ChatGPT runs `initialize` → `tools/list` immediately
+and should show four tools:
 
 - `get_public_mcp_health` — diagnostic. Run this first in any
   new chat to confirm the connector is alive.
@@ -142,6 +175,7 @@ MCP entry, delete the older ones and keep exactly one:
 
 | Action | Reason |
 |---|---|
+| **DELETE** any connector pointing at `mcp.lauburugrapplingmap.com/mcp`. | This is the website project's "GrapplingMap System v1.27.0" MCP — different project, different tool names. Aaron's earlier Agent failure ("only Gmail/Drive/GitHub/Consensus available") was almost certainly because the chat saw an empty / unreachable tool list from this wrong host. |
 | **DELETE** any connector pointing at the old website MCP URL (`grapplingmap-mcp` or any `*.lauburu*` URL that isn't `*.lauburu-aaron.workers.dev`). | Different project; different tool names. Confuses ChatGPT's tool resolution. |
 | **DELETE** any connector pointing at the private path `/mcp` (no `/public`) configured with No Auth. | Will return 403 every call. Pure noise. |
 | **DELETE** any connector with stale auth (Bearer token saved that no longer exists in ChatGPT's form, etc). | Half-configured connectors block the chat-side tool list. |
