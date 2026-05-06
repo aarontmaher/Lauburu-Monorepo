@@ -167,6 +167,48 @@ function connectorFreshnessLabel(checkedAt: string | null | undefined): string {
   return 'fresh · just now';
 }
 
+function connectorCheckedTime(checkedAt: string | null | undefined): string {
+  if (!checkedAt) return '—';
+  const checkedMs = new Date(checkedAt).getTime();
+  if (!Number.isFinite(checkedMs)) return '—';
+  return new Date(checkedAt).toLocaleTimeString();
+}
+
+function buildAgentAuditPrompt(snapshot: ConnectorSnapshot | null): string {
+  const work = snapshot?.workStatus ?? null;
+  const lanes = snapshot?.coderLanes?.lanes ?? [];
+  const laneSummary = lanes.length > 0
+    ? lanes.map((lane) => `${lane.laneId}:${lane.status}`).join(', ')
+    : 'no lanes reported';
+  return [
+    'PROMPT-ID: AGENT-MOBILE-UX-AUDIT-FROM-PHONE-01',
+    'TYPE: AGENT / MOBILE UX AUDIT WORKER',
+    'LANE: Mobile app UX audit only',
+    '',
+    'RULES',
+    '- Work only from normal tester/user UX evidence.',
+    '- Do not touch backend, Cloudflare, Supabase, MCP auth, health source logic, or app version/build numbers.',
+    '- Do not add build triggers, raw terminal control, backlog editing, or paid AI.',
+    '- Normal testers must not see Admin/Dev or coder state.',
+    '',
+    'CURRENT APP-CONTROL STATUS',
+    `Priority: ${work?.currentPriority ?? '—'}`,
+    `Blocker: ${work?.currentBlocker ?? 'none'}`,
+    `Next action: ${work?.nextAction ?? '—'}`,
+    `MCP: ${snapshot ? `${snapshot.source} · ${connectorFreshnessLabel(snapshot.checkedAt)}` : 'not connected'}`,
+    `Lanes: ${laneSummary}`,
+    '',
+    'TASK',
+    'Audit the mobile app UX from screenshots/device feedback. Identify tester-facing clutter, confusing hierarchy, duplicate actions, and developer/debug text that should be hidden or moved to Admin/Dev. Return findings and the smallest safe mobile-only patch plan.',
+    '',
+    'OUTPUT',
+    '- Findings by screen',
+    '- Smallest safe patch',
+    '- What must stay untouched',
+    '- Manual iPhone/Android verification checklist',
+  ].join('\n');
+}
+
 /** Static label list for the dynamic prompt-bridge buttons. The
  * body of each prompt is computed at render time from the
  * `useOwnerWorkflowStore` context so changes to priority / blocker
@@ -336,9 +378,13 @@ export default function AdminDevScreen() {
   const nowPriority = connectorWork?.currentPriority ?? CURRENT_PRIORITY;
   const nowBlocker = connectorWork?.currentBlocker ?? 'No MCP blocker reported.';
   const nowNextAction = connectorWork?.nextAction ?? NEXT_ACTION;
+  const nowLanes = connectorSnapshot?.coderLanes?.lanes ?? [];
+  const nowLaneSummary = nowLanes.length > 0
+    ? nowLanes.map((lane) => `${lane.laneId}: ${lane.status}`).join(' · ')
+    : 'No lane status yet.';
   const mcpStatus = isAdmin
     ? connectorSnapshot
-      ? `MCP ${connectorSnapshot.source === 'mcp' ? 'connected' : 'fallback'} · ${connectorFreshnessLabel(connectorSnapshot.checkedAt)}`
+      ? `MCP ${connectorSnapshot.source === 'mcp' ? 'connected' : 'fallback'} · ${connectorFreshnessLabel(connectorSnapshot.checkedAt)} · updated ${connectorCheckedTime(connectorSnapshot.checkedAt)}`
       : refreshing
         ? 'MCP refreshing…'
         : 'MCP not connected'
@@ -363,6 +409,12 @@ export default function AdminDevScreen() {
           <Text style={styles.chipLabel}>Next action</Text>
           <Text style={styles.chipBody}>{nowNextAction}</Text>
         </View>
+        {isAdmin && (
+          <View style={styles.chipBlock}>
+            <Text style={styles.chipLabel}>Lanes</Text>
+            <Text style={styles.chipBody}>{nowLaneSummary}</Text>
+          </View>
+        )}
         {mcpStatus && (
           <Text style={styles.note}>{mcpStatus}</Text>
         )}
@@ -869,8 +921,9 @@ function ConnectorStatusSection({
   const latestTerminal = terminalEntries[0] ?? null;
   const claudeLane = lanes.find((lane) => lane.laneId.toLowerCase().includes('claude')) ?? null;
   const codexLane = lanes.find((lane) => lane.laneId.toLowerCase().includes('codex')) ?? null;
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const mcpState = snapshot
-    ? `${snapshot.source === 'mcp' ? 'MCP connected' : 'Backend fallback'} · ${connectorFreshnessLabel(snapshot.checkedAt)}`
+    ? `${snapshot.source === 'mcp' ? 'MCP connected' : 'Backend fallback'} · ${connectorFreshnessLabel(snapshot.checkedAt)} · updated ${connectorCheckedTime(snapshot.checkedAt)}`
     : refreshing
       ? 'MCP refreshing…'
       : 'MCP not connected';
@@ -932,18 +985,11 @@ function ConnectorStatusSection({
             label="Copy handoff summary"
             body={handoffSummary ?? 'Connector snapshot is not available yet.'}
           />
+          <SelectableCopyButton
+            label="Copy Agent audit prompt"
+            body={buildAgentAuditPrompt(snapshot)}
+          />
         </View>
-      )}
-      {work && (
-        <>
-          <Row label="Priority" value={work.currentPriority ?? '—'} />
-          <Row label="Blocker" value={work.currentBlocker ?? 'none'} />
-          <Row label="Repo" value={`${work.repoStatus.branch}@${work.repoStatus.head} · ${work.repoStatus.dirtyFileCount} dirty / ${work.repoStatus.untrackedFileCount} untracked`} />
-          <Row label="Latest commit" value={work.repoStatus.lastCommitMessage || '—'} />
-          <Row label="Next action" value={work.nextAction ?? '—'} />
-          <Row label="Live status" value={work.liveStatus.cloudflareWorkerDeployed ? 'Cloudflare worker marked live' : 'Repo-only / not marked live'} />
-          <Row label="Tester builds" value={`Android ${work.liveStatus.androidVersionCode ?? '—'} · iOS ${work.liveStatus.iosBuildNumber ?? '—'}`} />
-        </>
       )}
       {lanes.length > 0 && (
         <View style={{ gap: 6 }}>
@@ -964,34 +1010,54 @@ function ConnectorStatusSection({
           ))}
         </View>
       )}
-      {build && (
+      <Pressable
+        style={[styles.btn, { backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.12)' }]}
+        onPress={() => setDetailsOpen((v) => !v)}>
+        <Text style={[styles.btnText, { color: '#cfd3da' }]}>{detailsOpen ? '▾ Hide diagnostics' : '▸ Show diagnostics'}</Text>
+      </Pressable>
+      {detailsOpen && (
         <>
-          <Row label="Android build" value={`v${build.android.versionCode ?? '—'} · ${build.android.githubStatus ?? '—'} · Play ${build.android.playStatus ?? '—'}`} />
-          <Row label="iOS build" value={`${build.ios.buildNumber ?? '—'} · ${build.ios.githubStatus ?? '—'} · TestFlight ${build.ios.testflightStatus ?? '—'}`} />
+          {work && (
+            <>
+              <Row label="Priority" value={work.currentPriority ?? '—'} />
+              <Row label="Blocker" value={work.currentBlocker ?? 'none'} />
+              <Row label="Repo" value={`${work.repoStatus.branch}@${work.repoStatus.head} · ${work.repoStatus.dirtyFileCount} dirty / ${work.repoStatus.untrackedFileCount} untracked`} />
+              <Row label="Latest commit" value={work.repoStatus.lastCommitMessage || '—'} />
+              <Row label="Next action" value={work.nextAction ?? '—'} />
+              <Row label="Live status" value={work.liveStatus.cloudflareWorkerDeployed ? 'Cloudflare worker marked live' : 'Repo-only / not marked live'} />
+              <Row label="Tester builds" value={`Android ${work.liveStatus.androidVersionCode ?? '—'} · iOS ${work.liveStatus.iosBuildNumber ?? '—'}`} />
+            </>
+          )}
+          {build && (
+            <>
+              <Row label="Android build" value={`v${build.android.versionCode ?? '—'} · ${build.android.githubStatus ?? '—'} · Play ${build.android.playStatus ?? '—'}`} />
+              <Row label="iOS build" value={`${build.ios.buildNumber ?? '—'} · ${build.ios.githubStatus ?? '—'} · TestFlight ${build.ios.testflightStatus ?? '—'}`} />
+            </>
+          )}
+          {handoff && (
+            <>
+              <Row label="Safe to build" value={handoff.safeToBuild ? 'yes' : 'no'} />
+              <Row label="Build gate reason" value={handoff.safeToBuildReason} />
+              <Row label="Latest Claude prompt" value={handoff.latestClaudePrompt ?? '—'} />
+              <Row label="Latest Codex prompt" value={handoff.latestCodexPrompt ?? '—'} />
+              {handoff.manualSteps.slice(0, 3).map((step, idx) => (
+                <Row key={`${idx}-${step}`} label={`Manual ${idx + 1}`} value={step} />
+              ))}
+            </>
+          )}
+          {latestTerminal && (
+            <View style={[styles.row, { flexDirection: 'column', alignItems: 'flex-start', gap: 4 }]}>
+              <Text style={styles.rowLabel}>Latest terminal · {latestTerminal.laneId}</Text>
+              <Text style={[styles.rowValue, { textAlign: 'left' }]} numberOfLines={3}>{latestTerminal.summary}</Text>
+              <Text style={[styles.rowValue, { textAlign: 'left', opacity: 0.65 }]} numberOfLines={2}>
+                Verified: {latestTerminal.verification || '—'}
+              </Text>
+              <Text style={[styles.rowValue, { textAlign: 'left', color: '#d4e157', opacity: 1 }]} numberOfLines={2}>
+                Next: {latestTerminal.nextAction || '—'}
+              </Text>
+            </View>
+          )}
         </>
-      )}
-      {handoff && (
-        <>
-          <Row label="Safe to build" value={handoff.safeToBuild ? 'yes' : 'no'} />
-          <Row label="Build gate reason" value={handoff.safeToBuildReason} />
-          <Row label="Latest Claude prompt" value={handoff.latestClaudePrompt ?? '—'} />
-          <Row label="Latest Codex prompt" value={handoff.latestCodexPrompt ?? '—'} />
-          {handoff.manualSteps.slice(0, 3).map((step, idx) => (
-            <Row key={`${idx}-${step}`} label={`Manual ${idx + 1}`} value={step} />
-          ))}
-        </>
-      )}
-      {latestTerminal && (
-        <View style={[styles.row, { flexDirection: 'column', alignItems: 'flex-start', gap: 4 }]}>
-          <Text style={styles.rowLabel}>Latest terminal · {latestTerminal.laneId}</Text>
-          <Text style={[styles.rowValue, { textAlign: 'left' }]} numberOfLines={3}>{latestTerminal.summary}</Text>
-          <Text style={[styles.rowValue, { textAlign: 'left', opacity: 0.65 }]} numberOfLines={2}>
-            Verified: {latestTerminal.verification || '—'}
-          </Text>
-          <Text style={[styles.rowValue, { textAlign: 'left', color: '#d4e157', opacity: 1 }]} numberOfLines={2}>
-            Next: {latestTerminal.nextAction || '—'}
-          </Text>
-        </View>
       )}
     </Section>
   );
