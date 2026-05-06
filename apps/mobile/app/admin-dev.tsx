@@ -161,16 +161,6 @@ function compactGitCommit(value: unknown): string {
   return trimmed.length > 12 ? trimmed.slice(0, 12) : trimmed;
 }
 
-function connectorFreshnessLabel(checkedAt: string | null | undefined): string {
-  if (!checkedAt) return 'not checked';
-  const checkedMs = new Date(checkedAt).getTime();
-  if (!Number.isFinite(checkedMs)) return 'checked time unknown';
-  const ageMinutes = Math.max(0, Math.floor((Date.now() - checkedMs) / 60_000));
-  if (ageMinutes >= 10) return `stale · ${ageMinutes}m old`;
-  if (ageMinutes >= 1) return `fresh · ${ageMinutes}m old`;
-  return 'fresh · just now';
-}
-
 function connectorCheckedTime(checkedAt: string | null | undefined): string {
   if (!checkedAt) return '—';
   const checkedMs = new Date(checkedAt).getTime();
@@ -185,9 +175,42 @@ function connectorIsStale(checkedAt: string | null | undefined): boolean {
   return Date.now() - checkedMs >= 10 * 60_000;
 }
 
+function connectorPayloadGeneratedAt(snapshot: ConnectorSnapshot | null): string | null {
+  if (!snapshot) return null;
+  const values = [
+    snapshot.workStatus?.generatedAt,
+    snapshot.coderLanes?.generatedAt,
+    snapshot.buildStatus?.generatedAt,
+    snapshot.handoff?.generatedAt,
+    snapshot.terminalSummary?.generatedAt,
+  ].filter((value): value is string => typeof value === 'string' && value.trim().length > 0);
+  if (values.length === 0) return null;
+  const latest = values
+    .map((value) => ({ value, ms: new Date(value).getTime() }))
+    .filter((item) => Number.isFinite(item.ms))
+    .sort((a, b) => b.ms - a.ms)[0];
+  return latest?.value ?? null;
+}
+
+function connectorPayloadFreshnessLabel(snapshot: ConnectorSnapshot | null): string {
+  const generatedAt = connectorPayloadGeneratedAt(snapshot);
+  if (!generatedAt) return snapshot ? 'bridge time unknown' : 'not connected';
+  const generatedMs = new Date(generatedAt).getTime();
+  if (!Number.isFinite(generatedMs)) return 'bridge time unknown';
+  const ageMinutes = Math.max(0, Math.floor((Date.now() - generatedMs) / 60_000));
+  if (ageMinutes >= 10) return `bridge stale · ${ageMinutes}m old`;
+  if (ageMinutes >= 1) return `bridge fresh · ${ageMinutes}m old`;
+  return 'bridge fresh · just now';
+}
+
+function connectorPayloadIsStale(snapshot: ConnectorSnapshot | null): boolean {
+  const generatedAt = connectorPayloadGeneratedAt(snapshot);
+  return generatedAt ? connectorIsStale(generatedAt) : false;
+}
+
 function connectorSnapshotLabel(snapshot: ConnectorSnapshot | null): string {
   if (!snapshot) return 'Repo-only';
-  if (connectorIsStale(snapshot.checkedAt)) return 'Stale snapshot';
+  if (connectorPayloadIsStale(snapshot)) return 'Stale snapshot';
   if (snapshot.source !== 'mcp') return 'Fallback placeholder';
   const dataSources: Array<ConnectorDataSource | undefined> = [
     snapshot.workStatus?.dataSource,
@@ -243,7 +266,7 @@ function buildAgentAuditPrompt(snapshot: ConnectorSnapshot | null): string {
     `Priority: ${work?.currentPriority ?? '—'}`,
     `Blocker: ${work?.currentBlocker ?? 'none'}`,
     `Next action: ${work?.nextAction ?? '—'}`,
-    `MCP: ${connectorSnapshotLabel(snapshot)} · ${snapshot ? connectorFreshnessLabel(snapshot.checkedAt) : 'not connected'}`,
+    `MCP: ${connectorSnapshotLabel(snapshot)} · ${connectorPayloadFreshnessLabel(snapshot)}`,
     `Lanes: ${laneSummary}`,
     '',
     'TASK',
@@ -445,9 +468,10 @@ export default function AdminDevScreen() {
     : 'Build status not loaded.';
   const nowSnapshotLabel = connectorSnapshotLabel(connectorSnapshot);
   const nowSourceLabel = connectorDataSourceLabel(connectorSnapshot);
+  const nowBridgeFreshness = connectorPayloadFreshnessLabel(connectorSnapshot);
   const mcpStatus = isAdmin
     ? connectorSnapshot
-      ? `${nowSnapshotLabel} · ${connectorFreshnessLabel(connectorSnapshot.checkedAt)} · updated ${connectorCheckedTime(connectorSnapshot.checkedAt)}`
+      ? `${nowSnapshotLabel} · ${nowBridgeFreshness} · fetched ${connectorCheckedTime(connectorSnapshot.checkedAt)}`
       : refreshing
         ? 'MCP refreshing…'
         : `${nowSnapshotLabel} · MCP not connected`
@@ -465,10 +489,10 @@ export default function AdminDevScreen() {
             <View style={styles.summaryTile}>
               <Text style={styles.chipLabel}>MCP</Text>
               <Text style={styles.summaryValue}>{refreshing && !connectorSnapshot ? 'Refreshing…' : nowSnapshotLabel}</Text>
-              <Text style={styles.summaryMeta}>{connectorSnapshot ? connectorFreshnessLabel(connectorSnapshot.checkedAt) : 'not connected'}</Text>
+              <Text style={styles.summaryMeta}>{nowBridgeFreshness}</Text>
             </View>
             <View style={styles.summaryTile}>
-              <Text style={styles.chipLabel}>Updated</Text>
+              <Text style={styles.chipLabel}>Fetched</Text>
               <Text style={styles.summaryValue}>{connectorSnapshot ? connectorCheckedTime(connectorSnapshot.checkedAt) : '—'}</Text>
               <Text style={styles.summaryMeta}>{nowSourceLabel}</Text>
             </View>
@@ -1028,13 +1052,14 @@ function ConnectorStatusSection({
   const [detailsOpen, setDetailsOpen] = useState(false);
   const stateLabel = connectorSnapshotLabel(snapshot);
   const dataSourceLabel = connectorDataSourceLabel(snapshot);
+  const bridgeFreshness = connectorPayloadFreshnessLabel(snapshot);
   const mcpState = snapshot
-    ? `${stateLabel} · ${connectorFreshnessLabel(snapshot.checkedAt)} · updated ${connectorCheckedTime(snapshot.checkedAt)}`
+    ? `${stateLabel} · ${bridgeFreshness} · fetched ${connectorCheckedTime(snapshot.checkedAt)}`
     : refreshing
       ? 'MCP refreshing…'
       : `${stateLabel} · MCP not connected`;
   const summaryLine = snapshot
-    ? `${lanes.length} lanes · ${terminalEntries.length} terminal summaries · ${handoff ? 'handoff ready' : 'no handoff'}`
+    ? `${lanes.length} lanes · ${terminalEntries.length} terminal summaries · ${handoff?.manualSteps.length ?? 0} manual steps`
     : 'Set EXPO_PUBLIC_MCP_BASE_URL + admin token, then refresh.';
   const handoffSummary = snapshot ? [
     'MOBILE_CONTROL_CENTRE_HANDOFF',
@@ -1062,6 +1087,11 @@ function ConnectorStatusSection({
         <Text style={styles.chipLabel}>MCP status</Text>
         <Text style={styles.chipBody}>{mcpState}</Text>
         <Text style={styles.note}>{summaryLine} · source {dataSourceLabel}</Text>
+        {stateLabel === 'Stale snapshot' && (
+          <Text style={styles.note}>
+            Stale means the bridge payload timestamp is older than the freshness window; the Worker/backend can still be reachable.
+          </Text>
+        )}
       </View>
       {snapshot && (
         <View style={styles.summaryGrid}>
