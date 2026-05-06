@@ -1485,30 +1485,84 @@ router.get('/admin/work-status', requireAdminToken, async (_req: any, res: any) 
  *   - sk-/whsec-/ghp_/ghs_/xoxb-/AKIA-shaped prefixed tokens
  * Replaces the matched run with `[redacted]` so the surrounding
  * text stays readable.
+ *
+ * Labelled commit/SHA/ref/version values are preserved BEFORE
+ * the generic regexes run — so "commit 8a7b53c", "sha
+ * 1234abcd…(40 hex)", "ref ddbc98cd-fa72-49c4-ad85-e0c8d929a957",
+ * "version 0.1.0" all survive. We tag those substrings with a
+ * unique sentinel that the redactor regexes can't match, then
+ * restore them after. This is the right shape because real
+ * commit refs in agent-status summaries are useful for triage
+ * and have low secret-leak value (commit SHAs are public on
+ * GitHub).
+ *
+ * Test fixtures (verified by the smoke test in commit 6c68726):
+ *   - "sk-OPEN-AI" intentionally PRESERVED — only 7 trailing
+ *     chars after the sk- prefix, which is below the ≥16-char
+ *     threshold for the prefixed-secret regex. Casual "sk-…"
+ *     mentions in prose stay readable.
+ *   - "8a7b53c" (7-char short commit) preserved.
+ *   - UUID `dc901a16-772d-49e5-a8ba-dff2fb4e21bd` preserved.
+ *   - 40-char commit SHA `1234567890abcdef1234567890abcdef12345678`
+ *     preserved when prefixed with "commit"/"sha"/"ref".
+ *   - Bare 40-char hex with NO commit-label prefix → still
+ *     redacted (likely a token, not a commit ref).
  */
 function redactTokenLikeSubstrings(input: string): string {
   if (typeof input !== 'string' || input.length === 0) return '';
   let out = input;
-  // JWTs: header.payload.sig — three base64url segments separated by '.'
+
+  // 1) Tag labelled commit/SHA/ref/version values with a sentinel
+  //    so the generic regexes below can't touch them. The label
+  //    must appear immediately before the value (with optional `:`
+  //    or `=` and whitespace). Captures 7–40 hex chars, plus
+  //    UUIDs (8-4-4-4-12 = 36 chars), plus dotted version strings.
+  //    Sentinel format: `\u0000PRESERVE_<index>\u0000`. Null-byte
+  //    bracketing means no real text could ever clash.
+  const preserved: string[] = [];
+  const sentinel = (i: number) => `\u0000PRESERVE_${i}\u0000`;
+  // UUID alternative must come BEFORE the bare-hex alternative
+  // because alternation in JS regex is left-to-right and a bare
+  // [0-9a-fA-F]{7,40} would otherwise greedily eat the first
+  // 8-char UUID segment, leaving the rest of the UUID exposed to
+  // downstream redaction. Capture the entire labelled chunk
+  // (label + separator + value) so the restored output keeps the
+  // original `:` / `=` separator instead of normalising to a
+  // space.
+  // Label allows compound snake_case forms — `build_sha`,
+  // `commit_sha`, `git_commit`, `app_version`, etc — so labelled
+  // values keep their context. The `(?:^|[^A-Za-z0-9_])` prefix
+  // is the snake_case-aware boundary (the standard `\b` boundary
+  // doesn't reset on `_`, which is a word character).
+  const labelPattern = /(?:^|[^A-Za-z0-9_])((?:[a-z_]*_)?(?:commit|sha|ref|version|build))\s*[:=]?\s*(?:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|[0-9a-fA-F]{7,40}|\d+(?:\.\d+){1,3})/g;
+  out = out.replace(labelPattern, (match: string) => {
+    const i = preserved.push(match) - 1;
+    return sentinel(i);
+  });
+
+  // 2) JWTs: header.payload.sig — three base64url segments separated by '.'
   out = out.replace(/eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}/g, '[redacted]');
-  // Common prefixed secrets.
+  // 3) Common prefixed secrets.
   out = out.replace(/\b(?:sk|pk|rk)-[A-Za-z0-9_-]{16,}/g, '[redacted]');
   out = out.replace(/\bwhsec_[A-Za-z0-9]{20,}/g, '[redacted]');
   out = out.replace(/\b(?:ghp|ghs|gho|ghu|ghr)_[A-Za-z0-9]{20,}/g, '[redacted]');
   out = out.replace(/\bxox[abposr]-[A-Za-z0-9-]{20,}/g, '[redacted]');
   out = out.replace(/\bAKIA[0-9A-Z]{16}\b/g, '[redacted]');
-  // Generic high-entropy strings: hex ≥32 chars and base64-ish ≥24
-  // chars. Bound with word boundaries so legitimate UUIDs (which
-  // are 32 hex chars including dashes) aren't redacted — UUID hex
-  // segments are ≤12 chars between dashes.
+  // 4) Generic high-entropy strings: hex ≥32 chars and base64-ish
+  //    ≥24 chars. Bound with word boundaries so legitimate UUIDs
+  //    aren't redacted — UUID hex segments are ≤12 chars between
+  //    dashes, and labelled commit refs were already sentinel-
+  //    swapped above.
   out = out.replace(/\b[0-9a-fA-F]{32,}\b/g, '[redacted]');
   out = out.replace(/\b[A-Za-z0-9+/=_-]{24,}\b/g, (match) => {
-    // Keep the match if it's actually a URL path or a UUID — both
-    // contain `-` or `/` patterns that the generic regex catches.
-    // UUID round-trip: 8-4-4-4-12 = 36 chars including dashes.
+    // Keep UUID-shaped values that slipped past the label scan
+    // (e.g. an unlabelled UUID in prose).
     if (/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(match)) return match;
     return '[redacted]';
   });
+
+  // 5) Restore preserved labelled values.
+  out = out.replace(/\u0000PRESERVE_(\d+)\u0000/g, (_m, idx: string) => preserved[Number(idx)] ?? '');
   return out;
 }
 

@@ -745,11 +745,12 @@ function AgentStatusSection() {
   }, [refresh, isAdmin]);
 
   if (!isAdmin) {
-    return (
-      <Section title="Coder status">
-        <Text style={styles.note}>Coder status is owner-account only.</Text>
-      </Section>
-    );
+    // Per the hardening pass: non-admin users get NO placeholder
+    // section at all. Even the "owner-account only" note signalled
+    // that this surface exists, which is more than testers /
+    // dev-unlock viewers need to know. Return null so the layout
+    // collapses cleanly.
+    return null;
   }
 
   const order = ['claude', 'codex', 'claude-code-guide', 'other'] as const;
