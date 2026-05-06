@@ -62,6 +62,44 @@ export interface SupabaseAdapter {
    * ordered by generated_at desc (matches the migration's index).
    */
   fetchTerminalEntries(limit: number): Promise<unknown[] | null>;
+  /**
+   * Fetches up to `limit` rows from connector_manual_steps ordered
+   * by updated_at desc. Each row is the full envelope (id, text,
+   * category, blocking, approval_required, approval, created_at,
+   * updated_at). Returns null on any failure; callers fall through
+   * to placeholder. NEVER fabricate data.
+   */
+  fetchManualSteps(limit: number): Promise<Array<{
+    id: string;
+    text: string;
+    category: string;
+    blocking: boolean;
+    approval_required: boolean;
+    approval: string;
+    created_at: string;
+    updated_at: string;
+  }> | null>;
+  /**
+   * Returns the top-1 backlog item by priority asc among rows whose
+   * status is not 'done'. Null when no open items exist.
+   */
+  fetchTopBacklogItem(): Promise<{
+    id: string;
+    title: string;
+    priority: number;
+    status: string;
+    type: string;
+    risk_level: string;
+    needs_build: boolean;
+    updated_at: string;
+  } | null>;
+  /**
+   * Returns counts for /api/control_centre.suggestionCounts:
+   *   candidate         — open backlog items (status != 'done').
+   *   awaitingApproval  — manual_steps where approval_required = true
+   *                       AND approval = 'pending'.
+   */
+  fetchSuggestionCounts(): Promise<{ candidate: number; awaitingApproval: number } | null>;
 }
 
 /**
@@ -155,6 +193,41 @@ export function getSupabaseAdapter(env: Env): SupabaseAdapter | SupabaseUnavaila
       );
       if (!rows) return null;
       return rows.map((r) => r.payload);
+    },
+    async fetchManualSteps(limit: number) {
+      const safeLimit = Math.max(1, Math.min(50, Math.floor(limit)));
+      return safeJson<Array<{
+        id: string; text: string; category: string;
+        blocking: boolean; approval_required: boolean; approval: string;
+        created_at: string; updated_at: string;
+      }>>(
+        `connector_manual_steps?select=id,text,category,blocking,approval_required,approval,created_at,updated_at&order=updated_at.desc&limit=${safeLimit}`,
+      );
+    },
+    async fetchTopBacklogItem() {
+      const rows = await safeJson<Array<{
+        id: string; title: string; priority: number; status: string;
+        type: string; risk_level: string; needs_build: boolean;
+        updated_at: string;
+      }>>(
+        'connector_backlog_items?select=id,title,priority,status,type,risk_level,needs_build,updated_at&status=neq.done&order=priority.asc&limit=1',
+      );
+      if (!rows || rows.length === 0) return null;
+      return rows[0];
+    },
+    async fetchSuggestionCounts() {
+      // PostgREST count via Prefer: count=exact would force a HEAD probe;
+      // simpler is two minimal selects with HEAD-style payload (we just
+      // count the returned ids).
+      const candidates = await safeJson<Array<{ id: string }>>(
+        'connector_backlog_items?select=id&status=neq.done',
+      );
+      if (candidates === null) return null;
+      const awaiting = await safeJson<Array<{ id: string }>>(
+        'connector_manual_steps?select=id&approval_required=eq.true&approval=eq.pending',
+      );
+      if (awaiting === null) return null;
+      return { candidate: candidates.length, awaitingApproval: awaiting.length };
     },
   };
 }

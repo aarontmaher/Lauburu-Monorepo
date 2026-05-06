@@ -35,10 +35,18 @@ const DANGEROUS_PATTERNS: ReadonlyArray<{ name: string; pattern: RegExp }> = [
   { name: 'whsec_', pattern: /\bwhsec_[A-Za-z0-9]{20,}\b/ },
   { name: 'AKIA', pattern: /\bAKIA[0-9A-Z]{16}\b/ },
   { name: 'xox slack', pattern: /\bxox[abposr]-[A-Za-z0-9-]{20,}/ },
-  // EAS / Play / TestFlight UUIDs.
-  { name: 'UUID', pattern: /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/ },
-  // GitHub run IDs (10+ digit numeric).
-  { name: 'GitHub run id', pattern: /\b\d{10,}\b/ },
+  // EAS / Play / TestFlight UUIDs by *field name*, not raw UUID.
+  // Row-PK UUIDs (manualSteps[].id, topBacklog.id) are intentional and
+  // mobile-readable. The dangerous ones are upstream submission /
+  // build IDs whose key names should never appear in this response.
+  { name: 'easBuildId field', pattern: /"easBuildId"\s*:/ },
+  { name: 'playSubmissionId field', pattern: /"playSubmissionId"\s*:/ },
+  { name: 'testflightSubmissionId field', pattern: /"testflightSubmissionId"\s*:/ },
+  { name: 'githubRunId field', pattern: /"githubRunId"\s*:/ },
+  // GitHub run IDs (10+ digit numeric, surrounded by JSON-string quotes
+  // OR comma/space). Catches the same value if it ever leaks into a
+  // free-text field.
+  { name: 'GitHub run id (numeric)', pattern: /\b\d{10,}\b/ },
   // Prompt IDs follow SCREAMING-KEBAB-CASE-NN; admin-token-gated route
   // is allowed to surface them in upstream payloads, but Control Centre
   // explicitly drops them, so this MUST NOT match.
@@ -50,7 +58,9 @@ function assert(cond: unknown, label: string): asserts cond {
 }
 
 function isIsoZ(s: unknown): s is string {
-  return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/.test(s);
+  // Accept both ISO-8601 UTC forms — Worker emits 'Z', Postgres emits '+00:00'.
+  return typeof s === 'string'
+    && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|\+00:00)$/.test(s);
 }
 
 async function main(): Promise<void> {
@@ -138,23 +148,57 @@ async function main(): Promise<void> {
   assert(isIsoZ(repo.updatedAt), 'repo updatedAt');
   console.log(`✓ repo (branch=${repo.branch}, shortHead=${repo.shortHead})`);
 
-  // 8. Manual steps.
+  // 8. Manual steps — rich shape (Phase 2 connector_manual_steps).
+  const STEP_CATEGORIES = [
+    'supabase', 'cloudflare', 'eas', 'play_console',
+    'app_store_connect', 'github', 'other',
+  ];
+  const STEP_APPROVALS = ['pending', 'approved', 'completed', 'declined'];
   const steps = body.manualSteps as Array<Record<string, unknown>>;
   assert(Array.isArray(steps), 'manualSteps array');
   assert(steps.length <= 10, 'manualSteps cap 10');
   for (const s of steps) {
+    assert(typeof s.id === 'string' && (s.id as string).length > 0, 'step id');
     assert(typeof s.text === 'string' && (s.text as string).length <= 200, 'step text cap');
+    assert(typeof s.category === 'string' && STEP_CATEGORIES.includes(s.category as string), 'step category enum');
+    assert(typeof s.blocking === 'boolean', 'step blocking boolean');
+    assert(typeof s.approvalRequired === 'boolean', 'step approvalRequired boolean');
+    assert(typeof s.approval === 'string' && STEP_APPROVALS.includes(s.approval as string), 'step approval enum');
+    assert(isIsoZ(s.createdAt), 'step createdAt');
+    assert(isIsoZ(s.updatedAt), 'step updatedAt');
   }
   assert(typeof body.manualStepsCount === 'number', 'manualStepsCount number');
-  console.log(`✓ manualSteps (${steps.length})`);
+  console.log(`✓ manualSteps (${steps.length}) with rich shape`);
 
-  // 9. Suggestion counts (null until Phase 2).
+  // 9. topBacklog (Phase 2 connector_backlog_items).
+  if (body.topBacklog !== null) {
+    const BACKLOG_STATUSES = ['live', 'repo-only', 'tester-build', 'blocked', 'done'];
+    const BACKLOG_TYPES = [
+      'bug', 'ux_issue', 'feature_idea', 'release_blocker',
+      'health_data_issue', 'ai_coaching_idea',
+      'monetisation_payment_idea', 'railway_backend_issue',
+      'source_integration_issue',
+    ];
+    const BACKLOG_RISKS = ['low', 'medium', 'high'];
+    const tb = body.topBacklog as Record<string, unknown>;
+    assert(typeof tb.id === 'string' && (tb.id as string).length > 0, 'topBacklog id');
+    assert(typeof tb.title === 'string' && (tb.title as string).length <= 120, 'topBacklog title cap');
+    assert(typeof tb.priority === 'number' && Number.isInteger(tb.priority) && (tb.priority as number) >= 1 && (tb.priority as number) <= 11, 'topBacklog priority 1..11');
+    assert(typeof tb.status === 'string' && BACKLOG_STATUSES.includes(tb.status as string), 'topBacklog status enum');
+    assert(typeof tb.type === 'string' && BACKLOG_TYPES.includes(tb.type as string), 'topBacklog type enum');
+    assert(typeof tb.riskLevel === 'string' && BACKLOG_RISKS.includes(tb.riskLevel as string), 'topBacklog riskLevel enum');
+    assert(typeof tb.needsBuild === 'boolean', 'topBacklog needsBuild boolean');
+    assert(isIsoZ(tb.updatedAt), 'topBacklog updatedAt');
+  }
+  console.log(`✓ topBacklog (${body.topBacklog === null ? 'null' : 'populated'})`);
+
+  // 10. suggestionCounts (Phase 2 — null only on read failure now).
   if (body.suggestionCounts !== null) {
     const sc = body.suggestionCounts as { candidate: unknown; awaitingApproval: unknown };
-    assert(typeof sc.candidate === 'number', 'suggestionCounts.candidate');
-    assert(typeof sc.awaitingApproval === 'number', 'suggestionCounts.awaitingApproval');
+    assert(typeof sc.candidate === 'number' && (sc.candidate as number) >= 0, 'suggestionCounts.candidate');
+    assert(typeof sc.awaitingApproval === 'number' && (sc.awaitingApproval as number) >= 0, 'suggestionCounts.awaitingApproval');
   }
-  console.log(`✓ suggestionCounts (${body.suggestionCounts === null ? 'null' : 'populated'})`);
+  console.log(`✓ suggestionCounts (${body.suggestionCounts === null ? 'null' : `${(body.suggestionCounts as {candidate:number;awaitingApproval:number}).candidate}c/${(body.suggestionCounts as {candidate:number;awaitingApproval:number}).awaitingApproval}a`})`);
 
   // 10. Prompt library.
   const promptLib = body.promptLibrary as Array<Record<string, unknown>>;

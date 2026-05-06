@@ -78,6 +78,21 @@ export interface ControlCentreManualStep {
   updatedAt: string;
 }
 
+export interface ControlCentreBacklogItem {
+  id: string;
+  title: string;
+  priority: number;
+  status: 'live' | 'repo-only' | 'tester-build' | 'blocked' | 'done';
+  type:
+    | 'bug' | 'ux_issue' | 'feature_idea' | 'release_blocker'
+    | 'health_data_issue' | 'ai_coaching_idea'
+    | 'monetisation_payment_idea' | 'railway_backend_issue'
+    | 'source_integration_issue';
+  riskLevel: 'low' | 'medium' | 'high';
+  needsBuild: boolean;
+  updatedAt: string;
+}
+
 export interface ControlCentreSuggestionCounts {
   /** docs/FEEDBACK_SUGGESTIONS.md candidates not yet approved. */
   candidate: number;
@@ -128,7 +143,11 @@ export interface ControlCentreSnapshot {
   manualSteps: ControlCentreManualStep[];
   manualStepsCount: number;
 
-  /** Null until connector_backlog_items + suggestion-tracking tables ship. */
+  /** Top-1 open item from connector_backlog_items by priority asc. */
+  topBacklog: ControlCentreBacklogItem | null;
+
+  /** Live counts when connector_backlog_items + connector_manual_steps
+   *  reads succeed; null on read failure. */
   suggestionCounts: ControlCentreSuggestionCounts | null;
 
   promptLibrary: readonly ControlCentrePromptRef[];
@@ -164,7 +183,11 @@ function truncate(text: string, cap: number): string {
 }
 
 function isIsoZ(s: unknown): s is string {
-  return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/.test(s);
+  // Accept the two ISO-8601 UTC forms callers produce:
+  //   '2026-05-07T12:34:56Z'              (Worker / new Date().toISOString())
+  //   '2026-05-07T12:34:56.123456+00:00'  (Postgres timestamptz default)
+  return typeof s === 'string'
+    && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|\+00:00)$/.test(s);
 }
 
 function maxIsoZ(values: ReadonlyArray<string | null | undefined>): string | null {
@@ -357,7 +380,7 @@ function buildRepo(workPayload: WorkStatusPayload | null, generatedAt: string): 
   };
 }
 
-function buildManualSteps(payload: HandoffPayload | null, generatedAt: string): ControlCentreManualStep[] {
+function buildManualStepsFromHandoff(payload: HandoffPayload | null, generatedAt: string): ControlCentreManualStep[] {
   if (!payload || !Array.isArray(payload.manualSteps)) return [];
   const sourceUpdatedAt = isIsoZ(payload.generatedAt) ? payload.generatedAt! : generatedAt;
   const steps: ControlCentreManualStep[] = [];
@@ -376,6 +399,74 @@ function buildManualSteps(payload: HandoffPayload | null, generatedAt: string): 
     });
   }
   return steps;
+}
+
+const STEP_CATEGORIES: ReadonlyArray<ControlCentreManualStep['category']> = [
+  'supabase', 'cloudflare', 'eas', 'play_console',
+  'app_store_connect', 'github', 'other',
+] as const;
+const STEP_APPROVALS: ReadonlyArray<ControlCentreManualStep['approval']> = [
+  'pending', 'approved', 'completed', 'declined',
+] as const;
+
+function buildManualStepsFromTable(rows: Array<{
+  id: string; text: string; category: string;
+  blocking: boolean; approval_required: boolean; approval: string;
+  created_at: string; updated_at: string;
+}>): ControlCentreManualStep[] {
+  const steps: ControlCentreManualStep[] = [];
+  for (const row of rows) {
+    if (steps.length >= 10) break;
+    const category = pickEnum(row.category, STEP_CATEGORIES);
+    const approval = pickEnum(row.approval, STEP_APPROVALS);
+    if (!category || !approval) continue;
+    steps.push({
+      id: row.id,
+      text: truncate(row.text ?? '', 200),
+      category,
+      blocking: !!row.blocking,
+      approvalRequired: !!row.approval_required,
+      approval,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+    });
+  }
+  return steps;
+}
+
+const BACKLOG_STATUSES: ReadonlyArray<ControlCentreBacklogItem['status']> = [
+  'live', 'repo-only', 'tester-build', 'blocked', 'done',
+] as const;
+const BACKLOG_TYPES: ReadonlyArray<ControlCentreBacklogItem['type']> = [
+  'bug', 'ux_issue', 'feature_idea', 'release_blocker',
+  'health_data_issue', 'ai_coaching_idea',
+  'monetisation_payment_idea', 'railway_backend_issue',
+  'source_integration_issue',
+] as const;
+const BACKLOG_RISKS: ReadonlyArray<ControlCentreBacklogItem['riskLevel']> = [
+  'low', 'medium', 'high',
+] as const;
+
+function buildBacklogItem(row: {
+  id: string; title: string; priority: number; status: string;
+  type: string; risk_level: string; needs_build: boolean; updated_at: string;
+} | null): ControlCentreBacklogItem | null {
+  if (!row) return null;
+  const status = pickEnum(row.status, BACKLOG_STATUSES);
+  const type = pickEnum(row.type, BACKLOG_TYPES);
+  const riskLevel = pickEnum(row.risk_level, BACKLOG_RISKS);
+  if (!status || !type || !riskLevel) return null;
+  if (typeof row.priority !== 'number' || !Number.isInteger(row.priority) || row.priority < 1 || row.priority > 11) return null;
+  return {
+    id: row.id,
+    title: truncate(row.title ?? '', 120),
+    priority: row.priority,
+    status,
+    type,
+    riskLevel,
+    needsBuild: !!row.needs_build,
+    updatedAt: row.updated_at,
+  };
 }
 
 function deriveMcpConnectionStatus(
@@ -413,17 +504,21 @@ export async function buildControlCentreSnapshot(env: Env): Promise<ControlCentr
       repo: buildRepo(null, generatedAt),
       manualSteps: [],
       manualStepsCount: 0,
+      topBacklog: null,
       suggestionCounts: null,
       promptLibrary: PROMPT_LIBRARY,
       safety: { publicSafe: false, privateFieldsWithheld: true, withheld: WITHHELD_FIELDS },
     };
   }
 
-  const [workRow, lanesRows, buildRow, handoffRow] = await Promise.all([
+  const [workRow, lanesRows, buildRow, handoffRow, manualRows, backlogRow, suggestionCounts] = await Promise.all([
     adapter.fetchSingleRowPayload('connector_work_status'),
     adapter.fetchCoderLaneRows(),
     adapter.fetchSingleRowPayload('connector_build_status'),
     adapter.fetchSingleRowPayload('connector_handoff'),
+    adapter.fetchManualSteps(10),
+    adapter.fetchTopBacklogItem(),
+    adapter.fetchSuggestionCounts(),
   ]);
 
   const workPayload = (workRow as WorkStatusPayload | null) ?? null;
@@ -436,10 +531,21 @@ export async function buildControlCentreSnapshot(env: Env): Promise<ControlCentr
     .filter((l): l is ControlCentreLane => l !== null);
   const buildDeploy = buildBuildDeploy(buildPayload, generatedAt);
   const repo = buildRepo(workPayload, generatedAt);
-  const manualSteps = buildManualSteps(handoffPayload, generatedAt);
+
+  // Prefer rich rows from connector_manual_steps. Fall back to the
+  // legacy handoff.manualSteps string array when the table read
+  // returns null (network failure) or empty (table not yet seeded).
+  const manualSteps =
+    Array.isArray(manualRows) && manualRows.length > 0
+      ? buildManualStepsFromTable(manualRows)
+      : buildManualStepsFromHandoff(handoffPayload, generatedAt);
+
+  const topBacklog = buildBacklogItem(backlogRow);
 
   const dataSource: 'supabase' | 'placeholder' =
-    workPayload || lanes.length > 0 || buildPayload || handoffPayload ? 'supabase' : 'placeholder';
+    workPayload || lanes.length > 0 || buildPayload || handoffPayload || manualSteps.length > 0 || topBacklog
+      ? 'supabase'
+      : 'placeholder';
 
   const updatedAt = maxIsoZ([
     cards.updatedAt,
@@ -448,6 +554,7 @@ export async function buildControlCentreSnapshot(env: Env): Promise<ControlCentr
     repo.updatedAt,
     ...lanes.map((l) => l.lastSeenAt),
     ...manualSteps.map((s) => s.updatedAt),
+    topBacklog?.updatedAt,
   ]) ?? generatedAt;
 
   return {
@@ -465,7 +572,8 @@ export async function buildControlCentreSnapshot(env: Env): Promise<ControlCentr
     repo,
     manualSteps,
     manualStepsCount: manualSteps.length,
-    suggestionCounts: null,
+    topBacklog,
+    suggestionCounts,
     promptLibrary: PROMPT_LIBRARY,
     safety: { publicSafe: false, privateFieldsWithheld: true, withheld: WITHHELD_FIELDS },
   };
