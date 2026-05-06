@@ -77,19 +77,17 @@ export const AI_BACKEND_DISABLED =
   !AI_BACKEND_CONFIGURED && AI_INTERNAL_BASE === DEV_INTERNAL;
 
 /**
- * Future MCP / app-dev-centre Cloudflare Worker base URL.
+ * Optional MCP / app-dev-centre Cloudflare Worker base URL.
  *
- * REPO-ONLY today: production traffic continues to hit the
- * existing Railway-hosted backend at AI_PUBLIC_BASE /
- * AI_INTERNAL_BASE. The Worker scaffold lives at
- * `cloudflare-worker/` and is not deployed yet.
+ * Production traffic continues to hit the existing Railway-hosted
+ * backend at AI_PUBLIC_BASE / AI_INTERNAL_BASE until the owner flips
+ * the EAS env values after live Worker verification.
  *
- * Set EXPO_PUBLIC_MCP_BASE_URL when the Worker preview is live to
- * route a future Admin/Dev "MCP probe" or specific connector
- * checks at the new origin without flipping the whole app off
- * Railway. The mobile app does NOT auto-fallback between the two
- * — this is a deliberate switch the owner toggles once Worker
- * verification is complete.
+ * Set EXPO_PUBLIC_MCP_BASE_URL to route Admin/Dev connector status
+ * reads to the Worker without flipping the core athlete-memory,
+ * ingest, feedback, WHOOP, or Polar paths off Railway. The mobile
+ * app does NOT auto-fallback between the two — this is a deliberate
+ * switch the owner toggles once Worker verification is complete.
  *
  * See docs/CLOUDFLARE_MIGRATION.md for cutover steps.
  */

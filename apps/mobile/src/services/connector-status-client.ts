@@ -1,3 +1,5 @@
+import { AI_PUBLIC_BASE, MCP_BASE_URL } from './ai-backend-config';
+
 export interface ConnectorWorkStatus {
   schemaVersion: number;
   generatedAt: string;
@@ -72,8 +74,8 @@ export interface ConnectorSnapshot {
 }
 
 function connectorApiBase(): string | null {
-  const publicBase = (process.env.EXPO_PUBLIC_AI_PUBLIC_URL ?? '').replace(/\/$/, '');
-  if (!publicBase) return null;
+  if (MCP_BASE_URL) return MCP_BASE_URL.replace(/\/$/, '');
+  const publicBase = AI_PUBLIC_BASE.replace(/\/$/, '');
   return publicBase.replace(/\/athlete-memory$/, '');
 }
 
