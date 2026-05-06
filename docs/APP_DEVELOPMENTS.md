@@ -1,277 +1,225 @@
-# App developments — repo-backed backlog
+# App developments — repo-backed roadmap
 
-Single source of truth for the **active** backlog Aaron carries
+Single source of truth for the **active** roadmap Aaron carries
 between the laptop terminal, ChatGPT chats, and Apple Notes. The
 in-app Admin/Dev "Backlog" card mirrors this file. When the file
-changes, the next paired build picks it up — no live-fetch required
-yet (the long-term shape is a backend route that serves this).
+changes, the next paired build picks it up — no live-fetch
+required yet (the long-term shape is the connector reading this
+via the MCP route layer once Supabase is wired).
 
-Updated 2026-05-05.
+Status language used below:
 
-## Active priority order (2026-05-06, after auto-update closure)
+| Tag | Meaning |
+|---|---|
+| **live** | Running in production / a deployed component (Worker, last released mobile build, etc.). |
+| **repo-only** | Code / docs are on `main` but not yet shipped via a tester build, deployment, or dashboard step. |
+| **tester-build** | Will ship to testers when the next paired Android v17 / iOS Build 18 dispatch goes (or whatever the next paired-build cadence is at the time). |
+| **blocked** | Cannot move without a specific external action — Aaron's manual step, vendor processing window, or upstream dependency. |
 
-1. **Apple Health (iPhone — Aaron) + Health Connect (Android —
-   girlfriend) usable for daily testing.** Real-tester
-   functionality is the top priority — the two devices in active
-   daily use must connect cleanly, surface what's available, and
-   stay honest about what's missing. Manual check-ins + training
-   logs as fallback when a source isn't connected.
-2. **Cautious early Grappler Readiness prototype** that only uses
-   available data (Apple Health / Health Connect + manual
-   check-ins + training logs) and clearly shows missingness.
-   No strong "you are ready" claims. Labelled provisional.
-3. **WHOOP / Polar / Garmin / Oura, raw exports, HIIT machine
-   capture, nutrition, DEXA / blood test uploads.** All below the
-   above two lanes. They matter, but they cannot block the
-   day-to-day usability for Aaron + girlfriend.
-4. **Admin/Dev workflow + Railway read-only / MCP-style bridge.**
-   Useful for owner workflow but secondary to (1) and (2).
-5. **Full mobile UX audit pass** once 1+2 are usable on both
-   devices.
-6. **Paid AI API** — deferred until monetisation + usage caps +
-   data readiness all exist (`AI_PROVIDER_STRATEGY.md` +
-   `AI_MONETISATION_AND_USAGE_STRATEGY.md`).
+Updated 2026-05-07.
 
-Grappler Readiness Batches B/C/D map onto priority (2). Tonight's
-prototype is doc-only (`docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md`)
-— Batches B/C/D refine the underlying schema (subjective sliders,
-grappling-load fields, bucket-ring UI).
+## Active priority order
 
-## Latest paired build (v15 / Build 16 — both `success`)
+The MCP terminal bridge moved to **Priority 1** because every
+other priority benefits from ChatGPT being able to read Claude /
+Codex lane status without screenshots. The remaining priorities
+keep their relative order from the previous backlog.
 
-- Android v15: run `25384901407` finished `success` 2026-05-05.
-  Bundles the un-gated AppleHealthCard / Health Connect card +
-  iOS HealthKit Mac/Vision warning fix + Admin/Dev redesign +
-  AI Coach UX cleanup + BLE CPS/CSC fix + Settings build/version
-  row + Railway audit + feedback PII fix. Should be propagating
-  to tester Android via Play Store auto-update.
-- iOS Build 16: run `25384907135` finished `success` 2026-05-05.
-  Same bundle on iOS via TestFlight — Apple processing window
-  (5–30 min) before testers see the prompt.
+### 1. MCP terminal bridge / ChatGPT-readable status (Priority 1) — IN FLIGHT
 
-Confirmation pending: Aaron walks Apple Health connect/sync on
-iPhone, girlfriend walks Health Connect connect/sync on Android.
+ChatGPT and the mobile Admin/Dev surface should read Claude /
+Codex lane status, build state, handoff, and recent terminal
+summaries from one admin-token-gated set of HTTP routes — no
+Termius screenshots, no manual paste.
 
-## Next paired build (v16 / Build 17 — repo-only changes ready)
+| Component | Status |
+|---|---|
+| Cloudflare Worker (`lauburu-mcp-preview`) | **live** — `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/` |
+| Worker admin-token gate | **live** — every connector route 403s without `x-athlete-memory-token` |
+| Worker routes (`/api/work_status`, `/api/coder_lanes`, `/api/build_status`, `/api/handoff`, `/api/terminal_summary`) | **live** — placeholder + `dataSource.schemaRequired` payload until Supabase wires |
+| Local tmux bridge (`scripts/bridge-snapshot-lanes.sh` / `npm run bridge:snapshot`) | **live** — writes 4 sanitised JSON artifacts to `data/agent-status/lanes/` |
+| Bridge artifact schema test (`npm run bridge:verify`) | **live** |
+| Live worker integration test (`npm run mcp:test:live`) | **live** — 11/11 assertions pass |
+| Express parity routes in `chat-app` | **live in repo** (chat-app is parity reference, not deployed) |
+| Supabase migration `0003_connector_status_tables.sql` | **repo-only** — committed at `955bfed`, awaiting manual apply |
+| Worker `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` secrets | **blocked** on Aaron's `wrangler secret put` after the migration |
+| Mobile Admin/Dev cards reading the Worker | **tester-build** — `EXPO_PUBLIC_MCP_BASE_URL=<worker>/api` env switch + next paired build |
+| Bridge → Supabase upsert (`LaneStatusWritePayload` consumer) | **repo-only / planned** — schema exists; producer code not yet written |
 
-The following are on `main` after v15 / Build 16 dispatch and
-will surface only when the next paired build ships:
+**Done flag for Priority 1:** Aaron taps an Admin/Dev card on the
+phone and sees the live Claude lane summary written by the local
+bridge to Supabase, fetched by the Worker, returned to the app
+through `EXPO_PUBLIC_MCP_BASE_URL`.
 
-- Friendly WHOOP / Polar error UI (commit `a036fd5`).
-- Settings build/version row (commit `774294c`).
-- In-app audit system + first capture site
-  (`health_source_visible` on Health-tab mount, this batch).
-- Connector `/admin/work-status` route (backend-side; ships with
-  Railway redeploy of `chat-app`).
-- The five new planning docs from this batch
-  (`WHOOP_POLAR_SYNC_STRATEGY.md`,
-  `GRAPPLER_READINESS_PROTOTYPE_PLAN.md`,
-  `NUTRITION_TRACKING_PLAN.md`,
-  `DEXA_BLOOD_TEST_UPLOAD_PLAN.md`,
-  `GRAPPLINGMAP_MCP_BRIDGE_PLAN.md`).
+### 2. Apple Health (iOS) + Health Connect (Android) usable for daily testing
 
-Trigger from Admin/Dev → Primary actions when ready: bump
-`app.json android.versionCode` 15 → 16 + `ios.buildNumber` 16 →
-17, dispatch Build Android + upload + Build iOS + submit. Both
-paths are routine now (auto-promote proven).
+Real-tester functionality for Aaron's iPhone (Apple Health) and
+his girlfriend's Android (Health Connect). Two devices in active
+daily use must connect cleanly, surface what's available, and
+stay honest about what's missing. Manual check-ins + training
+logs as fallback when a source isn't connected.
 
-Auto-update lane CLOSED 2026-05-06:
+Hard guardrails (preserved):
 
-- Run `25361589282`: SUCCESS end-to-end. EAS build ✓ → Submit AAB
-  to Play Internal Testing ✓ at 2026-05-05 06:59:36 UTC. Play
-  accepted the COMPLETED release.
-- Tester Android device received v14 via Play Store auto-update.
-  No Play Console click required.
-- Future paired builds dispatch routinely from Admin/Dev: bump
-  `app.json android.versionCode` + `ios.buildNumber` → tap Build
-  Android + upload + Build iOS + submit. No manual steps.
-- Workflow URL preserved:
-  https://github.com/aarontmaher/lauburu-grappling-map/actions/runs/25361589282
+- Apple Health is iOS-only; Health Connect is Android-only. No
+  cross-platform claims.
+- Missing data stays missing — never fabricated.
+- No paid-tier gating for these two primary sources (already
+  un-gated, commit `d4827ba`).
 
-Earlier failure preserved for context (run `25349253529`):
+Status: **live** for the existing primary cards in last paired
+build. Next moves are tester-build verifications + the cleanup
+items Codex is closing on `apps/mobile/app/admin-dev.tsx` and
+`apps/mobile/src/services/connector-status-client.ts`.
 
-- EAS build: ✅ succeeded — AAB produced
-  (`https://expo.dev/artifacts/eas/to6EtkZB68rBopsR9JNYMV.aab`,
-  EAS build id `ddbc98cd-fa72-49c4-ad85-e0c8d929a957`).
-- Play API auth: ✅ succeeded — service account
-  `lauburu-play-release-461@lauburu-play-deploy.iam.gserviceaccount.com`
-  authenticated, scheduled the submission, track `internal`,
-  releaseStatus `COMPLETED`.
-- Play submission: ❌ rejected by Google Play with: *"The app is
-  missing the required metadata to submit the app to Google Play
-  Store."* (EAS submission record:
-  `https://expo.dev/accounts/aaronmaher/projects/lauburu-grappling-map/submissions/df5d79df-b91e-4711-ae41-053102d46324`)
+### 3. Cautious early Grappler Readiness prototype
 
-What this means: the listing-pass items Aaron uploaded
-(graphics + screenshots) are present, but Play's COMPLETED-release
-validator requires more saved fields than DRAFT mode does. The
-common gaps that produce this exact error are:
+Uses only available data (Apple Health / Health Connect + manual
+check-ins + training logs) and clearly shows missingness. No
+strong "you are ready" claims. Labelled provisional.
 
-- **Data safety** questionnaire started but not Saved → "Complete"
-- **Content rating** IARC questionnaire started but not finalised
-- **Target audience and content** unsaved
-- **Health Connect declaration** missing or unsaved
-- **App access** if Play needs review credentials (only required
-  for production / open testing — but check this hasn't been
-  flagged on Internal Testing too)
+**Hard guardrail (preserved):** No Grappler Readiness UI ships
+until Batches B / C / D land. Tonight's prototype work is
+doc-only (`docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md`).
 
-Parallel iOS Build 15 dispatch (run `25349256198`,
-`submit_to_testflight=true`): **SUCCEEDED.** Build 15 is on App
-Store Connect and assigned to the internal `Team (Expo)` group.
-Aaron should accept the TestFlight prompt on his device — Build
-15 carries the iOS HealthKit Mac/Vision warning fix, the Admin/Dev
-redesign + Primary actions, and the owner-FAB rule (Feedback FAB
-hidden for the admin email).
+| Batch | What | Status |
+|---|---|---|
+| B | Extend `NextDayCheckin` sliders (soreness, mood, perceived fatigue) | repo-only / planned |
+| C | Extend `TrainingSession` schema (gi/no-gi, drilling vs live, perceived intensity) | repo-only / planned |
+| D | Bucket-ring UI on `AthleteStateStrip` (5 buckets with provenance) | repo-only / planned |
 
-## Current blocker
+### 4. WHOOP / Polar / Garmin / Oura / raw exports / HIIT / nutrition / DEXA / blood test uploads
 
-Aaron-side: open Play Console → Lauburu Grappling Map →
-**Dashboard** OR **Internal testing → v14 draft** and look for any
-"Complete this section" / red / amber prompt. Save each
-questionnaire to "Complete". Reply *"play listing fully complete"*
-when done; I will re-dispatch the Android workflow once. **Do NOT
-re-dispatch yet — it will fail the same way.**
+All below the above three lanes. They matter, but they cannot
+block day-to-day usability for Aaron + girlfriend.
 
-## Next action
+- WHOOP OAuth: legacy on Railway (deprecated); migration off
+  Railway disk to Supabase encrypted table — repo-only / planned.
+- Friendly WHOOP / Polar error UI: **repo-only**, ships in next
+  paired tester build (commit `a036fd5`).
+- Nutrition tracking plan: **repo-only** (`docs/NUTRITION_TRACKING_PLAN.md`).
+- DEXA / blood test upload plan: **repo-only**
+  (`docs/DEXA_BLOOD_TEST_UPLOAD_PLAN.md`).
 
-Aaron does Play Console pass → clicks `Review release → Start
-rollout` once on v13 → replies "flip releaseStatus to completed" →
-I edit `eas.json` (one line) and commit.
+### 5. Admin/Dev workflow + Cloudflare / Supabase MCP bridge
 
-## Can delete from notepad
+The owner-workflow surface that lets Aaron manage everything from
+the phone. Subsumes the previous "Railway read-only / MCP-style
+bridge" priority — Railway is deprecated; Cloudflare + Supabase
+is the active replacement.
 
-These items are spec'd or live and don't need to live in Apple Notes
-anymore:
+- Admin/Dev surface (Now / Android / iOS / OTA cards, Primary
+  actions, Prompt bridge, Quick capture, Open shortcuts):
+  **live**.
+- Workflow buttons (typecheck, release audit, backend smoke,
+  Android build + upload, iOS build + submit, OTA diagnostic):
+  **live** — owner-tap only, never auto-dispatched.
+- Mobile MCP endpoint switch (`EXPO_PUBLIC_MCP_BASE_URL`):
+  **live in code** (commit `7e40763`); **tester-build** to
+  flip on for testers.
+- Cloudflare Worker: see Priority 1 above.
 
-- "Wire iOS auto-group assignment" — DONE, Build 14 verified.
-- "Add Privacy / Account-deletion pages to website" — DONE, both
-  HTTP 200 at the live URLs.
-- "Document AI provider strategy" — DONE,
-  `docs/AI_PROVIDER_STRATEGY.md`.
-- "Document AI monetisation / cost guardrails" — DONE,
-  `docs/AI_MONETISATION_AND_USAGE_STRATEGY.md`.
-- "Audit which wearable claims are actually live" — DONE,
-  `docs/HEALTH_METRIC_APPS_DEVICES_AUDIT.md`.
-- "Fix iOS HealthKit Mac/Vision warning" — DONE, shipped on
-  iOS Build 15 (run `25349256198`).
-- "Generate Play app icon 512×512 and feature graphic 1024×500" —
-  DONE, in `docs/store-assets/google-play/`.
-- "Capture two phone screenshots for Play listing" — DONE
-  (Aaron-side, 2026-05-05).
-- "Upload Play Console icon / feature graphic / screenshots /
-  default store listing" — DONE (Chrome confirmed).
-- "Privacy policy URL declared" — DONE
-  (`https://www.lauburugrapplingmap.com/privacy/`).
-- "Advertising ID declaration" — DONE.
-- "Flip `releaseStatus` to `completed`" — DONE (eas.json +
-  workflow `release_status` override input).
-- "Android auto-promote proof: workflow + Play API + tester
-  device" — DONE 2026-05-06. Run `25361589282` + tester Android
-  device confirmed v14 via Play Store auto-update.
-- "Add /admin/status backend route + signed dispatch" — DONE.
-- "Hide Dev/Admin FAB from normal testers" — DONE (admin-email gate).
-- "Hide Feedback FAB from owner" — DONE (this batch).
+## Later backlog (not in the active top 5)
 
-## Do not delete yet
+### 6. Full mobile UX audit pass
 
-These remain in the backlog because they are NOT yet done:
+Once Apple Health + Health Connect are usable on both devices and
+the MCP bridge is live, do a full mobile UX audit pass on every
+tab — one screen at a time, with screenshots, fix list, single
+batched commit per tab. Codex's IA cleanup work is the on-ramp.
 
-- Grappler Readiness Batch B — extend NextDayCheckin sliders
-  (soreness, mood, perceived fatigue).
-- Grappler Readiness Batch C — extend TrainingSession schema
-  with grappling-specific fields (gi/no-gi, drilling vs live
-  minutes, perceived intensity).
-- Grappler Readiness Batch D — bucket-ring UI on
-  AthleteStateStrip showing all 5 buckets with provenance.
-- AI provider implementation — gated by triggers in
-  `AI_PROVIDER_STRATEGY.md` AND
-  `AI_MONETISATION_AND_USAGE_STRATEGY.md`.
-- Stage-5 local Mac/tmux bridge — eight hard rules required.
-- Public production release — out of scope until production
-  listing pass is done (separate from the now-complete
-  Internal Testing pass).
-- Grappler Readiness Batches B/C/D (extend `NextDayCheckin` sliders,
-  extend `TrainingSession` with grappling-load fields, bucket-ring
-  UI on `AthleteStateStrip`). The audit doc explicitly recommends
-  shipping these BEFORE adding any new wearable integration.
-- AI provider implementation — gated. See triggers in
-  `docs/AI_PROVIDER_STRATEGY.md` AND
-  `docs/AI_MONETISATION_AND_USAGE_STRATEGY.md`.
-- Public production release for either platform — out of scope until
-  tester channels are fully auto-promote AND a separate listing pass
-  for production is done.
+Status: **planned** — gate is "Priorities 1 + 2 are live for
+testers."
 
-## Next top 5
+### 7. Paid AI API integration
 
-In suggested order; each is "ready when" the prior item is unblocked.
+Deferred until monetisation + usage caps + data readiness all
+exist. Triggers documented in:
 
-1. **Play Console listing pass + flip** (Aaron-side, then one-line
-   commit).
-2. **Paired tester build** (Android v14 + iOS Build 15) bundling the
-   standing repo-only UX work and the iOS Mac/Vision warning fix.
-   Triggered from Admin/Dev once releaseStatus is flipped.
-3. **Grappler Readiness Batch B**: extend `NextDayCheckin` with
-   subjective sliders (soreness, mood, perceived fatigue). Pure
-   schema + UI work; no backend.
-4. **Grappler Readiness Batch C**: extend `TrainingSession` schema
-   with grappling-specific fields (gi/no-gi, drilling vs live
-   minutes, perceived intensity).
-5. **Grappler Readiness Batch D**: bucket-ring UI on
-   `AthleteStateStrip` showing all 5 buckets (autonomic, sleep,
-   load, grappling, subjective) with provenance.
+- `docs/AI_PROVIDER_STRATEGY.md`
+- `docs/AI_MONETISATION_AND_USAGE_STRATEGY.md`
 
-After these five, the AI provider implementation gate opens.
+Hard guardrail: no paid AI API call until both trigger docs
+explicitly say go. Status: **blocked** by design until then.
 
-## Last CHATGPT_STATUS
+### 8. Public production release
 
-Latest known status block from a Claude Code run; updated by the
-agent at the end of each lane. Older blocks live in chat history.
+Out of scope until the production listing pass is done (separate
+from the now-complete Internal Testing pass). Status: **blocked**
+on production listing pass.
 
-```
-CHATGPT_STATUS_START
-Auto-update status: iOS end-to-end auto-ship live (Build 14 reached
-TestFlight Team (Expo) testers via auto-group assignment, no ASC
-clicks). Android upload-to-Play DRAFT live; per-release promote
-click stays manual.
-Android auto-promote: NOT live yet. Gated on Play Console one-time
-listing pass + flipping eas.json releaseStatus from 'draft' to
-'completed'.
-iOS status: Auto-assign to Team (Expo) verified working on Build 14.
-Build 15+ adds the iOS HealthKit Mac/Vision warning fix.
-AI API implementation: NOT started. Gated on triggers in
-AI_PROVIDER_STRATEGY.md AND AI_MONETISATION_AND_USAGE_STRATEGY.md.
-AI monetisation strategy: design doc landed (commit dbb4a41).
-Health device/app audit: design doc landed (commit dbb4a41).
-Files changed (last lane): docs/AI_MONETISATION_AND_USAGE_STRATEGY.md,
-docs/HEALTH_METRIC_APPS_DEVICES_AUDIT.md.
-Verified: tsc --noEmit clean.
-Next: Aaron's Play Console listing pass.
-CHATGPT_STATUS_END
-```
+### 9. Stage-5 local Mac / tmux bridge daemon
 
-## Manual steps for Aaron
+Phone taps a fixed allowlist of safe actions over Tailscale. Gate
+is the eight hard rules in `docs/LOCAL_BRIDGE_WORKFLOW_PLAN.md`
+Stage 5. Stage 1 (the read-only producer) is **live**; the
+write-side daemon stays **repo-only / planned**.
+
+## Hard guardrails (apply across every priority)
+
+These don't move without an explicit doc commit. They are not a
+priority — they are the floor below every priority.
+
+- **Apple Health iOS-only, Health Connect Android-only.** No
+  cross-platform fallback.
+- **Missing data stays missing.** No fabricated zeros, no
+  invented connections.
+- **No Grappler Readiness UI yet.** Doc-only until Batches B / C
+  / D ship.
+- **No paid AI API.** Gated on the two strategy docs.
+- **Build dispatch is owner-tap only.** Connector / bridge cannot
+  trigger builds.
+- **Admin/Dev gating preserved.** No tester sees admin surfaces
+  or owner-only FABs.
+- **No secrets / tokens in any committed file** — `.env*` are
+  gitignored; bridge artifacts pass through the two-pass
+  redactor; Worker / chat-app responses pass through the same
+  redactor at the boundary.
+- **Do not touch grappling.opml content** — off-limits.
+
+## Top 5 priorities (the answer to "what's next")
+
+In order:
+
+1. **MCP terminal bridge** — apply `supabase/migrations/0003_connector_status_tables.sql` and set the two Worker secrets so the connector routes flip from `placeholder` to `supabase`. Once that's done, the phone can read Claude / Codex status without screenshots.
+2. **Apple Health + Health Connect** — verify the next tester build still surfaces the cards on Aaron's iPhone + girlfriend's Android, with missing data clearly marked.
+3. **Cautious Grappler Readiness Batches B / C / D** — schema + UI work only; no backend; ship behind a feature flag if needed.
+4. **WHOOP / Polar friendlier error UI in the next paired build** — already on `main` (commit `a036fd5`), tester-build to land.
+5. **Admin/Dev → Cloudflare/Supabase MCP wiring on the phone** — flip `EXPO_PUBLIC_MCP_BASE_URL` in the next paired build's EAS env so the phone reads from the Worker, not Railway.
+
+Items 6+ stay in the Later backlog above.
+
+## Manual steps for Aaron (phone-first)
 
 The only steps that genuinely need a human + browser. Everything
 else is dispatchable from Admin/Dev.
 
-1. **Play Console listing pass** (one-time, ~30–60 min). See
-   `docs/PLAY_SUBMIT_SETUP.md` §6.
-2. **Click `Review release → Start rollout`** once on the v13 draft
-   to verify the listing pass took.
-3. **Reply "flip releaseStatus to completed"** so I edit `eas.json`
-   in a single commit.
-4. **Tester device install** (your own devices): TestFlight + Play
-   Store auto-update once notified — no action needed beyond
-   accepting the update prompt.
-
-Everything else (typecheck, release audit, backend smoke, Android
-build, Android upload, iOS build, iOS submit, OTA diagnostic) is
-dispatchable in-app via the Admin/Dev workflow buttons.
+1. **Apply the Supabase migration.** Open Supabase project
+   `aarontmaher's Project` (`rejalrfmievikabgsakf`) → SQL Editor
+   → paste `supabase/migrations/0003_connector_status_tables.sql`
+   → Run. (Priority 1 unblocker.)
+2. **Set the Worker secrets.** From the laptop:
+   ```sh
+   cd cloudflare-worker
+   npx wrangler secret put SUPABASE_URL --name lauburu-mcp-preview
+   # https://rejalrfmievikabgsakf.supabase.co
+   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY --name lauburu-mcp-preview
+   # service_role JWT from Supabase → Settings → API
+   npx wrangler deploy --env preview
+   ```
+3. **Verify.** `npm run mcp:test:live` should still pass and
+   `dataSource.source` should flip from `placeholder` to
+   `supabase` on every route.
+4. **Tester device install** — TestFlight / Play Store auto-update
+   once notified — no action needed beyond accepting the prompt.
 
 ## What's NOT in this file
 
 - Long-form architecture (lives in `docs/architecture/`).
 - Specific code TODOs (tracked in code, not here).
 - Per-batch task breakdowns (in conversation history; this file
-  carries the cross-conversation backlog only).
+  carries the cross-conversation roadmap only).
 - The grappling.opml content (untouched, off-limits).
+- Old build / submission post-mortems — moved to
+  `docs/BACKLOG_AUTOMATION_SYSTEM.md` and the relevant per-build
+  audit docs.

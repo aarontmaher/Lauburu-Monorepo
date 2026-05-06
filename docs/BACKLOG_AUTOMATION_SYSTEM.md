@@ -5,12 +5,13 @@ through the backlog quickly without making unsafe changes. Three
 lanes: safe autopilot, build autopilot with confirmation, human
 approval required.
 
-Companion to `IN_APP_DEV_BACKLOG_PLAN.md` (the structured
-backlog), `CONNECTOR_BACKLOG_TOOLS_PLAN.md` (the connector tools),
+Companion to `APP_DEVELOPMENTS.md` (the active priorities),
+`IN_APP_DEV_BACKLOG_PLAN.md` (the structured backlog),
+`CONNECTOR_BACKLOG_TOOLS_PLAN.md` (the connector tools),
 `CONNECTOR_SECURITY_MODEL.md` (the invariants), and
 `FEEDBACK_PRIORITY_MODEL.md` (the priority ladder).
 
-Updated 2026-05-06.
+Updated 2026-05-07.
 
 ## Three lanes
 
@@ -175,9 +176,9 @@ implementation lands when the connector reads
 `/admin/backlog` and the in-app Quick capture has more items
 worth bundling.
 
-## First safe health-source bundle (already shipped on `main`)
+## First safe health-source bundle (live)
 
-The bundle the user prompt asks about is largely on `main`:
+Health source basics shipped via prior tester builds:
 
 - ✅ Apple Health primary on iOS, Health Connect primary on
   Android — un-gated from free tier (commit `d4827ba`).
@@ -185,25 +186,43 @@ The bundle the user prompt asks about is largely on `main`:
   does not appear on iOS — `Platform.OS` gates in `health.tsx`.
 - ✅ No raw WHOOP/Polar backend JSON in normal Health UI —
   `friendlyDirectSyncError()` helper (commit `a036fd5`).
-- ✅ WHOOP/Polar under "More sources" disclosure — already in
-  the Health-tab structure.
+- ✅ WHOOP/Polar under "More sources" disclosure — Health tab
+  structure.
 - ✅ Manual check-ins / training logs remain available — Train
   tab is BLE-state independent.
 
-In flight (already dispatched):
+Per-build verification still happens after each paired tester
+dispatch. The current paired build line is whatever Admin/Dev
+reports on the Now / Android / iOS cards.
 
-- 🟡 Android v15 build + Play upload (run `25384901407`,
-  in_progress).
-- 🟡 iOS Build 16 + TestFlight submit (run `25384907135`,
-  in_progress).
+## MCP / Cloudflare bridge automation (live, Priority 1)
 
-Pending after device install:
+Added 2026-05-07. The MCP terminal bridge is now Priority 1 per
+`APP_DEVELOPMENTS.md` and adds a new lane-1 pattern: read-only
+status routes that any agent / mobile-app card can poll.
 
-- Verify Apple Health card visible to free-tier user on Aaron's
-  iPhone post-Build 16.
-- Verify Health Connect card visible to free-tier user on
-  girlfriend's Android post-v15.
-- Verify metrics surface or correctly say "missing".
+Live components:
+
+- Cloudflare Worker `lauburu-mcp-preview` — five admin-token-gated
+  connector routes (`/api/work_status`, `/api/coder_lanes`,
+  `/api/build_status`, `/api/handoff`, `/api/terminal_summary`).
+- Local tmux bridge — `npm run bridge:snapshot` writes the four
+  connector artifacts under `data/agent-status/lanes/`. Read-only
+  on tmux + git; no shell from pane content.
+- Live integration test — `npm run mcp:test:live` against the
+  deployed Worker.
+
+Lane fit:
+
+- The bridge snapshot script and the schema test are **Lane 1**
+  (safe autopilot — read-only, no commits other than the JSON
+  artifacts which are gitignored).
+- Adding new MCP-shaped routes / new Supabase columns is **Lane
+  2** (build autopilot with confirmation — schema-equivalent
+  edit).
+- Setting `SUPABASE_SERVICE_ROLE_KEY` on the Worker, applying the
+  Supabase migration, or rotating any of the connector secrets
+  is **Lane 3** (human approval required).
 
 ## Admin/Dev automation surface
 
