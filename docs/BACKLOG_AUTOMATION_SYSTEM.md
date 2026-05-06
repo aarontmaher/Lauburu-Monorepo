@@ -8,8 +8,10 @@ approval required.
 Companion to `APP_DEVELOPMENTS.md` (the active priorities),
 `IN_APP_DEV_BACKLOG_PLAN.md` (the structured backlog),
 `CONNECTOR_BACKLOG_TOOLS_PLAN.md` (the connector tools),
-`CONNECTOR_SECURITY_MODEL.md` (the invariants), and
-`FEEDBACK_PRIORITY_MODEL.md` (the priority ladder).
+`CONNECTOR_SECURITY_MODEL.md` (the invariants),
+`FEEDBACK_PRIORITY_MODEL.md` (the priority ladder),
+`AGENT_AUDITS.md` (frozen historical audit text), and
+`FEEDBACK_SUGGESTIONS.md` (deduped candidates awaiting Aaron approval).
 
 Updated 2026-05-07.
 
