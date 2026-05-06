@@ -269,7 +269,7 @@ export function WhoopCard() {
             return (
               <Text style={[styles.freshnessText, { color: allMissing ? '#ff6b6b' : '#d4e157' }]}>
                 {allMissing
-                  ? `Missing ${missing.join(', ')} — likely WHOOP bridge isn\u2019t linked to this account. Check EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS contains your user.id.`
+                  ? `Missing ${missing.join(', ')} — WHOOP Direct is not linked to this account yet. Ask Aaron to finish account linking.`
                   : `Missing: ${missing.join(', ')}. WHOOP scores these after your next sleep / workout sync.`}
               </Text>
             );

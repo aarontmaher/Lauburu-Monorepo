@@ -863,7 +863,7 @@ function Body() {
   const onCheckWhoopStatus = useCallback(async () => {
     stampTap('whoopStatusAt');
     if (!cfg) {
-      Alert.alert('WHOOP', `Not signed in. userId=${user?.id ?? 'null'} accessToken=${accessToken ? 'present' : 'null'}`);
+      Alert.alert('WHOOP', 'Sign in first, then try WHOOP Direct again.');
       return;
     }
     setBusy('whoop-status');
@@ -871,8 +871,7 @@ function Body() {
     setBusy(null);
     if (!d) { Alert.alert('WHOOP status', 'Network error.'); return; }
     if (d.status === 'config_missing') {
-      const missing = Array.isArray(d.missingVars) ? d.missingVars.join(', ') : '(unknown)';
-      Alert.alert('WHOOP — config missing', `Missing / blank Railway env vars: ${missing}.\n\nRedirect URI:\n${d.expectedRedirectUri ?? '(unset)'}`);
+      Alert.alert('WHOOP setup required', 'WHOOP Direct is not ready on the backend yet. Ask Aaron to finish the vendor setup, then try again.');
     } else if (d.status === 'auth_required') {
       Alert.alert('WHOOP', 'Ready to connect. Tap Connect WHOOP to start OAuth.');
     } else if (d.status === 'connected') {
@@ -882,12 +881,12 @@ function Body() {
     } else {
       Alert.alert('WHOOP status', `status=${d.status ?? 'unknown'}`);
     }
-  }, [cfg, fetchWhoop, stampTap, user?.id, accessToken]);
+  }, [cfg, fetchWhoop, stampTap]);
 
   const onConnectWhoop = useCallback(async () => {
     stampTap('whoopConnectAt');
     if (!cfg) {
-      Alert.alert('WHOOP', `Not signed in. userId=${user?.id ?? 'null'} accessToken=${accessToken ? 'present' : 'null'}`);
+      Alert.alert('WHOOP', 'Sign in first, then try WHOOP Direct again.');
       return;
     }
     const getUrl = IntegrationsClient.getWhoopConnectUrl;
@@ -903,7 +902,7 @@ function Body() {
         try {
           const parsed = JSON.parse(text);
           if (Array.isArray(parsed?.missingVars)) {
-            Alert.alert('WHOOP — config missing', `Missing / blank Railway env vars: ${parsed.missingVars.join(', ')}.\n\nRedirect URI:\n${parsed.expectedRedirectUri ?? '(unset)'}`);
+            Alert.alert('WHOOP setup required', 'WHOOP Direct is not ready on the backend yet. Ask Aaron to finish the vendor setup, then try again.');
             return;
           }
         } catch { /* fall through */ }
@@ -914,7 +913,7 @@ function Body() {
     } catch (e: any) {
       Alert.alert('WHOOP', `Error: ${e?.message ?? 'unknown'}`);
     } finally { setBusy(null); }
-  }, [cfg, stampTap, user?.id, accessToken]);
+  }, [cfg, stampTap]);
 
   const onSyncWhoop = useCallback(async () => {
     stampTap('whoopSyncAt');
@@ -1058,7 +1057,7 @@ function Body() {
     (whoopState === 'partial' && !bodyLatestIsToday && !bodyLiveCycleEmpty);
   const summaryLine = (() => {
     const parts: string[] = [];
-    if (appleHealthConnected) parts.push(Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect');
+    if (appleHealthConnected) parts.push(Platform.OS === 'ios' ? 'Apple Health / HealthKit' : 'Health Connect');
     if (bodyAwaiting) parts.push('WHOOP · awaiting latest cycle');
     else if (whoopState === 'connected') parts.push('WHOOP');
     else if (whoopState === 'partial') parts.push('WHOOP · partial');
@@ -1244,7 +1243,7 @@ function WhoopLabel({ state, whoop }: { state: string; whoop: WhoopStatus | null
         break;
       }
       case 'auth_required': label = 'Not connected — ready to link'; break;
-      case 'config_missing': label = 'Config missing (Railway env blank)'; break;
+      case 'config_missing': label = 'Setup required'; break;
       case 'disconnected':  label = 'Disconnected'; break;
       case 'error':         label = 'Reconnect required (token expired)'; break;
       case 'loading':       label = 'Loading status…'; break;
@@ -1778,13 +1777,14 @@ function HealthSourceSheet(props: SheetProps) {
   const samsungHcHint = Platform.OS === 'android'
     ? ' If you use Samsung Health or Galaxy Watch, enable Samsung Health → Health Connect sharing, then grant Health Connect permissions here.'
     : '';
+  const nativeHealthHubLabel = Platform.OS === 'ios' ? 'Apple Health / HealthKit hub data' : 'Health Connect hub data';
   const nativeHealthMeta = appleHealthConnected
-    ? `Default live health source · ${healthDays} day${healthDays === 1 ? '' : 's'} · ${ageLabel(healthLastSyncAt)}${samsungHcHint}`
+    ? `${nativeHealthHubLabel} · ${healthDays} day${healthDays === 1 ? '' : 's'} · ${ageLabel(healthLastSyncAt)}${samsungHcHint}`
     : healthLastSyncAt
-      ? `Default live health source · synced but no recent records found · ${ageLabel(healthLastSyncAt)}${samsungHcHint}`
+      ? `${nativeHealthHubLabel} · synced but no recent records found · ${ageLabel(healthLastSyncAt)}${samsungHcHint}`
       : nativeAnyAuthorized
-        ? `Default live health source · permission granted, sync needed.${samsungHcHint}`
-        : `Default live health source · not connected yet.${samsungHcHint}`;
+        ? `${nativeHealthHubLabel} · permission granted, sync needed.${samsungHcHint}`
+        : `${nativeHealthHubLabel} · not connected yet.${samsungHcHint}`;
   const nativeHealthStatusLabel = appleHealthConnected
     ? 'Connected'
     : healthLastSyncAt
@@ -1852,7 +1852,7 @@ function HealthSourceSheet(props: SheetProps) {
   const appleRow = (
     <SourceSheetRow
       key="apple"
-      name={isIos ? 'Apple Health' : 'Health Connect'}
+      name={isIos ? 'Apple Health / HealthKit' : 'Health Connect'}
       status={nativeHealthStatusLabel}
       statusColor={nativeHealthStatusColor}
       meta={nativeHealthMeta}
@@ -2804,7 +2804,7 @@ function PolarExportRowInner() {
         Paste Polar Flow CSV/TCX export for historical training context. Recovery/readiness still uses your other sources — Polar export is evidence-only.
       </Text>
       <Text style={[styles.sourceMeta, { opacity: 0.45 }]}>
-        For now, Polar users can sync through Health Connect for live Android data. Polar Direct (richer Polar-specific fields) is planned for a later release. FIT files are not yet supported — export TCX or CSV.
+        For now, Polar users can sync through {Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect'}. Polar Direct with richer Polar-specific fields is planned for a later release. FIT files are not yet supported — export TCX or CSV.
       </Text>
 
       {!showPaste ? (

@@ -8,7 +8,7 @@
  *   - No fake connected states. If config is missing, say so with setup
  *     instructions.
  *   - Non-owner users never see Aaron's WHOOP bridge data.
- *   - Polar via Health Connect and direct Polar are shown distinctly.
+ *   - Polar via Apple Health / Health Connect and direct Polar are shown distinctly.
  *   - Manual nutrition/barcode/photo are always available regardless of
  *     Cronometer status.
  */
@@ -127,9 +127,10 @@ function friendlyDirectSyncError(
     return 'Direct sync is temporarily unavailable. Try again later.';
   }
   // Default: short generic — never the raw body.
+  const nativeHub = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
   return kind === 'whoop'
-    ? 'Direct WHOOP sync is not connected yet. Use Apple Health / Health Connect for now.'
-    : 'Direct Polar sync is not connected yet. Use Apple Health / Health Connect for now.';
+    ? `Direct WHOOP sync is not connected yet. Use ${nativeHub} for now.`
+    : `Direct Polar sync is not connected yet. Use ${nativeHub} for now.`;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -186,6 +187,7 @@ export function PolarDirectCard() {
 
   const s = status?.status;
   const viaHcDetected = !!polarViaHc?.detected;
+  const nativeHubName = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
 
   return (
     <View style={styles.card}>
@@ -202,23 +204,22 @@ export function PolarDirectCard() {
 
       {s !== 'connected' && (
         <Text style={[styles.bodyText, { opacity: 0.8 }]}>
-          For now, Polar users can sync through Health Connect — that&apos;s the supported Android path today. Polar Direct (AccessLink OAuth) is planned for a later release.
+          For now, Polar users can sync through {nativeHubName}. Polar Direct (AccessLink OAuth) is planned for a later release.
         </Text>
       )}
 
       {s === 'config_missing' && (
         <Text style={styles.bodyText}>
-          Direct Polar AccessLink requires server-side credentials.{'\n'}
-          {status?.setupInstructions?.map((i: string, idx: number) => `${i}\n`).join('') ?? ''}
+          Direct Polar AccessLink requires vendor setup on the backend.{'\n'}
           {viaHcDetected
-            ? `Meanwhile, Polar data is arriving via Health Connect (${polarViaHc?.sourceApp ?? 'Polar Flow'}).`
-            : 'If you use Polar Flow, enable "Write to Health Connect" in Flow settings to get data through that path now.'}
+            ? `Meanwhile, Polar data is arriving via ${nativeHubName} (${polarViaHc?.sourceApp ?? 'Polar Flow'}).`
+            : `If you use Polar Flow, enable sharing to ${nativeHubName} in Flow settings to get data through that path now.`}
         </Text>
       )}
 
       {s === 'auth_required' && (
         <Text style={styles.bodyText}>
-          Direct Polar AccessLink (OAuth) is planned. Use the Health Connect path above in the meantime.
+          Direct Polar AccessLink (OAuth) is planned. Use the {nativeHubName} path above in the meantime.
         </Text>
       )}
 
@@ -237,7 +238,7 @@ export function PolarDirectCard() {
 
       {viaHcDetected && s !== 'connected' && (
         <Text style={styles.subtleNote}>
-          Polar via Health Connect is active ({polarViaHc?.domains.join(', ')}). Direct Polar adds richer data.
+          Polar via {nativeHubName} is active ({polarViaHc?.domains.join(', ')}). Direct Polar adds richer data.
         </Text>
       )}
 
@@ -263,7 +264,7 @@ export function WhoopDirectCard() {
   const refresh = useCallback(async (announce?: boolean) => {
     if (!cfg) {
       if (announce) {
-        Alert.alert('WHOOP', 'Sign in first — the WHOOP status call needs an authenticated session.');
+        Alert.alert('WHOOP', 'Sign in first, then try WHOOP Direct again.');
       }
       return;
     }
@@ -279,10 +280,9 @@ export function WhoopDirectCard() {
         // identical before/after (e.g. still config_missing).
         const d = res.data as any;
         if (d?.status === 'config_missing') {
-          const missing = Array.isArray(d.missingVars) ? d.missingVars.join(', ') : '(unknown)';
           Alert.alert(
-            'WHOOP — config missing',
-            `Still waiting on Railway env vars: ${missing}.\n\nRedirect URI to register with WHOOP:\n${d.expectedRedirectUri ?? '(unset)'}`,
+            'WHOOP setup required',
+            'WHOOP Direct is not ready on the backend yet. Ask Aaron to finish the vendor setup, then try again.',
           );
         } else if (d?.status === 'auth_required') {
           Alert.alert('WHOOP', 'Ready to connect. Tap Connect WHOOP to start OAuth.');
@@ -306,7 +306,7 @@ export function WhoopDirectCard() {
     if (!cfg) {
       Alert.alert(
         'WHOOP',
-        'Sign in to connect WHOOP. The Connect button requires an authenticated session.',
+        'Sign in first, then try WHOOP Direct again.',
       );
       return;
     }
@@ -318,15 +318,13 @@ export function WhoopDirectCard() {
       setTimeout(() => void refresh(false), 5000);
     } else {
       setError(res.error);
-      // Parse structured 503 payload so the alert tells Aaron exactly
-      // which Railway vars are still missing.
       const text = res.error ?? 'Could not start WHOOP connection.';
       try {
         const parsed = JSON.parse(text);
         if (Array.isArray(parsed?.missingVars)) {
           Alert.alert(
-            'WHOOP — config missing',
-            `Missing Railway env vars: ${parsed.missingVars.join(', ')}.\n\nRedirect URI to register with WHOOP:\n${parsed.expectedRedirectUri ?? '(unset)'}`,
+            'WHOOP setup required',
+            'WHOOP Direct is not ready on the backend yet. Ask Aaron to finish the vendor setup, then try again.',
           );
           return;
         }
@@ -384,30 +382,18 @@ export function WhoopDirectCard() {
       {s === 'config_missing' && (
         <>
           <Text style={styles.bodyText}>
-            Per-user WHOOP OAuth requires server-side credentials. If the Railway variables have been added but are still listed here, the values saved blank — click each one and paste the real Client ID / Secret / redirect URI.
+            WHOOP Direct requires vendor setup on the backend before account linking can start.
           </Text>
           {Array.isArray(status?.missingVars) && status.missingVars.length > 0 && (
             <View style={{ gap: 2, marginTop: 4 }}>
-              <Text style={styles.subtleNote}>Missing / blank Railway env vars:</Text>
-              {status.missingVars.map((v: string) => (
-                <Text key={v} style={[styles.subtleNote, { color: '#ff6b6b' }]}>• {v}</Text>
-              ))}
-            </View>
-          )}
-          {status?.expectedRedirectUri && (
-            <View style={{ gap: 2, marginTop: 4 }}>
-              <Text style={styles.subtleNote}>Redirect URI to register with WHOOP:</Text>
-              <Text style={[styles.subtleNote, { color: '#d4e157' }]}>{status.expectedRedirectUri}</Text>
+              <Text style={styles.subtleNote}>Backend setup required before WHOOP Direct can connect.</Text>
             </View>
           )}
           {Array.isArray(status?.setupInstructions) && (
             <View style={{ gap: 2, marginTop: 4 }}>
-              {status.setupInstructions.map((i: string, idx: number) => (
-                <Text key={idx} style={styles.subtleNote}>{i}</Text>
-              ))}
+              <Text style={styles.subtleNote}>Ask Aaron to finish WHOOP vendor setup, then retry status.</Text>
             </View>
           )}
-          {status?.note && <Text style={styles.subtleNote}>{status.note}</Text>}
           <View style={styles.actions}>
             {/* Primary button always present so the card is obviously
                 tappable even when the underlying OAuth is blocked. */}
@@ -582,6 +568,8 @@ export function HealthConnectProvenanceCard() {
   const polarViaHc = useHealthStore((s) => s.polarViaHc);
   const samsungViaHc = useHealthStore((s) => s.samsungHealthViaHc);
 
+  if (Platform.OS !== 'android') return null;
+
   // Only render when there's interesting provenance to show
   if (!polarViaHc?.detected && !samsungViaHc?.detected) return null;
 
@@ -714,7 +702,7 @@ export function AppleHealthCard() {
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
-        <Text style={styles.cardTitle}>Apple Health</Text>
+        <Text style={styles.cardTitle}>Apple Health / HealthKit</Text>
         <StatusPill label={pillLabel} color={pillColor} />
       </View>
 
@@ -764,7 +752,7 @@ export function AppleHealthCard() {
       {!isConnectedFull && !isPartial && !isConnectedNoData && !isPermissionReadyToSync && !errorReason && (
         <>
           <Text style={styles.bodyText}>
-            Apple Health is the primary data path on iPhone. Grant HealthKit access to let Coach analyse your sleep, workouts, steps, heart rate, and training history.
+            Apple Health / HealthKit is the native data path on iPhone. Grant access to sync sleep, workouts, steps, heart rate, and training history.
           </Text>
           {!isAvailable && (
             <Text style={styles.subtleNote}>
@@ -778,7 +766,7 @@ export function AppleHealthCard() {
       )}
 
       <Text style={styles.subtleNote}>
-        Apple Health is a contextual source — it does not unlock direct WHOOP-style readiness clearance.
+        Apple Health / HealthKit hub data is separate from true WHOOP Direct or Polar Direct.
       </Text>
     </View>
   );

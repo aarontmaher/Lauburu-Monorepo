@@ -177,10 +177,8 @@ export const useWhoopStore = create<WhoopState>((set) => ({
     const { useAuthStore } = require('./auth-store');
     const userId = useAuthStore.getState().user?.id as string | undefined;
     const ownershipMod = require('../services/whoop-ownership');
-    const { isWhoopBridgeOwner, whoopBridgeOwnerCount, whoopBridgeOwnerSources } = ownershipMod;
+    const { isWhoopBridgeOwner } = ownershipMod;
     if (!isWhoopBridgeOwner(userId)) {
-      const count = typeof whoopBridgeOwnerCount === 'function' ? whoopBridgeOwnerCount() : 0;
-      const sources = typeof whoopBridgeOwnerSources === 'function' ? whoopBridgeOwnerSources() : [];
       // Previously set status='ready' + day=null silently, which made
       // the card render as "partial: missing recovery/HRV/RHR/sleep/
       // workouts" with no reason given. Keep the normal UI honest
@@ -190,7 +188,7 @@ export const useWhoopStore = create<WhoopState>((set) => ({
         day: null,
         fetchedAt: new Date().toISOString(),
         error: userId
-          ? `WHOOP Direct is not linked to this account yet. Ask Aaron to add this account to the WHOOP bridge allowlist. Config sources detected: ${count} (${sources.join('+') || 'none'}).`
+          ? 'WHOOP Direct is not linked to this account yet. Ask Aaron to finish account linking.'
           : 'WHOOP Direct: sign in first, then ask Aaron to link this account if you use WHOOP.',
       });
       return;

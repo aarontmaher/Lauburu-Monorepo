@@ -20,7 +20,7 @@
  *   - a sensor-scan button (BLE path needs the native module + prebuild)
  */
 import { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { usePolarStore } from '../store/polar-store';
 
@@ -52,11 +52,12 @@ export function PolarCard({ viaHealthConnect }: PolarCardProps = {}) {
   const viaHcPartial = viaHcDetected && (viaHealthConnect?.domains.length ?? 0) < 2;
   const sourceApp = viaHealthConnect?.sourceApp ?? 'Polar Flow';
   const domains = viaHealthConnect?.domains ?? [];
+  const nativeHubName = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
 
   const statusLabel = viaHcDetected
     ? viaHcPartial
-      ? 'Partial Polar data via Health Connect'
-      : 'Polar via Health Connect detected'
+      ? `Partial Polar data via ${nativeHubName}`
+      : `Polar via ${nativeHubName} detected`
     : 'Direct Polar not live yet';
 
   return (
@@ -73,12 +74,12 @@ export function PolarCard({ viaHealthConnect }: PolarCardProps = {}) {
       {viaHcDetected ? (
         <>
           <Text style={styles.bodyText}>
-            {`Health Connect is receiving data from ${sourceApp}. `}
+            {`${nativeHubName} is receiving data from ${sourceApp}. `}
             {domains.length > 0
               ? `Domains: ${domains.join(', ')}.`
               : 'No domains confirmed yet — sync again to confirm.'}
             {' '}
-            This counts as Polar via Health Connect — not a direct Polar adapter.
+            This counts as Polar via {nativeHubName} — not a direct Polar adapter.
             It does not provide Polar Recovery Pro or Nightly Recharge.
           </Text>
           <Text style={styles.bodyText}>
@@ -90,10 +91,10 @@ export function PolarCard({ viaHealthConnect }: PolarCardProps = {}) {
       ) : (
         <Text style={styles.bodyText}>
           Direct Polar is not connected yet. Polar data reaches the app only when the Polar Flow app is set
-          to write into Health Connect (Android) or Apple Health (iOS) —
+          to write into {nativeHubName} —
           so it arrives as generic metrics without Polar&apos;s richer
-          readiness fields. If you use Polar Flow on Android, open it,
-          enable &quot;Write to Health Connect&quot;, then sync here.
+          readiness fields. If you use Polar Flow, enable sharing to
+          {nativeHubName}, then sync here.
         </Text>
       )}
 
