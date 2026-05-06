@@ -1,9 +1,21 @@
-# Railway connector tools — read examples
+# Railway connector tools — read examples (DEPRECATED)
 
-How ChatGPT, Claude Code, and Codex talk to the Lauburu Railway
-backend safely. This is the **practical curl guide**; the broader
-contract sits in `CONNECTOR_BACKLOG_TOOLS_PLAN.md` and the
-security rules sit in `CONNECTOR_SECURITY_MODEL.md`.
+> **DEPRECATED 2026-05-06.** Railway is no longer the active
+> backend. The Cloudflare Worker at
+> `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/` is the
+> live MCP / connector surface. See
+> `docs/CLOUDFLARE_MIGRATION.md` § 11.6 for the curls that
+> currently work, and `docs/CONNECTOR_SUPABASE_SCHEMA.md` for the
+> Supabase state layer the Worker reads from once tables exist.
+>
+> The Railway curls below are kept as a parity reference for the
+> local schema test (`chat-app/src/server/scripts/test-mcp-routes.ts`)
+> and for any historical debugging; the live Railway URL has been
+> in `FAILED` state since 2026-04-28 and is not coming back.
+
+How ChatGPT, Claude Code, and Codex used to talk to the Lauburu
+Railway backend. This document is preserved for the schema shape
+references; the active equivalents live on the Cloudflare Worker.
 
 Updated 2026-05-06.
 

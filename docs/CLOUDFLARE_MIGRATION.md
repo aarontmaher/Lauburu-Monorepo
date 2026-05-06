@@ -1,29 +1,35 @@
 # Cloudflare migration — runbook
 
-How the Lauburu MCP / app-dev-centre layer moves off Railway
-dependency onto Cloudflare Workers + Supabase, without breaking
-the current mobile app, the in-app Admin/Dev surface, the
-website, or any deployed behaviour.
+**Status (2026-05-06):** Railway is **DEPRECATED**. The
+Cloudflare Worker at
+`https://lauburu-mcp-preview.lauburu-aaron.workers.dev/` is the
+**active** MCP / control-centre surface. Supabase is the durable
+state layer; the connector tables required for live reads are
+specified in `docs/CONNECTOR_SUPABASE_SCHEMA.md` and not yet
+created.
 
-Companion to `RAILWAY_BACKEND_AUDIT.md` (current routes inventory),
-`RAILWAY_CONNECTOR_TOOLS.md` (connector curl examples),
-`CONNECTOR_SECURITY_MODEL.md` (invariants), and
-`GRAPPLINGMAP_MCP_BRIDGE_PLAN.md` (5-stage build-out).
+Companion to `RAILWAY_BACKEND_AUDIT.md` (legacy routes
+inventory), `RAILWAY_CONNECTOR_TOOLS.md` (legacy curl reference,
+header banner now points here), `CONNECTOR_SECURITY_MODEL.md`
+(invariants), `CONNECTOR_SUPABASE_SCHEMA.md` (state layer schema),
+and `GRAPPLINGMAP_MCP_BRIDGE_PLAN.md` (5-stage build-out).
 
 Updated 2026-05-06.
 
-## 1. Why move
+## 1. Why move (and why it's no longer optional)
 
-Railway billing requires a credit card; Aaron has a debit card.
-The blocker is operational, not architectural. Cloudflare Workers
-have a generous free tier and accept debit-only billing for paid
-plans when usage grows. Moving the public MCP / app-dev-centre
-control layer to Workers keeps the project shippable without a
-Railway billing dependency.
+Railway billing requires a credit card; Aaron uses a debit card,
+so Railway billing cannot be maintained. The Railway service is
+currently in `FAILED` state (since 2026-04-28) and is not coming
+back. Cloudflare Workers accept debit billing on paid plans and
+have a free tier sufficient for current load.
 
-The mobile app, the existing Express backend, the website, and
-the connector tools all keep working on Railway during the
-migration — Cloudflare deployment is additive, not a swap.
+This is no longer "additive" — Railway is the deprecated
+fallback, the Worker is the active replacement. The mobile app,
+ChatGPT Connector, and any future client should target the
+Cloudflare Worker URL. The legacy Railway URL remains in
+documentation only as a historical reference, not a fallback the
+Worker will ever proxy through.
 
 ## 2. What stays on Supabase
 
@@ -56,12 +62,24 @@ Out of scope for the Worker:
 - Build dispatch (`/admin/workflows/:id/dispatch`) — stays on
   Railway. The Worker explicitly does NOT relay build dispatches.
 
-## 4. What Railway still owns until cutover
+## 4. Railway = deprecated fallback only
 
-Everything in `chat-app/src/server/`. Mobile app keeps pointing
-at Railway for both AI_INTERNAL_BASE + AI_PUBLIC_BASE until the
-Worker verification is complete and the owner explicitly flips
-the env values. Do NOT delete Railway config.
+The Railway service has been in `FAILED` state since 2026-04-28
+and Aaron cannot restore billing. Treat Railway as deprecated:
+
+- The Worker NEVER proxies through Railway. `RAILWAY_FALLBACK_URL`
+  in `wrangler.toml` is retained only so consumers can echo the
+  legacy URL for migration messaging; the Worker itself does not
+  call it.
+- The mobile app's `AI_PUBLIC_BASE` / `AI_INTERNAL_BASE` env
+  values still point at Railway in the last released build (Build
+  18 / version 0.1.0). The next mobile build cuts those over to
+  the Worker URL once `EXPO_PUBLIC_MCP_BASE_URL` is set in EAS
+  env (Stage 4 below).
+- The legacy `chat-app/src/server/` Express app stays in the
+  repo for parity reference and for the local schema test
+  (`npx tsx src/server/scripts/test-mcp-routes.ts`); it is not
+  deployed and is not the source of truth.
 
 ## 5. Local dev commands
 
@@ -114,7 +132,7 @@ state.
 | `ATHLETE_MEMORY_API_TOKEN` | Cloudflare secret (preview env) | Same shared token used by mobile + Railway; gates admin reads on the Worker |
 | `SUPABASE_URL` | Cloudflare secret (preview env) | Supabase REST base, set when Stage 2 lands |
 | `SUPABASE_SERVICE_ROLE_KEY` | Cloudflare secret (preview env) | Supabase server-side key, set when Stage 2 lands |
-| `RAILWAY_FALLBACK_URL` | wrangler.toml `[vars]` | Public reference URL the Worker can echo for clients that need to hit Railway during overlap |
+| `RAILWAY_FALLBACK_URL` | wrangler.toml `[vars]` | **DEPRECATED** legacy URL. Never proxied. Echoed in `legacyRailwayUrl` field of `/status` for migration messaging only. Safe to delete in a future cleanup batch. |
 | `WORKER_MODE` | wrangler.toml `[vars]` | "preview" / "production" — surfaces in `/status` |
 | `EXPO_PUBLIC_MCP_BASE_URL` | Mobile build env (NOT set yet) | Future switch in `apps/mobile/src/services/ai-backend-config.ts` to point a specific Admin/Dev "MCP probe" at the Worker without flipping the whole app off Railway |
 

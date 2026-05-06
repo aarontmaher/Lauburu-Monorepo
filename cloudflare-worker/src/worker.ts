@@ -1,15 +1,18 @@
 /**
- * Lauburu MCP / app-dev-centre Cloudflare Worker — scaffold.
+ * Lauburu MCP / app-dev-centre Cloudflare Worker.
  *
- * Status today: REPO-ONLY. Aaron has not deployed this Worker
- * yet; production traffic continues hitting the Railway-hosted
- * `chat-app/src/server` Express app at
- * `https://lauburu-ai-backend-production.up.railway.app`.
+ * Status today: ACTIVE — this Worker is the live MCP / control-centre
+ * surface. The legacy Railway backend at
+ * `https://lauburu-ai-backend-production.up.railway.app` is
+ * DEPRECATED (Aaron cannot maintain Railway billing) and the Worker
+ * never proxies through it. RAILWAY_FALLBACK_URL is retained only
+ * as a legacy reference value for documentation responses; nothing
+ * relies on it being reachable.
  *
- * Purpose: have a Cloudflare-Workers-shaped surface ready to take
- * over the public MCP / app-dev-centre layer when Railway billing
- * becomes a blocker. Supabase remains the database / auth / state
- * layer regardless of where this control surface lives.
+ * Supabase is the durable state layer. The adapter in
+ * `./supabase.ts` reports configuration state; once the connector
+ * tables in `docs/CONNECTOR_SUPABASE_SCHEMA.md` exist, the route
+ * helpers below switch from placeholder payloads to live reads.
  *
  * Endpoints exposed:
  *   GET /health
@@ -31,13 +34,12 @@
  * commented out until an authenticated write path exists.
  */
 
-export interface Env {
-  WORKER_MODE?: string;
-  RAILWAY_FALLBACK_URL?: string;
-  ATHLETE_MEMORY_API_TOKEN?: string;
-  SUPABASE_URL?: string;
-  SUPABASE_SERVICE_ROLE_KEY?: string;
-}
+import type { Env } from './worker-env';
+import {
+  CONNECTOR_SCHEMA_REQUIREMENTS,
+  getSupabaseAdapter,
+  type ConnectorRouteKey,
+} from './supabase';
 
 interface ConnectorMeta {
   generatedAt: string;
@@ -45,19 +47,50 @@ interface ConnectorMeta {
   mode: string;
   workerName: string;
   supabaseConfigured: boolean;
+  /** Always false — Railway is deprecated, never proxied. */
   railwayRequired: false;
-  railwayFallbackUrl: string | null;
+  /** Always true — flag retained so consumers can assert on it. */
+  railwayDeprecated: true;
+  /** Reference URL only; the Worker never calls it. */
+  legacyRailwayUrl: string | null;
 }
 
 function buildMeta(env: Env): ConnectorMeta {
+  const adapter = getSupabaseAdapter(env);
   return {
     generatedAt: new Date().toISOString(),
     provider: 'cloudflare-workers',
     mode: env.WORKER_MODE ?? 'unknown',
     workerName: 'lauburu-mcp',
-    supabaseConfigured: !!env.SUPABASE_URL && !!env.SUPABASE_SERVICE_ROLE_KEY,
+    supabaseConfigured: adapter.configured === true,
     railwayRequired: false,
-    railwayFallbackUrl: env.RAILWAY_FALLBACK_URL ?? null,
+    railwayDeprecated: true,
+    legacyRailwayUrl: env.RAILWAY_FALLBACK_URL ?? null,
+  };
+}
+
+/**
+ * Returns the Supabase data-source descriptor for a connector
+ * route. When Supabase is wired and the named table exists, the
+ * descriptor flips to `{ source: 'supabase', table }`. Until then
+ * it surfaces the schema requirement so consumers self-document
+ * the gap.
+ */
+function dataSourceFor(env: Env, route: ConnectorRouteKey) {
+  const adapter = getSupabaseAdapter(env);
+  const schema = CONNECTOR_SCHEMA_REQUIREMENTS[route];
+  if (adapter.configured) {
+    return {
+      source: 'supabase' as const,
+      table: schema.table,
+      note: 'Supabase env configured. Table read attempted; falls back to placeholder if the table is missing.',
+    };
+  }
+  return {
+    source: 'placeholder' as const,
+    reason: adapter.reason,
+    message: adapter.message,
+    schemaRequired: schema,
   };
 }
 
@@ -99,10 +132,11 @@ function buildWorkStatus(env: Env) {
   return {
     schemaVersion: CONNECTOR_SCHEMA_VERSION,
     generatedAt,
+    dataSource: dataSourceFor(env, 'work_status'),
     currentPriority:
-      'Cloudflare Worker is the live MCP connector surface; secret installed; routes admin-token gated.',
+      'Cloudflare Worker is the active MCP connector surface; Railway deprecated; Supabase schema next.',
     currentBlocker:
-      'Tmux bridge producer not operational; coder_lanes / build_status / handoff payloads are provisional placeholders.',
+      'connector_* Supabase tables not created yet — see docs/CONNECTOR_SUPABASE_SCHEMA.md.',
     liveStatus: {
       androidVersionCode: 17,
       iosBuildNumber: '18',
@@ -117,27 +151,28 @@ function buildWorkStatus(env: Env) {
       dirtyFileCount: 0,
       untrackedFileCount: 0,
       lastCommitAt: generatedAt,
-      lastCommitMessage: 'unknown until local bridge populates this field',
+      lastCommitMessage: 'unknown until Supabase reads land',
     },
     nextAction:
-      'Stand up the tmux bridge producer to replace the placeholder coder_lanes / handoff payloads with live data.',
+      'Create connector_* Supabase tables per docs/CONNECTOR_SUPABASE_SCHEMA.md, set SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY secrets on the Worker, redeploy.',
   };
 }
 
-function buildCoderLanes() {
+function buildCoderLanes(env: Env) {
   const generatedAt = new Date().toISOString();
   return {
     schemaVersion: CONNECTOR_SCHEMA_VERSION,
     generatedAt,
+    dataSource: dataSourceFor(env, 'coder_lanes'),
     lanes: [
       {
         laneId: 'claude' as const,
         status: 'idle' as const,
         lastSeenAt: generatedAt,
         currentPromptId: null,
-        lastPromptId: 'CLAUDE-CLOUDFLARE-CUTOVER-MCP-ROUTES-01',
+        lastPromptId: 'CLAUDE-CLOUDFLARE-SUPABASE-CUTOVER-PRIORITY-01',
         lastSummary:
-          'Claude lane parked after Cloudflare cutover deploy. Awaiting next owner-reviewed handoff.',
+          'Claude lane parked after Supabase-cutover scaffold. Awaiting next owner-reviewed handoff.',
         lastCommit: null,
         lastTypecheckResult: null,
         dirtyFiles: [],
@@ -160,10 +195,11 @@ function buildCoderLanes() {
   };
 }
 
-function buildBuildStatus() {
+function buildBuildStatus(env: Env) {
   return {
     schemaVersion: CONNECTOR_SCHEMA_VERSION,
     generatedAt: new Date().toISOString(),
+    dataSource: dataSourceFor(env, 'build_status'),
     android: {
       versionCode: 17,
       appVersion: '0.1.0',
@@ -189,14 +225,16 @@ function buildBuildStatus() {
   };
 }
 
-function buildHandoff() {
+function buildHandoff(env: Env) {
   return {
     schemaVersion: CONNECTOR_SCHEMA_VERSION,
     generatedAt: new Date().toISOString(),
-    latestClaudePrompt: 'CLAUDE-CLOUDFLARE-CUTOVER-MCP-ROUTES-01',
+    dataSource: dataSourceFor(env, 'handoff'),
+    latestClaudePrompt: 'CLAUDE-CLOUDFLARE-SUPABASE-CUTOVER-PRIORITY-01',
     latestCodexPrompt: 'CODEX-BACKEND-API-AI-IMPLEMENTATION-01',
     manualSteps: [
-      'Aaron: decide whether to resolve Railway suspension or stay on Cloudflare permanently.',
+      'Aaron: create connector_* Supabase tables per docs/CONNECTOR_SUPABASE_SCHEMA.md.',
+      'Aaron: set SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY secrets on the Worker via wrangler secret put.',
       'Aaron: keep build dispatch owner-tap only — connector cannot tap.',
     ],
     doNotTouch: [
@@ -292,6 +330,7 @@ export default {
         endpoints: [
           'GET /health',
           'GET /status',
+          'GET /supabase/health',
           'GET /mcp/health',
           'GET /app-dev-centre/status',
           'GET /handoff',
@@ -305,6 +344,38 @@ export default {
       });
     }
 
+    // ── /supabase/health ───────────────────────────────────────────────
+    // Admin-gated probe of the Supabase adapter. Returns whether the
+    // env is configured and, if so, the result of pinging
+    // PostgREST `/rest/v1/`. Surfacing this separately keeps the MCP
+    // routes terse while giving Aaron a single curl to verify the
+    // Supabase wiring after a secret rotation.
+    if (request.method === 'GET' && path === '/supabase/health') {
+      const auth = requireAdminToken(request, env);
+      if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
+      const adapter = getSupabaseAdapter(env);
+      if (!adapter.configured) {
+        return jsonResponse({
+          ...buildMeta(env),
+          supabase: {
+            configured: false,
+            reason: adapter.reason,
+            message: adapter.message,
+            schemaRequirements: CONNECTOR_SCHEMA_REQUIREMENTS,
+          },
+        });
+      }
+      const ping = await adapter.ping();
+      return jsonResponse({
+        ...buildMeta(env),
+        supabase: {
+          configured: true,
+          host: adapter.config.url,
+          ping,
+        },
+      });
+    }
+
     // ── /mcp/health ────────────────────────────────────────────────────
     // Connector-shaped probe — same shape as Railway's
     // /api/athlete-memory/admin/work-status when wired.
@@ -314,9 +385,9 @@ export default {
       return jsonResponse({
         ...buildMeta(env),
         mcp: {
-          status: 'repo-only',
+          status: 'live-placeholder',
           notes:
-            'Worker scaffold is reachable but does not yet read Supabase or proxy Railway. Stage 2 is wiring Supabase reads via SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY.',
+            'Worker is the active MCP surface (Railway deprecated). Connector routes return placeholder payloads with `dataSource.schemaRequired` until the connector_* Supabase tables in docs/CONNECTOR_SUPABASE_SCHEMA.md are created and the SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY secrets are set.',
           targetEndpoints: ['get_work_status', 'get_release_status', 'get_health_source_status'],
         },
       });
@@ -329,12 +400,10 @@ export default {
       return jsonResponse({
         ...buildMeta(env),
         appDevCentre: {
-          status: 'repo-only',
+          status: 'live-placeholder',
           notes:
-            'When wired, this returns the same shape as Railway /api/athlete-memory/admin/work-status — currentPriority, currentBlocker, nextAction, androidReleaseStatus, iosReleaseStatus, healthSourceStatus, adminDevStatus, feedbackSummary, backlogSummary, manualSteps, canDeleteFromNotes, doNotDeleteYet.',
-          fallback: env.RAILWAY_FALLBACK_URL
-            ? `${env.RAILWAY_FALLBACK_URL}/api/athlete-memory/admin/work-status`
-            : null,
+            'Active route. Returns the same shape as the legacy Railway /api/athlete-memory/admin/work-status — currentPriority, currentBlocker, nextAction, androidReleaseStatus, iosReleaseStatus, healthSourceStatus, adminDevStatus, feedbackSummary, backlogSummary, manualSteps, canDeleteFromNotes, doNotDeleteYet — once connector_work_status table is created and Supabase secrets set.',
+          schemaRequired: CONNECTOR_SCHEMA_REQUIREMENTS.work_status,
         },
       });
     }
@@ -399,19 +468,19 @@ export default {
     if (request.method === 'GET' && path === '/api/coder_lanes') {
       const auth = requireAdminToken(request, env);
       if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
-      return jsonResponse(applyConnectorRedaction(buildCoderLanes()));
+      return jsonResponse(applyConnectorRedaction(buildCoderLanes(env)));
     }
 
     if (request.method === 'GET' && path === '/api/build_status') {
       const auth = requireAdminToken(request, env);
       if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
-      return jsonResponse(applyConnectorRedaction(buildBuildStatus()));
+      return jsonResponse(applyConnectorRedaction(buildBuildStatus(env)));
     }
 
     if (request.method === 'GET' && path === '/api/handoff') {
       const auth = requireAdminToken(request, env);
       if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });
-      return jsonResponse(applyConnectorRedaction(buildHandoff()));
+      return jsonResponse(applyConnectorRedaction(buildHandoff(env)));
     }
 
     // ── Write endpoints intentionally absent ───────────────────────────
