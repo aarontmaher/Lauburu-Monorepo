@@ -25,7 +25,7 @@ other priority benefits from ChatGPT being able to read Claude /
 Codex lane status without screenshots. The remaining priorities
 keep their relative order from the previous backlog.
 
-### 1. MCP terminal bridge / ChatGPT-readable status (Priority 1) — IN FLIGHT
+### 1. Screenshot-free MCP terminal bridge / control centre (Priority 1) — IN FLIGHT
 
 ChatGPT and the mobile Admin/Dev surface should read Claude /
 Codex lane status, build state, handoff, and recent terminal
@@ -51,13 +51,14 @@ phone and sees the live Claude lane summary written by the local
 bridge to Supabase, fetched by the Worker, returned to the app
 through `EXPO_PUBLIC_MCP_BASE_URL`.
 
-### 2. Apple Health (iOS) + Health Connect (Android) usable for daily testing
+### 2. Health / Data Source reliability
 
 Real-tester functionality for Aaron's iPhone (Apple Health) and
-his girlfriend's Android (Health Connect). Two devices in active
-daily use must connect cleanly, surface what's available, and
-stay honest about what's missing. Manual check-ins + training
-logs as fallback when a source isn't connected.
+his girlfriend's Android (Health Connect) is the first health
+source target. Two devices in active daily use must connect
+cleanly, surface what's available, and stay honest about what's
+missing. Manual check-ins + training logs are the fallback when a
+source isn't connected.
 
 Hard guardrails (preserved):
 
@@ -68,11 +69,36 @@ Hard guardrails (preserved):
   un-gated, commit `d4827ba`).
 
 Status: **live** for the existing primary cards in last paired
-build. Next moves are tester-build verifications + the cleanup
-items Codex is closing on `apps/mobile/app/admin-dev.tsx` and
-`apps/mobile/src/services/connector-status-client.ts`.
+build. Next moves are tester-build verifications, then source
+expansion in this order: WHOOP / Polar OAuth reliability,
+Garmin / Oura, raw exports, HIIT machine capture, nutrition,
+DEXA / blood test uploads. These data-source lanes matter, but
+they do not outrank the Apple Health / Health Connect daily
+testing path.
 
-### 3. Cautious early Grappler Readiness prototype
+### 3. UX / information architecture cleanup
+
+Daily and frequent workflows live in the feature tabs where the
+user naturally does that work. Rare settings, account state,
+subscription, app version/build info, permissions, support,
+diagnostics, and developer/admin controls live in Settings or
+Admin/Dev.
+
+Current rule:
+
+- Health owns nutrition targets, source status, sync/storage
+  actions, and health-source management.
+- Train owns weekly schedule, training plans, and session
+  logging.
+- Settings is not a dumping ground. It should stay focused on
+  account, subscription, version/build, notifications,
+  permissions, support/feedback, and hidden Admin/Dev entry.
+
+Status: **ongoing**. UX/IA stays after MCP bridge and
+Health/Data Source reliability unless a tester-facing blocker is
+urgent.
+
+### 4. Cautious early Grappler Readiness prototype
 
 Uses only available data (Apple Health / Health Connect + manual
 check-ins + training logs) and clearly shows missingness. No
@@ -88,25 +114,13 @@ doc-only (`docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md`).
 | C | Extend `TrainingSession` schema (gi/no-gi, drilling vs live, perceived intensity) | repo-only / planned |
 | D | Bucket-ring UI on `AthleteStateStrip` (5 buckets with provenance) | repo-only / planned |
 
-### 4. WHOOP / Polar / Garmin / Oura / raw exports / HIIT / nutrition / DEXA / blood test uploads
-
-All below the above three lanes. They matter, but they cannot
-block day-to-day usability for Aaron + girlfriend.
-
-- WHOOP OAuth: legacy on Railway (deprecated); migration off
-  Railway disk to Supabase encrypted table — repo-only / planned.
-- Friendly WHOOP / Polar error UI: **repo-only**, ships in next
-  paired tester build (commit `a036fd5`).
-- Nutrition tracking plan: **repo-only** (`docs/NUTRITION_TRACKING_PLAN.md`).
-- DEXA / blood test upload plan: **repo-only**
-  (`docs/DEXA_BLOOD_TEST_UPLOAD_PLAN.md`).
-
-### 5. Admin/Dev workflow + Cloudflare / Supabase MCP bridge
+### 5. Admin/Dev workflow + Cloudflare / Supabase MCP bridge on the phone
 
 The owner-workflow surface that lets Aaron manage everything from
 the phone. Subsumes the previous "Railway read-only / MCP-style
-bridge" priority — Railway is deprecated; Cloudflare + Supabase
-is the active replacement.
+bridge" priority. Railway is deprecated; Cloudflare Worker +
+Supabase is the active replacement for connector/control-centre
+state.
 
 - Admin/Dev surface (Now / Android / iOS / OTA cards, Primary
   actions, Prompt bridge, Quick capture, Open shortcuts):
@@ -121,17 +135,7 @@ is the active replacement.
 
 ## Later backlog (not in the active top 5)
 
-### 6. Full mobile UX audit pass
-
-Once Apple Health + Health Connect are usable on both devices and
-the MCP bridge is live, do a full mobile UX audit pass on every
-tab — one screen at a time, with screenshots, fix list, single
-batched commit per tab. Codex's IA cleanup work is the on-ramp.
-
-Status: **planned** — gate is "Priorities 1 + 2 are live for
-testers."
-
-### 7. Paid AI API integration
+### 6. Paid AI API integration
 
 Deferred until monetisation + usage caps + data readiness all
 exist. Triggers documented in:
@@ -142,13 +146,13 @@ exist. Triggers documented in:
 Hard guardrail: no paid AI API call until both trigger docs
 explicitly say go. Status: **blocked** by design until then.
 
-### 8. Public production release
+### 7. Public production release
 
 Out of scope until the production listing pass is done (separate
 from the now-complete Internal Testing pass). Status: **blocked**
 on production listing pass.
 
-### 9. Stage-5 local Mac / tmux bridge daemon
+### 8. Stage-5 local Mac / tmux bridge daemon
 
 Phone taps a fixed allowlist of safe actions over Tailscale. Gate
 is the eight hard rules in `docs/LOCAL_BRIDGE_WORKFLOW_PLAN.md`
@@ -182,9 +186,9 @@ priority — they are the floor below every priority.
 In order:
 
 1. **MCP terminal bridge** — apply `supabase/migrations/0003_connector_status_tables.sql` and set the two Worker secrets so the connector routes flip from `placeholder` to `supabase`. Once that's done, the phone can read Claude / Codex status without screenshots.
-2. **Apple Health + Health Connect** — verify the next tester build still surfaces the cards on Aaron's iPhone + girlfriend's Android, with missing data clearly marked.
-3. **Cautious Grappler Readiness Batches B / C / D** — schema + UI work only; no backend; ship behind a feature flag if needed.
-4. **WHOOP / Polar friendlier error UI in the next paired build** — already on `main` (commit `a036fd5`), tester-build to land.
+2. **Health / Data Source reliability** — verify Apple Health on Aaron's iPhone + Health Connect on girlfriend's Android first; then continue WHOOP / Polar / exports / nutrition without blocking the primary daily sources.
+3. **UX / IA cleanup** — keep daily/frequent workflows in feature tabs and rare/admin/config/debug in Settings/AdminDev unless an urgent tester blocker jumps the queue.
+4. **Cautious Grappler Readiness Batches B / C / D** — architecture/schema + gated UI work only; no overclaiming and no user-facing readiness score until explicitly allowed.
 5. **Admin/Dev → Cloudflare/Supabase MCP wiring on the phone** — flip `EXPO_PUBLIC_MCP_BASE_URL` in the next paired build's EAS env so the phone reads from the Worker, not Railway.
 
 Items 6+ stay in the Later backlog above.

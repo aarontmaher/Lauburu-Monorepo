@@ -125,6 +125,60 @@ Risk-level mapping (default per type):
 The runner can override `riskLevel` upward but not downward.
 `approvalRequired` follows `riskLevel === 'high'`.
 
+## Backlog workflow loop
+
+Every backlog item moves through the same explicit loop. The
+source can be tester feedback, in-app audit events, an Aaron note,
+or a connector observation, but the promotion path is identical:
+
+1. **Capture** — feedback / audit / Aaron note / connector status
+   becomes a candidate item. Raw logs, secrets, and raw health
+   values are never copied into the item.
+2. **Triage** — assign type, platform, risk level, owner lane,
+   verification, and whether the item needs a tester build.
+3. **Prompt** — generate a deterministic Claude / Codex prompt
+   from the triaged item. Prompt generation is read-only; it does
+   not execute code or call a paid AI API.
+4. **Coder work** — Claude or Codex works only inside the lane's
+   allowed ownership boundary and reports files changed,
+   verification, blocker, and next step.
+5. **Terminal bridge result** — the local tmux bridge records a
+   compact, sanitized lane result into `coder_lanes` /
+   `terminal_summary`. It never stores raw pane logs and never
+   executes terminal text.
+6. **Aaron approval** — Aaron reviews the result in chat or
+   Admin/Dev. High-risk / Lane-3 items require explicit written
+   approval before they move forward.
+7. **Done or return to backlog** — if verified, mark done and
+   keep the result in history. If incomplete, blocked, or failed,
+   return the item to backlog with the blocker and next prompt.
+
+No item is removed from the backlog solely because a coder claims
+it is done. Removal / archive requires Aaron approval or an
+explicit doc commit that names why the item is complete.
+
+## UX / IA placement rule
+
+Daily and frequent workflows belong in the relevant feature tab.
+Rare, admin, configuration, and debug workflows belong in Settings
+or Admin/Dev.
+
+Current placement defaults:
+
+- Health owns nutrition targets, health-source status, source
+  management, and sync/storage actions.
+- Train owns weekly schedule, training plans, and session logging.
+- Settings owns account, subscription, app version/build,
+  notifications, permissions, support/feedback, and hidden
+  Admin/Dev access.
+- Admin/Dev owns diagnostics, connector/control-centre status,
+  build/runtime detail, audit summaries, and prompt handoffs.
+
+If a daily workflow appears in Settings, move it to the feature
+tab unless doing so would require a risky rewrite. If debug copy
+appears on a normal tester screen, hide it behind Admin/Dev or a
+gated diagnostics disclosure.
+
 ## Bundle generator
 
 The Prompt bridge in Admin/Dev already produces deterministic
