@@ -38,7 +38,7 @@ in this plan deletes or breaks them.
 | `lauburu-mcp-preview…/mcp` (5 tools, admin-token) | KEEP | Earliest at Phase 4 |
 | `lauburu-mcp-preview…/api/*` (REST, admin-token) | KEEP indefinitely — these back the mobile app's `connector-status-client.ts`, not just MCP | Never (different consumer) |
 | `mcp.lauburugrapplingmap.com/mcp` (~25 tools, No Auth) | KEEP — different repo entirely | Out of scope; that codebase decides |
-| WHOOP MCP (if present at a separate URL — currently shows as disconnected in Claude Code's deferred tool list) | KEEP if present | Out of scope; that codebase decides |
+| WHOOP MCP (local authenticated health server) | KEEP | Not eligible for retirement until unified MCP has equivalent authenticated WHOOP tools, secure credential handling, live tests, and no remaining unique functionality |
 
 **Anti-rule:** the v2 endpoint is **additive**. A commit that
 removes any of the above before Phase 4 is rejected.
@@ -144,12 +144,27 @@ initialize) work transparently.
 | `integrations.list_sources` | `[{ source, connected, lastSyncAt, missingFields }]` (sanitised) | Supabase `source_connection_state` | admin token |
 | `integrations.get_overview` | `{ totalSources, byStatus: { connected, stale, never_connected }, lastSyncAt }` | aggregated from `source_connection_state` | No Auth (counts only) |
 | `integrations.whoop.get_status` | `{ connected, lastWhoopSyncAt, missing: ['recovery'/'sleep'/'strain'] }` | `source_connection_state` row for whoop_oauth | admin token |
-| `integrations.polar.get_status` | same shape | `source_connection_state` row for polar_oauth | admin token |
+| `integrations.whoop.get_daily_summary` | authenticated WHOOP recovery / sleep / strain / workout summary | WHOOP OAuth data store or migrated equivalent of local WHOOP SQLite | admin token |
+| `integrations.whoop.get_recovery_history` / `get_sleep_history` / `get_hrv_trend` / `get_strain_history` | authenticated WHOOP metrics, never public | WHOOP OAuth data store or migrated equivalent of local WHOOP SQLite | admin token |
+| `integrations.polar.get_status` | direct Polar connection state only | `source_connection_state` row for polar_oauth | admin token |
+| `integrations.polar.get_metrics` | future authenticated Polar-specific metrics, if direct Polar exists | future Polar direct store | admin token |
 | `integrations.health.get_overview` | `{ ios: { appleHealth: 'connected'/'never_seen' }, android: { healthConnect: 'connected'/'never_seen' } }` (no per-user data) | aggregated `source_connection_state` | admin token |
+| `integrations.health.get_hub_summary` | Apple Health / Health Connect hub summaries only; no vendor-direct claims | app health-source summary store | admin token |
 
-Per-user health values NEVER appear here. Aggregate counts only.
-The existing `/api/health/*` admin routes carry the per-user
-detail.
+Unauthenticated tools, including `/mcp/public` and any future
+No-Auth `/mcp/v2` tool, must **never** expose personal health
+metrics. Public-safe health output is limited to source counts,
+connection-state enums, and stale/never-seen aggregate status.
+Authenticated metric namespaces are strict:
+
+- WHOOP metrics live under `integrations.whoop.*`.
+- Apple Health / Health Connect hub summaries live under
+  `integrations.health.*`.
+- Polar-specific metrics live under `integrations.polar.*`.
+
+Do not label hub-derived Polar data as Polar Direct. Do not
+label WHOOP-like fields as WHOOP Direct unless they came from an
+authenticated WHOOP path.
 
 ### `handoff.*` — cross-project handoff artifacts
 
@@ -272,7 +287,9 @@ Lane: this codebase.
       that's a different codebase. We continue to proxy it via
       `website.*`.
 - [ ] WHOOP MCP, if it exists at a separate URL, is also
-      **untouched** — out of scope.
+      **untouched** until the retirement checklist in § 14.9 is
+      complete. The local WHOOP MCP is not retired just because
+      `/mcp/v2` exists.
 
 ### Phase 5 — optional, never required
 
@@ -371,9 +388,12 @@ hide them from rendering until Phase 1 ships.
   return a `proxy_unavailable` error — they do NOT fall back
   to a stale local copy.
 - **No raw athlete health values in any namespace.**
-  `integrations.*` exposes connection state only; per-user
-  values live behind the existing user-token-gated mobile
-  routes.
+  `/mcp/public` and every unauthenticated `/mcp/v2` tool expose
+  connection-state counts/enums only. Personal metrics are
+  authenticated only and must be namespaced by source:
+  `integrations.whoop.*` for WHOOP, `integrations.health.*` for
+  Apple Health / Health Connect hub summaries, and
+  `integrations.polar.*` for direct Polar metrics.
 - **No tokens / EAS UUIDs / GitHub run IDs / file paths in any
   No-Auth namespace.** The same dangerous-pattern grep that
   guards `/mcp/public` extends to every No-Auth tool in
@@ -383,6 +403,10 @@ hide them from rendering until Phase 1 ships.
   codebase's `connector_backlog_items` belongs to this project.
   They render alongside each other in `project.get_overview`,
   not merged.
+- **No deleting the local WHOOP MCP before parity.** It cannot
+  be removed until equivalent authenticated WHOOP tools,
+  secure credential handling, live tests, and uniqueness audit
+  all pass.
 - **No silent expansion of namespaces.** Adding a new tool
   requires a doc commit updating this file and the per-tool
   table in § 4 BEFORE the implementation lands.
@@ -558,7 +582,7 @@ Read-only audit sources:
 | Website write tools | Proxy only with explicit write classification and confirmation policy | They mutate website queues/state. No silent execution from public clients. |
 | Website user health / memory tools | Keep under `website.*`; require auth review before public exposure | They may return per-user data. Treat No-Auth status as risk until audited. |
 | Website provider registry | Consider merging into `integrations.list_provider_registry` after compatibility wrapper | It is catalogue-like and can be public-safe if no private data. |
-| WHOOP read-only health data tools | Keep separate now; later expose as admin-only `integrations.whoop.*` if needed | Unique authenticated health data; high privacy risk. |
+| WHOOP read-only health data tools | Keep separate now; migrate only into authenticated `integrations.whoop.*` equivalents | Unique authenticated health data; high privacy risk. Local MCP remains until parity is proven. |
 | WHOOP diagnostics | Keep local/admin-only; do not expose through public unified MCP | Auth/token/webhook details are operationally sensitive. |
 | WHOOP write routes (`trigger-sync`, `force-reseed`, OAuth callback, webhook) | Do not fold into MCP v1; never expose No-Auth | They mutate tokens/data or receive vendor webhooks. |
 | Empty resources/prompts | Keep empty | No existing client depends on resources/prompts. |
@@ -573,7 +597,7 @@ Read-only audit sources:
   of this repo's live lane/build/repo status.
 - Deleting mobile private MCP is lower risk than deleting `/api/*`,
   but still breaks laptop curl / future authenticated MCP clients.
-- Deleting WHOOP MCP would remove local authenticated WHOOP
+- Deleting WHOOP MCP before authenticated unified parity would remove local authenticated WHOOP
   analysis, sync/auth/webhook diagnostics, and the only verified
   source for several WHOOP-specific views. It may also break local
   Claude/Codex tools.
@@ -593,8 +617,8 @@ Recommended final namespaces:
 | `handoff.*` | Cross-project latest handoff summaries with source disambiguation | `handoff.get_latest`, `handoff.get_by_source` |
 | `integrations.*` | Provider registry and connection state | `integrations.list_sources`, `integrations.list_provider_registry` |
 | `integrations.whoop.*` | Authenticated WHOOP-only data and diagnostics | `integrations.whoop.get_daily_summary`, `integrations.whoop.get_sync_status` |
-| `integrations.polar.*` | Future Polar direct state | `integrations.polar.get_status` |
-| `integrations.health.*` | Apple Health / Health Connect source state | `integrations.health.get_overview` |
+| `integrations.polar.*` | Future direct Polar state and Polar-specific metrics only | `integrations.polar.get_status`, `integrations.polar.get_metrics` |
+| `integrations.health.*` | Apple Health / Health Connect hub source state and hub summaries | `integrations.health.get_overview`, `integrations.health.get_hub_summary` |
 
 ### 14.6 Safe cutover plan
 
@@ -613,10 +637,13 @@ Recommended final namespaces:
 3. Test new unified endpoint:
    - `tools/list` includes namespaced wrappers.
    - Public-safe tools contain no free text, file paths, tokens,
-     IDs, secrets, raw logs, or per-user health values.
+     IDs, secrets, raw logs, or per-user health metrics.
    - Admin-only tools reject unauthenticated calls.
    - Website proxy preserves old website tool response shapes
      under `website.*`.
+   - Authenticated WHOOP tools under `integrations.whoop.*`
+     match the local WHOOP MCP's read-only metric coverage before
+     any WHOOP retirement discussion.
 4. Mark old endpoints deprecated in docs only after `/mcp/v2`
    works for ChatGPT, Claude, Codex, mobile Admin/Dev, and any
    automation scripts.
@@ -652,7 +679,61 @@ stores:
 - `website.*` proxies the live website MCP unchanged.
 - `integrations.whoop.*` remains **out of v1 public scope**.
   WHOOP MCP has unique authenticated WHOOP value and must stay
-  local/admin-only until a privacy/auth design is approved.
+  local/admin-only until authenticated unified replacements are
+  implemented, tested, and proven equivalent.
 
 The deletion target is only future legacy wrappers after proven
 cutover, not the underlying website or WHOOP MCPs.
+
+### 14.9 Local WHOOP MCP retirement checklist
+
+The local WHOOP MCP cannot be deleted, disabled, or removed from
+local MCP configs until every item below is complete and Aaron
+explicitly approves the retirement.
+
+- [ ] Unified MCP exposes authenticated `integrations.whoop.*`
+      tools that cover every retained read-only WHOOP tool:
+      recovery, recovery history, HRV trend, sleep last night,
+      sleep history, cycle/strain history, workout history,
+      workout-zone history, training-load summary,
+      recovery-vs-strain, recovery-vs-sleep, daily summary,
+      stored daily metrics, health flags, correlation snapshots,
+      grappling sessions, manual daily context,
+      intelligence-ready view, data-completeness report,
+      sync status, auth status, webhook status, user profile,
+      body measurements, and sport labels.
+- [ ] Unified MCP stores and refreshes WHOOP credentials without
+      exposing client IDs, client secrets, access tokens, refresh
+      tokens, token file paths, OAuth callback URLs containing
+      secrets, or raw authorization headers in tool responses,
+      logs, docs, or app UI.
+- [ ] Every `integrations.whoop.*` metric tool is admin-token
+      or user-auth gated. Unauthenticated `/mcp/public` and
+      unauthenticated `/mcp/v2` tools return only source-state
+      counts/enums and never recovery, HRV, sleep, strain,
+      workouts, body measurements, profile values, or manual
+      context.
+- [ ] Live tests prove unauthenticated WHOOP metric calls are
+      rejected and authenticated calls return schema-shaped,
+      sanitized payloads.
+- [ ] Live tests compare representative unified WHOOP outputs
+      against the local WHOOP MCP for equivalent dates/windows.
+      Differences must be explained as intentional schema changes
+      or fixed.
+- [ ] WHOOP write/side-effect operations are explicitly scoped:
+      OAuth authorize/callback, webhooks, sync trigger, and token
+      reseed are not exposed as No-Auth MCP tools. Any admin write
+      tool requires a separate owner-approved design.
+- [ ] No remaining unique functionality exists in
+      `~/whoop-integration/whoop_mcp.py` or its custom routes.
+      If a tool is intentionally not migrated, it is marked
+      historical/backlog-only with a replacement or deprecation
+      reason.
+- [ ] Claude, Codex, mobile Admin/Dev, and any website consumer
+      have been confirmed using the unified/authenticated path
+      for WHOOP reads for at least 30 days.
+- [ ] Rollback is documented: how to re-enable the local WHOOP
+      MCP and where credentials/tokens live, without printing
+      those credentials.
+- [ ] Aaron explicitly approves retirement after reviewing the
+      live test results and uniqueness audit.

@@ -137,6 +137,19 @@ authenticated WHOOP-derived status. Keep it local or behind a
 private/authenticated namespace if it is ever folded into the
 unified MCP.
 
+If WHOOP is folded into the unified MCP later, personal metrics
+must live under authenticated `integrations.whoop.*` tools.
+Apple Health / Health Connect hub summaries belong under
+`integrations.health.*`; future direct Polar-specific metrics
+belong under `integrations.polar.*`. `/mcp/public` and any
+unauthenticated unified tools must never expose personal health
+metrics.
+
+The local WHOOP MCP is not a deletion candidate until the
+unified MCP has equivalent authenticated WHOOP tools, secure
+credential handling, live tests, and a confirmed audit showing
+no remaining unique functionality.
+
 ## Read-only audit snapshot — 2026-05-07
 
 Verified live / local facts:
