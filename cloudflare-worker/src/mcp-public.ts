@@ -78,6 +78,12 @@ type TestflightStatus = (typeof ALLOWED_TF_STATUSES)[number];
 
 const TOOLS = [
   {
+    name: 'get_public_mcp_health',
+    description:
+      'Diagnostic tool. Returns tool list, server version, protocol version, generatedAt, and the data-source state (supabase | repo-only). Use this to confirm the MCP connector is wired before calling any other tool. No secrets, no paths. Public-safe.',
+    inputSchema: { type: 'object', properties: {}, required: [] as string[] },
+  },
+  {
     name: 'get_lane_overview',
     description:
       'Aggregate count of coder lanes (Claude, Codex, etc) grouped by status enum (idle / working / blocked / needs_user / needs_review / done). Returns counts only — no per-lane text, no prompt IDs, no file paths. Public-safe.',
@@ -265,6 +271,37 @@ interface RepoOverview {
 const SHORT_SHA_RE = /^[0-9a-f]{7,12}$/;
 const BRANCH_RE = /^[A-Za-z0-9._\-/]{1,80}$/;
 
+interface PublicMcpHealth {
+  schemaVersion: 1;
+  generatedAt: string;
+  serverInfo: typeof SERVER_INFO;
+  protocolVersion: typeof PROTOCOL_VERSION;
+  /** 'supabase' when Supabase env is configured + reachable; 'repo-only' otherwise. */
+  source: 'supabase' | 'repo-only';
+  /** Names of every tool exposed by this public-safe endpoint. */
+  toolNames: readonly string[];
+  publicPreview: true;
+}
+
+async function buildPublicMcpHealth(env: Env): Promise<PublicMcpHealth> {
+  const generatedAt = new Date().toISOString();
+  const adapter = getSupabaseAdapter(env);
+  let source: 'supabase' | 'repo-only' = 'repo-only';
+  if (adapter.configured) {
+    const ping = await adapter.ping();
+    if (ping.ok) source = 'supabase';
+  }
+  return {
+    schemaVersion: 1,
+    generatedAt,
+    serverInfo: SERVER_INFO,
+    protocolVersion: PROTOCOL_VERSION,
+    source,
+    toolNames: TOOLS.map((t) => t.name),
+    publicPreview: true,
+  };
+}
+
 async function buildRepoOverview(env: Env): Promise<RepoOverview> {
   const generatedAt = new Date().toISOString();
   const adapter = getSupabaseAdapter(env);
@@ -283,6 +320,7 @@ async function buildRepoOverview(env: Env): Promise<RepoOverview> {
 }
 
 const TOOL_BUILDERS: Record<ToolName, (env: Env) => Promise<unknown>> = {
+  get_public_mcp_health: buildPublicMcpHealth,
   get_lane_overview: buildLaneOverview,
   get_build_overview: buildBuildOverview,
   get_repo_overview: buildRepoOverview,
