@@ -109,11 +109,47 @@ value is also the Worker's `ATHLETE_MEMORY_API_TOKEN` secret.
 
 ## ChatGPT custom MCP connector
 
-The Worker exposes a **real MCP protocol endpoint** at `POST /mcp`,
-in addition to the REST routes under `/api/*`. Use this in
-ChatGPT's "Connectors" UI (or any MCP-compatible client).
+ChatGPT's "Connectors" UI currently offers only OAuth / No Auth /
+Mixed — there is no API-key / Bearer option. The full-fidelity
+private MCP at `/mcp` is therefore NOT directly usable from a
+ChatGPT custom connector. Two paths are wired:
 
-**MCP Server URL:**
+### Path A — public-safe preview MCP (use this in ChatGPT)
+
+A separate MCP server at `/mcp/public` returns ONLY sanitised
+aggregate overviews (no free text, no file paths, no prompts,
+no terminal logs, no handoff details, no version-bump signals).
+This is safe to expose without auth.
+
+**MCP Server URL (ChatGPT connector):**
+```
+https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/public
+```
+
+**Authentication option:** **No Auth** (in ChatGPT's UI).
+
+**Privacy:** PUBLIC-SAFE PREVIEW. Every response carries a
+`publicPreview: true` flag. The tool surface is intentionally
+narrow — three aggregate overviews:
+
+| Tool | Returns |
+|---|---|
+| `get_lane_overview` | Total lane count + counts grouped by status enum (idle / working / blocked / needs_user / needs_review / done). No per-lane summary, no prompt id, no file list. |
+| `get_build_overview` | Android `versionCode` + iOS `buildNumber` (already public on Play Internal Testing + TestFlight listings) + GitHub workflow / Play / TestFlight status enums. No EAS build IDs, no submission UUIDs, no run IDs. |
+| `get_repo_overview` | Branch name (regex-filtered) + short HEAD SHA (regex-filtered). Both already public on GitHub. No commit message, no dirty-file count. |
+
+The endpoint applies a strict allow-list to every output field —
+new fields don't appear unless they're explicitly added to the
+sanitiser. Anything outside the allow-list is dropped, never
+"filtered" from a free-text blob.
+
+### Path B — full-fidelity private MCP (curl / Claude Code only)
+
+The original `/mcp` endpoint stays available for laptop use with
+the admin token. This is what curl / Claude Code / future OAuth
+wiring use; it is NOT for ChatGPT's current connector form.
+
+**Server URL:**
 ```
 https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp
 ```
@@ -124,9 +160,10 @@ https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp
 
 The token value is the same one stored in Mac Keychain as
 `ATHLETE_MEMORY_API_TOKEN` and bundled into the mobile app as
-`EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN`. ChatGPT's connector UI may
-prefer "API Key" or "Bearer" — pick whichever the form offers;
-both hit the same gate.
+`EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN`. The full coder-lane / handoff
+/ terminal_summary text is only ever returned through this
+gated path. **Never paste this URL into a public ChatGPT
+connector.**
 
 **Transport:** Streamable HTTP, JSON-RPC 2.0. Returns plain
 `application/json` (no SSE in this minimal build).

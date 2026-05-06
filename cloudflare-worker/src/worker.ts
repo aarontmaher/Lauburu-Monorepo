@@ -41,6 +41,7 @@ import {
   type ConnectorRouteKey,
 } from './supabase';
 import { handleMcp } from './mcp';
+import { handleMcpPublic } from './mcp-public';
 
 interface ConnectorMeta {
   generatedAt: string;
@@ -331,10 +332,19 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '');
 
-    // ── /mcp — JSON-RPC 2.0 MCP server (Streamable HTTP) ───────────────
-    // Read-only tool surface for ChatGPT / Claude.ai connectors.
-    // Implementation in ./mcp.ts. Auth via x-athlete-memory-token OR
-    // Authorization: Bearer <token>.
+    // ── /mcp/public — public-safe preview MCP (no auth) ────────────────
+    // Sanitised aggregate-only tool surface for ChatGPT custom
+    // connectors that don't support API-key / Bearer auth in the UI.
+    // Implementation in ./mcp-public.ts. Strict allowlist; no free
+    // text, no paths, no prompts, no terminal logs.
+    if (path === '/mcp/public') {
+      return handleMcpPublic(request, env);
+    }
+
+    // ── /mcp — full-fidelity JSON-RPC 2.0 MCP server (admin-gated) ─────
+    // Private read-only tool surface — every coder lane / handoff /
+    // terminal summary detail. Implementation in ./mcp.ts. Auth via
+    // x-athlete-memory-token OR Authorization: Bearer <token>.
     if (path === '/mcp') {
       return handleMcp(request, env);
     }
@@ -356,8 +366,10 @@ export default {
         endpoints: [
           'GET /health',
           'GET /status',
-          'GET /mcp (server info; POST for JSON-RPC 2.0)',
-          'POST /mcp (MCP protocol — initialize / tools/list / tools/call)',
+          'GET /mcp (private full-fidelity MCP server info; POST for JSON-RPC 2.0)',
+          'POST /mcp (private MCP — admin-token-gated; full coder lane / handoff / terminal data)',
+          'GET /mcp/public (public-safe preview MCP server info; POST for JSON-RPC 2.0)',
+          'POST /mcp/public (public-safe preview — sanitised aggregate overviews only, no auth required)',
           'GET /supabase/health',
           'GET /mcp/health',
           'GET /app-dev-centre/status',
