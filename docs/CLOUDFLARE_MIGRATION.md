@@ -244,3 +244,106 @@ parallel scaffold, not a replacement.
 
 Stage 5 is intentionally far away — the migration is staged so
 each step is reversible by env-var unset, not git revert.
+
+## 14. DNS / custom domain cutover steps (Stage 5 only)
+
+Reserved for the final cutover. Do NOT run these until every
+prior stage has been green for ≥1 month and Aaron has signed off
+in a doc commit.
+
+1. In Cloudflare dashboard → Workers → `lauburu-mcp-production` →
+   **Triggers → Custom Domains** → add the domain you want the
+   Worker to own (e.g. `mcp.lauburugrapplingmap.com` or a
+   subpath of an existing zone).
+2. Cloudflare automatically issues TLS via Universal SSL when
+   the domain is on a Cloudflare zone. If the zone lives
+   elsewhere, follow Cloudflare's guidance to add the zone first.
+3. Update the mobile app `eas.json` env values for the next
+   build:
+   ```jsonc
+   "env": {
+     "EXPO_PUBLIC_AI_PUBLIC_URL": "https://mcp.lauburugrapplingmap.com/api/athlete-memory",
+     "EXPO_PUBLIC_AI_BACKEND_URL": "https://mcp.lauburugrapplingmap.com/v1/internal"
+   }
+   ```
+   (The Worker must be ready to serve the matching paths — Stage
+   3 onwards covers the public surface; the legacy `/v1/internal/*`
+   server-to-server routes stay on Railway and require their own
+   migration plan, which is NOT in scope for the Worker.)
+4. Cut a new mobile build via Admin/Dev → Primary actions.
+5. Once the mobile cohort is fully on the new build AND the
+   Worker has served traffic cleanly for ≥7 days, delete the
+   Railway service (or pause billing).
+
+## 15. Rollback plan (full)
+
+Each stage is reversible by env-var change; nothing requires git
+revert.
+
+- **Stage 4 rollback** (mobile env switch caused issues): unset
+  `EXPO_PUBLIC_MCP_BASE_URL` in EAS env, cut a new mobile build.
+  Worker stays deployed but no app code calls it.
+- **Stage 5 rollback** (custom domain cutover caused issues):
+  point `EXPO_PUBLIC_AI_PUBLIC_URL` and `EXPO_PUBLIC_AI_BACKEND_URL`
+  back at the Railway URL (`https://lauburu-ai-backend-production.up.railway.app`)
+  in `eas.json`, cut a new mobile build. Railway service must
+  not have been deleted yet (do NOT delete Railway until Stage
+  5 has been green for ≥1 month per §14 step 5).
+- **Custom domain rollback**: in Cloudflare dashboard → Workers
+  → Triggers → Custom Domains → remove the domain. DNS
+  propagation back to Railway is instant if Railway still owns
+  the route.
+
+## 16. Final Railway removal checklist
+
+Only run AFTER §14 step 5 condition is satisfied (≥7 days of
+clean Worker traffic on the production cohort).
+
+- [ ] No mobile build in the field still points at the Railway
+      URL — confirm via the EAS env on the latest released build
+      and via the in-app Settings → About → Build/Version row.
+- [ ] No external service / connector / user-facing URL still
+      resolves to Railway. Check `dig +short
+      lauburu-ai-backend-production.up.railway.app` from a
+      neutral network.
+- [ ] All audit roll-up routes that were planned for the Worker
+      (per `IN_APP_AUDIT_SYSTEM.md` § Backend route contract) are
+      live and Aaron has used them at least once.
+- [ ] Railway env values for `ATHLETE_MEMORY_API_TOKEN` /
+      `INTERNAL_API_TOKEN` / `INTEGRATION_STATE_SECRET` are
+      either rotated to Cloudflare or scheduled for rotation
+      post-removal.
+- [ ] Railway service paused (NOT deleted yet) for 7 more days
+      as a fallback window.
+- [ ] After the additional 7-day fallback window, Railway service
+      may be deleted. Doc-commit the deletion timestamp.
+
+## 17. Supabase schema/env required for Stage 3 reads
+
+Documented here so when Stage 3 lands, the env vars and table
+names are unambiguous.
+
+Required Cloudflare secrets (set per env via `wrangler secret put`):
+
+- `SUPABASE_URL` — same value the Railway backend reads
+  (`https://YOUR-PROJECT.supabase.co`).
+- `SUPABASE_SERVICE_ROLE_KEY` — server-side key. NEVER bundle
+  into the mobile app.
+
+Tables / RPCs the Worker reads (read-only):
+
+- `auth.users` (Supabase-managed) — only for the owner email
+  match when admin-token auth is augmented with per-user JWT
+  cross-check (Stage 5 nicety, not required for Stage 3).
+- `normalized_daily_metrics` — read-only count + most-recent
+  timestamp roll-ups for `/admin/health-source-status`. Per-user
+  rows NEVER serialised to the wire (only aggregates).
+- `source_connection_state` — count of active connections per
+  source. Aggregates only.
+- (Future) `audit_events` table — schema NOT yet defined; lands
+  with the Stage 3 audit roll-up route per
+  `IN_APP_AUDIT_SYSTEM.md`.
+
+If any of the table names above are wrong, the Worker handler
+keeps returning `supabaseConfigured: false` + `repo-only` —
+fail-soft on schema mismatch, never invent data.
