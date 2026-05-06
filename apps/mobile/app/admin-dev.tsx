@@ -438,6 +438,8 @@ export default function AdminDevScreen() {
 
       <QuickCaptureSection />
 
+      <HealthConnectAuditStatusSection />
+
       <AuditSummarySection />
 
       <PromptBridgeSection statusBlock={STATUS_HANDOFF_TEMPLATE} />
@@ -798,6 +800,46 @@ function AgentStatusSection() {
           </View>
         );
       })}
+    </Section>
+  );
+}
+
+function HealthConnectAuditStatusSection() {
+  const events = useAuditEventStore((s) => s.events);
+  const hcEvents = events.filter((e) => e.sourceId === 'health_connect');
+  const latest = hcEvents[hcEvents.length - 1] ?? null;
+  const latestVisible = [...hcEvents].reverse().find((e) =>
+    e.eventType === 'health_source_visible' || e.eventType === 'health_source_missing'
+  ) ?? null;
+  const latestPermission = [...hcEvents].reverse().find((e) =>
+    e.eventType === 'permission_granted' || e.eventType === 'permission_denied' || e.eventType === 'permission_requested'
+  ) ?? null;
+  const latestSync = [...hcEvents].reverse().find((e) =>
+    e.eventType === 'sync_succeeded' || e.eventType === 'sync_failed' || e.eventType === 'sync_started'
+  ) ?? null;
+  const latestMissing = [...hcEvents].reverse().find((e) => e.eventType === 'missing_metrics') ?? null;
+
+  const fmt = (e: { eventType: string; severity: string; createdAt: string } | null) => e
+    ? `${e.eventType} · ${e.severity} · ${new Date(e.createdAt).toLocaleTimeString()}`
+    : '—';
+
+  return (
+    <Section title="Health Connect audit">
+      <Text style={styles.note}>
+        Android local audit only — source-state metadata, not raw health values.
+      </Text>
+      <Row label="Events" value={String(hcEvents.length)} />
+      <Row label="Latest" value={fmt(latest)} />
+      <Row label="Visibility" value={fmt(latestVisible)} />
+      <Row label="Permission" value={fmt(latestPermission)} />
+      <Row label="Sync" value={fmt(latestSync)} />
+      <Row label="Missing metrics" value={fmt(latestMissing)} />
+      {latestSync?.availableFields && latestSync.availableFields.length > 0 && (
+        <Row label="Available fields" value={latestSync.availableFields.join(', ')} />
+      )}
+      {latestMissing?.missingFields && latestMissing.missingFields.length > 0 && (
+        <Row label="Missing fields" value={latestMissing.missingFields.join(', ')} />
+      )}
     </Section>
   );
 }

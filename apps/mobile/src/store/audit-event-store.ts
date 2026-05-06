@@ -76,6 +76,8 @@ export interface AuditEvent {
   lastSyncedAt?: string | null;
   availableFields?: string[];
   missingFields?: string[];
+  normalizedDays?: number | null;
+  recordCountTotal?: number | null;
   staleReason?: string | null;
   userVisibleMessage?: string | null;
   developerMessage?: string | null;

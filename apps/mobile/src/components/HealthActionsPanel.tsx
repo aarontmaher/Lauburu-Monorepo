@@ -58,6 +58,74 @@ const ENABLE_WHOOP_FILE_PICKER = process.env.EXPO_PUBLIC_ENABLE_WHOOP_FILE_PICKE
 type WhoopCsvCache = { imported: boolean; totalRowsIngested?: number; updatedAt: string };
 type WhoopUploadTrace = { at: string; step: string; detail?: string };
 
+const HEALTH_CONNECT_AUDIT_FIELDS = [
+  ['restingHr', 'resting_heart_rate'],
+  ['hrv', 'hrv'],
+  ['steps', 'steps'],
+  ['activeCal', 'active_calories'],
+  ['heartRate', 'heart_rate_samples'],
+  ['workouts', 'workouts'],
+  ['sleep', 'sleep'],
+] as const;
+
+function buildHealthConnectSyncAuditSnapshot() {
+  const store: any = useHealthStore.getState();
+  const diag = store?.lastSyncDiagnostics ?? null;
+  const counts = diag?.recordCounts ?? {};
+  const availableFields: string[] = [];
+  const missingFields: string[] = [];
+  let recordCountTotal = 0;
+
+  for (const [key, label] of HEALTH_CONNECT_AUDIT_FIELDS) {
+    const value = counts?.[key];
+    const n = typeof value === 'number' && Number.isFinite(value) ? value : 0;
+    recordCountTotal += n;
+    if (n > 0) availableFields.push(label);
+    else missingFields.push(label);
+  }
+
+  const error = typeof store?.error === 'string' && store.error.trim().length > 0
+    ? store.error.trim()
+    : null;
+
+  return {
+    error,
+    normalizedDays: typeof diag?.normalizedDays === 'number' ? diag.normalizedDays : null,
+    recordCountTotal,
+    availableFields,
+    missingFields,
+  };
+}
+
+function addHealthConnectAuditEvent(input: {
+  eventType: 'sync_succeeded' | 'sync_failed' | 'missing_metrics';
+  severity: 'info' | 'warning' | 'error';
+  userVisibleMessage?: string;
+  developerMessage?: string | null;
+}) {
+  try {
+    const snap = buildHealthConnectSyncAuditSnapshot();
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const aud = require('../store/audit-event-store');
+    aud?.useAuditEventStore?.getState?.()?.add?.({
+      platform: 'android',
+      appVersion: Application.nativeApplicationVersion ?? null,
+      buildNumber: Application.nativeBuildVersion ?? null,
+      screen: '(tabs)/health',
+      eventType: input.eventType,
+      severity: input.severity,
+      sourceId: 'health_connect',
+      syncMode: 'live_sync',
+      availableFields: snap.availableFields,
+      missingFields: snap.missingFields,
+      normalizedDays: snap.normalizedDays,
+      recordCountTotal: snap.recordCountTotal,
+      userVisibleMessage: input.userVisibleMessage,
+      developerMessage: input.developerMessage ?? snap.error,
+    });
+  } catch { /* non-fatal */ }
+}
+
 /**
  * Append a single breadcrumb to local storage so that if the next
  * upload attempt crashes the JS bundle, the in-app diagnostics panel
@@ -647,21 +715,32 @@ function Body() {
         } catch { /* non-fatal */ }
         try {
           await syncData(user.id);
-          try {
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            const aud = require('../store/audit-event-store');
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            const App = require('expo-application');
-            aud?.useAuditEventStore?.getState?.()?.add?.({
-              platform: 'android',
-              appVersion: App?.nativeApplicationVersion ?? null,
-              buildNumber: App?.nativeBuildVersion ?? null,
-              screen: '(tabs)/health',
+          const snap = buildHealthConnectSyncAuditSnapshot();
+          if (snap.error) {
+            addHealthConnectAuditEvent({
+              eventType: 'sync_failed',
+              severity: 'error',
+              userVisibleMessage: 'Health Connect sync failed.',
+              developerMessage: snap.error,
+            });
+          } else {
+            addHealthConnectAuditEvent({
               eventType: 'sync_succeeded',
               severity: 'info',
-              sourceId: 'health_connect',
+              userVisibleMessage: snap.recordCountTotal > 0
+                ? `Health Connect sync succeeded with ${snap.normalizedDays ?? 0} normalized days.`
+                : 'Health Connect sync completed with no recent records.',
             });
-          } catch { /* non-fatal */ }
+            if (snap.missingFields.length > 0) {
+              addHealthConnectAuditEvent({
+                eventType: 'missing_metrics',
+                severity: snap.availableFields.length > 0 ? 'warning' : 'info',
+                userVisibleMessage: snap.availableFields.length > 0
+                  ? `Health Connect missing: ${snap.missingFields.join(', ')}.`
+                  : 'Health Connect returned no recent records.',
+              });
+            }
+          }
         } catch (e: any) {
           try {
             // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -727,21 +806,32 @@ function Body() {
         return;
       }
       await syncData(user.id);
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const aud = require('../store/audit-event-store');
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const App = require('expo-application');
-        aud?.useAuditEventStore?.getState?.()?.add?.({
-          platform: 'android',
-          appVersion: App?.nativeApplicationVersion ?? null,
-          buildNumber: App?.nativeBuildVersion ?? null,
-          screen: '(tabs)/health',
+      const snap = buildHealthConnectSyncAuditSnapshot();
+      if (snap.error) {
+        addHealthConnectAuditEvent({
+          eventType: 'sync_failed',
+          severity: 'error',
+          userVisibleMessage: 'Health Connect sync failed.',
+          developerMessage: snap.error,
+        });
+      } else {
+        addHealthConnectAuditEvent({
           eventType: 'sync_succeeded',
           severity: 'info',
-          sourceId: 'health_connect',
+          userVisibleMessage: snap.recordCountTotal > 0
+            ? `Health Connect sync succeeded with ${snap.normalizedDays ?? 0} normalized days.`
+            : 'Health Connect sync completed with no recent records.',
         });
-      } catch { /* non-fatal */ }
+        if (snap.missingFields.length > 0) {
+          addHealthConnectAuditEvent({
+            eventType: 'missing_metrics',
+            severity: snap.availableFields.length > 0 ? 'warning' : 'info',
+            userVisibleMessage: snap.availableFields.length > 0
+              ? `Health Connect missing: ${snap.missingFields.join(', ')}.`
+              : 'Health Connect returned no recent records.',
+          });
+        }
+      }
       try {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const hs = require('../store/health-store');
