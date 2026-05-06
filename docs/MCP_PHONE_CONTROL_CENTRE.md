@@ -84,16 +84,70 @@ To point the next mobile build at the Worker (no version bump
 required — env-only):
 
 ```
-EXPO_PUBLIC_MCP_BASE_URL=https://lauburu-mcp-preview.lauburu-aaron.workers.dev/api
+EXPO_PUBLIC_MCP_BASE_URL=https://lauburu-mcp-preview.lauburu-aaron.workers.dev
 ```
 
-The trailing `/api` is required — the mobile client's path
-constructor produces e.g. `${baseUrl}/work_status`, and the
-Worker's allowlist serves under the `/api/*` prefix.
+The mobile `connectorApiBase()` helper auto-appends `/api` if
+the env value doesn't already end with it, so either form works
+(`…workers.dev` or `…workers.dev/api`).
 
-The same admin token used today (`EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN`)
-is sent in the `x-athlete-memory-token` header. No new secret
-needed.
+The same admin token used today
+(`EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN`) is sent in the
+`x-athlete-memory-token` header. No new secret needed; the same
+value is also the Worker's `ATHLETE_MEMORY_API_TOKEN` secret.
+
+## Quick reference for ChatGPT / HTTP consumers
+
+The screenshot-free read path is **live**. Any HTTP client that
+sends the admin token in a custom header can read live Claude /
+Codex lane status, the latest handoff, the terminal summary log,
+and the build / work_status snapshots — no Termius screenshots.
+
+**Base URL:** `https://lauburu-mcp-preview.lauburu-aaron.workers.dev`
+
+**Auth header:** `x-athlete-memory-token: <ATHLETE_MEMORY_API_TOKEN>`
+(same value as the mobile app's `EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN`,
+also stored in Mac Keychain under the same name).
+
+**Live endpoints** (all `GET`, all admin-token-gated, all return
+JSON):
+
+| Path | Returns | Source |
+|---|---|---|
+| `/health` | public liveness + Worker meta | (no auth required) |
+| `/status` | public meta + endpoints listing | (no auth required) |
+| `/supabase/health` | adapter configured? PostgREST ping ok? | admin |
+| `/api/work_status` | `WorkStatus` (current priority, blocker, next action, repo state) | admin |
+| `/api/coder_lanes` | `CoderLanes` (one row per active lane: claude / codex etc) | admin |
+| `/api/build_status` | `BuildStatus` (Android + iOS release rows) | admin |
+| `/api/handoff` | `Handoff` (latest prompts, manual steps, doNotTouch, safeToBuild) | admin |
+| `/api/terminal_summary` | `TerminalSummary` (mark-agent-done log, ≤50 entries) | admin |
+
+Every admin response carries a `dataSource` field:
+
+- `{ source: 'supabase', table: 'connector_…' }` — live row
+  from Supabase.
+- `{ source: 'placeholder', reason, message, schemaRequired }` —
+  fallback. `reason` is one of:
+  - `env_missing` / `env_url_invalid` / `env_key_invalid` —
+    Worker secrets not (validly) set.
+  - `table_empty` — adapter is configured but the table has no
+    row matching the route's key. Routes still return
+    schema-shaped placeholders so consumers don't have to
+    branch.
+
+A `403 Forbidden admin access.` response means the
+`x-athlete-memory-token` header is missing or wrong. A `404 Route
+not found.` means the path isn't on the allowlist (every other
+path on the host returns 404).
+
+Schemas live in
+`chat-app/src/server/types/connector.ts` — TS interfaces are the
+canonical shape. The
+`chat-app/src/server/scripts/test-mcp-worker-live.ts` script (run
+via `npm run mcp:test:live` with `MCP_WORKER_URL` and
+`ATHLETE_MEMORY_TOKEN` in env) asserts every route's auth gate
+and the terminal_summary schema against the live Worker.
 
 ## Direct curl from phone / ChatGPT
 
@@ -134,44 +188,39 @@ A `403 Forbidden admin access.` response means the
 | `ATHLETE_MEMORY_API_TOKEN` Worker secret | LIVE |
 | Local tmux bridge (`scripts/bridge-snapshot-lanes.sh`) | LIVE — local artifacts always; Supabase upsert when env vars present |
 | Bridge → Supabase upsert | LIVE (env-gated) — hardcoded `connector_*` paths only, gated on `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` in env |
-| Worker → Supabase reads (5 fetch helpers, fallback path) | LIVE — code returns Supabase data when secrets set; placeholder otherwise |
-| `connector_*` Supabase tables | LIVE — applied via `supabase/migrations/0003_connector_status_tables.sql`; seeded with bridge artifacts |
-| `SUPABASE_URL` Worker secret | NOT YET — Aaron pastes via `wrangler secret put` |
-| `SUPABASE_SERVICE_ROLE_KEY` Worker secret | NOT YET — Aaron pastes via `wrangler secret put` |
+| Worker → Supabase reads (5 fetch helpers, fallback path) | LIVE — returns real Supabase data, placeholder + `table_empty` when row missing |
+| `connector_*` Supabase tables | LIVE — migration applied; all five tables seeded |
+| `SUPABASE_URL` Worker secret | LIVE |
+| `SUPABASE_SERVICE_ROLE_KEY` Worker secret | LIVE (`sb_secret_…` format accepted alongside legacy `eyJ…` JWTs) |
+| `/api/work_status` | LIVE — `dataSource.source = supabase` |
+| `/api/coder_lanes` | LIVE — `dataSource.source = supabase`, returns claude + codex bridge rows |
+| `/api/build_status` | LIVE — `dataSource.source = supabase` (seeded from latest paired build) |
+| `/api/handoff` | LIVE — `dataSource.source = supabase` |
+| `/api/terminal_summary` | LIVE — `dataSource.source = supabase` |
 | Mobile `EXPO_PUBLIC_MCP_BASE_URL` switch | LIVE in code (`apps/mobile/src/services/ai-backend-config.ts`); env-var unset in current released build |
 
-## Manual Supabase steps (final remaining)
+## Manual Supabase steps (DONE)
 
-Step 1 (apply the migration) is **DONE** — the five
-`connector_*` tables exist in project `rejalrfmievikabgsakf`,
-seeded with the current bridge snapshot. Only the two Worker
-secrets remain:
+All three steps are complete. Tables applied, all three Worker
+secrets installed, all five connector tables seeded, all five
+`/api/*` routes serving live Supabase data.
 
-1. ~~**Apply the migration.**~~ DONE.
-2. **Set the Worker secrets.** This is the single remaining
-   blocker for screenshot-free MCP reads.
-   ```sh
-   cd cloudflare-worker
-   npx wrangler secret put SUPABASE_URL --name lauburu-mcp-preview
-   # paste: https://rejalrfmievikabgsakf.supabase.co
-   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY --name lauburu-mcp-preview
-   # paste: service_role JWT from Supabase → Project Settings → API
-   npx wrangler deploy --env preview
-   ```
-3. **Verify.**
-   ```sh
-   curl -sS -H "x-athlete-memory-token: $TOKEN" "$MCP/supabase/health" | jq
-   # Expected: supabase.configured = true, supabase.ping.ok = true
-   curl -sS -H "x-athlete-memory-token: $TOKEN" "$MCP/api/coder_lanes" | jq '.dataSource.source'
-   # Expected: "supabase" (was "placeholder" before secrets)
-   ```
+The remaining work is operational, not gating:
 
-Until step 2 lands, the routes return
-`dataSource: { source: 'placeholder', schemaRequired: ... }`
-even though Supabase is fully populated — the Worker has no way
-to authenticate to Supabase without the service-role key. That
-is the only thing standing between today's state and full
-screenshot-free MCP reads.
+- **Mobile env flip.** Set `EXPO_PUBLIC_MCP_BASE_URL=https://lauburu-mcp-preview.lauburu-aaron.workers.dev`
+  in EAS env (or `.env.development` for dev builds) so the
+  next paired mobile build's Admin/Dev cards read from the
+  Worker instead of legacy Railway. The mobile client
+  auto-appends `/api`, so trailing-slash and `/api` are both
+  acceptable.
+- **Bridge cron.** Today the bridge runs on `npm run
+  bridge:snapshot` from the laptop. A future batch can
+  schedule it (cron / launchd / a small daemon) so coder_lanes
+  and terminal_summary refresh without manual invocation.
+- **Build_status writer.** `connector_build_status` was seeded
+  with the latest paired build's IDs as a one-time backfill.
+  A future batch should attach an upsert to the release
+  workflow so each build refreshes the row.
 
 ## Safety model (cross-reference)
 
