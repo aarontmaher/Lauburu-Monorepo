@@ -603,7 +603,7 @@ function ConsentSection() {
 
 const ALL_TIERS: Tier[] = ['free', 'low_cost', 'pro', 'ai_premium'];
 
-function TierSection() {
+function TierSection({ showDevTools }: { showDevTools: boolean }) {
   const effectiveTier = useTierStore((s) => s.effectiveTier());
   const devOverride = useTierStore((s) => s.devOverride);
   const setDevOverride = useTierStore((s) => s.setDevOverride);
@@ -674,30 +674,31 @@ function TierSection() {
         </View>
       )}
 
-      {/* Dev tier override */}
-      <View style={styles.devSection}>
-        <Text style={styles.devLabel}>Dev Override</Text>
-        <View style={styles.pillRow}>
-          <Pressable
-            style={[styles.pill, devOverride === null && styles.pillActive]}
-            onPress={() => setDevOverride(null)}>
-            <Text style={[styles.pillText, devOverride === null && styles.pillTextActive]}>
-              None
-            </Text>
-          </Pressable>
-          {ALL_TIERS.map((t) => (
+      {showDevTools && (
+        <View style={styles.devSection}>
+          <Text style={styles.devLabel}>Developer override</Text>
+          <View style={styles.pillRow}>
             <Pressable
-              key={t}
-              style={[styles.pill, devOverride === t && { borderColor: TIER_INFO[t].color, backgroundColor: TIER_INFO[t].color + '15' }]}
-              onPress={() => setDevOverride(t)}>
-              <Text
-                style={[styles.pillText, devOverride === t && { color: TIER_INFO[t].color, fontWeight: '600' }]}>
-                {TIER_INFO[t].label}
+              style={[styles.pill, devOverride === null && styles.pillActive]}
+              onPress={() => setDevOverride(null)}>
+              <Text style={[styles.pillText, devOverride === null && styles.pillTextActive]}>
+                None
               </Text>
             </Pressable>
-          ))}
+            {ALL_TIERS.map((t) => (
+              <Pressable
+                key={t}
+                style={[styles.pill, devOverride === t && { borderColor: TIER_INFO[t].color, backgroundColor: TIER_INFO[t].color + '15' }]}
+                onPress={() => setDevOverride(t)}>
+                <Text
+                  style={[styles.pillText, devOverride === t && { color: TIER_INFO[t].color, fontWeight: '600' }]}>
+                  {TIER_INFO[t].label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
         </View>
-      </View>
+      )}
     </>
   );
 }
@@ -711,6 +712,20 @@ function ReplayTourButton() {
     <Pressable style={styles.row} onPress={replay}>
       <Text style={styles.rowLabel}>Replay app tour</Text>
       <Text style={styles.rowValue}>Walk through all features</Text>
+    </Pressable>
+  );
+}
+
+function SupportFeedbackRow() {
+  const router = useRouter();
+  return (
+    <Pressable
+      style={styles.row}
+      onPress={() => router.push('/feedback')}
+      accessibilityRole="button"
+      accessibilityLabel="Open feedback tools">
+      <Text style={styles.rowLabel}>Feedback</Text>
+      <Text style={styles.rowValue}>Share what happened</Text>
     </Pressable>
   );
 }
@@ -782,7 +797,7 @@ export default function SettingsScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Subscription & Features</Text>
-        <TierSection />
+        <TierSection showDevTools={showDevTools} />
       </View>
 
       <View style={styles.section}>
@@ -791,7 +806,8 @@ export default function SettingsScreen() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Help</Text>
+        <Text style={styles.sectionTitle}>Support</Text>
+        <SupportFeedbackRow />
         <ReplayTourButton />
       </View>
 
