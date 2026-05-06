@@ -980,7 +980,7 @@ function Body() {
     (whoopState === 'partial' && !bodyLatestIsToday && !bodyLiveCycleEmpty);
   const summaryLine = (() => {
     const parts: string[] = [];
-    if (appleHealthConnected) parts.push('Apple Health');
+    if (appleHealthConnected) parts.push(Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect');
     if (bodyAwaiting) parts.push('WHOOP · awaiting latest cycle');
     else if (whoopState === 'connected') parts.push('WHOOP');
     else if (whoopState === 'partial') parts.push('WHOOP · partial');
@@ -1490,7 +1490,7 @@ function HealthSourceSheet(props: SheetProps) {
     return `synced ${Math.round(h / 24)}d ago`;
   };
 
-  const appleHealthMeta = appleHealthConnected
+  const nativeHealthMeta = appleHealthConnected
     ? `Default live health source · ${healthDays} day${healthDays === 1 ? '' : 's'} · ${ageLabel(healthLastSyncAt)}`
     : 'Default live health source · not connected yet';
 
@@ -1551,7 +1551,7 @@ function HealthSourceSheet(props: SheetProps) {
       name={isIos ? 'Apple Health' : 'Health Connect'}
       status={appleHealthConnected ? 'Connected' : 'Not connected'}
       statusColor={appleHealthConnected ? '#4ade80' : '#888'}
-      meta={appleHealthMeta}
+      meta={nativeHealthMeta}
       actions={appleHealthConnected ? (isIos ? [
         {
           label: busy === 'apple-sync' ? 'Syncing…' : 'Sync',

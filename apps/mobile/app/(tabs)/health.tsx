@@ -519,6 +519,7 @@ function BackendSyncCard() {
   const storeError = useHealthStore((s) => s.error);
   const authStatus = useAuthStore((s) => s.status);
   const canPersist = useTierStore((s) => s.can)('backend_persistence');
+  const nativeSourceLabel = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
   // Local in-progress state — flips true the instant the button is
   // pressed so the user gets immediate feedback. Previously we only
   // observed the health-store `persisting` flag, which doesn't flip
@@ -716,7 +717,7 @@ function BackendSyncCard() {
           <ActivityIndicator size="small" color="#d4e157" />
           <Text style={[styles.syncTimestamp, { color: '#d4e157' }]}>
             {saving === 'railway'
-              ? 'Saving Railway primary · pushing Apple Health days, nutrition, sessions…'
+              ? `Saving Railway primary · pushing ${nativeSourceLabel} days, nutrition, sessions…`
               : 'Saving Supabase mirror · attempting redundant backup…'}
           </Text>
         </View>
@@ -765,7 +766,7 @@ function BackendSyncCard() {
       {!saving && !lastPersistedAt && !pressResult && (
         <>
           <Text style={styles.syncTimestamp}>
-            {'Your Apple Health days, nutrition history, HIIT + training sessions, and the merged athlete-state snapshot already stream to the durable backend layer — they survive reinstall and feed long-term AI learning.'}
+            {`Your ${nativeSourceLabel} days, nutrition history, HIIT + training sessions, and the merged athlete-state snapshot already stream to the durable backend layer — they survive reinstall and feed long-term AI learning.`}
           </Text>
           <Text style={[styles.syncTimestamp, { opacity: 0.5 }]}>
             {'Tap Save long-term data to push a fresh local snapshot to Railway. The server dedupes by date so re-pushing is safe and never overwrites older history.'}
@@ -774,7 +775,7 @@ function BackendSyncCard() {
       )}
       {/* Supabase JWT algorithm mismatch is an admin-side blocker —
           surface it explicitly so the user knows no amount of tapping
-          will fix it until the dashboard knob flips. Apple Health →
+          will fix it until the dashboard knob flips. Native health →
           Coach still works via the Railway /ingest path regardless. */}
       {(() => {
         const err = (pressResult && !pressResult.supabase.ok ? (pressResult.supabase.error ?? '') : (storeError ?? '')) ?? '';
@@ -807,7 +808,7 @@ function BackendSyncCard() {
               3. Tap Save to Account again.
             </Text>
             <Text style={{ color: '#888', fontSize: 11, lineHeight: 14 }}>
-              Apple Health → Coach still works via the Railway /ingest pipeline regardless — this blocker only affects the direct-to-Supabase persist path.
+              {`${nativeSourceLabel} → Coach still works via the Railway /ingest pipeline regardless — this blocker only affects the direct-to-Supabase persist path.`}
             </Text>
           </View>
         );
@@ -1049,7 +1050,9 @@ export default function HealthScreen() {
 
         {isAvailable && !anyAuthorized && (
           <Text style={styles.connectNote}>
-            Tap Manage health sources above to connect. Lauburu appears in iOS Settings → Health → Data Access & Devices after you grant at least one metric.
+            {Platform.OS === 'ios'
+              ? 'Tap Manage health sources above to connect. Lauburu appears in iOS Settings → Health → Data Access & Devices after you grant at least one metric.'
+              : 'Tap Manage health sources above to connect. Health Connect will ask which metrics Lauburu can read.'}
           </Text>
         )}
 
