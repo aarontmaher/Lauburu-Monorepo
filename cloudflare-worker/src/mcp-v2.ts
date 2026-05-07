@@ -146,6 +146,114 @@ function adminGateError(): unknown {
   };
 }
 
+const TEXT_SECRET_PATTERNS: ReadonlyArray<RegExp> = [
+  /eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}/g,
+  /\bsk-[A-Za-z0-9_-]{16,}\b/g,
+  /\bgh[pousr]_[A-Za-z0-9]{20,}\b/g,
+  /\bwhsec_[A-Za-z0-9]{20,}\b/g,
+  /\bAKIA[0-9A-Z]{16}\b/g,
+  /\bsb_secret_[A-Za-z0-9_-]{20,}\b/g,
+];
+
+function redactText(value: unknown, cap = 1000): string | null {
+  if (typeof value !== 'string' || value.length === 0) return null;
+  let text = value.replace(/\s+/g, ' ').trim();
+  for (const pattern of TEXT_SECRET_PATTERNS) text = text.replace(pattern, '<redacted>');
+  return text.length > cap ? `${text.slice(0, Math.max(0, cap - 1)).trim()}…` : text;
+}
+
+function safeShortCommit(value: unknown): string | null {
+  return typeof value === 'string' && /^[0-9a-f]{7,12}$/.test(value) ? value : null;
+}
+
+function safeIso(value: unknown): string | null {
+  return typeof value === 'string' ? value : null;
+}
+
+function currentQaBuildTargets(qa: unknown): { iosBuildNumber: string | null; androidVersionCode: number | null; appVersion: string | null } {
+  if (!qa || typeof qa !== 'object') return { iosBuildNumber: '19', androidVersionCode: 18, appVersion: '0.1.0' };
+  const installed = (qa as { installedBuild?: unknown }).installedBuild;
+  if (!installed || typeof installed !== 'object') return { iosBuildNumber: '19', androidVersionCode: 18, appVersion: '0.1.0' };
+  const row = installed as { iosBuildNumber?: unknown; androidVersionCode?: unknown; appVersion?: unknown };
+  return {
+    iosBuildNumber: typeof row.iosBuildNumber === 'string' ? row.iosBuildNumber : '19',
+    androidVersionCode: typeof row.androidVersionCode === 'number' ? row.androidVersionCode : 18,
+    appVersion: typeof row.appVersion === 'string' ? row.appVersion : '0.1.0',
+  };
+}
+
+function sanitizeQaResult(qa: unknown, detail: 'public' | 'admin'): unknown | null {
+  if (!qa || typeof qa !== 'object') return null;
+  const row = qa as Record<string, unknown>;
+  const releaseGate = row.releaseGate && typeof row.releaseGate === 'object'
+    ? row.releaseGate as Record<string, unknown>
+    : {};
+  const installed = row.installedBuild && typeof row.installedBuild === 'object'
+    ? row.installedBuild as Record<string, unknown>
+    : {};
+  const repo = row.repo && typeof row.repo === 'object'
+    ? row.repo as Record<string, unknown>
+    : {};
+  const results = row.results && typeof row.results === 'object'
+    ? row.results as Record<string, unknown>
+    : {};
+  const evidence = row.evidence && typeof row.evidence === 'object'
+    ? row.evidence as Record<string, unknown>
+    : {};
+  const requiredFixes = Array.isArray(row.requiredFixes)
+    ? row.requiredFixes.map((item) => redactText(item, 180)).filter((item): item is string => !!item).slice(0, detail === 'admin' ? 20 : 5)
+    : [];
+  const base = {
+    schemaVersion: 1,
+    qaRunId: detail === 'admin' ? redactText(row.qaRunId, 80) : null,
+    sourceAgent: redactText(row.sourceAgent, 80),
+    createdAt: safeIso(row.createdAt),
+    updatedAt: safeIso(row.updatedAt),
+    status: typeof row.status === 'string' ? row.status : 'unknown',
+    gate: typeof row.gate === 'string' ? row.gate : 'general',
+    platform: typeof row.platform === 'string' ? row.platform : 'repo',
+    deviceName: detail === 'admin' ? redactText(row.deviceName, 120) : null,
+    installedBuild: {
+      iosBuildNumber: typeof installed.iosBuildNumber === 'string' ? installed.iosBuildNumber : null,
+      androidVersionCode: typeof installed.androidVersionCode === 'number' ? installed.androidVersionCode : null,
+      appVersion: typeof installed.appVersion === 'string' ? installed.appVersion : null,
+      channel: typeof installed.channel === 'string' ? installed.channel : null,
+      track: typeof installed.track === 'string' ? installed.track : null,
+    },
+    repo: {
+      branch: typeof repo.branch === 'string' ? repo.branch.slice(0, 80) : null,
+      shortHead: safeShortCommit(repo.shortHead),
+    },
+    results: {
+      healthManageSources: typeof results.healthManageSources === 'string' ? results.healthManageSources : 'not_tested',
+      androidHealthConnect: typeof results.androidHealthConnect === 'string' ? results.androidHealthConnect : 'not_tested',
+      iosAppleHealth: typeof results.iosAppleHealth === 'string' ? results.iosAppleHealth : 'not_tested',
+      grapplingReadiness: typeof results.grapplingReadiness === 'string' ? results.grapplingReadiness : 'not_tested',
+      adminControlCentre: typeof results.adminControlCentre === 'string' ? results.adminControlCentre : 'not_tested',
+      copyTruthfulness: typeof results.copyTruthfulness === 'string' ? results.copyTruthfulness : 'not_tested',
+      uiDensity: typeof results.uiDensity === 'string' ? results.uiDensity : 'not_tested',
+    },
+    releaseGate: {
+      newTestFlightAllowed: releaseGate.newTestFlightAllowed === true,
+      newAndroidBuildAllowed: releaseGate.newAndroidBuildAllowed === true,
+      reason: redactText(releaseGate.reason, 280) ?? 'No release gate reason recorded.',
+    },
+    requiredFixes,
+    publicSummary: redactText(row.publicSummary, 280),
+  };
+  if (detail === 'public') return { ...base, qaRunId: undefined, deviceName: undefined, publicSafe: true };
+  return {
+    ...base,
+    evidence: {
+      screenshotRefs: Array.isArray(evidence.screenshotRefs)
+        ? evidence.screenshotRefs.map((item) => redactText(item, 120)).filter((item): item is string => !!item).slice(0, 20)
+        : [],
+      notes: redactText(evidence.notes, 1000),
+    },
+    privateDetails: redactText(row.privateDetails, 1000),
+  };
+}
+
 // ── tool implementations: project.* ───────────────────────────────────
 
 async function buildProjectOverview(env: Env): Promise<unknown> {
@@ -731,6 +839,26 @@ async function buildQaLatestResult(env: Env): Promise<unknown> {
   };
 }
 
+async function buildQaListResults(env: Env): Promise<unknown> {
+  const latest = await buildQaLatestResult(env) as {
+    schemaVersion?: number;
+    generatedAt?: string;
+    source?: unknown;
+    freshness?: unknown;
+    latestQaGate?: unknown;
+  };
+  return {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    source: latest.source ?? 'placeholder',
+    freshness: latest.freshness,
+    results: latest.latestQaGate ? [latest.latestQaGate] : [],
+    resultCount: latest.latestQaGate ? 1 : 0,
+    note: 'Current bridge stores the latest Agent QA result only; historical QA result table is not enabled yet.',
+    publicPreview: true,
+  };
+}
+
 async function buildMobileAgentQaResult(env: Env): Promise<unknown> {
   const full = await buildMobileFullSingle(env, 'connector_handoff') as {
     payload?: { agentQaResult?: unknown } | null;
@@ -742,7 +870,91 @@ async function buildMobileAgentQaResult(env: Env): Promise<unknown> {
     generatedAt: new Date().toISOString(),
     source: full.source ?? 'placeholder',
     freshness: full.freshness,
-    payload: full.payload?.agentQaResult ?? null,
+    payload: sanitizeQaResult(full.payload?.agentQaResult ?? null, 'admin'),
+  };
+}
+
+async function buildReleaseGate(env: Env): Promise<unknown> {
+  const generatedAt = new Date().toISOString();
+  const adapter = getSupabaseAdapter(env);
+  if (!adapter.configured) {
+    return {
+      schemaVersion: 1,
+      generatedAt,
+      source: 'placeholder' as const,
+      freshness: computeFreshness(null, false),
+      current: { iosBuildNumber: null, androidVersionCode: null },
+      target: { iosBuildNumber: '19', androidVersionCode: 18, appVersion: '0.1.0' },
+      qaState: null,
+      buildAllowed: { ios: false, android: false },
+      reason: 'Supabase bridge is not configured.',
+      publicSafe: true,
+    };
+  }
+  const [build, handoff] = await Promise.all([
+    adapter.fetchSingleRowPayload('connector_build_status') as Promise<{
+      generatedAt?: string;
+      android?: { versionCode?: number | null; playStatus?: string | null; playTrack?: string | null };
+      ios?: { buildNumber?: string | null; testflightStatus?: string | null };
+    } | null>,
+    adapter.fetchSingleRowPayload('connector_handoff') as Promise<{ generatedAt?: string; agentQaResult?: unknown } | null>,
+  ]);
+  const latestQaGate = buildPublicQaGate(handoff?.agentQaResult ?? null) as {
+    status?: string;
+    gate?: string;
+    platform?: string;
+    freshness?: { isStale?: boolean; staleReason?: string };
+    releaseGate?: { newTestFlightAllowed?: boolean; newAndroidBuildAllowed?: boolean; reason?: string };
+  } | null;
+  const target = currentQaBuildTargets(handoff?.agentQaResult ?? null);
+  const updatedAt = typeof handoff?.generatedAt === 'string' ? handoff.generatedAt : typeof build?.generatedAt === 'string' ? build.generatedAt : null;
+  const reason = latestQaGate?.releaseGate?.reason ?? 'No Agent QA result is available; build gates remain blocked.';
+  return {
+    schemaVersion: 1,
+    generatedAt,
+    source: build || handoff ? ('supabase' as const) : ('placeholder' as const),
+    freshness: computeFreshness(updatedAt, true),
+    current: {
+      iosBuildNumber: typeof build?.ios?.buildNumber === 'string' ? build.ios.buildNumber : null,
+      iosStatus: typeof build?.ios?.testflightStatus === 'string' ? build.ios.testflightStatus : null,
+      androidVersionCode: typeof build?.android?.versionCode === 'number' ? build.android.versionCode : null,
+      androidStatus: typeof build?.android?.playStatus === 'string' ? build.android.playStatus : null,
+      androidTrack: typeof build?.android?.playTrack === 'string' ? build.android.playTrack : null,
+    },
+    target,
+    qaState: latestQaGate
+      ? {
+          status: latestQaGate.status ?? 'unknown',
+          gate: latestQaGate.gate ?? 'general',
+          platform: latestQaGate.platform ?? 'repo',
+          freshness: latestQaGate.freshness ?? null,
+        }
+      : null,
+    buildAllowed: {
+      ios: latestQaGate?.releaseGate?.newTestFlightAllowed === true,
+      android: latestQaGate?.releaseGate?.newAndroidBuildAllowed === true,
+    },
+    reason,
+    commands: {
+      iosQaBuild: 'cd apps/mobile && npx eas-cli build --platform ios --profile production',
+      iosSubmit: 'cd apps/mobile && npx eas-cli submit --platform ios --profile production --latest',
+      androidQaBuild: 'cd apps/mobile && npx eas-cli build --platform android --profile production --auto-submit',
+    },
+    publicSafe: true,
+  };
+}
+
+async function buildMobileBuildReadiness(env: Env): Promise<unknown> {
+  const gate = await buildReleaseGate(env);
+  const qa = await buildMobileAgentQaResult(env);
+  return {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    releaseGate: gate,
+    latestAgentQaResult: (qa as { payload?: unknown }).payload ?? null,
+    installedDeviceGateRule: 'repo_only/stale/blocked/fail/partial QA does not clear installed-device QA gates; pass must match target platform/build.',
+    safeToRunBuild: false,
+    safeToRunBuildReason: 'No EAS build may start until Agent confirms worthwhile installed-device testing and Aaron explicitly approves.',
   };
 }
 function pickWebsiteHandoffTime(payload: unknown): string | null {
@@ -799,9 +1011,72 @@ async function buildMobileFullSingle(env: Env, table: string): Promise<unknown> 
 }
 async function buildMobileCoderLanes(env: Env): Promise<unknown> {
   const adapter = getSupabaseAdapter(env);
-  if (!adapter.configured) return { lanes: [] };
-  const rows = await adapter.fetchCoderLaneRows();
-  return { schemaVersion: 1, generatedAt: new Date().toISOString(), lanes: (rows ?? []).map((r) => r.payload) };
+  const generatedAt = new Date().toISOString();
+  if (!adapter.configured) {
+    return {
+      schemaVersion: 1,
+      generatedAt,
+      source: 'placeholder' as const,
+      freshness: computeFreshness(null, false),
+      lanes: [],
+    };
+  }
+  const [rows, terminalEntries] = await Promise.all([
+    adapter.fetchCoderLaneRows(),
+    adapter.fetchTerminalEntries(50),
+  ]);
+  const latestTerminalByLane = new Map<string, {
+    summary?: unknown;
+    verification?: unknown;
+    nextAction?: unknown;
+    exitCode?: unknown;
+    at?: unknown;
+  }>();
+  for (const entry of (terminalEntries ?? []) as Array<Record<string, unknown>>) {
+    const laneId = typeof entry.laneId === 'string' ? entry.laneId : '';
+    if (laneId && !latestTerminalByLane.has(laneId)) latestTerminalByLane.set(laneId, entry);
+  }
+  const lanes = (rows ?? []).map((r) => {
+    const p = (r.payload ?? {}) as Record<string, unknown>;
+    const laneId = typeof p.laneId === 'string' ? p.laneId : r.lane_id;
+    const terminal = latestTerminalByLane.get(laneId) ?? null;
+    const verification = redactText(terminal?.verification, 500);
+    const exitCode = typeof terminal?.exitCode === 'number' ? terminal.exitCode : null;
+    const status = typeof p.status === 'string' ? p.status : 'unknown';
+    return {
+      agentId: laneId,
+      status,
+      taskBundle: redactText(p.currentPromptId ?? p.lastPromptId, 120),
+      taskSummary: redactText(p.lastSummary, 1200),
+      filesChangedSummary: Array.isArray(p.dirtyFiles) ? `${p.dirtyFiles.length} dirty file(s)` : '0 dirty file(s)',
+      testsRun: verification,
+      testResult: exitCode === 0
+        ? 'pass'
+        : exitCode === null
+          ? (verification ? 'reported' : 'unknown')
+          : 'fail',
+      blockers: status === 'blocked' ? redactText(p.lastSummary, 500) : null,
+      nextExactStep: redactText(p.nextPrompt ?? terminal?.nextAction, 500),
+      lastCommit: safeShortCommit(p.lastCommit),
+      updatedAt: safeIso(p.lastSeenAt),
+      terminalSummary: redactText(terminal?.summary, 800),
+      terminalUpdatedAt: safeIso(terminal?.at),
+      rawTerminalLogsWithheld: true,
+      dirtyFilePathsWithheld: true,
+    };
+  });
+  const updatedAt = lanes
+    .map((lane) => lane.updatedAt)
+    .filter((value): value is string => typeof value === 'string')
+    .sort()
+    .slice(-1)[0] ?? null;
+  return {
+    schemaVersion: 1,
+    generatedAt,
+    source: lanes.length > 0 ? ('supabase' as const) : ('placeholder' as const),
+    freshness: computeFreshness(updatedAt, true),
+    lanes,
+  };
 }
 async function buildMobileTerminalSummary(env: Env): Promise<unknown> {
   const adapter = getSupabaseAdapter(env);
@@ -1252,6 +1527,13 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     build: (env) => buildMobileFullSingle(env, 'connector_build_status'),
   },
   {
+    name: 'mobile.get_build_readiness',
+    description: 'Admin-gated release readiness drill-down: latest Agent QA result, release gate, target build commands, and why builds are or are not allowed.',
+    inputSchema: { type: 'object', properties: {}, required: [] },
+    auth: 'admin',
+    build: buildMobileBuildReadiness,
+  },
+  {
     name: 'mobile.get_handoff',
     description: 'Full Handoff payload (manualSteps text, doNotTouch, safeToBuild). Admin token required.',
     inputSchema: { type: 'object', properties: {}, required: [] },
@@ -1285,6 +1567,20 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
     build: buildQaLatestResult,
+  },
+  {
+    name: 'qa.list_results',
+    description: 'Public-safe Agent QA result list. Currently returns the latest bridge result only; historical storage is not enabled yet.',
+    inputSchema: { type: 'object', properties: {}, required: [] },
+    auth: 'public',
+    build: buildQaListResults,
+  },
+  {
+    name: 'release.get_gate',
+    description: 'Public-safe release gate detail: current installed build, target QA build, latest QA state, build-allowed booleans, and exact reason. No secrets or raw logs.',
+    inputSchema: { type: 'object', properties: {}, required: [] },
+    auth: 'public',
+    build: buildReleaseGate,
   },
   {
     name: 'mobile.get_agent_qa_result',
@@ -1446,6 +1742,8 @@ export async function handleMcpV2Health(request: Request, env: Env): Promise<Res
       'integrations.get_overview',
       'handoff.get_latest',
       'qa.get_latest_result',
+      'qa.list_results',
+      'release.get_gate',
     ],
   });
 }

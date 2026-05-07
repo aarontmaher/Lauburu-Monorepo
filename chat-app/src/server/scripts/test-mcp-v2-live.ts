@@ -81,7 +81,7 @@ async function main(): Promise<void> {
   }
 
   // 3. Admin tools fail-soft without token.
-  const adminTools = ['mobile.get_control_centre', 'mobile.get_coder_lanes', 'mobile.get_terminal_summary', 'mobile.get_handoff', 'mobile.get_work_status', 'mobile.get_build_status'];
+  const adminTools = ['mobile.get_control_centre', 'mobile.get_coder_lanes', 'mobile.get_terminal_summary', 'mobile.get_handoff', 'mobile.get_work_status', 'mobile.get_build_status', 'mobile.get_build_readiness'];
   for (const name of adminTools) {
     const env = await rpc(v2, { jsonrpc: '2.0', id: 20, method: 'tools/call', params: { name } });
     assert(env.result?.isError === true, `${name} (no token) → isError true`);

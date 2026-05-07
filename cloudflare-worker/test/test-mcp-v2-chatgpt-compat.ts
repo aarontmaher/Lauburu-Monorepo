@@ -24,6 +24,8 @@ const REQUIRED_TOOLS = [
   'integrations.get_overview',
   'handoff.get_latest',
   'qa.get_latest_result',
+  'qa.list_results',
+  'release.get_gate',
 ] as const;
 
 const env = {} as any;
@@ -165,6 +167,24 @@ async function main(): Promise<void> {
     unauthBody.result?.content?.[0]?.text.includes('admin token required'),
     'unauthenticated write explains admin-token requirement',
   );
+
+  const releaseGate = await rpc({
+    jsonrpc: '2.0',
+    id: 'release.get_gate',
+    method: 'tools/call',
+    params: { name: 'release.get_gate', arguments: {} },
+  });
+  const releaseGateBody = await releaseGate.json() as { result?: { content?: Array<{ text: string }>; isError?: boolean } };
+  assert(releaseGateBody.result?.isError === false, 'release.get_gate is public-safe');
+  const releaseGatePayload = JSON.parse(releaseGateBody.result?.content?.[0]?.text ?? '{}') as {
+    buildAllowed?: { ios?: boolean; android?: boolean };
+    reason?: string;
+    publicSafe?: boolean;
+  };
+  assert(releaseGatePayload.publicSafe === true, 'release.get_gate marks publicSafe');
+  assert(releaseGatePayload.buildAllowed?.ios === false, 'release.get_gate blocks iOS without installed-device QA');
+  assert(releaseGatePayload.buildAllowed?.android === false, 'release.get_gate blocks Android without installed-device QA');
+  assert(/repo.only|No Agent QA|Supabase bridge/i.test(releaseGatePayload.reason ?? ''), 'release.get_gate explains blocked gate');
 
   const authedWrite = await rpcWithToken({
     jsonrpc: '2.0',
