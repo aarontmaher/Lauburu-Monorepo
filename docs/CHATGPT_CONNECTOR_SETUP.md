@@ -256,7 +256,125 @@ entries) but require the admin token. Use them from:
 
 Never paste these URLs into a public ChatGPT connector.
 
-## 7. Quick verification
+## 7. ChatGPT-shaped end-to-end verification
+
+Updated 2026-05-08 against
+`CLAUDE-CHATGPT-MCP-V2-ATTACHMENT-FIX-01`. Use this when the
+ChatGPT custom connector lists tools but tool calls fail or
+silently don't fire — these three curls reproduce exactly what
+ChatGPT sends, so if all three return clean payloads, the
+server is fine and the issue is on the client.
+
+```sh
+URL="https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2"
+
+# 1. initialize handshake (ChatGPT sends this first; Accept advertises both transports)
+curl -sS -X POST -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"chatgpt-test","version":"0.1"}}}' \
+  "$URL"
+# Expected: text/event-stream frame containing
+#   serverInfo.name = "lauburu-mcp-unified"
+#   serverInfo.version = "0.1.0"
+#   protocolVersion = "2025-03-26"
+#   capabilities.tools.listChanged = false
+
+# 2. tools/list (ChatGPT calls this immediately after initialize)
+curl -sS -X POST -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' "$URL" \
+  | sed 's/^event: message$//;s/^data: //' \
+  | jq '.result.tools | {count: length, namespaces: [.[].name | split(".")[0]] | unique}'
+# Expected: { "count": 43, "namespaces": ["handoff","integrations","mobile","project","update_work_status","website"] }
+
+# 3. tools/call public-safe (No Auth)
+curl -sS -X POST -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"project.get_current_state"}}' \
+  "$URL" \
+  | sed 's/^event: message$//;s/^data: //' \
+  | jq '.result.content[0].text | fromjson | {freshness: .freshness.staleReason, agents: [.agents[] | {id, status}]}'
+# Expected: { "freshness": "fresh", "agents": [{ "id": "claude", "status": ... }, { "id": "codex", "status": ... }] }
+```
+
+If all three return as expected, the **server invocation path
+works end-to-end**. ChatGPT-side failures are then almost
+certainly one of the three causes in § 2 plus the new § 8 tool-
+count cap below.
+
+### 7.1 Reference URLs
+
+| URL | What it is | Use? |
+|---|---|---|
+| `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2` | THIS codebase's unified MCP — 43 tools (project.* / mobile.* / integrations.* / handoff.* / website.* proxied) | **YES — the canonical ChatGPT URL** |
+| `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/public` | THIS codebase's legacy preview — 4 tools | yes, additive; safe to keep alongside |
+| `https://mcp.lauburugrapplingmap.com/mcp` | website project's MCP (`GrapplingMap System v1.27.0`) | only if you want website-project state directly; tool overlap with `website.*` proxy on /mcp/v2 |
+| `https://mcp.lauburugrapplingmap.com/mcp/v2` | **does NOT exist — returns 404** | NO — common mistake; the custom domain only hosts `/mcp` (no `/v2` path) |
+
+The `/mcp/v2` path lives ONLY on the workers.dev URL. The
+`mcp.lauburugrapplingmap.com` custom domain points at the
+website project's separate codebase and does not host `/mcp/v2`.
+
+## 8. Tool-count cap on the ChatGPT custom-connector form
+
+ChatGPT's custom-MCP connector currently surfaces **at most ~30
+tools** per connector inside a chat. The unified `/mcp/v2`
+exposes **43 tools** (project + mobile + integrations + handoff
++ website proxy). When the chat's selected tool list is over
+the cap, ChatGPT silently drops the tail — the connector still
+appears connected and the model "sees" tool names in some
+contexts, but tool invocation routes to "tool not found" or
+silently no-ops.
+
+### Working around the cap
+
+Two options, in order of preference:
+
+1. **One connector, prompt-targeted invocations.** Keep the
+   single `/mcp/v2` connector. In the chat's first message,
+   instruct ChatGPT explicitly which tool to call by name —
+   "Use the `project.get_current_state` tool from Lauburu MCP".
+   ChatGPT then resolves the call by tool name regardless of
+   how many tools are in the picker. This works for every tool
+   in the 43-tool list.
+
+2. **Two connectors, scoped surfaces.** Add the legacy
+   `/mcp/public` connector (4 tools) alongside `/mcp/v2`.
+   Beginner reads stay on `/mcp/public`; advanced reads
+   (`project.get_current_state`, lane status, build status,
+   handoff) on `/mcp/v2`. Distinct names so ChatGPT picks
+   cleanly:
+   - `Lauburu MCP (unified, /mcp/v2)`
+   - `Lauburu MCP (preview, 4 tools)`
+
+### Diagnosing the cap symptom
+
+The signature of this failure mode:
+
+- ChatGPT lists the connector in settings and the connector is
+  toggled on for the chat.
+- A `tools/list` curl from terminal (§ 7) returns 43 tools.
+- Inside ChatGPT, asking "what tools do you see from
+  Lauburu?" returns a partial list (often the first ~28-30).
+- Asking ChatGPT to call a tool **by name** that's beyond the
+  cap fails with "I don't have access to that tool" or silent
+  no-op.
+- Asking ChatGPT to call a tool **by name** that's within the
+  cap works.
+
+### Future fix path
+
+If the cap proves persistent, the right code change is to split
+`/mcp/v2` into two endpoints:
+
+- `/mcp/v2/lauburu` — project / mobile / integrations / handoff
+  (≤18 tools)
+- `/mcp/v2/website` — the proxied `website.*` set (≤25 tools)
+
+Each becomes its own ChatGPT connector with a tool count well
+under the cap. This is a Worker code change behind a separate
+FS-XXX candidate; not done in this commit.
+
+## 9. Quick verification (terminal one-liners)
 
 ```sh
 # Public-safe path:
