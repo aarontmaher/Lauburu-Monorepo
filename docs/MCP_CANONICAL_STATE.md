@@ -274,6 +274,108 @@ called the website MCP — that's the wrong server for THIS
 codebase's status. Use the other connector or rename them so
 ChatGPT picks correctly.
 
+## Tool inventory — public, admin, write-status (P1 spec-ready)
+
+The unified Worker MCP at
+`https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2`
+exposes a clean public/admin split. Updated 2026-05-07.
+
+### Public tools (No Auth)
+
+These are safe for any ChatGPT connector. They never expose
+prompt IDs, file paths, raw lane summaries longer than 140 char,
+or any personal health metric. The freshness envelope (added in
+commit `8a393b7`) is canonical: every tool that surfaces a
+timestamped row reports `{ updatedAt, ageMs, isStale,
+staleReason, windowMs }` with the same 10-min window. **Until
+that commit's worker redeploy ships,
+`mobile.get_*` / `handoff.get_latest` continue to return the
+pre-envelope shape; `project.get_current_state` already had
+the envelope and is the recommended public tool.**
+
+| Tool | Returns | First-call recommendation |
+|---|---|---|
+| `project.get_current_state` | composed priority/blocker/next/agents[]/freshness | **Yes** — primary public entry-point. |
+| `project.get_overview` | cross-project aggregates (mobile top priority + website pending count) | secondary cross-project view |
+| `project.get_work_status` | sanitised priority/blocker/next; subset of get_current_state | redundant with get_current_state |
+| `project.list_priorities` | top backlog item only | when you only want the headline backlog item |
+| `project.get_operating_rules` | the 11 operating rules with id/title/body | rule lookup |
+| `mobile.get_lane_overview` / `mobile.get_build_overview` / `mobile.get_repo_overview` | counts/aggregates only | when ChatGPT wants a count without admin token |
+| `handoff.get_latest` | composed across mobile + website, each entry tagged source | handoff feed |
+| `integrations.get_overview` | per-platform exposure spec (apple_health/health_connect/whoop_oauth/polar_oauth) | integration inventory |
+
+### Admin tools (require `x-athlete-memory-token` or `Authorization: Bearer`)
+
+The admin token is `ATHLETE_MEMORY_API_TOKEN` set via
+`wrangler secret put`. Same value is mirrored to the mobile
+app under `EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN` for the in-app
+admin/dev surface. **ChatGPT cannot present this token via the
+connector form today** — admin tools are reachable only from
+the laptop / mobile-app, not from a chat session.
+
+| Tool | Returns | Use |
+|---|---|---|
+| `mobile.get_control_centre` | full `/api/control_centre` snapshot incl. `operatingRules`, `lanes`, `manualSteps`, `topBacklog`, `dataSource` | local admin view |
+| `mobile.get_coder_lanes` | full lane payloads for claude / codex | lane diagnostic |
+| `mobile.get_work_status` | full WorkStatus payload (priority + blocker + liveStatus + repoStatus + nextAction) | full read |
+| `mobile.get_build_status` | Android + iOS release rows including IDs | build diagnostic |
+| `mobile.get_handoff` | full Handoff payload (manualSteps text, doNotTouch, safeToBuild) | full handoff read |
+| `mobile.get_terminal_summary` | up to 50 most recent terminal entries | terminal recall |
+
+### Write-status situation (the explicit answer)
+
+**Today: there is no MCP v2 write tool for any agent / coder
+status.** No `mobile.update_work_status`, no
+`update_lane_status`, no `set_handoff`, no equivalent on the
+public OR admin side. The full canonical-store write surface
+lives **outside the MCP**:
+
+| Writer | Surface | Auth | Notes |
+|---|---|---|---|
+| Bridge / coder script | direct Supabase write to `connector_*` tables | service role key | The intended canonical writer; runs from laptop. |
+| `Supabase` MCP `execute_sql` | direct SQL against `public.connector_*` rows | Supabase MCP credentials | What Claude / Codex / Aaron use today to refresh `currentPriority`, `nextAction`, lane `lastSeenAt`. Not a chat-from-ChatGPT path. |
+| Mobile app admin/dev cards | `POST /api/...` (admin token) | `x-athlete-memory-token` | Phone-side admin view; not ChatGPT-reachable. |
+| Website MCP `update_work_status` | the WEBSITE project's tables | website-side per-user auth | Rejects every `clientInfo` from this Worker (`role: 'none'`). Not patchable from this repo. |
+
+**Implication for Codex**: if Codex needs to mark its lane
+`needs_review` or post a lane summary, it does so via the
+Supabase MCP `execute_sql` tool against
+`public.connector_coder_lanes WHERE lane_id = 'codex'`, NOT
+via an MCP v2 write tool (none exists). When ChatGPT asks
+"can ChatGPT update Claude's status?" the answer is **no, not
+through MCP today** — the closest path is the Supabase MCP
+`execute_sql` tool if that connector is configured for
+ChatGPT.
+
+**Decision: do NOT add a public MCP write tool.** A public
+write tool would (a) need rate-limiting + spam protection we
+don't have today, (b) need a per-actor auth model the No-Auth
+public connector cannot offer, (c) duplicate the Supabase MCP
+which already does this with proper auth. The current admin
+gate + Supabase MCP path is correct. If ChatGPT-from-chat
+write capability is ever desired, it goes behind admin token
+under `mobile.update_work_status` / `mobile.update_lane`, NOT
+under the No-Auth surface.
+
+### Recommended ChatGPT connector URL
+
+For the live "what is Claude / Codex doing? what is the build
+state? what's pending?" question:
+
+```
+https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2
+```
+
+First call: `project.get_current_state`. Read
+`freshness.staleReason`. If `'fresh'`, trust the snapshot. If
+`'no_writeback'` or `'env_missing'`, treat as MCP stale, fall
+back to terminal / control-centre per rule 11, and continue
+fixing canonical sync as a priority.
+
+The legacy `/mcp/public` tool list (four tools) stays live until
+Phase 4 of `docs/UNIFIED_MCP_PLAN.md`. The `/mcp/v2` URL is
+strictly preferred for new connectors.
+
 ## Anti-rules
 
 - **No copying website-project handoff text into this codebase

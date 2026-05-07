@@ -359,6 +359,43 @@ EAS build cost control rule.
 | P3.6 | DEXA upload | planned (`DEXA_BLOOD_TEST_UPLOAD_PLAN.md`) |
 | P3.7 | Journal upload | planned |
 
+### 3.1 Per-source decision matrix
+
+For every source in § 1, the six fields the implementation
+team needs at a glance: current state / blocker / next step /
+what beginners must NOT see / what veterans MAY see /
+readiness-compute eligibility now / readiness-compute
+eligibility later. Sources stay listed in § 1 order.
+
+| § | Source | Current | Blocker | Next step | Beginner hides | Veteran sees | Readiness now | Readiness later |
+|---|---|---|---|---|---|---|---|---|
+| 1.1 | Apple Health (iOS hub) | live | — | tester verify on Aaron's iPhone (P0.1) | nothing | full per-metric truth labels | direct input under "synced from hub" | direct input |
+| 1.2 | Health Connect (Android hub) | live | — | tester verify on girlfriend's Android (P0.2) | nothing | full per-metric truth labels | direct input | direct input |
+| 1.3 | Polar via hub | live | — | label-propagation audit (P1.5) — never "Polar Direct" leakage | "Polar Direct" / "Polar live" labels | "Polar via Apple Health" provenance line | upstream of Apple Health / Health Connect; counted as hub | hub |
+| 1.4.a | WHOOP Direct (OAuth via CF Worker) | partial | Railway → CF Worker migration (FS-008) | Aaron approves FS-008 → migrate callback | the entire WHOOP card until P1.1 ships | "setup required" chip with one-click connect button | NOT eligible | eligible at `confidence: low` once 1.4.d clears |
+| 1.4.b | WHOOP API (vendor-native pull) | partial | tracks 1.4.a | flips on with 1.4.a | as 1.4.a | recovery / strain / sleep panels with `seed/provisional` chips for first 7 days | NOT eligible | eligible at `confidence: low` once 1.4.d clears |
+| 1.4.c | WHOOP raw export (CSV / zip) | app-side ready | — | tester-verify upload flow on iOS + Android | the upload card itself (advanced surface) | `manual_imports` upload button + provenance "imported summary" | NOT eligible (truth label `imported summary`) | NEVER eligible — provenance ≠ freshness |
+| 1.4.d | WHOOP seed / provisional window | defined | depends on 1.4.a/b | enforce in compute (Lane B, P2.4) | nothing — chip is visible to all | same chip, with explicit countdown to `live` | NOT eligible | eligible at `confidence: low` only |
+| 1.5 | Polar AccessLink | planned | AccessLink credentials + OAuth wiring | scope after FS-008 lands | the entire surface | nothing yet | NOT eligible | hub-equivalent input once shipped |
+| 1.6 | BLE HR sensor (HRS GATT 0x180D) | planned | native scaffold (Aaron approval gate) | follow `BLUETOOTH_MVP_SPEC.md` Phase 1 | the entire surface | scan-and-pair admin card | NEVER eligible — Train-session only | NEVER eligible |
+| 1.7 | Manual check-in / training log | live | — | Batch B/C extensions (P2.1/P2.2) | nothing | sliders + history | direct input (subjective bucket) | direct input |
+| 1.8 | Generic conditioning — hub | partial (hub live, file import planned) | FIT / TCX / CSV parser routing | scope file-import after P0/P1 | "Concept2 Direct" / "ErgZone Direct" / "Rogue Direct" labels | provenance label "ErgData via Health Connect" etc. | hub-routed (load bucket) | hub-routed |
+| 1.9 | Nutrition (manual + photo + targets) | live | — | tester verify P1.4 | macros breakdown / coaching language | macros breakdown + protein-target progress | NOT eligible (context only) | NEVER eligible — context only |
+| 1.10 | Cronometer / nutrition app | planned | hub onboarding flow + provenance label rendering polish | document hub-first contract | "Cronometer Direct" label | "Cronometer via Apple Health" provenance line | NOT eligible | NEVER eligible — hub feeds nutrition; nutrition is context |
+| 1.11 | Blood test uploads | planned | upload UI + redactor extension + threshold language audit | scope after P2 | the entire surface | quarterly upload entry + trend graph + "context only — not medical advice" caption | NEVER eligible | NEVER eligible — context only |
+| 1.12 | DEXA uploads | planned | as 1.11 | scope after P2 | the entire surface | quarterly upload entry | NEVER eligible | NEVER eligible — context only |
+| 1.13 | Journal uploads | planned | per-user storage + redactor extension on any MCP-bound field | scope after P2 | nothing — visible but optional | journal entries paired with session log | NEVER eligible | NEVER eligible — evidence only |
+
+Anti-rule: a source's "readiness later" column is **the
+maximum** the readiness compute may use, not the default. The
+default for every direct WHOOP-derived input is
+`confidence: low`. Promotion to `confidence: medium` requires
+an Aaron-tester confirmation line in `FEEDBACK_SUGGESTIONS.md`.
+`confidence: high` is reserved and never returned by the
+prototype until an explicit doc-commit promotion. Sources
+listed as "NEVER eligible" stay that way regardless of how
+much data has flowed.
+
 ## 4. Beginner vs veteran UX requirements
 
 The same data surface must serve two very different users:
@@ -503,6 +540,67 @@ without health-source regression. Acceptance:
 7. No EAS build dispatched solely to verify a readiness
    string. Bundled with at least one other meaningful mobile
    change.
+
+### 6.3 Smallest next implementation bundle + EAS gate
+
+Updated 2026-05-07 against the prompt
+`CLAUDE-HEALTH-MCP-UNBLOCK-P1-SPEC-READY-01`.
+
+**FS-008 status: BLOCKED on Aaron approval.** The full
+WHOOP OAuth migration — Railway → Cloudflare Worker callback,
+WHOOP client secret paste via `wrangler secret put`, WHOOP
+developer-console redirect URI update — needs Aaron's explicit
+approval before any code lands. Until that approval, FS-008
+is the wrong target. The next Codex batch must NOT touch any
+WHOOP OAuth wiring.
+
+**Smallest next Codex batch: § 7 Phase 1 mobile audit + small
+copy patches** (`PROMPT-ID:
+CODEX-HEALTH-NUTRITION-AUDIT-MOBILE-PHASE-1-LABELS-01`). Scope:
+audit existing health-tab UI strings + mobile services for
+truth-label compliance, propose ≤20 line/file copy patches,
+no React redesign, no Worker, no migration, no native rebuild,
+no version bump. Anchored to the canonical truth labels in
+this doc § 1 + `HEALTH_CONNECTIVITY_TRUTH_SPEC.md` § 3.
+
+This bundle is appropriate **now** because:
+- It does not depend on FS-008 (no WHOOP code path touched
+  beyond label hygiene).
+- It directly serves P0.1 / P0.2 / P0.3 (the per-platform
+  reliability gates that block everything else).
+- It produces no native code, so no EAS build is implied.
+- It requires no Aaron-side action other than reviewing the
+  audit list + approving any final copy patches.
+
+**EAS build gate** (extends rule 7 +
+`docs/BACKLOG_AUTOMATION_SYSTEM.md` § "EAS build cost control"):
+- Codex's most recent commit `c8e9f48 HealthNutrition:
+  simplify health tab daily flow` is **NOT** sufficient on its
+  own to justify a build. One UX simplification is too small a
+  delta to spend an EAS build slot.
+- The next EAS build dispatches **only** after ALL hold:
+  1. Phase 1 mobile audit completes with patches landed.
+  2. At least one other meaningful mobile bundle has shipped
+     to main alongside it (e.g. P1.5 Polar-via-hub label
+     propagation completing, or P0.3 hub-label leakage audit
+     closing).
+  3. Agent functional audit confirms the bundle is worthwhile
+     to test on-device (rule 7: "Agent confirms the change is
+     worthwhile to test on-device").
+  4. Aaron explicitly approves the build (rule 7: default is
+     no build).
+- Health-source phrasing fixes alone never trigger a build per
+  the do-not-promote rule (§ 5).
+
+**Aaron's pending decision points** (the prompt asks for
+these so they don't drift into Apple Notes — rule 10):
+1. Approve / defer FS-008 (WHOOP OAuth migration). Default
+   action: defer until Phase 1 audit completes.
+2. Approve / decline the Phase 1 audit batch dispatch to
+   Codex. Default action: approve — it is docs-and-copy only
+   and unblocks P0.
+3. After Phase 1 lands, approve / defer the next bundled EAS
+   build per the gate above.
 
 ## 7. Codex handoff prompt
 
