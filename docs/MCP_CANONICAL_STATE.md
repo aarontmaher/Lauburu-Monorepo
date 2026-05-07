@@ -175,6 +175,58 @@ unified MCP has equivalent authenticated WHOOP tools, secure
 credential handling, live tests, and a confirmed audit showing
 no remaining unique functionality.
 
+## Why "stale" really means "empty store + no patch path"
+
+A second probe (2026-05-07) confirmed the precise reason the
+website MCP looks "stale" for this codebase's questions, and
+why no code change in this repo can fix it:
+
+1. **Website MCP `get_work_status` data is empty, not old.**
+   The full response is null/idle for every agent it tracks:
+   ```jsonc
+   {
+     "schema_version": 1,
+     "agents": {
+       "claude_chat":  { "task": null, "status": "idle", "branch": null, "commit": null, "summary": null, "updated_at": null },
+       "claude_code":  { "task": null, "status": "idle", "branch": null, "commit": null, "summary": null, "updated_at": null },
+       "codex":        { "task": null, "status": "idle", "branch": null, "commit": null, "summary": null, "updated_at": null },
+       "chatgpt":      { "task": null, "status": "idle", "branch": null, "commit": null, "summary": null, "updated_at": null },
+       "cowork":       { "task": null, "status": "idle", "branch": null, "commit": null, "summary": null, "updated_at": null }
+     },
+     "updated_at": null
+   }
+   ```
+   This is **the website project's accurate state** — nobody
+   has been writing to its `update_work_status` queue. Not a
+   stale cache, not a regression; just an empty data store on
+   a project where nobody is currently coding.
+
+2. **The website MCP rejects every proxy write attempt.**
+   Three different `clientInfo.name` identities (`owner-aaron`,
+   `lauburu-mobile-bridge`, `claude-code`) all returned the
+   same response from `update_work_status`:
+   `{ ok: false, error: 'unauthorized', role: 'none' }`. The
+   write gate is not on `clientInfo`; it is on something the
+   v2 proxy can't synthesise (per-user ChatGPT account context
+   or a server-side allowlist that doesn't include our
+   proxy). There is **no patchable auth path** from this
+   repo.
+
+3. **Therefore the only fix is the connector switch + the new
+   `project.get_current_state` tool already shipped at /mcp/v2
+   (commit `d1292e5`).** Modifying the website MCP would
+   require commits in a different repository owned by the
+   website project. That is intentionally out of scope; the
+   two projects keep their data lifecycles separate per § "Do
+   NOT sync state between the two".
+
+If a chat needs both views side-by-side, ChatGPT can be
+configured with both connectors (Lauburu MCP unified +
+GrapplingMap MCP website). Each tool answer carries the
+`source` discriminator (`source: 'mobile'` vs
+`source: 'website'`) on our `/mcp/v2` proxy responses, so the
+chat doesn't have to guess which project a status came from.
+
 ## Read-only audit snapshot — 2026-05-07
 
 Verified live / local facts:
