@@ -54,6 +54,8 @@ from datetime import datetime, timezone
 ROOT = sys.argv[1]
 OUT_DIR = os.path.join(ROOT, "data", "agent-status", "lanes")
 os.makedirs(OUT_DIR, exist_ok=True)
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
+from bridge_snapshot_classifier import detect_status, summarize_pane  # noqa: E402
 
 # ── Lane → tmux session map ────────────────────────────────────────────
 # Adding a new lane requires adding the LaneId to:
@@ -169,54 +171,6 @@ def as_clean_str(value, cap, fallback=""):
 
 def as_bool(value):
     return value is True
-
-# ── Lane-status detection ladder ──────────────────────────────────────
-SHELL_PROMPT_RE = re.compile(r"(?:\$|%|>|#|❯)\s*$")
-BLOCKED_RE = re.compile(
-    r"BLOCK(?:ED|ER):|cannot continue|please clarify|awaiting owner",
-    re.IGNORECASE,
-)
-NEEDS_USER_RE = re.compile(
-    r"NEEDS_USER:|awaiting input|confirm before proceeding",
-    re.IGNORECASE,
-)
-NEEDS_REVIEW_RE = re.compile(
-    r"NEEDS_REVIEW:|please review|awaiting audit",
-    re.IGNORECASE,
-)
-DONE_HINT_RE = re.compile(
-    r"\b(done|complete|completed|landed|merged)\b",
-    re.IGNORECASE,
-)
-
-def is_shell_prompt(line):
-    if not line:
-        return True
-    stripped = line.rstrip()
-    if not stripped:
-        return True
-    return bool(SHELL_PROMPT_RE.search(stripped))
-
-def detect_status(pane_text, git_clean):
-    if not pane_text:
-        return "idle"
-    lines = pane_text.rstrip("\n").splitlines()
-    if not lines:
-        return "idle"
-    last = lines[-1]
-    last_30 = "\n".join(lines[-30:])
-    is_prompt = is_shell_prompt(last)
-    if is_prompt and BLOCKED_RE.search(last_30):
-        return "blocked"
-    if is_prompt and NEEDS_USER_RE.search(last_30):
-        return "needs_user"
-    if is_prompt and NEEDS_REVIEW_RE.search(last_30):
-        return "needs_review"
-    if is_prompt and DONE_HINT_RE.search(last_30) and git_clean:
-        return "done"
-    if not is_prompt:
-        return "working"
-    return "idle"
 
 # ── Subprocess helpers (fixed argv only) ──────────────────────────────
 def run(args, cwd=None, timeout=10):
@@ -485,8 +439,7 @@ for session, lane in SESSION_MAP:
 
     prompt_id = find_prompt_id(pane)
 
-    tail_lines = [l for l in pane.rstrip("\n").splitlines() if l.strip()]
-    summary_raw = "\n".join(tail_lines[-SUMMARY_TAIL_LINES:]) if tail_lines else ""
+    summary_raw = summarize_pane(pane, status, SUMMARY_TAIL_LINES) or ""
     summary = redact(summary_raw)
     summary = truncate(summary, CAP_SUMMARY)
 

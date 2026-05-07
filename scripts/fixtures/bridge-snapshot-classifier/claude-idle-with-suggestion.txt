@@ -1,0 +1,9 @@
+Tell me what you find on the simulator — happy to triage any
+single-screen failure into a focused Codex bundle (or fix-myself
+if it's worker/docs lane). The bundle is ready in Metro; only
+⌘R away.
+
+──────────────────────────────────────────
+❯
+──────────────────────────────────────────
+  ⏵⏵ bypass permissions on · 4 shells · esc to inte…

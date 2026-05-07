@@ -1,0 +1,13 @@
+Implemented the route smoke harness and verified all checks.
+
+Tests run:
+- node scripts/mobile-route-smoke.mjs --strict
+- npm run bridge:verify
+
+Tell me what you find on the simulator — happy to triage the next
+single-screen failure into a focused Codex bundle.
+
+──────────────────────────────────────────
+❯
+──────────────────────────────────────────
+  ⏵⏵ bypass permissions on · 4 shells · esc to inte…

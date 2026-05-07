@@ -1,0 +1,5 @@
+PROMPT-ID: CLAUDE-SIMULATOR-QA-UNBLOCK-M
+
+Need inspect current route state and test harness.
+
+✶ Prestidigitating… (thought for 11s)
