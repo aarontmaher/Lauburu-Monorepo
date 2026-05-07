@@ -91,6 +91,14 @@ complete" wording until Aaron tests or approves; and no EAS build
 unless Agent confirms a worthwhile on-device change and Aaron
 approves.
 
+Every copied prompt also carries the clear-steps / automate-first
+rule: when follow-up is required, give Aaron step-by-step
+instructions, automate safely before asking Aaron, use Claude /
+Codex / Agent before owner action, and separate output into
+`automated by coder/agent`, `manual Aaron step`, and `blocked until
+Aaron acts`. Aaron only handles secrets, approvals, logins, 2FA,
+vendor dashboards, and safety-sensitive confirmations.
+
 Done when: each template renders from the context and copies
 clean. Confirmed.
 

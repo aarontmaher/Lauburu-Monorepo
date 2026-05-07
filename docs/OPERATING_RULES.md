@@ -10,7 +10,10 @@ a tool exposed by the Worker MCP at
 new task, check the MCP / control-centre state. The other
 ten rules govern HOW the work is done; rule 11 governs WHEN
 to start it. **Rule 12** then governs WHO runs the laptop
-commands — coders do, Aaron approves from phone.
+commands — coders do, Aaron approves from phone. **Rule 13**
+then governs HOW required Aaron-facing steps are presented:
+clear steps first, automate before asking Aaron, and separate
+coder/agent automation from true manual owner action.
 
 This doc is the source of truth. The Worker constant in
 `cloudflare-worker/src/operating-rules.ts` is the **mirror** —
@@ -20,7 +23,7 @@ hash of the rule strings).
 
 Updated 2026-05-07.
 
-## The twelve rules
+## The thirteen rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -108,6 +111,17 @@ this file.
     confirmations, and pasting vendor secrets the one time
     they get rotated. Anything else asked of Aaron is a
     workflow bug — coder fixes the workflow.
+13. **Clear steps; automate first.** When something is required,
+    the worker MUST give Aaron clear step-by-step instructions
+    and automate the step whenever it is safe. Claude / Codex /
+    Agent should be used wherever possible before asking Aaron to
+    act. Aaron should only do secrets, approvals, logins, 2FA,
+    vendor dashboards, or safety-sensitive confirmations. Every
+    output that names follow-up work MUST separate: `automated by
+    coder/agent`, `manual Aaron step`, and `blocked until Aaron
+    acts`. No EAS build may be requested, recommended, prepared, or
+    triggered unless Agent confirms worthwhile on-device testing
+    and Aaron explicitly approves.
 
 ## Where to find each rule's full body
 
@@ -125,13 +139,14 @@ this file.
 | 10 | `docs/APP_DEVELOPMENTS.md` (top); `docs/BACKLOG_AUTOMATION_SYSTEM.md` § Source of truth |
 | 11 | `docs/MCP_CANONICAL_STATE.md` (canonical paths); `docs/MCP_PHONE_CONTROL_CENTRE.md` (curl examples); `docs/CHATGPT_CONNECTOR_SETUP.md` (recommended connector) |
 | 12 | `docs/PHONE_ONLY_AUTOMATION_PLAN.md` (workflow + remaining manual Aaron steps); `docs/CODER_LAPTOP_COMMANDS.md` (full command list + cadence) |
+| 13 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Clear steps; automate first"; `docs/PHONE_ONLY_AUTOMATION_PLAN.md` § "Remaining manual Aaron steps" |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..12], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..13], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.
@@ -147,7 +162,7 @@ integration test will flag.
   Lane-3 batch (`docs/BACKLOG_AUTOMATION_SYSTEM.md` § Lane 3)
   with Aaron's written approval.
 - **No surfacing the rules without ID.** Every rule has a
-  stable id 1..12; consumers reference rules by id, not by
+  stable id 1..13; consumers reference rules by id, not by
   string match.
 - **No moving rule text into private surfaces.** These rules
   are public-safe by design — they describe coder discipline,

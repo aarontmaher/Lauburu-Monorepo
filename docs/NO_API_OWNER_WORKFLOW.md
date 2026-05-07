@@ -50,6 +50,13 @@ keep coder lanes parallel and non-overlapping; use
 until Agent confirms; do not call work fully complete until Aaron
 has tested or approved it; and do not run EAS builds unless Agent
 has confirmed a worthwhile on-device change and Aaron approves.
+It also carries the clear-steps / automate-first rule: if a worker
+needs Aaron, it must first give exact step-by-step instructions,
+automate every safe part, and use Claude / Codex / Agent before
+asking Aaron. Outputs must split follow-up into `automated by
+coder/agent`, `manual Aaron step`, and `blocked until Aaron acts`.
+Aaron should only handle secrets, approvals, logins, 2FA, vendor
+dashboards, and safety-sensitive confirmations.
 
 Every generated prompt that mentions build, tester-build,
 TestFlight, Play Internal Testing, or EAS work must include this

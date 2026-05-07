@@ -204,6 +204,15 @@ gate, the distinction between implementation-complete and fully
 complete, and Aaron approval before any "done" / build-ready
 promotion.
 
+Prompt refs / handoff prompts must also preserve the clear-steps /
+automate-first rule. When follow-up is required, the worker gives
+Aaron exact step-by-step instructions, automates every safe step
+first, and uses Claude / Codex / Agent before asking Aaron. Outputs
+must separate `automated by coder/agent`, `manual Aaron step`, and
+`blocked until Aaron acts`. Aaron should only handle secrets,
+approvals, logins, 2FA, vendor dashboards, or safety-sensitive
+confirmations.
+
 Use status wording: `Implementation-complete, awaiting Agent
 functional confirmation`, `Agent-confirmed, ready for Aaron build
 approval`, `Aaron-approved for EAS build`, and

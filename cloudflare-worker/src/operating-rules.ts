@@ -7,7 +7,7 @@
  *
  * Edit policy: changing this constant requires a paired edit to
  * docs/OPERATING_RULES.md in the same commit. The live integration
- * test asserts count = 12 + each rule's id stays stable. Any
+ * test asserts count = 13 + each rule's id stays stable. Any
  * promotion / demotion / reorder is a Lane-3 batch with explicit
  * Aaron approval per docs/BACKLOG_AUTOMATION_SYSTEM.md § Lane 3.
  */
@@ -90,6 +90,12 @@ export const OPERATING_RULES: readonly OperatingRule[] = [
     title: 'Coders run all laptop commands; Aaron approves from phone',
     body:
       'Aaron\'s role is approval, not execution. Coders (Claude / Codex) run every laptop command in docs/CODER_LAPTOP_COMMANDS.md — npm run bridge:snapshot, npm run bridge:verify, cd cloudflare-worker && npx tsc --noEmit, cd cloudflare-worker && wrangler deploy, git add / git commit / git push, all live and contract tests. Aaron NEVER runs typecheck, deploy, bridge:snapshot, or git commands on a laptop. Bridge writeback cadence: after task start, after commit, after blocker, after handoff — the coder MUST run npm run bridge:snapshot (or project.update_work_status) so MCP doesn\'t drift to staleReason: \'no_writeback\'. Coder reports MUST include three explicit fields: MCP update attempted yes/no, bridge snapshot run yes/no, stale reason if blocked. The only steps that stay on Aaron are listed in docs/PHONE_ONLY_AUTOMATION_PLAN.md § 5: FS-XXX approval, EAS build approval, tester-device verification, vendor-console steps, judgement-call decisions, "I tested this on my phone" health-source confirmations, and pasting vendor secrets when they get rotated. Anything else asked of Aaron is a workflow bug — coder fixes the workflow.',
+  },
+  {
+    id: 13,
+    title: 'Clear steps; automate first',
+    body:
+      'When something is required, the worker MUST give Aaron clear step-by-step instructions and automate the step whenever it is safe. Claude / Codex / Agent should be used wherever possible before asking Aaron to act. Aaron should only do secrets, approvals, logins, 2FA, vendor dashboards, or safety-sensitive confirmations. Every output that names follow-up work MUST separate three sections: "automated by coder/agent", "manual Aaron step", and "blocked until Aaron acts". No EAS build may be requested, recommended, prepared, or triggered unless Agent confirms worthwhile on-device testing AND Aaron explicitly approves. Asking Aaron to run a laptop command that a coder can safely run is a workflow bug; the coder runs it, automates it, or reports the exact safety blocker.',
   },
 ] as const;
 

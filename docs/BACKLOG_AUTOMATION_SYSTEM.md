@@ -48,6 +48,27 @@ was needed. If MCP is stale, the worker must say "MCP stale", use
 the latest terminal / control-centre state as fallback, and keep
 MCP canonical sync as a priority.
 
+## Clear steps; automate first
+
+When a task requires follow-up, every worker must:
+
+1. Give Aaron clear step-by-step instructions.
+2. Automate the step whenever it is safe.
+3. Use Claude / Codex / Agent wherever possible before asking
+   Aaron to act.
+4. Leave Aaron only secrets, approvals, logins, 2FA, vendor
+   dashboards, or safety-sensitive confirmations.
+5. Separate every output into:
+   - `automated by coder/agent`
+   - `manual Aaron step`
+   - `blocked until Aaron acts`
+6. Keep the EAS build gate intact: no EAS build unless Agent
+   confirms worthwhile on-device testing and Aaron approves.
+
+Asking Aaron to run a laptop command that a coder can safely run is
+a workflow bug. The coder should either run it, automate it, or
+report the exact safety blocker.
+
 ## Three lanes
 
 ### Lane 1 — Safe autopilot (no confirmation)
@@ -128,6 +149,9 @@ or tester-build work must include: "Do not run EAS builds unless Agent has confi
 
 Every generated Claude / Codex / Agent / ChatGPT prompt must also
 include the MCP-first operating rule above before the task body.
+It must also include the clear-steps / automate-first rule: give
+Aaron step-by-step instructions when needed, automate safely before
+asking Aaron, and split output into automated / manual / blocked.
 
 Use these build-gate statuses:
 

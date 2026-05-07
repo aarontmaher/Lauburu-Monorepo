@@ -263,6 +263,15 @@ priority — they are the floor below every priority.
   build approval`, `Aaron-approved for EAS build`, and
   `Built/tester-ready`. Do not call mobile work `fully complete`
   until Aaron has tested or approved it.
+- **Clear steps; automate first.** When something is required,
+  coders / agents must give Aaron clear step-by-step instructions,
+  automate every safe part before asking him, and use Claude /
+  Codex / Agent wherever possible. Aaron should only handle secrets,
+  approvals, logins, 2FA, vendor dashboards, or safety-sensitive
+  confirmations. Every output must split follow-up into `automated by
+  coder/agent`, `manual Aaron step`, and `blocked until Aaron acts`.
+  No EAS build unless Agent confirms worthwhile on-device testing
+  and Aaron approves.
 - **Admin/Dev gating preserved.** No tester sees admin surfaces
   or owner-only FABs.
 - **No secrets / tokens in any committed file** — `.env*` are
