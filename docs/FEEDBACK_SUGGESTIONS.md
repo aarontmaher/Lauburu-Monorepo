@@ -127,7 +127,8 @@ that follows.
 
 | ID | Title | Category | Status | Notes |
 |---|---|---|---|---|
-| FS-019 | Native iPhone automation controls from TestFlight app, not Expo-only | mobile-native-automation | approved_active | Aaron iPhone app request. Add a native/TestFlight-safe mobile control-centre path so Aaron can view live MCP project state and trigger only safe approved automation/control-centre actions from the installed iPhone app. Admin-gated, no exposed secrets, clear live/stale/fallback labels. Top active mobile priority above P1/P2. |
+| FS-019 | Native iPhone automation controls from TestFlight app, not Expo-only | mobile-native-automation | approved_active | Aaron iPhone app request. Add a native/TestFlight-safe mobile control-centre path so Aaron can view live MCP project state and trigger only safe approved automation/control-centre actions from the installed iPhone app. Admin-gated, no exposed secrets, clear live/stale/fallback labels. Top active mobile priority above P1/P2. Spec at `docs/MOBILE_NATIVE_CONTROL_CENTRE_SPEC.md` (FS-019 sub-batches B-19a..g). |
+| FS-020 | Journal import + term normalization + macro ratio + personal insights (extends FS-018) | feature_idea | candidate | Per `docs/JOURNAL_IMPORT_NORMALIZE_INSIGHTS_SPEC.md`. Three new tables (`journal_term_normalizations` + `nutrition_daily_log` + `journal_imports`) + shared dictionary + research-snippets static files + 5-shape parser (Apple Notes / WHOOP CSV / Cronometer CSV / generic CSV / free-text) + term-confirmation modal + macro ratio derivation + 4-window pattern engine (same-day / next-day / rolling 3 / rolling 7) + DESIGN-ONLY cross-user aggregate (B-20h deferred). 8 sub-batches. NEVER causation claims; only `associated with`. `confidence: high` reserved. Lane 3 (DB + privacy). Codex handoff at § 11 (B-20a + B-20b paired). |
 | FS-001 | ChatGPT public MCP connector consistency | mcp | candidate | Tools list snapshotted at chat-start; some chats can't bind new tools. Diagnostic tool `get_public_mcp_health` shipped (commit `ce98f80`); doc `CHATGPT_CONNECTOR_SETUP.md` written. Active candidate scope: enforce a single canonical connector entry, document re-init steps, watch for ChatGPT-side regressions. |
 | FS-002 | Duplicate / stale ChatGPT connector cleanup | mcp | candidate | Cleanup table is in `CHATGPT_CONNECTOR_SETUP.md` § 4. Active candidate scope: Aaron walks his ChatGPT settings, deletes the listed duplicates, leaves exactly one entry pointing at `…/mcp/public` with No Auth. |
 | FS-003 | Admin/Dev iPhone first-screen control centre | admin_dev | candidate | Spec at `docs/CONTROL_CENTRE_MVP_SPEC.md` (commit `8d06042`). Active candidate scope: implement Phase 1 Worker route + Phase 3 mobile UI per the spec. Mobile UI is Codex's lane; Worker route is Claude's lane. No version bump. |
@@ -171,6 +172,7 @@ FS-016 | (awaiting Aaron approval)
 FS-017 | (awaiting Aaron approval)
 FS-018 | 2026-05-08 approved by Aaron — dispatched CODEX-CUSTOM-JOURNAL-V1-SCHEMA-AND-UI-01 to codex-lauburu pane
 FS-019 | approved_active 2026-05-08 Aaron — note: native iPhone/TestFlight automation controls are the top active mobile priority above P1/P2.
+FS-020 | (awaiting Aaron approval — extends FS-018; spec at docs/JOURNAL_IMPORT_NORMALIZE_INSIGHTS_SPEC.md; first dispatchable batch is B-20a + B-20b paired Worker dictionary + Supabase migration)
 ```
 
 When Aaron approves an item, the line becomes:
