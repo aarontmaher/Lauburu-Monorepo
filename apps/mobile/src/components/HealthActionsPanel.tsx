@@ -1078,6 +1078,7 @@ function Body() {
   const permissions = useHealthStore((s) => s.permissions);
   const healthDays = useHealthStore((s) => s.days.length);
   const healthLastSyncAt = useHealthStore((s) => s.lastSyncAt);
+  const healthError = useHealthStore((s) => s.error);
   const appleHealthConnected = healthDays > 0 && !!healthLastSyncAt;
   const nativeAnyAuthorized = permissions?.permissions
     ? Object.values(permissions.permissions).some((s) => s === 'authorized')
@@ -1153,6 +1154,7 @@ function Body() {
         appleHealthConnected={appleHealthConnected}
         healthDays={healthDays}
         healthLastSyncAt={healthLastSyncAt}
+        healthError={healthError}
         whoopState={whoopState}
         whoop={whoop}
         isWhoopConnected={isWhoopConnected}
@@ -1754,6 +1756,7 @@ interface SheetProps {
   appleHealthConnected: boolean;
   healthDays: number;
   healthLastSyncAt: string | null;
+  healthError: string | null;
   whoopState: string;
   whoop: WhoopStatus | null;
   isWhoopConnected: boolean;
@@ -1774,7 +1777,7 @@ interface SheetProps {
 function HealthSourceSheet(props: SheetProps) {
   const {
     visible, onClose, busy,
-    appleHealthConnected, healthDays, healthLastSyncAt,
+    appleHealthConnected, healthDays, healthLastSyncAt, healthError,
     whoopState, whoop, isWhoopConnected,
     onConnectAppleHealth, onSyncAppleHealth, onBackfillAppleHealth,
     onConnectHealthConnect, onSyncHealthConnect,
@@ -1862,16 +1865,24 @@ function HealthSourceSheet(props: SheetProps) {
       : nativeAnyAuthorized
         ? `${nativeHealthHubLabel} · permission granted, sync needed.${samsungHcHint}`
         : `${nativeHealthHubLabel} · not connected yet.${samsungHcHint}`;
-  const nativeHealthStatusLabel = appleHealthConnected
+  const nativeHealthSyncFailed = !!healthError && !(healthDays > 0 && healthLastSyncAt);
+  const nativeHealthPermissionNeeded = !nativeAnyAuthorized;
+  const nativeHealthStatusLabel = nativeHealthSyncFailed
+    ? 'Sync failed — retry'
+    : nativeHealthPermissionNeeded
+      ? 'Permission needed'
+      : appleHealthConnected
     ? 'Connected'
     : healthLastSyncAt
       ? 'Connected — no data'
-      : nativeAnyAuthorized
-        ? 'Sync needed'
-        : 'Not connected';
-  const nativeHealthStatusColor = appleHealthConnected
+      : 'Sync needed';
+  const nativeHealthStatusColor = nativeHealthSyncFailed
+    ? '#ff6b6b'
+    : nativeHealthPermissionNeeded
+      ? '#d4e157'
+      : appleHealthConnected
     ? '#4ade80'
-    : healthLastSyncAt || nativeAnyAuthorized
+    : healthLastSyncAt
       ? '#d4e157'
       : '#888';
 

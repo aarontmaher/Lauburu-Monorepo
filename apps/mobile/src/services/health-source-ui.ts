@@ -30,6 +30,8 @@ export type DirectIntegrationState =
   | 'awaiting_cycle'
   | 'stale'
   | 'reconnect_required'
+  | 'permission_needed'
+  | 'sync_failed'
   | 'setup_required'
   | 'not_connected'
   | 'unknown';
@@ -42,6 +44,8 @@ export function getWhoopDirectStateLabel(state: string, opts: { awaitingCycle?: 
   if (opts.awaitingCycle) return { label: 'WHOOP Direct awaiting cycle', state: 'awaiting_cycle' };
   if (state === 'connected') return { label: 'WHOOP Direct connected', state: 'connected' };
   if (state === 'partial') return { label: 'WHOOP Direct partial', state: 'partial' };
+  if (state === 'permission_needed') return { label: 'WHOOP Direct permission needed', state: 'permission_needed' };
+  if (state === 'sync_failed') return { label: 'WHOOP Direct sync failed', state: 'sync_failed' };
   if (state === 'error') return { label: 'WHOOP Direct reconnect needed', state: 'reconnect_required' };
   if (state === 'config_missing') return { label: 'WHOOP Direct setup needed', state: 'setup_required' };
   if (state === 'auth_required' || state === 'disconnected') return { label: 'WHOOP Direct not connected', state: 'not_connected' };

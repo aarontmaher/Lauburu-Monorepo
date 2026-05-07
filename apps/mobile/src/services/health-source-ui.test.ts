@@ -25,6 +25,8 @@ assertEqual(getNativeHealthSourceCopy('android').hubLabel, 'Health Connect hub d
 
 assertEqual(getWhoopDirectStateLabel('config_missing').label, 'WHOOP Direct setup needed', 'WHOOP setup label');
 assertEqual(getWhoopDirectStateLabel('connected').state, 'connected', 'WHOOP connected state');
+assertEqual(getWhoopDirectStateLabel('permission_needed').state, 'permission_needed', 'WHOOP permission-needed state');
+assertEqual(getWhoopDirectStateLabel('sync_failed').state, 'sync_failed', 'WHOOP sync-failed state');
 assertEqual(getWhoopDirectStateLabel('partial', { awaitingCycle: true }).label, 'WHOOP Direct awaiting cycle', 'WHOOP awaiting label');
 assertEqual(getPolarDirectStateLabel(false).label, 'Polar AccessLink planned', 'Polar planned label');
 
