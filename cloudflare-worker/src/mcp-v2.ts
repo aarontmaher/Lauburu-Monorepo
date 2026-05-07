@@ -716,9 +716,156 @@ async function proxyWebsiteToolsList(): Promise<Array<{ name: string; descriptio
 interface LocalToolEntry {
   name: string;
   description: string;
-  inputSchema: { type: 'object'; properties: Record<string, never>; required: string[] };
+  inputSchema: unknown;
   auth: 'public' | 'admin';
-  build: (env: Env) => Promise<unknown>;
+  build: (env: Env, args?: unknown) => Promise<unknown>;
+}
+
+const SECRET_PATTERNS = [
+  /eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}/g,
+  /\bsk-[A-Za-z0-9_-]{16,}\b/g,
+  /\bghp_[A-Za-z0-9]{20,}\b/g,
+  /\bgho_[A-Za-z0-9]{20,}\b/g,
+  /\bghs_[A-Za-z0-9]{20,}\b/g,
+  /\bwhsec_[A-Za-z0-9]{20,}\b/g,
+  /\bAKIA[0-9A-Z]{16}\b/g,
+  /\bxox[abprs]-[A-Za-z0-9-]{20,}/g,
+] as const;
+
+function sanitizeStatusText(value: unknown, cap: number): string | null {
+  if (typeof value !== 'string') return null;
+  let out = value.replace(/\s+/g, ' ').trim();
+  if (!out) return null;
+  for (const pattern of SECRET_PATTERNS) out = out.replace(pattern, '<redacted>');
+  return out.length > cap ? `${out.slice(0, cap - 1)}…` : out;
+}
+
+function parseWorkStatusArgs(args: unknown): {
+  agent: 'claude' | 'codex' | 'claude_chat' | 'chatgpt' | 'cowork';
+  laneStatus: 'idle' | 'working' | 'blocked' | 'needs_user' | 'needs_review' | 'done';
+  requestedStatus: string;
+  task: string;
+  summary: string | null;
+  branch: string | null;
+  commit: string | null;
+} | { error: string } {
+  const input = (args && typeof args === 'object') ? args as Record<string, unknown> : {};
+  const agentRaw = sanitizeStatusText(input.agent, 40);
+  const AGENTS = ['claude', 'codex', 'claude_chat', 'chatgpt', 'cowork'] as const;
+  const agentAlias: Record<string, typeof AGENTS[number]> = {
+    claude: 'claude',
+    codex: 'codex',
+    claude_chat: 'claude_chat',
+    'claude-code-guide': 'claude_chat',
+    chatgpt: 'chatgpt',
+    cowork: 'cowork',
+  };
+  const agent = agentRaw ? agentAlias[agentRaw] : undefined;
+  if (!agent || !(AGENTS as readonly string[]).includes(agent)) return { error: 'agent must be one of claude, codex, claude_chat, chatgpt, cowork' };
+
+  const task = sanitizeStatusText(input.task, 140);
+  if (!task) return { error: 'task is required' };
+  const requestedStatus = sanitizeStatusText(input.status, 80) ?? 'working';
+  const statusMap: Record<string, typeof LANE_STATUSES[number]> = {
+    idle: 'idle',
+    working: 'working',
+    in_progress: 'working',
+    blocked: 'blocked',
+    needs_user: 'needs_user',
+    needs_review: 'needs_review',
+    'implementation-complete-awaiting-agent-confirmation': 'needs_review',
+    done: 'done',
+  };
+  const laneStatus = statusMap[requestedStatus] ?? 'needs_review';
+  const summary = sanitizeStatusText(input.summary, 240);
+  const branchCandidate = sanitizeStatusText(input.branch, 80);
+  const branch = branchCandidate && /^[A-Za-z0-9._\-/]{1,80}$/.test(branchCandidate) ? branchCandidate : null;
+  const commitCandidate = sanitizeStatusText(input.commit, 12);
+  const commit = commitCandidate && /^[0-9a-f]{7,12}$/.test(commitCandidate) ? commitCandidate : null;
+  return { agent, laneStatus, requestedStatus, task, summary, branch, commit };
+}
+
+const LANE_STATUSES = ['idle', 'working', 'blocked', 'needs_user', 'needs_review', 'done'] as const;
+
+async function updateProjectWorkStatus(env: Env, args?: unknown): Promise<unknown> {
+  const adapter = getSupabaseAdapter(env);
+  const generatedAt = new Date().toISOString();
+  if (!adapter.configured) {
+    return {
+      schemaVersion: 1,
+      generatedAt,
+      ok: false,
+      error: adapter.reason,
+      message: 'Supabase writer env is not configured on this Worker.',
+    };
+  }
+  const parsed = parseWorkStatusArgs(args);
+  if ('error' in parsed) {
+    return { schemaVersion: 1, generatedAt, ok: false, error: parsed.error };
+  }
+
+  const lanePayload = {
+    laneId: parsed.agent,
+    status: parsed.laneStatus,
+    statusDetail: parsed.requestedStatus,
+    lastSeenAt: generatedAt,
+    currentPromptId: null,
+    lastPromptId: null,
+    lastSummary: parsed.summary ? `${parsed.task}. ${parsed.summary}` : parsed.task,
+    lastCommit: parsed.commit,
+    lastTypecheckResult: null,
+    dirtyFiles: [],
+    nextPrompt: null,
+  };
+  const workPayload = {
+    schemaVersion: 1,
+    generatedAt,
+    currentPriority: parsed.task,
+    currentBlocker: parsed.laneStatus === 'blocked' ? parsed.summary : null,
+    liveStatus: {
+      androidVersionCode: null,
+      iosBuildNumber: null,
+      androidPlayTrack: null,
+      iosTestflightGroup: null,
+      lastRailwayDeployAt: null,
+      cloudflareWorkerDeployed: true,
+    },
+    repoStatus: {
+      head: parsed.commit,
+      branch: parsed.branch ?? 'main',
+      dirtyFileCount: 0,
+      untrackedFileCount: 0,
+      lastCommitAt: generatedAt,
+      lastCommitMessage: parsed.summary ?? parsed.task,
+    },
+    nextAction: parsed.laneStatus === 'needs_review'
+      ? 'Agent functional re-audit next; no EAS build until Agent confirms and Aaron approves.'
+      : (parsed.summary ?? parsed.task),
+  };
+
+  const [workResult, laneResult] = await Promise.all([
+    adapter.upsertWorkStatus(workPayload, generatedAt),
+    adapter.upsertCoderLane(parsed.agent, lanePayload, generatedAt),
+  ]);
+  if (!workResult.ok || !laneResult.ok) {
+    return {
+      schemaVersion: 1,
+      generatedAt,
+      ok: false,
+      workStatus: workResult.ok ? 'ok' : `HTTP ${workResult.status}`,
+      coderLane: laneResult.ok ? 'ok' : `HTTP ${laneResult.status}`,
+    };
+  }
+  return {
+    schemaVersion: 1,
+    generatedAt,
+    ok: true,
+    agent: parsed.agent,
+    status: parsed.laneStatus,
+    statusDetail: parsed.requestedStatus,
+    task: parsed.task,
+    commit: parsed.commit,
+  };
 }
 
 const LOCAL_TOOLS: readonly LocalToolEntry[] = [
@@ -742,6 +889,42 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
     build: buildProjectWorkStatus,
+  },
+  {
+    name: 'project.update_work_status',
+    description: 'Admin-token-gated writeback for the mobile project work-status and coder-lane Supabase rows. Sanitizes text, maps implementation-complete-awaiting-agent-confirmation to needs_review, and never stores secrets.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        agent: { type: 'string', enum: ['claude', 'codex', 'claude_chat', 'chatgpt', 'cowork'] },
+        status: { type: 'string' },
+        task: { type: 'string' },
+        summary: { type: 'string' },
+        branch: { type: 'string' },
+        commit: { type: 'string' },
+      },
+      required: ['agent', 'status', 'task'],
+    },
+    auth: 'admin',
+    build: updateProjectWorkStatus,
+  },
+  {
+    name: 'update_work_status',
+    description: 'Compatibility alias for project.update_work_status. Admin token required.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        agent: { type: 'string' },
+        status: { type: 'string' },
+        task: { type: 'string' },
+        summary: { type: 'string' },
+        branch: { type: 'string' },
+        commit: { type: 'string' },
+      },
+      required: ['agent', 'status', 'task'],
+    },
+    auth: 'admin',
+    build: updateProjectWorkStatus,
   },
   {
     name: 'project.get_operating_rules',
@@ -867,7 +1050,7 @@ async function dispatchToolCall(env: Env, request: Request, name: string, args: 
   if (tool.auth === 'admin' && !tokenAuthorised(request, env)) {
     return adminGateError();
   }
-  const payload = await tool.build(env);
+  const payload = await tool.build(env, args);
   return {
     content: [{ type: 'text', text: JSON.stringify(payload, null, 2) }],
     isError: false,

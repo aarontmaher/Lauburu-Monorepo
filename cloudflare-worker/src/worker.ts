@@ -387,12 +387,12 @@ export default {
           'GET /handoff',
           'GET /automation-state',
           'GET /pending-suggestions',
-          'GET /api/work_status',
-          'GET /api/coder_lanes',
-          'GET /api/build_status',
-          'GET /api/handoff',
-          'GET /api/terminal_summary',
-          'GET /api/control_centre',
+          'GET /api/work_status (deprecated compatibility read; prefer POST /mcp/v2 project.get_work_status)',
+          'GET /api/coder_lanes (deprecated compatibility read; prefer POST /mcp/v2 mobile.get_coder_lanes)',
+          'GET /api/build_status (deprecated compatibility read; prefer POST /mcp/v2 mobile.get_build_status)',
+          'GET /api/handoff (deprecated compatibility read; prefer POST /mcp/v2 handoff.get_latest or mobile.get_handoff)',
+          'GET /api/terminal_summary (deprecated compatibility read; prefer POST /mcp/v2 mobile.get_terminal_summary)',
+          'GET /api/control_centre (deprecated compatibility read; prefer POST /mcp/v2 mobile.get_control_centre)',
         ],
       });
     }
@@ -509,9 +509,9 @@ export default {
     // Shape source of truth: chat-app/src/server/types/connector.ts.
     // Sanitisation: docs/CONNECTOR_SANITIZATION_RULES.md.
     //
-    // While Railway is suspended these four are the canonical
-    // connector surface; the mobile app + ChatGPT Connector both
-    // read from here.
+    // Deprecated compatibility reads. The canonical connector surface
+    // is /mcp/v2; these REST routes stay live until mobile and ChatGPT
+    // clients have completed cutover.
     if (request.method === 'GET' && path === '/api/work_status') {
       const auth = requireAdminToken(request, env);
       if (!auth.ok) return jsonResponse({ ok: false, error: auth.reason }, { status: 403 });

@@ -40,7 +40,6 @@ import { getWhoopCsvStatus, uploadWhoopCsv, uploadWhoopZip, clearWhoopCsv } from
 import { readStoredJson, writeStoredJson } from '../store/secure-storage';
 import { SafeErrorBoundary } from './SafeErrorBoundary';
 import { HealthConnectAvailabilityHint } from './HealthConnectAvailabilityHint';
-import { PolarDirectCard } from './IntegrationCards';
 import { parsePolarExport, type PolarSession } from '../../../../packages/shared/src/backend/services/polar/parse-polar-export';
 import {
   getNativeHealthSourceCopy,
@@ -2072,11 +2071,6 @@ function HealthSourceSheet(props: SheetProps) {
               <>
                 <Text style={styles.sheetSectionHeader}>Available to connect</Text>
                 {available}
-                <View style={styles.sheetInlineCard}>
-                  <SafeErrorBoundary label="Polar Direct card">
-                    <PolarDirectCard />
-                  </SafeErrorBoundary>
-                </View>
               </>
             )}
           </ScrollView>

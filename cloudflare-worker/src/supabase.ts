@@ -100,6 +100,17 @@ export interface SupabaseAdapter {
    *                       AND approval = 'pending'.
    */
   fetchSuggestionCounts(): Promise<{ candidate: number; awaitingApproval: number } | null>;
+  /**
+   * Upserts the single-row work-status envelope used by
+   * project.get_work_status / project.get_current_state.
+   */
+  upsertWorkStatus(payload: unknown, generatedAt: string): Promise<{ ok: true } | { ok: false; status: number; body: string }>;
+  /**
+   * Upserts one coder lane envelope. Lane IDs are validated by the
+   * caller before this method is reached; the adapter only writes to
+   * the hardcoded connector_coder_lanes table.
+   */
+  upsertCoderLane(laneId: string, payload: unknown, generatedAt: string): Promise<{ ok: true } | { ok: false; status: number; body: string }>;
 }
 
 /**
@@ -158,6 +169,23 @@ export function getSupabaseAdapter(env: Env): SupabaseAdapter | SupabaseUnavaila
       return (await res.json()) as T;
     } catch {
       return null;
+    }
+  }
+
+  async function safeUpsert(path: string, body: unknown): Promise<{ ok: true } | { ok: false; status: number; body: string }> {
+    try {
+      const res = await fetch(`${url}/rest/v1/${path}`, {
+        method: 'POST',
+        headers: {
+          ...headers,
+          Prefer: 'resolution=merge-duplicates,return=minimal',
+        },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) return { ok: true };
+      return { ok: false, status: res.status, body: (await res.text()).slice(0, 200) };
+    } catch (err) {
+      return { ok: false, status: 0, body: err instanceof Error ? err.message.slice(0, 200) : 'unknown error' };
     }
   }
 
@@ -228,6 +256,22 @@ export function getSupabaseAdapter(env: Env): SupabaseAdapter | SupabaseUnavaila
       );
       if (awaiting === null) return null;
       return { candidate: candidates.length, awaitingApproval: awaiting.length };
+    },
+    async upsertWorkStatus(payload: unknown, generatedAt: string) {
+      return safeUpsert('connector_work_status', [{
+        id: 'current',
+        generated_at: generatedAt,
+        source: 'mcp_v2',
+        payload,
+      }]);
+    },
+    async upsertCoderLane(laneId: string, payload: unknown, generatedAt: string) {
+      return safeUpsert('connector_coder_lanes', [{
+        lane_id: laneId,
+        generated_at: generatedAt,
+        source: 'mcp_v2',
+        payload,
+      }]);
     },
   };
 }

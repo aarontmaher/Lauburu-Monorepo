@@ -310,6 +310,42 @@ def load_terminal_entries():
     entries.sort(key=lambda e: e["at"], reverse=True)
     return entries[:50]
 
+def load_latest_agent_status():
+    """Return the newest mark-agent-done status row, sanitized.
+
+    This feeds connector_work_status so project.get_work_status reflects
+    the last meaningful lane update instead of a hardcoded bridge line.
+    """
+    rows = []
+    if not os.path.isdir(MARK_DONE_DIR):
+        return None
+    for name in sorted(os.listdir(MARK_DONE_DIR)):
+        if not name.endswith(".json"):
+            continue
+        path = os.path.join(MARK_DONE_DIR, name)
+        try:
+            with open(path) as f:
+                data = json.load(f)
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        updated_at = data.get("updatedAt")
+        task = data.get("task")
+        if not isinstance(updated_at, str) or not isinstance(task, str) or not task:
+            continue
+        rows.append({
+            "agent": str(data.get("agent") or name[:-5]),
+            "status": str(data.get("status") or "working"),
+            "task": redact(truncate(task, 280) or ""),
+            "summary": redact(truncate(str(data.get("summary") or ""), 200) or ""),
+            "verification": redact(truncate(str(data.get("verification") or ""), 200) or ""),
+            "nextAction": redact(truncate(str(data.get("nextAction") or ""), 280) or ""),
+            "updatedAt": updated_at,
+        })
+    rows.sort(key=lambda r: r["updatedAt"], reverse=True)
+    return rows[0] if rows else None
+
 # ── Build payload ─────────────────────────────────────────────────────
 CAP_SUMMARY = 1200
 SUMMARY_TAIL_LINES = 12
@@ -389,6 +425,7 @@ coder_lanes_payload = {
 
 # ── terminal_summary ──────────────────────────────────────────────────
 terminal_entries = load_terminal_entries()
+latest_agent_status = load_latest_agent_status()
 terminal_summary_payload = {
     "schemaVersion": 1,
     "generatedAt": now_iso,
@@ -554,11 +591,15 @@ def upsert_supabase():
     print("supabase: upserting to configured project")
 
     # work_status (single row, id='current').
+    current_priority = latest_agent_status["task"] if latest_agent_status else "MCP terminal bridge live; Worker reads Supabase."
+    next_action = latest_agent_status["nextAction"] if latest_agent_status and latest_agent_status["nextAction"] else "Owner-tap workflow dispatch when ready."
+    current_blocker = latest_agent_status["summary"] if latest_agent_status and latest_agent_status["status"] == "blocked" else None
+    last_commit_message = latest_agent_status["summary"] if latest_agent_status else ""
     work_status_payload = {
         "schemaVersion": 1,
         "generatedAt": now_iso,
-        "currentPriority": "MCP terminal bridge live; Worker reads Supabase.",
-        "currentBlocker": None,
+        "currentPriority": current_priority,
+        "currentBlocker": current_blocker,
         "liveStatus": {
             "androidVersionCode": None,
             "iosBuildNumber": None,
@@ -573,9 +614,9 @@ def upsert_supabase():
             "dirtyFileCount": len(dirty_files),
             "untrackedFileCount": 0,
             "lastCommitAt": now_iso,
-            "lastCommitMessage": "",
+            "lastCommitMessage": last_commit_message,
         },
-        "nextAction": "Owner-tap workflow dispatch when ready.",
+        "nextAction": next_action,
     }
     s, body = _supabase_request("POST", "connector_work_status", [{
         "id": "current",
