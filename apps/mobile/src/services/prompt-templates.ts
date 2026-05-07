@@ -65,10 +65,28 @@ function rules(ctx: OwnerWorkflowContext): string {
   return bulletise(merged);
 }
 
+function workflowRulesBlock(): string {
+  return [
+    'OPERATING RULES',
+    'Before starting the task, check MCP/control-centre state first:',
+    '1. get_work_status',
+    '2. list_pending_suggestions',
+    '3. get_automation_state',
+    '4. get_handoff',
+    '5. /api/control_centre if available',
+    'Then report: MCP state, freshness/staleness, chosen next task, and whether terminal/control-centre fallback was needed. If MCP is stale, say "MCP stale" and use latest terminal/control-centre state as fallback.',
+    'Keep coder lanes parallel and non-overlapping; do not edit another agent’s in-flight files.',
+    'Use status wording: "Implementation-complete, awaiting Agent functional confirmation" until Agent confirms. Do not call work fully complete until Aaron has tested or approved it.',
+    'Do not run EAS builds unless Agent has confirmed a worthwhile on-device change and Aaron approves.',
+  ].join('\n');
+}
+
 /** Claude Code (terminal CLI) — full implementation prompt. */
 export function buildClaudeCodePrompt(ctx: OwnerWorkflowContext): string {
   return [
     header('CLAUDE-CODE', ctx.selectedTaskBundle ?? 'Mobile owner workflow'),
+    '',
+    workflowRulesBlock(),
     '',
     'CURRENT PRIORITY',
     ctx.currentPriority || '(set in Admin/Dev → Now)',
@@ -111,6 +129,8 @@ export function buildClaudeChromePrompt(ctx: OwnerWorkflowContext): string {
   return [
     header('CLAUDE-CHROME', ctx.selectedTaskBundle ?? 'Owner workflow review'),
     '',
+    workflowRulesBlock(),
+    '',
     `CURRENT PRIORITY: ${ctx.currentPriority || '(unset)'}`,
     `CURRENT BLOCKER: ${ctx.currentBlocker || '(unset)'}`,
     '',
@@ -140,6 +160,8 @@ export function buildChatGPTStatusPrompt(ctx: OwnerWorkflowContext): string {
   return [
     header('CHATGPT-STATUS', ctx.selectedTaskBundle ?? 'Owner status check'),
     '',
+    workflowRulesBlock(),
+    '',
     `CURRENT PRIORITY: ${ctx.currentPriority || '(unset)'}`,
     `CURRENT BLOCKER: ${ctx.currentBlocker || '(unset)'}`,
     '',
@@ -164,6 +186,8 @@ export function buildChatGPTStatusPrompt(ctx: OwnerWorkflowContext): string {
 export function buildCodexPrompt(ctx: OwnerWorkflowContext): string {
   return [
     header('CODEX', ctx.selectedTaskBundle ?? 'Owner workflow code lane'),
+    '',
+    workflowRulesBlock(),
     '',
     `Repo root: ~/LauburuGrapplingMap-mobile (mobile-first, Expo SDK 54, TypeScript).`,
     '',
@@ -198,6 +222,8 @@ export function buildCodexPrompt(ctx: OwnerWorkflowContext): string {
 export function buildTerminalCheckPrompt(ctx: OwnerWorkflowContext): string {
   return [
     'Quick terminal check — paste into Claude Code on the laptop:',
+    '',
+    workflowRulesBlock(),
     '',
     '1. cd ~/LauburuGrapplingMap-mobile',
     '2. git status --short && git log --oneline -5',

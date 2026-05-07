@@ -31,6 +31,23 @@ Apple Notes is stale for planning. It remains a human scratchpad
 for rough thoughts only. A note does not become backlog until it
 is copied into the repo-backed flow or captured in Admin/Dev.
 
+## MCP-first operating rule
+
+Before starting any new task, every Claude / Codex / Agent /
+ChatGPT worker must check MCP / control-centre state first:
+
+1. `get_work_status`
+2. `list_pending_suggestions`
+3. `get_automation_state`
+4. `get_handoff`
+5. `/api/control_centre` if available
+
+The worker must then report the MCP state, freshness/staleness,
+chosen next task, and whether terminal / control-centre fallback
+was needed. If MCP is stale, the worker must say "MCP stale", use
+the latest terminal / control-centre state as fallback, and keep
+MCP canonical sync as a priority.
+
 ## Three lanes
 
 ### Lane 1 — Safe autopilot (no confirmation)
@@ -108,6 +125,9 @@ Use instead:
 
 Every generated Claude / Codex / Agent prompt that mentions build
 or tester-build work must include: "Do not run EAS builds unless Agent has confirmed a worthwhile on-device change and Aaron approves."
+
+Every generated Claude / Codex / Agent / ChatGPT prompt must also
+include the MCP-first operating rule above before the task body.
 
 Use these build-gate statuses:
 

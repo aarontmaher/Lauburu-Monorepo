@@ -76,6 +76,21 @@ ChatGPT status / Codex / terminal check) generated from a
 structured `OwnerWorkflowContext`. No paid LLM. Long-press to
 copy → paste into the runner of choice.
 
+Every copied prompt begins with the MCP-first operating rule:
+check `get_work_status`, `list_pending_suggestions`,
+`get_automation_state`, `get_handoff`, then `/api/control_centre`
+if available; report MCP state, freshness/staleness, chosen next
+task, and whether fallback terminal / control-centre state was
+needed. Stale MCP must be called out as "MCP stale" before using
+fallback state.
+
+The copied prompt also repeats the build/status guardrails: parallel
+non-overlapping coder lanes; `Implementation-complete, awaiting
+Agent functional confirmation` until Agent confirms; no "fully
+complete" wording until Aaron tests or approves; and no EAS build
+unless Agent confirms a worthwhile on-device change and Aaron
+approves.
+
 Done when: each template renders from the context and copies
 clean. Confirmed.
 

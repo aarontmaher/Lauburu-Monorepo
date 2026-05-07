@@ -37,6 +37,20 @@ The builders bake the standing non-negotiables into every prompt
 so Aaron doesn't have to re-state them — every generated prompt is
 self-contained and safe to paste cold into the chosen runner.
 
+Every generated prompt also starts with the MCP-first operating
+rule. The runner must check, in order: `get_work_status`,
+`list_pending_suggestions`, `get_automation_state`, `get_handoff`,
+and `/api/control_centre` if available. The runner must report MCP
+state, freshness/staleness, chosen next task, and whether fallback
+terminal / control-centre state was needed before doing work.
+
+The same operating block carries the build and workflow guardrails:
+keep coder lanes parallel and non-overlapping; use
+`Implementation-complete, awaiting Agent functional confirmation`
+until Agent confirms; do not call work fully complete until Aaron
+has tested or approved it; and do not run EAS builds unless Agent
+has confirmed a worthwhile on-device change and Aaron approves.
+
 Every generated prompt that mentions build, tester-build,
 TestFlight, Play Internal Testing, or EAS work must include this
 sentence verbatim: "Do not run EAS builds unless Agent has confirmed a worthwhile on-device change and Aaron approves."

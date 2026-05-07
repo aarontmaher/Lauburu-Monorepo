@@ -10,6 +10,15 @@ file changes, the next paired build picks it up — no live-fetch
 required yet (the long-term shape is the connector reading this
 via the MCP route layer once Supabase is wired).
 
+MCP-first operating rule: before any Claude / Codex / Agent /
+ChatGPT task starts, check `get_work_status`,
+`list_pending_suggestions`, `get_automation_state`, `get_handoff`,
+then `/api/control_centre` if available. Report MCP state,
+freshness/staleness, chosen next task, and whether fallback
+terminal / control-centre state was needed. If MCP is stale, say
+"MCP stale" and use latest terminal / control-centre state as
+fallback.
+
 Status language used below:
 
 | Tag | Meaning |

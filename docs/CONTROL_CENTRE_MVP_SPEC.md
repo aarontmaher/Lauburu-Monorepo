@@ -190,6 +190,20 @@ Prompt refs / handoff prompts that mention build work must include:
 "Do not run EAS builds unless Agent has confirmed a worthwhile
 on-device change and Aaron approves."
 
+All prompt refs / handoff prompts must include the MCP-first
+operating rule before the task body. Required order:
+`get_work_status`, `list_pending_suggestions`,
+`get_automation_state`, `get_handoff`, then `/api/control_centre`
+if available. The worker must report MCP state,
+freshness/staleness, chosen next task, and whether fallback
+terminal / control-centre state was needed.
+
+Prompt refs / handoff prompts must also preserve parallel
+non-overlapping coder lanes, the Agent functional confirmation
+gate, the distinction between implementation-complete and fully
+complete, and Aaron approval before any "done" / build-ready
+promotion.
+
 Use status wording: `Implementation-complete, awaiting Agent
 functional confirmation`, `Agent-confirmed, ready for Aaron build
 approval`, `Aaron-approved for EAS build`, and
