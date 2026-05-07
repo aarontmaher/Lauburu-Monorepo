@@ -25,7 +25,7 @@ Status language used below:
 |---|---|
 | **live** | Running in production / a deployed component (Worker, last released mobile build, etc.). |
 | **repo-only** | Code / docs are on `main` but not yet shipped via a tester build, deployment, or dashboard step. |
-| **tester-build** | Will ship to testers when the next paired Android v17 / iOS Build 18 dispatch goes (or whatever the next paired-build cadence is at the time). |
+| **tester-build** | Will ship to testers when the next paired Android v18 / iOS Build 19 dispatch goes. **Per 2026-05-08 directive: this build is installed-device QA only — TestFlight tester group + Play Internal Testing track. NOT a public release.** Numbers stay at current `app.json` values (no bump) until Aaron approves the next paired build after Android Health Connect + Grappling Readiness v1 are finished and Agent-confirmed. The `production` EAS submit profile's `ios.groups: ["Team (Expo)"]` already routes to the TestFlight tester group, not App Store public. |
 | **blocked** | Cannot move without a specific external action — Aaron's manual step, vendor processing window, or upstream dependency. |
 
 Updated 2026-05-07.
