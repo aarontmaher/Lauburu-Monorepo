@@ -39,6 +39,7 @@ import {
 } from '../src/store/owner-backlog-store';
 import { useOwnerWorkflowStore } from '../src/store/owner-workflow-store';
 import { useAuditEventStore } from '../src/store/audit-event-store';
+import { useAdminDevNotificationStore } from '../src/store/admin-dev-notification-store';
 import { fetchAgentStatus, type AgentStatusEntry } from '../src/services/agent-status-client';
 import {
   fetchConnectorSnapshot,
@@ -261,6 +262,15 @@ type McpV2CurrentState = {
   };
 };
 
+const WORKER_NEEDS_DIRECTION_STATUSES = new Set([
+  'idle',
+  'needs_review',
+  'blocked',
+  'needs_user',
+  'complete_waiting_approval',
+]);
+const DIRECTION_WORKERS = ['claude', 'codex', 'agent'] as const;
+
 function getMcpCurrentState(snapshot: McpV2DashboardSnapshot | null): McpV2CurrentState | null {
   if (!snapshot?.projectCurrentState.ok) return null;
   const payload = snapshot.projectCurrentState.payload;
@@ -291,6 +301,52 @@ function mcpRule12Status(snapshot: McpV2DashboardSnapshot | null): {
   const rule12 = rules.find((rule) => rule.id === 12);
   if (!rule12) return { visible: false, label: 'Rule 12 not loaded' };
   return { visible: true, label: rule12.title ?? 'Coders run all laptop commands' };
+}
+
+function workerNeedsDirection(status: string | null | undefined): boolean {
+  return WORKER_NEEDS_DIRECTION_STATUSES.has((status ?? '').trim().toLowerCase());
+}
+
+function allWorkersDirectionState(current: McpV2CurrentState | null): {
+  key: string | null;
+  waitingWorkers: string[];
+  missingWorkers: string[];
+  freshnessTimestamp: string;
+} {
+  const freshness = current?.freshness;
+  const freshnessTimestamp = freshness?.updatedAt ?? '—';
+  if (!current || freshness?.isStale === true) {
+    return { key: null, waitingWorkers: [], missingWorkers: [], freshnessTimestamp };
+  }
+  const agents = current.agents ?? [];
+  const waitingWorkers: string[] = [];
+  const missingWorkers: string[] = [];
+  const keyParts = [freshness?.updatedAt ?? 'unknown'];
+
+  for (const worker of DIRECTION_WORKERS) {
+    const agent = agents.find((entry) => entry.id === worker);
+    if (!agent) {
+      missingWorkers.push(worker);
+      continue;
+    }
+    keyParts.push(worker, agent.status ?? 'unknown', agent.lastCommit ?? 'none');
+    if (workerNeedsDirection(agent.status)) waitingWorkers.push(worker);
+  }
+
+  if (missingWorkers.length > 0 || waitingWorkers.length !== DIRECTION_WORKERS.length) {
+    return { key: null, waitingWorkers, missingWorkers, freshnessTimestamp };
+  }
+
+  return {
+    key: [
+      ...keyParts,
+      current.currentPriority ?? '',
+      current.nextAction ?? '',
+    ].join('|'),
+    waitingWorkers,
+    missingWorkers,
+    freshnessTimestamp,
+  };
 }
 
 function connectorDataSourceLabel(snapshot: ConnectorSnapshot | null): string {
@@ -452,6 +508,10 @@ export default function AdminDevScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [openPromptIdx, setOpenPromptIdx] = useState<number | null>(null);
   const [handoffOpen, setHandoffOpen] = useState(false);
+  const allWorkerDirectionAlertsEnabled = useAdminDevNotificationStore((s) => s.allWorkerDirectionAlertsEnabled);
+  const setAllWorkerDirectionAlertsEnabled = useAdminDevNotificationStore((s) => s.setAllWorkerDirectionAlertsEnabled);
+  const lastAllWorkerDirectionAlertKey = useAdminDevNotificationStore((s) => s.lastAllWorkerDirectionAlertKey);
+  const markAllWorkerDirectionAlertSeen = useAdminDevNotificationStore((s) => s.markAllWorkerDirectionAlertSeen);
 
   const refresh = useCallback(async () => {
     setRefreshing(true);
@@ -572,6 +632,11 @@ export default function AdminDevScreen() {
   const safeToBuildLabel = 'Agent confirmation required before EAS build';
   const deployCommandAllowedByDocs = nowNextAction.toLowerCase().includes('wrangler deploy');
   const fs008Visible = nowNextAction.toLowerCase().includes('fs-008') || nowPriority.toLowerCase().includes('fs-008');
+  const workerDirectionState = allWorkersDirectionState(mcpCurrentState);
+  const showAllWorkersBanner = isAdmin
+    && allWorkerDirectionAlertsEnabled
+    && workerDirectionState.key != null
+    && workerDirectionState.key !== lastAllWorkerDirectionAlertKey;
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -580,6 +645,23 @@ export default function AdminDevScreen() {
       <Text style={styles.subtitle}>Owner control centre. Compact status. No secrets. No remote shell.</Text>
 
       <Section title="Now">
+        {showAllWorkersBanner && (
+          <View style={styles.noticeBlock}>
+            <Text style={styles.chipLabel}>Worker input needed</Text>
+            <Text style={styles.chipBody}>All workers need direction</Text>
+            <Text style={styles.note}>Priority: {nowPriority}</Text>
+            <Text style={styles.note}>Next: {nowNextAction}</Text>
+            <Text style={styles.note}>Waiting: {workerDirectionState.waitingWorkers.join(', ')}</Text>
+            <Text style={styles.note}>MCP freshness: {workerDirectionState.freshnessTimestamp}</Text>
+            <Pressable
+              style={styles.btn}
+              onPress={() => {
+                if (workerDirectionState.key) void markAllWorkerDirectionAlertSeen(workerDirectionState.key);
+              }}>
+              <Text style={styles.btnText}>Acknowledge</Text>
+            </Pressable>
+          </View>
+        )}
         {isAdmin && (
           <View style={styles.summaryGrid}>
             <View style={styles.summaryTile}>
@@ -614,6 +696,28 @@ export default function AdminDevScreen() {
           <Text style={styles.chipBody}>{safeToBuildLabel}</Text>
           <Text style={styles.note}>No EAS build until Agent confirms the on-device value and Aaron approves.</Text>
         </View>
+        {isAdmin && (
+          <View style={styles.chipBlock}>
+            <Text style={styles.chipLabel}>Owner alerts</Text>
+            <Text style={styles.chipBody}>
+              All-worker direction banner: {allWorkerDirectionAlertsEnabled ? 'enabled' : 'disabled'}
+            </Text>
+            <Text style={styles.note}>
+              Fires only when MCP is fresh and Claude, Codex, and Agent are all idle, blocked, need review, need user input, or complete waiting approval.
+            </Text>
+            {workerDirectionState.missingWorkers.length > 0 && (
+              <Text style={styles.note}>
+                {workerDirectionState.missingWorkers.map((worker) => `${worker[0]?.toUpperCase()}${worker.slice(1)} not reporting yet`).join(' · ')}
+              </Text>
+            )}
+            <Text style={styles.note}>Push notifications are not configured in this app, so this is in-app only.</Text>
+            <Pressable
+              style={styles.btn}
+              onPress={() => void setAllWorkerDirectionAlertsEnabled(!allWorkerDirectionAlertsEnabled)}>
+              <Text style={styles.btnText}>{allWorkerDirectionAlertsEnabled ? 'Disable worker direction banner' : 'Enable worker direction banner'}</Text>
+            </Pressable>
+          </View>
+        )}
         {mcpFreshness.stale && (
           <View style={styles.warningBlock}>
             <Text style={styles.chipLabel}>Stale writeback</Text>
@@ -2018,6 +2122,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,138,138,0.08)',
     borderWidth: 1, borderColor: 'rgba(255,138,138,0.28)',
     gap: 4,
+  },
+  noticeBlock: {
+    paddingVertical: 10, paddingHorizontal: 12, borderRadius: 10,
+    backgroundColor: 'rgba(212,225,87,0.12)',
+    borderWidth: 1, borderColor: 'rgba(212,225,87,0.38)',
+    gap: 6,
   },
   chipLabel: { fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.55 },
   chipBody: { fontSize: 13, lineHeight: 17 },
