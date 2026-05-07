@@ -143,6 +143,7 @@ export interface McpV2DashboardSnapshot {
   serverInfo: { name: string; version: string; description?: string } | null;
   protocolVersion: string | null;
   toolCounts: { total: number; byNamespace: Record<string, number> };
+  projectCurrentState: { ok: true; payload: unknown } | { ok: false; message: string };
   projectOverview: { ok: true; payload: unknown } | { ok: false; message: string };
   projectWorkStatus: { ok: true; payload: unknown } | { ok: false; message: string };
   laneOverview: { ok: true; payload: unknown } | { ok: false; message: string };
@@ -164,6 +165,7 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
       serverInfo: null,
       protocolVersion: null,
       toolCounts: { total: 0, byNamespace: {} },
+      projectCurrentState: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
       projectOverview: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
       projectWorkStatus: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
       laneOverview: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
@@ -180,6 +182,7 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
       serverInfo: null,
       protocolVersion: null,
       toolCounts: { total: 0, byNamespace: {} },
+      projectCurrentState: { ok: false, message: initialised.message },
       projectOverview: { ok: false, message: initialised.message },
       projectWorkStatus: { ok: false, message: initialised.message },
       laneOverview: { ok: false, message: initialised.message },
@@ -195,13 +198,14 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
   }
 
   const results = await Promise.all([
+    mcpV2CallTool('project.get_current_state', {}, signal),
     mcpV2CallTool('project.get_overview', {}, signal),
     mcpV2CallTool('project.get_work_status', {}, signal),
     mcpV2CallTool('mobile.get_lane_overview', {}, signal),
     mcpV2CallTool('mobile.get_build_overview', {}, signal),
     mcpV2CallTool('handoff.get_latest', {}, signal),
   ]);
-  const [proj, work, lane, build, handoff] = results;
+  const [current, proj, work, lane, build, handoff] = results;
 
   const wrap = (r: McpV2CallResult): { ok: true; payload: unknown } | { ok: false; message: string } =>
     r.ok ? { ok: true, payload: r.payload } : { ok: false, message: r.message };
@@ -212,6 +216,7 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
     serverInfo: initialised.serverInfo,
     protocolVersion: initialised.protocolVersion,
     toolCounts: { total: initialised.tools.length, byNamespace },
+    projectCurrentState: wrap(current),
     projectOverview: wrap(proj),
     projectWorkStatus: wrap(work),
     laneOverview: wrap(lane),

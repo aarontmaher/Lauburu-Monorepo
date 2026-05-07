@@ -148,6 +148,12 @@ const STATUS_HANDOFF_TEMPLATE = [
   'CHATGPT_STATUS_END',
 ].join('\n');
 
+const SAFE_PHONE_COMMANDS = {
+  bridgeSnapshot: 'npm run bridge:snapshot',
+  bridgeVerify: 'npm run bridge:verify',
+  workerDeploy: 'cd cloudflare-worker && wrangler deploy',
+} as const;
+
 /**
  * Top-of-screen workflow truths. These mirror docs/APP_DEVELOPMENTS.md
  * and are intentionally hard-coded for now — the long-term shape is a
@@ -227,6 +233,53 @@ function connectorSnapshotLabel(snapshot: ConnectorSnapshot | null): string {
     source?.source === 'placeholder' || source?.schemaRequired === true
   );
   return hasPlaceholder ? 'Fallback placeholder' : 'Live MCP data';
+}
+
+type McpV2CurrentState = {
+  source?: string;
+  freshness?: {
+    updatedAt?: string | null;
+    ageMs?: number | null;
+    isStale?: boolean;
+    staleReason?: string;
+    windowMs?: number;
+  };
+  agents?: Array<{
+    id?: string;
+    status?: string;
+    taskSummary?: string;
+    lastCommit?: string | null;
+    updatedAt?: string | null;
+  }>;
+  currentPriority?: string | null;
+  currentBlocker?: string | null;
+  nextAction?: string | null;
+  liveStatus?: {
+    android?: { versionCode?: number | null; status?: string | null; playTrack?: string | null } | null;
+    ios?: { buildNumber?: string | null; status?: string | null } | null;
+    repo?: { branch?: string | null; shortHead?: string | null } | null;
+  };
+};
+
+function getMcpCurrentState(snapshot: McpV2DashboardSnapshot | null): McpV2CurrentState | null {
+  if (!snapshot?.projectCurrentState.ok) return null;
+  const payload = snapshot.projectCurrentState.payload;
+  return payload && typeof payload === 'object' ? payload as McpV2CurrentState : null;
+}
+
+function mcpFreshnessSummary(current: McpV2CurrentState | null): {
+  label: string;
+  stale: boolean;
+  reason: string;
+  updatedAt: string;
+} {
+  const freshness = current?.freshness;
+  const stale = freshness?.isStale === true;
+  const reason = typeof freshness?.staleReason === 'string' ? freshness.staleReason : 'unknown';
+  const updatedAt = freshness?.updatedAt ? new Date(freshness.updatedAt).toLocaleTimeString() : '—';
+  if (!current) return { label: 'MCP current-state unavailable', stale: true, reason: 'unavailable', updatedAt };
+  if (stale) return { label: `MCP readable · stale (${reason})`, stale, reason, updatedAt };
+  return { label: 'MCP readable · fresh', stale, reason, updatedAt };
 }
 
 function connectorDataSourceLabel(snapshot: ConnectorSnapshot | null): string {
@@ -458,9 +511,14 @@ export default function AdminDevScreen() {
   const androidBuildAvailable = adminStatus?.androidBuildWorkflowAvailable === true;
   const dispatchAvailable = adminStatus?.workflowDispatchAvailable === true;
   const connectorWork = connectorSnapshot?.workStatus ?? null;
-  const nowPriority = connectorWork?.currentPriority ?? CURRENT_PRIORITY;
-  const nowBlocker = connectorWork?.currentBlocker ?? 'No MCP blocker reported.';
-  const nowNextAction = connectorWork?.nextAction ?? NEXT_ACTION;
+  const mcpCurrentState = getMcpCurrentState(mcpV2Snapshot);
+  const mcpFreshness = mcpFreshnessSummary(mcpCurrentState);
+  const mcpAgents = mcpCurrentState?.agents ?? [];
+  const mcpClaudeLane = mcpAgents.find((agent) => agent.id === 'claude') ?? null;
+  const mcpCodexLane = mcpAgents.find((agent) => agent.id === 'codex') ?? null;
+  const nowPriority = mcpCurrentState?.currentPriority ?? connectorWork?.currentPriority ?? CURRENT_PRIORITY;
+  const nowBlocker = mcpCurrentState?.currentBlocker ?? connectorWork?.currentBlocker ?? 'No MCP blocker reported.';
+  const nowNextAction = mcpCurrentState?.nextAction ?? connectorWork?.nextAction ?? NEXT_ACTION;
   const nowLanes = connectorSnapshot?.coderLanes?.lanes ?? [];
   const laneStatusCounts = nowLanes.reduce<Record<string, number>>((acc, lane) => {
     acc[lane.status] = (acc[lane.status] ?? 0) + 1;
@@ -471,12 +529,18 @@ export default function AdminDevScreen() {
     .join(' · ');
   const nowLaneSummary = nowLanes.length > 0
     ? nowLanes.map((lane) => `${lane.laneId}: ${lane.status}`).join(' · ')
+    : mcpAgents.length > 0
+      ? mcpAgents.map((agent) => `${agent.id ?? 'lane'}: ${agent.status ?? 'unknown'}`).join(' · ')
     : 'No lane status yet.';
   const nowRepoSummary = connectorWork
     ? `${connectorWork.repoStatus.branch}@${connectorWork.repoStatus.head} · ${connectorWork.repoStatus.dirtyFileCount} dirty`
-    : 'Repo-only until MCP work status loads.';
+    : mcpCurrentState?.liveStatus?.repo
+      ? `${mcpCurrentState.liveStatus.repo.branch ?? 'main'}@${mcpCurrentState.liveStatus.repo.shortHead ?? '—'}`
+      : 'Repo-only until MCP work status loads.';
   const nowBuildSummary = connectorSnapshot?.buildStatus
     ? `Android ${connectorSnapshot.buildStatus.android.versionCode ?? '—'} · ${connectorSnapshot.buildStatus.android.githubStatus ?? '—'} / iOS ${connectorSnapshot.buildStatus.ios.buildNumber ?? '—'} · ${connectorSnapshot.buildStatus.ios.githubStatus ?? '—'}`
+    : mcpCurrentState?.liveStatus
+      ? `Android ${mcpCurrentState.liveStatus.android?.versionCode ?? '—'} · ${mcpCurrentState.liveStatus.android?.status ?? '—'} / iOS ${mcpCurrentState.liveStatus.ios?.buildNumber ?? '—'} · ${mcpCurrentState.liveStatus.ios?.status ?? '—'}`
     : 'Build status not loaded.';
   const nowSnapshotLabel = connectorSnapshotLabel(connectorSnapshot);
   const nowSourceLabel = connectorDataSourceLabel(connectorSnapshot);
@@ -488,6 +552,8 @@ export default function AdminDevScreen() {
         ? 'MCP refreshing…'
         : `${nowSnapshotLabel} · MCP not connected`
     : null;
+  const safeToBuildLabel = 'Agent confirmation required before EAS build';
+  const deployCommandAllowedByDocs = nowNextAction.toLowerCase().includes('wrangler deploy');
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -500,8 +566,8 @@ export default function AdminDevScreen() {
           <View style={styles.summaryGrid}>
             <View style={styles.summaryTile}>
               <Text style={styles.chipLabel}>MCP</Text>
-              <Text style={styles.summaryValue}>{refreshing && !connectorSnapshot ? 'Refreshing…' : nowSnapshotLabel}</Text>
-              <Text style={styles.summaryMeta}>{nowBridgeFreshness}</Text>
+              <Text style={styles.summaryValue}>{refreshing && !mcpV2Snapshot ? 'Refreshing…' : mcpFreshness.label}</Text>
+              <Text style={styles.summaryMeta}>updated {mcpFreshness.updatedAt}</Text>
             </View>
             <View style={styles.summaryTile}>
               <Text style={styles.chipLabel}>Fetched</Text>
@@ -521,6 +587,18 @@ export default function AdminDevScreen() {
           </View>
         )}
         <View style={styles.chipBlock}>
+          <Text style={styles.chipLabel}>Build gate</Text>
+          <Text style={styles.chipBody}>{safeToBuildLabel}</Text>
+          <Text style={styles.note}>No EAS build until Agent confirms the on-device value and Aaron approves.</Text>
+        </View>
+        {mcpFreshness.stale && (
+          <View style={styles.warningBlock}>
+            <Text style={styles.chipLabel}>Stale writeback</Text>
+            <Text style={styles.chipBody}>MCP readable, but writeback is stale. Run bridge snapshot/verify.</Text>
+            <Text style={styles.note}>Reason: {mcpFreshness.reason}</Text>
+          </View>
+        )}
+        <View style={styles.chipBlock}>
           <Text style={styles.chipLabel}>Priority</Text>
           <Text style={styles.chipBody}>{nowPriority}</Text>
         </View>
@@ -536,6 +614,9 @@ export default function AdminDevScreen() {
           <View style={styles.chipBlock}>
             <Text style={styles.chipLabel}>Lanes</Text>
             <Text style={styles.chipBody}>{nowLaneSummary}</Text>
+            <Text style={styles.note}>
+              Claude: {mcpClaudeLane ? `${mcpClaudeLane.status} · ${mcpClaudeLane.lastCommit ?? '—'}` : '—'} · Codex: {mcpCodexLane ? `${mcpCodexLane.status} · ${mcpCodexLane.lastCommit ?? '—'}` : '—'}
+            </Text>
           </View>
         )}
         {isAdmin && (
@@ -546,6 +627,18 @@ export default function AdminDevScreen() {
           </View>
         )}
         {mcpStatus && <Text style={styles.note}>{mcpStatus} · source {nowSourceLabel}</Text>}
+        {isAdmin && (
+          <View style={{ gap: 6 }}>
+            <Text style={styles.rowLabel}>Safe laptop commands</Text>
+            <SelectableCopyButton label="Copy bridge snapshot command" body={SAFE_PHONE_COMMANDS.bridgeSnapshot} />
+            <SelectableCopyButton label="Copy bridge verify command" body={SAFE_PHONE_COMMANDS.bridgeVerify} />
+            <SelectableCopyButton
+              label="Copy Worker deploy command"
+              body={deployCommandAllowedByDocs ? SAFE_PHONE_COMMANDS.workerDeploy : null}
+              disabledReason="Worker deploy copy appears only when MCP/docs next action says wrangler deploy is needed."
+            />
+          </View>
+        )}
       </Section>
 
       {isAdmin && <ConnectorStatusSection snapshot={connectorSnapshot} refreshing={refreshing} onRefresh={refresh} />}
@@ -1845,6 +1938,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10,
     backgroundColor: 'rgba(212,225,87,0.06)',
     borderWidth: 1, borderColor: 'rgba(212,225,87,0.2)',
+    gap: 4,
+  },
+  warningBlock: {
+    paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10,
+    backgroundColor: 'rgba(255,138,138,0.08)',
+    borderWidth: 1, borderColor: 'rgba(255,138,138,0.28)',
     gap: 4,
   },
   chipLabel: { fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.55 },
