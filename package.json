@@ -7,6 +7,7 @@
     "apps/*"
   ],
   "scripts": {
+    "setup:supabase": "node scripts/setup-supabase-env.mjs",
     "bridge:snapshot": "./scripts/bridge-snapshot-lanes.sh",
     "bridge:verify": "cd chat-app && npx tsx src/server/scripts/test-bridge-artifacts.ts",
     "mcp:test:live": "cd chat-app && npx tsx src/server/scripts/test-mcp-worker-live.ts",
