@@ -590,6 +590,42 @@ function TrendItem({
   );
 }
 
+function PlannedHealthContextCard() {
+  const items = [
+    {
+      title: 'Blood test upload',
+      body: 'Planned file/context import. Not connected and not used for readiness yet.',
+    },
+    {
+      title: 'DEXA upload',
+      body: 'Planned body-composition context. No upload flow in this build.',
+    },
+    {
+      title: 'Journal / check-in',
+      body: 'Planned daily subjective context. Manual training logs remain available now.',
+    },
+  ];
+  return (
+    <View style={styles.card}>
+      <View style={styles.cardHeaderRow}>
+        <Text style={styles.cardTitle}>Planned health context</Text>
+        <Text style={styles.importBadge}>Planned</Text>
+      </View>
+      <Text style={styles.importSubtle}>
+        These are placeholders only. They do not import data or change readiness.
+      </Text>
+      <View style={styles.plannedList}>
+        {items.map((item) => (
+          <View key={item.title} style={styles.plannedRow}>
+            <Text style={styles.plannedTitle}>{item.title}</Text>
+            <Text style={styles.plannedBody}>{item.body}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 // --- Expo Go notice ---
 
 function ExpoGoNotice() {
@@ -953,6 +989,10 @@ export default function HealthScreen() {
         <NutritionCard />
       </SafeErrorBoundary>
 
+      <SafeErrorBoundary label="Planned health context">
+        <PlannedHealthContextCard />
+      </SafeErrorBoundary>
+
       {/* Structured coaching */}
       {coaching && coaching.readiness?.level !== 'grey' && (
         <SafeErrorBoundary label="Coaching card">
@@ -1268,6 +1308,15 @@ const styles = StyleSheet.create({
   importMissing: { fontSize: 11, opacity: 0.5, marginTop: 3, lineHeight: 15 },
   importMetaCol: { alignItems: 'flex-end' as const, gap: 1, maxWidth: 112 },
   importMeta: { fontSize: 11, opacity: 0.58, textAlign: 'right' as const },
+  plannedList: { gap: 8 },
+  plannedRow: {
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.06)',
+    gap: 2,
+  },
+  plannedTitle: { fontSize: 13, fontWeight: '700' },
+  plannedBody: { fontSize: 12, opacity: 0.55, lineHeight: 16 },
 
   availBadge: { fontSize: 12, fontWeight: '700', letterSpacing: 0.5 },
   unavailNote: { fontSize: 13, opacity: 0.6, lineHeight: 18 },

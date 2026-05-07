@@ -79,6 +79,19 @@ function pctOfTarget(value: number | undefined, target: number | undefined): str
   return `${pct}%`;
 }
 
+function nutritionTargetSummary(targets: ReturnType<typeof useNutritionStore.getState>['targets']): string {
+  if (!targets) return 'Manual daily targets not set yet.';
+  const parts = [
+    targets.calories_kcal != null ? `${Math.round(targets.calories_kcal)} kcal` : null,
+    targets.protein_g != null ? `${Math.round(targets.protein_g)}g protein` : null,
+    targets.carbs_g != null ? `${Math.round(targets.carbs_g)}g carbs` : null,
+    targets.fat_g != null ? `${Math.round(targets.fat_g)}g fat` : null,
+  ].filter(Boolean);
+  return parts.length > 0
+    ? `Manual targets: ${parts.join(' · ')}.`
+    : 'Manual daily targets not set yet.';
+}
+
 function MetricCell({
   label,
   value,
@@ -467,6 +480,7 @@ export function NutritionCard() {
       today.water_ml != null);
 
   const sourceLabel = today ? NUTRITION_SOURCE_LABELS[today.source] : null;
+  const targetSummary = nutritionTargetSummary(targets);
 
   return (
     <View style={styles.card}>
@@ -524,6 +538,13 @@ export function NutritionCard() {
         </View>
       )}
 
+      <View style={styles.truthPanel}>
+        <Text style={styles.truthLine}>{targetSummary}</Text>
+        <Text style={styles.truthLine}>
+          Nutrition imports are not live yet. Cronometer and health-app nutrition reads stay planned until connected and verified.
+        </Text>
+      </View>
+
       {!editing && <NutritionTargetsEditor />}
 
       {/* Transient confirmation banner — renders right under the
@@ -545,7 +566,7 @@ export function NutritionCard() {
       {/* Empty state */}
       {!editing && !hasAnyValue && (
         <Text style={styles.emptyText}>
-          No fuel logged yet today. Tap + Log to enter manually, scan a barcode, or pull from Apple Health.
+          No fuel logged yet today. Use Search food, Barcode, or Manual. Health-app nutrition import is planned, not automatic.
         </Text>
       )}
 
@@ -1360,6 +1381,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
+  truthPanel: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.035)',
+    gap: 3,
+  },
+  truthLine: { fontSize: 11, opacity: 0.58, lineHeight: 15 },
   editBtn: {
     paddingVertical: 6,
     paddingHorizontal: 12,

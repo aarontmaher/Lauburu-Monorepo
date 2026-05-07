@@ -1089,6 +1089,11 @@ function Body() {
   const missingSourceLine = hasVerifiedWhoopDirect
     ? 'Missing health fields stay blank until a source provides them.'
     : 'Direct recovery fields stay missing until verified WHOOP Direct data exists. Polar Direct is planned.';
+  const primarySourceActionLabel = needsAttention
+    ? 'Attention needed · Manage sources'
+    : !nativeAnyAuthorized
+      ? `Connect ${nativeCopy.shortName}`
+      : 'Manage health sources';
 
   return (
     <View style={styles.card}>
@@ -1102,9 +1107,7 @@ function Body() {
         onPress={() => setSheetOpen(true)}
         accessibilityRole="button"
         accessibilityLabel="Manage health sources">
-        <Text style={styles.manageBtnText}>
-          {needsAttention ? 'Attention needed · Manage sources' : 'Manage health sources'}
-        </Text>
+        <Text style={styles.manageBtnText}>{primarySourceActionLabel}</Text>
       </Pressable>
 
       <HealthSourceSheet
@@ -1845,10 +1848,10 @@ function HealthSourceSheet(props: SheetProps) {
   const isStaleBeyondWindow = typeof daysSinceLatest === 'number' && daysSinceLatest >= 2;
 
   const whoopMeta = (() => {
-    // WHOOP Direct is positioned as optional live calibration — not a
+    // WHOOP Direct is positioned as optional direct data — not a
     // core requirement. Every meta string leads with that framing so
     // users don't read a non-connected WHOOP row as "broken".
-    const optionalPrefix = 'Optional live calibration · ';
+    const optionalPrefix = 'Optional direct data · ';
     if (whoopState === 'connected' || whoopState === 'partial') {
       const latest = effectiveLatestDate ? ` · latest ${effectiveLatestDate}` : '';
       const missing = Array.isArray((whoop as any)?.missingDomains) ? (whoop as any).missingDomains : [];
