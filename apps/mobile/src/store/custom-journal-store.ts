@@ -185,8 +185,15 @@ function dateFromEffectiveAt(value: string): string {
   return value.slice(0, 10);
 }
 
-function genId(prefix: string): string {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+function genId(): string {
+  // Supabase schema stores these IDs as uuid. Keep locally-created
+  // rows uuid-shaped so offline creation can sync without remapping
+  // item/event foreign keys later.
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
+    const value = Math.floor(Math.random() * 16);
+    const nibble = char === 'x' ? value : (value & 0x3) | 0x8;
+    return nibble.toString(16);
+  });
 }
 
 function sanitizeText(value: unknown, maxLength = 1200): string | null {
@@ -268,7 +275,7 @@ function sanitizeItem(value: unknown): CustomJournalItem | null {
   if (!name) return null;
   const now = new Date().toISOString();
   return {
-    id: typeof item.id === 'string' && item.id ? item.id : genId('ji'),
+    id: typeof item.id === 'string' && item.id ? item.id : genId(),
     userId: typeof item.userId === 'string' ? item.userId : null,
     category: sanitizeCategory(item.category),
     name,
@@ -291,7 +298,7 @@ function sanitizeEvent(value: unknown): CustomJournalEvent | null {
   if (typeof event.itemId !== 'string' || !event.itemId) return null;
   const now = new Date().toISOString();
   return {
-    id: typeof event.id === 'string' && event.id ? event.id : genId('je'),
+    id: typeof event.id === 'string' && event.id ? event.id : genId(),
     userId: typeof event.userId === 'string' ? event.userId : null,
     itemId: event.itemId,
     eventType: sanitizeEventType(event.eventType),
@@ -486,7 +493,7 @@ export const useCustomJournalStore = create<CustomJournalState>((set, get) => ({
     const now = new Date().toISOString();
     const category = sanitizeCategory(input.category);
     const item: CustomJournalItem = {
-      id: genId('ji'),
+      id: genId(),
       userId,
       category,
       name,
@@ -502,7 +509,7 @@ export const useCustomJournalStore = create<CustomJournalState>((set, get) => ({
       pendingSync: true,
     };
     const startEvent: CustomJournalEvent = {
-      id: genId('je'),
+      id: genId(),
       userId,
       itemId: item.id,
       eventType: 'start',
@@ -536,7 +543,7 @@ export const useCustomJournalStore = create<CustomJournalState>((set, get) => ({
     const userId = useAuthStore.getState().user?.id ?? item.userId ?? null;
     const now = new Date().toISOString();
     const event: CustomJournalEvent = {
-      id: genId('je'),
+      id: genId(),
       userId,
       itemId: item.id,
       eventType: sanitizeEventType(input.eventType),
