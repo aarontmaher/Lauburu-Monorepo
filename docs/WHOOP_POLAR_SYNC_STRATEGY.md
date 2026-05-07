@@ -19,15 +19,15 @@ Updated 2026-05-06.
 3. WHOOP Direct truthfulness / setup.
 4. Polar / Bluetooth truthfulness.
 5. Manual session logging.
-6. Optional FIT / CSV import later.
+6. Optional FIT / TCX / CSV import later.
 
 ErgZone is **not** a primary dependency. Keep it in backlog only as
 an optional future import source:
 
-- ErgZone FIT / CSV export import.
-- Concept2 Logbook indirect import.
+- ErgZone FIT / TCX / CSV export import.
+- Rogue / Concept2 Logbook indirect import.
 - Strava / TrainingPeaks / Intervals.icu indirect import if the
-  user already syncs there.
+  user already syncs there or provides a file export.
 
 These import paths are backfill / history aids, not live source
 claims and not requirements for the primary Health tab.

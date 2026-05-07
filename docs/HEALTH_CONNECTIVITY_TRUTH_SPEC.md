@@ -41,7 +41,7 @@ require it.
 | **Polar direct (OAuth / API)** | planned only | `WHOOP_POLAR_SYNC_STRATEGY.md` § "Polar" | reserved label `Polar Direct`; **MUST NOT** be marked live in any UI / source label / connector response until the OAuth wiring + token storage land |
 | **WHOOP raw export** | app-side ready | manual upload of WHOOP CSV / zip to `/admin/manual-import` | `manual_imports` Supabase table accepts the shape; parser version flagged |
 | **Bluetooth HR sensor (HRS, GATT 0x180D)** | planned only | `BLUETOOTH_MVP_SPEC.md` Phase 1 native scaffold + Phase 3+ pairing UI | Train-session data ONLY; never feeds readiness in the MVP |
-| **Generic conditioning imports** | app-side ready | `manual_imports` (CSV / ad-hoc) — same envelope as WHOOP raw export | parser routing TBD per `NUTRITION_TRACKING_PLAN.md` for shape; conditioning-specific subset not yet documented |
+| **Generic conditioning imports** | app-side ready | Apple Health / Health Connect hub first; future FIT / TCX / CSV file import | ErgZone, Rogue, Concept2, Strava, TrainingPeaks, and Intervals.icu are provenance examples only when data arrives through the hub or future file import; no direct APIs |
 | **Manual check-in / training log** | live verified | `NextDayCheckin` + `TrainingSession` (existing schemas) | Train tab; no backend integration needed; the readiness compute already accepts these |
 | **Garmin / Oura / Whoop-via-BLE** | NOT supported | — | out of scope per `WHOOP_POLAR_SYNC_STRATEGY.md` anti-rules |
 
@@ -63,7 +63,7 @@ expose nutrition; BLE HRS doesn't expose sleep).
 | Workout / training session | live | live | synced from hub | setup required | planned | imported summary | — | live (Train tab `TrainingSession`) |
 | Active calories | live | live | synced from hub | setup required | planned | imported summary | — | — |
 | Nutrition | imported summary (Apple Health "Nutrition" types) | imported summary (HC nutrition) | — | — | — | — | — | live (manual + planned `NUTRITION_TRACKING_PLAN.md`) |
-| Generic conditioning import | — | — | — | — | — | imported summary (CSV) | — | imported summary (CSV) |
+| Generic conditioning import | imported summary | imported summary | synced from hub | — | — | imported summary (FIT / TCX / CSV) | — | imported summary (manual) |
 
 **Reading the matrix:**
 

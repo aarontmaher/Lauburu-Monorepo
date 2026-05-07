@@ -185,7 +185,7 @@ function ConditioningImportsCard({
                 <Text style={styles.importName}>
                   {item.workoutType === 'unknown' ? 'Conditioning' : item.workoutType.replace('_', ' ')}
                 </Text>
-                <Text style={styles.importSource}>{item.provenanceLabel}</Text>
+                <Text style={styles.importSource}>Workout summary imported · {item.provenanceLabel}</Text>
                 {item.missingIntervalLabel && (
                   <Text style={styles.importMissing}>{item.missingIntervalLabel}</Text>
                 )}

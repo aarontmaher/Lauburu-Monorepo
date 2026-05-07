@@ -39,7 +39,7 @@ export const CONDITIONING_IMPORT_COPY = {
   body:
     'Import conditioning workouts from apps that sync to Apple Health / Health Connect.',
   examples:
-    'ErgZone, Rogue, Concept2, Strava, and others may appear here if they write to your health hub.',
+    'ErgZone, Rogue, Concept2, Strava, TrainingPeaks, Intervals.icu, and others may appear here if they write to your health hub.',
   future:
     'FIT / TCX / CSV file import is optional backlog, not the primary path.',
 } as const;

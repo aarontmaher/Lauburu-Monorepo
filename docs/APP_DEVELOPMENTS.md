@@ -107,14 +107,15 @@ expansion in this order:
 3. WHOOP Direct truthfulness / setup.
 4. Polar / Bluetooth truthfulness.
 5. Manual session logging.
-6. Optional FIT / CSV import later.
+6. Optional FIT / TCX / CSV import later.
 
-Optional import backlog stays secondary: ErgZone FIT / CSV export
-import, Concept2 Logbook indirect import, and Strava /
-TrainingPeaks / Intervals.icu indirect import only when the user
-already syncs there. Do **not** build ErgZone as a primary
-dependency. These data-source lanes matter, but they do not
-outrank the Apple Health / Health Connect daily testing path.
+Optional import backlog stays secondary: ErgZone FIT / TCX / CSV
+export import, Rogue / Concept2 Logbook indirect import, and
+Strava / TrainingPeaks / Intervals.icu indirect import only when
+the user already syncs there or provides a file export. Do **not**
+build ErgZone or Rogue as primary dependencies or direct APIs.
+These data-source lanes matter, but they do not outrank the
+Apple Health / Health Connect daily testing path.
 
 Generic conditioning import model:
 
