@@ -12,7 +12,13 @@ import { useFeedbackStore } from '../../src/store/feedback-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useAuthStore } from '../../src/store/auth-store';
-import { useDailyJournalStore, type TrainingIntent } from '../../src/store/daily-journal-store';
+import {
+  useDailyJournalStore,
+  type CustomJournalAction,
+  type CustomJournalCategory,
+  type CustomJournalItem,
+  type TrainingIntent,
+} from '../../src/store/daily-journal-store';
 import { SESSION_TYPE_LABELS } from '@lauburu/shared';
 import { ATHLETE_CAPABILITY_COPY } from '../../src/services/athlete-capability-display';
 
@@ -99,6 +105,33 @@ const TRAINING_INTENT_LABELS: Record<TrainingIntent, string> = {
   light: 'Light',
   rest: 'Rest',
 };
+
+const JOURNAL_CATEGORY_LABELS: Record<CustomJournalCategory, string> = {
+  supplement: 'Supplement',
+  medication: 'Medication',
+  nutrition: 'Nutrition',
+  recovery: 'Recovery',
+  training: 'Training',
+  sleep: 'Sleep',
+  symptom: 'Symptom',
+  other: 'Other',
+};
+
+const JOURNAL_ACTION_LABELS: Record<CustomJournalAction, string> = {
+  start: 'Start',
+  stop: 'Stop',
+  dose_change: 'Dose change',
+  break_start: 'Break start',
+  break_end: 'Break end',
+  one_off: 'One-off use',
+  symptom_note: 'Symptom note',
+  custom_note: 'Custom note',
+};
+
+function formatJournalDose(item: Pick<CustomJournalItem, 'dose' | 'unit' | 'frequencyTiming'>): string {
+  const dose = [item.dose, item.unit].filter(Boolean).join(' ');
+  return [dose, item.frequencyTiming].filter(Boolean).join(' · ') || 'No dose/timing set';
+}
 
 // ---------------------------------------------------------------------------
 // 0. Daily journal — subjective readiness context
@@ -203,6 +236,302 @@ function DailyJournalCard() {
       <Pressable style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveText}>{existing || saved ? 'Update Journal' : 'Save Journal'}</Text>
       </Pressable>
+    </View>
+  );
+}
+
+function CustomJournalTimelineCard() {
+  const customItems = useDailyJournalStore((s) => s.customItems);
+  const activeItems = useDailyJournalStore((s) => s.getActiveCustomItems());
+  const stoppedItems = useDailyJournalStore((s) => s.getStoppedCustomItems());
+  const recentEvents = useDailyJournalStore((s) => s.getRecentJournalEvents(8));
+  const addCustomItem = useDailyJournalStore((s) => s.addCustomItem);
+  const addJournalEvent = useDailyJournalStore((s) => s.addJournalEvent);
+  const stopCustomItem = useDailyJournalStore((s) => s.stopCustomItem);
+
+  const [name, setName] = useState('');
+  const [category, setCategory] = useState<CustomJournalCategory>('supplement');
+  const [customCategory, setCustomCategory] = useState('');
+  const [dose, setDose] = useState('');
+  const [unit, setUnit] = useState('');
+  const [frequencyTiming, setFrequencyTiming] = useState('');
+  const [startDate, setStartDate] = useState(todayDate());
+  const [stopDate, setStopDate] = useState('');
+  const [itemNotes, setItemNotes] = useState('');
+
+  const [eventAction, setEventAction] = useState<CustomJournalAction>('dose_change');
+  const [eventItemId, setEventItemId] = useState<string>('');
+  const [eventDate, setEventDate] = useState(todayDate());
+  const [eventDose, setEventDose] = useState('');
+  const [eventUnit, setEventUnit] = useState('');
+  const [eventNotes, setEventNotes] = useState('');
+  const [savedMessage, setSavedMessage] = useState<string | null>(null);
+
+  const handleAddItem = () => {
+    Keyboard.dismiss();
+    if (!name.trim()) {
+      Alert.alert('Journal item', 'Add a name first.');
+      return;
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate.trim())) {
+      Alert.alert('Journal item', 'Use YYYY-MM-DD for the start date.');
+      return;
+    }
+    if (stopDate.trim() && !/^\d{4}-\d{2}-\d{2}$/.test(stopDate.trim())) {
+      Alert.alert('Journal item', 'Use YYYY-MM-DD for the stop date.');
+      return;
+    }
+    addCustomItem({
+      name,
+      category,
+      customCategory,
+      dose,
+      unit,
+      frequencyTiming,
+      startDate,
+      stopDate,
+      notes: itemNotes,
+    });
+    setSavedMessage('Item added');
+    setName('');
+    setCustomCategory('');
+    setDose('');
+    setUnit('');
+    setFrequencyTiming('');
+    setStopDate('');
+    setItemNotes('');
+  };
+
+  const handleAddEvent = () => {
+    Keyboard.dismiss();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate.trim())) {
+      Alert.alert('Journal event', 'Use YYYY-MM-DD for the event date.');
+      return;
+    }
+    if (!eventItemId && !eventNotes.trim()) {
+      Alert.alert('Journal event', 'Choose an item or add a note.');
+      return;
+    }
+    const item = customItems.find((candidate) => candidate.id === eventItemId);
+    addJournalEvent({
+      itemId: item?.id ?? null,
+      itemName: item?.name,
+      action: eventAction,
+      date: eventDate,
+      dose: eventDose,
+      unit: eventUnit,
+      notes: eventNotes,
+    });
+    setSavedMessage('Event added');
+    setEventDose('');
+    setEventUnit('');
+    setEventNotes('');
+  };
+
+  return (
+    <View style={styles.card}>
+      <View style={styles.cardHeaderRow}>
+        <View>
+          <Text style={styles.cardTitle}>Custom journal timeline</Text>
+          <Text style={styles.cardSubtitle}>Track things that may affect readiness</Text>
+        </View>
+        <Text style={styles.badge}>{activeItems.length} active</Text>
+      </View>
+      <Text style={styles.noteText}>
+        These entries show possible associations only. The app will not claim causation.
+      </Text>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>Add item</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Name, e.g. magnesium, creatine, sauna, knee pain"
+          placeholderTextColor="#666"
+          value={name}
+          onChangeText={setName}
+        />
+        <PillSelect
+          options={['supplement', 'medication', 'nutrition', 'recovery', 'training', 'sleep', 'symptom', 'other'] as const}
+          labels={JOURNAL_CATEGORY_LABELS}
+          value={category}
+          onChange={setCategory}
+        />
+        {category === 'other' && (
+          <TextInput
+            style={styles.input}
+            placeholder="Custom category"
+            placeholderTextColor="#666"
+            value={customCategory}
+            onChangeText={setCustomCategory}
+          />
+        )}
+        <View style={styles.twoColRow}>
+          <TextInput
+            style={[styles.input, styles.flexInput]}
+            placeholder="Dose"
+            placeholderTextColor="#666"
+            value={dose}
+            onChangeText={setDose}
+          />
+          <TextInput
+            style={[styles.input, styles.flexInput]}
+            placeholder="Unit"
+            placeholderTextColor="#666"
+            value={unit}
+            onChangeText={setUnit}
+          />
+        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Frequency / timing, e.g. nightly, post-training"
+          placeholderTextColor="#666"
+          value={frequencyTiming}
+          onChangeText={setFrequencyTiming}
+        />
+        <View style={styles.twoColRow}>
+          <TextInput
+            style={[styles.input, styles.flexInput]}
+            placeholder="Start YYYY-MM-DD"
+            placeholderTextColor="#666"
+            value={startDate}
+            onChangeText={setStartDate}
+          />
+          <TextInput
+            style={[styles.input, styles.flexInput]}
+            placeholder="Stop optional"
+            placeholderTextColor="#666"
+            value={stopDate}
+            onChangeText={setStopDate}
+          />
+        </View>
+        <TextInput
+          style={[styles.input, styles.multilineInput]}
+          placeholder="Notes (optional)"
+          placeholderTextColor="#666"
+          value={itemNotes}
+          onChangeText={setItemNotes}
+          multiline
+        />
+        <Pressable style={styles.saveButton} onPress={handleAddItem}>
+          <Text style={styles.saveText}>Add Timeline Item</Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>Add event</Text>
+        <PillSelect
+          options={['dose_change', 'break_start', 'break_end', 'one_off', 'symptom_note', 'custom_note', 'stop'] as const}
+          labels={JOURNAL_ACTION_LABELS}
+          value={eventAction}
+          onChange={setEventAction}
+        />
+        <View style={styles.pillRow}>
+          <Pressable
+            style={[styles.pill, eventItemId === '' && styles.pillActive]}
+            onPress={() => setEventItemId('')}>
+            <Text style={[styles.pillText, eventItemId === '' && styles.pillTextActive]}>No item</Text>
+          </Pressable>
+          {customItems.slice(-8).map((item) => (
+            <Pressable
+              key={item.id}
+              style={[styles.pill, eventItemId === item.id && styles.pillActive]}
+              onPress={() => setEventItemId(item.id)}>
+              <Text style={[styles.pillText, eventItemId === item.id && styles.pillTextActive]}>{item.name}</Text>
+            </Pressable>
+          ))}
+        </View>
+        <View style={styles.twoColRow}>
+          <TextInput
+            style={[styles.input, styles.flexInput]}
+            placeholder="Date"
+            placeholderTextColor="#666"
+            value={eventDate}
+            onChangeText={setEventDate}
+          />
+          <TextInput
+            style={[styles.input, styles.flexInput]}
+            placeholder="Dose change"
+            placeholderTextColor="#666"
+            value={eventDose}
+            onChangeText={setEventDose}
+          />
+        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Unit / note detail"
+          placeholderTextColor="#666"
+          value={eventUnit}
+          onChangeText={setEventUnit}
+        />
+        <TextInput
+          style={[styles.input, styles.multilineInput]}
+          placeholder="Event note"
+          placeholderTextColor="#666"
+          value={eventNotes}
+          onChangeText={setEventNotes}
+          multiline
+        />
+        <Pressable style={styles.saveButton} onPress={handleAddEvent}>
+          <Text style={styles.saveText}>Add Event</Text>
+        </Pressable>
+        {savedMessage && <Text style={styles.savedText}>{savedMessage}</Text>}
+      </View>
+
+      {activeItems.length > 0 && (
+        <View style={styles.timelineGroup}>
+          <Text style={styles.sectionLabel}>Active items</Text>
+          {activeItems.map((item) => (
+            <View key={item.id} style={styles.timelineRow}>
+              <View style={styles.timelineTextCol}>
+                <Text style={styles.timelineTitle}>{item.name}</Text>
+                <Text style={styles.timelineMeta}>
+                  {JOURNAL_CATEGORY_LABELS[item.category]} · {formatJournalDose(item)} · since {item.startDate}
+                </Text>
+              </View>
+              <Pressable
+                style={styles.smallOutlineBtn}
+                onPress={() => stopCustomItem(item.id, todayDate(), 'Stopped from timeline')}>
+                <Text style={styles.smallOutlineText}>Stop</Text>
+              </Pressable>
+            </View>
+          ))}
+        </View>
+      )}
+
+      <View style={styles.timelineGroup}>
+        <Text style={styles.sectionLabel}>Recent changes</Text>
+        {recentEvents.length > 0 ? recentEvents.map((event) => (
+          <View key={event.id} style={styles.timelineRow}>
+            <View style={styles.timelineTextCol}>
+              <Text style={styles.timelineTitle}>{event.date} · {JOURNAL_ACTION_LABELS[event.action]}</Text>
+              <Text style={styles.timelineMeta}>
+                {event.itemName}{event.dose || event.unit ? ` · ${[event.dose, event.unit].filter(Boolean).join(' ')}` : ''}
+              </Text>
+              {!!event.notes && <Text style={styles.timelineNote}>{event.notes}</Text>}
+            </View>
+          </View>
+        )) : (
+          <Text style={styles.noteText}>No timeline changes yet.</Text>
+        )}
+      </View>
+
+      {stoppedItems.length > 0 && (
+        <View style={styles.timelineGroup}>
+          <Text style={styles.sectionLabel}>Stopped items</Text>
+          {stoppedItems.slice(-5).reverse().map((item) => (
+            <Text key={item.id} style={styles.timelineMeta}>
+              {item.name} · {item.startDate} to {item.stopDate}
+            </Text>
+          ))}
+        </View>
+      )}
+
+      <View style={styles.effectBox}>
+        <Text style={styles.effectTitle}>Effect insight</Text>
+        <Text style={styles.effectBody}>
+          Not enough data yet. Future views may show possible associations with low confidence, without claiming cause.
+        </Text>
+      </View>
     </View>
   );
 }
@@ -581,6 +910,7 @@ export default function FeedbackScreen() {
           : 'Log subjective context, sessions, and coaching feedback'}
       </Text>
       <DailyJournalCard />
+      <CustomJournalTimelineCard />
       <SyncCard />
       <NextDayCheckinCard />
       <RecommendationFeedbackCard />
@@ -684,6 +1014,45 @@ const styles = StyleSheet.create({
     minHeight: 74,
     textAlignVertical: 'top',
   },
+  twoColRow: { flexDirection: 'row', gap: 8 },
+  flexInput: { flex: 1 },
+  timelineGroup: {
+    gap: 8,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.06)',
+  },
+  timelineRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    gap: 10,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.04)',
+  },
+  timelineTextCol: { flex: 1, gap: 2 },
+  timelineTitle: { fontSize: 14, fontWeight: '700' },
+  timelineMeta: { fontSize: 12, opacity: 0.55, lineHeight: 17 },
+  timelineNote: { fontSize: 12, opacity: 0.42, lineHeight: 17 },
+  smallOutlineBtn: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#d4e157',
+  },
+  smallOutlineText: { fontSize: 12, color: '#d4e157', fontWeight: '700' },
+  effectBox: {
+    gap: 4,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(212,225,87,0.07)',
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.18)',
+  },
+  effectTitle: { fontSize: 13, fontWeight: '700', color: '#d4e157' },
+  effectBody: { fontSize: 12, opacity: 0.65, lineHeight: 17 },
 
   saveButton: {
     backgroundColor: '#d4e157',

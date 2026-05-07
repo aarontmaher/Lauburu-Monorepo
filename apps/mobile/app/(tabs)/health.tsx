@@ -730,6 +730,7 @@ export default function HealthScreen() {
   const whoopSourceUpdatedAt = useWhoopStore((s) => s.day?.source_updated_at ?? null);
   const whoopHasDay = useWhoopStore((s) => s.day != null);
   const todayJournal = useDailyJournalStore((s) => s.getEntryForDate(todayDate()));
+  const activeJournalItems = useDailyJournalStore((s) => s.getActiveCustomItems());
 
   const authStatus = useAuthStore((s) => s.status);
   const user = useAuthStore((s) => s.user);
@@ -771,8 +772,8 @@ export default function HealthScreen() {
     polarHubDetected: polarViaHc?.detected ?? false,
     samsungHubDetected: samsungViaHc?.detected ?? false,
     manualSessionData: days.some((day) => day.grappling_session != null || (day.workouts ?? []).some((workout) => workout.source === 'manual')),
-    journalContext: todayJournal != null,
-  }), [days, features, polarViaHc?.detected, samsungViaHc?.detected, today, todayJournal]);
+    journalContext: todayJournal != null || activeJournalItems.length > 0,
+  }), [activeJournalItems.length, days, features, polarViaHc?.detected, samsungViaHc?.detected, today, todayJournal]);
 
   const inExpoGo = isExpoGo();
   const nativeCopy = useMemo(() => getNativeHealthSourceCopy(Platform.OS), []);
