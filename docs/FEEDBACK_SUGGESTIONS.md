@@ -168,7 +168,7 @@ FS-014 | (awaiting Aaron approval)
 FS-015 | (awaiting Aaron approval)
 FS-016 | (awaiting Aaron approval)
 FS-017 | (awaiting Aaron approval)
-FS-018 | (awaiting Aaron approval)
+FS-018 | 2026-05-08 approved by Aaron — dispatched CODEX-CUSTOM-JOURNAL-V1-SCHEMA-AND-UI-01 to codex-lauburu pane
 ```
 
 When Aaron approves an item, the line becomes:
