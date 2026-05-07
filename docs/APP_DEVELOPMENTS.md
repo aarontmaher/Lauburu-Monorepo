@@ -217,6 +217,22 @@ priority — they are the floor below every priority.
 - **No paid AI API.** Gated on the two strategy docs.
 - **Build dispatch is owner-tap only.** Connector / bridge cannot
   trigger builds.
+- **EAS build cost control.** Do not run, trigger, recommend, or
+  prepare a new EAS build unless all are true:
+  1. Agent has completed a human-style app audit or targeted
+     verification.
+  2. Agent explicitly confirms the change is worthwhile to test
+     on-device.
+  3. The change is bundled with other meaningful mobile changes
+     where possible.
+  4. Typecheck/tests pass first.
+  5. Aaron explicitly approves the build.
+  Default is no EAS build, no tester build, no "quick build to
+  check", no build for docs/backend/MCP-only changes, and no build
+  for tiny copy/UI tweaks unless bundled. Use mobile typecheck,
+  unit tests, local inspection, simulator/dev-client if already
+  available, Admin/Dev MCP status, and Agent audit confirmation
+  instead.
 - **Admin/Dev gating preserved.** No tester sees admin surfaces
   or owner-only FABs.
 - **No secrets / tokens in any committed file** — `.env*` are

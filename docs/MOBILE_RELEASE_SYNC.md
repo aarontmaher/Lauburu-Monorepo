@@ -40,6 +40,39 @@ State as of 2026-05-05:
   bump versionCode + buildNumber → Build Android + upload + Build
   iOS + submit from Admin/Dev → testers update automatically.
 
+## EAS build cost control rule (PINNED)
+
+Tester / Internal Testing builds described in this doc cost EAS
+build credits. Do NOT run, trigger, recommend, or prepare a new
+EAS build (Android `android-aab-build.yml` or iOS
+`ios-testflight-build.yml`) unless ALL FIVE hold:
+
+1. Agent has completed a human-style app audit or targeted
+   verification.
+2. Agent explicitly confirms the change is worthwhile to test
+   on-device.
+3. The change is bundled with other meaningful mobile changes
+   where possible.
+4. Typecheck/tests pass first.
+5. Aaron explicitly approves the build.
+
+Default: no EAS build, no tester build, no "quick build to
+check", no build for docs/backend/MCP-only changes, and no
+build for tiny copy/UI tweaks unless bundled.
+
+Use instead: mobile typecheck, unit tests, local inspection,
+simulator/dev-client if already available, Admin/Dev MCP
+status, and Agent audit confirmation.
+
+Every Claude / Codex / Agent prompt that mentions build or
+tester-build work must include: "Do not run EAS builds unless
+Agent has confirmed a worthwhile on-device change and Aaron
+approves."
+
+Full body: `docs/ADMIN_RELEASE_AUTOMATION_PLAN.md` § Safety
+gates and `docs/BACKLOG_AUTOMATION_SYSTEM.md` § EAS build
+cost control rule.
+
 ## TL;DR
 
 Tester channels work. Full auto-ship is partial.

@@ -37,6 +37,11 @@ The builders bake the standing non-negotiables into every prompt
 so Aaron doesn't have to re-state them — every generated prompt is
 self-contained and safe to paste cold into the chosen runner.
 
+Every generated prompt that mentions build, tester-build,
+TestFlight, Play Internal Testing, or EAS work must include this
+sentence verbatim: "Do not run EAS builds unless Agent has confirmed
+a worthwhile on-device change and Aaron approves."
+
 When paid LLM access lands, this layer does NOT change. A future
 runner-specific endpoint may auto-summarise recent work into the
 `selectedTaskBundle` field; the builder shape stays identical.

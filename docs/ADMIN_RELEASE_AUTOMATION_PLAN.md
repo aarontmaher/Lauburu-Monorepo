@@ -82,6 +82,15 @@ GitHub-side and we monitor via the runs API.
 - `x-athlete-memory-token` on backend endpoints; server-side
   allowlist of workflow IDs.
 - Confirmation alert in the app before every trigger.
+- EAS build cost control: do not run, trigger, recommend, or
+  prepare a new EAS build unless Agent has completed a human-style
+  app audit or targeted verification, Agent confirms the change is
+  worthwhile to test on-device, the change is bundled with other
+  meaningful mobile changes where possible, typecheck/tests pass,
+  and Aaron explicitly approves the build. Default is no EAS build,
+  no tester build, no "quick build to check", no build for
+  docs/backend/MCP-only changes, and no build for tiny copy/UI
+  tweaks unless bundled.
 - Branch lock: workflows accept `ref: 'main'` only by default.
 - No free-text command input.
 - Audit log: every dispatch records `(user_email, workflow, timestamp,
@@ -90,6 +99,12 @@ GitHub-side and we monitor via the runs API.
   workflow started < 60 s ago.
 - Dry-run: every workflow accepts a `dry_run: 'true'` input that
   short-circuits before the destructive step.
+
+Generated release/build prompts must include: "Do not run EAS
+builds unless Agent has confirmed a worthwhile on-device change and
+Aaron approves." Prefer mobile typecheck, unit tests, local
+inspection, simulator/dev-client if already available, Admin/Dev MCP
+status, and Agent audit confirmation before any build discussion.
 
 ## Implementation status (this batch)
 

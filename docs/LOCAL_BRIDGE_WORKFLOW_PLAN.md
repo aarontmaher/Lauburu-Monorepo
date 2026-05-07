@@ -42,8 +42,20 @@ parameters are rejected; confirm Alert names the cost (EAS
 credits, Play DRAFT release).
 
 Done when: Aaron can dispatch typecheck / release audit / backend
-smoke / Android build / Android upload / iOS build / iOS submit
-from the phone without opening a terminal. Confirmed.
+smoke from the phone without opening a terminal. Build dispatch
+buttons remain gated by the EAS build cost control rule below.
+Confirmed.
+
+EAS build cost control: do not run, trigger, recommend, or prepare
+a new EAS build unless Agent has completed a human-style app audit
+or targeted verification, Agent confirms the change is worthwhile
+to test on-device, the change is bundled with other meaningful
+mobile changes where possible, typecheck/tests pass, and Aaron
+explicitly approves the build. Default is no EAS build, no tester
+build, no "quick build to check", no build for docs/backend/MCP-only
+changes, and no build for tiny copy/UI tweaks unless bundled.
+Generated prompts must include: "Do not run EAS builds unless Agent
+has confirmed a worthwhile on-device change and Aaron approves."
 
 ## Stage 3 — Template prompt bridge (LIVE)
 

@@ -159,6 +159,34 @@ interface ControlCentrePromptRef {
 }
 ```
 
+## EAS Build Cost Control
+
+The control centre may display build state, workflow state, and
+copyable handoff prompts. It must not encourage a build as the
+default next step.
+
+Do not run, trigger, recommend, or prepare a new EAS build unless
+all are true:
+
+1. Agent has completed a human-style app audit or targeted
+   verification.
+2. Agent explicitly confirms the change is worthwhile to test
+   on-device.
+3. The change is bundled with other meaningful mobile changes where
+   possible.
+4. Typecheck/tests pass first.
+5. Aaron explicitly approves the build.
+
+Default is no EAS build, no tester build, no "quick build to check",
+no build for docs/backend/MCP-only changes, and no build for tiny
+copy/UI tweaks unless bundled. Use mobile typecheck, unit tests,
+local inspection, simulator/dev-client if already available,
+Admin/Dev MCP status, and Agent audit confirmation instead.
+
+Prompt refs / handoff prompts that mention build work must include:
+"Do not run EAS builds unless Agent has confirmed a worthwhile
+on-device change and Aaron approves."
+
 ## 2. Worker composition
 
 Phase 1 adds `GET /api/control_centre` (admin-token-gated). The

@@ -19,6 +19,28 @@ app into a remote shell.
   no env values, no token strings, no service-role keys, ever.
 - Cross-user data is gated by k≥10 + explicit consent (not changed by
   this work; remains backlog).
+- **EAS build cost control.** The Build Android / Build iOS / Submit
+  buttons exposed by Admin/Dev MUST NOT be tapped (or
+  programmatically dispatched, or scripted via the backend proxy)
+  unless ALL FIVE of the following hold:
+  1. Agent has completed a human-style app audit or targeted
+     verification.
+  2. Agent explicitly confirms the change is worthwhile to test
+     on-device.
+  3. The change is bundled with other meaningful mobile changes where
+     possible.
+  4. Typecheck/tests pass first.
+  5. Aaron explicitly approves the build.
+  Default: no EAS build, no tester build, no "quick build to check",
+  no build for docs/backend/MCP-only changes, no build for tiny
+  copy/UI tweaks unless bundled. Use mobile typecheck, unit tests,
+  local inspection, simulator/dev-client if already available,
+  Admin/Dev MCP status, and Agent audit confirmation instead. Full
+  rule body in `docs/ADMIN_RELEASE_AUTOMATION_PLAN.md` and
+  `docs/BACKLOG_AUTOMATION_SYSTEM.md`. Every generated Claude / Codex /
+  Agent prompt that mentions build or tester-build work must include:
+  "Do not run EAS builds unless Agent has confirmed a worthwhile
+  on-device change and Aaron approves."
 
 ## Stages
 

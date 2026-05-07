@@ -72,6 +72,42 @@ Bound: confirmation is a human "yes" in chat or a tap on the
 Admin/Dev confirm Alert. The runner names the cost (e.g. "EAS
 build credit") in the confirm copy.
 
+### EAS build cost control rule
+
+Do not run, trigger, recommend, or prepare a new EAS build unless
+all are true:
+
+1. Agent has completed a human-style app audit or targeted
+   verification.
+2. Agent explicitly confirms the change is worthwhile to test
+   on-device.
+3. The change is bundled with other meaningful mobile changes where
+   possible.
+4. Typecheck/tests pass first.
+5. Aaron explicitly approves the build.
+
+Default:
+
+- no EAS build
+- no tester build
+- no "quick build to check"
+- no build for docs/backend/MCP-only changes
+- no build for tiny copy/UI tweaks unless bundled
+
+Use instead:
+
+- mobile typecheck
+- unit tests
+- local inspection
+- simulator/dev-client if already available
+- Admin/Dev MCP status
+- Agent audit confirmation
+
+Every generated Claude / Codex / Agent prompt that mentions build
+or tester-build work must include: "Do not run EAS builds unless
+Agent has confirmed a worthwhile on-device change and Aaron
+approves."
+
 ### Lane 3 — Human approval required
 
 Runner cannot do these autonomously, period. Items in this lane:
