@@ -12,6 +12,103 @@ Companion to `HEALTH_SOURCE_IMPLEMENTATION_AUDIT.md`,
 
 Updated 2026-05-06.
 
+## Priority — v1 is hub-first
+
+Updated 2026-05-07 against
+`CLAUDE-GRAPPLING-READINESS-HUB-FIRST-PRIORITY-01`.
+**Grappling Readiness v1 ships against the platform health
+hubs (Apple Health on iOS, Health Connect on Android), not
+against vendor-direct integrations.** WHOOP Direct, Polar
+AccessLink Direct, and Bluetooth HR are explicit
+enrichments — they roll into v1.5 / v2, not v1.
+
+Why hub-first:
+- Apple Health and Health Connect are already `live` per
+  `docs/HEALTH_NUTRITION_READINESS_AUDIT.md` § 1.1 and § 1.2.
+  Every Aaron tester device already has them. No vendor
+  blocker.
+- WHOOP Direct (FS-008) is BLOCKED on Aaron approval +
+  Railway → Cloudflare migration. Treating it as a v1 input
+  would block Grappling Readiness on a separate workstream.
+- Polar AccessLink (FS-012) is `planned` only;
+  `docs/POLAR_ACCESSLINK_PLAN.md` is outline-only.
+- Hub-routed Polar / WHOOP / Garmin / Concept2 / etc. data
+  ALREADY contributes today, just under a different truth
+  label (`synced from hub`). v1 honours that data.
+
+### Hub-fed vendor data is hub-fed, not direct
+
+Anti-rule: when WHOOP / Polar / Garmin / Concept2 / ErgZone
+data lands via Apple Health or Health Connect, the readiness
+compute MUST treat it under the hub source (`apple_health` /
+`health_connect`) with the upstream-app provenance label
+(e.g. "WHOOP via Apple Health", "Polar via Health Connect").
+v1 MUST NOT relabel hub-routed rows as `whoop_direct` or
+`polar_direct` even if the user has those vendor accounts.
+The truth label captures provenance, not the user's vendor
+account state. See `docs/HEALTH_BACKEND_CONTRACT_FOR_CODEX.md`
+§ 4 for the three-way Polar matrix; same rule for WHOOP.
+
+### Field-eligibility gate per source
+
+The compute MUST NOT claim HRV / recovery / strain values
+unless the source actually supplies those fields. Hub data
+varies — Apple Health may not carry HRV unless the upstream
+app writes it; some Polar Flow → Health Connect users get HR
+samples but not RMSSD. The compute reads what the hub gave
+it, hedges everything missing as `provisional`, and never
+synthesises a field from another source.
+
+## Minimum v1 inputs
+
+The smallest set of fields v1 reads. Any of these may be
+missing on any given day; the compute returns
+`confidence: provisional` (or `low`) with the available
+subset, never blocks.
+
+| Input | Where it comes from | Required for v1 ship | Notes |
+|---|---|---|---|
+| Sleep duration | Apple Health `SleepSessionRecord` / Health Connect `SleepSessionRecord` | yes | feed for `sleep` bucket |
+| Resting heart rate | Apple Health / Health Connect `RestingHeartRateRecord` | yes | feed for `autonomic` bucket |
+| Heart-rate variability (RMSSD) | Apple Health / Health Connect `HeartRateVariabilityRmssdRecord` IF the upstream app wrote it | no — best-effort | feed for `autonomic` bucket when present; bucket falls back to RHR-only when missing |
+| Recent training sessions / load | Apple Health `WorkoutRecord` / Health Connect `ExerciseSessionRecord` + Lauburu manual `TrainingSession` | yes (at least one of the two paths) | feed for `load` bucket |
+| Subjective soreness / RPE | Lauburu `NextDayCheckin` sliders (Batch B) | best-effort — bucket goes null when not entered | feed for `subjective` bucket |
+| Nutrition context | Apple Health / Health Connect `NutritionRecord` OR Lauburu manual nutrition | best-effort — context-only, NEVER a readiness input | rendered as a sidebar / "More sources" disclosure; per `docs/CRONOMETER_IMPORT_FLOW.md` § 6 |
+
+Anti-rule: nutrition is **context only**, never readiness
+input. Same for blood test, DEXA, journal — those sources
+appear in the UI as evidence but the compute does not read
+them.
+
+### Confidence labels in v1
+
+| Label | Meaning | When it returns |
+|---|---|---|
+| `provisional` | floor; assumes nothing about input veracity | always — every reading carries this floor |
+| `low` | enough data to compute, partial provenance | hub data present + at least one Lauburu manual layer |
+| `medium` | NOT returned in v1 | reserved for v1.5+ once direct sources clear their seed window per `WHOOP_DIRECT_SETUP.md` § M.3 / `POLAR_ACCESSLINK_PLAN.md` § O.4 |
+| `high` | NEVER returned by the prototype | reserved for the post-calibration future state |
+
+Plus the qualifier label "better with connected sources":
+when the compute returns `provisional` AND the user has zero
+direct sources connected, the UI MUST show a small caption
+reading "Better with WHOOP / Polar Direct connected" linking
+to the (hidden-by-default) connect surfaces. This is the
+single allowed nudge — no other coaching language.
+
+### What stays hidden / disabled in v1
+
+| Surface | State |
+|---|---|
+| WHOOP Direct connect button | hidden behind veteran "More sources" disclosure; chip says `setup required` per `HEALTH_PROVISIONAL_AND_MISSINGNESS_COPY.md` § 5.2 |
+| WHOOP Direct readiness card | hidden until FS-008 ships AND seed window clears |
+| "Polar Direct" / "Polar AccessLink" labels | NEVER appear until POLAR_ACCESSLINK_PLAN ships AND seed window clears |
+| Polar AccessLink connect button | hidden until FS-012 ships |
+| Bluetooth HR sensor connect | lives in Train tab only; never offered as a readiness input |
+| `confidence: medium` chip | not rendered (compute won't return it in v1) |
+| `confidence: high` chip | not rendered |
+| Per-vendor recovery / strain / HRV claims | gated on source-actually-supplies-the-field per § "Field-eligibility gate"; hidden when the source is silent |
+
 ## Principles
 
 1. **App-owned, not vendor-mirrored.** Lauburu's Grappler
@@ -169,6 +266,79 @@ This document is the contract; implementation is gated:
 
 Each batch is its own safe lane per `BACKLOG_AUTOMATION_SYSTEM.md`
 Lane 2 (build autopilot with confirmation).
+
+## Codex handoff — hub-first v1 prototype
+
+Drop-in for the next mobile batch. Not yet dispatched; bundled
+with the existing health-source label audit prompt.
+
+```
+PROMPT-ID: CODEX-GRAPPLING-READINESS-V1-HUB-FIRST-01
+TYPE: CODEX
+LANE: Mobile / Grappling Readiness v1 prototype card
+
+MCP-FIRST: call project.get_current_state.
+
+Reference docs (read these first):
+- docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md (this doc) —
+  hub-first priority + minimum v1 inputs + confidence labels +
+  hidden / disabled surfaces.
+- docs/HEALTH_BACKEND_CONTRACT_FOR_CODEX.md § 3 (Health
+  Connect per-metric mapping) + § 5 (readiness gating).
+- docs/HEALTH_PROVISIONAL_AND_MISSINGNESS_COPY.md § 4
+  (provisional readiness strings) + § 1 (truth labels).
+
+Phase 1 scope (this batch):
+
+1. Implement the Grappler Readiness v1 card in
+   apps/mobile/src/components/ — read computeGrapplerReadiness
+   output from the existing service, map to band + suggestion +
+   why bullets per § "UI shape (target)".
+2. Hub-first: read Apple Health (iOS) and Health Connect
+   (Android) inputs only. Do NOT add WHOOP-direct or
+   Polar-direct read paths. WHOOP / Polar data routed through
+   the hub IS in scope and MUST surface with provenance like
+   "WHOOP via Apple Health" or "Polar via Health Connect".
+3. Confidence labels: render only `provisional` and `low` in
+   v1. The `medium` and `high` chips MUST NOT be reachable
+   from this UI even if the compute returns them; cap at `low`
+   for v1.
+4. "Better with connected sources" caption: render when the
+   compute returns `provisional` AND zero direct sources are
+   connected. One small line, links to the hidden-by-default
+   connect surfaces.
+5. Missingness: every bucket renders "no data" per
+   HEALTH_PROVISIONAL_AND_MISSINGNESS_COPY.md § 2.3 when its
+   input is absent. No fabricated values, no estimates.
+6. NO React redesign of unrelated screens. NO Worker route
+   addition. NO migration. NO native rebuild. NO version bump.
+   NO EAS build.
+7. Status report opens with the rule-12 three-field block
+   (MCP update attempted / Bridge snapshot run / Stale reason
+   if blocked) AND the rule-13 three-section split (automated
+   by coder/agent / manual Aaron step / blocked until Aaron
+   acts).
+8. Status sequence MUST be the four-string ladder per rule 8.
+
+Anti-rules:
+- No "you are ready" / "skip training today" language.
+- No medical / clinical phrasing.
+- No silent passthrough of vendor recovery scores
+  (WHOOP recovery, Polar Recovery Pro). v1 only renders
+  fields it computed itself.
+- No imputation of missing values.
+- No HRV / recovery / strain claim unless the source actually
+  supplied that field on that day.
+
+Output:
+- changed files (mobile prototype card, no other screens)
+- four-status compliance per FS-XXX candidate
+- recommendation for v1.5 (WHOOP-direct enrichment) once
+  v1 lands
+- explicit statement: this batch did NOT request, recommend,
+  or trigger an EAS build
+- rule-12 three-field block + rule-13 three-section split
+```
 
 ## Anti-rules summary
 

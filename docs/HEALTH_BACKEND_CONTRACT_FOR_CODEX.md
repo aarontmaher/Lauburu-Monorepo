@@ -235,6 +235,14 @@ BLE HR is never an input to readiness regardless of priority.
 
 ## 5. Readiness gating
 
+**v1 ships hub-first** per `docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md`
+§ "Priority — v1 is hub-first" (added 2026-05-07). The
+table below shows full eligibility across all phases — v1
+in particular reads only from Apple Health + Health Connect;
+the "After P1" column applies once direct integrations clear
+their seed windows. v1 confidence ceilings cap at `low`,
+even where the table allows `medium` later.
+
 Single per-source eligibility table for the Grappler Readiness
 v1 compute. Pulls together
 `HEALTH_NUTRITION_READINESS_AUDIT.md` § 3.1 (per-source

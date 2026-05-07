@@ -557,6 +557,16 @@ direct-integration gate AND a unified-MCP-state gate.
 
 ### 6.2 Grappler Readiness v1
 
+**v1 is hub-first** per
+`docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md` § "Priority — v1
+is hub-first" (updated 2026-05-07 against
+`CLAUDE-GRAPPLING-READINESS-HUB-FIRST-PRIORITY-01`). v1
+reads only from Apple Health (iOS) and Health Connect
+(Android); WHOOP Direct + Polar AccessLink + Bluetooth HR
+are explicit v1.5 / v2 enrichments. Hub-routed
+WHOOP / Polar data IS in scope under hub provenance
+("WHOOP via Apple Health", "Polar via Health Connect").
+
 Ships only after § 6.1 holds for ≥2 tester-build cycles
 without health-source regression. Acceptance:
 
