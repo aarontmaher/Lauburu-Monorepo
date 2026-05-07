@@ -26,6 +26,7 @@
 
 import type { Env } from './worker-env';
 import { getSupabaseAdapter } from './supabase';
+import { buildOperatingRulesSummary, type OperatingRulesSummary } from './operating-rules';
 
 export const CONTROL_CENTRE_SCHEMA_VERSION = 1 as const;
 
@@ -151,6 +152,9 @@ export interface ControlCentreSnapshot {
   suggestionCounts: ControlCentreSuggestionCounts | null;
 
   promptLibrary: readonly ControlCentrePromptRef[];
+
+  /** Mirror of docs/OPERATING_RULES.md — count + ids + titles only. Full bodies via `project.get_operating_rules`. */
+  operatingRules: OperatingRulesSummary;
 
   safety: ControlCentreSafety;
 }
@@ -507,6 +511,7 @@ export async function buildControlCentreSnapshot(env: Env): Promise<ControlCentr
       topBacklog: null,
       suggestionCounts: null,
       promptLibrary: PROMPT_LIBRARY,
+      operatingRules: buildOperatingRulesSummary(),
       safety: { publicSafe: false, privateFieldsWithheld: true, withheld: WITHHELD_FIELDS },
     };
   }
@@ -575,6 +580,7 @@ export async function buildControlCentreSnapshot(env: Env): Promise<ControlCentr
     topBacklog,
     suggestionCounts,
     promptLibrary: PROMPT_LIBRARY,
+    operatingRules: buildOperatingRulesSummary(),
     safety: { publicSafe: false, privateFieldsWithheld: true, withheld: WITHHELD_FIELDS },
   };
 }

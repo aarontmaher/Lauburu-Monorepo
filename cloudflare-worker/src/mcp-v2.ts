@@ -23,6 +23,7 @@
 import type { Env } from './worker-env';
 import { getSupabaseAdapter } from './supabase';
 import { buildControlCentreSnapshot } from './control-centre';
+import { buildOperatingRulesPayload } from './operating-rules';
 
 interface JsonRpcRequest {
   jsonrpc?: string;
@@ -679,6 +680,13 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
     build: buildProjectWorkStatus,
+  },
+  {
+    name: 'project.get_operating_rules',
+    description: 'Returns the canonical 10 operating rules every coder / agent / consumer must follow (audit→bundles, parallel lanes, no stopping at one patch, re-audit on implementation-complete, Agent-confirmed gate, EAS build cost control, no "fully done" without Aaron, provisional health claims, repo docs as source of truth). Stable rule IDs 1..10 + titles + bodies. Mirror of docs/OPERATING_RULES.md. Public-safe.',
+    inputSchema: { type: 'object', properties: {}, required: [] },
+    auth: 'public',
+    build: async () => buildOperatingRulesPayload(),
   },
   {
     name: 'project.list_priorities',
