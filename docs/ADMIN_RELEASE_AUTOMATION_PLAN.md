@@ -82,15 +82,26 @@ GitHub-side and we monitor via the runs API.
 - `x-athlete-memory-token` on backend endpoints; server-side
   allowlist of workflow IDs.
 - Confirmation alert in the app before every trigger.
-- EAS build cost control: do not run, trigger, recommend, or
-  prepare a new EAS build unless Agent has completed a human-style
-  app audit or targeted verification, Agent confirms the change is
-  worthwhile to test on-device, the change is bundled with other
-  meaningful mobile changes where possible, typecheck/tests pass,
-  and Aaron explicitly approves the build. Default is no EAS build,
-  no tester build, no "quick build to check", no build for
-  docs/backend/MCP-only changes, and no build for tiny copy/UI
-  tweaks unless bundled.
+- EAS build cost control: coders may say a feature or patch is
+  `Implementation-complete, awaiting Agent functional confirmation`
+  when code is committed, typecheck/tests pass, no obvious blockers
+  remain, and expected behaviour is clearly described. They must not
+  request, trigger, or recommend a new EAS/tester build yet. A new
+  EAS build is allowed only after Agent performs a functional audit,
+  Agent confirms the change is worthwhile to test on-device, the
+  change is bundled with other meaningful mobile changes where
+  possible, typecheck/tests pass, and Aaron explicitly approves the
+  EAS build. Default is no EAS build, no tester build, no "quick
+  build to check", no build for docs/backend/MCP-only changes, and
+  no build for tiny copy/UI tweaks unless bundled. Status wording
+  progression (use these exact strings, never flatten to "done"):
+  `Implementation-complete, awaiting Agent functional confirmation`
+  → `Agent-confirmed, ready for Aaron build approval`
+  → `Aaron-approved for EAS build`
+  → `Built/tester-ready`.
+  Do not call mobile work `fully complete`, `done`, or `shipped`
+  until Aaron has tested or approved it on-device. Full body in
+  `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "EAS build cost control rule".
 - Branch lock: workflows accept `ref: 'main'` only by default.
 - No free-text command input.
 - Audit log: every dispatch records `(user_email, workflow, timestamp,
@@ -105,6 +116,11 @@ builds unless Agent has confirmed a worthwhile on-device change and
 Aaron approves." Prefer mobile typecheck, unit tests, local
 inspection, simulator/dev-client if already available, Admin/Dev MCP
 status, and Agent audit confirmation before any build discussion.
+Use status wording: `Implementation-complete, awaiting Agent
+functional confirmation`, `Agent-confirmed, ready for Aaron build
+approval`, `Aaron-approved for EAS build`, and
+`Built/tester-ready`. Do not call mobile work `fully complete` until
+Aaron has tested or approved it.
 
 ## Implementation status (this batch)
 

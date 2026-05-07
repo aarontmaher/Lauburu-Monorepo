@@ -56,6 +56,34 @@ ready_for_aaron_test` (after coder-side verification),
 Coders MUST NOT move items: `* → approved_active`, `* →
 approved_done`, `* → rejected`. Those transitions are Aaron-only.
 
+## Build-readiness wording (parallel scale)
+
+The status enum above tracks **suggestion lifecycle**. A
+parallel scale tracks **build-readiness lifecycle** for any
+mobile-app candidate that needs to ship in an EAS build. Both
+scales co-exist on a single candidate; coders MUST report both
+when relevant.
+
+| Build-status string | When | Who sets it |
+|---|---|---|
+| `Implementation-complete, awaiting Agent functional confirmation` | Code committed, tsc / tests pass, no obvious blockers, expected behaviour described. NOT yet build-ready. | coder (Claude / Codex) |
+| `Agent-confirmed, ready for Aaron build approval` | Agent has run a functional audit and confirmed the change is worth testing on-device. | Agent |
+| `Aaron-approved for EAS build` | Aaron has read the Agent confirmation and explicitly said "build it". | Aaron |
+| `Built/tester-ready` | EAS build dispatched and the artefact is in TestFlight / Play Internal Testing. | Aaron / build workflow |
+
+Coders MUST NOT skip a step (e.g. labelling a change
+`Built/tester-ready` directly). Coders MUST NOT call mobile work
+`fully complete`, `done`, or `shipped` — only Aaron can promote
+to `approved_done` (suggestion-side) AND only Aaron-tested
+on-device qualifies as "fully complete" (build-side). Until
+Aaron tests, the longest-form build-status string is the only
+correct phrasing.
+
+Full body of the EAS build cost control rule lives in
+`docs/BACKLOG_AUTOMATION_SYSTEM.md` § "EAS build cost control
+rule" and `docs/ADMIN_RELEASE_AUTOMATION_PLAN.md` § "Safety
+gates".
+
 ## Workflow
 
 ```

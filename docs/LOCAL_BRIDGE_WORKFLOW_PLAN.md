@@ -46,16 +46,24 @@ smoke from the phone without opening a terminal. Build dispatch
 buttons remain gated by the EAS build cost control rule below.
 Confirmed.
 
-EAS build cost control: do not run, trigger, recommend, or prepare
-a new EAS build unless Agent has completed a human-style app audit
-or targeted verification, Agent confirms the change is worthwhile
-to test on-device, the change is bundled with other meaningful
-mobile changes where possible, typecheck/tests pass, and Aaron
-explicitly approves the build. Default is no EAS build, no tester
-build, no "quick build to check", no build for docs/backend/MCP-only
-changes, and no build for tiny copy/UI tweaks unless bundled.
-Generated prompts must include: "Do not run EAS builds unless Agent
-has confirmed a worthwhile on-device change and Aaron approves."
+EAS build cost control: coders may mark a change
+`Implementation-complete, awaiting Agent functional confirmation`
+when code is committed, typecheck/tests pass, no obvious blockers
+remain, and expected behaviour is clearly described. They must not
+request, trigger, or recommend a new EAS/tester build yet. A build
+is allowed only after Agent performs a functional audit, Agent
+confirms the change is worthwhile to test on-device, the change is
+bundled with other meaningful mobile changes where possible,
+typecheck/tests pass, and Aaron explicitly approves the EAS build.
+Default is no EAS build, no tester build, no "quick build to check",
+no build for docs/backend/MCP-only changes, and no build for tiny
+copy/UI tweaks unless bundled.
+Generated prompts must include: "Do not run EAS builds unless Agent has confirmed a worthwhile on-device change and Aaron approves."
+
+Status wording: `Implementation-complete, awaiting Agent functional
+confirmation` → `Agent-confirmed, ready for Aaron build approval` →
+`Aaron-approved for EAS build` → `Built/tester-ready`. Do not call
+mobile work `fully complete` until Aaron has tested or approved it.
 
 ## Stage 3 — Template prompt bridge (LIVE)
 

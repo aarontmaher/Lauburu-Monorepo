@@ -19,18 +19,20 @@ app into a remote shell.
   no env values, no token strings, no service-role keys, ever.
 - Cross-user data is gated by k≥10 + explicit consent (not changed by
   this work; remains backlog).
-- **EAS build cost control.** The Build Android / Build iOS / Submit
-  buttons exposed by Admin/Dev MUST NOT be tapped (or
-  programmatically dispatched, or scripted via the backend proxy)
-  unless ALL FIVE of the following hold:
-  1. Agent has completed a human-style app audit or targeted
-     verification.
-  2. Agent explicitly confirms the change is worthwhile to test
-     on-device.
+- **EAS build cost control.** Coders may mark mobile work
+  `Implementation-complete, awaiting Agent functional confirmation`
+  when code is committed, typecheck/tests pass, no obvious blockers
+  remain, and expected behaviour is clearly described. The Build
+  Android / Build iOS / Submit buttons exposed by Admin/Dev MUST NOT
+  be tapped (or programmatically dispatched, or scripted via the
+  backend proxy) yet. A new EAS build is allowed only when ALL FIVE
+  hold:
+  1. Agent performs a functional audit of the completed change.
+  2. Agent confirms the change is worthwhile to test on-device.
   3. The change is bundled with other meaningful mobile changes where
      possible.
-  4. Typecheck/tests pass first.
-  5. Aaron explicitly approves the build.
+  4. Typecheck/tests pass.
+  5. Aaron explicitly approves the EAS build.
   Default: no EAS build, no tester build, no "quick build to check",
   no build for docs/backend/MCP-only changes, no build for tiny
   copy/UI tweaks unless bundled. Use mobile typecheck, unit tests,
@@ -41,6 +43,11 @@ app into a remote shell.
   Agent prompt that mentions build or tester-build work must include:
   "Do not run EAS builds unless Agent has confirmed a worthwhile
   on-device change and Aaron approves."
+  Status wording: `Implementation-complete, awaiting Agent
+  functional confirmation`, `Agent-confirmed, ready for Aaron build
+  approval`, `Aaron-approved for EAS build`, `Built/tester-ready`.
+  Do not call mobile work `fully complete` until Aaron has tested or
+  approved it.
 
 ## Stages
 

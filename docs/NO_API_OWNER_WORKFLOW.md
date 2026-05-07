@@ -39,8 +39,13 @@ self-contained and safe to paste cold into the chosen runner.
 
 Every generated prompt that mentions build, tester-build,
 TestFlight, Play Internal Testing, or EAS work must include this
-sentence verbatim: "Do not run EAS builds unless Agent has confirmed
-a worthwhile on-device change and Aaron approves."
+sentence verbatim: "Do not run EAS builds unless Agent has confirmed a worthwhile on-device change and Aaron approves."
+Prompts may say implementation is complete when code is committed,
+typecheck/tests pass, no obvious blockers remain, and expected
+behaviour is described, but they must use the status
+`Implementation-complete, awaiting Agent functional confirmation`
+until Agent has completed a functional audit. Do not call mobile
+work `fully complete` until Aaron has tested or approved it.
 
 When paid LLM access lands, this layer does NOT change. A future
 runner-specific endpoint may auto-summarise recent work into the

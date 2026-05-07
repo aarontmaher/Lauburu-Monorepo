@@ -43,18 +43,21 @@ State as of 2026-05-05:
 ## EAS build cost control rule (PINNED)
 
 Tester / Internal Testing builds described in this doc cost EAS
-build credits. Do NOT run, trigger, recommend, or prepare a new
-EAS build (Android `android-aab-build.yml` or iOS
-`ios-testflight-build.yml`) unless ALL FIVE hold:
+build credits. Coders may say a change is
+`Implementation-complete, awaiting Agent functional confirmation`
+when code is committed, typecheck/tests pass, no obvious blockers
+remain, and expected behaviour is clearly described.
 
-1. Agent has completed a human-style app audit or targeted
-   verification.
-2. Agent explicitly confirms the change is worthwhile to test
-   on-device.
+They must NOT request, trigger, or recommend a new EAS/tester build
+yet. A new EAS build (Android `android-aab-build.yml` or iOS
+`ios-testflight-build.yml`) is allowed only when ALL FIVE hold:
+
+1. Agent performs a functional audit of the completed change.
+2. Agent confirms the change is worthwhile to test on-device.
 3. The change is bundled with other meaningful mobile changes
    where possible.
-4. Typecheck/tests pass first.
-5. Aaron explicitly approves the build.
+4. Typecheck/tests pass.
+5. Aaron explicitly approves the EAS build.
 
 Default: no EAS build, no tester build, no "quick build to
 check", no build for docs/backend/MCP-only changes, and no
@@ -65,9 +68,17 @@ simulator/dev-client if already available, Admin/Dev MCP
 status, and Agent audit confirmation.
 
 Every Claude / Codex / Agent prompt that mentions build or
-tester-build work must include: "Do not run EAS builds unless
-Agent has confirmed a worthwhile on-device change and Aaron
-approves."
+tester-build work must include: "Do not run EAS builds unless Agent has confirmed a worthwhile on-device change and Aaron approves."
+
+Use status wording:
+
+- `Implementation-complete, awaiting Agent functional confirmation`
+- `Agent-confirmed, ready for Aaron build approval`
+- `Aaron-approved for EAS build`
+- `Built/tester-ready`
+
+Do not call mobile work `fully complete` until Aaron has tested or
+approved it.
 
 Full body: `docs/ADMIN_RELEASE_AUTOMATION_PLAN.md` § Safety
 gates and `docs/BACKLOG_AUTOMATION_SYSTEM.md` § EAS build

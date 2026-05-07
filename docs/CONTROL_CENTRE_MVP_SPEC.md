@@ -165,17 +165,20 @@ The control centre may display build state, workflow state, and
 copyable handoff prompts. It must not encourage a build as the
 default next step.
 
-Do not run, trigger, recommend, or prepare a new EAS build unless
-all are true:
+Coders may say a feature or patch is
+`Implementation-complete, awaiting Agent functional confirmation`
+when code is committed, typecheck/tests pass, no obvious blockers
+remain, and expected behaviour is clearly described. They must not
+request, trigger, or recommend a new EAS/tester build yet.
 
-1. Agent has completed a human-style app audit or targeted
-   verification.
-2. Agent explicitly confirms the change is worthwhile to test
-   on-device.
+A new EAS build is allowed only after all are true:
+
+1. Agent performs a functional audit of the completed change.
+2. Agent confirms the change is worthwhile to test on-device.
 3. The change is bundled with other meaningful mobile changes where
    possible.
-4. Typecheck/tests pass first.
-5. Aaron explicitly approves the build.
+4. Typecheck/tests pass.
+5. Aaron explicitly approves the EAS build.
 
 Default is no EAS build, no tester build, no "quick build to check",
 no build for docs/backend/MCP-only changes, and no build for tiny
@@ -186,6 +189,12 @@ Admin/Dev MCP status, and Agent audit confirmation instead.
 Prompt refs / handoff prompts that mention build work must include:
 "Do not run EAS builds unless Agent has confirmed a worthwhile
 on-device change and Aaron approves."
+
+Use status wording: `Implementation-complete, awaiting Agent
+functional confirmation`, `Agent-confirmed, ready for Aaron build
+approval`, `Aaron-approved for EAS build`, and
+`Built/tester-ready`. Do not call mobile work `fully complete` until
+Aaron has tested or approved it.
 
 ## 2. Worker composition
 

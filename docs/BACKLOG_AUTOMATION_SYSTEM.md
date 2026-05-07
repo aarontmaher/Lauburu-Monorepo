@@ -74,17 +74,20 @@ build credit") in the confirm copy.
 
 ### EAS build cost control rule
 
-Do not run, trigger, recommend, or prepare a new EAS build unless
-all are true:
+Coders may mark a feature or patch
+`Implementation-complete, awaiting Agent functional confirmation`
+when code is committed, typecheck/tests pass, no obvious blockers
+remain, and the expected behaviour is clearly described.
 
-1. Agent has completed a human-style app audit or targeted
-   verification.
-2. Agent explicitly confirms the change is worthwhile to test
-   on-device.
+They must not request, trigger, or recommend a new EAS/tester build
+yet. A new EAS build is allowed only after all are true:
+
+1. Agent performs a functional audit of the completed change.
+2. Agent confirms the change is worthwhile to test on-device.
 3. The change is bundled with other meaningful mobile changes where
    possible.
-4. Typecheck/tests pass first.
-5. Aaron explicitly approves the build.
+4. Typecheck/tests pass.
+5. Aaron explicitly approves the EAS build.
 
 Default:
 
@@ -104,9 +107,17 @@ Use instead:
 - Agent audit confirmation
 
 Every generated Claude / Codex / Agent prompt that mentions build
-or tester-build work must include: "Do not run EAS builds unless
-Agent has confirmed a worthwhile on-device change and Aaron
-approves."
+or tester-build work must include: "Do not run EAS builds unless Agent has confirmed a worthwhile on-device change and Aaron approves."
+
+Use these build-gate statuses:
+
+- `Implementation-complete, awaiting Agent functional confirmation`
+- `Agent-confirmed, ready for Aaron build approval`
+- `Aaron-approved for EAS build`
+- `Built/tester-ready`
+
+Do not call user-facing mobile work `fully complete` until Aaron has
+tested or approved it.
 
 ### Lane 3 — Human approval required
 

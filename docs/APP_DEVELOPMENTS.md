@@ -217,22 +217,28 @@ priority — they are the floor below every priority.
 - **No paid AI API.** Gated on the two strategy docs.
 - **Build dispatch is owner-tap only.** Connector / bridge cannot
   trigger builds.
-- **EAS build cost control.** Do not run, trigger, recommend, or
-  prepare a new EAS build unless all are true:
-  1. Agent has completed a human-style app audit or targeted
-     verification.
-  2. Agent explicitly confirms the change is worthwhile to test
-     on-device.
+- **EAS build cost control.** Coders may say a feature or patch is
+  `Implementation-complete, awaiting Agent functional confirmation`
+  when code is committed, typecheck/tests pass, no obvious blockers
+  remain, and expected behaviour is clearly described. They must not
+  request, trigger, or recommend a new EAS/tester build yet. A new
+  EAS build is allowed only after:
+  1. Agent performs a functional audit of the completed change.
+  2. Agent confirms the change is worthwhile to test on-device.
   3. The change is bundled with other meaningful mobile changes
      where possible.
-  4. Typecheck/tests pass first.
-  5. Aaron explicitly approves the build.
+  4. Typecheck/tests pass.
+  5. Aaron explicitly approves the EAS build.
   Default is no EAS build, no tester build, no "quick build to
   check", no build for docs/backend/MCP-only changes, and no build
   for tiny copy/UI tweaks unless bundled. Use mobile typecheck,
   unit tests, local inspection, simulator/dev-client if already
   available, Admin/Dev MCP status, and Agent audit confirmation
-  instead.
+  instead. Use status wording: `Implementation-complete, awaiting
+  Agent functional confirmation`, `Agent-confirmed, ready for Aaron
+  build approval`, `Aaron-approved for EAS build`, and
+  `Built/tester-ready`. Do not call mobile work `fully complete`
+  until Aaron has tested or approved it.
 - **Admin/Dev gating preserved.** No tester sees admin surfaces
   or owner-only FABs.
 - **No secrets / tokens in any committed file** — `.env*` are
