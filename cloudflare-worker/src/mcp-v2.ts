@@ -535,7 +535,7 @@ function withNativeIphoneAutomationPriority(payload: unknown): unknown {
 
 async function proxyWebsiteCount(): Promise<number | null> {
   try {
-    const list = await proxyWebsiteCall('list_pending_suggestions', {});
+    const list = withNativeIphoneAutomationPriority(await proxyWebsiteCall('list_pending_suggestions', {}));
     if (Array.isArray(list)) return list.length;
     if (list && typeof list === 'object' && 'count' in (list as object)) {
       const c = (list as { count?: unknown }).count;
