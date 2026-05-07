@@ -187,6 +187,177 @@ async function buildProjectWorkStatus(env: Env): Promise<unknown> {
   };
 }
 
+/**
+ * Canonical public-safe "what's happening right now" snapshot.
+ *
+ * Designed to be the single tool ChatGPT calls to disambiguate the
+ * "MCP says all idle but Claude is working" confusion. Composes
+ * priority + blocker + next action + per-lane sanitised
+ * summaries + freshness + safety flags. No raw text > 140 chars
+ * per field. No file paths. No prompt IDs.
+ */
+const FRESHNESS_WINDOW_MS_V2 = 10 * 60 * 1000;
+
+async function buildProjectCurrentState(env: Env): Promise<unknown> {
+  const generatedAt = new Date().toISOString();
+  const adapter = getSupabaseAdapter(env);
+
+  const safetyBaseline = {
+    publicSafe: true,
+    privateFieldsWithheld: true,
+    note: 'Public-safe surface. Per-lane lastSummary truncated to ≤140 char; prompt IDs / file paths / tokens dropped. Detail behind admin-token at /api/control_centre or mobile.get_control_centre.',
+  } as const;
+
+  if (!adapter.configured) {
+    return {
+      schemaVersion: 1,
+      generatedAt,
+      source: 'placeholder' as const,
+      freshness: {
+        updatedAt: null,
+        ageMs: null,
+        isStale: true,
+        staleReason: 'env_missing',
+      },
+      agents: [],
+      currentPriority: null,
+      currentBlocker: null,
+      nextAction: null,
+      liveStatus: { android: null, ios: null, repo: null },
+      safety: safetyBaseline,
+    };
+  }
+
+  const [work, lanes, build] = await Promise.all([
+    adapter.fetchSingleRowPayload('connector_work_status') as Promise<{
+      currentPriority?: string | null;
+      currentBlocker?: string | null;
+      nextAction?: string | null;
+      generatedAt?: string;
+      liveStatus?: { androidVersionCode?: number | null; iosBuildNumber?: string | null; androidPlayTrack?: string | null };
+      repoStatus?: { branch?: string; head?: string };
+    } | null>,
+    adapter.fetchCoderLaneRows(),
+    adapter.fetchSingleRowPayload('connector_build_status') as Promise<{
+      generatedAt?: string;
+      android?: { versionCode?: number | null; githubStatus?: string | null; playStatus?: string | null; playTrack?: string | null };
+      ios?: { buildNumber?: string | null; githubStatus?: string | null; testflightStatus?: string | null };
+    } | null>,
+  ]);
+
+  const ALLOWED_LANE_STATUSES = ['idle', 'working', 'blocked', 'needs_user', 'needs_review', 'done'] as const;
+  const ALLOWED_LANE_IDS = ['claude', 'codex', 'claude_chat', 'chatgpt', 'cowork'] as const;
+
+  function pickEnum<T extends string>(value: unknown, allowed: readonly T[]): T | 'unknown' {
+    return typeof value === 'string' && (allowed as readonly string[]).includes(value)
+      ? (value as T) : 'unknown';
+  }
+
+  function compressSummary(s: unknown): string {
+    if (typeof s !== 'string' || s.length === 0) return '';
+    return s.replace(/\s+/g, ' ').trim().slice(0, 140);
+  }
+
+  function safeShortCommit(s: unknown): string | null {
+    if (typeof s !== 'string') return null;
+    return /^[0-9a-f]{7,12}$/.test(s) ? s : null;
+  }
+
+  const agents = (lanes ?? []).map((row) => {
+    const p = (row.payload ?? {}) as {
+      laneId?: string;
+      status?: string;
+      lastSummary?: string;
+      lastCommit?: string;
+      lastSeenAt?: string;
+    };
+    return {
+      id: pickEnum(row.lane_id, ALLOWED_LANE_IDS),
+      status: pickEnum(p.status, ALLOWED_LANE_STATUSES),
+      taskSummary: compressSummary(p.lastSummary),
+      lastCommit: safeShortCommit(p.lastCommit),
+      updatedAt: typeof p.lastSeenAt === 'string' ? p.lastSeenAt : null,
+    };
+  });
+
+  const truncate = (s: string | null | undefined, cap: number) => {
+    if (typeof s !== 'string' || !s) return null;
+    return s.length > cap ? `${s.slice(0, cap - 1)}…` : s;
+  };
+  const currentPriority = truncate(work?.currentPriority ?? null, 280);
+  const currentBlocker = truncate(work?.currentBlocker ?? null, 280);
+  const nextAction = truncate(work?.nextAction ?? null, 280);
+
+  const ANDROID_PRIO: Array<{ match: (s: { gh?: string; play?: string }) => boolean; label: 'live' | 'repo-only' | 'tester-build' | 'blocked' }> = [
+    { match: (s) => s.gh === 'failure' || s.play === 'failed', label: 'blocked' },
+    { match: (s) => s.play === 'rolled_out' || s.play === 'submitted_completed', label: 'live' },
+    { match: (s) => s.play === 'submitted_draft' || s.gh === 'success' || s.gh === 'in_progress', label: 'tester-build' },
+  ];
+  const IOS_PRIO: Array<{ match: (s: { gh?: string; tf?: string }) => boolean; label: 'live' | 'repo-only' | 'tester-build' | 'blocked' }> = [
+    { match: (s) => s.gh === 'failure' || s.tf === 'failed' || s.tf === 'invalid_binary', label: 'blocked' },
+    { match: (s) => s.tf === 'available', label: 'live' },
+    { match: (s) => s.tf === 'uploaded_processing' || s.gh === 'success', label: 'tester-build' },
+  ];
+  const a = build?.android ?? {};
+  const i = build?.ios ?? {};
+  let androidStatus: 'live' | 'repo-only' | 'tester-build' | 'blocked' = 'repo-only';
+  for (const r of ANDROID_PRIO) {
+    if (r.match({ gh: typeof a.githubStatus === 'string' ? a.githubStatus : undefined, play: typeof a.playStatus === 'string' ? a.playStatus : undefined })) { androidStatus = r.label; break; }
+  }
+  let iosStatus: 'live' | 'repo-only' | 'tester-build' | 'blocked' = 'repo-only';
+  for (const r of IOS_PRIO) {
+    if (r.match({ gh: typeof i.githubStatus === 'string' ? i.githubStatus : undefined, tf: typeof i.testflightStatus === 'string' ? i.testflightStatus : undefined })) { iosStatus = r.label; break; }
+  }
+
+  // Source row updatedAt → freshness signal.
+  const isoCandidates = [
+    typeof work?.generatedAt === 'string' ? work.generatedAt : null,
+    typeof build?.generatedAt === 'string' ? build.generatedAt : null,
+    ...agents.map((g) => g.updatedAt),
+  ].filter((s): s is string => typeof s === 'string');
+  const updatedAt = isoCandidates.length > 0 ? isoCandidates.sort().slice(-1)[0] : null;
+  const ageMs = updatedAt ? Date.now() - new Date(updatedAt).getTime() : null;
+  const isStale = ageMs === null ? true : ageMs > FRESHNESS_WINDOW_MS_V2;
+  const staleReason: 'fresh' | 'no_writeback' | 'env_missing' = updatedAt === null
+    ? 'no_writeback' : isStale ? 'no_writeback' : 'fresh';
+
+  const branchRe = /^[A-Za-z0-9._\-/]{1,80}$/;
+  const branch = work?.repoStatus?.branch && branchRe.test(work.repoStatus.branch) ? work.repoStatus.branch : null;
+  const head = safeShortCommit(work?.repoStatus?.head);
+
+  const haveAnyRow = work !== null || (lanes !== null && lanes.length > 0) || build !== null;
+
+  return {
+    schemaVersion: 1,
+    generatedAt,
+    source: haveAnyRow ? 'supabase' as const : 'placeholder' as const,
+    freshness: {
+      updatedAt,
+      ageMs,
+      isStale,
+      staleReason,
+      windowMs: FRESHNESS_WINDOW_MS_V2,
+    },
+    agents,
+    currentPriority,
+    currentBlocker,
+    nextAction,
+    liveStatus: {
+      android: {
+        versionCode: typeof a.versionCode === 'number' ? a.versionCode : null,
+        status: androidStatus,
+        playTrack: typeof a.playTrack === 'string' ? a.playTrack : null,
+      },
+      ios: {
+        buildNumber: typeof i.buildNumber === 'string' ? i.buildNumber : null,
+        status: iosStatus,
+      },
+      repo: { branch, shortHead: head },
+    },
+    safety: safetyBaseline,
+  };
+}
+
 async function buildProjectListPriorities(env: Env): Promise<unknown> {
   const generatedAt = new Date().toISOString();
   const adapter = getSupabaseAdapter(env);
@@ -494,6 +665,13 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
     build: buildProjectOverview,
+  },
+  {
+    name: 'project.get_current_state',
+    description: 'Canonical "what is the team working on right now" snapshot. Composes priority / blocker / next action + per-lane (claude / codex) status + sanitised task summaries (≤140 char) + Android v + iOS Build state + freshness flag. Public-safe; the source enum + staleReason fields make it explicit when data is older than the 10-min freshness window. Use this from ChatGPT instead of the website MCP when you want current dev state.',
+    inputSchema: { type: 'object', properties: {}, required: [] },
+    auth: 'public',
+    build: buildProjectCurrentState,
   },
   {
     name: 'project.get_work_status',

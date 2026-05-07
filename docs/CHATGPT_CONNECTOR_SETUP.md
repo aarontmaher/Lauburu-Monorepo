@@ -30,11 +30,31 @@ wrong host — re-create per § 1.
 ## 1. Setup — what to paste into ChatGPT
 
 Open **ChatGPT → Settings → Connectors → Add custom connector**.
-Use exactly these values:
+
+**Recommended — unified `/mcp/v2`** (covers everything below in one
+connector, including the new `project.get_current_state` tool that
+returns live Claude / Codex status from this codebase's Supabase):
 
 | Field | Value |
 |---|---|
-| **Name** | `Lauburu MCP (public preview)` |
+| **Name** | `Lauburu MCP (unified)` |
+| **MCP Server URL** | `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2` |
+| **Authentication** | **No Auth** |
+
+Inside any chat that wires the unified connector, the first
+useful question is: **call `project.get_current_state`** — it
+returns priority / blocker / next action + per-lane status
+(`claude` / `codex` with the canonical lane-status enum) + sanitised
+task summary + freshness signal. Never the "all idle" the website
+MCP shows when it doesn't know about this repo's bridge.
+
+**Legacy preview connector — still live** (the original 4-tool
+path; safe to keep alongside the unified one during the
+documented dual-track period):
+
+| Field | Value |
+|---|---|
+| **Name** | `Lauburu MCP (public preview, legacy)` |
 | **MCP Server URL** | `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/public` |
 | **Authentication** | **No Auth** |
 

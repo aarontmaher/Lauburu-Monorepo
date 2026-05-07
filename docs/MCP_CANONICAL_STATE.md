@@ -75,25 +75,50 @@ Reasons:
 
 For live "what is Claude / Codex doing right now? what's the
 mobile build state? what manual steps does Aaron have open?"
-**questions, ChatGPT must use:**
+**questions, ChatGPT must use the unified Worker MCP, not the
+website MCP:**
 
 ```
-https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/public
+https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2
 ```
 
-Tool calls (No Auth):
+Single canonical tool call (No Auth):
 
-- `get_public_mcp_health` — diagnostic.
-- `get_lane_overview` — lane status counts.
-- `get_build_overview` — Android v + iOS Build status.
-- `get_repo_overview` — branch + short HEAD.
+- **`project.get_current_state`** — composes priority / blocker
+  / next action + per-lane (claude / codex) status enum +
+  sanitised task summaries (≤140 char) + Android v / iOS Build
+  state + freshness flag. Response includes
+  `source: 'supabase'`, `freshness.isStale`,
+  `freshness.staleReason`, and `agents[]` with the actual
+  lane-status enum (idle / working / blocked / needs_user /
+  needs_review / done) — never "all idle" by default. **Use
+  this as the first call from any new chat.**
+
+Other public-safe tools at `/mcp/v2` (No Auth):
+
+- `project.get_overview` — cross-project aggregate including
+  website pending count.
+- `project.get_work_status` — same priority / blocker / next
+  action shape (subset of `get_current_state`).
+- `project.list_priorities` — top backlog item.
+- `mobile.get_lane_overview` / `mobile.get_build_overview` /
+  `mobile.get_repo_overview` — counts/aggregates only.
+- `handoff.get_latest` — composed across both projects, each
+  entry tagged `source: 'mobile' | 'website'`.
+- `integrations.get_overview` — per-platform exposure spec.
+
+Legacy public preview path (`/mcp/public`, four tools, No Auth)
+is also still live with the same `get_*_overview` /
+`get_public_mcp_health` calls. It retires when Phase 4 of
+`docs/UNIFIED_MCP_PLAN.md` opens — until then, both paths
+coexist.
 
 For richer detail (lane summaries, manual step text, full
 build/handoff/terminal_summary) Aaron uses curl from the laptop
 or the in-app Admin/Dev surface — both go through the
-admin-token-gated `/api/*` routes, NOT through any ChatGPT
-connector. ChatGPT does not currently support API-key auth in
-the connector form.
+admin-token-gated `/api/*` routes or `mobile.get_<full>` v2
+tools. ChatGPT does not currently support API-key auth in the
+connector form.
 
 For "what's pending in the website's automation queue? when's
 the next batch? what techniques need editing?" **questions,
