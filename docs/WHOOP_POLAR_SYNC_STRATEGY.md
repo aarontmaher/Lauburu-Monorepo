@@ -1,10 +1,11 @@
 # WHOOP / Polar sync strategy
 
 How direct sync (OAuth/API), historical export uploads, and
-Health-Connect re-export paths fit together. Apple Health on iOS
-and Health Connect on Android remain the **primary** product
-surface; WHOOP and Polar are valuable secondary sources for users
-who own the hardware.
+Health-Connect re-export paths fit together. Apple Health on iOS,
+Health Connect on Android, and manual/journal context are the
+**only core Grappler Readiness sources**. WHOOP Direct and Polar
+Direct are not readiness requirements and are not used as core
+readiness inputs.
 
 Companion to `HEALTH_METRIC_APPS_DEVICES_AUDIT.md` (per-device
 wearability + role) and `HEALTH_SOURCE_IMPLEMENTATION_AUDIT.md`
@@ -16,9 +17,9 @@ Updated 2026-05-06.
 
 1. Android Health Connect.
 2. Apple Health stability.
-3. WHOOP Direct truthfulness / setup.
-4. Polar / Bluetooth truthfulness.
-5. Manual session logging.
+3. Manual session logging and journal context.
+4. WHOOP / Polar truth labels as optional/backfill only.
+5. Polar / Bluetooth truthfulness for non-readiness surfaces.
 6. Optional FIT / TCX / CSV import later.
 
 ErgZone is **not** a primary dependency. Keep it in backlog only as
@@ -57,7 +58,7 @@ trust levels:
 
 | Path | Surface | Sync mode | Trust |
 |---|---|---|---|
-| **Connect (direct OAuth/API)** | Health → More sources → Connect button | live_sync — daily-ish freshness | High when working; primary intent |
+| **Connect (direct OAuth/API)** | Health → More sources → Connect button | live_sync — daily-ish freshness | Optional enrichment only; not core readiness |
 | **Upload export file** | Health → More sources → Upload export | historical_upload — backfill only | Trustworthy for history, NEVER labelled live/current |
 
 The labels are non-overlapping: "Connect WHOOP" never means
@@ -67,7 +68,7 @@ P1 product bug per `FEEDBACK_PRIORITY_MODEL.md` rule 4
 
 ## WHOOP
 
-### Connect (direct) — primary future path
+### Connect (direct) — optional future path
 
 OAuth scopes used (server-side, Railway env): `read:recovery`,
 `read:cycles`, `read:sleep`, `read:workout`, `read:profile`,
@@ -81,8 +82,8 @@ without a registered redirect URI. The mobile UI now surfaces
 "Coming soon" instead of raw 404 JSON (commit `a036fd5`).
 
 When connected, fetched fields:
-- `recovery_score` (0–100) — independent cross-check vs Lauburu
-  Readiness's HRV/RHR/sleep_hours signals.
+- `recovery_score` (0–100) — optional vendor context only. It
+  must not promote Grappler Readiness out of seed/provisional state.
 - HRV (RMSSD), resting HR.
 - Day strain.
 - Workouts (type, duration, average HR, max HR, kilojoules).

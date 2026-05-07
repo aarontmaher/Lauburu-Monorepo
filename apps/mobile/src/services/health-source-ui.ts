@@ -60,9 +60,9 @@ export function getReadinessSeedBadge(input: {
 }): { label: 'Seed' | 'Live'; note: string; provisional: boolean } {
   if (input.hasLiveWhoopRecovery) {
     return {
-      label: 'Live',
-      note: 'Includes verified WHOOP Direct recovery when available. Still app-owned, not a vendor score.',
-      provisional: false,
+      label: 'Seed',
+      note: 'WHOOP Direct is optional evidence only. Grappler Readiness stays provisional until Apple Health / Health Connect, journal, and manual training inputs are verified.',
+      provisional: true,
     };
   }
   const confidence = input.confidenceLevel ? `${input.confidenceLevel} confidence` : 'directional';

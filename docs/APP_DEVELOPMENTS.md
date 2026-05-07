@@ -102,10 +102,10 @@ Hard guardrails (preserved):
 - Missing data stays missing — never fabricated.
 - No paid-tier gating for these two primary sources (already
   un-gated, commit `d4827ba`).
-- WHOOP direct stays `setup required` until OAuth migrates off
-  Railway disk + tokens flow ≥7 days clean. Polar direct stays
-  `planned`. Bluetooth HR is Train-session data only, never
-  readiness input.
+- WHOOP Direct and Polar Direct are not core Grappler Readiness
+  sources. If historical CSV/export paths already exist, they are
+  optional backfill/provisional evidence only. Bluetooth HR is
+  Train-session data only, never readiness input.
 
 Status: **live** for the existing primary cards in last paired
 build. Next moves are tester-build verifications, then source
@@ -113,9 +113,9 @@ expansion in this order:
 
 1. Android Health Connect reliability.
 2. Apple Health stability.
-3. WHOOP Direct truthfulness / setup.
-4. Polar / Bluetooth truthfulness.
-5. Manual session logging.
+3. Manual session logging and journal context.
+4. WHOOP / Polar labels stay truthful as optional/backfill only.
+5. Polar / Bluetooth truthfulness for non-readiness surfaces.
 6. Optional FIT / TCX / CSV import later.
 
 Optional import backlog stays secondary: ErgZone FIT / TCX / CSV

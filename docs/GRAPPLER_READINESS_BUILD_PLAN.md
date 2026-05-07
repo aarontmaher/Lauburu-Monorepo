@@ -24,8 +24,9 @@ are true in a tester build:
 
 - Source hierarchy is explicit: manual check-ins and training logs are
   the baseline; Apple Health on iOS and Health Connect on Android are
-  primary verified health sources; WHOOP/Polar direct or export data
-  are optional advanced evidence; CSV exports are historical backfill.
+  primary verified health sources. WHOOP Direct and Polar Direct are
+  not core readiness sources. Existing CSV/export paths are optional
+  historical backfill/provisional evidence only.
 - Missing health data stays missing. No bucket may substitute a vendor
   score, inferred HRV, or generic activity shape when the real metric
   is absent.
@@ -35,8 +36,10 @@ are true in a tester build:
   audit metadata, and explicit "provisional" labelling.
 - Apple Health verification is iOS-only. Health Connect verification is
   Android-only. Cross-platform copy must use the platform source name.
-- WHOOP/Polar data can enrich provenance and confidence, but cannot
-  replace the app-owned readiness calculation.
+- WHOOP/Polar direct data cannot promote, calibrate, or replace the
+  app-owned readiness calculation. Hub-fed Polar provenance remains
+  labelled through Apple Health / Health Connect; exports remain
+  historical evidence only.
 - Export/CSV historical backfill can improve baselines, but must be
   labelled as historical evidence rather than live readiness.
 
@@ -199,9 +202,9 @@ each dependency is ready:
 - WHOOP / Polar export backfill — UI labelled `historical_upload`
   per `WHOOP_POLAR_SYNC_STRATEGY.md`. Adds richer evidence to
   the autonomic + sleep buckets.
-- WHOOP / Polar direct sync — adds live cross-check vs
-  Apple Health / Health Connect. Recovery score surfaces
-  alongside the app-owned readiness, never replacing it.
+- WHOOP / Polar direct sync — optional future enrichment only, not a
+  core readiness source. Vendor recovery/strain scores must not
+  promote Grappler Readiness out of seed/provisional state.
 - HIIT / conditioning capture — feeds the `load` bucket via
   per-set strain estimates.
 - Nutrition trend context — out of readiness directly per

@@ -561,12 +561,35 @@ async function buildIntegrationsOverview(env: Env): Promise<unknown> {
     schemaVersion: 1,
     generatedAt,
     sources: {
-      apple_health: { exposure: 'ios-only', userVisible: true },
-      health_connect: { exposure: 'android-only', userVisible: true },
-      whoop_oauth: { exposure: 'optional', userVisible: true },
-      polar_oauth: { exposure: 'optional', userVisible: true },
+      apple_health: {
+        exposure: 'ios-only',
+        userVisible: true,
+        readinessRole: 'primary_ios',
+      },
+      health_connect: {
+        exposure: 'android-only',
+        userVisible: true,
+        readinessRole: 'primary_android',
+      },
+      manual_journal: {
+        exposure: 'all-platforms',
+        userVisible: true,
+        readinessRole: 'context',
+      },
+      whoop_oauth: {
+        exposure: 'optional-backfill',
+        userVisible: false,
+        readinessRole: 'not_core_readiness',
+        note: 'WHOOP Direct is not a core readiness source. Historical CSV/export data may be used only as optional labelled backfill/provisional evidence.',
+      },
+      polar_oauth: {
+        exposure: 'optional-backfill',
+        userVisible: false,
+        readinessRole: 'not_core_readiness',
+        note: 'Polar Direct is not a core readiness source. Hub-fed Polar provenance stays labelled via Apple Health / Health Connect; direct Polar remains optional/backfill only.',
+      },
     },
-    note: 'Per-user counts and last-sync timestamps require admin token; not exposed here.',
+    note: 'Core readiness sources are Apple Health on iOS, Health Connect on Android, and manual/journal context. WHOOP Direct and Polar Direct are not core readiness providers; public output exposes no personal metrics.',
     publicPreview: true,
     // env presence reference so callers can sense the deployment shape
     workerSupabaseConfigured: getSupabaseAdapter(env).configured === true,

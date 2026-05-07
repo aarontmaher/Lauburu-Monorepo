@@ -166,6 +166,15 @@ Do not label hub-derived Polar data as Polar Direct. Do not
 label WHOOP-like fields as WHOOP Direct unless they came from an
 authenticated WHOOP path.
 
+Core Grappler Readiness source policy:
+
+- Android primary: Health Connect.
+- iOS primary: Apple Health / HealthKit.
+- Context: manual training logs and journal/check-in entries.
+- WHOOP Direct and Polar Direct are not core readiness sources.
+  If historical CSV/export paths already exist, they are optional
+  labelled backfill/provisional evidence only.
+
 ### `handoff.*` — cross-project handoff artifacts
 
 | Tool | Returns | Backed by |

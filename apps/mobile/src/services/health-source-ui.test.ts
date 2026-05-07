@@ -34,8 +34,9 @@ assertEqual(seed.provisional, true, 'Seed badge provisional flag');
 assertMatches(seed.note, /Provisional/, 'Seed badge note');
 
 const live = getReadinessSeedBadge({ hasLiveWhoopRecovery: true });
-assertEqual(live.label, 'Live', 'Live badge label');
-assertEqual(live.provisional, false, 'Live badge provisional flag');
+assertEqual(live.label, 'Seed', 'WHOOP evidence keeps readiness seed-labelled');
+assertEqual(live.provisional, true, 'WHOOP evidence keeps readiness provisional');
+assertMatches(live.note, /optional evidence only/, 'WHOOP evidence note');
 
 const hubEvidence = buildHubReadinessEvidence({
   platform: 'android',

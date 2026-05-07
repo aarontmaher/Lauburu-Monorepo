@@ -111,6 +111,26 @@ async function main(): Promise<void> {
     assert(body.result?.content?.[0]?.type === 'text', `${name} returns text content`);
   }
 
+  const integrations = await rpc({
+    jsonrpc: '2.0',
+    id: 'integrations.get_overview.policy',
+    method: 'tools/call',
+    params: { name: 'integrations.get_overview', arguments: {} },
+  });
+  const integrationsBody = await integrations.json() as { result?: { content?: Array<{ text: string }>; isError?: boolean } };
+  assert(integrationsBody.result?.isError === false, 'integrations.get_overview is public-safe');
+  const integrationsPayload = JSON.parse(integrationsBody.result?.content?.[0]?.text ?? '{}') as {
+    sources?: Record<string, { readinessRole?: string; userVisible?: boolean }>;
+    note?: string;
+  };
+  assert(integrationsPayload.sources?.health_connect?.readinessRole === 'primary_android', 'Health Connect is Android primary');
+  assert(integrationsPayload.sources?.apple_health?.readinessRole === 'primary_ios', 'Apple Health is iOS primary');
+  assert(integrationsPayload.sources?.manual_journal?.readinessRole === 'context', 'Manual journal is context');
+  assert(integrationsPayload.sources?.whoop_oauth?.readinessRole === 'not_core_readiness', 'WHOOP Direct is not core readiness');
+  assert(integrationsPayload.sources?.polar_oauth?.readinessRole === 'not_core_readiness', 'Polar Direct is not core readiness');
+  assert(integrationsPayload.sources?.whoop_oauth?.userVisible === false, 'WHOOP Direct hidden from public integration overview');
+  assert(integrationsPayload.sources?.polar_oauth?.userVisible === false, 'Polar Direct hidden from public integration overview');
+
   const priorities = await rpc({
     jsonrpc: '2.0',
     id: 'project.list_priorities',
