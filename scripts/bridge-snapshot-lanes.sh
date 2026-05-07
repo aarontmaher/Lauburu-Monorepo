@@ -465,13 +465,44 @@ print(f"wrote {handoff_path}")
 
 # ── Optional Supabase upsert (gated on env vars) ──────────────────────
 # Bridge stays local-only unless SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY
-# are present in env. The service-role key bypasses RLS, so callers
-# MUST source these vars only when running on Aaron's Mac (never in
-# CI, never in shell history).
+# are present in the writer env or a local ignored env file. The
+# service-role key bypasses RLS, so callers MUST keep these vars only on
+# Aaron's Mac/server writer (never in CI, never in mobile EXPO_PUBLIC_*,
+# never in shell history).
 #
 # Hardcoded targets only — no caller-supplied table names. The five
 # connector_* tables in supabase/migrations/0003_connector_status_tables.sql
 # are the only write paths.
+
+WRITER_ENV_FILES = [
+    os.path.join(ROOT, ".env.local"),
+    os.path.join(ROOT, ".env"),
+    os.path.join(ROOT, "cloudflare-worker", ".dev.vars"),
+]
+WRITER_ENV_KEYS = {"SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"}
+
+def load_writer_env_files():
+    for env_path in WRITER_ENV_FILES:
+        if not os.path.isfile(env_path):
+            continue
+        try:
+            with open(env_path) as f:
+                lines = f.readlines()
+        except OSError:
+            continue
+        for line in lines:
+            raw = line.strip()
+            if not raw or raw.startswith("#") or "=" not in raw:
+                continue
+            key, value = raw.split("=", 1)
+            key = key.strip()
+            if key not in WRITER_ENV_KEYS or os.environ.get(key):
+                continue
+            value = value.strip().strip('"').strip("'")
+            if value:
+                os.environ[key] = value
+
+load_writer_env_files()
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
@@ -500,11 +531,11 @@ def upsert_supabase():
     if not SUPABASE_URL.startswith("https://"):
         print("supabase: skip (env_url_invalid)")
         return
-    if not SUPABASE_KEY.startswith("eyJ"):
+    if not (SUPABASE_KEY.startswith("eyJ") or SUPABASE_KEY.startswith("sb_secret_")):
         print("supabase: skip (env_key_invalid)")
         return
 
-    print(f"supabase: upserting to {SUPABASE_URL}")
+    print("supabase: upserting to configured project")
 
     # work_status (single row, id='current').
     work_status_payload = {
