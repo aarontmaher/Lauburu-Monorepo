@@ -26,7 +26,6 @@ import { AthleteCapabilitySummary } from '../../src/components/AthleteCapability
 import { BacklogAnalysisCard } from '../../src/components/BacklogAnalysisCard';
 import { SuggestedMetricsCard } from '../../src/components/SuggestedMetricsCard';
 import { AthleteStateStrip } from '../../src/components/AthleteStateStrip';
-import { LiveHrPill } from '../../src/components/LiveHrPill';
 import { REFERENCE_SECTIONS } from '../../src/data/reference-seed';
 import { REFERENCE_TECHNIQUES } from '../../src/data/reference-techniques';
 import type { ReadinessLevel, DailyCoachingBrief } from '@lauburu/shared';
@@ -1048,10 +1047,6 @@ export default function HomeScreen() {
 
       {/* Today's Coach — unified daily guidance (plan + insights) */}
       {isMember && <TodayCoachCard />}
-
-      {/* Live BLE HR/power chip — appears only during an active BLE
-          stream. Self-hides when idle. Build 9+ only. */}
-      {isMember && <LiveHrPill />}
 
       {/* Tiny backend-fed WHOOP metrics chip — shown only when data is ready */}
       {isMember && <WhoopHeadline />}

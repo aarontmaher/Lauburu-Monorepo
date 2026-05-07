@@ -8,7 +8,7 @@
  *       through, ranked by coverage.
  *   (3) future real-integration code has an obvious place to land —
  *       the store + card pattern already matches WhoopCard, so wiring
- *       AccessLink OAuth or BLE HR later is just a matter of filling
+ *       AccessLink OAuth or Bluetooth HR later is just a matter of filling
  *       in polar-store.fetchToday() and swapping this placeholder body
  *       for a live-metrics grid.
  *
@@ -17,7 +17,7 @@
  *   - a button that actually attempts OAuth today (the AccessLink flow
  *     needs a client ID + redirect URI provisioned in a Polar developer
  *     account, neither of which exist yet)
- *   - a sensor-scan button (BLE path needs the native module + prebuild)
+ *   - a sensor-scan button (Bluetooth sensor capture is planned)
  */
 import { useEffect } from 'react';
 import { Platform, StyleSheet } from 'react-native';
@@ -83,7 +83,7 @@ export function PolarCard({ viaHealthConnect }: PolarCardProps = {}) {
             It does not provide Polar Recovery Pro or Nightly Recharge.
           </Text>
           <Text style={styles.bodyText}>
-            Direct Polar (AccessLink / BLE) is not live yet. Recovery Pro,
+            Direct Polar (AccessLink / Bluetooth sensor capture) is not live yet. Recovery Pro,
             Nightly Recharge, and richer Polar-specific fields require a
             future direct adapter.
           </Text>
@@ -111,9 +111,9 @@ export function PolarCard({ viaHealthConnect }: PolarCardProps = {}) {
           from flow.polar.com. No OAuth, simplest first path.
         </Text>
         <Text style={styles.pathItem}>
-          • <Text style={styles.pathBold}>BLE chest strap</Text> — direct
-          pairing to an H9/H10/Verity Sense for live HR during a session.
-          Complementary to AccessLink.
+          • <Text style={styles.pathBold}>Bluetooth heart-rate sensors</Text> —
+          planned session capture for straps such as H9/H10/Verity Sense.
+          This is separate from Polar account metrics.
         </Text>
       </View>
     </View>

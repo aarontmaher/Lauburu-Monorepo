@@ -832,7 +832,32 @@ const FTMS_SERVICE_UUID_LC = '00001826-0000-1000-8000-00805f9b34fb';
 const CPS_SERVICE_UUID_LC = '00001818-0000-1000-8000-00805f9b34fb';
 const CSC_SERVICE_UUID_LC = '00001816-0000-1000-8000-00805f9b34fb';
 
+function isBluetoothCaptureUiEnabled(): boolean {
+  return false;
+}
+
 export function FTMSMachineCard() {
+  if (!isBluetoothCaptureUiEnabled()) {
+    return (
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Bluetooth heart-rate sensors planned</Text>
+        <Text style={styles.bodyText}>
+          Manual session logging is the supported path today. Bluetooth
+          heart-rate straps and machine capture will stay hidden until direct
+          capture is ready for normal testing.
+        </Text>
+        <Text style={styles.subtleNote}>
+          Polar may appear through Apple Health or Health Connect. Do not treat
+          hub data as Polar Direct or live Bluetooth data.
+        </Text>
+      </View>
+    );
+  }
+
+  return <FTMSMachineCardLive />;
+}
+
+function FTMSMachineCardLive() {
   const [state, setState] = useState<BleMachineState>(() => getBleMachineState());
   const [scanning, setScanning] = useState(false);
   const [connectingId, setConnectingId] = useState<string | null>(null);

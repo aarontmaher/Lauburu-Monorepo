@@ -86,11 +86,21 @@ Hard guardrails (preserved):
 
 Status: **live** for the existing primary cards in last paired
 build. Next moves are tester-build verifications, then source
-expansion in this order: WHOOP / Polar OAuth reliability,
-Garmin / Oura, raw exports, HIIT machine capture, nutrition,
-DEXA / blood test uploads. These data-source lanes matter, but
-they do not outrank the Apple Health / Health Connect daily
-testing path.
+expansion in this order:
+
+1. Android Health Connect reliability.
+2. Apple Health stability.
+3. WHOOP Direct truthfulness / setup.
+4. Polar / Bluetooth truthfulness.
+5. Manual session logging.
+6. Optional FIT / CSV import later.
+
+Optional import backlog stays secondary: ErgZone FIT / CSV export
+import, Concept2 Logbook indirect import, and Strava /
+TrainingPeaks / Intervals.icu indirect import only when the user
+already syncs there. Do **not** build ErgZone as a primary
+dependency. These data-source lanes matter, but they do not
+outrank the Apple Health / Health Connect daily testing path.
 
 ### 3. UX / information architecture cleanup
 

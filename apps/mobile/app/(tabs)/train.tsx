@@ -8,7 +8,6 @@ import {
   Keyboard,
 } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import { LiveHrPill } from '../../src/components/LiveHrPill';
 import { TrainMachineSection } from '../../src/components/TrainMachineSection';
 import { WeeklyScheduleEditor } from '../../src/components/WeeklyScheduleEditor';
 import { useTrainingStore } from '../../src/store/training-store';
@@ -764,12 +763,10 @@ function EntryForm({
       const totalDur = workSets * workDur + (workSets - 1) * restDur;
       const protocolFormat = `${workDur}:${restDur}`;
 
-      // BLE live-session fallback: if the user had an HR strap or
-      // FTMS machine streaming during this session but didn't enter
-      // HR/watts manually, ble-connect has been buffering samples
-      // into a session ring. Use those to fill avgHr/peakHr/avgWatts
-      // so the saved record reflects the live capture. Manual-entry
-      // values still win when present.
+      // Sensor-session fallback: if a future HR strap or machine
+      // capture path buffered samples during this session but the user
+      // did not enter HR/watts manually, use those values without
+      // overwriting manual entry.
       let liveAvgHr: number | null = null;
       let livePeakHr: number | null = null;
       let liveAvgPower: number | null = null;
@@ -796,9 +793,9 @@ function EntryForm({
         }
       } catch { /* ble module not linked — safe fallback */ }
 
-      // Track whether each field came from a live BLE strap/machine
+      // Track whether each field came from a sensor strap/machine
       // vs manual entry. Any of HR / watts / cadence / distance /
-      // calories being live-sourced flips the record to ble_live.
+      // calories being sensor-sourced flips the record to ble_live.
       const hrFromLive = (mm?.avg_hr_bpm == null) && (liveAvgHr != null);
       const wattsFromLive = (mm?.avg_power_w == null) && (liveAvgPower != null);
       const cadenceFromLive = (mm?.avg_cadence == null) && (liveAvgCadence != null);
@@ -862,7 +859,7 @@ function EntryForm({
       try {
         const lines: string[] = [];
         lines.push(`Saved. ${workout.totalSets} set${workout.totalSets === 1 ? '' : 's'} · ${Math.max(1, Math.round((workout.totalDurationSeconds ?? 0) / 60))} min total`);
-        // Summarize BLE capture scope so the user knows exactly what
+        // Summarize sensor capture scope so the user knows exactly what
         // was auto-filled vs entered manually.
         if (anyLive) {
           const captured: string[] = [];
@@ -871,7 +868,7 @@ function EntryForm({
           if (cadenceFromLive) captured.push('cadence');
           if (distanceFromLive) captured.push('distance');
           if (caloriesFromLive) captured.push('calories');
-          lines.push(`Captured live ${captured.join(' + ')} from BLE`);
+          lines.push(`Sensor data detected: ${captured.join(' + ')}`);
         } else {
           // Surface "connected but no samples" explicitly so the user
           // understands why the saved session has no live metrics.
@@ -880,7 +877,7 @@ function EntryForm({
             const ble = require('../../src/services/ble-connect');
             const bleState = ble?.getBleMachineState?.();
             if (bleState?.machineDevice && (bleState.status === 'connected' || bleState.status === 'receiving_data')) {
-              lines.push(`BLE machine connected but no live samples arrived — saved manual session only.`);
+              lines.push(`Bluetooth machine paired but no samples arrived — saved manual session only.`);
             } else if (bleState?.hrDevice) {
               lines.push(`HR strap bound but no samples arrived — saved manual session only.`);
             }
@@ -1608,7 +1605,7 @@ function EntryForm({
         </View>
       )}
 
-      {/* Machine data (optional) — WHOOP does not expose machine-level
+      {/* Machine data (optional) — source hubs do not expose machine-level
           output, so this is where the user captures distance, calories,
           power, cadence, HR etc. Only shown for cardio modes that could
           plausibly expose machine metrics. Lifting + respiratory + rest
@@ -1626,24 +1623,21 @@ function EntryForm({
                     // eslint-disable-next-line @typescript-eslint/no-require-imports
                     const ble = require('../../src/services/ble-connect');
                     const state = ble?.getBleMachineState?.();
-                    if (state?.status === 'receiving_data') return 'Live · streaming';
-                    if (state?.machineDevice || state?.hrDevice) return 'Live · waiting';
+                    if (state?.status === 'receiving_data') return 'Sensor sample detected';
+                    if (state?.machineDevice || state?.hrDevice) return 'Sensor paired';
                   } catch { /* ignore */ }
-                  return 'Live · no device';
+                  return 'Bluetooth planned';
                 }
                 return 'Phone timer';
               })()}
             </Text>
           </View>
 
-          {/* Source row — phone timer / manual / live BLE. Live BLE
-              is available now (Build 11+); auto-fill happens at save
-              time via the ble-connect session ring. When no machine
-              is bound we still let the user pre-select Live BLE so
-              the chosen source matches the intent; the helper text
-              below points them at Machine capture to pair. */}
+          {/* Source row — phone timer / manual / future Bluetooth sensors.
+              Bluetooth remains hidden as a live capture promise until it is
+              ready for normal tester use. */}
           <View style={styles.pillRow}>
-            {(['phone_timer', 'manual_machine_entry', 'machine_connected'] as WorkoutSource[]).map(
+            {(['phone_timer', 'manual_machine_entry'] as WorkoutSource[]).map(
               (src) => {
                 const isActive = machineSource === src;
                 return (
@@ -1654,9 +1648,7 @@ function EntryForm({
                     <Text style={[styles.pillSmallText, isActive && styles.pillTextActive]}>
                       {src === 'phone_timer'
                         ? 'Phone timer'
-                        : src === 'manual_machine_entry'
-                          ? 'Manual'
-                          : 'Live BLE'}
+                        : 'Manual'}
                     </Text>
                   </Pressable>
                 );
@@ -1669,7 +1661,7 @@ function EntryForm({
             // ble-connect module directly — no state subscription
             // needed for this static render; the chip re-renders on
             // re-entry of the Train tab.
-            let liveLine = 'Connect a machine in Machine capture above to capture live metrics.';
+            let liveLine = 'Bluetooth heart-rate sensors are planned. Save manual metrics for now.';
             try {
               // eslint-disable-next-line @typescript-eslint/no-require-imports
               const ble = require('../../src/services/ble-connect');
@@ -1687,12 +1679,12 @@ function EntryForm({
               } catch { /* ignore */ }
               if (state?.machineDevice) {
                 liveLine = sampleCount > 0
-                  ? `Capturing live from ${state.machineDevice.name} (${sampleCount} samples). Save will attach HR / watts / cadence.`
-                  : `Connected to ${state.machineDevice.name}. Start pedaling — metrics attach once samples arrive. You can still save the manual session.`;
+                  ? `Sensor samples detected from ${state.machineDevice.name} (${sampleCount} samples). Review values before saving.`
+                  : `Sensor paired to ${state.machineDevice.name}, but no samples are ready. Save the manual session for now.`;
               } else if (state?.hrDevice) {
                 liveLine = sampleCount > 0
-                  ? `HR strap streaming (${state.hrDevice.name}). Save will attach HR. Connect a machine for watts + cadence.`
-                  : `HR strap bound (${state.hrDevice.name}). No samples yet — start the session. Connect a machine for watts + cadence.`;
+                  ? `Heart-rate samples detected from ${state.hrDevice.name}. Review values before saving.`
+                  : `Heart-rate sensor paired (${state.hrDevice.name}), but no samples are ready. Save the manual session for now.`;
               }
             } catch { /* ignore */ }
             return (
@@ -1958,7 +1950,7 @@ function EntryForm({
               </View>
 
               <Text style={styles.machineComplementHint}>
-                Machine metrics give the in-session output that complements your readiness — Apple Health and recent training context only see big-picture signals.
+                Machine metrics are manual today. Readiness remains seed/provisional until direct data is connected and verified.
               </Text>
             </>
           )}
@@ -2527,21 +2519,14 @@ export default function TrainScreen() {
       keyboardShouldPersistTaps="handled">
       <Text style={styles.heading}>Log Training</Text>
 
-      {/* Live HR / power chip — appears only when a BLE HR or FTMS
-          stream is actually flowing. Self-hides after 6s of no
-          samples. Build 9+ only. */}
-      <LiveHrPill />
-
-      {/* Machine capture is exercise-machine specific (FTMS bikes,
-          rowers, ski-ergs, BLE HR straps). It is NOT how to connect
-          Apple Health / Health Connect / WHOOP / Polar — those live
-          on the Health tab. So only render this card after the user
-          picks HIIT or Steady state. */}
+      {/* Machine sensor capture is separate from Apple Health /
+          Health Connect / WHOOP / Polar source management. Keep it
+          honest until Bluetooth capture is ready for normal testers. */}
       {showForm && (pendingMode === 'hiit' || pendingMode === 'zone2') && (
         <View style={styles.machineConnectWrap}>
-          <Text style={styles.machineConnectHeading}>Connect exercise machine</Text>
+          <Text style={styles.machineConnectHeading}>Bluetooth sensors</Text>
           <Text style={styles.machineConnectSubcopy}>
-            Optional for bikes, rowers, ski-ergs, or Bluetooth heart-rate straps during this session.
+            Planned for heart-rate straps and machines. Manual workout metrics are available now.
           </Text>
           <TrainMachineSection />
         </View>

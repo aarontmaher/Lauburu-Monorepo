@@ -12,6 +12,26 @@ wearability + role) and `HEALTH_SOURCE_IMPLEMENTATION_AUDIT.md`
 
 Updated 2026-05-06.
 
+## Current source priority
+
+1. Android Health Connect.
+2. Apple Health stability.
+3. WHOOP Direct truthfulness / setup.
+4. Polar / Bluetooth truthfulness.
+5. Manual session logging.
+6. Optional FIT / CSV import later.
+
+ErgZone is **not** a primary dependency. Keep it in backlog only as
+an optional future import source:
+
+- ErgZone FIT / CSV export import.
+- Concept2 Logbook indirect import.
+- Strava / TrainingPeaks / Intervals.icu indirect import if the
+  user already syncs there.
+
+These import paths are backfill / history aids, not live source
+claims and not requirements for the primary Health tab.
+
 ## Two distinct paths per provider
 
 For each of WHOOP and Polar there are TWO paths the app supports.

@@ -64,7 +64,7 @@ const TOUR_STEPS = [
   {
     title: 'HIIT Progress',
     body: 'The Coach can compare your latest HIIT session to previous ones — watts drop-off, HR drift, and set-by-set changes.',
-    detail: 'Bluetooth machine capture (FTMS bikes, rowers, ski ergs) is available in Build 9+. Manual entry always captures the essentials regardless of device.',
+    detail: 'Manual entry captures the essentials today. Bluetooth heart-rate sensors and machine capture are planned for a later tester pass.',
   },
   {
     title: '3D Map',

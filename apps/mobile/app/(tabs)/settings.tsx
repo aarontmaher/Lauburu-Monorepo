@@ -616,9 +616,9 @@ function TierSection({ showDevTools }: { showDevTools: boolean }) {
     'local_health_view', 'basic_insights', 'health_sync',
     'backend_persistence', 'export_ai_payload', 'preference_coaching',
     'training_history', 'byo_ai', 'advanced_reports', 'cronometer_sync',
-    // 'ergzone_sync' intentionally hidden — ErgZone is not a supported
-    // integration path. Machine input flows through our own BLE/FTMS
-    // capture (see Machine capture card in Health → Integrations).
+    // 'ergzone_sync' intentionally hidden — ErgZone is not a primary
+    // integration path. Future FIT/CSV import belongs in backlog,
+    // separate from the current manual logging flow.
     'data_export_full', 'model_training_participation',
     'hosted_ai_coaching', 'daily_ai_recommendations',
     'advanced_ai_insights', 'priority_model_training',
