@@ -1,4 +1,5 @@
 import {
+  buildHubReadinessEvidence,
   getNativeHealthSourceCopy,
   getPolarDirectStateLabel,
   getReadinessSeedBadge,
@@ -35,3 +36,35 @@ assertMatches(seed.note, /Provisional/, 'Seed badge note');
 const live = getReadinessSeedBadge({ hasLiveWhoopRecovery: true });
 assertEqual(live.label, 'Live', 'Live badge label');
 assertEqual(live.provisional, false, 'Live badge provisional flag');
+
+const hubEvidence = buildHubReadinessEvidence({
+  platform: 'android',
+  fields: {
+    hrv: 44,
+    restingHr: 58,
+    sleepHours: 7.2,
+    activeCalories: 550,
+    workouts: 1,
+  },
+  provenance: ['com.polar.flow'],
+  polarHubDetected: true,
+  manualSessionData: true,
+});
+assertEqual(hubEvidence.confidence, 'high', 'Hub readiness high confidence');
+assertMatches(hubEvidence.sourceLabels.join(' | '), /Health Connect hub data/, 'Hub readiness native source');
+assertMatches(hubEvidence.sourceLabels.join(' | '), /Polar via Health Connect/, 'Hub readiness polar provenance');
+
+const missingEvidence = buildHubReadinessEvidence({
+  platform: 'ios',
+  fields: {
+    sleepHours: null,
+    hrv: null,
+    restingHr: 55,
+    activeCalories: null,
+    workouts: 0,
+  },
+  insufficientHistory: true,
+});
+assertEqual(missingEvidence.confidence, 'low', 'Hub readiness low confidence');
+assertMatches(missingEvidence.missingLabels.join(' | '), /sleep/, 'Hub readiness missing sleep');
+assertMatches(missingEvidence.missingLabels.join(' | '), /history baseline/, 'Hub readiness missing history');

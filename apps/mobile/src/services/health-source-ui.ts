@@ -72,3 +72,103 @@ export function getReadinessSeedBadge(input: {
     provisional: true,
   };
 }
+
+export type ReadinessConfidenceLevel = 'low' | 'medium' | 'high';
+
+export interface HubReadinessEvidenceInput {
+  platform: MobilePlatform | string;
+  fields: {
+    hrv?: number | null;
+    restingHr?: number | null;
+    sleepHours?: number | null;
+    activeCalories?: number | null;
+    steps?: number | null;
+    workouts?: number | null;
+  };
+  insufficientHistory?: boolean;
+  missing?: {
+    hrv?: boolean;
+    restingHr?: boolean;
+    sleep?: boolean;
+    strain?: boolean;
+    workoutDetail?: boolean;
+  };
+  provenance?: string[];
+  polarHubDetected?: boolean;
+  samsungHubDetected?: boolean;
+  manualSessionData?: boolean;
+}
+
+export interface HubReadinessEvidence {
+  confidence: ReadinessConfidenceLevel;
+  label: string;
+  note: string;
+  sourceLabels: string[];
+  inputLabels: string[];
+  missingLabels: string[];
+}
+
+export function buildHubReadinessEvidence(input: HubReadinessEvidenceInput): HubReadinessEvidence {
+  const nativeCopy = getNativeHealthSourceCopy(input.platform);
+  const sourceLabels = [nativeCopy.hubLabel];
+  const provenance = input.provenance ?? [];
+  const hasProvenance = (pattern: RegExp) => provenance.some((source) => pattern.test(source));
+
+  if (input.polarHubDetected || hasProvenance(/polar/i)) {
+    sourceLabels.push(`Polar via ${nativeCopy.shortName}`);
+  }
+  if (input.samsungHubDetected || hasProvenance(/samsung/i)) {
+    sourceLabels.push(`Samsung Health via ${nativeCopy.shortName}`);
+  }
+  if (input.manualSessionData) {
+    sourceLabels.push('Manual / logged training');
+  }
+
+  const inputLabels: string[] = [];
+  const missingLabels = new Set<string>();
+  const fields = input.fields;
+
+  if (fields.sleepHours != null) inputLabels.push('sleep');
+  else missingLabels.add('sleep');
+
+  if (fields.hrv != null) inputLabels.push('HRV');
+  else if (input.missing?.hrv !== false) missingLabels.add('HRV');
+
+  if (fields.restingHr != null) inputLabels.push('resting HR');
+  else if (input.missing?.restingHr !== false) missingLabels.add('resting HR');
+
+  if (fields.activeCalories != null || fields.steps != null) inputLabels.push('activity');
+  else missingLabels.add('activity');
+
+  if ((fields.workouts ?? 0) > 0 || input.manualSessionData) inputLabels.push('training log');
+  else if (input.missing?.workoutDetail !== false) missingLabels.add('training log');
+
+  if (input.missing?.strain) {
+    missingLabels.add('direct strain');
+  }
+  if (input.insufficientHistory) {
+    missingLabels.add('history baseline');
+  }
+
+  const signalCount = inputLabels.length;
+  let confidence: ReadinessConfidenceLevel = 'low';
+  if (signalCount >= 4 && !input.insufficientHistory) confidence = 'high';
+  else if (signalCount >= 3) confidence = 'medium';
+
+  const label = `${confidence[0].toUpperCase()}${confidence.slice(1)} confidence`;
+  const note =
+    confidence === 'high'
+      ? 'Hub-fed readiness has several current inputs, but remains provisional.'
+      : confidence === 'medium'
+        ? 'Hub-fed readiness has useful inputs, with some missing fields.'
+        : 'Hub-fed readiness is a light signal until more metrics sync.';
+
+  return {
+    confidence,
+    label,
+    note,
+    sourceLabels: [...new Set(sourceLabels)],
+    inputLabels,
+    missingLabels: Array.from(missingLabels),
+  };
+}

@@ -23,7 +23,7 @@ import { HealthKitDebugCard } from '../../src/components/HealthKitDebugCard';
 import { HealthActionsPanel } from '../../src/components/HealthActionsPanel';
 import { SafeErrorBoundary } from '../../src/components/SafeErrorBoundary';
 import { useWhoopStore } from '../../src/store/whoop-store';
-import { getNativeHealthSourceCopy, getReadinessSeedBadge } from '../../src/services/health-source-ui';
+import { buildHubReadinessEvidence, getNativeHealthSourceCopy, getReadinessSeedBadge } from '../../src/services/health-source-ui';
 import {
   buildConditioningImportSummaries,
   CONDITIONING_IMPORT_COPY,
@@ -387,13 +387,18 @@ const READINESS_COLORS: Record<ReadinessLevel, string> = {
   grey: '#666',
 };
 
-function InsightsCard({ insights }: { insights: TrainingInsight }) {
+function InsightsCard({
+  insights,
+  evidence,
+}: {
+  insights: TrainingInsight;
+  evidence: ReturnType<typeof buildHubReadinessEvidence>;
+}) {
+  const [evidenceOpen, setEvidenceOpen] = useState(false);
   const color = READINESS_COLORS[insights.readiness];
-  const whoopDay = useWhoopStore((s) => s.day);
-  const whoopFetchedAt = useWhoopStore((s) => s.fetchedAt);
   const seedBadge = getReadinessSeedBadge({
-    hasLiveWhoopRecovery: whoopDay?.recovery_score != null,
-    confidenceLevel: insights.readiness === 'grey' ? 'low' : null,
+    hasLiveWhoopRecovery: false,
+    confidenceLevel: evidence.confidence,
   });
   const statusColors: Record<string, string> = {
     good: '#4ade80',
@@ -418,12 +423,45 @@ function InsightsCard({ insights }: { insights: TrainingInsight }) {
         <View style={[styles.readinessDot, { backgroundColor: color }]} />
         <View style={styles.readinessText}>
           <Text style={[styles.readinessLabel, { color }]}>
-            {insights.readiness_label}
+            {seedBadge.provisional ? `Provisional: ${insights.readiness_label}` : insights.readiness_label}
           </Text>
           <Text style={styles.readinessSummary}>
             {insights.recommendation.summary}
           </Text>
         </View>
+      </View>
+
+      <View style={styles.evidenceBlock}>
+        <View style={styles.evidenceHeaderRow}>
+          <Text style={styles.evidenceTitle}>{evidence.label}</Text>
+          <Text style={styles.evidenceNote}>Hub-fed data only</Text>
+        </View>
+        <Text style={styles.evidenceBody}>{evidence.note}</Text>
+        <View style={styles.chipRow}>
+          {evidence.sourceLabels.slice(0, 3).map((source) => (
+            <Text key={source} style={styles.sourceChipSmall}>{source}</Text>
+          ))}
+        </View>
+        <Pressable
+          style={styles.evidenceToggle}
+          onPress={() => setEvidenceOpen((v) => !v)}
+          accessibilityRole="button"
+          accessibilityLabel={evidenceOpen ? 'Hide readiness evidence' : 'Show readiness evidence'}>
+          <Text style={styles.evidenceToggleText}>{evidenceOpen ? 'Hide evidence' : 'Show evidence'}</Text>
+        </Pressable>
+        {evidenceOpen && (
+          <View style={styles.evidenceDetails}>
+            <Text style={styles.evidenceDetailText}>
+              Inputs used: {evidence.inputLabels.length > 0 ? evidence.inputLabels.join(', ') : 'none yet'}
+            </Text>
+            <Text style={styles.evidenceDetailText}>
+              Missing: {evidence.missingLabels.length > 0 ? evidence.missingLabels.join(', ') : 'none obvious'}
+            </Text>
+            <Text style={styles.evidenceDetailText}>
+              Direct WHOOP/Polar readiness fields are not used here unless a verified direct integration is present.
+            </Text>
+          </View>
+        )}
       </View>
 
       {/* Key metrics row */}
@@ -474,7 +512,6 @@ function InsightsCard({ insights }: { insights: TrainingInsight }) {
       {/* Data note */}
       <Text style={styles.seedNoteText}>
         {seedBadge.note}
-        {whoopFetchedAt && !seedBadge.provisional ? ` WHOOP checked ${new Date(whoopFetchedAt).toLocaleTimeString()}.` : ''}
       </Text>
       <Text style={styles.dataNoteText}>{insights.data_note}</Text>
     </View>
@@ -703,6 +740,29 @@ export default function HealthScreen() {
     ).slice(0, 8),
     [days, conditioningSourceType],
   );
+  const readinessEvidence = useMemo(() => buildHubReadinessEvidence({
+    platform: Platform.OS,
+    fields: {
+      hrv: today?.hrv_ms ?? features?.today_hrv ?? null,
+      restingHr: today?.resting_hr ?? null,
+      sleepHours: today?.sleep_hours ?? features?.today_sleep ?? null,
+      activeCalories: today?.active_calories ?? null,
+      steps: today?.step_count ?? null,
+      workouts: today?.workouts?.length ?? 0,
+    },
+    insufficientHistory: features?.missing.insufficient_history ?? days.length < 7,
+    missing: {
+      hrv: features?.missing.hrv_data,
+      restingHr: today?.resting_hr == null,
+      sleep: features?.missing.sleep_data,
+      strain: features?.missing.strain_data,
+      workoutDetail: features?.missing.workout_detail,
+    },
+    provenance: features?.provenance ?? [],
+    polarHubDetected: polarViaHc?.detected ?? false,
+    samsungHubDetected: samsungViaHc?.detected ?? false,
+    manualSessionData: days.some((day) => day.grappling_session != null || (day.workouts ?? []).some((workout) => workout.source === 'manual')),
+  }), [days, features, polarViaHc?.detected, samsungViaHc?.detected, today]);
 
   const inExpoGo = isExpoGo();
   const nativeCopy = useMemo(() => getNativeHealthSourceCopy(Platform.OS), []);
@@ -1001,7 +1061,7 @@ export default function HealthScreen() {
       {/* Provisional/app-owned readiness */}
       {insights && (
         <SafeErrorBoundary label="Insights card">
-          <InsightsCard insights={insights} />
+          <InsightsCard insights={insights} evidence={readinessEvidence} />
         </SafeErrorBoundary>
       )}
 
@@ -1475,6 +1535,41 @@ const styles = StyleSheet.create({
   readinessText: { flex: 1, gap: 4 },
   readinessLabel: { fontSize: 18, fontWeight: '700' },
   readinessSummary: { fontSize: 14, opacity: 0.8, lineHeight: 20 },
+  evidenceBlock: {
+    gap: 8,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+  },
+  evidenceHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 8,
+  },
+  evidenceTitle: { fontSize: 13, fontWeight: '700', color: '#d4e157' },
+  evidenceNote: { fontSize: 11, opacity: 0.45 },
+  evidenceBody: { fontSize: 12, opacity: 0.68, lineHeight: 17 },
+  chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  sourceChipSmall: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#d4e157',
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.32)',
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  evidenceToggle: { alignSelf: 'flex-start' },
+  evidenceToggleText: { fontSize: 12, color: '#d4e157', fontWeight: '700' },
+  evidenceDetails: {
+    gap: 4,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.06)',
+  },
+  evidenceDetailText: { fontSize: 12, opacity: 0.58, lineHeight: 17 },
   seedBadge: {
     borderWidth: 1,
     borderRadius: 999,
