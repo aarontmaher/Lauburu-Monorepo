@@ -10,7 +10,51 @@ Companion to `HEALTH_SOURCE_IMPLEMENTATION_AUDIT.md`,
 `HEALTH_METRIC_APPS_DEVICES_AUDIT.md`, and the existing compute at
 `packages/shared/src/backend/services/readiness/grappler-readiness.ts`.
 
-Updated 2026-05-06.
+Updated 2026-05-08.
+
+## Grappling Readiness is the core health product
+
+Updated 2026-05-08 against
+`CLAUDE-GRAPPLING-READINESS-CORE-REPRIORITISE-01`. **Grappling
+Readiness is the core product of the Health tab.** Every other
+health surface (per-source cards, source-management settings,
+nutrition card, manual log, integrations) is supporting
+infrastructure: it exists to feed the readiness compute or to
+give the user provenance when a readiness signal is missing /
+provisional.
+
+Implication for prioritisation:
+
+- **Critical path** = anything that lets the readiness compute
+  return a useful provisional reading from data Aaron's
+  testers already have. That's Apple Health (iOS),
+  Health Connect (Android), and the Lauburu manual log /
+  NextDayCheckin / TrainingSession schemas.
+- **Optional enrichment** = WHOOP Direct, Polar AccessLink
+  Direct, Bluetooth HR sensor, vendor-export uploads. Each
+  improves readiness fidelity but **none is a v1 blocker**.
+  Removing them from the critical path means readiness ships
+  when hubs are reliable, not when every vendor migration is
+  done.
+- **Removed from the critical path explicitly:**
+  - WHOOP Direct OAuth migration (FS-008) — now optional
+    v1.5 enrichment, not a v1 blocker.
+  - Polar AccessLink (FS-012) — now optional v2 enrichment.
+  - Bluetooth HR sensor (FS-013) — Train-session lane,
+    never a readiness path.
+
+Hub-fed wearable data (WHOOP / Polar / Garmin / Concept2 /
+ErgZone routed through Apple Health or Health Connect) is an
+accepted v1 input — under hub provenance ("WHOOP via Apple
+Health", "Polar via Health Connect"), never relabeled as
+direct. Vendor exports (CSV / zip) are accepted with truth
+label `imported summary`; they enrich the historical context
+but are NEVER readiness inputs (`docs/HEALTH_NUTRITION_READINESS_AUDIT.md`
+§ 3.1, FS-014 anti-rule).
+
+This positioning supersedes any earlier framing in
+`docs/APP_DEVELOPMENTS.md` Priority 2 that treated WHOOP Direct
+or Polar AccessLink as health-MVP gates. They aren't.
 
 ## Priority — v1 is hub-first
 

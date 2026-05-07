@@ -4,6 +4,14 @@ The single doc that turns the cross-cutting health-and-nutrition
 audit into per-provider status, roadmap rank, beginner-vs-veteran
 UX rules, do-not-promote list, and MVP acceptance criteria.
 
+**Grappling Readiness is the core health product** per
+`docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md` § "Grappling
+Readiness is the core health product" (2026-05-08). Every
+per-source row below exists to feed the readiness compute or
+to surface provenance when readiness is missing / provisional.
+Direct integrations (WHOOP / Polar AccessLink / BLE) are
+optional enrichment, NOT v1 blockers.
+
 This doc is **spec / backlog only**. No implementation, no
 mobile UI, no native rebuild, no version bump, no EAS build.
 Code lands in batches downstream gated by the EAS build cost
