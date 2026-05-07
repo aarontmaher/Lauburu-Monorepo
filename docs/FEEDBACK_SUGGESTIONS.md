@@ -133,6 +133,16 @@ that follows.
 | FS-004 | App live MCP consumer in next tester build | mobile_release | candidate | Mobile already auto-appends `/api` and reads `EXPO_PUBLIC_MCP_BASE_URL`. Active candidate scope: set the env in EAS for the next paired build, dispatch from Admin/Dev → Primary actions, verify on tester device. NO version bump in this work. |
 | FS-005 | Feedback suggestions approval workflow visible in Admin/Dev | admin_dev | candidate | The mobile Admin/Dev surface should display `candidateCount` and `awaitingApprovalCount` from the Control Centre snapshot per `CONTROL_CENTRE_MVP_SPEC.md`. Active candidate scope: backend (Worker) reads counts from a future `connector_backlog_items` table; mobile renders the section. Phase-2/Phase-3 work, gated on the Phase-1 Worker route landing first. |
 | FS-006 | Health / Data Source reliability after MCP/AdminDev stabilises | health | candidate | Apple Health (iOS) + Health Connect (Android) reliability is Priority 2 in `APP_DEVELOPMENTS.md` and stays gated behind the MCP/AdminDev work. Active candidate scope: tester-device verification of cards visibility + missingness honesty. Health source logic itself is OUT OF SCOPE for the candidate intake — it goes through its own approval flow when MCP work stabilises. |
+| FS-007 | P0.3 — "Polar via hub" label propagation audit (mobile) | health_data_issue | candidate | Per `HEALTH_NUTRITION_READINESS_AUDIT.md` § 3 P0. Codex Phase-1 audit of every UI string + MCP response field that mentions Polar — confirm none say "Polar Direct" / "Polar live". Bundled with next mobile batch; NO standalone build. |
+| FS-008 | P1.1+P1.2 — WHOOP OAuth callback off Railway → Cloudflare Worker + Supabase token storage | source_integration_issue | candidate | Per `HEALTH_NUTRITION_READINESS_AUDIT.md` § 1.4. Lane-3 (DB + secrets); blocks on Aaron approval + Aaron pasting WHOOP client secret to Worker secret + WHOOP developer-console redirect URI update. After migration, WHOOP truth label flips to `seed/provisional` for ≥7 days before promotion to `live`. |
+| FS-009 | P1.4 — Nutrition manual + photo path tester-verified on iPhone + Android | health_data_issue | candidate | Code is live; verification is the gate. Bundle with next mobile batch. NO build solely for this. |
+| FS-010 | P1.5 — Mobile health-source label audit per `HEALTH_NUTRITION_READINESS_AUDIT.md` § 7 Codex prompt | ux_issue | candidate | Phase-1 audit of `IntegrationCards.tsx` / `HealthActionsPanel.tsx` / `health-source-ui.ts` strings against the six canonical truth labels. Codex's lane. ≤20 line changes per file. |
+| FS-011 | P2.1–P2.4 — Grappler Readiness v1 batches B/C/D + provisional UI | feature_idea | candidate | Per `GRAPPLER_READINESS_PROTOTYPE_PLAN.md` + `HEALTH_NUTRITION_READINESS_AUDIT.md` § 6.2. Gated on FS-006 / FS-007 / FS-009 / FS-010 holding for ≥2 tester-build cycles. confidence: provisional floor; hedge language only. |
+| FS-012 | P3.1 — Polar AccessLink (Polar Direct) OAuth wiring | source_integration_issue | candidate | Reserved label; vendor OAuth + token storage; bundled with WHOOP migration if practical. Lane 3. |
+| FS-013 | P3.2 — Bluetooth HR sensor Phase-1 native scaffold | feature_idea | candidate | Per `BLUETOOTH_MVP_SPEC.md` § 11 Codex handoff prompt. Native scaffold ONLY (no UI, no schema). Train-session lane. |
+| FS-014 | P3.3 — Generic conditioning file import (FIT / TCX / CSV) | feature_idea | candidate | `manual_imports` table accepts envelope; parser routing planned. Lane 2. |
+| FS-015 | P3.5+P3.6 — Blood test + DEXA upload UI + storage | feature_idea | candidate | Per `DEXA_BLOOD_TEST_UPLOAD_PLAN.md`. Quarterly evidence; "context only — not medical advice" caption mandatory. Lane 2. |
+| FS-016 | P3.7 — Journal upload (free-text, evidence only, never readiness input) | feature_idea | candidate | Per `HEALTH_NUTRITION_READINESS_AUDIT.md` § 1.13. Per-user storage; never appears in MCP / connector. Lane 2. |
 
 ### Per-candidate approval log
 
@@ -145,6 +155,16 @@ FS-003 | (awaiting Aaron approval)
 FS-004 | (awaiting Aaron approval)
 FS-005 | (awaiting Aaron approval)
 FS-006 | (awaiting Aaron approval)
+FS-007 | (awaiting Aaron approval)
+FS-008 | (awaiting Aaron approval)
+FS-009 | (awaiting Aaron approval)
+FS-010 | (awaiting Aaron approval)
+FS-011 | (awaiting Aaron approval)
+FS-012 | (awaiting Aaron approval)
+FS-013 | (awaiting Aaron approval)
+FS-014 | (awaiting Aaron approval)
+FS-015 | (awaiting Aaron approval)
+FS-016 | (awaiting Aaron approval)
 ```
 
 When Aaron approves an item, the line becomes:
