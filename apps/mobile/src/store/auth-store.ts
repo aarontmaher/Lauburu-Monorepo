@@ -85,6 +85,42 @@ function deriveEmailVerificationStatus(user: User | null): EmailVerificationStat
   return diff < 5000 ? 'not_configured' : 'verified';
 }
 
+/**
+ * Detect Supabase stale-session errors (Refresh Token Not Found,
+ * invalid_grant, expired refresh, etc.). When the SDK can't refresh
+ * the access token from the locally-stored refresh token, every
+ * subsequent API call throws until local storage is cleared. QA on
+ * simulator / TestFlight hits this when a server-side rotation
+ * invalidates the local token; the app needs to recover instead of
+ * looping on the error.
+ */
+function isStaleSessionError(err: unknown): boolean {
+  if (!err) return false;
+  const e = err as { message?: unknown; status?: unknown; code?: unknown };
+  const msg = typeof e.message === 'string' ? e.message.toLowerCase() : String(err).toLowerCase();
+  if (/refresh.token.not.found|invalid.refresh.token|invalid_grant|refresh_token_not_found|jwt.expired|token has expired/i.test(msg)) {
+    return true;
+  }
+  if (e.status === 401 && /refresh|grant|jwt|token/i.test(msg)) return true;
+  if (e.code === 'refresh_token_not_found' || e.code === 'invalid_grant') return true;
+  return false;
+}
+
+/**
+ * Clear ONLY the Supabase auth session from local storage. Does NOT
+ * clear per-user data (clear-user-data.ts handles that on full
+ * signOut). Safe to call when the session is already invalid — the
+ * underlying signOut({ scope: 'local' }) is best-effort.
+ */
+async function clearStaleAuthSession(): Promise<void> {
+  try {
+    await supabase.auth.signOut({ scope: 'local' });
+  } catch {
+    // Already cleared or network unreachable; the local-scope variant
+    // does not call the server, so we accept whatever state remains.
+  }
+}
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   status: 'loading',
   user: null,
@@ -106,12 +142,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       } else {
         set({ status: 'guest', user: null, session: null, emailVerificationStatus: 'unknown' });
       }
-    } catch {
+    } catch (err) {
+      if (isStaleSessionError(err)) {
+        if (__DEV__) console.warn('[auth] initialize: stale refresh token; clearing local session and falling back to guest');
+        await clearStaleAuthSession();
+      }
       set({ status: 'guest', user: null, session: null, emailVerificationStatus: 'unknown' });
     }
 
     // Listen for future auth changes (token refresh, sign-in from another tab, etc.)
-    supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.onAuthStateChange((event, session) => {
+      // Token refresh failures land here as TOKEN_REFRESHED + null session,
+      // or as SIGNED_OUT — either way we drop to guest. The TOKEN_REFRESHED
+      // case with a non-null session is the happy refresh path.
       if (session?.user) {
         set({
           status: 'member',
@@ -119,9 +162,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           session,
           emailVerificationStatus: deriveEmailVerificationStatus(session.user),
         });
-      } else {
-        set({ status: 'guest', user: null, session: null, emailVerificationStatus: 'unknown' });
+        return;
       }
+      if (__DEV__ && event === 'TOKEN_REFRESHED' && !session) {
+        console.warn('[auth] onAuthStateChange: TOKEN_REFRESHED with null session — refresh failed; dropping to guest');
+      }
+      set({ status: 'guest', user: null, session: null, emailVerificationStatus: 'unknown' });
     });
   },
 
@@ -216,11 +262,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const { session } = get();
     if (session?.access_token) return session.access_token;
 
-    // Fallback: ask Supabase (handles refresh).
+    // Fallback: ask Supabase (handles refresh). On stale-refresh-token
+    // errors, clear the local session and drop to guest so subsequent
+    // calls don't loop on the same error.
     try {
-      const { data } = await supabase.auth.getSession();
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
       return data.session?.access_token ?? null;
-    } catch {
+    } catch (err) {
+      if (isStaleSessionError(err)) {
+        if (__DEV__) console.warn('[auth] getAccessToken: stale refresh token; clearing local session');
+        await clearStaleAuthSession();
+        set({ status: 'guest', user: null, session: null, emailVerificationStatus: 'unknown' });
+      }
       return null;
     }
   },
