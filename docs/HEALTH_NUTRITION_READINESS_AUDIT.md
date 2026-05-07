@@ -286,14 +286,23 @@ quarterly cadence; no body-composition coaching prompts.
 
 ### 1.13 Journal uploads
 
-**Status: planned.**
+**Status: planned.** Superseded for the custom-timeline use
+case by `docs/CUSTOM_JOURNAL_HEALTH_EFFECTS_SPEC.md` (FS-018,
+2026-05-08). The flexible-tracked-items schema there covers
+medications / peptides / supplements / training changes /
+respiratory devices etc. with start/stop events, dose
+periods, and metric-effect windows that produce `associated
+with` (never causal) bullets to enrich the readiness `why`
+context. This § 1.13 entry retains the original
+free-text-journal scope for users who only want a paragraph
+per day; the daily-journal-store (`apps/mobile/src/store/daily-journal-store.ts`,
+shipped 2026-05-08) covers that surface.
 
-Free-text journal entries paired with a date stamp. Surfaces in
-the Train tab session log as context. Treated as
-**evidence/context**, never as fed input to the readiness
-compute. Privacy: per-user storage only; never appears in any
+Privacy: per-user storage only; never appears in any
 MCP / connector response; redactor extension applies if any
 journal text ever flows into a control-centre-bound field.
+Treated as **evidence/context**, never as fed input to the
+readiness compute.
 
 ## 2. Provider status summary table
 

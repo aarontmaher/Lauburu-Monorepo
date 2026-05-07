@@ -143,6 +143,8 @@ that follows.
 | FS-014 | P3.3 — Generic conditioning file import (FIT / TCX / CSV) | feature_idea | candidate | `manual_imports` table accepts envelope; parser routing planned. Lane 2. |
 | FS-015 | P3.5+P3.6 — Blood test + DEXA upload UI + storage | feature_idea | candidate | Per `DEXA_BLOOD_TEST_UPLOAD_PLAN.md`. Quarterly evidence; "context only — not medical advice" caption mandatory. Lane 2. |
 | FS-016 | P3.7 — Journal upload (free-text, evidence only, never readiness input) | feature_idea | candidate | Per `HEALTH_NUTRITION_READINESS_AUDIT.md` § 1.13. Per-user storage; never appears in MCP / connector. Lane 2. |
+| FS-017 | v2 — Hub-fed body-composition scale audit (Withings / Garmin Index / Renpho via Apple Health / Health Connect) | health_data_issue | candidate | Per `GRAPPLER_READINESS_PROTOTYPE_PLAN.md` § "Evidence input roadmap" v2. Hub-only path; no direct vendor API. `WeightRecord` + `BodyFatRecord` + `LeanBodyMassRecord` provenance label rendering. Lane 2. |
+| FS-018 | v2 — Custom timeline journal (interventions / peptides / supplements / training changes) + metric-effect window analysis | feature_idea | candidate | Per `docs/CUSTOM_JOURNAL_HEALTH_EFFECTS_SPEC.md`. Schema (journal_items / journal_events / journal_dose_periods / metric_effect_windows) + beginner UX + readiness confidence-modulation integration. NEVER causation claims, only `associated with` / `appeared to`. `confidence: high` reserved. Lane 3 (DB + privacy). |
 
 ### Per-candidate approval log
 
@@ -165,6 +167,8 @@ FS-013 | (awaiting Aaron approval)
 FS-014 | (awaiting Aaron approval)
 FS-015 | (awaiting Aaron approval)
 FS-016 | (awaiting Aaron approval)
+FS-017 | (awaiting Aaron approval)
+FS-018 | (awaiting Aaron approval)
 ```
 
 When Aaron approves an item, the line becomes:

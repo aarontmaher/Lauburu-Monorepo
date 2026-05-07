@@ -95,7 +95,8 @@ on FS-008 (WHOOP Direct) or FS-012 (Polar AccessLink).
 
 | Input | FS | What it adds | Source data path | Status |
 |---|---|---|---|---|
-| Daily journal / Apple-Notes-style check-in | FS-016 | free-text evidence; mood / soreness / context narrative; never a readiness input but informs Why bullets | new mobile UI + per-user storage; redactor extension on any MCP-bound field | planned |
+| Daily journal / Apple-Notes-style check-in | FS-016 | free-text evidence; mood / soreness / context narrative; never a readiness input but informs Why bullets | daily-journal-store (`apps/mobile/src/store/daily-journal-store.ts`) shipped 2026-05-08; per-user storage; redactor extension on any MCP-bound field | partial (daily entry shipped; custom timeline FS-018 next) |
+| Custom timeline journal (medications / peptides / supplements / training changes / respiratory devices / etc.) | FS-018 | tracked items with start/stop/dose-change events, computed dose periods, metric-effect windows that produce `associated with` (never causal) bullets to enrich readiness Why context | full spec at `docs/CUSTOM_JOURNAL_HEALTH_EFFECTS_SPEC.md`; Lane 3 (DB schema + per-user storage + privacy boundary) | planned |
 | Blood test uploads | FS-015 | PDF / screenshot / manual headline numbers; quarterly evidence | `manual_imports` table + parser stub; "context only — not medical advice" caption | planned |
 | DEXA scan uploads | FS-015 | quarterly body-composition evidence | same upload path as blood test | planned |
 | HIIT / conditioning hub-fed | (FS-007 + FS-010 audit aligned) | rower / ergometer / bike sessions written to Apple Health / Health Connect by ErgData / ErgZone / Concept2 logbook / Strava / TrainingPeaks / Intervals.icu | hub `WorkoutRecord` / `ExerciseSessionRecord` provenance | partial (hub path live; needs label hygiene) |
