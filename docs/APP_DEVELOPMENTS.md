@@ -76,6 +76,16 @@ cleanly, surface what's available, and stay honest about what's
 missing. Manual check-ins + training logs are the fallback when a
 source isn't connected.
 
+Source-of-truth spec for every provider:
+`docs/HEALTH_CONNECTIVITY_TRUTH_SPEC.md` — pulls
+Apple Health / Health Connect / Polar via hub / WHOOP direct /
+Polar direct / WHOOP export / Bluetooth HR / generic
+conditioning / manual log into one matrix with the canonical
+truth labels (`live` / `synced from hub` / `imported summary`
+/ `seed/provisional` / `setup required` / `planned`), names
+what's allowed to feed Grappler Readiness now vs later, and
+specifies the proposed `connector_health_sources` MCP fields.
+
 Hard guardrails (preserved):
 
 - Apple Health is iOS-only; Health Connect is Android-only. No
@@ -83,6 +93,10 @@ Hard guardrails (preserved):
 - Missing data stays missing — never fabricated.
 - No paid-tier gating for these two primary sources (already
   un-gated, commit `d4827ba`).
+- WHOOP direct stays `setup required` until OAuth migrates off
+  Railway disk + tokens flow ≥7 days clean. Polar direct stays
+  `planned`. Bluetooth HR is Train-session data only, never
+  readiness input.
 
 Status: **live** for the existing primary cards in last paired
 build. Next moves are tester-build verifications, then source
