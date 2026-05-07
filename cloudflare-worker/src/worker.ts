@@ -42,7 +42,7 @@ import {
 } from './supabase';
 import { handleMcp } from './mcp';
 import { handleMcpPublic } from './mcp-public';
-import { handleMcpV2 } from './mcp-v2';
+import { handleMcpV2, handleMcpV2Health } from './mcp-v2';
 import { buildControlCentreSnapshot } from './control-centre';
 
 interface ConnectorMeta {
@@ -339,6 +339,9 @@ export default {
     // ATHLETE_MEMORY_API_TOKEN. Implementation in ./mcp-v2.ts.
     if (path === '/mcp/v2') {
       return handleMcpV2(request, env);
+    }
+    if (path === '/mcp/v2/health') {
+      return handleMcpV2Health(request, env);
     }
 
     // ── /mcp/public — public-safe preview MCP (no auth) ────────────────

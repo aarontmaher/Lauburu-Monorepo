@@ -62,6 +62,7 @@ function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
     headers: {
       'content-type': 'application/json',
       'cache-control': 'no-store',
+      ...corsHeaders(),
       ...(init.headers ?? {}),
     },
   });
@@ -73,9 +74,24 @@ function sseResponse(body: unknown, init: ResponseInit = {}): Response {
     headers: {
       'content-type': 'text/event-stream',
       'cache-control': 'no-cache, no-transform',
+      ...corsHeaders(),
       ...(init.headers ?? {}),
     },
   });
+}
+function corsHeaders(): Record<string, string> {
+  return {
+    'access-control-allow-origin': '*',
+    'access-control-allow-methods': 'GET, POST, OPTIONS',
+    'access-control-allow-headers': 'authorization, content-type, mcp-session-id, x-athlete-memory-token',
+    'access-control-expose-headers': 'content-type, mcp-session-id',
+  };
+}
+function optionsResponse(): Response {
+  return new Response(null, { status: 204, headers: corsHeaders() });
+}
+function acceptedResponse(): Response {
+  return new Response(null, { status: 202, headers: corsHeaders() });
 }
 function clientWantsSse(request: Request): boolean {
   const accept = request.headers.get('accept') ?? request.headers.get('Accept') ?? '';
@@ -1101,6 +1117,10 @@ async function handleRpcRequest(req: JsonRpcRequest, env: Env, request: Request)
 }
 
 export async function handleMcpV2(request: Request, env: Env): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return optionsResponse();
+  }
+
   if (request.method === 'GET') {
     const tools = await listAllTools();
     return jsonResponse({
@@ -1127,10 +1147,41 @@ export async function handleMcpV2(request: Request, env: Env): Promise<Response>
   if (Array.isArray(body)) {
     const responses = await Promise.all(body.map((req) => handleRpcRequest(req as JsonRpcRequest, env, request)));
     const filtered = responses.filter((r): r is JsonRpcResponse => r !== null);
-    if (filtered.length === 0) return new Response(null, { status: 202 });
+    if (filtered.length === 0) return acceptedResponse();
     return negotiated(request, filtered);
   }
   const response = await handleRpcRequest(body as JsonRpcRequest, env, request);
-  if (response === null) return new Response(null, { status: 202 });
+  if (response === null) return acceptedResponse();
   return negotiated(request, response);
+}
+
+export async function handleMcpV2Health(request: Request, env: Env): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return optionsResponse();
+  }
+  if (request.method !== 'GET') {
+    return jsonResponse(rpcError(null, -32600, 'GET only.'), { status: 405, headers: { allow: 'GET, OPTIONS' } });
+  }
+  const adapter = getSupabaseAdapter(env);
+  let source: 'supabase' | 'repo-only' = 'repo-only';
+  if (adapter.configured) {
+    const ping = await adapter.ping();
+    if (ping.ok) source = 'supabase';
+  }
+  return jsonResponse({
+    ok: true,
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    protocolVersion: PROTOCOL_VERSION,
+    serverInfo: SERVER_INFO,
+    transport: 'streamable-http',
+    supportedTransports: ['streamable-http', 'sse-framed-json-rpc'],
+    source,
+    requiredTools: [
+      'project.get_current_state',
+      'project.get_operating_rules',
+      'integrations.get_overview',
+      'handoff.get_latest',
+    ],
+  });
 }

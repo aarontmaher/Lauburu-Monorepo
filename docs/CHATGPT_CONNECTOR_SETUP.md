@@ -301,6 +301,17 @@ works end-to-end**. ChatGPT-side failures are then almost
 certainly one of the three causes in § 2 plus the new § 8 tool-
 count cap below.
 
+The Worker also exposes a cheap route probe for connector setup:
+
+```sh
+curl -sS https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2/health | jq
+```
+
+Expected: `ok: true`, `serverInfo.name = "lauburu-mcp-unified"`,
+`transport = "streamable-http"`, and `requiredTools` containing
+`project.get_current_state`, `project.get_operating_rules`,
+`integrations.get_overview`, and `handoff.get_latest`.
+
 ### 7.1 Reference URLs
 
 | URL | What it is | Use? |
