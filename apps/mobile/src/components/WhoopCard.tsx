@@ -169,7 +169,7 @@ export function WhoopCard() {
         <>
           <Text style={styles.cardBody}>Optional WHOOP reference — not required.</Text>
           <Text style={[styles.cardBody, { fontSize: 11, opacity: 0.55 }]}>
-            Readiness is your primary score, derived from Apple Health, training, nutrition, and imported WHOOP history. Tap Refresh to attempt a WHOOP calibration pull.
+            Readiness stays provisional unless direct recovery data is present. The app can still use available health, training, nutrition, and imported history.
           </Text>
         </>
       )}
@@ -178,7 +178,7 @@ export function WhoopCard() {
           card as "the app is broken". Custom readiness keeps running. */}
       {isError && (
         <Text style={[styles.cardBody, { fontSize: 11, opacity: 0.55, marginTop: -4 }]}>
-          WHOOP Direct unavailable — using your readiness from Apple Health, training, and imported history.
+          WHOOP Direct unavailable — readiness remains provisional and uses only available health, training, and imported history.
         </Text>
       )}
 

@@ -415,7 +415,7 @@ export function WhoopDirectCard() {
       {s === 'auth_required' && (
         <>
           <Text style={styles.bodyText}>
-            Connect your WHOOP account for live recovery, HRV, strain, and sleep data. This is the only path that unlocks readiness coaching.
+            Connect your WHOOP account for direct recovery, HRV, strain, and sleep data. Until then, readiness stays provisional and uses only available hub/manual data.
           </Text>
           <View style={styles.actions}>
             <ActionBtn label="Connect WHOOP" onPress={handleConnect} loading={loading} />
@@ -500,7 +500,7 @@ export function WhoopDirectCard() {
           )}
           {status?.readinessStatus === 'available' && (
             <Text style={[styles.subtleNote, { color: '#4ade80' }]}>
-              Readiness available — recovery, HRV, strain, sleep all present.
+              Direct WHOOP fields present — recovery, HRV, strain, and sleep are available for app-owned readiness.
             </Text>
           )}
           {status?.readinessStatus === 'partial' && (

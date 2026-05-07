@@ -31,6 +31,7 @@ import * as Application from 'expo-application';
 import * as Updates from 'expo-updates';
 import { Text, View } from '@/components/Themed';
 import { useAuthStore } from '../store/auth-store';
+import { useDevUnlockStore } from '../store/dev-unlock-store';
 import { useHealthStore } from '../store/health-store';
 import { useTierStore } from '../store/tier-store';
 import { useWhoopStore } from '../store/whoop-store';
@@ -338,8 +339,11 @@ export class HealthActionsPanel extends Component<{}, { error: Error | null }> {
 function Body() {
   const user = useAuthStore((s) => s.user);
   const accessToken = useAuthStore((s) => s.session?.access_token);
+  const devUnlocked = useDevUnlockStore((s) => s.unlocked);
   const requestPermissions = useHealthStore((s) => s.requestPermissions);
   const syncData = useHealthStore((s) => s.syncData);
+  const userEmail = user?.email?.toLowerCase() ?? null;
+  const showSourceDiagnostics = userEmail === 'aaron.t.maher@gmail.com' || (__DEV__ && devUnlocked);
 
   const [taps, setTaps] = useState<TapLog>({
     appleConnectAt: null,
@@ -957,7 +961,7 @@ function Body() {
     if (Array.isArray(missing) && missing.length > 0) {
       lines.push(`Still missing: ${missing.join(', ')}.`);
     } else if (d?.status === 'connected') {
-      lines.push('All readiness domains present.');
+      lines.push('Direct WHOOP domains present.');
     }
     Alert.alert('WHOOP', lines.join('\n'));
   }, [cfg, fetchWhoop, stampTap]);
@@ -1081,12 +1085,16 @@ function Body() {
     return `Hub: ${nativeCopy.sourceName} ${nativeStatus}`;
   })();
   const directSummaryLine = `Direct: ${whoopSummary.label} · ${polarSummary.label}`;
+  const missingSourceLine = isWhoopConnected
+    ? 'Missing health fields stay blank until a source provides them.'
+    : 'Direct recovery fields stay missing until WHOOP or Polar Direct is linked.';
 
   return (
     <View style={styles.card}>
       <Text style={styles.title}>Health sources</Text>
       <Text style={styles.summaryLine}>{summaryLine}</Text>
       <Text style={styles.summaryLineMuted}>{directSummaryLine}</Text>
+      <Text style={styles.summaryLineMuted}>{missingSourceLine}</Text>
 
       <Pressable
         style={[styles.manageBtn, needsAttention && styles.manageBtnAttention]}
@@ -1120,17 +1128,19 @@ function Body() {
         onDisconnectWhoop={onDisconnectWhoop}
       />
 
-      <Pressable
-        style={styles.diagToggle}
-        onPress={() => setShowDiag((v) => !v)}
-        hitSlop={8}
-        accessibilityRole="button"
-        accessibilityLabel={showDiag ? 'Hide diagnostics' : 'Show diagnostics'}>
-        <Text style={styles.diagToggleText}>
-          {showDiag ? '▾ Hide diagnostics' : '▸ Show diagnostics'}
-        </Text>
-      </Pressable>
-      {showDiag && (
+      {showSourceDiagnostics && (
+        <Pressable
+          style={styles.diagToggle}
+          onPress={() => setShowDiag((v) => !v)}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={showDiag ? 'Hide diagnostics' : 'Show diagnostics'}>
+          <Text style={styles.diagToggleText}>
+            {showDiag ? '▾ Hide diagnostics' : '▸ Show diagnostics'}
+          </Text>
+        </Pressable>
+      )}
+      {showSourceDiagnostics && showDiag && (
         <View style={styles.idBlock}>
           <SafeSection label="identity-version">
             <IdentityVersion />
