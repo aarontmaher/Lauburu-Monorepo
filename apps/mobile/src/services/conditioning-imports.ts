@@ -118,8 +118,14 @@ function workoutText(workout: Workout): string {
     .join(' ');
 }
 
-function friendlySourceApp(source: string | undefined): string {
+export function friendlySourceApp(source: string | undefined): string {
   if (!source) return 'Health hub';
+  if (/apple|healthkit|com\.apple/i.test(source)) return 'Apple Health';
+  if (/health\s?connect|android\.health|com\.google\.android\.apps\.healthdata/i.test(source)) return 'Health Connect';
+  if (/samsung/i.test(source)) return 'Samsung Health';
+  if (/google\s?fit|com\.google\.android\.apps\.fitness/i.test(source)) return 'Google Fit';
+  if (/polar|flow/i.test(source)) return 'Polar Flow';
+  if (/whoop/i.test(source)) return 'WHOOP';
   if (/ergdata/i.test(source)) return 'ErgData';
   if (/concept\s?2|com\.concept2/i.test(source)) return 'Concept2';
   if (/ergzone/i.test(source)) return 'ErgZone';

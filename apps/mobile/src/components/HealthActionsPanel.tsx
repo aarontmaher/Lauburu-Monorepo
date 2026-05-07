@@ -1863,11 +1863,11 @@ function HealthSourceSheet(props: SheetProps) {
           : whoopState === 'partial' ? 'Partial sync' : 'Connected';
       return `${optionalPrefix}${head}${latest}${missStr}`;
     }
-    if (whoopState === 'config_missing') return 'Optional live calibration · setup required on the backend';
-    if (whoopState === 'auth_required') return 'Optional live calibration · not connected';
-    if (whoopState === 'error') return 'Optional live calibration · reconnect required (token expired)';
-    if (whoopState === 'loading') return 'Optional live calibration · loading status…';
-    return 'Optional live calibration';
+    if (whoopState === 'config_missing') return 'Optional direct data · setup required on the backend';
+    if (whoopState === 'auth_required') return 'Optional direct data · not connected';
+    if (whoopState === 'error') return 'Optional direct data · reconnect required (token expired)';
+    if (whoopState === 'loading') return 'Optional direct data · loading status…';
+    return 'Optional direct data';
   })();
 
   // Partition rows.

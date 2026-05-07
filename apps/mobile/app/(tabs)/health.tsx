@@ -27,6 +27,7 @@ import { getNativeHealthSourceCopy, getReadinessSeedBadge } from '../../src/serv
 import {
   buildConditioningImportSummaries,
   CONDITIONING_IMPORT_COPY,
+  friendlySourceApp,
   sourceTypeLabel,
   type ConditioningImportSummary,
 } from '../../src/services/conditioning-imports';
@@ -136,7 +137,7 @@ function TodayCard({ today }: { today: DailyMetrics }) {
                   {w.is_grappling ? ' 🥋' : ''}
                 </Text>
                 {w.source ? (
-                  <Text style={styles.workoutSource}>{w.source}</Text>
+                  <Text style={styles.workoutSource}>{friendlySourceApp(w.source)}</Text>
                 ) : null}
               </View>
               <View style={styles.workoutMetaCol}>
@@ -602,7 +603,7 @@ function PlannedHealthContextCard() {
     },
     {
       title: 'Journal / check-in',
-      body: 'Planned daily subjective context. Manual training logs remain available now.',
+      body: 'Planned journal expansion. Check-in and manual training logs remain available now.',
     },
   ];
   return (
