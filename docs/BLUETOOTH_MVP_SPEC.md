@@ -139,6 +139,10 @@ to make. **None of this lands in the spec commit.**
 
 ### iOS
 
+- Phase-1 scaffold choice: `react-native-ble-plx` `^3.5.1`,
+  already present in `apps/mobile/package.json`. The first
+  implementation batch keeps it central-only, foreground-only,
+  and UI-hidden until a native rebuild is verified.
 - Add `NSBluetoothAlwaysUsageDescription` to `Info.plist` (or
   `expo-build-properties` `ios.infoPlist.NSBluetoothAlwaysUsageDescription`)
   with copy: "Used during a training session to read live
@@ -158,6 +162,10 @@ to make. **None of this lands in the spec commit.**
 
 ### Android
 
+- Phase-1 scaffold choice: `react-native-ble-plx` `^3.5.1`,
+  already present in `apps/mobile/package.json`. A local Expo
+  config plugin sets `android:usesPermissionFlags="neverForLocation"`
+  on `BLUETOOTH_SCAN` during prebuild.
 - Add `BLUETOOTH_SCAN` (`android:usesPermissionFlags="neverForLocation"`)
   and `BLUETOOTH_CONNECT` permissions to `AndroidManifest.xml`
   (or `expo-build-properties` `android.permissions`) for

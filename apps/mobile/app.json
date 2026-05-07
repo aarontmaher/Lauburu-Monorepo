@@ -22,8 +22,8 @@
         "NSHealthUpdateUsageDescription": "Lauburu can log grappling sessions to Apple Health if you choose.",
         "NSCameraUsageDescription": "Lauburu uses the camera to scan food barcodes for nutrition tracking and to attach photos of issues to tester feedback.",
         "NSPhotoLibraryUsageDescription": "Lauburu lets testers attach screenshots or photos to feedback so bug reports and suggestions are easier to understand.",
-        "NSBluetoothAlwaysUsageDescription": "Lauburu connects to FTMS bikes, rowers, ski ergs, and Concept2 PM5 over Bluetooth to capture live power, cadence, and calorie data during your HIIT or conditioning sessions. You choose when to scan and connect.",
-        "NSBluetoothPeripheralUsageDescription": "Lauburu uses Bluetooth to discover and connect to HIIT machines during a session. Required for live machine data capture.",
+        "NSBluetoothAlwaysUsageDescription": "Used during a training session to read live heart rate from a paired sensor. Never sent off-device without your action.",
+        "NSBluetoothPeripheralUsageDescription": "Used during a training session to read live heart rate from a paired sensor. Never sent off-device without your action.",
         "UIRequiredDeviceCapabilities": ["arm64"],
         "ITSAppUsesNonExemptEncryption": false
       },
@@ -74,10 +74,10 @@
         "react-native-ble-plx",
         {
           "isBackgroundEnabled": false,
-          "modes": ["peripheral", "central"],
-          "bluetoothAlwaysPermission": "Lauburu connects to FTMS bikes, rowers, ski ergs, HR straps, and Concept2 PM5 over Bluetooth to capture live power, cadence, HR, and calories during HIIT/conditioning sessions."
+          "bluetoothAlwaysPermission": "Used during a training session to read live heart rate from a paired sensor. Never sent off-device without your action."
         }
       ],
+      "./plugins/withBluetoothScanNeverForLocation",
       [
         "@kingstinct/react-native-healthkit",
         {
