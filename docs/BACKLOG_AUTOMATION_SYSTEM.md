@@ -69,6 +69,53 @@ Asking Aaron to run a laptop command that a coder can safely run is
 a workflow bug. The coder should either run it, automate it, or
 report the exact safety blocker.
 
+## No delayed instruction chains
+
+Do not tell Aaron: "After Agent / Codex / Claude returns, run X."
+That makes Aaron carry future terminal commands in memory while
+working with other agents.
+
+Instead, every worker prompt must preserve the next action in the
+same workflow:
+
+1. Put the follow-up step inside the same worker prompt whenever
+   possible.
+2. Tell that worker to execute, prepare, or hand off the next
+   action itself.
+3. If a step depends on another worker, include the follow-up action
+   and stop condition in the same prompt.
+4. If another worker cannot proceed yet, give it non-blocking
+   adjacent work, not a waiting prompt.
+5. If Aaron must do a manual / device action, make that the only
+   immediate Aaron action and store later commands in MCP / bridge /
+   handoff.
+6. Use bridge handoff files, `AGENT_QA_RESULT_JSON`, prompt jobs, or
+   MCP state to preserve next steps.
+
+## Deferred prompts/actions backlog
+
+Deferred prompts / actions are real work items, not memory notes.
+If a follow-up cannot run immediately, store it in MCP, bridge
+artifacts, or a local backlog with:
+
+- `id`
+- `owner`
+- `targetWorker`
+- `triggerCondition`
+- `promptOrActionText`
+- `priority`
+- `createdAt`
+- `status: pending | active | completed | void | superseded`
+- `voidReason` when `status: void`
+
+When the trigger condition becomes true, surface the item as the
+next prompt / action. If it becomes obsolete, unsafe, replaced,
+already completed, or irrelevant, mark it `void` or remove it.
+Prefer putting follow-up steps inside the same worker prompt so the
+worker can continue without Aaron. If human / device action is
+unavoidable, store the later command in the backlog rather than
+relying on Aaron's memory.
+
 ## Three lanes
 
 ### Lane 1 — Safe autopilot (no confirmation)
@@ -152,6 +199,14 @@ include the MCP-first operating rule above before the task body.
 It must also include the clear-steps / automate-first rule: give
 Aaron step-by-step instructions when needed, automate safely before
 asking Aaron, and split output into automated / manual / blocked.
+It must also include the no-delayed-instruction rule: do not tell
+Aaron "after another worker returns, run X"; put follow-up actions,
+stop conditions, bridge writeback, and handoff preservation inside
+the worker prompt itself.
+If a deferred prompt/action remains, the prompt must write it into
+MCP, bridge artifacts, or the local backlog with the fields in the
+Deferred prompts/actions backlog section, and must mark obsolete
+items `void` or remove them.
 
 Use these build-gate statuses:
 

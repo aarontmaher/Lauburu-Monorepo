@@ -1465,7 +1465,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
   },
   {
     name: 'project.get_operating_rules',
-    description: 'Returns the canonical 15 operating rules every coder / agent / consumer must follow (audit→bundles, parallel lanes, no stopping at one patch, re-audit on implementation-complete, Agent-confirmed gate, EAS build cost control, no "fully done" without Aaron, provisional health claims, repo docs as source of truth, MCP-first start, coders run all laptop commands, clear-steps automate-first, parallel priorities stay active, no-idle dependency). Stable rule IDs 1..15 + titles + bodies. Mirror of docs/OPERATING_RULES.md. Public-safe.',
+    description: 'Returns the canonical 17 operating rules every coder / agent / consumer must follow (audit→bundles, parallel lanes, no stopping at one patch, re-audit on implementation-complete, Agent-confirmed gate, EAS build cost control, no "fully done" without Aaron, provisional health claims, repo docs as source of truth, MCP-first start, coders run all laptop commands, clear-steps automate-first, parallel priorities stay active, no-idle dependency, no delayed instruction chains, deferred prompt/action backlog hygiene). Stable rule IDs 1..17 + titles + bodies. Mirror of docs/OPERATING_RULES.md. Public-safe.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
     build: async () => buildOperatingRulesPayload(),

@@ -7,7 +7,7 @@
  *
  * Edit policy: changing this constant requires a paired edit to
  * docs/OPERATING_RULES.md in the same commit. The live integration
- * test asserts count = 15 + each rule's id stays stable. Any
+ * test asserts count = 17 + each rule's id stays stable. Any
  * promotion / demotion / reorder is a Lane-3 batch with explicit
  * Aaron approval per docs/BACKLOG_AUTOMATION_SYSTEM.md § Lane 3.
  */
@@ -108,6 +108,18 @@ export const OPERATING_RULES: readonly OperatingRule[] = [
     title: 'No-idle dependency',
     body:
       'No worker prompt may have its main action be "wait for another worker to finish." If a next step depends on another worker: (a) put the follow-up inside the same worker\'s prompt when possible, so that worker continues immediately after its own patch; (b) give other workers non-overlapping adjacent work they can do now — tests, bridge / MCP support, schemas, docs, release prep, route-smoke harness, redaction checks, data-model support; (c) if Worker B must verify Worker A\'s output, Worker B prepares the verifier / harness now and then continues into other safe same-lane tasks until Worker A\'s output exists. Every worker prompt MUST include a stay-busy rule per rule 3 AND an explicit alternative non-blocking lane. No coder / agent sits idle because a dependent prompt was split incorrectly. If a coder reports "blocked waiting on X", that is a workflow bug — fix the prompt template, not the worker.',
+  },
+  {
+    id: 16,
+    title: 'No delayed instruction chains',
+    body:
+      'Do not tell Aaron: "After Agent / Codex / Claude returns, run X." Put the follow-up step inside the same worker prompt whenever possible, and tell that worker to execute, prepare, or hand off the next action itself. If a step depends on another worker, the same prompt must include the follow-up action and stop condition. If another worker cannot proceed yet, give it non-blocking adjacent work, not a waiting prompt. If a manual / device action is required from Aaron, make that the only immediate action and store later commands in MCP / bridge / handoff. Use bridge handoff files, AGENT_QA_RESULT_JSON, prompt jobs, or MCP state to preserve next steps so Aaron does not have to remember them. Never make Aaron carry delayed terminal commands in memory while working with other agents.',
+  },
+  {
+    id: 17,
+    title: 'Backlog deferred prompts/actions; remove void ones',
+    body:
+      'Never make Aaron remember delayed instructions. Do not say "after Agent returns, run X" or "after Claude finishes, paste Y" as an untracked instruction. Store deferred prompts / actions in MCP, bridge artifacts, or a local backlog with: id, owner, targetWorker, triggerCondition, promptOrActionText, priority, createdAt, status: pending | active | completed | void | superseded, and voidReason when void. When the trigger condition becomes true, surface the item as the next prompt / action. If the item becomes obsolete, unsafe, replaced, already completed, or irrelevant, mark it void or remove it. Prefer putting follow-up steps inside the same worker prompt so the worker can continue without Aaron. If human / device action is unavoidable, store the later command in the backlog rather than relying on Aaron\'s memory.',
   },
 ] as const;
 

@@ -213,6 +213,22 @@ must separate `automated by coder/agent`, `manual Aaron step`, and
 approvals, logins, 2FA, vendor dashboards, or safety-sensitive
 confirmations.
 
+Prompt refs / handoff prompts must also preserve the no-delayed-
+instruction rule. Do not tell Aaron "after Agent / Codex / Claude
+returns, run X." Put follow-up actions, stop conditions, bridge
+writeback, and handoff preservation inside the same worker prompt.
+If Aaron must perform a manual / device action, make that the only
+immediate Aaron action and store later commands in MCP / bridge /
+handoff.
+
+Prompt refs / handoff prompts must store deferred prompts/actions
+with `id`, `owner`, `targetWorker`, `triggerCondition`,
+`promptOrActionText`, `priority`, `createdAt`, `status`, and
+`voidReason` when void. When the trigger condition becomes true, the
+control centre should surface the item as the next prompt/action.
+If the item is obsolete, unsafe, replaced, already completed, or
+irrelevant, mark it `void` or remove it.
+
 Use status wording: `Implementation-complete, awaiting Agent
 functional confirmation`, `Agent-confirmed, ready for Aaron build
 approval`, `Aaron-approved for EAS build`, and

@@ -99,6 +99,18 @@ Codex / Agent before owner action, and separate output into
 Aaron acts`. Aaron only handles secrets, approvals, logins, 2FA,
 vendor dashboards, and safety-sensitive confirmations.
 
+Every copied prompt also carries the no-delayed-instruction rule:
+do not tell Aaron "after Agent / Codex / Claude returns, run X."
+The prompt must include the follow-up action, stop condition, bridge
+writeback, and handoff preservation itself. If a manual / device
+action is required, that is the only immediate Aaron action; later
+commands live in MCP / bridge / handoff, not Aaron's memory.
+If a follow-up cannot run immediately, the copied prompt must store
+it as a deferred prompt/action with `id`, `owner`, `targetWorker`,
+`triggerCondition`, `promptOrActionText`, `priority`, `createdAt`,
+`status`, and `voidReason` when void. Obsolete, unsafe, replaced, or
+already-completed deferred actions must be marked `void` or removed.
+
 Done when: each template renders from the context and copies
 clean. Confirmed.
 

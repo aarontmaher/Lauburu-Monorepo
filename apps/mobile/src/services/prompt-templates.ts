@@ -78,6 +78,8 @@ function workflowRulesBlock(): string {
     'Keep coder lanes parallel and non-overlapping; do not edit another agent’s in-flight files.',
     'Use status wording: "Implementation-complete, awaiting Agent functional confirmation" until Agent confirms. Do not call work fully complete until Aaron has tested or approved it.',
     'Do not run EAS builds unless Agent has confirmed a worthwhile on-device change and Aaron approves.',
+    'No delayed instruction chains: do not tell Aaron "after Agent/Codex/Claude returns, run X." Put follow-up actions, stop conditions, bridge writeback, and handoff preservation inside this prompt. If Aaron must do a manual/device action, make that the only immediate Aaron action and store later commands in MCP/bridge/handoff.',
+    'Deferred prompts/actions must be tracked, not remembered: store any delayed item in MCP, bridge artifacts, or local backlog with id, owner, targetWorker, triggerCondition, promptOrActionText, priority, createdAt, status, and voidReason when void. Mark obsolete, unsafe, replaced, completed, or irrelevant items void/remove them.',
   ].join('\n');
 }
 

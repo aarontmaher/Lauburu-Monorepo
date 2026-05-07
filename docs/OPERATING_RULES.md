@@ -21,7 +21,14 @@ control centre, idle notifications, automation, or health
 input expansion. **Rule 15** then governs orchestration
 between workers: no worker prompt may have its main action
 be "wait for another worker to finish" — every prompt
-includes a stay-busy fallback lane.
+includes a stay-busy fallback lane. **Rule 16** then closes
+the delayed-instruction gap: never tell Aaron to remember a
+future terminal command after another worker returns; preserve
+the follow-up in the same worker prompt, MCP, bridge handoff, or
+Agent QA result instead. **Rule 17** then defines the backlog
+contract for deferred prompts / actions: store them with trigger
+conditions and status, surface them when active, and void or remove
+obsolete ones.
 
 This doc is the source of truth. The Worker constant in
 `cloudflare-worker/src/operating-rules.ts` is the **mirror** —
@@ -29,9 +36,9 @@ when the doc changes, the constant must change in the same
 commit, and the live test asserts the two stay in sync (count +
 hash of the rule strings).
 
-Updated 2026-05-07.
+Updated 2026-05-08.
 
-## The fifteen rules
+## The seventeen rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -168,6 +175,36 @@ this file.
     waiting on X", that's a workflow bug and the prompt
     should have been split differently — fix the prompt
     template, not the worker.
+16. **No delayed instruction chains.** Do not tell Aaron:
+    "After Agent / Codex / Claude returns, run X." Put the
+    follow-up step inside the same worker prompt whenever
+    possible, and tell that worker to execute, prepare, or
+    hand off the next action itself. If a step depends on
+    another worker, the same prompt must include the follow-up
+    action and stop condition. If another worker cannot proceed
+    yet, give it non-blocking adjacent work, not a waiting
+    prompt. If a manual / device action is required from Aaron,
+    make that the only immediate action and store later commands
+    in MCP / bridge / handoff. Use bridge handoff files,
+    `AGENT_QA_RESULT_JSON`, prompt jobs, or MCP state to
+    preserve next steps so Aaron does not have to remember them.
+    Never make Aaron carry delayed terminal commands in memory
+    while working with other agents.
+17. **Backlog deferred prompts/actions; remove void ones.**
+    Never make Aaron remember delayed instructions. Do not say
+    "after Agent returns, run X" or "after Claude finishes, paste Y"
+    as an untracked instruction. Store deferred prompts / actions in
+    MCP, bridge artifacts, or a local backlog with: `id`, `owner`,
+    `targetWorker`, `triggerCondition`, `promptOrActionText`,
+    `priority`, `createdAt`, `status: pending | active | completed |
+    void | superseded`, and `voidReason` when void. When the trigger
+    condition becomes true, surface the item as the next prompt /
+    action. If the item becomes obsolete, unsafe, replaced, already
+    completed, or irrelevant, mark it `void` or remove it. Prefer
+    putting follow-up steps inside the same worker prompt so the
+    worker can continue without Aaron. If human / device action is
+    unavoidable, store the later command in the backlog rather than
+    relying on Aaron's memory.
 
 ## Where to find each rule's full body
 
@@ -188,13 +225,15 @@ this file.
 | 13 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Clear steps; automate first"; `docs/PHONE_ONLY_AUTOMATION_PLAN.md` § "Remaining manual Aaron steps" |
 | 14 | `docs/APP_DEVELOPMENTS.md` § "Active priority order" (parallel-priority list); `docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md` § "Evidence input roadmap (v1 / v2 / v3)" (workstream parallelism for readiness inputs) |
 | 15 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Coder report contract — rule 12" (extended with the no-idle-dependency clause); `docs/LOCAL_BRIDGE_WORKFLOW_PLAN.md` § Stage 3 prompt template (every dispatched template carries an explicit alternative non-blocking lane) |
+| 16 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "No delayed instruction chains"; `docs/LOCAL_BRIDGE_WORKFLOW_PLAN.md` § Stage 3 prompt template; `docs/CONTROL_CENTRE_MVP_SPEC.md` § prompt refs / handoff prompts |
+| 17 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Deferred prompts/actions backlog"; `docs/MCP_CANONICAL_STATE.md` § public v2 tools and backlog state; `docs/CONTROL_CENTRE_MVP_SPEC.md` § prompt refs / handoff prompts |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..15], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..17], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.
@@ -210,7 +249,7 @@ integration test will flag.
   Lane-3 batch (`docs/BACKLOG_AUTOMATION_SYSTEM.md` § Lane 3)
   with Aaron's written approval.
 - **No surfacing the rules without ID.** Every rule has a
-  stable id 1..15; consumers reference rules by id, not by
+  stable id 1..17; consumers reference rules by id, not by
   string match.
 - **No moving rule text into private surfaces.** These rules
   are public-safe by design — they describe coder discipline,
