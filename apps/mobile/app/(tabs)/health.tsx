@@ -14,6 +14,7 @@ import { useAuthStore } from '../../src/store/auth-store';
 import { useAuditEventStore } from '../../src/store/audit-event-store';
 import { useDevUnlockStore } from '../../src/store/dev-unlock-store';
 import { useDailyJournalStore } from '../../src/store/daily-journal-store';
+import { useCustomJournalStore } from '../../src/store/custom-journal-store';
 import { isExpoGo } from '../../src/services/expo-detect';
 import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
 import { NutritionCard } from '../../src/components/NutritionCard';
@@ -730,7 +731,8 @@ export default function HealthScreen() {
   const whoopSourceUpdatedAt = useWhoopStore((s) => s.day?.source_updated_at ?? null);
   const whoopHasDay = useWhoopStore((s) => s.day != null);
   const todayJournal = useDailyJournalStore((s) => s.getEntryForDate(todayDate()));
-  const activeJournalItems = useDailyJournalStore((s) => s.getActiveCustomItems());
+  const activeCustomJournalCount = useCustomJournalStore((s) => s.getActiveItems().length);
+  const metricAffectingJournalCount = useCustomJournalStore((s) => s.countActiveMetricAffectingItems());
 
   const authStatus = useAuthStore((s) => s.status);
   const user = useAuthStore((s) => s.user);
@@ -772,8 +774,9 @@ export default function HealthScreen() {
     polarHubDetected: polarViaHc?.detected ?? false,
     samsungHubDetected: samsungViaHc?.detected ?? false,
     manualSessionData: days.some((day) => day.grappling_session != null || (day.workouts ?? []).some((workout) => workout.source === 'manual')),
-    journalContext: todayJournal != null || activeJournalItems.length > 0,
-  }), [activeJournalItems.length, days, features, polarViaHc?.detected, samsungViaHc?.detected, today, todayJournal]);
+    journalContext: todayJournal != null || activeCustomJournalCount > 0,
+    activeMetricAffectingJournalItems: metricAffectingJournalCount,
+  }), [activeCustomJournalCount, days, features, metricAffectingJournalCount, polarViaHc?.detected, samsungViaHc?.detected, today, todayJournal]);
 
   const inExpoGo = isExpoGo();
   const nativeCopy = useMemo(() => getNativeHealthSourceCopy(Platform.OS), []);

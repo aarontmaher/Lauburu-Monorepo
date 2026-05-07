@@ -30,6 +30,7 @@ import { useOwnerBacklogStore } from '../src/store/owner-backlog-store';
 import { useAuditEventStore } from '../src/store/audit-event-store';
 import { useAdminDevNotificationStore } from '../src/store/admin-dev-notification-store';
 import { useDailyJournalStore } from '../src/store/daily-journal-store';
+import { useCustomJournalStore } from '../src/store/custom-journal-store';
 
 export {
   ErrorBoundary,
@@ -73,6 +74,7 @@ export default function RootLayout() {
   const hydrateAuditEvents = useAuditEventStore((s) => s.hydrate);
   const hydrateAdminDevNotifications = useAdminDevNotificationStore((s) => s.hydrate);
   const hydrateDailyJournal = useDailyJournalStore((s) => s.hydrate);
+  const hydrateCustomJournal = useCustomJournalStore((s) => s.hydrate);
 
   // Initialize auth session on app launch, and hydrate all stores
   // from secureStorage in parallel. Each runs independently —
@@ -98,6 +100,7 @@ export default function RootLayout() {
       hydrateAuditEvents,
       hydrateAdminDevNotifications,
       hydrateDailyJournal,
+      hydrateCustomJournal,
     ]);
   }, [
     initialize,
@@ -119,6 +122,7 @@ export default function RootLayout() {
     hydrateAuditEvents,
     hydrateAdminDevNotifications,
     hydrateDailyJournal,
+    hydrateCustomJournal,
   ]);
 
   useEffect(() => {

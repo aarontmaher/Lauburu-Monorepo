@@ -57,6 +57,21 @@ assertMatches(hubEvidence.sourceLabels.join(' | '), /Polar via Health Connect/, 
 assertMatches(hubEvidence.sourceLabels.join(' | '), /Daily journal/, 'Hub readiness journal source');
 assertMatches(hubEvidence.inputLabels.join(' | '), /subjective check-in/, 'Hub readiness journal input');
 
+const cappedEvidence = buildHubReadinessEvidence({
+  platform: 'ios',
+  fields: {
+    hrv: 55,
+    restingHr: 52,
+    sleepHours: 8,
+    activeCalories: 400,
+    workouts: 1,
+  },
+  journalContext: true,
+  activeMetricAffectingJournalItems: 2,
+});
+assertEqual(cappedEvidence.confidence, 'low', 'Multiple active journal items cap readiness confidence');
+assertMatches(cappedEvidence.note, /Multiple tracked items active/, 'Journal confidence cap note');
+
 const missingEvidence = buildHubReadinessEvidence({
   platform: 'ios',
   fields: {

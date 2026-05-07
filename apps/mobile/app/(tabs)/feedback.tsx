@@ -12,13 +12,15 @@ import { useFeedbackStore } from '../../src/store/feedback-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useAuthStore } from '../../src/store/auth-store';
+import { useDailyJournalStore, type TrainingIntent } from '../../src/store/daily-journal-store';
 import {
-  useDailyJournalStore,
-  type CustomJournalAction,
-  type CustomJournalCategory,
-  type CustomJournalItem,
-  type TrainingIntent,
-} from '../../src/store/daily-journal-store';
+  BEGINNER_JOURNAL_CATEGORIES,
+  JOURNAL_CATEGORY_LABELS,
+  JOURNAL_EVENT_LABELS,
+  useCustomJournalStore,
+  type JournalEventType,
+  type JournalItemCategory,
+} from '../../src/store/custom-journal-store';
 import { SESSION_TYPE_LABELS } from '@lauburu/shared';
 import { ATHLETE_CAPABILITY_COPY } from '../../src/services/athlete-capability-display';
 
@@ -105,33 +107,6 @@ const TRAINING_INTENT_LABELS: Record<TrainingIntent, string> = {
   light: 'Light',
   rest: 'Rest',
 };
-
-const JOURNAL_CATEGORY_LABELS: Record<CustomJournalCategory, string> = {
-  supplement: 'Supplement',
-  medication: 'Medication',
-  nutrition: 'Nutrition',
-  recovery: 'Recovery',
-  training: 'Training',
-  sleep: 'Sleep',
-  symptom: 'Symptom',
-  other: 'Other',
-};
-
-const JOURNAL_ACTION_LABELS: Record<CustomJournalAction, string> = {
-  start: 'Start',
-  stop: 'Stop',
-  dose_change: 'Dose change',
-  break_start: 'Break start',
-  break_end: 'Break end',
-  one_off: 'One-off use',
-  symptom_note: 'Symptom note',
-  custom_note: 'Custom note',
-};
-
-function formatJournalDose(item: Pick<CustomJournalItem, 'dose' | 'unit' | 'frequencyTiming'>): string {
-  const dose = [item.dose, item.unit].filter(Boolean).join(' ');
-  return [dose, item.frequencyTiming].filter(Boolean).join(' · ') || 'No dose/timing set';
-}
 
 // ---------------------------------------------------------------------------
 // 0. Daily journal — subjective readiness context
@@ -240,298 +215,266 @@ function DailyJournalCard() {
   );
 }
 
-function CustomJournalTimelineCard() {
-  const customItems = useDailyJournalStore((s) => s.customItems);
-  const activeItems = useDailyJournalStore((s) => s.getActiveCustomItems());
-  const stoppedItems = useDailyJournalStore((s) => s.getStoppedCustomItems());
-  const recentEvents = useDailyJournalStore((s) => s.getRecentJournalEvents(8));
-  const addCustomItem = useDailyJournalStore((s) => s.addCustomItem);
-  const addJournalEvent = useDailyJournalStore((s) => s.addJournalEvent);
-  const stopCustomItem = useDailyJournalStore((s) => s.stopCustomItem);
-
+function CustomJournalBeginnerCard() {
+  const items = useCustomJournalStore((s) => s.items);
+  const activeItems = useCustomJournalStore((s) => s.getActiveItems());
+  const recentEvents = useCustomJournalStore((s) => s.getRecentEvents(4));
+  const createItem = useCustomJournalStore((s) => s.createItem);
+  const addEvent = useCustomJournalStore((s) => s.addEvent);
+  const syncFromSupabase = useCustomJournalStore((s) => s.syncFromSupabase);
+  const syncStatus = useCustomJournalStore((s) => s.syncStatus);
+  const lastSyncError = useCustomJournalStore((s) => s.lastSyncError);
+  const [mode, setMode] = useState<'closed' | 'category' | 'fields'>('closed');
+  const [category, setCategory] = useState<JournalItemCategory>('supplement');
   const [name, setName] = useState('');
-  const [category, setCategory] = useState<CustomJournalCategory>('supplement');
-  const [customCategory, setCustomCategory] = useState('');
   const [dose, setDose] = useState('');
   const [unit, setUnit] = useState('');
-  const [frequencyTiming, setFrequencyTiming] = useState('');
-  const [startDate, setStartDate] = useState(todayDate());
-  const [stopDate, setStopDate] = useState('');
-  const [itemNotes, setItemNotes] = useState('');
-
-  const [eventAction, setEventAction] = useState<CustomJournalAction>('dose_change');
-  const [eventItemId, setEventItemId] = useState<string>('');
-  const [eventDate, setEventDate] = useState(todayDate());
-  const [eventDose, setEventDose] = useState('');
-  const [eventUnit, setEventUnit] = useState('');
-  const [eventNotes, setEventNotes] = useState('');
+  const [frequency, setFrequency] = useState('');
+  const [started, setStarted] = useState(todayDate());
+  const [notes, setNotes] = useState('');
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [quickDose, setQuickDose] = useState('');
+  const [quickNote, setQuickNote] = useState('');
   const [savedMessage, setSavedMessage] = useState<string | null>(null);
 
-  const handleAddItem = () => {
+  const selectedItem = activeItems.find((item) => item.id === selectedItemId) ?? activeItems[0] ?? null;
+
+  const handleSaveItem = async () => {
     Keyboard.dismiss();
     if (!name.trim()) {
-      Alert.alert('Journal item', 'Add a name first.');
+      Alert.alert('Track something', 'Add a name first.');
       return;
     }
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate.trim())) {
-      Alert.alert('Journal item', 'Use YYYY-MM-DD for the start date.');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(started.trim())) {
+      Alert.alert('Track something', 'Use YYYY-MM-DD for the started date.');
       return;
     }
-    if (stopDate.trim() && !/^\d{4}-\d{2}-\d{2}$/.test(stopDate.trim())) {
-      Alert.alert('Journal item', 'Use YYYY-MM-DD for the stop date.');
+    const parsedDose = dose.trim() ? Number(dose.trim()) : null;
+    if (parsedDose != null && !Number.isFinite(parsedDose)) {
+      Alert.alert('Track something', 'Dose must be a number, or leave it blank.');
       return;
     }
-    addCustomItem({
-      name,
+    const item = await createItem({
       category,
-      customCategory,
-      dose,
+      name,
       unit,
-      frequencyTiming,
-      startDate,
-      stopDate,
-      notes: itemNotes,
+      defaultDose: parsedDose,
+      defaultFrequency: frequency,
+      mayAffectMetrics: category !== 'custom',
+      notes,
+      startDate: started,
     });
-    setSavedMessage('Item added');
-    setName('');
-    setCustomCategory('');
-    setDose('');
-    setUnit('');
-    setFrequencyTiming('');
-    setStopDate('');
-    setItemNotes('');
+    if (item) {
+      setSavedMessage('Tracking item saved');
+      setSelectedItemId(item.id);
+      setMode('closed');
+      setName('');
+      setDose('');
+      setUnit('');
+      setFrequency('');
+      setStarted(todayDate());
+      setNotes('');
+    }
   };
 
-  const handleAddEvent = () => {
+  const handleQuickAction = async (eventType: JournalEventType) => {
     Keyboard.dismiss();
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate.trim())) {
-      Alert.alert('Journal event', 'Use YYYY-MM-DD for the event date.');
+    if (!selectedItem) {
+      Alert.alert('Track something', 'Choose an active item first.');
       return;
     }
-    if (!eventItemId && !eventNotes.trim()) {
-      Alert.alert('Journal event', 'Choose an item or add a note.');
+    const parsedDose = quickDose.trim() ? Number(quickDose.trim()) : null;
+    if (parsedDose != null && !Number.isFinite(parsedDose)) {
+      Alert.alert('Track something', 'Dose must be a number, or leave it blank.');
       return;
     }
-    const item = customItems.find((candidate) => candidate.id === eventItemId);
-    addJournalEvent({
-      itemId: item?.id ?? null,
-      itemName: item?.name,
-      action: eventAction,
-      date: eventDate,
-      dose: eventDose,
-      unit: eventUnit,
-      notes: eventNotes,
+    const event = await addEvent({
+      itemId: selectedItem.id,
+      eventType,
+      effectiveAt: todayDate(),
+      dose: parsedDose,
+      unit: selectedItem.unit,
+      frequency: selectedItem.defaultFrequency,
+      notes: quickNote,
     });
-    setSavedMessage('Event added');
-    setEventDose('');
-    setEventUnit('');
-    setEventNotes('');
+    if (event) {
+      setSavedMessage(`${JOURNAL_EVENT_LABELS[eventType]} recorded`);
+      setQuickDose('');
+      setQuickNote('');
+    }
   };
 
   return (
     <View style={styles.card}>
       <View style={styles.cardHeaderRow}>
         <View>
-          <Text style={styles.cardTitle}>Custom journal timeline</Text>
-          <Text style={styles.cardSubtitle}>Track things that may affect readiness</Text>
+          <Text style={styles.cardTitle}>Track something</Text>
+          <Text style={styles.cardSubtitle}>Custom readiness context, separate from daily check-in</Text>
         </View>
-        <Text style={styles.badge}>{activeItems.length} active</Text>
+        <Pressable
+          style={styles.smallOutlineBtn}
+          onPress={() => setMode(mode === 'closed' ? 'category' : 'closed')}>
+          <Text style={styles.smallOutlineText}>{mode === 'closed' ? '+' : 'Close'}</Text>
+        </Pressable>
       </View>
+
       <Text style={styles.noteText}>
-        These entries show possible associations only. The app will not claim causation.
+        No medical advice. No causation claims. No safety inference. No clinical thresholds.
       </Text>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Add item</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Name, e.g. magnesium, creatine, sauna, knee pain"
-          placeholderTextColor="#666"
-          value={name}
-          onChangeText={setName}
-        />
-        <PillSelect
-          options={['supplement', 'medication', 'nutrition', 'recovery', 'training', 'sleep', 'symptom', 'other'] as const}
-          labels={JOURNAL_CATEGORY_LABELS}
-          value={category}
-          onChange={setCategory}
-        />
-        {category === 'other' && (
+      {mode === 'category' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>What are you tracking?</Text>
+          <PillSelect
+            options={BEGINNER_JOURNAL_CATEGORIES}
+            labels={JOURNAL_CATEGORY_LABELS}
+            value={category}
+            onChange={(value) => {
+              setCategory(value);
+              setMode('fields');
+            }}
+          />
+        </View>
+      )}
+
+      {mode === 'fields' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>{JOURNAL_CATEGORY_LABELS[category]}</Text>
           <TextInput
             style={styles.input}
-            placeholder="Custom category"
+            placeholder="Name"
             placeholderTextColor="#666"
-            value={customCategory}
-            onChangeText={setCustomCategory}
+            value={name}
+            onChangeText={setName}
           />
-        )}
-        <View style={styles.twoColRow}>
+          <View style={styles.twoColRow}>
+            <TextInput
+              style={[styles.input, styles.flexInput]}
+              placeholder="Dose"
+              placeholderTextColor="#666"
+              value={dose}
+              onChangeText={setDose}
+              keyboardType="decimal-pad"
+            />
+            <TextInput
+              style={[styles.input, styles.flexInput]}
+              placeholder="Unit"
+              placeholderTextColor="#666"
+              value={unit}
+              onChangeText={setUnit}
+            />
+          </View>
           <TextInput
-            style={[styles.input, styles.flexInput]}
-            placeholder="Dose"
+            style={styles.input}
+            placeholder="Timing, e.g. nightly, post-training"
             placeholderTextColor="#666"
-            value={dose}
-            onChangeText={setDose}
-          />
-          <TextInput
-            style={[styles.input, styles.flexInput]}
-            placeholder="Unit"
-            placeholderTextColor="#666"
-            value={unit}
-            onChangeText={setUnit}
-          />
-        </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Frequency / timing, e.g. nightly, post-training"
-          placeholderTextColor="#666"
-          value={frequencyTiming}
-          onChangeText={setFrequencyTiming}
-        />
-        <View style={styles.twoColRow}>
-          <TextInput
-            style={[styles.input, styles.flexInput]}
-            placeholder="Start YYYY-MM-DD"
-            placeholderTextColor="#666"
-            value={startDate}
-            onChangeText={setStartDate}
+            value={frequency}
+            onChangeText={setFrequency}
           />
           <TextInput
-            style={[styles.input, styles.flexInput]}
-            placeholder="Stop optional"
+            style={styles.input}
+            placeholder="Started YYYY-MM-DD"
             placeholderTextColor="#666"
-            value={stopDate}
-            onChangeText={setStopDate}
+            value={started}
+            onChangeText={setStarted}
           />
-        </View>
-        <TextInput
-          style={[styles.input, styles.multilineInput]}
-          placeholder="Notes (optional)"
-          placeholderTextColor="#666"
-          value={itemNotes}
-          onChangeText={setItemNotes}
-          multiline
-        />
-        <Pressable style={styles.saveButton} onPress={handleAddItem}>
-          <Text style={styles.saveText}>Add Timeline Item</Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Add event</Text>
-        <PillSelect
-          options={['dose_change', 'break_start', 'break_end', 'one_off', 'symptom_note', 'custom_note', 'stop'] as const}
-          labels={JOURNAL_ACTION_LABELS}
-          value={eventAction}
-          onChange={setEventAction}
-        />
-        <View style={styles.pillRow}>
-          <Pressable
-            style={[styles.pill, eventItemId === '' && styles.pillActive]}
-            onPress={() => setEventItemId('')}>
-            <Text style={[styles.pillText, eventItemId === '' && styles.pillTextActive]}>No item</Text>
+          <TextInput
+            style={[styles.input, styles.multilineInput]}
+            placeholder="Notes"
+            placeholderTextColor="#666"
+            value={notes}
+            onChangeText={setNotes}
+            multiline
+          />
+          <Pressable style={styles.saveButton} onPress={handleSaveItem}>
+            <Text style={styles.saveText}>Save & Track</Text>
           </Pressable>
-          {customItems.slice(-8).map((item) => (
-            <Pressable
-              key={item.id}
-              style={[styles.pill, eventItemId === item.id && styles.pillActive]}
-              onPress={() => setEventItemId(item.id)}>
-              <Text style={[styles.pillText, eventItemId === item.id && styles.pillTextActive]}>{item.name}</Text>
-            </Pressable>
-          ))}
-        </View>
-        <View style={styles.twoColRow}>
-          <TextInput
-            style={[styles.input, styles.flexInput]}
-            placeholder="Date"
-            placeholderTextColor="#666"
-            value={eventDate}
-            onChangeText={setEventDate}
-          />
-          <TextInput
-            style={[styles.input, styles.flexInput]}
-            placeholder="Dose change"
-            placeholderTextColor="#666"
-            value={eventDose}
-            onChangeText={setEventDose}
-          />
-        </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Unit / note detail"
-          placeholderTextColor="#666"
-          value={eventUnit}
-          onChangeText={setEventUnit}
-        />
-        <TextInput
-          style={[styles.input, styles.multilineInput]}
-          placeholder="Event note"
-          placeholderTextColor="#666"
-          value={eventNotes}
-          onChangeText={setEventNotes}
-          multiline
-        />
-        <Pressable style={styles.saveButton} onPress={handleAddEvent}>
-          <Text style={styles.saveText}>Add Event</Text>
-        </Pressable>
-        {savedMessage && <Text style={styles.savedText}>{savedMessage}</Text>}
-      </View>
-
-      {activeItems.length > 0 && (
-        <View style={styles.timelineGroup}>
-          <Text style={styles.sectionLabel}>Active items</Text>
-          {activeItems.map((item) => (
-            <View key={item.id} style={styles.timelineRow}>
-              <View style={styles.timelineTextCol}>
-                <Text style={styles.timelineTitle}>{item.name}</Text>
-                <Text style={styles.timelineMeta}>
-                  {JOURNAL_CATEGORY_LABELS[item.category]} · {formatJournalDose(item)} · since {item.startDate}
-                </Text>
-              </View>
-              <Pressable
-                style={styles.smallOutlineBtn}
-                onPress={() => stopCustomItem(item.id, todayDate(), 'Stopped from timeline')}>
-                <Text style={styles.smallOutlineText}>Stop</Text>
-              </Pressable>
-            </View>
-          ))}
         </View>
       )}
 
       <View style={styles.timelineGroup}>
-        <Text style={styles.sectionLabel}>Recent changes</Text>
-        {recentEvents.length > 0 ? recentEvents.map((event) => (
-          <View key={event.id} style={styles.timelineRow}>
-            <View style={styles.timelineTextCol}>
-              <Text style={styles.timelineTitle}>{event.date} · {JOURNAL_ACTION_LABELS[event.action]}</Text>
-              <Text style={styles.timelineMeta}>
-                {event.itemName}{event.dose || event.unit ? ` · ${[event.dose, event.unit].filter(Boolean).join(' ')}` : ''}
-              </Text>
-              {!!event.notes && <Text style={styles.timelineNote}>{event.notes}</Text>}
+        <Text style={styles.sectionLabel}>What you're tracking</Text>
+        {activeItems.length > 0 ? (
+          <>
+            <View style={styles.pillRow}>
+              {activeItems.map((item) => (
+                <Pressable
+                  key={item.id}
+                  style={[styles.pill, selectedItem?.id === item.id && styles.pillActive]}
+                  onPress={() => setSelectedItemId(item.id)}>
+                  <Text style={[styles.pillText, selectedItem?.id === item.id && styles.pillTextActive]}>
+                    {item.name}
+                  </Text>
+                </Pressable>
+              ))}
             </View>
-          </View>
-        )) : (
-          <Text style={styles.noteText}>No timeline changes yet.</Text>
+            {selectedItem && (
+              <View style={styles.quickActionBox}>
+                <Text style={styles.timelineTitle}>{selectedItem.name}</Text>
+                <Text style={styles.timelineMeta}>
+                  {JOURNAL_CATEGORY_LABELS[selectedItem.category]} · {selectedItem.defaultDose ?? 'no dose'} {selectedItem.unit ?? ''} · {selectedItem.defaultFrequency ?? 'no timing'}
+                </Text>
+                <View style={styles.twoColRow}>
+                  <TextInput
+                    style={[styles.input, styles.flexInput]}
+                    placeholder="New dose"
+                    placeholderTextColor="#666"
+                    value={quickDose}
+                    onChangeText={setQuickDose}
+                    keyboardType="decimal-pad"
+                  />
+                  <TextInput
+                    style={[styles.input, styles.flexInput]}
+                    placeholder="Note"
+                    placeholderTextColor="#666"
+                    value={quickNote}
+                    onChangeText={setQuickNote}
+                  />
+                </View>
+                <View style={styles.pillRow}>
+                  {(['dose_change', 'break_start', 'stop', 'one_off_use', 'custom'] as JournalEventType[]).map((eventType) => (
+                    <Pressable
+                      key={eventType}
+                      style={styles.pill}
+                      onPress={() => handleQuickAction(eventType)}>
+                      <Text style={styles.pillText}>{JOURNAL_EVENT_LABELS[eventType]}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+            )}
+          </>
+        ) : (
+          <Text style={styles.noteText}>You're not tracking any custom items yet.</Text>
         )}
       </View>
 
-      {stoppedItems.length > 0 && (
-        <View style={styles.timelineGroup}>
-          <Text style={styles.sectionLabel}>Stopped items</Text>
-          {stoppedItems.slice(-5).reverse().map((item) => (
-            <Text key={item.id} style={styles.timelineMeta}>
-              {item.name} · {item.startDate} to {item.stopDate}
-            </Text>
-          ))}
-        </View>
-      )}
-
       <View style={styles.effectBox}>
-        <Text style={styles.effectTitle}>Effect insight</Text>
+        <Text style={styles.effectTitle}>Insight status</Text>
         <Text style={styles.effectBody}>
-          Not enough data yet. Future views may show possible associations with low confidence, without claiming cause.
+          Not enough data yet. Future analysis may show possible associations with low confidence only.
         </Text>
       </View>
+
+      {recentEvents.length > 0 && (
+        <Text style={styles.timelineMeta}>
+          Recent: {recentEvents.map((event) => JOURNAL_EVENT_LABELS[event.eventType]).join(' · ')}
+        </Text>
+      )}
+      {savedMessage && <Text style={styles.savedText}>{savedMessage}</Text>}
+      <View style={styles.statusRow}>
+        <View style={[styles.statusDot, { backgroundColor: syncStatus === 'failed' ? '#ff6b6b' : syncStatus === 'synced' ? '#4ade80' : '#999' }]} />
+        <Text style={styles.statusText}>
+          {syncStatus === 'failed' ? lastSyncError ?? 'Journal sync failed' : syncStatus === 'synced' ? 'Journal synced' : 'Journal stored locally'}
+        </Text>
+        <Pressable onPress={() => syncFromSupabase()}>
+          <Text style={styles.smallOutlineText}>Refresh</Text>
+        </Pressable>
+      </View>
+      <Text style={styles.noteText}>
+        No imputation. No confounder hiding. No exporting journal data via MCP.
+      </Text>
+      {items.length > 0 && <Text style={styles.noteText}>{items.length} tracked item{items.length === 1 ? '' : 's'} stored for this user.</Text>}
     </View>
   );
 }
@@ -910,7 +853,7 @@ export default function FeedbackScreen() {
           : 'Log subjective context, sessions, and coaching feedback'}
       </Text>
       <DailyJournalCard />
-      <CustomJournalTimelineCard />
+      <CustomJournalBeginnerCard />
       <SyncCard />
       <NextDayCheckinCard />
       <RecommendationFeedbackCard />
@@ -1021,6 +964,14 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     borderTopWidth: 1,
     borderTopColor: 'rgba(255,255,255,0.06)',
+  },
+  quickActionBox: {
+    gap: 10,
+    padding: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(212,225,87,0.18)',
+    backgroundColor: 'rgba(212,225,87,0.06)',
   },
   timelineRow: {
     flexDirection: 'row',

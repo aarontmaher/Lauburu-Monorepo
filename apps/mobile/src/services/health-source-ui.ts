@@ -98,6 +98,7 @@ export interface HubReadinessEvidenceInput {
   samsungHubDetected?: boolean;
   manualSessionData?: boolean;
   journalContext?: boolean;
+  activeMetricAffectingJournalItems?: number;
 }
 
 export interface HubReadinessEvidence {
@@ -165,9 +166,15 @@ export function buildHubReadinessEvidence(input: HubReadinessEvidenceInput): Hub
   if (signalCount >= 4 && !input.insufficientHistory) confidence = 'high';
   else if (signalCount >= 3) confidence = 'medium';
 
+  const metricAffectingJournalCount = input.activeMetricAffectingJournalItems ?? 0;
+  if (metricAffectingJournalCount >= 2 && confidence !== 'low') {
+    confidence = 'low';
+  }
+
   const label = `${confidence[0].toUpperCase()}${confidence.slice(1)} confidence`;
-  const note =
-    confidence === 'high'
+  const note = metricAffectingJournalCount >= 2
+    ? 'Multiple tracked items active — readings may be influenced. Confidence capped low.'
+    : confidence === 'high'
       ? 'Hub-fed readiness has several current inputs, but remains provisional.'
       : confidence === 'medium'
         ? 'Hub-fed readiness has useful inputs, with some missing fields.'
