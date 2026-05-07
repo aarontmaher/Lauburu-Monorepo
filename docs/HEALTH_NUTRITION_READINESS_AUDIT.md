@@ -81,7 +81,14 @@ case.
 Truth label: `synced from hub`. The user-facing card MUST NOT
 say "Polar live" or "Polar Direct" when data arrived this way.
 
-### 1.4 WHOOP Direct (OAuth)
+### 1.4 WHOOP — Direct, API, export, seed
+
+WHOOP has four distinct flavours in this codebase. Each has
+its own status / truth label / unblock path. Coders MUST NOT
+collapse them into a single "WHOOP" surface in any UI / MCP
+response / connector text — they answer different questions.
+
+#### 1.4.a WHOOP Direct (OAuth via Cloudflare Worker)
 
 **Status: partial — blocked on Railway → Cloudflare migration.**
 
@@ -91,12 +98,10 @@ runbook. The OAuth callback URL is anchored to the deprecated
 Railway backend (`docs/WHOOP_DIRECT_SETUP.md` line 14). Until
 the callback is migrated to a Cloudflare Worker route AND
 WHOOP-side redirect URI is updated AND tokens are stored in
-Supabase encrypted columns (not Railway disk), the source
+Supabase encrypted columns (not Railway disk), this flavour
 stays `setup required` / `seed/provisional`.
 
-Truth label until migration: `setup required`. Even after
-migration, the first 7 days of clean token flow must be
-labelled `seed/provisional` before promotion to `live`.
+Truth label until migration: `setup required`.
 
 Blocking: Aaron must (a) approve the migration batch, (b) paste
 the WHOOP client secret into the Cloudflare Worker via
@@ -104,6 +109,70 @@ the WHOOP client secret into the Cloudflare Worker via
 developer console redirect URI, (d) verify token flow holds for
 ≥7 days. None of those four are doable from this repo without
 Aaron.
+
+#### 1.4.b WHOOP API (vendor-native pull)
+
+**Status: partial — same code path as 1.4.a; same blockers.**
+
+WHOOP exposes a developer API (recovery / strain / sleep /
+workouts / cycles) reached via the same OAuth tokens 1.4.a
+manages. Once 1.4.a is unblocked, the API surface is the
+single read path. There is **no separate API key model** —
+auth is the OAuth token. Coders MUST NOT introduce a "WHOOP
+API key" config field; the OAuth token IS the API credential.
+
+Truth label tracks 1.4.a: stays `setup required` until the
+callback migration ships; flips to `seed/provisional` for the
+first 7 days post-migration; only then `live`.
+
+#### 1.4.c WHOOP raw export (CSV / zip upload)
+
+**Status: app-side ready.**
+
+User exports their WHOOP data from the WHOOP app (Account →
+Export Data) and uploads the resulting CSV / zip to the manual
+imports surface. `manual_imports` Supabase table accepts the
+shape per `supabase/migrations/0002_manual_imports.sql`;
+parser version flagged on each row.
+
+Truth label when surfaced: `imported summary`. The data is
+aggregate (daily / weekly), not real-time. Per-event timing
+beyond what WHOOP includes in the export is NOT preserved.
+
+Independence from 1.4.a / 1.4.b: this flavour does **not**
+require WHOOP OAuth or vendor API connectivity. It works
+when WHOOP API access is broken, paused, or never set up.
+Useful as a fallback during the Railway → Cloudflare migration
+and as a first-day onboarding option for new users.
+
+Anti-rule: WHOOP export rows MUST NOT be cross-labelled as
+`live` even when imported on the same day. The truth label
+captures provenance, not freshness.
+
+#### 1.4.d WHOOP seed / provisional window
+
+**Status: defined here; enforced by 1.4.a + 1.4.b.**
+
+The 7-day post-migration window during which any new WHOOP
+direct connection produces readings labelled
+`seed/provisional`, regardless of how much data has flowed.
+The window protects against over-claiming during initial sync,
+auth retry storms, and timezone-boundary edge cases. Promotion
+to `live` requires:
+
+1. ≥7 calendar days of clean token flow (no auth drops, no
+   rate-limit errors, no shape mismatches).
+2. At least one daily reading per day of that window for
+   recovery + sleep + strain.
+3. Aaron's tester-device confirmation that the readings match
+   his subjective experience.
+4. An explicit `approved_done` line in
+   `docs/FEEDBACK_SUGGESTIONS.md` against FS-008.
+
+Until all four hold, the truth label stays `seed/provisional`
+and Grappler Readiness MUST treat WHOOP-derived inputs as
+`confidence: low` at most. No `confidence: high` from
+WHOOP-direct data, ever.
 
 ### 1.5 Polar AccessLink / Polar Direct
 
