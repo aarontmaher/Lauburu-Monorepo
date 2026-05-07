@@ -442,12 +442,20 @@ function buildPublicQaGate(qa: unknown): unknown | null {
     ? value.repo as Record<string, unknown>
     : {};
   const updatedAt = typeof value.updatedAt === 'string' ? value.updatedAt : null;
+  const freshness = computeFreshness(updatedAt, true);
+  const status = typeof value.status === 'string' ? value.status : 'unknown';
+  const gateBlockedReason = freshness.isStale
+    ? 'QA result is stale; installed-device build gates remain blocked.'
+    : status !== 'pass'
+      ? `${status} QA does not clear installed-device build gates.`
+      : null;
+  const rawReason = typeof releaseGate.reason === 'string' ? releaseGate.reason.slice(0, 280) : 'No release gate reason recorded.';
   return {
-    status: typeof value.status === 'string' ? value.status : 'unknown',
+    status,
     gate: typeof value.gate === 'string' ? value.gate : 'general',
     platform: typeof value.platform === 'string' ? value.platform : 'repo',
     updatedAt,
-    freshness: computeFreshness(updatedAt, true),
+    freshness,
     installedBuild: {
       iosBuildNumber: typeof installedBuild.iosBuildNumber === 'string' ? installedBuild.iosBuildNumber : null,
       androidVersionCode: typeof installedBuild.androidVersionCode === 'number' ? installedBuild.androidVersionCode : null,
@@ -460,9 +468,9 @@ function buildPublicQaGate(qa: unknown): unknown | null {
       shortHead: typeof repo.shortHead === 'string' && /^[0-9a-f]{7,12}$/.test(repo.shortHead) ? repo.shortHead : null,
     },
     releaseGate: {
-      newTestFlightAllowed: releaseGate.newTestFlightAllowed === true,
-      newAndroidBuildAllowed: releaseGate.newAndroidBuildAllowed === true,
-      reason: typeof releaseGate.reason === 'string' ? releaseGate.reason.slice(0, 280) : 'No release gate reason recorded.',
+      newTestFlightAllowed: gateBlockedReason ? false : releaseGate.newTestFlightAllowed === true,
+      newAndroidBuildAllowed: gateBlockedReason ? false : releaseGate.newAndroidBuildAllowed === true,
+      reason: gateBlockedReason ? `${gateBlockedReason} ${rawReason}`.slice(0, 280) : rawReason,
     },
     publicSummary: typeof value.publicSummary === 'string' ? value.publicSummary.slice(0, 280) : null,
     publicSafe: true,

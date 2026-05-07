@@ -68,6 +68,18 @@ function bool(value) {
   return value === true || value === 'true';
 }
 
+function currentBuildTargets() {
+  try {
+    const app = JSON.parse(fs.readFileSync(path.join(ROOT, 'apps', 'mobile', 'app.json'), 'utf8')).expo ?? {};
+    return {
+      iosBuildNumber: app.ios?.buildNumber == null ? null : String(app.ios.buildNumber),
+      androidVersionCode: Number.isInteger(app.android?.versionCode) ? app.android.versionCode : null,
+    };
+  } catch {
+    return { iosBuildNumber: null, androidVersionCode: null };
+  }
+}
+
 function normalize(input) {
   const now = isoNow();
   const status = ensureEnum(input.status, STATUSES, 'repo_only', 'status');
@@ -154,17 +166,41 @@ const raw = inputPath
   ? JSON.parse(fs.readFileSync(path.resolve(process.cwd(), inputPath), 'utf8'))
   : await promptForInput();
 const payload = normalize(raw);
+const targets = currentBuildTargets();
 
-if (payload.status === 'repo_only') {
+if (payload.status !== 'pass') {
   payload.releaseGate.newTestFlightAllowed = false;
   payload.releaseGate.newAndroidBuildAllowed = false;
+}
+
+if (payload.status === 'repo_only') {
   if (!/repo.only|installed/i.test(payload.releaseGate.reason)) {
     payload.releaseGate.reason = cleanString(`Repo-only QA does not clear installed-device gates. ${payload.releaseGate.reason}`, 280);
   }
 }
+if (payload.status === 'partial') {
+  payload.releaseGate.reason = cleanString(`Partial QA does not clear installed-device gates. ${payload.releaseGate.reason}`, 280);
+}
 if (payload.status === 'blocked' || payload.status === 'fail') {
+  payload.releaseGate.reason = cleanString(`${payload.status} QA does not clear installed-device gates. ${payload.releaseGate.reason}`, 280);
+}
+if (payload.platform === 'repo') {
   payload.releaseGate.newTestFlightAllowed = false;
   payload.releaseGate.newAndroidBuildAllowed = false;
+}
+if (payload.releaseGate.newTestFlightAllowed) {
+  const matchesIos = payload.platform === 'ios' || payload.platform === 'both';
+  if (!matchesIos || !targets.iosBuildNumber || payload.installedBuild.iosBuildNumber !== targets.iosBuildNumber) {
+    payload.releaseGate.newTestFlightAllowed = false;
+    payload.releaseGate.reason = cleanString(`iOS QA must be a pass on current build ${targets.iosBuildNumber ?? 'unknown'}. ${payload.releaseGate.reason}`, 280);
+  }
+}
+if (payload.releaseGate.newAndroidBuildAllowed) {
+  const matchesAndroid = payload.platform === 'android' || payload.platform === 'both';
+  if (!matchesAndroid || !targets.androidVersionCode || payload.installedBuild.androidVersionCode !== targets.androidVersionCode) {
+    payload.releaseGate.newAndroidBuildAllowed = false;
+    payload.releaseGate.reason = cleanString(`Android QA must be a pass on current versionCode ${targets.androidVersionCode ?? 'unknown'}. ${payload.releaseGate.reason}`, 280);
+  }
 }
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
