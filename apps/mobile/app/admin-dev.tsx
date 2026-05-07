@@ -279,7 +279,18 @@ function mcpFreshnessSummary(current: McpV2CurrentState | null): {
   const updatedAt = freshness?.updatedAt ? new Date(freshness.updatedAt).toLocaleTimeString() : '—';
   if (!current) return { label: 'MCP current-state unavailable', stale: true, reason: 'unavailable', updatedAt };
   if (stale) return { label: `MCP readable · stale (${reason})`, stale, reason, updatedAt };
-  return { label: 'MCP readable · fresh', stale, reason, updatedAt };
+  return { label: 'MCP live · fresh', stale, reason, updatedAt };
+}
+
+function mcpRule12Status(snapshot: McpV2DashboardSnapshot | null): {
+  visible: boolean;
+  label: string;
+} {
+  const payload = snapshot?.projectOperatingRules.ok ? snapshot.projectOperatingRules.payload : null;
+  const rules = (payload as { rules?: Array<{ id?: number; title?: string }> } | null)?.rules ?? [];
+  const rule12 = rules.find((rule) => rule.id === 12);
+  if (!rule12) return { visible: false, label: 'Rule 12 not loaded' };
+  return { visible: true, label: rule12.title ?? 'Coders run all laptop commands' };
 }
 
 function connectorDataSourceLabel(snapshot: ConnectorSnapshot | null): string {
@@ -513,6 +524,7 @@ export default function AdminDevScreen() {
   const connectorWork = connectorSnapshot?.workStatus ?? null;
   const mcpCurrentState = getMcpCurrentState(mcpV2Snapshot);
   const mcpFreshness = mcpFreshnessSummary(mcpCurrentState);
+  const rule12 = mcpRule12Status(mcpV2Snapshot);
   const mcpAgents = mcpCurrentState?.agents ?? [];
   const mcpClaudeLane = mcpAgents.find((agent) => agent.id === 'claude') ?? null;
   const mcpCodexLane = mcpAgents.find((agent) => agent.id === 'codex') ?? null;
@@ -559,6 +571,7 @@ export default function AdminDevScreen() {
     : null;
   const safeToBuildLabel = 'Agent confirmation required before EAS build';
   const deployCommandAllowedByDocs = nowNextAction.toLowerCase().includes('wrangler deploy');
+  const fs008Visible = nowNextAction.toLowerCase().includes('fs-008') || nowPriority.toLowerCase().includes('fs-008');
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -585,6 +598,11 @@ export default function AdminDevScreen() {
               <Text style={styles.summaryMeta}>{firstScreenLaneMeta}</Text>
             </View>
             <View style={styles.summaryTile}>
+              <Text style={styles.chipLabel}>Rule 12</Text>
+              <Text style={styles.summaryValue}>{rule12.visible ? 'Live' : '—'}</Text>
+              <Text style={styles.summaryMeta} numberOfLines={2}>{rule12.label}</Text>
+            </View>
+            <View style={styles.summaryTile}>
               <Text style={styles.chipLabel}>Build / repo</Text>
               <Text style={styles.summaryValue}>{connectorSnapshot?.buildStatus ? 'Loaded' : 'Repo-only'}</Text>
               <Text style={styles.summaryMeta}>{nowRepoSummary}</Text>
@@ -603,6 +621,12 @@ export default function AdminDevScreen() {
             <Text style={styles.note}>Reason: {mcpFreshness.reason}</Text>
           </View>
         )}
+        {!mcpFreshness.stale && isAdmin && (
+          <View style={styles.chipBlock}>
+            <Text style={styles.chipLabel}>Live writeback</Text>
+            <Text style={styles.chipBody}>MCP freshness is live. Rule 12 is active: coders run laptop commands; Aaron approves from phone.</Text>
+          </View>
+        )}
         <View style={styles.chipBlock}>
           <Text style={styles.chipLabel}>Priority</Text>
           <Text style={styles.chipBody}>{nowPriority}</Text>
@@ -614,6 +638,9 @@ export default function AdminDevScreen() {
         <View style={styles.chipBlock}>
           <Text style={styles.chipLabel}>Next action</Text>
           <Text style={styles.chipBody}>{nowNextAction}</Text>
+          {fs008Visible && (
+            <Text style={styles.note}>Manual decision visible: FS-008 WHOOP migration approve/defer.</Text>
+          )}
         </View>
         {isAdmin && (
           <View style={styles.chipBlock}>
@@ -634,7 +661,10 @@ export default function AdminDevScreen() {
         {mcpStatus && <Text style={styles.note}>{mcpStatus} · source {nowSourceLabel}</Text>}
         {isAdmin && (
           <View style={{ gap: 6 }}>
-            <Text style={styles.rowLabel}>Safe laptop commands</Text>
+            <Text style={styles.rowLabel}>Fallback / diagnostic commands</Text>
+            <Text style={styles.note}>
+              Rule 12 is live. These are copy-only diagnostics for stale writeback or verification; the app does not execute commands.
+            </Text>
             <SelectableCopyButton label="Copy bridge snapshot command" body={SAFE_PHONE_COMMANDS.bridgeSnapshot} />
             <SelectableCopyButton label="Copy bridge verify command" body={SAFE_PHONE_COMMANDS.bridgeVerify} />
             <SelectableCopyButton
@@ -1343,6 +1373,7 @@ function McpV2LiveSection({
   refreshing: boolean;
   onRefresh: () => void;
 }) {
+  const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
   const fetchedLabel = snapshot ? mcpV2RelativeAge(snapshot.fetchedAt) : '—';
   const stale = snapshot ? mcpV2IsStale(snapshot.fetchedAt) : false;
   const baseUrl = snapshot?.baseUrl ?? null;
@@ -1402,6 +1433,8 @@ function McpV2LiveSection({
 
       {snapshot ? (
         <>
+          <McpV2ToolRow label="project.get_current_state" auth="public" result={snapshot.projectCurrentState} formatter={formatProjectCurrentState} />
+          <McpV2ToolRow label="project.get_operating_rules" auth="public" result={snapshot.projectOperatingRules} formatter={formatOperatingRules} />
           <McpV2ToolRow label="project.get_overview" auth="public" result={snapshot.projectOverview} formatter={formatProjectOverview} />
           <McpV2ToolRow label="project.get_work_status" auth="public" result={snapshot.projectWorkStatus} formatter={formatProjectWorkStatus} />
           <McpV2ToolRow label="mobile.get_lane_overview" auth="public" result={snapshot.laneOverview} formatter={formatLaneOverview} />
@@ -1415,18 +1448,27 @@ function McpV2LiveSection({
         </View>
       )}
 
-      <View style={styles.chipBlock}>
-        <Text style={styles.chipLabel}>Diagnostics</Text>
-        <Text style={styles.chipBody}>
-          {`Public-safe namespaces (project / mobile.*_overview / integrations / handoff / website): No Auth.`}
-        </Text>
-        <Text style={styles.chipBody}>
-          {`Private namespaces (mobile.get_<full>): admin token required. Token sourced from EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN; never displayed.`}
-        </Text>
-        <Text style={styles.chipBody}>
-          {`Source labels: dataSource.source = 'supabase' | 'placeholder'; mcpConnectionStatus = connected | stale | fallback | offline.`}
-        </Text>
-      </View>
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => setDiagnosticsOpen((v) => !v)}
+        style={styles.btn}
+      >
+        <Text style={styles.btnText}>{diagnosticsOpen ? '▾ Hide diagnostics' : '▸ Show diagnostics'}</Text>
+      </Pressable>
+      {diagnosticsOpen && (
+        <View style={styles.chipBlock}>
+          <Text style={styles.chipLabel}>Diagnostics</Text>
+          <Text style={styles.chipBody}>
+            {`Public-safe namespaces (project / mobile.*_overview / integrations / handoff / website): No Auth.`}
+          </Text>
+          <Text style={styles.chipBody}>
+            {`Private namespaces (mobile.get_<full>): admin token required. Token sourced from EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN; never displayed.`}
+          </Text>
+          <Text style={styles.chipBody}>
+            {`Source labels: dataSource.source = 'supabase' | 'placeholder'; mcpConnectionStatus = connected | stale | fallback | offline.`}
+          </Text>
+        </View>
+      )}
 
       <Pressable
         accessibilityRole="button"
@@ -1477,6 +1519,32 @@ function mcpV2IsStale(iso: string): boolean {
   const t = new Date(iso).getTime();
   if (!Number.isFinite(t)) return true;
   return Date.now() - t > 10 * 60 * 1000;
+}
+
+function formatProjectCurrentState(payload: unknown): string {
+  const p = payload as {
+    source?: string;
+    freshness?: { isStale?: boolean; staleReason?: string; updatedAt?: string | null };
+    currentPriority?: string | null;
+    nextAction?: string | null;
+  };
+  const freshness = p.freshness;
+  const state = freshness?.isStale ? `stale (${freshness.staleReason ?? 'unknown'})` : 'fresh';
+  const updated = freshness?.updatedAt ? mcpV2RelativeAge(freshness.updatedAt) : '—';
+  return [
+    `state: ${state} · source=${p.source ?? '—'} · updated ${updated}`,
+    `priority: ${p.currentPriority ?? '—'}`,
+    `next: ${p.nextAction ?? '—'}`,
+  ].join('\n');
+}
+
+function formatOperatingRules(payload: unknown): string {
+  const p = payload as { rules?: Array<{ id?: number; title?: string }> };
+  const rules = p.rules ?? [];
+  const rule12 = rules.find((rule) => rule.id === 12);
+  return rule12
+    ? `Rule 12 live: ${rule12.title ?? 'Coders run all laptop commands'}`
+    : `Rule 12 not found · rules loaded: ${rules.length}`;
 }
 
 function formatProjectOverview(payload: unknown): string {
