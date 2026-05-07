@@ -17,6 +17,7 @@
       "env": {
         "EXPO_PUBLIC_AI_BACKEND_URL": "https://lauburu-ai-backend-production.up.railway.app/v1/internal",
         "EXPO_PUBLIC_AI_PUBLIC_URL": "https://lauburu-ai-backend-production.up.railway.app/api/athlete-memory",
+        "EXPO_PUBLIC_MCP_BASE_URL": "https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2",
         "EXPO_PUBLIC_ATHLETE_ID": "dev-athlete",
         "EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS": "4c809976-a00c-448a-aa3b-392bc94b63fb"
       }
@@ -31,6 +32,7 @@
       "env": {
         "EXPO_PUBLIC_AI_BACKEND_URL": "https://lauburu-ai-backend-production.up.railway.app/v1/internal",
         "EXPO_PUBLIC_AI_PUBLIC_URL": "https://lauburu-ai-backend-production.up.railway.app/api/athlete-memory",
+        "EXPO_PUBLIC_MCP_BASE_URL": "https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2",
         "EXPO_PUBLIC_ATHLETE_ID": "dev-athlete",
         "EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS": "4c809976-a00c-448a-aa3b-392bc94b63fb"
       }
@@ -44,6 +46,7 @@
       "env": {
         "EXPO_PUBLIC_AI_BACKEND_URL": "https://lauburu-ai-backend-production.up.railway.app/v1/internal",
         "EXPO_PUBLIC_AI_PUBLIC_URL": "https://lauburu-ai-backend-production.up.railway.app/api/athlete-memory",
+        "EXPO_PUBLIC_MCP_BASE_URL": "https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2",
         "EXPO_PUBLIC_WHOOP_BRIDGE_OWNER_IDS": "4c809976-a00c-448a-aa3b-392bc94b63fb"
       }
     }
