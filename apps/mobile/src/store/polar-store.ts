@@ -21,18 +21,18 @@
  *       but manual and fragile when Polar changes the export format.
  *
  *   (3) Polar sensor BLE (H9/H10 chest strap, Verity Sense, etc.) —
- *       standard Bluetooth Heart Rate Service (UUID 0x180D), gives
- *       live HR during a session. Complementary to AccessLink; useful
- *       for machine + HR pairing inside Train. Needs `react-native-
- *       ble-plx` + prebuild + dev client rebuild, same as FTMS.
+ *       standard Bluetooth Heart Rate Service, reserved for future
+ *       Train-session HR capture only. It does not feed readiness.
+ *       Needs `react-native-ble-plx` + prebuild + dev client rebuild,
+ *       same as FTMS.
  *
  * Nothing in the app calls this store today beyond the PolarCard
  * scaffold on the Health tab. When a real implementation lands, it
  * only needs to replace `fetchToday` with a real fetch and start
  * setting `day`, `status`, and `error`. The shape is already the
  * `PolarSnapshot` type from `@lauburu/shared`, which mirrors
- * `WhoopSnapshot` structurally so a downstream "whoopDay ?? polarDay"
- * readiness fallback in `buildDailyCoachingBrief` is a one-line add.
+ * `WhoopSnapshot` structurally. Any future Polar-backed readiness use
+ * needs separate provenance, missingness, and product-gating work.
  */
 import { create } from 'zustand';
 import type { PolarSnapshot } from '@lauburu/shared';

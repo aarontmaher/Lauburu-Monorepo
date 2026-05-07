@@ -51,7 +51,7 @@ export function getWhoopDirectStateLabel(state: string, opts: { awaitingCycle?: 
 export function getPolarDirectStateLabel(connected: boolean): { label: string; state: DirectIntegrationState } {
   return connected
     ? { label: 'Polar Direct connected', state: 'connected' }
-    : { label: 'Polar Direct setup needed', state: 'setup_required' };
+    : { label: 'Polar Direct planned', state: 'setup_required' };
 }
 
 export function getReadinessSeedBadge(input: {

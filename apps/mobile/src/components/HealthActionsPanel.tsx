@@ -1085,9 +1085,10 @@ function Body() {
     return `Hub: ${nativeCopy.sourceName} ${nativeStatus}`;
   })();
   const directSummaryLine = `Direct: ${whoopSummary.label} · ${polarSummary.label}`;
-  const missingSourceLine = isWhoopConnected
+  const hasVerifiedWhoopDirect = whoopState === 'connected';
+  const missingSourceLine = hasVerifiedWhoopDirect
     ? 'Missing health fields stay blank until a source provides them.'
-    : 'Direct recovery fields stay missing until WHOOP or Polar Direct is linked.';
+    : 'Direct recovery fields stay missing until verified WHOOP Direct data exists. Polar Direct is planned.';
 
   return (
     <View style={styles.card}>
@@ -2031,7 +2032,7 @@ function HealthSourceSheet(props: SheetProps) {
     <View key="others" style={styles.sourceRow}>
       <Text style={styles.sourceName}>Training hardware</Text>
       <Text style={styles.sourceMeta}>
-        Bluetooth heart-rate straps and FTMS bikes/rowers/ski-ergs live on the Train tab so they pair as part of a session.
+        Bluetooth heart-rate sensors are planned for Train-session capture. Manual session logging is available now.
       </Text>
     </View>,
   );

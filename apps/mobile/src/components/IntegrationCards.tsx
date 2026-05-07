@@ -415,7 +415,7 @@ export function WhoopDirectCard() {
       {s === 'auth_required' && (
         <>
           <Text style={styles.bodyText}>
-            Connect your WHOOP account for direct recovery, HRV, strain, and sleep data. Until then, readiness stays provisional and uses only available hub/manual data.
+            Connect your WHOOP account to allow direct recovery, HRV, strain, and sleep fields when WHOOP returns them. Until then, readiness stays provisional and uses only available hub/manual data.
           </Text>
           <View style={styles.actions}>
             <ActionBtn label="Connect WHOOP" onPress={handleConnect} loading={loading} />
@@ -500,12 +500,12 @@ export function WhoopDirectCard() {
           )}
           {status?.readinessStatus === 'available' && (
             <Text style={[styles.subtleNote, { color: '#4ade80' }]}>
-              Direct WHOOP fields present — recovery, HRV, strain, and sleep are available for app-owned readiness.
+              Direct WHOOP fields present for the latest scored cycle: recovery, HRV, strain, and sleep. Missing fields stay blank.
             </Text>
           )}
           {status?.readinessStatus === 'partial' && (
             <Text style={[styles.subtleNote, { color: '#ffa500' }]}>
-              Readiness unavailable until recovery + HRV + strain + sleep are all present.
+              Direct WHOOP fields incomplete until recovery + HRV + strain + sleep are all present.
             </Text>
           )}
           {typeof status?.historyDaysAvailable === 'number' && (
