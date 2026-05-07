@@ -408,7 +408,7 @@ function InsightsCard({ insights }: { insights: TrainingInsight }) {
         <Text style={styles.cardTitle}>Grappler Readiness</Text>
         <View style={[styles.seedBadge, seedBadge.provisional ? styles.seedBadgeProvisional : styles.seedBadgeLive]}>
           <Text style={[styles.seedBadgeText, seedBadge.provisional ? styles.seedBadgeTextSeed : styles.seedBadgeTextLive]}>
-            {seedBadge.label}
+            {seedBadge.provisional ? 'Seed / provisional' : seedBadge.label}
           </Text>
         </View>
       </View>
@@ -591,7 +591,13 @@ function TrendItem({
   );
 }
 
-function PlannedHealthContextCard() {
+function PlannedHealthContextCard({
+  open,
+  onToggle,
+}: {
+  open: boolean;
+  onToggle: () => void;
+}) {
   const items = [
     {
       title: 'Blood test upload',
@@ -608,21 +614,30 @@ function PlannedHealthContextCard() {
   ];
   return (
     <View style={styles.card}>
-      <View style={styles.cardHeaderRow}>
+      <Pressable
+        style={styles.cardHeaderRow}
+        onPress={onToggle}
+        accessibilityRole="button"
+        accessibilityLabel={open ? 'Hide planned health context' : 'Show planned health context'}>
         <Text style={styles.cardTitle}>Planned health context</Text>
-        <Text style={styles.importBadge}>Planned</Text>
-      </View>
+        <View style={styles.headerRightRow}>
+          <Text style={styles.importBadge}>Planned</Text>
+          <Text style={styles.disclosureChevron}>{open ? 'Hide' : 'Show'}</Text>
+        </View>
+      </Pressable>
       <Text style={styles.importSubtle}>
-        These are placeholders only. They do not import data or change readiness.
+        Future context only. No upload flow here and no readiness change.
       </Text>
-      <View style={styles.plannedList}>
-        {items.map((item) => (
-          <View key={item.title} style={styles.plannedRow}>
-            <Text style={styles.plannedTitle}>{item.title}</Text>
-            <Text style={styles.plannedBody}>{item.body}</Text>
-          </View>
-        ))}
-      </View>
+      {open && (
+        <View style={styles.plannedList}>
+          {items.map((item) => (
+            <View key={item.title} style={styles.plannedRow}>
+              <Text style={styles.plannedTitle}>{item.title}</Text>
+              <Text style={styles.plannedBody}>{item.body}</Text>
+            </View>
+          ))}
+        </View>
+      )}
     </View>
   );
 }
@@ -649,6 +664,7 @@ export default function HealthScreen() {
   // Panel. Testers can expand it for the no-data guidance / error
   // detail when debugging.
   const [sourceInfoOpen, setSourceInfoOpen] = useState(false);
+  const [plannedContextOpen, setPlannedContextOpen] = useState(false);
   const permissions = useHealthStore((s) => s.permissions);
   const syncing = useHealthStore((s) => s.syncing);
   const lastSyncAt = useHealthStore((s) => s.lastSyncAt);
@@ -967,6 +983,15 @@ export default function HealthScreen() {
         </SafeErrorBoundary>
       )}
 
+      {/* Nutrition — promoted here from the old mid-page slot so it's
+          discoverable right under the source/connection area. The card
+          exposes Search food / Barcode / Manual / Usual routine / AI
+          photo modes and feeds the merged nutrition summary + Coach
+          read-path on every add. */}
+      <SafeErrorBoundary label="Nutrition card">
+        <NutritionCard />
+      </SafeErrorBoundary>
+
       <SafeErrorBoundary label="Conditioning imports">
         <ConditioningImportsCard
           summaries={conditioningImports}
@@ -981,17 +1006,11 @@ export default function HealthScreen() {
         </SafeErrorBoundary>
       )}
 
-      {/* Nutrition — promoted here from the old mid-page slot so it's
-          discoverable right under the source/connection area. The card
-          exposes Search food / Barcode / Manual / Usual routine / AI
-          photo modes and feeds the merged nutrition summary + Coach
-          read-path on every add. */}
-      <SafeErrorBoundary label="Nutrition card">
-        <NutritionCard />
-      </SafeErrorBoundary>
-
       <SafeErrorBoundary label="Planned health context">
-        <PlannedHealthContextCard />
+        <PlannedHealthContextCard
+          open={plannedContextOpen}
+          onToggle={() => setPlannedContextOpen((v) => !v)}
+        />
       </SafeErrorBoundary>
 
       {/* Structured coaching */}
@@ -1287,6 +1306,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  headerRightRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   cardTitle: { fontSize: 18, fontWeight: '600' },
   importBadge: {
     fontSize: 11,
@@ -1296,6 +1316,7 @@ const styles = StyleSheet.create({
   },
   importBody: { fontSize: 13, opacity: 0.72, lineHeight: 18 },
   importSubtle: { fontSize: 12, opacity: 0.5, lineHeight: 17 },
+  disclosureChevron: { fontSize: 12, color: '#d4e157' },
   importList: { gap: 8 },
   importRow: {
     flexDirection: 'row',
