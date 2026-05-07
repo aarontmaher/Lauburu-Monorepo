@@ -228,8 +228,9 @@ next prompt; Aaron approves in the next prompt; loop continues.
 
 ## 9. Cross-references
 
-- `docs/OPERATING_RULES.md` — the 12 rules; rule 12 makes
-  laptop-command discipline explicit.
+- `docs/OPERATING_RULES.md` — the 17 rules; rule 12 makes
+  laptop-command discipline explicit, and rules 16-17 prevent
+  delayed untracked follow-up commands.
 - `docs/CODER_LAPTOP_COMMANDS.md` — full command list with
   cadence.
 - `docs/MCP_PHONE_CONTROL_CENTRE.md` — phone connector setup +
