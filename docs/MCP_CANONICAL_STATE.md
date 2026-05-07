@@ -315,7 +315,7 @@ the envelope and is the recommended public tool.**
 | `project.get_overview` | cross-project aggregates (mobile top priority + website pending count) | secondary cross-project view |
 | `project.get_work_status` | sanitised priority/blocker/next; subset of get_current_state | redundant with get_current_state |
 | `project.list_priorities` | top backlog item only | when you only want the headline backlog item |
-| `project.get_operating_rules` | the 17 operating rules with id/title/body | rule lookup |
+| `project.get_operating_rules` | the 18 operating rules with id/title/body | rule lookup |
 
 Deferred prompt/action state belongs in MCP, bridge artifacts, or a
 local backlog with `id`, `owner`, `targetWorker`,
@@ -324,6 +324,29 @@ local backlog with `id`, `owner`, `targetWorker`,
 compact counts or next-action summaries only; full prompt/action
 text must stay in admin-gated or local artifacts when it could
 contain operational detail.
+
+Action-ledger records extend that same model to every prompt, goal,
+human step, coder step, Agent step, and AI step. The canonical
+record shape is:
+
+- `id`
+- `owner`
+- `targetWorkerOrPerson`
+- `lane`
+- `actionText`
+- `triggerCondition`
+- `status: pending | active | completed | blocked | void | superseded`
+- `priority`
+- `createdAt`
+- `updatedAt`
+- `evidenceSummaryOrLink`
+- `voidReason` / `supersededBy` when applicable
+
+Public MCP surfaces may expose only compact redacted summaries,
+counts, stale-action indicators, and the next action per lane. Full
+action detail belongs in admin-gated MCP tools, bridge artifacts, or
+local backlog files until a durable `connector_action_ledger` table
+ships.
 | `mobile.get_lane_overview` / `mobile.get_build_overview` / `mobile.get_repo_overview` | counts/aggregates only | when ChatGPT wants a count without admin token |
 | `handoff.get_latest` | composed across mobile + website, each entry tagged source | handoff feed |
 | `integrations.get_overview` | per-platform exposure spec (apple_health/health_connect/whoop_oauth/polar_oauth) | integration inventory |

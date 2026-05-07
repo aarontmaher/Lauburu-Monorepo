@@ -111,6 +111,13 @@ it as a deferred prompt/action with `id`, `owner`, `targetWorker`,
 `status`, and `voidReason` when void. Obsolete, unsafe, replaced, or
 already-completed deferred actions must be marked `void` or removed.
 
+Every copied prompt also carries the action-ledger rule: every
+prompt, action, goal, human step, coder step, Agent step, or AI step
+stays in MCP / bridge until evidence clears it. Outputs must name
+`actions created`, `actions completed`, `actions voided/superseded`,
+and `next pending action`. Public summaries stay compact and
+redacted; full action text remains admin-gated or local.
+
 Done when: each template renders from the context and copies
 clean. Confirmed.
 

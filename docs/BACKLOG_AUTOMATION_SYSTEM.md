@@ -116,6 +116,40 @@ worker can continue without Aaron. If human / device action is
 unavoidable, store the later command in the backlog rather than
 relying on Aaron's memory.
 
+## Action ledger
+
+Every prompt, action, goal, human action, coder action, Agent
+action, or AI action must be recorded in MCP / bridge until evidence
+proves it is completed or no longer necessary. A pending action can
+be cleared only when there is evidence of:
+
+- completion
+- supersession
+- void / obsolete state
+- unsafe / rejected state
+- no-longer-necessary state
+
+Each action record should include:
+
+- `id`
+- `owner`
+- `targetWorkerOrPerson`
+- `lane`
+- `actionText`
+- `triggerCondition`
+- `status: pending | active | completed | blocked | void | superseded`
+- `priority`
+- `createdAt`
+- `updatedAt`
+- `evidenceSummaryOrLink`
+- `voidReason` / `supersededBy` when applicable
+
+Public MCP surfaces may show compact redacted action summaries,
+counts, stale-action indicators, and the next action per lane. Full
+action detail can be admin-gated. Obsolete Agent prompts, stale
+worker prompts, and completed bridge commands must be marked `void`
+or `superseded`; they must not remain active.
+
 ## Three lanes
 
 ### Lane 1 — Safe autopilot (no confirmation)
@@ -207,6 +241,13 @@ If a deferred prompt/action remains, the prompt must write it into
 MCP, bridge artifacts, or the local backlog with the fields in the
 Deferred prompts/actions backlog section, and must mark obsolete
 items `void` or remove them.
+Every generated prompt must also require a small action-ledger
+summary in its output:
+
+- `actions created`
+- `actions completed`
+- `actions voided/superseded`
+- `next pending action`
 
 Use these build-gate statuses:
 

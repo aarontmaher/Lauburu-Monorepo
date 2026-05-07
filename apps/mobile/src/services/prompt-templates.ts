@@ -80,6 +80,7 @@ function workflowRulesBlock(): string {
     'Do not run EAS builds unless Agent has confirmed a worthwhile on-device change and Aaron approves.',
     'No delayed instruction chains: do not tell Aaron "after Agent/Codex/Claude returns, run X." Put follow-up actions, stop conditions, bridge writeback, and handoff preservation inside this prompt. If Aaron must do a manual/device action, make that the only immediate Aaron action and store later commands in MCP/bridge/handoff.',
     'Deferred prompts/actions must be tracked, not remembered: store any delayed item in MCP, bridge artifacts, or local backlog with id, owner, targetWorker, triggerCondition, promptOrActionText, priority, createdAt, status, and voidReason when void. Mark obsolete, unsafe, replaced, completed, or irrelevant items void/remove them.',
+    'Action ledger required: every prompt/action/goal/human step/coder step/Agent step/AI step remains in MCP/bridge until evidence clears it. In output, include actions created, actions completed, actions voided/superseded, and next pending action.',
   ].join('\n');
 }
 
@@ -117,7 +118,7 @@ export function buildClaudeCodePrompt(ctx: OwnerWorkflowContext): string {
       : '(describe the lane in one or two short paragraphs)',
     '',
     'OUTPUT',
-    'End with a CHATGPT_STATUS_START / CHATGPT_STATUS_END block covering: live / repo-only / blocked / verified / next.',
+    'End with a CHATGPT_STATUS_START / CHATGPT_STATUS_END block covering: live / repo-only / blocked / verified / next, plus actions created / completed / voided-or-superseded / next pending action.',
   ].join('\n');
 }
 
@@ -153,7 +154,7 @@ export function buildClaudeChromePrompt(ctx: OwnerWorkflowContext): string {
       : '(describe the review lane)',
     '',
     'OUTPUT',
-    'A numbered plan with files affected, plus a one-paragraph summary suitable for pasting into ChatGPT or back into Claude Code.',
+    'A numbered plan with files affected, plus a one-paragraph summary suitable for pasting into ChatGPT or back into Claude Code. Include actions created / completed / voided-or-superseded / next pending action.',
   ].join('\n');
 }
 
@@ -180,7 +181,7 @@ export function buildChatGPTStatusPrompt(ctx: OwnerWorkflowContext): string {
     bulletise(ctx.manualStepsForAaron),
     '',
     'OUTPUT',
-    'A single CHATGPT_STATUS_START / CHATGPT_STATUS_END block summarising the current lane and proposing the next one. Keep it under 25 lines.',
+    'A single CHATGPT_STATUS_START / CHATGPT_STATUS_END block summarising the current lane and proposing the next one. Include actions created / completed / voided-or-superseded / next pending action. Keep it under 25 lines.',
   ].join('\n');
 }
 
@@ -216,7 +217,7 @@ export function buildCodexPrompt(ctx: OwnerWorkflowContext): string {
     '- Do NOT install new native modules without a config-plugin note.',
     '',
     'OUTPUT',
-    'Diff, plus a one-paragraph summary and a CHATGPT_STATUS block.',
+    'Diff, plus a one-paragraph summary and a CHATGPT_STATUS block. Include actions created / completed / voided-or-superseded / next pending action.',
   ].join('\n');
 }
 

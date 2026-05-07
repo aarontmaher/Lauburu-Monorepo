@@ -28,7 +28,9 @@ the follow-up in the same worker prompt, MCP, bridge handoff, or
 Agent QA result instead. **Rule 17** then defines the backlog
 contract for deferred prompts / actions: store them with trigger
 conditions and status, surface them when active, and void or remove
-obsolete ones.
+obsolete ones. **Rule 18** then makes that ledger universal:
+every prompt, goal, human step, coder step, Agent step, or AI step
+stays recorded until evidence proves completion or removal.
 
 This doc is the source of truth. The Worker constant in
 `cloudflare-worker/src/operating-rules.ts` is the **mirror** —
@@ -38,7 +40,7 @@ hash of the rule strings).
 
 Updated 2026-05-08.
 
-## The seventeen rules
+## The eighteen rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -205,6 +207,20 @@ this file.
     worker can continue without Aaron. If human / device action is
     unavoidable, store the later command in the backlog rather than
     relying on Aaron's memory.
+18. **Action ledger until evidence clears.** Every prompt, action,
+    goal, human action, coder action, Agent action, or AI action must
+    be recorded in MCP / bridge until evidence proves it is completed
+    or no longer necessary. A pending action can be cleared only with
+    evidence of completion, supersession, void / obsolete state,
+    unsafe / rejected state, or no-longer-necessary state. Each record
+    should include: `id`, `owner`, `targetWorkerOrPerson`, `lane`,
+    `actionText`, `triggerCondition`, `status: pending | active |
+    completed | blocked | void | superseded`, `priority`,
+    `createdAt`, `updatedAt`, `evidenceSummaryOrLink`, and
+    `voidReason` / `supersededBy` when applicable. Public MCP surfaces
+    may show compact redacted summaries; full action detail is admin
+    gated. Obsolete Agent prompts, stale worker prompts, and completed
+    bridge commands must be voided or superseded, not left active.
 
 ## Where to find each rule's full body
 
@@ -227,13 +243,14 @@ this file.
 | 15 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Coder report contract — rule 12" (extended with the no-idle-dependency clause); `docs/LOCAL_BRIDGE_WORKFLOW_PLAN.md` § Stage 3 prompt template (every dispatched template carries an explicit alternative non-blocking lane) |
 | 16 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "No delayed instruction chains"; `docs/LOCAL_BRIDGE_WORKFLOW_PLAN.md` § Stage 3 prompt template; `docs/CONTROL_CENTRE_MVP_SPEC.md` § prompt refs / handoff prompts |
 | 17 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Deferred prompts/actions backlog"; `docs/MCP_CANONICAL_STATE.md` § public v2 tools and backlog state; `docs/CONTROL_CENTRE_MVP_SPEC.md` § prompt refs / handoff prompts |
+| 18 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Action ledger"; `docs/MCP_CANONICAL_STATE.md` § action ledger surface; `docs/CONTROL_CENTRE_MVP_SPEC.md` § prompt refs / handoff prompts |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..17], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..18], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.
@@ -249,7 +266,7 @@ integration test will flag.
   Lane-3 batch (`docs/BACKLOG_AUTOMATION_SYSTEM.md` § Lane 3)
   with Aaron's written approval.
 - **No surfacing the rules without ID.** Every rule has a
-  stable id 1..17; consumers reference rules by id, not by
+  stable id 1..18; consumers reference rules by id, not by
   string match.
 - **No moving rule text into private surfaces.** These rules
   are public-safe by design — they describe coder discipline,

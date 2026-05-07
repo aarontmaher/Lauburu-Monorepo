@@ -229,6 +229,14 @@ control centre should surface the item as the next prompt/action.
 If the item is obsolete, unsafe, replaced, already completed, or
 irrelevant, mark it `void` or remove it.
 
+Prompt refs / handoff prompts must also preserve the action-ledger
+rule. Every prompt, action, goal, human step, coder step, Agent
+step, or AI step is recorded until evidence proves completion or no
+longer necessary. The control centre may show public-safe counts /
+next-action summaries, but full action text remains admin-gated.
+Every worker output must include actions created, actions completed,
+actions voided/superseded, and the next pending action.
+
 Use status wording: `Implementation-complete, awaiting Agent
 functional confirmation`, `Agent-confirmed, ready for Aaron build
 approval`, `Aaron-approved for EAS build`, and

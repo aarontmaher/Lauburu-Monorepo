@@ -228,9 +228,10 @@ next prompt; Aaron approves in the next prompt; loop continues.
 
 ## 9. Cross-references
 
-- `docs/OPERATING_RULES.md` — the 17 rules; rule 12 makes
+- `docs/OPERATING_RULES.md` — the 18 rules; rule 12 makes
   laptop-command discipline explicit, and rules 16-17 prevent
-  delayed untracked follow-up commands.
+  delayed untracked follow-up commands. Rule 18 makes every
+  prompt/action stay in MCP / bridge until evidence clears it.
 - `docs/CODER_LAPTOP_COMMANDS.md` — full command list with
   cadence.
 - `docs/MCP_PHONE_CONTROL_CENTRE.md` — phone connector setup +

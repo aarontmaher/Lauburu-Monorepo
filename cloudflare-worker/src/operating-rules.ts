@@ -7,7 +7,7 @@
  *
  * Edit policy: changing this constant requires a paired edit to
  * docs/OPERATING_RULES.md in the same commit. The live integration
- * test asserts count = 17 + each rule's id stays stable. Any
+ * test asserts count = 18 + each rule's id stays stable. Any
  * promotion / demotion / reorder is a Lane-3 batch with explicit
  * Aaron approval per docs/BACKLOG_AUTOMATION_SYSTEM.md § Lane 3.
  */
@@ -120,6 +120,12 @@ export const OPERATING_RULES: readonly OperatingRule[] = [
     title: 'Backlog deferred prompts/actions; remove void ones',
     body:
       'Never make Aaron remember delayed instructions. Do not say "after Agent returns, run X" or "after Claude finishes, paste Y" as an untracked instruction. Store deferred prompts / actions in MCP, bridge artifacts, or a local backlog with: id, owner, targetWorker, triggerCondition, promptOrActionText, priority, createdAt, status: pending | active | completed | void | superseded, and voidReason when void. When the trigger condition becomes true, surface the item as the next prompt / action. If the item becomes obsolete, unsafe, replaced, already completed, or irrelevant, mark it void or remove it. Prefer putting follow-up steps inside the same worker prompt so the worker can continue without Aaron. If human / device action is unavoidable, store the later command in the backlog rather than relying on Aaron\'s memory.',
+  },
+  {
+    id: 18,
+    title: 'Action ledger until evidence clears',
+    body:
+      'Every prompt, action, goal, human action, coder action, Agent action, or AI action must be recorded in MCP / bridge until evidence proves it is completed or no longer necessary. A pending action can be cleared only with evidence of completion, supersession, void / obsolete state, unsafe / rejected state, or no-longer-necessary state. Each record should include: id, owner, targetWorkerOrPerson, lane, actionText, triggerCondition, status: pending | active | completed | blocked | void | superseded, priority, createdAt, updatedAt, evidenceSummaryOrLink, and voidReason / supersededBy when applicable. Public MCP surfaces may show compact redacted summaries; full action detail is admin gated. Obsolete Agent prompts, stale worker prompts, and completed bridge commands must be voided or superseded, not left active.',
   },
 ] as const;
 

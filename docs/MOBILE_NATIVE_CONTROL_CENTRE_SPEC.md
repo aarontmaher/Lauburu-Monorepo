@@ -69,7 +69,7 @@ unchanged):
 - `project.get_overview` — cross-project aggregates
 - `project.get_work_status` — sanitised work status
 - `project.list_priorities` — top backlog item only
-- `project.get_operating_rules` — the 17 operating rules
+- `project.get_operating_rules` — the 18 operating rules
 - `mobile.get_lane_overview` / `mobile.get_build_overview` /
   `mobile.get_repo_overview` — counts/aggregates only
 - `handoff.get_latest` — composed handoff feed
