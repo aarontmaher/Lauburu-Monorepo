@@ -32,6 +32,23 @@ an optional future import source:
 These import paths are backfill / history aids, not live source
 claims and not requirements for the primary Health tab.
 
+Generic conditioning import fields:
+
+- `sourceApp`
+- `sourceType`: `apple_health`, `health_connect`, `fit_file`,
+  `tcx_file`, `csv_file`, or `manual`
+- `workoutType`: HIIT / rowing / ski erg / bike erg /
+  assault bike / conditioning / unknown
+- start time, end time, duration
+- calories, distance, heart-rate summary when available
+- intervals only when the upstream source actually provides them
+- provenance label such as "ErgData via Health Connect"
+
+Apple Health / Health Connect imports are summary-first. If interval
+splits are missing, the app must say: "Workout summary imported;
+interval splits not available." Do not feed these summaries into
+strong readiness claims yet.
+
 ## Two distinct paths per provider
 
 For each of WHOOP and Polar there are TWO paths the app supports.

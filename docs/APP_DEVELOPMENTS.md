@@ -102,6 +102,24 @@ already syncs there. Do **not** build ErgZone as a primary
 dependency. These data-source lanes matter, but they do not
 outrank the Apple Health / Health Connect daily testing path.
 
+Generic conditioning import model:
+
+- `sourceApp` — human-readable app label from Apple Health /
+  Health Connect provenance when available.
+- `sourceType` — `apple_health`, `health_connect`, `fit_file`,
+  `tcx_file`, `csv_file`, or `manual`.
+- `workoutType` — HIIT, rowing, ski erg, bike erg, assault bike,
+  conditioning, or unknown.
+- Timing — start time, end time, duration.
+- Summary metrics — calories, distance, heart-rate summary when
+  available.
+- Intervals — present only when the source actually supplies
+  structured interval splits; otherwise UI must say "Workout
+  summary imported; interval splits not available."
+- `provenanceLabel` — e.g. "ErgData via Health Connect"; never
+  "Concept2 Direct", "ErgZone Direct", or "Rogue Direct" unless a
+  verified direct integration exists.
+
 ### 3. UX / information architecture cleanup
 
 Daily and frequent workflows live in the feature tabs where the

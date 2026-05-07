@@ -24,6 +24,12 @@ import { HealthActionsPanel } from '../../src/components/HealthActionsPanel';
 import { SafeErrorBoundary } from '../../src/components/SafeErrorBoundary';
 import { useWhoopStore } from '../../src/store/whoop-store';
 import { getNativeHealthSourceCopy, getReadinessSeedBadge } from '../../src/services/health-source-ui';
+import {
+  buildConditioningImportSummaries,
+  CONDITIONING_IMPORT_COPY,
+  sourceTypeLabel,
+  type ConditioningImportSummary,
+} from '../../src/services/conditioning-imports';
 import type { HealthMetricType, PermissionStatus, DailyMetrics, DerivedFeatures, CoachingResponse } from '@lauburu/shared';
 import type { HealthFlag } from '@lauburu/shared';
 
@@ -150,6 +156,68 @@ function TodayCard({ today }: { today: DailyMetrics }) {
           ))}
         </View>
       )}
+    </View>
+  );
+}
+
+function ConditioningImportsCard({
+  summaries,
+  sourceType,
+}: {
+  summaries: ConditioningImportSummary[];
+  sourceType: 'apple_health' | 'health_connect';
+}) {
+  const visible = summaries.slice(0, 3);
+  return (
+    <View style={styles.card}>
+      <View style={styles.cardHeaderRow}>
+        <Text style={styles.cardTitle}>{CONDITIONING_IMPORT_COPY.title}</Text>
+        <Text style={styles.importBadge}>{sourceTypeLabel(sourceType)}</Text>
+      </View>
+      <Text style={styles.importBody}>{CONDITIONING_IMPORT_COPY.body}</Text>
+      <Text style={styles.importSubtle}>{CONDITIONING_IMPORT_COPY.examples}</Text>
+
+      {visible.length > 0 ? (
+        <View style={styles.importList}>
+          {visible.map((item, index) => (
+            <View key={`${item.startTime ?? 'workout'}-${index}`} style={styles.importRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.importName}>
+                  {item.workoutType === 'unknown' ? 'Conditioning' : item.workoutType.replace('_', ' ')}
+                </Text>
+                <Text style={styles.importSource}>{item.provenanceLabel}</Text>
+                {item.missingIntervalLabel && (
+                  <Text style={styles.importMissing}>{item.missingIntervalLabel}</Text>
+                )}
+              </View>
+              <View style={styles.importMetaCol}>
+                <Text style={styles.importMeta}>{item.durationMin}min</Text>
+                {(item.calories || item.distanceM) ? (
+                  <Text style={styles.importMeta}>
+                    {item.calories ? `${Math.round(item.calories)}cal` : ''}
+                    {item.calories && item.distanceM ? ' · ' : ''}
+                    {item.distanceM ? `${(item.distanceM / 1000).toFixed(1)}km` : ''}
+                  </Text>
+                ) : null}
+                {(item.avgHr || item.maxHr) ? (
+                  <Text style={styles.importMeta}>
+                    {item.avgHr ? `${Math.round(item.avgHr)} avg HR` : ''}
+                    {item.avgHr && item.maxHr ? ' · ' : ''}
+                    {item.maxHr ? `${Math.round(item.maxHr)} max` : ''}
+                  </Text>
+                ) : null}
+              </View>
+            </View>
+          ))}
+        </View>
+      ) : (
+        <Text style={styles.importMissing}>
+          No conditioning workouts imported yet. Sync after your workout app writes
+          to {sourceTypeLabel(sourceType)}.
+        </Text>
+      )}
+
+      <Text style={styles.importSubtle}>{CONDITIONING_IMPORT_COPY.future}</Text>
     </View>
   );
 }
@@ -573,6 +641,14 @@ export default function HealthScreen() {
   const hasImportedHistory = useHealthStore(
     (s) => s.historyWindowDays != null || (s.lastSyncDiagnostics?.normalizedDays ?? 0) > 0,
   );
+  const conditioningSourceType = Platform.OS === 'ios' ? 'apple_health' : 'health_connect';
+  const conditioningImports = useMemo(
+    () => buildConditioningImportSummaries(
+      days.flatMap((day) => day.workouts ?? []),
+      conditioningSourceType,
+    ).slice(0, 8),
+    [days, conditioningSourceType],
+  );
 
   const inExpoGo = isExpoGo();
   const nativeCopy = useMemo(() => getNativeHealthSourceCopy(Platform.OS), []);
@@ -853,6 +929,13 @@ export default function HealthScreen() {
           <TodayCard today={today} />
         </SafeErrorBoundary>
       )}
+
+      <SafeErrorBoundary label="Conditioning imports">
+        <ConditioningImportsCard
+          summaries={conditioningImports}
+          sourceType={conditioningSourceType}
+        />
+      </SafeErrorBoundary>
 
       {/* Provisional/app-owned readiness */}
       {insights && (
@@ -1164,6 +1247,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardTitle: { fontSize: 18, fontWeight: '600' },
+  importBadge: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#d4e157',
+    textTransform: 'uppercase',
+  },
+  importBody: { fontSize: 13, opacity: 0.72, lineHeight: 18 },
+  importSubtle: { fontSize: 12, opacity: 0.5, lineHeight: 17 },
+  importList: { gap: 8 },
+  importRow: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.06)',
+  },
+  importName: { fontSize: 13, fontWeight: '700', textTransform: 'capitalize' },
+  importSource: { fontSize: 11, opacity: 0.55, marginTop: 2 },
+  importMissing: { fontSize: 11, opacity: 0.5, marginTop: 3, lineHeight: 15 },
+  importMetaCol: { alignItems: 'flex-end' as const, gap: 1, maxWidth: 112 },
+  importMeta: { fontSize: 11, opacity: 0.58, textAlign: 'right' as const },
 
   availBadge: { fontSize: 12, fontWeight: '700', letterSpacing: 0.5 },
   unavailNote: { fontSize: 13, opacity: 0.6, lineHeight: 18 },
