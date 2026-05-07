@@ -7,7 +7,7 @@
  *
  * Edit policy: changing this constant requires a paired edit to
  * docs/OPERATING_RULES.md in the same commit. The live integration
- * test asserts count = 14 + each rule's id stays stable. Any
+ * test asserts count = 15 + each rule's id stays stable. Any
  * promotion / demotion / reorder is a Lane-3 batch with explicit
  * Aaron approval per docs/BACKLOG_AUTOMATION_SYSTEM.md § Lane 3.
  */
@@ -102,6 +102,12 @@ export const OPERATING_RULES: readonly OperatingRule[] = [
     title: 'Parallel priorities stay active',
     body:
       'Focused product work (e.g. Grappling Readiness) MUST NOT cause neglect of other active workstreams. The standing parallel priorities are: (a) MCP writeback / no-screenshot workflow, (b) Admin/Dev phone control centre, (c) idle notifications for Claude / Codex / Agent, (d) full automation of laptop commands per rule 12, (e) health input expansion (journal, blood test, DEXA, body composition, spirometry, conditioning machine data, etc.). Coders / Agent MUST surface progress on each parallel priority in every status report — at minimum a one-line freshness note ("MCP writeback: rule 12 cadence holding"), a flag if a parallel priority has gone unmoved for >7 days, and a suggestion for the next safe sub-batch. Pausing a parallel priority requires an explicit Aaron decision recorded in docs/APP_DEVELOPMENTS.md priority order, never a silent drift.',
+  },
+  {
+    id: 15,
+    title: 'No-idle dependency',
+    body:
+      'No worker prompt may have its main action be "wait for another worker to finish." If a next step depends on another worker: (a) put the follow-up inside the same worker\'s prompt when possible, so that worker continues immediately after its own patch; (b) give other workers non-overlapping adjacent work they can do now — tests, bridge / MCP support, schemas, docs, release prep, route-smoke harness, redaction checks, data-model support; (c) if Worker B must verify Worker A\'s output, Worker B prepares the verifier / harness now and then continues into other safe same-lane tasks until Worker A\'s output exists. Every worker prompt MUST include a stay-busy rule per rule 3 AND an explicit alternative non-blocking lane. No coder / agent sits idle because a dependent prompt was split incorrectly. If a coder reports "blocked waiting on X", that is a workflow bug — fix the prompt template, not the worker.',
   },
 ] as const;
 

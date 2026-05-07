@@ -18,7 +18,10 @@ coder/agent automation from true manual owner action. **Rule
 priorities stay active in every status report — focused
 readiness work must not silently starve MCP writeback, phone
 control centre, idle notifications, automation, or health
-input expansion.
+input expansion. **Rule 15** then governs orchestration
+between workers: no worker prompt may have its main action
+be "wait for another worker to finish" — every prompt
+includes a stay-busy fallback lane.
 
 This doc is the source of truth. The Worker constant in
 `cloudflare-worker/src/operating-rules.ts` is the **mirror** —
@@ -28,7 +31,7 @@ hash of the rule strings).
 
 Updated 2026-05-07.
 
-## The fourteen rules
+## The fifteen rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -144,6 +147,27 @@ this file.
     priority requires an explicit Aaron decision recorded in
     `docs/APP_DEVELOPMENTS.md` priority order, never a silent
     drift.
+15. **No-idle dependency.** No worker prompt may have its
+    main action be "wait for another worker to finish."
+    If a next step depends on another worker:
+    (a) put the follow-up inside the same worker's prompt
+    when possible, so that worker can continue immediately
+    after its own patch;
+    (b) give other workers non-overlapping adjacent work
+    they can do now — tests, bridge / MCP support, schemas,
+    docs, release prep, route-smoke harness, redaction
+    checks, data-model support;
+    (c) if Worker B must verify Worker A's output, Worker B
+    prepares the verifier / harness now and then continues
+    into other safe same-lane tasks until Worker A's output
+    exists.
+    Every worker prompt MUST include a stay-busy rule per
+    rule 3 AND an explicit alternative non-blocking lane.
+    No coder / agent sits idle because a dependent prompt
+    was split incorrectly. If a coder reports "blocked
+    waiting on X", that's a workflow bug and the prompt
+    should have been split differently — fix the prompt
+    template, not the worker.
 
 ## Where to find each rule's full body
 
@@ -163,13 +187,14 @@ this file.
 | 12 | `docs/PHONE_ONLY_AUTOMATION_PLAN.md` (workflow + remaining manual Aaron steps); `docs/CODER_LAPTOP_COMMANDS.md` (full command list + cadence) |
 | 13 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Clear steps; automate first"; `docs/PHONE_ONLY_AUTOMATION_PLAN.md` § "Remaining manual Aaron steps" |
 | 14 | `docs/APP_DEVELOPMENTS.md` § "Active priority order" (parallel-priority list); `docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md` § "Evidence input roadmap (v1 / v2 / v3)" (workstream parallelism for readiness inputs) |
+| 15 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Coder report contract — rule 12" (extended with the no-idle-dependency clause); `docs/LOCAL_BRIDGE_WORKFLOW_PLAN.md` § Stage 3 prompt template (every dispatched template carries an explicit alternative non-blocking lane) |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..14], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..15], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.
@@ -185,7 +210,7 @@ integration test will flag.
   Lane-3 batch (`docs/BACKLOG_AUTOMATION_SYSTEM.md` § Lane 3)
   with Aaron's written approval.
 - **No surfacing the rules without ID.** Every rule has a
-  stable id 1..14; consumers reference rules by id, not by
+  stable id 1..15; consumers reference rules by id, not by
   string match.
 - **No moving rule text into private surfaces.** These rules
   are public-safe by design — they describe coder discipline,
