@@ -100,7 +100,10 @@ Other public-safe tools at `/mcp/v2` (No Auth):
   website pending count.
 - `project.get_work_status` — same priority / blocker / next
   action shape (subset of `get_current_state`).
-- `project.list_priorities` — top backlog item.
+- `project.list_priorities` — top active backlog item(s). The
+  native iPhone/TestFlight automation item is repo-backed at
+  rank 0 while the health-connectivity release gate remains the
+  current work status.
 - `mobile.get_lane_overview` / `mobile.get_build_overview` /
   `mobile.get_repo_overview` — counts/aggregates only.
 - `handoff.get_latest` — composed across both projects, each
@@ -201,7 +204,8 @@ why no code change in this repo can fix it:
    stale cache, not a regression; just an empty data store on
    a project where nobody is currently coding.
 
-2. **The website MCP rejects every proxy write attempt.**
+2. **The website MCP rejects every proxy write attempt from this
+   No-Auth connector path.**
    Three different `clientInfo.name` identities (`owner-aaron`,
    `lauburu-mobile-bridge`, `claude-code`) all returned the
    same response from `update_work_status`:
@@ -212,13 +216,15 @@ why no code change in this repo can fix it:
    proxy). There is **no patchable auth path** from this
    repo.
 
-3. **Therefore the only fix is the connector switch + the new
-   `project.get_current_state` tool already shipped at /mcp/v2
-   (commit `d1292e5`).** Modifying the website MCP would
-   require commits in a different repository owned by the
-   website project. That is intentionally out of scope; the
-   two projects keep their data lifecycles separate per § "Do
-   NOT sync state between the two".
+3. **This repo can only fix the unified v2 surface.** The
+   `/mcp/v2` Worker now exposes public-safe read tools plus a
+   narrow admin-token-gated priority intake tool
+   (`project.submit_priority_suggestion`). ChatGPT No Auth
+   still cannot write; unauthenticated writes remain blocked.
+   Modifying the website MCP's `submit_suggestion` /
+   `update_work_status` auth requires commits in the website
+   project. The two projects keep their data lifecycles
+   separate per § "Do NOT sync state between the two".
 
 If a chat needs both views side-by-side, ChatGPT can be
 configured with both connectors (Lauburu MCP unified +
@@ -335,7 +341,8 @@ lives **outside the MCP**:
 | Bridge / coder script | direct Supabase write to `connector_*` tables | service role key | The intended canonical writer; runs from laptop. |
 | `Supabase` MCP `execute_sql` | direct SQL against `public.connector_*` rows | Supabase MCP credentials | What Claude / Codex / Aaron use today to refresh `currentPriority`, `nextAction`, lane `lastSeenAt`. Not a chat-from-ChatGPT path. |
 | Mobile app admin/dev cards | `POST /api/...` (admin token) | `x-athlete-memory-token` | Phone-side admin view; not ChatGPT-reachable. |
-| Website MCP `update_work_status` | the WEBSITE project's tables | website-side per-user auth | Rejects every `clientInfo` from this Worker (`role: 'none'`). Not patchable from this repo. |
+| Website MCP `update_work_status` / `submit_suggestion` | the WEBSITE project's tables / suggestion inbox | website-side per-user auth | Rejects No-Auth proxy writes from this Worker (`role: 'none'`). Not patchable from this repo. Use unified v2 public reads or an admin-auth v2 write tool instead. |
+| Unified v2 `project.submit_priority_suggestion` | this repo's priority overlay/intake response | `x-athlete-memory-token` OR `Authorization: Bearer <ATHLETE_MEMORY_API_TOKEN>` | Shipped as an admin-gated, public-write-blocked tool. The native iPhone/TestFlight automation priority is repo-backed at rank 0; generic durable suggestion storage still needs a future table/approval workflow. |
 
 **Implication for Codex**: if Codex needs to mark its lane
 `needs_review` or post a lane summary, it does so via the

@@ -115,7 +115,7 @@ The Worker re-wraps responses, no website credentials needed
 |---|---|---|
 | `website.list_pending_suggestions` | `list_pending_suggestions` | identical args + return |
 | `website.get_suggestion` | `get_suggestion` | identical |
-| `website.submit_suggestion` | `submit_suggestion` | write — the website's queue, not this codebase's |
+| `website.submit_suggestion` | `submit_suggestion` | write — the website's queue, not this codebase's. No-Auth proxy callers may be rejected as `role:none`; use this only when the website MCP auth path is configured. |
 | `website.approve_suggestion_for_preview` | `approve_suggestion_for_preview` | write |
 | `website.list_automation_batches` | `list_automation_batches` | identical |
 | `website.get_automation_state` | `get_automation_state` | identical |
@@ -776,6 +776,7 @@ canonical writer. The reader and writer MUST agree on:
 |---|---|---|---|
 | Read (public) | `/mcp/v2 project.get_*`, `/mcp/v2 mobile.get_*_overview`, `/mcp/v2 handoff.get_latest`, `/mcp/v2 integrations.get_overview`, `/mcp/v2 project.get_operating_rules` | **No Auth** | sanitised; `≤140 char` text fields; no prompt IDs / file paths / tokens; canonical freshness envelope. |
 | Read (admin) | `/mcp/v2 mobile.get_<full>`, `/api/control_centre`, `/api/work_status`, `/api/coder_lanes`, `/api/build_status`, `/api/handoff`, `/api/terminal_summary`, `/api/manual_steps`, `/api/backlog_items` | `x-athlete-memory-token` OR `Authorization: Bearer <ATHLETE_MEMORY_API_TOKEN>` | full payload; admin-only fields included. |
+| Write (admin) — shipped narrow intake | `/mcp/v2 project.submit_priority_suggestion`, `/mcp/v2 submit_priority_suggestion` | `x-athlete-memory-token` OR `Authorization: Bearer <ATHLETE_MEMORY_API_TOKEN>` | admin-gated priority suggestion intake. Public No-Auth clients are rejected. The FS-019 native iPhone/TestFlight automation item is repo-backed at rank 0; generic durable queue storage is future work. |
 | Write (admin) — **NEW, planned** | `/mcp/v2 mobile.update_work_status`, `/mcp/v2 mobile.update_lane_status`, `/mcp/v2 mobile.update_handoff`, `/mcp/v2 mobile.update_build_status`, `/mcp/v2 mobile.append_terminal_summary` | `x-athlete-memory-token` OR `Authorization: Bearer` | symmetric admin writers; same auth gate as admin reads. **Not shipped yet — see § 15.4 ship gate.** |
 | Write (service) | direct Supabase write to `connector_*` tables; Supabase MCP `execute_sql` | service role key; Supabase MCP credentials | what the bridge / coder script / Aaron uses today. Stays the canonical writer regardless of whether 15.4 ships. |
 | Write (public) | (none) | — | **Decision: no public-write tool will ever be added.** Public connectors are No-Auth; a public writer would lack the per-actor identity needed for spam protection / ownership tagging. If ChatGPT-from-chat write is desired, the user adds the admin token via a private connector. |
@@ -803,10 +804,12 @@ ship; the rest stay listed-but-unimplemented):
 
 **Out of scope (read-only, no write tool ever):**
 `integrations.get_overview`, `project.get_operating_rules`,
-`project.list_priorities`, `project.get_overview`,
-`project.get_current_state`. These are **composed reads** off
-multiple backing rows; their canonical writers are the
-underlying tool-pairs above.
+`project.get_overview`, `project.get_current_state`. These are
+**composed reads** off multiple backing rows; their canonical
+writers are the underlying tool-pairs above. `project.list_priorities`
+is also composed, but may include a repo-backed rank-0 priority
+overlay when Aaron promotes a new top item before the durable
+backlog-intake table exists.
 
 ### 15.4 Write-tool ship gate
 

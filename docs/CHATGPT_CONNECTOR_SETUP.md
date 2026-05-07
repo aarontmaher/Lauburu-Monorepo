@@ -32,8 +32,8 @@ wrong host — re-create per § 1.
 Open **ChatGPT → Settings → Connectors → Add custom connector**.
 
 **Recommended — unified `/mcp/v2`** (covers everything below in one
-connector, including the new `project.get_current_state` tool that
-returns live Claude / Codex status from this codebase's Supabase):
+connector, including `project.get_current_state`, `project.list_priorities`,
+operating rules, handoff, website proxies, and integration overview):
 
 | Field | Value |
 |---|---|
@@ -48,7 +48,15 @@ returns priority / blocker / next action + per-lane status
 task summary + freshness signal. Never the "all idle" the website
 MCP shows when it doesn't know about this repo's bridge.
 
-**Legacy preview connector — still live** (the original 4-tool
+The unified connector is **No Auth and read-only** in ChatGPT.
+It can show the current native iPhone/TestFlight automation
+priority through `project.list_priorities` and
+`website.list_pending_suggestions`, but it must not perform
+public writes. If a write tool such as
+`project.submit_priority_suggestion` is called without an admin
+token, the correct result is `admin token required`.
+
+**Legacy preview connector — still live but not preferred** (the original 4-tool
 path; safe to keep alongside the unified one during the
 documented dual-track period):
 
@@ -199,10 +207,11 @@ MCP entry, delete the older ones and keep exactly one:
 | **DELETE** any connector pointing at the old website MCP URL (`grapplingmap-mcp` or any `*.lauburu*` URL that isn't `*.lauburu-aaron.workers.dev`). | Different project; different tool names. Confuses ChatGPT's tool resolution. |
 | **DELETE** any connector pointing at the private path `/mcp` (no `/public`) configured with No Auth. | Will return 403 every call. Pure noise. |
 | **DELETE** any connector with stale auth (Bearer token saved that no longer exists in ChatGPT's form, etc). | Half-configured connectors block the chat-side tool list. |
-| **KEEP** exactly one connector at `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/public` with **No Auth**. | This is the canonical public-safe entry. |
+| **KEEP** exactly one connector at `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2` with **No Auth**. | This is the canonical public-safe entry. |
+| **OPTIONAL TEMPORARY** connector at `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/public` with **No Auth**. | Legacy 4-tool preview path. Keep only while comparing old/new behavior; prefer `/mcp/v2` for current state. |
 
 After cleanup, open a fresh chat and verify
-`get_public_mcp_health` is listed and callable.
+`project.get_current_state` is listed and callable.
 
 ## 5. The cheapest workflow (no paid API loop)
 
