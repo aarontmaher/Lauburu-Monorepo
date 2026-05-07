@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import * as Application from 'expo-application';
 import Constants from 'expo-constants';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import { useAppTourStore } from '../../src/components/AppTour';
 import { useAuthStore } from '../../src/store/auth-store';
@@ -182,7 +182,19 @@ function PrefPillRow<T extends string>({
 // Auth section
 // ---------------------------------------------------------------------------
 
-function AuthForm() {
+/**
+ * Map the `auth` query param shipped by the Home screen
+ * (Create account → 'sign_up', Sign in → 'sign_in') to the
+ * AuthForm's internal mode enum. Unknown / missing values
+ * default to 'login'.
+ */
+function authParamToMode(param: string | undefined): 'login' | 'signup' {
+  if (param === 'sign_up') return 'signup';
+  if (param === 'sign_in') return 'login';
+  return 'login';
+}
+
+function AuthForm({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' }) {
   const signIn = useAuthStore((s) => s.signIn);
   const signUp = useAuthStore((s) => s.signUp);
   const signInWithApple = useAuthStore((s) => s.signInWithApple);
@@ -193,7 +205,7 @@ function AuthForm() {
   const [resetBusy, setResetBusy] = useState(false);
   const [appleBusy, setAppleBusy] = useState(false);
   const [appleVisible, setAppleVisible] = useState(false);
-  const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const [mode, setMode] = useState<'login' | 'signup'>(initialMode);
 
   // Apple Sign-In availability probe runs once on mount. Hides the
   // button entirely until the next native build ships
@@ -756,6 +768,11 @@ function TesterToolsSection() {
 export default function SettingsScreen() {
   const router = useRouter();
   const status = useAuthStore((s) => s.status);
+  // Home screen passes auth=sign_up / auth=sign_in via router.push
+  // params; AuthForm uses this to default to the right mode (Create
+  // account → signup, Sign in → login). Unknown / missing → login.
+  const params = useLocalSearchParams<{ auth?: string }>();
+  const authInitialMode = authParamToMode(typeof params.auth === 'string' ? params.auth : undefined);
   const userEmail = useAuthStore((s) => s.user?.email ?? null);
   const isAdmin = userEmail != null && ADMIN_EMAILS.has(userEmail.toLowerCase());
   const devUnlocked = useDevUnlockStore((s) => s.unlocked);
@@ -786,7 +803,7 @@ export default function SettingsScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Account</Text>
-        {status === 'member' ? <SignedInSection /> : <AuthForm />}
+        {status === 'member' ? <SignedInSection /> : <AuthForm initialMode={authInitialMode} />}
       </View>
 
       <View style={styles.section}>
