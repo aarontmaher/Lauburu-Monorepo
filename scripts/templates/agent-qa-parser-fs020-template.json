@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "qaRunId": "agent-qa-fs020-parser-template",
+  "sourceAgent": "agent",
+  "status": "repo_only",
+  "gate": "general",
+  "platform": "repo",
+  "deviceName": null,
+  "installedBuild": {
+    "iosBuildNumber": null,
+    "androidVersionCode": null,
+    "appVersion": null,
+    "channel": null,
+    "track": null
+  },
+  "repo": {
+    "branch": "main"
+  },
+  "results": {
+    "healthManageSources": "not_tested",
+    "androidHealthConnect": "not_tested",
+    "iosAppleHealth": "not_tested",
+    "grapplingReadiness": "not_tested",
+    "adminControlCentre": "not_tested",
+    "copyTruthfulness": "pass",
+    "uiDensity": "not_tested"
+  },
+  "releaseGate": {
+    "newTestFlightAllowed": false,
+    "newAndroidBuildAllowed": false,
+    "reason": "Repo-only FS-020 parser QA does not clear installed-device gates."
+  },
+  "requiredFixes": [
+    "Agent must confirm parser behavior with synthetic fixtures before B-20d UI implementation starts."
+  ],
+  "evidence": {
+    "screenshotRefs": [],
+    "notes": "Use synthetic non-private fixtures only. Confirm term normalization, macro derivation, no medical advice, no causation claims, and no private journal data export via MCP."
+  },
+  "publicSummary": "FS-020 parser QA template is repo-only; does not clear installed-device gates.",
+  "privateDetails": null
+}

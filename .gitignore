@@ -46,6 +46,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Local QA evidence — screenshots, generated prompts, and bridge JSON drafts
+tmp/
+
 # Claude Code workspace state — never commit
 .claude/
 
