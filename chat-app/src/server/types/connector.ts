@@ -185,6 +185,12 @@ export interface Handoff {
   safeToBuild: boolean;
   /** One sentence explaining the safeToBuild value. */
   safeToBuildReason: string;
+  /**
+   * Latest structured installed-device / repo-only Agent QA result.
+   * Written by npm run bridge:agent-qa and carried through the existing
+   * connector_handoff row so no athlete-private table is required.
+   */
+  agentQaResult?: AgentQaResult | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -210,6 +216,80 @@ export interface TerminalSummary {
   generatedAt: string;
   /** Most recent first. Cap: 10 entries per lane, 50 total. */
   entries: TerminalSummaryEntry[];
+}
+
+// ---------------------------------------------------------------------------
+// 6. agent_qa_result
+// ---------------------------------------------------------------------------
+
+export type AgentQaStatus = 'pass' | 'fail' | 'blocked' | 'repo_only' | 'partial';
+export type AgentQaGate =
+  | 'health_connectivity'
+  | 'grappling_readiness'
+  | 'native_control_centre'
+  | 'release_gate'
+  | 'general';
+export type AgentQaPlatform = 'android' | 'ios' | 'both' | 'repo';
+export type AgentQaResultStatus =
+  | 'pass'
+  | 'fail'
+  | 'blocked'
+  | 'repo_only'
+  | 'partial'
+  | 'not_tested';
+
+export interface AgentQaInstalledBuild {
+  iosBuildNumber?: string | null;
+  androidVersionCode?: number | null;
+  appVersion?: string | null;
+  channel?: string | null;
+  track?: string | null;
+}
+
+export interface AgentQaRepoRef {
+  branch: string;
+  shortHead: string;
+}
+
+export interface AgentQaResultChecks {
+  healthManageSources: AgentQaResultStatus;
+  androidHealthConnect: AgentQaResultStatus;
+  iosAppleHealth: AgentQaResultStatus;
+  grapplingReadiness: AgentQaResultStatus;
+  adminControlCentre: AgentQaResultStatus;
+  copyTruthfulness: AgentQaResultStatus;
+  uiDensity: AgentQaResultStatus;
+}
+
+export interface AgentQaReleaseGate {
+  newTestFlightAllowed: boolean;
+  newAndroidBuildAllowed: boolean;
+  reason: string;
+}
+
+export interface AgentQaEvidence {
+  screenshotRefs: string[];
+  notes: string;
+}
+
+export interface AgentQaResult {
+  schemaVersion: typeof CONNECTOR_SCHEMA_VERSION;
+  qaRunId: string;
+  sourceAgent: string;
+  createdAt: string;
+  updatedAt: string;
+  status: AgentQaStatus;
+  gate: AgentQaGate;
+  platform: AgentQaPlatform;
+  deviceName?: string | null;
+  installedBuild: AgentQaInstalledBuild;
+  repo: AgentQaRepoRef;
+  results: AgentQaResultChecks;
+  releaseGate: AgentQaReleaseGate;
+  requiredFixes: string[];
+  evidence: AgentQaEvidence;
+  publicSummary: string;
+  privateDetails?: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -256,6 +336,7 @@ export interface ConnectorRouteMap {
   'GET /api/athlete-memory/admin/build-status': BuildStatus;
   'GET /api/athlete-memory/admin/handoff': Handoff;
   'GET /api/athlete-memory/admin/terminal-summary': TerminalSummary;
+  'GET /api/athlete-memory/admin/agent-qa-result': AgentQaResult;
   'POST /api/athlete-memory/admin/lane-status': { ok: true } | { ok: false; reason: string };
   'POST /api/athlete-memory/admin/terminal-summary': { ok: true } | { ok: false; reason: string };
   'POST /api/athlete-memory/admin/handoff': { ok: true; merged: Handoff } | { ok: false; reason: string };

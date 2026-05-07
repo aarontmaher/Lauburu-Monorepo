@@ -108,6 +108,9 @@ Other public-safe tools at `/mcp/v2` (No Auth):
   `mobile.get_repo_overview` — counts/aggregates only.
 - `handoff.get_latest` — composed across both projects, each
   entry tagged `source: 'mobile' | 'website'`.
+- `qa.get_latest_result` — latest public-safe Agent QA gate
+  summary. Distinguishes repo-only QA from installed-device QA
+  and reports whether TestFlight/Internal QA builds are allowed.
 - `integrations.get_overview` — per-platform exposure spec.
 
 Legacy public preview path (`/mcp/public`, four tools, No Auth)
@@ -117,11 +120,18 @@ is also still live with the same `get_*_overview` /
 coexist.
 
 For richer detail (lane summaries, manual step text, full
-build/handoff/terminal_summary) Aaron uses curl from the laptop
+build/handoff/terminal_summary/Agent QA detail) Aaron uses curl from the laptop
 or the in-app Admin/Dev surface — both go through the
 admin-token-gated `/api/*` routes or `mobile.get_<full>` v2
 tools. ChatGPT does not currently support API-key auth in the
 connector form.
+
+Agent QA results are written with `npm run bridge:agent-qa -- <json>`
+into a local ignored artifact, then carried by `npm run bridge:snapshot`
+inside `connector_handoff.agentQaResult`. This is control-centre
+status only, not athlete private memory. Public MCP sees only
+the redacted `qa.get_latest_result` summary; full notes are
+admin-gated at `mobile.get_agent_qa_result`.
 
 For "what's pending in the website's automation queue? when's
 the next batch? what techniques need editing?" **questions,

@@ -9,6 +9,7 @@
   "scripts": {
     "setup:supabase": "node scripts/setup-supabase-env.mjs",
     "bridge:snapshot": "./scripts/bridge-snapshot-lanes.sh",
+    "bridge:agent-qa": "node scripts/bridge-agent-qa.mjs",
     "bridge:verify": "cd chat-app && npx tsx src/server/scripts/test-bridge-artifacts.ts",
     "mcp:test:live": "cd chat-app && npx tsx src/server/scripts/test-mcp-worker-live.ts",
     "mcp:test:public-redaction": "cd cloudflare-worker && npx tsx test/test-mcp-public-redaction.ts",

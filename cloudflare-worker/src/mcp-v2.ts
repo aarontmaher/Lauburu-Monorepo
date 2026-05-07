@@ -293,7 +293,7 @@ async function buildProjectCurrentState(env: Env): Promise<unknown> {
     };
   }
 
-  const [work, lanes, build] = await Promise.all([
+  const [work, lanes, build, handoff] = await Promise.all([
     adapter.fetchSingleRowPayload('connector_work_status') as Promise<{
       currentPriority?: string | null;
       currentBlocker?: string | null;
@@ -307,6 +307,10 @@ async function buildProjectCurrentState(env: Env): Promise<unknown> {
       generatedAt?: string;
       android?: { versionCode?: number | null; githubStatus?: string | null; playStatus?: string | null; playTrack?: string | null };
       ios?: { buildNumber?: string | null; githubStatus?: string | null; testflightStatus?: string | null };
+    } | null>,
+    adapter.fetchSingleRowPayload('connector_handoff') as Promise<{
+      generatedAt?: string;
+      agentQaResult?: unknown;
     } | null>,
   ]);
 
@@ -389,8 +393,9 @@ async function buildProjectCurrentState(env: Env): Promise<unknown> {
   const branchRe = /^[A-Za-z0-9._\-/]{1,80}$/;
   const branch = work?.repoStatus?.branch && branchRe.test(work.repoStatus.branch) ? work.repoStatus.branch : null;
   const head = safeShortCommit(work?.repoStatus?.head);
+  const latestQaGate = buildPublicQaGate(handoff?.agentQaResult ?? null);
 
-  const haveAnyRow = work !== null || (lanes !== null && lanes.length > 0) || build !== null;
+  const haveAnyRow = work !== null || (lanes !== null && lanes.length > 0) || build !== null || handoff !== null;
 
   return {
     schemaVersion: 1,
@@ -419,7 +424,48 @@ async function buildProjectCurrentState(env: Env): Promise<unknown> {
       },
       repo: { branch, shortHead: head },
     },
+    latestQaGate,
     safety: safetyBaseline,
+  };
+}
+
+function buildPublicQaGate(qa: unknown): unknown | null {
+  if (!qa || typeof qa !== 'object') return null;
+  const value = qa as Record<string, unknown>;
+  const releaseGate = value.releaseGate && typeof value.releaseGate === 'object'
+    ? value.releaseGate as Record<string, unknown>
+    : {};
+  const installedBuild = value.installedBuild && typeof value.installedBuild === 'object'
+    ? value.installedBuild as Record<string, unknown>
+    : {};
+  const repo = value.repo && typeof value.repo === 'object'
+    ? value.repo as Record<string, unknown>
+    : {};
+  const updatedAt = typeof value.updatedAt === 'string' ? value.updatedAt : null;
+  return {
+    status: typeof value.status === 'string' ? value.status : 'unknown',
+    gate: typeof value.gate === 'string' ? value.gate : 'general',
+    platform: typeof value.platform === 'string' ? value.platform : 'repo',
+    updatedAt,
+    freshness: computeFreshness(updatedAt, true),
+    installedBuild: {
+      iosBuildNumber: typeof installedBuild.iosBuildNumber === 'string' ? installedBuild.iosBuildNumber : null,
+      androidVersionCode: typeof installedBuild.androidVersionCode === 'number' ? installedBuild.androidVersionCode : null,
+      appVersion: typeof installedBuild.appVersion === 'string' ? installedBuild.appVersion : null,
+      channel: typeof installedBuild.channel === 'string' ? installedBuild.channel : null,
+      track: typeof installedBuild.track === 'string' ? installedBuild.track : null,
+    },
+    repo: {
+      branch: typeof repo.branch === 'string' ? repo.branch.slice(0, 80) : null,
+      shortHead: typeof repo.shortHead === 'string' && /^[0-9a-f]{7,12}$/.test(repo.shortHead) ? repo.shortHead : null,
+    },
+    releaseGate: {
+      newTestFlightAllowed: releaseGate.newTestFlightAllowed === true,
+      newAndroidBuildAllowed: releaseGate.newAndroidBuildAllowed === true,
+      reason: typeof releaseGate.reason === 'string' ? releaseGate.reason.slice(0, 280) : 'No release gate reason recorded.',
+    },
+    publicSummary: typeof value.publicSummary === 'string' ? value.publicSummary.slice(0, 280) : null,
+    publicSafe: true,
   };
 }
 
@@ -644,6 +690,51 @@ async function buildHandoffLatest(env: Env): Promise<unknown> {
     freshness: computeFreshness(mobileEntry?.generatedAt ?? null, adapter.configured),
     entries,
     publicPreview: true,
+  };
+}
+
+async function buildQaLatestResult(env: Env): Promise<unknown> {
+  const adapter = getSupabaseAdapter(env);
+  const generatedAt = new Date().toISOString();
+  if (!adapter.configured) {
+    return {
+      schemaVersion: 1,
+      generatedAt,
+      source: 'placeholder' as const,
+      freshness: computeFreshness(null, false),
+      latestQaGate: null,
+      publicPreview: true,
+    };
+  }
+  const payload = await adapter.fetchSingleRowPayload('connector_handoff') as {
+    agentQaResult?: unknown;
+  } | null;
+  const latestQaGate = buildPublicQaGate(payload?.agentQaResult ?? null);
+  const updatedAt = latestQaGate && typeof latestQaGate === 'object'
+    ? (latestQaGate as { updatedAt?: unknown }).updatedAt
+    : null;
+  return {
+    schemaVersion: 1,
+    generatedAt,
+    source: latestQaGate ? ('supabase' as const) : ('placeholder' as const),
+    freshness: computeFreshness(typeof updatedAt === 'string' ? updatedAt : null, true),
+    latestQaGate,
+    publicPreview: true,
+  };
+}
+
+async function buildMobileAgentQaResult(env: Env): Promise<unknown> {
+  const full = await buildMobileFullSingle(env, 'connector_handoff') as {
+    payload?: { agentQaResult?: unknown } | null;
+    freshness?: unknown;
+    source?: unknown;
+  };
+  return {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    source: full.source ?? 'placeholder',
+    freshness: full.freshness,
+    payload: full.payload?.agentQaResult ?? null,
   };
 }
 function pickWebsiteHandoffTime(payload: unknown): string | null {
@@ -1180,6 +1271,20 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     auth: 'public',
     build: buildHandoffLatest,
   },
+  {
+    name: 'qa.get_latest_result',
+    description: 'Latest public-safe Agent QA gate summary. Shows repo-only vs installed-device QA status, tested platform/build, and whether TestFlight/Internal QA build is allowed. No screenshots, private details, or raw logs.',
+    inputSchema: { type: 'object', properties: {}, required: [] },
+    auth: 'public',
+    build: buildQaLatestResult,
+  },
+  {
+    name: 'mobile.get_agent_qa_result',
+    description: 'Full latest Agent QA result carried by connector_handoff.agentQaResult. Admin token required.',
+    inputSchema: { type: 'object', properties: {}, required: [] },
+    auth: 'admin',
+    build: buildMobileAgentQaResult,
+  },
 ];
 
 const LOCAL_BY_NAME = new Map(LOCAL_TOOLS.map((t) => [t.name, t] as const));
@@ -1332,6 +1437,7 @@ export async function handleMcpV2Health(request: Request, env: Env): Promise<Res
       'project.get_operating_rules',
       'integrations.get_overview',
       'handoff.get_latest',
+      'qa.get_latest_result',
     ],
   });
 }

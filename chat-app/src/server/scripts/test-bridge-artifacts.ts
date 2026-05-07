@@ -15,6 +15,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {
   CONNECTOR_SCHEMA_VERSION,
+  type AgentQaGate,
+  type AgentQaPlatform,
+  type AgentQaResult,
+  type AgentQaResultStatus,
+  type AgentQaStatus,
   type CoderLaneRow,
   type CoderLanes,
   type Handoff,
@@ -36,6 +41,18 @@ const LANE_STATUSES: ReadonlySet<LaneStatus> = new Set([
 ] as const);
 const TYPECHECK_RESULTS: ReadonlySet<TypecheckResult> = new Set([
   'pass', 'fail', 'unknown',
+] as const);
+const AGENT_QA_STATUSES: ReadonlySet<AgentQaStatus> = new Set([
+  'pass', 'fail', 'blocked', 'repo_only', 'partial',
+] as const);
+const AGENT_QA_GATES: ReadonlySet<AgentQaGate> = new Set([
+  'health_connectivity', 'grappling_readiness', 'native_control_centre', 'release_gate', 'general',
+] as const);
+const AGENT_QA_PLATFORMS: ReadonlySet<AgentQaPlatform> = new Set([
+  'android', 'ios', 'both', 'repo',
+] as const);
+const AGENT_QA_RESULT_STATUSES: ReadonlySet<AgentQaResultStatus> = new Set([
+  'pass', 'fail', 'blocked', 'repo_only', 'partial', 'not_tested',
 ] as const);
 
 function readJson<T>(file: string): T {
@@ -105,6 +122,41 @@ function validateHandoff(payload: Handoff): void {
   for (const s of payload.doNotTouch) assert(typeof s === 'string', 'handoff doNotTouch entry');
   assert(typeof payload.safeToBuild === 'boolean', 'handoff safeToBuild bool');
   assert(typeof payload.safeToBuildReason === 'string' && payload.safeToBuildReason.length <= 280, 'handoff safeToBuildReason cap');
+  if (payload.agentQaResult != null) {
+    validateAgentQaResult(payload.agentQaResult, 'handoff.agentQaResult');
+  }
+}
+
+function validateAgentQaResult(payload: AgentQaResult, prefix: string): void {
+  assert(payload.schemaVersion === CONNECTOR_SCHEMA_VERSION, `${prefix} schemaVersion`);
+  assert(typeof payload.qaRunId === 'string' && payload.qaRunId.length > 0 && payload.qaRunId.length <= 80, `${prefix} qaRunId`);
+  assert(typeof payload.sourceAgent === 'string' && payload.sourceAgent.length > 0 && payload.sourceAgent.length <= 80, `${prefix} sourceAgent`);
+  assert(isIsoZ(payload.createdAt), `${prefix} createdAt`);
+  assert(isIsoZ(payload.updatedAt), `${prefix} updatedAt`);
+  assert(AGENT_QA_STATUSES.has(payload.status), `${prefix} status enum`);
+  assert(AGENT_QA_GATES.has(payload.gate), `${prefix} gate enum`);
+  assert(AGENT_QA_PLATFORMS.has(payload.platform), `${prefix} platform enum`);
+  assert(payload.deviceName == null || typeof payload.deviceName === 'string', `${prefix} deviceName`);
+  assert(typeof payload.installedBuild === 'object' && payload.installedBuild !== null, `${prefix} installedBuild`);
+  assert(typeof payload.repo === 'object' && payload.repo !== null, `${prefix} repo`);
+  assert(typeof payload.repo.branch === 'string' && payload.repo.branch.length > 0, `${prefix} repo.branch`);
+  assert(typeof payload.repo.shortHead === 'string' && /^[0-9a-f]{7,12}$/.test(payload.repo.shortHead), `${prefix} repo.shortHead`);
+  assert(typeof payload.results === 'object' && payload.results !== null, `${prefix} results`);
+  for (const key of ['healthManageSources', 'androidHealthConnect', 'iosAppleHealth', 'grapplingReadiness', 'adminControlCentre', 'copyTruthfulness', 'uiDensity'] as const) {
+    assert(AGENT_QA_RESULT_STATUSES.has(payload.results[key]), `${prefix} results.${key}`);
+  }
+  assert(typeof payload.releaseGate === 'object' && payload.releaseGate !== null, `${prefix} releaseGate`);
+  assert(typeof payload.releaseGate.newTestFlightAllowed === 'boolean', `${prefix} releaseGate.newTestFlightAllowed`);
+  assert(typeof payload.releaseGate.newAndroidBuildAllowed === 'boolean', `${prefix} releaseGate.newAndroidBuildAllowed`);
+  assert(typeof payload.releaseGate.reason === 'string' && payload.releaseGate.reason.length <= 280, `${prefix} releaseGate.reason`);
+  assert(Array.isArray(payload.requiredFixes) && payload.requiredFixes.length <= 20, `${prefix} requiredFixes`);
+  for (const fix of payload.requiredFixes) assert(typeof fix === 'string' && fix.length <= 200, `${prefix} requiredFix`);
+  assert(typeof payload.evidence === 'object' && payload.evidence !== null, `${prefix} evidence`);
+  assert(Array.isArray(payload.evidence.screenshotRefs), `${prefix} screenshotRefs`);
+  for (const ref of payload.evidence.screenshotRefs) assert(typeof ref === 'string' && ref.length <= 160, `${prefix} screenshotRef`);
+  assert(typeof payload.evidence.notes === 'string' && payload.evidence.notes.length <= 1000, `${prefix} evidence.notes`);
+  assert(typeof payload.publicSummary === 'string' && payload.publicSummary.length <= 280, `${prefix} publicSummary`);
+  assert(payload.privateDetails == null || (typeof payload.privateDetails === 'string' && payload.privateDetails.length <= 2000), `${prefix} privateDetails`);
 }
 
 function main(): void {

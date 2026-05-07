@@ -23,6 +23,7 @@ const REQUIRED_TOOLS = [
   'project.get_operating_rules',
   'integrations.get_overview',
   'handoff.get_latest',
+  'qa.get_latest_result',
 ] as const;
 
 const env = {} as any;

@@ -69,6 +69,10 @@ ALLOWED_LANES = {"claude", "codex", "claude_chat", "chatgpt", "cowork"}
 ALLOWED_STATUSES = {
     "idle", "working", "blocked", "needs_user", "needs_review", "done",
 }
+AGENT_QA_STATUSES = {"pass", "fail", "blocked", "repo_only", "partial"}
+AGENT_QA_GATES = {"health_connectivity", "grappling_readiness", "native_control_centre", "release_gate", "general"}
+AGENT_QA_PLATFORMS = {"android", "ios", "both", "repo"}
+AGENT_QA_RESULT_STATUSES = {"pass", "fail", "blocked", "repo_only", "partial", "not_tested"}
 
 # ── Two-pass redactor (mirrors docs/CONNECTOR_SANITIZATION_RULES.md) ──
 PRESERVE_LABELS = {
@@ -157,6 +161,14 @@ def truncate(text, cap):
     if cut < cap // 2:
         cut = cap
     return text[:cut].rstrip() + "…"
+
+def as_clean_str(value, cap, fallback=""):
+    if value is None:
+        return fallback
+    return redact(truncate(str(value), cap) or fallback)
+
+def as_bool(value):
+    return value is True
 
 # ── Lane-status detection ladder ──────────────────────────────────────
 SHELL_PROMPT_RE = re.compile(r"(?:\$|%|>|#|❯)\s*$")
@@ -346,6 +358,96 @@ def load_latest_agent_status():
     rows.sort(key=lambda r: r["updatedAt"], reverse=True)
     return rows[0] if rows else None
 
+# ── Agent QA result ingest ────────────────────────────────────────────
+# scripts/bridge-agent-qa.mjs writes data/agent-status/lanes/agent_qa_result.json.
+# The bridge carries the latest result inside connector_handoff so
+# MCP can expose release-gate state without a new Supabase table.
+
+AGENT_QA_PATH = os.path.join(OUT_DIR, "agent_qa_result.json")
+
+def _qa_result_status(value):
+    v = str(value or "not_tested")
+    return v if v in AGENT_QA_RESULT_STATUSES else "not_tested"
+
+def load_agent_qa_result():
+    if not os.path.exists(AGENT_QA_PATH):
+        return None
+    try:
+        with open(AGENT_QA_PATH) as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+
+    status = str(data.get("status") or "repo_only")
+    gate = str(data.get("gate") or "general")
+    platform = str(data.get("platform") or "repo")
+    if status not in AGENT_QA_STATUSES:
+        status = "repo_only"
+    if gate not in AGENT_QA_GATES:
+        gate = "general"
+    if platform not in AGENT_QA_PLATFORMS:
+        platform = "repo"
+
+    installed = data.get("installedBuild") if isinstance(data.get("installedBuild"), dict) else {}
+    repo = data.get("repo") if isinstance(data.get("repo"), dict) else {}
+    results = data.get("results") if isinstance(data.get("results"), dict) else {}
+    release_gate = data.get("releaseGate") if isinstance(data.get("releaseGate"), dict) else {}
+    evidence = data.get("evidence") if isinstance(data.get("evidence"), dict) else {}
+    fixes_raw = data.get("requiredFixes") if isinstance(data.get("requiredFixes"), list) else []
+    screenshots_raw = evidence.get("screenshotRefs") if isinstance(evidence.get("screenshotRefs"), list) else []
+
+    created_at = as_clean_str(data.get("createdAt"), 24, now_iso)
+    updated_at = as_clean_str(data.get("updatedAt"), 24, created_at)
+    short = as_clean_str(repo.get("shortHead") or short_head or "unknown", 12, "unknown")
+    if not re.match(r"^[0-9a-f]{7,12}$", short):
+        short = short_head or "unknown"
+
+    return {
+        "schemaVersion": 1,
+        "qaRunId": as_clean_str(data.get("qaRunId"), 80, f"agent-qa-{updated_at}"),
+        "sourceAgent": as_clean_str(data.get("sourceAgent"), 80, "agent"),
+        "createdAt": created_at,
+        "updatedAt": updated_at,
+        "status": status,
+        "gate": gate,
+        "platform": platform,
+        "deviceName": as_clean_str(data.get("deviceName"), 120, "") or None,
+        "installedBuild": {
+            "iosBuildNumber": as_clean_str(installed.get("iosBuildNumber"), 20, "") or None,
+            "androidVersionCode": installed.get("androidVersionCode") if isinstance(installed.get("androidVersionCode"), int) else None,
+            "appVersion": as_clean_str(installed.get("appVersion"), 40, "") or None,
+            "channel": as_clean_str(installed.get("channel"), 80, "") or None,
+            "track": as_clean_str(installed.get("track"), 80, "") or None,
+        },
+        "repo": {
+            "branch": as_clean_str(repo.get("branch"), 80, "main"),
+            "shortHead": short,
+        },
+        "results": {
+            "healthManageSources": _qa_result_status(results.get("healthManageSources")),
+            "androidHealthConnect": _qa_result_status(results.get("androidHealthConnect")),
+            "iosAppleHealth": _qa_result_status(results.get("iosAppleHealth")),
+            "grapplingReadiness": _qa_result_status(results.get("grapplingReadiness")),
+            "adminControlCentre": _qa_result_status(results.get("adminControlCentre")),
+            "copyTruthfulness": _qa_result_status(results.get("copyTruthfulness")),
+            "uiDensity": _qa_result_status(results.get("uiDensity")),
+        },
+        "releaseGate": {
+            "newTestFlightAllowed": as_bool(release_gate.get("newTestFlightAllowed")),
+            "newAndroidBuildAllowed": as_bool(release_gate.get("newAndroidBuildAllowed")),
+            "reason": as_clean_str(release_gate.get("reason"), 280, "No installed-device QA gate has been cleared."),
+        },
+        "requiredFixes": [as_clean_str(x, 200, "") for x in fixes_raw[:20] if as_clean_str(x, 200, "")],
+        "evidence": {
+            "screenshotRefs": [as_clean_str(x, 160, "") for x in screenshots_raw[:10] if as_clean_str(x, 160, "")],
+            "notes": as_clean_str(evidence.get("notes"), 1000, ""),
+        },
+        "publicSummary": as_clean_str(data.get("publicSummary"), 280, f"{status} QA for {gate} on {platform}."),
+        "privateDetails": as_clean_str(data.get("privateDetails"), 2000, "") or None,
+    }
+
 # ── Build payload ─────────────────────────────────────────────────────
 CAP_SUMMARY = 1200
 SUMMARY_TAIL_LINES = 12
@@ -426,6 +528,7 @@ coder_lanes_payload = {
 # ── terminal_summary ──────────────────────────────────────────────────
 terminal_entries = load_terminal_entries()
 latest_agent_status = load_latest_agent_status()
+agent_qa_result = load_agent_qa_result()
 terminal_summary_payload = {
     "schemaVersion": 1,
     "generatedAt": now_iso,
@@ -454,6 +557,7 @@ handoff_payload = {
     "safeToBuild": False,
     "safeToBuildReason":
         "Bridge-derived handoff. Owner has not flipped safeToBuild=true via the in-app Admin/Dev surface.",
+    "agentQaResult": agent_qa_result,
 }
 
 # Defense-in-depth: redact every string in the bridge-derived payloads.
@@ -499,6 +603,8 @@ for row in rows:
     )
 print(f"wrote {terminal_path} (entries={len(terminal_entries)})")
 print(f"wrote {handoff_path}")
+if agent_qa_result:
+    print(f"  agent_qa_result={agent_qa_result['status']} gate={agent_qa_result['gate']} platform={agent_qa_result['platform']}")
 
 # ── Optional Supabase upsert (gated on env vars) ──────────────────────
 # Bridge stays local-only unless SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY
