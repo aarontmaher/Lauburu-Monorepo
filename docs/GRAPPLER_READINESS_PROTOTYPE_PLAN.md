@@ -56,6 +56,128 @@ This positioning supersedes any earlier framing in
 `docs/APP_DEVELOPMENTS.md` Priority 2 that treated WHOOP Direct
 or Polar AccessLink as health-MVP gates. They aren't.
 
+## Evidence input roadmap (v1 / v2 / v3)
+
+Updated 2026-05-08 against
+`CLAUDE-PARALLEL-PRIORITY-SYNC-READINESS-AUTOMATION-01`. The
+readiness compute is the core product (see § "Grappling
+Readiness is the core health product" above). Direct vendor
+integrations (WHOOP, Polar AccessLink) have been removed from
+the v1 AND v2 critical paths — they only return as v3
+optional enrichment if the readiness compute proves
+inaccurate from the inputs below. **Do not let any direct
+integration be a shipping gate for readiness.**
+
+### v1 — ships against this set
+
+Already live or shipping in current Codex batches. Aaron's
+testers have these on their devices today.
+
+| Input | Source | Status | Notes |
+|---|---|---|---|
+| Sleep duration | Apple Health / Health Connect `SleepSessionRecord` | live | hub-fed; provenance per § 3.3 of `HEALTH_BACKEND_CONTRACT_FOR_CODEX.md` |
+| Resting HR | hub `RestingHeartRateRecord` | live | hub-fed |
+| HRV (RMSSD) when present | hub `HeartRateVariabilityRmssdRecord` | live (best-effort) | feeds `autonomic` bucket when source supplies; never synthesised |
+| Workouts / training sessions | hub `WorkoutRecord` / `ExerciseSessionRecord` + Lauburu `TrainingSession` | live | feeds `load` bucket |
+| Manual training log | Lauburu `TrainingSession` schema | live | direct user input; truth label `live` (manual) |
+| Subjective check-in | Lauburu `NextDayCheckin` sliders | partial (Batch B extends) | feeds `subjective` bucket; bucket null when not entered |
+| Hub-fed wearable data | WHOOP / Polar / Garmin / Concept2 / ErgZone via Apple Health or Health Connect | live | provenance-labeled "{Vendor} via {Hub}"; NEVER relabeled as direct |
+
+Confidence ceiling for v1 reads: `low` (per § "Confidence
+labels in v1"). `medium` reserved for v2+; `high` never returned
+by prototype.
+
+### v2 — next ladder, gated on v1 stability
+
+Each v2 input is its own FS-XXX candidate; coders may build
+in parallel because the surfaces don't overlap. NONE depends
+on FS-008 (WHOOP Direct) or FS-012 (Polar AccessLink).
+
+| Input | FS | What it adds | Source data path | Status |
+|---|---|---|---|---|
+| Daily journal / Apple-Notes-style check-in | FS-016 | free-text evidence; mood / soreness / context narrative; never a readiness input but informs Why bullets | new mobile UI + per-user storage; redactor extension on any MCP-bound field | planned |
+| Blood test uploads | FS-015 | PDF / screenshot / manual headline numbers; quarterly evidence | `manual_imports` table + parser stub; "context only — not medical advice" caption | planned |
+| DEXA scan uploads | FS-015 | quarterly body-composition evidence | same upload path as blood test | planned |
+| HIIT / conditioning hub-fed | (FS-007 + FS-010 audit aligned) | rower / ergometer / bike sessions written to Apple Health / Health Connect by ErgData / ErgZone / Concept2 logbook / Strava / TrainingPeaks / Intervals.icu | hub `WorkoutRecord` / `ExerciseSessionRecord` provenance | partial (hub path live; needs label hygiene) |
+| Body-composition scale (hub-fed) | new — FS-017 | Withings / Garmin Index / Renpho when scale writes to Apple Health / Health Connect | hub `WeightRecord` + `BodyFatRecord` + `LeanBodyMassRecord` | planned |
+| Vendor file imports (FIT / TCX / CSV) | FS-014 | training sessions from devices that don't write to a hub | `manual_imports` upload path; truth label `imported summary`; **NEVER readiness input** | planned |
+| Subjective slider extensions | (Batch B + C of standing top-5) | soreness / mood / perceived fatigue / drilling-vs-live ratio | extend `NextDayCheckin` + `TrainingSession` schemas | planned |
+
+v2 confidence ceiling per source: `low` for hub-fed and
+manual; `medium` only for hub-fed + ≥7 days clean overlap
+with manual subjective layer.
+
+### v3 — research-gated; no implementation until proof
+
+These inputs ship ONLY after a proven-device research pass
+demonstrates that the data is reliable and that adding it to
+the readiness compute meaningfully improves accuracy versus
+v1+v2. No coder writes implementation against any v3 input
+until that research lands as a doc commit + Aaron approval.
+
+| Input | What it offers | Proof required before any code |
+|---|---|---|
+| Direct machine data — Rogue Echo Bike | per-second power / cadence / HR during machine-bound sessions | Rogue API exists? Is BLE characteristic exposed? Aaron tester has the device? Does adding the data change readiness output materially vs hub-fed workout summary? |
+| Direct machine data — other Rogue equipment (Echo Rower etc.) | same | same; per-device research pass |
+| Bluetooth / hub-fed body-composition scales (Withings, Garmin Index, Renpho) — DIRECT path | weight / fat % / muscle / water | only if hub path (v2) demonstrates a gap that direct vendor API would fix; otherwise stay hub-fed |
+| Bluetooth spirometry — Airofit | respiratory training metrics; airflow / load / session count | Airofit exposes BLE GATT or vendor SDK? values are clinically reliable for daily readiness signal, not just sales metric? Aaron tester has the device? |
+| Bluetooth nasal spirometry / similar respiratory devices | airway dynamics; breath rate variance | same proven-device gate as Airofit |
+| Direct WHOOP / Polar (FS-008 / FS-012) | richer recovery / HRV detail | only revisited if v1 + v2 readings prove inaccurate vs Aaron's subjective experience over ≥4 weeks |
+| Other improvements to readiness accuracy | TBD | any new input enters at v3 with the same proof gate; no auto-promotion to v1 / v2 |
+
+### Proven-device gate
+
+For any v3 input that requires Aaron to own / test a specific
+device, the gate is:
+
+1. Aaron owns or borrows the device for a tester pass.
+2. Coder writes a research doc (`docs/RESEARCH_<DEVICE>.md`)
+   showing: vendor data path, BLE characteristics if relevant,
+   reliability / signal-to-noise observation, comparison to
+   the v1 / v2 input it would replace or augment.
+3. Agent reviews; Aaron approves the research as worth
+   implementation work.
+4. Only then does an FS-XXX candidate get written and an
+   implementation bundle scoped.
+
+No coder is asked to implement any v3 input as scope for
+"just in case". Implementation work follows proof, not
+speculation.
+
+### Codex implementation bundles — parallel-runnable
+
+These bundles can run simultaneously without lane collision
+(rule 2). Each is a separate `PROMPT-ID` for the next
+overnight or paired-up batch. Coders MUST claim only one
+bundle per session.
+
+| Bundle | Lane / scope | Files / surfaces | Anti-overlap |
+|---|---|---|---|
+| **B1: Hub-first v1 prototype card** | mobile UI + service | `apps/mobile/app/(tabs)/health.tsx`, `apps/mobile/src/components/Readiness*`, `apps/mobile/src/services/health-source-ui.ts` | does NOT touch journal / blood / scale storage |
+| **B2: Daily journal upload** | mobile UI + per-user storage | new `JournalEntry` schema, journal-only mobile screen, redactor extension | does NOT touch readiness card |
+| **B3: Blood test + DEXA upload UI** | mobile UI + `manual_imports` parser stub | upload screen, "context only" caption rendering, PDF / image picker | does NOT touch journal / readiness |
+| **B4: NextDayCheckin slider extension (Batch B)** | schema + mobile sliders | `store/training-store.ts` schema; `NextDayCheckinScreen.tsx` | does NOT touch readiness card or upload UIs |
+| **B5: TrainingSession schema extension (Batch C)** | schema + session-log UI | `store/training-store.ts` `TrainingSession` shape; session log entry surfaces | does NOT touch B4's slider work; only the session schema |
+| **B6: Health-source label hygiene Phase 1** | mobile copy patches | the five files in CODEX-HEALTH-NUTRITION-AUDIT-MOBILE-PHASE-1-LABELS-01 | already in flight via prior commits; do not re-dispatch unless flagged |
+| **B7: Hub-fed body-composition scale audit** | docs + mobile read path | `WeightRecord` provenance label rendering | does NOT touch any other bundle |
+
+Three to four of these CAN run in parallel because the file
+sets are disjoint. B1 + B2 + B4 are the natural first wave;
+B3 + B5 + B7 the second wave. B6 is filler that can land
+anywhere because it's copy-only.
+
+### What's explicitly NOT part of v1 / v2
+
+- **WHOOP Direct OAuth migration (FS-008)** — moved to v3
+  research-gated. No v1 / v2 work touches this.
+- **Polar AccessLink (FS-012)** — moved to v3 research-gated.
+- **Bluetooth HR sensor as readiness input (FS-013)** — never;
+  Train-session lane only.
+- **Direct machine data (Rogue, etc.)** — v3 research-gated.
+- **Spirometry (Airofit, nasal)** — v3 research-gated.
+- **Body-composition scale via direct vendor API** — only if
+  hub path proves insufficient; v3 research-gated.
+
 ## Priority — v1 is hub-first
 
 Updated 2026-05-07 against

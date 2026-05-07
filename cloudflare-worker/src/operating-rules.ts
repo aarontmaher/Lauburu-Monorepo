@@ -7,7 +7,7 @@
  *
  * Edit policy: changing this constant requires a paired edit to
  * docs/OPERATING_RULES.md in the same commit. The live integration
- * test asserts count = 13 + each rule's id stays stable. Any
+ * test asserts count = 14 + each rule's id stays stable. Any
  * promotion / demotion / reorder is a Lane-3 batch with explicit
  * Aaron approval per docs/BACKLOG_AUTOMATION_SYSTEM.md § Lane 3.
  */
@@ -96,6 +96,12 @@ export const OPERATING_RULES: readonly OperatingRule[] = [
     title: 'Clear steps; automate first',
     body:
       'When something is required, the worker MUST give Aaron clear step-by-step instructions and automate the step whenever it is safe. Claude / Codex / Agent should be used wherever possible before asking Aaron to act. Aaron should only do secrets, approvals, logins, 2FA, vendor dashboards, or safety-sensitive confirmations. Every output that names follow-up work MUST separate three sections: "automated by coder/agent", "manual Aaron step", and "blocked until Aaron acts". No EAS build may be requested, recommended, prepared, or triggered unless Agent confirms worthwhile on-device testing AND Aaron explicitly approves. Asking Aaron to run a laptop command that a coder can safely run is a workflow bug; the coder runs it, automates it, or reports the exact safety blocker.',
+  },
+  {
+    id: 14,
+    title: 'Parallel priorities stay active',
+    body:
+      'Focused product work (e.g. Grappling Readiness) MUST NOT cause neglect of other active workstreams. The standing parallel priorities are: (a) MCP writeback / no-screenshot workflow, (b) Admin/Dev phone control centre, (c) idle notifications for Claude / Codex / Agent, (d) full automation of laptop commands per rule 12, (e) health input expansion (journal, blood test, DEXA, body composition, spirometry, conditioning machine data, etc.). Coders / Agent MUST surface progress on each parallel priority in every status report — at minimum a one-line freshness note ("MCP writeback: rule 12 cadence holding"), a flag if a parallel priority has gone unmoved for >7 days, and a suggestion for the next safe sub-batch. Pausing a parallel priority requires an explicit Aaron decision recorded in docs/APP_DEVELOPMENTS.md priority order, never a silent drift.',
   },
 ] as const;
 

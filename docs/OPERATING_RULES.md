@@ -13,7 +13,12 @@ to start it. **Rule 12** then governs WHO runs the laptop
 commands — coders do, Aaron approves from phone. **Rule 13**
 then governs HOW required Aaron-facing steps are presented:
 clear steps first, automate before asking Aaron, and separate
-coder/agent automation from true manual owner action.
+coder/agent automation from true manual owner action. **Rule
+14** then governs how multiple workstreams co-exist: parallel
+priorities stay active in every status report — focused
+readiness work must not silently starve MCP writeback, phone
+control centre, idle notifications, automation, or health
+input expansion.
 
 This doc is the source of truth. The Worker constant in
 `cloudflare-worker/src/operating-rules.ts` is the **mirror** —
@@ -23,7 +28,7 @@ hash of the rule strings).
 
 Updated 2026-05-07.
 
-## The thirteen rules
+## The fourteen rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -122,6 +127,23 @@ this file.
     acts`. No EAS build may be requested, recommended, prepared, or
     triggered unless Agent confirms worthwhile on-device testing
     and Aaron explicitly approves.
+14. **Parallel priorities stay active.** Focused product work
+    (e.g. Grappling Readiness) MUST NOT cause neglect of other
+    active workstreams. The standing parallel priorities are:
+    (a) MCP writeback / no-screenshot workflow,
+    (b) Admin/Dev phone control centre,
+    (c) idle notifications for Claude / Codex / Agent,
+    (d) full automation of laptop commands per rule 12,
+    (e) health input expansion (journal, blood test, DEXA, body
+    composition, spirometry, conditioning machine data, etc.).
+    Coders / Agent MUST surface progress on each parallel priority
+    in every status report — at minimum a one-line freshness
+    note ("MCP writeback: rule 12 cadence holding"), a flag if
+    a parallel priority has gone unmoved for >7 days, and a
+    suggestion for the next safe sub-batch. Pausing a parallel
+    priority requires an explicit Aaron decision recorded in
+    `docs/APP_DEVELOPMENTS.md` priority order, never a silent
+    drift.
 
 ## Where to find each rule's full body
 
@@ -140,13 +162,14 @@ this file.
 | 11 | `docs/MCP_CANONICAL_STATE.md` (canonical paths); `docs/MCP_PHONE_CONTROL_CENTRE.md` (curl examples); `docs/CHATGPT_CONNECTOR_SETUP.md` (recommended connector) |
 | 12 | `docs/PHONE_ONLY_AUTOMATION_PLAN.md` (workflow + remaining manual Aaron steps); `docs/CODER_LAPTOP_COMMANDS.md` (full command list + cadence) |
 | 13 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Clear steps; automate first"; `docs/PHONE_ONLY_AUTOMATION_PLAN.md` § "Remaining manual Aaron steps" |
+| 14 | `docs/APP_DEVELOPMENTS.md` § "Active priority order" (parallel-priority list); `docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md` § "Evidence input roadmap (v1 / v2 / v3)" (workstream parallelism for readiness inputs) |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..13], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..14], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.
@@ -162,7 +185,7 @@ integration test will flag.
   Lane-3 batch (`docs/BACKLOG_AUTOMATION_SYSTEM.md` § Lane 3)
   with Aaron's written approval.
 - **No surfacing the rules without ID.** Every rule has a
-  stable id 1..13; consumers reference rules by id, not by
+  stable id 1..14; consumers reference rules by id, not by
   string match.
 - **No moving rule text into private surfaces.** These rules
   are public-safe by design — they describe coder discipline,
