@@ -172,7 +172,7 @@ FS-016 | (awaiting Aaron approval)
 FS-017 | (awaiting Aaron approval)
 FS-018 | 2026-05-08 approved by Aaron — dispatched CODEX-CUSTOM-JOURNAL-V1-SCHEMA-AND-UI-01 to codex-lauburu pane
 FS-019 | approved_active 2026-05-08 Aaron — note: native iPhone/TestFlight automation controls are the top active mobile priority above P1/P2.
-FS-020 | (awaiting Aaron approval — extends FS-018; spec at docs/JOURNAL_IMPORT_NORMALIZE_INSIGHTS_SPEC.md; first dispatchable batch is B-20a + B-20b paired Worker dictionary + Supabase migration)
+FS-020 | 2026-05-08 approved by Aaron — dispatched CODEX-FS020-JOURNAL-IMPORT-SCHEMA-AND-DICTIONARY-01 (B-20a + B-20b paired) to codex-lauburu pane
 ```
 
 When Aaron approves an item, the line becomes:
