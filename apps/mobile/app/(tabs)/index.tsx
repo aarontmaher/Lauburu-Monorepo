@@ -59,7 +59,7 @@ function GuestBanner() {
             backgroundColor: '#d4e157',
             alignItems: 'center',
           }}
-          onPress={() => router.push({ pathname: '/(tabs)/settings', params: { auth: 'sign_up' } })}>
+          onPress={() => router.push({ pathname: '/settings', params: { auth: 'sign_up' } })}>
           <Text style={{ color: '#0b0b0b', fontWeight: '700', fontSize: 14 }}>Create account</Text>
         </Pressable>
         <Pressable
@@ -72,7 +72,7 @@ function GuestBanner() {
             borderColor: 'rgba(255,255,255,0.16)',
             alignItems: 'center',
           }}
-          onPress={() => router.push({ pathname: '/(tabs)/settings', params: { auth: 'sign_in' } })}>
+          onPress={() => router.push({ pathname: '/settings', params: { auth: 'sign_in' } })}>
           <Text style={{ color: '#f5f7f9', fontWeight: '700', fontSize: 14 }}>Sign in</Text>
         </Pressable>
       </View>
