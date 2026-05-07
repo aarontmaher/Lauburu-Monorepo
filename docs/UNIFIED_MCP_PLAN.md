@@ -737,3 +737,118 @@ explicitly approves the retirement.
       those credentials.
 - [ ] Aaron explicitly approves retirement after reviewing the
       live test results and uniqueness audit.
+
+## 15. End-to-end MCP write/read contract
+
+Updated 2026-05-07 against
+`CLAUDE-MCP-UNIFICATION-SPEC-04`. Closes the question
+"why does Codex see fresh state via project.get_work_status
+but cannot itself update it from /mcp/v2?" by codifying the
+symmetric write path that has been intentionally absent until
+now.
+
+### 15.1 The symmetry promise
+
+Every readable canonical-store field MUST have exactly one
+canonical writer. The reader and writer MUST agree on:
+
+1. **Backing table** — `connector_work_status`,
+   `connector_coder_lanes`, `connector_handoff`,
+   `connector_build_status`, `connector_manual_steps`,
+   `connector_backlog_items`, `connector_terminal_summary`.
+2. **Payload shape** — JSON Schema lives next to the writer in
+   `cloudflare-worker/src/types/connector.ts` (for paths
+   exposed via the worker) and in `chat-app/src/server/types/connector.ts`
+   (for paths owned by the bridge). Both files mirror each
+   other and are checked by a contract test.
+3. **Freshness contract** — every write touches `generated_at`
+   AND `updated_at`. Every read computes `freshness` against
+   the same 10-min window
+   (`FRESHNESS_WINDOW_MS_V2 = 10 * 60 * 1000`).
+4. **Source enum** — every write records `source` (a short
+   actor tag like `'health-mcp-unblock-p1'` or
+   `'codex-handoff'`). Reads pass `source` through unchanged.
+5. **Auth model** — see § 15.2.
+
+### 15.2 Auth model: public read, admin/service write
+
+| Operation | Surface | Auth | Examples |
+|---|---|---|---|
+| Read (public) | `/mcp/v2 project.get_*`, `/mcp/v2 mobile.get_*_overview`, `/mcp/v2 handoff.get_latest`, `/mcp/v2 integrations.get_overview`, `/mcp/v2 project.get_operating_rules` | **No Auth** | sanitised; `≤140 char` text fields; no prompt IDs / file paths / tokens; canonical freshness envelope. |
+| Read (admin) | `/mcp/v2 mobile.get_<full>`, `/api/control_centre`, `/api/work_status`, `/api/coder_lanes`, `/api/build_status`, `/api/handoff`, `/api/terminal_summary`, `/api/manual_steps`, `/api/backlog_items` | `x-athlete-memory-token` OR `Authorization: Bearer <ATHLETE_MEMORY_API_TOKEN>` | full payload; admin-only fields included. |
+| Write (admin) — **NEW, planned** | `/mcp/v2 mobile.update_work_status`, `/mcp/v2 mobile.update_lane_status`, `/mcp/v2 mobile.update_handoff`, `/mcp/v2 mobile.update_build_status`, `/mcp/v2 mobile.append_terminal_summary` | `x-athlete-memory-token` OR `Authorization: Bearer` | symmetric admin writers; same auth gate as admin reads. **Not shipped yet — see § 15.4 ship gate.** |
+| Write (service) | direct Supabase write to `connector_*` tables; Supabase MCP `execute_sql` | service role key; Supabase MCP credentials | what the bridge / coder script / Aaron uses today. Stays the canonical writer regardless of whether 15.4 ships. |
+| Write (public) | (none) | — | **Decision: no public-write tool will ever be added.** Public connectors are No-Auth; a public writer would lack the per-actor identity needed for spam protection / ownership tagging. If ChatGPT-from-chat write is desired, the user adds the admin token via a private connector. |
+
+### 15.3 Tool-pair contract per resource
+
+Each pair MUST satisfy:
+
+```
+read_tool.payload == write_tool.input.payload  (same shape)
+read_tool.freshness.updatedAt == write_tool.row.updated_at  (post-write)
+read_tool.source == write_tool.input.source  (post-write)
+```
+
+Initial tool-pair set (only the pairs with a real bridge user
+ship; the rest stay listed-but-unimplemented):
+
+| Resource | Read tool | Write tool | Status |
+|---|---|---|---|
+| WorkStatus | `mobile.get_work_status` (admin) / `project.get_work_status` (public, sanitised) | `mobile.update_work_status` (admin) | read live. write planned, ship gate § 15.4. |
+| CoderLanes | `mobile.get_coder_lanes` (admin) / `mobile.get_lane_overview` (public, counts) | `mobile.update_lane_status` (admin, `lane_id` required) | read live. write planned. |
+| Handoff | `mobile.get_handoff` (admin) / `handoff.get_latest` (public) | `mobile.update_handoff` (admin) | read live. write planned. |
+| BuildStatus | `mobile.get_build_status` (admin) / `mobile.get_build_overview` (public, counts) | `mobile.update_build_status` (admin) | read live. write planned. |
+| TerminalSummary | `mobile.get_terminal_summary` (admin) | `mobile.append_terminal_summary` (admin, append-only) | read live. write planned. |
+
+**Out of scope (read-only, no write tool ever):**
+`integrations.get_overview`, `project.get_operating_rules`,
+`project.list_priorities`, `project.get_overview`,
+`project.get_current_state`. These are **composed reads** off
+multiple backing rows; their canonical writers are the
+underlying tool-pairs above.
+
+### 15.4 Write-tool ship gate
+
+`mobile.update_*` tools ship together as one batch. The gate
+(do NOT ship piecemeal):
+
+- [ ] Contract test asserts shape symmetry per pair (read
+      output ⊇ write input payload, freshness round-trips).
+- [ ] Rate limit per token (10 writes / minute / token).
+      Anything higher logs a warning and ages the token's
+      next slot.
+- [ ] Per-write audit row in a new
+      `connector_write_audit` Supabase table:
+      `(id, table_name, lane_id, source, actor_token_hash,
+      diff, generated_at)`. Token is hashed, never stored
+      plaintext.
+- [ ] Worker secret-scan tests assert no admin token leaks
+      into any tool response or error message.
+- [ ] Aaron explicitly approves the batch (rule 7: default
+      no build).
+- [ ] Documented in `docs/CHATGPT_CONNECTOR_SETUP.md` how a
+      power user supplies the admin token via a private
+      connector (without committing it).
+
+Until the gate clears, the canonical writer for status
+refresh stays the Supabase MCP `execute_sql` tool against
+the `connector_*` rows directly. Aaron / Claude / Codex use
+that path today. No partial write-tool batch lands.
+
+### 15.5 Anti-rules
+
+- **No No-Auth write tool.** Public-safe means read-only.
+- **No bypassing the audit table.** Every write through
+  `mobile.update_*` writes to `connector_write_audit` in the
+  same transaction as the row update.
+- **No token in error messages.** Any failure path that
+  references the presented token MUST hash it first.
+- **No client-side `update_*` calls from beginner mobile UI.**
+  Beginner UI is read-only against the canonical store. Any
+  veteran-only "promote source to live" or "mark lane
+  needs_review" affordance lives behind `isAdminEmail`.
+- **No promoting truth labels via write tool.** Truth-label
+  promotion (e.g. `seed/provisional` → `live`) requires an
+  Aaron-approved `approved_done` line in
+  `docs/FEEDBACK_SUGGESTIONS.md`, never a UI button.

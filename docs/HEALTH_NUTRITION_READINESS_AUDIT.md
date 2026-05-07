@@ -485,7 +485,9 @@ Floor below every batch in this doc. Mirrors lists in
 ### 6.1 Health + Nutrition MVP
 
 The MVP is "done" (in the Aaron-tested-on-device sense, NOT the
-coder-thinks-it-works sense) when ALL hold:
+coder-thinks-it-works sense) when ALL hold. Updated 2026-05-07
+against `CLAUDE-MCP-UNIFICATION-SPEC-04` to add a +1
+direct-integration gate AND a unified-MCP-state gate.
 
 1. **P0.1 + P0.2 + P0.3 verified.** Apple Health hub on Aaron's
    iPhone + Health Connect hub on girlfriend's Android each
@@ -494,21 +496,64 @@ coder-thinks-it-works sense) when ALL hold:
    audited and clean.
 2. **Missing data renders as "no data".** No fabricated zeros,
    no implicit fallbacks. Visible across at least one full day
-   per source on both devices.
+   per source on both devices. Strings come from
+   `docs/HEALTH_PROVISIONAL_AND_MISSINGNESS_COPY.md` § 2.
 3. **Nutrition card shows daily totals + targets + history**
    with no coaching language. Apple Health "Nutrition" types
    labelled `imported summary` from hub (when present).
+   Cronometer routing follows
+   `docs/CRONOMETER_IMPORT_FLOW.md` § 1 — hub-first, no direct
+   API.
 4. **WHOOP UI honest**: every WHOOP-related card / chip says
    `setup required` (until P1.1+P1.2 ship) or
    `seed/provisional` (within 7 days post-migration). Never
    `live` until P1.3 unblocks.
-5. **No Polar Direct / Polar AccessLink label anywhere.** Even
-   in admin-only diagnostic strings.
+5. **No Polar Direct / Polar AccessLink label anywhere** until
+   `docs/POLAR_ACCESSLINK_PLAN.md` § O.4 promotion conditions
+   hold. Even in admin-only diagnostic strings.
 6. **Friendly error UI** (commit `a036fd5`) ships in tester
    build for WHOOP / Polar disconnect-vs-no-data distinction.
+   Strings come from
+   `docs/HEALTH_PROVISIONAL_AND_MISSINGNESS_COPY.md` § 5.3.
 7. **Aaron + girlfriend both confirm in writing** that their
    Health tab is honest and useful for daily training. Recorded
    as `approved_done` against an FS-XXX candidate.
+8. **+1 direct integration live** beyond the two platform hubs
+   (Apple Health + Health Connect already covered by P0.1 /
+   P0.2). Acceptable options for the +1 gate, in priority
+   order:
+   - **WHOOP Direct** (1.4.a + 1.4.b) — preferred. Truth label
+     has crossed `seed/provisional` → `live` per
+     `docs/WHOOP_DIRECT_SETUP.md` § M.3 conditions
+     (≥7 days clean, daily readings, Aaron tester
+     confirmation, FS-008 `approved_done`).
+   - **WHOOP raw export** (1.4.c) — acceptable substitute if
+     Aaron defers FS-008. Truth label stays `imported
+     summary`; the gate is "user can upload an export and see
+     it surfaced with correct provenance".
+   - **Polar AccessLink** (1.5) — acceptable but late;
+     follows `docs/POLAR_ACCESSLINK_PLAN.md` outline once
+     scoped. Same `≥7 days clean` ladder as WHOOP.
+9. **Unified MCP state** — every consumer (ChatGPT
+   connector / mobile app admin/dev / control-centre) sees the
+   same canonical-store snapshot via the contract in
+   `docs/UNIFIED_MCP_PLAN.md` § 15:
+   - Public reads return identical priority / blocker / next
+     action across `project.get_current_state` /
+     `project.get_work_status` / `/api/control_centre`
+     (within the 10-min freshness window).
+   - Every `mobile.get_*` and `handoff.get_latest` v2 tool
+     surfaces the canonical `freshness` envelope shipped in
+     commit `8a393b7` (worker MUST be redeployed for this gate
+     to clear).
+   - Per-source health data exposed via `integrations.*`
+     respects the auth model in § 15.2: counts/aggregates
+     No-Auth, per-user metrics admin-token only. No personal
+     metric leaks via No-Auth.
+   - Aaron has confirmed in writing that ChatGPT, mobile
+     admin/dev, and control-centre all show the same answer
+     to "what is Claude / Codex doing now? what's blocked?"
+     when queried within ≤2 minutes of each other.
 
 ### 6.2 Grappler Readiness v1
 
