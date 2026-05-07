@@ -249,3 +249,82 @@ tier keeps the Stage 1–4 workflow exactly as-is.
 3. **Use Stage 4 (Quick capture) for two weeks** before
    considering Stage 5. If capture sticks, plan the bridge.
    If it doesn't, the bridge wouldn't have been used either.
+
+## Bridge writeback cadence — rule 12
+
+Updated 2026-05-07 against
+`CLAUDE-WRITEBACK-CADENCE-RULE-12-FINALIZE-01`. The bridge
+write path (`scripts/bridge-snapshot-lanes.sh` writing all
+four `connector_*` tables, plus
+`/mcp/v2 project.update_work_status`) was already live as of
+commit `9ce3fcf`. The remaining gap was operational cadence —
+nobody was running the bridge between meaningful units of
+work, so MCP drifted to `staleReason: 'no_writeback'` within
+the 10-min freshness window. Rule 12 closes that loop.
+
+### Trigger list
+
+The coder MUST refresh the canonical store at each of these
+moments. Each trigger fires `npm run bridge:snapshot` (or, if
+running mid-session without bridge access, an equivalent
+Supabase MCP write or `project.update_work_status` admin
+call):
+
+| Trigger | When it fires | What writes |
+|---|---|---|
+| **After task start** | Coder picks up a new prompt and has done the rule-11 MCP-first check | flip own lane to `working`, update `currentPriority` to the task title |
+| **After commit** | A `git commit` completes (any commit, not just terminal) | refresh `repoStatus.head` to the new SHA, lane summary to the commit message subject |
+| **After blocker** | Coder hits a genuine blocker (rule 6: "Agent-not-confirmed = investigate") | flip own lane to `blocked`, set `currentBlocker` with the reason, propose `nextAction` |
+| **After handoff** | Coder writes a handoff prompt for the other coder / Agent / Aaron | upsert `connector_handoff` payload + flip lane to `needs_review` if implementation-complete |
+
+Verify cadence with `npm run bridge:verify` whenever the
+freshness signal disagrees with what the coder believes is
+fresh.
+
+### Stale-fallback protocol
+
+If the cadence fails (Supabase unreachable, env var missing,
+worker not deployed), the coder follows rule 11's fallback:
+
+1. Say "MCP stale" in the report.
+2. Use terminal / control-centre output as the source of
+   truth for the next decision.
+3. Continue fixing canonical sync as a priority — investigate
+   why the bridge failed, fix it, retry. Aaron is NOT asked
+   to "check Supabase" or "look at the worker dashboard".
+
+### Mandatory coder report fields
+
+Every coder output (Claude / Codex / Agent) MUST include
+these three explicit fields at the top of the report. These
+are the terms of rule 12's writeback contract — they let
+Aaron see at a glance whether the canonical store reflects
+the work just claimed:
+
+```
+MCP update attempted: yes / no
+Bridge snapshot run:   yes / no
+Stale reason if blocked: <one of fresh | no_writeback | env_missing | unreachable | n/a>
+```
+
+If `MCP update attempted: no`, the coder MUST explain why in
+one line (e.g. "MCP update attempted: no — read-only audit, no
+state change to write"). Silence is not acceptable; the field
+is required even when the answer is "n/a".
+
+### Allowlisted commands
+
+The full coder-laptop allowlist lives in
+`docs/CODER_LAPTOP_COMMANDS.md`. The bridge-cadence subset is:
+
+- `npm run bridge:snapshot` — primary.
+- `npm run bridge:verify` — diagnostic when § 1 fails.
+- `npm run mcp:test:v2-live` — spot-check live shape after a
+  Worker change.
+- Supabase MCP `execute_sql` — fallback writer when the
+  bridge environment isn't reachable from the session.
+- `tools/call name="project.update_work_status"` against
+  `/mcp/v2` — single-agent flip; lighter than a snapshot.
+
+No new commands are added by this section. The cadence is the
+addition; the commands themselves are pre-existing.

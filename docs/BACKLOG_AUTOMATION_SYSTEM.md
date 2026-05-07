@@ -250,6 +250,48 @@ the app behaviour on the relevant screen/device, mark the item
 `repo_only`, `built`, `needs_review`, or `blocked` and keep it in
 the backlog.
 
+## Coder report contract — rule 12
+
+Updated 2026-05-07 against
+`CLAUDE-WRITEBACK-CADENCE-RULE-12-FINALIZE-01`. Every coder
+output (Claude / Codex / Agent) MUST open with the three
+explicit fields below. They make the canonical-store
+writeback discipline visible at a glance, so Aaron doesn't
+have to ask "did you actually update MCP?" between turns.
+
+```
+PROMPT-ID: <id>
+Status: DONE / PARTIAL / BLOCKED
+
+MCP update attempted: yes / no
+Bridge snapshot run:   yes / no
+Stale reason if blocked: fresh | no_writeback | env_missing | unreachable | n/a
+
+<existing report fields>
+```
+
+Field rules:
+
+- **MCP update attempted** — `yes` if any of `bridge:snapshot`,
+  `project.update_work_status`, or Supabase MCP `execute_sql`
+  ran with the intent of refreshing canonical state during
+  this session. `no` requires a one-line reason on the next
+  line (e.g. "no — read-only audit, no state change to
+  write").
+- **Bridge snapshot run** — `yes` if `npm run bridge:snapshot`
+  specifically ran and exited with code 0 during this session.
+  `no` covers everything else (didn't run, ran but failed, ran
+  via an alternative writer).
+- **Stale reason if blocked** — copy the
+  `freshness.staleReason` enum from the most recent
+  `project.get_current_state` reading. `n/a` is acceptable
+  only when the work is read-only and Aaron didn't ask about
+  freshness.
+
+These three fields are mandatory in every output, regardless
+of prompt size or scope. They override any older report
+template that omitted them.
+
 ## Agent role boundary
 
 Agent is an app UX audit worker only. Its job is to inspect normal

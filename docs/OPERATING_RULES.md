@@ -9,7 +9,8 @@ a tool exposed by the Worker MCP at
 **Read rule 11 first.** "MCP-first" means: before starting any
 new task, check the MCP / control-centre state. The other
 ten rules govern HOW the work is done; rule 11 governs WHEN
-to start it.
+to start it. **Rule 12** then governs WHO runs the laptop
+commands — coders do, Aaron approves from phone.
 
 This doc is the source of truth. The Worker constant in
 `cloudflare-worker/src/operating-rules.ts` is the **mirror** —
@@ -19,7 +20,7 @@ hash of the rule strings).
 
 Updated 2026-05-07.
 
-## The eleven rules
+## The twelve rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -86,6 +87,27 @@ this file.
     fixing MCP canonical sync as a priority. Never start from
     memory, Apple Notes, screenshots, or old docs unless the
     MCP / control-centre is unavailable.
+12. **Coders run all laptop commands; Aaron approves from
+    phone.** Aaron's role is approval, not execution. Coders
+    (Claude / Codex) run every laptop command in
+    `docs/CODER_LAPTOP_COMMANDS.md` — `npm run bridge:snapshot`,
+    `npm run bridge:verify`, `cd cloudflare-worker && npx tsc
+    --noEmit`, `cd cloudflare-worker && wrangler deploy`,
+    `git add` / `git commit` / `git push`, all live and
+    contract tests. Aaron NEVER runs typecheck, deploy,
+    bridge:snapshot, or git commands on a laptop. After every
+    meaningful unit of work, the coder MUST refresh the
+    canonical store via `bridge:snapshot` or
+    `project.update_work_status` so MCP doesn't drift to
+    `staleReason: 'no_writeback'`. The only steps that stay
+    on Aaron are listed in
+    `docs/PHONE_ONLY_AUTOMATION_PLAN.md` § 5: FS-XXX approval,
+    EAS build approval, tester-device verification,
+    vendor-console steps Aaron alone can do, judgement-call
+    decisions, "I tested this on my phone" health-source
+    confirmations, and pasting vendor secrets the one time
+    they get rotated. Anything else asked of Aaron is a
+    workflow bug — coder fixes the workflow.
 
 ## Where to find each rule's full body
 
@@ -102,13 +124,14 @@ this file.
 | 9 | `docs/POST_MCP_PRODUCT_LANES.md` Lane B; `docs/HEALTH_CONNECTIVITY_TRUTH_SPEC.md`; `docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md` |
 | 10 | `docs/APP_DEVELOPMENTS.md` (top); `docs/BACKLOG_AUTOMATION_SYSTEM.md` § Source of truth |
 | 11 | `docs/MCP_CANONICAL_STATE.md` (canonical paths); `docs/MCP_PHONE_CONTROL_CENTRE.md` (curl examples); `docs/CHATGPT_CONNECTOR_SETUP.md` (recommended connector) |
+| 12 | `docs/PHONE_ONLY_AUTOMATION_PLAN.md` (workflow + remaining manual Aaron steps); `docs/CODER_LAPTOP_COMMANDS.md` (full command list + cadence) |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..10], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..12], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.
@@ -124,7 +147,7 @@ integration test will flag.
   Lane-3 batch (`docs/BACKLOG_AUTOMATION_SYSTEM.md` § Lane 3)
   with Aaron's written approval.
 - **No surfacing the rules without ID.** Every rule has a
-  stable id 1..10; consumers reference rules by id, not by
+  stable id 1..12; consumers reference rules by id, not by
   string match.
 - **No moving rule text into private surfaces.** These rules
   are public-safe by design — they describe coder discipline,
