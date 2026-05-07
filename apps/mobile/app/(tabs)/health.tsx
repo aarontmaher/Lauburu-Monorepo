@@ -665,6 +665,7 @@ export default function HealthScreen() {
   // detail when debugging.
   const [sourceInfoOpen, setSourceInfoOpen] = useState(false);
   const [plannedContextOpen, setPlannedContextOpen] = useState(false);
+  const [advancedHealthOpen, setAdvancedHealthOpen] = useState(false);
   const permissions = useHealthStore((s) => s.permissions);
   const syncing = useHealthStore((s) => s.syncing);
   const lastSyncAt = useHealthStore((s) => s.lastSyncAt);
@@ -836,6 +837,13 @@ export default function HealthScreen() {
 
       {isExpoGo() && <ExpoGoNotice />}
 
+      {/* Nutrition is a daily workflow, so keep it directly below the
+          native source action. Recovery metrics and deeper history can
+          sit lower without making food logging hard to find. */}
+      <SafeErrorBoundary label="Nutrition card">
+        <NutritionCard />
+      </SafeErrorBoundary>
+
       {/* Source info — folded behind a dev-only collapsed disclosure. The
           platform-name + status pill, sync button, and no-data
           guidance all already exist on AppleHealthCard / HealthActions
@@ -983,15 +991,6 @@ export default function HealthScreen() {
         </SafeErrorBoundary>
       )}
 
-      {/* Nutrition — promoted here from the old mid-page slot so it's
-          discoverable right under the source/connection area. The card
-          exposes Search food / Barcode / Manual / Usual routine / AI
-          photo modes and feeds the merged nutrition summary + Coach
-          read-path on every add. */}
-      <SafeErrorBoundary label="Nutrition card">
-        <NutritionCard />
-      </SafeErrorBoundary>
-
       <SafeErrorBoundary label="Conditioning imports">
         <ConditioningImportsCard
           summaries={conditioningImports}
@@ -1045,32 +1044,52 @@ export default function HealthScreen() {
         </SafeErrorBoundary>
       )}
 
-      {/* 7-day trends */}
-      {features && (
-        <SafeErrorBoundary label="Trends card">
-          <TrendsCard features={features} />
-        </SafeErrorBoundary>
+      {(features || days.length > 0 || hasImportedHistory) && (
+        <View style={styles.card}>
+          <Pressable
+            style={styles.cardHeaderRow}
+            onPress={() => setAdvancedHealthOpen((v) => !v)}
+            accessibilityRole="button"
+            accessibilityLabel={advancedHealthOpen ? 'Hide advanced health details' : 'Show advanced health details'}>
+            <Text style={styles.cardTitle}>Advanced health details</Text>
+            <Text style={styles.importBadge}>{advancedHealthOpen ? 'Hide' : 'Show'}</Text>
+          </Pressable>
+          <Text style={styles.importSubtle}>
+            Trends, recent days, and import depth. Missing fields stay blank.
+          </Text>
+        </View>
       )}
 
-      {/* Backend sync now lives inside Manage health sources. */}
+      {advancedHealthOpen && (
+        <>
+          {/* 7-day trends */}
+          {features && (
+            <SafeErrorBoundary label="Trends card">
+              <TrendsCard features={features} />
+            </SafeErrorBoundary>
+          )}
 
-      {/* Recent days */}
-      {days.length > 0 && (
-        <SafeErrorBoundary label="Recent days card">
-          <RecentDays days={days} />
-        </SafeErrorBoundary>
-      )}
+          {/* Backend sync now lives inside Manage health sources. */}
 
-      {/* The old per-source status card was removed from the main tab.
-          The import-history summary stays visible without re-listing
-          every source-management action. */}
-      {hasImportedHistory && (
-        <SafeErrorBoundary label="Data sources history">
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Imported history</Text>
-            <DataSourcesHistorySummary />
-          </View>
-        </SafeErrorBoundary>
+          {/* Recent days */}
+          {days.length > 0 && (
+            <SafeErrorBoundary label="Recent days card">
+              <RecentDays days={days} />
+            </SafeErrorBoundary>
+          )}
+
+          {/* The old per-source status card was removed from the main tab.
+              The import-history summary stays visible without re-listing
+              every source-management action. */}
+          {hasImportedHistory && (
+            <SafeErrorBoundary label="Data sources history">
+              <View style={styles.card}>
+                <Text style={styles.cardTitle}>Imported history</Text>
+                <DataSourcesHistorySummary />
+              </View>
+            </SafeErrorBoundary>
+          )}
+        </>
       )}
     </ScrollView>
   );

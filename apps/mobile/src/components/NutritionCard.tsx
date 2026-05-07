@@ -92,6 +92,29 @@ function nutritionTargetSummary(targets: ReturnType<typeof useNutritionStore.get
     : 'Manual daily targets not set yet.';
 }
 
+function nutritionSourceState(source: NutritionSource | null): {
+  sourceText: string;
+  stateText: string;
+  stateTone: 'manual' | 'imported' | 'planned' | 'estimated' | 'mixed';
+} {
+  if (!source) {
+    return { sourceText: 'No nutrition logged', stateText: 'Manual entry available', stateTone: 'manual' };
+  }
+  if (source === 'manual') {
+    return { sourceText: 'Manual nutrition', stateText: 'Manual', stateTone: 'manual' };
+  }
+  if (source === 'barcode') {
+    return { sourceText: 'Product database', stateText: 'Imported lookup', stateTone: 'imported' };
+  }
+  if (source === 'ai_estimate' || source === 'ai_corrected') {
+    return { sourceText: 'AI estimate', stateText: source === 'ai_corrected' ? 'Reviewed estimate' : 'Provisional estimate', stateTone: 'estimated' };
+  }
+  if (source === 'apple_health' || source === 'health_connect' || source === 'imported' || source === 'mixed') {
+    return { sourceText: NUTRITION_SOURCE_LABELS[source], stateText: source === 'mixed' ? 'Mixed provenance' : 'Imported', stateTone: source === 'mixed' ? 'mixed' : 'imported' };
+  }
+  return { sourceText: NUTRITION_SOURCE_LABELS[source], stateText: 'Planned source', stateTone: 'planned' };
+}
+
 function MetricCell({
   label,
   value,
@@ -480,6 +503,13 @@ export function NutritionCard() {
       today.water_ml != null);
 
   const sourceLabel = today ? NUTRITION_SOURCE_LABELS[today.source] : null;
+  const sourceState = nutritionSourceState(today?.source ?? null);
+  const sourceChipToneStyle =
+    sourceState.stateTone === 'manual' ? styles.sourceChipManual
+      : sourceState.stateTone === 'imported' ? styles.sourceChipImported
+        : sourceState.stateTone === 'estimated' ? styles.sourceChipEstimated
+          : sourceState.stateTone === 'mixed' ? styles.sourceChipMixed
+            : styles.sourceChipPlanned;
   const targetSummary = nutritionTargetSummary(targets);
 
   return (
@@ -539,6 +569,12 @@ export function NutritionCard() {
       )}
 
       <View style={styles.truthPanel}>
+        <View style={styles.sourceChipRow}>
+          <Text style={[styles.sourceChip, sourceChipToneStyle]}>
+            {sourceState.stateText}
+          </Text>
+          <Text style={styles.sourceChipMuted}>{sourceState.sourceText}</Text>
+        </View>
         <Text style={styles.truthLine}>{targetSummary}</Text>
         <Text style={styles.truthLine}>
           Nutrition imports are not live yet. Cronometer and health-app nutrition reads stay planned until connected and verified.
@@ -1388,6 +1424,43 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.035)',
     gap: 3,
   },
+  sourceChipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 2,
+  },
+  sourceChip: {
+    fontSize: 10,
+    fontWeight: '700',
+    paddingVertical: 3,
+    paddingHorizontal: 7,
+    borderRadius: 999,
+    overflow: 'hidden',
+    textTransform: 'uppercase',
+  },
+  sourceChipManual: {
+    color: '#d4e157',
+    backgroundColor: 'rgba(212,225,87,0.12)',
+  },
+  sourceChipImported: {
+    color: '#4ade80',
+    backgroundColor: 'rgba(74,222,128,0.12)',
+  },
+  sourceChipEstimated: {
+    color: '#ffa500',
+    backgroundColor: 'rgba(255,165,0,0.12)',
+  },
+  sourceChipMixed: {
+    color: '#9ad7ff',
+    backgroundColor: 'rgba(154,215,255,0.12)',
+  },
+  sourceChipPlanned: {
+    color: '#999',
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  sourceChipMuted: { fontSize: 11, opacity: 0.58 },
   truthLine: { fontSize: 11, opacity: 0.58, lineHeight: 15 },
   editBtn: {
     paddingVertical: 6,

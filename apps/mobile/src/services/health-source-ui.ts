@@ -68,7 +68,7 @@ export function getReadinessSeedBadge(input: {
   const confidence = input.confidenceLevel ? `${input.confidenceLevel} confidence` : 'directional';
   return {
     label: 'Seed',
-    note: `Provisional ${confidence}. Connect verified sources before treating readiness as a strong signal.`,
+    note: `Provisional ${confidence}. Connect verified sources before relying on readiness.`,
     provisional: true,
   };
 }

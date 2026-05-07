@@ -2422,7 +2422,7 @@ function WhoopCsvRowInner() {
             </View>
             <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
               <Text style={styles.sourceMeta}>
-                {'WHOOP app → Settings → Your Data → Export Data → download the zip → unzip on your phone (Files app) → open one CSV at a time → Select All → Copy → come back here and paste. The .zip picker is temporarily disabled (native crash on the current build); the next EAS build will re-enable it. Supported domains auto-detected: recoveries, sleeps, workouts, cycles. Optional · historical context for Readiness · not required for normal sync.'}
+                {'WHOOP app → Settings → Your Data → Export Data → download the zip → unzip on your phone (Files app) → open one CSV at a time → Select All → Copy → come back here and paste. The .zip picker is temporarily disabled on the current build; a future approved build can re-enable it. Supported domains auto-detected: recoveries, sleeps, workouts, cycles. Optional historical context only · not required for normal sync.'}
               </Text>
 
               {!ENABLE_WHOOP_FILE_PICKER && (
