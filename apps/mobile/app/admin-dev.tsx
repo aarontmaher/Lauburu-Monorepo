@@ -1991,6 +1991,7 @@ function WorkflowTriggerButton({
   disabledReason?: string;
 }) {
   const [busy, setBusy] = useState(false);
+  const showDispatchButton = __DEV__ === true;
   const onPress = useCallback(() => {
     if (!enabled || busy) return;
     Alert.alert(
@@ -2035,6 +2036,15 @@ function WorkflowTriggerButton({
       ],
     );
   }, [id, label, enabled, busy, inputs, confirmCopy]);
+  if (!showDispatchButton) {
+    return (
+      <View style={{ gap: 2 }}>
+        <Text style={styles.note}>
+          Dispatch button hidden in production builds until FS-019 (per-user JWT auth) lands.
+        </Text>
+      </View>
+    );
+  }
   const dimmed = !enabled || busy;
   return (
     <View style={{ gap: 2 }}>
