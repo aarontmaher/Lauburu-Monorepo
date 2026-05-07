@@ -7,6 +7,10 @@ const ROOT = path.resolve(new URL('..', import.meta.url).pathname);
 const TMP_ROOT = path.join(ROOT, 'tmp', 'qa-screenshots');
 const strict = process.argv.includes('--strict');
 const noScreenshot = process.argv.includes('--no-screenshot');
+const APP_START_COMMAND = 'cd apps/mobile && npx expo start --dev-client';
+const IOS_SIMULATOR_OPEN_COMMAND = 'open -a Simulator';
+const IOS_APP_RUN_COMMAND = 'cd apps/mobile && npx expo run:ios';
+const ROUTE_SMOKE_COMMAND = 'node scripts/mobile-route-smoke.mjs --strict';
 
 function stamp() {
   const now = new Date();
@@ -96,37 +100,46 @@ async function metroStatus() {
       ok: response.ok && /packager-status:running/i.test(text),
       status: response.status,
       detail: compact(text, 120),
-      command: 'cd apps/mobile && npx expo start --dev-client',
+      command: APP_START_COMMAND,
     };
   } catch (error) {
     return {
       ok: false,
       status: null,
       detail: compact(error instanceof Error ? error.message : String(error), 160),
-      command: 'cd apps/mobile && npx expo start --dev-client',
+      command: APP_START_COMMAND,
     };
   }
 }
 
 function captureIosScreenshot(outDir) {
+  const expectedPath = path.join(outDir, 'ios-simulator-home.png');
   if (noScreenshot) {
-    return { ok: false, skipped: true, path: null, detail: '--no-screenshot was passed.' };
+    return {
+      ok: false,
+      skipped: true,
+      path: path.relative(ROOT, expectedPath),
+      command: `xcrun simctl io booted screenshot ${path.relative(ROOT, expectedPath)}`,
+      detail: '--no-screenshot was passed.',
+    };
   }
   const xcrun = run('xcrun', ['simctl', 'list', 'devices', 'booted']);
   if (!xcrun.ok || !/\(Booted\)/.test(xcrun.stdout)) {
     return {
       ok: false,
       skipped: false,
-      path: null,
+      path: path.relative(ROOT, expectedPath),
+      command: `xcrun simctl io booted screenshot ${path.relative(ROOT, expectedPath)}`,
       detail: 'No booted iOS Simulator found. Boot one, open the app, then rerun npm run qa:simulator.',
     };
   }
-  const screenshotPath = path.join(outDir, 'ios-simulator-home.png');
+  const screenshotPath = expectedPath;
   const shot = run('xcrun', ['simctl', 'io', 'booted', 'screenshot', screenshotPath]);
   return {
     ok: shot.ok && fs.existsSync(screenshotPath),
     skipped: false,
-    path: shot.ok ? path.relative(ROOT, screenshotPath) : null,
+    path: path.relative(ROOT, screenshotPath),
+    command: `xcrun simctl io booted screenshot ${path.relative(ROOT, screenshotPath)}`,
     detail: shot.ok ? 'Captured booted iOS Simulator screenshot.' : compact(`${shot.stderr} ${shot.stdout}`, 240),
   };
 }
@@ -150,9 +163,19 @@ const app = readAppConfig();
 const metro = await metroStatus();
 const smoke = routeSmoke();
 const iosScreenshot = captureIosScreenshot(outDir);
-const screenshotRefs = iosScreenshot.path ? [iosScreenshot.path] : [];
+const screenshotRefs = iosScreenshot.ok && iosScreenshot.path ? [iosScreenshot.path] : [];
 const smokeChecks = smoke.parsed?.checks ?? [];
 const failedChecks = Array.isArray(smokeChecks) ? smokeChecks.filter((check) => !check.ok) : [];
+const routeChecklist = Array.isArray(smoke.parsed?.checklist)
+  ? smoke.parsed.checklist
+  : [
+      'Home renders without redirect loop.',
+      'Create account opens account creation mode.',
+      'Sign in opens sign-in mode.',
+      'Back navigation returns to Home or previous tab.',
+      'Health -> Manage health sources is reachable.',
+      'Grappling Readiness is reachable and provisional.',
+    ];
 const requiredFixes =
   failedChecks.length > 0
     ? failedChecks.map((check) => `${check.id}: ${check.detail}`)
@@ -212,9 +235,70 @@ const qaJson = {
 const qaJsonPath = path.join(outDir, 'agent-qa-simulator.json');
 const handoffPath = path.join(outDir, 'agent-handoff-prompt.md');
 const androidPlanPath = path.join(outDir, 'android-emulator-plan.md');
+const commandsPath = path.join(outDir, 'commands.md');
+const routeChecklistPath = path.join(outDir, 'route-smoke-checklist.md');
+const screenshotPlanPath = path.join(outDir, 'screenshot-capture-paths.md');
 
 fs.writeFileSync(qaJsonPath, `${JSON.stringify(qaJson, null, 2)}\n`);
 fs.writeFileSync(androidPlanPath, `${androidPlan().map((step, index) => `${index + 1}. ${step}`).join('\n')}\n`);
+fs.writeFileSync(
+  commandsPath,
+  [
+    '# Simulator QA Commands',
+    '',
+    'Start Metro/dev server:',
+    '',
+    `    ${APP_START_COMMAND}`,
+    '',
+    'Open iOS Simulator:',
+    '',
+    `    ${IOS_SIMULATOR_OPEN_COMMAND}`,
+    '',
+    'Install/open the app in iOS Simulator:',
+    '',
+    `    ${IOS_APP_RUN_COMMAND}`,
+    '',
+    'Run static route smoke:',
+    '',
+    `    ${ROUTE_SMOKE_COMMAND}`,
+    '',
+    'Run full evidence harness:',
+    '',
+    '    npm run qa:simulator',
+    '',
+    'Record the QA result into MCP/shared state:',
+    '',
+    `    npm run bridge:agent-qa -- ${path.relative(ROOT, qaJsonPath)}`,
+    '    npm run bridge:snapshot',
+    '',
+  ].join('\n'),
+);
+fs.writeFileSync(routeChecklistPath, `${routeChecklist.map((item, index) => `${index + 1}. ${item}`).join('\n')}\n`);
+fs.writeFileSync(
+  screenshotPlanPath,
+  [
+    '# Screenshot Capture Paths',
+    '',
+    `Evidence folder: ${path.relative(ROOT, outDir)}`,
+    '',
+    'iOS Simulator home/current screen:',
+    '',
+    `    ${iosScreenshot.command}`,
+    '',
+    `Expected path: ${iosScreenshot.path}`,
+    '',
+    'Suggested extra screenshots after navigating manually:',
+    '',
+    `- ${path.relative(ROOT, path.join(outDir, 'ios-health-manage-sources.png'))}`,
+    `- ${path.relative(ROOT, path.join(outDir, 'ios-grappling-readiness.png'))}`,
+    `- ${path.relative(ROOT, path.join(outDir, 'ios-admin-control-centre.png'))}`,
+    '',
+    'Android Emulator:',
+    '',
+    `    adb exec-out screencap -p > ${path.relative(ROOT, path.join(outDir, 'android-health-manage-sources.png'))}`,
+    '',
+  ].join('\n'),
+);
 fs.writeFileSync(
   handoffPath,
   [
@@ -223,16 +307,28 @@ fs.writeFileSync(
     `Repo: ${branchName()} @ ${shortHead()}`,
     `Evidence folder: ${path.relative(ROOT, outDir)}`,
     `QA JSON: ${path.relative(ROOT, qaJsonPath)}`,
+    `Commands: ${path.relative(ROOT, commandsPath)}`,
+    `Route checklist: ${path.relative(ROOT, routeChecklistPath)}`,
+    `Screenshot paths: ${path.relative(ROOT, screenshotPlanPath)}`,
+    '',
+    'Exact commands Aaron can run locally:',
+    '',
+    `- Start app/dev server: ${APP_START_COMMAND}`,
+    `- Open iOS Simulator: ${IOS_SIMULATOR_OPEN_COMMAND}`,
+    `- Install/open iOS simulator app: ${IOS_APP_RUN_COMMAND}`,
+    `- Route smoke: ${ROUTE_SMOKE_COMMAND}`,
     '',
     'Audit these screens from the local iOS Simulator evidence and any screenshots Aaron adds:',
     '',
-    '- Home',
-    '- Create account',
-    '- Sign in',
-    '- Back navigation',
-    '- Health / Manage health sources',
-    '- Grappling Readiness',
+    ...routeChecklist.map((item) => `- ${item}`),
     '- Admin/Control Centre only if Aaron is signed in as admin',
+    '',
+    'Screenshot list:',
+    '',
+    ...(screenshotRefs.length > 0 ? screenshotRefs : [iosScreenshot.path]).map((ref) => `- ${ref}`),
+    `- ${path.relative(ROOT, path.join(outDir, 'ios-health-manage-sources.png'))}`,
+    `- ${path.relative(ROOT, path.join(outDir, 'ios-grappling-readiness.png'))}`,
+    `- ${path.relative(ROOT, path.join(outDir, 'ios-admin-control-centre.png'))}`,
     '',
     'Return AGENT_QA_RESULT_JSON using the schema in the QA JSON file.',
     'Keep status partial for simulator-only QA. Do not clear TestFlight or Android internal build gates.',
@@ -255,9 +351,13 @@ const summary = {
   routeSmoke: {
     ok: smoke.ok,
     failedChecks: failedChecks.map((check) => check.id),
+    checklist: routeChecklist,
   },
   iosScreenshot,
   qaJson: path.relative(ROOT, qaJsonPath),
+  commands: path.relative(ROOT, commandsPath),
+  routeChecklist: path.relative(ROOT, routeChecklistPath),
+  screenshotPlan: path.relative(ROOT, screenshotPlanPath),
   handoffPrompt: path.relative(ROOT, handoffPath),
   androidPlan: path.relative(ROOT, androidPlanPath),
   ingestCommand: `npm run bridge:agent-qa -- ${path.relative(ROOT, qaJsonPath)}`,
