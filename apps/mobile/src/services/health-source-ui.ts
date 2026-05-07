@@ -97,6 +97,7 @@ export interface HubReadinessEvidenceInput {
   polarHubDetected?: boolean;
   samsungHubDetected?: boolean;
   manualSessionData?: boolean;
+  journalContext?: boolean;
 }
 
 export interface HubReadinessEvidence {
@@ -123,6 +124,9 @@ export function buildHubReadinessEvidence(input: HubReadinessEvidenceInput): Hub
   if (input.manualSessionData) {
     sourceLabels.push('Manual / logged training');
   }
+  if (input.journalContext) {
+    sourceLabels.push('Daily journal');
+  }
 
   const inputLabels: string[] = [];
   const missingLabels = new Set<string>();
@@ -142,6 +146,12 @@ export function buildHubReadinessEvidence(input: HubReadinessEvidenceInput): Hub
 
   if ((fields.workouts ?? 0) > 0 || input.manualSessionData) inputLabels.push('training log');
   else if (input.missing?.workoutDetail !== false) missingLabels.add('training log');
+
+  if (input.journalContext) {
+    inputLabels.push('subjective check-in');
+  } else {
+    missingLabels.add('journal');
+  }
 
   if (input.missing?.strain) {
     missingLabels.add('direct strain');

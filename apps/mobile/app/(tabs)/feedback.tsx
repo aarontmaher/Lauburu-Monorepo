@@ -12,6 +12,7 @@ import { useFeedbackStore } from '../../src/store/feedback-store';
 import { useHealthStore } from '../../src/store/health-store';
 import { useTrainingStore } from '../../src/store/training-store';
 import { useAuthStore } from '../../src/store/auth-store';
+import { useDailyJournalStore, type TrainingIntent } from '../../src/store/daily-journal-store';
 import { SESSION_TYPE_LABELS } from '@lauburu/shared';
 import { ATHLETE_CAPABILITY_COPY } from '../../src/services/athlete-capability-display';
 
@@ -87,6 +88,121 @@ function PillSelect<T extends string>({
           </Text>
         </Pressable>
       ))}
+    </View>
+  );
+}
+
+const TRAINING_INTENT_LABELS: Record<TrainingIntent, string> = {
+  push: 'Push',
+  normal: 'Normal',
+  technique: 'Technique',
+  light: 'Light',
+  rest: 'Rest',
+};
+
+// ---------------------------------------------------------------------------
+// 0. Daily journal — subjective readiness context
+// ---------------------------------------------------------------------------
+
+function DailyJournalCard() {
+  const existing = useDailyJournalStore((s) => s.getEntryForDate(todayDate()));
+  const upsertEntry = useDailyJournalStore((s) => s.upsertEntry);
+  const [date, setDate] = useState(existing?.date ?? todayDate());
+  const [sleepQuality, setSleepQuality] = useState(existing?.sleepQuality ?? 3);
+  const [soreness, setSoreness] = useState(existing?.soreness ?? 3);
+  const [fatigue, setFatigue] = useState(existing?.fatigue ?? 3);
+  const [stress, setStress] = useState(existing?.stress ?? 3);
+  const [trainingIntent, setTrainingIntent] = useState<TrainingIntent>(existing?.trainingIntent ?? 'normal');
+  const [injuryPainNotes, setInjuryPainNotes] = useState(existing?.injuryPainNotes ?? '');
+  const [medicationSupplementNotes, setMedicationSupplementNotes] = useState(existing?.medicationSupplementNotes ?? '');
+  const [notes, setNotes] = useState(existing?.notes ?? '');
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = () => {
+    Keyboard.dismiss();
+    const trimmedDate = date.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmedDate)) {
+      Alert.alert('Daily journal', 'Use YYYY-MM-DD for the date.');
+      return;
+    }
+    upsertEntry({
+      date: trimmedDate,
+      sleepQuality,
+      soreness,
+      fatigue,
+      stress,
+      trainingIntent,
+      injuryPainNotes,
+      medicationSupplementNotes,
+      notes,
+    });
+    setSaved(true);
+  };
+
+  return (
+    <View style={styles.card}>
+      <View style={styles.cardHeaderRow}>
+        <View>
+          <Text style={styles.cardTitle}>Daily journal</Text>
+          <Text style={styles.cardSubtitle}>Subjective context for provisional readiness</Text>
+        </View>
+        {(existing || saved) && <Text style={styles.savedText}>Saved</Text>}
+      </View>
+
+      <Text style={styles.noteText}>
+        This is your self-report, not medical data. Pain or medication notes stay as context.
+      </Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="YYYY-MM-DD"
+        placeholderTextColor="#666"
+        value={date}
+        onChangeText={setDate}
+        autoCapitalize="none"
+      />
+
+      <RatingRow label="Sleep quality" value={sleepQuality} onChange={setSleepQuality} />
+      <RatingRow label="Soreness" value={soreness} onChange={setSoreness} />
+      <RatingRow label="Fatigue" value={fatigue} onChange={setFatigue} />
+      <RatingRow label="Stress" value={stress} onChange={setStress} />
+
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>Training intent</Text>
+        <PillSelect
+          options={['push', 'normal', 'technique', 'light', 'rest'] as const}
+          labels={TRAINING_INTENT_LABELS}
+          value={trainingIntent}
+          onChange={setTrainingIntent}
+        />
+      </View>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Injury / pain notes (optional)"
+        placeholderTextColor="#666"
+        value={injuryPainNotes}
+        onChangeText={setInjuryPainNotes}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Medication / supplement notes (optional)"
+        placeholderTextColor="#666"
+        value={medicationSupplementNotes}
+        onChangeText={setMedicationSupplementNotes}
+      />
+      <TextInput
+        style={[styles.input, styles.multilineInput]}
+        placeholder="Free text notes (optional)"
+        placeholderTextColor="#666"
+        value={notes}
+        onChangeText={setNotes}
+        multiline
+      />
+
+      <Pressable style={styles.saveButton} onPress={handleSave}>
+        <Text style={styles.saveText}>{existing || saved ? 'Update Journal' : 'Save Journal'}</Text>
+      </Pressable>
     </View>
   );
 }
@@ -450,6 +566,8 @@ export default function FeedbackScreen() {
   const feedbackCount = useFeedbackStore((s) => s.recommendations.length);
   const outcomeCount = useFeedbackStore((s) => s.outcomes.length);
   const checkinCount = useFeedbackStore((s) => s.checkins.length);
+  const journalCount = useDailyJournalStore((s) => s.entries.length);
+  const entryCount = feedbackCount + outcomeCount + checkinCount + journalCount;
 
   return (
     <ScrollView
@@ -458,10 +576,11 @@ export default function FeedbackScreen() {
       keyboardShouldPersistTaps="handled">
       <Text style={styles.heading}>Daily Check-in</Text>
       <Text style={styles.subtitle}>
-        {feedbackCount + outcomeCount + checkinCount > 0
-          ? `${feedbackCount + outcomeCount + checkinCount} entries — improving your coaching`
-          : 'Rate sessions and coaching to personalize your experience'}
+        {entryCount > 0
+          ? `${entryCount} entries — improving your coaching context`
+          : 'Log subjective context, sessions, and coaching feedback'}
       </Text>
+      <DailyJournalCard />
       <SyncCard />
       <NextDayCheckinCard />
       <RecommendationFeedbackCard />
@@ -491,8 +610,15 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   cardTitle: { fontSize: 18, fontWeight: '600' },
+  cardHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    gap: 10,
+  },
   cardSubtitle: { fontSize: 13, opacity: 0.6 },
   savedText: { fontSize: 14, color: '#4ade80' },
+  noteText: { fontSize: 12, opacity: 0.55, lineHeight: 17 },
 
   section: { gap: 8 },
   sectionLabel: {
@@ -553,6 +679,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#f0f0f0',
     backgroundColor: 'rgba(255,255,255,0.05)',
+  },
+  multilineInput: {
+    minHeight: 74,
+    textAlignVertical: 'top',
   },
 
   saveButton: {

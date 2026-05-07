@@ -13,6 +13,7 @@ import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useAuditEventStore } from '../../src/store/audit-event-store';
 import { useDevUnlockStore } from '../../src/store/dev-unlock-store';
+import { useDailyJournalStore } from '../../src/store/daily-journal-store';
 import { isExpoGo } from '../../src/services/expo-detect';
 import { AthleteCapabilitySummary } from '../../src/components/AthleteCapabilitySummary';
 import { NutritionCard } from '../../src/components/NutritionCard';
@@ -56,6 +57,10 @@ const METRIC_LABELS: Record<HealthMetricType, string> = {
 };
 
 const WHOOP_STALE_HOURS = 6;
+
+function todayDate() {
+  return new Date().toISOString().slice(0, 10);
+}
 
 function whoopSourceStatus(
   whoopStatus: 'idle' | 'loading' | 'ready' | 'error',
@@ -460,6 +465,9 @@ function InsightsCard({
             <Text style={styles.evidenceDetailText}>
               Direct WHOOP/Polar readiness fields are not used here unless a verified direct integration is present.
             </Text>
+            <Text style={styles.evidenceDetailText}>
+              Planned inputs: blood test upload, DEXA upload, and body composition via Apple Health / Health Connect.
+            </Text>
           </View>
         )}
       </View>
@@ -645,8 +653,8 @@ function PlannedHealthContextCard({
       body: 'Planned body-composition context. No upload flow in this build.',
     },
     {
-      title: 'Journal / check-in',
-      body: 'Planned journal expansion. Check-in and manual training logs remain available now.',
+      title: 'Body composition scale',
+      body: 'Planned health-hub path first. Weight/body composition can count only when Apple Health or Health Connect provides it.',
     },
   ];
   return (
@@ -721,6 +729,7 @@ export default function HealthScreen() {
   const whoopStatus = useWhoopStore((s) => s.status);
   const whoopSourceUpdatedAt = useWhoopStore((s) => s.day?.source_updated_at ?? null);
   const whoopHasDay = useWhoopStore((s) => s.day != null);
+  const todayJournal = useDailyJournalStore((s) => s.getEntryForDate(todayDate()));
 
   const authStatus = useAuthStore((s) => s.status);
   const user = useAuthStore((s) => s.user);
@@ -762,7 +771,8 @@ export default function HealthScreen() {
     polarHubDetected: polarViaHc?.detected ?? false,
     samsungHubDetected: samsungViaHc?.detected ?? false,
     manualSessionData: days.some((day) => day.grappling_session != null || (day.workouts ?? []).some((workout) => workout.source === 'manual')),
-  }), [days, features, polarViaHc?.detected, samsungViaHc?.detected, today]);
+    journalContext: todayJournal != null,
+  }), [days, features, polarViaHc?.detected, samsungViaHc?.detected, today, todayJournal]);
 
   const inExpoGo = isExpoGo();
   const nativeCopy = useMemo(() => getNativeHealthSourceCopy(Platform.OS), []);

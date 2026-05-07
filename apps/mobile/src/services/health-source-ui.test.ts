@@ -49,10 +49,13 @@ const hubEvidence = buildHubReadinessEvidence({
   provenance: ['com.polar.flow'],
   polarHubDetected: true,
   manualSessionData: true,
+  journalContext: true,
 });
 assertEqual(hubEvidence.confidence, 'high', 'Hub readiness high confidence');
 assertMatches(hubEvidence.sourceLabels.join(' | '), /Health Connect hub data/, 'Hub readiness native source');
 assertMatches(hubEvidence.sourceLabels.join(' | '), /Polar via Health Connect/, 'Hub readiness polar provenance');
+assertMatches(hubEvidence.sourceLabels.join(' | '), /Daily journal/, 'Hub readiness journal source');
+assertMatches(hubEvidence.inputLabels.join(' | '), /subjective check-in/, 'Hub readiness journal input');
 
 const missingEvidence = buildHubReadinessEvidence({
   platform: 'ios',
