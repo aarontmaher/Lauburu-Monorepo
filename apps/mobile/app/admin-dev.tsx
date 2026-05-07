@@ -527,6 +527,11 @@ export default function AdminDevScreen() {
   const laneCountSummary = Object.entries(laneStatusCounts)
     .map(([status, count]) => `${count} ${status}`)
     .join(' · ');
+  const firstScreenLaneCount = nowLanes.length > 0 ? nowLanes.length : mcpAgents.length;
+  const firstScreenLaneMeta = laneCountSummary
+    || (mcpAgents.length > 0
+      ? mcpAgents.map((agent) => `${agent.id ?? 'lane'}:${agent.status ?? 'unknown'}`).join(' · ')
+      : 'no status');
   const nowLaneSummary = nowLanes.length > 0
     ? nowLanes.map((lane) => `${lane.laneId}: ${lane.status}`).join(' · ')
     : mcpAgents.length > 0
@@ -576,13 +581,13 @@ export default function AdminDevScreen() {
             </View>
             <View style={styles.summaryTile}>
               <Text style={styles.chipLabel}>Lanes</Text>
-              <Text style={styles.summaryValue}>{nowLanes.length}</Text>
-              <Text style={styles.summaryMeta}>{laneCountSummary || 'no status'}</Text>
+              <Text style={styles.summaryValue}>{firstScreenLaneCount}</Text>
+              <Text style={styles.summaryMeta}>{firstScreenLaneMeta}</Text>
             </View>
             <View style={styles.summaryTile}>
               <Text style={styles.chipLabel}>Build / repo</Text>
               <Text style={styles.summaryValue}>{connectorSnapshot?.buildStatus ? 'Loaded' : 'Repo-only'}</Text>
-              <Text style={styles.summaryMeta}>{connectorWork ? `${connectorWork.repoStatus.branch}@${connectorWork.repoStatus.head}` : buildInfo.repoHead}</Text>
+              <Text style={styles.summaryMeta}>{nowRepoSummary}</Text>
             </View>
           </View>
         )}
@@ -594,7 +599,7 @@ export default function AdminDevScreen() {
         {mcpFreshness.stale && (
           <View style={styles.warningBlock}>
             <Text style={styles.chipLabel}>Stale writeback</Text>
-            <Text style={styles.chipBody}>MCP readable, but writeback is stale. Run bridge snapshot/verify.</Text>
+            <Text style={styles.chipBody}>MCP readable but writeback is stale. Run bridge snapshot/verify or deploy worker.</Text>
             <Text style={styles.note}>Reason: {mcpFreshness.reason}</Text>
           </View>
         )}
