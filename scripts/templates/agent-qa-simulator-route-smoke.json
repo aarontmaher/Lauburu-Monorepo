@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "qaRunId": "qa-simulator-route-smoke-template",
+  "sourceAgent": "agent",
+  "status": "partial",
+  "gate": "general",
+  "platform": "ios",
+  "deviceName": "iOS simulator",
+  "installedBuild": {
+    "iosBuildNumber": "19",
+    "appVersion": "0.1.0",
+    "channel": "simulator"
+  },
+  "repo": {
+    "branch": "main",
+    "shortHead": "0000000"
+  },
+  "results": {
+    "healthManageSources": "partial",
+    "androidHealthConnect": "not_tested",
+    "iosAppleHealth": "not_tested",
+    "grapplingReadiness": "partial",
+    "adminControlCentre": "not_tested",
+    "copyTruthfulness": "partial",
+    "uiDensity": "partial"
+  },
+  "releaseGate": {
+    "newTestFlightAllowed": false,
+    "newAndroidBuildAllowed": false,
+    "reason": "Simulator route smoke is not installed-device QA and does not clear build gates."
+  },
+  "requiredFixes": [
+    "Replace this with any simulator route failures before ingesting."
+  ],
+  "evidence": {
+    "screenshotRefs": [],
+    "notes": "Template only. Fill with sanitized simulator route-smoke notes; do not include private screenshots, secrets, tokens, or raw logs."
+  },
+  "publicSummary": "Simulator route smoke recorded; installed-device QA still required before build gates clear."
+}
