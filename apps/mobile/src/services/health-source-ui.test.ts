@@ -25,7 +25,7 @@ assertEqual(getNativeHealthSourceCopy('android').hubLabel, 'Health Connect hub d
 assertEqual(getWhoopDirectStateLabel('config_missing').label, 'WHOOP Direct setup needed', 'WHOOP setup label');
 assertEqual(getWhoopDirectStateLabel('connected').state, 'connected', 'WHOOP connected state');
 assertEqual(getWhoopDirectStateLabel('partial', { awaitingCycle: true }).label, 'WHOOP Direct awaiting cycle', 'WHOOP awaiting label');
-assertEqual(getPolarDirectStateLabel(false).label, 'Polar Direct planned', 'Polar planned label');
+assertEqual(getPolarDirectStateLabel(false).label, 'Polar AccessLink planned', 'Polar planned label');
 
 const seed = getReadinessSeedBadge({ hasLiveWhoopRecovery: false, confidenceLevel: 'low' });
 assertEqual(seed.label, 'Seed', 'Seed badge label');

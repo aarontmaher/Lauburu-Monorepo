@@ -161,7 +161,7 @@ export interface AppAthleteState {
     };
     /**
      * Polar evidence — either via Polar Flow writing to Health
-     * Connect, or via the Polar Direct AccessLink OAuth path.
+     * Connect, or via the future Polar AccessLink OAuth path.
      * Both contribute training/HR/load evidence to the same
      * normalized layer; Coach can attribute training-load
      * contribution to Polar specifically when this flag is set.
@@ -257,7 +257,7 @@ export interface BuildAppAthleteStateInputs {
    *  flashing on Home during the first-render fetch window. */
   whoopFetchStatus?: 'idle' | 'loading' | 'ready' | 'error' | null;
   /** Polar provenance — either via Polar Flow → Health Connect
-   *  (Android) or via Polar Direct OAuth. Either way it's training
+   *  (Android) or via future Polar AccessLink OAuth. Either way it's training
    *  evidence; consumer just needs to know it exists. */
   polarPresence?: {
     detected: boolean;

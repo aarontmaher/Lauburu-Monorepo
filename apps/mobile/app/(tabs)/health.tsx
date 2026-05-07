@@ -1228,7 +1228,7 @@ function SourceRow({
     connected_last_synced: { text: 'Connected · recently synced', color: '#4ade80' },
     partial_missing: { text: 'Partial — some data missing', color: '#d4e157' },
     error_retry: { text: 'Error — tap to retry', color: '#ff6b6b' },
-    polar_scaffold: { text: 'Direct Polar not live yet', color: '#888' },
+    polar_scaffold: { text: 'Polar AccessLink not live yet', color: '#888' },
     polar_via_hc_detected: { text: 'Polar via Health Connect detected', color: '#4ade80' },
     polar_via_hc_partial: { text: 'Partial Polar data via Health Connect', color: '#d4e157' },
     samsung_via_hc_detected: { text: 'Samsung Health via Health Connect', color: '#4ade80' },

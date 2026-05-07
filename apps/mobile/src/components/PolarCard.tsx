@@ -58,7 +58,7 @@ export function PolarCard({ viaHealthConnect }: PolarCardProps = {}) {
     ? viaHcPartial
       ? `Partial Polar data via ${nativeHubName}`
       : `Polar via ${nativeHubName} detected`
-    : 'Direct Polar not live yet';
+    : 'Polar AccessLink not live yet';
 
   return (
     <View style={styles.card}>
@@ -83,14 +83,14 @@ export function PolarCard({ viaHealthConnect }: PolarCardProps = {}) {
             It does not provide Polar Recovery Pro or Nightly Recharge.
           </Text>
           <Text style={styles.bodyText}>
-            Direct Polar (AccessLink / Bluetooth sensor capture) is not live yet. Recovery Pro,
+            Polar AccessLink and Bluetooth sensor capture are not live yet. Recovery Pro,
             Nightly Recharge, and richer Polar-specific fields require a
             future direct adapter.
           </Text>
         </>
       ) : (
         <Text style={styles.bodyText}>
-          Direct Polar is not connected yet. Polar data reaches the app only when the Polar Flow app is set
+          Polar AccessLink is not connected yet. Polar data reaches the app only when the Polar Flow app is set
           to write into {nativeHubName} —
           so it arrives as generic metrics without Polar&apos;s richer
           readiness fields. If you use Polar Flow, enable sharing to

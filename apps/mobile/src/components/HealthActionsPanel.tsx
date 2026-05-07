@@ -77,6 +77,16 @@ const HEALTH_CONNECT_AUDIT_FIELDS = [
   ['sleep', 'sleep'],
 ] as const;
 
+const HEALTH_CONNECT_REQUIRED_LABELS: Record<string, string> = {
+  resting_heart_rate: 'RHR',
+  hrv: 'HRV',
+  steps: 'steps',
+  active_calories: 'active calories',
+  heart_rate_samples: 'heart-rate samples',
+  workouts: 'workouts',
+  sleep: 'sleep',
+};
+
 function buildHealthConnectSyncAuditSnapshot() {
   const store: any = useHealthStore.getState();
   const diag = store?.lastSyncDiagnostics ?? null;
@@ -133,6 +143,33 @@ function addHealthConnectAuditEvent(input: {
       developerMessage: input.developerMessage ?? snap.error,
     });
   } catch { /* non-fatal */ }
+}
+
+function healthConnectDiagnosticsSummary(): {
+  availableFields: string[];
+  missingFields: string[];
+  recordCountTotal: number;
+  normalizedDays: number | null;
+  provenanceCount: number;
+} {
+  const snap = buildHealthConnectSyncAuditSnapshot();
+  const store: any = useHealthStore.getState();
+  const diag = store?.lastSyncDiagnostics ?? null;
+  return {
+    availableFields: snap.availableFields,
+    missingFields: snap.missingFields,
+    recordCountTotal: snap.recordCountTotal,
+    normalizedDays: snap.normalizedDays,
+    provenanceCount: Array.isArray(diag?.provenanceDetected) ? diag.provenanceDetected.length : 0,
+  };
+}
+
+function formatHealthConnectMissing(fields: string[], max = 3): string {
+  if (fields.length === 0) return 'required fields present';
+  const labels = fields.map((field) => HEALTH_CONNECT_REQUIRED_LABELS[field] ?? field);
+  const shown = labels.slice(0, max).join(', ');
+  const more = labels.length > max ? ` +${labels.length - max}` : '';
+  return `missing ${shown}${more}`;
 }
 
 /**
@@ -1087,7 +1124,7 @@ function Body() {
   const hasVerifiedWhoopDirect = whoopState === 'connected';
   const missingSourceLine = hasVerifiedWhoopDirect
     ? 'Missing health fields stay blank until a source provides them.'
-    : 'Direct recovery fields stay missing until verified WHOOP Direct data exists. Polar Direct is planned.';
+    : 'Direct recovery fields stay missing until verified WHOOP Direct data exists. Polar AccessLink is planned.';
   const primarySourceActionLabel = needsAttention
     ? 'Attention needed · Manage sources'
     : !nativeAnyAuthorized
@@ -1809,12 +1846,19 @@ function HealthSourceSheet(props: SheetProps) {
   const samsungHcHint = Platform.OS === 'android'
     ? ' If you use Samsung Health or Galaxy Watch, enable Samsung Health → Health Connect sharing, then grant Health Connect permissions here.'
     : '';
+  const hcDiag = Platform.OS === 'android' ? healthConnectDiagnosticsSummary() : null;
+  const hcMetricLine = hcDiag && healthLastSyncAt
+    ? ` · ${hcDiag.availableFields.length}/7 metrics · ${formatHealthConnectMissing(hcDiag.missingFields)}`
+    : '';
+  const hcProvenanceLine = hcDiag && hcDiag.provenanceCount > 0
+    ? ` · ${hcDiag.provenanceCount} source app${hcDiag.provenanceCount === 1 ? '' : 's'} via Health Connect`
+    : '';
   const nativeCopy = getNativeHealthSourceCopy(Platform.OS);
   const nativeHealthHubLabel = nativeCopy.hubLabel;
   const nativeHealthMeta = appleHealthConnected
-    ? `${nativeHealthHubLabel} · ${healthDays} day${healthDays === 1 ? '' : 's'} · ${ageLabel(healthLastSyncAt)}${samsungHcHint}`
+    ? `${nativeHealthHubLabel} · ${healthDays} day${healthDays === 1 ? '' : 's'} · ${ageLabel(healthLastSyncAt)}${hcMetricLine}${hcProvenanceLine}${samsungHcHint}`
     : healthLastSyncAt
-      ? `${nativeHealthHubLabel} · synced but no recent records found · ${ageLabel(healthLastSyncAt)}${samsungHcHint}`
+      ? `${nativeHealthHubLabel} · synced but no recent records found · ${ageLabel(healthLastSyncAt)}${hcMetricLine}${hcProvenanceLine}${samsungHcHint}`
       : nativeAnyAuthorized
         ? `${nativeHealthHubLabel} · permission granted, sync needed.${samsungHcHint}`
         : `${nativeHealthHubLabel} · not connected yet.${samsungHcHint}`;
@@ -1868,6 +1912,19 @@ function HealthSourceSheet(props: SheetProps) {
     if (whoopState === 'loading') return 'Optional direct data · loading status…';
     return 'Optional direct data';
   })();
+  const fs008Row = (
+    <View key="fs008" style={styles.sourceRow}>
+      <View style={styles.sourceRowHeader}>
+        <Text style={styles.sourceName}>FS-008 WHOOP migration</Text>
+        <View style={[styles.sourceChip, { borderColor: '#888' }]}>
+          <Text style={[styles.sourceChipText, { color: '#888' }]}>Defer</Text>
+        </View>
+      </View>
+      <Text style={styles.sourceMeta}>
+        Default is defer until Phase 1 mobile Health connectivity ships. WHOOP Direct stays needs setup until Cloudflare/Supabase token migration is approved and verified.
+      </Text>
+    </View>
+  );
 
   // Partition rows.
   const connected: Array<React.ReactElement> = [];
@@ -1996,6 +2053,7 @@ function HealthSourceSheet(props: SheetProps) {
           onPress: onConnectWhoop,
           disabled: busy != null,
           kind: 'primary',
+          hidden: whoopState === 'config_missing',
         },
       ]}
     />
@@ -2005,6 +2063,9 @@ function HealthSourceSheet(props: SheetProps) {
   if (whoopStatusBucket === 'connected') connected.push(whoopRow);
   else if (whoopStatusBucket === 'attention') attention.push(whoopRow);
   else available.push(whoopRow);
+  if (whoopState === 'config_missing' || whoopState === 'unknown' || whoopState === 'auth_required') {
+    available.push(fs008Row);
+  }
 
   // WHOOP CSV enrichment row — optional manual upload for deep
   // history + zones + richer analysis. Appears in "Connected" when
@@ -2832,7 +2893,7 @@ function PolarExportRowInner() {
         Paste Polar Flow CSV/TCX export for historical training context. Recovery/readiness still uses your other sources — Polar export is evidence-only.
       </Text>
       <Text style={[styles.sourceMeta, { opacity: 0.45 }]}>
-        For now, Polar users can sync through {Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect'}. Polar Direct with richer Polar-specific fields is planned for a later release. FIT files are not yet supported — export TCX or CSV.
+        For now, Polar users can sync through {Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect'}. Polar AccessLink account sync with richer Polar-specific fields is planned for a later release. FIT files are not yet supported — export TCX or CSV.
       </Text>
 
       {!showPaste ? (

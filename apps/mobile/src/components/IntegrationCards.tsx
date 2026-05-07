@@ -130,11 +130,11 @@ function friendlyDirectSyncError(
   const nativeHub = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
   return kind === 'whoop'
     ? `Direct WHOOP sync is not connected yet. Use ${nativeHub} for now.`
-    : `Direct Polar sync is not connected yet. Use ${nativeHub} for now.`;
+    : `Polar AccessLink sync is not connected yet. Use ${nativeHub} for now.`;
 }
 
 // ═══════════════════════════════════════════════════════════════
-// POLAR DIRECT
+// POLAR ACCESSLINK
 // ═══════════════════════════════════════════════════════════════
 
 export function PolarDirectCard() {
@@ -192,7 +192,7 @@ export function PolarDirectCard() {
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
-        <Text style={styles.cardTitle}>Polar Direct</Text>
+        <Text style={styles.cardTitle}>Polar AccessLink</Text>
         {s === 'connected' && <StatusPill label="Connected" color="#4ade80" />}
         {s === 'config_missing' && <StatusPill label="Planned" color="#888" />}
         {s === 'auth_required' && <StatusPill label="Planned" color="#888" />}
@@ -204,13 +204,13 @@ export function PolarDirectCard() {
 
       {s !== 'connected' && (
         <Text style={[styles.bodyText, { opacity: 0.8 }]}>
-          For now, Polar users can sync through {nativeHubName}. Polar Direct (AccessLink OAuth) is planned for a later release.
+          For now, Polar users can sync through {nativeHubName}. Polar AccessLink account sync is planned for a later release.
         </Text>
       )}
 
       {s === 'config_missing' && (
         <Text style={styles.bodyText}>
-          Direct Polar AccessLink requires vendor setup on the backend.{'\n'}
+          Polar AccessLink requires vendor setup on the backend.{'\n'}
           {viaHcDetected
             ? `Meanwhile, Polar data is arriving via ${nativeHubName} (${polarViaHc?.sourceApp ?? 'Polar Flow'}).`
             : `If you use Polar Flow, enable sharing to ${nativeHubName} in Flow settings to get data through that path now.`}
@@ -219,7 +219,7 @@ export function PolarDirectCard() {
 
       {s === 'auth_required' && (
         <Text style={styles.bodyText}>
-          Direct Polar AccessLink (OAuth) is planned. Use the {nativeHubName} path above in the meantime.
+          Polar AccessLink OAuth is planned. Use the {nativeHubName} path above in the meantime.
         </Text>
       )}
 
@@ -238,7 +238,7 @@ export function PolarDirectCard() {
 
       {viaHcDetected && s !== 'connected' && (
         <Text style={styles.subtleNote}>
-          Polar via {nativeHubName} is active ({polarViaHc?.domains.join(', ')}). Direct Polar adds richer data.
+          Polar via {nativeHubName} is active ({polarViaHc?.domains.join(', ')}). Future AccessLink sync can add richer data.
         </Text>
       )}
 
@@ -766,7 +766,7 @@ export function AppleHealthCard() {
       )}
 
       <Text style={styles.subtleNote}>
-        Apple Health / HealthKit hub data is separate from true WHOOP Direct or Polar Direct.
+        Apple Health / HealthKit hub data is separate from true WHOOP Direct or planned Polar AccessLink account sync.
       </Text>
     </View>
   );
@@ -848,7 +848,7 @@ export function FTMSMachineCard() {
         </Text>
         <Text style={styles.subtleNote}>
           Polar may appear through Apple Health or Health Connect. Do not treat
-          hub data as Polar Direct or live Bluetooth data.
+          hub data as Polar AccessLink account sync or future Bluetooth data.
         </Text>
       </View>
     );
