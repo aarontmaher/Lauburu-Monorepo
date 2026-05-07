@@ -26,6 +26,7 @@ const REQUIRED_TOOLS = [
 ] as const;
 
 const env = {} as any;
+const adminEnv = { ATHLETE_MEMORY_API_TOKEN: 'test-admin-token' } as any;
 const originalFetch = globalThis.fetch;
 
 globalThis.fetch = (async () => new Response('upstream unavailable in test', { status: 503 })) as typeof fetch;
@@ -40,6 +41,19 @@ async function rpc(body: unknown, accept = 'application/json'): Promise<Response
     },
     body: JSON.stringify(body),
   }), env);
+}
+
+async function rpcWithToken(body: unknown): Promise<Response> {
+  return handleMcpV2(new Request('https://example.test/mcp/v2', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      accept: 'application/json',
+      origin: 'https://chat.openai.com',
+      authorization: 'Bearer test-admin-token',
+    },
+    body: JSON.stringify(body),
+  }), adminEnv);
 }
 
 async function main(): Promise<void> {
@@ -96,6 +110,64 @@ async function main(): Promise<void> {
     assert(body.result?.isError === false, `${name} is not a tool error`);
     assert(body.result?.content?.[0]?.type === 'text', `${name} returns text content`);
   }
+
+  const priorities = await rpc({
+    jsonrpc: '2.0',
+    id: 'project.list_priorities',
+    method: 'tools/call',
+    params: { name: 'project.list_priorities', arguments: {} },
+  });
+  assert(priorities.status === 200, `project.list_priorities returns HTTP 200 (got ${priorities.status})`);
+  const prioritiesBody = await priorities.json() as { result?: { content?: Array<{ text: string }>; isError?: boolean } };
+  assert(prioritiesBody.result?.isError === false, 'project.list_priorities is public-safe');
+  const prioritiesPayload = JSON.parse(prioritiesBody.result?.content?.[0]?.text ?? '{}') as {
+    items?: Array<{ rank?: number; title?: string }>;
+  };
+  assert(
+    prioritiesPayload.items?.[0]?.rank === 0 &&
+      prioritiesPayload.items[0].title === 'Native iPhone automation controls from TestFlight app, not Expo-only',
+    'project.list_priorities surfaces native iPhone automation as rank 0',
+  );
+
+  const unauthWrite = await rpc({
+    jsonrpc: '2.0',
+    id: 'submit_priority_suggestion_unauth',
+    method: 'tools/call',
+    params: {
+      name: 'project.submit_priority_suggestion',
+      arguments: { title: 'Native iPhone automation controls from TestFlight app, not Expo-only' },
+    },
+  });
+  const unauthBody = await unauthWrite.json() as { result?: { isError?: boolean; content?: Array<{ text: string }> } };
+  assert(unauthBody.result?.isError === true, 'unauthenticated project.submit_priority_suggestion is blocked');
+  assert(
+    unauthBody.result?.content?.[0]?.text.includes('admin token required'),
+    'unauthenticated write explains admin-token requirement',
+  );
+
+  const authedWrite = await rpcWithToken({
+    jsonrpc: '2.0',
+    id: 'submit_priority_suggestion_authed',
+    method: 'tools/call',
+    params: {
+      name: 'project.submit_priority_suggestion',
+      arguments: {
+        title: 'Native iPhone automation controls from TestFlight app, not Expo-only',
+        source: 'Aaron iPhone app request',
+        area: 'mobile-native-automation',
+      },
+    },
+  });
+  const authedBody = await authedWrite.json() as { result?: { isError?: boolean; content?: Array<{ text: string }> } };
+  assert(authedBody.result?.isError === false, 'authenticated project.submit_priority_suggestion is callable');
+  const authedPayload = JSON.parse(authedBody.result?.content?.[0]?.text ?? '{}') as {
+    ok?: boolean;
+    rank?: number;
+    publicWriteAllowed?: boolean;
+  };
+  assert(authedPayload.ok === true, 'authenticated priority suggestion returns ok true');
+  assert(authedPayload.rank === 0, 'authenticated native iPhone priority maps to rank 0');
+  assert(authedPayload.publicWriteAllowed === false, 'authenticated response still marks public writes disallowed');
 
   const health = await handleMcpV2Health(new Request('https://example.test/mcp/v2/health', {
     method: 'GET',

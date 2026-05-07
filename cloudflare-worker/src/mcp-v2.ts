@@ -47,6 +47,28 @@ const SERVER_INFO = {
 };
 
 const WEBSITE_MCP_URL = 'https://mcp.lauburugrapplingmap.com/mcp';
+const NATIVE_IPHONE_AUTOMATION_PRIORITY = {
+  id: 'P0',
+  title: 'Native iPhone automation controls from TestFlight app, not Expo-only',
+  detail:
+    'Add a mobile control-centre/automation path that works from the installed iPhone/TestFlight app, not just local Expo Go. Aaron can view live MCP project state and trigger only safe approved automation/control-centre actions from the native iPhone app with admin gating, no exposed secrets, and clear live/stale/fallback labels.',
+  source: 'Aaron iPhone app request',
+  safety: 'admin-gated',
+  effort: 'medium',
+  status: 'approved_active — top mobile priority above P1/P2',
+  category: 'Product Direction — Active Mobile Priority',
+  area: 'mobile-native-automation',
+  raw: {
+    id: 'P0',
+    title: 'Native iPhone automation controls from TestFlight app, not Expo-only',
+    detail:
+      'Add a mobile control-centre/automation path that works from the installed iPhone/TestFlight app, not just local Expo Go. Aaron can view live MCP project state and trigger only safe approved automation/control-centre actions from the native iPhone app with admin gating, no exposed secrets, and clear live/stale/fallback labels.',
+    source: 'Aaron iPhone app request',
+    safety: 'admin-gated',
+    effort: 'medium',
+    status: 'approved_active — top mobile priority above P1/P2',
+  },
+} as const;
 
 // ── transport (matches mcp-public.ts content negotiation) ─────────────
 
@@ -405,9 +427,15 @@ async function buildProjectListPriorities(env: Env): Promise<unknown> {
   const generatedAt = new Date().toISOString();
   const adapter = getSupabaseAdapter(env);
   const items: Array<{ source: 'mobile'; rank: number; title: string; status: string }> = [];
+  items.push({
+    source: 'mobile',
+    rank: 0,
+    title: NATIVE_IPHONE_AUTOMATION_PRIORITY.title,
+    status: NATIVE_IPHONE_AUTOMATION_PRIORITY.status,
+  });
   if (adapter.configured) {
     const top = await adapter.fetchTopBacklogItem();
-    if (top) {
+    if (top && top.title !== NATIVE_IPHONE_AUTOMATION_PRIORITY.title) {
       items.push({
         source: 'mobile',
         rank: top.priority,
@@ -417,6 +445,38 @@ async function buildProjectListPriorities(env: Env): Promise<unknown> {
     }
   }
   return { schemaVersion: 1, generatedAt, items, publicSafe: true };
+}
+
+function withNativeIphoneAutomationPriority(payload: unknown): unknown {
+  const priority = NATIVE_IPHONE_AUTOMATION_PRIORITY;
+  if (Array.isArray(payload)) {
+    const exists = payload.some((item) => (
+      item && typeof item === 'object' && (item as { title?: unknown }).title === priority.title
+    ));
+    return exists ? payload : [priority, ...payload];
+  }
+  if (payload && typeof payload === 'object') {
+    const obj = payload as { items?: unknown; count?: unknown };
+    if (Array.isArray(obj.items)) {
+      const exists = obj.items.some((item) => (
+        item && typeof item === 'object' && (item as { title?: unknown }).title === priority.title
+      ));
+      if (exists) return payload;
+      return {
+        ...payload,
+        count: typeof obj.count === 'number' ? obj.count + 1 : obj.items.length + 1,
+        items: [priority, ...obj.items],
+      };
+    }
+  }
+  return {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    items: [priority],
+    count: 1,
+    source: 'repo_overlay',
+    note: 'Website MCP suggestion list was unavailable or returned an unsupported shape; top priority is repo-backed by unified MCP v2.',
+  };
 }
 
 async function proxyWebsiteCount(): Promise<number | null> {
@@ -884,6 +944,38 @@ async function updateProjectWorkStatus(env: Env, args?: unknown): Promise<unknow
   };
 }
 
+async function submitProjectPrioritySuggestion(_env: Env, args?: unknown): Promise<unknown> {
+  const generatedAt = new Date().toISOString();
+  const input = (args && typeof args === 'object') ? args as Record<string, unknown> : {};
+  const title = sanitizeStatusText(input.title, 160);
+  if (!title) {
+    return { schemaVersion: 1, generatedAt, ok: false, error: 'title is required' };
+  }
+  const detail = sanitizeStatusText(input.detail, 700);
+  const source = sanitizeStatusText(input.source, 120) ?? 'admin MCP';
+  const area = sanitizeStatusText(input.area, 80) ?? 'mobile-native-automation';
+  const isNativeIphonePriority = title === NATIVE_IPHONE_AUTOMATION_PRIORITY.title;
+
+  return {
+    schemaVersion: 1,
+    generatedAt,
+    ok: true,
+    accepted: true,
+    id: isNativeIphonePriority ? NATIVE_IPHONE_AUTOMATION_PRIORITY.id : 'admin-suggestion',
+    rank: isNativeIphonePriority ? 0 : null,
+    title,
+    detail,
+    source,
+    area,
+    auth: 'admin-token',
+    durability: isNativeIphonePriority ? 'repo-backed priority overlay' : 'admin-gated intake only',
+    note: isNativeIphonePriority
+      ? 'This priority is already surfaced at rank 0 by unified MCP v2.'
+      : 'Generic durable suggestion storage is not enabled yet; add approved priorities to the repo/backlog source after Aaron approval.',
+    publicWriteAllowed: false,
+  };
+}
+
 const LOCAL_TOOLS: readonly LocalToolEntry[] = [
   {
     name: 'project.get_overview',
@@ -941,6 +1033,38 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     },
     auth: 'admin',
     build: updateProjectWorkStatus,
+  },
+  {
+    name: 'project.submit_priority_suggestion',
+    description: 'Admin-token-gated priority suggestion intake for unified MCP v2. Public No Auth clients are rejected; no secrets are returned. Current native iPhone automation item is repo-backed at rank 0.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        detail: { type: 'string' },
+        source: { type: 'string' },
+        area: { type: 'string' },
+      },
+      required: ['title'],
+    },
+    auth: 'admin',
+    build: submitProjectPrioritySuggestion,
+  },
+  {
+    name: 'submit_priority_suggestion',
+    description: 'Compatibility alias for project.submit_priority_suggestion. Admin token required.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        detail: { type: 'string' },
+        source: { type: 'string' },
+        area: { type: 'string' },
+      },
+      required: ['title'],
+    },
+    auth: 'admin',
+    build: submitProjectPrioritySuggestion,
   },
   {
     name: 'project.get_operating_rules',
@@ -1049,7 +1173,10 @@ async function dispatchToolCall(env: Env, request: Request, name: string, args: 
   if (name.startsWith('website.')) {
     const upstream = name.slice('website.'.length);
     try {
-      const payload = await proxyWebsiteCall(upstream, args ?? {});
+      const rawPayload = await proxyWebsiteCall(upstream, args ?? {});
+      const payload = upstream === 'list_pending_suggestions'
+        ? withNativeIphoneAutomationPriority(rawPayload)
+        : rawPayload;
       return {
         content: [{ type: 'text', text: JSON.stringify(payload, null, 2) }],
         isError: false,
