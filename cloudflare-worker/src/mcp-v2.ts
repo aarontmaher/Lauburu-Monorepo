@@ -199,6 +199,32 @@ async function buildProjectWorkStatus(env: Env): Promise<unknown> {
  */
 const FRESHNESS_WINDOW_MS_V2 = 10 * 60 * 1000;
 
+/**
+ * Canonical freshness signal used by every v2 tool that surfaces a
+ * timestamped row. Keeping the shape identical across
+ * project.get_current_state, mobile.get_*, and handoff.get_latest is
+ * what makes "MCP fresh vs stale" a checkable invariant for rule 11.
+ */
+export interface FreshnessSignalV2 {
+  updatedAt: string | null;
+  ageMs: number | null;
+  isStale: boolean;
+  staleReason: 'fresh' | 'no_writeback' | 'env_missing';
+  windowMs: number;
+}
+
+function computeFreshness(updatedAt: string | null, configured: boolean): FreshnessSignalV2 {
+  if (!configured) {
+    return { updatedAt: null, ageMs: null, isStale: true, staleReason: 'env_missing', windowMs: FRESHNESS_WINDOW_MS_V2 };
+  }
+  const ageMs = updatedAt ? Date.now() - new Date(updatedAt).getTime() : null;
+  const isStale = ageMs === null ? true : ageMs > FRESHNESS_WINDOW_MS_V2;
+  const staleReason: FreshnessSignalV2['staleReason'] = updatedAt === null
+    ? 'no_writeback'
+    : isStale ? 'no_writeback' : 'fresh';
+  return { updatedAt, ageMs, isStale, staleReason, windowMs: FRESHNESS_WINDOW_MS_V2 };
+}
+
 async function buildProjectCurrentState(env: Env): Promise<unknown> {
   const generatedAt = new Date().toISOString();
   const adapter = getSupabaseAdapter(env);
@@ -506,7 +532,20 @@ async function buildHandoffLatest(env: Env): Promise<unknown> {
   }
 
   entries.sort((a, b) => (b.generatedAt ?? '').localeCompare(a.generatedAt ?? ''));
-  return { schemaVersion: 1, generatedAt, entries, publicPreview: true };
+  // Freshness anchor = newest mobile-source entry (mirror of
+  // connector_handoff). Website entries stay informational; their
+  // generatedAt does not gate freshness because the website MCP write
+  // path is currently unauthorised from this worker (see
+  // docs/MCP_CANONICAL_STATE.md).
+  const mobileEntry = entries.find((e) => e.source === 'mobile') ?? null;
+  return {
+    schemaVersion: 1,
+    generatedAt,
+    source: adapter.configured && mobileEntry ? ('supabase' as const) : ('placeholder' as const),
+    freshness: computeFreshness(mobileEntry?.generatedAt ?? null, adapter.configured),
+    entries,
+    publicPreview: true,
+  };
 }
 function pickWebsiteHandoffTime(payload: unknown): string | null {
   if (!payload || typeof payload !== 'object') return null;
@@ -534,8 +573,31 @@ async function buildMobileControlCentre(env: Env): Promise<unknown> {
 }
 async function buildMobileFullSingle(env: Env, table: string): Promise<unknown> {
   const adapter = getSupabaseAdapter(env);
-  if (!adapter.configured) return { error: 'supabase not configured' };
-  return (await adapter.fetchSingleRowPayload(table)) ?? null;
+  const generatedAt = new Date().toISOString();
+  if (!adapter.configured) {
+    return {
+      schemaVersion: 1,
+      generatedAt,
+      source: 'placeholder' as const,
+      freshness: computeFreshness(null, false),
+      payload: null,
+      error: 'supabase not configured',
+    };
+  }
+  const payload = (await adapter.fetchSingleRowPayload(table)) ?? null;
+  // Row-level updatedAt comes from payload.generatedAt (the row's
+  // canonical timestamp written by the bridge). The Postgres
+  // generated_at column is what the bridge mirrors into payload.
+  const updatedAt = (payload && typeof (payload as { generatedAt?: unknown }).generatedAt === 'string')
+    ? (payload as { generatedAt: string }).generatedAt
+    : null;
+  return {
+    schemaVersion: 1,
+    generatedAt,
+    source: payload ? ('supabase' as const) : ('placeholder' as const),
+    freshness: computeFreshness(updatedAt, true),
+    payload,
+  };
 }
 async function buildMobileCoderLanes(env: Env): Promise<unknown> {
   const adapter = getSupabaseAdapter(env);
