@@ -476,12 +476,21 @@ print(f"wrote {handoff_path}")
 
 WRITER_ENV_FILES = [
     os.path.join(ROOT, ".env.local"),
+    os.path.join(ROOT, ".env.writer"),
     os.path.join(ROOT, ".env"),
     os.path.join(ROOT, "cloudflare-worker", ".dev.vars"),
 ]
 WRITER_ENV_KEYS = {"SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"}
 
 def load_writer_env_files():
+    """Load WRITER_ENV_KEYS from local gitignored env files.
+
+    Earlier-listed files take priority (do NOT override an already-set
+    env). Only key NAMES are logged; values never reach stdout. Returns
+    a dict mapping each WRITER_ENV_KEYS key to the relative file path
+    it came from (or 'env' / 'missing').
+    """
+    provenance = {k: ("env" if os.environ.get(k) else "missing") for k in WRITER_ENV_KEYS}
     for env_path in WRITER_ENV_FILES:
         if not os.path.isfile(env_path):
             continue
@@ -501,8 +510,15 @@ def load_writer_env_files():
             value = value.strip().strip('"').strip("'")
             if value:
                 os.environ[key] = value
+                rel = os.path.relpath(env_path, ROOT)
+                provenance[key] = rel
+    return provenance
 
-load_writer_env_files()
+WRITER_ENV_PROVENANCE = load_writer_env_files()
+print("supabase writer env (names only, never values):")
+for key in sorted(WRITER_ENV_KEYS):
+    src = WRITER_ENV_PROVENANCE.get(key, "missing")
+    print(f"  {key}: {src}")
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
