@@ -88,9 +88,9 @@ this file.
     control-centre are the source of truth. Anything intended
     to drive coder / agent / Aaron action MUST be promoted
     into the repo-backed flow.
-11. **MCP-first start.** Before starting any new task, every
-    coder / agent / ChatGPT MUST check the MCP / control-centre
-    state. Required check order:
+11. **MCP-first start.** Before any project action or answer,
+    every coder / agent / ChatGPT MUST check the Grappling Map
+    MCP Core state. Required check order:
     1. `get_work_status` (or `mobile.get_work_status` /
        `project.get_current_state` on `/mcp/v2`)
     2. `list_pending_suggestions` (website MCP) /
@@ -102,11 +102,17 @@ this file.
     `stale` (per the `freshness.staleReason` field on
     `project.get_current_state`); compare with terminal /
     control-centre if needed; only then choose the next task.
-    If MCP is stale, say "MCP stale", use the latest
-    terminal / control-centre state as fallback, AND continue
-    fixing MCP canonical sync as a priority. Never start from
-    memory, Apple Notes, screenshots, or old docs unless the
-    MCP / control-centre is unavailable.
+    If MCP is **stale** (responding but `staleReason` set), say
+    "MCP stale", use the latest local bridge / terminal /
+    control-centre artefacts as fallback, AND continue fixing
+    MCP canonical sync as a priority.
+    If MCP Core is **unavailable** (not responding, 5xx, or
+    DNS failure), say so clearly, **STOP** any audit / task /
+    answer that depends on live project state, and do **NOT**
+    fall back to memory, Apple Notes, screenshots, or old docs
+    unless Aaron explicitly approves a "fallback mode" for
+    that specific question. Never start from memory in any
+    other case.
 12. **Coders run all laptop commands; Aaron approves from
     phone.** Aaron's role is approval, not execution. Coders
     (Claude / Codex) run every laptop command in

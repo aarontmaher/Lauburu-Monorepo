@@ -8,7 +8,7 @@ Companion to:
 - `docs/MCP_PHONE_CONTROL_CENTRE.md` (live MCP read paths)
 - `docs/CONTROL_CENTRE_MVP_SPEC.md` (in-app Admin/Dev surface)
 
-Updated 2026-05-07.
+Updated 2026-05-08.
 
 ## DO NOT USE — `mcp.lauburugrapplingmap.com`
 
@@ -26,6 +26,38 @@ The canonical ChatGPT-facing URL is the workers.dev preview path
 documented in § 1 below. If a chat shows a connector named
 "GrapplingMap System" with weird tool names, it's wired to the
 wrong host — re-create per § 1.
+
+## MCP-first rule (operating rule 11) — for every ChatGPT chat
+
+Once the connector is set up (next section), ChatGPT MUST honour
+the project's **MCP-first** operating rule. Paste this rule into
+the system message / first message of any chat that uses the
+Lauburu MCP connector to do project work:
+
+> **Before any project action or answer, call Grappling Map MCP
+> Core first.** Use `project.get_current_state` (or
+> `mobile.get_work_status` / `project.get_overview` /
+> `handoff.get_latest`) to learn the live state. Report what MCP
+> says, plus its freshness — `fresh` vs `stale` per the
+> `freshness.staleReason` field. Only then choose the next task.
+>
+> If MCP is **stale** (responding but `staleReason` is set), say
+> "MCP stale", use the latest local bridge / terminal /
+> control-centre artefacts as fallback, and flag canonical sync
+> as a priority.
+>
+> If MCP Core is **unavailable** (not responding / 5xx / DNS
+> failure / connector cannot create), say so clearly, **STOP**
+> the task, and do **NOT** fall back to memory, Apple Notes,
+> screenshots, or old docs unless Aaron explicitly approves a
+> "fallback mode" for that specific question.
+>
+> Never start from memory in any other case.
+
+The canonical body of rule 11 lives at
+[`docs/OPERATING_RULES.md`](OPERATING_RULES.md) § "11. MCP-first
+start" and at the live MCP tool `project.get_operating_rules`.
+Both are kept in sync by the Worker contract test.
 
 ## 1. Setup — what to paste into ChatGPT
 
@@ -293,7 +325,8 @@ curl -sS -X POST -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' "$URL" \
   | sed 's/^event: message$//;s/^data: //' \
   | jq '.result.tools | {count: length, namespaces: [.[].name | split(".")[0]] | unique}'
-# Expected: { "count": 43, "namespaces": ["handoff","integrations","mobile","project","update_work_status","website"] }
+# Expected (verified 2026-05-08): { "count": 50, "namespaces": ["handoff","integrations","mobile","project","qa","release","submit_priority_suggestion","update_work_status","website"] }
+# Per-namespace counts: project=7, mobile=11, website=25, qa=2, integrations=1, handoff=1, release=1, plus 2 unprefixed write tools.
 
 # 3. tools/call public-safe (No Auth)
 curl -sS -X POST -H "Content-Type: application/json" \
@@ -325,7 +358,7 @@ Expected: `ok: true`, `serverInfo.name = "lauburu-mcp-unified"`,
 
 | URL | What it is | Use? |
 |---|---|---|
-| `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2` | THIS codebase's unified MCP — 43 tools (project.* / mobile.* / integrations.* / handoff.* / website.* proxied) | **YES — the canonical ChatGPT URL** |
+| `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2` | THIS codebase's unified MCP — **50 tools** (project=7 / mobile=11 / integrations=1 / handoff=1 / qa=2 / release=1 / website.*=25 proxied / 2 unprefixed write tools) | **YES — the canonical ChatGPT URL** |
 | `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/public` | THIS codebase's legacy preview — 4 tools | yes, additive; safe to keep alongside |
 | `https://mcp.lauburugrapplingmap.com/mcp` | website project's MCP (`GrapplingMap System v1.27.0`) | only if you want website-project state directly; tool overlap with `website.*` proxy on /mcp/v2 |
 | `https://mcp.lauburugrapplingmap.com/mcp/v2` | **does NOT exist — returns 404** | NO — common mistake; the custom domain only hosts `/mcp` (no `/v2` path) |
@@ -338,12 +371,12 @@ website project's separate codebase and does not host `/mcp/v2`.
 
 ChatGPT's custom-MCP connector currently surfaces **at most ~30
 tools** per connector inside a chat. The unified `/mcp/v2`
-exposes **43 tools** (project + mobile + integrations + handoff
-+ website proxy). When the chat's selected tool list is over
-the cap, ChatGPT silently drops the tail — the connector still
-appears connected and the model "sees" tool names in some
-contexts, but tool invocation routes to "tool not found" or
-silently no-ops.
+exposes **50 tools** (project + mobile + integrations + handoff
++ qa + release + 25-tool website proxy). When the chat's selected
+tool list is over the cap, ChatGPT silently drops the tail — the
+connector still appears connected and the model "sees" tool names
+in some contexts, but tool invocation routes to "tool not found"
+or silently no-ops.
 
 ### Working around the cap
 
@@ -424,3 +457,124 @@ curl -sS -X POST -H "content-type: application/json" \
 If the tools list comes back empty or `get_public_mcp_health`
 errors, the Worker has been redeployed without the public
 handler — re-run the deploy step in `docs/MCP_PHONE_CONTROL_CENTRE.md`.
+
+## 10. Failure-mode quick reference
+
+Five common ChatGPT-side failure modes and the exact fix for
+each. If the curls in § 7 succeed but ChatGPT still misbehaves,
+your symptom is in this list.
+
+### 10.1 "Tool appears in Drafts only"
+
+ChatGPT's custom MCP connectors are surfaced in **Project**
+(formerly "Drafts") chats and through the **Connectors** picker
+in standard chats — but not every chat type sees them
+automatically.
+
+- **Symptom**: connector exists in Settings → Connectors, but
+  the chat composer doesn't list it; ChatGPT says "I don't have
+  any custom tools."
+- **Fix**:
+  1. In the ChatGPT chat composer, tap the connector / "+" /
+     "tools" picker and explicitly enable the **Lauburu MCP
+     (unified)** connector for that chat.
+  2. If you're in a Project (Drafts) chat, the connector is
+     scoped to that Project — verify the Project's Connector
+     list includes Lauburu MCP.
+  3. If the connector is still missing, this is an account-level
+     enablement issue: the Custom MCP feature is gated on the
+     ChatGPT plan tier (Plus / Pro / Team / Enterprise).
+     There is no Worker-side fix.
+
+### 10.2 "Fresh chat required"
+
+ChatGPT snapshots the connector's `tools/list` response when the
+chat is opened. Tools added to the Worker after the chat started
+are NOT visible inside that chat.
+
+- **Symptom**: existing chat lists fewer tools than § 7's
+  curl returns; calling a recently-added tool fails with "tool
+  not found"; closing and reopening the chat doesn't help (chat
+  history retains the snapshot).
+- **Fix**: open a **brand-new chat**. Older chats stay locked
+  to their original snapshot.
+
+### 10.3 "POST forbidden" (401 / 403 / 405)
+
+The connector form rejects the URL with a 4xx, OR ChatGPT
+shows "connection failed" on save.
+
+- **Common causes**:
+  1. URL points at the private `/mcp` (no `/v2`) on the workers
+     subdomain — that's the admin-token-gated route. ChatGPT's
+     custom-connector form on most plan tiers does not currently
+     expose a Bearer-token field, so saves fail. **Fix**: paste
+     `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2`
+     (this is the unified endpoint; public-safe tools are
+     callable with No Auth).
+  2. URL points at `https://mcp.lauburugrapplingmap.com/mcp/v2`
+     — that path returns **404** because the custom domain only
+     hosts `/mcp` (and routes there to the website project's
+     `GrapplingMap System` MCP, not this codebase). **Fix**:
+     same as above — use the workers.dev URL.
+  3. Trailing slash or extra path component (`/mcp/v2/` or
+     `/mcp/v2/tools/list`) — the form expects exactly the base
+     path. **Fix**: drop trailing slash; do not include a method
+     path.
+  4. URL points at a deprecated worker hostname — only
+     `lauburu-mcp-preview.lauburu-aaron.workers.dev` is the
+     currently-deployed preview. **Fix**: confirm exact spelling.
+
+### 10.4 "Public listing only"
+
+The connector lists tools fine, but every tool call returns
+`admin token required for this tool` or returns sanitised /
+counts-only payloads.
+
+- **Symptom**: `mobile.get_<full>` calls fail with the admin-
+  token-required content block. Public tools (`mobile.get_<full>_overview`,
+  `project.get_*`, `integrations.get_overview`, `handoff.*`,
+  `website.*`) work.
+- **Cause**: this is intentional. ChatGPT's custom connector is
+  configured **No Auth**, which scopes the surface to public-
+  safe tools only. Admin tools (`mobile.get_<full>`) require the
+  admin token, which **must not** be pasted into a public web UI.
+- **Fix**: for project status questions, prompt ChatGPT to call
+  `project.get_current_state`, `mobile.get_<full>_overview`,
+  `handoff.get_latest`, or any other public-safe tool. Full-
+  fidelity reads stay on the laptop (`/mcp` admin route + token
+  in Mac Keychain — see § 6).
+
+### 10.5 "Wrong auth type"
+
+The connector form accepted the URL but no tools resolve, or
+calls fail with "401 Unauthorized" / "missing token".
+
+- **Symptom**: `tools/list` returns empty; tool calls error
+  with auth-shaped messages; or the connector is configured
+  with **Bearer Token** / **API Key** and saves but fails.
+- **Cause**: confusion between auth modes. The unified
+  `/mcp/v2` endpoint is **layered**:
+  - **No Auth** — covers `project.*`, `mobile.*_overview`,
+    `integrations.get_overview`, `handoff.*`, `website.*`
+    proxies. This is the correct ChatGPT setup.
+  - **Bearer (admin)** — covers `mobile.get_<full>` and any
+    write tool (`project.update_work_status`,
+    `project.submit_priority_suggestion`, etc). ChatGPT's custom
+    connector form does NOT reliably expose this; even when
+    saved, calls may fail because ChatGPT does not always
+    forward the auth header in MCP transport. Do NOT configure
+    Bearer here — admin reads belong on the laptop.
+- **Fix**: set Authentication = **No Auth** in the ChatGPT
+  connector form. Admin reads and any write actions belong on
+  the laptop / Claude Code / Codex sessions, never in the
+  ChatGPT custom-connector form.
+
+### 10.6 Production-cutover gotcha
+
+`https://mcp.lauburugrapplingmap.com/mcp/v2` is the **future**
+canonical URL once Stage 5 of `docs/CLOUDFLARE_MIGRATION.md`
+flips DNS. **Today (2026-05-08) it returns 404**. Aaron's
+ChatGPT connector should NOT be reconfigured to that URL until
+the migration doc records Stage 5 = DONE. Until then, paste the
+workers.dev URL exactly.

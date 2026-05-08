@@ -76,13 +76,18 @@ ChatGPT status / Codex / terminal check) generated from a
 structured `OwnerWorkflowContext`. No paid LLM. Long-press to
 copy → paste into the runner of choice.
 
-Every copied prompt begins with the MCP-first operating rule:
-check `get_work_status`, `list_pending_suggestions`,
+Every copied prompt begins with the MCP-first operating rule
+(rule 11): check `get_work_status`, `list_pending_suggestions`,
 `get_automation_state`, `get_handoff`, then `/api/control_centre`
 if available; report MCP state, freshness/staleness, chosen next
 task, and whether fallback terminal / control-centre state was
 needed. Stale MCP must be called out as "MCP stale" before using
-fallback state.
+local bridge / terminal / control-centre fallback. If MCP Core
+is **unavailable** (not responding / 5xx / DNS failure), the
+worker MUST say so clearly and STOP any task that depends on
+live project state — no fallback to memory / Apple Notes /
+screenshots / old docs unless Aaron explicitly approves a
+"fallback mode" for that specific question.
 
 The copied prompt also repeats the build/status guardrails: parallel
 non-overlapping coder lanes; `Implementation-complete, awaiting
