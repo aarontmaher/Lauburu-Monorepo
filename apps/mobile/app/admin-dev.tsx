@@ -313,6 +313,57 @@ function mcpFreshnessSummary(current: McpV2CurrentState | null): {
   return { label: `MCP live · fresh · ${ageLabel}`, stale, reason, updatedAt, ageLabel, ageMs };
 }
 
+interface DeveloperModeRecommendation {
+  recommendation: 'keep_on' | 'safe_to_turn_off' | 'unknown';
+  shortLabel: string;
+  reason: string;
+}
+
+function summariseDeveloperModeRecommendation(
+  freshness: ReturnType<typeof mcpFreshnessSummary>,
+  releaseGate: ReleaseGateSummary,
+  laneHeartbeat: LaneHeartbeatSummary,
+): DeveloperModeRecommendation {
+  // Defensive defaults — Developer Mode stays ON unless every signal
+  // says otherwise. See docs/MCP_LONGTERM_ACCESS_ARCHITECTURE.md § 2
+  // for the canonical criteria. Mobile only checks the device-side
+  // signals it can read; a fully "safe to turn OFF" verdict still
+  // requires Aaron to confirm the off-device steps (Surface B
+  // shipped, push wiring shipped, no active MCP-creation-fix
+  // prompts).
+  const reasons: string[] = [];
+  if (freshness.stale) {
+    reasons.push(`MCP freshness ${freshness.reason}`);
+  }
+  if (laneHeartbeat.ok && laneHeartbeat.driftWarning) {
+    reasons.push('lane drift suspected');
+  }
+  if (!releaseGate.ok) {
+    reasons.push('release gate not loaded');
+  } else if (releaseGate.iosAllowed === null && releaseGate.androidAllowed === null) {
+    reasons.push('release gate booleans unknown');
+  }
+  if (!freshness.stale && (!laneHeartbeat.ok || !laneHeartbeat.driftWarning) && releaseGate.ok) {
+    return {
+      recommendation: 'safe_to_turn_off',
+      shortLabel: 'Developer Mode safe to turn OFF (device-side)',
+      reason: 'MCP freshness fresh, lane heartbeat fresh, release gate readable. Off-device prerequisites (Surface B, push wiring, no active MCP fix prompts) still apply — confirm before flipping the toggle.',
+    };
+  }
+  if (reasons.length === 0) {
+    return {
+      recommendation: 'unknown',
+      shortLabel: 'Developer Mode status unknown',
+      reason: 'Not enough signal yet — refresh and check back.',
+    };
+  }
+  return {
+    recommendation: 'keep_on',
+    shortLabel: 'Keep Developer Mode ON',
+    reason: reasons.join(' · '),
+  };
+}
+
 interface LaneHeartbeatSummary {
   ok: boolean;
   laneCount: number;
@@ -809,6 +860,7 @@ export default function AdminDevScreen() {
   const releaseGateSummary = summariseReleaseGate(mcpV2Snapshot);
   const laneOverviewSummary = summariseLaneOverview(mcpV2Snapshot);
   const laneHeartbeat = summariseLaneHeartbeat(mcpCurrentState);
+  const developerModeRecommendation = summariseDeveloperModeRecommendation(mcpFreshness, releaseGateSummary, laneHeartbeat);
   const nowPriority = mcpCurrentState?.currentPriority ?? connectorWork?.currentPriority ?? CURRENT_PRIORITY;
   const nowBlocker = mcpCurrentState?.currentBlocker ?? connectorWork?.currentBlocker ?? 'No MCP blocker reported.';
   const nowNextAction = mcpCurrentState?.nextAction ?? connectorWork?.nextAction ?? NEXT_ACTION;
@@ -1005,6 +1057,16 @@ export default function AdminDevScreen() {
             <Text style={styles.chipLabel}>Live writeback</Text>
             <Text style={styles.chipBody}>MCP freshness is live ({mcpFreshness.ageLabel}). Rule 12 is active: coders run laptop commands; Aaron approves from phone.</Text>
             <Text style={styles.note}>Updated {mcpFreshness.updatedAt}</Text>
+          </View>
+        )}
+        {isAdmin && (
+          <View style={developerModeRecommendation.recommendation === 'keep_on' ? styles.warningBlock : styles.chipBlock}>
+            <Text style={styles.chipLabel}>Developer Mode</Text>
+            <Text style={styles.chipBody}>{developerModeRecommendation.shortLabel}</Text>
+            <Text style={styles.note}>{developerModeRecommendation.reason}</Text>
+            <Text style={styles.note}>
+              Off-device prerequisites: Surface B shipped, push wiring shipped, no active MCP-creation-fix prompts. See docs/MCP_LONGTERM_ACCESS_ARCHITECTURE.md § 2 for the full criteria.
+            </Text>
           </View>
         )}
         <View style={styles.chipBlock}>
