@@ -311,7 +311,14 @@ in dependency order:
 1. `CODEX-FS-XXX-ALL-IDLE-PUSH-NOTIFICATION-01`
    (`docs/CONTROL_CENTRE_MVP_SPEC.md` § 10) — push wiring
    foundation. Ships expo-notifications setup that everything
-   else builds on.
+   else builds on. **Foundation tier landed in commit
+   `c6fb518` ("PushApproval: add lazy expo-notifications
+   scaffold + pure mapper")** — provides
+   `apps/mobile/src/services/push-approval-notifications.ts`
+   + `packages/shared/src/approval-gates/push.ts` + a
+   pure-mapper test in
+   `cloudflare-worker/test/test-push-approval-action-mapping.ts`.
+   Subsequent tiers (handoffs 2–5 below) build on this.
 2. `CODEX-FS-XXX-HUMAN-APPROVAL-GATE-IMPL-01`
    (`docs/HUMAN_APPROVAL_GATE_SPEC.md` § 6) — base approval-
    gate state machine + admin-dev approval centre + the
