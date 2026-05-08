@@ -15,6 +15,7 @@ import {
   buildIphoneMirroringManifest,
   buildMaestroManifest,
   buildScrcpyAndroidManifest,
+  buildAgentBundleManifest,
   indexPrefix,
   isFilenameSuspicious,
   labelToScreenSlug,
@@ -22,6 +23,7 @@ import {
   parseIphoneMirroringArgs,
   parseMaestroArgs,
   parseScrcpyAndroidArgs,
+  parseAgentBundleArgs,
 } from '../../scripts/audit-screenshots-helpers.mjs';
 
 function assert(cond: unknown, label: string): asserts cond {
@@ -357,5 +359,56 @@ assert(s2.nonInteractive === true, 'parseScrcpyAndroidArgs --non-interactive');
 assert(s2.dryRun === true, 'parseScrcpyAndroidArgs --dry-run');
 
 assert(parseScrcpyAndroidArgs(['--android-version-code', 'oops']).androidVersionCode === null, 'parseScrcpyAndroidArgs rejects non-int');
+
+// ── Agent-bundle manifest ───────────────────────────────────────────
+
+const bundle = buildAgentBundleManifest({
+  generatedAt: '2026-05-09T12:00:00.000Z',
+  repo: { branch: 'main', shortHead: '14bbf62' },
+  build: { appVersion: '0.1.0', androidVersionCode: 20, iosBuildNumber: '20', iosBundleIdentifier: 'com.lauburu.grapplingmap', androidPackage: 'com.lauburu.grapplingmap' },
+  mcp: {
+    generatedAt: '2026-05-09T11:59:30.000Z',
+    ageMs: 30_000,
+    staleReason: 'fresh',
+    priority: 'Health connectivity Phase 1 mobile truth labels',
+    nextAction: 'Agent audit Health Manage Sources on Android and iPhone.',
+  },
+  sources: [
+    { tier: 'simulator', path: 'artifacts/agent-bundles/foo/simulator', manifest: 'manifest.json', capturedAt: '2026-05-09T11:55:00.000Z', screenCount: 9 },
+    { tier: 'maestro', path: 'artifacts/agent-bundles/foo/maestro', manifest: 'manifest.json', capturedAt: '2026-05-09T11:58:00.000Z', screenCount: 12 },
+  ],
+  notes: 'overnight bundle',
+});
+assert(bundle.schemaVersion === 1, 'agent-bundle: schemaVersion === 1');
+assert(bundle.captureMethod === 'agent_bundle', 'agent-bundle: captureMethod marker');
+assert(bundle.repo.shortHead === '14bbf62', 'agent-bundle: repo.shortHead preserved');
+assert(bundle.mcp.staleReason === 'fresh', 'agent-bundle: mcp.staleReason preserved');
+assert(bundle.mcp.ageMs === 30_000, 'agent-bundle: mcp.ageMs preserved');
+assert(bundle.sources.length === 2, 'agent-bundle: 2 sources');
+assert(bundle.sources[0].tier === 'simulator', 'agent-bundle: source order preserved');
+assert(bundle.sources[1].screenCount === 12, 'agent-bundle: screenCount preserved');
+assert(bundle.notes === 'overnight bundle', 'agent-bundle: notes preserved');
+
+const bundleJunk = buildAgentBundleManifest({
+  mcp: { ageMs: 'oops' as any, priority: 12345 as any },
+  sources: [
+    { tier: 'foo' } as any,                                                        // missing path
+    { path: 'no-tier' } as any,                                                    // missing tier
+    { tier: 'maestro', path: 'ok', screenCount: 'bad' as any },                    // bad screenCount → 0
+  ],
+});
+assert(bundleJunk.mcp.ageMs === null, 'agent-bundle junk: bad ageMs → null');
+assert(bundleJunk.mcp.priority === null, 'agent-bundle junk: numeric priority → null');
+assert(bundleJunk.sources.length === 1, 'agent-bundle junk: malformed sources dropped');
+assert(bundleJunk.sources[0].screenCount === 0, 'agent-bundle junk: bad screenCount → 0');
+
+const ag1 = parseAgentBundleArgs([]);
+assert(ag1.include === null && ag1.exclude === null && ag1.mcpUrl === null && ag1.dryRun === false, 'parseAgentBundleArgs default empty');
+
+const ag2 = parseAgentBundleArgs(['--include', 'simulator,maestro', '--exclude', 'scrcpy', '--mcp-url', 'https://x', '--dry-run']);
+assert(ag2.include === 'simulator,maestro', 'parseAgentBundleArgs --include');
+assert(ag2.exclude === 'scrcpy', 'parseAgentBundleArgs --exclude');
+assert(ag2.mcpUrl === 'https://x', 'parseAgentBundleArgs --mcp-url');
+assert(ag2.dryRun === true, 'parseAgentBundleArgs --dry-run');
 
 console.log('audit-screenshots manifest contract test passed.');

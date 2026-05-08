@@ -18,6 +18,7 @@
     "audit:iphone-mirroring": "node scripts/iphone-mirroring-audit.mjs",
     "audit:android-scrcpy": "node scripts/audit-android-scrcpy.mjs",
     "audit:maestro": "node scripts/audit-maestro.mjs",
+    "audit:agent-bundle": "node scripts/audit-agent-bundle.mjs",
     "mcp:test:live": "cd chat-app && npx tsx src/server/scripts/test-mcp-worker-live.ts",
     "mcp:test:public-redaction": "cd cloudflare-worker && npx tsx test/test-mcp-public-redaction.ts",
     "rules:test": "cd cloudflare-worker && npx tsx test/test-operating-rules.ts",

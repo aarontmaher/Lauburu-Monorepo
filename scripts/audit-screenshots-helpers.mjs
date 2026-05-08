@@ -248,6 +248,60 @@ export function buildScrcpyAndroidManifest(input) {
   };
 }
 
+/**
+ * Build the index manifest for an Agent-ready bundle that
+ * stitches together the latest capture from every audit tier
+ * (simulator + iPhone Mirroring + scrcpy + Maestro) plus a
+ * snapshot of the current MCP state. The intent is one folder
+ * Aaron / Codex / Claude can hand to Agent without picking
+ * across timestamp dirs.
+ */
+export function buildAgentBundleManifest(input) {
+  const generatedAt = isString(input?.generatedAt) ? input.generatedAt : new Date().toISOString();
+  const sources = Array.isArray(input?.sources) ? input.sources : [];
+  return {
+    schemaVersion: 1,
+    captureMethod: 'agent_bundle',
+    generatedAt,
+    repo: sanitizeRepo(input?.repo),
+    build: sanitizeBuild(input?.build),
+    mcp: {
+      generatedAt: isString(input?.mcp?.generatedAt) ? input.mcp.generatedAt : null,
+      ageMs: typeof input?.mcp?.ageMs === 'number' && input.mcp.ageMs >= 0 ? input.mcp.ageMs : null,
+      staleReason: isString(input?.mcp?.staleReason) ? input.mcp.staleReason : null,
+      priority: isString(input?.mcp?.priority) ? input.mcp.priority.slice(0, 280) : null,
+      nextAction: isString(input?.mcp?.nextAction) ? input.mcp.nextAction.slice(0, 280) : null,
+    },
+    sources: sources
+      .map((s) => {
+        if (!s || typeof s !== 'object') return null;
+        if (!isString(s.tier) || !isString(s.path)) return null;
+        return {
+          tier: s.tier,
+          path: s.path,
+          manifest: isString(s.manifest) ? s.manifest : null,
+          capturedAt: isString(s.capturedAt) ? s.capturedAt : null,
+          screenCount: Number.isInteger(s.screenCount) && s.screenCount >= 0 ? s.screenCount : 0,
+        };
+      })
+      .filter((s) => s !== null),
+    notes: isString(input?.notes) ? input.notes : '',
+  };
+}
+
+export function parseAgentBundleArgs(argv) {
+  const out = { include: null, exclude: null, mcpUrl: null, dryRun: false };
+  for (let i = 0; i < argv.length; i += 1) {
+    const a = argv[i];
+    const next = argv[i + 1];
+    if (a === '--include' && next) { out.include = next; i += 1; }
+    else if (a === '--exclude' && next) { out.exclude = next; i += 1; }
+    else if (a === '--mcp-url' && next) { out.mcpUrl = next; i += 1; }
+    else if (a === '--dry-run') out.dryRun = true;
+  }
+  return out;
+}
+
 export function parseScrcpyAndroidArgs(argv) {
   const out = {
     watchDir: null,
