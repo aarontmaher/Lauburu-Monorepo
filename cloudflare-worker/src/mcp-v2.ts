@@ -1454,7 +1454,30 @@ async function submitProjectPrioritySuggestion(_env: Env, args?: unknown): Promi
   };
 }
 
+async function buildProjectPing(_env: Env): Promise<unknown> {
+  return {
+    schemaVersion: 1,
+    ok: true,
+    serverInfo: SERVER_INFO,
+    surface: 'core' as const,
+    transport: 'streamable-http' as const,
+    protocolVersion: PROTOCOL_VERSION,
+    auth: 'no_auth' as const,
+    publicSafe: true,
+    timestamp: new Date().toISOString(),
+    note: 'project.ping is a tiny diagnostic — no Supabase fetch, no proxies. If a client can call this tool but no other tool, the issue is upstream (Supabase / website MCP), not the MCP transport.',
+  };
+}
+
 const LOCAL_TOOLS: readonly LocalToolEntry[] = [
+  {
+    name: 'project.ping',
+    description: 'Tiny zero-dependency diagnostic. Returns serverInfo + protocolVersion + transport + timestamp + a publicSafe flag. Use this from a ChatGPT custom connector or Anthropic Agent first to verify the MCP transport is reachable; if it succeeds but project.get_current_state fails, the issue is the Supabase mirror, not MCP. Public-safe; no auth.',
+    inputSchema: { type: 'object', properties: {}, required: [] },
+    auth: 'public',
+    surface: 'core',
+    build: buildProjectPing,
+  },
   {
     name: 'project.get_overview',
     description: 'Cross-project aggregate: top mobile priority, open manual-steps count, website pending suggestions count. No free text > 120 chars. Public-safe.',

@@ -18,11 +18,13 @@ function assert(cond: unknown, label: string): asserts cond {
   }
 }
 
-// /mcp/v2 (post-trim) advertises EXACTLY these 8 tools — under
+// /mcp/v2 (post-trim) advertises EXACTLY these 9 tools — well under
 // ChatGPT's ~30-tool picker cap. Admin reads + non-core public
 // extras live at /mcp/v2/admin and are exercised separately
-// against that surface below.
+// against that surface below. project.ping is the zero-dependency
+// diagnostic for clients that fail on richer tools.
 const CORE_TOOLS = [
+  'project.ping',
   'project.get_current_state',
   'project.get_operating_rules',
   'project.get_work_status',
@@ -34,6 +36,7 @@ const CORE_TOOLS = [
 ] as const;
 
 const CORE_PUBLIC_TOOLS = [
+  'project.ping',
   'project.get_current_state',
   'project.get_operating_rules',
   'project.get_work_status',
@@ -162,6 +165,33 @@ async function main(): Promise<void> {
     assert(body.result?.isError === false, `${name} is not a tool error`);
     assert(body.result?.content?.[0]?.type === 'text', `${name} returns text content`);
   }
+
+  // project.ping shape — Agent / ChatGPT diagnostic must remain
+  // dependency-free so it answers when richer tools cannot.
+  const ping = await rpc({
+    jsonrpc: '2.0',
+    id: 'project.ping.shape',
+    method: 'tools/call',
+    params: { name: 'project.ping', arguments: {} },
+  });
+  const pingBody = await ping.json() as { result?: { content?: Array<{ text: string }>; isError?: boolean } };
+  assert(pingBody.result?.isError === false, 'project.ping is not a tool error');
+  const pingPayload = JSON.parse(pingBody.result?.content?.[0]?.text ?? '{}') as {
+    ok?: boolean;
+    publicSafe?: boolean;
+    transport?: string;
+    protocolVersion?: string;
+    auth?: string;
+    surface?: string;
+    timestamp?: string;
+  };
+  assert(pingPayload.ok === true, 'project.ping reports ok true');
+  assert(pingPayload.publicSafe === true, 'project.ping reports publicSafe true');
+  assert(pingPayload.transport === 'streamable-http', 'project.ping advertises streamable-http transport');
+  assert(pingPayload.protocolVersion === '2025-03-26', 'project.ping carries protocolVersion 2025-03-26');
+  assert(pingPayload.auth === 'no_auth', 'project.ping advertises no_auth');
+  assert(pingPayload.surface === 'core', 'project.ping reports surface core');
+  assert(typeof pingPayload.timestamp === 'string' && pingPayload.timestamp.length > 0, 'project.ping returns ISO timestamp');
 
   const integrations = await rpc({
     jsonrpc: '2.0',
