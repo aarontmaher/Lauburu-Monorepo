@@ -318,6 +318,7 @@ def load_latest_agent_status():
 # MCP can expose release-gate state without a new Supabase table.
 
 AGENT_QA_PATH = os.path.join(OUT_DIR, "agent_qa_result.json")
+ACTION_LEDGER_PATH = os.path.join(ROOT, "data", "action-ledger", "pending_actions.json")
 
 def _qa_result_status(value):
     v = str(value or "not_tested")
@@ -402,6 +403,114 @@ def load_agent_qa_result():
         "privateDetails": as_clean_str(data.get("privateDetails"), 2000, "") or None,
     }
 
+def _action_status(value):
+    v = str(value or "pending")
+    return v if v in {"pending", "active", "completed", "blocked", "void", "superseded"} else "pending"
+
+def _action_record(raw):
+    if not isinstance(raw, dict):
+        return None
+    action_id = as_clean_str(raw.get("id"), 100, "")
+    action_text = as_clean_str(raw.get("actionText"), 280, "")
+    if not action_id or not action_text:
+        return None
+    status = _action_status(raw.get("status"))
+    return {
+        "id": action_id,
+        "owner": as_clean_str(raw.get("owner"), 80, "unknown"),
+        "targetWorkerOrPerson": as_clean_str(raw.get("targetWorkerOrPerson"), 80, "unknown"),
+        "lane": as_clean_str(raw.get("lane"), 120, "general"),
+        "actionText": action_text,
+        "triggerCondition": as_clean_str(raw.get("triggerCondition"), 240, ""),
+        "status": status,
+        "priority": as_clean_str(raw.get("priority"), 20, "P3"),
+        "createdAt": as_clean_str(raw.get("createdAt"), 24, now_iso),
+        "updatedAt": as_clean_str(raw.get("updatedAt"), 24, now_iso),
+        "evidenceSummaryOrLink": as_clean_str(raw.get("evidenceSummaryOrLink"), 240, ""),
+        "voidReason": as_clean_str(raw.get("voidReason"), 200, "") or None,
+        "supersededBy": as_clean_str(raw.get("supersededBy"), 100, "") or None,
+    }
+
+def load_action_ledger():
+    if not os.path.exists(ACTION_LEDGER_PATH):
+        return {
+            "schemaVersion": 1,
+            "generatedAt": now_iso,
+            "source": "bridge_default",
+            "pendingActions": [],
+            "completedActions": [],
+            "voidedActions": [],
+            "summary": {
+                "pendingCount": 0,
+                "activeCount": 0,
+                "blockedCount": 0,
+                "voidedCount": 0,
+                "nextPendingAction": None,
+            },
+        }
+    try:
+        with open(ACTION_LEDGER_PATH) as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        data = {}
+    if not isinstance(data, dict):
+        data = {}
+
+    pending_raw = data.get("pendingActions") if isinstance(data.get("pendingActions"), list) else []
+    completed_raw = data.get("completedActions") if isinstance(data.get("completedActions"), list) else []
+    voided_raw = data.get("voidedActions") if isinstance(data.get("voidedActions"), list) else []
+    pending = [_action_record(x) for x in pending_raw]
+    completed = [_action_record(x) for x in completed_raw]
+    voided = [_action_record(x) for x in voided_raw]
+    pending = [x for x in pending if x]
+    completed = [x for x in completed if x]
+    voided = [x for x in voided if x]
+    active_count = sum(1 for x in pending if x["status"] == "active")
+    blocked_count = sum(1 for x in pending if x["status"] == "blocked")
+    next_action = None
+    active_or_pending = [x for x in pending if x["status"] in {"active", "pending", "blocked"}]
+    if active_or_pending:
+        next_action = {
+            "id": active_or_pending[0]["id"],
+            "owner": active_or_pending[0]["owner"],
+            "targetWorkerOrPerson": active_or_pending[0]["targetWorkerOrPerson"],
+            "lane": active_or_pending[0]["lane"],
+            "actionText": active_or_pending[0]["actionText"],
+            "triggerCondition": active_or_pending[0]["triggerCondition"],
+            "status": active_or_pending[0]["status"],
+            "priority": active_or_pending[0]["priority"],
+        }
+
+    priorities = data.get("currentPriorityOrder") if isinstance(data.get("currentPriorityOrder"), list) else []
+    compact_priorities = []
+    for item in priorities[:10]:
+        if not isinstance(item, dict):
+            continue
+        compact_priorities.append({
+            "rank": item.get("rank") if isinstance(item.get("rank"), int) else None,
+            "id": as_clean_str(item.get("id"), 100, ""),
+            "title": as_clean_str(item.get("title"), 160, ""),
+            "status": as_clean_str(item.get("status"), 80, ""),
+            "evidenceRequirement": as_clean_str(item.get("evidenceRequirement"), 220, ""),
+        })
+
+    return {
+        "schemaVersion": 1,
+        "generatedAt": as_clean_str(data.get("generatedAt"), 24, now_iso),
+        "source": as_clean_str(data.get("source"), 120, "repo_action_ledger"),
+        "currentPriorityOrder": compact_priorities,
+        "pendingActions": pending[:50],
+        "completedActions": completed[:50],
+        "voidedActions": voided[:50],
+        "summary": {
+            "pendingCount": len(pending),
+            "activeCount": active_count,
+            "blockedCount": blocked_count,
+            "voidedCount": len(voided),
+            "nextPendingAction": next_action,
+        },
+    }
+
 # ── Build payload ─────────────────────────────────────────────────────
 CAP_SUMMARY = 1200
 SUMMARY_TAIL_LINES = 12
@@ -482,6 +591,7 @@ coder_lanes_payload = {
 terminal_entries = load_terminal_entries()
 latest_agent_status = load_latest_agent_status()
 agent_qa_result = load_agent_qa_result()
+action_ledger = load_action_ledger()
 terminal_summary_payload = {
     "schemaVersion": 1,
     "generatedAt": now_iso,
@@ -511,6 +621,7 @@ handoff_payload = {
     "safeToBuildReason":
         "Bridge-derived handoff. Owner has not flipped safeToBuild=true via the in-app Admin/Dev surface.",
     "agentQaResult": agent_qa_result,
+    "actionLedger": action_ledger,
 }
 
 # Defense-in-depth: redact every string in the bridge-derived payloads.

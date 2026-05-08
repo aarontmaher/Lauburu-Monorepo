@@ -419,6 +419,7 @@ async function buildProjectCurrentState(env: Env): Promise<unknown> {
     adapter.fetchSingleRowPayload('connector_handoff') as Promise<{
       generatedAt?: string;
       agentQaResult?: unknown;
+      actionLedger?: unknown;
     } | null>,
   ]);
 
@@ -502,6 +503,7 @@ async function buildProjectCurrentState(env: Env): Promise<unknown> {
   const branch = work?.repoStatus?.branch && branchRe.test(work.repoStatus.branch) ? work.repoStatus.branch : null;
   const head = safeShortCommit(work?.repoStatus?.head);
   const latestQaGate = buildPublicQaGate(handoff?.agentQaResult ?? null);
+  const actionLedger = buildPublicActionLedgerSummary(handoff?.actionLedger ?? null);
 
   const haveAnyRow = work !== null || (lanes !== null && lanes.length > 0) || build !== null || handoff !== null;
 
@@ -533,7 +535,53 @@ async function buildProjectCurrentState(env: Env): Promise<unknown> {
       repo: { branch, shortHead: head },
     },
     latestQaGate,
+    actionLedger,
     safety: safetyBaseline,
+  };
+}
+
+function buildPublicActionLedgerSummary(ledger: unknown): unknown | null {
+  if (!ledger || typeof ledger !== 'object') return null;
+  const value = ledger as Record<string, unknown>;
+  const summary = value.summary && typeof value.summary === 'object'
+    ? value.summary as Record<string, unknown>
+    : {};
+  const next = summary.nextPendingAction && typeof summary.nextPendingAction === 'object'
+    ? summary.nextPendingAction as Record<string, unknown>
+    : null;
+  const priorities = Array.isArray(value.currentPriorityOrder)
+    ? value.currentPriorityOrder.slice(0, 5).map((item) => {
+        const row = item && typeof item === 'object' ? item as Record<string, unknown> : {};
+        return {
+          rank: typeof row.rank === 'number' ? row.rank : null,
+          id: typeof row.id === 'string' ? row.id.slice(0, 80) : null,
+          title: typeof row.title === 'string' ? row.title.slice(0, 140) : null,
+          status: typeof row.status === 'string' ? row.status.slice(0, 60) : null,
+        };
+      }).filter((item) => item.id || item.title)
+    : [];
+
+  return {
+    schemaVersion: 1,
+    generatedAt: typeof value.generatedAt === 'string' ? value.generatedAt : null,
+    pendingCount: typeof summary.pendingCount === 'number' ? summary.pendingCount : 0,
+    activeCount: typeof summary.activeCount === 'number' ? summary.activeCount : 0,
+    blockedCount: typeof summary.blockedCount === 'number' ? summary.blockedCount : 0,
+    voidedCount: typeof summary.voidedCount === 'number' ? summary.voidedCount : 0,
+    nextPendingAction: next
+      ? {
+          id: typeof next.id === 'string' ? next.id.slice(0, 80) : null,
+          owner: typeof next.owner === 'string' ? next.owner.slice(0, 60) : null,
+          targetWorkerOrPerson: typeof next.targetWorkerOrPerson === 'string' ? next.targetWorkerOrPerson.slice(0, 60) : null,
+          lane: typeof next.lane === 'string' ? next.lane.slice(0, 100) : null,
+          status: typeof next.status === 'string' ? next.status.slice(0, 40) : null,
+          priority: typeof next.priority === 'string' ? next.priority.slice(0, 20) : null,
+          actionText: typeof next.actionText === 'string' ? next.actionText.slice(0, 220) : null,
+          triggerCondition: typeof next.triggerCondition === 'string' ? next.triggerCondition.slice(0, 220) : null,
+        }
+      : null,
+    topPriorities: priorities,
+    publicSafe: true,
   };
 }
 
@@ -771,12 +819,20 @@ async function buildHandoffLatest(env: Env): Promise<unknown> {
       latestClaudePrompt?: string | null;
       latestCodexPrompt?: string | null;
       manualSteps?: unknown[];
+      actionLedger?: { summary?: { pendingCount?: unknown; activeCount?: unknown; blockedCount?: unknown } };
     } | null;
     if (payload) {
+      const ledger = payload.actionLedger?.summary ?? {};
+      const pending = typeof ledger.pendingCount === 'number' ? ledger.pendingCount : null;
+      const active = typeof ledger.activeCount === 'number' ? ledger.activeCount : null;
+      const blocked = typeof ledger.blockedCount === 'number' ? ledger.blockedCount : null;
+      const ledgerSuffix = pending === null
+        ? ''
+        : ` actions pending=${pending} active=${active ?? 0} blocked=${blocked ?? 0}`;
       entries.push({
         source: 'mobile',
         generatedAt: typeof payload.generatedAt === 'string' ? payload.generatedAt : null,
-        summary: `mobile bridge handoff — claude=${payload.latestClaudePrompt ?? '—'} codex=${payload.latestCodexPrompt ?? '—'}`.slice(0, 200),
+        summary: `mobile bridge handoff — claude=${payload.latestClaudePrompt ?? '—'} codex=${payload.latestCodexPrompt ?? '—'}${ledgerSuffix}`.slice(0, 200),
         manualStepsCount: Array.isArray(payload.manualSteps) ? payload.manualSteps.length : null,
       });
     }

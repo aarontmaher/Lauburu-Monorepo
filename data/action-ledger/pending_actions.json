@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-05-08T03:32:27Z",
+  "source": "codex-priority-list-nonblocking-backlog-action-ledger-01",
+  "currentPriorityOrder": [
+    {
+      "rank": 1,
+      "id": "gate-health-connectivity-phase-1",
+      "title": "Health connectivity Phase 1 mobile truth labels + installed-device QA gate",
+      "status": "active",
+      "evidenceRequirement": "Installed Android internal and iPhone TestFlight QA recorded through bridge:agent-qa; repo-only and simulator-only evidence do not clear the gate."
+    },
+    {
+      "rank": 2,
+      "id": "fs019-native-iphone-control-centre",
+      "title": "Native iPhone/TestFlight automation controls with safe admin-gated actions",
+      "status": "next_after_gate",
+      "evidenceRequirement": "Installed app can read live MCP state with clear freshness labels; write actions remain backend/admin gated with no secrets in mobile."
+    },
+    {
+      "rank": 3,
+      "id": "fs020-journal-import-parser",
+      "title": "FS-020 journal import parser/macros confirmation and UI handoff",
+      "status": "awaiting_agent_confirmation",
+      "evidenceRequirement": "Agent confirms parser fixtures/privacy behavior before B-20d UI begins."
+    },
+    {
+      "rank": 4,
+      "id": "p1-actionable-home",
+      "title": "P1 actionable home screen",
+      "status": "queued_after_current_gate",
+      "evidenceRequirement": "Current health/release gate no longer blocks mobile product work."
+    },
+    {
+      "rank": 5,
+      "id": "p2-start-training",
+      "title": "P2 Start Training / Drill Timer on home",
+      "status": "queued_after_p1",
+      "evidenceRequirement": "P1 path is stable or bundled safely."
+    },
+    {
+      "rank": 6,
+      "id": "product-decisions-p4-p9",
+      "title": "P4-P9 product decisions",
+      "status": "needs_aaron_decision",
+      "evidenceRequirement": "Aaron explicitly approves or rejects each decision."
+    },
+    {
+      "rank": 7,
+      "id": "code-can-build-c1-c5",
+      "title": "C1-C5 code-can-build graph improvements",
+      "status": "queued_support_work",
+      "evidenceRequirement": "Non-conflicting build graph support is scoped and verified without starting EAS."
+    }
+  ],
+  "pendingActions": [
+    {
+      "id": "qa-ios-build-19-dispatch-result",
+      "owner": "Claude",
+      "targetWorkerOrPerson": "Claude",
+      "lane": "iOS QA build dispatch",
+      "actionText": "Record the iOS build 19 QA dispatch result, including GitHub Actions/EAS/TestFlight status, without promoting publicly.",
+      "triggerCondition": "Claude's iOS EAS QA build dispatch finishes or fails.",
+      "status": "active",
+      "priority": "P0",
+      "createdAt": "2026-05-08T03:32:27Z",
+      "updatedAt": "2026-05-08T03:32:27Z",
+      "evidenceSummaryOrLink": "Needs build/run URL, status, and whether build 19 becomes available in TestFlight.",
+      "voidReason": null,
+      "supersededBy": null
+    },
+    {
+      "id": "qa-android-versioncode-18-dispatch",
+      "owner": "Aaron",
+      "targetWorkerOrPerson": "Claude",
+      "lane": "Android internal QA build",
+      "actionText": "Dispatch Android internal QA build for versionCode 18 only after Aaron approval and current iOS/build gate context is clear.",
+      "triggerCondition": "Aaron approves Android QA build dispatch after release-gate checks remain satisfied.",
+      "status": "pending",
+      "priority": "P0",
+      "createdAt": "2026-05-08T03:32:27Z",
+      "updatedAt": "2026-05-08T03:32:27Z",
+      "evidenceSummaryOrLink": "Needs explicit Aaron approval, command output, run URL/status, and Play Internal availability.",
+      "voidReason": null,
+      "supersededBy": null
+    },
+    {
+      "id": "installed-device-qa-after-builds",
+      "owner": "Aaron",
+      "targetWorkerOrPerson": "Agent",
+      "lane": "Installed mobile QA / release gate",
+      "actionText": "Run installed-device QA on actual Android internal and iPhone TestFlight builds, recording exact versionCode/buildNumber and non-private evidence.",
+      "triggerCondition": "iOS build 19 and/or Android versionCode 18 are available to install.",
+      "status": "pending",
+      "priority": "P0",
+      "createdAt": "2026-05-08T03:32:27Z",
+      "updatedAt": "2026-05-08T03:32:27Z",
+      "evidenceSummaryOrLink": "AGENT_QA_RESULT_JSON must show installed build numbers; repo_only and simulator evidence do not clear gates.",
+      "voidReason": null,
+      "supersededBy": null
+    },
+    {
+      "id": "agent-qa-json-writeback",
+      "owner": "Codex",
+      "targetWorkerOrPerson": "Codex",
+      "lane": "MCP bridge / Agent QA results",
+      "actionText": "Ingest the installed-device Agent QA JSON with npm run bridge:agent-qa, then refresh MCP with npm run bridge:snapshot.",
+      "triggerCondition": "Agent or Aaron provides a completed installed-device AGENT_QA_RESULT_JSON.",
+      "status": "pending",
+      "priority": "P0",
+      "createdAt": "2026-05-08T03:32:27Z",
+      "updatedAt": "2026-05-08T03:32:27Z",
+      "evidenceSummaryOrLink": "bridge:agent-qa succeeds; latestQaGate reflects installed-device QA and releaseGate booleans truthfully.",
+      "voidReason": null,
+      "supersededBy": null
+    },
+    {
+      "id": "fs020-parser-agent-confirmation",
+      "owner": "Agent",
+      "targetWorkerOrPerson": "Agent",
+      "lane": "FS-020 journal import parser/macros",
+      "actionText": "Functionally audit FS-020 parser fixtures, term normalization, macro derivation, and privacy/RLS expectations.",
+      "triggerCondition": "Parser implementation is implementation-complete and awaiting Agent confirmation.",
+      "status": "pending",
+      "priority": "P1",
+      "createdAt": "2026-05-08T03:32:27Z",
+      "updatedAt": "2026-05-08T03:32:27Z",
+      "evidenceSummaryOrLink": "Agent confirmation or required-fix JSON; no private journal data in evidence.",
+      "voidReason": null,
+      "supersededBy": null
+    },
+    {
+      "id": "fs020-b20d-ui-after-parser-confirmation",
+      "owner": "Codex",
+      "targetWorkerOrPerson": "Codex",
+      "lane": "FS-020 journal import UI",
+      "actionText": "Start B-20d journal import UI only after parser confirmation or with explicitly non-conflicting scaffolding.",
+      "triggerCondition": "FS-020 parser confirmation arrives or Agent says B-20d can proceed.",
+      "status": "pending",
+      "priority": "P1",
+      "createdAt": "2026-05-08T03:32:27Z",
+      "updatedAt": "2026-05-08T03:32:27Z",
+      "evidenceSummaryOrLink": "Agent parser confirmation and scoped B-20d prompt.",
+      "voidReason": null,
+      "supersededBy": null
+    },
+    {
+      "id": "p1p2-after-health-release-gate",
+      "owner": "Codex",
+      "targetWorkerOrPerson": "Codex",
+      "lane": "Mobile home P1/P2",
+      "actionText": "Resume actionable home and Start Training work only after the health/release gate no longer owns the top priority.",
+      "triggerCondition": "Health connectivity Phase 1 release gate is cleared, superseded, or explicitly deprioritized.",
+      "status": "pending",
+      "priority": "P2",
+      "createdAt": "2026-05-08T03:32:27Z",
+      "updatedAt": "2026-05-08T03:32:27Z",
+      "evidenceSummaryOrLink": "MCP currentPriority changes away from health/release gate or Aaron explicitly redirects.",
+      "voidReason": null,
+      "supersededBy": null
+    }
+  ],
+  "completedActions": [],
+  "voidedActions": [
+    {
+      "id": "legacy-chatgpt-mcp-unavailable-summary",
+      "owner": "Codex",
+      "targetWorkerOrPerson": "Codex",
+      "lane": "MCP connector readiness",
+      "actionText": "Treat old summaries saying ChatGPT cannot call MCP v2 as obsolete.",
+      "triggerCondition": "ChatGPT MCP v2 read tools are callable.",
+      "status": "void",
+      "priority": "P3",
+      "createdAt": "2026-05-08T03:32:27Z",
+      "updatedAt": "2026-05-08T03:32:27Z",
+      "evidenceSummaryOrLink": "MCP v2 read tools are in use; no-auth writes remain blocked by design.",
+      "voidReason": "Superseded by working MCP v2 read path and no-auth write safety model.",
+      "supersededBy": "public-read-only-plus-admin-gated-write-model"
+    }
+  ]
+}
