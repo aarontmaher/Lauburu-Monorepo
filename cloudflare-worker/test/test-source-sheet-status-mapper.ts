@@ -11,6 +11,7 @@
  */
 
 import {
+  HC_DID_NOT_REGISTER_STATUS,
   SOURCE_SHEET_STATUS_TO_TRUTH_LABEL,
   mapSourceSheetStatusToTruthLabel,
 } from '../../apps/mobile/src/components/primitives/source-status-mapper';
@@ -30,6 +31,8 @@ function expectAll(): void {
     ['Sync failed — retry', 'stale'],
     ['Permission needed', 'setup required'],
     ['Sync needed', 'setup required'],
+    // Android Health Connect — app-not-listed-with-HC fallback.
+    [HC_DID_NOT_REGISTER_STATUS, 'setup required'],
     // WHOOP Direct
     ['Awaiting cycle', 'live'],
     ['Partial', 'seed/provisional'],
@@ -39,6 +42,9 @@ function expectAll(): void {
     ['Stale', 'stale'],
     ['Unknown', 'missing'],
   ];
+  if (HC_DID_NOT_REGISTER_STATUS !== 'Health Connect did not register') {
+    throw new Error(`[FAIL] HC_DID_NOT_REGISTER_STATUS drifted from the literal HealthActionsPanel writes; got ${JSON.stringify(HC_DID_NOT_REGISTER_STATUS)}`);
+  }
   for (const [input, expected] of expectations) {
     assertEq(mapSourceSheetStatusToTruthLabel(input), expected, `mapSourceSheetStatusToTruthLabel(${JSON.stringify(input)})`);
   }

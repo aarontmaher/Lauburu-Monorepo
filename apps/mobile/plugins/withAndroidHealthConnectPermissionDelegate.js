@@ -15,6 +15,22 @@ const HEALTH_RATIONALE_ACTION = 'androidx.health.ACTION_SHOW_PERMISSIONS_RATIONA
 const DELEGATE_IMPORT = 'import dev.matinzd.healthconnect.permissions.HealthConnectPermissionDelegate';
 const DELEGATE_CALL = 'HealthConnectPermissionDelegate.setPermissionDelegate(this)';
 
+// Android 14+ (API 34) requires a separate <activity-alias> with the
+// VIEW_PERMISSION_USAGE intent + HEALTH_PERMISSIONS category for
+// Health Connect's "Apps & permissions" UI to actually list the app.
+// Without this alias, HC's Apps screen does NOT show the app even
+// though manifest permissions and the rationale intent-filter are in
+// place — exactly the v20 symptom Aaron observed on installed
+// hardware. The alias targets MainActivity so HC routes back into
+// the app on tap, but lives on its own activity-alias so HC's intent
+// resolver can find it without conflict with the launcher filter.
+//
+// Reference: developer.android.com/health-and-fitness/guides/health-connect/develop/get-started
+const VIEW_PERMISSION_USAGE_ALIAS_NAME = '.ViewPermissionUsageActivity';
+const VIEW_PERMISSION_USAGE_PERMISSION = 'android.permission.START_VIEW_PERMISSION_USAGE';
+const VIEW_PERMISSION_USAGE_ACTION = 'android.intent.action.VIEW_PERMISSION_USAGE';
+const HEALTH_PERMISSIONS_CATEGORY = 'android.intent.category.HEALTH_PERMISSIONS';
+
 function ensureHealthConnectManifest(config) {
   return withAndroidManifest(config, (mod) => {
     const manifest = mod.modResults.manifest;
@@ -51,6 +67,34 @@ function ensureHealthConnectManifest(config) {
     }
 
     mainActivity['intent-filter'] = intentFilters;
+
+    // Android 14+ — register the activity-alias HC uses to route
+    // permission-usage requests back into the app, which is the
+    // signal HC's "Apps & permissions" UI uses to list the app.
+    // Idempotent: skip if an alias with this name already exists.
+    const aliases = application?.['activity-alias'] ?? [];
+    const hasAlias = aliases.some(
+      (alias) => alias?.$?.['android:name'] === VIEW_PERMISSION_USAGE_ALIAS_NAME,
+    );
+    if (!hasAlias) {
+      aliases.push({
+        $: {
+          'android:name': VIEW_PERMISSION_USAGE_ALIAS_NAME,
+          'android:exported': 'true',
+          'android:targetActivity': '.MainActivity',
+          'android:permission': VIEW_PERMISSION_USAGE_PERMISSION,
+        },
+        'intent-filter': [
+          {
+            action: [{ $: { 'android:name': VIEW_PERMISSION_USAGE_ACTION } }],
+            category: [{ $: { 'android:name': HEALTH_PERMISSIONS_CATEGORY } }],
+          },
+        ],
+      });
+    }
+    if (application) {
+      application['activity-alias'] = aliases;
+    }
     return mod;
   });
 }

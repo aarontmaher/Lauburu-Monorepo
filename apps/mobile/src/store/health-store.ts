@@ -240,6 +240,17 @@ interface HealthState {
   /** Error from last operation */
   error: string | null;
 
+  /**
+   * Last Health Connect permission-request registration outcome
+   * (Android only). Set by the platform service after
+   * `requestPermissions()` resolves. `'did_not_register'` is the
+   * UI-visible signal that HC's "Apps & permissions" screen still
+   * does not list the app — usually because the OS never displayed
+   * the system permissions dialog. Default 'unknown' on iOS or
+   * before any request has run.
+   */
+  hcRegistrationStatus: 'unknown' | 'registered' | 'did_not_register';
+
   /** Check permissions without requesting */
   checkPermissions: () => Promise<void>;
 
@@ -395,6 +406,8 @@ export const useHealthStore = create<HealthState>((set, get) => ({
 
   error: null,
 
+  hcRegistrationStatus: 'unknown',
+
   checkPermissions: async () => {
     try {
       const service = safeGetHealthService(); if (!service) { set({ error: "Health service unavailable" }); return; }
@@ -409,13 +422,25 @@ export const useHealthStore = create<HealthState>((set, get) => ({
     try {
       const service = safeGetHealthService(); if (!service) { set({ error: "Health service unavailable" }); return false; }
       const perms = await service.requestPermissions();
-      set({ permissions: perms, error: null });
+      // Android service exposes `didLastPermissionRequestFailToRegister`
+      // — read it through a duck-type so the iOS service path is
+      // unaffected. Anything other than the explicit
+      // 'did_not_register' reading is treated as 'registered' so we
+      // never falsely accuse a working device.
+      let nextRegistrationStatus: 'unknown' | 'registered' | 'did_not_register' = 'registered';
+      try {
+        const probe: unknown = (service as any)?.didLastPermissionRequestFailToRegister;
+        if (typeof probe === 'function' && probe.call(service) === true) {
+          nextRegistrationStatus = 'did_not_register';
+        }
+      } catch { /* probe unavailable on iOS; ignore */ }
+      set({ permissions: perms, error: null, hcRegistrationStatus: nextRegistrationStatus });
       const anyAuthorized = Object.values(perms.permissions).some(
         (s) => s === 'authorized',
       );
       return anyAuthorized;
     } catch (e: any) {
-      set({ error: e?.message ?? 'Permission request failed' });
+      set({ error: e?.message ?? 'Permission request failed', hcRegistrationStatus: 'unknown' });
       return false;
     }
   },

@@ -42,7 +42,7 @@ import { SafeErrorBoundary } from './SafeErrorBoundary';
 import { HealthConnectAvailabilityHint } from './HealthConnectAvailabilityHint';
 import { HealthConnectDebugCard } from './HealthConnectDebugCard';
 import { SourceChip } from './primitives/SourceChip';
-import { mapSourceSheetStatusToTruthLabel } from './primitives/source-status-mapper';
+import { mapSourceSheetStatusToTruthLabel, HC_DID_NOT_REGISTER_STATUS } from './primitives/source-status-mapper';
 import { parsePolarExport, type PolarSession } from '../../../../packages/shared/src/backend/services/polar/parse-polar-export';
 import {
   getNativeHealthSourceCopy,
@@ -1897,7 +1897,9 @@ function HealthSourceSheet(props: SheetProps) {
     : '';
   const nativeCopy = getNativeHealthSourceCopy(Platform.OS);
   const nativeHealthHubLabel = nativeCopy.hubLabel;
-  const nativeHealthMeta = appleHealthConnected
+  // Defer the hcDidNotRegister hint until after the registration
+  // status is read below — append to the meta string at render time.
+  const nativeHealthMetaBase = appleHealthConnected
     ? `${nativeHealthHubLabel} · ${healthDays} day${healthDays === 1 ? '' : 's'} · ${ageLabel(healthLastSyncAt)}${hcMetricLine}${hcProvenanceLine}${samsungHcHint}`
     : healthLastSyncAt
       ? `${nativeHealthHubLabel} · synced but no recent records found · ${ageLabel(healthLastSyncAt)}${hcMetricLine}${hcProvenanceLine}${samsungHcHint}`
@@ -1906,7 +1908,19 @@ function HealthSourceSheet(props: SheetProps) {
         : `${nativeHealthHubLabel} · not connected yet.${samsungHcHint}`;
   const nativeHealthSyncFailed = !!healthError && !(healthDays > 0 && healthLastSyncAt);
   const nativeHealthPermissionNeeded = !nativeAnyAuthorized;
-  const nativeHealthStatusLabel = nativeHealthSyncFailed
+  // Android-only: when the Health Connect runtime probe reports the
+  // last requestPermission round-trip resolved silently with zero
+  // grants, surface a distinct status. Distinct from
+  // 'Permission needed' because the user cannot fix it from the OS
+  // dialog (HC never showed one) — they need to retry the request
+  // so HC re-registers the app.
+  const hcRegistrationStatus = useHealthStore((s) => s.hcRegistrationStatus);
+  const hcDidNotRegister = Platform.OS === 'android'
+    && hcRegistrationStatus === 'did_not_register'
+    && nativeHealthPermissionNeeded;
+  const nativeHealthStatusLabel = hcDidNotRegister
+    ? HC_DID_NOT_REGISTER_STATUS
+    : nativeHealthSyncFailed
     ? 'Sync failed — retry'
     : nativeHealthPermissionNeeded
       ? 'Permission needed'
@@ -1915,6 +1929,9 @@ function HealthSourceSheet(props: SheetProps) {
     : healthLastSyncAt
       ? 'Connected — no data'
       : 'Sync needed';
+  const nativeHealthMeta = hcDidNotRegister
+    ? `${nativeHealthMetaBase} Health Connect did not register the app — open Health Connect → Apps and verify Lauburu Grappling Map appears, then tap Retry permission request.`
+    : nativeHealthMetaBase;
 
   // Stale detection — only when the freshest known date is more than
   // 2 days behind local today. WHOOP normally scores overnight, so
@@ -2028,7 +2045,16 @@ function HealthSourceSheet(props: SheetProps) {
         },
       ] : [
         {
-          label: busy === 'hc-connect' ? 'Connecting…' : 'Connect',
+          // When the runtime detects the OS rejected the permission
+          // intent silently, relabel the primary action so the user
+          // understands tapping again is the recovery path (HC will
+          // attempt to register the app on the second request, now
+          // that the activity-alias is present in the manifest).
+          label: busy === 'hc-connect'
+            ? 'Connecting…'
+            : hcDidNotRegister
+              ? 'Retry permission request'
+              : 'Connect',
           onPress: onConnectHealthConnect,
           disabled: busy != null,
           kind: 'primary',
