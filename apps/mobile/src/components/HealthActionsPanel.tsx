@@ -41,6 +41,8 @@ import { readStoredJson, writeStoredJson } from '../store/secure-storage';
 import { SafeErrorBoundary } from './SafeErrorBoundary';
 import { HealthConnectAvailabilityHint } from './HealthConnectAvailabilityHint';
 import { HealthConnectDebugCard } from './HealthConnectDebugCard';
+import { SourceChip } from './primitives/SourceChip';
+import { mapSourceSheetStatusToTruthLabel } from './primitives/source-status-mapper';
 import { parsePolarExport, type PolarSession } from '../../../../packages/shared/src/backend/services/polar/parse-polar-export';
 import {
   getNativeHealthSourceCopy,
@@ -1913,15 +1915,6 @@ function HealthSourceSheet(props: SheetProps) {
     : healthLastSyncAt
       ? 'Connected — no data'
       : 'Sync needed';
-  const nativeHealthStatusColor = nativeHealthSyncFailed
-    ? '#ff6b6b'
-    : nativeHealthPermissionNeeded
-      ? '#d4e157'
-      : appleHealthConnected
-    ? '#4ade80'
-    : healthLastSyncAt
-      ? '#d4e157'
-      : '#888';
 
   // Stale detection — only when the freshest known date is more than
   // 2 days behind local today. WHOOP normally scores overnight, so
@@ -1992,7 +1985,6 @@ function HealthSourceSheet(props: SheetProps) {
       key="apple"
       name={nativeCopy.sourceName}
       status={nativeHealthStatusLabel}
-      statusColor={nativeHealthStatusColor}
       meta={nativeHealthMeta}
       actions={appleHealthConnected || healthLastSyncAt || nativeAnyAuthorized ? (isIos ? [
         {
@@ -2078,13 +2070,6 @@ function HealthSourceSheet(props: SheetProps) {
         : whoopState === 'config_missing' ? 'Setup required'
         : whoopState === 'auth_required' ? 'Not connected'
         : 'Unknown'
-      }
-      statusColor={
-        whoopState === 'connected' ? '#4ade80'
-        : isAwaitingTodaysCycle ? '#4ade80'
-        : whoopState === 'partial' ? '#ffa500'
-        : whoopState === 'error' ? '#ff6b6b'
-        : '#888'
       }
       meta={whoopMeta}
       actions={isWhoopConnected ? [
@@ -3025,22 +3010,20 @@ function PolarExportRowInner() {
 }
 
 function SourceSheetRow({
-  name, status, statusColor, meta, actions,
+  name, status, meta, actions,
 }: {
   name: string;
   status: string;
-  statusColor: string;
   meta: string;
   actions: SourceAction[];
 }) {
   const visibleActions = actions.filter((a) => !a.hidden);
+  const truthLabel = mapSourceSheetStatusToTruthLabel(status);
   return (
     <View style={styles.sourceRow}>
       <View style={styles.sourceRowHeader}>
         <Text style={styles.sourceName}>{name}</Text>
-        <View style={[styles.sourceChip, { borderColor: statusColor }]}>
-          <Text style={[styles.sourceChipText, { color: statusColor }]}>{status}</Text>
-        </View>
+        <SourceChip state={truthLabel} />
       </View>
       <Text style={styles.sourceMeta}>{meta}</Text>
       {visibleActions.length > 0 && (
