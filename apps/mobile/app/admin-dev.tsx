@@ -295,6 +295,18 @@ type McpV2CurrentState = {
     ios?: { buildNumber?: string | null; status?: string | null } | null;
     repo?: { branch?: string | null; shortHead?: string | null } | null;
   };
+  /**
+   * Overnight Prompt Queue summary surfaced on the public MCP
+   * payload per CODEX-OVERNIGHT-PROMPT-QUEUE-IMPL-01. Counts +
+   * the safe-to-run-unattended flag are public-safe. Full row
+   * content lives behind the admin tool `project.list_overnight_queue`.
+   */
+  overnightQueue?: {
+    count?: number | null;
+    recommendedTaskId?: string | null;
+    safeToRunUnattended?: boolean | null;
+    hasStaleEntries?: boolean | null;
+  } | null;
 };
 
 const WORKER_NEEDS_DIRECTION_STATUSES = new Set([
@@ -947,6 +959,11 @@ export default function AdminDevScreen() {
   const mcpClaudeLane = mcpAgents.find((agent) => agent.id === 'claude') ?? null;
   const mcpCodexLane = mcpAgents.find((agent) => agent.id === 'codex') ?? null;
   const laneProgress: LaneProgressSummary = summariseLaneProgress(mcpCurrentState ?? null);
+  const overnightQueueSummary = mcpCurrentState?.overnightQueue ?? null;
+  const overnightQueueCount = typeof overnightQueueSummary?.count === 'number' ? overnightQueueSummary.count : 0;
+  const overnightQueueHasStale = overnightQueueSummary?.hasStaleEntries === true;
+  const overnightQueueSafeToRun = overnightQueueSummary?.safeToRunUnattended === true;
+  const overnightQueueRecommendedId = typeof overnightQueueSummary?.recommendedTaskId === 'string' ? overnightQueueSummary.recommendedTaskId : null;
   const releaseGateSummary = summariseReleaseGate(mcpV2Snapshot);
   const laneOverviewSummary = summariseLaneOverview(mcpV2Snapshot);
   const laneHeartbeat = summariseLaneHeartbeat(mcpCurrentState);
@@ -1310,6 +1327,34 @@ export default function AdminDevScreen() {
                 </View>
               );
             })}
+          </View>
+        )}
+        {/* Overnight Prompt Queue — admin-only summary surface
+            (counts + the recommended-task pointer + stale flag).
+            Full row content lives behind the admin tool
+            `project.list_overnight_queue` and is not rendered
+            here yet; this block is the always-visible status
+            tile so an idle lane has somewhere to look for the
+            next overnight candidate. Per spec: SECONDARY surface
+            — does NOT reorder the Top-7 priority list. Auto-
+            refreshes via the AppState resume listener added in
+            commit 9f3143a. */}
+        {isAdmin && (
+          <View style={styles.chipBlock}>
+            <Text style={styles.chipLabel}>Overnight queue</Text>
+            <Text style={styles.chipBody}>
+              {overnightQueueSummary == null
+                ? 'MCP has not yet started emitting an overnight queue field — repo-only summariser shipped, awaiting worker wiring.'
+                : overnightQueueCount === 0
+                  ? 'Queue empty. Tag a backlog item with safe_overnight=true and lane_owner to fill it.'
+                  : `${overnightQueueCount} task${overnightQueueCount === 1 ? '' : 's'} queued${overnightQueueRecommendedId ? ` · recommended ${overnightQueueRecommendedId.slice(0, 8)}` : ''}${overnightQueueSafeToRun ? ' · safe to run unattended' : ' · requires Aaron interaction'}`}
+            </Text>
+            {overnightQueueHasStale && (
+              <Text style={styles.note}>One or more queue rows have not been updated in over the stale threshold — refresh or void per Rule 18 (action ledger).</Text>
+            )}
+            <Text style={styles.note}>
+              Recommendation only — Aaron approves before any overnight execution. P0/P1 blockers always win over the queue. No EAS / TestFlight / Play upload overnight without explicit approval per rule 7.
+            </Text>
           </View>
         )}
         {laneHeartbeat.ok && !laneHeartbeat.driftWarning && isAdmin && (
