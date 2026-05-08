@@ -40,6 +40,8 @@ import {
 import { useOwnerWorkflowStore } from '../src/store/owner-workflow-store';
 import { useAuditEventStore } from '../src/store/audit-event-store';
 import { useAdminDevNotificationStore } from '../src/store/admin-dev-notification-store';
+import { useApprovalGatesStore } from '../src/store/approval-gates-store';
+import type { ApprovalGate } from '@lauburu/shared';
 import { fetchAgentStatus, type AgentStatusEntry } from '../src/services/agent-status-client';
 import {
   fetchConnectorSnapshot,
@@ -650,6 +652,18 @@ export default function AdminDevScreen() {
 
   useEffect(() => { void refresh(); }, [refresh]);
 
+  // Approval gates store — local-first; no server writeback yet.
+  const approvalGates = useApprovalGatesStore((s) => s.gates);
+  const approvalRefreshing = useApprovalGatesStore((s) => s.refreshing);
+  const approvalLedgerNotePreview = useApprovalGatesStore((s) => s.ledgerNotePreview);
+  const approvalRecentNotes = useApprovalGatesStore((s) => s.recentLedgerNotes);
+  const hydrateApprovalGates = useApprovalGatesStore((s) => s.hydrate);
+  const refreshApprovalGates = useApprovalGatesStore((s) => s.refresh);
+  const approveApprovalGate = useApprovalGatesStore((s) => s.approve);
+  const deferApprovalGate = useApprovalGatesStore((s) => s.defer);
+  const cancelApprovalGate = useApprovalGatesStore((s) => s.cancel);
+  useEffect(() => { void hydrateApprovalGates(); }, [hydrateApprovalGates]);
+
   const buildInfo = useMemo(() => {
     const expoExtra = Constants.expoConfig?.extra as Record<string, unknown> | undefined;
     const easExtra = expoExtra?.eas as Record<string, unknown> | undefined;
@@ -939,6 +953,51 @@ export default function AdminDevScreen() {
         />
       )}
       <AgentStatusSection />
+
+      <Section title="Approval gates">
+        <Text style={styles.note}>
+          Automation pauses on these gates. Approve to unblock; defer to ping again later; safeDefault applies if a gate expires unanswered. No server writeback yet — approving updates the local cache and emits a ledger note Aaron / Codex can paste into data/action-ledger/pending_actions.json.
+        </Text>
+        <Pressable
+          style={[styles.btn, approvalRefreshing && { opacity: 0.5 }]}
+          disabled={approvalRefreshing}
+          onPress={() => { void refreshApprovalGates(); }}>
+          <Text style={styles.btnText}>{approvalRefreshing ? 'Refreshing…' : 'Apply expiries / refresh gates'}</Text>
+        </Pressable>
+        {approvalGates.length === 0 ? (
+          <Text style={styles.note}>No approval gates loaded.</Text>
+        ) : (
+          approvalGates.map((gate) => (
+            <ApprovalGateRow
+              key={gate.id}
+              gate={gate}
+              onApprove={() => { void approveApprovalGate(gate.id); }}
+              onDefer={(deferUntil) => { void deferApprovalGate(gate.id, deferUntil); }}
+              onCancel={() => { void cancelApprovalGate(gate.id); }}
+            />
+          ))
+        )}
+        {approvalLedgerNotePreview() && (
+          <View style={styles.chipBlock}>
+            <Text style={styles.chipLabel}>Last ledger note (paste into data/action-ledger/pending_actions.json)</Text>
+            <SelectableCopyButton
+              label="Copy last ledger note"
+              body={approvalLedgerNotePreview()}
+              disabledReason="No ledger note yet — approve a gate to emit one."
+            />
+          </View>
+        )}
+        {approvalRecentNotes.length > 1 && (
+          <View style={styles.chipBlock}>
+            <Text style={styles.chipLabel}>Recent ledger notes ({approvalRecentNotes.length})</Text>
+            {approvalRecentNotes.slice().reverse().slice(0, 5).map((note) => (
+              <Text key={`${note.gateId}-${note.at}`} style={styles.note} numberOfLines={3}>
+                {new Date(note.at).toLocaleTimeString()} · {note.gateId} · {note.note}
+              </Text>
+            ))}
+          </View>
+        )}
+      </Section>
 
       <Section title="AI Coach status">
         <Row label="Backend reachable" value={health == null ? '—' : health.ok ? 'yes ✓' : 'no'} />
@@ -2214,6 +2273,75 @@ function Section({ title, children }: { title: string; children: React.ReactNode
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
       {children}
+    </View>
+  );
+}
+
+function ApprovalGateRow({
+  gate,
+  onApprove,
+  onDefer,
+  onCancel,
+}: {
+  gate: ApprovalGate;
+  onApprove: () => void;
+  onDefer: (deferUntil: string) => void;
+  onCancel: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const isActive = gate.status === 'pending' || gate.status === 'deferred';
+  const expiresLabel = (() => {
+    const expires = new Date(gate.expiresAt).getTime();
+    if (!Number.isFinite(expires)) return '—';
+    const remaining = expires - Date.now();
+    if (remaining <= 0) return 'expired';
+    if (remaining < 3_600_000) return `${Math.max(1, Math.floor(remaining / 60_000))}m left`;
+    if (remaining < 86_400_000) return `${Math.floor(remaining / 3_600_000)}h left`;
+    return `${Math.floor(remaining / 86_400_000)}d left`;
+  })();
+  const deferOneDay = () => {
+    const until = new Date(Date.now() + 86_400_000).toISOString();
+    onDefer(until);
+  };
+  return (
+    <View style={styles.chipBlock}>
+      <Pressable onPress={() => setOpen((v) => !v)} hitSlop={6}>
+        <Text style={styles.chipLabel}>
+          {gate.priority} · {gate.actionType} · {gate.status} · {expiresLabel}
+        </Text>
+        <Text style={styles.chipBody}>{gate.title}</Text>
+      </Pressable>
+      {open && (
+        <View style={{ gap: 6, marginTop: 6 }}>
+          <Text style={styles.note}>{gate.description}</Text>
+          {gate.actionPayload && (
+            <Text style={styles.note}>Next step: {gate.actionPayload}</Text>
+          )}
+          <Text style={styles.note}>safeDefault if expired: {gate.safeDefault}</Text>
+          {gate.ledgerActionId && (
+            <Text style={styles.note}>Unblocks ledger: {gate.ledgerActionId}</Text>
+          )}
+          {gate.resolvedAt && (
+            <Text style={styles.note}>
+              Resolved {new Date(gate.resolvedAt).toLocaleString()} by {gate.resolvedBy ?? '—'}
+              {gate.resolutionNote ? ` — ${gate.resolutionNote}` : ''}
+            </Text>
+          )}
+        </View>
+      )}
+      {isActive && (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+          <Pressable style={[styles.btn, { flexGrow: 1, minWidth: 100 }]} onPress={onApprove}>
+            <Text style={styles.btnText}>Approve</Text>
+          </Pressable>
+          <Pressable style={[styles.btn, { flexGrow: 1, minWidth: 100, opacity: 0.85 }]} onPress={deferOneDay}>
+            <Text style={styles.btnText}>Defer 24h</Text>
+          </Pressable>
+          <Pressable style={[styles.btn, { flexGrow: 1, minWidth: 100, opacity: 0.6 }]} onPress={onCancel}>
+            <Text style={styles.btnText}>Cancel</Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }

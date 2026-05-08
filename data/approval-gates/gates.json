@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-05-09T00:00:00Z",
+  "source": "codex-human-approval-push-gate-mvp-01",
+  "note": "Approval gate ring buffer. Only the canonical fields from packages/shared/src/approval-gates/index.ts ApprovalGate. Aaron is the only approver; mobile Admin/Dev → Approval gates renders these.",
+  "gates": [
+    {
+      "id": "gate-android-v20-play-upload",
+      "title": "Approve Android v20 Play Internal upload",
+      "description": "Manually upload v20 AAB to Play Console Internal Testing. EAS build 58071abc finished; AAB pending Aaron drag-drop. v20 carries the Health Connect crash patch and the Health Connect debug-card surface.",
+      "priority": "P0",
+      "actionType": "play_console_upload",
+      "status": "pending",
+      "safeDefault": "wait",
+      "createdAt": "2026-05-08T13:01:40Z",
+      "expiresAt": "2026-05-15T00:00:00Z",
+      "resolvedAt": null,
+      "resolvedBy": null,
+      "deferUntil": null,
+      "resolutionNote": null,
+      "ledgerActionId": "qa-android-versioncode-20-build-dispatched",
+      "actionPayload": "Open Play Console → Lauburu → Testing → Internal testing → Create release → upload ~/Downloads/lauburu-android-versionCode20-health-connect-debug-surface.aab → Save → Review → Start rollout to Internal Testing."
+    },
+    {
+      "id": "gate-mcp-core-worker-deploy",
+      "title": "Approve worker deploy of project.ping diagnostic",
+      "description": "Diagnostic tool added to /mcp/v2 core surface (commit 1081d65). Code is committed but not deployed; existing /mcp/v2 still works without it. Deploy unblocks Agent troubleshooting via project.ping.",
+      "priority": "P2",
+      "actionType": "worker_deploy",
+      "status": "pending",
+      "safeDefault": "wait",
+      "createdAt": "2026-05-08T14:30:00Z",
+      "expiresAt": "2026-05-22T00:00:00Z",
+      "resolvedAt": null,
+      "resolvedBy": null,
+      "deferUntil": null,
+      "resolutionNote": null,
+      "ledgerActionId": null,
+      "actionPayload": "cd cloudflare-worker && npx wrangler deploy --env preview"
+    },
+    {
+      "id": "gate-fs020-agent-qa-recording",
+      "title": "Approve FS-020 journal-import Agent QA on next QA build",
+      "description": "FS-020 journal parser + import UI is committed (70cd98b). The currently-installable Android build is v20 which is the Health Connect retest target — FS-020 UI is in the working tree but not yet on a tester device. Bundle FS-020 with the next QA build and run Agent QA per docs/JOURNAL_IMPORT_QA_HANDOFF.md.",
+      "priority": "P1",
+      "actionType": "other",
+      "status": "pending",
+      "safeDefault": "wait",
+      "createdAt": "2026-05-08T11:28:13Z",
+      "expiresAt": "2026-05-29T00:00:00Z",
+      "resolvedAt": null,
+      "resolvedBy": null,
+      "deferUntil": null,
+      "resolutionNote": null,
+      "ledgerActionId": "fs020-b20d-ui-after-parser-confirmation",
+      "actionPayload": "Bundle FS-020 with next Aaron-approved QA build; Agent QA the import card with synthetic paste fixture; record AGENT_QA_RESULT_JSON via npm run bridge:agent-qa."
+    }
+  ]
+}
