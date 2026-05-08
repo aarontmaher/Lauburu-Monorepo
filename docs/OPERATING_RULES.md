@@ -38,9 +38,24 @@ when the doc changes, the constant must change in the same
 commit, and the live test asserts the two stay in sync (count +
 hash of the rule strings).
 
-Updated 2026-05-08.
+Updated 2026-05-09.
 
-## The twenty-three rules
+> **Read rule 24 first.** Rule 24 is titled "Rule 1 — MCP-first +
+> terminal-truth fallback + no idle lanes" and is the
+> top-priority pre-flight rule. It elevates rule 11 (MCP-first)
+> and rule 19 (coordinator-fed idle lanes) into a single
+> non-negotiable contract that every status reply, audit, or
+> project message MUST satisfy: check MCP first, treat terminal
+> truth as authoritative when MCP is stale or contradicted, and
+> include a recommended next prompt for any lane that is idle,
+> needs-review, needs-user, or complete-waiting-approval. Stale
+> cached `working` MUST NEVER suppress an idle-lane prompt.
+> Rule 24's id is high to keep prior cross-references stable; the
+> rule's TITLE communicates its priority. The hard cost / human-
+> approval / AI-spend / deep-research gates (rules 7, 21, 22, 23)
+> remain floors no recommended-next-prompt can bypass.
+
+## The twenty-four rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -388,6 +403,71 @@ this file.
     rule 22 (AI-spend ladder). Spec:
     `docs/DEEP_RESEARCH_OFFLOAD_SPEC.md`.
 
+24. **Rule 1 — MCP-first + terminal-truth fallback + no idle
+    lanes.** TOP-PRIORITY pre-flight rule. Before every project
+    message, status reply, or audit, the worker / coder / agent
+    / chat lane MUST:
+
+    1. **Check MCP first** per rule 11 — call
+       `project.get_current_state`, `mobile.get_lane_overview`,
+       or `/api/control_centre` and report exactly what MCP
+       says, including `freshness.isStale`,
+       `freshness.staleReason`, and `updatedAt`.
+    2. **Treat terminal truth as authoritative** when MCP is
+       stale (`isStale=true`) OR when MCP is contradicted by a
+       more recent terminal observation (e.g. MCP says lane X is
+       `working` while the tmux pane shows the prompt has
+       returned and the lane is idle). Write a `bridge:snapshot`
+       before responding so the canonical state catches up.
+       **Stale cached `working` MUST NEVER suppress an idle-
+       lane prompt.**
+    3. **Idle / needs-user / needs-review / complete-waiting-
+       approval lanes get a prompt in the same response.** For
+       every lane in any of those states (or any contradicting-
+       terminal-idle reading), the SAME response MUST include a
+       recommended next prompt: `targetWorker` (`claude` /
+       `codex` / `agent` / `chat`), `promptText` or PROMPT-ID
+       summary if the full text is in the action ledger, and an
+       estimated `promptProgressPercent` if known (otherwise
+       the literal string `unknown`; **never silently default
+       to 0%**).
+    4. **MCP / control-centre payload contract.** Per lane,
+       surface: `laneFreshness` (`fresh` | `stale` | `unknown`),
+       `idleStatus` (`idle` | `stale` | `working` | `blocked` |
+       `needs_user` | `needs_review` |
+       `complete_waiting_approval` | `unknown`),
+       `recommendedNextPromptTarget` (lane id),
+       `recommendedNextPromptText` (or `null` if not yet
+       drafted; never fabricated client-side),
+       `recommendedNextPromptSummary` (≤140 chars),
+       `promptProgressPercent` (0..100 integer or `null` /
+       `'unknown'`).
+    5. **UI rendering contract.** The Admin/Dev lane progress
+       strip and any chat-lane status reply MUST render these
+       structured fields verbatim — no progress is rendered
+       as 0%; missing recommendations render as
+       `'queue a prompt'` rather than blank.
+    6. **Conflict resolution.** When this rule and any other
+       rule conflict, this rule wins, **except** for the rule 7
+       EAS-build cost gate, the rule 21 human-approval gate,
+       the rule 22 AI-spend gate, and the rule 23 deep-research
+       offload — those four gates remain hard floors that no
+       recommended-next-prompt may bypass.
+
+    Why id=24 not 1: keeping prior ids stable preserves 500+
+    cross-references in the codebase. The rule's TITLE
+    communicates its priority, and the doc preamble's "Read
+    rule 24 first" directive elevates it. The MCP contract test
+    asserts count=24 with the new id stable.
+
+    Specs: `docs/CONTROL_CENTRE_LANE_PROGRESS.md` (UI / payload
+    contract — to be written as a follow-up batch),
+    `apps/mobile/src/services/lane-progress-summary.ts`
+    (pure summariser used by the mobile Admin/Dev strip).
+    Honours rule 11 (MCP-first), rule 19 (coordinator-fed
+    idle lanes), rule 18 (action ledger), rule 14 (parallel
+    priorities). Hard-floor exceptions: rules 7, 21, 22, 23.
+
 ## Where to find each rule's full body
 
 | Rule # | Full body lives at |
@@ -415,13 +495,14 @@ this file.
 | 21 | This file § rule 21; `docs/HUMAN_APPROVAL_GATE_SPEC.md` (canonical full spec); `docs/CONTROL_CENTRE_MVP_SPEC.md` § approval centre integration; `docs/BACKLOG_AUTOMATION_SYSTEM.md` § approval-gated lanes — paired with rule 7 (EAS cost control), rule 18 (action ledger), rule 20 (push surface) |
 | 22 | This file § rule 22; `docs/AI_SPEND_GATES_SPEC.md` (canonical full spec) — paired with rule 7 (cost control), rule 21 (approval gate state machine + push wiring), `cloudflare-worker/src/data/CONNECTOR_SANITIZATION_RULES.md` (privacy floor) |
 | 23 | This file § rule 23; `docs/DEEP_RESEARCH_OFFLOAD_SPEC.md` (canonical full spec) — paired with rule 7 (cost control), rule 9 (provisional health claims), rule 21 (approval gate state machine), rule 22 (AI-spend ladder; `deep_research_external` cost class) |
+| 24 | This file § rule 24 ("Rule 1 — MCP-first + terminal-truth fallback + no idle lanes"); `apps/mobile/src/services/lane-progress-summary.ts` (mobile UI summariser); `cloudflare-worker/test/test-lane-progress-summary.ts` (pinned contract); `cloudflare-worker/test/test-rule-1-no-idle-prompt.ts` (idle-lane prompt requirement) — paired with rule 11 (MCP-first), rule 14 (parallel priorities), rule 18 (action ledger), rule 19 (coordinator-fed idle lanes); hard-floor exceptions rules 7, 21, 22, 23 |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..23], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..24], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.

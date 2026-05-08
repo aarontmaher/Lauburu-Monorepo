@@ -31,7 +31,23 @@ export interface McpLaneProgressInputAgent {
   updatedAt?: string | null;
   lastSeenAt?: string | null;
   progressPct?: number | null;
+  /**
+   * Free-form recommendation. Treated as `recommendedNextPromptText`
+   * when present. Non-empty server payloads win over the defaulted
+   * "queue a prompt" placeholder. Never fabricated client-side.
+   */
   recommendedNextPrompt?: string | null;
+  /** Server-emitted next-prompt target (lane id). When missing, the lane's own id is used. */
+  recommendedNextPromptTarget?: string | null;
+  /** Server-emitted ≤140 char summary (preferred over recommendedNextPrompt for badges). */
+  recommendedNextPromptSummary?: string | null;
+  /**
+   * Optional `terminalIdleAt` ISO timestamp the bridge can populate
+   * when terminal evidence shows the lane is actually idle even
+   * though MCP `status` may still read 'working'. Rule 1 in
+   * `docs/OPERATING_RULES.md` requires terminal truth to win.
+   */
+  terminalIdleAt?: string | null;
 }
 
 export interface McpLaneProgressInput {
@@ -47,6 +63,22 @@ export interface McpLaneProgressInput {
 
 export type LaneFreshness = 'fresh' | 'stale' | 'unknown';
 
+/**
+ * Canonical idle-status enum for Rule 1 / Rule 24. UI rendering and
+ * MCP/control-centre summaries MUST emit one of these values; a
+ * lane is treated as needing a recommended next prompt when its
+ * idleStatus is anything other than 'working'.
+ */
+export type IdleStatus =
+  | 'working'
+  | 'idle'
+  | 'stale'
+  | 'blocked'
+  | 'needs_user'
+  | 'needs_review'
+  | 'complete_waiting_approval'
+  | 'unknown';
+
 export interface LaneProgressEntry {
   /** Lane id (claude/codex/agent/…) — falls back to 'lane' when missing. */
   id: string;
@@ -58,10 +90,24 @@ export interface LaneProgressEntry {
   ageLabel: string;
   /** Fresh / stale / unknown — never 'fresh' when the MCP payload itself is stale. */
   freshness: LaneFreshness;
+  /**
+   * Canonical idle status per Rule 1 (file § rule 24). Emits one of
+   * the `IdleStatus` values. When the bridge has flagged the lane
+   * as terminal-idle (terminalIdleAt set) AND MCP says 'working',
+   * idleStatus collapses to 'idle' so a stale 'working' cannot
+   * suppress a recommended-next-prompt.
+   */
+  idleStatus: IdleStatus;
+  /** True when this lane should receive a recommended-next-prompt. Per Rule 1, idleStatus !== 'working'. */
+  needsPrompt: boolean;
   /** 0..100 integer progress, or null for "unknown". */
   progressPct: number | null;
   /** Server-provided next prompt recommendation, or null. */
   recommendedNextPrompt: string | null;
+  /** Per Rule 1: lane id the recommended prompt should target. Defaults to the lane's own id. */
+  recommendedNextPromptTarget: string;
+  /** Per Rule 1: ≤140 char summary; null when MCP did not emit one. */
+  recommendedNextPromptSummary: string | null;
   /** Short task summary from MCP, or null. */
   taskSummary: string | null;
 }
@@ -74,6 +120,22 @@ export interface LaneProgressSummary {
   snapshotStaleReason: string | null;
   /** Per-lane entries, in input order. */
   lanes: LaneProgressEntry[];
+  /**
+   * Per-lane Rule 1 enforcement payload — every lane that needs a
+   * prompt according to Rule 1 is listed here. Empty when every
+   * lane is `working`. Each entry carries the four canonical
+   * fields the spec requires, with `unknown` placeholders when
+   * MCP did not yet emit a recommendation. UI MUST render every
+   * entry as an immediate "queue a prompt" affordance.
+   */
+  promptsRequired: Array<{
+    laneId: string;
+    idleStatus: IdleStatus;
+    recommendedNextPromptTarget: string;
+    recommendedNextPromptText: string | null;
+    recommendedNextPromptSummary: string | null;
+    promptProgressPercent: number | 'unknown';
+  }>;
 }
 
 /** Lanes whose `lastSeenAt` is older than this are considered stale. */
@@ -107,6 +169,26 @@ export function sanitiseProgressPct(value: unknown): number | null {
   return Math.round(value);
 }
 
+/**
+ * The canonical idle-state set Rule 1 (file § rule 24) requires a
+ * recommended next prompt for. Anything outside this set + 'working'
+ * collapses to 'unknown'.
+ */
+const IDLE_STATUSES: ReadonlySet<IdleStatus> = new Set([
+  'idle',
+  'stale',
+  'blocked',
+  'needs_user',
+  'needs_review',
+  'complete_waiting_approval',
+]);
+
+function coerceIdleStatus(raw: string): IdleStatus {
+  if (raw === 'working' || raw === 'in_progress' || raw === 'in-progress') return 'working';
+  if (IDLE_STATUSES.has(raw as IdleStatus)) return raw as IdleStatus;
+  return 'unknown';
+}
+
 export function summariseLaneProgress(
   input: McpLaneProgressInput | null | undefined,
   nowMs: number = Date.now(),
@@ -117,6 +199,7 @@ export function summariseLaneProgress(
       snapshotFreshness: 'unknown',
       snapshotStaleReason: null,
       lanes: [],
+      promptsRequired: [],
     };
   }
   const snapshotStale = input.freshness?.isStale === true;
@@ -150,25 +233,68 @@ export function summariseLaneProgress(
       && agent.recommendedNextPrompt.trim().length > 0
       ? agent.recommendedNextPrompt
       : null;
+    const recommendedNextPromptTarget = typeof agent.recommendedNextPromptTarget === 'string'
+      && agent.recommendedNextPromptTarget.trim().length > 0
+      ? agent.recommendedNextPromptTarget.trim()
+      : id;
+    const recommendedNextPromptSummary = typeof agent.recommendedNextPromptSummary === 'string'
+      && agent.recommendedNextPromptSummary.trim().length > 0
+      ? agent.recommendedNextPromptSummary.trim().slice(0, 140)
+      : null;
     const taskSummary = typeof agent.taskSummary === 'string' && agent.taskSummary.length > 0
       ? agent.taskSummary
       : null;
+
+    // Rule 1: terminal truth wins. If the bridge says the lane is
+    // terminal-idle (terminalIdleAt is set) but MCP `status` still
+    // reads 'working', treat the lane as idle so the recommended-
+    // next-prompt fires. Otherwise honour MCP `status`.
+    let idleStatus = coerceIdleStatus(status);
+    const terminalIdleHasTimestamp = typeof agent.terminalIdleAt === 'string' && agent.terminalIdleAt.length > 0;
+    if (terminalIdleHasTimestamp && idleStatus === 'working') {
+      idleStatus = 'idle';
+    }
+    // Lanes with a stale-by-age reading collapse to 'stale' so the
+    // UI cannot show a green-fresh badge while terminal evidence
+    // says the lane has not heart-beat in over a minute.
+    if (idleStatus === 'working' && (snapshotStale || laneStaleByAge)) {
+      idleStatus = 'stale';
+    }
+
+    const needsPrompt = idleStatus !== 'working';
+
     return {
       id,
       status,
       ageMs,
       ageLabel: ageLabel(ageMs),
       freshness,
+      idleStatus,
+      needsPrompt,
       progressPct,
       recommendedNextPrompt,
+      recommendedNextPromptTarget,
+      recommendedNextPromptSummary,
       taskSummary,
     };
   });
+
+  const promptsRequired = lanes
+    .filter((lane) => lane.needsPrompt)
+    .map((lane) => ({
+      laneId: lane.id,
+      idleStatus: lane.idleStatus,
+      recommendedNextPromptTarget: lane.recommendedNextPromptTarget,
+      recommendedNextPromptText: lane.recommendedNextPrompt,
+      recommendedNextPromptSummary: lane.recommendedNextPromptSummary,
+      promptProgressPercent: lane.progressPct == null ? ('unknown' as const) : lane.progressPct,
+    }));
 
   return {
     source: 'mcp',
     snapshotFreshness,
     snapshotStaleReason,
     lanes,
+    promptsRequired,
   };
 }

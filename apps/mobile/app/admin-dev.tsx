@@ -1232,6 +1232,31 @@ export default function AdminDevScreen() {
             </Text>
           </View>
         )}
+        {/* Rule 1 enforcement banner — every lane that is idle,
+            blocked, needs_user, needs_review, or
+            complete_waiting_approval (or terminal-idle while MCP
+            still says working) MUST appear here with a
+            recommended-next-prompt directive. This banner is the
+            UI surface of `promptsRequired` from
+            apps/mobile/src/services/lane-progress-summary.ts.
+            Anti-rule: progress 'unknown' renders as the literal
+            string, never coerced to 0%. */}
+        {isAdmin && laneProgress.promptsRequired.length > 0 && (
+          <View style={styles.warningBlock}>
+            <Text style={styles.chipLabel}>Rule 1 — no idle lanes</Text>
+            <Text style={styles.chipBody}>
+              {laneProgress.promptsRequired.length} lane{laneProgress.promptsRequired.length === 1 ? '' : 's'} need{laneProgress.promptsRequired.length === 1 ? 's' : ''} a recommended next prompt before the next status reply.
+            </Text>
+            {laneProgress.promptsRequired.map((p) => (
+              <Text key={`rule1-${p.laneId}`} style={styles.note}>
+                {p.laneId} ({p.idleStatus}) → target {p.recommendedNextPromptTarget} · progress {p.promptProgressPercent === 'unknown' ? 'unknown' : `${p.promptProgressPercent}%`} · {p.recommendedNextPromptSummary ?? p.recommendedNextPromptText ?? 'queue a prompt'}
+              </Text>
+            ))}
+            <Text style={styles.note}>
+              Stale cached `working` MUST NEVER suppress this banner. See docs/OPERATING_RULES.md § rule 24 ("Rule 1") for the full contract.
+            </Text>
+          </View>
+        )}
         {/* Lane progress strip — Claude / Codex / Agent (and any
             other lane the MCP server reports). Each row shows the
             lane status, age, fresh/stale/unknown badge, a progress

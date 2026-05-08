@@ -54,15 +54,29 @@ function expectFreshSnapshot(): void {
   assert.equal(claude.id, 'claude');
   assert.equal(claude.status, 'in_progress');
   assert.equal(claude.freshness, 'fresh');
+  assert.equal(claude.idleStatus, 'working', 'in_progress canonicalises to working');
+  assert.equal(claude.needsPrompt, false, 'working lanes do NOT need a recommended prompt');
   assert.equal(claude.progressPct, 42);
   assert.equal(claude.recommendedNextPrompt, 'CODEX-NEXT-LANE-WORK-01');
+  assert.equal(claude.recommendedNextPromptTarget, 'claude');
   assert.equal(claude.taskSummary, 'CODEX-LANE-PROGRESS-BAR-01');
   assert.equal(claude.ageLabel, '5s');
 
   const codex = summary.lanes[1];
   assert.equal(codex.freshness, 'fresh');
+  assert.equal(codex.idleStatus, 'idle');
+  assert.equal(codex.needsPrompt, true, 'idle lanes MUST need a prompt (Rule 1)');
   assert.equal(codex.progressPct, null, 'unknown-progress lane must surface as null');
   assert.equal(codex.recommendedNextPrompt, null);
+
+  // Rule 1: an idle lane goes into promptsRequired with progress 'unknown'
+  // (never 0%), and the target defaults to the lane's id.
+  assert.equal(summary.promptsRequired.length, 1);
+  assert.equal(summary.promptsRequired[0].laneId, 'codex');
+  assert.equal(summary.promptsRequired[0].idleStatus, 'idle');
+  assert.equal(summary.promptsRequired[0].recommendedNextPromptTarget, 'codex');
+  assert.equal(summary.promptsRequired[0].recommendedNextPromptText, null);
+  assert.equal(summary.promptsRequired[0].promptProgressPercent, 'unknown');
 }
 
 function expectStaleSnapshotWinsOverFreshLane(): void {
@@ -99,6 +113,55 @@ function expectStaleByAge(): void {
   );
   assert.equal(summary.snapshotFreshness, 'fresh');
   assert.equal(summary.lanes[0].freshness, 'stale');
+  // A stale-by-age `idle` lane is still idle for Rule 1 purposes
+  // — it MUST get a recommended prompt.
+  assert.equal(summary.lanes[0].idleStatus, 'idle');
+  assert.equal(summary.lanes[0].needsPrompt, true);
+}
+
+function expectTerminalTruthOverridesStaleWorking(): void {
+  // Rule 1 anti-rule: stale cached `working` MUST NEVER suppress a
+  // recommended-next-prompt when the bridge has flagged the lane
+  // as terminal-idle. We simulate by setting MCP status='working'
+  // but providing terminalIdleAt — the summary must collapse the
+  // lane to idle and include it in promptsRequired.
+  const summary = summariseLaneProgress(
+    {
+      freshness: { isStale: false, updatedAt: isoAgo(5_000) },
+      agents: [
+        {
+          id: 'codex',
+          status: 'working',
+          lastSeenAt: isoAgo(2_000),
+          terminalIdleAt: isoAgo(1_000),
+          progressPct: null,
+        },
+      ],
+    },
+    NOW,
+  );
+  assert.equal(summary.lanes[0].idleStatus, 'idle', 'terminal-idle override must collapse working → idle');
+  assert.equal(summary.lanes[0].needsPrompt, true);
+  assert.equal(summary.promptsRequired.length, 1);
+  assert.equal(summary.promptsRequired[0].laneId, 'codex');
+  assert.equal(summary.promptsRequired[0].promptProgressPercent, 'unknown');
+}
+
+function expectAllIdleStatusesNeedPrompt(): void {
+  // Per Rule 1: idle, blocked, needs_user, needs_review,
+  // complete_waiting_approval all require a recommended prompt.
+  for (const status of ['idle', 'blocked', 'needs_user', 'needs_review', 'complete_waiting_approval']) {
+    const summary = summariseLaneProgress(
+      {
+        freshness: { isStale: false },
+        agents: [{ id: status, status, lastSeenAt: isoAgo(2_000) }],
+      },
+      NOW,
+    );
+    assert.equal(summary.lanes[0].idleStatus, status, `status=${status} must canonicalise as itself`);
+    assert.equal(summary.lanes[0].needsPrompt, true, `status=${status} must need a prompt`);
+    assert.equal(summary.promptsRequired.length, 1);
+  }
 }
 
 function expectUnavailable(): void {
@@ -158,11 +221,13 @@ function main(): void {
   expectFreshSnapshot();
   expectStaleSnapshotWinsOverFreshLane();
   expectStaleByAge();
+  expectTerminalTruthOverridesStaleWorking();
+  expectAllIdleStatusesNeedPrompt();
   expectUnavailable();
   expectUnknownProgress();
   expectUnknownAge();
   expectBlankRecommendationCoercedToNull();
-  console.log('lane-progress summariser contract test passed (fresh / stale / unavailable / unknown-progress + anti-rule sanitisation).');
+  console.log('lane-progress summariser contract test passed (fresh / stale / unavailable / unknown-progress / Rule 1 idle-prompt routing + terminal-truth override).');
 }
 
 main();
