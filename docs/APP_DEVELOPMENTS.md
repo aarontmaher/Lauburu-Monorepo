@@ -297,6 +297,67 @@ In order:
 
 Items 6+ stay in the Later backlog above.
 
+## Permanent improvement categories
+
+Standing categories that span multiple priorities. These are
+NOT one-time goals that "ship" and disappear — they are
+continuous quality bars the Top 5 priorities and Later backlog
+must honour.
+
+### Complete mobile-only admin/developer workflow
+
+The end state where Aaron operates the project from his phone
+without a laptop or Termius for normal day-to-day work. Pairs
+with rule 12 (coders run all laptop commands), rule 14
+(parallel priorities — Admin/Dev phone control centre is
+priority (b)), and `docs/MCP_LONGTERM_ACCESS_ARCHITECTURE.md`
+§ 3 (Surface A required fields).
+
+Permanent quality bars:
+
+- **No required laptop / Termius for normal operation.** Every
+  workflow Aaron uses daily must be reachable from the phone
+  Admin/Dev tab. Laptop tools (Claude Code, Codex, terminal)
+  are for coders + occasional debug; never the only path for
+  Aaron.
+- **Admin/Dev tab as the canonical operator surface.** Status,
+  approvals, build gates, automation state, MCP freshness,
+  next actions all visible. The architecture doc § 3 lists
+  the exact fields required for Surface A parity with the
+  laptop `/mcp/v2` surface.
+- **Simple, effective, efficient, low-friction.** Every panel
+  earns its place. Ship density is fine; UI debt is not. If a
+  card does not directly serve operator decisions, archive it.
+- **Every manual step is challenged.** For each step Aaron
+  performs by hand, ask: can a coder / agent automate this
+  safely (rule 12 / rule 13)? If not, can it be approval-
+  gated via push so the user only taps Approve / Defer (rule
+  21 / 22 / 23)? If neither, the step must have an explicit,
+  written justification in `docs/PHONE_ONLY_AUTOMATION_PLAN.md`
+  § 5. "Aaron has always done it" is not a justification.
+
+This category is **never marked complete** — it is reviewed
+continuously. Status reports include a one-line freshness
+note (e.g. "Mobile-only workflow: rule-12 cadence holding;
+1 manual step under review") and surface any drift from the
+quality bars.
+
+Implementation milestones live across the Top 5 priorities
+(specifically priorities 1 + 5) and the staged Codex handoff
+prompts in:
+- `docs/CONTROL_CENTRE_MVP_SPEC.md` § 10 (rule 20 push wiring).
+- `docs/HUMAN_APPROVAL_GATE_SPEC.md` § 6 (rule 21 approval
+  centre).
+- `docs/AI_SPEND_GATES_SPEC.md` § 6 (rule 22 AI-spend gate).
+- `docs/DEEP_RESEARCH_OFFLOAD_SPEC.md` § 7 (rule 23 deep-
+  research offload + cache).
+- `docs/MCP_LONGTERM_ACCESS_ARCHITECTURE.md` § 4 (Surface B
+  standard connector for external-AI access without laptop).
+
+When all of these land, criterion (a) of the architecture
+doc § 2 ("Admin/Dev tab parity") holds and Developer Mode
+can be turned off — completing the mobile-only workflow.
+
 ## Manual steps for Aaron (phone-first)
 
 The only steps that genuinely need a human + browser. Everything
