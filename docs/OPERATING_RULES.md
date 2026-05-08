@@ -216,7 +216,16 @@ this file.
 18. **Action ledger until evidence clears.** Every prompt, action,
     goal, human action, coder action, Agent action, or AI action must
     be recorded in MCP / bridge until evidence proves it is completed
-    or no longer necessary. A pending action can be cleared only with
+    or no longer necessary. **Terminal state is evidence, not
+    memory** — anything discovered in a tmux pane, a build log, an
+    EAS console, a Play Console screen, or any other transient
+    surface MUST be written back to the action ledger /
+    `connector_*` tables / canonical doc before being considered
+    tracked. Terminal checks must NEVER become the only source of
+    truth. The MCP / action ledger must capture every queued task,
+    deferred prompt, approval gate (rules 21 / 22 / 23), audit
+    finding (per `docs/INSTALLED_DEVICE_AUDIT_PLAYBOOK.md`), and
+    follow-up. A pending action can be cleared only with
     evidence of completion, supersession, void / obsolete state,
     unsafe / rejected state, or no-longer-necessary state. Each record
     should include: `id`, `owner`, `targetWorkerOrPerson`, `lane`,
