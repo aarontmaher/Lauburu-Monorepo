@@ -355,7 +355,7 @@ export interface FreshnessSignalV2 {
   updatedAt: string | null;
   ageMs: number | null;
   isStale: boolean;
-  staleReason: 'fresh' | 'no_writeback' | 'env_missing';
+  staleReason: 'fresh' | 'no_writeback' | 'stale_writeback' | 'env_missing';
   windowMs: number;
 }
 
@@ -365,9 +365,16 @@ function computeFreshness(updatedAt: string | null, configured: boolean): Freshn
   }
   const ageMs = updatedAt ? Date.now() - new Date(updatedAt).getTime() : null;
   const isStale = ageMs === null ? true : ageMs > FRESHNESS_WINDOW_MS_V2;
+  // staleReason distinguishes:
+  //   - no_writeback: row never written (updatedAt === null)
+  //   - stale_writeback: row written but older than the freshness window
+  //   - fresh: row within the window
+  // Consumers (Admin/Dev pill, push gate trigger, audit playbook) MUST
+  // treat both no_writeback and stale_writeback as unreliable per the
+  // mcpLivenessP0 rule (connector_work_status.mcpLivenessP0).
   const staleReason: FreshnessSignalV2['staleReason'] = updatedAt === null
     ? 'no_writeback'
-    : isStale ? 'no_writeback' : 'fresh';
+    : isStale ? 'stale_writeback' : 'fresh';
   return { updatedAt, ageMs, isStale, staleReason, windowMs: FRESHNESS_WINDOW_MS_V2 };
 }
 
@@ -530,16 +537,26 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
   }
 
   // Source row updatedAt → freshness signal.
+  // Defensive: accept BOTH `generatedAt` (canonical bridge field) and
+  // `updatedAt` (legacy / partial-merge SQL writes) as freshness
+  // candidates. Whichever is newest wins. This guards against
+  // bridge↔Worker field-name drift; the underlying bridge writes
+  // `payload.generatedAt` (scripts/bridge-snapshot-lanes.sh line 843
+  // for work_status, line 875+ for lanes).
+  const workValue = work as Record<string, unknown> | null;
+  const buildValue = build as Record<string, unknown> | null;
   const isoCandidates = [
-    typeof work?.generatedAt === 'string' ? work.generatedAt : null,
-    typeof build?.generatedAt === 'string' ? build.generatedAt : null,
+    typeof workValue?.generatedAt === 'string' ? (workValue.generatedAt as string) : null,
+    typeof workValue?.updatedAt === 'string' ? (workValue.updatedAt as string) : null,
+    typeof buildValue?.generatedAt === 'string' ? (buildValue.generatedAt as string) : null,
+    typeof buildValue?.updatedAt === 'string' ? (buildValue.updatedAt as string) : null,
     ...agents.map((g) => g.updatedAt),
   ].filter((s): s is string => typeof s === 'string');
   const updatedAt = isoCandidates.length > 0 ? isoCandidates.sort().slice(-1)[0] : null;
   const ageMs = updatedAt ? Date.now() - new Date(updatedAt).getTime() : null;
   const isStale = ageMs === null ? true : ageMs > FRESHNESS_WINDOW_MS_V2;
-  const staleReason: 'fresh' | 'no_writeback' | 'env_missing' = updatedAt === null
-    ? 'no_writeback' : isStale ? 'no_writeback' : 'fresh';
+  const staleReason: 'fresh' | 'no_writeback' | 'stale_writeback' | 'env_missing' = updatedAt === null
+    ? 'no_writeback' : isStale ? 'stale_writeback' : 'fresh';
 
   const branchRe = /^[A-Za-z0-9._\-/]{1,80}$/;
   const branch = work?.repoStatus?.branch && branchRe.test(work.repoStatus.branch) ? work.repoStatus.branch : null;
