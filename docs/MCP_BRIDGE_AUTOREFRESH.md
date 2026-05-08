@@ -98,7 +98,75 @@ codex · working · stale 4m
 `stale Xm` indicates the lane's `lastSeenAt` is past the
 60-second drift threshold.
 
-## 4. Anti-rules
+## 4. Live terminal markers
+
+Coders and agents can update MCP **immediately** by emitting
+structured single-line markers to their own stdout. The bridge's
+parser (`parse_mcp_markers` in
+`scripts/bridge_snapshot_classifier.py`) extracts the LAST
+occurrence per marker name on every tick, sanitises every value
+through the existing redactor, and attaches the result to the
+lane row's `lastMarkers` field.
+
+**Marker format** — one line per marker, name + colon + space +
+value. Values are capped at 280 characters and redacted by the
+existing two-pass `redactString` rules (JWT, sk-, ghp_, AKIA,
+whsec_, sb_secret_).
+
+| Marker | Purpose | Cap |
+|---|---|---|
+| `MCP_RESULT:` | What just shipped (commit / feature / patch) | 280 |
+| `MCP_BLOCKER:` | What is blocking progress now (drives `currentBlocker`) | 280 |
+| `MCP_COMMIT:` | Short SHA of the latest meaningful commit | 80 |
+| `MCP_TESTS:` | Short test summary (e.g. "14/14 passed", "tsc EXIT=0") | 280 |
+| `MCP_NEXT:` | What this lane is about to do next | 280 |
+| `AGENT_QA_RESULT_JSON:` | One-shot JSON object — `status` / `gate` / `platform` digest only ride into MCP; the full JSON stays local | 6 KB raw |
+
+Examples:
+
+```
+MCP_RESULT: shipped FS-020 import parser at commit 70cd98b
+MCP_TESTS: 14/14 synthetic rows OK; tsc EXIT=0
+MCP_COMMIT: 70cd98b
+MCP_NEXT: bundle gate centres into v21 build after Aaron approval
+
+AGENT_QA_RESULT_JSON: {"status": "pass", "gate": "release_gate", "platform": "android"}
+```
+
+`AGENT_QA_RESULT_JSON` may also span multiple lines starting with
+the label and a trailing `{`:
+
+```
+AGENT_QA_RESULT_JSON:
+{
+  "status": "partial",
+  "gate": "release_gate",
+  "platform": "ios"
+}
+```
+
+**marker_hash** is a deterministic FNV-1a 32-bit hex of the
+non-JSON marker values + the QA-digest fields.
+`bridge-watch.sh` compares the hash across ticks and fires a
+fresh snapshot whenever it changes — that is how the bridge
+gets to **10–30 seconds drift** for marker-driven updates,
+ahead of the 60-second heartbeat refresh.
+
+**Sanitization rules.** No raw pane text reaches Supabase. The
+bridge stores only the parsed marker values (after redact +
+truncate) and the small QA digest (status / gate / platform) —
+never the full JSON, never the surrounding pane content. The
+Worker re-redacts every marker string before exposing it on
+`agents[].lastMarkers`.
+
+**Anti-rules for emitters.** Aaron must NOT type markers by
+hand; coders / agents emit them as part of structured output.
+Markers MUST NOT carry secrets, raw user health values, or
+file paths outside the repo. The two-pass redactor catches
+known token shapes; emitters are still on the hook for not
+including the values in the first place.
+
+## 5. Anti-rules
 
 - Auto-snapshot MUST NOT be confused with auto-deploy. The
   watch script only writes to the connector tables that the
@@ -116,7 +184,7 @@ codex · working · stale 4m
   the heartbeat just means the underlying row updates more
   often.
 
-## 5. Tests
+## 6. Tests
 
 - `scripts/test-bridge-snapshot-classifier.py` covers
   `compute_state_change_at` (carry-forward / transition /
@@ -132,7 +200,7 @@ codex · working · stale 4m
   watch-state cache; subsequent ticks without state changes
   no-op until the heartbeat interval elapses.
 
-## 6. Cross-references
+## 7. Cross-references
 
 - `docs/CONNECTOR_SUPABASE_SCHEMA.md` — connector tables the
   bridge writes to.

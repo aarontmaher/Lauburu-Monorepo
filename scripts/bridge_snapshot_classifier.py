@@ -137,6 +137,147 @@ def compute_state_change_at(prev_status, current_status, prev_state_change_at, n
     return now_iso
 
 
+MARKER_NAMES = (
+    "MCP_RESULT",
+    "MCP_BLOCKER",
+    "MCP_COMMIT",
+    "MCP_TESTS",
+    "MCP_NEXT",
+)
+JSON_MARKER_NAME = "AGENT_QA_RESULT_JSON"
+MARKER_VALUE_CAP = 280
+JSON_MARKER_CAP = 6000
+
+_MARKER_LINE_RE = re.compile(
+    r"^\s*(MCP_RESULT|MCP_BLOCKER|MCP_COMMIT|MCP_TESTS|MCP_NEXT)\s*:\s*(.+?)\s*$",
+)
+_JSON_MARKER_RE = re.compile(r"^\s*AGENT_QA_RESULT_JSON\s*:\s*(.*)$")
+
+
+def _strip_markers(value):
+    """Cap a marker value to MARKER_VALUE_CAP and strip whitespace."""
+    if not isinstance(value, str):
+        return None
+    text = value.replace("\r", "").strip()
+    if not text:
+        return None
+    return text if len(text) <= MARKER_VALUE_CAP else text[: MARKER_VALUE_CAP - 1].rstrip() + "…"
+
+
+def parse_mcp_markers(pane_text):
+    """Pure helper: extract structured terminal markers from pane text.
+
+    Markers are single-line key/value pairs the agent writes to its
+    own stdout — never interpreted as commands, never echoed back to
+    the shell. Recognised marker names live in MARKER_NAMES plus the
+    multi-line JSON_MARKER_NAME (AGENT_QA_RESULT_JSON).
+
+    Returns a dict of the form:
+
+        {
+          "MCP_RESULT":   "<sanitised string|None>",
+          "MCP_BLOCKER":  "<...>",
+          "MCP_COMMIT":   "<...>",
+          "MCP_TESTS":    "<...>",
+          "MCP_NEXT":     "<...>",
+          "AGENT_QA_RESULT_JSON": <parsed dict|None>,
+          "marker_count": <int>,
+          "newest_line": <int — 0-based line index of the last marker, or -1 if none>,
+        }
+
+    For each non-JSON marker, the LAST occurrence wins (so a coder
+    can overwrite an earlier value by emitting a fresh line).
+    AGENT_QA_RESULT_JSON parses the FIRST JSON object that follows the
+    label — agents are expected to emit the marker once per cycle.
+
+    The function never raises; bad inputs return an empty marker
+    dict so callers can guard cheaply.
+    """
+    out = {name: None for name in MARKER_NAMES}
+    out[JSON_MARKER_NAME] = None
+    out["marker_count"] = 0
+    out["newest_line"] = -1
+    if not isinstance(pane_text, str) or not pane_text:
+        return out
+    lines = pane_text.splitlines()
+    json_buffer = None
+    json_buffer_start = -1
+    for idx, line in enumerate(lines):
+        if json_buffer is not None:
+            json_buffer.append(line)
+            joined = "\n".join(json_buffer)
+            try:
+                import json as _json
+                parsed = _json.loads(joined)
+            except (ValueError, TypeError):
+                if len(joined) > JSON_MARKER_CAP:
+                    json_buffer = None
+                continue
+            if isinstance(parsed, dict):
+                out[JSON_MARKER_NAME] = parsed
+                out["marker_count"] += 1
+                out["newest_line"] = idx
+            json_buffer = None
+            continue
+        m = _MARKER_LINE_RE.match(line)
+        if m:
+            name, value = m.group(1), m.group(2)
+            sanitised = _strip_markers(value)
+            if sanitised:
+                out[name] = sanitised
+                out["marker_count"] += 1
+                out["newest_line"] = idx
+            continue
+        j = _JSON_MARKER_RE.match(line)
+        if j:
+            tail = j.group(1).strip()
+            if tail.startswith("{") and tail.endswith("}"):
+                try:
+                    import json as _json
+                    parsed = _json.loads(tail)
+                except (ValueError, TypeError):
+                    parsed = None
+                if isinstance(parsed, dict):
+                    out[JSON_MARKER_NAME] = parsed
+                    out["marker_count"] += 1
+                    out["newest_line"] = idx
+                continue
+            if tail.startswith("{"):
+                json_buffer = [tail]
+                json_buffer_start = idx
+                continue
+            json_buffer = []
+            json_buffer_start = idx
+    return out
+
+
+def marker_hash(markers):
+    """Stable short hash of the non-JSON marker values + a count.
+
+    Used by bridge-watch.sh to fire a fresh snapshot when ANY
+    marker value changes between ticks. Cheap (deterministic
+    string concat) and intentionally NOT cryptographic — the
+    only consumers are local watch loops.
+    """
+    if not isinstance(markers, dict):
+        return ""
+    parts = []
+    for name in MARKER_NAMES:
+        v = markers.get(name)
+        parts.append(f"{name}={v if isinstance(v, str) else ''}")
+    qa = markers.get(JSON_MARKER_NAME)
+    if isinstance(qa, dict):
+        parts.append(f"qa.status={qa.get('status') or ''}")
+        parts.append(f"qa.gate={qa.get('gate') or ''}")
+        parts.append(f"qa.platform={qa.get('platform') or ''}")
+    seed = " || ".join(parts)
+    h = 0x811c9dc5
+    for ch in seed:
+        h ^= ord(ch)
+        h = (h * 0x01000193) & 0xFFFFFFFF
+    return f"{h:08x}"
+
+
 def heartbeat_envelope(now_iso, prev_state_change_at, prev_status, current_status, source="tmux_bridge"):
     """Build the heartbeat fields the bridge attaches to every lane row.
 

@@ -56,9 +56,13 @@ OUT_DIR = os.path.join(ROOT, "data", "agent-status", "lanes")
 os.makedirs(OUT_DIR, exist_ok=True)
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 from bridge_snapshot_classifier import (  # noqa: E402
+    JSON_MARKER_NAME,
+    MARKER_NAMES,
     compute_state_change_at,
     detect_status,
     heartbeat_envelope,
+    marker_hash,
+    parse_mcp_markers,
     summarize_pane,
 )
 
@@ -567,6 +571,12 @@ for session, lane in SESSION_MAP:
             "lastTypecheckResult": None,
             "dirtyFiles": [],
             "nextPrompt": None,
+            "lastMarkers": {
+                **{n: None for n in MARKER_NAMES},
+                JSON_MARKER_NAME: None,
+                "markerCount": 0,
+                "markerHash": "",
+            },
         })
         continue
 
@@ -587,6 +597,35 @@ for session, lane in SESSION_MAP:
 
     beat = heartbeat_envelope(now_iso, prev_change_at, prev_status, status)
 
+    # ── Structured terminal markers ────────────────────────────────
+    # Coders / agents emit single-line MCP_* markers + an
+    # AGENT_QA_RESULT_JSON block to signal state changes immediately
+    # without waiting for git commit / typecheck cycles. The bridge
+    # extracts the LAST occurrence per marker name, sanitises every
+    # value through redact() + truncate(), and never stores the raw
+    # pane text. The marker_hash field lets bridge-watch.sh fire a
+    # snapshot on marker-change without re-running detect_status.
+    raw_markers = parse_mcp_markers(pane)
+    sanitised_markers = {}
+    for name in MARKER_NAMES:
+        v = raw_markers.get(name)
+        if isinstance(v, str) and v:
+            sanitised_markers[name] = redact(truncate(v, 280)) or None
+        else:
+            sanitised_markers[name] = None
+    qa_payload = raw_markers.get(JSON_MARKER_NAME)
+    if isinstance(qa_payload, dict):
+        # We only persist a small public-safe digest in lastMarkers.
+        sanitised_markers[JSON_MARKER_NAME] = {
+            "status": str(qa_payload.get("status") or "")[:32] or None,
+            "gate": str(qa_payload.get("gate") or "")[:64] or None,
+            "platform": str(qa_payload.get("platform") or "")[:32] or None,
+        }
+    else:
+        sanitised_markers[JSON_MARKER_NAME] = None
+    sanitised_markers["markerCount"] = int(raw_markers.get("marker_count") or 0)
+    sanitised_markers["markerHash"] = marker_hash(raw_markers)
+
     row = {
         "laneId": lane,
         "status": status,
@@ -601,6 +640,7 @@ for session, lane in SESSION_MAP:
         # Repo-wide dirty list: per-lane attribution is a Stage 2 concern.
         "dirtyFiles": dirty_files,
         "nextPrompt": None,
+        "lastMarkers": sanitised_markers,
     }
 
     # Defense-in-depth: re-redact every string-shaped field at the

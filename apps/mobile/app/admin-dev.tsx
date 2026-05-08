@@ -258,6 +258,16 @@ type McpV2CurrentState = {
     lastSeenAt?: string | null;
     lastStateChangeAt?: string | null;
     source?: string | null;
+    lastMarkers?: {
+      MCP_RESULT?: string | null;
+      MCP_BLOCKER?: string | null;
+      MCP_COMMIT?: string | null;
+      MCP_TESTS?: string | null;
+      MCP_NEXT?: string | null;
+      AGENT_QA_RESULT_JSON?: { status?: string | null; gate?: string | null; platform?: string | null } | null;
+      markerCount?: number;
+      markerHash?: string;
+    } | null;
   }>;
   currentPriority?: string | null;
   currentBlocker?: string | null;
@@ -311,6 +321,43 @@ function mcpFreshnessSummary(current: McpV2CurrentState | null): {
   }
   if (stale) return { label: `MCP readable · stale (${reason}) · ${ageLabel}`, stale, reason, updatedAt, ageLabel, ageMs };
   return { label: `MCP live · fresh · ${ageLabel}`, stale, reason, updatedAt, ageLabel, ageMs };
+}
+
+interface MarkerWritebackSummary {
+  totalMarkers: number;
+  perLane: Array<{ id: string; markerCount: number; mostRecent: string | null; markerHash: string }>;
+  hasAny: boolean;
+  qaSummary: string | null;
+}
+
+function summariseMarkerWriteback(current: McpV2CurrentState | null): MarkerWritebackSummary {
+  const empty: MarkerWritebackSummary = { totalMarkers: 0, perLane: [], hasAny: false, qaSummary: null };
+  if (!current?.agents || current.agents.length === 0) return empty;
+  let total = 0;
+  let qaSummary: string | null = null;
+  const perLane = current.agents.map((a) => {
+    const m = a.lastMarkers ?? null;
+    const count = typeof m?.markerCount === 'number' ? m.markerCount : 0;
+    total += count;
+    let mostRecent: string | null = null;
+    if (m) {
+      mostRecent =
+        m.MCP_RESULT ?? m.MCP_BLOCKER ?? m.MCP_TESTS ?? m.MCP_NEXT ?? m.MCP_COMMIT ?? null;
+      if (!qaSummary && m.AGENT_QA_RESULT_JSON) {
+        const qa = m.AGENT_QA_RESULT_JSON;
+        if (qa.status || qa.gate || qa.platform) {
+          qaSummary = `${a.id ?? 'lane'}: ${qa.status ?? '—'} · ${qa.gate ?? '—'} · ${qa.platform ?? '—'}`;
+        }
+      }
+    }
+    return {
+      id: a.id ?? 'lane',
+      markerCount: count,
+      mostRecent,
+      markerHash: typeof m?.markerHash === 'string' ? m.markerHash.slice(0, 8) : '',
+    };
+  });
+  return { totalMarkers: total, perLane, hasAny: total > 0, qaSummary };
 }
 
 interface DeveloperModeRecommendation {
@@ -861,6 +908,7 @@ export default function AdminDevScreen() {
   const laneOverviewSummary = summariseLaneOverview(mcpV2Snapshot);
   const laneHeartbeat = summariseLaneHeartbeat(mcpCurrentState);
   const developerModeRecommendation = summariseDeveloperModeRecommendation(mcpFreshness, releaseGateSummary, laneHeartbeat);
+  const markerWriteback = summariseMarkerWriteback(mcpCurrentState);
   const nowPriority = mcpCurrentState?.currentPriority ?? connectorWork?.currentPriority ?? CURRENT_PRIORITY;
   const nowBlocker = mcpCurrentState?.currentBlocker ?? connectorWork?.currentBlocker ?? 'No MCP blocker reported.';
   const nowNextAction = mcpCurrentState?.nextAction ?? connectorWork?.nextAction ?? NEXT_ACTION;
@@ -1038,6 +1086,27 @@ export default function AdminDevScreen() {
             {laneHeartbeat.perLaneLines.map((line, idx) => (
               <Text key={`heartbeat-${idx}`} style={styles.note}>{line}</Text>
             ))}
+          </View>
+        )}
+        {isAdmin && (
+          <View style={styles.chipBlock}>
+            <Text style={styles.chipLabel}>Live marker writeback</Text>
+            <Text style={styles.chipBody}>
+              {markerWriteback.hasAny
+                ? `${markerWriteback.totalMarkers} marker${markerWriteback.totalMarkers === 1 ? '' : 's'} ingested across ${markerWriteback.perLane.length} lane${markerWriteback.perLane.length === 1 ? '' : 's'}`
+                : 'No live markers in the latest snapshot.'}
+            </Text>
+            {markerWriteback.perLane.map((lane) => (
+              <Text key={`marker-${lane.id}`} style={styles.note}>
+                {lane.id} · {lane.markerCount} marker{lane.markerCount === 1 ? '' : 's'}{lane.markerHash ? ` · hash ${lane.markerHash}` : ''}{lane.mostRecent ? ` · "${lane.mostRecent.slice(0, 80)}"` : ''}
+              </Text>
+            ))}
+            {markerWriteback.qaSummary && (
+              <Text style={styles.note}>QA digest: {markerWriteback.qaSummary}</Text>
+            )}
+            <Text style={styles.note}>
+              Markers (MCP_RESULT / MCP_BLOCKER / MCP_COMMIT / MCP_TESTS / MCP_NEXT / AGENT_QA_RESULT_JSON) are extracted from coder/agent stdout each snapshot. Run `npm run bridge:watch` to fire snapshots on marker change within 10–30s.
+            </Text>
           </View>
         )}
         {laneHeartbeat.ok && !laneHeartbeat.driftWarning && isAdmin && (

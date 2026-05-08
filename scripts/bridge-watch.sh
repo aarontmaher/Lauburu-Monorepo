@@ -75,7 +75,9 @@ mkdir -p "$STATE_DIR"
 WATCH_STATE_FILE="$STATE_DIR/.bridge-watch-state.json"
 
 run_classifier() {
-  # Print "lane_id status" lines for every session in the SESSION_MAP.
+  # Print "lane_id status marker_hash" lines for every session in the
+  # SESSION_MAP. A change in EITHER the status OR the marker_hash
+  # triggers a fresh snapshot in the watch loop above.
   python3 - "$ROOT" <<'PY'
 import os
 import subprocess
@@ -83,7 +85,7 @@ import sys
 
 ROOT = sys.argv[1]
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
-from bridge_snapshot_classifier import detect_status
+from bridge_snapshot_classifier import detect_status, marker_hash, parse_mcp_markers
 
 SESSION_MAP = [
     ("lauburu", "claude"),
@@ -117,11 +119,12 @@ sessions = list_sessions()
 clean = git_clean()
 for session, lane in SESSION_MAP:
     if session not in sessions:
-        print(f"{lane}\tidle")
+        print(f"{lane}\tidle\t")
         continue
     pane = capture_pane(session)
     status = detect_status(pane, clean)
-    print(f"{lane}\t{status}")
+    h = marker_hash(parse_mcp_markers(pane))
+    print(f"{lane}\t{status}\t{h}")
 PY
 }
 

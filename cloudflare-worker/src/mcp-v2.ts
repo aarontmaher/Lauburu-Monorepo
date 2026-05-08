@@ -450,9 +450,43 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
       lastSeenAt?: string;
       lastStateChangeAt?: string;
       source?: string;
+      lastMarkers?: {
+        MCP_RESULT?: string | null;
+        MCP_BLOCKER?: string | null;
+        MCP_COMMIT?: string | null;
+        MCP_TESTS?: string | null;
+        MCP_NEXT?: string | null;
+        AGENT_QA_RESULT_JSON?: { status?: string | null; gate?: string | null; platform?: string | null } | null;
+        markerCount?: number;
+        markerHash?: string;
+      };
     };
     const lastSeenAt = typeof p.lastSeenAt === 'string' ? p.lastSeenAt : null;
     const lastStateChangeAt = typeof p.lastStateChangeAt === 'string' ? p.lastStateChangeAt : null;
+    const m = p.lastMarkers && typeof p.lastMarkers === 'object' ? p.lastMarkers : null;
+    const cleanString = (v: unknown, cap: number): string | null => {
+      if (typeof v !== 'string' || v.length === 0) return null;
+      const t = redactText(v, cap);
+      return t && t.length > 0 ? t : null;
+    };
+    const lastMarkers = m
+      ? {
+          MCP_RESULT: cleanString(m.MCP_RESULT, 280),
+          MCP_BLOCKER: cleanString(m.MCP_BLOCKER, 280),
+          MCP_COMMIT: cleanString(m.MCP_COMMIT, 80),
+          MCP_TESTS: cleanString(m.MCP_TESTS, 280),
+          MCP_NEXT: cleanString(m.MCP_NEXT, 280),
+          AGENT_QA_RESULT_JSON: m.AGENT_QA_RESULT_JSON && typeof m.AGENT_QA_RESULT_JSON === 'object'
+            ? {
+                status: cleanString(m.AGENT_QA_RESULT_JSON.status, 32),
+                gate: cleanString(m.AGENT_QA_RESULT_JSON.gate, 64),
+                platform: cleanString(m.AGENT_QA_RESULT_JSON.platform, 32),
+              }
+            : null,
+          markerCount: typeof m.markerCount === 'number' && m.markerCount >= 0 ? m.markerCount : 0,
+          markerHash: typeof m.markerHash === 'string' ? m.markerHash.slice(0, 16) : '',
+        }
+      : null;
     return {
       id: pickEnum(row.lane_id, ALLOWED_LANE_IDS),
       status: pickEnum(p.status, ALLOWED_LANE_STATUSES),
@@ -462,6 +496,7 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
       lastSeenAt,
       lastStateChangeAt,
       source: typeof p.source === 'string' ? p.source : null,
+      lastMarkers,
     };
   });
 
