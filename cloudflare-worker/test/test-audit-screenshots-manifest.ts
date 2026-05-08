@@ -9,7 +9,16 @@
  */
 
 // @ts-expect-error - .mjs JS module imported into TS test
-import { AUDIT_SCREENS, buildManifest, parseArgs } from '../../scripts/audit-screenshots-helpers.mjs';
+import {
+  AUDIT_SCREENS,
+  buildManifest,
+  buildIphoneMirroringManifest,
+  indexPrefix,
+  isFilenameSuspicious,
+  labelToScreenSlug,
+  parseArgs,
+  parseIphoneMirroringArgs,
+} from '../../scripts/audit-screenshots-helpers.mjs';
 
 function assert(cond: unknown, label: string): asserts cond {
   if (!cond) {
@@ -119,5 +128,118 @@ assert(a3.platform === null, 'parseArgs rejects unknown platform');
 
 const a4 = parseArgs(['--device', 'emulator-5554']);
 assert(a4.device === 'emulator-5554', 'parseArgs --device preserved');
+
+// ── iPhone Mirroring manifest ───────────────────────────────────────
+
+const mirror = buildIphoneMirroringManifest({
+  iosBuildNumber: '20',
+  appVersion: '0.1.0',
+  device: 'iPhone 15 Pro',
+  iosVersion: '18.2',
+  macosVersion: '15.2',
+  capturedAt: '2026-05-09T12:00:00.000Z',
+  screens: [
+    { filename: '01-admin-dev-top.png', screen: 'admin-dev-top', notes: '' },
+    { filename: '02-admin-dev-mcp.png', screen: 'admin-dev-mcp', notes: 'fresh writeback visible' },
+  ],
+  notes: 'v20 health-connect retest cycle 1',
+});
+assert(mirror.schemaVersion === 1, 'mirror: schemaVersion === 1');
+assert(mirror.captureMethod === 'iphone_mirroring', 'mirror: captureMethod marker');
+assert(mirror.iosBuildNumber === '20', 'mirror: iosBuildNumber preserved');
+assert(mirror.device === 'iPhone 15 Pro', 'mirror: device preserved');
+assert(mirror.iosVersion === '18.2', 'mirror: iosVersion preserved');
+assert(mirror.macosVersion === '15.2', 'mirror: macosVersion preserved');
+assert(mirror.capturedAt === '2026-05-09T12:00:00.000Z', 'mirror: capturedAt preserved');
+assert(Array.isArray(mirror.screens) && mirror.screens.length === 2, 'mirror: 2 screens');
+assert(mirror.screens[0].filename === '01-admin-dev-top.png' && mirror.screens[0].screen === 'admin-dev-top', 'mirror: first screen shape');
+assert(mirror.screens[1].notes === 'fresh writeback visible', 'mirror: second screen notes preserved');
+assert(mirror.notes === 'v20 health-connect retest cycle 1', 'mirror: top-level notes preserved');
+
+const mirrorJunk = buildIphoneMirroringManifest({
+  iosBuildNumber: 12345 as any,
+  device: { not: 'string' } as any,
+  screens: [
+    { filename: '01.png' } as any,                             // missing screen
+    { screen: 'no-filename' } as any,                          // missing filename
+    { filename: '03.png', screen: 'health' } as any,           // good (notes default '')
+    { filename: '04.png', screen: 'home', notes: 99 } as any,  // notes coerced to ''
+  ],
+  notes: 12345 as any,
+});
+assert(mirrorJunk.iosBuildNumber === null, 'mirror junk: numeric iosBuildNumber → null');
+assert(mirrorJunk.device === null, 'mirror junk: object device → null');
+assert(mirrorJunk.notes === '', 'mirror junk: numeric notes → ""');
+assert(mirrorJunk.screens.length === 2, 'mirror junk: keeps 2 valid screens');
+assert(mirrorJunk.screens[0].filename === '03.png' && mirrorJunk.screens[0].notes === '', 'mirror junk: missing notes coerces to ""');
+assert(mirrorJunk.screens[1].notes === '', 'mirror junk: numeric notes coerces to ""');
+
+const mirrorEmpty = buildIphoneMirroringManifest({});
+assert(mirrorEmpty.captureMethod === 'iphone_mirroring', 'mirror empty: captureMethod still iphone_mirroring');
+assert(mirrorEmpty.screens.length === 0, 'mirror empty: screens [] default');
+assert(typeof mirrorEmpty.capturedAt === 'string' && mirrorEmpty.capturedAt.length > 0, 'mirror empty: capturedAt fallback string');
+
+// ── isFilenameSuspicious ────────────────────────────────────────────
+
+assert(isFilenameSuspicious('Screenshot 2026-05-09 token.png'), 'token-shaped filename refused');
+assert(isFilenameSuspicious('Screenshot ghp_abcdefghij.png'), 'ghp_ filename refused');
+assert(isFilenameSuspicious('AKIAIOSFODNN7EXAMPLE.png'), 'AKIA filename refused');
+assert(isFilenameSuspicious('apikey-screen.png'), 'apikey filename refused');
+assert(isFilenameSuspicious('jwt-leaked.png'), 'jwt filename refused');
+assert(!isFilenameSuspicious('Screenshot 2026-05-09 admin-dev-top.png'), 'admin-dev filename allowed');
+assert(!isFilenameSuspicious('01-health-sources.png'), 'health-sources filename allowed');
+assert(!isFilenameSuspicious(''), 'empty filename does not throw');
+
+// ── labelToScreenSlug ───────────────────────────────────────────────
+
+assert(labelToScreenSlug('Admin/Dev top') === 'admin-dev-top', 'slash slugifies');
+assert(labelToScreenSlug('Admin Dev — MCP') === 'admin-dev-mcp', 'em-dash slugifies');
+assert(labelToScreenSlug('   ') === 'screen', 'whitespace falls back to "screen"');
+assert(labelToScreenSlug(undefined as any) === 'screen', 'undefined falls back to "screen"');
+
+const longLabel = 'a'.repeat(200);
+assert(labelToScreenSlug(longLabel).length <= 60, 'slug capped at 60 chars');
+
+// ── indexPrefix ─────────────────────────────────────────────────────
+
+assert(indexPrefix(0) === '01', 'indexPrefix 0 → "01"');
+assert(indexPrefix(8) === '09', 'indexPrefix 8 → "09"');
+assert(indexPrefix(9) === '10', 'indexPrefix 9 → "10"');
+
+// ── parseIphoneMirroringArgs ────────────────────────────────────────
+
+const m1 = parseIphoneMirroringArgs([]);
+assert(m1.windowMinutes === 10, 'parseIphoneMirroringArgs default windowMinutes 10');
+assert(m1.zip === false && m1.nonInteractive === false && m1.dryRun === false, 'parseIphoneMirroringArgs default booleans false');
+
+const m2 = parseIphoneMirroringArgs([
+  '--watch-dir', '/tmp/x',
+  '--window', '60',
+  '--ios-build', '20',
+  '--app-version', '0.1.0',
+  '--device', 'iPhone 15 Pro',
+  '--ios-version', '18.2',
+  '--macos-version', '15.2',
+  '--labels', 'a,b,c',
+  '--notes', 'cycle 1',
+  '--zip',
+  '--non-interactive',
+  '--dry-run',
+]);
+assert(m2.watchDir === '/tmp/x', 'parseIphoneMirroringArgs --watch-dir');
+assert(m2.windowMinutes === 60, 'parseIphoneMirroringArgs --window 60');
+assert(m2.iosBuild === '20', 'parseIphoneMirroringArgs --ios-build');
+assert(m2.appVersion === '0.1.0', 'parseIphoneMirroringArgs --app-version');
+assert(m2.device === 'iPhone 15 Pro', 'parseIphoneMirroringArgs --device');
+assert(m2.iosVersion === '18.2', 'parseIphoneMirroringArgs --ios-version');
+assert(m2.macosVersion === '15.2', 'parseIphoneMirroringArgs --macos-version');
+assert(m2.labels === 'a,b,c', 'parseIphoneMirroringArgs --labels');
+assert(m2.notes === 'cycle 1', 'parseIphoneMirroringArgs --notes');
+assert(m2.zip === true, 'parseIphoneMirroringArgs --zip');
+assert(m2.nonInteractive === true, 'parseIphoneMirroringArgs --non-interactive');
+assert(m2.dryRun === true, 'parseIphoneMirroringArgs --dry-run');
+
+const m3 = parseIphoneMirroringArgs(['--window', 'not-a-number']);
+assert(m3.windowMinutes === 10, 'parseIphoneMirroringArgs invalid --window keeps default');
 
 console.log('audit-screenshots manifest contract test passed.');
