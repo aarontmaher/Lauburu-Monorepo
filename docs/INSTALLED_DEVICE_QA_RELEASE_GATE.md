@@ -162,6 +162,94 @@ Tests added (repo-only):
 - `cloudflare-worker/test/test-source-sheet-status-mapper.ts`
   pins the `'Health Connect did not register'` status string to
   the canonical `'setup required'` TruthLabel.
+- `cloudflare-worker/test/test-android-prebuild-manifest.ts`
+  asserts the rendered `apps/mobile/android/app/src/main/AndroidManifest.xml`
+  (when present — file is gitignored) contains the eight HC
+  permissions, the rationale intent-filter, and the Android 14+
+  `ViewPermissionUsageActivity` activity-alias with the correct
+  permission, action, and category. MainActivity.kt is also
+  checked for the `HealthConnectPermissionDelegate.setPermissionDelegate(this)`
+  hookup. Skips silently if `expo prebuild` has not yet been run.
+
+### Android v21 retest readiness bundle (2026-05-09)
+
+Pre-flight (already complete before EAS is triggered):
+
+| Check | Status | Evidence |
+|---|---|---|
+| Config plugin patched | ✅ | `apps/mobile/plugins/withAndroidHealthConnectPermissionDelegate.js` adds the activity-alias on top of the rationale filter. |
+| Prebuild output verified | ✅ | `npx expo prebuild --platform android --no-install --clean` ran 2026-05-09 and produced an `AndroidManifest.xml` containing `ViewPermissionUsageActivity`, all eight `READ_*` permissions, and the rationale intent-filter. `MainActivity.kt` includes `HealthConnectPermissionDelegate.setPermissionDelegate(this)`. |
+| Connect calls requestPermission first | ✅ | `cloudflare-worker/test/test-android-health-connect-crash-guard.ts` static-checks the call order in `onConnectHealthConnect` — `requestPermissions(` precedes any `openHealthConnectSettings` reference within the same handler body. |
+| "Health Connect did not register" fallback | ✅ | `apps/mobile/src/components/HealthActionsPanel.tsx` renders the new pill when `useHealthStore.getState().hcRegistrationStatus === 'did_not_register'`. Primary action relabels to "Retry permission request". |
+| Truth labels preserved | ✅ | `cloudflare-worker/test/test-source-sheet-status-mapper.ts` locks the eight canonical `TruthLabel` strings + the new `'Health Connect did not register'` → `'setup required'` mapping. |
+| Admin/Dev MCP transport diagnostics | ✅ | `apps/mobile/app/admin-dev.tsx` renders resolved core/admin endpoints + per-call HTTP status when MCP is unavailable. URL double-append regression locked by `cloudflare-worker/test/test-mcp-worker-root-url.ts`. |
+| Admin/Dev lane progress strip | ✅ | `apps/mobile/src/services/lane-progress-summary.ts` + lane chip block in `apps/mobile/app/admin-dev.tsx`. Tests in `cloudflare-worker/test/test-lane-progress-summary.ts` cover fresh / stale / unavailable / unknown-progress. |
+| Admin/Dev build-state separation | ✅ | New "Build state separation" panel labels each platform as `repo-only` (badge neutral) vs `installed-build verified` (badge green). Default state is `repo-only` until a versionCode is installed and matches the target. |
+| App-resume auto-refresh | ✅ | `AppState.change === 'active'` listener triggers `refresh()` so installed-device QA does not need a manual pull. |
+
+Aaron retest steps for v21 (after he approves a new EAS Android build):
+
+1. Trigger an EAS Android build at the current `main` commit (or
+   any commit ≥ `a0c9816`). Confirm versionCode is 21.
+2. Wait for the build to finish; download the `.aab` to
+   `~/Downloads/`.
+3. Open Play Console → Lauburu Grappling Map → Testing → Internal
+   testing → create new release. Upload the `.aab`. Start rollout
+   to Internal Testing only.
+4. Wait for Play processing (5-30 min). Open the internal-tester
+   opt-in link from Google or tap the existing Play Store invite.
+5. Install/update Lauburu Grappling Map on the Android device.
+6. **HC registration check.** Open Health → Manage Sources → tap
+   **Connect** on the Health Connect source row. Expect: the OS
+   Health Connect permissions dialog appears (it did NOT on v20).
+7. Grant at least one permission, then open the Health Connect OS
+   app → Apps. Expect: **Lauburu Grappling Map** is now listed
+   under "Allowed access" (or similar — Android 14 wording varies).
+8. Return to the Lauburu app. Manage Sources should now show the
+   Health Connect row as `live` with a green chip and the meta
+   line should reflect at least one connected metric.
+9. **Did-not-register fallback check.** If HC still does not show
+   the app, the source row should render the new "Health Connect
+   did not register" pill (set chip → 'setup required' tone) and
+   the primary action label should read "Retry permission
+   request" instead of "Connect". Tap it. If HC still does not
+   register, the manifest fix did not apply at prebuild — open
+   the Play Console internal release notes / EAS build log and
+   verify the build commit hash includes `a0c9816` or later.
+10. **Admin/Dev verification.** Open Admin/Dev (admin email
+    signed in). Expect:
+    - "MCP" tile shows `MCP live · fresh · <age>` within 1.5s.
+    - "Lane progress" chip block lists Claude / Codex / Agent
+      with status, age, fresh/stale/unknown badge, progress bar
+      (filled where MCP reports progress; track-only with meta
+      "progress unknown" otherwise), and "Next: …" line.
+    - "Build state separation" chip block now shows
+      `Android — installed-build verified (v21)` with a green
+      `verified` badge (assuming the release-gate writeback
+      reflects the new versionCode).
+    - "MCP transport diagnostics" panel does NOT render when all
+      calls succeed.
+11. **App-resume auto-refresh check.** Background the app for
+    ≥1 minute, then foreground. Expect: the snapshot age in the
+    MCP tile and the lane ages refresh within 1.5s without a
+    manual pull.
+12. Record results with `npm run bridge:agent-qa`
+    (`platform: android`, `androidVersionCode: 21`).
+
+Anti-rules during this readiness bundle (do not violate):
+
+- **No EAS build, Play upload, TestFlight upload, or production
+  release.** The bundle is repo-only — Aaron approves the EAS
+  build separately.
+- **No installed-build verified claim.** The "verified" badge
+  only flips green AFTER a real installed-device run. Until then,
+  every build-state row reads `repo-only`.
+- **Truth labels preserved.** The eight canonical `TruthLabel`
+  strings (`live`, `synced from hub`, `imported summary`,
+  `seed/provisional`, `setup required`, `planned`, `missing`,
+  `stale`) remain the only values rendered by `SourceChip`.
+- **Stale wins over fresh** in the lane progress strip — a stale
+  snapshot vetoes per-lane fresh badges.
 
 ## Current build QA state
 

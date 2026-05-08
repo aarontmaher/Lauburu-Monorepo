@@ -1091,6 +1091,52 @@ export default function AdminDevScreen() {
           )}
           <Text style={styles.note}>No EAS build until Agent confirms the on-device value and Aaron approves.</Text>
         </View>
+        {/* Build-state separation: makes the repo-only vs installed-
+            build-verified distinction explicit so a tester does not
+            confuse a repo-side patch (e.g. Health Connect activity-
+            alias) with an installed-device confirmation. The badge
+            tone is intentionally neutral until a versionCode is
+            installed; only the matched-installed state goes green. */}
+        <View style={styles.chipBlock}>
+          <Text style={styles.chipLabel}>Build state separation</Text>
+          {(() => {
+            const installedAndroid = releaseGateSummary.ok ? releaseGateSummary.installedAndroid : null;
+            const targetAndroid = releaseGateSummary.ok ? releaseGateSummary.targetAndroid : null;
+            const installedIos = releaseGateSummary.ok ? releaseGateSummary.installedIos : null;
+            const targetIos = releaseGateSummary.ok ? releaseGateSummary.targetIos : null;
+            const androidMatched = installedAndroid != null && targetAndroid != null && installedAndroid === targetAndroid;
+            const iosMatched = installedIos != null && targetIos != null && String(installedIos) === String(targetIos);
+            const androidLabel = installedAndroid == null
+              ? `Android — repo-only (target v${targetAndroid ?? '—'} not installed)`
+              : androidMatched
+                ? `Android — installed-build verified (v${installedAndroid})`
+                : `Android — repo-only patch ahead of installed (installed v${installedAndroid} → target v${targetAndroid ?? '—'})`;
+            const iosLabel = installedIos == null
+              ? `iOS — repo-only (target build ${targetIos ?? '—'} not installed)`
+              : iosMatched
+                ? `iOS — installed-build verified (build ${installedIos})`
+                : `iOS — repo-only patch ahead of installed (installed ${installedIos} → target ${targetIos ?? '—'})`;
+            return (
+              <>
+                <View style={[styles.laneProgressRow, { marginTop: 0 }]}>
+                  <Text style={styles.chipBody}>{androidLabel}</Text>
+                  <View style={androidMatched ? styles.laneFreshnessBadgeFresh : styles.laneFreshnessBadgeUnknown}>
+                    <Text style={styles.laneFreshnessBadgeText}>{androidMatched ? 'verified' : 'repo-only'}</Text>
+                  </View>
+                </View>
+                <View style={styles.laneProgressRow}>
+                  <Text style={styles.chipBody}>{iosLabel}</Text>
+                  <View style={iosMatched ? styles.laneFreshnessBadgeFresh : styles.laneFreshnessBadgeUnknown}>
+                    <Text style={styles.laneFreshnessBadgeText}>{iosMatched ? 'verified' : 'repo-only'}</Text>
+                  </View>
+                </View>
+              </>
+            );
+          })()}
+          <Text style={styles.note}>
+            Repo-only = patch is on main but not yet bundled into an installed build. Installed-build verified = the installed versionCode/build matches the patched target. No EAS build is triggered from this screen.
+          </Text>
+        </View>
         {isAdmin && (
           <View style={styles.chipBlock}>
             <Text style={styles.chipLabel}>Owner alerts</Text>
