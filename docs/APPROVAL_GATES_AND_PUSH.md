@@ -117,6 +117,95 @@ laptop-less day can be reconciled later.
   and must NOT carry secrets, real device IDs, or build URLs that
   rotate frequently. Pin to short stable identifiers.
 
+## Push action category (repo-ready scaffold)
+
+The pure mapper + the lazy expo-notifications scaffold landed
+ahead of the EAS build that adds the dep, so when Aaron
+approves the build the wiring is already in place. Files:
+
+- `packages/shared/src/approval-gates/push.ts` — pure helpers:
+  `mapNotificationActionToGateMutation` (action id → mutation
+  envelope), `APPROVAL_CATEGORY_IDENTIFIER`
+  (`lauburu_approval_gate_v1`), `DEFAULT_NOTIFICATION_DEFER_HOURS`
+  (24). No React Native / Expo / fs deps; testable in node.
+- `apps/mobile/src/services/push-approval-notifications.ts` —
+  app-side surface: re-exports the pure mapper + adds three
+  lazy-loaded helpers (`registerApprovalCategory`,
+  `scheduleLocalApprovalReminder`, `dispatchNotificationAction`)
+  that all `require('expo-notifications')` and gracefully no-op
+  when the dep is absent. Today every helper returns
+  `{ ok: false, reason: 'expo-notifications not installed' }`.
+- `cloudflare-worker/test/test-push-approval-action-mapping.ts`
+  locks the mapper contract: 3 known action ids
+  (approve / deny / defer); empty / non-string inputs → null;
+  case-insensitive match; whitespace NOT trimmed (any drift
+  surfaces immediately); approve / deny carry fixed reason
+  strings; defer adds 24h to `now()` by default; non-positive
+  `deferHours` falls back to default; `APPROVAL_CATEGORY_IDENTIFIER`
+  stable.
+
+### Action category contract (registered when expo-notifications lands)
+
+| Action id | Button title | Options | Effect |
+|---|---|---|---|
+| `approve` | Approve | foreground=false | `useApprovalGatesStore.approve(gateId, 'approved via push notification action')` |
+| `defer` | Defer 24h | foreground=false | `useApprovalGatesStore.defer(gateId, +24h, 'deferred via push notification action')` |
+| `deny` | Deny | foreground=true (opens app), destructive=true | `useApprovalGatesStore.cancel(gateId, 'denied via push notification action')` |
+
+`Approve` and `Defer` resolve from the lock screen without
+opening the app; `Deny` opens the app to the approval centre
+because cancel is destructive and benefits from a confirm
+glance. Either way, the existing approval-gate centre on
+Admin/Dev is the canonical fallback if the lock-screen action
+fails to deliver — the gate stays `pending` and Aaron resolves
+it from the in-app surface.
+
+### iOS lock-screen behaviour (notes for the install-approving session)
+
+- iOS delivers the user's tap to the app via
+  `UNNotificationResponse.actionIdentifier`. The handler
+  `dispatchNotificationAction(response)` reads
+  `notification.request.content.data.gateId`, runs the pure
+  mapper, and applies the resulting store mutation.
+- iOS may delay action delivery if the device is locked +
+  passcode required. The `Deny` action's `foreground=true`
+  ensures the user sees the in-app gate state rather than a
+  silent denial.
+- Aaron may receive multiple reminders for the same gate (one
+  per `scheduleLocalApprovalReminder` call) — the helper
+  refuses to schedule when `expiresAt - leadMinutes` is in
+  the past, but it's idempotent only by hash of the trigger
+  date, not by gateId. Future Codex work: add a
+  `cancelLocalApprovalReminder(gateId)` to fan-out cancels
+  when the gate resolves; today the user just dismisses the
+  duplicate.
+- Action button text MUST stay short (iOS truncates
+  aggressively on lock screen). `Approve`, `Defer 24h`, `Deny`
+  all fit comfortably.
+
+### Wiring once expo-notifications is added (pseudocode)
+
+Inside the app's root layout's `useEffect(() => {}, [])`:
+
+```ts
+import * as Notifications from 'expo-notifications';
+import {
+  registerApprovalCategory,
+  dispatchNotificationAction,
+} from '@/src/services/push-approval-notifications';
+
+useEffect(() => {
+  void registerApprovalCategory();
+  const sub = Notifications.addNotificationResponseReceivedListener((response) => {
+    void dispatchNotificationAction(response);
+  });
+  return () => sub.remove();
+}, []);
+```
+
+No new MCP tool, no backend route, no app-state persistence
+beyond what the approval-gates store already does.
+
 ## Codex handoff (next implementation batch)
 
 Only fires when Aaron approves the push setup AND has completed
