@@ -464,6 +464,26 @@ Five common ChatGPT-side failure modes and the exact fix for
 each. If the curls in § 7 succeed but ChatGPT still misbehaves,
 your symptom is in this list.
 
+### 10.0 "ChatGPT Agent says MCP Core not callable"
+
+The custom MCP connector works in **normal chat** but Agent
+(autonomous browsing / deep research) reports MCP Core not
+callable and stops. This is a separate surface and likely a
+ChatGPT product gating issue — Agent runtime may not yet
+support arbitrary custom MCP servers.
+
+See `docs/AGENT_MCP_ACCESS.md` for:
+- Root-cause candidates (9 hypotheses).
+- An 8-step verification matrix Aaron can run.
+- The fallback workflow for now (chat does the MCP read,
+  pastes state into Agent).
+- The ideal workflow once Agent supports custom MCP.
+
+The fallback is rule-11-compliant: chat enforces MCP-first,
+hands the live state to Agent as input, Agent uses its
+built-in connectors for device / screenshot / vendor-console
+work, then output flows back to coders for MCP writeback.
+
 ### 10.1 "Tool appears in Drafts only"
 
 ChatGPT's custom MCP connectors are surfaced in **Project**
