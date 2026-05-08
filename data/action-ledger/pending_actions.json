@@ -33,27 +33,34 @@
     },
     {
       "rank": 5,
+      "id": "fs021-health-inputs-expansion",
+      "title": "FS-021 lactate, Daily Dozen-style checklist, and nutrition/recovery pattern inputs",
+      "status": "queued_after_fs020_parser",
+      "evidenceRequirement": "Aaron approves FS-021 batch scope after the release gate and FS-020 parser confirmation; implementation remains manual/CSV-first and context-only."
+    },
+    {
+      "rank": 6,
       "id": "p1-actionable-home",
       "title": "P1 actionable home screen",
       "status": "queued_after_current_gate",
       "evidenceRequirement": "Current health/release gate no longer blocks mobile product work."
     },
     {
-      "rank": 6,
+      "rank": 7,
       "id": "p2-start-training",
       "title": "P2 Start Training / Drill Timer on home",
       "status": "queued_after_p1",
       "evidenceRequirement": "P1 path is stable or bundled safely."
     },
     {
-      "rank": 7,
+      "rank": 8,
       "id": "product-decisions-p4-p9",
       "title": "P4-P9 product decisions",
       "status": "needs_aaron_decision",
       "evidenceRequirement": "Aaron explicitly approves or rejects each decision."
     },
     {
-      "rank": 8,
+      "rank": 9,
       "id": "code-can-build-c1-c5",
       "title": "C1-C5 code-can-build graph improvements",
       "status": "queued_support_work",
@@ -163,6 +170,21 @@
       "createdAt": "2026-05-08T03:32:27Z",
       "updatedAt": "2026-05-08T03:32:27Z",
       "evidenceSummaryOrLink": "Agent parser confirmation and scoped B-20d prompt.",
+      "voidReason": null,
+      "supersededBy": null
+    },
+    {
+      "id": "fs021-health-inputs-expansion-scope",
+      "owner": "Aaron",
+      "targetWorkerOrPerson": "Codex",
+      "lane": "Health metrics / journal import / data model",
+      "actionText": "Approve or refine FS-021 scope: lactate manual/CSV-first, Daily Dozen-style checklist, and association-only nutrition/recovery pattern metrics.",
+      "triggerCondition": "Health/release gate and FS-020 parser confirmation are no longer blocking; Aaron wants the next health input expansion batch.",
+      "status": "pending",
+      "priority": "P1",
+      "createdAt": "2026-05-08T03:58:40Z",
+      "updatedAt": "2026-05-08T03:58:40Z",
+      "evidenceSummaryOrLink": "Spec lives in docs/FS021_HEALTH_INPUTS_EXPANSION_SPEC.md; no EAS build, no clinical interpretation, no device BLE claim until protocol is proven.",
       "voidReason": null,
       "supersededBy": null
     },

@@ -25,6 +25,7 @@ Updated 2026-05-05.
 | Oura | none | ❌ NOT live | n/a | n/a | Defer; small cohort overlap |
 | Cronometer | none | ❌ NOT live; nutrition card is manual entry | n/a | n/a | Defer; nutrition isn't a readiness input today |
 | Manual check-in | `NextDayCheckin` | ✅ (subset) | Subjective only — not a readiness signal yet | Subjective bucket (placeholder, null today) | Extend — cheapest path to closing Grappler Readiness gaps |
+| Lactate testing | FS-021 proposal | ❌ NOT live | Training/performance context only | Context only; never recovery/fatigue certainty | Manual/CSV first; BLE investigation later |
 | Phone PPG (camera HR) | none | ❌ NOT live | n/a | n/a | Defer; quality unreliable for HRV |
 
 "Live today" = code reads a real value from the source and stores it
@@ -106,6 +107,25 @@ on Android. Same weights, same buckets.
 **Integration priority:** keep parity with iOS. If Apple-side adds
 a new metric, Android should follow within one batch where Health
 Connect supports it.
+
+### Lactate testing — FS-021 proposal
+
+**Data provided today:** none. No lactate source is live in the app.
+
+**Planned first path:** manual entry and CSV/import only. Proposed
+fields: mmol/L, test protocol, stage/workload, heart rate, RPE,
+timing relative to training, source, confidence, and notes.
+
+**Device notes:** Lactate Scout Sport/4 advertises BLE features and
+heart-rate monitor linkage, but open mobile protocol support is not
+confirmed. Lactate Plus should be treated as manual/CSV unless
+Bluetooth support is proven. Lactate Express and IDRO remain research
+paths only.
+
+**Role in readiness:** training/performance context only. The app must
+not say lactate diagnoses recovery, fatigue, health status, or whether
+to train. Any future insight language is association-only and
+confidence-labelled.
 
 ### WHOOP (direct OAuth) — `whoop-store.ts` + `integrations.ts`
 

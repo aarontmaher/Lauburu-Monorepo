@@ -18,10 +18,12 @@ handoff/control-centre surfaces.
    fresh; top-level MCP reports `env_missing` until Aaron sets the
    two Supabase secrets on `lauburu-mcp`.
 4. FS-020 journal import parser/macros confirmation and UI handoff.
-5. P1 actionable home screen.
-6. P2 Start Training / Drill Timer on home.
-7. P4-P9 product decisions that need Aaron approval.
-8. C1-C5 code-can-build graph support work.
+5. FS-021 lactate, Daily Dozen-style checklist, and
+   nutrition/recovery pattern inputs.
+6. P1 actionable home screen.
+7. P2 Start Training / Drill Timer on home.
+8. P4-P9 product decisions that need Aaron approval.
+9. C1-C5 code-can-build graph support work.
 
 Old website backlog items such as P1/P2 stay queued. They do not
 outrank the active mobile health/release gate.
@@ -57,6 +59,7 @@ The current pending set covers:
 - Agent QA JSON writeback.
 - FS-020 parser confirmation.
 - B-20d journal import UI after parser confirmation.
+- FS-021 health-input expansion scope approval/refinement.
 - P1/P2 mobile home work after the health/release gate clears.
 
 The stale "ChatGPT cannot call MCP v2" follow-up is voided because the

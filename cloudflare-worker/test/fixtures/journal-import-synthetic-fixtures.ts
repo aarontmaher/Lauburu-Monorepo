@@ -24,6 +24,26 @@ export interface SyntheticMacroFixture {
   expectedProteinGPerKg: number | null;
 }
 
+export interface SyntheticLactateFixture {
+  id: string;
+  sourceKind: 'manual' | 'generic_csv';
+  rawText: string;
+  expectedMmolL: number;
+  expectedProtocol: string;
+  expectedTiming: 'pre_session' | 'during_session' | 'post_session' | 'morning' | 'other';
+  expectedConfidence: 'user_reported' | 'imported_uncertain';
+}
+
+export interface SyntheticNutritionChecklistFixture {
+  id: string;
+  sourceKind: 'manual' | 'generic_csv';
+  rawText: string;
+  expectedCategory: string;
+  expectedCompletedCount: number;
+  expectedTargetCount: number;
+  expectedConfidence: 'user_reported' | 'imported_uncertain';
+}
+
 export const SYNTHETIC_JOURNAL_TERM_FIXTURES: readonly SyntheticJournalTermFixture[] = [
   {
     id: 'apple-notes-bpc-alias',
@@ -117,5 +137,47 @@ export const SYNTHETIC_MACRO_FIXTURES: readonly SyntheticMacroFixture[] = [
     expectedCarbsKcalPct: 33,
     expectedFatKcalPct: 34,
     expectedProteinGPerKg: null,
+  },
+] as const;
+
+export const SYNTHETIC_LACTATE_FIXTURES: readonly SyntheticLactateFixture[] = [
+  {
+    id: 'manual-post-session-lactate',
+    sourceKind: 'manual',
+    rawText: '2026-05-08 post session lactate 7.2 mmol/L, stage 4, HR 168, RPE 8, protocol ramp.',
+    expectedMmolL: 7.2,
+    expectedProtocol: 'ramp',
+    expectedTiming: 'post_session',
+    expectedConfidence: 'user_reported',
+  },
+  {
+    id: 'csv-lactate-threshold-step',
+    sourceKind: 'generic_csv',
+    rawText: 'measured_at,lactate_mmol_l,protocol,stage,heart_rate_bpm,rpe,timing\n2026-05-08T07:10:00Z,3.4,step_test,stage_2,142,6,during_session',
+    expectedMmolL: 3.4,
+    expectedProtocol: 'step_test',
+    expectedTiming: 'during_session',
+    expectedConfidence: 'imported_uncertain',
+  },
+] as const;
+
+export const SYNTHETIC_NUTRITION_CHECKLIST_FIXTURES: readonly SyntheticNutritionChecklistFixture[] = [
+  {
+    id: 'manual-daily-dozen-greens',
+    sourceKind: 'manual',
+    rawText: 'Daily checklist: greens 2/2, berries 1/1, whole grains 2/3.',
+    expectedCategory: 'greens',
+    expectedCompletedCount: 2,
+    expectedTargetCount: 2,
+    expectedConfidence: 'user_reported',
+  },
+  {
+    id: 'csv-daily-dozen-legumes',
+    sourceKind: 'generic_csv',
+    rawText: 'date,category,completed_count,target_count\n2026-05-08,beans_legumes,1,3',
+    expectedCategory: 'beans_legumes',
+    expectedCompletedCount: 1,
+    expectedTargetCount: 3,
+    expectedConfidence: 'imported_uncertain',
   },
 ] as const;

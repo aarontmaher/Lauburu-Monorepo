@@ -40,6 +40,10 @@ Fields that matter for trend context (NOT for readiness):
 - **Macros**: protein (g), carbs (g), fat (g).
 - **Hydration**: water (ml).
 - **Meal timing**: first meal, last meal, meal count per day.
+- **Carb timing around training**: user-entered/imported context
+  only, not an automatic readiness claim.
+- **Daily Dozen-style checklist completion**: optional manual habit
+  checklist per FS-021; not assumed to have an official API/export.
 - **Weight**: body weight on a slow cadence (weekly, monthly).
 - **Goals**: target weight, target macro split.
 
@@ -96,6 +100,9 @@ Out of scope:
    "estimate" label. Heuristic; never claimed as accurate.
 5. Per-meal log refinement — beyond MVP; tracks meal timing for
    trend analysis.
+6. FS-021 Daily Dozen-style checklist — manual first, optional CSV
+   later. Completion may be compared with training/recovery context
+   using "associated with" language only.
 
 ## UI rules
 

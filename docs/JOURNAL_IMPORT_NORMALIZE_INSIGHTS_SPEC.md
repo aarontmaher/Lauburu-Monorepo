@@ -776,8 +776,12 @@ Output:
   contract; the CSV-import path here is a fallback when the
   hub doesn't carry the data.
 - `docs/NUTRITION_TRACKING_PLAN.md` — nutrition is context,
-  never readiness input. Macro insights are personal
-  observations only, never coaching.
+  not a primary readiness signal.
+- `docs/FS021_HEALTH_INPUTS_EXPANSION_SPEC.md` — queued extension
+  for lactate manual/CSV inputs, Daily Dozen-style checklist context,
+  and nutrition/recovery association metrics. It reuses FS-020 parser
+  privacy rules and stays context-only until Aaron approves a batch.
+- Macro insights are personal observations only, never coaching.
 - `docs/PRIVACY.md` — per-user storage rules.
 - `docs/UNIFIED_MCP_PLAN.md` § 15 — auth model the new
   tables MUST honour.
