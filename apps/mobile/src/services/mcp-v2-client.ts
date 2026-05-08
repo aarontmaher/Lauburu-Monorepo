@@ -1,4 +1,4 @@
-import { AI_PUBLIC_BASE, MCP_BASE_URL } from './ai-backend-config';
+import { AI_PUBLIC_BASE, mcpWorkerRootUrl } from './ai-backend-config';
 
 /**
  * Thin JSON-RPC 2.0 client for the unified Lauburu MCP v2 endpoint
@@ -50,15 +50,15 @@ export type McpV2CallResult = McpV2CallEnvelope | McpV2CallFailure;
 export type McpV2Surface = 'core' | 'admin';
 
 function v2BaseUrlBase(): string | null {
-  if (MCP_BASE_URL) {
-    const trimmed = MCP_BASE_URL.replace(/\/$/, '');
-    // EXPO_PUBLIC_MCP_BASE_URL may already end at /api or be the worker
-    // root. We want the v2 endpoint at <root>/mcp/v2.
-    return trimmed.endsWith('/api') ? trimmed.slice(0, -'/api'.length) : trimmed;
-  }
-  // Fall back to deriving from AI_PUBLIC_BASE only when the public
-  // backend is configured (legacy Railway shape). Most testers won't
-  // have this — return null so the UI renders "MCP not configured".
+  // Source of truth — strips any /mcp/v2[/admin], /api, /mcp/core,
+  // or /mcp/public suffix the env may have shipped with. Older code
+  // here only stripped /api and re-appended /mcp/v2, which produced
+  // /mcp/v2/mcp/v2 (404) when the env was already set to the full
+  // /mcp/v2 URL. See docs/INSTALLED_DEVICE_QA_RELEASE_GATE.md for the
+  // 2026-05-09 v19 evidence.
+  const root = mcpWorkerRootUrl();
+  if (root) return root;
+  // Legacy fallback: the original Railway-shaped public base.
   if (AI_PUBLIC_BASE) {
     return AI_PUBLIC_BASE.replace(/\/$/, '').replace(/\/athlete-memory$/, '');
   }
@@ -163,9 +163,40 @@ export async function mcpV2CallTool(
   return { ok: true, isError: parsed.result?.isError === true, text, payload };
 }
 
+/**
+ * Safe diagnostics about a single MCP fetch. Surfaced in the
+ * Admin/Dev UI so installed-device QA can see why a call failed
+ * without exposing tokens, raw response bodies, or internal IDs.
+ *
+ * `reason` is one of the small, finite categories the v2 client
+ * already returns, so the UI can render category copy ("transport
+ * error", "rpc error", "unconfigured") rather than raw error text.
+ */
+export interface McpV2CallDiagnostics {
+  reason: McpV2CallFailure['reason'] | 'ok';
+  /** HTTP status code when the call reached the server, else null. */
+  httpStatus: number | null;
+  /** Tool name or rpc method ('initialize'/'tools/list'). */
+  endpoint: string;
+}
+
 export interface McpV2DashboardSnapshot {
   fetchedAt: string;
   baseUrl: string | null;
+  /**
+   * Resolved core endpoint (`<root>/mcp/v2`) — exposed so the
+   * Admin/Dev diagnostics panel can render the exact URL being
+   * fetched without callers re-deriving it. Never includes auth.
+   */
+  resolvedCoreEndpoint: string | null;
+  /** Resolved admin endpoint (`<root>/mcp/v2/admin`). */
+  resolvedAdminEndpoint: string | null;
+  /**
+   * Source of the env that produced the resolved endpoints —
+   * 'mcp' for `EXPO_PUBLIC_MCP_BASE_URL`, 'public_backend' for the
+   * legacy Railway shape, 'unconfigured' when neither is set.
+   */
+  envSource: 'mcp' | 'public_backend' | 'unconfigured';
   serverInfo: { name: string; version: string; description?: string } | null;
   protocolVersion: string | null;
   toolCounts: { total: number; byNamespace: Record<string, number> };
@@ -180,6 +211,19 @@ export interface McpV2DashboardSnapshot {
   handoffLatest: { ok: true; payload: unknown } | { ok: false; message: string };
   /** /mcp/v2/admin release.get_gate — public-safe but lives on admin surface. */
   releaseGate: { ok: true; payload: unknown } | { ok: false; message: string };
+  /**
+   * Per-tool fetch diagnostics. Always populated. Reason 'ok' for
+   * successful calls; categorical failure reason otherwise. Never
+   * carries token, raw body, or stack data.
+   */
+  diagnostics: McpV2CallDiagnostics[];
+  /** Wall-clock duration of the parallel fetch fan-out, ms. */
+  fetchDurationMs: number;
+}
+
+function diagnoseCall(endpoint: string, r: McpV2CallResult): McpV2CallDiagnostics {
+  if (r.ok) return { endpoint, reason: 'ok', httpStatus: 200 };
+  return { endpoint, reason: r.reason, httpStatus: r.status ?? null };
 }
 
 /**
@@ -189,10 +233,21 @@ export interface McpV2DashboardSnapshot {
  */
 export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise<McpV2DashboardSnapshot | null> {
   const baseUrl = v2BaseUrl();
+  const resolvedCoreEndpoint = baseUrl;
+  const resolvedAdminEndpoint = baseUrl ? v2SurfaceUrl('admin') : null;
+  const envSource: McpV2DashboardSnapshot['envSource'] = baseUrl
+    ? 'mcp'
+    : AI_PUBLIC_BASE
+      ? 'public_backend'
+      : 'unconfigured';
   if (!baseUrl) {
+    const startMs = Date.now();
     return {
       fetchedAt: new Date().toISOString(),
       baseUrl: null,
+      resolvedCoreEndpoint: null,
+      resolvedAdminEndpoint: null,
+      envSource,
       serverInfo: null,
       protocolVersion: null,
       toolCounts: { total: 0, byNamespace: {} },
@@ -205,14 +260,22 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
       buildOverview: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
       handoffLatest: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
       releaseGate: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
+      diagnostics: [
+        { endpoint: 'initialize', reason: 'mcp_base_url_missing', httpStatus: null },
+      ],
+      fetchDurationMs: Date.now() - startMs,
     };
   }
 
+  const startMs = Date.now();
   const initialised = await mcpV2InitializeAndListTools(signal);
   if (!initialised.ok) {
     return {
       fetchedAt: new Date().toISOString(),
       baseUrl,
+      resolvedCoreEndpoint,
+      resolvedAdminEndpoint,
+      envSource,
       serverInfo: null,
       protocolVersion: null,
       toolCounts: { total: 0, byNamespace: {} },
@@ -225,6 +288,10 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
       buildOverview: { ok: false, message: initialised.message },
       handoffLatest: { ok: false, message: initialised.message },
       releaseGate: { ok: false, message: initialised.message },
+      diagnostics: [
+        { endpoint: 'initialize', reason: initialised.reason, httpStatus: initialised.status ?? null },
+      ],
+      fetchDurationMs: Date.now() - startMs,
     };
   }
 
@@ -269,6 +336,9 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
   return {
     fetchedAt: new Date().toISOString(),
     baseUrl,
+    resolvedCoreEndpoint,
+    resolvedAdminEndpoint,
+    envSource,
     serverInfo: initialised.serverInfo,
     protocolVersion: initialised.protocolVersion,
     toolCounts: { total: initialised.tools.length, byNamespace },
@@ -281,5 +351,17 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
     buildOverview: wrap(build),
     handoffLatest: wrap(handoff),
     releaseGate: wrap(release),
+    diagnostics: [
+      { endpoint: 'initialize', reason: 'ok', httpStatus: 200 },
+      diagnoseCall('project.get_current_state', current),
+      diagnoseCall('project.get_operating_rules', rules),
+      diagnoseCall('project.get_work_status', work),
+      diagnoseCall('mobile.get_lane_overview', lane),
+      diagnoseCall('mobile.get_build_overview', build),
+      diagnoseCall('handoff.get_latest', handoff),
+      diagnoseCall('project.get_overview', proj),
+      diagnoseCall('release.get_gate', release),
+    ],
+    fetchDurationMs: Date.now() - startMs,
   };
 }

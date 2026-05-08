@@ -21,8 +21,8 @@
  *   - No arbitrary shell. Disabled trigger buttons surface intent only.
  *   - Admin gate by email allowlist (matches Settings tester-tools gate).
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, Linking, Platform, Pressable, ScrollView, StyleSheet, TextInput, Text as RNText } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, AppState, Linking, Platform, Pressable, ScrollView, StyleSheet, TextInput, Text as RNText } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import * as Application from 'expo-application';
 import * as Updates from 'expo-updates';
@@ -817,6 +817,22 @@ export default function AdminDevScreen() {
 
   useEffect(() => { void refresh(); }, [refresh]);
 
+  // Auto-refresh on app foreground/resume so installed-device QA
+  // sees the latest MCP snapshot without a manual pull-to-refresh.
+  // Subscription is added once on mount; the listener calls the
+  // current `refresh` via a ref so we don't re-subscribe whenever
+  // the callback identity changes.
+  const refreshRef = useRef(refresh);
+  useEffect(() => { refreshRef.current = refresh; }, [refresh]);
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        void refreshRef.current();
+      }
+    });
+    return () => { sub.remove(); };
+  }, []);
+
   // Approval gates store — local-first; no server writeback yet.
   const approvalGates = useApprovalGatesStore((s) => s.gates);
   const approvalRefreshing = useApprovalGatesStore((s) => s.refreshing);
@@ -900,6 +916,14 @@ export default function AdminDevScreen() {
   const connectorWork = connectorSnapshot?.workStatus ?? null;
   const mcpCurrentState = getMcpCurrentState(mcpV2Snapshot);
   const mcpFreshness = mcpFreshnessSummary(mcpCurrentState);
+  // Diagnostics visibility: any non-ok call, OR null snapshot, OR
+  // unavailable freshness — surfaces the safe per-call category +
+  // HTTP status to the panel below. We never render the raw response
+  // body or token; the upstream client already discards both.
+  const mcpV2DiagnosticsAnyFailed = !!(mcpV2Snapshot?.diagnostics?.some((d) => d.reason !== 'ok'));
+  const mcpV2DiagnosticsVisible = mcpV2Snapshot == null
+    || mcpV2DiagnosticsAnyFailed
+    || mcpFreshness.reason === 'unavailable';
   const rule12 = mcpRule12Status(mcpV2Snapshot);
   const mcpAgents = mcpCurrentState?.agents ?? [];
   const mcpClaudeLane = mcpAgents.find((agent) => agent.id === 'claude') ?? null;
@@ -1075,6 +1099,40 @@ export default function AdminDevScreen() {
             <Text style={styles.chipLabel}>Stale writeback</Text>
             <Text style={styles.chipBody}>MCP readable but writeback is stale ({mcpFreshness.ageLabel}). Run bridge snapshot/verify or deploy worker.</Text>
             <Text style={styles.note}>Reason: {mcpFreshness.reason} · updated {mcpFreshness.updatedAt}</Text>
+          </View>
+        )}
+        {/* MCP transport diagnostics — visible only on admin and only
+            when the v2 snapshot has any non-ok call OR the snapshot
+            is null/error. Renders categorical reasons + HTTP status
+            codes + the resolved endpoint URL so installed-device QA
+            can see WHY MCP is unavailable without exposing tokens or
+            raw response bodies. Added 2026-05-09 alongside the
+            base-URL normalisation fix. */}
+        {isAdmin && mcpV2DiagnosticsVisible && (
+          <View style={styles.warningBlock}>
+            <Text style={styles.chipLabel}>MCP transport diagnostics</Text>
+            <Text style={styles.chipBody}>
+              {mcpV2Snapshot == null
+                ? `MCP fetch did not return a snapshot${mcpV2Error ? ` · ${mcpV2Error}` : ''}.`
+                : `MCP fetch reached the worker${mcpV2DiagnosticsAnyFailed ? ' but some calls failed.' : ' — see per-call statuses below.'}`}
+            </Text>
+            {mcpV2Snapshot?.resolvedCoreEndpoint && (
+              <Text style={styles.note}>Core endpoint: {mcpV2Snapshot.resolvedCoreEndpoint}</Text>
+            )}
+            {mcpV2Snapshot?.resolvedAdminEndpoint && (
+              <Text style={styles.note}>Admin endpoint: {mcpV2Snapshot.resolvedAdminEndpoint}</Text>
+            )}
+            {mcpV2Snapshot && (
+              <Text style={styles.note}>Env source: {mcpV2Snapshot.envSource} · fetched in {mcpV2Snapshot.fetchDurationMs}ms</Text>
+            )}
+            {mcpV2Snapshot?.diagnostics?.map((d) => (
+              <Text key={`mcp-diag-${d.endpoint}`} style={styles.note}>
+                {d.endpoint}: {d.reason}{d.httpStatus != null ? ` · HTTP ${d.httpStatus}` : ''}
+              </Text>
+            ))}
+            <Text style={styles.note}>
+              Diagnostics never include tokens, raw bodies, or stack traces — only the categorical reason and HTTP status.
+            </Text>
           </View>
         )}
         {laneHeartbeat.ok && laneHeartbeat.driftWarning && (

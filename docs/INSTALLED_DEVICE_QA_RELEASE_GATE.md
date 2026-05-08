@@ -2,6 +2,89 @@
 
 Status: active gate. This is QA-only, not public release approval.
 
+## v19 iOS installed-device evidence — Admin/Dev "MCP current-state unavailable" (2026-05-09)
+
+Aaron's installed-device evidence on iPhone build 19: Admin/Dev shows
+"MCP current-state unavailable", lanes 0, Rule 12 not loaded, stale
+writeback. ChatGPT MCP at the same Worker is readable but with
+`updatedAt 2026-05-08T17:06:11Z` (stale by snapshot, not by transport).
+
+Root cause (patched repo-only, awaits a v20-iOS retest):
+
+`EXPO_PUBLIC_MCP_BASE_URL` shipped to v19 was the full
+`https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2`
+URL. Two clients re-appended path suffixes onto that value:
+
+- `apps/mobile/src/services/mcp-v2-client.ts` appended `/mcp/v2`,
+  producing `…/mcp/v2/mcp/v2` (404 → "MCP current-state unavailable").
+- `apps/mobile/src/services/connector-status-client.ts` appended
+  `/api`, producing `…/mcp/v2/api/*` (also 404 → empty connector
+  snapshot, lanes 0, Rule 12 not loaded).
+
+ChatGPT MCP works because its connector URL ends at `/mcp/v2`
+(no second append). The mobile clients did not.
+
+Patch:
+
+- `apps/mobile/src/services/ai-backend-config.ts` exports
+  `mcpWorkerRootUrl()` and the pure `normaliseMcpWorkerRootUrl()`
+  helper. Both strip the longest known suffix (`/mcp/v2/admin`,
+  `/mcp/v2/website`, `/mcp/v2/health`, `/mcp/v2`, `/mcp/core`,
+  `/mcp/public`, `/api`) so callers can append the path they
+  need without re-deriving from the env shape.
+- Both clients now route through `mcpWorkerRootUrl()` instead
+  of inline trims; the v2 client appends `/mcp/v2` exactly once
+  and the connector client appends `/api` exactly once.
+- `McpV2DashboardSnapshot` gains safe diagnostics:
+  `resolvedCoreEndpoint`, `resolvedAdminEndpoint`, `envSource`
+  (`'mcp' | 'public_backend' | 'unconfigured'`), `fetchDurationMs`,
+  and a `diagnostics` array with categorical reason + HTTP status
+  per call. No tokens, raw bodies, or stack traces are surfaced.
+- `apps/mobile/app/admin-dev.tsx` renders a new "MCP transport
+  diagnostics" panel when any per-call status is non-ok or the
+  snapshot is null. Subscribes to `AppState.change === 'active'`
+  to auto-refresh on app foreground/resume.
+
+iPhone retest path (after Aaron approves a TestFlight-replacement
+build that picks up the patch):
+
+1. New EAS iOS build (commit hash containing this patch).
+2. Install via TestFlight on Aaron's iPhone.
+3. Open Admin/Dev (admin email signed in).
+4. Expected:
+   - "MCP" summary tile shows "MCP live · fresh · <age>" within
+     1.5s of fresh open or app-resume.
+   - Lanes count > 0.
+   - Rule 12 tile shows "Live" not "—".
+   - The "MCP transport diagnostics" panel does NOT appear when
+     all calls succeed. If MCP is intermittently unavailable, the
+     panel surfaces the resolved core endpoint, the resolved
+     admin endpoint, the env source, the fetch duration, and the
+     categorical reason + HTTP status per call.
+5. Background the app for ≥1 minute, then foreground. Expected:
+   the snapshot age refreshes within 1.5s without manual pull.
+
+Anti-rules:
+
+- **No EAS build, TestFlight upload, Play upload, or production
+  release** until Aaron approves.
+- The fix is **repo-only** until an installed-device retest
+  confirms the iPhone Admin/Dev now reads MCP cleanly.
+- Stale MCP must continue to render stale, not "live". The
+  freshness summary remains driven by the worker payload's
+  `freshness` field; this patch only fixes transport, not
+  writeback.
+
+Tests added (repo-only):
+
+- `cloudflare-worker/test/test-mcp-worker-root-url.ts` locks
+  the `normaliseMcpWorkerRootUrl` contract across the historic
+  env shapes (worker root, `/api`, `/mcp/v2`, `/mcp/v2/admin`,
+  `/mcp/v2/website`, `/mcp/v2/health`, `/mcp/core`, `/mcp/public`,
+  case-insensitive, idempotency under repeat normalisation).
+  Includes env-lookup cases for `mcpWorkerRootUrl()` so the
+  regression that produced `/mcp/v2/mcp/v2` cannot recur.
+
 ## v20 installed-device evidence — Android Health Connect "app not listed" (2026-05-09)
 
 Aaron's installed-device evidence on v20: tapping Connect on the

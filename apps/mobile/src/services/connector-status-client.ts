@@ -1,4 +1,4 @@
-import { AI_PUBLIC_BASE, MCP_BASE_URL } from './ai-backend-config';
+import { AI_PUBLIC_BASE, mcpWorkerRootUrl } from './ai-backend-config';
 
 export interface ConnectorWorkStatus {
   schemaVersion: number;
@@ -102,10 +102,16 @@ export interface ConnectorSnapshot {
 }
 
 function connectorApiBase(): { baseUrl: string; source: ConnectorSnapshot['source'] } {
-  if (MCP_BASE_URL) {
-    const trimmed = MCP_BASE_URL.replace(/\/$/, '');
-    const apiBase = trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
-    return { baseUrl: apiBase, source: 'mcp' };
+  // Source of truth — strips any /mcp/v2[/admin] / /api / /mcp/core
+  // suffix the env may already include, then re-appends `/api` once.
+  // Older code here appended `/api` even when the env was set to the
+  // full `<root>/mcp/v2` URL, producing `/mcp/v2/api/*` paths the
+  // worker does not route. The env has shipped both shapes (worker
+  // root and full /mcp/v2 URL) at different points; centralise the
+  // normalisation in `mcpWorkerRootUrl`.
+  const root = mcpWorkerRootUrl();
+  if (root) {
+    return { baseUrl: `${root}/api`, source: 'mcp' };
   }
   const publicBase = AI_PUBLIC_BASE.replace(/\/$/, '');
   return { baseUrl: publicBase.replace(/\/athlete-memory$/, ''), source: 'public_backend' };

@@ -98,3 +98,61 @@ export const MCP_BASE_URL: string | null =
 
 /** True when the Cloudflare Worker MCP base URL is wired in env. */
 export const MCP_BACKEND_CONFIGURED = MCP_BASE_URL !== null;
+
+/**
+ * Suffix paths the worker exposes that callers may have included in
+ * `EXPO_PUBLIC_MCP_BASE_URL`. Order matters — longer suffixes first
+ * so we strip `/mcp/v2/admin` before `/mcp/v2`. The legacy `/api`
+ * suffix from the Railway era is also tolerated.
+ *
+ * Bug-fix history (2026-05-09): the iPhone v19 EAS env was set to
+ * the full `<root>/mcp/v2` URL, and both the MCP-v2 and
+ * connector-status clients re-appended `/mcp/v2` (or `/api`),
+ * producing 404 paths like `/mcp/v2/mcp/v2` and `/mcp/v2/api/*`.
+ * Centralising the strip-suffix logic here makes the clients
+ * tolerant of either env form (worker root or full /mcp/v2 URL).
+ */
+const MCP_KNOWN_SUFFIX_PATHS: ReadonlyArray<string> = [
+  '/mcp/v2/admin',
+  '/mcp/v2/website',
+  '/mcp/v2/health',
+  '/mcp/v2',
+  '/mcp/core',
+  '/mcp/public',
+  '/api',
+];
+
+/**
+ * Normalise an arbitrary MCP base URL string to the worker root
+ * with no trailing slash. Pure helper — the test suite calls this
+ * directly with synthetic inputs, while production callers go
+ * through `mcpWorkerRootUrl()` which reads the env on every call.
+ */
+export function normaliseMcpWorkerRootUrl(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  let trimmed = raw.replace(/\/$/, '');
+  for (const suffix of MCP_KNOWN_SUFFIX_PATHS) {
+    if (trimmed.toLowerCase().endsWith(suffix)) {
+      trimmed = trimmed.slice(0, -suffix.length);
+      break;
+    }
+  }
+  return trimmed.replace(/\/$/, '');
+}
+
+/**
+ * Normalise `EXPO_PUBLIC_MCP_BASE_URL` to the worker root with no
+ * trailing slash. Tolerant of every form the env has shipped in
+ * (bare hostname, `<root>/api`, `<root>/mcp/v2`,
+ * `<root>/mcp/v2/admin`). Returns null when the env is unset.
+ *
+ * Reads `process.env` on every call so test rigs and runtime
+ * config refreshes both work. Callers should use the result and
+ * append exactly the path they need (`/mcp/v2`, `/mcp/v2/admin`,
+ * `/api`, `/mcp/public`, etc.) — never re-derive paths in the
+ * call sites.
+ */
+export function mcpWorkerRootUrl(): string | null {
+  const raw = (process.env.EXPO_PUBLIC_MCP_BASE_URL ?? '').trim();
+  return normaliseMcpWorkerRootUrl(raw.length > 0 ? raw : null);
+}
