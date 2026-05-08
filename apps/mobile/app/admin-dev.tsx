@@ -41,7 +41,8 @@ import { useOwnerWorkflowStore } from '../src/store/owner-workflow-store';
 import { useAuditEventStore } from '../src/store/audit-event-store';
 import { useAdminDevNotificationStore } from '../src/store/admin-dev-notification-store';
 import { useApprovalGatesStore } from '../src/store/approval-gates-store';
-import type { ApprovalGate } from '@lauburu/shared';
+import { useSpendGatesStore, isSpendGateActionable } from '../src/store/spend-gates-store';
+import type { ApprovalGate, SpendGate } from '@lauburu/shared';
 import { fetchAgentStatus, type AgentStatusEntry } from '../src/services/agent-status-client';
 import {
   fetchConnectorSnapshot,
@@ -664,6 +665,17 @@ export default function AdminDevScreen() {
   const cancelApprovalGate = useApprovalGatesStore((s) => s.cancel);
   useEffect(() => { void hydrateApprovalGates(); }, [hydrateApprovalGates]);
 
+  // Spend gates store — local-first; export-prompt for out-of-band AI calls.
+  const spendGates = useSpendGatesStore((s) => s.gates);
+  const spendRefreshing = useSpendGatesStore((s) => s.refreshing);
+  const hydrateSpendGates = useSpendGatesStore((s) => s.hydrate);
+  const refreshSpendGates = useSpendGatesStore((s) => s.refresh);
+  const approveSpendGate = useSpendGatesStore((s) => s.approve);
+  const deferSpendGate = useSpendGatesStore((s) => s.defer);
+  const cancelSpendGate = useSpendGatesStore((s) => s.cancel);
+  const exportSpendPrompt = useSpendGatesStore((s) => s.exportPrompt);
+  useEffect(() => { void hydrateSpendGates(); }, [hydrateSpendGates]);
+
   const buildInfo = useMemo(() => {
     const expoExtra = Constants.expoConfig?.extra as Record<string, unknown> | undefined;
     const easExtra = expoExtra?.eas as Record<string, unknown> | undefined;
@@ -996,6 +1008,32 @@ export default function AdminDevScreen() {
               </Text>
             ))}
           </View>
+        )}
+      </Section>
+
+      <Section title="AI spend gates">
+        <Text style={styles.note}>
+          Pause AI calls until Aaron approves spend. Each gate carries a deterministic precheck summary so the non-AI answer is visible BEFORE you spend tokens. Export prompt lets you paste the question into ChatGPT out-of-band instead of approving an in-app paid call.
+        </Text>
+        <Pressable
+          style={[styles.btn, spendRefreshing && { opacity: 0.5 }]}
+          disabled={spendRefreshing}
+          onPress={() => { void refreshSpendGates(); }}>
+          <Text style={styles.btnText}>{spendRefreshing ? 'Refreshing…' : 'Apply expiries / refresh'}</Text>
+        </Pressable>
+        {spendGates.length === 0 ? (
+          <Text style={styles.note}>No AI spend gates loaded.</Text>
+        ) : (
+          spendGates.map((gate) => (
+            <SpendGateRow
+              key={gate.id}
+              gate={gate}
+              exportPrompt={exportSpendPrompt(gate.id)}
+              onApprove={() => { void approveSpendGate(gate.id); }}
+              onDefer={(deferUntil) => { void deferSpendGate(gate.id, deferUntil); }}
+              onCancel={() => { void cancelSpendGate(gate.id); }}
+            />
+          ))
         )}
       </Section>
 
@@ -2273,6 +2311,83 @@ function Section({ title, children }: { title: string; children: React.ReactNode
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
       {children}
+    </View>
+  );
+}
+
+function SpendGateRow({
+  gate,
+  exportPrompt,
+  onApprove,
+  onDefer,
+  onCancel,
+}: {
+  gate: SpendGate;
+  exportPrompt: string | null;
+  onApprove: () => void;
+  onDefer: (deferUntil: string) => void;
+  onCancel: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const isActive = isSpendGateActionable(gate);
+  const expiresLabel = (() => {
+    const t = new Date(gate.expiresAt).getTime();
+    if (!Number.isFinite(t)) return '—';
+    const remaining = t - Date.now();
+    if (remaining <= 0) return 'expired';
+    if (remaining < 3_600_000) return `${Math.max(1, Math.floor(remaining / 60_000))}m left`;
+    if (remaining < 86_400_000) return `${Math.floor(remaining / 3_600_000)}h left`;
+    return `${Math.floor(remaining / 86_400_000)}d left`;
+  })();
+  const deferOneDay = () => {
+    const until = new Date(Date.now() + 86_400_000).toISOString();
+    onDefer(until);
+  };
+  return (
+    <View style={styles.chipBlock}>
+      <Pressable onPress={() => setOpen((v) => !v)} hitSlop={6}>
+        <Text style={styles.chipLabel}>
+          {gate.priority} · {gate.triggerType} · cost: {gate.estimatedCostClass} · {gate.status} · {expiresLabel}
+        </Text>
+        <Text style={styles.chipBody}>{gate.title}</Text>
+        <Text style={styles.note} numberOfLines={3}>Precheck: {gate.precheckSummary}</Text>
+      </Pressable>
+      {open && (
+        <View style={{ gap: 6, marginTop: 6 }}>
+          <Text style={styles.note}>Reason for AI: {gate.description}</Text>
+          {gate.actionPayload && (
+            <Text style={styles.note}>Proposed AI action: {gate.actionPayload}</Text>
+          )}
+          <Text style={styles.note}>safeDefault if expired: {gate.safeDefault}</Text>
+          {gate.precheckRuleId && (
+            <Text style={styles.note}>Precheck rule: {gate.precheckRuleId}</Text>
+          )}
+          {gate.resolvedAt && (
+            <Text style={styles.note}>
+              Resolved {new Date(gate.resolvedAt).toLocaleString()} by {gate.resolvedBy ?? '—'}
+              {gate.resolutionNote ? ` — ${gate.resolutionNote}` : ''}
+            </Text>
+          )}
+        </View>
+      )}
+      <SelectableCopyButton
+        label="Export prompt for ChatGPT"
+        body={exportPrompt}
+        disabledReason="Gate not loaded — refresh and try again."
+      />
+      {isActive && (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+          <Pressable style={[styles.btn, { flexGrow: 1, minWidth: 100 }]} onPress={onApprove}>
+            <Text style={styles.btnText}>Approve spend</Text>
+          </Pressable>
+          <Pressable style={[styles.btn, { flexGrow: 1, minWidth: 100, opacity: 0.85 }]} onPress={deferOneDay}>
+            <Text style={styles.btnText}>Defer 24h</Text>
+          </Pressable>
+          <Pressable style={[styles.btn, { flexGrow: 1, minWidth: 100, opacity: 0.6 }]} onPress={onCancel}>
+            <Text style={styles.btnText}>Cancel</Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }

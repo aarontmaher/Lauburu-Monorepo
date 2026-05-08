@@ -341,3 +341,6 @@ export function expireIfDue(
 export function isActionable(gate: ApprovalGate): boolean {
   return gate.status === 'pending' || (gate.status === 'deferred' && gate.deferUntil != null && new Date(gate.deferUntil).getTime() <= Date.now());
 }
+
+export * from './spend';
+export * from './spend-prechecks';
