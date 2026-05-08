@@ -601,3 +601,119 @@ Tester walkthrough on Aaron's iPhone after Phase 3 ships:
 - **No autosync from `apps/mobile`.** The phone reads; the
   laptop writes (bridge upsert + owner taps). Mobile state is
   cache, never source.
+
+## 10. All-idle push notification (operating rule 20) — Codex handoff
+
+In-app banner: **shipped** at `apps/mobile/app/admin-dev.tsx`
+§ Owner alerts → "All-worker direction banner". Fires when MCP
+is fresh and Claude / Codex / Agent are all idle, blocked,
+need review, need user input, or complete-waiting-approval.
+Today the banner is in-app only — `admin-dev.tsx` line 861
+explicitly notes "Push notifications are not configured in
+this app, so this is in-app only."
+
+Push notification: **TODO**. Per operating rule 20, when
+Claude + Codex + Agent are all simultaneously `idle` (per
+`project.get_current_state.agents[].status`), AND no lane has
+a blocker, AND no Aaron-paused decision is recorded, the app
+MUST notify Aaron via push. Payload includes top priority
+title, recommended next action, timestamp, freshness check.
+
+### Codex handoff prompt — push notification implementation
+
+Stored as a ready-to-paste handoff. Aaron MUST explicitly
+approve dispatch before this prompt goes to Codex. Until then,
+this is documentation only.
+
+```
+PROMPT-ID: CODEX-FS-XXX-ALL-IDLE-PUSH-NOTIFICATION-01
+TYPE: CODEX
+LANE: Mobile push-notification wiring + admin-dev integration
+
+MCP-FIRST: call project.get_current_state. Bridge → Supabase
+direct upsert is LIVE; bridge:snapshot for end-of-task cadence
+per rule 12.
+
+Reference (read first):
+- docs/OPERATING_RULES.md § 20 (canonical rule body).
+- docs/CONTROL_CENTRE_MVP_SPEC.md § 10 (this section).
+- apps/mobile/app/admin-dev.tsx § Owner alerts (existing
+  in-app banner — do not break).
+- apps/mobile/src/services/* for any existing push-notification
+  scaffolding.
+
+GOAL
+Wire push notifications for the all-idle trigger so Aaron is
+notified on his iPhone when Claude + Codex + Agent are all
+idle, MCP is fresh, no lane is blocked, no Aaron-paused state.
+Existing in-app banner stays. This adds a NEW push surface
+gated on the same trigger.
+
+SCOPE PHASE 1 (this prompt)
+1. Add expo-notifications dependency to apps/mobile if not
+   present. Configure entitlements per Expo Notifications
+   docs (ios + android + Expo Push Token). NO breaking
+   manifest changes.
+2. Add push token registration on app launch (admin-only —
+   gated to Aaron's email per FS-019 auth model).
+3. Add a push-notification trigger in the admin-dev surface
+   that fires when:
+   - MCP is fresh (per project.get_current_state.freshness),
+     AND
+   - All three lanes (claude / codex / agent) report
+     status: 'idle', AND
+   - No lane has currentBlocker set, AND
+   - No Aaron-paused decision is recorded in
+     docs/APP_DEVELOPMENTS.md priority order (read via
+     project.list_priorities or the action ledger backlog).
+4. Notification payload: title = "All lanes idle — top
+   priority: <priority.title>"; body = "Next action:
+   <recommended_next_action>"; data = { timestamp,
+   priorityId, freshnessSnapshot }.
+5. Throttle: do NOT fire more than once every 15 minutes for
+   the same all-idle window. Re-arm when a lane flips to
+   working / blocked / needs_review.
+6. Toggle in admin-dev to enable / disable the push surface
+   independently from the in-app banner.
+
+ANTI-RULES
+- No public push tokens — admin-only, email-allowlisted.
+- No payload PII — task summary text must NOT include raw
+  terminal output / journal data / PII (rule 11 + the public
+  redaction surface remains the bar).
+- Honour rule 11 (MCP-first): never fire from stale or
+  unavailable MCP — that risks a false-idle signal.
+- Honour rule 19: the push fires; the rule says Aaron acts
+  by feeding the next prompt.
+- No EAS build dispatched from this prompt; build approval
+  follows Aaron's separate gate per rule 7.
+- No iOS-only or Android-only — both platforms required for
+  parity (rule 14 parallel priorities).
+
+VERIFICATION
+- cd apps/mobile && npx tsc --noEmit clean.
+- npm run rules:test PASS (20 rules, doc parity).
+- npm run mcp:test:public-redaction PASS.
+- npm run bridge:snapshot at end-of-task.
+- Manual: simulate all-3-idle MCP state in dev, confirm push
+  fires once + payload correct + throttle behavior.
+- Manual: simulate one-lane-blocked, confirm push does NOT
+  fire (banner still fires).
+- Manual: simulate Aaron-paused, confirm push does NOT fire.
+
+OUTPUT (small)
+- Status: implementation-complete-awaiting-Agent-confirmation
+  / partial / blocked
+- New deps added:
+- New files added:
+- Existing files touched:
+- Tests run:
+- MCP / bridge writeback evidence:
+- Open questions for Aaron / Agent confirmation:
+- Recommendation for follow-up (FS-XXX next batch):
+```
+
+Approval-gated: do NOT dispatch this prompt without Aaron's
+explicit approval per rule 7 (no EAS build) and rule 13
+(clear-steps automate-first; manual Aaron step here is
+"approve push-notification implementation batch").

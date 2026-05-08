@@ -32,7 +32,7 @@ const REPO_ROOT = path.resolve(__dirname, '../../');
 const docPath = path.join(REPO_ROOT, OPERATING_RULES_DOC_PATH);
 
 // 1. Count + id contract.
-const EXPECTED_RULE_COUNT = 19;
+const EXPECTED_RULE_COUNT = 20;
 assert(OPERATING_RULES.length === EXPECTED_RULE_COUNT, `OPERATING_RULES.length === ${EXPECTED_RULE_COUNT} (got ${OPERATING_RULES.length})`);
 for (let i = 0; i < OPERATING_RULES.length; i++) {
   const r = OPERATING_RULES[i];

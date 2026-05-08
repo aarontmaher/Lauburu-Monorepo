@@ -7,7 +7,7 @@
  *
  * Edit policy: changing this constant requires a paired edit to
  * docs/OPERATING_RULES.md in the same commit. The live integration
- * test asserts count = 19 + each rule's id stays stable. Any
+ * test asserts count = 20 + each rule's id stays stable. Any
  * promotion / demotion / reorder is a Lane-3 batch with explicit
  * Aaron approval per docs/BACKLOG_AUTOMATION_SYSTEM.md § Lane 3.
  */
@@ -132,6 +132,12 @@ export const OPERATING_RULES: readonly OperatingRule[] = [
     title: 'Coordinator-fed idle lanes',
     body:
       "When Claude, Codex, or Agent is idle, the coordinator (Aaron via ChatGPT or laptop) MUST provide the next highest-leverage prompt for that lane unless a real external blocker or explicit Aaron pause exists. Do not let coders sit idle while active project priorities (per rule 14) remain. The coordinator's pacing obligation is the inverse of rule 15's coder obligation: rule 15 makes individual prompts non-idling-by-design; this rule makes the prompt cadence non-gapping. Idle without a fed prompt for >15 minutes during active workdays is a workflow bug — surface it via project.get_current_state freshness signal and the action ledger backlog (rule 18). Acceptable pause states: tester-device QA awaiting Aaron, EAS billing limit, vendor-console wait, sleep, or explicit Aaron-paused decision recorded in docs/APP_DEVELOPMENTS.md. Unacceptable: \"I forgot to give the coder the next thing.\" If a lane has no high-leverage adjacent work, the coordinator MUST queue a backlog-grooming or doc-refresh prompt rather than leave it idle.",
+  },
+  {
+    id: 20,
+    title: 'All-idle notification',
+    body:
+      "When Claude, Codex, and Agent are all in an `idle` state simultaneously (all three lanes report status: 'idle' via project.get_current_state.agents[].status), the app MUST notify Aaron via a pop-up / banner / push notification. Exclusions: do NOT fire when (a) any lane has a blocker recorded (blockers have their own dedicated alert surface), OR (b) an explicit Aaron pause decision is recorded in docs/APP_DEVELOPMENTS.md priority order. The notification payload MUST include: (1) current top priority title from project.get_current_state.priority; (2) recommended next action drawn from project.list_priorities or the action ledger backlog; (3) timestamp of the all-idle state; (4) freshness check (only fire when MCP is fresh). The notification serves rule 19 (coordinator-fed idle lanes) — it tells Aaron immediately when all coders need a new prompt rather than requiring him to poll the admin-dev surface. In-app banner is implemented (apps/mobile/app/admin-dev.tsx § Owner alerts → \"All-worker direction banner\"); push notification implementation is a Codex follow-up batch (handoff documented in docs/CONTROL_CENTRE_MVP_SPEC.md or equivalent control-centre doc). Honour rule 11 (MCP-first): never fire from stale or unavailable MCP — that would risk a false-idle signal.",
   },
 ] as const;
 

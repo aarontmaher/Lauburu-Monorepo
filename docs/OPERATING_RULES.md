@@ -40,7 +40,7 @@ hash of the rule strings).
 
 Updated 2026-05-08.
 
-## The nineteen rules
+## The twenty rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -244,6 +244,27 @@ this file.
     forgot to give the coder the next thing." If a lane has no
     high-leverage adjacent work, the coordinator MUST queue a
     backlog-grooming or doc-refresh prompt rather than leave it idle.
+20. **All-idle notification.** When Claude, Codex, and Agent are all
+    in an `idle` state simultaneously (all three lanes report
+    `status: 'idle'` via `project.get_current_state.agents[].status`),
+    the app MUST notify Aaron via a pop-up / banner / push
+    notification. Exclusions: do NOT fire when (a) any lane has a
+    blocker recorded — blockers have their own dedicated alert
+    surface, OR (b) an explicit Aaron pause decision is recorded in
+    `docs/APP_DEVELOPMENTS.md` priority order. The notification
+    payload MUST include: (1) current top priority title from
+    `project.get_current_state.priority`; (2) recommended next action
+    drawn from `project.list_priorities` or the action ledger
+    backlog; (3) timestamp of the all-idle state; (4) freshness check
+    — only fire when MCP is fresh, never from stale or unavailable
+    MCP (which would risk a false-idle signal — rule 11 honoured).
+    The notification serves rule 19 (coordinator-fed idle lanes) by
+    telling Aaron immediately when all coders need a new prompt
+    rather than requiring him to poll the admin-dev surface. In-app
+    banner is implemented at `apps/mobile/app/admin-dev.tsx` § Owner
+    alerts → "All-worker direction banner"; **push notification
+    implementation is a Codex follow-up batch** (handoff staged in
+    `docs/CONTROL_CENTRE_MVP_SPEC.md`).
 
 ## Where to find each rule's full body
 
@@ -268,13 +289,14 @@ this file.
 | 17 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Deferred prompts/actions backlog"; `docs/MCP_CANONICAL_STATE.md` § public v2 tools and backlog state; `docs/CONTROL_CENTRE_MVP_SPEC.md` § prompt refs / handoff prompts |
 | 18 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Action ledger"; `docs/MCP_CANONICAL_STATE.md` § action ledger surface; `docs/CONTROL_CENTRE_MVP_SPEC.md` § prompt refs / handoff prompts |
 | 19 | This file § rule 19; `docs/PHONE_ONLY_AUTOMATION_PLAN.md` § coordinator-cadence; `docs/CHATGPT_CONNECTOR_SETUP.md` (ChatGPT-side coordinator role) — rule 14 priorities + rule 15 coder obligation are the paired rules |
+| 20 | This file § rule 20; `docs/CONTROL_CENTRE_MVP_SPEC.md` § all-idle notification handoff; `apps/mobile/app/admin-dev.tsx` § Owner alerts (in-app banner already shipped); `docs/MCP_PHONE_CONTROL_CENTRE.md` (notification surface integration) — paired with rule 19 |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..19], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..20], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.
@@ -290,7 +312,7 @@ integration test will flag.
   Lane-3 batch (`docs/BACKLOG_AUTOMATION_SYSTEM.md` § Lane 3)
   with Aaron's written approval.
 - **No surfacing the rules without ID.** Every rule has a
-  stable id 1..19; consumers reference rules by id, not by
+  stable id 1..20; consumers reference rules by id, not by
   string match.
 - **No moving rule text into private surfaces.** These rules
   are public-safe by design — they describe coder discipline,
