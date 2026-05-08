@@ -117,6 +117,53 @@ Anchor: Admin/Dev → installed-build summary card.
 | 7.6 | Historical evidence (v18 fail / v19 superseded) | Visible at INSTALLED_DEVICE_QA_RELEASE_GATE § Historical evidence in collapsible card. | INSTALLED_DEVICE_QA_RELEASE_GATE |
 | 7.7 | "No EAS build until v20 retest" enforcement | Plain-text note enforcing rule 7 + the v20 active-gate state. | rule 7 |
 
+## 7B. Phone-first control centre acceptance
+
+Established by `CLAUDE-LIVE-STATUS-DISPATCHER` 2026-05-09 in
+response to Aaron's installed-device evidence that MCP lane
+status drifts from live pane state + the v20 Health Connect
+"app not listed" P0. These rows are explicit phone-side
+acceptance criteria — every row must pass on installed iOS +
+Android before the Admin/Dev tab can be called "phone-first
+complete".
+
+| # | Proof point | Pass criterion | Source spec |
+|---|---|---|---|
+| 7B.1 | App refreshes project status on open / resume | `AppState` `active` transition triggers a `project.get_current_state` re-fetch within 1.5s. Stale-cache renders during the gap with a "refreshing…" indicator. | `LIVE_MCP_MODEL_SPEC` § 2 + new acceptance |
+| 7B.2 | Manual refresh control exists | Pull-to-refresh on the Admin/Dev top section OR explicit refresh button. Tap re-fetches MCP within 1s; UI shows skeleton during. | new acceptance |
+| 7B.3 | Stale badge visible when MCP fails | When `freshness.staleReason` is set OR `lastWritebackAt` is null, freshness pill renders `Stale: <reason>` (NOT `Live`). When MCP unreachable, pill renders `MCP unreachable` — never silent. | rule 11 unavailable branch + `LIVE_MCP_MODEL_SPEC` § 3.1 |
+| 7B.4 | Worker lanes show age + freshness | Each lane chip shows `<status> · <heartbeatAgeSeconds>` (e.g. "Working · 2 min" / "Idle · 47 min"). When freshness is stale, lane status appends "· stale" + chip background turns grey. | `LIVE_MCP_MODEL_SPEC` § 1.2 + § 3.2 + new MCP-liveness P0 rule (`connector_work_status.mcpLivenessP0`) |
+| 7B.5 | Build/QA gate status separated by stage | Build/release card explicitly partitions: `live now` / `repo-only` / `preview-only` (workers.dev) / `installed-verified` (real-device QA passed) / `planned-only`. Each row carries its own truth label. | `MCP_LONGTERM_ACCESS_ARCHITECTURE` § 1 + new acceptance |
+| 7B.6 | Android HC "app-not-listed" blocker visible | When v20 retest evidence shows the app is not listed under Health Connect → App permissions, a P0 blocker card surfaces in Admin/Dev with "Health Connect did not register the app" copy + a retry button + a link to ledger entry `audit-2026-05-09T08:12-codex-hc-app-not-listed` + an "awaiting v21 patch" / "v21 patched, awaiting Aaron-approved EAS build" status. | `audit-2026-05-09T08:12-codex-hc-app-not-listed` ledger entry + `INSTALLED_DEVICE_QA_RELEASE_GATE.md` § "v20 installed-device evidence — Android Health Connect 'app not listed'" |
+
+### Stale-worker semantics rule (canonical, P0)
+
+Recorded in `connector_work_status.mcpLivenessP0`. Rule:
+
+> When `freshness.staleReason` is set OR `lastWritebackAt`
+> is empty, the UI MUST show **stale** or **unknown** for
+> lane status — NEVER relay the cached `agent.status`
+> value as `working`.
+
+Rationale: terminal evidence has shown the cached
+`agent.status` value drifting from live pane state (e.g.
+MCP reports `claude: working` while the pane is idle).
+Cached values are unreliable when freshness fails; honest
+UI surfaces stale/unknown until writeback resumes.
+
+### AGENT_QA recording for this section
+
+`npm run bridge:agent-qa` with:
+- `gate: phone_first_control_centre_acceptance`
+- `platform: ios | android` (run on both)
+- per-row pass / partial / fail (rows 7B.1–7B.6)
+- `evidence.notes` calling out any platform-specific
+  divergence + linking to the relevant ledger entry
+
+Pass criteria for this section: all 6 rows pass on
+installed iOS + Android. Section pass is a prerequisite
+for the § 8 Developer-Mode-off pass criteria below.
+
 ## 8. Pass criteria — when does Developer Mode go off?
 
 Run the full checklist (sections 1–7) on installed iOS +
