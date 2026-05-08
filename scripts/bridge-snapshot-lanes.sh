@@ -55,7 +55,12 @@ ROOT = sys.argv[1]
 OUT_DIR = os.path.join(ROOT, "data", "agent-status", "lanes")
 os.makedirs(OUT_DIR, exist_ok=True)
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
-from bridge_snapshot_classifier import detect_status, summarize_pane  # noqa: E402
+from bridge_snapshot_classifier import (  # noqa: E402
+    compute_state_change_at,
+    detect_status,
+    heartbeat_envelope,
+    summarize_pane,
+)
 
 # ── Lane → tmux session map ────────────────────────────────────────────
 # Adding a new lane requires adding the LaneId to:
@@ -520,17 +525,41 @@ sessions_alive = set(list_sessions())
 dirty_files, clean = git_status_dirty()
 short_head = git_short_head()
 
+def load_previous_lane_row(lane_id):
+    """Return the previously persisted per-lane row (or None) so we can
+    compute lastStateChangeAt deterministically. Never raises."""
+    path = os.path.join(OUT_DIR, f"{lane_id}.json")
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path) as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
 rows = []
 for session, lane in SESSION_MAP:
     if lane not in ALLOWED_LANES:
         # Defensive: refuse unknown lane id at write time.
         continue
 
+    prev_row = load_previous_lane_row(lane) or {}
+    prev_status = prev_row.get("status") if isinstance(prev_row.get("status"), str) else None
+    prev_change_at = prev_row.get("lastStateChangeAt") if isinstance(prev_row.get("lastStateChangeAt"), str) else None
+
     if session not in sessions_alive:
+        # Pretend tmux session = idle. Carry the heartbeat field
+        # forward so a lane that's been idle for hours doesn't pretend
+        # it just transitioned.
+        beat = heartbeat_envelope(now_iso, prev_change_at, prev_status, "idle")
         rows.append({
             "laneId": lane,
             "status": "idle",
-            "lastSeenAt": None,
+            "lastSeenAt": beat["lastSeenAt"],
+            "lastStateChangeAt": beat["lastStateChangeAt"],
+            "source": beat["source"],
             "currentPromptId": None,
             "lastPromptId": None,
             "lastSummary": None,
@@ -556,10 +585,14 @@ for session, lane in SESSION_MAP:
         "working", "needs_user", "needs_review", "blocked",
     ) else None
 
+    beat = heartbeat_envelope(now_iso, prev_change_at, prev_status, status)
+
     row = {
         "laneId": lane,
         "status": status,
-        "lastSeenAt": now_iso,
+        "lastSeenAt": beat["lastSeenAt"],
+        "lastStateChangeAt": beat["lastStateChangeAt"],
+        "source": beat["source"],
         "currentPromptId": current_prompt,
         "lastPromptId": prompt_id,
         "lastSummary": summary if summary else None,

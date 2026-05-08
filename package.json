@@ -9,6 +9,7 @@
   "scripts": {
     "setup:supabase": "node scripts/setup-supabase-env.mjs",
     "bridge:snapshot": "./scripts/bridge-snapshot-lanes.sh",
+    "bridge:watch": "./scripts/bridge-watch.sh",
     "bridge:agent-qa": "node scripts/bridge-agent-qa.mjs",
     "bridge:verify": "cd chat-app && npx tsx src/server/scripts/test-bridge-artifacts.ts",
     "bridge:test:classifier": "python3 scripts/test-bridge-snapshot-classifier.py",

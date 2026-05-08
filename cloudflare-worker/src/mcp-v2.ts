@@ -448,13 +448,20 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
       lastSummary?: string;
       lastCommit?: string;
       lastSeenAt?: string;
+      lastStateChangeAt?: string;
+      source?: string;
     };
+    const lastSeenAt = typeof p.lastSeenAt === 'string' ? p.lastSeenAt : null;
+    const lastStateChangeAt = typeof p.lastStateChangeAt === 'string' ? p.lastStateChangeAt : null;
     return {
       id: pickEnum(row.lane_id, ALLOWED_LANE_IDS),
       status: pickEnum(p.status, ALLOWED_LANE_STATUSES),
       taskSummary: compressSummary(p.lastSummary),
       lastCommit: safeShortCommit(p.lastCommit),
-      updatedAt: typeof p.lastSeenAt === 'string' ? p.lastSeenAt : null,
+      updatedAt: lastSeenAt,
+      lastSeenAt,
+      lastStateChangeAt,
+      source: typeof p.source === 'string' ? p.source : null,
     };
   });
 

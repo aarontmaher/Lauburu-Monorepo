@@ -255,6 +255,9 @@ type McpV2CurrentState = {
     taskSummary?: string;
     lastCommit?: string | null;
     updatedAt?: string | null;
+    lastSeenAt?: string | null;
+    lastStateChangeAt?: string | null;
+    source?: string | null;
   }>;
   currentPriority?: string | null;
   currentBlocker?: string | null;
@@ -308,6 +311,68 @@ function mcpFreshnessSummary(current: McpV2CurrentState | null): {
   }
   if (stale) return { label: `MCP readable · stale (${reason}) · ${ageLabel}`, stale, reason, updatedAt, ageLabel, ageMs };
   return { label: `MCP live · fresh · ${ageLabel}`, stale, reason, updatedAt, ageLabel, ageMs };
+}
+
+interface LaneHeartbeatSummary {
+  ok: boolean;
+  laneCount: number;
+  oldestLastSeenAgeMs: number | null;
+  newestLastSeenAgeMs: number | null;
+  driftWarning: boolean;
+  /** Per-lane shorthand: "claude · idle · 12s" / "codex · working · stale 4m" */
+  perLaneLines: string[];
+  /** ISO timestamp of the freshest lastSeenAt across lanes. */
+  freshestLastSeenAt: string | null;
+  /** ISO timestamp of the freshest lastStateChangeAt across lanes. */
+  freshestLastStateChangeAt: string | null;
+}
+
+const LANE_DRIFT_WARN_MS = 60_000;
+
+function summariseLaneHeartbeat(current: McpV2CurrentState | null): LaneHeartbeatSummary {
+  const empty: LaneHeartbeatSummary = {
+    ok: false,
+    laneCount: 0,
+    oldestLastSeenAgeMs: null,
+    newestLastSeenAgeMs: null,
+    driftWarning: false,
+    perLaneLines: [],
+    freshestLastSeenAt: null,
+    freshestLastStateChangeAt: null,
+  };
+  if (!current?.agents || current.agents.length === 0) return empty;
+  const now = Date.now();
+  let oldest: number | null = null;
+  let newest: number | null = null;
+  let freshSeen: string | null = null;
+  let freshChange: string | null = null;
+  const lines: string[] = [];
+  for (const a of current.agents) {
+    const seen = typeof a.lastSeenAt === 'string' ? a.lastSeenAt : typeof a.updatedAt === 'string' ? a.updatedAt : null;
+    const seenT = seen ? Date.parse(seen) : NaN;
+    let ageMs: number | null = null;
+    if (Number.isFinite(seenT)) {
+      ageMs = now - seenT;
+      if (oldest === null || ageMs > oldest) oldest = ageMs;
+      if (newest === null || ageMs < newest) newest = ageMs;
+      if (!freshSeen || (seen && seen > freshSeen)) freshSeen = seen;
+    }
+    const change = typeof a.lastStateChangeAt === 'string' ? a.lastStateChangeAt : null;
+    if (change && (!freshChange || change > freshChange)) freshChange = change;
+    const stale = ageMs !== null && ageMs > LANE_DRIFT_WARN_MS;
+    const ageLabel = ageMs === null ? 'no heartbeat' : stale ? `stale ${ageLabelMs(ageMs)}` : ageLabelMs(ageMs);
+    lines.push(`${a.id ?? 'lane'} · ${a.status ?? 'unknown'} · ${ageLabel}`);
+  }
+  return {
+    ok: true,
+    laneCount: current.agents.length,
+    oldestLastSeenAgeMs: oldest,
+    newestLastSeenAgeMs: newest,
+    driftWarning: oldest !== null && oldest > LANE_DRIFT_WARN_MS,
+    perLaneLines: lines,
+    freshestLastSeenAt: freshSeen,
+    freshestLastStateChangeAt: freshChange,
+  };
 }
 
 interface ReleaseGateSummary {
@@ -743,6 +808,7 @@ export default function AdminDevScreen() {
   const mcpCodexLane = mcpAgents.find((agent) => agent.id === 'codex') ?? null;
   const releaseGateSummary = summariseReleaseGate(mcpV2Snapshot);
   const laneOverviewSummary = summariseLaneOverview(mcpV2Snapshot);
+  const laneHeartbeat = summariseLaneHeartbeat(mcpCurrentState);
   const nowPriority = mcpCurrentState?.currentPriority ?? connectorWork?.currentPriority ?? CURRENT_PRIORITY;
   const nowBlocker = mcpCurrentState?.currentBlocker ?? connectorWork?.currentBlocker ?? 'No MCP blocker reported.';
   const nowNextAction = mcpCurrentState?.nextAction ?? connectorWork?.nextAction ?? NEXT_ACTION;
@@ -909,6 +975,29 @@ export default function AdminDevScreen() {
             <Text style={styles.chipLabel}>Stale writeback</Text>
             <Text style={styles.chipBody}>MCP readable but writeback is stale ({mcpFreshness.ageLabel}). Run bridge snapshot/verify or deploy worker.</Text>
             <Text style={styles.note}>Reason: {mcpFreshness.reason} · updated {mcpFreshness.updatedAt}</Text>
+          </View>
+        )}
+        {laneHeartbeat.ok && laneHeartbeat.driftWarning && (
+          <View style={styles.warningBlock}>
+            <Text style={styles.chipLabel}>Lane drift suspected</Text>
+            <Text style={styles.chipBody}>
+              Terminal/MCP drift suspected — lane heartbeat is stale ({ageLabelMs(laneHeartbeat.oldestLastSeenAgeMs)}). Start `npm run bridge:watch` on the laptop, or run `npm run bridge:snapshot` once to refresh.
+            </Text>
+            {laneHeartbeat.perLaneLines.map((line, idx) => (
+              <Text key={`heartbeat-${idx}`} style={styles.note}>{line}</Text>
+            ))}
+          </View>
+        )}
+        {laneHeartbeat.ok && !laneHeartbeat.driftWarning && isAdmin && (
+          <View style={styles.chipBlock}>
+            <Text style={styles.chipLabel}>Lane heartbeat</Text>
+            <Text style={styles.chipBody}>
+              {laneHeartbeat.laneCount} lane{laneHeartbeat.laneCount === 1 ? '' : 's'} · oldest {ageLabelMs(laneHeartbeat.oldestLastSeenAgeMs)} · newest {ageLabelMs(laneHeartbeat.newestLastSeenAgeMs)}
+            </Text>
+            {laneHeartbeat.perLaneLines.map((line, idx) => (
+              <Text key={`heartbeat-${idx}`} style={styles.note}>{line}</Text>
+            ))}
+            <Text style={styles.note}>source: tmux_bridge · drift threshold {Math.round(LANE_DRIFT_WARN_MS / 1000)}s</Text>
           </View>
         )}
         {!mcpFreshness.stale && isAdmin && (

@@ -111,3 +111,43 @@ def summarize_pane(pane_text, status, tail_lines=12):
         return None
     lines = _nonempty_lines(pane_text)
     return "\n".join(lines[-tail_lines:]) if lines else None
+
+
+def compute_state_change_at(prev_status, current_status, prev_state_change_at, now_iso):
+    """Carry the per-lane lastStateChangeAt field forward unless the status
+    actually changed.
+
+    Pure helper so the bridge writer + tests share the same rule:
+      - prev_status missing OR != current_status → lastStateChangeAt = now_iso
+      - otherwise carry the previous value forward (or seed to now_iso if
+        there is no previous value, e.g. brand-new lane file).
+
+    Returns a string. Never raises.
+    """
+    if not isinstance(now_iso, str) or not now_iso:
+        return None
+    if not isinstance(prev_status, str) or not prev_status:
+        return now_iso
+    if not isinstance(current_status, str) or not current_status:
+        return prev_state_change_at if isinstance(prev_state_change_at, str) and prev_state_change_at else now_iso
+    if prev_status != current_status:
+        return now_iso
+    if isinstance(prev_state_change_at, str) and prev_state_change_at:
+        return prev_state_change_at
+    return now_iso
+
+
+def heartbeat_envelope(now_iso, prev_state_change_at, prev_status, current_status, source="tmux_bridge"):
+    """Build the heartbeat fields the bridge attaches to every lane row.
+
+    Schema:
+      - lastSeenAt        — bumped on every snapshot regardless of state
+      - lastStateChangeAt — bumped only when status changes (carry-forward
+        otherwise)
+      - source            — provenance, defaults to "tmux_bridge"
+    """
+    return {
+        "lastSeenAt": now_iso,
+        "lastStateChangeAt": compute_state_change_at(prev_status, current_status, prev_state_change_at, now_iso),
+        "source": source,
+    }
