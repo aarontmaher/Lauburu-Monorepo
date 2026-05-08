@@ -40,7 +40,7 @@ hash of the rule strings).
 
 Updated 2026-05-08.
 
-## The twenty-one rules
+## The twenty-two rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -292,6 +292,41 @@ this file.
     event recorded in the ledger. Honours rule 7 (EAS build cost
     control), rule 11 (MCP-first), and rule 18 (action ledger).
     Full spec: `docs/HUMAN_APPROVAL_GATE_SPEC.md`.
+22. **AI spend gate.** Cheap deterministic / backend / local
+    analysis MUST run first. If a request is likely to require
+    expensive AI inference (long-context reasoning, deep research,
+    multi-pass synthesis, vision-heavy audit, or any path that
+    materially increases monthly AI spend above Aaron's configured
+    threshold), the app MUST notify Aaron via push (sharing rule
+    21's gate wiring) BEFORE initiating the spend, with the gate
+    UI offering: `approve_in_app` / `defer` / `export_prompt`
+    (paste into external ChatGPT / Claude.ai / etc.) / `ignore`.
+    Cost classes:
+    - `free_deterministic` — local rules, regex parsers, MCP
+      reads, `bridge:snapshot`, parser-only journal-import — runs
+      without ask.
+    - `cheap_ai` — short-context calls within the monthly free
+      tier or below the user-configured threshold — runs without
+      ask but is rate-limited per `CONNECTOR_SANITIZATION_RULES`.
+    - `expensive_ai` — long-context, multi-pass, vision-heavy, or
+      beyond the threshold — REQUIRES gate (uses rule 21 state
+      machine).
+    - `deep_research_external` — work the in-app AI cannot do
+      well or that costs more than the monthly budget — surfaces
+      "Export prompt" so Aaron can paste into external AI without
+      paying for in-app inference.
+    Notification payload: action name; why it matters;
+    `estimated_cost` (credits / tokens / dollars); Approve / Defer
+    / Export prompt / Ignore buttons. Settings: per-user monthly
+    AI budget (default $5/month); "always ask above $X" threshold
+    (default $0.50/call); pay-as-you-go credits (later).
+    **Privacy floor**: NEVER send raw sensitive data (journal
+    text, health metrics, PII, raw terminal output) to ANY AI
+    inference path (in-app or external) without explicit per-call
+    approval; default for `expensive_ai` is "summarize first,
+    send minimal context". Honours rule 7 (cost control), rule 11
+    (MCP-first), rule 21 (approval gates). Spec:
+    `docs/AI_SPEND_GATES_SPEC.md`.
 
 ## Where to find each rule's full body
 
@@ -318,13 +353,14 @@ this file.
 | 19 | This file § rule 19; `docs/PHONE_ONLY_AUTOMATION_PLAN.md` § coordinator-cadence; `docs/CHATGPT_CONNECTOR_SETUP.md` (ChatGPT-side coordinator role) — rule 14 priorities + rule 15 coder obligation are the paired rules |
 | 20 | This file § rule 20; `docs/CONTROL_CENTRE_MVP_SPEC.md` § all-idle notification handoff; `apps/mobile/app/admin-dev.tsx` § Owner alerts (in-app banner already shipped); `docs/MCP_PHONE_CONTROL_CENTRE.md` (notification surface integration) — paired with rule 19 |
 | 21 | This file § rule 21; `docs/HUMAN_APPROVAL_GATE_SPEC.md` (canonical full spec); `docs/CONTROL_CENTRE_MVP_SPEC.md` § approval centre integration; `docs/BACKLOG_AUTOMATION_SYSTEM.md` § approval-gated lanes — paired with rule 7 (EAS cost control), rule 18 (action ledger), rule 20 (push surface) |
+| 22 | This file § rule 22; `docs/AI_SPEND_GATES_SPEC.md` (canonical full spec) — paired with rule 7 (cost control), rule 21 (approval gate state machine + push wiring), `cloudflare-worker/src/data/CONNECTOR_SANITIZATION_RULES.md` (privacy floor) |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..21], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..22], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.
@@ -340,7 +376,7 @@ integration test will flag.
   Lane-3 batch (`docs/BACKLOG_AUTOMATION_SYSTEM.md` § Lane 3)
   with Aaron's written approval.
 - **No surfacing the rules without ID.** Every rule has a
-  stable id 1..21; consumers reference rules by id, not by
+  stable id 1..22; consumers reference rules by id, not by
   string match.
 - **No moving rule text into private surfaces.** These rules
   are public-safe by design — they describe coder discipline,

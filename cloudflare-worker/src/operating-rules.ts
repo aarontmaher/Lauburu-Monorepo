@@ -7,7 +7,7 @@
  *
  * Edit policy: changing this constant requires a paired edit to
  * docs/OPERATING_RULES.md in the same commit. The live integration
- * test asserts count = 21 + each rule's id stays stable. Any
+ * test asserts count = 22 + each rule's id stays stable. Any
  * promotion / demotion / reorder is a Lane-3 batch with explicit
  * Aaron approval per docs/BACKLOG_AUTOMATION_SYSTEM.md § Lane 3.
  */
@@ -144,6 +144,12 @@ export const OPERATING_RULES: readonly OperatingRule[] = [
     title: 'Human-approval push gate',
     body:
       "When automation pauses awaiting Aaron's approval (any prompt or action ledger row with status `waiting_for_approval`), the app MUST send a push notification — even if the app is closed — provided push permissions are granted (per rule 20's push wiring). Notification payload MUST include: (1) what needs approval (action name + brief context, ≤140 chars); (2) why it matters (consequence summary — e.g. 'EAS build deducts X credits' / 'Cloudflare deploy' / 'Supabase row reset'); (3) current top priority for context; (4) safe default if Aaron defers / does nothing (e.g. 'Defer 24h' / 'No build' / 'Stay on current state'); (5) action buttons where the platform supports them (Approve / Defer / Block); fallback is tap-to-open Admin/Dev approval centre. Approval gate state machine: `waiting_for_approval` → `approved` | `deferred` | `expired` | `blocked`. On `approved`: automation resumes from the action ledger / MCP at the exact next step. On `deferred`: gate re-fires after the deferred-until timestamp. On `expired`: gate auto-transitions to `blocked` with reason `expired_no_response`. On `blocked`: gate is closed and a Codex/Claude follow-up prompt is required to advance. Safety floor: NO production release, NO EAS build, NO destructive Worker deploy, NO Supabase migration may proceed past `waiting_for_approval` without an explicit `approved` event recorded in the ledger. Honour rule 7 (EAS build cost control), rule 11 (MCP-first), and rule 18 (action ledger). Spec: docs/HUMAN_APPROVAL_GATE_SPEC.md.",
+  },
+  {
+    id: 22,
+    title: 'AI spend gate',
+    body:
+      "Cheap deterministic / backend / local analysis MUST run first. If a request is likely to require expensive AI inference (long-context reasoning, deep research, multi-pass synthesis, vision-heavy audit, or any path that materially increases monthly AI spend above Aaron's configured threshold), the app MUST notify Aaron via push (sharing rule 21's gate wiring) BEFORE initiating the spend, with the gate UI offering: `approve_in_app` / `defer` / `export_prompt` (paste into external ChatGPT / Claude.ai / etc.) / `ignore`. Cost classes: (1) `free_deterministic` — local rules, regex parsers, MCP reads, bridge:snapshot, parser-only journal-import — runs without ask; (2) `cheap_ai` — short-context calls within the monthly free tier or below the user-configured threshold — runs without ask but is rate-limited per CONNECTOR_SANITIZATION_RULES; (3) `expensive_ai` — long-context reasoning, multi-pass, vision-heavy, or anything beyond the threshold — REQUIRES gate (uses rule 21 state machine: waiting_for_approval → approved | deferred | expired | blocked); (4) `deep_research_external` — work the in-app AI cannot do well or that costs more than the monthly budget — surfaces 'Export prompt' so Aaron can paste into external AI without paying for in-app inference. Notification payload: action name, why it matters, estimated_cost (credits / tokens / dollars), Approve / Defer / Export prompt / Ignore buttons. Settings: per-user monthly AI budget (default $5/month), 'always ask above $X' threshold (default $0.50/call), pay-as-you-go credits (later). Privacy floor: NEVER send raw sensitive data (journal text, health metrics, PII, raw terminal output) to ANY AI inference path (in-app or external) without explicit per-call approval; default for expensive_ai is 'summarize first, send minimal context'. Honour rule 7 (cost control), rule 11 (MCP-first), rule 21 (approval gates). Spec: docs/AI_SPEND_GATES_SPEC.md.",
   },
 ] as const;
 
