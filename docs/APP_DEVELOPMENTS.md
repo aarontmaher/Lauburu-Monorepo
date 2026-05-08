@@ -287,15 +287,56 @@ priority — they are the floor below every priority.
 
 ## Top 5 priorities (the answer to "what's next")
 
-In order:
+Updated 2026-05-09 per Aaron's directive. In order:
 
-1. **MCP connector/control-centre read path** — ChatGPT-compatible MCP auth/read path, screenshot-free terminal status, and app Admin/Dev status consumer. Apply `supabase/migrations/0003_connector_status_tables.sql` and set the two Worker secrets so the connector routes flip from `placeholder` to `supabase`.
-2. **Health / Data Source reliability** — verify Apple Health on Aaron's iPhone + Health Connect on girlfriend's Android first; then continue WHOOP / Polar / exports / nutrition without blocking the primary daily sources.
-3. **UX / IA cleanup** — keep daily/frequent workflows in feature tabs and rare/admin/config/debug in Settings/AdminDev unless an urgent tester blocker jumps the queue.
-4. **Cautious Grappler Readiness Batches B / C / D** — architecture/schema + gated UI work only; no overclaiming and no user-facing readiness score until explicitly allowed.
-5. **Admin/Dev → Cloudflare/Supabase MCP wiring on the phone** — flip `EXPO_PUBLIC_MCP_BASE_URL` in the next paired build's EAS env so the phone reads from the Worker, not Railway.
+1. **Health Connect / Apple Health installed-device truth** —
+   clear the active release gate by retesting the Health
+   Connect → Connect crash repro on Android v20
+   (`~/Downloads/lauburu-android-versionCode20-health-connect-debug-surface.aab`)
+   AND auditing iOS TestFlight build 19 on Aaron's iPhone.
+   Drives `agent_qa_result.json` from `partial` →
+   `pass`. Canonical: `docs/INSTALLED_DEVICE_QA_RELEASE_GATE.md`.
+   Per rule 9, all health/readiness claims stay
+   `confidence: provisional` until this gate clears.
+2. **Push approval notifications** — ship the rule 21 / 22 /
+   23 push wiring so automation pauses ONLY for Aaron's
+   Approve / Defer / Deny on the iPhone lock screen.
+   Synthesis: `docs/PUSH_APPROVAL_AUTOMATION_SPEC.md`.
+   Underlying handoffs in dependency order:
+   `CODEX-FS-XXX-ALL-IDLE-PUSH-NOTIFICATION-01` →
+   `CODEX-FS-XXX-HUMAN-APPROVAL-GATE-IMPL-01` →
+   `CODEX-FS-XXX-AI-SPEND-GATES-IMPL-01` →
+   `CODEX-FS-XXX-DEEP-RESEARCH-OFFLOAD-IMPL-01`. All staged,
+   all approval-gated.
+3. **Admin/Dev approval centre** — single in-app panel that
+   surfaces every pending gate (release / EAS build / Worker
+   deploy / AI spend / research / FS-XXX promotion / public
+   release) plus deferred / approved / blocked recent
+   decisions. Spec: `docs/HUMAN_APPROVAL_GATE_SPEC.md` § 4 +
+   `docs/PUSH_APPROVAL_AUTOMATION_SPEC.md` § 4. Required
+   fields tracked in
+   `docs/MCP_LONGTERM_ACCESS_ARCHITECTURE.md` § 3 (criterion
+   (a) of Developer-Mode-off).
+4. **Screenshot / audit automation** — shipped this session
+   in 4 commits: `fc8d7c3` (audit-screenshots script + v1.5
+   capture tier), `da233c3` (in-app audit automation spec),
+   `412dab2` (iPhone Mirroring helper + workflow doc),
+   `1e5a1ad` (operator audit playbook). Next step: Aaron
+   runs `npm run audit:screenshots` (simulator) and
+   `npm run audit:iphone-mirroring` (real device via
+   Continuity) to validate end-to-end. Canonical playbook:
+   `docs/INSTALLED_DEVICE_AUDIT_PLAYBOOK.md`.
+5. **Grappling Readiness core** — architecture/schema +
+   gated UI work per `docs/GRAPPLER_READINESS_BUILD_PLAN.md`
+   + `docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md`. No
+   overclaiming, no user-facing readiness score until
+   priority 1 (real-device truth) clears AND priority 2 +
+   3 (push approval centre) ship to gate any high-cost AI
+   inference per rule 22.
 
-Items 6+ stay in the Later backlog above.
+Items 6+ stay in the Later backlog above. The Permanent
+Improvement Categories below are continuous quality bars
+that span priorities 1–5 and beyond — not separate items.
 
 ## Permanent improvement categories (Forever Improve)
 
