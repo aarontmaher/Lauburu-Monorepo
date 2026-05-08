@@ -233,6 +233,44 @@ surfaces.
 4. Run installed-device QA.
 5. Record results with `npm run bridge:agent-qa`.
 
+### Installed iPhone Admin/Dev MCP-liveness verification
+
+(Established by `CLAUDE-LIVE-STATUS-DISPATCHER` 2026-05-09 +
+the in-flight Codex P0 implementation of MCP-unavailable
+diagnostics. Run this AFTER Codex's iPhone Admin/Dev MCP
+patch lands AND a v21 build (or a TestFlight-replacement
+build that picks up the patch — confirm via build commit
+hash) is installed on Aaron's iPhone.)
+
+| # | Step | Pass criterion | Cross-ref |
+|---|---|---|---|
+| iA | Foreground app from cold | Within ≤1.5s, freshness pill renders + lane chips populated. Skeleton state visible during fetch. | `ADMIN_DEV_PROOF_CHECKLIST` § 7B.1 |
+| iB | Backgrounded app → resume | `AppState` `active` event triggers a `project.get_current_state` re-fetch within ≤1.5s. Stale-cache renders during the gap with a "refreshing…" indicator. | § 7B.1 |
+| iC | Manual refresh control | Pull-to-refresh on the Admin/Dev top section OR an explicit refresh button. Tap re-fetches MCP within 1s; UI shows skeleton during. | § 7B.2 |
+| iD | Force MCP stale (test) | Disable network OR point to an unreachable Worker URL. Confirm the freshness pill flips to `MCP unreachable` (NEVER silent). Re-enable network → next refresh restores `Live` pill within 1.5s. | § 7B.3 + rule 11 unavailable branch |
+| iE | Worker returns stale `staleReason` | Confirm pill renders `Stale: <reason>` (e.g. `Stale: no_writeback`). Lane chips append `· stale` + chip background turns grey. Cached `agent.status` MUST NOT display as `working`. | § 7B.3 + 7B.4 + stale-worker semantics rule (`connector_work_status.mcpLivenessP0`) |
+| iF | Endpoint diagnostics card visible (admin-only) | Card surfaces: endpoint category (workers.dev preview / custom domain / fallback), HTTP status (200 / 4xx / 5xx / network-fail), error type (`network` / `config` / `auth` / `server` / `stale` / `writeback`), MCP `updatedAt` ISO + relative age, freshness `staleReason`. | task 3 + 5 of `CODEX-LIVE-STATUS-STREAM-AND-AUTO-REFRESH-01` |
+| iG | Lane age-and-freshness | Each lane chip displays `<status> · <heartbeatAgeSeconds>` (e.g. `Working · 2 min`). When stale, suffix `· stale`. | § 7B.4 |
+| iH | Build/QA stage separator | Build/release card explicitly partitions: `live now` / `repo-only` / `preview-only` / `installed-verified` / `planned-only`. Each row carries its own truth label. | § 7B.5 |
+| iI | HC app-not-listed P0 card | When the v20 retest evidence shows the app missing from HC → Apps, a P0 card surfaces with the patched-and-awaiting-build status. Dismisses ONLY when v21 retest evidence flips it. | § 7B.6 + audit ledger `audit-2026-05-09T08:12-codex-hc-app-not-listed` |
+| iJ | No "live" / "verified" claims | Plain-text scan of the Admin/Dev tab finds zero rule-9 banned phrases ("you are ready", "skip training", "guaranteed", "verified" applied to non-Aaron-on-device-pass states). | rule 9 |
+
+Recording: `npm run bridge:agent-qa` with
+`gate: phone_first_control_centre_acceptance` +
+`platform: ios` + `installedBuild.iosBuildNumber: <N>` +
+per-row `iA`-`iJ` `pass | partial | fail`.
+
+**Pass criterion for the iPhone verification block: all 10
+rows pass on the installed build that includes Codex's
+in-flight P0 patch.** Until then, treat the Admin/Dev tab
+as `partial` for iOS.
+
+**Anti-rule:** No simulator evidence clears these rows.
+The auto-refresh + manual refresh + stale-badge behaviour
+must be observed on the actual installed iPhone build —
+simulator AppState transitions differ subtly from real
+device cold-start / background-resume timing.
+
 ## Gate rule
 
 Repo-only, simulator-only, or processing-only evidence does not clear
