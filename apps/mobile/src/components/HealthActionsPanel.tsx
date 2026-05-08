@@ -40,6 +40,7 @@ import { getWhoopCsvStatus, uploadWhoopCsv, uploadWhoopZip, clearWhoopCsv } from
 import { readStoredJson, writeStoredJson } from '../store/secure-storage';
 import { SafeErrorBoundary } from './SafeErrorBoundary';
 import { HealthConnectAvailabilityHint } from './HealthConnectAvailabilityHint';
+import { HealthConnectDebugCard } from './HealthConnectDebugCard';
 import { parsePolarExport, type PolarSession } from '../../../../packages/shared/src/backend/services/polar/parse-polar-export';
 import {
   getNativeHealthSourceCopy,
@@ -807,16 +808,38 @@ function Body() {
           } catch { /* non-fatal */ }
         }
       }
-      Alert.alert(
-        'Health Connect',
-        granted
-          ? user?.id
+      if (granted) {
+        Alert.alert(
+          'Health Connect',
+          user?.id
             ? 'Permissions granted. Synced your latest metrics.'
-            : 'Permissions granted. Sign in to save synced data to your account.'
-          : requestError
+            : 'Permissions granted. Sign in to save synced data to your account.',
+        );
+      } else {
+        Alert.alert(
+          'Health Connect',
+          requestError
             ? requestError
-            : 'Permissions not granted. Open Health Connect → App permissions → Lauburu and grant the metrics you want, then tap Sync.',
-      );
+            : 'Permissions not granted. If the OS prompt did not appear, tap Open Health Connect and grant Lauburu the metrics you want, then tap Sync.',
+          [
+            {
+              text: 'Open Health Connect',
+              onPress: () => {
+                try {
+                  // eslint-disable-next-line @typescript-eslint/no-require-imports
+                  const mod = require('react-native-health-connect');
+                  if (typeof mod?.openHealthConnectSettings === 'function') {
+                    mod.openHealthConnectSettings();
+                    return;
+                  }
+                } catch { /* fall through */ }
+                Linking.openSettings().catch(() => { /* no-op */ });
+              },
+            },
+            { text: 'OK', style: 'cancel' },
+          ],
+        );
+      }
     } catch (e: any) {
       Alert.alert('Health Connect', `Error: ${e?.message ?? 'unknown'}`);
     } finally {
@@ -1218,6 +1241,9 @@ function Body() {
           </SafeSection>
           <SafeSection label="taps">
             <TapsBlock taps={taps} />
+          </SafeSection>
+          <SafeSection label="health-connect-debug">
+            <HealthConnectDebugCard />
           </SafeSection>
         </View>
       )}
@@ -2001,16 +2027,41 @@ function HealthSourceSheet(props: SheetProps) {
           disabled: busy != null,
           kind: 'secondary',
         },
-      ]) : [
+      ]) : (isIos ? [
         {
-          label: isIos
-            ? (busy === 'apple-connect' ? 'Connecting…' : 'Connect')
-            : (busy === 'hc-connect' ? 'Connecting…' : 'Connect'),
-          onPress: isIos ? onConnectAppleHealth : onConnectHealthConnect,
+          label: busy === 'apple-connect' ? 'Connecting…' : 'Connect',
+          onPress: onConnectAppleHealth,
           disabled: busy != null,
           kind: 'primary',
         },
-      ]}
+      ] : [
+        {
+          label: busy === 'hc-connect' ? 'Connecting…' : 'Connect',
+          onPress: onConnectHealthConnect,
+          disabled: busy != null,
+          kind: 'primary',
+        },
+        {
+          // Secondary troubleshooting only — first tap should be the
+          // Connect button above, which calls Health Connect's
+          // requestPermission API directly. This opens the OS Health
+          // Connect screen so the tester can confirm what the OS sees.
+          label: 'Open Health Connect',
+          onPress: () => {
+            try {
+              // eslint-disable-next-line @typescript-eslint/no-require-imports
+              const mod = require('react-native-health-connect');
+              if (typeof mod?.openHealthConnectSettings === 'function') {
+                mod.openHealthConnectSettings();
+                return;
+              }
+            } catch { /* fall through */ }
+            Linking.openSettings().catch(() => { /* no-op */ });
+          },
+          disabled: busy != null,
+          kind: 'secondary',
+        },
+      ])}
     />
   );
 
