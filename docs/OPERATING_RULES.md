@@ -40,7 +40,7 @@ hash of the rule strings).
 
 Updated 2026-05-08.
 
-## The twenty rules
+## The twenty-one rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -265,6 +265,33 @@ this file.
     alerts → "All-worker direction banner"; **push notification
     implementation is a Codex follow-up batch** (handoff staged in
     `docs/CONTROL_CENTRE_MVP_SPEC.md`).
+21. **Human-approval push gate.** When automation pauses awaiting
+    Aaron's approval (any prompt or action ledger row with
+    `status: waiting_for_approval`), the app MUST send a push
+    notification — even if the app is closed — provided push
+    permissions are granted (per rule 20's push wiring). Notification
+    payload MUST include: (1) **what needs approval** — action name
+    + brief context, ≤140 chars; (2) **why it matters** — consequence
+    summary (e.g. "EAS build deducts X credits" / "Cloudflare
+    deploy" / "Supabase row reset"); (3) **current top priority**
+    for context; (4) **safe default if Aaron defers** (e.g. "Defer
+    24h" / "No build" / "Stay on current state"); (5) **action
+    buttons** where the platform supports them — Approve / Defer /
+    Block; fallback is tap-to-open the Admin/Dev approval centre.
+    Approval gate state machine:
+    `waiting_for_approval` → `approved` | `deferred` | `expired` |
+    `blocked`. On `approved`: automation resumes from the action
+    ledger / MCP at the exact next step. On `deferred`: gate
+    re-fires after the deferred-until timestamp. On `expired`: gate
+    auto-transitions to `blocked` with reason
+    `expired_no_response`. On `blocked`: gate is closed and a
+    Codex/Claude follow-up prompt is required to advance.
+    Safety floor: NO production release, NO EAS build, NO
+    destructive Worker deploy, NO Supabase migration may proceed
+    past `waiting_for_approval` without an explicit `approved`
+    event recorded in the ledger. Honours rule 7 (EAS build cost
+    control), rule 11 (MCP-first), and rule 18 (action ledger).
+    Full spec: `docs/HUMAN_APPROVAL_GATE_SPEC.md`.
 
 ## Where to find each rule's full body
 
@@ -290,13 +317,14 @@ this file.
 | 18 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Action ledger"; `docs/MCP_CANONICAL_STATE.md` § action ledger surface; `docs/CONTROL_CENTRE_MVP_SPEC.md` § prompt refs / handoff prompts |
 | 19 | This file § rule 19; `docs/PHONE_ONLY_AUTOMATION_PLAN.md` § coordinator-cadence; `docs/CHATGPT_CONNECTOR_SETUP.md` (ChatGPT-side coordinator role) — rule 14 priorities + rule 15 coder obligation are the paired rules |
 | 20 | This file § rule 20; `docs/CONTROL_CENTRE_MVP_SPEC.md` § all-idle notification handoff; `apps/mobile/app/admin-dev.tsx` § Owner alerts (in-app banner already shipped); `docs/MCP_PHONE_CONTROL_CENTRE.md` (notification surface integration) — paired with rule 19 |
+| 21 | This file § rule 21; `docs/HUMAN_APPROVAL_GATE_SPEC.md` (canonical full spec); `docs/CONTROL_CENTRE_MVP_SPEC.md` § approval centre integration; `docs/BACKLOG_AUTOMATION_SYSTEM.md` § approval-gated lanes — paired with rule 7 (EAS cost control), rule 18 (action ledger), rule 20 (push surface) |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..20], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..21], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.
@@ -312,7 +340,7 @@ integration test will flag.
   Lane-3 batch (`docs/BACKLOG_AUTOMATION_SYSTEM.md` § Lane 3)
   with Aaron's written approval.
 - **No surfacing the rules without ID.** Every rule has a
-  stable id 1..20; consumers reference rules by id, not by
+  stable id 1..21; consumers reference rules by id, not by
   string match.
 - **No moving rule text into private surfaces.** These rules
   are public-safe by design — they describe coder discipline,

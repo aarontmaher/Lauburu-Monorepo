@@ -7,7 +7,7 @@
  *
  * Edit policy: changing this constant requires a paired edit to
  * docs/OPERATING_RULES.md in the same commit. The live integration
- * test asserts count = 20 + each rule's id stays stable. Any
+ * test asserts count = 21 + each rule's id stays stable. Any
  * promotion / demotion / reorder is a Lane-3 batch with explicit
  * Aaron approval per docs/BACKLOG_AUTOMATION_SYSTEM.md § Lane 3.
  */
@@ -138,6 +138,12 @@ export const OPERATING_RULES: readonly OperatingRule[] = [
     title: 'All-idle notification',
     body:
       "When Claude, Codex, and Agent are all in an `idle` state simultaneously (all three lanes report status: 'idle' via project.get_current_state.agents[].status), the app MUST notify Aaron via a pop-up / banner / push notification. Exclusions: do NOT fire when (a) any lane has a blocker recorded (blockers have their own dedicated alert surface), OR (b) an explicit Aaron pause decision is recorded in docs/APP_DEVELOPMENTS.md priority order. The notification payload MUST include: (1) current top priority title from project.get_current_state.priority; (2) recommended next action drawn from project.list_priorities or the action ledger backlog; (3) timestamp of the all-idle state; (4) freshness check (only fire when MCP is fresh). The notification serves rule 19 (coordinator-fed idle lanes) — it tells Aaron immediately when all coders need a new prompt rather than requiring him to poll the admin-dev surface. In-app banner is implemented (apps/mobile/app/admin-dev.tsx § Owner alerts → \"All-worker direction banner\"); push notification implementation is a Codex follow-up batch (handoff documented in docs/CONTROL_CENTRE_MVP_SPEC.md or equivalent control-centre doc). Honour rule 11 (MCP-first): never fire from stale or unavailable MCP — that would risk a false-idle signal.",
+  },
+  {
+    id: 21,
+    title: 'Human-approval push gate',
+    body:
+      "When automation pauses awaiting Aaron's approval (any prompt or action ledger row with status `waiting_for_approval`), the app MUST send a push notification — even if the app is closed — provided push permissions are granted (per rule 20's push wiring). Notification payload MUST include: (1) what needs approval (action name + brief context, ≤140 chars); (2) why it matters (consequence summary — e.g. 'EAS build deducts X credits' / 'Cloudflare deploy' / 'Supabase row reset'); (3) current top priority for context; (4) safe default if Aaron defers / does nothing (e.g. 'Defer 24h' / 'No build' / 'Stay on current state'); (5) action buttons where the platform supports them (Approve / Defer / Block); fallback is tap-to-open Admin/Dev approval centre. Approval gate state machine: `waiting_for_approval` → `approved` | `deferred` | `expired` | `blocked`. On `approved`: automation resumes from the action ledger / MCP at the exact next step. On `deferred`: gate re-fires after the deferred-until timestamp. On `expired`: gate auto-transitions to `blocked` with reason `expired_no_response`. On `blocked`: gate is closed and a Codex/Claude follow-up prompt is required to advance. Safety floor: NO production release, NO EAS build, NO destructive Worker deploy, NO Supabase migration may proceed past `waiting_for_approval` without an explicit `approved` event recorded in the ledger. Honour rule 7 (EAS build cost control), rule 11 (MCP-first), and rule 18 (action ledger). Spec: docs/HUMAN_APPROVAL_GATE_SPEC.md.",
   },
 ] as const;
 
