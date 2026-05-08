@@ -120,31 +120,31 @@ write where applicable) before criterion (a) of § 2 holds.
 
 | Field | Source | Status today |
 |---|---|---|
-| Top priority + blocker + freshness | `project.get_current_state` | Shipped (admin-dev shows priority / blocker / freshness pill) |
-| Per-lane status (claude / codex / agent) | `project.get_current_state.agents[]` | Shipped (lane chips) |
+| Top priority + blocker + freshness | `project.get_current_state` | Shipped (admin-dev shows priority / blocker / freshness pill with relative age + colour cue) |
+| Per-lane status (claude / codex / agent) | `project.get_current_state.agents[]` | Shipped (lane chips + dedicated Idle/working/blocked/needs-review tile) |
 | Repo HEAD + branch + dirty count | `project.get_current_state.repo` | Shipped |
 | Build status (Android versionCode + iOS buildNumber + Play / TestFlight tracks) | `mobile.get_build_status` | Shipped (build chips) |
-| Agent QA result + release gate | `mobile.get_agent_qa_result` | Shipped (release-gate chip) |
+| Agent QA result + release gate | `mobile.get_agent_qa_result` | Shipped (release-gate chip + iOS/Android boolean tile + reason) |
 | Handoff (latest from each lane) | `handoff.get_latest` | Shipped (handoff card) |
 | Integrations overview (provider counts) | `integrations.get_overview` | Shipped |
 | Owner alerts toggle (rule 20 in-app banner) | local state | Shipped (banner toggle) |
-| **Approval gate list (rule 21)** | new `project.list_approval_gates` (admin token) | **TODO** — gated on rule 21 implementation |
-| **AI spend usage + budget (rule 22)** | new `project.get_ai_spend_usage` (admin token) | **TODO** — gated on rule 22 implementation |
-| **Research artifact cache (rule 23)** | new `project.list_research_artifacts` (admin token) | **TODO** — gated on rule 23 implementation |
-| **Operating rules count + ids (1..N)** | `project.get_operating_rules` | Shipped (rules count chip) |
+| **Approval gate list (rule 21)** | local store `data/approval-gates/gates.json` + `useApprovalGatesStore` (UI shipped; server-side `project.list_approval_gates` admin tool still TODO) | **PARTIAL** — UI shipped (commit 87ebabc); server writeback + push fan-out TODO |
+| **AI spend usage + gate list (rule 22)** | local `useSpendGatesStore` + `precheckJournalImport`/`precheckReadinessAnomaly`/`precheckHealthTrend` (UI shipped; server-side `project.get_ai_spend_usage` admin tool still TODO) | **PARTIAL** — UI + deterministic prechecks shipped (commit 228160c); server writeback TODO |
+| **Research artifact cache (rule 23)** | local `useResearchJobsStore` (UI shipped with paste-result + reuseHash dedup + supersede; server-side `project.list_research_artifacts` admin tool still TODO) | **PARTIAL** — UI + cache lifecycle shipped (commit 11b8c75); server writeback TODO |
+| **Operating rules count + ids (1..N)** | `project.get_operating_rules` | Shipped (rules count chip; current contract test asserts 23 rules) |
 | **Action ledger backlog (rule 18)** | `project.list_priorities` (or dedicated ledger reader) | Shipped read-only; full detail TODO |
 
 ### 3.2 Write / action surface
 
 | Action | Tool | Status today |
 |---|---|---|
-| Update lane status / next action / blocker | `project.update_work_status` | Shipped (admin-dev surfaces action) |
+| Update lane status / next action / blocker | `project.update_work_status` | Shipped (admin-dev surfaces action; tool is on `/mcp/v2` core surface, admin-token-gated) |
 | Submit priority suggestion | `project.submit_priority_suggestion` | Shipped |
 | Toggle in-app banner | local | Shipped |
-| **Approve / Defer / Block an approval gate (rule 21)** | new `project.update_approval_gate` | **TODO** |
-| **Approve / Defer / Export prompt / Ignore an AI-spend gate (rule 22)** | new `project.update_ai_spend_gate` | **TODO** |
-| **Approve / Defer / Copy prompt / Import result for research (rule 23)** | new `project.research_job_update` + `project.research_artifact_import` | **TODO** |
-| Push permissions toggle | local + Expo Notifications | **TODO** (rule 20 push wiring) |
+| **Approve / Defer / Cancel an approval gate (rule 21)** | local `useApprovalGatesStore.approve|defer|cancel|markCompleted`; new `project.update_approval_gate` admin tool TODO | **PARTIAL** — local-first writeback shipped (commit 87ebabc); on approve the store emits a ledger note Aaron pastes into `data/action-ledger/pending_actions.json` until the server route lands. Server `project.update_approval_gate` on `/mcp/v2/admin` still TODO |
+| **Approve / Defer / Cancel an AI-spend gate + Export prompt (rule 22)** | local `useSpendGatesStore.approve|defer|cancel` + `exportSpendGatePrompt`; new `project.update_ai_spend_gate` admin tool TODO | **PARTIAL** — local writeback + paste-into-ChatGPT prompt-export shipped (commit 228160c). Server route TODO |
+| **Create / Mark submitted / Mark complete / Cancel a research job + Copy prompt (rule 23)** | local `useResearchJobsStore.createJob|markSubmitted|markCompleted|cancel` + `exportResearchPrompt`; new `project.research_job_create` + `project.research_artifact_import` admin tools TODO | **PARTIAL** — local lifecycle + reuseHash dedup + supersede shipped (commit 11b8c75). Server routes TODO |
+| Push permissions toggle | local + Expo Notifications | **TODO** (rule 20 push wiring) — blockers documented in `docs/APPROVAL_GATES_AND_PUSH.md` |
 | Bridge:snapshot trigger (admin-dev "refresh writeback" button) | local invocation | Optional — coder-side cadence is canonical |
 
 ### 3.3 Acceptance criteria for surface A parity
@@ -292,22 +292,40 @@ operator UI; Agent reads it visually until Surface B ships.
 
 Order of operations to retire Developer-Mode dependence:
 
-### Phase 1 — current state (2026-05)
+### Phase 1 — current state (2026-05-09)
 
-- Surface A (Admin/Dev tab): partially shipped (read parity
-  most-complete; approval gates + push notifications NOT
-  shipped).
+- Surface A (Admin/Dev tab): **substantially shipped**.
+  - Read parity: priority / blocker / freshness with relative-age
+    age cue, per-lane status, lane-status breakdown tile, repo
+    HEAD, build status, release-gate boolean tile + reason,
+    handoff card, integrations overview — all shipped.
+  - Approval gate centre, AI-spend gate centre with deterministic
+    prechecks + prompt export, research-job centre with
+    reuseHash dedup + supersede + paste-result import — all
+    shipped (commits 87ebabc, 228160c, 11b8c75).
+  - Push notifications: **NOT shipped** (Apple capability +
+    expo-notifications + backend route — see
+    `docs/APPROVAL_GATES_AND_PUSH.md`). Banner-only today.
+  - Server-side writeback for approval / spend / research gates:
+    NOT shipped. Aaron pastes ledger notes manually until the
+    server routes land.
 - Surface B: NOT shipped.
 - Surface C (`/mcp/v2`): shipped + working in normal chat
   (Developer Mode ON), broken in Agent / Deep Research.
+  `/mcp/v2/admin` and `/mcp/v2/website` split shipped (commit
+  630bf3f) so the core surface stays under ChatGPT's tool-picker
+  cap. `project.ping` diagnostic shipped (commit 1081d65).
 - Developer Mode: ON.
 
 ### Phase 2 — Surface A feature complete (when § 3 criteria hold)
 
 - Push notifications shipped (rule 20 / 21 / 22 / 23 via
   Codex handoffs in their respective spec docs).
-- Approval gate centre + AI-spend gate centre + research-job
-  centre all shipped in admin-dev.
+- Server-side approval-gate / spend-gate / research-job
+  writeback routes shipped (`project.update_approval_gate`,
+  `project.update_ai_spend_gate`,
+  `project.research_job_create`, `project.research_artifact_import`
+  on `/mcp/v2/admin`).
 - Aaron uses Surface A for daily operator work. Surface C
   becomes "occasional debug".
 - Developer Mode: still ON (provides fallback richness for
@@ -395,3 +413,12 @@ Order of operations to retire Developer-Mode dependence:
   the connector surfaces.
 - `docs/PHONE_ONLY_AUTOMATION_PLAN.md` — Surface A operator
   workflow + manual Aaron steps.
+- `docs/APPROVAL_GATES_AND_PUSH.md` — push setup blockers
+  (Apple capability + `expo-notifications` + Expo push token
+  + backend POST `/api/admin/notify-approval-gate`) and the
+  manual ledger-writeback path Aaron uses today.
+- `docs/MCP_CORE_AGENT_TROUBLESHOOTING.md` — diagnostic
+  ladder for the "works in normal chat but not Agent"
+  symptom; Surface B will eventually obsolete the workaround
+  but the troubleshooting ladder remains useful for any
+  future MCP transport regression.
