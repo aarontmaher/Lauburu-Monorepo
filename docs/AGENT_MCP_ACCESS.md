@@ -203,6 +203,11 @@ No Codex handoff dispatched from this doc; verification results determine which 
 
 ## 8. Cross-references
 
+- **`docs/MCP_LONGTERM_ACCESS_ARCHITECTURE.md`** — the
+  long-term access architecture this gap-fix doc feeds into;
+  Surface A (Admin/Dev tab) becomes the primary operator UI,
+  Surface B (standard connector / API wrapper) replaces this
+  fallback workflow once shipped.
 - `docs/OPERATING_RULES.md` § rule 11 — MCP-first, including the unavailable-stop branch.
 - `docs/CHATGPT_CONNECTOR_SETUP.md` — chat-side connector setup; § "MCP-first rule (operating rule 11)" callout; § 10 failure-mode quick reference.
 - `docs/MCP_CANONICAL_STATE.md` — canonical MCP paths.

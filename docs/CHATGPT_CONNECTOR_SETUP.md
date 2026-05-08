@@ -27,6 +27,28 @@ documented in § 1 below. If a chat shows a connector named
 "GrapplingMap System" with weird tool names, it's wired to the
 wrong host — re-create per § 1.
 
+## Long-term architecture context
+
+This setup doc covers the **current** ChatGPT custom-MCP
+connector path, which requires Developer Mode and works in
+normal chat (not Agent / Deep Research today — see
+`docs/AGENT_MCP_ACCESS.md`).
+
+The **long-term** access architecture is documented in
+`docs/MCP_LONGTERM_ACCESS_ARCHITECTURE.md`:
+- **Surface A** — Admin/Dev tab in the mobile app =
+  primary phone/operator UI.
+- **Surface B** — standard connector / OpenAPI wrapper =
+  long-term Agent / Deep Research / external-AI path
+  (does NOT require Developer Mode).
+- **Surface C** — this `/mcp/v2` developer MCP = optional
+  dev/debug tooling; NOT the required production workflow.
+
+This doc keeps the Surface C setup current for now. When
+Surface B ships, this doc will be updated with the new
+connector setup; the `/mcp/v2` setup will move to a
+"legacy / dev-only" subsection.
+
 ## MCP-first rule (operating rule 11) — for every ChatGPT chat
 
 Once the connector is set up (next section), ChatGPT MUST honour
