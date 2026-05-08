@@ -117,7 +117,7 @@ function buildHealthConnectSyncAuditSnapshot() {
 }
 
 function addHealthConnectAuditEvent(input: {
-  eventType: 'sync_started' | 'sync_succeeded' | 'sync_failed' | 'missing_metrics';
+  eventType: 'permission_denied' | 'sync_started' | 'sync_succeeded' | 'sync_failed' | 'missing_metrics';
   severity: 'info' | 'warning' | 'error';
   userVisibleMessage?: string;
   developerMessage?: string | null;
@@ -719,12 +719,21 @@ function Body() {
         Alert.alert('Health Connect', 'Permission handler unavailable. Reopen the app.');
         return;
       }
-      await requestPermissions();
+      const permissionOpened = await requestPermissions();
       // Read back the resulting permission state so we can route to a
       // granted vs denied audit event without a second permission probe.
       const st: any = useHealthStore.getState();
       const perms = st?.permissions?.permissions ?? {};
+      const requestError = typeof st?.error === 'string' ? st.error : null;
       const granted = Object.values(perms).some((v) => v === 'authorized');
+      if (!permissionOpened && requestError) {
+        addHealthConnectAuditEvent({
+          eventType: 'permission_denied',
+          severity: 'warning',
+          userVisibleMessage: requestError,
+          developerMessage: requestError,
+        });
+      }
       try {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const aud = require('../store/audit-event-store');
@@ -804,7 +813,9 @@ function Body() {
           ? user?.id
             ? 'Permissions granted. Synced your latest metrics.'
             : 'Permissions granted. Sign in to save synced data to your account.'
-          : 'Permissions not granted. Open Health Connect → App permissions → Lauburu and grant the metrics you want, then tap Sync.',
+          : requestError
+            ? requestError
+            : 'Permissions not granted. Open Health Connect → App permissions → Lauburu and grant the metrics you want, then tap Sync.',
       );
     } catch (e: any) {
       Alert.alert('Health Connect', `Error: ${e?.message ?? 'unknown'}`);

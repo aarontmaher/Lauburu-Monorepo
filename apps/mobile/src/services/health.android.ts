@@ -22,6 +22,38 @@ function hc() {
   return require('react-native-health-connect');
 }
 
+export type HealthConnectConnectFailureReason =
+  | 'provider_unavailable'
+  | 'provider_update_required'
+  | 'native_module_unavailable'
+  | 'initialize_failed'
+  | 'permission_request_failed';
+
+export class HealthConnectConnectError extends Error {
+  reason: HealthConnectConnectFailureReason;
+
+  constructor(reason: HealthConnectConnectFailureReason, message: string) {
+    super(message);
+    this.name = 'HealthConnectConnectError';
+    this.reason = reason;
+  }
+}
+
+export function healthConnectConnectMessage(reason: HealthConnectConnectFailureReason): string {
+  switch (reason) {
+    case 'provider_unavailable':
+      return 'Health Connect is unavailable on this device. Install or update Health Connect and try again.';
+    case 'provider_update_required':
+      return 'Health Connect needs an update before Lauburu can request permissions.';
+    case 'native_module_unavailable':
+      return 'Health Connect is not available in this build. Install/update the latest tester build and try again.';
+    case 'initialize_failed':
+      return 'Could not start Health Connect. Reopen the app, update Health Connect, and try again.';
+    case 'permission_request_failed':
+      return 'Could not open Health Connect permissions. Open Health Connect app permissions and grant Lauburu access, then try again.';
+  }
+}
+
 const HC_PERMISSIONS = [
   { accessType: 'read' as const, recordType: 'RestingHeartRate' as const },
   { accessType: 'read' as const, recordType: 'HeartRateVariabilityRmssd' as const },
@@ -135,21 +167,39 @@ export class HealthConnectService implements IHealthService {
   }
 
   async requestPermissions(): Promise<HealthPermissions> {
-    const available = await this.isAvailable();
-    if (!available) {
-      return { available: false, permissions: makeAllStatus('unavailable') };
+    const detail = await this.getAvailabilityDetail();
+    if (detail.code !== 'available') {
+      const reason = detail.code === 'provider_update_required'
+        ? 'provider_update_required'
+        : detail.code === 'unknown'
+          ? 'native_module_unavailable'
+          : 'provider_unavailable';
+      throw new HealthConnectConnectError(reason, healthConnectConnectMessage(reason));
     }
-    await this.ensureInit();
+    const initialized = await this.ensureInit();
+    if (!initialized) {
+      throw new HealthConnectConnectError('initialize_failed', healthConnectConnectMessage('initialize_failed'));
+    }
     try {
-      const granted = await hc().requestPermission(HC_PERMISSIONS);
+      const mod = hc();
+      if (typeof mod?.requestPermission !== 'function') {
+        throw new HealthConnectConnectError('native_module_unavailable', healthConnectConnectMessage('native_module_unavailable'));
+      }
+      const granted = await mod.requestPermission(HC_PERMISSIONS);
       const result = makeAllStatus('denied');
-      for (const p of granted) {
+      for (const p of Array.isArray(granted) ? granted : []) {
         const metric = recordTypeToMetric(p.recordType);
         if (metric) result[metric] = 'authorized';
       }
       return { available: true, permissions: result };
-    } catch {
-      return { available: true, permissions: makeAllStatus('denied') };
+    } catch (e: any) {
+      if (e instanceof HealthConnectConnectError) throw e;
+      throw new HealthConnectConnectError(
+        'permission_request_failed',
+        e?.message
+          ? `${healthConnectConnectMessage('permission_request_failed')} (${e.message})`
+          : healthConnectConnectMessage('permission_request_failed'),
+      );
     }
   }
 

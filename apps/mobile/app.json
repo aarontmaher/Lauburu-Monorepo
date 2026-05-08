@@ -94,6 +94,7 @@
       "expo-document-picker",
       "expo-apple-authentication",
       "react-native-health-connect",
+      "./plugins/withAndroidHealthConnectPermissionDelegate",
       [
         "expo-build-properties",
         {
