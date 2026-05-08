@@ -43,6 +43,7 @@ import {
 import { handleMcp } from './mcp';
 import { handleMcpPublic } from './mcp-public';
 import { handleMcpV2, handleMcpV2Health } from './mcp-v2';
+import { handleMcpCore } from './mcp-core';
 import { buildControlCentreSnapshot } from './control-centre';
 
 interface ConnectorMeta {
@@ -344,6 +345,32 @@ export default {
       return handleMcpV2Health(request, env);
     }
 
+    // ── /mcp/core — compact public-safe MCP for ChatGPT custom connectors.
+    // ChatGPT's custom-MCP creation flow fails on the larger /mcp/v2
+    // (49 tools, large schemas). /mcp/core trims to 6 public-safe tools
+    // with the same Streamable HTTP / JSON-RPC contract. Implementation
+    // in ./mcp-core.ts; reuses tool builders from ./mcp-v2 so behaviour
+    // cannot drift between the two surfaces.
+    if (path === '/mcp/core') {
+      return handleMcpCore(request, env);
+    }
+
+    // ── /mcp/health, /mcp/admin, /mcp/map — reserved descriptors.
+    // These keep the URL shape predictable without shipping unfinished
+    // MCP servers. /mcp/health (qa.* / release.*), /mcp/admin (mobile.get_<full>),
+    // and /mcp/map (website.* proxy) are deferred — for now they redirect
+    // callers to /mcp/v2 which already serves the same tools.
+    if (path === '/mcp/health' || path === '/mcp/admin' || path === '/mcp/map') {
+      return jsonResponse({
+        ok: true,
+        status: 'reserved',
+        message:
+          'Compact MCP surface reserved for future split. Tools currently available via /mcp/v2 (Streamable HTTP, JSON-RPC 2.0). Use /mcp/core for the public-safe ChatGPT-friendly subset.',
+        currentlyServedBy: '/mcp/v2',
+        chatgptFriendlyAlternative: '/mcp/core',
+      });
+    }
+
     // ── /mcp/public — public-safe preview MCP (no auth) ────────────────
     // Sanitised aggregate-only tool surface for ChatGPT custom
     // connectors that don't support API-key / Bearer auth in the UI.
@@ -384,6 +411,11 @@ export default {
           'POST /mcp/public (public-safe preview — sanitised aggregate overviews only, no auth required)',
           'GET /mcp/v2 (unified namespaced MCP server info; POST for JSON-RPC 2.0)',
           'POST /mcp/v2 (unified — project.* / mobile.* / website.* / integrations.* / handoff.*; layered auth)',
+          'GET /mcp/core (compact 6-tool public-safe MCP for ChatGPT custom connectors; POST for JSON-RPC 2.0)',
+          'POST /mcp/core (project.get_current_state / project.get_operating_rules / handoff.get_latest / integrations.get_overview / mobile.get_lane_overview / mobile.get_build_overview; No Auth)',
+          'GET /mcp/health (reserved; currently delegates to /mcp/v2)',
+          'GET /mcp/admin (reserved; currently delegates to /mcp/v2)',
+          'GET /mcp/map (reserved; currently delegates to /mcp/v2)',
           'GET /supabase/health',
           'GET /mcp/health',
           'GET /app-dev-centre/status',

@@ -371,7 +371,7 @@ function computeFreshness(updatedAt: string | null, configured: boolean): Freshn
   return { updatedAt, ageMs, isStale, staleReason, windowMs: FRESHNESS_WINDOW_MS_V2 };
 }
 
-async function buildProjectCurrentState(env: Env): Promise<unknown> {
+export async function buildProjectCurrentState(env: Env): Promise<unknown> {
   const generatedAt = new Date().toISOString();
   const adapter = getSupabaseAdapter(env);
 
@@ -705,7 +705,7 @@ async function proxyWebsiteCount(): Promise<number | null> {
 
 // ── mobile.* (overview = No Auth, full = admin token) ─────────────────
 
-async function buildMobileLaneOverview(env: Env): Promise<unknown> {
+export async function buildMobileLaneOverview(env: Env): Promise<unknown> {
   const adapter = getSupabaseAdapter(env);
   const generatedAt = new Date().toISOString();
   if (!adapter.configured) return { totalLanes: 0, byStatus: emptyLaneStatusCounts(), publicPreview: true, generatedAt };
@@ -723,7 +723,7 @@ function emptyLaneStatusCounts() {
   return { idle: 0, working: 0, blocked: 0, needs_user: 0, needs_review: 0, done: 0 };
 }
 
-async function buildMobileBuildOverview(env: Env): Promise<unknown> {
+export async function buildMobileBuildOverview(env: Env): Promise<unknown> {
   const adapter = getSupabaseAdapter(env);
   const generatedAt = new Date().toISOString();
   if (!adapter.configured) return { android: null, ios: null, publicPreview: true, generatedAt };
@@ -765,7 +765,7 @@ async function buildMobileRepoOverview(env: Env): Promise<unknown> {
 
 // ── integrations.* (No Auth aggregate only) ───────────────────────────
 
-async function buildIntegrationsOverview(env: Env): Promise<unknown> {
+export async function buildIntegrationsOverview(env: Env): Promise<unknown> {
   const generatedAt = new Date().toISOString();
   return {
     schemaVersion: 1,
@@ -808,7 +808,7 @@ async function buildIntegrationsOverview(env: Env): Promise<unknown> {
 
 // ── handoff.* (composed across mobile + website) ──────────────────────
 
-async function buildHandoffLatest(env: Env): Promise<unknown> {
+export async function buildHandoffLatest(env: Env): Promise<unknown> {
   const adapter = getSupabaseAdapter(env);
   const generatedAt = new Date().toISOString();
   const entries: Array<{ source: 'mobile' | 'website'; generatedAt: string | null; summary: string; manualStepsCount: number | null }> = [];
