@@ -5,6 +5,7 @@ export * from './health';
 export * from './knowledge';
 export * from './journal';
 export * from './approval-gates';
+export * from './research-jobs';
 export * from './athlete-memory';
 export * from './syllabus';
 export { compareHiitWorkouts } from './backend/services/hiit/compare-hiit-workouts';

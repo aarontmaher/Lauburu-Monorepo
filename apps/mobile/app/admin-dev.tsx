@@ -42,7 +42,8 @@ import { useAuditEventStore } from '../src/store/audit-event-store';
 import { useAdminDevNotificationStore } from '../src/store/admin-dev-notification-store';
 import { useApprovalGatesStore } from '../src/store/approval-gates-store';
 import { useSpendGatesStore, isSpendGateActionable } from '../src/store/spend-gates-store';
-import type { ApprovalGate, SpendGate } from '@lauburu/shared';
+import { useResearchJobsStore } from '../src/store/research-jobs-store';
+import type { ApprovalGate, SpendGate, ResearchJob } from '@lauburu/shared';
 import { fetchAgentStatus, type AgentStatusEntry } from '../src/services/agent-status-client';
 import {
   fetchConnectorSnapshot,
@@ -676,6 +677,17 @@ export default function AdminDevScreen() {
   const exportSpendPrompt = useSpendGatesStore((s) => s.exportPrompt);
   useEffect(() => { void hydrateSpendGates(); }, [hydrateSpendGates]);
 
+  // Research jobs store — Deep Research offload (no auto-call).
+  const researchJobs = useResearchJobsStore((s) => s.jobs);
+  const hydrateResearchJobs = useResearchJobsStore((s) => s.hydrate);
+  const refreshResearchArtifacts = useResearchJobsStore((s) => s.refreshArtifactStatuses);
+  const exportResearchPrompt = useResearchJobsStore((s) => s.exportPrompt);
+  const markResearchSubmitted = useResearchJobsStore((s) => s.markSubmitted);
+  const markResearchCompleted = useResearchJobsStore((s) => s.markCompleted);
+  const cancelResearchJob = useResearchJobsStore((s) => s.cancel);
+  const [researchPasteState, setResearchPasteState] = useState<Record<string, string>>({});
+  useEffect(() => { void hydrateResearchJobs(); }, [hydrateResearchJobs]);
+
   const buildInfo = useMemo(() => {
     const expoExtra = Constants.expoConfig?.extra as Record<string, unknown> | undefined;
     const easExtra = expoExtra?.eas as Record<string, unknown> | undefined;
@@ -1008,6 +1020,44 @@ export default function AdminDevScreen() {
               </Text>
             ))}
           </View>
+        )}
+      </Section>
+
+      <Section title="Deep Research offload">
+        <Text style={styles.note}>
+          Pending external research jobs. The app NEVER auto-calls Deep Research. Copy the prompt, run it in ChatGPT / OpenAI Deep Research, paste the result back, then tap Mark complete. Jobs deduplicate by reuseHash so the same scope is not researched twice.
+        </Text>
+        <Pressable style={styles.btn} onPress={() => { void refreshResearchArtifacts(); }}>
+          <Text style={styles.btnText}>Refresh artifact statuses</Text>
+        </Pressable>
+        {researchJobs.length === 0 ? (
+          <Text style={styles.note}>No research jobs loaded.</Text>
+        ) : (
+          researchJobs.map((job) => (
+            <ResearchJobRow
+              key={job.id}
+              job={job}
+              promptExport={exportResearchPrompt(job.id)}
+              pasteValue={researchPasteState[job.id] ?? ''}
+              onPasteChange={(value) => setResearchPasteState((prev) => ({ ...prev, [job.id]: value }))}
+              onMarkSubmitted={() => { void markResearchSubmitted(job.id); }}
+              onMarkCompleted={() => {
+                const result = (researchPasteState[job.id] ?? '').trim();
+                if (!result) {
+                  Alert.alert('Deep Research', 'Paste the Deep Research result before marking complete.');
+                  return;
+                }
+                void markResearchCompleted(job.id, result).then((res) => {
+                  if (res.ok) {
+                    setResearchPasteState((prev) => ({ ...prev, [job.id]: '' }));
+                  } else {
+                    Alert.alert('Deep Research', `Could not store result: ${res.reason}`);
+                  }
+                });
+              }}
+              onCancel={() => { void cancelResearchJob(job.id); }}
+            />
+          ))
         )}
       </Section>
 
@@ -2311,6 +2361,94 @@ function Section({ title, children }: { title: string; children: React.ReactNode
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
       {children}
+    </View>
+  );
+}
+
+function ResearchJobRow({
+  job,
+  promptExport,
+  pasteValue,
+  onPasteChange,
+  onMarkSubmitted,
+  onMarkCompleted,
+  onCancel,
+}: {
+  job: ResearchJob;
+  promptExport: string | null;
+  pasteValue: string;
+  onPasteChange: (value: string) => void;
+  onMarkSubmitted: () => void;
+  onMarkCompleted: () => void;
+  onCancel: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const isActive = job.status === 'draft' || job.status === 'submitted';
+  const completedLabel = (() => {
+    if (!job.completedAt) return '';
+    const t = new Date(job.completedAt).getTime();
+    if (!Number.isFinite(t)) return '';
+    const ageMs = Date.now() - t;
+    if (ageMs < 3_600_000) return `${Math.max(1, Math.floor(ageMs / 60_000))}m ago`;
+    if (ageMs < 86_400_000) return `${Math.floor(ageMs / 3_600_000)}h ago`;
+    return `${Math.floor(ageMs / 86_400_000)}d ago`;
+  })();
+  return (
+    <View style={styles.chipBlock}>
+      <Pressable onPress={() => setOpen((v) => !v)} hitSlop={6}>
+        <Text style={styles.chipLabel}>
+          {job.triggerType} · {job.status}
+          {job.artifactStatus ? ` · artifact ${job.artifactStatus}` : ''}
+          {completedLabel ? ` · completed ${completedLabel}` : ''}
+        </Text>
+        <Text style={styles.chipBody}>{job.topic}</Text>
+        <Text style={styles.note} numberOfLines={2}>reuseHash {job.reuseHash} · scope {job.scopeKeys.join(', ') || '—'}</Text>
+      </Pressable>
+      {open && (
+        <View style={{ gap: 6, marginTop: 6 }}>
+          <Text style={styles.note}>Prompt: {job.prompt}</Text>
+          {job.result && (
+            <Text style={styles.note} numberOfLines={6}>Result (cached): {job.result}</Text>
+          )}
+          {job.citations.length > 0 && (
+            <Text style={styles.note}>Citations: {job.citations.join(' · ')}</Text>
+          )}
+          <Text style={styles.note}>freshnessWindowDays: {job.freshnessWindowDays}{job.staleAfter ? ` · staleAfter ${new Date(job.staleAfter).toLocaleDateString()}` : ''}</Text>
+          {job.supersededBy && (
+            <Text style={styles.note}>Superseded by: {job.supersededBy}</Text>
+          )}
+        </View>
+      )}
+      <SelectableCopyButton
+        label="Copy prompt for Deep Research"
+        body={promptExport}
+        disabledReason="Job not loaded — refresh and try again."
+      />
+      {isActive && (
+        <View style={{ gap: 6, marginTop: 8 }}>
+          <TextInput
+            style={[styles.captureInput, { minHeight: 100, textAlignVertical: 'top' }]}
+            placeholder="Paste Deep Research result here, then Mark complete"
+            placeholderTextColor="#666"
+            multiline
+            value={pasteValue}
+            onChangeText={onPasteChange}
+          />
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+            {job.status === 'draft' && (
+              <Pressable style={[styles.btn, { flexGrow: 1, minWidth: 100, opacity: 0.85 }]} onPress={onMarkSubmitted}>
+                <Text style={styles.btnText}>Mark submitted</Text>
+              </Pressable>
+            )}
+            <Pressable style={[styles.btn, { flexGrow: 1, minWidth: 100 }]} onPress={onMarkCompleted}>
+              <Text style={styles.btnText}>Mark complete</Text>
+            </Pressable>
+            <Pressable style={[styles.btn, { flexGrow: 1, minWidth: 100, opacity: 0.6 }]} onPress={onCancel}>
+              <Text style={styles.btnText}>Cancel</Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
