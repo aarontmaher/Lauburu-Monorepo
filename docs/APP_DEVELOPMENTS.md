@@ -285,9 +285,11 @@ priority — they are the floor below every priority.
   not a backend deployer, not an MCP auth owner, not a Supabase
   operator, and not a build dispatcher.
 
-## Top 5 priorities (the answer to "what's next")
+## Top 7 priorities (the answer to "what's next")
 
-Updated 2026-05-09 per Aaron's directive. In order:
+Updated 2026-05-09 per Aaron's CLAUDE-FINAL-OVERNIGHT-PRODUCT-AUTOMATION-01
+directive — extends the earlier 2026-05-09 Top-5 with
+priorities 6 + 7. In order:
 
 1. **Health Connect / Apple Health installed-device truth** —
    clear the active release gate by retesting the Health
@@ -330,13 +332,33 @@ Updated 2026-05-09 per Aaron's directive. In order:
    gated UI work per `docs/GRAPPLER_READINESS_BUILD_PLAN.md`
    + `docs/GRAPPLER_READINESS_PROTOTYPE_PLAN.md`. No
    overclaiming, no user-facing readiness score until
-   priority 1 (real-device truth) clears AND priority 2 +
+   priority 1 (real-device truth) clears AND priorities 2 +
    3 (push approval centre) ship to gate any high-cost AI
    inference per rule 22.
+6. **AI cost control / external AI offload** — ship the
+   tier model + pay-as-you-go overflow + tester-stage
+   external-AI offload + cached research artifact reuse
+   defined in `docs/AI_SPEND_GATES_SPEC.md` § 4 +
+   `docs/DEEP_RESEARCH_OFFLOAD_SPEC.md` +
+   `docs/AI_ECONOMICS_TESTER_TO_PUBLIC_PLAN.md`. Goal: the
+   cheapest AI that still satisfies the user's question
+   gets used; expensive paths cache + Aaron-approve. Pairs
+   with priority 2 (gate UX) + priority 7 (Forever Improve
+   AI cost reduction quality bar).
+7. **Forever Improve / product intelligence** — keep the 9
+   permanent improvement categories (per the section below)
+   in active rotation. Each status report includes a
+   one-line freshness note for at least one category. Drift
+   on a category for >7d surfaces as a candidate FS-XXX.
+   Lifecycle: per `docs/FOREVER_IMPROVE_LIFECYCLE_SPEC.md` —
+   8 states from `candidate` to `verified` (or `superseded`
+   exit). Memory architecture per
+   `docs/MCP_MEMORY_ARCHITECTURE_SPEC.md` provides the
+   "nothing gets lost" persistence floor.
 
-Items 6+ stay in the Later backlog above. The Permanent
+Items 8+ stay in the Later backlog above. The Permanent
 Improvement Categories below are continuous quality bars
-that span priorities 1–5 and beyond — not separate items.
+that span priorities 1–7 and beyond — not separate items.
 
 ## Permanent improvement categories (Forever Improve)
 
