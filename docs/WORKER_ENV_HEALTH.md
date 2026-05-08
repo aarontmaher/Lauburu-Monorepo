@@ -5,6 +5,20 @@ secret values.
 
 ## Current finding
 
+As of 2026-05-08T04:31Z, both the top-level and preview Workers read
+Supabase fresh through `/mcp/v2`.
+
+Verified markers on both endpoints:
+
+- `source: "supabase"`
+- `freshness.staleReason: "fresh"`
+- `freshness.isStale: false`
+
+The previous `env_missing` state is retained below as historical
+context only.
+
+## Historical finding
+
 Preview MCP is the fresh shared-state surface:
 
 - `https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2`
@@ -18,7 +32,7 @@ It does not have `SUPABASE_URL` or `SUPABASE_SERVICE_ROLE_KEY`, so
 `project.get_current_state` correctly reports `source: "placeholder"`
 and `freshness.staleReason: "env_missing"`.
 
-This is not a code bug. It is an environment configuration gap.
+This was not a code bug. It was an environment configuration gap.
 
 ## Safe manual fix
 

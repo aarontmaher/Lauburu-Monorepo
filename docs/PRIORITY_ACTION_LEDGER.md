@@ -14,16 +14,13 @@ handoff/control-centre surfaces.
    QA gate.
 2. FS-019 native iPhone/TestFlight automation controls with safe
    admin-gated actions.
-3. Top-level Worker Supabase secret configuration. Preview MCP is
-   fresh; top-level MCP reports `env_missing` until Aaron sets the
-   two Supabase secrets on `lauburu-mcp`.
-4. FS-020 journal import parser/macros confirmation and UI handoff.
-5. FS-021 lactate, Daily Dozen-style checklist, and
+3. FS-020 journal import parser/macros confirmation and UI handoff.
+4. FS-021 lactate, Daily Dozen-style checklist, and
    nutrition/recovery pattern inputs.
-6. P1 actionable home screen.
-7. P2 Start Training / Drill Timer on home.
-8. P4-P9 product decisions that need Aaron approval.
-9. C1-C5 code-can-build graph support work.
+5. P1 actionable home screen.
+6. P2 Start Training / Drill Timer on home.
+7. P4-P9 product decisions that need Aaron approval.
+8. C1-C5 code-can-build graph support work.
 
 Old website backlog items such as P1/P2 stay queued. They do not
 outrank the active mobile health/release gate.
@@ -53,7 +50,6 @@ Each action record includes:
 The current pending set covers:
 
 - iOS build 19 dispatch result.
-- top-level Worker Supabase secret configuration.
 - Android versionCode 18 dispatch approval/result.
 - installed-device QA after builds are available.
 - Agent QA JSON writeback.
@@ -64,3 +60,7 @@ The current pending set covers:
 
 The stale "ChatGPT cannot call MCP v2" follow-up is voided because the
 read path is live; no-auth writes remain blocked by design.
+
+The top-level Worker Supabase secret action was completed after both
+top-level and preview `/mcp/v2` returned `source: supabase`,
+`freshness.staleReason: fresh`, and `isStale: false`.
