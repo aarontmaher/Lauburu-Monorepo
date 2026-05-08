@@ -55,6 +55,10 @@ import {
   type McpV2DashboardSnapshot,
 } from '../src/services/mcp-v2-client';
 import {
+  summariseLaneProgress,
+  type LaneProgressSummary,
+} from '../src/services/lane-progress-summary';
+import {
   buildClaudeCodePrompt,
   buildClaudeChromePrompt,
   buildChatGPTStatusPrompt,
@@ -258,6 +262,20 @@ type McpV2CurrentState = {
     lastSeenAt?: string | null;
     lastStateChangeAt?: string | null;
     source?: string | null;
+    /**
+     * Optional 0..100 progress percentage. The MCP server may emit
+     * this when a lane is mid-task; missing / non-finite values
+     * render as "unknown" in the UI rather than 0% (which would
+     * imply the lane has not started).
+     */
+    progressPct?: number | null;
+    /**
+     * Optional next-prompt recommendation. The MCP server may
+     * surface a suggested PROMPT-ID / instruction for the human to
+     * dispatch next. Free-form text — UI renders verbatim if
+     * present, "—" otherwise. NEVER fabricated client-side.
+     */
+    recommendedNextPrompt?: string | null;
     lastMarkers?: {
       MCP_RESULT?: string | null;
       MCP_BLOCKER?: string | null;
@@ -928,6 +946,7 @@ export default function AdminDevScreen() {
   const mcpAgents = mcpCurrentState?.agents ?? [];
   const mcpClaudeLane = mcpAgents.find((agent) => agent.id === 'claude') ?? null;
   const mcpCodexLane = mcpAgents.find((agent) => agent.id === 'codex') ?? null;
+  const laneProgress: LaneProgressSummary = summariseLaneProgress(mcpCurrentState ?? null);
   const releaseGateSummary = summariseReleaseGate(mcpV2Snapshot);
   const laneOverviewSummary = summariseLaneOverview(mcpV2Snapshot);
   const laneHeartbeat = summariseLaneHeartbeat(mcpCurrentState);
@@ -1165,6 +1184,61 @@ export default function AdminDevScreen() {
             <Text style={styles.note}>
               Markers (MCP_RESULT / MCP_BLOCKER / MCP_COMMIT / MCP_TESTS / MCP_NEXT / AGENT_QA_RESULT_JSON) are extracted from coder/agent stdout each snapshot. Run `npm run bridge:watch` to fire snapshots on marker change within 10–30s.
             </Text>
+          </View>
+        )}
+        {/* Lane progress strip — Claude / Codex / Agent (and any
+            other lane the MCP server reports). Each row shows the
+            lane status, age, fresh/stale/unknown badge, a progress
+            bar (or "unknown" when no progress was reported), and
+            the recommended next prompt when the server provided
+            one. Renders even when MCP is unavailable so the human
+            can see "MCP unavailable" rather than an empty strip. */}
+        {isAdmin && (
+          <View style={styles.chipBlock}>
+            <Text style={styles.chipLabel}>Lane progress</Text>
+            <Text style={styles.chipBody}>
+              {laneProgress.source === 'unavailable'
+                ? 'MCP unavailable — lane progress cannot be loaded.'
+                : `${laneProgress.lanes.length} lane${laneProgress.lanes.length === 1 ? '' : 's'} reporting · snapshot ${laneProgress.snapshotFreshness}${laneProgress.snapshotStaleReason ? ` (${laneProgress.snapshotStaleReason})` : ''}`}
+            </Text>
+            {laneProgress.lanes.map((lane) => {
+              const badgeStyle = lane.freshness === 'fresh'
+                ? styles.laneFreshnessBadgeFresh
+                : lane.freshness === 'stale'
+                  ? styles.laneFreshnessBadgeStale
+                  : styles.laneFreshnessBadgeUnknown;
+              const fillColor = lane.freshness === 'fresh' ? '#4ade80' : lane.freshness === 'stale' ? '#ff8a8a' : 'rgba(255,255,255,0.35)';
+              const widthPct = lane.progressPct ?? 0;
+              return (
+                <View key={`lane-progress-${lane.id}`} style={{ marginTop: 8 }}>
+                  <View style={styles.laneProgressRow}>
+                    <Text style={styles.laneProgressName}>{lane.id}</Text>
+                    <View style={badgeStyle}>
+                      <Text style={styles.laneFreshnessBadgeText}>{lane.freshness}</Text>
+                    </View>
+                  </View>
+                  <Text style={styles.laneProgressMeta}>
+                    {lane.status} · age {lane.ageLabel} · progress {lane.progressPct == null ? 'unknown' : `${lane.progressPct}%`}
+                  </Text>
+                  {lane.taskSummary && (
+                    <Text style={styles.note}>{lane.taskSummary}</Text>
+                  )}
+                  <View style={styles.laneProgressBarTrack}>
+                    {lane.progressPct != null && (
+                      <View
+                        style={[
+                          styles.laneProgressBarFill,
+                          { width: `${Math.max(2, widthPct)}%`, backgroundColor: fillColor },
+                        ]}
+                      />
+                    )}
+                  </View>
+                  <Text style={styles.note}>
+                    Next: {lane.recommendedNextPrompt ?? '—'}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
         )}
         {laneHeartbeat.ok && !laneHeartbeat.driftWarning && isAdmin && (
@@ -2959,6 +3033,33 @@ const styles = StyleSheet.create({
   },
   chipLabel: { fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.55 },
   chipBody: { fontSize: 13, lineHeight: 17 },
+  laneProgressRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    gap: 8, marginTop: 6,
+  },
+  laneProgressName: { fontSize: 12, fontWeight: '700' },
+  laneProgressMeta: { fontSize: 10, opacity: 0.6 },
+  laneProgressBarTrack: {
+    height: 6, borderRadius: 3, marginTop: 4,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    overflow: 'hidden',
+  },
+  laneProgressBarFill: {
+    height: '100%', borderRadius: 3,
+  },
+  laneFreshnessBadgeFresh: {
+    paddingVertical: 1, paddingHorizontal: 6, borderRadius: 4,
+    backgroundColor: 'rgba(74,222,128,0.18)', borderWidth: 1, borderColor: 'rgba(74,222,128,0.45)',
+  },
+  laneFreshnessBadgeStale: {
+    paddingVertical: 1, paddingHorizontal: 6, borderRadius: 4,
+    backgroundColor: 'rgba(255,138,138,0.18)', borderWidth: 1, borderColor: 'rgba(255,138,138,0.45)',
+  },
+  laneFreshnessBadgeUnknown: {
+    paddingVertical: 1, paddingHorizontal: 6, borderRadius: 4,
+    backgroundColor: 'rgba(255,255,255,0.07)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.18)',
+  },
+  laneFreshnessBadgeText: { fontSize: 9, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 },
   backlogStandingLine: { fontSize: 12, lineHeight: 17, opacity: 0.75 },
   captureBox: {
     gap: 8, padding: 10, borderRadius: 10,
