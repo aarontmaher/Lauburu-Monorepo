@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-05-08T03:32:27Z",
-  "source": "codex-priority-list-nonblocking-backlog-action-ledger-01",
+  "generatedAt": "2026-05-08T03:47:12Z",
+  "source": "codex-stay-busy-mcp-worker-env-missing-and-priority-actions-01",
   "currentPriorityOrder": [
     {
       "rank": 1,
@@ -19,34 +19,41 @@
     },
     {
       "rank": 3,
+      "id": "mcp-top-level-supabase-env",
+      "title": "Top-level Worker Supabase secret configuration",
+      "status": "manual_config_needed",
+      "evidenceRequirement": "Top-level project.get_current_state returns source=supabase/fresh and shows actionLedger after Aaron sets Supabase secrets on lauburu-mcp."
+    },
+    {
+      "rank": 4,
       "id": "fs020-journal-import-parser",
       "title": "FS-020 journal import parser/macros confirmation and UI handoff",
       "status": "awaiting_agent_confirmation",
       "evidenceRequirement": "Agent confirms parser fixtures/privacy behavior before B-20d UI begins."
     },
     {
-      "rank": 4,
+      "rank": 5,
       "id": "p1-actionable-home",
       "title": "P1 actionable home screen",
       "status": "queued_after_current_gate",
       "evidenceRequirement": "Current health/release gate no longer blocks mobile product work."
     },
     {
-      "rank": 5,
+      "rank": 6,
       "id": "p2-start-training",
       "title": "P2 Start Training / Drill Timer on home",
       "status": "queued_after_p1",
       "evidenceRequirement": "P1 path is stable or bundled safely."
     },
     {
-      "rank": 6,
+      "rank": 7,
       "id": "product-decisions-p4-p9",
       "title": "P4-P9 product decisions",
       "status": "needs_aaron_decision",
       "evidenceRequirement": "Aaron explicitly approves or rejects each decision."
     },
     {
-      "rank": 7,
+      "rank": 8,
       "id": "code-can-build-c1-c5",
       "title": "C1-C5 code-can-build graph improvements",
       "status": "queued_support_work",
@@ -54,6 +61,21 @@
     }
   ],
   "pendingActions": [
+    {
+      "id": "mcp-top-level-worker-supabase-secrets",
+      "owner": "Aaron",
+      "targetWorkerOrPerson": "Aaron",
+      "lane": "MCP/Supabase Worker health",
+      "actionText": "Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY on the top-level lauburu-mcp Worker, then redeploy and verify top-level project.get_current_state returns source=supabase/fresh.",
+      "triggerCondition": "Top-level Worker still reports source=placeholder and freshness.staleReason=env_missing while preview is fresh.",
+      "status": "pending",
+      "priority": "P0",
+      "createdAt": "2026-05-08T03:47:12Z",
+      "updatedAt": "2026-05-08T03:47:12Z",
+      "evidenceSummaryOrLink": "Use `cd cloudflare-worker && npx wrangler secret put SUPABASE_URL` and `npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY` for the top-level worker; never print values.",
+      "voidReason": null,
+      "supersededBy": null
+    },
     {
       "id": "qa-ios-build-19-dispatch-result",
       "owner": "Claude",
