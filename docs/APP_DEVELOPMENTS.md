@@ -385,6 +385,25 @@ level / progression surface.
   deliberate practice signals (drill rep counts, sparring
   rounds with logged outcomes, journal entries with non-empty
   content), never to passive opens.
+- **Belt-aware progression.** Where progression surfaces
+  reference belt level, they treat belt as **context** for
+  expected technique scope, NEVER as automatic XP / mastery /
+  rank within the app. Belt level is user-asserted (with
+  optional coach signoff via the verified-mastery surface
+  below) and revocable; belt promotion happens at a real-life
+  academy, not in the app. The app may surface "techniques
+  often tested at <belt>" or "drills your peers at <belt>
+  also practice", but never claims to grant or test belt
+  rank itself.
+- **Technique-mastery progression.** Mastery / repetition /
+  consistency tied to a specific technique node in the
+  drill / position taxonomy (verified-mastery surface
+  below). Never global "skill level" inflation.
+- **Contribution / reputation as one of the progression
+  inputs.** Reputation earned via the community-contribution
+  surface below feeds into a user-visible profile; it does
+  NOT confer in-app authority that overrides safety / privacy
+  controls.
 - **Anti-farm.** Cap dailies / weeklies that can be gamed.
   Rate-limit XP gain per session. Diminishing returns on
   repeat actions inside a window.
@@ -424,11 +443,25 @@ proof, NEVER auto-promotion.
 ### AI video analysis
 
 When AI is used to analyse uploaded video (technique
-breakdown, sparring footage, drill review), the workflow
-honours rule 22 (AI spend gate) + rule 23 (deep research
-offload + cache) + the proof/confidence/manual-review layers
-above.
+breakdown, sparring footage, drill review, competition
+footage), the workflow honours rule 22 (AI spend gate) +
+rule 23 (deep research offload + cache) + the
+proof/confidence/manual-review layers above.
 
+- **Footage classes.** Distinct schemas for: `competition`
+  (full match, opponent identifiable, scoreline if any),
+  `training_sparring` (round / partner / intensity), `drill`
+  (technique focus + rep count), `instructional_reference`
+  (third-party clip the user is studying — analysis only,
+  no claims about the user's own ability).
+- **Analysis tasks.** Three high-signal modes: **positional
+  analysis** (classifying positions over time within a
+  match / round), **mistake analysis** (flagging moments
+  where a technique was attempted and failed, with a
+  confidence label), **system analysis** (clustering the
+  user's tendencies into a higher-level "what they tend to
+  do" picture across many clips). All three are
+  hypothesis-generating; none confer mastery automatically.
 - **Vision-heavy → `expensive_ai` cost class** per rule 22.
   Each video analysis fires the AI-spend gate before
   inference. No silent vision processing.
@@ -438,6 +471,13 @@ above.
 - **Output is annotated suggestions, never prescriptive
   coaching.** Rule 9 anti-rules apply: associations only,
   no "you should do X", no causation claims.
+- **Coach review + confidence labels.** Each AI annotation
+  carries a confidence tier: `ai_only_low_confidence` →
+  `ai_only_medium_confidence` → `coach_reviewed` →
+  `coach_signoff` (the highest tier surfaces only after a
+  linked coach explicitly accepts the annotation per the
+  Private coaching surface below). The UI MUST render the
+  tier alongside any annotation.
 - **Manual review layer required.** User (and the linked
   coach, if any) can accept / reject / correct each AI
   annotation before it counts as mastery evidence. Rejected
@@ -473,12 +513,21 @@ Reputation rewards verified contributions, never raw activity.
 ### Private coaching workflows
 
 Coach ↔ student is a per-pair RLS-gated relationship; never a
-broadcast or one-way data drain.
+broadcast or one-way data drain. Designed first for Aaron's
+own online + in-person privates; the same module is reusable
+for other coaches once the per-pair contract is shipped.
 
 - **Per-pair consent.** A coach reads a student's data ONLY
   with the student's explicit, time-bound, revocable consent
   recorded in a `coaching_relationships` row (Supabase RLS-
   gated by both `coach_user_id` and `student_user_id`).
+- **Online + in-person private mode.** A `private_session`
+  row captures: scheduled time, mode (`online` / `in_person`),
+  technique focus (links to drill / position taxonomy),
+  pre-session goals from the student, post-session signoff
+  from the coach. Online sessions can attach a session
+  recording; in-person sessions log a coach note + optional
+  uploaded video that the coach films at the session.
 - **Granular scope.** Consent is per-data-class (e.g. journal,
   health metrics, video, mastery claims) not all-or-nothing.
 - **No silent broadcast.** Coaches do not get a "see all your
@@ -486,8 +535,25 @@ broadcast or one-way data drain.
   individually. Aggregate views over the coach's roster are
   count-only by default.
 - **Sign-off-able feedback loop.** Coach feedback (verbal,
-  written, video-annotated) lands as evidence in the
-  verified-mastery surface above when the student accepts it.
+  written, video-annotated, post-session note) lands as
+  evidence in the verified-mastery surface above when the
+  student accepts it. Coach signoff is also the highest
+  tier in the AI-video-analysis confidence ladder above.
+- **Reusable module.** Once Aaron's coach-side flow is
+  shipped + battle-tested, the same `coaching_relationships`
+  + `private_session` schema is exposed to other coaches
+  who want to use the app for their own students. The module
+  is reusable, NOT cloned; per-coach customisation lands
+  via settings, not separate code paths.
+- **Priority access (points/reputation-based).** A coach
+  may optionally enable a priority-access lane where
+  students with higher reputation / verified consistency
+  (per the Community-contribution surface above) get earlier
+  booking slots — but the coach can also retain a fully
+  manual booking flow. **Priority access is NEVER an
+  automatic unlock** — students never gain access purely by
+  hitting an XP threshold. The coach approves every booking;
+  reputation only sorts the queue.
 - **Inheritance.** Privacy floor (rule 22), AI-spend gate
   (rule 22), and deep-research-offload (rule 23) all apply
   to coach-side AI usage. The coach's API budget is the
@@ -519,6 +585,149 @@ category above to the coach role.
 - **Coach mobile path is independent of operator (Aaron)
   mobile path.** Coach is a separate role with its own auth
   scope (Supabase JWT + coach-allowlist or coach-grant flow).
+
+### User feedback incentives
+
+Reward users who help the app get better. Pairs tightly with
+the community-contribution surface above but is scoped
+specifically to product feedback.
+
+- **Points for useful suggestions.** A user-submitted
+  suggestion that passes triage (not duplicate, not spam,
+  has a clear product point) earns a small base reward.
+- **More points if implemented.** When a suggestion lands as
+  an FS-XXX candidate that ships, the suggesting user(s)
+  earn a larger reward + a one-line credit on the FS-XXX
+  card (opt-out by default; user can opt out of public
+  credit per submission).
+- **Anti-spam / duplicate protection.** Each new suggestion
+  is auto-checked against the open + recently-closed
+  backlog for near-duplicates (text similarity threshold).
+  Duplicates are merged into the original; the merging user
+  earns no points but the suggestion stays in the audit
+  trail.
+- **Rate-limit + cooldown.** Hard cap on suggestions per
+  user per day; cooldown after rejected suggestions to
+  discourage spray-and-pray.
+- **Contributor reputation.** Approved-suggestion + shipped
+  suggestion counts feed into the community-contribution
+  reputation surface. Contributor reputation is opt-in to
+  surface publicly, same rules as community reputation.
+- **Aaron's manual review.** Final triage / accept / reject
+  decisions are Aaron's (or a delegated maintainer's) — no
+  AI auto-acceptance. AI may pre-flag duplicates or
+  low-quality submissions but never auto-rejects without
+  human review.
+- **No reward gaming.** Submitting variations of the same
+  idea, splitting one suggestion into many, or copy-pasting
+  another user's suggestion are detected and zero out the
+  reward; repeat offenders lose contributor reputation.
+- **Privacy.** Suggestions submitted privately stay private
+  by default; public visibility (e.g. "voted on by N
+  contributors") requires per-suggestion opt-in.
+
+Schema sketch (Supabase, RLS-gated):
+
+```ts
+interface UserSuggestion {
+  id: string;
+  user_id: string;
+  text: string;                  // ≤2000 chars
+  category: 'gameplay' | 'health' | 'coaching' | 'admin' | 'other';
+  status: 'pending_review' | 'duplicate_of' | 'accepted_backlog'
+        | 'shipped' | 'rejected_with_reason';
+  duplicateOfSuggestionId?: string;
+  fsCandidateId?: string;
+  rewardPointsAwarded: number;
+  publicCreditOptIn: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+Maps to existing `connector_backlog_items` / FS-XXX flow
+where appropriate.
+
+### Evidence-driven technique evolution
+
+The headline category — how grappling technique improvements
+flow through the app from raw hypothesis to public
+instructional content WITHOUT the app ever claiming
+unverified technique effectiveness.
+
+Suggestions for new techniques / variations / system
+refinements travel through a state machine of progressively
+stronger evidence before they appear as a public node on the
+3D grappling map.
+
+**State machine** (10 states):
+
+```
+suggested
+   │
+   ▼
+approved_private  ──────────────► rejected
+   │                                  │
+   ▼                                  │
+testing_live  ────────────────────►  │
+   │                                  │
+   ▼                                  │
+evidence_accumulating  ─────► deprecated
+   │                                  │
+   ▼                                  │
+validated                             │
+   │                                  │
+   ▼                                  │
+instructional_ready ─────►  rejected  │
+   │                                  │
+   ▼                                  │
+filmed                                │
+   │                                  │
+   ▼                                  │
+published ─────────────► deprecated ◄─┘
+```
+
+| State | Meaning |
+|---|---|
+| `suggested` | An AI / user / coach proposed a new technique or refinement. Untested. No public surfacing. |
+| `approved_private` | Aaron (or a delegated coach) reviewed the suggestion and accepted it for private testing. Hidden 3D-map node created (private to Aaron + collaborating coaches). |
+| `testing_live` | The technique is being tested in live rolling / competition / drill. Footage uploaded against the hidden node. |
+| `evidence_accumulating` | Multiple footage attempts logged. AI may surface pattern observations (associations only — never effectiveness claims). |
+| `validated` | Enough evidence + coach review to consider the technique reliably reproducible. Still private. |
+| `instructional_ready` | Aaron decides this is worth making an instructional for. Filming queued. |
+| `filmed` | Instructional video filmed but not yet published. |
+| `published` | Public node added to the 3D map; viewable by users (with opt-in tier gating per coaching/community surfaces above). |
+| `rejected` | Suggestion deemed unworkable. Stays in audit trail; reusable as a "tried and rejected because X" data point. |
+| `deprecated` | A previously-published or validated technique no longer holds (e.g. counter discovered in live testing). Surface flips from public-good to deprecated; the audit trail keeps the original + the deprecation reason. |
+
+**Hard rules**:
+
+- **AI must NOT claim unproven technique effectiveness.**
+  Any AI output about a technique in `suggested` /
+  `approved_private` / `testing_live` /
+  `evidence_accumulating` MUST be phrased as hypothesis
+  ("possible improvement", "candidate position", "observed
+  in N attempts"), never as confirmed claim.
+- **Hypothesis-until-validated.** No technique is asserted
+  reliable until `validated` AND a coach signoff has been
+  recorded.
+- **Only `published` nodes are user-viewable.** Earlier
+  states are private to Aaron + collaborating coaches.
+  Other users never see in-progress experimental nodes
+  unless explicitly invited.
+- **Footage-backed transitions.** Promotion from
+  `testing_live` → `evidence_accumulating` → `validated`
+  requires uploaded footage proof + coach review per the
+  AI-video-analysis confidence ladder above.
+- **No app-claimed grappling authority.** The app surfaces
+  evidence; humans (Aaron, coaches) make every promotion
+  / rejection decision. AI may flag candidates, but every
+  state transition past `suggested` requires human signoff.
+
+**Spec home**: `docs/EVIDENCE_DRIVEN_TECHNIQUE_EVOLUTION_SPEC.md`
+(canonical) — covers schema, state-machine transitions,
+3D-map-node integration, Codex handoff for the backlog
+surface.
 
 When all of these categories' implementation milestones land,
 the app's "Forever Improve" bar is materially honoured. Each
