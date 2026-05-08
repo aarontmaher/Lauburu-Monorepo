@@ -297,12 +297,28 @@ In order:
 
 Items 6+ stay in the Later backlog above.
 
-## Permanent improvement categories
+## Permanent improvement categories (Forever Improve)
 
-Standing categories that span multiple priorities. These are
-NOT one-time goals that "ship" and disappear — they are
-continuous quality bars the Top 5 priorities and Later backlog
-must honour.
+Standing categories — colloquially "Forever Improve" — that
+span multiple priorities. These are NOT one-time goals that
+"ship" and disappear. They are continuous quality bars the
+Top 5 priorities and Later backlog must honour.
+
+### Reward principle (applies to every category below)
+
+Reward **genuine grappling growth, verified contribution,
+consistency, and learning quality.** NEVER reward spam
+engagement, meaningless app usage, raw activity counts, or
+behaviours users could farm. Every gamification / mastery /
+reputation surface MUST resist sybil attacks, rate-limit
+gain, and weight verified evidence above passive activity.
+
+Video, skill-mastery, and any AI-derived claim about ability
+MUST use **proof + confidence + manual-review layers.** No
+automatic mastery claims; no automatic skill-level promotions;
+no automatic ranking. Claims start at the lowest confidence
+tier and only rise after explicit proof / peer signoff / coach
+signoff per rule 9 (provisional health/skill claims).
 
 ### Complete mobile-only admin/developer workflow
 
@@ -357,6 +373,159 @@ prompts in:
 When all of these land, criterion (a) of the architecture
 doc § 2 ("Admin/Dev tab parity") holds and Developer Mode
 can be turned off — completing the mobile-only workflow.
+
+### Gamification / progression systems
+
+Continuous quality bars for any future XP / streak / badge /
+level / progression surface.
+
+- **Reward verified mastery + consistency, never raw activity
+  counts.** No "you logged in 7 days in a row" badges. No
+  "you opened the app N times" XP. Streaks are tied to
+  deliberate practice signals (drill rep counts, sparring
+  rounds with logged outcomes, journal entries with non-empty
+  content), never to passive opens.
+- **Anti-farm.** Cap dailies / weeklies that can be gamed.
+  Rate-limit XP gain per session. Diminishing returns on
+  repeat actions inside a window.
+- **No medals from passive metrics alone.** Steps, watch-on-
+  wrist time, raw heart-rate data, total app-usage minutes
+  do NOT generate awards by themselves; they are inputs to
+  context, not achievements.
+- **Public leaderboards only after opt-in + calibration.** No
+  default-on rankings; no surfacing of relative position to
+  peers without explicit user consent recorded per FS-019
+  auth model.
+- **Privacy floor.** Rule 22 applies: nothing about gamification
+  state is sent to external AI without per-call approval.
+
+### Verified instructional mastery
+
+Mastery claims (e.g. "I can hit X technique reliably") require
+proof, NEVER auto-promotion.
+
+- **Three confidence tiers.** `claim_only` (user said so;
+  lowest) → `self_video_attached` (user uploaded clip;
+  middle) → `verified_by_coach` or `verified_by_peers`
+  (explicit signoff; highest). Tier display follows rule 9
+  — `verified_by_coach` is the highest tier; no `mastered`
+  or absolute claim language.
+- **No automatic mastery awards.** Mastery is never inferred
+  from session count, journal frequency, or AI scoring alone.
+  An explicit human signoff (self-attested-with-evidence,
+  peer, or coach) is required for each tier upgrade.
+- **Tied to a drill / position / progression taxonomy.**
+  Mastery rows reference a stable taxonomy id so claims are
+  comparable + revocable per technique, not a vague global
+  "skill level".
+- **Revocability.** Coaches and the user themselves can
+  downgrade or revoke a mastery claim. Audit trail preserved.
+
+### AI video analysis
+
+When AI is used to analyse uploaded video (technique
+breakdown, sparring footage, drill review), the workflow
+honours rule 22 (AI spend gate) + rule 23 (deep research
+offload + cache) + the proof/confidence/manual-review layers
+above.
+
+- **Vision-heavy → `expensive_ai` cost class** per rule 22.
+  Each video analysis fires the AI-spend gate before
+  inference. No silent vision processing.
+- **Cache by `reuseKey`** per rule 23. Re-uploading the same
+  clip (hash match) returns the cached annotations + cited
+  artifact; no re-spend.
+- **Output is annotated suggestions, never prescriptive
+  coaching.** Rule 9 anti-rules apply: associations only,
+  no "you should do X", no causation claims.
+- **Manual review layer required.** User (and the linked
+  coach, if any) can accept / reject / correct each AI
+  annotation before it counts as mastery evidence. Rejected
+  annotations are logged but never surface as truth.
+- **No auto-promotion.** AI-flagged "good rep" or "clean
+  technique" output does NOT automatically lift mastery
+  tier. It can be ATTACHED as evidence; the human signoff
+  is still required.
+- **Privacy floor.** Video stays per-user; never auto-shared
+  with peers / coach / the cohort. Sharing requires explicit
+  per-clip user action (per rule 22 sensitive-data opt-in).
+
+### Community contribution / reputation
+
+Reputation rewards verified contributions, never raw activity.
+
+- **What earns reputation:** confirmed-correct technique
+  annotations, peer reviews other users mark as helpful,
+  community content that gets manual-moderation signoff,
+  coach-verified mastery sign-offs given to peers.
+- **What does NOT earn reputation:** post count, comment
+  count, login streaks, video upload count, follower count.
+- **Anti-sybil + rate-limit + manual moderation.** Reputation
+  growth is throttled. Manual moderation surfaces flag spam
+  patterns; reputation decays toward zero when behaviour
+  shifts toward farming patterns.
+- **Visible reputation is opt-in.** Default-private; surfacing
+  to peers requires explicit user consent.
+- **Reputation never gates safety.** A user with low / zero
+  reputation still has full access to safety features (block,
+  report, privacy controls, leaving the community).
+
+### Private coaching workflows
+
+Coach ↔ student is a per-pair RLS-gated relationship; never a
+broadcast or one-way data drain.
+
+- **Per-pair consent.** A coach reads a student's data ONLY
+  with the student's explicit, time-bound, revocable consent
+  recorded in a `coaching_relationships` row (Supabase RLS-
+  gated by both `coach_user_id` and `student_user_id`).
+- **Granular scope.** Consent is per-data-class (e.g. journal,
+  health metrics, video, mastery claims) not all-or-nothing.
+- **No silent broadcast.** Coaches do not get a "see all your
+  students at a glance" surface unless each student opts in
+  individually. Aggregate views over the coach's roster are
+  count-only by default.
+- **Sign-off-able feedback loop.** Coach feedback (verbal,
+  written, video-annotated) lands as evidence in the
+  verified-mastery surface above when the student accepts it.
+- **Inheritance.** Privacy floor (rule 22), AI-spend gate
+  (rule 22), and deep-research-offload (rule 23) all apply
+  to coach-side AI usage. The coach's API budget is the
+  coach's, not the student's.
+- **Termination.** Either party can revoke the relationship.
+  Existing artifacts (cached signoffs, annotations) stay in
+  the audit trail but new reads are blocked.
+
+### Mobile-only coaching / admin operations
+
+Extends the "Complete mobile-only admin/developer workflow"
+category above to the coach role.
+
+- **No required laptop for coach operations.** Coaches
+  operate the per-pair surfaces from their phone:
+  reviewing student journal entries, signing off on mastery
+  claims, watching submitted clips, sending feedback.
+- **Coach approval flows reuse rule 21 push wiring.** When a
+  coach needs to approve a high-cost AI analysis (rule 22)
+  or an artifact import (rule 23) on behalf of a student-
+  shared clip, the gate fires on the coach's phone too.
+- **Every manual coach step is challenged.** Same bar as
+  the operator: automate (rule 12 / rule 13), approval-gate
+  via push (rule 21), or document explicit justification.
+- **Coach UI honours the same simple/effective/efficient/
+  low-friction bar.** No coach surface earns its place by
+  surfacing extra metrics; surfaces must directly serve
+  coaching decisions.
+- **Coach mobile path is independent of operator (Aaron)
+  mobile path.** Coach is a separate role with its own auth
+  scope (Supabase JWT + coach-allowlist or coach-grant flow).
+
+When all of these categories' implementation milestones land,
+the app's "Forever Improve" bar is materially honoured. Each
+status report MUST include a one-line freshness note for at
+least one of these categories ("Mobile-only workflow: rule-12
+cadence holding"; "Verified mastery: 3 new tier-2 claims this
+week"; etc.) and surface drift from the quality bars.
 
 ## Manual steps for Aaron (phone-first)
 
