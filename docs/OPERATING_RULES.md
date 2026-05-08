@@ -40,7 +40,7 @@ hash of the rule strings).
 
 Updated 2026-05-08.
 
-## The twenty-two rules
+## The twenty-three rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -327,6 +327,57 @@ this file.
     send minimal context". Honours rule 7 (cost control), rule 11
     (MCP-first), rule 21 (approval gates). Spec:
     `docs/AI_SPEND_GATES_SPEC.md`.
+23. **Deep research offload + artifact cache.** When an
+    `expensive_ai` request (rule 22) classifies as
+    `deep_research_external`, the app MUST:
+    1. Compute a `reuseKey` hash from `triggerType` +
+       redacted `sourceDataSummary`.
+    2. Check the research-artifacts cache. If a non-stale
+       artifact matches, **cite it via `cited_artifact_id`
+       and skip re-running** — the same research never
+       repeats while a valid artifact exists.
+    3. If no match, create a research job with status
+       `waiting_for_approval` (rule 21 gate).
+    4. On `approved`, generate a ready-to-run external-AI
+       prompt (default ChatGPT Deep Research; configurable)
+       Aaron copy-pastes.
+    5. On Aaron's import of the external result, store as a
+       cached artifact indexed by `reuseKey`, status
+       `cached`, with `expiresAt`. Future requests with the
+       same `reuseKey` reference the cached artifact without
+       re-spending.
+
+    **Schema fields**: `id`, `triggerType`, `prompt` (the
+    external-AI-ready text), `sourceDataSummary` (redacted),
+    `reuseKey`, `status` (`waiting_for_approval | approved |
+    running | imported | cached | stale | blocked`),
+    `approvedAt`, `resultArtifactId`, `expiresAt`,
+    `citationCount`.
+
+    **Triggers**: complex journal entry; blood test PDF /
+    DEXA scan; new health trend; readiness anomaly; large
+    visual app audit; long athlete-memory synthesis.
+
+    **Cache rules**: NEVER re-run research with a non-stale
+    matching `reuseKey`; cite the cached artifact in every
+    future explanation that uses it; mark stale after
+    configurable TTL (default 90 days for health context,
+    30 days for app-state audits).
+
+    **UX**: push (per rule 21) with action buttons Approve /
+    Defer / Copy prompt / Import result.
+
+    **Safety**: redacted minimal context only; user approval
+    before any sensitive data leaves the app (rule 22 privacy
+    floor); imported result MUST NOT contain medical advice
+    or causation claims (rule 9 + journal-spec § 12 anti-
+    rules); the import path strips any remaining advice /
+    causation language at parse time.
+
+    Honours rule 7 (cost control), rule 9 (provisional health
+    claims), rule 11 (MCP-first), rule 21 (approval gates),
+    rule 22 (AI-spend ladder). Spec:
+    `docs/DEEP_RESEARCH_OFFLOAD_SPEC.md`.
 
 ## Where to find each rule's full body
 
@@ -354,13 +405,14 @@ this file.
 | 20 | This file § rule 20; `docs/CONTROL_CENTRE_MVP_SPEC.md` § all-idle notification handoff; `apps/mobile/app/admin-dev.tsx` § Owner alerts (in-app banner already shipped); `docs/MCP_PHONE_CONTROL_CENTRE.md` (notification surface integration) — paired with rule 19 |
 | 21 | This file § rule 21; `docs/HUMAN_APPROVAL_GATE_SPEC.md` (canonical full spec); `docs/CONTROL_CENTRE_MVP_SPEC.md` § approval centre integration; `docs/BACKLOG_AUTOMATION_SYSTEM.md` § approval-gated lanes — paired with rule 7 (EAS cost control), rule 18 (action ledger), rule 20 (push surface) |
 | 22 | This file § rule 22; `docs/AI_SPEND_GATES_SPEC.md` (canonical full spec) — paired with rule 7 (cost control), rule 21 (approval gate state machine + push wiring), `cloudflare-worker/src/data/CONNECTOR_SANITIZATION_RULES.md` (privacy floor) |
+| 23 | This file § rule 23; `docs/DEEP_RESEARCH_OFFLOAD_SPEC.md` (canonical full spec) — paired with rule 7 (cost control), rule 9 (provisional health claims), rule 21 (approval gate state machine), rule 22 (AI-spend ladder; `deep_research_external` cost class) |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..22], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..23], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.
@@ -376,7 +428,7 @@ integration test will flag.
   Lane-3 batch (`docs/BACKLOG_AUTOMATION_SYSTEM.md` § Lane 3)
   with Aaron's written approval.
 - **No surfacing the rules without ID.** Every rule has a
-  stable id 1..22; consumers reference rules by id, not by
+  stable id 1..23; consumers reference rules by id, not by
   string match.
 - **No moving rule text into private surfaces.** These rules
   are public-safe by design — they describe coder discipline,
