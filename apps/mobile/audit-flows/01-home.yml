@@ -1,0 +1,7 @@
+# 01-home — Home tab.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Home"
+    optional: true
+- takeScreenshot: "01-home"

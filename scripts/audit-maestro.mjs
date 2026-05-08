@@ -1,0 +1,194 @@
+#!/usr/bin/env node
+/**
+ * audit-maestro — wrapper around `maestro test apps/mobile/audit-flows/`.
+ *
+ * Runs the full Maestro flow suite (or a single flow when --flow is
+ * passed) against the booted simulator/emulator/device, collects
+ * `.maestro/test-output/<run>/screenshot-*.png` outputs into
+ * artifacts/app-audit/maestro/<isoTimestamp>/, and writes a
+ * manifest.json identical in shape to the simulator-driver output.
+ *
+ * Fail-soft when Maestro is not installed — prints the brew install
+ * command and exits with code 1 cleanly. Anti-rule: never crashes
+ * the user's terminal because of a missing dep.
+ *
+ * Flags:
+ *   --flow <name>          Run a single flow file (e.g. 02-health)
+ *   --platform <ios|android>  Force a target platform; default auto
+ *   --device <id>          Forward to maestro test --device <id>
+ *   --dry-run              Print the maestro command without running
+ *   --keep-tmp             Don't delete the maestro test-output dir
+ */
+
+import { execFileSync, spawnSync } from 'node:child_process';
+import { mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync, existsSync, rmSync } from 'node:fs';
+import { dirname, join, relative, basename } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { homedir } from 'node:os';
+
+import {
+  buildMaestroManifest,
+  parseMaestroArgs,
+} from './audit-screenshots-helpers.mjs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const ROOT = join(__dirname, '..');
+const FLOW_DIR = join(ROOT, 'apps', 'mobile', 'audit-flows');
+
+const args = parseMaestroArgs(process.argv.slice(2));
+
+function shortHead() {
+  try { return execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim(); }
+  catch { return 'unknown'; }
+}
+function branchName() {
+  try { return execFileSync('git', ['branch', '--show-current'], { cwd: ROOT, encoding: 'utf8' }).trim() || 'main'; }
+  catch { return 'main'; }
+}
+
+function readAppConfig() {
+  try {
+    const raw = JSON.parse(readFileSync(join(ROOT, 'apps', 'mobile', 'app.json'), 'utf8'));
+    const expo = raw?.expo ?? {};
+    return {
+      appVersion: expo.version ?? null,
+      iosBuildNumber: expo.ios?.buildNumber == null ? null : String(expo.ios.buildNumber),
+      androidVersionCode: Number.isInteger(expo.android?.versionCode) ? expo.android.versionCode : null,
+      iosBundleIdentifier: expo.ios?.bundleIdentifier ?? null,
+      androidPackage: expo.android?.package ?? null,
+    };
+  } catch { return { appVersion: null, iosBuildNumber: null, androidVersionCode: null, iosBundleIdentifier: null, androidPackage: null }; }
+}
+
+function maestroAvailable() {
+  try {
+    const r = spawnSync('maestro', ['--version'], { encoding: 'utf8' });
+    return r.status === 0;
+  } catch { return false; }
+}
+
+function listFlowFiles() {
+  if (!existsSync(FLOW_DIR)) return [];
+  return readdirSync(FLOW_DIR)
+    .filter((n) => n.endsWith('.yml') && n !== 'README.md')
+    .sort();
+}
+
+function findScreenshots(searchDir) {
+  if (!existsSync(searchDir)) return [];
+  const stack = [searchDir];
+  const out = [];
+  while (stack.length > 0) {
+    const current = stack.pop();
+    let entries;
+    try { entries = readdirSync(current, { withFileTypes: true }); } catch { continue; }
+    for (const e of entries) {
+      const abs = join(current, e.name);
+      if (e.isDirectory()) { stack.push(abs); continue; }
+      if (!e.isFile()) continue;
+      if (!e.name.toLowerCase().endsWith('.png')) continue;
+      let mtime = 0;
+      try { mtime = statSync(abs).mtimeMs; } catch { /* ignore */ }
+      out.push({ abs, name: e.name, mtimeMs: mtime });
+    }
+  }
+  out.sort((a, b) => a.mtimeMs - b.mtimeMs);
+  return out;
+}
+
+async function main() {
+  if (!maestroAvailable()) {
+    console.error('Maestro is not installed. Install via:');
+    console.error('  brew tap mobile-dev-inc/tap');
+    console.error('  brew install maestro');
+    console.error('Then re-run npm run audit:maestro.');
+    process.exit(1);
+  }
+
+  const flows = args.flow
+    ? [args.flow.endsWith('.yml') ? args.flow : `${args.flow}.yml`]
+    : listFlowFiles();
+  if (flows.length === 0) {
+    console.error(`No flows found under ${FLOW_DIR}.`);
+    process.exit(1);
+  }
+
+  const ts = new Date().toISOString();
+  const tsSafe = ts.replace(/[:.]/g, '-');
+  const outDirAbs = join(ROOT, 'artifacts', 'app-audit', 'maestro', tsSafe);
+  mkdirSync(outDirAbs, { recursive: true });
+
+  const buildIdentity = readAppConfig();
+  console.log(`Maestro audit run`);
+  console.log(`  flows:    ${flows.length}`);
+  console.log(`  output:   ${relative(ROOT, outDirAbs)}`);
+  console.log(`  build:    appVersion ${buildIdentity.appVersion ?? '—'} · android v${buildIdentity.androidVersionCode ?? '—'} · iOS Build ${buildIdentity.iosBuildNumber ?? '—'}`);
+  console.log(`  repo:     ${branchName()}@${shortHead()}`);
+
+  const captured = [];
+  const failed = [];
+  const tmpRoot = join(homedir(), '.maestro', 'tests');
+  const beforeSet = new Set(findScreenshots(tmpRoot).map((f) => f.abs));
+
+  for (const flow of flows) {
+    const abs = join(FLOW_DIR, flow);
+    if (!existsSync(abs)) {
+      console.error(`  ✗ ${flow}: file not found`);
+      failed.push({ flow, reason: 'file-not-found' });
+      continue;
+    }
+    const cmd = ['test', abs];
+    if (args.device) cmd.push('--device', args.device);
+    if (args.dryRun) {
+      console.log(`  [dry-run] maestro ${cmd.join(' ')}`);
+      continue;
+    }
+    const result = spawnSync('maestro', cmd, { encoding: 'utf8' });
+    if (result.status !== 0) {
+      console.error(`  ✗ ${flow}: maestro exit ${result.status}`);
+      const stderr = (result.stderr ?? '').trim().slice(-400);
+      if (stderr) console.error(`     stderr: ${stderr}`);
+      failed.push({ flow, reason: `maestro-exit-${result.status}` });
+      continue;
+    }
+    console.log(`  ✓ ${flow}`);
+    const after = findScreenshots(tmpRoot).filter((f) => !beforeSet.has(f.abs));
+    for (const f of after) {
+      const flowSlug = basename(flow, '.yml');
+      const newName = `${flowSlug}-${captured.filter((c) => c.flow === flowSlug).length + 1}.png`;
+      const destAbs = join(outDirAbs, newName);
+      try {
+        renameSync(f.abs, destAbs);
+        beforeSet.add(f.abs);
+        captured.push({
+          flow: flowSlug,
+          file: newName,
+          capturedAt: new Date().toISOString(),
+        });
+      } catch (err) {
+        console.error(`     ✗ failed to move screenshot ${f.name}: ${err.message}`);
+      }
+    }
+  }
+
+  const manifest = buildMaestroManifest({
+    platform: args.platform ?? 'unknown',
+    device: { id: args.device ?? null, name: args.device ?? null },
+    build: buildIdentity,
+    repo: { branch: branchName(), shortHead: shortHead() },
+    capturedAt: ts,
+    flows: flows.map((f) => basename(f, '.yml')),
+    captured,
+    failed,
+  });
+  writeFileSync(join(outDirAbs, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+  console.log(`\nDone. Captured ${captured.length} screenshot(s); ${failed.length} flow(s) failed.`);
+  console.log(`  manifest: ${relative(ROOT, join(outDirAbs, 'manifest.json'))}`);
+
+  if (!args.keepTmp) {
+    try { rmSync(join(homedir(), '.maestro', 'tests'), { recursive: true, force: true }); } catch { /* ignore */ }
+  }
+}
+
+main().catch((err) => { console.error(err.stack ?? err.message ?? String(err)); process.exit(1); });

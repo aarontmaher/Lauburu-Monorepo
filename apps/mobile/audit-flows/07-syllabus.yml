@@ -1,0 +1,6 @@
+# 07-syllabus — Syllabus tab.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Syllabus"
+- takeScreenshot: "07-syllabus"

@@ -1,0 +1,6 @@
+# 05-map — Map tab.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Map"
+- takeScreenshot: "05-map"

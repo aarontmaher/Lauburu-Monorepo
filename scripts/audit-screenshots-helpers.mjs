@@ -179,6 +179,109 @@ export function indexPrefix(idx) {
   return String(idx + 1).padStart(2, '0');
 }
 
+/**
+ * Build the manifest for a Maestro YAML-flow audit run. Mirrors the
+ * iPhone-Mirroring shape but adds `flows` (the YAML files that ran)
+ * and `failed` (per-flow failure list). Schema locked in
+ * cloudflare-worker/test/test-audit-screenshots-manifest.ts.
+ */
+export function buildMaestroManifest(input) {
+  const platform = input?.platform === 'ios' || input?.platform === 'android' ? input.platform : 'unknown';
+  const capturedAt = isString(input?.capturedAt) ? input.capturedAt : new Date().toISOString();
+  return {
+    schemaVersion: 1,
+    captureMethod: 'maestro',
+    captureTier: 'v3_maestro_full_auto',
+    platform,
+    device: sanitizeDevice(input?.device),
+    build: sanitizeBuild(input?.build),
+    repo: sanitizeRepo(input?.repo),
+    capturedAt,
+    flows: Array.isArray(input?.flows) ? input.flows.filter((f) => isString(f)) : [],
+    captured: Array.isArray(input?.captured)
+      ? input.captured
+          .map((c) => (c && typeof c === 'object' && isString(c.flow) && isString(c.file) && isString(c.capturedAt)
+            ? { flow: c.flow, file: c.file, capturedAt: c.capturedAt } : null))
+          .filter((c) => c !== null)
+      : [],
+    failed: Array.isArray(input?.failed)
+      ? input.failed
+          .map((f) => (f && typeof f === 'object' && isString(f.flow) && isString(f.reason)
+            ? { flow: f.flow, reason: f.reason } : null))
+          .filter((f) => f !== null)
+      : [],
+  };
+}
+
+export function parseMaestroArgs(argv) {
+  const out = { flow: null, platform: null, device: null, dryRun: false, keepTmp: false };
+  for (let i = 0; i < argv.length; i += 1) {
+    const a = argv[i];
+    const next = argv[i + 1];
+    if (a === '--flow' && next) { out.flow = next; i += 1; }
+    else if (a === '--platform' && next) { if (next === 'ios' || next === 'android') out.platform = next; i += 1; }
+    else if (a === '--device' && next) { out.device = next; i += 1; }
+    else if (a === '--dry-run') out.dryRun = true;
+    else if (a === '--keep-tmp') out.keepTmp = true;
+  }
+  return out;
+}
+
+/**
+ * Build the manifest for a scrcpy-driven Android audit. Mirrors the
+ * iPhone-Mirroring shape but with android-specific build identity
+ * and the Android-side OS version.
+ */
+export function buildScrcpyAndroidManifest(input) {
+  const capturedAt = isString(input?.capturedAt) ? input.capturedAt : new Date().toISOString();
+  return {
+    schemaVersion: 1,
+    captureMethod: 'scrcpy_android',
+    androidVersionCode: Number.isInteger(input?.androidVersionCode) ? input.androidVersionCode : null,
+    appVersion: isString(input?.appVersion) ? input.appVersion : null,
+    device: isString(input?.device) ? input.device : null,
+    androidVersion: isString(input?.androidVersion) ? input.androidVersion : null,
+    macosVersion: isString(input?.macosVersion) ? input.macosVersion : null,
+    capturedAt,
+    screens: sanitizeMirroringScreens(input?.screens),
+    notes: isString(input?.notes) ? input.notes : '',
+  };
+}
+
+export function parseScrcpyAndroidArgs(argv) {
+  const out = {
+    watchDir: null,
+    windowMinutes: 10,
+    androidVersionCode: null,
+    appVersion: null,
+    device: null,
+    androidVersion: null,
+    macosVersion: null,
+    labels: null,
+    notes: null,
+    zip: false,
+    nonInteractive: false,
+    dryRun: false,
+  };
+  for (let i = 0; i < argv.length; i += 1) {
+    const a = argv[i];
+    const next = argv[i + 1];
+    if (a === '--watch-dir' && next) { out.watchDir = next; i += 1; }
+    else if (a === '--window' && next) { const n = Number(next); if (Number.isFinite(n) && n > 0) out.windowMinutes = n; i += 1; }
+    else if (a === '--android-version-code' && next) { const n = Number(next); if (Number.isInteger(n)) out.androidVersionCode = n; i += 1; }
+    else if (a === '--app-version' && next) { out.appVersion = next; i += 1; }
+    else if (a === '--device' && next) { out.device = next; i += 1; }
+    else if (a === '--android-version' && next) { out.androidVersion = next; i += 1; }
+    else if (a === '--macos-version' && next) { out.macosVersion = next; i += 1; }
+    else if (a === '--labels' && next) { out.labels = next; i += 1; }
+    else if (a === '--notes' && next) { out.notes = next; i += 1; }
+    else if (a === '--zip') out.zip = true;
+    else if (a === '--non-interactive') out.nonInteractive = true;
+    else if (a === '--dry-run') out.dryRun = true;
+  }
+  return out;
+}
+
 export function parseIphoneMirroringArgs(argv) {
   const out = {
     watchDir: null,

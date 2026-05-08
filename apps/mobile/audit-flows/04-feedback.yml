@@ -1,0 +1,11 @@
+# 04-feedback — Feedback tab. Captures Import notes preview when
+# the FS-020 journal-import card is bundled in this build.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Feedback"
+- takeScreenshot: "04-feedback"
+- tapOn:
+    text: "Preview Notes"
+    optional: true
+- takeScreenshot: "04-feedback-import-preview"

@@ -13,11 +13,15 @@ import {
   AUDIT_SCREENS,
   buildManifest,
   buildIphoneMirroringManifest,
+  buildMaestroManifest,
+  buildScrcpyAndroidManifest,
   indexPrefix,
   isFilenameSuspicious,
   labelToScreenSlug,
   parseArgs,
   parseIphoneMirroringArgs,
+  parseMaestroArgs,
+  parseScrcpyAndroidArgs,
 } from '../../scripts/audit-screenshots-helpers.mjs';
 
 function assert(cond: unknown, label: string): asserts cond {
@@ -241,5 +245,117 @@ assert(m2.dryRun === true, 'parseIphoneMirroringArgs --dry-run');
 
 const m3 = parseIphoneMirroringArgs(['--window', 'not-a-number']);
 assert(m3.windowMinutes === 10, 'parseIphoneMirroringArgs invalid --window keeps default');
+
+// ── Maestro manifest ────────────────────────────────────────────────
+
+const maestro = buildMaestroManifest({
+  platform: 'android',
+  device: { id: 'emulator-5554', name: 'Pixel 8a' },
+  build: { appVersion: '0.1.0', androidVersionCode: 20, iosBuildNumber: '20', iosBundleIdentifier: null, androidPackage: 'com.lauburu.grapplingmap' },
+  repo: { branch: 'main', shortHead: '8ba25ae' },
+  capturedAt: '2026-05-09T12:00:00.000Z',
+  flows: ['00-launch', '01-home', '02-health'],
+  captured: [
+    { flow: '00-launch', file: '00-launch-1.png', capturedAt: '2026-05-09T12:00:01.000Z' },
+    { flow: '01-home', file: '01-home-1.png', capturedAt: '2026-05-09T12:00:02.000Z' },
+  ],
+  failed: [{ flow: '02-health', reason: 'maestro-exit-1' }],
+});
+assert(maestro.schemaVersion === 1, 'maestro: schemaVersion === 1');
+assert(maestro.captureMethod === 'maestro', 'maestro: captureMethod marker');
+assert(maestro.captureTier === 'v3_maestro_full_auto', 'maestro: captureTier v3 marker');
+assert(maestro.flows.length === 3 && maestro.flows[0] === '00-launch', 'maestro: flows preserved');
+assert(maestro.captured.length === 2 && maestro.captured[0].flow === '00-launch', 'maestro: captured shape');
+assert(maestro.failed.length === 1 && maestro.failed[0].reason === 'maestro-exit-1', 'maestro: failed shape');
+
+const maestroJunk = buildMaestroManifest({
+  platform: 'web' as any,
+  flows: ['ok', 12345 as any, '', 'also-ok'],
+  captured: [
+    { flow: 'ok' } as any,                                                     // missing fields
+    { flow: 'ok', file: 'ok-1.png', capturedAt: '2026-05-09T12:00:00.000Z' },
+  ],
+  failed: [{ flow: 'oops' } as any, { flow: 'oops', reason: 'x' }],
+});
+assert(maestroJunk.platform === 'unknown', 'maestro junk: platform falls back to unknown');
+assert(maestroJunk.flows.length === 2, 'maestro junk: empty/non-string flows dropped');
+assert(maestroJunk.captured.length === 1, 'maestro junk: malformed captured dropped');
+assert(maestroJunk.failed.length === 1, 'maestro junk: malformed failed dropped');
+
+const maestroArgs1 = parseMaestroArgs([]);
+assert(maestroArgs1.flow === null && maestroArgs1.platform === null && maestroArgs1.dryRun === false && maestroArgs1.keepTmp === false, 'parseMaestroArgs default empty');
+
+const maestroArgs2 = parseMaestroArgs(['--flow', '02-health', '--platform', 'ios', '--device', 'sim-1', '--dry-run', '--keep-tmp']);
+assert(maestroArgs2.flow === '02-health', 'parseMaestroArgs --flow');
+assert(maestroArgs2.platform === 'ios', 'parseMaestroArgs --platform ios');
+assert(maestroArgs2.device === 'sim-1', 'parseMaestroArgs --device');
+assert(maestroArgs2.dryRun === true, 'parseMaestroArgs --dry-run');
+assert(maestroArgs2.keepTmp === true, 'parseMaestroArgs --keep-tmp');
+
+assert(parseMaestroArgs(['--platform', 'web']).platform === null, 'parseMaestroArgs rejects unknown platform');
+
+// ── scrcpy Android manifest ─────────────────────────────────────────
+
+const scrcpy = buildScrcpyAndroidManifest({
+  androidVersionCode: 20,
+  appVersion: '0.1.0',
+  device: 'Pixel 8a',
+  androidVersion: '15',
+  macosVersion: '15.2',
+  capturedAt: '2026-05-09T12:00:00.000Z',
+  screens: [
+    { filename: '01-home.png', screen: 'home', notes: '' },
+    { filename: '02-health.png', screen: 'health', notes: 'manage sources sheet open' },
+  ],
+  notes: 'v20 retest',
+});
+assert(scrcpy.schemaVersion === 1, 'scrcpy: schemaVersion === 1');
+assert(scrcpy.captureMethod === 'scrcpy_android', 'scrcpy: captureMethod marker');
+assert(scrcpy.androidVersionCode === 20, 'scrcpy: androidVersionCode preserved');
+assert(scrcpy.device === 'Pixel 8a', 'scrcpy: device preserved');
+assert(scrcpy.androidVersion === '15', 'scrcpy: androidVersion preserved');
+assert(scrcpy.screens.length === 2, 'scrcpy: 2 screens');
+assert(scrcpy.notes === 'v20 retest', 'scrcpy: notes preserved');
+
+const scrcpyJunk = buildScrcpyAndroidManifest({
+  androidVersionCode: 'not-a-number' as any,
+  device: { not: 'string' } as any,
+  screens: [
+    { filename: '01.png' } as any,
+    { filename: '02.png', screen: 'home' } as any,
+  ],
+});
+assert(scrcpyJunk.androidVersionCode === null, 'scrcpy junk: non-int androidVersionCode → null');
+assert(scrcpyJunk.device === null, 'scrcpy junk: object device → null');
+assert(scrcpyJunk.screens.length === 1, 'scrcpy junk: malformed screens dropped');
+
+const s1 = parseScrcpyAndroidArgs([]);
+assert(s1.windowMinutes === 10, 'parseScrcpyAndroidArgs default windowMinutes 10');
+assert(s1.androidVersionCode === null, 'parseScrcpyAndroidArgs default androidVersionCode null');
+
+const s2 = parseScrcpyAndroidArgs([
+  '--watch-dir', '/tmp/x',
+  '--window', '30',
+  '--android-version-code', '20',
+  '--app-version', '0.1.0',
+  '--device', 'Pixel 8a',
+  '--android-version', '15',
+  '--macos-version', '15.2',
+  '--labels', 'a,b',
+  '--notes', 'cycle 1',
+  '--zip',
+  '--non-interactive',
+  '--dry-run',
+]);
+assert(s2.watchDir === '/tmp/x', 'parseScrcpyAndroidArgs --watch-dir');
+assert(s2.windowMinutes === 30, 'parseScrcpyAndroidArgs --window');
+assert(s2.androidVersionCode === 20, 'parseScrcpyAndroidArgs --android-version-code');
+assert(s2.appVersion === '0.1.0', 'parseScrcpyAndroidArgs --app-version');
+assert(s2.device === 'Pixel 8a', 'parseScrcpyAndroidArgs --device');
+assert(s2.zip === true, 'parseScrcpyAndroidArgs --zip');
+assert(s2.nonInteractive === true, 'parseScrcpyAndroidArgs --non-interactive');
+assert(s2.dryRun === true, 'parseScrcpyAndroidArgs --dry-run');
+
+assert(parseScrcpyAndroidArgs(['--android-version-code', 'oops']).androidVersionCode === null, 'parseScrcpyAndroidArgs rejects non-int');
 
 console.log('audit-screenshots manifest contract test passed.');

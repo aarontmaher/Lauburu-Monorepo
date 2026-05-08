@@ -1,0 +1,6 @@
+# 03-train — Train tab.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Train"
+- takeScreenshot: "03-train"

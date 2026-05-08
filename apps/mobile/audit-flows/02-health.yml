@@ -1,0 +1,13 @@
+# 02-health — Health tab → Manage Sources sheet → close.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Health"
+- takeScreenshot: "02-health"
+- tapOn:
+    text: "Manage Sources"
+    optional: true
+- takeScreenshot: "02-health-manage-sources"
+- tapOn:
+    text: "Done"
+    optional: true
