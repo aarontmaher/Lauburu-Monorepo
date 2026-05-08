@@ -335,39 +335,63 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '');
 
-    // ── /mcp/v2 — unified namespaced MCP (Phase 1 of UNIFIED_MCP_PLAN) ──
-    // Layered auth: public-safe tools No Auth, admin tools require
-    // ATHLETE_MEMORY_API_TOKEN. Implementation in ./mcp-v2.ts.
+    // ── /mcp/v2 — unified namespaced MCP, ChatGPT-friendly core surface.
+    // Trimmed to 8 tools (project.get_current_state, project.get_operating_rules,
+    // project.get_work_status, project.update_work_status [admin],
+    // handoff.get_latest, integrations.get_overview, mobile.get_lane_overview,
+    // mobile.get_build_overview) so the tool list stays well under
+    // ChatGPT's ~30-tool picker cap. Admin reads + non-core public extras
+    // live at /mcp/v2/admin. Website-project proxy lives at /mcp/v2/website.
+    // Implementation in ./mcp-v2.ts.
     if (path === '/mcp/v2') {
-      return handleMcpV2(request, env);
+      return handleMcpV2(request, env, 'core');
+    }
+    if (path === '/mcp/v2/admin') {
+      return handleMcpV2(request, env, 'admin');
+    }
+    if (path === '/mcp/v2/website') {
+      return handleMcpV2(request, env, 'website');
     }
     if (path === '/mcp/v2/health') {
       return handleMcpV2Health(request, env);
     }
 
-    // ── /mcp/core — compact public-safe MCP for ChatGPT custom connectors.
-    // ChatGPT's custom-MCP creation flow fails on the larger /mcp/v2
-    // (49 tools, large schemas). /mcp/core trims to 6 public-safe tools
-    // with the same Streamable HTTP / JSON-RPC contract. Implementation
-    // in ./mcp-core.ts; reuses tool builders from ./mcp-v2 so behaviour
-    // cannot drift between the two surfaces.
+    // ── /mcp/core — even smaller (6-tool) ChatGPT-friendly surface.
+    // Predates the /mcp/v2 trim and is kept for backward compatibility with
+    // any ChatGPT connectors already attached to /mcp/core. Future ChatGPT
+    // connectors should attach to /mcp/v2 directly. Implementation in
+    // ./mcp-core.ts; reuses tool builders from ./mcp-v2.
     if (path === '/mcp/core') {
       return handleMcpCore(request, env);
     }
 
-    // ── /mcp/health, /mcp/admin, /mcp/map — reserved descriptors.
-    // These keep the URL shape predictable without shipping unfinished
-    // MCP servers. /mcp/health (qa.* / release.*), /mcp/admin (mobile.get_<full>),
-    // and /mcp/map (website.* proxy) are deferred — for now they redirect
-    // callers to /mcp/v2 which already serves the same tools.
-    if (path === '/mcp/health' || path === '/mcp/admin' || path === '/mcp/map') {
+    // ── /mcp/health, /mcp/admin, /mcp/map — reserved descriptor stubs.
+    // Predate the /mcp/v2/admin and /mcp/v2/website split. They now point
+    // callers at the live working paths.
+    if (path === '/mcp/admin') {
+      return jsonResponse({
+        ok: true,
+        status: 'moved',
+        message: 'Admin tool surface is now live at /mcp/v2/admin (Streamable HTTP, JSON-RPC 2.0, admin token required for write tools).',
+        currentlyServedBy: '/mcp/v2/admin',
+      });
+    }
+    if (path === '/mcp/map') {
+      return jsonResponse({
+        ok: true,
+        status: 'moved',
+        message: 'Website-project tool surface is now live at /mcp/v2/website (Streamable HTTP, JSON-RPC 2.0, proxies mcp.lauburugrapplingmap.com/mcp).',
+        currentlyServedBy: '/mcp/v2/website',
+      });
+    }
+    if (path === '/mcp/health') {
       return jsonResponse({
         ok: true,
         status: 'reserved',
         message:
-          'Compact MCP surface reserved for future split. Tools currently available via /mcp/v2 (Streamable HTTP, JSON-RPC 2.0). Use /mcp/core for the public-safe ChatGPT-friendly subset.',
-        currentlyServedBy: '/mcp/v2',
-        chatgptFriendlyAlternative: '/mcp/core',
+          'Compact health-tool surface reserved for future split. qa.* and release.get_gate currently live at /mcp/v2/admin (no auth needed for public-safe ones).',
+        currentlyServedBy: '/mcp/v2/admin',
+        chatgptFriendlyAlternative: '/mcp/v2',
       });
     }
 
@@ -409,13 +433,17 @@ export default {
           'POST /mcp (private MCP — admin-token-gated; full coder lane / handoff / terminal data)',
           'GET /mcp/public (public-safe preview MCP server info; POST for JSON-RPC 2.0)',
           'POST /mcp/public (public-safe preview — sanitised aggregate overviews only, no auth required)',
-          'GET /mcp/v2 (unified namespaced MCP server info; POST for JSON-RPC 2.0)',
-          'POST /mcp/v2 (unified — project.* / mobile.* / website.* / integrations.* / handoff.*; layered auth)',
-          'GET /mcp/core (compact 6-tool public-safe MCP for ChatGPT custom connectors; POST for JSON-RPC 2.0)',
+          'GET /mcp/v2 (ChatGPT-friendly core MCP surface — 8 tools; POST for JSON-RPC 2.0)',
+          'POST /mcp/v2 (project.get_current_state / project.get_operating_rules / project.get_work_status / project.update_work_status [admin] / handoff.get_latest / integrations.get_overview / mobile.get_lane_overview / mobile.get_build_overview)',
+          'GET /mcp/v2/admin (admin reads + non-core public extras; POST for JSON-RPC 2.0)',
+          'POST /mcp/v2/admin (mobile.get_<full> / project.get_overview / project.list_priorities / mobile.get_repo_overview / qa.* / release.get_gate / project.submit_priority_suggestion / submit_priority_suggestion / update_work_status; admin token for writes)',
+          'GET /mcp/v2/website (website-project proxy; POST for JSON-RPC 2.0)',
+          'POST /mcp/v2/website (forwards to mcp.lauburugrapplingmap.com/mcp; ~25 website.* tools)',
+          'GET /mcp/core (legacy compact 6-tool surface; POST for JSON-RPC 2.0)',
           'POST /mcp/core (project.get_current_state / project.get_operating_rules / handoff.get_latest / integrations.get_overview / mobile.get_lane_overview / mobile.get_build_overview; No Auth)',
-          'GET /mcp/health (reserved; currently delegates to /mcp/v2)',
-          'GET /mcp/admin (reserved; currently delegates to /mcp/v2)',
-          'GET /mcp/map (reserved; currently delegates to /mcp/v2)',
+          'GET /mcp/admin (descriptor stub; live at /mcp/v2/admin)',
+          'GET /mcp/map (descriptor stub; live at /mcp/v2/website)',
+          'GET /mcp/health (reserved descriptor; tools live at /mcp/v2/admin)',
           'GET /supabase/health',
           'GET /mcp/health',
           'GET /app-dev-centre/status',

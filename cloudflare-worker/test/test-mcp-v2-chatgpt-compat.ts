@@ -18,14 +18,29 @@ function assert(cond: unknown, label: string): asserts cond {
   }
 }
 
-const REQUIRED_TOOLS = [
+// /mcp/v2 (post-trim) advertises EXACTLY these 8 tools — under
+// ChatGPT's ~30-tool picker cap. Admin reads + non-core public
+// extras live at /mcp/v2/admin and are exercised separately
+// against that surface below.
+const CORE_TOOLS = [
   'project.get_current_state',
   'project.get_operating_rules',
-  'integrations.get_overview',
+  'project.get_work_status',
+  'project.update_work_status',
   'handoff.get_latest',
-  'qa.get_latest_result',
-  'qa.list_results',
-  'release.get_gate',
+  'integrations.get_overview',
+  'mobile.get_lane_overview',
+  'mobile.get_build_overview',
+] as const;
+
+const CORE_PUBLIC_TOOLS = [
+  'project.get_current_state',
+  'project.get_operating_rules',
+  'project.get_work_status',
+  'handoff.get_latest',
+  'integrations.get_overview',
+  'mobile.get_lane_overview',
+  'mobile.get_build_overview',
 ] as const;
 
 const env = {} as any;
@@ -43,10 +58,35 @@ async function rpc(body: unknown, accept = 'application/json'): Promise<Response
       origin: 'https://chat.openai.com',
     },
     body: JSON.stringify(body),
-  }), env);
+  }), env, 'core');
 }
 
-async function rpcWithToken(body: unknown): Promise<Response> {
+async function rpcAdmin(body: unknown): Promise<Response> {
+  return handleMcpV2(new Request('https://example.test/mcp/v2/admin', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      accept: 'application/json',
+      origin: 'https://chat.openai.com',
+    },
+    body: JSON.stringify(body),
+  }), env, 'admin');
+}
+
+async function rpcAdminWithToken(body: unknown): Promise<Response> {
+  return handleMcpV2(new Request('https://example.test/mcp/v2/admin', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      accept: 'application/json',
+      origin: 'https://chat.openai.com',
+      authorization: 'Bearer test-admin-token',
+    },
+    body: JSON.stringify(body),
+  }), adminEnv, 'admin');
+}
+
+async function rpcCoreWithToken(body: unknown): Promise<Response> {
   return handleMcpV2(new Request('https://example.test/mcp/v2', {
     method: 'POST',
     headers: {
@@ -56,14 +96,15 @@ async function rpcWithToken(body: unknown): Promise<Response> {
       authorization: 'Bearer test-admin-token',
     },
     body: JSON.stringify(body),
-  }), adminEnv);
+  }), adminEnv, 'core');
 }
 
 async function main(): Promise<void> {
+  // ── /mcp/v2 (core) ─────────────────────────────────────────────────
   const preflight = await handleMcpV2(new Request('https://example.test/mcp/v2', {
     method: 'OPTIONS',
     headers: { origin: 'https://chat.openai.com' },
-  }), env);
+  }), env, 'core');
   assert(preflight.status === 204, `OPTIONS /mcp/v2 returns 204 (got ${preflight.status})`);
   assert(preflight.headers.get('access-control-allow-origin') === '*', 'OPTIONS includes CORS allow-origin');
   assert(
@@ -86,17 +127,25 @@ async function main(): Promise<void> {
   assert(init.headers.get('content-type')?.includes('text/event-stream'), 'initialize can return SSE');
   assert(initText.includes('event: message'), 'initialize SSE includes event frame');
   assert(initText.includes('"name":"lauburu-mcp-unified"'), 'initialize returns unified server info');
+  assert(initText.includes('"surface":"core"'), 'initialize tags surface core');
 
   const listed = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
   assert(listed.status === 200, `tools/list returns 200 (got ${listed.status})`);
   assert(listed.headers.get('access-control-allow-origin') === '*', 'tools/list includes CORS');
   const listedJson = await listed.json() as { result: { tools: Array<{ name: string }> } };
   const names = listedJson.result.tools.map((t) => t.name);
-  for (const name of REQUIRED_TOOLS) {
-    assert(names.includes(name), `tools/list includes ${name}`);
+  assert(
+    names.length === CORE_TOOLS.length,
+    `tools/list returns exactly ${CORE_TOOLS.length} core tools (got ${names.length}: ${JSON.stringify(names)})`,
+  );
+  for (const name of CORE_TOOLS) {
+    assert(names.includes(name), `tools/list includes core tool ${name}`);
+  }
+  for (const expelled of ['qa.get_latest_result', 'qa.list_results', 'release.get_gate', 'project.get_overview', 'project.list_priorities', 'mobile.get_repo_overview', 'mobile.get_control_centre']) {
+    assert(!names.includes(expelled), `core tools/list does NOT include moved-to-admin tool ${expelled}`);
   }
 
-  for (const name of REQUIRED_TOOLS) {
+  for (const name of CORE_PUBLIC_TOOLS) {
     const called = await rpc({
       jsonrpc: '2.0',
       id: name,
@@ -134,48 +183,79 @@ async function main(): Promise<void> {
   assert(integrationsPayload.sources?.whoop_oauth?.userVisible === false, 'WHOOP Direct hidden from public integration overview');
   assert(integrationsPayload.sources?.polar_oauth?.userVisible === false, 'Polar Direct hidden from public integration overview');
 
-  const priorities = await rpc({
+  // project.update_work_status lives on /mcp/v2 (core) per Aaron's spec
+  // and is admin-token-gated. Calling without a token returns the soft
+  // gate error; calling with a valid token returns isError === false.
+  const unauthWrite = await rpc({
+    jsonrpc: '2.0',
+    id: 'core_update_work_status_unauth',
+    method: 'tools/call',
+    params: {
+      name: 'project.update_work_status',
+      arguments: { agent: 'codex', status: 'working', task: 'core-surface-test' },
+    },
+  });
+  const unauthBody = await unauthWrite.json() as { result?: { isError?: boolean; content?: Array<{ text: string }> } };
+  assert(unauthBody.result?.isError === true, 'unauthenticated project.update_work_status on core is blocked');
+  assert(
+    unauthBody.result?.content?.[0]?.text.includes('admin token required'),
+    'core unauthenticated write explains admin-token requirement',
+  );
+
+  // ── /mcp/v2/admin ──────────────────────────────────────────────────
+  const adminListed = await rpcAdmin({ jsonrpc: '2.0', id: 'admin-list', method: 'tools/list' });
+  assert(adminListed.status === 200, 'admin tools/list returns 200');
+  const adminListedJson = await adminListed.json() as { result: { tools: Array<{ name: string }> } };
+  const adminNames = adminListedJson.result.tools.map((t) => t.name);
+  for (const name of ['qa.get_latest_result', 'qa.list_results', 'release.get_gate', 'project.get_overview', 'project.list_priorities', 'mobile.get_repo_overview', 'mobile.get_control_centre', 'project.submit_priority_suggestion']) {
+    assert(adminNames.includes(name), `admin tools/list includes ${name}`);
+  }
+  for (const exclude of CORE_PUBLIC_TOOLS) {
+    assert(!adminNames.includes(exclude), `admin tools/list excludes core-only tool ${exclude}`);
+  }
+
+  const priorities = await rpcAdmin({
     jsonrpc: '2.0',
     id: 'project.list_priorities',
     method: 'tools/call',
     params: { name: 'project.list_priorities', arguments: {} },
   });
-  assert(priorities.status === 200, `project.list_priorities returns HTTP 200 (got ${priorities.status})`);
+  assert(priorities.status === 200, `admin project.list_priorities returns HTTP 200 (got ${priorities.status})`);
   const prioritiesBody = await priorities.json() as { result?: { content?: Array<{ text: string }>; isError?: boolean } };
-  assert(prioritiesBody.result?.isError === false, 'project.list_priorities is public-safe');
+  assert(prioritiesBody.result?.isError === false, 'admin project.list_priorities is public-safe');
   const prioritiesPayload = JSON.parse(prioritiesBody.result?.content?.[0]?.text ?? '{}') as {
     items?: Array<{ rank?: number; title?: string }>;
   };
   assert(
     prioritiesPayload.items?.[0]?.rank === 0 &&
       prioritiesPayload.items[0].title === 'Native iPhone automation controls from TestFlight app, not Expo-only',
-    'project.list_priorities surfaces native iPhone automation as rank 0',
+    'admin project.list_priorities surfaces native iPhone automation as rank 0',
   );
 
-  const unauthWrite = await rpc({
+  const unauthAdminWrite = await rpcAdmin({
     jsonrpc: '2.0',
-    id: 'submit_priority_suggestion_unauth',
+    id: 'admin_submit_priority_suggestion_unauth',
     method: 'tools/call',
     params: {
       name: 'project.submit_priority_suggestion',
       arguments: { title: 'Native iPhone automation controls from TestFlight app, not Expo-only' },
     },
   });
-  const unauthBody = await unauthWrite.json() as { result?: { isError?: boolean; content?: Array<{ text: string }> } };
-  assert(unauthBody.result?.isError === true, 'unauthenticated project.submit_priority_suggestion is blocked');
+  const unauthAdminBody = await unauthAdminWrite.json() as { result?: { isError?: boolean; content?: Array<{ text: string }> } };
+  assert(unauthAdminBody.result?.isError === true, 'admin unauthenticated submit is blocked');
   assert(
-    unauthBody.result?.content?.[0]?.text.includes('admin token required'),
-    'unauthenticated write explains admin-token requirement',
+    unauthAdminBody.result?.content?.[0]?.text.includes('admin token required'),
+    'admin unauthenticated submit explains admin-token requirement',
   );
 
-  const releaseGate = await rpc({
+  const releaseGate = await rpcAdmin({
     jsonrpc: '2.0',
     id: 'release.get_gate',
     method: 'tools/call',
     params: { name: 'release.get_gate', arguments: {} },
   });
   const releaseGateBody = await releaseGate.json() as { result?: { content?: Array<{ text: string }>; isError?: boolean } };
-  assert(releaseGateBody.result?.isError === false, 'release.get_gate is public-safe');
+  assert(releaseGateBody.result?.isError === false, 'admin release.get_gate is public-safe');
   const releaseGatePayload = JSON.parse(releaseGateBody.result?.content?.[0]?.text ?? '{}') as {
     buildAllowed?: { ios?: boolean; android?: boolean };
     reason?: string;
@@ -186,9 +266,9 @@ async function main(): Promise<void> {
   assert(releaseGatePayload.buildAllowed?.android === false, 'release.get_gate blocks Android without installed-device QA');
   assert(/repo.only|No Agent QA|Supabase bridge/i.test(releaseGatePayload.reason ?? ''), 'release.get_gate explains blocked gate');
 
-  const authedWrite = await rpcWithToken({
+  const authedAdminWrite = await rpcAdminWithToken({
     jsonrpc: '2.0',
-    id: 'submit_priority_suggestion_authed',
+    id: 'admin_submit_priority_suggestion_authed',
     method: 'tools/call',
     params: {
       name: 'project.submit_priority_suggestion',
@@ -199,9 +279,9 @@ async function main(): Promise<void> {
       },
     },
   });
-  const authedBody = await authedWrite.json() as { result?: { isError?: boolean; content?: Array<{ text: string }> } };
-  assert(authedBody.result?.isError === false, 'authenticated project.submit_priority_suggestion is callable');
-  const authedPayload = JSON.parse(authedBody.result?.content?.[0]?.text ?? '{}') as {
+  const authedAdminBody = await authedAdminWrite.json() as { result?: { isError?: boolean; content?: Array<{ text: string }> } };
+  assert(authedAdminBody.result?.isError === false, 'admin authenticated project.submit_priority_suggestion is callable');
+  const authedPayload = JSON.parse(authedAdminBody.result?.content?.[0]?.text ?? '{}') as {
     ok?: boolean;
     rank?: number;
     publicWriteAllowed?: boolean;
@@ -210,6 +290,19 @@ async function main(): Promise<void> {
   assert(authedPayload.rank === 0, 'authenticated native iPhone priority maps to rank 0');
   assert(authedPayload.publicWriteAllowed === false, 'authenticated response still marks public writes disallowed');
 
+  // Cross-surface guard: admin tools must NOT be callable on the core
+  // path even with a valid token. They moved out of /mcp/v2.
+  const crossSurface = await rpcCoreWithToken({
+    jsonrpc: '2.0',
+    id: 'release_get_gate_on_core',
+    method: 'tools/call',
+    params: { name: 'release.get_gate', arguments: {} },
+  });
+  const crossBody = await crossSurface.json() as { error?: { code?: number; message?: string } };
+  assert(crossBody.error?.code === -32602, 'release.get_gate is rejected on core surface (-32602)');
+  assert(/Unknown tool for core surface/i.test(crossBody.error?.message ?? ''), 'cross-surface error names the surface');
+
+  // ── /mcp/v2/health ─────────────────────────────────────────────────
   const health = await handleMcpV2Health(new Request('https://example.test/mcp/v2/health', {
     method: 'GET',
     headers: { origin: 'https://chat.openai.com' },
@@ -218,12 +311,13 @@ async function main(): Promise<void> {
   assert(health.headers.get('access-control-allow-origin') === '*', 'health includes CORS');
   const healthJson = await health.json() as { ok: boolean; requiredTools: string[] };
   assert(healthJson.ok === true, 'health ok true');
-  for (const name of REQUIRED_TOOLS) {
+  // health endpoint advertises the canonical core + admin required tools.
+  for (const name of ['project.get_current_state', 'project.get_operating_rules', 'integrations.get_overview', 'handoff.get_latest']) {
     assert(healthJson.requiredTools.includes(name), `health lists ${name}`);
   }
 
   globalThis.fetch = originalFetch;
-  console.log('MCP v2 ChatGPT compatibility test passed.');
+  console.log(`MCP v2 ChatGPT compatibility test passed (core=${CORE_TOOLS.length} tools).`);
 }
 
 main().catch((err) => {

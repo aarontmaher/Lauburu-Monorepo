@@ -1242,11 +1242,36 @@ async function proxyWebsiteToolsList(): Promise<Array<{ name: string; descriptio
 
 // ── tool registry ────────────────────────────────────────────────────
 
+/**
+ * Each tool is tagged with a surface so /mcp/v2 can stay under
+ * ChatGPT's tool-picker cap (~30 tools) while terminal/coder
+ * callers continue to reach admin and website-proxy tools at
+ * dedicated paths.
+ *
+ *   - 'core'    → exposed at /mcp/v2 only. Public-safe + the
+ *                 admin write tools (token-gated; ChatGPT lists
+ *                 them but cannot call them without a Bearer
+ *                 token, which keeps the surface ≤25 tools).
+ *   - 'admin'   → exposed at /mcp/v2/admin only. Includes all
+ *                 admin-token full-payload reads plus the
+ *                 public-safe extras (qa.*, release.get_gate,
+ *                 mobile.get_repo_overview, project.get_overview,
+ *                 project.list_priorities) that aren't required
+ *                 for the ChatGPT-friendly core surface.
+ *
+ * The website.* runtime-merged proxy is gated separately by URL
+ * path (handled in dispatchToolCall + listAllTools); /mcp/v2
+ * never includes website.*. /mcp/v2/website is the dedicated
+ * surface for those 25 proxied tools.
+ */
+type ToolSurface = 'core' | 'admin';
+
 interface LocalToolEntry {
   name: string;
   description: string;
   inputSchema: unknown;
   auth: 'public' | 'admin';
+  surface: ToolSurface;
   build: (env: Env, args?: unknown) => Promise<unknown>;
 }
 
@@ -1435,6 +1460,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Cross-project aggregate: top mobile priority, open manual-steps count, website pending suggestions count. No free text > 120 chars. Public-safe.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'admin',
     build: buildProjectOverview,
   },
   {
@@ -1442,6 +1468,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Canonical "what is the team working on right now" snapshot. Composes priority / blocker / next action + per-lane (claude / codex) status + sanitised task summaries (≤140 char) + Android v + iOS Build state + freshness flag. Public-safe; the source enum + staleReason fields make it explicit when data is older than the 10-min freshness window. Use this from ChatGPT instead of the website MCP when you want current dev state.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'core',
     build: buildProjectCurrentState,
   },
   {
@@ -1449,6 +1476,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Sanitised work status — currentPriority, currentBlocker, nextAction (each ≤280 char) plus a blocked boolean. No raw text fields beyond those three. Public-safe.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'core',
     build: buildProjectWorkStatus,
   },
   {
@@ -1467,6 +1495,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
       required: ['agent', 'status', 'task'],
     },
     auth: 'admin',
+    surface: 'core',
     build: updateProjectWorkStatus,
   },
   {
@@ -1485,6 +1514,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
       required: ['agent', 'status', 'task'],
     },
     auth: 'admin',
+    surface: 'admin',
     build: updateProjectWorkStatus,
   },
   {
@@ -1501,6 +1531,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
       required: ['title'],
     },
     auth: 'admin',
+    surface: 'admin',
     build: submitProjectPrioritySuggestion,
   },
   {
@@ -1517,6 +1548,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
       required: ['title'],
     },
     auth: 'admin',
+    surface: 'admin',
     build: submitProjectPrioritySuggestion,
   },
   {
@@ -1524,6 +1556,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Returns the canonical 18 operating rules every coder / agent / consumer must follow (audit→bundles, parallel lanes, no stopping at one patch, re-audit on implementation-complete, Agent-confirmed gate, EAS build cost control, no "fully done" without Aaron, provisional health claims, repo docs as source of truth, MCP-first start, coders run all laptop commands, clear-steps automate-first, parallel priorities stay active, no-idle dependency, no delayed instruction chains, deferred prompt/action backlog hygiene, action ledger until evidence clears). Stable rule IDs 1..18 + titles + bodies. Mirror of docs/OPERATING_RULES.md. Public-safe.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'core',
     build: async () => buildOperatingRulesPayload(),
   },
   {
@@ -1531,6 +1564,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Top backlog items across the active mobile-app project. Each entry: source / rank / title / status. Public-safe.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'admin',
     build: buildProjectListPriorities,
   },
   {
@@ -1538,6 +1572,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Coder lane counts by status enum. No per-lane text. Public-safe.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'core',
     build: buildMobileLaneOverview,
   },
   {
@@ -1545,6 +1580,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Latest paired-build status enums + Android versionCode + iOS buildNumber. No EAS / submission UUIDs. Public-safe.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'core',
     build: buildMobileBuildOverview,
   },
   {
@@ -1552,6 +1588,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Branch + short HEAD SHA. Both already public on GitHub. Public-safe.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'admin',
     build: buildMobileRepoOverview,
   },
   {
@@ -1559,6 +1596,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Full ControlCentreSnapshot (priority, blocker, lanes, build, repo, manualSteps, topBacklog, suggestionCounts, promptLibrary, safety). Admin token required.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'admin',
+    surface: 'admin',
     build: buildMobileControlCentre,
   },
   {
@@ -1566,6 +1604,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Full coder-lanes payload — per-lane summaries with text, prompts, dirtyFiles. Admin token required.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'admin',
+    surface: 'admin',
     build: buildMobileCoderLanes,
   },
   {
@@ -1573,6 +1612,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Full WorkStatus payload (priority, blocker, liveStatus, repoStatus, nextAction). Admin token required.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'admin',
+    surface: 'admin',
     build: (env) => buildMobileFullSingle(env, 'connector_work_status'),
   },
   {
@@ -1580,6 +1620,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Full BuildStatus payload (Android + iOS release rows including IDs). Admin token required.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'admin',
+    surface: 'admin',
     build: (env) => buildMobileFullSingle(env, 'connector_build_status'),
   },
   {
@@ -1587,6 +1628,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Admin-gated release readiness drill-down: latest Agent QA result, release gate, target build commands, and why builds are or are not allowed.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'admin',
+    surface: 'admin',
     build: buildMobileBuildReadiness,
   },
   {
@@ -1594,6 +1636,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Full Handoff payload (manualSteps text, doNotTouch, safeToBuild). Admin token required.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'admin',
+    surface: 'admin',
     build: (env) => buildMobileFullSingle(env, 'connector_handoff'),
   },
   {
@@ -1601,6 +1644,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'TerminalSummary entries (≤50, most recent first, full text). Admin token required.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'admin',
+    surface: 'admin',
     build: buildMobileTerminalSummary,
   },
   {
@@ -1608,6 +1652,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Per-platform exposure of Apple Health (iOS only) / Health Connect (Android only) / WHOOP / Polar. Aggregates only. No per-user data. Public-safe.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'core',
     build: buildIntegrationsOverview,
   },
   {
@@ -1615,6 +1660,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Latest handoff entries from both projects, each tagged source: mobile|website. Public-safe summary; admin token unlocks richer fields.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'core',
     build: buildHandoffLatest,
   },
   {
@@ -1622,6 +1668,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Latest public-safe Agent QA gate summary. Shows repo-only vs installed-device QA status, tested platform/build, and whether TestFlight/Internal QA build is allowed. No screenshots, private details, or raw logs.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'admin',
     build: buildQaLatestResult,
   },
   {
@@ -1629,6 +1676,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Public-safe Agent QA result list. Currently returns the latest bridge result only; historical storage is not enabled yet.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'admin',
     build: buildQaListResults,
   },
   {
@@ -1636,6 +1684,7 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Public-safe release gate detail: current installed build, target QA build, latest QA state, build-allowed booleans, and exact reason. No secrets or raw logs.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'public',
+    surface: 'admin',
     build: buildReleaseGate,
   },
   {
@@ -1643,22 +1692,50 @@ const LOCAL_TOOLS: readonly LocalToolEntry[] = [
     description: 'Full latest Agent QA result carried by connector_handoff.agentQaResult. Admin token required.',
     inputSchema: { type: 'object', properties: {}, required: [] },
     auth: 'admin',
+    surface: 'admin',
     build: buildMobileAgentQaResult,
   },
 ];
 
 const LOCAL_BY_NAME = new Map(LOCAL_TOOLS.map((t) => [t.name, t] as const));
 
+/** /mcp/v2 surface gate. */
+type V2Surface = 'core' | 'admin' | 'website';
+
 // ── JSON-RPC dispatch ────────────────────────────────────────────────
 
-async function listAllTools(): Promise<Array<{ name: string; description: string; inputSchema: unknown }>> {
-  const local = LOCAL_TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema }));
-  const website = await proxyWebsiteToolsList();
-  return [...local, ...website];
+/**
+ * Return the tools advertised on a given /mcp/v2 surface.
+ *
+ *   - 'core'    → 8 LOCAL_TOOLS tagged surface: 'core'.
+ *                 Stays under ChatGPT's tool-picker cap.
+ *   - 'admin'   → 17 LOCAL_TOOLS tagged surface: 'admin'.
+ *                 Includes admin-token reads + non-core public-safe
+ *                 extras (qa.*, release.get_gate, project.get_overview,
+ *                 etc). Terminal/coder use.
+ *   - 'website' → 25 website.* proxy tools fetched from
+ *                 mcp.lauburugrapplingmap.com/mcp at request time.
+ */
+async function listToolsForSurface(
+  surface: V2Surface,
+): Promise<Array<{ name: string; description: string; inputSchema: unknown }>> {
+  if (surface === 'website') {
+    return proxyWebsiteToolsList();
+  }
+  return LOCAL_TOOLS
+    .filter((t) => t.surface === surface)
+    .map(({ name, description, inputSchema }) => ({ name, description, inputSchema }));
 }
 
-async function dispatchToolCall(env: Env, request: Request, name: string, args: unknown): Promise<unknown> {
-  if (name.startsWith('website.')) {
+async function dispatchToolCall(
+  env: Env,
+  request: Request,
+  name: string,
+  args: unknown,
+  surface: V2Surface,
+): Promise<unknown> {
+  if (surface === 'website') {
+    if (!name.startsWith('website.')) return null;
     const upstream = name.slice('website.'.length);
     try {
       const rawPayload = await proxyWebsiteCall(upstream, args ?? {});
@@ -1678,6 +1755,7 @@ async function dispatchToolCall(env: Env, request: Request, name: string, args: 
   }
   const tool = LOCAL_BY_NAME.get(name);
   if (!tool) return null;
+  if (tool.surface !== surface) return null;
   if (tool.auth === 'admin' && !tokenAuthorised(request, env)) {
     return adminGateError();
   }
@@ -1688,7 +1766,18 @@ async function dispatchToolCall(env: Env, request: Request, name: string, args: 
   };
 }
 
-async function handleRpcRequest(req: JsonRpcRequest, env: Env, request: Request): Promise<JsonRpcResponse | null> {
+function instructionsForSurface(surface: V2Surface): string {
+  switch (surface) {
+    case 'core':
+      return 'Lauburu / GrapplingMap MCP — core surface. Eight ChatGPT-friendly tools: project.get_current_state, project.get_operating_rules, project.get_work_status, project.update_work_status (admin), handoff.get_latest, integrations.get_overview, mobile.get_lane_overview, mobile.get_build_overview. Public-safe except project.update_work_status which requires x-athlete-memory-token or Authorization: Bearer. Admin reads (mobile.get_<full>, qa.*, release.get_gate, project.get_overview/list_priorities) are at /mcp/v2/admin. Website-project tools are at /mcp/v2/website.';
+    case 'admin':
+      return 'Lauburu / GrapplingMap MCP — admin surface. Admin-token-gated full payloads (mobile.get_control_centre / coder_lanes / work_status / build_status / build_readiness / handoff / terminal_summary / agent_qa_result, project.submit_priority_suggestion, alias submit_priority_suggestion + update_work_status) plus non-core public-safe tools (project.get_overview, project.list_priorities, mobile.get_repo_overview, qa.*, release.get_gate). ChatGPT-friendly core is at /mcp/v2; website-project tools at /mcp/v2/website.';
+    case 'website':
+      return 'Lauburu / GrapplingMap MCP — website-project proxy. Forwards JSON-RPC tools/call to mcp.lauburugrapplingmap.com/mcp (the website project MCP server). Tool list and schemas are fetched at request time. Twenty-five tools: jubjub.*, suggestions.*, automation.*, work-status.*, etc.';
+  }
+}
+
+async function handleRpcRequest(req: JsonRpcRequest, env: Env, request: Request, surface: V2Surface): Promise<JsonRpcResponse | null> {
   if (req.jsonrpc !== '2.0') {
     return rpcError(req.id ?? null, -32600, 'Invalid Request: jsonrpc must be "2.0"');
   }
@@ -1700,9 +1789,8 @@ async function handleRpcRequest(req: JsonRpcRequest, env: Env, request: Request)
       return rpcResult(id, {
         protocolVersion: PROTOCOL_VERSION,
         capabilities: { tools: { listChanged: false } },
-        serverInfo: SERVER_INFO,
-        instructions:
-          'Unified Lauburu / GrapplingMap MCP. Public-safe tools (project.* / *.get_*_overview / website.* / integrations.get_overview / handoff.*) work without auth. Admin tools (mobile.get_<full>) require x-athlete-memory-token or Authorization: Bearer. Detail in docs/UNIFIED_MCP_PLAN.md.',
+        serverInfo: { ...SERVER_INFO, surface },
+        instructions: instructionsForSurface(surface),
       });
     case 'notifications/initialized':
     case 'notifications/cancelled':
@@ -1711,14 +1799,14 @@ async function handleRpcRequest(req: JsonRpcRequest, env: Env, request: Request)
     case 'ping':
       return rpcResult(id, {});
     case 'tools/list': {
-      const tools = await listAllTools();
+      const tools = await listToolsForSurface(surface);
       return rpcResult(id, { tools });
     }
     case 'tools/call': {
       const params = (req.params as { name?: string; arguments?: unknown }) ?? {};
       const name = params.name ?? '';
-      const result = await dispatchToolCall(env, request, name, params.arguments);
-      if (result === null) return rpcError(id, -32602, `Unknown tool: ${name || '<missing>'}`);
+      const result = await dispatchToolCall(env, request, name, params.arguments, surface);
+      if (result === null) return rpcError(id, -32602, `Unknown tool for ${surface} surface: ${name || '<missing>'}`);
       return rpcResult(id, result);
     }
     case 'prompts/list':
@@ -1731,24 +1819,29 @@ async function handleRpcRequest(req: JsonRpcRequest, env: Env, request: Request)
   }
 }
 
-export async function handleMcpV2(request: Request, env: Env): Promise<Response> {
+export async function handleMcpV2(request: Request, env: Env, surface: V2Surface = 'core'): Promise<Response> {
   if (request.method === 'OPTIONS') {
     return optionsResponse();
   }
 
   if (request.method === 'GET') {
-    const tools = await listAllTools();
+    const tools = await listToolsForSurface(surface);
     return jsonResponse({
       ok: true,
       protocolVersion: PROTOCOL_VERSION,
-      serverInfo: SERVER_INFO,
+      serverInfo: { ...SERVER_INFO, surface },
       transport: 'streamable-http',
       auth: {
         public: 'no auth required for public-safe tools',
         admin: 'Authorization: Bearer <ATHLETE_MEMORY_API_TOKEN> OR x-athlete-memory-token header',
       },
+      surface,
       tools: tools.map((t) => ({ name: t.name, description: (t.description ?? '').slice(0, 160) })),
-      hint: 'POST JSON-RPC 2.0 here. See docs/UNIFIED_MCP_PLAN.md for namespace conventions.',
+      hint: surface === 'core'
+        ? 'POST JSON-RPC 2.0 here. ChatGPT-friendly core surface (≤25 tools). Admin/full at /mcp/v2/admin; website-project tools at /mcp/v2/website.'
+        : surface === 'admin'
+          ? 'POST JSON-RPC 2.0 here. Admin surface — full payload reads + admin write tools. Public-safe extras live here too. ChatGPT-friendly core at /mcp/v2.'
+          : 'POST JSON-RPC 2.0 here. Website-project proxy — forwards to mcp.lauburugrapplingmap.com/mcp.',
     });
   }
 
@@ -1760,12 +1853,12 @@ export async function handleMcpV2(request: Request, env: Env): Promise<Response>
   try { body = await request.json(); } catch { return jsonResponse(rpcError(null, -32700, 'Parse error'), { status: 400 }); }
 
   if (Array.isArray(body)) {
-    const responses = await Promise.all(body.map((req) => handleRpcRequest(req as JsonRpcRequest, env, request)));
+    const responses = await Promise.all(body.map((req) => handleRpcRequest(req as JsonRpcRequest, env, request, surface)));
     const filtered = responses.filter((r): r is JsonRpcResponse => r !== null);
     if (filtered.length === 0) return acceptedResponse();
     return negotiated(request, filtered);
   }
-  const response = await handleRpcRequest(body as JsonRpcRequest, env, request);
+  const response = await handleRpcRequest(body as JsonRpcRequest, env, request, surface);
   if (response === null) return acceptedResponse();
   return negotiated(request, response);
 }
