@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-05-08T05:48:00Z",
-  "source": "codex-p0-android18-health-connect-crash-01",
+  "generatedAt": "2026-05-08T05:52:35Z",
+  "source": "codex-p0-android18-health-connect-crash-fix-02",
   "currentPriorityOrder": [
     {
       "rank": 1,
@@ -62,17 +62,17 @@
   ],
   "pendingActions": [
     {
-      "id": "p0-android18-health-connect-connect-crash",
-      "owner": "Codex",
-      "targetWorkerOrPerson": "Codex",
-      "lane": "Android Health Connect / installed-build crash",
-      "actionText": "Fix Android versionCode 18 crash after tapping Health Connect Connect; verify patch, then queue Android versionCode 19 QA build for installed retest after Aaron approval.",
-      "triggerCondition": "Aaron reported newest Android internal tester build/versionCode 18 crashes after tapping Connect for Android Health Connect.",
-      "status": "active",
+      "id": "qa-android-versioncode-19-build-approval",
+      "owner": "Aaron",
+      "targetWorkerOrPerson": "Claude/Codex",
+      "lane": "Android internal QA build",
+      "actionText": "Approve Android versionCode 19 QA build from main @ 99dd657 for installed-device retest of Health Connect Connect. Do not mark release gate passed until Android v19 is installed and retested.",
+      "triggerCondition": "Health Connect crash patch is committed/pushed and local checks passed; Android versionCode 18 installed QA remains failed.",
+      "status": "pending",
       "priority": "P0",
-      "createdAt": "2026-05-08T05:48:00Z",
-      "updatedAt": "2026-05-08T05:48:00Z",
-      "evidenceSummaryOrLink": "Root cause found: Android Health Connect permission requests require HealthConnectPermissionDelegate in MainActivity, but the generated native app lacked a tracked config plugin for it. Patch adds tracked Expo config plugin for delegate + native permissions/rationale action, plus JS fallback handling.",
+      "createdAt": "2026-05-08T05:52:35Z",
+      "updatedAt": "2026-05-08T05:52:35Z",
+      "evidenceSummaryOrLink": "Exact build prep: bump android.versionCode from 18 to 19 in apps/mobile/app.json, commit that release-build-number-only change, then run the Android production AAB QA build command after Aaron approval.",
       "voidReason": null,
       "supersededBy": null
     },
@@ -111,13 +111,13 @@
       "owner": "Aaron",
       "targetWorkerOrPerson": "Agent",
       "lane": "Installed mobile QA / release gate",
-      "actionText": "Installed-device QA is blocked until Android Health Connect Connect crash is fixed and a new Android versionCode 19 QA build is installed/retested.",
-      "triggerCondition": "Android versionCode 18 installed-device QA failed/crashed on Health Connect Connect.",
+      "actionText": "Run installed-device QA after Android versionCode 19 and iOS build 19 are installable; Android v18 crash evidence does not clear the gate.",
+      "triggerCondition": "Android versionCode 19 QA build is installed and iOS build 19 is installable; exact builds are available for device QA.",
       "status": "blocked",
       "priority": "P0",
       "createdAt": "2026-05-08T03:32:27Z",
-      "updatedAt": "2026-05-08T05:48:00Z",
-      "evidenceSummaryOrLink": "Aaron live device report: Android internal build/versionCode 18 crashes after tapping Connect for Health Connect.",
+      "updatedAt": "2026-05-08T05:52:35Z",
+      "evidenceSummaryOrLink": "Blocked now: Android v19 QA build has not been approved/built/installed yet. Android v18 failed on Health Connect Connect.",
       "voidReason": null,
       "supersededBy": null
     },
@@ -198,6 +198,21 @@
     }
   ],
   "completedActions": [
+    {
+      "id": "p0-android18-health-connect-connect-crash",
+      "owner": "Codex",
+      "targetWorkerOrPerson": "Codex",
+      "lane": "Android Health Connect / installed-build crash",
+      "actionText": "Fix Android versionCode 18 crash after tapping Health Connect Connect; verify patch, then queue Android versionCode 19 QA build for installed retest after Aaron approval.",
+      "triggerCondition": "Aaron reported newest Android internal tester build/versionCode 18 crashes after tapping Connect for Android Health Connect.",
+      "status": "completed",
+      "priority": "P0",
+      "createdAt": "2026-05-08T05:48:00Z",
+      "updatedAt": "2026-05-08T05:52:35Z",
+      "evidenceSummaryOrLink": "Patch committed and pushed as 99dd657: tracked Expo config plugin generates HealthConnectPermissionDelegate, Health Connect permissions/rationale action, and JS connect path handles unavailable/package/permission exceptions with compact fallback copy. Local typecheck, guard test, health-source test, route smoke, bridge verify passed.",
+      "voidReason": null,
+      "supersededBy": null
+    },
     {
       "id": "mcp-top-level-worker-supabase-secrets",
       "owner": "Aaron",
