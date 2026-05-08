@@ -277,19 +277,134 @@ function getMcpCurrentState(snapshot: McpV2DashboardSnapshot | null): McpV2Curre
   return payload && typeof payload === 'object' ? payload as McpV2CurrentState : null;
 }
 
+function ageLabelMs(ageMs: number | null | undefined): string {
+  if (typeof ageMs !== 'number' || !Number.isFinite(ageMs)) return '—';
+  if (ageMs < 60_000) return `${Math.max(0, Math.floor(ageMs / 1000))}s ago`;
+  if (ageMs < 3_600_000) return `${Math.floor(ageMs / 60_000)}m ago`;
+  if (ageMs < 86_400_000) return `${Math.floor(ageMs / 3_600_000)}h ago`;
+  return `${Math.floor(ageMs / 86_400_000)}d ago`;
+}
+
 function mcpFreshnessSummary(current: McpV2CurrentState | null): {
   label: string;
   stale: boolean;
   reason: string;
   updatedAt: string;
+  ageLabel: string;
+  ageMs: number | null;
 } {
   const freshness = current?.freshness;
   const stale = freshness?.isStale === true;
   const reason = typeof freshness?.staleReason === 'string' ? freshness.staleReason : 'unknown';
   const updatedAt = freshness?.updatedAt ? new Date(freshness.updatedAt).toLocaleTimeString() : '—';
-  if (!current) return { label: 'MCP current-state unavailable', stale: true, reason: 'unavailable', updatedAt };
-  if (stale) return { label: `MCP readable · stale (${reason})`, stale, reason, updatedAt };
-  return { label: 'MCP live · fresh', stale, reason, updatedAt };
+  const ageMs = typeof freshness?.ageMs === 'number' ? freshness.ageMs : null;
+  const ageLabel = ageLabelMs(ageMs);
+  if (!current) {
+    return { label: 'MCP current-state unavailable', stale: true, reason: 'unavailable', updatedAt, ageLabel: '—', ageMs: null };
+  }
+  if (stale) return { label: `MCP readable · stale (${reason}) · ${ageLabel}`, stale, reason, updatedAt, ageLabel, ageMs };
+  return { label: `MCP live · fresh · ${ageLabel}`, stale, reason, updatedAt, ageLabel, ageMs };
+}
+
+interface ReleaseGateSummary {
+  ok: boolean;
+  message: string | null;
+  publicSafe: boolean;
+  iosAllowed: boolean | null;
+  androidAllowed: boolean | null;
+  reason: string;
+  installedIos: string | null;
+  installedAndroid: number | null;
+  targetIos: string | null;
+  targetAndroid: number | null;
+  shortLabel: string;
+}
+
+function summariseReleaseGate(snapshot: McpV2DashboardSnapshot | null): ReleaseGateSummary {
+  const empty: ReleaseGateSummary = {
+    ok: false,
+    message: snapshot?.releaseGate?.ok === false ? snapshot.releaseGate.message : 'release.get_gate not loaded',
+    publicSafe: false,
+    iosAllowed: null,
+    androidAllowed: null,
+    reason: '—',
+    installedIos: null,
+    installedAndroid: null,
+    targetIos: null,
+    targetAndroid: null,
+    shortLabel: 'Loading…',
+  };
+  if (!snapshot?.releaseGate?.ok) return empty;
+  const payload = snapshot.releaseGate.payload as {
+    buildAllowed?: { ios?: boolean; android?: boolean };
+    reason?: string;
+    publicSafe?: boolean;
+    installedBuild?: { iosBuildNumber?: string | null; androidVersionCode?: number | null };
+    targetBuild?: { iosBuildNumber?: string | null; androidVersionCode?: number | null };
+  } | undefined;
+  if (!payload || typeof payload !== 'object') return empty;
+  const ios = payload.buildAllowed?.ios;
+  const android = payload.buildAllowed?.android;
+  const reason = typeof payload.reason === 'string' && payload.reason.trim().length > 0 ? payload.reason.trim() : '—';
+  const iosLabel = ios === true ? 'iOS ✓' : ios === false ? 'iOS ✕' : 'iOS ?';
+  const androidLabel = android === true ? 'Android ✓' : android === false ? 'Android ✕' : 'Android ?';
+  return {
+    ok: true,
+    message: null,
+    publicSafe: payload.publicSafe === true,
+    iosAllowed: typeof ios === 'boolean' ? ios : null,
+    androidAllowed: typeof android === 'boolean' ? android : null,
+    reason,
+    installedIos: payload.installedBuild?.iosBuildNumber ?? null,
+    installedAndroid: typeof payload.installedBuild?.androidVersionCode === 'number' ? payload.installedBuild.androidVersionCode : null,
+    targetIos: payload.targetBuild?.iosBuildNumber ?? null,
+    targetAndroid: typeof payload.targetBuild?.androidVersionCode === 'number' ? payload.targetBuild.androidVersionCode : null,
+    shortLabel: `${iosLabel} · ${androidLabel}`,
+  };
+}
+
+interface LaneOverviewSummary {
+  ok: boolean;
+  total: number | null;
+  byStatus: Record<string, number>;
+  shortLabel: string;
+  idleCount: number;
+  workingCount: number;
+  blockedCount: number;
+  needsReviewCount: number;
+}
+
+function summariseLaneOverview(snapshot: McpV2DashboardSnapshot | null): LaneOverviewSummary {
+  const empty: LaneOverviewSummary = {
+    ok: false,
+    total: null,
+    byStatus: {},
+    shortLabel: 'lanes —',
+    idleCount: 0,
+    workingCount: 0,
+    blockedCount: 0,
+    needsReviewCount: 0,
+  };
+  if (!snapshot?.laneOverview?.ok) return empty;
+  const payload = snapshot.laneOverview.payload as {
+    totalLanes?: number;
+    byStatus?: Record<string, number>;
+  } | undefined;
+  if (!payload || typeof payload !== 'object') return empty;
+  const byStatus = payload.byStatus ?? {};
+  const total = typeof payload.totalLanes === 'number' ? payload.totalLanes : null;
+  const parts = Object.entries(byStatus).filter(([, v]) => typeof v === 'number' && v > 0).map(([k, v]) => `${k}=${v}`);
+  const shortLabel = parts.length > 0 ? parts.join(' / ') : 'all idle';
+  return {
+    ok: true,
+    total,
+    byStatus,
+    shortLabel,
+    idleCount: typeof byStatus.idle === 'number' ? byStatus.idle : 0,
+    workingCount: typeof byStatus.working === 'number' ? byStatus.working : 0,
+    blockedCount: typeof byStatus.blocked === 'number' ? byStatus.blocked : 0,
+    needsReviewCount: typeof byStatus.needs_review === 'number' ? byStatus.needs_review : 0,
+  };
 }
 
 function mcpRule12Status(snapshot: McpV2DashboardSnapshot | null): {
@@ -588,6 +703,8 @@ export default function AdminDevScreen() {
   const mcpAgents = mcpCurrentState?.agents ?? [];
   const mcpClaudeLane = mcpAgents.find((agent) => agent.id === 'claude') ?? null;
   const mcpCodexLane = mcpAgents.find((agent) => agent.id === 'codex') ?? null;
+  const releaseGateSummary = summariseReleaseGate(mcpV2Snapshot);
+  const laneOverviewSummary = summariseLaneOverview(mcpV2Snapshot);
   const nowPriority = mcpCurrentState?.currentPriority ?? connectorWork?.currentPriority ?? CURRENT_PRIORITY;
   const nowBlocker = mcpCurrentState?.currentBlocker ?? connectorWork?.currentBlocker ?? 'No MCP blocker reported.';
   const nowNextAction = mcpCurrentState?.nextAction ?? connectorWork?.nextAction ?? NEXT_ACTION;
@@ -676,8 +793,24 @@ export default function AdminDevScreen() {
             </View>
             <View style={styles.summaryTile}>
               <Text style={styles.chipLabel}>Lanes</Text>
-              <Text style={styles.summaryValue}>{firstScreenLaneCount}</Text>
-              <Text style={styles.summaryMeta}>{firstScreenLaneMeta}</Text>
+              <Text style={styles.summaryValue}>{laneOverviewSummary.ok ? `${laneOverviewSummary.total ?? 0}` : `${firstScreenLaneCount}`}</Text>
+              <Text style={styles.summaryMeta}>{laneOverviewSummary.ok ? laneOverviewSummary.shortLabel : firstScreenLaneMeta}</Text>
+            </View>
+            <View style={styles.summaryTile}>
+              <Text style={styles.chipLabel}>Idle</Text>
+              <Text style={styles.summaryValue}>{laneOverviewSummary.idleCount}</Text>
+              <Text style={styles.summaryMeta}>
+                {laneOverviewSummary.workingCount} working · {laneOverviewSummary.blockedCount} blocked · {laneOverviewSummary.needsReviewCount} review
+              </Text>
+            </View>
+            <View style={styles.summaryTile}>
+              <Text style={styles.chipLabel}>Release gate</Text>
+              <Text style={styles.summaryValue}>{releaseGateSummary.ok ? releaseGateSummary.shortLabel : 'Loading…'}</Text>
+              <Text style={styles.summaryMeta} numberOfLines={2}>
+                {releaseGateSummary.ok
+                  ? releaseGateSummary.reason
+                  : releaseGateSummary.message ?? 'release.get_gate not loaded'}
+              </Text>
             </View>
             <View style={styles.summaryTile}>
               <Text style={styles.chipLabel}>Rule 12</Text>
@@ -693,7 +826,22 @@ export default function AdminDevScreen() {
         )}
         <View style={styles.chipBlock}>
           <Text style={styles.chipLabel}>Build gate</Text>
-          <Text style={styles.chipBody}>{safeToBuildLabel}</Text>
+          <Text style={styles.chipBody}>
+            {releaseGateSummary.ok
+              ? `${releaseGateSummary.shortLabel} · ${safeToBuildLabel}`
+              : safeToBuildLabel}
+          </Text>
+          {releaseGateSummary.ok && (
+            <Text style={styles.note}>Reason: {releaseGateSummary.reason}</Text>
+          )}
+          {releaseGateSummary.ok && (releaseGateSummary.installedAndroid != null || releaseGateSummary.installedIos != null) && (
+            <Text style={styles.note}>
+              Installed Android v{releaseGateSummary.installedAndroid ?? '—'} · iOS Build {releaseGateSummary.installedIos ?? '—'}
+              {releaseGateSummary.targetAndroid != null || releaseGateSummary.targetIos != null
+                ? `  →  target Android v${releaseGateSummary.targetAndroid ?? '—'} · iOS Build ${releaseGateSummary.targetIos ?? '—'}`
+                : ''}
+            </Text>
+          )}
           <Text style={styles.note}>No EAS build until Agent confirms the on-device value and Aaron approves.</Text>
         </View>
         {isAdmin && (
@@ -721,14 +869,15 @@ export default function AdminDevScreen() {
         {mcpFreshness.stale && (
           <View style={styles.warningBlock}>
             <Text style={styles.chipLabel}>Stale writeback</Text>
-            <Text style={styles.chipBody}>MCP readable but writeback is stale. Run bridge snapshot/verify or deploy worker.</Text>
-            <Text style={styles.note}>Reason: {mcpFreshness.reason}</Text>
+            <Text style={styles.chipBody}>MCP readable but writeback is stale ({mcpFreshness.ageLabel}). Run bridge snapshot/verify or deploy worker.</Text>
+            <Text style={styles.note}>Reason: {mcpFreshness.reason} · updated {mcpFreshness.updatedAt}</Text>
           </View>
         )}
         {!mcpFreshness.stale && isAdmin && (
           <View style={styles.chipBlock}>
             <Text style={styles.chipLabel}>Live writeback</Text>
-            <Text style={styles.chipBody}>MCP freshness is live. Rule 12 is active: coders run laptop commands; Aaron approves from phone.</Text>
+            <Text style={styles.chipBody}>MCP freshness is live ({mcpFreshness.ageLabel}). Rule 12 is active: coders run laptop commands; Aaron approves from phone.</Text>
+            <Text style={styles.note}>Updated {mcpFreshness.updatedAt}</Text>
           </View>
         )}
         <View style={styles.chipBlock}>

@@ -37,26 +37,46 @@ export interface McpV2CallFailure {
 
 export type McpV2CallResult = McpV2CallEnvelope | McpV2CallFailure;
 
-function v2BaseUrl(): string | null {
+/**
+ * Surface gate (mirrors cloudflare-worker/src/mcp-v2.ts ToolSurface).
+ *
+ *   - 'core'  → /mcp/v2 (8 ChatGPT-friendly tools — public-safe except
+ *               project.update_work_status which is admin-token-gated)
+ *   - 'admin' → /mcp/v2/admin (admin reads + non-core public extras:
+ *               project.get_overview, project.list_priorities,
+ *               mobile.get_repo_overview, mobile.get_<full> reads,
+ *               qa.*, release.get_gate, write tools)
+ */
+export type McpV2Surface = 'core' | 'admin';
+
+function v2BaseUrlBase(): string | null {
   if (MCP_BASE_URL) {
     const trimmed = MCP_BASE_URL.replace(/\/$/, '');
     // EXPO_PUBLIC_MCP_BASE_URL may already end at /api or be the worker
     // root. We want the v2 endpoint at <root>/mcp/v2.
-    const base = trimmed.endsWith('/api') ? trimmed.slice(0, -'/api'.length) : trimmed;
-    return `${base}/mcp/v2`;
+    return trimmed.endsWith('/api') ? trimmed.slice(0, -'/api'.length) : trimmed;
   }
   // Fall back to deriving from AI_PUBLIC_BASE only when the public
   // backend is configured (legacy Railway shape). Most testers won't
   // have this — return null so the UI renders "MCP not configured".
   if (AI_PUBLIC_BASE) {
-    const publicBase = AI_PUBLIC_BASE.replace(/\/$/, '').replace(/\/athlete-memory$/, '');
-    return `${publicBase}/mcp/v2`;
+    return AI_PUBLIC_BASE.replace(/\/$/, '').replace(/\/athlete-memory$/, '');
   }
   return null;
 }
 
-async function rpc(body: unknown, signal?: AbortSignal): Promise<{ status: number; raw: string } | { error: string }> {
-  const url = v2BaseUrl();
+function v2SurfaceUrl(surface: McpV2Surface): string | null {
+  const base = v2BaseUrlBase();
+  if (!base) return null;
+  return surface === 'admin' ? `${base}/mcp/v2/admin` : `${base}/mcp/v2`;
+}
+
+function v2BaseUrl(): string | null {
+  return v2SurfaceUrl('core');
+}
+
+async function rpc(body: unknown, signal?: AbortSignal, surface: McpV2Surface = 'core'): Promise<{ status: number; raw: string } | { error: string }> {
+  const url = v2SurfaceUrl(surface);
   if (!url) return { error: 'mcp_base_url_missing' };
   const memToken = process.env.EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN ?? '';
   try {
@@ -116,10 +136,16 @@ export async function mcpV2InitializeAndListTools(signal?: AbortSignal): Promise
   };
 }
 
-export async function mcpV2CallTool(name: string, args: unknown = {}, signal?: AbortSignal): Promise<McpV2CallResult> {
+export async function mcpV2CallTool(
+  name: string,
+  args: unknown = {},
+  signal?: AbortSignal,
+  surface: McpV2Surface = 'core',
+): Promise<McpV2CallResult> {
   const callRes = await rpc(
     { jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name, arguments: args ?? {} } },
     signal,
+    surface,
   );
   if ('error' in callRes) {
     return { ok: false, reason: callRes.error === 'mcp_base_url_missing' ? 'mcp_base_url_missing' : 'transport', message: callRes.error };
@@ -143,6 +169,8 @@ export interface McpV2DashboardSnapshot {
   serverInfo: { name: string; version: string; description?: string } | null;
   protocolVersion: string | null;
   toolCounts: { total: number; byNamespace: Record<string, number> };
+  /** Tool counts on /mcp/v2/admin — separate surface as of the surface split. */
+  adminToolCounts: { total: number; byNamespace: Record<string, number> } | null;
   projectCurrentState: { ok: true; payload: unknown } | { ok: false; message: string };
   projectOperatingRules: { ok: true; payload: unknown } | { ok: false; message: string };
   projectOverview: { ok: true; payload: unknown } | { ok: false; message: string };
@@ -150,6 +178,8 @@ export interface McpV2DashboardSnapshot {
   laneOverview: { ok: true; payload: unknown } | { ok: false; message: string };
   buildOverview: { ok: true; payload: unknown } | { ok: false; message: string };
   handoffLatest: { ok: true; payload: unknown } | { ok: false; message: string };
+  /** /mcp/v2/admin release.get_gate — public-safe but lives on admin surface. */
+  releaseGate: { ok: true; payload: unknown } | { ok: false; message: string };
 }
 
 /**
@@ -166,6 +196,7 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
       serverInfo: null,
       protocolVersion: null,
       toolCounts: { total: 0, byNamespace: {} },
+      adminToolCounts: null,
       projectCurrentState: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
       projectOperatingRules: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
       projectOverview: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
@@ -173,6 +204,7 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
       laneOverview: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
       buildOverview: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
       handoffLatest: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
+      releaseGate: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
     };
   }
 
@@ -184,6 +216,7 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
       serverInfo: null,
       protocolVersion: null,
       toolCounts: { total: 0, byNamespace: {} },
+      adminToolCounts: null,
       projectCurrentState: { ok: false, message: initialised.message },
       projectOperatingRules: { ok: false, message: initialised.message },
       projectOverview: { ok: false, message: initialised.message },
@@ -191,6 +224,7 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
       laneOverview: { ok: false, message: initialised.message },
       buildOverview: { ok: false, message: initialised.message },
       handoffLatest: { ok: false, message: initialised.message },
+      releaseGate: { ok: false, message: initialised.message },
     };
   }
 
@@ -200,16 +234,34 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
     byNamespace[ns] = (byNamespace[ns] ?? 0) + 1;
   }
 
-  const results = await Promise.all([
-    mcpV2CallTool('project.get_current_state', {}, signal),
-    mcpV2CallTool('project.get_operating_rules', {}, signal),
-    mcpV2CallTool('project.get_overview', {}, signal),
-    mcpV2CallTool('project.get_work_status', {}, signal),
-    mcpV2CallTool('mobile.get_lane_overview', {}, signal),
-    mcpV2CallTool('mobile.get_build_overview', {}, signal),
-    mcpV2CallTool('handoff.get_latest', {}, signal),
+  const [current, rules, work, lane, build, handoff, proj, release, adminList] = await Promise.all([
+    // Core surface (8 tools).
+    mcpV2CallTool('project.get_current_state', {}, signal, 'core'),
+    mcpV2CallTool('project.get_operating_rules', {}, signal, 'core'),
+    mcpV2CallTool('project.get_work_status', {}, signal, 'core'),
+    mcpV2CallTool('mobile.get_lane_overview', {}, signal, 'core'),
+    mcpV2CallTool('mobile.get_build_overview', {}, signal, 'core'),
+    mcpV2CallTool('handoff.get_latest', {}, signal, 'core'),
+    // Admin surface — public-safe extras live here post-split.
+    mcpV2CallTool('project.get_overview', {}, signal, 'admin'),
+    mcpV2CallTool('release.get_gate', {}, signal, 'admin'),
+    // Admin tools/list — for the diagnostics panel.
+    rpc({ jsonrpc: '2.0', id: 4, method: 'tools/list' }, signal, 'admin'),
   ]);
-  const [current, rules, proj, work, lane, build, handoff] = results;
+
+  let adminToolCounts: { total: number; byNamespace: Record<string, number> } | null = null;
+  if (!('error' in adminList) && adminList.status === 200) {
+    try {
+      const parsed = JSON.parse(adminList.raw) as { result?: { tools?: McpV2Tool[] } };
+      const adminTools = parsed.result?.tools ?? [];
+      const adminByNamespace: Record<string, number> = {};
+      for (const t of adminTools) {
+        const ns = t.name.split('.')[0] ?? 'unknown';
+        adminByNamespace[ns] = (adminByNamespace[ns] ?? 0) + 1;
+      }
+      adminToolCounts = { total: adminTools.length, byNamespace: adminByNamespace };
+    } catch { /* leave null */ }
+  }
 
   const wrap = (r: McpV2CallResult): { ok: true; payload: unknown } | { ok: false; message: string } =>
     r.ok ? { ok: true, payload: r.payload } : { ok: false, message: r.message };
@@ -220,6 +272,7 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
     serverInfo: initialised.serverInfo,
     protocolVersion: initialised.protocolVersion,
     toolCounts: { total: initialised.tools.length, byNamespace },
+    adminToolCounts,
     projectCurrentState: wrap(current),
     projectOperatingRules: wrap(rules),
     projectOverview: wrap(proj),
@@ -227,5 +280,6 @@ export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise
     laneOverview: wrap(lane),
     buildOverview: wrap(build),
     handoffLatest: wrap(handoff),
+    releaseGate: wrap(release),
   };
 }
