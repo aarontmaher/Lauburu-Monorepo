@@ -44,6 +44,11 @@ export interface SyntheticNutritionChecklistFixture {
   expectedConfidence: 'user_reported' | 'imported_uncertain';
 }
 
+export interface SyntheticNotesPasteFixture {
+  id: string;
+  rawText: string;
+}
+
 export const SYNTHETIC_JOURNAL_TERM_FIXTURES: readonly SyntheticJournalTermFixture[] = [
   {
     id: 'apple-notes-bpc-alias',
@@ -179,5 +184,46 @@ export const SYNTHETIC_NUTRITION_CHECKLIST_FIXTURES: readonly SyntheticNutrition
     expectedCompletedCount: 1,
     expectedTargetCount: 3,
     expectedConfidence: 'imported_uncertain',
+  },
+] as const;
+
+export const SYNTHETIC_NOTES_PASTE_FIXTURES: readonly SyntheticNotesPasteFixture[] = [
+  {
+    id: 'apple-notes-structure-dose-periods',
+    rawText: [
+      'Peptides',
+      'BPC 157',
+      '2026-05-01 started 100 mcg daily',
+      '2026-05-08 changed to 200 mcg daily',
+      '2026-05-15 break for travel',
+      '',
+      'Lungs and Sinuses',
+      'Salbutamol',
+      '2026-05-03 single use 2 puffs pre-training',
+      'Pulmicort',
+      '2026-05-04 1 puff nightly',
+      '2026-05-04 budesonide nasal spray 1 spray nightly',
+      '',
+      'Drugs',
+      '2026-05-05 amitriptaline 10 mg nightly',
+      '2026-05-10 dexamfetamine 5 mg morning',
+      '2026-05-20 esomeprazole stopped permanently',
+      '',
+      'Supplements',
+      'Creatine',
+      '2026-05-06 5 g daily',
+      '2026-05-06 mouth tape nightly',
+      '2026-05-06 nasal irrigation nightly',
+      '',
+      'Surgery',
+      '2026-05-07 minor procedure note only',
+    ].join('\n'),
+  },
+  {
+    id: 'apple-notes-broad-category',
+    rawText: [
+      'Peptides',
+      '2026-06-01 peptides changed',
+    ].join('\n'),
   },
 ] as const;

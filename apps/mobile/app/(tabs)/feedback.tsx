@@ -15,13 +15,18 @@ import { useAuthStore } from '../../src/store/auth-store';
 import { useDailyJournalStore, type TrainingIntent } from '../../src/store/daily-journal-store';
 import {
   BEGINNER_JOURNAL_CATEGORIES,
+  IMPORT_JOURNAL_EVENT_LABELS,
   JOURNAL_CATEGORY_LABELS,
   JOURNAL_EVENT_LABELS,
   useCustomJournalStore,
   type JournalEventType,
   type JournalItemCategory,
 } from '../../src/store/custom-journal-store';
-import { SESSION_TYPE_LABELS } from '@lauburu/shared';
+import {
+  SESSION_TYPE_LABELS,
+  parseJournalNotesPaste,
+  type ParsedJournalNotesEntry,
+} from '@lauburu/shared';
 import { ATHLETE_CAPABILITY_COPY } from '../../src/services/athlete-capability-display';
 
 function todayDate() {
@@ -479,6 +484,197 @@ function CustomJournalBeginnerCard() {
   );
 }
 
+function JournalNotesImportCard() {
+  const importConfirmedAppleNotes = useCustomJournalStore((s) => s.importConfirmedAppleNotes);
+  const syncStatus = useCustomJournalStore((s) => s.syncStatus);
+  const [rawText, setRawText] = useState('');
+  const [previewRows, setPreviewRows] = useState<ParsedJournalNotesEntry[]>([]);
+  const [confirmedIds, setConfirmedIds] = useState<Set<string>>(new Set());
+  const [skippedIds, setSkippedIds] = useState<Set<string>>(new Set());
+  const [rowEdits, setRowEdits] = useState<NonNullable<Parameters<typeof importConfirmedAppleNotes>[0]['edits']>>({});
+  const [savedMessage, setSavedMessage] = useState<string | null>(null);
+
+  const parsePreview = () => {
+    Keyboard.dismiss();
+    const result = parseJournalNotesPaste(rawText);
+    setPreviewRows(result.entries);
+    setConfirmedIds(new Set(result.entries.filter((row) => row.status === 'ready_to_import').map((row) => row.id)));
+    setSkippedIds(new Set(result.entries.filter((row) => row.status === 'skipped' || row.status === 'missing_required_field').map((row) => row.id)));
+    setRowEdits({});
+    setSavedMessage(null);
+  };
+
+  const toggleConfirmed = (row: ParsedJournalNotesEntry) => {
+    if (row.status === 'missing_required_field' || row.status === 'skipped') return;
+    setConfirmedIds((current) => {
+      const next = new Set(current);
+      if (next.has(row.id)) next.delete(row.id);
+      else next.add(row.id);
+      return next;
+    });
+    setSkippedIds((current) => {
+      const next = new Set(current);
+      next.delete(row.id);
+      return next;
+    });
+  };
+
+  const skipRow = (row: ParsedJournalNotesEntry) => {
+    setSkippedIds((current) => new Set(current).add(row.id));
+    setConfirmedIds((current) => {
+      const next = new Set(current);
+      next.delete(row.id);
+      return next;
+    });
+  };
+
+  const saveConfirmed = async () => {
+    const ids = [...confirmedIds].filter((id) => !skippedIds.has(id));
+    const unresolved = previewRows.filter((row) => row.needsConfirmation && !confirmedIds.has(row.id) && !skippedIds.has(row.id));
+    if (unresolved.length > 0) {
+      Alert.alert('Import notes', 'Confirm or skip every row that needs confirmation before saving.');
+      return;
+    }
+    if (ids.length === 0) {
+      Alert.alert('Import notes', 'Confirm at least one preview row first.');
+      return;
+    }
+    const result = await importConfirmedAppleNotes({ rows: previewRows, confirmedRowIds: ids, edits: rowEdits });
+    setSavedMessage(`Imported ${result.eventCount} event${result.eventCount === 1 ? '' : 's'}`);
+  };
+
+  const updateRowEdit = (rowId: string, key: 'itemText' | 'amount' | 'unit', value: string) => {
+    setRowEdits((current) => ({
+      ...current,
+      [rowId]: {
+        ...current[rowId],
+        [key]: key === 'amount' ? (value.trim() ? Number(value) : null) : value,
+      },
+    }));
+  };
+
+  const grouped = previewRows.reduce<Record<string, ParsedJournalNotesEntry[]>>((acc, row) => {
+    const key = row.section || 'Unsectioned';
+    acc[key] = [...(acc[key] ?? []), row];
+    return acc;
+  }, {});
+
+  return (
+    <View style={styles.card}>
+      <View style={styles.cardHeaderRow}>
+        <View>
+          <Text style={styles.cardTitle}>Import notes</Text>
+          <Text style={styles.cardSubtitle}>Paste journal notes for private preview</Text>
+        </View>
+        {previewRows.length > 0 && <Text style={styles.savedText}>{confirmedIds.size} confirmed</Text>}
+      </View>
+
+      <Text style={styles.noteText}>
+        Preview before saving. Private journal data. Ambiguous entries need confirmation.
+      </Text>
+      <Text style={styles.noteText}>
+        Not medical advice. Associations only, not causation. Stored locally first; syncs to your account when signed in and journal sync is available.
+      </Text>
+
+      <TextInput
+        style={[styles.input, styles.notesImportInput]}
+        placeholder="Paste journal note text"
+        placeholderTextColor="#666"
+        value={rawText}
+        onChangeText={setRawText}
+        multiline
+      />
+
+      <Pressable style={styles.saveButton} onPress={parsePreview}>
+        <Text style={styles.saveText}>Preview Notes</Text>
+      </Pressable>
+
+      {Object.entries(grouped).map(([section, rows]) => (
+        <View key={section} style={styles.timelineGroup}>
+          <Text style={styles.sectionLabel}>{section}</Text>
+          {rows.map((row) => {
+            const isConfirmed = confirmedIds.has(row.id) && !skippedIds.has(row.id);
+            const isSkipped = skippedIds.has(row.id);
+            const edit = rowEdits[row.id] ?? {};
+            return (
+              <View key={row.id} style={styles.importPreviewRow}>
+                <View style={styles.timelineTextCol}>
+                  <Text style={styles.timelineTitle}>
+                    {row.date ?? 'Needs date'} · {edit.itemText ?? row.canonicalName ?? row.itemText}
+                  </Text>
+                  <Text style={styles.timelineMeta}>
+                    {JOURNAL_CATEGORY_LABELS[row.category as JournalItemCategory] ?? row.category} · {IMPORT_JOURNAL_EVENT_LABELS[row.eventType] ?? JOURNAL_EVENT_LABELS[row.eventType as JournalEventType] ?? row.eventType} · {edit.amount ?? row.amount ?? 'no amount'} {edit.unit ?? row.unit ?? ''} · {row.confidence}
+                  </Text>
+                  <View style={styles.importEditRow}>
+                    <TextInput
+                      style={[styles.input, styles.importNameInput]}
+                      placeholder="Edit item"
+                      placeholderTextColor="#666"
+                      value={edit.itemText ?? row.canonicalName ?? row.itemText}
+                      onChangeText={(value) => updateRowEdit(row.id, 'itemText', value)}
+                    />
+                    <TextInput
+                      style={[styles.input, styles.importAmountInput]}
+                      placeholder="Amount"
+                      placeholderTextColor="#666"
+                      value={edit.amount == null ? (row.amount == null ? '' : String(row.amount)) : String(edit.amount)}
+                      onChangeText={(value) => updateRowEdit(row.id, 'amount', value)}
+                      keyboardType="decimal-pad"
+                    />
+                    <TextInput
+                      style={[styles.input, styles.importUnitInput]}
+                      placeholder="Unit"
+                      placeholderTextColor="#666"
+                      value={edit.unit ?? row.unit ?? ''}
+                      onChangeText={(value) => updateRowEdit(row.id, 'unit', value)}
+                    />
+                  </View>
+                  {row.periodStartDate && (
+                    <Text style={styles.timelineNote}>
+                      Period starts {row.periodStartDate}{row.periodEndDate ? ` until ${row.periodEndDate}` : ''}
+                    </Text>
+                  )}
+                  {row.parseWarnings.length > 0 && (
+                    <Text style={styles.timelineNote}>Warnings: {row.parseWarnings.join(' ')}</Text>
+                  )}
+                  {(row.confirmationReason || row.skippedReason) && (
+                    <Text style={styles.timelineNote}>{row.confirmationReason ?? row.skippedReason}</Text>
+                  )}
+                </View>
+                <View style={styles.importActionCol}>
+                  <Pressable
+                    style={[styles.smallOutlineBtn, isConfirmed && styles.pillActive]}
+                    onPress={() => toggleConfirmed(row)}>
+                    <Text style={[styles.smallOutlineText, isConfirmed && styles.pillTextActive]}>
+                      {isConfirmed ? 'Confirmed' : 'Confirm'}
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.smallOutlineBtn, isSkipped && styles.pillDanger]}
+                    onPress={() => skipRow(row)}>
+                    <Text style={[styles.smallOutlineText, isSkipped && styles.pillDangerText]}>Skip</Text>
+                  </Pressable>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      ))}
+
+      {previewRows.length > 0 && (
+        <Pressable style={styles.saveButton} onPress={saveConfirmed}>
+          <Text style={styles.saveText}>Save Confirmed Rows</Text>
+        </Pressable>
+      )}
+      {savedMessage && <Text style={styles.savedText}>{savedMessage}</Text>}
+      <Text style={styles.noteText}>
+        Raw lines stay attached to private journal rows only. No public MCP export. These rows are context-only and do not change the final readiness score.
+      </Text>
+      <Text style={styles.statusText}>Journal sync: {syncStatus}</Text>
+    </View>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // 1. Recommendation feedback
 // ---------------------------------------------------------------------------
@@ -854,6 +1050,7 @@ export default function FeedbackScreen() {
       </Text>
       <DailyJournalCard />
       <CustomJournalBeginnerCard />
+      <JournalNotesImportCard />
       <SyncCard />
       <NextDayCheckinCard />
       <RecommendationFeedbackCard />
@@ -957,6 +1154,10 @@ const styles = StyleSheet.create({
     minHeight: 74,
     textAlignVertical: 'top',
   },
+  notesImportInput: {
+    minHeight: 140,
+    textAlignVertical: 'top',
+  },
   twoColRow: { flexDirection: 'row', gap: 8 },
   flexInput: { flex: 1 },
   timelineGroup: {
@@ -981,6 +1182,43 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255,255,255,0.04)',
+  },
+  importPreviewRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    gap: 10,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.04)',
+  },
+  importActionCol: {
+    width: 92,
+    gap: 8,
+    alignItems: 'stretch',
+  },
+  importEditRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginTop: 6,
+  },
+  importNameInput: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    fontSize: 12,
+  },
+  importAmountInput: {
+    width: 76,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    fontSize: 12,
+  },
+  importUnitInput: {
+    width: 70,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    fontSize: 12,
   },
   timelineTextCol: { flex: 1, gap: 2 },
   timelineTitle: { fontSize: 14, fontWeight: '700' },

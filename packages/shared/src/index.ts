@@ -3,6 +3,7 @@ export * from './types';
 export * from './api';
 export * from './health';
 export * from './knowledge';
+export * from './journal';
 export * from './athlete-memory';
 export * from './syllabus';
 export { compareHiitWorkouts } from './backend/services/hiit/compare-hiit-workouts';

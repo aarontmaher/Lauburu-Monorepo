@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { supabase } from './supabase';
 import { secureStorage } from './secure-storage';
 import { useAuthStore } from './auth-store';
+import type { JournalNotesEventType, ParsedJournalNotesEntry } from '@lauburu/shared';
 
 export type JournalItemCategory =
   | 'medication'
@@ -93,6 +94,12 @@ export interface AddJournalEventInput {
   notes?: string | null;
 }
 
+export interface ImportJournalNotesInput {
+  rows: ParsedJournalNotesEntry[];
+  confirmedRowIds: string[];
+  edits?: Record<string, Partial<Pick<ParsedJournalNotesEntry, 'itemText' | 'category' | 'eventType' | 'amount' | 'unit' | 'frequency' | 'date'>>>;
+}
+
 type SyncStatus = 'idle' | 'syncing' | 'synced' | 'failed';
 
 interface CustomJournalState {
@@ -107,6 +114,7 @@ interface CustomJournalState {
   syncPendingToSupabase: () => Promise<boolean>;
   createItem: (input: CreateJournalItemInput) => Promise<CustomJournalItem | null>;
   addEvent: (input: AddJournalEventInput) => Promise<CustomJournalEvent | null>;
+  importConfirmedAppleNotes: (input: ImportJournalNotesInput) => Promise<{ itemCount: number; eventCount: number }>;
   getActiveItems: (onDate?: string) => CustomJournalItem[];
   getRecentEvents: (limit?: number) => CustomJournalEvent[];
   countActiveMetricAffectingItems: (onDate?: string) => number;
@@ -150,6 +158,19 @@ export const JOURNAL_EVENT_LABELS: Record<JournalEventType, string> = {
   symptom_note: 'Symptom note',
   training_note: 'Training note',
   injury_note: 'Injury note',
+  custom: 'Note',
+};
+
+export const IMPORT_JOURNAL_EVENT_LABELS: Record<JournalNotesEventType, string> = {
+  start: 'Start',
+  stop: 'Stop',
+  permanent_stop: 'Permanent stop',
+  dose_change: 'Dose changed',
+  break: 'Break',
+  single_use: 'Single use',
+  note: 'Note',
+  training_note: 'Training note',
+  surgery_or_injury_event: 'Surgery / injury event',
   custom: 'Note',
 };
 
@@ -230,6 +251,15 @@ function sanitizeEventType(value: unknown): JournalEventType {
     return value;
   }
   return 'custom';
+}
+
+function mapImportEventType(value: unknown): JournalEventType {
+  if (value === 'permanent_stop') return 'stop';
+  if (value === 'break') return 'break_start';
+  if (value === 'single_use') return 'one_off_use';
+  if (value === 'note') return 'custom';
+  if (value === 'surgery_or_injury_event') return 'injury_note';
+  return sanitizeEventType(value);
 }
 
 function sanitizeConfidence(value: unknown): JournalConfidence {
@@ -407,6 +437,20 @@ function isItemActive(item: CustomJournalItem, events: CustomJournalEvent[], onD
   return latest.eventType === 'start' || latest.eventType === 'dose_change' || latest.eventType === 'break_end';
 }
 
+function normalizeImportKey(name: string, category: JournalItemCategory): string {
+  return `${category}:${name.trim().toLowerCase().replace(/\s+/g, ' ')}`;
+}
+
+function importedNotesText(row: ParsedJournalNotesEntry, editedName: string): string {
+  const parts = [
+    `Imported preview row ${row.sourceLineNumber}`,
+    row.section ? `section: ${row.section}` : null,
+    row.periodEndDate ? `period until ${row.periodEndDate}` : null,
+    row.rawLine ? `raw: ${row.rawLine}` : null,
+  ].filter(Boolean);
+  return `${editedName}. ${parts.join(' · ')}`.slice(0, 1200);
+}
+
 export const useCustomJournalStore = create<CustomJournalState>((set, get) => ({
   items: [],
   events: [],
@@ -569,6 +613,88 @@ export const useCustomJournalStore = create<CustomJournalState>((set, get) => ({
     });
     void get().syncPendingToSupabase();
     return event;
+  },
+
+  importConfirmedAppleNotes: async (input) => {
+    const confirmed = new Set(input.confirmedRowIds);
+    const userId = useAuthStore.getState().user?.id ?? null;
+    const now = new Date().toISOString();
+    const existingItems = [...get().items];
+    const itemsByKey = new Map(existingItems.map((item) => [normalizeImportKey(item.name, item.category), item]));
+    const importedItems: CustomJournalItem[] = [];
+    const importedEvents: CustomJournalEvent[] = [];
+
+    for (const row of input.rows) {
+      if (!confirmed.has(row.id)) continue;
+      if (row.status === 'missing_required_field' || row.status === 'skipped') continue;
+      const edit = input.edits?.[row.id] ?? {};
+      const name = sanitizeText(edit.itemText ?? row.canonicalName ?? row.itemText, 160);
+      const date = sanitizeText(edit.date ?? row.date, 20);
+      if (!name || !date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+      const category = sanitizeCategory(edit.category ?? row.category);
+      const key = normalizeImportKey(name, category);
+      let item = itemsByKey.get(key);
+      const amount = sanitizeNumber(edit.amount ?? row.amount);
+      const unit = sanitizeText(edit.unit ?? row.unit, 40);
+      const frequency = sanitizeText(edit.frequency ?? row.frequency, 160);
+      const notes = importedNotesText(row, name);
+
+      if (!item) {
+        item = {
+          id: genId(),
+          userId,
+          category,
+          name,
+          unit,
+          defaultDose: amount,
+          defaultFrequency: frequency,
+          mayAffectMetrics: category !== 'custom',
+          notes,
+          source: 'imported_apple_notes',
+          confidence: 'imported_uncertain',
+          createdAt: now,
+          updatedAt: now,
+          pendingSync: true,
+        };
+        itemsByKey.set(key, item);
+        importedItems.push(item);
+      }
+
+      importedEvents.push({
+        id: genId(),
+        userId,
+        itemId: item.id,
+        eventType: mapImportEventType(edit.eventType ?? row.eventType),
+        effectiveAt: toEffectiveAt(date),
+        dose: amount,
+        unit,
+        frequency,
+        notes,
+        source: 'imported_apple_notes',
+        confidence: 'imported_uncertain',
+        createdAt: now,
+        pendingSync: true,
+      });
+    }
+
+    if (importedItems.length === 0 && importedEvents.length === 0) {
+      return { itemCount: 0, eventCount: 0 };
+    }
+
+    set((state) => {
+      const next = {
+        items: [...state.items, ...importedItems].slice(-120),
+        events: [...state.events, ...importedEvents]
+          .sort((a, b) => a.effectiveAt.localeCompare(b.effectiveAt) || a.createdAt.localeCompare(b.createdAt))
+          .slice(-240),
+        lastSyncAt: state.lastSyncAt,
+        lastSyncError: null,
+      };
+      void persistSafely(next);
+      return { ...next, syncStatus: 'idle' };
+    });
+    void get().syncPendingToSupabase();
+    return { itemCount: importedItems.length, eventCount: importedEvents.length };
   },
 
   getActiveItems: (onDate = todayIsoDate()) => get().items.filter((item) => isItemActive(item, get().events, onDate)),
