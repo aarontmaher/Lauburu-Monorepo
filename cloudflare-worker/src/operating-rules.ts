@@ -7,7 +7,7 @@
  *
  * Edit policy: changing this constant requires a paired edit to
  * docs/OPERATING_RULES.md in the same commit. The live integration
- * test asserts count = 18 + each rule's id stays stable. Any
+ * test asserts count = 19 + each rule's id stays stable. Any
  * promotion / demotion / reorder is a Lane-3 batch with explicit
  * Aaron approval per docs/BACKLOG_AUTOMATION_SYSTEM.md § Lane 3.
  */
@@ -126,6 +126,12 @@ export const OPERATING_RULES: readonly OperatingRule[] = [
     title: 'Action ledger until evidence clears',
     body:
       'Every prompt, action, goal, human action, coder action, Agent action, or AI action must be recorded in MCP / bridge until evidence proves it is completed or no longer necessary. A pending action can be cleared only with evidence of completion, supersession, void / obsolete state, unsafe / rejected state, or no-longer-necessary state. Each record should include: id, owner, targetWorkerOrPerson, lane, actionText, triggerCondition, status: pending | active | completed | blocked | void | superseded, priority, createdAt, updatedAt, evidenceSummaryOrLink, and voidReason / supersededBy when applicable. Public MCP surfaces may show compact redacted summaries; full action detail is admin gated. Obsolete Agent prompts, stale worker prompts, and completed bridge commands must be voided or superseded, not left active.',
+  },
+  {
+    id: 19,
+    title: 'Coordinator-fed idle lanes',
+    body:
+      "When Claude, Codex, or Agent is idle, the coordinator (Aaron via ChatGPT or laptop) MUST provide the next highest-leverage prompt for that lane unless a real external blocker or explicit Aaron pause exists. Do not let coders sit idle while active project priorities (per rule 14) remain. The coordinator's pacing obligation is the inverse of rule 15's coder obligation: rule 15 makes individual prompts non-idling-by-design; this rule makes the prompt cadence non-gapping. Idle without a fed prompt for >15 minutes during active workdays is a workflow bug — surface it via project.get_current_state freshness signal and the action ledger backlog (rule 18). Acceptable pause states: tester-device QA awaiting Aaron, EAS billing limit, vendor-console wait, sleep, or explicit Aaron-paused decision recorded in docs/APP_DEVELOPMENTS.md. Unacceptable: \"I forgot to give the coder the next thing.\" If a lane has no high-leverage adjacent work, the coordinator MUST queue a backlog-grooming or doc-refresh prompt rather than leave it idle.",
   },
 ] as const;
 

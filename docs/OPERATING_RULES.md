@@ -40,7 +40,7 @@ hash of the rule strings).
 
 Updated 2026-05-08.
 
-## The eighteen rules
+## The nineteen rules
 
 These are stable. Coders MUST NOT promote, demote, reorder, or
 soften any of them without an explicit doc commit referenced by
@@ -221,6 +221,23 @@ this file.
     may show compact redacted summaries; full action detail is admin
     gated. Obsolete Agent prompts, stale worker prompts, and completed
     bridge commands must be voided or superseded, not left active.
+19. **Coordinator-fed idle lanes.** When Claude, Codex, or Agent is
+    idle, the coordinator (Aaron via ChatGPT or laptop) MUST provide
+    the next highest-leverage prompt for that lane unless a real
+    external blocker or explicit Aaron pause exists. Do not let coders
+    sit idle while active project priorities (per rule 14) remain.
+    The coordinator's pacing obligation is the inverse of rule 15's
+    coder obligation: rule 15 makes individual prompts non-idling-by-
+    design; this rule makes the prompt cadence non-gapping. Idle
+    without a fed prompt for >15 minutes during active workdays is a
+    workflow bug — surface it via `project.get_current_state`
+    freshness signal and the action ledger backlog (rule 18).
+    Acceptable pause states: tester-device QA awaiting Aaron, EAS
+    billing limit, vendor-console wait, sleep, or explicit Aaron-paused
+    decision recorded in `docs/APP_DEVELOPMENTS.md`. Unacceptable: "I
+    forgot to give the coder the next thing." If a lane has no
+    high-leverage adjacent work, the coordinator MUST queue a
+    backlog-grooming or doc-refresh prompt rather than leave it idle.
 
 ## Where to find each rule's full body
 
@@ -244,13 +261,14 @@ this file.
 | 16 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "No delayed instruction chains"; `docs/LOCAL_BRIDGE_WORKFLOW_PLAN.md` § Stage 3 prompt template; `docs/CONTROL_CENTRE_MVP_SPEC.md` § prompt refs / handoff prompts |
 | 17 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Deferred prompts/actions backlog"; `docs/MCP_CANONICAL_STATE.md` § public v2 tools and backlog state; `docs/CONTROL_CENTRE_MVP_SPEC.md` § prompt refs / handoff prompts |
 | 18 | `docs/BACKLOG_AUTOMATION_SYSTEM.md` § "Action ledger"; `docs/MCP_CANONICAL_STATE.md` § action ledger surface; `docs/CONTROL_CENTRE_MVP_SPEC.md` § prompt refs / handoff prompts |
+| 19 | This file § rule 19; `docs/PHONE_ONLY_AUTOMATION_PLAN.md` § coordinator-cadence; `docs/CHATGPT_CONNECTOR_SETUP.md` (ChatGPT-side coordinator role) — rule 14 priorities + rule 15 coder obligation are the paired rules |
 
 ## How the rules surface in MCP / control-centre
 
 | Surface | Carries the rules |
 |---|---|
 | `/mcp/v2` `tools/call name="project.get_operating_rules"` | No Auth. Returns `{ schemaVersion, generatedAt, rules: [{ id, title, body }, …] }`. |
-| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..18], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
+| `/api/control_centre` (admin token) | Snapshot includes an `operatingRules` field: `{ count, ids: [1..19], titles: [...] }` (titles only; full body via the dedicated MCP tool). |
 | `docs/OPERATING_RULES.md` (this file) | Authoritative full-body text. |
 
 Consumers MUST cross-check the count + ids against this file.
@@ -266,7 +284,7 @@ integration test will flag.
   Lane-3 batch (`docs/BACKLOG_AUTOMATION_SYSTEM.md` § Lane 3)
   with Aaron's written approval.
 - **No surfacing the rules without ID.** Every rule has a
-  stable id 1..18; consumers reference rules by id, not by
+  stable id 1..19; consumers reference rules by id, not by
   string match.
 - **No moving rule text into private surfaces.** These rules
   are public-safe by design — they describe coder discipline,
