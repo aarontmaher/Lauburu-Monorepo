@@ -19,7 +19,8 @@
       "deferUntil": null,
       "resolutionNote": null,
       "ledgerActionId": "qa-android-versioncode-20-build-dispatched",
-      "actionPayload": "Open Play Console → Lauburu → Testing → Internal testing → Create release → upload ~/Downloads/lauburu-android-versionCode20-health-connect-debug-surface.aab → Save → Review → Start rollout to Internal Testing."
+      "actionPayload": "Open Play Console → Lauburu → Testing → Internal testing → Create release → upload ~/Downloads/lauburu-android-versionCode20-health-connect-debug-surface.aab → Save → Review → Start rollout to Internal Testing.",
+      "dependsOnGateId": null
     },
     {
       "id": "gate-mcp-core-worker-deploy",
@@ -36,7 +37,8 @@
       "deferUntil": null,
       "resolutionNote": null,
       "ledgerActionId": null,
-      "actionPayload": "cd cloudflare-worker && npx wrangler deploy --env preview"
+      "actionPayload": "cd cloudflare-worker && npx wrangler deploy --env preview",
+      "dependsOnGateId": "gate-android-v20-play-upload"
     },
     {
       "id": "gate-fs020-agent-qa-recording",
@@ -53,7 +55,8 @@
       "deferUntil": null,
       "resolutionNote": null,
       "ledgerActionId": "fs020-b20d-ui-after-parser-confirmation",
-      "actionPayload": "Bundle FS-020 with next Aaron-approved QA build; Agent QA the import card with synthetic paste fixture; record AGENT_QA_RESULT_JSON via npm run bridge:agent-qa."
+      "actionPayload": "Bundle FS-020 with next Aaron-approved QA build; Agent QA the import card with synthetic paste fixture; record AGENT_QA_RESULT_JSON via npm run bridge:agent-qa.",
+      "dependsOnGateId": "gate-android-v20-play-upload"
     }
   ]
 }

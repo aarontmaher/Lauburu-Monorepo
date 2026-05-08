@@ -27,7 +27,9 @@ import {
   completeGate,
   deferGate,
   expireIfDue,
+  gateLockReason,
   isActionable,
+  isGateUnlocked,
   type ApprovalGate,
   type ApprovalTransitionResult,
 } from '@lauburu/shared';
@@ -55,6 +57,7 @@ const DEFAULT_GATES: readonly ApprovalGate[] = [
     deferUntil: null,
     resolutionNote: null,
     ledgerActionId: 'qa-android-versioncode-20-build-dispatched',
+    dependsOnGateId: null,
     actionPayload:
       'Open Play Console → Lauburu → Testing → Internal testing → Create release → upload ~/Downloads/lauburu-android-versionCode20-health-connect-debug-surface.aab → Save → Review → Start rollout to Internal Testing.',
   },
@@ -75,6 +78,10 @@ const DEFAULT_GATES: readonly ApprovalGate[] = [
     resolutionNote: null,
     ledgerActionId: null,
     actionPayload: 'cd cloudflare-worker && npx wrangler deploy --env preview',
+    // Worker deploy depends on the v20 Play upload completing, so
+    // the deploy gate stays locked until Aaron upload-approves the
+    // build first. This is the canonical chained-approvals example.
+    dependsOnGateId: 'gate-android-v20-play-upload',
   },
 ];
 
@@ -101,6 +108,10 @@ interface ApprovalGatesState {
   actionableGates: () => ApprovalGate[];
   byId: (id: string) => ApprovalGate | null;
   ledgerNotePreview: () => string | null;
+  /** Whether the gate's upstream dependency (if any) has cleared. */
+  isUnlocked: (id: string) => boolean;
+  /** Human reason a gate is locked, or null when ready. */
+  lockReason: (id: string) => string | null;
 }
 
 const RECENT_LEDGER_NOTES_CAP = 20;
@@ -187,7 +198,8 @@ export const useApprovalGatesStore = create<ApprovalGatesState>((set, get) => ({
   approve: async (id, note) => {
     const gate = get().byId(id);
     if (!gate) return { ok: false, reason: 'gate not found', next: makeMissingGate(id), ledgerNote: null };
-    const result = approveGate(gate, RESOLVER, { note: note ?? null });
+    const gateById = new Map(get().gates.map((g) => [g.id, g] as const));
+    const result = approveGate(gate, RESOLVER, { note: note ?? null, gateById });
     if (!result.ok) return result;
     const gates = get().gates.map((g) => (g.id === id ? result.next : g));
     const recent = recordLedgerNote(get(), id, result.ledgerNote);
@@ -198,7 +210,8 @@ export const useApprovalGatesStore = create<ApprovalGatesState>((set, get) => ({
   defer: async (id, deferUntil, note) => {
     const gate = get().byId(id);
     if (!gate) return { ok: false, reason: 'gate not found', next: makeMissingGate(id), ledgerNote: null };
-    const result = deferGate(gate, RESOLVER, deferUntil, { note: note ?? null });
+    const gateById = new Map(get().gates.map((g) => [g.id, g] as const));
+    const result = deferGate(gate, RESOLVER, deferUntil, { note: note ?? null, gateById });
     if (!result.ok) return result;
     const gates = get().gates.map((g) => (g.id === id ? result.next : g));
     const recent = recordLedgerNote(get(), id, result.ledgerNote);
@@ -235,6 +248,18 @@ export const useApprovalGatesStore = create<ApprovalGatesState>((set, get) => ({
     const recent = get().recentLedgerNotes;
     return recent.length > 0 ? recent[recent.length - 1].note : null;
   },
+  isUnlocked: (id) => {
+    const gate = get().byId(id);
+    if (!gate) return false;
+    const gateById = new Map(get().gates.map((g) => [g.id, g] as const));
+    return isGateUnlocked(gate, gateById);
+  },
+  lockReason: (id) => {
+    const gate = get().byId(id);
+    if (!gate) return 'gate not found';
+    const gateById = new Map(get().gates.map((g) => [g.id, g] as const));
+    return gateLockReason(gate, gateById);
+  },
 }));
 
 function makeMissingGate(id: string): ApprovalGate {
@@ -254,5 +279,6 @@ function makeMissingGate(id: string): ApprovalGate {
     resolutionNote: null,
     ledgerActionId: null,
     actionPayload: null,
+    dependsOnGateId: null,
   };
 }

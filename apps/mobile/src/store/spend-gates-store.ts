@@ -56,6 +56,7 @@ const DEFAULT_SPEND_GATES: readonly SpendGate[] = [
     precheckSummary:
       'Readiness drop 18 pts vs baseline 72. Today 54. No deterministic explanatory signal in training, sleep, or journal. Numbers are descriptive only.',
     precheckRuleId: 'precheck-readiness-anomaly-v1',
+    dependsOnGateId: null,
   },
   {
     id: 'spend-journal-import-ambiguous-2026-05-09',
@@ -80,6 +81,7 @@ const DEFAULT_SPEND_GATES: readonly SpendGate[] = [
     precheckSummary:
       'Journal import: 12 parsed rows. 7 need user confirmation, 5 low-confidence. Most rows missing required fields. No medical advice. No causation. The user reviews each row before save.',
     precheckRuleId: 'precheck-journal-import-v1',
+    dependsOnGateId: null,
   },
 ];
 

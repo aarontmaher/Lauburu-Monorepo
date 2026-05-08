@@ -74,6 +74,18 @@ export interface ApprovalGate {
   ledgerActionId: string | null;
   /** Free-form short payload describing the next automation step (sanitised, ≤ 400 chars). */
   actionPayload: string | null;
+  /**
+   * Optional dependency: this gate is locked (cannot be approved /
+   * deferred / completed) until the named gate is `approved` or
+   * `completed`. Lets coders express a chain — e.g. gate B is the
+   * "submit to Play Internal" approval which only unlocks once
+   * gate A ("approve EAS build") is completed.
+   *
+   * `cancelled` / `expired` of the dependency does NOT unlock the
+   * dependant — Aaron has to either re-create the dependency gate
+   * or explicitly cancel the dependant.
+   */
+  dependsOnGateId: string | null;
 }
 
 /** Result envelope for transitions. The caller is responsible for
@@ -129,6 +141,7 @@ export interface ApprovalGateInput {
   expiresAt: string;
   ledgerActionId?: string | null;
   actionPayload?: string | null;
+  dependsOnGateId?: string | null;
 }
 
 export function makeApprovalGate(input: ApprovalGateInput): ApprovalGate {
@@ -170,6 +183,9 @@ export function makeApprovalGate(input: ApprovalGateInput): ApprovalGate {
     resolutionNote: null,
     ledgerActionId: input.ledgerActionId ?? null,
     actionPayload,
+    dependsOnGateId: typeof input.dependsOnGateId === 'string' && input.dependsOnGateId.length > 0
+      ? input.dependsOnGateId
+      : null,
   };
 }
 
@@ -180,7 +196,7 @@ function nowIso(now: () => Date): string {
 export function approveGate(
   gate: ApprovalGate,
   resolver: string,
-  options: { now?: () => Date; note?: string | null } = {},
+  options: { now?: () => Date; note?: string | null; gateById?: Map<string, ApprovalGate> } = {},
 ): ApprovalTransitionResult {
   const now = options.now ?? (() => new Date());
   if (gate.status !== 'pending' && gate.status !== 'deferred') {
@@ -190,6 +206,10 @@ export function approveGate(
       next: gate,
       ledgerNote: null,
     };
+  }
+  if (options.gateById && !isGateUnlocked(gate, options.gateById)) {
+    const reason = gateLockReason(gate, options.gateById) ?? 'gate is locked by a dependency';
+    return { ok: false, reason, next: gate, ledgerNote: null };
   }
   const note = options.note != null ? trimAndCap(options.note, NOTE_MAX) : null;
   if (note != null && looksLikeSecret(note)) {
@@ -217,11 +237,15 @@ export function deferGate(
   gate: ApprovalGate,
   resolver: string,
   deferUntil: string,
-  options: { now?: () => Date; note?: string | null } = {},
+  options: { now?: () => Date; note?: string | null; gateById?: Map<string, ApprovalGate> } = {},
 ): ApprovalTransitionResult {
   const now = options.now ?? (() => new Date());
   if (gate.status !== 'pending' && gate.status !== 'deferred') {
     return { ok: false, reason: `cannot defer gate in status ${gate.status}`, next: gate, ledgerNote: null };
+  }
+  if (options.gateById && !isGateUnlocked(gate, options.gateById)) {
+    const reason = gateLockReason(gate, options.gateById) ?? 'gate is locked by a dependency';
+    return { ok: false, reason, next: gate, ledgerNote: null };
   }
   const deferAt = new Date(deferUntil).getTime();
   if (!Number.isFinite(deferAt)) {
@@ -340,6 +364,50 @@ export function expireIfDue(
 
 export function isActionable(gate: ApprovalGate): boolean {
   return gate.status === 'pending' || (gate.status === 'deferred' && gate.deferUntil != null && new Date(gate.deferUntil).getTime() <= Date.now());
+}
+
+/**
+ * Whether a gate's dependency (if any) has cleared. A gate without
+ * a dependsOnGateId is always unlocked. With a dependency, the
+ * gate is unlocked only when the named upstream gate is
+ * `approved` or `completed`. Cancelled / expired upstreams do NOT
+ * unlock the dependant — Aaron has to re-create or explicitly
+ * cancel.
+ *
+ * Pure: caller passes the registry as a Map for cheap lookup;
+ * `gateById.get(id)` returning undefined means the dependency is
+ * missing from the local view, which we treat as locked (fail
+ * closed).
+ */
+export function isGateUnlocked(gate: ApprovalGate, gateById: Map<string, ApprovalGate>): boolean {
+  if (!gate.dependsOnGateId) return true;
+  const upstream = gateById.get(gate.dependsOnGateId);
+  if (!upstream) return false;
+  return upstream.status === 'approved' || upstream.status === 'completed';
+}
+
+/**
+ * Combined check: the gate must be in an actionable status AND
+ * its dependency (if any) must have cleared.
+ */
+export function isGateReadyForUser(gate: ApprovalGate, gateById: Map<string, ApprovalGate>): boolean {
+  return isActionable(gate) && isGateUnlocked(gate, gateById);
+}
+
+/**
+ * Reason a gate is not ready for the user — used by the AdminDev
+ * lock chip and ledger notes. Returns null when the gate is
+ * ready.
+ */
+export function gateLockReason(gate: ApprovalGate, gateById: Map<string, ApprovalGate>): string | null {
+  if (gate.status !== 'pending' && gate.status !== 'deferred') {
+    return `gate is ${gate.status}`;
+  }
+  if (!gate.dependsOnGateId) return null;
+  const upstream = gateById.get(gate.dependsOnGateId);
+  if (!upstream) return `waiting for missing upstream gate ${gate.dependsOnGateId}`;
+  if (upstream.status === 'approved' || upstream.status === 'completed') return null;
+  return `waiting for ${gate.dependsOnGateId} (upstream is ${upstream.status})`;
 }
 
 export * from './spend';

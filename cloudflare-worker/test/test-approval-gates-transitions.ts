@@ -16,7 +16,10 @@ import {
   completeGate,
   deferGate,
   expireIfDue,
+  gateLockReason,
   isActionable,
+  isGateReadyForUser,
+  isGateUnlocked,
   looksLikeSecret,
   makeApprovalGate,
   type ApprovalGate,
@@ -182,5 +185,60 @@ assert(looksLikeSecret('ghp_abcdefghijklmnopqrstuvwxyz12'), 'ghp_ detected');
 assert(looksLikeSecret('AKIAIOSFODNN7EXAMPLE'), 'AKIA detected');
 assert(!looksLikeSecret('Approve Android v20 Play Internal upload'), 'normal copy passes');
 assert(!looksLikeSecret('cd cloudflare-worker && npx wrangler deploy --env preview'), 'shell command passes');
+
+// ── Chained approvals (dependsOnGateId) ────────────────────────────
+
+const upstream = freshGate({ id: 'upstream' });
+const dependant = freshGate({ id: 'dependant', dependsOnGateId: 'upstream' });
+const noDep = freshGate({ id: 'no-dep' });
+
+const registry = (gates: ApprovalGate[]) => new Map(gates.map((g) => [g.id, g] as const));
+
+assert(isGateUnlocked(noDep, registry([noDep])), 'no-dep gate is always unlocked');
+assert(!isGateUnlocked(dependant, registry([upstream, dependant])), 'dependant locked while upstream pending');
+assert(!isGateReadyForUser(dependant, registry([upstream, dependant])), 'dependant not ready while upstream pending');
+assert(gateLockReason(dependant, registry([upstream, dependant])) === 'waiting for upstream (upstream is pending)', 'lockReason names upstream id + status');
+assert(gateLockReason(noDep, registry([noDep])) === null, 'no-dep gate has null lock reason');
+
+const lockedApproveAttempt = approveGate(dependant, 'Aaron', { gateById: registry([upstream, dependant]) });
+assert(!lockedApproveAttempt.ok, 'approve refused while upstream not approved');
+assert(/waiting for upstream/.test(lockedApproveAttempt.reason), 'approve refusal cites the upstream wait');
+
+const lockedDeferAttempt = deferGate(dependant, 'Aaron', '2026-05-13T00:00:00Z', { gateById: registry([upstream, dependant]) });
+assert(!lockedDeferAttempt.ok, 'defer refused while upstream not approved');
+
+// Approve upstream + retry dependant.
+const upstreamApproved = approveGate(upstream, 'Aaron');
+assert(upstreamApproved.ok, 'upstream approve succeeds');
+const liveRegistry = registry([upstreamApproved.next, dependant]);
+assert(isGateUnlocked(dependant, liveRegistry), 'dependant unlocked after upstream approved');
+assert(gateLockReason(dependant, liveRegistry) === null, 'dependant lockReason null after upstream approved');
+
+const dependantApproved = approveGate(dependant, 'Aaron', { gateById: liveRegistry });
+assert(dependantApproved.ok, 'dependant approve succeeds after upstream approved');
+assert(dependantApproved.next.status === 'approved', 'dependant becomes approved');
+
+// Cancelled / expired upstream does NOT unlock dependant.
+const cancelledUpstream = cancelGate(upstream, 'Aaron');
+assert(cancelledUpstream.ok, 'cancel upstream ok');
+assert(!isGateUnlocked(dependant, registry([cancelledUpstream.next, dependant])), 'cancelled upstream does NOT unlock dependant');
+
+// Missing upstream is treated as locked (fail closed).
+assert(!isGateUnlocked(dependant, registry([dependant])), 'missing upstream is treated as locked');
+assert(/missing upstream gate upstream/.test(gateLockReason(dependant, registry([dependant])) ?? ''), 'lockReason cites missing upstream');
+
+// Empty / undefined dependsOnGateId during construction defaults to null.
+const fromEmpty = makeApprovalGate({
+  id: 'fresh',
+  title: 'Test gate',
+  description: 'Approve to proceed with the test action.',
+  priority: 'P1',
+  actionType: 'eas_build',
+  safeDefault: 'wait',
+  createdAt: T0,
+  expiresAt: T_FUTURE,
+  dependsOnGateId: '',
+});
+assert(fromEmpty.dependsOnGateId === null, 'empty-string dependsOnGateId coerced to null');
 
 console.log('approval-gates transitions test passed.');

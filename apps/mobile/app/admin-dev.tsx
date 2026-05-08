@@ -1146,6 +1146,7 @@ export default function AdminDevScreen() {
             <ApprovalGateRow
               key={gate.id}
               gate={gate}
+              lockReason={useApprovalGatesStore.getState().lockReason(gate.id)}
               onApprove={() => { void approveApprovalGate(gate.id); }}
               onDefer={(deferUntil) => { void deferApprovalGate(gate.id, deferUntil); }}
               onCancel={() => { void cancelApprovalGate(gate.id); }}
@@ -2683,17 +2684,20 @@ function SpendGateRow({
 
 function ApprovalGateRow({
   gate,
+  lockReason,
   onApprove,
   onDefer,
   onCancel,
 }: {
   gate: ApprovalGate;
+  lockReason: string | null;
   onApprove: () => void;
   onDefer: (deferUntil: string) => void;
   onCancel: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const isActive = gate.status === 'pending' || gate.status === 'deferred';
+  const isLocked = lockReason != null && (gate.status === 'pending' || gate.status === 'deferred');
+  const isActive = (gate.status === 'pending' || gate.status === 'deferred') && !isLocked;
   const expiresLabel = (() => {
     const expires = new Date(gate.expiresAt).getTime();
     if (!Number.isFinite(expires)) return '—';
@@ -2711,9 +2715,12 @@ function ApprovalGateRow({
     <View style={styles.chipBlock}>
       <Pressable onPress={() => setOpen((v) => !v)} hitSlop={6}>
         <Text style={styles.chipLabel}>
-          {gate.priority} · {gate.actionType} · {gate.status} · {expiresLabel}
+          {gate.priority} · {gate.actionType} · {gate.status}{isLocked ? ' · locked' : ''} · {expiresLabel}
         </Text>
         <Text style={styles.chipBody}>{gate.title}</Text>
+        {isLocked && (
+          <Text style={styles.note}>🔒 {lockReason}</Text>
+        )}
       </Pressable>
       {open && (
         <View style={{ gap: 6, marginTop: 6 }}>
@@ -2724,6 +2731,9 @@ function ApprovalGateRow({
           <Text style={styles.note}>safeDefault if expired: {gate.safeDefault}</Text>
           {gate.ledgerActionId && (
             <Text style={styles.note}>Unblocks ledger: {gate.ledgerActionId}</Text>
+          )}
+          {gate.dependsOnGateId && (
+            <Text style={styles.note}>Depends on gate: {gate.dependsOnGateId}</Text>
           )}
           {gate.resolvedAt && (
             <Text style={styles.note}>
