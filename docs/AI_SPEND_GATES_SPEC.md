@@ -166,11 +166,13 @@ similar). Rule 22 settings:
 
 ```ts
 interface AiSpendSettings {
-  monthlyBudgetUsd: number;             // default $5
+  tier: 'free' | 'pro' | 'elite';       // see § 4.1
+  monthlyBudgetUsd: number;             // tier-default; user can lower, never raise above tier cap without upgrade
   alwaysAskAboveUsd: number;            // default $0.50/call
   alwaysAskAboveTokens: number;         // default 4000 (long-context threshold)
-  payAsYouGoEnabled: boolean;           // default false (later)
+  payAsYouGoEnabled: boolean;           // default false; per-tier eligibility (see § 4.2)
   payAsYouGoCreditsCents: number;       // default 0
+  payAsYouGoTopUpCents: number;         // default 1000 ($10) increments
   defaultExportInsteadOfApprove: boolean; // default true for deep_research_external; off for expensive_ai
   monthlyResetDayOfMonth: number;       // 1
   currentMonth: { spendUsd: number; calls: number; lastResetAt: string };
@@ -178,8 +180,77 @@ interface AiSpendSettings {
 ```
 
 The Admin/Dev settings panel exposes these controls; the user
-profile screen exposes a subset (budget + threshold) for self-
-service.
+profile screen exposes a subset (tier + budget + threshold)
+for self-service.
+
+### 4.1 Tier model
+
+Three tiers + pay-as-you-go overflow. Each tier sets the
+**monthly budget cap** and the **default action for
+`expensive_ai` calls beyond the cap**:
+
+| Tier | Monthly budget | `cheap_ai` rate-limit | `expensive_ai` default beyond cap | `deep_research_external` | Pay-as-you-go available |
+|---|---|---|---|---|---|
+| **free** | $0 (deterministic only) | 0 calls/h | Always export-prompt (no in-app spend) | Always export-prompt | NO |
+| **pro** | $5 / month (configurable down) | 60 calls/h | Approval gate; default-defer | Approval gate; default-export-prompt | YES (opt-in) |
+| **elite** | $25 / month (configurable down) | 240 calls/h | Approval gate; default-approve | Approval gate; default-approve | YES (default-on) |
+
+Notes per tier:
+
+- **Free** ships with `cost_class: free_deterministic` only.
+  Local rules + MCP reads + bridge snapshots run uncapped.
+  Any AI inference path (`cheap_ai` or above) is gated behind
+  an upgrade prompt OR an export-prompt to external AI. Free
+  tier users still get the full deterministic surface
+  (FS-020 parser, FS-018 journal, MCP tools, audit playbook
+  capture, etc.).
+- **Pro** is the default for testers + early adopters. $5/mo
+  default budget covers ~10–25 `expensive_ai` calls
+  (depending on context length). Pay-as-you-go top-ups
+  ($10 increments) are available for overflow.
+- **Elite** is the high-throughput tier — coaches running
+  athlete-memory synthesis across multiple students,
+  high-volume video analysis, frequent style-evolution
+  passes. Default-approve for in-app `expensive_ai` (still
+  gated, but the gate's default action is approve rather
+  than defer). Pay-as-you-go is on by default.
+
+Tier transitions:
+- Upgrade at any time; new tier active for the current
+  monthly window (no proration in MVP).
+- Downgrade respects the monthly window — new tier active
+  next reset.
+- No automatic upgrades. Tier is a deliberate user
+  decision, never auto-flipped from `cheap_ai` rate-limit
+  hits.
+
+### 4.2 Pay-as-you-go overflow
+
+Available on `pro` + `elite` tiers. When monthly budget
+hits cap:
+
+1. Push notification fires (rule 21 wiring): "Monthly AI
+   budget exhausted. Top up $10 to continue, defer to next
+   reset, or switch to export-prompt for the current
+   request."
+2. Aaron approves the top-up → `payAsYouGoCreditsCents +=
+   1000`. Subsequent `expensive_ai` calls draw from credits
+   first.
+3. Credits roll over month-to-month (no expiry within the
+   same calendar year).
+4. Per-call ledger row records `payment_source: 'monthly_budget' | 'pay_as_you_go_credits'`.
+5. Hard cap: max $50 in pay-as-you-go top-ups per month
+   without explicit Aaron Admin/Dev confirmation (anti-
+   runaway).
+
+Privacy: payment provider integration is out of MVP scope —
+this is the data model only. Implementation (Stripe / RevenueCat / etc.) is a separate FS-XXX.
+
+### 4.3 Tier visibility on Admin/Dev
+
+The proof checklist § 5 (`docs/ADMIN_DEV_PROOF_CHECKLIST.md`)
+is extended with one row per tier-setting field. Tier badge
+visible in the AI spend card.
 
 ## 5. Privacy / safety floor
 

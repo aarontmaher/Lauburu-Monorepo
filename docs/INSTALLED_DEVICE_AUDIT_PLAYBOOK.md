@@ -45,7 +45,8 @@ covers the gate's needs.
 |---|---|---|---|---|
 | **Simulator script** (`npm run audit:screenshots`) | `artifacts/app-audit/<isoTimestamp>/` | Gate B (FS-XXX confirm), Gate C (Forever Improve drift), Gate F (pre-build sanity). Anything that doesn't require real-device sensors. | Free; runs locally. | Synthetic data; no real Aaron data on screen. |
 | **iPhone Mirroring** (macOS 15+ Continuity feature) | `artifacts/app-audit/iphone-mirroring/<timestamp>/` | Gate B / C / E when the screen needs to come from the real installed app but no real-device-only sensor is required. Aaron's iPhone shows on Mac; Cmd-Shift-4 captures any window. | Free; built into macOS 15+. | Real Aaron data on screen — redact before sharing. Manifest must flag `containsRealUserData: true`. |
-| **iPhone screen-record** (real device, on-device) | `artifacts/app-audit/iphone-screen-record/<timestamp>/` | Gate A (release gate, canonical), Gate D (Health Connect crash retest — needs to actually trigger the OS-level Connect flow). The only path that captures full live behaviour including OS prompts. | Free; built into iOS. | Real data + OS prompts — redact before sharing. |
+| **iPhone screen-record** (real device, on-device) | `artifacts/app-audit/iphone-screen-record/<timestamp>/` | Gate A (release gate, canonical), Gate D (Health Connect crash retest — needs to actually trigger the OS-level Connect flow on iOS) [iOS-equivalent of the Android Health Connect tap]. The only path that captures full live iOS behaviour including OS prompts. | Free; built into iOS. | Real data + OS prompts — redact before sharing. |
+| **Android scrcpy** (real device, USB → Mac) | `artifacts/app-audit/scrcpy/<timestamp>/` | Gate A + Gate D (Android Health Connect → Connect tap). Real-device equivalent on Android. | Free; `brew install scrcpy` one-time setup. | Real data on screen — redact before sharing. |
 
 The iPhone Mirroring path is the **default cheap path** for
 most non-real-sensor audits — it's the lowest-friction way to
@@ -109,7 +110,39 @@ pattern.)
    move PNGs into `artifacts/app-audit/iphone-mirroring/<timestamp>/`
    and generate `manifest.json`.
 
-### 3.3 iPhone screen-record (real device)
+### 3.3 Android scrcpy (real device, USB)
+
+For Android real-device captures with no Continuity
+equivalent. Mac-side mirroring + screenshot capture.
+
+```sh
+# One-time install (Mac):
+brew install scrcpy
+
+# Plug Android device via USB. On the device: Settings →
+# About phone → tap Build number 7 times → Developer
+# options → enable USB debugging. First connect prompts a
+# pairing dialog on the device.
+
+# Mirror + record full session:
+scrcpy --record artifacts/app-audit/scrcpy/<isoTimestamp>/session.mp4
+
+# OR per-screen screenshots (faster, no mirroring window):
+adb -s <serial> exec-out screencap -p > screen.png
+```
+
+scrcpy outputs an `.mp4` of the entire mirrored session;
+extract per-screen PNGs in post via `ffmpeg -ss <ts> -frames:v 1 ...`.
+For repeatable per-screen captures, prefer `adb exec-out
+screencap` driven by a small Bash script (Codex follow-up
+in the Maestro spec § 7 covers this case at the v3 tier).
+
+Output path: `artifacts/app-audit/scrcpy/<timestamp>/`.
+
+Privacy: same as iPhone Mirroring — real-user data on
+screen; redact before sharing.
+
+### 3.4 iPhone screen-record (real device)
 
 Used when the audit needs OS-level prompts captured (Health
 permission grants, Health Connect → Connect crash repro).

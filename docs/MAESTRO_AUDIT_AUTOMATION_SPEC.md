@@ -267,6 +267,17 @@ For rule 9 verification:
 
 ## 7. Codex handoff prompt — implementation
 
+**Status update (2026-05-09):** Codex shipped a substantial
+slice of this spec in commit `ce62e90` ("QA: Phase 3 audit
+automation — Maestro flows + scrcpy Android helper") — 14
+Maestro YAML flows under `apps/mobile/audit-flows/` (00-launch
+through 99-teardown), `scripts/audit-maestro.mjs` wrapper
+with manifest output to `artifacts/app-audit/maestro/<isoTimestamp>/`,
+and `scripts/audit-android-scrcpy.mjs` for the real-Android
+companion path. The handoff prompt below is preserved as a
+historical reference + as the contract any follow-up batch
+must continue to honour.
+
 Stored as ready-to-paste. Aaron MUST explicitly approve
 dispatch before this prompt goes to Codex.
 
