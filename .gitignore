@@ -49,6 +49,9 @@ yarn-error.log*
 # Local QA evidence — screenshots, generated prompts, and bridge JSON drafts
 tmp/
 
+# Audit screenshot bundles produced by `npm run audit:screenshots`
+artifacts/
+
 # Claude Code workspace state — never commit
 .claude/
 
