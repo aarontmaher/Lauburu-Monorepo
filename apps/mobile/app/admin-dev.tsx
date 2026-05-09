@@ -71,6 +71,7 @@ import {
   buildClaudeChromePrompt,
   buildChatGPTStatusPrompt,
   buildCodexPrompt,
+  buildMcpAutomationPrompt,
   buildTerminalCheckPrompt,
   buildTmuxAttachInstructions,
 } from '../src/services/prompt-templates';
@@ -1393,6 +1394,47 @@ export default function AdminDevScreen() {
             <Text style={styles.note}>
               Stale cached `working` MUST NEVER suppress this banner. See docs/OPERATING_RULES.md § rule 24 ("Rule 1") for the full contract.
             </Text>
+          </View>
+        )}
+        {isAdmin && (
+          <View style={styles.chipBlock}>
+            <Text style={styles.chipLabel}>MCP prompt automation</Text>
+            <Text style={styles.chipBody}>
+              {laneProgress.promptsRequired.length > 0
+                ? `${laneProgress.promptsRequired.length} copy-ready prompt${laneProgress.promptsRequired.length === 1 ? '' : 's'} from MCP lane state.`
+                : 'No idle-lane prompt required in the latest MCP snapshot.'}
+            </Text>
+            <Text style={styles.note}>
+              Copy-only automation bridge. Prompts preserve MCP target/summary when present and otherwise scaffold a safe repo-only lane prompt.
+            </Text>
+            {laneProgress.promptsRequired.length === 0 ? (
+              <SelectableCopyButton
+                label="Copy MCP automation prompt"
+                body={null}
+                disabledReason="No MCP promptsRequired entries in the latest lane snapshot."
+              />
+            ) : laneProgress.promptsRequired.map((p) => (
+              <SelectableCopyButton
+                key={`mcp-automation-prompt-${p.laneId}`}
+                label={`Copy ${p.recommendedNextPromptTarget || p.laneId} automation prompt`}
+                body={buildMcpAutomationPrompt({
+                  laneId: p.laneId,
+                  idleStatus: p.idleStatus,
+                  recommendedNextPromptTarget: p.recommendedNextPromptTarget,
+                  recommendedNextPromptText: p.recommendedNextPromptText,
+                  recommendedNextPromptSummary: p.recommendedNextPromptSummary,
+                  promptProgressPercent: p.promptProgressPercent,
+                  currentPriority: nowPriority,
+                  currentBlocker: nowBlocker,
+                  nextAction: nowNextAction,
+                  mcpFreshnessLabel: mcpFreshness.label,
+                  releaseGateLabel: releaseGateSummary.ok ? releaseGateSummary.shortLabel : 'unknown',
+                  releaseGateReason: releaseGateSummary.ok
+                    ? releaseGateSummary.reason
+                    : releaseGateSummary.message ?? 'release.get_gate not loaded',
+                })}
+              />
+            ))}
           </View>
         )}
         {/* Lane progress strip — Claude / Codex / Agent (and any

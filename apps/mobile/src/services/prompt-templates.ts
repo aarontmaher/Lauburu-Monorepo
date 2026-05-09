@@ -35,6 +35,21 @@ export interface OwnerWorkflowContext {
   doNotDeleteYet: string[];
 }
 
+export interface McpAutomationPromptInput {
+  laneId: string;
+  idleStatus: string;
+  recommendedNextPromptTarget: string;
+  recommendedNextPromptText: string | null;
+  recommendedNextPromptSummary: string | null;
+  promptProgressPercent: number | 'unknown';
+  currentPriority: string;
+  currentBlocker: string;
+  nextAction: string;
+  mcpFreshnessLabel: string;
+  releaseGateLabel: string;
+  releaseGateReason: string;
+}
+
 /** Small helper — prefix bullet lines with `- ` if missing. */
 function bulletise(items: string[]): string {
   if (items.length === 0) return '(none)';
@@ -237,6 +252,59 @@ export function buildTerminalCheckPrompt(ctx: OwnerWorkflowContext): string {
     rules(ctx),
     '',
     `Lane: ${ctx.selectedTaskBundle ?? '(none — diagnostic only)'}`,
+  ].join('\n');
+}
+
+/**
+ * Copy-only prompt produced from MCP/control-centre automation
+ * state. Used when Rule 1 says a lane is idle/blocked/stale and
+ * needs a next prompt. If MCP supplied a full prompt body, preserve
+ * it verbatim inside a wrapper; otherwise emit a safe scaffold with
+ * enough context to keep the lane moving without inventing work.
+ */
+export function buildMcpAutomationPrompt(input: McpAutomationPromptInput): string {
+  const progress = input.promptProgressPercent === 'unknown'
+    ? 'unknown'
+    : `${input.promptProgressPercent}%`;
+  const suppliedPrompt = input.recommendedNextPromptText?.trim() ?? '';
+  const fallbackTask = input.recommendedNextPromptSummary?.trim()
+    || input.nextAction?.trim()
+    || 'Inspect MCP/control-centre state, pick the smallest safe adjacent task for this lane, and stop before any external release action.';
+  return [
+    header('MCP-AUTOMATION', input.recommendedNextPromptTarget || input.laneId || 'lane'),
+    '',
+    'SOURCE',
+    'Admin/Dev MCP automation prompt. Copy-only; the app does not execute commands.',
+    '',
+    'MCP STATE',
+    `Freshness: ${input.mcpFreshnessLabel || 'unknown'}`,
+    `Lane: ${input.laneId || 'lane'} · idleStatus ${input.idleStatus || 'unknown'} · progress ${progress}`,
+    `Target worker: ${input.recommendedNextPromptTarget || input.laneId || 'lane'}`,
+    '',
+    'CURRENT PRIORITY',
+    input.currentPriority || '(unset)',
+    '',
+    'CURRENT BLOCKER',
+    input.currentBlocker || 'none',
+    '',
+    'NEXT ACTION',
+    input.nextAction || '(unset)',
+    '',
+    'RELEASE GATE',
+    `${input.releaseGateLabel || 'unknown'} · ${input.releaseGateReason || 'No release gate reason loaded.'}`,
+    '',
+    'SAFETY RULES',
+    '- Start with MCP/control-centre state; if MCP is stale, say so and use terminal/repo evidence as fallback.',
+    '- Keep work repo-only unless Aaron explicitly approved an external action.',
+    '- Do not start EAS, Play, TestFlight, OTA, Worker deploy, production release, or installed-device verified claims from this prompt.',
+    '- Preserve unrelated dirty files and do not revert user changes.',
+    '- Public-safe output only: no secrets, raw health values, tokens, or private terminal logs.',
+    '',
+    suppliedPrompt ? 'MCP-PROVIDED PROMPT' : 'TASK',
+    suppliedPrompt || fallbackTask,
+    '',
+    'OUTPUT',
+    'Report root cause/context, files changed if any, tests run, commit hash if committed, and remaining blocker. Include MCP_RESULT / MCP_BLOCKER / MCP_TESTS / MCP_NEXT markers when useful for bridge writeback.',
   ].join('\n');
 }
 
