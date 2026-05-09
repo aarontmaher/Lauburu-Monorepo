@@ -266,12 +266,58 @@ export function buildMaestroAgentAuditManifest(input) {
   };
 }
 
+export function buildMaestroAgentHandoff(input) {
+  const manifest = input?.manifest && typeof input.manifest === 'object' ? input.manifest : {};
+  const agentManifest = input?.agentManifest && typeof input.agentManifest === 'object' ? input.agentManifest : {};
+  const bundlePath = isString(input?.bundlePath) ? input.bundlePath : 'artifacts/app-audit/maestro/<platform>/<build>/<timestamp>';
+  const captured = Array.isArray(manifest.captured) ? manifest.captured : [];
+  const failed = Array.isArray(manifest.failed) ? manifest.failed : [];
+  const screenLines = captured.length > 0
+    ? captured
+        .filter((screen) => screen && typeof screen === 'object' && isString(screen.file))
+        .map((screen) => `- ${screen.flow}: ${bundlePath}/${screen.file}`)
+        .join('\n')
+    : '- none captured';
+  const failedLines = failed.length > 0
+    ? failed
+        .filter((item) => item && typeof item === 'object' && isString(item.flow))
+        .map((item) => `- ${item.flow}: ${isString(item.reason) ? item.reason : 'failed'}`)
+        .join('\n')
+    : '- none';
+  return `# Agent Audit Handoff
+
+Source: ${isString(agentManifest.source) ? agentManifest.source : 'maestro_v3'}
+Status: ${isString(agentManifest.status) ? agentManifest.status : 'captured_only'}
+Platform: ${manifest.platform === 'ios' || manifest.platform === 'android' ? manifest.platform : 'unknown'}
+Bundle: ${bundlePath}
+Manifest: ${bundlePath}/manifest.json
+Agent manifest: ${bundlePath}/agent-audit-manifest.json
+
+## Gate Rule
+
+Maestro simulator/emulator evidence can find UI bugs and regressions, but cannot clear installed-device gates or support an installed-device verified claim. Real iPhone evidence still requires iPhone Mirroring, TestFlight install, and Apple Health device checks.
+
+## Screenshots
+
+${screenLines}
+
+## Failed Flows
+
+${failedLines}
+
+## Agent Review Prompt
+
+Review the public-safe screenshots and manifest for UI regressions, stale/error/provisional truth-label issues, unreadable copy, blocked navigation, and Admin/Dev freshness disagreement. Do not infer real-device Apple Health behavior from simulator evidence.
+`;
+}
+
 export function parseMaestroArgs(argv) {
-  const out = { flow: null, platform: null, device: null, dryRun: false, keepTmp: false };
+  const out = { flow: null, suite: null, platform: null, device: null, dryRun: false, keepTmp: false };
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
     const next = argv[i + 1];
     if (a === '--flow' && next) { out.flow = next; i += 1; }
+    else if (a === '--suite' && next) { if (next === 'ios' || next === 'default') out.suite = next; i += 1; }
     else if (a === '--platform' && next) { if (next === 'ios' || next === 'android') out.platform = next; i += 1; }
     else if (a === '--device' && next) { out.device = next; i += 1; }
     else if (a === '--dry-run') out.dryRun = true;

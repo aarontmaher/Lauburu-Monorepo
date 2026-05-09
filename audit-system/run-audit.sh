@@ -16,7 +16,7 @@ Install locally:
   maestro --version
 
 Then boot an iOS Simulator or Android emulator with Lauburu installed and run:
-  audit-system/run-audit.sh --platform ios
+  audit-system/run-audit.sh --platform ios --suite ios
   audit-system/run-audit.sh --platform android
 
 This audit is simulator/emulator evidence only and cannot clear installed-device gates.

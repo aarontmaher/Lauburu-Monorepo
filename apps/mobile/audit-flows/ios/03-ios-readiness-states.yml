@@ -1,0 +1,21 @@
+# 03-ios-readiness-states — stale/error/provisional labels on Health.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Health"
+- scrollUntilVisible:
+    element:
+      text: "Grappler Readiness"
+    direction: UP
+    optional: true
+- takeScreenshot: "03-ios-readiness-card"
+- assertVisible:
+    text: "Seed / provisional"
+    optional: true
+- assertVisible:
+    text: "Error"
+    optional: true
+- assertVisible:
+    text: "stale"
+    optional: true
+- takeScreenshot: "03-ios-readiness-state-labels"

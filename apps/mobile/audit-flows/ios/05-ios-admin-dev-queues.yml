@@ -1,0 +1,25 @@
+# 05-ios-admin-dev-queues — Admin/Dev state, queues, before/after refresh.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Settings"
+    optional: true
+- tapOn:
+    text: "Admin / Dev"
+    optional: true
+- takeScreenshot: "05-ios-admin-dev-before-refresh"
+- tapOn:
+    text: "Refresh status"
+    optional: true
+- tapOn:
+    text: "Refresh MCP v2"
+    optional: true
+- waitForAnimationToEnd:
+    timeout: 4000
+- takeScreenshot: "05-ios-admin-dev-after-refresh"
+- scrollUntilVisible:
+    element:
+      text: "Overnight Prompt Queue"
+    direction: DOWN
+    optional: true
+- takeScreenshot: "05-ios-admin-dev-queues"

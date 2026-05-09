@@ -14,6 +14,7 @@ import {
   buildManifest,
   buildIphoneMirroringManifest,
   buildMaestroAgentAuditManifest,
+  buildMaestroAgentHandoff,
   buildMaestroManifest,
   buildScrcpyAndroidManifest,
   buildV21HealthConnectAgentQaScaffold,
@@ -288,6 +289,15 @@ assert(maestroAgentManifest.evidence.screenshotRefs.length === 2, 'maestro agent
 assert(maestroAgentManifest.evidence.screenshotRefs[0].endsWith('/00-launch-1.png'), 'maestro agent manifest: screenshot path includes bundle');
 assert(maestroAgentManifest.status === 'partial', 'maestro agent manifest: failed flow makes partial status');
 
+const maestroHandoff = buildMaestroAgentHandoff({
+  manifest: maestro,
+  agentManifest: maestroAgentManifest,
+  bundlePath: 'artifacts/app-audit/maestro/android/android-v21/2026-05-09T12-00-00-000Z',
+});
+assert(maestroHandoff.includes('Agent Audit Handoff'), 'maestro handoff: title');
+assert(maestroHandoff.includes('cannot clear installed-device gates'), 'maestro handoff: gate warning');
+assert(maestroHandoff.includes('02-health: maestro-exit-1'), 'maestro handoff: failed flow included');
+
 const maestroJunk = buildMaestroManifest({
   platform: 'web' as any,
   flows: ['ok', 12345 as any, '', 'also-ok'],
@@ -303,16 +313,18 @@ assert(maestroJunk.captured.length === 1, 'maestro junk: malformed captured drop
 assert(maestroJunk.failed.length === 1, 'maestro junk: malformed failed dropped');
 
 const maestroArgs1 = parseMaestroArgs([]);
-assert(maestroArgs1.flow === null && maestroArgs1.platform === null && maestroArgs1.dryRun === false && maestroArgs1.keepTmp === false, 'parseMaestroArgs default empty');
+assert(maestroArgs1.flow === null && maestroArgs1.suite === null && maestroArgs1.platform === null && maestroArgs1.dryRun === false && maestroArgs1.keepTmp === false, 'parseMaestroArgs default empty');
 
-const maestroArgs2 = parseMaestroArgs(['--flow', '02-health', '--platform', 'ios', '--device', 'sim-1', '--dry-run', '--keep-tmp']);
+const maestroArgs2 = parseMaestroArgs(['--flow', '02-health', '--suite', 'ios', '--platform', 'ios', '--device', 'sim-1', '--dry-run', '--keep-tmp']);
 assert(maestroArgs2.flow === '02-health', 'parseMaestroArgs --flow');
+assert(maestroArgs2.suite === 'ios', 'parseMaestroArgs --suite ios');
 assert(maestroArgs2.platform === 'ios', 'parseMaestroArgs --platform ios');
 assert(maestroArgs2.device === 'sim-1', 'parseMaestroArgs --device');
 assert(maestroArgs2.dryRun === true, 'parseMaestroArgs --dry-run');
 assert(maestroArgs2.keepTmp === true, 'parseMaestroArgs --keep-tmp');
 
 assert(parseMaestroArgs(['--platform', 'web']).platform === null, 'parseMaestroArgs rejects unknown platform');
+assert(parseMaestroArgs(['--suite', 'web']).suite === null, 'parseMaestroArgs rejects unknown suite');
 
 // ── scrcpy Android manifest ─────────────────────────────────────────
 

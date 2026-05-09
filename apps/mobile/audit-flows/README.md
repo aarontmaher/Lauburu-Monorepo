@@ -32,6 +32,9 @@ maestro test apps/mobile/audit-flows/01-home.yml
 # Basic launch + Home + Health/Manage Sources + Admin/Dev smoke:
 audit-system/run-audit.sh --platform ios --flow 00-smoke-basic
 
+# iOS simulator audit path:
+audit-system/run-audit.sh --platform ios --suite ios
+
 # Full suite:
 maestro test apps/mobile/audit-flows/
 
@@ -48,6 +51,7 @@ artifacts/app-audit/maestro/<platform>/<build>/<isoTimestamp>/
   ...
   manifest.json
   agent-audit-manifest.json
+  agent-handoff.md
 ```
 
 `artifacts/` is gitignored; bundles never reach the repo.
@@ -72,8 +76,25 @@ artifacts/app-audit/maestro/<platform>/<build>/<isoTimestamp>/
 | `12-admin-dev-research-offload.yml` | Admin/Dev → Deep Research offload Section → expand each row. |
 | `99-teardown.yml` | Sign out (optional) so the next run starts cold. |
 
+## iOS simulator suite
+
+Run with `audit-system/run-audit.sh --platform ios --suite ios`.
+These flows are simulator evidence only; they can find bugs but cannot
+clear installed-device gates.
+
+| File | Captures |
+|---|---|
+| `ios/00-ios-launch-refresh.yml` | Launch, Home before refresh, Home after refresh. |
+| `ios/01-ios-home-readiness.yml` | Home and readiness entry point. |
+| `ios/02-ios-health-apple-health.yml` | Health, Apple Health status, Manage Sources, after refresh. |
+| `ios/03-ios-readiness-states.yml` | Readiness card labels including provisional/stale/error if present. |
+| `ios/04-ios-journal.yml` | Journal and journal refresh state. |
+| `ios/05-ios-admin-dev-queues.yml` | Admin/Dev before/after refresh and Overnight Prompt Queue. |
+| `ios/06-ios-control-queue.yml` | Control/queue tab and after-refresh state if available. |
+
 Each flow runs `takeScreenshot` after the relevant tap. The wrapper
-script renames the captures `<flow-step>.png` and writes a manifest.
+script renames the captures `<flow-step>.png`, writes `manifest.json`,
+`agent-audit-manifest.json`, and `agent-handoff.md`.
 
 ## Anti-rules
 

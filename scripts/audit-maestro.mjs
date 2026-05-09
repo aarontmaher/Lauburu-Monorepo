@@ -14,6 +14,7 @@
  *
  * Flags:
  *   --flow <name>          Run a single flow file (e.g. 02-health)
+ *   --suite <default|ios>  Run the default root suite or iOS simulator suite
  *   --platform <ios|android>  Force a target platform; default auto
  *   --device <id>          Forward to maestro test --device <id>
  *   --dry-run              Print the maestro command without running
@@ -28,6 +29,7 @@ import { homedir } from 'node:os';
 
 import {
   buildMaestroAgentAuditManifest,
+  buildMaestroAgentHandoff,
   buildMaestroManifest,
   parseMaestroArgs,
 } from './audit-screenshots-helpers.mjs';
@@ -80,10 +82,21 @@ function maestroAvailable() {
 }
 
 function listFlowFiles() {
-  if (!existsSync(FLOW_DIR)) return [];
-  return readdirSync(FLOW_DIR)
+  const dir = flowDirForSuite();
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
     .filter((n) => n.endsWith('.yml') && n !== 'README.md')
     .sort();
+}
+
+function flowDirForSuite() {
+  if (args.suite === 'ios') return join(FLOW_DIR, 'ios');
+  return FLOW_DIR;
+}
+
+function flowAbsPath(flow) {
+  if (flow.includes('/') || flow.includes('\\')) return join(FLOW_DIR, flow);
+  return join(flowDirForSuite(), flow);
 }
 
 function findScreenshots(searchDir) {
@@ -121,7 +134,7 @@ async function main() {
     ? [args.flow.endsWith('.yml') ? args.flow : `${args.flow}.yml`]
     : listFlowFiles();
   if (flows.length === 0) {
-    console.error(`No flows found under ${FLOW_DIR}.`);
+    console.error(`No flows found under ${flowDirForSuite()}.`);
     process.exit(1);
   }
 
@@ -138,6 +151,7 @@ async function main() {
   mkdirSync(outDirAbs, { recursive: true });
 
   console.log(`Maestro audit run`);
+  console.log(`  suite:    ${args.suite ?? 'default'}`);
   console.log(`  flows:    ${flows.length}`);
   console.log(`  output:   ${relative(ROOT, outDirAbs)}`);
   console.log(`  build:    appVersion ${buildIdentity.appVersion ?? '—'} · android v${buildIdentity.androidVersionCode ?? '—'} · iOS Build ${buildIdentity.iosBuildNumber ?? '—'}`);
@@ -149,7 +163,7 @@ async function main() {
   const beforeSet = new Set(findScreenshots(tmpRoot).map((f) => f.abs));
 
   for (const flow of flows) {
-    const abs = join(FLOW_DIR, flow);
+    const abs = flowAbsPath(flow);
     if (!existsSync(abs)) {
       console.error(`  ✗ ${flow}: file not found`);
       failed.push({ flow, reason: 'file-not-found' });
@@ -206,9 +220,16 @@ async function main() {
     bundlePath: relative(ROOT, outDirAbs),
   });
   writeFileSync(join(outDirAbs, 'agent-audit-manifest.json'), `${JSON.stringify(agentManifest, null, 2)}\n`);
+  const agentHandoff = buildMaestroAgentHandoff({
+    manifest,
+    agentManifest,
+    bundlePath: relative(ROOT, outDirAbs),
+  });
+  writeFileSync(join(outDirAbs, 'agent-handoff.md'), agentHandoff);
   console.log(`\nDone. Captured ${captured.length} screenshot(s); ${failed.length} flow(s) failed.`);
   console.log(`  manifest: ${relative(ROOT, join(outDirAbs, 'manifest.json'))}`);
   console.log(`  agent manifest: ${relative(ROOT, join(outDirAbs, 'agent-audit-manifest.json'))}`);
+  console.log(`  agent handoff: ${relative(ROOT, join(outDirAbs, 'agent-handoff.md'))}`);
   console.log('  gate: simulator/emulator capture only; cannot clear installed-device release gates');
 
   if (!args.keepTmp) {
