@@ -1,6 +1,6 @@
 # MCP bridge auto-refresh
 
-How terminal/tmux lane state stays within 30–60s of MCP /
+How terminal/tmux lane state stays within roughly 10–15s of MCP /
 Admin/Dev. Three pieces:
 
 1. **Heartbeat fields** on every per-lane row.
@@ -74,6 +74,17 @@ Stop with Ctrl-C. Trap-based shutdown.
 Recommended invocation: keep a tmux pane named `bridge-watch`
 running `npm run bridge:watch`. It survives restarts of the
 laptop's other tmux sessions because it only reads them.
+
+For prompt automation that should notice lane completion quickly,
+run the MCP polling watcher at the same cadence:
+
+```
+npm run watcher:mcp -- --interval 10 --auto-refresh
+```
+
+The watcher accepts `--interval` down to 5 seconds; use 10 seconds
+as the normal laptop-side setting to avoid unnecessary Worker
+polling while still catching finished lanes quickly.
 
 ## 3. AdminDev drift warning
 
@@ -149,7 +160,7 @@ AGENT_QA_RESULT_JSON:
 non-JSON marker values + the QA-digest fields.
 `bridge-watch.sh` compares the hash across ticks and fires a
 fresh snapshot whenever it changes — that is how the bridge
-gets to **10–30 seconds drift** for marker-driven updates,
+gets to **10–15 seconds drift** for marker-driven updates,
 ahead of the 60-second heartbeat refresh.
 
 **Sanitization rules.** No raw pane text reaches Supabase. The

@@ -6,7 +6,7 @@
  *
  * Intended to run during active sessions in a long-running
  * shell:
- *   npm run watcher:mcp -- --interval 60 --auto-refresh
+ *   npm run watcher:mcp -- --interval 10 --auto-refresh
  *
  * Outputs:
  *   - data/mcp-watcher/<isoDate>.jsonl — per-tick findings.
@@ -17,7 +17,7 @@
  *     path the bridge uses. NEVER writes secrets to logs.
  *
  * Flags:
- *   --interval <seconds>      poll interval (default 60; min 30; max 600).
+ *   --interval <seconds>      poll interval (default 10; min 5; max 600).
  *   --auto-refresh            on stale_writeback / no_writeback,
  *                             run `npm run bridge:snapshot` and re-poll once.
  *   --tmux-session <name>     tmux session to inspect for
@@ -55,7 +55,7 @@ const MCP_URL = 'https://lauburu-mcp-preview.lauburu-aaron.workers.dev/mcp/v2';
 
 function parseArgs(argv) {
   const args = {
-    intervalSec: 60,
+    intervalSec: 10,
     autoRefresh: false,
     tmuxSession: 'codex-lauburu',
     once: false,
@@ -63,7 +63,7 @@ function parseArgs(argv) {
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--interval') args.intervalSec = Math.max(30, Math.min(600, parseInt(argv[++i] ?? '60', 10) || 60));
+    if (a === '--interval') args.intervalSec = Math.max(5, Math.min(600, parseInt(argv[++i] ?? '10', 10) || 10));
     else if (a === '--auto-refresh') args.autoRefresh = true;
     else if (a === '--tmux-session') args.tmuxSession = argv[++i] ?? 'codex-lauburu';
     else if (a === '--once') args.once = true;
@@ -71,7 +71,7 @@ function parseArgs(argv) {
     else if (a === '--help' || a === '-h') {
       console.log(`Usage: node scripts/mcp-watcher.mjs [flags]
 
-  --interval <seconds>      poll interval (30..600, default 60)
+  --interval <seconds>      poll interval (5..600, default 10)
   --auto-refresh            on stale, run bridge:snapshot once
   --tmux-session <name>     tmux session to inspect (default codex-lauburu)
   --once                    run a single tick and exit
