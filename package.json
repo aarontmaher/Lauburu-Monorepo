@@ -23,6 +23,8 @@
     "mcp:test:public-redaction": "cd cloudflare-worker && npx tsx test/test-mcp-public-redaction.ts",
     "watcher:mcp": "node scripts/mcp-watcher.mjs",
     "watcher:mcp:test": "cd cloudflare-worker && npx tsx test/test-mcp-watcher-helpers.ts",
+    "prompt:dispatch": "node scripts/prompt-dispatcher.mjs",
+    "prompt:dispatch:test": "cd cloudflare-worker && npx tsx test/test-prompt-dispatcher-helpers.ts",
     "queue:taxonomy:test": "cd cloudflare-worker && npx tsx test/test-queue-taxonomy-helpers.ts",
     "rules:test": "cd cloudflare-worker && npx tsx test/test-operating-rules.ts",
     "cc:test:live": "cd chat-app && npx tsx src/server/scripts/test-control-centre-route.ts",

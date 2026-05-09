@@ -2,3 +2,6 @@
 # that aren't useful in git history) but keep the dir + .gitkeep.
 agent-status/*.json
 !agent-status/.gitkeep
+
+# Prompt dispatcher queue/logs are local operator state.
+prompt-dispatcher/
