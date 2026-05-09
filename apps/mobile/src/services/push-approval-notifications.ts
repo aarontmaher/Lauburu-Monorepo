@@ -40,6 +40,7 @@ import {
   type ApprovalNotificationGateMutation,
 } from '@lauburu/shared';
 import { useApprovalGatesStore } from '../store/approval-gates-store';
+import { ANDROID_CONTROLLER_NOTIFICATION_CATEGORIES } from './android-controller-context';
 
 // Re-export the pure helpers from @lauburu/shared so app-side
 // callers don't have to import from two places.
@@ -51,6 +52,41 @@ export type { ApprovalNotificationActionId, ApprovalNotificationGateMutation as 
 type GateMutation = ApprovalNotificationGateMutation;
 /** Default defer window when the user taps "Defer" on a notification. */
 export const DEFAULT_DEFER_HOURS = SHARED_DEFAULT_DEFER_HOURS;
+export const ANDROID_CONTROLLER_CATEGORY_PREFIX = 'lauburu.controller.';
+
+const ANDROID_CONTROLLER_CATEGORY_COPY: Record<string, { title: string; actions: NotificationActionShape[] }> = {
+  idle_lane: {
+    title: 'Idle lane',
+    actions: [
+      { identifier: 'open_admin_dev', buttonTitle: 'Open Admin/Dev', options: { opensAppToForeground: true } },
+    ],
+  },
+  approval_needed: {
+    title: 'Approval needed',
+    actions: [
+      { identifier: 'open_approvals', buttonTitle: 'Review', options: { opensAppToForeground: true } },
+      { identifier: 'defer', buttonTitle: 'Defer', options: { opensAppToForeground: false } },
+    ],
+  },
+  audit_complete: {
+    title: 'Audit complete',
+    actions: [
+      { identifier: 'open_evidence', buttonTitle: 'View evidence', options: { opensAppToForeground: true } },
+    ],
+  },
+  mcp_stale: {
+    title: 'MCP stale',
+    actions: [
+      { identifier: 'open_admin_dev', buttonTitle: 'Open Admin/Dev', options: { opensAppToForeground: true } },
+    ],
+  },
+  build_blocked: {
+    title: 'Build blocked',
+    actions: [
+      { identifier: 'open_admin_dev', buttonTitle: 'View gate', options: { opensAppToForeground: true } },
+    ],
+  },
+};
 
 /**
  * Lazy-load expo-notifications. Returns null when the dep is not
@@ -96,6 +132,36 @@ export async function registerApprovalCategory(): Promise<{ registered: boolean;
     return { registered: true, reason: 'category registered' };
   } catch (err) {
     return { registered: false, reason: err instanceof Error ? err.message : 'unknown error' };
+  }
+}
+
+/**
+ * Register Android controller notification categories. Safe scaffold:
+ * no-op until expo-notifications is installed in an approved native
+ * build. Payloads stay generic and public-safe.
+ */
+export async function registerAndroidControllerCategories(): Promise<{ registered: boolean; reason: string; categories: string[] }> {
+  const Notifications = loadNotificationsModule() as null | {
+    setNotificationCategoryAsync?: (
+      identifier: string,
+      actions: NotificationActionShape[],
+    ) => Promise<unknown>;
+  };
+  if (!Notifications || typeof Notifications.setNotificationCategoryAsync !== 'function') {
+    return { registered: false, reason: 'expo-notifications not installed', categories: [] };
+  }
+  const registered: string[] = [];
+  try {
+    for (const category of ANDROID_CONTROLLER_NOTIFICATION_CATEGORIES) {
+      const copy = ANDROID_CONTROLLER_CATEGORY_COPY[category];
+      if (!copy) continue;
+      const identifier = `${ANDROID_CONTROLLER_CATEGORY_PREFIX}${category}`;
+      await Notifications.setNotificationCategoryAsync(identifier, copy.actions);
+      registered.push(identifier);
+    }
+    return { registered: true, reason: 'controller categories registered', categories: registered };
+  } catch (err) {
+    return { registered: false, reason: err instanceof Error ? err.message : 'unknown error', categories: registered };
   }
 }
 

@@ -41,6 +41,7 @@ import { useOwnerWorkflowStore } from '../src/store/owner-workflow-store';
 import { useAuditEventStore } from '../src/store/audit-event-store';
 import { useAdminDevNotificationStore } from '../src/store/admin-dev-notification-store';
 import { useApprovalGatesStore } from '../src/store/approval-gates-store';
+import { useHealthStore } from '../src/store/health-store';
 import { useSpendGatesStore, isSpendGateActionable } from '../src/store/spend-gates-store';
 import { useResearchJobsStore } from '../src/store/research-jobs-store';
 import type { ApprovalGate, SpendGate, ResearchJob } from '@lauburu/shared';
@@ -58,6 +59,11 @@ import {
   summariseLaneProgress,
   type LaneProgressSummary,
 } from '../src/services/lane-progress-summary';
+import {
+  ANDROID_CONTROLLER_NOTIFICATION_CATEGORIES,
+  buildAndroidControllerContext,
+  type AndroidControllerHealthConnectState,
+} from '../src/services/android-controller-context';
 import { StatusPill } from '../src/components/primitives/StatusPill';
 import type { Tone } from '../src/components/primitives/_helpers';
 import {
@@ -815,6 +821,12 @@ export default function AdminDevScreen() {
   const accessGranted = isAdmin || localDevAccess;
 
   const [health, setHealth] = useState<BackendHealth | null>(null);
+  const nativeHealthDays = useHealthStore((s) => s.days.length);
+  const nativeHealthLastSyncAt = useHealthStore((s) => s.lastSyncAt);
+  const nativeHealthError = useHealthStore((s) => s.error);
+  const nativeHealthPermissions = useHealthStore((s) => s.permissions);
+  const nativeHealthDiagnostics = useHealthStore((s) => s.lastSyncDiagnostics);
+  const hcRegistrationStatus = useHealthStore((s) => s.hcRegistrationStatus);
   const [adminStatus, setAdminStatus] = useState<AdminStatus | null>(null);
   const [connectorSnapshot, setConnectorSnapshot] = useState<ConnectorSnapshot | null>(null);
   const [mcpV2Snapshot, setMcpV2Snapshot] = useState<McpV2DashboardSnapshot | null>(null);
@@ -973,6 +985,31 @@ export default function AdminDevScreen() {
   const releaseGateSummary = summariseReleaseGate(mcpV2Snapshot);
   const laneOverviewSummary = summariseLaneOverview(mcpV2Snapshot);
   const laneHeartbeat = summariseLaneHeartbeat(mcpCurrentState);
+  const healthConnectPermissionGranted =
+    nativeHealthPermissions?.permissions
+      ? Object.values(nativeHealthPermissions.permissions).some((status) => status === 'authorized')
+      : false;
+  const healthConnectRecordCounts = nativeHealthDiagnostics?.recordCounts ?? {};
+  const healthConnectAvailableMetrics = Object.values(healthConnectRecordCounts)
+    .filter((value) => typeof value === 'number' && Number.isFinite(value) && value > 0)
+    .length;
+  const healthConnectMissingMetrics = Object.entries(healthConnectRecordCounts)
+    .filter(([, value]) => !(typeof value === 'number' && Number.isFinite(value) && value > 0))
+    .map(([key]) => key);
+  const healthConnectControllerState: AndroidControllerHealthConnectState =
+    Platform.OS !== 'android'
+      ? 'unknown'
+      : hcRegistrationStatus === 'did_not_register'
+        ? 'not_registered'
+        : nativeHealthError
+          ? 'sync_failed'
+          : nativeHealthDays > 0 && nativeHealthLastSyncAt
+            ? 'connected'
+            : nativeHealthLastSyncAt
+              ? 'stale'
+              : healthConnectPermissionGranted
+                ? 'sync_needed'
+                : 'permission_needed';
   const developerModeRecommendation = summariseDeveloperModeRecommendation(mcpFreshness, releaseGateSummary, laneHeartbeat);
   const markerWriteback = summariseMarkerWriteback(mcpCurrentState);
   const nowPriority = mcpCurrentState?.currentPriority ?? connectorWork?.currentPriority ?? CURRENT_PRIORITY;
@@ -1024,6 +1061,38 @@ export default function AdminDevScreen() {
     && allWorkerDirectionAlertsEnabled
     && workerDirectionState.key != null
     && workerDirectionState.key !== lastAllWorkerDirectionAlertKey;
+  const samsungController = buildAndroidControllerContext({
+    adminEntitled: isAdmin,
+    platform: Platform.OS,
+    generatedAt: new Date().toISOString(),
+    mcp: {
+      updatedAt: mcpFreshness.updatedAt === '—' ? null : mcpFreshness.updatedAt,
+      ageMs: mcpFreshness.ageMs,
+      isStale: mcpFreshness.stale,
+      staleReason: mcpFreshness.reason,
+    },
+    lanes: laneProgress.lanes.map((lane) => ({
+      id: lane.id,
+      status: lane.status,
+      heartbeatAgeMs: lane.ageMs,
+      terminalDisagreement: lane.idleStatus !== 'working' && lane.status === 'working',
+    })),
+    nextPromptTarget: laneProgress.promptsRequired[0]?.recommendedNextPromptTarget ?? null,
+    humanApprovalCount: approvalGates.filter((gate) => gate.status === 'pending' || gate.status === 'approved').length,
+    buildGateStatus: releaseGateSummary.ok
+      ? releaseGateSummary.shortLabel === 'clear' ? 'clear' : 'blocked'
+      : 'unknown',
+    qaGateStatus: releaseGateSummary.ok ? 'partial' : 'unknown',
+    overnightQueueCount,
+    auditQueueCount: laneProgress.promptsRequired.length,
+    healthConnect: {
+      state: healthConnectControllerState,
+      lastSyncAt: nativeHealthLastSyncAt,
+      availableMetrics: healthConnectAvailableMetrics,
+      missingMetrics: healthConnectMissingMetrics,
+    },
+    latestEvidencePath: 'audit-artifacts/android/<timestamp>/samsung-audit.mp4',
+  });
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -1092,6 +1161,56 @@ export default function AdminDevScreen() {
               <Text style={styles.summaryValue}>{connectorSnapshot?.buildStatus ? 'Loaded' : 'Repo-only'}</Text>
               <Text style={styles.summaryMeta}>{nowRepoSummary}</Text>
             </View>
+          </View>
+        )}
+        {samsungController && (
+          <View style={styles.noticeBlock}>
+            <Text style={styles.chipLabel}>Samsung controller home</Text>
+            <Text style={styles.chipBody}>
+              Android controller mode · MCP {samsungController.mcp.freshness} · build gate {samsungController.gates.build}
+            </Text>
+            <View style={styles.summaryGrid}>
+              <View style={styles.summaryTile}>
+                <Text style={styles.chipLabel}>MCP freshness</Text>
+                <Text style={styles.summaryValue}>{samsungController.mcp.freshness}</Text>
+                <Text style={styles.summaryMeta}>
+                  {samsungController.mcp.lastWritebackAgeMs == null ? 'no writeback age' : ageLabelMs(samsungController.mcp.lastWritebackAgeMs)}
+                  {samsungController.mcp.staleReason ? ` · ${samsungController.mcp.staleReason}` : ''}
+                </Text>
+              </View>
+              <View style={styles.summaryTile}>
+                <Text style={styles.chipLabel}>Lane truth</Text>
+                <Text style={styles.summaryValue}>{samsungController.lanes.length}</Text>
+                <Text style={styles.summaryMeta}>
+                  {samsungController.lanes.map((lane) => `${lane.id}:${lane.status}${lane.terminalDisagreement ? ' drift' : ''}`).join(' · ') || 'no lanes'}
+                </Text>
+              </View>
+              <View style={styles.summaryTile}>
+                <Text style={styles.chipLabel}>Approvals</Text>
+                <Text style={styles.summaryValue}>{samsungController.approvals.humanApprovalCount}</Text>
+                <Text style={styles.summaryMeta}>Human Approval Queue entry point: Admin/Dev approval gates below</Text>
+              </View>
+              <View style={styles.summaryTile}>
+                <Text style={styles.chipLabel}>Health Connect</Text>
+                <Text style={styles.summaryValue}>{samsungController.healthConnect.state}</Text>
+                <Text style={styles.summaryMeta}>
+                  {samsungController.healthConnect.availableMetrics} metrics · missing {samsungController.healthConnect.missingMetrics.length}
+                </Text>
+              </View>
+            </View>
+            <Text style={styles.note}>
+              Notification categories scaffolded: {ANDROID_CONTROLLER_NOTIFICATION_CATEGORIES.join(', ')}. Push remains inactive until an approved native build includes expo-notifications.
+            </Text>
+            <View style={{ gap: 6 }}>
+              <Text style={styles.rowLabel}>Audit Runner controls</Text>
+              <SelectableCopyButton label="Copy start audit command" body={samsungController.auditRunner.startAuditCommand} />
+              <SelectableCopyButton label="Copy screenshot command" body={samsungController.auditRunner.screenshotCommand} />
+              <SelectableCopyButton label="Copy video capture command" body={samsungController.auditRunner.videoCommand} />
+              <SelectableCopyButton label="Copy latest evidence path" body={samsungController.auditRunner.latestEvidencePath ?? 'audit-artifacts/android/<timestamp>/'} />
+            </View>
+            <Text style={styles.note}>
+              Mirror/simulator evidence can find bugs but cannot clear installed-device gates. No Play, TestFlight, EAS, upload, or release action runs from this controller.
+            </Text>
           </View>
         )}
         <View style={styles.chipBlock}>
