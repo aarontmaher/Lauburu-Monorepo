@@ -1,6 +1,7 @@
 /**
  * Auth state store — mirrors website AUTH_STATE / AUTH_USER pattern.
- * Email/password auth only (no OAuth — matches website).
+ * Preserves the existing Supabase session flow for email/password and
+ * provider ID-token sign-in.
  */
 import { create } from 'zustand';
 import type { User, Session } from '@supabase/supabase-js';
@@ -217,6 +218,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signInWithGoogleIdToken: async (idToken: string) => {
+    if (!idToken || idToken.trim().length === 0) return 'Google did not return a usable token.';
     let mod: any;
     try { mod = require('../services/social-auth'); }
     catch { return 'Google Sign-In not available on this build.'; }

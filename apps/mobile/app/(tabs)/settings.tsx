@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -10,7 +10,9 @@ import {
   Platform,
 } from 'react-native';
 import * as Application from 'expo-application';
+import * as Google from 'expo-auth-session/providers/google';
 import Constants from 'expo-constants';
+import * as WebBrowser from 'expo-web-browser';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import { useAppTourStore } from '../../src/components/AppTour';
@@ -36,6 +38,8 @@ import {
 import type {
   CoachingPreferences, Tier, Capability,
 } from '@lauburu/shared';
+
+WebBrowser.maybeCompleteAuthSession();
 
 // ---------------------------------------------------------------------------
 // Reusable components
@@ -194,10 +198,21 @@ function authParamToMode(param: string | undefined): 'login' | 'signup' {
   return 'login';
 }
 
+function hasGoogleClientForPlatform(ids: {
+  iosClientId?: string;
+  androidClientId?: string;
+  webClientId?: string;
+}): boolean {
+  if (Platform.OS === 'ios') return Boolean(ids.iosClientId || ids.webClientId);
+  if (Platform.OS === 'android') return Boolean(ids.androidClientId || ids.webClientId);
+  return Boolean(ids.webClientId);
+}
+
 function AuthForm({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' }) {
   const signIn = useAuthStore((s) => s.signIn);
   const signUp = useAuthStore((s) => s.signUp);
   const signInWithApple = useAuthStore((s) => s.signInWithApple);
+  const signInWithGoogleIdToken = useAuthStore((s) => s.signInWithGoogleIdToken);
   const requestPasswordReset = useAuthStore((s) => s.requestPasswordReset);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -205,11 +220,25 @@ function AuthForm({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' 
   const [resetBusy, setResetBusy] = useState(false);
   const [appleBusy, setAppleBusy] = useState(false);
   const [appleVisible, setAppleVisible] = useState(false);
+  const [appleChecked, setAppleChecked] = useState(false);
+  const [appleButtonModule, setAppleButtonModule] = useState<any | null>(null);
+  const [googleBusy, setGoogleBusy] = useState(false);
+  const [socialMessage, setSocialMessage] = useState<string | null>(null);
   const [mode, setMode] = useState<'login' | 'signup'>(initialMode);
+  const googleClientIds = useMemo(() => ({
+    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || undefined,
+    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || undefined,
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || undefined,
+  }), []);
+  const googleConfigured = hasGoogleClientForPlatform(googleClientIds);
+  const [googleRequest, googleResponse, promptGoogleAsync] = Google.useIdTokenAuthRequest({
+    ...googleClientIds,
+    scopes: ['openid', 'profile', 'email'],
+  });
 
-  // Apple Sign-In availability probe runs once on mount. Hides the
-  // button entirely until the next native build ships
-  // expo-apple-authentication. No "Coming soon" stub — just absent.
+  // Apple Sign-In availability probe runs once on mount. When present,
+  // iOS gets the native AppleAuthenticationButton instead of a custom
+  // look-alike.
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -218,11 +247,56 @@ function AuthForm({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' 
         const ok = typeof mod.appleSignInAvailable === 'function'
           ? await mod.appleSignInAvailable()
           : false;
-        if (!cancelled) setAppleVisible(Boolean(ok));
-      } catch { /* social-auth or native module missing — keep hidden */ }
+        const appleMod = ok ? require('expo-apple-authentication') : null;
+        if (!cancelled) {
+          setAppleVisible(Boolean(ok));
+          setAppleButtonModule(appleMod);
+          setAppleChecked(true);
+        }
+      } catch {
+        if (!cancelled) {
+          setAppleVisible(false);
+          setAppleButtonModule(null);
+          setAppleChecked(true);
+        }
+      }
     })();
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    if (!googleResponse) return;
+
+    if (googleResponse.type === 'success') {
+      const response = googleResponse as any;
+      const idToken =
+        response.params?.id_token ??
+        response.authentication?.idToken ??
+        null;
+      if (!idToken) {
+        setGoogleBusy(false);
+        setSocialMessage('Google did not return a usable token.');
+        return;
+      }
+      void (async () => {
+        const error = await signInWithGoogleIdToken(idToken);
+        setGoogleBusy(false);
+        if (error) {
+          setSocialMessage(error);
+          Alert.alert('Google Sign-In', error);
+        }
+      })();
+      return;
+    }
+
+    setGoogleBusy(false);
+    if (googleResponse.type === 'error') {
+      const response = googleResponse as any;
+      const message = response.error?.message ?? 'Google Sign-In failed.';
+      setSocialMessage(message);
+      Alert.alert('Google Sign-In', message);
+    }
+  }, [googleResponse, signInWithGoogleIdToken]);
 
   const handleSubmit = async () => {
     if (!email || !password) return;
@@ -240,10 +314,33 @@ function AuthForm({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' 
 
   const handleApple = async () => {
     if (appleBusy) return;
+    setSocialMessage(null);
     setAppleBusy(true);
     const error = await signInWithApple();
     setAppleBusy(false);
-    if (error) Alert.alert('Apple Sign-In', error);
+    if (error) {
+      setSocialMessage(error);
+      Alert.alert('Apple Sign-In', error);
+    }
+  };
+
+  const handleGoogle = async () => {
+    if (googleBusy) return;
+    setSocialMessage(null);
+    if (!googleConfigured) {
+      const message = 'Google Sign-In needs OAuth client IDs in app config.';
+      setSocialMessage(message);
+      Alert.alert('Google Sign-In', message);
+      return;
+    }
+    if (!googleRequest) {
+      const message = 'Google Sign-In is still loading. Try again in a moment.';
+      setSocialMessage(message);
+      return;
+    }
+    setGoogleBusy(true);
+    const result = await promptGoogleAsync();
+    if (result.type !== 'success') setGoogleBusy(false);
   };
 
   const handleForgotPassword = async () => {
@@ -261,21 +358,45 @@ function AuthForm({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' 
 
   return (
     <View style={styles.authForm}>
-      {appleVisible && (
-        <>
+      <View style={styles.socialButtonGroup}>
+        {Platform.OS === 'ios' && appleVisible && appleButtonModule && !appleBusy ? (
+          React.createElement(appleButtonModule.AppleAuthenticationButton, {
+            buttonType: appleButtonModule.AppleAuthenticationButtonType.SIGN_IN,
+            buttonStyle: appleButtonModule.AppleAuthenticationButtonStyle.BLACK,
+            cornerRadius: 8,
+            style: styles.appleAuthButton,
+            onPress: handleApple,
+          })
+        ) : Platform.OS === 'ios' ? (
           <Pressable
-            style={[styles.button, { backgroundColor: '#000' }, appleBusy && styles.buttonDisabled]}
+            style={[styles.socialButton, styles.appleFallbackButton, (!appleChecked || appleBusy) && styles.buttonDisabled]}
             onPress={handleApple}
-            disabled={appleBusy}>
+            disabled={!appleVisible || !appleChecked || appleBusy}>
             {appleBusy ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={[styles.buttonText, { color: '#fff' }]}> Sign in with Apple</Text>
+              <Text style={styles.appleFallbackText}>
+                {appleChecked ? 'Apple Sign-In unavailable on this build' : 'Checking Apple Sign-In...'}
+              </Text>
             )}
           </Pressable>
-          <Text style={styles.switchText}>or use email</Text>
-        </>
-      )}
+        ) : null}
+
+        <Pressable
+          style={[styles.socialButton, styles.googleButton, (!googleConfigured || !googleRequest || googleBusy) && styles.buttonDisabled]}
+          onPress={handleGoogle}
+          disabled={!googleConfigured || !googleRequest || googleBusy}>
+          {googleBusy ? (
+            <ActivityIndicator color="#1f1f1f" />
+          ) : (
+            <Text style={styles.googleButtonText}>
+              {googleConfigured ? 'Continue with Google' : 'Google Sign-In not configured'}
+            </Text>
+          )}
+        </Pressable>
+        {socialMessage ? <Text style={styles.socialHint}>{socialMessage}</Text> : null}
+        <Text style={styles.switchText}>or use email</Text>
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -930,6 +1051,45 @@ const styles = StyleSheet.create({
   rowLabel: { fontSize: 16, flexShrink: 1, paddingRight: 12 },
   rowValue: { fontSize: 14, opacity: 0.5, flexShrink: 1, textAlign: 'right' },
   authForm: { gap: 12 },
+  socialButtonGroup: { gap: 10 },
+  socialButton: {
+    minHeight: 48,
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  appleAuthButton: {
+    width: '100%',
+    height: 48,
+  },
+  appleFallbackButton: {
+    backgroundColor: '#000',
+  },
+  appleFallbackText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  googleButton: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#dadce0',
+  },
+  googleButtonText: {
+    color: '#1f1f1f',
+    fontSize: 15,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  socialHint: {
+    color: '#bbb',
+    fontSize: 12,
+    lineHeight: 17,
+    textAlign: 'center',
+  },
   input: {
     borderWidth: 1,
     borderColor: '#333',

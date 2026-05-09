@@ -1,21 +1,22 @@
 /**
- * Social sign-in scaffolding for Apple + Google.
+ * Social sign-in support for Apple + Google.
  *
- * NOT live until the next native build. The native modules
- * (`expo-apple-authentication`, `expo-auth-session`, `expo-crypto`)
- * are declared in `apps/mobile/package.json` but won't be linked into
- * the running app until a fresh `eas build` runs. Until then:
+ * The native modules (`expo-apple-authentication`, `expo-auth-session`,
+ * `expo-crypto`) are declared in `apps/mobile/package.json`, but they
+ * only work on binaries that have those modules linked. Until a fresh
+ * native build with provider configuration is installed:
  *
- *   - `appleSignInAvailable()` returns false on the current Build 11
- *     bundle (lazy require throws → caught → false).
- *   - `googleSignInAvailable()` returns false unless
- *     EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID (or Android equivalent) is set
- *     AND the native auth-session module is linked.
+ *   - `appleSignInAvailable()` returns false when the module is absent
+ *     or the platform is not iOS.
+ *   - `googleSignInAvailable()` returns false unless the AuthSession
+ *     module is linked and the relevant EXPO_PUBLIC_GOOGLE_* client ID
+ *     is set.
  *
  * The auth-store callers (signInWithApple/signInWithGoogle) and the
  * AuthForm in settings.tsx therefore get safe `not_available` results
  * if invoked on the current shipped binary, and the UI hides the
- * buttons entirely when availability returns false.
+ * buttons disabled with truthful copy when availability/config is
+ * missing.
  *
  * Wiring to Supabase uses signInWithIdToken which is the documented
  * cross-provider path: Apple emits an OIDC identity token, Google
@@ -52,19 +53,22 @@ export async function appleSignInAvailable(): Promise<boolean> {
   } catch { return false; }
 }
 
+export function googleSignInConfigured(platform: typeof Platform.OS = Platform.OS): boolean {
+  const ios = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ?? '';
+  const android = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID ?? '';
+  const web = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? '';
+  if (platform === 'ios') return ios.length > 0 || web.length > 0;
+  if (platform === 'android') return android.length > 0 || web.length > 0;
+  return web.length > 0;
+}
+
 export function googleSignInAvailable(): boolean {
   // Treat as available only if the native auth-session module is
   // linked AND at least one platform's client ID env var is set.
   try {
     require('expo-auth-session');
   } catch { return false; }
-  const ios = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ?? '';
-  const android = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID ?? '';
-  const web = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? '';
-  if (Platform.OS === 'ios' && ios.length > 0) return true;
-  if (Platform.OS === 'android' && android.length > 0) return true;
-  // Web client ID covers the Expo dev-client / generic fallback.
-  return web.length > 0;
+  return googleSignInConfigured();
 }
 
 // ── Apple ───────────────────────────────────────────────────────
@@ -116,16 +120,9 @@ export async function appleSignIn(): Promise<SocialAuthResult> {
 // ── Google ──────────────────────────────────────────────────────
 
 export async function googleSignIn(): Promise<SocialAuthResult> {
-  let authSession: any;
-  let crypto: any;
-  try { authSession = require('expo-auth-session/providers/google'); }
+  try { require('expo-auth-session/providers/google'); }
   catch { return { ok: false, provider: 'google', reason: 'not_available' }; }
-  try { crypto = require('expo-crypto'); }
-  catch { return { ok: false, provider: 'google', reason: 'not_available' }; }
-  const ios = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ?? '';
-  const android = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID ?? '';
-  const web = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? '';
-  if (!ios && !android && !web) return { ok: false, provider: 'google', reason: 'config_missing' };
+  if (!googleSignInConfigured()) return { ok: false, provider: 'google', reason: 'config_missing' };
   try {
     // Note: the standard expo-auth-session/providers/google flow uses
     // the React-hook `useAuthRequest`. Calling it imperatively from a
@@ -147,6 +144,9 @@ export async function googleSignIn(): Promise<SocialAuthResult> {
  * hook pattern is the only ergonomic path through expo-auth-session.
  */
 export async function exchangeGoogleIdToken(idToken: string): Promise<SocialAuthResult> {
+  if (!idToken || idToken.trim().length === 0) {
+    return { ok: false, provider: 'google', reason: 'no_id_token' };
+  }
   try {
     const { error } = await supabase.auth.signInWithIdToken({
       provider: 'google',
