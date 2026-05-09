@@ -92,6 +92,36 @@
       "supersededBy": "qa-android-versioncode-21-build-dispatched"
     },
     {
+      "id": "claude-controller-decision-test-edge-cases",
+      "owner": "Claude",
+      "targetWorkerOrPerson": "Claude",
+      "lane": "Mobile controller notification edge cases",
+      "actionText": "Extend apps/mobile/src/services/controller-notification-decisions.test.ts with additional repo-only edge cases: empty lane summary input, every-lane-stale-snapshot, mixed approval+stale priority ordering, dedupeKey cross-slice freshness, and topPriority truncation past 120 chars. Run npm run controller:test to verify all assertions pass.",
+      "triggerCondition": "Aaron-side v21 device retest is Aaron-blocked; the Claude lane has spare repo-only capacity for follow-up coverage that does not touch the live phone.",
+      "status": "pending",
+      "priority": "P1",
+      "createdAt": "2026-05-10T02:20:00Z",
+      "updatedAt": "2026-05-10T02:20:00Z",
+      "evidenceSummaryOrLink": "Repo-only follow-up to commit 9d4e47d (Samsung phone-first Admin/Dev controller + notification decisions). New cases live alongside the existing 9 cases in apps/mobile/src/services/controller-notification-decisions.test.ts. Pure decision-layer code; no native compile step; no live phone needed; runs entirely under npx tsx via npm run controller:test.",
+      "voidReason": null,
+      "supersededBy": null
+    },
+    {
+      "id": "codex-dispatcher-queue-stale-prune",
+      "owner": "Codex",
+      "targetWorkerOrPerson": "Codex",
+      "lane": "Dispatcher queue freshness audit",
+      "actionText": "Audit data/prompt-dispatcher/queue.json for entries whose underlying ledger action is now status superseded or completed; confirm the regeneration pass marks them stale and that the dispatcher correctly skips them. Add a regression test under cloudflare-worker/test/test-prompt-dispatcher-helpers.ts that asserts a superseded ledger entry produces a queue item with status stale and approved false.",
+      "triggerCondition": "Top ledger item is Aaron-blocked and Codex lane has spare repo-only capacity for dispatcher coverage work.",
+      "status": "pending",
+      "priority": "P1",
+      "createdAt": "2026-05-10T02:20:00Z",
+      "updatedAt": "2026-05-10T02:20:00Z",
+      "evidenceSummaryOrLink": "Repo-only follow-up to commit 93e71e1 (v21 ledger refresh) and the Codex dispatcher work in scripts/prompt-dispatcher-helpers.mjs. The regression test exercises pure helpers; no native compile step; runs entirely under npx tsx.",
+      "voidReason": null,
+      "supersededBy": null
+    },
+    {
       "id": "qa-android-versioncode-21-build-dispatched",
       "owner": "Aaron",
       "targetWorkerOrPerson": "Aaron",
