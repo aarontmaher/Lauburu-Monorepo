@@ -708,6 +708,10 @@ function Body() {
       Alert.alert('Health Connect', 'Android only.');
       return;
     }
+    if (!user?.id) {
+      Alert.alert('Health Connect', 'Sign in to connect Health Connect.');
+      return;
+    }
     setBusy('hc-connect');
     try {
       // Audit: permission_requested.
@@ -822,9 +826,7 @@ function Body() {
       if (granted) {
         Alert.alert(
           'Health Connect',
-          user?.id
-            ? 'Permissions granted. Synced your latest metrics.'
-            : 'Permissions granted. Sign in to save synced data to your account.',
+          'Permissions granted. Synced your latest metrics.',
         );
       } else {
         Alert.alert(
@@ -864,7 +866,7 @@ function Body() {
       return;
     }
     if (!user?.id) {
-      Alert.alert('Health Connect', 'Sign in first.');
+      Alert.alert('Health Connect', 'Sign in to connect Health Connect.');
       return;
     }
     setBusy('hc-sync');

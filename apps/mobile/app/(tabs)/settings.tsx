@@ -41,6 +41,9 @@ import type {
 
 WebBrowser.maybeCompleteAuthSession();
 
+const GOOGLE_NATIVE_REDIRECT_URI = 'lauburu://auth/google';
+const GOOGLE_REDIRECT_PATH = 'auth/google';
+
 // ---------------------------------------------------------------------------
 // Reusable components
 // ---------------------------------------------------------------------------
@@ -208,6 +211,15 @@ function hasGoogleClientForPlatform(ids: {
   return Boolean(ids.webClientId);
 }
 
+function googleRedirectMisconfiguredMessage(raw: string): string | null {
+  if (!__DEV__) return null;
+  const value = raw.toLowerCase();
+  if (value.includes('github.io') || value.includes('404') || value.includes('redirect_uri_mismatch')) {
+    return 'Google sign-in failed because the redirect is misconfigured.';
+  }
+  return null;
+}
+
 function AuthForm({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' }) {
   const signIn = useAuthStore((s) => s.signIn);
   const signUp = useAuthStore((s) => s.signUp);
@@ -230,11 +242,16 @@ function AuthForm({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' 
     androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || undefined,
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || undefined,
   }), []);
+  const googleRedirectOptions = useMemo(() => (
+    Platform.OS === 'web'
+      ? { path: GOOGLE_REDIRECT_PATH }
+      : { native: GOOGLE_NATIVE_REDIRECT_URI, scheme: 'lauburu', path: GOOGLE_REDIRECT_PATH }
+  ), []);
   const googleConfigured = hasGoogleClientForPlatform(googleClientIds);
   const [googleRequest, googleResponse, promptGoogleAsync] = Google.useIdTokenAuthRequest({
     ...googleClientIds,
     scopes: ['openid', 'profile', 'email'],
-  });
+  }, googleRedirectOptions);
 
   // Apple Sign-In availability probe runs once on mount. When present,
   // iOS gets the native AppleAuthenticationButton instead of a custom
@@ -292,7 +309,8 @@ function AuthForm({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' 
     setGoogleBusy(false);
     if (googleResponse.type === 'error') {
       const response = googleResponse as any;
-      const message = response.error?.message ?? 'Google Sign-In failed.';
+      const rawMessage = response.error?.message ?? response.params?.error_description ?? response.params?.error ?? 'Google Sign-In failed.';
+      const message = googleRedirectMisconfiguredMessage(String(rawMessage)) ?? String(rawMessage);
       setSocialMessage(message);
       Alert.alert('Google Sign-In', message);
     }
@@ -340,6 +358,12 @@ function AuthForm({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' 
     }
     setGoogleBusy(true);
     const result = await promptGoogleAsync();
+    if (result.type === 'error') {
+      const response = result as any;
+      const rawMessage = response.error?.message ?? response.params?.error_description ?? response.params?.error ?? 'Google Sign-In failed.';
+      const message = googleRedirectMisconfiguredMessage(String(rawMessage)) ?? String(rawMessage);
+      setSocialMessage(message);
+    }
     if (result.type !== 'success') setGoogleBusy(false);
   };
 
@@ -394,6 +418,9 @@ function AuthForm({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' 
             </Text>
           )}
         </Pressable>
+        {__DEV__ && googleConfigured ? (
+          <Text style={styles.socialHint}>Google callback: {GOOGLE_NATIVE_REDIRECT_URI}</Text>
+        ) : null}
         {socialMessage ? <Text style={styles.socialHint}>{socialMessage}</Text> : null}
         <Text style={styles.switchText}>or use email</Text>
       </View>

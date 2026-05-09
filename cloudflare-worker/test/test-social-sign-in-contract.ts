@@ -21,6 +21,18 @@ assert.ok(
   'Google sign-in must use the Expo AuthSession ID-token hook',
 );
 assert.ok(
+  /const GOOGLE_NATIVE_REDIRECT_URI = 'lauburu:\/\/auth\/google';/.test(SETTINGS),
+  'Google native OAuth redirect must be pinned to the app scheme, not a hosted web origin',
+);
+assert.ok(
+  /Google\.useIdTokenAuthRequest\(\{[\s\S]*\}, googleRedirectOptions\)/.test(SETTINGS),
+  'Google AuthSession hook must receive explicit native redirect options',
+);
+assert.ok(
+  /Google sign-in failed because the redirect is misconfigured/.test(SETTINGS),
+  'Google redirect misconfiguration must have a dev/debug-only diagnostic string',
+);
+assert.ok(
   /EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID/.test(SETTINGS) &&
     /EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID/.test(SETTINGS) &&
     /EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID/.test(SETTINGS),
@@ -29,6 +41,10 @@ assert.ok(
 assert.ok(
   /signInWithGoogleIdToken\(idToken\)/.test(SETTINGS),
   'Google id_token must be handed to the existing auth store flow',
+);
+assert.ok(
+  /Continue with Google/.test(SETTINGS) && /AppleAuthenticationButtonType\.SIGN_IN/.test(SETTINGS),
+  'Auth form must expose social sign-in buttons on the same login/signup form',
 );
 assert.ok(
   /signInWithIdToken\(\{\s*provider: 'apple'/s.test(SOCIAL_AUTH),
