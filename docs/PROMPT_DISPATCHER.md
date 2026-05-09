@@ -36,7 +36,8 @@ Run all MCP automation loops together:
 npm run mcp:auto
 ```
 
-This creates/attaches a tmux session named `mcp-auto` with:
+This creates/attaches a tmux session named `mcp-auto` with one
+tiled window:
 
 - `bridge-watch`
 - `mcp-poll`
@@ -86,13 +87,13 @@ npm run terminal:auto -- --attach mcp-auto
 npm run terminal:auto -- --attach lauburu
 ```
 
-Use these windows inside `mcp-auto`:
+Use these panes inside `mcp-auto`:
 
 ```text
-Ctrl-b 0  bridge-watch
-Ctrl-b 1  mcp-poll
-Ctrl-b 2  prompt-dry-run / prompt-dispatch
-Ctrl-b 3  bridge-verify
+top-left      bridge-watch
+top-right     mcp-poll
+bottom-left   prompt-dry-run / prompt-dispatch
+bottom-right  bridge-verify
 ```
 
 Disable the periodic verifier if you only want the live loops:

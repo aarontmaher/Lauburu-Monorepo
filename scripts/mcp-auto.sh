@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Start/attach the local MCP automation bundle in one tmux session.
-# This starts three repo-only loops:
+# Start/attach the local MCP automation bundle in one tmux dashboard.
+# This starts repo-only loops:
 #   1. bridge:watch       terminal heartbeat + bridge snapshots
 #   2. watcher:mcp        MCP freshness poll + stale auto-refresh
 #   3. prompt:dispatch    approved prompt dispatcher
@@ -30,7 +30,7 @@ for arg in "$@"; do
       cat <<'EOF'
 Usage: scripts/mcp-auto.sh [--dry-run|--dispatch] [--no-verify] [--no-attach]
 
-Starts one tmux session with:
+Starts one tmux session with one tiled window:
   - npm run bridge:watch
   - npm run watcher:mcp -- --interval 10 --auto-refresh
   - npm run prompt:dispatch -- --watch --interval 10
@@ -53,20 +53,21 @@ if tmux has-session -t "$SESSION" 2>/dev/null; then
   exit 0
 fi
 
-tmux new-session -d -s "$SESSION" -n bridge-watch -c "$ROOT" 'npm run bridge:watch'
-tmux new-window -t "$SESSION" -n mcp-poll -c "$ROOT" "npm run watcher:mcp -- --interval $POLL_INTERVAL --auto-refresh"
+tmux new-session -d -s "$SESSION" -n mcp-all -c "$ROOT" 'npm run bridge:watch'
+tmux split-window -h -t "$SESSION:0" -c "$ROOT" "npm run watcher:mcp -- --interval $POLL_INTERVAL --auto-refresh"
 
 if [[ "$DISPATCH_MODE" == "dispatch" ]]; then
-  tmux new-window -t "$SESSION" -n prompt-dispatch -c "$ROOT" "npm run prompt:dispatch -- --watch --interval $PROMPT_INTERVAL --dispatch --bridge-snapshot"
+  tmux split-window -v -t "$SESSION:0.0" -c "$ROOT" "npm run prompt:dispatch -- --watch --interval $PROMPT_INTERVAL --dispatch --bridge-snapshot"
 else
-  tmux new-window -t "$SESSION" -n prompt-dry-run -c "$ROOT" "npm run prompt:dispatch -- --watch --interval $PROMPT_INTERVAL"
+  tmux split-window -v -t "$SESSION:0.0" -c "$ROOT" "npm run prompt:dispatch -- --watch --interval $PROMPT_INTERVAL"
 fi
 
 if [[ "$VERIFY_LOOP" == "1" ]]; then
-  tmux new-window -t "$SESSION" -n bridge-verify -c "$ROOT" "while true; do date -u '+[%Y-%m-%dT%H:%M:%SZ] bridge:verify'; npm run bridge:verify; sleep $VERIFY_INTERVAL; done"
+  tmux split-window -v -t "$SESSION:0.1" -c "$ROOT" "while true; do date -u '+[%Y-%m-%dT%H:%M:%SZ] bridge:verify'; npm run bridge:verify; sleep $VERIFY_INTERVAL; done"
 fi
 
-tmux select-window -t "$SESSION:bridge-watch"
+tmux select-layout -t "$SESSION:0" tiled
+tmux select-pane -t "$SESSION:0.0"
 
 if [[ "$ATTACH" == "1" ]]; then
   exec tmux attach -t "$SESSION"
