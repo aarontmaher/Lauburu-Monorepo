@@ -25,6 +25,7 @@
     "watcher:mcp:test": "cd cloudflare-worker && npx tsx test/test-mcp-watcher-helpers.ts",
     "prompt:dispatch": "node scripts/prompt-dispatcher.mjs",
     "prompt:dispatch:test": "cd cloudflare-worker && npx tsx test/test-prompt-dispatcher-helpers.ts",
+    "mcp:auto": "./scripts/mcp-auto.sh",
     "queue:taxonomy:test": "cd cloudflare-worker && npx tsx test/test-queue-taxonomy-helpers.ts",
     "rules:test": "cd cloudflare-worker && npx tsx test/test-operating-rules.ts",
     "cc:test:live": "cd chat-app && npx tsx src/server/scripts/test-control-centre-route.ts",

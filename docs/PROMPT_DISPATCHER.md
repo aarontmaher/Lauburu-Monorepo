@@ -16,6 +16,45 @@ Real dispatch requires an explicit flag:
 npm run prompt:dispatch -- --once --dispatch --bridge-snapshot
 ```
 
+Loop mode:
+
+```sh
+npm run prompt:dispatch -- --watch --interval 10
+```
+
+Real loop dispatch:
+
+```sh
+npm run prompt:dispatch -- --watch --interval 10 --dispatch --bridge-snapshot
+```
+
+## Combined MCP automation
+
+Run all MCP automation loops together:
+
+```sh
+npm run mcp:auto
+```
+
+This creates/attaches a tmux session named `mcp-auto` with:
+
+- `bridge-watch`
+- `mcp-poll`
+- `prompt-dry-run`
+
+The combined command defaults to prompt dry-run. Real prompt
+dispatch must be explicitly enabled:
+
+```sh
+npm run mcp:auto -- --dispatch
+```
+
+Attach later:
+
+```sh
+tmux attach -t mcp-auto
+```
+
 Default tmux targets:
 
 | Lane | Target |

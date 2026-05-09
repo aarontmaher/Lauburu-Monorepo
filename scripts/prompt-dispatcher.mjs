@@ -30,6 +30,8 @@ function parseArgs(argv) {
     lanesPath: DEFAULT_LANES,
     logPath: DEFAULT_LOG,
     once: false,
+    watch: false,
+    intervalSec: 10,
     dispatch: false,
     bridgeSnapshot: false,
     target: { ...DEFAULT_TARGETS },
@@ -43,12 +45,16 @@ function parseArgs(argv) {
     else if (arg === '--codex-target' && next) { out.target.codex = next; i += 1; }
     else if (arg === '--claude-target' && next) { out.target.claude = next; i += 1; }
     else if (arg === '--once') out.once = true;
+    else if (arg === '--watch') out.watch = true;
+    else if (arg === '--interval' && next) { out.intervalSec = Math.max(5, Math.min(600, Number(next) || 10)); i += 1; }
     else if (arg === '--dispatch') out.dispatch = true;
     else if (arg === '--bridge-snapshot') out.bridgeSnapshot = true;
     else if (arg === '--help' || arg === '-h') {
       console.log(`Usage: node scripts/prompt-dispatcher.mjs [flags]
 
   --once                    run one selection pass and exit
+  --watch                   loop until stopped
+  --interval <seconds>      loop interval for --watch (5..600, default 10)
   --dispatch                actually paste prompt into tmux (default: dry-run)
   --bridge-snapshot         after real dispatch, run npm run bridge:snapshot
   --queue <path>            prompt queue JSON (default data/prompt-dispatcher/queue.json)
@@ -155,12 +161,40 @@ function runOnce(args) {
   console.log(JSON.stringify(event, null, 2));
 }
 
-function main() {
+async function main() {
   const args = parseArgs(process.argv.slice(2));
-  runOnce(args);
-  if (!args.once) {
-    console.log('prompt-dispatcher currently runs one pass per invocation; use a supervisor/tmux loop after dry-run validation.');
+  if (args.watch && args.once) {
+    throw new Error('--watch and --once are mutually exclusive.');
+  }
+
+  if (!args.watch) {
+    runOnce(args);
+    return;
+  }
+
+  console.log(`prompt-dispatcher: every ${args.intervalSec}s · dispatch=${args.dispatch ? 'on' : 'dry-run'} · bridgeSnapshot=${args.bridgeSnapshot ? 'on' : 'off'}`);
+  let stop = false;
+  process.on('SIGINT', () => { stop = true; console.log('\nprompt-dispatcher: stopping...'); });
+  while (!stop) {
+    try {
+      runOnce(args);
+    } catch (err) {
+      const event = buildDispatchEvent({
+        selected: null,
+        dryRun: !args.dispatch,
+        dispatched: false,
+        reason: `error: ${err instanceof Error ? err.message : String(err)}`,
+        observedAt: new Date().toISOString(),
+      });
+      writeLog(args.logPath, event);
+      console.error(JSON.stringify(event, null, 2));
+    }
+    if (stop) break;
+    await new Promise((resolveSleep) => setTimeout(resolveSleep, args.intervalSec * 1000));
   }
 }
 
-main();
+main().catch((err) => {
+  console.error(`prompt-dispatcher fatal: ${err instanceof Error ? err.message : String(err)}`);
+  process.exit(1);
+});
