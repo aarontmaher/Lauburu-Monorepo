@@ -231,13 +231,18 @@ Every operator response is recorded in the action ledger
 | Worker auto-refresh + heartbeat fields | LIVE | Codex `8ba25ae` |
 | Lane drift detection at Worker read time | LIVE | Codex `8ba25ae` |
 | Admin/Dev freshness pill | LIVE | per the proof checklist § 1 |
-| Admin/Dev lane chips | LIVE | per the proof checklist § 2 |
+| Admin/Dev lane chips | LIVE | per the proof checklist § 2 + Codex `e51d179` (lane progress strip) |
 | Admin/Dev Developer Mode pill | LIVE | Codex `fe7f93d` |
 | Admin/Dev all-idle in-app banner | LIVE | per `admin-dev.tsx` § Owner alerts |
+| Admin/Dev URL fix + resume + manual refresh + diagnostics | LIVE | Codex `9f3143a` |
+| Admin/Dev StatusPill primitive | LIVE | Codex `634bb18` |
+| Worker `staleReason` distinguishes `stale_writeback` from `no_writeback` | LIVE | Claude `49841b0` (4-state union: env_missing / no_writeback / stale_writeback / fresh) |
+| **MCP watcher daemon** — detect staleness + terminal-vs-MCP disagreement + optional auto-refresh | **LIVE (laptop-side)** | Claude `scripts/mcp-watcher.mjs` + `mcp-watcher-helpers.mjs` + contract test. Run via `npm run watcher:mcp` (one-shot: `--once`; auto-refresh on stale: `--auto-refresh`). JSONL log to `data/mcp-watcher/` (gitignored). |
 | All-idle push notification | PARTIAL — foundation tier | Codex `c6fb518` (lazy expo-notifications scaffold + pure mapper) |
 | Approval-gate push (rule 21) | PARTIAL — chained-approvals impl shipped | Codex `eb81060` |
 | AI-spend gate push (rule 22) | SPEC ONLY | `CODEX-FS-XXX-AI-SPEND-GATES-IMPL-01` staged |
 | Research-job push (rule 23) | SPEC ONLY | `CODEX-FS-XXX-DEEP-RESEARCH-OFFLOAD-IMPL-01` staged |
+| Overnight prompt queue | LIVE — schema + idle-lane recommendation + Admin/Dev surface | Codex `7193ee1` |
 
 ## 6. Anti-rules
 

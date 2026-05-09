@@ -64,3 +64,6 @@ data/agent-status/lanes/
 
 # bridge-watch.sh runtime state (cached lane status + write timestamp)
 data/agent-status/lanes/.bridge-watch-state.json
+
+# mcp-watcher.mjs runtime logs (per-tick JSONL; local-only)
+data/mcp-watcher/
