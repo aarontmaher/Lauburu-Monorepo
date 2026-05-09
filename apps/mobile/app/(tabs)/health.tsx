@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import * as Application from 'expo-application';
+import { MetricCard } from '../../src/components/primitives/MetricCard';
 import { useHealthStore } from '../../src/store/health-store';
 import { useAuthStore } from '../../src/store/auth-store';
 import { useAuditEventStore } from '../../src/store/audit-event-store';
@@ -112,7 +113,16 @@ function TodayCard({ today }: { today: DailyMetrics }) {
       <Text style={styles.cardTitle}>Recovery metrics — {today.date}</Text>
       <View style={styles.metricsGrid}>
         <MetricBox label="Resting HR" value={today.resting_hr} unit="bpm" />
-        <MetricBox label="HRV" value={today.hrv_ms} unit="ms" />
+        {/* HRV migrated to MetricCard primitive per
+            docs/UI_PRIMITIVES_INTEGRATION_GUIDE.md § 3 step 2.
+            Anti-rule: caller pre-formats; missing renders '—'. */}
+        <View style={styles.metricsGridCardSlot}>
+          <MetricCard
+            label="HRV"
+            value={today.hrv_ms != null ? `${Math.round(today.hrv_ms * 10) / 10}` : '—'}
+            unit="ms"
+          />
+        </View>
         <MetricBox label="Sleep" value={today.sleep_hours} unit="hrs" />
         <MetricBox label="Active Cal" value={today.active_calories} unit="kcal" />
         {hasWhoopStrain && (
@@ -1489,6 +1499,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 2,
     paddingVertical: 8,
+  },
+  // MetricCard primitive sits in roughly the same width as the
+  // legacy MetricBox so the row stays balanced during the
+  // one-tile-at-a-time migration. The card carries its own padding
+  // / borderRadius — the slot only owns flex sizing.
+  metricsGridCardSlot: {
+    width: '30%',
   },
   metricValue: { fontSize: 24, fontWeight: '700', color: '#d4e157' },
   metricUnit: { fontSize: 11, opacity: 0.5 },
