@@ -90,6 +90,15 @@ const HEALTH_CONNECT_REQUIRED_LABELS: Record<string, string> = {
   sleep: 'sleep',
 };
 
+const NATIVE_HEALTH_STALE_MS = 48 * 60 * 60 * 1000;
+
+function isNativeHealthSyncStale(lastSyncAt: string | null, nowMs = Date.now()): boolean {
+  if (!lastSyncAt) return false;
+  const syncedMs = new Date(lastSyncAt).getTime();
+  if (!Number.isFinite(syncedMs)) return false;
+  return nowMs - syncedMs > NATIVE_HEALTH_STALE_MS;
+}
+
 function buildHealthConnectSyncAuditSnapshot() {
   const store: any = useHealthStore.getState();
   const diag = store?.lastSyncDiagnostics ?? null;
@@ -1116,6 +1125,7 @@ function Body() {
   const healthLastSyncAt = useHealthStore((s) => s.lastSyncAt);
   const healthError = useHealthStore((s) => s.error);
   const appleHealthConnected = healthDays > 0 && !!healthLastSyncAt;
+  const nativeHealthSyncStale = isNativeHealthSyncStale(healthLastSyncAt);
   const nativeAnyAuthorized = permissions?.permissions
     ? Object.values(permissions.permissions).some((s) => s === 'authorized')
     : false;
@@ -1149,7 +1159,7 @@ function Body() {
   const polarSummary = getPolarDirectStateLabel(false);
   const summaryLine = (() => {
     const nativeStatus = appleHealthConnected
-      ? 'connected'
+      ? nativeHealthSyncStale ? 'stale' : 'connected'
       : healthLastSyncAt
         ? 'synced with no recent data'
         : nativeAnyAuthorized
@@ -1908,6 +1918,7 @@ function HealthSourceSheet(props: SheetProps) {
         : `${nativeHealthHubLabel} · not connected yet.${samsungHcHint}`;
   const nativeHealthSyncFailed = !!healthError && !(healthDays > 0 && healthLastSyncAt);
   const nativeHealthPermissionNeeded = !nativeAnyAuthorized;
+  const nativeHealthSyncStale = isNativeHealthSyncStale(healthLastSyncAt);
   // Android-only: when the Health Connect runtime probe reports the
   // last requestPermission round-trip resolved silently with zero
   // grants, surface a distinct status. Distinct from
@@ -1924,6 +1935,8 @@ function HealthSourceSheet(props: SheetProps) {
     ? 'Sync failed — retry'
     : nativeHealthPermissionNeeded
       ? 'Permission needed'
+      : nativeHealthSyncStale
+        ? 'Stale'
       : appleHealthConnected
     ? 'Connected'
     : healthLastSyncAt
