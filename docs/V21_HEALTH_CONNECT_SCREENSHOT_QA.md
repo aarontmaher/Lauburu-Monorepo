@@ -72,6 +72,7 @@ After all 10 (or 11 with FAIL) screenshots are captured:
 
    ```sh
    npm run audit:android-scrcpy -- \
+     --watch-dir ~/Downloads \
      --label-preset v21-health-connect \
      --android-version-code 21 \
      --audit-gate release_gate \

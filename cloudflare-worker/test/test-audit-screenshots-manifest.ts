@@ -20,6 +20,7 @@ import {
   buildV21HealthConnectAgentQaScaffold,
   validateV21HealthConnectCapture,
   buildAgentBundleManifest,
+  expandHomePath,
   indexPrefix,
   isFilenameSuspicious,
   labelToScreenSlug,
@@ -28,6 +29,7 @@ import {
   parseMaestroArgs,
   parseScrcpyAndroidArgs,
   parseAgentBundleArgs,
+  resolveAuditWatchDir,
   SCRCPY_ANDROID_LABEL_PRESETS,
 } from '../../scripts/audit-screenshots-helpers.mjs';
 
@@ -37,6 +39,23 @@ function assert(cond: unknown, label: string): asserts cond {
     process.exit(1);
   }
 }
+
+// ── audit watch-dir path expansion ─────────────────────────────────
+
+const fakeHome = '/Users/audit-user';
+assert(expandHomePath('~', fakeHome) === fakeHome, 'expandHomePath "~" maps to home');
+assert(expandHomePath('~/', fakeHome) === fakeHome, 'expandHomePath "~/" maps to home');
+assert(expandHomePath('~/Downloads', fakeHome) === '/Users/audit-user/Downloads', 'expandHomePath "~/Downloads" maps under home');
+assert(expandHomePath('/tmp/audit', fakeHome) === '/tmp/audit', 'expandHomePath absolute path unchanged');
+assert(expandHomePath('relative/audit', fakeHome) === 'relative/audit', 'expandHomePath relative path unchanged');
+assert(resolveAuditWatchDir(null, fakeHome) === '/Users/audit-user/Desktop', 'resolveAuditWatchDir default is home Desktop');
+let usernamePathRejected = false;
+try {
+  expandHomePath('~someone/Downloads', fakeHome);
+} catch (err) {
+  usernamePathRejected = err instanceof Error && err.message.includes('~username');
+}
+assert(usernamePathRejected, 'expandHomePath rejects ~username paths with helpful error');
 
 // ── AUDIT_SCREENS catalogue ─────────────────────────────────────────
 
@@ -234,6 +253,7 @@ const m2 = parseIphoneMirroringArgs([
   '--labels', 'a,b,c',
   '--notes', 'cycle 1',
   '--zip',
+  '--auto-launch',
   '--non-interactive',
   '--dry-run',
 ]);
@@ -247,6 +267,7 @@ assert(m2.macosVersion === '15.2', 'parseIphoneMirroringArgs --macos-version');
 assert(m2.labels === 'a,b,c', 'parseIphoneMirroringArgs --labels');
 assert(m2.notes === 'cycle 1', 'parseIphoneMirroringArgs --notes');
 assert(m2.zip === true, 'parseIphoneMirroringArgs --zip');
+assert(m2.autoLaunch === true, 'parseIphoneMirroringArgs --auto-launch');
 assert(m2.nonInteractive === true, 'parseIphoneMirroringArgs --non-interactive');
 assert(m2.dryRun === true, 'parseIphoneMirroringArgs --dry-run');
 
@@ -383,6 +404,7 @@ const s2 = parseScrcpyAndroidArgs([
   '--labels', 'a,b',
   '--notes', 'cycle 1',
   '--zip',
+  '--auto-launch',
   '--non-interactive',
   '--dry-run',
 ]);
@@ -395,6 +417,7 @@ assert(s2.androidVersionCode === 20, 'parseScrcpyAndroidArgs --android-version-c
 assert(s2.appVersion === '0.1.0', 'parseScrcpyAndroidArgs --app-version');
 assert(s2.device === 'Pixel 8a', 'parseScrcpyAndroidArgs --device');
 assert(s2.zip === true, 'parseScrcpyAndroidArgs --zip');
+assert(s2.autoLaunch === true, 'parseScrcpyAndroidArgs --auto-launch');
 assert(s2.nonInteractive === true, 'parseScrcpyAndroidArgs --non-interactive');
 assert(s2.dryRun === true, 'parseScrcpyAndroidArgs --dry-run');
 

@@ -28,15 +28,16 @@
  *   --macos-version <s>    Manifest field macosVersion
  *   --notes <s>            Manifest field notes
  *   --zip                  Also produce <ts>.zip for handoff
+ *   --auto-launch          Open iPhone Mirroring before scanning (opt-in)
  *   --non-interactive      Skip prompts; manifest fields default to null when not flagged
  *   --dry-run              Don't move files / write manifest; print what would happen
  */
 
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdirSync, readdirSync, statSync, renameSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
-import { dirname, join, relative, basename, extname } from 'node:path';
+import { dirname, join, relative, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { homedir, platform as osPlatform } from 'node:os';
+import { platform as osPlatform } from 'node:os';
 import { createInterface } from 'node:readline/promises';
 
 import {
@@ -45,6 +46,7 @@ import {
   isFilenameSuspicious,
   labelToScreenSlug,
   parseIphoneMirroringArgs,
+  resolveAuditWatchDir,
 } from './audit-screenshots-helpers.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -157,6 +159,21 @@ function makeZip(folderAbs) {
   return { ok: existsSync(zipPath), path: zipPath, stderr: '' };
 }
 
+function autoLaunchIphoneMirroring() {
+  try {
+    const result = spawnSync('open', ['-a', 'iPhone Mirroring'], { encoding: 'utf8' });
+    if (result.status !== 0) {
+      const stderr = result.stderr?.trim();
+      throw new Error(stderr || `open exited ${result.status}`);
+    }
+    console.log('  auto-launch: opened iPhone Mirroring');
+  } catch (err) {
+    console.error(`--auto-launch failed to open iPhone Mirroring: ${err instanceof Error ? err.message : String(err)}`);
+    console.error('Confirm macOS 15+ and that /Applications/iPhone Mirroring.app is installed.');
+    process.exit(2);
+  }
+}
+
 async function main() {
   if (osPlatform() !== 'darwin') {
     console.error('iphone-mirroring-audit requires macOS (iPhone Mirroring is a macOS 15+ feature). Detected:', osPlatform());
@@ -166,11 +183,16 @@ async function main() {
   const args = parseIphoneMirroringArgs(process.argv.slice(2));
   if (args.labels) args.nonInteractive = true;
 
-  const watchDir = args.watchDir
-    ? (args.watchDir.startsWith('~') ? join(homedir(), args.watchDir.slice(1)) : args.watchDir)
-    : join(homedir(), 'Desktop');
+  let watchDir;
+  try {
+    watchDir = resolveAuditWatchDir(args.watchDir);
+  } catch (err) {
+    console.error(err instanceof Error ? err.message : String(err));
+    process.exit(2);
+  }
 
   const windowMs = args.windowMinutes * 60_000;
+  if (args.autoLaunch) autoLaunchIphoneMirroring();
   const recent = listRecentPngs(watchDir, windowMs);
 
   console.log(`iPhone-Mirroring audit run`);

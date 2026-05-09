@@ -12,6 +12,9 @@
  * downstream readers can rely on it.
  */
 
+import { homedir } from 'node:os';
+import { join } from 'node:path';
+
 export const AUDIT_SCREENS = Object.freeze([
   { id: 'home',           label: 'Home',                     route: '(tabs)/index' },
   { id: 'health',         label: 'Health',                   route: '(tabs)/health' },
@@ -28,6 +31,20 @@ const MANIFEST_SCHEMA_VERSION = 1;
 
 function isString(v) {
   return typeof v === 'string' && v.length > 0;
+}
+
+export function expandHomePath(input, home = homedir()) {
+  if (typeof input !== 'string' || input.length === 0) return input;
+  if (input === '~' || input === '~/') return home;
+  if (input.startsWith('~/')) return join(home, input.slice(2));
+  if (input.startsWith('~')) {
+    throw new Error(`Unsupported home-directory syntax ${JSON.stringify(input)}. Use "~" or "~/path"; "~username" paths are not supported.`);
+  }
+  return input;
+}
+
+export function resolveAuditWatchDir(input, home = homedir()) {
+  return input ? expandHomePath(input, home) : join(home, 'Desktop');
 }
 
 function sanitizeBuild(build) {
@@ -547,6 +564,7 @@ export function parseScrcpyAndroidArgs(argv) {
     verificationStatus: null,
     notes: null,
     zip: false,
+    autoLaunch: false,
     nonInteractive: false,
     dryRun: false,
   };
@@ -566,6 +584,7 @@ export function parseScrcpyAndroidArgs(argv) {
     else if (a === '--verification-status' && next) { out.verificationStatus = next; i += 1; }
     else if (a === '--notes' && next) { out.notes = next; i += 1; }
     else if (a === '--zip') out.zip = true;
+    else if (a === '--auto-launch') out.autoLaunch = true;
     else if (a === '--non-interactive') out.nonInteractive = true;
     else if (a === '--dry-run') out.dryRun = true;
   }
@@ -584,6 +603,7 @@ export function parseIphoneMirroringArgs(argv) {
     labels: null,
     notes: null,
     zip: false,
+    autoLaunch: false,
     nonInteractive: false,
     dryRun: false,
   };
@@ -600,6 +620,7 @@ export function parseIphoneMirroringArgs(argv) {
     else if (a === '--labels' && next) { out.labels = next; i += 1; }
     else if (a === '--notes' && next) { out.notes = next; i += 1; }
     else if (a === '--zip') { out.zip = true; }
+    else if (a === '--auto-launch') { out.autoLaunch = true; }
     else if (a === '--non-interactive') { out.nonInteractive = true; }
     else if (a === '--dry-run') { out.dryRun = true; }
   }

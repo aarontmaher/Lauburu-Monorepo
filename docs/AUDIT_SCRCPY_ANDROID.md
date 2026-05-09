@@ -32,8 +32,9 @@ sw_vers -productVersion # macOS version (just for the manifest)
 ## Capture workflow
 
 1. Plug the Android device in (or connect Wi-Fi adb).
-2. In a separate terminal: `scrcpy`. A Mac window appears
-   showing the device.
+2. Start mirroring with `scrcpy`, or pass `--auto-launch` to
+   the audit script later. A Mac window appears showing the
+   device.
 3. In the scrcpy window, navigate the app to each screen Aaron
    wants to audit.
 4. For each screen: Mac-side keyboard shortcut **Cmd-Shift-4 →
@@ -41,12 +42,19 @@ sw_vers -productVersion # macOS version (just for the manifest)
    frame only (not the surrounding desktop).
    - Cmd-Shift-3 captures the whole Mac display (overkill).
    - Cmd-Shift-5 opens the screenshot palette.
-5. The PNGs land in `~/Desktop` (or whatever Save-to is set to).
-6. Run `npm run audit:android-scrcpy`.
+5. The PNGs land in the macOS screenshot Save-to folder.
+6. Run the audit script against that same folder, for example:
+
+   ```sh
+   npm run audit:android-scrcpy -- --watch-dir ~/Downloads
+   ```
 
 The script:
 - Defaults to `~/Desktop` as the watch dir (override with
   `--watch-dir`).
+- Expands `~` and `~/...` correctly, leaves absolute and
+  relative paths unchanged, and rejects `~username/...` paths
+  with a clear error.
 - Scans for `.png` files modified in the last 10 minutes
   (override with `--window`).
 - Lists them in mtime order (the order Aaron captured).
@@ -88,6 +96,7 @@ The script:
 
 ```sh
 node scripts/audit-android-scrcpy.mjs \
+  --watch-dir ~/Downloads \
   --labels admin-dev-top,admin-dev-mcp,health-sources,home,settings \
   --android-version-code 20 \
   --app-version 0.1.0 \
@@ -99,8 +108,12 @@ node scripts/audit-android-scrcpy.mjs \
 ```
 
 Other flags:
-- `--watch-dir <path>` — scan a different directory.
+- `--watch-dir <path>` — scan the same directory macOS saves
+  screenshots to, such as `~/Downloads`.
 - `--window <minutes>` — how far back to scan (default 10).
+- `--auto-launch` — opt-in helper that starts `scrcpy` before
+  scanning; screenshots still need to be captured into the
+  watched folder.
 - `--dry-run` — print what would happen without moving files.
 - `--non-interactive` — required when no labels are supplied
   but you also don't want prompts; screens get fallback ids
@@ -127,6 +140,9 @@ auto-shares.
   + filesystem ops.
 - **No EAS build.** This workflow audits whatever is already
   installed.
+- **No installed-device product QA claim from mirroring alone.**
+  Mac-side scrcpy screenshots are workflow evidence; release
+  gates still need the matching installed-device QA verdict.
 
 ## Troubleshooting
 
@@ -139,8 +155,8 @@ auto-shares.
   is set, and the device isn't in Battery Saver.
 - *"No .png files modified in the last 10 minutes"* — capture
   screenshots first; pass `--window 60` if you captured > 10
-  min ago. Confirm `~/Desktop` is the actual Save-to folder via
-  System Settings → Desktop & Dock.
+  min ago. Confirm the script's `--watch-dir` matches the
+  actual Save-to folder in System Settings → Desktop & Dock.
 - *"Refusing to ingest filenames…"* — rename or delete the
   flagged file. The heuristic protects against accidental
   secret captures. Rename the file if it's a false positive.

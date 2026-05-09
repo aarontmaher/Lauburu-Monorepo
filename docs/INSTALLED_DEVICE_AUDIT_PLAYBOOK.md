@@ -46,7 +46,7 @@ covers the gate's needs.
 | **Simulator script** (`npm run audit:screenshots`) | `artifacts/app-audit/<isoTimestamp>/` | Gate B (FS-XXX confirm), Gate C (Forever Improve drift), Gate F (pre-build sanity). Anything that doesn't require real-device sensors. | Free; runs locally. | Synthetic data; no real Aaron data on screen. |
 | **iPhone Mirroring** (macOS 15+ Continuity feature) | `artifacts/app-audit/iphone-mirroring/<timestamp>/` | Gate B / C / E when the screen needs to come from the real installed app but no real-device-only sensor is required. Aaron's iPhone shows on Mac; Cmd-Shift-4 captures any window. | Free; built into macOS 15+. | Real Aaron data on screen — redact before sharing. Manifest must flag `containsRealUserData: true`. |
 | **iPhone screen-record** (real device, on-device) | `artifacts/app-audit/iphone-screen-record/<timestamp>/` | Gate A (release gate, canonical), Gate D (Health Connect crash retest — needs to actually trigger the OS-level Connect flow on iOS) [iOS-equivalent of the Android Health Connect tap]. The only path that captures full live iOS behaviour including OS prompts. | Free; built into iOS. | Real data + OS prompts — redact before sharing. |
-| **Android scrcpy** (real device, USB → Mac) | `artifacts/app-audit/scrcpy/<timestamp>/` | Gate A + Gate D (Android Health Connect → Connect tap). Real-device equivalent on Android. | Free; `brew install scrcpy` one-time setup. | Real data on screen — redact before sharing. |
+| **Android scrcpy** (real device, USB → Mac) | `artifacts/app-audit/android-scrcpy/<timestamp>/` | Gate A + Gate D (Android Health Connect → Connect tap). Real-device equivalent on Android. | Free; `brew install scrcpy` one-time setup. | Real data on screen — redact before sharing. |
 
 The iPhone Mirroring path is the **default cheap path** for
 most non-real-sensor audits — it's the lowest-friction way to
@@ -106,9 +106,12 @@ pattern.)
 3. Tap through target screens in the mirrored window.
 4. Cmd-Shift-4 → window pick → save to the configured
    capture folder.
-5. Run `npm run audit:iphone-mirroring` (when shipped) to
-   move PNGs into `artifacts/app-audit/iphone-mirroring/<timestamp>/`
-   and generate `manifest.json`.
+5. Run `npm run audit:iphone-mirroring -- --watch-dir ~/Downloads`
+   (or the actual macOS screenshot Save-to folder) to move PNGs
+   into `artifacts/app-audit/iphone-mirroring/<timestamp>/`
+   and generate `manifest.json`. Do not manually move
+   screenshots out of `~/Desktop`; point `--watch-dir` at the
+   folder where macOS saved them.
 
 ### 3.3 Android scrcpy (real device, USB)
 
@@ -124,20 +127,20 @@ brew install scrcpy
 # options → enable USB debugging. First connect prompts a
 # pairing dialog on the device.
 
-# Mirror + record full session:
-scrcpy --record artifacts/app-audit/scrcpy/<isoTimestamp>/session.mp4
+# Mirror + collect per-screen screenshots:
+npm run audit:android-scrcpy -- --watch-dir ~/Downloads --auto-launch
 
-# OR per-screen screenshots (faster, no mirroring window):
-adb -s <serial> exec-out screencap -p > screen.png
+# OR record a full session when video evidence is required:
+scrcpy --record artifacts/app-audit/android-scrcpy/<isoTimestamp>/session.mp4
 ```
 
-scrcpy outputs an `.mp4` of the entire mirrored session;
-extract per-screen PNGs in post via `ffmpeg -ss <ts> -frames:v 1 ...`.
-For repeatable per-screen captures, prefer `adb exec-out
-screencap` driven by a small Bash script (Codex follow-up
-in the Maestro spec § 7 covers this case at the v3 tier).
+The audit helper ingests PNGs from the watch directory and
+writes `manifest.json`. Full-session `scrcpy --record` outputs
+an `.mp4`; extract per-screen PNGs in post via
+`ffmpeg -ss <ts> -frames:v 1 ...` only when video evidence is
+required.
 
-Output path: `artifacts/app-audit/scrcpy/<timestamp>/`.
+Output path: `artifacts/app-audit/android-scrcpy/<timestamp>/`.
 
 Privacy: same as iPhone Mirroring — real-user data on
 screen; redact before sharing.
@@ -243,7 +246,7 @@ After capture + interpretation:
    shipped scaffolding:
    - Simulator script (`npm run audit:screenshots`):
      `artifacts/app-audit/<isoTimestamp>/manifest.json`.
-   - iPhone Mirroring (forthcoming `npm run audit:iphone-mirroring`):
+   - iPhone Mirroring (`npm run audit:iphone-mirroring`):
      `artifacts/app-audit/iphone-mirroring/<timestamp>/manifest.json`.
    - iPhone screen-record (manual): `artifacts/app-audit/iphone-screen-record/<timestamp>/manifest.json`.
    Screenshots themselves stay LOCAL — the ref is path-only,

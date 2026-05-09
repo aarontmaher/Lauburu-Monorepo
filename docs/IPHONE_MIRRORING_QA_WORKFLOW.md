@@ -43,8 +43,10 @@ itself refuses to run on any other platform.
    floating window on the Mac. Macros / dock / Mission Control
    work as normal.
 5. Optional: System Settings → Desktop & Dock → "Save
-   screenshots to" → keep the default `~/Desktop` (the script
-   defaults there too).
+   screenshots to" → choose a stable folder such as
+   `~/Desktop` or `~/Downloads`. Pass the same folder to the
+   script with `--watch-dir`; do not manually move screenshots
+   between folders before ingestion.
 
 ## Capture workflow
 
@@ -58,8 +60,7 @@ For each screen Aaron wants to audit:
      this flow).
    - Cmd-Shift-5 opens the screenshot palette if Aaron prefers
      a configurable shortcut.
-3. The PNG lands in `~/Desktop` (or the configured Save-to
-   folder).
+3. The PNG lands in the configured Save-to folder.
 4. Repeat for as many screens as the audit requires. The
    recommended 9-screen catalogue from
    `docs/AUDIT_SCREENSHOTS.md` § "Screen catalogue" is a good
@@ -67,14 +68,17 @@ For each screen Aaron wants to audit:
    Spend-gates expansions per
    `docs/ADMINDEV_INSTALLED_PROOF_GAP.md` § 1.
 
-Then run the script:
+Then run the script against that same Save-to folder:
 
 ```
-npm run audit:iphone-mirroring
+npm run audit:iphone-mirroring -- --watch-dir ~/Downloads
 ```
 
 The script:
 - Defaults to `~/Desktop` as the watch dir.
+- Expands `~` and `~/...` correctly, leaves absolute and
+  relative paths unchanged, and rejects `~username/...` paths
+  with a clear error.
 - Scans for `.png` files modified in the last 10 minutes.
 - Lists them in mtime order (the order Aaron captured).
 - Prompts per file for a short label
@@ -137,6 +141,7 @@ string (possibly empty).
 
 ```
 node scripts/iphone-mirroring-audit.mjs \
+  --watch-dir ~/Downloads \
   --labels admin-dev-top,admin-dev-mcp,health-sources,home,settings \
   --ios-build 20 \
   --app-version 0.1.0 \
@@ -150,8 +155,12 @@ node scripts/iphone-mirroring-audit.mjs \
 Other flags:
 
 - `--watch-dir <path>` — scan a different directory (e.g.
-  `~/Pictures/Screenshots` if you've moved the default).
+  `~/Downloads` or `~/Pictures/Screenshots` if that is your
+  macOS screenshot Save-to folder).
 - `--window <minutes>` — how far back to scan (default 10).
+- `--auto-launch` — opt-in helper that opens iPhone Mirroring
+  before scanning; screenshots still need to be captured into
+  the watched folder.
 - `--dry-run` — print what would happen without moving files
   or writing the manifest.
 - `--non-interactive` — required when no labels are supplied
@@ -183,13 +192,18 @@ the courier; the script never auto-shares.
 - **No EAS build.** This workflow audits whatever's already
   installed; bumping the build is a separate Aaron-approved
   flow.
+- **No installed-device product QA claim from mirroring alone.**
+  Mac-side iPhone Mirroring screenshots are workflow evidence;
+  release gates still need the matching installed-device QA
+  verdict and any Apple Health device checks.
 
 ## Troubleshooting
 
 - *"No .png files modified in the last 10 minutes"* —
   capture screenshots first; or pass `--window 60` if you
-  captured > 10 min ago. Confirm `~/Desktop` is the actual
-  Save-to folder via System Settings → Desktop & Dock.
+  captured > 10 min ago. Confirm the script's `--watch-dir`
+  matches the actual Save-to folder in System Settings →
+  Desktop & Dock.
 - *"Refusing to ingest filenames…"* — rename or delete the
   flagged file; the heuristic protects against accidental
   secret captures. If it's a false positive, rename the

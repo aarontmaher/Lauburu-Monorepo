@@ -34,15 +34,16 @@
  *   --macos-version <s>           Manifest field
  *   --notes <s>                   Manifest field
  *   --zip                         Also produce <ts>.zip for handoff
+ *   --auto-launch                 Start scrcpy before scanning (opt-in)
  *   --non-interactive             Skip prompts; manifest fields default to null when not flagged
  *   --dry-run                     Don't move files / write manifest; print what would happen
  */
 
-import { execFileSync, spawnSync } from 'node:child_process';
+import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { mkdirSync, readdirSync, statSync, renameSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 import { dirname, join, relative, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { homedir, platform as osPlatform } from 'node:os';
+import { platform as osPlatform } from 'node:os';
 import { createInterface } from 'node:readline/promises';
 
 import {
@@ -52,6 +53,7 @@ import {
   isFilenameSuspicious,
   labelToScreenSlug,
   parseScrcpyAndroidArgs,
+  resolveAuditWatchDir,
   SCRCPY_ANDROID_LABEL_PRESETS,
 } from './audit-screenshots-helpers.mjs';
 
@@ -95,6 +97,21 @@ function listRecentPngs(watchDir, windowMs) {
 
 function adbAvailable() { try { execFileSync('adb', ['version'], { stdio: 'ignore' }); return true; } catch { return false; } }
 function scrcpyAvailable() { try { execFileSync('scrcpy', ['--version'], { stdio: 'ignore' }); return true; } catch { return false; } }
+
+function autoLaunchScrcpy() {
+  if (!scrcpyAvailable()) {
+    console.error('--auto-launch requested, but scrcpy is not installed or not on PATH. Install with: brew install scrcpy');
+    process.exit(2);
+  }
+  try {
+    const child = spawn('scrcpy', { detached: true, stdio: 'ignore' });
+    child.unref();
+    console.log('  auto-launch: started scrcpy');
+  } catch (err) {
+    console.error(`--auto-launch failed to start scrcpy: ${err instanceof Error ? err.message : String(err)}`);
+    process.exit(2);
+  }
+}
 
 async function promptManifestFields(rl, args, defaults) {
   if (args.nonInteractive) {
@@ -165,10 +182,15 @@ async function main() {
   const args = parseScrcpyAndroidArgs(process.argv.slice(2));
   if (args.labels || args.labelPreset) args.nonInteractive = true;
 
-  const watchDir = args.watchDir
-    ? (args.watchDir.startsWith('~') ? join(homedir(), args.watchDir.slice(1)) : args.watchDir)
-    : join(homedir(), 'Desktop');
+  let watchDir;
+  try {
+    watchDir = resolveAuditWatchDir(args.watchDir);
+  } catch (err) {
+    console.error(err instanceof Error ? err.message : String(err));
+    process.exit(2);
+  }
   const windowMs = args.windowMinutes * 60_000;
+  if (args.autoLaunch) autoLaunchScrcpy();
   const recent = listRecentPngs(watchDir, windowMs);
 
   console.log(`scrcpy Android audit run`);
