@@ -81,17 +81,36 @@ After all 10 (or 11 with FAIL) screenshots are captured:
 
    `captured_only` is intentional: this records the post-upload
    click-through evidence bundle without claiming the release
-   gate passed. Agent's verdict is recorded separately through
-   `bridge:agent-qa`.
+   gate passed. The script writes both `manifest.json` and
+   `agent-qa-v21-health-connect-captured-only.json` beside the
+   screenshots. That QA JSON is a `partial` scaffold with both
+   release booleans false; it is evidence ingestion only, not an
+   installed-device pass.
 
 2. Upload the screenshots to the audit-bundle aggregator path
    (or attach to the action ledger entry
    `qa-android-versioncode-21-build-dispatched`).
-3. Run `npm run bridge:agent-qa` with:
+3. If you need to record the captured-only bundle before Agent has
+   made a verdict, run:
+
+   ```sh
+   npm run bridge:agent-qa -- \
+     artifacts/app-audit/android-scrcpy/<timestamp>/agent-qa-v21-health-connect-captured-only.json
+   ```
+
+   This keeps `androidHealthConnect: partial` and does not clear
+   the release gate.
+
+4. After Agent reviews the screenshots, replace the scaffold with
+   Agent's verdict and run `npm run bridge:agent-qa` with:
 
    ```json
    {
+     "status": "<pass|fail|partial>",
      "platform": "android",
+     "installedBuild": {
+       "androidVersionCode": 21
+     },
      "androidVersionCode": 21,
      "gate": "release_gate",
      "results": {
@@ -104,7 +123,7 @@ After all 10 (or 11 with FAIL) screenshots are captured:
    }
    ```
 
-4. The bridge writes the result back to MCP. The Build State
+5. The bridge writes the result back to MCP. The Build State
    Separation panel's `Android — installed-build verified` badge
    already reflects v21; Agent's audit decision (verified vs
    needs-patch) flips on this `androidHealthConnect` field.

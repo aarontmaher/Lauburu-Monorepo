@@ -261,6 +261,74 @@ export function buildScrcpyAndroidManifest(input) {
   };
 }
 
+function safeIsoId(value) {
+  return (isString(value) ? value : new Date().toISOString())
+    .replace(/\.\d{3}Z$/, 'Z')
+    .replace(/[^0-9A-Za-z]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/**
+ * Captured-only scaffold for the Android v21 Health Connect
+ * click-through audit. This is intentionally a partial QA record:
+ * screenshots can prove the run was captured, but Agent still owns
+ * the installed-device pass/fail verdict.
+ */
+export function buildV21HealthConnectAgentQaScaffold(input) {
+  const manifest = input?.manifest && typeof input.manifest === 'object' ? input.manifest : {};
+  const capturedAt = isString(manifest.capturedAt) ? manifest.capturedAt : new Date().toISOString();
+  const bundlePath = isString(input?.bundlePath) ? input.bundlePath.replace(/\/+$/g, '') : '';
+  const screenshotRefs = Array.isArray(manifest.screens)
+    ? manifest.screens
+        .map((screen) => {
+          if (!screen || typeof screen !== 'object' || !isString(screen.filename)) return null;
+          return bundlePath ? `${bundlePath}/${screen.filename}` : screen.filename;
+        })
+        .filter((ref) => ref !== null)
+        .slice(0, 10)
+    : [];
+  const manifestRef = bundlePath ? `${bundlePath}/manifest.json` : 'manifest.json';
+  return {
+    schemaVersion: 1,
+    qaRunId: `agent-qa-v21-health-connect-captured-only-${safeIsoId(capturedAt)}`,
+    sourceAgent: 'codex-v21-scrcpy-scaffold',
+    createdAt: capturedAt.replace(/\.\d{3}Z$/, 'Z'),
+    updatedAt: capturedAt.replace(/\.\d{3}Z$/, 'Z'),
+    status: 'partial',
+    gate: 'release_gate',
+    platform: 'android',
+    deviceName: isString(manifest.device) ? manifest.device : null,
+    installedBuild: {
+      iosBuildNumber: null,
+      androidVersionCode: Number.isInteger(manifest.androidVersionCode) ? manifest.androidVersionCode : 21,
+      appVersion: isString(manifest.appVersion) ? manifest.appVersion : null,
+      channel: null,
+      track: 'play-internal-testing',
+    },
+    results: {
+      healthManageSources: 'partial',
+      androidHealthConnect: 'partial',
+      iosAppleHealth: 'not_tested',
+      grapplingReadiness: 'not_tested',
+      adminControlCentre: 'partial',
+      copyTruthfulness: 'partial',
+      uiDensity: 'partial',
+    },
+    releaseGate: {
+      newTestFlightAllowed: false,
+      newAndroidBuildAllowed: false,
+      reason: 'Captured-only screenshot bundle; Agent verdict is required before any installed-device gate claim.',
+    },
+    requiredFixes: [],
+    evidence: {
+      screenshotRefs,
+      notes: `Captured-only Android v21 Health Connect click-through bundle. Manifest: ${manifestRef}. This scaffold is not a pass verdict.`,
+    },
+    publicSummary: 'Captured-only Android v21 Health Connect screenshot bundle; installed-device pass/fail is not claimed.',
+    privateDetails: null,
+  };
+}
+
 export const SCRCPY_ANDROID_LABEL_PRESETS = Object.freeze({
   'v21-health-connect': [
     'home',

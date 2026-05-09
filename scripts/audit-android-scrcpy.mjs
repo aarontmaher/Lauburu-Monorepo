@@ -47,6 +47,7 @@ import { createInterface } from 'node:readline/promises';
 
 import {
   buildScrcpyAndroidManifest,
+  buildV21HealthConnectAgentQaScaffold,
   indexPrefix,
   isFilenameSuspicious,
   labelToScreenSlug,
@@ -263,6 +264,17 @@ async function main() {
   const manifestPath = join(destDir, 'manifest.json');
   if (!args.dryRun) writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   console.log(`\n${args.dryRun ? '[dry-run] would write' : '✓ wrote'} ${relative(ROOT, manifestPath)}`);
+
+  if (args.labelPreset === 'v21-health-connect') {
+    const qaPath = join(destDir, 'agent-qa-v21-health-connect-captured-only.json');
+    const qaScaffold = buildV21HealthConnectAgentQaScaffold({
+      manifest,
+      bundlePath: relative(ROOT, destDir),
+    });
+    if (!args.dryRun) writeFileSync(qaPath, `${JSON.stringify(qaScaffold, null, 2)}\n`);
+    console.log(`${args.dryRun ? '[dry-run] would write' : '✓ wrote'} ${relative(ROOT, qaPath)}`);
+    console.log('  scaffold status=partial; Agent verdict still required before any installed-device pass claim');
+  }
 
   if (args.zip && !args.dryRun) {
     const zip = makeZip(destDir);

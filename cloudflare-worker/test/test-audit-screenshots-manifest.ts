@@ -15,6 +15,7 @@ import {
   buildIphoneMirroringManifest,
   buildMaestroManifest,
   buildScrcpyAndroidManifest,
+  buildV21HealthConnectAgentQaScaffold,
   buildAgentBundleManifest,
   indexPrefix,
   isFilenameSuspicious,
@@ -375,6 +376,33 @@ assert(Array.isArray(SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect']), 'scrcp
 assert(SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'].length === 10, 'scrcpy preset: v21 health connect has 10 labels');
 assert(SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'][2] === 'permissions-dialog', 'scrcpy preset: step 03 locks v20 failure point');
 assert(SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'][8] === 'build-state-separation', 'scrcpy preset: build-state evidence included');
+
+const v21Scaffold = buildV21HealthConnectAgentQaScaffold({
+  manifest: buildScrcpyAndroidManifest({
+    auditGate: 'release_gate',
+    verificationStatus: 'captured_only',
+    androidVersionCode: 21,
+    appVersion: '0.1.0',
+    device: 'Pixel 8a',
+    androidVersion: '15',
+    capturedAt: '2026-05-09T12:00:00.000Z',
+    screens: SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'].map((screen: string, idx: number) => ({
+      filename: `${indexPrefix(idx)}-${screen}.png`,
+      screen,
+      notes: '',
+    })),
+  }),
+  bundlePath: 'artifacts/app-audit/android-scrcpy/2026-05-09T12-00-00-000Z',
+});
+assert(v21Scaffold.status === 'partial', 'v21 scaffold: captured-only status is partial');
+assert(v21Scaffold.gate === 'release_gate' && v21Scaffold.platform === 'android', 'v21 scaffold: release gate android');
+assert(v21Scaffold.installedBuild.androidVersionCode === 21, 'v21 scaffold: android versionCode 21');
+assert(v21Scaffold.releaseGate.newAndroidBuildAllowed === false, 'v21 scaffold: android release remains blocked');
+assert(v21Scaffold.releaseGate.newTestFlightAllowed === false, 'v21 scaffold: iOS release remains blocked');
+assert(v21Scaffold.results.androidHealthConnect === 'partial', 'v21 scaffold: HC result partial until Agent verdict');
+assert(v21Scaffold.evidence.screenshotRefs.length === 10, 'v21 scaffold: carries 10 screenshot refs');
+assert(v21Scaffold.evidence.screenshotRefs[2].endsWith('/03-permissions-dialog.png'), 'v21 scaffold: step 03 screenshot ref preserved');
+assert(v21Scaffold.evidence.notes.includes('not a pass verdict'), 'v21 scaffold: notes reject pass claim');
 
 // ── Agent-bundle manifest ───────────────────────────────────────────
 
