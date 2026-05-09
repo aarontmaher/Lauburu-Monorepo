@@ -218,3 +218,93 @@ its own pass before ANY new QA build is dispatched.
 - It does NOT include Aaron's real journal text.
 - It does NOT clear the v19 release gate.
 - It does NOT promote any release to public.
+
+---
+
+## Repo-only audit snapshot — 2026-05-09 (Claude lane)
+
+Independent audit of repo readiness for FS-020 by the Claude lane,
+in parallel with Codex's v21 Health Connect work. **Status: parser +
+UI + tests + migration are repo-ready; installed-device QA still
+pending and is the gate to flip the agent-QA template from
+`repo_only` to `pass`.**
+
+### Inventory (live-now / repo-only / preview-only / installed-build verified)
+
+| Surface | Path | Status | Evidence |
+|---|---|---|---|
+| Parser | `packages/shared/src/journal/notes-import.ts` (390 lines, exports `parseJournalNotesPaste`) | repo-only | `cd packages/shared && npx tsc --noEmit` → exit 0 |
+| Migration | `supabase/migrations/0006_journal_imports_macros_terms.sql` | repo-only | RLS test green (see below) |
+| UI card | `apps/mobile/app/(tabs)/feedback.tsx` lines ~487–680 (`JournalNotesImportCard`) — paste textarea, Preview button, per-row Confirm/Skip pills, edit fields, sensitive-confirm gate, "Not medical advice" + "Associations only" copy literal | repo-only | `cd apps/mobile && npx tsc --noEmit` → exit 0 |
+| Custom journal store | `apps/mobile/src/store/custom-journal-store.ts` (`importConfirmedAppleNotes`) | repo-only | Used by `JournalNotesImportCard.saveConfirmed` |
+| Maestro flow | `apps/mobile/audit-flows/04-feedback.yml` extended in this audit to drive synthetic paste → preview → save-without-confirming → assert sensitive-gate alert | repo-only | All steps `optional: true`; flow doesn't break pre-B-20d builds |
+| Agent QA template | `scripts/templates/agent-qa-parser-fs020-template.json` | repo-only | `releaseGate.newTestFlightAllowed: false`, `status: "repo_only"` — correct for this stage |
+
+### Test status (all repo-only)
+
+```
+test-journal-notes-import-parser.ts          PASS  (14 synthetic rows)
+test-journal-notes-import-parser-qa-gaps.ts  PASS  (privacy + edge cases)
+test-journal-import-fixtures.ts              PASS  (6 terms, 3 macros, 2 lactate, 2 checklist)
+test-journal-imports-rls.ts                  PASS  (migration RLS / privacy contract)
+test-journal-canonical-terms.ts              PASS  (145 terms)
+test-journal-research-snippets.ts            PASS  (31 snippets)
+```
+
+Each test runs with `cd cloudflare-worker && npx tsx test/<file>`.
+None of the six tests asserts behaviour against an installed build —
+they exercise the parser and migration only.
+
+### Repo evidence + gaps
+
+**Evidence the repo IS ready for parser confirmation:**
+- Parser surface exists, typechecks, and passes its own tests.
+- Migration is additive, RLS-enforced, privacy contract test-asserted.
+- UI is wired end-to-end: `parseJournalNotesPaste` →
+  `JournalNotesImportCard` state → `useCustomJournalStore.importConfirmedAppleNotes`.
+- The save action explicitly refuses when any `needsConfirmation`
+  row is unresolved (sensitive-confirm gate enforced in code at
+  `feedback.tsx:saveConfirmed`, not just docs).
+- "Not medical advice. Associations only, not causation." is
+  rendered literally on the import card.
+
+**Gaps remaining (none blocking parser confirmation; all blocking
+installed-device QA):**
+- No real-device Maestro / iPhone Mirroring evidence yet.
+  Workflow-integrity gate continues to flag `no_real_device_audit_ever`
+  (warn).
+- The extended `04-feedback.yml` Maestro flow needs an installed
+  build with the FS-020 card to actually exercise; the same build
+  cycle that produces v21 + FS-020 will satisfy this.
+- Agent-QA template still says `repo_only`. Correct — it cannot
+  flip without an installed build. Do **not** promote it on the
+  basis of repo-only evidence.
+
+### Re-audit verdict
+
+`status: repo_only`. Parser confirmation is **achievable now via the
+existing tests + typecheck** (all six parser tests green, both
+typechecks clean) and the doc-acceptance walk-through above. The
+release-impacting decision (`releaseGate.newTestFlightAllowed`) MUST
+NOT be flipped from `false` until an installed build runs the
+extended `04-feedback.yml` flow on a real device and an Agent posts
+an `installed-build verified` finding.
+
+### Next action by lane
+
+- **Codex** — already focused on v21 Health Connect; this audit does
+  not touch Codex's lane. When v21 ships and a new QA build is
+  authorised, ride the same build for FS-020 end-to-end (no separate
+  build cut needed — UI + parser are already in repo).
+- **Aaron** — when a QA build with FS-020 + v21 is on a phone:
+  1. Run the extended `audit-flows/04-feedback.yml` against the
+     installed app.
+  2. Confirm the synthetic paste produces a preview row for
+     Salbutamol with `needs_confirmation`.
+  3. Confirm save-without-confirming raises the gate alert.
+  4. Confirm save-with-confirming the BPC 157 row but skipping
+     Salbutamol writes only the non-sensitive event.
+- **Claude (this lane)** — done with repo-only audit. Will not file
+  installed-build findings without device evidence; that is
+  correctly out of scope per the no-builds-no-uploads constraint
+  on this turn.
