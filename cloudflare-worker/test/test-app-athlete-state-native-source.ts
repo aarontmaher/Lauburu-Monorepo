@@ -41,4 +41,32 @@ assert.ok(
   'primary_live_source must reuse the platform-native source id',
 );
 
+// v21 truth-label expansion — the Coach AI evidence builder needs
+// freshness + is_stale on the native_health role so it can hedge
+// "covers today" claims when the source is silent. These come from
+// the shared services/native-health-freshness module so the Manage
+// Sources sheet and the Coach context can never disagree.
+assert.ok(
+  /from '\.\/native-health-freshness'/.test(SOURCE),
+  'app-athlete-state must import the shared native-health freshness helpers',
+);
+assert.ok(
+  /freshness_hours:\s*number \| null;/.test(SOURCE)
+    && /is_stale:\s*boolean;/.test(SOURCE)
+    && /stale_threshold_hours:\s*number;/.test(SOURCE),
+  'source_roles.native_health must expose freshness_hours, is_stale, stale_threshold_hours',
+);
+assert.ok(
+  /freshness_hours: hoursSinceNativeHealthSync\(healthLastSyncAt\)/.test(SOURCE),
+  'native_health.freshness_hours must come from hoursSinceNativeHealthSync(healthLastSyncAt)',
+);
+assert.ok(
+  /is_stale: isNativeHealthSyncStale\(healthLastSyncAt\)/.test(SOURCE),
+  'native_health.is_stale must come from isNativeHealthSyncStale(healthLastSyncAt)',
+);
+assert.ok(
+  /stale_threshold_hours: NATIVE_HEALTH_STALE_HOURS/.test(SOURCE),
+  'native_health.stale_threshold_hours must come from the shared constant',
+);
+
 console.log('AppAthleteState native-health source contract test passed.');

@@ -44,6 +44,11 @@
 
 import { Platform } from 'react-native';
 import type { DailyMetrics, DerivedFeatures, TrainingSession } from '@lauburu/shared';
+import {
+  hoursSinceNativeHealthSync,
+  isNativeHealthSyncStale,
+  NATIVE_HEALTH_STALE_HOURS,
+} from './native-health-freshness';
 
 const NATIVE_HEALTH_LABEL = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
 const NATIVE_HEALTH_SOURCE = Platform.OS === 'ios' ? 'apple_health' : 'health_connect';
@@ -158,6 +163,12 @@ export interface AppAthleteState {
       days_with_data: number;
       covers_today: boolean;
       history_depth_days: number | null;
+      /** Hours since lastSyncAt; null when no sync has been recorded. */
+      freshness_hours: number | null;
+      /** True when freshness_hours > NATIVE_HEALTH_STALE_HOURS (48). */
+      is_stale: boolean;
+      /** Threshold (hours) the freshness_hours value is compared against. */
+      stale_threshold_hours: number;
     };
     /** Legacy broad-baseline field retained for existing Coach readers. */
     apple_health: {
@@ -864,6 +875,13 @@ export function buildAppAthleteState(inputs: BuildAppAthleteStateInputs): AppAth
         days_with_data: days.length,
         covers_today: todayMetrics != null,
         history_depth_days: days.length > 0 ? days.length : null,
+        // freshness_hours / is_stale come from the SAME helper the
+        // Manage Sources sheet uses, so an "Apple Health: stale" badge
+        // in the UI and a "stale" tag in the Coach AI evidence summary
+        // can never disagree on the threshold.
+        freshness_hours: hoursSinceNativeHealthSync(healthLastSyncAt),
+        is_stale: isNativeHealthSyncStale(healthLastSyncAt),
+        stale_threshold_hours: NATIVE_HEALTH_STALE_HOURS,
       },
       apple_health: {
         role: appleHealthHasData ? 'broad_baseline' : 'not_connected',

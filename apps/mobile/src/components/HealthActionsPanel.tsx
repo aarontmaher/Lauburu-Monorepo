@@ -49,6 +49,7 @@ import {
   getPolarDirectStateLabel,
   getWhoopDirectStateLabel,
 } from '../services/health-source-ui';
+import { isNativeHealthSyncStale } from '../services/native-health-freshness';
 
 const WHOOP_CSV_CACHE_KEY = 'whoop_csv_imported_v1';
 const WHOOP_UPLOAD_TRACE_KEY = 'whoop_upload_trace_v1';
@@ -90,14 +91,11 @@ const HEALTH_CONNECT_REQUIRED_LABELS: Record<string, string> = {
   sleep: 'sleep',
 };
 
-const NATIVE_HEALTH_STALE_MS = 48 * 60 * 60 * 1000;
-
-function isNativeHealthSyncStale(lastSyncAt: string | null, nowMs = Date.now()): boolean {
-  if (!lastSyncAt) return false;
-  const syncedMs = new Date(lastSyncAt).getTime();
-  if (!Number.isFinite(syncedMs)) return false;
-  return nowMs - syncedMs > NATIVE_HEALTH_STALE_MS;
-}
+// Native-health staleness lives in services/native-health-freshness so the
+// Manage Sources sheet, the Coach AI evidence builder, and the home widget
+// all reach the same verdict from one threshold. Don't reinstate a local
+// copy of the helper — that's the drift the v21 truth-label QA is meant
+// to catch.
 
 function buildHealthConnectSyncAuditSnapshot() {
   const store: any = useHealthStore.getState();

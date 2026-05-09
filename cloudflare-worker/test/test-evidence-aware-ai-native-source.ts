@@ -39,4 +39,17 @@ assert.ok(
   'Coach source-role summary must not hard-code Apple Health for the native broad-baseline line',
 );
 
+// v21 truth-label expansion — when the native source is stale, the
+// Coach context must SAY SO INLINE so the model doesn't reason over
+// stale "covers today" claims as if they were live. The phrase
+// "STALE (last sync ...)" is the literal contract the model reads.
+assert.ok(
+  /\$\{nativeHealthRole\.is_stale\s*\?\s*` · STALE \(last sync \$\{nativeHealthRole\.freshness_hours\}h ago, threshold \$\{nativeHealthRole\.stale_threshold_hours\}h\)`/.test(SOURCE),
+  'Coach native-source line must surface STALE + freshness_hours + threshold when is_stale is true',
+);
+assert.ok(
+  /:\s*nativeHealthRole\.freshness_hours\s*!=\s*null\s*\?\s*` · synced \$\{nativeHealthRole\.freshness_hours\}h ago`\s*:\s*''/.test(SOURCE),
+  'Coach native-source line must show synced-Nh-ago when fresh, no badge when no sync recorded',
+);
+
 console.log('Evidence-aware AI native-health source contract test passed.');

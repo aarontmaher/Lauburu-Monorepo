@@ -701,7 +701,7 @@ export function buildEvidenceAwareAiRequestPacket(
     `  Recovery inputs used: ${aas.recovery_context.contributing_sources.join(', ') || 'none'}${aas.recovery_context.uses_vendor_score ? ' (incl. vendor score as one weighted input)' : ''}`,
     '',
     'Three-layer source roles (not rankings — different jobs):',
-    `  ${nativeHealthRole.label}: ${nativeHealthRole.role}${nativeHealthRole.role === 'broad_baseline' ? ` · ${nativeHealthRole.history_depth_days} days of history` : ''}${nativeHealthRole.covers_today ? ' · covers today' : ''}`,
+    `  ${nativeHealthRole.label}: ${nativeHealthRole.role}${nativeHealthRole.role === 'broad_baseline' ? ` · ${nativeHealthRole.history_depth_days} days of history` : ''}${nativeHealthRole.covers_today ? ' · covers today' : ''}${nativeHealthRole.is_stale ? ` · STALE (last sync ${nativeHealthRole.freshness_hours}h ago, threshold ${nativeHealthRole.stale_threshold_hours}h)` : nativeHealthRole.freshness_hours != null ? ` · synced ${nativeHealthRole.freshness_hours}h ago` : ''}`,
     `  WHOOP Direct: ${aas.source_roles.whoop_direct.role}${aas.source_roles.whoop_direct.latest_cycle_date ? ` · latest cycle ${aas.source_roles.whoop_direct.latest_cycle_date}` : ''}`,
     `  WHOOP export: ${aas.source_roles.whoop_csv.role}${aas.source_roles.whoop_csv.imported_rows ? ` · ${aas.source_roles.whoop_csv.imported_rows} rows` : ''}`,
     `  Role conventions: ${nativeHealthRole.label} = broad baseline + history; WHOOP Direct = authoritative live/current state; WHOOP export = optional deeper historical enrichment. All three coexist — none overrides the others. Today\u2019s scored state prefers WHOOP; days WHOOP missed fall back to ${nativeHealthRole.label}; long baselines use the full merged record.`,
