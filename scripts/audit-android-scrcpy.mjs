@@ -24,6 +24,9 @@
  *   --watch-dir <path>            Source directory (default ~/Desktop)
  *   --window <minutes>            How far back to scan for new PNGs (default 10)
  *   --labels a,b,c                Comma-separated screen labels (1:1 with files in mtime order)
+ *   --label-preset <name>         Known label set. Current: v21-health-connect
+ *   --audit-gate <name>           Manifest audit gate label (e.g. release_gate)
+ *   --verification-status <name>  Manifest status: captured_only/pass/partial/fail/blocked
  *   --android-version-code <int>  Manifest field
  *   --app-version <s>             Manifest field
  *   --device <s>                  Manifest field
@@ -48,6 +51,7 @@ import {
   isFilenameSuspicious,
   labelToScreenSlug,
   parseScrcpyAndroidArgs,
+  SCRCPY_ANDROID_LABEL_PRESETS,
 } from './audit-screenshots-helpers.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -158,7 +162,7 @@ async function main() {
     process.exit(1);
   }
   const args = parseScrcpyAndroidArgs(process.argv.slice(2));
-  if (args.labels) args.nonInteractive = true;
+  if (args.labels || args.labelPreset) args.nonInteractive = true;
 
   const watchDir = args.watchDir
     ? (args.watchDir.startsWith('~') ? join(homedir(), args.watchDir.slice(1)) : args.watchDir)
@@ -196,7 +200,24 @@ async function main() {
   const rl = args.nonInteractive ? null : createInterface({ input: process.stdin, output: process.stdout });
 
   let labels;
-  if (args.labels) {
+  if (args.labels && args.labelPreset) {
+    console.error('--labels and --label-preset are mutually exclusive.');
+    process.exit(2);
+  }
+
+  if (args.labelPreset) {
+    labels = SCRCPY_ANDROID_LABEL_PRESETS[args.labelPreset];
+    if (!labels) {
+      console.error(`Unknown --label-preset ${JSON.stringify(args.labelPreset)}.`);
+      console.error(`Known presets: ${Object.keys(SCRCPY_ANDROID_LABEL_PRESETS).join(', ')}`);
+      process.exit(2);
+    }
+    if (labels.length !== recent.length) {
+      console.error(`Preset ${args.labelPreset} expects ${labels.length} captures but found ${recent.length}.`);
+      console.error('For v21 Health Connect, capture exactly the 10 screenshots from docs/V21_HEALTH_CONNECT_SCREENSHOT_QA.md, or use --labels manually.');
+      process.exit(2);
+    }
+  } else if (args.labels) {
     labels = args.labels.split(',').map((s) => s.trim());
     if (labels.length !== recent.length) {
       console.error(`--labels count (${labels.length}) must match captured files (${recent.length}).`);
@@ -228,6 +249,8 @@ async function main() {
   rl?.close();
 
   const manifest = buildScrcpyAndroidManifest({
+    auditGate: args.auditGate,
+    verificationStatus: args.verificationStatus,
     androidVersionCode: fields.androidVersionCode,
     appVersion: fields.appVersion,
     device: fields.device,

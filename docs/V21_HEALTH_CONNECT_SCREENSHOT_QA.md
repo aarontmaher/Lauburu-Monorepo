@@ -68,10 +68,26 @@ Health Connect → Apps does NOT list Lauburu Grappling Map:
 
 After all 10 (or 11 with FAIL) screenshots are captured:
 
-1. Upload the screenshots to the audit-bundle aggregator path
+1. Ingest the 10 screenshots with the locked v21 label preset:
+
+   ```sh
+   npm run audit:android-scrcpy -- \
+     --label-preset v21-health-connect \
+     --android-version-code 21 \
+     --audit-gate release_gate \
+     --verification-status captured_only \
+     --zip
+   ```
+
+   `captured_only` is intentional: this records the post-upload
+   click-through evidence bundle without claiming the release
+   gate passed. Agent's verdict is recorded separately through
+   `bridge:agent-qa`.
+
+2. Upload the screenshots to the audit-bundle aggregator path
    (or attach to the action ledger entry
    `qa-android-versioncode-21-build-dispatched`).
-2. Run `npm run bridge:agent-qa` with:
+3. Run `npm run bridge:agent-qa` with:
 
    ```json
    {
@@ -88,7 +104,7 @@ After all 10 (or 11 with FAIL) screenshots are captured:
    }
    ```
 
-3. The bridge writes the result back to MCP. The Build State
+4. The bridge writes the result back to MCP. The Build State
    Separation panel's `Android — installed-build verified` badge
    already reflects v21; Agent's audit decision (verified vs
    needs-patch) flips on this `androidHealthConnect` field.

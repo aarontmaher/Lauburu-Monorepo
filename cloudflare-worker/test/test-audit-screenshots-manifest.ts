@@ -24,6 +24,7 @@ import {
   parseMaestroArgs,
   parseScrcpyAndroidArgs,
   parseAgentBundleArgs,
+  SCRCPY_ANDROID_LABEL_PRESETS,
 } from '../../scripts/audit-screenshots-helpers.mjs';
 
 function assert(cond: unknown, label: string): asserts cond {
@@ -299,6 +300,8 @@ assert(parseMaestroArgs(['--platform', 'web']).platform === null, 'parseMaestroA
 // ── scrcpy Android manifest ─────────────────────────────────────────
 
 const scrcpy = buildScrcpyAndroidManifest({
+  auditGate: 'release_gate',
+  verificationStatus: 'captured_only',
   androidVersionCode: 20,
   appVersion: '0.1.0',
   device: 'Pixel 8a',
@@ -313,6 +316,8 @@ const scrcpy = buildScrcpyAndroidManifest({
 });
 assert(scrcpy.schemaVersion === 1, 'scrcpy: schemaVersion === 1');
 assert(scrcpy.captureMethod === 'scrcpy_android', 'scrcpy: captureMethod marker');
+assert(scrcpy.auditGate === 'release_gate', 'scrcpy: auditGate preserved');
+assert(scrcpy.verificationStatus === 'captured_only', 'scrcpy: verificationStatus preserved');
 assert(scrcpy.androidVersionCode === 20, 'scrcpy: androidVersionCode preserved');
 assert(scrcpy.device === 'Pixel 8a', 'scrcpy: device preserved');
 assert(scrcpy.androidVersion === '15', 'scrcpy: androidVersion preserved');
@@ -338,6 +343,9 @@ assert(s1.androidVersionCode === null, 'parseScrcpyAndroidArgs default androidVe
 const s2 = parseScrcpyAndroidArgs([
   '--watch-dir', '/tmp/x',
   '--window', '30',
+  '--label-preset', 'v21-health-connect',
+  '--audit-gate', 'release_gate',
+  '--verification-status', 'captured_only',
   '--android-version-code', '20',
   '--app-version', '0.1.0',
   '--device', 'Pixel 8a',
@@ -351,6 +359,9 @@ const s2 = parseScrcpyAndroidArgs([
 ]);
 assert(s2.watchDir === '/tmp/x', 'parseScrcpyAndroidArgs --watch-dir');
 assert(s2.windowMinutes === 30, 'parseScrcpyAndroidArgs --window');
+assert(s2.labelPreset === 'v21-health-connect', 'parseScrcpyAndroidArgs --label-preset');
+assert(s2.auditGate === 'release_gate', 'parseScrcpyAndroidArgs --audit-gate');
+assert(s2.verificationStatus === 'captured_only', 'parseScrcpyAndroidArgs --verification-status');
 assert(s2.androidVersionCode === 20, 'parseScrcpyAndroidArgs --android-version-code');
 assert(s2.appVersion === '0.1.0', 'parseScrcpyAndroidArgs --app-version');
 assert(s2.device === 'Pixel 8a', 'parseScrcpyAndroidArgs --device');
@@ -359,6 +370,11 @@ assert(s2.nonInteractive === true, 'parseScrcpyAndroidArgs --non-interactive');
 assert(s2.dryRun === true, 'parseScrcpyAndroidArgs --dry-run');
 
 assert(parseScrcpyAndroidArgs(['--android-version-code', 'oops']).androidVersionCode === null, 'parseScrcpyAndroidArgs rejects non-int');
+
+assert(Array.isArray(SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect']), 'scrcpy preset: v21 health connect exists');
+assert(SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'].length === 10, 'scrcpy preset: v21 health connect has 10 labels');
+assert(SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'][2] === 'permissions-dialog', 'scrcpy preset: step 03 locks v20 failure point');
+assert(SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'][8] === 'build-state-separation', 'scrcpy preset: build-state evidence included');
 
 // ── Agent-bundle manifest ───────────────────────────────────────────
 

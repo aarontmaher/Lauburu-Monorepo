@@ -234,9 +234,22 @@ export function parseMaestroArgs(argv) {
  */
 export function buildScrcpyAndroidManifest(input) {
   const capturedAt = isString(input?.capturedAt) ? input.capturedAt : new Date().toISOString();
+  const auditGate = isString(input?.auditGate) ? input.auditGate : null;
+  const verificationStatus = [
+    'not_started',
+    'captured_only',
+    'pass',
+    'partial',
+    'fail',
+    'blocked',
+  ].includes(input?.verificationStatus)
+    ? input.verificationStatus
+    : 'captured_only';
   return {
     schemaVersion: 1,
     captureMethod: 'scrcpy_android',
+    auditGate,
+    verificationStatus,
     androidVersionCode: Number.isInteger(input?.androidVersionCode) ? input.androidVersionCode : null,
     appVersion: isString(input?.appVersion) ? input.appVersion : null,
     device: isString(input?.device) ? input.device : null,
@@ -247,6 +260,21 @@ export function buildScrcpyAndroidManifest(input) {
     notes: isString(input?.notes) ? input.notes : '',
   };
 }
+
+export const SCRCPY_ANDROID_LABEL_PRESETS = Object.freeze({
+  'v21-health-connect': [
+    'home',
+    'manage-sources',
+    'permissions-dialog',
+    'after-grant',
+    'hc-apps-list',
+    'hc-permission-detail',
+    'after-sync',
+    'lane-progress',
+    'build-state-separation',
+    'mcp-status',
+  ],
+});
 
 /**
  * Build the index manifest for an Agent-ready bundle that
@@ -312,6 +340,9 @@ export function parseScrcpyAndroidArgs(argv) {
     androidVersion: null,
     macosVersion: null,
     labels: null,
+    labelPreset: null,
+    auditGate: null,
+    verificationStatus: null,
     notes: null,
     zip: false,
     nonInteractive: false,
@@ -328,6 +359,9 @@ export function parseScrcpyAndroidArgs(argv) {
     else if (a === '--android-version' && next) { out.androidVersion = next; i += 1; }
     else if (a === '--macos-version' && next) { out.macosVersion = next; i += 1; }
     else if (a === '--labels' && next) { out.labels = next; i += 1; }
+    else if (a === '--label-preset' && next) { out.labelPreset = next; i += 1; }
+    else if (a === '--audit-gate' && next) { out.auditGate = next; i += 1; }
+    else if (a === '--verification-status' && next) { out.verificationStatus = next; i += 1; }
     else if (a === '--notes' && next) { out.notes = next; i += 1; }
     else if (a === '--zip') out.zip = true;
     else if (a === '--non-interactive') out.nonInteractive = true;
