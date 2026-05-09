@@ -686,7 +686,8 @@ export function buildEvidenceAwareAiRequestPacket(
   // reliable parsing, but the header gives someone a quick read on
   // why the AI is about to answer a given way.
   const aas = localContext.app_athlete_state;
-  const athleteSummary = aas ? [
+  const nativeHealthRole = aas ? aas.source_roles.native_health : null;
+  const athleteSummary = aas && nativeHealthRole ? [
     '',
     'App-owned athlete analysis (device-agnostic):',
     `  Recovery: ${aas.recovery_context.band}${aas.recovery_context.score_0_100 != null ? ` (${aas.recovery_context.score_0_100}/100)` : ''} — ${aas.recovery_context.note}`,
@@ -700,10 +701,10 @@ export function buildEvidenceAwareAiRequestPacket(
     `  Recovery inputs used: ${aas.recovery_context.contributing_sources.join(', ') || 'none'}${aas.recovery_context.uses_vendor_score ? ' (incl. vendor score as one weighted input)' : ''}`,
     '',
     'Three-layer source roles (not rankings — different jobs):',
-    `  Apple Health: ${aas.source_roles.apple_health.role}${aas.source_roles.apple_health.role === 'broad_baseline' ? ` · ${aas.source_roles.apple_health.history_depth_days} days of history` : ''}${aas.source_roles.apple_health.covers_today ? ' · covers today' : ''}`,
+    `  ${nativeHealthRole.label}: ${nativeHealthRole.role}${nativeHealthRole.role === 'broad_baseline' ? ` · ${nativeHealthRole.history_depth_days} days of history` : ''}${nativeHealthRole.covers_today ? ' · covers today' : ''}`,
     `  WHOOP Direct: ${aas.source_roles.whoop_direct.role}${aas.source_roles.whoop_direct.latest_cycle_date ? ` · latest cycle ${aas.source_roles.whoop_direct.latest_cycle_date}` : ''}`,
     `  WHOOP export: ${aas.source_roles.whoop_csv.role}${aas.source_roles.whoop_csv.imported_rows ? ` · ${aas.source_roles.whoop_csv.imported_rows} rows` : ''}`,
-    '  Role conventions: Apple Health = broad baseline + history; WHOOP Direct = authoritative live/current state; WHOOP export = optional deeper historical enrichment. All three coexist — none overrides the others. Today\u2019s scored state prefers WHOOP; days WHOOP missed fall back to Apple Health; long baselines use the full merged record.',
+    `  Role conventions: ${nativeHealthRole.label} = broad baseline + history; WHOOP Direct = authoritative live/current state; WHOOP export = optional deeper historical enrichment. All three coexist — none overrides the others. Today\u2019s scored state prefers WHOOP; days WHOOP missed fall back to ${nativeHealthRole.label}; long baselines use the full merged record.`,
   ].join('\n') : '';
 
   const text = [
