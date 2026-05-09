@@ -268,6 +268,54 @@ function safeIsoId(value) {
     .replace(/^-+|-+$/g, '');
 }
 
+export const SCRCPY_ANDROID_LABEL_PRESETS = Object.freeze({
+  'v21-health-connect': [
+    'home',
+    'manage-sources',
+    'permissions-dialog',
+    'after-grant',
+    'hc-apps-list',
+    'hc-permission-detail',
+    'after-sync',
+    'lane-progress',
+    'build-state-separation',
+    'mcp-status',
+  ],
+});
+
+export function validateV21HealthConnectCapture(manifest) {
+  const expectedScreens = SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'];
+  const screens = Array.isArray(manifest?.screens) ? manifest.screens : [];
+  const capturedScreens = screens
+    .map((screen) => (screen && typeof screen === 'object' && isString(screen.screen) ? screen.screen : null))
+    .filter((screen) => screen !== null);
+  const missingScreens = expectedScreens.filter((screen) => !capturedScreens.includes(screen));
+  const unexpectedScreens = capturedScreens.filter((screen) => !expectedScreens.includes(screen));
+  const ordered = expectedScreens.length === capturedScreens.length
+    && expectedScreens.every((screen, idx) => capturedScreens[idx] === screen);
+  const verificationStatus = isString(manifest?.verificationStatus) ? manifest.verificationStatus : null;
+  const androidVersionCode = Number.isInteger(manifest?.androidVersionCode) ? manifest.androidVersionCode : null;
+  const captureMethod = isString(manifest?.captureMethod) ? manifest.captureMethod : null;
+  const ok = captureMethod === 'scrcpy_android'
+    && verificationStatus === 'captured_only'
+    && androidVersionCode === 21
+    && screens.length === expectedScreens.length
+    && ordered
+    && missingScreens.length === 0
+    && unexpectedScreens.length === 0;
+  return {
+    ok,
+    captureMethod,
+    verificationStatus,
+    androidVersionCode,
+    expectedCount: expectedScreens.length,
+    screenshotCount: screens.length,
+    ordered,
+    missingScreens,
+    unexpectedScreens,
+  };
+}
+
 /**
  * Captured-only scaffold for the Android v21 Health Connect
  * click-through audit. This is intentionally a partial QA record:
@@ -288,6 +336,7 @@ export function buildV21HealthConnectAgentQaScaffold(input) {
         .slice(0, 10)
     : [];
   const manifestRef = bundlePath ? `${bundlePath}/manifest.json` : 'manifest.json';
+  const captureChecklist = validateV21HealthConnectCapture(manifest);
   return {
     schemaVersion: 1,
     qaRunId: `agent-qa-v21-health-connect-captured-only-${safeIsoId(capturedAt)}`,
@@ -322,27 +371,13 @@ export function buildV21HealthConnectAgentQaScaffold(input) {
     requiredFixes: [],
     evidence: {
       screenshotRefs,
+      captureChecklist,
       notes: `Captured-only Android v21 Health Connect click-through bundle. Manifest: ${manifestRef}. This scaffold is not a pass verdict.`,
     },
     publicSummary: 'Captured-only Android v21 Health Connect screenshot bundle; installed-device pass/fail is not claimed.',
     privateDetails: null,
   };
 }
-
-export const SCRCPY_ANDROID_LABEL_PRESETS = Object.freeze({
-  'v21-health-connect': [
-    'home',
-    'manage-sources',
-    'permissions-dialog',
-    'after-grant',
-    'hc-apps-list',
-    'hc-permission-detail',
-    'after-sync',
-    'lane-progress',
-    'build-state-separation',
-    'mcp-status',
-  ],
-});
 
 /**
  * Build the index manifest for an Agent-ready bundle that

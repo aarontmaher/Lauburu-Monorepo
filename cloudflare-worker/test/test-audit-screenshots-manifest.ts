@@ -16,6 +16,7 @@ import {
   buildMaestroManifest,
   buildScrcpyAndroidManifest,
   buildV21HealthConnectAgentQaScaffold,
+  validateV21HealthConnectCapture,
   buildAgentBundleManifest,
   indexPrefix,
   isFilenameSuspicious,
@@ -377,21 +378,44 @@ assert(SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'].length === 10, 'scrcpy
 assert(SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'][2] === 'permissions-dialog', 'scrcpy preset: step 03 locks v20 failure point');
 assert(SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'][8] === 'build-state-separation', 'scrcpy preset: build-state evidence included');
 
+const v21Manifest = buildScrcpyAndroidManifest({
+  auditGate: 'release_gate',
+  verificationStatus: 'captured_only',
+  androidVersionCode: 21,
+  appVersion: '0.1.0',
+  device: 'Pixel 8a',
+  androidVersion: '15',
+  capturedAt: '2026-05-09T12:00:00.000Z',
+  screens: SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'].map((screen: string, idx: number) => ({
+    filename: `${indexPrefix(idx)}-${screen}.png`,
+    screen,
+    notes: '',
+  })),
+});
+
+const v21Checklist = validateV21HealthConnectCapture(v21Manifest);
+assert(v21Checklist.ok === true, 'v21 checklist: complete captured-only v21 bundle is ok');
+assert(v21Checklist.expectedCount === 10 && v21Checklist.screenshotCount === 10, 'v21 checklist: counts match preset');
+assert(v21Checklist.ordered === true, 'v21 checklist: preset order preserved');
+assert(v21Checklist.missingScreens.length === 0 && v21Checklist.unexpectedScreens.length === 0, 'v21 checklist: no missing or unexpected screens');
+
+const v21IncompleteChecklist = validateV21HealthConnectCapture(buildScrcpyAndroidManifest({
+  auditGate: 'release_gate',
+  verificationStatus: 'pass',
+  androidVersionCode: 20,
+  screens: [
+    { filename: '01-home.png', screen: 'home', notes: '' },
+    { filename: '02-mystery.png', screen: 'mystery', notes: '' },
+  ],
+}));
+assert(v21IncompleteChecklist.ok === false, 'v21 checklist: incomplete/non-captured-only bundle is not ok');
+assert(v21IncompleteChecklist.verificationStatus === 'pass', 'v21 checklist: exposes unsafe verificationStatus mismatch');
+assert(v21IncompleteChecklist.androidVersionCode === 20, 'v21 checklist: exposes versionCode mismatch');
+assert(v21IncompleteChecklist.missingScreens.includes('permissions-dialog'), 'v21 checklist: reports missing expected screen');
+assert(v21IncompleteChecklist.unexpectedScreens.includes('mystery'), 'v21 checklist: reports unexpected screen');
+
 const v21Scaffold = buildV21HealthConnectAgentQaScaffold({
-  manifest: buildScrcpyAndroidManifest({
-    auditGate: 'release_gate',
-    verificationStatus: 'captured_only',
-    androidVersionCode: 21,
-    appVersion: '0.1.0',
-    device: 'Pixel 8a',
-    androidVersion: '15',
-    capturedAt: '2026-05-09T12:00:00.000Z',
-    screens: SCRCPY_ANDROID_LABEL_PRESETS['v21-health-connect'].map((screen: string, idx: number) => ({
-      filename: `${indexPrefix(idx)}-${screen}.png`,
-      screen,
-      notes: '',
-    })),
-  }),
+  manifest: v21Manifest,
   bundlePath: 'artifacts/app-audit/android-scrcpy/2026-05-09T12-00-00-000Z',
 });
 assert(v21Scaffold.status === 'partial', 'v21 scaffold: captured-only status is partial');
@@ -402,6 +426,7 @@ assert(v21Scaffold.releaseGate.newTestFlightAllowed === false, 'v21 scaffold: iO
 assert(v21Scaffold.results.androidHealthConnect === 'partial', 'v21 scaffold: HC result partial until Agent verdict');
 assert(v21Scaffold.evidence.screenshotRefs.length === 10, 'v21 scaffold: carries 10 screenshot refs');
 assert(v21Scaffold.evidence.screenshotRefs[2].endsWith('/03-permissions-dialog.png'), 'v21 scaffold: step 03 screenshot ref preserved');
+assert(v21Scaffold.evidence.captureChecklist.ok === true, 'v21 scaffold: embeds capture checklist');
 assert(v21Scaffold.evidence.notes.includes('not a pass verdict'), 'v21 scaffold: notes reject pass claim');
 
 // ── Agent-bundle manifest ───────────────────────────────────────────
