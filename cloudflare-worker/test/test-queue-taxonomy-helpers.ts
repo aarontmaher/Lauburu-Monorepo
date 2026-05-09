@@ -25,8 +25,8 @@ import {
 
 assert.deepEqual(
   [...QUEUE_KINDS].sort(),
-  ['app_functionality', 'app_ux_ui', 'audit', 'automation_workflow', 'human_approval', 'overnight'].sort(),
-  'six queue kinds defined (4 original + audit + human_approval)',
+  ['app_functionality', 'app_ux_ui', 'audit', 'automation_workflow', 'data_readiness_evidence', 'human_approval', 'overnight', 'release_qa_gate'].sort(),
+  'eight queue kinds defined (4 original + audit + human_approval + release_qa_gate + data_readiness_evidence)',
 );
 assert.deepEqual(
   [...LANE_OWNERS].sort(),
@@ -72,6 +72,15 @@ assert.deepEqual(
   assert.equal(r.queue_kind, 'human_approval');
   assert.equal(r.lane_owner, 'aaron');
 }
+{
+  const r = classifyQueueItem('[release-gate] v21 build retest');
+  assert.equal(r.queue_kind, 'release_qa_gate');
+}
+{
+  const r = classifyQueueItem('[evidence] Apple Health sample ingestion');
+  assert.equal(r.queue_kind, 'data_readiness_evidence');
+  assert.equal(r.lane_owner, 'codex');
+}
 
 // -- classifyQueueItem: lane hint via opts -------------------
 
@@ -94,7 +103,17 @@ assert.deepEqual(
   assert.equal(r.matchedRule, 'ux_keyword');
 }
 {
+  // After the data_readiness_evidence queue addition, "lactate entry"
+  // is recognised as evidence-corpus content (correctly — the lactate
+  // value is evidence, not feature code). The functionality-queue
+  // route is reserved for items like "FS-021 lactate entry UI panel"
+  // where the title clearly references UI / feature scope.
   const r = classifyQueueItem('FS-021 lactate entry validator');
+  assert.equal(r.queue_kind, 'data_readiness_evidence');
+  assert.equal(r.matchedRule, 'evidence_keyword');
+}
+{
+  const r = classifyQueueItem('FS-021 training tab UI');
   assert.equal(r.queue_kind, 'app_functionality');
   assert.equal(r.matchedRule, 'functionality_keyword');
 }
@@ -155,6 +174,30 @@ assert.deepEqual(
 {
   const r = classifyQueueItem('Pending approval: research export');
   assert.equal(r.queue_kind, 'human_approval');
+}
+
+// -- classifyQueueItem: release_qa_gate keyword matches ------
+
+{
+  const r = classifyQueueItem('Track v21 build install retest');
+  assert.equal(r.queue_kind, 'release_qa_gate');
+  assert.equal(r.matchedRule, 'release_gate_keyword');
+}
+{
+  const r = classifyQueueItem('TestFlight processing for build 20');
+  assert.equal(r.queue_kind, 'release_qa_gate');
+}
+
+// -- classifyQueueItem: data_readiness_evidence keyword matches --
+
+{
+  const r = classifyQueueItem('Ingest Apple Health sample for date 2026-05-09');
+  assert.equal(r.queue_kind, 'data_readiness_evidence');
+  assert.equal(r.matchedRule, 'evidence_keyword');
+}
+{
+  const r = classifyQueueItem('Cached research artifact: BPC-157 mechanism');
+  assert.equal(r.queue_kind, 'data_readiness_evidence');
 }
 
 // -- classifyQueueItem: fallback to automation_workflow + unclassified flag --
@@ -222,6 +265,8 @@ assert.equal(staleThresholdHours('app_ux_ui'), 168);
 assert.equal(staleThresholdHours('overnight'), 24);
 assert.equal(staleThresholdHours('audit'), 168);
 assert.equal(staleThresholdHours('human_approval'), 96, 'approval queue rots faster than functionality/ux');
+assert.equal(staleThresholdHours('release_qa_gate'), 96, 'release gate rots in lockstep with approval');
+assert.equal(staleThresholdHours('data_readiness_evidence'), 168 * 2, 'evidence has long shelf life');
 
 // -- riskFromAction -------------------------------------------
 
@@ -266,5 +311,5 @@ assert.equal(riskFromAction('something unmapped'), 'medium', 'unknown action def
   assert.equal(isItemStale({ queue_kind: 'automation_workflow', lastUpdatedAt: null }), true);
 }
 
-console.log('✓ queue-taxonomy-helpers contract: 6 queues (+ audit + human_approval) / classifier rule order incl. approval > audit > automation / P0+P1 protection / overnight-window / stale thresholds / riskFromAction');
+console.log('✓ queue-taxonomy-helpers contract: 8 queues (+ audit + human_approval + release_qa_gate + data_readiness_evidence) / classifier rule order: approval > release_gate > evidence > audit > automation / P0+P1 protection / overnight-window / stale thresholds / riskFromAction');
 console.log('queue-taxonomy-helpers contract test passed.');

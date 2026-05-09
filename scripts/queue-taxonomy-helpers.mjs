@@ -17,6 +17,8 @@ export const QUEUE_KINDS = Object.freeze([
   'overnight',
   'audit',
   'human_approval',
+  'release_qa_gate',
+  'data_readiness_evidence',
 ]);
 
 export const LANE_OWNERS = Object.freeze(['claude', 'codex', 'agent', 'aaron']);
@@ -30,6 +32,8 @@ const OWNER_BY_KIND = Object.freeze({
   overnight: null,    // any owner; rest of system decides
   audit: 'agent',     // primary; secondaries (Claude/Codex) classify as audit too
   human_approval: 'aaron', // consumer; producer is the push surface
+  release_qa_gate: null,    // shared: Aaron + Agent + coder rotate as the build phase changes
+  data_readiness_evidence: 'codex', // primary for ingestion; Agent for confirmation
 });
 
 const EXPLICIT_TAGS = Object.freeze({
@@ -39,6 +43,8 @@ const EXPLICIT_TAGS = Object.freeze({
   '[overnight]': 'overnight',
   '[audit]': 'audit',
   '[approval]': 'human_approval',
+  '[release-gate]': 'release_qa_gate',
+  '[evidence]': 'data_readiness_evidence',
 });
 
 const APPROVAL_KEYWORDS = [
@@ -48,6 +54,27 @@ const APPROVAL_KEYWORDS = [
   'research approval', 'research export approval',
   'technique publish approval', 'technique publishing approval',
   'play production approval', 'app store approval',
+];
+
+const RELEASE_GATE_KEYWORDS = [
+  'release gate', 'release-gate', 'qa gate', 'qa-gate',
+  'release readiness', 'release retest', 'install retest',
+  'eas build in progress', 'eas build complete',
+  'play internal upload', 'testflight processing',
+  'installed-device audit', 'installed device audit',
+  'versioncode bump', 'buildnumber bump',
+  'v21 build', 'v22 build', 'v23 build',
+];
+
+const EVIDENCE_KEYWORDS = [
+  'apple health sample', 'health connect sample', 'apple health record',
+  'health connect record', 'journal event', 'journal_event',
+  'dose period', 'dose_period', 'manual log entry',
+  'lactate entry', 'dexa', 'blood test',
+  'cached research artifact', 'research_artifact',
+  'athlete memory snapshot', 'athlete_memory_snapshot',
+  'technique evidence', 'technique_evidence',
+  'metric_effect_window', 'metric effect window',
 ];
 
 const AUDIT_KEYWORDS = [
@@ -148,7 +175,29 @@ export function classifyQueueItem(title, opts = {}) {
     };
   }
 
-  // 3. Audit / Review keywords (these PRODUCE evidence; the
+  // 3. Release / QA Gate keywords (build-in-flight state;
+  //    distinct from approval which is decision-pending).
+  if (matchAny(title, RELEASE_GATE_KEYWORDS)) {
+    return {
+      queue_kind: 'release_qa_gate',
+      lane_owner: OWNER_BY_KIND.release_qa_gate,
+      unclassified: false,
+      matchedRule: 'release_gate_keyword',
+    };
+  }
+
+  // 4. Data / Readiness Evidence keywords (the corpus of
+  //    health + journal + research artefacts).
+  if (matchAny(title, EVIDENCE_KEYWORDS)) {
+    return {
+      queue_kind: 'data_readiness_evidence',
+      lane_owner: OWNER_BY_KIND.data_readiness_evidence,
+      unclassified: false,
+      matchedRule: 'evidence_keyword',
+    };
+  }
+
+  // 5. Audit / Review keywords (these PRODUCE evidence; the
   //    approval queue CONSUMES it).
   if (matchAny(title, AUDIT_KEYWORDS)) {
     return {
@@ -271,6 +320,8 @@ export function staleThresholdHours(queueKind) {
     case 'overnight': return 24;
     case 'audit': return 168;
     case 'human_approval': return 96;  // shorter — undecided gates rot quickly
+    case 'release_qa_gate': return 96; // build-in-flight rots without retest action
+    case 'data_readiness_evidence': return 168 * 2; // 14d — evidence has long shelf life
     default: return 168;
   }
 }
