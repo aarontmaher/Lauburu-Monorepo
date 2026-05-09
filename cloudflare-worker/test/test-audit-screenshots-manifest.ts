@@ -13,6 +13,7 @@ import {
   AUDIT_SCREENS,
   buildManifest,
   buildIphoneMirroringManifest,
+  buildMaestroAgentAuditManifest,
   buildMaestroManifest,
   buildScrcpyAndroidManifest,
   buildV21HealthConnectAgentQaScaffold,
@@ -269,9 +270,23 @@ const maestro = buildMaestroManifest({
 assert(maestro.schemaVersion === 1, 'maestro: schemaVersion === 1');
 assert(maestro.captureMethod === 'maestro', 'maestro: captureMethod marker');
 assert(maestro.captureTier === 'v3_maestro_full_auto', 'maestro: captureTier v3 marker');
+assert(maestro.auditGate === 'simulator_audit', 'maestro: audit gate defaults to simulator_audit');
+assert(maestro.verificationStatus === 'captured_only', 'maestro: verification status is captured_only');
+assert(maestro.installedDeviceGate.canClearInstalledDeviceGate === false, 'maestro: cannot clear installed-device gates');
 assert(maestro.flows.length === 3 && maestro.flows[0] === '00-launch', 'maestro: flows preserved');
 assert(maestro.captured.length === 2 && maestro.captured[0].flow === '00-launch', 'maestro: captured shape');
 assert(maestro.failed.length === 1 && maestro.failed[0].reason === 'maestro-exit-1', 'maestro: failed shape');
+
+const maestroAgentManifest = buildMaestroAgentAuditManifest({
+  manifest: maestro,
+  bundlePath: 'artifacts/app-audit/maestro/android/android-v21/2026-05-09T12-00-00-000Z',
+});
+assert(maestroAgentManifest.source === 'maestro_v3', 'maestro agent manifest: source marker');
+assert(maestroAgentManifest.simulatorOrEmulatorOnly === true, 'maestro agent manifest: simulator/emulator only');
+assert(maestroAgentManifest.installedDeviceGate.canClearInstalledDeviceGate === false, 'maestro agent manifest: release gate cannot clear');
+assert(maestroAgentManifest.evidence.screenshotRefs.length === 2, 'maestro agent manifest: screenshot refs copied');
+assert(maestroAgentManifest.evidence.screenshotRefs[0].endsWith('/00-launch-1.png'), 'maestro agent manifest: screenshot path includes bundle');
+assert(maestroAgentManifest.status === 'partial', 'maestro agent manifest: failed flow makes partial status');
 
 const maestroJunk = buildMaestroManifest({
   platform: 'web' as any,

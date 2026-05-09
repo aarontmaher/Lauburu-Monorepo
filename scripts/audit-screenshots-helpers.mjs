@@ -188,10 +188,17 @@ export function indexPrefix(idx) {
 export function buildMaestroManifest(input) {
   const platform = input?.platform === 'ios' || input?.platform === 'android' ? input.platform : 'unknown';
   const capturedAt = isString(input?.capturedAt) ? input.capturedAt : new Date().toISOString();
+  const auditGate = isString(input?.auditGate) ? input.auditGate : 'simulator_audit';
   return {
     schemaVersion: 1,
     captureMethod: 'maestro',
     captureTier: 'v3_maestro_full_auto',
+    auditGate,
+    verificationStatus: 'captured_only',
+    installedDeviceGate: {
+      canClearInstalledDeviceGate: false,
+      reason: 'Maestro simulator/emulator screenshots are public-safe UI evidence only; installed-device gates require separate real-device Agent QA.',
+    },
     platform,
     device: sanitizeDevice(input?.device),
     build: sanitizeBuild(input?.build),
@@ -210,6 +217,52 @@ export function buildMaestroManifest(input) {
             ? { flow: f.flow, reason: f.reason } : null))
           .filter((f) => f !== null)
       : [],
+  };
+}
+
+export function buildMaestroAgentAuditManifest(input) {
+  const manifest = input?.manifest && typeof input.manifest === 'object' ? input.manifest : {};
+  const capturedAt = isString(manifest.capturedAt) ? manifest.capturedAt : new Date().toISOString();
+  const bundlePath = isString(input?.bundlePath) ? input.bundlePath.replace(/\/+$/g, '') : '';
+  const captured = Array.isArray(manifest.captured) ? manifest.captured : [];
+  const screenshotRefs = captured
+    .map((screen) => {
+      if (!screen || typeof screen !== 'object' || !isString(screen.file)) return null;
+      return bundlePath ? `${bundlePath}/${screen.file}` : screen.file;
+    })
+    .filter((ref) => ref !== null);
+  const failed = Array.isArray(manifest.failed)
+    ? manifest.failed
+        .map((f) => (f && typeof f === 'object' && isString(f.flow) && isString(f.reason)
+          ? { flow: f.flow, reason: f.reason }
+          : null))
+        .filter((f) => f !== null)
+    : [];
+  const manifestRef = bundlePath ? `${bundlePath}/manifest.json` : 'manifest.json';
+  return {
+    schemaVersion: 1,
+    auditRunId: `agent-audit-maestro-captured-only-${safeIsoId(capturedAt)}`,
+    source: 'maestro_v3',
+    createdAt: capturedAt.replace(/\.\d{3}Z$/, 'Z'),
+    updatedAt: capturedAt.replace(/\.\d{3}Z$/, 'Z'),
+    status: failed.length > 0 ? 'partial' : 'captured_only',
+    gate: isString(manifest.auditGate) ? manifest.auditGate : 'simulator_audit',
+    platform: manifest.platform === 'ios' || manifest.platform === 'android' ? manifest.platform : 'unknown',
+    captureTier: 'v3_maestro_full_auto',
+    captureMethod: 'maestro',
+    simulatorOrEmulatorOnly: true,
+    installedDeviceGate: {
+      canClearInstalledDeviceGate: false,
+      reason: 'Maestro simulator/emulator audit cannot clear installed-device release gates or claim real-device verification.',
+    },
+    evidence: {
+      manifestRef,
+      screenshotRefs,
+      capturedCount: screenshotRefs.length,
+      failed,
+      publicSafe: true,
+      notes: 'Automated public-safe UI screenshot bundle. Agent may use this for UX audit context only; it is not installed-device proof.',
+    },
   };
 }
 

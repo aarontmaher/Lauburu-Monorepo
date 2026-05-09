@@ -27,6 +27,7 @@ import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
 
 import {
+  buildMaestroAgentAuditManifest,
   buildMaestroManifest,
   parseMaestroArgs,
 } from './audit-screenshots-helpers.mjs';
@@ -59,6 +60,16 @@ function readAppConfig() {
       androidPackage: expo.android?.package ?? null,
     };
   } catch { return { appVersion: null, iosBuildNumber: null, androidVersionCode: null, iosBundleIdentifier: null, androidPackage: null }; }
+}
+
+function slugPart(value, fallback) {
+  const text = value == null ? fallback : String(value);
+  const slug = text
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
+  return slug || fallback;
 }
 
 function maestroAvailable() {
@@ -116,10 +127,16 @@ async function main() {
 
   const ts = new Date().toISOString();
   const tsSafe = ts.replace(/[:.]/g, '-');
-  const outDirAbs = join(ROOT, 'artifacts', 'app-audit', 'maestro', tsSafe);
+  const buildIdentity = readAppConfig();
+  const platformSlug = args.platform ?? 'unknown-platform';
+  const buildSlug = args.platform === 'ios'
+    ? `ios-build-${slugPart(buildIdentity.iosBuildNumber, 'unknown')}`
+    : args.platform === 'android'
+      ? `android-v${slugPart(buildIdentity.androidVersionCode, 'unknown')}`
+      : `app-${slugPart(buildIdentity.appVersion, 'unknown')}`;
+  const outDirAbs = join(ROOT, 'artifacts', 'app-audit', 'maestro', platformSlug, buildSlug, tsSafe);
   mkdirSync(outDirAbs, { recursive: true });
 
-  const buildIdentity = readAppConfig();
   console.log(`Maestro audit run`);
   console.log(`  flows:    ${flows.length}`);
   console.log(`  output:   ${relative(ROOT, outDirAbs)}`);
@@ -174,6 +191,7 @@ async function main() {
 
   const manifest = buildMaestroManifest({
     platform: args.platform ?? 'unknown',
+    auditGate: 'simulator_audit',
     device: { id: args.device ?? null, name: args.device ?? null },
     build: buildIdentity,
     repo: { branch: branchName(), shortHead: shortHead() },
@@ -183,8 +201,15 @@ async function main() {
     failed,
   });
   writeFileSync(join(outDirAbs, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+  const agentManifest = buildMaestroAgentAuditManifest({
+    manifest,
+    bundlePath: relative(ROOT, outDirAbs),
+  });
+  writeFileSync(join(outDirAbs, 'agent-audit-manifest.json'), `${JSON.stringify(agentManifest, null, 2)}\n`);
   console.log(`\nDone. Captured ${captured.length} screenshot(s); ${failed.length} flow(s) failed.`);
   console.log(`  manifest: ${relative(ROOT, join(outDirAbs, 'manifest.json'))}`);
+  console.log(`  agent manifest: ${relative(ROOT, join(outDirAbs, 'agent-audit-manifest.json'))}`);
+  console.log('  gate: simulator/emulator capture only; cannot clear installed-device release gates');
 
   if (!args.keepTmp) {
     try { rmSync(join(homedir(), '.maestro', 'tests'), { recursive: true, force: true }); } catch { /* ignore */ }

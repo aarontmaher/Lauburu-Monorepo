@@ -29,6 +29,9 @@ bundle identifier on both platforms.
 # Single flow:
 maestro test apps/mobile/audit-flows/01-home.yml
 
+# Basic launch + Home + Health/Manage Sources + Admin/Dev smoke:
+audit-system/run-audit.sh --platform ios --flow 00-smoke-basic
+
 # Full suite:
 maestro test apps/mobile/audit-flows/
 
@@ -39,11 +42,12 @@ npm run audit:maestro
 Wrapper output:
 
 ```
-artifacts/app-audit/maestro/<isoTimestamp>/
+artifacts/app-audit/maestro/<platform>/<build>/<isoTimestamp>/
   01-home.png
   02-health.png
   ...
   manifest.json
+  agent-audit-manifest.json
 ```
 
 `artifacts/` is gitignored; bundles never reach the repo.
@@ -52,6 +56,7 @@ artifacts/app-audit/maestro/<isoTimestamp>/
 
 | File | Captures |
 |---|---|
+| `00-smoke-basic.yml` | Launch + Home + Health/Manage Sources + Settings/Admin/Dev. |
 | `00-launch.yml` | Cold launch + sign-in (skipped on dev-client where the device is already signed). |
 | `01-home.yml` | Home tab. |
 | `02-health.yml` | Health tab → Manage Sources sheet → close. |
