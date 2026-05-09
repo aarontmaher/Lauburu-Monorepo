@@ -46,6 +46,7 @@ import { Platform } from 'react-native';
 import type { DailyMetrics, DerivedFeatures, TrainingSession } from '@lauburu/shared';
 
 const NATIVE_HEALTH_LABEL = Platform.OS === 'ios' ? 'Apple Health' : 'Health Connect';
+const NATIVE_HEALTH_SOURCE = Platform.OS === 'ios' ? 'apple_health' : 'health_connect';
 
 export type Band = 'low' | 'mid' | 'high' | 'unknown';
 
@@ -119,6 +120,7 @@ export interface AppAthleteState {
     freshness_hours: {
       whoop: number | null;
       apple_health: number | null;
+      native_health: number | null;
       nutrition: number | null;
       training: number | null;
     };
@@ -143,6 +145,21 @@ export interface AppAthleteState {
    * them. All three can coexist; their roles differ.
    */
   source_roles: {
+    /**
+     * Platform-native broad baseline source. This is the preferred
+     * cross-platform field for Coach context: iOS reports
+     * `apple_health`, Android reports `health_connect`. The legacy
+     * `apple_health` field below remains for older consumers.
+     */
+    native_health: {
+      source: 'apple_health' | 'health_connect';
+      label: 'Apple Health' | 'Health Connect';
+      role: 'broad_baseline' | 'not_connected';
+      days_with_data: number;
+      covers_today: boolean;
+      history_depth_days: number | null;
+    };
+    /** Legacy broad-baseline field retained for existing Coach readers. */
     apple_health: {
       role: 'broad_baseline' | 'not_connected';
       days_with_data: number;
@@ -827,6 +844,7 @@ export function buildAppAthleteState(inputs: BuildAppAthleteStateInputs): AppAth
       freshness_hours: {
         whoop: fWhoop,
         apple_health: fAH,
+        native_health: fAH,
         nutrition: fNut,
         training: fTrain,
       },
@@ -839,6 +857,14 @@ export function buildAppAthleteState(inputs: BuildAppAthleteStateInputs): AppAth
       },
     },
     source_roles: {
+      native_health: {
+        source: NATIVE_HEALTH_SOURCE,
+        label: NATIVE_HEALTH_LABEL,
+        role: appleHealthHasData ? 'broad_baseline' : 'not_connected',
+        days_with_data: days.length,
+        covers_today: todayMetrics != null,
+        history_depth_days: days.length > 0 ? days.length : null,
+      },
       apple_health: {
         role: appleHealthHasData ? 'broad_baseline' : 'not_connected',
         days_with_data: days.length,
@@ -874,7 +900,7 @@ export function buildAppAthleteState(inputs: BuildAppAthleteStateInputs): AppAth
       score_kind: 'custom_readiness',
       calibration_source: whoopDay?.recovery_score != null ? 'whoop_direct' : null,
       primary_live_source: appleHealthHasData
-        ? (Platform.OS === 'ios' ? 'apple_health' : 'health_connect')
+        ? NATIVE_HEALTH_SOURCE
         : 'none',
     },
   };
