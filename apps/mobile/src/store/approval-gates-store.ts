@@ -42,24 +42,24 @@ const DEFAULT_GATES: readonly ApprovalGate[] = [
   // Mirrors data/approval-gates/gates.json so the device has
   // something to render before the first refresh() lands.
   {
-    id: 'gate-android-v20-play-upload',
-    title: 'Approve Android v20 Play Internal upload',
+    id: 'gate-android-v21-install-test',
+    title: 'Approve Android v21 install + Health Connect retest',
     description:
-      'Manually upload v20 AAB to Play Console Internal Testing. EAS build 58071abc finished; AAB pending Aaron drag-drop. v20 carries the Health Connect crash patch and the Health Connect debug-card surface.',
+      'v21 build a52a921e finished at commit 0005523. Approval covers manual Play Internal upload, install on Android, confirm versionCode 21, then run the Health Connect retest and 10-screenshot QA. v20 is superseded; do not upload v20.',
     priority: 'P0',
     actionType: 'play_console_upload',
     status: 'pending',
     safeDefault: 'wait',
-    createdAt: '2026-05-08T13:01:40Z',
-    expiresAt: '2026-05-15T00:00:00Z',
+    createdAt: '2026-05-09T00:35:00Z',
+    expiresAt: '2026-05-23T00:00:00Z',
     resolvedAt: null,
     resolvedBy: null,
     deferUntil: null,
     resolutionNote: null,
-    ledgerActionId: 'qa-android-versioncode-20-build-dispatched',
+    ledgerActionId: 'qa-android-versioncode-21-build-dispatched',
     dependsOnGateId: null,
     actionPayload:
-      'Open Play Console → Lauburu → Testing → Internal testing → Create release → upload ~/Downloads/lauburu-android-versionCode20-health-connect-debug-surface.aab → Save → Review → Start rollout to Internal Testing.',
+      'Download v21 AAB from https://expo.dev/artifacts/eas/moWfFhT957sPk5v2tSGFj3.aab, upload to Play Internal, install via internal tester invite, confirm versionCode 21, then run docs/V21_HEALTH_CONNECT_SCREENSHOT_QA.md.',
   },
   {
     id: 'gate-mcp-core-worker-deploy',
@@ -78,10 +78,10 @@ const DEFAULT_GATES: readonly ApprovalGate[] = [
     resolutionNote: null,
     ledgerActionId: null,
     actionPayload: 'cd cloudflare-worker && npx wrangler deploy --env preview',
-    // Worker deploy depends on the v20 Play upload completing, so
+    // Worker deploy depends on the current Android v21 gate, so
     // the deploy gate stays locked until Aaron upload-approves the
-    // build first. This is the canonical chained-approvals example.
-    dependsOnGateId: 'gate-android-v20-play-upload',
+    // install/retest gate first. This is the canonical chained-approvals example.
+    dependsOnGateId: 'gate-android-v21-install-test',
   },
 ];
 
