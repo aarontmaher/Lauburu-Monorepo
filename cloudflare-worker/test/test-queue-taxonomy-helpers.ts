@@ -13,23 +13,30 @@ import * as assert from 'node:assert/strict';
 import {
   QUEUE_KINDS,
   LANE_OWNERS,
+  RISK_LEVELS,
   classifyQueueItem,
   shouldRecommendToIdleLane,
   staleThresholdHours,
   isItemStale,
+  riskFromAction,
 } from '../../scripts/queue-taxonomy-helpers.mjs';
 
-// -- QUEUE_KINDS + LANE_OWNERS shape -------------------------
+// -- QUEUE_KINDS + LANE_OWNERS + RISK_LEVELS shape -----------
 
 assert.deepEqual(
   [...QUEUE_KINDS].sort(),
-  ['app_functionality', 'app_ux_ui', 'automation_workflow', 'overnight'].sort(),
-  'four queue kinds defined',
+  ['app_functionality', 'app_ux_ui', 'audit', 'automation_workflow', 'human_approval', 'overnight'].sort(),
+  'six queue kinds defined (4 original + audit + human_approval)',
 );
 assert.deepEqual(
   [...LANE_OWNERS].sort(),
   ['aaron', 'agent', 'claude', 'codex'].sort(),
   'four lane owners defined',
+);
+assert.deepEqual(
+  [...RISK_LEVELS].sort(),
+  ['high', 'irreversible', 'low', 'medium'].sort(),
+  'four risk levels defined',
 );
 
 // -- classifyQueueItem: explicit tag wins --------------------
@@ -54,6 +61,16 @@ assert.deepEqual(
   const r = classifyQueueItem('[overnight] long synthesis run');
   assert.equal(r.queue_kind, 'overnight');
   assert.equal(r.lane_owner, null);
+}
+{
+  const r = classifyQueueItem('[audit] FS-022 functional confirmation');
+  assert.equal(r.queue_kind, 'audit');
+  assert.equal(r.lane_owner, 'agent');
+}
+{
+  const r = classifyQueueItem('[approval] EAS Android v22 build approval');
+  assert.equal(r.queue_kind, 'human_approval');
+  assert.equal(r.lane_owner, 'aaron');
 }
 
 // -- classifyQueueItem: lane hint via opts -------------------
@@ -93,6 +110,51 @@ assert.deepEqual(
   // "MCP" (automation) wins over "polish" (ux) per § 3 rule order.
   const r = classifyQueueItem('MCP polish for Admin/Dev');
   assert.equal(r.queue_kind, 'automation_workflow');
+}
+
+// -- classifyQueueItem: rule order — approval > audit > automation --
+
+{
+  // "approval" wins over "audit" wins over "MCP".
+  const r = classifyQueueItem('EAS build approval after MCP audit');
+  assert.equal(r.queue_kind, 'human_approval', 'approval keyword wins');
+}
+{
+  // "audit" wins over "MCP" when there is no approval keyword.
+  const r = classifyQueueItem('Recurring drift check on MCP freshness');
+  assert.equal(r.queue_kind, 'audit', 'audit keyword wins over automation');
+}
+
+// -- classifyQueueItem: audit-queue keyword matches ----------
+
+{
+  const r = classifyQueueItem('Spec consistency audit for FS-022');
+  assert.equal(r.queue_kind, 'audit');
+  assert.equal(r.matchedRule, 'audit_keyword');
+}
+{
+  const r = classifyQueueItem('Bug report: HC permission dialog never appears');
+  assert.equal(r.queue_kind, 'audit');
+}
+{
+  const r = classifyQueueItem('Suggestion-escalation from user feedback');
+  assert.equal(r.queue_kind, 'audit');
+}
+
+// -- classifyQueueItem: human_approval keyword matches -------
+
+{
+  const r = classifyQueueItem('Worker deploy approval');
+  assert.equal(r.queue_kind, 'human_approval');
+  assert.equal(r.matchedRule, 'approval_keyword');
+}
+{
+  const r = classifyQueueItem('Awaiting Aaron — Play Production approval');
+  assert.equal(r.queue_kind, 'human_approval');
+}
+{
+  const r = classifyQueueItem('Pending approval: research export');
+  assert.equal(r.queue_kind, 'human_approval');
 }
 
 // -- classifyQueueItem: fallback to automation_workflow + unclassified flag --
@@ -158,6 +220,35 @@ assert.equal(staleThresholdHours('automation_workflow'), 72);
 assert.equal(staleThresholdHours('app_functionality'), 168);
 assert.equal(staleThresholdHours('app_ux_ui'), 168);
 assert.equal(staleThresholdHours('overnight'), 24);
+assert.equal(staleThresholdHours('audit'), 168);
+assert.equal(staleThresholdHours('human_approval'), 96, 'approval queue rots faster than functionality/ux');
+
+// -- riskFromAction -------------------------------------------
+
+assert.equal(riskFromAction('App Store public release'), 'irreversible');
+assert.equal(riskFromAction('Play Production release'), 'irreversible');
+assert.equal(riskFromAction('DROP TABLE users'), 'irreversible');
+assert.equal(riskFromAction('TRUNCATE journal_events'), 'irreversible');
+assert.equal(riskFromAction('Force-push to main'), 'irreversible');
+assert.equal(riskFromAction('Rotate secret ATHLETE_MEMORY_API_TOKEN'), 'irreversible');
+
+assert.equal(riskFromAction('Worker production deploy'), 'high');
+assert.equal(riskFromAction('Stage 5 DNS cutover'), 'high');
+assert.equal(riskFromAction('TestFlight Team release'), 'high');
+assert.equal(riskFromAction('Play Internal upload'), 'high');
+
+assert.equal(riskFromAction('Worker preview deploy'), 'medium');
+assert.equal(riskFromAction('EAS Internal Testing build'), 'medium');
+assert.equal(riskFromAction('npm dep upgrade'), 'medium');
+assert.equal(riskFromAction('Supabase additive migration'), 'medium');
+
+assert.equal(riskFromAction('Doc edit'), 'low');
+assert.equal(riskFromAction('Read-only audit'), 'low');
+assert.equal(riskFromAction('bridge:snapshot'), 'low');
+assert.equal(riskFromAction('Spec addition'), 'low');
+assert.equal(riskFromAction('Classifier change'), 'low');
+
+assert.equal(riskFromAction('something unmapped'), 'medium', 'unknown action defaults to medium');
 
 // -- isItemStale ----------------------------------------------
 
@@ -175,5 +266,5 @@ assert.equal(staleThresholdHours('overnight'), 24);
   assert.equal(isItemStale({ queue_kind: 'automation_workflow', lastUpdatedAt: null }), true);
 }
 
-console.log('✓ queue-taxonomy-helpers contract: 4 queues / classifier rule order / P0+P1 protection / overnight-window / stale thresholds');
+console.log('✓ queue-taxonomy-helpers contract: 6 queues (+ audit + human_approval) / classifier rule order incl. approval > audit > automation / P0+P1 protection / overnight-window / stale thresholds / riskFromAction');
 console.log('queue-taxonomy-helpers contract test passed.');

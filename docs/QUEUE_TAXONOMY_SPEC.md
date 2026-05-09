@@ -28,7 +28,9 @@ coder knows what's theirs:
 | **Automation Workflow** | Claude | Mobile control via Admin/Dev tab. Push notification automation. No-idle routing. MCP freshness/writeback reliability. Approval-gated build/deploy workflows. Safe admin actions only; public/no-auth read-only. | rules 11 / 12 / 14 / 18 / 19 / 20 / 21 / 22 / 23 / 24 |
 | **App Functionality** | Codex | Health source connectivity. Journal / FS-018 / FS-020. Training tab. Map. Coaching. Verified mastery. AI video analysis. Anything that ships as part of the mobile bundle's user-facing functionality. | rules 7 / 8 / 9 / 22 / 23 |
 | **App UX/UI** | Agent | Visual polish. Premium UI primitives migration. Per-screen redesigns. Rule-9 anti-claim copy audits. Dark theme cohesion. Accessibility. | rules 9 / Forever Improve § AI video analysis (audit confidence ladder) |
-| **Overnight prompt queue** | shared (any owner) | Long-running unattended tasks per `docs/CONTROL_CENTRE_MVP_SPEC.md` § 10 — already shipped in Codex `7193ee1`. Items here optionally inherit a primary queue from the 3 above for routing. | rule 7 (no overnight EAS / Play / TestFlight without explicit approval) |
+| **Overnight prompt queue** | shared (any owner) | Long-running unattended tasks per `docs/CONTROL_CENTRE_MVP_SPEC.md` § 10 — already shipped in Codex `7193ee1`. Items here optionally inherit a primary queue from the 4 above/below for routing. | rule 7 (no overnight EAS / Play / TestFlight without explicit approval) |
+| **Audit / Review** | Agent (primary) + Claude/Codex (secondary) | Repo audits, recurring full-app screenshot audits, code review, agent-confirmed gate runs, FS-XXX functional confirmation, drift checks per Forever Improve. NOT the same as approval gates — these PRODUCE evidence; approval gates CONSUME it. | rules 1 / 4 / 5 / 6 + `INSTALLED_DEVICE_AUDIT_PLAYBOOK` |
+| **Human Approval** | Aaron (consumer) + push surface (producer) | Pending approvals from any source — EAS build, Worker deploy, Supabase migration, AI spend, research export, public release, FS-XXX promotion, technique publishing. Surfaces in Admin/Dev approval centre + push notifications per rule 21. | rules 7 / 21 / 22 / 23 |
 
 Queues do **NOT** override the Top-7 priority ordering or
 P0/P1 assignments. They organise the **inside** of those
@@ -74,7 +76,11 @@ per item:
 | `progress_pct` | yes | 0–100; 0 for non-started; 100 only when `status = verified` |
 | `next_prompt_target` | yes | `{ owner, prompt_id_or_title, approval_required: bool }` |
 | `human_action_required` | yes | boolean — `true` when the item is blocked on Aaron approval / device retest / vendor console |
+| `risk` | yes | `low` \| `medium` \| `high` \| `irreversible` — inherited from the underlying action's reversibility (see § 5 risk classification) |
 | `dependencies` | optional | uuid[] referring to other queue items / action-ledger rows |
+| `recurrence` | optional (audit queue only) | `{ cron: string, lastRunAt?: string, nextRunAt?: string }` for recurring full-app audits |
+| `escalation_source` | optional (audit queue only) | `{ kind: 'bug' \| 'improvement' \| 'suggestion', source_user_id?: string, original_finding_id?: string }` for items escalated from user-feedback / agent audits |
+| `approval_gate_id` | optional (human approval queue only) | uuid → `connector_action_ledger` row with `gateState: 'waiting_for_approval'` per rule 21 |
 
 Public-safe surface MUST show `count` per `queue_kind` + per
 `status` + per `priority` only. Full per-item rows are
@@ -90,23 +96,40 @@ item's title + (optionally) explicit lane hint.
 Rule order (first match wins):
 
 1. **Explicit lane hint**: if title contains `[automation]`,
-   `[functionality]`, `[ux]`, or `[overnight]` tag, that
-   wins — manual override.
-2. **Automation Workflow keywords**: MCP, freshness,
-   writeback, watcher, push, approval, gate, lane, idle,
-   admin/dev, deploy, bridge, snapshot, audit-bundle.
-3. **App UX/UI keywords**: dark theme, premium, palette,
+   `[functionality]`, `[ux]`, `[overnight]`, `[audit]`, or
+   `[approval]` tag, that wins — manual override.
+2. **Human Approval keywords**: approve, approval, pending
+   approval, awaiting aaron, EAS build approval, Worker
+   deploy approval, public release, AI spend gate, research
+   approval, technique publish (these surface in the rule
+   21 push gate).
+3. **Audit / Review keywords**: audit, review, recurring
+   audit, drift check, screenshot audit, click-through,
+   agent-confirm, FS-XXX functional confirmation, AGENT_QA,
+   bug report, improvement, suggestion-escalation.
+4. **Automation Workflow keywords**: MCP, freshness,
+   writeback, watcher, push, gate (approval gates excluded —
+   covered above), lane, idle, admin/dev, deploy, bridge,
+   snapshot, audit-bundle, control-centre, no-idle,
+   staleReason, heartbeat.
+5. **App UX/UI keywords**: dark theme, premium, palette,
    primitive, copy, hedge, anti-claim, contrast, padding,
    layout, redesign, polish, accessibility, screen-record-only.
-4. **App Functionality keywords**: journal, parser, health
+6. **App Functionality keywords**: journal, parser, health
    connect, apple health, training, map, syllabus, drill,
    technique, mastery, video analysis, coach, FS-018, FS-020,
    FS-021, FS-022.
-5. **Overnight keywords**: overnight, unattended, long-
-   running, batch, 8-hour-build.
-6. **Default fallback**: `automation_workflow` (Claude's
+7. **Overnight keywords**: overnight, unattended, long-
+   running, batch, 8-hour-build, cron.
+8. **Default fallback**: `automation_workflow` (Claude's
    default), with an `unclassified: true` flag so reviewers
    re-classify.
+
+Order matters: Human Approval keywords win over Automation
+keywords (an "EAS build approval" item belongs to the
+approval queue, not the automation queue). Audit keywords
+win over functionality keywords (a "FS-020 audit" is an
+audit-queue item, not a functionality-queue item).
 
 ## 4. Stale age + progress contract
 
@@ -118,6 +141,14 @@ Stale thresholds (item flips to `stale` indicator):
 - `app_ux_ui`: 168h (7d).
 - `overnight`: 24h (overnight items rarely sit; a stale
   overnight item is a workflow bug).
+- `audit`: 168h (7d). Recurring audits with `recurrence`
+  field flip to stale at `nextRunAt` rather than the
+  generic threshold.
+- `human_approval`: 96h (4d) — Aaron-action items get a
+  shorter staleness window because every day of delay
+  means an undecided gate. After staleness, the gate
+  auto-`expired` per rule 21 § 1 (after a 6d push warning,
+  per HUMAN_APPROVAL_GATE_SPEC § 1).
 
 Progress contract:
 - `0` until `status === 'in_progress'`.
@@ -128,6 +159,43 @@ Progress contract:
 
 `status === 'superseded'` clears progress to `null` (not 0)
 to distinguish "abandoned" from "not started".
+
+## 4.5 Risk classification
+
+Every item carries a `risk` field inherited from the
+underlying action's reversibility. Used by Admin/Dev display
++ push payloads + recurring-audit cadence selection.
+
+| Risk | Examples | Approval push wording bias |
+|---|---|---|
+| `low` | Doc edits / spec additions / read-only audits / classifier changes / bridge:snapshot | "Recommended; low risk." |
+| `medium` | Worker preview deploy / npm dep bump / EAS Internal Testing build / non-destructive Supabase additive migration | "Approval recommended; reversible by re-deploy." |
+| `high` | Worker production deploy / Play Internal upload / TestFlight Team release / DNS cutover | "Approval required; partial rollback path exists." |
+| `irreversible` | Public App Store / Play Production release / destructive Supabase migration (DROP/TRUNCATE) / force-push to main / shared-secret rotation | "**Irreversible.** Approval required; explicit confirmation needed." |
+
+Risk for the Human Approval queue is inherited from the
+underlying action's class. Audit-queue items are typically
+`low` (read-only) but may be `medium` if they include
+destructive cleanup steps.
+
+## 4.6 Recurring full-app audits
+
+Audit-queue items may carry a `recurrence` cron schedule.
+Default cadences for the standard audit gates per
+`docs/INSTALLED_DEVICE_AUDIT_PLAYBOOK.md`:
+
+| Audit gate | Default cadence | Owner | Risk |
+|---|---|---|---|
+| `forever_improve_drift` (Gate C) | weekly (`0 4 * * MON`) | Agent | low |
+| `pre_eas_sanity` (Gate F) | per build approval; not cron-scheduled | Agent | low |
+| `admin_dev_proof_checklist` | quarterly (`0 4 1 1,4,7,10 *`) | Agent | low |
+| `release_gate` (Gate A) | NEVER cron-scheduled — runs only when an installed-device gate is staged | Aaron + Agent | medium |
+| `health_connect_crash_retest` (Gate D) | NEVER cron-scheduled — runs only post-build install | Aaron + Agent | medium |
+
+Codex (or a Claude-shipped daemon, see § 6 alt-handoff)
+schedules + dispatches the cron audits; the audit queue
+records `lastRunAt` + `nextRunAt`. Recurring audits NEVER
+override the P0/P1 protection (per § 5).
 
 ## 5. P0 / P1 protection
 
