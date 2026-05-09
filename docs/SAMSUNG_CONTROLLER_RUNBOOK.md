@@ -85,6 +85,57 @@ payload — `evidence_label` flips from `planned-only` to `live-now`
 once `fcm_configured = true`. None of those flips are owned by
 the mobile lane.
 
+## Mirror to laptop (scrcpy over Wi-Fi)
+
+The Samsung Galaxy S20+ pairs over Wireless Debugging. The IP/port
+appear under **Settings → Developer options → Wireless debugging →
+IP address & port** and rotate every time the phone toggles
+Wireless Debugging or rejoins Wi-Fi.
+
+```sh
+adb connect 192.168.20.14:37907    # replace with the current IP/port
+adb devices -l                     # confirm "device" state, model SM_G986B
+nohup scrcpy -s 192.168.20.14:37907 \
+  --max-size 1080 \
+  --video-bit-rate 4M \
+  --max-fps 30 \
+  --no-audio \
+  --window-title "Samsung Galaxy S20+ (192.168.20.14)" \
+  >/tmp/scrcpy.log 2>&1 &
+disown
+```
+
+Verified working invocation on macOS Darwin 25.x with scrcpy 3.3.4
+against Android 13 / SM-G986B: `Renderer: metal · Texture:
+488×1080`. The captured size is portrait-oriented to match the
+phone's 1080×2400 override.
+
+Why these flags:
+- `--max-size 1080` matches the phone's `wm size override`, avoids
+  upscaling.
+- `--video-bit-rate 4M` survives flaky Wi-Fi without artefacts.
+- `--max-fps 30` keeps the encoder budget under Wi-Fi headroom.
+- `--no-audio` sidesteps Samsung's flaky aaudio stream over
+  wireless adb.
+- `nohup … & disown` detaches the process so closing the launching
+  shell does not kill the mirror window.
+
+If the window does not appear:
+1. Check `pgrep -lf scrcpy` — the process should be alive.
+2. Read `/tmp/scrcpy.log` for `Renderer: metal · Texture: …`. If
+   missing after 10 s, the SDL window failed to open — usually
+   another scrcpy process is holding the device server (`pkill -f
+   scrcpy` and retry).
+3. If the device shows as `offline`, retry the IP/port — Samsung
+   rotates the wireless-debugging port on every reconnect.
+4. For installed-device evidence capture, prefer the headless
+   record path (no GUI required):
+   ```sh
+   scrcpy -s <ip>:<port> --no-playback \
+     --record audit-artifacts/android/$(date +%Y%m%dT%H%M%S)Z/samsung-audit.mp4 \
+     --time-limit 60
+   ```
+
 ## Daily workflow
 
 1. **Morning sweep.** Open Admin/Dev. The controller home banner
