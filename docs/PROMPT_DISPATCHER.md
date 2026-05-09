@@ -56,6 +56,36 @@ Attach later:
 tmux attach -t mcp-auto
 ```
 
+## One-command terminal startup
+
+Use this for Termius startup or a local Terminal tab:
+
+```sh
+cd /Users/aaronmaher/LauburuGrapplingMap-mobile && npm run terminal:auto
+```
+
+It ensures these sessions exist:
+
+- `mcp-auto` — all MCP automation loops
+- `codex-lauburu` — Codex / Claude / Agent workspace
+- `lauburu` — standalone Claude Code
+
+By default it attaches to `codex-lauburu`. Switch windows:
+
+```text
+Ctrl-b 0  Codex
+Ctrl-b 1  Claude Code
+Ctrl-b 2  Agent
+Ctrl-b 6  Shell
+```
+
+Attach somewhere else:
+
+```sh
+npm run terminal:auto -- --attach mcp-auto
+npm run terminal:auto -- --attach lauburu
+```
+
 Use these windows inside `mcp-auto`:
 
 ```text
