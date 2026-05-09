@@ -256,10 +256,26 @@ Anti-rules during this readiness bundle (do not violate):
 - iOS: build 19 submitted to TestFlight Team (Expo), Apple
   processing. Current EAS build reference from handoff:
   `9b11aeb1`.
-- Android: **versionCode 20 build FINISHED.** Active gate target
-  (Health Connect crash patch + new debug-card surface).
-  EAS build reference: `58071abc`. Repo commit: `3d7122c`
-  (versionCode bump on top of patch commit `5ea6b24`).
+- Android: **versionCode 21 build TRIGGERED 2026-05-09.** Active
+  gate target (Health Connect activity-alias registration fix +
+  did-not-register fallback UI + Admin/Dev MCP transport
+  diagnostics + lane progress strip + Rule 1 banner +
+  build-state separation + overnight queue MVP + UI primitive
+  migrations + FS-020 / FS-021 scaffolding).
+  EAS build reference: `a52a921e-5709-4d9f-9daa-fad720602492`.
+  Repo commit: `0005523` (versionCode bump on top of priority-
+  queue commits `58c821a..82e62c7`).
+  Profile: `production` (produces `.aab` for Play Console).
+  Local handoff path (post-build):
+  `~/Downloads/lauburu-android-versionCode21-health-connect-activity-alias.aab`
+  (Aaron downloads via the EAS build page).
+  Logs: `https://expo.dev/accounts/aaronmaher/projects/lauburu-grappling-map/builds/a52a921e-5709-4d9f-9daa-fad720602492`.
+- Android: **versionCode 20 build FINISHED but SUPERSEDED by v21**
+  (v20 missed the Android 14+ activity-alias for HC's Apps &
+  permissions UI). EAS build reference: `58071abc`. Repo commit:
+  `3d7122c`. Local file
+  `~/Downloads/lauburu-android-versionCode20-health-connect-debug-surface.aab`
+  retained for diff comparison only — **do NOT upload v20 again**.
 - Android v20 AAB local handoff path:
   `~/Downloads/lauburu-android-versionCode20-health-connect-debug-surface.aab`.
 - Android v19 was built (EAS `d1f1a9a5`, commit `bc0b567`,
