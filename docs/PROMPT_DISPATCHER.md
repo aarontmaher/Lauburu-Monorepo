@@ -4,6 +4,22 @@ Local-only helper for feeding the next approved prompt into an
 idle tmux lane. It is intentionally conservative and defaults to
 dry-run.
 
+The dispatcher does not call MCP tools directly. It reads the
+local bridge/action-ledger files produced by `mcp-auto`:
+
+```text
+data/agent-status/lanes/coder_lanes.json
+data/action-ledger/pending_actions.json
+data/prompt-dispatcher/queue.json
+```
+
+If `coder_lanes.json` is missing or stale, dispatch is blocked
+with:
+
+```text
+run npm run terminal:auto -- --attach mcp-auto first
+```
+
 ## Run
 
 ```sh
@@ -20,6 +36,19 @@ Loop mode:
 
 ```sh
 npm run prompt:dispatch -- --watch --interval 10
+```
+
+Generate/update the local queue from the action ledger before
+selecting. This is the default:
+
+```sh
+npm run prompt:dispatch -- --once --generate-queue
+```
+
+Use a prebuilt queue without regenerating:
+
+```sh
+npm run prompt:dispatch -- --once --no-generate-queue
 ```
 
 Real loop dispatch:
@@ -142,13 +171,30 @@ Shape:
 }
 ```
 
+The generator reads:
+
+```text
+data/action-ledger/pending_actions.json
+```
+
+Manual/unsafe actions, such as uploading the v21 AAB to Play
+Internal, are written as non-dispatchable queue rows. They can
+show as the top blocker/next action, but the dispatcher will not
+paste them into a lane.
+
+Dispatched rows are marked locally with `status: "dispatched"`,
+`dispatchedAt`, and `consumedAt`; repeated runs will not send
+the same prompt again.
+
 The dispatcher refuses prompts unless:
 
 - `approved: true`
 - `publicSafe: true`
 - `status` is `queued`, `ready`, or `approved`
 - target lane is `codex` or `claude`
+- target lane may also be `agent` when an Agent tmux pane exists
 - target lane is idle in `data/agent-status/lanes/coder_lanes.json`
+- `coder_lanes.json` is fresh from the local bridge snapshot
 - prompt text does not contain positive build/upload/release
   instructions
 
@@ -171,6 +217,10 @@ state and may contain prompt text.
 - No automatic builds.
 - No Play/TestFlight/App Store uploads.
 - No production releases.
+- v21 Play Internal upload, Samsung install, versionCode 21
+  confirmation, and 10-screenshot Health Connect QA remain manual
+  installed-device workflow steps. Automation may surface them,
+  never perform or mark them complete.
 - No secrets, tokens, raw logs, or private worker text in queue
   rows.
 - Run dry-run first before enabling `--dispatch`.

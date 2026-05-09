@@ -33,7 +33,7 @@ Usage: scripts/mcp-auto.sh [--dry-run|--dispatch] [--no-verify] [--no-attach]
 Starts one tmux session with one tiled window:
   - npm run bridge:watch
   - npm run watcher:mcp -- --interval 10 --auto-refresh
-  - npm run prompt:dispatch -- --watch --interval 10
+  - npm run prompt:dispatch -- --watch --interval 10 --generate-queue
   - npm run bridge:verify every 300s
 
 Defaults to dry-run prompt dispatch. Use --dispatch only after
@@ -57,9 +57,9 @@ tmux new-session -d -s "$SESSION" -n mcp-all -c "$ROOT" 'npm run bridge:watch'
 tmux split-window -h -t "$SESSION:0" -c "$ROOT" "npm run watcher:mcp -- --interval $POLL_INTERVAL --auto-refresh"
 
 if [[ "$DISPATCH_MODE" == "dispatch" ]]; then
-  tmux split-window -v -t "$SESSION:0.0" -c "$ROOT" "npm run prompt:dispatch -- --watch --interval $PROMPT_INTERVAL --dispatch --bridge-snapshot"
+  tmux split-window -v -t "$SESSION:0.0" -c "$ROOT" "npm run prompt:dispatch -- --watch --interval $PROMPT_INTERVAL --generate-queue --dispatch --bridge-snapshot"
 else
-  tmux split-window -v -t "$SESSION:0.0" -c "$ROOT" "npm run prompt:dispatch -- --watch --interval $PROMPT_INTERVAL"
+  tmux split-window -v -t "$SESSION:0.0" -c "$ROOT" "npm run prompt:dispatch -- --watch --interval $PROMPT_INTERVAL --generate-queue"
 fi
 
 if [[ "$VERIFY_LOOP" == "1" ]]; then
