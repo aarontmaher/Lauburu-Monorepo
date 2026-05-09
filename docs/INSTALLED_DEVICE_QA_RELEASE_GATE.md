@@ -256,20 +256,23 @@ Anti-rules during this readiness bundle (do not violate):
 - iOS: build 19 submitted to TestFlight Team (Expo), Apple
   processing. Current EAS build reference from handoff:
   `9b11aeb1`.
-- Android: **versionCode 21 build TRIGGERED 2026-05-09.** Active
-  gate target (Health Connect activity-alias registration fix +
-  did-not-register fallback UI + Admin/Dev MCP transport
-  diagnostics + lane progress strip + Rule 1 banner +
-  build-state separation + overnight queue MVP + UI primitive
-  migrations + FS-020 / FS-021 scaffolding).
+- Android: **versionCode 21 build FINISHED 2026-05-09T00:44:34Z.**
+  Active gate target (Health Connect activity-alias
+  registration fix + did-not-register fallback UI + Admin/Dev
+  MCP transport diagnostics + lane progress strip + Rule 1
+  banner + build-state separation + overnight queue MVP + UI
+  primitive migrations + FS-020 / FS-021 scaffolding).
   EAS build reference: `a52a921e-5709-4d9f-9daa-fad720602492`.
   Repo commit: `0005523` (versionCode bump on top of priority-
   queue commits `58c821a..82e62c7`).
   Profile: `production` (produces `.aab` for Play Console).
-  Local handoff path (post-build):
-  `~/Downloads/lauburu-android-versionCode21-health-connect-activity-alias.aab`
-  (Aaron downloads via the EAS build page).
+  AAB download URL:
+  `https://expo.dev/artifacts/eas/moWfFhT957sPk5v2tSGFj3.aab`.
   Logs: `https://expo.dev/accounts/aaronmaher/projects/lauburu-grappling-map/builds/a52a921e-5709-4d9f-9daa-fad720602492`.
+  Approval gate: `gate-android-v21-install-test` in
+  `data/approval-gates/gates.json`.
+  Screenshot QA checklist:
+  `docs/V21_HEALTH_CONNECT_SCREENSHOT_QA.md`.
 - Android: **versionCode 20 build FINISHED but SUPERSEDED by v21**
   (v20 missed the Android 14+ activity-alias for HC's Apps &
   permissions UI). EAS build reference: `58071abc`. Repo commit:
