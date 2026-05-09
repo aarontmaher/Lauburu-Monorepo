@@ -359,11 +359,11 @@ export interface FreshnessSignalV2 {
   windowMs: number;
 }
 
-function computeFreshness(updatedAt: string | null, configured: boolean): FreshnessSignalV2 {
+export function computeFreshness(updatedAt: string | null, configured: boolean, nowMs = Date.now()): FreshnessSignalV2 {
   if (!configured) {
     return { updatedAt: null, ageMs: null, isStale: true, staleReason: 'env_missing', windowMs: FRESHNESS_WINDOW_MS_V2 };
   }
-  const ageMs = updatedAt ? Date.now() - new Date(updatedAt).getTime() : null;
+  const ageMs = updatedAt ? nowMs - new Date(updatedAt).getTime() : null;
   const isStale = ageMs === null ? true : ageMs > FRESHNESS_WINDOW_MS_V2;
   // staleReason distinguishes:
   //   - no_writeback: row never written (updatedAt === null)
@@ -376,6 +376,21 @@ function computeFreshness(updatedAt: string | null, configured: boolean): Freshn
     ? 'no_writeback'
     : isStale ? 'stale_writeback' : 'fresh';
   return { updatedAt, ageMs, isStale, staleReason, windowMs: FRESHNESS_WINDOW_MS_V2 };
+}
+
+export function latestIsoTimestamp(candidates: Array<string | null | undefined>): string | null {
+  const isoCandidates = candidates.filter((s): s is string => typeof s === 'string' && s.length > 0);
+  return isoCandidates.length > 0 ? isoCandidates.sort().slice(-1)[0] : null;
+}
+
+export function effectiveAgentStatusForFreshness(
+  status: string,
+  freshness: Pick<FreshnessSignalV2, 'isStale'>,
+): string {
+  if (freshness.isStale && (status === 'working' || status === 'in_progress')) {
+    return 'idle';
+  }
+  return status;
 }
 
 export async function buildProjectCurrentState(env: Env): Promise<unknown> {
@@ -448,7 +463,7 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
     return /^[0-9a-f]{7,12}$/.test(s) ? s : null;
   }
 
-  const agents = (lanes ?? []).map((row) => {
+  const agentRows = (lanes ?? []).map((row) => {
     const p = (row.payload ?? {}) as {
       laneId?: string;
       status?: string;
@@ -494,9 +509,10 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
           markerHash: typeof m.markerHash === 'string' ? m.markerHash.slice(0, 16) : '',
         }
       : null;
+    const status = pickEnum(p.status, ALLOWED_LANE_STATUSES);
     return {
       id: pickEnum(row.lane_id, ALLOWED_LANE_IDS),
-      status: pickEnum(p.status, ALLOWED_LANE_STATUSES),
+      status,
       taskSummary: compressSummary(p.lastSummary),
       lastCommit: safeShortCommit(p.lastCommit),
       updatedAt: lastSeenAt,
@@ -545,18 +561,23 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
   // for work_status, line 875+ for lanes).
   const workValue = work as Record<string, unknown> | null;
   const buildValue = build as Record<string, unknown> | null;
-  const isoCandidates = [
+  const updatedAt = latestIsoTimestamp([
     typeof workValue?.generatedAt === 'string' ? (workValue.generatedAt as string) : null,
     typeof workValue?.updatedAt === 'string' ? (workValue.updatedAt as string) : null,
     typeof buildValue?.generatedAt === 'string' ? (buildValue.generatedAt as string) : null,
     typeof buildValue?.updatedAt === 'string' ? (buildValue.updatedAt as string) : null,
-    ...agents.map((g) => g.updatedAt),
-  ].filter((s): s is string => typeof s === 'string');
-  const updatedAt = isoCandidates.length > 0 ? isoCandidates.sort().slice(-1)[0] : null;
-  const ageMs = updatedAt ? Date.now() - new Date(updatedAt).getTime() : null;
-  const isStale = ageMs === null ? true : ageMs > FRESHNESS_WINDOW_MS_V2;
-  const staleReason: 'fresh' | 'no_writeback' | 'stale_writeback' | 'env_missing' = updatedAt === null
-    ? 'no_writeback' : isStale ? 'stale_writeback' : 'fresh';
+    ...agentRows.map((g) => g.updatedAt),
+  ]);
+  const freshness = computeFreshness(updatedAt, true);
+  const agents = agentRows.map((agent) => {
+    const effectiveStatus = effectiveAgentStatusForFreshness(agent.status, freshness);
+    return {
+      ...agent,
+      status: effectiveStatus,
+      reportedStatus: agent.status,
+      staleDowngraded: effectiveStatus !== agent.status,
+    };
+  });
 
   const branchRe = /^[A-Za-z0-9._\-/]{1,80}$/;
   const branch = work?.repoStatus?.branch && branchRe.test(work.repoStatus.branch) ? work.repoStatus.branch : null;
@@ -570,13 +591,7 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
     schemaVersion: 1,
     generatedAt,
     source: haveAnyRow ? 'supabase' as const : 'placeholder' as const,
-    freshness: {
-      updatedAt,
-      ageMs,
-      isStale,
-      staleReason,
-      windowMs: FRESHNESS_WINDOW_MS_V2,
-    },
+    freshness,
     agents,
     currentPriority,
     currentBlocker,
