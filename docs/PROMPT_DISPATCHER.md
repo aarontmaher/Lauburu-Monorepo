@@ -41,6 +41,7 @@ This creates/attaches a tmux session named `mcp-auto` with:
 - `bridge-watch`
 - `mcp-poll`
 - `prompt-dry-run`
+- `bridge-verify`
 
 The combined command defaults to prompt dry-run. Real prompt
 dispatch must be explicitly enabled:
@@ -53,6 +54,21 @@ Attach later:
 
 ```sh
 tmux attach -t mcp-auto
+```
+
+Use these windows inside `mcp-auto`:
+
+```text
+Ctrl-b 0  bridge-watch
+Ctrl-b 1  mcp-poll
+Ctrl-b 2  prompt-dry-run / prompt-dispatch
+Ctrl-b 3  bridge-verify
+```
+
+Disable the periodic verifier if you only want the live loops:
+
+```sh
+npm run mcp:auto -- --no-verify
 ```
 
 Default tmux targets:
