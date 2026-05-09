@@ -58,6 +58,8 @@ import {
   summariseLaneProgress,
   type LaneProgressSummary,
 } from '../src/services/lane-progress-summary';
+import { StatusPill } from '../src/components/primitives/StatusPill';
+import type { Tone } from '../src/components/primitives/_helpers';
 import {
   buildClaudeCodePrompt,
   buildClaudeChromePrompt,
@@ -1137,15 +1139,11 @@ export default function AdminDevScreen() {
               <>
                 <View style={[styles.laneProgressRow, { marginTop: 0 }]}>
                   <Text style={styles.chipBody}>{androidLabel}</Text>
-                  <View style={androidMatched ? styles.laneFreshnessBadgeFresh : styles.laneFreshnessBadgeUnknown}>
-                    <Text style={styles.laneFreshnessBadgeText}>{androidMatched ? 'verified' : 'repo-only'}</Text>
-                  </View>
+                  <StatusPill label={androidMatched ? 'verified' : 'repo-only'} tone={androidMatched ? 'fresh' : 'neutral'} />
                 </View>
                 <View style={styles.laneProgressRow}>
                   <Text style={styles.chipBody}>{iosLabel}</Text>
-                  <View style={iosMatched ? styles.laneFreshnessBadgeFresh : styles.laneFreshnessBadgeUnknown}>
-                    <Text style={styles.laneFreshnessBadgeText}>{iosMatched ? 'verified' : 'repo-only'}</Text>
-                  </View>
+                  <StatusPill label={iosMatched ? 'verified' : 'repo-only'} tone={iosMatched ? 'fresh' : 'neutral'} />
                 </View>
               </>
             );
@@ -1290,20 +1288,18 @@ export default function AdminDevScreen() {
                 : `${laneProgress.lanes.length} lane${laneProgress.lanes.length === 1 ? '' : 's'} reporting · snapshot ${laneProgress.snapshotFreshness}${laneProgress.snapshotStaleReason ? ` (${laneProgress.snapshotStaleReason})` : ''}`}
             </Text>
             {laneProgress.lanes.map((lane) => {
-              const badgeStyle = lane.freshness === 'fresh'
-                ? styles.laneFreshnessBadgeFresh
+              const tone: Tone = lane.freshness === 'fresh'
+                ? 'fresh'
                 : lane.freshness === 'stale'
-                  ? styles.laneFreshnessBadgeStale
-                  : styles.laneFreshnessBadgeUnknown;
+                  ? 'warning'
+                  : 'neutral';
               const fillColor = lane.freshness === 'fresh' ? '#4ade80' : lane.freshness === 'stale' ? '#ff8a8a' : 'rgba(255,255,255,0.35)';
               const widthPct = lane.progressPct ?? 0;
               return (
                 <View key={`lane-progress-${lane.id}`} style={{ marginTop: 8 }}>
                   <View style={styles.laneProgressRow}>
                     <Text style={styles.laneProgressName}>{lane.id}</Text>
-                    <View style={badgeStyle}>
-                      <Text style={styles.laneFreshnessBadgeText}>{lane.freshness}</Text>
-                    </View>
+                    <StatusPill label={lane.freshness} tone={tone} dot={lane.freshness === 'fresh'} />
                   </View>
                   <Text style={styles.laneProgressMeta}>
                     {lane.status} · age {lane.ageLabel} · progress {lane.progressPct == null ? 'unknown' : `${lane.progressPct}%`}
@@ -3163,19 +3159,6 @@ const styles = StyleSheet.create({
   laneProgressBarFill: {
     height: '100%', borderRadius: 3,
   },
-  laneFreshnessBadgeFresh: {
-    paddingVertical: 1, paddingHorizontal: 6, borderRadius: 4,
-    backgroundColor: 'rgba(74,222,128,0.18)', borderWidth: 1, borderColor: 'rgba(74,222,128,0.45)',
-  },
-  laneFreshnessBadgeStale: {
-    paddingVertical: 1, paddingHorizontal: 6, borderRadius: 4,
-    backgroundColor: 'rgba(255,138,138,0.18)', borderWidth: 1, borderColor: 'rgba(255,138,138,0.45)',
-  },
-  laneFreshnessBadgeUnknown: {
-    paddingVertical: 1, paddingHorizontal: 6, borderRadius: 4,
-    backgroundColor: 'rgba(255,255,255,0.07)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.18)',
-  },
-  laneFreshnessBadgeText: { fontSize: 9, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 },
   backlogStandingLine: { fontSize: 12, lineHeight: 17, opacity: 0.75 },
   captureBox: {
     gap: 8, padding: 10, borderRadius: 10,
