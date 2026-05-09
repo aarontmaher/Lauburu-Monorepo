@@ -138,6 +138,7 @@ def compute_state_change_at(prev_status, current_status, prev_state_change_at, n
 
 
 MARKER_NAMES = (
+    "MCP_EVENT",
     "MCP_RESULT",
     "MCP_BLOCKER",
     "MCP_COMMIT",
@@ -149,7 +150,7 @@ MARKER_VALUE_CAP = 280
 JSON_MARKER_CAP = 6000
 
 _MARKER_LINE_RE = re.compile(
-    r"^\s*(MCP_RESULT|MCP_BLOCKER|MCP_COMMIT|MCP_TESTS|MCP_NEXT)\s*:\s*(.+?)\s*$",
+    r"^\s*(MCP_EVENT|MCP_RESULT|MCP_BLOCKER|MCP_COMMIT|MCP_TESTS|MCP_NEXT)\s*:\s*(.+?)\s*$",
 )
 _JSON_MARKER_RE = re.compile(r"^\s*AGENT_QA_RESULT_JSON\s*:\s*(.*)$")
 

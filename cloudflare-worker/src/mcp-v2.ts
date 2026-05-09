@@ -344,6 +344,9 @@ async function buildProjectWorkStatus(env: Env): Promise<unknown> {
  * per field. No file paths. No prompt IDs.
  */
 const FRESHNESS_WINDOW_MS_V2 = 10 * 60 * 1000;
+export const ACTIVE_LANE_STALE_MS_V2 = 60 * 1000;
+export const IDLE_LANE_STALE_MS_V2 = 120 * 1000;
+export const BUILD_AUDIT_STALE_MS_V2 = 180 * 1000;
 
 /**
  * Canonical freshness signal used by every v2 tool that surfaces a
@@ -359,12 +362,12 @@ export interface FreshnessSignalV2 {
   windowMs: number;
 }
 
-export function computeFreshness(updatedAt: string | null, configured: boolean, nowMs = Date.now()): FreshnessSignalV2 {
+function computeFreshnessWithWindow(updatedAt: string | null, configured: boolean, windowMs: number, nowMs = Date.now()): FreshnessSignalV2 {
   if (!configured) {
-    return { updatedAt: null, ageMs: null, isStale: true, staleReason: 'env_missing', windowMs: FRESHNESS_WINDOW_MS_V2 };
+    return { updatedAt: null, ageMs: null, isStale: true, staleReason: 'env_missing', windowMs };
   }
   const ageMs = updatedAt ? nowMs - new Date(updatedAt).getTime() : null;
-  const isStale = ageMs === null ? true : ageMs > FRESHNESS_WINDOW_MS_V2;
+  const isStale = ageMs === null ? true : ageMs > windowMs;
   // staleReason distinguishes:
   //   - no_writeback: row never written (updatedAt === null)
   //   - stale_writeback: row written but older than the freshness window
@@ -375,7 +378,41 @@ export function computeFreshness(updatedAt: string | null, configured: boolean, 
   const staleReason: FreshnessSignalV2['staleReason'] = updatedAt === null
     ? 'no_writeback'
     : isStale ? 'stale_writeback' : 'fresh';
-  return { updatedAt, ageMs, isStale, staleReason, windowMs: FRESHNESS_WINDOW_MS_V2 };
+  return { updatedAt, ageMs, isStale, staleReason, windowMs };
+}
+
+export function computeFreshness(updatedAt: string | null, configured: boolean, nowMs = Date.now()): FreshnessSignalV2 {
+  return computeFreshnessWithWindow(updatedAt, configured, FRESHNESS_WINDOW_MS_V2, nowMs);
+}
+
+export interface LaneHeartbeatSignalV2 {
+  lastSeenAt: string | null;
+  heartbeatAgeMs: number | null;
+  isStale: boolean;
+  staleReason: 'fresh' | 'no_heartbeat' | 'active_heartbeat_stale' | 'idle_heartbeat_stale';
+  windowMs: number;
+}
+
+function laneHeartbeatWindowMs(status: string): number {
+  return status === 'working' || status === 'in_progress'
+    ? ACTIVE_LANE_STALE_MS_V2
+    : IDLE_LANE_STALE_MS_V2;
+}
+
+export function computeLaneHeartbeat(
+  status: string,
+  lastSeenAt: string | null,
+  nowMs = Date.now(),
+): LaneHeartbeatSignalV2 {
+  const windowMs = laneHeartbeatWindowMs(status);
+  const heartbeatAgeMs = lastSeenAt ? nowMs - new Date(lastSeenAt).getTime() : null;
+  const isStale = heartbeatAgeMs === null ? true : heartbeatAgeMs > windowMs;
+  const staleReason: LaneHeartbeatSignalV2['staleReason'] = heartbeatAgeMs === null
+    ? 'no_heartbeat'
+    : isStale
+      ? (windowMs === ACTIVE_LANE_STALE_MS_V2 ? 'active_heartbeat_stale' : 'idle_heartbeat_stale')
+      : 'fresh';
+  return { lastSeenAt, heartbeatAgeMs, isStale, staleReason, windowMs };
 }
 
 export function latestIsoTimestamp(candidates: Array<string | null | undefined>): string | null {
@@ -386,8 +423,9 @@ export function latestIsoTimestamp(candidates: Array<string | null | undefined>)
 export function effectiveAgentStatusForFreshness(
   status: string,
   freshness: Pick<FreshnessSignalV2, 'isStale'>,
+  laneHeartbeat?: Pick<LaneHeartbeatSignalV2, 'isStale'>,
 ): string {
-  if (freshness.isStale && (status === 'working' || status === 'in_progress')) {
+  if ((freshness.isStale || laneHeartbeat?.isStale) && (status === 'working' || status === 'in_progress')) {
     return 'idle';
   }
   return status;
@@ -435,11 +473,15 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
     adapter.fetchCoderLaneRows(),
     adapter.fetchSingleRowPayload('connector_build_status') as Promise<{
       generatedAt?: string;
+      updatedAt?: string;
+      longRunning?: boolean;
       android?: { versionCode?: number | null; githubStatus?: string | null; playStatus?: string | null; playTrack?: string | null };
       ios?: { buildNumber?: string | null; githubStatus?: string | null; testflightStatus?: string | null };
     } | null>,
     adapter.fetchSingleRowPayload('connector_handoff') as Promise<{
       generatedAt?: string;
+      updatedAt?: string;
+      longRunning?: boolean;
       agentQaResult?: unknown;
       actionLedger?: unknown;
     } | null>,
@@ -471,6 +513,9 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
       lastCommit?: string;
       lastSeenAt?: string;
       lastStateChangeAt?: string;
+      terminalStatus?: string;
+      lastEventType?: string;
+      lastEventAt?: string;
       source?: string;
       lastMarkers?: {
         MCP_RESULT?: string | null;
@@ -513,11 +558,14 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
     return {
       id: pickEnum(row.lane_id, ALLOWED_LANE_IDS),
       status,
+      terminalStatus: pickEnum(p.terminalStatus, ALLOWED_LANE_STATUSES),
       taskSummary: compressSummary(p.lastSummary),
       lastCommit: safeShortCommit(p.lastCommit),
       updatedAt: lastSeenAt,
       lastSeenAt,
       lastStateChangeAt,
+      lastEventType: typeof p.lastEventType === 'string' ? redactText(p.lastEventType, 64) : null,
+      lastEventAt: typeof p.lastEventAt === 'string' ? p.lastEventAt : null,
       source: typeof p.source === 'string' ? p.source : null,
       lastMarkers,
     };
@@ -568,14 +616,26 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
     typeof buildValue?.updatedAt === 'string' ? (buildValue.updatedAt as string) : null,
     ...agentRows.map((g) => g.updatedAt),
   ]);
-  const freshness = computeFreshness(updatedAt, true);
+  const nowMs = Date.now();
+  const freshness = computeFreshness(updatedAt, true, nowMs);
   const agents = agentRows.map((agent) => {
-    const effectiveStatus = effectiveAgentStatusForFreshness(agent.status, freshness);
+    const heartbeat = computeLaneHeartbeat(agent.status, agent.lastSeenAt, nowMs);
+    const effectiveStatus = effectiveAgentStatusForFreshness(agent.status, freshness, heartbeat);
+    const terminalStatus = agent.terminalStatus === 'unknown' ? agent.status : agent.terminalStatus;
+    const terminalDisagreement = effectiveStatus !== agent.status || terminalStatus !== agent.status;
     return {
       ...agent,
       status: effectiveStatus,
       reportedStatus: agent.status,
       staleDowngraded: effectiveStatus !== agent.status,
+      heartbeat,
+      terminal: {
+        status: terminalStatus,
+        disagreement: terminalDisagreement,
+        reason: terminalDisagreement
+          ? (effectiveStatus !== agent.status ? 'cached_status_downgraded_by_stale_heartbeat' : 'terminal_status_differs_from_cached_status')
+          : 'none',
+      },
     };
   });
 
@@ -584,6 +644,20 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
   const head = safeShortCommit(work?.repoStatus?.head);
   const latestQaGate = buildPublicQaGate(handoff?.agentQaResult ?? null);
   const actionLedger = buildPublicActionLedgerSummary(handoff?.actionLedger ?? null);
+  const handoffValue = handoff as Record<string, unknown> | null;
+  const buildAuditUpdatedAt = latestIsoTimestamp([
+    typeof buildValue?.generatedAt === 'string' ? (buildValue.generatedAt as string) : null,
+    typeof buildValue?.updatedAt === 'string' ? (buildValue.updatedAt as string) : null,
+    typeof handoffValue?.generatedAt === 'string' ? (handoffValue.generatedAt as string) : null,
+    typeof handoffValue?.updatedAt === 'string' ? (handoffValue.updatedAt as string) : null,
+  ]);
+  const buildAuditLongRunning = build?.longRunning === true || handoff?.longRunning === true;
+  const buildAuditFreshness = computeFreshnessWithWindow(
+    buildAuditUpdatedAt,
+    true,
+    buildAuditLongRunning ? 24 * 60 * 60 * 1000 : BUILD_AUDIT_STALE_MS_V2,
+    nowMs,
+  );
 
   const haveAnyRow = work !== null || (lanes !== null && lanes.length > 0) || build !== null || handoff !== null;
 
@@ -607,6 +681,8 @@ export async function buildProjectCurrentState(env: Env): Promise<unknown> {
         status: iosStatus,
       },
       repo: { branch, shortHead: head },
+      buildAuditFreshness,
+      buildAuditLongRunning,
     },
     latestQaGate,
     actionLedger,

@@ -129,11 +129,19 @@ MCP_RESULT: superseded earlier result, latest one wins
     if parsed["MCP_BLOCKER"] is not None:
         print(f"✗ parse_mcp_markers: MCP_BLOCKER should be None; got {parsed['MCP_BLOCKER']}")
         return 1
+    if parsed["MCP_EVENT"] is not None:
+        print(f"✗ parse_mcp_markers: MCP_EVENT should be None when absent; got {parsed['MCP_EVENT']}")
+        return 1
     if parsed["marker_count"] != 5:
         print(f"✗ parse_mcp_markers: expected 5 markers; got {parsed['marker_count']}")
         return 1
     if parsed["newest_line"] < 0:
         print("✗ parse_mcp_markers: newest_line not recorded")
+        return 1
+
+    event = parse_mcp_markers("MCP_EVENT: tests_started\nMCP_TESTS: running")
+    if event["MCP_EVENT"] != "tests_started" or event["marker_count"] != 2:
+        print(f"✗ parse_mcp_markers: MCP_EVENT should be parsed for immediate writeback; got {event}")
         return 1
 
     # AGENT_QA_RESULT_JSON inline
@@ -203,8 +211,8 @@ trailing line
         return 1
 
     # All marker names exposed in MARKER_NAMES
-    if len(MARKER_NAMES) != 5:
-        print(f"✗ MARKER_NAMES: expected 5 names; got {len(MARKER_NAMES)}")
+    if len(MARKER_NAMES) != 6:
+        print(f"✗ MARKER_NAMES: expected 6 names; got {len(MARKER_NAMES)}")
         return 1
 
     print("✓ marker parser rules passed.")

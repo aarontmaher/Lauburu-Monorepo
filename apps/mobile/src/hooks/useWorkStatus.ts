@@ -1,12 +1,14 @@
 /**
  * Hook to fetch agent work status from MCP HTTP API.
- * Polls every 30s while active (matches website auto-refresh).
+ * Polls every 12s while mounted so Admin/Dev stays close to the
+ * bridge's 10-15s heartbeat cadence.
  */
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { AppState } from 'react-native';
 import { getWorkStatus } from '@lauburu/shared';
 import type { WorkStatusResponse } from '@lauburu/shared';
 
-const POLL_INTERVAL = 30_000;
+const POLL_INTERVAL = 12_000;
 
 export function useWorkStatus() {
   const [data, setData] = useState<WorkStatusResponse | null>(null);
@@ -33,9 +35,13 @@ export function useWorkStatus() {
     mountedRef.current = true;
     refresh();
     timerRef.current = setInterval(refresh, POLL_INTERVAL);
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') void refresh();
+    });
     return () => {
       mountedRef.current = false;
       if (timerRef.current) clearInterval(timerRef.current);
+      sub.remove();
     };
   }, [refresh]);
 

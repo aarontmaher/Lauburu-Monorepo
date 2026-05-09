@@ -847,7 +847,11 @@ export default function AdminDevScreen() {
     } finally { setRefreshing(false); }
   }, [isAdmin]);
 
-  useEffect(() => { void refresh(); }, [refresh]);
+  useEffect(() => {
+    void refresh();
+    const t = setInterval(() => { void refresh(); }, 12_000);
+    return () => clearInterval(t);
+  }, [refresh]);
 
   // Auto-refresh on app foreground/resume so installed-device QA
   // sees the latest MCP snapshot without a manual pull-to-refresh.
@@ -1972,7 +1976,7 @@ function AgentStatusSection() {
   useEffect(() => {
     if (!isAdmin) return;  // never poll for non-admin
     void refresh();
-    const t = setInterval(() => { void refresh(); }, 30_000);
+    const t = setInterval(() => { void refresh(); }, 12_000);
     return () => clearInterval(t);
   }, [refresh, isAdmin]);
 

@@ -29,8 +29,8 @@
 # Usage:
 #   ./scripts/bridge-watch.sh                            # run forever
 #   ./scripts/bridge-watch.sh --once                     # one tick + exit
-#   POLL_INTERVAL=15 ./scripts/bridge-watch.sh           # tweak poll
-#   HEARTBEAT_INTERVAL=120 ./scripts/bridge-watch.sh     # tweak heartbeat
+#   POLL_INTERVAL=10 ./scripts/bridge-watch.sh           # tweak poll
+#   HEARTBEAT_INTERVAL=15 ./scripts/bridge-watch.sh      # tweak heartbeat
 #
 # Stop with Ctrl-C.
 
@@ -54,8 +54,8 @@ if ! command -v python3 >/dev/null 2>&1; then
 fi
 
 POLL_INTERVAL="${POLL_INTERVAL:-10}"
-HEARTBEAT_INTERVAL="${HEARTBEAT_INTERVAL:-60}"
-MIN_WRITE_INTERVAL="${MIN_WRITE_INTERVAL:-10}"
+HEARTBEAT_INTERVAL="${HEARTBEAT_INTERVAL:-15}"
+MIN_WRITE_INTERVAL="${MIN_WRITE_INTERVAL:-5}"
 ONCE=0
 for arg in "$@"; do
   case "$arg" in

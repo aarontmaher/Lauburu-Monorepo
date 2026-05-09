@@ -80,6 +80,13 @@ ALLOWED_LANES = {"claude", "codex", "claude_chat", "chatgpt", "cowork"}
 ALLOWED_STATUSES = {
     "idle", "working", "blocked", "needs_user", "needs_review", "done",
 }
+ALLOWED_EVENT_TYPES = {
+    "heartbeat", "start", "stop", "idle", "prompt_received",
+    "tests_started", "tests_finished", "commit", "build_status_change",
+    "audit_result", "error", "blocker", "status_working",
+    "status_blocked", "status_needs_user", "status_needs_review",
+    "status_done",
+}
 AGENT_QA_STATUSES = {"pass", "fail", "blocked", "repo_only", "partial"}
 AGENT_QA_GATES = {"health_connectivity", "grappling_readiness", "native_control_centre", "release_gate", "general"}
 AGENT_QA_PLATFORMS = {"android", "ios", "both", "repo"}
@@ -543,6 +550,39 @@ def load_previous_lane_row(lane_id):
     return data if isinstance(data, dict) else None
 
 
+def normalise_event_type(value):
+    if not isinstance(value, str):
+        return None
+    text = re.sub(r"[^a-z0-9_]+", "_", value.strip().lower()).strip("_")
+    return text if text in ALLOWED_EVENT_TYPES else None
+
+
+def infer_event_type(prev_status, current_status, raw_markers):
+    marker_event = normalise_event_type(raw_markers.get("MCP_EVENT") if isinstance(raw_markers, dict) else None)
+    if marker_event:
+        return marker_event
+    if isinstance(raw_markers, dict):
+        if raw_markers.get("MCP_BLOCKER"):
+            return "blocker"
+        if raw_markers.get("MCP_COMMIT"):
+            return "commit"
+        if raw_markers.get(JSON_MARKER_NAME):
+            return "audit_result"
+        tests = raw_markers.get("MCP_TESTS")
+        if isinstance(tests, str) and tests:
+            return "tests_started" if re.search(r"\b(start|running|begin)\b", tests, re.I) else "tests_finished"
+        result = raw_markers.get("MCP_RESULT")
+        if isinstance(result, str) and re.search(r"\b(error|failed|failure|blocked)\b", result, re.I):
+            return "error"
+    if prev_status != current_status:
+        if current_status == "idle":
+            return "idle"
+        if current_status == "working" and prev_status in (None, "idle", "done"):
+            return "prompt_received"
+        return f"status_{current_status}"
+    return "heartbeat"
+
+
 rows = []
 for session, lane in SESSION_MAP:
     if lane not in ALLOWED_LANES:
@@ -561,6 +601,9 @@ for session, lane in SESSION_MAP:
         rows.append({
             "laneId": lane,
             "status": "idle",
+            "terminalStatus": "idle",
+            "lastEventType": infer_event_type(prev_status, "idle", {}),
+            "lastEventAt": now_iso,
             "lastSeenAt": beat["lastSeenAt"],
             "lastStateChangeAt": beat["lastStateChangeAt"],
             "source": beat["source"],
@@ -625,10 +668,14 @@ for session, lane in SESSION_MAP:
         sanitised_markers[JSON_MARKER_NAME] = None
     sanitised_markers["markerCount"] = int(raw_markers.get("marker_count") or 0)
     sanitised_markers["markerHash"] = marker_hash(raw_markers)
+    event_type = infer_event_type(prev_status, status, raw_markers)
 
     row = {
         "laneId": lane,
         "status": status,
+        "terminalStatus": status,
+        "lastEventType": event_type,
+        "lastEventAt": now_iso,
         "lastSeenAt": beat["lastSeenAt"],
         "lastStateChangeAt": beat["lastStateChangeAt"],
         "source": beat["source"],
