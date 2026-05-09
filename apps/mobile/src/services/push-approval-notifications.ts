@@ -41,6 +41,11 @@ import {
 } from '@lauburu/shared';
 import { useApprovalGatesStore } from '../store/approval-gates-store';
 import { ANDROID_CONTROLLER_NOTIFICATION_CATEGORIES } from './android-controller-context';
+import {
+  controllerCategoryToNativeCategory,
+  type ControllerNotificationDecision,
+} from './controller-notification-decisions';
+import { useAdminDevNotificationStore } from '../store/admin-dev-notification-store';
 
 // Re-export the pure helpers from @lauburu/shared so app-side
 // callers don't have to import from two places.
@@ -254,4 +259,73 @@ export async function dispatchNotificationAction(
   }
   const result = await store.defer(mutation.gateId, mutation.deferUntil, mutation.reason);
   return { ok: result.ok, reason: result.reason, mutation };
+}
+
+interface DispatchControllerDecisionResult {
+  fired: number;
+  suppressed: number;
+  /** Reason the dispatcher could not fire — populated when fired = 0 and no decisions came in. */
+  reason: string;
+}
+
+/**
+ * Fire any controller-notification decisions that have not been
+ * recently dedupe-suppressed. Lazy-loads expo-notifications; when
+ * the dep is absent (the current state), records the dedupe key
+ * so we don't show repeated in-app banners either, but does not
+ * fail. Always public-safe: title + body come from the decision,
+ * which itself caps length and excludes secrets.
+ */
+export async function dispatchControllerDecisions(
+  decisions: ReadonlyArray<ControllerNotificationDecision>,
+): Promise<DispatchControllerDecisionResult> {
+  if (decisions.length === 0) {
+    return { fired: 0, suppressed: 0, reason: 'no decisions' };
+  }
+  const store = useAdminDevNotificationStore.getState();
+  if (!store.controllerNotificationsEnabled) {
+    return { fired: 0, suppressed: decisions.length, reason: 'controller notifications disabled' };
+  }
+  const Notifications = loadNotificationsModule() as null | {
+    scheduleNotificationAsync?: (input: unknown) => Promise<unknown>;
+  };
+  let fired = 0;
+  let suppressed = 0;
+  for (const decision of decisions) {
+    const fresh = useAdminDevNotificationStore.getState().shouldFireControllerKey(decision.dedupeKey);
+    if (!fresh) {
+      suppressed += 1;
+      continue;
+    }
+    if (Notifications?.scheduleNotificationAsync) {
+      try {
+        const nativeCategory = controllerCategoryToNativeCategory(decision.category);
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: decision.title,
+            body: decision.body,
+            categoryIdentifier: `${ANDROID_CONTROLLER_CATEGORY_PREFIX}${nativeCategory}`,
+            data: {
+              controller: true,
+              category: decision.category,
+              dedupeKey: decision.dedupeKey,
+              evidenceLabel: decision.evidenceLabel,
+              laneId: decision.laneId,
+            },
+          },
+          trigger: null,
+        });
+      } catch {
+        // expo-notifications swallow — the dedupe still records so
+        // we don't spam the in-app banner channel.
+      }
+    }
+    await useAdminDevNotificationStore.getState().recordControllerKey(decision.dedupeKey);
+    fired += 1;
+  }
+  return {
+    fired,
+    suppressed,
+    reason: Notifications ? 'dispatched' : 'expo-notifications not installed — dedupe recorded only',
+  };
 }

@@ -29,7 +29,8 @@
     "queue:taxonomy:test": "cd cloudflare-worker && npx tsx test/test-queue-taxonomy-helpers.ts",
     "rules:test": "cd cloudflare-worker && npx tsx test/test-operating-rules.ts",
     "cc:test:live": "cd chat-app && npx tsx src/server/scripts/test-control-centre-route.ts",
-    "mcp:test:v2-live": "cd chat-app && npx tsx src/server/scripts/test-mcp-v2-live.ts"
+    "mcp:test:v2-live": "cd chat-app && npx tsx src/server/scripts/test-mcp-v2-live.ts",
+    "controller:test": "npx tsx apps/mobile/src/services/android-controller-context.test.ts && npx tsx apps/mobile/src/services/controller-notification-decisions.test.ts"
   },
   "dependencies": {
     "@kingstinct/react-native-healthkit": "^13.4.0",

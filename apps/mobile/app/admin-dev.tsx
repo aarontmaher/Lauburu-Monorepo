@@ -64,6 +64,13 @@ import {
   buildAndroidControllerContext,
   type AndroidControllerHealthConnectState,
 } from '../src/services/android-controller-context';
+import {
+  decideControllerNotifications,
+  topControllerDecision,
+  type ControllerNotificationDecision,
+} from '../src/services/controller-notification-decisions';
+import { dispatchControllerDecisions } from '../src/services/push-approval-notifications';
+import { SamsungControllerHome } from '../src/components/SamsungControllerHome';
 import { StatusPill } from '../src/components/primitives/StatusPill';
 import type { Tone } from '../src/components/primitives/_helpers';
 import {
@@ -839,6 +846,14 @@ export default function AdminDevScreen() {
   const setAllWorkerDirectionAlertsEnabled = useAdminDevNotificationStore((s) => s.setAllWorkerDirectionAlertsEnabled);
   const lastAllWorkerDirectionAlertKey = useAdminDevNotificationStore((s) => s.lastAllWorkerDirectionAlertKey);
   const markAllWorkerDirectionAlertSeen = useAdminDevNotificationStore((s) => s.markAllWorkerDirectionAlertSeen);
+  const controllerNotificationsEnabled = useAdminDevNotificationStore((s) => s.controllerNotificationsEnabled);
+  const setControllerNotificationsEnabled = useAdminDevNotificationStore((s) => s.setControllerNotificationsEnabled);
+  const recordControllerNotificationKey = useAdminDevNotificationStore((s) => s.recordControllerKey);
+  const hydrateAdminDevNotifications = useAdminDevNotificationStore((s) => s.hydrate);
+  const adminDevNotificationsHydrated = useAdminDevNotificationStore((s) => s.hydrated);
+  useEffect(() => {
+    if (!adminDevNotificationsHydrated) void hydrateAdminDevNotifications();
+  }, [adminDevNotificationsHydrated, hydrateAdminDevNotifications]);
 
   const refresh = useCallback(async () => {
     setRefreshing(true);
@@ -1095,6 +1110,45 @@ export default function AdminDevScreen() {
     latestEvidencePath: 'audit-artifacts/android/<timestamp>/samsung-audit.mp4',
   });
 
+  const installedDeviceQaPending = releaseGateSummary.ok
+    ? !!(releaseGateSummary.installedAndroid == null
+        || releaseGateSummary.installedIos == null
+        || (releaseGateSummary.targetAndroid != null
+            && releaseGateSummary.installedAndroid != null
+            && releaseGateSummary.installedAndroid !== releaseGateSummary.targetAndroid))
+    : false;
+
+  const controllerNotificationDecisions: ControllerNotificationDecision[] = samsungController
+    ? decideControllerNotifications({
+        context: samsungController,
+        laneSummary: laneProgress,
+        approvalsPending: approvalGates.filter((gate) => gate.status === 'pending').length,
+        installedDeviceQaPending,
+        topPriority: nowPriority,
+        recommendedNextAction: nowNextAction,
+      })
+    : [];
+  const topControllerNotification = topControllerDecision(controllerNotificationDecisions);
+
+  // Fire any new decisions through the lazy-loaded notification
+  // channel. The dispatcher dedupe-records keys regardless of
+  // whether expo-notifications is installed, so foreground re-
+  // renders cannot spam Aaron with the same alert.
+  useEffect(() => {
+    if (!samsungController) return;
+    if (!controllerNotificationsEnabled) return;
+    if (controllerNotificationDecisions.length === 0) return;
+    void dispatchControllerDecisions(controllerNotificationDecisions);
+    // We intentionally key on dedupeKeys joined — when a new key
+    // appears we re-run; otherwise the dispatcher's own dedupe
+    // suppresses repeats.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    samsungController == null,
+    controllerNotificationsEnabled,
+    controllerNotificationDecisions.map((d) => d.dedupeKey).join('|'),
+  ]);
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Stack.Screen options={{ title: 'Admin / Dev', headerBackTitle: 'Settings' }} />
@@ -1165,54 +1219,28 @@ export default function AdminDevScreen() {
           </View>
         )}
         {samsungController && (
-          <View style={styles.noticeBlock}>
-            <Text style={styles.chipLabel}>Samsung controller home</Text>
-            <Text style={styles.chipBody}>
-              Android controller mode · MCP {samsungController.mcp.freshness} · build gate {samsungController.gates.build}
-            </Text>
-            <View style={styles.summaryGrid}>
-              <View style={styles.summaryTile}>
-                <Text style={styles.chipLabel}>MCP freshness</Text>
-                <Text style={styles.summaryValue}>{samsungController.mcp.freshness}</Text>
-                <Text style={styles.summaryMeta}>
-                  {samsungController.mcp.lastWritebackAgeMs == null ? 'no writeback age' : ageLabelMs(samsungController.mcp.lastWritebackAgeMs)}
-                  {samsungController.mcp.staleReason ? ` · ${samsungController.mcp.staleReason}` : ''}
-                </Text>
-              </View>
-              <View style={styles.summaryTile}>
-                <Text style={styles.chipLabel}>Lane truth</Text>
-                <Text style={styles.summaryValue}>{samsungController.lanes.length}</Text>
-                <Text style={styles.summaryMeta}>
-                  {samsungController.lanes.map((lane) => `${lane.id}:${lane.status}${lane.terminalDisagreement ? ' drift' : ''}`).join(' · ') || 'no lanes'}
-                </Text>
-              </View>
-              <View style={styles.summaryTile}>
-                <Text style={styles.chipLabel}>Approvals</Text>
-                <Text style={styles.summaryValue}>{samsungController.approvals.humanApprovalCount}</Text>
-                <Text style={styles.summaryMeta}>Human Approval Queue entry point: Admin/Dev approval gates below</Text>
-              </View>
-              <View style={styles.summaryTile}>
-                <Text style={styles.chipLabel}>Health Connect</Text>
-                <Text style={styles.summaryValue}>{samsungController.healthConnect.state}</Text>
-                <Text style={styles.summaryMeta}>
-                  {samsungController.healthConnect.availableMetrics} metrics · missing {samsungController.healthConnect.missingMetrics.length}
-                </Text>
-              </View>
-            </View>
-            <Text style={styles.note}>
-              Notification categories scaffolded: {ANDROID_CONTROLLER_NOTIFICATION_CATEGORIES.join(', ')}. Push remains inactive until an approved native build includes expo-notifications.
-            </Text>
-            <View style={{ gap: 6 }}>
-              <Text style={styles.rowLabel}>Audit Runner controls</Text>
-              <SelectableCopyButton label="Copy start audit command" body={samsungController.auditRunner.startAuditCommand} />
-              <SelectableCopyButton label="Copy screenshot command" body={samsungController.auditRunner.screenshotCommand} />
-              <SelectableCopyButton label="Copy video capture command" body={samsungController.auditRunner.videoCommand} />
-              <SelectableCopyButton label="Copy latest evidence path" body={samsungController.auditRunner.latestEvidencePath ?? 'audit-artifacts/android/<timestamp>/'} />
-            </View>
-            <Text style={styles.note}>
-              Mirror/simulator evidence can find bugs but cannot clear installed-device gates. No Play, TestFlight, EAS, upload, or release action runs from this controller.
-            </Text>
-          </View>
+          <SamsungControllerHome
+            context={samsungController}
+            lanes={laneProgress.lanes}
+            topPriority={nowPriority}
+            recommendedNextAction={nowNextAction}
+            approvalsPending={approvalGates.filter((gate) => gate.status === 'pending').length}
+            topDecision={topControllerNotification}
+            decisionCount={controllerNotificationDecisions.length}
+            notificationsEnabled={controllerNotificationsEnabled}
+            onCopyText={(label, text) => {
+              Alert.alert(label, text);
+            }}
+            onOpenApprovals={() => {
+              Alert.alert(
+                'Approvals',
+                'Scroll down to the Approval gates section on this screen to approve, defer, or deny each pending gate.',
+              );
+            }}
+            onAcknowledgeDecision={(key) => {
+              void recordControllerNotificationKey(key);
+            }}
+          />
         )}
         <View style={styles.chipBlock}>
           <Text style={styles.chipLabel}>Build gate</Text>
@@ -1295,6 +1323,21 @@ export default function AdminDevScreen() {
               style={styles.btn}
               onPress={() => void setAllWorkerDirectionAlertsEnabled(!allWorkerDirectionAlertsEnabled)}>
               <Text style={styles.btnText}>{allWorkerDirectionAlertsEnabled ? 'Disable worker direction banner' : 'Enable worker direction banner'}</Text>
+            </Pressable>
+            <Text style={styles.chipBody}>
+              Samsung controller notifications: {controllerNotificationsEnabled ? 'enabled' : 'muted'}
+            </Text>
+            <Text style={styles.note}>
+              Categories: {ANDROID_CONTROLLER_NOTIFICATION_CATEGORIES.join(', ')}.
+              Local notifications fire when expo-notifications is included in an approved native build.
+              Until then, the dispatcher dedupe-records keys so the in-app banner channel does not repeat.
+            </Text>
+            <Pressable
+              style={styles.btn}
+              onPress={() => void setControllerNotificationsEnabled(!controllerNotificationsEnabled)}>
+              <Text style={styles.btnText}>
+                {controllerNotificationsEnabled ? 'Mute Samsung controller notifications' : 'Enable Samsung controller notifications'}
+              </Text>
             </Pressable>
           </View>
         )}
