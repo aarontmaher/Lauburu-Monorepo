@@ -14,6 +14,13 @@ separation panel in Admin/Dev should show
 the screenshot run begins; if it says `repo-only` or shows
 v20, stop.
 
+> **Mirror setup:** before capturing, get the Samsung phone
+> mirroring on the laptop with the working scrcpy invocation in
+> `docs/SAMSUNG_CONTROLLER_RUNBOOK.md` § "Mirror to laptop
+> (scrcpy over Wi-Fi)". `npm run audit:android-scrcpy` ingests
+> the screenshots after, but the mirror window is what you take
+> the screenshots from.
+
 ## Pre-flight
 
 - [ ] EAS build status = `FINISHED` at
