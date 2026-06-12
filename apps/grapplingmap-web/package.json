@@ -1,31 +1,32 @@
 {
-  "name": "chat-gpt",
+  "name": "@lauburu/grapplingmap-web",
   "version": "1.0.0",
-  "description": "Automatically publishes Mindomo OPML exports to GitHub Pages.",
+  "description": "Public Lauburu Grappling Map GitHub Pages renderer and OPML export pipeline.",
   "main": "index.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "test": "npx playwright test tests/e2e/smoke.spec.js",
-    "test:snapshots": "npx playwright test tests/e2e/snapshots.spec.js",
-    "test:update-snapshots": "npx playwright test tests/e2e/snapshots.spec.js --update-snapshots",
-    "test:all": "npx playwright test",
+    "test": "playwright test tests/e2e/smoke.spec.js",
+    "test:snapshots": "playwright test tests/e2e/snapshots.spec.js",
+    "test:update-snapshots": "playwright test tests/e2e/snapshots.spec.js --update-snapshots",
+    "test:all": "playwright test",
     "ready": "npm run test && echo '✓ All smoke tests passed — ready to deploy'",
-    "check": "npx playwright test tests/e2e/smoke.spec.js --reporter=line"
+    "check": "playwright test tests/e2e/smoke.spec.js --reporter=line"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aarontmaher/Chat-gpt.git"
+    "url": "git+https://github.com/aarontmaher/lauburu-grappling-map.git",
+    "directory": "apps/grapplingmap-web"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/aarontmaher/Chat-gpt/issues"
+    "url": "https://github.com/aarontmaher/lauburu-grappling-map/issues"
   },
-  "homepage": "https://github.com/aarontmaher/Chat-gpt#readme",
+  "homepage": "https://www.lauburugrapplingmap.com/",
   "devDependencies": {
     "@playwright/test": "^1.58.2"
   }

@@ -1,6 +1,8 @@
-# Grappling Map — OPML Auto-Update Workflow
+# Grappling Map - Public Web Renderer
 
-Automatically publishes Mindomo OPML exports to GitHub Pages.
+This app contains the public Lauburu Grappling Map GitHub Pages renderer and the Mindomo OPML export pipeline.
+
+It was imported from `aarontmaher/lauburugrapplingmap` into the private monorepo at `apps/grapplingmap-web`. The public repository still owns the live GitHub Pages deployment for `https://www.lauburugrapplingmap.com/` until the deployment path is moved intentionally.
 
 **Flow:** Export OPML from Mindomo → save to `~/GrapplingMap/exports/` → watcher fires → updates `grappling.opml` + `index.html` → git push → site updates in ~1 min.
 
@@ -8,11 +10,11 @@ Automatically publishes Mindomo OPML exports to GitHub Pages.
 
 ## Quick Start
 
-### 1. Clone this repo on your Mac
+### 1. Work from the monorepo clone
 
 ```bash
-git clone https://github.com/aarontmaher/Chat-gpt.git
-cd Chat-gpt
+git clone https://github.com/aarontmaher/lauburu-grappling-map.git
+cd lauburu-grappling-map/apps/grapplingmap-web
 ```
 
 ### 2. One-time setup (run once from the repo root)
@@ -40,7 +42,7 @@ Leave this running in a Terminal window. Press **Ctrl-C** to stop.
    - Copies it to `grappling.opml` in this repo
    - Updates `const SECTIONS` in `index.html`
    - Commits and pushes to GitHub
-   - Site updates at https://aarontmaher.github.io/Chat-gpt/ within ~1 minute
+   - Site updates at https://www.lauburugrapplingmap.com/ after the public deployment repo receives the change
 
 > **Chrome tip:** Enable "Ask where to save each file before downloading" in Chrome Settings > Downloads so you can choose the exports folder each time.
 
@@ -49,7 +51,7 @@ Leave this running in a Terminal window. Press **Ctrl-C** to stop.
 ## File Structure
 
 ```
-Chat-gpt/
+apps/grapplingmap-web/
 ├── grappling.opml          <- canonical OPML (updated by watcher)
 ├── index.html              <- site (const SECTIONS updated by watcher)
 └── tools/
@@ -70,7 +72,7 @@ Chat-gpt/
 ## Auto-launch on Login (optional)
 
 ```bash
-REPO_PATH="$HOME/path/to/Chat-gpt"   # <-- edit this
+REPO_PATH="$HOME/path/to/lauburu-grappling-map/apps/grapplingmap-web"   # <-- edit this
 
 cat > ~/Library/LaunchAgents/com.grapplingmap.watcher.plist << EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -105,13 +107,13 @@ brew install fswatch
 Option A — Personal Access Token:
 1. GitHub > Settings > Developer settings > Personal access tokens > New token (classic)
 2. Select `repo` scope, generate and copy the token
-3. `git remote set-url origin https://YOUR_TOKEN@github.com/aarontmaher/Chat-gpt.git`
+3. `git remote set-url origin https://YOUR_TOKEN@github.com/aarontmaher/lauburu-grappling-map.git`
 
 Option B — SSH key:
 ```bash
 ssh-keygen -t ed25519 -C "your@email.com"   # if no key exists
 # Add ~/.ssh/id_ed25519.pub to GitHub > Settings > SSH keys
-git remote set-url origin git@github.com:aarontmaher/Chat-gpt.git
+git remote set-url origin git@github.com:aarontmaher/lauburu-grappling-map.git
 ```
 
 **"No changes detected" (commit skipped)**
@@ -123,5 +125,5 @@ python3 tools/opml_to_sections.py   # run manually to see the error
 ```
 
 **Site looks wrong after push**
-Check the Pages deploy status: https://github.com/aarontmaher/Chat-gpt/actions
-Then open DevTools Console at https://aarontmaher.github.io/Chat-gpt/ and look for JS errors.
+Check the Pages deploy status on the repository currently serving the site.
+Then open DevTools Console at https://www.lauburugrapplingmap.com/ and look for JS errors.
