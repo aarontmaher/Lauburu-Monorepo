@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "agents": {
+    "claude_chat": {
+      "task": null,
+      "status": "idle",
+      "branch": null,
+      "commit": null,
+      "last_commit": null,
+      "summary": null,
+      "updated_at": null
+    },
+    "claude_code": {
+      "task": "Multi-user health architecture with Polar-first expansion",
+      "status": "idle",
+      "branch": "main",
+      "commit": "b68e1e3",
+      "last_commit": "b68e1e3",
+      "summary": "Multi-user health arch deployed: per-user data model, provider-agnostic schema (WHOOP+Polar+AppleHealth+Garmin+Cronometer+manual), role-based operator gating, per-user shared memory scoping. Polar is first non-WHOOP provider.",
+      "updated_at": "2026-04-05T06:32:00Z"
+    },
+    "codex": {
+      "task": "WHOOP remote data hydration",
+      "status": "idle",
+      "branch": "codex/whoop-chatgpt-oauth",
+      "commit": "",
+      "last_commit": "",
+      "summary": "WHOOP live auth restored. Live sync working. Latest local date: 2026-04-05. 1044 days stored.",
+      "updated_at": "2026-04-05T00:40:10Z"
+    },
+    "chatgpt": {
+      "task": null,
+      "status": "idle",
+      "branch": null,
+      "commit": null,
+      "last_commit": null,
+      "summary": null,
+      "updated_at": null
+    },
+    "cowork": {
+      "task": null,
+      "status": "idle",
+      "branch": null,
+      "commit": null,
+      "last_commit": null,
+      "summary": null,
+      "updated_at": null
+    }
+  },
+  "updated_at": "2026-04-05T06:32:00Z"
+}
