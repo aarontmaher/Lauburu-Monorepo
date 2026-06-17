@@ -1,0 +1,14 @@
+# 01-ios-home-readiness — Home + readiness snapshot.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Home"
+    optional: true
+- takeScreenshot: "01-ios-home"
+- tapOn:
+    text: "Readiness"
+    optional: true
+- takeScreenshot: "01-ios-readiness-entry"
+- assertVisible:
+    text: "Readiness"
+    optional: true

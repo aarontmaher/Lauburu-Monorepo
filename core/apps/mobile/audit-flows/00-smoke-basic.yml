@@ -1,0 +1,27 @@
+# 00-smoke-basic — launch + Home + Health/Manage Sources + Admin/Dev.
+# Public-safe smoke path for the automated audit runner.
+appId: com.lauburu.grapplingmap
+---
+- launchApp
+- takeScreenshot: "00-smoke-launch"
+- tapOn:
+    text: "Home"
+    optional: true
+- takeScreenshot: "00-smoke-home"
+- tapOn:
+    text: "Health"
+- takeScreenshot: "00-smoke-health"
+- tapOn:
+    text: "Manage Sources"
+    optional: true
+- takeScreenshot: "00-smoke-health-manage-sources"
+- tapOn:
+    text: "Done"
+    optional: true
+- tapOn:
+    text: "Settings"
+- takeScreenshot: "00-smoke-settings"
+- tapOn:
+    text: "Admin / Dev"
+    optional: true
+- takeScreenshot: "00-smoke-admin-dev"

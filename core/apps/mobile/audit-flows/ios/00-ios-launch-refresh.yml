@@ -1,0 +1,18 @@
+# 00-ios-launch-refresh — iOS simulator launch + first refresh evidence.
+appId: com.lauburu.grapplingmap
+---
+- launchApp
+- assertVisible:
+    text: "Lauburu"
+    optional: true
+- takeScreenshot: "00-ios-launch"
+- tapOn:
+    text: "Home"
+    optional: true
+- takeScreenshot: "00-ios-home-before-refresh"
+- tapOn:
+    text: "Refresh"
+    optional: true
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: "00-ios-home-after-refresh"

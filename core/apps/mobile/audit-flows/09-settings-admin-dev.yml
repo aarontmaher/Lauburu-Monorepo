@@ -1,0 +1,13 @@
+# 09-settings-admin-dev — Settings → Admin/Dev → top of Now section.
+# Admin/Dev requires the admin email to be signed in; this flow is
+# captured against Aaron's signed-in QA account or a dedicated test
+# account with admin-email override.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Settings"
+- takeScreenshot: "09-settings"
+- tapOn:
+    text: "Admin / Dev"
+    optional: true
+- takeScreenshot: "09-admin-dev-now"

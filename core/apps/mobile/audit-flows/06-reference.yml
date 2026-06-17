@@ -1,0 +1,6 @@
+# 06-reference — Reference tab.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Reference"
+- takeScreenshot: "06-reference"

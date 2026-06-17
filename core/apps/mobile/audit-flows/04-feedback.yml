@@ -1,0 +1,54 @@
+# 04-feedback — Feedback tab. Captures Import notes preview AND the
+# sensitive-confirm gate when the FS-020 journal-import card is
+# bundled in this build. Every step that touches the FS-020 UI is
+# optional so older builds (pre-B-20d) don't fail this flow.
+#
+# Synthetic paste only — never paste Aaron's real notes here. This
+# fixture mirrors the one in cloudflare-worker/test/fixtures/
+# journal-import-synthetic-fixtures.ts and the QA handoff snippet.
+# The "Salbutamol" entry is a sensitive-category row (inhaler) and
+# MUST trigger the per-row confirmation gate; the flow asserts that
+# Save without confirming surfaces the "Confirm or skip every row"
+# alert — i.e. silent-save would be a regression.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Feedback"
+- takeScreenshot: "04-feedback"
+
+# Synthetic paste path — wrapped in optional ops so a pre-B-20d build
+# captures only the screenshots above and exits cleanly.
+- tapOn:
+    text: "Paste journal note text"
+    optional: true
+- inputText: |
+    Peptides
+    BPC 157
+    2026-05-01 started 100 mcg daily
+    2026-05-08 changed to 200 mcg daily
+
+    Lungs and Sinuses
+    Salbutamol
+    2026-05-03 single use 2 puffs pre-training
+- hideKeyboard:
+    optional: true
+- tapOn:
+    text: "Preview Notes"
+    optional: true
+- takeScreenshot: "04-feedback-import-preview"
+
+# Sensitive-confirm gate: tapping Save without confirming the
+# Salbutamol (inhaler) row should raise the "Confirm or skip every
+# row that needs confirmation before saving." alert. Capture both
+# the unresolved-preview state and the gate alert.
+- takeScreenshot: "04-feedback-import-before-save"
+- tapOn:
+    text: "Save Confirmed Rows"
+    optional: true
+- assertVisible:
+    text: "Confirm or skip every row that needs confirmation"
+    optional: true
+- takeScreenshot: "04-feedback-import-sensitive-gate"
+- tapOn:
+    text: "OK"
+    optional: true

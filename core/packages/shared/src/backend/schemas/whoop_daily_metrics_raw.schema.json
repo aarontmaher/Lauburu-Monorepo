@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "whoop_daily_metrics_raw",
+  "title": "WHOOP Daily Metrics Raw",
+  "description": "Layer 1: raw WHOOP data as ingested. No interpretation. Missing stays null.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "updatedAt", "athleteId", "localDate", "timezone", "workoutCount"],
+  "properties": {
+    "id": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "athleteId": { "type": "string" },
+    "localDate": { "type": "string", "format": "date" },
+    "timezone": { "type": "string" },
+    "recoveryScore": { "type": ["number", "null"] },
+    "hrvMs": { "type": ["number", "null"] },
+    "rhrBpm": { "type": ["number", "null"] },
+    "spo2Pct": { "type": ["number", "null"] },
+    "skinTempCelsius": { "type": ["number", "null"] },
+    "totalSleepHours": { "type": ["number", "null"] },
+    "swsHours": { "type": ["number", "null"] },
+    "remHours": { "type": ["number", "null"] },
+    "respiratoryRate": { "type": ["number", "null"] },
+    "dayStrain": { "type": ["number", "null"] },
+    "dayKilojoules": { "type": ["number", "null"] },
+    "workoutCount": { "type": "integer" },
+    "sourceUpdatedAt": { "type": ["string", "null"], "format": "date-time" },
+    "sourceRecordIds": {
+      "type": "object",
+      "properties": {
+        "cycleId": { "type": ["integer", "null"] },
+        "sleepId": { "type": ["string", "null"] },
+        "recoveryCycleId": { "type": ["integer", "null"] }
+      }
+    }
+  }
+}

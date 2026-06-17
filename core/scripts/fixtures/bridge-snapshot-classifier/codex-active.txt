@@ -1,0 +1,4 @@
+Read mcp-v2.ts
+
+• Working (39s • esc to interrupt)
+• Messages to be submitted after next tool call (press esc to interrupt)

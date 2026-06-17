@@ -1,0 +1,52 @@
+# Lauburu MCP / app-dev-centre Cloudflare Worker
+#
+# Deployment-ready config for `npx wrangler dev` (local) and
+# `npx wrangler deploy` (preview / staging). Production cutover
+# is intentionally NOT this file's job — the mobile app continues
+# pointing at the existing Railway URL until verification is
+# complete.
+#
+# Required environment to deploy:
+#   - Cloudflare account with Workers enabled.
+#   - `wrangler login` once on Aaron's machine.
+#   - Per-environment secrets set via `wrangler secret put`:
+#       ATHLETE_MEMORY_API_TOKEN
+#       SUPABASE_URL
+#       SUPABASE_SERVICE_ROLE_KEY      (only if backend reads land)
+#
+# This Worker is repo-only until deployed.
+
+name = "lauburu-mcp"
+main = "src/worker.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# No KV / D1 / Durable Objects bound in the starter build.
+# When Supabase reads land, no Cloudflare-side state is needed —
+# the Worker hits Supabase REST directly.
+
+# Default vars (non-secret) for the top-level / no-env runs.
+# Wrangler 4 does NOT inherit top-level [vars] into named envs —
+# each env block redeclares its own [env.X.vars] explicitly so
+# `wrangler deploy --env preview` sees what it expects.
+# Secrets go via `wrangler secret put` and never live here.
+[vars]
+WORKER_MODE = "dev"
+RAILWAY_FALLBACK_URL = "https://lauburu-ai-backend-production.up.railway.app"
+
+# Env "preview" — for testing without touching production.
+[env.preview]
+name = "lauburu-mcp-preview"
+
+[env.preview.vars]
+WORKER_MODE = "preview"
+RAILWAY_FALLBACK_URL = "https://lauburu-ai-backend-production.up.railway.app"
+
+# Env "production" — reserved. Do NOT deploy here until cutover
+# is explicitly approved per docs/CLOUDFLARE_MIGRATION.md.
+[env.production]
+name = "lauburu-mcp-production"
+
+[env.production.vars]
+WORKER_MODE = "production"
+RAILWAY_FALLBACK_URL = "https://lauburu-ai-backend-production.up.railway.app"

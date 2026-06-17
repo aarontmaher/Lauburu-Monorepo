@@ -1,0 +1,12 @@
+# 10-admin-dev-approval-gates — Admin/Dev → Approval gates section.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Settings"
+- tapOn:
+    text: "Admin / Dev"
+- scrollUntilVisible:
+    element:
+      text: "Approval gates"
+    optional: true
+- takeScreenshot: "10-admin-dev-approval-gates"

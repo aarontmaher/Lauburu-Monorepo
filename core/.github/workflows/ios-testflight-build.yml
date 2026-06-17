@@ -1,0 +1,94 @@
+name: ios-testflight-build
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch / SHA to build'
+        required: false
+        default: 'main'
+      submit_to_testflight:
+        description: 'true → after build, submit to TestFlight (requires Apple credentials configured on EAS)'
+        required: false
+        default: 'false'
+      dry_run:
+        description: 'true → run typecheck only, do not start EAS build'
+        required: false
+        default: 'false'
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || 'main' }}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm install --no-audit --no-fund
+      - name: TypeScript check (mobile)
+        run: cd apps/mobile && npx tsc --noEmit
+
+      - name: Preflight — required secrets + provisioning
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error title=EXPO_TOKEN missing::Set EXPO_TOKEN as a GitHub Actions secret."
+            exit 1
+          fi
+          {
+            echo "## Preflight"
+            echo "- EXPO_TOKEN: present"
+            echo "- submit_to_testflight: ${{ inputs.submit_to_testflight }}"
+            if [ "${{ inputs.submit_to_testflight }}" = "true" ]; then
+              echo "- TestFlight submit: requires App Store Connect API key cached on EAS or EXPO_APPLE_APP_SPECIFIC_PASSWORD secret. EAS submit will fail clearly if neither is configured."
+            fi
+            echo
+            echo "Note: if the EAS build step fails with 'provisioning profile doesn't include the com.apple.developer.applesignin entitlement', regenerate the profile with"
+            echo '`npx eas-cli credentials --platform ios` → Set up new provisioning profile.'
+            echo "See docs/IOS_TESTFLIGHT_AUTOMATION_SETUP.md."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: EAS iOS build
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_BUILD_NO_EXPO_GO_WARNING: 'true'
+        run: |
+          cd apps/mobile
+          npx eas-cli build --platform ios --profile production --non-interactive
+
+      # ── Optional: submit latest iOS build to TestFlight ─────────
+      # Requires Apple credentials cached on EAS (or App Store Connect
+      # API key envs). EAS submit reads the cached credentials and
+      # submits the latest build. No App Store Connect token is ever
+      # printed.
+      - name: Submit to TestFlight
+        if: ${{ inputs.dry_run != 'true' && inputs.submit_to_testflight == 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }}
+        run: |
+          cd apps/mobile
+          npx eas-cli submit --platform ios --profile production --latest --non-interactive
+
+      - name: Summary
+        run: |
+          {
+            echo "## iOS TestFlight build summary"
+            echo "Ref: ${{ inputs.ref || 'main' }}"
+            echo "Dry run: ${{ inputs.dry_run }}"
+            echo "Submit to TestFlight: ${{ inputs.submit_to_testflight }}"
+            if [ "${{ inputs.submit_to_testflight }}" = "true" ]; then
+              echo "Next: TestFlight will surface the new build to internal testers after Apple processing (~10–30 min)."
+            else
+              echo "Next: Open the EAS build page → download IPA OR run an EAS submit pass to TestFlight."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

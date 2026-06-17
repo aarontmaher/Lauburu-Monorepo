@@ -1,0 +1,51 @@
+{
+  "name": "lauburu-grappling-map-mobile",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "setup:supabase": "node scripts/setup-supabase-env.mjs",
+    "bridge:snapshot": "./scripts/bridge-snapshot-lanes.sh",
+    "bridge:watch": "./scripts/bridge-watch.sh",
+    "bridge:agent-qa": "node scripts/bridge-agent-qa.mjs",
+    "bridge:verify": "cd chat-app && npx tsx src/server/scripts/test-bridge-artifacts.ts",
+    "bridge:test:classifier": "python3 scripts/test-bridge-snapshot-classifier.py",
+    "qa:simulator": "node scripts/mobile-simulator-audit.mjs",
+    "audit:screenshots": "node scripts/audit-screenshots.mjs",
+    "audit:iphone-mirroring": "node scripts/iphone-mirroring-audit.mjs",
+    "audit:android-scrcpy": "node scripts/audit-android-scrcpy.mjs",
+    "audit:maestro": "node scripts/audit-maestro.mjs",
+    "audit:agent-bundle": "node scripts/audit-agent-bundle.mjs",
+    "mcp:test:live": "cd chat-app && npx tsx src/server/scripts/test-mcp-worker-live.ts",
+    "mcp:test:public-redaction": "cd cloudflare-worker && npx tsx test/test-mcp-public-redaction.ts",
+    "watcher:mcp": "node scripts/mcp-watcher.mjs",
+    "watcher:mcp:test": "cd cloudflare-worker && npx tsx test/test-mcp-watcher-helpers.ts",
+    "prompt:dispatch": "node scripts/prompt-dispatcher.mjs",
+    "prompt:dispatch:test": "cd cloudflare-worker && npx tsx test/test-prompt-dispatcher-helpers.ts",
+    "mcp:auto": "./scripts/mcp-auto.sh",
+    "terminal:auto": "./scripts/terminal-auto.sh",
+    "queue:taxonomy:test": "cd cloudflare-worker && npx tsx test/test-queue-taxonomy-helpers.ts",
+    "rules:test": "cd cloudflare-worker && npx tsx test/test-operating-rules.ts",
+    "cc:test:live": "cd chat-app && npx tsx src/server/scripts/test-control-centre-route.ts",
+    "mcp:test:v2-live": "cd chat-app && npx tsx src/server/scripts/test-mcp-v2-live.ts",
+    "controller:test": "npx tsx apps/mobile/src/services/android-controller-context.test.ts && npx tsx apps/mobile/src/services/controller-notification-decisions.test.ts",
+    "web:grapplingmap:test": "npm --prefix apps/grapplingmap-web test",
+    "web:grapplingmap:check": "npm --prefix apps/grapplingmap-web run check",
+    "web:grapplingmap:ready": "npm --prefix apps/grapplingmap-web run ready"
+  },
+  "dependencies": {
+    "@kingstinct/react-native-healthkit": "^13.4.0",
+    "@supabase/supabase-js": "^2.102.1",
+    "expo-build-properties": "^55.0.12",
+    "expo-haptics": "^55.0.13",
+    "expo-health-connect": "^0.1.1",
+    "expo-secure-store": "^55.0.12",
+    "expo-updates": "~29.0.16",
+    "react-native-health-connect": "^3.5.0",
+    "react-native-webview": "13.15.0",
+    "zustand": "^5.0.12"
+  }
+}

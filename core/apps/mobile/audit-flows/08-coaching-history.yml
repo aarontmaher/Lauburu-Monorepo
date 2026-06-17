@@ -1,0 +1,6 @@
+# 08-coaching-history — Coaching history tab.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Coaching"
+- takeScreenshot: "08-coaching-history"

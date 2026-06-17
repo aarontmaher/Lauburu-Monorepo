@@ -1,0 +1,126 @@
+{
+  "expo": {
+    "name": "Lauburu Grappling Map",
+    "slug": "lauburu-grappling-map",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "lauburu",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0a0a0a"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.lauburu.grapplingmap",
+      "buildNumber": "19",
+      "infoPlist": {
+        "NSHealthShareUsageDescription": "Lauburu reads sleep, steps, heart rate, HRV, resting heart rate, active energy, workouts, and distance from Apple Health so Coach can tailor recovery and training suggestions to your grappling sessions. You choose which metrics to share.",
+        "NSHealthUpdateUsageDescription": "Lauburu can log grappling sessions to Apple Health if you choose.",
+        "NSCameraUsageDescription": "Lauburu uses the camera to scan food barcodes for nutrition tracking and to attach photos of issues to tester feedback.",
+        "NSPhotoLibraryUsageDescription": "Lauburu lets testers attach screenshots or photos to feedback so bug reports and suggestions are easier to understand.",
+        "NSBluetoothAlwaysUsageDescription": "Used during a training session to read live heart rate from a paired sensor. Never sent off-device without your action.",
+        "NSBluetoothPeripheralUsageDescription": "Used during a training session to read live heart rate from a paired sensor. Never sent off-device without your action.",
+        "UIRequiredDeviceCapabilities": ["arm64"],
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "entitlements": {
+        "com.apple.developer.healthkit": true,
+        "com.apple.developer.healthkit.background-delivery": true,
+        "com.apple.developer.applesignin": ["Default"]
+      },
+      "usesAppleSignIn": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#0a0a0a"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.lauburu.grapplingmap",
+      "versionCode": 21,
+      "blockedPermissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_EXTERNAL_STORAGE"
+      ],
+      "permissions": [
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.health.READ_HEART_RATE",
+        "android.permission.health.READ_HEART_RATE_VARIABILITY",
+        "android.permission.health.READ_RESTING_HEART_RATE",
+        "android.permission.health.READ_STEPS",
+        "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
+        "android.permission.health.READ_SLEEP",
+        "android.permission.health.READ_EXERCISE",
+        "android.permission.health.READ_HEALTH_DATA_HISTORY"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "react-native-ble-plx",
+        {
+          "isBackgroundEnabled": false,
+          "bluetoothAlwaysPermission": "Used during a training session to read live heart rate from a paired sensor. Never sent off-device without your action."
+        }
+      ],
+      "./plugins/withBluetoothScanNeverForLocation",
+      [
+        "@kingstinct/react-native-healthkit",
+        {
+          "NSHealthShareUsageDescription": "Lauburu reads sleep, steps, heart rate, HRV, resting heart rate, active energy, workouts, and distance from Apple Health so Coach can tailor recovery and training suggestions to your grappling sessions. You choose which metrics to share.",
+          "NSHealthUpdateUsageDescription": "Lauburu can log grappling sessions to Apple Health if you choose."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Lauburu lets testers attach screenshots or photos to feedback."
+        }
+      ],
+      "expo-document-picker",
+      "expo-apple-authentication",
+      "react-native-health-connect",
+      "./plugins/withAndroidHealthConnectPermissionDelegate",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "minSdkVersion": 26
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "dc901a16-772d-49e5-a8ba-dff2fb4e21bd"
+      },
+      "whoopBridgeOwnerIds": "4c809976-a00c-448a-aa3b-392bc94b63fb"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/dc901a16-772d-49e5-a8ba-dff2fb4e21bd"
+    }
+  }
+}

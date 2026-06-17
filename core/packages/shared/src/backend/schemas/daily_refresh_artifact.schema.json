@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "daily_refresh_artifact",
+  "title": "Daily Refresh Artifact",
+  "description": "Layer 3: athlete-relative interpreted artifact. Includes baseline comparisons, risk scoring, session gating, pattern detection. Carries confidence, coverage, and evidence basis.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "athleteId", "sourceDate", "generatedAt", "freshUntil", "dayState", "confidence", "coverage"],
+  "properties": {
+    "id": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "derivationVersion": { "type": "string" },
+    "athleteId": { "type": "string" },
+    "sourceDate": { "type": "string", "format": "date" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "freshUntil": { "type": "string", "format": "date-time" },
+    "dayState": { "enum": ["green", "yellow", "red", "blocked"] },
+    "dayScore": { "type": "number" },
+    "rollingRiskLevel": { "enum": ["low", "moderate", "elevated", "high"] },
+    "rollingRiskScore": { "type": "number" },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "metric": { "type": "string" },
+          "value": { "type": ["number", "null"] },
+          "unit": { "type": "string" },
+          "baselineValue": { "type": ["number", "null"] },
+          "deltaPct": { "type": ["number", "null"] },
+          "status": { "enum": ["normal", "elevated", "suppressed", "missing"] }
+        }
+      }
+    },
+    "primaryRecommendation": {
+      "type": "object",
+      "properties": {
+        "guidance": { "type": "string" },
+        "reasons": { "type": "array", "items": { "type": "string" } },
+        "evidenceBasis": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "enum": ["high", "medium", "low"] }
+      }
+    },
+    "confidence": { "enum": ["high", "medium", "low"] },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "presentCount": { "type": "integer" },
+        "totalExpected": { "type": "integer" },
+        "missingFields": { "type": "array", "items": { "type": "string" } },
+        "status": { "enum": ["complete", "partial", "minimal"] }
+      }
+    },
+    "evidenceBasis": { "type": "array", "items": { "type": "string" } }
+  }
+}

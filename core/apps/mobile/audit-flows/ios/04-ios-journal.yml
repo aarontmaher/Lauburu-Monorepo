@@ -1,0 +1,19 @@
+# 04-ios-journal — Journal cards and refresh.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Journal"
+    optional: true
+- tapOn:
+    text: "Feedback"
+    optional: true
+- takeScreenshot: "04-ios-journal"
+- assertVisible:
+    text: "Daily Journal"
+    optional: true
+- tapOn:
+    text: "Refresh"
+    optional: true
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: "04-ios-journal-after-refresh"

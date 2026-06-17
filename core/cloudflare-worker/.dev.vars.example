@@ -1,0 +1,26 @@
+# Cloudflare Worker local env template — copy to .dev.vars and
+# replace the placeholder values. .dev.vars is gitignored; this
+# .example file is committed.
+#
+# Wrangler reads .dev.vars when you run `npm run dev` and exposes
+# each line as a binding inside Env.
+
+# Shared admin token used by the mobile app to gate Worker
+# admin reads. Mint a fresh value with:
+#   openssl rand -hex 24
+# and set the SAME value in:
+#   - apps/mobile/.env.production (EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN)
+#   - This file (.dev.vars) for local Worker dev
+#   - Cloudflare secret for the deployed Worker via:
+#       npx wrangler secret put ATHLETE_MEMORY_API_TOKEN --name lauburu-mcp-preview
+ATHLETE_MEMORY_API_TOKEN="REPLACE_WITH_REAL_TOKEN"
+
+# Supabase reads are deferred until the connector_* tables in
+# docs/CONNECTOR_SUPABASE_SCHEMA.md exist. Leave the values
+# unset for now — the Worker handler treats them as
+# `supabaseConfigured: false` and returns placeholder payloads
+# with explicit `dataSource.schemaRequired` fields.
+# When wired (set via `npx wrangler secret put` for the deployed
+# Worker; this .dev.vars file is dev-only):
+# SUPABASE_URL="https://YOUR-PROJECT.supabase.co"
+# SUPABASE_SERVICE_ROLE_KEY="REPLACE_WITH_SERVICE_ROLE_KEY"

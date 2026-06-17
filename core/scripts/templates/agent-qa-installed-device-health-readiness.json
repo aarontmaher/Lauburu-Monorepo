@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "qaRunId": "installed-health-readiness-template",
+  "sourceAgent": "agent",
+  "status": "blocked",
+  "gate": "release_gate",
+  "platform": "both",
+  "deviceName": "replace-with-device-names",
+  "installedBuild": {
+    "iosBuildNumber": "19",
+    "androidVersionCode": 18,
+    "appVersion": "0.1.0",
+    "channel": "TestFlight + Play Internal QA"
+  },
+  "repo": {
+    "branch": "main",
+    "shortHead": "0932c63"
+  },
+  "results": {
+    "healthManageSources": "not_tested",
+    "androidHealthConnect": "not_tested",
+    "iosAppleHealth": "not_tested",
+    "grapplingReadiness": "not_tested",
+    "adminControlCentre": "not_tested",
+    "copyTruthfulness": "not_tested",
+    "uiDensity": "not_tested"
+  },
+  "releaseGate": {
+    "newTestFlightAllowed": false,
+    "newAndroidBuildAllowed": false,
+    "reason": "Template only. Replace with installed-device pass/fail/blocked result. Repo-only or simulator-only evidence does not clear gates."
+  },
+  "requiredFixes": [
+    "Replace template fields after actual installed-device QA."
+  ],
+  "evidence": {
+    "screenshotRefs": [],
+    "notes": "Record non-private notes only. Do not include health data, secrets, tokens, or raw logs."
+  },
+  "publicSummary": "Installed-device QA template pending real device testing."
+}

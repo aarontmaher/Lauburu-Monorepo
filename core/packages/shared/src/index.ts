@@ -1,0 +1,13 @@
+export * from './constants';
+export * from './types';
+export * from './api';
+export * from './health';
+export * from './knowledge';
+export * from './journal';
+export * from './approval-gates';
+export * from './research-jobs';
+export * from './athlete-memory';
+export * from './syllabus';
+export { compareHiitWorkouts } from './backend/services/hiit/compare-hiit-workouts';
+export type { CronometerConnectionState, CronometerConnectionStatus } from './backend/contracts/cronometer.types';
+export type { MachineConnectionRecord, MachineConnectionSummary, MachineConnectionStatus } from './backend/contracts/machine-connection.types';
