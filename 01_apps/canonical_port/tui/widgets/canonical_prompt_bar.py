@@ -206,7 +206,60 @@ class CanonicalPromptBar(Horizontal):
                 next_eng = self.inference_router.cycle_engine(1)
                 log_sys(f"Cycled active inference engine to [bold #00ffcc][{next_eng.upper()}][/bold #00ffcc]")
 
+        elif cmd in ("/model", "/m"):
+            # Route model selection through the unified proxy
+            models_info = (
+                "[bold cyan]📦 Proxy Models (http://127.0.0.1:8080):[/bold cyan]\n"
+                "  [green]local/qwen[/green]   → Qwen2.5-Coder-7B Q4_K_M   :8083\n"
+                "  [yellow]local/gpt-oss[/yellow] → GPT-OSS 20B MXFP4         :8081\n"
+                "  [blue]cf/llama[/blue]      → Cloudflare Llama-3.1-8B   (free)\n"
+                "  [blue]cf/llama70[/blue]    → Cloudflare Llama-3.3-70B  (free)\n"
+                "  [blue]cf/deepseek[/blue]   → Cloudflare DeepSeek-R1-32B(free)\n"
+                "  [dim]auto[/dim]          → Best live local → CF fallback\n"
+                "\nUsage: /model local/qwen   or   /model cf/llama"
+            )
+            if len(parts) > 1:
+                model_target = parts[1].lower()
+                # Map model selections to llama_rpc bridge with model override
+                bridge = self.inference_router.bridges.get("llama_rpc")
+                if bridge:
+                    # Store the selected model name on the bridge for proxy routing
+                    bridge.model_name = model_target
+                    # Reset active endpoint so it re-probes with new model
+                    if hasattr(bridge, '_active_endpoint'):
+                        bridge._active_endpoint = None
+                    log_sys(f"[green]✓ Model set to [bold]{model_target}[/bold] — next prompt routes via proxy.[/green]")
+                    # Switch engine to llama_rpc if not already
+                    if self.inference_router.active_engine not in ("llama_rpc", "auto"):
+                        self.inference_router.set_active_engine("llama_rpc")
+                else:
+                    log_sys(f"[red]Bridge not found. Run /engine llama_rpc first.[/red]")
+            else:
+                log_sys(models_info)
+
+        elif cmd in ("/proxy", "/status"):
+            # Show live proxy status
+            import asyncio
+            def _fetch_proxy_status():
+                try:
+                    import urllib.request, json
+                    r = urllib.request.urlopen("http://127.0.0.1:8080/v1/proxy/status", timeout=2)
+                    data = json.loads(r.read().decode())
+                    lines = ["[bold cyan]🔀 Unified AI Proxy Status (port 8080):[/bold cyan]"]
+                    for k, v in data.items():
+                        live = v.get("live", False)
+                        ready = v.get("ready", False)
+                        dot = "[green]🟢[/green]" if ready else ("[yellow]🟡[/yellow]" if live else "[red]🔴[/red]")
+                        port_info = f":{v.get('port','cloud')}" if 'port' in v else "(cloud)"
+                        lines.append(f"  {dot} [bold]{k}[/bold] {port_info}")
+                    return "\n".join(lines)
+                except Exception as e:
+                    return f"[red]Proxy unreachable: {e}[/red]"
+            status_msg = _fetch_proxy_status()
+            log_sys(status_msg)
+
         elif cmd == "/nodes":
+
             snapshot = blackboard_store.get_snapshot(force_refresh=False)
             l1 = snapshot.layer_1_hardware
             tb4 = snapshot.layer_0_networking.tb4_dma
@@ -386,28 +439,58 @@ class CanonicalPromptBar(Horizontal):
         else:
             log_sys(f"[yellow]Unknown slash command: {cmd}. Type /help for available commands.[/yellow]")
 
-    async def _stream_response_worker(self, prompt: str) -> None:
-        """Non-blocking background inference stream worker."""
+    async def _stream_response_worker(self, prompt: str) -\u003e None:
+        """
+        Non-blocking background inference stream worker.
+        Streams tokens in real-time to the chat log for smooth UX.
+        """
         eff_engine = self.inference_router.get_effective_engine()
         full_response = ""
+        token_count = 0
+
+        # Signal start of response in chat
+        if self.on_system_message:
+            bridge = self.inference_router.get_active_bridge()
+            badge = bridge.get_status_badge() if bridge else f"[{eff_engine.upper()}]"
+            self.on_system_message(f"[dim]⏳ {badge} thinking...[/dim]")
+
         try:
-            async for token in self.inference_router.stream_generate(prompt):
+            async for token in self.inference_router.stream_generate(prompt, max_tokens=512):
                 full_response += token
-                await asyncio.sleep(0.005)
+                token_count += 1
+                # Every ~8 tokens, flush accumulated text to the chat log
+                # This gives smooth streaming without flooding the widget
+                if token_count % 8 == 0 and self.on_system_message:
+                    # Replace the "thinking" placeholder with accumulated text on first flush
+                    if token_count == 8:
+                        bridge = self.inference_router.get_active_bridge()
+                        badge = bridge.get_status_badge() if bridge else f"[{eff_engine.upper()}]"
+                        self.on_system_message(f"[bold cyan]{badge}[/bold cyan]: {full_response}")
+                    else:
+                        # Update: append latest chunk
+                        self.on_system_message(f"  [dim]...{token}[/dim]")
+                await asyncio.sleep(0.002)
 
+            # Final complete response — show it cleanly
             if self.on_system_message:
-                self.on_system_message(f"[{eff_engine.upper()}] {full_response}")
+                bridge = self.inference_router.get_active_bridge()
+                badge = bridge.get_status_badge() if bridge else f"[{eff_engine.upper()}]"
+                self.on_system_message(f"[bold cyan]{badge}[/bold cyan]: {full_response}")
 
+            # Extract code blocks into editor
             if "```" in full_response and self.on_code_extracted:
                 extracted = self._extract_code_block(full_response)
                 if extracted:
                     self.on_code_extracted(extracted)
+                    if self.on_system_message:
+                        self.on_system_message("[dim]📋 Code snippet extracted to Active Code Buffer.[/dim]")
+
         except asyncio.CancelledError:
             if self.on_system_message:
-                self.on_system_message("[italic yellow]Inference stream cancelled by user or engine switch.[/italic yellow]")
+                self.on_system_message("[italic yellow]⏹ Stream cancelled.[/italic yellow]")
         except Exception as e:
             if self.on_system_message:
-                self.on_system_message(f"[red]Inference Error ({eff_engine}): {e}[/red]")
+                self.on_system_message(f"[red]❌ Inference Error ({eff_engine}): {e}[/red]")
 
     def _extract_code_block(self, text: str) -> Optional[str]:
         if "```" not in text:
@@ -420,3 +503,4 @@ class CanonicalPromptBar(Horizontal):
                 return "\n".join(lines[1:]).strip()
             return block.strip()
         return None
+

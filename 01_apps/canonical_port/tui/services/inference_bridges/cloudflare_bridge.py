@@ -4,11 +4,28 @@ import time
 import json
 import logging
 import httpx
+from pathlib import Path
 from typing import AsyncGenerator, Dict, Any, Optional
 
 from .base_bridge import BaseInferenceBridge
 
 logger = logging.getLogger("CloudflareBridge")
+
+
+def _load_env_once():
+    """Load ~/.env and monorepo .env so API keys are always available."""
+    for p in [Path.home() / ".env", Path(__file__).parents[4] / ".env"]:
+        try:
+            if p.exists():
+                for line in p.read_text().splitlines():
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        k, _, v = line.partition("=")
+                        os.environ.setdefault(k.strip(), v.strip())
+        except Exception:
+            pass
+
+_load_env_once()
 
 
 class CloudflareBridge(BaseInferenceBridge):
