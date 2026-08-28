@@ -1,0 +1,188 @@
+{
+  "timestamp": "2026-08-15T16:33:07Z",
+  "total_monitored": 18,
+  "online_services_count": 14,
+  "offline_services_count": 4,
+  "services": [
+    {
+      "name": "lauburu-storefront",
+      "port": 3000,
+      "role": "Shopify Hydrogen Storefront",
+      "status": "UP",
+      "tcp_connected": true,
+      "http_code": 200,
+      "latency_ms": 0.3,
+      "url": "http://127.0.0.1:3000/"
+    },
+    {
+      "name": "self-healing-hub-vite",
+      "port": 5173,
+      "role": "Vite React Hub UI",
+      "status": "UP",
+      "tcp_connected": true,
+      "http_code": 200,
+      "latency_ms": 0.3,
+      "url": "http://127.0.0.1:5173/"
+    },
+    {
+      "name": "self-healing-hub-api",
+      "port": 5001,
+      "role": "Telemetry & State API",
+      "status": "UP",
+      "tcp_connected": true,
+      "http_code": 200,
+      "latency_ms": 0.33,
+      "url": "http://127.0.0.1:5001/api/telemetry"
+    },
+    {
+      "name": "terminal-pty-gateway",
+      "port": 5002,
+      "role": "Termius PTY Terminal Gateway (Source of Truth)",
+      "status": "UP",
+      "tcp_connected": true,
+      "http_code": 200,
+      "latency_ms": 0.27
+    },
+    {
+      "name": "movesense-readiness-ui",
+      "port": 8086,
+      "role": "MoveSense Biometrics WebApp",
+      "status": "UP",
+      "tcp_connected": true,
+      "http_code": 500,
+      "latency_ms": 0.26,
+      "url": "http://127.0.0.1:8086/",
+      "note": "HTTP status 500"
+    },
+    {
+      "name": "movesense-readiness-docker",
+      "port": 8750,
+      "role": "MoveSense Docker Container",
+      "status": "UP",
+      "tcp_connected": true,
+      "http_code": 200,
+      "latency_ms": 0.32,
+      "url": "http://127.0.0.1:8750/"
+    },
+    {
+      "name": "gemini-ai-service",
+      "port": 8087,
+      "role": "Gemini AI FastAPI Service",
+      "status": "UP",
+      "tcp_connected": true,
+      "http_code": 200,
+      "latency_ms": 0.28,
+      "url": "http://127.0.0.1:8087/health"
+    },
+    {
+      "name": "gemini-spark-router",
+      "port": 8088,
+      "role": "FastAPI Spark Router",
+      "status": "DOWN",
+      "tcp_connected": false,
+      "http_code": null,
+      "latency_ms": null,
+      "error": "Connection refused / port closed"
+    },
+    {
+      "name": "unified-chat-hub",
+      "port": 8888,
+      "role": "Lauburu Master Chat Hub",
+      "status": "TCP_ONLY",
+      "tcp_connected": true,
+      "http_code": null,
+      "latency_ms": 0.17,
+      "error": "timed out"
+    },
+    {
+      "name": "lauburu-agi-backend",
+      "port": 8900,
+      "role": "Local AGI Backend",
+      "status": "UP",
+      "tcp_connected": true,
+      "http_code": 200,
+      "latency_ms": 0.21,
+      "url": "http://127.0.0.1:8900/health"
+    },
+    {
+      "name": "mock-services-stub",
+      "port": 9000,
+      "role": "API Mock Gateway",
+      "status": "TCP_ONLY",
+      "tcp_connected": true,
+      "http_code": null,
+      "latency_ms": 0.26,
+      "error": "timed out"
+    },
+    {
+      "name": "prometheus",
+      "port": 9090,
+      "role": "Prometheus Metrics",
+      "status": "TCP_ONLY",
+      "tcp_connected": true,
+      "http_code": null,
+      "latency_ms": 0.22,
+      "error": "Remote end closed connection without response"
+    },
+    {
+      "name": "openclaw-gateway",
+      "port": 18789,
+      "role": "OpenClaw Central Gateway",
+      "status": "UP",
+      "tcp_connected": true,
+      "http_code": 200,
+      "latency_ms": 0.22,
+      "url": "http://127.0.0.1:18789/"
+    },
+    {
+      "name": "openclaw-proxy",
+      "port": 8080,
+      "role": "OpenClaw Local Inference Proxy",
+      "status": "TCP_ONLY",
+      "tcp_connected": true,
+      "http_code": null,
+      "latency_ms": 0.39,
+      "error": "Remote end closed connection without response"
+    },
+    {
+      "name": "swarm-dashboard",
+      "port": 3003,
+      "role": "AI Training Mesh Dashboard",
+      "status": "UP",
+      "tcp_connected": true,
+      "http_code": 200,
+      "latency_ms": 0.21,
+      "url": "http://127.0.0.1:3003/"
+    },
+    {
+      "name": "lauburu-agi-api",
+      "port": 8000,
+      "role": "Core AGI FastAPI Server",
+      "status": "DOWN",
+      "tcp_connected": false,
+      "http_code": null,
+      "latency_ms": null,
+      "error": "Connection refused / port closed"
+    },
+    {
+      "name": "ray-dashboard",
+      "port": 8265,
+      "role": "Ray Distributed Cluster Dashboard",
+      "status": "DOWN",
+      "tcp_connected": false,
+      "http_code": null,
+      "latency_ms": null,
+      "error": "Connection refused / port closed"
+    },
+    {
+      "name": "qdrant-vector",
+      "port": 6333,
+      "role": "Qdrant Vector DB",
+      "status": "DOWN",
+      "tcp_connected": false,
+      "http_code": null,
+      "latency_ms": null,
+      "error": "Connection refused / port closed"
+    }
+  ]
+}

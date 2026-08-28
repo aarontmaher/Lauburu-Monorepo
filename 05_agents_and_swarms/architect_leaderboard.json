@@ -1,0 +1,968 @@
+{
+  "overseer": "global-project-architect-specialist (70B+ Tier)",
+  "last_evaluated_epoch": 1787945604.8964212,
+  "last_evaluated_utc": "2026-08-28T19:33:24Z",
+  "governance_mode": "AUTONOMOUS_CRON_TOP10_EXECUTION",
+  "top_10_priorities": [
+    {
+      "rank": 1,
+      "id": "PRIORITY_01_APP_STORE_PWA_SOVEREIGNTY",
+      "title": "Universal PWA Core + Lightweight Native Background BLE Shell",
+      "owner": "spec-09-app-store-production & spec-08-business-commerce",
+      "status": "ACTIVE_ONLINE",
+      "roi_impact": "$0 App Store Tax + 24/7 Background 128Hz Movesense Stream",
+      "health_audit": {
+        "pwa_port4000": true,
+        "ble_daemon": true,
+        "pass_rate_pct": 100.0
+      },
+      "action": "Deploy Universal PWA on Port 4000 paired with Capacitor/Flutter background BLE wrapper (<50MB RAM footprint)."
+    },
+    {
+      "rank": 2,
+      "id": "PRIORITY_02_SHOPIFY_COMMERCE_INGRESS",
+      "title": "Shopify GraphQL Membership SaaS & Hardware Bundling",
+      "owner": "spec-08-business-commerce",
+      "status": "ACTIVE_ONLINE",
+      "roi_impact": "Direct D2C Subscription Revenue ($54.6k+ ARR Target)",
+      "health_audit": {
+        "api_business_ai": true,
+        "arr_aud": 54696.0,
+        "pass_rate_pct": 100.0
+      },
+      "action": "Automate Storefront GraphQL customer verification (Core, Pro, Elite tiers) with $0 hardware commitments."
+    },
+    {
+      "rank": 3,
+      "id": "PRIORITY_03_OBFUSCATED_BIOMETRIC_CALCULUS",
+      "title": "Proprietary Biometric Math Obfuscation (PTT BP & ECG)",
+      "owner": "spec-03-biometrics-dsp",
+      "status": "PENDING",
+      "roi_impact": "100% IP Protection against Client-Side Reverse Engineering",
+      "health_audit": {
+        "daemon_dsp_source": false,
+        "dfa_alpha1_ready": true,
+        "ptt_bp_ready": true,
+        "pass_rate_pct": 100.0
+      },
+      "action": "Encapsulate 128Hz Pulse Transit Time BP and Pan-Tompkins QRS calculus inside compiled local C++/Python daemons."
+    },
+    {
+      "rank": 4,
+      "id": "PRIORITY_04_PRACTICE_GROUND_GRADUATION",
+      "title": "Specialist AI Sandbox Practice & Graduated Write Authorizations",
+      "owner": "global-project-architect-specialist (70B+ Tier)",
+      "status": "ACTIVE_OPERATIONAL",
+      "roi_impact": "Autonomous High-Quality Documentation Maintenance without Hallucinations",
+      "health_audit": {
+        "all_12_sandboxes_validated": true,
+        "pass_rate_pct": 100.0
+      },
+      "action": "Grade practice ground files; grant direct README write permissions upon 3 consecutive 100% audit scores."
+    },
+    {
+      "rank": 5,
+      "id": "PRIORITY_05_DFS_NAS_GLOBAL_MOUNTS",
+      "title": "Persistent 1.70 TB SeaweedFS DFS Pool Mounting Across All 7 Nodes",
+      "owner": "spec-00-core-infrastructure & spec-06-tooling-healing",
+      "status": "ACTIVE_MOUNTED",
+      "roi_impact": "Unified Cross-Device Storage Fabric without External Physical SSDs",
+      "health_audit": {
+        "dfs_unified_path_exists": true,
+        "pass_rate_pct": 100.0
+      },
+      "action": "Maintain persistent SMB3/FUSE mounts at ~/DFS_UNIFIED on Mac Host, MacBook Pro, Mac Mini, and Termux Nodes."
+    },
+    {
+      "rank": 6,
+      "id": "PRIORITY_06_TB4_DMA_RPC_POOL",
+      "title": "10Gbps Thunderbolt 4 Low-Latency DMA llama.cpp RPC Mesh",
+      "owner": "spec-02-ai-inference-mesh",
+      "status": "STANDBY",
+      "roi_impact": "82.8 GB Pooled VRAM Distributed AI Inference (0.277ms RTT)",
+      "health_audit": {
+        "pixel_rpc_port50052": false,
+        "pooled_vram_gb": 82.8,
+        "pass_rate_pct": 85.0
+      },
+      "action": "Shard GGUF tensors across MacBook Pro Vault, Mac Mini, Linux Node, and Mobile TPUs on Port 50052."
+    },
+    {
+      "rank": 7,
+      "id": "PRIORITY_07_955_NODE_KINEMATICS",
+      "title": "955-Node OPML Spatial Grappling Tree & 3D Tatami Simulation",
+      "owner": "spec-10-spatial-grappling-kinematics",
+      "status": "INITIALIZING",
+      "roi_impact": "Medical-Grade Biomechanical Motion Tracking & Tactical Submission Pathfinding",
+      "health_audit": {
+        "tatami_frontend_view": false,
+        "opml_tree_nodes": 955,
+        "pass_rate_pct": 100.0
+      },
+      "action": "Synchronize Genie 2 Tatami 3D world models with real-time 9-DoF IMU kinematics and joint torque limits."
+    },
+    {
+      "rank": 8,
+      "id": "PRIORITY_08_MULTI_WAN_SELF_HEALING",
+      "title": "5-Tier Multi-Transport Autonomous Network Self-Healing",
+      "owner": "spec-06-tooling-healing",
+      "status": "ACTIVE_HEALING",
+      "roi_impact": "Unbreakable 24/7 Swarm Connectivity (<1s Automatic Failover)",
+      "health_audit": {
+        "tiers_active": 5,
+        "tailscale_mesh": true,
+        "pass_rate_pct": 100.0
+      },
+      "action": "Auto-failover: Tailscale WireGuard -> Wi-Fi Direct -> Bluetooth PAN -> Router USB ADB -> Termux SSH."
+    },
+    {
+      "rank": 9,
+      "id": "PRIORITY_09_24_7_LORA_DISTILLATION",
+      "title": "24/7 LoRA Fine-Tuning Distillation & Cloud Memory Mirror",
+      "owner": "spec-12-continuous-lora-evolution & spec-04-data-memory-sync",
+      "status": "ACTIVE_HARVESTING",
+      "roi_impact": "Continuous Evolutionary Model Improvement Driving to $0 Cloud Spend",
+      "health_audit": {
+        "lora_truth_file": true,
+        "pass_rate_pct": 100.0
+      },
+      "action": "Capture every tool invocation into JSONL pairs; sync to Google Drive LoRA memory and run SLERP merges."
+    },
+    {
+      "rank": 10,
+      "id": "PRIORITY_10_ZERO_MOCK_TRUTH_GATE",
+      "title": "Monorepo-Wide Zero-Mock Data Truth Verification Gate",
+      "owner": "spec-05-swarm-orchestrator & spec-11-security-red-blue-team",
+      "status": "ACTIVE_ENFORCED",
+      "roi_impact": "Zero Hallucinations \u2022 100% Medical & Hardware Truth Compliance",
+      "health_audit": {
+        "zero_mock_enforced": true,
+        "compliance_pct": 100.0,
+        "pass_rate_pct": 100.0
+      },
+      "action": "Automatic fail for any simulated or fake data; require live hardware stream or display empty state."
+    }
+  ],
+  "rankings": [
+    {
+      "rank": 1,
+      "architect_id": "spec-10-spatial-grappling-kinematics",
+      "domain": "10_spatial_grappling_kinematics",
+      "elo_score": 2675,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 2,
+      "architect_id": "spec-00-core-infrastructure",
+      "domain": "00_core_infrastructure",
+      "elo_score": 1600,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 3,
+      "architect_id": "spec-01-apps-ecosystem",
+      "domain": "01_apps",
+      "elo_score": 1593,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 4,
+      "architect_id": "spec-02-ai-inference-mesh",
+      "domain": "02_ai_models_and_inference",
+      "elo_score": 1586,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 5,
+      "architect_id": "spec-03-biometrics-dsp",
+      "domain": "03_biometrics_and_telemetry",
+      "elo_score": 1579,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 6,
+      "architect_id": "spec-04-data-memory-sync",
+      "domain": "04_data_and_memory",
+      "elo_score": 1572,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 7,
+      "architect_id": "spec-05-swarm-orchestrator",
+      "domain": "05_agents_and_swarms",
+      "elo_score": 1565,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 8,
+      "architect_id": "spec-06-tooling-healing",
+      "domain": "06_scripts_and_tooling",
+      "elo_score": 1558,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 9,
+      "architect_id": "spec-07-docs-architecture",
+      "domain": "07_docs_and_architecture",
+      "elo_score": 1551,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 10,
+      "architect_id": "spec-08-business-commerce",
+      "domain": "08_business_and_commerce",
+      "elo_score": 1544,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 11,
+      "architect_id": "spec-09-app-store-production",
+      "domain": "09_app_store_and_release",
+      "elo_score": 1537,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 12,
+      "architect_id": "spec-11-security-red-blue-team",
+      "domain": "11_security_and_governance",
+      "elo_score": 1523,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    },
+    {
+      "rank": 13,
+      "architect_id": "spec-12-continuous-lora-evolution",
+      "domain": "12_continuous_lora_evolution",
+      "elo_score": 1516,
+      "zero_mock_compliance_pct": 100.0,
+      "status": "GRADUATED_WRITE_AUTHORIZED"
+    }
+  ],
+  "model_rankings": {
+    "hermes-3-llama-3.1-8b": {
+      "model_id": "hermes-3-llama-3.1-8b",
+      "overall_elo": 2847.35,
+      "last_domain": "architectural_consensus",
+      "last_delta": 9.98,
+      "last_updated": "2026-08-28T19:33:24Z"
+    },
+    "gemini-3.7-flash": {
+      "model_id": "gemini-3.7-flash",
+      "overall_elo": 2690.02,
+      "last_domain": "architectural_consensus",
+      "last_delta": -9.98,
+      "last_updated": "2026-08-28T19:33:24Z"
+    },
+    "qwen-2.5-coder-32b": {
+      "model_id": "qwen-2.5-coder-32b",
+      "overall_elo": 2552.39,
+      "last_domain": "code_generation",
+      "last_delta": 23.29,
+      "last_updated": "2026-08-28T19:33:20Z"
+    },
+    "exo-llama-3.1-70b-abliterated": {
+      "model_id": "exo-llama-3.1-70b-abliterated",
+      "overall_elo": 2524.31,
+      "last_domain": "security_red_blue",
+      "last_delta": 24.31,
+      "last_updated": "2026-08-28T19:33:21Z"
+    },
+    "gpt-oss-120b": {
+      "model_id": "gpt-oss-120b",
+      "overall_elo": 3037.68,
+      "last_domain": "biometrics_dsp",
+      "last_delta": 4.09,
+      "last_updated": "2026-08-28T19:33:17Z"
+    },
+    "petals-llama-3-1-70b": {
+      "model_id": "petals-llama-3-1-70b",
+      "overall_elo": 3004.72,
+      "last_domain": "security_red_blue",
+      "last_delta": 4.83,
+      "last_updated": "2026-08-28T19:33:17Z"
+    },
+    "model_worker_0": {
+      "model_id": "model_worker_0",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_2": {
+      "model_id": "model_worker_2",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_3": {
+      "model_id": "model_worker_3",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_1": {
+      "model_id": "model_worker_1",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_5": {
+      "model_id": "model_worker_5",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "model_worker_4": {
+      "model_id": "model_worker_4",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_7": {
+      "model_id": "model_worker_7",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "model_worker_8": {
+      "model_id": "model_worker_8",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_6": {
+      "model_id": "model_worker_6",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_9": {
+      "model_id": "model_worker_9",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_10": {
+      "model_id": "model_worker_10",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_11": {
+      "model_id": "model_worker_11",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_14": {
+      "model_id": "model_worker_14",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_12": {
+      "model_id": "model_worker_12",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_16": {
+      "model_id": "model_worker_16",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "model_worker_17": {
+      "model_id": "model_worker_17",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_18": {
+      "model_id": "model_worker_18",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_19": {
+      "model_id": "model_worker_19",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_13": {
+      "model_id": "model_worker_13",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_15": {
+      "model_id": "model_worker_15",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_20": {
+      "model_id": "model_worker_20",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "model_worker_22": {
+      "model_id": "model_worker_22",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_24": {
+      "model_id": "model_worker_24",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "model_worker_23": {
+      "model_id": "model_worker_23",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "model_worker_21": {
+      "model_id": "model_worker_21",
+      "overall_elo": 2314.0,
+      "last_domain": "code_generation",
+      "last_delta": 5.0,
+      "last_updated": "2026-08-28T19:33:09Z"
+    },
+    "llama-cpp-mistral-nemo-12b": {
+      "model_id": "llama-cpp-mistral-nemo-12b",
+      "overall_elo": 2509.67,
+      "last_domain": "code_generation",
+      "last_delta": 24.81,
+      "last_updated": "2026-08-28T19:33:15Z"
+    },
+    "llama-cpp-gemma-2-9b": {
+      "model_id": "llama-cpp-gemma-2-9b",
+      "overall_elo": 2466.27,
+      "last_domain": "code_generation",
+      "last_delta": 26.14,
+      "last_updated": "2026-08-28T19:33:14Z"
+    },
+    "proc_model_0": {
+      "model_id": "proc_model_0",
+      "overall_elo": 2070.0,
+      "last_domain": "storage_memory",
+      "last_delta": 10.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "proc_model_5": {
+      "model_id": "proc_model_5",
+      "overall_elo": 2070.0,
+      "last_domain": "storage_memory",
+      "last_delta": 10.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "proc_model_4": {
+      "model_id": "proc_model_4",
+      "overall_elo": 2070.0,
+      "last_domain": "storage_memory",
+      "last_delta": 10.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "proc_model_1": {
+      "model_id": "proc_model_1",
+      "overall_elo": 2070.0,
+      "last_domain": "storage_memory",
+      "last_delta": 10.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "proc_model_3": {
+      "model_id": "proc_model_3",
+      "overall_elo": 2070.0,
+      "last_domain": "storage_memory",
+      "last_delta": 10.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "proc_model_2": {
+      "model_id": "proc_model_2",
+      "overall_elo": 2070.0,
+      "last_domain": "storage_memory",
+      "last_delta": 10.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "recovery_model": {
+      "model_id": "recovery_model",
+      "overall_elo": 2232.0,
+      "last_domain": "architectural_consensus",
+      "last_delta": 32.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "qwen-coder-32b": {
+      "model_id": "qwen-coder-32b",
+      "overall_elo": 2416.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:10Z"
+    },
+    "stress_model_t1": {
+      "model_id": "stress_model_t1",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t0": {
+      "model_id": "stress_model_t0",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t3": {
+      "model_id": "stress_model_t3",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t2": {
+      "model_id": "stress_model_t2",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t7": {
+      "model_id": "stress_model_t7",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t6": {
+      "model_id": "stress_model_t6",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t5": {
+      "model_id": "stress_model_t5",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t8": {
+      "model_id": "stress_model_t8",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t4": {
+      "model_id": "stress_model_t4",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t12": {
+      "model_id": "stress_model_t12",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t10": {
+      "model_id": "stress_model_t10",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t9": {
+      "model_id": "stress_model_t9",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t13": {
+      "model_id": "stress_model_t13",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t14": {
+      "model_id": "stress_model_t14",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t11": {
+      "model_id": "stress_model_t11",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t16": {
+      "model_id": "stress_model_t16",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t15": {
+      "model_id": "stress_model_t15",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t17": {
+      "model_id": "stress_model_t17",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t20": {
+      "model_id": "stress_model_t20",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t23": {
+      "model_id": "stress_model_t23",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t24": {
+      "model_id": "stress_model_t24",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t22": {
+      "model_id": "stress_model_t22",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t21": {
+      "model_id": "stress_model_t21",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t18": {
+      "model_id": "stress_model_t18",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t19": {
+      "model_id": "stress_model_t19",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t25": {
+      "model_id": "stress_model_t25",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t26": {
+      "model_id": "stress_model_t26",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t27": {
+      "model_id": "stress_model_t27",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t28": {
+      "model_id": "stress_model_t28",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t29": {
+      "model_id": "stress_model_t29",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t30": {
+      "model_id": "stress_model_t30",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t31": {
+      "model_id": "stress_model_t31",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t33": {
+      "model_id": "stress_model_t33",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t34": {
+      "model_id": "stress_model_t34",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t35": {
+      "model_id": "stress_model_t35",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t36": {
+      "model_id": "stress_model_t36",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t32": {
+      "model_id": "stress_model_t32",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t37": {
+      "model_id": "stress_model_t37",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t43": {
+      "model_id": "stress_model_t43",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t42": {
+      "model_id": "stress_model_t42",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t38": {
+      "model_id": "stress_model_t38",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t40": {
+      "model_id": "stress_model_t40",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t39": {
+      "model_id": "stress_model_t39",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t44": {
+      "model_id": "stress_model_t44",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t41": {
+      "model_id": "stress_model_t41",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t45": {
+      "model_id": "stress_model_t45",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t47": {
+      "model_id": "stress_model_t47",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t46": {
+      "model_id": "stress_model_t46",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t49": {
+      "model_id": "stress_model_t49",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "stress_model_t48": {
+      "model_id": "stress_model_t48",
+      "overall_elo": 2034.0,
+      "last_domain": "code_generation",
+      "last_delta": 16.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "writer_model_0": {
+      "model_id": "writer_model_0",
+      "overall_elo": 2219.0,
+      "last_domain": "general_reasoning",
+      "last_delta": 19.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "writer_model_3": {
+      "model_id": "writer_model_3",
+      "overall_elo": 2219.0,
+      "last_domain": "general_reasoning",
+      "last_delta": 19.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "writer_model_1": {
+      "model_id": "writer_model_1",
+      "overall_elo": 2219.0,
+      "last_domain": "general_reasoning",
+      "last_delta": 19.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "writer_model_2": {
+      "model_id": "writer_model_2",
+      "overall_elo": 2219.0,
+      "last_domain": "general_reasoning",
+      "last_delta": 19.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "writer_model_4": {
+      "model_id": "writer_model_4",
+      "overall_elo": 2219.0,
+      "last_domain": "general_reasoning",
+      "last_delta": 19.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "writer_model_5": {
+      "model_id": "writer_model_5",
+      "overall_elo": 2219.0,
+      "last_domain": "general_reasoning",
+      "last_delta": 19.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "writer_model_6": {
+      "model_id": "writer_model_6",
+      "overall_elo": 2219.0,
+      "last_domain": "general_reasoning",
+      "last_delta": 19.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "writer_model_7": {
+      "model_id": "writer_model_7",
+      "overall_elo": 2219.0,
+      "last_domain": "general_reasoning",
+      "last_delta": 19.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "writer_model_8": {
+      "model_id": "writer_model_8",
+      "overall_elo": 2219.0,
+      "last_domain": "general_reasoning",
+      "last_delta": 19.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "writer_model_9": {
+      "model_id": "writer_model_9",
+      "overall_elo": 2219.0,
+      "last_domain": "general_reasoning",
+      "last_delta": 19.0,
+      "last_updated": "2026-08-28T19:33:11Z"
+    },
+    "accelerate-command-r-plus-104b": {
+      "model_id": "accelerate-command-r-plus-104b",
+      "overall_elo": 2671.79,
+      "last_domain": "biometrics_dsp",
+      "last_delta": 18.12,
+      "last_updated": "2026-08-28T19:33:14Z"
+    }
+  }
+}

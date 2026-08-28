@@ -1,0 +1,407 @@
+version: '3.8'
+
+# ==============================================================================
+# LAUBURU DISTRIBUTED FILE SYSTEM (DFS) — 3-NODE RAFT HIGH AVAILABILITY CLUSTER
+# Target Mesh: 7-Node Tailscale WireGuard Overlay (100.x.y.z)
+# Quorum: 2/3 Masters Required (100.101.39.98, 100.119.199.76, 100.103.212.21)
+# Storage: 1.701 TB Additive Pool Across 4 Core Nodes (Replication: 000)
+# Derived gRPC Offset Ports: Master 19333, Filer 18888, Volume 18080
+# ==============================================================================
+
+x-seaweed-defaults: &seaweed-defaults
+  image: chrislusf/seaweedfs:latest
+  restart: unless-stopped
+  network_mode: "host"
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "20m"
+      max-file: "3"
+
+services:
+  # ============================================================================
+  # MASTER NODE 1: LINUX HEAD NODE (100.101.39.98) — RAFT PEER 1
+  # ============================================================================
+  dfs_master_node1:
+    <<: *seaweed-defaults
+    container_name: lauburu_dfs_master_node1
+    hostname: linux-head-dfs-master
+    environment:
+      - WEED_MASTER_PORT=9333
+      - WEED_MASTER_PORT_GRPC=19333
+      - WEED_MASTER_PEERS=100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333
+      - WEED_MASTER_ELECTIONTIMEOUT=2s
+      - WEED_MASTER_HEARTBEATINTERVAL=200ms
+    volumes:
+      - /mnt/ssd_1tb/dfs_master:/data/dfs_master:rw
+    command: >
+      weed master
+      -ip=100.101.39.98
+      -ip.bind=0.0.0.0
+      -port=9333
+      -port.grpc=19333
+      -mdir=/data/dfs_master
+      -volumeSizeLimitMB=1024
+      -defaultReplication=000
+      -peers=100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333
+      -electionTimeout=2s
+      -heartbeatInterval=200ms
+      -telemetry=false
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "dfs-master"
+      com.lauburu.dfs.node: "Linux_Head_Node"
+      com.lauburu.dfs.raft_peer: "1"
+      com.lauburu.dfs.ip: "100.101.39.98"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:9333/dir/status || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ============================================================================
+  # MASTER NODE 2: MAC MINI HOST (100.119.199.76) — RAFT PEER 2
+  # ============================================================================
+  dfs_master_node2:
+    <<: *seaweed-defaults
+    container_name: lauburu_dfs_master_node2
+    hostname: mac-mini-dfs-master
+    environment:
+      - WEED_MASTER_PORT=9333
+      - WEED_MASTER_PORT_GRPC=19333
+      - WEED_MASTER_PEERS=100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333
+      - WEED_MASTER_ELECTIONTIMEOUT=2s
+      - WEED_MASTER_HEARTBEATINTERVAL=200ms
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data/dfs_master:/data/dfs_master:rw
+    command: >
+      weed master
+      -ip=100.119.199.76
+      -ip.bind=0.0.0.0
+      -port=9333
+      -port.grpc=19333
+      -mdir=/data/dfs_master
+      -volumeSizeLimitMB=1024
+      -defaultReplication=000
+      -peers=100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333
+      -electionTimeout=2s
+      -heartbeatInterval=200ms
+      -telemetry=false
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "dfs-master"
+      com.lauburu.dfs.node: "Mac_Node"
+      com.lauburu.dfs.raft_peer: "2"
+      com.lauburu.dfs.ip: "100.119.199.76"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:9333/dir/status || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ============================================================================
+  # MASTER NODE 3: MACBOOK PRO VAULT (100.103.212.21) — RAFT PEER 3
+  # ============================================================================
+  dfs_master_node3:
+    <<: *seaweed-defaults
+    container_name: lauburu_dfs_master_node3
+    hostname: macbook-vault-dfs-master
+    environment:
+      - WEED_MASTER_PORT=9333
+      - WEED_MASTER_PORT_GRPC=19333
+      - WEED_MASTER_PEERS=100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333
+      - WEED_MASTER_ELECTIONTIMEOUT=2s
+      - WEED_MASTER_HEARTBEATINTERVAL=200ms
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data/dfs_master:/data/dfs_master:rw
+    command: >
+      weed master
+      -ip=100.103.212.21
+      -ip.bind=0.0.0.0
+      -port=9333
+      -port.grpc=19333
+      -mdir=/data/dfs_master
+      -volumeSizeLimitMB=1024
+      -defaultReplication=000
+      -peers=100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333
+      -electionTimeout=2s
+      -heartbeatInterval=200ms
+      -telemetry=false
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "dfs-master"
+      com.lauburu.dfs.node: "MacBook_Pro"
+      com.lauburu.dfs.raft_peer: "3"
+      com.lauburu.dfs.ip: "100.103.212.21"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:9333/dir/status || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ============================================================================
+  # LINUX HEAD NODE: DFS FILER (100.101.39.98)
+  # ============================================================================
+  dfs_filer_node1:
+    <<: *seaweed-defaults
+    container_name: lauburu_dfs_filer_node1
+    hostname: linux-head-dfs-filer
+    depends_on:
+      - dfs_master_node1
+    volumes:
+      - /mnt/ssd_1tb/dfs_filer:/data/dfs_filer:rw
+    command: >
+      weed filer
+      -ip=100.101.39.98
+      -ip.bind=0.0.0.0
+      -port=8888
+      -port.grpc=18888
+      -master=100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333
+      -defaultReplicaPlacement=000
+      -defaultStoreDir=/data/dfs_filer
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "dfs-filer"
+      com.lauburu.dfs.node: "Linux_Head_Node"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8888/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ============================================================================
+  # VOLUME SERVER 1: LINUX HEAD NODE (848 GB NVMe)
+  # ============================================================================
+  dfs_volume_linux:
+    <<: *seaweed-defaults
+    container_name: lauburu_dfs_volume_linux
+    hostname: linux-head-dfs-volume
+    depends_on:
+      - dfs_master_node1
+    volumes:
+      - /mnt/ssd_1tb/dfs_bricks:/data/dfs_bricks:rw
+    command: >
+      weed volume
+      -ip=100.101.39.98
+      -ip.bind=0.0.0.0
+      -port=8080
+      -port.grpc=18080
+      -dir=/data/dfs_bricks
+      -max=50
+      -minFreeSpacePercent=5
+      -dataCenter=WiFi
+      -master=100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333
+      -publicUrl=100.101.39.98:8080
+    mem_limit: 128m
+    memswap_limit: 128m
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '1.0'
+        reservations:
+          memory: 32M
+    labels:
+      com.lauburu.dfs.service: "volume-brick"
+      com.lauburu.dfs.node: "Linux_Head_Node"
+      com.lauburu.dfs.capacity_gb: "848"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ============================================================================
+  # VOLUME SERVER 2: M4 MAC MINI HOST (368 GB NVMe)
+  # ============================================================================
+  dfs_volume_mac_host:
+    <<: *seaweed-defaults
+    container_name: lauburu_dfs_volume_mac_host
+    hostname: mac-host-dfs-volume
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data/dfs_bricks:/data/dfs_bricks:rw
+    command: >
+      weed volume
+      -ip=100.119.199.76
+      -ip.bind=0.0.0.0
+      -port=8080
+      -port.grpc=18080
+      -dir=/data/dfs_bricks
+      -max=25
+      -minFreeSpacePercent=5
+      -dataCenter=Thunderbolt
+      -master=100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333
+      -publicUrl=100.119.199.76:8080
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "volume-brick"
+      com.lauburu.dfs.node: "Mac_Node"
+      com.lauburu.dfs.capacity_gb: "368"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ============================================================================
+  # VOLUME SERVER 3: MACBOOK PRO VAULT (285 GB SSD)
+  # ============================================================================
+  dfs_volume_macbook_vault:
+    <<: *seaweed-defaults
+    container_name: lauburu_dfs_volume_macbook_vault
+    hostname: macbook-vault-dfs-volume
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data/dfs_bricks:/data/dfs_bricks:rw
+    command: >
+      weed volume
+      -ip=100.103.212.21
+      -ip.bind=0.0.0.0
+      -port=8080
+      -port.grpc=18080
+      -dir=/data/dfs_bricks
+      -max=20
+      -minFreeSpacePercent=5
+      -dataCenter=Thunderbolt
+      -master=100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333
+      -publicUrl=100.103.212.21:8080
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "volume-brick"
+      com.lauburu.dfs.node: "MacBook_Pro"
+      com.lauburu.dfs.capacity_gb: "285"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ============================================================================
+  # VOLUME SERVER 4: MAC MINI COMPUTE (200 GB NVMe)
+  # ============================================================================
+  dfs_volume_mac_mini:
+    <<: *seaweed-defaults
+    container_name: lauburu_dfs_volume_mac_mini
+    hostname: mac-mini-dfs-volume
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data/dfs_bricks:/data/dfs_bricks:rw
+    command: >
+      weed volume
+      -ip=100.93.158.96
+      -ip.bind=0.0.0.0
+      -port=8080
+      -port.grpc=18080
+      -dir=/data/dfs_bricks
+      -max=15
+      -minFreeSpacePercent=5
+      -dataCenter=WiFi
+      -master=100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333
+      -publicUrl=100.93.158.96:8080
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "volume-brick"
+      com.lauburu.dfs.node: "Mac_Mini"
+      com.lauburu.dfs.capacity_gb: "200"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ============================================================================
+  # SAMBA SMB3 NAS GATEWAY (Linux Head Node)
+  # ============================================================================
+  dfs_samba_gateway:
+    image: dperson/samba:latest
+    container_name: lauburu_samba_gateway
+    hostname: lauburu-samba-gateway
+    restart: unless-stopped
+    network_mode: "host"
+    environment:
+      - TZ=Australia/Sydney
+      - WORKGROUP=WORKGROUP
+      - SERVERSTRING=Lauburu 1.701TB Unified DFS NAS
+      - NMBD=true
+    volumes:
+      - /mnt/dfs_unified:/mnt/nas:rw
+      - /Volumes/Lauburu-Monorepo/smb_pool_config.conf:/etc/samba/smb.conf:ro
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "samba-smb3-gateway"
+      com.lauburu.dfs.node: "Linux_Head_Node"
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 445 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3

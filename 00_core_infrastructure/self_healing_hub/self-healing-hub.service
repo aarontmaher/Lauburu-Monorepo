@@ -1,0 +1,22 @@
+[Unit]
+Description=Lauburu Self-Healing Swarm Hub
+After=network-online.target tailscaled.service docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Update the User and Group to your Linux username
+User=root
+Group=root
+# Update this path to where you cloned the self_healing_hub repository
+WorkingDirectory=/opt/self_healing_hub
+ExecStart=/bin/bash /opt/self_healing_hub/start_hub_headless.sh
+
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=self-healing-hub
+
+[Install]
+WantedBy=multi-user.target

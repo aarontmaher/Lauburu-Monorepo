@@ -1,0 +1,16 @@
+# 06-ios-control-queue — Control/queue tab summary if available.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Control"
+    optional: true
+- takeScreenshot: "06-ios-control"
+- tapOn:
+    text: "Refresh"
+    optional: true
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: "06-ios-control-after-refresh"
+- assertVisible:
+    text: "Queue"
+    optional: true

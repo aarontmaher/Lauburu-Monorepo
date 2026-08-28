@@ -1,0 +1,54 @@
+version: '3.8'
+
+# ==============================================================================
+# LAUBURU HIGH-PERFORMANCE SAMBA (SMB3) GATEWAY WITH APPLE VFS FRUIT
+# Deployed on Linux Head Node (100.101.39.98 / 192.168.8.224)
+# Docker MCP Managed & 75% RAM Ceiling Compliant (Hard 512MB Limit)
+# ==============================================================================
+
+services:
+  samba_nas_gateway:
+    image: dperson/samba:latest
+    container_name: samba_nas_gateway
+    hostname: lauburu-samba-gateway
+    environment:
+      - TZ=Australia/Sydney
+      - WORKGROUP=WORKGROUP
+      - SERVERSTRING=Lauburu Core Storage Mesh
+      - NMBD=true
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data:/data:rw
+      - /Volumes/Lauburu-Monorepo/smb_pool_config.conf:/etc/samba/smb.conf:ro
+    ports:
+      - "100.101.39.98:445:445/tcp"
+      - "100.101.39.98:139:139/tcp"
+      - "192.168.8.224:445:445/tcp"
+      - "192.168.8.224:139:139/tcp"
+    mem_limit: 512m
+    memswap_limit: 512m
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '2.0'
+        reservations:
+          memory: 128M
+    labels:
+      com.lauburu.nas.service: "samba-smb3"
+      com.lauburu.nas.tier: "core_wall_powered"
+      com.lauburu.nas.mcp_managed: "true"
+      com.lauburu.nas.role: "nas-gateway"
+      com.lauburu.nas.node: "Linux_Head_Node"
+      com.lauburu.nas.layer: "3"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 445 || smbclient -L //127.0.0.1 -N || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    name: lauburu_nas_mesh_net
+    driver: bridge

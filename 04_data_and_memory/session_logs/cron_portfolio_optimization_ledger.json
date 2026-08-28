@@ -1,0 +1,98 @@
+{
+  "timestamp": "2026-08-28T16:41:09.514664Z",
+  "total_daemons_ranked": 9,
+  "active_high_roi_daemons": 7,
+  "system_roi_score": 9.81,
+  "roi_leaderboard": [
+    {
+      "id": "cron_001_mesh_healer",
+      "name": "7-Device Mesh Network Healer & Port Watchdog",
+      "interval_sec": 900,
+      "roi_score": 9.99,
+      "priority": "CRITICAL_HIGH_ROI",
+      "status": "ACTIVE",
+      "total_runs": 1112,
+      "last_elapsed_sec": 0.0
+    },
+    {
+      "id": "cron_002_battery_governor",
+      "name": "Mobile Edge Battery & Thermal Governor",
+      "interval_sec": 600,
+      "roi_score": 9.92,
+      "priority": "CRITICAL_HIGH_ROI",
+      "status": "ACTIVE",
+      "total_runs": 153,
+      "last_elapsed_sec": 0.26
+    },
+    {
+      "id": "cron_003_nomad_genetic_storage",
+      "name": "Nomad Genetic Storage & Cache Pruner",
+      "interval_sec": 360,
+      "roi_score": 9.86,
+      "priority": "CRITICAL_HIGH_ROI",
+      "status": "ACTIVE",
+      "total_runs": 137,
+      "last_elapsed_sec": 0.0
+    },
+    {
+      "id": "cron_004_nomad_scout_and_debate",
+      "name": "Nomad Open-Source Scout & AI Confidence Gate",
+      "interval_sec": 300,
+      "roi_score": 9.84,
+      "priority": "CRITICAL_HIGH_ROI",
+      "status": "ACTIVE",
+      "total_runs": 140,
+      "last_elapsed_sec": 0.038
+    },
+    {
+      "id": "cron_009_cloud_api_quota_manager",
+      "name": "Cloud API Quota Manager & Continuous LoRA Distillation",
+      "interval_sec": 120,
+      "roi_score": 9.81,
+      "priority": "CRITICAL_HIGH_ROI",
+      "status": "ACTIVE",
+      "total_runs": 81,
+      "last_elapsed_sec": 0.156
+    },
+    {
+      "id": "cron_007_genetic_moe_router",
+      "name": "Genetic MoE Fitness & Token Efficiency Evaluator",
+      "interval_sec": 7200,
+      "roi_score": 9.73,
+      "priority": "CRITICAL_HIGH_ROI",
+      "status": "ACTIVE",
+      "total_runs": 22,
+      "last_elapsed_sec": 0.022
+    },
+    {
+      "id": "cron_005_cloudflare_watchdog",
+      "name": "Multi-WAN Bond & Cloudflare Tunnel Watchdog",
+      "interval_sec": 300,
+      "roi_score": 9.49,
+      "priority": "OPTIMIZED_CADENCE",
+      "status": "ACTIVE",
+      "total_runs": 137,
+      "last_elapsed_sec": 16.479
+    },
+    {
+      "id": "cron_006_swarm_truth_audit",
+      "name": "Swarm Truth Audit & Obsidian Anti-Hallucination Scanner",
+      "interval_sec": 300,
+      "roi_score": 8.82,
+      "priority": "DECOMMISSIONED_LOW_ROI",
+      "status": "STOPPED",
+      "total_runs": 144,
+      "last_elapsed_sec": 6.834
+    },
+    {
+      "id": "cron_008_deprecated_raw_scrapers",
+      "name": "Legacy Raw Web Scrapers & Unmounted Mount Poller",
+      "interval_sec": 86400,
+      "roi_score": 5.94,
+      "priority": "DECOMMISSIONED_LOW_ROI",
+      "status": "STOPPED",
+      "total_runs": 2,
+      "last_elapsed_sec": 0.001
+    }
+  ]
+}

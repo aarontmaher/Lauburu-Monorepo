@@ -1,0 +1,230 @@
+{
+  "main": {
+    "id": "b0ffcaf147d1c355",
+    "type": "split",
+    "children": [
+      {
+        "id": "f3d46638afcd2486",
+        "type": "tabs",
+        "dimension": 17.639593908629443,
+        "children": [
+          {
+            "id": "be5de28a74835057",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Welcome.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Welcome"
+            }
+          }
+        ]
+      },
+      {
+        "id": "c9ef9bed1a465d8b",
+        "type": "tabs",
+        "dimension": 82.36040609137056,
+        "children": [
+          {
+            "id": "254e01731c4ef29d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5fc443b63b6b379a",
+    "type": "split",
+    "children": [
+      {
+        "id": "1bcccc71b81be50c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7e3da89e5e23a58a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "781e8f6d0bb23618",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "cf8f100e520299a4",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "02484d4f5009f0b4",
+    "type": "split",
+    "children": [
+      {
+        "id": "883351f620913f5f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "08dce0e5fbb2a323",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Lauburu-Network-Mesh.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "cc02247428b2b805",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Lauburu-Network-Mesh.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "fc65bebcd1a48e08",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "7e5cd5e6f1210276",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "9fcae399095dc5c4",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Lauburu-Network-Mesh.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "254e01731c4ef29d",
+  "lastOpenFiles": [
+    "CUSTOM_AI_SHARDING_DAEMON_PETALS_DHT_SPEC.md",
+    "smolagents_and_smolswarms.md",
+    "LIGHTWEIGHT_WIREGUARD_DERP_MESH_SPEC.md",
+    "SPEEDIFY_MULTIPATH_TUN_TAP_BONDING_ENGINE.md",
+    "LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX.md",
+    "TERMIUS_TUI_UNIFIED_AI_SHARDING_SPEC.md",
+    "storage_system_options.md",
+    "network_overrides.md",
+    "ai-debate.md",
+    "Lauburu-Network-Mesh.md",
+    "docs",
+    "Untitled.base",
+    "Welcome.md",
+    "Untitled.canvas"
+  ]
+}

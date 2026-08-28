@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  hemodynamic-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lauburu_hemodynamic_cloud_server
+    restart: unless-stopped
+    ports:
+      - "8085:8085"
+    volumes:
+      - /mnt/ssd_1tb/lauburu_cloud/sqlite:/app/data/sqlite
+      - /mnt/ssd_1tb/lauburu_cloud/chromadb:/app/data/chromadb
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8085
+      - SQLITE_DB_PATH=/app/data/sqlite/hemodynamic_sessions.db
+      - CHROMADB_DIR=/app/data/chromadb
+      - LOG_LEVEL=INFO
+      - ZERO_PII_HMAC_SECRET=lauburu_hemodynamic_private_key_2026
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8085/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

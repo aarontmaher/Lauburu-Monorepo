@@ -1,0 +1,293 @@
+{
+  "timestamp": "2026-08-21T12:06:23.905204+00:00",
+  "service": "Lauburu Local AI Download & Hardware Sharding Suggestion Engine",
+  "mesh_vram_headroom_gb": 82.8,
+  "recommended_specialist_models_count": 6,
+  "total_monthly_cloud_spend_replaced_usd": 775.0,
+  "supported_inference_engines": [
+    "llama.cpp",
+    "petals",
+    "exo"
+  ],
+  "models": [
+    {
+      "model_id": "qwen2.5_coder_32b_q4km",
+      "name": "Qwen 2.5 Coder 32B Instruct (Q4_K_M)",
+      "primary_domain": "DOM_02_FLUTTER_DART_SYSTEMS",
+      "secondary_domains": [
+        "DOM_07_CPP_SYSTEMS_LLAMA_OPTIMIZATION",
+        "DOM_04_SHOPIFY_ECOMMERCE"
+      ],
+      "archetype": "Apex Code & Architecture Specialist",
+      "supported_inference_engines": [
+        "llama.cpp",
+        "exo"
+      ],
+      "optimal_inference_engine": "llama.cpp",
+      "engine_routing_parameters": {
+        "llama.cpp": {
+          "rpc_nodes": [
+            "layer_2_headless_mac:50052",
+            "layer_3_linux_node:50052"
+          ],
+          "quant": "Q4_K_M",
+          "expected_tps": 32.0
+        },
+        "exo": {
+          "discovery_port": 52415,
+          "partition": "dynamic_memory_weighted",
+          "expected_tps": 26.5
+        }
+      },
+      "hf_repo": "Qwen/Qwen2.5-Coder-32B-Instruct-GGUF",
+      "hf_file": "qwen2.5-coder-32b-instruct-q4_k_m.gguf",
+      "file_size_gb": 19.85,
+      "vram_required_gb": 22.5,
+      "recommended_quant": "Q4_K_M",
+      "recommended_mesh_placement": {
+        "primary": "layer_2_headless_mac (14.0 GB) + layer_3_linux_node (8.5 GB)",
+        "shard_mode": "2-Layer RPC Sharding over 10Gbps TB4 / Gigabit LAN",
+        "standalone_capable_nodes": [
+          "layer_1_mac_host + layer_2_headless_mac"
+        ]
+      },
+      "cloud_spend_replaced_monthly_usd": 150.0,
+      "download_command": "huggingface-cli download Qwen/Qwen2.5-Coder-32B-Instruct-GGUF qwen2.5-coder-32b-instruct-q4_k_m.gguf --local-dir /Volumes/models/gguf/",
+      "local_readiness_score": 98.5
+    },
+    {
+      "model_id": "deepseek_r1_distill_qwen_32b_q4km",
+      "name": "DeepSeek-R1 Distill Qwen 32B (Q4_K_M)",
+      "primary_domain": "DOM_09_AI_GAME_ARENA_REASONING",
+      "secondary_domains": [
+        "DOM_01_BIOMETRICS_PHYSIOLOGY",
+        "DOM_06_BIOINFORMATICS_SCIENCE"
+      ],
+      "archetype": "Deep Deliberative Reasoning & Debate Champion",
+      "supported_inference_engines": [
+        "llama.cpp",
+        "exo"
+      ],
+      "optimal_inference_engine": "llama.cpp",
+      "engine_routing_parameters": {
+        "llama.cpp": {
+          "rpc_nodes": [
+            "layer_3_linux_node:50052",
+            "layer_7_samsung_s20:50052"
+          ],
+          "quant": "Q4_K_M",
+          "expected_tps": 29.0
+        },
+        "exo": {
+          "discovery_port": 52415,
+          "partition": "ring_pipeline",
+          "expected_tps": 24.0
+        }
+      },
+      "hf_repo": "unsloth/DeepSeek-R1-Distill-Qwen-32B-GGUF",
+      "hf_file": "DeepSeek-R1-Distill-Qwen-32B-Q4_K_M.gguf",
+      "file_size_gb": 19.85,
+      "vram_required_gb": 22.0,
+      "recommended_quant": "Q4_K_M",
+      "recommended_mesh_placement": {
+        "primary": "layer_3_linux_node (13.8 GB) + layer_5_samsung_s20 (8.2 GB)",
+        "shard_mode": "Distributed Dual-Node Mesh Sharding",
+        "standalone_capable_nodes": [
+          "layer_2_headless_mac + layer_3_linux_node"
+        ]
+      },
+      "cloud_spend_replaced_monthly_usd": 140.0,
+      "download_command": "huggingface-cli download unsloth/DeepSeek-R1-Distill-Qwen-32B-GGUF DeepSeek-R1-Distill-Qwen-32B-Q4_K_M.gguf --local-dir /Volumes/models/gguf/",
+      "local_readiness_score": 96.0
+    },
+    {
+      "model_id": "qwen2_vl_7b_instruct_q5km",
+      "name": "Qwen2-VL 7B Vision-Language (Q5_K_M)",
+      "primary_domain": "DOM_05_VISION_VLM_TRUTH_AUDIT",
+      "secondary_domains": [
+        "DOM_04_SHOPIFY_ECOMMERCE",
+        "DOM_01_BIOMETRICS_PHYSIOLOGY"
+      ],
+      "archetype": "100% Local Visual Auditor & OCR Specialist",
+      "supported_inference_engines": [
+        "llama.cpp",
+        "exo"
+      ],
+      "optimal_inference_engine": "llama.cpp",
+      "engine_routing_parameters": {
+        "llama.cpp": {
+          "rpc_nodes": [
+            "layer_1_mac_host:50052"
+          ],
+          "quant": "Q5_K_M",
+          "expected_tps": 48.0
+        },
+        "exo": {
+          "discovery_port": 52415,
+          "partition": "standalone_node",
+          "expected_tps": 42.0
+        }
+      },
+      "hf_repo": "Qwen/Qwen2-VL-7B-Instruct-GGUF",
+      "hf_file": "qwen2-vl-7b-instruct-q5_k_m.gguf",
+      "file_size_gb": 5.45,
+      "vram_required_gb": 6.8,
+      "recommended_quant": "Q5_K_M",
+      "recommended_mesh_placement": {
+        "primary": "layer_1_mac_host (Metal GPU) or layer_3_linux_node",
+        "shard_mode": "Single Node Ultra-Low Latency (No Sharding Needed)",
+        "standalone_capable_nodes": [
+          "layer_1_mac_host",
+          "layer_2_headless_mac",
+          "layer_3_linux_node"
+        ]
+      },
+      "cloud_spend_replaced_monthly_usd": 110.0,
+      "download_command": "huggingface-cli download Qwen/Qwen2-VL-7B-Instruct-GGUF qwen2-vl-7b-instruct-q5_k_m.gguf --local-dir /Volumes/models/gguf/",
+      "local_readiness_score": 99.0
+    },
+    {
+      "model_id": "biomistral_7b_q8_0",
+      "name": "BioMistral 7B Medical & Physiology Specialist (Q8_0)",
+      "primary_domain": "DOM_01_BIOMETRICS_PHYSIOLOGY",
+      "secondary_domains": [
+        "DOM_06_BIOINFORMATICS_SCIENCE"
+      ],
+      "archetype": "Cardiovascular & Medical Science Specialist",
+      "supported_inference_engines": [
+        "llama.cpp",
+        "exo"
+      ],
+      "optimal_inference_engine": "llama.cpp",
+      "engine_routing_parameters": {
+        "llama.cpp": {
+          "rpc_nodes": [
+            "layer_7_samsung_s20:50052"
+          ],
+          "quant": "Q8_0",
+          "expected_tps": 35.0
+        },
+        "exo": {
+          "discovery_port": 52415,
+          "partition": "mobile_edge_node",
+          "expected_tps": 30.0
+        }
+      },
+      "hf_repo": "BioMistral/BioMistral-7B-GGUF",
+      "hf_file": "BioMistral-7B.Q8_0.gguf",
+      "file_size_gb": 7.7,
+      "vram_required_gb": 8.5,
+      "recommended_quant": "Q8_0 (High Precision Clinical)",
+      "recommended_mesh_placement": {
+        "primary": "layer_5_samsung_s20 (Router USB ADB) or layer_4_pixel_10_pro",
+        "shard_mode": "Mobile Edge Node Dedicated Ingestion",
+        "standalone_capable_nodes": [
+          "layer_3_linux_node",
+          "layer_5_samsung_s20"
+        ]
+      },
+      "cloud_spend_replaced_monthly_usd": 75.0,
+      "download_command": "huggingface-cli download BioMistral/BioMistral-7B-GGUF BioMistral-7B.Q8_0.gguf --local-dir /Volumes/models/gguf/",
+      "local_readiness_score": 94.0
+    },
+    {
+      "model_id": "llama_3_1_8b_instruct_q5km",
+      "name": "Meta Llama 3.1 8B Instruct (Q5_K_M)",
+      "primary_domain": "DOM_03_DOCKER_MESH_INFRASTRUCTURE",
+      "secondary_domains": [
+        "DOM_08_LORA_FINE_TUNING_DISTILLATION",
+        "DOM_10_SECURITY_INGRESS_GOVERNANCE"
+      ],
+      "archetype": "Fast Infrastructure & Tool Orchestrator",
+      "supported_inference_engines": [
+        "llama.cpp",
+        "exo"
+      ],
+      "optimal_inference_engine": "llama.cpp",
+      "engine_routing_parameters": {
+        "llama.cpp": {
+          "rpc_nodes": [
+            "layer_6_pixel_10_pro:50052",
+            "layer_7_samsung_s20:50052"
+          ],
+          "quant": "Q5_K_M",
+          "expected_tps": 45.0
+        },
+        "exo": {
+          "discovery_port": 52415,
+          "partition": "edge_tpu_accelerated",
+          "expected_tps": 38.0
+        }
+      },
+      "hf_repo": "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF",
+      "hf_file": "Meta-Llama-3.1-8B-Instruct-Q5_K_M.gguf",
+      "file_size_gb": 5.73,
+      "vram_required_gb": 6.9,
+      "recommended_quant": "Q5_K_M",
+      "recommended_mesh_placement": {
+        "primary": "layer_4_pixel_10_pro (Tensor G5 Edge TPU) or layer_5_samsung_s20",
+        "shard_mode": "Mobile Edge In-Memory Dedicated Execution",
+        "standalone_capable_nodes": [
+          "layer_4_pixel_10_pro",
+          "layer_5_samsung_s20",
+          "layer_3_linux_node"
+        ]
+      },
+      "cloud_spend_replaced_monthly_usd": 80.0,
+      "download_command": "huggingface-cli download bartowski/Meta-Llama-3.1-8B-Instruct-GGUF Meta-Llama-3.1-8B-Instruct-Q5_K_M.gguf --local-dir /Volumes/models/gguf/",
+      "local_readiness_score": 97.5
+    },
+    {
+      "model_id": "deepseek_r1_distill_llama_70b_iq4xs",
+      "name": "DeepSeek-R1 Distill Llama 70B (IQ4_XS)",
+      "primary_domain": "DOM_09_AI_GAME_ARENA_REASONING",
+      "secondary_domains": [
+        "DOM_02_FLUTTER_DART_SYSTEMS",
+        "DOM_07_CPP_SYSTEMS_LLAMA_OPTIMIZATION"
+      ],
+      "archetype": "Apex Sovereign Frontier Model (Full Mesh Distributed)",
+      "supported_inference_engines": [
+        "llama.cpp",
+        "exo",
+        "petals"
+      ],
+      "optimal_inference_engine": "exo",
+      "engine_routing_parameters": {
+        "llama.cpp": {
+          "rpc_nodes": [
+            "layer_2_headless_mac:50052",
+            "layer_3_linux_node:50052",
+            "layer_1_mac_host:50052"
+          ],
+          "quant": "IQ4_XS",
+          "expected_tps": 18.5
+        },
+        "exo": {
+          "discovery_port": 52415,
+          "partition": "ring_3_node_pipeline",
+          "expected_tps": 21.0
+        },
+        "petals": {
+          "dht_bootstrap": "100.101.39.98:31337",
+          "dht_prefix": "lauburu-petals-mesh-v1",
+          "expected_tps": 14.0
+        }
+      },
+      "hf_repo": "unsloth/DeepSeek-R1-Distill-Llama-70B-GGUF",
+      "hf_file": "DeepSeek-R1-Distill-Llama-70B-IQ4_XS.gguf",
+      "file_size_gb": 35.8,
+      "vram_required_gb": 39.5,
+      "recommended_quant": "IQ4_XS (Optimized 70B Quantization)",
+      "recommended_mesh_placement": {
+        "primary": "layer_2_headless_mac (14.0 GB) + layer_3_linux_node (13.8 GB) + layer_1_mac_host (11.7 GB)",
+        "shard_mode": "3-Node Dynamic RPC Sharding across 82.8 GB Mesh Pool",
+        "standalone_capable_nodes": [
+          "Distributed Pool Only"
+        ]
+      },
+      "cloud_spend_replaced_monthly_usd": 220.0,
+      "download_command": "huggingface-cli download unsloth/DeepSeek-R1-Distill-Llama-70B-GGUF DeepSeek-R1-Distill-Llama-70B-IQ4_XS.gguf --local-dir /Volumes/models/gguf/",
+      "local_readiness_score": 92.0
+    }
+  ]
+}

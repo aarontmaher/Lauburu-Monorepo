@@ -1,0 +1,95 @@
+{
+  "role": "RootWebArea",
+  "name": "Lauburu Sovereign Mesh Hub",
+  "uid": "uid_0001",
+  "bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 1920,
+    "height": 1080
+  },
+  "children": [
+    {
+      "role": "header",
+      "name": "Top Navigation Bar",
+      "uid": "uid_0002",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 64
+      },
+      "children": [
+        {
+          "role": "heading",
+          "name": "Lauburu Sovereign Mesh",
+          "level": 1,
+          "uid": "uid_0003",
+          "bounds": {
+            "x": 24,
+            "y": 16,
+            "width": 300,
+            "height": 32
+          }
+        },
+        {
+          "role": "button",
+          "name": "Restart Tailscale VPN",
+          "uid": "uid_0004",
+          "bounds": {
+            "x": 1500,
+            "y": 16,
+            "width": 180,
+            "height": 36
+          }
+        },
+        {
+          "role": "button",
+          "name": "Initiate Tri-Orchestrator Debate",
+          "uid": "uid_0005",
+          "bounds": {
+            "x": 1700,
+            "y": 16,
+            "width": 200,
+            "height": 36
+          }
+        }
+      ]
+    },
+    {
+      "role": "main",
+      "name": "Dashboard Live Viewport",
+      "uid": "uid_0006",
+      "bounds": {
+        "x": 0,
+        "y": 64,
+        "width": 1920,
+        "height": 1016
+      },
+      "children": [
+        {
+          "role": "region",
+          "name": "Mesh Node Status Grid",
+          "uid": "uid_0007",
+          "bounds": {
+            "x": 32,
+            "y": 96,
+            "width": 1200,
+            "height": 800
+          }
+        },
+        {
+          "role": "region",
+          "name": "Real-Time Biometrics Telemetry",
+          "uid": "uid_0008",
+          "bounds": {
+            "x": 1264,
+            "y": 96,
+            "width": 624,
+            "height": 800
+          }
+        }
+      ]
+    }
+  ]
+}

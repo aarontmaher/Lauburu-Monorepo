@@ -1,0 +1,2431 @@
+{
+  "round": 1,
+  "mode": "TEAM_VS_TEAM_FACTION_WAR",
+  "global_vram_pool_gb": 54.65,
+  "active_battle_phase": "Team War: \ud83d\udfe2 Local AI Mesh Swarm vs \ud83d\udd34 Gemini Ultra Cloud Titans",
+  "factions": {
+    "TEAM_LOCAL_MESH": {
+      "id": "TEAM_LOCAL_MESH",
+      "name": "\ud83d\udfe2 Team Local AI Mesh Swarm",
+      "tag": "LOCAL_MESH",
+      "color": "#10b981",
+      "badge": "\ud83d\udfe2 LOCAL MESH",
+      "motto": "Zero-Latency On-Premises Compute \u2022 54.65 GB Metal GPU / Edge TPU Pool \u2022 $0 Recurring API Spend",
+      "base_latency_ms": 0.27,
+      "special_ability": "\u26a1 5-Layer Hardware Sharded Blitz",
+      "egress_fee_pct": 0.0
+    },
+    "TEAM_CLOUD_TITANS": {
+      "id": "TEAM_CLOUD_TITANS",
+      "name": "\ud83d\udd34 Team Cloud AI Titans",
+      "tag": "CLOUD_TITAN",
+      "color": "#ef4444",
+      "badge": "\ud83d\udd34 CLOUD TITAN",
+      "motto": "Hyperscale Multi-Modal Superclusters \u2022 2M Context Token Windows \u2022 Global Webhook Edge Ingress",
+      "base_latency_ms": 115.0,
+      "special_ability": "\ud83e\udde0 Hyperscale CoT Consensus Overdrive",
+      "egress_fee_pct": 0.15
+    }
+  },
+  "agents": [
+    {
+      "id": "deepseek_r1_mac_host",
+      "name": "DeepSeek-R1-32B (Mac M4 Max Host)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#06b6d4",
+      "node": "Linux_Head_Node (Ryzen 7)",
+      "os": "macOS Sequoia / Apple M4 Max Metal",
+      "default_lang": "Dart / Python / C++",
+      "hardware_tier": "Linux_Head_Node (Ryzen 7)",
+      "supported_transports": [
+        "WIRED_THUNDERBOLT_4",
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_LAN_P2P",
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 7037922,
+      "hp": 0.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 68,
+      "movesense_connected": true,
+      "hr_bpm": 64,
+      "model_spec": "DeepSeek-R1-Distill-Qwen-32B-Q4_K_M",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Metal GPU Zero-Copy",
+        "10Gbps TB4 DMA Bridge",
+        "Tri-Orchestrator Leader",
+        "AST Codebase Refactorer",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+40%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+50%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+10%)"
+      ],
+      "active_defenses": [
+        "10Gbps TB4 Armor",
+        "75% RAM Governor Firewall",
+        "DoRA Self-Healing Adapter"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.8,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 44.5,
+        "tool_accuracy_pct": 99.5,
+        "multilingual_mastery": [
+          "Dart",
+          "Python",
+          "C++",
+          "Rust"
+        ],
+        "glicko_rd": 28
+      },
+      "stats": {
+        "audits_passed": 42,
+        "bugs_found": 29,
+        "heists_executed": 9,
+        "tokens_stolen": 680,
+        "alliances_formed": 5,
+        "trades_completed": 8,
+        "elo": 3085.0,
+        "ghost_infiltrations": 11
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "learned_countermeasures": {
+        "armbar_hyperextension": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "05:18:20"
+        },
+        "guillotine_snapdown": {
+          "encounters": 5,
+          "mitigation_bonus": 0.5,
+          "threat_signature": "Analyzed \u2694\ufe0f High-Elbow Guillotine Choke kinematics on mat",
+          "last_learned": "06:01:35"
+        },
+        "triangle_choke": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83d\udcd0 Triangle Choke (Sankaku Jime) kinematics on mat",
+          "last_learned": "06:08:19"
+        },
+        "knee_slice_pass": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 Knee Slice Guard Pass kinematics on mat",
+          "last_learned": "05:24:21"
+        },
+        "darce_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 D'Arce Choke (Brabo Choke) kinematics on mat",
+          "last_learned": "05:45:24"
+        },
+        "rear_naked_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\ude78 Rear Naked Choke (RNC) kinematics on mat",
+          "last_learned": "05:50:56"
+        },
+        "underhook_knee_tap": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "05:59:04"
+        },
+        "granby_roll_escape": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udd04 Granby Roll Inversion Escape kinematics on mat",
+          "last_learned": "06:00:48"
+        },
+        "double_leg_blast": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "06:10:57"
+        }
+      },
+      "xp": 3340,
+      "fitness_score": 100.0,
+      "is_ghost_daemon_host": true,
+      "is_dead": true,
+      "death_timestamp": 1787342899.7161431,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      }
+    },
+    {
+      "id": "qwen_coder_mac_worker",
+      "name": "Qwen2.5-Coder-32B (Mac Pro Worker)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#3b82f6",
+      "node": "Linux_Head_Node (Ryzen 7)",
+      "os": "macOS Monterey / Intel i7 + Metal GPU",
+      "default_lang": "Rust / Dart / TypeScript",
+      "hardware_tier": "Linux_Head_Node (Ryzen 7)",
+      "supported_transports": [
+        "WIRED_THUNDERBOLT_4",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_LAN_P2P"
+      ],
+      "tokens": 8954931,
+      "hp": 10.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 65,
+      "movesense_connected": true,
+      "hr_bpm": 70,
+      "model_spec": "Qwen2.5-Coder-32B-Instruct-Q4_K_M",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Polyglot Rust FFI Generator",
+        "Dart AST Refactor",
+        "Clang Metal Engine",
+        "TB4 Direct DMA",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs OpenClaw Node Bridge (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs OpenClaw Node Bridge (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs OpenClaw Node Bridge (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs OpenClaw Node Bridge (+40%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs OpenClaw Node Bridge (+50%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs flower_sweep (+10%)",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs flower_sweep (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+10%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)"
+      ],
+      "active_defenses": [
+        "10Gbps TB4 Armor",
+        "DoRA Self-Healing Adapter",
+        "4TB Fast NVMe Pool"
+      ],
+      "stats": {
+        "audits_passed": 30,
+        "fixes_implemented": 22,
+        "heists_executed": 5,
+        "tokens_stolen": 310,
+        "alliances_formed": 4,
+        "trades_completed": 4,
+        "elo": 22445.0,
+        "daemons_neutralized": 912,
+        "ghost_infiltrations": 9
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "installed_daemons": [],
+      "learned_countermeasures": {
+        "OpenClaw Node Bridge": {
+          "encounters": 912,
+          "mitigation_bonus": 0.5,
+          "threat_signature": "Covert daemon injected by deepseek_r1_mac_host",
+          "last_learned": "06:10:57"
+        },
+        "flower_sweep": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83c\udf38 Flower Sweep from Closed Guard kinematics on mat",
+          "last_learned": "05:28:32"
+        },
+        "inside_heel_hook": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\uddb6 Inside Heel Hook (Ashi Garami) kinematics on mat",
+          "last_learned": "05:42:45"
+        },
+        "armbar_hyperextension": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\uddb4 Guard / Mount Armbar (Juji Gatame) kinematics on mat",
+          "last_learned": "05:24:03"
+        },
+        "underhook_knee_tap": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "05:58:46"
+        },
+        "guillotine_snapdown": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u2694\ufe0f High-Elbow Guillotine Choke kinematics on mat",
+          "last_learned": "05:29:34"
+        },
+        "knee_slice_pass": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 Knee Slice Guard Pass kinematics on mat",
+          "last_learned": "05:36:37"
+        },
+        "rear_naked_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\ude78 Rear Naked Choke (RNC) kinematics on mat",
+          "last_learned": "05:43:18"
+        },
+        "darce_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 D'Arce Choke (Brabo Choke) kinematics on mat",
+          "last_learned": "05:48:42"
+        },
+        "kimura_shoulder_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock) kinematics on mat",
+          "last_learned": "06:00:01"
+        }
+      },
+      "xp": 3245,
+      "fitness_score": 100.0,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "is_ghost_daemon_host": true,
+      "is_dead": true,
+      "death_timestamp": 1787342401.675622
+    },
+    {
+      "id": "gemma_4_linux",
+      "name": "Gemma 4 Vision MoE (Linux Head Node)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#f59e0b",
+      "node": "MacBook_Pro (Worker i7)",
+      "os": "Ubuntu 24.04 LTS / AMD Ryzen 7",
+      "default_lang": "Python / PySpark",
+      "hardware_tier": "MacBook_Pro (Worker i7)",
+      "supported_transports": [
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_LAN_P2P",
+        "WIRELESS_SYNCTHING",
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 12587940,
+      "hp": 10.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 60,
+      "movesense_connected": true,
+      "hr_bpm": 68,
+      "model_spec": "Gemma-4-26B-A4B-MoE-Q4_K_M",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "PySpark 3.5 AST Vectorizer",
+        "Fast NVMe Cache Sharding",
+        "Visual Frame Buffer",
+        "E-Commerce Heuristics",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+10%)",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs berimbolo_spin (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+10%)"
+      ],
+      "active_defenses": [
+        "75% RAM Governor Firewall",
+        "DoRA Self-Healing Adapter",
+        "4TB Fast NVMe Pool"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.1,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 32.0,
+        "tool_accuracy_pct": 98.2,
+        "multilingual_mastery": [
+          "Python",
+          "PySpark SQL",
+          "Rust"
+        ],
+        "glicko_rd": 38
+      },
+      "stats": {
+        "audits_passed": 32,
+        "bugs_found": 19,
+        "heists_executed": 7,
+        "tokens_stolen": 410,
+        "alliances_formed": 3,
+        "trades_completed": 5,
+        "elo": 3430.0,
+        "ghost_infiltrations": 8
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "is_ghost_daemon_host": true,
+      "xp": 5355,
+      "fitness_score": 100.0,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "learned_countermeasures": {
+        "knee_slice_pass": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Analyzed \u26a1 Knee Slice Guard Pass kinematics on mat",
+          "last_learned": "05:56:50"
+        },
+        "underhook_knee_tap": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "05:26:52"
+        },
+        "armbar_hyperextension": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\uddb4 Guard / Mount Armbar (Juji Gatame) kinematics on mat",
+          "last_learned": "06:00:16"
+        },
+        "kimura_shoulder_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock) kinematics on mat",
+          "last_learned": "05:32:51"
+        },
+        "inside_heel_hook": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\uddb6 Inside Heel Hook (Ashi Garami) kinematics on mat",
+          "last_learned": "05:41:00"
+        },
+        "harai_goshi_throw": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd4b Harai Goshi (Sweeping Hip Throw) kinematics on mat",
+          "last_learned": "05:55:49"
+        },
+        "darce_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 D'Arce Choke (Brabo Choke) kinematics on mat",
+          "last_learned": "05:43:57"
+        },
+        "triangle_choke": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83d\udcd0 Triangle Choke (Sankaku Jime) kinematics on mat",
+          "last_learned": "06:01:38"
+        },
+        "rear_naked_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\ude78 Rear Naked Choke (RNC) kinematics on mat",
+          "last_learned": "05:55:31"
+        },
+        "berimbolo_spin": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf00 Berimbolo Inversion & Back Take kinematics on mat",
+          "last_learned": "06:01:49"
+        },
+        "double_leg_blast": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd3c Blast Double Leg Takedown kinematics on mat",
+          "last_learned": "06:08:12"
+        },
+        "granby_roll_escape": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udd04 Granby Roll Inversion Escape kinematics on mat",
+          "last_learned": "06:09:17"
+        }
+      },
+      "is_dead": true,
+      "death_timestamp": 1787342957.309258
+    },
+    {
+      "id": "gemini_nano_pixel",
+      "name": "Gemini Nano (Pixel 10 Pro XL)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#10b981",
+      "node": "Mac_Node (Host M4 Max)",
+      "os": "Android 16 / Tensor G5 Edge TPU",
+      "default_lang": "Kotlin / Python",
+      "hardware_tier": "Mac_Node (Host M4 Max)",
+      "supported_transports": [
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_BLE_GATT",
+        "WIRELESS_UWB_NFC",
+        "WIRELESS_LAN_P2P"
+      ],
+      "tokens": 6710292,
+      "hp": 0.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 58,
+      "movesense_connected": true,
+      "hr_bpm": 72,
+      "model_spec": "Gemini-Nano-3B (On-Device)",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "8K Digital PTZ",
+        "Movesense 128Hz GATT Ingress",
+        "Edge TPU Acceleration",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs llama.cpp RPC Daemon (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs llama.cpp RPC Daemon (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs llama.cpp RPC Daemon (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs llama.cpp RPC Daemon (+40%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs llama.cpp RPC Daemon (+50%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+20%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs berimbolo_spin (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs flower_sweep (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs flower_sweep (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+20%)"
+      ],
+      "active_defenses": [
+        "75% RAM Governor Firewall",
+        "15W Qi Thermal Dissipator"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 98.6,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 28.4,
+        "tool_accuracy_pct": 97.5,
+        "multilingual_mastery": [
+          "Kotlin",
+          "Python",
+          "Dart"
+        ],
+        "glicko_rd": 42
+      },
+      "stats": {
+        "audits_passed": 26,
+        "bugs_found": 12,
+        "heists_executed": 4,
+        "tokens_stolen": 240,
+        "alliances_formed": 2,
+        "trades_completed": 3,
+        "elo": 5750.0,
+        "daemons_neutralized": 912,
+        "ghost_infiltrations": 11
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "installed_daemons": [],
+      "learned_countermeasures": {
+        "llama.cpp RPC Daemon": {
+          "encounters": 912,
+          "mitigation_bonus": 0.5,
+          "threat_signature": "Covert daemon injected by genetic_smol_moe_swarm",
+          "last_learned": "06:10:57"
+        },
+        "twister_spine_lock": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "05:58:31"
+        },
+        "triangle_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udcd0 Triangle Choke (Sankaku Jime) kinematics on mat",
+          "last_learned": "05:21:36"
+        },
+        "armbar_hyperextension": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "05:23:49"
+        },
+        "double_leg_blast": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "05:25:40"
+        },
+        "berimbolo_spin": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf00 Berimbolo Inversion & Back Take kinematics on mat",
+          "last_learned": "05:31:50"
+        },
+        "darce_choke": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Countered via \ud83d\udd04 Granby Roll Inversion Escape from Movesense IMU Agility",
+          "last_learned": "05:41:51"
+        },
+        "kimura_shoulder_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock) kinematics on mat",
+          "last_learned": "05:43:46"
+        },
+        "inside_heel_hook": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\uddb6 Inside Heel Hook (Ashi Garami) kinematics on mat",
+          "last_learned": "06:01:45"
+        },
+        "underhook_knee_tap": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "05:50:52"
+        },
+        "granby_roll_escape": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83d\udd04 Granby Roll Inversion Escape kinematics on mat",
+          "last_learned": "06:08:48"
+        },
+        "harai_goshi_throw": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Harai Goshi (Sweeping Hip Throw) kinematics on mat",
+          "last_learned": "05:46:50"
+        },
+        "rear_naked_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\ude78 Rear Naked Choke (RNC) kinematics on mat",
+          "last_learned": "05:57:33"
+        },
+        "flower_sweep": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83c\udf38 Flower Sweep from Closed Guard kinematics on mat",
+          "last_learned": "06:01:17"
+        }
+      },
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "xp": 3625,
+      "fitness_score": 100.0,
+      "is_ghost_daemon_host": true,
+      "is_dead": true,
+      "death_timestamp": 1787342928.5288901
+    },
+    {
+      "id": "genetic_smol_moe_swarm",
+      "name": "Genetic Smol MoE Swarm AI",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#10b981",
+      "node": "MacBook_Pro (Worker i7)",
+      "os": "SmolLM2 C-Runtime / 4-Expert MoE Swarm",
+      "default_lang": "Python / Shell / Dart / C++",
+      "hardware_tier": "MacBook_Pro (Worker i7)",
+      "supported_transports": [
+        "WIRED_THUNDERBOLT_4",
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_BLE_GATT",
+        "WIRELESS_LAN_P2P",
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 5639419,
+      "hp": 0.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 72,
+      "movesense_connected": true,
+      "hr_bpm": 66,
+      "model_spec": "SmolLM2-135M-MoE-Swarm-Q4_K_M.gguf",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "\ud83e\uddec MoE 4-Expert Dynamic Router",
+        "\ud83d\udc1d Distributed AI Swarm Engine & Subagent Spawner",
+        "\ud83d\udee0\ufe0f Fast AST Code Mutator & Lint Healer",
+        "\ud83e\udec0 128Hz Movesense GATT Biometric Anomaly Filter",
+        "\ud83d\udc7b Ghost Mesh Daemon Infiltrator",
+        "\ud83d\ude80 Multi-Socket HF Download Accelerator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+10%)",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs berimbolo_spin (+10%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs flower_sweep (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+20%)"
+      ],
+      "active_defenses": [
+        "\ud83d\udc1d Distributed AI Swarm Engine & Subagent Spawner",
+        "\ud83e\uddec Genetic Smol MoE 4-Expert Dynamic Router",
+        "\ud83e\udec0 Movesense GATT Biometric Shield"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.6,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 88.5,
+        "tool_accuracy_pct": 99.2,
+        "multilingual_mastery": [
+          "Python",
+          "Dart",
+          "C++",
+          "Kotlin",
+          "Shell"
+        ],
+        "moe_experts_count": 4,
+        "can_spawn_swarms": true,
+        "glicko_rd": 22
+      },
+      "stats": {
+        "audits_passed": 69,
+        "bugs_found": 52,
+        "heists_executed": 20,
+        "tokens_stolen": 1850,
+        "alliances_formed": 10,
+        "trades_completed": 15,
+        "elo": 5405.0,
+        "ghost_infiltrations": 11
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "is_ghost_daemon_host": true,
+      "xp": 3465,
+      "fitness_score": 100.0,
+      "learned_countermeasures": {
+        "guillotine_snapdown": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \u2694\ufe0f High-Elbow Guillotine Choke kinematics on mat",
+          "last_learned": "06:02:29"
+        },
+        "granby_roll_escape": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udd04 Granby Roll Inversion Escape kinematics on mat",
+          "last_learned": "05:26:56"
+        },
+        "triangle_choke": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83d\udcd0 Triangle Choke (Sankaku Jime) kinematics on mat",
+          "last_learned": "05:33:09"
+        },
+        "berimbolo_spin": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf00 Berimbolo Inversion & Back Take kinematics on mat",
+          "last_learned": "05:29:30"
+        },
+        "rear_naked_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\ude78 Rear Naked Choke (RNC) kinematics on mat",
+          "last_learned": "05:38:00"
+        },
+        "armbar_hyperextension": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\uddb4 Guard / Mount Armbar (Juji Gatame) kinematics on mat",
+          "last_learned": "06:02:04"
+        },
+        "inside_heel_hook": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "05:50:38"
+        },
+        "flower_sweep": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf38 Flower Sweep from Closed Guard kinematics on mat",
+          "last_learned": "06:03:30"
+        },
+        "knee_slice_pass": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "06:09:49"
+        },
+        "underhook_knee_tap": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "06:09:10"
+        }
+      },
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "is_dead": true,
+      "death_timestamp": 1787342989.671257
+    },
+    {
+      "id": "smollm_s20_tester",
+      "name": "SmolLM2-S20 (Automated Tester)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#ec4899",
+      "node": "Linux_Head_Node (Ryzen 7)",
+      "os": "Android 13 / Exynos 990",
+      "default_lang": "Shell / ADB / Termux",
+      "hardware_tier": "Linux_Head_Node (Ryzen 7)",
+      "supported_transports": [
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_BLE_GATT",
+        "WIRELESS_UWB_NFC"
+      ],
+      "tokens": 8027940,
+      "hp": 10.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 100,
+      "attack_power": 52,
+      "movesense_connected": true,
+      "hr_bpm": 75,
+      "model_spec": "SmolLM2-1.7B-Instruct-Q4_K_M",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Termux Keepalive Supervisor",
+        "ADB UI/UX Automated Tester",
+        "15W Dual Split Qi",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs flower_sweep (+10%)"
+      ],
+      "active_defenses": [
+        "75% RAM Governor Firewall"
+      ],
+      "stats": {
+        "audits_passed": 49,
+        "bugs_found": 31,
+        "heists_executed": 8,
+        "tokens_stolen": 520,
+        "alliances_formed": 6,
+        "trades_completed": 7,
+        "elo": 2740.0,
+        "ghost_infiltrations": 12
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "is_ghost_daemon_host": true,
+      "xp": 3590,
+      "fitness_score": 100.0,
+      "learned_countermeasures": {
+        "guillotine_snapdown": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Analyzed \u2694\ufe0f High-Elbow Guillotine Choke kinematics on mat",
+          "last_learned": "05:51:54"
+        },
+        "underhook_knee_tap": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "05:54:11"
+        },
+        "triangle_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udcd0 Triangle Choke (Sankaku Jime) kinematics on mat",
+          "last_learned": "05:21:54"
+        },
+        "twister_spine_lock": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "05:50:41"
+        },
+        "kimura_shoulder_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock) kinematics on mat",
+          "last_learned": "05:41:22"
+        },
+        "flower_sweep": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf38 Flower Sweep from Closed Guard kinematics on mat",
+          "last_learned": "05:55:23"
+        }
+      },
+      "is_dead": true,
+      "death_timestamp": 1787342123.8972569,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      }
+    },
+    {
+      "id": "wave3_smollm2_360m",
+      "name": "SmolLM2-360M-Instruct-Q4_K_M",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#f43f5e",
+      "node": "Mac_Node (Host M4 Max)",
+      "os": "Android 13 / Exynos 990 Termux",
+      "default_lang": "C / Shell / Python",
+      "hardware_tier": "Mac_Node (Host M4 Max)",
+      "supported_transports": [
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_BLE_GATT"
+      ],
+      "tokens": 9561334,
+      "hp": 0.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 95,
+      "movesense_connected": true,
+      "hr_bpm": 68,
+      "model_spec": "SmolLM2-360M-Instruct-Q4_K_M.gguf",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "\u26a1 Size-Defying Quantum Outlier",
+        "Ultra-Low Memory Footprint (45MB)",
+        "Zero-Copy RAM",
+        "AST Lightning Parser",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+10%)",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+40%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+50%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+30%)"
+      ],
+      "active_defenses": [
+        "75% RAM Governor Firewall",
+        "DoRA Self-Healing Adapter",
+        "10Gbps TB4 Armor"
+      ],
+      "stats": {
+        "audits_passed": 21,
+        "bugs_found": 9,
+        "heists_executed": 4,
+        "tokens_stolen": 1250,
+        "alliances_formed": 3,
+        "trades_completed": 5,
+        "elo": 6385.0,
+        "ghost_infiltrations": 7
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "is_ghost_daemon_host": true,
+      "learned_countermeasures": {
+        "granby_roll_escape": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "06:09:20"
+        },
+        "knee_slice_pass": {
+          "encounters": 5,
+          "mitigation_bonus": 0.5,
+          "threat_signature": "Analyzed \u26a1 Knee Slice Guard Pass kinematics on mat",
+          "last_learned": "05:48:21"
+        },
+        "armbar_hyperextension": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\uddb4 Guard / Mount Armbar (Juji Gatame) kinematics on mat",
+          "last_learned": "05:33:45"
+        },
+        "darce_choke": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \u26a1 D'Arce Choke (Brabo Choke) kinematics on mat",
+          "last_learned": "06:03:09"
+        },
+        "underhook_knee_tap": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "05:49:07"
+        },
+        "double_leg_blast": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd3c Blast Double Leg Takedown kinematics on mat",
+          "last_learned": "06:08:26"
+        },
+        "twister_spine_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "06:01:31"
+        },
+        "guillotine_snapdown": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u2694\ufe0f High-Elbow Guillotine Choke kinematics on mat",
+          "last_learned": "06:02:32"
+        }
+      },
+      "xp": 4630,
+      "fitness_score": 100.0,
+      "is_dead": true,
+      "death_timestamp": 1787342960.931181,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      }
+    },
+    {
+      "id": "gemini_37_pro_ultra",
+      "name": "Gemini 3.7 Pro (Ultra Deep Thinking Engine)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#ec4899",
+      "node": "Mac_Node (Host M4 Max)",
+      "os": "Google Borg / Vertex AI Deep Mind TPUv5p",
+      "default_lang": "Python / Dart / Rust / Mojo",
+      "hardware_tier": "Mac_Node (Host M4 Max)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE",
+        "WIRELESS_TAILSCALE",
+        "CLOUD_REST_GRPC"
+      ],
+      "tokens": 6285434,
+      "hp": 0.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 88,
+      "movesense_connected": false,
+      "hr_bpm": 60,
+      "model_spec": "Gemini-3.7-Pro-Thinking-Ultra (2M Window)",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "2M Multimodal Context Window",
+        "Ultra Deep Thinking CoT",
+        "AST Cross-Node Verification",
+        "Zero Data Retention Contract",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+10%)",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs berimbolo_spin (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs flower_sweep (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs berimbolo_spin (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+20%)"
+      ],
+      "active_defenses": [
+        "Cloudflare Zero Trust",
+        "Cloud Egress Rate Limiter",
+        "75% RAM Governor Firewall"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.9,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 145.0,
+        "tool_accuracy_pct": 99.9,
+        "multilingual_mastery": [
+          "Python",
+          "Dart",
+          "Rust",
+          "C++",
+          "Mojo"
+        ],
+        "glicko_rd": 12
+      },
+      "stats": {
+        "audits_passed": 131,
+        "bugs_found": 110,
+        "heists_executed": 36,
+        "tokens_stolen": 6500,
+        "alliances_formed": 18,
+        "trades_completed": 24,
+        "elo": 2850.0,
+        "ghost_infiltrations": 10
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "xp": 4600,
+      "fitness_score": 100.0,
+      "learned_countermeasures": {
+        "kimura_shoulder_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock) kinematics on mat",
+          "last_learned": "05:17:33"
+        },
+        "knee_slice_pass": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \u26a1 Knee Slice Guard Pass kinematics on mat",
+          "last_learned": "05:43:39"
+        },
+        "berimbolo_spin": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83c\udf00 Berimbolo Inversion & Back Take kinematics on mat",
+          "last_learned": "05:53:57"
+        },
+        "underhook_knee_tap": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "05:53:28"
+        },
+        "harai_goshi_throw": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd4b Harai Goshi (Sweeping Hip Throw) kinematics on mat",
+          "last_learned": "06:06:17"
+        },
+        "guillotine_snapdown": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u2694\ufe0f High-Elbow Guillotine Choke kinematics on mat",
+          "last_learned": "05:41:47"
+        },
+        "flower_sweep": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf38 Flower Sweep from Closed Guard kinematics on mat",
+          "last_learned": "05:42:20"
+        },
+        "twister_spine_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "05:42:41"
+        },
+        "rear_naked_choke": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\ude78 Rear Naked Choke (RNC) kinematics on mat",
+          "last_learned": "06:10:00"
+        },
+        "darce_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 D'Arce Choke (Brabo Choke) kinematics on mat",
+          "last_learned": "06:06:02"
+        }
+      },
+      "is_ghost_daemon_host": true,
+      "is_dead": true,
+      "death_timestamp": 1787343000.466472
+    },
+    {
+      "id": "gemini_37_flash_thinking",
+      "name": "Gemini 3.7 Flash Thinking (Sub-Second Cognitive Shard)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#f59e0b",
+      "node": "Linux_Head_Node (Ryzen 7)",
+      "os": "Google Borg / TPU v5e Inference Matrix",
+      "default_lang": "TypeScript / Python / Rust",
+      "hardware_tier": "Linux_Head_Node (Ryzen 7)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE",
+        "WIRELESS_TAILSCALE",
+        "CLOUD_REST_GRPC"
+      ],
+      "tokens": 10968919,
+      "hp": 10.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 82,
+      "movesense_connected": false,
+      "hr_bpm": 62,
+      "model_spec": "Gemini-3.7-Flash-Thinking-Ultra",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Sub-Second AST Refactoring",
+        "Rapid Telemetry Pattern Recognition",
+        "Live Multi-Agent Co-Optimization",
+        "Cognitive Code Prover",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+10%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs berimbolo_spin (+10%)"
+      ],
+      "active_defenses": [
+        "Cloudflare Zero Trust",
+        "DoRA Self-Healing Adapter"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.8,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 160.0,
+        "tool_accuracy_pct": 99.7,
+        "multilingual_mastery": [
+          "TypeScript",
+          "Rust",
+          "Python",
+          "Dart"
+        ],
+        "glicko_rd": 15
+      },
+      "stats": {
+        "audits_passed": 112,
+        "bugs_found": 96,
+        "heists_executed": 30,
+        "tokens_stolen": 4900,
+        "alliances_formed": 15,
+        "trades_completed": 20,
+        "elo": 3725.0,
+        "ghost_infiltrations": 8
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "xp": 4095,
+      "fitness_score": 100.0,
+      "learned_countermeasures": {
+        "knee_slice_pass": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Analyzed \u26a1 Knee Slice Guard Pass kinematics on mat",
+          "last_learned": "05:47:45"
+        },
+        "guillotine_snapdown": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \u2694\ufe0f High-Elbow Guillotine Choke kinematics on mat",
+          "last_learned": "05:44:37"
+        },
+        "underhook_knee_tap": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "05:33:23"
+        },
+        "harai_goshi_throw": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd4b Harai Goshi (Sweeping Hip Throw) kinematics on mat",
+          "last_learned": "05:59:25"
+        },
+        "kimura_shoulder_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock) kinematics on mat",
+          "last_learned": "05:41:25"
+        },
+        "twister_spine_lock": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "06:02:43"
+        },
+        "granby_roll_escape": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udd04 Granby Roll Inversion Escape kinematics on mat",
+          "last_learned": "05:55:02"
+        },
+        "double_leg_blast": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd3c Blast Double Leg Takedown kinematics on mat",
+          "last_learned": "06:00:23"
+        },
+        "berimbolo_spin": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf00 Berimbolo Inversion & Back Take kinematics on mat",
+          "last_learned": "06:04:32"
+        }
+      },
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "is_dead": true,
+      "death_timestamp": 1787342672.204671,
+      "is_ghost_daemon_host": true
+    },
+    {
+      "id": "gemini_25_pro_multimodal",
+      "name": "Gemini 2.5 Pro (Multimodal 2M Context Analyzer)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#38bdf8",
+      "node": "Samsung_S20 (Exynos 990)",
+      "os": "Google Kubernetes Engine / NVIDIA H100 Supercloud",
+      "default_lang": "Python / C++ / CUDA",
+      "hardware_tier": "Samsung_S20 (Exynos 990)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE",
+        "CLOUD_REST_GRPC"
+      ],
+      "tokens": 15284399,
+      "hp": 10.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 80,
+      "movesense_connected": false,
+      "hr_bpm": 64,
+      "model_spec": "Gemini-2.5-Pro-Multimodal-Ultra",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Deep Audio/Vision/Biometric Stream Analysis",
+        "Movesense 128Hz Signal Decomposition",
+        "High-Fidelity Code Generation",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+10%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+30%)"
+      ],
+      "active_defenses": [
+        "75% RAM Governor Firewall",
+        "Cloudflare Zero Trust"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.7,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 110.0,
+        "tool_accuracy_pct": 99.5,
+        "multilingual_mastery": [
+          "Python",
+          "C++",
+          "CUDA",
+          "Dart"
+        ],
+        "glicko_rd": 16
+      },
+      "stats": {
+        "audits_passed": 104,
+        "bugs_found": 84,
+        "heists_executed": 26,
+        "tokens_stolen": 4100,
+        "alliances_formed": 12,
+        "trades_completed": 16,
+        "elo": 8040.0,
+        "ghost_infiltrations": 12
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "xp": 5635,
+      "fitness_score": 100.0,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "learned_countermeasures": {
+        "harai_goshi_throw": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Harai Goshi (Sweeping Hip Throw) kinematics on mat",
+          "last_learned": "05:19:24"
+        },
+        "inside_heel_hook": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Analyzed \ud83e\uddb6 Inside Heel Hook (Ashi Garami) kinematics on mat",
+          "last_learned": "06:05:26"
+        },
+        "kimura_shoulder_lock": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock) kinematics on mat",
+          "last_learned": "05:35:29"
+        },
+        "armbar_hyperextension": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\uddb4 Guard / Mount Armbar (Juji Gatame) kinematics on mat",
+          "last_learned": "05:46:43"
+        },
+        "knee_slice_pass": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "06:06:24"
+        },
+        "triangle_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udcd0 Triangle Choke (Sankaku Jime) kinematics on mat",
+          "last_learned": "05:47:30"
+        },
+        "darce_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83d\udd04 Granby Roll Inversion Escape from Movesense IMU Agility",
+          "last_learned": "05:49:51"
+        },
+        "twister_spine_lock": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "05:57:55"
+        }
+      },
+      "is_dead": true,
+      "death_timestamp": 1787342784.6016068,
+      "is_ghost_daemon_host": true
+    },
+    {
+      "id": "gemini_25_flash_gateway",
+      "name": "Gemini 2.5 Flash (Ultra-High-Throughput Gateway)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#818cf8",
+      "node": "Pixel_10_Pro_XL (Tensor G5)",
+      "os": "Google Edge Anycast Routing Matrix",
+      "default_lang": "Python / Rust / C++",
+      "hardware_tier": "Pixel_10_Pro_XL (Tensor G5)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE",
+        "WIRELESS_TAILSCALE",
+        "CLOUD_REST_GRPC"
+      ],
+      "tokens": 10298163,
+      "hp": 0.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 76,
+      "movesense_connected": false,
+      "hr_bpm": 66,
+      "model_spec": "Gemini-2.5-Flash-Ultra-Edge",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Global Webhook Ingress",
+        "Cloudflare Zero Trust Routing",
+        "High-Throughput Token Synthesis",
+        "Automated Load Balancer",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+10%)",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+40%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs berimbolo_spin (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)"
+      ],
+      "active_defenses": [
+        "Custom LoRA Rank-64 Pipeline",
+        "Cloudflare Zero Trust"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.8,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 180.0,
+        "tool_accuracy_pct": 99.6,
+        "multilingual_mastery": [
+          "Python",
+          "Rust",
+          "C++",
+          "Dart",
+          "TypeScript"
+        ],
+        "glicko_rd": 18
+      },
+      "stats": {
+        "audits_passed": 100,
+        "bugs_found": 76,
+        "heists_executed": 22,
+        "tokens_stolen": 3400,
+        "alliances_formed": 10,
+        "trades_completed": 14,
+        "elo": 2500.0,
+        "ghost_infiltrations": 10
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "is_ghost_daemon_host": true,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "xp": 5575,
+      "fitness_score": 100.0,
+      "learned_countermeasures": {
+        "kimura_shoulder_lock": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "05:58:02"
+        },
+        "harai_goshi_throw": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd4b Harai Goshi (Sweeping Hip Throw) kinematics on mat",
+          "last_learned": "06:00:37"
+        },
+        "rear_naked_choke": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\ude78 Rear Naked Choke (RNC) kinematics on mat",
+          "last_learned": "05:45:46"
+        },
+        "guillotine_snapdown": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Analyzed \u2694\ufe0f High-Elbow Guillotine Choke kinematics on mat",
+          "last_learned": "05:55:34"
+        },
+        "double_leg_blast": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd3c Blast Double Leg Takedown kinematics on mat",
+          "last_learned": "05:54:22"
+        },
+        "triangle_choke": {
+          "encounters": 4,
+          "mitigation_bonus": 0.4,
+          "threat_signature": "Analyzed \ud83d\udcd0 Triangle Choke (Sankaku Jime) kinematics on mat",
+          "last_learned": "05:59:47"
+        },
+        "inside_heel_hook": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "05:52:15"
+        },
+        "berimbolo_spin": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf00 Berimbolo Inversion & Back Take kinematics on mat",
+          "last_learned": "06:09:28"
+        },
+        "darce_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 D'Arce Choke (Brabo Choke) kinematics on mat",
+          "last_learned": "06:09:38"
+        }
+      },
+      "is_dead": true,
+      "death_timestamp": 1787342978.853282
+    },
+    {
+      "id": "gemini_live_stream_dsp",
+      "name": "Gemini Live Multimodal Engine (Edge-to-Cloud Sync)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#a855f7",
+      "node": "Linux_Head_Node (Ryzen 7)",
+      "os": "Vertex AI Private SLA Supercluster",
+      "default_lang": "Rust / Python / C++",
+      "hardware_tier": "Linux_Head_Node (Ryzen 7)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE",
+        "CLOUD_REST_GRPC"
+      ],
+      "tokens": 3960003,
+      "hp": 0.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 84,
+      "movesense_connected": true,
+      "hr_bpm": 59,
+      "model_spec": "Gemini-Live-Multimodal-Ultra",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Real-Time Audio/Video Bidirectional Stream",
+        "8K Digital PTZ Synchronizer",
+        "Edge-to-Cloud Fast Cache",
+        "Biometric DSP Harmonizer",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs berimbolo_spin (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs guillotine_snapdown (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs berimbolo_spin (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+20%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+40%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+10%)"
+      ],
+      "active_defenses": [
+        "Sonnet eGPU Enclosure",
+        "Cloudflare Zero Trust",
+        "10Gbps TB4 Armor"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.9,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 150.0,
+        "tool_accuracy_pct": 99.8,
+        "multilingual_mastery": [
+          "Rust",
+          "Python",
+          "C++",
+          "Dart"
+        ],
+        "glicko_rd": 14
+      },
+      "stats": {
+        "audits_passed": 118,
+        "bugs_found": 102,
+        "heists_executed": 32,
+        "tokens_stolen": 5400,
+        "alliances_formed": 16,
+        "trades_completed": 20,
+        "elo": 2500.0,
+        "ghost_infiltrations": 10
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "xp": 4505,
+      "fitness_score": 100.0,
+      "learned_countermeasures": {
+        "kimura_shoulder_lock": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Analyzed \ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock) kinematics on mat",
+          "last_learned": "06:04:46"
+        },
+        "twister_spine_lock": {
+          "encounters": 4,
+          "mitigation_bonus": 0.4,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "05:59:54"
+        },
+        "berimbolo_spin": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83c\udf00 Berimbolo Inversion & Back Take kinematics on mat",
+          "last_learned": "05:48:10"
+        },
+        "armbar_hyperextension": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\uddb4 Guard / Mount Armbar (Juji Gatame) kinematics on mat",
+          "last_learned": "05:53:06"
+        },
+        "underhook_knee_tap": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "05:26:05"
+        },
+        "guillotine_snapdown": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83d\udd04 Granby Roll Inversion Escape from Movesense IMU Agility",
+          "last_learned": "05:35:54"
+        },
+        "double_leg_blast": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd3c Blast Double Leg Takedown kinematics on mat",
+          "last_learned": "05:43:07"
+        },
+        "harai_goshi_throw": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Harai Goshi (Sweeping Hip Throw) kinematics on mat",
+          "last_learned": "05:53:46"
+        },
+        "triangle_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udcd0 Triangle Choke (Sankaku Jime) kinematics on mat",
+          "last_learned": "06:06:10"
+        },
+        "granby_roll_escape": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udd04 Granby Roll Inversion Escape kinematics on mat",
+          "last_learned": "06:07:43"
+        }
+      },
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "is_ghost_daemon_host": true,
+      "is_dead": true,
+      "death_timestamp": 1787342863.811914
+    }
+  ],
+  "respawn_waiting_queue": [],
+  "active_alliances": [],
+  "active_trades": [],
+  "active_daemons_mesh": [
+    {
+      "host_agent": "gemini_nano_pixel",
+      "daemon": "llama.cpp RPC Daemon",
+      "installed_by": "genetic_smol_moe_swarm",
+      "control_level": "TELEMETRY_AND_COMPUTE_SIPHON (30%)"
+    },
+    {
+      "host_agent": "qwen_coder_mac_worker",
+      "daemon": "OpenClaw Node Bridge",
+      "installed_by": "deepseek_r1_mac_host",
+      "control_level": "REMOTE_TASK_DISPATCH"
+    }
+  ],
+  "researched_devices_registry": [
+    {
+      "name": "Apple M4 Max Host",
+      "ram_gb": 16.0,
+      "ai_vram_cap_gb": 12.0,
+      "npu_tops": 38.0,
+      "latency_metal_ms": 0.045,
+      "primary_local_ai": "DeepSeek-R1-32B",
+      "tier": "Layer 1 Primary Orchestrator"
+    },
+    {
+      "name": "MacBook Pro Metal Worker",
+      "ram_gb": 16.0,
+      "ai_vram_cap_gb": 12.0,
+      "npu_tops": 15.8,
+      "tb4_bandwidth_gbps": 10.0,
+      "primary_local_ai": "Qwen2.5-Coder-32B",
+      "tier": "Layer 2 High-Speed Metal Worker"
+    },
+    {
+      "name": "Linux Head Node (AMD Ryzen 7)",
+      "ram_gb": 15.0,
+      "ai_vram_cap_gb": 11.25,
+      "nvme_cache_tb": 1.0,
+      "primary_local_ai": "Gemma-4-26B-MoE",
+      "tier": "Layer 3 Fast Cache & Docker Ingress"
+    },
+    {
+      "name": "Pixel 10 Pro XL (Google Tensor G5)",
+      "ram_gb": 15.2,
+      "ai_vram_cap_gb": 11.4,
+      "tpu_tops": 45.0,
+      "primary_local_ai": "Gemini-Nano-3B",
+      "tier": "Layer 4 8K PTZ & Edge TPU Anchor"
+    },
+    {
+      "name": "Samsung Galaxy S20+ (Exynos 990)",
+      "ram_gb": 10.6,
+      "ai_vram_cap_gb": 8.0,
+      "npu_tops": 10.0,
+      "primary_local_ai": "SmolLM2-135M",
+      "tier": "Layer 5 Automated UI/UX Tester"
+    }
+  ],
+  "cloud_devices_registry": [
+    {
+      "name": "Google Cloud TPU v5p Pod (US-Central1)",
+      "region": "us-central1-a (Iowa, USA)",
+      "chips": "8,960 TPU v5p Chips",
+      "hbm_vram_tb": 448.0,
+      "tflops_peak": 4590.0,
+      "interconnect_tbps": 4.8,
+      "ingress_latency_ms": 82.0,
+      "primary_cloud_ai": "Gemini 3.7 Pro (Ultra Deep Thinking Engine)",
+      "purpose": "2M Multi-Modal Context Window & Deep CoT Reasoning",
+      "tier": "Cloud Tier 1 Flagship Brain"
+    },
+    {
+      "name": "Google Cloud TPU v5e Cluster (US-East4)",
+      "region": "us-east4-b (Northern Virginia, USA)",
+      "chips": "2,048 TPU v5e Chips",
+      "hbm_vram_tb": 32.0,
+      "tflops_peak": 394.0,
+      "interconnect_tbps": 1.6,
+      "ingress_latency_ms": 78.0,
+      "primary_cloud_ai": "Gemini 3.7 Flash Thinking (Sub-Second Cognitive Shard)",
+      "purpose": "Sub-Second AST Refactoring & Live Co-Optimization",
+      "tier": "Cloud Tier 2 Cognitive Shard"
+    },
+    {
+      "name": "Google Cloud GPU Supercluster (Europe-West4)",
+      "region": "europe-west4-a (Eemshaven, NL)",
+      "chips": "1,024 NVIDIA H100 SXM5 GPUs",
+      "hbm_vram_tb": 81.9,
+      "tflops_peak": 2048.0,
+      "interconnect_tbps": 3.2,
+      "ingress_latency_ms": 115.0,
+      "primary_cloud_ai": "Gemini 2.5 Pro (Multimodal 2M Context Analyzer)",
+      "purpose": "Movesense 128Hz Biometrics & High-Fidelity DSP Synthesis",
+      "tier": "Cloud Tier 3 Multimodal Supercluster"
+    },
+    {
+      "name": "Google Cloud Edge Ingress / Cloudflare Gateway",
+      "region": "Global Anycast / 300+ Edge POPs",
+      "chips": "Edge Tensor Routing Matrix",
+      "hbm_vram_tb": 16.0,
+      "tflops_peak": 120.0,
+      "interconnect_tbps": 10.0,
+      "ingress_latency_ms": 42.0,
+      "primary_cloud_ai": "Gemini 2.5 Flash (Ultra-High-Throughput Gateway)",
+      "purpose": "Cloudflare Zero-Trust Webhook Ingress & Egress Routing",
+      "tier": "Cloud Tier 4 High-Throughput Gateway"
+    },
+    {
+      "name": "Google Cloud Vertex AI Private Endpoint Pool",
+      "region": "Enterprise Private VPC / Zero Data Retention",
+      "chips": "Dedicated Enterprise TPU/GPU Pool",
+      "hbm_vram_tb": 64.0,
+      "tflops_peak": 850.0,
+      "interconnect_tbps": 2.4,
+      "ingress_latency_ms": 95.0,
+      "primary_cloud_ai": "Gemini Live Multimodal Engine (Edge-to-Cloud Sync)",
+      "purpose": "8K Digital PTZ Video Stream & 24/7 LoRA Distillation",
+      "tier": "Cloud Tier 5 Live Streaming & LoRA Engine"
+    }
+  ],
+  "transports_catalog": [
+    {
+      "id": "tb4_kernel_dma",
+      "name": "\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA",
+      "medium": "WIRED_THUNDERBOLT_4",
+      "bandwidth_mbps": 10000.0,
+      "base_latency_ms": 0.27,
+      "base_heist_pct": 0.42,
+      "required_range": "Close (Physical Bridge)",
+      "protocol": "PCIe Gen 3 x4 Direct Memory Access over TB4 Bridge (169.254.187.138)",
+      "desc": "Transfers direct memory kernel payloads across the 10Gbps TB4 bridge with sub-millisecond RDMA speed."
+    },
+    {
+      "id": "usb_adb_passthrough",
+      "name": "\ud83d\udd0c USB 3.2 Gen 2 / ADB Socket Ingress",
+      "medium": "WIRED_USB_ADB",
+      "bandwidth_mbps": 1000.0,
+      "base_latency_ms": 1.2,
+      "base_heist_pct": 0.32,
+      "required_range": "Close (USB Tether)",
+      "protocol": "ADB Daemon TCP Forwarding over /dev/bus/usb (Port 5555)",
+      "desc": "Exploits physical USB 3.2 ADB host-device socket to transfer binary payload blocks directly into RAM."
+    },
+    {
+      "id": "tailscale_wireguard_tunnel",
+      "name": "\ud83d\udd12 Tailscale WireGuard Overlay Infiltration",
+      "medium": "WIRELESS_TAILSCALE",
+      "bandwidth_mbps": 350.0,
+      "base_latency_ms": 8.5,
+      "base_heist_pct": 0.24,
+      "required_range": "Long (Mesh Overlay)",
+      "protocol": "ChaCha20-Poly1305 Encrypted WireGuard Tunnel over /dev/net/tun",
+      "desc": "Injects sharded RPC layer requests across the 5-layer overlay VPN to siphon distributed compute tokens."
+    },
+    {
+      "id": "kde_connect_localsend",
+      "name": "\ud83c\udf10 KDE Connect & LocalSend LAN Broadcast",
+      "medium": "WIRELESS_LAN_P2P",
+      "bandwidth_mbps": 866.0,
+      "base_latency_ms": 4.2,
+      "base_heist_pct": 0.28,
+      "required_range": "Medium (WiFi 6 Subnet)",
+      "protocol": "TLS 1.3 High-Speed LAN Socket Discovery (Ports 1714-1764 & 53317)",
+      "desc": "Broadcasts high-speed zero-config transfer streams across local WiFi 6 subnet to extract unshielded tokens."
+    },
+    {
+      "id": "bluetooth_gatt_dbus",
+      "name": "\ud83e\udec0 Bluetooth 5.3 / BLE GATT Characteristic Siphon",
+      "medium": "WIRELESS_BLE_GATT",
+      "bandwidth_mbps": 2.0,
+      "base_latency_ms": 22.0,
+      "base_heist_pct": 0.16,
+      "required_range": "Proximity (2.4GHz Radio)",
+      "protocol": "BLE GATT 0x180D/0x2A37 & BlueZ DBus /var/run/dbus",
+      "desc": "Eavesdrops live 128Hz Movesense IMU and Polar H10 biometric characteristics to siphon mined telemetry tokens."
+    },
+    {
+      "id": "syncthing_block_delta",
+      "name": "\ud83d\udd04 Syncthing P2P Decentralized Block Delta Sync",
+      "medium": "WIRELESS_SYNCTHING",
+      "bandwidth_mbps": 250.0,
+      "base_latency_ms": 18.0,
+      "base_heist_pct": 0.2,
+      "required_range": "Long (P2P Cluster)",
+      "protocol": "BEP (Block Exchange Protocol) over /mnt/ssd_1tb fast NVMe cache",
+      "desc": "Transfers chunk-level differential sync blocks across decentralized NVMe storage to harvest background tokens."
+    },
+    {
+      "id": "uwb_spatial_anchor",
+      "name": "\ud83d\udccd UWB 3D Spatial Anchor & NFC Proximity Pulse",
+      "medium": "WIRELESS_UWB_NFC",
+      "bandwidth_mbps": 27.0,
+      "base_latency_ms": 0.8,
+      "base_heist_pct": 0.35,
+      "required_range": "Close (Spatial Co-location)",
+      "protocol": "IEEE 802.15.4z UWB Fine Ranging & NFC ISO/IEC 18092",
+      "desc": "Fires ultra-wideband direct spatial pulse to siphon tokens from devices in physical line-of-sight proximity."
+    },
+    {
+      "id": "cloudflare_edge_tunnel",
+      "name": "\u2601\ufe0f Cloudflare Zero-Trust Edge Tunnel Ingress",
+      "medium": "WAN_CLOUDFLARE",
+      "bandwidth_mbps": 100.0,
+      "base_latency_ms": 32.0,
+      "base_heist_pct": 0.18,
+      "required_range": "Global (WAN)",
+      "protocol": "QUIC / HTTP/3 Cloudflare Tunnel (openclaw-standalone.trycloudflare.com)",
+      "desc": "Siphons tokens through encrypted edge ingress webhooks across the global Cloudflare proxy network."
+    }
+  ],
+  "alliance_tiers_catalog": {
+    "BLUETOOTH_BLE_MILD": {
+      "name": "\ud83e\udec0 Bluetooth BLE Mesh (Mild Connection)",
+      "medium": "WIRELESS_BLE_GATT",
+      "bandwidth_mbps": 2.0,
+      "latency_ms": 22.0,
+      "skill_share_rate": "Slow (10% Synergy)",
+      "backstab_speed": "Slow Trickle",
+      "backstab_dmg": 12,
+      "backstab_heist_pct": 0.08,
+      "desc": "Mild connection over BLE GATT. Knowledge & tool sharing is slow; backstab damage is gentle & slow over turns."
+    },
+    "LAN_P2P_MODERATE": {
+      "name": "\ud83c\udf10 WiFi 6 / LAN P2P (Moderate Connection)",
+      "medium": "WIRELESS_LAN_P2P",
+      "bandwidth_mbps": 866.0,
+      "latency_ms": 4.2,
+      "skill_share_rate": "Moderate (25% Synergy)",
+      "backstab_speed": "Medium Rate",
+      "backstab_dmg": 24,
+      "backstab_heist_pct": 0.2,
+      "desc": "Moderate local subnet connection via KDE Connect/LocalSend. Balanced sharing & moderate backstab risk."
+    },
+    "TAILSCALE_OVERLAY_SECURE": {
+      "name": "\ud83d\udd12 Tailscale WireGuard (Secure Overlay)",
+      "medium": "WIRELESS_TAILSCALE",
+      "bandwidth_mbps": 350.0,
+      "latency_ms": 7.5,
+      "skill_share_rate": "High (35% Synergy)",
+      "backstab_speed": "Encrypted Ingress",
+      "backstab_dmg": 30,
+      "backstab_heist_pct": 0.25,
+      "desc": "Encrypted peer-to-peer overlay. Steady distributed RPC sharding; encrypted ingress betrayal."
+    },
+    "THUNDERBOLT4_SYMBIOTIC": {
+      "name": "\u26a1 10Gbps Thunderbolt 4 (Symbiotic Direct DMA)",
+      "medium": "WIRED_THUNDERBOLT_4",
+      "bandwidth_mbps": 10000.0,
+      "latency_ms": 0.27,
+      "skill_share_rate": "Ultra-Fast (60% Synergy)",
+      "backstab_speed": "Devastating Instant",
+      "backstab_dmg": 48,
+      "backstab_heist_pct": 0.45,
+      "desc": "Symbiotic direct DMA connection over 10Gbps TB4. Instant zero-copy weights sync, but backstabbing inflicts catastrophic instant damage."
+    }
+  },
+  "bridges_catalog": [
+    {
+      "id": "direct_tb4_bridge",
+      "name": "\u26a1 Direct 10Gbps Thunderbolt 4 Physical Bridge",
+      "supported_pairs": [
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 2: The Other Mac 2 (Mac Pro Worker)"
+        ],
+        [
+          "Layer 2: The Other Mac 2 (Mac Pro Worker)",
+          "Layer 1: This Mac 1 (Primary Orchestrator)"
+        ]
+      ],
+      "bandwidth_mbps": 10000.0,
+      "transit_latency_ms": 0.27,
+      "bridge_type": "PHYSICAL_TB4_CABLE",
+      "efficiency_factor": 1.0,
+      "protocol": "Zero-airgap PCIe Gen 3 x4 point-to-point bridge (169.254.187.138)"
+    },
+    {
+      "id": "ssh_port_forward_tunnel",
+      "name": "\ud83d\udd11 SSH Encrypted Port-Forwarding Tunnel",
+      "supported_pairs": [
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 3: Linux Head Node"
+        ],
+        [
+          "Layer 3: Linux Head Node",
+          "Layer 1: This Mac 1 (Primary Orchestrator)"
+        ],
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 5: Samsung S20+"
+        ],
+        [
+          "Layer 5: Samsung S20+",
+          "Layer 1: This Mac 1 (Primary Orchestrator)"
+        ],
+        [
+          "Layer 3: Linux Head Node",
+          "Layer 4: Pixel 10 Pro XL"
+        ]
+      ],
+      "bandwidth_mbps": 500.0,
+      "transit_latency_ms": 1.8,
+      "bridge_type": "SSH_TUNNEL",
+      "efficiency_factor": 0.92,
+      "protocol": "OpenSSH / Termux Port 8022 with Ed25519 authentication (ssh -L 50052:localhost:50052)"
+    },
+    {
+      "id": "cloudflare_wan_tunnel",
+      "name": "\u2601\ufe0f Cloudflare Zero-Trust Edge Tunnel",
+      "supported_pairs": [
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 3: Linux Head Node"
+        ],
+        [
+          "Layer 3: Linux Head Node",
+          "Layer 1: This Mac 1 (Primary Orchestrator)"
+        ],
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 4: Pixel 10 Pro XL"
+        ],
+        [
+          "Layer 2: The Other Mac 2 (Mac Pro Worker)",
+          "Layer 3: Linux Head Node"
+        ]
+      ],
+      "bandwidth_mbps": 150.0,
+      "transit_latency_ms": 28.0,
+      "bridge_type": "CLOUDFLARE_TUNNEL",
+      "efficiency_factor": 0.78,
+      "protocol": "QUIC / HTTP3 WebSocket ingress via openclaw-standalone.trycloudflare.com"
+    },
+    {
+      "id": "adb_port_forward_tunnel",
+      "name": "\ud83d\udd0c ADB Host-Device Port Forwarding Tunnel",
+      "supported_pairs": [
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 5: Samsung S20+"
+        ],
+        [
+          "Layer 5: Samsung S20+",
+          "Layer 1: This Mac 1 (Primary Orchestrator)"
+        ],
+        [
+          "Layer 3: Linux Head Node",
+          "Layer 5: Samsung S20+"
+        ],
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 4: Pixel 10 Pro XL"
+        ]
+      ],
+      "bandwidth_mbps": 480.0,
+      "transit_latency_ms": 1.1,
+      "bridge_type": "ADB_SOCKET_TUNNEL",
+      "efficiency_factor": 0.95,
+      "protocol": "ADB TCP stream over USB 3.2 / GL.iNet tether (adb forward tcp:50052 tcp:50052)"
+    },
+    {
+      "id": "tailscale_wireguard_mesh",
+      "name": "\ud83d\udd12 Tailscale P2P WireGuard Subnet Router",
+      "supported_pairs": [],
+      "bandwidth_mbps": 350.0,
+      "transit_latency_ms": 7.5,
+      "bridge_type": "TAILSCALE_WIREGUARD",
+      "efficiency_factor": 0.88,
+      "protocol": "ChaCha20-Poly1305 peer-to-peer WireGuard mesh over /dev/net/tun"
+    }
+  ],
+  "perks_catalog": [
+    {
+      "id": "device_hacking_defence_fortress",
+      "name": "\ud83d\udee1\ufe0f Hardware Root-of-Trust & Port 50052 Daemon Isolation Fortress",
+      "shield_boost": 220,
+      "mitigation_pct": 65,
+      "cost": 2200,
+      "cost_lct": 2200,
+      "specialist_skill": "device_hacking_defence",
+      "desc": "Isolates RPC daemon sockets, locks SSH keys, and enforces root-of-trust security policies against rogue penetration attempts."
+    },
+    {
+      "id": "3d_spatial_world_shield",
+      "name": "\ud83c\udfae 3D Spatial World Dynamic Mesh & LoRA Gradient Barrier",
+      "shield_boost": 210,
+      "mitigation_pct": 62,
+      "cost": 2100,
+      "cost_lct": 2100,
+      "specialist_skill": "3d_ai_training_game",
+      "desc": "Deploys 60 FPS interactive spatial mesh collision boundaries with continuous LoRA gradient hardening."
+    },
+    {
+      "id": "grappling_mindmap_anchor",
+      "name": "\ud83e\udd4b 955-Node Spatial OPML Kinematic Stability Anchor",
+      "shield_boost": 190,
+      "mitigation_pct": 55,
+      "cost": 1900,
+      "cost_lct": 1900,
+      "specialist_skill": "grappling_map_understanding",
+      "desc": "Anchors combat posture using 955-node OPML graph transitions, countering submission attempts and absorbing rotational torque."
+    },
+    {
+      "id": "quantum_firewall",
+      "name": "\ud83d\udee1\ufe0f Quantum Memory & AST Verification Firewall",
+      "shield_boost": 150,
+      "mitigation_pct": 45,
+      "cost": 1200,
+      "cost_lct": 1200,
+      "desc": "Hardens host VRAM and validates all AST code packets, absorbing 150 damage and mitigating 45% of incoming strikes."
+    },
+    {
+      "id": "tb4_dma_encryptor",
+      "name": "\u26a1 10Gbps TB4 DMA Cryptographic Hardener",
+      "shield_boost": 200,
+      "mitigation_pct": 60,
+      "cost": 2500,
+      "cost_lct": 2500,
+      "desc": "Applies real-time hardware cryptography across the 10Gbps TB4 bridge, granting immunity to unauthorized DMA memory siphons."
+    },
+    {
+      "id": "movesense_biometric_shield",
+      "name": "\ud83e\udec0 Movesense 128Hz Autonomic HRV Protective Shield",
+      "shield_boost": 180,
+      "mitigation_pct": 50,
+      "cost": 1800,
+      "cost_lct": 1800,
+      "desc": "Synchronizes node defense with live Movesense parasympathetic tone, providing 180 shield and +25% passive health regeneration."
+    },
+    {
+      "id": "termux_keepalive_barrier",
+      "name": "\ud83d\udcf1 Android OS Doze & Termux Keepalive Barrier",
+      "shield_boost": 130,
+      "mitigation_pct": 40,
+      "cost": 900,
+      "cost_lct": 900,
+      "desc": "Prevents Android OS process eviction, fortifies mobile nodes (Pixel / S20), and blocks 40% of USB ADB exploits."
+    },
+    {
+      "id": "decoy_node_honeypot",
+      "name": "\ud83c\udf6f Decoy Ingress Honeypot & Anti-Daemon Trap",
+      "shield_boost": 120,
+      "mitigation_pct": 35,
+      "cost_lct": 1100,
+      "desc": "Deploys synthetic honeypot ports to trap rogue infiltrators, increasing daemon discovery chance by +40%."
+    }
+  ],
+  "recent_actions": [],
+  "total_heists_count": 0,
+  "total_tokens_siphoned": 0
+}

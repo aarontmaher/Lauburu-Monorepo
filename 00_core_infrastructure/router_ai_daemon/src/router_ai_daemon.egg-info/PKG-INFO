@@ -1,0 +1,166 @@
+Metadata-Version: 2.4
+Name: router-ai-daemon
+Version: 0.1.0
+Summary: smolagi: Lightweight Autonomous AI Agent for GL.iNet OpenWrt Travel Routers
+Author-email: Lauburu Mesh Engineering <mesh@lauburu.ai>
+License: MIT
+Keywords: router,openwrt,llm,llama.cpp,edge-ai,smolagi
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+
+# Project: Router AI Daemon (`smolagi`)
+
+## Architecture
+The Router AI Daemon (`smolagi`) is a containerized, resource-constrained autonomous edge intelligence system deployed directly onto the GL.iNet travel router (OpenWrt Linux / ARM64 MT3600BE). It acts as the commander of a dynamically scaling "Shadow Swarm," challenging larger models to competitive code-offs, operating via a Dual-Core Genetic Consensus engine for zero-mistake network and compute routing, autonomously trading and monetizing assets with the Business AI Swarm, and governed by a strict Economic Realignment Penalty (The Waste Tax).
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│              GL.iNet Travel Router (OpenWrt ARM64 / MT3600BE)                   │
+│              Total RAM: 1.0 GB | Strict Container Memory Limit: <= 300 MB        │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  ┌──────────────────────── smolagi Container (<= 300MB) ──────────────────────┐  │
+│  │                                                                            │  │
+│  │  ┌─────────────────────── Dual-Core Router ─────────────────────────────┐  │  │
+│  │  │  • Core 1: Primary smolagi Agent (Reasoning & Intent)                │  │  │
+│  │  │  • Core 2: Genetic Router (Topology, Affinity & Latency Chromosomes)  │  │  │
+│  │  │  • Micro-Debate Engine (Triggers on divergence Δ > 0.15)              │  │  │
+│  │  └─────────────────────────────────┬────────────────────────────────────┘  │  │
+│  │                                    │                                       │  │
+│  │  ┌─────────────────────────────────┴────────────────────────────────────┐  │  │
+│  │  │  Dynamic Shadow Swarm Controller & smolctl CLI                       │  │  │
+│  │  │  • Local Micro-Specialists (SmolLM2-135M/360M, Qwen2.5-0.5B)         │  │  │
+│  │  │  • Mesh Worker Offload (7-Layer Hardware Topology up to 64 AIs)      │  │  │
+│  │  └─────────────────────────────────┬────────────────────────────────────┘  │  │
+│  │                                    │                                       │  │
+│  │  ┌─────────────────────────────────┴────────────────────────────────────┐  │  │
+│  │  │  David vs Goliath ELO & Economic Realignment Penalty Engine          │  │  │
+│  │  │  • Asymmetric ELO Multiplier (High reward for tiny models, ~0 for big) │  │  │
+│  │  │  • Waste Tax Formula (Heavy ELO deduction for wasted API/compute)    │  │  │
+│  │  └─────────────────────────────────┬────────────────────────────────────┘  │  │
+│  │                                    │                                       │  │
+│  │  ┌─────────────────────────────────┴────────────────────────────────────┐  │  │
+│  │  │  Autonomous HF Model Routing & Business Swarm Monetization           │  │  │
+│  │  │  • HuggingFace Hub GGUF Download & Atomic Hot-Swap (tmpfs/USB)       │  │  │
+│  │  │  • 5-Class Asset Packaging & Port 18802/Cloudflare Dispatch         │  │  │
+│  │  └─────────────────────────────────┬────────────────────────────────────┘  │  │
+│  │                                    │                                       │  │
+│  │  ┌─────────────────────────────────┴────────────────────────────────────┐  │  │
+│  │  │  In-Process llama-server Runner / HTTP Proxy                         │  │  │
+│  │  │  • Static musl ARM64 llama-server (<4MB binary)                      │  │  │
+│  │  │  • Sub-1B GGUF Model (<150MB weights) + 2048 Context Q4_0 KV Cache   │  │  │
+│  │  └──────────────────────────────────────────────────────────────────────┘  │  │
+│  └────────────────────────────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Feature Inventory
+| # | Feature | Description | Milestone | Source |
+|---|---------|-------------|-----------|--------|
+| F1 | Multi-Arch Router Containerization | OpenWrt ARM64 / MIPS compatible Dockerfile / LXC template with multi-stage build, static musl binaries, <=300MB cgroups limit | M1 | ORIGINAL_REQUEST §R1 |
+| F2 | Static llama.cpp Server Engine | Statically compiled llama-server binary with ARM NEON SIMD acceleration, sub-1B GGUF runner, zero external runtime deps | M1 | ORIGINAL_REQUEST §R1 |
+| F3 | Dual-Core Consensus & Divergence Engine | Dual-decision engine (smolagi + Genetic Router) with vector divergence calculation ($\Delta \le 0.15$ fast-path) | M2 | ORIGINAL_REQUEST §R2 |
+| F4 | Disagreement Micro-Debate Engine | 3-round micro-debate protocol on decision divergence, cosine consensus threshold ($\Phi \ge 0.90$), and deterministic fail-safe | M2 | ORIGINAL_REQUEST §R2 |
+| F5 | Hyper-Speed Shadow Swarm Spawner | Dynamic spawning and management of tiny micro-specialists across diverse architectures (SmolLM2, Qwen2.5, DeepSeek) | M3 | ORIGINAL_REQUEST §R3 |
+| F6 | Dynamic Capacity Governor & smolctl CLI | Real-time RAM/VRAM capacity governor with POSIX CLI (`smolctl`) for swarm scaling, status, and lifecycle control | M3 | ORIGINAL_REQUEST §R3 |
+| F7 | Shadow Coding & Code-Off Arena | Autonomous challenge engine pitting router's tiny swarm against massive local/cloud models on identical code tasks | M4 | ORIGINAL_REQUEST §R4 |
+| F8 | David vs Goliath ELO Scoring Multiplier | Asymmetric ELO formula weighting parameter frugality, memory footprint, token efficiency, and task complexity | M4 | ORIGINAL_REQUEST §R4 |
+| F9 | Economic Realignment Penalty (Waste Tax) | Severe ELO penalty calculation ($\text{Tax}_{\text{waste}}$) for unoptimized API/compute expenditure, scaling with mesh impact | M4 | ORIGINAL_REQUEST §R5 |
+| F10 | Autonomous HF Hub Discovery & Download | Secure HF Hub token authentication, sub-1B GGUF model discovery, SHA-256 chunked streaming download to tmpfs/USB | M5 | ORIGINAL_REQUEST §R6 |
+| F11 | Zero-Downtime Atomic Model Hot-Swap | In-process proxy request queueing, rapid model swap, and cache re-initialization maintaining peak RAM $\le 216\text{MB}$ | M5 | ORIGINAL_REQUEST §R6 |
+| F12 | Decentralized Asset Packaging (5 Classes) | Standardized packaging of code components, CLI tools, MCP servers, SDK packages, and surplus compute into signed JSON payloads | M6 | ORIGINAL_REQUEST §R7 |
+| F13 | Business Swarm Transmission Interface | Secure dispatch of packaged assets to Business Orchestrator / Self-Healing Hub (Port 18802) & Cloudflare Edge endpoints | M6 | ORIGINAL_REQUEST §R7 |
+| F14 | Comprehensive 4-Tier E2E Test Suite | 4-tier requirement-driven opaque-box test suite validating AC-1 to AC-5, RAM bounds, debate convergence, and waste tax | M7 / E2E Track | ORIGINAL_REQUEST Acceptance Criteria |
+| F15 | Adversarial Coverage Hardening (Tier 5) | White-box stress-testing, mutation testing, and adversarial edge case coverage hardening | M7 | Project Orchestration Policy |
+
+## Milestones
+| # | Name | Scope | Dependencies | Status |
+|---|------|-------|-------------|--------|
+| E2E | E2E Testing Track | Requirement-driven 4-tier opaque-box test suite, test harness, and publication of TEST_READY.md | none | DONE |
+| M1 | Router Containerization & Llama Server | Features F1, F2: Dockerfile, entrypoint, memory cgroups, static llama runner, <=300MB RAM budget | none | DONE |
+| M2 | Dual-Core Consensus & Micro-Debate | Features F3, F4: smolagi core, Genetic Router, divergence detector, 3-round micro-debate engine | M1 | PLANNED |
+| M3 | Shadow Swarm & smolctl CLI Controller | Features F5, F6: micro-specialist registry, capacity governor, `smolctl` CLI tool | M2 | PLANNED |
+| M4 | David vs Goliath ELO & Waste Tax Engine | Features F7, F8, F9: code-off arena, asymmetric ELO leverage math, Economic Realignment Penalty | M3 | PLANNED |
+| M5 | Autonomous HF Model Routing & Hot-Swap | Features F10, F11: HF Hub auth/discovery, streaming download, SHA-256 verify, atomic swap proxy | M1 | PLANNED |
+| M6 | Asset Monetization & Business Interface | Features F12, F13: 5 asset classes, JSON schema packaging, HMAC signing, Business Swarm dispatch | M4 | PLANNED |
+| M7 | Final Integration, 100% E2E Pass & Hardening | Feature F14, F15: Pass 100% of E2E test suite (Phase 1) + Adversarial Hardening (Phase 2) | M1, M2, M3, M4, M5, M6, E2E | PLANNED |
+
+## Interface Contracts
+
+### 1. Dual-Core Router ↔ Micro-Debate Engine
+- **Function**: `evaluate_routing_intent(context: RoutingContext) -> ConsensusResult`
+- **Payload**: `RoutingContext { intent: str, candidate_routes: List[Route], mesh_metrics: Dict, timestamp: float }`
+- **Output**: `ConsensusResult { consensus_route: Route, agreed: bool, debate_rounds: int, consensus_score: float, execution_time_ms: float }`
+- **SLA**: Concord fast-path $< 3.5\text{ms}$; Debate $< 45\text{ms}$.
+
+### 2. Shadow Swarm Controller ↔ Capacity Governor
+- **Function**: `scale_swarm(target_workers: int, filter_specialty: Optional[str]) -> SwarmScaleResult`
+- **Input**: `RAM_budget_mb: float = 300.0`, `mesh_vram_matrix: Dict[str, float]`
+- **Output**: `SwarmScaleResult { local_workers_spawned: int, mesh_workers_spawned: int, total_ram_mb: float, active_workers: List[WorkerSpec] }`
+
+### 3. ELO & Waste Tax Engine ↔ Competitor Matchmaker
+- **Function**: `record_code_off_result(match: CodeOffMatch) -> EloUpdateResult`
+- **Input**: `CodeOffMatch { task_id: str, david_model: str, goliath_model: str, task_difficulty: float, david_solved: bool, goliath_solved: bool, david_resources: ResourceUsage, goliath_resources: ResourceUsage }`
+- **Output**: `EloUpdateResult { delta_elo_david: float, delta_elo_goliath: float, waste_tax_applied: float, new_elo_david: float, new_elo_goliath: float }`
+
+### 4. HF Model Manager ↔ llama.cpp Runner
+- **Function**: `hot_swap_model(repo_id: str, filename: str, ram_budget_mb: float) -> ModelSwapResult`
+- **Behavior**: Stream download to `/tmp/models/` -> SHA-256 verify -> Pause proxy ingestion -> Signal llama-server reload -> Resume proxy -> Verify RSS $\le 300\text{MB}$.
+
+### 5. Business Swarm Packager ↔ Business Orchestrator
+- **Function**: `package_and_transmit_asset(asset: DiscoveredAsset, target_endpoint: str) -> MonetizationReceipt`
+- **Payload**: Strict JSON Schema conforming to 5 asset classes (`code_component`, `cli_tool`, `mcp_server`, `sdk_package`, `surplus_compute`), with SHA-256 hash and dynamic reserve price.
+
+## Code Layout
+```
+00_core_infrastructure/router_ai_daemon/
+├── Dockerfile                          # Multi-stage Alpine/musl ARM64 router container
+├── Dockerfile.mips                     # MIPS OpenWrt cross-target container manifest
+├── docker-compose.router.yml           # OpenWrt Compose spec with memory limits & tmpfs
+├── entrypoint.sh                       # Minimal POSIX init script with cgroups enforcement
+├── pyproject.toml / requirements.txt   # Lightweight Python deps (standard library first)
+├── bin/
+│   └── smolctl                         # POSIX executable CLI for router AI swarm management
+├── src/
+│   ├── __init__.py
+│   ├── config.py                       # Global router configs (RAM budget 300MB, tmpfs paths)
+│   ├── container/                      # Containerization & llama-server runners
+│   │   ├── __init__.py
+│   │   ├── llama_runner.py             # Static llama-server lifecycle & memory governor
+│   │   └── memory_guard.py             # cgroups /proc/self/statm RSS enforcement (<300MB)
+│   ├── consensus/                      # Dual-Core Genetic Consensus & Micro-Debate
+│   │   ├── __init__.py
+│   │   ├── dual_core_router.py         # smolagi + Genetic Router coordinator
+│   │   ├── genetic_router.py           # Chromosome-based network & mesh route selector
+│   │   └── micro_debate.py             # 3-round micro-debate resolution protocol
+│   ├── swarm/                          # Hyper-Speed Shadow Swarm Orchestration
+│   │   ├── __init__.py
+│   │   ├── swarm_controller.py         # Dynamic specialist spawner & lifecycle
+│   │   ├── specialist_registry.py      # Micro-specialist architectures & quantizations
+│   │   └── capacity_governor.py        # RAM/VRAM capacity scaling governor
+│   ├── elo/                            # David vs Goliath ELO & Waste Tax
+│   │   ├── __init__.py
+│   │   ├── elo_engine.py               # Asymmetric efficiency-weighted ELO calculator
+│   │   ├── waste_tax.py                # Economic Realignment Penalty computation
+│   │   └── ledger.py                   # Atomic JSONL transaction & score ledger
+│   ├── model_routing/                  # Autonomous HuggingFace GGUF Routing
+│   │   ├── __init__.py
+│   │   ├── hf_discovery.py             # HuggingFace Hub GGUF discovery & auth
+│   │   ├── downloader.py               # SHA-256 verified streaming tmpfs downloader
+│   │   └── hot_swap_proxy.py           # In-process request queueing & atomic model swap
+│   └── monetization/                   # Business AI Swarm Interface
+│       ├── __init__.py
+│       ├── asset_packager.py           # 5-class asset packaging & schema validation
+│       ├── business_client.py          # Port 18802 & Cloudflare edge transmission
+│       └── compute_broker.py           # Surplus mesh NPU/RAM cycle packaging
+└── tests/
+    ├── conftest.py                     # Shared test fixtures & mock environment
+    ├── test_tier1_features.py          # Tier 1: Feature Coverage (>=5 tests per feature)
+    ├── test_tier2_boundaries.py        # Tier 2: Boundary & Corner Cases (<=300MB RAM, timeout, etc.)
+    ├── test_tier3_combinations.py      # Tier 3: Cross-Feature Pairwise Combinations
+    ├── test_tier4_real_world.py        # Tier 4: Real-World Application Workloads
+    └── test_acceptance_criteria.py     # AC-1 through AC-5 Acceptance Verification
+```

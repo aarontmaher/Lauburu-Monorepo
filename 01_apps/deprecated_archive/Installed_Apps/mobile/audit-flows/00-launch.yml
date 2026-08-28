@@ -1,0 +1,9 @@
+# 00-launch — cold launch the Lauburu app.
+# Skipped silently on dev-client where the device is already signed.
+appId: com.lauburu.grapplingmap
+---
+- launchApp
+- assertVisible:
+    text: "Lauburu"
+    optional: true
+- takeScreenshot: "00-launch"

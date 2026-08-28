@@ -1,0 +1,2 @@
+[console_scripts]
+canonical-tui = tui.canonical_tui:main

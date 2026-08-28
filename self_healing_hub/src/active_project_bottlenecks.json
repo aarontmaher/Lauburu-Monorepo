@@ -1,0 +1,89 @@
+[
+  {
+    "id": "tb4_10gbps_rpc_layer_sync",
+    "title": "10Gbps Thunderbolt 4 RPC Zero-Copy Layer Sharding Overhead",
+    "category": "DISTRIBUTED_COMPUTE",
+    "severity": "MEDIUM_HIGH",
+    "weight": 1.25,
+    "target_metric": "tb4_socket_rtt_ms < 0.5",
+    "description": "Sub-millisecond tensor synchronisation across Mac Apple M4 Pro Mac Mini Host and Mac Pro Worker on IP 169.254.187.138:50052.",
+    "skills_required": [
+      "GGML_RPC Sharding",
+      "TCP Window Optimization",
+      "Metal GPU Offloading"
+    ],
+    "bounty_multiplier": 8.0,
+    "current_val": "150.41ms",
+    "is_actively_straining": true,
+    "urgency_score": 2.8
+  },
+  {
+    "id": "ram_governor_headroom",
+    "title": "VRAM / Host Memory Saturation & OOM Thrashing",
+    "category": "MEMORY_INFRASTRUCTURE",
+    "severity": "CRITICAL",
+    "weight": 1.45,
+    "target_metric": "psutil.virtual_memory().percent <= 75.0",
+    "description": "Preventing Mac host RAM from exceeding 75% to preserve Antigravity chat and IDE execution during 70B RPC sharding.",
+    "skills_required": [
+      "Dynamic Memory Paging",
+      "Quantization IQ2/Q4_K_M",
+      "Active Process Eviction"
+    ],
+    "bounty_multiplier": 6.0,
+    "current_val": "66.8%",
+    "urgency_score": 2.23,
+    "is_actively_straining": false
+  },
+  {
+    "id": "ble_gatt_128hz_telemetry_desync",
+    "title": "Movesense 128Hz GATT IMU/ECG & Polar H10 Dual-Stream Collision",
+    "category": "HARDWARE_BLE_INTEGRATION",
+    "severity": "HIGH",
+    "weight": 1.35,
+    "target_metric": "telemetry_packet_loss_pct < 0.5",
+    "description": "Cross-device Bluetooth characteristic contention between 128Hz IMU stream and Polar RR intervals in lauburu_compute_hub.",
+    "skills_required": [
+      "Zero-Copy Ring Buffer",
+      "Rust/Dart FFI",
+      "Non-blocking Threading"
+    ],
+    "bounty_multiplier": 8.0,
+    "current_val": "128Hz IMU Flowing",
+    "urgency_score": 1.8
+  },
+  {
+    "id": "android_doze_termux_daemon_killer",
+    "title": "Android OS Doze Mode & Phantom Process Killer Suppression",
+    "category": "MOBILE_EDGE_PERSISTENCE",
+    "severity": "HIGH",
+    "weight": 1.3,
+    "target_metric": "termux_sshd_and_rpc_alive_pct == 100.0",
+    "description": "Ensuring Termux ggml-rpc-server on port 50052 and OpenSSH on port 8022 run 24/7 on Samsung S20+ and Pixel without OEM task-killer termination.",
+    "skills_required": [
+      "AppOps Background Permissions",
+      "WakeLock Management",
+      "Keepalive Supervisor"
+    ],
+    "bounty_multiplier": 7.5,
+    "current_val": "24/7 Keepalive Active",
+    "urgency_score": 1.6
+  },
+  {
+    "id": "dart_rust_zero_copy_ffi",
+    "title": "High-Frequency Biosignal Serialization Bottleneck",
+    "category": "APPLICATION_CORE",
+    "severity": "MEDIUM",
+    "weight": 1.15,
+    "target_metric": "dart_gc_pause_time_ms < 2.0",
+    "description": "Eliminating Flutter Dart garbage collection pauses during real-time 512Hz ECG waveform graph rendering.",
+    "skills_required": [
+      "package:ffigen",
+      "Direct Pointer Transfer",
+      "Custom Painter Vectorization"
+    ],
+    "bounty_multiplier": 6.2,
+    "current_val": "0.8ms Pause Time",
+    "urgency_score": 1.3
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "timestamp": 1787878597.740451,
+  "nodes": {
+    "L1_Mac_Node": {
+      "ip": "100.119.199.76",
+      "latency": 0.252,
+      "status": "ONLINE"
+    },
+    "L2_MacBook_Pro": {
+      "ip": "100.103.212.21",
+      "latency": 26.892,
+      "status": "ONLINE"
+    },
+    "L3_Linux_Head": {
+      "ip": "100.101.39.98",
+      "latency": 9.956,
+      "status": "ONLINE"
+    },
+    "L4_Linux_Tablet": {
+      "ip": "100.81.92.125",
+      "latency": "--",
+      "status": "OFFLINE"
+    },
+    "L5_MacBook_Air": {
+      "ip": "100.93.158.96",
+      "latency": 38.835,
+      "status": "ONLINE"
+    },
+    "L6_Pixel_10_Pro": {
+      "ip": "100.73.38.87",
+      "latency": 9.652,
+      "status": "ONLINE"
+    },
+    "L7_Samsung_S20": {
+      "ip": "100.84.40.95",
+      "latency": 62.912,
+      "status": "ONLINE"
+    },
+    "GW_Router": {
+      "ip": "100.122.185.123",
+      "latency": 14.225,
+      "status": "ONLINE"
+    }
+  }
+}

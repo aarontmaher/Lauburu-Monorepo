@@ -1,0 +1,1 @@
+/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_tui_prototypes/rust_ratatui/target/debug/canonical_tui_rust: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_tui_prototypes/rust_ratatui/src/main.rs

@@ -1,0 +1,22 @@
+#!/usr/bin/expect -f
+set timeout 30
+
+spawn ssh -o StrictHostKeyChecking=no linux@100.101.39.98
+expect "assword:"
+send "goldfighting1\r"
+expect "\\$"
+send "mkdir -p ~/nas_samba && mv /tmp/docker-compose.samba.yml ~/nas_samba/docker-compose.yml\r"
+expect "\\$"
+send "cd ~/nas_samba\r"
+expect "\\$"
+send "sudo docker-compose up -d\r"
+expect {
+    "assword" {
+        send "goldfighting1\r"
+        expect "\\$"
+    }
+    "\\$" { }
+}
+send "sudo docker ps | grep samba\r"
+expect "\\$"
+send "exit\r"

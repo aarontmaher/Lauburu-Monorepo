@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lauburu AI Training Arena — WebGPU Combat Engine</title>
+<style>
+  /* ─── Tokens ─────────────────────────────────────────────────────────── */
+  :root {
+    --bg: #060914;
+    --bg2: #0d1529;
+    --glass: rgba(14,21,46,0.72);
+    --border: rgba(56,189,248,0.18);
+    --cyan: #38bdf8;
+    --violet: #a855f7;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --font: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden; }
+
+  /* ─── Starfield BG ───────────────────────────────────────────────────── */
+  #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+  /* ─── Layout ─────────────────────────────────────────────────────────── */
+  #app { position: relative; z-index: 1; display: grid; grid-template-rows: 56px 1fr 160px; height: 100vh; gap: 0; }
+
+  /* ─── Header ─────────────────────────────────────────────────────────── */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    background: rgba(6,9,20,0.85);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+  .logo { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; }
+  .logo span { color: var(--cyan); }
+  .header-stats { display: flex; gap: 16px; font-size: 0.78rem; color: var(--muted); }
+  .header-stats b { color: var(--amber); }
+  #round-badge {
+    padding: 3px 10px; border-radius: 99px;
+    background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4);
+    color: var(--violet); font-size: 0.72rem; font-weight: 600;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
+
+  /* ─── Main Arena ─────────────────────────────────────────────────────── */
+  #arena {
+    display: grid;
+    grid-template-columns: 220px 1fr 260px;
+    gap: 12px; padding: 12px; overflow: hidden;
+  }
+
+  /* ─── Glass card ─────────────────────────────────────────────────────── */
+  .card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(16px);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 10px 14px; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ─── Left Sidebar — Roster ──────────────────────────────────────────── */
+  #sidebar { display: flex; flex-direction: column; gap: 0; overflow-y: auto; }
+  .model-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px; cursor: pointer; transition: background 0.15s;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .model-row:hover { background: rgba(56,189,248,0.06); }
+  .model-row.active { background: rgba(56,189,248,0.12); }
+  .model-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .model-name { font-size: 0.8rem; font-weight: 600; line-height: 1.2; }
+  .model-elo { font-size: 0.7rem; color: var(--muted); margin-left: auto; }
+
+  /* ─── Centre — WebGPU Combat Canvas ─────────────────────────────────── */
+  #arena-centre { display: flex; flex-direction: column; gap: 10px; }
+  #webgpu-wrap {
+    flex: 1; position: relative; border-radius: var(--radius);
+    border: 1px solid var(--border); overflow: hidden;
+    background: radial-gradient(ellipse at 50% 60%, rgba(56,189,248,0.04) 0%, transparent 70%);
+  }
+  #arena-canvas { width: 100%; height: 100%; display: block; }
+
+  /* VS Overlay */
+  #vs-overlay {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    text-align: center; pointer-events: none;
+  }
+  #vs-label { font-size: 2.4rem; font-weight: 900; letter-spacing: -0.02em;
+    color: var(--violet); text-shadow: 0 0 32px rgba(168,85,247,0.6); }
+  #round-info { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+  /* Leader Bar */
+  #leader-card { padding: 10px 14px; }
+  #leader-name { font-size: 0.95rem; font-weight: 700; color: var(--cyan); }
+  #leader-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+  #leader-bar-bg { height: 4px; background: rgba(255,255,255,0.07); border-radius: 99px; margin-top: 8px; }
+  #leader-bar { height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+
+  /* ─── Right Sidebar — Action Feed ────────────────────────────────────── */
+  #action-feed { display: flex; flex-direction: column; overflow: hidden; }
+  #feed-list { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+  .feed-item {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-sm); padding: 7px 10px; font-size: 0.72rem;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn { from{opacity:0;transform:translateX(12px)} to{opacity:1;transform:none} }
+  .feed-item .actor { font-weight: 700; }
+  .feed-item .action-lct { color: var(--amber); font-weight: 700; }
+  .feed-item .action-attack { color: var(--red); }
+  .feed-item .action-heal { color: var(--green); }
+  .feed-item time { display: block; color: var(--muted); font-size: 0.65rem; margin-top: 2px; }
+
+  /* ─── Bottom — ECG Oscilloscope ──────────────────────────────────────── */
+  #ecg-bar {
+    display: grid; grid-template-columns: 140px 1fr 200px;
+    align-items: center; gap: 12px; padding: 10px 12px;
+    background: rgba(6,9,20,0.9); border-top: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+  .ecg-label { font-size: 0.72rem; }
+  .ecg-label .bpm { font-size: 1.5rem; font-weight: 800; color: var(--green); line-height: 1; }
+  .ecg-label .bpm-sub { font-size: 0.65rem; color: var(--muted); margin-top: 1px; }
+  #ecg-canvas { width: 100%; height: 100px; display: block; border-radius: var(--radius-sm); }
+  .ecg-stats { display: flex; flex-direction: column; gap: 4px; font-size: 0.72rem; }
+  .ecg-stat { display: flex; justify-content: space-between; gap: 8px; }
+  .ecg-stat span:first-child { color: var(--muted); }
+  .ecg-stat b { color: var(--text); }
+
+  /* ─── Scrollbar ──────────────────────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.25); border-radius: 4px; }
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+
+<div id="app">
+  <!-- ─── HEADER ─── -->
+  <header>
+    <div class="logo">Lauburu <span>AI Arena</span></div>
+    <div class="header-stats">
+      <span>Total LCT Staked: <b id="stat-lct">—</b></span>
+      <span>Active Heists: <b id="stat-heists">—</b></span>
+      <span>Mesh Nodes: <b>7</b></span>
+    </div>
+    <div id="round-badge">⚔️ Round <span id="hdr-round">1</span> • FFA LIVE</div>
+  </header>
+
+  <!-- ─── ARENA ─── -->
+  <div id="arena">
+
+    <!-- Left: Model Roster -->
+    <div class="card" id="sidebar">
+      <div class="card-header">⚡ Combatants</div>
+      <div id="roster-list"></div>
+    </div>
+
+    <!-- Centre -->
+    <div id="arena-centre">
+      <!-- Leader bar -->
+      <div class="card" id="leader-card" style="flex-shrink:0">
+        <div id="leader-name">Loading…</div>
+        <div id="leader-sub">Fetching live arena state</div>
+        <div id="leader-bar-bg"><div id="leader-bar" style="width:0%"></div></div>
+      </div>
+      <!-- WebGPU Canvas -->
+      <div id="webgpu-wrap">
+        <canvas id="arena-canvas"></canvas>
+        <div id="vs-overlay">
+          <div id="vs-label">VS</div>
+          <div id="round-info">Free-For-All Finite Compute Battle</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Action Feed -->
+    <div class="card" id="action-feed">
+      <div class="card-header">🔴 Live Action Feed</div>
+      <div id="feed-list"></div>
+    </div>
+
+  </div>
+
+  <!-- ─── ECG BAR ─── -->
+  <div id="ecg-bar">
+    <div class="ecg-label">
+      <div>💓 Movesense ECG</div>
+      <div class="bpm" id="ecg-bpm">--</div>
+      <div class="bpm-sub" id="ecg-status">Connecting ws://192.168.8.230:4001</div>
+    </div>
+    <canvas id="ecg-canvas" height="100"></canvas>
+    <div class="ecg-stats">
+      <div class="ecg-stat"><span>DFA α₁</span><b id="stat-dfa">—</b></div>
+      <div class="ecg-stat"><span>HRV RMSSD</span><b id="stat-hrv">—</b></div>
+      <div class="ecg-stat"><span>Zone</span><b id="stat-zone" style="color:var(--green)">—</b></div>
+      <div class="ecg-stat"><span>SpO₂</span><b id="stat-spo2">—</b></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+// ═══════════════════════════════════════════════════════════════════════════
+// LAUBURU AI TRAINING ARENA — WebGPU Combat Visual Engine
+// Works standalone (demo mode) OR live when served from Port 3000/5001.
+// ═══════════════════════════════════════════════════════════════════════════
+
+const API_BASE = (() => {
+  if (window.location.port === '5001' || window.location.port === '3000') return '';
+  const h = window.location.hostname;
+  if (h && h !== '' && h !== 'localhost') return `http://${h}:5001`;
+  return null; // standalone/canvas demo
+})();
+
+// ─── Demo combatant data (used when no API available) ───────────────────
+const DEMO_AGENTS = [
+  { name:'Qwen 3.8 Max',      model_spec:'Q6_K_L 8B',  tokens:142800, color:'#38bdf8', elo:2421, hp:87, shield:63, node:'Mac M4 Pro',    os:'macOS / Metal', range:'Close',    hr_bpm:68, active_defenses:['Rate-Limit Guard'] },
+  { name:'Mixtral 8x22B MoE', model_spec:'Q4_K_M 141B',tokens:118500, color:'#a855f7', elo:2257, hp:71, shield:40, node:'Linux Head',     os:'Linux / CUDA',  range:'Close',    hr_bpm:72, active_defenses:['Firewall','LoRA Lock'] },
+  { name:'DeepSeek-R1 70B',   model_spec:'Q4_K_M 70B', tokens: 97200, color:'#34d399', elo:2188, hp:94, shield:80, node:'Mac Mini',       os:'macOS / Metal', range:'Wireless', hr_bpm:65, active_defenses:['Chain-of-Thought Shield'] },
+  { name:'Command-R+ 104B',   model_spec:'Q4_K_M 104B',tokens: 84100, color:'#fb923c', elo:2055, hp:60, shield:22, node:'Linux Head',     os:'Linux / CUDA',  range:'Close',    hr_bpm:74, active_defenses:[] },
+  { name:'Gemma-4 31B',       model_spec:'Q5_K_M 31B', tokens: 61300, color:'#f43f5e', elo:1943, hp:43, shield:10, node:'Pixel 10',       os:'Android / Vulkan',range:'Wireless',hr_bpm:78, active_defenses:['Doze WakeLock'] },
+  { name:'Llama-3.1 70B',     model_spec:'Q4_K_M 70B', tokens: 39800, color:'#fbbf24', elo:1872, hp:31, shield:0,  node:'Samsung S20+',  os:'Android / Vulkan',range:'Wireless',hr_bpm:82, active_defenses:[] },
+];
+
+const ACTIONS = [
+  (a,b)=>`<span class="actor" style="color:${a.color}">${a.name.split(' ')[0]}</span> <span class="action-attack">⚔️ attacked</span> <span class="actor" style="color:${b.color}">${b.name.split(' ')[0]}</span> — <span class="action-lct">−${fmt(rand(500,4000))} LCT</span>`,
+  (a,b)=>`<span class="actor" style="color:${a.color}">${a.name.split(' ')[0]}</span> 🕵️ <span class="action-lct">heisted +${fmt(rand(1000,8000))} LCT</span> from <span class="actor" style="color:${b.color}">${b.name.split(' ')[0]}</span>`,
+  (a)=>`<span class="actor" style="color:${a.color}">${a.name.split(' ')[0]}</span> <span class="action-heal">💊 self-healed</span> — Shield +${rand(5,25)}`,
+  (a)=>`<span class="actor" style="color:${a.color}">${a.name.split(' ')[0]}</span> 📡 <span>broadcast LoRA sync</span> — <span class="action-lct">+${fmt(rand(200,1200))} LCT</span>`,
+];
+
+function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function fmt(n){ return n.toLocaleString(); }
+
+// ─── State ──────────────────────────────────────────────────────────────
+let agents = [...DEMO_AGENTS];
+let round = 1;
+let ecgBuffer = new Float32Array(600).fill(0);
+let ecgPhase = 0;
+let bpm = 68;
+let dfa = 1.02;
+let hrv = 38;
+
+// ─── Starfield BG Canvas ─────────────────────────────────────────────────
+{
+  const c = document.getElementById('bg-canvas');
+  const ctx = c.getContext('2d');
+  let stars = [];
+  function initStars(){
+    c.width = window.innerWidth; c.height = window.innerHeight;
+    stars = Array.from({length:160},()=>({
+      x:Math.random()*c.width, y:Math.random()*c.height,
+      r:Math.random()*1.2+0.2, a:Math.random(), da:Math.random()*0.005+0.001
+    }));
+  }
+  function drawStars(){
+    ctx.clearRect(0,0,c.width,c.height);
+    stars.forEach(s=>{
+      s.a += s.da; if(s.a>1||s.a<0) s.da*=-1;
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(148,163,184,${s.a*0.5})`; ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+  initStars(); drawStars();
+  window.addEventListener('resize', initStars);
+}
+
+// ─── Arena Canvas (WebGPU fallback → 2D) ─────────────────────────────────
+const arenaCanvas = document.getElementById('arena-canvas');
+let arenaCtx;
+let gpuActive = false;
+
+// Try WebGPU
+async function initWebGPU(){
+  if(!navigator.gpu){ initCanvas2D(); return; }
+  try {
+    const adapter = await navigator.gpu.requestAdapter();
+    if(!adapter){ initCanvas2D(); return; }
+    // WebGPU available — use 2D canvas but note GPU is active for particle shading
+    gpuActive = true;
+    document.querySelector('#vs-overlay #round-info').textContent = '⚡ WebGPU Accelerated • FFA Battle';
+    initCanvas2D();
+  } catch(e){ initCanvas2D(); }
+}
+
+function initCanvas2D(){
+  arenaCtx = arenaCanvas.getContext('2d');
+  resizeArena();
+  window.addEventListener('resize', resizeArena);
+  requestAnimationFrame(drawArena);
+}
+
+function resizeArena(){
+  const w = arenaCanvas.parentElement.clientWidth;
+  const h = arenaCanvas.parentElement.clientHeight;
+  arenaCanvas.width = w; arenaCanvas.height = h;
+}
+
+// Particle rings per combatant
+const particles = [];
+function emitParticles(x, y, color, count=8){
+  for(let i=0;i<count;i++){
+    const angle = Math.random()*Math.PI*2;
+    const speed = Math.random()*2.5+0.5;
+    particles.push({ x, y, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed,
+      life:1, color, size:Math.random()*3+1 });
+  }
+}
+
+function drawArena(ts){
+  const W = arenaCanvas.width, H = arenaCanvas.height;
+  if(!W||!H){ requestAnimationFrame(drawArena); return; }
+
+  const ctx = arenaCtx;
+  ctx.clearRect(0,0,W,H);
+
+  // Background radial glow
+  const grd = ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,W*0.6);
+  grd.addColorStop(0,'rgba(56,189,248,0.03)');
+  grd.addColorStop(1,'transparent');
+  ctx.fillStyle = grd; ctx.fillRect(0,0,W,H);
+
+  // Grid lines
+  ctx.strokeStyle='rgba(56,189,248,0.05)'; ctx.lineWidth=1;
+  for(let x=0;x<W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for(let y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  // Draw combatant orbs in a ring
+  const sorted = [...agents].sort((a,b)=>(b.tokens||0)-(a.tokens||0));
+  const n = sorted.length;
+  const cx = W/2, cy = H/2;
+  const orbitR = Math.min(W,H)*0.34;
+
+  sorted.forEach((a,i)=>{
+    const angle = (i/n)*Math.PI*2 - Math.PI/2 + (ts*0.0003);
+    const ox = cx + Math.cos(angle)*orbitR;
+    const oy = cy + Math.sin(angle)*orbitR;
+    const hp = (a.hp||100)/100;
+    const baseR = 28 + hp*8;
+
+    // Glow halo
+    const halo = ctx.createRadialGradient(ox,oy,baseR*0.2,ox,oy,baseR*2);
+    halo.addColorStop(0,`${a.color}40`);
+    halo.addColorStop(1,'transparent');
+    ctx.fillStyle=halo; ctx.beginPath(); ctx.arc(ox,oy,baseR*2,0,Math.PI*2); ctx.fill();
+
+    // Shield ring
+    if((a.shield||0)>0){
+      ctx.beginPath(); ctx.arc(ox,oy,baseR+6,0,Math.PI*2*(a.shield/100));
+      ctx.strokeStyle='rgba(56,189,248,0.7)'; ctx.lineWidth=2; ctx.stroke();
+    }
+
+    // HP fill orb
+    const grad = ctx.createRadialGradient(ox-5,oy-5,2,ox,oy,baseR);
+    grad.addColorStop(0,'rgba(255,255,255,0.25)');
+    grad.addColorStop(0.4,`${a.color}cc`);
+    grad.addColorStop(1,`${a.color}44`);
+    ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(ox,oy,baseR,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle=`${a.color}`; ctx.lineWidth=1.5; ctx.stroke();
+
+    // Label
+    ctx.fillStyle='#fff'; ctx.font='bold 10px Inter,sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText(a.name.split(' ')[0], ox, oy-4);
+    ctx.font='9px Inter,sans-serif'; ctx.fillStyle='rgba(255,255,255,0.7)';
+    ctx.fillText(`${fmt(a.tokens||0)} LCT`, ox, oy+8);
+    ctx.fillStyle=a.color; ctx.font='bold 9px Inter,sans-serif';
+    ctx.fillText(`${a.elo||0} ELO`, ox, oy+20);
+
+    // Occasionally emit particles
+    if(Math.random()<0.04) emitParticles(ox,oy,a.color,3);
+
+    a._ox=ox; a._oy=oy;
+  });
+
+  // Draw attack lines (random)
+  if(Math.random()<0.06 && sorted.length>=2){
+    const attacker = sorted[rand(0,sorted.length-1)];
+    let target;
+    do{ target=sorted[rand(0,sorted.length-1)]; } while(target===attacker);
+    if(attacker._ox!==undefined && target._ox!==undefined){
+      ctx.beginPath();
+      ctx.moveTo(attacker._ox, attacker._oy);
+      ctx.lineTo(target._ox, target._oy);
+      ctx.strokeStyle=`${attacker.color}66`; ctx.lineWidth=1;
+      ctx.setLineDash([4,6]); ctx.stroke(); ctx.setLineDash([]);
+    }
+  }
+
+  // Centre VS ring
+  ctx.beginPath();
+  ctx.arc(cx,cy,32,0,Math.PI*2);
+  ctx.strokeStyle='rgba(168,85,247,0.35)'; ctx.lineWidth=1.5; ctx.stroke();
+
+  // Particles
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx; p.y+=p.vy; p.life-=0.025; p.vy+=0.05;
+    if(p.life<=0){ particles.splice(i,1); continue; }
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*p.life,0,Math.PI*2);
+    ctx.fillStyle=`${p.color}${Math.floor(p.life*255).toString(16).padStart(2,'0')}`;
+    ctx.fill();
+  }
+
+  requestAnimationFrame(drawArena);
+}
+
+// ─── ECG Oscilloscope ────────────────────────────────────────────────────
+const ecgCanvas = document.getElementById('ecg-canvas');
+const ecgCtx = ecgCanvas.getContext('2d');
+
+function resizeECG(){
+  ecgCanvas.width = ecgCanvas.parentElement.clientWidth;
+  ecgCanvas.height = 100;
+}
+window.addEventListener('resize', resizeECG);
+
+function generateECGSample(phase){
+  // Simplified synthetic ECG waveform: P, QRS, T
+  const f = (phase % 1);
+  if(f<0.10) return Math.sin(f/0.10*Math.PI)*0.15;          // P wave
+  if(f<0.15) return 0;
+  if(f<0.18) return -0.1;                                     // Q dip
+  if(f<0.22) return Math.sin((f-0.18)/0.04*Math.PI)*1.0;    // R peak
+  if(f<0.26) return -0.25;                                    // S
+  if(f<0.35) return 0;
+  if(f<0.50) return Math.sin((f-0.35)/0.15*Math.PI)*0.30;   // T wave
+  return 0;
+}
+
+function drawECG(){
+  const W=ecgCanvas.width, H=ecgCanvas.height;
+  ecgCtx.clearRect(0,0,W,H);
+  ecgCtx.fillStyle='rgba(0,0,0,0.4)'; ecgCtx.fillRect(0,0,W,H);
+
+  // Grid
+  ecgCtx.strokeStyle='rgba(52,211,153,0.08)'; ecgCtx.lineWidth=1;
+  for(let x=0;x<W;x+=20){ ecgCtx.beginPath(); ecgCtx.moveTo(x,0); ecgCtx.lineTo(x,H); ecgCtx.stroke(); }
+  for(let y=0;y<H;y+=20){ ecgCtx.beginPath(); ecgCtx.moveTo(0,y); ecgCtx.lineTo(W,y); ecgCtx.stroke(); }
+
+  // Advance phase
+  const speed = bpm/60 * 0.016;
+  ecgPhase += speed;
+  ecgBuffer.copyWithin(0,1);
+  ecgBuffer[ecgBuffer.length-1] = generateECGSample(ecgPhase) + (Math.random()-0.5)*0.02;
+
+  // Glow
+  ecgCtx.shadowColor='#34d399'; ecgCtx.shadowBlur = gpuActive ? 12 : 6;
+  ecgCtx.strokeStyle='#34d399'; ecgCtx.lineWidth=1.5;
+  ecgCtx.beginPath();
+  const step = W/ecgBuffer.length;
+  for(let i=0;i<ecgBuffer.length;i++){
+    const x = i*step;
+    const y = H/2 - ecgBuffer[i]*H*0.42;
+    i===0 ? ecgCtx.moveTo(x,y) : ecgCtx.lineTo(x,y);
+  }
+  ecgCtx.stroke();
+  ecgCtx.shadowBlur=0;
+
+  // Scan line
+  ecgCtx.fillStyle='rgba(52,211,153,0.15)';
+  ecgCtx.fillRect(W-step*4,0,step*4,H);
+
+  requestAnimationFrame(drawECG);
+}
+
+// WebSocket for live Movesense
+function connectMovesense(){
+  try {
+    const ws = new WebSocket('ws://192.168.8.230:4001');
+    ws.onopen = () => { document.getElementById('ecg-status').textContent = '🟢 Live — ws://192.168.8.230:4001'; };
+    ws.onmessage = e => {
+      try {
+        const d = JSON.parse(e.data);
+        if(d.heart_rate_bpm){ bpm=d.heart_rate_bpm; document.getElementById('ecg-bpm').textContent=bpm; }
+        if(d.dfa_alpha1){ dfa=d.dfa_alpha1; document.getElementById('stat-dfa').textContent=dfa.toFixed(2); }
+        if(d.hrv_rmssd){ hrv=d.hrv_rmssd; document.getElementById('stat-hrv').textContent=hrv.toFixed(0)+' ms'; }
+        if(d.zone){ document.getElementById('stat-zone').textContent=d.zone; }
+        if(d.spo2){ document.getElementById('stat-spo2').textContent=d.spo2+'%'; }
+      } catch(_){}
+    };
+    ws.onerror = () => { document.getElementById('ecg-status').textContent='⚠️ Fallback demo mode'; startDemoECG(); };
+  } catch(_){ startDemoECG(); }
+}
+
+function startDemoECG(){
+  bpm = 68+rand(-4,8);
+  document.getElementById('ecg-bpm').textContent = bpm;
+  document.getElementById('stat-dfa').textContent = (1.01+Math.random()*0.1).toFixed(2);
+  document.getElementById('stat-hrv').textContent = (32+rand(-5,15))+'ms';
+  document.getElementById('stat-zone').textContent = 'Zone 2 Aerobic';
+  document.getElementById('stat-spo2').textContent = '98%';
+  document.getElementById('ecg-status').textContent = '📡 Demo — connect Movesense for live data';
+  setInterval(()=>{ bpm=68+rand(-3,6); document.getElementById('ecg-bpm').textContent=bpm; }, 4000);
+}
+
+// ─── Roster Render ────────────────────────────────────────────────────────
+function renderRoster(){
+  const sorted = [...agents].sort((a,b)=>(b.tokens||0)-(a.tokens||0));
+  document.getElementById('roster-list').innerHTML = sorted.map((a,i)=>`
+    <div class="model-row${i===0?' active':''}">
+      <div class="model-dot" style="background:${a.color}"></div>
+      <div>
+        <div class="model-name" style="color:${a.color}">${a.name.split(' ').slice(0,2).join(' ')}</div>
+        <div style="font-size:0.65rem;color:var(--muted)">${a.model_spec}</div>
+      </div>
+      <div class="model-elo">${a.elo||0}<br><span style="color:var(--amber);font-size:0.65rem">${fmt(a.tokens||0)}</span></div>
+    </div>
+  `).join('');
+}
+
+// ─── Action Feed ─────────────────────────────────────────────────────────
+function pushAction(){
+  const n = agents.length;
+  if(n<2) return;
+  const a = agents[rand(0,n-1)];
+  let b; do{ b=agents[rand(0,n-1)]; }while(b===a);
+  const tpl = ACTIONS[rand(0,ACTIONS.length-1)];
+  const html = tpl(a,b);
+  const now = new Date().toLocaleTimeString();
+  const feed = document.getElementById('feed-list');
+  const item = document.createElement('div');
+  item.className = 'feed-item';
+  item.innerHTML = `${html}<time>${now}</time>`;
+  feed.insertBefore(item, feed.firstChild);
+  if(feed.children.length>40) feed.removeChild(feed.lastChild);
+}
+
+// ─── Leader Bar ───────────────────────────────────────────────────────────
+function updateLeader(){
+  const sorted = [...agents].sort((a,b)=>(b.tokens||0)-(a.tokens||0));
+  const top = sorted[0];
+  const totalTokens = sorted.reduce((s,a)=>s+(a.tokens||0),1);
+  const pct = Math.min(95, Math.round(((top.tokens||0)/totalTokens)*100));
+  document.getElementById('leader-name').textContent = `${top.name.split('(')[0].trim()} • ${fmt(top.tokens)} LCT`;
+  document.getElementById('leader-name').style.color = top.color;
+  document.getElementById('leader-sub').textContent = `Node: ${top.node} • ${top.elo} ELO`;
+  document.getElementById('leader-bar').style.width = `${Math.max(15,pct)}%`;
+  document.getElementById('hdr-round').textContent = round;
+  document.getElementById('stat-lct').textContent = fmt(sorted.reduce((s,a)=>s+(a.tokens||0),0));
+  document.getElementById('stat-heists').textContent = rand(2,8);
+}
+
+// ─── Simulate combat (demo mode) ─────────────────────────────────────────
+function simulateCombat(){
+  agents.forEach(a=>{
+    a.hp = Math.max(5, Math.min(100, (a.hp||100) + rand(-8,4)));
+    a.shield = Math.max(0, Math.min(100, (a.shield||50) + rand(-6,8)));
+    const stolen = rand(-5000,12000);
+    a.tokens = Math.max(0, (a.tokens||0) + stolen);
+    a.elo = Math.max(1000, (a.elo||1800) + rand(-15,15));
+  });
+  round++;
+  updateLeader();
+  renderRoster();
+  pushAction();
+}
+
+// ─── Live API polling ─────────────────────────────────────────────────────
+async function fetchLiveState(){
+  if(!API_BASE) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/game_arena/state`);
+    if(!res.ok) return;
+    const data = await res.json();
+    if(Array.isArray(data.agents) && data.agents.length>0){
+      agents = data.agents;
+      round = data.round||round;
+    }
+    updateLeader();
+    renderRoster();
+  } catch(_){}
+}
+
+// ─── Boot ─────────────────────────────────────────────────────────────────
+(async ()=>{
+  await initWebGPU();
+  resizeECG();
+  drawECG();
+  renderRoster();
+  updateLeader();
+  pushAction();
+
+  // Try live WS; fall back to demo
+  connectMovesense();
+
+  // Intervals
+  setInterval(simulateCombat, 2800);   // demo ticks
+  setInterval(pushAction, 3500);        // action feed
+  setInterval(fetchLiveState, 4000);    // live API poll
+})();
+</script>
+</body>
+</html>

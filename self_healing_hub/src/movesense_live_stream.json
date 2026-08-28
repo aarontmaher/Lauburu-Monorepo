@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-08-24T00:25:20Z",
+  "sensor_model": "Movesense HR+ 128Hz GATT (Medical Class IIa)",
+  "ingestion_pipeline": "PySpark 3.5 Structured Streaming Vectorizer",
+  "sample_rate_hz": 128,
+  "stream_status": "ACTIVE_STREAMING",
+  "biometrics": {
+    "heart_rate_bpm": 138.0,
+    "rr_interval_ms": [
+      435.0,
+      432.1,
+      440.0,
+      438.2,
+      434.5,
+      436.0,
+      439.1,
+      431.0,
+      435.8,
+      437.2,
+      433.0,
+      436.5,
+      438.0,
+      435.2,
+      434.0
+    ],
+    "artifact_filter": "Kamath 2004 20% Clinical RR Filter (Active)",
+    "rmssd_ms": 4.07,
+    "dfa_alpha1": 0.4,
+    "dfa_alpha1_target": 0.75,
+    "zone_alignment": "Zone 4/5 (Anaerobic Threshold)",
+    "zone_color": "#ef4444",
+    "vo2_max_ml_kg_min": 39.8,
+    "ecg_signal_to_noise_ratio_db": 28.4,
+    "window_duration_seconds": 120
+  },
+  "kinematics_imu_12axis": {
+    "accelerometer_g": {
+      "x": 0.12,
+      "y": 0.05,
+      "z": 0.98
+    },
+    "gyroscope_dps": {
+      "x": 1.2,
+      "y": -0.8,
+      "z": 0.4
+    },
+    "total_dynamic_g": 0.989,
+    "mechanical_power_watts": 165.3,
+    "cadence_spm": 164,
+    "posture_alignment_score_pct": 98.6
+  },
+  "epoch_time": 1787531120.31374,
+  "game_and_apps_feed": {
+    "arena_biometric_shield_boost": 35,
+    "arena_mining_yield_multiplier": 1.05,
+    "super_app_sync_status": "ONLINE (Port 5001 Broadcast)",
+    "zero_simulated_data_cert": "PASSED (Live Movesense GATT Pipeline)"
+  }
+}

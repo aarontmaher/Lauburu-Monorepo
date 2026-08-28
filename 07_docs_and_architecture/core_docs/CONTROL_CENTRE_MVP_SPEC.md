@@ -1,0 +1,719 @@
+# Admin/Dev Control Centre — implementation-ready MVP spec
+
+A single screen on the iPhone that answers "what's happening with
+the project right now?" without screenshots, terminal access, or
+Apple Notes. Reads from the Cloudflare Worker, which composes
+one `ControlCentreSnapshot` from the existing connector tables
+plus two small additions.
+
+This doc is the spec. **No React UI implementation in this
+batch.** No Worker route added yet. The scope here is: schema,
+composition, missing tables, screen layout, acceptance criteria,
+phone test checklist, implementation phases.
+
+Companion to:
+- `docs/MCP_PHONE_CONTROL_CENTRE.md` (live MCP read paths)
+- `docs/CONNECTOR_SUPABASE_SCHEMA.md` (envelope + safety model)
+- `docs/APP_DEVELOPMENTS.md` (active priorities)
+- `docs/BACKLOG_AUTOMATION_SYSTEM.md` (three-lane risk model)
+
+Updated 2026-05-07.
+
+## 1. Snapshot schema
+
+One JSON object served by `GET /api/control_centre` (Phase 1
+adds this route). All free-text fields pass through the
+existing two-pass redactor before serialisation. Status labels
+use the four-value enum from `APP_DEVELOPMENTS.md`:
+`live` / `repo-only` / `tester-build` / `blocked`.
+
+```ts
+interface ControlCentreSnapshot {
+  schemaVersion: 1;
+  /** ISO Z. The most recent timestamp across the four input tables. */
+  updatedAt: string;
+  /** ISO Z. When the Worker assembled this response. */
+  generatedAt: string;
+
+  /**
+   * Single-glance connection state for the Status Banner. Always
+   * non-null. Values:
+   *   'connected'  — Worker reachable AND every connector_* read
+   *                  returned a row (`dataSource.source === 'supabase'`
+   *                  on every input route) AND data is fresh
+   *                  (`updatedAt` within the freshness window).
+   *   'stale'      — Worker reachable; some/all reads succeeded
+   *                  but `updatedAt` is older than the freshness
+   *                  window. UI shows an amber chip + "stale Xm ago".
+   *   'fallback'   — Worker reachable but at least one upstream read
+   *                  returned `dataSource.source === 'placeholder'`
+   *                  (table empty / Supabase env unset). UI shows a
+   *                  red chip with the placeholder reason.
+   *   'offline'    — Network fetch failed; phone rendered the last
+   *                  cached snapshot. Set by the mobile client, not
+   *                  the Worker.
+   */
+  mcpConnectionStatus: 'connected' | 'stale' | 'fallback' | 'offline';
+  /** Default freshness window: 10 minutes. Beyond this →
+   *  mcpConnectionStatus = 'stale'. */
+  freshnessWindowMs: number;
+
+  /** What is currently being worked on. */
+  priority: ControlCentreCard;
+  /** What's stopping the priority. Null when nothing blocks. */
+  blocker: ControlCentreCard | null;
+  /** Single actionable next step. */
+  nextAction: ControlCentreCard;
+
+  /** One row per coder lane the bridge has seen. */
+  lanes: ControlCentreLane[];
+
+  /** Mobile build / store-pipeline state. */
+  buildDeploy: ControlCentreBuildDeploy;
+
+  /** Things only Aaron can do. Most recent first; cap 10. */
+  manualSteps: ControlCentreManualStep[];
+
+  /** Single top item from the structured backlog. Null when empty. */
+  topBacklog: ControlCentreBacklogItem | null;
+
+  /** Pointer to the prompt library entries the phone can copy/paste. */
+  promptLibrary: ControlCentrePromptRef[];
+}
+
+interface ControlCentreCard {
+  /** Free text, ≤280 chars, redacted. */
+  text: string;
+  /** UI badge label. */
+  status: 'live' | 'repo-only' | 'tester-build' | 'blocked';
+  /** ISO Z. Source row's updated_at. */
+  updatedAt: string;
+}
+
+interface ControlCentreLane {
+  laneId: 'claude' | 'codex' | 'claude_chat' | 'chatgpt' | 'cowork';
+  status: 'idle' | 'working' | 'blocked' | 'needs_user' | 'needs_review' | 'done';
+  /** Compressed summary, ≤140 chars, redacted. Suitable for one card line. */
+  oneLine: string;
+  /** ISO Z. Null when the lane has never been seen. */
+  lastSeenAt: string | null;
+  /** True when currentPromptId is set (lane is mid-work). */
+  hasOpenPrompt: boolean;
+}
+
+interface ControlCentreBuildDeploy {
+  android: {
+    versionCode: number | null;
+    /** Highest-priority status enum across github/play. */
+    status: 'live' | 'repo-only' | 'tester-build' | 'blocked';
+    /** Free text, ≤120 chars, redacted. */
+    lastChange: string;
+    updatedAt: string;
+  };
+  ios: {
+    buildNumber: string | null;
+    status: 'live' | 'repo-only' | 'tester-build' | 'blocked';
+    lastChange: string;
+    updatedAt: string;
+  };
+}
+
+interface ControlCentreManualStep {
+  /** Stable id (UUID v7 or generated text). */
+  id: string;
+  /** Free text, ≤200 chars, redacted. */
+  text: string;
+  category: 'supabase' | 'cloudflare' | 'eas' | 'play_console' | 'app_store_connect' | 'github' | 'other';
+  /** True when the step is high-risk and gates the rest of the priority. */
+  blocking: boolean;
+  /** Lane-3 items per BACKLOG_AUTOMATION_SYSTEM.md. */
+  approvalRequired: boolean;
+  approval: 'pending' | 'approved' | 'completed' | 'declined';
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ControlCentreBacklogItem {
+  id: string;
+  /** ≤120 chars, redacted. */
+  title: string;
+  /** 1–11 ladder per IN_APP_DEV_BACKLOG_PLAN.md. Lower = higher priority. */
+  priority: number;
+  status: 'live' | 'repo-only' | 'tester-build' | 'blocked';
+  type:
+    | 'bug' | 'ux_issue' | 'feature_idea' | 'release_blocker'
+    | 'health_data_issue' | 'ai_coaching_idea'
+    | 'monetisation_payment_idea' | 'railway_backend_issue'
+    | 'source_integration_issue';
+  riskLevel: 'low' | 'medium' | 'high';
+  needsBuild: boolean;
+  updatedAt: string;
+}
+
+interface ControlCentrePromptRef {
+  id: string;
+  /** ≤80 chars. Plain title, never the prompt body. */
+  title: string;
+  /** Stable enum the mobile prompt-template generator already exposes. */
+  templateId: string;
+}
+```
+
+## EAS Build Cost Control
+
+The control centre may display build state, workflow state, and
+copyable handoff prompts. It must not encourage a build as the
+default next step.
+
+Coders may say a feature or patch is
+`Implementation-complete, awaiting Agent functional confirmation`
+when code is committed, typecheck/tests pass, no obvious blockers
+remain, and expected behaviour is clearly described. They must not
+request, trigger, or recommend a new EAS/tester build yet.
+
+A new EAS build is allowed only after all are true:
+
+1. Agent performs a functional audit of the completed change.
+2. Agent confirms the change is worthwhile to test on-device.
+3. The change is bundled with other meaningful mobile changes where
+   possible.
+4. Typecheck/tests pass.
+5. Aaron explicitly approves the EAS build.
+
+Default is no EAS build, no tester build, no "quick build to check",
+no build for docs/backend/MCP-only changes, and no build for tiny
+copy/UI tweaks unless bundled. Use mobile typecheck, unit tests,
+local inspection, simulator/dev-client if already available,
+Admin/Dev MCP status, and Agent audit confirmation instead.
+
+Prompt refs / handoff prompts that mention build work must include:
+"Do not run EAS builds unless Agent has confirmed a worthwhile
+on-device change and Aaron approves."
+
+All prompt refs / handoff prompts must include the MCP-first
+operating rule before the task body. Required order:
+`get_work_status`, `list_pending_suggestions`,
+`get_automation_state`, `get_handoff`, then `/api/control_centre`
+if available. The worker must report MCP state,
+freshness/staleness, chosen next task, and whether fallback
+terminal / control-centre state was needed.
+
+Prompt refs / handoff prompts must also preserve parallel
+non-overlapping coder lanes, the Agent functional confirmation
+gate, the distinction between implementation-complete and fully
+complete, and Aaron approval before any "done" / build-ready
+promotion.
+
+Prompt refs / handoff prompts must also preserve the clear-steps /
+automate-first rule. When follow-up is required, the worker gives
+Aaron exact step-by-step instructions, automates every safe step
+first, and uses Claude / Codex / Agent before asking Aaron. Outputs
+must separate `automated by coder/agent`, `manual Aaron step`, and
+`blocked until Aaron acts`. Aaron should only handle secrets,
+approvals, logins, 2FA, vendor dashboards, or safety-sensitive
+confirmations.
+
+Prompt refs / handoff prompts must also preserve the no-delayed-
+instruction rule. Do not tell Aaron "after Agent / Codex / Claude
+returns, run X." Put follow-up actions, stop conditions, bridge
+writeback, and handoff preservation inside the same worker prompt.
+If Aaron must perform a manual / device action, make that the only
+immediate Aaron action and store later commands in MCP / bridge /
+handoff.
+
+Prompt refs / handoff prompts must store deferred prompts/actions
+with `id`, `owner`, `targetWorker`, `triggerCondition`,
+`promptOrActionText`, `priority`, `createdAt`, `status`, and
+`voidReason` when void. When the trigger condition becomes true, the
+control centre should surface the item as the next prompt/action.
+If the item is obsolete, unsafe, replaced, already completed, or
+irrelevant, mark it `void` or remove it.
+
+Prompt refs / handoff prompts must also preserve the action-ledger
+rule. Every prompt, action, goal, human step, coder step, Agent
+step, or AI step is recorded until evidence proves completion or no
+longer necessary. The control centre may show public-safe counts /
+next-action summaries, but full action text remains admin-gated.
+Every worker output must include actions created, actions completed,
+actions voided/superseded, and the next pending action.
+
+Use status wording: `Implementation-complete, awaiting Agent
+functional confirmation`, `Agent-confirmed, ready for Aaron build
+approval`, `Aaron-approved for EAS build`, and
+`Built/tester-ready`. Do not call mobile work `fully complete` until
+Aaron has tested or approved it.
+
+## 2. Worker composition
+
+Phase 1 adds `GET /api/control_centre` (admin-token-gated). The
+handler composes the snapshot in one pass without writing
+anywhere. Pseudocode:
+
+```ts
+async function buildControlCentreSnapshot(env: Env) {
+  const now = new Date().toISOString();
+  const adapter = getSupabaseAdapter(env);
+  if (!adapter.configured) return placeholderSnapshot(env, now);
+
+  const [workRow, lanesRows, buildRow, handoffRow, manualRows, backlogRow] =
+    await Promise.all([
+      adapter.fetchSingleRowPayload('connector_work_status'),
+      adapter.fetchCoderLaneRows(),
+      adapter.fetchSingleRowPayload('connector_build_status'),
+      adapter.fetchSingleRowPayload('connector_handoff'),
+      adapter.fetchManualSteps(),       // NEW (see § 3)
+      adapter.fetchTopBacklogItem(),    // NEW (see § 3)
+    ]);
+
+  return {
+    schemaVersion: 1,
+    generatedAt: now,
+    updatedAt: maxIsoZ([
+      workRow?.generatedAt, buildRow?.generatedAt, handoffRow?.generatedAt,
+      ...lanesRows.map(r => r.payload.lastSeenAt),
+    ]),
+    priority: cardFromWorkStatus(workRow, 'priority'),
+    blocker: cardFromWorkStatus(workRow, 'blocker'),
+    nextAction: cardFromWorkStatus(workRow, 'nextAction'),
+    lanes: lanesRows.map(rowToControlCentreLane),
+    buildDeploy: composeBuildDeploy(buildRow),
+    manualSteps: manualRows.map(rowToManualStep),
+    topBacklog: backlogRow ? rowToBacklogItem(backlogRow) : null,
+    promptLibrary: STATIC_PROMPT_LIBRARY,
+  };
+}
+```
+
+Mapping rules:
+
+- **priority / nextAction** → `connector_work_status.payload.currentPriority`
+  / `nextAction`. Status label derived: `'blocked'` when blocker is
+  non-null; otherwise `'live'`. Future iterations can pull
+  per-priority status from a richer field.
+- **blocker** → `connector_work_status.payload.currentBlocker`. Null
+  when missing. Status always `'blocked'` when present.
+- **lanes** → `connector_coder_lanes` rows. `oneLine` is
+  `truncate(payload.lastSummary, 140)` after the redactor; if
+  empty, fallback to `${laneId}: ${status}`. `hasOpenPrompt` is
+  `payload.currentPromptId !== null`.
+- **buildDeploy.android.status / .ios.status** → derived from the
+  payload's GitHub / Play / TestFlight status enums:
+  - `failure` / `failed` / `invalid_binary` → `blocked`
+  - `submitted_completed` / `available` / `rolled_out` → `live`
+  - `submitted_draft` / `uploaded_processing` / `success` (build
+    workflow only) → `tester-build`
+  - everything else → `repo-only`.
+- **buildDeploy.\*.lastChange** → free-text summary, e.g.
+  `"v17 / Build 18 — Play submission complete; TestFlight
+  processing"`. Generated server-side; cap 120 chars; redactor
+  applied.
+- **manualSteps** → `connector_manual_steps` (NEW). Most recent
+  first by `updated_at`; cap 10.
+- **topBacklog** → `connector_backlog_items` (NEW),
+  `where status != 'done' order by priority asc limit 1`.
+- **promptLibrary** → static const inside the Worker; not from
+  any table. The mobile app already owns the bodies via
+  `apps/mobile/src/services/prompt-templates.ts`; the snapshot
+  surface only carries titles + template ids so the phone can
+  resolve.
+
+Sanitisation: every string field passes through the existing
+two-pass redactor at the response boundary. The `dataSource`
+discriminator from the underlying routes is collapsed: a single
+top-level `dataSource: 'supabase' | 'placeholder'` field tells
+the consumer whether all four upstream tables backed the
+response or any fell through.
+
+## 3. Missing Supabase tables
+
+**Tables needed: yes — two new tables.** Manual steps and
+backlog items have richer structure than fits cleanly inside
+the existing `connector_handoff` envelope; promoting them to
+their own tables makes the bridge / owner-tap write paths
+explicit.
+
+These get a separate migration `0004_control_centre_tables.sql`
+in the next batch (NOT in this docs-only commit). Spec:
+
+```sql
+-- 0004_control_centre_tables.sql (Phase 2, NOT yet committed)
+
+create table if not exists public.connector_manual_steps (
+  id uuid primary key default gen_random_uuid(),
+  scope text not null default 'default',
+  text text not null check (char_length(text) <= 200),
+  category text not null check (
+    category in ('supabase', 'cloudflare', 'eas', 'play_console',
+                'app_store_connect', 'github', 'other')
+  ),
+  blocking boolean not null default false,
+  approval_required boolean not null default false,
+  approval text not null default 'pending' check (
+    approval in ('pending', 'approved', 'completed', 'declined')
+  ),
+  source text not null default 'owner',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+comment on table public.connector_manual_steps is
+  'Owner/control-centre manual steps. NOT athlete private memory.';
+create index if not exists connector_manual_steps_recent
+  on public.connector_manual_steps (updated_at desc);
+alter table public.connector_manual_steps enable row level security;
+
+create table if not exists public.connector_backlog_items (
+  id uuid primary key default gen_random_uuid(),
+  scope text not null default 'default',
+  title text not null check (char_length(title) <= 120),
+  priority int not null check (priority between 1 and 11),
+  status text not null check (
+    status in ('live', 'repo-only', 'tester-build', 'blocked', 'done')
+  ),
+  type text not null check (
+    type in ('bug', 'ux_issue', 'feature_idea', 'release_blocker',
+            'health_data_issue', 'ai_coaching_idea',
+            'monetisation_payment_idea', 'railway_backend_issue',
+            'source_integration_issue')
+  ),
+  risk_level text not null check (risk_level in ('low', 'medium', 'high')),
+  needs_build boolean not null default false,
+  source text not null default 'owner',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+comment on table public.connector_backlog_items is
+  'Owner/control-centre backlog. NOT athlete private memory.';
+create index if not exists connector_backlog_items_open_priority
+  on public.connector_backlog_items (priority asc, updated_at desc)
+  where status != 'done';
+alter table public.connector_backlog_items enable row level security;
+```
+
+**Approval state:** lives inline on `connector_manual_steps.approval`.
+No separate table needed for the MVP; promote later if approval
+audit history matters.
+
+**Existing tables that need NO change:**
+`connector_work_status`, `connector_coder_lanes`,
+`connector_build_status`, `connector_handoff`,
+`connector_terminal_summary`. The snapshot reads them as-is.
+
+## 4. iPhone screen layout
+
+Single scrollable screen at Admin/Dev → Control Centre. All
+sections are read-only in the MVP (no taps mutate Supabase yet
+— Phase 4 adds the "mark step completed" write path).
+
+```
+┌────────────────────────────────────────┐
+│ [Status Banner]                        │
+│                                        │
+│  MCP: [connected | stale | fallback |  │
+│        offline] · last update Xm ago   │
+│                                        │
+│  PRIORITY                              │
+│   <priority.text>                      │
+│   • <priority.status badge>            │
+│                                        │
+│  BLOCKER (only if non-null)            │
+│   <blocker.text>                       │
+│   • blocked                            │
+│                                        │
+│  NEXT ACTION                           │
+│   <nextAction.text>                    │
+│   • <nextAction.status badge>          │
+│                                        │
+│  generatedAt: <relative time>          │
+├────────────────────────────────────────┤
+│ [Lane Cards]                           │
+│                                        │
+│  ▢ claude       [working]    2m ago    │
+│   <lane.oneLine>                       │
+│                                        │
+│  ▢ codex        [idle]       11m ago   │
+│   <lane.oneLine>                       │
+│                                        │
+│  (≤5 lanes; tap card → no-op in MVP)   │
+├────────────────────────────────────────┤
+│ [Build / Deploy]                       │
+│                                        │
+│  Android v<versionCode> · [status]     │
+│   <android.lastChange>                 │
+│  iOS Build <buildNumber> · [status]    │
+│   <ios.lastChange>                     │
+├────────────────────────────────────────┤
+│ [Manual Steps]                         │
+│                                        │
+│  ◯ <step.text>                         │
+│    <category badge> [approval state]   │
+│  ◯ ...                                 │
+│                                        │
+│  (cap 10; section hidden if 0 steps)   │
+├────────────────────────────────────────┤
+│ [Backlog Preview]                      │
+│                                        │
+│  Top: <topBacklog.title>               │
+│   priority <n> · <type> · <status>     │
+│   risk <riskLevel>                     │
+│                                        │
+│  (link "open full backlog" → existing  │
+│   in-app backlog screen)               │
+├────────────────────────────────────────┤
+│ [Prompt Library]                       │
+│                                        │
+│  • Claude prompt                       │
+│  • Codex prompt                        │
+│  • ChatGPT status prompt               │
+│  • Terminal-check prompt               │
+│  (resolves via existing                │
+│   prompt-templates.ts on the device)   │
+├────────────────────────────────────────┤
+│ [Refresh] (manual fetch)               │
+└────────────────────────────────────────┘
+```
+
+Header behaviour:
+
+- Status Banner is the only section that's always visible.
+- Refresh button calls `GET /api/control_centre` with the admin
+  token. No background polling in MVP.
+- Offline / fetch fail → show last successful snapshot with a
+  "stale, last refreshed Xm ago" badge; do not fabricate data.
+- 403 from the Worker → show "Token misconfigured. Set
+  EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN and rebuild." inline; never
+  prompt for the token in-app.
+
+## 5. Acceptance criteria
+
+A snapshot lands on the phone correctly when ALL of the
+following are true:
+
+1. **Reachable.** `GET /api/control_centre` returns HTTP 200 with
+   `application/json` from
+   `https://lauburu-mcp-preview.lauburu-aaron.workers.dev` when
+   the admin token is present; HTTP 403 without it.
+2. **Schema valid.** Response matches the TS interface above —
+   verified by a tsx test (`test-control-centre-route.ts` —
+   added in Phase 1).
+3. **Latency.** p95 ≤ 500 ms server-side under steady load
+   (six PostgREST reads + composition).
+4. **Truthful.** Every status badge is one of the four enum
+   values. No badge is empty, no field is `undefined`, every
+   ISO timestamp parses.
+5. **Sanitised.** No string field contains a JWT, an
+   `sk-…` / `ghp_…` / `whsec_…` / `xox…` shape, or an
+   absolute filesystem path. The redactor self-test still
+   passes (`test-bridge-artifacts.ts` shape).
+6. **Length-capped.**
+   `priority.text` ≤ 280, `blocker.text` ≤ 280,
+   `nextAction.text` ≤ 280, `lane.oneLine` ≤ 140,
+   `manualStep.text` ≤ 200, `backlog.title` ≤ 120,
+   `buildDeploy.*.lastChange` ≤ 120.
+7. **Provenance.** Every section's `updatedAt` is the source
+   row's `updated_at`, not `now()`.
+8. **Owner-only.** Every UI section is rendered behind the
+   existing Admin/Dev gate (`isAdminEmail(user)` already in
+   the codebase). No tester sees this screen.
+9. **Stable when partial.** With `connector_manual_steps`
+   empty, the Manual Steps section hides cleanly; with
+   `connector_backlog_items` empty, `topBacklog === null` and
+   the Backlog Preview shows a one-line "no items" placeholder.
+10. **No writes in MVP.** The screen reads only. Marking a
+    manual step completed lands in Phase 4.
+
+## 6. Phone test checklist
+
+Tester walkthrough on Aaron's iPhone after Phase 3 ships:
+
+- [ ] Open the app, sign in, tap Admin/Dev tab. Control Centre
+      is the first thing visible.
+- [ ] Status Banner shows priority text + status badge. Pull
+      to refresh; timestamp updates.
+- [ ] Blocker section is hidden when blocker is null; visible
+      with red badge when non-null. (Force the latter by
+      writing a `currentBlocker` value in
+      `connector_work_status.payload`.)
+- [ ] Lane Cards show ≥1 lane. Each card has lane id, status
+      badge, oneLine summary, "Xm ago" relative time.
+- [ ] Build/Deploy card shows Android versionCode + iOS
+      buildNumber matching the seed in
+      `connector_build_status`.
+- [ ] Manual Steps card shows ≤10 entries. Each has category
+      badge + approval state. Section hidden when 0 entries.
+- [ ] Backlog Preview shows the top item by priority. "Open
+      full backlog" link navigates to the existing in-app
+      backlog screen.
+- [ ] Prompt Library lists the four standard prompt
+      titles. Tapping a title copies the resolved prompt body
+      to the clipboard (resolves via
+      `prompt-templates.ts`, NOT via the Worker).
+- [ ] Force airplane mode → screen still shows the last
+      cached snapshot with "stale Xm ago" badge.
+- [ ] Toggle airplane mode off + Refresh → snapshot updates.
+- [ ] Force a 403 (set
+      `EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN=wrong-value` in a dev
+      build) → inline error message, no in-app token prompt.
+- [ ] Sign out → Admin/Dev tab is hidden again (existing
+      admin-email gate behaviour).
+
+## 7. Implementation phases
+
+| Phase | What | Lane | Status |
+|---|---|---|---|
+| 0 | This spec doc. | Lane 1 (docs) | DONE in this commit. |
+| 1 | Add `GET /api/control_centre` Worker route + composition logic + tsx integration test. No new tables — placeholder when manual_steps / backlog tables are missing. | Lane 2 (build autopilot) | NEXT BACKEND BATCH |
+| 2 | Apply `0004_control_centre_tables.sql` (manual_steps + backlog_items). Seed via Supabase MCP. Worker switches from placeholder to real on those two sections. | Lane 3 (DB migration; owner-approved) | After Phase 1 |
+| 3 | Mobile UI: Admin/Dev → Control Centre screen. Read-only. Reads via existing `MCP_BASE_URL` + admin token. Owner-only via `isAdminEmail`. No version bump. | Lane 2 (Codex's lane) | After Phase 2 |
+| 4 | Add `POST /api/control_centre/manual_steps/:id/approve` + write path so phone can mark steps completed. Lane 3 in BACKLOG_AUTOMATION_SYSTEM.md (write path). | Lane 3 | After Phase 3 ships to testers |
+| 5 | Optional: approval-state audit history table. Currently inline on `connector_manual_steps.approval`. Promote when audit retention matters. | Lane 3 | Deferred |
+
+## 8. Out of scope for the MVP
+
+- Live polling / push from Worker to phone. The MVP refreshes
+  on tap.
+- Build dispatch from inside the Control Centre screen. Stays
+  in the existing Admin/Dev → Primary actions surface.
+- Editing the backlog or priorities from the phone. Owner taps
+  in the existing in-app backlog editor; Control Centre only
+  shows the top item.
+- Per-prompt body display. Prompt Library shows titles only;
+  the body is generated locally on tap by
+  `apps/mobile/src/services/prompt-templates.ts` per Stage 3 of
+  `LOCAL_BRIDGE_WORKFLOW_PLAN.md`.
+- Auto-sync of `apps/mobile/src/store/owner-backlog-store.ts`
+  with `connector_backlog_items`. Stays one-way (Supabase →
+  phone read) until Phase 4.
+
+## 9. Anti-rules
+
+- **No raw terminal text in the snapshot.** `lane.oneLine` is a
+  redacted, ≤140-char compression. Full
+  `connector_terminal_summary` rows stay on the private
+  `/api/terminal_summary` endpoint.
+- **No new public surface.** All Control Centre routes are
+  admin-token-gated. The public-safe `/mcp/public` preview at
+  `docs/MCP_PHONE_CONTROL_CENTRE.md` § "Path A" is a separate
+  product; it does NOT expose Control Centre data.
+- **No third-party network calls from the Worker.** Cloudflare →
+  Supabase only. No GitHub API, no Play Console API, no EAS
+  API in this surface (build_status comes pre-aggregated from
+  the existing release-workflow seed, not from live API calls).
+- **No autosync from `apps/mobile`.** The phone reads; the
+  laptop writes (bridge upsert + owner taps). Mobile state is
+  cache, never source.
+
+## 10. All-idle push notification (operating rule 20) — Codex handoff
+
+In-app banner: **shipped** at `apps/mobile/app/admin-dev.tsx`
+§ Owner alerts → "All-worker direction banner". Fires when MCP
+is fresh and Claude / Codex / Agent are all idle, blocked,
+need review, need user input, or complete-waiting-approval.
+Today the banner is in-app only — `admin-dev.tsx` line 861
+explicitly notes "Push notifications are not configured in
+this app, so this is in-app only."
+
+Push notification: **TODO**. Per operating rule 20, when
+Claude + Codex + Agent are all simultaneously `idle` (per
+`project.get_current_state.agents[].status`), AND no lane has
+a blocker, AND no Aaron-paused decision is recorded, the app
+MUST notify Aaron via push. Payload includes top priority
+title, recommended next action, timestamp, freshness check.
+
+### Codex handoff prompt — push notification implementation
+
+Stored as a ready-to-paste handoff. Aaron MUST explicitly
+approve dispatch before this prompt goes to Codex. Until then,
+this is documentation only.
+
+```
+PROMPT-ID: CODEX-FS-XXX-ALL-IDLE-PUSH-NOTIFICATION-01
+TYPE: CODEX
+LANE: Mobile push-notification wiring + admin-dev integration
+
+MCP-FIRST: call project.get_current_state. Bridge → Supabase
+direct upsert is LIVE; bridge:snapshot for end-of-task cadence
+per rule 12.
+
+Reference (read first):
+- docs/OPERATING_RULES.md § 20 (canonical rule body).
+- docs/CONTROL_CENTRE_MVP_SPEC.md § 10 (this section).
+- apps/mobile/app/admin-dev.tsx § Owner alerts (existing
+  in-app banner — do not break).
+- apps/mobile/src/services/* for any existing push-notification
+  scaffolding.
+
+GOAL
+Wire push notifications for the all-idle trigger so Aaron is
+notified on his iPhone when Claude + Codex + Agent are all
+idle, MCP is fresh, no lane is blocked, no Aaron-paused state.
+Existing in-app banner stays. This adds a NEW push surface
+gated on the same trigger.
+
+SCOPE PHASE 1 (this prompt)
+1. Add expo-notifications dependency to apps/mobile if not
+   present. Configure entitlements per Expo Notifications
+   docs (ios + android + Expo Push Token). NO breaking
+   manifest changes.
+2. Add push token registration on app launch (admin-only —
+   gated to Aaron's email per FS-019 auth model).
+3. Add a push-notification trigger in the admin-dev surface
+   that fires when:
+   - MCP is fresh (per project.get_current_state.freshness),
+     AND
+   - All three lanes (claude / codex / agent) report
+     status: 'idle', AND
+   - No lane has currentBlocker set, AND
+   - No Aaron-paused decision is recorded in
+     docs/APP_DEVELOPMENTS.md priority order (read via
+     project.list_priorities or the action ledger backlog).
+4. Notification payload: title = "All lanes idle — top
+   priority: <priority.title>"; body = "Next action:
+   <recommended_next_action>"; data = { timestamp,
+   priorityId, freshnessSnapshot }.
+5. Throttle: do NOT fire more than once every 15 minutes for
+   the same all-idle window. Re-arm when a lane flips to
+   working / blocked / needs_review.
+6. Toggle in admin-dev to enable / disable the push surface
+   independently from the in-app banner.
+
+ANTI-RULES
+- No public push tokens — admin-only, email-allowlisted.
+- No payload PII — task summary text must NOT include raw
+  terminal output / journal data / PII (rule 11 + the public
+  redaction surface remains the bar).
+- Honour rule 11 (MCP-first): never fire from stale or
+  unavailable MCP — that risks a false-idle signal.
+- Honour rule 19: the push fires; the rule says Aaron acts
+  by feeding the next prompt.
+- No EAS build dispatched from this prompt; build approval
+  follows Aaron's separate gate per rule 7.
+- No iOS-only or Android-only — both platforms required for
+  parity (rule 14 parallel priorities).
+
+VERIFICATION
+- cd apps/mobile && npx tsc --noEmit clean.
+- npm run rules:test PASS (20 rules, doc parity).
+- npm run mcp:test:public-redaction PASS.
+- npm run bridge:snapshot at end-of-task.
+- Manual: simulate all-3-idle MCP state in dev, confirm push
+  fires once + payload correct + throttle behavior.
+- Manual: simulate one-lane-blocked, confirm push does NOT
+  fire (banner still fires).
+- Manual: simulate Aaron-paused, confirm push does NOT fire.
+
+OUTPUT (small)
+- Status: implementation-complete-awaiting-Agent-confirmation
+  / partial / blocked
+- New deps added:
+- New files added:
+- Existing files touched:
+- Tests run:
+- MCP / bridge writeback evidence:
+- Open questions for Aaron / Agent confirmation:
+- Recommendation for follow-up (FS-XXX next batch):
+```
+
+Approval-gated: do NOT dispatch this prompt without Aaron's
+explicit approval per rule 7 (no EAS build) and rule 13
+(clear-steps automate-first; manual Aaron step here is
+"approve push-notification implementation batch").

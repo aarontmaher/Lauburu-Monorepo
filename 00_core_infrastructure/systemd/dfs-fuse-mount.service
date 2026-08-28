@@ -1,0 +1,30 @@
+[Unit]
+Description=Lauburu Unified Distributed File System (DFS) Kernel FUSE Mount
+After=network-online.target tailscaled.service docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStartPre=/bin/mkdir -p /mnt/dfs_unified
+ExecStartPre=/bin/sh -c "grep -q 'user_allow_other' /etc/fuse.conf || echo 'user_allow_other' >> /etc/fuse.conf"
+ExecStart=/usr/local/bin/weed mount \
+    -filer=100.101.39.98:8888 \
+    -dir=/mnt/dfs_unified \
+    -filer.path=/ \
+    -allowOthers=true \
+    -umask=000 \
+    -cacheCapacityMB=128 \
+    -chunkSizeLimitMB=16 \
+    -concurrentWriters=32 \
+    -readOnly=false
+ExecStop=/bin/fusermount3 -u -z /mnt/dfs_unified
+Restart=always
+RestartSec=5
+TimeoutSec=30
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

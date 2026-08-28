@@ -1,0 +1,4 @@
+# Supabase CLI local cache — project ref, pooler URL, version pins.
+# Not source; do not commit.
+.temp/
+.branches/

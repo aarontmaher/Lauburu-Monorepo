@@ -1,0 +1,19 @@
+{
+  "timestamp_utc": "2026-08-28T15:47:08.417062Z",
+  "iteration": 195,
+  "cycle_duration_seconds": 3.008,
+  "overall_mesh_headroom_gb": 2745.26,
+  "mesh_utilization_pct": 30.44,
+  "champion_fitness": 0.7808,
+  "champion_genes": {
+    "capacity_weight": 3.401,
+    "latency_weight": 5.181,
+    "immortality_weight": 6.038,
+    "edge_weight": 1.176,
+    "cost_weight": 0.988,
+    "headroom_target_pct": 71.4,
+    "pruning_aggressiveness": 0.809
+  },
+  "mb_pruned_this_cycle": 0.0,
+  "status": "HEALTHY_OPTIMIZED"
+}

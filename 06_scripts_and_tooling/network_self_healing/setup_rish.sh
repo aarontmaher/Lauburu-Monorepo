@@ -1,0 +1,1 @@
+../../self_healing_hub/src/setup_rish.sh

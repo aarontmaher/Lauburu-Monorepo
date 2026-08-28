@@ -1,0 +1,72 @@
+{
+  "Local AI Swarm Only": {
+    "elo": 1225,
+    "failures": {
+      "UI_Refactoring": 0,
+      "Backend_Logic": 0,
+      "Device_ADB_Integration": 0,
+      "Telemetry_Analysis": 0,
+      "Architecture_Design": 0
+    }
+  },
+  "Cloud AI Swarm Only": {
+    "elo": 1225,
+    "failures": {
+      "UI_Refactoring": 0,
+      "Backend_Logic": 0,
+      "Device_ADB_Integration": 0,
+      "Telemetry_Analysis": 0,
+      "Architecture_Design": 0
+    }
+  },
+  "Mixed Cloud & Local Swarm": {
+    "elo": 1225,
+    "failures": {
+      "UI_Refactoring": 0,
+      "Backend_Logic": 0,
+      "Device_ADB_Integration": 0,
+      "Telemetry_Analysis": 0,
+      "Architecture_Design": 0
+    }
+  },
+  "Massive Tiny Swarm (0.5B-1.5B)": {
+    "elo": 1225,
+    "failures": {
+      "UI_Refactoring": 0,
+      "Backend_Logic": 0,
+      "Device_ADB_Integration": 0,
+      "Telemetry_Analysis": 0,
+      "Architecture_Design": 0
+    }
+  },
+  "Single Large Local MoE": {
+    "elo": 1225,
+    "failures": {
+      "UI_Refactoring": 0,
+      "Backend_Logic": 0,
+      "Device_ADB_Integration": 0,
+      "Telemetry_Analysis": 0,
+      "Architecture_Design": 0
+    }
+  },
+  "Single Large Local Dense": {
+    "elo": 1225,
+    "failures": {
+      "UI_Refactoring": 0,
+      "Backend_Logic": 0,
+      "Device_ADB_Integration": 0,
+      "Telemetry_Analysis": 0,
+      "Architecture_Design": 0
+    }
+  },
+  "Dynamic Auto-Download (New Models)": {
+    "elo": 1225,
+    "failures": {
+      "UI_Refactoring": 0,
+      "Backend_Logic": 0,
+      "Device_ADB_Integration": 0,
+      "Telemetry_Analysis": 0,
+      "Architecture_Design": 0
+    }
+  }
+}

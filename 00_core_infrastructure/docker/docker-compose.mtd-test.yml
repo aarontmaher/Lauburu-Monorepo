@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  mtd-sandbox:
+    image: python:3.11-slim
+    container_name: mtd-sandbox
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ["python3", "apps/mtd_test_suite.py"]
+    # Run once and exit
+    restart: "no"

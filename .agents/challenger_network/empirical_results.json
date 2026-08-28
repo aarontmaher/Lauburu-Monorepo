@@ -1,0 +1,366 @@
+{
+  "lan_probes": [
+    {
+      "name": "GL.iNet Gateway / Router",
+      "ip": "192.168.8.1",
+      "ping": {
+        "reachable": true,
+        "packet_loss_pct": 0.0,
+        "rtt_min_ms": 0.766,
+        "rtt_avg_ms": 0.8,
+        "rtt_max_ms": 0.85,
+        "rtt_stddev_ms": 0.036,
+        "raw": "PING 192.168.8.1 (192.168.8.1): 56 data bytes\n64 bytes from 192.168.8.1: icmp_seq=0 ttl=64 time=0.785 ms\n64 bytes from 192.168.8.1: icmp_seq=1 ttl=64 time=0.850 ms\n64 bytes from 192.168.8.1: icmp_seq=2 ttl=64 time=0.766 ms\n\n--- 192.168.8.1 ping statistics ---\n3 packets transmitted, 3 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 0.766/0.800/0.850/0.036 ms"
+      },
+      "ports": {
+        "22": {
+          "open": true,
+          "latency_ms": 0.778,
+          "error_code": 0
+        },
+        "53": {
+          "open": true,
+          "latency_ms": 0.718,
+          "error_code": 0
+        },
+        "80": {
+          "open": true,
+          "latency_ms": 0.664,
+          "error_code": 0
+        },
+        "443": {
+          "open": true,
+          "latency_ms": 0.782,
+          "error_code": 0
+        }
+      }
+    },
+    {
+      "name": "Linux-1 (Ryzen 7 Hub)",
+      "ip": "192.168.8.224",
+      "ping": {
+        "reachable": false,
+        "error": "ping: sendto: Host is down\nping: sendto: Host is down\nping: sendto: Host is down",
+        "returncode": 2
+      },
+      "ports": {
+        "22": {
+          "open": false,
+          "latency_ms": 0.595,
+          "error_code": 64
+        },
+        "8080": {
+          "open": false,
+          "latency_ms": 0.315,
+          "error_code": 64
+        },
+        "18789": {
+          "open": false,
+          "latency_ms": 0.279,
+          "error_code": 64
+        },
+        "50052": {
+          "open": false,
+          "latency_ms": 0.218,
+          "error_code": 64
+        }
+      }
+    },
+    {
+      "name": "MacBook Pro (M-series)",
+      "ip": "192.168.8.127",
+      "ping": {
+        "reachable": true,
+        "packet_loss_pct": 0.0,
+        "rtt_min_ms": 3.003,
+        "rtt_avg_ms": 4.145,
+        "rtt_max_ms": 5.528,
+        "rtt_stddev_ms": 1.045,
+        "raw": "PING 192.168.8.127 (192.168.8.127): 56 data bytes\n64 bytes from 192.168.8.127: icmp_seq=0 ttl=64 time=3.003 ms\n64 bytes from 192.168.8.127: icmp_seq=1 ttl=64 time=5.528 ms\n64 bytes from 192.168.8.127: icmp_seq=2 ttl=64 time=3.905 ms\n\n--- 192.168.8.127 ping statistics ---\n3 packets transmitted, 3 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 3.003/4.145/5.528/1.045 ms"
+      },
+      "ports": {
+        "22": {
+          "open": true,
+          "latency_ms": 4.692,
+          "error_code": 0
+        },
+        "50052": {
+          "open": true,
+          "latency_ms": 3.035,
+          "error_code": 0
+        }
+      }
+    },
+    {
+      "name": "MacBook-1 (M-series)",
+      "ip": "192.168.8.222",
+      "ping": {
+        "reachable": true,
+        "packet_loss_pct": 0.0,
+        "rtt_min_ms": 4.19,
+        "rtt_avg_ms": 5.241,
+        "rtt_max_ms": 5.836,
+        "rtt_stddev_ms": 0.745,
+        "raw": "PING 192.168.8.222 (192.168.8.222): 56 data bytes\n64 bytes from 192.168.8.222: icmp_seq=0 ttl=64 time=4.190 ms\n64 bytes from 192.168.8.222: icmp_seq=1 ttl=64 time=5.696 ms\n64 bytes from 192.168.8.222: icmp_seq=2 ttl=64 time=5.836 ms\n\n--- 192.168.8.222 ping statistics ---\n3 packets transmitted, 3 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 4.190/5.241/5.836/0.745 ms"
+      },
+      "ports": {
+        "22": {
+          "open": true,
+          "latency_ms": 5.399,
+          "error_code": 0
+        },
+        "50052": {
+          "open": true,
+          "latency_ms": 4.992,
+          "error_code": 0
+        }
+      }
+    }
+  ],
+  "tailscale_probes": [
+    {
+      "name": "aarons-mac-mini (Local)",
+      "ip": "100.119.199.76",
+      "ping": {
+        "reachable": true,
+        "packet_loss_pct": 0.0,
+        "rtt_min_ms": 0.263,
+        "rtt_avg_ms": 0.552,
+        "rtt_max_ms": 0.905,
+        "rtt_stddev_ms": 0.266,
+        "raw": "PING 100.119.199.76 (100.119.199.76): 56 data bytes\n64 bytes from 100.119.199.76: icmp_seq=0 ttl=64 time=0.263 ms\n64 bytes from 100.119.199.76: icmp_seq=1 ttl=64 time=0.905 ms\n64 bytes from 100.119.199.76: icmp_seq=2 ttl=64 time=0.487 ms\n\n--- 100.119.199.76 ping statistics ---\n3 packets transmitted, 3 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 0.263/0.552/0.905/0.266 ms"
+      },
+      "ports": {
+        "22": {
+          "open": true,
+          "latency_ms": 1.089,
+          "error_code": 0
+        },
+        "50052": {
+          "open": true,
+          "latency_ms": 0.67,
+          "error_code": 0
+        }
+      }
+    },
+    {
+      "name": "linux-1",
+      "ip": "100.101.39.98",
+      "ping": {
+        "reachable": false,
+        "error": "Host unreachable / request timed out",
+        "returncode": 2
+      },
+      "ports": {
+        "22": {
+          "open": false,
+          "latency_ms": 1002.48,
+          "error_code": 35
+        },
+        "8080": {
+          "open": false,
+          "latency_ms": 1001.754,
+          "error_code": 35
+        },
+        "18789": {
+          "open": false,
+          "latency_ms": 1002.348,
+          "error_code": 35
+        },
+        "50052": {
+          "open": false,
+          "latency_ms": 1002.079,
+          "error_code": 35
+        }
+      }
+    },
+    {
+      "name": "aarons-macbook-pro",
+      "ip": "100.103.212.21",
+      "ping": {
+        "reachable": true,
+        "packet_loss_pct": 0.0,
+        "rtt_min_ms": 4.746,
+        "rtt_avg_ms": 42.917,
+        "rtt_max_ms": 118.063,
+        "rtt_stddev_ms": 53.139,
+        "raw": "PING 100.103.212.21 (100.103.212.21): 56 data bytes\n64 bytes from 100.103.212.21: icmp_seq=0 ttl=64 time=5.941 ms\n64 bytes from 100.103.212.21: icmp_seq=1 ttl=64 time=4.746 ms\n64 bytes from 100.103.212.21: icmp_seq=2 ttl=64 time=118.063 ms\n\n--- 100.103.212.21 ping statistics ---\n3 packets transmitted, 3 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 4.746/42.917/118.063/53.139 ms"
+      },
+      "ports": {
+        "22": {
+          "open": true,
+          "latency_ms": 3.53,
+          "error_code": 0
+        },
+        "50052": {
+          "open": true,
+          "latency_ms": 2.822,
+          "error_code": 0
+        }
+      }
+    },
+    {
+      "name": "macbook-1",
+      "ip": "100.93.158.96",
+      "ping": {
+        "reachable": true,
+        "packet_loss_pct": 0.0,
+        "rtt_min_ms": 6.351,
+        "rtt_avg_ms": 41.116,
+        "rtt_max_ms": 91.967,
+        "rtt_stddev_ms": 36.757,
+        "raw": "PING 100.93.158.96 (100.93.158.96): 56 data bytes\n64 bytes from 100.93.158.96: icmp_seq=0 ttl=64 time=91.967 ms\n64 bytes from 100.93.158.96: icmp_seq=1 ttl=64 time=6.351 ms\n64 bytes from 100.93.158.96: icmp_seq=2 ttl=64 time=25.031 ms\n\n--- 100.93.158.96 ping statistics ---\n3 packets transmitted, 3 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 6.351/41.116/91.967/36.757 ms"
+      },
+      "ports": {
+        "22": {
+          "open": true,
+          "latency_ms": 8.068,
+          "error_code": 0
+        },
+        "50052": {
+          "open": true,
+          "latency_ms": 5.706,
+          "error_code": 0
+        }
+      }
+    },
+    {
+      "name": "pixel-10-pro-xl",
+      "ip": "100.73.38.87",
+      "ping": {
+        "reachable": true,
+        "packet_loss_pct": 0.0,
+        "rtt_min_ms": 98.727,
+        "rtt_avg_ms": 110.105,
+        "rtt_max_ms": 124.11,
+        "rtt_stddev_ms": 10.528,
+        "raw": "PING 100.73.38.87 (100.73.38.87): 56 data bytes\n64 bytes from 100.73.38.87: icmp_seq=0 ttl=64 time=124.110 ms\n64 bytes from 100.73.38.87: icmp_seq=1 ttl=64 time=98.727 ms\n64 bytes from 100.73.38.87: icmp_seq=2 ttl=64 time=107.478 ms\n\n--- 100.73.38.87 ping statistics ---\n3 packets transmitted, 3 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 98.727/110.105/124.110/10.528 ms"
+      },
+      "ports": {
+        "22": {
+          "open": false,
+          "latency_ms": 106.816,
+          "error_code": 61
+        },
+        "8022": {
+          "open": true,
+          "latency_ms": 109.797,
+          "error_code": 0
+        },
+        "50052": {
+          "open": false,
+          "latency_ms": 160.893,
+          "error_code": 61
+        }
+      }
+    },
+    {
+      "name": "aarons-s20-1",
+      "ip": "100.84.40.95",
+      "ping": {
+        "reachable": true,
+        "packet_loss_pct": 0.0,
+        "rtt_min_ms": 63.718,
+        "rtt_avg_ms": 68.197,
+        "rtt_max_ms": 71.681,
+        "rtt_stddev_ms": 3.326,
+        "raw": "PING 100.84.40.95 (100.84.40.95): 56 data bytes\n64 bytes from 100.84.40.95: icmp_seq=0 ttl=64 time=71.681 ms\n64 bytes from 100.84.40.95: icmp_seq=1 ttl=64 time=69.193 ms\n64 bytes from 100.84.40.95: icmp_seq=2 ttl=64 time=63.718 ms\n\n--- 100.84.40.95 ping statistics ---\n3 packets transmitted, 3 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 63.718/68.197/71.681/3.326 ms"
+      },
+      "ports": {
+        "22": {
+          "open": false,
+          "latency_ms": 60.664,
+          "error_code": 61
+        },
+        "8022": {
+          "open": true,
+          "latency_ms": 79.235,
+          "error_code": 0
+        },
+        "50052": {
+          "open": true,
+          "latency_ms": 69.04,
+          "error_code": 0
+        }
+      }
+    },
+    {
+      "name": "gl-mt3600be",
+      "ip": "100.122.185.123",
+      "ping": {
+        "reachable": true,
+        "packet_loss_pct": 0.0,
+        "rtt_min_ms": 2.509,
+        "rtt_avg_ms": 144.403,
+        "rtt_max_ms": 399.555,
+        "rtt_stddev_ms": 180.798,
+        "raw": "PING 100.122.185.123 (100.122.185.123): 56 data bytes\n64 bytes from 100.122.185.123: icmp_seq=0 ttl=64 time=399.555 ms\n64 bytes from 100.122.185.123: icmp_seq=1 ttl=64 time=31.146 ms\n64 bytes from 100.122.185.123: icmp_seq=2 ttl=64 time=2.509 ms\n\n--- 100.122.185.123 ping statistics ---\n3 packets transmitted, 3 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 2.509/144.403/399.555/180.798 ms"
+      },
+      "ports": {
+        "22": {
+          "open": true,
+          "latency_ms": 2.164,
+          "error_code": 0
+        },
+        "80": {
+          "open": true,
+          "latency_ms": 1.611,
+          "error_code": 0
+        },
+        "443": {
+          "open": true,
+          "latency_ms": 1.786,
+          "error_code": 0
+        }
+      }
+    }
+  ],
+  "movesense_udp_benchmark": {
+    "sample_rate_hz": 128.0,
+    "dscp_ef_tos_hex": "0xB8",
+    "packets_sent": 640,
+    "packets_received": 640,
+    "packets_dropped": 0,
+    "packet_drop_pct": 0.0,
+    "out_of_order_packets": 0,
+    "send_duration_sec": 5.0033,
+    "effective_send_rate_hz": 127.91,
+    "latency_min_ms": 0.053,
+    "latency_avg_ms": 0.183,
+    "latency_max_ms": 1.821,
+    "rfc3550_final_jitter_ms": 0.0222,
+    "zero_packet_drop_verified": true
+  },
+  "lan_movesense_udp_benchmark": {
+    "sample_rate_hz": 128.0,
+    "dscp_ef_tos_hex": "0xB8",
+    "packets_sent": 640,
+    "packets_received": 640,
+    "packets_dropped": 0,
+    "packet_drop_pct": 0.0,
+    "out_of_order_packets": 0,
+    "send_duration_sec": 5.0002,
+    "effective_send_rate_hz": 127.99,
+    "latency_min_ms": 0.12,
+    "latency_avg_ms": 0.237,
+    "latency_max_ms": 1.982,
+    "rfc3550_final_jitter_ms": 0.1627,
+    "zero_packet_drop_verified": true
+  },
+  "stress_udp_benchmark": {
+    "sample_rate_hz": 128.0,
+    "dscp_ef_tos_hex": "0xB8",
+    "packets_sent": 1280,
+    "packets_received": 1280,
+    "packets_dropped": 0,
+    "packet_drop_pct": 0.0,
+    "out_of_order_packets": 0,
+    "send_duration_sec": 10.0024,
+    "effective_send_rate_hz": 127.97,
+    "latency_min_ms": 0.033,
+    "latency_avg_ms": 0.226,
+    "latency_max_ms": 3.316,
+    "rfc3550_final_jitter_ms": 0.1367,
+    "zero_packet_drop_verified": true
+  }
+}

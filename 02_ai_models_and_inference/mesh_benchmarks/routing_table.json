@@ -1,0 +1,27 @@
+{
+  "UI_Refactoring": {
+    "strategy": "Local AI Swarm Only",
+    "reasoning_tier": "Tier 2: Balanced Reasoning",
+    "gemini_effort": "medium"
+  },
+  "Backend_Logic": {
+    "strategy": "Local AI Swarm Only",
+    "reasoning_tier": "Tier 2: Balanced Reasoning",
+    "gemini_effort": "medium"
+  },
+  "Device_ADB_Integration": {
+    "strategy": "Local AI Swarm Only",
+    "reasoning_tier": "Tier 2: Balanced Reasoning",
+    "gemini_effort": "medium"
+  },
+  "Telemetry_Analysis": {
+    "strategy": "Local AI Swarm Only",
+    "reasoning_tier": "Tier 3: Maximum Speed",
+    "gemini_effort": "low"
+  },
+  "Architecture_Design": {
+    "strategy": "Local AI Swarm Only",
+    "reasoning_tier": "Tier 1: High Reasoning",
+    "gemini_effort": "high"
+  }
+}

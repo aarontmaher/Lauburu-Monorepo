@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  syncthing:
+    image: syncthing/syncthing:latest
+    container_name: syncthing
+    hostname: lauburu-syncthing
+    ports:
+      - "8384:8384"    # Web UI
+      - "22000:22000"  # Sync protocol TCP
+      - "22000:22000/udp"  # Sync protocol UDP
+      - "21027:21027/udp"  # Discovery
+    volumes:
+      - syncthing_config:/var/syncthing/config
+      - syncthing_data:/var/syncthing
+      - ./nas_imported:/var/syncthing/nas_imported
+      - ./data:/var/syncthing/lauburu_data
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    networks:
+      - lauburu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8384/rest/system/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  syncthing_config:
+  syncthing_data:
+
+networks:
+  lauburu-network:
+    driver: bridge

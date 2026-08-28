@@ -1,0 +1,69 @@
+/* Canonical Port Global Stylesheet */
+
+Screen {
+    background: #0b111c;
+    color: #e2e8f0;
+}
+
+TabbedContent {
+    height: 100%;
+}
+
+/* Visual Engine Selector Styling */
+EngineSelectorWidget {
+    height: 1;
+    width: 100%;
+    background: #0b111c;
+    align: right middle;
+    padding: 0 1;
+}
+
+.engine-selector {
+    height: 1;
+    width: 100%;
+    background: #0b111c;
+}
+
+#engine-selector-bar {
+    height: 1;
+    width: 100%;
+    background: #0b111c;
+}
+
+#engine-selector-label {
+    width: auto;
+    color: #94a3b8;
+    text-style: bold;
+}
+
+#engine-select {
+    width: 36;
+    height: 1;
+    border: none;
+    background: #0f172a;
+    color: #00ffcc;
+}
+
+#swarm-audit-layout {
+    layout: vertical;
+    padding: 1;
+}
+.panel {
+    border: round $primary;
+    padding: 1;
+    height: auto;
+}
+.panel-header {
+    background: $primary;
+    color: $text;
+    text-style: bold;
+    width: 100%;
+}
+.panel-title {
+    text-align: center;
+    background: $success;
+    color: black;
+    text-style: bold;
+    width: 100%;
+    margin-bottom: 1;
+}

@@ -1,0 +1,22 @@
+# 02-ios-health-apple-health — Health tab + Apple Health status.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Health"
+- takeScreenshot: "02-ios-health"
+- assertVisible:
+    text: "Apple Health"
+    optional: true
+- tapOn:
+    text: "Manage Sources"
+    optional: true
+- takeScreenshot: "02-ios-health-manage-sources"
+- tapOn:
+    text: "Done"
+    optional: true
+- tapOn:
+    text: "Refresh"
+    optional: true
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: "02-ios-health-after-refresh"

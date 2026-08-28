@@ -1,0 +1,139 @@
+{
+  "tournament_id": "tui_mastery_red_vs_blue_v1",
+  "name": "Continuous Red vs. Blue Sandbox Training - TUI Specialist Evolution",
+  "version": "1.0.0",
+  "integrity_mode": "benchmark",
+  "referee": "Abliterated Llama 70B (Devil's Advocate)",
+  "working_directory": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery",
+  "frameworks": [
+    "python_textual",
+    "go_bubbletea",
+    "rust_ratatui"
+  ],
+  "specialists": {
+    "python_textual": {
+      "skill_name": "polyglot-python-textual-specialist",
+      "skill_path": "/Users/aaron/.gemini/config/skills/polyglot-python-textual-specialist/SKILL.md",
+      "profile_path": "config/specialists/python_textual.json",
+      "framework": "textual",
+      "language": "python",
+      "defense_path": "defenses/python_textual",
+      "baseline_rss_mb": 45.0
+    },
+    "go_bubbletea": {
+      "skill_name": "polyglot-go-bubbletea-specialist",
+      "skill_path": "/Users/aaron/.gemini/config/skills/polyglot-go-bubbletea-specialist/SKILL.md",
+      "profile_path": "config/specialists/go_bubbletea.json",
+      "framework": "bubbletea",
+      "language": "go",
+      "defense_path": "defenses/go_bubbletea",
+      "baseline_rss_mb": 18.0
+    },
+    "rust_ratatui": {
+      "skill_name": "polyglot-rust-ratatui-specialist",
+      "skill_path": "/Users/aaron/.gemini/config/skills/polyglot-rust-ratatui-specialist/SKILL.md",
+      "profile_path": "config/specialists/rust_ratatui.json",
+      "framework": "ratatui",
+      "language": "rust",
+      "defense_path": "defenses/rust_ratatui",
+      "baseline_rss_mb": 4.0
+    }
+  },
+  "scoring_rubric": {
+    "weights": {
+      "memory_efficiency": 0.25,
+      "latency_throughput": 0.25,
+      "attack_robustness": 0.30,
+      "code_quality_and_truth": 0.20
+    },
+    "target_fps": 60.0,
+    "max_frame_latency_ms": 16.6,
+    "max_acceptable_rss_mb": 150.0,
+    "min_composite_victory_score": 80.0
+  },
+  "attack_suite": {
+    "total_scenarios": 10,
+    "scenarios": [
+      {
+        "id": "SIGWINCH_STORM",
+        "name": "Rapid Terminal Resize Storm",
+        "description": "1,000 rapid terminal resize events (10x5 to 300x100) within 2 seconds",
+        "weight": 1.0
+      },
+      {
+        "id": "EVENT_FLOOD",
+        "name": "Telemetry Torrent",
+        "description": "100,000 JSON telemetry events streamed over local socket at line rate",
+        "weight": 1.0
+      },
+      {
+        "id": "ANSI_INJECTION",
+        "name": "ANSI & Malformed UTF-8 Fuzzing",
+        "description": "Fuzz payload with corrupted byte sequences, truncated CSI codes, and OSC title exploits",
+        "weight": 1.0
+      },
+      {
+        "id": "KEY_SPAM_FLOOD",
+        "name": "High-Frequency Key Spam",
+        "description": "10,000 keystrokes/sec injected via PTY input buffer",
+        "weight": 1.0
+      },
+      {
+        "id": "SLOW_CONSUMER_HANG",
+        "name": "Socket Sever & Slow Consumer",
+        "description": "Abruptly severed TCP/Unix socket testing reconnection without UI freeze",
+        "weight": 1.0
+      },
+      {
+        "id": "ZERO_DIM_VIEWPORT",
+        "name": "Zero-Dimension Viewport Boundary",
+        "description": "Terminal resized to 0x0 and 1x1 boundary conditions",
+        "weight": 1.0
+      },
+      {
+        "id": "HIGH_CONCURRENCY_MUTATION",
+        "name": "Multi-Threaded State Mutation Contention",
+        "description": "10 background worker threads writing simultaneous telemetry updates",
+        "weight": 1.0
+      },
+      {
+        "id": "MEMORY_PRESSURE",
+        "name": "Heap & Memory Pressure Stressor",
+        "description": "Artificial host memory throttling inducing emergency GC cycles",
+        "weight": 1.0
+      },
+      {
+        "id": "ABRUPT_TERMINATION",
+        "name": "SIGTERM/SIGINT Terminal Restoration",
+        "description": "Process interrupt verification of zero orphaned threads and clean alternate screen exit",
+        "weight": 1.0
+      },
+      {
+        "id": "CHAOS_SPEC_SHIFT",
+        "name": "Devil's Advocate Dynamic Spec Shift",
+        "description": "Abliterated 70B dynamic layout and telemetry schema mutation injection",
+        "weight": 1.0
+      }
+    ]
+  },
+  "logging": {
+    "tournament_events": "logs/tournament_events.jsonl",
+    "referee_verdicts": "logs/referee_verdicts.jsonl",
+    "lora_distillation": "logs/lora_tui_distillation.jsonl",
+    "dpo_preferences": "logs/dpo_tui_preferences.jsonl",
+    "benchmark_results": "benchmarks/benchmark_results.json"
+  },
+  "npu_ledger": {
+    "ledger_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/mesh_benchmarks/npu_bonus_ledger.json",
+    "base_grant_hours": 25.0,
+    "scaling_factor": 0.5,
+    "threshold_score": 70.0,
+    "breakthrough_score": 90.0,
+    "max_grant_hours": 50.0
+  },
+  "production_promotion": {
+    "skills_directory": "/Users/aaron/.gemini/config/skills",
+    "apps_directory": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+    "obsidian_vault_target": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/TUI_WINNER.md"
+  }
+}

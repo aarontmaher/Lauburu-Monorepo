@@ -25,6 +25,8 @@
     "watcher:mcp:test": "cd cloudflare-worker && npx tsx test/test-mcp-watcher-helpers.ts",
     "prompt:dispatch": "node scripts/prompt-dispatcher.mjs",
     "prompt:dispatch:test": "cd cloudflare-worker && npx tsx test/test-prompt-dispatcher-helpers.ts",
+    "subagent:dispatch": "node scripts/subagent-dispatcher-worktree.mjs",
+    "subagent:dispatch:test": "cd cloudflare-worker && npx tsx test/test-subagent-worktree-dispatcher.ts",
     "mcp:auto": "./scripts/mcp-auto.sh",
     "terminal:auto": "./scripts/terminal-auto.sh",
     "queue:taxonomy:test": "cd cloudflare-worker && npx tsx test/test-queue-taxonomy-helpers.ts",

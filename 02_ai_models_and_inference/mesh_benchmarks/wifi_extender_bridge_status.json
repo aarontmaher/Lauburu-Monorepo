@@ -1,0 +1,12 @@
+{
+  "target_ssid": "absolute mesh",
+  "security": "WPA2-PSK",
+  "psk_configured": true,
+  "tx_power_dbm": 23,
+  "channel_width": "40MHz",
+  "bridge_interface": "wwan (DHCP Client)",
+  "extender_antennas": "High-Gain Dual-Band Dipole (5dBi)",
+  "status": "CONFIGURED_AND_BRIDGED",
+  "permanent_npu_boost_active": true,
+  "timestamp": "2026-08-14T13:01:55Z"
+}

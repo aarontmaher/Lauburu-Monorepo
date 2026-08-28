@@ -1,0 +1,69 @@
+# ==============================================================================
+# Lauburu Mesh Client-Side Master SSH Configuration with Socket Multiplexing
+# Classification: Blue Team Defense Invariant • High-Speed Transport Baseline
+# Subsystem: 05_agents_and_swarms/red_blue_arena/blue_team/configs
+# ==============================================================================
+
+# Global Mesh Defaults
+Host *
+    IdentityFile ~/.ssh/id_ed25519
+    IdentityFile ~/.ssh/id_ed25519_monorepo
+    IdentitiesOnly yes
+    Compression yes
+    ServerAliveInterval 15
+    ServerAliveCountMax 3
+    ConnectTimeout 4
+    StrictHostKeyChecking accept-new
+    UserKnownHostsFile ~/.ssh/known_hosts_lauburu
+    # Connection Multiplexing (Socket Pooling for <3ms latency)
+    ControlMaster auto
+    ControlPath ~/.ssh/control-%C
+    ControlPersist 10m
+
+# Layer 1: Host Mac Mini M4 Pro
+Host mac-mini mac-node 100.64.0.1 192.168.8.230
+    HostName 192.168.8.230
+    User aaron
+    Port 22
+
+# Layer 2: MacBook Pro M1 Max Vault (TB4 DMA Direct + LAN + Headscale)
+Host macbook-pro mbp 100.64.0.2 192.168.8.127 169.254.187.138
+    HostName 169.254.187.138
+    User aaronmaher
+    Port 22
+
+# Layer 3: Linux Head Node (AMD Ryzen 7)
+Host linux linux-head 100.64.0.3 192.168.8.224
+    HostName 192.168.8.224
+    User linux
+    Port 22
+
+# Layer 4: Bedside Linux Tablet
+Host linux-tablet tablet bedside 100.64.0.4 192.168.8.173
+    HostName 192.168.8.173
+    User aaron
+    Port 22
+
+# Layer 5: MacBook Air M2 / M4
+Host macbook-air mba 100.64.0.5 192.168.8.222
+    HostName 192.168.8.222
+    User aaronmaher
+    Port 22
+
+# Layer 6: Google Pixel 10 Pro XL (Termux Port 8022)
+Host pixel pixel-10 100.64.0.6 192.168.8.145 169.254.60.151
+    HostName 100.64.0.6
+    User u0_a363
+    Port 8022
+
+# Layer 7: Samsung Galaxy S20+ (Termux Port 8022)
+Host s20 samsung 100.64.0.7 192.168.8.158
+    HostName 100.64.0.7
+    User u0_a420
+    Port 8022
+
+# Gateway: GL.iNet Travel Router BE3600
+Host router gateway 100.64.0.254 192.168.8.1
+    HostName 192.168.8.1
+    User root
+    Port 22

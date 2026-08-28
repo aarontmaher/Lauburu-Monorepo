@@ -1,0 +1,13 @@
+#!/usr/bin/expect -f
+set timeout 15
+spawn ssh -o StrictHostKeyChecking=no root@192.168.8.1
+expect "*?assword:*"
+send "Goldfighting1\r"
+expect "*?root@*"
+send "adb shell pm grant com.termux.api android.permission.BLUETOOTH_SCAN\r"
+expect "*?root@*"
+send "adb shell pm grant com.termux.api android.permission.BLUETOOTH_CONNECT\r"
+expect "*?root@*"
+send "adb shell pm grant com.termux.api android.permission.ACCESS_FINE_LOCATION\r"
+expect "*?root@*"
+send "exit\r"

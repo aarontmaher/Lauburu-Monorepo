@@ -1,0 +1,1 @@
+../scripts/fuse_watchdog.sh

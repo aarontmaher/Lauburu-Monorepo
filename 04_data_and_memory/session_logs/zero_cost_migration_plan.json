@@ -1,0 +1,61 @@
+{
+  "timestamp": "2026-08-21T12:06:23.905204+00:00",
+  "service": "Lauburu $0 Cloud Cost AI Self-Sufficiency Plan",
+  "current_local_independence_pct": 84.5,
+  "target_local_independence_pct": 100.0,
+  "total_annual_cloud_savings_usd": 9300.0,
+  "hardware_vram_pool_gb": 82.8,
+  "supported_inference_engines": [
+    "llama.cpp",
+    "petals",
+    "exo"
+  ],
+  "migration_phases": [
+    {
+      "phase": "PHASE_1_IMMEDIATE",
+      "name": "Mobile Edge & Visual Audit Local Migration",
+      "models_to_activate": [
+        "qwen2_vl_7b_instruct_q5km",
+        "llama_3_1_8b_instruct_q5km",
+        "biomistral_7b_q8_0"
+      ],
+      "inference_engines": [
+        "llama.cpp",
+        "exo"
+      ],
+      "vram_required_gb": 22.2,
+      "monthly_cloud_spend_saved_usd": 265.0,
+      "target_completion": "Active & Ready"
+    },
+    {
+      "phase": "PHASE_2_HIGH_IMPACT",
+      "name": "32B Apex Coding & Deep Reasoning RPC Sharding",
+      "models_to_activate": [
+        "qwen2.5_coder_32b_q4km",
+        "deepseek_r1_distill_qwen_32b_q4km"
+      ],
+      "inference_engines": [
+        "llama.cpp",
+        "exo"
+      ],
+      "vram_required_gb": 44.5,
+      "monthly_cloud_spend_saved_usd": 290.0,
+      "target_completion": "Active & Verified"
+    },
+    {
+      "phase": "PHASE_3_SOVEREIGN_IMMORTAL",
+      "name": "70B / 405B Distributed Mesh Frontier Reasoning ($0 Spend Pinnacle)",
+      "models_to_activate": [
+        "deepseek_r1_distill_llama_70b_iq4xs"
+      ],
+      "inference_engines": [
+        "llama.cpp",
+        "petals",
+        "exo"
+      ],
+      "vram_required_gb": 39.5,
+      "monthly_cloud_spend_saved_usd": 220.0,
+      "target_completion": "Mesh Sharded on Demand"
+    }
+  ]
+}

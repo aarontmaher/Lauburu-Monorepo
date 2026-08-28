@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-08-20T02:42:03Z",
+  "hardware_route": "NPU_ACCELERATED",
+  "execution_engine": "CoreML / MPSGraph Engine",
+  "power_draw_w": 1.2,
+  "occlusion_state": "LINE_OF_SIGHT_CLEAR",
+  "optical_confidence": 0.88,
+  "joint_angles": {
+    "elbow_extension_deg": 180.0,
+    "knee_flexion_deg": 180.0,
+    "shoulder_rotation_deg": 0.0
+  },
+  "safety_radar": {
+    "armbar_hyperextension_risk": "CRITICAL_HYPEREXTENSION",
+    "kimura_rotational_risk": "SAFE"
+  },
+  "movesense_biometrics": {
+    "heart_rate_bpm": 164,
+    "dfa_alpha1": 0.62,
+    "fatigue_state": "AEROBIC_OPTIMAL",
+    "linear_g_force": 1.19,
+    "rotational_yaw_deg_s": 45.0
+  },
+  "tactical_position": "Open Guard / Scramble",
+  "fused_ekf_coordinates": [
+    0.206,
+    0.411,
+    0.0
+  ]
+}

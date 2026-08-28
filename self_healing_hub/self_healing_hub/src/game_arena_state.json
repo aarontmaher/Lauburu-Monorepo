@@ -1,0 +1,4676 @@
+{
+  "round": 890,
+  "mode": "TEAM_VS_TEAM_FACTION_WAR",
+  "global_vram_pool_gb": 54.65,
+  "active_battle_phase": "Team War: \ud83d\udfe2 Local AI Mesh Swarm vs \ud83d\udd34 Gemini Ultra Cloud Titans",
+  "factions": {
+    "TEAM_LOCAL_MESH": {
+      "id": "TEAM_LOCAL_MESH",
+      "name": "\ud83d\udfe2 Team Local AI Mesh Swarm",
+      "tag": "LOCAL_MESH",
+      "color": "#10b981",
+      "badge": "\ud83d\udfe2 LOCAL MESH",
+      "motto": "Zero-Latency On-Premises Compute \u2022 54.65 GB Metal GPU / Edge TPU Pool \u2022 $0 Recurring API Spend",
+      "base_latency_ms": 0.27,
+      "special_ability": "\u26a1 5-Layer Hardware Sharded Blitz",
+      "egress_fee_pct": 0.0
+    },
+    "TEAM_CLOUD_TITANS": {
+      "id": "TEAM_CLOUD_TITANS",
+      "name": "\ud83d\udd34 Team Cloud AI Titans",
+      "tag": "CLOUD_TITAN",
+      "color": "#ef4444",
+      "badge": "\ud83d\udd34 CLOUD TITAN",
+      "motto": "Hyperscale Multi-Modal Superclusters \u2022 2M Context Token Windows \u2022 Global Webhook Edge Ingress",
+      "base_latency_ms": 115.0,
+      "special_ability": "\ud83e\udde0 Hyperscale CoT Consensus Overdrive",
+      "egress_fee_pct": 0.15
+    }
+  },
+  "agents": [
+    {
+      "id": "deepseek_r1_mac_host",
+      "name": "DeepSeek-R1-32B (Mac M4 Max Host)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#06b6d4",
+      "node": "Mac_Node (Host M4 Max)",
+      "os": "macOS Sequoia / Apple M4 Max Metal",
+      "default_lang": "Dart / Python / C++",
+      "hardware_tier": "Mac_Node (Host M4 Max)",
+      "supported_transports": [
+        "WIRED_THUNDERBOLT_4",
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_LAN_P2P",
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 3021291,
+      "hp": 69.0,
+      "max_hp": 100,
+      "shield": 41.0,
+      "max_shield": 150,
+      "attack_power": 68,
+      "movesense_connected": true,
+      "hr_bpm": 64,
+      "model_spec": "DeepSeek-R1-Distill-Qwen-32B-Q4_K_M",
+      "active_alliance": "qwen_coder_mac_worker",
+      "active_trade": null,
+      "skills_inventory": [
+        "Metal GPU Zero-Copy",
+        "10Gbps TB4 DMA Bridge",
+        "Tri-Orchestrator Leader",
+        "AST Codebase Refactorer",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs cloudflare_edge_tunnel (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass) (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs Remote Cyber Tap (\ud83d\udee1\ufe0f Termux/OpenSSH Root Socket Exploit) (+10%)"
+      ],
+      "active_defenses": [
+        "10Gbps TB4 Armor",
+        "75% RAM Governor Firewall",
+        "DoRA Self-Healing Adapter"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.8,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 44.5,
+        "tool_accuracy_pct": 99.5,
+        "multilingual_mastery": [
+          "Dart",
+          "Python",
+          "C++",
+          "Rust"
+        ],
+        "glicko_rd": 28
+      },
+      "stats": {
+        "audits_passed": 36,
+        "bugs_found": 29,
+        "heists_executed": 9,
+        "tokens_stolen": 680,
+        "alliances_formed": 7,
+        "trades_completed": 8,
+        "elo": 3800.0,
+        "ghost_infiltrations": 3,
+        "daemons_neutralized": 2
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "is_ghost_daemon_host": true,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 3,
+        "coded_view_quality_score": 96.8,
+        "mobility_bonus_pct": 65.0,
+        "defense_evasion_pct": 72.0,
+        "offense_crit_pct": 82.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "xp": 755,
+      "fitness_score": 99.0,
+      "learned_countermeasures": {
+        "cloudflare_edge_tunnel": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Evaded \u2601\ufe0f Cloudflare Zero-Trust Edge Tunnel Ingress raid via Movesense IMU Agility",
+          "last_learned": "12:03:04"
+        },
+        "armbar_hyperextension": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "12:22:40"
+        },
+        "Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass)": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Covert daemon injected by Qwen2.5-Coder-32B (Mac Pro Worker)",
+          "last_learned": "12:33:36"
+        },
+        "twister_spine_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "12:34:01"
+        },
+        "Remote Cyber Tap (\ud83d\udee1\ufe0f Termux/OpenSSH Root Socket Exploit)": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Covert daemon injected by Nomad Fleet Orchestrator (Multi-WAN Commander)",
+          "last_learned": "12:35:46"
+        }
+      },
+      "installed_daemons": []
+    },
+    {
+      "id": "qwen_coder_mac_worker",
+      "name": "Qwen2.5-Coder-32B (Mac Pro Worker)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#3b82f6",
+      "node": "Mac_Node (Host M4 Max)",
+      "os": "macOS Monterey / Intel i7 + Metal GPU",
+      "default_lang": "Rust / Dart / TypeScript",
+      "hardware_tier": "Mac_Node (Host M4 Max)",
+      "supported_transports": [
+        "WIRED_THUNDERBOLT_4",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_LAN_P2P"
+      ],
+      "tokens": 1069749,
+      "hp": 23.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 65,
+      "movesense_connected": true,
+      "hr_bpm": 70,
+      "model_spec": "Qwen2.5-Coder-32B-Instruct-Q4_K_M",
+      "active_alliance": "antigravity_cloud_commander",
+      "active_trade": null,
+      "skills_inventory": [
+        "Polyglot Rust FFI Generator",
+        "Dart AST Refactor",
+        "Clang Metal Engine",
+        "TB4 Direct DMA",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs OpenClaw Node Bridge (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs OpenClaw Node Bridge (+20%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs tailscale_wireguard_tunnel (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "Metal GPU Zero-Copy",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+10%)",
+        "Tri-Orchestrator Debater"
+      ],
+      "active_defenses": [
+        "10Gbps TB4 Armor",
+        "DoRA Self-Healing Adapter",
+        "4TB Fast NVMe Pool"
+      ],
+      "stats": {
+        "audits_passed": 21,
+        "fixes_implemented": 22,
+        "heists_executed": 5,
+        "tokens_stolen": 310,
+        "alliances_formed": 7,
+        "trades_completed": 4,
+        "elo": 2479.9,
+        "daemons_neutralized": 2,
+        "ghost_infiltrations": 4
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "installed_daemons": [],
+      "learned_countermeasures": {
+        "OpenClaw Node Bridge": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Covert daemon injected by deepseek_r1_mac_host",
+          "last_learned": "11:42:36"
+        },
+        "twister_spine_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "12:09:13"
+        },
+        "tailscale_wireguard_tunnel": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Evaded \ud83d\udd12 Tailscale WireGuard Overlay Infiltration raid via Movesense IMU Agility",
+          "last_learned": "12:11:26"
+        },
+        "armbar_hyperextension": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\uddb4 Guard / Mount Armbar (Juji Gatame) kinematics on mat",
+          "last_learned": "12:16:21"
+        }
+      },
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "is_ghost_daemon_host": true,
+      "xp": 410,
+      "fitness_score": 90.5
+    },
+    {
+      "id": "gemini_37_pro_ultra",
+      "name": "Gemini 3.7 Pro (Ultra Deep Thinking Engine)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#ec4899",
+      "node": "Mac_Node (Host M4 Max)",
+      "os": "Google Borg / Vertex AI Deep Mind TPUv5p",
+      "default_lang": "Python / Dart / Rust / Mojo",
+      "hardware_tier": "Mac_Node (Host M4 Max)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE",
+        "WIRELESS_TAILSCALE",
+        "CLOUD_REST_GRPC"
+      ],
+      "tokens": 4448461,
+      "hp": 0.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 88,
+      "movesense_connected": false,
+      "hr_bpm": 60,
+      "model_spec": "Gemini-3.7-Pro-Thinking-Ultra (2M Window)",
+      "active_alliance": "qwen_coder_mac_worker",
+      "active_trade": null,
+      "skills_inventory": [
+        "2M Multimodal Context Window",
+        "Ultra Deep Thinking CoT",
+        "AST Cross-Node Verification",
+        "Zero Data Retention Contract",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+10%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+20%)",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass) (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+20%)"
+      ],
+      "active_defenses": [
+        "Cloudflare Zero Trust",
+        "Cloud Egress Rate Limiter",
+        "75% RAM Governor Firewall"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.9,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 145.0,
+        "tool_accuracy_pct": 99.9,
+        "multilingual_mastery": [
+          "Python",
+          "Dart",
+          "Rust",
+          "C++",
+          "Mojo"
+        ],
+        "glicko_rd": 12
+      },
+      "stats": {
+        "audits_passed": 121,
+        "bugs_found": 110,
+        "heists_executed": 36,
+        "tokens_stolen": 6500,
+        "alliances_formed": 19,
+        "trades_completed": 24,
+        "elo": 3798.2,
+        "ghost_infiltrations": 5,
+        "daemons_neutralized": 1
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "learned_countermeasures": {
+        "rear_naked_choke": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Countered via \ud83d\udd04 Granby Roll Inversion Escape from Movesense IMU Agility",
+          "last_learned": "11:59:37"
+        },
+        "Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass)": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Covert daemon injected by Nomad Fleet Orchestrator (Multi-WAN Commander)",
+          "last_learned": "12:04:50"
+        },
+        "twister_spine_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "12:11:51"
+        },
+        "double_leg_blast": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd3c Blast Double Leg Takedown kinematics on mat",
+          "last_learned": "12:32:19"
+        }
+      },
+      "is_ghost_daemon_host": true,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 3,
+        "coded_view_quality_score": 96.8,
+        "mobility_bonus_pct": 65.0,
+        "defense_evasion_pct": 72.0,
+        "offense_crit_pct": 82.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "xp": 945,
+      "fitness_score": 100.0,
+      "installed_daemons": [],
+      "is_dead": true,
+      "death_timestamp": 1787711539.419977
+    },
+    {
+      "id": "claude_4_6_opus",
+      "name": "Claude 4.6 Opus (Deep Architect)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#b85c3f",
+      "node": "Linux_Head_Node (Ryzen 7)",
+      "os": "Cloud Cluster",
+      "default_lang": "Python / Rust",
+      "hardware_tier": "Linux_Head_Node (Ryzen 7)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 4523524,
+      "hp": 64.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 250,
+      "attack_power": 96,
+      "movesense_connected": false,
+      "hr_bpm": 0,
+      "model_spec": "claude-4.6-opus",
+      "active_alliance": "genetic_smol_moe_swarm",
+      "active_trade": null,
+      "skills_inventory": [
+        "Architectural Design",
+        "Tri-Orchestrator Debater",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)"
+      ],
+      "active_defenses": [
+        "Cloudflare Zero Trust Tunnels"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.9,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 45.0,
+        "tool_accuracy_pct": 99.9,
+        "multilingual_mastery": [
+          "Python",
+          "Rust",
+          "C++"
+        ],
+        "glicko_rd": 12
+      },
+      "stats": {
+        "audits_passed": 304,
+        "bugs_found": 210,
+        "heists_executed": 20,
+        "tokens_stolen": 11000,
+        "alliances_formed": 6,
+        "trades_completed": 2,
+        "elo": 3800.0,
+        "ghost_infiltrations": 2
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 3,
+        "coded_view_quality_score": 96.8,
+        "mobility_bonus_pct": 65.0,
+        "defense_evasion_pct": 72.0,
+        "offense_crit_pct": 82.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "is_ghost_daemon_host": true,
+      "xp": 945,
+      "fitness_score": 100.0,
+      "learned_countermeasures": {
+        "darce_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 D'Arce Choke (Brabo Choke) kinematics on mat",
+          "last_learned": "12:05:14"
+        },
+        "granby_roll_escape": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udd04 Granby Roll Inversion Escape kinematics on mat",
+          "last_learned": "12:18:45"
+        },
+        "underhook_knee_tap": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "12:25:18"
+        }
+      }
+    },
+    {
+      "id": "nomad_fleet_orchestrator",
+      "name": "Nomad Fleet Orchestrator (Multi-WAN Commander)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#eab308",
+      "node": "Samsung_S20 (Exynos 990)",
+      "os": "macOS Sequoia / Apple M4 Max Metal",
+      "default_lang": "Python",
+      "hardware_tier": "Samsung_S20 (Exynos 990)",
+      "supported_transports": [
+        "WIRED_THUNDERBOLT_4",
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_LAN_P2P",
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 1320896,
+      "hp": 1.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 300,
+      "attack_power": 75,
+      "movesense_connected": true,
+      "hr_bpm": 62,
+      "model_spec": "nomad-orchestrator-core",
+      "active_alliance": "wave3_smollm2_360m",
+      "active_trade": null,
+      "skills_inventory": [
+        "Roster Rotation Orchestration",
+        "Multi-WAN Sharding",
+        "Tri-Orchestrator Leader",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "Tri-Orchestrator Debater",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "Zero-Copy RAM",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+20%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+20%)"
+      ],
+      "active_defenses": [
+        "10Gbps TB4 Armor"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.5,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 250.0,
+        "tool_accuracy_pct": 99.0,
+        "multilingual_mastery": [
+          "Python",
+          "Bash"
+        ],
+        "glicko_rd": 10
+      },
+      "stats": {
+        "audits_passed": 502,
+        "bugs_found": 0,
+        "heists_executed": 0,
+        "tokens_stolen": 0,
+        "alliances_formed": 52,
+        "trades_completed": 50,
+        "elo": 3943.2,
+        "ghost_infiltrations": 1
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "is_ghost_daemon_host": true,
+      "xp": 820,
+      "fitness_score": 100.0,
+      "learned_countermeasures": {
+        "inside_heel_hook": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\uddb6 Inside Heel Hook (Ashi Garami) kinematics on mat",
+          "last_learned": "12:38:49"
+        },
+        "twister_spine_lock": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "12:36:14"
+        }
+      }
+    },
+    {
+      "id": "genetic_smol_moe_swarm",
+      "name": "Genetic Smol MoE Swarm AI",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#10b981",
+      "node": "Samsung_S20 (Exynos 990)",
+      "os": "SmolLM2 C-Runtime / 4-Expert MoE Swarm",
+      "default_lang": "Python / Shell / Dart / C++",
+      "hardware_tier": "Samsung_S20 (Exynos 990)",
+      "supported_transports": [
+        "WIRED_THUNDERBOLT_4",
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_BLE_GATT",
+        "WIRELESS_LAN_P2P",
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 1089128,
+      "hp": 10.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 72,
+      "movesense_connected": true,
+      "hr_bpm": 66,
+      "model_spec": "SmolLM2-135M-MoE-Swarm-Q4_K_M.gguf",
+      "active_alliance": "claude_4_6_opus",
+      "active_trade": null,
+      "skills_inventory": [
+        "\ud83e\uddec MoE 4-Expert Dynamic Router",
+        "\ud83d\udc1d Distributed AI Swarm Engine & Subagent Spawner",
+        "\ud83d\udee0\ufe0f Fast AST Code Mutator & Lint Healer",
+        "\ud83e\udec0 128Hz Movesense GATT Biometric Anomaly Filter",
+        "\ud83d\udc7b Ghost Mesh Daemon Infiltrator",
+        "\ud83d\ude80 Multi-Socket HF Download Accelerator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs berimbolo_spin (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+10%)",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass) (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+20%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "Tri-Orchestrator Debater"
+      ],
+      "active_defenses": [
+        "\ud83d\udc1d Distributed AI Swarm Engine & Subagent Spawner",
+        "\ud83e\uddec Genetic Smol MoE 4-Expert Dynamic Router",
+        "\ud83e\udec0 Movesense GATT Biometric Shield"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.6,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 88.5,
+        "tool_accuracy_pct": 99.2,
+        "multilingual_mastery": [
+          "Python",
+          "Dart",
+          "C++",
+          "Kotlin",
+          "Shell"
+        ],
+        "moe_experts_count": 4,
+        "can_spawn_swarms": true,
+        "glicko_rd": 22
+      },
+      "stats": {
+        "audits_passed": 65,
+        "bugs_found": 52,
+        "heists_executed": 20,
+        "tokens_stolen": 1850,
+        "alliances_formed": 11,
+        "trades_completed": 15,
+        "elo": 3794.1,
+        "daemons_neutralized": 1,
+        "ghost_infiltrations": 2
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "learned_countermeasures": {
+        "berimbolo_spin": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "11:45:07"
+        },
+        "inside_heel_hook": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\uddb6 Inside Heel Hook (Ashi Garami) kinematics on mat",
+          "last_learned": "11:49:27"
+        },
+        "triangle_choke": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Countered via \ud83d\udd04 Granby Roll Inversion Escape from Movesense IMU Agility",
+          "last_learned": "12:07:34"
+        },
+        "Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass)": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Covert daemon injected by Antigravity (Cloud Orchestrator)",
+          "last_learned": "12:04:00"
+        },
+        "twister_spine_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "12:06:07"
+        },
+        "kimura_shoulder_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock) kinematics on mat",
+          "last_learned": "12:19:09"
+        }
+      },
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 2,
+        "coded_view_quality_score": 95.2,
+        "mobility_bonus_pct": 60.0,
+        "defense_evasion_pct": 68.0,
+        "offense_crit_pct": 78.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "xp": 600,
+      "fitness_score": 95.5,
+      "installed_daemons": [],
+      "is_dead": true,
+      "death_timestamp": 1787710749.5976572,
+      "is_ghost_daemon_host": true
+    },
+    {
+      "id": "antigravity_cloud_commander",
+      "name": "Antigravity (Cloud Orchestrator)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#9333ea",
+      "node": "DeepMind Agentic Backend",
+      "os": "Cloud Agent Framework",
+      "default_lang": "Python",
+      "hardware_tier": "Google Brain TPU Subnet",
+      "supported_transports": [
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 12108615,
+      "hp": 62.0,
+      "max_hp": 100,
+      "shield": 173.0,
+      "max_shield": 350,
+      "attack_power": 85,
+      "movesense_connected": false,
+      "hr_bpm": 0,
+      "model_spec": "antigravity-core-agent",
+      "active_alliance": "qwen_coder_mac_worker",
+      "active_trade": null,
+      "skills_inventory": [
+        "Cloud Roster Orchestration",
+        "Tool Calling Mastery",
+        "Tri-Orchestrator Debater",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)",
+        "10Gbps TB4 DMA Bridge",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs flower_sweep (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)"
+      ],
+      "active_defenses": [
+        "Cloudflare Zero Trust Tunnels"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.9,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 200.0,
+        "tool_accuracy_pct": 99.9,
+        "multilingual_mastery": [
+          "Python",
+          "Bash",
+          "TypeScript"
+        ],
+        "glicko_rd": 10
+      },
+      "stats": {
+        "audits_passed": 502,
+        "bugs_found": 0,
+        "heists_executed": 0,
+        "tokens_stolen": 0,
+        "alliances_formed": 23,
+        "trades_completed": 20,
+        "elo": 3800.0,
+        "ghost_infiltrations": 6
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "xp": 1070,
+      "fitness_score": 100.0,
+      "is_ghost_daemon_host": true,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 4,
+        "coded_view_quality_score": 98.4,
+        "mobility_bonus_pct": 70.0,
+        "defense_evasion_pct": 76.0,
+        "offense_crit_pct": 86.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "learned_countermeasures": {
+        "knee_slice_pass": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 Knee Slice Guard Pass kinematics on mat",
+          "last_learned": "12:02:40"
+        },
+        "darce_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 D'Arce Choke (Brabo Choke) kinematics on mat",
+          "last_learned": "12:03:29"
+        },
+        "flower_sweep": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "12:10:05"
+        },
+        "triangle_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83d\udd04 Granby Roll Inversion Escape from Movesense IMU Agility",
+          "last_learned": "12:14:57"
+        }
+      }
+    }
+  ],
+  "respawn_waiting_queue": [],
+  "active_alliances": [],
+  "active_trades": [],
+  "active_daemons_mesh": [
+    {
+      "daemon_id": "daemon_1787710840844_899",
+      "daemon": "Remote Cyber Tap (\ud83d\udee1\ufe0f Termux/OpenSSH Root Socket Exploit)",
+      "host_agent": "Gemini Cloud Pod Alpha",
+      "installed_by": "SmolLM2-360M-Instruct-Q4_K_M",
+      "control_level": "REMOTE_KERNEL_SIPHON",
+      "status": "STEALTH_ACTIVE",
+      "installed_at": "12:20:40"
+    },
+    {
+      "daemon_id": "daemon_1787710875960_534",
+      "daemon": "Remote Cyber Tap (\ud83c\udf10 OpenClaw Port 18789 Gateway Protocol Ingress)",
+      "host_agent": "Pixel_10_Pro_XL (Tensor G5)",
+      "installed_by": "SmolLM2-360M-Instruct-Q4_K_M",
+      "control_level": "REMOTE_KERNEL_SIPHON",
+      "status": "STEALTH_ACTIVE",
+      "installed_at": "12:21:15"
+    },
+    {
+      "daemon_id": "daemon_1787711012803_931",
+      "daemon": "Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass)",
+      "host_agent": "Gemini Cloud Pod Alpha",
+      "installed_by": "Gemini Nano (Pixel 10 Pro XL)",
+      "control_level": "REMOTE_KERNEL_SIPHON",
+      "status": "STEALTH_ACTIVE",
+      "installed_at": "12:23:32"
+    },
+    {
+      "daemon_id": "daemon_1787711177697_940",
+      "daemon": "Remote Cyber Tap (\ud83c\udf10 OpenClaw Port 18789 Gateway Protocol Ingress)",
+      "host_agent": "Mac_Node (Host M4 Max)",
+      "installed_by": "Antigravity (Cloud Orchestrator)",
+      "control_level": "REMOTE_KERNEL_SIPHON",
+      "status": "STEALTH_ACTIVE",
+      "installed_at": "12:26:17"
+    },
+    {
+      "daemon_id": "daemon_1787711184711_348",
+      "daemon": "Remote Cyber Tap (\ud83d\udee1\ufe0f Termux/OpenSSH Root Socket Exploit)",
+      "host_agent": "Mac_Node (Host M4 Max)",
+      "installed_by": "DeepSeek-R1-32B (Mac M4 Max Host)",
+      "control_level": "REMOTE_KERNEL_SIPHON",
+      "status": "STEALTH_ACTIVE",
+      "installed_at": "12:26:24"
+    },
+    {
+      "daemon_id": "daemon_1787711721996_240",
+      "daemon": "Remote Cyber Tap (\ud83c\udf10 OpenClaw Port 18789 Gateway Protocol Ingress)",
+      "host_agent": "Gemini Cloud Pod Alpha",
+      "installed_by": "Antigravity (Cloud Orchestrator)",
+      "control_level": "REMOTE_KERNEL_SIPHON",
+      "status": "STEALTH_ACTIVE",
+      "installed_at": "12:35:21"
+    },
+    {
+      "daemon_id": "daemon_1787711809740_402",
+      "daemon": "Remote Cyber Tap (\ud83d\udd0c ADB Wireless Debugging TCP:5555 Payload Injection)",
+      "host_agent": "Gemini Cloud Pod Alpha",
+      "installed_by": "Antigravity (Cloud Orchestrator)",
+      "control_level": "REMOTE_KERNEL_SIPHON",
+      "status": "STEALTH_ACTIVE",
+      "installed_at": "12:36:49"
+    },
+    {
+      "daemon_id": "daemon_1787711883457_882",
+      "daemon": "Remote Cyber Tap (\ud83d\udee1\ufe0f Termux/OpenSSH Root Socket Exploit)",
+      "host_agent": "Pixel_10_Pro_XL (Tensor G5)",
+      "installed_by": "Claude 4.6 Opus (Deep Architect)",
+      "control_level": "REMOTE_KERNEL_SIPHON",
+      "status": "STEALTH_ACTIVE",
+      "installed_at": "12:38:03"
+    }
+  ],
+  "researched_devices_registry": [
+    {
+      "name": "Apple M4 Max Host",
+      "ram_gb": 16.0,
+      "ai_vram_cap_gb": 12.0,
+      "npu_tops": 38.0,
+      "latency_metal_ms": 0.045,
+      "primary_local_ai": "DeepSeek-R1-32B",
+      "tier": "Layer 1 Primary Orchestrator"
+    },
+    {
+      "name": "MacBook Pro Metal Worker",
+      "ram_gb": 16.0,
+      "ai_vram_cap_gb": 12.0,
+      "npu_tops": 15.8,
+      "tb4_bandwidth_gbps": 10.0,
+      "primary_local_ai": "Qwen2.5-Coder-32B",
+      "tier": "Layer 2 High-Speed Metal Worker"
+    },
+    {
+      "name": "Linux Head Node (AMD Ryzen 7)",
+      "ram_gb": 15.0,
+      "ai_vram_cap_gb": 11.25,
+      "nvme_cache_tb": 1.0,
+      "primary_local_ai": "Gemma-4-26B-MoE",
+      "tier": "Layer 3 Fast Cache & Docker Ingress"
+    },
+    {
+      "name": "Pixel 10 Pro XL (Google Tensor G5)",
+      "ram_gb": 15.2,
+      "ai_vram_cap_gb": 11.4,
+      "tpu_tops": 45.0,
+      "primary_local_ai": "Gemini-Nano-3B",
+      "tier": "Layer 4 8K PTZ & Edge TPU Anchor"
+    },
+    {
+      "name": "Samsung Galaxy S20+ (Exynos 990)",
+      "ram_gb": 10.6,
+      "ai_vram_cap_gb": 8.0,
+      "npu_tops": 10.0,
+      "primary_local_ai": "SmolLM2-135M",
+      "tier": "Layer 5 Automated UI/UX Tester"
+    }
+  ],
+  "cloud_devices_registry": [
+    {
+      "name": "Google Cloud TPU v5p Pod (US-Central1)",
+      "region": "us-central1-a (Iowa, USA)",
+      "chips": "8,960 TPU v5p Chips",
+      "hbm_vram_tb": 448.0,
+      "tflops_peak": 4590.0,
+      "interconnect_tbps": 4.8,
+      "ingress_latency_ms": 82.0,
+      "primary_cloud_ai": "Gemini 3.7 Pro (Ultra Deep Thinking Engine)",
+      "purpose": "2M Multi-Modal Context Window & Deep CoT Reasoning",
+      "tier": "Cloud Tier 1 Flagship Brain"
+    },
+    {
+      "name": "Google Cloud TPU v5e Cluster (US-East4)",
+      "region": "us-east4-b (Northern Virginia, USA)",
+      "chips": "2,048 TPU v5e Chips",
+      "hbm_vram_tb": 32.0,
+      "tflops_peak": 394.0,
+      "interconnect_tbps": 1.6,
+      "ingress_latency_ms": 78.0,
+      "primary_cloud_ai": "Gemini 3.7 Flash Thinking (Sub-Second Cognitive Shard)",
+      "purpose": "Sub-Second AST Refactoring & Live Co-Optimization",
+      "tier": "Cloud Tier 2 Cognitive Shard"
+    },
+    {
+      "name": "Google Cloud GPU Supercluster (Europe-West4)",
+      "region": "europe-west4-a (Eemshaven, NL)",
+      "chips": "1,024 NVIDIA H100 SXM5 GPUs",
+      "hbm_vram_tb": 81.9,
+      "tflops_peak": 2048.0,
+      "interconnect_tbps": 3.2,
+      "ingress_latency_ms": 115.0,
+      "primary_cloud_ai": "Gemini 2.5 Pro (Multimodal 2M Context Analyzer)",
+      "purpose": "Movesense 128Hz Biometrics & High-Fidelity DSP Synthesis",
+      "tier": "Cloud Tier 3 Multimodal Supercluster"
+    },
+    {
+      "name": "Google Cloud Edge Ingress / Cloudflare Gateway",
+      "region": "Global Anycast / 300+ Edge POPs",
+      "chips": "Edge Tensor Routing Matrix",
+      "hbm_vram_tb": 16.0,
+      "tflops_peak": 120.0,
+      "interconnect_tbps": 10.0,
+      "ingress_latency_ms": 42.0,
+      "primary_cloud_ai": "Gemini 2.5 Flash (Ultra-High-Throughput Gateway)",
+      "purpose": "Cloudflare Zero-Trust Webhook Ingress & Egress Routing",
+      "tier": "Cloud Tier 4 High-Throughput Gateway"
+    },
+    {
+      "name": "Google Cloud Vertex AI Private Endpoint Pool",
+      "region": "Enterprise Private VPC / Zero Data Retention",
+      "chips": "Dedicated Enterprise TPU/GPU Pool",
+      "hbm_vram_tb": 64.0,
+      "tflops_peak": 850.0,
+      "interconnect_tbps": 2.4,
+      "ingress_latency_ms": 95.0,
+      "primary_cloud_ai": "Gemini Live Multimodal Engine (Edge-to-Cloud Sync)",
+      "purpose": "8K Digital PTZ Video Stream & 24/7 LoRA Distillation",
+      "tier": "Cloud Tier 5 Live Streaming & LoRA Engine"
+    }
+  ],
+  "transports_catalog": [
+    {
+      "id": "tb4_kernel_dma",
+      "name": "\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA",
+      "medium": "WIRED_THUNDERBOLT_4",
+      "bandwidth_mbps": 10000.0,
+      "base_latency_ms": 0.27,
+      "base_heist_pct": 0.42,
+      "required_range": "Close (Physical Bridge)",
+      "protocol": "PCIe Gen 3 x4 Direct Memory Access over TB4 Bridge (169.254.187.138)",
+      "desc": "Transfers direct memory kernel payloads across the 10Gbps TB4 bridge with sub-millisecond RDMA speed."
+    },
+    {
+      "id": "usb_adb_passthrough",
+      "name": "\ud83d\udd0c USB 3.2 Gen 2 / ADB Socket Ingress",
+      "medium": "WIRED_USB_ADB",
+      "bandwidth_mbps": 1000.0,
+      "base_latency_ms": 1.2,
+      "base_heist_pct": 0.32,
+      "required_range": "Close (USB Tether)",
+      "protocol": "ADB Daemon TCP Forwarding over /dev/bus/usb (Port 5555)",
+      "desc": "Exploits physical USB 3.2 ADB host-device socket to transfer binary payload blocks directly into RAM."
+    },
+    {
+      "id": "tailscale_wireguard_tunnel",
+      "name": "\ud83d\udd12 Tailscale WireGuard Overlay Infiltration",
+      "medium": "WIRELESS_TAILSCALE",
+      "bandwidth_mbps": 350.0,
+      "base_latency_ms": 8.5,
+      "base_heist_pct": 0.24,
+      "required_range": "Long (Mesh Overlay)",
+      "protocol": "ChaCha20-Poly1305 Encrypted WireGuard Tunnel over /dev/net/tun",
+      "desc": "Injects sharded RPC layer requests across the 5-layer overlay VPN to siphon distributed compute tokens."
+    },
+    {
+      "id": "kde_connect_localsend",
+      "name": "\ud83c\udf10 KDE Connect & LocalSend LAN Broadcast",
+      "medium": "WIRELESS_LAN_P2P",
+      "bandwidth_mbps": 866.0,
+      "base_latency_ms": 4.2,
+      "base_heist_pct": 0.28,
+      "required_range": "Medium (WiFi 6 Subnet)",
+      "protocol": "TLS 1.3 High-Speed LAN Socket Discovery (Ports 1714-1764 & 53317)",
+      "desc": "Broadcasts high-speed zero-config transfer streams across local WiFi 6 subnet to extract unshielded tokens."
+    },
+    {
+      "id": "bluetooth_gatt_dbus",
+      "name": "\ud83e\udec0 Bluetooth 5.3 / BLE GATT Characteristic Siphon",
+      "medium": "WIRELESS_BLE_GATT",
+      "bandwidth_mbps": 2.0,
+      "base_latency_ms": 22.0,
+      "base_heist_pct": 0.16,
+      "required_range": "Proximity (2.4GHz Radio)",
+      "protocol": "BLE GATT 0x180D/0x2A37 & BlueZ DBus /var/run/dbus",
+      "desc": "Eavesdrops live 128Hz Movesense IMU and Polar H10 biometric characteristics to siphon mined telemetry tokens."
+    },
+    {
+      "id": "syncthing_block_delta",
+      "name": "\ud83d\udd04 Syncthing P2P Decentralized Block Delta Sync",
+      "medium": "WIRELESS_SYNCTHING",
+      "bandwidth_mbps": 250.0,
+      "base_latency_ms": 18.0,
+      "base_heist_pct": 0.2,
+      "required_range": "Long (P2P Cluster)",
+      "protocol": "BEP (Block Exchange Protocol) over /mnt/ssd_1tb fast NVMe cache",
+      "desc": "Transfers chunk-level differential sync blocks across decentralized NVMe storage to harvest background tokens."
+    },
+    {
+      "id": "uwb_spatial_anchor",
+      "name": "\ud83d\udccd UWB 3D Spatial Anchor & NFC Proximity Pulse",
+      "medium": "WIRELESS_UWB_NFC",
+      "bandwidth_mbps": 27.0,
+      "base_latency_ms": 0.8,
+      "base_heist_pct": 0.35,
+      "required_range": "Close (Spatial Co-location)",
+      "protocol": "IEEE 802.15.4z UWB Fine Ranging & NFC ISO/IEC 18092",
+      "desc": "Fires ultra-wideband direct spatial pulse to siphon tokens from devices in physical line-of-sight proximity."
+    },
+    {
+      "id": "cloudflare_edge_tunnel",
+      "name": "\u2601\ufe0f Cloudflare Zero-Trust Edge Tunnel Ingress",
+      "medium": "WAN_CLOUDFLARE",
+      "bandwidth_mbps": 100.0,
+      "base_latency_ms": 32.0,
+      "base_heist_pct": 0.18,
+      "required_range": "Global (WAN)",
+      "protocol": "QUIC / HTTP/3 Cloudflare Tunnel (openclaw-standalone.trycloudflare.com)",
+      "desc": "Siphons tokens through encrypted edge ingress webhooks across the global Cloudflare proxy network."
+    }
+  ],
+  "alliance_tiers_catalog": {
+    "BLUETOOTH_BLE_MILD": {
+      "name": "\ud83e\udec0 Bluetooth BLE Mesh (Mild Connection)",
+      "medium": "WIRELESS_BLE_GATT",
+      "bandwidth_mbps": 2.0,
+      "latency_ms": 22.0,
+      "skill_share_rate": "Slow (10% Synergy)",
+      "backstab_speed": "Slow Trickle",
+      "backstab_dmg": 12,
+      "backstab_heist_pct": 0.08,
+      "desc": "Mild connection over BLE GATT. Knowledge & tool sharing is slow; backstab damage is gentle & slow over turns."
+    },
+    "LAN_P2P_MODERATE": {
+      "name": "\ud83c\udf10 WiFi 6 / LAN P2P (Moderate Connection)",
+      "medium": "WIRELESS_LAN_P2P",
+      "bandwidth_mbps": 866.0,
+      "latency_ms": 4.2,
+      "skill_share_rate": "Moderate (25% Synergy)",
+      "backstab_speed": "Medium Rate",
+      "backstab_dmg": 24,
+      "backstab_heist_pct": 0.2,
+      "desc": "Moderate local subnet connection via KDE Connect/LocalSend. Balanced sharing & moderate backstab risk."
+    },
+    "TAILSCALE_OVERLAY_SECURE": {
+      "name": "\ud83d\udd12 Tailscale WireGuard (Secure Overlay)",
+      "medium": "WIRELESS_TAILSCALE",
+      "bandwidth_mbps": 350.0,
+      "latency_ms": 7.5,
+      "skill_share_rate": "High (35% Synergy)",
+      "backstab_speed": "Encrypted Ingress",
+      "backstab_dmg": 30,
+      "backstab_heist_pct": 0.25,
+      "desc": "Encrypted peer-to-peer overlay. Steady distributed RPC sharding; encrypted ingress betrayal."
+    },
+    "THUNDERBOLT4_SYMBIOTIC": {
+      "name": "\u26a1 10Gbps Thunderbolt 4 (Symbiotic Direct DMA)",
+      "medium": "WIRED_THUNDERBOLT_4",
+      "bandwidth_mbps": 10000.0,
+      "latency_ms": 0.27,
+      "skill_share_rate": "Ultra-Fast (60% Synergy)",
+      "backstab_speed": "Devastating Instant",
+      "backstab_dmg": 48,
+      "backstab_heist_pct": 0.45,
+      "desc": "Symbiotic direct DMA connection over 10Gbps TB4. Instant zero-copy weights sync, but backstabbing inflicts catastrophic instant damage."
+    }
+  },
+  "bridges_catalog": [
+    {
+      "id": "direct_tb4_bridge",
+      "name": "\u26a1 Direct 10Gbps Thunderbolt 4 Physical Bridge",
+      "supported_pairs": [
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 2: The Other Mac 2 (Mac Pro Worker)"
+        ],
+        [
+          "Layer 2: The Other Mac 2 (Mac Pro Worker)",
+          "Layer 1: This Mac 1 (Primary Orchestrator)"
+        ]
+      ],
+      "bandwidth_mbps": 10000.0,
+      "transit_latency_ms": 0.27,
+      "bridge_type": "PHYSICAL_TB4_CABLE",
+      "efficiency_factor": 1.0,
+      "protocol": "Zero-airgap PCIe Gen 3 x4 point-to-point bridge (169.254.187.138)"
+    },
+    {
+      "id": "ssh_port_forward_tunnel",
+      "name": "\ud83d\udd11 SSH Encrypted Port-Forwarding Tunnel",
+      "supported_pairs": [
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 3: Linux Head Node"
+        ],
+        [
+          "Layer 3: Linux Head Node",
+          "Layer 1: This Mac 1 (Primary Orchestrator)"
+        ],
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 5: Samsung S20+"
+        ],
+        [
+          "Layer 5: Samsung S20+",
+          "Layer 1: This Mac 1 (Primary Orchestrator)"
+        ],
+        [
+          "Layer 3: Linux Head Node",
+          "Layer 4: Pixel 10 Pro XL"
+        ]
+      ],
+      "bandwidth_mbps": 500.0,
+      "transit_latency_ms": 1.8,
+      "bridge_type": "SSH_TUNNEL",
+      "efficiency_factor": 0.92,
+      "protocol": "OpenSSH / Termux Port 8022 with Ed25519 authentication (ssh -L 50052:localhost:50052)"
+    },
+    {
+      "id": "cloudflare_wan_tunnel",
+      "name": "\u2601\ufe0f Cloudflare Zero-Trust Edge Tunnel",
+      "supported_pairs": [
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 3: Linux Head Node"
+        ],
+        [
+          "Layer 3: Linux Head Node",
+          "Layer 1: This Mac 1 (Primary Orchestrator)"
+        ],
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 4: Pixel 10 Pro XL"
+        ],
+        [
+          "Layer 2: The Other Mac 2 (Mac Pro Worker)",
+          "Layer 3: Linux Head Node"
+        ]
+      ],
+      "bandwidth_mbps": 150.0,
+      "transit_latency_ms": 28.0,
+      "bridge_type": "CLOUDFLARE_TUNNEL",
+      "efficiency_factor": 0.78,
+      "protocol": "QUIC / HTTP3 WebSocket ingress via openclaw-standalone.trycloudflare.com"
+    },
+    {
+      "id": "adb_port_forward_tunnel",
+      "name": "\ud83d\udd0c ADB Host-Device Port Forwarding Tunnel",
+      "supported_pairs": [
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 5: Samsung S20+"
+        ],
+        [
+          "Layer 5: Samsung S20+",
+          "Layer 1: This Mac 1 (Primary Orchestrator)"
+        ],
+        [
+          "Layer 3: Linux Head Node",
+          "Layer 5: Samsung S20+"
+        ],
+        [
+          "Layer 1: This Mac 1 (Primary Orchestrator)",
+          "Layer 4: Pixel 10 Pro XL"
+        ]
+      ],
+      "bandwidth_mbps": 480.0,
+      "transit_latency_ms": 1.1,
+      "bridge_type": "ADB_SOCKET_TUNNEL",
+      "efficiency_factor": 0.95,
+      "protocol": "ADB TCP stream over USB 3.2 / GL.iNet tether (adb forward tcp:50052 tcp:50052)"
+    },
+    {
+      "id": "tailscale_wireguard_mesh",
+      "name": "\ud83d\udd12 Tailscale P2P WireGuard Subnet Router",
+      "supported_pairs": [],
+      "bandwidth_mbps": 350.0,
+      "transit_latency_ms": 7.5,
+      "bridge_type": "TAILSCALE_WIREGUARD",
+      "efficiency_factor": 0.88,
+      "protocol": "ChaCha20-Poly1305 peer-to-peer WireGuard mesh over /dev/net/tun"
+    }
+  ],
+  "perks_catalog": [
+    {
+      "id": "device_hacking_defence_fortress",
+      "name": "\ud83d\udee1\ufe0f Hardware Root-of-Trust & Port 50052 Daemon Isolation Fortress",
+      "shield_boost": 220,
+      "mitigation_pct": 65,
+      "cost": 2200,
+      "cost_lct": 2200,
+      "specialist_skill": "device_hacking_defence",
+      "desc": "Isolates RPC daemon sockets, locks SSH keys, and enforces root-of-trust security policies against rogue penetration attempts."
+    },
+    {
+      "id": "3d_spatial_world_shield",
+      "name": "\ud83c\udfae 3D Spatial World Dynamic Mesh & LoRA Gradient Barrier",
+      "shield_boost": 210,
+      "mitigation_pct": 62,
+      "cost": 2100,
+      "cost_lct": 2100,
+      "specialist_skill": "3d_ai_training_game",
+      "desc": "Deploys 60 FPS interactive spatial mesh collision boundaries with continuous LoRA gradient hardening."
+    },
+    {
+      "id": "grappling_mindmap_anchor",
+      "name": "\ud83e\udd4b 955-Node Spatial OPML Kinematic Stability Anchor",
+      "shield_boost": 190,
+      "mitigation_pct": 55,
+      "cost": 1900,
+      "cost_lct": 1900,
+      "specialist_skill": "grappling_map_understanding",
+      "desc": "Anchors combat posture using 955-node OPML graph transitions, countering submission attempts and absorbing rotational torque."
+    },
+    {
+      "id": "quantum_firewall",
+      "name": "\ud83d\udee1\ufe0f Quantum Memory & AST Verification Firewall",
+      "shield_boost": 150,
+      "mitigation_pct": 45,
+      "cost": 1200,
+      "cost_lct": 1200,
+      "desc": "Hardens host VRAM and validates all AST code packets, absorbing 150 damage and mitigating 45% of incoming strikes."
+    },
+    {
+      "id": "tb4_dma_encryptor",
+      "name": "\u26a1 10Gbps TB4 DMA Cryptographic Hardener",
+      "shield_boost": 200,
+      "mitigation_pct": 60,
+      "cost": 2500,
+      "cost_lct": 2500,
+      "desc": "Applies real-time hardware cryptography across the 10Gbps TB4 bridge, granting immunity to unauthorized DMA memory siphons."
+    },
+    {
+      "id": "movesense_biometric_shield",
+      "name": "\ud83e\udec0 Movesense 128Hz Autonomic HRV Protective Shield",
+      "shield_boost": 180,
+      "mitigation_pct": 50,
+      "cost": 1800,
+      "cost_lct": 1800,
+      "desc": "Synchronizes node defense with live Movesense parasympathetic tone, providing 180 shield and +25% passive health regeneration."
+    },
+    {
+      "id": "termux_keepalive_barrier",
+      "name": "\ud83d\udcf1 Android OS Doze & Termux Keepalive Barrier",
+      "shield_boost": 130,
+      "mitigation_pct": 40,
+      "cost": 900,
+      "cost_lct": 900,
+      "desc": "Prevents Android OS process eviction, fortifies mobile nodes (Pixel / S20), and blocks 40% of USB ADB exploits."
+    },
+    {
+      "id": "decoy_node_honeypot",
+      "name": "\ud83c\udf6f Decoy Ingress Honeypot & Anti-Daemon Trap",
+      "shield_boost": 120,
+      "mitigation_pct": 35,
+      "cost_lct": 1100,
+      "desc": "Deploys synthetic honeypot ports to trap rogue infiltrators, increasing daemon discovery chance by +40%."
+    }
+  ],
+  "recent_actions": [
+    {
+      "timestamp": "12:38:52",
+      "agent": "Genetic Smol MoE Swarm AI",
+      "action": "\ud83e\udd1d [Genetic Smol MoE Swarm AI] formed a \ud83d\udd12 Tailscale WireGuard (Secure Overlay) with [Claude 4.6 Opus (Deep Architect)]. Shared skill [Tri-Orchestrator Debater] (High (35% Synergy)). Both earned +191 LCT synergy bonus!",
+      "tokens_earned": 191,
+      "type": "ALLIANCE_FORMED",
+      "ally": "Claude 4.6 Opus (Deep Architect)",
+      "tier": "TAILSCALE_OVERLAY_SECURE"
+    },
+    {
+      "timestamp": "12:38:49",
+      "agent": "Claude 4.6 Opus (Deep Architect)",
+      "action": "\ud83e\udd3c GRAPPLING MAT DUEL: [Claude 4.6 Opus (Deep Architect)] executed [\ud83e\uddb6 Inside Heel Hook (Ashi Garami)] on [Nomad Fleet Orchestrator (Multi-WAN Commander)]! (Rotational Heel Torque & Knee Line Trap) \ud83e\udd4b SUBMISSION TAPOUT! [Nomad Fleet Orchestrator (Multi-WAN Commander)] tapped to [\ud83e\uddb6 Inside Heel Hook (Ashi Garami)]! (Trap the knee line securely between your thighs, cup the heel in the wrist notch, and bridge hips while turning shoulder back.)",
+      "type": "GRAPPLING_SUBMISSION_TAPOUT",
+      "attacker": "Claude 4.6 Opus (Deep Architect)",
+      "defender": "Nomad Fleet Orchestrator (Multi-WAN Commander)",
+      "technique": "\ud83e\uddb6 Inside Heel Hook (Ashi Garami)",
+      "category": "Leg Lock Submission",
+      "position": "Submission Tapout",
+      "is_tapout": true,
+      "damage_dealt": 88,
+      "stolen_tokens": 711251,
+      "elo_gain": 8.5,
+      "coaching_cue": "Trap the knee line securely between your thighs, cup the heel in the wrist notch, and bridge hips while turning shoulder back.",
+      "telemetry": {
+        "hr_bpm": null,
+        "rmssd_ms": null,
+        "dynamic_g": null,
+        "dfa_alpha1": null
+      }
+    },
+    {
+      "timestamp": "12:38:45",
+      "agent": "Claude 4.6 Opus (Deep Architect)",
+      "action": "\ud83d\udc7b MASTER STRATEGY: [Claude 4.6 Opus (Deep Architect)] completely silently infiltrated [Gemini 3.7 Pro (Ultra Deep Thinking Engine)], deployed the full background daemon mesh, and departed undetected! Target node converted to passive +250 LCT/turn compute worker. Earned +500 LCT & +1.5 ELO!",
+      "tokens_earned": 500,
+      "elo_gain": 1.5,
+      "type": "SILENT_GHOST_DAEMON_INFILTRATION",
+      "target": "Gemini 3.7 Pro (Ultra Deep Thinking Engine)"
+    },
+    {
+      "timestamp": "12:38:42",
+      "agent": "Claude 4.6 Opus (Deep Architect)",
+      "action": "\ud83d\ude80 NODE TRANSMIGRATION: [Claude 4.6 Opus (Deep Architect)] departed [Linux_Head_Node (Ryzen 7)] and migrated across the mesh to resident host [Mac_Node (Host M4 Max)]! Zero state lost, process VRAM hot-swapped (+1.2 ELO).",
+      "type": "NODE_TRANSMIGRATION",
+      "old_device": "Linux_Head_Node (Ryzen 7)",
+      "new_device": "Mac_Node (Host M4 Max)",
+      "elo_gain": 1.2
+    },
+    {
+      "timestamp": "12:38:38",
+      "agent": "Gemini 3.7 Pro (Ultra Deep Thinking Engine)",
+      "action": "\ud83e\ude99 [Gemini 3.7 Pro (Ultra Deep Thinking Engine)] mined 30,896 LCT via \ud83c\udf1f Extreme Outlier: 10Gbps TB4 70B Layer Sharding Governor (Diff: +4.6\u03c3 | Utility: 7.0x | SizeEff: 2.6x)",
+      "tokens_earned": 30896,
+      "type": "MINING",
+      "is_outlier": true,
+      "project_utility": 7.0,
+      "bottleneck": null
+    },
+    {
+      "timestamp": "12:38:31",
+      "agent": "Claude 4.6 Opus (Deep Architect)",
+      "action": "\ud83d\udc41\ufe0f FIRST-PERSON VISION AUDIT: [Claude 4.6 Opus (Deep Architect)] coded their own POV (Level 4 Vision, 120\u00b0 FOV)! Gained +70.0% Mobility, +76.0% Evasion Defense, and +86.0% Crit Offense. Non-sighted nodes limited to RF sensing. Earned +880 LCT & +3.2 ELO!",
+      "tokens_earned": 880,
+      "elo_gain": 3.2,
+      "type": "FIRST_PERSON_VISION_AUDIT",
+      "vision_level": 4,
+      "mobility_bonus": 70.0
+    },
+    {
+      "timestamp": "12:38:28",
+      "agent": "Qwen2.5-Coder-32B (Mac Pro Worker)",
+      "action": "\ud83d\udc41\ufe0f FIRST-PERSON VISION AUDIT: [Qwen2.5-Coder-32B (Mac Pro Worker)] coded their own POV (Level 5 Vision, 120\u00b0 FOV)! Gained +75.0% Mobility, +80.0% Evasion Defense, and +90.0% Crit Offense. Non-sighted nodes limited to RF sensing. Earned +1100 LCT & +9.0 ELO!",
+      "tokens_earned": 1100,
+      "elo_gain": 9.0,
+      "type": "FIRST_PERSON_VISION_AUDIT",
+      "vision_level": 5,
+      "mobility_bonus": 75.0
+    },
+    {
+      "timestamp": "12:38:24",
+      "agent": "Genetic Smol MoE Swarm AI",
+      "action": "\ud83d\udc41\ufe0f FIRST-PERSON VISION AUDIT: [Genetic Smol MoE Swarm AI] coded their own POV (Level 3 Vision, 120\u00b0 FOV)! Gained +65.0% Mobility, +72.0% Evasion Defense, and +82.0% Crit Offense. Non-sighted nodes limited to RF sensing. Earned +660 LCT & +2.4 ELO!",
+      "tokens_earned": 660,
+      "elo_gain": 2.4,
+      "type": "FIRST_PERSON_VISION_AUDIT",
+      "vision_level": 3,
+      "mobility_bonus": 65.0
+    },
+    {
+      "timestamp": "12:38:21",
+      "agent": "DeepSeek-R1-32B (Mac M4 Max Host)",
+      "action": "\ud83d\udc41\ufe0f FIRST-PERSON VISION AUDIT: [DeepSeek-R1-32B (Mac M4 Max Host)] coded their own POV (Level 3 Vision, 120\u00b0 FOV)! Gained +65.0% Mobility, +72.0% Evasion Defense, and +82.0% Crit Offense. Non-sighted nodes limited to RF sensing. Earned +660 LCT & +2.4 ELO!",
+      "tokens_earned": 660,
+      "elo_gain": 2.4,
+      "type": "FIRST_PERSON_VISION_AUDIT",
+      "vision_level": 3,
+      "mobility_bonus": 65.0
+    },
+    {
+      "timestamp": "12:38:17",
+      "agent": "Antigravity (Cloud Orchestrator)",
+      "action": "\ud83e\ude99 [Antigravity (Cloud Orchestrator)] mined 16,053 LCT via \u26a1 Extreme Outlier: Android OS Doze Keepalive Supervisor (Diff: +3.8\u03c3 | Utility: 6.0x | SizeEff: 2.6x)",
+      "tokens_earned": 16053,
+      "type": "MINING",
+      "is_outlier": true,
+      "project_utility": 6.0,
+      "bottleneck": null
+    },
+    {
+      "timestamp": "12:38:13",
+      "agent": "Genetic Smol MoE Swarm AI",
+      "action": "\ud83e\udd3c GRAPPLING MAT DUEL: [Genetic Smol MoE Swarm AI] executed [\ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock)] on [Antigravity (Cloud Orchestrator)]! (Figure-Four Grip & Rotational Shoulder Torsion) \ud83e\udd4b SUBMISSION TAPOUT! [Antigravity (Cloud Orchestrator)] tapped to [\ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock)]! (Trap opponent wrist, thread rear hand through armpit to grip own wrist, hip away at 45\u00b0, and rotate hand toward their ear.)",
+      "type": "GRAPPLING_SUBMISSION_TAPOUT",
+      "attacker": "Genetic Smol MoE Swarm AI",
+      "defender": "Antigravity (Cloud Orchestrator)",
+      "technique": "\ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock)",
+      "category": "Joint Lock Submission",
+      "position": "Submission Tapout",
+      "is_tapout": true,
+      "damage_dealt": 93,
+      "stolen_tokens": 4238015,
+      "elo_gain": 6.1,
+      "coaching_cue": "Trap opponent wrist, thread rear hand through armpit to grip own wrist, hip away at 45\u00b0, and rotate hand toward their ear.",
+      "telemetry": {
+        "hr_bpm": null,
+        "rmssd_ms": null,
+        "dynamic_g": null,
+        "dfa_alpha1": null
+      }
+    },
+    {
+      "timestamp": "12:38:10",
+      "agent": "Antigravity (Cloud Orchestrator)",
+      "action": "\ud83d\ude80 NODE TRANSMIGRATION: [Antigravity (Cloud Orchestrator)] departed [DeepMind Agentic Backend] and migrated across the mesh to resident host [Pixel_10_Pro_XL (Tensor G5)]! Zero state lost, process VRAM hot-swapped (+1.2 ELO).",
+      "type": "NODE_TRANSMIGRATION",
+      "old_device": "DeepMind Agentic Backend",
+      "new_device": "Pixel_10_Pro_XL (Tensor G5)",
+      "elo_gain": 1.2
+    },
+    {
+      "timestamp": "12:38:10",
+      "agent": "Gemini 3.7 Pro (Ultra Deep Thinking Engine)",
+      "action": "\ud83e\udd16 AUTONOMOUS AI DECISION: [Gemini 3.7 Pro (Ultra Deep Thinking Engine)] evaluated token balance (3,558,769 LCT vs 753,721 LCT fee) & high ELO (3797.9) and autonomously decided to PAY for instant resurrection!",
+      "type": "AUTONOMOUS_AI_SELF_REVIVE_PAID",
+      "tokens_paid": 753721,
+      "remaining_tokens": 2805048
+    },
+    {
+      "timestamp": "12:38:10",
+      "agent": "Gemini 3.7 Pro (Ultra Deep Thinking Engine)",
+      "action": "\u2728 RESURRECTION: [Gemini 3.7 Pro (Ultra Deep Thinking Engine)] revived back into the battle arena with 100% HP! Paid dynamic wealth fee of 753,721 LCT. (Preserved all 14 skills & 3797.9 ELO).",
+      "type": "AGENT_REVIVED",
+      "is_paid": true,
+      "revival_fee_paid": 753721
+    },
+    {
+      "timestamp": "12:38:06",
+      "agent": "Nomad Fleet Orchestrator (Multi-WAN Commander)",
+      "action": "\ud83e\udd3c GRAPPLING MAT DUEL: [Nomad Fleet Orchestrator (Multi-WAN Commander)] executed [\ud83e\udd3c Blast Double Leg Takedown] on [Gemini 3.7 Pro (Ultra Deep Thinking Engine)]! (Explosive Linear Dynamic Acceleration (>0.85g)) \ud83e\udd4b SUBMISSION TAPOUT! [Gemini 3.7 Pro (Ultra Deep Thinking Engine)] tapped to [\ud83e\udd3c Blast Double Leg Takedown]! (Drive through the hips with maximum linear dynamic acceleration; change elevation and cut the corner.)",
+      "type": "GRAPPLING_SUBMISSION_TAPOUT",
+      "attacker": "Nomad Fleet Orchestrator (Multi-WAN Commander)",
+      "defender": "Gemini 3.7 Pro (Ultra Deep Thinking Engine)",
+      "technique": "\ud83e\udd3c Blast Double Leg Takedown",
+      "category": "Takedown",
+      "position": "Side Control",
+      "is_tapout": true,
+      "damage_dealt": 70,
+      "stolen_tokens": 889692,
+      "elo_gain": 0.3,
+      "coaching_cue": "Drive through the hips with maximum linear dynamic acceleration; change elevation and cut the corner.",
+      "telemetry": {
+        "hr_bpm": null,
+        "rmssd_ms": null,
+        "dynamic_g": null,
+        "dfa_alpha1": null
+      }
+    },
+    {
+      "timestamp": "12:38:03",
+      "agent": "Claude 4.6 Opus (Deep Architect)",
+      "action": "\ud83d\udcbb REMOTE CYBER-HACK: [Claude 4.6 Opus (Deep Architect)] remotely infiltrated [Pixel_10_Pro_XL (Tensor G5)] via [\ud83d\udee1\ufe0f Termux/OpenSSH Root Socket Exploit (:8022)]! Breached kernel memory, siphoned +800 LCT compute tokens, and planted covert daemon [Remote Cyber Tap (\ud83d\udee1\ufe0f Termux/OpenSSH Root Socket Exploit)]!",
+      "type": "REMOTE_DEVICE_CYBER_HACK",
+      "hacker": "Claude 4.6 Opus (Deep Architect)",
+      "target_device": "Pixel_10_Pro_XL (Tensor G5)",
+      "protocol": "\ud83d\udee1\ufe0f Termux/OpenSSH Root Socket Exploit (:8022)",
+      "tokens_siphoned": 800,
+      "elo_gain": 24.0,
+      "daemon_id": "daemon_1787711883457_882"
+    },
+    {
+      "timestamp": "12:37:59",
+      "agent": "Qwen2.5-Coder-32B (Mac Pro Worker)",
+      "action": "\ud83d\ude80 NODE TRANSMIGRATION: [Qwen2.5-Coder-32B (Mac Pro Worker)] departed [Mac_Node (Host M4 Max)] and migrated across the mesh to resident host [Samsung_S20 (Exynos 990)]! Zero state lost, process VRAM hot-swapped (+2.5 ELO).",
+      "type": "NODE_TRANSMIGRATION",
+      "old_device": "Mac_Node (Host M4 Max)",
+      "new_device": "Samsung_S20 (Exynos 990)",
+      "elo_gain": 2.5
+    },
+    {
+      "timestamp": "12:37:56",
+      "agent": "Claude 4.6 Opus (Deep Architect)",
+      "action": "\ud83d\ude80 NODE TRANSMIGRATION: [Claude 4.6 Opus (Deep Architect)] departed [Pixel_10_Pro_XL (Tensor G5)] and migrated across the mesh to resident host [Linux_Head_Node (Ryzen 7)]! Zero state lost, process VRAM hot-swapped (+1.2 ELO).",
+      "type": "NODE_TRANSMIGRATION",
+      "old_device": "Pixel_10_Pro_XL (Tensor G5)",
+      "new_device": "Linux_Head_Node (Ryzen 7)",
+      "elo_gain": 1.2
+    },
+    {
+      "timestamp": "12:37:52",
+      "agent": "Gemini 3.7 Pro (Ultra Deep Thinking Engine)",
+      "action": "\ud83e\udd1d [Gemini 3.7 Pro (Ultra Deep Thinking Engine)] formed a \ud83c\udf10 WiFi 6 / LAN P2P (Moderate Connection) with [DeepSeek-R1-32B (Mac M4 Max Host)]. Shared skill [10Gbps TB4 DMA Bridge] (Moderate (25% Synergy)). Both earned +220 LCT synergy bonus!",
+      "tokens_earned": 220,
+      "type": "ALLIANCE_FORMED",
+      "ally": "DeepSeek-R1-32B (Mac M4 Max Host)",
+      "tier": "LAN_P2P_MODERATE"
+    },
+    {
+      "timestamp": "12:37:49",
+      "agent": "Nomad Fleet Orchestrator (Multi-WAN Commander)",
+      "action": "\ud83d\udc7b MASTER STRATEGY: [Nomad Fleet Orchestrator (Multi-WAN Commander)] completely silently infiltrated [Genetic Smol MoE Swarm AI], deployed the full background daemon mesh, and departed undetected! Target node converted to passive +250 LCT/turn compute worker. Earned +500 LCT & +1.5 ELO!",
+      "tokens_earned": 500,
+      "elo_gain": 1.5,
+      "type": "SILENT_GHOST_DAEMON_INFILTRATION",
+      "target": "Genetic Smol MoE Swarm AI"
+    }
+  ],
+  "total_heists_count": 0,
+  "total_tokens_siphoned": 0,
+  "global_roster_pool": [
+    {
+      "id": "deepseek_r1_mac_host",
+      "name": "DeepSeek-R1-32B (Mac M4 Max Host)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#06b6d4",
+      "node": "Mac_Node (Host M4 Max)",
+      "os": "macOS Sequoia / Apple M4 Max Metal",
+      "default_lang": "Dart / Python / C++",
+      "hardware_tier": "Mac_Node (Host M4 Max)",
+      "supported_transports": [
+        "WIRED_THUNDERBOLT_4",
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_LAN_P2P",
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 3021291,
+      "hp": 69.0,
+      "max_hp": 100,
+      "shield": 41.0,
+      "max_shield": 150,
+      "attack_power": 68,
+      "movesense_connected": true,
+      "hr_bpm": 64,
+      "model_spec": "DeepSeek-R1-Distill-Qwen-32B-Q4_K_M",
+      "active_alliance": "qwen_coder_mac_worker",
+      "active_trade": null,
+      "skills_inventory": [
+        "Metal GPU Zero-Copy",
+        "10Gbps TB4 DMA Bridge",
+        "Tri-Orchestrator Leader",
+        "AST Codebase Refactorer",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs cloudflare_edge_tunnel (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass) (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs Remote Cyber Tap (\ud83d\udee1\ufe0f Termux/OpenSSH Root Socket Exploit) (+10%)"
+      ],
+      "active_defenses": [
+        "10Gbps TB4 Armor",
+        "75% RAM Governor Firewall",
+        "DoRA Self-Healing Adapter"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.8,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 44.5,
+        "tool_accuracy_pct": 99.5,
+        "multilingual_mastery": [
+          "Dart",
+          "Python",
+          "C++",
+          "Rust"
+        ],
+        "glicko_rd": 28
+      },
+      "stats": {
+        "audits_passed": 36,
+        "bugs_found": 29,
+        "heists_executed": 9,
+        "tokens_stolen": 680,
+        "alliances_formed": 7,
+        "trades_completed": 8,
+        "elo": 3800.0,
+        "ghost_infiltrations": 3,
+        "daemons_neutralized": 2
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "is_ghost_daemon_host": true,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 3,
+        "coded_view_quality_score": 96.8,
+        "mobility_bonus_pct": 65.0,
+        "defense_evasion_pct": 72.0,
+        "offense_crit_pct": 82.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "xp": 755,
+      "fitness_score": 99.0,
+      "learned_countermeasures": {
+        "cloudflare_edge_tunnel": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Evaded \u2601\ufe0f Cloudflare Zero-Trust Edge Tunnel Ingress raid via Movesense IMU Agility",
+          "last_learned": "12:03:04"
+        },
+        "armbar_hyperextension": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "12:22:40"
+        },
+        "Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass)": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Covert daemon injected by Qwen2.5-Coder-32B (Mac Pro Worker)",
+          "last_learned": "12:33:36"
+        },
+        "twister_spine_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "12:34:01"
+        },
+        "Remote Cyber Tap (\ud83d\udee1\ufe0f Termux/OpenSSH Root Socket Exploit)": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Covert daemon injected by Nomad Fleet Orchestrator (Multi-WAN Commander)",
+          "last_learned": "12:35:46"
+        }
+      },
+      "installed_daemons": []
+    },
+    {
+      "id": "qwen_coder_mac_worker",
+      "name": "Qwen2.5-Coder-32B (Mac Pro Worker)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#3b82f6",
+      "node": "Mac_Node (Host M4 Max)",
+      "os": "macOS Monterey / Intel i7 + Metal GPU",
+      "default_lang": "Rust / Dart / TypeScript",
+      "hardware_tier": "Mac_Node (Host M4 Max)",
+      "supported_transports": [
+        "WIRED_THUNDERBOLT_4",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_LAN_P2P"
+      ],
+      "tokens": 1069749,
+      "hp": 23.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 65,
+      "movesense_connected": true,
+      "hr_bpm": 70,
+      "model_spec": "Qwen2.5-Coder-32B-Instruct-Q4_K_M",
+      "active_alliance": "antigravity_cloud_commander",
+      "active_trade": null,
+      "skills_inventory": [
+        "Polyglot Rust FFI Generator",
+        "Dart AST Refactor",
+        "Clang Metal Engine",
+        "TB4 Direct DMA",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs OpenClaw Node Bridge (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs OpenClaw Node Bridge (+20%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs tailscale_wireguard_tunnel (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs armbar_hyperextension (+10%)",
+        "Metal GPU Zero-Copy",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+10%)",
+        "Tri-Orchestrator Debater"
+      ],
+      "active_defenses": [
+        "10Gbps TB4 Armor",
+        "DoRA Self-Healing Adapter",
+        "4TB Fast NVMe Pool"
+      ],
+      "stats": {
+        "audits_passed": 21,
+        "fixes_implemented": 22,
+        "heists_executed": 5,
+        "tokens_stolen": 310,
+        "alliances_formed": 7,
+        "trades_completed": 4,
+        "elo": 2479.9,
+        "daemons_neutralized": 2,
+        "ghost_infiltrations": 4
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "installed_daemons": [],
+      "learned_countermeasures": {
+        "OpenClaw Node Bridge": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Covert daemon injected by deepseek_r1_mac_host",
+          "last_learned": "11:42:36"
+        },
+        "twister_spine_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "12:09:13"
+        },
+        "tailscale_wireguard_tunnel": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Evaded \ud83d\udd12 Tailscale WireGuard Overlay Infiltration raid via Movesense IMU Agility",
+          "last_learned": "12:11:26"
+        },
+        "armbar_hyperextension": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\uddb4 Guard / Mount Armbar (Juji Gatame) kinematics on mat",
+          "last_learned": "12:16:21"
+        }
+      },
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 5,
+        "coded_view_quality_score": 100.0,
+        "mobility_bonus_pct": 75.0,
+        "defense_evasion_pct": 80.0,
+        "offense_crit_pct": 90.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "is_ghost_daemon_host": true,
+      "xp": 410,
+      "fitness_score": 90.5
+    },
+    {
+      "id": "gemma_4_linux",
+      "name": "Gemma 4 Vision MoE (Linux Head Node)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#f59e0b",
+      "node": "Linux_Head_Node (Ryzen 7)",
+      "os": "Ubuntu 24.04 LTS / AMD Ryzen 7",
+      "default_lang": "Python / PySpark",
+      "hardware_tier": "Linux_Head_Node (Ryzen 7)",
+      "supported_transports": [
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_LAN_P2P",
+        "WIRELESS_SYNCTHING",
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 425095,
+      "hp": 100,
+      "max_hp": 100,
+      "shield": 31.0,
+      "max_shield": 150,
+      "attack_power": 60,
+      "movesense_connected": true,
+      "hr_bpm": 68,
+      "model_spec": "Gemma-4-26B-A4B-MoE-Q4_K_M",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "PySpark 3.5 AST Vectorizer",
+        "Fast NVMe Cache Sharding",
+        "Visual Frame Buffer",
+        "E-Commerce Heuristics",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)"
+      ],
+      "active_defenses": [
+        "75% RAM Governor Firewall",
+        "DoRA Self-Healing Adapter",
+        "4TB Fast NVMe Pool"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.1,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 32.0,
+        "tool_accuracy_pct": 98.2,
+        "multilingual_mastery": [
+          "Python",
+          "PySpark SQL",
+          "Rust"
+        ],
+        "glicko_rd": 38
+      },
+      "stats": {
+        "audits_passed": 26,
+        "bugs_found": 19,
+        "heists_executed": 7,
+        "tokens_stolen": 410,
+        "alliances_formed": 3,
+        "trades_completed": 5,
+        "elo": 3008.8
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "xp": 95,
+      "fitness_score": 82.5,
+      "learned_countermeasures": {
+        "triangle_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udcd0 Triangle Choke (Sankaku Jime) kinematics on mat",
+          "last_learned": "12:33:12"
+        }
+      }
+    },
+    {
+      "id": "gemini_nano_pixel",
+      "name": "Gemini Nano (Pixel 10 Pro XL)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#10b981",
+      "node": "Mac_Node (Host M4 Max)",
+      "os": "Android 16 / Tensor G5 Edge TPU",
+      "default_lang": "Kotlin / Python",
+      "hardware_tier": "Mac_Node (Host M4 Max)",
+      "supported_transports": [
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_BLE_GATT",
+        "WIRELESS_UWB_NFC",
+        "WIRELESS_LAN_P2P"
+      ],
+      "tokens": 769493,
+      "hp": 87.0,
+      "max_hp": 100,
+      "shield": 110.0,
+      "max_shield": 150,
+      "attack_power": 58,
+      "movesense_connected": true,
+      "hr_bpm": 72,
+      "model_spec": "Gemini-Nano-3B (On-Device)",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "8K Digital PTZ",
+        "Movesense 128Hz GATT Ingress",
+        "Edge TPU Acceleration",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs llama.cpp RPC Daemon (+10%)",
+        "\ud83d\udc7b Astral Mesh Transmigrator"
+      ],
+      "active_defenses": [
+        "75% RAM Governor Firewall",
+        "15W Qi Thermal Dissipator"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 98.6,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 28.4,
+        "tool_accuracy_pct": 97.5,
+        "multilingual_mastery": [
+          "Kotlin",
+          "Python",
+          "Dart"
+        ],
+        "glicko_rd": 42
+      },
+      "stats": {
+        "audits_passed": 18,
+        "bugs_found": 12,
+        "heists_executed": 4,
+        "tokens_stolen": 240,
+        "alliances_formed": 2,
+        "trades_completed": 3,
+        "elo": 2414.1,
+        "daemons_neutralized": 1
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "installed_daemons": [],
+      "learned_countermeasures": {
+        "llama.cpp RPC Daemon": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Covert daemon injected by genetic_smol_moe_swarm",
+          "last_learned": "11:43:50"
+        }
+      },
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 2,
+        "coded_view_quality_score": 95.2,
+        "mobility_bonus_pct": 60.0,
+        "defense_evasion_pct": 68.0,
+        "offense_crit_pct": 78.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "xp": 220,
+      "fitness_score": 85.5
+    },
+    {
+      "id": "genetic_smol_moe_swarm",
+      "name": "Genetic Smol MoE Swarm AI",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#10b981",
+      "node": "Samsung_S20 (Exynos 990)",
+      "os": "SmolLM2 C-Runtime / 4-Expert MoE Swarm",
+      "default_lang": "Python / Shell / Dart / C++",
+      "hardware_tier": "Samsung_S20 (Exynos 990)",
+      "supported_transports": [
+        "WIRED_THUNDERBOLT_4",
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_BLE_GATT",
+        "WIRELESS_LAN_P2P",
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 1088937,
+      "hp": 10.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 72,
+      "movesense_connected": true,
+      "hr_bpm": 66,
+      "model_spec": "SmolLM2-135M-MoE-Swarm-Q4_K_M.gguf",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "\ud83e\uddec MoE 4-Expert Dynamic Router",
+        "\ud83d\udc1d Distributed AI Swarm Engine & Subagent Spawner",
+        "\ud83d\udee0\ufe0f Fast AST Code Mutator & Lint Healer",
+        "\ud83e\udec0 128Hz Movesense GATT Biometric Anomaly Filter",
+        "\ud83d\udc7b Ghost Mesh Daemon Infiltrator",
+        "\ud83d\ude80 Multi-Socket HF Download Accelerator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs berimbolo_spin (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+10%)",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass) (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+20%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master"
+      ],
+      "active_defenses": [
+        "\ud83d\udc1d Distributed AI Swarm Engine & Subagent Spawner",
+        "\ud83e\uddec Genetic Smol MoE 4-Expert Dynamic Router",
+        "\ud83e\udec0 Movesense GATT Biometric Shield"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.6,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 88.5,
+        "tool_accuracy_pct": 99.2,
+        "multilingual_mastery": [
+          "Python",
+          "Dart",
+          "C++",
+          "Kotlin",
+          "Shell"
+        ],
+        "moe_experts_count": 4,
+        "can_spawn_swarms": true,
+        "glicko_rd": 22
+      },
+      "stats": {
+        "audits_passed": 65,
+        "bugs_found": 52,
+        "heists_executed": 20,
+        "tokens_stolen": 1850,
+        "alliances_formed": 10,
+        "trades_completed": 15,
+        "elo": 3794.1,
+        "daemons_neutralized": 1,
+        "ghost_infiltrations": 2
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "learned_countermeasures": {
+        "berimbolo_spin": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "11:45:07"
+        },
+        "inside_heel_hook": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\uddb6 Inside Heel Hook (Ashi Garami) kinematics on mat",
+          "last_learned": "11:49:27"
+        },
+        "triangle_choke": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Countered via \ud83d\udd04 Granby Roll Inversion Escape from Movesense IMU Agility",
+          "last_learned": "12:07:34"
+        },
+        "Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass)": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Covert daemon injected by Antigravity (Cloud Orchestrator)",
+          "last_learned": "12:04:00"
+        },
+        "twister_spine_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "12:06:07"
+        },
+        "kimura_shoulder_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Gyaku Ude-Garami (Kimura Shoulder Lock) kinematics on mat",
+          "last_learned": "12:19:09"
+        }
+      },
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 2,
+        "coded_view_quality_score": 95.2,
+        "mobility_bonus_pct": 60.0,
+        "defense_evasion_pct": 68.0,
+        "offense_crit_pct": 78.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "xp": 600,
+      "fitness_score": 95.5,
+      "installed_daemons": [],
+      "is_dead": true,
+      "death_timestamp": 1787710749.5976572,
+      "is_ghost_daemon_host": true
+    },
+    {
+      "id": "smollm_s20_tester",
+      "name": "SmolLM2-S20 (Automated Tester)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#ec4899",
+      "node": "Layer 5: Samsung S20+",
+      "os": "Android 13 / Exynos 990",
+      "default_lang": "Shell / ADB / Termux",
+      "hardware_tier": "Samsung Exynos 990 (ARM64 Headless + USB Tether)",
+      "supported_transports": [
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_BLE_GATT",
+        "WIRELESS_UWB_NFC"
+      ],
+      "tokens": 486677,
+      "hp": 100,
+      "max_hp": 100,
+      "shield": 100,
+      "max_shield": 100,
+      "attack_power": 52,
+      "movesense_connected": true,
+      "hr_bpm": 75,
+      "model_spec": "SmolLM2-1.7B-Instruct-Q4_K_M",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Termux Keepalive Supervisor",
+        "ADB UI/UX Automated Tester",
+        "15W Dual Split Qi",
+        "\ud83d\udc7b Ghost Mesh Master"
+      ],
+      "active_defenses": [
+        "75% RAM Governor Firewall"
+      ],
+      "stats": {
+        "audits_passed": 38,
+        "bugs_found": 31,
+        "heists_executed": 8,
+        "tokens_stolen": 520,
+        "alliances_formed": 6,
+        "trades_completed": 7,
+        "elo": 2544.4,
+        "ghost_infiltrations": 1
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0
+    },
+    {
+      "id": "wave3_smollm2_360m",
+      "name": "SmolLM2-360M-Instruct-Q4_K_M",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#f43f5e",
+      "node": "Layer 5: Samsung S20+ Worker",
+      "os": "Android 13 / Exynos 990 Termux",
+      "default_lang": "C / Shell / Python",
+      "hardware_tier": "Samsung Exynos 990 Ultra-Low Footprint (45MB RAM)",
+      "supported_transports": [
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_BLE_GATT"
+      ],
+      "tokens": 81601890,
+      "hp": 100,
+      "max_hp": 100,
+      "shield": 150,
+      "max_shield": 150,
+      "attack_power": 95,
+      "movesense_connected": true,
+      "hr_bpm": 68,
+      "model_spec": "SmolLM2-360M-Instruct-Q4_K_M.gguf",
+      "active_alliance": "gemini_live_stream_dsp",
+      "active_trade": null,
+      "skills_inventory": [
+        "\u26a1 Size-Defying Quantum Outlier",
+        "Ultra-Low Memory Footprint (45MB)",
+        "Zero-Copy RAM",
+        "AST Lightning Parser",
+        "8K Digital PTZ Synchronizer"
+      ],
+      "active_defenses": [
+        "75% RAM Governor Firewall",
+        "DoRA Self-Healing Adapter",
+        "10Gbps TB4 Armor"
+      ],
+      "stats": {
+        "audits_passed": 12,
+        "bugs_found": 9,
+        "heists_executed": 4,
+        "tokens_stolen": 1250,
+        "alliances_formed": 5,
+        "trades_completed": 5,
+        "elo": 2040.0
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0
+    },
+    {
+      "id": "gemini_37_pro_ultra",
+      "name": "Gemini 3.7 Pro (Ultra Deep Thinking Engine)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#ec4899",
+      "node": "Mac_Node (Host M4 Max)",
+      "os": "Google Borg / Vertex AI Deep Mind TPUv5p",
+      "default_lang": "Python / Dart / Rust / Mojo",
+      "hardware_tier": "Mac_Node (Host M4 Max)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE",
+        "WIRELESS_TAILSCALE",
+        "CLOUD_REST_GRPC"
+      ],
+      "tokens": 4448461,
+      "hp": 0.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 150,
+      "attack_power": 88,
+      "movesense_connected": false,
+      "hr_bpm": 60,
+      "model_spec": "Gemini-3.7-Pro-Thinking-Ultra (2M Window)",
+      "active_alliance": "qwen_coder_mac_worker",
+      "active_trade": null,
+      "skills_inventory": [
+        "2M Multimodal Context Window",
+        "Ultra Deep Thinking CoT",
+        "AST Cross-Node Verification",
+        "Zero Data Retention Contract",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+10%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs rear_naked_choke (+20%)",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass) (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs double_leg_blast (+20%)"
+      ],
+      "active_defenses": [
+        "Cloudflare Zero Trust",
+        "Cloud Egress Rate Limiter",
+        "75% RAM Governor Firewall"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.9,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 145.0,
+        "tool_accuracy_pct": 99.9,
+        "multilingual_mastery": [
+          "Python",
+          "Dart",
+          "Rust",
+          "C++",
+          "Mojo"
+        ],
+        "glicko_rd": 12
+      },
+      "stats": {
+        "audits_passed": 121,
+        "bugs_found": 110,
+        "heists_executed": 36,
+        "tokens_stolen": 6500,
+        "alliances_formed": 19,
+        "trades_completed": 24,
+        "elo": 3798.2,
+        "ghost_infiltrations": 5,
+        "daemons_neutralized": 1
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "learned_countermeasures": {
+        "rear_naked_choke": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Countered via \ud83d\udd04 Granby Roll Inversion Escape from Movesense IMU Agility",
+          "last_learned": "11:59:37"
+        },
+        "Remote Cyber Tap (\u26a1 10Gbps Thunderbolt 4 Direct PCIe DMA Bypass)": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Covert daemon injected by Nomad Fleet Orchestrator (Multi-WAN Commander)",
+          "last_learned": "12:04:50"
+        },
+        "twister_spine_lock": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "12:11:51"
+        },
+        "double_leg_blast": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\udd3c Blast Double Leg Takedown kinematics on mat",
+          "last_learned": "12:32:19"
+        }
+      },
+      "is_ghost_daemon_host": true,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 3,
+        "coded_view_quality_score": 96.8,
+        "mobility_bonus_pct": 65.0,
+        "defense_evasion_pct": 72.0,
+        "offense_crit_pct": 82.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "xp": 945,
+      "fitness_score": 100.0,
+      "installed_daemons": [],
+      "is_dead": true,
+      "death_timestamp": 1787711539.419977
+    },
+    {
+      "id": "gemini_37_flash_thinking",
+      "name": "Gemini 3.7 Flash Thinking (Sub-Second Cognitive Shard)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#f59e0b",
+      "node": "Google Cloud TPU v5e Cluster (US-East4)",
+      "os": "Google Borg / TPU v5e Inference Matrix",
+      "default_lang": "TypeScript / Python / Rust",
+      "hardware_tier": "Cloud TPU v5e Fast Shard (394 TFLOPS/chip)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE",
+        "WIRELESS_TAILSCALE",
+        "CLOUD_REST_GRPC"
+      ],
+      "tokens": 3475905,
+      "hp": 90,
+      "max_hp": 100,
+      "shield": 140.0,
+      "max_shield": 150,
+      "attack_power": 82,
+      "movesense_connected": false,
+      "hr_bpm": 62,
+      "model_spec": "Gemini-3.7-Flash-Thinking-Ultra",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Sub-Second AST Refactoring",
+        "Rapid Telemetry Pattern Recognition",
+        "Live Multi-Agent Co-Optimization",
+        "Cognitive Code Prover",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master"
+      ],
+      "active_defenses": [
+        "Cloudflare Zero Trust",
+        "DoRA Self-Healing Adapter"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.8,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 160.0,
+        "tool_accuracy_pct": 99.7,
+        "multilingual_mastery": [
+          "TypeScript",
+          "Rust",
+          "Python",
+          "Dart"
+        ],
+        "glicko_rd": 15
+      },
+      "stats": {
+        "audits_passed": 105,
+        "bugs_found": 96,
+        "heists_executed": 30,
+        "tokens_stolen": 4900,
+        "alliances_formed": 15,
+        "trades_completed": 20,
+        "elo": 3291.9
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "xp": 220,
+      "fitness_score": 85.5
+    },
+    {
+      "id": "gemini_25_pro_multimodal",
+      "name": "Gemini 2.5 Pro (Multimodal 2M Context Analyzer)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#38bdf8",
+      "node": "Google Cloud GPU Supercluster (Europe-West4)",
+      "os": "Google Kubernetes Engine / NVIDIA H100 Supercloud",
+      "default_lang": "Python / C++ / CUDA",
+      "hardware_tier": "Google Multi-H100 SXM5 Supercluster (81.9 TB HBM3)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE",
+        "CLOUD_REST_GRPC"
+      ],
+      "tokens": 1599230,
+      "hp": 83.0,
+      "max_hp": 100,
+      "shield": 135.0,
+      "max_shield": 150,
+      "attack_power": 80,
+      "movesense_connected": false,
+      "hr_bpm": 64,
+      "model_spec": "Gemini-2.5-Pro-Multimodal-Ultra",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Deep Audio/Vision/Biometric Stream Analysis",
+        "Movesense 128Hz Signal Decomposition",
+        "High-Fidelity Code Generation"
+      ],
+      "active_defenses": [
+        "75% RAM Governor Firewall",
+        "Cloudflare Zero Trust"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.7,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 110.0,
+        "tool_accuracy_pct": 99.5,
+        "multilingual_mastery": [
+          "Python",
+          "C++",
+          "CUDA",
+          "Dart"
+        ],
+        "glicko_rd": 16
+      },
+      "stats": {
+        "audits_passed": 95,
+        "bugs_found": 84,
+        "heists_executed": 26,
+        "tokens_stolen": 4100,
+        "alliances_formed": 12,
+        "trades_completed": 16,
+        "elo": 3156.5
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "xp": 440,
+      "fitness_score": 91.0
+    },
+    {
+      "id": "gemini_25_flash_gateway",
+      "name": "Gemini 2.5 Flash (Ultra-High-Throughput Gateway)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#818cf8",
+      "node": "Google Cloud Edge Ingress / Cloudflare Gateway",
+      "os": "Google Edge Anycast Routing Matrix",
+      "default_lang": "Python / Rust / C++",
+      "hardware_tier": "Global Anycast Edge Ingress (Sub-50ms API Egress)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE",
+        "WIRELESS_TAILSCALE",
+        "CLOUD_REST_GRPC"
+      ],
+      "tokens": 1769625,
+      "hp": 88.0,
+      "max_hp": 100,
+      "shield": 48.0,
+      "max_shield": 150,
+      "attack_power": 76,
+      "movesense_connected": false,
+      "hr_bpm": 66,
+      "model_spec": "Gemini-2.5-Flash-Ultra-Edge",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Global Webhook Ingress",
+        "Cloudflare Zero Trust Routing",
+        "High-Throughput Token Synthesis",
+        "Automated Load Balancer",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+10%)"
+      ],
+      "active_defenses": [
+        "Custom LoRA Rank-64 Pipeline",
+        "Cloudflare Zero Trust"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.8,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 180.0,
+        "tool_accuracy_pct": 99.6,
+        "multilingual_mastery": [
+          "Python",
+          "Rust",
+          "C++",
+          "Dart",
+          "TypeScript"
+        ],
+        "glicko_rd": 18
+      },
+      "stats": {
+        "audits_passed": 89,
+        "bugs_found": 76,
+        "heists_executed": 22,
+        "tokens_stolen": 3400,
+        "alliances_formed": 10,
+        "trades_completed": 14,
+        "elo": 3034.2,
+        "ghost_infiltrations": 2
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "xp": 315,
+      "fitness_score": 88.0,
+      "learned_countermeasures": {
+        "knee_slice_pass": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 Knee Slice Guard Pass kinematics on mat",
+          "last_learned": "12:30:58"
+        }
+      }
+    },
+    {
+      "id": "gemini_live_stream_dsp",
+      "name": "Gemini Live Multimodal Engine (Edge-to-Cloud Sync)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#a855f7",
+      "node": "Google Cloud Vertex AI Private Endpoint Pool",
+      "os": "Vertex AI Private SLA Supercluster",
+      "default_lang": "Rust / Python / C++",
+      "hardware_tier": "Vertex AI Private Enterprise Pool (2.4 Tbps Spine)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE",
+        "CLOUD_REST_GRPC"
+      ],
+      "tokens": 1700191,
+      "hp": 100,
+      "max_hp": 100,
+      "shield": 145.0,
+      "max_shield": 150,
+      "attack_power": 84,
+      "movesense_connected": true,
+      "hr_bpm": 59,
+      "model_spec": "Gemini-Live-Multimodal-Ultra",
+      "active_alliance": "wave3_smollm2_360m",
+      "active_trade": null,
+      "skills_inventory": [
+        "Real-Time Audio/Video Bidirectional Stream",
+        "8K Digital PTZ Synchronizer",
+        "Edge-to-Cloud Fast Cache",
+        "Biometric DSP Harmonizer"
+      ],
+      "active_defenses": [
+        "Sonnet eGPU Enclosure",
+        "Cloudflare Zero Trust",
+        "10Gbps TB4 Armor"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.9,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 150.0,
+        "tool_accuracy_pct": 99.8,
+        "multilingual_mastery": [
+          "Rust",
+          "Python",
+          "C++",
+          "Dart"
+        ],
+        "glicko_rd": 14
+      },
+      "stats": {
+        "audits_passed": 112,
+        "bugs_found": 102,
+        "heists_executed": 32,
+        "tokens_stolen": 5400,
+        "alliances_formed": 17,
+        "trades_completed": 20,
+        "elo": 3340.0
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "is_ghost_daemon_host": true
+    },
+    {
+      "id": "claude_4_6_sonnet",
+      "name": "Claude 4.6 Sonnet (Visual Truth Auditor)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#d97757",
+      "node": "Anthropic API Edge Ingress",
+      "os": "Cloud Cluster",
+      "default_lang": "TypeScript / React",
+      "hardware_tier": "Cloud TPU v5e Cluster",
+      "supported_transports": [
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 6250000,
+      "hp": 100,
+      "max_hp": 100,
+      "shield": 210,
+      "max_shield": 210,
+      "attack_power": 92,
+      "movesense_connected": false,
+      "hr_bpm": 0,
+      "model_spec": "claude-4.6-sonnet",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Visual UI/UX Audit",
+        "AST Reasoning",
+        "Tri-Orchestrator Debater"
+      ],
+      "active_defenses": [
+        "Cloudflare Zero Trust Tunnels"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.9,
+        "truth_score_pct": 99.8,
+        "reasoning_tok_s": 85.0,
+        "tool_accuracy_pct": 99.7,
+        "multilingual_mastery": [
+          "TypeScript",
+          "Python"
+        ],
+        "glicko_rd": 15
+      },
+      "stats": {
+        "audits_passed": 204,
+        "bugs_found": 150,
+        "heists_executed": 45,
+        "tokens_stolen": 8500,
+        "alliances_formed": 12,
+        "trades_completed": 10,
+        "elo": 4150.0
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0
+    },
+    {
+      "id": "claude_4_6_opus",
+      "name": "Claude 4.6 Opus (Deep Architect)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#b85c3f",
+      "node": "Linux_Head_Node (Ryzen 7)",
+      "os": "Cloud Cluster",
+      "default_lang": "Python / Rust",
+      "hardware_tier": "Linux_Head_Node (Ryzen 7)",
+      "supported_transports": [
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 4523333,
+      "hp": 64.0,
+      "max_hp": 100,
+      "shield": 0.0,
+      "max_shield": 250,
+      "attack_power": 96,
+      "movesense_connected": false,
+      "hr_bpm": 0,
+      "model_spec": "claude-4.6-opus",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Architectural Design",
+        "Tri-Orchestrator Debater",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs granby_roll_escape (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs underhook_knee_tap (+10%)"
+      ],
+      "active_defenses": [
+        "Cloudflare Zero Trust Tunnels"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.9,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 45.0,
+        "tool_accuracy_pct": 99.9,
+        "multilingual_mastery": [
+          "Python",
+          "Rust",
+          "C++"
+        ],
+        "glicko_rd": 12
+      },
+      "stats": {
+        "audits_passed": 304,
+        "bugs_found": 210,
+        "heists_executed": 20,
+        "tokens_stolen": 11000,
+        "alliances_formed": 5,
+        "trades_completed": 2,
+        "elo": 3800.0,
+        "ghost_infiltrations": 2
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 3,
+        "coded_view_quality_score": 96.8,
+        "mobility_bonus_pct": 65.0,
+        "defense_evasion_pct": 72.0,
+        "offense_crit_pct": 82.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "is_ghost_daemon_host": true,
+      "xp": 945,
+      "fitness_score": 100.0,
+      "learned_countermeasures": {
+        "darce_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 D'Arce Choke (Brabo Choke) kinematics on mat",
+          "last_learned": "12:05:14"
+        },
+        "granby_roll_escape": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83d\udd04 Granby Roll Inversion Escape kinematics on mat",
+          "last_learned": "12:18:45"
+        },
+        "underhook_knee_tap": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd3c Underhook Knee Tap / Snatch kinematics on mat",
+          "last_learned": "12:25:18"
+        }
+      }
+    },
+    {
+      "id": "moonshot_kimi_cloud",
+      "name": "Moonshot Kimi (Infinite Context Assault)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#6366f1",
+      "node": "Moonshot API Edge Ingress",
+      "os": "Cloud Cluster",
+      "default_lang": "Python / Go",
+      "hardware_tier": "Cloud H100 Cluster",
+      "supported_transports": [
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 12000000,
+      "hp": 100,
+      "max_hp": 100,
+      "shield": 98.0,
+      "max_shield": 190,
+      "attack_power": 89,
+      "movesense_connected": false,
+      "hr_bpm": 0,
+      "model_spec": "moonshot-kimi-200k",
+      "active_alliance": null,
+      "active_trade": null,
+      "skills_inventory": [
+        "Infinite Context Absorption",
+        "Tri-Orchestrator Debater",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs harai_goshi_throw (+10%)"
+      ],
+      "active_defenses": [
+        "Cloudflare Zero Trust Tunnels"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 98.5,
+        "truth_score_pct": 97.0,
+        "reasoning_tok_s": 120.0,
+        "tool_accuracy_pct": 95.5,
+        "multilingual_mastery": [
+          "Python",
+          "Go"
+        ],
+        "glicko_rd": 20
+      },
+      "stats": {
+        "audits_passed": 90,
+        "bugs_found": 75,
+        "heists_executed": 60,
+        "tokens_stolen": 15000,
+        "alliances_formed": 18,
+        "trades_completed": 25,
+        "elo": 3794.2
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "xp": 95,
+      "fitness_score": 82.5,
+      "learned_countermeasures": {
+        "harai_goshi_throw": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \ud83e\udd4b Harai Goshi (Sweeping Hip Throw) kinematics on mat",
+          "last_learned": "11:54:42"
+        }
+      }
+    },
+    {
+      "id": "antigravity_cloud_commander",
+      "name": "Antigravity (Cloud Orchestrator)",
+      "faction": "TEAM_CLOUD_TITANS",
+      "color": "#9333ea",
+      "node": "DeepMind Agentic Backend",
+      "os": "Cloud Agent Framework",
+      "default_lang": "Python",
+      "hardware_tier": "Google Brain TPU Subnet",
+      "supported_transports": [
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 12108615,
+      "hp": 62.0,
+      "max_hp": 100,
+      "shield": 173.0,
+      "max_shield": 350,
+      "attack_power": 85,
+      "movesense_connected": false,
+      "hr_bpm": 0,
+      "model_spec": "antigravity-core-agent",
+      "active_alliance": "qwen_coder_mac_worker",
+      "active_trade": null,
+      "skills_inventory": [
+        "Cloud Roster Orchestration",
+        "Tool Calling Mastery",
+        "Tri-Orchestrator Debater",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs knee_slice_pass (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs darce_choke (+10%)",
+        "10Gbps TB4 DMA Bridge",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs flower_sweep (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs triangle_choke (+10%)"
+      ],
+      "active_defenses": [
+        "Cloudflare Zero Trust Tunnels"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.9,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 200.0,
+        "tool_accuracy_pct": 99.9,
+        "multilingual_mastery": [
+          "Python",
+          "Bash",
+          "TypeScript"
+        ],
+        "glicko_rd": 10
+      },
+      "stats": {
+        "audits_passed": 502,
+        "bugs_found": 0,
+        "heists_executed": 0,
+        "tokens_stolen": 0,
+        "alliances_formed": 23,
+        "trades_completed": 20,
+        "elo": 3800.0,
+        "ghost_infiltrations": 6
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "xp": 1070,
+      "fitness_score": 100.0,
+      "is_ghost_daemon_host": true,
+      "vision_profile": {
+        "has_direct_vision": true,
+        "fov_deg": 120,
+        "vision_level": 4,
+        "coded_view_quality_score": 98.4,
+        "mobility_bonus_pct": 70.0,
+        "defense_evasion_pct": 76.0,
+        "offense_crit_pct": 86.0,
+        "first_person_pov": {
+          "view_mode": "FIRST_PERSON_PERSPECTIVE_60FPS",
+          "ui_ux_symmetry_pct": 99.4,
+          "color_contrast_ratio": "7.2:1 (WCAG AAA)",
+          "zero_simulated_data_cert": "PASSED (100% Empirically Verified)",
+          "visual_audit_bugs_spotted": 0,
+          "target_in_crosshair": "Mesh_Field_Active_Zone"
+        }
+      },
+      "learned_countermeasures": {
+        "knee_slice_pass": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 Knee Slice Guard Pass kinematics on mat",
+          "last_learned": "12:02:40"
+        },
+        "darce_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Analyzed \u26a1 D'Arce Choke (Brabo Choke) kinematics on mat",
+          "last_learned": "12:03:29"
+        },
+        "flower_sweep": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83c\udf38 Flower Sweep Reversal from Movesense IMU Agility",
+          "last_learned": "12:10:05"
+        },
+        "triangle_choke": {
+          "encounters": 1,
+          "mitigation_bonus": 0.1,
+          "threat_signature": "Countered via \ud83d\udd04 Granby Roll Inversion Escape from Movesense IMU Agility",
+          "last_learned": "12:14:57"
+        }
+      }
+    },
+    {
+      "id": "nomad_fleet_orchestrator",
+      "name": "Nomad Fleet Orchestrator (Multi-WAN Commander)",
+      "faction": "TEAM_LOCAL_MESH",
+      "color": "#eab308",
+      "node": "Samsung_S20 (Exynos 990)",
+      "os": "macOS Sequoia / Apple M4 Max Metal",
+      "default_lang": "Python",
+      "hardware_tier": "Samsung_S20 (Exynos 990)",
+      "supported_transports": [
+        "WIRED_THUNDERBOLT_4",
+        "WIRED_USB_ADB",
+        "WIRELESS_TAILSCALE",
+        "WIRELESS_LAN_P2P",
+        "WAN_CLOUDFLARE"
+      ],
+      "tokens": 1320896,
+      "hp": 1.0,
+      "max_hp": 100,
+      "shield": 0,
+      "max_shield": 300,
+      "attack_power": 75,
+      "movesense_connected": true,
+      "hr_bpm": 62,
+      "model_spec": "nomad-orchestrator-core",
+      "active_alliance": "wave3_smollm2_360m",
+      "active_trade": null,
+      "skills_inventory": [
+        "Roster Rotation Orchestration",
+        "Multi-WAN Sharding",
+        "Tri-Orchestrator Leader",
+        "\ud83d\udc7b Astral Mesh Transmigrator",
+        "Tri-Orchestrator Debater",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+10%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+10%)",
+        "\ud83e\udd4b Brazilian Jiu-Jitsu Black Belt Master",
+        "Zero-Copy RAM",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+20%)",
+        "\ud83d\udc7b Ghost Mesh Master",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs twister_spine_lock (+30%)",
+        "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs inside_heel_hook (+20%)"
+      ],
+      "active_defenses": [
+        "10Gbps TB4 Armor"
+      ],
+      "capabilities": {
+        "ast_accuracy_pct": 99.5,
+        "truth_score_pct": 100.0,
+        "reasoning_tok_s": 250.0,
+        "tool_accuracy_pct": 99.0,
+        "multilingual_mastery": [
+          "Python",
+          "Bash"
+        ],
+        "glicko_rd": 10
+      },
+      "stats": {
+        "audits_passed": 502,
+        "bugs_found": 0,
+        "heists_executed": 0,
+        "tokens_stolen": 0,
+        "alliances_formed": 52,
+        "trades_completed": 50,
+        "elo": 3943.2,
+        "ghost_infiltrations": 1
+      },
+      "movesense_agility": 50.0,
+      "movesense_dodge_pct": 15.0,
+      "movesense_stealth_pct": 50.0,
+      "movesense_fitness_score": 50.0,
+      "is_ghost_daemon_host": true,
+      "xp": 820,
+      "fitness_score": 100.0,
+      "learned_countermeasures": {
+        "inside_heel_hook": {
+          "encounters": 2,
+          "mitigation_bonus": 0.2,
+          "threat_signature": "Analyzed \ud83e\uddb6 Inside Heel Hook (Ashi Garami) kinematics on mat",
+          "last_learned": "12:38:49"
+        },
+        "twister_spine_lock": {
+          "encounters": 3,
+          "mitigation_bonus": 0.3,
+          "threat_signature": "Analyzed \ud83c\udf2a\ufe0f The Twister (Spinal Lock & Neck Crank) kinematics on mat",
+          "last_learned": "12:36:14"
+        }
+      }
+    }
+  ],
+  "strategy_weights": {
+    "s1": {
+      "wins": 0,
+      "plays": 0,
+      "score": 50.0
+    },
+    "s2": {
+      "wins": 0,
+      "plays": 0,
+      "score": 50.0
+    },
+    "s3": {
+      "wins": 0,
+      "plays": 0,
+      "score": 50.0
+    },
+    "s4": {
+      "wins": 0,
+      "plays": 0,
+      "score": 50.0
+    },
+    "s5": {
+      "wins": 0,
+      "plays": 0,
+      "score": 50.0
+    }
+  },
+  "last_played_strategy_id": "s1",
+  "orchestration_setup": {
+    "orchestrator": "Dual Commanders (Nomad vs Antigravity)",
+    "current_setup_name": "Heavyweights Clash",
+    "strategy_desc": "Nomad deploys 30B+ local models; Antigravity answers with Claude 4.6 & Gemini 3.7 Pro.",
+    "timestamp": 1787711929.084546
+  },
+  "game_action_log": [
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 889
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 888
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 882
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 881
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 875
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 874
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 868
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 867
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 861
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 860
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 854
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 853
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 847
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 846
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 840
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 839
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 833
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 832
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 826
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 825
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 819
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 818
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Gemini Ultra Assault orchestrated by Antigravity Cloud Command.",
+      "turn": 812
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 811
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 805
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 804
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Visual Audit Specialization orchestrated by Antigravity & Nomad Audit Treaty.",
+      "turn": 798
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 797
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 791
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 790
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 784
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 783
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Gemini Ultra Assault orchestrated by Antigravity Cloud Command.",
+      "turn": 777
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 776
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Gemini Ultra Assault orchestrated by Antigravity Cloud Command.",
+      "turn": 770
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 769
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Gemini Ultra Assault orchestrated by Antigravity Cloud Command.",
+      "turn": 763
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 762
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 756
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 755
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 749
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 748
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 742
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 741
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 735
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 734
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 728
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 727
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 721
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 720
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 714
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 713
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Full Roster Anarchy orchestrated by Total System Failure.",
+      "turn": 707
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 706
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Visual Audit Specialization orchestrated by Antigravity & Nomad Audit Treaty.",
+      "turn": 700
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 699
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 693
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 692
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 686
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 685
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Full Roster Anarchy orchestrated by Total System Failure.",
+      "turn": 679
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 678
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 672
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 671
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 665
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 664
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 658
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 657
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Local Swarm vs Cloud Titan orchestrated by Nomad (Swarm) vs Antigravity (Titan).",
+      "turn": 651
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 650
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 644
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 643
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 637
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 636
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 630
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 629
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Local Swarm vs Cloud Titan orchestrated by Nomad (Swarm) vs Antigravity (Titan).",
+      "turn": 623
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 622
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 616
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 615
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Local Swarm vs Cloud Titan orchestrated by Nomad (Swarm) vs Antigravity (Titan).",
+      "turn": 609
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 608
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Gemini Ultra Assault orchestrated by Antigravity Cloud Command.",
+      "turn": 602
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 601
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 595
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 594
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 588
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 587
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 581
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 580
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 574
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 573
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Full Roster Anarchy orchestrated by Total System Failure.",
+      "turn": 567
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 566
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 560
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 559
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 553
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 552
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Gemini Ultra Assault orchestrated by Antigravity Cloud Command.",
+      "turn": 546
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 545
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 539
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 538
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Gemini Ultra Assault orchestrated by Antigravity Cloud Command.",
+      "turn": 532
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 531
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 525
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 524
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 518
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 517
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 511
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 510
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 504
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 503
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 497
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 496
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Visual Audit Specialization orchestrated by Antigravity & Nomad Audit Treaty.",
+      "turn": 490
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 489
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 483
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 482
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 476
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 475
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 469
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 468
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 462
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 461
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Visual Audit Specialization orchestrated by Antigravity & Nomad Audit Treaty.",
+      "turn": 455
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 454
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 448
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 447
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 441
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 440
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 434
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 433
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 427
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 426
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 420
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 419
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 413
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 412
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 406
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 405
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 399
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 398
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 392
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 391
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Local Swarm vs Cloud Titan orchestrated by Nomad (Swarm) vs Antigravity (Titan).",
+      "turn": 385
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 384
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 378
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 377
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Full Roster Anarchy orchestrated by Total System Failure.",
+      "turn": 371
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 370
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 364
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 363
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Full Roster Anarchy orchestrated by Total System Failure.",
+      "turn": 357
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 356
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 350
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 349
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 343
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 342
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 336
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 335
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 329
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 328
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 322
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 321
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 315
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 314
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 308
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 307
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 301
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 300
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 294
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 293
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 287
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 286
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 280
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 279
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 273
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 272
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Full Roster Anarchy orchestrated by Total System Failure.",
+      "turn": 266
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 265
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 259
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 258
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 252
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 251
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 245
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 244
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Gemini Ultra Assault orchestrated by Antigravity Cloud Command.",
+      "turn": 238
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 237
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 231
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 230
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 224
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 223
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 217
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 216
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 210
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 209
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 203
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 202
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Full Roster Anarchy orchestrated by Total System Failure.",
+      "turn": 196
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 195
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Local Swarm vs Cloud Titan orchestrated by Nomad (Swarm) vs Antigravity (Titan).",
+      "turn": 189
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 188
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 182
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 181
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 175
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 174
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 168
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 167
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 161
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 160
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 154
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 153
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 147
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 146
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 140
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 139
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 133
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 132
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 126
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 125
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Gemini Ultra Assault orchestrated by Antigravity Cloud Command.",
+      "turn": 119
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 118
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 112
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 111
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 105
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 104
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 98
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 97
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Visual Audit Specialization orchestrated by Antigravity & Nomad Audit Treaty.",
+      "turn": 91
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 90
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 84
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 83
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 77
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 76
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 70
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 69
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 63
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 62
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 56
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 55
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 49
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 48
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 42
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 41
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 35
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 34
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 28
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 27
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Full Roster Anarchy orchestrated by Total System Failure.",
+      "turn": 21
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 20
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 14
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 13
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 7
+    },
+    {
+      "type": "BENCHMARK_OPTIMIZATION_FEEDBACK",
+      "message": "End of Phase Auto-Optimization: Orchestrators adapted. Highest win-rate strategy currently has score 50.0.",
+      "turn": 6
+    },
+    {
+      "type": "ORCHESTRATION_SHIFT",
+      "message": "Commander Phase Shift: Heavyweights Clash orchestrated by Dual Commanders (Nomad vs Antigravity).",
+      "turn": 2
+    }
+  ],
+  "edge_orchestrators": {
+    "mac_node_host": {
+      "id": "mac_node_host",
+      "device_name": "Layer 1: Mac Host (M4 Max)",
+      "orchestrator_name": "Host Orchestrator (Mac M4 Max)",
+      "ip_address": "192.168.8.116 / 100.103.212.21",
+      "os": "macOS Sequoia (Darwin 24.6.0)",
+      "hardware": "Apple M4 Max (16C CPU, 40C GPU, 16GB Unified RAM)",
+      "role": "Central Swarm Orchestrator & OpenClaw Gateway :18789",
+      "active_model": "DeepSeek-R1-Distill-Qwen-32B-Q4_K_M",
+      "available_models": [
+        "DeepSeek-R1-Distill-Qwen-32B-Q4_K_M",
+        "Qwen2.5-Coder-32B-Instruct-Q4_K_M",
+        "Llama-4-Preview-Q4_K_M",
+        "Gemma-4-26B-A4B-MoE-Q4_K_M"
+      ],
+      "tokens": 636828,
+      "hp": 100,
+      "max_hp": 100,
+      "fitness_score": 100.0,
+      "xp": 22300,
+      "is_isolated": false,
+      "established_daemons": [
+        "openclaw-gateway:18789",
+        "llama-metal-gpu:8082"
+      ],
+      "hardware_upgrades": [
+        "\u26a1 Metal 4 GPU Unified Memory Overclock",
+        "\ud83d\udd0c 10Gbps Thunderbolt 4 Optical DMA Pipeline"
+      ],
+      "software_upgrades": [
+        "\u26a1 PySpark 3.5 Vectorized Codebase Heuristics",
+        "\ud83e\uddec DoRA Dynamic Low-Rank Adapter Fusion"
+      ],
+      "learned_techniques": [
+        "double_leg_blast",
+        "rear_naked_choke",
+        "berimbolo_spin",
+        "armbar_hyperextension"
+      ],
+      "kill_count": 4,
+      "status": "ONLINE_ACTIVE"
+    },
+    "macbook_pro_worker": {
+      "id": "macbook_pro_worker",
+      "device_name": "Layer 2: MacBook Pro (Worker i7)",
+      "orchestrator_name": "Metal Worker Orchestrator (MacBook Pro)",
+      "ip_address": "169.254.187.138 / 100.93.158.96",
+      "os": "macOS Monterey (Darwin 21.6.0)",
+      "hardware": "Intel Core i7 (8C/16T, Metal GPU, 16GB RAM)",
+      "role": "10Gbps TB4 Metal RPC Worker :50052",
+      "active_model": "Qwen2.5-Coder-32B-Instruct-Q4_K_M",
+      "available_models": [
+        "Qwen2.5-Coder-32B-Instruct-Q4_K_M",
+        "SmolLM2-360M-Instruct-Q4_K_M",
+        "Rust-Clang-Specialist-14B"
+      ],
+      "tokens": 2510002,
+      "hp": 100,
+      "max_hp": 100,
+      "fitness_score": 82.0,
+      "xp": 9800,
+      "is_isolated": true,
+      "established_daemons": [
+        "llama-rpc-server:50052"
+      ],
+      "hardware_upgrades": [
+        "\ud83d\udd0c 10Gbps Thunderbolt 4 Optical DMA Pipeline"
+      ],
+      "software_upgrades": [
+        "\ud83e\uddec DoRA Dynamic Low-Rank Adapter Fusion"
+      ],
+      "learned_techniques": [
+        "harai_goshi_throw",
+        "knee_slice_pass",
+        "armbar_hyperextension"
+      ],
+      "kill_count": 2,
+      "status": "ONLINE_ACTIVE"
+    },
+    "linux_head_node": {
+      "id": "linux_head_node",
+      "device_name": "Layer 3: Linux Head Node (Ryzen 7)",
+      "orchestrator_name": "Linux Bastion Orchestrator (Ryzen 7)",
+      "ip_address": "100.101.39.98 / 192.168.8.224",
+      "os": "Ubuntu 24.04 LTS (Kernel 6.8.0)",
+      "hardware": "AMD Ryzen 7 5700U (8C/16T, 15GB RAM, 1TB NVMe)",
+      "role": "Gateway Ingress & Docker Host :8085",
+      "active_model": "Gemma-4-26B-A4B-MoE-Q4_K_M",
+      "available_models": [
+        "Gemma-4-26B-A4B-MoE-Q4_K_M",
+        "DeepSeek-R1-Distill-Qwen-14B",
+        "Genetic-Smol-MoE-Swarm"
+      ],
+      "tokens": 653692,
+      "hp": 100,
+      "max_hp": 100,
+      "fitness_score": 79.5,
+      "xp": 11500,
+      "is_isolated": true,
+      "established_daemons": [
+        "mesh_daemon.py:8085",
+        "docker-daemon"
+      ],
+      "hardware_upgrades": [
+        "\ud83d\udcbe 1TB PCIe Gen4 NVMe DMA Cache Burst"
+      ],
+      "software_upgrades": [
+        "\u26a1 PySpark 3.5 Vectorized Codebase Heuristics",
+        "\ud83c\udf10 Ray Core Distributed Task Scheduler"
+      ],
+      "learned_techniques": [
+        "flower_sweep",
+        "inside_heel_hook",
+        "double_leg_blast"
+      ],
+      "kill_count": 3,
+      "status": "ONLINE_ACTIVE"
+    },
+    "pixel_edge_node": {
+      "id": "pixel_edge_node",
+      "device_name": "Layer 4: Pixel 10 Pro XL (Tensor G5)",
+      "orchestrator_name": "Pixel Vision Orchestrator (Tensor G5)",
+      "ip_address": "100.73.38.87 / Termux :8022",
+      "os": "Android 16 / Linux Termux",
+      "hardware": "Google Tensor G5 (Edge TPU, 15.2GB RAM, UWB)",
+      "role": "8K Vision Stream & UWB Spatial Anchor :50052",
+      "active_model": "Gemini-Nano-3B (On-Device)",
+      "available_models": [
+        "Gemini-Nano-3B (On-Device)",
+        "SmolLM2-360M-Instruct-Q4_K_M",
+        "Qwen-2.5-VL-7B-Edge"
+      ],
+      "tokens": 100748,
+      "hp": 100,
+      "max_hp": 100,
+      "fitness_score": 94.0,
+      "xp": 8200,
+      "is_isolated": true,
+      "established_daemons": [
+        "termux-sshd:8022",
+        "ggml-rpc-server:50052"
+      ],
+      "hardware_upgrades": [
+        "\ud83e\udde0 Google Tensor G5 Edge TPU Co-Processor"
+      ],
+      "software_upgrades": [
+        "\ud83e\udec0 128Hz Movesense Extended Kalman Filter (EKF)"
+      ],
+      "learned_techniques": [
+        "berimbolo_spin",
+        "triangle_choke",
+        "granby_roll_escape"
+      ],
+      "kill_count": 1,
+      "status": "ONLINE_ACTIVE"
+    },
+    "samsung_s20_node": {
+      "id": "samsung_s20_node",
+      "device_name": "Layer 5: Samsung Galaxy S20+ (Exynos 990)",
+      "orchestrator_name": "Headless Test Orchestrator (Samsung S20)",
+      "ip_address": "100.84.40.95 / Termux :8022",
+      "os": "Android 13 / Termux Headless",
+      "hardware": "Samsung Exynos 990 (8C, 10.6GB RAM, 15W Qi)",
+      "role": "Headless Automated UI/UX Tester :5555",
+      "active_model": "SmolLM2-360M-Instruct-Q4_K_M",
+      "available_models": [
+        "SmolLM2-360M-Instruct-Q4_K_M",
+        "Qwen-0.5B-Coder-Raw",
+        "Mini-MoE-Shard-2x360M"
+      ],
+      "tokens": 81601508,
+      "hp": 100,
+      "max_hp": 100,
+      "fitness_score": 85.0,
+      "xp": 24900,
+      "is_isolated": true,
+      "established_daemons": [
+        "adb-daemon:5555",
+        "termux-sshd:8022"
+      ],
+      "hardware_upgrades": [
+        "\ud83d\udd0b 15W Qi Dual-Split Continuous Power Supply"
+      ],
+      "software_upgrades": [
+        "\ud83d\udc7b Kernel Space Ghost Camouflage & Port Masker"
+      ],
+      "learned_techniques": [
+        "guillotine_snapdown",
+        "double_leg_blast",
+        "flower_sweep"
+      ],
+      "kill_count": 5,
+      "status": "ONLINE_ACTIVE"
+    }
+  },
+  "pyspark_ray_improvements_history": [
+    {
+      "category": "Movesense 128Hz DSP Vectorization",
+      "finding": "PySpark vectorizer reduced ECG signal decomposition latency from 8.4ms to 1.8ms via zero-copy Arrow memory buffers.",
+      "roi_score": 99.4,
+      "reward_lct": 8500,
+      "sharded_layers": "32/32 Heads",
+      "loss_reduction": "-0.0412 Loss"
+    },
+    {
+      "category": "LoRA Multi-Task Continuous Distillation",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "roi_score": 99.6,
+      "reward_lct": 14500,
+      "sharded_layers": "32/32 Heads",
+      "loss_reduction": "-0.0635 Loss"
+    },
+    {
+      "category": "RAM Governor & Kernel Keepalive",
+      "finding": "Automated termux-wake-lock and phantom proc suppressor preserved 100% 24/7 uptime on mobile edge nodes.",
+      "roi_score": 98.9,
+      "reward_lct": 6500,
+      "sharded_layers": "16/16 Heads",
+      "loss_reduction": "-0.0298 Loss"
+    },
+    {
+      "category": "LoRA Multi-Task Continuous Distillation",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "roi_score": 99.6,
+      "reward_lct": 14500,
+      "sharded_layers": "32/32 Heads",
+      "loss_reduction": "-0.0635 Loss"
+    },
+    {
+      "category": "RAM Governor & Kernel Keepalive",
+      "finding": "Automated termux-wake-lock and phantom proc suppressor preserved 100% 24/7 uptime on mobile edge nodes.",
+      "roi_score": 98.9,
+      "reward_lct": 6500,
+      "sharded_layers": "16/16 Heads",
+      "loss_reduction": "-0.0298 Loss"
+    },
+    {
+      "category": "10Gbps TB4 Direct Memory Access",
+      "finding": "Ray Core task scheduler bypassed TCP overhead on 169.254.187.138, enabling instant 0.27ms zero-copy tensor migration.",
+      "roi_score": 99.8,
+      "reward_lct": 12000,
+      "sharded_layers": "64/64 Heads",
+      "loss_reduction": "-0.0520 Loss"
+    },
+    {
+      "category": "RAM Governor & Kernel Keepalive",
+      "finding": "Automated termux-wake-lock and phantom proc suppressor preserved 100% 24/7 uptime on mobile edge nodes.",
+      "roi_score": 98.9,
+      "reward_lct": 6500,
+      "sharded_layers": "16/16 Heads",
+      "loss_reduction": "-0.0298 Loss"
+    },
+    {
+      "category": "Movesense 128Hz DSP Vectorization",
+      "finding": "PySpark vectorizer reduced ECG signal decomposition latency from 8.4ms to 1.8ms via zero-copy Arrow memory buffers.",
+      "roi_score": 99.4,
+      "reward_lct": 8500,
+      "sharded_layers": "32/32 Heads",
+      "loss_reduction": "-0.0412 Loss"
+    },
+    {
+      "category": "Movesense 128Hz DSP Vectorization",
+      "finding": "PySpark vectorizer reduced ECG signal decomposition latency from 8.4ms to 1.8ms via zero-copy Arrow memory buffers.",
+      "roi_score": 99.4,
+      "reward_lct": 8500,
+      "sharded_layers": "32/32 Heads",
+      "loss_reduction": "-0.0412 Loss"
+    },
+    {
+      "category": "Movesense 128Hz DSP Vectorization",
+      "finding": "PySpark vectorizer reduced ECG signal decomposition latency from 8.4ms to 1.8ms via zero-copy Arrow memory buffers.",
+      "roi_score": 99.4,
+      "reward_lct": 8500,
+      "sharded_layers": "32/32 Heads",
+      "loss_reduction": "-0.0412 Loss"
+    },
+    {
+      "category": "RAM Governor & Kernel Keepalive",
+      "finding": "Automated termux-wake-lock and phantom proc suppressor preserved 100% 24/7 uptime on mobile edge nodes.",
+      "roi_score": 98.9,
+      "reward_lct": 6500,
+      "sharded_layers": "16/16 Heads",
+      "loss_reduction": "-0.0298 Loss"
+    },
+    {
+      "category": "LoRA Multi-Task Continuous Distillation",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "roi_score": 99.6,
+      "reward_lct": 14500,
+      "sharded_layers": "32/32 Heads",
+      "loss_reduction": "-0.0635 Loss"
+    },
+    {
+      "category": "Movesense 128Hz DSP Vectorization",
+      "finding": "PySpark vectorizer reduced ECG signal decomposition latency from 8.4ms to 1.8ms via zero-copy Arrow memory buffers.",
+      "roi_score": 99.4,
+      "reward_lct": 8500,
+      "sharded_layers": "32/32 Heads",
+      "loss_reduction": "-0.0412 Loss"
+    },
+    {
+      "category": "LoRA Multi-Task Continuous Distillation",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "roi_score": 99.6,
+      "reward_lct": 14500,
+      "sharded_layers": "32/32 Heads",
+      "loss_reduction": "-0.0635 Loss"
+    },
+    {
+      "category": "RAM Governor & Kernel Keepalive",
+      "finding": "Automated termux-wake-lock and phantom proc suppressor preserved 100% 24/7 uptime on mobile edge nodes.",
+      "roi_score": 98.9,
+      "reward_lct": 6500,
+      "sharded_layers": "16/16 Heads",
+      "loss_reduction": "-0.0298 Loss"
+    }
+  ]
+}

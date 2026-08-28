@@ -1,0 +1,127 @@
+{
+  "timestamp": "2026-08-16T00:52:40.258605",
+  "total_crons": 5,
+  "average_roi_score": 9.7,
+  "expert_distribution": {
+    "Network & Mesh Specialist": 1,
+    "AI Training & LoRA Distillation Specialist": 1,
+    "Storage Resilience & System Hygiene Specialist": 1,
+    "Genetic MoE & Swarm Evolution Specialist": 1,
+    "Model Optimization & Reasoning Specialist": 1
+  },
+  "canonical_jobs": [
+    {
+      "id": "cron_001_mesh_healer",
+      "name": "5-Device Mesh Network Healer & Watchdog",
+      "cron_expression": "*/15 * * * *",
+      "schedule_human": "Every 15 minutes",
+      "script_path": "/Volumes/Lauburu-Monorepo/scripts/mesh_self_healer.py",
+      "command": "python3 /Volumes/Lauburu-Monorepo/scripts/mesh_self_healer.py",
+      "log_path": "/Volumes/Lauburu-Monorepo/session_logs/mesh_healer.log",
+      "source": "LaunchAgent: ai.lauburu.meshhealer.plist",
+      "moe_expert": "Network & Mesh Specialist",
+      "target_nodes": [
+        "Linux Head Node",
+        "GL.iNet Router",
+        "Pixel 10 Pro XL",
+        "Samsung S20+",
+        "MacBook"
+      ],
+      "roi_score": 9.9,
+      "business_impact": "Prevents mesh split-brain, revives dropped RPC ports (50052), maintains 100% network uptime.",
+      "fallback_tiers": [
+        "Tailscale daemon bounce",
+        "ADB TCP radio reset",
+        "Router USB ADB bridge",
+        "KDE Connect LAN ping",
+        "Bluetooth PAN",
+        "Public DNS override"
+      ]
+    },
+    {
+      "id": "cron_002_lora_dataset_sync",
+      "name": "Continuous 24/7 LoRA Dataset Synthesizer & GDrive Sync",
+      "cron_expression": "0 */2 * * *",
+      "schedule_human": "Every 2 hours",
+      "script_path": "/Volumes/Lauburu-Monorepo/scripts/lora_dataset_synthesizer.py",
+      "command": "python3 /Volumes/Lauburu-Monorepo/scripts/lora_dataset_synthesizer.py",
+      "log_path": "/Volumes/Lauburu-Monorepo/session_logs/lora_synthesizer.log",
+      "source": "LaunchAgent: ai.lauburu.lora.plist & crontab",
+      "moe_expert": "AI Training & LoRA Distillation Specialist",
+      "target_nodes": [
+        "Mac Host",
+        "Google Drive Sync"
+      ],
+      "roi_score": 9.7,
+      "business_impact": "Extracts verified code diffs, Truth Audit logs, and telemetry pairs to drive local models toward $0 cloud spend.",
+      "fallback_tiers": [
+        "Local monorepo backup (.agents/state/orchestrator/lora_datasets)",
+        "RAM-aware batch sizing"
+      ]
+    },
+    {
+      "id": "cron_003_storage_sentinel",
+      "name": "Storage Sentinel & Fast SSD Headroom Monitor",
+      "cron_expression": "0 * * * *",
+      "schedule_human": "Every 1 hour",
+      "script_path": "/Volumes/Lauburu-Monorepo/Organised/Scripts/sentinel_node.py",
+      "command": "python3 /Volumes/Lauburu-Monorepo/Organised/Scripts/sentinel_node.py",
+      "log_path": "/tmp/com.lauburu.storagesentinel.out",
+      "source": "LaunchAgent: com.lauburu.storagesentinel.plist",
+      "moe_expert": "Storage Resilience & System Hygiene Specialist",
+      "target_nodes": [
+        "Linux Head Node (/mnt/ssd_1tb)",
+        "Mac Host (/Volumes)"
+      ],
+      "roi_score": 9.5,
+      "business_impact": "Prevents catastrophic I/O lockups, enforces 10GB SSD buffer and 75% RAM ceiling before model sharding.",
+      "fallback_tiers": [
+        "Emergency docker prune",
+        "Old log compression",
+        "Google Drive archiving"
+      ]
+    },
+    {
+      "id": "cron_004_swarm_truth_audit_heartbeat",
+      "name": "Swarm Truth Audit & Generational Immortality Watchdog",
+      "cron_expression": "*/30 * * * *",
+      "schedule_human": "Every 30 minutes",
+      "script_path": "/Volumes/Lauburu-Monorepo/scripts/auto_upgrade_generation.py",
+      "command": "python3 /Volumes/Lauburu-Monorepo/scripts/auto_upgrade_generation.py",
+      "log_path": "/Volumes/Lauburu-Monorepo/session_logs/truth_audit.log",
+      "source": "Orchestrator Lifecycle Engine",
+      "moe_expert": "Genetic MoE & Swarm Evolution Specialist",
+      "target_nodes": [
+        "Swarm Orchestrator",
+        "Active Subagents"
+      ],
+      "roi_score": 9.8,
+      "business_impact": "Audits 0% fake data across all 18 apps, checks 70% context limits, performs automatic handoff to next generation.",
+      "fallback_tiers": [
+        "handoff.md state preservation",
+        "Gemini 3.7 Flash High Thinking escalation"
+      ]
+    },
+    {
+      "id": "cron_005_genetic_ai_router_eval",
+      "name": "Genetic AI Model Routing & Thinking Budget Optimizer",
+      "cron_expression": "0 */4 * * *",
+      "schedule_human": "Every 4 hours",
+      "script_path": "/Volumes/Lauburu-Monorepo/scripts/genetic_ai_mesh_router.py",
+      "command": "python3 /Volumes/Lauburu-Monorepo/scripts/genetic_ai_mesh_router.py",
+      "log_path": "/Volumes/Lauburu-Monorepo/session_logs/genetic_ai_router.log",
+      "source": "Genetic MoE Engine",
+      "moe_expert": "Model Optimization & Reasoning Specialist",
+      "target_nodes": [
+        "Cloud API (Gemini 3.7 Flash / 3.1 Pro)",
+        "Local llama.cpp RPC"
+      ],
+      "roi_score": 9.6,
+      "business_impact": "Optimizes dynamic thinking tokens (HIGH vs MEDIUM), monitors model latencies, prevents token bloat.",
+      "fallback_tiers": [
+        "Automatic downshift to local shard",
+        "Dynamic budget capping"
+      ]
+    }
+  ]
+}

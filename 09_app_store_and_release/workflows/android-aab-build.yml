@@ -1,0 +1,128 @@
+name: android-aab-build
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch / SHA to build'
+        required: false
+        default: 'main'
+      release_notes:
+        description: 'Optional release notes for downstream Play upload step'
+        required: false
+        default: 'Internal tester build.'
+      dry_run:
+        description: 'true → run typecheck only, do not start EAS build'
+        required: false
+        default: 'false'
+      submit_to_play:
+        description: 'true → after build, submit AAB to Play Internal Testing (requires PLAY_SA_JSON secret)'
+        required: false
+        default: 'false'
+      release_status:
+        description: 'Optional override for releaseStatus on the Internal Testing track. Default uses eas.json (currently completed). Use "draft" to revert to per-release manual rollout.'
+        required: false
+        default: ''
+        type: choice
+        options:
+          - ''
+          - completed
+          - draft
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || 'main' }}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm install --no-audit --no-fund
+      - name: TypeScript check (mobile)
+        run: cd apps/mobile && npx tsc --noEmit
+
+      - name: Preflight — required secrets
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          PLAY_SA_JSON: ${{ secrets.PLAY_SA_JSON }}
+        run: |
+          set -euo pipefail
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error title=EXPO_TOKEN missing::Set EXPO_TOKEN as a GitHub Actions secret. See docs/ADMIN_RELEASE_AUTOMATION_PLAN.md."
+            exit 1
+          fi
+          if [ "${{ inputs.submit_to_play }}" = "true" ] && [ -z "$PLAY_SA_JSON" ]; then
+            echo "::error title=PLAY_SA_JSON missing::submit_to_play=true requires PLAY_SA_JSON. See docs/PLAY_SUBMIT_SETUP.md."
+            exit 1
+          fi
+          {
+            echo "## Preflight"
+            echo "- EXPO_TOKEN: present"
+            if [ "${{ inputs.submit_to_play }}" = "true" ]; then
+              echo "- submit_to_play: true · PLAY_SA_JSON: present"
+            else
+              echo "- submit_to_play: false (build-only, manual upload)"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: EAS Android build
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_BUILD_NO_EXPO_GO_WARNING: 'true'
+        run: |
+          cd apps/mobile
+          npx eas-cli build --platform android --profile production --non-interactive
+
+      # ── Optional: upload AAB to Play Internal Testing ───────────
+      # Runs only when submit_to_play=true AND PLAY_SA_JSON secret is
+      # set. Otherwise the workflow finishes after the build and you
+      # upload manually. The service-account JSON is written to a
+      # tmpfile at the path eas.json's android.serviceAccountKeyPath
+      # references, then deleted after submit.
+      - name: Submit AAB to Play Internal Testing
+        if: ${{ inputs.dry_run != 'true' && inputs.submit_to_play == 'true' }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          PLAY_SA_JSON: ${{ secrets.PLAY_SA_JSON }}
+          RELEASE_STATUS_OVERRIDE: ${{ inputs.release_status }}
+        run: |
+          set -euo pipefail
+          if [ -z "${PLAY_SA_JSON}" ]; then
+            echo "::error::PLAY_SA_JSON secret is not set; cannot upload to Play. See docs/PLAY_SUBMIT_SETUP.md."
+            exit 1
+          fi
+          # eas.json points at apps/mobile/google-services-key.json; write
+          # the secret there for the duration of this job only. The path
+          # is in .gitignore (*.key etc.) and is ephemeral on the runner.
+          printf '%s' "${PLAY_SA_JSON}" > apps/mobile/google-services-key.json
+          trap 'rm -f apps/mobile/google-services-key.json' EXIT
+          cd apps/mobile
+          SUBMIT_ARGS=( --platform android --profile production --latest --non-interactive )
+          if [ -n "${RELEASE_STATUS_OVERRIDE}" ]; then
+            echo "::warning title=release_status ignored::This eas-cli version does not support a submit --release-status flag; using eas.json submit.production.android.releaseStatus."
+          else
+            echo "Using eas.json default releaseStatus (completed for internal track)."
+          fi
+          npx eas-cli submit "${SUBMIT_ARGS[@]}"
+
+      - name: Summary
+        run: |
+          {
+            echo "## Android AAB build summary"
+            echo "Ref: ${{ inputs.ref || 'main' }}"
+            echo "Dry run: ${{ inputs.dry_run }}"
+            echo "Submit to Play: ${{ inputs.submit_to_play }}"
+            echo "Release notes: ${{ inputs.release_notes }}"
+            if [ "${{ inputs.submit_to_play }}" = "true" ]; then
+              echo "Next: nothing manual — release uses eas.json submit.production.android.releaseStatus and should surface to Internal Testing testers after Play processing."
+            else
+              echo "Next: Play Console → Internal testing → Create new release → upload AAB manually."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

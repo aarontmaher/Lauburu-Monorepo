@@ -1,0 +1,53 @@
+{
+  "timestamp": 1786692192.143671,
+  "timestamp_iso": "2026-08-14T07:23:12Z",
+  "service_status": "ONLINE_ACTIVE",
+  "node_id": "K2UN42G-SBCZ5HX-IIJKC63-N3JDOP4-JHXBZK2-OVAEJ5F-C6QEOHV-DXU6AAU",
+  "gui_url": "http://127.0.0.1:8384",
+  "uptime_seconds": 104088,
+  "cpu_percent": 0,
+  "storage_architecture": {
+    "primary": "Internal Device NVMe / Flash Storage (100% Hardware Native)",
+    "cloud_sync": "Google Drive Sync (Lauburu_AI_Memory)",
+    "p2p_mesh": "Syncthing QUIC / LAN Zero-Cloud Peer Transfer",
+    "external_ssd_status": "DECOMMISSIONED_SAFELY (Zero Dependency on /mnt/ssd_1tb)"
+  },
+  "folders": [
+    {
+      "id": "lauburu-lora-datasets",
+      "label": "LoRA Datasets & Model Checkpoints",
+      "path": "/Volumes/Lauburu-Monorepo/models/checkpoints",
+      "sync_mode": "Send & Receive (Local NVMe + Device P2P)",
+      "status": "UP_TO_DATE"
+    },
+    {
+      "id": "lauburu-monorepo-core",
+      "label": "Monorepo Code & Scripts",
+      "path": "/Volumes/Lauburu-Monorepo",
+      "sync_mode": "Send & Receive",
+      "status": "UP_TO_DATE"
+    }
+  ],
+  "peer_nodes": [
+    {
+      "device": "MacBook Pro 16-inch (M4 Max)",
+      "protocol": "Thunderbolt / LAN",
+      "status": "SYNCED"
+    },
+    {
+      "device": "Pixel 10 Pro XL",
+      "protocol": "Tailscale / Wi-Fi 7",
+      "status": "SYNCED"
+    },
+    {
+      "device": "Samsung Galaxy S20+",
+      "protocol": "USB / Wi-Fi",
+      "status": "SYNCED"
+    },
+    {
+      "device": "Linux Head Node",
+      "protocol": "Gigabit Ethernet",
+      "status": "SYNCED"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-08-22T23:30:23Z",
+  "last_updated_epoch": 1787405423.182753,
+  "connected": true,
+  "sampling_profile": "grappling",
+  "ecg_hz": 500,
+  "imu_hz": 833,
+  "heart_rate_bpm": 72.0,
+  "hrv_rmssd_ms": 35.0,
+  "hrv_sdnn_ms": 45.0,
+  "dfa_alpha1": 1.0,
+  "stress_index": 13.9,
+  "blood_pressure": {
+    "systolic_mmhg": 123.5,
+    "diastolic_mmhg": 79.4,
+    "ptt_ms": 263.8
+  },
+  "temperature_c": 36.6,
+  "battery_pct": 95,
+  "recent_rr_intervals_ms": [],
+  "imu": {
+    "accel_magnitude_g": 1.0,
+    "gyro_magnitude_dps": 0.0,
+    "classification": "Stationary / Idle",
+    "tactical_boost": 1.0
+  },
+  "game_arena_attributes": {
+    "kinetic_power_pct": 39.0,
+    "tactical_technique": "Stationary / Idle",
+    "technique_multiplier": 1.0,
+    "aerobic_efficiency": "Recovery"
+  }
+}

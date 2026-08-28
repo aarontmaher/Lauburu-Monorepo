@@ -1,0 +1,307 @@
+{
+  "telemetry": {
+    "host_nvme": {
+      "path": "/Volumes/aaronmaher/Lauburu-Monorepo",
+      "total_gb": 228.27,
+      "used_gb": 225.61,
+      "free_gb": 2.67,
+      "used_percent": 98.83,
+      "headroom_safe": false
+    },
+    "google_drive": {
+      "status": "UNMOUNTED"
+    }
+  },
+  "topology": {
+    "components": [
+      {
+        "component": "models",
+        "total_mb": 5640.61
+      },
+      {
+        "component": "data",
+        "total_mb": 1703.67
+      },
+      {
+        "component": "Installed_Apps",
+        "total_mb": 1104.61
+      },
+      {
+        "component": "unorganised",
+        "total_mb": 426.84
+      },
+      {
+        "component": "lora_datasets",
+        "total_mb": 346.44
+      },
+      {
+        "component": "ai_swarm_orchestrator",
+        "total_mb": 236.52
+      },
+      {
+        "component": "llama.cpp",
+        "total_mb": 149.61
+      },
+      {
+        "component": "Organised",
+        "total_mb": 108.8
+      },
+      {
+        "component": "session_logs",
+        "total_mb": 80.05
+      },
+      {
+        "component": "archive",
+        "total_mb": 55.13
+      },
+      {
+        "component": "self_healing_hub",
+        "total_mb": 37.82
+      },
+      {
+        "component": "reports",
+        "total_mb": 29.49
+      },
+      {
+        "component": "root",
+        "total_mb": 28.3
+      },
+      {
+        "component": "openclaw",
+        "total_mb": 22.04
+      },
+      {
+        "component": "swarm_dashboard",
+        "total_mb": 20.0
+      },
+      {
+        "component": "openclaw_apk",
+        "total_mb": 17.81
+      },
+      {
+        "component": "scratch",
+        "total_mb": 15.93
+      },
+      {
+        "component": "logs",
+        "total_mb": 15.73
+      },
+      {
+        "component": "scripts",
+        "total_mb": 11.53
+      },
+      {
+        "component": "Standalone_Services",
+        "total_mb": 10.5
+      },
+      {
+        "component": "qdrant_data",
+        "total_mb": 5.61
+      },
+      {
+        "component": "teamwork_projects",
+        "total_mb": 5.3
+      },
+      {
+        "component": "lauburu-storefront",
+        "total_mb": 4.04
+      },
+      {
+        "component": "ui_dumps",
+        "total_mb": 3.25
+      },
+      {
+        "component": "shopify-ai",
+        "total_mb": 3.1
+      },
+      {
+        "component": "config",
+        "total_mb": 2.58
+      },
+      {
+        "component": "tests",
+        "total_mb": 1.43
+      },
+      {
+        "component": "lauburu_business_app",
+        "total_mb": 0.65
+      },
+      {
+        "component": "multi_wan",
+        "total_mb": 0.61
+      },
+      {
+        "component": "docs",
+        "total_mb": 0.43
+      },
+      {
+        "component": "e2e_tests",
+        "total_mb": 0.26
+      },
+      {
+        "component": "project_files",
+        "total_mb": 0.24
+      },
+      {
+        "component": "truth_auditing_swarm",
+        "total_mb": 0.22
+      },
+      {
+        "component": "lauburu_compute_hub",
+        "total_mb": 0.17
+      },
+      {
+        "component": "functional_apps",
+        "total_mb": 0.16
+      },
+      {
+        "component": "ga_network_optimizer",
+        "total_mb": 0.13
+      },
+      {
+        "component": "android_ndk",
+        "total_mb": 0.12
+      },
+      {
+        "component": "obsidian_vault",
+        "total_mb": 0.09
+      },
+      {
+        "component": "Google_Drive_LoRA_Dump",
+        "total_mb": 0.06
+      },
+      {
+        "component": "training",
+        "total_mb": 0.05
+      },
+      {
+        "component": "docker",
+        "total_mb": 0.05
+      },
+      {
+        "component": "brain_temp",
+        "total_mb": 0.05
+      },
+      {
+        "component": "mesh_benchmarks",
+        "total_mb": 0.04
+      },
+      {
+        "component": "nas_imported",
+        "total_mb": 0.04
+      },
+      {
+        "component": "assets",
+        "total_mb": 0.04
+      },
+      {
+        "component": "claim_audit_system",
+        "total_mb": 0.03
+      },
+      {
+        "component": "gdrive_sync",
+        "total_mb": 0.02
+      },
+      {
+        "component": "bin",
+        "total_mb": 0.02
+      },
+      {
+        "component": "AI_Director",
+        "total_mb": 0.01
+      },
+      {
+        "component": "backup_evidence",
+        "total_mb": 0.01
+      },
+      {
+        "component": "lauburu_zone2_endurance",
+        "total_mb": 0.01
+      },
+      {
+        "component": "deploy_swarm",
+        "total_mb": 0.01
+      },
+      {
+        "component": "infrastructure",
+        "total_mb": 0.01
+      },
+      {
+        "component": "sandbox",
+        "total_mb": 0.01
+      },
+      {
+        "component": "qwen_distributed_proof",
+        "total_mb": 0.0
+      },
+      {
+        "component": "subprojects",
+        "total_mb": 0.0
+      },
+      {
+        "component": "credentials",
+        "total_mb": 0.0
+      },
+      {
+        "component": "movesense_hub",
+        "total_mb": 0.0
+      },
+      {
+        "component": "chat-bridge-worker",
+        "total_mb": 0.0
+      },
+      {
+        "component": "workers",
+        "total_mb": 0.0
+      },
+      {
+        "component": "firebase-backend",
+        "total_mb": 0.0
+      },
+      {
+        "component": "systemd",
+        "total_mb": 0.0
+      },
+      {
+        "component": "mcp_config",
+        "total_mb": 0.0
+      },
+      {
+        "component": "backups",
+        "total_mb": 0.0
+      }
+    ],
+    "extensions": [],
+    "cold_candidates": []
+  },
+  "optimization_plan": {
+    "timestamp": "2026-08-21T23:38:24Z",
+    "real_time_status": "HEADROOM_WARNING",
+    "actions_taken": [
+      "Pruned 3.52 MB of temporary build caches."
+    ],
+    "predictive_metrics": {
+      "estimated_daily_growth_mb": 145.0,
+      "predicted_days_to_headroom_limit": 18.9,
+      "long_term_risk": "HIGH"
+    },
+    "tier_strategy": {
+      "hot_tier_nvme": {
+        "role": "Active Local Monorepo Code, Live Metal VRAM Buffers, PySpark/Ray Temp RAM",
+        "allocated_gb": 225.61,
+        "target_utilization_pct": "< 80%"
+      },
+      "warm_tier_headless_mac_nas": {
+        "role": "Qwen 2.5 Coder & DeepSeek 32B/70B GGUF Model Weights, Headless Mac Hard Drive Vault & NAS",
+        "endpoint": "/Volumes/NAS/Hardware_Tiers/Layer_2_Headless_Mac_Vault",
+        "target_utilization_pct": "< 75%"
+      },
+      "cold_tier_gdrive": {
+        "role": "24/7 LoRA Datasets (/Volumes/Google Drive/My Drive/Lauburu_AI_Memory), Full Snapshots",
+        "status": "UNMOUNTED",
+        "sync_cadence": "Continuous bi-hourly rsync"
+      }
+    },
+    "genetic_fitness_score": 0.055
+  }
+}

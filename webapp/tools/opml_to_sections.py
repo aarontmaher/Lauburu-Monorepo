@@ -18,7 +18,10 @@ COLORS = ['#e8ff47', '#ff6b35', '#a78bfa', '#47c8ff', '#34d399']
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OPML_PATH = os.path.join(REPO_ROOT, 'grappling.opml')
-INDEX_PATH = os.path.join(REPO_ROOT, 'index.html')
+INDEX_HTML = os.path.join(REPO_ROOT, 'index.html')
+INDEX_PATH = INDEX_HTML
+LAST_CANONICAL = os.path.expanduser('~/GrapplingMap/exports/last_canonical.json')
+os.makedirs(os.path.dirname(LAST_CANONICAL), exist_ok=True)
 
 # ---------------------------------------------------------------------------
 # Encoding helpers

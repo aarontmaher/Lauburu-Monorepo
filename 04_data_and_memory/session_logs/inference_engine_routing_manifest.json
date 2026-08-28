@@ -1,0 +1,250 @@
+{
+  "timestamp": "2026-08-21T12:06:23.905204+00:00",
+  "service": "Lauburu Multi-Engine Distributed Inference Router",
+  "total_engines_registered": 3,
+  "supported_inference_engines": [
+    "llama.cpp",
+    "petals",
+    "exo"
+  ],
+  "engines": {
+    "llama_cpp_rpc": {
+      "engine_id": "llama.cpp",
+      "name": "llama.cpp Metal & Multi-Device RPC Mesh",
+      "status": "ACTIVE_VERIFIED",
+      "protocol": "TCP_RPC_SOCKET",
+      "default_port": 50052,
+      "api_port": 8080,
+      "supported_formats": [
+        "GGUF_V3"
+      ],
+      "max_recommended_params": "70B",
+      "avg_token_latency_ms": 28.5,
+      "optimal_for": [
+        "Low-Latency Code Synthesis",
+        "VLM Visual Truth Audits",
+        "Real-time Biometrics DSP"
+      ],
+      "active_nodes": [
+        "Mac_Node",
+        "MacBook_Pro",
+        "Linux_Head_Node",
+        "Pixel_10_Pro_XL",
+        "Samsung_S20"
+      ]
+    },
+    "petals_swarm": {
+      "engine_id": "petals",
+      "name": "Petals Decentralized Layer-Sharded Mesh Swarm",
+      "status": "ACTIVE_VERIFIED",
+      "protocol": "LIBP2P_DHT",
+      "default_port": 31337,
+      "api_port": 8085,
+      "supported_formats": [
+        "PyTorch_Safetensors",
+        "NF4_4bit",
+        "8bit"
+      ],
+      "max_recommended_params": "405B",
+      "avg_token_latency_ms": 145.0,
+      "optimal_for": [
+        "Ultra-Large Frontier Models (405B/671B)",
+        "Deep Scientific/Genomic Analysis",
+        "Massive Repository Audits"
+      ],
+      "active_nodes": [
+        "Linux_Head_Node",
+        "MacBook_Pro",
+        "Mac_Mini",
+        "Samsung_S20"
+      ]
+    },
+    "exo_cluster": {
+      "engine_id": "exo",
+      "name": "EXO Peer-to-Peer Dynamic Ring & Pipeline Cluster",
+      "status": "ACTIVE_VERIFIED",
+      "protocol": "P2P_DISCOVERY_TCP",
+      "default_port": 52415,
+      "api_port": 52415,
+      "supported_formats": [
+        "MLX",
+        "PyTorch",
+        "GGUF"
+      ],
+      "max_recommended_params": "72B_MOE",
+      "avg_token_latency_ms": 62.0,
+      "optimal_for": [
+        "Heterogeneous Mac+Linux+Mobile Dynamic Clustering",
+        "AI Game Arena Live Duels",
+        "Gemma MoE Sharding"
+      ],
+      "active_nodes": [
+        "Mac_Node",
+        "Linux_Head_Node",
+        "MacBook_Pro",
+        "Linux_Tablet"
+      ]
+    }
+  },
+  "domain_routing_table": {
+    "DOM_01_BIOMETRICS_PHYSIOLOGY": {
+      "domain_id": "DOM_01_BIOMETRICS_PHYSIOLOGY",
+      "primary_engine": "llama.cpp",
+      "fallback_engine": "exo",
+      "recommended_model": "biomistral_7b_q8_0",
+      "target_latency_ms": 40.0,
+      "routing_reason": "Clinical ECG/HRV DSP requires strict deterministic latency and high precision (Q8_0)."
+    },
+    "DOM_02_FLUTTER_DART_SYSTEMS": {
+      "domain_id": "DOM_02_FLUTTER_DART_SYSTEMS",
+      "primary_engine": "llama.cpp",
+      "fallback_engine": "exo",
+      "recommended_model": "qwen2.5_coder_32b_q4km",
+      "target_latency_ms": 35.0,
+      "routing_reason": "Flutter/Dart 3.x AST transforms benefit from Metal GPU matrix acceleration over 10Gbps TB4."
+    },
+    "DOM_03_DOCKER_MESH_INFRASTRUCTURE": {
+      "domain_id": "DOM_03_DOCKER_MESH_INFRASTRUCTURE",
+      "primary_engine": "llama.cpp",
+      "fallback_engine": "exo",
+      "recommended_model": "llama_3_1_8b_instruct_q5km",
+      "target_latency_ms": 20.0,
+      "routing_reason": "Fast container health checking and systemd orchestration requires minimal token latency."
+    },
+    "DOM_04_SHOPIFY_ECOMMERCE": {
+      "domain_id": "DOM_04_SHOPIFY_ECOMMERCE",
+      "primary_engine": "exo",
+      "fallback_engine": "llama.cpp",
+      "recommended_model": "qwen2.5_coder_32b_q4km",
+      "target_latency_ms": 75.0,
+      "routing_reason": "Shopify Polaris UI generation and supplier research benefit from dynamic multi-device memory pooling."
+    },
+    "DOM_05_VISION_VLM_TRUTH_AUDIT": {
+      "domain_id": "DOM_05_VISION_VLM_TRUTH_AUDIT",
+      "primary_engine": "llama.cpp",
+      "fallback_engine": "exo",
+      "recommended_model": "qwen2_vl_7b_instruct_q5km",
+      "target_latency_ms": 45.0,
+      "routing_reason": "Frame-by-frame UI truth verification on Mac Host Metal GPU ensures sub-100ms visual regression checks."
+    },
+    "DOM_06_BIOINFORMATICS_SCIENCE": {
+      "domain_id": "DOM_06_BIOINFORMATICS_SCIENCE",
+      "primary_engine": "petals",
+      "fallback_engine": "exo",
+      "recommended_model": "llama_3_1_405b_instruct",
+      "target_latency_ms": 220.0,
+      "routing_reason": "Deep biochemical entity extraction and PubMed synthesis requires 405B parameter frontier reasoning."
+    },
+    "DOM_07_CPP_SYSTEMS_LLAMA_OPTIMIZATION": {
+      "domain_id": "DOM_07_CPP_SYSTEMS_LLAMA_OPTIMIZATION",
+      "primary_engine": "llama.cpp",
+      "fallback_engine": "exo",
+      "recommended_model": "qwen2.5_coder_32b_q4km",
+      "target_latency_ms": 30.0,
+      "routing_reason": "Metal shader kernel synthesis directly maps to llama.cpp C++ runtime optimization."
+    },
+    "DOM_08_LORA_FINE_TUNING_DISTILLATION": {
+      "domain_id": "DOM_08_LORA_FINE_TUNING_DISTILLATION",
+      "primary_engine": "llama.cpp",
+      "fallback_engine": "exo",
+      "recommended_model": "hermes_3_8b_q4km",
+      "target_latency_ms": 25.0,
+      "routing_reason": "24/7 instruction harvesting and LoRA dataset collating executes continuously with zero Host RAM footprint."
+    },
+    "DOM_09_AI_GAME_ARENA_REASONING": {
+      "domain_id": "DOM_09_AI_GAME_ARENA_REASONING",
+      "primary_engine": "exo",
+      "fallback_engine": "llama.cpp",
+      "recommended_model": "deepseek_r1_distill_llama_70b_iq4xs",
+      "target_latency_ms": 85.0,
+      "routing_reason": "Multi-agent ELO arena duels run optimally over P2P dynamic ring partitions across Mac and Linux nodes."
+    },
+    "DOM_10_SECURITY_INGRESS_GOVERNANCE": {
+      "domain_id": "DOM_10_SECURITY_INGRESS_GOVERNANCE",
+      "primary_engine": "llama.cpp",
+      "fallback_engine": "exo",
+      "recommended_model": "hermes_3_8b_q4km",
+      "target_latency_ms": 18.0,
+      "routing_reason": "Zero-trust session token signing and firewall inspection mandate local standalone low latency."
+    },
+    "DOM_11_STORAGE_ROUTING_AND_MONITORING": {
+      "domain_id": "DOM_11_STORAGE_ROUTING_AND_MONITORING",
+      "primary_engine": "exo",
+      "fallback_engine": "llama.cpp",
+      "recommended_model": "gemma_27b_moe",
+      "target_latency_ms": 60.0,
+      "routing_reason": "Dynamic storage headroom monitoring and NAS routing adapts to dynamic node joins."
+    },
+    "DOM_12_AI_CONTINUOUS_SELF_IMPROVEMENT": {
+      "domain_id": "DOM_12_AI_CONTINUOUS_SELF_IMPROVEMENT",
+      "primary_engine": "hybrid",
+      "fallback_engine": "llama.cpp",
+      "recommended_model": "deepseek_r1_distill_llama_70b_iq4xs",
+      "target_latency_ms": 90.0,
+      "routing_reason": "The Training Specialist benchmarks all 3 engines to discover optimal routing for every new task."
+    },
+    "DOM_13_PETALS_LAYER_SHARDING": {
+      "domain_id": "DOM_13_PETALS_LAYER_SHARDING",
+      "primary_engine": "petals",
+      "fallback_engine": "exo",
+      "recommended_model": "llama_3_1_405b_instruct",
+      "target_latency_ms": 250.0,
+      "routing_reason": "Decentralized DHT hidden-state streaming serves models beyond single-device physical memory."
+    },
+    "DOM_14_APACHE_RAY_COMPUTE": {
+      "domain_id": "DOM_14_APACHE_RAY_COMPUTE",
+      "primary_engine": "exo",
+      "fallback_engine": "llama.cpp",
+      "recommended_model": "qwen2.5_coder_32b_q4km",
+      "target_latency_ms": 50.0,
+      "routing_reason": "Ray Head on Linux Node coordinates parallel actor streaming with EXO dynamic pipeline parallelism."
+    }
+  },
+  "hardware_mesh_summary": {
+    "total_vram_gb": 82.8,
+    "nodes": [
+      {
+        "id": "Mac_Node",
+        "layer": 1,
+        "vram_gb": 13.5,
+        "role": "Master Governor / Metal GPU"
+      },
+      {
+        "id": "MacBook_Pro",
+        "layer": 2,
+        "vram_gb": 14.0,
+        "role": "Metal Vault / 10Gbps TB4 Bridge"
+      },
+      {
+        "id": "Linux_Head_Node",
+        "layer": 3,
+        "vram_gb": 13.8,
+        "role": "Ray Head / Gateway Ingress / AVX2"
+      },
+      {
+        "id": "Linux_Tablet",
+        "layer": 4,
+        "vram_gb": 6.5,
+        "role": "Debian Mobile Compute / Secondary Worker"
+      },
+      {
+        "id": "Mac_Mini",
+        "layer": 5,
+        "vram_gb": 13.5,
+        "role": "Secondary High-Speed Metal RPC"
+      },
+      {
+        "id": "Pixel_10_Pro_XL",
+        "layer": 6,
+        "vram_gb": 12.5,
+        "role": "Tensor G5 Edge TPU / Vision Stream"
+      },
+      {
+        "id": "Samsung_S20",
+        "layer": 7,
+        "vram_gb": 9.0,
+        "role": "Dedicated UI Tester / Router USB ADB"
+      }
+    ]
+  }
+}

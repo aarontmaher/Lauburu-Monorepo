@@ -1,0 +1,13 @@
+{
+  "iteration": 3,
+  "epoch": 32,
+  "loss": 8.3803,
+  "throughput_tps": 62.1,
+  "device_engine": "mps",
+  "acceleration_mode": "Apple Silicon Metal GPU (3.8W)",
+  "active_experts_count": 8,
+  "top_k_gating": 2,
+  "checkpoint_saved": "/Volumes/Lauburu-Monorepo/models/checkpoints/lauburu_project_moe_init.pt",
+  "timestamp": "2026-08-19T23:51:05Z",
+  "status": "CONVERGING_OPTIMALLY"
+}

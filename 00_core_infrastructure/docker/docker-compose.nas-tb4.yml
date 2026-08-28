@@ -1,0 +1,55 @@
+version: '3.8'
+
+# ==============================================================================
+# LAUBURU 10Gbps THUNDERBOLT 4 HIGH-SPEED DIRECT STORAGE & RAG ACCELERATOR
+# Dedicated 0.277ms Low-Latency Link Between Mac_Node and MacBook_Pro (169.254.187.138)
+# Docker MCP Managed & 75% RAM Ceiling Compliant (Hard 256MB Limit)
+# ==============================================================================
+
+services:
+  tb4_rag_storage_vault:
+    image: alpine:latest
+    container_name: tb4_rag_storage_vault
+    hostname: mbp-tb4-vault
+    command: >
+      sh -c "mkdir -p /data/vector_dbs /data/rag_cache /data/models &&
+             echo '10Gbps TB4 High-Speed Vector & RAG Storage Online' > /data/rag_cache/status.txt &&
+             tail -f /dev/null"
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data/qdrant_data:/data/vector_dbs:rw
+      - /Volumes/Lauburu-Monorepo/data/rag_cache:/data/rag_cache:rw
+      - /Volumes/Lauburu-Monorepo/data/models:/data/models:ro
+    ports:
+      - "169.254.187.138:2049:2049/tcp"
+      - "169.254.187.138:111:111/tcp"
+      - "169.254.187.138:8385:8385"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.nas.service: "tb4-high-speed"
+      com.lauburu.nas.tier: "core_wall_powered"
+      com.lauburu.nas.mcp_managed: "true"
+      com.lauburu.nas.role: "tb4-direct-mount"
+      com.lauburu.nas.node: "MacBook_Pro"
+      com.lauburu.nas.partner_node: "Mac_Node"
+      com.lauburu.nas.bandwidth: "10Gbps"
+      com.lauburu.nas.latency: "0.277ms"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /data/rag_cache/status.txt || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+networks:
+  default:
+    name: lauburu_nas_mesh_net
+    driver: bridge

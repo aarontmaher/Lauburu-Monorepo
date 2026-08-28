@@ -1,0 +1,12 @@
+{
+  "workstation_role": "PRIMARY_MESH_ANCHOR",
+  "hardware_profile": "M4_Mac_Mini_24GB",
+  "active_model_path": "/Users/aaron/AI_Models/Qwen3.8-27B-UD-Q4_K_XL.gguf",
+  "thunderbolt_ip": "169.254.87.230",
+  "unified_mesh_nodes": [
+    "local_dense_qwen",
+    "cloud_gemini_3.1_pro_high",
+    "cloud_gemini_3.7_flash_high"
+  ],
+  "memory_offloader_enabled": true
+}

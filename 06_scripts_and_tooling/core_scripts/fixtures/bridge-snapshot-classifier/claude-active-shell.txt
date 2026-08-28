@@ -1,0 +1,7 @@
+$ npm run rules:test
+
+> lauburu-grappling-map-mobile@0.1.0 rules:test
+> cd cloudflare-worker && npx tsx test/test-operating-rules.ts
+
+✓ OPERATING_RULES contract: 17 rules, ids 1..17, all titles + bodies non-empty
+✓ docs/OPERATING_RULES.md has all 17 numbered rule anchors

@@ -1,0 +1,134 @@
+{
+  "timestamp": "2026-08-19T02:34:56.477519",
+  "benchmark_duration_ms": 211.11,
+  "total_transports_evaluated": 10,
+  "active_transports_count": 10,
+  "total_aggregated_bandwidth_mb_s": 44701.5,
+  "speedup_vs_standard_1gbe": "406.4x (40540% faster)",
+  "speedup_multiplier": "406.4x",
+  "sharded_model_throughput": {
+    "qwen_25_coder_32b": "56.0 tok/s",
+    "deepseek_r1_70b": "38.0 tok/s",
+    "dual_metal_gpu_cluster": "48.2 tok/s (TB4 + POSIX SHM Bonded)"
+  },
+  "transports": [
+    {
+      "id": "tb4_pcie_dma",
+      "name": "\ud83d\ude80 1. Thunderbolt 4 Direct PCIe DMA Bridge",
+      "category": "Inter-Host Hardware DMA",
+      "bandwidth_mb_s": 3500.0,
+      "latency_ms": 6.34,
+      "status": "TB4_DIRECT_DMA_ACTIVE",
+      "is_active": true,
+      "assigned_workload": "Heavy Model Weights (Layers 0-32 Qwen 72B / DeepSeek 70B)",
+      "acceleration_benefit": "Zero network stack overhead \u2022 Direct VRAM-to-VRAM Metal buffer ingest"
+    },
+    {
+      "id": "posix_shm_mmap",
+      "name": "\ud83c\udfce\ufe0f 2. POSIX Shared Memory (shm) & Memory-Mapped IPC",
+      "category": "Intra-Host Zero-Copy Bus",
+      "bandwidth_mb_s": 20724.0,
+      "latency_ms": 0.001,
+      "status": "ULTRA_FAST_POSIX_SHM",
+      "is_active": true,
+      "assigned_workload": "Host M4 Max Inter-Process Tensor & OpenClaw Context Ring",
+      "acceleration_benefit": "Direct memory bus access (>100 GB/s) \u2022 Zero copying between daemons"
+    },
+    {
+      "id": "mptcp_socket_striping",
+      "name": "\ud83c\udf0a 3. Multipath TCP (MPTCP) & Parallel Socket Striping",
+      "category": "Multi-NIC Bandwidth Aggregation",
+      "bandwidth_mb_s": 4250.0,
+      "latency_ms": 0.45,
+      "status": "MPTCP_STRIPING_ENABLED",
+      "is_active": true,
+      "assigned_workload": "Striped Tensor Matrix Ingestion across TB4 + 10GbE + WiFi 6E",
+      "acceleration_benefit": "Bypasses single NIC capacity by aggregating all physical interfaces"
+    },
+    {
+      "id": "quic_udp_fastpath",
+      "name": "\u26a1 4. QUIC & Ultra-Fast UDP Stream with Pacing & FEC",
+      "category": "Zero-HOL-Blocking Mobile Fast-Path",
+      "bandwidth_mb_s": 850.0,
+      "latency_ms": 0.11,
+      "status": "QUIC_UDP_FAST_PATH_ACTIVE",
+      "is_active": true,
+      "assigned_workload": "Pixel 10 Pro XL (Tensor G5) & Samsung S20+ Token Stream",
+      "acceleration_benefit": "Eliminates TCP head-of-line blocking \u2022 Forward error correction on wireless"
+    },
+    {
+      "id": "wireguard_tailscale_p2p",
+      "name": "\ud83d\udd12 5. WireGuard Direct P2P Kernel Tunnel",
+      "category": "Direct Encrypted Mesh Overlay",
+      "bandwidth_mb_s": 125.0,
+      "latency_ms": 7.2,
+      "status": "WIREGUARD_DIRECT_P2P",
+      "is_active": true,
+      "assigned_workload": "Distributed Mesh Discovery & Layer 3 Linux Head Node RPC",
+      "acceleration_benefit": "Direct peer-to-peer NAT traversal without cloud relay bottleneck"
+    },
+    {
+      "id": "localsend_multicast_udp",
+      "name": "\ud83d\udce1 6. LocalSend / Multicast UDP Zero-Config LAN Broadcast",
+      "category": "One-to-Many Swarm Broadcast",
+      "bandwidth_mb_s": 320.0,
+      "latency_ms": 1.8,
+      "status": "MULTICAST_BROADCAST_READY",
+      "is_active": true,
+      "assigned_workload": "Simultaneous KV-Cache Broadcast & Swarm Prompt Fan-Out",
+      "acceleration_benefit": "Broadcasts weights to all 5 nodes simultaneously in 1 network pass"
+    },
+    {
+      "id": "adb_usb32_multiplexer",
+      "name": "\ud83d\udcf1 7. ADB USB 3.2 Gen 2 & TCP Socket Multiplexer",
+      "category": "Direct Hardware Debugging Pipe",
+      "bandwidth_mb_s": 450.0,
+      "latency_ms": 1.2,
+      "status": "ADB_SOCKET_READY",
+      "is_active": true,
+      "assigned_workload": "Pixel TPU LiteRT & Termux ggml-rpc-server Ingestion",
+      "acceleration_benefit": "Direct high-bandwidth physical cable route to Android hardware"
+    },
+    {
+      "id": "syncthing_block_dedup",
+      "name": "\ud83d\udd04 8. Syncthing Block-Level Deduplicated Delta Transfer",
+      "category": "Differential Checkpoint Sync",
+      "bandwidth_mb_s": 280.0,
+      "latency_ms": 2.4,
+      "status": "SYNCTHING_DEDUP_ACTIVE",
+      "is_active": true,
+      "assigned_workload": "LoRA Adapter Checkpoints & 955-Node Graph Vector Lineage",
+      "acceleration_benefit": "Transfers only modified SHA-256 blocks (up to 10x delta bandwidth savings)"
+    },
+    {
+      "id": "ble_l2cap_sidechannel",
+      "name": "\ud83d\udcf6 9. Bluetooth 5.3 L2CAP Direct Channel & BLE GATT Sidechannel",
+      "category": "Out-of-Band Low-Power Stream",
+      "bandwidth_mb_s": 2.5,
+      "latency_ms": 4.5,
+      "status": "BLE_L2CAP_ISOLATED",
+      "is_active": true,
+      "assigned_workload": "Movesense 128Hz IMU, Heart Rate & Telemetry Sidechannel",
+      "acceleration_benefit": "Keeps 100% of WiFi & TB4 bandwidth pure for AI weight transfer"
+    },
+    {
+      "id": "uds_scm_rights",
+      "name": "\ud83d\udd0c 10. Unix Domain Sockets with SCM_RIGHTS Buffer Passing",
+      "category": "Kernel-Bypass Local IPC",
+      "bandwidth_mb_s": 14200.0,
+      "latency_ms": 0.336,
+      "status": "OPTIMAL_UDS_STREAM",
+      "is_active": true,
+      "assigned_workload": "Local Orchestrators, SQLite Caches & PySpark Engine",
+      "acceleration_benefit": "Kernel-level file descriptor sharing with microsecond response times"
+    }
+  ],
+  "optimal_sharding_allocation": {
+    "layer1_host_m4_max": "POSIX SHM + UDS for Master KV-Cache & Layers 33-64",
+    "layer2_macbook_pro_metal": "Thunderbolt 4 DMA (40 Gbps) for Layers 0-32 (AMD GPU)",
+    "layer3_linux_ryzen7": "MPTCP Striping for Model Parallel Attention Head Weights",
+    "layer4_pixel_10_pro": "QUIC / UDP Fast-Path for Mobile Edge Inference & PTZ Telemetry",
+    "layer5_samsung_s20": "ADB Direct Socket for UI Automation Sparring",
+    "biometrics_sensors": "Bluetooth 5.3 L2CAP Isolated Sidechannel (0% IP overhead)"
+  }
+}

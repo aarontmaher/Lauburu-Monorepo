@@ -1,0 +1,205 @@
+:root {
+  --bg-primary: #070b12;
+  --bg-secondary: #0b111c;
+  --bg-tertiary: #101726;
+  --bg-card: rgba(16, 23, 38, 0.85);
+  --bg-card-hover: rgba(22, 32, 54, 0.95);
+  --bg-glass: rgba(11, 17, 28, 0.7);
+  
+  --border-subtle: #172236;
+  --border-strong: #23334d;
+  --border-focus: #00ffcc;
+  
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-dim: #475569;
+  
+  --accent-cyan: #00ffcc;
+  --accent-cyan-glow: rgba(0, 255, 204, 0.25);
+  --accent-blue: #38bdf8;
+  --accent-purple: #c084fc;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --accent-crimson: #ff3366;
+  
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+  
+  --shadow-glow-cyan: 0 0 15px rgba(0, 255, 204, 0.2);
+  --shadow-glow-amber: 0 0 15px rgba(245, 158, 11, 0.2);
+  --shadow-glow-rose: 0 0 15px rgba(244, 63, 94, 0.2);
+  --shadow-panel: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* Base Body and Layout Styles */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Glass Panels */
+.cyber-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-panel);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cyber-panel:hover {
+  border-color: var(--border-strong);
+}
+
+.cyber-panel-glow-cyan {
+  border-color: rgba(0, 255, 204, 0.4);
+  box-shadow: var(--shadow-glow-cyan);
+}
+
+.cyber-panel-glow-amber {
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: var(--shadow-glow-amber);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 0.725rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-cyan {
+  background: rgba(0, 255, 204, 0.12);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 255, 204, 0.3);
+}
+
+.badge-amber {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--accent-amber);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-emerald {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-rose {
+  background: rgba(244, 63, 94, 0.12);
+  color: var(--accent-rose);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.badge-purple {
+  background: rgba(192, 132, 252, 0.12);
+  color: var(--accent-purple);
+  border: 1px solid rgba(192, 132, 252, 0.3);
+}
+
+/* Buttons */
+.cyber-btn {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease-in-out;
+}
+
+.cyber-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: var(--shadow-glow-cyan);
+}
+
+.cyber-btn-cyan {
+  background: rgba(0, 255, 204, 0.15);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+
+.cyber-btn-cyan:hover {
+  background: rgba(0, 255, 204, 0.25);
+  color: #fff;
+}
+
+.cyber-btn-rose {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: var(--accent-rose);
+  color: var(--accent-rose);
+}
+
+.cyber-btn-rose:hover {
+  background: rgba(244, 63, 94, 0.25);
+  color: #fff;
+  box-shadow: var(--shadow-glow-rose);
+}
+
+/* Telemetry Grid & Meter Bars */
+.telemetry-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.telemetry-bar-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: var(--radius-full);
+}
+
+/* Monospace Values */
+.mono-val {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+}

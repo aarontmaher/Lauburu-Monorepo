@@ -1,0 +1,5 @@
+XSym
+0053
+8d1e8f2e683500e2f26cba709257fd64
+../../../Installed_Apps/Core_Mesh/syncthing_bridge.py
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          

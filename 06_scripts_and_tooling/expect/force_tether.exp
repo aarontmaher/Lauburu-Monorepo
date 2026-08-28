@@ -1,0 +1,27 @@
+#!/usr/bin/expect -f
+set timeout 15
+spawn ssh -o StrictHostKeyChecking=no root@192.168.8.1
+expect "*?assword:*"
+send "Goldfighting1\r"
+expect "*?root@*"
+
+# Run a smart loop over all connected ADB devices
+send "for dev in \$(adb devices | grep -v 'List' | grep 'device$' | awk '{print \$1}'); do\r"
+send "  model=\$(adb -s \$dev shell getprop ro.product.model)\r"
+send "  echo \"Configuring tethering for \$model (\$dev)\"\r"
+send "  adb -s \$dev shell settings put global tether_dun_required 0\r"
+send "  if echo \"\$model\" | grep -qi 'pixel'; then\r"
+send "    echo \"-> Applying Pixel ConnectivityManager Tethering\"\r"
+send "    adb -s \$dev shell cmd connectivity start-tethering 1\r"
+send "    adb -s \$dev shell cmd connectivity start-tethering 5\r"
+send "  else\r"
+send "    echo \"-> Applying Samsung NCM Tethering\"\r"
+send "    adb -s \$dev shell svc usb setFunctions ncm,adb\r"
+send "  fi\r"
+send "done\r"
+expect "*?root@*"
+
+# Refresh OpenWrt Network Interfaces
+send "ifup tethering\r"
+expect "*?root@*"
+send "exit\r"

@@ -1,0 +1,142 @@
+{
+  "timestamp": "2026-08-18T16:08:07.491780+00:00",
+  "service": "Lauburu Autonomous Storage Router & Hardware Sharding Daemon",
+  "mesh_topology": {
+    "total_nodes": 5,
+    "total_vram_capacity_gb": 62.8,
+    "allocated_vram_gb": 39.7,
+    "available_headroom_vram_gb": 23.1,
+    "nodes": {
+      "layer_1_mac_host": {
+        "node_name": "Mac M4 Host",
+        "ip": "127.0.0.1",
+        "rpc_port": 50052,
+        "compute_engine": "Metal GPU (Unified Memory)",
+        "safe_vram_cap_gb": 13.5,
+        "priority_fill_rank": 4,
+        "dedicated_models": [
+          "qwen2-vl-7b-instruct-q5_k_m.gguf"
+        ],
+        "sharded_models": [
+          "deepseek_r1_70b_shard_layer_1"
+        ]
+      },
+      "layer_2_headless_mac": {
+        "node_name": "MacBook Pro (Headless Compute)",
+        "ip": "100.93.158.96",
+        "rpc_port": 50052,
+        "compute_engine": "Metal GPU (10Gbps Thunderbolt 4 / Direct)",
+        "safe_vram_cap_gb": 14.0,
+        "priority_fill_rank": 1,
+        "dedicated_models": [],
+        "sharded_models": [
+          "qwen2.5_coder_32b_shard_a",
+          "deepseek_r1_70b_shard_layer_2"
+        ]
+      },
+      "layer_3_linux_node": {
+        "node_name": "Linux Head Node",
+        "ip": "192.168.8.119",
+        "rpc_port": 50052,
+        "compute_engine": "AMD Ryzen 7 AVX2 + 1TB NVMe Storage",
+        "safe_vram_cap_gb": 13.8,
+        "priority_fill_rank": 2,
+        "dedicated_models": [],
+        "sharded_models": [
+          "qwen2.5_coder_32b_shard_b",
+          "deepseek_r1_32b_shard_a",
+          "deepseek_r1_70b_shard_layer_3"
+        ]
+      },
+      "layer_4_pixel_10_pro": {
+        "node_name": "Google Pixel 10 Pro XL",
+        "ip": "100.73.38.87",
+        "rpc_port": 50052,
+        "compute_engine": "Tensor G5 Edge TPU (Android 15 / Termux RPC)",
+        "safe_vram_cap_gb": 12.5,
+        "priority_fill_rank": 5,
+        "dedicated_models": [
+          "Meta-Llama-3.1-8B-Instruct-Q5_K_M.gguf"
+        ],
+        "sharded_models": []
+      },
+      "layer_5_samsung_s20": {
+        "node_name": "Samsung Galaxy S20+",
+        "ip": "100.99.123.58",
+        "adb_device_id": "R3CN40CJJ1R",
+        "rpc_port": 50052,
+        "compute_engine": "Exynos 990 (Router USB ADB / 24/7 Power)",
+        "safe_vram_cap_gb": 9.0,
+        "priority_fill_rank": 3,
+        "dedicated_models": [
+          "BioMistral-7B.Q8_0.gguf"
+        ],
+        "sharded_models": [
+          "deepseek_r1_32b_shard_b"
+        ]
+      }
+    }
+  },
+  "model_catalog": [
+    {
+      "id": "qwen25_coder_32b",
+      "filename": "qwen2.5-coder-32b-instruct-q4_k_m.gguf",
+      "domain": "DOM_02_FLUTTER_DART_SYSTEMS",
+      "size_gb": 18.49,
+      "sharding_plan": "Layer 2 (14.0 GB) + Layer 3 (8.5 GB)",
+      "status": "DOWNLOADED_AND_VERIFIED",
+      "storage_location": "/Volumes/NAS/AI_Models/qwen2.5-coder-32b-instruct-q4_k_m.gguf",
+      "symlink_ready": true
+    },
+    {
+      "id": "deepseek_r1_32b",
+      "filename": "DeepSeek-R1-Distill-Qwen-32B-Q4_K_M.gguf",
+      "domain": "DOM_09_AI_GAME_ARENA_REASONING",
+      "size_gb": 18.49,
+      "sharding_plan": "Layer 3 (13.8 GB) + Layer 5 (8.2 GB)",
+      "status": "DOWNLOADED_AND_VERIFIED",
+      "storage_location": "/Volumes/NAS/AI_Models/DeepSeek-R1-Distill-Qwen-32B-Q4_K_M.gguf",
+      "symlink_ready": true
+    },
+    {
+      "id": "qwen2_vl_7b",
+      "filename": "qwen2-vl-7b-instruct-q5_k_m.gguf",
+      "domain": "DOM_05_VISION_VLM_TRUTH_AUDIT",
+      "size_gb": 5.45,
+      "sharding_plan": "Layer 1 Mac Host Dedicated (5.45 GB)",
+      "status": "QUEUED_FOR_NAS_INGESTION",
+      "hf_url": "https://huggingface.co/Qwen/Qwen2-VL-7B-Instruct-GGUF/resolve/main/qwen2-vl-7b-instruct-q5_k_m.gguf",
+      "storage_location": "/Volumes/NAS/AI_Models/qwen2-vl-7b-instruct-q5_k_m.gguf",
+      "symlink_ready": false
+    },
+    {
+      "id": "biomistral_7b",
+      "filename": "BioMistral-7B.Q8_0.gguf",
+      "domain": "DOM_01_BIOMETRICS_PHYSIOLOGY",
+      "size_gb": 7.7,
+      "sharding_plan": "Layer 5 Samsung S20+ Dedicated (7.70 GB)",
+      "status": "QUEUED_FOR_NAS_INGESTION",
+      "hf_url": "https://huggingface.co/BioMistral/BioMistral-7B-GGUF/resolve/main/BioMistral-7B.Q8_0.gguf",
+      "storage_location": "/Volumes/NAS/AI_Models/BioMistral-7B.Q8_0.gguf",
+      "symlink_ready": false
+    },
+    {
+      "id": "llama_31_8b",
+      "filename": "Meta-Llama-3.1-8B-Instruct-Q5_K_M.gguf",
+      "domain": "DOM_03_DOCKER_MESH_INFRASTRUCTURE",
+      "size_gb": 5.73,
+      "sharding_plan": "Layer 4 Pixel 10 Pro XL Dedicated (5.73 GB)",
+      "status": "QUEUED_FOR_NAS_INGESTION",
+      "hf_url": "https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct-Q5_K_M.gguf",
+      "storage_location": "/Volumes/NAS/AI_Models/Meta-Llama-3.1-8B-Instruct-Q5_K_M.gguf",
+      "symlink_ready": false
+    }
+  ],
+  "download_queue_count": 3,
+  "storage_paths": {
+    "nas_primary_models_dir": "/Volumes/NAS/AI_Models",
+    "local_symlink_dir": "/Volumes/models/gguf",
+    "internal_workspace_data": "/Volumes/Lauburu-Monorepo/data",
+    "gdrive_sync_target": "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory"
+  }
+}

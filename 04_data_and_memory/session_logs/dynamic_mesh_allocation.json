@@ -1,0 +1,181 @@
+{
+  "timestamp": "2026-08-18T14:50:08.398450Z",
+  "mesh_metrics": {
+    "total_physical_ram_gb": 73.1,
+    "peak_safe_ai_vram_cap_gb": 62.8,
+    "current_live_usable_cap_gb": 50.3,
+    "fill_priority_rules": {
+      "tier_1_fill_first": [
+        "layer_2_headless_mac (14.0 GB)",
+        "layer_3_linux_node (13.8 GB)",
+        "layer_5_samsung_s20 (9.0 GB)"
+      ],
+      "tier_2_fill_last": [
+        "layer_1_mac_host (13.5 GB)",
+        "layer_4_pixel_10_pro (12.5 GB - Battery Modulated)"
+      ]
+    }
+  },
+  "node_capacities": {
+    "layer_2_headless_mac": {
+      "name": "MacBook Pro (Headless Worker - Intel i7 / Metal GPU)",
+      "ip": "100.93.158.96",
+      "physical_ram_gb": 16.0,
+      "base_max_cap_gb": 14.0,
+      "effective_usable_cap_gb": 14.0,
+      "priority_tier": 1,
+      "priority_rank": 1,
+      "is_headless": true,
+      "is_throttled": false,
+      "regulator_status": "FULL_CAPACITY_NOMINAL"
+    },
+    "layer_3_linux_node": {
+      "name": "Linux Head Node (AMD Ryzen 7 5700U / Fast NVMe)",
+      "ip": "192.168.8.119",
+      "physical_ram_gb": 15.3,
+      "base_max_cap_gb": 13.8,
+      "effective_usable_cap_gb": 13.8,
+      "priority_tier": 1,
+      "priority_rank": 2,
+      "is_headless": true,
+      "is_throttled": false,
+      "regulator_status": "FULL_CAPACITY_NOMINAL"
+    },
+    "layer_5_samsung_s20": {
+      "name": "Samsung Galaxy S20+ (Exynos 990 / WAN Link #3)",
+      "ip": "R3CN40CJJ1R",
+      "physical_ram_gb": 10.6,
+      "base_max_cap_gb": 9.0,
+      "effective_usable_cap_gb": 9.0,
+      "priority_tier": 1,
+      "priority_rank": 3,
+      "is_headless": true,
+      "is_throttled": false,
+      "regulator_status": "FULL_CAPACITY_NOMINAL"
+    },
+    "layer_1_mac_host": {
+      "name": "This Mac Host (Apple M4 Max / Primary Orchestrator)",
+      "ip": "127.0.0.1",
+      "physical_ram_gb": 16.0,
+      "base_max_cap_gb": 13.5,
+      "effective_usable_cap_gb": 13.5,
+      "priority_tier": 2,
+      "priority_rank": 4,
+      "is_headless": false,
+      "is_throttled": false,
+      "regulator_status": "FULL_CAPACITY_NOMINAL"
+    },
+    "layer_4_pixel_10_pro": {
+      "name": "Google Pixel 10 Pro XL (Tensor G5 / Edge TPU)",
+      "ip": "100.73.38.87",
+      "physical_ram_gb": 15.2,
+      "base_max_cap_gb": 12.5,
+      "effective_usable_cap_gb": 0.0,
+      "priority_tier": 2,
+      "priority_rank": 5,
+      "is_headless": false,
+      "is_throttled": true,
+      "regulator_status": "CRITICAL_BATTERY_STANDBY (9% unplugged < 20%)"
+    }
+  },
+  "sharding_plans": {
+    "32B_model": {
+      "model_target_gb": 18.0,
+      "total_assigned_gb": 18.0,
+      "fit_success": true,
+      "remaining_unallocated_gb": 0.0,
+      "tensor_split_arg": "0.0,14.0,4.0,0.0,0.0",
+      "nodes": {
+        "layer_2_headless_mac": {
+          "name": "MacBook Pro (Headless Worker - Intel i7 / Metal GPU)",
+          "assigned_gb": 14.0,
+          "available_cap_gb": 14.0,
+          "priority_tier": 1,
+          "priority_rank": 1,
+          "regulator_status": "FULL_CAPACITY_NOMINAL"
+        },
+        "layer_3_linux_node": {
+          "name": "Linux Head Node (AMD Ryzen 7 5700U / Fast NVMe)",
+          "assigned_gb": 4.0,
+          "available_cap_gb": 13.8,
+          "priority_tier": 1,
+          "priority_rank": 2,
+          "regulator_status": "FULL_CAPACITY_NOMINAL"
+        },
+        "layer_5_samsung_s20": {
+          "name": "Samsung Galaxy S20+ (Exynos 990 / WAN Link #3)",
+          "assigned_gb": 0.0,
+          "available_cap_gb": 9.0,
+          "priority_tier": 1,
+          "priority_rank": 3,
+          "regulator_status": "FULL_CAPACITY_NOMINAL"
+        },
+        "layer_1_mac_host": {
+          "name": "This Mac Host (Apple M4 Max / Primary Orchestrator)",
+          "assigned_gb": 0.0,
+          "available_cap_gb": 13.5,
+          "priority_tier": 2,
+          "priority_rank": 4,
+          "regulator_status": "FULL_CAPACITY_NOMINAL"
+        },
+        "layer_4_pixel_10_pro": {
+          "name": "Google Pixel 10 Pro XL (Tensor G5 / Edge TPU)",
+          "assigned_gb": 0.0,
+          "available_cap_gb": 0.0,
+          "priority_tier": 2,
+          "priority_rank": 5,
+          "regulator_status": "CRITICAL_BATTERY_STANDBY (9% unplugged < 20%)"
+        }
+      }
+    },
+    "70B_model": {
+      "model_target_gb": 42.0,
+      "total_assigned_gb": 42.0,
+      "fit_success": true,
+      "remaining_unallocated_gb": 0.0,
+      "tensor_split_arg": "5.2,14.0,13.8,0.0,9.0",
+      "nodes": {
+        "layer_2_headless_mac": {
+          "name": "MacBook Pro (Headless Worker - Intel i7 / Metal GPU)",
+          "assigned_gb": 14.0,
+          "available_cap_gb": 14.0,
+          "priority_tier": 1,
+          "priority_rank": 1,
+          "regulator_status": "FULL_CAPACITY_NOMINAL"
+        },
+        "layer_3_linux_node": {
+          "name": "Linux Head Node (AMD Ryzen 7 5700U / Fast NVMe)",
+          "assigned_gb": 13.8,
+          "available_cap_gb": 13.8,
+          "priority_tier": 1,
+          "priority_rank": 2,
+          "regulator_status": "FULL_CAPACITY_NOMINAL"
+        },
+        "layer_5_samsung_s20": {
+          "name": "Samsung Galaxy S20+ (Exynos 990 / WAN Link #3)",
+          "assigned_gb": 9.0,
+          "available_cap_gb": 9.0,
+          "priority_tier": 1,
+          "priority_rank": 3,
+          "regulator_status": "FULL_CAPACITY_NOMINAL"
+        },
+        "layer_1_mac_host": {
+          "name": "This Mac Host (Apple M4 Max / Primary Orchestrator)",
+          "assigned_gb": 5.2,
+          "available_cap_gb": 13.5,
+          "priority_tier": 2,
+          "priority_rank": 4,
+          "regulator_status": "FULL_CAPACITY_NOMINAL"
+        },
+        "layer_4_pixel_10_pro": {
+          "name": "Google Pixel 10 Pro XL (Tensor G5 / Edge TPU)",
+          "assigned_gb": 0.0,
+          "available_cap_gb": 0.0,
+          "priority_tier": 2,
+          "priority_rank": 5,
+          "regulator_status": "CRITICAL_BATTERY_STANDBY (9% unplugged < 20%)"
+        }
+      }
+    }
+  }
+}

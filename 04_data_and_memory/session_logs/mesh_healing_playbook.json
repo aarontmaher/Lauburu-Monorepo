@@ -1,0 +1,50 @@
+{
+  "version": "3.0.0",
+  "last_updated": "2026-08-21T23:31:36.392630+00:00",
+  "total_heals_executed": 0,
+  "recipes": {
+    "Mac_Node_rpc_down": {
+      "action": "launchctl unload ~/Library/LaunchAgents/com.lauburu.rpc-server.plist 2>/dev/null; launchctl load ~/Library/LaunchAgents/com.lauburu.rpc-server.plist || nohup /Volumes/aaronmaher/Lauburu-Monorepo/llama.cpp/build/bin/ggml-rpc-server -H 0.0.0.0 -p 50052 > /tmp/rpc.log 2>&1 &",
+      "success_count": 14,
+      "failure_count": 1,
+      "last_attempt": "2026-08-21T23:30:57.350974+00:00"
+    },
+    "Linux_Head_Node_rpc_down": {
+      "action": "ssh -o BatchMode=yes -o ConnectTimeout=3 linux@100.101.39.98 'nohup /home/linux/llama.cpp/build/bin/ggml-rpc-server -H 0.0.0.0 -p 50052 -t 8 > /tmp/rpc.log 2>&1 &' || ssh -o BatchMode=yes -o ConnectTimeout=3 linux@192.168.8.119 'nohup /home/linux/llama.cpp/build/bin/ggml-rpc-server -H 0.0.0.0 -p 50052 -t 8 > /tmp/rpc.log 2>&1 &'",
+      "success_count": 18,
+      "failure_count": 0
+    },
+    "MacBook_Pro_rpc_down": {
+      "action": "ssh -o BatchMode=yes -o ConnectTimeout=3 aaronmaher@169.254.187.138 'nohup /usr/local/bin/llama-rpc-server -H 0.0.0.0 -p 50052 > /tmp/rpc.log 2>&1 &' || ssh -o BatchMode=yes -o ConnectTimeout=3 aaronmaher@100.103.212.21 'nohup /usr/local/bin/llama-rpc-server -H 0.0.0.0 -p 50052 > /tmp/rpc.log 2>&1 &'",
+      "success_count": 9,
+      "failure_count": 0
+    },
+    "Pixel_10_Pro_XL_rpc_down": {
+      "action": "adb connect 100.73.38.87:5555; adb -s 100.73.38.87:5555 shell 'input keyevent KEYCODE_WAKEUP && am start -n com.termux/.app.TermuxActivity'; ssh -o BatchMode=yes -o ConnectTimeout=3 -p 8022 u0_a363@100.73.38.87 'nohup /data/data/com.termux/files/home/llama.cpp/build/bin/ggml-rpc-server -H 0.0.0.0 -p 50052 -t 8 > /data/data/com.termux/files/home/rpc.log 2>&1 & || nohup /data/data/com.termux/files/usr/bin/ggml-rpc-server -H 0.0.0.0 -p 50052 > /dev/null 2>&1 &'",
+      "success_count": 22,
+      "failure_count": 1,
+      "last_attempt": "2026-08-21T23:31:32.104611+00:00"
+    },
+    "Samsung_S20_rpc_down": {
+      "action": "adb connect 100.84.40.95:5555; adb -s 100.84.40.95:5555 shell 'export LD_LIBRARY_PATH=/data/local/tmp:$LD_LIBRARY_PATH; ps -A | grep rpc-server || nohup /data/local/tmp/rpc-server -H 0.0.0.0 -p 50052 -t 6 > /data/local/tmp/rpc.log 2>&1 &' || ssh -o BatchMode=yes -o ConnectTimeout=3 root@192.168.8.1 'adb -s R3CN40CJJ1R shell \"export LD_LIBRARY_PATH=/data/local/tmp:\\$LD_LIBRARY_PATH; ps -A | grep rpc-server || nohup /data/local/tmp/rpc-server -H 0.0.0.0 -p 50052 -t 6 > /data/local/tmp/rpc.log 2>&1 &\"'",
+      "success_count": 25,
+      "failure_count": 0
+    },
+    "Linux_Tablet_rpc_down": {
+      "action": "ssh -o BatchMode=yes -o ConnectTimeout=3 debian@100.81.92.125 'sudo systemctl restart tailscaled; nohup /usr/local/bin/llama-rpc-server -H 0.0.0.0 -p 50052 > /tmp/rpc.log 2>&1 &' || true",
+      "success_count": 5,
+      "failure_count": 0
+    },
+    "Mac_Mini_rpc_down": {
+      "action": "ssh -o BatchMode=yes -o ConnectTimeout=3 aaronmaher@100.93.158.96 'nohup /usr/local/bin/llama-rpc-server -H 0.0.0.0 -p 50052 > /tmp/rpc.log 2>&1 &' || true",
+      "success_count": 8,
+      "failure_count": 0
+    },
+    "Cloudflare_tunnel_down": {
+      "action": "pkill -f cloudflared; nohup cloudflared tunnel --url http://127.0.0.1:18789 > /Volumes/aaronmaher/Lauburu-Monorepo/session_logs/cloudflared_quick.log 2>&1 &",
+      "success_count": 12,
+      "failure_count": 1,
+      "last_attempt": "2026-08-21T23:31:36.392619+00:00"
+    }
+  }
+}

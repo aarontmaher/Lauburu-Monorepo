@@ -1,0 +1,258 @@
+version: '3.8'
+
+services:
+  # Local AGI Gateway & Bridge Daemon
+  lauburu-local-agi:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.bridge
+    container_name: lauburu-mac-agi
+    environment:
+      - NODE_ROLE=MAC_ORCHESTRATOR
+      - OLLAMA_HOST=http://100.101.39.98:11434
+    volumes:
+      - .:/app
+      - ~/.lauburu_offline_buffer:/app/data/offline_buffer
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c 'import os, sys; sys.exit(0 if os.path.exists(\"/app/scripts/lauburu_bridge_daemon.py\") else 1)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Movesense Readiness App
+  movesense-readiness:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.movesense
+    container_name: lauburu-movesense-app
+    ports:
+      - "8750:8750"
+    volumes:
+      - ./session_logs:/app/session_logs
+      - ./apps/movesense-readiness:/app/apps/movesense-readiness
+      - ./data:/app/data
+    environment:
+      - PORT=8750
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8750/\")' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Voice STT Service
+  lauburu-voice-coder:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.voice
+    container_name: lauburu-nano-voice-coder
+    environment:
+      - NODE_ROLE=VOICE_STT_WORKER
+      - OLLAMA_HOST=http://100.101.39.98:11434
+    volumes:
+      - .:/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c 'import os, sys; sys.exit(0 if os.path.exists(\"/app/docker/Dockerfile.voice\") else 1)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Gemini AI Service - FastAPI wrapper for Gemini API / Vertex AI
+  gemini-ai-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gemini
+    container_name: lauburu-gemini-ai
+    ports:
+      - "8087:8087"
+    volumes:
+      - .:/app
+      - ${HOME}/.config/gcloud:/root/.config/gcloud:ro
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - GEMINI_MODEL_DEFAULT=gemini-1.5-flash
+      - GEMINI_SPARK_MODEL=gemini-2.0-flash-exp
+      - GEMINI_PRO_MODEL=gemini-1.5-pro
+      - PYTHONUNBUFFERED=1
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/gemini_service.py
+          target: /app/apps/gemini_service.py
+        - action: sync
+          path: ./config
+          target: /app/config
+        - action: rebuild
+          path: ./docker/Dockerfile.gemini
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8087/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      - lauburu-local-agi
+
+  # Master Control & Swarm Hub
+  lauburu-chat-hub:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gemini
+    container_name: lauburu-chat-hub
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - GEMINI_SERVICE_URL=http://gemini-ai-service:8087
+      - OLLAMA_HOST=http://100.101.39.98:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["python3", "apps/unified_chat_hub/server.py"]
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/unified_chat_hub
+          target: /app/apps/unified_chat_hub
+        - action: rebuild
+          path: ./requirements.txt
+    restart: unless-stopped
+    depends_on:
+      - gemini-ai-service
+
+  # Gemini Spark Multi-Agent Router
+  gemini-spark-router:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gemini
+    container_name: lauburu-spark-router
+    ports:
+      - "8088:8088"
+    volumes:
+      - .:/app
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - GEMINI_SERVICE_URL=http://gemini-ai-service:8087
+      - PYTHONUNBUFFERED=1
+    command: ["python3", "-m", "uvicorn", "apps.gemini_spark_router:app", "--host", "0.0.0.0", "--port", "8088"]
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/gemini_spark_router.py
+          target: /app/apps/gemini_spark_router.py
+        - action: sync
+          path: ./scripts
+          target: /app/scripts
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      - gemini-ai-service
+
+  # Lauburu AGI API Server
+  lauburu-agi-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.server
+    container_name: lauburu-agi-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Lauburu Local AGI Backend Hub (Shared MCPs, Info Store & Rules Engine)
+  lauburu-agi-backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.agi-backend
+    container_name: lauburu-agi-backend
+    ports:
+      - "8900:8900"
+    volumes:
+      - .:/app
+      - ./data:/app/data
+      - ./session_logs:/app/session_logs
+      - /Volumes/.gemini/config:/app/mcp_config:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - PYTHONUNBUFFERED=1
+      - WORKSPACE_ROOT=/app
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - GEMINI_SERVICE_URL=http://gemini-ai-service:8087
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8900/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+
+  # Prometheus Server for Ray Dashboard Metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ray-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /tmp/ray:/tmp/ray
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  # Grafana Server for Ray Dashboard Time-Series Charts
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ray-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-ChangeMeSecurely123!}
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+    volumes:
+      - ./config/grafana/provisioning:/etc/grafana/provisioning
+    restart: unless-stopped
+
+  # GPU Acceleration for Local Inference (NVIDIA Linux hosts)
+  ollama-gpu-service:
+    image: ollama/ollama:latest
+    container_name: lauburu-ollama-gpu
+    ports:
+      - "11434:11434"
+    volumes:
+      - ~/.ollama:/root/.ollama
+      - ./nas_imported/stale_files:/app/nas/stale_files:ro
+      - ./nas_imported/staging:/app/nas/staging:ro
+      - ./nas_imported/nas_main:/app/nas/main
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

@@ -1,0 +1,61 @@
+{
+  "timestamp": "2026-08-18T04:35:09Z",
+  "free_tier_rpm_budget": 15,
+  "allocated_rpm_slots": 2,
+  "remaining_rpm_headroom": 13,
+  "projected_cloud_tokens_used": 5700,
+  "projected_local_tokens_saved": 2300,
+  "zero_cloud_spend_ratio_pct": 28.7,
+  "delegation_matrix": [
+    {
+      "task_category": "antigravity_sdk_synthesis",
+      "task_name": "Google Antigravity SDK Agent Synthesis",
+      "token_estimate": 3500,
+      "cloud_roi_score": 9.85,
+      "local_roi_score": 8.6,
+      "delegated_route": "GEMINI_FREE_TIER",
+      "assigned_model": "gemini-3.7-flash",
+      "routing_rational": "Maximum Reasoning Yield under 15 RPM Free Tier Quota"
+    },
+    {
+      "task_category": "ast_code_refactoring",
+      "task_name": "Continuous AST Zero-Copy Code Refactoring",
+      "token_estimate": 1200,
+      "cloud_roi_score": 2.1,
+      "local_roi_score": 9.95,
+      "delegated_route": "LOCAL_MESH",
+      "assigned_model": "qwen_38_max",
+      "routing_rational": "Strict Zero-Egress Privacy Mandate ($0 spend, 0ms network egress)"
+    },
+    {
+      "task_category": "movesense_biometrics_dsp",
+      "task_name": "128Hz Movesense ECG & DFA-alpha1 Telemetry",
+      "token_estimate": 250,
+      "cloud_roi_score": 2.1,
+      "local_roi_score": 9.95,
+      "delegated_route": "LOCAL_MESH",
+      "assigned_model": "genetic_moe_slm",
+      "routing_rational": "Strict Zero-Egress Privacy Mandate ($0 spend, 0ms network egress)"
+    },
+    {
+      "task_category": "swarm_truth_audit",
+      "task_name": "Multi-Frame Swarm Truth & Hallucination Audit",
+      "token_estimate": 2200,
+      "cloud_roi_score": 9.85,
+      "local_roi_score": 8.6,
+      "delegated_route": "GEMINI_FREE_TIER",
+      "assigned_model": "gemini-3.7-flash",
+      "routing_rational": "Maximum Reasoning Yield under 15 RPM Free Tier Quota"
+    },
+    {
+      "task_category": "opml_grappling_kinematics",
+      "task_name": "OPML 3D Joint Kinematics & Transition Physics",
+      "token_estimate": 850,
+      "cloud_roi_score": 3.5,
+      "local_roi_score": 9.98,
+      "delegated_route": "LOCAL_METAL_TB4",
+      "assigned_model": "gemma_4_27b",
+      "routing_rational": "Sub-100ms hard real-time latency requirement"
+    }
+  ]
+}

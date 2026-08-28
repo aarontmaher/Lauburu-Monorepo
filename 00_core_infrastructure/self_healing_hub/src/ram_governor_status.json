@@ -1,0 +1,165 @@
+{
+  "timestamp": "2026-08-24T00:12:58Z",
+  "tier": "CRITICAL",
+  "overall_headroom_compliance": false,
+  "headroom_violations": [
+    "Samsung_S20"
+  ],
+  "host_memory": {
+    "node_id": "Mac_Node",
+    "total_gb": 24.0,
+    "available_gb": 3.46,
+    "used_gb": 20.54,
+    "used_pct": 85.6,
+    "headroom_pct": 14.4,
+    "headroom_target_gb": 2.4,
+    "headroom_compliant": true
+  },
+  "nodes_memory": {
+    "Mac_Node": {
+      "node_id": "Mac_Node",
+      "total_gb": 24.0,
+      "available_gb": 3.46,
+      "used_gb": 20.54,
+      "used_pct": 85.6,
+      "headroom_pct": 14.4,
+      "headroom_target_gb": 2.4,
+      "headroom_compliant": true
+    },
+    "Linux_Head_Node": {
+      "node_id": "Linux_Head_Node",
+      "total_gb": 15.33,
+      "available_gb": 12.35,
+      "min_required_gb": 3.07,
+      "headroom_target_gb": 3.07,
+      "headroom_compliant": true,
+      "status": "ONLINE"
+    },
+    "Pixel_10_Pro_XL": {
+      "node_id": "Pixel_10_Pro_XL",
+      "total_gb": 12.0,
+      "available_gb": 2.5,
+      "min_required_gb": 2.34,
+      "headroom_target_gb": 2.34,
+      "headroom_pct": 20.8,
+      "headroom_compliant": true,
+      "actions_taken": [],
+      "status": "OFFLINE"
+    },
+    "Samsung_S20": {
+      "node_id": "Samsung_S20",
+      "total_gb": 12.0,
+      "available_gb": 2.5,
+      "min_required_gb": 2.73,
+      "headroom_target_gb": 2.73,
+      "headroom_pct": 20.8,
+      "headroom_compliant": false,
+      "actions_taken": [
+        "samsung_am_trim_caches_1024M",
+        "am_trim_caches_executed"
+      ],
+      "status": "OFFLINE"
+    }
+  },
+  "mesh_headroom": {
+    "Mac_Node": {
+      "node_id": "Mac_Node",
+      "total_gb": 24.0,
+      "available_gb": 3.46,
+      "used_gb": 20.54,
+      "used_pct": 85.6,
+      "headroom_pct": 14.4,
+      "headroom_target_gb": 2.4,
+      "headroom_compliant": true
+    },
+    "mac_host": {
+      "node_id": "Mac_Node",
+      "total_gb": 24.0,
+      "available_gb": 3.46,
+      "used_gb": 20.54,
+      "used_pct": 85.6,
+      "headroom_pct": 14.4,
+      "headroom_target_gb": 2.4,
+      "headroom_compliant": true
+    },
+    "Linux_Head_Node": {
+      "node_id": "Linux_Head_Node",
+      "total_gb": 15.33,
+      "available_gb": 12.35,
+      "min_required_gb": 3.07,
+      "headroom_target_gb": 3.07,
+      "headroom_compliant": true,
+      "status": "ONLINE"
+    },
+    "linux_node": {
+      "node_id": "Linux_Head_Node",
+      "total_gb": 15.33,
+      "available_gb": 12.35,
+      "min_required_gb": 3.07,
+      "headroom_target_gb": 3.07,
+      "headroom_compliant": true,
+      "status": "ONLINE"
+    },
+    "Pixel_10_Pro_XL": {
+      "node_id": "Pixel_10_Pro_XL",
+      "total_gb": 12.0,
+      "available_gb": 2.5,
+      "min_required_gb": 2.34,
+      "headroom_target_gb": 2.34,
+      "headroom_pct": 20.8,
+      "headroom_compliant": true,
+      "actions_taken": [],
+      "status": "OFFLINE"
+    },
+    "pixel_10_pro": {
+      "node_id": "Pixel_10_Pro_XL",
+      "total_gb": 12.0,
+      "available_gb": 2.5,
+      "min_required_gb": 2.34,
+      "headroom_target_gb": 2.34,
+      "headroom_pct": 20.8,
+      "headroom_compliant": true,
+      "actions_taken": [],
+      "status": "OFFLINE"
+    },
+    "Samsung_S20": {
+      "node_id": "Samsung_S20",
+      "total_gb": 12.0,
+      "available_gb": 2.5,
+      "min_required_gb": 2.73,
+      "headroom_target_gb": 2.73,
+      "headroom_pct": 20.8,
+      "headroom_compliant": false,
+      "actions_taken": [
+        "samsung_am_trim_caches_1024M",
+        "am_trim_caches_executed"
+      ],
+      "status": "OFFLINE"
+    },
+    "samsung_s20": {
+      "node_id": "Samsung_S20",
+      "total_gb": 12.0,
+      "available_gb": 2.5,
+      "min_required_gb": 2.73,
+      "headroom_target_gb": 2.73,
+      "headroom_pct": 20.8,
+      "headroom_compliant": false,
+      "actions_taken": [
+        "samsung_am_trim_caches_1024M",
+        "am_trim_caches_executed"
+      ],
+      "status": "OFFLINE"
+    },
+    "all_nodes_compliant": false
+  },
+  "target_ceiling_pct": 75.0,
+  "min_headroom_target_pct": 25.0,
+  "throttle_factor": 0.0,
+  "active_context_size": 1024,
+  "action_taken": "EMERGENCY_PAUSE: Paused heavy local model inference and cleared buffers to protect Host stability",
+  "actions_taken": [
+    "EMERGENCY_PAUSE: Paused heavy local model inference and cleared buffers to protect Host stability"
+  ],
+  "antigravity_protected": true,
+  "mesh_status": "5-Layer Pooled Mesh (55.58 GB Usable VRAM)"
+}

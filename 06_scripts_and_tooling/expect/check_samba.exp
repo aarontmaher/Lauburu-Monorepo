@@ -1,0 +1,11 @@
+#!/usr/bin/expect -f
+set timeout 15
+spawn ssh -o StrictHostKeyChecking=no -o PubkeyAuthentication=no linux@100.101.39.98
+expect "assword:"
+send "goldfighting1\r"
+expect "\\$"
+send "sudo docker ps | grep samba\r"
+expect "assword"
+send "goldfighting1\r"
+expect "\\$"
+send "exit\r"

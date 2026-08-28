@@ -1,0 +1,54 @@
+services:
+  # GlusterFS Server (Brick)
+  glusterfs-server:
+    image: gluster/gluster-centos:latest
+    container_name: glusterfs-server
+    hostname: gluster-brick-1
+    volumes:
+      - glusterfs_brick:/data/brick1
+      - glusterfs_config:/var/lib/glusterd
+    ports:
+      - "24007:24007"    # GlusterFS daemon
+      - "24008:24008"    # GlusterFS RPC
+      - "49152:49152"    # Brick port
+    environment:
+      - GLUSTER_VOL_NAME=lauburu-volume
+      - GLUSTER_BRICK_PATH=/data/brick1
+    networks:
+      - lauburu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "gluster", "volume", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # GlusterFS NFS Server (for device access)
+  glusterfs-nfs:
+    image: gluster/gluster-centos:latest
+    container_name: glusterfs-nfs
+    hostname: gluster-nfs
+    ports:
+      - "2049:2049"      # NFS port
+      - "111:111"        # RPC port
+      - "38465:38465"    # NFS callbacks
+      - "38466:38466"    # NFS callbacks
+    volumes:
+      - glusterfs_nfs_config:/var/lib/glusterd
+    environment:
+      - GLUSTER_MODE=nfs
+    networks:
+      - lauburu-network
+    depends_on:
+      - glusterfs-server
+    restart: unless-stopped
+
+volumes:
+  glusterfs_brick:
+  glusterfs_config:
+  glusterfs_nfs_config:
+
+networks:
+  lauburu-network:
+    driver: bridge

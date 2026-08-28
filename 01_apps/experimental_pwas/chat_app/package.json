@@ -1,0 +1,33 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "description": "Lauburu AI backend — athlete memory, nutrition ingest, HIIT sessions, Coach.",
+  "main": "src/server/app.ts",
+  "scripts": {
+    "start": "tsx src/server/app.ts",
+    "dev": "tsx watch src/server/app.ts",
+    "build": "echo 'Runtime TypeScript via tsx — no build step needed'",
+    "build:server": "tsc -p tsconfig.server.json",
+    "test:mcp-routes": "tsx src/server/scripts/test-mcp-routes.ts",
+    "test:contracts": "tsx src/server/scripts/test-nutrition-hiit-contracts.ts",
+    "test:roundtrip": "tsx src/server/scripts/test-round-trip.ts",
+    "test:roundtrip:deployed": "echo 'Set BACKEND_URL, INTERNAL_API_TOKEN, ATHLETE_MEMORY_API_TOKEN' && tsx src/server/scripts/test-round-trip.ts",
+    "client": "lite-server"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "jszip": "^3.10.1",
+    "socket.io": "^4.0.0",
+    "tsx": "^4.21.0"
+  },
+  "devDependencies": {
+    "lite-server": "^2.6.1",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "Lauburu",
+  "license": "MIT"
+}

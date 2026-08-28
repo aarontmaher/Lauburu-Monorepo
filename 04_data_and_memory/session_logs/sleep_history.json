@@ -1,0 +1,27 @@
+[
+  {
+    "sleep_quality_score": 95.2,
+    "sleep_duration_hours": 7.6,
+    "sleep_debt_hours": 0.4,
+    "hypnogram_stages": {
+      "deep_slow_wave_pct": 21.5,
+      "rem_cognitive_pct": 23.5,
+      "light_sleep_pct": 47.5,
+      "awake_restless_pct": 7.5
+    },
+    "nocturnal_cardiovascular_recovery": {
+      "nocturnal_avg_rmssd_ms": 66.92999999999999,
+      "daytime_sbp_mmHg": 116.4,
+      "nocturnal_sbp_mmHg": 102.4,
+      "bp_dip_percentage": 12.0,
+      "nocturnal_dipping_category": "NORMAL_DIPPER (Cardioprotective)"
+    },
+    "ai_restorative_interventions": [
+      {
+        "pillar": "CIRCADIAN_CONSISTENCY",
+        "action": "Maintain uniform wake time (+-15m) to anchor suprachiasmatic nucleus melatonin surge."
+      }
+    ],
+    "logged_timestamp": "2026-08-21T23:32:25.604667+00:00"
+  }
+]

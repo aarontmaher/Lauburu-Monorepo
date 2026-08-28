@@ -1,0 +1,65 @@
+{
+  "$schema": "https://seaweedfs.github.io/schema/remote_storage_tiering.json",
+  "version": "1.0",
+  "description": "SeaweedFS S3-Compatible Cloudflare R2 Remote Storage and Volume Tiering Configuration",
+  "remote_storage": {
+    "name": "cloudflare_r2",
+    "type": "s3",
+    "s3": {
+      "access_key": "${R2_ACCESS_KEY}",
+      "secret_key": "${R2_SECRET_KEY}",
+      "endpoint": "${R2_ENDPOINT}",
+      "bucket": "${R2_BUCKET}",
+      "region": "${R2_REGION:-auto}",
+      "force_path_style": true,
+      "storage_class": "STANDARD",
+      "support_tagging": false,
+      "v4_auth_only": true
+    }
+  },
+  "tiering_policy": {
+    "enabled": true,
+    "destination": "cloudflare_r2",
+    "target_bucket": "${R2_BUCKET}",
+    "criteria": {
+      "full_percent": 95,
+      "quiet_for": "24h",
+      "min_size_mb": 100,
+      "max_volumes_per_batch": 5
+    },
+    "schedule": "0 2 * * *",
+    "auto_vacuum": true,
+    "keep_local_indexes": true,
+    "read_cache_enabled": true,
+    "read_cache_size_mb": 2048
+  },
+  "filer_sync": {
+    "enabled": false,
+    "remote_directory": "/",
+    "local_directory": "/buckets/${R2_BUCKET}",
+    "sync_mode": "upload_only",
+    "concurrency": 8
+  },
+  "s3_identities": [
+    {
+      "name": "r2-tiering-admin",
+      "credentials": [
+        {
+          "accessKey": "${R2_ACCESS_KEY}",
+          "secretKey": "${R2_SECRET_KEY}"
+        }
+      ],
+      "actions": [
+        "Read",
+        "Write",
+        "List",
+        "Admin",
+        "Tagging"
+      ],
+      "resources": [
+        "buckets/${R2_BUCKET}",
+        "buckets/${R2_BUCKET}/*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;      /* #f8fafc */
+    --foreground: 222 47% 11%;      /* #0f172a - high contrast slate 900 */
+    --card: 0 0% 100%;              /* #ffffff */
+    --card-foreground: 222 47% 11%; /* #0f172a */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 160 84% 39%;         /* Emerald 600 - #059669 */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;     /* Slate 100 */
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 94%;           /* Slate 200 */
+    --muted-foreground: 215 16% 35%;/* Slate 700 - high contrast for AA compliance */
+    --accent: 160 84% 95%;          /* Emerald 50 */
+    --accent-foreground: 160 84% 25%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214 32% 85%;          /* Slate 300 - clearly distinct borders */
+    --input: 214 32% 85%;
+    --ring: 160 84% 39%;            /* Emerald 600 focus ring */
+    --radius: 0.5rem;
+
+    /* Explicit Biometric Zone HSL tokens */
+    --zone1: 199 89% 48%;           /* #0284c7 Sky 600 */
+    --zone2: 160 84% 39%;           /* #059669 Emerald 600 */
+    --zone3: 38 92% 50%;            /* #d97706 Amber 600 */
+    --zone4: 21 90% 48%;            /* #ea580c Orange 600 */
+    --zone5: 347 77% 50%;           /* #e11d48 Rose 600 */
+
+    /* ECG Canvas Grid tokens (Light) */
+    --ecg-bg: #090d16;
+    --ecg-grid-major: rgba(16, 185, 129, 0.25);
+    --ecg-grid-minor: rgba(16, 185, 129, 0.08);
+  }
+
+  .dark {
+    --background: 224 71% 4%;       /* #030712 - deep charcoal/black */
+    --foreground: 210 40% 98%;      /* #f8fafc - high contrast light slate */
+    --card: 224 71% 7%;             /* #0b0f19 */
+    --card-foreground: 210 40% 98%;
+    --popover: 224 71% 7%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 158 64% 52%;         /* Emerald 400 - #34d399 */
+    --primary-foreground: 224 71% 4%;
+    --secondary: 217 33% 14%;       /* Slate 800 */
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 14%;
+    --muted-foreground: 215 20% 75%;/* Slate 300 - high contrast text for dark mode */
+    --accent: 158 64% 15%;          /* Emerald 950 */
+    --accent-foreground: 158 64% 52%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 22%;          /* Slate 700 */
+    --input: 217 33% 22%;
+    --ring: 158 64% 52%;            /* Emerald 400 focus ring */
+
+    /* Explicit Biometric Zone HSL tokens (Dark Mode) */
+    --zone1: 199 89% 60%;           /* #38bdf8 Sky 400 */
+    --zone2: 158 64% 52%;           /* #34d399 Emerald 400 */
+    --zone3: 38 92% 56%;            /* #fbbf24 Amber 400 */
+    --zone4: 21 90% 61%;            /* #fb923c Orange 400 */
+    --zone5: 347 77% 65%;           /* #fb7185 Rose 400 */
+
+    /* ECG Canvas Grid tokens (Dark) */
+    --ecg-bg: #020617;
+    --ecg-grid-major: rgba(52, 211, 153, 0.28);
+    --ecg-grid-minor: rgba(52, 211, 153, 0.09);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    color-scheme: light dark;
+  }
+
+  body {
+    @apply bg-background text-foreground min-h-screen antialiased selection:bg-primary/20 selection:text-primary;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Strict WCAG 2.1 / 2.2 AA Keyboard Focus Ring Defaults */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+
+  /* Skip to main content link utility */
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg focus:ring-2 focus:ring-ring;
+  }
+}
+
+/* Reduced motion preference override */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

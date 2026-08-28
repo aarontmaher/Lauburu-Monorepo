@@ -1,0 +1,196 @@
+{
+  "title": "Lauburu-Monorepo Storage Migration E2E Test Report",
+  "timestamp": "2026-08-23T13:24:01.334708Z",
+  "environment": {
+    "tb4_ip": "169.254.80.69",
+    "master_url": "http://169.254.80.69:9333",
+    "filer_url": "http://169.254.80.69:8888",
+    "volume_url": "http://169.254.80.69:8080",
+    "s3_url": "http://169.254.80.69:8333",
+    "python_version": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]"
+  },
+  "summary": {
+    "total_tests": 17,
+    "passed_tests": 17,
+    "failed_tests": 0,
+    "total_duration_sec": 6.039099212,
+    "success": true
+  },
+  "tier_breakdown": {
+    "1": {
+      "total": 7,
+      "passed": 7,
+      "failed": 0
+    },
+    "2": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "3": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0
+    },
+    "4": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    }
+  },
+  "test_results": [
+    {
+      "tier": 1,
+      "name": "SeaweedFS Master Cluster Status & Topology",
+      "passed": true,
+      "duration_sec": 0.005325999999999997,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:55.300371Z"
+    },
+    {
+      "tier": 1,
+      "name": "SeaweedFS Volume Allocation & FID Generation",
+      "passed": true,
+      "duration_sec": 0.0005632089999999951,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:55.301085Z"
+    },
+    {
+      "tier": 1,
+      "name": "Filer HTTP API CRUD & Read Parity",
+      "passed": true,
+      "duration_sec": 0.003626416999999993,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:55.304726Z"
+    },
+    {
+      "tier": 1,
+      "name": "Filer Directory Indexing & JSON Listing",
+      "passed": true,
+      "duration_sec": 0.003633582999999996,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:55.308376Z"
+    },
+    {
+      "tier": 1,
+      "name": "S3 Gateway Bucket & Object CRUD",
+      "passed": true,
+      "duration_sec": 0.005293333999999997,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:55.313680Z"
+    },
+    {
+      "tier": 1,
+      "name": "Thunderbolt 4 (bridge0) Ingress Binding & Ports",
+      "passed": true,
+      "duration_sec": 0.00490800000000001,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:55.318615Z"
+    },
+    {
+      "tier": 1,
+      "name": "LaunchDaemon Autostart & KeepAlive Plist",
+      "passed": true,
+      "duration_sec": 0.0004095840000000045,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:55.319056Z"
+    },
+    {
+      "tier": 2,
+      "name": "Large File Streaming Upload & SHA256 Integrity (1GB+)",
+      "passed": true,
+      "duration_sec": 3.468373583,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:58.787467Z"
+    },
+    {
+      "tier": 2,
+      "name": "0-Byte (Empty) File Lifecycle & Metadata",
+      "passed": true,
+      "duration_sec": 0.008321292000000202,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:58.795835Z"
+    },
+    {
+      "tier": 2,
+      "name": "Deeply Nested Directory Hierarchy (>20 Levels)",
+      "passed": true,
+      "duration_sec": 0.013427292000000257,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:58.809283Z"
+    },
+    {
+      "tier": 2,
+      "name": "Unicode, Emojis, and Special Character Filenames",
+      "passed": true,
+      "duration_sec": 0.01617849999999965,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:58.825483Z"
+    },
+    {
+      "tier": 2,
+      "name": "High Concurrency Connection Pool Stress (50+ Clients)",
+      "passed": true,
+      "duration_sec": 0.13346870899999974,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:23:58.958969Z"
+    },
+    {
+      "tier": 3,
+      "name": "Concurrent Filer R/W during Sentinel Probes",
+      "passed": true,
+      "duration_sec": 2.07710775,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:24:01.036102Z"
+    },
+    {
+      "tier": 3,
+      "name": "Thunderbolt 4 Route Isolation & No Wi-Fi/Tailscale Leakage",
+      "passed": true,
+      "duration_sec": 0.01620504200000017,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:24:01.052331Z"
+    },
+    {
+      "tier": 4,
+      "name": "Monorepo I/O Speed Benchmark (>2,500 MB/s Target)",
+      "passed": true,
+      "duration_sec": 0.10341300000000064,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:24:01.155774Z"
+    },
+    {
+      "tier": 4,
+      "name": "Antigravity Agent Swarm Workspace Stress",
+      "passed": true,
+      "duration_sec": 0.0856407499999996,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:24:01.241441Z"
+    },
+    {
+      "tier": 4,
+      "name": "Cryptographic Multi-threaded Data Parity Audit (100%)",
+      "passed": true,
+      "duration_sec": 0.09320316699999953,
+      "error": null,
+      "traceback": null,
+      "timestamp": "2026-08-23T13:24:01.334666Z"
+    }
+  ]
+}

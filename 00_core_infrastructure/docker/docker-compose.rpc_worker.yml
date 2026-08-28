@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  rpc-worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.rpc_worker
+    image: lauburu-rpc-worker:latest
+    container_name: lauburu_rpc_worker
+    restart: unless-stopped
+    environment:
+      # You must provide a reusable auth key from your Tailscale admin console
+      - TS_AUTHKEY=${TS_AUTHKEY:-your-tailscale-auth-key-here}
+    # We do NOT use network_mode: "host" here, keeping the device isolated
+    # We also do NOT map port 50052 to the host, because we want all traffic
+    # to flow exclusively over the isolated Tailscale tunnel.
+    # To use Tailscale's userspace networking, it needs tun device access if we want 
+    # traditional TUN, but we are using pure userspace SOCKS5/HTTP mode in the Dockerfile
+    # so no privileged capabilities are required.

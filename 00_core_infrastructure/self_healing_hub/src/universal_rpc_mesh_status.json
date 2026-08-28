@@ -1,0 +1,215 @@
+{
+  "timestamp": "2026-08-22T07:15:49.637543+00:00",
+  "mesh_health": "OPTIMAL_HEALTHY",
+  "active_nodes_count": 6,
+  "total_nodes_count": 7,
+  "total_pooled_ram_gb": 99.33,
+  "usable_ai_vram_gb": 76.3,
+  "active_allocated_vram_gb": 53.41,
+  "mesh_headroom_reserve_gb": 22.89,
+  "mesh_headroom_reserve_pct": 30.0,
+  "nodes": {
+    "Mac_Node": {
+      "node_id": "layer_1_mac_host",
+      "name": "M4 Mac Mini Host Master",
+      "layer": 1,
+      "status": "ONLINE",
+      "ip": "127.0.0.1",
+      "port": 50052,
+      "transport": "Localhost / Metal GPU",
+      "latency_ms": 0.11,
+      "is_healthy": true,
+      "total_ram_gb": 16.0,
+      "usable_vram_gb": 13.5,
+      "vram_capacity_gb": 13.5
+    },
+    "MacBook_Pro": {
+      "node_id": "layer_2_headless_mac",
+      "name": "Headless MacBook Pro Vault",
+      "layer": 2,
+      "status": "ONLINE",
+      "ip": "100.103.212.21",
+      "port": 50052,
+      "transport": "10Gbps Thunderbolt 4 / Tailscale",
+      "latency_ms": 5.99,
+      "is_healthy": true,
+      "total_ram_gb": 16.0,
+      "usable_vram_gb": 14.0,
+      "vram_capacity_gb": 14.0
+    },
+    "Linux_Head_Node": {
+      "node_id": "layer_3_linux_node",
+      "name": "Linux Ryzen 7 Head Node",
+      "layer": 3,
+      "status": "ONLINE",
+      "ip": "100.101.39.98",
+      "port": 50052,
+      "transport": "Gigabit LAN / Tailscale",
+      "latency_ms": 4.49,
+      "is_healthy": true,
+      "total_ram_gb": 15.33,
+      "usable_vram_gb": 13.8,
+      "vram_capacity_gb": 13.8
+    },
+    "Linux_Tablet": {
+      "node_id": "layer_4_linux_tablet",
+      "name": "Debian Linux Tablet",
+      "layer": 4,
+      "status": "STANDBY",
+      "ip": "100.81.92.125",
+      "port": 50052,
+      "transport": "Wi-Fi / Tailscale",
+      "latency_ms": null,
+      "is_healthy": false,
+      "total_ram_gb": 8.0,
+      "usable_vram_gb": 6.5,
+      "vram_capacity_gb": 6.5
+    },
+    "Mac_Mini": {
+      "node_id": "layer_5_mac_mini",
+      "name": "Mac Mini Compute Node",
+      "layer": 5,
+      "status": "ONLINE",
+      "ip": "100.93.158.96",
+      "port": 50052,
+      "transport": "Gigabit LAN / Metal GPU",
+      "latency_ms": 47.19,
+      "is_healthy": true,
+      "total_ram_gb": 16.0,
+      "usable_vram_gb": 13.5,
+      "vram_capacity_gb": 13.5
+    },
+    "Pixel_10_Pro_XL": {
+      "node_id": "layer_6_pixel_10_pro",
+      "name": "Google Pixel 10 Pro XL",
+      "layer": 6,
+      "status": "ONLINE",
+      "ip": "100.73.38.87",
+      "port": 50052,
+      "transport": "Wi-Fi 7 MLO / Tailscale",
+      "latency_ms": 418.47,
+      "is_healthy": true,
+      "total_ram_gb": 16.0,
+      "usable_vram_gb": 12.5,
+      "vram_capacity_gb": 12.5
+    },
+    "Samsung_S20": {
+      "node_id": "layer_7_samsung_s20",
+      "name": "Samsung Galaxy S20+",
+      "layer": 7,
+      "status": "ONLINE",
+      "ip": "100.84.40.95",
+      "port": 50052,
+      "transport": "Router USB ADB / Tailscale",
+      "latency_ms": 251.01,
+      "is_healthy": true,
+      "total_ram_gb": 12.0,
+      "usable_vram_gb": 9.0,
+      "vram_capacity_gb": 9.0
+    }
+  },
+  "distributed_engines": {
+    "timestamp": "2026-08-22T07:15:49.636211+00:00",
+    "llamacpp_rpc": {
+      "status": "ONLINE",
+      "port": 50052,
+      "latency_ms": 0.08,
+      "sharding_model": "Tensor Pipeline Layer Sharding",
+      "target_models": [
+        "Qwen2.5-32B-Instruct",
+        "Gemma-2-27B-IT",
+        "DeepSeek-R1-Distill-32B"
+      ]
+    },
+    "exo_cluster": {
+      "status": "ONLINE",
+      "port": 52415,
+      "latency_ms": 0.06,
+      "topology": "Ring / Pipeline Parallel Multi-Node",
+      "mobile_compatible": true
+    },
+    "petals_swarm": {
+      "status": "LAYER_ROUTING_ACTIVE",
+      "dht_port": 31337,
+      "latency_ms": null,
+      "target_models": [
+        "Llama-3.1-405B-Instruct",
+        "DeepSeek-V4-Flash-GGUF"
+      ]
+    },
+    "apache_ray": {
+      "status": "STANDALONE_COORDINATOR",
+      "head_node": "100.101.39.98:6379",
+      "latency_ms": null
+    }
+  },
+  "model_lifecycle": {
+    "free_ssd_gb": 24.5,
+    "safe_to_download": true,
+    "active_models_count": 3,
+    "merging_consensus_active": true
+  },
+  "active_sharded_models": [
+    {
+      "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B-GGUF",
+      "quantization": "Q4_K_M",
+      "file_size_gb": 19.85,
+      "download_status": "DOWNLOADED_AND_VERIFIED",
+      "recommended_backend": "llamacpp_rpc",
+      "optimal_layers_split": {
+        "Mac_Node": 16,
+        "MacBook_Pro": 16,
+        "Linux_Head_Node": 16,
+        "Pixel_10_Pro_XL": 8,
+        "Samsung_S20": 8
+      }
+    },
+    {
+      "model_id": "unsloth/gemma-2-27b-it-GGUF",
+      "quantization": "Q4_K_M",
+      "file_size_gb": 16.4,
+      "download_status": "DOWNLOADED_AND_VERIFIED",
+      "recommended_backend": "exo_cluster",
+      "optimal_layers_split": {
+        "Mac_Node": 12,
+        "MacBook_Pro": 12,
+        "Linux_Head_Node": 12,
+        "Linux_Tablet": 6
+      }
+    },
+    {
+      "model_id": "meta-llama/Llama-3.1-70B-Instruct-GGUF",
+      "quantization": "Q4_K_M",
+      "file_size_gb": 42.5,
+      "download_status": "POOLED_ACROSS_VAULT",
+      "recommended_backend": "petals_swarm",
+      "optimal_layers_split": {
+        "Mac_Node": 20,
+        "MacBook_Pro": 20,
+        "Linux_Head_Node": 20,
+        "Mac_Mini": 20
+      }
+    }
+  ],
+  "merging_consensus": [
+    {
+      "timestamp": "2026-08-22T07:15:49.637539+00:00",
+      "merge_method": "DARE-TIES / PEFT Dynamic Stacking",
+      "base_model": "DeepSeek-R1-Distill-32B",
+      "donor_adapter": "Lauburu-TruthAudit-Biometrics-LoRA-v3",
+      "consensus_score": 9.88,
+      "participating_ais": [
+        "Gemini 3.7 Flash High",
+        "Gemini Pro 3.1",
+        "Genetic MoE Router",
+        "Local Orchestrator"
+      ],
+      "status": "CONSENSUS_APPROVED"
+    }
+  ],
+  "rpc_command_flags": "--rpc 100.103.212.21:50052,100.101.39.98:50052,100.93.158.96:50052,100.73.38.87:50052,100.84.40.95:50052",
+  "thermal_compliance": {
+    "thermal_ceiling_c": 41.0,
+    "all_nodes_compliant": true
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "timestamp": 1786945514.1597388,
+  "timestamp_iso": "2026-08-17T05:45:14Z",
+  "status": "MIGRATION_COMPLETE",
+  "external_ssd_decommissioned": true,
+  "active_storage_tiers": {
+    "tier_1_local_hardware": "Internal Apple Silicon / Android Flash NVMe (Ultra-fast)",
+    "tier_2_cloud_memory": "Google Drive Sync (/Lauburu_AI_Memory/lora_datasets/)",
+    "tier_3_p2p_sync": "Syncthing P2P LAN/QUIC Mesh (Port 8384 / 65309)"
+  },
+  "npu_grant_awarded": {
+    "grant_id": "NPU_GRANT_1786945514_8",
+    "timestamp": 1786945514.158603,
+    "timestamp_iso": "2026-08-17T05:45:14Z",
+    "feature_promoted": "Sovereign Storage Migration & SSD Decommissioning",
+    "author_model": "LauburuProjectMoE (Storage Specialist)",
+    "bonus_npu_hours": 25.0,
+    "production_target": "scripts/syncthing_mesh_manager.py",
+    "impact_summary": "Decoupled all /mnt/ssd_1tb dependencies to native device internal NVMe + Google Drive + Syncthing P2P.",
+    "status": "ACTIVE_GRANT"
+  }
+}

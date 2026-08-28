@@ -1,0 +1,11 @@
+#!/usr/bin/expect -f
+set timeout 15
+spawn ssh -o StrictHostKeyChecking=no root@192.168.8.1
+expect "*?assword:*"
+send "Goldfighting1\r"
+expect "*?root@*"
+send "opkg list-installed | grep -i rndis\r"
+expect "*?root@*"
+send "lsmod | grep -i rndis\r"
+expect "*?root@*"
+send "exit\r"

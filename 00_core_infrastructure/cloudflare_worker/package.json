@@ -1,0 +1,17 @@
+{
+  "name": "lauburu-mcp-worker",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Cloudflare Worker scaffold for the Lauburu MCP / app-dev-centre layer. Repo-only until deployed.",
+  "main": "src/worker.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy:preview": "wrangler deploy --env preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251001.0",
+    "typescript": "^5.4.5",
+    "wrangler": "^4.0.0"
+  }
+}

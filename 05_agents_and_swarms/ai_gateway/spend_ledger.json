@@ -1,0 +1,37 @@
+{
+  "budget_limit": 1.0,
+  "current_spend": 0.0,
+  "period_start": "2026-08-28",
+  "period_reset": "monthly",
+  "currency": "USD",
+  "transactions": [
+    {
+      "timestamp": "2026-08-28T17:48:22.027858Z",
+      "model": "local/meta-llama-3.1-8b-instruct-abliterated.Q4_K_M",
+      "provider": "local",
+      "is_free": true,
+      "input_tokens": 8,
+      "output_tokens": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-08-28T17:48:25.270811Z",
+      "model": "local/meta-llama-3.1-8b-instruct-abliterated.Q4_K_M",
+      "provider": "local",
+      "is_free": true,
+      "input_tokens": 8,
+      "output_tokens": 0,
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-08-28T17:48:52.347656Z",
+      "model": "meta-llama-3.1-8b-instruct-abliterated",
+      "provider": "local",
+      "is_free": true,
+      "input_tokens": 4,
+      "output_tokens": 0,
+      "cost_usd": 0.0
+    }
+  ],
+  "free_tier_calls": 3
+}

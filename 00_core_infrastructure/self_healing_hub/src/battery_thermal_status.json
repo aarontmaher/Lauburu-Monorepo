@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-08-20T09:29:55.110768",
+  "pixel": {
+    "node": "pixel",
+    "node_id": "Pixel_10_Pro_XL",
+    "status": "OFFLINE_PROBE",
+    "level": 0,
+    "temp": 0.0,
+    "temp_c": 0.0,
+    "thermal_ceiling_c": 41.0,
+    "thermal_compliant": true,
+    "battery_compliant": false
+  },
+  "samsung": {
+    "node": "samsung",
+    "node_id": "Samsung_S20",
+    "status": "NOMINAL",
+    "level": 94,
+    "temp": 32.6,
+    "temp_c": 32.6,
+    "thermal_ceiling_c": 41.0,
+    "thermal_compliant": true,
+    "battery_compliant": true,
+    "details": {
+      "AC powered": "false",
+      "USB powered": "true",
+      "status": "2",
+      "level": "94",
+      "temperature": "326"
+    }
+  },
+  "thermal_ceiling_c": 41.0,
+  "all_thermal_compliant": true,
+  "all_nodes_compliant": true,
+  "all_battery_compliant": false,
+  "active_offload_directive": {
+    "timestamp": "2026-08-20T09:29:55.109226",
+    "active_offload": false,
+    "throttled_nodes": [],
+    "target_node": null,
+    "active": false,
+    "rebalance_target": "Linux_Head_Node",
+    "thermal_ceiling_c": 41.0,
+    "reason": "Thermal offload inactive: throttled nodes = []"
+  },
+  "rebalanced_sharding_plan": null
+}

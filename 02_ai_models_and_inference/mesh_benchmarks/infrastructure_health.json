@@ -1,0 +1,85 @@
+{
+  "timestamp": 1786652922.669699,
+  "timestamp_iso": "2026-08-13T20:28:42Z",
+  "docker_cluster": {
+    "all_healthy": true,
+    "total_containers": 8,
+    "running_containers": 8,
+    "containers": {
+      "cloudflared-tunnel": {
+        "status": "Up 18 hours",
+        "state": "running",
+        "healthy": true
+      },
+      "connectivity-hub": {
+        "status": "Up 18 hours",
+        "state": "running",
+        "healthy": true
+      },
+      "movesense-gateway": {
+        "status": "Up 18 hours",
+        "state": "running",
+        "healthy": true
+      },
+      "adb-bridge": {
+        "status": "Up 18 hours",
+        "state": "running",
+        "healthy": true
+      },
+      "mesh-transport-daemon": {
+        "status": "Up 2 hours",
+        "state": "running",
+        "healthy": true
+      },
+      "openclaw-headscale": {
+        "status": "Up 18 hours",
+        "state": "running",
+        "healthy": true
+      },
+      "ai_swarm_orchestrator": {
+        "status": "Up 18 hours",
+        "state": "running",
+        "healthy": true
+      },
+      "ai_swarm_redis": {
+        "status": "Up 18 hours",
+        "state": "running",
+        "healthy": true
+      }
+    }
+  },
+  "storage_and_sync": {
+    "gdrive_mounted": true,
+    "lora_datasets_synced": true,
+    "evolution_memory_synced": true,
+    "storage_pools": {
+      "monorepo_disk": true,
+      "gdrive_cloud_pool": true,
+      "lora_dataset_pool": true,
+      "evolution_memory_pool": true,
+      "local_benchmark_pool": true
+    }
+  },
+  "mesh_nodes": {
+    "Mac Worker (Thunderbolt)": {
+      "ip": "169.254.187.138",
+      "online": true
+    },
+    "Pixel 10 Pro XL (Tailscale)": {
+      "ip": "100.73.38.87",
+      "online": true
+    },
+    "Linux Head Node (Tailscale)": {
+      "ip": "100.101.39.98",
+      "online": true
+    },
+    "Samsung Galaxy S20+": {
+      "ip": "100.99.123.58",
+      "online": false
+    },
+    "GL.iNet Router Core": {
+      "ip": "192.168.8.1",
+      "online": true
+    }
+  }
+}

@@ -1,0 +1,457 @@
+{
+  "Mac_Node": {
+    "name": "M4 Mac Mini Host",
+    "transports": {
+      "bluetooth_pan": {
+        "tier": "bluetooth_pan",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tb4_link_local": {
+        "tier": "tb4_link_local",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "lan": {
+        "tier": "lan",
+        "ok": true,
+        "rtt_ms": 4.9,
+        "detail": "LAN 192.168.8.230"
+      },
+      "lan_adb": {
+        "tier": "lan_adb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "nfs_smb": {
+        "tier": "nfs_smb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "openclaw_ws": {
+        "tier": "openclaw_ws",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tailscale_direct": {
+        "tier": "tailscale_direct",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "TS unreachable 100.119.199.76"
+      },
+      "tailscale_relay": {
+        "tier": "tailscale_relay",
+        "ok": true,
+        "rtt_ms": 8.29,
+        "detail": "TS relay fallback 100.119.199.76"
+      }
+    },
+    "active_transport": "lan",
+    "active_rtt_ms": 4.9,
+    "transport_priority": [
+      "bluetooth_pan",
+      "tb4_link_local",
+      "lan",
+      "lan_adb",
+      "nfs_smb",
+      "openclaw_ws",
+      "tailscale_direct",
+      "tailscale_relay"
+    ]
+  },
+  "MacBook_Pro": {
+    "name": "Headless MacBook Pro Vault",
+    "transports": {
+      "bluetooth_pan": {
+        "tier": "bluetooth_pan",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tb4_link_local": {
+        "tier": "tb4_link_local",
+        "ok": true,
+        "rtt_ms": 0.82,
+        "detail": "TB4 link-local 169.254.122.166"
+      },
+      "lan": {
+        "tier": "lan",
+        "ok": true,
+        "rtt_ms": 32.69,
+        "detail": "LAN 192.168.8.127"
+      },
+      "lan_adb": {
+        "tier": "lan_adb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "nfs_smb": {
+        "tier": "nfs_smb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "openclaw_ws": {
+        "tier": "openclaw_ws",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tailscale_direct": {
+        "tier": "tailscale_direct",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "TS unreachable 100.103.212.21"
+      },
+      "tailscale_relay": {
+        "tier": "tailscale_relay",
+        "ok": true,
+        "rtt_ms": 11.24,
+        "detail": "TS relay fallback 100.103.212.21"
+      }
+    },
+    "active_transport": "tb4_link_local",
+    "active_rtt_ms": 0.82,
+    "transport_priority": [
+      "bluetooth_pan",
+      "tb4_link_local",
+      "lan",
+      "lan_adb",
+      "nfs_smb",
+      "openclaw_ws",
+      "tailscale_direct",
+      "tailscale_relay"
+    ]
+  },
+  "Linux_Head_Node": {
+    "name": "Linux Head Node Laptop",
+    "transports": {
+      "bluetooth_pan": {
+        "tier": "bluetooth_pan",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tb4_link_local": {
+        "tier": "tb4_link_local",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "lan": {
+        "tier": "lan",
+        "ok": true,
+        "rtt_ms": 7.55,
+        "detail": "LAN 192.168.8.224"
+      },
+      "lan_adb": {
+        "tier": "lan_adb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "nfs_smb": {
+        "tier": "nfs_smb",
+        "ok": true,
+        "rtt_ms": 5.93,
+        "detail": "NFS:5.93ms SMB:5.61ms"
+      },
+      "openclaw_ws": {
+        "tier": "openclaw_ws",
+        "ok": true,
+        "rtt_ms": 5.76,
+        "detail": "WS 192.168.8.224:18789"
+      },
+      "tailscale_direct": {
+        "tier": "tailscale_direct",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "TS unreachable 100.101.39.98"
+      },
+      "tailscale_relay": {
+        "tier": "tailscale_relay",
+        "ok": true,
+        "rtt_ms": 7.14,
+        "detail": "TS relay fallback 100.101.39.98"
+      }
+    },
+    "active_transport": "lan",
+    "active_rtt_ms": 7.55,
+    "transport_priority": [
+      "bluetooth_pan",
+      "tb4_link_local",
+      "lan",
+      "lan_adb",
+      "nfs_smb",
+      "openclaw_ws",
+      "tailscale_direct",
+      "tailscale_relay"
+    ]
+  },
+  "Linux_Tablet": {
+    "name": "Bedside Linux Tablet",
+    "transports": {
+      "bluetooth_pan": {
+        "tier": "bluetooth_pan",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tb4_link_local": {
+        "tier": "tb4_link_local",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "lan": {
+        "tier": "lan",
+        "ok": true,
+        "rtt_ms": 109.28,
+        "detail": "LAN 192.168.8.173"
+      },
+      "lan_adb": {
+        "tier": "lan_adb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "nfs_smb": {
+        "tier": "nfs_smb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "openclaw_ws": {
+        "tier": "openclaw_ws",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tailscale_direct": {
+        "tier": "tailscale_direct",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "TS unreachable 100.81.92.125"
+      },
+      "tailscale_relay": {
+        "tier": "tailscale_relay",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "TS relay fallback 100.81.92.125"
+      }
+    },
+    "active_transport": "lan",
+    "active_rtt_ms": 109.28,
+    "transport_priority": [
+      "bluetooth_pan",
+      "tb4_link_local",
+      "lan",
+      "lan_adb",
+      "nfs_smb",
+      "openclaw_ws",
+      "tailscale_direct",
+      "tailscale_relay"
+    ]
+  },
+  "Mac_Mini": {
+    "name": "MacBook Air M4 Host Laptop",
+    "transports": {
+      "bluetooth_pan": {
+        "tier": "bluetooth_pan",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tb4_link_local": {
+        "tier": "tb4_link_local",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "lan": {
+        "tier": "lan",
+        "ok": true,
+        "rtt_ms": 0.28,
+        "detail": "LAN 192.168.8.222"
+      },
+      "lan_adb": {
+        "tier": "lan_adb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "nfs_smb": {
+        "tier": "nfs_smb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "openclaw_ws": {
+        "tier": "openclaw_ws",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tailscale_direct": {
+        "tier": "tailscale_direct",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "TS unreachable 100.93.158.96"
+      },
+      "tailscale_relay": {
+        "tier": "tailscale_relay",
+        "ok": true,
+        "rtt_ms": 0.42,
+        "detail": "TS relay fallback 100.93.158.96"
+      }
+    },
+    "active_transport": "lan",
+    "active_rtt_ms": 0.28,
+    "transport_priority": [
+      "bluetooth_pan",
+      "tb4_link_local",
+      "lan",
+      "lan_adb",
+      "nfs_smb",
+      "openclaw_ws",
+      "tailscale_direct",
+      "tailscale_relay"
+    ]
+  },
+  "Pixel_10_Pro_XL": {
+    "name": "Google Pixel 10 Pro XL",
+    "transports": {
+      "bluetooth_pan": {
+        "tier": "bluetooth_pan",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tb4_link_local": {
+        "tier": "tb4_link_local",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "lan": {
+        "tier": "lan",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "LAN 192.168.8.160"
+      },
+      "lan_adb": {
+        "tier": "lan_adb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "ADB 100.73.38.87:5555"
+      },
+      "nfs_smb": {
+        "tier": "nfs_smb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "openclaw_ws": {
+        "tier": "openclaw_ws",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tailscale_direct": {
+        "tier": "tailscale_direct",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "TS unreachable 100.73.38.87"
+      },
+      "tailscale_relay": {
+        "tier": "tailscale_relay",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "TS relay fallback 100.73.38.87"
+      }
+    },
+    "active_transport": null,
+    "active_rtt_ms": null,
+    "transport_priority": [
+      "bluetooth_pan",
+      "tb4_link_local",
+      "lan",
+      "lan_adb",
+      "nfs_smb",
+      "openclaw_ws",
+      "tailscale_direct",
+      "tailscale_relay"
+    ]
+  },
+  "Samsung_S20": {
+    "name": "Samsung Galaxy S20+",
+    "transports": {
+      "bluetooth_pan": {
+        "tier": "bluetooth_pan",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tb4_link_local": {
+        "tier": "tb4_link_local",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "lan": {
+        "tier": "lan",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "LAN 192.168.8.158"
+      },
+      "lan_adb": {
+        "tier": "lan_adb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "ADB 100.84.40.95:5555"
+      },
+      "nfs_smb": {
+        "tier": "nfs_smb",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "openclaw_ws": {
+        "tier": "openclaw_ws",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "not_configured"
+      },
+      "tailscale_direct": {
+        "tier": "tailscale_direct",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "TS unreachable 100.84.40.95"
+      },
+      "tailscale_relay": {
+        "tier": "tailscale_relay",
+        "ok": false,
+        "rtt_ms": null,
+        "detail": "TS relay fallback 100.84.40.95"
+      }
+    },
+    "active_transport": null,
+    "active_rtt_ms": null,
+    "transport_priority": [
+      "bluetooth_pan",
+      "tb4_link_local",
+      "lan",
+      "lan_adb",
+      "nfs_smb",
+      "openclaw_ws",
+      "tailscale_direct",
+      "tailscale_relay"
+    ]
+  }
+}

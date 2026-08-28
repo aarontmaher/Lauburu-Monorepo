@@ -1,0 +1,304 @@
+#!/usr/bin/env python3
+"""
+smolctl — Standalone POSIX CLI for Router AI Daemon (smolagi) Swarm Management.
+
+Provides CLI commands for inspection, dynamic scaling, worker spawning, termination,
+pruning, and performance benchmarking across the router and 7-layer physical mesh.
+Authoritative Specifications: ORIGINAL_REQUEST.md §R3 & PROJECT.md §F6.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+import time
+from pathlib import Path
+
+# Add project root to sys.path
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from src.config import get_config
+from src.swarm.capacity_governor import get_capacity_governor
+from src.swarm.specialist_registry import get_specialist_registry
+from src.swarm.swarm_controller import get_swarm_controller
+
+
+def format_status_table(status: dict, verbose: bool = False) -> str:
+    """Format status dictionary as human-readable terminal table."""
+    lines = [
+        "╔══════════════════════════════════════════════════════════════════════════╗",
+        "║                     GL.iNet Router AI Swarm Status                       ║",
+        "╠══════════════════════════════════════════════════════════════════════════╣",
+        f"║ Active Specialists:  {status['active_specialists']:<10} (Local: {status.get('local_worker_count', 0)}, Mesh: {status.get('mesh_worker_count', 0)})            ║",
+        f"║ Allocated RAM:       {status['allocated_ram_mb']:<6.1f} MB / {status['max_ram_mb']:<6.1f} MB (Headroom: {status['headroom_mb']:<6.1f} MB)   ║",
+        f"║ Mesh Nodes Online:   {status['mesh_nodes_online']:<10} (7-Layer Physical Topology)             ║",
+        "╚══════════════════════════════════════════════════════════════════════════╝",
+    ]
+
+    workers = status.get("workers", [])
+    if workers:
+        lines.append("\nActive Worker Pool:")
+        lines.append(f"{'ID':<18} {'Specialty':<16} {'Quant':<10} {'Layer':<8} {'RAM (MB)':<10} {'Status':<10}")
+        lines.append("-" * 75)
+        for w in workers:
+            lines.append(
+                f"{w['worker_id']:<18} {w['specialty']:<16} {w['quant']:<10} {w['target_layer']:<8} {w['ram_mb']:<10.1f} {w['status']:<10}"
+            )
+            if verbose and "metadata" in w and w["metadata"]:
+                lines.append(f"  └─ metadata: {json.dumps(w['metadata'])}")
+
+    return "\n".join(lines)
+
+
+def cmd_status(args: argparse.Namespace) -> int:
+    """Handle status command."""
+    controller = get_swarm_controller()
+    status = controller.get_status()
+
+    if getattr(args, "json", False):
+        print(json.dumps(status, indent=2))
+    else:
+        print(format_status_table(status, verbose=getattr(args, "verbose", False)))
+    return 0
+
+
+def cmd_scale(args: argparse.Namespace) -> int:
+    """Handle scale command."""
+    controller = get_swarm_controller()
+    target_count = args.count
+    specialty = getattr(args, "specialty", "posix_healer") or "posix_healer"
+    target_layer = getattr(args, "target_layer", None) or getattr(args, "layer", None)
+
+    result = controller.scale_swarm(
+        target_workers=target_count,
+        filter_specialty=specialty,
+        target_layer=target_layer,
+    )
+
+    if getattr(args, "json", False):
+        print(json.dumps(result.to_dict(), indent=2))
+    else:
+        print(f"✔ Swarm scaled to {target_count} workers.")
+        print(f"  • Local Workers Spawned: {result.local_workers_spawned}")
+        print(f"  • Mesh Workers Spawned:  {result.mesh_workers_spawned}")
+        print(f"  • Total Allocated RAM:   {result.total_ram_mb:.1f} MB")
+        if result.offload_map:
+            print(f"  • Mesh Offload Map:      {result.offload_map}")
+    return 0
+
+
+def cmd_spawn(args: argparse.Namespace) -> int:
+    """Handle spawn command."""
+    controller = get_swarm_controller()
+    specialty = args.specialty
+    model = getattr(args, "model", None)
+    quant = getattr(args, "quant", None)
+    target_layer = getattr(args, "layer", None) or getattr(args, "target_layer", None)
+    ram_cap_mb = getattr(args, "ram_cap_mb", None)
+
+    try:
+        worker = controller.spawn_worker(
+            specialty=specialty,
+            model=model,
+            quant=quant,
+            target_layer=target_layer,
+            ram_cap_mb=ram_cap_mb,
+        )
+    except (MemoryError, ValueError) as err:
+        if getattr(args, "json", False):
+            print(json.dumps({"error": str(err), "status": "failed"}, indent=2), file=sys.stderr)
+        else:
+            print(f"✖ Failed to spawn worker: {err}", file=sys.stderr)
+        return 1
+
+    if getattr(args, "json", False):
+        print(json.dumps(worker.to_dict(), indent=2))
+    else:
+        print(f"✔ Successfully spawned worker '{worker.worker_id}'")
+        print(f"  • Specialty: {worker.specialty}")
+        print(f"  • Model:     {worker.model} ({worker.quant})")
+        print(f"  • Layer:     {worker.target_layer}")
+        print(f"  • RAM:       {worker.ram_mb:.1f} MB")
+    return 0
+
+
+def cmd_kill(args: argparse.Namespace) -> int:
+    """Handle kill command."""
+    controller = get_swarm_controller()
+    agent_id = getattr(args, "agent_id", None) or getattr(args, "worker_id", None)
+    if not agent_id:
+        print("✖ Error: --agent-id or --worker-id required", file=sys.stderr)
+        return 1
+
+    timeout_ms = getattr(args, "graceful_timeout_ms", 500)
+    killed = controller.kill_worker(agent_id, graceful_timeout_ms=timeout_ms)
+
+    if getattr(args, "json", False):
+        print(json.dumps({"agent_id": agent_id, "killed": killed}, indent=2))
+        return 0 if killed else 1
+    else:
+        if killed:
+            print(f"✔ Worker '{agent_id}' gracefully terminated.")
+            return 0
+        else:
+            print(f"✖ Worker '{agent_id}' not found or already terminated.", file=sys.stderr)
+            return 1
+
+
+def cmd_prune(args: argparse.Namespace) -> int:
+    """Handle prune command."""
+    controller = get_swarm_controller()
+    idle_threshold = getattr(args, "idle_seconds", 30.0)
+    force = getattr(args, "force", False)
+
+    pruned = controller.prune_workers(idle_seconds_threshold=idle_threshold, force=force)
+
+    if getattr(args, "json", False):
+        print(json.dumps({"pruned_count": len(pruned), "pruned_ids": pruned}, indent=2))
+    else:
+        print(f"✔ Pruned {len(pruned)} idle specialists.")
+        for wid in pruned:
+            print(f"  • Terminated: {wid}")
+    return 0
+
+
+def cmd_bench(args: argparse.Namespace) -> int:
+    """Handle micro-benchmark command."""
+    controller = get_swarm_controller()
+    specialty = getattr(args, "specialty", "posix_healer") or "posix_healer"
+    iterations = getattr(args, "iterations", 5) or 5
+
+    latencies_ms: list[float] = []
+    task_results: list[dict] = []
+
+    for i in range(iterations):
+        res = controller.dispatch_task(
+            task_id=f"bench_task_{i+1}",
+            task_domain=specialty,
+            prompt="Benchmark evaluation prompt for micro-specialist latency",
+        )
+        latencies_ms.append(res.execution_time_ms)
+        task_results.append(res.to_dict())
+
+    avg_lat = sum(latencies_ms) / len(latencies_ms) if latencies_ms else 0.0
+    min_lat = min(latencies_ms) if latencies_ms else 0.0
+    max_lat = max(latencies_ms) if latencies_ms else 0.0
+
+    report = {
+        "specialty": specialty,
+        "iterations": iterations,
+        "avg_latency_ms": round(avg_lat, 2),
+        "min_latency_ms": round(min_lat, 2),
+        "max_latency_ms": round(max_lat, 2),
+        "throughput_ops_sec": round(1000.0 / avg_lat, 1) if avg_lat > 0 else 0.0,
+        "sample_results": task_results[:3],
+    }
+
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+    else:
+        print(f"╔══════════════════════════════════════════════════════════════════════════╗")
+        print(f"║                   smolctl Micro-Benchmark Results                       ║")
+        print(f"╠══════════════════════════════════════════════════════════════════════════╣")
+        print(f"║ Specialty:           {specialty:<51} ║")
+        print(f"║ Iterations:          {iterations:<51} ║")
+        print(f"║ Avg Latency:         {avg_lat:<6.2f} ms                                              ║")
+        print(f"║ Min / Max Latency:   {min_lat:<5.2f} ms / {max_lat:<5.2f} ms                                   ║")
+        print(f"║ Throughput:          {report['throughput_ops_sec']:<6.1f} ops/sec                                       ║")
+        print(f"╚══════════════════════════════════════════════════════════════════════════╝")
+    return 0
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """Build command line argument parser supporting both nested subcommands and direct verbs."""
+    parser = argparse.ArgumentParser(
+        prog="smolctl",
+        description="POSIX CLI for Router AI Daemon (smolagi) Swarm Management",
+    )
+    parser.add_argument("--json", action="store_true", help="Format output as JSON")
+    parser.add_argument("--verbose", action="store_true", help="Verbose debug output")
+
+    subparsers = parser.add_subparsers(dest="command", help="Swarm command")
+
+    def register_command_parsers(sp: argparse._SubParsersAction, is_swarm_sub: bool = False):
+        # 1. status
+        p_status = sp.add_parser("status", help="Inspect swarm status and resource headroom")
+        p_status.add_argument("--json", action="store_true", help="JSON output")
+        p_status.add_argument("--verbose", action="store_true", help="Verbose output")
+        p_status.set_defaults(func=cmd_status)
+
+        # 2. scale
+        p_scale = sp.add_parser("scale", help="Dynamically scale swarm worker count")
+        p_scale.add_argument("--count", type=int, required=True, help="Target worker count")
+        p_scale.add_argument("--target-layer", "--layer", dest="target_layer", type=str, help="Target physical layer")
+        p_scale.add_argument("--specialty", type=str, default="posix_healer", help="Specialty to scale")
+        p_scale.add_argument("--json", action="store_true", help="JSON output")
+        p_scale.set_defaults(func=cmd_scale)
+
+        # 3. spawn
+        p_spawn = sp.add_parser("spawn", help="Spawn an individual specialist worker")
+        p_spawn.add_argument("--specialty", type=str, required=True, help="Specialist domain")
+        p_spawn.add_argument("--model", type=str, help="Model identifier/path")
+        p_spawn.add_argument("--quant", type=str, help="Quantization level (IQ1_S, IQ2_XXS, Q4_K_M)")
+        p_spawn.add_argument("--layer", "--target-layer", dest="layer", type=str, help="Target layer (GW, L1-L7)")
+        p_spawn.add_argument("--ram-cap-mb", type=float, help="Max RAM cap for worker")
+        p_spawn.add_argument("--json", action="store_true", help="JSON output")
+        p_spawn.set_defaults(func=cmd_spawn)
+
+        # 4. kill
+        p_kill = sp.add_parser("kill", help="Terminate a specialist worker")
+        p_kill.add_argument("--agent-id", "--worker-id", dest="agent_id", type=str, required=True, help="Worker UUID")
+        p_kill.add_argument("--graceful-timeout-ms", type=int, default=500, help="Graceful timeout in ms")
+        p_kill.add_argument("--json", action="store_true", help="JSON output")
+        p_kill.set_defaults(func=cmd_kill)
+
+        # 5. prune
+        p_prune = sp.add_parser("prune", help="Prune idle specialist workers")
+        p_prune.add_argument("--idle-seconds", type=float, default=30.0, help="Idle time threshold in seconds")
+        p_prune.add_argument("--force", action="store_true", help="Force prune all idle workers")
+        p_prune.add_argument("--json", action="store_true", help="JSON output")
+        p_prune.set_defaults(func=cmd_prune)
+
+        # 6. bench
+        p_bench = sp.add_parser("bench", help="Run micro-benchmarks on specialist dispatch")
+        p_bench.add_argument("--specialty", type=str, default="posix_healer", help="Specialty to benchmark")
+        p_bench.add_argument("--iterations", type=int, default=5, help="Number of test iterations")
+        p_bench.add_argument("--json", action="store_true", help="JSON output")
+        p_bench.set_defaults(func=cmd_bench)
+
+    # Register direct subcommands
+    register_command_parsers(subparsers, is_swarm_sub=False)
+
+    # Register nested `swarm` subcommand (e.g. `smolctl swarm status`)
+    p_swarm = subparsers.add_parser("swarm", help="Swarm management commands")
+    swarm_subparsers = p_swarm.add_subparsers(dest="swarm_command", help="Swarm operations")
+    register_command_parsers(swarm_subparsers, is_swarm_sub=True)
+
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Main CLI entrypoint."""
+    if argv is None:
+        argv = sys.argv[1:]
+
+    parser = build_parser()
+    if not argv:
+        parser.print_help(sys.stderr)
+        return 1
+
+    args = parser.parse_args(argv)
+    if hasattr(args, "func"):
+        return args.func(args)
+    else:
+        parser.print_help(sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

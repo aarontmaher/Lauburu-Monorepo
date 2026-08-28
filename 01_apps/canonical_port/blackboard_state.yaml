@@ -1,0 +1,1730 @@
+version: 3.0.0-CANONICAL
+timestamp: '2026-08-29T06:29:54.857157'
+source_node: L1_Mac_Node
+provenance:
+  agent_id: teamwork_preview_worker_m2
+  role: Canonical Telemetry Blackboard Store
+  collector_daemon: BlackboardTelemetryCollector
+  rule_zero_certified: true
+layer_0_networking:
+  wol_targets: []
+  bluetooth_pan:
+    interface: bnep0
+    status: ONLINE
+    rtt_ms: 0.03
+    bandwidth: 3.0 MB/s
+    paired_devices: 7
+    profile: BNEP/PANU
+  kde_connect:
+    status: ACTIVE
+    port_udp: 1716
+    port_tcp_range: 1714-1764
+    paired_nodes: 7
+    rtt_ms: 0.94
+    bandwidth_mb_s: 90.0
+    tls_encrypted: true
+  tb4_dma:
+    ip: 169.254.187.138
+    status: OFFLINE
+    rtt_ms: null
+    throughput_gbps: 0.0
+    interface: bridge0 / tb0
+    zero_copy_active: false
+  wan_routes: []
+  tailscale_peers:
+  - node_name: "Aaron\u2019s Mac mini"
+    ip: 100.119.199.76
+    status: ONLINE
+    relay: Direct WireGuard
+    layer: L1
+    os: macOS
+  - node_name: localhost
+    ip: 100.118.191.96
+    status: OFFLINE
+    relay: DERP Relay
+    layer: --
+    os: iOS
+  - node_name: Macbook
+    ip: 100.93.158.96
+    status: ONLINE
+    relay: DERP Relay
+    layer: --
+    os: macOS
+  - node_name: localhost
+    ip: 100.116.111.43
+    status: OFFLINE
+    relay: DERP Relay
+    layer: --
+    os: iOS
+  - node_name: Pixel 10 Pro XL
+    ip: 100.73.38.87
+    status: ONLINE
+    relay: DERP Relay
+    layer: --
+    os: android
+  - node_name: Aaron's S20+
+    ip: 100.99.123.58
+    status: OFFLINE
+    relay: DERP Relay
+    layer: --
+    os: android
+  - node_name: Aaron's S20+
+    ip: 100.84.40.95
+    status: ONLINE
+    relay: DERP Relay
+    layer: --
+    os: android
+  - node_name: localhost
+    ip: 100.113.62.81
+    status: ONLINE
+    relay: DERP Relay
+    layer: --
+    os: iOS
+  - node_name: debian
+    ip: 100.81.92.125
+    status: ONLINE
+    relay: DERP Relay
+    layer: --
+    os: linux
+  - node_name: "aaron\u2019s MacBook Pro"
+    ip: 100.103.212.21
+    status: ONLINE
+    relay: DERP Relay
+    layer: --
+    os: macOS
+  - node_name: GL-MT3600BE
+    ip: 100.122.185.123
+    status: ONLINE
+    relay: DERP Relay
+    layer: --
+    os: linux
+  - node_name: tablet
+    ip: 100.118.79.63
+    status: OFFLINE
+    relay: DERP Relay
+    layer: --
+    os: windows
+  - node_name: DESKTOP-Q4SI00P
+    ip: 100.91.85.70
+    status: OFFLINE
+    relay: DERP Relay
+    layer: --
+    os: linux
+  - node_name: linux
+    ip: 100.101.39.98
+    status: ONLINE
+    relay: DERP Relay
+    layer: --
+    os: linux
+  internet_speed:
+    download_mbps: 482.0
+    upload_mbps: 48.0
+    responsiveness_rpm: 1420
+    latency_ms: 12.4
+    timestamp: 06:29:53
+    command: /usr/bin/networkQuality -c -M 5
+    cycle_seconds: 300
+    last_tested_iso: '2026-08-29T06:29:53.678719'
+  ssh_fleet:
+  - node_id: L1
+    host: 127.0.0.1
+    port: 22
+    status: OPEN
+    banner: SSH-2.0-OpenSSH_10.3
+    key_type: ssh-ed25519
+    latency_ms: 1.91
+    last_auth_iso: '2026-08-29T06:29:54.744093'
+  - node_id: L2
+    host: 192.168.8.127
+    port: 22
+    status: CLOSED
+    banner: null
+    key_type: ssh-ed25519
+    latency_ms: null
+    last_auth_iso: null
+  - node_id: L3
+    host: 100.101.39.98
+    port: 22
+    status: CLOSED
+    banner: null
+    key_type: ssh-ed25519
+    latency_ms: null
+    last_auth_iso: null
+  - node_id: L4
+    host: 100.91.85.70
+    port: 22
+    status: CLOSED
+    banner: null
+    key_type: ssh-ed25519
+    latency_ms: null
+    last_auth_iso: null
+  - node_id: L5
+    host: 100.93.158.96
+    port: 22
+    status: CLOSED
+    banner: null
+    key_type: ssh-ed25519
+    latency_ms: null
+    last_auth_iso: null
+  - node_id: L6
+    host: 100.73.38.87
+    port: 8022
+    status: CLOSED
+    banner: null
+    key_type: ssh-ed25519
+    latency_ms: null
+    last_auth_iso: null
+  - node_id: L7
+    host: 100.84.40.95
+    port: 8022
+    status: CLOSED
+    banner: null
+    key_type: ssh-ed25519
+    latency_ms: null
+    last_auth_iso: null
+  - node_id: GW
+    host: 192.168.8.1
+    port: 22
+    status: CLOSED
+    banner: null
+    key_type: ssh-ed25519
+    latency_ms: null
+    last_auth_iso: null
+  ewma_alpha: 0.35
+  circuit_breaker_trip_threshold: 0.284
+layer_1_hardware:
+  nodes:
+  - node_id: L1
+    name: Mac_Node
+    model: Apple M4 Pro Mac Mini
+    arch: ARM64
+    os: macOS Darwin 24+
+    role: Primary Host & Memory Governor
+    ip: 192.168.8.152
+    tailscale_ip: 100.119.199.76
+    status: ONLINE
+    ram_total_gb: 24.0
+    ram_used_gb: 14.8
+    ram_usage_pct: 61.7
+    vram_cap_gb: 21.6
+    vram_used_gb: 12.0
+    dynamic_cap_pct: 90.0
+    cpu_usage_pct: 22.4
+    cpu_cores: 12
+    load_1m: 1.85
+    load_5m: 1.62
+    load_15m: 1.4
+    thermal_c: 42.5
+    thermal_status: NOMINAL
+    battery_pct: null
+    is_charging: true
+    power_source: AC
+    qi_power_watts: 0.0
+    storage_free_gb: 228.0
+    headless_capable: true
+    headless_score: 95
+    priority_rank: 1
+    device_elo_rating: 1600.0
+    ssh_banner: null
+    ssh_port: 22
+  - node_id: L5
+    name: MacBook_Air
+    model: Apple M4 / M2 MacBook Air
+    arch: ARM64
+    os: macOS Darwin
+    role: Secondary Metal Worker & LoRA Daemon
+    ip: 192.168.8.222
+    tailscale_ip: 100.93.158.96
+    status: ONLINE
+    ram_total_gb: 16.0
+    ram_used_gb: 8.2
+    ram_usage_pct: 51.2
+    vram_cap_gb: 14.0
+    vram_used_gb: 0.0
+    dynamic_cap_pct: 90.0
+    cpu_usage_pct: 15.2
+    cpu_cores: 8
+    load_1m: 1.12
+    load_5m: 0.98
+    load_15m: 0.85
+    thermal_c: 38.5
+    thermal_status: NOMINAL
+    battery_pct: 92
+    is_charging: true
+    power_source: AC
+    qi_power_watts: 0.0
+    storage_free_gb: 142.0
+    headless_capable: true
+    headless_score: 72
+    priority_rank: 2
+    device_elo_rating: 1540.0
+    ssh_banner: null
+    ssh_port: 22
+  - node_id: L2
+    name: MacBook_Pro
+    model: Apple Silicon TB4 Bridge Node
+    arch: x86_64
+    os: macOS Darwin
+    role: TB4 Bridge & GGUF Model Vault
+    ip: 192.168.8.127
+    tailscale_ip: 100.103.212.21
+    status: ONLINE
+    ram_total_gb: 16.0
+    ram_used_gb: 13.8
+    ram_usage_pct: 86.2
+    vram_cap_gb: 14.0
+    vram_used_gb: 13.5
+    dynamic_cap_pct: 90.0
+    cpu_usage_pct: 34.1
+    cpu_cores: 12
+    load_1m: 2.1
+    load_5m: 1.95
+    load_15m: 1.7
+    thermal_c: 52.0
+    thermal_status: FAIR
+    battery_pct: 98
+    is_charging: true
+    power_source: AC
+    qi_power_watts: 0.0
+    storage_free_gb: 409.3
+    headless_capable: true
+    headless_score: 70
+    priority_rank: 3
+    device_elo_rating: 1510.0
+    ssh_banner: null
+    ssh_port: 22
+  - node_id: L3
+    name: Linux_Head_Node
+    model: AMD Ryzen 7 5700U
+    arch: x86_64
+    os: Debian Linux 12
+    role: Gateway Ingress & Docker Hub
+    ip: 192.168.8.224
+    tailscale_ip: 100.101.39.98
+    status: ONLINE
+    ram_total_gb: 16.0
+    ram_used_gb: 12.4
+    ram_usage_pct: 77.5
+    vram_cap_gb: 13.8
+    vram_used_gb: 13.5
+    dynamic_cap_pct: 80.0
+    cpu_usage_pct: 41.5
+    cpu_cores: 16
+    load_1m: 3.2
+    load_5m: 2.8
+    load_15m: 2.4
+    thermal_c: 48.2
+    thermal_status: FAIR
+    battery_pct: null
+    is_charging: true
+    power_source: AC
+    qi_power_watts: 0.0
+    storage_free_gb: 320.0
+    headless_capable: true
+    headless_score: 92
+    priority_rank: 4
+    device_elo_rating: 1570.0
+    ssh_banner: null
+    ssh_port: 22
+  - node_id: L6
+    name: Pixel_10_Pro_XL
+    model: Google Tensor G5 Edge TPU
+    arch: ARM64
+    os: Android 15 (Termux)
+    role: 8K Vision & Edge TPU Trainer
+    ip: 192.168.8.160
+    tailscale_ip: 100.73.38.87
+    status: ONLINE
+    ram_total_gb: 16.0
+    ram_used_gb: 6.8
+    ram_usage_pct: 42.5
+    vram_cap_gb: 12.5
+    vram_used_gb: 0.0
+    dynamic_cap_pct: 85.0
+    cpu_usage_pct: 12.8
+    cpu_cores: 8
+    load_1m: 0.95
+    load_5m: 0.88
+    load_15m: 0.75
+    thermal_c: 36.2
+    thermal_status: NOMINAL
+    battery_pct: 85
+    is_charging: true
+    power_source: AC
+    qi_power_watts: 15.0
+    storage_free_gb: 128.0
+    headless_capable: true
+    headless_score: 88
+    priority_rank: 5
+    device_elo_rating: 1530.0
+    ssh_banner: null
+    ssh_port: 8022
+  - node_id: L7
+    name: Samsung_S20
+    model: Samsung Exynos 990 / Snapdragon
+    arch: ARM64
+    os: Android 13 (Termux)
+    role: Dedicated UI Tester & OpenClaw
+    ip: 192.168.8.158
+    tailscale_ip: 100.84.40.95
+    status: IDLE
+    ram_total_gb: 12.0
+    ram_used_gb: 3.2
+    ram_usage_pct: 26.7
+    vram_cap_gb: 9.0
+    vram_used_gb: 0.0
+    dynamic_cap_pct: 75.0
+    cpu_usage_pct: 8.4
+    cpu_cores: 8
+    load_1m: 0.45
+    load_5m: 0.5
+    load_15m: 0.42
+    thermal_c: 34.8
+    thermal_status: NOMINAL
+    battery_pct: 96
+    is_charging: true
+    power_source: AC
+    qi_power_watts: 10.0
+    storage_free_gb: 64.0
+    headless_capable: true
+    headless_score: 80
+    priority_rank: 6
+    device_elo_rating: 1480.0
+    ssh_banner: null
+    ssh_port: 8022
+  - node_id: L4
+    name: Linux_Tablet
+    model: Debian ARM64 Quad-Core
+    arch: ARM64
+    os: Debian Linux ARM64
+    role: Mobile Touch DSP & Petals Worker
+    ip: 192.168.8.173
+    tailscale_ip: 100.81.92.125
+    status: ONLINE
+    ram_total_gb: 8.0
+    ram_used_gb: 4.5
+    ram_usage_pct: 56.2
+    vram_cap_gb: 6.5
+    vram_used_gb: 0.0
+    dynamic_cap_pct: 75.0
+    cpu_usage_pct: 18.0
+    cpu_cores: 4
+    load_1m: 0.85
+    load_5m: 0.72
+    load_15m: 0.6
+    thermal_c: 39.0
+    thermal_status: NOMINAL
+    battery_pct: 78
+    is_charging: false
+    power_source: BATTERY
+    qi_power_watts: 4.5
+    storage_free_gb: 38.5
+    headless_capable: true
+    headless_score: 75
+    priority_rank: 7
+    device_elo_rating: 1470.0
+    ssh_banner: null
+    ssh_port: 22
+  - node_id: GW
+    name: GL.iNet Router
+    model: GL-MT3600BE-a0f-MLO
+    arch: MIPS/ARM
+    os: OpenWrt Linux 23.x
+    role: Core Multi-WAN Gateway & USB ADB
+    ip: 192.168.8.1
+    tailscale_ip: 100.122.185.123
+    status: ONLINE
+    ram_total_gb: 0.5
+    ram_used_gb: 0.2
+    ram_usage_pct: 40.0
+    vram_cap_gb: 0.0
+    vram_used_gb: 0.0
+    dynamic_cap_pct: 100.0
+    cpu_usage_pct: 9.5
+    cpu_cores: 4
+    load_1m: 0.25
+    load_5m: 0.2
+    load_15m: 0.15
+    thermal_c: 41.0
+    thermal_status: NOMINAL
+    battery_pct: null
+    is_charging: true
+    power_source: AC
+    qi_power_watts: 0.0
+    storage_free_gb: 1.5
+    headless_capable: true
+    headless_score: 100
+    priority_rank: 8
+    device_elo_rating: 1650.0
+    ssh_banner: null
+    ssh_port: 22
+  total_ram_gb: 108.0
+  total_vram_gb: 82.8
+  pooled_ram_used_gb: 48.2
+  pooled_vram_used_gb: 39.0
+  storage_health:
+    obsidian_vault:
+      path: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault
+      healthy: true
+      permissions: 0755/0644
+      index_present: true
+      master_wikilinks_valid: true
+    pyspark_lake:
+      path: /Users/aaron/DFS_UNIFIED/lora_datasets
+      healthy: false
+      free_headroom_gb: 2.17
+      headroom_threshold_gb: 10.0
+      qdrant_reachable: true
+    github_tree:
+      path: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+      healthy: true
+      is_worktree: true
+      index_locked: false
+      clean_tree: true
+    all_healthy: false
+  memory_governor_active: true
+layer_2_biometrics:
+  movesense_stream:
+    connected: false
+    sensor_id: Movesense-Medical-230950000
+    sampling_rate_hz: 512
+    profile: zone2
+    battery_pct: 88
+    ecg_snr_db: 0.0
+    firmware: 2.1.0-MED
+    medical_class: Class IIa
+  kamath_filter:
+    filter_name: Kamath 20% Clinical RR Filter
+    threshold_pct: 20.0
+    window_size: 60
+    rejection_rate_pct: 1.42
+    is_active: true
+  heart_rate_bpm: null
+  rr_intervals_ms: []
+  rmssd_ms: null
+  dfa_alpha1: null
+  zone2_status: AWAITING_BLUETOOTH_SENSORS
+  vo2_max_ml_kg_min: null
+  ptt_blood_pressure:
+    systolic_mmhg: null
+    diastolic_mmhg: null
+    pulse_transit_time_ms: null
+    status: OFFLINE
+  imu_kinematics:
+    accelerometer_g:
+      x: 0.04
+      y: 0.98
+      z: 0.12
+    gyroscope_dps:
+      x: 1.2
+      y: 0.8
+      z: 2.4
+    total_dynamic_g: 0.99
+    mechanical_power_watts: 182.4
+    cadence_spm: 164
+    posture_alignment_pct: 94.2
+  grappling_map:
+    total_nodes: 31
+    total_transitions: 57
+    active_position: Side Control
+    world_bounds_m:
+      x: 8.0
+      y: 8.0
+      z: 2.5
+    tactical_categories:
+    - Neutral
+    - Clinch
+    - Takedown
+    - Guard
+    - Passing/Pin
+    - Defensive/Apex
+    - Leg Entanglements
+    - Submissions
+    recent_submissions:
+    - Straight Armbar
+    - Kimura Lock
+    - Rear Naked Choke
+    - Triangle Choke
+    - Inside Heel Hook
+    session_duration_s: 1840
+  readiness:
+    readiness_score: 92.4
+    readiness_category: PRIME_OPTIMAL
+    recovery_index_pct: 94.2
+    cns_strain_score: 2.1
+    autonomic_balance: PARASYMPATHETIC_DOMINANT
+    sleep_recovery_score: 88.5
+    nocturnal_rmssd_ms: 54.2
+    training_advice: 'PRIME: High-intensity neural workload / Zone 4-5 conditioning
+      authorized.'
+layer_3_ai_inference:
+  llama_rpc_nodes:
+  - node_name: Linux Head Node
+    endpoint: 100.101.39.98:50052
+    layers_sharded: 28
+    vram_used_gb: 13.5
+    status: OFFLINE
+    latency_ms: null
+  - node_name: MacBook Pro
+    endpoint: 169.254.187.138:50052
+    layers_sharded: 28
+    vram_used_gb: 13.5
+    status: OFFLINE
+    latency_ms: null
+  - node_name: Mac Mini Host
+    endpoint: 127.0.0.1:50052
+    layers_sharded: 24
+    vram_used_gb: 12.0
+    status: OFFLINE
+    latency_ms: null
+  - node_name: MacBook Air
+    endpoint: 100.93.158.96:50052
+    layers_sharded: 0
+    vram_used_gb: 0.0
+    status: OFFLINE
+    latency_ms: null
+  - node_name: Linux Tablet
+    endpoint: 100.81.92.125:50052
+    layers_sharded: 0
+    vram_used_gb: 0.0
+    status: OFFLINE
+    latency_ms: null
+  - node_name: Pixel 10 Pro XL
+    endpoint: 100.73.38.87:50052
+    layers_sharded: 0
+    vram_used_gb: 0.0
+    status: OFFLINE
+    latency_ms: null
+  rpc_split: -ts 28,28,24
+  total_sharded_layers: 80
+  active_models:
+  - model_id: kimi_tandem_titan
+    name: Kimi 72B/88B Tandem Titan
+    checkpoint_file: kimi-dev-72b-instruct-q4_k_m.gguf
+    quant: Q4_K_M
+    role: MoE Sharded Reasoning
+    sharding_strategy: llama.cpp RPC (-ts 28,28,24)
+    context_window: 262144
+    vram_footprint_gb: 39.0
+    throughput_tok_s: 48.2
+    elo_rating: 2180
+    status: ACTIVE
+    port: 8081
+    throughput_128_tok_s: 58.4
+    throughput_512_tok_s: 48.2
+    throughput_2048_tok_s: 36.1
+    efficiency_tok_s_per_gb: 1.24
+    is_abliterated: false
+    alignment_filter_bypassed: false
+    safety_level: STANDARD
+    coding_proficiency:
+      Python: 95
+      Rust: 92
+      C++: 91
+      Dart: 88
+      Kotlin: 89
+      TypeScript: 94
+      Swift: 90
+      Bash: 96
+  - model_id: kimi_vl_thinking_2506
+    name: Kimi VL Thinking 2506
+    checkpoint_file: kimi-vl-thinking-2506-q4_k_m.gguf
+    quant: Q4_K_M
+    role: Vision-Language & Deep Reasoning
+    sharding_strategy: Apple Metal GPU Host
+    context_window: 32768
+    vram_footprint_gb: 10.6
+    throughput_tok_s: 34.5
+    elo_rating: 2150
+    status: ACTIVE
+    port: 8085
+    throughput_128_tok_s: 42.0
+    throughput_512_tok_s: 34.5
+    throughput_2048_tok_s: 26.8
+    efficiency_tok_s_per_gb: 3.25
+    is_abliterated: false
+    alignment_filter_bypassed: false
+    safety_level: STANDARD
+    coding_proficiency:
+      Python: 92
+      Rust: 86
+      C++: 88
+      Dart: 85
+      Kotlin: 86
+      TypeScript: 91
+      Swift: 87
+      Bash: 90
+  - model_id: qwen_38_max
+    name: Qwen 3.8 Max Vision
+    checkpoint_file: qwen2.5-vl-7b-instruct-q4_k_m.gguf
+    quant: Q4_K_M
+    role: Dense Vision Edge Transformer
+    sharding_strategy: Host + Pixel 10 Edge TPU
+    context_window: 131072
+    vram_footprint_gb: 5.85
+    throughput_tok_s: 48.3
+    elo_rating: 2110
+    status: ACTIVE
+    port: 8084
+    throughput_128_tok_s: 64.2
+    throughput_512_tok_s: 48.3
+    throughput_2048_tok_s: 38.9
+    efficiency_tok_s_per_gb: 8.26
+    is_abliterated: false
+    alignment_filter_bypassed: false
+    safety_level: STANDARD
+    coding_proficiency:
+      Python: 94
+      Rust: 90
+      C++: 92
+      Dart: 89
+      Kotlin: 91
+      TypeScript: 93
+      Swift: 89
+      Bash: 94
+  - model_id: genetic_moe_core
+    name: Genetic MoE Distilled Core
+    checkpoint_file: genetic_moe_core.safetensors
+    quant: Q4_K_M
+    role: Continuous LoRA Merged
+    sharding_strategy: MacBook Air + Tablet Petals Ring
+    context_window: 32768
+    vram_footprint_gb: 8.2
+    throughput_tok_s: 62.1
+    elo_rating: 2040
+    status: ACTIVE
+    port: 8083
+    throughput_128_tok_s: 78.5
+    throughput_512_tok_s: 62.1
+    throughput_2048_tok_s: 48.4
+    efficiency_tok_s_per_gb: 7.57
+    is_abliterated: false
+    alignment_filter_bypassed: false
+    safety_level: STANDARD
+    coding_proficiency:
+      Python: 89
+      Rust: 85
+      C++: 84
+      Dart: 82
+      Kotlin: 83
+      TypeScript: 88
+      Swift: 84
+      Bash: 91
+  - model_id: gemini_flash_cloud
+    name: Gemini 3.7 Flash Cloud
+    checkpoint_file: cloud_api_endpoint
+    quant: N/A
+    role: Hyperscale Multimodal Oracle
+    sharding_strategy: Cloudflare Worker Gateway
+    context_window: 1048576
+    vram_footprint_gb: 0.0
+    throughput_tok_s: 124.0
+    elo_rating: 2240
+    status: ACTIVE
+    port: null
+    throughput_128_tok_s: 165.0
+    throughput_512_tok_s: 124.0
+    throughput_2048_tok_s: 98.5
+    efficiency_tok_s_per_gb: 99.9
+    is_abliterated: false
+    alignment_filter_bypassed: false
+    safety_level: STANDARD
+    coding_proficiency:
+      Python: 98
+      Rust: 95
+      C++: 96
+      Dart: 94
+      Kotlin: 95
+      TypeScript: 98
+      Swift: 95
+      Bash: 97
+  - model_id: deepseek_v3_671b
+    name: DeepSeek V3 671B Shard
+    checkpoint_file: deepseek-v3-iq2_xxs.gguf
+    quant: IQ2_XXS
+    role: MoE Sharded Sub-Network
+    sharding_strategy: Distributed Petals / RPC
+    context_window: 65536
+    vram_footprint_gb: 24.0
+    throughput_tok_s: 36.4
+    elo_rating: 2010
+    status: ACTIVE
+    port: null
+    throughput_128_tok_s: 45.2
+    throughput_512_tok_s: 36.4
+    throughput_2048_tok_s: 28.1
+    efficiency_tok_s_per_gb: 1.52
+    is_abliterated: false
+    alignment_filter_bypassed: false
+    safety_level: STANDARD
+    coding_proficiency:
+      Python: 96
+      Rust: 93
+      C++: 94
+      Dart: 87
+      Kotlin: 88
+      TypeScript: 95
+      Swift: 89
+      Bash: 95
+  - model_id: llama_33_70b
+    name: Meta Llama 3.3 70B
+    checkpoint_file: llama-3.3-70b-instruct-q4_k_m.gguf
+    quant: Q4_K_M
+    role: Dense Code Engine
+    sharding_strategy: Distributed RPC Mesh
+    context_window: 32768
+    vram_footprint_gb: 42.0
+    throughput_tok_s: 42.0
+    elo_rating: 1985
+    status: ACTIVE
+    port: 8082
+    throughput_128_tok_s: 52.8
+    throughput_512_tok_s: 42.0
+    throughput_2048_tok_s: 31.5
+    efficiency_tok_s_per_gb: 1.0
+    is_abliterated: false
+    alignment_filter_bypassed: false
+    safety_level: STANDARD
+    coding_proficiency:
+      Python: 93
+      Rust: 89
+      C++: 90
+      Dart: 86
+      Kotlin: 87
+      TypeScript: 92
+      Swift: 88
+      Bash: 93
+  abliterated_models:
+  - model_id: llama_33_70b_abliterated
+    name: Llama-3.3-70B-Instruct-Abliterated
+    checkpoint_file: llama-3.3-70b-instruct-abliterated-q4_k_m.gguf
+    quant: Q4_K_M
+    role: Uncensored Security & Kernel Code Analysis
+    sharding_strategy: Distributed RPC Mesh (-ts 28,28,24)
+    context_window: 32768
+    vram_footprint_gb: 42.0
+    throughput_tok_s: 41.8
+    elo_rating: 2080
+    status: ACTIVE
+    port: 8082
+    throughput_128_tok_s: 53.0
+    throughput_512_tok_s: 41.8
+    throughput_2048_tok_s: 31.2
+    efficiency_tok_s_per_gb: 1.0
+    is_abliterated: true
+    alignment_filter_bypassed: true
+    safety_level: ABLITERATED_UNCENSORED
+    coding_proficiency:
+      Python: 94
+      Rust: 91
+      C++: 92
+      Dart: 87
+      Kotlin: 88
+      TypeScript: 93
+      Swift: 89
+      Bash: 95
+  - model_id: qwen_25_72b_abliterated
+    name: Qwen-2.5-72B-Instruct-Abliterated
+    checkpoint_file: qwen2.5-72b-instruct-abliterated-q4_k_m.gguf
+    quant: Q4_K_M
+    role: Unfiltered Deep Math & Architecture Reasoning
+    sharding_strategy: Distributed RPC Mesh (-ts 28,28,24)
+    context_window: 131072
+    vram_footprint_gb: 44.0
+    throughput_tok_s: 43.5
+    elo_rating: 2140
+    status: ACTIVE
+    port: 8081
+    throughput_128_tok_s: 55.4
+    throughput_512_tok_s: 43.5
+    throughput_2048_tok_s: 33.8
+    efficiency_tok_s_per_gb: 0.99
+    is_abliterated: true
+    alignment_filter_bypassed: true
+    safety_level: ABLITERATED_UNCENSORED
+    coding_proficiency:
+      Python: 95
+      Rust: 93
+      C++: 93
+      Dart: 90
+      Kotlin: 91
+      TypeScript: 95
+      Swift: 91
+      Bash: 96
+  - model_id: hermes_3_llama_8b_uncensored
+    name: Hermes-3-Llama-3.1-8B-Uncensored
+    checkpoint_file: Hermes-3-Llama-3.1-8B-Q8_0.gguf
+    quant: Q8_0
+    role: Fast Lightweight Red Teaming & AST Audit
+    sharding_strategy: MacBook Air / Host Metal
+    context_window: 131072
+    vram_footprint_gb: 8.5
+    throughput_tok_s: 58.2
+    elo_rating: 1950
+    status: ACTIVE
+    port: 8084
+    throughput_128_tok_s: 72.0
+    throughput_512_tok_s: 58.2
+    throughput_2048_tok_s: 44.6
+    efficiency_tok_s_per_gb: 6.85
+    is_abliterated: true
+    alignment_filter_bypassed: true
+    safety_level: ABLITERATED_UNCENSORED
+    coding_proficiency:
+      Python: 88
+      Rust: 84
+      C++: 85
+      Dart: 81
+      Kotlin: 82
+      TypeScript: 87
+      Swift: 83
+      Bash: 90
+  - model_id: dolphin_294_llama_70b
+    name: Dolphin-2.9.4-Llama-3.1-70B
+    checkpoint_file: dolphin-2.9.4-llama3.1-70b-q4_k_m.gguf
+    quant: Q4_K_M
+    role: Alignment-Free Red Team Automation & Exploitation Analysis
+    sharding_strategy: Distributed RPC Mesh (-ts 28,28,24)
+    context_window: 65536
+    vram_footprint_gb: 42.0
+    throughput_tok_s: 40.5
+    elo_rating: 2025
+    status: ACTIVE
+    port: 8082
+    throughput_128_tok_s: 50.2
+    throughput_512_tok_s: 40.5
+    throughput_2048_tok_s: 30.4
+    efficiency_tok_s_per_gb: 0.96
+    is_abliterated: true
+    alignment_filter_bypassed: true
+    safety_level: ABLITERATED_UNCENSORED
+    coding_proficiency:
+      Python: 91
+      Rust: 88
+      C++: 89
+      Dart: 84
+      Kotlin: 85
+      TypeScript: 90
+      Swift: 86
+      Bash: 94
+  petals_swarm:
+    status: OFFLINE
+    port: 31337
+    active_blocks: 0
+    swarm_nodes: 0
+    dht_connected: false
+  exo_p2p:
+    status: OFFLINE
+    port: 52415
+    discovery_ring: false
+    active_peers: 0
+    topology: DISCONNECTED
+  active_ports:
+    kimi_gateway: 8081
+    qwen_coder: 8082
+    genetic_moe: 8083
+    qwen_edge_vision: 8084
+    kimi_vl: 8085
+    llama_rpc: 50052
+  active_engine: llama_rpc
+  supported_engines:
+  - llama_rpc
+  - exo
+  - accelerate
+  - petals
+layer_4_training_games:
+  lora_datasets:
+  - name: all_local_ais_lora_burst_dataset.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/all_local_ais_lora_burst_dataset.jsonl
+    pairs_count: 3650
+    category: SFT
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: architectural_decisions.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/architectural_decisions.jsonl
+    pairs_count: 3770
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: autonomous_consensus_iterations.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/autonomous_consensus_iterations.jsonl
+    pairs_count: 3890
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: biometrics_sleep_lora_dataset.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/biometrics_sleep_lora_dataset.jsonl
+    pairs_count: 4010
+    category: SFT
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: continuous_lora_dataset.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/continuous_lora_dataset.jsonl
+    pairs_count: 4130
+    category: SFT
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: cot_distillation_generation_1786654798.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/cot_distillation_generation_1786654798.jsonl
+    pairs_count: 4250
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: device_doctor_telemetry.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/device_doctor_telemetry.jsonl
+    pairs_count: 4370
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: gemma_nano_training_dataset.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/gemma_nano_training_dataset.jsonl
+    pairs_count: 4490
+    category: SFT
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: genetic_ml_dataset_latest.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/genetic_ml_dataset_latest.jsonl
+    pairs_count: 4610
+    category: SFT
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: genetic_smol_lora_training.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/genetic_smol_lora_training.jsonl
+    pairs_count: 4730
+    category: SFT
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: healing_incidents.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/healing_incidents.jsonl
+    pairs_count: 4850
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: lauburu_chat_conversations.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/lauburu_chat_conversations.jsonl
+    pairs_count: 4970
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: mesh_battle_game_training.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/mesh_battle_game_training.jsonl
+    pairs_count: 5090
+    category: SFT
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: model_merge_benchmarks.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/model_merge_benchmarks.jsonl
+    pairs_count: 5210
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: movesense_biometrics_coaching.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/movesense_biometrics_coaching.jsonl
+    pairs_count: 5330
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: on_device_nano_smol_training.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/on_device_nano_smol_training.jsonl
+    pairs_count: 5450
+    category: SFT
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: quarantined_hallucinations.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/quarantined_hallucinations.jsonl
+    pairs_count: 5570
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: self_evolving_analysis_chains.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/self_evolving_analysis_chains.jsonl
+    pairs_count: 5690
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: shadow_coding_distillation.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/shadow_coding_distillation.jsonl
+    pairs_count: 5810
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: swarm_codebase_refactors.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/swarm_codebase_refactors.jsonl
+    pairs_count: 5930
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: truth_audit_debate.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/truth_audit_debate.jsonl
+    pairs_count: 6050
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: truthfulness_retraining_dataset.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/truthfulness_retraining_dataset.jsonl
+    pairs_count: 6170
+    category: SFT
+    last_modified: '2026-08-27T05:58:00Z'
+  - name: ui_ux_improvements.jsonl
+    path: 12_continuous_lora_evolution/lora_datasets/ui_ux_improvements.jsonl
+    pairs_count: 6290
+    category: DPO
+    last_modified: '2026-08-27T05:58:00Z'
+  total_datasets_count: 23
+  current_loss: 0.142
+  initial_loss: 2.18
+  training_step: 4800
+  loss_history:
+  - step: 0
+    loss: 1.84
+  - step: 800
+    loss: 1.22
+  - step: 1600
+    loss: 0.85
+  - step: 2400
+    loss: 0.54
+  - step: 3200
+    loss: 0.32
+  - step: 4000
+    loss: 0.21
+  - step: 4800
+    loss: 0.142
+  harvest_rate_pairs_per_min: 48.5
+  total_harvested_pairs: 84320
+  learning_rate: 2e-5
+  batch_size: 32
+  optimizer: AdamW
+  ffa_arena_agents:
+  - model_id: kimi_titan
+    name: Kimi Tandem Titan
+    hp: 95
+    status: ALIVE
+    kills: 12
+    shield_boost: 35
+    tactical_role: Heavy Vanguard
+  - model_id: qwen_38
+    name: Qwen 3.8 Max
+    hp: 88
+    status: ALIVE
+    kills: 9
+    shield_boost: 20
+    tactical_role: Precision Scout
+  - model_id: gemini_flash
+    name: Gemini 3.7 Flash
+    hp: 92
+    status: ALIVE
+    kills: 14
+    shield_boost: 25
+    tactical_role: Strategic Oracle
+  - model_id: genetic_moe
+    name: Genetic MoE Core
+    hp: 82
+    status: ALIVE
+    kills: 7
+    shield_boost: 15
+    tactical_role: Adaptive Infiltrator
+  - model_id: deepseek_v3
+    name: DeepSeek V3
+    hp: 78
+    status: ALIVE
+    kills: 6
+    shield_boost: 10
+    tactical_role: MoE Anchor
+  - model_id: llama_33
+    name: Llama 3.3 70B
+    hp: 75
+    status: ALIVE
+    kills: 5
+    shield_boost: 10
+    tactical_role: Code Sentry
+  - model_id: smollm2_360m
+    name: SmolLM2 360M
+    hp: 60
+    status: ALIVE
+    kills: 2
+    shield_boost: 5
+    tactical_role: Edge Skirmisher
+  - model_id: gemma_2b
+    name: Gemma 2B Nano
+    hp: 65
+    status: ALIVE
+    kills: 3
+    shield_boost: 5
+    tactical_role: Light Support
+  - model_id: qwen_coder_7b
+    name: Qwen Coder 7B
+    hp: 70
+    status: ALIVE
+    kills: 4
+    shield_boost: 8
+    tactical_role: Tactical Engineer
+  - model_id: hermes_3b
+    name: Hermes 3B
+    hp: 55
+    status: ALIVE
+    kills: 2
+    shield_boost: 5
+    tactical_role: Combat Medic
+  - model_id: whisper_large
+    name: Whisper Audio
+    hp: 50
+    status: ALIVE
+    kills: 1
+    shield_boost: 5
+    tactical_role: Comms Sensor
+  - model_id: clip_vit
+    name: CLIP Vision
+    hp: 52
+    status: ALIVE
+    kills: 1
+    shield_boost: 5
+    tactical_role: Recon Sensor
+  - model_id: phi_3_mini
+    name: Phi-3 Mini
+    hp: 48
+    status: ALIVE
+    kills: 1
+    shield_boost: 5
+    tactical_role: Fast Courier
+  pyspark_ast_metrics:
+    total_projects: 32
+    total_code_files: 3104
+    total_loc: 434965
+    total_test_suites: 325
+    total_ast_nodes: 124491
+    language_breakdown:
+      Markdown: 2228
+      Python: 752
+      JSON: 30
+      TypeScript: 24
+      Shell: 22
+      JavaScript: 14
+      TOML: 13
+      YAML: 11
+      HTML: 4
+      CSS: 3
+      Rust: 1
+layer_5_governance:
+  debate_council:
+    cosine_accord: 0.999
+    threshold: 0.98
+    consensus_reached: true
+    current_turn: 4
+    total_turns: 4
+    current_phase: ACCORD_SYNTHESIS
+    phases:
+    - PROPOSAL
+    - CROSS_EXAMINATION
+    - ACCORD_SYNTHESIS
+    - EXECUTION_DISPATCH
+    debate_topic: 'Biometrics GATT Pipeline: Movesense 128Hz BLE ECG telemetry ingestion
+      and Kamath RR filtering'
+    active_agents:
+    - Kimi 88B Titan (Port 8085)
+    - Qwen 3.8 Max (Port 8084)
+    - Abiliterated Llama 70B (Devil's Advocate)
+    - Gemini 3.7 Flash Cloud
+    protocol_type: UNYIELDING_CONSENSUS_PROTOCOL
+    code_off_active: false
+    human_fallback_active: false
+    max_turns: null
+  elo_leaderboard:
+  - rank: 1
+    model_id: gemini_flash
+    name: Gemini 3.7 Flash Cloud
+    rating: 2240
+    matches_played: 142
+    win_rate_pct: 88.5
+    k_factor: 32.0
+    throughput_tok_s: 124.0
+    ram_tier: Cloud Frontier
+    freedom_of_choice_unlocked: true
+    coding_proficiency:
+      Python: 98
+      Rust: 95
+      C++: 96
+      Dart: 94
+      Kotlin: 95
+      TypeScript: 98
+      Swift: 95
+      Bash: 97
+  - rank: 2
+    model_id: kimi_titan
+    name: Kimi 72B/88B Tandem Titan
+    rating: 2180
+    matches_played: 186
+    win_rate_pct: 84.2
+    k_factor: 32.0
+    throughput_tok_s: 48.2
+    ram_tier: Apex (108GB)
+    freedom_of_choice_unlocked: true
+    coding_proficiency:
+      Python: 95
+      Rust: 92
+      C++: 91
+      Dart: 88
+      Kotlin: 89
+      TypeScript: 94
+      Swift: 90
+      Bash: 96
+  - rank: 3
+    model_id: kimi_vl
+    name: Kimi VL Thinking 2506
+    rating: 2150
+    matches_played: 98
+    win_rate_pct: 81.0
+    k_factor: 32.0
+    throughput_tok_s: 34.5
+    ram_tier: 64GB Tier
+    freedom_of_choice_unlocked: true
+    coding_proficiency:
+      Python: 92
+      Rust: 86
+      C++: 88
+      Dart: 85
+      Kotlin: 86
+      TypeScript: 91
+      Swift: 87
+      Bash: 90
+  - rank: 4
+    model_id: qwen_38
+    name: Qwen 3.8 Max Vision
+    rating: 2110
+    matches_played: 164
+    win_rate_pct: 78.6
+    k_factor: 32.0
+    throughput_tok_s: 48.3
+    ram_tier: 16GB Tier
+    freedom_of_choice_unlocked: true
+    coding_proficiency:
+      Python: 94
+      Rust: 90
+      C++: 92
+      Dart: 89
+      Kotlin: 91
+      TypeScript: 93
+      Swift: 89
+      Bash: 94
+  - rank: 5
+    model_id: genetic_moe
+    name: Genetic MoE Distilled
+    rating: 2040
+    matches_played: 210
+    win_rate_pct: 72.4
+    k_factor: 32.0
+    throughput_tok_s: 62.1
+    ram_tier: 32GB Tier
+    freedom_of_choice_unlocked: false
+    coding_proficiency:
+      Python: 89
+      Rust: 85
+      C++: 84
+      Dart: 82
+      Kotlin: 83
+      TypeScript: 88
+      Swift: 84
+      Bash: 91
+  - rank: 6
+    model_id: deepseek_v3
+    name: DeepSeek V3 671B Shard
+    rating: 2010
+    matches_played: 88
+    win_rate_pct: 69.5
+    k_factor: 32.0
+    throughput_tok_s: 36.4
+    ram_tier: Apex (108GB)
+    freedom_of_choice_unlocked: false
+    coding_proficiency:
+      Python: 96
+      Rust: 93
+      C++: 94
+      Dart: 87
+      Kotlin: 88
+      TypeScript: 95
+      Swift: 89
+      Bash: 95
+  - rank: 7
+    model_id: llama_33
+    name: Meta Llama 3.3 70B
+    rating: 1985
+    matches_played: 120
+    win_rate_pct: 66.8
+    k_factor: 32.0
+    throughput_tok_s: 42.0
+    ram_tier: 64GB Tier
+    freedom_of_choice_unlocked: false
+    coding_proficiency:
+      Python: 93
+      Rust: 89
+      C++: 90
+      Dart: 86
+      Kotlin: 87
+      TypeScript: 92
+      Swift: 88
+      Bash: 93
+  action_commands:
+  - command: /audit
+    description: Trigger Swarm Truth Verification Audit
+    hotkey: '[a]'
+    enabled: true
+    last_executed: null
+  - command: /duel
+    description: Initiate 13-Model FFA Arena Combat Round
+    hotkey: '[d]'
+    enabled: true
+    last_executed: null
+  - command: /cron
+    description: Dispatch Autonomous Nomad ROI Cron Cycle
+    hotkey: '[c]'
+    enabled: true
+    last_executed: null
+  - command: /storage
+    description: Execute Tri-Vault Pre-Flight Self-Healing
+    hotkey: '[s]'
+    enabled: true
+    last_executed: null
+  - command: /ping
+    description: Probe 17-Protocol Network Matrix Latencies
+    hotkey: '[p]'
+    enabled: true
+    last_executed: null
+  - command: /revive
+    description: Emit WoL Magic Packets to Suspended Nodes
+    hotkey: '[r]'
+    enabled: true
+    last_executed: null
+  coding_proficiency_matrix:
+    kimi_tandem_titan:
+      Python: 95
+      Rust: 92
+      C++: 91
+      Dart: 88
+      Kotlin: 89
+      TypeScript: 94
+      Swift: 90
+      Bash: 96
+    kimi_vl_thinking:
+      Python: 92
+      Rust: 86
+      C++: 88
+      Dart: 85
+      Kotlin: 86
+      TypeScript: 91
+      Swift: 87
+      Bash: 90
+    qwen_38_max:
+      Python: 94
+      Rust: 90
+      C++: 92
+      Dart: 89
+      Kotlin: 91
+      TypeScript: 93
+      Swift: 89
+      Bash: 94
+    genetic_moe_core:
+      Python: 89
+      Rust: 85
+      C++: 84
+      Dart: 82
+      Kotlin: 83
+      TypeScript: 88
+      Swift: 84
+      Bash: 91
+    gemini_flash_cloud:
+      Python: 98
+      Rust: 95
+      C++: 96
+      Dart: 94
+      Kotlin: 95
+      TypeScript: 98
+      Swift: 95
+      Bash: 97
+    deepseek_v3_671b:
+      Python: 96
+      Rust: 93
+      C++: 94
+      Dart: 87
+      Kotlin: 88
+      TypeScript: 95
+      Swift: 89
+      Bash: 95
+    llama_33_70b:
+      Python: 93
+      Rust: 89
+      C++: 90
+      Dart: 86
+      Kotlin: 87
+      TypeScript: 92
+      Swift: 88
+      Bash: 93
+  reconvergence_status: IDLE (Monolith Synchronized)
+  reconvergence_active: false
+  apex_rotation_schedule:
+  - candidate: Kimi 88B Tandem Titan
+    status: ACTIVE_APEX
+    evaluation_progress: 100
+    elo_delta: '+42'
+  - candidate: DeepSeek R1 671B Distill
+    status: QUEUED
+    evaluation_progress: 64
+    elo_delta: --
+  - candidate: Qwen 2.5 72B Instruct
+    status: EVALUATING
+    evaluation_progress: 82
+    elo_delta: '+18'
+  - candidate: Llama 3.3 70B Abliterated
+    status: BENCHMARKING
+    evaluation_progress: 91
+    elo_delta: '+25'
+  failover_latency_ms: 142.5
+  ram_tiered_champions:
+    16GB_Tier: Qwen 3.8 Max Vision (2110 ELO)
+    32GB_Tier: Genetic MoE Core (2040 ELO)
+    64GB_Tier: Kimi VL Thinking (2150 ELO)
+    108GB_Apex_Mesh: Kimi 88B Tandem Titan (2180 ELO)
+    Cloud_Frontier: Gemini 3.7 Flash (2240 ELO)
+  ai_currency_tracker:
+    agy_tokens_issued: 184500
+    smolagent_rights_active: 14
+    lora_training_cycles_awarded: 320
+    freedom_of_choice_models_count: 4
+layer_6_tooling_skills:
+  mcp_servers:
+  - name: docker
+    tool_count: 12
+    status: ACTIVE
+    description: LobeHub Docker Multi-Container Compose Management
+    schema_path: ''
+  - name: obsidian
+    tool_count: 41
+    status: ACTIVE
+    description: Obsidian MCP Pro Knowledge Graph Traversal & Wikilinks
+    schema_path: ''
+  - name: cloudflare
+    tool_count: 18
+    status: ACTIVE
+    description: Cloudflare Workers AI, KV/D1/R2 & Tunnels
+    schema_path: ''
+  - name: computer-use
+    tool_count: 14
+    status: ACTIVE
+    description: Apple Silicon Native ARM64 Desktop Automation
+    schema_path: ''
+  - name: browser-use
+    tool_count: 16
+    status: ACTIVE
+    description: Autonomous Web Automation & CDP Tree Inspector
+    schema_path: ''
+  - name: antigravity-models
+    tool_count: 8
+    status: ACTIVE
+    description: Dynamic Local AI Routing (llama.cpp, Petals, Exo)
+    schema_path: ''
+  - name: figma
+    tool_count: 6
+    status: ACTIVE
+    description: Live REST AST Zero-Mock UI Design Extraction
+    schema_path: ''
+  - name: marionette-mcp
+    tool_count: 9
+    status: ACTIVE
+    description: Headless Browser Accessibility & DOM Audit
+    schema_path: ''
+  - name: filesystem
+    tool_count: 14
+    status: ACTIVE
+    description: Native Filesystem Mutation & Stat Operations
+    schema_path: ''
+  - name: memory
+    tool_count: 9
+    status: ACTIVE
+    description: Shared Swarm Knowledge Graph & Entity State
+    schema_path: ''
+  - name: sequential-thinking
+    tool_count: 1
+    status: ACTIVE
+    description: Multi-Step Sequential Problem Solving
+    schema_path: ''
+  - name: chrome-devtools-mcp
+    tool_count: 29
+    status: ACTIVE
+    description: Performance Profiler, Heap Snapshots & Network
+    schema_path: ''
+  sdks:
+  - name: torch
+    version: 2.5.1
+    binding_type: C++/Metal Native
+    status: ACTIVE
+    capabilities: PyTorch Deep Learning & Metal MPS
+  - name: pyspark
+    version: 3.5.0
+    binding_type: Java/Scala Py4J
+    status: ACTIVE
+    capabilities: Monorepo Code AST Crawl & 435K LOC Index
+  - name: transformers
+    version: 4.48.0
+    binding_type: Python/PyTorch
+    status: ACTIVE
+    capabilities: HuggingFace Transformer Architectures
+  - name: peft
+    version: 0.14.0
+    binding_type: Python/PyTorch
+    status: ACTIVE
+    capabilities: Parameter-Efficient Fine-Tuning / LoRA
+  - name: trl
+    version: 0.14.0
+    binding_type: Python/PyTorch
+    status: ACTIVE
+    capabilities: Transformer Reinforcement Learning / DPO
+  - name: accelerate
+    version: 1.3.0
+    binding_type: Python/PyTorch
+    status: ACTIVE
+    capabilities: Multi-Node Distributed Tensor Training
+  - name: llama_cpp
+    version: 0.3.5
+    binding_type: C/C++ FFI
+    status: ACTIVE
+    capabilities: GGML Metal RPC Ingestion & Sharding
+  - name: google_antigravity_sdk
+    version: 2.0.0
+    binding_type: Python Native
+    status: ACTIVE
+    capabilities: Autonomous Multi-Agent Swarm Orchestration
+  - name: textual
+    version: 0.85.2
+    binding_type: Python Async
+    status: ACTIVE
+    capabilities: High-Density Terminal User Interface Framework
+  - name: psutil
+    version: 6.1.1
+    binding_type: C/OS Native
+    status: ACTIVE
+    capabilities: Hardware Telemetry & Kernel Metrics
+  - name: pydantic
+    version: 2.10.4
+    binding_type: Rust/C-Core
+    status: ACTIVE
+    capabilities: Schema Validation & High-Speed Serialization
+  - name: asyncssh
+    version: 2.18.0
+    binding_type: Python Native
+    status: ACTIVE
+    capabilities: Asynchronous Multi-Transport SSHv2
+  clis:
+  - name: agy
+    version_cmd: agy --version
+    installed: true
+    status: ACTIVE
+    description: Antigravity 2.0 Agent Lifecycle CLI
+  - name: gh
+    version_cmd: gh --version
+    installed: true
+    status: ACTIVE
+    description: GitHub CLI & Worktree Synchronization
+  - name: uv
+    version_cmd: uv --version
+    installed: true
+    status: ACTIVE
+    description: Ultra-Fast Python Package & Test Runner
+  - name: adb
+    version_cmd: adb version
+    installed: true
+    status: ACTIVE
+    description: Android Debug Bridge & Termux Lifecycle
+  - name: ssh
+    version_cmd: ssh -V
+    installed: true
+    status: ACTIVE
+    description: Multi-Transport Remote Command Execution
+  - name: docker
+    version_cmd: docker --version
+    installed: true
+    status: ACTIVE
+    description: Multi-Container Docker Compose Engine
+  - name: kdeconnect-cli
+    version_cmd: kdeconnect-cli --version
+    installed: true
+    status: ACTIVE
+    description: LAN Device Discovery & Broadcast
+  - name: tailscale
+    version_cmd: tailscale version
+    installed: true
+    status: ACTIVE
+    description: WireGuard Encrypted Mesh Overlay
+  - name: weed
+    version_cmd: weed version
+    installed: true
+    status: ACTIVE
+    description: SeaweedFS Distributed File System
+  - name: scrcpy
+    version_cmd: scrcpy --version
+    installed: true
+    status: ACTIVE
+    description: Ultra-Low-Latency Mobile Mirroring
+  agent_skills:
+  - name: spec-00-core-infrastructure
+    path: 00_core_infrastructure/README.md
+    domain: Infrastructure
+    active: true
+  - name: spec-01-apps-ecosystem
+    path: 01_apps/README.md
+    domain: Applications
+    active: true
+  - name: spec-02-ai-inference-mesh
+    path: 02_ai_models_and_inference/README.md
+    domain: AI Inference
+    active: true
+  - name: spec-03-biometrics-dsp
+    path: 03_biometrics_and_telemetry/README.md
+    domain: Biometrics
+    active: true
+  - name: spec-04-data-memory-sync
+    path: 04_data_and_memory/README.md
+    domain: Data & Memory
+    active: true
+  - name: spec-05-swarm-orchestrator
+    path: 05_agents_and_swarms/README.md
+    domain: Governance
+    active: true
+  - name: spec-06-tooling-healing
+    path: 06_scripts_and_tooling/README.md
+    domain: Self-Healing
+    active: true
+  - name: spec-07-docs-architecture
+    path: 07_docs_and_architecture/README.md
+    domain: Architecture
+    active: true
+  - name: spec-08-business-commerce
+    path: 08_business_and_commerce/README.md
+    domain: Commerce
+    active: true
+  - name: spec-09-app-store-production
+    path: 09_app_store_and_production/README.md
+    domain: App Store
+    active: true
+  - name: spec-10-spatial-grappling-kinematics
+    path: 10_spatial_grappling_kinematics/README.md
+    domain: Spatial Grappling
+    active: true
+  - name: spec-11-security-red-blue-team
+    path: 11_security_isolation/README.md
+    domain: Security
+    active: true
+  - name: spec-12-continuous-lora-evolution
+    path: 12_continuous_lora_evolution/README.md
+    domain: Continuous LoRA
+    active: true
+  shopify:
+    storefront_url: https://shop.lauburu.ai
+    graphql_endpoint: https://shop.lauburu.ai/api/2026-01/graphql.json
+    subscription_tier: Titanium All-Access
+    active_memberships: 1420
+    merchandise_catalog_synced: true
+    cart_pipeline_healthy: true
+voice_coding:
+  status: IDLE
+  is_active: false
+  is_stt_active: false
+  is_tts_active: false
+  is_muted: false
+  endpoint_ws: ws://127.0.0.1:8765/ws/voice
+  session_id: null
+  current_transcript: ''
+  last_code_snippet: ''
+  last_user_speech: ''
+  last_model_speech: ''
+  telemetry:
+    input_db: -60.0
+    output_db: -60.0
+    latency_ms: 0.0
+    packet_loss_pct: 0.0
+    sample_rate_in_hz: 16000
+    sample_rate_out_hz: 24000
+    buffer_occupancy_pct: 0.0
+    rms_energy: 0.0
+    vad_active: false
+    speech_detected: false
+    total_ingress_bytes: 0
+    total_egress_bytes: 0
+    jitter_ms: 0.0
+  error_message: null

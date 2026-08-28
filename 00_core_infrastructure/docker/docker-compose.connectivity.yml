@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  connectivity-hub:
+    build:
+      context: .
+      dockerfile: Dockerfile.connectivity
+    container_name: connectivity-hub
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - "/dev/bus/usb:/dev/bus/usb"
+      - "/dev/net/tun:/dev/net/tun"
+    volumes:
+      - .:/app
+      - "/var/run/dbus:/var/run/dbus"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - WORKSPACE_ROOT=/app
+    restart: unless-stopped
+
+  mesh-transport-daemon:
+    image: python:3.11-slim
+    container_name: mesh-transport-daemon
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - .:/app
+      - /Volumes:/Volumes
+      - /Users:/Users
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - PYTHONUNBUFFERED=1
+    working_dir: /app
+    command: sh -c "pip install -r docker/requirements_mesh.txt && python3 Installed_Apps/Core_Mesh/mesh_transport_daemon.py"
+    restart: unless-stopped
+
+  adb-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.connectivity
+    container_name: adb-bridge
+    network_mode: host
+    devices:
+      - "/dev/bus/usb:/dev/bus/usb"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: ["python3", "Installed_Apps/Core_Mesh/adb_bridge.py"]
+    restart: unless-stopped
+
+  movesense-gateway:
+    build:
+      context: Installed_Apps/Core_Mesh/movesense-readiness/backend
+      dockerfile: Dockerfile
+    container_name: movesense-gateway
+    network_mode: host
+    privileged: true
+    volumes:
+      - ./Installed_Apps/Core_Mesh/movesense-readiness/backend:/app
+      - /var/run/dbus:/var/run/dbus
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PORT=8086
+    restart: unless-stopped

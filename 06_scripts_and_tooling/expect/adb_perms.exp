@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+set timeout 15
+spawn ssh -o StrictHostKeyChecking=no linux@100.101.39.98
+expect "*?assword:*"
+send "goldfighting1\r"
+expect "*?linux@*"
+send "adb connect 100.84.40.95:5555 || adb connect 100.99.123.58:5555\r"
+expect "*?linux@*"
+send "adb shell pm grant com.termux android.permission.BLUETOOTH_SCAN\r"
+expect "*?linux@*"
+send "adb shell pm grant com.termux android.permission.BLUETOOTH_CONNECT\r"
+expect "*?linux@*"
+send "adb shell pm grant com.termux android.permission.ACCESS_FINE_LOCATION\r"
+expect "*?linux@*"
+send "exit\r"

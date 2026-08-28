@@ -1,0 +1,8 @@
+# 99-teardown — sign out so the next run starts cold (optional).
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Settings"
+- tapOn:
+    text: "Sign out"
+    optional: true

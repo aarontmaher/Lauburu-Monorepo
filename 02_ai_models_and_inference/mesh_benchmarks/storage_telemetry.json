@@ -1,0 +1,22 @@
+{
+  "storage_telemetry": {
+    "macbook-1": {
+      "total_gb": 228.3,
+      "used_gb": 221.1,
+      "free_gb": 7.2,
+      "used_pct": 96.8
+    },
+    "linux-1": {
+      "total_gb": 467.3,
+      "used_gb": 415.7,
+      "free_gb": 27.8,
+      "used_pct": 94.0
+    },
+    "mesh_benchmarks_folder": {
+      "size_mb": 0.01,
+      "failed_traces_file": "/Volumes/Lauburu-Monorepo/mesh_benchmarks/failed_traces.jsonl",
+      "competent_models_file": "/Volumes/Lauburu-Monorepo/mesh_benchmarks/competent_models.json"
+    }
+  },
+  "updated": "2026-08-09T06:58:49.036535"
+}

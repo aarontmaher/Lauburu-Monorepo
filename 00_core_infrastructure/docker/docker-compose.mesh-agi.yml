@@ -1,0 +1,87 @@
+version: '3.8'
+
+networks:
+  lauburu-mesh-net:
+    driver: bridge
+
+services:
+  lauburu-unified-gateway:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gemini
+    container_name: lauburu-unified-gateway
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - GATEWAY_PORT=9000
+      - OLLAMA_URL=http://host.docker.internal:11434
+      - AGI_BACKEND_URL=http://lauburu-agi-backend:8900
+      - GEMINI_SERVICE_URL=http://gemini-ai-service:8087
+      - GEMINI_SPARK_ROUTER_URL=http://gemini-spark-router:8088
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["python3", "-m", "uvicorn", "apps.unified_api_gateway:app", "--host", "0.0.0.0", "--port", "9000"]
+    networks:
+      - lauburu-mesh-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  lauburu-mesh-telemetry:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gemini
+    container_name: lauburu-mesh-telemetry
+    restart: unless-stopped
+    ports:
+      - "8096:8096"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TELEMETRY_PORT=8096
+      - GUTHER_DIR=/app/.guther
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["python3", "-m", "uvicorn", "scripts.mesh_health_telemetry_daemon:app", "--host", "0.0.0.0", "--port", "8096"]
+    networks:
+      - lauburu-mesh-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8096/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  lauburu-compute-offloader:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gemini
+    container_name: lauburu-compute-offloader
+    restart: unless-stopped
+    ports:
+      - "8902:8902"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - OFFLOADER_PORT=8902
+      - DEVICE_STATUS_PATH=/app/.guther/device_status.json
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["python3", "-m", "uvicorn", "multi_wan.compute_offloader:app", "--host", "0.0.0.0", "--port", "8902"]
+    networks:
+      - lauburu-mesh-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8902/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s

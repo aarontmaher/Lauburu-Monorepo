@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  lauburu-unified-node:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.unified_node
+    image: lauburu-unified-node:latest
+    container_name: lauburu_node
+    restart: unless-stopped
+    network_mode: "host" # Allows direct BLE DBus discovery, low-latency RPC, and web access
+    volumes:
+      - /var/run/dbus:/var/run/dbus:ro # Bluetooth DBus socket passthrough for Movesense
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY:-} # Optional Tailscale Auth Key for global mesh pooling
+      - NODE_NAME=${NODE_NAME:-contributor-node}
+      - SHOPIFY_STORE_DOMAIN=lauburugrappling.myshopify.com
+      - HUB_PORT=8086
+      - OPENCLAW_PROXY_PORT=8181
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8192M # 8GB allocation for Pro Contributor Tier

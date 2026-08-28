@@ -1,0 +1,8 @@
+[web]
+port = 8088
+host = "0.0.0.0"
+
+[[apps]]
+name = "Canonical Port TUI"
+slug = "canonical_port"
+command = "python3 canonical_tui.py"

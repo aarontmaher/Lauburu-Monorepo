@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  headscale:
+    image: headscale/headscale:latest
+    container_name: openclaw-headscale
+    volumes:
+      - ./headscale/config:/etc/headscale
+      - ./headscale/data:/var/lib/headscale
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    command: serve
+    restart: unless-stopped

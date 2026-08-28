@@ -1,0 +1,11 @@
+#!/usr/bin/expect -f
+set timeout 15
+spawn ssh -o StrictHostKeyChecking=no linux@100.101.39.98
+expect "*?assword:*"
+send "goldfighting1\r"
+expect "*?linux@*"
+send "sudo docker rm -f samba_nas_gateway\r"
+expect "*?linux@*"
+send "sudo docker run -d --name samba_nas_gateway -p 100.101.39.98:139:139 -p 100.101.39.98:445:445 -v /Volumes/Lauburu-Monorepo/data:/data:rw -e TZ=Australia/Sydney -d dperson/samba -u \"linux;goldfighting1\" -s \"nas;/data;yes;no;no;linux\"\r"
+expect "*?linux@*"
+send "exit\r"

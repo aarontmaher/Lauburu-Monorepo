@@ -1,0 +1,121 @@
+{
+  "timestamp": "2026-08-19T22:03:29.610418",
+  "total_monitored_services": 9,
+  "online_services_count": 7,
+  "cloudflared_process": {
+    "running": true,
+    "processes": [
+      "4677 cloudflared tunnel --url http://localhost:18789"
+    ]
+  },
+  "services": [
+    {
+      "id": "openclaw_named_tunnel",
+      "name": "Cloudflare Named Tunnel (openclaw.lauburugrappling.com)",
+      "criticality": "HIGH",
+      "type": "PUBLIC_HTTPS",
+      "status": "OFFLINE",
+      "details": {
+        "online": false,
+        "status_code": null,
+        "message": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+      }
+    },
+    {
+      "id": "openclaw_quick_tunnel",
+      "name": "Cloudflare Quick Tunnel (openclaw-standalone.trycloudflare.com)",
+      "criticality": "MEDIUM",
+      "type": "PUBLIC_HTTPS",
+      "status": "OFFLINE",
+      "details": {
+        "online": false,
+        "status_code": null,
+        "message": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+      }
+    },
+    {
+      "id": "openclaw_gateway_local",
+      "name": "OpenClaw Local Gateway Service",
+      "criticality": "CRITICAL",
+      "type": "LOCAL_SOCKET",
+      "status": "ONLINE",
+      "details": {
+        "online": true,
+        "latency_ms": 0.14,
+        "status": "LISTENING"
+      }
+    },
+    {
+      "id": "lauburu_dashboard",
+      "name": "Lauburu PySpark Dashboard & Control Center",
+      "criticality": "CRITICAL",
+      "type": "LOCAL_SOCKET",
+      "status": "ONLINE",
+      "details": {
+        "online": true,
+        "latency_ms": 0.05,
+        "status": "LISTENING"
+      }
+    },
+    {
+      "id": "multi_wan_hub",
+      "name": "Multi-WAN & Connectivity Hub API",
+      "criticality": "HIGH",
+      "type": "LOCAL_SOCKET",
+      "status": "ONLINE",
+      "details": {
+        "online": true,
+        "latency_ms": 0.05,
+        "status": "LISTENING"
+      }
+    },
+    {
+      "id": "api_gateway_proxy",
+      "name": "API Gateway Proxy Service",
+      "criticality": "MEDIUM",
+      "type": "LOCAL_SOCKET",
+      "status": "ONLINE",
+      "details": {
+        "online": true,
+        "latency_ms": 0.03,
+        "status": "LISTENING"
+      }
+    },
+    {
+      "id": "shopify_ai_service",
+      "name": "Shopify AI & Storefront Ingress",
+      "criticality": "MEDIUM",
+      "type": "LOCAL_SOCKET",
+      "status": "ONLINE",
+      "details": {
+        "online": true,
+        "latency_ms": 0.04,
+        "status": "LISTENING"
+      }
+    },
+    {
+      "id": "syncthing_gui",
+      "name": "Syncthing P2P Web GUI",
+      "criticality": "LOW",
+      "type": "LOCAL_SOCKET",
+      "status": "ONLINE",
+      "details": {
+        "online": true,
+        "latency_ms": 0.19,
+        "status": "LISTENING"
+      }
+    },
+    {
+      "id": "dualchat_gemini_api",
+      "name": "Dual-Agent Chat & Gemini FastAPIs",
+      "criticality": "MEDIUM",
+      "type": "LOCAL_SOCKET",
+      "status": "ONLINE",
+      "details": {
+        "online": true,
+        "latency_ms": 0.04,
+        "status": "LISTENING"
+      }
+    }
+  ]
+}

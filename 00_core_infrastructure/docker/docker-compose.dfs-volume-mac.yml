@@ -1,0 +1,55 @@
+version: '3.8'
+
+# ==============================================================================
+# LAUBURU DISTRIBUTED FILE SYSTEM (DFS) — MACOS ARM64 VOLUME WORKER
+# Target Hosts: Mac_Node (Host), MacBook_Pro (Vault), Mac_Mini (Compute)
+# Memory Limit: Hard 256MB (Preserves 82.8 GB llama.cpp AI VRAM Pool)
+# Architecture: linux/arm64 (Apple Silicon M4 / Pro / Max)
+# ==============================================================================
+
+services:
+  dfs_volume_server:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_dfs_volume_node
+    hostname: ${NODE_HOSTNAME:-mac-storage-node}
+    restart: unless-stopped
+    command: >
+      volume
+      -mserver=100.101.39.98:9333
+      -port=8080
+      -port.grpc=18080
+      -ip=${NODE_IP:-100.84.87.3}
+      -dir=/data/dfs_bricks
+      -max=${MAX_VOLUMES:-20}
+      -minFreeSpacePercent=5
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data/dfs_bricks:/data/dfs_bricks:rw
+    ports:
+      - "8080:8080"      # Volume HTTP / REST API
+      - "18080:18080"    # Volume gRPC High-Speed Block Sync
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "volume-brick"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.arch: "arm64"
+      com.lauburu.dfs.ram_cap: "256m"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    name: lauburu_dfs_net
+    driver: bridge

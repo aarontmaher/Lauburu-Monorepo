@@ -1,0 +1,76 @@
+version: "3.8"
+
+services:
+  router_ai_daemon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lauburu/smolagi-router:latest
+    container_name: smolagi_router_daemon
+    restart: unless-stopped
+    network_mode: host
+
+    # Strict resource constraints for GL.iNet OpenWrt (1.0GB Total Host RAM)
+    # Total Container RAM ceiling is strictly bounded at 300MB
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 300M
+        reservations:
+          cpus: "0.5"
+          memory: 150M
+
+    # Docker Compose v2 memory constraints
+    mem_limit: 300m
+    mem_reservation: 150m
+    memswap_limit: 300m
+    cpus: 3.0
+
+    # Volatile tmpfs mounts to guarantee zero flash wear on router SPI NAND / eMMC
+    tmpfs:
+      - /models:rw,size=180M,noexec,nosuid,nodev
+      - /tmp/telemetry:rw,size=16M,noexec,nosuid,nodev
+      - /tmp/cache:rw,size=8M,noexec,nosuid,nodev
+
+    volumes:
+      # Host IPC & telemetry mounts
+      - /var/run/ubus/ubus.sock:/var/run/ubus/ubus.sock:ro
+      - /proc:/host_proc:ro
+      - /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock:ro
+
+    environment:
+      - ROUTER_AI_ENV=production
+      - ROUTER_AI_RAM_BUDGET_MB=300.0
+      - ROUTER_AI_HOST=127.0.0.1
+      - ROUTER_AI_PORT=8080
+      - LLAMA_SERVER_HOST=127.0.0.1
+      - LLAMA_SERVER_PORT=8081
+      - TMPFS_MODELS_DIR=/models
+      - TMPFS_TELEMETRY_DIR=/tmp/telemetry
+      - UBUS_SOCKET_PATH=/var/run/ubus/ubus.sock
+      - HOST_PROC_PATH=/host_proc
+      - PYTHONUNBUFFERED=1
+
+    security_opt:
+      - no-new-privileges:true
+
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_PTRACE
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/health"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "2"

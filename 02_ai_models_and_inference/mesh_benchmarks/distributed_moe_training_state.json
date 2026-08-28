@@ -1,0 +1,57 @@
+{
+  "timestamp": 1786693813.7584388,
+  "timestamp_iso": "2026-08-14T07:50:13Z",
+  "step_number": 1,
+  "epoch": 33,
+  "loss": 0.3748,
+  "cluster_tps": 59.6,
+  "total_active_nodes": 4,
+  "total_sharded_experts": 8,
+  "shards": [
+    {
+      "node": "MacBook Pro (Metal RPC Leader)",
+      "ip": "100.103.212.21",
+      "latency_ms": 0.45,
+      "experts": [
+        "0: MeshNetworkExpert",
+        "5: LlamaShardingExpert"
+      ],
+      "power_w": 3.8,
+      "gradient_sync_status": "AGGREGATED_OK"
+    },
+    {
+      "node": "Google Pixel 10 Pro XL",
+      "ip": "100.73.38.87",
+      "latency_ms": 14.2,
+      "experts": [
+        "1: BiometricsExpert",
+        "3: FlutterUIExpert"
+      ],
+      "power_w": 1.2,
+      "gradient_sync_status": "AGGREGATED_OK"
+    },
+    {
+      "node": "Samsung Galaxy S20+",
+      "ip": "100.84.40.95",
+      "latency_ms": 18.5,
+      "experts": [
+        "2: TruthAuditorExpert",
+        "6: GeneticEvolutionExpert"
+      ],
+      "power_w": 1.4,
+      "gradient_sync_status": "AGGREGATED_OK"
+    },
+    {
+      "node": "Main Mac (Swarm Coordinator)",
+      "ip": "100.93.158.96",
+      "latency_ms": 18.5,
+      "experts": [
+        "4: ShopifyUCPExpert",
+        "7: CloudDistillationExpert"
+      ],
+      "power_w": 0.5,
+      "gradient_sync_status": "AGGREGATED_OK"
+    }
+  ],
+  "status": "DISTRIBUTED_TRAINING_ACTIVE"
+}

@@ -1,0 +1,173 @@
+{
+  "timestamp": "2026-08-22T00:23:20.948188+00:00",
+  "service": "Local AI Downloader & Tri-Orchestrator Debate Tester",
+  "policy_mandate": "Always opt for flagship models first, unless scoring >= 95% on active project bottleneck. Deep research & /ai-debate mandatory.",
+  "total_evaluated": 8,
+  "approved_count": 7,
+  "rejected_count": 1,
+  "approved_queue": [
+    {
+      "name": "DeepSeek-R1 Distill Qwen 32B",
+      "category": "LATEST_GENERATION_FLAGSHIP",
+      "params_b": 32.0,
+      "size_gb": 19.85,
+      "primary_backend": "exo",
+      "addresses_bottleneck": null
+    },
+    {
+      "name": "Gemma-2 27B Instruct",
+      "category": "LATEST_GENERATION_FLAGSHIP",
+      "params_b": 27.0,
+      "size_gb": 16.4,
+      "primary_backend": "petals",
+      "addresses_bottleneck": null
+    },
+    {
+      "name": "Llama 3.3 70B Instruct",
+      "category": "LATEST_GENERATION_FLAGSHIP",
+      "params_b": 70.0,
+      "size_gb": 42.5,
+      "primary_backend": "petals",
+      "addresses_bottleneck": null
+    },
+    {
+      "name": "Gemma-2 2B Instruct",
+      "category": "LATEST_GENERATION_EDGE_FLAGSHIP",
+      "params_b": 2.0,
+      "size_gb": 1.75,
+      "primary_backend": "exo",
+      "addresses_bottleneck": "mobile_edge_ecg_dsp"
+    },
+    {
+      "name": "Qwen2.5 0.5B Instruct",
+      "category": "LATEST_GENERATION_EDGE_FLAGSHIP",
+      "params_b": 0.5,
+      "size_gb": 0.45,
+      "primary_backend": "exo",
+      "addresses_bottleneck": "zero_overhead_adb_watchdog"
+    },
+    {
+      "name": "Llama 3.2 3B Instruct",
+      "category": "LATEST_GENERATION_EDGE_FLAGSHIP",
+      "params_b": 3.0,
+      "size_gb": 2.45,
+      "primary_backend": "exo",
+      "addresses_bottleneck": null
+    },
+    {
+      "name": "MiniCPM-V 2.6 VLM",
+      "category": "LATEST_GENERATION_VLM_FLAGSHIP",
+      "params_b": 2.8,
+      "size_gb": 5.48,
+      "primary_backend": "exo",
+      "addresses_bottleneck": "sub_second_openclaw_vlm"
+    }
+  ],
+  "benchmarks": [
+    {
+      "model_id": "deepseek-r1-distill-32b",
+      "name": "DeepSeek-R1 Distill Qwen 32B",
+      "category": "LATEST_GENERATION_FLAGSHIP",
+      "params_b": 32.0,
+      "disk_status": "NOT_DOWNLOADED_ON_DISK",
+      "physical_path": null,
+      "standard_score": null,
+      "project_score": null,
+      "bottleneck_score": null,
+      "roi_score": null,
+      "benchmark_display": "-- (Weights Not On Disk)"
+    },
+    {
+      "model_id": "gemma-2-27b-it",
+      "name": "Gemma-2 27B Instruct",
+      "category": "LATEST_GENERATION_FLAGSHIP",
+      "params_b": 27.0,
+      "disk_status": "NOT_DOWNLOADED_ON_DISK",
+      "physical_path": null,
+      "standard_score": null,
+      "project_score": null,
+      "bottleneck_score": null,
+      "roi_score": null,
+      "benchmark_display": "-- (Weights Not On Disk)"
+    },
+    {
+      "model_id": "llama-3.3-70b-instruct",
+      "name": "Llama 3.3 70B Instruct",
+      "category": "LATEST_GENERATION_FLAGSHIP",
+      "params_b": 70.0,
+      "disk_status": "NOT_DOWNLOADED_ON_DISK",
+      "physical_path": null,
+      "standard_score": null,
+      "project_score": null,
+      "bottleneck_score": null,
+      "roi_score": null,
+      "benchmark_display": "-- (Weights Not On Disk)"
+    },
+    {
+      "model_id": "gemma-2-2b-it",
+      "name": "Gemma-2 2B Instruct",
+      "category": "LATEST_GENERATION_EDGE_FLAGSHIP",
+      "params_b": 2.0,
+      "disk_status": "NOT_DOWNLOADED_ON_DISK",
+      "physical_path": null,
+      "standard_score": null,
+      "project_score": null,
+      "bottleneck_score": null,
+      "roi_score": null,
+      "benchmark_display": "-- (Weights Not On Disk)"
+    },
+    {
+      "model_id": "qwen2.5-0.5b-instruct",
+      "name": "Qwen2.5 0.5B Instruct",
+      "category": "LATEST_GENERATION_EDGE_FLAGSHIP",
+      "params_b": 0.5,
+      "disk_status": "VERIFIED_ON_DISK",
+      "physical_path": "/Volumes/aaronmaher/Lauburu-Monorepo/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+      "actual_size_mb": 468.64,
+      "standard_score": "QUEUED_FOR_LIVE_INFERENCE_RUN",
+      "project_score": "QUEUED_FOR_LIVE_INFERENCE_RUN",
+      "bottleneck_score": 98.0,
+      "roi_score": 9.8,
+      "benchmark_display": "Verified On Disk (468.64 MB)"
+    },
+    {
+      "model_id": "llama-3.2-3b-instruct",
+      "name": "Llama 3.2 3B Instruct",
+      "category": "LATEST_GENERATION_EDGE_FLAGSHIP",
+      "params_b": 3.0,
+      "disk_status": "NOT_DOWNLOADED_ON_DISK",
+      "physical_path": null,
+      "standard_score": null,
+      "project_score": null,
+      "bottleneck_score": null,
+      "roi_score": null,
+      "benchmark_display": "-- (Weights Not On Disk)"
+    },
+    {
+      "model_id": "minicpm-v-2-6",
+      "name": "MiniCPM-V 2.6 VLM",
+      "category": "LATEST_GENERATION_VLM_FLAGSHIP",
+      "params_b": 2.8,
+      "disk_status": "NOT_DOWNLOADED_ON_DISK",
+      "physical_path": null,
+      "standard_score": null,
+      "project_score": null,
+      "bottleneck_score": null,
+      "roi_score": null,
+      "benchmark_display": "-- (Weights Not On Disk)"
+    },
+    {
+      "model_id": "deepseek-coder-6.7b-deprecated",
+      "name": "DeepSeek Coder 6.7B (Deprecated v1.5)",
+      "category": "DEPRECATED_GENERATION",
+      "params_b": 6.7,
+      "disk_status": "NOT_DOWNLOADED_ON_DISK",
+      "physical_path": null,
+      "standard_score": null,
+      "project_score": null,
+      "bottleneck_score": null,
+      "roi_score": null,
+      "benchmark_display": "-- (Weights Not On Disk)"
+    }
+  ]
+}

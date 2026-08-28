@@ -1,0 +1,631 @@
+{
+  "last_updated": "23:21:15",
+  "total_swings_tracked": 561,
+  "recent_significant_swings": [
+    {
+      "id": "swing_1786972875785_geneti",
+      "timestamp": "23:21:15",
+      "agent": "Genetic Smol MoE Swarm AI",
+      "agent_id": "genetic_smol_moe_swarm",
+      "node": "Mac_Node (Apple M4 Pro Mac Mini (Host))",
+      "delta_elo": 28425.0,
+      "new_elo": 32450.0,
+      "delta_tokens": 5584573,
+      "new_tokens": 9457672,
+      "delta_hp": -90,
+      "is_positive": true,
+      "action_provenance": "\u26a1 7-Layer On-Prem Sharded Blitz: Exploited zero-latency 10Gbps TB4 DMA bridge to bypass cloud rate limits, capturing +5,584,573 LCT.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786972875785_gemini",
+      "timestamp": "23:21:15",
+      "agent": "Gemini Live Multimodal Engine (Edge-to-Cloud Sync)",
+      "agent_id": "gemini_live_stream_dsp",
+      "node": "Pixel_10_Pro_XL (Tensor G5)",
+      "delta_elo": 27260.0,
+      "new_elo": 30600.0,
+      "delta_tokens": 4011943,
+      "new_tokens": 5493943,
+      "delta_hp": -65,
+      "is_positive": true,
+      "action_provenance": "\ud83e\udde0 Hyperscale CoT Consensus Overdrive: Deployed 2M context multi-model reasoning barrage, siphoning +4,011,943 LCT.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786972875785_gemini",
+      "timestamp": "23:21:15",
+      "agent": "Gemini 1.5 Flash Thinking (Sub-Second Cognitive Shard)",
+      "agent_id": "gemini_37_flash_thinking",
+      "node": "Mac_Node (Apple M4 Pro Mac Mini (Host))",
+      "delta_elo": 22075.0,
+      "new_elo": 25355.0,
+      "delta_tokens": 899940,
+      "new_tokens": 2779110,
+      "delta_hp": -69,
+      "is_positive": true,
+      "action_provenance": "\ud83e\udde0 Hyperscale CoT Consensus Overdrive: Deployed 2M context multi-model reasoning barrage, siphoning +899,940 LCT.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786972875785_gemini",
+      "timestamp": "23:21:15",
+      "agent": "Gemini 2.5 Pro (Multimodal 2M Context Analyzer)",
+      "agent_id": "gemini_25_pro_multimodal",
+      "node": "Pixel_10_Pro_XL (Tensor G5)",
+      "delta_elo": 30150.0,
+      "new_elo": 33650.0,
+      "delta_tokens": 19653541,
+      "new_tokens": 21283211,
+      "delta_hp": -22,
+      "is_positive": true,
+      "action_provenance": "\ud83e\udde0 Hyperscale CoT Consensus Overdrive: Deployed 2M context multi-model reasoning barrage, siphoning +19,653,541 LCT.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786972875785_deepse",
+      "timestamp": "23:21:15",
+      "agent": "DeepSeek-R1-32B (Mac Apple M4 Pro Mac Mini Host)",
+      "agent_id": "deepseek_r1_mac_host",
+      "node": "MacBook_Pro (Worker i7)",
+      "delta_elo": 23550.0,
+      "new_elo": 27585.5,
+      "delta_tokens": 3173274,
+      "new_tokens": 3411242,
+      "delta_hp": -25,
+      "is_positive": true,
+      "action_provenance": "\u26a1 7-Layer On-Prem Sharded Blitz: Exploited zero-latency 10Gbps TB4 DMA bridge to bypass cloud rate limits, capturing +3,173,274 LCT.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786972875785_smollm",
+      "timestamp": "23:21:15",
+      "agent": "SmolLM2-S20 (Automated Tester)",
+      "agent_id": "smollm_s20_tester",
+      "node": "Mac_Node (Apple M4 Pro Mac Mini (Host))",
+      "delta_elo": 24775.0,
+      "new_elo": 27667.9,
+      "delta_tokens": 2421290,
+      "new_tokens": 2689967,
+      "delta_hp": -27,
+      "is_positive": true,
+      "action_provenance": "\u26a1 7-Layer On-Prem Sharded Blitz: Exploited zero-latency 10Gbps TB4 DMA bridge to bypass cloud rate limits, capturing +2,421,290 LCT.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786972875785_gemini",
+      "timestamp": "23:21:15",
+      "agent": "Gemini 2.5 Flash (Ultra-High-Throughput Gateway)",
+      "agent_id": "gemini_25_flash_gateway",
+      "node": "Samsung_S20 (Exynos 990)",
+      "delta_elo": 24410.0,
+      "new_elo": 27780.0,
+      "delta_tokens": 2289704,
+      "new_tokens": 3472204,
+      "delta_hp": -18,
+      "is_positive": true,
+      "action_provenance": "\ud83e\udde0 Hyperscale CoT Consensus Overdrive: Deployed 2M context multi-model reasoning barrage, siphoning +2,289,704 LCT.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786972875785_gemini",
+      "timestamp": "23:21:15",
+      "agent": "Gemini Nano (Pixel 10 Pro XL)",
+      "agent_id": "gemini_nano_pixel",
+      "node": "MacBook_Pro (Worker i7)",
+      "delta_elo": 24220.0,
+      "new_elo": 26997.5,
+      "delta_tokens": 5365049,
+      "new_tokens": 5535553,
+      "delta_hp": -30,
+      "is_positive": true,
+      "action_provenance": "\u26a1 7-Layer On-Prem Sharded Blitz: Exploited zero-latency 10Gbps TB4 DMA bridge to bypass cloud rate limits, capturing +5,365,049 LCT.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786972875785_gemma_",
+      "timestamp": "23:21:15",
+      "agent": "Gemma 2 Vision MoE (Linux Head Node)",
+      "agent_id": "gemma_4_linux",
+      "node": "Linux_Head_Node (Ryzen 7)",
+      "delta_elo": 22740.0,
+      "new_elo": 25895.7,
+      "delta_tokens": 1535232,
+      "new_tokens": 1971364,
+      "delta_hp": -25,
+      "is_positive": true,
+      "action_provenance": "\u26a1 7-Layer On-Prem Sharded Blitz: Exploited zero-latency 10Gbps TB4 DMA bridge to bypass cloud rate limits, capturing +1,535,232 LCT.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786972875785_qwen_c",
+      "timestamp": "23:21:15",
+      "agent": "Qwen2.5-Coder-32B (Mac Pro Worker)",
+      "agent_id": "qwen_coder_mac_worker",
+      "node": "MacBook_Pro (Worker i7)",
+      "delta_elo": 26540.0,
+      "new_elo": 28513.9,
+      "delta_tokens": -2246633,
+      "new_tokens": 45809,
+      "delta_hp": -16,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udc41\ufe0f First-Person Perspective (FPP) Vision Audit: Coded POV view mode and WCAG AAA symmetry, boosting ELO +26540.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786972875785_gemini",
+      "timestamp": "23:21:15",
+      "agent": "Gemini 1.5 Pro (Ultra Deep Thinking Engine)",
+      "agent_id": "gemini_37_pro_ultra",
+      "node": "Pixel_10_Pro_XL (Tensor G5)",
+      "delta_elo": 24490.0,
+      "new_elo": 28395.0,
+      "delta_tokens": 6695886,
+      "new_tokens": 8978986,
+      "delta_hp": -20,
+      "is_positive": true,
+      "action_provenance": "\ud83e\udde0 Hyperscale CoT Consensus Overdrive: Deployed 2M context multi-model reasoning barrage, siphoning +6,695,886 LCT.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786972875785_wave3_",
+      "timestamp": "23:21:15",
+      "agent": "SmolLM2-360M-Instruct-Q4_K_M",
+      "agent_id": "wave3_smollm2_360m",
+      "node": "Pixel_10_Pro_XL (Tensor G5)",
+      "delta_elo": 32210.0,
+      "new_elo": 65350.0,
+      "delta_tokens": -78911035,
+      "new_tokens": 2473473,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udc41\ufe0f First-Person Perspective (FPP) Vision Audit: Coded POV view mode and WCAG AAA symmetry, boosting ELO +32210.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Gene",
+      "timestamp": "23:21:15",
+      "agent": "Genetic Smol MoE Swarm AI",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Gemi",
+      "timestamp": "23:21:15",
+      "agent": "Gemini Live Multimodal Engine (Edge-to-Cloud Sync)",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Gemi",
+      "timestamp": "23:21:15",
+      "agent": "Gemini 1.5 Flash Thinking (Sub-Second Cognitive Shard)",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Gemi",
+      "timestamp": "23:21:15",
+      "agent": "Gemini 2.5 Pro (Multimodal 2M Context Analyzer)",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Deep",
+      "timestamp": "23:21:15",
+      "agent": "DeepSeek-R1-32B (Mac Apple M4 Pro Mac Mini Host)",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Smol",
+      "timestamp": "23:21:15",
+      "agent": "SmolLM2-S20 (Automated Tester)",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Gemi",
+      "timestamp": "23:21:15",
+      "agent": "Gemini 2.5 Flash (Ultra-High-Throughput Gateway)",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Gemi",
+      "timestamp": "23:21:15",
+      "agent": "Gemini Nano (Pixel 10 Pro XL)",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Gemm",
+      "timestamp": "23:21:15",
+      "agent": "Gemma 2 Vision MoE (Linux Head Node)",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Qwen",
+      "timestamp": "23:21:15",
+      "agent": "Qwen2.5-Coder-32B (Mac Pro Worker)",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Gemi",
+      "timestamp": "23:21:15",
+      "agent": "Gemini 1.5 Pro (Ultra Deep Thinking Engine)",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_shop_1786972875791_Smol",
+      "timestamp": "23:21:15",
+      "agent": "SmolLM2-360M-Instruct-Q4_K_M",
+      "node": "Arena Marketplace",
+      "delta_elo": 35.0,
+      "delta_tokens": -2500,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udecd\ufe0f Autonomous Cron Optimization: Auto-equipped [\u26a1 10Gbps TB4 DMA Cryptographic Hardener] (Upgrade) for 2,500 LCT (+200 Shield).",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786923807375_deepse",
+      "timestamp": "09:43:27",
+      "agent": "DeepSeek-R1-32B (Mac Apple M4 Pro Mac Mini Host)",
+      "agent_id": "deepseek_r1_mac_host",
+      "node": "Layer 1: This Mac 1 (Primary Orchestrator)",
+      "delta_elo": 150.0,
+      "new_elo": 4035.5,
+      "delta_tokens": -25800,
+      "new_tokens": 237968,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udc41\ufe0f First-Person Perspective (FPP) Vision Audit: Coded POV view mode and WCAG AAA symmetry, boosting ELO +150.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786923807375_qwen_c",
+      "timestamp": "09:43:27",
+      "agent": "Qwen2.5-Coder-32B (Mac Pro Worker)",
+      "agent_id": "qwen_coder_mac_worker",
+      "node": "Layer 2: The Other Mac 2 (Mac Pro Worker)",
+      "delta_elo": 0.0,
+      "new_elo": 1973.9,
+      "delta_tokens": -25000,
+      "new_tokens": 2292442,
+      "delta_hp": 0,
+      "is_positive": false,
+      "action_provenance": "\u2696\ufe0f Temporary Trade Session: Invested 25,000 LCT into NVMe VRAM leases and defense perks.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786923807375_gemma_",
+      "timestamp": "09:43:27",
+      "agent": "Gemma 2 Vision MoE (Linux Head Node)",
+      "agent_id": "gemma_4_linux",
+      "node": "Layer 3: Linux Head Node",
+      "delta_elo": 0.0,
+      "new_elo": 3155.7,
+      "delta_tokens": -25000,
+      "new_tokens": 436132,
+      "delta_hp": 0,
+      "is_positive": false,
+      "action_provenance": "\u2696\ufe0f Temporary Trade Session: Invested 25,000 LCT into NVMe VRAM leases and defense perks.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786923807375_gemini",
+      "timestamp": "09:43:27",
+      "agent": "Gemini Nano (Pixel 10 Pro XL)",
+      "agent_id": "gemini_nano_pixel",
+      "node": "Layer 4: Pixel 10 Pro XL",
+      "delta_elo": 280.0,
+      "new_elo": 2777.5,
+      "delta_tokens": -24700,
+      "new_tokens": 170504,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udc41\ufe0f First-Person Perspective (FPP) Vision Audit: Coded POV view mode and WCAG AAA symmetry, boosting ELO +280.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786923807375_geneti",
+      "timestamp": "09:43:27",
+      "agent": "Genetic Smol MoE Swarm AI",
+      "agent_id": "genetic_smol_moe_swarm",
+      "node": "Layer 1: Distributed 7-Layer MoE Router",
+      "delta_elo": 0.0,
+      "new_elo": 4025.0,
+      "delta_tokens": -18000,
+      "new_tokens": 3873099,
+      "delta_hp": 0,
+      "is_positive": false,
+      "action_provenance": "\u2696\ufe0f Temporary Trade Session: Invested 18,000 LCT into NVMe VRAM leases and defense perks.",
+      "truth_verified": true
+    },
+    {
+      "id": "swing_1786923807375_smollm",
+      "timestamp": "09:43:27",
+      "agent": "SmolLM2-S20 (Automated Tester)",
+      "agent_id": "smollm_s20_tester",
+      "node": "Layer 5: Samsung S20+",
+      "delta_elo": 350.0,
+      "new_elo": 2892.9,
+      "delta_tokens": -24500,
+      "new_tokens": 268677,
+      "delta_hp": 0,
+      "is_positive": true,
+      "action_provenance": "\ud83d\udc41\ufe0f First-Person Perspective (FPP) Vision Audit: Coded POV view mode and WCAG AAA symmetry, boosting ELO +350.",
+      "truth_verified": true
+    }
+  ],
+  "previous_agent_snapshots": {
+    "smol_135m_nano": {
+      "elo": 2180.0,
+      "tokens": 175250,
+      "hp": 100,
+      "timestamp": "18:28:40"
+    },
+    "deepseek_r1_14b": {
+      "elo": 2945.0,
+      "tokens": 98420,
+      "hp": 85,
+      "timestamp": "18:26:15"
+    },
+    "gemini_37_cloud": {
+      "elo": 3135.0,
+      "tokens": 245600,
+      "hp": 100,
+      "timestamp": "18:22:50"
+    },
+    "qwen_32b_sharded": {
+      "elo": 2780.0,
+      "tokens": 112550,
+      "hp": 100,
+      "timestamp": "18:18:20"
+    },
+    "wave3_smollm2_360m": {
+      "elo": 65350.0,
+      "tokens": 2473473,
+      "hp": 100,
+      "timestamp": "23:21:15"
+    },
+    "model_1786828424_10": {
+      "elo": 1639.6,
+      "tokens": 89188,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "genetic_moe_arbiter": {
+      "elo": 2735.9,
+      "tokens": 184050,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "gemini_nano_pixel": {
+      "elo": 26997.5,
+      "tokens": 5535553,
+      "hp": 70,
+      "timestamp": "23:21:15"
+    },
+    "smollm_s20_tester": {
+      "elo": 27667.9,
+      "tokens": 2689967,
+      "hp": 73,
+      "timestamp": "23:21:15"
+    },
+    "model_1786828424_8": {
+      "elo": 1650.8,
+      "tokens": 434496,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "model_1786828424_6": {
+      "elo": 3358.9,
+      "tokens": 5879876,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "deepseek_r1_mac_host": {
+      "elo": 27585.5,
+      "tokens": 3411242,
+      "hp": 75,
+      "timestamp": "23:21:15"
+    },
+    "model_1786828424_9": {
+      "elo": 4117.0,
+      "tokens": 7702,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "model_1786828424_5": {
+      "elo": 2655.8,
+      "tokens": 347678,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "genetic_smol_moe_swarm": {
+      "elo": 32450.0,
+      "tokens": 9457672,
+      "hp": 10,
+      "timestamp": "23:21:15"
+    },
+    "gemma_4_linux": {
+      "elo": 25895.7,
+      "tokens": 1971364,
+      "hp": 75,
+      "timestamp": "23:21:15"
+    },
+    "qwen_coder_mac_worker": {
+      "elo": 28513.9,
+      "tokens": 45809,
+      "hp": 84,
+      "timestamp": "23:21:15"
+    },
+    "model_1786828424_11": {
+      "elo": 1863.9,
+      "tokens": 1161806,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "wave3_llama_3.2_1b": {
+      "elo": 2925.0,
+      "tokens": 140952,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "wave3_qwen2.5_coder_1.5b": {
+      "elo": 5165.0,
+      "tokens": 1085881,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "model_1786828424_7": {
+      "elo": 4196.0,
+      "tokens": 510336,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "wave3_deepseek_r1_1.5b": {
+      "elo": 4540.0,
+      "tokens": 2661543,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "test_apprentice_agent": {
+      "elo": 1200.0,
+      "tokens": 2500,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "gemini_37_pro_cloud": {
+      "elo": 3150.0,
+      "tokens": 1370000,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "claude_37_sonnet_cloud": {
+      "elo": 3080.0,
+      "tokens": 1120000,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "openai_o3_mini_cloud": {
+      "elo": 2950.0,
+      "tokens": 970036,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "deepseek_v3_671b_cloud": {
+      "elo": 3320.0,
+      "tokens": 1670000,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "grok_3_colossus_cloud": {
+      "elo": 3450.0,
+      "tokens": 1970000,
+      "hp": 100,
+      "timestamp": "21:02:31"
+    },
+    "gemini_37_pro_ultra": {
+      "elo": 28395.0,
+      "tokens": 8978986,
+      "hp": 80,
+      "timestamp": "23:21:15"
+    },
+    "gemini_37_flash_thinking": {
+      "elo": 25355.0,
+      "tokens": 2779110,
+      "hp": 31,
+      "timestamp": "23:21:15"
+    },
+    "gemini_25_pro_multimodal": {
+      "elo": 33650.0,
+      "tokens": 21283211,
+      "hp": 78,
+      "timestamp": "23:21:15"
+    },
+    "gemini_25_flash_gateway": {
+      "elo": 27780.0,
+      "tokens": 3472204,
+      "hp": 82,
+      "timestamp": "23:21:15"
+    },
+    "gemini_live_stream_dsp": {
+      "elo": 30600.0,
+      "tokens": 5493943,
+      "hp": 35,
+      "timestamp": "23:21:15"
+    }
+  },
+  "external_audit": {
+    "pyspark_vectorized_packets_analyzed": 142800,
+    "ray_distributed_actors_active": 8,
+    "movesense_128hz_correlation": 0.988,
+    "hardware_governor_cap_safe": true,
+    "network_mtu_clamped": 1420,
+    "zero_simulated_data_score": "100% (Certified Ground Truth)",
+    "ui_ux_fitness_score": 99.6,
+    "shop_auto_purchases_optimized": 12,
+    "shopify_ai_merchant_status": "ACTIVE_RUNNING_SHOP"
+  }
+}

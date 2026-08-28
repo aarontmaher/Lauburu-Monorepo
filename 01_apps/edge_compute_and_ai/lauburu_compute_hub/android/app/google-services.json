@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "497324587334",
+    "project_id": "lauburu-net-cloud",
+    "storage_bucket": "lauburu-net-cloud.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497324587334:android:be1e62cf9fafa3d0004d47",
+        "android_client_info": {
+          "package_name": "com.example.lauburu_bluetooth_sensor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHvLTUFyYBWPM3EVSnMrLfBJAODBuegsw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497324587334:android:38bff57b920bc2d5004d47",
+        "android_client_info": {
+          "package_name": "com.example.lauburu_compute_hub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHvLTUFyYBWPM3EVSnMrLfBJAODBuegsw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497324587334:android:8169e8427c3e0078004d47",
+        "android_client_info": {
+          "package_name": "com.example.lauburu_mesh_network"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHvLTUFyYBWPM3EVSnMrLfBJAODBuegsw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

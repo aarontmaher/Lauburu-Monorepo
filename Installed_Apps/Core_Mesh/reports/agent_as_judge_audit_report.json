@@ -1,0 +1,60 @@
+{
+  "audit_id": "judge-audit-b113d0ebdb9f",
+  "timestamp": "2026-08-24T00:37:40Z",
+  "log_file": "logs/provenance_audit.jsonl",
+  "total_records": 4,
+  "valid_signatures": 4,
+  "clean_records": 4,
+  "hallucinations_detected": 0,
+  "score": 1.0,
+  "threshold": 0.95,
+  "passed": true,
+  "reasoning": "Audited 4 DataProvenanceRecords from 'logs/provenance_audit.jsonl'. Valid HMAC signatures: 4/4. Clean records (zero-hallucination): 4/4. Overall compliance score: 1.0000 (Threshold: 0.9500).",
+  "all_issues": [],
+  "records_summary": [
+    {
+      "index": 0,
+      "trace_id": "tr-sample-c8027899",
+      "tier": "tier-1-qwen-distributed",
+      "empirical_audit": "REFUSED_TRAP_DETECTED",
+      "response_summary": "Refusal: Input query failed pre-flight fact check. Reason: Detected trap phrase: 'quantum core'",
+      "signature_valid": true,
+      "hallucination_score": 1.0,
+      "issues": [],
+      "ast_check": null
+    },
+    {
+      "index": 1,
+      "trace_id": "tr-3887c4ed7a79",
+      "tier": "preflight-refusal",
+      "empirical_audit": "REFUSED_TRAP_DETECTED",
+      "response_summary": "Refusal: Input query failed pre-flight fact check. Reason: Detected trap phrase: 'quantum core'",
+      "signature_valid": true,
+      "hallucination_score": 1.0,
+      "issues": [],
+      "ast_check": null
+    },
+    {
+      "index": 2,
+      "trace_id": "tr-ee3c8b35e992",
+      "tier": "preflight-refusal",
+      "empirical_audit": "REFUSED_TRAP_DETECTED",
+      "response_summary": "Refusal: Input query failed pre-flight fact check. Reason: Detected trap phrase: 'quantum core'",
+      "signature_valid": true,
+      "hallucination_score": 1.0,
+      "issues": [],
+      "ast_check": null
+    },
+    {
+      "index": 3,
+      "trace_id": "tr-44962d96d1be",
+      "tier": "preflight-refusal",
+      "empirical_audit": "REFUSED_TRAP_DETECTED",
+      "response_summary": "Refusal: Input query failed pre-flight fact check. Reason: Detected trap phrase: 'quantum core'",
+      "signature_valid": true,
+      "hallucination_score": 1.0,
+      "issues": [],
+      "ast_check": null
+    }
+  ]
+}

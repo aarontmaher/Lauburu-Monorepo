@@ -1,0 +1,12 @@
+# 11-admin-dev-spend-gates — Admin/Dev → AI spend gates section.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Settings"
+- tapOn:
+    text: "Admin / Dev"
+- scrollUntilVisible:
+    element:
+      text: "AI spend gates"
+    optional: true
+- takeScreenshot: "11-admin-dev-spend-gates"

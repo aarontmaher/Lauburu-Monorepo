@@ -1,0 +1,138 @@
+{
+  "status": "ACTIVE_24_7",
+  "timestamp": "2026-08-19T12:07:24Z",
+  "datasets": [
+    {
+      "filename": "3d_spatial_instructional_map_lora.jsonl",
+      "size_kb": 1469.7,
+      "records_count": 1959,
+      "last_modified": "2026-08-19 00:35:20"
+    },
+    {
+      "filename": "anti_lag_stability.jsonl",
+      "size_kb": 1960.2,
+      "records_count": 2232,
+      "last_modified": "2026-08-15 21:01:42"
+    },
+    {
+      "filename": "antigravity_sdk_lora.jsonl",
+      "size_kb": 539.7,
+      "records_count": 322,
+      "last_modified": "2026-08-19 22:02:08"
+    },
+    {
+      "filename": "app_ecosystem_evaluations.jsonl",
+      "size_kb": 96.6,
+      "records_count": 43,
+      "last_modified": "2026-08-19 22:02:59"
+    },
+    {
+      "filename": "architectural_decisions.jsonl",
+      "size_kb": 330.5,
+      "records_count": 16,
+      "last_modified": "2026-08-19 15:18:58"
+    },
+    {
+      "filename": "continuous_lora_dataset.jsonl",
+      "size_kb": 1575304.7,
+      "records_count": 49943,
+      "last_modified": "2026-08-19 22:03:52"
+    },
+    {
+      "filename": "genetic_moe_cron_optimizations.jsonl",
+      "size_kb": 3.2,
+      "records_count": 4,
+      "last_modified": "2026-08-18 16:02:04"
+    },
+    {
+      "filename": "genetic_workflow_evolution.jsonl",
+      "size_kb": 1.2,
+      "records_count": 1,
+      "last_modified": "2026-08-19 19:03:57"
+    },
+    {
+      "filename": "git_ast_diffs_lora.jsonl",
+      "size_kb": 40555.7,
+      "records_count": 10775,
+      "last_modified": "2026-08-19 22:07:23"
+    },
+    {
+      "filename": "mesh_telemetry_lora.jsonl",
+      "size_kb": 3554.3,
+      "records_count": 2155,
+      "last_modified": "2026-08-19 22:07:24"
+    },
+    {
+      "filename": "movesense_biometrics_lora.jsonl",
+      "size_kb": 8833.7,
+      "records_count": 6467,
+      "last_modified": "2026-08-19 22:07:17"
+    },
+    {
+      "filename": "network_telemetry.jsonl",
+      "size_kb": 4.4,
+      "records_count": 12,
+      "last_modified": "2026-08-17 22:02:19"
+    },
+    {
+      "filename": "obsidian_knowledge_structuring.jsonl",
+      "size_kb": 0.4,
+      "records_count": 1,
+      "last_modified": "2026-08-19 18:36:19"
+    },
+    {
+      "filename": "openclaw_audit_ledger.jsonl",
+      "size_kb": 0.4,
+      "records_count": 1,
+      "last_modified": "2026-08-19 18:46:48"
+    },
+    {
+      "filename": "quarantined_hallucinations.jsonl",
+      "size_kb": 214.6,
+      "records_count": 61,
+      "last_modified": "2026-08-16 01:36:45"
+    },
+    {
+      "filename": "ram_load_balancing.jsonl",
+      "size_kb": 2.2,
+      "records_count": 3,
+      "last_modified": "2026-08-16 00:44:30"
+    },
+    {
+      "filename": "shopify_commerce_lora.jsonl",
+      "size_kb": 12677.5,
+      "records_count": 6465,
+      "last_modified": "2026-08-19 22:07:17"
+    },
+    {
+      "filename": "tiered_router_decisions.jsonl",
+      "size_kb": 5.1,
+      "records_count": 14,
+      "last_modified": "2026-08-19 19:01:57"
+    },
+    {
+      "filename": "truth_audit_debate.jsonl",
+      "size_kb": 13275.8,
+      "records_count": 11307,
+      "last_modified": "2026-08-19 22:07:10"
+    },
+    {
+      "filename": "truth_audit_m4.jsonl",
+      "size_kb": 182.1,
+      "records_count": 57,
+      "last_modified": "2026-08-15 11:14:56"
+    },
+    {
+      "filename": "ui_ux_evolution_game.jsonl",
+      "size_kb": 2.6,
+      "records_count": 2,
+      "last_modified": "2026-08-18 11:08:36"
+    },
+    {
+      "filename": "ui_ux_improvements.jsonl",
+      "size_kb": 25065.5,
+      "records_count": 5671,
+      "last_modified": "2026-08-19 22:05:59"
+    }
+  ]
+}

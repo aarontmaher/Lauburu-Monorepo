@@ -1,0 +1,8 @@
+/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/defenses/rust_ratatui/target/debug/deps/log-79a4fe618d5933c0.d: /Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/lib.rs /Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/macros.rs /Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/serde.rs /Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/__private_api.rs
+
+/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/defenses/rust_ratatui/target/debug/deps/liblog-79a4fe618d5933c0.rmeta: /Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/lib.rs /Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/macros.rs /Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/serde.rs /Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/__private_api.rs
+
+/Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/lib.rs:
+/Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/macros.rs:
+/Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/serde.rs:
+/Users/aaron/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/src/__private_api.rs:

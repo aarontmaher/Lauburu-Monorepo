@@ -1,0 +1,14 @@
+{
+  "model": "Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
+  "repo": "huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF",
+  "destination": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
+  "downloaded_bytes": 17378626464,
+  "total_bytes": 17378626464,
+  "downloaded_gb": 16.19,
+  "total_gb": 16.19,
+  "progress_percent": 100.0,
+  "speed_mb_s": 0.0,
+  "eta_seconds": null,
+  "status": "completed",
+  "updated_at": 1787948831.552823
+}

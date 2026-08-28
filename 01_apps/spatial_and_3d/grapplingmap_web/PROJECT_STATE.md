@@ -1,0 +1,66 @@
+# PROJECT STATE
+Last updated: 2026-03-29
+
+## Current Phase
+Active website/app improvement iteration loop
+
+## Default Priority Order
+1. Website/app improvements (mobile UX, search, video, polish)
+2. Automation/workflow improvements
+3. Live-footage understanding improvements
+4. Content filling (only when Aaron is actively supplying content)
+
+## What Is Working
+- Single-file app (index.html) with Reference tree + 3D network graph
+- OPML pipeline: grappling.opml → opml_to_sections.py → index.html (stable)
+- PWA: manifest, service worker, installable
+- Playwright smoke tests: 12 tests (12 pass — canvas test fixed 2026-03-29)
+- Website improvement loop: 4 iterations completed this session
+- Live footage workflow: INBOX, ffmpeg, classification memory (25 entries), placement rules
+- Keyboard Maestro: active automation system
+- Auto-merge for claude/** branches
+- Shared memory files + zip bundles + auto-open Finder on upload
+
+## Website Improvement History (this session — 13 iterations)
+1. ITERATION-01: mobile touch targets, list panel swipe-to-dismiss
+2. BATCH-LEGEND-01: legend overlap fix, ★ tooltip, 3D render loop pause/resume
+3. ITERATION-02: search clear buttons, result count, mobile search expand
+4. ITERATION-03: 3D detail panel swipe-dismiss, video modal landscape, scroll-to-top fix
+5. ITERATION-04: tap-to-deselect, inline note preview, two-tone progress bar
+6. ITERATION-05: OT transition rows clickable (navigate to destination)
+7. ITERATION-06: progress dashboard visual upgrade (sparkline, section colors, drill/learn split)
+8. ITERATION-07: filter button sync on tab switch, search clears on filter change
+9. ITERATION-08: heading click toggles collapse, video watched indicator
+10. ITERATION-09: Recently Watched panel + W keyboard shortcut
+11. ITERATION-10: Share button (copy deep link to clipboard)
+12. ITERATION-11: keyboard help panel updated with W shortcut
+13. ITERATION-12: position connection card (inbound/outbound edges inline)
+14. ITERATION-13: section header progress percentage bar
+15. BATCH-I-01: mobile auto-rotation off, recenter button, notes styling, video URL parser, graph video indicators
+16. BATCH-J-01: game strength indicators (Strong/Building/Gap), game-coloured graph nodes
+17. BATCH-K-01: drill auto-advance with countdown, session summary after training
+18. BATCH-EXTRAS-01: connected-but-untracked suggestions, drilling queue badge, dynamic subtitle, edge direction arrows
+
+## Built-out Positions (11)
+J point, K guard, Quarter guard, Supine Guard, Mount, Turtle, Berimbolo, Grounded 50/50, Wrestling bodylock, Back Control, Crab ride
+
+## Live Footage
+- 45 videos placed, 574+ technique folders
+- INBOX ready, sync script ready (not yet applied)
+
+## Instructional Videos
+- 75 instructional videos sorted into ~/GrapplingMap/instructionals/ (separate from live-footage)
+- Mirrored folder structure: section/position/perspective/heading/
+- Content types kept separate: instructionals vs live footage
+
+## Pipeline
+- Stable, NO_DEST=0, HELD=1 (Knee on belly bare arrow)
+- Transition edges: 36, in_network: 36
+
+## Uncommitted
+- This session's index.html changes not yet committed/pushed
+
+## Input-limited (needs Aaron)
+- Octopus Guard OPML decision
+- Guard OT: 16/19 positions have zero OT lines
+- Saddle canonical name

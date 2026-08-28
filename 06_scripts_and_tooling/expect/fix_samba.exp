@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+set timeout 15
+spawn ssh -o StrictHostKeyChecking=no linux@100.101.39.98
+expect "assword:"
+send "goldfighting1\r"
+expect "\\$"
+send "sudo systemctl stop smbd nmbd && sudo systemctl disable smbd nmbd\r"
+expect "assword"
+send "goldfighting1\r"
+expect "\\$"
+send "cd ~/nas_samba && sudo docker-compose up -d\r"
+expect "\\$"
+send "sudo docker ps | grep samba\r"
+expect "\\$"
+send "exit\r"

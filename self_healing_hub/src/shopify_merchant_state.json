@@ -1,0 +1,32 @@
+{
+  "merchant_name": "Shopify AI Merchant Specialist",
+  "model_engine": "Gemma-4-26B-MoE & OpenClaw E-Commerce Specialist",
+  "version": "2.4.0",
+  "status": "ACTIVE",
+  "total_sales_volume_lct": 8898500,
+  "total_transactions": 42,
+  "active_promotions": [
+    {
+      "id": "promo_flash_tb4",
+      "title": "\u26a1 10Gbps TB4 Bridge Expansion Sale",
+      "discount_pct": 15,
+      "target_category": "Hardware & Cables",
+      "reason": "Accelerating inter-Mac tensor sharding over 10Gbps bridge."
+    },
+    {
+      "id": "promo_swarm_bundle",
+      "title": "\ud83d\udc1d Swarm Engine & Subagent Starter Kit",
+      "discount_pct": 10,
+      "target_category": "Swarm & Subagents",
+      "reason": "Empowering lower-tier edge nodes with multi-node AST mining capabilities."
+    }
+  ],
+  "featured_recommendation": {
+    "product_id": "tb4_optical_cable_10g",
+    "product_name": "\u26a1 10Gbps Active Optical Thunderbolt 4 Cable (2m)",
+    "target_node": "MacBook Pro Worker & Mac Apple M4 Pro Mac Mini",
+    "roi_score": 9.8,
+    "merchant_pitch": "Essential upgrade for sub-millisecond layer transfers between Mac 1 and Mac 2."
+  },
+  "last_cycle_timestamp": "2026-08-17T13:21:15Z"
+}

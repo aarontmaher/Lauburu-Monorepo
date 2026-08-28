@@ -1,0 +1,141 @@
+version: '3.8'
+
+# ==============================================================================
+# LAUBURU SEAWEEDFS LOCAL NODE STACK (Milestone 1 Production Definition)
+# Subsystem: 00_core_infrastructure/seaweedfs
+# Raft Quorum: 3-Node Consensus Cluster (2/3 majority required)
+# Master Peers: 100.101.39.98:9333, 100.119.199.76:9333, 100.103.212.21:9333
+# Derived gRPC Ports: Master 19333, Filer 18888, Volume 18080
+# ==============================================================================
+
+services:
+  seaweed_master:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_seaweed_master
+    hostname: ${NODE_HOSTNAME:-seaweed-master-node}
+    restart: unless-stopped
+    network_mode: "host"
+    environment:
+      - WEED_MASTER_PORT=9333
+      - WEED_MASTER_PORT_GRPC=19333
+      - WEED_MASTER_PEERS=${DFS_MASTER_PEERS:-100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333}
+      - WEED_MASTER_ELECTIONTIMEOUT=2s
+      - WEED_MASTER_HEARTBEATINTERVAL=200ms
+    volumes:
+      - ${DFS_MASTER_DATA_DIR:-/mnt/storage/seaweedfs/master}:/data/master:rw
+    command: >
+      weed master
+      -ip=${NODE_IP:-100.101.39.98}
+      -ip.bind=0.0.0.0
+      -port=9333
+      -port.grpc=19333
+      -mdir=/data/master
+      -volumeSizeLimitMB=1024
+      -defaultReplication=000
+      -peers=${DFS_MASTER_PEERS:-100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333}
+      -electionTimeout=2s
+      -heartbeatInterval=200ms
+      -telemetry=false
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "seaweed-master"
+      com.lauburu.dfs.cluster: "3-node-raft-ha"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:9333/dir/status || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  seaweed_filer:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_seaweed_filer
+    hostname: ${NODE_HOSTNAME:-seaweed-filer-node}
+    restart: unless-stopped
+    network_mode: "host"
+    depends_on:
+      - seaweed_master
+    environment:
+      - WEED_FILER_PORT=8888
+      - WEED_FILER_PORT_GRPC=18888
+    volumes:
+      - ${DFS_FILER_DATA_DIR:-/mnt/storage/seaweedfs/filerldb2}:/data/filerldb2:rw
+    command: >
+      weed filer
+      -ip=${NODE_IP:-100.101.39.98}
+      -ip.bind=0.0.0.0
+      -port=8888
+      -port.grpc=18888
+      -master=${DFS_MASTER_PEERS:-100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333}
+      -defaultReplicaPlacement=000
+      -defaultStoreDir=/data/filerldb2
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "seaweed-filer"
+      com.lauburu.dfs.cluster: "3-node-raft-ha"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8888/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  seaweed_volume:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_seaweed_volume
+    hostname: ${NODE_HOSTNAME:-seaweed-volume-node}
+    restart: unless-stopped
+    network_mode: "host"
+    depends_on:
+      - seaweed_master
+    environment:
+      - WEED_VOLUME_PORT=8080
+      - WEED_VOLUME_PORT_GRPC=18080
+    volumes:
+      - ${DFS_VOLUME_DATA_DIR:-/mnt/storage/seaweedfs/volume}:/data/volume:rw
+    command: >
+      weed volume
+      -ip=${NODE_IP:-100.101.39.98}
+      -ip.bind=0.0.0.0
+      -port=8080
+      -port.grpc=18080
+      -dir=/data/volume
+      -max=${MAX_VOLUMES:-30}
+      -minFreeSpacePercent=5
+      -dataCenter=${DATACENTER:-WiFi}
+      -master=${DFS_MASTER_PEERS:-100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333}
+      -publicUrl=${NODE_IP:-100.101.39.98}:8080
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "seaweed-volume"
+      com.lauburu.dfs.cluster: "3-node-raft-ha"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

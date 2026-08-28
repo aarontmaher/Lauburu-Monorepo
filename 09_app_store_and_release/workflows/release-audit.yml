@@ -1,0 +1,51 @@
+name: release-audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch / SHA to audit'
+        required: false
+        default: 'main'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || 'main' }}
+      - name: Read app config
+        id: app
+        run: |
+          set -euo pipefail
+          version=$(jq -r '.expo.version' apps/mobile/app.json)
+          android_vc=$(jq -r '.expo.android.versionCode' apps/mobile/app.json)
+          ios_bn=$(jq -r '.expo.ios.buildNumber' apps/mobile/app.json)
+          target_sdk=$(jq -r '.expo.plugins | map(select(type=="array" and .[0]=="expo-build-properties")) | .[0][1].android.targetSdkVersion' apps/mobile/app.json)
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "android_vc=${android_vc}" >> "$GITHUB_OUTPUT"
+          echo "ios_bn=${ios_bn}" >> "$GITHUB_OUTPUT"
+          echo "target_sdk=${target_sdk}" >> "$GITHUB_OUTPUT"
+      - name: Latest EAS builds
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "${EXPO_TOKEN}" ]; then
+            echo "::warning::EXPO_TOKEN not set; skipping EAS list."
+            exit 0
+          fi
+          npx eas-cli build:list --platform android --limit 3 || true
+          npx eas-cli build:list --platform ios --limit 3 || true
+      - name: Summary
+        run: |
+          {
+            echo "## Release audit"
+            echo "App version: ${{ steps.app.outputs.version }}"
+            echo "Android versionCode: ${{ steps.app.outputs.android_vc }}"
+            echo "iOS buildNumber: ${{ steps.app.outputs.ios_bn }}"
+            echo "Target API: ${{ steps.app.outputs.target_sdk }}"
+            echo "Backend: https://lauburu-ai-backend-production.up.railway.app"
+            echo "Expo project: https://expo.dev/accounts/aaronmaher/projects/lauburu-grappling-map"
+          } >> "$GITHUB_STEP_SUMMARY"

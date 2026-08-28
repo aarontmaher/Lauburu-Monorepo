@@ -1,0 +1,29 @@
+FROM debian:bookworm-slim
+
+# Install dependencies and Tailscale
+RUN apt-get update && apt-get install -y \
+    curl \
+    ca-certificates \
+    iptables \
+    && curl -fsSL https://tailscale.com/install.sh | sh \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Ensure rpc-server binary exists in the context and copy it
+COPY rpc-server /usr/local/bin/rpc-server
+RUN chmod +x /usr/local/bin/rpc-server
+
+# Wrapper script to start Tailscale and the RPC Server
+RUN echo '#!/bin/sh\n\
+# Start Tailscale daemon in userspace mode (doesnt hijack host network)\n\
+tailscaled --tun=userspace-networking --socks5-server=localhost:1055 --outbound-http-proxy-listen=localhost:1055 &\n\
+sleep 3\n\
+# Authenticate Tailscale (requires TS_AUTHKEY environment variable)\n\
+tailscale up --authkey=${TS_AUTHKEY} --hostname=rpc-worker-node\n\
+echo "Tailscale connected. Starting llama-rpc-server..."\n\
+# Start the RPC Server on port 50052\n\
+exec rpc-server 0.0.0.0 50052\n\
+' > /app/start.sh && chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]

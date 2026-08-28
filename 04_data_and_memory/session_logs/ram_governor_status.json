@@ -1,0 +1,181 @@
+{
+  "timestamp": "2026-08-19T23:29:53Z",
+  "tier": "PROTECTIVE",
+  "overall_headroom_compliance": false,
+  "headroom_violations": [
+    "Mac_Node",
+    "Pixel_10_Pro_XL"
+  ],
+  "host_memory": {
+    "node_id": "Mac_Node",
+    "total_gb": 16.0,
+    "available_gb": 2.66,
+    "used_gb": 13.34,
+    "used_pct": 83.4,
+    "headroom_pct": 16.6,
+    "headroom_target_gb": 4.0,
+    "headroom_compliant": false
+  },
+  "nodes_memory": {
+    "Mac_Node": {
+      "node_id": "Mac_Node",
+      "total_gb": 16.0,
+      "available_gb": 2.66,
+      "used_gb": 13.34,
+      "used_pct": 83.4,
+      "headroom_pct": 16.6,
+      "headroom_target_gb": 4.0,
+      "headroom_compliant": false
+    },
+    "Linux_Head_Node": {
+      "node_id": "Linux_Head_Node",
+      "total_gb": 14.97,
+      "available_gb": 12.55,
+      "min_required_gb": 3.75,
+      "headroom_target_gb": 3.75,
+      "headroom_compliant": true,
+      "status": "ONLINE"
+    },
+    "Pixel_10_Pro_XL": {
+      "node_id": "Pixel_10_Pro_XL",
+      "total_gb": 12.0,
+      "available_gb": 2.5,
+      "min_required_gb": 3.0,
+      "headroom_target_gb": 3.0,
+      "headroom_pct": 20.8,
+      "headroom_compliant": false,
+      "actions_taken": [
+        "adb_am_trim_caches_2048M",
+        "am_trim_caches_executed",
+        "pkill_proot_termux",
+        "proot_cleanup_invoked"
+      ],
+      "status": "OFFLINE"
+    },
+    "Samsung_S20": {
+      "node_id": "Samsung_S20",
+      "total_gb": 10.65,
+      "available_gb": 6.74,
+      "min_required_gb": 2.0,
+      "headroom_target_gb": 2.0,
+      "headroom_pct": 63.3,
+      "headroom_compliant": true,
+      "actions_taken": [
+        "samsung_am_trim_caches_1024M",
+        "am_trim_caches_executed"
+      ],
+      "status": "ONLINE"
+    }
+  },
+  "mesh_headroom": {
+    "Mac_Node": {
+      "node_id": "Mac_Node",
+      "total_gb": 16.0,
+      "available_gb": 2.66,
+      "used_gb": 13.34,
+      "used_pct": 83.4,
+      "headroom_pct": 16.6,
+      "headroom_target_gb": 4.0,
+      "headroom_compliant": false
+    },
+    "mac_host": {
+      "node_id": "Mac_Node",
+      "total_gb": 16.0,
+      "available_gb": 2.66,
+      "used_gb": 13.34,
+      "used_pct": 83.4,
+      "headroom_pct": 16.6,
+      "headroom_target_gb": 4.0,
+      "headroom_compliant": false
+    },
+    "Linux_Head_Node": {
+      "node_id": "Linux_Head_Node",
+      "total_gb": 14.97,
+      "available_gb": 12.55,
+      "min_required_gb": 3.75,
+      "headroom_target_gb": 3.75,
+      "headroom_compliant": true,
+      "status": "ONLINE"
+    },
+    "linux_node": {
+      "node_id": "Linux_Head_Node",
+      "total_gb": 14.97,
+      "available_gb": 12.55,
+      "min_required_gb": 3.75,
+      "headroom_target_gb": 3.75,
+      "headroom_compliant": true,
+      "status": "ONLINE"
+    },
+    "Pixel_10_Pro_XL": {
+      "node_id": "Pixel_10_Pro_XL",
+      "total_gb": 12.0,
+      "available_gb": 2.5,
+      "min_required_gb": 3.0,
+      "headroom_target_gb": 3.0,
+      "headroom_pct": 20.8,
+      "headroom_compliant": false,
+      "actions_taken": [
+        "adb_am_trim_caches_2048M",
+        "am_trim_caches_executed",
+        "pkill_proot_termux",
+        "proot_cleanup_invoked"
+      ],
+      "status": "OFFLINE"
+    },
+    "pixel_10_pro": {
+      "node_id": "Pixel_10_Pro_XL",
+      "total_gb": 12.0,
+      "available_gb": 2.5,
+      "min_required_gb": 3.0,
+      "headroom_target_gb": 3.0,
+      "headroom_pct": 20.8,
+      "headroom_compliant": false,
+      "actions_taken": [
+        "adb_am_trim_caches_2048M",
+        "am_trim_caches_executed",
+        "pkill_proot_termux",
+        "proot_cleanup_invoked"
+      ],
+      "status": "OFFLINE"
+    },
+    "Samsung_S20": {
+      "node_id": "Samsung_S20",
+      "total_gb": 10.65,
+      "available_gb": 6.74,
+      "min_required_gb": 2.0,
+      "headroom_target_gb": 2.0,
+      "headroom_pct": 63.3,
+      "headroom_compliant": true,
+      "actions_taken": [
+        "samsung_am_trim_caches_1024M",
+        "am_trim_caches_executed"
+      ],
+      "status": "ONLINE"
+    },
+    "samsung_s20": {
+      "node_id": "Samsung_S20",
+      "total_gb": 10.65,
+      "available_gb": 6.74,
+      "min_required_gb": 2.0,
+      "headroom_target_gb": 2.0,
+      "headroom_pct": 63.3,
+      "headroom_compliant": true,
+      "actions_taken": [
+        "samsung_am_trim_caches_1024M",
+        "am_trim_caches_executed"
+      ],
+      "status": "ONLINE"
+    },
+    "all_nodes_compliant": false
+  },
+  "target_ceiling_pct": 75.0,
+  "min_headroom_target_pct": 25.0,
+  "throttle_factor": 0.5,
+  "active_context_size": 2048,
+  "action_taken": "PROTECTIVE_SCALE_DOWN: Reduced context window to 2048 and throttled LoRA ingestion to 50%",
+  "actions_taken": [
+    "PROTECTIVE_SCALE_DOWN: Reduced context window to 2048 and throttled LoRA ingestion to 50%"
+  ],
+  "antigravity_protected": true,
+  "mesh_status": "5-Layer Pooled Mesh (55.58 GB Usable VRAM)"
+}

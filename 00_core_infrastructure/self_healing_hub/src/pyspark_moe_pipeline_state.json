@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-08-15T17:46:22Z",
+  "spark_engine_active": true,
+  "engine_mode": "PySpark Distributed DataFrame Engine",
+  "elapsed_ms": 2766263.03,
+  "total_records_ingested": 326069,
+  "streams": {
+    "network_telemetry": {
+      "stream_name": "Multi-Transport Network Telemetry",
+      "source": "Tailscale Overlay + 10G TB4 + 2.5GbE LAN (:8085/:50052)",
+      "record_count": 1420,
+      "throughput_mb_s": 84.5,
+      "avg_latency_ms": 0.277,
+      "status": "HEALTHY_INGEST"
+    },
+    "codebase_ast": {
+      "stream_name": "Monorepo Codebase & AST Structures",
+      "source": "/Volumes/aaronmaher/Lauburu-Monorepo",
+      "record_count": 259524,
+      "file_counts": {
+        "python": 12749,
+        "react_jsx": 58,
+        "shell_scripts": 1611,
+        "total_indexed_files": 14418
+      },
+      "status": "INDEXED_PARALLEL"
+    },
+    "sensor_hardware": {
+      "stream_name": "Hardware Telemetry & Movesense Biometrics",
+      "source": "Apple ANE (38 TOPS) + Tensor TPU (22 TOPS) + Movesense BLE",
+      "record_count": 8640,
+      "sensors_active": [
+        "12-Axis IMU",
+        "ECG HRV",
+        "Device Doctor Thermals",
+        "Battery Voltages"
+      ],
+      "status": "STREAMING_ZERO_LEAKAGE"
+    },
+    "lora_memory": {
+      "stream_name": "24/7 LoRA Memory & Debate Ledger",
+      "source": "truth_audit_debate.jsonl & Google Drive Memory Mirror",
+      "record_count": 56485,
+      "dataset_size_mb": 32.51,
+      "status": "CONTINUOUS_HARVEST"
+    }
+  },
+  "genetic_moe_transformation": {
+    "evaluated_generation": 143,
+    "data_entropy_score": 0.0142,
+    "clean_records_ratio_pct": 99.8,
+    "eliminated_hallucinations": 0,
+    "verified_ground_truth_pct": 100.0,
+    "fitness_delta": "+1.8% Data Pillar Score",
+    "routing_rule_output": "High-density AST code diffs routed to Q4_K_M sharded mesh; real-time sensor streams routed to Edge TPU."
+  }
+}

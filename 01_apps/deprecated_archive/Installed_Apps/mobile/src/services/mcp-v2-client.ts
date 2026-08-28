@@ -1,0 +1,367 @@
+import { AI_PUBLIC_BASE, mcpWorkerRootUrl } from './ai-backend-config';
+
+/**
+ * Thin JSON-RPC 2.0 client for the unified Lauburu MCP v2 endpoint
+ * (POST /mcp/v2). Used by the Admin/Dev tab's "MCP Live" + diagnostics
+ * panels.
+ *
+ * Reuses EXPO_PUBLIC_MCP_BASE_URL (auto-appends `/mcp/v2`) so the
+ * existing connector-status-client.ts and this client share the same
+ * base. The admin token (`EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN`) is sent
+ * on every call — the v2 server fail-softs admin tools to a
+ * tool-result error when the token is missing, so the UI can render
+ * a clear "admin needed" state instead of crashing.
+ *
+ * NEVER renders the token in the UI. NEVER logs it.
+ */
+
+export interface McpV2Tool {
+  name: string;
+  description: string;
+  inputSchema?: unknown;
+}
+
+export interface McpV2CallEnvelope {
+  ok: true;
+  isError: boolean;
+  text: string;
+  payload: unknown;
+}
+
+export interface McpV2CallFailure {
+  ok: false;
+  reason: 'transport' | 'rpc_error' | 'no_content' | 'parse_error' | 'mcp_base_url_missing';
+  message: string;
+  status?: number;
+}
+
+export type McpV2CallResult = McpV2CallEnvelope | McpV2CallFailure;
+
+/**
+ * Surface gate (mirrors cloudflare-worker/src/mcp-v2.ts ToolSurface).
+ *
+ *   - 'core'  → /mcp/v2 (8 ChatGPT-friendly tools — public-safe except
+ *               project.update_work_status which is admin-token-gated)
+ *   - 'admin' → /mcp/v2/admin (admin reads + non-core public extras:
+ *               project.get_overview, project.list_priorities,
+ *               mobile.get_repo_overview, mobile.get_<full> reads,
+ *               qa.*, release.get_gate, write tools)
+ */
+export type McpV2Surface = 'core' | 'admin';
+
+function v2BaseUrlBase(): string | null {
+  // Source of truth — strips any /mcp/v2[/admin], /api, /mcp/core,
+  // or /mcp/public suffix the env may have shipped with. Older code
+  // here only stripped /api and re-appended /mcp/v2, which produced
+  // /mcp/v2/mcp/v2 (404) when the env was already set to the full
+  // /mcp/v2 URL. See docs/INSTALLED_DEVICE_QA_RELEASE_GATE.md for the
+  // 2026-05-09 v19 evidence.
+  const root = mcpWorkerRootUrl();
+  if (root) return root;
+  // Legacy fallback: the original Railway-shaped public base.
+  if (AI_PUBLIC_BASE) {
+    return AI_PUBLIC_BASE.replace(/\/$/, '').replace(/\/athlete-memory$/, '');
+  }
+  return null;
+}
+
+function v2SurfaceUrl(surface: McpV2Surface): string | null {
+  const base = v2BaseUrlBase();
+  if (!base) return null;
+  return surface === 'admin' ? `${base}/mcp/v2/admin` : `${base}/mcp/v2`;
+}
+
+function v2BaseUrl(): string | null {
+  return v2SurfaceUrl('core');
+}
+
+async function rpc(body: unknown, signal?: AbortSignal, surface: McpV2Surface = 'core'): Promise<{ status: number; raw: string } | { error: string }> {
+  const url = v2SurfaceUrl(surface);
+  if (!url) return { error: 'mcp_base_url_missing' };
+  const memToken = process.env.EXPO_PUBLIC_ATHLETE_MEMORY_TOKEN ?? '';
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      signal,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...(memToken ? { 'x-athlete-memory-token': memToken } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+    const raw = await res.text();
+    return { status: res.status, raw };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'unknown_error' };
+  }
+}
+
+export async function mcpV2InitializeAndListTools(signal?: AbortSignal): Promise<{
+  ok: true;
+  serverInfo: { name: string; version: string; description?: string };
+  protocolVersion: string;
+  tools: McpV2Tool[];
+} | McpV2CallFailure> {
+  const initRes = await rpc(
+    {
+      jsonrpc: '2.0', id: 1, method: 'initialize',
+      params: { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'lauburu-mobile', version: '0.1.0' } },
+    },
+    signal,
+  );
+  if ('error' in initRes) {
+    return { ok: false, reason: initRes.error === 'mcp_base_url_missing' ? 'mcp_base_url_missing' : 'transport', message: initRes.error };
+  }
+  if (initRes.status !== 200) {
+    return { ok: false, reason: 'rpc_error', message: `initialize → HTTP ${initRes.status}`, status: initRes.status };
+  }
+  let initParsed: { result?: { protocolVersion?: string; serverInfo?: { name?: string; version?: string; description?: string } }; error?: { message?: string } };
+  try { initParsed = JSON.parse(initRes.raw); } catch { return { ok: false, reason: 'parse_error', message: 'initialize body not JSON' }; }
+  if (initParsed.error) return { ok: false, reason: 'rpc_error', message: initParsed.error.message ?? 'initialize error' };
+
+  const listRes = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list' }, signal);
+  if ('error' in listRes) return { ok: false, reason: 'transport', message: listRes.error };
+  if (listRes.status !== 200) return { ok: false, reason: 'rpc_error', message: `tools/list → HTTP ${listRes.status}`, status: listRes.status };
+  let listParsed: { result?: { tools?: McpV2Tool[] }; error?: { message?: string } };
+  try { listParsed = JSON.parse(listRes.raw); } catch { return { ok: false, reason: 'parse_error', message: 'tools/list body not JSON' }; }
+  if (listParsed.error) return { ok: false, reason: 'rpc_error', message: listParsed.error.message ?? 'tools/list error' };
+  const tools = listParsed.result?.tools ?? [];
+  const info = initParsed.result?.serverInfo ?? {};
+  return {
+    ok: true,
+    serverInfo: { name: info.name ?? 'unknown', version: info.version ?? '0', description: info.description },
+    protocolVersion: initParsed.result?.protocolVersion ?? 'unknown',
+    tools,
+  };
+}
+
+export async function mcpV2CallTool(
+  name: string,
+  args: unknown = {},
+  signal?: AbortSignal,
+  surface: McpV2Surface = 'core',
+): Promise<McpV2CallResult> {
+  const callRes = await rpc(
+    { jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name, arguments: args ?? {} } },
+    signal,
+    surface,
+  );
+  if ('error' in callRes) {
+    return { ok: false, reason: callRes.error === 'mcp_base_url_missing' ? 'mcp_base_url_missing' : 'transport', message: callRes.error };
+  }
+  if (callRes.status !== 200) {
+    return { ok: false, reason: 'rpc_error', message: `tools/call → HTTP ${callRes.status}`, status: callRes.status };
+  }
+  let parsed: { result?: { content?: Array<{ text?: string; type?: string }>; isError?: boolean }; error?: { message?: string } };
+  try { parsed = JSON.parse(callRes.raw); } catch { return { ok: false, reason: 'parse_error', message: 'tools/call body not JSON' }; }
+  if (parsed.error) return { ok: false, reason: 'rpc_error', message: parsed.error.message ?? 'tools/call error' };
+  const text = parsed.result?.content?.[0]?.text ?? '';
+  if (!text) return { ok: false, reason: 'no_content', message: 'tools/call returned no content' };
+  let payload: unknown = text;
+  try { payload = JSON.parse(text); } catch { /* keep as string */ }
+  return { ok: true, isError: parsed.result?.isError === true, text, payload };
+}
+
+/**
+ * Safe diagnostics about a single MCP fetch. Surfaced in the
+ * Admin/Dev UI so installed-device QA can see why a call failed
+ * without exposing tokens, raw response bodies, or internal IDs.
+ *
+ * `reason` is one of the small, finite categories the v2 client
+ * already returns, so the UI can render category copy ("transport
+ * error", "rpc error", "unconfigured") rather than raw error text.
+ */
+export interface McpV2CallDiagnostics {
+  reason: McpV2CallFailure['reason'] | 'ok';
+  /** HTTP status code when the call reached the server, else null. */
+  httpStatus: number | null;
+  /** Tool name or rpc method ('initialize'/'tools/list'). */
+  endpoint: string;
+}
+
+export interface McpV2DashboardSnapshot {
+  fetchedAt: string;
+  baseUrl: string | null;
+  /**
+   * Resolved core endpoint (`<root>/mcp/v2`) — exposed so the
+   * Admin/Dev diagnostics panel can render the exact URL being
+   * fetched without callers re-deriving it. Never includes auth.
+   */
+  resolvedCoreEndpoint: string | null;
+  /** Resolved admin endpoint (`<root>/mcp/v2/admin`). */
+  resolvedAdminEndpoint: string | null;
+  /**
+   * Source of the env that produced the resolved endpoints —
+   * 'mcp' for `EXPO_PUBLIC_MCP_BASE_URL`, 'public_backend' for the
+   * legacy Railway shape, 'unconfigured' when neither is set.
+   */
+  envSource: 'mcp' | 'public_backend' | 'unconfigured';
+  serverInfo: { name: string; version: string; description?: string } | null;
+  protocolVersion: string | null;
+  toolCounts: { total: number; byNamespace: Record<string, number> };
+  /** Tool counts on /mcp/v2/admin — separate surface as of the surface split. */
+  adminToolCounts: { total: number; byNamespace: Record<string, number> } | null;
+  projectCurrentState: { ok: true; payload: unknown } | { ok: false; message: string };
+  projectOperatingRules: { ok: true; payload: unknown } | { ok: false; message: string };
+  projectOverview: { ok: true; payload: unknown } | { ok: false; message: string };
+  projectWorkStatus: { ok: true; payload: unknown } | { ok: false; message: string };
+  laneOverview: { ok: true; payload: unknown } | { ok: false; message: string };
+  buildOverview: { ok: true; payload: unknown } | { ok: false; message: string };
+  handoffLatest: { ok: true; payload: unknown } | { ok: false; message: string };
+  /** /mcp/v2/admin release.get_gate — public-safe but lives on admin surface. */
+  releaseGate: { ok: true; payload: unknown } | { ok: false; message: string };
+  /**
+   * Per-tool fetch diagnostics. Always populated. Reason 'ok' for
+   * successful calls; categorical failure reason otherwise. Never
+   * carries token, raw body, or stack data.
+   */
+  diagnostics: McpV2CallDiagnostics[];
+  /** Wall-clock duration of the parallel fetch fan-out, ms. */
+  fetchDurationMs: number;
+}
+
+function diagnoseCall(endpoint: string, r: McpV2CallResult): McpV2CallDiagnostics {
+  if (r.ok) return { endpoint, reason: 'ok', httpStatus: 200 };
+  return { endpoint, reason: r.reason, httpStatus: r.status ?? null };
+}
+
+/**
+ * Fetches the five Admin/Dev-relevant MCP tools in parallel. Each
+ * tool result is independent — a single tool failure does not break
+ * the rest of the dashboard.
+ */
+export async function fetchMcpV2DashboardSnapshot(signal?: AbortSignal): Promise<McpV2DashboardSnapshot | null> {
+  const baseUrl = v2BaseUrl();
+  const resolvedCoreEndpoint = baseUrl;
+  const resolvedAdminEndpoint = baseUrl ? v2SurfaceUrl('admin') : null;
+  const envSource: McpV2DashboardSnapshot['envSource'] = baseUrl
+    ? 'mcp'
+    : AI_PUBLIC_BASE
+      ? 'public_backend'
+      : 'unconfigured';
+  if (!baseUrl) {
+    const startMs = Date.now();
+    return {
+      fetchedAt: new Date().toISOString(),
+      baseUrl: null,
+      resolvedCoreEndpoint: null,
+      resolvedAdminEndpoint: null,
+      envSource,
+      serverInfo: null,
+      protocolVersion: null,
+      toolCounts: { total: 0, byNamespace: {} },
+      adminToolCounts: null,
+      projectCurrentState: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
+      projectOperatingRules: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
+      projectOverview: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
+      projectWorkStatus: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
+      laneOverview: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
+      buildOverview: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
+      handoffLatest: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
+      releaseGate: { ok: false, message: 'EXPO_PUBLIC_MCP_BASE_URL not set' },
+      diagnostics: [
+        { endpoint: 'initialize', reason: 'mcp_base_url_missing', httpStatus: null },
+      ],
+      fetchDurationMs: Date.now() - startMs,
+    };
+  }
+
+  const startMs = Date.now();
+  const initialised = await mcpV2InitializeAndListTools(signal);
+  if (!initialised.ok) {
+    return {
+      fetchedAt: new Date().toISOString(),
+      baseUrl,
+      resolvedCoreEndpoint,
+      resolvedAdminEndpoint,
+      envSource,
+      serverInfo: null,
+      protocolVersion: null,
+      toolCounts: { total: 0, byNamespace: {} },
+      adminToolCounts: null,
+      projectCurrentState: { ok: false, message: initialised.message },
+      projectOperatingRules: { ok: false, message: initialised.message },
+      projectOverview: { ok: false, message: initialised.message },
+      projectWorkStatus: { ok: false, message: initialised.message },
+      laneOverview: { ok: false, message: initialised.message },
+      buildOverview: { ok: false, message: initialised.message },
+      handoffLatest: { ok: false, message: initialised.message },
+      releaseGate: { ok: false, message: initialised.message },
+      diagnostics: [
+        { endpoint: 'initialize', reason: initialised.reason, httpStatus: initialised.status ?? null },
+      ],
+      fetchDurationMs: Date.now() - startMs,
+    };
+  }
+
+  const byNamespace: Record<string, number> = {};
+  for (const t of initialised.tools) {
+    const ns = t.name.split('.')[0] ?? 'unknown';
+    byNamespace[ns] = (byNamespace[ns] ?? 0) + 1;
+  }
+
+  const [current, rules, work, lane, build, handoff, proj, release, adminList] = await Promise.all([
+    // Core surface (8 tools).
+    mcpV2CallTool('project.get_current_state', {}, signal, 'core'),
+    mcpV2CallTool('project.get_operating_rules', {}, signal, 'core'),
+    mcpV2CallTool('project.get_work_status', {}, signal, 'core'),
+    mcpV2CallTool('mobile.get_lane_overview', {}, signal, 'core'),
+    mcpV2CallTool('mobile.get_build_overview', {}, signal, 'core'),
+    mcpV2CallTool('handoff.get_latest', {}, signal, 'core'),
+    // Admin surface — public-safe extras live here post-split.
+    mcpV2CallTool('project.get_overview', {}, signal, 'admin'),
+    mcpV2CallTool('release.get_gate', {}, signal, 'admin'),
+    // Admin tools/list — for the diagnostics panel.
+    rpc({ jsonrpc: '2.0', id: 4, method: 'tools/list' }, signal, 'admin'),
+  ]);
+
+  let adminToolCounts: { total: number; byNamespace: Record<string, number> } | null = null;
+  if (!('error' in adminList) && adminList.status === 200) {
+    try {
+      const parsed = JSON.parse(adminList.raw) as { result?: { tools?: McpV2Tool[] } };
+      const adminTools = parsed.result?.tools ?? [];
+      const adminByNamespace: Record<string, number> = {};
+      for (const t of adminTools) {
+        const ns = t.name.split('.')[0] ?? 'unknown';
+        adminByNamespace[ns] = (adminByNamespace[ns] ?? 0) + 1;
+      }
+      adminToolCounts = { total: adminTools.length, byNamespace: adminByNamespace };
+    } catch { /* leave null */ }
+  }
+
+  const wrap = (r: McpV2CallResult): { ok: true; payload: unknown } | { ok: false; message: string } =>
+    r.ok ? { ok: true, payload: r.payload } : { ok: false, message: r.message };
+
+  return {
+    fetchedAt: new Date().toISOString(),
+    baseUrl,
+    resolvedCoreEndpoint,
+    resolvedAdminEndpoint,
+    envSource,
+    serverInfo: initialised.serverInfo,
+    protocolVersion: initialised.protocolVersion,
+    toolCounts: { total: initialised.tools.length, byNamespace },
+    adminToolCounts,
+    projectCurrentState: wrap(current),
+    projectOperatingRules: wrap(rules),
+    projectOverview: wrap(proj),
+    projectWorkStatus: wrap(work),
+    laneOverview: wrap(lane),
+    buildOverview: wrap(build),
+    handoffLatest: wrap(handoff),
+    releaseGate: wrap(release),
+    diagnostics: [
+      { endpoint: 'initialize', reason: 'ok', httpStatus: 200 },
+      diagnoseCall('project.get_current_state', current),
+      diagnoseCall('project.get_operating_rules', rules),
+      diagnoseCall('project.get_work_status', work),
+      diagnoseCall('mobile.get_lane_overview', lane),
+      diagnoseCall('mobile.get_build_overview', build),
+      diagnoseCall('handoff.get_latest', handoff),
+      diagnoseCall('project.get_overview', proj),
+      diagnoseCall('release.get_gate', release),
+    ],
+    fetchDurationMs: Date.now() - startMs,
+  };
+}

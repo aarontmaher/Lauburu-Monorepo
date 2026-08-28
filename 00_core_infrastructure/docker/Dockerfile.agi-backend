@@ -1,0 +1,91 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies, C++ compilers, audio tools, git-lfs & ADB
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    git-lfs \
+    ca-certificates \
+    gnupg \
+    build-essential \
+    g++ \
+    clang \
+    cmake \
+    ninja-build \
+    gdb \
+    ffmpeg \
+    libsndfile1 \
+    portaudio19-dev \
+    android-tools-adb \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Tailscale CLI
+RUN curl -fsSL https://pkgs.tailscale.com/stable/debian/trixie.noarmor.gpg | tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null || true \
+    && curl -fsSL https://tailscale.com/install.sh | sh || true
+
+# Install GitHub CLI (gh)
+RUN mkdir -p -m 755 /etc/apt/keyrings \
+    && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+    && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && apt-get update && apt-get install -y gh || true
+
+# Install Kubernetes kubectl CLI
+RUN curl -fsSL "https://dl.k8s.io/release/v1.31.0/bin/linux/$(dpkg --print-architecture)/kubectl" -o /usr/local/bin/kubectl \
+    && chmod +x /usr/local/bin/kubectl || true
+
+
+# Upgrade pip to latest version
+RUN pip install --no-cache-dir --upgrade pip
+
+# Install AI SDKs, Google Cloud SDK, MCP frameworks, Speech STT/TTS, Computer & Phone Use tools
+RUN pip install --no-cache-dir --default-timeout=100 --retries 5 \
+    fastapi \
+    uvicorn \
+    httpx \
+    duckdb \
+    pydantic \
+    mcp \
+    psutil \
+    kubernetes \
+
+    "huggingface_hub" \
+    smolagents \
+    transformers \
+    google-generativeai \
+    google-genai \
+    google-cloud-storage \
+    google-cloud-firestore \
+    google-cloud-pubsub \
+    google-cloud-logging \
+    google-cloud-resource-manager \
+    google-api-python-client \
+    openai \
+    anthropic \
+    ollama \
+    nbformat \
+    nbconvert \
+    chromadb \
+    pure-python-adb \
+    pyautogui \
+    pillow \
+    mss \
+    gTTS \
+    pyttsx3 \
+    soundfile
+
+# Copy application code and scripts
+COPY apps/ /app/apps/
+COPY scripts/ /app/scripts/
+
+# Set Python path
+ENV PYTHONPATH=/app
+
+EXPOSE 8900
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8900/health || exit 1
+
+CMD ["python3", "-m", "uvicorn", "apps.local_agi_backend.app:app", "--host", "0.0.0.0", "--port", "8900"]

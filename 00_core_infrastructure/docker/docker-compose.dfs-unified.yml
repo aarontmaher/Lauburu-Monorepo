@@ -1,0 +1,336 @@
+version: '3.8'
+
+# ==============================================================================
+# LAUBURU UNIFIED DISTRIBUTED FILE SYSTEM (DFS) — 4-NODE CLUSTER MANIFEST
+# Pools 1.701 TB - 2.60 TB Across 4 Wall-Powered Core Nodes
+# Master Gateway: Linux Head Node (100.101.39.98 / 192.168.8.224)
+# Samba Export: smb://100.101.39.98/nas with Apple VFS Fruit Extensions
+# Memory Ceilings: ≤256M Mac Nodes / ≤512M Linux Head Node (82.8 GB AI Safe)
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. LINUX HEAD NODE: DFS MASTER (Raft Consensus Controller)
+  # ----------------------------------------------------------------------------
+  dfs_master:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_dfs_master
+    hostname: linux-head-dfs-master
+    restart: unless-stopped
+    command: >
+      master
+      -ip=100.101.39.98
+      -port=9333
+      -port.grpc=19333
+      -mdir=/data/dfs_master
+      -volumeSizeLimitMB=1024
+      -defaultReplication=000
+      -peers=100.101.39.98:9333
+    volumes:
+      - /mnt/ssd_1tb/dfs_master:/data/dfs_master:rw
+    ports:
+      - "100.101.39.98:9333:9333"
+      - "100.101.39.98:19333:19333"
+      - "192.168.8.224:9333:9333"
+      - "192.168.8.224:19333:19333"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "dfs-master"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.node: "Linux_Head_Node"
+      com.lauburu.dfs.arch: "amd64"
+      com.lauburu.dfs.ram_cap: "256m"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:9333/dir/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ----------------------------------------------------------------------------
+  # 2. LINUX HEAD NODE: DFS FILER (POSIX Namespace Engine via LevelDB)
+  # ----------------------------------------------------------------------------
+  dfs_filer:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_dfs_filer
+    hostname: linux-head-dfs-filer
+    restart: unless-stopped
+    command: >
+      filer
+      -master=100.101.39.98:9333
+      -ip=100.101.39.98
+      -port=8888
+      -port.grpc=18888
+      -defaultReplicaPlacement=000
+    volumes:
+      - /mnt/ssd_1tb/dfs_filer:/data/dfs_filer:rw
+    ports:
+      - "100.101.39.98:8888:8888"
+      - "100.101.39.98:18888:18888"
+      - "192.168.8.224:8888:8888"
+      - "192.168.8.224:18888:18888"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    depends_on:
+      - dfs_master
+    labels:
+      com.lauburu.dfs.service: "dfs-filer"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.node: "Linux_Head_Node"
+      com.lauburu.dfs.arch: "amd64"
+      com.lauburu.dfs.ram_cap: "256m"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8888/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ----------------------------------------------------------------------------
+  # 3. LINUX HEAD NODE: LOCAL VOLUME SERVER (848 GB NVMe Storage Brick)
+  # ----------------------------------------------------------------------------
+  dfs_linux_volume:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_dfs_linux_volume
+    hostname: linux-head-dfs-volume
+    restart: unless-stopped
+    command: >
+      volume
+      -mserver=100.101.39.98:9333
+      -port=8080
+      -port.grpc=18080
+      -ip=100.101.39.98
+      -dir=/data/dfs_bricks
+      -max=50
+      -minFreeSpacePercent=5
+    volumes:
+      - /mnt/ssd_1tb/dfs_bricks:/data/dfs_bricks:rw
+    ports:
+      - "100.101.39.98:8080:8080"
+      - "100.101.39.98:18080:18080"
+      - "192.168.8.224:8080:8080"
+      - "192.168.8.224:18080:18080"
+    mem_limit: 128m
+    memswap_limit: 128m
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '1.0'
+        reservations:
+          memory: 32M
+    depends_on:
+      - dfs_master
+    labels:
+      com.lauburu.dfs.service: "volume-brick"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.node: "Linux_Head_Node"
+      com.lauburu.dfs.arch: "amd64"
+      com.lauburu.dfs.ram_cap: "128m"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ----------------------------------------------------------------------------
+  # 4. LINUX HEAD NODE: SAMBA SMB3 GATEWAY (Apple VFS Fruit macOS Native Export)
+  # ----------------------------------------------------------------------------
+  dfs_samba_gateway:
+    image: dperson/samba:latest
+    container_name: lauburu_samba_gateway
+    hostname: lauburu-samba-gateway
+    restart: unless-stopped
+    environment:
+      - TZ=Australia/Sydney
+      - WORKGROUP=WORKGROUP
+      - SERVERSTRING=Lauburu 1.701TB Unified DFS NAS
+      - NMBD=true
+    volumes:
+      - /mnt/dfs_unified:/mnt/nas:rw
+      - /Volumes/Lauburu-Monorepo/smb_pool_config.conf:/etc/samba/smb.conf:ro
+    ports:
+      - "100.101.39.98:445:445/tcp"
+      - "100.101.39.98:139:139/tcp"
+      - "192.168.8.224:445:445/tcp"
+      - "192.168.8.224:139:139/tcp"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "samba-smb3-gateway"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.node: "Linux_Head_Node"
+      com.lauburu.dfs.arch: "amd64"
+      com.lauburu.dfs.ram_cap: "256m"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 445 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ----------------------------------------------------------------------------
+  # 5. NODE 1 (M4 MAC MINI HOST): VOLUME SERVER (368 GB NVMe Storage Brick)
+  # ----------------------------------------------------------------------------
+  dfs_mac_host_volume:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_dfs_mac_host_volume
+    hostname: mac-host-dfs-volume
+    restart: unless-stopped
+    command: >
+      volume
+      -mserver=100.101.39.98:9333
+      -port=8080
+      -port.grpc=18080
+      -ip=100.84.87.3
+      -dir=/data/dfs_bricks
+      -max=25
+      -minFreeSpacePercent=5
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data/dfs_bricks:/data/dfs_bricks:rw
+    ports:
+      - "8080:8080"
+      - "18080:18080"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "volume-brick"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.node: "Mac_Node"
+      com.lauburu.dfs.arch: "arm64"
+      com.lauburu.dfs.ram_cap: "256m"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ----------------------------------------------------------------------------
+  # 6. NODE 2 (HEADLESS MACBOOK PRO): VOLUME SERVER (285 GB SSD Storage Vault)
+  # ----------------------------------------------------------------------------
+  dfs_macbook_vault_volume:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_dfs_macbook_vault_volume
+    hostname: macbook-vault-dfs-volume
+    restart: unless-stopped
+    command: >
+      volume
+      -mserver=100.101.39.98:9333
+      -port=8080
+      -port.grpc=18080
+      -ip=100.103.212.21
+      -dir=/data/dfs_bricks
+      -max=20
+      -minFreeSpacePercent=5
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data/dfs_bricks:/data/dfs_bricks:rw
+    ports:
+      - "8080:8080"
+      - "18080:18080"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "volume-brick"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.node: "MacBook_Pro"
+      com.lauburu.dfs.arch: "arm64"
+      com.lauburu.dfs.ram_cap: "256m"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ----------------------------------------------------------------------------
+  # 7. NODE 4 (MAC MINI COMPUTE): VOLUME SERVER (200 GB NVMe Storage Brick)
+  # ----------------------------------------------------------------------------
+  dfs_mac_mini_volume:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_dfs_mac_mini_volume
+    hostname: mac-mini-dfs-volume
+    restart: unless-stopped
+    command: >
+      volume
+      -mserver=100.101.39.98:9333
+      -port=8080
+      -port.grpc=18080
+      -ip=100.93.158.96
+      -dir=/data/dfs_bricks
+      -max=15
+      -minFreeSpacePercent=5
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data/dfs_bricks:/data/dfs_bricks:rw
+    ports:
+      - "8080:8080"
+      - "18080:18080"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "volume-brick"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.node: "Mac_Mini"
+      com.lauburu.dfs.arch: "arm64"
+      com.lauburu.dfs.ram_cap: "256m"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    name: lauburu_dfs_net
+    driver: bridge

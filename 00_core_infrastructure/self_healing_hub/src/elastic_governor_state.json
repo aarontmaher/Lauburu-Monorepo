@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-08-27 06:54:34 UTC",
+  "action": "MAINTAIN_OPTIMAL",
+  "host_ram_used_pct": 65.5,
+  "host_free_gb": 8.27,
+  "current_batch_size": 4,
+  "gradient_accumulation_steps": 8,
+  "current_seq_length": 2048,
+  "active_training_shards": [
+    "L1_Mac_Node",
+    "L2_MacBook_Pro",
+    "L3_Linux_Head_Node"
+  ],
+  "cluster_vram_utilization_gb": 53.7,
+  "cluster_total_usable_vram_gb": 82.8,
+  "cluster_utilization_pct": 64.9,
+  "allocated_matrix": {
+    "L1_Mac_Node": 18.0,
+    "L5_MacBook_Air": 4.8,
+    "L2_MacBook_Pro": 12.5,
+    "L3_Linux_Head_Node": 11.0,
+    "L6_Pixel_10_Pro_XL": 3.4,
+    "L7_Samsung_S20": 2.4,
+    "L4_Linux_Tablet": 1.6
+  }
+}

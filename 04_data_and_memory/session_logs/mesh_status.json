@@ -1,0 +1,88 @@
+{
+  "timestamp": "2026-08-21T23:31:36.400083+00:00",
+  "mesh_topology_version": "7_DEVICE_UNIFIED_MESH",
+  "active_devices_count": 4,
+  "total_devices_count": 7,
+  "mesh_health_status": "DEGRADED",
+  "nodes": {
+    "Mac_Node": {
+      "layer": 1,
+      "name": "M4 Mac Mini Host Master",
+      "status": "DEGRADED",
+      "rpc_port_50052": false,
+      "gateway_port_9000": false,
+      "dashboard_port_8750": false,
+      "latency_ms": 0.29,
+      "is_healthy": false
+    },
+    "MacBook_Pro": {
+      "layer": 2,
+      "name": "Headless MacBook Pro Vault",
+      "status": "ONLINE",
+      "active_ip": "100.103.212.21",
+      "rpc_port_50052": true,
+      "latency_ms": 3.72,
+      "is_healthy": true
+    },
+    "Linux_Head_Node": {
+      "layer": 3,
+      "name": "Linux Ryzen 7 Head Node",
+      "status": "ONLINE",
+      "active_ip": "192.168.8.224",
+      "rpc_port_50052": true,
+      "ray_head_port_6379": false,
+      "cron_supervisor_port_8088": true,
+      "latency_ms": 2.34,
+      "is_healthy": true
+    },
+    "Linux_Tablet": {
+      "layer": 4,
+      "name": "Debian Linux Tablet",
+      "status": "STANDBY",
+      "active_ip": "100.81.92.125",
+      "rpc_port_50052": false,
+      "latency_ms": null,
+      "is_healthy": false
+    },
+    "Mac_Mini": {
+      "layer": 5,
+      "name": "Mac Mini Compute Node",
+      "status": "ONLINE",
+      "active_ip": "100.93.158.96",
+      "rpc_port_50052": true,
+      "latency_ms": 4.21,
+      "is_healthy": true
+    },
+    "Pixel_10_Pro_XL": {
+      "layer": 6,
+      "name": "Google Pixel 10 Pro XL",
+      "status": "STANDBY",
+      "active_ip": "100.73.38.87",
+      "rpc_port_50052": false,
+      "latency_ms": null,
+      "is_healthy": false
+    },
+    "Samsung_S20": {
+      "layer": 7,
+      "name": "Samsung Galaxy S20+",
+      "status": "ONLINE",
+      "active_ip": "100.84.40.95",
+      "rpc_port_50052": true,
+      "latency_ms": 142.29,
+      "is_healthy": true
+    }
+  },
+  "infrastructure": {
+    "router_online": true,
+    "router_latency_ms": 2.324,
+    "wan_metrics": {
+      "internet_connected": true,
+      "wan_latency_ms": 470.37,
+      "cloudflare_tunnel_active": false,
+      "struggling_wan": true
+    },
+    "is_healthy": true
+  },
+  "sweep_duration_sec": 40.57,
+  "self_evolving_playbook_heals_total": 0
+}

@@ -1,0 +1,114 @@
+{
+  "total_bonus_hours_awarded": 247.73,
+  "active_promotions_count": 9,
+  "grants": [
+    {
+      "grant_id": "NPU_GRANT_1786659724_1",
+      "timestamp": 1786659724.710516,
+      "timestamp_iso": "2026-08-13T22:22:04Z",
+      "feature_promoted": "3D Holographic Spatial Radar Canvas",
+      "author_model": "LauburuProjectMoE",
+      "bonus_npu_hours": 16.0,
+      "production_target": "lauburu_business_app/lib/views/spatial_radar_view.dart",
+      "impact_summary": "Custom Canvas 60fps radar sweep visualizer rendering multi-tier geographic nodes with 0% CPU overhead.",
+      "status": "ACTIVE_GRANT"
+    },
+    {
+      "grant_id": "NPU_GRANT_1786659724_2",
+      "timestamp": 1786659724.710909,
+      "timestamp_iso": "2026-08-13T22:22:04Z",
+      "feature_promoted": "10Gbps Thunderbolt Subnet Keyless Authorization",
+      "author_model": "MacBook Pro M4 (Metal RPC)",
+      "bonus_npu_hours": 14.0,
+      "production_target": "scripts/authorize_thunderbolt_bridge.sh",
+      "impact_summary": "Sub-millisecond 0.45ms RTT zero-Wi-Fi congestion channel for distributed llama.cpp Metal GPU sharding.",
+      "status": "ACTIVE_GRANT"
+    },
+    {
+      "grant_id": "NPU_GRANT_1786659724_3",
+      "timestamp": 1786659724.7110841,
+      "timestamp_iso": "2026-08-13T22:22:04Z",
+      "feature_promoted": "Dynamic Reasoning Tier Governor",
+      "author_model": "Gemini 3.7 Flash + Genetic Evaluator",
+      "bonus_npu_hours": 10.0,
+      "production_target": ".agents/swarm_fitness_evaluator.py",
+      "impact_summary": "3-Tier task-aware reasoning governor cutting routine token usage by 65% while maximizing CoT distillation.",
+      "status": "ACTIVE_GRANT"
+    },
+    {
+      "grant_id": "PERMANENT_NPU_BOOST_1786684450",
+      "timestamp": 1786684450.2294772,
+      "timestamp_iso": "2026-08-14T05:14:10Z",
+      "feature_promoted": "TP-Link High-Gain Extender Bridge for 'absolute mesh'",
+      "author_model": "LauburuProjectMoE (Router & RF Specialist)",
+      "bonus_npu_hours": 50.0,
+      "is_permanent_boost": true,
+      "production_target": "scripts/tplink_extender_wifi_mesh_connector.py",
+      "impact_summary": "Extender STA client configured with 23dBm TX power, 40MHz channel width, and WPA2-PSK key 'W0rshipDan' to bridge edge internet into mesh.",
+      "status": "PERMANENT_ACTIVE_BOOST"
+    },
+    {
+      "grant_id": "NPU_GRANT_1786691686_5",
+      "timestamp": 1786691686.3850398,
+      "timestamp_iso": "2026-08-14T07:14:46Z",
+      "feature_promoted": "Real-World Network Failure Self-Healing Gate",
+      "author_model": "LauburuProjectMoE (Resilience Specialist)",
+      "bonus_npu_hours": 18.0,
+      "production_target": "scripts/real_network_failure_stress_test.py",
+      "impact_summary": "6-Scenario automated self-healing testbench certifying 100% offline continuity across WAN blackouts and daemon crashes.",
+      "status": "ACTIVE_GRANT"
+    },
+    {
+      "grant_id": "NPU_GRANT_1786692212_6",
+      "timestamp": 1786692212.1767318,
+      "timestamp_iso": "2026-08-14T07:23:32Z",
+      "feature_promoted": "Sovereign Storage Migration & SSD Decommissioning",
+      "author_model": "LauburuProjectMoE (Storage Specialist)",
+      "bonus_npu_hours": 25.0,
+      "production_target": "scripts/syncthing_mesh_manager.py",
+      "impact_summary": "Decoupled all /mnt/ssd_1tb dependencies to native device internal NVMe + Google Drive + Syncthing P2P.",
+      "status": "ACTIVE_GRANT"
+    },
+    {
+      "grant_id": "PERMANENT_NPU_BOOST_1786712515",
+      "timestamp": 1786712515.638952,
+      "timestamp_iso": "2026-08-14T13:01:55Z",
+      "feature_promoted": "TP-Link High-Gain Extender Bridge for 'absolute mesh'",
+      "author_model": "LauburuProjectMoE (Router & RF Specialist)",
+      "bonus_npu_hours": 50.0,
+      "is_permanent_boost": true,
+      "production_target": "scripts/tplink_extender_wifi_mesh_connector.py",
+      "impact_summary": "Extender STA client configured with 23dBm TX power, 40MHz channel width, and WPA2-PSK key 'W0rshipDan' to bridge edge internet into mesh.",
+      "status": "PERMANENT_ACTIVE_BOOST"
+    },
+    {
+      "grant_id": "NPU_GRANT_1786945514_8",
+      "timestamp": 1786945514.158603,
+      "timestamp_iso": "2026-08-17T05:45:14Z",
+      "feature_promoted": "Sovereign Storage Migration & SSD Decommissioning",
+      "author_model": "LauburuProjectMoE (Storage Specialist)",
+      "bonus_npu_hours": 25.0,
+      "production_target": "scripts/syncthing_mesh_manager.py",
+      "impact_summary": "Decoupled all /mnt/ssd_1tb dependencies to native device internal NVMe + Google Drive + Syncthing P2P.",
+      "status": "ACTIVE_GRANT"
+    },
+    {
+      "grant_id": "NPU_GRANT_1787838188_9",
+      "timestamp": 1787838188.989494,
+      "timestamp_iso": "2026-08-27T13:43:08Z",
+      "feature_promoted": "Continuous Red vs Blue TUI Mastery Production Runner (Rust Ratatui)",
+      "author_model": "polyglot-rust-ratatui-specialist",
+      "bonus_npu_hours": 39.73,
+      "production_target": "01_apps/canonical_tui_prototypes/rust_ratatui",
+      "impact_summary": "Zero-allocation 120fps immediate mode terminal dashboard certified under Abliterated Llama 70B Devil Advocate referee with 99.39 composite score.",
+      "status": "ACTIVE_GRANT",
+      "benchmark_scores": {
+        "memory_score": 99.22,
+        "latency_score": 98.32,
+        "robustness_score": 100.0,
+        "code_quality_score": 100.0,
+        "composite_score": 99.39
+      }
+    }
+  ]
+}

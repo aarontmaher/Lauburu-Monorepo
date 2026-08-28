@@ -1,0 +1,314 @@
+[
+  {
+    "id": "corr_1786826474502",
+    "timestamp": "2026-08-15T20:41:14.372994+00:00",
+    "claim": "Aggregating 5-device live telemetry stream via PySpark RDDs without simulated data",
+    "action_domain": "Telemetry & Distributed Streaming",
+    "target_model": "PySpark Engine (v4.0.4)",
+    "duration_ms": 67.26,
+    "hardware_spikes": {
+      "cpu_spike_percent": 0.0,
+      "peak_cpu_percent": 29.4,
+      "ram_delta_mb": 1.47,
+      "peak_ram_mb": 7582.33,
+      "npu_tops_engaged": 0.0,
+      "gpu_metal_vram_mb": 307.56
+    },
+    "grounding": {
+      "executed_successfully": false,
+      "error": "No module named 'scripts'",
+      "claim_empirically_grounded": false
+    },
+    "effectiveness": {
+      "score": 0.5,
+      "rating": "DEGRADED",
+      "roi_compute": "5.0 / 10.0"
+    }
+  },
+  {
+    "id": "corr_1786826474635",
+    "timestamp": "2026-08-15T20:41:14.504338+00:00",
+    "claim": "Executing zero-lag Ray distributed worker hashing on Monorepo core scripts",
+    "action_domain": "Distributed Storage & Hashing",
+    "target_model": "Ray Distributed Cluster (v2.51.2)",
+    "duration_ms": 65.83,
+    "hardware_spikes": {
+      "cpu_spike_percent": 10.4,
+      "peak_cpu_percent": 40.8,
+      "ram_delta_mb": 0.21,
+      "peak_ram_mb": 7580.83,
+      "npu_tops_engaged": 9.3,
+      "gpu_metal_vram_mb": 307.58
+    },
+    "grounding": {
+      "executed_successfully": false,
+      "error": "No module named 'scripts'",
+      "claim_empirically_grounded": false
+    },
+    "effectiveness": {
+      "score": 0.474,
+      "rating": "DEGRADED",
+      "roi_compute": "4.74 / 10.0"
+    }
+  },
+  {
+    "id": "corr_1786826474770",
+    "timestamp": "2026-08-15T20:41:14.635866+00:00",
+    "claim": "Probing and validating live RPC socket 50052 and Metal GPU across Mac Host and Linux Node",
+    "action_domain": "Mesh Sharding & Hardware Resilience",
+    "target_model": "llama.cpp GGML-RPC Engine",
+    "duration_ms": 69.72,
+    "hardware_spikes": {
+      "cpu_spike_percent": 0.0,
+      "peak_cpu_percent": 20.4,
+      "ram_delta_mb": 0.22,
+      "peak_ram_mb": 7581.06,
+      "npu_tops_engaged": 4.56,
+      "gpu_metal_vram_mb": 307.61
+    },
+    "grounding": {
+      "executed_successfully": false,
+      "error": "No module named 'scripts'",
+      "claim_empirically_grounded": false
+    },
+    "effectiveness": {
+      "score": 0.5,
+      "rating": "DEGRADED",
+      "roi_compute": "5.0 / 10.0"
+    }
+  },
+  {
+    "id": "corr_1786826509411",
+    "timestamp": "2026-08-15T20:41:49.271700+00:00",
+    "claim": "Aggregating 5-device live telemetry stream via PySpark RDDs without simulated data",
+    "action_domain": "Telemetry & Distributed Streaming",
+    "target_model": "PySpark Engine (v4.0.4)",
+    "duration_ms": 75.57,
+    "hardware_spikes": {
+      "cpu_spike_percent": 0.0,
+      "peak_cpu_percent": 41.7,
+      "ram_delta_mb": 2.48,
+      "peak_ram_mb": 7537.14,
+      "npu_tops_engaged": 4.01,
+      "gpu_metal_vram_mb": 295.06
+    },
+    "grounding": {
+      "executed_successfully": false,
+      "error": "cannot import name 'aggregate_live_telemetry_stream' from 'scripts.pyspark_telemetry_aggregator' (/Volumes/Lauburu-Monorepo/scripts/pyspark_telemetry_aggregator.py)",
+      "claim_empirically_grounded": false
+    },
+    "effectiveness": {
+      "score": 0.5,
+      "rating": "DEGRADED",
+      "roi_compute": "5.0 / 10.0"
+    }
+  },
+  {
+    "id": "corr_1786826512552",
+    "timestamp": "2026-08-15T20:41:49.412479+00:00",
+    "claim": "Executing zero-lag Ray distributed worker hashing on Monorepo core scripts",
+    "action_domain": "Distributed Storage & Hashing",
+    "target_model": "Ray Distributed Cluster (v2.51.2)",
+    "duration_ms": 3074.16,
+    "hardware_spikes": {
+      "cpu_spike_percent": 23.5,
+      "peak_cpu_percent": 42.4,
+      "ram_delta_mb": -64.03,
+      "peak_ram_mb": 7537.34,
+      "npu_tops_engaged": 9.67,
+      "gpu_metal_vram_mb": 1067.09
+    },
+    "grounding": {
+      "executed_successfully": true,
+      "error": null,
+      "claim_empirically_grounded": true
+    },
+    "effectiveness": {
+      "score": 0.773,
+      "rating": "NOMINAL",
+      "roi_compute": "7.73 / 10.0"
+    }
+  },
+  {
+    "id": "corr_1786826513709",
+    "timestamp": "2026-08-15T20:41:52.553221+00:00",
+    "claim": "Probing and validating live RPC socket 50052 and Metal GPU across Mac Host and Linux Node",
+    "action_domain": "Mesh Sharding & Hardware Resilience",
+    "target_model": "llama.cpp GGML-RPC Engine",
+    "duration_ms": 1092.9,
+    "hardware_spikes": {
+      "cpu_spike_percent": 3.2,
+      "peak_cpu_percent": 20.8,
+      "ram_delta_mb": -182.62,
+      "peak_ram_mb": 7477.06,
+      "npu_tops_engaged": 4.74,
+      "gpu_metal_vram_mb": 1070.0
+    },
+    "grounding": {
+      "executed_successfully": true,
+      "error": null,
+      "claim_empirically_grounded": true
+    },
+    "effectiveness": {
+      "score": 0.971,
+      "rating": "OPTIMAL",
+      "roi_compute": "9.71 / 10.0"
+    }
+  },
+  {
+    "id": "corr_1786826559256",
+    "timestamp": "2026-08-15T20:42:38.495620+00:00",
+    "claim": "Aggregating 5-device live telemetry stream via PySpark RDDs without simulated data",
+    "action_domain": "Telemetry & Distributed Streaming",
+    "target_model": "PySpark Engine (v4.0.4)",
+    "duration_ms": 682.05,
+    "hardware_spikes": {
+      "cpu_spike_percent": 5.9,
+      "peak_cpu_percent": 22.2,
+      "ram_delta_mb": -122.71,
+      "peak_ram_mb": 7674.38,
+      "npu_tops_engaged": 5.06,
+      "gpu_metal_vram_mb": 319.25
+    },
+    "grounding": {
+      "executed_successfully": true,
+      "error": null,
+      "claim_empirically_grounded": true
+    },
+    "effectiveness": {
+      "score": 0.985,
+      "rating": "OPTIMAL",
+      "roi_compute": "9.85 / 10.0"
+    }
+  },
+  {
+    "id": "corr_1786826563409",
+    "timestamp": "2026-08-15T20:42:39.259119+00:00",
+    "claim": "Executing zero-lag Ray distributed worker hashing on Monorepo core scripts",
+    "action_domain": "Distributed Storage & Hashing",
+    "target_model": "Ray Distributed Cluster (v2.51.2)",
+    "duration_ms": 4083.32,
+    "hardware_spikes": {
+      "cpu_spike_percent": 0.0,
+      "peak_cpu_percent": 37.9,
+      "ram_delta_mb": -186.74,
+      "peak_ram_mb": 7538.12,
+      "npu_tops_engaged": 8.32,
+      "gpu_metal_vram_mb": 1105.89
+    },
+    "grounding": {
+      "executed_successfully": true,
+      "error": null,
+      "claim_empirically_grounded": true
+    },
+    "effectiveness": {
+      "score": 0.811,
+      "rating": "NOMINAL",
+      "roi_compute": "8.11 / 10.0"
+    }
+  },
+  {
+    "id": "corr_1786826564660",
+    "timestamp": "2026-08-15T20:42:43.410270+00:00",
+    "claim": "Probing and validating live RPC socket 50052 and Metal GPU across Mac Host and Linux Node",
+    "action_domain": "Mesh Sharding & Hardware Resilience",
+    "target_model": "llama.cpp GGML-RPC Engine",
+    "duration_ms": 1159.95,
+    "hardware_spikes": {
+      "cpu_spike_percent": 3.3,
+      "peak_cpu_percent": 47.7,
+      "ram_delta_mb": 33.92,
+      "peak_ram_mb": 7381.83,
+      "npu_tops_engaged": 10.88,
+      "gpu_metal_vram_mb": 1104.66
+    },
+    "grounding": {
+      "executed_successfully": true,
+      "error": null,
+      "claim_empirically_grounded": true
+    },
+    "effectiveness": {
+      "score": 0.957,
+      "rating": "OPTIMAL",
+      "roi_compute": "9.57 / 10.0"
+    }
+  },
+  {
+    "id": "corr_1786968133990",
+    "timestamp": "2026-08-17T12:02:12.778167+00:00",
+    "claim": "Aggregating 5-device live telemetry stream via PySpark RDDs without simulated data",
+    "action_domain": "Telemetry & Distributed Streaming",
+    "target_model": "PySpark Engine (v4.0.4)",
+    "duration_ms": 1121.79,
+    "hardware_spikes": {
+      "cpu_spike_percent": 0.0,
+      "peak_cpu_percent": 25.4,
+      "ram_delta_mb": 78.14,
+      "peak_ram_mb": 5710.47,
+      "npu_tops_engaged": 0.0,
+      "gpu_metal_vram_mb": 0.0
+    },
+    "grounding": {
+      "executed_successfully": true,
+      "error": null,
+      "claim_empirically_grounded": true
+    },
+    "effectiveness": {
+      "score": 0.973,
+      "rating": "OPTIMAL",
+      "roi_compute": "9.73 / 10.0"
+    }
+  },
+  {
+    "id": "corr_1786968137312",
+    "timestamp": "2026-08-17T12:02:13.992899+00:00",
+    "claim": "Executing zero-lag Ray distributed worker hashing on Monorepo core scripts",
+    "action_domain": "Distributed Storage & Hashing",
+    "target_model": "Ray Distributed Cluster (v2.51.2)",
+    "duration_ms": 3250.99,
+    "hardware_spikes": {
+      "cpu_spike_percent": 26.0,
+      "peak_cpu_percent": 36.7,
+      "ram_delta_mb": -334.87,
+      "peak_ram_mb": 5703.7,
+      "npu_tops_engaged": 8.37,
+      "gpu_metal_vram_mb": 0.0
+    },
+    "grounding": {
+      "executed_successfully": true,
+      "error": null,
+      "claim_empirically_grounded": true
+    },
+    "effectiveness": {
+      "score": 0.762,
+      "rating": "NOMINAL",
+      "roi_compute": "7.62 / 10.0"
+    }
+  },
+  {
+    "id": "corr_1786968139598",
+    "timestamp": "2026-08-17T12:02:17.312903+00:00",
+    "claim": "Probing and validating live RPC socket 50052 and Metal GPU across Mac Host and Linux Node",
+    "action_domain": "Mesh Sharding & Hardware Resilience",
+    "target_model": "llama.cpp GGML-RPC Engine",
+    "duration_ms": 2181.55,
+    "hardware_spikes": {
+      "cpu_spike_percent": 0.0,
+      "peak_cpu_percent": 29.1,
+      "ram_delta_mb": 60.8,
+      "peak_ram_mb": 5436.14,
+      "npu_tops_engaged": 3.65,
+      "gpu_metal_vram_mb": 0.0
+    },
+    "grounding": {
+      "executed_successfully": true,
+      "error": null,
+      "claim_empirically_grounded": true
+    },
+    "effectiveness": {
+      "score": 0.865,
+      "rating": "OPTIMAL",
+      "roi_compute": "8.65 / 10.0"
+    }
+  }
+]

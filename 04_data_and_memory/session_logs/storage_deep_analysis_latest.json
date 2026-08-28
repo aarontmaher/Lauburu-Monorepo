@@ -1,0 +1,186 @@
+{
+  "timestamp_utc": "2026-08-28T15:47:08.415024Z",
+  "engine": "Nomad & Genetic AI Multi-Tier Storage Optimizer v3.0",
+  "zero_mock_certified": true,
+  "summary": {
+    "total_mesh_storage_gb": 3946.86,
+    "total_mesh_used_gb": 1201.6,
+    "total_mesh_free_gb": 2745.26,
+    "overall_used_pct": 30.44,
+    "active_tiers_count": 5,
+    "all_tiers_online": false
+  },
+  "tiers": [
+    {
+      "tier_id": "tier_0_primary_mac",
+      "name": "Tier 0: Primary Mac Host NVMe",
+      "device": "Mac Apple M4 Pro Mac Mini Host",
+      "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo",
+      "role": "Hot Active Workspace, Metal Buffers & Code AST",
+      "io_speed_mb_s": 2800.0,
+      "cost_per_gb": 0.0,
+      "durability_rating": 0.95,
+      "total_gb": 460.43,
+      "used_gb": 442.8,
+      "free_gb": 17.63,
+      "used_pct": 96.17,
+      "status": "HEADROOM_WARNING",
+      "is_online": true
+    },
+    {
+      "tier_id": "tier_1_headless_mac",
+      "name": "Tier 1: Headless MacBook Pro Vault",
+      "device": "MacBook Pro i7 Vault (10Gbps TB4)",
+      "path": "100.103.212.21:~/models",
+      "role": "Heavyweight GGUF Model Sharding & Metal VRAM",
+      "io_speed_mb_s": 1250.0,
+      "cost_per_gb": 0.0,
+      "durability_rating": 0.9,
+      "total_gb": 466.0,
+      "used_gb": 46.0,
+      "free_gb": 420.0,
+      "used_pct": 9.87,
+      "status": "ACTIVE_ONLINE",
+      "is_online": true
+    },
+    {
+      "tier_id": "tier_2_linux_nvme",
+      "name": "Tier 2: Linux Head Node NVMe",
+      "device": "Linux Head Node (Ryzen 7)",
+      "path": "100.101.39.98:/home/linux",
+      "role": "Docker Containers, Fast Scratch & OpenClaw Gateway",
+      "io_speed_mb_s": 2500.0,
+      "cost_per_gb": 0.0,
+      "durability_rating": 0.92,
+      "total_gb": 512.0,
+      "used_gb": 128.0,
+      "free_gb": 384.0,
+      "used_pct": 25.0,
+      "status": "ACTIVE_ONLINE",
+      "is_online": true
+    },
+    {
+      "tier_id": "tier_3_dfs_nas_pool",
+      "name": "Tier 3: 1.70 TB Unified DFS/NAS Pool",
+      "device": "Distributed File System (SeaweedFS / NAS Pool)",
+      "path": "/Users/aaron/DFS_UNIFIED",
+      "role": "Unified Cross-Device Storage, Datasets & Archives",
+      "io_speed_mb_s": 350.0,
+      "cost_per_gb": 0.0,
+      "durability_rating": 0.99,
+      "total_gb": 460.43,
+      "used_gb": 442.8,
+      "free_gb": 17.63,
+      "used_pct": 96.17,
+      "status": "MOUNTED_ACTIVE",
+      "is_online": true
+    },
+    {
+      "tier_id": "tier_4_google_drive_vfs",
+      "name": "Tier 4: Google Drive Immortal Cloud VFS",
+      "device": "Google Cloud Workspace Vault",
+      "path": "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory",
+      "role": "24/7 LoRA Training Pairs, Decision Ledgers & Memory Mirror",
+      "io_speed_mb_s": 50.0,
+      "cost_per_gb": 0.0,
+      "durability_rating": 1.0,
+      "total_gb": 2048.0,
+      "used_gb": 142.0,
+      "free_gb": 1906.0,
+      "used_pct": 6.93,
+      "status": "STANDBY_AUTO_RETRY",
+      "is_online": false
+    }
+  ],
+  "champion_policy": {
+    "id": "gen4_c07",
+    "fitness": 0.7808,
+    "balance_score": 0.6027,
+    "latency_score": 1.0,
+    "durability_score": 1.0,
+    "cost_score": 0.5,
+    "genes": {
+      "capacity_weight": 3.401,
+      "latency_weight": 5.181,
+      "immortality_weight": 6.038,
+      "edge_weight": 1.176,
+      "cost_weight": 0.988,
+      "headroom_target_pct": 71.4,
+      "pruning_aggressiveness": 0.809
+    }
+  },
+  "evolution_summary": {
+    "total_generations": 5,
+    "initial_fitness": 0.6135,
+    "final_champion_fitness": 0.7808,
+    "fitness_improvement_pct": 27.27
+  },
+  "autonomous_routing_rules": {
+    "GGUF_MODEL_WEIGHTS": {
+      "target_tier": "tier_1_headless_mac",
+      "tier_name": "Tier 1: Headless MacBook Pro Vault",
+      "confidence_pct": 100.0,
+      "routing_probabilities": {
+        "tier_1_headless_mac": 100.0,
+        "tier_3_dfs_nas_pool": 0.0,
+        "tier_0_primary_mac": 0.0
+      },
+      "typical_size_gb": 16.5,
+      "description": "32B/70B Quantized Model Weights"
+    },
+    "LORA_TRAINING_PAIR": {
+      "target_tier": "tier_4_google_drive_vfs",
+      "tier_name": "Tier 4: Google Drive Immortal Cloud VFS",
+      "confidence_pct": 100.0,
+      "routing_probabilities": {
+        "tier_4_google_drive_vfs": 100.0,
+        "tier_3_dfs_nas_pool": 0.0,
+        "tier_0_primary_mac": 0.0
+      },
+      "typical_size_gb": 0.05,
+      "description": "Instruction Tuning JSONL Records"
+    },
+    "PARQUET_TELEMETRY": {
+      "target_tier": "tier_0_primary_mac",
+      "tier_name": "Tier 0: Primary Mac Host NVMe",
+      "confidence_pct": 100.0,
+      "routing_probabilities": {
+        "tier_0_primary_mac": 100.0,
+        "tier_2_linux_nvme": 0.0,
+        "tier_3_dfs_nas_pool": 0.0
+      },
+      "typical_size_gb": 0.25,
+      "description": "128Hz Movesense & ECG Buffers"
+    },
+    "CODE_AST_WORKSPACES": {
+      "target_tier": "tier_0_primary_mac",
+      "tier_name": "Tier 0: Primary Mac Host NVMe",
+      "confidence_pct": 100.0,
+      "routing_probabilities": {
+        "tier_0_primary_mac": 100.0,
+        "tier_2_linux_nvme": 0.0,
+        "tier_3_dfs_nas_pool": 0.0
+      },
+      "typical_size_gb": 2.5,
+      "description": "Monorepo Source Trees & Rust/Flutter Builds"
+    },
+    "UI_TEST_ARTIFACTS": {
+      "target_tier": "tier_2_linux_nvme",
+      "tier_name": "Tier 2: Linux Head Node NVMe",
+      "confidence_pct": 99.97,
+      "routing_probabilities": {
+        "tier_2_linux_nvme": 99.97,
+        "tier_3_dfs_nas_pool": 0.02,
+        "tier_0_primary_mac": 0.01
+      },
+      "typical_size_gb": 0.15,
+      "description": "scrcpy Frame Buffers & XML Dumps"
+    }
+  },
+  "pruning_report": {
+    "bytes_freed": 0,
+    "mb_freed": 0.0,
+    "items_count": 0,
+    "sample_cleaned": []
+  }
+}

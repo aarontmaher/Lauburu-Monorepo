@@ -1,0 +1,104 @@
+{
+  "timestamp": 1787183387.553482,
+  "analysis_elapsed_sec": 0.278,
+  "user_query": "What ports are used?",
+  "gating_distribution": {
+    "CodebaseASTExpert": 0.2,
+    "MeshDistributedExpert": 0.2,
+    "BiometricsDSPExpert": 0.2,
+    "TruthAuditorExpert": 0.2,
+    "ShopifyCommerceExpert": 0.2
+  },
+  "pyspark_ast_context": {
+    "engine": "Apache PySpark 3.5 AST Analyzer",
+    "total_indexed_files": 3679,
+    "relevant_ast_nodes": [
+      "scripts/android_illegal_imports.py",
+      "self_healing_hub/src/unorthodox_transports_state.json"
+    ],
+    "structural_pillars": [
+      "1. Phone_Applications (Super App, Zone 2 Endurance, Workout Analyzer, Business Suite)",
+      "2. Standalone_Services (Edge Node Hub, OpenClaw Environment, llama.cpp Mesh)",
+      "3. self_healing_hub (PySpark Pipeline, Dynamic RPC Optimizer, Visual Auditor)",
+      "4. scripts (Continuous LoRA Daemon, Tri-Orchestrator Debate, Hardware Guard)"
+    ]
+  },
+  "ray_cluster_state": {
+    "engine": "Ray 2.41.0 Distributed Cluster Scheduler",
+    "head_node": "mac_node_host (Apple M4 Max, 127.0.0.1:6379)",
+    "worker_nodes": [
+      {
+        "node": "MacBook_Pro (Layer 2)",
+        "ip": "169.254.187.138",
+        "transport": "10Gbps Thunderbolt 4",
+        "status": "ONLINE",
+        "ram_gb": 16.0
+      },
+      {
+        "node": "Linux_Head_Node (Layer 3)",
+        "ip": "100.101.39.98",
+        "transport": "Tailscale WireGuard",
+        "status": "ONLINE",
+        "ram_gb": 15.0
+      },
+      {
+        "node": "Pixel_10_Pro_XL (Layer 4)",
+        "ip": "100.73.38.87",
+        "transport": "Edge TPU / Termux",
+        "status": "ONLINE",
+        "ram_gb": 15.2
+      },
+      {
+        "node": "Samsung_S20 (Layer 5)",
+        "ip": "100.84.40.95",
+        "transport": "GL.iNet USB ADB Tether",
+        "status": "ONLINE",
+        "ram_gb": 10.6
+      }
+    ],
+    "total_pooled_mesh_ram_gb": 72.8,
+    "usable_ai_vram_gb": 82.8,
+    "active_ray_actors": [
+      "PySparkDataActor",
+      "TelemetryBroadcastActor",
+      "LoRATrainingActor",
+      "RPCCircuitActor"
+    ]
+  },
+  "daemon_and_mesh_health": {
+    "daemon_matrix": {
+      "openclaw_proxy_8181": "RUNNING",
+      "lauburu_node_supervisor_8086": "RUNNING",
+      "self_healing_hub_5001": "RUNNING",
+      "llama_metal_gpu_8082": "OFFLINE",
+      "pixel_rpc_server_50052": "RUNNING",
+      "samsung_termux_ssh_8022": "OFFLINE"
+    },
+    "active_daemons_count": 4,
+    "total_daemons_monitored": 6,
+    "mesh_health_score_pct": 66.7,
+    "zero_fake_data_policy": "STRICT_ENFORCED (No simulated numbers, live sensors only)"
+  },
+  "movesense_dsp_state": {
+    "engine": "Movesense 2.0 GATT DSP & Kinematics Pipeline",
+    "sample_rate_ecg_hz": 125,
+    "sample_rate_imu_hz": 52,
+    "artifact_filter": "Kamath 2004 Clinical RR Filter (Enabled)",
+    "aerobic_threshold_engine": "DFA-alpha1 Rolling Detrended Fluctuation Analysis",
+    "active_target_ranges": {
+      "Recovery": "alpha1 >= 1.0",
+      "Zone 2 Aerobic Base": "0.75 <= alpha1 < 1.0",
+      "Above LT1 Threshold": "alpha1 < 0.75"
+    },
+    "hub_websocket_endpoint": "ws://127.0.0.1:8086/telemetry"
+  },
+  "shopify_membership_state": {
+    "auth_mode": "Shopify GraphQL Storefront Customer Account API (2026-01)",
+    "dual_membership_rules": {
+      "contributor_staking": ">= 8GB Pooled RAM/VRAM contributed -> 100% Free Lifetime Pro Access (CONTRIBUTOR_PRO)",
+      "shopify_subscription": "Active 'tier_pro' customer tag -> Paid Pro Access (SHOPIFY_PAID_PRO)"
+    },
+    "current_node_tier": "CONTRIBUTOR_PRO",
+    "access_granted": true
+  }
+}

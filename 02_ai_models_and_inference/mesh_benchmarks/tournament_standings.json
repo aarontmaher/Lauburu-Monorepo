@@ -1,0 +1,32 @@
+{
+  "LauburuProjectMoE (Local 8-Expert)": {
+    "elo": 1280,
+    "wins": 4,
+    "losses": 0,
+    "type": "From-Scratch MoE"
+  },
+  "Qwen3-VL-32B (Vision Agent)": {
+    "elo": 1250,
+    "wins": 0,
+    "losses": 0,
+    "type": "Local Edge Vision"
+  },
+  "Gemini 3.7 Flash (High Reasoning)": {
+    "elo": 1250,
+    "wins": 0,
+    "losses": 0,
+    "type": "Cloud Teacher / Shadow Guard"
+  },
+  "DeepSeek-R1-32B (Q4_K_M)": {
+    "elo": 1220,
+    "wins": 0,
+    "losses": 0,
+    "type": "Local Mesh RPC"
+  },
+  "Tiny Swarm (0.5B Fleet)": {
+    "elo": 1180,
+    "wins": 0,
+    "losses": 0,
+    "type": "Massive Parallel Edge"
+  }
+}

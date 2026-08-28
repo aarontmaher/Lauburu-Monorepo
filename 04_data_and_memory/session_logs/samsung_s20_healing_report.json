@@ -1,0 +1,10 @@
+{
+  "device_id": "Samsung_S20",
+  "timestamp": "2026-08-22T07:11:00.567703+00:00",
+  "adb_connected": false,
+  "active_endpoint": null,
+  "termux_woken": false,
+  "rpc_server_running": false,
+  "zero_mock_verified": true,
+  "status": "OFFLINE_AWAITING_PHYSICAL_CONNECTION"
+}

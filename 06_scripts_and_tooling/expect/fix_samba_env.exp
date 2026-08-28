@@ -1,0 +1,29 @@
+#!/usr/bin/expect -f
+set timeout 15
+spawn ssh -o StrictHostKeyChecking=no linux@100.101.39.98
+expect "*?assword:*"
+send "goldfighting1\r"
+expect "*?linux@*"
+send "sudo bash -c 'cat << \"INNER_EOF\" > /home/linux/nas_samba/docker-compose.yml
+version: \"3.8\"
+services:
+  samba_nas_gateway:
+    image: dperson/samba:latest
+    container_name: samba_nas_gateway
+    environment:
+      - TZ=Australia/Sydney
+      - WORKGROUP=WORKGROUP
+      - SERVERSTRING=Lauburu Core Storage Mesh
+      - NMBD=true
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data:/data:rw
+    ports:
+      - \"100.101.39.98:445:445/tcp\"
+      - \"100.101.39.98:139:139/tcp\"
+    command: -u \"linux;goldfighting1\" -s \"nas;/data;yes;no;no;linux\"
+    restart: unless-stopped
+INNER_EOF'\r"
+expect "*?linux@*"
+send "cd ~/nas_samba && sudo docker-compose up -d --force-recreate\r"
+expect "*?linux@*"
+send "exit\r"

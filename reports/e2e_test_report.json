@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-08-27T03:13:25.814777",
+  "tier": "all",
+  "total_tests": 133,
+  "passed": 133,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "pass_rate_percent": 100.0,
+  "duration_seconds": 1.067,
+  "status": "PASSED",
+  "failures_details": [],
+  "errors_details": []
+}

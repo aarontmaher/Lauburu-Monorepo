@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  genetic-optimizer:
+    build: 
+      context: .
+      dockerfile: Dockerfile.genetic
+    container_name: genetic_optimizer
+    restart: unless-stopped
+    volumes:
+      - .:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1

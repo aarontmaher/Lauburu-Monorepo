@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+psutil
+httpx
+aiohttp
+python-osc
+ifaddr
+pydantic
+python-multipart

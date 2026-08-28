@@ -1,0 +1,21 @@
+[package]
+name = "canonical_tui_rust"
+version = "2.0.0"
+edition = "2021"
+authors = ["Aaron Maher", "Lauburu Monorepo Team"]
+description = "Canonical Lauburu Ratatui Cloud API Quota & Telemetry Defense HUD"
+
+[dependencies]
+ratatui = "0.28"
+crossterm = "0.28"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4.4", features = ["derive"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "unwind"
+strip = true

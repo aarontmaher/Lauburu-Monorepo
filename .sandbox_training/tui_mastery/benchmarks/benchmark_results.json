@@ -1,0 +1,45 @@
+{
+  "tournament_id": "tui_mastery_red_vs_blue_v1",
+  "timestamp": "2026-08-27T13:47:53Z",
+  "integrity_mode": "benchmark",
+  "referee": "Abliterated Llama 70B (Devil's Advocate)",
+  "frameworks": {
+    "python_textual": {
+      "memory_score": 78.65,
+      "latency_score": 0.0,
+      "robustness_score": 100.0,
+      "code_quality_score": 100.0,
+      "composite_score": 69.66,
+      "panics_count": 0,
+      "status": "COMPLETED",
+      "bonus_npu_hours": 25.0
+    },
+    "go_bubbletea": {
+      "memory_score": 97.08,
+      "latency_score": 97.6,
+      "robustness_score": 100.0,
+      "code_quality_score": 100.0,
+      "composite_score": 98.67,
+      "panics_count": 0,
+      "status": "COMPLETED",
+      "bonus_npu_hours": 39.33
+    },
+    "rust_ratatui": {
+      "memory_score": 99.22,
+      "latency_score": 97.45,
+      "robustness_score": 100.0,
+      "code_quality_score": 100.0,
+      "composite_score": 99.17,
+      "panics_count": 0,
+      "status": "COMPLETED",
+      "bonus_npu_hours": 39.58
+    }
+  },
+  "winner": {
+    "framework": "rust_ratatui",
+    "specialist": "polyglot-rust-ratatui-specialist",
+    "composite_score": 99.17,
+    "promotion_target": "01_apps/canonical_tui_prototypes/rust_ratatui",
+    "bonus_npu_hours": 39.58
+  }
+}

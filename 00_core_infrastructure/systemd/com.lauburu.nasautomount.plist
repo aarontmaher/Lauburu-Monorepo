@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.lauburu.nasautomount</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Volumes/Lauburu-Monorepo/auto_mount_nas_daemon.py</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Volumes/.gemini/antigravity/brain/nas_automount.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Volumes/.gemini/antigravity/brain/nas_automount_err.log</string>
+</dict>
+</plist>

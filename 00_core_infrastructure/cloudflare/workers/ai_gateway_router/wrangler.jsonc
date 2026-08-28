@@ -1,0 +1,18 @@
+{
+  "name": "lauburu-ai-gateway-router",
+  "main": "worker.js",
+  "compatibility_date": "2026-08-28",
+  "account_id": "16282271f1eccb56f0b96afed09d21ff",
+  "ai": {
+    "binding": "AI"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "ENVIRONMENT": "production",
+    "GATEWAY_SLUG": "lauburu-ai-gateway",
+    "ACCOUNT_ID": "16282271f1eccb56f0b96afed09d21ff"
+  }
+}

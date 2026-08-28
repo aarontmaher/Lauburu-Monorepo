@@ -1,0 +1,19 @@
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    iproute2 \
+    net-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY docker/requirements_mesh.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+COPY . /app
+
+EXPOSE 8181
+
+CMD ["python3", "Installed_Apps/Core_Mesh/openclaw_proxy.py"]

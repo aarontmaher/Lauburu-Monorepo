@@ -1,0 +1,33 @@
+{
+  "subsystem": "shizuku_network_healer",
+  "version": "1.0.0",
+  "target_nodes": [
+    {
+      "node_id": "pixel_10",
+      "ip": "100.73.38.87",
+      "adb_port": 5555,
+      "doze_whitelist": [
+        "com.termux",
+        "com.tailscale.ipn"
+      ]
+    },
+    {
+      "node_id": "samsung_s20",
+      "ip": "100.84.40.95",
+      "adb_port": 5555,
+      "doze_whitelist": [
+        "com.termux",
+        "com.tailscale.ipn"
+      ]
+    }
+  ],
+  "healing_triggers": {
+    "ping_timeout_seconds": 5,
+    "consecutive_failures_before_restart": 3,
+    "wifi_bounce_delay_seconds": 2
+  },
+  "security": {
+    "require_root_or_shell_uid": true,
+    "disable_phantom_process_monitor": true
+  }
+}

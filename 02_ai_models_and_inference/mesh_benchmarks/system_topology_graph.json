@@ -1,0 +1,71 @@
+{
+  "system_topology_graph": {
+    "version": "2.0.0",
+    "updated": "2026-08-09T07:15:00.000000",
+    "monorepo_apps": [
+      {
+        "id": "lauburu_compute_hub",
+        "role": "Central Background & Foreground BLE / AI Compute Service",
+        "ipc_endpoint": "ws://127.0.0.1:18789",
+        "status": "ACTIVE"
+      },
+      {
+        "id": "lauburu_zone2_endurance",
+        "role": "DFA-alpha1 Live HRV & LT1/LT2 Threshold Training App",
+        "consumes_ble_from": "lauburu_compute_hub",
+        "status": "ACTIVE"
+      },
+      {
+        "id": "bicep_ecg_tkeo",
+        "role": "512Hz EMG / Bicep Lead TKEO Signal Processing App",
+        "consumes_ble_from": "lauburu_compute_hub",
+        "status": "ACTIVE"
+      },
+      {
+        "id": "athlete_meditation_app",
+        "role": "Biofeedback & Heart Rate Variability Synchronization App",
+        "consumes_ble_from": "lauburu_compute_hub",
+        "status": "ACTIVE"
+      },
+      {
+        "id": "shopify_research_specialist",
+        "role": "Gemma/OpenClaw E-Commerce & UI/UX Auto-Optimization App",
+        "status": "ACTIVE"
+      }
+    ],
+    "network_mesh_transports": {
+      "docker": {
+        "mcp_server": "docker-mcp-server",
+        "container_hub": "docker-compose.connectivity.yml",
+        "passthrough": ["/dev/bus/usb", "/var/run/dbus"]
+      },
+      "ssh": {
+        "target": "linux@100.101.39.98",
+        "purpose": "Remote Linux Execution & 1TB SSD Maintenance"
+      },
+      "cloudflare": {
+        "tunnel_domain": "openclaw.lauburugrappling.com",
+        "protocol": "wss / https edge routing"
+      },
+      "tailscale": {
+        "network": "100.x.x.x overlay mesh",
+        "nodes": ["macbook-1", "pixel-10-pro-xl", "samsung-s20", "linux-1"]
+      },
+      "llama_cpp_rpc": {
+        "sharding_port": 50052,
+        "master_inference_port": 8081,
+        "vision_inference_port": 8085,
+        "edge_fallback_port": 8084,
+        "pooled_vram_gb": 82.8,
+        "sharded_models": ["Kimi-Dev-72B", "Kimi-VL-Thinking-2506", "Qwen2.5-VL-7B", "DeepSeek-R1-Distill-32B"],
+        "tensor_split": "28,28,24"
+      }
+    },
+    "storage_tier_hierarchy": {
+      "tier1_nvme": "/ (Linux OS 468GB - 21GB Freed)",
+      "tier2_ssd_1tb": "/mnt/ssd_1tb (ext4 - 22GB Models Stored / 848GB Free)",
+      "tier3_mac_host": "/Volumes/Lauburu-Monorepo (228GB Source & Builds)",
+      "tier4_cloud": "gdrive_sync/ (Google Drive Backup Target)"
+    }
+  }
+}

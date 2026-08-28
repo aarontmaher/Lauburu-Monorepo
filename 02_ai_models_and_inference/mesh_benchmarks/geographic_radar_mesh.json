@@ -1,0 +1,304 @@
+{
+  "timestamp": 1786659388.3195589,
+  "timestamp_iso": "2026-08-13T22:16:28Z",
+  "summary": {
+    "total_nodes": 10,
+    "melbourne_core_nodes": 4,
+    "victoria_nodes": 6,
+    "australia_nodes": 8,
+    "global_nodes": 2,
+    "avg_latency_ms": 34.84,
+    "npu_priority_cascade": "NPU -> GPU -> CPU (Undetectable Throttle Active)"
+  },
+  "regions": [
+    {
+      "zone": "Melbourne CBD / Inner Suburbs",
+      "radius_km": 15,
+      "tier": 1
+    },
+    {
+      "zone": "Greater Victoria (Geelong, Ballarat, Bendigo)",
+      "radius_km": 150,
+      "tier": 2
+    },
+    {
+      "zone": "National Australia (Sydney, Brisbane, Perth, Adelaide)",
+      "radius_km": 3500,
+      "tier": 3
+    },
+    {
+      "zone": "Global Edge Mesh (Tokyo, Singapore, Frankfurt, San Francisco)",
+      "radius_km": 16000,
+      "tier": 4
+    }
+  ],
+  "devices": [
+    {
+      "id": "node_mel_01",
+      "device": "Google Pixel 10 Pro XL",
+      "location": "Melbourne CBD (Carlton), VIC, AU",
+      "lat": -37.8001,
+      "lng": 144.9671,
+      "region_zone": "Melbourne CBD / Inner Suburbs",
+      "os": "Android 15 (AP2A.250105.002)",
+      "hardware_chip": "Google Tensor G5 TPU (NPU v3)",
+      "carrier_isp": "Telstra 5G mmWave",
+      "connection_type": "Cellular 5G (Sub-6 + mmWave)",
+      "latency_ms": 7.2,
+      "jitter_ms": 1.1,
+      "packet_loss_pct": 0.0,
+      "battery": {
+        "level_pct": 86,
+        "max_capacity_pct": 98,
+        "cycle_count": 42,
+        "is_charging": false,
+        "temp_c": 31.4
+      },
+      "user_profile": "Power User (Foreground 3h/day, Background Compute 21h/day)",
+      "npu_bonus_credits": 250,
+      "active_role": "Primary Local Vision & Biometrics Sensor Gateway"
+    },
+    {
+      "id": "node_mel_02",
+      "device": "MacBook Pro 16-inch (M4 Max)",
+      "location": "Melbourne (South Yarra), VIC, AU",
+      "lat": -37.8386,
+      "lng": 144.9918,
+      "region_zone": "Melbourne CBD / Inner Suburbs",
+      "os": "macOS Sequoia 15.3 (Build 24D60)",
+      "hardware_chip": "Apple M4 Max 16-Core Neural Engine + 40-Core Metal GPU",
+      "carrier_isp": "Aussie Broadband 1000/50 NBN FTTP",
+      "connection_type": "10Gbps Thunderbolt 4 Subnet Bridge",
+      "latency_ms": 0.45,
+      "jitter_ms": 0.05,
+      "packet_loss_pct": 0.0,
+      "battery": {
+        "level_pct": 100,
+        "max_capacity_pct": 100,
+        "cycle_count": 18,
+        "is_charging": true,
+        "temp_c": 28.1
+      },
+      "user_profile": "Desktop Workstation (24/7 Deep MoE Metal Sharding)",
+      "npu_bonus_credits": 480,
+      "active_role": "Master Metal GPU RPC Shard Leader"
+    },
+    {
+      "id": "node_mel_03",
+      "device": "iPhone 16 Pro Max",
+      "location": "Melbourne (Fitzroy), VIC, AU",
+      "lat": -37.8014,
+      "lng": 144.9785,
+      "region_zone": "Melbourne CBD / Inner Suburbs",
+      "os": "iOS 18.3.1 (22D72)",
+      "hardware_chip": "Apple A18 Pro 16-Core Neural Engine",
+      "carrier_isp": "Optus 5G Plus",
+      "connection_type": "Wi-Fi 7 (802.11be)",
+      "latency_ms": 4.8,
+      "jitter_ms": 0.8,
+      "packet_loss_pct": 0.0,
+      "battery": {
+        "level_pct": 74,
+        "max_capacity_pct": 99,
+        "cycle_count": 56,
+        "is_charging": false,
+        "temp_c": 32.8
+      },
+      "user_profile": "Daily Commuter (Automatic Idle Background Compute)",
+      "npu_bonus_credits": 180,
+      "active_role": "Edge RAG & Local Verification Worker"
+    },
+    {
+      "id": "node_mel_04",
+      "device": "Samsung Galaxy S20+ (Headless Server)",
+      "location": "Melbourne (Brunswick), VIC, AU",
+      "lat": -37.7667,
+      "lng": 144.96,
+      "region_zone": "Melbourne CBD / Inner Suburbs",
+      "os": "Android 13 / Termux headless",
+      "hardware_chip": "Snapdragon 865 Adreno 650 + Hexagon 698 DSP",
+      "carrier_isp": "Vodafone AU 5G",
+      "connection_type": "USB-C Direct Tether",
+      "latency_ms": 1.2,
+      "jitter_ms": 0.2,
+      "packet_loss_pct": 0.0,
+      "battery": {
+        "level_pct": 92,
+        "max_capacity_pct": 82,
+        "cycle_count": 840,
+        "is_charging": true,
+        "temp_c": 34.5
+      },
+      "user_profile": "Dedicated Testbench Runner (Continuous OpenClaw Audits)",
+      "npu_bonus_credits": 310,
+      "active_role": "Autonomous OpenClaw UI/UX Tester"
+    },
+    {
+      "id": "node_vic_01",
+      "device": "Dell XPS 15 (Ubuntu Head Node)",
+      "location": "Geelong, VIC, AU",
+      "lat": -38.1499,
+      "lng": 144.3617,
+      "region_zone": "Greater Victoria (Geelong, Ballarat, Bendigo)",
+      "os": "Ubuntu 24.04.1 LTS (Linux 6.8.0-52-generic)",
+      "hardware_chip": "Intel Core i9-13900H + NVIDIA RTX 4070 Laptop GPU",
+      "carrier_isp": "Superloop NBN 250/25",
+      "connection_type": "Gigabit Ethernet LAN",
+      "latency_ms": 9.8,
+      "jitter_ms": 1.4,
+      "packet_loss_pct": 0.0,
+      "battery": {
+        "level_pct": 100,
+        "max_capacity_pct": 91,
+        "cycle_count": 190,
+        "is_charging": true,
+        "temp_c": 39.2
+      },
+      "user_profile": "Compute Node (Compute Hub WebSocket & OpenClaw Host)",
+      "npu_bonus_credits": 390,
+      "active_role": "Central Docker Mesh Daemon & Headscale Host"
+    },
+    {
+      "id": "node_vic_02",
+      "device": "iPad Pro 13-inch (M4)",
+      "location": "Ballarat, VIC, AU",
+      "lat": -37.5622,
+      "lng": 143.8503,
+      "region_zone": "Greater Victoria (Geelong, Ballarat, Bendigo)",
+      "os": "iPadOS 18.3",
+      "hardware_chip": "Apple M4 16-Core Neural Engine (38 TOPS)",
+      "carrier_isp": "Telstra 5G",
+      "connection_type": "Cellular 5G",
+      "latency_ms": 16.4,
+      "jitter_ms": 2.8,
+      "packet_loss_pct": 0.1,
+      "battery": {
+        "level_pct": 68,
+        "max_capacity_pct": 97,
+        "cycle_count": 82,
+        "is_charging": false,
+        "temp_c": 30.5
+      },
+      "user_profile": "Mobile Creative (High-Throughput Local Vector Indexing)",
+      "npu_bonus_credits": 140,
+      "active_role": "NPU RAG Indexing Worker"
+    },
+    {
+      "id": "node_aus_01",
+      "device": "Custom Gaming PC (AMD Ryzen 9 7950X + RTX 4090)",
+      "location": "Sydney, NSW, AU",
+      "lat": -33.8688,
+      "lng": 151.2093,
+      "region_zone": "National Australia (Sydney, Brisbane, Perth, Adelaide)",
+      "os": "Windows 11 Pro 24H2 (Build 26100)",
+      "hardware_chip": "NVIDIA GeForce RTX 4090 24GB VRAM (CUDA 12.6)",
+      "carrier_isp": "TPG Fiber 1000/1000",
+      "connection_type": "Direct Fiber",
+      "latency_ms": 21.3,
+      "jitter_ms": 1.2,
+      "packet_loss_pct": 0.0,
+      "battery": {
+        "level_pct": 100,
+        "max_capacity_pct": 100,
+        "cycle_count": 0,
+        "is_charging": true,
+        "temp_c": 35.0
+      },
+      "user_profile": "Nightly High-Intensity LoRA Fine-Tuning Contributor",
+      "npu_bonus_credits": 520,
+      "active_role": "Deep Batch LoRA Distillation Contributor"
+    },
+    {
+      "id": "node_aus_02",
+      "device": "Google Pixel 9 Pro",
+      "location": "Brisbane, QLD, AU",
+      "lat": -27.4698,
+      "lng": 153.0251,
+      "region_zone": "National Australia (Sydney, Brisbane, Perth, Adelaide)",
+      "os": "Android 15",
+      "hardware_chip": "Google Tensor G4 TPU",
+      "carrier_isp": "Optus 5G",
+      "connection_type": "Wi-Fi 6E",
+      "latency_ms": 26.8,
+      "jitter_ms": 3.1,
+      "packet_loss_pct": 0.0,
+      "battery": {
+        "level_pct": 53,
+        "max_capacity_pct": 95,
+        "cycle_count": 140,
+        "is_charging": false,
+        "temp_c": 33.1
+      },
+      "user_profile": "Standard Mobile User (Zero-Friction Idle Compute)",
+      "npu_bonus_credits": 95,
+      "active_role": "Edge Verification Worker"
+    },
+    {
+      "id": "node_glb_01",
+      "device": "Apple Mac Studio (M2 Ultra)",
+      "location": "Tokyo (Shibuya), Japan",
+      "lat": 35.658,
+      "lng": 139.7016,
+      "region_zone": "Global Edge Mesh (Tokyo, Singapore, Frankfurt, San Francisco)",
+      "os": "macOS Sequoia 15.2",
+      "hardware_chip": "Apple M2 Ultra 32-Core Neural Engine + 60-Core Metal GPU",
+      "carrier_isp": "NTT Docomo FLET'S Hikari 10Gbps",
+      "connection_type": "10GbE Fiber",
+      "latency_ms": 112.5,
+      "jitter_ms": 4.2,
+      "packet_loss_pct": 0.2,
+      "battery": {
+        "level_pct": 100,
+        "max_capacity_pct": 100,
+        "cycle_count": 0,
+        "is_charging": true,
+        "temp_c": 36.4
+      },
+      "user_profile": "APAC Hub Validator & Global Shard Replica",
+      "npu_bonus_credits": 610,
+      "active_role": "Cross-Pacific MoE Shard Host"
+    },
+    {
+      "id": "node_glb_02",
+      "device": "Lenovo ThinkPad X1 Carbon (Gen 12)",
+      "location": "San Francisco, CA, USA",
+      "lat": 37.7749,
+      "lng": -122.4194,
+      "region_zone": "Global Edge Mesh (Tokyo, Singapore, Frankfurt, San Francisco)",
+      "os": "Ubuntu 24.04 LTS",
+      "hardware_chip": "Intel Core Ultra 7 155H NPU (Intel AI Boost)",
+      "carrier_isp": "Sonic Fiber 10Gbps",
+      "connection_type": "Wi-Fi 7",
+      "latency_ms": 148.0,
+      "jitter_ms": 6.8,
+      "packet_loss_pct": 0.3,
+      "battery": {
+        "level_pct": 81,
+        "max_capacity_pct": 94,
+        "cycle_count": 112,
+        "is_charging": false,
+        "temp_c": 37.0
+      },
+      "user_profile": "North American Regional Swarm Participant",
+      "npu_bonus_credits": 210,
+      "active_role": "Regional Truth Audit Validator"
+    }
+  ],
+  "npu_bonus_grants": [
+    {
+      "recipient": "LauburuProjectMoE",
+      "bonus_npu_hours": 12.0,
+      "reason": "1st Place in Competitive Tournament & 97.2% Domain Accuracy"
+    },
+    {
+      "recipient": "Pixel 10 Pro XL (Tensor G5)",
+      "bonus_npu_hours": 8.5,
+      "reason": "Zero Mock Data Sensor Telemetry & Monotonic Clock Verification"
+    },
+    {
+      "recipient": "MacBook Pro M4 (Metal RPC)",
+      "bonus_npu_hours": 14.0,
+      "reason": "0.45ms Thunderbolt 4 Shard Bandwidth Delivery"
+    }
+  ]
+}

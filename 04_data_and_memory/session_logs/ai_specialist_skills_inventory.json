@@ -1,0 +1,491 @@
+{
+  "timestamp": "2026-08-21T12:06:23.905204+00:00",
+  "service": "Lauburu Monorepo AI Specialist Skill Identifier",
+  "total_monorepo_domains_audited": 14,
+  "total_identified_project_skills": 26,
+  "total_estimated_cloud_spend_monthly_usd": 1095.0,
+  "domains": [
+    {
+      "domain_id": "DOM_01_BIOMETRICS_PHYSIOLOGY",
+      "name": "Biometrics, Cardiovascular & Sleep Physiology",
+      "description": "ECG filtering, Pan-Tompkins QRS, PTT Blood Pressure, VO2max/DFA-alpha1 fractal dynamics, HRV RMSSD, and Nocturnal Hypnogram AI coaching.",
+      "active_codebases": [
+        "lauburu_zone2_endurance",
+        "self_healing_hub",
+        "scripts/biometric_readiness_ecg_sleep_engine.py"
+      ],
+      "criticality": "TIER_1_CRITICAL",
+      "current_ai_dependency": "HYBRID (Local Math + Cloud Reasoning)",
+      "specialist_requirements": [
+        "Real-time biosignal interpretation & artifact filtering",
+        "Cardiovascular risk & autonomic stress classification",
+        "Targeted circadian sleep architecture recommendations"
+      ],
+      "estimated_monthly_cloud_spend_usd": 65.0
+    },
+    {
+      "domain_id": "DOM_02_FLUTTER_DART_SYSTEMS",
+      "name": "Flutter, Dart & Mobile Systems Architecture",
+      "description": "High-performance reactive UI rendering, Riverpod state management, CustomPainters, BLE continuous background services, and Android 15/iOS bridges.",
+      "active_codebases": [
+        "lauburu_zone2_endurance",
+        "lauburu_fitness",
+        "hub_mobile_app"
+      ],
+      "criticality": "TIER_1_CRITICAL",
+      "current_ai_dependency": "CLOUD_HEAVY (Gemini 3.7 / Claude 3.7)",
+      "specialist_requirements": [
+        "Dart 3.x pattern matching, primary constructors & null-safety",
+        "Zero-latency UI render thread optimization & 120Hz smooth scrolling",
+        "Native platform channel FFI & Bluetooth Low Energy isolates"
+      ],
+      "estimated_monthly_cloud_spend_usd": 120.0
+    },
+    {
+      "domain_id": "DOM_03_DOCKER_MESH_INFRASTRUCTURE",
+      "name": "Docker, Tailscale & Distributed RPC Mesh Infrastructure",
+      "description": "Container orchestration, multi-transport connectivity (Tailscale/LAN/ADB), Linux headless nodes, and llama.cpp distributed tensor sharding.",
+      "active_codebases": [
+        "self_healing_hub",
+        "scripts/universal_rpc_mesh_supervisor.py",
+        "docker-compose.connectivity.yml"
+      ],
+      "criticality": "TIER_1_CRITICAL",
+      "current_ai_dependency": "LOCAL_DOMINANT (Self-Healing Daemons)",
+      "specialist_requirements": [
+        "Zero-downtime container self-healing & health probing",
+        "Low-overhead multi-socket network routing across 5 hardware layers",
+        "Linux systemd, ADB TCP/IP & GL.iNet router orchestration"
+      ],
+      "estimated_monthly_cloud_spend_usd": 45.0
+    },
+    {
+      "domain_id": "DOM_04_SHOPIFY_ECOMMERCE",
+      "name": "Shopify E-Commerce, Polaris Admin & Product Sourcing",
+      "description": "Shopify GraphQL Storefront APIs, Polaris admin extensions, Cart Transform Functions, high-converting Liquid themes, and autonomous product research.",
+      "active_codebases": [
+        "shopify_theme",
+        "shopify_apps",
+        "scripts/shopify_research.py"
+      ],
+      "criticality": "TIER_2_HIGH",
+      "current_ai_dependency": "CLOUD_HEAVY (Gemini API for market analysis)",
+      "specialist_requirements": [
+        "Shopify Storefront & Admin GraphQL schema expertise",
+        "Polaris UI component design & high-conversion UX flows",
+        "Autonomous e-commerce niche profitability & supplier sourcing"
+      ],
+      "estimated_monthly_cloud_spend_usd": 85.0
+    },
+    {
+      "domain_id": "DOM_05_VISION_VLM_TRUTH_AUDIT",
+      "name": "Vision-Language Models & E2E UI Truth Auditing",
+      "description": "Sequential screenshot evaluation, OCR coordinate extraction, zero fake data auditing, visual regression testing, and autonomous ADB click-through.",
+      "active_codebases": [
+        "scripts/swarm_truth_audit.py",
+        "self_healing_hub/frontend",
+        ".agents/skills/ai-debate"
+      ],
+      "criticality": "TIER_1_CRITICAL",
+      "current_ai_dependency": "HYBRID (Local VLM + Cloud Vision)",
+      "specialist_requirements": [
+        "100% Local VLM sequential UI frame auditing",
+        "Detection of UI overflows, contrast violations & misaligned widgets",
+        "Autonomous ADB event click-through and state machine verification"
+      ],
+      "estimated_monthly_cloud_spend_usd": 110.0
+    },
+    {
+      "domain_id": "DOM_06_BIOINFORMATICS_SCIENCE",
+      "name": "Bioinformatics, Pharmacology & Scientific Databases",
+      "description": "PubChem molecular structures, UniProt protein mappings, AlphaFold pLDDT scores, ChEMBL bioactivities, and PubMed clinical literature retrieval.",
+      "active_codebases": [
+        "science_plugins",
+        "scripts/scientific_research_harvester.py"
+      ],
+      "criticality": "TIER_2_HIGH",
+      "current_ai_dependency": "CLOUD_HEAVY (Scientific APIs & LLM Synthesis)",
+      "specialist_requirements": [
+        "Biochemical entity extraction and SMILES/IUPAC validation",
+        "Genomic variant pathogenicity and clinical trial matching",
+        "Evidence-grounded medical literature synthesis without hallucination"
+      ],
+      "estimated_monthly_cloud_spend_usd": 75.0
+    },
+    {
+      "domain_id": "DOM_07_CPP_SYSTEMS_LLAMA_OPTIMIZATION",
+      "name": "C++, Metal Shaders & llama.cpp RPC Optimization",
+      "description": "ARM NEON, AVX2, Metal GPU matrix kernels, llama.cpp RPC protocol, memory-mapped tensor loading, and low-latency IPC socket streaming.",
+      "active_codebases": [
+        "llama.cpp_custom_builds",
+        "scripts/deploy_llama_rpc.sh"
+      ],
+      "criticality": "TIER_1_CRITICAL",
+      "current_ai_dependency": "HYBRID (Local profiling + Cloud code synthesis)",
+      "specialist_requirements": [
+        "Low-level C++17/20 SIMD vectorization and Metal MPS/Metal Performance Shaders",
+        "GGUF tensor format manipulation and custom quantization kernels",
+        "Distributed RPC socket optimization and zero-copy shared memory"
+      ],
+      "estimated_monthly_cloud_spend_usd": 50.0
+    },
+    {
+      "domain_id": "DOM_08_LORA_FINE_TUNING_DISTILLATION",
+      "name": "Continuous 24/7 LoRA Fine-Tuning & Model Distillation",
+      "description": "Autonomous instruction-thought-solution dataset harvesting, synthetic reasoning generation, LoRA adapter fine-tuning, and Google Drive cloud memory synchronization.",
+      "active_codebases": [
+        "scripts/lora_dataset_synthesizer.py",
+        "scripts/continuous_lora_pipeline_daemon.py"
+      ],
+      "criticality": "TIER_1_CRITICAL",
+      "current_ai_dependency": "LOCAL_DOMINANT (Continuous LoRA Daemons)",
+      "specialist_requirements": [
+        "Instruction dataset token formatting (ChatML / Llama-3 / Qwen templates)",
+        "Unsloth / PEFT parameter-efficient fine-tuning pipelines",
+        "Loss convergence monitoring and catastrophic forgetting prevention"
+      ],
+      "estimated_monthly_cloud_spend_usd": 90.0
+    },
+    {
+      "domain_id": "DOM_09_AI_GAME_ARENA_REASONING",
+      "name": "AI Game Arena, ELO Ranking & Competitive Reasoning",
+      "description": "Multi-turn deliberative debate, Tri-Orchestrator consensus synthesis, ELO tournament matchmaking, and Lauburu Champion Token (LCT) game mechanics.",
+      "active_codebases": [
+        "self_healing_hub/frontend/src/AITrainingGameArenaView.jsx",
+        "scripts/ai_game_debate_and_improvements_cron.py"
+      ],
+      "criticality": "TIER_2_HIGH",
+      "current_ai_dependency": "HYBRID (DeepSeek-R1 Local + Cloud Consensus)",
+      "specialist_requirements": [
+        "Chain-of-thought mathematical and algorithmic verification",
+        "Automated debate judging and counter-argument synthesis",
+        "Gamified ELO ranking and token reward economics"
+      ],
+      "estimated_monthly_cloud_spend_usd": 70.0
+    },
+    {
+      "domain_id": "DOM_10_SECURITY_INGRESS_GOVERNANCE",
+      "name": "Security, Cloudflare Tunnels & Token Governance",
+      "description": "Cloudflare zero-trust ingress, HMAC-SHA256 session token generation, zero source-code leakage firewalling, and privileged admin operator auth.",
+      "active_codebases": [
+        "scripts/cloudflare_tunnel_watchdog.py",
+        "self_healing_hub/src/api_server.py"
+      ],
+      "criticality": "TIER_1_CRITICAL",
+      "current_ai_dependency": "LOCAL_DOMINANT",
+      "specialist_requirements": [
+        "Zero-trust API ingress filtering & rate limiting",
+        "API key and source IP leakage prevention audit",
+        "Cryptographic signature verification for cross-node RPC commands"
+      ],
+      "estimated_monthly_cloud_spend_usd": 35.0
+    },
+    {
+      "domain_id": "DOM_11_STORAGE_ROUTING_AND_MONITORING",
+      "name": "Storage Routing, Monitoring & Mesh Sharding Governance",
+      "description": "NVMe headroom enforcement (10GB ceiling), model weight caching to NAS without host root consumption, zero-copy symlinking, and 5-layer 62.8 GB VRAM allocation.",
+      "active_codebases": [
+        "scripts/local_ai_storage_router_and_downloader.py",
+        "Organised/Scripts/sentinel_node.py",
+        "scripts/universal_rpc_mesh_supervisor.py"
+      ],
+      "criticality": "TIER_1_CRITICAL",
+      "current_ai_dependency": "LOCAL_DOMINANT (Storage Router & Healer Daemons)",
+      "specialist_requirements": [
+        "Zero-copy filesystem symlink routing between NAS and local RPC daemons",
+        "Pre-flight disk headroom validation (>15GB) before GGUF ingestion",
+        "GGUF v3 magic byte verification and distributed VRAM allocation calculation"
+      ],
+      "estimated_monthly_cloud_spend_usd": 55.0
+    },
+    {
+      "domain_id": "DOM_12_AI_CONTINUOUS_SELF_IMPROVEMENT",
+      "name": "AI Training Specialist & Continuous Autonomous Self-Improvement",
+      "description": "Autonomous instruction-thought-solution dataset harvesting, synthetic reasoning generation, LoRA adapter fine-tuning, loss convergence tracking, ELO leveling, and evolutionary skill distillation to systematically outperform cloud AIs over time.",
+      "active_codebases": [
+        "scripts/lora_dataset_synthesizer.py",
+        "scripts/project_ai_specialist_skill_identifier.py",
+        "self_healing_hub/src/game_arena_manager.py",
+        "scripts/ai_game_debate_and_improvements_cron.py"
+      ],
+      "criticality": "TIER_1_CRITICAL",
+      "current_ai_dependency": "LOCAL_DOMINANT (Continuous 24/7 Training Mesh)",
+      "specialist_requirements": [
+        "Autonomous LoRA training pair synthesis & loss convergence monitoring",
+        "Multi-objective ELO progression & challenge mastery across all project domains",
+        "Continuous evolutionary skill transfer to systematically surpass cloud frontier models over time"
+      ],
+      "estimated_monthly_cloud_spend_usd": 150.0
+    },
+    {
+      "domain_id": "DOM_13_PETALS_LAYER_SHARDING",
+      "name": "Petals Decentralized Layer-Sharded Mesh Inference",
+      "description": "Decentralized DHT peer discovery, collaborative pipeline inference, forward/backward hidden state tensor streaming across nodes, and ultra-large model execution without single-device VRAM bounds.",
+      "active_codebases": [
+        "scripts/petals_and_ray_distributed_mesh_cron.py",
+        "scripts/download_petals_models.py"
+      ],
+      "criticality": "TIER_1_CRITICAL",
+      "current_ai_dependency": "LOCAL_DOMINANT (Petals Mesh Daemon)",
+      "specialist_requirements": [
+        "DHT bootstrap routing & libp2p tensor passing across Tailscale",
+        "Dynamic layer block allocation based on empirical node VRAM & thermals",
+        "Zero Host Mac root NVMe impact with remote Headless Mac vault caching"
+      ],
+      "estimated_monthly_cloud_spend_usd": 80.0
+    },
+    {
+      "domain_id": "DOM_14_APACHE_RAY_COMPUTE",
+      "name": "Apache Ray Distributed Actor Scaling & DSP Streaming",
+      "description": "Distributed Ray task orchestration, actor scaling, parallel Movesense 128Hz IMU/ECG biometrics DSP streaming, worker pool auto-scaling, and cluster resource scheduling.",
+      "active_codebases": [
+        "scripts/petals_and_ray_distributed_mesh_cron.py",
+        "scripts/cross_device_ssh_ray_runner.py"
+      ],
+      "criticality": "TIER_1_CRITICAL",
+      "current_ai_dependency": "LOCAL_DOMINANT (Ray Head on Linux Node)",
+      "specialist_requirements": [
+        "Ray Head cluster governance (Port 6379 / Dashboard 8265)",
+        "Distributed actor task scheduling across Linux + Headless Mac + Android workers",
+        "Real-time sensor stream ingestion with sub-10ms packet dispatch"
+      ],
+      "estimated_monthly_cloud_spend_usd": 65.0
+    }
+  ],
+  "project_specialist_skills": {
+    "training_specialist_skill": {
+      "id": "training_specialist_skill",
+      "name": "Training Specialist Skill (Autonomous Self-Improvement)",
+      "icon": "\ud83c\udfcb\ufe0f",
+      "category": "Continuous LoRA Training & Self-Improvement",
+      "description": "Autonomous instruction-thought-solution dataset harvesting, synthetic reasoning generation, LoRA adapter fine-tuning, loss convergence tracking, ELO leveling, and evolutionary skill distillation to systematically outperform cloud AIs over time.",
+      "edge_only": false,
+      "mastery_cap": 120.0
+    },
+    "biometrics_cardiovascular_physiology": {
+      "id": "biometrics_cardiovascular_physiology",
+      "name": "Biometrics & Cardiovascular Physiology",
+      "icon": "\ud83e\udec0",
+      "category": "Biomedical & Physiological DSP",
+      "description": "128Hz ECG filtering, Pan-Tompkins QRS detection, PTT Blood Pressure estimation, VO2max/DFA-alpha1 fractal dynamics, HRV RMSSD, and Nocturnal Hypnogram AI coaching.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "flutter_dart_mobile_architecture": {
+      "id": "flutter_dart_mobile_architecture",
+      "name": "Flutter, Dart & Mobile Systems Architecture",
+      "icon": "\ud83d\udcf1",
+      "category": "Mobile Architecture & Reactive UI",
+      "description": "High-performance reactive UI rendering, Riverpod state management, CustomPainters, BLE continuous background services, Dart 3.x pattern matching, and native platform channels.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "docker_mesh_rpc_sharding": {
+      "id": "docker_mesh_rpc_sharding",
+      "name": "Docker, Tailscale & Distributed RPC Mesh Sharding",
+      "icon": "\ud83d\udc33",
+      "category": "Infrastructure & RPC Sharding",
+      "description": "Docker container orchestration, multi-transport connectivity (Tailscale/LAN/ADB), Linux headless nodes, and llama.cpp distributed tensor sharding across 5 hardware layers.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "shopify_polaris_ecommerce": {
+      "id": "shopify_polaris_ecommerce",
+      "name": "Shopify E-Commerce, Polaris Admin & Sourcing",
+      "icon": "\ud83d\udecd\ufe0f",
+      "category": "E-Commerce & High-Converting UX",
+      "description": "Shopify GraphQL Storefront APIs, Polaris admin extensions, Cart Transform Functions, high-converting Liquid themes, and autonomous product research.",
+      "edge_only": false,
+      "mastery_cap": 110.0
+    },
+    "vision_vlm_truth_auditing": {
+      "id": "vision_vlm_truth_auditing",
+      "name": "Vision-Language Models & E2E UI Truth Auditing",
+      "icon": "\ud83d\udc41\ufe0f",
+      "category": "VLM Visual Audit & Truth Verification",
+      "description": "Sequential screenshot evaluation, OCR coordinate extraction, zero fake data auditing, visual regression testing, and autonomous ADB click-through verification.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "bioinformatics_scientific_databases": {
+      "id": "bioinformatics_scientific_databases",
+      "name": "Bioinformatics, Pharmacology & Scientific Databases",
+      "icon": "\ud83d\udd2c",
+      "category": "Bioinformatics & Life Sciences",
+      "description": "PubChem molecular structures, UniProt protein mappings, AlphaFold pLDDT scores, ChEMBL bioactivities, and PubMed clinical literature retrieval without hallucinations.",
+      "edge_only": false,
+      "mastery_cap": 110.0
+    },
+    "cpp_metal_llama_optimization": {
+      "id": "cpp_metal_llama_optimization",
+      "name": "C++, Metal Shaders & llama.cpp Optimization",
+      "icon": "\u2699\ufe0f",
+      "category": "Low-Level Kernel & Shader Engineering",
+      "description": "ARM NEON, AVX2, Metal GPU matrix kernels, llama.cpp RPC protocol, memory-mapped tensor loading, and low-latency IPC socket streaming.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "lora_fine_tuning_distillation": {
+      "id": "lora_fine_tuning_distillation",
+      "name": "Continuous 24/7 LoRA Fine-Tuning & Distillation",
+      "icon": "\ud83e\udde0",
+      "category": "Model Training & Memory Sync",
+      "description": "Continuous dataset harvesting, synthetic reasoning generation, LoRA adapter fine-tuning, and Google Drive cloud memory synchronization.",
+      "edge_only": false,
+      "mastery_cap": 120.0
+    },
+    "security_ingress_token_governance": {
+      "id": "security_ingress_token_governance",
+      "name": "Security, Cloudflare Tunnels & Token Governance",
+      "icon": "\ud83d\udd12",
+      "category": "Zero-Trust Security & Access Control",
+      "description": "Cloudflare zero-trust ingress, HMAC-SHA256 session token generation, zero source-code leakage firewalling, and privileged admin operator auth.",
+      "edge_only": false,
+      "mastery_cap": 110.0
+    },
+    "storage_routing_and_monitoring": {
+      "id": "storage_routing_and_monitoring",
+      "name": "Storage Routing and Monitoring",
+      "icon": "\ud83d\udcbe",
+      "category": "Infrastructure & Storage Routing",
+      "description": "NVMe headroom enforcement, multi-device sharded model caching, Google Drive LoRA memory sync, and zero-leakage storage path governance.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "device_npu_ram_cpu_capabilities": {
+      "id": "device_npu_ram_cpu_capabilities",
+      "name": "Device NPU, RAM, CPU Capabilities",
+      "icon": "\u2699\ufe0f",
+      "category": "Adaptive Hardware Governance",
+      "description": "Dynamic AI resource governor replacing static limits with adaptable context-aware allocation (throttles to 58% when in use by human, surges to 94%+ when idle/headless, NPU-first priority).",
+      "edge_only": false,
+      "mastery_cap": 110.0
+    },
+    "obsidian": {
+      "id": "obsidian",
+      "name": "Obsidian Multi-Agent Knowledge Vault",
+      "icon": "\ud83d\udcd3",
+      "category": "Multi-Agent Knowledge Vault & Synced Sub-Projects",
+      "description": "Bidirectional markdown vault synthesis across 3 sub-projects: \ud83c\udfdb\ufe0f /ai-debate, \ud83d\udc1d /swarm, and \ud83d\udc65 /teamwork-preview.",
+      "edge_only": false,
+      "mastery_cap": 110.0
+    },
+    "live_text_chat": {
+      "id": "live_text_chat",
+      "name": "Live Text Chat",
+      "icon": "\ud83d\udcac",
+      "category": "Live Chat & Conversational AI",
+      "description": "Real-time multi-agent text chat, sub-100ms streaming token latency, conversational markdown parsing, and high-coherence multi-turn context retention.",
+      "edge_only": false,
+      "mastery_cap": 110.0
+    },
+    "live_voice_conversation": {
+      "id": "live_voice_conversation",
+      "name": "Live Voice Conversation Chat",
+      "icon": "\ud83c\udf99\ufe0f",
+      "category": "Live Voice & Multimodal Audio AI",
+      "description": "Full-duplex real-time voice streaming, interruptible conversational audio, ultra-low latency turn-taking, and acoustic noise suppression.",
+      "edge_only": false,
+      "mastery_cap": 110.0
+    },
+    "edge_live_text_chat": {
+      "id": "edge_live_text_chat",
+      "name": "On-Device Edge Live Text Chat (Edge-Only)",
+      "icon": "\ud83d\udcf1",
+      "category": "Edge On-Device App Integration",
+      "description": "100% offline on-device embedded text chat for standalone mobile/desktop apps benchmarked for zero-cloud latency and minimal RAM footprint.",
+      "edge_only": true,
+      "mastery_cap": 115.0
+    },
+    "edge_live_voice_conversation": {
+      "id": "edge_live_voice_conversation",
+      "name": "On-Device Edge Live Voice Conversation (Edge-Only)",
+      "icon": "\ud83d\udde3\ufe0f",
+      "category": "Edge On-Device App Integration",
+      "description": "100% offline on-device voice pipeline (Whisper/Kaldi STT + Embedded Edge SLM + Fast Piper/eSpeak TTS) benchmarked for zero-cloud latency voice assistance.",
+      "edge_only": true,
+      "mastery_cap": 115.0
+    },
+    "webgpu_acceleration": {
+      "id": "webgpu_acceleration",
+      "name": "WebGPU Hardware Acceleration & Compute Shaders",
+      "icon": "\u26a1",
+      "category": "Hardware Acceleration & WebGPU Compute",
+      "description": "In-browser WebGPU WGSL compute shader execution, parallel matrix multiplication tensor acceleration, 120 FPS hardware-accelerated spatial rendering.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "hermes_utilisation": {
+      "id": "hermes_utilisation",
+      "name": "Hermes Utilisation",
+      "icon": "\ud83c\udfdb\ufe0f",
+      "category": "Agentic Function Calling & Synthetic Reasoning",
+      "description": "Nous Research Hermes 3 structured function calling, JSON schema synthesis, multi-turn agentic roleplay, and uncensored synthetic reasoning on local GGUF weights.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "openclaw_utilisation": {
+      "id": "openclaw_utilisation",
+      "name": "OpenClaw Utilisation",
+      "icon": "\ud83e\udd9e",
+      "category": "Edge Gateway & UI Automation",
+      "description": "OpenClaw LAN gateway integration (ws://192.168.8.224:18789), bootstrap token admin operator pairing, dynamic RPC model loading, and headless UI/UX automated audits.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "genetic_workflow_optimization": {
+      "id": "genetic_workflow_optimization",
+      "name": "Genetic AI Workflow Optimization & Evolution",
+      "icon": "\ud83e\uddec",
+      "category": "Evolutionary AI & Workflow Optimization",
+      "description": "Multi-objective genetic algorithm evolving, mutating, and tournament-benchmarking computational workflow graphs across generations for Pareto-optimal effectiveness.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "grappling_map_understanding": {
+      "id": "grappling_map_understanding",
+      "name": "Grappling Map Understanding",
+      "icon": "\ud83e\udd4b",
+      "category": "Kinematics & Spatial AI",
+      "description": "Spatial 955-node OPML graph comprehension, kinematic joint paths, transitions, and submission counter-traversals.",
+      "edge_only": false,
+      "mastery_cap": 110.0
+    },
+    "debating": {
+      "id": "debating",
+      "name": "Debating",
+      "icon": "\ud83d\udcac",
+      "category": "Consensus & Strategic Reasoning",
+      "description": "Multi-turn deliberative argumentation, Tri-Orchestrator consensus synthesis, logic proofs, and ROI arbitration.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "device_hacking": {
+      "id": "device_hacking",
+      "name": "Device Hacking",
+      "icon": "\u26a1",
+      "category": "Offensive Security & Red Teaming",
+      "description": "Penetration testing, unauthorized socket / ADB port exploit discovery, termux payload auditing, and buffer vulnerability scanning.",
+      "edge_only": false,
+      "mastery_cap": 110.0
+    },
+    "device_hacking_defence": {
+      "id": "device_hacking_defence",
+      "name": "Device Hacking Defence",
+      "icon": "\ud83d\udee1\ufe0f",
+      "category": "Defensive Security & Blue Teaming",
+      "description": "Hardware isolation, SSH key segregation, firewall rule enforcement, RPC socket encryption, and unauthorized intrusion mitigation.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    },
+    "3d_ai_training_game": {
+      "id": "3d_ai_training_game",
+      "name": "3D AI Training Game & Project Learning",
+      "icon": "\ud83c\udfae",
+      "category": "3D Spatial UI/UX & Real Project AI Training",
+      "description": "3D spatial UI/UX rendering fluidity, 60 FPS Canvas micro-animations, Genie 2 world models, and verified effectiveness of continuous local AI model training against the real monorepo.",
+      "edge_only": false,
+      "mastery_cap": 115.0
+    }
+  }
+}

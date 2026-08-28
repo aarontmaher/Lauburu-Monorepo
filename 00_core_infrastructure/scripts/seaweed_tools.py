@@ -1,0 +1,1 @@
+../seaweedfs/seaweed_tools.py

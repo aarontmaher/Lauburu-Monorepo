@@ -1,0 +1,39 @@
+{
+  "last_dispatch": {
+    "timestamp": "2026-08-22T07:57:21Z",
+    "task_type": "joint_safety_eval",
+    "token_estimate": 250,
+    "assigned_target": "NPU_ACCELERATED",
+    "execution_engine": "CoreML / MPSGraph Engine",
+    "hardware_used": "Apple Neural Engine (ANE) - Apple M4 Pro",
+    "power_state": {
+      "battery_percent": 100,
+      "is_charging": true,
+      "is_throttled": false,
+      "power_source": "AC Power"
+    },
+    "power_draw_estimate_w": 1.2,
+    "projected_latency_ms": 12.5,
+    "priority_level": 1,
+    "rationale": "Priority 1 (NPU): Ultra-low 1.2W power draw, zero GPU/CPU battery drain, deterministic sub-15ms DSP."
+  },
+  "hardware_profile": {
+    "host_node": {
+      "npu_name": "Apple Neural Engine (ANE) - Apple M4 Pro",
+      "npu_tops": 38.0,
+      "npu_framework": "CoreML / MPSGraph Engine",
+      "vram_gb": 18.0,
+      "metal_gpu_active": true
+    },
+    "mesh_mobile_nodes": [],
+    "total_mesh_npu_tops": 38.0,
+    "total_mesh_vram_gb": 30.0
+  },
+  "power_state": {
+    "battery_percent": 100,
+    "is_charging": true,
+    "is_throttled": false,
+    "power_source": "AC Power"
+  },
+  "active_hierarchy": "1. NPU (Apple ANE / Tensor TPU) \u2794 2. VRAM (Metal / RPC) \u2794 3. CPU/Mesh"
+}

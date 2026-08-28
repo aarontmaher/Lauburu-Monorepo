@@ -1,0 +1,131 @@
+{
+  "timestamp": 1786656765.353718,
+  "timestamp_iso": "2026-08-13T21:32:45Z",
+  "scale_factor_pct": 1.0,
+  "roi_confidence": 0.94,
+  "compute_cascade_priority": [
+    "NPU (Primary)",
+    "GPU (Secondary)",
+    "CPU (Tertiary)"
+  ],
+  "undetectable_governor": {
+    "active_user_throttling": "0% Compute (Zero Lag Guarantee)",
+    "idle_charging_expansion": "100% Metal/TPU Acceleration",
+    "max_thermal_threshold_c": 42.0
+  },
+  "hardware_evaluations": [
+    {
+      "profile": "NPU Only (AICore / Tensor G5)",
+      "tps": 28.5,
+      "power_watts": 1.2,
+      "thermal_rise_c": 0.4,
+      "efficiency_rating": 59.38,
+      "recommendation": "OPTIMAL: Zero User Friction"
+    },
+    {
+      "profile": "NPU + GPU (Hybrid Metal/Vulkan)",
+      "tps": 42.0,
+      "power_watts": 3.8,
+      "thermal_rise_c": 1.8,
+      "efficiency_rating": 6.14,
+      "recommendation": "OPTIMAL: Zero User Friction"
+    },
+    {
+      "profile": "NPU + GPU + CPU (Full Mesh Pooling)",
+      "tps": 48.2,
+      "power_watts": 6.5,
+      "thermal_rise_c": 3.2,
+      "efficiency_rating": 2.32,
+      "recommendation": "OPTIMAL: Zero User Friction"
+    },
+    {
+      "profile": "GPU Only (Metal / CUDA / Adreno)",
+      "tps": 34.0,
+      "power_watts": 4.5,
+      "thermal_rise_c": 2.5,
+      "efficiency_rating": 3.02,
+      "recommendation": "FALLBACK: Higher Thermal/Power Footprint"
+    },
+    {
+      "profile": "CPU Only (ARM NEON / AVX-512 Fallback)",
+      "tps": 12.4,
+      "power_watts": 8.2,
+      "thermal_rise_c": 5.1,
+      "efficiency_rating": 0.3,
+      "recommendation": "FALLBACK: Higher Thermal/Power Footprint"
+    }
+  ],
+  "chaos_handling_results": [
+    {
+      "event": "User foreground app open",
+      "action": "Auto-throttle local compute to 0% (Immediate UI Priority)"
+    },
+    {
+      "event": "Device plugged into AC & Screen Off",
+      "action": "Auto-expand compute to 100% capacity (Deep MoE Training Mode)"
+    },
+    {
+      "event": "Wi-Fi to 5G Cell handover (150ms spike)",
+      "action": "Top-2 Gating Router drops remote shard & falls back to local NPU"
+    },
+    {
+      "event": "Sudden surge of 50 new peers joining mesh",
+      "action": "Dynamic load balancer redistributes MoE expert shards over 10Gbps TB & Tailscale"
+    },
+    {
+      "event": "Thermal ceiling warning (>42\u00b0C)",
+      "action": "Shift execution strictly to NPU-only (lowest thermal output: 1.2W)"
+    }
+  ],
+  "node_mesh": [
+    {
+      "device": "Pixel 10 Pro XL (Primary Edge)",
+      "connection": "Tailscale Overlay / 5G",
+      "npu_engine": "Tensor G5 TPU",
+      "effective_tps": 32.0,
+      "status": "HEALTHY / PARTICIPATING"
+    },
+    {
+      "device": "MacBook Pro (10Gbps TB Subnet)",
+      "connection": "Thunderbolt 4 (0.45ms)",
+      "npu_engine": "Metal GPU 16-Core",
+      "effective_tps": 46.0,
+      "status": "HEALTHY / PARTICIPATING"
+    },
+    {
+      "device": "Linux Head Node",
+      "connection": "Gigabit Ethernet (1.2ms)",
+      "npu_engine": "CPU AVX2 / OpenClaw",
+      "effective_tps": 18.0,
+      "status": "HEALTHY / PARTICIPATING"
+    },
+    {
+      "device": "Samsung Galaxy S20+ (Headless)",
+      "connection": "USB Tether / Wi-Fi",
+      "npu_engine": "Snapdragon NPU/Adreno",
+      "effective_tps": 14.0,
+      "status": "HEALTHY / PARTICIPATING"
+    },
+    {
+      "device": "Crowdsourced Node #1 (Global User)",
+      "connection": "Home Wi-Fi 6 (14ms)",
+      "npu_engine": "Apple M-Series Neural Engine",
+      "effective_tps": 22.0,
+      "status": "HEALTHY / PARTICIPATING"
+    },
+    {
+      "device": "Crowdsourced Node #2 (Global User)",
+      "connection": "Cellular 5G (38ms)",
+      "npu_engine": "MediaTek NPU 8300",
+      "effective_tps": 19.0,
+      "status": "HEALTHY / PARTICIPATING"
+    },
+    {
+      "device": "Crowdsourced Node #3 (Global User)",
+      "connection": "Public Hotspot (95ms + 5% loss)",
+      "npu_engine": "Exynos NPU",
+      "effective_tps": 11.0,
+      "status": "HEALTHY / PARTICIPATING"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+#!/usr/bin/expect -f
+set timeout 10
+spawn ssh -o StrictHostKeyChecking=no root@192.168.8.1
+expect "assword:"
+send "Goldfighting1\r"
+expect "#"
+send "dmesg | grep -i usb | tail -n 20\r"
+expect "#"
+send "lsusb\r"
+expect "#"
+send "exit\r"

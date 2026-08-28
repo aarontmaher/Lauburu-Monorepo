@@ -1,0 +1,381 @@
+{
+  "canonical_modules": {
+    "00_SYSTEM_DASHBOARDS": {
+      "files": 8,
+      "dirs": 0,
+      "symlinks": 0,
+      "size_mb": 0.03
+    },
+    "00_core_infrastructure": {
+      "files": 32123,
+      "dirs": 2739,
+      "symlinks": 28,
+      "size_mb": 254.11
+    },
+    "01_apps": {
+      "files": 48482,
+      "dirs": 5156,
+      "symlinks": 47,
+      "size_mb": 1390.17
+    },
+    "02_ai_models_and_inference": {
+      "files": 21571,
+      "dirs": 1957,
+      "symlinks": 0,
+      "size_mb": 2512.37
+    },
+    "03_biometrics_and_telemetry": {
+      "files": 7,
+      "dirs": 4,
+      "symlinks": 0,
+      "size_mb": 0.12
+    },
+    "04_data_and_memory": {
+      "files": 246,
+      "dirs": 16,
+      "symlinks": 0,
+      "size_mb": 760.0
+    },
+    "05_agents_and_swarms": {
+      "files": 22372,
+      "dirs": 2070,
+      "symlinks": 3,
+      "size_mb": 613.9
+    },
+    "06_scripts_and_tooling": {
+      "files": 116,
+      "dirs": 13,
+      "symlinks": 2,
+      "size_mb": 0.8
+    },
+    "07_docs_and_architecture": {
+      "files": 135,
+      "dirs": 11,
+      "symlinks": 0,
+      "size_mb": 1.69
+    },
+    "08_business_and_commerce": {
+      "files": 1,
+      "dirs": 0,
+      "symlinks": 0,
+      "size_mb": 0.0
+    },
+    "09_app_store_and_release": {
+      "files": 1,
+      "dirs": 0,
+      "symlinks": 0,
+      "size_mb": 0.0
+    },
+    "10_spatial_grappling_kinematics": {
+      "files": 5,
+      "dirs": 1,
+      "symlinks": 0,
+      "size_mb": 0.62
+    },
+    "11_security_and_governance": {
+      "files": 1,
+      "dirs": 0,
+      "symlinks": 0,
+      "size_mb": 0.0
+    },
+    "12_continuous_lora_evolution": {
+      "files": 24,
+      "dirs": 1,
+      "symlinks": 0,
+      "size_mb": 427.94
+    }
+  },
+  "legacy_and_root_dirs": {
+    "core": {
+      "files": 1153,
+      "dirs": 141,
+      "symlinks": 0,
+      "size_mb": 9.86
+    },
+    "webapp": {
+      "files": 493,
+      "dirs": 39,
+      "symlinks": 0,
+      "size_mb": 3.44
+    },
+    "apps": {
+      "files": 25,
+      "dirs": 1,
+      "symlinks": 0,
+      "size_mb": 0.22
+    },
+    "data": {
+      "files": 51,
+      "dirs": 18,
+      "symlinks": 0,
+      "size_mb": 20.9
+    },
+    "docs": {
+      "files": 8,
+      "dirs": 1,
+      "symlinks": 0,
+      "size_mb": 0.04
+    },
+    "scripts": {
+      "files": 34,
+      "dirs": 0,
+      "symlinks": 0,
+      "size_mb": 0.33
+    },
+    "tests": {
+      "files": 90,
+      "dirs": 5,
+      "symlinks": 0,
+      "size_mb": 1.61
+    },
+    "reports": {
+      "files": 77,
+      "dirs": 2,
+      "symlinks": 0,
+      "size_mb": 12.4
+    },
+    "logs": {
+      "files": 5,
+      "dirs": 0,
+      "symlinks": 0,
+      "size_mb": 0.1
+    },
+    "self_healing_hub": {
+      "files": 1404,
+      "dirs": 195,
+      "symlinks": 3,
+      "size_mb": 97.07
+    },
+    "Installed_Apps": {
+      "files": 5,
+      "dirs": 4,
+      "symlinks": 1,
+      "size_mb": 0.01
+    },
+    "obsidian_vault": {
+      "files": 85,
+      "dirs": 47,
+      "symlinks": 0,
+      "size_mb": 0.55
+    },
+    "lora_datasets": {
+      "files": 8,
+      "dirs": 0,
+      "symlinks": 0,
+      "size_mb": 23.33
+    },
+    "ai_debate": {
+      "files": 4,
+      "dirs": 2,
+      "symlinks": 0,
+      "size_mb": 0.06
+    }
+  },
+  "teamwork_projects_count": 34,
+  "teamwork_projects": {
+    "ai_sharding_daemon": {
+      "files": 2055,
+      "dirs": 236,
+      "symlinks": 3,
+      "size_mb": 27.96
+    },
+    "ai_strengthening_training_game": {
+      "files": 279,
+      "dirs": 62,
+      "symlinks": 3,
+      "size_mb": 41.12
+    },
+    "ai_training_game": {
+      "files": 1109,
+      "dirs": 129,
+      "symlinks": 3,
+      "size_mb": 19.34
+    },
+    "ai_training_stealth_compute_arena": {
+      "files": 4672,
+      "dirs": 526,
+      "symlinks": 3,
+      "size_mb": 126.66
+    },
+    "antigravity_chat_mcp": {
+      "files": 2129,
+      "dirs": 309,
+      "symlinks": 3,
+      "size_mb": 40.03
+    },
+    "antigravity_mcp_models": {
+      "files": 1772,
+      "dirs": 323,
+      "symlinks": 3,
+      "size_mb": 44.41
+    },
+    "compute_pooling_app": {
+      "files": 68,
+      "dirs": 21,
+      "symlinks": 0,
+      "size_mb": 0.31
+    },
+    "dark_mode_audit": {
+      "files": 207,
+      "dirs": 106,
+      "symlinks": 0,
+      "size_mb": 11.72
+    },
+    "glinet_tethering_fix": {
+      "files": 174,
+      "dirs": 50,
+      "symlinks": 0,
+      "size_mb": 0.59
+    },
+    "glinet_usb_fix": {
+      "files": 52,
+      "dirs": 17,
+      "symlinks": 0,
+      "size_mb": 0.34
+    },
+    "global_training_games_audit": {
+      "files": 146,
+      "dirs": 32,
+      "symlinks": 0,
+      "size_mb": 2.24
+    },
+    "hf_training_integration": {
+      "files": 31372,
+      "dirs": 3280,
+      "symlinks": 3,
+      "size_mb": 976.95
+    },
+    "internet_debugging_swarm": {
+      "files": 712,
+      "dirs": 76,
+      "symlinks": 3,
+      "size_mb": 8.99
+    },
+    "internet_training_protocol": {
+      "files": 150,
+      "dirs": 35,
+      "symlinks": 0,
+      "size_mb": 1.32
+    },
+    "jules_repoless_integration": {
+      "files": 2665,
+      "dirs": 400,
+      "symlinks": 5,
+      "size_mb": 63.52
+    },
+    "lauburu_biometrics_algorithm_debate": {
+      "files": 0,
+      "dirs": 0,
+      "symlinks": 0,
+      "size_mb": 0.0
+    },
+    "lauburu_cli_sentinel": {
+      "files": 2188,
+      "dirs": 242,
+      "symlinks": 3,
+      "size_mb": 24.81
+    },
+    "lauburu_compute_hub": {
+      "files": 8118,
+      "dirs": 1870,
+      "symlinks": 3,
+      "size_mb": 541.52
+    },
+    "lauburu_webapp_and_competitor_analysis": {
+      "files": 2,
+      "dirs": 0,
+      "symlinks": 0,
+      "size_mb": 0.06
+    },
+    "luci_ai_connectivity": {
+      "files": 1673,
+      "dirs": 207,
+      "symlinks": 3,
+      "size_mb": 24.83
+    },
+    "mac_air_sync": {
+      "files": 72,
+      "dirs": 15,
+      "symlinks": 0,
+      "size_mb": 0.22
+    },
+    "mac_air_sync_audit": {
+      "files": 73,
+      "dirs": 17,
+      "symlinks": 0,
+      "size_mb": 0.54
+    },
+    "mesh_healing_ai_gym": {
+      "files": 22,
+      "dirs": 6,
+      "symlinks": 0,
+      "size_mb": 0.09
+    },
+    "mesh_network_optimizer": {
+      "files": 133,
+      "dirs": 31,
+      "symlinks": 0,
+      "size_mb": 0.98
+    },
+    "mesh_pwa_audit": {
+      "files": 182,
+      "dirs": 50,
+      "symlinks": 0,
+      "size_mb": 1.08
+    },
+    "mesh_telemetry_audit": {
+      "files": 176,
+      "dirs": 46,
+      "symlinks": 1,
+      "size_mb": 0.92
+    },
+    "open_source_scout_obsidian": {
+      "files": 168,
+      "dirs": 67,
+      "symlinks": 0,
+      "size_mb": 1.16
+    },
+    "software_dev_training_game": {
+      "files": 428,
+      "dirs": 77,
+      "symlinks": 3,
+      "size_mb": 8.39
+    },
+    "speedify_channel_bonding_ai": {
+      "files": 0,
+      "dirs": 6,
+      "symlinks": 0,
+      "size_mb": 0.0
+    },
+    "swarm_healer": {
+      "files": 72,
+      "dirs": 20,
+      "symlinks": 0,
+      "size_mb": 0.23
+    },
+    "termius_tui_dashboard": {
+      "files": 2782,
+      "dirs": 320,
+      "symlinks": 3,
+      "size_mb": 50.29
+    },
+    "tplink_linux_laptop": {
+      "files": 94,
+      "dirs": 20,
+      "symlinks": 0,
+      "size_mb": 0.54
+    },
+    "tplink_mesh_resurrection": {
+      "files": 151,
+      "dirs": 41,
+      "symlinks": 0,
+      "size_mb": 0.94
+    },
+    "visual_audit_swarm": {
+      "files": 0,
+      "dirs": 2,
+      "symlinks": 0,
+      "size_mb": 0.0
+    }
+  }
+}

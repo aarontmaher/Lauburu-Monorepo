@@ -1,0 +1,180 @@
+version: '3.8'
+
+# ==============================================================================
+# LAUBURU 4-NODE CORE SYNCTHING P2P CLUSTER
+# Docker MCP Managed & 75% RAM Ceiling Compliant (Hard 256MB Limit per Node)
+# ==============================================================================
+
+services:
+  # Node 1: M4 Mac Mini (Host Governor / Layer 1)
+  syncthing_mac_node:
+    image: syncthing/syncthing:latest
+    container_name: syncthing_mac_node
+    hostname: mac-node-storage
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - STNORESTART=1
+      - STNOUPGRADE=1
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data:/data
+      - /Volumes/Lauburu-Monorepo/data/syncthing_config/mac_node:/var/syncthing
+    ports:
+      - "127.0.0.1:8384:8384"
+      - "100.84.87.3:8384:8384"
+      - "22000:22000/tcp"
+      - "22000:22000/udp"
+      - "21027:21027/udp"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.nas.service: "syncthing-p2p"
+      com.lauburu.nas.tier: "core_wall_powered"
+      com.lauburu.nas.mcp_managed: "true"
+      com.lauburu.nas.role: "storage-replica"
+      com.lauburu.nas.node: "Mac_Node"
+      com.lauburu.nas.layer: "1"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 8384 || curl -fk http://127.0.0.1:8384/rest/system/ping || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Node 2: Headless MacBook Pro (285GB NVMe Vault / Layer 2)
+  syncthing_macbook_pro:
+    image: syncthing/syncthing:latest
+    container_name: syncthing_macbook_pro
+    hostname: mbp-storage-vault
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - STNORESTART=1
+      - STNOUPGRADE=1
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data:/data
+      - /Volumes/Lauburu-Monorepo/data/syncthing_config/macbook_pro:/var/syncthing
+    ports:
+      - "100.103.212.21:8384:8384"
+      - "169.254.187.138:8384:8384"
+      - "22001:22000/tcp"
+      - "22001:22000/udp"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.nas.service: "syncthing-p2p"
+      com.lauburu.nas.tier: "core_wall_powered"
+      com.lauburu.nas.mcp_managed: "true"
+      com.lauburu.nas.role: "storage-replica"
+      com.lauburu.nas.node: "MacBook_Pro"
+      com.lauburu.nas.layer: "2"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 8384 || curl -fk http://127.0.0.1:8384/rest/system/ping || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Node 3: Linux Head Node (Primary P2P Engine Hub / Layer 3)
+  syncthing_linux_head_node:
+    image: syncthing/syncthing:latest
+    container_name: syncthing_linux_head_node
+    hostname: linux-head-storage
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - STNORESTART=1
+      - STNOUPGRADE=1
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data:/data
+      - /Volumes/Lauburu-Monorepo/data/syncthing_config/linux_head_node:/var/syncthing
+    ports:
+      - "100.101.39.98:8384:8384"
+      - "192.168.8.224:8384:8384"
+      - "22002:22000/tcp"
+      - "22002:22000/udp"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.nas.service: "syncthing-p2p"
+      com.lauburu.nas.tier: "core_wall_powered"
+      com.lauburu.nas.mcp_managed: "true"
+      com.lauburu.nas.role: "storage-replica"
+      com.lauburu.nas.node: "Linux_Head_Node"
+      com.lauburu.nas.layer: "3"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 8384 || curl -fk http://127.0.0.1:8384/rest/system/ping || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Node 4: Mac Mini Compute Node (Metal RPC / Layer 5)
+  syncthing_mac_mini:
+    image: syncthing/syncthing:latest
+    container_name: syncthing_mac_mini
+    hostname: mac-mini-compute-storage
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - STNORESTART=1
+      - STNOUPGRADE=1
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data:/data
+      - /Volumes/Lauburu-Monorepo/data/syncthing_config/mac_mini:/var/syncthing
+    ports:
+      - "100.93.158.96:8384:8384"
+      - "22003:22000/tcp"
+      - "22003:22000/udp"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.nas.service: "syncthing-p2p"
+      com.lauburu.nas.tier: "core_wall_powered"
+      com.lauburu.nas.mcp_managed: "true"
+      com.lauburu.nas.role: "storage-replica"
+      com.lauburu.nas.node: "Mac_Mini"
+      com.lauburu.nas.layer: "5"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 8384 || curl -fk http://127.0.0.1:8384/rest/system/ping || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    name: lauburu_nas_mesh_net
+    driver: bridge

@@ -1,0 +1,181 @@
+{
+  "timestamp": "2026-08-13T20:28:51.004046",
+  "origin_anchor": "Mac_Node",
+  "fusion_sensors": [
+    "UWB (Ultra-Wideband 6.5GHz - 8.0GHz Impulse Radio)",
+    "6DoF IMU (Linear Accelerometer + Rate Gyroscope)",
+    "Bluetooth 5.3 RSSI Multilateration Triangulation Array",
+    "8K Digital PTZ Visual Horizon Tracking"
+  ],
+  "nodes": {
+    "Mac_Node": {
+      "name": "Mac Host (M4 Max)",
+      "archetype": "Primary Host / 3D Anchor Origin",
+      "coords": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.75
+      },
+      "orientation": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "sensors_active": [
+        "Thunderbolt_PHY",
+        "Bluetooth_5.3",
+        "Wi-Fi_7_MLO"
+      ],
+      "status": "Anchor_Origin"
+    },
+    "MacBook_Pro": {
+      "name": "MacBook Pro (M-Series)",
+      "archetype": "Secondary Compute Laptop",
+      "coords": {
+        "x": -0.65,
+        "y": 0.2,
+        "z": 0.75
+      },
+      "orientation": {
+        "pitch": 12.0,
+        "roll": 0.0,
+        "yaw": 15.0
+      },
+      "sensors_active": [
+        "Thunderbolt_4_Bridge",
+        "Bluetooth_5.3",
+        "Wi-Fi_7"
+      ],
+      "status": "Tracked_Active"
+    },
+    "Linux_Head_Node": {
+      "name": "Linux Laptop (Debian)",
+      "archetype": "Gateway & Cloudflare Ingress",
+      "coords": {
+        "x": 0.85,
+        "y": 0.15,
+        "z": 0.75
+      },
+      "orientation": {
+        "pitch": 15.0,
+        "roll": 0.0,
+        "yaw": -20.0
+      },
+      "sensors_active": [
+        "Netlink_Kernel_Socket",
+        "Wi-Fi_7_MLO_Bond",
+        "Bluetooth_P2P"
+      ],
+      "status": "Tracked_Active"
+    },
+    "Pixel_10_Pro_XL": {
+      "name": "Pixel 10 Pro XL",
+      "archetype": "UWB Spatial Radar & VL Auditor",
+      "coords": {
+        "x": -0.251,
+        "y": 0.452,
+        "z": 0.76
+      },
+      "orientation": {
+        "pitch": 65.0,
+        "roll": 0.0,
+        "yaw": 5.0
+      },
+      "sensors_active": [
+        "UWB_Impulse_Radio",
+        "6DoF_IMU_Acc_Gyro",
+        "BLE_RSSI_Array",
+        "8K_VLM_Camera"
+      ],
+      "status": "UWB_Anchor_Master"
+    },
+    "Samsung_S20": {
+      "name": "Samsung Galaxy S20+",
+      "archetype": "USB Data Tether & Telemetry Node",
+      "coords": {
+        "x": 0.35,
+        "y": 0.402,
+        "z": 0.741
+      },
+      "orientation": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": -10.0
+      },
+      "sensors_active": [
+        "USB_RNDIS_Tether",
+        "Qi_15W_Power_Bus",
+        "6DoF_IMU",
+        "Bluetooth_5.0"
+      ],
+      "status": "Tracked_Active"
+    }
+  },
+  "inter_device_vectors": {
+    "Mac_Node \u2194 MacBook_Pro": {
+      "distance_meters": 0.68,
+      "tof_nanoseconds": 2.27,
+      "moe_routing_latency_gain": "-1.4ms RTT",
+      "optimal_route": "UWB Direct"
+    },
+    "Mac_Node \u2194 Linux_Head_Node": {
+      "distance_meters": 0.863,
+      "tof_nanoseconds": 2.88,
+      "moe_routing_latency_gain": "-1.8ms RTT",
+      "optimal_route": "UWB Direct"
+    },
+    "Mac_Node \u2194 Pixel_10_Pro_XL": {
+      "distance_meters": 0.517,
+      "tof_nanoseconds": 1.72,
+      "moe_routing_latency_gain": "-1.1ms RTT",
+      "optimal_route": "UWB Direct"
+    },
+    "Mac_Node \u2194 Samsung_S20": {
+      "distance_meters": 0.533,
+      "tof_nanoseconds": 1.78,
+      "moe_routing_latency_gain": "-1.1ms RTT",
+      "optimal_route": "UWB Direct"
+    },
+    "MacBook_Pro \u2194 Linux_Head_Node": {
+      "distance_meters": 1.501,
+      "tof_nanoseconds": 5.01,
+      "moe_routing_latency_gain": "-3.2ms RTT",
+      "optimal_route": "Wi-Fi 7 MLO"
+    },
+    "MacBook_Pro \u2194 Pixel_10_Pro_XL": {
+      "distance_meters": 0.472,
+      "tof_nanoseconds": 1.57,
+      "moe_routing_latency_gain": "-1.0ms RTT",
+      "optimal_route": "UWB Direct"
+    },
+    "MacBook_Pro \u2194 Samsung_S20": {
+      "distance_meters": 1.02,
+      "tof_nanoseconds": 3.4,
+      "moe_routing_latency_gain": "-2.1ms RTT",
+      "optimal_route": "Wi-Fi 7 MLO"
+    },
+    "Linux_Head_Node \u2194 Pixel_10_Pro_XL": {
+      "distance_meters": 1.142,
+      "tof_nanoseconds": 3.81,
+      "moe_routing_latency_gain": "-2.4ms RTT",
+      "optimal_route": "Wi-Fi 7 MLO"
+    },
+    "Linux_Head_Node \u2194 Samsung_S20": {
+      "distance_meters": 0.56,
+      "tof_nanoseconds": 1.87,
+      "moe_routing_latency_gain": "-1.2ms RTT",
+      "optimal_route": "UWB Direct"
+    },
+    "Pixel_10_Pro_XL \u2194 Samsung_S20": {
+      "distance_meters": 0.603,
+      "tof_nanoseconds": 2.01,
+      "moe_routing_latency_gain": "-1.3ms RTT",
+      "optimal_route": "UWB Direct"
+    }
+  },
+  "ai_skill_application": {
+    "purpose": "Physical 3D Spatial Environment Map for Autonomous AI Coaching and Live Video Overlays",
+    "accuracy_margin": "\u00b11.5 cm ToF / \u00b10.5\u00b0 AoA",
+    "moe_expert_clustering_active": true
+  }
+}

@@ -1,0 +1,62 @@
+version: '3.8'
+
+# ==============================================================================
+# LAUBURU DFS STORAGE VOLUME NODE 1: M4 MAC MINI HOST
+# Hardware: Apple M4 (macOS ARM64), 24.0 GB RAM (AI VRAM Cap: 13.5 GB)
+# Storage Contributed: 368 GiB (/dev/disk3s1s1 NVMe)
+# Network: Tailscale 100.119.199.76 / TB4 169.254.87.238
+# Memory Cap: Hard 256MB cgroup (llama.cpp Metal GPU Safe)
+# Master Quorum: 100.101.39.98:9333, 100.119.199.76:9333, 100.103.212.21:9333
+# ==============================================================================
+
+services:
+  dfs_volume_m4_mini:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_dfs_volume_m4_mini
+    hostname: m4-mini-dfs-volume
+    restart: unless-stopped
+    command: >
+      volume
+      -master=${DFS_MASTER:-100.101.39.98:9333,100.119.199.76:9333,100.103.212.21:9333}
+      -port=8080
+      -port.grpc=18080
+      -ip=${NODE_IP:-100.119.199.76}
+      -dir=/data/dfs_bricks
+      -max=25
+      -minFreeSpacePercent=5
+      -dataCenter=Thunderbolt
+      -publicUrl=${NODE_IP:-100.119.199.76}:8080
+    volumes:
+      - /Volumes/Lauburu-Monorepo/data/dfs_bricks:/data/dfs_bricks:rw
+    ports:
+      - "8080:8080"      # Volume HTTP / REST API
+      - "18080:18080"    # Volume gRPC High-Speed Sync
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "volume-brick"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.node: "Mac_Node"
+      com.lauburu.dfs.node_id: "Node_1_M4_Mini"
+      com.lauburu.dfs.arch: "arm64"
+      com.lauburu.dfs.ram_cap: "256m"
+      com.lauburu.dfs.capacity_gb: "368"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    name: lauburu_dfs_net
+    driver: bridge

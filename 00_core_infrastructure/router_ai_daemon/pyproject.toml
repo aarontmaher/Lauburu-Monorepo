@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "router-ai-daemon"
+version = "0.1.0"
+description = "smolagi: Lightweight Autonomous AI Agent for GL.iNet OpenWrt Travel Routers"
+readme = "PROJECT.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Lauburu Mesh Engineering", email = "mesh@lauburu.ai"}
+]
+keywords = ["router", "openwrt", "llm", "llama.cpp", "edge-ai", "smolagi"]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.scripts]
+smolctl = "src.bin.smolctl:main"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-v --tb=short"
+testpaths = ["tests"]
+pythonpath = ["."]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]

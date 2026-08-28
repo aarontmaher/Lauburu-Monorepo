@@ -1,0 +1,131 @@
+services:
+  standalone_cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: standalone_cloudflared
+    restart: unless-stopped
+    environment:
+      - CLOUDFLARE_TUNNEL_URL=${CLOUDFLARE_TUNNEL_URL:-https://openclaw-standalone.trycloudflare.com}
+      - CLOUDFLARE_TUNNEL_DOMAIN=${CLOUDFLARE_TUNNEL_DOMAIN:-openclaw-standalone.trycloudflare.com}
+      - CLOUDFLARE_FALLBACK_URL=${CLOUDFLARE_FALLBACK_URL:-https://openclaw.laubu.ru}
+    command: >
+      tunnel --no-autoupdate --url http://openclaw-proxy:8181
+    healthcheck:
+      test: ["CMD-SHELL", "cloudflared --version || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      - openclaw-proxy
+      - google-chat-bridge
+      - openclaw-gateway
+
+  llama-server:
+    image: ghcr.io/ggerganov/llama.cpp:full
+    container_name: standalone_llama_server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ${MODELS_DIR:-/models}:/models:ro
+      - ${MONOREPO_DIR:-../..}:/monorepo:ro
+    environment:
+      - CLOUDFLARE_TUNNEL_URL=${CLOUDFLARE_TUNNEL_URL:-https://openclaw-standalone.trycloudflare.com}
+      - CLOUDFLARE_TUNNEL_DOMAIN=${CLOUDFLARE_TUNNEL_DOMAIN:-openclaw-standalone.trycloudflare.com}
+      - LLAMA_ARG_CTX_SIZE=${LLAMA_ARG_CTX_SIZE:-4096}
+      - LLAMA_ARG_BATCH=${LLAMA_ARG_BATCH:-512}
+      - LLAMA_ARG_UBATCH=${LLAMA_ARG_UBATCH:-512}
+    command: >
+      llama-server
+      --model ${CONTAINER_MODEL_PATH:-/monorepo/gemma-2-2b-it-Q4_K_M.gguf}
+      --host 0.0.0.0
+      --port 8080
+      --ctx-size ${LLAMA_ARG_CTX_SIZE:-4096}
+      --batch-size ${LLAMA_ARG_BATCH:-512}
+      --ubatch-size ${LLAMA_ARG_UBATCH:-512}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  openclaw-gateway:
+    image: node:20-slim
+    container_name: standalone_openclaw_gateway
+    ports:
+      - "18789:18789"
+    environment:
+      - OPENCLAW_GATEWAY_PORT=18789
+      - OPENCLAW_GATEWAY_HOST=0.0.0.0
+      - CLOUDFLARE_TUNNEL_URL=${CLOUDFLARE_TUNNEL_URL:-https://openclaw-standalone.trycloudflare.com}
+      - CLOUDFLARE_TUNNEL_DOMAIN=${CLOUDFLARE_TUNNEL_DOMAIN:-openclaw-standalone.trycloudflare.com}
+    command: sh -c "npx --yes openclaw gateway run --port 18789 --bind 0.0.0.0 --allow-unconfigured"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:18789', r => process.exit(r.statusCode === 200 ? 0 : 1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  openclaw-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile.openclaw-chat-app
+    image: openclaw-chat-app:latest
+    container_name: standalone_openclaw_proxy
+    working_dir: /app
+    ports:
+      - "8181:8181"
+    volumes:
+      - ./scripts/openclaw_proxy.py:/app/scripts/openclaw_proxy.py:ro
+      - ./config/env.sh:/app/config/env.sh:ro
+      - ./web_chat_app:/app/web_chat_app:ro
+    environment:
+      - LLAMA_SERVER_URL=http://llama-server:8080
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+      - OPENCLAW_PROXY_PORT=8181
+      - OPENCLAW_PROXY_HOST=0.0.0.0
+      - CLOUDFLARE_TUNNEL_URL=${CLOUDFLARE_TUNNEL_URL:-https://openclaw-standalone.trycloudflare.com}
+      - CLOUDFLARE_TUNNEL_DOMAIN=${CLOUDFLARE_TUNNEL_DOMAIN:-openclaw-standalone.trycloudflare.com}
+      - CLOUDFLARE_FALLBACK_URL=${CLOUDFLARE_FALLBACK_URL:-https://openclaw.laubu.ru}
+      - PYTHONPATH=/app
+    depends_on:
+      llama-server:
+        condition: service_started
+    command: uvicorn scripts.openclaw_proxy:app --host 0.0.0.0 --port 8181 --timeout-keep-alive 120 --limit-concurrency 100
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8181/health', timeout=4)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  google-chat-bridge:
+    image: python:3.11-slim
+    container_name: standalone_google_chat_bridge
+    working_dir: /app
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./scripts/google_chat_bridge.py:/app/scripts/google_chat_bridge.py:ro
+      - ./config/env.sh:/app/config/env.sh:ro
+      - ./logs:/app/logs
+    environment:
+      - GOOGLE_CHAT_WEBHOOK=${GOOGLE_CHAT_WEBHOOK}
+      - GOOGLE_CHAT_BRIDGE_PORT=8081
+      - GOOGLE_CHAT_BRIDGE_HOST=0.0.0.0
+      - CLOUDFLARE_TUNNEL_URL=${CLOUDFLARE_TUNNEL_URL:-https://openclaw-standalone.trycloudflare.com}
+      - CLOUDFLARE_TUNNEL_DOMAIN=${CLOUDFLARE_TUNNEL_DOMAIN:-openclaw-standalone.trycloudflare.com}
+      - CLOUDFLARE_FALLBACK_URL=${CLOUDFLARE_FALLBACK_URL:-https://openclaw.laubu.ru}
+      - PYTHONPATH=/app
+    command: sh -c "pip install --no-cache-dir fastapi uvicorn httpx pydantic && uvicorn scripts.google_chat_bridge:app --host 0.0.0.0 --port 8081 --timeout-keep-alive 120 --limit-concurrency 100"
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8081/health', timeout=4)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+networks:
+  default:
+    name: openclaw_standalone_net

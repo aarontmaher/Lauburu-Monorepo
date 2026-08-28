@@ -1,0 +1,246 @@
+{
+  "Mac_Node": {
+    "node_id": "Mac_Node",
+    "name": "M4 Mac Mini Host",
+    "layer": 1,
+    "role": "SWARM_ORCHESTRATOR",
+    "type": "macOS",
+    "state": "DEGRADED",
+    "active_transport": "lan",
+    "active_rtt_ms": 4.9,
+    "tailscale_ip": "100.119.199.76",
+    "lan_ip": "192.168.8.230",
+    "tb4_ip": null,
+    "daemons_ok": 3,
+    "daemons_total": 4,
+    "daemon_checks": [
+      {
+        "daemon": "tailscale",
+        "ok": true,
+        "message": "",
+        "rtt_ms": null
+      },
+      {
+        "daemon": "llama_rpc",
+        "ok": true,
+        "message": "RPC 192.168.8.230:50052 UP",
+        "rtt_ms": 8.43
+      },
+      {
+        "daemon": "internet_egress",
+        "ok": false,
+        "message": "Egress: TIMEOUT",
+        "rtt_ms": null
+      },
+      {
+        "daemon": "antigravity_core",
+        "ok": true,
+        "message": "Antigravity: RUNNING",
+        "rtt_ms": null
+      }
+    ],
+    "last_seen": "2026-08-23T00:33:20.455531"
+  },
+  "MacBook_Pro": {
+    "node_id": "MacBook_Pro",
+    "name": "Headless MacBook Pro Vault",
+    "layer": 2,
+    "role": "STORAGE_VAULT_METAL_WORKER",
+    "type": "macOS",
+    "state": "DEGRADED",
+    "active_transport": "tb4_link_local",
+    "active_rtt_ms": 0.82,
+    "tailscale_ip": "100.103.212.21",
+    "lan_ip": "192.168.8.127",
+    "tb4_ip": "169.254.122.166",
+    "daemons_ok": 2,
+    "daemons_total": 3,
+    "daemon_checks": [
+      {
+        "daemon": "tailscale",
+        "ok": true,
+        "message": "",
+        "rtt_ms": null
+      },
+      {
+        "daemon": "llama_rpc",
+        "ok": true,
+        "message": "RPC 192.168.8.127:50052 UP",
+        "rtt_ms": 6.03
+      },
+      {
+        "daemon": "internet_egress",
+        "ok": false,
+        "message": "Egress: TIMEOUT",
+        "rtt_ms": null
+      }
+    ],
+    "last_seen": "2026-08-23T00:33:28.044625"
+  },
+  "Linux_Head_Node": {
+    "node_id": "Linux_Head_Node",
+    "name": "Linux Head Node Laptop",
+    "layer": 3,
+    "role": "RAY_HEAD_INGRESS_GATEWAY",
+    "type": "Linux",
+    "state": "DEGRADED",
+    "active_transport": "lan",
+    "active_rtt_ms": 7.55,
+    "tailscale_ip": "100.101.39.98",
+    "lan_ip": "192.168.8.224",
+    "tb4_ip": null,
+    "daemons_ok": 5,
+    "daemons_total": 7,
+    "daemon_checks": [
+      {
+        "daemon": "docker",
+        "ok": true,
+        "message": "samba_nas_gateway:Up 20 hours (healthy)\nlauburu_nfs_core:Up 18 hours\nts-exo-node:Up 9 seconds\nnas-minio:Up 22 hours\nportainer:Up 22 hours",
+        "rtt_ms": null
+      },
+      {
+        "daemon": "openclaw",
+        "ok": true,
+        "message": "WS 192.168.8.224:18789 UP",
+        "rtt_ms": 3.37
+      },
+      {
+        "daemon": "llama_rpc",
+        "ok": false,
+        "message": "RPC 192.168.8.224:50052 DOWN",
+        "rtt_ms": null
+      },
+      {
+        "daemon": "nfs",
+        "ok": true,
+        "message": "NFS 192.168.8.224:/data UP",
+        "rtt_ms": 13.59
+      },
+      {
+        "daemon": "tailscale",
+        "ok": true,
+        "message": "100.101.39.98    linux-1             linux-1.taildb25e9.ts.net  linux    offline",
+        "rtt_ms": null
+      },
+      {
+        "daemon": "ray",
+        "ok": true,
+        "message": "",
+        "rtt_ms": null
+      },
+      {
+        "daemon": "internet_egress",
+        "ok": false,
+        "message": "Egress: TIMEOUT",
+        "rtt_ms": null
+      }
+    ],
+    "last_seen": "2026-08-23T00:33:41.938184"
+  },
+  "Linux_Tablet": {
+    "node_id": "Linux_Tablet",
+    "name": "Bedside Linux Tablet",
+    "layer": 4,
+    "role": "MOBILE_LINUX_COMPUTE_HUD",
+    "type": "Linux",
+    "state": "DEGRADED",
+    "active_transport": "lan",
+    "active_rtt_ms": 109.28,
+    "tailscale_ip": "100.81.92.125",
+    "lan_ip": "192.168.8.173",
+    "tb4_ip": null,
+    "daemons_ok": 0,
+    "daemons_total": 2,
+    "daemon_checks": [
+      {
+        "daemon": "tailscale",
+        "ok": false,
+        "message": "",
+        "rtt_ms": null
+      },
+      {
+        "daemon": "llama_rpc",
+        "ok": false,
+        "message": "RPC 192.168.8.173:50052 DOWN",
+        "rtt_ms": null
+      }
+    ],
+    "last_seen": "2026-08-23T00:33:47.329879"
+  },
+  "Mac_Mini": {
+    "node_id": "Mac_Mini",
+    "name": "MacBook Air M4 Host Laptop",
+    "layer": 5,
+    "role": "CONTROL_PLANE_SERVER",
+    "type": "macOS",
+    "state": "DEGRADED",
+    "active_transport": "lan",
+    "active_rtt_ms": 0.28,
+    "tailscale_ip": "100.93.158.96",
+    "lan_ip": "192.168.8.222",
+    "tb4_ip": null,
+    "daemons_ok": 2,
+    "daemons_total": 4,
+    "daemon_checks": [
+      {
+        "daemon": "tailscale",
+        "ok": true,
+        "message": "",
+        "rtt_ms": null
+      },
+      {
+        "daemon": "hermes_broker",
+        "ok": false,
+        "message": "Hermes :51379 DOWN",
+        "rtt_ms": null
+      },
+      {
+        "daemon": "internet_egress",
+        "ok": false,
+        "message": "Egress: TIMEOUT",
+        "rtt_ms": null
+      },
+      {
+        "daemon": "antigravity_core",
+        "ok": true,
+        "message": "Antigravity: RUNNING",
+        "rtt_ms": null
+      }
+    ],
+    "last_seen": "2026-08-23T00:33:53.942474"
+  },
+  "Pixel_10_Pro_XL": {
+    "node_id": "Pixel_10_Pro_XL",
+    "name": "Google Pixel 10 Pro XL",
+    "layer": 6,
+    "role": "EDGE_TPU_VISION_STREAM",
+    "type": "Android",
+    "state": "OFFLINE",
+    "active_transport": null,
+    "active_rtt_ms": null,
+    "tailscale_ip": "100.73.38.87",
+    "lan_ip": "192.168.8.160",
+    "tb4_ip": null,
+    "daemons_ok": 0,
+    "daemons_total": 0,
+    "daemon_checks": [],
+    "last_seen": "2026-08-23T00:34:04.837078"
+  },
+  "Samsung_S20": {
+    "node_id": "Samsung_S20",
+    "name": "Samsung Galaxy S20+",
+    "layer": 7,
+    "role": "DEDICATED_UI_TESTER_TETHER",
+    "type": "Android",
+    "state": "OFFLINE",
+    "active_transport": null,
+    "active_rtt_ms": null,
+    "tailscale_ip": "100.84.40.95",
+    "lan_ip": "192.168.8.158",
+    "tb4_ip": null,
+    "daemons_ok": 0,
+    "daemons_total": 0,
+    "daemon_checks": [],
+    "last_seen": "2026-08-23T00:34:23.755949"
+  }
+}

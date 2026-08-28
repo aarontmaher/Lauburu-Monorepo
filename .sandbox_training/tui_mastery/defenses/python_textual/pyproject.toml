@@ -1,0 +1,13 @@
+[project]
+name = "lauburu-textual-defense"
+version = "2.0.0"
+description = "Canonical Lauburu Python Textual Cloud API Quota & Telemetry Defense HUD"
+requires-python = ">=3.10"
+dependencies = [
+    "textual>=0.40.0",
+    "rich>=13.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

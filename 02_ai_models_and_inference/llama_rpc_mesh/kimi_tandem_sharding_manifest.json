@@ -1,0 +1,184 @@
+{
+  "kimi_tandem_sharding_manifest": {
+    "version": "3.0.0",
+    "updated_utc": "2026-08-25T00:50:00Z",
+    "cluster_architecture": {
+      "pooled_vram_gb": 82.8,
+      "pooled_ram_gb": 108.0,
+      "total_nodes": 7,
+      "rpc_sharding_port": 50052,
+      "master_inference_port": 8081,
+      "vision_inference_port": 8085,
+      "edge_fallback_port": 8084,
+      "high_speed_interconnect": "10Gbps Thunderbolt 4 DMA Bridge (0.277ms RTT) + Gigabit LAN"
+    },
+    "dynamic_memory_ceilings_pct": {
+      "mac_os": 90.0,
+      "linux_os": 80.0,
+      "pixel_android": 85.0,
+      "samsung_android": 75.0,
+      "linux_tablet": 75.0
+    },
+    "models": {
+      "kimi_vl_thinking_2506": {
+        "model_id": "kimi-vl-thinking-2506-q4_k_m",
+        "role": "Tier-1 Local Vision-Language & Multimodal Deep Reasoning",
+        "quantization": "Q4_K_M",
+        "model_size_gb": 9.8,
+        "mmproj_size_gb": 0.8,
+        "context_window": 32768,
+        "deployment_node": "mac_host (Mac Mini M4)",
+        "endpoint": "http://127.0.0.1:8085",
+        "offload_engine": "Apple Metal Performance Shaders (-ngl 999)",
+        "vram_allocation_gb": 10.6
+      },
+      "kimi_dev_72b": {
+        "model_id": "kimi-dev-72b-instruct-q4_k_m",
+        "role": "Tier-1 Primary Code & Deep Architectural Reasoning Engine",
+        "quantization": "Q4_K_M",
+        "total_layers": 80,
+        "model_size_gb": 39.0,
+        "context_window": 16384,
+        "sharding_protocol": "llama.cpp GGML-RPC (Port 50052)",
+        "tensor_split_arg": "-ts 28,28,24",
+        "master_endpoint": "http://127.0.0.1:8081",
+        "shards": [
+          {
+            "shard_id": 1,
+            "node_id": "linux_node",
+            "hostname": "Linux Head Node (Ryzen 7 5700U)",
+            "ip": "100.101.39.98",
+            "rpc_port": 50052,
+            "assigned_layers": 28,
+            "layer_range": "0..27",
+            "vram_allocation_gb": 13.5,
+            "dynamic_ram_ceiling_pct": 80.0,
+            "usable_vram_gb": 12.8,
+            "storage_path": "/mnt/ssd_1tb/llama.cpp/models/kimi-dev-72b-instruct-q4_k_m.gguf"
+          },
+          {
+            "shard_id": 2,
+            "node_id": "macbook_pro",
+            "hostname": "MacBook Pro M1 Max Vault (TB4)",
+            "ip": "100.103.212.21",
+            "tb4_ip": "169.254.187.138",
+            "rpc_port": 50052,
+            "assigned_layers": 28,
+            "layer_range": "28..55",
+            "vram_allocation_gb": 13.5,
+            "dynamic_ram_ceiling_pct": 90.0,
+            "usable_vram_gb": 14.4,
+            "storage_path": "/Volumes/NAS/AI_Models/kimi-dev-72b-instruct-q4_k_m.gguf"
+          },
+          {
+            "shard_id": 3,
+            "node_id": "mac_host",
+            "hostname": "Host Mac Mini M4",
+            "ip": "100.119.199.76",
+            "local_ip": "127.0.0.1",
+            "rpc_port": 50052,
+            "assigned_layers": 24,
+            "layer_range": "56..79",
+            "vram_allocation_gb": 12.0,
+            "dynamic_ram_ceiling_pct": 90.0,
+            "usable_vram_gb": 21.6,
+            "storage_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/models/kimi-dev-72b-instruct-q4_k_m.gguf"
+          }
+        ]
+      },
+      "qwen25_vl_7b_edge": {
+        "model_id": "qwen2.5-vl-7b-instruct-q4_k_m",
+        "role": "Tier-0 Ultra-Fast Edge Visual Frame Auditor & Fallback",
+        "quantization": "Q4_K_M",
+        "model_size_gb": 4.4,
+        "mmproj_size_gb": 0.8,
+        "context_window": 8192,
+        "throughput_tokens_sec": 48.3,
+        "deployment_node": "mac_host (Mac Mini M4)",
+        "endpoint": "http://127.0.0.1:8084",
+        "vram_allocation_gb": 5.85
+      }
+    },
+    "cluster_node_headroom_matrix": [
+      {
+        "node_id": "mac_host",
+        "name": "Primary Host Mac Mini M4",
+        "total_ram_gb": 24.0,
+        "dynamic_ceiling_pct": 90.0,
+        "usable_vram_gb": 21.6,
+        "min_free_os_buffer_gb": 2.4,
+        "assigned_kimi_footprint_gb": 21.8,
+        "priority": 4
+      },
+      {
+        "node_id": "macbook_pro",
+        "name": "MacBook Pro M1 Max Vault (TB4)",
+        "total_ram_gb": 16.0,
+        "dynamic_ceiling_pct": 90.0,
+        "usable_vram_gb": 14.4,
+        "min_free_os_buffer_gb": 1.6,
+        "assigned_kimi_footprint_gb": 13.5,
+        "priority": 2
+      },
+      {
+        "node_id": "macbook_air",
+        "name": "MacBook Air M2 Worker",
+        "total_ram_gb": 16.0,
+        "dynamic_ceiling_pct": 90.0,
+        "usable_vram_gb": 14.4,
+        "min_free_os_buffer_gb": 1.6,
+        "assigned_kimi_footprint_gb": 0.0,
+        "priority": 3
+      },
+      {
+        "node_id": "linux_node",
+        "name": "Linux Head Node (Ryzen 7 5700U)",
+        "total_ram_gb": 16.0,
+        "dynamic_ceiling_pct": 80.0,
+        "usable_vram_gb": 12.8,
+        "min_free_os_buffer_gb": 3.2,
+        "assigned_kimi_footprint_gb": 13.5,
+        "priority": 1
+      },
+      {
+        "node_id": "linux_tablet",
+        "name": "Debian Linux Tablet",
+        "total_ram_gb": 8.0,
+        "dynamic_ceiling_pct": 75.0,
+        "usable_vram_gb": 6.0,
+        "min_free_os_buffer_gb": 2.0,
+        "assigned_kimi_footprint_gb": 0.0,
+        "priority": 1
+      },
+      {
+        "node_id": "pixel_10",
+        "name": "Google Pixel 10 Pro XL (Tensor G5)",
+        "total_ram_gb": 16.0,
+        "dynamic_ceiling_pct": 85.0,
+        "usable_vram_gb": 13.6,
+        "min_free_os_buffer_gb": 2.4,
+        "assigned_kimi_footprint_gb": 0.0,
+        "priority": 6
+      },
+      {
+        "node_id": "samsung_s20",
+        "name": "Samsung Galaxy S20+ (Exynos 990)",
+        "total_ram_gb": 12.0,
+        "dynamic_ceiling_pct": 75.0,
+        "usable_vram_gb": 9.0,
+        "min_free_os_buffer_gb": 3.0,
+        "assigned_kimi_footprint_gb": 0.0,
+        "priority": 5
+      }
+    ],
+    "tandem_summary": {
+      "total_layers": 80,
+      "layer_split": [28, 28, 24],
+      "combined_footprint_gb": 48.8,
+      "cluster_usable_vram_gb": 82.8,
+      "free_cluster_headroom_gb": 34.0,
+      "utilization_pct": 58.94,
+      "zero_fake_data_guaranteed": true
+    }
+  }
+}

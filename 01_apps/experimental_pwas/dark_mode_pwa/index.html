@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dark Fleet — Pure Black Monochromatic Controller</title>
+  
+  <!-- PWA Metadata -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#000000">
+  <meta name="background-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="DarkFleet">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg">
+  
+  <!-- Monochromatic Stealth Stylesheet -->
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-circle">
+          <svg viewBox="0 0 512 512" width="24" height="24">
+            <path d="M 296 140 A 136 136 0 1 0 372 340 A 156 156 0 0 1 296 140 Z" fill="#ffffff" />
+          </svg>
+        </div>
+        <div>
+          <h1>DARK FLEET</h1>
+          <p class="subtitle">Pure Monochromatic Hardware Dark Mode & Mesh Blackout Hub</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btnHeaderOff" class="btn btn-off btn-sm" onclick="turnEverythingOff()">⏻ MASTER OFF</button>
+        <button id="btnPwaInstall" class="btn btn-sm hidden">Install App</button>
+        <span class="status-pill"><span class="dot live"></span> MESH ONLINE</span>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="mode-nav">
+      <button class="mode-btn active" id="tabNetworkFleet" onclick="switchView('network_fleet')">
+        Network Fleet <span class="badge-mini" id="tabFleetBadge">Fleet</span>
+      </button>
+      <button class="mode-btn" id="tabThisDevice" onclick="switchView('this_device')">
+        This Device <span class="badge-mini">Local Host</span>
+      </button>
+      <button class="mode-btn" id="tabBlackout" onclick="switchView('blackout')">
+        Hardware OLED Dimmer
+      </button>
+    </nav>
+
+    <!-- ==================== VIEW 1: NETWORK FLEET ==================== -->
+    <main id="viewNetworkFleet" class="view-panel active">
+      <!-- Master Control Banner -->
+      <section class="master-card">
+        <div class="master-info">
+          <h2>Fleet Master Blackout</h2>
+          <p>Broadcasts hardware OS dark mode & pitch-black appearance across all physical devices simultaneously.</p>
+          <div class="stats-row">
+            <div class="stat-badge"><span id="statActiveCount">--/--</span> Nodes Active</div>
+            <div class="stat-badge">Contrast: 21:1 (Pure Monochrome AAA)</div>
+            <div class="stat-badge">22:00 Auto-Dim: Active</div>
+          </div>
+        </div>
+        <div class="master-toggle-wrap">
+          <label class="switch switch-lg">
+            <input type="checkbox" id="masterToggle" checked>
+            <span class="slider round"></span>
+          </label>
+          <span class="toggle-label" id="masterToggleLabel">ALL BLACK</span>
+        </div>
+      </section>
+
+      <!-- Action Bar with Explicit ON and OFF Buttons -->
+      <section class="action-bar">
+        <button class="btn btn-primary" id="btnApplyAllDark">🌑 Enforce All Black</button>
+        <button class="btn btn-off" id="btnApplyAllLight" onclick="turnEverythingOff()">⏻ Turn Fleet OFF (Light)</button>
+        <button class="btn" id="btnWakeAll">⚡ Wake All Nodes (WoL)</button>
+        <button class="btn" id="btnRunAudit">Audit Contrast</button>
+        <button class="btn" id="btnChromeGuide">Chrome Flag Guide</button>
+      </section>
+
+      <!-- Connected Devices Grid -->
+      <section class="device-section">
+        <div class="section-title">
+          <h3>Connected Hardware Matrix <span id="deviceHeadingCount"></span></h3>
+          <span class="refresh-link" onclick="refreshFleetStatus()">Sync Live Status</span>
+        </div>
+        <div class="device-grid" id="deviceGrid">
+          <!-- Injected dynamically by app.js -->
+        </div>
+      </section>
+    </main>
+
+    <!-- ==================== VIEW 2: THIS DEVICE ==================== -->
+    <main id="viewThisDevice" class="view-panel hidden">
+      <!-- Local Hero Card -->
+      <section class="master-card">
+        <div class="master-info">
+          <div class="badge-row">
+            <span class="stat-badge" id="localOsBadge">Detecting Device...</span>
+            <span class="stat-badge" id="localBatteryBadge">Power Syncing</span>
+            <span class="stat-badge">Autonomous PWA</span>
+          </div>
+          <h2>Local Device Dark Mode</h2>
+          <p id="localDeviceSummary">Controls OS appearance, dark window chrome, and true 0W OLED black backgrounds on this machine.</p>
+          <div class="stats-row">
+            <div class="stat-badge">Client: <strong id="localBrowserName">Browser</strong></div>
+            <div class="stat-badge">Screen: <strong id="localScreenRes">Display</strong></div>
+          </div>
+        </div>
+        <div class="master-toggle-wrap">
+          <label class="switch switch-lg">
+            <input type="checkbox" id="localDeviceToggle" checked>
+            <span class="slider round"></span>
+          </label>
+          <span class="toggle-label" id="localToggleLabel">LOCAL BLACK</span>
+        </div>
+      </section>
+
+      <!-- Local Quick Action Bar with Dedicated OFF Button -->
+      <section class="action-bar">
+        <button class="btn btn-primary" id="btnToggleLocalTheme">Toggle Local Theme</button>
+        <button class="btn btn-off" id="btnLocalOff" onclick="turnLocalDeviceOff()">⏻ Turn This Device OFF</button>
+        <button class="btn" id="btnResetDisplay">Reset Display Calibration</button>
+        <button class="btn" id="btnChromeLocalGuide">Chrome Force-Dark</button>
+      </section>
+
+      <!-- Astronomical Scheduler -->
+      <section class="card-section">
+        <div class="schedule-box">
+          <div class="schedule-info">
+            <h4>Astronomical Night Scheduler</h4>
+            <p id="localSolarTimes">Calculated for your timezone: Sunset at <strong>5:42 PM</strong> • Sunrise at <strong>6:18 AM</strong></p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="localScheduleToggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==================== VIEW 3: HARDWARE OLED DIMMER ==================== -->
+    <main id="viewBlackout" class="view-panel hidden">
+      <section class="card-section">
+        <div class="section-title">
+          <div>
+            <h3>Hardware OLED Luminance & Blackout Floor</h3>
+            <p class="section-subtitle">Dims screen luminance to 0.5 nits without PWM flicker or chromatic color alteration.</p>
+          </div>
+          <button class="btn btn-off btn-sm" onclick="resetDisplayBrightness()">⏻ Reset to 100% Brightness</button>
+        </div>
+        <div class="slider-box">
+          <span>0.5 Nits (Blackout Floor)</span>
+          <input type="range" id="subzeroSlider" min="15" max="100" value="100" oninput="onSubzeroSliderChange(this.value)">
+          <span>100% (Daylight Nits)</span>
+        </div>
+      </section>
+
+      <section class="card-section">
+        <div class="section-title">
+          <div>
+            <h3>Monochromatic Blackout Presets</h3>
+            <p class="section-subtitle">Pure 0-Chroma Grayscale & True OLED 0W Power Profiles.</p>
+          </div>
+        </div>
+        <div class="palette-grid">
+          <div class="palette-card active" onclick="applyPreset('pure_oled', this)">
+            <div class="palette-preview" style="background: #000000; border: 1px solid #333333;"></div>
+            <div class="palette-name">Pure OLED Black</div>
+            <div class="palette-desc">#000000 • 0W Pixel Shutoff</div>
+          </div>
+          <div class="palette-card" onclick="applyPreset('stealth_obsidian', this)">
+            <div class="palette-preview" style="background: #080808; border: 1px solid #222222;"></div>
+            <div class="palette-name">Stealth Obsidian</div>
+            <div class="palette-desc">#080808 • Monochromatic Slate</div>
+          </div>
+          <div class="palette-card" onclick="applyPreset('graphite', this)">
+            <div class="palette-preview" style="background: #111111; border: 1px solid #282828;"></div>
+            <div class="palette-name">Graphite Dark</div>
+            <div class="palette-desc">#111111 • Zero Color Chroma</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Chrome Flag Modal -->
+    <div class="modal-overlay hidden" id="chromeModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h4>Eliminate White Flash Glare in Chrome</h4>
+          <button class="close-btn" id="btnCloseModal">✕</button>
+        </div>
+        <div class="modal-body">
+          <p>System dark mode colors your window titlebars, but web pages default to pure white unless forced by Chrome's rendering engine.</p>
+          <div class="instruction-box">
+            <span class="step-num">1</span>
+            <div>Open a new tab in Chrome and navigate to:
+              <code>chrome://flags/#enable-force-dark</code>
+            </div>
+          </div>
+          <div class="instruction-box">
+            <span class="step-num">2</span>
+            <div>Change the dropdown to:
+              <br><strong>Enabled with selective inversion of non-image elements</strong>
+            </div>
+          </div>
+          <div class="instruction-box">
+            <span class="step-num">3</span>
+            <div>Click <strong>Relaunch</strong> at the bottom of Chrome.</div>
+          </div>
+          <p class="modal-footer-note">All web pages and new tabs will render in true pitch-black.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

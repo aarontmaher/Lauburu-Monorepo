@@ -1,0 +1,207 @@
+{
+  "metadata": {
+    "audit_name": "Milestone 3 Fault Injection & Unreachable Device Behavior Audit",
+    "timestamp_iso": "2026-08-13T15:35:43.661784+00:00",
+    "execution_duration_seconds": 178.58,
+    "unreachable_target_ip": "192.0.2.1",
+    "target_nodes_tested": [
+      "Pixel_10",
+      "Samsung_S20"
+    ],
+    "all_nodes_passed": true
+  },
+  "results": {
+    "Pixel_10": {
+      "node_name": "Pixel_10",
+      "start_timestamp_iso": "2026-08-13T15:35:43.662358+00:00",
+      "unreachable_patch": {
+        "ssh_host": "192.0.2.1",
+        "device_id": "192.0.2.1:5555"
+      },
+      "phases": {
+        "baseline": {
+          "passed": true,
+          "wait_time_seconds": 0.01,
+          "assertions": {
+            "memory_is_non_null": true,
+            "ping_latency_ms_is_non_null": true,
+            "battery_is_non_null": true
+          },
+          "telemetry_snapshot": {
+            "battery": {
+              "ac_powered": false,
+              "level": 29,
+              "status": "charging",
+              "usb_powered": false
+            },
+            "cpu_usage": null,
+            "current_tier": 1,
+            "device_name": "Pixel_10",
+            "hardware": {
+              "cpu": "Tensor G5",
+              "device_type": "Android Device",
+              "npu": "Google Edge TPU",
+              "ram": "15.2 GB"
+            },
+            "memory": {
+              "available_mb": 2850.05,
+              "total_mb": 15575.25,
+              "used_mb": 12725.2,
+              "used_percent": 81.7
+            },
+            "net_stats": null,
+            "ping_latency_ms": 67.02
+          }
+        },
+        "fault_injection": {
+          "passed": true,
+          "wait_time_seconds": 34.11,
+          "assertions": {
+            "battery_is_null": true,
+            "memory_is_null": true,
+            "net_stats_is_null": true,
+            "ping_latency_ms_is_null": true,
+            "no_fake_data_reported": true,
+            "fake_data_violations": []
+          },
+          "telemetry_snapshot": {
+            "battery": null,
+            "cpu_usage": null,
+            "current_tier": 1,
+            "device_name": "Pixel_10",
+            "hardware": null,
+            "memory": null,
+            "net_stats": null,
+            "ping_latency_ms": null
+          }
+        },
+        "recovery": {
+          "passed": true,
+          "wait_time_seconds": 50.14,
+          "assertions": {
+            "memory_restored": true,
+            "ping_latency_restored": true
+          },
+          "telemetry_snapshot": {
+            "battery": {
+              "ac_powered": false,
+              "level": 29,
+              "status": "charging",
+              "usb_powered": false
+            },
+            "cpu_usage": null,
+            "current_tier": 1,
+            "device_name": "Pixel_10",
+            "hardware": {
+              "cpu": "Tensor G5",
+              "device_type": "Android Device",
+              "npu": "Google Edge TPU",
+              "ram": "15.2 GB"
+            },
+            "memory": {
+              "available_mb": 2902.42,
+              "total_mb": 15575.25,
+              "used_mb": 12672.83,
+              "used_percent": 81.37
+            },
+            "net_stats": null,
+            "ping_latency_ms": 149.564
+          }
+        }
+      },
+      "overall_passed": true,
+      "end_timestamp_iso": "2026-08-13T15:37:07.922873+00:00"
+    },
+    "Samsung_S20": {
+      "node_name": "Samsung_S20",
+      "start_timestamp_iso": "2026-08-13T15:37:07.922981+00:00",
+      "unreachable_patch": {
+        "device_id": "192.0.2.1:5555",
+        "ssh_host": "192.0.2.1"
+      },
+      "phases": {
+        "baseline": {
+          "passed": true,
+          "wait_time_seconds": 0.0,
+          "assertions": {
+            "memory_is_non_null": true,
+            "ping_latency_ms_is_non_null": true,
+            "battery_is_non_null": false
+          },
+          "telemetry_snapshot": {
+            "battery": null,
+            "cpu_usage": null,
+            "current_tier": 1,
+            "device_name": "Samsung_S20",
+            "hardware": {
+              "cpu": "Exynos 990",
+              "device_type": "Android Device",
+              "npu": "Samsung NPU",
+              "ram": "10.6 GB"
+            },
+            "memory": {
+              "available_mb": 5773.85,
+              "total_mb": 10900.98,
+              "used_mb": 5127.13,
+              "used_percent": 47.03
+            },
+            "net_stats": null,
+            "ping_latency_ms": 19.041
+          }
+        },
+        "fault_injection": {
+          "passed": true,
+          "wait_time_seconds": 42.14,
+          "assertions": {
+            "battery_is_null": true,
+            "memory_is_null": true,
+            "net_stats_is_null": true,
+            "ping_latency_ms_is_null": true,
+            "no_fake_data_reported": true,
+            "fake_data_violations": []
+          },
+          "telemetry_snapshot": {
+            "battery": null,
+            "cpu_usage": null,
+            "current_tier": 1,
+            "device_name": "Samsung_S20",
+            "hardware": null,
+            "memory": null,
+            "net_stats": null,
+            "ping_latency_ms": null
+          }
+        },
+        "recovery": {
+          "passed": true,
+          "wait_time_seconds": 52.17,
+          "assertions": {
+            "memory_restored": true,
+            "ping_latency_restored": true
+          },
+          "telemetry_snapshot": {
+            "battery": null,
+            "cpu_usage": null,
+            "current_tier": 1,
+            "device_name": "Samsung_S20",
+            "hardware": {
+              "cpu": "Exynos 990",
+              "device_type": "Android Device",
+              "npu": "Samsung NPU",
+              "ram": "10.6 GB"
+            },
+            "memory": {
+              "available_mb": 5784.02,
+              "total_mb": 10900.98,
+              "used_mb": 5116.96,
+              "used_percent": 46.94
+            },
+            "net_stats": null,
+            "ping_latency_ms": 19.138
+          }
+        }
+      },
+      "overall_passed": true,
+      "end_timestamp_iso": "2026-08-13T15:38:42.240005+00:00"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+# 12-admin-dev-research-offload — Admin/Dev → Deep Research offload section.
+appId: com.lauburu.grapplingmap
+---
+- tapOn:
+    text: "Settings"
+- tapOn:
+    text: "Admin / Dev"
+- scrollUntilVisible:
+    element:
+      text: "Deep Research offload"
+    optional: true
+- takeScreenshot: "12-admin-dev-research-offload"

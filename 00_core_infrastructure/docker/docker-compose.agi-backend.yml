@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  lauburu-agi-backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.agi-backend
+    container_name: lauburu-agi-backend
+    ports:
+      - "8900:8900"
+    volumes:
+      - .:/app
+      - ./data:/app/data
+      - ./session_logs:/app/session_logs
+      - /Volumes/.gemini/config:/app/mcp_config:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - PYTHONUNBUFFERED=1
+      - WORKSPACE_ROOT=/app
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - GEMINI_SERVICE_URL=http://gemini-ai-service:8087
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8900/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s

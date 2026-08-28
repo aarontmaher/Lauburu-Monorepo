@@ -1,0 +1,578 @@
+{
+  "metadata": {
+    "audit_name": "Milestone 2 Self-Healing Hub Telemetry Truth Audit",
+    "timestamp_iso": "2026-08-13T15:39:00.012464+00:00",
+    "execution_duration_seconds": 23.547,
+    "target_nodes_count": 4,
+    "telemetry_state_file": "/Volumes/aaronmaher/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json",
+    "state_mtime_iso": "2026-08-13T15:38:43.851389+00:00",
+    "all_nodes_passed": true
+  },
+  "results": {
+    "Linux_Head_Node": {
+      "config": {
+        "current_tier": 1,
+        "device_id": null,
+        "relay_cmd": "dbclient linux@192.168.8.224",
+        "relay_host": "100.122.185.123",
+        "ssh_host": "100.101.39.98",
+        "ssh_key": "~/.ssh/id_ed25519",
+        "ssh_port": 22,
+        "ssh_user": "linux",
+        "use_ssh": true
+      },
+      "direct_metrics": {
+        "device_name": "Linux_Head_Node",
+        "os_type": "linux",
+        "probe_start_epoch": 1786635540.021523,
+        "probe_end_epoch": 1786635563.5587971,
+        "probe_timestamp_iso": "2026-08-13T15:39:00.021523+00:00",
+        "battery": null,
+        "memory": null,
+        "net_stats": null,
+        "ping_latency_ms": null
+      },
+      "api_metrics": {
+        "battery": null,
+        "cpu_usage": null,
+        "current_tier": 1,
+        "device_name": "Linux_Head_Node",
+        "hardware": null,
+        "memory": null,
+        "net_stats": null,
+        "ping_latency_ms": null
+      },
+      "comparison": {
+        "device_name": "Linux_Head_Node",
+        "overall_passed": true,
+        "checks": {
+          "time_delta_freshness": true,
+          "memory": true,
+          "battery": true,
+          "network": true,
+          "ping": true
+        },
+        "details": {
+          "time_delta_seconds": 16.17,
+          "time_delta_max_allowed": 75.0,
+          "memory": {
+            "direct": null,
+            "api": null,
+            "note": "Both direct and API memory are null (consistent)",
+            "passed": true
+          },
+          "battery": {
+            "direct": null,
+            "api": null,
+            "note": "Both direct and API battery are null (no battery sensor / headless)",
+            "passed": true
+          },
+          "network": {
+            "direct": null,
+            "api": null,
+            "note": "Both direct and API net_stats are null (restricted OS permissions)",
+            "passed": true
+          },
+          "ping": {
+            "direct": null,
+            "api": null,
+            "note": "Both direct and API ping are null",
+            "passed": true
+          }
+        }
+      }
+    },
+    "Mac_Node": {
+      "config": {
+        "current_tier": 1,
+        "device_id": null,
+        "ssh_host": "127.0.0.1",
+        "ssh_key": "~/.ssh/id_ed25519",
+        "ssh_port": 22,
+        "ssh_user": "aaronmaher",
+        "use_ssh": true
+      },
+      "direct_metrics": {
+        "device_name": "Mac_Node",
+        "os_type": "macos",
+        "probe_start_epoch": 1786635540.021905,
+        "probe_end_epoch": 1786635540.545743,
+        "probe_timestamp_iso": "2026-08-13T15:39:00.021905+00:00",
+        "battery": {
+          "level": 43,
+          "status": "charging",
+          "ac_powered": true,
+          "usb_powered": false
+        },
+        "memory": {
+          "total_mb": 16384.0,
+          "available_mb": 3398.2,
+          "used_mb": 12985.8,
+          "used_percent": 79.26
+        },
+        "net_stats": {
+          "lo0": {
+            "rx_bytes": 4466529,
+            "tx_bytes": 0
+          },
+          "gif0": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "stf0": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "anpi0": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "anpi1": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "en3": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "en4": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "en1": {
+            "rx_bytes": 4783522,
+            "tx_bytes": 489139213
+          },
+          "en2": {
+            "rx_bytes": 0,
+            "tx_bytes": 540
+          },
+          "ap1": {
+            "rx_bytes": 0,
+            "tx_bytes": 540
+          },
+          "en0": {
+            "rx_bytes": 625234277,
+            "tx_bytes": 3060069833
+          },
+          "awdl0": {
+            "rx_bytes": 0,
+            "tx_bytes": 703491
+          },
+          "llw0": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "utun0": {
+            "rx_bytes": 1350,
+            "tx_bytes": 0
+          },
+          "utun1": {
+            "rx_bytes": 1371950,
+            "tx_bytes": 0
+          },
+          "utun2": {
+            "rx_bytes": 1350,
+            "tx_bytes": 0
+          },
+          "utun3": {
+            "rx_bytes": 1351,
+            "tx_bytes": 0
+          },
+          "utun4": {
+            "rx_bytes": 1,
+            "tx_bytes": 0
+          },
+          "en6": {
+            "rx_bytes": 9686445,
+            "tx_bytes": 75183742
+          }
+        },
+        "ping_latency_ms": 87.971
+      },
+      "api_metrics": {
+        "battery": {
+          "ac_powered": true,
+          "level": 43,
+          "status": "charging",
+          "usb_powered": false
+        },
+        "cpu_usage": 27.56,
+        "current_tier": 1,
+        "device_name": "Mac_Node",
+        "hardware": {
+          "cpu": "Apple M4",
+          "device_type": "Apple Mac",
+          "npu": "Apple Neural Engine (ANE)",
+          "ram": "16.0 GB"
+        },
+        "memory": {
+          "available_mb": 3628.31,
+          "total_mb": 16384.0,
+          "used_mb": 12755.69,
+          "used_percent": 77.85
+        },
+        "net_stats": {
+          "anpi0": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "anpi1": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "ap1": {
+            "rx_bytes": 0,
+            "tx_bytes": 540
+          },
+          "awdl0": {
+            "rx_bytes": 0,
+            "tx_bytes": 702429
+          },
+          "en0": {
+            "rx_bytes": 624684125,
+            "tx_bytes": 3049462791
+          },
+          "en1": {
+            "rx_bytes": 4782154,
+            "tx_bytes": 489136441
+          },
+          "en2": {
+            "rx_bytes": 0,
+            "tx_bytes": 540
+          },
+          "en3": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "en4": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "en6": {
+            "rx_bytes": 6757608,
+            "tx_bytes": 48059679
+          },
+          "gif0": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "llw0": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "lo0": {
+            "rx_bytes": 4452554,
+            "tx_bytes": 0
+          },
+          "stf0": {
+            "rx_bytes": 0,
+            "tx_bytes": 0
+          },
+          "utun0": {
+            "rx_bytes": 1348,
+            "tx_bytes": 0
+          },
+          "utun1": {
+            "rx_bytes": 1367926,
+            "tx_bytes": 0
+          },
+          "utun2": {
+            "rx_bytes": 1348,
+            "tx_bytes": 0
+          },
+          "utun3": {
+            "rx_bytes": 1349,
+            "tx_bytes": 0
+          },
+          "utun4": {
+            "rx_bytes": 1,
+            "tx_bytes": 0
+          }
+        },
+        "ping_latency_ms": 269.102
+      },
+      "comparison": {
+        "device_name": "Mac_Node",
+        "overall_passed": true,
+        "checks": {
+          "time_delta_freshness": true,
+          "memory": true,
+          "battery": true,
+          "network": true,
+          "ping": true
+        },
+        "details": {
+          "time_delta_seconds": 16.171,
+          "time_delta_max_allowed": 75.0,
+          "memory": {
+            "direct": {
+              "total_mb": 16384.0,
+              "available_mb": 3398.2,
+              "used_mb": 12985.8,
+              "used_percent": 79.26
+            },
+            "api": {
+              "available_mb": 3628.31,
+              "total_mb": 16384.0,
+              "used_mb": 12755.69,
+              "used_percent": 77.85
+            },
+            "total_mb_delta": 0.0,
+            "avail_mb_delta": 230.11,
+            "used_pct_delta": 1.41,
+            "passed": true
+          },
+          "battery": {
+            "direct": {
+              "level": 43,
+              "status": "charging",
+              "ac_powered": true,
+              "usb_powered": false
+            },
+            "api": {
+              "ac_powered": true,
+              "level": 43,
+              "status": "charging",
+              "usb_powered": false
+            },
+            "level_delta": 0,
+            "status_match": true,
+            "passed": true
+          },
+          "network": {
+            "direct_total_rx_bytes": 645546775,
+            "direct_total_tx_bytes": 3625097359,
+            "api_total_rx_bytes": 642048413,
+            "api_total_tx_bytes": 3587362420,
+            "common_interfaces_count": 19,
+            "passed": true
+          },
+          "ping": {
+            "direct_ms": 87.971,
+            "api_ms": 269.102,
+            "ping_delta_ms": 181.131,
+            "passed": true
+          }
+        }
+      }
+    },
+    "Pixel_10": {
+      "config": {
+        "current_tier": 1,
+        "device_id": "100.73.38.87:5555",
+        "ssh_host": "100.73.38.87",
+        "ssh_key": "~/.ssh/id_ed25519",
+        "ssh_port": 8022,
+        "ssh_user": "u0_a363",
+        "use_ssh": true
+      },
+      "direct_metrics": {
+        "device_name": "Pixel_10",
+        "os_type": "android_termux",
+        "probe_start_epoch": 1786635540.024717,
+        "probe_end_epoch": 1786635550.409921,
+        "probe_timestamp_iso": "2026-08-13T15:39:00.024717+00:00",
+        "battery": {
+          "level": 30,
+          "status": "charging",
+          "ac_powered": false,
+          "usb_powered": false
+        },
+        "memory": {
+          "total_mb": 15575.25,
+          "available_mb": 2904.44,
+          "used_mb": 12670.81,
+          "used_percent": 81.35
+        },
+        "net_stats": null,
+        "ping_latency_ms": 144.564
+      },
+      "api_metrics": {
+        "battery": {
+          "ac_powered": false,
+          "level": 30,
+          "status": "charging",
+          "usb_powered": false
+        },
+        "cpu_usage": null,
+        "current_tier": 1,
+        "device_name": "Pixel_10",
+        "hardware": {
+          "cpu": "Tensor G5",
+          "device_type": "Android Device",
+          "npu": "Google Edge TPU",
+          "ram": "15.2 GB"
+        },
+        "memory": {
+          "available_mb": 2877.76,
+          "total_mb": 15575.25,
+          "used_mb": 12697.49,
+          "used_percent": 81.52
+        },
+        "net_stats": null,
+        "ping_latency_ms": 45.466
+      },
+      "comparison": {
+        "device_name": "Pixel_10",
+        "overall_passed": true,
+        "checks": {
+          "time_delta_freshness": true,
+          "memory": true,
+          "battery": true,
+          "network": true,
+          "ping": true
+        },
+        "details": {
+          "time_delta_seconds": 16.173,
+          "time_delta_max_allowed": 75.0,
+          "memory": {
+            "direct": {
+              "total_mb": 15575.25,
+              "available_mb": 2904.44,
+              "used_mb": 12670.81,
+              "used_percent": 81.35
+            },
+            "api": {
+              "available_mb": 2877.76,
+              "total_mb": 15575.25,
+              "used_mb": 12697.49,
+              "used_percent": 81.52
+            },
+            "total_mb_delta": 0.0,
+            "avail_mb_delta": 26.68,
+            "used_pct_delta": 0.17,
+            "passed": true
+          },
+          "battery": {
+            "direct": {
+              "level": 30,
+              "status": "charging",
+              "ac_powered": false,
+              "usb_powered": false
+            },
+            "api": {
+              "ac_powered": false,
+              "level": 30,
+              "status": "charging",
+              "usb_powered": false
+            },
+            "level_delta": 0,
+            "status_match": true,
+            "passed": true
+          },
+          "network": {
+            "direct": null,
+            "api": null,
+            "note": "Both direct and API net_stats are null (restricted OS permissions)",
+            "passed": true
+          },
+          "ping": {
+            "direct_ms": 144.564,
+            "api_ms": 45.466,
+            "ping_delta_ms": 99.098,
+            "passed": true
+          }
+        }
+      }
+    },
+    "Samsung_S20": {
+      "config": {
+        "current_tier": 1,
+        "device_id": "100.84.40.95:5555",
+        "ssh_host": "100.84.40.95",
+        "ssh_key": "~/.ssh/id_ed25519",
+        "ssh_port": 8022,
+        "ssh_user": "u0_a420",
+        "use_ssh": true
+      },
+      "direct_metrics": {
+        "device_name": "Samsung_S20",
+        "os_type": "android_termux",
+        "probe_start_epoch": 1786635540.024947,
+        "probe_end_epoch": 1786635547.291091,
+        "probe_timestamp_iso": "2026-08-13T15:39:00.024947+00:00",
+        "battery": null,
+        "memory": {
+          "total_mb": 10900.98,
+          "available_mb": 5604.99,
+          "used_mb": 5295.99,
+          "used_percent": 48.58
+        },
+        "net_stats": null,
+        "ping_latency_ms": 21.226
+      },
+      "api_metrics": {
+        "battery": null,
+        "cpu_usage": null,
+        "current_tier": 1,
+        "device_name": "Samsung_S20",
+        "hardware": {
+          "cpu": "Exynos 990",
+          "device_type": "Android Device",
+          "npu": "Samsung NPU",
+          "ram": "10.6 GB"
+        },
+        "memory": {
+          "available_mb": 5784.02,
+          "total_mb": 10900.98,
+          "used_mb": 5116.96,
+          "used_percent": 46.94
+        },
+        "net_stats": null,
+        "ping_latency_ms": 19.138
+      },
+      "comparison": {
+        "device_name": "Samsung_S20",
+        "overall_passed": true,
+        "checks": {
+          "time_delta_freshness": true,
+          "memory": true,
+          "battery": true,
+          "network": true,
+          "ping": true
+        },
+        "details": {
+          "time_delta_seconds": 16.174,
+          "time_delta_max_allowed": 75.0,
+          "memory": {
+            "direct": {
+              "total_mb": 10900.98,
+              "available_mb": 5604.99,
+              "used_mb": 5295.99,
+              "used_percent": 48.58
+            },
+            "api": {
+              "available_mb": 5784.02,
+              "total_mb": 10900.98,
+              "used_mb": 5116.96,
+              "used_percent": 46.94
+            },
+            "total_mb_delta": 0.0,
+            "avail_mb_delta": 179.03,
+            "used_pct_delta": 1.64,
+            "passed": true
+          },
+          "battery": {
+            "direct": null,
+            "api": null,
+            "note": "Both direct and API battery are null (no battery sensor / headless)",
+            "passed": true
+          },
+          "network": {
+            "direct": null,
+            "api": null,
+            "note": "Both direct and API net_stats are null (restricted OS permissions)",
+            "passed": true
+          },
+          "ping": {
+            "direct_ms": 21.226,
+            "api_ms": 19.138,
+            "ping_delta_ms": 2.088,
+            "passed": true
+          }
+        }
+      }
+    }
+  }
+}

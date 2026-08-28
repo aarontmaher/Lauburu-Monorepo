@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+set timeout 15
+spawn ssh -o StrictHostKeyChecking=no -o PubkeyAuthentication=no aaronmaher@100.103.212.21
+expect "assword:"
+send "goldfighting1\r"
+expect "%"
+send "cat /Volumes/NAS/PROOF_OF_SWARM.md\r"
+expect "%"
+send "exit\r"

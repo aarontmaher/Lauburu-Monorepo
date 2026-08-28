@@ -1,0 +1,43 @@
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Command Center" focus=true {
+        pane {
+            name "Textual Cockpit"
+            command "bash"
+            args "-c" "until curl -s -f http://127.0.0.1:4000/ >/dev/null 2>&1; do sleep 0.5; done; uv run textual run tui/canonical_tui.py"
+            focus true
+        }
+    }
+
+    tab name="Background Services" {
+        pane split_direction="vertical" {
+            pane {
+                name "FastAPI Backend (:4000) & Crons"
+                command "uv"
+                args "run" "uvicorn" "backend.app:app" "--host" "0.0.0.0" "--port" "4000"
+                size "60%"
+            }
+            pane split_direction="horizontal" {
+                pane {
+                    name "Movesense BLE Bridge"
+                    command "bash"
+                    args "-c" "until curl -s -f http://127.0.0.1:4000/ >/dev/null 2>&1; do sleep 0.5; done; uv run python ../../03_biometrics_and_telemetry/movesense_to_4000_bridge.py"
+                }
+                pane {
+                    name "AI Debate TUI Sync Daemon"
+                    command "bash"
+                    args "-c" "until curl -s -f http://127.0.0.1:4000/ >/dev/null 2>&1; do sleep 0.5; done; uv run python tui/services/ai_debate_tui_sync.py"
+                }
+            }
+        }
+    }
+}

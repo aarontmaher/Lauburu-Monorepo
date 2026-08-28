@@ -1,0 +1,25 @@
+[Unit]
+Description=Lauburu SeaweedFS FUSE Mount Zombie Watchdog Daemon
+Documentation=https://github.com/chrislusf/seaweedfs/wiki
+After=network-online.target tailscaled.service docker.service dfs-fuse-mount.service
+Wants=network-online.target
+PartOf=dfs-fuse-mount.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+Environment="DFS_MOUNT_POINT=/mnt/dfs_unified"
+Environment="DFS_FILER_PEERS=100.101.39.98:8888,100.119.199.76:8888,100.103.212.21:8888"
+Environment="POLL_INTERVAL=5"
+Environment="PROBE_TIMEOUT=3"
+Environment="MAX_FAILURES=2"
+ExecStart=/bin/bash /usr/local/bin/fuse_watchdog.sh --mount-point /mnt/dfs_unified --filers 100.101.39.98:8888,100.119.199.76:8888,100.103.212.21:8888
+Restart=always
+RestartSec=3
+TimeoutSec=15
+LimitNOFILE=65536
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

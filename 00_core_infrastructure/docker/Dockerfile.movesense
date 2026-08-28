@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY docker/requirements_movesense.txt .
+RUN pip install --no-cache-dir -r requirements_movesense.txt
+
+COPY apps/movesense-readiness /app/apps/movesense-readiness
+COPY data /app/data
+
+# Run the app.py from the mounted folder
+CMD ["python3", "apps/movesense-readiness/backend/app.py"]

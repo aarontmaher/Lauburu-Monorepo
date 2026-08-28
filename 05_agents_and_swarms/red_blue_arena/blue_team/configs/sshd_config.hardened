@@ -1,0 +1,54 @@
+# ==============================================================================
+# Lauburu Mesh Hardened OpenSSH Server Configuration (Darwin / Linux)
+# Classification: Blue Team Defense Invariant • High-Security Baseline
+# Subsystem: 05_agents_and_swarms/red_blue_arena/blue_team/configs
+# ==============================================================================
+
+# Network & Port Binding (Standard privileged daemon)
+Port 22
+AddressFamily inet
+ListenAddress 0.0.0.0
+
+# Cryptographic Algorithm Whitelist (Modern Quantum-Resistant & Curve25519)
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+
+# Authentication & Access Control (Ed25519 Only, Zero Plaintext Passwords)
+PermitRootLogin prohibit-password
+PubkeyAuthentication yes
+PasswordAuthentication no
+PermitEmptyPasswords no
+KbdInteractiveAuthentication no
+ChallengeResponseAuthentication no
+GSSAPIAuthentication no
+KerberosAuthentication no
+
+# Key Storage & Segregation
+AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys_monorepo
+
+# Session Hardening & Anti-Brute Force
+MaxAuthTries 3
+MaxSessions 16
+LoginGraceTime 20
+StrictModes yes
+
+# Fast Keepalive & Ghost Session Pruning
+ClientAliveInterval 15
+ClientAliveCountMax 3
+TCPKeepAlive yes
+
+# Environment & Tunnel Restrictions
+AllowAgentForwarding no
+AllowTcpForwarding yes
+X11Forwarding no
+PrintMotd no
+PrintLastLog yes
+Banner none
+
+# Logging & Telemetry
+LogLevel VERBOSE
+SyslogFacility AUTH
+
+# Subsystem Definition
+Subsystem sftp internal-sftp

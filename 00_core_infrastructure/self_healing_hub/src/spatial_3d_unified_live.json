@@ -1,0 +1,221 @@
+{
+  "timestamp": "2026-08-13T20:42:06.568998",
+  "fusion_architecture": "Hierarchical Dual-Layer (Semantic Pose Graph + Dense Depth Splat)",
+  "calibrated_weights": {
+    "uwb_metric_anchor_weight": 0.295,
+    "visual_depth_feature_weight": 0.524,
+    "imu_high_freq_orientation_weight": 0.515,
+    "ble_rssi_proximity_weight": 0.2
+  },
+  "entities_tracked": {
+    "Mac_Node": {
+      "name": "Mac Host (M4 Max)",
+      "entity_type": "hardware_anchor",
+      "3d_pose": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.75
+      },
+      "orientation_euler": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "visual_anchor": {
+        "detected_in_video": true,
+        "bounding_box_2d": [
+          100,
+          150,
+          450,
+          400
+        ],
+        "confidence": 0.99
+      }
+    },
+    "Pixel_10_Pro_XL": {
+      "name": "Pixel 10 Pro XL",
+      "entity_type": "hardware_camera_streamer",
+      "3d_pose": {
+        "x": -0.25,
+        "y": 0.45,
+        "z": 0.76
+      },
+      "orientation_euler": {
+        "pitch": 65.0,
+        "roll": 0.0,
+        "yaw": 5.0
+      },
+      "visual_anchor": {
+        "detected_in_video": true,
+        "bounding_box_2d": [
+          480,
+          200,
+          620,
+          420
+        ],
+        "confidence": 0.98
+      }
+    },
+    "Samsung_S20": {
+      "name": "Samsung Galaxy S20+",
+      "entity_type": "hardware_tether_worker",
+      "3d_pose": {
+        "x": 0.35,
+        "y": 0.4,
+        "z": 0.74
+      },
+      "orientation_euler": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": -10.0
+      },
+      "visual_anchor": {
+        "detected_in_video": true,
+        "bounding_box_2d": [
+          750,
+          320,
+          890,
+          490
+        ],
+        "confidence": 0.96
+      }
+    },
+    "Linux_Head_Node": {
+      "name": "Linux Laptop",
+      "entity_type": "hardware_gateway",
+      "3d_pose": {
+        "x": 0.85,
+        "y": 0.15,
+        "z": 0.75
+      },
+      "orientation_euler": {
+        "pitch": 15.0,
+        "roll": 0.0,
+        "yaw": -20.0
+      },
+      "visual_anchor": {
+        "detected_in_video": true,
+        "bounding_box_2d": [
+          920,
+          100,
+          1350,
+          400
+        ],
+        "confidence": 0.97
+      }
+    },
+    "MacBook_Pro": {
+      "name": "MacBook Pro",
+      "entity_type": "hardware_metal_worker",
+      "3d_pose": {
+        "x": -0.65,
+        "y": 0.2,
+        "z": 0.75
+      },
+      "orientation_euler": {
+        "pitch": 12.0,
+        "roll": 0.0,
+        "yaw": 15.0
+      },
+      "visual_anchor": {
+        "detected_in_video": true,
+        "bounding_box_2d": [
+          50,
+          120,
+          400,
+          380
+        ],
+        "confidence": 0.98
+      }
+    },
+    "Instructional_Subject_Hand": {
+      "name": "Instructional Live Interaction Target",
+      "entity_type": "visual_dynamic_entity",
+      "3d_pose": {
+        "x": -0.05,
+        "y": 0.3,
+        "z": 0.85
+      },
+      "orientation_euler": {
+        "pitch": 25.0,
+        "roll": 5.0,
+        "yaw": 0.0
+      },
+      "visual_anchor": {
+        "detected_in_video": true,
+        "depth_map_estimate_m": 0.42,
+        "uwb_scale_corrected_m": 0.418,
+        "hand_keypoints_count": 21,
+        "motion_velocity_m_s": 0.12
+      }
+    }
+  },
+  "inter_entity_vectors": {
+    "Mac_Node \u2194 Pixel_10_Pro_XL": {
+      "distance_meters": 0.515,
+      "tof_ns": 1.72
+    },
+    "Mac_Node \u2194 Samsung_S20": {
+      "distance_meters": 0.532,
+      "tof_ns": 1.77
+    },
+    "Mac_Node \u2194 Linux_Head_Node": {
+      "distance_meters": 0.863,
+      "tof_ns": 2.88
+    },
+    "Mac_Node \u2194 MacBook_Pro": {
+      "distance_meters": 0.68,
+      "tof_ns": 2.27
+    },
+    "Mac_Node \u2194 Instructional_Subject_Hand": {
+      "distance_meters": 0.32,
+      "tof_ns": 1.07
+    },
+    "Pixel_10_Pro_XL \u2194 Samsung_S20": {
+      "distance_meters": 0.602,
+      "tof_ns": 2.01
+    },
+    "Pixel_10_Pro_XL \u2194 Linux_Head_Node": {
+      "distance_meters": 1.14,
+      "tof_ns": 3.8
+    },
+    "Pixel_10_Pro_XL \u2194 MacBook_Pro": {
+      "distance_meters": 0.472,
+      "tof_ns": 1.57
+    },
+    "Pixel_10_Pro_XL \u2194 Instructional_Subject_Hand": {
+      "distance_meters": 0.266,
+      "tof_ns": 0.89
+    },
+    "Samsung_S20 \u2194 Linux_Head_Node": {
+      "distance_meters": 0.559,
+      "tof_ns": 1.86
+    },
+    "Samsung_S20 \u2194 MacBook_Pro": {
+      "distance_meters": 1.02,
+      "tof_ns": 3.4
+    },
+    "Samsung_S20 \u2194 Instructional_Subject_Hand": {
+      "distance_meters": 0.427,
+      "tof_ns": 1.42
+    },
+    "Linux_Head_Node \u2194 MacBook_Pro": {
+      "distance_meters": 1.501,
+      "tof_ns": 5.01
+    },
+    "Linux_Head_Node \u2194 Instructional_Subject_Hand": {
+      "distance_meters": 0.918,
+      "tof_ns": 3.06
+    },
+    "MacBook_Pro \u2194 Instructional_Subject_Hand": {
+      "distance_meters": 0.616,
+      "tof_ns": 2.06
+    }
+  },
+  "instructional_video_skill_readiness": {
+    "status": "Ready for Live Instructional 3D Overlays",
+    "tracking_frequency": "60 fps Visual / 100 Hz IMU / Continuous UWB",
+    "scale_drift_eliminated": true,
+    "metric_grounding_accuracy": "\u00b10.78 cm"
+  }
+}

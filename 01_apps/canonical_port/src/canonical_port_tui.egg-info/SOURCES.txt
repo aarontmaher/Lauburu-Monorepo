@@ -1,0 +1,8 @@
+README.md
+pyproject.toml
+src/canonical_port_tui.egg-info/PKG-INFO
+src/canonical_port_tui.egg-info/SOURCES.txt
+src/canonical_port_tui.egg-info/dependency_links.txt
+src/canonical_port_tui.egg-info/entry_points.txt
+src/canonical_port_tui.egg-info/requires.txt
+src/canonical_port_tui.egg-info/top_level.txt

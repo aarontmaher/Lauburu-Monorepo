@@ -1,0 +1,48 @@
+--- a/06_scripts_and_tooling/automation/nomad_roi_cron_governor.py
++++ b/06_scripts_and_tooling/automation/nomad_roi_cron_governor.py
+@@ -392,9 +392,6 @@ class DynamicEmpiricalROIEngine:
+             if "rss_mb" not in telemetry:
+                 telemetry["rss_mb"] = job.get("rss_mb", 25.0)
+ 
+-        if job.get("status") == "STOPPED" and job.get("id") == "cron_008_deprecated_raw_scrapers":
+-            return 4.10
+-
+         total_runs = int(job.get("total_runs", 0))
+         successes = int(job.get("successful_runs", total_runs))
+         failures = int(job.get("consecutive_failures", 0))
+--- a/scripts/nomad_roi_cron_governor.py
++++ b/scripts/nomad_roi_cron_governor.py
+@@ -392,9 +392,6 @@ class DynamicEmpiricalROIEngine:
+             if "rss_mb" not in telemetry:
+                 telemetry["rss_mb"] = job.get("rss_mb", 25.0)
+ 
+-        if job.get("status") == "STOPPED" and job.get("id") == "cron_008_deprecated_raw_scrapers":
+-            return 4.10
+-
+         total_runs = int(job.get("total_runs", 0))
+         successes = int(job.get("successful_runs", total_runs))
+         failures = int(job.get("consecutive_failures", 0))
+--- a/tests/test_nomad_roi_cron_governor.py
++++ b/tests/test_nomad_roi_cron_governor.py
+@@ -351,10 +351,18 @@ class TestTier2BoundaryEdgeCaseTesting:
+             assert "jobs" in gov.portfolio
+             assert len(gov.portfolio["jobs"]) >= 6
+ 
+-    def test_t2_decommissioned_job_stable_score_and_bypass(self):
+-        job = {"id": "cron_008_deprecated_raw_scrapers", "status": "STOPPED"}
++    def test_t2_decommissioned_job_dynamic_calculation(self):
++        job = next(j for j in DEFAULT_JOBS if j["id"] == "cron_008_deprecated_raw_scrapers")
+         roi = DynamicEmpiricalROIEngine.compute_empirical_roi(job)
+-        assert roi == 4.10
++        # S_j = 0.5 (1.50) + E_time = 1.0 (1.50) + R_res = 0.9889 (0.9889) + I_avoid = 3.0 (0.75) + V_token = 2.0 (0.40) - P_fail = 0.0 -> 5.14
++        assert roi == 5.14
++
++        # Verify dynamic responsiveness: failure penalty dynamically reduces ROI (no bypass)
++        job_failed = dict(job)
++        job_failed["consecutive_failures"] = 2
++        roi_failed = DynamicEmpiricalROIEngine.compute_empirical_roi(job_failed)
++        assert roi_failed == 2.07
++        assert roi_failed < roi
+ 
+     def test_t2_cluster_telemetry_thermal_and_ram_anomaly_detection(self):
+         tel = AdaptiveCadenceElasticity.probe_cluster_telemetry()

@@ -1,0 +1,33 @@
+#!/usr/bin/expect -f
+set timeout 15
+
+proc mount_mac {host user pass} {
+    puts "\n--- Mounting on $host ---"
+    spawn ssh -o StrictHostKeyChecking=no $user@$host
+    expect {
+        "assword:" {
+            send "$pass\r"
+            expect {
+                "\\$" {
+                    send "sudo mkdir -p /Volumes/NAS && echo '$pass' | sudo -S mount -t nfs -o vers=4,resvport 100.101.39.98:/ /Volumes/NAS\r"
+                    expect "\\$"
+                    send "ls -la /Volumes/NAS\r"
+                    expect "\\$"
+                    send "exit\r"
+                }
+                timeout { puts "Timeout waiting for shell" }
+            }
+        }
+        "\\$" {
+            send "sudo mkdir -p /Volumes/NAS && echo '$pass' | sudo -S mount -t nfs -o vers=4,resvport 100.101.39.98:/ /Volumes/NAS\r"
+            expect "\\$"
+            send "ls -la /Volumes/NAS\r"
+            expect "\\$"
+            send "exit\r"
+        }
+        timeout { puts "Timeout waiting for ssh" }
+    }
+}
+
+mount_mac "169.254.187.138" "aaronmaher" "goldfighting1"
+mount_mac "100.93.158.96" "aaronmaher" "goldfighting1"

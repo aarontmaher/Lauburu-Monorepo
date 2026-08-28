@@ -1,0 +1,179 @@
+{
+  "timestamp": "2026-08-20T03:20:34Z",
+  "engine_mode": "Native Parallel AST & Hardware Extractor",
+  "elapsed_ms": 90645.7,
+  "total_files_indexed": 23625,
+  "total_lines_of_code": 12590258,
+  "total_ast_functions": 125362,
+  "project_packages": {
+    "self_healing_hub": {
+      "path": "self_healing_hub",
+      "desc": "Local AI Orchestrator, 3D Spatial UI, Terminal Gateway & Live Telemetry",
+      "files": 681,
+      "loc": 784795,
+      "functions": 5540
+    },
+    "movesense_hub": {
+      "path": "movesense_hub",
+      "desc": "12-Axis Kinematics IMU, ECG HRV, DFA-alpha1 & VO2max DSP Engine",
+      "files": 1,
+      "loc": 55,
+      "functions": 2
+    },
+    "device_doctor": {
+      "path": "device_doctor",
+      "desc": "Autonomous OS Vital Inspector, Thermal Governor & Kernel Optimizer",
+      "files": 0,
+      "loc": 0,
+      "functions": 0
+    },
+    "apps": {
+      "path": "apps",
+      "desc": "Cross-Platform Flutter/Dart & React Web Client Interfaces",
+      "files": 15832,
+      "loc": 11217011,
+      "functions": 115723
+    },
+    "scripts": {
+      "path": "scripts",
+      "desc": "llama.cpp 5-Way RPC Sharder, Pre-Execution Shard Guard & Auto Upgrades",
+      "files": 673,
+      "loc": 105896,
+      "functions": 2692
+    },
+    "agents_skills": {
+      "path": ".agents",
+      "desc": "Autonomous Swarm Skills, AGENTS.md Multi-Model Rules & LoRA Distillation",
+      "files": 6438,
+      "loc": 482501,
+      "functions": 1405
+    }
+  },
+  "devices_analyzed": [
+    {
+      "id": "node_1_mac_m4",
+      "name": "Apple MacBook Pro (M4 Max Host)",
+      "role": "Primary Swarm Orchestrator & OpenClaw Gateway",
+      "ram_total_gb": 16.0,
+      "usable_vram_gb": 12.0,
+      "ai_accel": "16-Core Apple Neural Engine (38 TOPS) + Metal GPU",
+      "storage": "1TB PCIe Gen 4 NVMe (6,500 MB/s)",
+      "os": "macOS Sequoia (Darwin 24.x)",
+      "power": "140W MagSafe 3 / USB-PD 3.1"
+    },
+    {
+      "id": "node_2_mac_intel",
+      "name": "MacBook Pro (Intel i7 Metal Worker)",
+      "role": "High-Speed Metal RPC Sharding Node",
+      "ram_total_gb": 16.0,
+      "usable_vram_gb": 12.0,
+      "ai_accel": "Metal GPU Matrix Acceleration",
+      "storage": "512GB Apple PCIe SSD",
+      "os": "macOS Sonoma (Darwin 23.x)",
+      "power": "87W USB-C AC Mains"
+    },
+    {
+      "id": "node_3_linux_ryzen",
+      "name": "Linux Head Node (AMD Ryzen 7 5700U)",
+      "role": "Gateway Ingress, Docker Host & 1TB NVMe Fast Cache",
+      "ram_total_gb": 15.0,
+      "usable_vram_gb": 11.25,
+      "ai_accel": "AMD XDNA Ryzen AI (16 TOPS) + Radeon Vega",
+      "storage": "1TB PCIe NVMe Fast Cache",
+      "os": "Ubuntu Linux 24.04 LTS (Kernel 6.8+ MPTCP)",
+      "power": "65W DC Barrel AC Adapter"
+    },
+    {
+      "id": "node_4_pixel_10",
+      "name": "Google Pixel 10 Pro XL",
+      "role": "8K Vision Stream, UWB Spatial Anchor & Edge TPU",
+      "ram_total_gb": 15.2,
+      "usable_vram_gb": 11.4,
+      "ai_accel": "Google Tensor G5 + Edge TPU (22 TOPS)",
+      "storage": "256GB UFS 4.0",
+      "os": "Android 15 (Termux Linux 6.1+ Proot)",
+      "power": "15W Qi Wireless Fast Pad (Continuous Float)"
+    },
+    {
+      "id": "node_5_samsung_s20",
+      "name": "Samsung Galaxy S20+",
+      "role": "Automated Headless UI/UX Tester & Low-Layer RPC",
+      "ram_total_gb": 10.6,
+      "usable_vram_gb": 8.0,
+      "ai_accel": "Samsung Exynos 990 NPU + Mali-G77",
+      "storage": "128GB UFS 3.0",
+      "os": "Android 13 (Termux Linux 4.19+ Proot)",
+      "power": "USB-C PD 3.0 Pass-Through (+15W Net Surplus)"
+    }
+  ],
+  "connectors_analyzed": [
+    {
+      "connector": "Thunderbolt 4 / USB4 (Type-C)",
+      "bandwidth_gbps": 40.0,
+      "layer_speed": "10Gbps TB4 Bridge Mode (0.277ms RTT)",
+      "bus_type": "PCI Express 3.0 x4 Tunneling + DisplayPort 1.4",
+      "power_delivery": "USB-PD 3.1 Extended Power Range (up to 140W)",
+      "connected_nodes": "Mac M4 Max Host \u2194 MacBook Pro i7 Worker",
+      "optimization": "Used for instant tensor layer RPC sharding with sub-millisecond layer transfer"
+    },
+    {
+      "connector": "USB 3.2 Gen 2 Type-C (SuperSpeed+)",
+      "bandwidth_gbps": 10.0,
+      "layer_speed": "10,000 Mbps Raw Throughput",
+      "bus_type": "USB 3.2 Gen 2 Full Duplex",
+      "power_delivery": "USB-PD 3.0 PPS (27W Fast Charge)",
+      "connected_nodes": "Google Pixel 10 Pro XL \u2194 USB-C Hub / PC",
+      "optimization": "Transfers high-speed 8K vision streams and Edge TPU weights"
+    },
+    {
+      "connector": "2.5GbE Base-T Ethernet (RJ-45)",
+      "bandwidth_gbps": 2.5,
+      "layer_speed": "2,500 Mbps Full Duplex (0.15ms wire latency)",
+      "bus_type": "IEEE 802.3bz Multi-Gigabit Ethernet",
+      "power_delivery": "Passive / Mains AC Powered",
+      "connected_nodes": "Linux Head Node \u2194 GL.iNet Router / NAS",
+      "optimization": "Ingresses Docker telemetry and 1TB NVMe fast caching without Wi-Fi jitter"
+    },
+    {
+      "connector": "Wi-Fi 7 (802.11be) 320MHz MLO",
+      "bandwidth_gbps": 5.8,
+      "layer_speed": "890.4 Mbps Aggregated MLO (6GHz + 5GHz)",
+      "bus_type": "Multi-Link Operation (MLO) 4096-QAM",
+      "power_delivery": "Wireless RF",
+      "connected_nodes": "Pixel 10 Pro XL \u2194 Mac M4 Host \u2194 Router",
+      "optimization": "Ultra-low latency wireless roaming with simultaneous multi-band packet dispatch"
+    },
+    {
+      "connector": "USB 2.0 High-Speed ADB Tether (Type-C)",
+      "bandwidth_gbps": 0.48,
+      "layer_speed": "480 Mbps RNDIS Hardware Tether",
+      "bus_type": "USB 2.0 ADB / CDC-NCM Virtual NIC",
+      "power_delivery": "USB-PD 3.0 (+15W Net Surplus)",
+      "connected_nodes": "Samsung S20+ \u2194 GL.iNet Router USB Port",
+      "optimization": "Dedicated zero-disconnect ADB channel for 24/7 headless UI/UX automated testing"
+    },
+    {
+      "connector": "Bluetooth 5.4 Low Energy (BLE)",
+      "bandwidth_gbps": 0.002,
+      "layer_speed": "2.0 Mbps High-Speed PHY (1.25ms interval)",
+      "bus_type": "GATT Protocol / L2CAP Channels",
+      "power_delivery": "Ultra-Low Power Coin Cell / Battery",
+      "connected_nodes": "Movesense Medical Sensor \u2194 Movesense Hub",
+      "optimization": "12-axis IMU kinematics and ECG HRV biometrics streaming with zero cloud leakage"
+    },
+    {
+      "connector": "MagSafe 3 Fast Charge Port",
+      "bandwidth_gbps": 0.0,
+      "layer_speed": "Power Delivery Only",
+      "bus_type": "Magnetic DC Quick-Release",
+      "power_delivery": "140W USB-PD 3.1 EPR (28V / 5A)",
+      "connected_nodes": "Mac M4 Max Host",
+      "optimization": "Maintains 100% full clock speeds on 16-core CPU/GPU during heavy 38.26 GB sharded training"
+    }
+  ],
+  "training_harvest": {
+    "new_training_samples_generated": 2,
+    "total_dataset_samples": 121314,
+    "status": "INGESTED_TO_GENETIC_MOE"
+  }
+}

@@ -1,0 +1,102 @@
+version: '3.8'
+
+# ==============================================================================
+# LAUBURU DISTRIBUTED FILE SYSTEM (DFS) — MASTER & FILER DEPLOYMENT
+# Target Host: Linux Head Node (100.101.39.98 / 192.168.8.224)
+# Memory Limit: Hard 512MB Total (256MB Master + 256MB Filer)
+# Architecture: linux/amd64 (AMD Ryzen 7 5700U)
+# ==============================================================================
+
+services:
+  dfs_master:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_dfs_master
+    hostname: linux-head-dfs-master
+    restart: unless-stopped
+    command: >
+      master
+      -ip=100.101.39.98
+      -port=9333
+      -port.grpc=19333
+      -mdir=/data/dfs_master
+      -volumeSizeLimitMB=1024
+      -defaultReplication=000
+      -peers=100.101.39.98:9333
+    volumes:
+      - /mnt/ssd_1tb/dfs_master:/data/dfs_master:rw
+    ports:
+      - "100.101.39.98:9333:9333"
+      - "100.101.39.98:19333:19333"
+      - "192.168.8.224:9333:9333"
+      - "192.168.8.224:19333:19333"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    labels:
+      com.lauburu.dfs.service: "dfs-master"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.node: "Linux_Head_Node"
+      com.lauburu.dfs.arch: "amd64"
+      com.lauburu.dfs.ram_cap: "256m"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:9333/dir/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  dfs_filer:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_dfs_filer
+    hostname: linux-head-dfs-filer
+    restart: unless-stopped
+    command: >
+      filer
+      -master=100.101.39.98:9333
+      -ip=100.101.39.98
+      -port=8888
+      -port.grpc=18888
+      -defaultReplicaPlacement=000
+    volumes:
+      - /mnt/ssd_1tb/dfs_filer:/data/dfs_filer:rw
+    ports:
+      - "100.101.39.98:8888:8888"
+      - "100.101.39.98:18888:18888"
+      - "192.168.8.224:8888:8888"
+      - "192.168.8.224:18888:18888"
+    mem_limit: 256m
+    memswap_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
+        reservations:
+          memory: 64M
+    depends_on:
+      - dfs_master
+    labels:
+      com.lauburu.dfs.service: "dfs-filer"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.node: "Linux_Head_Node"
+      com.lauburu.dfs.arch: "amd64"
+      com.lauburu.dfs.ram_cap: "256m"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8888/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    name: lauburu_dfs_net
+    driver: bridge

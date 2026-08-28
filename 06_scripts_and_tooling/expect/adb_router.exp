@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+set timeout 15
+spawn ssh -o StrictHostKeyChecking=no root@192.168.8.1
+expect "*?assword:*"
+send "Goldfighting1\r"
+expect "*?root@*"
+send "adb devices\r"
+expect "*?root@*"
+send "exit\r"

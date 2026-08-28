@@ -1,0 +1,64 @@
+# OS & Environment
+.DS_Store
+**/.DS_Store
+.env
+.env.local
+.env.*.local
+
+# AI Model Weights & Heavy Binaries (Stored in Model Vault / External Storage)
+*.gguf
+*.bin
+*.pt
+*.pth
+*.onnx
+*.safetensors
+02_ai_models_and_inference/model_vault_gguf/*.gguf
+02_ai_models_and_inference/models/*.gguf
+
+# Big Data Lake & LoRA Datasets (Layer 2 Vault - PySpark / Delta Lake)
+lora_datasets/
+**/lora_datasets/
+data/
+**/data/
+*.jsonl
+!tests/e2e/fixtures/*.jsonl
+*.parquet
+*.arrow
+*.csv.gz
+*.tar.gz
+*.zip
+*.db
+*.sqlite
+*.sqlite3
+
+# Node & Frontend Build
+node_modules/
+**/node_modules/
+.next/
+dist/
+build/
+.wrangler/
+
+# Python & Testing Caches
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs & Transient Runs
+logs/*.log
+logs/*.err
+*.log
+06_scripts_and_tooling/scratch/
+session_logs/*.log
+
+# Sync & Temp
+.stversions/
+.stignore
+.julesignore
+
+# Sensitive Drop Zones
+obsidian_vault/Secure_Drop_Zone.md

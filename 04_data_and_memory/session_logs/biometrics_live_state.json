@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-08-22T00:23:03.811432+00:00",
+  "service": "Lauburu Multi-Sensor Biometrics, Auto-Workout & Sleep Engine",
+  "hardware_sensor_status": "DISCONNECTED_WAITING_FOR_LIVE_BLE_DATA",
+  "live_readiness": {
+    "score": null,
+    "display": "--",
+    "state": "WAITING_FOR_LIVE_DATA"
+  },
+  "bicep_ecg": {
+    "instant_hr_bpm": null,
+    "display": "--",
+    "status": "NO_ECG_STREAM"
+  },
+  "live_blood_pressure": {
+    "systolic_mmHg": null,
+    "diastolic_mmHg": null,
+    "display": "--/--",
+    "status": "WAITING_FOR_PTT"
+  },
+  "live_stress": {
+    "score": null,
+    "display": "--",
+    "state": "WAITING_FOR_DATA"
+  },
+  "auto_workout_telemetry": {
+    "status": "INACTIVE",
+    "active_modality": null,
+    "trimp_load": null,
+    "display": "--"
+  },
+  "auto_sleep_polysomnography": {
+    "status": "WAITING_FOR_NOCTURNAL_DATA",
+    "sleep_score": null,
+    "display": "--"
+  }
+}

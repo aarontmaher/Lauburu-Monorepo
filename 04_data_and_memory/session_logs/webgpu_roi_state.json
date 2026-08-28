@@ -1,0 +1,181 @@
+{
+  "graduated_archive": [
+    {
+      "id": "roi_qwen_38_coder",
+      "title": "Ingest Qwen-3.8-Coder-32B",
+      "status": "COMPLETED",
+      "badge": "\u26a1 Verified & Graduated",
+      "confidence": 0.98,
+      "roi_multiplier": "9.8x",
+      "impact": "Empowers local $0-spend WGSL shader generation and AST syntax validation across the 7-device mesh.",
+      "verified": true,
+      "completed_at": "2026-08-22T23:45:00Z",
+      "graduated_at": "2026-08-22T14:08:53.339135Z",
+      "lora_harvested": true
+    },
+    {
+      "id": "roi_webgpu_profiler_mcp",
+      "title": "Deploy WebGPU Profiler MCP",
+      "status": "COMPLETED",
+      "badge": "\u2705 Verified & Graduated",
+      "confidence": 0.99,
+      "roi_multiplier": "9.6x",
+      "impact": "Real-time hardware adapter query, WGSL struct alignment inspection, and GEMM GFLOPs benchmarking.",
+      "verified": true,
+      "completed_at": "2026-08-22T23:50:00Z",
+      "graduated_at": "2026-08-22T14:08:53.354436Z",
+      "lora_harvested": true
+    },
+    {
+      "id": "roi_wgpu_rust_bridge",
+      "title": "Create wgpu-rust-bridge Skill",
+      "status": "COMPLETED",
+      "badge": "\ud83d\udee0\ufe0f Verified & Graduated",
+      "confidence": 0.97,
+      "roi_multiplier": "9.4x",
+      "impact": "Cross-platform Rust wgpu bindings and WebAssembly memory-mapped buffers for universal Metal/Vulkan/WebGPU parity.",
+      "verified": true,
+      "completed_at": "2026-08-22T23:55:00Z",
+      "graduated_at": "2026-08-22T14:08:53.365141Z",
+      "lora_harvested": true
+    }
+  ],
+  "active_pool": [
+    {
+      "id": "roi_qwen_38_coder",
+      "title": "Ingest Qwen-3.8-Coder-32B",
+      "status": "COMPLETED",
+      "badge": "\u26a1 Verified & Graduated",
+      "confidence": 0.98,
+      "roi_multiplier": "9.8x",
+      "impact": "Empowers local $0-spend WGSL shader generation and AST syntax validation across the 7-device mesh.",
+      "verified": true,
+      "completed_at": "2026-08-22T23:45:00Z",
+      "graduated_at": "2026-08-22T14:08:53.339135Z",
+      "lora_harvested": true
+    },
+    {
+      "id": "roi_webgpu_profiler_mcp",
+      "title": "Deploy WebGPU Profiler MCP",
+      "status": "COMPLETED",
+      "badge": "\u2705 Verified & Graduated",
+      "confidence": 0.99,
+      "roi_multiplier": "9.6x",
+      "impact": "Real-time hardware adapter query, WGSL struct alignment inspection, and GEMM GFLOPs benchmarking.",
+      "verified": true,
+      "completed_at": "2026-08-22T23:50:00Z",
+      "graduated_at": "2026-08-22T14:08:53.354436Z",
+      "lora_harvested": true
+    },
+    {
+      "id": "roi_wgpu_rust_bridge",
+      "title": "Create wgpu-rust-bridge Skill",
+      "status": "COMPLETED",
+      "badge": "\ud83d\udee0\ufe0f Verified & Graduated",
+      "confidence": 0.97,
+      "roi_multiplier": "9.4x",
+      "impact": "Cross-platform Rust wgpu bindings and WebAssembly memory-mapped buffers for universal Metal/Vulkan/WebGPU parity.",
+      "verified": true,
+      "completed_at": "2026-08-22T23:55:00Z",
+      "graduated_at": "2026-08-22T14:08:53.365141Z",
+      "lora_harvested": true
+    },
+    {
+      "id": "roi_wgsl_120fps_kinematics_shader",
+      "title": "WGSL 120 FPS Real-Time Neon Kinematics Shader Pipeline",
+      "status": "ACTIVE_PIPELINE",
+      "badge": "\u26a1 Active Pipeline",
+      "confidence": 0.99,
+      "roi_multiplier": "12.4x",
+      "impact": "Direct GPU-side compute shader calculating 955-node BJJ joint tension vectors in WebGPU buffer instead of CPU rendering.",
+      "verified": false,
+      "stage": "WGSL_COMPUTE_PIPELINE",
+      "rank": 1
+    },
+    {
+      "id": "roi_uiux_glassmorphism_shaders",
+      "title": "Autonomous UI/UX Glassmorphism & Micro-Interaction Shader Engine",
+      "status": "IN_DEVELOPMENT",
+      "badge": "\ud83c\udfa8 UI/UX In Progress",
+      "confidence": 0.98,
+      "roi_multiplier": "11.8x",
+      "impact": "Dynamic CSS/WGSL blur-behind glass shaders and interactive multi-touch visual ripple feedback for Port 3000 & 4000.",
+      "verified": false,
+      "stage": "SHADER_MATERIAL_SYNTHESIS",
+      "rank": 2
+    },
+    {
+      "id": "roi_webgpu_128hz_oscilloscope",
+      "title": "WebGPU-Accelerated 128Hz Movesense ECG/IMU Waveform Canvas",
+      "status": "STAGED",
+      "badge": "\ud83d\udc93 High ROI Staged",
+      "confidence": 0.97,
+      "roi_multiplier": "11.2x",
+      "impact": "Zero-copy WebAssembly-to-WebGPU vertex streaming for 500Hz ECG and 833Hz IMU oscilloscope graphics with sub-1ms render time.",
+      "verified": false,
+      "stage": "WASM_BUFFER_BINDING",
+      "rank": 3
+    },
+    {
+      "id": "roi_vlm_iterative_layout_polisher",
+      "title": "Multi-Model Visual AI Auto-Iterative CSS & Layout Polisher",
+      "status": "BACKLOG",
+      "badge": "\ud83d\udee1\ufe0f VLM Sentinel",
+      "confidence": 0.96,
+      "roi_multiplier": "10.6x",
+      "impact": "Autonomous VLM feedback loop between Gemini 3.7 Flash and Local Qwen-VL to detect visual clipping and adjust flexbox bounds.",
+      "verified": false,
+      "stage": "VLM_SCREENSHOT_FEEDBACK"
+    },
+    {
+      "id": "roi_wgpu_native_metal_vulkan_compiler",
+      "title": "wgpu-native Rust Metal/Vulkan Headless Shader Compiler",
+      "status": "BACKLOG",
+      "badge": "\ud83e\udd80 Rust wgpu Native",
+      "confidence": 0.95,
+      "roi_multiplier": "10.2x",
+      "impact": "Compiles WGSL shaders to Apple Metal Shading Language (MSL) and Vulkan SPIR-V with AST verification.",
+      "verified": false,
+      "stage": "CROSS_PLATFORM_MSL"
+    }
+  ],
+  "active_top_3": [
+    {
+      "id": "roi_wgsl_120fps_kinematics_shader",
+      "title": "WGSL 120 FPS Real-Time Neon Kinematics Shader Pipeline",
+      "status": "ACTIVE_PIPELINE",
+      "badge": "\u26a1 Active Pipeline",
+      "confidence": 0.99,
+      "roi_multiplier": "12.4x",
+      "impact": "Direct GPU-side compute shader calculating 955-node BJJ joint tension vectors in WebGPU buffer instead of CPU rendering.",
+      "verified": false,
+      "stage": "WGSL_COMPUTE_PIPELINE",
+      "rank": 1
+    },
+    {
+      "id": "roi_uiux_glassmorphism_shaders",
+      "title": "Autonomous UI/UX Glassmorphism & Micro-Interaction Shader Engine",
+      "status": "IN_DEVELOPMENT",
+      "badge": "\ud83c\udfa8 UI/UX In Progress",
+      "confidence": 0.98,
+      "roi_multiplier": "11.8x",
+      "impact": "Dynamic CSS/WGSL blur-behind glass shaders and interactive multi-touch visual ripple feedback for Port 3000 & 4000.",
+      "verified": false,
+      "stage": "SHADER_MATERIAL_SYNTHESIS",
+      "rank": 2
+    },
+    {
+      "id": "roi_webgpu_128hz_oscilloscope",
+      "title": "WebGPU-Accelerated 128Hz Movesense ECG/IMU Waveform Canvas",
+      "status": "STAGED",
+      "badge": "\ud83d\udc93 High ROI Staged",
+      "confidence": 0.97,
+      "roi_multiplier": "11.2x",
+      "impact": "Zero-copy WebAssembly-to-WebGPU vertex streaming for 500Hz ECG and 833Hz IMU oscilloscope graphics with sub-1ms render time.",
+      "verified": false,
+      "stage": "WASM_BUFFER_BINDING",
+      "rank": 3
+    }
+  ],
+  "last_updated": "2026-08-22T14:32:54.674014Z"
+}

@@ -1,0 +1,269 @@
+{
+  "timestamp": "2026-08-13T20:49:04.311300",
+  "vision_model_engine": "LocalVisionVLMAgent (Qwen2.5-VL-32B + DepthAnything-v2)",
+  "projection_mode": "3D Spatial AR Holographic Dashboard Mapping",
+  "physical_origin": "Mac_Node (0.0, 0.0, 0.75m)",
+  "projected_huds": [
+    {
+      "hud_id": "hud_Samsung_S20",
+      "target_device": "Samsung_S20",
+      "label": "Samsung_S20",
+      "3d_world_position_meters": {
+        "x": 0.35,
+        "y": 0.4,
+        "z": 0.89
+      },
+      "spatial_orientation_deg": {
+        "pitch": -15.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "projected_telemetry": {
+        "cpu_percent": 0,
+        "memory_percent": 0,
+        "battery_percent": 100,
+        "primary_ip": "N/A",
+        "link_type": "USB 3.2 Tether (1.1ms)"
+      },
+      "vision_bounding_anchor": {
+        "detected_by_vlm": true,
+        "confidence_score": 0.985,
+        "spatial_depth_scale": "UWB Grounded (\u00b10.78cm)"
+      }
+    },
+    {
+      "hud_id": "hud_Mac_Node",
+      "target_device": "Mac_Node",
+      "label": "Mac_Node",
+      "3d_world_position_meters": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.9
+      },
+      "spatial_orientation_deg": {
+        "pitch": -15.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "projected_telemetry": {
+        "cpu_percent": 0,
+        "memory_percent": 0,
+        "battery_percent": 100,
+        "primary_ip": "N/A",
+        "link_type": "Thunderbolt 4 (0.27ms)"
+      },
+      "vision_bounding_anchor": {
+        "detected_by_vlm": true,
+        "confidence_score": 0.985,
+        "spatial_depth_scale": "UWB Grounded (\u00b10.78cm)"
+      }
+    },
+    {
+      "hud_id": "hud_MacBook_Pro",
+      "target_device": "MacBook_Pro",
+      "label": "MacBook_Pro",
+      "3d_world_position_meters": {
+        "x": -0.65,
+        "y": 0.2,
+        "z": 0.9
+      },
+      "spatial_orientation_deg": {
+        "pitch": -15.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "projected_telemetry": {
+        "cpu_percent": 0,
+        "memory_percent": 0,
+        "battery_percent": 100,
+        "primary_ip": "N/A",
+        "link_type": "Thunderbolt 4 (0.27ms)"
+      },
+      "vision_bounding_anchor": {
+        "detected_by_vlm": true,
+        "confidence_score": 0.985,
+        "spatial_depth_scale": "UWB Grounded (\u00b10.78cm)"
+      }
+    },
+    {
+      "hud_id": "hud_aarons_MacBook_Pro",
+      "target_device": "aarons_MacBook_Pro",
+      "label": "aarons_MacBook_Pro",
+      "3d_world_position_meters": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.9
+      },
+      "spatial_orientation_deg": {
+        "pitch": -15.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "projected_telemetry": {
+        "cpu_percent": 0,
+        "memory_percent": 0,
+        "battery_percent": 100,
+        "primary_ip": "N/A",
+        "link_type": "Thunderbolt 4 (0.27ms)"
+      },
+      "vision_bounding_anchor": {
+        "detected_by_vlm": true,
+        "confidence_score": 0.985,
+        "spatial_depth_scale": "UWB Grounded (\u00b10.78cm)"
+      }
+    },
+    {
+      "hud_id": "hud_Linux_Head_Node",
+      "target_device": "Linux_Head_Node",
+      "label": "Linux_Head_Node",
+      "3d_world_position_meters": {
+        "x": 0.85,
+        "y": 0.15,
+        "z": 0.9
+      },
+      "spatial_orientation_deg": {
+        "pitch": -15.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "projected_telemetry": {
+        "cpu_percent": 0,
+        "memory_percent": 0,
+        "battery_percent": 100,
+        "primary_ip": "N/A",
+        "link_type": "Wi-Fi 7 MLO (1.4ms)"
+      },
+      "vision_bounding_anchor": {
+        "detected_by_vlm": true,
+        "confidence_score": 0.985,
+        "spatial_depth_scale": "UWB Grounded (\u00b10.78cm)"
+      }
+    },
+    {
+      "hud_id": "hud_Pixel_10_Pro_XL",
+      "target_device": "Pixel_10_Pro_XL",
+      "label": "Pixel_10_Pro_XL",
+      "3d_world_position_meters": {
+        "x": -0.25,
+        "y": 0.45,
+        "z": 0.91
+      },
+      "spatial_orientation_deg": {
+        "pitch": -15.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "projected_telemetry": {
+        "cpu_percent": 0,
+        "memory_percent": 0,
+        "battery_percent": 100,
+        "primary_ip": "N/A",
+        "link_type": "Wi-Fi 7 MLO (1.4ms)"
+      },
+      "vision_bounding_anchor": {
+        "detected_by_vlm": true,
+        "confidence_score": 0.985,
+        "spatial_depth_scale": "UWB Grounded (\u00b10.78cm)"
+      }
+    }
+  ],
+  "central_billboard": {
+    "hud_id": "hud_main_matrix_billboard",
+    "target_device": "Room_Center_Billboard",
+    "label": "\ud83c\udf10 Network Multi-Transport Optimization Matrix",
+    "3d_world_position_meters": {
+      "x": 0.0,
+      "y": 0.85,
+      "z": 1.2
+    },
+    "spatial_orientation_deg": {
+      "pitch": 10.0,
+      "roll": 0.0,
+      "yaw": 0.0
+    },
+    "projected_data": {
+      "top_1_link": "Hardware Dual Trunk TB4 (2,400.0 Mbps \u2022 0.3ms RTT)",
+      "active_improvements": "10+ Swarm Rules Applied",
+      "mode": "Physical Room Holographic Projection"
+    }
+  },
+  "spatial_energy_beams": [
+    {
+      "from_node": "Mac_Node",
+      "to_node": "MacBook_Pro",
+      "from_pos": [
+        0.0,
+        0.0,
+        0.75
+      ],
+      "to_pos": [
+        -0.65,
+        0.2,
+        0.75
+      ],
+      "throughput": "1,450.2 Mbps",
+      "latency_rtt": "0.277 ms",
+      "beam_color": "#38bdf8",
+      "protocol": "10Gbps Thunderbolt 4 Subnet Bridge"
+    },
+    {
+      "from_node": "Mac_Node",
+      "to_node": "Samsung_S20",
+      "from_pos": [
+        0.0,
+        0.0,
+        0.75
+      ],
+      "to_pos": [
+        0.35,
+        0.4,
+        0.74
+      ],
+      "throughput": "990.4 Mbps",
+      "latency_rtt": "1.1 ms",
+      "beam_color": "#4ade80",
+      "protocol": "USB 3.2 Gen 2 RNDIS Direct Bus"
+    },
+    {
+      "from_node": "Mac_Node",
+      "to_node": "Pixel_10_Pro_XL",
+      "from_pos": [
+        0.0,
+        0.0,
+        0.75
+      ],
+      "to_pos": [
+        -0.25,
+        0.45,
+        0.76
+      ],
+      "throughput": "1,950.0 Mbps",
+      "latency_rtt": "1.4 ms",
+      "beam_color": "#c084fc",
+      "protocol": "UWB ToF + Wi-Fi 7 MLO Bond"
+    },
+    {
+      "from_node": "Mac_Node",
+      "to_node": "Linux_Head_Node",
+      "from_pos": [
+        0.0,
+        0.0,
+        0.75
+      ],
+      "to_pos": [
+        0.85,
+        0.15,
+        0.75
+      ],
+      "throughput": "1,200.0 Mbps",
+      "latency_rtt": "2.8 ms",
+      "beam_color": "#facc15",
+      "protocol": "Netlink Kernel Socket + Cloudflare Ingress"
+    }
+  ],
+  "vlm_raycast_status": {
+    "active_huds_rendered": 7,
+    "spatial_tracking_hz": 60,
+    "drift_compensation": "UWB Grounded Metric Scale"
+  }
+}

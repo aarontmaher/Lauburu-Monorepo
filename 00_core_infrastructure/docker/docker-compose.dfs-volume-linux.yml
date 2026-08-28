@@ -1,0 +1,58 @@
+version: '3.8'
+
+# ==============================================================================
+# LAUBURU DISTRIBUTED FILE SYSTEM (DFS) — LINUX HEAD NODE VOLUME WORKER
+# Target Host: Linux Head Node (100.101.39.98 / 192.168.8.224)
+# Memory Limit: Hard 128MB (Preserves Host Memory)
+# Architecture: linux/amd64 (AMD Ryzen 7 5700U)
+# ==============================================================================
+
+services:
+  dfs_linux_volume:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu_dfs_linux_volume
+    hostname: linux-head-dfs-volume
+    restart: unless-stopped
+    command: >
+      volume
+      -mserver=100.101.39.98:9333
+      -port=8080
+      -port.grpc=18080
+      -ip=100.101.39.98
+      -dir=/data/dfs_bricks
+      -max=50
+      -minFreeSpacePercent=5
+    volumes:
+      - /mnt/ssd_1tb/dfs_bricks:/data/dfs_bricks:rw
+    ports:
+      - "100.101.39.98:8080:8080"
+      - "100.101.39.98:18080:18080"
+      - "192.168.8.224:8080:8080"
+      - "192.168.8.224:18080:18080"
+    mem_limit: 128m
+    memswap_limit: 128m
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '1.0'
+        reservations:
+          memory: 32M
+    labels:
+      com.lauburu.dfs.service: "volume-brick"
+      com.lauburu.dfs.tier: "core_wall_powered"
+      com.lauburu.dfs.node: "Linux_Head_Node"
+      com.lauburu.dfs.arch: "amd64"
+      com.lauburu.dfs.ram_cap: "128m"
+      com.lauburu.dfs.mcp_managed: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/status || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    name: lauburu_dfs_net
+    driver: bridge
