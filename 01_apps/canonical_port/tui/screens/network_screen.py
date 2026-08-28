@@ -31,6 +31,7 @@ try:
     from widgets.pinned_tab_nav_bar import PinnedTabNavBar
     from widgets.live_speedtest_card import LiveSpeedtestCard
     from widgets.router_control_card import RouterControlCard
+    from widgets.network_health_ai import NetworkHealthAI
 except ImportError:
     from tui.services.blackboard_store import blackboard_store
     from tui.services.network_telemetry_store import network_telemetry_store
@@ -41,6 +42,7 @@ except ImportError:
     from tui.widgets.pinned_tab_nav_bar import PinnedTabNavBar
     from tui.widgets.live_speedtest_card import LiveSpeedtestCard
     from tui.widgets.router_control_card import RouterControlCard
+    from tui.widgets.network_health_ai import NetworkHealthAI
 
 
 class NetworkScreen(Screen):
@@ -64,6 +66,7 @@ class NetworkScreen(Screen):
                 yield Button("⚡ Probe RPC Matrix", id="btn-probe-rpc", variant="warning")
                 yield Button("🔄 Refresh Telemetry", id="btn-refresh-net", variant="success")
                 yield Button("⚡ WoL Wake-up", id="btn-wol-revive", variant="default")
+                yield Button("🧠 AI Scan", id="btn-ai-scan-top", variant="primary")
             yield LiveSpeedtestCard(id="live-speedtest-card")
             yield RouterControlCard(id="router-control-card")
             yield Static(id="wol-status-view")
@@ -73,8 +76,21 @@ class NetworkScreen(Screen):
             yield Static(id="wan-status-view")
             yield Static(id="tailscale-mesh-view")
             yield Static(id="rpc-latency-view")
+            # ── Network Health AI (auto-launches, sandboxed healer) ───────────
+            yield NetworkHealthAI(id="network-health-ai")
         yield DockedShortcutsLegend(active_screen="network")
         yield Footer()
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        """Route top-level button presses that aren't handled by child widgets."""
+        if event.button.id == "btn-ai-scan-top":
+            try:
+                ai = self.query_one("#network-health-ai", NetworkHealthAI)
+                ai.run_worker(ai._do_scan(heal=True), exclusive=False, name="ai-manual")
+                event.stop()
+            except Exception:
+                pass
+
 
     def on_mount(self) -> None:
         # Initial instant render from cache (<1ms)
