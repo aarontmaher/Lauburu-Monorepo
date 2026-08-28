@@ -107,31 +107,56 @@ DOMAIN_DATASETS = {
 def lauburu_to_agentworld(record: Dict, domain: str) -> Optional[Dict]:
     """
     Convert a Lauburu JSONL record to AgentWorld next-state-prediction format.
-
-    AgentWorld format:
-      system: "You are an environment simulator for [domain]."
-      user:   "<action> [action] </action>\n<history> [history] </history>"
-      assistant: "<next_state> [predicted state] </next_state>"
-
-    Lauburu JSONL fields vary by dataset but commonly have:
-      instruction, observation, completion, actions_taken, timestamp, mesh_status
+    Handles all field schemas across Lauburu datasets:
+      nomad_autonomous_actions: {action, result, timestamp_utc, nomad_agent}
+      cron_governor_decisions:  {instruction, completion, action, ...}
+      truth_audit_decisions:    {instruction, input, output, completion, ...}
+      ui_ux_improvements:       {instruction, input, output, ...}
+      network_decisions:        {action, result, context, ...}
+      shizuku_healing_actions:  {instruction, completion, actions_taken, ...}
     """
-    instruction = record.get("instruction", record.get("action", ""))
-    observation = record.get("observation", record.get("input", ""))
-    completion  = record.get("completion", record.get("output", record.get("result", "")))
-    actions     = record.get("actions_taken", record.get("action", []))
+    # ── Extract action/instruction ──────────────────────────────────────────
+    instruction = (
+        record.get("instruction") or
+        record.get("action") or
+        record.get("input") or
+        record.get("prompt") or
+        record.get("query") or ""
+    )
 
+    # ── Extract observation/context ─────────────────────────────────────────
+    observation = (
+        record.get("observation") or
+        record.get("context") or
+        record.get("input") or
+        record.get("state") or
+        record.get("nomad_agent", "") + " @ " + record.get("timestamp_utc", "")
+    )
+
+    # ── Extract completion/result ───────────────────────────────────────────
+    completion = (
+        record.get("completion") or
+        record.get("result") or
+        record.get("output") or
+        record.get("response") or ""
+    )
+
+    # Skip records without both an action and a result
     if not instruction or not completion:
         return None
 
-    # Build action string
+    # Skip trivially short records
+    if len(str(completion)) < 3:
+        return None
+
+    # ── Extract action list ─────────────────────────────────────────────────
+    actions = record.get("actions_taken", record.get("action", instruction))
     if isinstance(actions, list):
         action_str = "; ".join(str(a) for a in actions[:5]) if actions else instruction
     else:
-        action_str = str(actions)
+        action_str = str(actions)[:300]
 
-    # Build history from observation
-    history_str = str(observation)[:500] if observation else "No prior state."
+    history_str = str(observation)[:400] if observation else "No prior state."
 
     system = (
         f"You are a language world model simulating the {domain} environment. "
@@ -155,7 +180,7 @@ def lauburu_to_agentworld(record: Dict, domain: str) -> Optional[Dict]:
         ],
         "domain":    domain,
         "source":    "lauburu_mesh_telemetry",
-        "timestamp": record.get("timestamp", ""),
+        "timestamp": record.get("timestamp", record.get("timestamp_utc", "")),
     }
 
 
