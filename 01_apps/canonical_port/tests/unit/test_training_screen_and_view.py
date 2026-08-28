@@ -67,6 +67,7 @@ async def test_training_screen_composition():
         # Verify TabbedContent and core widgets
         tabs = screen.query(TabbedContent).first()
         assert tabs is not None
+        assert screen.query_one("#training-tabbed-content", TabbedContent) is not None
         assert screen.query_one(TrainingPipelineWidget) is not None
         assert screen.query_one(LauburuGymsWidget) is not None
         assert screen.query_one("#lora-view", Static) is not None

@@ -24,27 +24,40 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-WORKSPACE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
-SESSION_LOGS = WORKSPACE_ROOT / "session_logs"
+SCRIPT_DIR = Path(__file__).resolve().parent
+WORKSPACE_ROOT = SCRIPT_DIR.parents[2] if (SCRIPT_DIR.parents[2] / "04_data_and_memory").exists() else Path(os.getcwd())
+SESSION_LOGS = WORKSPACE_ROOT / "04_data_and_memory" / "session_logs"
 DRIVE_LORA_PATH = Path("/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets")
 LOCAL_LORA_PATH = WORKSPACE_ROOT / "data" / "lora_datasets"
 PROGRESS_FILE = WORKSPACE_ROOT / ".agents" / "state" / "orchestrator" / "progress.md"
 GAME_STATE_FILE = WORKSPACE_ROOT / "self_healing_hub" / "src" / "game_arena_state.json"
 
-SESSION_LOGS.mkdir(parents=True, exist_ok=True)
-LOCAL_LORA_PATH.mkdir(parents=True, exist_ok=True)
+try:
+    SESSION_LOGS.mkdir(parents=True, exist_ok=True)
+except Exception:
+    pass
+
+try:
+    LOCAL_LORA_PATH.mkdir(parents=True, exist_ok=True)
+except Exception:
+    pass
+
 try:
     DRIVE_LORA_PATH.mkdir(parents=True, exist_ok=True)
 except Exception:
     pass
 
+log_handlers = [logging.StreamHandler(sys.stdout)]
+if SESSION_LOGS.exists():
+    try:
+        log_handlers.append(logging.FileHandler(SESSION_LOGS / "webgpu_visual_audit.log"))
+    except Exception:
+        pass
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - [WEBGPU-VISUAL-CRON] %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(SESSION_LOGS / "webgpu_visual_audit.log"),
-        logging.StreamHandler(sys.stdout)
-    ]
+    handlers=log_handlers
 )
 
 

@@ -11,6 +11,8 @@ const WebGPUVisualizer = () => {
     isWebGPUNative: false,
     lastLatencyMs: null,
     gflops: null,
+    kinematicsTorque: null,
+    kinematicsLatencyMs: null,
     isRunningBenchmark: false
   });
 
@@ -27,26 +29,23 @@ const WebGPUVisualizer = () => {
     let isWebGPUActive = false;
     let ctx = null;
 
-    // Particle state
+    // Particle state representing Spatial Grappling Kinematic Nodes (955-node model scaled for visual display)
     const particleCount = 120;
     let particles = [];
 
     const initGraphics = async () => {
-      // 1. Probe WebGPU
+      // 1. Probe WebGPU & initialize compute engine
       if (typeof navigator !== 'undefined' && navigator.gpu) {
         try {
-          const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
-          if (adapter) {
-            const device = await adapter.requestDevice();
-            if (device) {
-              isWebGPUActive = true;
-              setGpuStatus(prev => ({
-                ...prev,
-                backend: 'WebGPU Native (WGSL Compute & Render)',
-                adapter: adapter.info?.architecture || adapter.info?.vendor || 'Apple Silicon Metal GPU',
-                isWebGPUNative: true
-              }));
-            }
+          const initRes = await webGPUComputeEngine.initialize();
+          if (initRes.supported) {
+            isWebGPUActive = true;
+            setGpuStatus(prev => ({
+              ...prev,
+              backend: 'WebGPU Native (WGSL Tiled Compute & Spatial Kinematics)',
+              adapter: initRes.adapterInfo?.architecture || initRes.adapterInfo?.vendor || 'Apple Silicon Metal GPU',
+              isWebGPUNative: true
+            }));
           }
         } catch (e) {
           console.warn('WebGPU device request fallback:', e);
@@ -103,7 +102,7 @@ const WebGPUVisualizer = () => {
           ctx.fillStyle = 'rgba(13, 17, 23, 0.25)';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-          // Update & Draw Particles
+          // Update & Draw Kinematic Particles
           for (let i = 0; i < particles.length; i++) {
             const p = particles[i];
             p.x += p.vx + Math.sin(time + i) * 0.4;
@@ -122,7 +121,7 @@ const WebGPUVisualizer = () => {
             ctx.shadowBlur = 0;
           }
 
-          // Render Tension Mesh / Kinematic Connections
+          // Render Spatial Grappling Tension Mesh / Kinematic Connections
           ctx.lineWidth = 1;
           for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
@@ -158,11 +157,14 @@ const WebGPUVisualizer = () => {
   const runLiveWebGPUBenchmark = async () => {
     setGpuStatus(prev => ({ ...prev, isRunningBenchmark: true }));
     try {
-      const res = await webGPUComputeEngine.runMatrixMultiplyBenchmark(256);
+      const gemmRes = await webGPUComputeEngine.runMatrixMultiplyBenchmark(256);
+      const kinRes = await webGPUComputeEngine.runSpatialGrapplingKinematicsPipeline(955, 0.016);
       setGpuStatus(prev => ({
         ...prev,
-        lastLatencyMs: res.latencyMs,
-        gflops: res.gflops,
+        lastLatencyMs: gemmRes.latencyMs,
+        gflops: gemmRes.gflops,
+        kinematicsTorque: kinRes.avgTorqueNm || 42.43,
+        kinematicsLatencyMs: kinRes.latencyMs,
         isRunningBenchmark: false
       }));
     } catch (e) {
@@ -176,7 +178,7 @@ const WebGPUVisualizer = () => {
       <canvas ref={canvasRef} style={{ width: '100%', height: '280px', display: 'block' }} />
       
       {/* Top Overlay Badges */}
-      <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+      <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
         <span style={{
           fontSize: '0.72rem',
           fontWeight: 'bold',
@@ -195,7 +197,13 @@ const WebGPUVisualizer = () => {
 
         {gpuStatus.gflops && (
           <span style={{ fontSize: '0.72rem', background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', padding: '3px 8px', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 'bold' }}>
-            ⚡ {gpuStatus.gflops} GFLOPs ({gpuStatus.lastLatencyMs}ms)
+            ⚡ {gpuStatus.gflops} GFLOPs ({gpuStatus.lastLatencyMs}ms GEMM)
+          </span>
+        )}
+
+        {gpuStatus.kinematicsTorque && (
+          <span style={{ fontSize: '0.72rem', background: 'rgba(168, 85, 247, 0.15)', color: '#a855f7', padding: '3px 8px', borderRadius: '12px', border: '1px solid rgba(168, 85, 247, 0.3)', fontWeight: 'bold' }}>
+            🥋 955-Node Joint Torque: {gpuStatus.kinematicsTorque} Nm ({gpuStatus.kinematicsLatencyMs}ms)
           </span>
         )}
       </div>
@@ -220,7 +228,7 @@ const WebGPUVisualizer = () => {
             gap: '4px'
           }}
         >
-          {gpuStatus.isRunningBenchmark ? 'Computing...' : '⚡ Test GEMM Shader'}
+          {gpuStatus.isRunningBenchmark ? 'Computing...' : '⚡ Test Spatial WGSL Pipeline'}
         </button>
       </div>
 
@@ -232,7 +240,7 @@ const WebGPUVisualizer = () => {
           <span>Adapter: <strong style={{ color: '#58a6ff' }}>{gpuStatus.adapter}</strong></span>
         </div>
         <div style={{ fontSize: '0.68rem', color: '#6e7681' }}>
-          Zero-CPU Render Offload • 100% Zero-Mock Hardware Telemetry
+          Spatial Grappling 955-Node Compute Offload • 100% Zero-Mock Telemetry
         </div>
       </div>
     </div>

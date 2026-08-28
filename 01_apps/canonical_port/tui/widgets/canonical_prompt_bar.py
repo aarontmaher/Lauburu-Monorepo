@@ -210,13 +210,24 @@ class CanonicalPromptBar(Horizontal):
             # Route model selection through the unified proxy
             models_info = (
                 "[bold cyan]📦 Proxy Models (http://127.0.0.1:8080):[/bold cyan]\n"
-                "  [green]local/qwen[/green]   → Qwen2.5-Coder-7B Q4_K_M   :8083\n"
-                "  [yellow]local/gpt-oss[/yellow] → GPT-OSS 20B MXFP4         :8081\n"
-                "  [blue]cf/llama[/blue]      → Cloudflare Llama-3.1-8B   (free)\n"
-                "  [blue]cf/llama70[/blue]    → Cloudflare Llama-3.3-70B  (free)\n"
-                "  [blue]cf/deepseek[/blue]   → Cloudflare DeepSeek-R1-32B(free)\n"
-                "  [dim]auto[/dim]          → Best live local → CF fallback\n"
-                "\nUsage: /model local/qwen   or   /model cf/llama"
+                "  [bold]── LOCAL (free, on-device) ──[/bold]\n"
+                "  [green]local/qwen[/green]     → Qwen2.5-Coder-7B Q4_K_M      :8083 ✅\n"
+                "  [green]local/qwen27b[/green]  → Qwen3.8-27B Abliterated Q4_XL :8085\n"
+                "  [green]local/mistral[/green]  → Mistral-Nemo-12B Q4_K_M       :8082\n"
+                "  [green]local/nemotron[/green] → Nemotron-70B Q4_K_M (RPC)     :8084\n"
+                "  [green]local/pixel[/green]    → Pixel 10 Qwen2.5-14B Q3 (Tensor G5) :8087\n"
+                "  [bold]── CLOUD FREE TIER ──[/bold]\n"
+                "  [blue]hf/qwen[/blue]        → HuggingFace Qwen2.5-72B-Instruct (free🎁)\n"
+                "  [blue]hf/phi[/blue]         → HuggingFace Phi-3.5-mini (fastest free🎁)\n"
+                "  [blue]hf/llama[/blue]       → HuggingFace Llama-3.1-8B (free🎁)\n"
+                "  [magenta]gemini/flash[/magenta]  → Gemini 2.0 Flash 15RPM/1M-TPD (free🎁)\n"
+                "  [magenta]gemini/flash8[/magenta] → Gemini 2.0 Flash-8B (fastest free🎁)\n"
+                "  [dim]cf/llama[/dim]      → Cloudflare Llama-3.1-8B (free)\n"
+                "  [dim]cf/llama70[/dim]    → Cloudflare Llama-3.3-70B (free)\n"
+                "  [bold]── AUTO ──[/bold]\n"
+                "  [dim]auto[/dim]          → qwen27b→qwen→pixel→gemini→hf→cf\n"
+                "\n[dim]To enable Gemini: add GEMINI_API_KEY=<key> to ~/.env[/dim]\n"
+                "[dim]Usage: /model local/qwen27b   /model hf/qwen   /model gemini/flash[/dim]"
             )
             if len(parts) > 1:
                 model_target = parts[1].lower()
@@ -439,7 +450,7 @@ class CanonicalPromptBar(Horizontal):
         else:
             log_sys(f"[yellow]Unknown slash command: {cmd}. Type /help for available commands.[/yellow]")
 
-    async def _stream_response_worker(self, prompt: str) -\u003e None:
+    async def _stream_response_worker(self, prompt: str) -> None:
         """
         Non-blocking background inference stream worker.
         Streams tokens in real-time to the chat log for smooth UX.

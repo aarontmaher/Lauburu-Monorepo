@@ -59,6 +59,14 @@ except ImportError:
         RedBlueArenaWidget = None
 
 try:
+    from widgets.agentworld_panel import AgentWorldPanel
+except ImportError:
+    try:
+        from tui.widgets.agentworld_panel import AgentWorldPanel
+    except ImportError:
+        AgentWorldPanel = None
+
+try:
     from backend.training_telemetry_collector import (
         training_telemetry_collector,
         get_ingestion_loop_telemetry,
@@ -136,7 +144,7 @@ class TrainingScreen(Screen):
             yield Button("🔄 Refresh Training", id="btn-refresh-train", variant="success")
             yield Button("🛡️ /gate Test VRAM Gate", id="btn-test-gate", variant="default")
 
-        with TabbedContent(initial="tab_red_blue"):
+        with TabbedContent(initial="tab_red_blue", id="training-tabbed-content"):
             # Tab 1: Red/Blue Adversarial Arena (Cloudflare Zero Trust + Abliterated Llama <think> stream)
             with TabPane("1. Red/Blue Arena (🛡️)", id="tab_red_blue"):
                 if RedBlueArenaWidget is not None:
@@ -167,6 +175,17 @@ class TrainingScreen(Screen):
             # Tab 5: Execution Action Traces
             with TabPane("5. Execution Action Traces (📜)", id="tab-traces"):
                 yield Static(id="traces-view")
+
+            # Tab 6: AgentWorld Integration
+            with TabPane("6. AgentWorld-35B Train (🤖)", id="tab-agentworld"):
+                if AgentWorldPanel is not None:
+                    yield AgentWorldPanel(id="agentworld-panel")
+                else:
+                    yield Static(
+                        "[bold red]AgentWorldPanel not loaded.[/bold red]\n"
+                        "Check: tui/widgets/agentworld_panel.py",
+                        id="agentworld-fallback"
+                    )
 
         yield Footer()
 

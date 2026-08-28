@@ -59,24 +59,48 @@ app = FastAPI(title="Lauburu Unified AI Proxy", version="1.0.0")
 # ─────────────────────────────────────────────────────────────────────────────
 
 LOCAL_MODELS: dict = {
-    "local/qwen":     {"host": "127.0.0.1", "port": 8083, "display": "Qwen2.5-Coder-7B (Q4_K_M)"},
-    "local/gpt-oss":  {"host": "127.0.0.1", "port": 8081, "display": "GPT-OSS 20B (MXFP4)"},
-    "local/kimi":     {"host": "127.0.0.1", "port": 8084, "display": "Kimi-VL 2506 (Q4_K_M)"},
-    "local/deepseek": {"host": "127.0.0.1", "port": 8085, "display": "DeepSeek-R1-32B (Q4_K_M)"},
-    # Aliases for convenience
-    "qwen":      {"host": "127.0.0.1", "port": 8083, "display": "Qwen2.5-Coder-7B"},
-    "coder":     {"host": "127.0.0.1", "port": 8083, "display": "Qwen2.5-Coder-7B"},
-    "gpt-oss":   {"host": "127.0.0.1", "port": 8081, "display": "GPT-OSS 20B"},
+    # ── Local llama-server ports (Mac Mini) ──────────────────────────────────
+    "local/qwen":        {"host": "127.0.0.1", "port": 8083, "display": "Qwen2.5-Coder-7B Q4_K_M"},
+    "local/mistral":     {"host": "127.0.0.1", "port": 8082, "display": "Mistral-Nemo-12B Q4_K_M"},
+    "local/nemotron":    {"host": "127.0.0.1", "port": 8084, "display": "Nemotron-70B Q4_K_M (RPC)"},
+    "local/qwen27b":     {"host": "127.0.0.1", "port": 8085, "display": "Qwen3.8-27B Abliterated Q4_K_XL"},
+    "local/gpt-oss":     {"host": "127.0.0.1", "port": 8081, "display": "GPT-OSS 20B MXFP4"},
+    # ── Pixel 10 Pro (Tailscale 100.73.38.87) remote model ──────────────────
+    "local/pixel":       {"host": "100.73.38.87", "port": 8087, "display": "Pixel Qwen2.5-Coder-14B Q3 (Tensor G5)"},
+    "pixel":             {"host": "100.73.38.87", "port": 8087, "display": "Pixel Qwen2.5-14B"},
+    # ── Short aliases ────────────────────────────────────────────────────────
+    "qwen":          {"host": "127.0.0.1", "port": 8083, "display": "Qwen2.5-Coder-7B"},
+    "mistral":       {"host": "127.0.0.1", "port": 8082, "display": "Mistral-Nemo-12B"},
+    "nemotron":      {"host": "127.0.0.1", "port": 8084, "display": "Nemotron-70B"},
+    "qwen27b":       {"host": "127.0.0.1", "port": 8085, "display": "Qwen3.8-27B Abliterated"},
+    "coder":         {"host": "127.0.0.1", "port": 8083, "display": "Qwen2.5-Coder-7B"},
 }
 
 CF_MODELS: dict = {
-    "cf/llama":     "@cf/meta/llama-3.1-8b-instruct",
-    "cf/llama70":   "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-    "cf/qwen":      "@cf/qwen/qwen1.5-14b-chat-awq",
-    "cf/mistral":   "@cf/mistral/mistral-7b-instruct-v0.2",
-    "cf/deepseek":  "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b",
-    # Default alias
-    "cloudflare":   "@cf/meta/llama-3.1-8b-instruct",
+    # ── Cloudflare Workers AI (free tier, 10K req/day) ───────────────────────
+    "cf/llama":      "@cf/meta/llama-3.1-8b-instruct",
+    "cf/llama70":    "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "cf/qwen":       "@cf/qwen/qwen1.5-14b-chat-awq",
+    "cf/mistral":    "@cf/mistral/mistral-7b-instruct-v0.2",
+    "cf/deepseek":   "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b",
+    "cloudflare":    "@cf/meta/llama-3.1-8b-instruct",
+}
+
+# ── HuggingFace Inference API (free tier, ~1K req/day) ───────────────────────
+HF_MODELS: dict = {
+    "hf/qwen":       "Qwen/Qwen2.5-72B-Instruct",
+    "hf/mistral":    "mistralai/Mistral-7B-Instruct-v0.3",
+    "hf/llama":      "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "hf/deepseek":   "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+    "hf/phi":        "microsoft/Phi-3.5-mini-instruct",
+}
+
+# ── Google Gemini (free tier: 15 RPM / 1M tokens/day on Flash) ───────────────
+GEMINI_MODELS: dict = {
+    "gemini/flash":  "gemini-2.0-flash",
+    "gemini/flash8": "gemini-2.0-flash-8b",       # cheapest / fastest
+    "gemini/pro":    "gemini-2.5-pro",
+    "gemini":        "gemini-2.0-flash",            # default alias
 }
 
 TIMEOUT = httpx.Timeout(connect=3.0, read=60.0, write=10.0, pool=10.0)
@@ -233,31 +257,143 @@ async def _stream_cloudflare(cf_model: str, body: dict) -> AsyncGenerator[bytes,
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# HuggingFace Inference API (free tier)
+# ─────────────────────────────────────────────────────────────────────────────
+
+async def _stream_huggingface(hf_model: str, body: dict) -> AsyncGenerator[bytes, None]:
+    """Stream from HuggingFace Inference API free tier (OpenAI-compatible endpoint)."""
+    hf_token = os.getenv("HUGGINGFACE_TOKEN", os.getenv("HF_TOKEN", ""))
+    url = f"https://api-inference.huggingface.co/models/{hf_model}/v1/chat/completions"
+
+    headers = {"Content-Type": "application/json"}
+    if hf_token:
+        headers["Authorization"] = f"Bearer {hf_token}"
+
+    payload = {
+        "model": hf_model,
+        "messages": body.get("messages", []),
+        "stream": True,
+        "max_tokens": body.get("max_tokens", 512),
+        "temperature": body.get("temperature", 0.7),
+    }
+
+    async with httpx.AsyncClient(timeout=TIMEOUT) as client:
+        try:
+            async with client.stream("POST", url, json=payload, headers=headers) as resp:
+                if resp.status_code == 401:
+                    err = json.dumps({"error": {"message": "HF_TOKEN not set or invalid. Set HUGGINGFACE_TOKEN in ~/.env", "type": "auth_error", "code": 401}})
+                    yield f"data: {err}\n\ndata: [DONE]\n\n".encode()
+                    return
+                if resp.status_code != 200:
+                    err_body = await resp.aread()
+                    err = json.dumps({"error": {"message": err_body.decode()[:200], "type": "hf_error", "code": resp.status_code}})
+                    yield f"data: {err}\n\ndata: [DONE]\n\n".encode()
+                    return
+                # HF returns OpenAI-compatible SSE — pass through directly
+                async for line in resp.aiter_lines():
+                    if line:
+                        yield (line + "\n\n").encode()
+        except Exception as e:
+            err = json.dumps({"error": {"message": str(e), "type": "hf_connection_error"}})
+            yield f"data: {err}\n\ndata: [DONE]\n\n".encode()
+
+    yield b"data: [DONE]\n\n"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Google Gemini API (free tier: 15 RPM / 1M TPD on Flash)
+# ─────────────────────────────────────────────────────────────────────────────
+
+async def _stream_gemini(gemini_model: str, body: dict) -> AsyncGenerator[bytes, None]:
+    """Stream from Google Gemini API using the OpenAI-compatible endpoint."""
+    gemini_key = os.getenv("GEMINI_API_KEY", os.getenv("GOOGLE_API_KEY", ""))
+    if not gemini_key:
+        err = json.dumps({"error": {"message": "GEMINI_API_KEY not set in ~/.env", "type": "auth_error", "code": 401}})
+        yield f"data: {err}\n\ndata: [DONE]\n\n".encode()
+        return
+
+    # Gemini OpenAI-compat endpoint
+    url = f"https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {gemini_key}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "model": gemini_model,
+        "messages": body.get("messages", []),
+        "stream": True,
+        "max_tokens": body.get("max_tokens", 512),
+        "temperature": body.get("temperature", 0.7),
+    }
+
+    async with httpx.AsyncClient(timeout=TIMEOUT) as client:
+        try:
+            async with client.stream("POST", url, json=payload, headers=headers) as resp:
+                if resp.status_code != 200:
+                    err_body = await resp.aread()
+                    err = json.dumps({"error": {"message": err_body.decode()[:200], "type": "gemini_error", "code": resp.status_code}})
+                    yield f"data: {err}\n\ndata: [DONE]\n\n".encode()
+                    return
+                # Gemini OpenAI-compat SSE — pass through directly
+                async for line in resp.aiter_lines():
+                    if line:
+                        yield (line + "\n\n").encode()
+        except Exception as e:
+            err = json.dumps({"error": {"message": str(e), "type": "gemini_connection_error"}})
+            yield f"data: {err}\n\ndata: [DONE]\n\n".encode()
+
+    yield b"data: [DONE]\n\n"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Route resolver
 # ─────────────────────────────────────────────────────────────────────────────
 
 async def _resolve_route(model: str) -> dict:
-    """Return routing dict: {type: 'local'|'cf', ...config}"""
+    """Return routing dict: {type: 'local'|'cf'|'hf'|'gemini', ...config}"""
     model = (model or "auto").lower().strip()
 
     if model == "auto":
-        live = await _get_live_local_port()
-        if live:
-            return {"type": "local", **live}
-        # Fallback to Cloudflare
+        # Priority: local qwen27b → local qwen → local mistral → hf/phi (no token needed) → cf/llama
+        priority = ["local/qwen27b", "local/qwen", "local/mistral", "local/nemotron"]
+        for key in priority:
+            cfg = LOCAL_MODELS.get(key)
+            if cfg and await _probe_local(cfg["host"], cfg["port"]):
+                try:
+                    async with httpx.AsyncClient(timeout=httpx.Timeout(1.0)) as c:
+                        r = await c.get(f"http://{cfg['host']}:{cfg['port']}/health")
+                        if r.status_code == 200 and r.json().get("status") == "ok":
+                            return {"type": "local", **cfg, "model_key": key}
+                except Exception:
+                    pass
+        # Try Gemini free tier
+        if os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"):
+            return {"type": "gemini", "gemini_model": "gemini-2.0-flash", "display": "Gemini 2.0 Flash (free)"}
+        # Try HF free tier
+        if os.getenv("HUGGINGFACE_TOKEN") or os.getenv("HF_TOKEN"):
+            return {"type": "hf", "hf_model": HF_MODELS["hf/phi"], "display": "HF Phi-3.5-mini (free)"}
+        # Final fallback: Cloudflare
         return {"type": "cf", "cf_model": CF_MODELS["cf/llama"], "display": "Cloudflare Llama-3.1-8B (free)"}
 
     if model in LOCAL_MODELS:
         cfg = LOCAL_MODELS[model]
         if await _probe_local(cfg["host"], cfg["port"]):
             return {"type": "local", **cfg, "model_key": model}
-        raise HTTPException(status_code=503, detail=f"Local model '{model}' not available on port {cfg['port']}. Is llama-server running?")
+        raise HTTPException(status_code=503, detail=f"Local model '{model}' not ready on :{cfg['port']}")
 
     if model in CF_MODELS:
         return {"type": "cf", "cf_model": CF_MODELS[model], "display": f"Cloudflare {model}"}
 
-    # Unknown: try treating as local port lookup or CF model ID
-    raise HTTPException(status_code=400, detail=f"Unknown model '{model}'. Valid: {list(LOCAL_MODELS.keys()) + list(CF_MODELS.keys()) + ['auto']}")
+    if model in HF_MODELS:
+        return {"type": "hf", "hf_model": HF_MODELS[model], "display": f"HuggingFace {model}"}
+
+    if model in GEMINI_MODELS:
+        return {"type": "gemini", "gemini_model": GEMINI_MODELS[model], "display": f"Gemini {model}"}
+
+    raise HTTPException(
+        status_code=400,
+        detail=f"Unknown model '{model}'. Valid: {list(LOCAL_MODELS.keys()) + list(CF_MODELS.keys()) + list(HF_MODELS.keys()) + list(GEMINI_MODELS.keys()) + ['auto']}"
+    )
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -274,7 +410,7 @@ async def list_models():
     """Return all available models, flagging which local ones are live."""
     models = []
     for key, cfg in LOCAL_MODELS.items():
-        if key.startswith("local/"):  # Only top-level names
+        if key.startswith("local/"):
             live = await _probe_local(cfg["host"], cfg["port"])
             models.append({
                 "id": key,
@@ -285,15 +421,16 @@ async def list_models():
                 "port": cfg["port"],
             })
     for key, cf_model in CF_MODELS.items():
-        if "/" in key:  # Only cf/xxx names
-            models.append({
-                "id": key,
-                "object": "model",
-                "owned_by": "cloudflare-workers-ai",
-                "status": "ready",
-                "display": f"CF: {cf_model}",
-                "cf_model": cf_model,
-            })
+        if "/" in key:
+            models.append({"id": key, "object": "model", "owned_by": "cloudflare-workers-ai",
+                           "status": "ready", "display": f"CF: {cf_model}"})
+    for key, hf_model in HF_MODELS.items():
+        models.append({"id": key, "object": "model", "owned_by": "huggingface-inference-api",
+                       "status": "ready", "display": f"HF: {hf_model}"})
+    for key, g_model in GEMINI_MODELS.items():
+        if "/" in key:
+            models.append({"id": key, "object": "model", "owned_by": "google-gemini",
+                           "status": "ready", "display": f"Gemini: {g_model}"})
     return {"object": "list", "data": models}
 
 
@@ -314,20 +451,32 @@ async def chat_completions(request: Request):
                 media_type="text/event-stream",
                 headers={"X-Routed-To": f"local:{port}", "X-Model": route.get("display", "")}
             )
-        else:
-            result = await _complete_local(host, port, body)
-            return JSONResponse(result)
+        result = await _complete_local(host, port, body)
+        return JSONResponse(result)
 
     elif route["type"] == "cf":
-        cf_model = route["cf_model"]
-        # Always stream from CF for better UX
         return StreamingResponse(
-            _stream_cloudflare(cf_model, body),
+            _stream_cloudflare(route["cf_model"], body),
             media_type="text/event-stream",
-            headers={"X-Routed-To": "cloudflare-workers-ai", "X-Model": cf_model}
+            headers={"X-Routed-To": "cloudflare-workers-ai", "X-Model": route["cf_model"]}
         )
 
-    raise HTTPException(status_code=500, detail="Routing error")
+    elif route["type"] == "hf":
+        return StreamingResponse(
+            _stream_huggingface(route["hf_model"], body),
+            media_type="text/event-stream",
+            headers={"X-Routed-To": "huggingface-inference-api", "X-Model": route["hf_model"]}
+        )
+
+    elif route["type"] == "gemini":
+        gemini_model = route["gemini_model"]
+        return StreamingResponse(
+            _stream_gemini(gemini_model, body),
+            media_type="text/event-stream",
+            headers={"X-Routed-To": "google-gemini", "X-Model": gemini_model}
+        )
+
+    raise HTTPException(status_code=500, detail=f"Unhandled route type: {route.get('type')}")
 
 
 @app.get("/v1/proxy/status")
@@ -351,7 +500,18 @@ async def proxy_status():
     cf_ok = bool(os.getenv("CLOUDFLARE_ACCOUNT_ID") and os.getenv("CLOUDFLARE_API_KEY"))
     for key in CF_MODELS:
         if "/" in key:
-            status[key] = {"live": cf_ok, "ready": cf_ok, "type": "cloud"}
+            status[key] = {"live": cf_ok, "ready": cf_ok, "type": "cloud-cf"}
+
+    hf_ok = bool(os.getenv("HUGGINGFACE_TOKEN") or os.getenv("HF_TOKEN"))
+    for key in HF_MODELS:
+        status[key] = {"live": hf_ok, "ready": hf_ok, "type": "cloud-hf-free",
+                       "note": "~1K req/day free tier"}
+
+    gemini_ok = bool(os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"))
+    for key in GEMINI_MODELS:
+        if "/" in key:
+            status[key] = {"live": gemini_ok, "ready": gemini_ok, "type": "cloud-gemini-free",
+                           "note": "15 RPM / 1M TPD free tier"}
 
     return status
 

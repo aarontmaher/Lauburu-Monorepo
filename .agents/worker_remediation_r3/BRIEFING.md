@@ -1,4 +1,4 @@
-# BRIEFING — 2026-08-29T06:28:04+10:00
+# BRIEFING — 2026-08-29T06:31:15+10:00
 
 ## Mission
 Apply 2 targeted bug fixes in training screen tests and Shopify token gating queries, verify test suites, and report results.
@@ -19,18 +19,21 @@ Apply 2 targeted bug fixes in training screen tests and Shopify token gating que
 
 ## Current Parent
 - Conversation ID: bd60345a-40bc-43d3-9c68-783b46479a2b
-- Updated: 2026-08-29T06:28:04+10:00
+- Updated: 2026-08-29T06:31:15+10:00
 
 ## Task Summary
 - **What to build**: 2 targeted fixes and 1 test extension.
 - **Success criteria**: All tests in both targets pass cleanly.
 
 ## Change Tracker
-- **Files modified**: [TBD]
-- **Build status**: [TBD]
+- **Files modified**:
+  - `01_apps/canonical_port/tests/unit/test_training_screen_and_view.py`: Replaced `query_one(TabbedContent)` with `query(TabbedContent).first()`.
+  - `08_business_and_commerce/shopify_headless/queries/token_gating.py`: Added None and non-string guards in `extract_tier_from_tags` and `get_customer_gated_profile`.
+  - `08_business_and_commerce/shopify_headless/tests/test_token_gating.py`: Added test cases for `extract_tier_from_tags(None)` and `get_customer_gated_profile` with null tags.
+- **Build status**: Pass (all 49 tests passing)
 - **Pending issues**: None
 
 ## Quality Status
-- **Build/test result**: [TBD]
-- **Lint status**: [TBD]
-- **Tests added/modified**: [TBD]
+- **Build/test result**: 7/7 training screen tests passing, 42/42 shopify headless tests passing.
+- **Lint status**: Clean python syntax compilation.
+- **Tests added/modified**: `test_get_customer_gated_profile_handles_none_tags` + None-safety assertions in `test_extract_tier_from_tags`.

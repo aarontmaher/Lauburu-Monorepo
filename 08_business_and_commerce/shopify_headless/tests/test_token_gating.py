@@ -186,6 +186,30 @@ async def test_get_customer_gated_profile_handles_none_tags(mock_config):
 
 
 @pytest.mark.asyncio
+async def test_get_customer_gated_profile_missing_tags_field_and_null_elements(mock_config):
+    resp = {
+        "customer": {
+            "id": "gid://shopify/Customer/9903",
+            "email": "nulltags@lauburu.ai",
+            "firstName": "Null",
+            "lastName": "Elements",
+            "phone": None,
+            "tags": [None, "", "tier_pro", None],
+            "orders": {"edges": []},
+        }
+    }
+    transport = MockGraphQLTransport(responses=[httpx.Response(200, json={"data": resp})])
+    client = ShopifyClient(config=mock_config, transport=transport)
+
+    profile = await get_customer_gated_profile(client, customer_access_token="shpat_valid_token_mixed_tags")
+    assert profile is not None
+    assert profile.tier == "PAID_PRO"
+    assert profile.is_paid_subscriber is True
+    assert profile.tags == ["tier_pro"]
+
+
+
+@pytest.mark.asyncio
 async def test_get_customer_account_subscriptions(mock_config):
     ca_resp = {
         "customer": {

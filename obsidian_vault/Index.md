@@ -76,3 +76,7 @@ Welcome to the autonomous, persistent multi-agent knowledge vault for the **Laub
 - [[AUDIT_CONVERSATIONS_UNFINISHED_TASKS_AUGUST_2026]]
 - [[Canonical_Sync_Engine]]
 - [[DEBATE_MESH_DATA_BROKER_PROTOCOL_CERTIFICATION]]
+
+- [[DOM_GLINET_LUCI_DEV_PIPELINE]]
+- [[OPENWRT_AST_TAXONOMY]]
+- [[SPEEDIFY_TAILSCALE_REVERSE_ENGINEERING]]

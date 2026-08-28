@@ -1,5 +1,5 @@
 version: 3.0.0-CANONICAL
-timestamp: '2026-08-29T06:29:54.857157'
+timestamp: '2026-08-29T08:53:28.097019'
 source_node: L1_Mac_Node
 provenance:
   agent_id: teamwork_preview_worker_m2
@@ -38,12 +38,6 @@ layer_0_networking:
     relay: Direct WireGuard
     layer: L1
     os: macOS
-  - node_name: localhost
-    ip: 100.118.191.96
-    status: OFFLINE
-    relay: DERP Relay
-    layer: --
-    os: iOS
   - node_name: Macbook
     ip: 100.93.158.96
     status: ONLINE
@@ -76,16 +70,10 @@ layer_0_networking:
     os: android
   - node_name: localhost
     ip: 100.113.62.81
-    status: ONLINE
+    status: OFFLINE
     relay: DERP Relay
     layer: --
     os: iOS
-  - node_name: debian
-    ip: 100.81.92.125
-    status: ONLINE
-    relay: DERP Relay
-    layer: --
-    os: linux
   - node_name: "aaron\u2019s MacBook Pro"
     ip: 100.103.212.21
     status: ONLINE
@@ -104,12 +92,6 @@ layer_0_networking:
     relay: DERP Relay
     layer: --
     os: windows
-  - node_name: DESKTOP-Q4SI00P
-    ip: 100.91.85.70
-    status: OFFLINE
-    relay: DERP Relay
-    layer: --
-    os: linux
   - node_name: linux
     ip: 100.101.39.98
     status: ONLINE
@@ -121,10 +103,10 @@ layer_0_networking:
     upload_mbps: 48.0
     responsiveness_rpm: 1420
     latency_ms: 12.4
-    timestamp: 06:29:53
+    timestamp: 08:53:28
     command: /usr/bin/networkQuality -c -M 5
     cycle_seconds: 300
-    last_tested_iso: '2026-08-29T06:29:53.678719'
+    last_tested_iso: '2026-08-29T08:53:28.722353'
   ssh_fleet:
   - node_id: L1
     host: 127.0.0.1
@@ -132,24 +114,24 @@ layer_0_networking:
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 1.91
-    last_auth_iso: '2026-08-29T06:29:54.744093'
+    latency_ms: 0.18
+    last_auth_iso: '2026-08-29T08:53:29.772867'
   - node_id: L2
     host: 192.168.8.127
     port: 22
-    status: CLOSED
-    banner: null
+    status: OPEN
+    banner: SSH-2.0-OpenSSH_9.6
     key_type: ssh-ed25519
-    latency_ms: null
-    last_auth_iso: null
+    latency_ms: 64.67
+    last_auth_iso: '2026-08-29T08:53:29.828408'
   - node_id: L3
     host: 100.101.39.98
     port: 22
-    status: CLOSED
-    banner: null
+    status: OPEN
+    banner: SSH-2.0-OpenSSH_9.8
     key_type: ssh-ed25519
-    latency_ms: null
-    last_auth_iso: null
+    latency_ms: 14.33
+    last_auth_iso: '2026-08-29T08:53:30.048042'
   - node_id: L4
     host: 100.91.85.70
     port: 22
@@ -161,35 +143,35 @@ layer_0_networking:
   - node_id: L5
     host: 100.93.158.96
     port: 22
-    status: CLOSED
-    banner: null
+    status: OPEN
+    banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: null
-    last_auth_iso: null
+    latency_ms: 84.51
+    last_auth_iso: '2026-08-29T08:53:29.891107'
   - node_id: L6
     host: 100.73.38.87
     port: 8022
-    status: CLOSED
-    banner: null
+    status: OPEN
+    banner: Not allowed at this time
     key_type: ssh-ed25519
-    latency_ms: null
-    last_auth_iso: null
+    latency_ms: 38.43
+    last_auth_iso: '2026-08-29T08:53:29.862628'
   - node_id: L7
     host: 100.84.40.95
     port: 8022
-    status: CLOSED
-    banner: null
+    status: OPEN
+    banner: Not allowed at this time
     key_type: ssh-ed25519
-    latency_ms: null
-    last_auth_iso: null
+    latency_ms: 16.96
+    last_auth_iso: '2026-08-29T08:53:29.773562'
   - node_id: GW
     host: 192.168.8.1
     port: 22
-    status: CLOSED
-    banner: null
+    status: OPEN
+    banner: "SSH-2.0-dropbear\r\n\0\0\x01\v\x14]`$f=B\0\0\0curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384"
     key_type: ssh-ed25519
-    latency_ms: null
-    last_auth_iso: null
+    latency_ms: 8.86
+    last_auth_iso: '2026-08-29T08:53:29.754705'
   ewma_alpha: 0.35
   circuit_breaker_trip_threshold: 0.284
 layer_1_hardware:
@@ -471,8 +453,8 @@ layer_1_hardware:
       master_wikilinks_valid: true
     pyspark_lake:
       path: /Users/aaron/DFS_UNIFIED/lora_datasets
-      healthy: false
-      free_headroom_gb: 2.17
+      healthy: true
+      free_headroom_gb: 26.86
       headroom_threshold_gb: 10.0
       qdrant_reachable: true
     github_tree:
@@ -481,7 +463,7 @@ layer_1_hardware:
       is_worktree: true
       index_locked: false
       clean_tree: true
-    all_healthy: false
+    all_healthy: true
   memory_governor_active: true
 layer_2_biometrics:
   movesense_stream:
@@ -563,8 +545,8 @@ layer_3_ai_inference:
     endpoint: 100.101.39.98:50052
     layers_sharded: 28
     vram_used_gb: 13.5
-    status: OFFLINE
-    latency_ms: null
+    status: ACTIVE
+    latency_ms: 6.84
   - node_name: MacBook Pro
     endpoint: 169.254.187.138:50052
     layers_sharded: 28

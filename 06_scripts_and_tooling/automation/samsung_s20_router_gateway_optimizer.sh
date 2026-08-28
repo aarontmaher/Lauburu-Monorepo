@@ -76,14 +76,25 @@ for pkg in com.duckduckgo.mobile.android \
 done
 echo '  [OK] Force-stopped background bloat packages'
 
-echo '=== TIER 5: GATEWAY PERSISTENCE & DOZE WHITELIST ==='
+echo '=== TIER 5: GATEWAY PERSISTENCE, DOZE WHITELIST & TAILSCALE KEEPALIVE ==='
 settings put global settings_enable_monitor_phantom_procs false
+
+# Tailscale — NEVER kill, always explicitly protect and revive
 dumpsys deviceidle whitelist +com.termux +com.termux.boot +com.tailscale.ipn >/dev/null 2>&1 || true
 cmd appops set com.termux RUN_IN_BACKGROUND allow >/dev/null 2>&1 || true
 cmd appops set com.termux RUN_ANY_IN_BACKGROUND allow >/dev/null 2>&1 || true
 cmd appops set com.tailscale.ipn RUN_IN_BACKGROUND allow >/dev/null 2>&1 || true
 cmd appops set com.tailscale.ipn RUN_ANY_IN_BACKGROUND allow >/dev/null 2>&1 || true
-echo '  [OK] Phantom Procs Monitor Disabled, Termux & Tailscale Whitelisted'
+
+# Ensure Tailscale IPNService is running — restart if not active
+if ! dumpsys activity services 2>/dev/null | grep -q 'com.tailscale.ipn/.IPNService'; then
+    am startservice -n com.tailscale.ipn/.IPNService >/dev/null 2>&1 || true
+    echo '  [REVIVE] Tailscale IPNService was stopped — restarted'
+else
+    echo '  [OK] Tailscale IPNService is active and protected'
+fi
+
+echo '  [OK] Phantom Procs Monitor Disabled, Termux & Tailscale Whitelisted & Protected'
 
 echo '=== TIER 6: ENFORCING SCREEN SLEEP ==='
 if dumpsys power | grep -q 'mWakefulness=Awake'; then

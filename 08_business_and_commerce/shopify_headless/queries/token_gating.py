@@ -137,7 +137,9 @@ query getCustomerAccountSubscription {
 def extract_tier_from_tags(tags: Optional[List[str]]) -> Tuple[str, bool]:
     """
     Extracts membership tier and paid status flag from customer tags.
+    Safely handles None, null, empty lists, and non-string elements.
     """
+    tags = tags or []
     if not tags:
         return "FREE", False
     tags_lower = [str(t).lower().strip() for t in tags if t is not None]
@@ -279,7 +281,8 @@ async def get_customer_gated_profile(
     if not customer_dict:
         return None
 
-    tags = customer_dict.get("tags") or []
+    raw_tags = customer_dict.get("tags") or []
+    tags = [str(t) for t in raw_tags if t]
     tier, is_paid = extract_tier_from_tags(tags)
 
     raw_orders = customer_dict.get("orders", {}).get("edges", [])
