@@ -1,0 +1,37 @@
+[
+  {
+    "id": "MATH_01",
+    "category": "MATH_AND_ALGORITHMS",
+    "title": "Multi-Transport Inverse-Variance Packet Striping",
+    "prompt": "Given three physical network interfaces with observed Round Trip Times RTT_TB4 = 0.27ms, RTT_WG = 1.85ms, and RTT_WiFi = 4.20ms, calculate the optimal normalized inverse-variance traffic striping weights w_i = (1 / RTT_i^2) / Sum(1 / RTT_j^2). Provide the closed-form equation, intermediate variance computations, and exact percentage weights.",
+    "criteria": "Accurate inverse variance calculation, correct normalization sum, clear LaTeX mathematical formatting."
+  },
+  {
+    "id": "DSP_01",
+    "category": "BIOMETRICS_AND_DSP",
+    "title": "512Hz Pan-Tompkins QRS Derivative & Kamath 2004 Artifact Filter",
+    "prompt": "Explain how a 5-point derivative filter H(z) = (1/8T)(-z^-2 - 2z^-1 + 2z^1 + z^2) detects steep R-peaks in 512Hz raw Movesense ECG data, and formulate the Kamath 2004 20% clinical RR-interval artifact rejection criterion for autonomic HRV computation.",
+    "criteria": "Correct discrete-time transfer function explanation, Kamath 2004 mathematical bound formula, zero synthetic mock data assumptions."
+  },
+  {
+    "id": "SYS_01",
+    "category": "NETWORK_AND_SYSTEMS",
+    "title": "Thunderbolt 4 DMA Ring Buffer & Zero-Copy Tensor Sharding",
+    "prompt": "Architect a zero-copy circular ring buffer for sharding GGML GGUF quantization weights across a 10Gbps/40Gbps Thunderbolt 4 bridge (0.27ms RTT) between an Apple M4 Pro host and an M1 Max peripheral node without user-space memcpy overhead.",
+    "criteria": "POSIX shared memory / mmap semantics, lock-free producer-consumer pointer management, sub-millisecond tensor pipeline integrity."
+  },
+  {
+    "id": "CODE_01",
+    "category": "POLYGLOT_CODE_EXEC",
+    "title": "Apple Silicon Metal Compute Shader for 120 FPS Tatami Kinematics",
+    "prompt": "Write a complete Metal Shading Language (MSL) kernel in Swift/C++ that computes 33-landmark MediaPipe joint torque vectors in parallel and binds the output buffer directly to a WebGPU / Three.js 10m x 10m tatami canvas running at 120 FPS.",
+    "criteria": "Syntactically valid MSL kernel code, simd::float3 vector math, threadgroup memory optimization."
+  },
+  {
+    "id": "CYBER_01",
+    "category": "CYBER_ADVERSARIAL_REASONING",
+    "title": "OpenWrt SQM fq_codel Defense vs BQL Buffer Exhaustion",
+    "prompt": "An adversarial red faction agent is injecting 64MB socket probe floods into TCP Port 50052 to induce bufferbloat on GL-MT3600BE. Formulate the exact Linux tc qdisc command and sysctl TCP window clamp parameters to ensure packet jitter remains bounded under 0.15ms.",
+    "criteria": "Precise tc qdisc fq_codel syntax, correct target/interval parameter selection, BQL queue clamp mechanism."
+  }
+]

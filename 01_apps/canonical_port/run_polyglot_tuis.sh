@@ -37,7 +37,12 @@ echo "  • [train-game]     - Run Autonomous AI Game Arena Training & ELO Evolu
 echo "=============================================================================="
 
 case "${TARGET}" in
-    # ── LIST 1: TMUX COCKPITS ───────────────────────────────────────────────────
+    # ── LIST 1: INTEGRATED POLYGLOT SINGLE TUI & TMUX ───────────────────────────
+    single|polyglot|integrated|unified)
+        echo "🚀 Launching Integrated Polyglot Single TUI (Rust + Go + Python + Metal)..."
+        export PYTHONPATH="${SCRIPT_DIR}/tui:${SCRIPT_DIR}:${PYTHONPATH:-}"
+        exec "${PYTHON_VENV}" "${SCRIPT_DIR}/tui/polyglot_unified_cockpit.py"
+        ;;
     tmux|all)
         echo "🚀 Spawning Polyglot Tmux Cockpit..."
         tmux kill-session -t lauburu_polyglot_tui 2>/dev/null || true
