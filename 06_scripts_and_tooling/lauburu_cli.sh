@@ -33,7 +33,7 @@ case "$CMD" in
         cd "$TUI_DIR"
         exec ./run_live_tui.sh "$@"
         ;;
-    dev|arena)
+    --dev|dev|arena)
         echo "🚀 Launching Lauburu Live Side-by-Side Dual Graphical Arena (--dev)..."
         cd "$TUI_DIR"
         exec ./run_live_arena_dev.sh "$@"
