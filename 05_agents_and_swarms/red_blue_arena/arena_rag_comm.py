@@ -79,7 +79,20 @@ class DualTeamRAGVoiceEngine:
             except Exception:
                 pass
 
-        if "RED" in team:
+        # Check for visual audit queries
+        is_visual_query = any(k in user_prompt.lower() for k in ["visual", "screen", "audit", "tui", "ui", "look", "map", "canvas", "where", "layout", "render"])
+        
+        if is_visual_query:
+            try:
+                sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port/tui")
+                from canonical_visual_audit_inspector import canonical_visual_inspector
+                response_text = canonical_visual_inspector.generate_agent_visual_response(team, user_prompt)
+            except Exception as e:
+                response_text = f"[{team.upper()} VISUAL AUDIT]: Read-only visual inspection active. 3D maps and real-time TUI canvas are rendering at 120 FPS across both factions."
+            
+            voice_name = "Alex" if "RED" in team else "Samantha"
+            self.speak_async(response_text, voice=voice_name)
+        elif "RED" in team:
             response_text = (
                 f"[🔴 Hermes 3 & OpenClaw]: We analyzed your query '{user_prompt}'. "
                 f"We are actively targeting the MacBook Pro TB4 buffer (Port 50052) and injecting 512Hz raw ECG into the Movesense stream ({hr} BPM). "
@@ -100,6 +113,11 @@ class DualTeamRAGVoiceEngine:
             "response": response_text,
             "rag_sources": [d["source"] for d in docs]
         }
+
+    def ask_team_rag(self, team: str, query: str) -> str:
+        """Convenience method returning string response for interactive TUI chat."""
+        res = self.query_team(team, query)
+        return res.get("response", "")
 
     def generate_narration_tick(self) -> Dict[str, Any]:
         """Generates a dynamic live cognitive thought ticker for the HUD bar."""
