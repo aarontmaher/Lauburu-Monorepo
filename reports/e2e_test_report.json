@@ -1,12 +1,12 @@
 {
-  "timestamp_utc": "2026-08-29T10:00:37Z",
+  "timestamp_utc": "2026-08-29T10:09:33Z",
   "status": "PASSED",
   "grand_total": 184,
   "grand_passed": 184,
   "grand_failed": 0,
   "grand_skipped": 0,
   "overall_pass_rate_pct": 100.0,
-  "total_elapsed_sec": 1.5969,
+  "total_elapsed_sec": 0.865,
   "tier_breakdown": [
     {
       "tier": "1",
@@ -16,7 +16,7 @@
       "failed": 0,
       "skipped": 0,
       "pass_rate": 100.0,
-      "elapsed_sec": 1.5578,
+      "elapsed_sec": 0.8269,
       "failures": [],
       "errors": []
     },
@@ -28,7 +28,7 @@
       "failed": 0,
       "skipped": 0,
       "pass_rate": 100.0,
-      "elapsed_sec": 0.0091,
+      "elapsed_sec": 0.008,
       "failures": [],
       "errors": []
     },
@@ -40,7 +40,7 @@
       "failed": 0,
       "skipped": 0,
       "pass_rate": 100.0,
-      "elapsed_sec": 0.0172,
+      "elapsed_sec": 0.0166,
       "failures": [],
       "errors": []
     },
@@ -52,7 +52,7 @@
       "failed": 0,
       "skipped": 0,
       "pass_rate": 100.0,
-      "elapsed_sec": 0.012,
+      "elapsed_sec": 0.0129,
       "failures": [],
       "errors": []
     }

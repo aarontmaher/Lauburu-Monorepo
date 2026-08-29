@@ -1,9 +1,9 @@
 {
-  "timestamp_utc": "2026-08-29T09:59:31Z",
+  "timestamp_utc": "2026-08-29T10:06:33Z",
   "world_coordinate_system": "Right-Handed Euclidean (Z-Up, Meters)",
   "telemetry_fusion": {
     "movesense_live_hr_bpm": 92.0,
-    "movesense_rmssd_ms": 1005.69,
+    "movesense_rmssd_ms": 974.21,
     "tb4_dma_latency_ms": 0.35,
     "quantum_state": "COHERENT_ZONE2"
   },

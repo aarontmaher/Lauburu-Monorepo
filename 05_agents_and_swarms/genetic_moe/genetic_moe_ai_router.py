@@ -28,7 +28,7 @@ WEIGHTS_PATH = WORKSPACE_ROOT / "05_agents_and_swarms/genetic_moe/genetic_moe_we
 LORA_OUTPUT_PATH = WORKSPACE_ROOT / "04_data_and_memory/lora_datasets/genetic_moe_router_evolution.jsonl"
 
 LOCAL_EXPERTS = {
-    "coder": {"port": 8083, "name": "Qwen 2.5 Coder 7B", "domains": ["python", "c", "rust", "ast", "refactor", "code"]},
+    "coder": {"port": 8083, "name": "Qwen 2.5 Coder 7B", "domains": ["python", "cpp", "rust", "ast", "refactor", "code"]},
     "math": {"port": 8086, "name": "Qwen 2.5 Math 7B", "domains": ["math", "qaoa", "dsp", "ecg", "statistics", "regression"]},
     "hermes": {"port": 8082, "name": "Hermes 3 8B", "domains": ["strategy", "rag", "reasoning", "obsidian", "debate"]},
     "abliterated": {"port": 8085, "name": "Qwen 7B Abliterated", "domains": ["exploit", "red", "stress", "overflow", "chaos"]},

@@ -18,6 +18,7 @@ Usage:
 """
 
 import os
+import time
 import json
 import asyncio
 import logging
@@ -168,10 +169,10 @@ def _inject_lauburu_system_context(messages: list) -> list:
 # ─────────────────────────────────────────────────────────────────────────────
 
 async def _probe_local(host: str, port: int) -> bool:
-    """Non-blocking TCP port probe."""
+    """Non-blocking fast TCP port probe."""
     try:
         reader, writer = await asyncio.wait_for(
-            asyncio.open_connection(host, port), timeout=0.5
+            asyncio.open_connection(host, port), timeout=0.05
         )
         writer.close()
         await writer.wait_closed()
@@ -543,7 +544,7 @@ def execute_conversational_rag(query_text: str, app_context: str = "canonical_po
             retrieved_sources.append(rel)
 
     t_elapsed_ms = (time.perf_counter() - t0) * 1000.0
-    latency_ms = round(t_elapsed_ms + 11.2, 2)
+    latency_ms = round(t_elapsed_ms, 2)
 
     response_text = (
         f"Conversational RAG Edge AI Context for '{query_text}': Verified system status. "
@@ -575,15 +576,6 @@ async def _cascade_stream_generator(body: dict, requested_model: str) -> AsyncGe
     if requested_model in rag_keys:
         user_msgs = [m.get("content", "") for m in body.get("messages", []) if m.get("role") == "user"]
         query_text = user_msgs[-1] if user_msgs else "system architecture"
-        cfg = LOCAL_MODELS.get("local/conversational-rag")
-        if cfg and await _probe_local(cfg["host"], cfg["port"]):
-            try:
-                async for chunk in _stream_local(cfg["host"], cfg["port"], body.copy()):
-                    yield chunk
-                return
-            except Exception:
-                pass
-
         rag_res = execute_conversational_rag(query_text)
         chunk_obj = {
             "id": f"chatcmpl-rag-{int(time.time())}",
@@ -654,13 +646,6 @@ async def _cascade_complete(body: dict, requested_model: str) -> dict:
     if requested_model in rag_keys:
         user_msgs = [m.get("content", "") for m in body.get("messages", []) if m.get("role") == "user"]
         query_text = user_msgs[-1] if user_msgs else "system architecture"
-        cfg = LOCAL_MODELS.get("local/conversational-rag")
-        if cfg and await _probe_local(cfg["host"], cfg["port"]):
-            try:
-                return await _complete_local(cfg["host"], cfg["port"], body.copy())
-            except Exception:
-                pass
-
         rag_res = execute_conversational_rag(query_text)
         return {
             "id": f"chatcmpl-rag-{int(time.time())}",
