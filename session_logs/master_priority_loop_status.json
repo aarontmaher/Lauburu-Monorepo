@@ -1,12 +1,12 @@
 {
-  "cycle": 65,
-  "elapsed_seconds": 24.863,
-  "timestamp_utc": "2026-08-29T11:41:07Z",
+  "cycle": 68,
+  "elapsed_seconds": 5.901,
+  "timestamp_utc": "2026-08-29T11:43:01Z",
   "tiers": {
     "P0": {
       "priority": "P0_INFRASTRUCTURE",
-      "host_ram_pct": 99.5,
-      "disk_free_gb": 6.05,
+      "host_ram_pct": 92.0,
+      "disk_free_gb": 4.71,
       "router_online": true,
       "status": "HEALED",
       "action": "TRIGGERED: /nomad-autonomous-mesh-governor 5-tier self-healing"
