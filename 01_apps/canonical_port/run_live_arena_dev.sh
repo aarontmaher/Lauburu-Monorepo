@@ -23,4 +23,10 @@ python3 05_agents_and_swarms/red_blue_arena/device_settings_sandbox.py >/dev/nul
 python3 00_core_infrastructure/self_healing_hub/src/spatial_3d_unified_fusion.py >/dev/null 2>&1 || true
 
 # Launch the live interactive Textual --dev Cockpit
-exec python3 01_apps/canonical_port/tui/tui_live_arena_dev.py "$@"
+if [ "$1" = "--dev" ] || [ "$1" = "dev" ] || [ -z "$1" ]; then
+    echo "⚡ Starting in Textual --dev live reload mode..."
+    shift || true
+    exec python3 -m textual run --dev 01_apps/canonical_port/tui/tui_live_arena_dev.py "$@"
+else
+    exec python3 01_apps/canonical_port/tui/tui_live_arena_dev.py "$@"
+fi

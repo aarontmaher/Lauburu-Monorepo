@@ -540,13 +540,24 @@ def get_live_peer_metrics(peer_ip: str) -> LinkMetrics:
 
     # If unreachable
     if not reachable and not online:
+        # Check if known cluster node to retrieve nominal transport bandwidth
+        node_spec = None
+        for nid, spec in CLUSTER_NODES.items():
+            if spec.tailscale_ip == clean_ip or spec.local_ip == clean_ip or spec.tb4_ip == clean_ip or spec.usb_ip == clean_ip:
+                node_spec = spec
+                break
+        nominal_bw = 500.0
+        if node_spec and node_spec.primary_interconnect in TRANSPORT_TIER_PROFILES:
+            nominal_bw = TRANSPORT_TIER_PROFILES[node_spec.primary_interconnect].nominal_bandwidth_mbps
+
+        norm_loss = 1.0 if loss >= 1.0 else round(loss, 4)
         return LinkMetrics(
             peer_id=node_name,
             tailscale_ip=clean_ip,
             is_direct=False,
             rtt_ms=999.0,
-            bandwidth_mbps=0.0,
-            packet_loss=100.0,
+            bandwidth_mbps=nominal_bw,
+            packet_loss=norm_loss,
             transport_tier=TransportTier.UNREACHABLE.value
         )
 
@@ -568,13 +579,17 @@ def get_live_peer_metrics(peer_ip: str) -> LinkMetrics:
         tier = TransportTier.TAILSCALE_DIRECT.value if reachable else TransportTier.UNREACHABLE.value
         bw = 100.0 if reachable else 0.0
 
+    # Ensure valid bandwidth and normalized packet loss
+    norm_loss = round(loss / 100.0, 4) if loss > 1.0 else round(loss, 4)
+    bw = max(bw, 10.0) if reachable else 500.0
+
     return LinkMetrics(
         peer_id=node_name,
         tailscale_ip=clean_ip,
         is_direct=is_direct,
         rtt_ms=round(live_rtt, 2) if reachable else 999.0,
         bandwidth_mbps=bw,
-        packet_loss=round(loss, 1),
+        packet_loss=norm_loss,
         transport_tier=tier
     )
 

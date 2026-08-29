@@ -400,6 +400,9 @@ class LiveArenaDevApp(App):
         color = "bold red" if team == "red" else "bold cyan"
         target_log.write(f"[{color}]{prefix}[/] {resp}")
 
+
+# Module-level app export for 'textual run --dev'
+app = LiveArenaDevApp()
+
 if __name__ == "__main__":
-    app = LiveArenaDevApp()
     app.run()

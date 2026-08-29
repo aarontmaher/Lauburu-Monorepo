@@ -643,9 +643,10 @@ zero_mock_certified: true
             "errors": []
         }
 
-        # 1. DPO
+        # 1. DPO (continuous_lora_dataset.jsonl & dpo_router_orchestrator_pairs.jsonl)
         try:
-            self.export_dpo_pair(trial_record)
+            self.export_dpo_pair(trial_record, target_filename="continuous_lora_dataset.jsonl")
+            self.export_dpo_pair(trial_record, target_filename="dpo_router_orchestrator_pairs.jsonl")
             export_summary["dpo_exported"] = True
         except Exception as e:
             logger.warning(f"TriVaultSink: DPO export error: {e}")
@@ -653,9 +654,10 @@ zero_mock_certified: true
             with self._lock:
                 self._metrics["failed_writes"] += 1
 
-        # 2. SFT
+        # 2. SFT (sft_router_orchestrator_debate.jsonl & truth_audit_debate.jsonl)
         try:
-            self.export_sft_instruction(trial_record)
+            self.export_sft_instruction(trial_record, target_filename="sft_router_orchestrator_debate.jsonl")
+            self.export_sft_instruction(trial_record, target_filename="truth_audit_debate.jsonl")
             export_summary["sft_exported"] = True
         except Exception as e:
             logger.warning(f"TriVaultSink: SFT export error: {e}")

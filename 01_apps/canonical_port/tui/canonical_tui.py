@@ -304,9 +304,9 @@ Footer {
             pass
 
 
-# Canonical alias
+# Canonical alias and module-level app instance for 'textual run --dev'
 CanonicalPortTUI = CanonicalPortApp
+app = CanonicalPortApp()
 
 if __name__ == "__main__":
-    app = CanonicalPortApp()
     app.run()
