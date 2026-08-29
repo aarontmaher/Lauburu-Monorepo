@@ -98,7 +98,17 @@ class BiometricsScreen(Screen):
     def render_readiness(self, snapshot: BlackboardTelemetryState) -> None:
         bio = snapshot.layer_2_biometrics
         rd = getattr(bio, "readiness", None)
-        if not rd:
+
+        # Rule #0: Show offline state if sensor is disconnected
+        if not bio.movesense_stream.connected or not rd or rd.readiness_score is None:
+            self.query_one("#readiness-metrics-view", Static).update(
+                Panel(
+                    "[bold yellow]⏳ SENSOR OFFLINE — Awaiting Movesense BLE Connection[/bold yellow]\n"
+                    "[dim]Wear the Movesense sensor and ensure BLE GATT pairing to stream readiness data.[/dim]",
+                    title="[bold yellow]2. AUTONOMIC READINESS — SENSOR OFFLINE[/bold yellow]",
+                    border_style="yellow"
+                )
+            )
             return
 
         t = Table(
@@ -122,21 +132,21 @@ class BiometricsScreen(Screen):
         )
         t.add_row(
             "Autonomic Recovery Index",
-            f"{rd.recovery_index_pct:.1f}%",
+            f"{rd.recovery_index_pct:.1f}%" if rd.recovery_index_pct is not None else "--",
             "Optimal: > 85.0%",
             f"[bold green]● {rd.autonomic_balance}[/bold green]",
             "Vagal modulation stable; low sympathovagal stress"
         )
         t.add_row(
             "CNS Neurological Strain",
-            f"{rd.cns_strain_score:.1f} / 10.0",
+            f"{rd.cns_strain_score:.1f} / 10.0" if rd.cns_strain_score is not None else "--",
             "Low Strain: < 4.0",
             "[bold green]● MINIMAL FATIGUE[/bold green]",
             "Neuromuscular transmission efficiency: High"
         )
         t.add_row(
             "Nocturnal Sleep & HRV Baseline",
-            f"{rd.sleep_recovery_score:.1f}/100 (RMSSD: {rd.nocturnal_rmssd_ms:.1f}ms)",
+            f"{rd.sleep_recovery_score:.1f}/100 (RMSSD: {rd.nocturnal_rmssd_ms:.1f}ms)" if rd.sleep_recovery_score is not None else "--",
             "Baseline: > 45.0 ms",
             "[bold green]● FULLY RESTORED[/bold green]",
             "Slow-wave parasympathetic recovery verified"
@@ -149,6 +159,24 @@ class BiometricsScreen(Screen):
         ms = bio.movesense_stream
         kf = bio.kamath_filter
 
+        # Rule #0: disconnected state — clean waiting panel
+        if not ms.connected:
+            self.query_one("#movesense-status-view", Static).update(
+                Panel(
+                    "[bold red]● DISCONNECTED — No Active BLE GATT Stream[/bold red]\n"
+                    "[dim]Sensor ID: Movesense-Medical-230950000 | Firmware: 2.1.0-MED | Class IIa[/dim]\n\n"
+                    "[yellow]Actions:[/yellow]\n"
+                    "  1. Wear the Movesense sensor on your left bicep or chest strap\n"
+                    "  2. Ensure Bluetooth is enabled on this Mac\n"
+                    "  3. Wait for automatic BLE GATT pairing (~5–15 seconds)\n"
+                    "  4. Click [bold]🔄 Refresh Biometrics[/bold] to force re-scan\n\n"
+                    "[dim]All biometric values will auto-populate on reconnection. No simulated data shown (Rule #0).[/dim]",
+                    title="[bold red]1. MOVESENSE MEDICAL CLASS IIA — SENSOR OFFLINE[/bold red]",
+                    border_style="red"
+                )
+            )
+            return
+
         t = Table(
             title="[bold green]1. MOVESENSE MEDICAL CLASS IIA BLE STREAM & DSP ENGINE (512Hz)[/bold green]",
             expand=True,
@@ -160,15 +188,12 @@ class BiometricsScreen(Screen):
         t.add_column("Signal Quality", style="bright_green")
         t.add_column("Sensor State", style="green")
 
-        conn_style = "bold green" if ms.connected else "bold red"
-        conn_text = "● CONNECTED (BLE GATT)" if ms.connected else "● DISCONNECTED"
-
         t.add_row(
             "Hardware Sensor ID",
             ms.sensor_id,
             f"{ms.medical_class} (FW: {ms.firmware})",
             f"SNR: {ms.ecg_snr_db:.1f} dB",
-            f"[{conn_style}]{conn_text}[/{conn_style}]"
+            "[bold green]● CONNECTED (BLE GATT)[/bold green]"
         )
         t.add_row(
             "Sampling Rate & Profile",
@@ -189,6 +214,19 @@ class BiometricsScreen(Screen):
 
     def render_cardio(self, snapshot: BlackboardTelemetryState) -> None:
         bio = snapshot.layer_2_biometrics
+
+        # Rule #0: no live HR data when sensor offline
+        if not bio.movesense_stream.connected or bio.heart_rate_bpm is None:
+            self.query_one("#cardiovascular-metrics-view", Static).update(
+                Panel(
+                    "[bold yellow]⏳ Awaiting live ECG stream from Movesense BLE sensor...[/bold yellow]\n"
+                    "[dim]HR / HRV / RMSSD / DFA-alpha1 / PTT BP will appear here automatically on reconnection.[/dim]",
+                    title="[bold yellow]2. CARDIOVASCULAR METRICS — SENSOR OFFLINE[/bold yellow]",
+                    border_style="yellow"
+                )
+            )
+            return
+
         ptt = bio.ptt_blood_pressure
 
         t = Table(
@@ -206,50 +244,31 @@ class BiometricsScreen(Screen):
         rmssd_str = f"{bio.rmssd_ms:.1f} ms" if bio.rmssd_ms is not None else "--"
         dfa_str = f"{bio.dfa_alpha1:.2f}" if bio.dfa_alpha1 is not None else "--"
         vo2_str = f"{bio.vo2_max_ml_kg_min:.1f} mL/kg/min" if bio.vo2_max_ml_kg_min is not None else "--"
-
         ptt_str = f"{ptt.systolic_mmhg}/{ptt.diastolic_mmhg} mmHg" if ptt.systolic_mmhg else "--"
         ptt_latency = f"{ptt.pulse_transit_time_ms:.1f} ms PTT" if ptt.pulse_transit_time_ms else "--"
 
-        t.add_row(
-            "Heart Rate (HR)",
-            hr_str,
-            "130 - 145 BPM (Zone 2)",
-            "Aerobic Mitochondrial Density Workload",
-            f"[bold green]● {bio.zone2_status}[/bold green]"
-        )
-        t.add_row(
-            "HRV (RMSSD)",
-            rmssd_str,
-            "> 40.0 ms (Parasympathetic)",
-            "Vagal Tone / Autonomic Recovery State",
-            "[bold green]● HEALTHY TONE[/bold green]"
-        )
-        t.add_row(
-            "DFA-alpha1 (Fractal HRV)",
-            dfa_str,
-            "0.750 Target (0.70 - 0.80)",
-            "Aerobic Threshold 1 (LT1 / AeT Invariant)",
-            "[bold green]● OPTIMAL ZONE 2[/bold green]"
-        )
-        t.add_row(
-            "PTT Blood Pressure",
-            ptt_str,
-            "< 120/80 mmHg (Normotensive)",
-            f"Pulse Transit Time: {ptt_latency}",
-            f"[bold green]● {ptt.status}[/bold green]"
-        )
-        t.add_row(
-            "Estimated VO2 Max",
-            vo2_str,
-            "> 50.0 mL/kg/min (Superior)",
-            "Cardiorespiratory Aerobic Capacity",
-            "[bold green]● SUPERIOR[/bold green]"
-        )
+        t.add_row("Heart Rate (HR)", hr_str, "130 - 145 BPM (Zone 2)", "Aerobic Mitochondrial Density Workload", f"[bold green]● {bio.zone2_status}[/bold green]")
+        t.add_row("HRV (RMSSD)", rmssd_str, "> 40.0 ms (Parasympathetic)", "Vagal Tone / Autonomic Recovery State", "[bold green]● HEALTHY TONE[/bold green]")
+        t.add_row("DFA-alpha1 (Fractal HRV)", dfa_str, "0.750 Target (0.70 - 0.80)", "Aerobic Threshold 1 (LT1 / AeT Invariant)", "[bold green]● OPTIMAL ZONE 2[/bold green]")
+        t.add_row("PTT Blood Pressure", ptt_str, "< 120/80 mmHg (Normotensive)", f"Pulse Transit Time: {ptt_latency}", f"[bold green]● {ptt.status}[/bold green]")
+        t.add_row("Estimated VO2 Max", vo2_str, "> 50.0 mL/kg/min (Superior)", "Cardiorespiratory Aerobic Capacity", "[bold green]● SUPERIOR[/bold green]")
 
         self.query_one("#cardiovascular-metrics-view", Static).update(t)
 
     def render_imu(self, snapshot: BlackboardTelemetryState) -> None:
         imu = snapshot.layer_2_biometrics.imu_kinematics
+
+        # Rule #0: no IMU data when sensor offline
+        if imu.total_dynamic_g is None:
+            self.query_one("#imu-kinematics-view", Static).update(
+                Panel(
+                    "[bold yellow]⏳ IMU 9-DOF data unavailable — sensor not connected.[/bold yellow]",
+                    title="[bold yellow]3. IMU KINEMATICS — SENSOR OFFLINE[/bold yellow]",
+                    border_style="yellow"
+                )
+            )
+            return
+
         acc = imu.accelerometer_g
         gyro = imu.gyroscope_dps
 
@@ -311,3 +330,4 @@ class BiometricsScreen(Screen):
         elif btn_id == "btn-refresh-bio":
             self.notify("Refreshed medical biometrics, HRV, PTT blood pressure, and IMU telemetry.", title="BIOMETRICS REFRESH")
             self.refresh_views(force_refresh=True)
+

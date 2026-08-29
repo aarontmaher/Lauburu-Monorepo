@@ -107,6 +107,28 @@ case "$CMD" in
         cd "$MONOREPO_DIR"
         exec python3 02_ai_models_and_inference/benchmarks/glinet_router_micro_ai_benchmark.py
         ;;
+    mcp|project-mcp)
+        MCP_SCRIPT="$MONOREPO_DIR/06_scripts_and_tooling/mcp/lauburu_project_mcp.py"
+        MCP_LOG="/tmp/lauburu_mcp_9999.log"
+        echo "🧠 Lauburu Project Overview MCP Server — Port 9999"
+        # Kill any existing instance cleanly
+        pkill -f "lauburu_project_mcp.py" 2>/dev/null || true
+        sleep 0.5
+        # Resolve python3 — prefer venv if available
+        PY3="/Users/aaron/DFS_UNIFIED/lora_datasets/.venv/bin/python3"
+        [ -x "$PY3" ] || PY3="$(which python3)"
+        nohup "$PY3" "$MCP_SCRIPT" > "$MCP_LOG" 2>&1 &
+        MCP_PID=$!
+        sleep 2
+        if kill -0 "$MCP_PID" 2>/dev/null; then
+            echo "✅ MCP server started (PID $MCP_PID)"
+            echo "   URL : http://localhost:9999/mcp/project/full_context"
+            echo "   Log : $MCP_LOG"
+        else
+            echo "⚠️ MCP server may have failed to start. Check log:"
+            echo "   tail -f $MCP_LOG"
+        fi
+        ;;
     help|--help|-h)
         echo "======================================================================"
         echo "🌟 LAUBURU MESH UNIFIED GLOBAL CLI"
@@ -123,6 +145,7 @@ case "$CMD" in
         echo "  lauburu map-all          Run Autonomous Whole-Project Feature Discovery"
         echo "  lauburu math             Run Standalone Qwen Math Telemetry Trend Optimizer"
         echo "  lauburu movesense        Check / Start Physical Movesense 128Hz BLE daemon"
+        echo "  lauburu mcp              Start Project Overview MCP server on Port 9999"
         echo "  lauburu help             Show this help message"
         echo "======================================================================"
         ;;

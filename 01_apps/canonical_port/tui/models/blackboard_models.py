@@ -423,13 +423,15 @@ class Layer1HardwareState:
 
 @dataclass
 class MovesenseStreamState:
-    """Movesense Medical Class IIa BLE 512Hz/128Hz Stream."""
-    connected: bool = True
+    """Movesense Medical Class IIa BLE 512Hz/128Hz Stream.
+    Rule #0: connected defaults False — only True when live BLE GATT is confirmed.
+    """
+    connected: bool = False   # ← Rule #0: default DISCONNECTED until BLE probe confirms
     sensor_id: str = "Movesense-Medical-230950000"
-    sampling_rate_hz: int = 512 # 512 or 128
-    profile: str = "zone2"      # "resting", "zone2", "grappling"
-    battery_pct: int = 88
-    ecg_snr_db: float = 28.5
+    sampling_rate_hz: int = 512
+    profile: str = "zone2"
+    battery_pct: int = 0      # ← 0 when disconnected
+    ecg_snr_db: float = 0.0   # ← 0.0 when disconnected
     firmware: str = "2.1.0-MED"
     medical_class: str = "Class IIa"
 
@@ -443,8 +445,8 @@ class KamathFilterState:
     filter_name: str = "Kamath 20% Clinical RR Filter"
     threshold_pct: float = 20.0
     window_size: int = 60
-    rejection_rate_pct: float = 1.42
-    is_active: bool = True
+    rejection_rate_pct: float = 0.0
+    is_active: bool = False   # ← inactive when sensor offline
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -452,11 +454,13 @@ class KamathFilterState:
 
 @dataclass
 class PttBloodPressure:
-    """Pulse Transit Time Non-Invasive Arterial Blood Pressure."""
-    systolic_mmhg: Optional[int] = 118
-    diastolic_mmhg: Optional[int] = 76
-    pulse_transit_time_ms: Optional[float] = 212.4
-    status: str = "NOMINAL"
+    """Pulse Transit Time Non-Invasive Arterial Blood Pressure.
+    Rule #0: all None until live sensor stream is active.
+    """
+    systolic_mmhg: Optional[int] = None        # ← None = waiting for sensor
+    diastolic_mmhg: Optional[int] = None
+    pulse_transit_time_ms: Optional[float] = None
+    status: str = "SENSOR_OFFLINE"
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -464,13 +468,15 @@ class PttBloodPressure:
 
 @dataclass
 class ImuKinematicsState:
-    """Movesense 9-DOF IMU & Kinematic Expenditure DSP."""
-    accelerometer_g: Dict[str, float] = field(default_factory=lambda: {"x": 0.04, "y": 0.98, "z": 0.12})
-    gyroscope_dps: Dict[str, float] = field(default_factory=lambda: {"x": 1.2, "y": 0.8, "z": 2.4})
-    total_dynamic_g: float = 0.99
-    mechanical_power_watts: float = 182.4
-    cadence_spm: int = 164
-    posture_alignment_pct: float = 94.2
+    """Movesense 9-DOF IMU & Kinematic Expenditure DSP.
+    Rule #0: all zeros / None until live sensor stream is active.
+    """
+    accelerometer_g: Dict[str, float] = field(default_factory=lambda: {"x": None, "y": None, "z": None})
+    gyroscope_dps: Dict[str, float] = field(default_factory=lambda: {"x": None, "y": None, "z": None})
+    total_dynamic_g: Optional[float] = None
+    mechanical_power_watts: Optional[float] = None
+    cadence_spm: Optional[int] = None
+    posture_alignment_pct: Optional[float] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -489,7 +495,7 @@ class GrapplingMapState:
     recent_submissions: List[str] = field(default_factory=lambda: [
         "Straight Armbar", "Kimura Lock", "Rear Naked Choke", "Triangle Choke", "Inside Heel Hook"
     ])
-    session_duration_s: int = 1840
+    session_duration_s: int = 0
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -497,15 +503,17 @@ class GrapplingMapState:
 
 @dataclass
 class ReadinessState:
-    """Cardiovascular, Neurological & Autonomic Readiness / Recovery State."""
-    readiness_score: float = 92.4              # 0 - 100 Composite readiness score
-    readiness_category: str = "PRIME_OPTIMAL"  # "PRIME_OPTIMAL", "RECOVERED", "MODERATE_STRAIN", "HIGH_FATIGUE"
-    recovery_index_pct: float = 94.2          # 0 - 100% Autonomic recovery index
-    cns_strain_score: float = 2.1             # 0 - 10.0 Central Nervous System fatigue index
-    autonomic_balance: str = "PARASYMPATHETIC_DOMINANT" # "PARASYMPATHETIC_DOMINANT", "SYMPATHETIC_STRAIN", "EQUILIBRIUM"
-    sleep_recovery_score: float = 88.5        # 0 - 100 Nocturnal HRV/sleep quality score
-    nocturnal_rmssd_ms: float = 54.2          # Resting/nocturnal HRV baseline in ms
-    training_advice: str = "PRIME: High-intensity neural workload / Zone 4-5 conditioning authorized."
+    """Cardiovascular, Neurological & Autonomic Readiness / Recovery State.
+    Rule #0: fields are None until sensor provides live HRV/ECG data.
+    """
+    readiness_score: Optional[float] = None
+    readiness_category: str = "SENSOR_OFFLINE"
+    recovery_index_pct: Optional[float] = None
+    cns_strain_score: Optional[float] = None
+    autonomic_balance: str = "AWAITING_SENSOR"
+    sleep_recovery_score: Optional[float] = None
+    nocturnal_rmssd_ms: Optional[float] = None
+    training_advice: str = "Connect Movesense sensor to begin readiness assessment."
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -513,15 +521,18 @@ class ReadinessState:
 
 @dataclass
 class Layer2BiometricsState:
-    """Layer 2: Medical-Grade Biometrics & Kinematics State."""
+    """Layer 2: Medical-Grade Biometrics & Kinematics State.
+    Rule #0: All live telemetry fields default to None when sensor is offline.
+    No simulated or fabricated biometric values are ever shown.
+    """
     movesense_stream: MovesenseStreamState = field(default_factory=MovesenseStreamState)
     kamath_filter: KamathFilterState = field(default_factory=KamathFilterState)
-    heart_rate_bpm: Optional[float] = 138.4
-    rr_intervals_ms: List[float] = field(default_factory=lambda: [433.5, 432.8, 434.1, 433.0, 435.2])
-    rmssd_ms: Optional[float] = 42.8
-    dfa_alpha1: Optional[float] = 0.75 # Optimal Zone 2 threshold (0.75 target)
-    zone2_status: str = "ZONE_2_OPTIMAL"
-    vo2_max_ml_kg_min: Optional[float] = 52.4
+    heart_rate_bpm: Optional[float] = None        # ← None = sensor offline
+    rr_intervals_ms: List[float] = field(default_factory=list)  # ← empty list offline
+    rmssd_ms: Optional[float] = None
+    dfa_alpha1: Optional[float] = None
+    zone2_status: str = "SENSOR_OFFLINE"
+    vo2_max_ml_kg_min: Optional[float] = None
     ptt_blood_pressure: PttBloodPressure = field(default_factory=PttBloodPressure)
     imu_kinematics: ImuKinematicsState = field(default_factory=ImuKinematicsState)
     grappling_map: GrapplingMapState = field(default_factory=GrapplingMapState)
@@ -554,12 +565,12 @@ class Layer2BiometricsState:
         return cls(
             movesense_stream=movesense,
             kamath_filter=kamath,
-            heart_rate_bpm=data.get("heart_rate_bpm", 138.4),
-            rr_intervals_ms=data.get("rr_intervals_ms", [433.5, 432.8, 434.1, 433.0, 435.2]),
-            rmssd_ms=data.get("rmssd_ms", 42.8),
-            dfa_alpha1=data.get("dfa_alpha1", 0.75),
-            zone2_status=data.get("zone2_status", "ZONE_2_OPTIMAL"),
-            vo2_max_ml_kg_min=data.get("vo2_max_ml_kg_min", 52.4),
+            heart_rate_bpm=data.get("heart_rate_bpm"),        # None if not in data
+            rr_intervals_ms=data.get("rr_intervals_ms", []),
+            rmssd_ms=data.get("rmssd_ms"),
+            dfa_alpha1=data.get("dfa_alpha1"),
+            zone2_status=data.get("zone2_status", "SENSOR_OFFLINE"),
+            vo2_max_ml_kg_min=data.get("vo2_max_ml_kg_min"),
             ptt_blood_pressure=ptt,
             imu_kinematics=imu,
             grappling_map=grappling,
@@ -1479,20 +1490,9 @@ class BlackboardTelemetryState:
 
         # --------------------------------------------------------------------
         # Layer 2: Medical Biometrics & Kinematics
+        # Rule #0: All fields default to None/offline until live BLE GATT confirmed
         # --------------------------------------------------------------------
-        l2 = Layer2BiometricsState(
-            movesense_stream=MovesenseStreamState(),
-            kamath_filter=KamathFilterState(),
-            heart_rate_bpm=138.4,
-            rr_intervals_ms=[433.5, 432.8, 434.1, 433.0, 435.2],
-            rmssd_ms=42.8,
-            dfa_alpha1=0.75,
-            zone2_status="ZONE_2_OPTIMAL",
-            vo2_max_ml_kg_min=52.4,
-            ptt_blood_pressure=PttBloodPressure(systolic_mmhg=118, diastolic_mmhg=76, pulse_transit_time_ms=212.4, status="NOMINAL"),
-            imu_kinematics=ImuKinematicsState(),
-            grappling_map=GrapplingMapState()
-        )
+        l2 = Layer2BiometricsState()  # All None — sensor offline by default
 
         # --------------------------------------------------------------------
         # Layer 3: Local AI Inference & Mesh Sharding
