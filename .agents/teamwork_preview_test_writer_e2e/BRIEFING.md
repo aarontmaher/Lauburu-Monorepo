@@ -1,56 +1,52 @@
-# BRIEFING — 2026-08-27T13:30:00Z
+# BRIEFING — 2026-08-29T19:10:00Z
 
 ## Mission
-Design, implement, and verify the comprehensive 4-Tier E2E test suite (`test_sandbox_tui_mastery_e2e.py`) and testing infrastructure documentation (`TEST_INFRA.md`, `TEST_READY.md`) for the Continuous Red vs. Blue Sandbox Training & TUI Specialist Evolution project.
+Build and execute an opaque-box, requirement-driven E2E test suite covering all 16 features from PROJECT.md across 4 tiers (Tier 1 >=80 tests, Tier 2 >=80 tests, Tier 3 >=16 tests, Tier 4 >=8 tests), create TEST_INFRA.md, run all tests with 100% pass rate, and produce TEST_READY.md and handoff report.
 
 ## 🔒 My Identity
-- Archetype: test_writer
+- Archetype: Test Writer / E2E Test Architect
 - Roles: specialist, qa
-- Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e
-- Original parent: 768913e7-e140-4a9c-aaad-4dd6832be4be
-- Milestone: M-E2E (E2E Testing Track)
+- Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/
+- Original parent: 63ce69b0-c347-4525-baf9-09dde968f198
+- Milestone: E2E Dual-Track & Milestone Certification (M1-M4)
 
 ## 🔒 Key Constraints
-- Test writer role only: write and modify test and test-infrastructure code only. Never write fake/facade implementations.
-- Zero-Mock Policy: All tests must test real logic, real files, real mathematical models, authentic schemas, and legitimate processes.
-- Progressive testability & independence: tests should be self-contained and isolated.
-- Comprehensive 4-Tier test architecture with >=5 tests per feature/boundary across all tiers.
-- Pre-flight storage health verification (<3ms fast-path).
+- Scope & File Ownership: Exclusively own TEST_INFRA.md, tests/e2e/, TEST_READY.md.
+- DO NOT cheat or hardcode test results or create dummy/facade implementations.
+- Zero-mock / Rule #0 compliance: tests exercise authentic logic and data pipelines.
+- Verify 100% pass across all tiers.
+- Progressive testability and complete independence.
 
 ## Current Parent
-- Conversation ID: 768913e7-e140-4a9c-aaad-4dd6832be4be
-- Updated: 2026-08-27T13:30:00Z
+- Conversation ID: 63ce69b0-c347-4525-baf9-09dde968f198
+- Updated: not yet
 
 ## Task Summary
-- **What to build**:
-  1. `TEST_INFRA.md` in `.sandbox_training/tui_mastery/` and `.agents/teamwork_preview_orchestrator_16/`.
-  2. 4-Tier E2E test suite `tests/e2e/test_sandbox_tui_mastery_e2e.py` covering features F1-F7, boundary conditions, cross-feature interactions, and real-world tournament workflows.
-  3. `TEST_READY.md` in repo root and orchestrator directory.
-  4. Full test run verification using pytest.
-  5. Detailed `handoff.md` and parent notification.
-- **Success criteria**: 100% pytest pass on `test_sandbox_tui_mastery_e2e.py`, thorough coverage across all 4 tiers, zero syntax/lint errors, zero mocking of test assertions.
-- **Interface contracts**: PROJECT.md Interface Contracts (Specialist Schema, Scoring Output Schema, NPU Ledger Schema).
-- **Code layout**: tests/e2e/test_sandbox_tui_mastery_e2e.py, .sandbox_training/tui_mastery/TEST_INFRA.md.
-
-## Loaded Skills
-- **Source**: `/Users/aaron/.gemini/config/skills/sandbox-training/SKILL.md`
-- **Local copy**: `.agents/teamwork_preview_test_writer_e2e/skills/sandbox-training.md`
-- **Core methodology**: Multi-tier isolated model training, shadow swarm benchmarking, ELO tournaments, and production promotion with NPU bonus grants.
-
-## Quality Status
-- **Build/test result**: 72/72 tests PASSED in 3.46 seconds (100% PASS rate).
-- **Lint status**: Clean (py_compile 0 errors).
-- **Tests added/modified**: `tests/e2e/test_sandbox_tui_mastery_e2e.py` (72 test cases across 4 tiers).
+- **What to build**: Comprehensive 4-Tier E2E test suite under `tests/e2e/`, `TEST_INFRA.md`, master test runner `tests/e2e/run_all_e2e_tests.py`, and `TEST_READY.md`.
+- **Success criteria**: 
+  - Tier 1: Feature Coverage (>=5 tests per feature * 16 features = >=80 test cases)
+  - Tier 2: Boundary & Corner Cases (>=5 tests per feature * 16 features = >=80 test cases)
+  - Tier 3: Cross-Feature Combinations (Pairwise coverage >=16 test cases)
+  - Tier 4: Real-World Application Scenarios (>=8 application scenarios)
+  - Total >= 184 test cases passing with exit code 0.
+- **Interface contracts**: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md § Interface Contracts
+- **Code layout**: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md § Code Layout
 
 ## Key Decisions Made
-- Implemented 4-Tier test architecture with full adherence to Rule #0 Zero-Mock truth enforcement.
-- Tested authentic POSIX file locks, real subprocess executions, genuine JSON/JSONL schemas, and real math formulations (refusal ablation, composite scores, NPU bonus grant hours).
-- Verified mathematical invariants in `npu_bonus_ledger.json` and generated structured, isolated test fixtures.
+- Organize the E2E test suite into modular, highly structured test files or a unified canonical multi-tier test framework under `tests/e2e/` using `pytest` and a custom test runner `run_all_e2e_tests.py`.
+- Ensure all 16 features from PROJECT.md are rigorously tested with concrete mathematical derivations, physiological models, airgap boundaries, UI manifests, SmolAgents execution, TUI state synchronizations, and adversarial hardening.
 
 ## Artifact Index
-- `.sandbox_training/tui_mastery/TEST_INFRA.md` — Testing infrastructure and 4-tier philosophy
-- `.agents/teamwork_preview_orchestrator_16/TEST_INFRA.md` — Orchestrator copy of test infra
-- `tests/e2e/test_sandbox_tui_mastery_e2e.py` — 4-Tier E2E test suite (72 tests)
-- `TEST_READY.md` — Test suite execution summary and coverage matrix
-- `.agents/teamwork_preview_orchestrator_16/TEST_READY.md` — Orchestrator copy of test ready
-- `.agents/teamwork_preview_test_writer_e2e/handoff.md` — Final handoff report
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/TEST_INFRA.md` — E2E Test Infrastructure Specification
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e/` — 4-Tier E2E Test Suite & Runner
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/TEST_READY.md` — Test Readiness & Certification Report
+
+## Loaded Skills
+- **Source**: none explicitly requested
+- **Local copy**: N/A
+- **Core methodology**: Opaque-box E2E testing, boundary value analysis, combinatorial testing, scenario testing.
+
+## Quality Status
+- **Build/test result**: Initializing
+- **Lint status**: Clean
+- **Tests added/modified**: In progress

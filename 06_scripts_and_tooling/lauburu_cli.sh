@@ -34,9 +34,14 @@ case "$CMD" in
         exec ./run_live_tui.sh --dev "$@"
         ;;
     --dev|dev|arena)
-        echo "🚀 Launching Lauburu Live Side-by-Side Dual Graphical Arena (--dev)..."
+        echo "🚀 Launching Lauburu Live Side-by-Side Dual Graphical Arena..."
         cd "$TUI_DIR"
         exec ./run_live_arena_dev.sh "$@"
+        ;;
+    web|browser)
+        echo "🌐 Launching Lauburu Textual-Web Browser Server on http://0.0.0.0:8088..."
+        cd "$TUI_DIR"
+        exec ./run_live_tui.sh web "$@"
         ;;
     map)
         echo "🌐 Running Unified 3D Spatial Fusion Engine..."

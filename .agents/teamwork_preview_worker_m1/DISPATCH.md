@@ -1,30 +1,26 @@
-## 2026-08-27T13:21:49Z
+## 2026-08-29T09:09:14Z
 
-You are teamwork_preview_worker_m1.
-Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1
-Your parent is: teamwork_preview_orchestrator_16 (conversation ID: 768913e7-e140-4a9c-aaad-4dd6832be4be)
+You are teamwork_preview_worker (Milestone M1 Specialist: Frontend PWA, 3D Tatami & Airgap Isolation).
+Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/
+Project root: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+Read the original request at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
+Read the project specification at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
+Read survey report: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1/handoff.md
 
 MANDATORY INTEGRITY WARNING:
 DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
 
-MANDATORY FILES TO READ BEFORE STARTING:
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_16/PROJECT.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3/handoff.md
+Scope & File Ownership:
+You own exclusively:
+- webapp/ (PWA manifest, index.html, sw.js)
+- 00_core_infrastructure/cloudflare_worker/src/worker.ts
+- 01_apps/biometrics/zone2_endurance/
 
-ASSIGNMENT (Milestone 1: Sandbox Scaffolding & Specialist Prompt Profiles):
-1. Initialize target sandbox structure at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery
-   - Directories: config/, config/specialists/, defenses/, attacks/, referee/, logs/, benchmarks/
-   - Create .sandbox_training/tui_mastery/config/tournament_config.json
-   - Create .sandbox_training/tui_mastery/README.md
-2. Create complete, production-grade specialist skill files in /Users/aaron/.gemini/config/skills/ with valid YAML frontmatter and deep architectural system prompts per Survey 3 specifications:
-   - /Users/aaron/.gemini/config/skills/polyglot-python-textual-specialist/SKILL.md
-   - /Users/aaron/.gemini/config/skills/polyglot-go-bubbletea-specialist/SKILL.md
-   - /Users/aaron/.gemini/config/skills/polyglot-rust-ratatui-specialist/SKILL.md
-3. Create corresponding structured JSON prompt profiles in .sandbox_training/tui_mastery/config/specialists/:
-   - python_textual.json
-   - go_bubbletea.json
-   - rust_ratatui.json
-4. Run verification commands (validate YAML frontmatter, JSON validity).
-5. Document all actions, created files, and verification commands/output in /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/handoff.md following standard handoff structure.
-6. Notify parent via send_message when complete.
+Tasks:
+1. Verify and ensure Frontend PWA scaffolding and ServiceWorker caching are robust.
+2. Verify Three.js r128 3D Tatami and Kinematics network graph across 955+ OPML nodes with WebGPU/WebGL fallback and raycaster picking.
+3. Verify TailwindCSS components and accessible WCAG 2.1 AA tokens.
+4. Enforce strict 100% Local Airgap health data protection policy in Cloudflare Worker (00_core_infrastructure/cloudflare_worker/src/worker.ts) - zero raw biometrics egress.
+5. Run the existing frontend test suite (01_apps/biometrics/zone2_endurance/tests/) and any verification scripts.
+6. Write your handoff report to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/handoff.md.
+7. Notify the orchestrator via send_message when complete.

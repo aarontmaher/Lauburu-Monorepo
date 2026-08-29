@@ -14,8 +14,14 @@ from typing import List, Optional, Dict, Any
 
 # Add project roots
 BASE_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
-sys.path.insert(0, os.path.join(BASE_DIR, "01_apps", "movesense_hub"))
-sys.path.insert(0, os.path.join(BASE_DIR, "self_healing_hub", "src"))
+for p in [
+    BASE_DIR,
+    os.path.join(BASE_DIR, "01_apps", "biometrics", "movesense_hub"),
+    os.path.join(BASE_DIR, "00_core_infrastructure", "self_healing_hub", "src"),
+    os.path.join(BASE_DIR, "03_biometrics_and_telemetry"),
+]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 from pyspark_biometrics_dsp import (
     apply_kamath_filter,

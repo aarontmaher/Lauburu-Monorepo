@@ -10,6 +10,7 @@ import sys
 import json
 import time
 import random
+import asyncio
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
@@ -56,6 +57,13 @@ class RedTeamGraphicalMapWidget(Static):
     }
     """
 
+    def __init__(self, *args, **kwargs):
+        try:
+            asyncio.get_event_loop()
+        except RuntimeError:
+            asyncio.set_event_loop(asyncio.new_event_loop())
+        super().__init__(*args, **kwargs)
+
     def render_map(self, hr_bpm: int = 73, chaos_active: bool = False) -> Panel:
         tb4_atk = "[bold red]⚠️ 350ms PACKET DROP FLOOD[/]" if chaos_active else "[bold red]⚡ TB4 SOCKET DRAIN: Port 50052[/]"
         lines = [
@@ -82,6 +90,13 @@ class BlueTeamGraphicalMapWidget(Static):
         margin-bottom: 1;
     }
     """
+
+    def __init__(self, *args, **kwargs):
+        try:
+            asyncio.get_event_loop()
+        except RuntimeError:
+            asyncio.set_event_loop(asyncio.new_event_loop())
+        super().__init__(*args, **kwargs)
 
     def render_map(self, hr_bpm: int = 73, chaos_active: bool = False) -> Panel:
         tb4_def = "[bold red]⚠️ TB4 SEVERED -> WG FAILOVER[/]" if chaos_active else "[bold green]⚡ MTU 9000 JUMBO SHIELD (0.35ms)[/]"
@@ -148,7 +163,7 @@ class LiveArenaDevScreen(Screen):
         ("h", "trigger_heal", "Self-Heal All"),
         ("b", "trigger_bql_burst", "BQL Queue Burst"),
         ("s", "trigger_jumbo_shield", "Lock MTU 9000 Shield"),
-        ("m", "cycle_game_mode", "Cycle Game Mode"),
+        ("m", "cycle_game_mode", "Cycle Game Mode (1-4)"),
         ("v", "toggle_voice", "Toggle Voice (TTS)"),
     ]
 
@@ -199,7 +214,6 @@ class LiveArenaDevScreen(Screen):
         hud = state.get("gamified_hud", {})
         combat_bar = hud.get("combat_tug_of_war_bar", "")
         hr = readiness["sensor_telemetry"]["heart_rate_bpm"]
-        rmssd = readiness["sensor_telemetry"]["rmssd_ms"]
         bp = readiness["blood_pressure_ptt"]
         sleep = readiness["overnight_sleep_analysis"]
         vo2 = readiness["cardiorespiratory_thresholds"]["estimated_vo2max_ml_kg_min"]
@@ -221,10 +235,20 @@ class LiveArenaDevScreen(Screen):
         self.red_map.update(self.red_map.render_map(hr_bpm=hr, chaos_active=self.chaos_active))
         self.blue_map.update(self.blue_map.render_map(hr_bpm=hr, chaos_active=self.chaos_active))
 
-        # Log code executions
-        if self.mode_index == 1:
-            self.red_log.write(f"[{time.strftime('%H:%M:%S')}] [bold red]🐍 SMOLAGENT CODE:[/] Executed 64MB buffer probe on 169.254.187.138:50052")
-            self.blue_log.write(f"[{time.strftime('%H:%M:%S')}] [bold cyan]🐍 SMOLAGENT CODE:[/] Executed SQM fq_codel tc replacement on bridge0")
+        # Log code executions & mode activities
+        timestamp_str = time.strftime('%H:%M:%S')
+        if active_mode == "EDGE_ORCHESTRATOR_CLASSIC":
+            self.red_log.write(f"[{timestamp_str}] [bold red]⚡ HEURISTIC PROBE:[/] {red_intent}")
+            self.blue_log.write(f"[{timestamp_str}] [bold cyan]🛡️ HEURISTIC SHIELD:[/] {blue_intent}")
+        elif active_mode == "SMOLAGENTS_PYTHON_DUEL":
+            self.red_log.write(f"[{timestamp_str}] [bold red]🐍 SMOLAGENT PYTHON:[/] Executed 64MB buffer probe on TB4 Port 50052")
+            self.blue_log.write(f"[{timestamp_str}] [bold cyan]🐍 SMOLAGENT PYTHON:[/] Executed SQM fq_codel tc replacement on bridge0")
+        elif active_mode == "MULTI_MODEL_AGI_SWARM":
+            self.red_log.write(f"[{timestamp_str}] [bold red]🤖 SWARM DISPATCH:[/] {red_intent}")
+            self.blue_log.write(f"[{timestamp_str}] [bold cyan]🧬 GENETIC MoE:[/] {blue_intent}")
+        elif active_mode == "AIRGAP_MESH_VS_CLOUD_CHAOS":
+            self.red_log.write(f"[{timestamp_str}] [bold yellow]⚡ CHAOS INJECTION:[/] {red_intent}")
+            self.blue_log.write(f"[{timestamp_str}] [bold green]🔒 AIRGAP PERIMETER:[/] {blue_intent}")
 
     def on_input_submitted(self, event: Input.Submitted):
         val = event.value.strip()

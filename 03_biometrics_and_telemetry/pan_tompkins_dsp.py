@@ -58,6 +58,7 @@ class PanTompkinsQRSDetector:
         """
         4th-order Butterworth bandpass filter (0.5 Hz - 40.0 Hz) to eliminate baseline wander
         and high-frequency muscle noise / mains interference.
+        Implements forward-backward zero-phase filtering across any sampling frequency.
         """
         if not ecg_signal:
             return []
@@ -69,7 +70,7 @@ class PanTompkinsQRSDetector:
         if SCIPY_AVAILABLE and NUMPY_AVAILABLE and n >= 15:
             try:
                 nyquist = 0.5 * self.fs
-                low = max(0.01, 0.5 / nyquist)
+                low = max(0.005, 0.5 / nyquist)
                 high = min(0.99, 40.0 / nyquist)
                 b, a = butter(2, [low, high], btype="bandpass")
                 filtered = filtfilt(b, a, np.array(ecg_signal, dtype=float))
@@ -77,27 +78,47 @@ class PanTompkinsQRSDetector:
             except Exception:
                 pass
 
-        # Robust recursive lowpass/highpass digital filter fallback (pure Python)
-        # Lowpass filter: y[n] = 2y[n-1] - y[n-2] + x[n] - 2x[n-6] + x[n-12]
-        # Highpass filter: y[n] = 32x[n-16] - [y[n-1] + x[n] - x[n-32]]
-        low_passed = [0.0] * n
-        for i in range(n):
-            x0 = ecg_signal[i]
-            x6 = ecg_signal[i - 6] if i >= 6 else 0.0
-            x12 = ecg_signal[i - 12] if i >= 12 else 0.0
-            y1 = low_passed[i - 1] if i >= 1 else 0.0
-            y2 = low_passed[i - 2] if i >= 2 else 0.0
-            low_passed[i] = 2.0 * y1 - y2 + (x0 - 2.0 * x6 + x12) / 36.0
+        # Exact Bilinear Transform 2nd-order Highpass (0.5Hz) + 2nd-order Lowpass (40Hz)
+        def biquad_coeffs(fc: float, fs: float, is_hp: bool) -> Tuple[float, float, float, float, float]:
+            w = math.tan(math.pi * fc / fs)
+            w2 = w * w
+            sqrt2 = math.sqrt(2.0)
+            norm = 1.0 + sqrt2 * w + w2
+            if is_hp:
+                b0 = 1.0 / norm
+                b1 = -2.0 * b0
+                b2 = b0
+            else:
+                b0 = w2 / norm
+                b1 = 2.0 * b0
+                b2 = b0
+            a1 = 2.0 * (w2 - 1.0) / norm
+            a2 = (1.0 - sqrt2 * w + w2) / norm
+            return (b0, b1, b2, a1, a2)
 
-        high_passed = [0.0] * n
-        for i in range(n):
-            x16 = low_passed[i - 16] if i >= 16 else 0.0
-            x0 = low_passed[i]
-            x32 = low_passed[i - 32] if i >= 32 else 0.0
-            y1 = high_passed[i - 1] if i >= 1 else 0.0
-            high_passed[i] = x16 - (y1 + x0 - x32) / 32.0
+        hp = biquad_coeffs(0.5, float(self.fs), is_hp=True)
+        lp = biquad_coeffs(40.0, float(self.fs), is_hp=False)
 
-        return [round(x, 4) for x in high_passed]
+        def apply_section(x: Sequence[float], c: Tuple[float, float, float, float, float]) -> List[float]:
+            b0, b1, b2, a1, a2 = c
+            y = [0.0] * len(x)
+            for i in range(len(x)):
+                x0 = x[i]
+                x1 = x[i - 1] if i >= 1 else 0.0
+                x2 = x[i - 2] if i >= 2 else 0.0
+                y1 = y[i - 1] if i >= 1 else 0.0
+                y2 = y[i - 2] if i >= 2 else 0.0
+                y[i] = b0 * x0 + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2
+            return y
+
+        def filtfilt_section(x: Sequence[float], c: Tuple[float, float, float, float, float]) -> List[float]:
+            fwd = apply_section(x, c)
+            rev = apply_section(fwd[::-1], c)
+            return rev[::-1]
+
+        hp_out = filtfilt_section(ecg_signal, hp)
+        bp_out = filtfilt_section(hp_out, lp)
+        return [round(float(v), 4) for v in bp_out]
 
     def derivative_filter(self, filtered_signal: Sequence[float]) -> List[float]:
         """
@@ -155,7 +176,7 @@ class PanTompkinsQRSDetector:
         Executes full Pan-Tompkins pipeline on raw ECG array.
         Returns:
             peak_indices: list of sample index positions where R-peaks occurred.
-            rr_intervals_ms: list of RR intervals in milliseconds.
+            rr_intervals_ms: list of RR intervals in milliseconds (microsecond precision).
         """
         if not ecg_signal or len(ecg_signal) < int(self.fs * 0.5):
             return [], []
@@ -172,33 +193,31 @@ class PanTompkinsQRSDetector:
         # 4. Moving Window Integration
         mwi = self.moving_window_integration(squared)
 
+        max_mwi = max(mwi) if mwi else 0.0
+        if max_mwi <= 1e-6:
+            return [], []
+
         # 5. Adaptive Dual-Threshold Peak Detection
-        peaks: List[int] = []
+        # Enforce minimum peak threshold (5% of max energy) to reject zero-state noise
+        min_peak_height = max_mwi * 0.05
+        local_peaks = []
         n = len(mwi)
 
-        # Local maxima detection in integrated signal
-        local_peaks = []
         for i in range(1, n - 1):
-            if mwi[i] > mwi[i - 1] and mwi[i] >= mwi[i + 1]:
+            if mwi[i] > mwi[i - 1] and mwi[i] >= mwi[i + 1] and mwi[i] >= min_peak_height:
                 local_peaks.append((i, mwi[i]))
 
         if not local_peaks:
             return [], []
 
-        # Initialize threshold levels from first 2 seconds of data
-        init_peaks = [p[1] for p in local_peaks[:min(10, len(local_peaks))]]
-        if init_peaks:
-            max_init = max(init_peaks)
-            mean_init = sum(init_peaks) / len(init_peaks)
-            self.spk = max_init * 0.75
-            self.npk = mean_init * 0.25
-        else:
-            self.spk = 1.0
-            self.npk = 0.1
-
+        # Adaptive threshold initialization
+        peak_vals = [p[1] for p in local_peaks]
+        self.spk = max(peak_vals) * 0.5
+        self.npk = (sum(peak_vals) / len(peak_vals)) * 0.1
         self.threshold_i1 = self.npk + 0.25 * (self.spk - self.npk)
         self.threshold_i2 = 0.5 * self.threshold_i1
 
+        peaks: List[int] = []
         last_peak_idx = -self.refractory_samples
 
         for idx, peak_val in local_peaks:
@@ -207,9 +226,9 @@ class PanTompkinsQRSDetector:
                 continue
 
             if peak_val >= self.threshold_i1:
-                # Confirmed QRS Peak: Search back in filtered signal for true R-peak apex
+                # Search back in filtered signal for true R-peak apex
                 search_start = max(0, idx - self.mwi_window)
-                search_end = min(len(filtered), idx + self.mwi_window)
+                search_end = min(len(filtered), idx + max(5, self.mwi_window // 2))
                 r_apex = search_start
                 r_max = -1e9
 
@@ -220,18 +239,14 @@ class PanTompkinsQRSDetector:
 
                 peaks.append(r_apex)
                 last_peak_idx = r_apex
-
-                # Update running signal peak level
                 self.spk = 0.125 * peak_val + 0.875 * self.spk
             else:
-                # Noise peak
                 self.npk = 0.125 * peak_val + 0.875 * self.npk
 
-            # Update adaptive thresholds
             self.threshold_i1 = self.npk + 0.25 * (self.spk - self.npk)
             self.threshold_i2 = 0.5 * self.threshold_i1
 
-        # Compute RR intervals in ms
+        # Compute microsecond precision RR intervals in ms
         rr_intervals: List[float] = []
         for i in range(1, len(peaks)):
             diff_samples = peaks[i] - peaks[i - 1]
@@ -282,6 +297,18 @@ def apply_kamath_artifact_filter(
             cleaned.append(round(corrected, 1))
 
     return cleaned, artifact_count
+
+
+def apply_kamath_filter(
+    rr_intervals: Sequence[float],
+    threshold_pct: float = 20.0
+) -> List[float]:
+    """
+    Convenience wrapper for Kamath 2004 20% clinical RR filter.
+    Returns the list of cleaned/filtered RR intervals.
+    """
+    cleaned, _ = apply_kamath_artifact_filter(rr_intervals, threshold_pct=threshold_pct)
+    return cleaned
 
 
 def calculate_rmssd(rr_intervals: Sequence[float]) -> Optional[float]:
@@ -505,3 +532,29 @@ class MovesenseECGPipeline:
             },
             "rule_0_zero_mock": True
         }
+
+
+if __name__ == "__main__":
+    print("=" * 70)
+    print("ECG 512Hz PAN-TOMPKINS DSP & BIOMETRICS ENGINE (CANONICAL)")
+    print("=" * 70)
+    pipe = MovesenseECGPipeline(sample_rate_hz=512)
+    disconnected_out = pipe.process_raw_ecg_window([])
+    print("Disconnected Output:", disconnected_out["status"], "| Zero-Mock:", disconnected_out["rule_0_zero_mock"])
+    
+    # Test signal with QRS spikes at ~1.0s intervals (60 BPM)
+    sample_rate = 512
+    ecg_signal = [0.0] * (sample_rate * 3)
+    for beat_sec in [0.5, 1.5, 2.5]:
+        idx = int(beat_sec * sample_rate)
+        ecg_signal[idx-2] = 0.5
+        ecg_signal[idx-1] = 2.5
+        ecg_signal[idx] = 4.0
+        ecg_signal[idx+1] = -1.5
+        ecg_signal[idx+2] = -0.5
+    
+    active_out = pipe.process_raw_ecg_window(ecg_signal, ptt_ms=195.0, device_id="Movesense Medical 512Hz")
+    print(f"Active Output: {active_out['status']} | HR: {active_out['heart_rate_bpm']} BPM | Peaks: {active_out['peak_indices']}")
+    print(f"Clean RRs: {active_out['clean_rr_intervals_ms']} ms | RMSSD: {active_out['rmssd_ms']} ms | DFA-a1: {active_out['dfa_alpha1']}")
+    print(f"PTT BP: {active_out['ptt_blood_pressure']['systolic_mmhg']}/{active_out['ptt_blood_pressure']['diastolic_mmhg']} mmHg")
+

@@ -20,7 +20,12 @@ import logging
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-import httpx
+try:
+    import httpx
+    HTTPX_AVAILABLE = True
+except ImportError:
+    httpx = None
+    HTTPX_AVAILABLE = False
 
 # Resolve monorepo root reliably across symlinks
 REPO_ROOT = Path(__file__).resolve().parent.parent

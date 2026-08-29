@@ -3,6 +3,11 @@ port = 8088
 host = "0.0.0.0"
 
 [[apps]]
-name = "Canonical Port TUI"
-slug = "canonical_port"
-command = "python3 canonical_tui.py"
+name = "⚔️ Lauburu Live Combat Arena & SmolAgents Duel"
+slug = "arena"
+command = "python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port/tui/tui_live_arena_dev.py"
+
+[[apps]]
+name = "🏛️ Canonical Port 9-Screen Command Center"
+slug = "canonical"
+command = "python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port/tui/canonical_tui.py"

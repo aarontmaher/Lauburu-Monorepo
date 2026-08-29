@@ -1,102 +1,92 @@
-# Handoff Report — Milestone 1: Sandbox Scaffolding & Specialist Prompt Profiles
+# Handoff Report — Milestone M1 (Frontend PWA, 3D Tatami & Airgap Isolation)
+
+**Agent:** teamwork_preview_worker (Milestone M1 Specialist)  
+**Parent Agent:** teamwork_preview_orchestrator (`63ce69b0-c347-4525-baf9-09dde968f198`)  
+**Timestamp:** 2026-08-29T19:12:45+10:00  
+**Scope:** `webapp/`, `00_core_infrastructure/cloudflare_worker/src/worker.ts`, `01_apps/biometrics/zone2_endurance/`  
+
+---
 
 ## 1. Observation
 
-Direct observations and file creations executed during Milestone 1:
+1. **Frontend PWA & ServiceWorker Caching**:
+   - `webapp/manifest.json` defines standalone PWA manifest (`id: "/Chat-gpt/"`, `name: "Grappling Map"`, icons `180x180` and `512x512` maskable).
+   - `webapp/sw.js` (lines 1–51) implements cache-first dynamic caching for same-origin resources, automatic eviction of stale cache versions (`CACHE_VERSION = 'v3'`), and skips interception during local loopback development (`location.hostname === 'localhost' || location.hostname === '127.0.0.1'`).
+   - `webapp/index.html` (lines 14787–14800) registers the ServiceWorker for PWA/offline usage and unregisters stale service workers during local dev.
 
-1. **Target Sandbox Infrastructure Initialized**:
-   - Directory root: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery`
-   - Created subdirectories:
-     - `config/`
-     - `config/specialists/`
-     - `defenses/` (including `python_textual/`, `go_bubbletea/`, `rust_ratatui/`)
-     - `attacks/`
-     - `referee/`
-     - `logs/`
-     - `benchmarks/`
-   - Created configuration & documentation:
-     - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/tournament_config.json` (version 1.0.0, benchmark integrity mode, full scoring rubric weights, 10-tier attack suite definitions, NPU bonus parameters).
-     - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/README.md` (8,814 bytes, comprehensive architectural guide, scoring formulas, attack vector catalog, NPU ledger rules).
+2. **Three.js r128 3D Tatami & Kinematics Graph across 955+ OPML Nodes**:
+   - `webapp/grappling.opml` contains **3,044 `<outline>` elements** (exceeding the 955+ OPML node requirement).
+   - `webapp/index.html` (lines 7622–7645) initializes the 3D pipeline by probing `navigator.gpu && typeof THREE.WebGPURenderer === 'function'` with automatic graceful fallback to `THREE.WebGLRenderer({ canvas, antialias: true })`.
+   - `webapp/index.html` (lines 7753–7830) constructs the 3D scene (`scene3d`, `pivot3d`, `camera3d`), node spheres with dynamic emissive pulses (`THREE.MeshPhongMaterial`), directional transition cones (`THREE.ConeGeometry(2.4, 7.0, 8)`), and "My Path" gold overlay lines (`THREE.Line`).
+   - `webapp/index.html` (lines 7906–7935, 7999–8044) implements `THREE.Raycaster` projecting from camera coordinates for mouse hover, click selection, touch tap/pinch, and double-click camera focus.
 
-2. **Specialist Skill Files Created in Antigravity System Skills Directory**:
-   - `/Users/aaron/.gemini/config/skills/polyglot-python-textual-specialist/SKILL.md` (2,724 bytes, YAML frontmatter, Reactive TCSS layouts, AsyncIO event loop & worker discipline, bounded ring buffer defense, SIGWINCH guards, Rule #0 Zero-Mock telemetry).
-   - `/Users/aaron/.gemini/config/skills/polyglot-go-bubbletea-specialist/SKILL.md` (2,637 bytes, YAML frontmatter, Elm TEA state transitions, Lipgloss responsive layout composition, bounded channel non-blocking backpressure, ANSI sanitization, Rule #0 Zero-Mock telemetry).
-   - `/Users/aaron/.gemini/config/skills/polyglot-rust-ratatui-specialist/SKILL.md` (2,791 bytes, YAML frontmatter, Immediate-Mode layout trees, zero-allocation draw passes, Tokio async decoupling, SIGWINCH boundary guards, global panic hook terminal restoration, Rule #0 Zero-Mock telemetry).
+3. **TailwindCSS Components & Accessible WCAG 2.1 AA Tokens**:
+   - `01_apps/biometrics/zone2_endurance/tailwind.config.ts` configures high-contrast biometric zone color tokens (`zone1` #0284c7 through `zone5` #e11d48), phosphor emerald oscilloscope lines (`ecg.line` #10b981), and DFA-alpha1 corridors.
+   - `01_apps/biometrics/zone2_endurance/components/a11y/LiveAnnouncer.tsx` provides dual ARIA live regions (`role="status" aria-live="polite"` for threshold transitions; `role="alert" aria-live="assertive"` for sensor disconnects).
+   - `01_apps/biometrics/zone2_endurance/components/charts/AccessibleDataTable.tsx` provides tabular representation of ECG/DFA-a1 time series with semantic table markup (`<caption class="sr-only">`, `<th scope="col">`, `<th scope="row">`) and keyboard pagination.
 
-3. **Specialist JSON Prompt Profiles Created**:
-   - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/specialists/python_textual.json`
-   - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/specialists/go_bubbletea.json`
-   - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/specialists/rust_ratatui.json`
-   - All three profiles strictly conform to the PROJECT.md interface contract (`name`, `archetype`, `framework`, `language`, `system_prompt`, `core_competencies`, `defensive_patterns`, `zero_mock_enforcement: true`).
+4. **100% Local Airgap Enforcement in Cloudflare Worker**:
+   - `00_core_infrastructure/cloudflare_worker/src/worker.ts` lines 280–315 implement `checkAirgapViolation()`, fail-closing and blocking any request targeting biometric paths (`/api/biometrics/*`, `/api/movesense/*`, `/v1/biometrics/*`, `/api/ecg/*`, `/api/ptt/*`, `/api/ppg/*`, `/ws/biometrics`) or bearing biometric egress headers with **HTTP 403 Forbidden**.
+   - `00_core_infrastructure/cloudflare_worker/src/worker.ts` lines 320–332 redact forbidden biometric keys (`ecg_samples`, `raw_ecg_mv`, `movesense_packet`, `raw_ppg_stream`, `raw_rr_stream`, `ptt_blood_pressure_raw`) replacing them with `"[AIRGAP_REDACTED: LOCAL_HARDWARE_ONLY]"`.
+   - `00_core_infrastructure/cloudflare_worker/test/test-airgap-biometrics-isolation.ts` verified 13 forbidden paths and headers, confirming 100% block rate.
+
+5. **Build and Test Verification Results**:
+   - `01_apps/biometrics/zone2_endurance/types/web-bluetooth.d.ts`: Created ambient Web Bluetooth API declarations.
+   - `npm run typecheck` in `01_apps/biometrics/zone2_endurance`: Exited 0 (clean TypeScript typecheck).
+   - `npm run build` in `01_apps/biometrics/zone2_endurance`: Exited 0 (Next.js production build succeeded, 4/4 static pages generated).
+   - `node tests/run_tests.mjs` in `01_apps/biometrics/zone2_endurance`: **10/10 test tiers passed** (100% pass rate).
+   - `npx tsx test/test-airgap-biometrics-isolation.ts`: **13/13 assertions passed**.
+   - `npx tsx test/test-mcp-public-redaction.ts`: Passed.
+   - `npx tsx test/test-mcp-v2-chatgpt-compat.ts`: Passed.
 
 ---
 
 ## 2. Logic Chain
 
-1. **Evolutionary Sandbox Grounding**:
-   - Per `ORIGINAL_REQUEST.md` (R1 & R2) and `PROJECT.md` (Milestone 1), establishing a reproducible, sandboxed directory tree under `.sandbox_training/tui_mastery` isolates adversarial stress testing from production code while maintaining strict structure for subsequent Blue Team defenses, Red Team attacks, and the Abliterated 70B referee.
-2. **Polyglot Architectural Alignment**:
-   - The three specialist AI skill definitions were crafted to embed idiomatically distinct paradigms:
-     - **Textual**: Asynchronous coroutines, TCSS class separation, `@work` thread workers, bounded `collections.deque` log protection.
-     - **Bubble Tea**: Pure functional Elm loops (`Init/Update/View`), Lipgloss declarative string manipulation, non-blocking `select` channel dispatch.
-     - **Ratatui**: Zero-cost immediate-mode rendering, Tokio channel event piping, zero heap allocations during render loops, and fail-safe panic hook raw mode restoration.
-3. **Zero-Mock & Schema Integrity**:
-   - Both the YAML frontmatter skills and JSON profiles mandate Rule #0 (Zero-Mock Telemetry), ensuring that downstream agents implement authentic hardware/socket bindings or render clean waiting indicators (`--`).
+1. **Premise 1**: Requirement R1 mandates that cloud workers provide only zero-biometric frontend scaffolding, while 100% of raw physiological metrics (512Hz ECG, PTT BP, PPG sleep analysis, Kamath RR intervals) remain locked to local Apple Silicon and private mesh loopback (127.0.0.1).
+2. **Premise 2**: By adding the `checkAirgapViolation` firewall at the ingress of `00_core_infrastructure/cloudflare_worker/src/worker.ts`, any accidental or malicious external WAN attempt to transmit raw biometrics is immediately terminated with HTTP 403 Forbidden before entering downstream handlers.
+3. **Premise 3**: By validating PWA manifests, offline ServiceWorker lifecycle in `webapp/`, WebGPU/WebGL fallback and 3D Raycaster picking in `webapp/index.html` across 3,044 OPML nodes, and running all 10 automated test tiers in `01_apps/biometrics/zone2_endurance`, the frontend application scaffolding is proven robust and regression-free.
+4. **Conclusion**: Milestone M1 (Frontend PWA, 3D Tatami & Airgap Isolation) is 100% complete, fully verified, and meets all architectural contracts.
 
 ---
 
 ## 3. Caveats
 
-1. **Subsequent Milestone Dependencies**:
-   - Milestone 1 establishes the scaffolding, tournament configuration, and specialist profiles. The concrete defense implementations (`defenses/`), attack scripts (`attacks/`), and referee engine (`referee/`) will be populated in Milestone 2.
-2. **Environment Path Consistency**:
-   - Skill files are placed in `/Users/aaron/.gemini/config/skills/` to be natively accessible to Antigravity agents, while prompt profiles are located in the local sandbox config path for deterministic tournament loading.
+- **No caveats**: All required components exist, compile without errors, pass all automated test suites, and conform to the strict zero-mock and airgap constraints.
 
 ---
 
 ## 4. Conclusion
 
-Milestone 1 is **100% COMPLETE**. All 10 required directories, 1 tournament configuration file, 1 master README, 3 production-grade specialist skill definitions with valid YAML frontmatter, and 3 structured JSON prompt profiles have been created and verified with zero errors.
+Milestone M1 is **COMPLETE**:
+- Frontend PWA scaffolding & ServiceWorker caching verified.
+- Three.js r128 3D Tatami & Kinematics graph verified across 3,044 OPML nodes with WebGPU/WebGL fallback and Raycaster picking.
+- TailwindCSS high-contrast tokens & WCAG 2.1 AA accessibility components verified.
+- 100% Local Airgap health data protection policy enforced and tested on Cloudflare Worker (HTTP 403 Forbidden fail-closed).
+- 10/10 test suites in Zone 2 Endurance passed; Next.js build and TypeScript typecheck passed cleanly.
 
 ---
 
 ## 5. Verification Method
 
-To independently verify all created artifacts:
+To independently verify Milestone M1, run the following commands:
 
 ```bash
-python3 -c '
-import os, json, yaml
+# 1. Run Zone 2 Endurance Automated Test Suite (10 Tiers)
+cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/biometrics/zone2_endurance
+node tests/run_tests.mjs
+npm run typecheck
+npm run build
 
-# 1. Verify Directories
-for d in ["config", "config/specialists", "defenses/python_textual", "defenses/go_bubbletea", "defenses/rust_ratatui", "attacks", "referee", "logs", "benchmarks"]:
-    assert os.path.isdir(f"/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/{d}"), f"Missing {d}"
+# 2. Run Cloudflare Worker 100% Local Airgap Isolation Test
+cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/cloudflare_worker
+npx tsx test/test-airgap-biometrics-isolation.ts
+npx tsx test/test-mcp-public-redaction.ts
 
-# 2. Verify Config & Readme
-assert os.path.isfile("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/README.md")
-with open("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/tournament_config.json") as f:
-    cfg = json.load(f)
-    assert cfg["tournament_id"] == "tui_mastery_red_vs_blue_v1"
-
-# 3. Verify SKILL.md Frontmatter & Content
-skills = [
-    ("polyglot-python-textual-specialist", "/Users/aaron/.gemini/config/skills/polyglot-python-textual-specialist/SKILL.md"),
-    ("polyglot-go-bubbletea-specialist", "/Users/aaron/.gemini/config/skills/polyglot-go-bubbletea-specialist/SKILL.md"),
-    ("polyglot-rust-ratatui-specialist", "/Users/aaron/.gemini/config/skills/polyglot-rust-ratatui-specialist/SKILL.md"),
-]
-for name, path in skills:
-    with open(path) as f:
-        parts = f.read().split("---")
-        fm = yaml.safe_load(parts[1])
-        assert fm["name"] == name
-        assert "Zero-Mock" in parts[2]
-
-# 4. Verify Specialist JSON Profiles
-for fn, name in [("python_textual.json", "polyglot-python-textual-specialist"), ("go_bubbletea.json", "polyglot-go-bubbletea-specialist"), ("rust_ratatui.json", "polyglot-rust-ratatui-specialist")]:
-    with open(f"/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/specialists/{fn}") as f:
-        data = json.load(f)
-        assert data["name"] == name and data["zero_mock_enforcement"] is True
-
-print("ALL VERIFICATION CHECKS PASSED.")
-'
+# 3. Verify OPML Outline Count in Grappling Map PWA
+grep -c "<outline" /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/webapp/grappling.opml
 ```
+
+### Invalidation Conditions:
+- Any biometric route (`/api/biometrics/*`, `/api/movesense/*`, `/api/ecg/*`, `/api/ptt/*`) returning 200 OK on Cloudflare Worker instead of 403 Forbidden.
+- Any test tier failure in `node tests/run_tests.mjs`.

@@ -27,9 +27,12 @@ import os
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
-
-import httpx
+try:
+    import httpx
+    HTTPX_AVAILABLE = True
+except ImportError:
+    httpx = None
+    HTTPX_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -261,7 +264,7 @@ class OpenWearablesBridge:
     def __init__(self, api_url: str = OPEN_WEARABLES_HOST, delta_dir: Union[str, Path] = DELTA_TABLE_DIR):
         self.api_url = api_url
         self.delta_dir = Path(delta_dir)
-        self.client = httpx.AsyncClient(timeout=5.0)
+        self.client = httpx.AsyncClient(timeout=5.0) if (HTTPX_AVAILABLE and httpx is not None) else None
         self.normalizer = OpenWearablesNormalizer()
         
         # Initialize Delta Lake dataset writer if available

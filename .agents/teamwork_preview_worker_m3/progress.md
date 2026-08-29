@@ -1,13 +1,18 @@
-# Progress Log — Milestone 3 Worker
+# Progress — Milestone M3 (SmolAgents Autonomous Arena & 4-Mode TUI Engine)
+Last visited: 2026-08-29T19:09:35+10:00
 
-Last visited: 2026-08-27T13:43:40Z
-Status: Complete (All M3 Tasks Succeeded)
+## Status: IN_PROGRESS
 
-## Tasks
-- [x] Task 1: Inspect environment, tournament script, defenses, and ledger.
-- [x] Task 2: Execute Official Tournament Benchmark (`run_tournament.py`).
-- [x] Task 3: Verify all 4 JSONL streams in `.sandbox_training/tui_mastery/logs/` and `benchmark_results.json`.
-- [x] Task 4: Execute Production Promotion of winning framework & specialist (Rust Ratatui).
-- [x] Task 5: Update NPU Bonus Ledger (+39.73 hours, +1 active promotion).
-- [x] Task 6: Run full E2E validation (`pytest tests/e2e/test_sandbox_tui_mastery_e2e.py -v`) -> 72/72 PASS.
-- [x] Task 7: Generate handoff report and notify parent orchestrator.
+### Completed Steps:
+- [x] Initialized DISPATCH.md and BRIEFING.md
+- [x] Pre-flight storage health verification (Healthy)
+
+### Pending Steps:
+- [ ] Read survey report handoff.md, ORIGINAL_REQUEST.md, PROJECT.md
+- [ ] Inspect existing smolagents_engine, red_blue_arena, and canonical_port/tui files
+- [ ] Implement/verify SmolAgents Autonomous Python Code-Execution in smolagents_arena_hub.py
+- [ ] Ensure 4 game modes active & switchable via 'm'
+- [ ] Verify Telemetry HUD Tactical Objective Summaries render plain-language active intent statements
+- [ ] Synchronize tui_live_arena_dev.py
+- [ ] Run full test suites & verify 100% pass
+- [ ] Write handoff.md and notify orchestrator

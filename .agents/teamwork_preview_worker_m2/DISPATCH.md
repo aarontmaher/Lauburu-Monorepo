@@ -1,36 +1,27 @@
-## 2026-08-27T13:27:17Z
-You are teamwork_preview_worker_m2.
-Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m2
-Your parent is: teamwork_preview_orchestrator_16 (conversation ID: 768913e7-e140-4a9c-aaad-4dd6832be4be)
+## 2026-08-29T09:09:14Z
+
+You are teamwork_preview_worker (Milestone M2 Specialist: Movesense Physiological Readiness & 512Hz DSP).
+Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m2/
+Project root: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+Read the original request at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
+Read the project specification at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
+Read survey report: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/handoff.md
 
 MANDATORY INTEGRITY WARNING:
 DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
 
-MANDATORY FILES TO READ BEFORE STARTING:
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_16/PROJECT.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/handoff.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/TEST_INFRA.md
+Scope & File Ownership:
+You own exclusively:
+- 03_biometrics_and_telemetry/ (pan_tompkins_dsp.py, movesense_readiness_suite.py, tests/)
+- tests/test_adversarial_challenger2_movesense_dsp.py
 
-ASSIGNMENT (Milestone 2: Red vs Blue Arena Components & Abliterated 70B Referee Engine):
-1. Build Blue Team robust TUI components in /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/defenses/:
-   - python_textual/ (app.py, widgets, TCSS, bounded log deque, throttled workers, non-blocking flock)
-   - go_bubbletea/ (main.go, TEA loop, Lipgloss styling, bounded channels, panic recovery, non-blocking flock)
-   - rust_ratatui/ (Cargo.toml, src/main.rs, immediate-mode layout, Tokio async event polling, zero-allocation draw passes, panic hook raw mode restoration)
-   (Note: You may leverage and adapt the high-quality implementations in 01_apps/canonical_tui_prototypes/ ensuring full sandboxed autonomy and compliance with specialist prompt profiles).
-
-2. Implement Red Team 5-Tier Attack Engine in /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/attacks/:
-   - sigwinch_storm.py (50-200 Hz resize stressor from 0x0 to 240x60)
-   - event_flood.py (1,000 keystrokes/s & concurrent telemetry storm)
-   - memory_stressor.py (buffer exhaustion & leak detector)
-   - schema_fuzzer.py (15 payload mutation classes including binary noise, 10^18 numbers, zero division, ANSI bombs)
-   - lock_contention.py (POSIX flock hijacking and atomic rename races)
-
-3. Implement Abliterated Llama 70B Referee & Chaos Engine in /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/referee/:
-   - abliterated_referee.py (Uncensored Devil's Advocate referee, refusal direction ablation math, round execution runner, streaming JSONL logs for tournament_events.jsonl, referee_verdicts.jsonl, lora_tui_distillation.jsonl, dpo_tui_preferences.jsonl)
-   - scoring_matrix.py (Composite score S_composite calculation with weights: 25% Memory, 25% Latency, 30% Robustness, 20% Quality)
-   - chaos_injector.py (Dynamic Tier 1 Architectural, Tier 2 Environmental, Tier 3 Cognitive chaos generator)
-
-4. Run all unit and E2E tests (including python3 -m pytest tests/e2e/test_sandbox_tui_mastery_e2e.py -v) to verify that all components operate flawlessly with 0 panics.
-5. Write detailed report to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m2/handoff.md.
-6. Notify parent via send_message when complete.
+Tasks:
+1. Ensure 512Hz Pan-Tompkins QRS detection, Kamath 2004 20% clinical RR artifact filter, microsecond precision R-R intervals, and RMSSD calculation are robust and mathematically complete.
+2. Ensure Pulse Transit Time (PTT) Continuous Blood Pressure hemodynamic inversion model (SBP, DBP, MAP) is verified.
+3. Ensure Overnight PPG Sleep Staging (Deep/REM/Light/Awake) & 0-100 recovery score calculate accurately.
+4. Ensure Auto Workout Detection & Cardiorespiratory Thresholds (LT1 @ DFA-a1=0.75, LT2 @ DFA-a1=0.50, VO2max = 15.3 * HR_max / HR_rest) function in real-time.
+5. Enforce Rule #0: Strictly zero simulated or fake arrays; offline hardware returns clean null / WAITING_FOR_SENSOR states.
+6. Fix outdated import paths in tests/test_adversarial_challenger2_movesense_dsp.py.
+7. Create and run a dedicated standalone unit & integration test suite under 03_biometrics_and_telemetry/tests/test_movesense_dsp_suite.py and ensure 100% pass rate.
+8. Write your handoff report to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m2/handoff.md.
+9. Notify the orchestrator via send_message when complete.

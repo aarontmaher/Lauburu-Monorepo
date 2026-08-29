@@ -19,10 +19,13 @@ import pytest
 BASE_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
 for p in [
     BASE_DIR,
-    os.path.join(BASE_DIR, "01_apps", "lauburu_compute_hub", "services"),
-    os.path.join(BASE_DIR, "01_apps", "movesense_hub"),
-    os.path.join(BASE_DIR, "01_apps", "port_4000_hub"),
+    os.path.join(BASE_DIR, "01_apps", "edge_compute_and_ai", "lauburu_compute_hub", "services"),
+    os.path.join(BASE_DIR, "01_apps", "edge_compute_and_ai", "lauburu_compute_hub"),
+    os.path.join(BASE_DIR, "01_apps", "biometrics", "movesense_hub"),
+    os.path.join(BASE_DIR, "01_apps", "edge_compute_and_ai", "port_4000_hub"),
+    os.path.join(BASE_DIR, "01_apps", "edge_compute_and_ai", "port_4000_hub", "services"),
     os.path.join(BASE_DIR, "00_core_infrastructure", "self_healing_hub", "src"),
+    os.path.join(BASE_DIR, "03_biometrics_and_telemetry"),
 ]:
     if p not in sys.path:
         sys.path.insert(0, p)
@@ -55,7 +58,7 @@ from pyspark_biometrics_dsp import (
     calculate_dfa_alpha1,
 )
 from pyspark_movesense_stream import PySparkMovesenseStreamEngine
-from services.telemetry_service import TelemetryService
+from telemetry_service import TelemetryService
 
 
 class TestChallenger2MovesenseProtocolStandards:

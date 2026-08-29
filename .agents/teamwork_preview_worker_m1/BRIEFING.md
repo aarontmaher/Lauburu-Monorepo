@@ -1,66 +1,54 @@
-# BRIEFING — 2026-08-27T13:24:00Z
+# BRIEFING — 2026-08-29T19:12:35+10:00
 
 ## Mission
-Initialize Sandbox Scaffolding & Specialist Prompt Profiles for Milestone 1 of the TUI Mastery Sandboxed Agent Arena.
+Deliver Milestone M1: Frontend PWA, 3D Tatami & Airgap Isolation verification, hardening, and test pass.
 
 ## 🔒 My Identity
-- Archetype: teamwork_preview_worker_m1
-- Roles: implementer, qa, specialist
-- Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1
-- Original parent: 768913e7-e140-4a9c-aaad-4dd6832be4be
-- Milestone: Milestone 1 (Sandbox Scaffolding & Specialist Prompt Profiles)
+- Archetype: teamwork_preview_worker
+- Roles: [implementer, qa, specialist]
+- Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/
+- Original parent: 63ce69b0-c347-4525-baf9-09dde968f198
+- Milestone: M1 (Frontend PWA, 3D Tatami & Airgap Isolation)
 
 ## 🔒 Key Constraints
-- Zero-mock & zero-cheating integrity mandate.
-- Create target sandbox directory structure at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery
-- Create complete production-grade specialist skill files in /Users/aaron/.gemini/config/skills/ with valid YAML frontmatter and deep architectural system prompts.
-- Create structured JSON prompt profiles in .sandbox_training/tui_mastery/config/specialists/
-- Run full verification suite (YAML parsing, JSON validation).
-- Keep handoff.md comprehensive and self-contained.
+- DO NOT CHEAT: Genuine implementations only, no hardcoded test values, no facades.
+- Scope ownership: webapp/, 00_core_infrastructure/cloudflare_worker/src/worker.ts, 01_apps/biometrics/zone2_endurance/
+- 100% Local Airgap health data protection policy: zero raw biometrics egress to cloud.
+- Write handoff.md upon completion and notify parent via send_message.
 
 ## Current Parent
-- Conversation ID: 768913e7-e140-4a9c-aaad-4dd6832be4be
-- Updated: 2026-08-27T13:24:00Z
+- Conversation ID: 63ce69b0-c347-4525-baf9-09dde968f198
+- Updated: 2026-08-29T19:12:35+10:00
 
 ## Task Summary
-- **What to build**: 
-  1. Sandbox directories and config under `.sandbox_training/tui_mastery/`
-  2. Production-grade skill files: `polyglot-python-textual-specialist`, `polyglot-go-bubbletea-specialist`, `polyglot-rust-ratatui-specialist`
-  3. Specialist JSON prompt profiles: `python_textual.json`, `go_bubbletea.json`, `rust_ratatui.json`
-- **Success criteria**: All directories, config files, SKILL.md files, and JSON profiles created and verified with zero syntax errors.
-- **Interface contracts**: PROJECT.md, Survey 3 handoff.md
+- **What to build/verify**: PWA offline caching & manifest, Three.js r128 3D Tatami & Kinematics 955+ OPML node graph with WebGPU/WebGL fallback & raycasting, TailwindCSS WCAG 2.1 AA tokens, strict Cloudflare Worker airgap policy, and frontend test suite execution.
+- **Success criteria**: All tests pass, offline PWA works, 3D graph and picking work, airgap rejects biometrics egress with 403 Forbidden, handoff report generated.
+- **Interface contracts**: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
+- **Code layout**: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
 
 ## Change Tracker
 - **Files modified**:
-  - `.sandbox_training/tui_mastery/config/tournament_config.json`: Master tournament configuration & weights
-  - `.sandbox_training/tui_mastery/README.md`: Comprehensive sandbox architecture & scoring documentation
-  - `/Users/aaron/.gemini/config/skills/polyglot-python-textual-specialist/SKILL.md`: Python Textual specialist skill
-  - `/Users/aaron/.gemini/config/skills/polyglot-go-bubbletea-specialist/SKILL.md`: Go Bubble Tea specialist skill
-  - `/Users/aaron/.gemini/config/skills/polyglot-rust-ratatui-specialist/SKILL.md`: Rust Ratatui specialist skill
-  - `.sandbox_training/tui_mastery/config/specialists/python_textual.json`: Textual prompt profile
-  - `.sandbox_training/tui_mastery/config/specialists/go_bubbletea.json`: Bubble Tea prompt profile
-  - `.sandbox_training/tui_mastery/config/specialists/rust_ratatui.json`: Ratatui prompt profile
-- **Build status**: 18/18 checks PASSED
-- **Pending issues**: None
+  - `00_core_infrastructure/cloudflare_worker/src/worker.ts`: Implemented `checkAirgapViolation` enforcing strict 100% Local Airgap (403 Forbidden on biometric paths/headers) & `applyConnectorRedaction` key filtering.
+  - `00_core_infrastructure/cloudflare_worker/test/test-airgap-biometrics-isolation.ts`: Created airgap firewall test suite verifying 13+ forbidden biometric endpoints and headers.
+  - `01_apps/biometrics/zone2_endurance/types/web-bluetooth.d.ts`: Added ambient type declarations for Web Bluetooth API to ensure flawless TypeScript compilation.
+- **Build status**: PASS (Next.js build & typecheck 100% green; Cloudflare Worker tests 100% green).
+- **Pending issues**: None.
 
 ## Quality Status
-- **Build/test result**: 100% PASS on YAML frontmatter & JSON profile validation
-- **Lint status**: Clean
-- **Tests added/modified**: Validation test suite in handoff.md
+- **Build/test result**: 10/10 Zone 2 test tiers passed, Airgap isolation test passed, TypeScript typecheck passed, Next.js production build passed.
+- **Lint status**: Clean.
+- **Tests added/modified**: `test-airgap-biometrics-isolation.ts` (13 path assertions + header tests + route validation).
 
 ## Loaded Skills
-- None loaded directly
+- None
 
 ## Key Decisions Made
-- Embedded deep architectural directives (TCSS vs Elm Loop vs Immediate Mode) and Rule #0 Zero-Mock enforcement in all skills and prompt profiles.
+- Embedded fail-closed HTTP 403 airgap firewall into Cloudflare Worker ingress to guarantee zero raw biometrics egress to cloud edge workers.
+- Verified Three.js r128 WebGPU/WebGL fallback and Raycaster interaction across 3,044 OPML outline nodes in Grappling Map PWA.
+- Verified Zone 2 Endurance WCAG 2.1 AA accessibility tokens and screen-reader live regions.
 
 ## Artifact Index
-- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/tournament_config.json`
-- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/README.md`
-- `/Users/aaron/.gemini/config/skills/polyglot-python-textual-specialist/SKILL.md`
-- `/Users/aaron/.gemini/config/skills/polyglot-go-bubbletea-specialist/SKILL.md`
-- `/Users/aaron/.gemini/config/skills/polyglot-rust-ratatui-specialist/SKILL.md`
-- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/specialists/python_textual.json`
-- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/specialists/go_bubbletea.json`
-- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/specialists/rust_ratatui.json`
-- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/handoff.md`
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/DISPATCH.md
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/BRIEFING.md
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/progress.md
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/handoff.md

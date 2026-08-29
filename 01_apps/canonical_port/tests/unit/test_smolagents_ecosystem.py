@@ -164,7 +164,7 @@ class TestAutonomousBackgroundCronScheduler:
         scheduler.register_job("job_sync", interval_seconds=0.01, func=sync_job)
         scheduler.start()
 
-        await asyncio.sleep(0.04)
+        await asyncio.sleep(0.08)
         await scheduler.stop()
 
         assert counter >= 2

@@ -1,87 +1,121 @@
-# Project: Lauburu External GraphQL Perimeters Integration (Cloudflare Zero Trust & Shopify Headless)
+# Project: Unified Lauburu Front-Facing App Architecture & Multi-Mode Game Arena
 
 ## Architecture
-- **Perimeter 1: Cloudflare Zero Trust & WAF Telemetry**:
-  - `06_scripts_and_tooling/cloudflare_telemetry.py` queries Cloudflare GraphQL Analytics API (`https://api.cloudflare.com/client/v4/graphql`) for WAF threat blocks (`firewallEventsAdaptive`) and traffic aggregates (`httpRequestsAdaptiveGroups`), plus REST API for Zero Trust Access logs (`/accounts/{account_id}/access/logs/access_requests`).
-  - Ingested by `01_apps/canonical_port/backend/training_telemetry_collector.py` and rendered dynamically inside `01_apps/canonical_port/tui/screens/training_screen.py` Tab 1 (Red/Blue Arena) and `01_apps/canonical_port/tui/widgets/lauburu_gyms_widget.py`.
-  - Visual correlation between Red Team cognitive reasoning (`<think>` thought stream from Abliterated Llama) and Blue Team WAF intercept events.
-- **Perimeter 2: Shopify Headless Monetization Engine**:
-  - Located in `08_business_and_commerce/shopify_headless/`.
-  - Modular layered architecture: `config.py` (env vars), `client.py` (Async httpx client with rate limit tracking & retry backoff), `errors.py`, `models.py` (Pydantic), `queries/` (`subscriptions.py`, `hardware_kit.py`, `token_gating.py`), and `services/` (`monetization_service.py`, `compute_offset.py`).
-  - Three distinct monetization use cases:
-    1. Recurring Subscriptions: OpenClaw AI API purchasing via Storefront selling plans and Admin subscription contract tracking.
-    2. Hardware Kit Cart: Mesh node bundling (GL.iNet MT3600BE Router + Movesense Medical ECG) with custom device attributes and buyer identity.
-    3. Token-Gated Authentication: Customer Account / Storefront API profile verification unlocking the 3D Spatial Grappling UI and Port 4000 Hub.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                 100% LOCAL BIOMETRICS AIRGAP BOUNDARY                           │
+├─────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ [Movesense HR+ 512Hz / 128Hz BLE]  ──(GATT 0x2A37 / MDS 2.0)──►  [Apple Silicon Metal GPU / CPU]│
+│                                                                                                 │
+│  LOCAL DSP PIPELINE (127.0.0.1:8000 / 127.0.0.1:4000 / 127.0.0.1:5001):                        │
+│  1. 4th-Order Butterworth 0.5–40 Hz Bandpass Filter                                             │
+│  2. 5-Point Derivative Filter & Non-linear Squaring (Pan-Tompkins 1985)                        │
+│  3. 150ms Moving Window Integrator (MWI) & Dual-Threshold Adaptive Peak Searchback              │
+│  4. Kamath et al. 2004 20% Clinical RR Artifact Filter (|RR_i - RR_{i-1}| / RR_{i-1} <= 0.20)  │
+│  5. Root Mean Square of Successive Differences (RMSSD) Math                                     │
+│  6. 120s Rolling Detrended Fluctuation Analysis (DFA-alpha1, LT1 @ 0.75, LT2 @ 0.50)           │
+│  7. Pulse Transit Time (PTT) Continuous Hemodynamic Blood Pressure Inversion:                  │
+│     • SBP = 120.0 + 0.45 * (200 - PTT) + 0.15 * (HR - 70)                                       │
+│     • DBP = 80.0 + 0.25 * (200 - PTT) + 0.08 * (HR - 70)                                        │
+│     • MAP = (SBP + 2 * DBP) / 3.0                                                               │
+│  8. Overnight Optical PPG Sleep Staging (Deep, REM, Light, Awake) & Sleep Score (0-100)        │
+│  9. Uth-Sørensen VO2max Estimation: 15.3 * (HR_max / HR_rest)                                  │
+│                                                                                                 │
+│  LOCAL PERSISTENCE ONLY:                                                                        │
+│  • PySpark JSONL & Delta Lake Parquet (/Users/aaron/DFS_UNIFIED/lora_datasets/)                 │
+│  • Obsidian Vault Health Graph (/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/)      │
+├─────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                  STRICT ISOLATION FIREWALL                                      │
+├─────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  CLOUD AI & EDGE WORKERS (Cloudflare Workers AI, Gemini 3.7 Flash, Supabase, Railway):         │
+│  • STRICTLY ZERO RAW BIOMETRIC DATA ALLOWED.                                                    │
+│  • Redacts all raw athlete physiological metrics before egress.                                 │
+│  • Handles UI scaffolding, PWA asset delivery, WebGPU WGSL shaders, and Three.js 3D Tatami.    │
+└─────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
 
 ## Feature Inventory
 | # | Feature | Description | Milestone | Source |
-|---|---------|-------------|-----------|--------|
-| 1 | Cloudflare GraphQL Analytics Collector | Queries `firewallEventsAdaptive` & `httpRequestsAdaptiveGroups` for WAF blocks | M1 | Survey |
-| 2 | Cloudflare Zero Trust Access Audit Collector | Queries `/access/logs/access_requests` for user login/service authentications | M1 | Survey |
-| 3 | Telemetry Data Models & Zero-Mock Guarantee | Typed dataclasses (`WAFThreatEvent`, `AccessAuthEvent`, `CloudflareTelemetrySnapshot`) with `--` fallback | M1 | Survey |
-| 4 | TUI Red/Blue Arena Status Cards & Metrics | Tunnel health, Blue Team Access passes, Red Team threat blocks, RTT | M1 | Survey |
-| 5 | TUI Subpixel Braille Sparklines | Real-time traffic & attack frequency visualization | M1 | Survey |
-| 6 | TUI Live Combat & Defense Ledger Table | Rich / DataTable listing attacker IP, Geo, target path, action, rule ID | M1 | Survey |
-| 7 | TUI Attack Vector & Geo Distribution Panels | Ranked attack vector list and origin country breakdown | M1 | Survey |
-| 8 | Red Team Cognitive Telemetry Stream | Real-time `<think>` Chain-of-Thought stream in Tab 1 correlated with WAF blocks | M1 | User Directive |
-| 9 | Non-blocking Async TUI Poller | `@work` / `set_interval` loop updating reactive telemetry without UI lag | M1 | Survey |
-| 10 | Shopify Headless Configuration Loader | Environment-driven config (`SHOPIFY_STORE_DOMAIN`, tokens, version) with zero hardcoding | M2 | Survey |
-| 11 | Resilient Async GraphQL Client | Async httpx client with leaky-bucket rate limiting, 429 backoff, dev token bypass | M2 | Survey |
-| 12 | Use Case 1: Subscription Selling Plans Query | Queries `sellingPlanGroups` and `sellingPlans` for OpenClaw AI product | M2 | Survey |
-| 13 | Use Case 1: Subscription Cart Mutation | `cartCreate` with `merchandiseId` + `sellingPlanId` for recurring billing | M2 | Survey |
-| 14 | Use Case 1: Admin Subscription Contracts Query | Queries `subscriptionContracts` connection for active subscription tracking | M2 | Survey |
-| 15 | Use Case 2: Multi-Item Hardware Bundle Cart | `cartCreate` for GL.iNet router + Movesense ECG bundle with custom device attributes | M2 | Survey |
-| 16 | Use Case 2: Progressive Hardware Line Updates | `cartLinesAdd` for adding mesh nodes / accessories to existing cart | M2 | Survey |
-| 17 | Use Case 2: Buyer Identity & Shipping Preferences | `cartBuyerIdentityUpdate` for country code and delivery rates | M2 | Survey |
-| 18 | Use Case 2: Cart Discount Code Application | `cartDiscountCodesUpdate` for bundle promo codes ($0 hardware commitment) | M2 | Survey |
-| 19 | Use Case 3: Customer Access Token Creation | `customerAccessTokenCreate` for Storefront login session | M2 | Survey |
-| 20 | Use Case 3: Customer Gated Profile Query | `customer(customerAccessToken: ...)` querying membership tags (`tier_pro`) | M2 | Survey |
-| 21 | Use Case 3: Customer Account Subscriptions | Direct query against Customer Account API for subscriber status | M2 | Survey |
-| 22 | Use Case 3: Spatial Grappling Gatekeeper Service | Verifies subscription status before unlocking 3D Tatami Kinematics | M2 | Survey |
-| 23 | Comprehensive E2E Test Suite | 4-tier test harness covering Cloudflare telemetry, TUI rendering, and Shopify engine | M3 | Dual Track |
-| 24 | Adversarial Stress & Integrity Audit | White-box vulnerability testing, zero-mock audit, and secret leakage prevention | M3 | Dual Track |
+|---|---|---|---|---|
+| 1 | Frontend PWA Scaffolding & Manifest | Offline ServiceWorker caching, responsive PWA manifests for mobile/desktop | M1 | Survey R1 |
+| 2 | Three.js 3D Tatami & Kinematics Graph | 955+ OPML nodes interactive 3D map, WebGPU/WebGL renderers, raycasting | M1 | Survey R1 |
+| 3 | TailwindCSS & Cross-Platform UI | Responsive Tailwind UI components, WCAG 2.1 AA accessible charts, Flutter templates | M1 | Survey R1 |
+| 4 | Strict 100% Local Airgap Protection | Strict zero-biometrics firewall on Cloudflare/external endpoints, 127.0.0.1 airgap | M1 | Survey R1 |
+| 5 | Bicep ECG 512Hz Pan-Tompkins DSP | Butterworth bandpass, 5-pt derivative, 150ms MWI, dual-threshold peak search | M2 | Survey R2 |
+| 6 | Kamath 20% Artifact Filter & RMSSD | Kamath 2004 20% RR interval filter, microsecond precision, RMSSD calculation | M2 | Survey R2 |
+| 7 | Pulse Transit Time (PTT) Continuous BP | Hemodynamic PTT inversion model calculating SBP, DBP, MAP in real time | M2 | Survey R2 |
+| 8 | Overnight PPG Sleep Staging & Score | Deep, REM, Light, Awake staging, 0-100 recovery score, nocturnal dipping | M2 | Survey R2 |
+| 9 | Auto Workout Detect & LT1/LT2 / VO2max | Real-time DFA-a1 LT1 (0.75), LT2 (0.50), HR ratio VO2max (15.3 * HR_max / HR_rest) | M2 | Survey R2 |
+| 10 | Rule #0 Zero-Mock Enforcement | Zero fake arrays; clean WAITING_FOR_SENSOR / null states when offline | M2 | Survey R2 |
+| 11 | SmolAgents Sandboxed Python Duel | Faction leaders (Hermes 3 / Qwen Red, LuCI / Sentinel Blue) write & run Python code | M3 | Survey R3 |
+| 12 | Canonical 4 Selectable Game Modes | EDGE_ORCHESTRATOR_CLASSIC, SMOLAGENTS_PYTHON_DUEL, MULTI_MODEL_AGI_SWARM, AIRGAP_MESH_VS_CLOUD_CHAOS | M3 | Survey R3 |
+| 13 | Telemetry HUD Tactical Objective Summaries | Active plain-language statements: "What is each team currently trying to do?" | M3 | Survey R3 |
+| 14 | Standalone & Embedded TUI Synchronization | Sync standalone tui_live_arena_dev.py with Canonical LiveArenaDevScreen 4-mode engine | M3 | Survey R3 |
+| 15 | 100% E2E Test Suite Pass | Opaque-box E2E test verification across all 14 features (Tiers 1-4) | M4 | Dual Track |
+| 16 | Tier 5 Adversarial Coverage Hardening | White-box stress testing, chaos injections, and forensic audit verification | M4 | Final Milestone |
 
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
-|---|------|-------|-------------|--------|
-| 1 | M1: Cloudflare Zero Trust Telemetry & TUI Arena | `06_scripts_and_tooling/cloudflare_telemetry.py`, `01_apps/canonical_port/tui/screens/training_screen.py`, `01_apps/canonical_port/tui/widgets/lauburu_gyms_widget.py`, `01_apps/canonical_port/tui/widgets/red_blue_arena_widget.py` | none | DONE |
-| 2 | M2: Shopify Headless Monetization Engine | `08_business_and_commerce/shopify_headless/` (config, client, errors, models, queries, services, tests) | none | DONE |
-| 3 | M3: Dual Track E2E Test Suite & Adversarial Audit | Test suite across all 4 tiers (175 tests), adversarial stress testing, Forensic integrity audit | M1, M2 | DONE |
-
+|---|---|---|---|---|
+| M1 | Frontend PWA, 3D Tatami & Airgap Scaffolding | Frontend PWA scaffolding, Three.js 3D Tatami, TailwindCSS tokens, 100% local airgap policy | None | PLANNED |
+| M2 | Movesense Physiological Readiness & 512Hz DSP | 512Hz Pan-Tompkins QRS, Kamath RR filter, RMSSD, PTT BP inversion, Sleep staging, LT1/LT2, VO2max | None | PLANNED |
+| M3 | SmolAgents Autonomous Arena & 4-Mode TUI Engine | Sandboxed Python code execution for Red/Blue leads, 4 game modes, TUI Tactical Objective HUD | None | PLANNED |
+| M4 | Final Milestone: 100% E2E Pass & Tier 5 Hardening | Execute full E2E Test Suite (Tiers 1-4) + Tier 5 Adversarial Coverage Hardening + Forensic Audit | M1, M2, M3, E2E Track | PLANNED |
 
 ## Interface Contracts
-### `cloudflare_telemetry.py` ↔ `training_screen.py`
-- Function: `get_cloudflare_zero_trust_snapshot(time_window_minutes: int = 60) -> Dict[str, Any]`
-- Dataclass: `CloudflareTelemetrySnapshot` serializable to JSON
-- Key fields: `status`, `is_configured`, `summary` (`total_threats_blocked`, `total_challenges_issued`, `top_attacked_host`), `threat_events` (`timestamp`, `action`, `client_ip`, `country`, `path`, `rule_id`, `description`, `ray_id`), `access_events` (`user_email`, `allowed`, `connection_type`, `country`), `red_team_thoughts` (`timestamp`, `model_id`, `thought_summary`, `attack_vector`, `target_endpoint`).
-- Rule #0 invariant: When credentials are missing or no live events exist, all numerical fields render `--` and event lists are empty `[]`.
+### Frontend UI (`01_apps/`, `webapp/`) ↔ Local Biometrics Airgap (`03_biometrics_and_telemetry/`)
+- Endpoint: `http://127.0.0.1:8000/api/movesense/telemetry` & `ws://127.0.0.1:8000/ws/ingest`
+- Input: Request for live telemetry / readiness score
+- Response Schema:
+  ```json
+  {
+    "status": "STREAMING" | "WAITING_FOR_SENSOR",
+    "heart_rate_bpm": float | null,
+    "rmssd_ms": float | null,
+    "dfa_alpha1": float | null,
+    "ptt_blood_pressure": {
+      "systolic_bp_mmhg": float | null,
+      "diastolic_bp_mmhg": float | null,
+      "map_mmhg": float | null
+    },
+    "sleep_recovery": {
+      "sleep_score_pct": int | null,
+      "deep_sleep_pct": float | null,
+      "rem_sleep_pct": float | null
+    },
+    "cardiorespiratory": {
+      "lt1_threshold_bpm": float | null,
+      "lt2_threshold_bpm": float | null,
+      "vo2max_estimate": float | null,
+      "activity_state": string | null
+    }
+  }
+  ```
 
-### `shopify_headless` ↔ Consumers (Port 4000 Hub / Spatial Grappling UI)
-- High-level Service: `ShopifyMonetizationService`
-  - `create_subscription_checkout(handle: str, plan_id: str) -> SubscriptionCheckoutResponse`
-  - `create_hardware_kit_cart(items: List[HardwareItemInput], buyer_identity: Optional[BuyerIdentityInput] = None) -> CartResponse`
-  - `verify_token_gated_access(customer_token: str, required_tier: str = "tier_pro") -> TokenGatedAccessGrant`
-- Error handling: Raises `ShopifyGraphQLError`, `ShopifyRateLimitError`, `ShopifyUserError`.
-- Dev token bypass: Tokens matching `tok_dev_*` / `shpat_dev_*` return verified active subscription grants for local offline testing.
+### SmolAgents Arena Engine (`05_agents_and_swarms/`) ↔ Canonical TUI HUD (`01_apps/canonical_port/tui/`)
+- Module: `SmolAgentsArenaHub` in `smolagents_engine/smolagents_arena_hub.py`
+- Methods:
+  - `run_arena_tick(active_mode: str) -> dict`
+  - `tactical_intent_summary` output schema:
+    ```json
+    {
+      "red_faction_intent": string,
+      "blue_faction_intent": string,
+      "user_biological_state": string,
+      "combat_narrative": string
+    }
+    ```
 
 ## Code Layout
-- `06_scripts_and_tooling/cloudflare_telemetry.py`
-- `01_apps/canonical_port/tui/screens/training_screen.py`
-- `01_apps/canonical_port/tui/widgets/lauburu_gyms_widget.py`
-- `01_apps/canonical_port/tui/widgets/red_blue_arena_widget.py` (shared Arena component)
-- `08_business_and_commerce/shopify_headless/`
-  - `__init__.py`
-  - `config.py`
-  - `client.py`
-  - `errors.py`
-  - `models.py`
-  - `queries/__init__.py`
-  - `queries/subscriptions.py`
-  - `queries/hardware_kit.py`
-  - `queries/token_gating.py`
-  - `services/__init__.py`
-  - `services/monetization_service.py`
-  - `services/compute_offset.py`
-  - `tests/`
-- `tests/e2e/test_cloudflare_telemetry_tui_e2e.py`
-- `tests/e2e/test_shopify_headless_e2e.py`
+- `01_apps/biometrics/zone2_endurance/` — Next.js 14 Web Bluetooth Zone 2 App
+- `webapp/` — Three.js 3D Tatami Grappling Map PWA
+- `00_core_infrastructure/self_healing_hub/frontend/` — WebGPU WGSL Tatami Particle Visualizer
+- `00_core_infrastructure/cloudflare_worker/src/worker.ts` — Zero-Biometric Cloud Isolation Worker
+- `03_biometrics_and_telemetry/pan_tompkins_dsp.py` — 512Hz Pan-Tompkins QRS, Kamath filter, RMSSD, DFA-a1, PTT BP
+- `03_biometrics_and_telemetry/movesense_readiness_suite.py` — Readiness, Sleep Staging, LT1/LT2, VO2max
+- `05_agents_and_swarms/smolagents_engine/smolagents_arena_hub.py` — SmolAgents Arena Hub & 4 Game Modes
+- `01_apps/canonical_port/tui/screens/live_arena_dev_screen.py` — Canonical TUI Live Arena Dev Screen
+- `01_apps/canonical_port/tui/tui_live_arena_dev.py` — Standalone Live Arena TUI script
+- `05_agents_and_swarms/genetic_moe/genetic_moe_ai_router.py` — Mode 3 Genetic MoE AI Router
+- `tests/e2e/` — Opaque-box E2E Test Suite (Tiers 1-4)

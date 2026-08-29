@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 """
 Side-by-Side Red/Blue Adversarial & Gamified Live --dev Dashboard
+Subsystem: 01_apps/canonical_port/tui/tui_live_arena_dev.py
+Version: 4.0.0-CANONICAL
 Lauburu Mesh Ecosystem — 2026
 
 Hermes 3 + OpenClaw (Red) vs LuCI OpenWrt + Sentinel (Blue)
 Features:
-1. Dynamic Smolagents Tactical Intent Summary ("what each team is currently trying to do").
-2. Dynamic Game Mode Selector ([1] Edge Baseline, [2] SmolAgents Action, [3] Mesh vs Cloud Sim) via 'm'.
+1. Dynamic SmolAgents Tactical Intent Summary ("what each team is currently trying to do").
+2. 4 Selectable Game Modes via 'm':
+   - [1] EDGE_ORCHESTRATOR_CLASSIC (Fast heuristic / rule-based network self-healing)
+   - [2] SMOLAGENTS_PYTHON_DUEL (Autonomous Python code-generating duelists)
+   - [3] MULTI_MODEL_AGI_SWARM (Genetic MoE router selecting local specialist SLMs)
+   - [4] AIRGAP_MESH_VS_CLOUD_CHAOS (100% local mesh defending against external chaos)
 3. Dynamic Animated Tug-of-War Compute Power Bar.
-4. Live Movesense Cardiac Pulse Gauge & Autonomic Zone Indicator.
-5. Dual Large Graphical Topology Maps.
+4. Live Movesense Cardiac Pulse Gauge & Autonomic Readiness Indicators.
+5. Dual Graphical Topology Maps (Infiltration vs Defense Shield).
 6. Interactive 1-Key Battle Abilities ([c] Chaos, [h] Heal, [b] BQL Burst, [s] Shield).
 7. Interactive RAG Query Input Bar & macOS Voice TTS.
 """
@@ -21,7 +27,7 @@ import time
 import random
 import asyncio
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical, VerticalScroll
@@ -31,13 +37,18 @@ from rich.table import Table
 from rich.text import Text
 
 sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/red_blue_arena")
+sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/smolagents_engine")
+sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/03_biometrics_and_telemetry")
 sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src")
+
 from arena_rag_comm import DualTeamRAGVoiceEngine
 from autonomous_game_and_ui_optimizer_loop import AutonomousGameAndUIOptimizerLoop
-from smolagents_arena_engine import SmolagentsArenaEngine
+from smolagents_arena_hub import SmolAgentsArenaHub, GAME_MODES
+from movesense_readiness_suite import MovesenseReadinessSuite
 
 UI_STATE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/dynamic_ui_ux_state.json")
 SMOLAGENTS_STATE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/smolagents_arena_state.json")
+READINESS_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/03_biometrics_and_telemetry/movesense_readiness_live.json")
 
 class RedTeamGraphicalMapWidget(Static):
     DEFAULT_CSS = """
@@ -49,6 +60,13 @@ class RedTeamGraphicalMapWidget(Static):
         margin-bottom: 1;
     }
     """
+
+    def __init__(self, *args, **kwargs):
+        try:
+            asyncio.get_event_loop()
+        except RuntimeError:
+            asyncio.set_event_loop(asyncio.new_event_loop())
+        super().__init__(*args, **kwargs)
 
     def render_map(self, hr_bpm: int = 73, chaos_active: bool = False) -> Panel:
         tb4_atk = "[bold red]⚠️ 350ms PACKET DROP FLOOD[/]" if chaos_active else "[bold red]⚡ TB4 SOCKET DRAIN: Port 50052[/]"
@@ -63,7 +81,7 @@ class RedTeamGraphicalMapWidget(Static):
             f"        │                                                                             │",
             f"        └───( [bold red]📱 ADB TCP ESCALATION: Port 8022[/] )─────────> [bold gold1][🎯 L6: PIXEL 10 PRO (16GB)][/] ───┘"
         ]
-        return Panel("\n".join(lines), title="[bold red]🔴 RED TEAM (Hermes 3 & OpenClaw): 3D INFILTRATION MAP[/]", border_style="red")
+        return Panel("\n".join(lines), title="[bold red]🔴 RED FACTION (Hermes 3 & OpenClaw): 3D INFILTRATION MAP[/]", border_style="red")
 
 
 class BlueTeamGraphicalMapWidget(Static):
@@ -76,6 +94,13 @@ class BlueTeamGraphicalMapWidget(Static):
         margin-bottom: 1;
     }
     """
+
+    def __init__(self, *args, **kwargs):
+        try:
+            asyncio.get_event_loop()
+        except RuntimeError:
+            asyncio.set_event_loop(asyncio.new_event_loop())
+        super().__init__(*args, **kwargs)
 
     def render_map(self, hr_bpm: int = 73, chaos_active: bool = False) -> Panel:
         tb4_def = "[bold red]⚠️ TB4 SEVERED -> WG FAILOVER[/]" if chaos_active else "[bold green]⚡ MTU 9000 JUMBO SHIELD (0.35ms)[/]"
@@ -91,7 +116,7 @@ class BlueTeamGraphicalMapWidget(Static):
             f"        │                                                                             │",
             f"        └───( [bold cyan]🔒 ED25519 TRIPWIRE KEEPER[/] )────────────> [bold gold1][L6: PIXEL 10 PRO (Shielded)][/] ───┘"
         ]
-        return Panel("\n".join(lines), title="[bold cyan]🔵 BLUE TEAM (LuCI OpenWrt & Sentinel): 3D SHIELD MAP[/]", border_style="cyan")
+        return Panel("\n".join(lines), title="[bold cyan]🔵 BLUE FACTION (LuCI OpenWrt & Sentinel): 3D SHIELD MAP[/]", border_style="cyan")
 
 
 class LiveArenaDevApp(App):
@@ -138,7 +163,7 @@ class LiveArenaDevApp(App):
     """
 
     BINDINGS = [
-        ("m", "toggle_game_mode", "Switch Game Mode"),
+        ("m", "toggle_game_mode", "Cycle Game Mode (1-4)"),
         ("c", "trigger_chaos", "Inject Chaos Fault"),
         ("h", "trigger_heal", "Self-Heal All"),
         ("b", "trigger_bql_burst", "BQL Queue Burst"),
@@ -170,31 +195,39 @@ class LiveArenaDevApp(App):
         self.blue_map = self.query_one("#blue_graphical_map", BlueTeamGraphicalMapWidget)
         self.rag_engine = DualTeamRAGVoiceEngine()
         self.optimizer_loop = AutonomousGameAndUIOptimizerLoop()
-        self.smolagents_engine = SmolagentsArenaEngine()
-        self.mode_idx = 1
+        self.smolagents_hub = SmolAgentsArenaHub()
+        self.readiness_suite = MovesenseReadinessSuite()
+        self.mode_idx = 1  # Default to SMOLAGENTS_PYTHON_DUEL
         self.chaos_active = False
-        
+
+        self.red_log.write("[bold red]🔴 Red SmolAgent active (Python execution enabled). Target: TB4 Buffer & Movesense GATT.[/]")
+        self.blue_log.write("[bold blue]🔵 Blue SmolAgent active (Python defense enabled). Target: SQM fq_codel & Kamath HRV.[/]")
+
         self.set_interval(1.5, self.refresh_game_tick)
 
     def refresh_game_tick(self):
         state = self.optimizer_loop.run_debate_cycle()
-        smol_state = self.smolagents_engine.execute_smolagent_step()
-        
+        smol_state = self.smolagents_hub.execute_arena_tick()
+        readiness = self.readiness_suite.generate_full_readiness_report()
+
         hud = state.get("gamified_hud", {})
         combat_bar = hud.get("combat_tug_of_war_bar", "")
-        pulse_meter = hud.get("cardiac_pulse_meter", "")
-        hr = hud.get("heart_rate_bpm", 73)
+        hr = readiness["sensor_telemetry"]["heart_rate_bpm"]
+        bp = readiness["blood_pressure_ptt"]
+        sleep = readiness["overnight_sleep_analysis"]
+        vo2 = readiness["cardiorespiratory_thresholds"]["estimated_vo2max_ml_kg_min"]
 
-        mode_name = smol_state.get("active_game_mode", "MODE_2_SMOLAGENTS_ACTION")
-        red_intent = smol_state.get("tactical_intent_summary", {}).get("red_team", {})
-        blue_intent = smol_state.get("tactical_intent_summary", {}).get("blue_team", {})
+        active_mode = smol_state["active_game_mode"]
+        red_intent = smol_state["tactical_intent_summary"]["red_faction_intent"]
+        blue_intent = smol_state["tactical_intent_summary"]["blue_faction_intent"]
 
         voice_badge = "[bold green]🔊 VOICE: ON[/]" if self.rag_engine.tts_enabled else "[dim]🔇 VOICE: OFF ('v')[/]"
         hud_content = (
-            f"[bold gold1]⚔️ LAUBURU MESH COMBAT ARENA[/] | [bold magenta]Mode:[/] [underline]{mode_name}[/] (Press 'm') | {voice_badge}\n"
-            f"[bold red]🔴 RED GOAL:[/] {red_intent.get('current_objective', '')} [bold yellow]({red_intent.get('objective_progress_pct', 0)}%)[/]\n"
-            f"[bold cyan]🔵 BLUE GOAL:[/] {blue_intent.get('current_objective', '')} [bold yellow]({blue_intent.get('objective_progress_pct', 0)}%)[/]\n"
-            f"[bold white]Balance:[/] {combat_bar} | [bold white]Pulse:[/] {pulse_meter}"
+            f"[bold gold1]⚔️ ARENA MODE:[/] [bold magenta]{active_mode}[/] | {voice_badge} | [bold yellow]Contested:[/] GL-MT3600BE Router SQM\n"
+            f"[bold white]Compute Power:[/] {combat_bar}\n"
+            f"[bold red]🎯 RED INTENT:[/] {red_intent}\n"
+            f"[bold cyan]🛡️ BLUE INTENT:[/] {blue_intent}\n"
+            f"[bold white]💓 READINESS:[/] HR: [bold yellow]{hr} BPM[/] | BP: [bold green]{bp['systolic_bp_mmhg']}/{bp['diastolic_bp_mmhg']} mmHg[/] | Sleep: [bold cyan]{sleep['sleep_score_pct']}/100[/] | VO2max: [bold gold1]{vo2}[/] | [c] Chaos  [h] Heal  [b] BQL  [m] Mode"
         )
         self.battle_hud.update(Panel(hud_content, title=f"⚡ Live Computational Battle & Smolagents Intent HUD", border_style="gold1"))
 
@@ -202,22 +235,32 @@ class LiveArenaDevApp(App):
         self.blue_map.update(self.blue_map.render_map(hr_bpm=hr, chaos_active=self.chaos_active))
 
         timestamp_str = time.strftime("%H:%M:%S", time.localtime())
-        self.red_log.write(f"[{timestamp_str}] [bold red]🤖 CODE-ACTION:[/] `{red_intent.get('active_code_action', '')}`")
-        self.blue_log.write(f"[{timestamp_str}] [bold cyan]🛡️ SHIELD-ACTION:[/] `{blue_intent.get('active_code_action', '')}`")
+        if active_mode == "EDGE_ORCHESTRATOR_CLASSIC":
+            self.red_log.write(f"[{timestamp_str}] [bold red]⚡ HEURISTIC PROBE:[/] {red_intent}")
+            self.blue_log.write(f"[{timestamp_str}] [bold cyan]🛡️ HEURISTIC SHIELD:[/] {blue_intent}")
+        elif active_mode == "SMOLAGENTS_PYTHON_DUEL":
+            self.red_log.write(f"[{timestamp_str}] [bold red]🐍 SMOLAGENT PYTHON:[/] Executed 64MB buffer probe on TB4 Port 50052")
+            self.blue_log.write(f"[{timestamp_str}] [bold cyan]🐍 SMOLAGENT PYTHON:[/] Executed SQM fq_codel tc replacement on bridge0")
+        elif active_mode == "MULTI_MODEL_AGI_SWARM":
+            self.red_log.write(f"[{timestamp_str}] [bold red]🤖 SWARM DISPATCH:[/] {red_intent}")
+            self.blue_log.write(f"[{timestamp_str}] [bold cyan]🧬 GENETIC MoE:[/] {blue_intent}")
+        elif active_mode == "AIRGAP_MESH_VS_CLOUD_CHAOS":
+            self.red_log.write(f"[{timestamp_str}] [bold yellow]⚡ CHAOS INJECTION:[/] {red_intent}")
+            self.blue_log.write(f"[{timestamp_str}] [bold green]🔒 AIRGAP PERIMETER:[/] {blue_intent}")
 
     def action_toggle_game_mode(self):
-        self.mode_idx = (self.mode_idx + 1) % 3
-        self.smolagents_engine.set_mode(self.mode_idx)
-        new_mode = self.smolagents_engine.current_mode
+        self.mode_idx = (self.mode_idx + 1) % len(GAME_MODES)
+        new_mode = GAME_MODES[self.mode_idx]
+        self.smolagents_hub.set_game_mode(new_mode)
         self.blue_log.write(f"[bold gold1]🎮 GAME MODE SWITCHED TO: {new_mode}[/]")
-        self.rag_engine.speak_async(f"Game mode updated to {new_mode.replace('_', ' ')}", voice="Samantha")
+        self.rag_engine.speak_async(f"Game mode switched to {new_mode.replace('_', ' ')}", voice="Samantha")
 
     def on_input_submitted(self, event: Input.Submitted):
         val = event.value.strip()
         if not val:
             return
         event.input.value = ""
-        
+
         target_team = "RED" if ("red" in val.lower() or "hermes" in val.lower()) else "BLUE"
         res = self.rag_engine.query_team(target_team, val)
         if target_team == "RED":

@@ -1,65 +1,43 @@
-# BRIEFING — 2026-08-27T13:43:30Z
+# BRIEFING — 2026-08-29T19:09:30+10:00
 
 ## Mission
-Milestone 3 Complete: Official Red vs Blue tournament benchmark executed, Rust Ratatui certified as winner (99.39 composite score), production promotion verified with active skill and standalone binaries, NPU Bonus Ledger atomically updated (+39.73 hours, +1 promotion count), and full 72/72 E2E test validation passing.
+Verify, implement, and package SmolAgents Autonomous Python Code-Execution for faction leaders in SmolAgentsArenaHub, ensure all 4 selectable game modes are active and switchable ('m'), verify plain-language active intent statements in Telemetry HUD, synchronize tui_live_arena_dev.py, and achieve 100% test pass rate across test suites.
 
 ## 🔒 My Identity
-- Archetype: teamwork_preview_worker_m3
+- Archetype: teamwork_preview_worker
 - Roles: implementer, qa, specialist
 - Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3
-- Original parent: ca24800e-a20f-4c18-a415-cc33fd171e73
-- Milestone: Milestone 3 (Official Tournament Benchmark, Production Promotion & NPU Ledger Accounting)
+- Original parent: 63ce69b0-c347-4525-baf9-09dde968f198
+- Milestone: M3 (SmolAgents Autonomous Arena & 4-Mode TUI Engine)
 
 ## 🔒 Key Constraints
-- Strict Integrity Mandate: No cheating, no hardcoded results, no dummy implementations. Real state and empirical execution.
-- Maintain Zero-Mock (Rule #0) and Tri-Vault Storage Invariants.
-- Atomically increment total_bonus_hours_awarded (+39.73) and active_promotions_count (+1) in NPU Bonus Ledger.
-- Verify 72/72 E2E tests pass.
+- Scope: 05_agents_and_swarms/smolagents_engine/, 01_apps/canonical_port/tui/ (screens/live_arena_dev_screen.py, tui_live_arena_dev.py, canonical_tui.py)
+- Zero-mock truth enforcement (Rule #0)
+- Minimal change principle
+- Self-contained handoff report at completion
 
 ## Current Parent
-- Conversation ID: ca24800e-a20f-4c18-a415-cc33fd171e73
-- Updated: 2026-08-27T13:43:30Z
+- Conversation ID: 63ce69b0-c347-4525-baf9-09dde968f198
+- Updated: 2026-08-29T19:09:30+10:00
 
 ## Task Summary
-- **What to build/run**:
-  1. Executed `python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/benchmarks/run_tournament.py` [COMPLETED]
-  2. Confirmed 4 JSONL streams in `.sandbox_training/tui_mastery/logs/` and `benchmark_results.json` certification [COMPLETED]
-  3. Executed production promotion for winning framework & specialist (Rust Ratatui) [COMPLETED]
-  4. Updated NPU Bonus Ledger in `02_ai_models_and_inference/mesh_benchmarks/npu_bonus_ledger.json` (+39.73 hrs, +1 count) and synced to root `mesh_benchmarks/` [COMPLETED]
-  5. Ran full E2E test suite `pytest tests/e2e/test_sandbox_tui_mastery_e2e.py -v` (72/72 passing) [COMPLETED]
-- **Success criteria**:
-  - Tournament executed with empirical metrics. Winner certified: `rust_ratatui`.
-  - Production promotion verified: active skill `polyglot-rust-ratatui-specialist` and standalone binaries.
-  - Ledger updated: 247.73 total hours (+39.73), 9 active promotions (+1).
-  - 72/72 tests passing in 3.40s.
+- **What to build**: SmolAgents code execution arena integration, 4 canonical game modes with 'm' toggle, plain-language tactical intent statements in HUD, standalone TUI synchronization.
+- **Success criteria**: All 4 game modes active, SmolAgents execution verified with real Python sandbox tools, plain-language intent HUD, TUI unit tests and arena test suite passing 100%.
+- **Interface contracts**: PROJECT.md, survey report handoff.md.
 
 ## Change Tracker
-- **Files modified**:
-  - `02_ai_models_and_inference/mesh_benchmarks/npu_bonus_ledger.json` — Added grant NPU_GRANT_1787838188_9, total 247.73 hrs, count 9.
-  - `mesh_benchmarks/npu_bonus_ledger.json` — Synced root copy.
-  - `01_apps/canonical_tui_prototypes/rust_ratatui/canonical_tui_rust` — Standalone production binary.
-  - `01_apps/canonical_tui_prototypes/rust_ratatui/bin/canonical_tui_rust` — Standalone production binary in bin/.
-  - `.sandbox_training/tui_mastery/benchmarks/benchmark_results.json` — Certified official tournament results.
-  - `.sandbox_training/tui_mastery/logs/*.jsonl` — Populated 4 JSONL telemetry & distillation streams.
-- **Build status**: PASS (all tests and binaries passing).
-- **Pending issues**: None.
+- **Files modified**: [TBD]
+- **Build status**: [TBD]
+- **Pending issues**: None
 
 ## Quality Status
-- **Build/test result**: 72/72 E2E tests passing in 3.40s.
-- **Lint status**: Clean.
-- **Tests added/modified**: Validated all 4 tiers of `tests/e2e/test_sandbox_tui_mastery_e2e.py`.
+- **Build/test result**: [TBD]
+- **Lint status**: clean
+- **Tests added/modified**: [TBD]
 
 ## Loaded Skills
-- **Source**: /Users/aaron/.gemini/config/skills/polyglot-rust-ratatui-specialist/SKILL.md
-- **Local copy**: /Users/aaron/.gemini/config/skills/polyglot-rust-ratatui-specialist/SKILL.md
-- **Core methodology**: Master Rust Ratatui Specialist AI governing zero-cost immediate-mode terminal UI, Crossterm raw mode handling, Tokio async event loops, zero-copy buffer rendering, and sub-millisecond 120 FPS performance.
-
-## Key Decisions Made
-- Certified Rust Ratatui as undisputed champion under Abliterated Llama 70B referee.
-- Awarded official NPU bonus grant of 39.73 hours to polyglot-rust-ratatui-specialist.
+- polyglot-python-textual-specialist (/Users/aaron/.gemini/config/skills/polyglot-python-textual-specialist/SKILL.md)
+- polyglot-python-specialist (/Users/aaron/.gemini/config/skills/polyglot-python-specialist/SKILL.md)
 
 ## Artifact Index
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/benchmarks/benchmark_results.json — Official certified tournament results
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/mesh_benchmarks/npu_bonus_ledger.json — Master NPU Bonus Ledger
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/mesh_benchmarks/npu_bonus_ledger.json — Synced Root NPU Bonus Ledger
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e/test_sandbox_tui_mastery_e2e.py — E2E test suite
+- handoff.md — self-contained handoff report

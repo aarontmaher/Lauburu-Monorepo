@@ -271,6 +271,45 @@ function placeholderHandoff(env: Env) {
   };
 }
 
+// ── 100% Local Airgap Health Data Protection Policy ────────────────
+// Raw physiological biometrics (ECG 512Hz streams, microvolts, Movesense GATT
+// bytes, PTT waveforms, optical PPG sleep data, Kamath RR arrays, DFA-alpha1 raw series)
+// are strictly confined to local Apple Silicon & private mesh hardware (127.0.0.1).
+// Any WAN/Cloudflare request targeting biometric routes or sending biometric keys
+// is rejected with 403 Forbidden fail-closed isolation.
+
+const FORBIDDEN_AIRGAP_PATHS = [
+  /^\/(?:api|v1|ws)\/(?:biometrics|movesense|ecg|ptt|ppg|sleep_staging|raw_rr|heart_rate_raw|telemetry_raw)(?:\/.*)?$/i,
+];
+
+const FORBIDDEN_BIOMETRIC_KEYS = new Set([
+  'ecg_samples', 'raw_ecg_mv', 'ecgsamples', 'movesense_packet',
+  'movesenseraw', 'raw_ppg_stream', 'raw_rr_stream', 'rr_intervals_raw',
+  'ptt_blood_pressure_raw', 'dfa_alpha1_raw', 'pan_tompkins_raw',
+  'raw_ecg_stream', 'movesense_gatt_raw', 'optical_ppg_raw',
+]);
+
+function checkAirgapViolation(request: Request, path: string): { blocked: boolean; reason?: string } {
+  for (const pattern of FORBIDDEN_AIRGAP_PATHS) {
+    if (pattern.test(path)) {
+      return {
+        blocked: true,
+        reason: `Forbidden path '${path}': 100% Local Airgap Violation. Raw physiological biometrics (Movesense 512Hz ECG, PTT BP, PPG sleep streams) execute strictly on local Apple Silicon / Mesh hardware (127.0.0.1) and are forbidden from egressing to cloud edge workers.`,
+      };
+    }
+  }
+
+  const biometricsHeader = request.headers.get('x-lauburu-biometrics-egress') || request.headers.get('x-raw-biometrics');
+  if (biometricsHeader) {
+    return {
+      blocked: true,
+      reason: 'Forbidden header: 100% Local Airgap Violation. Raw biometrics egress header detected.',
+    };
+  }
+
+  return { blocked: false };
+}
+
 // ── Inline two-pass redactor (mirrors chat-app redactTokenLikeSubstrings) ──
 // Workers runtime can't import the chat-app code, so this is a small
 // re-implementation matching docs/CONNECTOR_SANITIZATION_RULES.md.
@@ -322,7 +361,11 @@ function applyConnectorRedaction<T>(payload: T): T {
   if (payload !== null && typeof payload === 'object') {
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(payload as Record<string, unknown>)) {
-      out[k] = applyConnectorRedaction(v);
+      if (FORBIDDEN_BIOMETRIC_KEYS.has(k.toLowerCase())) {
+        out[k] = '[AIRGAP_REDACTED: LOCAL_HARDWARE_ONLY]';
+      } else {
+        out[k] = applyConnectorRedaction(v);
+      }
     }
     return out as unknown as T;
   }
@@ -334,6 +377,21 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '');
+
+    // ── 100% Local Airgap Isolation Firewall Guard ─────────────────────
+    const airgapCheck = checkAirgapViolation(request, path);
+    if (airgapCheck.blocked) {
+      return jsonResponse(
+        {
+          ok: false,
+          error: airgapCheck.reason,
+          airgapPolicy: '100% Local Airgap (Apple Silicon / Private Mesh only)',
+          egressBlocked: true,
+          timestamp: new Date().toISOString(),
+        },
+        { status: 403 },
+      );
+    }
 
     // ── /mcp/v2 — unified namespaced MCP, ChatGPT-friendly core surface.
     // Trimmed to 8 tools (project.get_current_state, project.get_operating_rules,

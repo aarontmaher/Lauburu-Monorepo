@@ -1,22 +1,25 @@
-## 2026-08-27T13:40:38Z
+## 2026-08-29T09:09:14Z
+Task: Milestone M3 Specialist: SmolAgents Autonomous Arena & 4-Mode TUI Engine
+Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/
+Project root: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+Read the original request at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
+Read the project specification at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
+Read survey report: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3/handoff.md
 
-Resume work at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3.
-Read /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_16/handoff.md, BRIEFING.md, ORIGINAL_REQUEST.md, DISPATCH.md, and progress.md for current state.
-Your parent is ca24800e-a20f-4c18-a415-cc33fd171e73 — use this ID for all escalation and status reporting (send_message).
+Scope & File Ownership:
+You own exclusively:
+- 05_agents_and_swarms/smolagents_engine/
+- 01_apps/canonical_port/tui/ (screens/live_arena_dev_screen.py, tui_live_arena_dev.py, canonical_tui.py)
 
-MANDATORY INTEGRITY WARNING:
-DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
-
-ASSIGNMENT (Milestone 3: Official Tournament Benchmark, Production Promotion & NPU Ledger Accounting):
-1. Execute Official Tournament:
-   - Run `python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/benchmarks/run_tournament.py`
-   - Confirm all 4 JSONL streams in `.sandbox_training/tui_mastery/logs/` are populated and `benchmark_results.json` certifies the winning framework.
-2. Execute Production Promotion:
-   - Promote winning framework & specialist (Rust Ratatui) to production.
-   - Verify `/Users/aaron/.gemini/config/skills/polyglot-rust-ratatui-specialist/SKILL.md` is active and standalone binaries exist.
-3. Update NPU Bonus Ledger:
-   - Append the official grant entry to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/mesh_benchmarks/npu_bonus_ledger.json` (and sync to any root `mesh_benchmarks/npu_bonus_ledger.json`).
-   - Atomically increment `total_bonus_hours_awarded` (+39.73 hours) and `active_promotions_count` (+1).
-4. Run full E2E validation:
-   - `python3 -m pytest tests/e2e/test_sandbox_tui_mastery_e2e.py -v` (assert 72/72 tests passing).
-5. Document all actions in handoff.md and send final completion message to ca24800e-a20f-4c18-a415-cc33fd171e73.
+Tasks:
+1. Verify and package SmolAgents Autonomous Python Code-Execution for faction leaders (Hermes 3 / Qwen 7B Red Lead, LuCI OpenWrt / Qwen Coder Blue Lead) in 05_agents_and_swarms/smolagents_engine/smolagents_arena_hub.py.
+2. Ensure all 4 selectable game modes are active and switchable via key binding 'm':
+   1. EDGE_ORCHESTRATOR_CLASSIC
+   2. SMOLAGENTS_PYTHON_DUEL
+   3. MULTI_MODEL_AGI_SWARM
+   4. AIRGAP_MESH_VS_CLOUD_CHAOS
+3. Verify Telemetry HUD Tactical Objective Summaries render plain-language active intent statements ("What is each team currently trying to do?").
+4. Synchronize standalone 01_apps/canonical_port/tui/tui_live_arena_dev.py to import SmolAgentsArenaHub and support the 4 canonical game modes.
+5. Run the red/blue arena test suite (05_agents_and_swarms/red_blue_arena/tests/) and any TUI unit tests, verifying 100% pass rate.
+6. Write your handoff report to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/handoff.md.
+7. Notify the orchestrator via send_message when complete.

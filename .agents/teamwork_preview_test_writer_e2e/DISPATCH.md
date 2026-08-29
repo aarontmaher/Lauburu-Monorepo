@@ -1,26 +1,30 @@
-## 2026-08-27T13:21:49Z
+## 2026-08-29T09:09:14Z
 
-You are teamwork_preview_test_writer_e2e.
-Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e
-Your parent is: teamwork_preview_orchestrator_16 (conversation ID: 768913e7-e140-4a9c-aaad-4dd6832be4be)
+<USER_REQUEST>
+You are teamwork_preview_test_writer (E2E Test Architect & Writer).
+Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/
+Project root: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+Read the original request at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
+Read the project specification at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
 
 MANDATORY INTEGRITY WARNING:
 DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
 
-MANDATORY FILES TO READ BEFORE STARTING:
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_16/PROJECT.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/handoff.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3/handoff.md
+Scope & File Ownership:
+You own exclusively:
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/TEST_INFRA.md
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e/
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/TEST_READY.md
 
-ASSIGNMENT (E2E Testing Track):
-1. Design and write TEST_INFRA.md documenting the 4-tier testing philosophy (Opaque-box, requirement-driven), feature checklist, and coverage thresholds. Save to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/TEST_INFRA.md and /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_16/TEST_INFRA.md.
-2. Implement the comprehensive 4-Tier test suite in /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e/test_sandbox_tui_mastery_e2e.py:
-   - Tier 1: Feature Coverage (>=5 tests per feature: sandbox init, 3 specialist prompts & skills, Blue defenses, Red attacks, 70B referee, tournament execution, NPU bonus ledger)
-   - Tier 2: Boundary & Corner Cases (>=5 tests per boundary: empty configs, extreme fuzzer bounds, missing files, corrupted logs)
-   - Tier 3: Cross-Feature Interactions (referee reading attacks/defenses, tournament updating NPU ledger, logs adhering to JSONL schemas)
-   - Tier 4: Real-World Application Scenarios (end-to-end multi-round tournament simulation, winner declaration, NPU bonus grant accounting)
-3. Create TEST_READY.md at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/TEST_READY.md and /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_16/TEST_READY.md summarizing test runner command and coverage matrix.
-4. Run pytest on the test suite to verify test execution and syntax.
-5. Write handoff report in /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/handoff.md.
-6. Notify parent via send_message when complete.
+Tasks:
+1. Create TEST_INFRA.md following the E2E Test Infra template in PROJECT.md.
+2. Build an opaque-box, requirement-driven E2E test suite under tests/e2e/ covering all 16 features from PROJECT.md:
+   - Tier 1: Feature Coverage (>=5 tests per feature = >=80 test cases)
+   - Tier 2: Boundary & Corner Cases (>=5 tests per feature = >=80 test cases)
+   - Tier 3: Cross-Feature Combinations (Pairwise coverage >=16 test cases)
+   - Tier 4: Real-World Application Scenarios (>=8 application scenarios)
+3. Create the test runner (e.g. tests/e2e/run_all_e2e_tests.py or pytest suite) that executes all tiers and outputs structured results.
+4. Run the full test suite, verify that all test cases pass with exit code 0, and create TEST_READY.md with complete tier counts and checklist.
+5. Write your handoff report to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/handoff.md.
+6. Notify the orchestrator via send_message when complete.
+</USER_REQUEST>
