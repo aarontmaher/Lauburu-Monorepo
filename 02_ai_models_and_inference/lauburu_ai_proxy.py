@@ -157,8 +157,18 @@ async def _stream_local(host: str, port: int, body: dict) -> AsyncGenerator[byte
                 error_body = await resp.aread()
                 raise HTTPException(status_code=resp.status_code, detail=error_body.decode())
             async for line in resp.aiter_lines():
-                if line:
-                    yield (line + "\n\n").encode()
+                if not line:
+                    continue
+                if line.startswith("data: "):
+                    raw_data = line[6:].strip()
+                    if raw_data != "[DONE]":
+                        try:
+                            parsed = json.loads(raw_data)
+                            if "error" in parsed:
+                                raise RuntimeError(f"Local model error: {parsed['error']}")
+                        except json.JSONDecodeError:
+                            pass
+                yield f"{line}\n\n".encode()
 
 
 async def _complete_local(host: str, port: int, body: dict) -> dict:
@@ -168,7 +178,10 @@ async def _complete_local(host: str, port: int, body: dict) -> dict:
     async with httpx.AsyncClient(timeout=TIMEOUT) as client:
         r = await client.post(url, json=body)
         r.raise_for_status()
-        return r.json()
+        data = r.json()
+        if "error" in data:
+            raise RuntimeError(f"Local model error: {data['error']}")
+        return data
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -437,49 +450,143 @@ async def list_models():
     return {"object": "list", "data": models}
 
 
+async def _cascade_stream_generator(body: dict, requested_model: str) -> AsyncGenerator[bytes, None]:
+    """
+    3-Tier Streaming Fallback:
+    Tier 1: Requested model (e.g. Fast Local Qwen / Abliterated)
+    Tier 2: Larger Local / Sharded Mesh Models (:8084 Nemotron-70B, :8085 Qwen-27B, :8081 GPT-OSS)
+    Tier 3: Free Cloud APIs (Gemini Flash, Cloudflare Workers AI, HuggingFace Free)
+    """
+    candidate_keys = []
+    if requested_model and requested_model != "auto":
+        candidate_keys.append(requested_model)
+    
+    # Larger local / mesh fallbacks
+    for k in ["local/qwen-abliterated", "local/qwen", "local/nemotron", "local/gpt-oss", "local/mistral"]:
+        if k not in candidate_keys:
+            candidate_keys.append(k)
+            
+    # Free Cloud API fallbacks ($0 spend)
+    if os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"):
+        candidate_keys.extend(["gemini/flash", "gemini/pro"])
+    if os.getenv("CLOUDFLARE_ACCOUNT_ID") and os.getenv("CLOUDFLARE_API_KEY"):
+        candidate_keys.extend(["cf/llama70", "cf/qwen", "cf/llama"])
+    if os.getenv("HUGGINGFACE_TOKEN") or os.getenv("HF_TOKEN"):
+        candidate_keys.extend(["hf/qwen", "hf/llama", "hf/phi"])
+
+    last_err = None
+    for cand in candidate_keys:
+        try:
+            route = await _resolve_route(cand)
+        except Exception:
+            continue
+            
+        token_yielded = False
+        try:
+            logger.info(f"Cascade attempting candidate '{cand}' ({route['type']})")
+            if route["type"] == "local":
+                host, port = route["host"], route["port"]
+                if not await _probe_local(host, port):
+                    continue
+                async for chunk in _stream_local(host, port, body.copy()):
+                    token_yielded = True
+                    yield chunk
+                return  # Successfully completed stream
+            elif route["type"] == "cf":
+                async for chunk in _stream_cloudflare(route["cf_model"], body.copy()):
+                    token_yielded = True
+                    yield chunk
+                return
+            elif route["type"] == "hf":
+                async for chunk in _stream_huggingface(route["hf_model"], body.copy()):
+                    token_yielded = True
+                    yield chunk
+                return
+            elif route["type"] == "gemini":
+                async for chunk in _stream_gemini(route["gemini_model"], body.copy()):
+                    token_yielded = True
+                    yield chunk
+                return
+        except Exception as e:
+            last_err = e
+            logger.warning(f"Candidate '{cand}' failed ({e}). Yielded tokens: {token_yielded}. Falling back...")
+            if token_yielded:
+                # If tokens were already sent to client, we cannot cleanly switch midway
+                return
+            continue
+
+    # If all candidates failed:
+    err_json = json.dumps({"error": {"message": f"All cascade tiers exhausted: {last_err}", "type": "cascade_exhausted", "code": 500}})
+    yield f"data: {err_json}\n\ndata: [DONE]\n\n".encode()
+
+
+async def _cascade_complete(body: dict, requested_model: str) -> dict:
+    """3-Tier Non-Streaming Completion Fallback."""
+    candidate_keys = []
+    if requested_model and requested_model != "auto":
+        candidate_keys.append(requested_model)
+    for k in ["local/qwen-abliterated", "local/qwen", "local/nemotron", "local/gpt-oss", "local/mistral"]:
+        if k not in candidate_keys:
+            candidate_keys.append(k)
+    if os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"):
+        candidate_keys.extend(["gemini/flash", "gemini/pro"])
+    if os.getenv("CLOUDFLARE_ACCOUNT_ID") and os.getenv("CLOUDFLARE_API_KEY"):
+        candidate_keys.extend(["cf/llama70", "cf/qwen", "cf/llama"])
+    if os.getenv("HUGGINGFACE_TOKEN") or os.getenv("HF_TOKEN"):
+        candidate_keys.extend(["hf/qwen", "hf/llama", "hf/phi"])
+
+    last_err = None
+    for cand in candidate_keys:
+        try:
+            route = await _resolve_route(cand)
+            if route["type"] == "local":
+                host, port = route["host"], route["port"]
+                if not await _probe_local(host, port):
+                    continue
+                return await _complete_local(host, port, body.copy())
+            elif route["type"] == "gemini":
+                # Collect from gemini stream
+                full_text = ""
+                async for chunk_bytes in _stream_gemini(route["gemini_model"], body.copy()):
+                    raw = chunk_bytes.decode(errors="ignore")
+                    for line in raw.split("\n"):
+                        if line.startswith("data: ") and line != "data: [DONE]":
+                            try:
+                                j = json.loads(line[6:])
+                                full_text += j.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                            except Exception:
+                                pass
+                if full_text:
+                    return {
+                        "id": f"chatcmpl-{int(time.time())}",
+                        "object": "chat.completion",
+                        "created": int(time.time()),
+                        "model": route["gemini_model"],
+                        "choices": [{"index": 0, "message": {"role": "assistant", "content": full_text}, "finish_reason": "stop"}]
+                    }
+        except Exception as e:
+            last_err = e
+            logger.warning(f"Candidate '{cand}' failed non-streaming ({e}). Falling back...")
+            continue
+
+    raise HTTPException(status_code=500, detail=f"All cascade tiers exhausted. Last error: {last_err}")
+
+
 @app.post("/v1/chat/completions")
 async def chat_completions(request: Request):
     body = await request.json()
     model = body.get("model", "auto")
     stream = body.get("stream", False)
 
-    route = await _resolve_route(model)
-    logger.info(f"Routing '{model}' → {route['type']}: {route.get('display', '')}")
-
-    if route["type"] == "local":
-        host, port = route["host"], route["port"]
-        if stream:
-            return StreamingResponse(
-                _stream_local(host, port, body),
-                media_type="text/event-stream",
-                headers={"X-Routed-To": f"local:{port}", "X-Model": route.get("display", "")}
-            )
-        result = await _complete_local(host, port, body)
-        return JSONResponse(result)
-
-    elif route["type"] == "cf":
+    if stream:
         return StreamingResponse(
-            _stream_cloudflare(route["cf_model"], body),
+            _cascade_stream_generator(body, model),
             media_type="text/event-stream",
-            headers={"X-Routed-To": "cloudflare-workers-ai", "X-Model": route["cf_model"]}
+            headers={"X-Cascade-Enabled": "true"}
         )
-
-    elif route["type"] == "hf":
-        return StreamingResponse(
-            _stream_huggingface(route["hf_model"], body),
-            media_type="text/event-stream",
-            headers={"X-Routed-To": "huggingface-inference-api", "X-Model": route["hf_model"]}
-        )
-
-    elif route["type"] == "gemini":
-        gemini_model = route["gemini_model"]
-        return StreamingResponse(
-            _stream_gemini(gemini_model, body),
-            media_type="text/event-stream",
-            headers={"X-Routed-To": "google-gemini", "X-Model": gemini_model}
-        )
-
-    raise HTTPException(status_code=500, detail=f"Unhandled route type: {route.get('type')}")
+    else:
+        res = await _cascade_complete(body, model)
+        return JSONResponse(res)
 
 
 @app.get("/v1/proxy/status")

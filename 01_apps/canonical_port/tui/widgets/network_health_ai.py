@@ -59,8 +59,9 @@ SAFE_CMD_ALLOWLIST: List[str] = [
     # Approved healing actions (write — but strictly scoped)
     "launchctl unload /Users/aaron/Library/LaunchAgents/ai.lauburu",
     "launchctl load /Users/aaron/Library/LaunchAgents/ai.lauburu",
-    "bash /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/mesh_rpc_petals_healer.sh",
-    "python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/nomad_courier_self_healer.py --once",
+    "launchctl kickstart -k gui/",
+    "python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/mesh_rpc_petals_healer.py",
+    "python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/nomad_courier_self_healer.py",
 ]
 
 LORA_LOG = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/lora_datasets/nomad_autonomous_actions.jsonl")
@@ -240,8 +241,9 @@ class NetworkHealthAI(Vertical):
 
         # Tailscale summary
         try:
+            ts_bin = "/Applications/Tailscale.app/Contents/MacOS/Tailscale" if os.path.exists("/Applications/Tailscale.app/Contents/MacOS/Tailscale") else "tailscale"
             r = subprocess.run(
-                ["tailscale", "status", "--json"],
+                [ts_bin, "status", "--json"],
                 capture_output=True, text=True, timeout=3
             )
             ts_data = json.loads(r.stdout)
@@ -315,10 +317,9 @@ class NetworkHealthAI(Vertical):
                 "2. A JSON block of healing actions in this exact format:\n"
                 '{"actions": [{"cmd": "<shell command>", "reason": "<why>"}]}\n'
                 "Only suggest commands from this allowlist:\n"
-                "- bash /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/mesh_rpc_petals_healer.sh\n"
-                "- python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/nomad_courier_self_healer.py --once\n"
-                "- launchctl unload /Users/aaron/Library/LaunchAgents/ai.lauburu.unified.proxy.plist\n"
-                "- launchctl load /Users/aaron/Library/LaunchAgents/ai.lauburu.unified.proxy.plist\n"
+                "- python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/mesh_rpc_petals_healer.py\n"
+                "- python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/nomad_courier_self_healer.py\n"
+                "- launchctl kickstart -k gui/501/ai.lauburu.mesh.rpc.petals\n"
                 "- curl -s --max-time 2 http://127.0.0.1:8080/health\n"
                 "Keep your response under 150 words. Be direct and technical."
             )
@@ -342,7 +343,7 @@ class NetworkHealthAI(Vertical):
                     "max_tokens": 300,
                     "temperature": 0.2,
                 }
-                log.write("[dim]AI:[/dim] ", end="")
+                log.write("[dim]⏳ Requesting local AI diagnostics via proxy...[/dim]")
                 timeout_cfg = httpx.Timeout(connect=3.0, read=45.0, write=5.0, pool=5.0)
                 async with httpx.AsyncClient(timeout=timeout_cfg) as client:
                     async with client.stream("POST", PROXY_URL, json=payload) as resp:
@@ -362,15 +363,16 @@ class NetworkHealthAI(Vertical):
                                 token = chunk["choices"][0]["delta"].get("content", "")
                                 if token:
                                     full_response += token
-                                    log.write(token, end="", markup=False)
                             except Exception:
                                 continue
-                log.write("")  # newline after stream
+                
+                if full_response.strip():
+                    log.write(f"[bold cyan]🤖 AI Diagnosis:[/bold cyan]\n[white]{full_response.strip()}[/white]")
 
             except Exception as e:
                 log.write(f"[red]AI stream error: {e}[/red]")
                 # Fallback: run healer directly without AI
-                full_response = '{"actions": [{"cmd": "bash /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/mesh_rpc_petals_healer.sh", "reason": "AI unavailable — running default healer"}]}'
+                full_response = '{"actions": [{"cmd": "python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/mesh_rpc_petals_healer.py", "reason": "AI unavailable — running default healer"}]}'
 
             if self._cancel_flag or not heal:
                 self._set_status("[dim]Scan complete (heal skipped)[/dim]")
@@ -386,9 +388,8 @@ class NetworkHealthAI(Vertical):
                     if start != -1:
                         start += 8
                 if start != -1:
-                    end = full_response.find("}", start) + 1
-                    # Find matching closing brace for the outer object
                     depth = 0
+                    end = -1
                     for i, ch in enumerate(full_response[start:], start):
                         if ch == "{":
                             depth += 1
@@ -397,13 +398,21 @@ class NetworkHealthAI(Vertical):
                             if depth == 0:
                                 end = i + 1
                                 break
-                    parsed = json.loads(full_response[start:end])
-                    actions_to_run = parsed.get("actions", [])
+                    if end != -1:
+                        parsed = json.loads(full_response[start:end])
+                        actions_to_run = parsed.get("actions", [])
             except Exception as e:
                 log.write(f"[dim yellow]JSON parse: {e} — running default healer[/dim yellow]")
                 actions_to_run = [{
-                    "cmd": "bash /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/mesh_rpc_petals_healer.sh",
-                    "reason": "Fallback: could not parse AI actions"
+                    "cmd": "python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/mesh_rpc_petals_healer.py",
+                    "reason": "Fallback: running default Python mesh healer"
+                }]
+
+            if not actions_to_run:
+                # Default to Python healer if issues exist but no actions extracted
+                actions_to_run = [{
+                    "cmd": "python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/mesh_rpc_petals_healer.py",
+                    "reason": "Automated mesh self-healing cycle"
                 }]
 
             if not actions_to_run:

@@ -457,13 +457,24 @@ class UnifiedInferenceRouter:
             else:
                 target_eng_used = self.get_effective_engine()
                 bridge = self.get_active_bridge()
-                async for token in bridge.stream_generate(prompt, max_tokens=max_tokens, temperature=temperature):
-                    token_yielded = True
-                    accumulated_chunks.append(token)
-                    yield token
-        except asyncio.CancelledError:
-            logger.info(f"UnifiedInferenceRouter: stream_generate cancelled on '{self._active_engine}'.")
-            raise
+                try:
+                    async for token in bridge.stream_generate(prompt, max_tokens=max_tokens, temperature=temperature):
+                        token_yielded = True
+                        accumulated_chunks.append(token)
+                        yield token
+                except asyncio.CancelledError:
+                    raise
+                except Exception as e:
+                    if not token_yielded:
+                        logger.warning(f"Engine '{target_eng_used}' stream failed ({e}). Auto-cascading to llama_rpc / proxy...")
+                        fallback_bridge = self.bridges.get("llama_rpc")
+                        if fallback_bridge and fallback_bridge is not bridge:
+                            async for token in fallback_bridge.stream_generate(prompt, max_tokens=max_tokens, temperature=temperature):
+                                token_yielded = True
+                                accumulated_chunks.append(token)
+                                yield token
+                    else:
+                        logger.warning(f"Engine '{target_eng_used}' dropped mid-stream: {e}")
         finally:
             if self._active_task is asyncio.current_task():
                 self._active_task = None
@@ -553,11 +564,23 @@ class UnifiedInferenceRouter:
             else:
                 target_eng_used = self.get_effective_engine()
                 bridge = self.get_active_bridge()
-                res = await bridge.process_user_input(
-                    prompt=prompt,
-                    is_voice=is_voice,
-                    max_tokens=max_tokens
-                )
+                try:
+                    res = await bridge.process_user_input(
+                        prompt=prompt,
+                        is_voice=is_voice,
+                        max_tokens=max_tokens
+                    )
+                except Exception as e:
+                    logger.warning(f"Engine '{target_eng_used}' process_user_input failed ({e}). Auto-cascading...")
+                    res = ""
+                if not res:
+                    fallback_bridge = self.bridges.get("llama_rpc")
+                    if fallback_bridge and fallback_bridge is not bridge:
+                        res = await fallback_bridge.process_user_input(
+                            prompt=prompt,
+                            is_voice=is_voice,
+                            max_tokens=max_tokens
+                        )
                 return res
         except asyncio.CancelledError:
             logger.info(f"UnifiedInferenceRouter: process_user_input cancelled on '{self._active_engine}'.")
