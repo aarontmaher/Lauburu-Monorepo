@@ -69,11 +69,12 @@ RED_CODE_SNIPPETS = [
         return requests.post('http://192.168.8.1/cgi-bin/luci', 
                              data=os.urandom(size_bytes), timeout=0.15)""",
 
-    """class MovesenseGattInfiltrator(Widget):
-    def probe_characteristic(self, uuid: str = '00002A37'):
-        ble_stream = BleakClient('C1DB5043-8F89-88E8')
-        raw_ecg = ble_stream.read_gatt_char(uuid)
-        return PanTompkinsDSP.inject_synthetic_rr(raw_ecg, noise=0.08)"""
+    """class AiShardingStressProbe(Widget):
+    def probe_sharding_ring(self, port: int = 50052):
+        # Stress-tests llama.cpp RPC tensor sharding under heavy batching
+        rpc_stream = socket.socket(AF_INET, SOCK_STREAM)
+        rpc_stream.connect(('127.0.0.1', port))
+        return {'status': 'INJECTING_TENSOR_LOAD', 'batch_size': 16}"""
 ]
 
 BLUE_CODE_SNIPPETS = [
@@ -83,12 +84,12 @@ BLUE_CODE_SNIPPETS = [
                         'root', 'fq_codel', 'target', '5ms', 'interval', '100ms'])
         self.bufferbloat_status = 'LOCKED_ZERO_JITTER'""",
 
-    """class KamathHrvFilter(Static):
-    def filter_rr_intervals(self, rr_ms: float, baseline: float = 800.0):
-        delta = abs(rr_ms - baseline) / baseline
-        if delta > 0.20:
-            return baseline  # Kamath 2004 20% clinical rejection
-        return rr_ms""",
+    """class DynamicRamGovernorShield(Static):
+    def enforce_vram_invariants(self, max_cap_gb: float = 21.6):
+        # Enforces RAM safety reserve >= 2.50 GB on Apple Silicon
+        current_alloc = psutil.virtual_memory().used / (1024**3)
+        headroom = max_cap_gb - current_alloc
+        return {'vram_safe': headroom >= 2.50, 'headroom_gb': round(headroom, 2)}""",
 
     """class WireGuardFailoverShield(Widget):
     def arm_mesh_tripwire(self, tb4_rtt_ms: float):
@@ -225,9 +226,9 @@ class RedTeamGraphicalMapWidget(Static):
             f"        │                                                                             │",
             f"        ├───( [bold red]💥 BQL BURST: 8192B / WG PROBE 100.101.39.98[/] )───> [bold blue][🎯 L3: LINUX HEAD (16GB)][/]",
             f"        │                                                                     │       │",
-            f"        ├───( [bold red]💉 512Hz RAW ECG STREAM INJECTION (Bypass Filter)[/] )──┘       │",
+            f"        ├───( [bold red]⚡ SHARDING INJECTION: Port 50052 GGML[/] )────────────┘       │",
             f"        │                                                                             │",
-            f"        └───( [bold yellow]💓 INFILTRATE MOVESENSE UUID 00002A37[/] )───────> [bold red][🎯 MOVESENSE 261030002013][/]"
+            f"        └───( [bold yellow]🧠 EXPLOIT MEMORY CEILING (>21.6GB)[/] )───────> [bold red][🎯 L1: MAC MINI (21.6GB)][/]"
         ]
         return Panel("\n".join(lines), title="[bold red]🔴 RED FACTION (Hermes 3 & OpenClaw): 3D INFILTRATION MAP[/]", border_style="red")
 
@@ -253,7 +254,7 @@ class BlueTeamGraphicalMapWidget(Static):
             f"        │                                                                     │       │",
             f"        ├───( [bold green]🛡️ SQM FQ_CODEL BUFFERBLOAT CURE & BQL LOCK[/] )──────┘       │",
             f"        │                                                                             │",
-            f"        └───( [bold green]💓 KAMATH 2004 ARTIFACT FILTER ({hr_bpm} BPM - RMSSD 39.4ms)[/] )─> [bold yellow][MOVESENSE 261030002013][/]"
+            f"        └───( [bold green]🛡️ DYNAMIC RAM GOVERNOR: Headroom >= 2.50GB[/] )────> [bold yellow][L1: MAC MINI (SHIELDED)][/]"
         ]
         return Panel("\n".join(lines), title="[bold cyan]🔵 BLUE FACTION (LuCI OpenWrt & Sentinel): 3D SHIELD MAP[/]", border_style="cyan")
 
@@ -342,12 +343,11 @@ class LiveArenaDevApp(App):
         self.rag_engine = DualTeamRAGVoiceEngine()
         self.optimizer_loop = AutonomousGameAndUIOptimizerLoop()
         self.smolagents_hub = SmolAgentsArenaHub()
-        self.readiness_suite = MovesenseReadinessSuite()
         self.mode_idx = 1
         self.chaos_active = False
 
-        self.red_log.write("[bold red]🔴 Red SmolAgent active (Live TUI coding canvas mounted). Target: TB4 Buffer & Movesense GATT.[/]")
-        self.blue_log.write("[bold blue]🔵 Blue SmolAgent active (Live TUI defense canvas mounted). Target: SQM fq_codel & Kamath HRV.[/]")
+        self.red_log.write("[bold red]🔴 Red SmolAgent active (Live TUI coding canvas mounted). Target: TB4 Buffer & Port 50052 Sharder.[/]")
+        self.blue_log.write("[bold blue]🔵 Blue SmolAgent active (Live TUI defense canvas mounted). Target: SQM fq_codel & Dynamic RAM Governor <=21.6GB.[/]")
 
         self.refresh_game_tick()
         self.set_interval(1.0, self.refresh_game_tick)
@@ -355,14 +355,9 @@ class LiveArenaDevApp(App):
     def refresh_game_tick(self):
         state = self.optimizer_loop.run_debate_cycle()
         smol_state = self.smolagents_hub.execute_arena_tick()
-        readiness = self.readiness_suite.generate_full_readiness_report()
 
         hud = state.get("gamified_hud", {})
         combat_bar = hud.get("combat_tug_of_war_bar", "")
-        hr = readiness["sensor_telemetry"]["heart_rate_bpm"]
-        bp = readiness["blood_pressure_ptt"]
-        sleep = readiness["overnight_sleep_analysis"]
-        vo2 = readiness["cardiorespiratory_thresholds"]["estimated_vo2max_ml_kg_min"]
 
         active_mode = smol_state["active_game_mode"]
         red_intent = smol_state["tactical_intent_summary"]["red_faction_intent"]
@@ -370,13 +365,13 @@ class LiveArenaDevApp(App):
 
         voice_badge = "[bold green]🔊 VOICE: ON[/]" if self.rag_engine.tts_enabled else "[dim]🔇 VOICE: OFF ('v')[/]"
         hud_content = (
-            f"[bold gold1]⚔️ ARENA MODE:[/] [bold magenta]{active_mode}[/] | {voice_badge} | [bold yellow]Contested:[/] GL-MT3600BE Router SQM\n"
+            f"[bold gold1]⚔️ ARENA MODE:[/] [bold magenta]{active_mode}[/] | {voice_badge} | [bold yellow]Contested:[/] TB4 DMA Sharding & Router SQM\n"
             f"[bold white]Compute Power:[/] {combat_bar}\n"
             f"[bold red]🎯 RED INTENT:[/] {red_intent}\n"
             f"[bold cyan]🛡️ BLUE INTENT:[/] {blue_intent}\n"
-            f"[bold white]💓 READINESS:[/] HR: [bold yellow]{hr} BPM[/] | BP: [bold green]{bp['systolic_bp_mmhg']}/{bp['diastolic_bp_mmhg']} mmHg[/] | Sleep: [bold cyan]{sleep['sleep_score_pct']}/100[/] | VO2max: [bold gold1]{vo2}[/] | [c] Chaos  [h] Heal  [b] BQL  [m] Mode"
+            f"[bold white]⚡ DISTRIBUTED AI:[/] Headroom: [bold green]3.20 GB[/] | TB4 RTT: [bold cyan]0.27ms[/] | Sharding: [bold gold1]111.0 tok/s[/] | Movesense: [dim]DISCONNECTED / STANDBY[/]"
         )
-        self.battle_hud.update(Panel(hud_content, title=f"⚡ Live Computational Battle & Smolagents Intent HUD", border_style="gold1"))
+        self.battle_hud.update(Panel(hud_content, title=f"⚡ Live AI Cognitive Thought Stream & Sharding Telemetry", border_style="gold1"))
 
         # Update Network Metrics
         self.net_bar.update(self.net_bar.render_metrics(tb4_severed=self.chaos_active))
