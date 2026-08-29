@@ -1,26 +1,26 @@
 {
-  "timestamp_utc": "2026-08-29T11:54:28Z",
-  "elapsed_seconds": 0.117,
+  "timestamp_utc": "2026-08-29T11:58:16Z",
+  "elapsed_seconds": 0.173,
   "synergy_efficiency_score": 862.0,
   "router_real_ram": {
     "online": true,
     "total_mb": 481.3,
-    "used_mb": 424.9,
-    "available_mb": 86.8,
+    "used_mb": 424.6,
+    "available_mb": 87.1,
     "safety_status": "\ud83d\udfe2 NOMINAL SAFE",
     "crash_risk_pct": 0.0
   },
   "host_ram": {
-    "used_gb": 11.87,
+    "used_gb": 13.75,
     "total_gb": 24.0,
-    "percent": 80.1,
+    "percent": 72.2,
     "status": "\ud83d\udfe2 NOMINAL"
   },
   "storage_health": {
     "healthy": true,
     "obsidian_vault_mounted": true,
     "pyspark_data_lake_ready": true,
-    "disk_free_gb": 13.49,
+    "disk_free_gb": 13.47,
     "git_lock_cleared": false,
     "status": "HEALTHY"
   },
