@@ -1,6 +1,6 @@
 {
   "version": "3.0.0-CANONICAL",
-  "timestamp": "2026-08-29T18:19:09.986212",
+  "timestamp": "2026-08-29T18:24:12.931145",
   "source_node": "L1_Mac_Node",
   "provenance": {
     "agent_id": "teamwork_preview_worker_m2",
@@ -155,10 +155,10 @@
       "upload_mbps": 48.0,
       "responsiveness_rpm": 1420,
       "latency_ms": 12.4,
-      "timestamp": "18:19:07",
+      "timestamp": "18:24:10",
       "command": "/usr/bin/networkQuality -c -M 5",
       "cycle_seconds": 300,
-      "last_tested_iso": "2026-08-29T18:19:07.309628"
+      "last_tested_iso": "2026-08-29T18:24:10.662594"
     },
     "ssh_fleet": [
       {
@@ -168,8 +168,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 2.23,
-        "last_auth_iso": "2026-08-29T18:19:08.370903"
+        "latency_ms": 0.17,
+        "last_auth_iso": "2026-08-29T18:24:11.714641"
       },
       {
         "node_id": "L2",
@@ -178,8 +178,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_9.6",
         "key_type": "ssh-ed25519",
-        "latency_ms": 35.19,
-        "last_auth_iso": "2026-08-29T18:19:08.386242"
+        "latency_ms": 99.08,
+        "last_auth_iso": "2026-08-29T18:24:11.805251"
       },
       {
         "node_id": "L3",
@@ -188,8 +188,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18",
         "key_type": "ssh-ed25519",
-        "latency_ms": 34.97,
-        "last_auth_iso": "2026-08-29T18:19:08.544142"
+        "latency_ms": 20.1,
+        "last_auth_iso": "2026-08-29T18:24:11.921045"
       },
       {
         "node_id": "L4",
@@ -208,8 +208,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 33.33,
-        "last_auth_iso": "2026-08-29T18:19:08.512441"
+        "latency_ms": 19.71,
+        "last_auth_iso": "2026-08-29T18:24:11.791676"
       },
       {
         "node_id": "L6",
@@ -228,18 +228,18 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.4",
         "key_type": "ssh-ed25519",
-        "latency_ms": 29.75,
-        "last_auth_iso": "2026-08-29T18:19:08.458267"
+        "latency_ms": 24.15,
+        "last_auth_iso": "2026-08-29T18:24:11.781255"
       },
       {
         "node_id": "GW",
         "host": "192.168.8.1",
         "port": 22,
         "status": "OPEN",
-        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u0014\"\u0002\u0014\u0017w\n\u03b3P\u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
+        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u0014R\bMOl\u0016\u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
         "key_type": "ssh-ed25519",
-        "latency_ms": 14.67,
-        "last_auth_iso": "2026-08-29T18:19:08.359073"
+        "latency_ms": 8.34,
+        "last_auth_iso": "2026-08-29T18:24:11.714072"
       }
     ],
     "ewma_alpha": 0.35,
@@ -542,8 +542,8 @@
       },
       "pyspark_lake": {
         "path": "/Users/aaron/DFS_UNIFIED/lora_datasets",
-        "healthy": true,
-        "free_headroom_gb": 10.44,
+        "healthy": false,
+        "free_headroom_gb": 9.98,
         "headroom_threshold_gb": 10.0,
         "qdrant_reachable": true
       },
@@ -554,7 +554,7 @@
         "index_locked": false,
         "clean_tree": true
       },
-      "all_healthy": true
+      "all_healthy": false
     },
     "memory_governor_active": true
   },
@@ -651,7 +651,7 @@
         "layers_sharded": 28,
         "vram_used_gb": 13.5,
         "status": "ACTIVE",
-        "latency_ms": 6.36
+        "latency_ms": 6.49
       },
       {
         "node_name": "MacBook Pro",
@@ -675,7 +675,7 @@
         "layers_sharded": 0,
         "vram_used_gb": 0.0,
         "status": "ACTIVE",
-        "latency_ms": 44.59
+        "latency_ms": 47.46
       },
       {
         "node_name": "Linux Tablet",
@@ -2088,25 +2088,6 @@
       "merchandise_catalog_synced": true,
       "cart_pipeline_healthy": true
     }
-  },
-  "wearables_telemetry": {
-    "source": "open_wearables_aggregator",
-    "timestamp": null,
-    "user_id": "default_user",
-    "providers": [
-      "whoop",
-      "garmin",
-      "oura",
-      "apple_health"
-    ],
-    "recovery_score": 88.0,
-    "sleep_score": 91.0,
-    "strain_score": 14.2,
-    "resting_hr_bpm": 48.5,
-    "hrv_rmssd_ms": 64.2,
-    "steps": 12450,
-    "calories": 840,
-    "rule_0_zero_mock": true
   },
   "voice_coding": {
     "status": "IDLE",
