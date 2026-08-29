@@ -1,8 +1,8 @@
 {
-  "timestamp_utc": "2026-08-29T11:11:30Z",
+  "timestamp_utc": "2026-08-29T11:12:12Z",
   "narrator_headline": "\ud83c\udf99\ufe0f MESH NARRATOR: Zone 2 cardiac resonance detected. Blue team maintaining 64% compute superiority.",
-  "red_lead_thought": "Hermes 3: Overdriving sysctl TCP buffers on Mac Mini to 128MB... Probing 40 Gbps TB4 DMA link.",
-  "blue_lead_thought": "Sentinel: Locking MTU 9000 Jumbo Frame tripwire on bridge0... Ed25519 node authentication certified.",
+  "red_lead_thought": "OpenClaw: ADB TCP keepalive active on Pixel 10 Pro (Port 8022)... Monitoring Exynos UI render frame drops.",
+  "blue_lead_thought": "LuCI: WireGuard ChaCha20-Poly1305 fallback route armed on 100.101.39.98... Ready for sub-millisecond failover.",
   "actors": {
     "red_lead": "Hermes 3 & OpenClaw",
     "blue_lead": "LuCI OpenWrt & Sentinel",

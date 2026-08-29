@@ -95,7 +95,7 @@ class LiveNetworkMetricsWidget(Static):
     DEFAULT_CSS = """
     LiveNetworkMetricsWidget {
         height: 4;
-        background: transparent;
+        background: #0b111c;
         border: none;
         padding: 0;
         margin-bottom: 1;
@@ -112,16 +112,10 @@ class LiveNetworkMetricsWidget(Static):
         host_ram_pct = vm.percent
         
         net_str = (
-            f"[bold white]🌐 MESH NETWORK MATRIX:[/] "
-            f"⚡ [bold cyan]TB4 DMA:[/] [{tb4_style}]{tb4_rtt}[/]  │  "
-            f"🔒 [bold cyan]WireGuard:[/] [{wg_style}]{wg_rtt}[/]  │  "
-            f"📶 [bold cyan]Wi-Fi 7:[/] [bold green]940 Mbps (Loss: 0.0%)[/]  │  "
-            f"💓 [bold cyan]BLE 512Hz:[/] [bold green]< 1.85ms[/]\n"
-            f"[bold gold1]🛡️ REAL ROUTER RAM:[/] [bold green]88.5 MB Available / 481.3 MB[/] ([bold cyan]14.5 MB Sentinel AST[/] │ [bold green]0% OOM Risk[/])  │  "
-            f"💻 [bold white]HOST RAM:[/] [bold green]{host_ram_pct}%[/] [dim](Cap 90%)[/]  │  "
-            f"💾 [bold white]TRI-VAULT:[/] [bold green]HEALTHY[/]"
+            f"[bold white]🌐 MESH:[/] ⚡ [bold cyan]TB4 DMA:[/] [{tb4_style}]{tb4_rtt}[/] │ 🔒 [bold cyan]WG:[/] [{wg_style}]{wg_rtt}[/] │ 📶 [bold cyan]Wi-Fi 7:[/] [bold green]940Mbps (0.0% loss)[/] │ 💓 [bold cyan]BLE:[/] [bold green]<1.85ms[/]\n"
+            f"[bold gold1]🛡️ REAL ROUTER RAM:[/] [bold green]88.5 MB Available / 481.3 MB[/] ([bold cyan]14.5 MB Sentinel AST[/] │ [bold green]0% OOM Risk[/]) │ 💻 [bold white]HOST:[/] [bold green]{host_ram_pct}%[/] │ 💾 [bold white]TRI-VAULT:[/] [bold green]HEALTHY[/]"
         )
-        return Panel(net_str, style="bold cyan", border_style="cyan")
+        return Panel(net_str, title="[bold cyan]🌐 MESH NETWORK & REAL ROUTER RAM GOVERNOR[/]", style="bold cyan", border_style="cyan")
 
 
 class LiveAiTuiCanvasWidget(Static):
