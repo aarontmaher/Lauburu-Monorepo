@@ -1,11 +1,11 @@
 {
-  "timestamp_utc": "2026-08-29T10:59:40Z",
+  "timestamp_utc": "2026-08-29T11:11:30Z",
   "status": "STREAMING",
   "sensor_telemetry": {
     "device": "Movesense Medical",
     "connected": true,
     "heart_rate_bpm": 89,
-    "rmssd_ms": 975.58,
+    "rmssd_ms": 783.39,
     "dfa_alpha1": 1.05,
     "stream_mode": "100% STRICT LOCAL AIRGAP BLE"
   },
@@ -21,7 +21,7 @@
     "status": "COMPLETED",
     "sleep_score_pct": 50,
     "recovery_status": "LOW (Red)",
-    "nocturnal_rmssd_ms": 975.6,
+    "nocturnal_rmssd_ms": 783.4,
     "nocturnal_hr_bpm": 89.0,
     "nocturnal_dip_pct": -33.4,
     "sleep_stages_estimate": {

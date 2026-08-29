@@ -22,6 +22,8 @@ if [ "$INVOKED_CMD" = "arena" ]; then
     CMD="arena"
 elif [ "$INVOKED_CMD" = "tui" ]; then
     CMD="tui"
+elif [ "$INVOKED_CMD" = "priority" ] || [ "$INVOKED_CMD" = "governor" ]; then
+    CMD="priority"
 else
     CMD="${1:-tui}"
     shift || true
@@ -68,6 +70,22 @@ case "$CMD" in
             echo "✅ Started Movesense BLE daemon."
         fi
         ;;
+    priority|governor)
+        echo "🛡️ Running Hybrid Real-RAM Mesh Governor & Master Priority Swarm..."
+        cd "$MONOREPO_DIR"
+        python3 06_scripts_and_tooling/network/hybrid_router_mesh_governor.py "$@"
+        python3 05_agents_and_swarms/master_priority_automation_loop.py --once
+        ;;
+    priority-daemon|governor-daemon)
+        echo "🚀 Starting 24/7 Master Priority Continuous Automation Daemon..."
+        cd "$MONOREPO_DIR"
+        exec python3 05_agents_and_swarms/master_priority_automation_loop.py --daemon
+        ;;
+    router-bench|bench-router)
+        echo "🔬 Running Sandboxed GL.iNet Router Micro AI Benchmark..."
+        cd "$MONOREPO_DIR"
+        exec python3 02_ai_models_and_inference/benchmarks/glinet_router_micro_ai_benchmark.py
+        ;;
     help|--help|-h)
         echo "======================================================================"
         echo "🌟 LAUBURU MESH UNIFIED GLOBAL CLI"
@@ -75,13 +93,16 @@ case "$CMD" in
         echo "Usage: lauburu [command] [options]"
         echo ""
         echo "Commands:"
-        echo "  lauburu (or tui)     Launch full Canonical 9-Screen TUI Command Center"
-        echo "  lauburu dev (or arena) Launch Live Side-by-Side Dual Graphical Arena"
-        echo "  lauburu map          Run Unified 3D Spatial Fusion Engine"
-        echo "  lauburu map-all      Run Autonomous Whole-Project Feature Discovery"
-        echo "  lauburu math         Run Standalone Qwen Math Telemetry Trend Optimizer"
-        echo "  lauburu movesense    Check / Start Physical Movesense 128Hz BLE daemon"
-        echo "  lauburu help         Show this help message"
+        echo "  lauburu (or tui)        Launch full Canonical 9-Screen TUI Command Center"
+        echo "  lauburu dev (or arena)   Launch Live Side-by-Side Dual Graphical Arena"
+        echo "  lauburu priority         Run Hybrid Real-RAM Mesh Governor & Priority Loop"
+        echo "  lauburu priority-daemon  Start 24/7 Master Priority Automation Daemon"
+        echo "  lauburu router-bench     Run Sandboxed GL.iNet Router Micro AI Benchmark"
+        echo "  lauburu map              Run Unified 3D Spatial Fusion Engine"
+        echo "  lauburu map-all          Run Autonomous Whole-Project Feature Discovery"
+        echo "  lauburu math             Run Standalone Qwen Math Telemetry Trend Optimizer"
+        echo "  lauburu movesense        Check / Start Physical Movesense 128Hz BLE daemon"
+        echo "  lauburu help             Show this help message"
         echo "======================================================================"
         ;;
     *)
