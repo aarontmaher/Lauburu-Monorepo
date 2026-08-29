@@ -1,0 +1,131 @@
+{
+  "timestamp_utc": "2026-08-29T06:29:28Z",
+  "devices": [
+    {
+      "node_id": "L1_mac_mini",
+      "name": "Mac Mini M4 Pro",
+      "role": "Host Controller & Memory Governor",
+      "endpoints": {
+        "tb4": "169.254.80.69",
+        "lan": "192.168.8.230",
+        "wg": "100.119.199.76",
+        "loopback": "127.0.0.1"
+      },
+      "vram_pool_gb": 21.6,
+      "primary_transport": "tb4"
+    },
+    {
+      "node_id": "L2_macbook_pro",
+      "name": "MacBook Pro M1 Max",
+      "role": "Metal GPU RPC & Storage Vault",
+      "endpoints": {
+        "tb4": "169.254.187.138",
+        "lan": "192.168.8.127",
+        "wg": "100.103.212.21"
+      },
+      "vram_pool_gb": 14.0,
+      "primary_transport": "tb4"
+    },
+    {
+      "node_id": "L3_linux_head",
+      "name": "Linux Head Node (AMD 5700U)",
+      "role": "Gateway Ingress & Docker Compute Hub",
+      "endpoints": {
+        "lan": "192.168.8.224",
+        "wg": "100.101.39.98"
+      },
+      "vram_pool_gb": 13.8,
+      "primary_transport": "lan"
+    },
+    {
+      "node_id": "L6_pixel_10",
+      "name": "Pixel 10 Pro XL (Tensor G5)",
+      "role": "Edge Vision & NPU Shard",
+      "endpoints": {
+        "wg": "100.73.38.87",
+        "adb_tcp": "192.168.8.1"
+      },
+      "vram_pool_gb": 12.5,
+      "primary_transport": "wg"
+    }
+  ],
+  "combination_benchmarks": [
+    {
+      "combination_name": "Mode A: Mac Mini (Host) + MacBook Pro (Metal RPC)",
+      "participating_nodes": [
+        "L1_mac_mini",
+        "L2_macbook_pro"
+      ],
+      "transport_topology": "Thunderbolt 4 PCIe DMA Bridge",
+      "sample_count": 30,
+      "mean_rtt_ms": 125.81,
+      "std_dev_rtt_ms": 127.704,
+      "ci_95_rtt_ms": [
+        80.112,
+        171.508
+      ],
+      "margin_of_error_pct": 36.32,
+      "nominal_bandwidth_gbps": 40.0,
+      "effective_throughput_mb_s": 27.2,
+      "statistical_confidence": "ESTABLISHING (MoE +- 36.3%)"
+    },
+    {
+      "combination_name": "Mode B: Mac Mini (Host) + Linux Head Node (Ray/Petals)",
+      "participating_nodes": [
+        "L1_mac_mini",
+        "L3_linux_head"
+      ],
+      "transport_topology": "Speedify Multi-WAN 2.5GbE Subnet",
+      "sample_count": 30,
+      "mean_rtt_ms": 134.254,
+      "std_dev_rtt_ms": 127.249,
+      "ci_95_rtt_ms": [
+        88.718,
+        179.789
+      ],
+      "margin_of_error_pct": 33.92,
+      "nominal_bandwidth_gbps": 3.5,
+      "effective_throughput_mb_s": 12.6,
+      "statistical_confidence": "ESTABLISHING (MoE +- 33.9%)"
+    },
+    {
+      "combination_name": "Mode C: Tri-Node Tandem (Mini + MBP + Linux Head)",
+      "participating_nodes": [
+        "L1_mac_mini",
+        "L2_macbook_pro",
+        "L3_linux_head"
+      ],
+      "transport_topology": "TB4 DMA + WireGuard Mesh",
+      "sample_count": 45,
+      "mean_rtt_ms": 84.329,
+      "std_dev_rtt_ms": 120.228,
+      "ci_95_rtt_ms": [
+        49.201,
+        119.457
+      ],
+      "margin_of_error_pct": 41.66,
+      "nominal_bandwidth_gbps": 1.0,
+      "effective_throughput_mb_s": 11.7,
+      "statistical_confidence": "ESTABLISHING (MoE +- 41.7%)"
+    },
+    {
+      "combination_name": "Mode D: Mobile Edge Swarm (Mini + Pixel Tensor G5)",
+      "participating_nodes": [
+        "L1_mac_mini",
+        "L6_pixel_10"
+      ],
+      "transport_topology": "WireGuard L3 Mesh over 5G/Wi-Fi",
+      "sample_count": 30,
+      "mean_rtt_ms": 125.708,
+      "std_dev_rtt_ms": 127.58,
+      "ci_95_rtt_ms": [
+        80.054,
+        171.362
+      ],
+      "margin_of_error_pct": 36.32,
+      "nominal_bandwidth_gbps": 1.0,
+      "effective_throughput_mb_s": 8.1,
+      "statistical_confidence": "ESTABLISHING (MoE +- 36.3%)"
+    }
+  ]
+}
