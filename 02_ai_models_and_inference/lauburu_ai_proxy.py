@@ -107,8 +107,12 @@ GEMINI_MODELS: dict = {
     "gemini/flash":  "gemini-2.0-flash",
     "gemini/flash8": "gemini-2.0-flash-8b",       # cheapest / fastest
     "gemini/pro":    "gemini-2.5-pro",
-    "gemini":        "gemini-2.0-flash",            # default alias
 }
+
+# ── 100% STRICT LOCAL AIRGAP HEALTH DATA PRIVACY LOCK ──────────────────────
+# When TRUE, all cloud routes (Cloudflare, Gemini, Hugging Face) are completely disabled.
+# All inferences, embeddings, and health data processing are locked 100% to local hardware.
+STRICT_LOCAL_AIRGAP_HEALTH_LOCK: bool = True
 
 TIMEOUT = httpx.Timeout(connect=3.0, read=60.0, write=10.0, pool=10.0)
 
@@ -411,14 +415,19 @@ async def _resolve_route(model: str) -> dict:
                             return {"type": "local", **cfg, "model_key": key}
                 except Exception:
                     pass
-        # Try Gemini free tier
-        if os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"):
-            return {"type": "gemini", "gemini_model": "gemini-2.0-flash", "display": "Gemini 2.0 Flash (free)"}
-        # Try HF free tier
-        if os.getenv("HUGGINGFACE_TOKEN") or os.getenv("HF_TOKEN"):
-            return {"type": "hf", "hf_model": HF_MODELS["hf/phi"], "display": "HF Phi-3.5-mini (free)"}
-        # Final fallback: Cloudflare
-        return {"type": "cf", "cf_model": CF_MODELS["cf/llama"], "display": "Cloudflare Llama-3.1-8B (free)"}
+        # If airgap lock is active, auto-resolve strictly to first available local model
+        first_local = await _get_live_local_port()
+        if first_local:
+            return {"type": "local", **first_local}
+        raise HTTPException(status_code=503, detail="[AIRGAP PROTECTED] No local AI model servers are currently live.")
+
+    if STRICT_LOCAL_AIRGAP_HEALTH_LOCK and (model in CF_MODELS or model in HF_MODELS or model in GEMINI_MODELS):
+        logger.warning(f"🔒 [AIRGAP HEALTH LOCK] Intercepted cloud model request '{model}'. Rerouting to 100% local model.")
+        # Reroute to local equivalent
+        first_local = await _get_live_local_port()
+        if first_local:
+            return {"type": "local", **first_local}
+        raise HTTPException(status_code=403, detail="[AIRGAP HEALTH LOCK] Cloud AI requests disabled to protect sensitive biometric health data.")
 
     if model in LOCAL_MODELS:
         cfg = LOCAL_MODELS[model]
@@ -447,7 +456,13 @@ async def _resolve_route(model: str) -> dict:
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "lauburu-ai-proxy", "port": 8080}
+    return {
+        "status": "ok",
+        "service": "lauburu-ai-proxy",
+        "port": 8080,
+        "airgap_health_lock": STRICT_LOCAL_AIRGAP_HEALTH_LOCK,
+        "mode": "100% STRICT LOCAL AIRGAP (Health Data Protected)"
+    }
 
 
 @app.get("/v1/models")
@@ -465,43 +480,35 @@ async def list_models():
                 "display": cfg["display"],
                 "port": cfg["port"],
             })
-    for key, cf_model in CF_MODELS.items():
-        if "/" in key:
-            models.append({"id": key, "object": "model", "owned_by": "cloudflare-workers-ai",
-                           "status": "ready", "display": f"CF: {cf_model}"})
-    for key, hf_model in HF_MODELS.items():
-        models.append({"id": key, "object": "model", "owned_by": "huggingface-inference-api",
-                       "status": "ready", "display": f"HF: {hf_model}"})
-    for key, g_model in GEMINI_MODELS.items():
-        if "/" in key:
-            models.append({"id": key, "object": "model", "owned_by": "google-gemini",
-                           "status": "ready", "display": f"Gemini: {g_model}"})
+    if not STRICT_LOCAL_AIRGAP_HEALTH_LOCK:
+        for key, cf_model in CF_MODELS.items():
+            if "/" in key:
+                models.append({"id": key, "object": "model", "owned_by": "cloudflare-workers-ai",
+                               "status": "ready", "display": f"CF: {cf_model}"})
+        for key, hf_model in HF_MODELS.items():
+            models.append({"id": key, "object": "model", "owned_by": "huggingface-inference-api",
+                           "status": "ready", "display": f"HF: {hf_model}"})
+        for key, g_model in GEMINI_MODELS.items():
+            if "/" in key:
+                models.append({"id": key, "object": "model", "owned_by": "google-gemini",
+                               "status": "ready", "display": f"Gemini: {g_model}"})
     return {"object": "list", "data": models}
 
 
 async def _cascade_stream_generator(body: dict, requested_model: str) -> AsyncGenerator[bytes, None]:
     """
-    3-Tier Streaming Fallback:
-    Tier 1: Requested model (e.g. Fast Local Qwen / Abliterated)
-    Tier 2: Larger Local / Sharded Mesh Models (:8084 Nemotron-70B, :8085 Qwen-27B, :8081 GPT-OSS)
-    Tier 3: Free Cloud APIs (Gemini Flash, Cloudflare Workers AI, HuggingFace Free)
+    Local-Only Streaming Cascade (Airgap Locked):
+    Tier 1: Requested local model (e.g. Fast Local Qwen / Abliterated / Hermes / Math)
+    Tier 2: Alternate Local / Sharded Mesh Models (:8086 Math, :8085 Abliterated, :8083 Coder, :8082 Hermes)
     """
     candidate_keys = []
-    if requested_model and requested_model != "auto":
+    if requested_model and requested_model != "auto" and requested_model in LOCAL_MODELS:
         candidate_keys.append(requested_model)
     
-    # Larger local / mesh fallbacks
-    for k in ["local/qwen-abliterated", "local/qwen", "local/nemotron", "local/gpt-oss", "local/mistral"]:
+    # 100% Local / Mesh candidates only
+    for k in ["local/qwen", "local/qwen-math", "local/qwen-abliterated", "local/mistral", "local/nemotron", "local/gpt-oss"]:
         if k not in candidate_keys:
             candidate_keys.append(k)
-            
-    # Free Cloud API fallbacks ($0 spend)
-    if os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"):
-        candidate_keys.extend(["gemini/flash", "gemini/pro"])
-    if os.getenv("CLOUDFLARE_ACCOUNT_ID") and os.getenv("CLOUDFLARE_API_KEY"):
-        candidate_keys.extend(["cf/llama70", "cf/qwen", "cf/llama"])
-    if os.getenv("HUGGINGFACE_TOKEN") or os.getenv("HF_TOKEN"):
-        candidate_keys.extend(["hf/qwen", "hf/llama", "hf/phi"])
 
     last_err = None
     for cand in candidate_keys:
