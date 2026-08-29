@@ -308,12 +308,12 @@ class LiveArenaDevScreen(Screen):
         with Horizontal(id="arena_container"):
             with Vertical(id="red_box", classes="faction_box"):
                 yield RedTeamGraphicalMapWidget(id="red_graphical_map")
-                yield LiveAiTuiCanvasWidget(faction="red", id="red_canvas")
+                yield LiveAiGpuCanvasWidget(faction="red", id="red_canvas")
                 yield Label("[bold red]🔴 HERMES 3 & OPENCLAW ACTION STREAM[/]")
                 yield RichLog(id="red_log", highlight=True, markup=True)
             with Vertical(id="blue_box", classes="faction_box"):
                 yield BlueTeamGraphicalMapWidget(id="blue_graphical_map")
-                yield LiveAiTuiCanvasWidget(faction="blue", id="blue_canvas")
+                yield LiveAiGpuCanvasWidget(faction="blue", id="blue_canvas")
                 yield Label("[bold cyan]🔵 LUCI OPENWRT & SENTINEL DEFENSE STREAM[/]")
                 yield RichLog(id="blue_log", highlight=True, markup=True)
         yield Input(placeholder="💬 Ask Red [Hermes] or Blue [LuCI]... (e.g., 'red why write that widget?' or 'blue firewall rules')", id="rag_input")
@@ -328,8 +328,8 @@ class LiveArenaDevScreen(Screen):
         self.net_bar = self.query_one("#network_metrics_bar", LiveNetworkMetricsWidget)
         self.red_map = self.query_one("#red_graphical_map", RedTeamGraphicalMapWidget)
         self.blue_map = self.query_one("#blue_graphical_map", BlueTeamGraphicalMapWidget)
-        self.red_canvas = self.query_one("#red_canvas", LiveAiTuiCanvasWidget)
-        self.blue_canvas = self.query_one("#blue_canvas", LiveAiTuiCanvasWidget)
+        self.red_canvas = self.query_one("#red_canvas", LiveAiGpuCanvasWidget)
+        self.blue_canvas = self.query_one("#blue_canvas", LiveAiGpuCanvasWidget)
 
         self.rag_engine = DualTeamRAGVoiceEngine()
         self.optimizer_loop = AutonomousGameAndUIOptimizerLoop()

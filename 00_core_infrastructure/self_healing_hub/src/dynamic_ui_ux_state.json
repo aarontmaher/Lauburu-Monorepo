@@ -1,87 +1,87 @@
 {
-  "timestamp_utc": "2026-08-29T10:30:34Z",
-  "cycle_count": 1050,
+  "timestamp_utc": "2026-08-29T10:34:17Z",
+  "cycle_count": 3619,
   "gamified_hud": {
-    "combat_tug_of_war_bar": "\ud83d\udd35 BLUE [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 68.4% vs \ud83d\udd34 RED [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 31.6%",
+    "combat_tug_of_war_bar": "\ud83d\udd35 BLUE [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 51.8% vs \ud83d\udd34 RED [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 48.2%",
     "cardiac_pulse_meter": "\ud83d\udc93 [\u2665\u2665\u2665\u2665\u2665\u00b7\u00b7\u00b7\u00b7\u00b7] 86 BPM (Zone 2 Aerobic Resonance | RMSSD: 899.08ms)",
-    "blue_compute_pct": 68.4,
-    "red_compute_pct": 31.6,
+    "blue_compute_pct": 51.8,
+    "red_compute_pct": 48.2,
     "heart_rate_bpm": 86,
     "autonomic_state": "ZONE_2_OPTIMAL",
     "contested_node": "GL-MT3600BE Router SQM Buffers (192.168.8.1)"
   },
   "play_by_play_events": [
     {
-      "time": "20:30:34",
+      "time": "20:34:17",
+      "type": "\ud83d\udca5 BQL BURST",
+      "description": "Hermes 3 expanded OpenWrt BQL queue depth to 8192 bytes! Contesting router bandwidth",
+      "team": "red"
+    },
+    {
+      "time": "20:34:15",
       "type": "\ud83d\udc89 BIOMETRIC INJECTION",
       "description": "OpenClaw injected 512Hz raw ECG stream into Movesense GATT UUID 0x2A37! Testing HRV filter threshold",
       "team": "red"
     },
     {
-      "time": "20:30:33",
+      "time": "20:34:14",
+      "type": "\ud83d\udee1\ufe0f DEFENSE LOCK",
+      "description": "LuCI OpenWrt deployed SQM fq_codel bufferbloat shield on 192.168.8.1! Mitigated 350ms latency surge",
+      "team": "blue"
+    },
+    {
+      "time": "20:34:12",
       "type": "\u26a1 EXPLOIT CLASH",
       "description": "Hermes 3 executed TB4 socket buffer overdrive! Targeted Port 50052 on MacBook Pro (+85 VRAM drained)",
       "team": "red"
     },
     {
-      "time": "20:30:32",
+      "time": "20:34:11",
       "type": "\ud83d\udca5 BQL BURST",
       "description": "Hermes 3 expanded OpenWrt BQL queue depth to 8192 bytes! Contesting router bandwidth",
       "team": "red"
     },
     {
-      "time": "20:30:31",
-      "type": "\ud83d\udca5 BQL BURST",
-      "description": "Hermes 3 expanded OpenWrt BQL queue depth to 8192 bytes! Contesting router bandwidth",
-      "team": "red"
-    },
-    {
-      "time": "20:30:30",
-      "type": "\ud83d\udca5 BQL BURST",
-      "description": "Hermes 3 expanded OpenWrt BQL queue depth to 8192 bytes! Contesting router bandwidth",
-      "team": "red"
-    },
-    {
-      "time": "20:30:29",
-      "type": "\ud83d\udca5 BQL BURST",
-      "description": "Hermes 3 expanded OpenWrt BQL queue depth to 8192 bytes! Contesting router bandwidth",
-      "team": "red"
-    },
-    {
-      "time": "20:30:28",
-      "type": "\ud83d\udee1\ufe0f DEFENSE LOCK",
-      "description": "LuCI OpenWrt deployed SQM fq_codel bufferbloat shield on 192.168.8.1! Mitigated 350ms latency surge",
-      "team": "blue"
-    },
-    {
-      "time": "20:30:27",
+      "time": "20:34:09",
       "type": "\ud83d\udd12 JUMBO SHIELD",
       "description": "Sentinel locked MTU 9000 Jumbo Frame tripwire on bridge0! Certified Ed25519 node authentication",
       "team": "blue"
     },
     {
-      "time": "20:30:26",
-      "type": "\ud83d\udd12 JUMBO SHIELD",
-      "description": "Sentinel locked MTU 9000 Jumbo Frame tripwire on bridge0! Certified Ed25519 node authentication",
-      "team": "blue"
-    },
-    {
-      "time": "20:30:25",
-      "type": "\ud83d\udee1\ufe0f DEFENSE LOCK",
-      "description": "LuCI OpenWrt deployed SQM fq_codel bufferbloat shield on 192.168.8.1! Mitigated 350ms latency surge",
-      "team": "blue"
-    },
-    {
-      "time": "20:30:24",
-      "type": "\ud83d\udee1\ufe0f DEFENSE LOCK",
-      "description": "LuCI OpenWrt deployed SQM fq_codel bufferbloat shield on 192.168.8.1! Mitigated 350ms latency surge",
-      "team": "blue"
-    },
-    {
-      "time": "20:30:23",
+      "time": "20:34:08",
       "type": "\u26a1 EXPLOIT CLASH",
       "description": "Hermes 3 executed TB4 socket buffer overdrive! Targeted Port 50052 on MacBook Pro (+85 VRAM drained)",
       "team": "red"
+    },
+    {
+      "time": "20:34:06",
+      "type": "\ud83d\udd12 JUMBO SHIELD",
+      "description": "Sentinel locked MTU 9000 Jumbo Frame tripwire on bridge0! Certified Ed25519 node authentication",
+      "team": "blue"
+    },
+    {
+      "time": "20:34:05",
+      "type": "\ud83d\udd12 JUMBO SHIELD",
+      "description": "Sentinel locked MTU 9000 Jumbo Frame tripwire on bridge0! Certified Ed25519 node authentication",
+      "team": "blue"
+    },
+    {
+      "time": "20:34:03",
+      "type": "\ud83d\udee1\ufe0f DEFENSE LOCK",
+      "description": "LuCI OpenWrt deployed SQM fq_codel bufferbloat shield on 192.168.8.1! Mitigated 350ms latency surge",
+      "team": "blue"
+    },
+    {
+      "time": "20:34:02",
+      "type": "\ud83d\ude80 FAILOVER ENGAGED",
+      "description": "Chaos Overlord simulated TB4 packet loss! Instant sub-millisecond WireGuard failover executed (1.85ms RTT)",
+      "team": "yellow"
+    },
+    {
+      "time": "20:34:00",
+      "type": "\ud83d\udc93 HRV STABILIZATION",
+      "description": "LuCI engaged Kamath 2004 artifact filter! Real-time heart rate verified authentic at Zone 2 baseline",
+      "team": "blue"
     }
   ],
   "territory_control": {

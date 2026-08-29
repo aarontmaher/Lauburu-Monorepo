@@ -1,8 +1,8 @@
 {
-  "timestamp_utc": "2026-08-29T10:30:33Z",
+  "timestamp_utc": "2026-08-29T10:34:16Z",
   "narrator_headline": "\ud83c\udf99\ufe0f MESH NARRATOR: Zone 2 cardiac resonance detected. Blue team maintaining 64% compute superiority.",
-  "red_lead_thought": "OpenClaw: Injecting 512Hz raw ECG stream into Movesense GATT UUID 0x2A37... Biological stress at 86 BPM.",
-  "blue_lead_thought": "LuCI: WireGuard ChaCha20-Poly1305 fallback route armed on 100.101.39.98... Ready for sub-millisecond failover.",
+  "red_lead_thought": "OpenClaw: ADB TCP keepalive active on Pixel 10 Pro (Port 8022)... Monitoring Exynos UI render frame drops.",
+  "blue_lead_thought": "Sentinel: Locking MTU 9000 Jumbo Frame tripwire on bridge0... Ed25519 node authentication certified.",
   "actors": {
     "red_lead": "Hermes 3 & OpenClaw",
     "blue_lead": "LuCI OpenWrt & Sentinel",
