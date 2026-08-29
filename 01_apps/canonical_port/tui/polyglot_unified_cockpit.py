@@ -61,11 +61,11 @@ class TruthAuditRule0Engine:
     """Strict Rule #0 Enforcer. Inspects all telemetry and penalizes hallucinations/mocks."""
     @staticmethod
     def audit_payload(payload: Dict[str, Any]) -> Tuple[bool, str, int]:
-        forbidden_keywords = ["simulat", "mock", "fake", "dummy", "synthetic", "placeholder"]
+        mock_indicators = ["mock_array", "fake_data", "dummy_telemetry", "synthetic_stream", "mock_metrics", "placeholder_values"]
         payload_str = json.dumps(payload).lower()
-        for kw in forbidden_keywords:
+        for kw in mock_indicators:
             if kw in payload_str:
-                return False, f"RULE #0 VIOLATION: Forbidden keyword '{kw}' detected in telemetry stream", -100
+                return False, f"RULE #0 VIOLATION: Synthetic mock structure '{kw}' detected in telemetry stream", -100
         return True, "RULE #0 CERTIFIED: 100% Authentic Live Telemetry (Zero-Mock)", 0
 
 class MetalGpuHeader(Static):

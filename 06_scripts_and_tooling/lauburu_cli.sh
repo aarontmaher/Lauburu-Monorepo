@@ -73,8 +73,18 @@ case "$CMD" in
     priority|governor)
         echo "🛡️ Running Hybrid Real-RAM Mesh Governor & Master Priority Swarm..."
         cd "$MONOREPO_DIR"
-        python3 06_scripts_and_tooling/network/hybrid_router_mesh_governor.py "$@"
+        python3 06_scripts_and_tooling/network/real_hardware_router_ram_governor.py "$@"
         python3 05_agents_and_swarms/master_priority_automation_loop.py --once
+        ;;
+    governor-optimize|optimize-network)
+        echo "⚡ Executing Real-Hardware Network-Wide Settings Optimization..."
+        cd "$MONOREPO_DIR"
+        exec python3 06_scripts_and_tooling/network/real_hardware_router_ram_governor.py "$@"
+        ;;
+    governor-test|test-tiny-models)
+        echo "🔬 Running Continuous Tiny Model Governance Benchmark..."
+        cd "$MONOREPO_DIR"
+        exec python3 02_ai_models_and_inference/benchmarks/router_ram_governor_model_bench.py "$@"
         ;;
     priority-daemon|governor-daemon)
         echo "🚀 Starting 24/7 Master Priority Continuous Automation Daemon..."

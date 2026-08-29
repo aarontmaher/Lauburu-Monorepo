@@ -24,9 +24,11 @@ class LiveRouterRAMSampler:
     _lock = threading.Lock()
 
     def __init__(self):
-        self.total_mb = 0.0
+        self.total_mb = 481.3
         self.available_mb = 0.0
         self.free_mb = 0.0
+        self.sqm_status = "NOMINAL"
+        self.adb_status = "STANDBY"
         self.is_online = False
         self.last_update = 0.0
         self._running = True
@@ -36,19 +38,36 @@ class LiveRouterRAMSampler:
     def _poll_loop(self):
         while self._running:
             try:
-                cmd = f"sshpass -p '{ROUTER_PASS}' ssh -o StrictHostKeyChecking=no -o ConnectTimeout=1 root@{ROUTER_IP} 'grep -E \"(MemTotal|MemFree|MemAvailable)\" /proc/meminfo'"
+                # Fast invocation of onboard micro governor or /proc/meminfo
+                cmd = f"sshpass -p '{ROUTER_PASS}' ssh -o StrictHostKeyChecking=no -o ConnectTimeout=1 root@{ROUTER_IP} '/tmp/micro_governor.sh 2>/dev/null || grep -E \"(MemTotal|MemFree|MemAvailable)\" /proc/meminfo'"
                 res = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=2.0)
-                if res.returncode == 0 and "MemTotal" in res.stdout:
-                    mem = {}
-                    for line in res.stdout.splitlines():
-                        if ":" in line:
-                            k, v = line.split(":", 1)
-                            mem[k.strip()] = int(v.strip().split()[0])
-                    self.total_mb = round(mem.get("MemTotal", 492824) / 1024.0, 1)
-                    self.free_mb = round(mem.get("MemFree", 0) / 1024.0, 1)
-                    self.available_mb = round(mem.get("MemAvailable", self.free_mb) / 1024.0, 1)
-                    self.is_online = True
-                    self.last_update = time.time()
+                if res.returncode == 0 and res.stdout.strip():
+                    out = res.stdout.strip()
+                    if out.startswith("{") and "available_mb" in out:
+                        try:
+                            import json
+                            data = json.loads(out)
+                            self.total_mb = float(data["ram"]["total_mb"])
+                            self.available_mb = float(data["ram"]["available_mb"])
+                            self.sqm_status = data["network_optimizations"].get("sqm_status", "NOMINAL")
+                            self.adb_status = data["network_optimizations"].get("usb_adb_status", "STANDBY")
+                            self.is_online = True
+                            self.last_update = time.time()
+                        except Exception:
+                            pass
+                    elif "MemTotal" in out:
+                        mem = {}
+                        for line in out.splitlines():
+                            if ":" in line:
+                                k, v = line.split(":", 1)
+                                mem[k.strip()] = int(v.strip().split()[0])
+                        self.total_mb = round(mem.get("MemTotal", 492824) / 1024.0, 1)
+                        self.free_mb = round(mem.get("MemFree", 0) / 1024.0, 1)
+                        self.available_mb = round(mem.get("MemAvailable", self.free_mb) / 1024.0, 1)
+                        self.is_online = True
+                        self.last_update = time.time()
+                    else:
+                        self.is_online = False
                 else:
                     self.is_online = False
             except Exception:
@@ -61,6 +80,8 @@ class LiveRouterRAMSampler:
             "total_mb": self.total_mb,
             "available_mb": self.available_mb,
             "free_mb": self.free_mb,
+            "sqm_status": self.sqm_status,
+            "adb_status": self.adb_status,
             "last_update": self.last_update
         }
 
