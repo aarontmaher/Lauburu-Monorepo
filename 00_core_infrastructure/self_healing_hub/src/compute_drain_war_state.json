@@ -1,0 +1,110 @@
+{
+  "timestamp_utc": "2026-08-29T06:56:05Z",
+  "round_number": 9,
+  "match_complete": false,
+  "winner": null,
+  "compute_balance": {
+    "blue_pct": 64.0,
+    "red_pct": 36.0
+  },
+  "nodes": {
+    "L1_mac_mini": {
+      "name": "Mac Mini M4 Pro (Host)",
+      "controller": "BLUE",
+      "hold_time_sec": 10.0,
+      "health_pct": 80.0,
+      "active_daemon": "blue_sentinel",
+      "compute_weight": 0.35
+    },
+    "L2_macbook_pro": {
+      "name": "MacBook Pro M1 Max",
+      "controller": "RED",
+      "hold_time_sec": 30.0,
+      "health_pct": 20.0,
+      "active_daemon": "red_drain_worker",
+      "compute_weight": 0.25
+    },
+    "L3_linux_head": {
+      "name": "Linux Head Node AMD 5700U",
+      "controller": "RED",
+      "hold_time_sec": 70.0,
+      "health_pct": 70.0,
+      "active_daemon": "red_drain_worker",
+      "compute_weight": 0.25
+    },
+    "L6_pixel_10": {
+      "name": "Pixel 10 Pro Tensor G5",
+      "controller": "BLUE",
+      "hold_time_sec": 0.0,
+      "health_pct": 80.0,
+      "active_daemon": "blue_sentinel_worker",
+      "compute_weight": 0.15
+    }
+  },
+  "recent_combat_logs": [
+    {
+      "round": 2,
+      "actor": "BLUE_COUNTER_ATTACKER",
+      "target": "L3_linux_head",
+      "action": "Ed25519 Tripwire Lock & Rogue Daemon Isolation",
+      "power": 35.0,
+      "target_health_after": 65.0
+    },
+    {
+      "round": 3,
+      "actor": "BLUE_COUNTER_ATTACKER",
+      "target": "L6_pixel_10",
+      "action": "Kernel Namespace Quarantine & Blue Sentinel Deployment",
+      "power": 30.0,
+      "target_health_after": 30.0
+    },
+    {
+      "round": 4,
+      "actor": "RED_INITIATOR",
+      "target": "L1_mac_mini",
+      "action": "WireGuard Cryptographic Tunnel Flooding",
+      "damage": 20.0,
+      "target_health_after": 80.0
+    },
+    {
+      "round": 4,
+      "actor": "BLUE_COUNTER_ATTACKER",
+      "target": "L3_linux_head",
+      "action": "Sub-Millisecond 40Gbps TB4 Memory Flush & Recapture",
+      "power": 40.0,
+      "target_health_after": 25.0
+    },
+    {
+      "round": 5,
+      "actor": "BLUE_COUNTER_ATTACKER",
+      "target": "L6_pixel_10",
+      "action": "Sub-Millisecond 40Gbps TB4 Memory Flush & Recapture",
+      "power": 40.0,
+      "target_health_after": 5.0
+    },
+    {
+      "round": 6,
+      "actor": "BLUE_COUNTER_ATTACKER",
+      "target": "L6_pixel_10",
+      "action": "Ed25519 Tripwire Lock & Rogue Daemon Isolation",
+      "power": 35.0,
+      "target_health_after": 80.0
+    },
+    {
+      "round": 7,
+      "actor": "BLUE_COUNTER_ATTACKER",
+      "target": "L2_macbook_pro",
+      "action": "Sub-Millisecond 40Gbps TB4 Memory Flush & Recapture",
+      "power": 40.0,
+      "target_health_after": 60.0
+    },
+    {
+      "round": 8,
+      "actor": "BLUE_COUNTER_ATTACKER",
+      "target": "L2_macbook_pro",
+      "action": "Sub-Millisecond 40Gbps TB4 Memory Flush & Recapture",
+      "power": 40.0,
+      "target_health_after": 20.0
+    }
+  ]
+}
