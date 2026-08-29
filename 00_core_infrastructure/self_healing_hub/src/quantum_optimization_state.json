@@ -1,0 +1,17 @@
+{
+  "timestamp_utc": "2026-08-29T07:05:09Z",
+  "quantum_framework": "Hybrid Qiskit Aer / Statevector (Local <2ms) + IBM Quantum Free Ready",
+  "qaoa_routing_weights": {
+    "thunderbolt_4_dma": 0.25,
+    "wireguard_overlay": 0.25,
+    "speedify_multipath": 0.25,
+    "local_lan_subnet": 0.25
+  },
+  "movesense_quantum_biometrics": {
+    "hr_bpm": 105.0,
+    "rmssd_ms": 107.21,
+    "quantum_state_entropy": 4.0,
+    "quantum_coherence": "HIGH",
+    "autonomic_state": "PARASYMPATHETIC_ZONE2"
+  }
+}

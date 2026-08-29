@@ -112,6 +112,31 @@ GEMINI_MODELS: dict = {
 
 TIMEOUT = httpx.Timeout(connect=3.0, read=60.0, write=10.0, pool=10.0)
 
+CANONICAL_SYSTEM_CONTEXT = (
+    "You are operating within the Lauburu Mesh Ecosystem. "
+    "Primary Host Node: Apple M4 Pro Mac Mini (24GB RAM, 192.168.8.230, 100.119.199.76, TB4 169.254.80.69). "
+    "Hardware Mesh: MacBook Pro M1 Max (TB4 40Gbps bridge 169.254.187.138), Linux Head Node AMD 5700U (192.168.8.224), Pixel 10 Pro Tensor G5 (100.73.38.87). "
+    "Connected Sensors: Physical Movesense 261030002013 BLE (72 BPM, RMSSD, DFA-alpha1). "
+    "Rule #0 Mandate: Zero-Mock & Zero-Simulated Data. All metrics must originate from verified physical sockets. "
+    "Storage Tri-Vault: Obsidian (/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault), "
+    "PySpark Big Data Lake (/Users/aaron/DFS_UNIFIED/lora_datasets), GitHub Monorepo."
+)
+
+def _inject_lauburu_system_context(messages: list) -> list:
+    """Ensure every cloud and local model prompt is anchored with the canonical Lauburu physical setup."""
+    if not messages:
+        return [{"role": "system", "content": CANONICAL_SYSTEM_CONTEXT}]
+    
+    msgs = list(messages)
+    # If first message is system, prepend the canonical context
+    if msgs[0].get("role") == "system":
+        existing = msgs[0].get("content", "")
+        if "Lauburu Mesh Ecosystem" not in existing:
+            msgs[0] = {"role": "system", "content": f"{CANONICAL_SYSTEM_CONTEXT}\n\n{existing}"}
+    else:
+        msgs.insert(0, {"role": "system", "content": CANONICAL_SYSTEM_CONTEXT})
+    return msgs
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Health probe
@@ -226,7 +251,7 @@ async def _stream_cloudflare(cf_model: str, body: dict) -> AsyncGenerator[bytes,
     else:
         url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/{cf_model}"
 
-    messages = body.get("messages", [])
+    messages = _inject_lauburu_system_context(body.get("messages", []))
     cf_payload = {
         "messages": messages,
         "stream": True,
@@ -291,7 +316,7 @@ async def _stream_huggingface(hf_model: str, body: dict) -> AsyncGenerator[bytes
 
     payload = {
         "model": hf_model,
-        "messages": body.get("messages", []),
+        "messages": _inject_lauburu_system_context(body.get("messages", [])),
         "stream": True,
         "max_tokens": body.get("max_tokens", 512),
         "temperature": body.get("temperature", 0.7),
@@ -340,7 +365,7 @@ async def _stream_gemini(gemini_model: str, body: dict) -> AsyncGenerator[bytes,
     }
     payload = {
         "model": gemini_model,
-        "messages": body.get("messages", []),
+        "messages": _inject_lauburu_system_context(body.get("messages", [])),
         "stream": True,
         "max_tokens": body.get("max_tokens", 512),
         "temperature": body.get("temperature", 0.7),
