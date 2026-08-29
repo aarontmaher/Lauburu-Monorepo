@@ -1,0 +1,41 @@
+{
+  "timestamp_utc": "2026-08-29T09:01:07Z",
+  "sensor_telemetry": {
+    "device": "Movesense HR+ 261030002013",
+    "connected": true,
+    "heart_rate_bpm": 74,
+    "rmssd_ms": 46.97,
+    "dfa_alpha1": 1.05,
+    "stream_mode": "100% STRICT LOCAL AIRGAP BLE"
+  },
+  "blood_pressure_ptt": {
+    "estimated_ptt_ms": 212.5,
+    "systolic_bp_mmhg": 120,
+    "diastolic_bp_mmhg": 77,
+    "mean_arterial_pressure_mmhg": 91.3,
+    "method": "ECG-PTT Pulse Wave Inversion (100% Local DSP)"
+  },
+  "overnight_sleep_analysis": {
+    "sleep_score_pct": 44,
+    "recovery_status": "LOW (Red)",
+    "nocturnal_rmssd_ms": 46.97,
+    "sleep_stages_estimate": {
+      "deep_sleep_pct": 14.0,
+      "rem_sleep_pct": 18.5,
+      "light_sleep_pct": 46.5,
+      "awake_pct": 7.0
+    }
+  },
+  "activity_and_workout": {
+    "current_activity": "RESTING",
+    "training_zone": "Rest / Passive Recovery",
+    "hr_pct_max": 38.9
+  },
+  "cardiorespiratory_thresholds": {
+    "estimated_vo2max_ml_kg_min": 50.1,
+    "lt1_aerobic_threshold_bpm": 137,
+    "lt2_anaerobic_threshold_bpm": 170,
+    "current_dfa_alpha1": 1.05,
+    "physiological_domain": "Below LT1 (Aerobic Recovery / Low Systemic Stress)"
+  }
+}

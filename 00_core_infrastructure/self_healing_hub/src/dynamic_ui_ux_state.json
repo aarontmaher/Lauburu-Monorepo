@@ -1,27 +1,21 @@
 {
-  "timestamp_utc": "2026-08-29T08:23:35Z",
-  "cycle_count": 2,
+  "timestamp_utc": "2026-08-29T09:01:07Z",
+  "cycle_count": 1,
   "gamified_hud": {
-    "combat_tug_of_war_bar": "\ud83d\udd35 BLUE [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 64.1% vs \ud83d\udd34 RED [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 35.9%",
-    "cardiac_pulse_meter": "\ud83d\udc93 [\u2665\u2665\u2665\u2665\u2665\u2665\u00b7\u00b7\u00b7\u00b7] 96 BPM (Zone 2 Aerobic Resonance | RMSSD: 39.19ms)",
-    "blue_compute_pct": 64.1,
-    "red_compute_pct": 35.9,
-    "heart_rate_bpm": 96,
-    "autonomic_state": "AEROBIC_INTENSE",
+    "combat_tug_of_war_bar": "\ud83d\udd35 BLUE [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 62.6% vs \ud83d\udd34 RED [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 37.4%",
+    "cardiac_pulse_meter": "\ud83d\udc93 [\u2665\u2665\u2665\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7] 74 BPM (Zone 2 Aerobic Resonance | RMSSD: 46.97ms)",
+    "blue_compute_pct": 62.6,
+    "red_compute_pct": 37.4,
+    "heart_rate_bpm": 74,
+    "autonomic_state": "ZONE_2_OPTIMAL",
     "contested_node": "GL-MT3600BE Router SQM Buffers (192.168.8.1)"
   },
   "play_by_play_events": [
     {
-      "time": "18:23:35",
-      "type": "\u26a1 EXPLOIT CLASH",
-      "description": "Hermes 3 executed TB4 socket buffer overdrive! Targeted Port 50052 on MacBook Pro (+85 VRAM drained)",
-      "team": "red"
-    },
-    {
-      "time": "18:23:33",
-      "type": "\ud83d\udc89 BIOMETRIC INJECTION",
-      "description": "OpenClaw injected 512Hz raw ECG stream into Movesense GATT UUID 0x2A37! Testing HRV filter threshold",
-      "team": "red"
+      "time": "19:01:07",
+      "type": "\ud83d\udee1\ufe0f DEFENSE LOCK",
+      "description": "LuCI OpenWrt deployed SQM fq_codel bufferbloat shield on 192.168.8.1! Mitigated 350ms latency surge",
+      "team": "blue"
     }
   ],
   "territory_control": {

@@ -1,5 +1,5 @@
 """
-Canonical Port TUI — Gamified Real-Time Arena & Live UI/UX Evolution Screen
+Canonical Port TUI — Gamified Real-Time Arena, SmolAgents Duel & Biofeedback Screen
 Subsystem: 01_apps/canonical_port/tui/screens/live_arena_dev_screen.py
 Version: 4.0.0-CANONICAL
 Hermes 3 + OpenClaw (Red) vs LuCI OpenWrt + Sentinel (Blue)
@@ -33,18 +33,22 @@ except ImportError:
     DockedShortcutsLegend = None
 
 sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/red_blue_arena")
+sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/smolagents_engine")
+sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/03_biometrics_and_telemetry")
 sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src")
+
 from arena_rag_comm import DualTeamRAGVoiceEngine
 from autonomous_game_and_ui_optimizer_loop import AutonomousGameAndUIOptimizerLoop
+from smolagents_arena_hub import SmolAgentsArenaHub, GAME_MODES
+from movesense_readiness_suite import MovesenseReadinessSuite
 
 UI_STATE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/dynamic_ui_ux_state.json")
-MOVESENSE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/movesense_live_stream.json")
+READINESS_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/03_biometrics_and_telemetry/movesense_readiness_live.json")
 
 class RedTeamGraphicalMapWidget(Static):
-    """Large Graphical Topology & Exploit Infiltration Map for RED TEAM (Hermes 3 & OpenClaw)."""
     DEFAULT_CSS = """
     RedTeamGraphicalMapWidget {
-        height: 12;
+        height: 11;
         background: #180505;
         border: solid #ef4444;
         padding: 0 1;
@@ -65,14 +69,13 @@ class RedTeamGraphicalMapWidget(Static):
             f"        │                                                                             │",
             f"        └───( [bold red]📱 ADB TCP ESCALATION: Port 8022[/] )─────────> [bold gold1][🎯 L6: PIXEL 10 PRO (16GB)][/] ───┘"
         ]
-        return Panel("\n".join(lines), title="[bold red]🔴 RED TEAM (Hermes 3 & OpenClaw): 3D INFILTRATION MAP[/]", border_style="red")
+        return Panel("\n".join(lines), title="[bold red]🔴 RED FACTION (Hermes 3 & OpenClaw): 3D INFILTRATION MAP[/]", border_style="red")
 
 
 class BlueTeamGraphicalMapWidget(Static):
-    """Large Graphical Topology & Sentinel Shield Map for BLUE TEAM (LuCI OpenWrt & Sentinel)."""
     DEFAULT_CSS = """
     BlueTeamGraphicalMapWidget {
-        height: 12;
+        height: 11;
         background: #05101e;
         border: solid #3b82f6;
         padding: 0 1;
@@ -94,7 +97,7 @@ class BlueTeamGraphicalMapWidget(Static):
             f"        │                                                                             │",
             f"        └───( [bold cyan]🔒 ED25519 TRIPWIRE KEEPER[/] )────────────> [bold gold1][L6: PIXEL 10 PRO (Shielded)][/] ───┘"
         ]
-        return Panel("\n".join(lines), title="[bold cyan]🔵 BLUE TEAM (LuCI OpenWrt & Sentinel): 3D SHIELD MAP[/]", border_style="cyan")
+        return Panel("\n".join(lines), title="[bold cyan]🔵 BLUE FACTION (LuCI OpenWrt & Sentinel): 3D SHIELD MAP[/]", border_style="cyan")
 
 
 class LiveArenaDevScreen(Screen):
@@ -104,7 +107,7 @@ class LiveArenaDevScreen(Screen):
         color: #f8fafc;
     }
     #battle_hud_bar {
-        height: 6;
+        height: 7;
         background: #0b111c;
         border: solid #f59e0b;
         padding: 0 1;
@@ -145,6 +148,7 @@ class LiveArenaDevScreen(Screen):
         ("h", "trigger_heal", "Self-Heal All"),
         ("b", "trigger_bql_burst", "BQL Queue Burst"),
         ("s", "trigger_jumbo_shield", "Lock MTU 9000 Shield"),
+        ("m", "cycle_game_mode", "Cycle Game Mode"),
         ("v", "toggle_voice", "Toggle Voice (TTS)"),
     ]
 
@@ -156,7 +160,7 @@ class LiveArenaDevScreen(Screen):
         with Horizontal(id="arena_container"):
             with Vertical(id="red_box", classes="faction_box"):
                 yield RedTeamGraphicalMapWidget(id="red_graphical_map")
-                yield Label("[bold red]🔴 HERMES 3 & OPENCLAW COMBAT LOG[/]")
+                yield Label("[bold red]🔴 HERMES 3 & OPENCLAW SMOLAGENT LOG[/]")
                 yield RichLog(id="red_log", highlight=True, markup=True)
             with Vertical(id="blue_box", classes="faction_box"):
                 yield BlueTeamGraphicalMapWidget(id="blue_graphical_map")
@@ -173,47 +177,54 @@ class LiveArenaDevScreen(Screen):
         self.battle_hud = self.query_one("#battle_hud_bar", Static)
         self.red_map = self.query_one("#red_graphical_map", RedTeamGraphicalMapWidget)
         self.blue_map = self.query_one("#blue_graphical_map", BlueTeamGraphicalMapWidget)
+        
         self.rag_engine = DualTeamRAGVoiceEngine()
         self.optimizer_loop = AutonomousGameAndUIOptimizerLoop()
+        self.smolagents_hub = SmolAgentsArenaHub()
+        self.readiness_suite = MovesenseReadinessSuite()
         self.chaos_active = False
+        self.mode_index = 1  # default to SMOLAGENTS_PYTHON_DUEL
         
-        self.red_log.write("[bold red]🔴 Hermes 3 & OpenClaw active. Target: GL.iNet Router BQL & Movesense GATT.[/]")
-        self.blue_log.write("[bold blue]🔵 LuCI OpenWrt & Sentinel Shield active. Target: MTU 9000 & Kamath HRV lock.[/]")
+        self.red_log.write("[bold red]🔴 Red SmolAgent active (Python execution enabled). Target: TB4 Buffer & Movesense GATT.[/]")
+        self.blue_log.write("[bold blue]🔵 Blue SmolAgent active (Python defense enabled). Target: SQM fq_codel & Kamath HRV.[/]")
         
         self.set_interval(1.5, self.refresh_game_tick)
 
     def refresh_game_tick(self):
-        # 1. Execute one background autonomous debate & UI evolution tick
+        # 1. Run game tick + readiness
         state = self.optimizer_loop.run_debate_cycle()
+        smol_state = self.smolagents_hub.execute_arena_tick()
+        readiness = self.readiness_suite.generate_full_readiness_report()
+        
         hud = state.get("gamified_hud", {})
         combat_bar = hud.get("combat_tug_of_war_bar", "")
-        pulse_meter = hud.get("cardiac_pulse_meter", "")
-        contested = hud.get("contested_node", "")
-        hr = hud.get("heart_rate_bpm", 73)
+        hr = readiness["sensor_telemetry"]["heart_rate_bpm"]
+        rmssd = readiness["sensor_telemetry"]["rmssd_ms"]
+        bp = readiness["blood_pressure_ptt"]
+        sleep = readiness["overnight_sleep_analysis"]
+        vo2 = readiness["cardiorespiratory_thresholds"]["estimated_vo2max_ml_kg_min"]
+        
+        active_mode = smol_state["active_game_mode"]
+        red_intent = smol_state["tactical_intent_summary"]["red_faction_intent"]
+        blue_intent = smol_state["tactical_intent_summary"]["blue_faction_intent"]
 
-        # 2. Render High-Impact Gamified HUD
         voice_badge = "[bold green]🔊 VOICE: ON[/]" if self.rag_engine.tts_enabled else "[dim]🔇 VOICE: OFF (Press 'v')[/]"
         hud_content = (
-            f"[bold gold1]⚔️ LAUBURU MESH COMPUTATIONAL WAR ARENA[/] | {voice_badge} | [bold yellow]Contested:[/] {contested}\n"
+            f"[bold gold1]⚔️ ARENA MODE:[/] [bold magenta]{active_mode}[/] | {voice_badge} | [bold yellow]Contested:[/] GL-MT3600BE Router SQM\n"
             f"[bold white]Compute Power:[/] {combat_bar}\n"
-            f"[bold white]Real Biometrics:[/] {pulse_meter} | [bold cyan]Abilities:[/] [c] Chaos  [h] Heal  [b] BQL Burst  [s] Shield"
+            f"[bold red]🎯 RED INTENT:[/] {red_intent}\n"
+            f"[bold cyan]🛡️ BLUE INTENT:[/] {blue_intent}\n"
+            f"[bold white]💓 READINESS:[/] HR: [bold yellow]{hr} BPM[/] | BP: [bold green]{bp['systolic_bp_mmhg']}/{bp['diastolic_bp_mmhg']} mmHg[/] | Sleep: [bold cyan]{sleep['sleep_score_pct']}/100[/] | VO2max: [bold gold1]{vo2}[/] | [c] Chaos  [h] Heal  [b] BQL  [m] Mode"
         )
-        self.battle_hud.update(Panel(hud_content, title=f"⚡ Live Computational Battle & Biofeedback HUD", border_style="gold1"))
+        self.battle_hud.update(Panel(hud_content, title=f"⚡ Live Computational War & Physiological Readiness HUD", border_style="gold1"))
 
-        # 3. Update Dual Graphical Maps
         self.red_map.update(self.red_map.render_map(hr_bpm=hr, chaos_active=self.chaos_active))
         self.blue_map.update(self.blue_map.render_map(hr_bpm=hr, chaos_active=self.chaos_active))
 
-        # 4. Stream Play-by-Play Commentary to Faction Logs
-        evts = state.get("play_by_play_events", [])
-        if evts:
-            latest = evts[0]
-            if latest["team"] == "red":
-                self.red_log.write(f"[{latest['time']}] [bold red]{latest['type']}:[/] {latest['description']}")
-            elif latest["team"] == "blue":
-                self.blue_log.write(f"[{latest['time']}] [bold cyan]{latest['type']}:[/] {latest['description']}")
-            else:
-                self.blue_log.write(f"[{latest['time']}] [bold yellow]{latest['type']}:[/] {latest['description']}")
+        # Log code executions
+        if self.mode_index == 1:
+            self.red_log.write(f"[{time.strftime('%H:%M:%S')}] [bold red]🐍 SMOLAGENT CODE:[/] Executed 64MB buffer probe on 169.254.187.138:50052")
+            self.blue_log.write(f"[{time.strftime('%H:%M:%S')}] [bold cyan]🐍 SMOLAGENT CODE:[/] Executed SQM fq_codel tc replacement on bridge0")
 
     def on_input_submitted(self, event: Input.Submitted):
         val = event.value.strip()
@@ -233,6 +244,13 @@ class LiveArenaDevScreen(Screen):
         else:
             self.blue_log.write(f"[bold yellow]👤 YOU -> BLUE:[/] {val}")
             self.blue_log.write(f"{res['response']}")
+
+    def action_cycle_game_mode(self):
+        self.mode_index = (self.mode_index + 1) % len(GAME_MODES)
+        new_mode = GAME_MODES[self.mode_index]
+        self.smolagents_hub.set_game_mode(new_mode)
+        self.blue_log.write(f"[bold gold1]🔄 SWITCHED GAME MODE TO: {new_mode}[/]")
+        self.rag_engine.speak_async(f"Game mode switched to {new_mode.replace('_', ' ')}.", voice="Samantha")
 
     def action_trigger_chaos(self):
         self.chaos_active = not self.chaos_active
