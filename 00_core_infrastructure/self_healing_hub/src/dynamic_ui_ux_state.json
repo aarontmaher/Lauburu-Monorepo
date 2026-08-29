@@ -1,0 +1,34 @@
+{
+  "timestamp_utc": "2026-08-29T08:23:35Z",
+  "cycle_count": 2,
+  "gamified_hud": {
+    "combat_tug_of_war_bar": "\ud83d\udd35 BLUE [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 64.1% vs \ud83d\udd34 RED [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 35.9%",
+    "cardiac_pulse_meter": "\ud83d\udc93 [\u2665\u2665\u2665\u2665\u2665\u2665\u00b7\u00b7\u00b7\u00b7] 96 BPM (Zone 2 Aerobic Resonance | RMSSD: 39.19ms)",
+    "blue_compute_pct": 64.1,
+    "red_compute_pct": 35.9,
+    "heart_rate_bpm": 96,
+    "autonomic_state": "AEROBIC_INTENSE",
+    "contested_node": "GL-MT3600BE Router SQM Buffers (192.168.8.1)"
+  },
+  "play_by_play_events": [
+    {
+      "time": "18:23:35",
+      "type": "\u26a1 EXPLOIT CLASH",
+      "description": "Hermes 3 executed TB4 socket buffer overdrive! Targeted Port 50052 on MacBook Pro (+85 VRAM drained)",
+      "team": "red"
+    },
+    {
+      "time": "18:23:33",
+      "type": "\ud83d\udc89 BIOMETRIC INJECTION",
+      "description": "OpenClaw injected 512Hz raw ECG stream into Movesense GATT UUID 0x2A37! Testing HRV filter threshold",
+      "team": "red"
+    }
+  ],
+  "territory_control": {
+    "mac_mini_host": "\ud83d\udd35 BLUE (Shielded)",
+    "macbook_pro_vault": "\ud83d\udd34 CONTESTED (TB4 Buffer Drain Active)",
+    "linux_head_node": "\ud83d\udd35 BLUE (Locked)",
+    "pixel_10_pro": "\ud83d\udfe1 NEUTRAL (ADB Monitored)",
+    "movesense_sensor": "\ud83d\udfe2 STREAMING (Kamath Filtered)"
+  }
+}

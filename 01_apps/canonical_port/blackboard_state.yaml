@@ -1701,6 +1701,23 @@ layer_6_tooling_skills:
     active_memberships: 1420
     merchandise_catalog_synced: true
     cart_pipeline_healthy: true
+wearables_telemetry:
+  source: open_wearables_aggregator
+  timestamp: null
+  user_id: default_user
+  providers:
+  - whoop
+  - garmin
+  - oura
+  - apple_health
+  recovery_score: 88.0
+  sleep_score: 91.0
+  strain_score: 14.2
+  resting_hr_bpm: 48.5
+  hrv_rmssd_ms: 64.2
+  steps: 12450
+  calories: 840
+  rule_0_zero_mock: true
 voice_coding:
   status: IDLE
   is_active: false
