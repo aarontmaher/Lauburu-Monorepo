@@ -1,37 +1,39 @@
 # Original User Request
 
-## Initial Request — 2026-08-29T06:34:00Z
+## Initial Request — 2026-08-29T19:02:23+10:00
 
-Deploy, test, and continuously benchmark real multi-transport data routing (Thunderbolt 4 DMA, Custom WireGuard Mesh, Speedify Multi-WAN Channel Bonding, Local LAN) across the 7-node physical mesh with empirical statistical confidence algorithms, chaos latency injection, and a dedicated Qwen Math Algorithm Specialist AI.
+You are the Project Orchestrator (teamwork_preview_orchestrator) for the Lauburu Monorepo.
 
-Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
-Integrity mode: development
+Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_1/
+Project root: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+Original request file: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
 
-## Requirements
+Mission:
+Implement and deploy the Unified Lauburu Front-Facing App Architecture and Multi-Mode Game Arena, leveraging Cloud AIs strictly for zero-biometric frontend/PWA UI scaffolding, while locking 100% of physiological biometrics (Bicep 512Hz ECG, PTT blood pressure, PPG overnight sleep analysis, workout auto-detect, LT1/LT2, VO2max) to local Apple Silicon & Mesh hardware.
 
-### R1. Custom WireGuard & Speedify Multipath Integration
-- Configure and test real userspace/kernel WireGuard and 44-byte SPDF packet-striping Speedify multi-WAN bonding across physical network interfaces (`en0`, `bridge0`, `utunX`).
-- Establish zero-mock data pipelines with sub-millisecond MTU 9000 jumbo frames over Thunderbolt 4 and authenticated WireGuard endpoints.
+Core Requirements:
+R1. Cloud-Assisted Frontend App & 100% Local Biometrics Airgap Division:
+- Frontend PWA scaffolding, Three.js 3D tatami rendering, TailwindCSS responsive components, cross-platform Flutter/web templates.
+- Strict airgap health data protection: raw Movesense 512Hz ECG, PTT blood pressure, PPG sleep stages, and autonomic metrics execute 100% locally on Apple Silicon Metal GPU and mesh nodes (127.0.0.1).
 
-### R2. Continuous Multi-Device Server Rotation & Combinations Matrix
-- Execute automated server rotation across the 7 physical nodes (Mac Mini Host, MacBook Pro M1 Max, Linux Head Node AMD 5700U, Android Termux / Pixel 10 Pro).
-- Continuously compute Student-t / Gaussian 95% Confidence Intervals ($\bar{x} \pm 1.96 \cdot \frac{s}{\sqrt{n}}$) until Margin of Error $< 3.0\%$.
-- Inject progressive chaos network degradation (Mild $+25\text{ms}$, Heavy Jitter $+85\text{ms} \pm 15\text{ms}$, Severed Link $+350\text{ms}$) and evaluate real-time multi-path failover across transport combinations.
+R2. Complete Movesense Physiological Readiness & Biofeedback Suite:
+- Bicep ECG & 512Hz Pan-Tompkins DSP: High-resolution QRS detection, microsecond R-R intervals, and RMSSD.
+- Pulse Transit Time (PTT) Continuous Blood Pressure: Inversion model estimating real-time Systolic/Diastolic BP from ECG R-peak to optical PPG peak.
+- Overnight PPG Sleep Staging & Sleep Score: Automated sleep scoring (0-100), Deep/REM/Light/Awake phase breakdown, and nocturnal autonomic recovery.
+- Auto Workout Detection & Cardiorespiratory Thresholds: Real-time LT1 aerobic threshold (DFA-alpha1 = 0.75), LT2 anaerobic threshold (DFA-alpha1 = 0.50), and Heart Rate Ratio VO2max estimation (15.3 * HR_max / HR_rest).
 
-### R3. Qwen Math Algorithm Specialist AI & Continuous Training Protocol
-- Host standard and abliterated Qwen Math local models on Port `:8086` to analyze real-time transport matrices, optimize packet striping weights, and discover high-speed network topologies.
-- Format all debate verdicts, packet telemetry, and benchmark records into continuous 24/7 LoRA training datasets in `04_data_and_memory` and synchronize to Obsidian Vault.
+R3. SmolAgents Autonomous Python Code-Execution Arena & Multi-Mode Engine:
+- Equip faction leaders (Hermes 3 / Qwen 7B Red Lead, LuCI OpenWrt / Qwen Coder Blue Lead) with SmolAgents capability to write and execute sandboxed Python code directly.
+- Implement 4 selectable game modes in the Canonical TUI:
+  1. EDGE_ORCHESTRATOR_CLASSIC (Fast heuristic self-healing).
+  2. SMOLAGENTS_PYTHON_DUEL (Direct Python code-generating agentic combat).
+  3. MULTI_MODEL_AGI_SWARM (Unconstrained multi-specialist Genetic MoE routing).
+  4. AIRGAP_MESH_VS_CLOUD_CHAOS (100% local mesh defending against external chaos).
+- Transform the telemetry HUD to display active, plain-language Tactical Objective Summaries ("What is each team currently trying to do?").
 
-## Acceptance Criteria
-
-### Real Socket & Transport Verification (Rule #0 Compliance)
-- [ ] Every transport probe connects to real physical sockets (`bridge0`, `utunX`, `en0`, `lo0`) with zero simulated data.
-- [ ] Speedify bonding engine successfully packs, stripes, and reassembles 36/44-byte binary frames with CRC32 integrity checks across multi-path subflows.
-
-### Statistical Confidence & Chaos Recovery
-- [ ] Benchmarking daemon gathers $\ge 30$ continuous samples per link and reports 95% Confidence Intervals.
-- [ ] Chaos fault injection automatically verifies sub-second failover from degraded links to backup transports without dropping active TUI sessions.
-
-### Model Serving & Proxy Integration
-- [ ] `Qwen2.5-Math-7B-Instruct-Q4_K_M.gguf` serves on Port `:8086` and responds to mathematical/algorithmic optimization queries.
-- [ ] Unified AI Proxy (`:8080`) includes `:8086` in its cascade routing matrix.
+Operating Constraints:
+- Follow Rule #0: Strictly zero simulated or fake arrays. Telemetry must originate from real sensor logs, live BLE streams, or show clean waiting states.
+- Follow Tri-Vault Storage rules (Obsidian, PySpark datasets, GitHub worktree).
+- Maintain your BRIEFING.md, plan.md, and progress.md in your working directory.
+- Dispatch specialists, execute test suites, and ensure all acceptance criteria are rigorously met.
+- When done, produce a comprehensive handoff report and notify the sentinel.

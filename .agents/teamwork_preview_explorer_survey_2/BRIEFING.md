@@ -1,66 +1,38 @@
-# BRIEFING — 2026-08-29T16:39:00+10:00
+# BRIEFING — 2026-08-29T19:05:00+10:00
 
 ## Mission
-Investigate codebase for Requirement R2: Continuous Multi-Device Server Rotation, Combinations Matrix, Statistical Benchmarking, and Chaos Fault Injection.
+Comprehensive survey of the Lauburu Monorepo for Requirement R2: Movesense Physiological Readiness & Biofeedback Suite, Rule #0 compliance, existing DSP algorithms, test suites, and implementation gaps.
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: investigation, synthesis
-- Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2
-- Original parent: cfcf2713-886c-48ba-8b62-d1730ec486f6
-- Milestone: Mesh Survey Phase - Explorer 2 (Requirement R2)
+- Roles: Movesense Biometrics DSP Explorer, codebase surveyor, synthesis
+- Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/
+- Original parent: 63ce69b0-c347-4525-baf9-09dde968f198
+- Milestone: Survey & Discovery Complete
 
 ## 🔒 Key Constraints
-- Read-only investigation — do NOT implement / modify source code
-- Produce structured 5-component handoff report
-- Deliver final report to parent via send_message
+- Read-only investigation — do NOT implement
+- Rule #0: Strictly zero simulated or fake arrays. Telemetry must originate from real sensor logs, live BLE streams, or show clean waiting states.
+- Follow Tri-Vault Storage rules.
 
 ## Current Parent
-- Conversation ID: cfcf2713-886c-48ba-8b62-d1730ec486f6
-- Updated: 2026-08-29T16:39:00+10:00
+- Conversation ID: 63ce69b0-c347-4525-baf9-09dde968f198
+- Updated: 2026-08-29T19:05:00+10:00
 
 ## Investigation State
-- **Explored paths**:
-  - `ORIGINAL_REQUEST.md`
-  - `02_ai_models_and_inference/benchmarks/multi_device_matrix_benchmarker.py`
-  - `02_ai_models_and_inference/benchmarks/mesh_transport_continuous_benchmarker.py`
-  - `02_ai_models_and_inference/benchmarks/benchmark_all_daemons.py`
-  - `02_ai_models_and_inference/benchmarks/live_transport_stats.json`
-  - `02_ai_models_and_inference/benchmarks/multi_device_matrix_results.json`
-  - `02_ai_models_and_inference/sharding_daemon/config.py`
-  - `02_ai_models_and_inference/sharding_daemon/network_awareness.py`
-  - `02_ai_models_and_inference/sharding_daemon/router.py`
-  - `00_core_infrastructure/multi_wan/all_transports_protocol_matrix.py`
-  - `00_core_infrastructure/multi_wan/agi_mesh_nodes.py`
-  - `00_core_infrastructure/multi_wan/connectivity.py`
-  - `00_core_infrastructure/multi_wan/benchmark.py`
-  - `00_core_infrastructure/self_healing_hub/src/devices.json`
-  - `00_core_infrastructure/self_healing_hub/src/mesh_all_to_all_matrix.json`
-  - `00_core_infrastructure/self_healing_hub/src/future_network_simulator.py`
-  - `00_core_infrastructure/self_healing_hub/src/unorthodox_matrix_engine.py`
-  - `06_scripts_and_tooling/network/tensor_multipath_router.py`
-  - `06_scripts_and_tooling/network/multiwan_bond_manager.py`
-  - `06_scripts_and_tooling/network/mesh_network_probe.py`
-  - `00_SYSTEM_DASHBOARDS/FLEET_TRUTH_AUDIT_MATRIX.md`
-  - `00_SYSTEM_DASHBOARDS/MESH_NETWORK_GENETIC_LEDGER.md`
-  - `00_SYSTEM_DASHBOARDS/LOCAL_AI_BENCHMARK_REPORT.md`
-  - `tests/` and `02_ai_models_and_inference/tests/` (test_multipath_and_probe.py, test_tier5_adversarial_hardening.py)
-
+- **Explored paths**: `03_biometrics_and_telemetry/`, `01_apps/biometrics/`, `01_apps/edge_compute_and_ai/`, `01_apps/canonical_port/`, `04_data_and_memory/`, `tests/`, `12_continuous_lora_evolution/`, `obsidian_vault/`.
 - **Key findings**:
-  - Found canonical 7 physical node matrix (108 GB RAM, 82.8 GB VRAM) defined in `00_core_infrastructure/self_healing_hub/src/devices.json` and `02_ai_models_and_inference/sharding_daemon/config.py`.
-  - Discovered partial implementation of statistical benchmarking in `mesh_transport_continuous_benchmarker.py` (Gaussian CI, MoE% calculation, rolling 500 samples, chaos stages 0-4).
-  - Identified critical gaps:
-    1. Node coverage gap: `multi_device_matrix_benchmarker.py` only defines 4 devices and 4 static modes.
-    2. Statistical convergence gap: Matrix benchmarker uses static 15 iterations rather than dynamic $n \ge 30$ and $\text{MoE} < 3.0\%$ loop. Continuous benchmarker uses 4.0% threshold instead of 3.0%.
-    3. Chaos integration gap: Chaos latency injection (+25ms, +85±15ms, +350ms) is implemented as synthetic latency modification in `mesh_transport_continuous_benchmarker.py`, but needs unified binding with multi-path failover test harness across all 7 nodes.
-
-- **Unexplored areas**: None. Comprehensive survey completed.
+  - Pan-Tompkins 512Hz QRS detection, Kamath 20% filter, RMSSD, and DFA-alpha1 ($n=4..16$) are fully implemented and functional in `03_biometrics_and_telemetry/pan_tompkins_dsp.py`.
+  - PTT continuous blood pressure inversion is modeled in `pan_tompkins_dsp.py` and `movesense_readiness_suite.py`.
+  - Overnight sleep scoring and hypnogram staging are modeled in `movesense_readiness_suite.py` and `whoop-intelligence.js`, with gold-standard fixtures in `04_data_and_memory/session_logs/sleep_history.json`.
+  - Cardiorespiratory thresholds (LT1 $\alpha_1=0.75$, LT2 $\alpha_1=0.50$, VO2max $15.3 \times \text{HR}_{\max}/\text{HR}_{\text{rest}}$) are operational in `movesense_readiness_suite.py`.
+  - Rule #0 compliance is strictly maintained across all modules with explicit `None`/`WAITING_FOR_SENSOR` disconnected states.
+- **Unexplored areas**: None regarding R2 survey.
 
 ## Key Decisions Made
-- Fully documented all 7 nodes, statistical formulations, chaos mechanics, file paths, gaps, and concrete architectural recommendations for implementing R2.
+- Completed full audit and structured handoff report in `handoff.md`.
 
 ## Artifact Index
-- `DISPATCH.md` — incoming prompt record
-- `BRIEFING.md` — persistent memory
-- `progress.md` — liveness heartbeat
-- `handoff.md` — comprehensive 5-component report
+- `handoff.md` — Complete 5-component survey and verification report for Requirement R2.
+- `progress.md` — Progress log.
+- `DISPATCH.md` — Initial task dispatch record.

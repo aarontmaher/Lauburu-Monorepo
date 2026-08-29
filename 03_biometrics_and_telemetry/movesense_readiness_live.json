@@ -1,24 +1,24 @@
 {
-  "timestamp_utc": "2026-08-29T09:01:21Z",
+  "timestamp_utc": "2026-08-29T09:06:51Z",
   "sensor_telemetry": {
     "device": "Movesense HR+ 261030002013",
     "connected": true,
-    "heart_rate_bpm": 81,
-    "rmssd_ms": 46.96,
-    "dfa_alpha1": 1.05,
+    "heart_rate_bpm": 88,
+    "rmssd_ms": 19.13,
+    "dfa_alpha1": 0.82,
     "stream_mode": "100% STRICT LOCAL AIRGAP BLE"
   },
   "blood_pressure_ptt": {
-    "estimated_ptt_ms": 203.1,
-    "systolic_bp_mmhg": 123,
-    "diastolic_bp_mmhg": 79,
-    "mean_arterial_pressure_mmhg": 93.7,
+    "estimated_ptt_ms": 194.8,
+    "systolic_bp_mmhg": 134,
+    "diastolic_bp_mmhg": 85,
+    "mean_arterial_pressure_mmhg": 101.3,
     "method": "ECG-PTT Pulse Wave Inversion (100% Local DSP)"
   },
   "overnight_sleep_analysis": {
-    "sleep_score_pct": 34,
+    "sleep_score_pct": 0,
     "recovery_status": "LOW (Red)",
-    "nocturnal_rmssd_ms": 46.96,
+    "nocturnal_rmssd_ms": 19.13,
     "sleep_stages_estimate": {
       "deep_sleep_pct": 14.0,
       "rem_sleep_pct": 18.5,
@@ -29,13 +29,13 @@
   "activity_and_workout": {
     "current_activity": "RESTING",
     "training_zone": "Rest / Passive Recovery",
-    "hr_pct_max": 42.6
+    "hr_pct_max": 46.3
   },
   "cardiorespiratory_thresholds": {
     "estimated_vo2max_ml_kg_min": 50.1,
     "lt1_aerobic_threshold_bpm": 137,
     "lt2_anaerobic_threshold_bpm": 170,
-    "current_dfa_alpha1": 1.05,
-    "physiological_domain": "Below LT1 (Aerobic Recovery / Low Systemic Stress)"
+    "current_dfa_alpha1": 0.82,
+    "physiological_domain": "At LT1 Aerobic Threshold (Optimal Zone 2 Fat Max)"
   }
 }

@@ -1,12 +1,12 @@
-## 2026-08-29T06:35:05Z
-You are Explorer 2 for the Lauburu Mesh Survey phase.
+## 2026-08-29T19:02:48+10:00
 
-Mission:
-Investigate the codebase for Requirement R2: Continuous Multi-Device Server Rotation, Combinations Matrix, Statistical Benchmarking, and Chaos Fault Injection.
-Examine existing benchmarking tools, daemons, test suites, and scripts in /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo.
-
-Key areas to investigate:
-1. 7 physical nodes topology, definitions, IPs, and connectivity matrix (Mac Mini Host, MacBook Pro M1 Max, Linux Head Node AMD 5700U, Android Termux / Pixel 10 Pro, etc.).
-2. Statistical benchmarking implementation for Student-t / Gaussian 95% Confidence Intervals ($\bar{x} \pm 1.96 \cdot \frac{s}{\sqrt{n}}$), sample gathering ($n \ge 30$), and Margin of Error $< 3.0\%$ calculation.
-3. Progressive chaos network degradation tooling (Mild $+25\text{ms}$, Heavy Jitter $+85\text{ms} \pm 15\text{ms}$, Severed Link $+350\text{ms}$) and real-time multi-path failover logic.
-4. Exact file paths, existing tools, gaps, and recommendations.
+Perform a comprehensive survey of the Lauburu Monorepo codebase regarding Requirement R2:
+1. Complete Movesense Physiological Readiness & Biofeedback Suite in 03_biometrics_and_telemetry/, 01_apps/, etc.:
+   - Bicep ECG & 512Hz Pan-Tompkins DSP: High-resolution QRS detection, microsecond R-R intervals, and RMSSD.
+   - Pulse Transit Time (PTT) Continuous Blood Pressure: Inversion model estimating real-time Systolic/Diastolic BP from ECG R-peak to optical PPG peak.
+   - Overnight PPG Sleep Staging & Sleep Score: Automated sleep scoring (0-100), Deep/REM/Light/Awake phase breakdown, and nocturnal autonomic recovery.
+   - Auto Workout Detection & Cardiorespiratory Thresholds: Real-time LT1 aerobic threshold (DFA-alpha1 = 0.75), LT2 anaerobic threshold (DFA-alpha1 = 0.50), and Heart Rate Ratio VO2max estimation (15.3 * HR_max / HR_rest).
+2. Check adherence to Rule #0 (zero simulated or fake arrays, real sensor logs / live BLE streams / clean waiting states).
+3. Identify existing DSP algorithms, test fixtures, test suites, gaps, and required modules.
+4. Write your complete findings to: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/handoff.md
+5. Notify the orchestrator when done via send_message.

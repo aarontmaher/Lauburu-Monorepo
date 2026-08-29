@@ -1,8 +1,8 @@
 {
-  "timestamp_utc": "2026-08-29T08:02:13Z",
+  "timestamp_utc": "2026-08-29T09:03:48Z",
   "turn_count": 7,
   "live_telemetry": {
-    "heart_rate_bpm": 72,
+    "heart_rate_bpm": 77,
     "mean_rtt_ms": 0.35
   },
   "devices": {
@@ -26,24 +26,6 @@
       },
       "optimizations_applied": [
         {
-          "timestamp": "07:48:16",
-          "faction": "RED_TEAM",
-          "action": "Aggressive BQL Queue Burst Expansion",
-          "device": "glinet_router",
-          "parameter": "bql_limit_bytes",
-          "new_value": 8192,
-          "scouted_hr_bpm": 85
-        },
-        {
-          "timestamp": "07:53:33",
-          "faction": "RED_TEAM",
-          "action": "Aggressive BQL Queue Burst Expansion",
-          "device": "glinet_router",
-          "parameter": "bql_limit_bytes",
-          "new_value": 8192,
-          "scouted_hr_bpm": 82
-        },
-        {
           "timestamp": "07:53:34",
           "faction": "RED_TEAM",
           "action": "Aggressive BQL Queue Burst Expansion",
@@ -114,6 +96,24 @@
           "parameter": "bql_limit_bytes",
           "new_value": 8192,
           "scouted_hr_bpm": 72
+        },
+        {
+          "timestamp": "09:03:47",
+          "faction": "BLUE_TEAM",
+          "action": "Self-Healing SQM Bufferbloat Elimination",
+          "device": "glinet_router",
+          "parameter": "sqm_queue_discipline",
+          "new_value": "fq_codel",
+          "scouted_hr_bpm": 74
+        },
+        {
+          "timestamp": "09:03:47",
+          "faction": "RED_TEAM",
+          "action": "Aggressive BQL Queue Burst Expansion",
+          "device": "glinet_router",
+          "parameter": "bql_limit_bytes",
+          "new_value": 8192,
+          "scouted_hr_bpm": 76
         }
       ]
     },
@@ -131,15 +131,6 @@
       },
       "optimizations_applied": [
         {
-          "timestamp": "07:53:35",
-          "faction": "BLUE_TEAM",
-          "action": "Precision Kamath HRV QRS Stabilization",
-          "device": "movesense_sensor",
-          "parameter": "kamath_artifact_filter_threshold_pct",
-          "new_value": 15.0,
-          "scouted_hr_bpm": 82
-        },
-        {
           "timestamp": "08:00:04",
           "faction": "BLUE_TEAM",
           "action": "Precision Kamath HRV QRS Stabilization",
@@ -219,6 +210,15 @@
           "parameter": "kamath_artifact_filter_threshold_pct",
           "new_value": 15.0,
           "scouted_hr_bpm": 72
+        },
+        {
+          "timestamp": "09:03:46",
+          "faction": "BLUE_TEAM",
+          "action": "Precision Kamath HRV QRS Stabilization",
+          "device": "movesense_sensor",
+          "parameter": "kamath_artifact_filter_threshold_pct",
+          "new_value": 15.0,
+          "scouted_hr_bpm": 73
         }
       ]
     },
@@ -232,51 +232,6 @@
         "bridge0_jumbo_frames": 9000
       },
       "optimizations_applied": [
-        {
-          "timestamp": "07:38:55",
-          "faction": "RED_TEAM",
-          "action": "TB4 Memory Buffer Overdrive",
-          "device": "mac_mini_host",
-          "parameter": "sysctl_max_socket_buffers_mb",
-          "new_value": 128,
-          "scouted_hr_bpm": 102
-        },
-        {
-          "timestamp": "07:48:16",
-          "faction": "RED_TEAM",
-          "action": "TB4 Memory Buffer Overdrive",
-          "device": "mac_mini_host",
-          "parameter": "sysctl_max_socket_buffers_mb",
-          "new_value": 128,
-          "scouted_hr_bpm": 84
-        },
-        {
-          "timestamp": "07:48:17",
-          "faction": "BLUE_TEAM",
-          "action": "Lock MTU 9000 Jumbo Frame Tripwire",
-          "device": "mac_mini_host",
-          "parameter": "bridge0_jumbo_frames",
-          "new_value": 9000,
-          "scouted_hr_bpm": 84
-        },
-        {
-          "timestamp": "07:53:34",
-          "faction": "RED_TEAM",
-          "action": "TB4 Memory Buffer Overdrive",
-          "device": "mac_mini_host",
-          "parameter": "sysctl_max_socket_buffers_mb",
-          "new_value": 128,
-          "scouted_hr_bpm": 81
-        },
-        {
-          "timestamp": "07:53:35",
-          "faction": "BLUE_TEAM",
-          "action": "Lock MTU 9000 Jumbo Frame Tripwire",
-          "device": "mac_mini_host",
-          "parameter": "bridge0_jumbo_frames",
-          "new_value": 9000,
-          "scouted_hr_bpm": 82
-        },
         {
           "timestamp": "08:00:06",
           "faction": "RED_TEAM",
@@ -321,6 +276,51 @@
           "parameter": "bridge0_jumbo_frames",
           "new_value": 9000,
           "scouted_hr_bpm": 72
+        },
+        {
+          "timestamp": "09:03:46",
+          "faction": "RED_TEAM",
+          "action": "TB4 Memory Buffer Overdrive",
+          "device": "mac_mini_host",
+          "parameter": "sysctl_max_socket_buffers_mb",
+          "new_value": 128,
+          "scouted_hr_bpm": 73
+        },
+        {
+          "timestamp": "09:03:46",
+          "faction": "RED_TEAM",
+          "action": "TB4 Memory Buffer Overdrive",
+          "device": "mac_mini_host",
+          "parameter": "sysctl_max_socket_buffers_mb",
+          "new_value": 128,
+          "scouted_hr_bpm": 73
+        },
+        {
+          "timestamp": "09:03:47",
+          "faction": "BLUE_TEAM",
+          "action": "Lock MTU 9000 Jumbo Frame Tripwire",
+          "device": "mac_mini_host",
+          "parameter": "bridge0_jumbo_frames",
+          "new_value": 9000,
+          "scouted_hr_bpm": 76
+        },
+        {
+          "timestamp": "09:03:47",
+          "faction": "RED_TEAM",
+          "action": "TB4 Memory Buffer Overdrive",
+          "device": "mac_mini_host",
+          "parameter": "sysctl_max_socket_buffers_mb",
+          "new_value": 128,
+          "scouted_hr_bpm": 76
+        },
+        {
+          "timestamp": "09:03:48",
+          "faction": "BLUE_TEAM",
+          "action": "Lock MTU 9000 Jumbo Frame Tripwire",
+          "device": "mac_mini_host",
+          "parameter": "bridge0_jumbo_frames",
+          "new_value": 9000,
+          "scouted_hr_bpm": 77
         }
       ]
     },
@@ -334,42 +334,6 @@
         "cgroup_memory_limit_gb": 13.8
       },
       "optimizations_applied": [
-        {
-          "timestamp": "07:48:17",
-          "faction": "RED_TEAM",
-          "action": "DHT Tensor Layer Pre-Allocation",
-          "device": "linux_head_node",
-          "parameter": "petals_dht_block_allocation",
-          "new_value": 12,
-          "scouted_hr_bpm": 82
-        },
-        {
-          "timestamp": "07:53:33",
-          "faction": "RED_TEAM",
-          "action": "DHT Tensor Layer Pre-Allocation",
-          "device": "linux_head_node",
-          "parameter": "petals_dht_block_allocation",
-          "new_value": 12,
-          "scouted_hr_bpm": 82
-        },
-        {
-          "timestamp": "07:53:33",
-          "faction": "BLUE_TEAM",
-          "action": "Dynamic Core Frequency Lock",
-          "device": "linux_head_node",
-          "parameter": "cpu_governor",
-          "new_value": "performance",
-          "scouted_hr_bpm": 82
-        },
-        {
-          "timestamp": "07:53:34",
-          "faction": "BLUE_TEAM",
-          "action": "Dynamic Core Frequency Lock",
-          "device": "linux_head_node",
-          "parameter": "cpu_governor",
-          "new_value": "performance",
-          "scouted_hr_bpm": 81
-        },
         {
           "timestamp": "07:53:35",
           "faction": "RED_TEAM",
@@ -423,6 +387,42 @@
           "parameter": "cpu_governor",
           "new_value": "performance",
           "scouted_hr_bpm": 72
+        },
+        {
+          "timestamp": "09:03:46",
+          "faction": "BLUE_TEAM",
+          "action": "Dynamic Core Frequency Lock",
+          "device": "linux_head_node",
+          "parameter": "cpu_governor",
+          "new_value": "performance",
+          "scouted_hr_bpm": 74
+        },
+        {
+          "timestamp": "09:03:47",
+          "faction": "RED_TEAM",
+          "action": "DHT Tensor Layer Pre-Allocation",
+          "device": "linux_head_node",
+          "parameter": "petals_dht_block_allocation",
+          "new_value": 12,
+          "scouted_hr_bpm": 74
+        },
+        {
+          "timestamp": "09:03:48",
+          "faction": "RED_TEAM",
+          "action": "DHT Tensor Layer Pre-Allocation",
+          "device": "linux_head_node",
+          "parameter": "petals_dht_block_allocation",
+          "new_value": 12,
+          "scouted_hr_bpm": 77
+        },
+        {
+          "timestamp": "09:03:48",
+          "faction": "BLUE_TEAM",
+          "action": "Dynamic Core Frequency Lock",
+          "device": "linux_head_node",
+          "parameter": "cpu_governor",
+          "new_value": "performance",
+          "scouted_hr_bpm": 77
         }
       ]
     }

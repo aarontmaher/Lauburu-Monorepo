@@ -1,14 +1,5 @@
-[
-  {
-    "session_id": "5956055681378266468",
-    "task_id": 2,
-    "task": "Implement PySpark aggregation for DFA-alpha1 metrics",
-    "dispatched_at": 1787957090.951284
-  },
-  {
-    "session_id": "9639225101125609906",
-    "task_id": 2,
-    "task": "Implement PySpark aggregation for DFA-alpha1 metrics",
-    "dispatched_at": 1787993766.3725078
-  }
-]
+{
+  "status": "DISABLED_AND_CANCELLED",
+  "cancelled_at": "2026-08-29T19:07:00Z",
+  "active_sessions": []
+}
