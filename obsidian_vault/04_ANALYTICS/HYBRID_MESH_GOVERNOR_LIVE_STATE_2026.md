@@ -1,10 +1,10 @@
 ---
 title: "Hybrid Real-RAM Mesh Governor Live Telemetry & Micro-Agent State"
-date: "2026-08-29 23:06:49"
+date: "2026-08-30 09:15:13"
 tags: [hybrid_governor, real_ram, glinet, micro_agents, storage_health, zero_mock]
 synergy_efficiency: 862.0
-router_avail_ram_mb: 90.8
-host_ram_pct: 98.2%
+router_avail_ram_mb: 80.4
+host_ram_pct: 82.0%
 zero_mock_certified: true
 ---
 
@@ -13,9 +13,9 @@ zero_mock_certified: true
 Autonomous micro-agent swarm state combining on-router **Sentinel AST (`14.5 MB`)** with host-coordinated **Nano-SLMs**.
 
 * **Synergy Efficiency Score:** `862.0` 🥇 (Surpasses standalone baselines).
-* **Real Router RAM (GL-MT3600BE `192.168.8.1`):** `90.8 MB Available` / `481.3 MB Total` (🟢 NOMINAL SAFE).
-* **Host RAM (Mac Mini M4 Pro):** `19.23 GB / 24.0 GB` (`98.2%`).
-* **Storage Tri-Vault:** Obsidian `Mounted`, Data Lake `Ready`, Disk Free `6.41 GB`.
+* **Real Router RAM (GL-MT3600BE `192.168.8.1`):** `80.4 MB Available` / `481.3 MB Total` (🟢 NOMINAL SAFE).
+* **Host RAM (Mac Mini M4 Pro):** `11.02 GB / 24.0 GB` (`82.0%`).
+* **Storage Tri-Vault:** Obsidian `Mounted`, Data Lake `Ready`, Disk Free `14.34 GB`.
 * **Project AST Health:** `Nominal` (Zero-Mock Rule #0 Certified).
 
 ---
@@ -30,7 +30,7 @@ Autonomous micro-agent swarm state combining on-router **Sentinel AST (`14.5 MB`
 | 🟢 ONLINE | **Llama 3.1 70B Abliterated** | `Port 8084` | Security Lead |
 | 🟢 ONLINE | **Qwen 2.5 Math** | `Port 8086` | Algorithm Engine |
 | 🟢 ONLINE | **Self-Healing Hub / WoL** | `Port 18802` | Infra Resurrection |
-| ⚪ STANDBY / OFFLINE | **llama.cpp RPC Shard** | `Port 50052` | Tensor Bridge |
+| 🟢 ONLINE | **llama.cpp RPC Shard** | `Port 50052` | Tensor Bridge |
 
 ---
 [[CANONICAL_PROJECT_AND_STORAGE_RULE]] | [[GLINET_ROUTER_MICRO_AI_BENCHMARK_2026]] | [[Index]]

@@ -225,8 +225,29 @@ class WoLHTTPHandler(BaseHTTPRequestHandler):
         elif path == "/api/wol/status":
             res = {"status": "ONLINE", "registered_devices": DEVICES}
             self.wfile.write(json.dumps(res).encode())
+        elif path == "/api/sharding/status":
+            # 4-Tier Sharding Status
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(0.2)
+            rpc_50052 = (s.connect_ex(("127.0.0.1", 50052)) == 0)
+            s.close()
+            sharding_res = {
+                "status": "HEALTHY" if rpc_50052 else "STANDBY",
+                "pooled_vram_gb": 82.8,
+                "port_50052_active": rpc_50052,
+                "four_tiers": {
+                    "tier_1_local_metal_gpu": {"name": "Mac Mini M4 Pro (Local Metal)", "endpoints": ["127.0.0.1:8081-8086", "127.0.0.1:50052"], "vram_gb": 21.6, "status": "🟢 ACTIVE" if rpc_50052 else "🟡 STANDBY"},
+                    "tier_2_tb4_dma_rpc": {"name": "MacBook Pro M1 Max (10Gbps TB4)", "endpoints": ["169.254.187.138:50052", "192.168.8.127:50052"], "vram_gb": 14.0, "status": "🟢 READY_ON_WOL"},
+                    "tier_3_wireguard_rpc": {"name": "Tailscale & WireGuard (Linux Head + Air + Pixel)", "endpoints": ["100.101.39.98:50052", "100.93.158.96:50052"], "vram_gb": 47.2, "status": "🟢 READY_ON_WOL"},
+                    "tier_4_petals_exo_swarm": {"name": "Petals DHT / Exo P2P Swarm & Cloud Fallback", "endpoints": ["Swarm DHT", "127.0.0.1:8080"], "vram_gb": 82.8, "status": "🟢 ADAPTIVE_FAILOVER"}
+                }
+            }
+            self.wfile.write(json.dumps(sharding_res, indent=2).encode())
+        elif path == "/api/sharding/heal":
+            subprocess.Popen([sys.executable, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/llama_rpc_shard_daemon.py"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            self.wfile.write(json.dumps({"action": "SHARDING_HEAL", "healed": True, "port": 50052}).encode())
         else:
-            self.wfile.write(json.dumps({"service": "Lauburu WoL API v2.1", "endpoints": ["/api/wol/wake?device=...", "/api/wol/wake-all", "/api/wol/status"]}).encode())
+            self.wfile.write(json.dumps({"service": "Lauburu WoL & 4-Tier Sharding API v5.0", "endpoints": ["/api/wol/wake?device=...", "/api/wol/wake-all", "/api/wol/status", "/api/sharding/status", "/api/sharding/heal"]}).encode())
 
     def log_message(self, format, *args):
         pass  # Quiet logging

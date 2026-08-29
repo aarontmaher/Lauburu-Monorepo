@@ -1,32 +1,32 @@
 {
-  "timestamp_utc": "2026-08-29T13:06:49Z",
-  "elapsed_seconds": 0.381,
+  "timestamp_utc": "2026-08-29T23:15:13Z",
+  "elapsed_seconds": 0.131,
   "synergy_efficiency_score": 862.0,
   "router_real_ram": {
     "online": true,
     "total_mb": 481.3,
-    "used_mb": 423.0,
-    "available_mb": 90.8,
+    "used_mb": 421.3,
+    "available_mb": 80.4,
     "safety_status": "\ud83d\udfe2 NOMINAL SAFE",
     "crash_risk_pct": 0.0
   },
   "host_ram": {
-    "used_gb": 19.23,
+    "used_gb": 11.02,
     "total_gb": 24.0,
-    "percent": 98.2,
-    "status": "\ud83d\udd34 HIGH UTILIZATION"
+    "percent": 82.0,
+    "status": "\ud83d\udfe2 NOMINAL"
   },
   "storage_health": {
     "healthy": true,
     "obsidian_vault_mounted": true,
     "pyspark_data_lake_ready": true,
-    "disk_free_gb": 6.41,
+    "disk_free_gb": 14.34,
     "git_lock_cleared": false,
     "status": "HEALTHY"
   },
   "daemon_watchdog": {
     "total_daemons": 7,
-    "active_daemons": 6,
+    "active_daemons": 7,
     "daemons": [
       {
         "name": "Web-TUI Portal",
@@ -74,8 +74,8 @@
         "name": "llama.cpp RPC Shard",
         "port": 50052,
         "role": "Tensor Bridge",
-        "online": false,
-        "status": "\u26aa STANDBY / OFFLINE"
+        "online": true,
+        "status": "\ud83d\udfe2 ONLINE"
       }
     ]
   },

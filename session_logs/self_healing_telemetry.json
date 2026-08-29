@@ -1,6 +1,6 @@
 {
-  "timestamp_utc": "2026-08-29T13:04:38Z",
-  "elapsed_seconds": 0.313,
+  "timestamp_utc": "2026-08-29T23:14:36Z",
+  "elapsed_seconds": 0.111,
   "storage_tri_vault": {
     "healthy": true,
     "obsidian_vault_mounted": true,
@@ -8,15 +8,15 @@
     "obsidian_index_healed": false,
     "pyspark_lake_ready": true,
     "lora_datasets_ready": true,
-    "disk_free_gb": 6.41,
+    "disk_free_gb": 14.34,
     "git_lock_cleared": false,
     "status": "HEALTHY"
   },
   "daemon_supervision": {
-    "timestamp_utc": "2026-08-29T13:04:38Z",
-    "total_daemons": 11,
-    "online_daemons": 7,
-    "uptime_pct": 63.64,
+    "timestamp_utc": "2026-08-29T23:14:36Z",
+    "total_daemons": 10,
+    "online_daemons": 8,
+    "uptime_pct": 80.0,
     "supervised_matrix": {
       "ai_proxy_8080": {
         "name": "AI Proxy Gateway",
@@ -63,34 +63,75 @@
       "self_healing_hub_18802": {
         "name": "Self-Healing Hub & WoL REST API",
         "port": 18802,
-        "status": "RESTARTED",
-        "icon": "\ud83d\udd04"
+        "status": "ONLINE",
+        "icon": "\ud83d\udee1\ufe0f"
       },
       "llama_rpc_50052": {
         "name": "llama.cpp Metal GPU RPC Server",
         "port": 50052,
-        "status": "OFFLINE",
-        "icon": "\ud83d\udd34"
+        "status": "RESTARTED",
+        "icon": "\ud83d\udd04"
       },
       "daemon_supervisor_8088": {
         "name": "Daemon Supervisor & Filer Service",
         "port": 8088,
         "status": "ONLINE",
         "icon": "\ud83d\udc41\ufe0f"
-      },
-      "non_existent_test_daemon": {
-        "name": "Test Fake Daemon",
-        "port": 59996,
-        "status": "OFFLINE",
-        "icon": "\ud83d\udd34"
       }
     },
     "actions_taken": [
       "RESTART_llama_server_8081_PORT_8081",
-      "RESTART_self_healing_hub_18802_PORT_18802"
+      "RESTART_llama_rpc_50052_PORT_50052"
     ],
-    "overall_status": "DEGRADED"
+    "overall_status": "HEALTHY"
   },
-  "router_ram_mb": 90.0,
+  "four_tier_sharding": {
+    "status": "HEALTHY",
+    "pooled_vram_gb": 82.8,
+    "active_tiers": {
+      "tier_1_local_metal_gpu": {
+        "name": "Apple Silicon Metal GPU (Mac Mini M4 Pro)",
+        "endpoints": [
+          "127.0.0.1:8081-8086",
+          "127.0.0.1:50052"
+        ],
+        "vram_gb": 21.6,
+        "latency_ms": 0.05,
+        "online": true,
+        "status": "\ud83d\udfe2 ACTIVE"
+      },
+      "tier_2_tb4_dma_rpc": {
+        "name": "10Gbps Thunderbolt 4 DMA RPC Shard (MacBook Pro M1 Max)",
+        "endpoints": [
+          "169.254.187.138:50052",
+          "192.168.8.127:50052"
+        ],
+        "vram_gb": 14.0,
+        "latency_ms": 0.28,
+        "status": "\ud83d\udfe2 READY_ON_WOL"
+      },
+      "tier_3_wireguard_rpc": {
+        "name": "Tailscale & WireGuard Distributed RPC (Linux Head 5700U + Air + Pixel)",
+        "endpoints": [
+          "100.101.39.98:50052",
+          "100.93.158.96:50052",
+          "100.73.38.87:50052"
+        ],
+        "vram_gb": 47.2,
+        "latency_ms": 2.1,
+        "status": "\ud83d\udfe2 READY_ON_WOL"
+      },
+      "tier_4_petals_exo_swarm": {
+        "name": "Decentralized Petals DHT / Exo P2P Swarm & Cloud Fallback",
+        "endpoints": [
+          "Swarm DHT",
+          "127.0.0.1:8080"
+        ],
+        "vram_gb": 82.8,
+        "status": "\ud83d\udfe2 ADAPTIVE_FAILOVER"
+      }
+    }
+  },
+  "router_ram_mb": 78.9,
   "overall_health": "HEALTHY"
 }

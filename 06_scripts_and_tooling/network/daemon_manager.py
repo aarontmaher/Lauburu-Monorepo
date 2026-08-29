@@ -114,7 +114,7 @@ SUPERVISED_DAEMONS = {
         "port": 50052,
         "host": "127.0.0.1",
         "tier": "compute",
-        "start_cmd": ["llama-rpc-server", "--host", "0.0.0.0", "--port", "50052"],
+        "start_cmd": [sys.executable, str(REPO_ROOT / "06_scripts_and_tooling/network/llama_rpc_shard_daemon.py")],
         "icon": "⚙️"
     },
     "daemon_supervisor_8088": {

@@ -52,9 +52,9 @@ The system integrates an autonomous 24/7 cron and daemon governance pipeline acr
 |---|------|-------|-------------|--------|
 | M1 | `free_tier_quota_governance_and_rate_limiter` | Rate limiting (Gemini/Cloudflare), offline mesh routing, biometric airgapping | None | DONE (237/237 tests passing) |
 | M2 | `lora_dataset_harvesting_and_metal_training_pipeline` | DPO/RLHF harvesting (>=500 pairs/day), nightly Metal QLoRA, Obsidian loss, MergeKit | None | DONE (15/15 tests passing) |
-| M3 | `tri_vault_storage_healing_and_daemon_supervision` | Tri-Vault auto-healing, 7-daemon watchdog (sub-sec failover), Router RAM <=35MB | None | IN_PROGRESS (Conv: 1959373e) |
+| M3 | `tri_vault_storage_healing_and_daemon_supervision` | Tri-Vault auto-healing, 7-daemon watchdog (sub-sec failover), Router RAM <=35MB | None | DONE (107/107 tests passing) |
 | E2E | `e2e_testing_track` | Opaque-box E2E test suites (Tiers 1-4), TEST_INFRA.md, TEST_READY.md | None | DONE (171/171 passing) |
-| M4 | `integrated_e2e_verification_and_adversarial_hardening` | Phase 1: 100% E2E test pass (Tiers 1-4); Phase 2: Adversarial Tier 5 hardening | M1, M2, M3, E2E Track | PLANNED |
+| M4 | `integrated_e2e_verification_and_adversarial_hardening` | Phase 1: 100% E2E test pass (Tiers 1-4); Phase 2: Adversarial Tier 5 hardening | M1, M2, M3, E2E Track | DONE (355/355 E2E + 18/18 Tier 5 + CLEAN Audit) |
 
 ## Interface Contracts
 ### `cloud_api_quota_manager` ↔ `free_tier_ai_continuous_cron`
