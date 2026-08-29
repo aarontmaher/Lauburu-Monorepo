@@ -126,10 +126,10 @@ class LiveNetworkMetricsWidget(Static):
 
 
 class LiveAiTuiCanvasWidget(Static):
-    """Interactive Live Canvas where Red and Blue AIs write, stream, and render live Textual TUIs."""
+    """Interactive Live Canvas with Side-by-Side Live Code Stream + Visual GPU/TUI Render Output."""
     DEFAULT_CSS = """
     LiveAiTuiCanvasWidget {
-        height: 10;
+        height: 11;
         background: #090d16;
         border: solid #6366f1;
         padding: 0 1;
@@ -142,8 +142,10 @@ class LiveAiTuiCanvasWidget(Static):
         self.faction = faction
         self.snippet_idx = 0
         self.char_offset = 0
+        self.tick = 0
 
-    def render_canvas(self, active_mode: str) -> Panel:
+    def render_canvas(self, active_mode: str, hr_bpm: int = 73) -> Panel:
+        self.tick += 1
         snippets = RED_CODE_SNIPPETS if self.faction == "red" else BLUE_CODE_SNIPPETS
         curr_snippet = snippets[self.snippet_idx % len(snippets)]
         
@@ -159,14 +161,52 @@ class LiveAiTuiCanvasWidget(Static):
             typed_code = curr_snippet[:self.char_offset] + " █"
             status_text = "[bold yellow]⚡ LIVE STREAMING TUI WIDGET CODE...[/]"
 
+        # Left Column: Syntax Highlighted Code Stream
         syntax = Syntax(typed_code, "python", theme="monokai", line_numbers=True)
+
+        # Right Column: Live Visual GPU / TUI Render Output
+        ecg_patterns = ["_/\__/\__/\_", "_/\\___/\\___", "___/\\__/\\___", "_/\\_/\\_/\\___"]
+        curr_ecg = ecg_patterns[self.tick % len(ecg_patterns)]
         
+        if self.faction == "red":
+            fill_blocks = (self.tick * 3) % 18 + 2
+            bar = "█" * fill_blocks + "░" * (20 - fill_blocks)
+            visual_text = Text.from_markup(
+                f"[bold red]⚡ [LIVE VISUAL GPU & TUI PREVIEW][/]\n"
+                f"[bold white]Target Widget:[/] [bold magenta]SocketDrainProbe(Widget)[/]\n"
+                f"[bold red]TB4 Drain:[/] [{bar}] [bold yellow]38.5 Gbps[/]\n"
+                f"[bold red]512Hz ECG:[/] [bold magenta]{curr_ecg}[/] (Injected)\n"
+                f"[bold cyan]🎮 GPU Engine:[/] [bold green]Apple M4 Pro Metal (120 FPS)[/]\n"
+                f"[bold cyan]Frame Time:[/] [bold green]0.42ms / frame (0 drops)[/]"
+            )
+            v_panel = Panel(visual_text, title="[bold red]🎨 RED VISUAL GPU CANVAS[/]", border_style="red")
+        else:
+            bar = "█" * 19 + "░"
+            visual_text = Text.from_markup(
+                f"[bold cyan]🛡️ [LIVE VISUAL GPU & TUI PREVIEW][/]\n"
+                f"[bold white]Active Shield:[/] [bold green]SqmCodelDefender(Widget)[/]\n"
+                f"[bold green]SQM Buffer:[/] [{bar}] [bold green]0.00ms JITTER[/]\n"
+                f"[bold cyan]Kamath HRV:[/] [bold green]{curr_ecg}[/] ({hr_bpm} BPM)\n"
+                f"[bold cyan]🎮 GPU Engine:[/] [bold green]Metal Performance Shaders[/]\n"
+                f"[bold cyan]Frame Time:[/] [bold green]0.38ms / frame (120 FPS)[/]"
+            )
+            v_panel = Panel(visual_text, title="[bold cyan]🎨 BLUE VISUAL GPU CANVAS[/]", border_style="cyan")
+
+        # Side-by-Side Dual Pane Layout
+        grid = Table.grid(expand=True)
+        grid.add_column(ratio=1)
+        grid.add_column(ratio=1)
+        grid.add_row(
+            Panel(syntax, title="[bold white]💻 LIVE PYTHON CODE STREAM[/]", border_style="dim"),
+            v_panel
+        )
+
         title_color = "red" if self.faction == "red" else "cyan"
         title_prefix = "🔴 RED SMOLAGENT" if self.faction == "red" else "🔵 BLUE SENTINEL"
-        title = f"[{title_color}]💻 {title_prefix}: LIVE TUI COMPILER & CODE CANVAS — {status_text}[/]"
+        title = f"[{title_color}]💻 {title_prefix}: LIVE TUI COMPILER & VISUAL GPU CANVAS — {status_text}[/]"
         border_color = "red" if self.faction == "red" else "cyan"
         
-        return Panel(syntax, title=title, border_style=border_color)
+        return Panel(grid, title=title, border_style=border_color)
 
 
 class RedTeamGraphicalMapWidget(Static):
@@ -346,9 +386,9 @@ class LiveArenaDevApp(App):
         self.red_map.update(self.red_map.render_map(hr_bpm=hr, chaos_active=self.chaos_active))
         self.blue_map.update(self.blue_map.render_map(hr_bpm=hr, chaos_active=self.chaos_active))
 
-        # Update Live Code & TUI Canvas
-        self.red_canvas.update(self.red_canvas.render_canvas(active_mode))
-        self.blue_canvas.update(self.blue_canvas.render_canvas(active_mode))
+        # Update Live Code & Visual GPU TUI Canvas
+        self.red_canvas.update(self.red_canvas.render_canvas(active_mode, hr_bpm=hr))
+        self.blue_canvas.update(self.blue_canvas.render_canvas(active_mode, hr_bpm=hr))
 
         timestamp_str = time.strftime("%H:%M:%S", time.localtime())
         if active_mode == "SMOLAGENTS_PYTHON_DUEL":
