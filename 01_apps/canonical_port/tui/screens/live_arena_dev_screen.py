@@ -1,30 +1,39 @@
-#!/usr/bin/env python3
 """
-Side-by-Side Red/Blue Adversarial & Device Sandbox Live --dev Dashboard
-Lauburu Mesh Ecosystem — 2026
-
-Rule #0 Compliant: Renders live graphical network topology map directly on top of telemetry.
+Canonical Port TUI — Live Side-by-Side Adversarial Arena & Graphical Network Map Screen
+Subsystem: 01_apps/canonical_port/tui/screens/live_arena_dev_screen.py
+Version: 4.0.0-CANONICAL
 """
 
 import os
 import sys
 import json
 import time
-import asyncio
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Optional, Dict, Any, List
 
-from textual.app import App, ComposeResult
+from textual.app import ComposeResult
+from textual.screen import Screen
 from textual.containers import Container, Horizontal, Vertical, VerticalScroll
 from textual.widgets import Header, Footer, Static, RichLog, Label
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
-from rich.markup import escape
+
+_TUI_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if _TUI_DIR not in sys.path:
+    sys.path.insert(0, _TUI_DIR)
+
+try:
+    from widgets.pinned_tab_nav_bar import PinnedTabNavBar
+    from widgets.docked_shortcuts_legend import DockedShortcutsLegend
+except ImportError:
+    PinnedTabNavBar = None
+    DockedShortcutsLegend = None
 
 DRAIN_STATE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/compute_drain_war_state.json")
 SANDBOX_STATE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/device_settings_shadow.json")
 MOVESENSE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/movesense_live_stream.json")
+TRANSPORT_STATS_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/live_transport_stats.json")
 
 class GraphicalNetworkMapWidget(Static):
     """
@@ -62,9 +71,9 @@ class GraphicalNetworkMapWidget(Static):
         return Panel(content, title="[bold cyan]🌐 LAUBURU 7-LAYER PHYSICAL MESH TOPOLOGY MAP (Live Dynamic Graph)[/]", border_style="cyan")
 
 
-class LiveArenaDevApp(App):
+class LiveArenaDevScreen(Screen):
     CSS = """
-    Screen {
+    LiveArenaDevScreen {
         background: #070b12;
         color: #f8fafc;
     }
@@ -100,11 +109,12 @@ class LiveArenaDevApp(App):
     BINDINGS = [
         ("c", "trigger_chaos", "Inject Chaos Fault"),
         ("m", "mutate_sandbox", "Mutate Device Settings"),
-        ("q", "quit", "Quit --dev Cockpit")
     ]
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
+        if PinnedTabNavBar:
+            yield PinnedTabNavBar()
         yield GraphicalNetworkMapWidget(id="network_map_widget")
         yield Static(id="hud_bar")
         with Horizontal(id="arena_container"):
@@ -114,6 +124,8 @@ class LiveArenaDevApp(App):
             with Vertical(id="blue_box", classes="faction_box"):
                 yield Label("🔵 BLUE TEAM COUNTER-ATTACKER (Standard Shield / Self-Healing / Defense Lock)")
                 yield RichLog(id="blue_log", highlight=True, markup=True)
+        if DockedShortcutsLegend:
+            yield DockedShortcutsLegend()
         yield Footer()
 
     def on_mount(self):
@@ -206,7 +218,3 @@ class LiveArenaDevApp(App):
         os.system("python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/red_blue_arena/device_settings_sandbox.py >/dev/null 2>&1 &")
         self.red_log.write("[magenta]🔄 Triggered Clean-Room Device Settings mutation cycle...[/]")
         self.blue_log.write("[cyan]🔒 Re-evaluating device sysctls and OpenWrt SQM queue buffers...[/]")
-
-if __name__ == "__main__":
-    app = LiveArenaDevApp()
-    app.run()

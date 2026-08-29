@@ -6,15 +6,15 @@
     "dispatched_at": 1787957090.951284
   },
   {
-    "session_id": "2473282605897332868",
-    "task_id": 1,
-    "task": "Optimize WebGPU shader pipeline for Spatial Grappling",
-    "dispatched_at": 1787988357.563214
-  },
-  {
     "session_id": "11608111435649884703",
     "task_id": 2,
     "task": "Implement PySpark aggregation for DFA-alpha1 metrics",
     "dispatched_at": 1787988676.821407
+  },
+  {
+    "session_id": "848307249540425456",
+    "task_id": 1,
+    "task": "Optimize WebGPU shader pipeline for Spatial Grappling",
+    "dispatched_at": 1787989000.643033
   }
 ]

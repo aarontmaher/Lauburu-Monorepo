@@ -45,6 +45,7 @@ try:
     from screens.all_tabs_screen import AllTabsGridScreen
     from screens.architecture_explorer_screen import ArchitectureExplorerScreen
     from screens.commercialization_screen import CommercializationScreen
+    from screens.live_arena_dev_screen import LiveArenaDevScreen
     from views.chat_ide_view import ChatIdeView
     from views.hardware_noc_view import HardwareNocView
     from views.biometrics_view import BiometricsView
@@ -118,6 +119,7 @@ Footer {
         "all_tabs": AllTabsGridScreen,
         "explorer": ArchitectureExplorerScreen,
         "commercialization": CommercializationScreen,
+        "live_arena_dev": LiveArenaDevScreen,
     }
 
     SCREEN_ORDER: List[str] = [
@@ -130,6 +132,7 @@ Footer {
         "governance",
         "tooling",
         "optimization",
+        "live_arena_dev",
     ]
 
     BINDINGS: List[Binding] = [
@@ -154,6 +157,7 @@ Footer {
         Binding("8", "show_tooling", "Tooling"),
         Binding("o", "show_optimization", "Optimization"),
         Binding("9", "show_optimization", "Optimization"),
+        Binding("v", "show_live_arena_dev", "Arena Dev"),
         Binding("0", "show_all_tabs", "All Tabs"),
         Binding("a", "show_all_tabs", "All Tabs"),
         Binding("e", "show_explorer", "Explorer"),
@@ -265,6 +269,9 @@ Footer {
 
     def action_show_commercialization(self) -> None:
         self.switch_screen("commercialization")
+
+    def action_show_live_arena_dev(self) -> None:
+        self.switch_screen("live_arena_dev")
 
     def action_cycle_inference_engine(self) -> None:
         """Global action to cycle active inference engine (ctrl+e / F2)."""
