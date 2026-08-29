@@ -157,16 +157,15 @@ class PanTompkinsQRSDetector:
         n = len(squared_signal)
         if n == 0:
             return []
-        
+
         mwi = [0.0] * n
         window = self.mwi_window
-        running_sum = sum(squared_signal[:min(window, n)])
+        running_sum = 0.0
 
         for i in range(n):
+            running_sum += squared_signal[i]
             if i >= window:
-                running_sum += squared_signal[i] - squared_signal[i - window]
-            elif i > 0:
-                running_sum += squared_signal[i]
+                running_sum -= squared_signal[i - window]
             mwi[i] = running_sum / float(min(i + 1, window))
 
         return mwi
@@ -274,21 +273,40 @@ def apply_kamath_artifact_filter(
         return [float(x) for x in (rr_intervals or [])], 0
 
     thresh = threshold_pct / 100.0
-    cleaned = [float(rr_intervals[0])]
-    artifact_count = 0
+    r0 = float(rr_intervals[0])
+
+    # Establish robust physiological baseline anchor (250ms - 2200ms)
+    valid_cands = [float(x) for x in rr_intervals[:min(5, len(rr_intervals))] if 250.0 <= float(x) <= 2200.0]
+    if 250.0 <= r0 <= 2200.0:
+        cleaned = [r0]
+        artifact_count = 0
+    elif valid_cands:
+        # Initial beat is outlier: anchor with first plausible physiological beat
+        anchor = valid_cands[0]
+        cleaned = [anchor]
+        artifact_count = 1
+    else:
+        # Fallback search across entire array
+        all_valid = [float(x) for x in rr_intervals if 250.0 <= float(x) <= 2200.0]
+        if all_valid:
+            cleaned = [all_valid[0]]
+            artifact_count = 1
+        else:
+            cleaned = [r0]
+            artifact_count = 0
 
     for i in range(1, len(rr_intervals)):
         prev = cleaned[-1]
         curr = float(rr_intervals[i])
-        if prev > 0 and (abs(curr - prev) / prev) <= thresh:
+        if 250.0 <= curr <= 2200.0 and prev > 0 and (abs(curr - prev) / prev) <= thresh:
             cleaned.append(curr)
         else:
             artifact_count += 1
-            # Search ahead for the next valid physiological beat
+            # Search ahead for the next valid physiological beat within threshold
             next_val = None
             for j in range(i + 1, len(rr_intervals)):
                 cand = float(rr_intervals[j])
-                if prev > 0 and (abs(cand - prev) / prev) <= thresh:
+                if 250.0 <= cand <= 2200.0 and prev > 0 and (abs(cand - prev) / prev) <= thresh:
                     next_val = cand
                     break
             if next_val is None:
@@ -410,11 +428,11 @@ def calculate_hemodynamics_bp(
     DBP = 80.0 + (200 - PTT) * 0.25 + (HR - 70) * 0.08
     MAP = (SBP + 2 * DBP) / 3.0
     """
-    if ptt_ms is None or ptt_ms <= 0:
+    if ptt_ms is None or ptt_ms <= 0 or hr_bpm is None or hr_bpm <= 0:
         return None, None, None
 
     delta_ptt = 200.0 - float(ptt_ms)
-    hr_adj = ((float(hr_bpm) - 70.0) * 0.15) if hr_bpm else 0.0
+    hr_adj = (float(hr_bpm) - 70.0) * 0.15
 
     sbp = round(max(80.0, min(220.0, 120.0 + (delta_ptt * 0.45) + hr_adj)), 1)
     dbp = round(max(50.0, min(130.0, 80.0 + (delta_ptt * 0.25) + (hr_adj * 0.5))), 1)

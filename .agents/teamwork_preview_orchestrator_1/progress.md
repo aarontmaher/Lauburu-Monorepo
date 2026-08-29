@@ -1,24 +1,33 @@
+# Project Progress Tracker
+
 ## Current Status
-Last visited: 2026-08-29T19:22:26+10:00
+Last visited: 2026-08-29T09:50:05Z
 
 ## Iteration Status
-Current iteration: 1 / 32
+Current iteration: 0 / 32
 
 ## Checklist
-- [x] Record ORIGINAL_REQUEST.md and initialize DISPATCH.md / BRIEFING.md
-- [x] Schedule heartbeat cron (task-11 active)
-- [x] Phase 0: Survey Monorepo with 3 parallel Explorers (all completed)
-- [x] Synthesize Survey findings and generate PROJECT.md
-- [x] Phase 2: Dual-Track Implementation & Test Writing:
-  - [x] E2E Test Architect & Writer (d044e7e7): TEST_INFRA.md, 184 test cases, TEST_READY.md published
-  - [x] Worker M1 (459c1ed5): Frontend PWA, Three.js 3D Tatami, Airgap isolation verified
-  - [x] Worker M2 (ac281c04): Movesense 512Hz DSP Suite, PTT BP, Sleep Staging, LT1/LT2, VO2max verified
-  - [x] Worker M3 (5faa0827): SmolAgents Arena, 4 Game Modes, Tactical Objective HUD verified
-- [x] Phase 3: Milestone Review, Challenger, & Forensic Audit Gating:
-  - [x] Reviewer 1 (816c75ff): APPROVE (M1 & M2)
-  - [x] Reviewer 2 (d3d0deb8): APPROVE (M3 & E2E Suite)
-  - [x] Challenger 1 (8383762e): APPROVE (54 stress tests pass)
-  - [x] Challenger 2 (c4b4a457): APPROVE (17 stress tests pass, 184 E2E tests pass)
-  - [x] Forensic Auditor (52561a6f): CLEAN (Rule #0 zero-mock verified, 100% local airgap confirmed)
-- [x] Phase 4: Final Milestone M4 (E2E 100% + Tier 5 Hardening) [PASS]
-- [x] Generate Comprehensive Handoff Report & Notify Parent
+- [x] Phase 0.0: Orchestrator initialization, briefing, and state setup
+- [ ] Phase 0.1: Survey phase (Spawn 3 Explorers across Monorepo subsystems)
+- [ ] Phase 0.2: Synthesize survey into PROJECT.md with complete Feature Inventory
+- [ ] Phase 1.0: Launch E2E Testing Track Orchestrator (TEST_INFRA.md + Tiers 1-4 test suite)
+- [x] Phase 1.1: Milestone M1 — Flagship Movesense Physiological Readiness Suite
+- [ ] Phase 1.2: Milestone M2 — User & Scaling Apps Portfolio (Grappling, Arena, Shopify Storefront)
+- [ ] Phase 1.3: Milestone M3 — Operator & Dev Cockpits Portfolio (Canonical NOC, SmolAgents Duel, Qwen Math)
+- [ ] Phase 1.4: Milestone M4 — Universal Web-TUI Portal on Port 8088 (120 FPS FastAPI/WebSocket bridge)
+- [ ] Phase 1.5: Milestone M5 — Free-Tier Cloud AI Scaffolding Engine & Strict Airgap Sentinel
+- [ ] Phase 2.0: Final Milestone — 100% E2E Pass across all Tiers (1-4)
+- [ ] Phase 2.1: Adversarial Coverage Hardening (Tier 5 Whitebox Testing)
+- [ ] Phase 3.0: Final Verification, Tri-Vault Health Audit & Handoff Report
+
+## Milestones Summary
+| Milestone | Description | Status | Gate Verdict |
+|-----------|-------------|--------|--------------|
+| Survey | Monorepo AST, dependencies, existing code survey | DONE | PASS |
+| E2E Track | Opaque-box 4-tier test harness & suite | DONE | PASS (184/184 tests) |
+| M1 | Flagship Movesense Hub (`01_apps/biometrics/movesense_hub`) | DONE | PASS (102 tests certified) |
+| M2 | User & Scaling Apps (`01_apps/user_facing_and_scaling/`) | PLANNED | PENDING |
+| M3 | Operator Cockpits (`01_apps/operator_and_dev/`) | PLANNED | PENDING |
+| M4 | Web-TUI Portal Port 8088 (`/readiness`, `/grappling`, etc.) | PLANNED | PENDING |
+| M5 | Free-Tier AI Scaffolding & Zero-Leak Airgap Engine | PLANNED | PENDING |
+| M6 | Final Verification & Hardening | PLANNED | PENDING |

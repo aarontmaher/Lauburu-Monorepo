@@ -3,11 +3,12 @@ Master Local AGI Agent & Specialist Swarm Orchestrator
 Powered by HuggingFace smolagents (smolagents.CodeAgent)
 
 Architecture:
-1. Master AGI Controller: Runs locally via llama.cpp OpenAI-compatible API (Port 8081 / Mesh).
-2. Complete Toolset: Filesystem, Terminal/Bash execution, Ripgrep search, Git operations.
-3. Specialist Sub-Swarm Delegation: Routes tasks to domain-specific specialist models.
-4. Tri-Stream Shadow Benchmarking: Compares outputs against Google Jules (3.1 Pro) and Gemini 3.7 Flash.
-5. Continuous LoRA Dataset Harvesting: Records execution traces directly to Tri-Vault storage.
+1. Master AGI Controller (Qwen-3.8Max): Runs locally via llama.cpp OpenAI-compatible API (Port 8081 / 8082).
+2. Qwen-Math Governor (Qwen-Math): Runs locally on Port 8086 for loss curve analysis and RAM headroom equations.
+3. Complete 3-Mesh-Algorithm Optimization Toolset: ACO, GA, Dijkstra DP / SA, Qwen-Math, Conversational RAG.
+4. Specialist Sub-Swarm Delegation: Routes tasks to domain-specific specialist models.
+5. Tri-Stream Shadow Benchmarking: Compares outputs against Google Jules (3.1 Pro) and Gemini 3.7 Flash.
+6. Continuous LoRA Dataset Harvesting: Records execution traces directly to Tri-Vault storage.
 """
 
 import os
@@ -18,27 +19,85 @@ import subprocess
 from typing import Optional, Dict, Any, List
 from pathlib import Path
 
-from smolagents import (
-    CodeAgent,
-    ToolCallingAgent,
-    OpenAIServerModel,
-    tool,
-)
+# Add monorepo root to sys.path to enable importing tools
+MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+if str(MONOREPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(MONOREPO_ROOT))
+
+# Safe import for smolagents with fallback
+try:
+    from smolagents import (
+        CodeAgent,
+        ToolCallingAgent,
+        OpenAIServerModel,
+        tool,
+    )
+except ImportError:
+    def tool(fn):
+        """Fallback tool decorator when smolagents is run outside its venv."""
+        return fn
+
+    class OpenAIServerModel:
+        def __init__(self, model_id: str, api_base: str, api_key: str = "EMPTY", **kwargs):
+            self.model_id = model_id
+            self.api_base = api_base
+            self.api_key = api_key
+
+    class CodeAgent:
+        def __init__(self, tools: List[Any], model: Any, max_steps: int = 15, verbosity_level: int = 2, **kwargs):
+            self.tools = tools
+            self.model = model
+            self.max_steps = max_steps
+            self.verbosity_level = verbosity_level
+
+    class ToolCallingAgent:
+        def __init__(self, tools: List[Any], model: Any, **kwargs):
+            self.tools = tools
+            self.model = model
+
+# Import the 3-Mesh-Algorithm tool suite
+try:
+    from importlib import import_module
+    _tools_mod = import_module("05_agents_and_swarms.tools.mesh_algorithm_tools")
+    AntColonyOptimizerTool = _tools_mod.AntColonyOptimizerTool
+    GeneticOptimizerTool = _tools_mod.GeneticOptimizerTool
+    DijkstraSimulatedAnnealingTool = _tools_mod.DijkstraSimulatedAnnealingTool
+    QwenMathAnalyzerTool = _tools_mod.QwenMathAnalyzerTool
+    ConversationalRAGEdgeTool = _tools_mod.ConversationalRAGEdgeTool
+    mesh_aco_routing_optimizer = _tools_mod.mesh_aco_routing_optimizer
+    mesh_ga_multipath_evolution = _tools_mod.mesh_ga_multipath_evolution
+    mesh_dijkstra_sa_optimizer = _tools_mod.mesh_dijkstra_sa_optimizer
+    qwen_math_headroom_governor = _tools_mod.qwen_math_headroom_governor
+    conversational_rag_edge_query = _tools_mod.conversational_rag_edge_query
+    ALL_TOOL_SCHEMAS = _tools_mod.ALL_TOOL_SCHEMAS
+except Exception as e:
+    # Direct fallback if run as standalone script
+    from tools.mesh_algorithm_tools import (
+        AntColonyOptimizerTool,
+        GeneticOptimizerTool,
+        DijkstraSimulatedAnnealingTool,
+        QwenMathAnalyzerTool,
+        ConversationalRAGEdgeTool,
+        mesh_aco_routing_optimizer,
+        mesh_ga_multipath_evolution,
+        mesh_dijkstra_sa_optimizer,
+        qwen_math_headroom_governor,
+        conversational_rag_edge_query,
+        ALL_TOOL_SCHEMAS
+    )
 
 # -----------------------------------------------------------------------------
 # Configuration & Paths
 # -----------------------------------------------------------------------------
-MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
 LORA_DATASETS_DIR = Path("/Users/aaron/DFS_UNIFIED/lora_datasets")
 LORA_DATASETS_DIR.mkdir(parents=True, exist_ok=True)
 
-# Default local inference endpoint (llama.cpp RPC mesh)
-LOCAL_LLAMA_URL = os.getenv("LOCAL_LLAMA_URL", "http://100.101.39.98:8081/v1")
-LOCAL_MODEL_NAME = os.getenv("LOCAL_MODEL_NAME", "kimi-88b-tandem-iq3_s")
+# Default local inference endpoints (llama.cpp RPC mesh)
+LOCAL_LLAMA_URL = os.getenv("LOCAL_LLAMA_URL", "http://127.0.0.1:8081/v1")
+LOCAL_MODEL_NAME = os.getenv("LOCAL_MODEL_NAME", "qwen-3.8-max")
 
-# Note: GGUF weights for Kimi-88B-Tandem and Qwen-3.8-Max are stored physically 
-# on the Mac_Node (Mac Mini) SSD at /Users/aaron/DFS_UNIFIED/...
-# Kimi 88B shards across L1 and L2 via TB4. Qwen 3.8 Max serves as the LoRA training target on Port 8082.
+QWEN_MATH_URL = os.getenv("QWEN_MATH_URL", "http://127.0.0.1:8086/v1")
+QWEN_MATH_MODEL = os.getenv("QWEN_MATH_MODEL", "qwen2.5-math-7b-instruct")
 
 # -----------------------------------------------------------------------------
 # Master AGI Tool Suite
@@ -117,10 +176,10 @@ def delegate_to_specialist(domain: str, task_prompt: str) -> str:
     """Delegates a specialized sub-task to a domain-expert AI model in the Lauburu swarm.
     
     Available specialist domains:
-    - 'dsp_biometrics': Movesense 512Hz ECG, Pan-Tompkins QRS, DFA-alpha1 aerobic thresholds.
-    - 'ui_nextjs_react': Next.js 14 App Router, WebGL Canvas visualizers, Tailwind WCAG AA theming.
-    - 'rust_metal_wgpu': High-throughput SIMD, WebGPU shaders, 10Gbps Thunderbolt DMA.
-    - 'truth_auditor': Zero-mock validation, forensic diff check, anti-hallucination verification.
+    - 'dsp_biometrics': BioMistral-7B / Pan-Tompkins Specialist (Port 8083).
+    - 'ui_nextjs_react': Qwen 3.8 Max 27B / Web Component Specialist (Port 8082).
+    - 'rust_metal_wgpu': Qwen 3.8 Max 27B / Metal MPS Specialist (Port 8082).
+    - 'truth_auditor': Qwen2-VL 7B / Local Vision Auditor (Port 8084).
     
     Args:
         domain: The specialized domain name.
@@ -230,11 +289,73 @@ def train_specialist(specialty_name: str, dataset_path: str) -> str:
 
 
 # -----------------------------------------------------------------------------
-# Master Agent Factory
+# 3-Mesh-Algorithm Tools Wrapped for smolagents & Multi-Model Execution
+# -----------------------------------------------------------------------------
+
+@tool
+def tool_mesh_aco_routing(start_node: str, target_node: str) -> str:
+    """Executes Ant Colony Optimization with dynamic sub-ms pheromone decay to determine lowest-latency mesh path.
+    
+    Args:
+        start_node: Source mesh node (e.g. 'L1_Mac_Node').
+        target_node: Destination mesh node (e.g. 'L6_Pixel_10_Pro').
+    """
+    res = mesh_aco_routing_optimizer(start_node=start_node, target_node=target_node)
+    return json.dumps(res, indent=2)
+
+
+@tool
+def tool_mesh_ga_evolution(vram_cap_gb: float) -> str:
+    """Executes Genetic Algorithm evolution across training parameters under strict RAM ceiling (e.g. 21.6 GB).
+    
+    Args:
+        vram_cap_gb: Maximum VRAM ceiling in GB for host node (e.g. 21.6 for Mac Mini M4 Pro).
+    """
+    res = mesh_ga_multipath_evolution(vram_cap_gb=vram_cap_gb)
+    return json.dumps(res, indent=2)
+
+
+@tool
+def tool_mesh_dijkstra_sa_routing(start_node: str, target_node: str) -> str:
+    """Calculates deterministic shortest-path tensor sharding routes using Dijkstra DP and Simulated Annealing.
+    
+    Args:
+        start_node: Source node identifier (e.g. 'L1_Mac_Node').
+        target_node: Destination node identifier (e.g. 'L3_Linux_Head').
+    """
+    res = mesh_dijkstra_sa_optimizer(start_node=start_node, target_node=target_node)
+    return json.dumps(res, indent=2)
+
+
+@tool
+def tool_qwen_math_ram_governor(host_ram_gb: float, model_vram_gb: float) -> str:
+    """Evaluates telemetry trends, solves RAM headroom equations, and projects loss curve trajectories.
+    
+    Args:
+        host_ram_gb: Host physical RAM in GB (e.g. 24.0 for Apple M4 Pro).
+        model_vram_gb: Model weights base VRAM in GB (e.g. 14.50).
+    """
+    res = qwen_math_headroom_governor(host_physical_ram_gb=host_ram_gb, model_base_vram_gb=model_vram_gb)
+    return json.dumps(res, indent=2)
+
+
+@tool
+def tool_conversational_rag_query(query: str) -> str:
+    """Queries the conversational RAG edge AI model for sub-50ms monorepo context.
+    
+    Args:
+        query: User query or prompt.
+    """
+    res = conversational_rag_edge_query(user_query=query)
+    return json.dumps(res, indent=2)
+
+
+# -----------------------------------------------------------------------------
+# Agent Factories
 # -----------------------------------------------------------------------------
 
 def build_master_agi_agent(api_base: str = LOCAL_LLAMA_URL, model_id: str = LOCAL_MODEL_NAME) -> CodeAgent:
-    """Instantiates the Master Local AGI CodeAgent equipped with all monorepo tools."""
+    """Instantiates the Master Local AGI CodeAgent (Qwen-3.8Max) equipped with full monorepo & 3-mesh tools."""
     
     model = OpenAIServerModel(
         model_id=model_id,
@@ -250,7 +371,12 @@ def build_master_agi_agent(api_base: str = LOCAL_LLAMA_URL, model_id: str = LOCA
         record_lora_training_sample,
         create_dynamic_smolagent,
         evaluate_performance,
-        train_specialist
+        train_specialist,
+        tool_mesh_aco_routing,
+        tool_mesh_ga_evolution,
+        tool_mesh_dijkstra_sa_routing,
+        tool_qwen_math_ram_governor,
+        tool_conversational_rag_query
     ]
     
     agent = CodeAgent(
@@ -263,11 +389,42 @@ def build_master_agi_agent(api_base: str = LOCAL_LLAMA_URL, model_id: str = LOCA
     return agent
 
 
+def build_qwen_math_agent(api_base: str = QWEN_MATH_URL, model_id: str = QWEN_MATH_MODEL) -> CodeAgent:
+    """Instantiates the Qwen-Math Governor CodeAgent bound to mathematical & optimization tools."""
+    
+    model = OpenAIServerModel(
+        model_id=model_id,
+        api_base=api_base,
+        api_key=os.getenv("QWEN_MATH_API_KEY", "EMPTY")
+    )
+    
+    tools = [
+        tool_qwen_math_ram_governor,
+        tool_mesh_ga_evolution,
+        tool_mesh_aco_routing,
+        tool_mesh_dijkstra_sa_routing,
+        tool_conversational_rag_query
+    ]
+    
+    agent = CodeAgent(
+        tools=tools,
+        model=model,
+        max_steps=10,
+        verbosity_level=2
+    )
+    
+    return agent
+
+
 if __name__ == "__main__":
-    print("🚀 Initializing Master Local AGI Agent (HuggingFace smolagents)...")
+    print("🚀 Initializing Master Local AGI Agent (Dual Qwen-3.8Max & Qwen-Math)...")
     try:
-        agent = build_master_agi_agent()
-        print(f"✅ Master AGI Agent online. Equipped with {len(agent.tools)} primary tools.")
+        master_agent = build_master_agi_agent()
+        print(f"✅ Master AGI Agent (Qwen-3.8Max) online. Equipped with {len(master_agent.tools)} primary tools.")
         print(f"📡 Inference target: {LOCAL_LLAMA_URL}")
+
+        math_agent = build_qwen_math_agent()
+        print(f"✅ Qwen-Math Governor Agent online. Equipped with {len(math_agent.tools)} optimization tools.")
+        print(f"📡 Math target: {QWEN_MATH_URL}")
     except Exception as e:
         print(f"⚠️ Initialization notice: {e}")

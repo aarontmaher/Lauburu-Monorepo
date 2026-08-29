@@ -1,477 +1,514 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Challenger 1 Adversarial Stress Test Suite: Biometrics DSP, Kamath Filter, PTT BP & Airgap Invariants
-Subsystem: 03_biometrics_and_telemetry, 00_core_infrastructure
-Author: teamwork_preview_challenger_1
-
-Adversarially stress tests:
-1. Extreme Tachycardia (>220 BPM up to 260 BPM) and Extreme Bradycardia (<35 BPM down to 20 BPM).
-2. Ectopic Bursts, Bigeminy, Trigeminy, Compensatory Pauses, and Rapid Acceleration Ramps.
-3. Pulse Transit Time (PTT) Missing Pulses, Corrupt Pulses, Negative/Zero PTT, Out-of-Bounds BP Inversion.
-4. Overnight Sleep Staging with Balanced vs Deficit Architecture, Nocturnal Arrhythmias, and Negative Dipping.
-5. Corrupt, Malformed, NaN/Inf, Step Input, and Fuzzed Sensor Packets.
-6. Cardiorespiratory Thresholds (LT1, LT2, VO2max) under Extreme Physiological Edge Cases.
-7. Strict Rule #0 Zero-Mock Null State Invariants & Interface Contract Schemas.
+================================================================================
+ADVERSARIAL STRESS TEST SUITE — CHALLENGER 1
+Milestone M1: Flagship Movesense Physiological Readiness Suite DSP Engine
+================================================================================
+Empirically stress-tests:
+1. Pan-Tompkins QRS Detection (512Hz/128Hz, baseline wander, 220 BPM tachycardia, 35 BPM bradycardia, PVCs)
+2. Kamath 20% RR Artifact Filter (Large spikes, bursts, initial beat corruption, RSA preservation)
+3. Pulse Transit Time (PTT) Blood Pressure Inversion Bounds (50ms - 500ms, extreme HR, Rule #0 compliance)
+4. Sleep Scoring (0-100 score invariance, stage distribution) and DFA-alpha1 boundary cases
+================================================================================
 """
 
 import math
-import random
 import sys
-import os
+import numpy as np
 import pytest
-from typing import List, Dict, Any, Optional
 
-# Add project root and biometrics directories
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-DSP_DIR = os.path.join(PROJECT_ROOT, "03_biometrics_and_telemetry")
-for p in [PROJECT_ROOT, DSP_DIR]:
-    if p not in sys.path:
-        sys.path.insert(0, p)
+sys.path.insert(0, "01_apps/biometrics")
 
-from pan_tompkins_dsp import (
+from movesense_hub.dsp.pan_tompkins import (
     PanTompkinsQRSDetector,
     apply_kamath_artifact_filter,
     apply_kamath_filter,
     calculate_rmssd,
     calculate_dfa_alpha1,
-    calculate_hemodynamics_bp,
-    classify_zone2_alignment,
     MovesenseECGPipeline,
 )
-from movesense_readiness_suite import MovesenseReadinessSuite
+from movesense_hub.dsp.hemodynamics_bp import (
+    calculate_hemodynamics_bp,
+    ContinuousPttBloodPressureModel,
+    compute_ptt_blood_pressure,
+)
+from movesense_hub.dsp.sleep_scoring import (
+    classify_sleep_epoch,
+    SleepStagingEngine,
+    compute_overnight_sleep_analysis,
+)
+from movesense_hub.dsp.zone2_coaching import (
+    classify_zone2_alignment,
+    classify_workout_state,
+    compute_cardiorespiratory_thresholds,
+    Zone2CoachingEngine,
+)
 
 
-# ============================================================================
-# 1. EXTREME TACHYCARDIA (>220 BPM) & EXTREME BRADYCARDIA (<35 BPM)
-# ============================================================================
+def generate_synthetic_ecg(
+    duration_sec: float = 10.0,
+    sample_rate_hz: int = 512,
+    bpm: float = 60.0,
+    baseline_wander_hz: float = 0.0,
+    baseline_wander_mv: float = 0.0,
+    noise_mv: float = 0.0,
+    powerline_hz: float = 0.0,
+    powerline_mv: float = 0.0,
+    pvc_indices: list = None,
+) -> tuple[list[float], list[int]]:
+    """
+    Generates synthetic ECG signal with ground-truth R-peak sample indices.
+    """
+    total_samples = int(duration_sec * sample_rate_hz)
+    rr_samples = int((60.0 / bpm) * sample_rate_hz)
+    
+    t = np.linspace(0, duration_sec, total_samples, endpoint=False)
+    signal = np.zeros(total_samples)
+    ground_truth_peaks = []
+    
+    cur_sample = int(0.5 * rr_samples)
+    beat_count = 0
+    pvc_set = set(pvc_indices or [])
+    
+    while cur_sample < total_samples - int(0.3 * sample_rate_hz):
+        ground_truth_peaks.append(cur_sample)
+        is_pvc = beat_count in pvc_set
+        
+        # P-wave
+        p_offset = int(-0.16 * sample_rate_hz)
+        p_width = int(0.04 * sample_rate_hz)
+        p_amp = 0.15 if not is_pvc else 0.0
+        
+        # Q-wave
+        q_offset = int(-0.04 * sample_rate_hz)
+        q_width = int(0.015 * sample_rate_hz)
+        q_amp = -0.15
+        
+        # R-peak
+        r_offset = 0
+        r_width = int(0.02 * sample_rate_hz) if not is_pvc else int(0.05 * sample_rate_hz)
+        r_amp = 1.2 if not is_pvc else -1.5
+        
+        # S-wave
+        s_offset = int(0.04 * sample_rate_hz)
+        s_width = int(0.02 * sample_rate_hz)
+        s_amp = -0.3 if not is_pvc else 0.4
+        
+        # T-wave
+        t_offset = int(0.20 * sample_rate_hz)
+        t_width = int(0.07 * sample_rate_hz)
+        t_amp = 0.35 if not is_pvc else -0.5
+        
+        waves = [
+            (p_offset, p_width, p_amp),
+            (q_offset, q_width, q_amp),
+            (r_offset, r_width, r_amp),
+            (s_offset, s_width, s_amp),
+            (t_offset, t_width, t_amp),
+        ]
+        
+        for off, width, amp in waves:
+            if width <= 0 or amp == 0.0:
+                continue
+            center = cur_sample + off
+            idx_range = np.arange(max(0, center - 3 * width), min(total_samples, center + 3 * width + 1))
+            if len(idx_range) > 0:
+                signal[idx_range] += amp * np.exp(-0.5 * ((idx_range - center) / width) ** 2)
+        
+        beat_count += 1
+        if is_pvc:
+            cur_sample += int(rr_samples * 1.3)
+        else:
+            cur_sample += rr_samples
 
-class TestExtremeHeartRateBoundaries:
-    """Stress tests Pan-Tompkins QRS and pipeline at extreme physiological boundaries."""
+    if baseline_wander_mv > 0 and baseline_wander_hz > 0:
+        signal += baseline_wander_mv * np.sin(2 * np.pi * baseline_wander_hz * t)
+        
+    if powerline_mv > 0 and powerline_hz > 0:
+        signal += powerline_mv * np.sin(2 * np.pi * powerline_hz * t)
+        
+    if noise_mv > 0:
+        np.random.seed(42)
+        signal += np.random.normal(0, noise_mv, total_samples)
+        
+    return signal.tolist(), ground_truth_peaks
 
-    def test_extreme_tachycardia_225_bpm_detection(self):
+
+# ==============================================================================
+# CHALLENGE 1: Pan-Tompkins QRS Detection
+# ==============================================================================
+
+class TestPanTompkinsAdversarial:
+    
+    @pytest.mark.parametrize("sample_rate_hz", [512, 128])
+    def test_nominal_ecg_detection(self, sample_rate_hz):
+        """Test clean nominal ECG at 60 BPM."""
+        ecg, true_peaks = generate_synthetic_ecg(
+            duration_sec=10.0, sample_rate_hz=sample_rate_hz, bpm=60.0
+        )
+        detector = PanTompkinsQRSDetector(sample_rate_hz=sample_rate_hz)
+        detected_peaks, rr_intervals = detector.detect_qrs_peaks(ecg)
+        
+        assert len(detected_peaks) > 0
+        assert abs(len(detected_peaks) - len(true_peaks)) <= 1
+        for rr in rr_intervals:
+            assert 950.0 <= rr <= 1050.0
+
+    @pytest.mark.parametrize("sample_rate_hz", [128])
+    def test_extreme_tachycardia_220_bpm_128hz(self, sample_rate_hz):
+        """Test extreme tachycardia at 128Hz (220 BPM, RR ~ 272.7ms)."""
+        ecg, true_peaks = generate_synthetic_ecg(
+            duration_sec=10.0, sample_rate_hz=sample_rate_hz, bpm=220.0
+        )
+        detector = PanTompkinsQRSDetector(sample_rate_hz=sample_rate_hz)
+        detected_peaks, rr_intervals = detector.detect_qrs_peaks(ecg)
+        
+        assert len(detected_peaks) >= len(true_peaks) - 2
+        for rr in rr_intervals:
+            assert 250.0 <= rr <= 320.0
+
+    def test_empirical_mwi_accumulator_flaw_at_512hz(self):
         """
-        Adversarial test at 225 BPM (RR = 266.7 ms):
-        Verifies 512Hz Pan-Tompkins accurately resolves high-rate QRS complexes above 220 BPM.
+        VERIFICATION OF FIX #1:
+        Moving Window Integrator double-accumulation fixed — 512Hz 220 BPM tachycardia correctly detected.
         """
-        fs = 512
-        detector = PanTompkinsQRSDetector(sample_rate_hz=fs)
-        duration_s = 4.0
-        n_samples = int(fs * duration_s)
-        signal = [0.0] * n_samples
+        ecg, true_peaks = generate_synthetic_ecg(
+            duration_sec=10.0, sample_rate_hz=512, bpm=220.0
+        )
+        detector = PanTompkinsQRSDetector(sample_rate_hz=512)
+        detected_peaks, rr_intervals = detector.detect_qrs_peaks(ecg)
+        
+        # 512Hz 220BPM tachycardia: genuine peaks are cleanly detected without false index-0 impulse suppression
+        print(f"512Hz 220BPM: True={len(true_peaks)}, Detected={len(detected_peaks)}")
+        assert len(detected_peaks) >= len(true_peaks) - 2
+        for rr in rr_intervals:
+            assert 250.0 <= rr <= 320.0
 
-        # 225 BPM -> interval = 60.0 / 225.0 = 0.26667 s (~136.5 samples)
-        rr_sec = 60.0 / 225.0
-        beat_times = []
-        t = 0.3
-        while t < duration_s - 0.2:
-            beat_times.append(t)
-            t += rr_sec
+    @pytest.mark.parametrize("sample_rate_hz", [512, 128])
+    def test_extreme_bradycardia_35_bpm(self, sample_rate_hz):
+        """Test extreme bradycardia (35 BPM, RR ~ 1714.3ms)."""
+        ecg, true_peaks = generate_synthetic_ecg(
+            duration_sec=20.0, sample_rate_hz=sample_rate_hz, bpm=35.0
+        )
+        detector = PanTompkinsQRSDetector(sample_rate_hz=sample_rate_hz)
+        detected_peaks, rr_intervals = detector.detect_qrs_peaks(ecg)
+        
+        assert len(detected_peaks) >= len(true_peaks) - 1
+        for rr in rr_intervals:
+            assert 1600.0 <= rr <= 1800.0
 
-        for bt in beat_times:
-            idx = int(bt * fs)
-            if 2 <= idx < n_samples - 2:
-                signal[idx - 2] = 0.6
-                signal[idx - 1] = 2.8
-                signal[idx] = 5.0  # R-peak apex
-                signal[idx + 1] = -1.8
-                signal[idx + 2] = -0.5
+    @pytest.mark.parametrize("sample_rate_hz", [512, 128])
+    def test_severe_baseline_wander(self, sample_rate_hz):
+        """Test 2.0mV baseline wander at 0.25Hz (respiratory drift)."""
+        ecg, true_peaks = generate_synthetic_ecg(
+            duration_sec=10.0, sample_rate_hz=sample_rate_hz, bpm=72.0,
+            baseline_wander_hz=0.25, baseline_wander_mv=2.0
+        )
+        detector = PanTompkinsQRSDetector(sample_rate_hz=sample_rate_hz)
+        detected_peaks, rr_intervals = detector.detect_qrs_peaks(ecg)
+        
+        assert len(detected_peaks) >= len(true_peaks) - 2
 
-        peaks, rrs = detector.detect_qrs_peaks(signal)
-        assert len(peaks) >= len(beat_times) - 1, f"Expected at least {len(beat_times)-1} peaks, got {len(peaks)}"
-        assert len(rrs) >= 1, "Must detect valid RR intervals"
+    @pytest.mark.parametrize("sample_rate_hz", [512, 128])
+    def test_noise_and_powerline_interference(self, sample_rate_hz):
+        """Test with 50Hz powerline hum (0.3mV) + Gaussian EMG noise (0.15mV)."""
+        ecg, true_peaks = generate_synthetic_ecg(
+            duration_sec=10.0, sample_rate_hz=sample_rate_hz, bpm=70.0,
+            powerline_hz=50.0, powerline_mv=0.3, noise_mv=0.15
+        )
+        detector = PanTompkinsQRSDetector(sample_rate_hz=sample_rate_hz)
+        detected_peaks, rr_intervals = detector.detect_qrs_peaks(ecg)
+        
+        assert len(detected_peaks) >= len(true_peaks) - 2
 
-        # RR intervals should be ~266.7 ms (within +-15 ms)
-        for rr in rrs:
-            assert abs(rr - 266.7) < 20.0, f"RR interval {rr} deviates from 266.7 ms"
+    def test_ectopic_beats_pvc(self):
+        """Test ECG containing premature ventricular contractions (PVCs)."""
+        ecg, true_peaks = generate_synthetic_ecg(
+            duration_sec=12.0, sample_rate_hz=512, bpm=65.0,
+            pvc_indices=[3, 7]
+        )
+        detector = PanTompkinsQRSDetector(sample_rate_hz=512)
+        detected_peaks, rr_intervals = detector.detect_qrs_peaks(ecg)
+        
+        assert len(detected_peaks) > 0
 
-        # Check full pipeline
-        pipe = MovesenseECGPipeline(sample_rate_hz=fs)
-        out = pipe.process_raw_ecg_window(signal, ptt_ms=170.0)
-        assert out["status"] == "ACTIVE_STREAMING"
-        assert out["heart_rate_bpm"] is not None
-        assert abs(out["heart_rate_bpm"] - 225.0) < 15.0, f"Detected HR {out['heart_rate_bpm']} vs expected 225 BPM"
-
-    def test_extreme_tachycardia_240_bpm_boundary(self):
-        """
-        Adversarial test at 240 BPM (RR = 250.0 ms):
-        Boundary limit of physiological range (250.0 ms).
-        """
-        fs = 512
-        detector = PanTompkinsQRSDetector(sample_rate_hz=fs)
-        duration_s = 4.0
-        signal = [0.0] * int(fs * duration_s)
-
-        rr_sec = 60.0 / 240.0  # 0.250 s
-        t = 0.3
-        while t < duration_s - 0.2:
-            idx = int(t * fs)
-            signal[idx - 2] = 0.5
-            signal[idx - 1] = 2.5
-            signal[idx] = 4.5
-            signal[idx + 1] = -1.5
-            signal[idx + 2] = -0.4
-            t += rr_sec
-
-        peaks, rrs = detector.detect_qrs_peaks(signal)
-        assert len(peaks) >= 10
-        assert len(rrs) >= 9
-        for rr in rrs:
-            assert abs(rr - 250.0) < 10.0
-
-    def test_supra_physiological_tachycardia_clamping_260_bpm(self):
-        """
-        Adversarial test at 260 BPM (RR = 230.8 ms):
-        Since RR < 250.0 ms (outside valid single-chamber sinus filter), RR intervals are rejected by design.
-        """
-        fs = 512
-        detector = PanTompkinsQRSDetector(sample_rate_hz=fs)
-        signal = [0.0] * (fs * 3)
-        rr_sec = 60.0 / 260.0  # 0.2307 s
-
-        t = 0.2
-        while t < 2.8:
-            idx = int(t * fs)
-            signal[idx] = 5.0
-            t += rr_sec
-
-        peaks, rrs = detector.detect_qrs_peaks(signal)
-        # R-peaks may be identified, but raw RR intervals below 250ms must be safely rejected
-        assert rrs == [], "RR intervals below 250ms must be rejected as unphysiological / ventricular fibrillation"
-
-    def test_extreme_bradycardia_30_bpm_detection(self):
-        """
-        Adversarial test at 30 BPM (RR = 2000.0 ms):
-        Verifies deep athletic bradycardia detection (<35 BPM).
-        """
-        fs = 512
-        detector = PanTompkinsQRSDetector(sample_rate_hz=fs)
-        duration_s = 8.0
-        signal = [0.0] * int(fs * duration_s)
-
-        for t_beat in [1.0, 3.0, 5.0, 7.0]:  # 2.0s apart = 30 BPM
-            idx = int(t_beat * fs)
-            signal[idx - 2] = 0.4
-            signal[idx - 1] = 2.0
-            signal[idx] = 4.2
-            signal[idx + 1] = -1.0
-            signal[idx + 2] = -0.3
-
-        peaks, rrs = detector.detect_qrs_peaks(signal)
-        assert len(peaks) == 4
-        assert len(rrs) == 3
-        for rr in rrs:
-            assert abs(rr - 2000.0) < 10.0
-
-        pipe = MovesenseECGPipeline(sample_rate_hz=fs)
-        out = pipe.process_raw_ecg_window(signal)
-        assert out["status"] == "ACTIVE_STREAMING"
-        assert abs(out["heart_rate_bpm"] - 30.0) < 1.0
+    def test_empty_and_flatline_signals(self):
+        """Test empty, zero, and single-value inputs for zero-mock compliance."""
+        detector = PanTompkinsQRSDetector(sample_rate_hz=512)
+        
+        # Empty
+        p, rr = detector.detect_qrs_peaks([])
+        assert p == [] and rr == []
+        
+        # Too short (< 0.5s)
+        p, rr = detector.detect_qrs_peaks([1.0] * 100)
+        assert p == [] and rr == []
+        
+        # Flatline (zero signal)
+        p, rr = detector.detect_qrs_peaks([0.0] * 2000)
+        assert p == [] and rr == []
+        
+        # Constant non-zero DC offset
+        p, rr = detector.detect_qrs_peaks([1.5] * 2000)
+        assert p == [] and rr == []
 
 
-# ============================================================================
-# 2. KAMATH 2004 ARTIFACT FILTER STRESS: BURSTS, ECTOPICS & RAMPS
-# ============================================================================
+# ==============================================================================
+# CHALLENGE 2: Kamath 20% RR Artifact Filter
+# ==============================================================================
 
-class TestKamath2004ArtifactFilterAdversarial:
-    """Stress tests the Kamath 20% clinical RR filter against extreme pathological sequences."""
+class TestKamathFilterAdversarial:
+    
+    def test_single_large_artifact_spike(self):
+        """Single 5000ms artifact in normal 800ms stream."""
+        rrs = [800.0, 800.0, 5000.0, 800.0, 800.0]
+        cleaned, count = apply_kamath_artifact_filter(rrs)
+        assert count == 1
+        assert len(cleaned) == 5
+        assert cleaned[2] == 800.0
+        assert cleaned == [800.0, 800.0, 800.0, 800.0, 800.0]
 
-    def test_kamath_bigeminy_alternating_bursts(self):
-        """
-        Alternating bigeminy: Normal (800ms) -> Premature (480ms, -40%) -> Compensatory (1120ms, +40%).
-        Kamath filter must identify and interpolate all ectopic beats back to baseline.
-        """
-        raw_rrs = [800.0, 480.0, 1120.0, 480.0, 1120.0, 800.0, 805.0]
-        cleaned, count = apply_kamath_artifact_filter(raw_rrs)
-        assert count == 4, f"Expected 4 ectopic beats to be flagged, got {count}"
-        assert len(cleaned) == len(raw_rrs)
+    def test_multiple_consecutive_artifacts(self):
+        """Burst of 3 consecutive artifact spikes."""
+        rrs = [800.0, 2000.0, 2100.0, 2200.0, 800.0]
+        cleaned, count = apply_kamath_artifact_filter(rrs)
+        assert count == 3
         for val in cleaned:
-            assert 700.0 <= val <= 900.0, f"Cleaned value {val} should stay near baseline (~800ms)"
+            assert val == 800.0
 
-    def test_kamath_trigeminy_recurrent_pvcs(self):
+    def test_initial_beat_corrupted_lockin_vulnerability(self):
         """
-        Trigeminy: Normal, Normal, PVC, Normal, Normal, PVC...
+        VERIFICATION OF FIX #2:
+        First beat corrupted outlier is properly rejected and anchored to physiological baseline.
         """
-        raw_rrs = [800.0, 805.0, 420.0, 802.0, 804.0, 410.0, 798.0]
-        cleaned, count = apply_kamath_artifact_filter(raw_rrs)
-        assert count == 2
-        assert cleaned[0] == 800.0
-        assert cleaned[1] == 805.0
-        assert cleaned[3] == 802.0
-        assert cleaned[4] == 804.0
-        assert cleaned[6] == 798.0
-        assert 600.0 <= cleaned[2] <= 810.0
-        assert 600.0 <= cleaned[5] <= 810.0
+        rrs = [5000.0, 800.0, 805.0, 810.0, 800.0]
+        cleaned, count = apply_kamath_artifact_filter(rrs)
+        print("Initial beat corrupted output:", cleaned, "count:", count)
+        assert len(cleaned) == 5
+        # The initial 5000ms outlier is rejected (count = 1) and anchored to 800.0
+        assert count == 1
+        assert 790.0 <= cleaned[0] <= 810.0
+        assert cleaned[1:] == [800.0, 805.0, 810.0, 800.0]
 
-    def test_kamath_consecutive_noise_burst_of_10_artifacts(self):
-        """
-        Long consecutive run of 10 motion artifact beats (>1500ms and <300ms).
-        Filter must not crash or diverge, and must recover cleanly once valid beats resume.
-        """
-        noise = [2500.0, 200.0, 3000.0, 150.0, 2800.0, 180.0, 2900.0, 190.0, 3100.0, 210.0]
-        raw_rrs = [800.0] + noise + [805.0, 810.0]
-        cleaned, count = apply_kamath_artifact_filter(raw_rrs)
-        assert count == 10
-        assert len(cleaned) == len(raw_rrs)
-        assert cleaned[-2] == 805.0
-        assert cleaned[-1] == 810.0
+    def test_extreme_underflow_artifact(self):
+        """Sudden false short RR (e.g. 50ms artifact)."""
+        rrs = [850.0, 850.0, 50.0, 850.0, 850.0]
+        cleaned, count = apply_kamath_artifact_filter(rrs)
+        assert count == 1
+        assert cleaned[2] == 850.0
 
-    def test_kamath_rapid_physiological_acceleration_sprint(self):
-        """
-        Explosive grappling sprint: heart rate ramps from 60 BPM (1000ms) to 180 BPM (333ms).
-        Physiological rate of change: step-down transitions (1000 -> 820 -> 680 -> 560 -> 460 -> 380 -> 333).
-        Each transition is <= 20% step. All must be preserved with 0 artifacts.
-        """
-        ramp_rrs = [1000.0, 820.0, 680.0, 560.0, 460.0, 380.0, 333.0, 330.0, 332.0]
-        cleaned, count = apply_kamath_artifact_filter(ramp_rrs)
-        assert count == 0, f"Physiological sprint ramp should have 0 artifacts rejected, got {count}"
-        assert cleaned == ramp_rrs
+    def test_physiological_respiratory_sinus_arrhythmia(self):
+        """Normal RSA variation within 15%: should NOT be rejected."""
+        rrs = [800.0, 880.0, 960.0, 890.0, 810.0, 750.0, 800.0]
+        cleaned, count = apply_kamath_artifact_filter(rrs)
+        assert count == 0
+        assert cleaned == rrs
 
-    def test_kamath_zero_and_negative_handling(self):
-        """
-        Corrupted inputs with 0.0 or negative numbers in RR interval stream.
-        Filter must gracefully handle zero division protections.
-        """
-        corrupt_rrs = [800.0, 0.0, -500.0, 810.0]
-        cleaned, count = apply_kamath_artifact_filter(corrupt_rrs)
-        assert count >= 2
-        assert len(cleaned) == 4
-        assert cleaned[0] == 800.0
-        assert cleaned[-1] == 810.0
+    def test_empty_and_single_element(self):
+        """Edge cases: empty, 1-element, wrapper functions."""
+        assert apply_kamath_artifact_filter([]) == ([], 0)
+        assert apply_kamath_artifact_filter([800.0]) == ([800.0], 0)
+        assert apply_kamath_filter([]) == []
+        assert apply_kamath_filter([800.0]) == [800.0]
 
 
-# ============================================================================
-# 3. PULSE TRANSIT TIME (PTT) CONTINUOUS BP INVERSION STRESS
-# ============================================================================
+# ==============================================================================
+# CHALLENGE 3: PTT Blood Pressure Bounds
+# ==============================================================================
 
-class TestHemodynamicPTTAdversarialStress:
-    """Stress tests PTT Hemodynamic BP Inversion across extreme ranges and missing data."""
+class TestPttBloodPressureAdversarial:
+    
+    @pytest.mark.parametrize("ptt_ms, hr_bpm", [
+        (50.0, 60.0),    # Extremely short PTT (hypertensive/stiff)
+        (50.0, 220.0),   # Extremely short PTT + extreme tachycardia
+        (100.0, 70.0),   # Short PTT
+        (200.0, 70.0),   # Baseline nominal
+        (350.0, 60.0),   # Long PTT
+        (500.0, 40.0),   # Extremely long PTT (vasodilated/delay)
+        (500.0, 220.0),  # Extremely long PTT + extreme tachycardia
+    ])
+    def test_ptt_bp_ranges(self, ptt_ms, hr_bpm):
+        """Ensure SBP, DBP, MAP remain within strict physiological boundaries."""
+        sbp, dbp, map_val = calculate_hemodynamics_bp(ptt_ms, hr_bpm)
+        assert sbp is not None
+        assert dbp is not None
+        assert map_val is not None
+        
+        assert 80.0 <= sbp <= 220.0, f"SBP {sbp} out of bounds for ptt={ptt_ms}, hr={hr_bpm}"
+        assert 50.0 <= dbp <= 130.0, f"DBP {dbp} out of bounds for ptt={ptt_ms}, hr={hr_bpm}"
+        assert sbp > dbp, f"SBP ({sbp}) must be greater than DBP ({dbp})"
+        assert dbp <= map_val <= sbp, f"MAP ({map_val}) must be between DBP ({dbp}) and SBP ({sbp})"
+        expected_map = round((sbp + 2.0 * dbp) / 3.0, 1)
+        assert abs(map_val - expected_map) <= 0.1
 
-    def test_ptt_bp_extreme_hypertension_vasoconstriction(self):
-        """
-        Extreme vasoconstriction / acute stress: PTT = 80 ms (fast pulse wave velocity), HR = 180 BPM.
-        Inversion model must clamp SBP to max 220 mmHg and DBP to max 130 mmHg.
-        """
-        sbp, dbp, map_val = calculate_hemodynamics_bp(ptt_ms=80.0, hr_bpm=180.0)
-        # delta_ptt = 120 -> SBP raw = 120 + 54 + 16.5 = 190.5 mmHg
-        # DBP raw = 80 + 30 + 8.8 = 118.8 mmHg
-        assert sbp is not None and dbp is not None and map_val is not None
-        assert 80.0 <= sbp <= 220.0
-        assert 50.0 <= dbp <= 130.0
-        assert map_val == round((sbp + 2.0 * dbp) / 3.0, 1)
+    def test_ptt_bp_zero_mock_and_invalid_inputs(self):
+        """Rule #0 compliance on missing or non-positive PTT or non-positive HR."""
+        assert calculate_hemodynamics_bp(None, 70.0) == (None, None, None)
+        assert calculate_hemodynamics_bp(0.0, 70.0) == (None, None, None)
+        assert calculate_hemodynamics_bp(-100.0, 70.0) == (None, None, None)
+        assert calculate_hemodynamics_bp(200.0, 0.0) == (None, None, None)
+        assert calculate_hemodynamics_bp(200.0, -10.0) == (None, None, None)
 
-    def test_ptt_bp_extreme_hypotension_vasodilation(self):
-        """
-        Extreme vasodilation / post-exercise vasodilation: PTT = 350 ms, HR = 45 BPM.
-        Inversion model must clamp SBP to min 80 mmHg and DBP to min 50 mmHg.
-        """
-        sbp, dbp, map_val = calculate_hemodynamics_bp(ptt_ms=350.0, hr_bpm=45.0)
-        # delta_ptt = -150 -> SBP raw = 120 - 67.5 - 3.75 = 48.75 -> clamped to 80.0 mmHg
-        # DBP raw = 80 - 37.5 - 1.875 = 40.625 -> clamped to 50.0 mmHg
-        assert sbp == 80.0
-        assert dbp == 50.0
-        assert map_val == round((80.0 + 2 * 50.0) / 3.0, 1)
+    def test_continuous_model_dataclass_contract(self):
+        """Test ContinuousPttBloodPressureModel full contract."""
+        model = ContinuousPttBloodPressureModel(hr_rest_baseline=58.0)
+        
+        # Disconnected state
+        res_disconnected = model.compute_ptt_blood_pressure(hr_bpm=None)
+        assert res_disconnected.status == "STANDBY"
+        assert res_disconnected.sbp_mmhg is None
+        assert res_disconnected.dbp_mmhg is None
 
-    def test_ptt_bp_missing_or_corrupt_inputs(self):
-        """Tests None, negative, 0, NaN, and Inf inputs."""
-        assert calculate_hemodynamics_bp(ptt_ms=None, hr_bpm=70.0) == (None, None, None)
-        assert calculate_hemodynamics_bp(ptt_ms=0.0, hr_bpm=70.0) == (None, None, None)
-        assert calculate_hemodynamics_bp(ptt_ms=-100.0, hr_bpm=70.0) == (None, None, None)
+        # Non-positive HR (asystole / sensor drop) -> Rule #0 STANDBY
+        res_zero_hr = model.compute_ptt_blood_pressure(hr_bpm=0.0, rmssd_ms=40.0)
+        assert res_zero_hr.status == "STANDBY"
+        assert res_zero_hr.sbp_mmhg is None
+        assert res_zero_hr.dbp_mmhg is None
 
-        suite = MovesenseReadinessSuite()
-        res_none = suite.compute_ptt_blood_pressure(hr_bpm=None, rmssd_ms=None, ptt_ms=None)
-        assert res_none["status"] == "STANDBY"
-        assert res_none["systolic_bp_mmhg"] is None
+        res_neg_hr = model.compute_ptt_blood_pressure(hr_bpm=-15.0, rmssd_ms=40.0)
+        assert res_neg_hr.status == "STANDBY"
+        assert res_neg_hr.sbp_mmhg is None
+        
+        # Direct PTT mode
+        res_direct = model.compute_ptt_blood_pressure(hr_bpm=72.0, ptt_ms=180.0)
+        assert res_direct.status == "NOMINAL"
+        assert 80.0 <= res_direct.sbp_mmhg <= 220.0
+        assert 50.0 <= res_direct.dbp_mmhg <= 130.0
+        assert res_direct.ptt_ms == 180.0
+
+        # Hughes-Bramwell approximation fallback (ECG only)
+        res_approx = model.compute_ptt_blood_pressure(hr_bpm=72.0, rmssd_ms=45.0, ptt_ms=None)
+        assert res_approx.status == "NOMINAL"
+        assert 90.0 <= res_approx.sbp_mmhg <= 185.0
+        assert 55.0 <= res_approx.dbp_mmhg <= 115.0
+        assert res_approx.ptt_ms is not None
 
 
-# ============================================================================
-# 4. OVERNIGHT SLEEP STAGING & NOCTURNAL AUTONOMIC RECOVERY
-# ============================================================================
+# ==============================================================================
+# CHALLENGE 4: Sleep Score (0-100) & DFA-alpha1 Boundaries
+# ==============================================================================
 
-class TestOvernightSleepStagingAdversarial:
-    """Stress tests overnight hypnogram analysis, recovery scoring, and abnormal dipping."""
-
-    def test_sleep_balanced_optimal_architecture_perfect_recovery(self):
-        """Balanced architecture: 25% Deep, 25% REM, 50% Light with high RMSSD and low nocturnal HR -> Score = 100."""
-        suite = MovesenseReadinessSuite(user_age=30, hr_rest_baseline=50.0)
-        epochs = ["DEEP"] * 30 + ["REM"] * 30 + ["LIGHT"] * 60
-        res = suite.compute_overnight_sleep_analysis(
-            hr_bpm=42.0,
-            rmssd_ms=85.0,
-            epoch_stages=epochs,
-            daytime_hr_rest=60.0
+class TestSleepScoreAndDfaAdversarial:
+    
+    @pytest.mark.parametrize("stages, hr, rmssd", [
+        # 100% Deep sleep with high RMSSD and low HR -> should be near 100
+        (["DEEP"] * 20, 45.0, 65.0),
+        # 100% Awake with high HR and low RMSSD -> should be near 0
+        (["AWAKE"] * 20, 95.0, 15.0),
+        # 100% REM
+        (["REM"] * 20, 65.0, 25.0),
+        # 100% LIGHT
+        (["LIGHT"] * 20, 58.0, 35.0),
+        # Mixed physiological distribution
+        (["LIGHT"] * 10 + ["DEEP"] * 5 + ["REM"] * 4 + ["AWAKE"] * 1, 55.0, 48.0),
+    ])
+    def test_sleep_score_0_to_100_invariance(self, stages, hr, rmssd):
+        """Verify sleep score is strictly integer in [0, 100]."""
+        engine = SleepStagingEngine(hr_rest_baseline=58.0)
+        res = engine.compute_overnight_sleep_analysis(
+            hr_bpm=hr, rmssd_ms=rmssd, epoch_stages=stages
         )
-        assert res["status"] == "COMPLETED"
-        assert res["sleep_score_pct"] == 100
-        assert res["recovery_status"] == "EXCELLENT (Green)"
-        assert res["sleep_stages_estimate"]["deep_sleep_pct"] == 25.0
-        assert res["sleep_stages_estimate"]["rem_sleep_pct"] == 25.0
+        assert res.status == "COMPLETED"
+        assert res.sleep_score_100 is not None
+        assert 0 <= res.sleep_score_100 <= 100
+        assert isinstance(res.sleep_score_100, int)
+        assert 0.0 <= res.deep_pct <= 100.0
+        assert 0.0 <= res.rem_pct <= 100.0
+        assert 0.0 <= res.efficiency_pct <= 100.0
 
-    def test_sleep_isolated_deep_sleep_without_rem_capped_score(self):
-        """100% Deep Sleep with 0% REM represents a REM deficit; score is capped at 75."""
-        suite = MovesenseReadinessSuite(user_age=30, hr_rest_baseline=50.0)
-        epochs = ["DEEP"] * 120
-        res = suite.compute_overnight_sleep_analysis(
-            hr_bpm=42.0,
-            rmssd_ms=85.0,
-            epoch_stages=epochs,
-            daytime_hr_rest=60.0
+    def test_sleep_score_zero_mock(self):
+        """Rule #0 compliance: returns WAITING_FOR_SENSOR and None score when empty."""
+        engine = SleepStagingEngine()
+        res = engine.compute_overnight_sleep_analysis(hr_bpm=None, rmssd_ms=None, epoch_stages=None)
+        assert res.status == "WAITING_FOR_SENSOR"
+        assert res.sleep_score_100 is None
+        assert res.deep_pct is None
+
+    def test_dfa_alpha1_edge_cases(self):
+        """Test DFA-alpha1 with zero variance, short buffers, and extreme patterns."""
+        # Flatline / zero variance (identical RR intervals)
+        flat_rrs = [800.0] * 50
+        alpha_flat = calculate_dfa_alpha1(flat_rrs)
+        assert alpha_flat is not None
+        assert 0.40 <= alpha_flat <= 1.50
+        
+        # Extremely short buffer (< 4 beats)
+        assert calculate_dfa_alpha1([]) is None
+        assert calculate_dfa_alpha1([800.0, 810.0]) is None
+        assert calculate_dfa_alpha1([800.0, 810.0, 805.0]) is None
+        
+        # Buffer length = 4 (minimum allowed)
+        alpha_4 = calculate_dfa_alpha1([800.0, 820.0, 790.0, 810.0])
+        assert alpha_4 is not None
+        assert 0.40 <= alpha_4 <= 1.50
+
+        # Highly correlated brownian noise / drift (alpha ~ 1.0 - 1.5)
+        np.random.seed(42)
+        drift = np.cumsum(np.random.randn(60) * 10) + 800.0
+        alpha_drift = calculate_dfa_alpha1(drift.tolist())
+        assert alpha_drift is not None
+        assert 0.40 <= alpha_drift <= 1.50
+
+        # White noise / uncorrelated (alpha ~ 0.5)
+        noise = (np.random.randn(60) * 20 + 800.0).tolist()
+        alpha_noise = calculate_dfa_alpha1(noise)
+        assert alpha_noise is not None
+        assert 0.40 <= alpha_noise <= 1.50
+
+    def test_zone2_thresholds_and_domains(self):
+        """Verify cardiorespiratory domain boundaries based on DFA-alpha1."""
+        c_high = compute_cardiorespiratory_thresholds(hr_bpm=120.0, dfa_alpha1=0.90)
+        assert c_high.current_zone == "Zone 2 (Aerobic Base Endurance)"
+        assert "Below LT1" in c_high.physiological_domain
+        
+        c_lt1 = compute_cardiorespiratory_thresholds(hr_bpm=135.0, dfa_alpha1=0.75)
+        assert c_lt1.current_zone == "Zone 2 (Aerobic Base Endurance)"
+        assert "At LT1" in c_lt1.physiological_domain
+        
+        c_mid = compute_cardiorespiratory_thresholds(hr_bpm=155.0, dfa_alpha1=0.60)
+        assert c_mid.current_zone == "Zone 3 (Tempo / Aerobic Power)"
+        assert "Between LT1 and LT2" in c_mid.physiological_domain
+        
+        c_low = compute_cardiorespiratory_thresholds(hr_bpm=175.0, dfa_alpha1=0.42)
+        assert c_low.current_zone == "Zone 4/5 (Anaerobic Threshold / Fatigue)"
+        assert "Above LT2" in c_low.physiological_domain
+
+        c_none = compute_cardiorespiratory_thresholds(hr_bpm=None, dfa_alpha1=None)
+        assert c_none.status == "WAITING_FOR_SENSOR"
+        assert c_none.dfa_alpha1 is None
+
+    def test_sleep_score_zero_division_guard_daytime_hr_rest_zero(self):
+        """Verify daytime_hr_rest <= 0.0 does not trigger ZeroDivisionError."""
+        engine = SleepStagingEngine(hr_rest_baseline=58.0)
+        
+        # daytime_hr_rest = 0.0
+        res_zero = engine.compute_overnight_sleep_analysis(
+            hr_bpm=60.0, rmssd_ms=40.0, epoch_stages=["LIGHT"] * 10, daytime_hr_rest=0.0
         )
-        assert res["status"] == "COMPLETED"
-        assert res["sleep_score_pct"] == 75
-        assert res["sleep_stages_estimate"]["deep_sleep_pct"] == 100.0
-        assert res["sleep_stages_estimate"]["rem_sleep_pct"] == 0.0
+        assert res_zero.status == "COMPLETED"
+        assert res_zero.dip_pct == 0.0
 
-    def test_sleep_100_percent_awake_insomnia_zero_recovery(self):
-        """100% Awake (severe insomnia) with elevated HR and low RMSSD."""
-        suite = MovesenseReadinessSuite(user_age=30, hr_rest_baseline=50.0)
-        epochs = ["AWAKE"] * 120
-        res = suite.compute_overnight_sleep_analysis(
-            hr_bpm=88.0,
-            rmssd_ms=12.0,
-            epoch_stages=epochs,
-            daytime_hr_rest=60.0
+        # daytime_hr_rest = -10.0
+        res_neg = engine.compute_overnight_sleep_analysis(
+            hr_bpm=60.0, rmssd_ms=40.0, epoch_stages=["LIGHT"] * 10, daytime_hr_rest=-10.0
         )
-        assert res["status"] == "COMPLETED"
-        assert res["sleep_score_pct"] == 0
-        assert res["recovery_status"] == "LOW (Red)"
-        assert res["sleep_stages_estimate"]["awake_pct"] == 100.0
+        assert res_neg.status == "COMPLETED"
+        assert res_neg.dip_pct == 0.0
 
-    def test_negative_nocturnal_dipping_sympathetic_overdrive(self):
-        """
-        Reverse/Negative dipping: night HR (75 BPM) higher than daytime rest baseline (60 BPM).
-        Nocturnal dip % should be negative, reflecting sympathetic overdrive.
-        """
-        suite = MovesenseReadinessSuite(user_age=30, hr_rest_baseline=50.0)
-        res = suite.compute_overnight_sleep_analysis(
-            hr_bpm=75.0,
-            rmssd_ms=25.0,
-            daytime_hr_rest=60.0
-        )
-        assert res["status"] == "COMPLETED"
-        assert res["nocturnal_dip_pct"] is not None
-        assert res["nocturnal_dip_pct"] < 0.0  # (60 - 75) / 60 * 100 = -25.0%
+    def test_zone2_zero_division_guard_hr_max_zero(self):
+        """Verify hr_max <= 0 does not trigger ZeroDivisionError in workout classification."""
+        state_zero = classify_workout_state(120.0, hr_max=0)
+        assert state_zero.status == "WAITING_FOR_SENSOR"
+        assert state_zero.hr_pct_max is None
 
-    def test_sleep_unrecognized_epoch_labels_resilience(self):
-        """Hypnogram containing unknown stage labels ('CORRUPT', 'UNKNOWN', '') must not crash."""
-        suite = MovesenseReadinessSuite()
-        epochs = ["DEEP", "CORRUPT", "REM", "UNKNOWN", "LIGHT", ""]
-        res = suite.compute_overnight_sleep_analysis(hr_bpm=55.0, rmssd_ms=45.0, epoch_stages=epochs)
-        assert res["status"] == "COMPLETED"
-        assert res["sleep_score_pct"] is not None
-        assert 0 <= res["sleep_score_pct"] <= 100
+        state_neg = classify_workout_state(120.0, hr_max=-50)
+        assert state_neg.status == "WAITING_FOR_SENSOR"
+        assert state_neg.hr_pct_max is None
 
-
-# ============================================================================
-# 5. CORRUPT, MALFORMED & FUZZED SENSOR PACKETS
-# ============================================================================
-
-class TestCorruptAndFuzzedSensorPackets:
-    """Fuzz testing and malformed input handling for ECG and DSP pipeline."""
-
-    def test_flatline_ecg_zero_variance(self):
-        """ECG disconnected / zero flatline -> 0 peaks, 0 RR intervals."""
-        detector = PanTompkinsQRSDetector(sample_rate_hz=512)
-        flatline = [0.0] * (512 * 3)
-        peaks, rrs = detector.detect_qrs_peaks(flatline)
-        assert peaks == []
-        assert rrs == []
-
-    def test_dc_offset_only_ecg_no_heartbeat(self):
-        """Constant non-zero DC offset (e.g. +2000 mV) produces no periodic heart rate output."""
-        detector = PanTompkinsQRSDetector(sample_rate_hz=512)
-        dc_signal = [2000.0] * (512 * 3)
-        peaks, rrs = detector.detect_qrs_peaks(dc_signal)
-        # Even if a filter transient occurs at index 6, there can be at most 1 transient and 0 RR intervals
-        assert rrs == []
-        pipe = MovesenseECGPipeline(sample_rate_hz=512)
-        out = pipe.process_raw_ecg_window(dc_signal)
-        assert out["heart_rate_bpm"] is None
-
-    def test_pure_high_frequency_mains_hum(self):
-        """50Hz / 60Hz pure sinusoidal mains noise (no QRS complexes) -> rejected."""
-        detector = PanTompkinsQRSDetector(sample_rate_hz=512)
-        fs = 512
-        hum = [5.0 * math.sin(2 * math.pi * 50.0 * (i / fs)) for i in range(fs * 3)]
-        peaks, rrs = detector.detect_qrs_peaks(hum)
-        # Pure sinusoidal 50Hz derivative and bandpass will be attenuated, no discrete QRS peaks
-        assert len(peaks) == 0
-
-    def test_fuzzed_random_noise_stream(self):
-        """Fuzzed random gaussian noise does not cause uncaught exceptions or unbounded outputs."""
-        detector = PanTompkinsQRSDetector(sample_rate_hz=512)
-        pipe = MovesenseECGPipeline(sample_rate_hz=512)
-        random.seed(42)
-
-        for _ in range(5):
-            noise_signal = [random.gauss(0.0, 10.0) for _ in range(512 * 2)]
-            out = pipe.process_raw_ecg_window(noise_signal, ptt_ms=random.choice([None, 180.0, -50.0]))
-            assert out["status"] in ["ACTIVE_STREAMING", "WAITING_FOR_SENSOR"]
-            assert out["rule_0_zero_mock"] is True
-
-
-# ============================================================================
-# 6. CARDIORESPIRATORY THRESHOLDS & VO2MAX EXTREME CASES
-# ============================================================================
-
-class TestCardiorespiratoryThresholdsAdversarial:
-    """Stress tests LT1, LT2, and Uth-Sørensen VO2max formulas."""
-
-    def test_vo2max_elite_athlete_vs_sedentary(self):
-        """
-        Elite endurance athlete (Age 25, HR max = 195, HR rest = 38):
-        VO2max = 15.3 * (195 / 40.0) [clamped baseline min 40] = 74.6 mL/kg/min.
-        Sedentary (Age 60, HR max = 160, HR rest = 85):
-        VO2max = 15.3 * (160 / 85) = 28.8 mL/kg/min.
-        """
-        elite_suite = MovesenseReadinessSuite(user_age=25, hr_rest_baseline=38.0)
-        res_elite = elite_suite.compute_cardiorespiratory_thresholds(hr_bpm=140.0, dfa_alpha1=0.75)
-        assert res_elite["estimated_vo2max_ml_kg_min"] >= 70.0
-        assert "LT1" in res_elite["physiological_domain"]
-
-        sedentary_suite = MovesenseReadinessSuite(user_age=60, hr_rest_baseline=85.0)
-        res_sedentary = sedentary_suite.compute_cardiorespiratory_thresholds(hr_bpm=120.0, dfa_alpha1=0.48)
-        assert res_sedentary["estimated_vo2max_ml_kg_min"] <= 35.0
-        assert "Above LT2" in res_sedentary["physiological_domain"]
-
-    def test_dfa_alpha1_out_of_bounds_clamping(self):
-        """Ensures calculate_dfa_alpha1 values stay bounded in [0.40, 1.50]."""
-        # Identical values
-        assert calculate_dfa_alpha1([800.0] * 20) is not None
-        # Huge fluctuating values
-        huge_rrs = [200.0, 1800.0, 200.0, 1800.0, 200.0, 1800.0, 200.0, 1800.0]
-        alpha = calculate_dfa_alpha1(huge_rrs)
-        assert alpha is not None
-        assert 0.40 <= alpha <= 1.50
-
-
-# ============================================================================
-# 7. STRICT RULE #0 ZERO-MOCK INVARIANTS & INTERFACE CONTRACTS
-# ============================================================================
-
-class TestStrictRuleZeroMockAndContractCompliance:
-    """Verifies that under disconnected / absent sensor states, strictly null metrics are returned."""
-
-    def test_null_state_invariant_across_all_metrics(self):
-        """Verifies no simulated arrays or synthetic numbers leak into disconnected payloads."""
-        suite = MovesenseReadinessSuite()
-        contract = suite.get_interface_contract_payload(live_data={"connected": False})
-
-        assert contract["status"] == "WAITING_FOR_SENSOR"
-        assert contract["heart_rate_bpm"] is None
-        assert contract["rmssd_ms"] is None
-        assert contract["dfa_alpha1"] is None
-        assert contract["ptt_blood_pressure"]["systolic_bp_mmhg"] is None
-        assert contract["ptt_blood_pressure"]["diastolic_bp_mmhg"] is None
-        assert contract["ptt_blood_pressure"]["map_mmhg"] is None
-        assert contract["sleep_recovery"]["sleep_score_pct"] is None
-        assert contract["sleep_recovery"]["deep_sleep_pct"] is None
-        assert contract["sleep_recovery"]["rem_sleep_pct"] is None
-        assert contract["cardiorespiratory"]["lt1_threshold_bpm"] is None
-        assert contract["cardiorespiratory"]["lt2_threshold_bpm"] is None
-        assert contract["cardiorespiratory"]["vo2max_estimate"] is None
-        assert contract["cardiorespiratory"]["activity_state"] is None
+        # Also test compute_cardiorespiratory_thresholds with hr_max=0
+        cardio = compute_cardiorespiratory_thresholds(hr_bpm=120.0, dfa_alpha1=0.80, hr_max=0)
+        assert cardio.status == "ACTIVE"
+        assert cardio.vo2max_ml_kg_min is not None
 
 
 if __name__ == "__main__":
-    pytest.main(["-v", __file__])
+    pytest.main([__file__, "-v", "-s"])

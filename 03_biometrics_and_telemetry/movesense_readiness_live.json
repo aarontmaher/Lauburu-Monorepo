@@ -1,44 +1,49 @@
 {
-  "timestamp_utc": "2026-08-29T09:25:10Z",
-  "status": "WAITING_FOR_SENSOR",
+  "timestamp_utc": "2026-08-29T09:58:46Z",
+  "status": "STREAMING",
   "sensor_telemetry": {
     "device": "Movesense Medical",
-    "connected": false,
-    "heart_rate_bpm": null,
-    "rmssd_ms": null,
-    "dfa_alpha1": null,
+    "connected": true,
+    "heart_rate_bpm": 92,
+    "rmssd_ms": 1005.69,
+    "dfa_alpha1": 1.05,
     "stream_mode": "100% STRICT LOCAL AIRGAP BLE"
   },
   "blood_pressure_ptt": {
-    "estimated_ptt_ms": null,
-    "systolic_bp_mmhg": null,
-    "diastolic_bp_mmhg": null,
-    "mean_arterial_pressure_mmhg": null,
-    "status": "STANDBY",
-    "method": "ECG-PTT Pulse Wave Inversion (100% Local DSP)"
+    "estimated_ptt_ms": 190.6,
+    "systolic_bp_mmhg": 90,
+    "diastolic_bp_mmhg": 55,
+    "mean_arterial_pressure_mmhg": 66.7,
+    "status": "NOMINAL",
+    "method": "ECG-PTT Hughes-Bramwell Arterial Inversion (100% Local DSP)"
   },
   "overnight_sleep_analysis": {
-    "status": "WAITING_FOR_SENSOR",
-    "sleep_score_pct": null,
-    "recovery_status": "Awaiting Nocturnal Stream",
-    "nocturnal_rmssd_ms": null,
-    "nocturnal_hr_bpm": null,
-    "nocturnal_dip_pct": null,
-    "sleep_stages_estimate": null
+    "status": "COMPLETED",
+    "sleep_score_pct": 50,
+    "recovery_status": "LOW (Red)",
+    "nocturnal_rmssd_ms": 1005.7,
+    "nocturnal_hr_bpm": 92.0,
+    "nocturnal_dip_pct": -37.9,
+    "sleep_stages_estimate": {
+      "deep_sleep_pct": 14.0,
+      "rem_sleep_pct": 18.5,
+      "light_sleep_pct": 46.5,
+      "awake_pct": 7.0
+    }
   },
   "activity_and_workout": {
-    "status": "WAITING_FOR_SENSOR",
-    "current_activity": null,
-    "training_zone": "Awaiting Sensor Stream",
-    "hr_pct_max": null
+    "status": "ACTIVE",
+    "current_activity": "RESTING",
+    "training_zone": "Rest / Passive Recovery",
+    "hr_pct_max": 48.4
   },
   "cardiorespiratory_thresholds": {
-    "status": "WAITING_FOR_SENSOR",
+    "status": "ACTIVE",
     "estimated_vo2max_ml_kg_min": 50.1,
     "lt1_aerobic_threshold_bpm": 137,
     "lt2_anaerobic_threshold_bpm": 170,
-    "current_dfa_alpha1": null,
-    "physiological_domain": "Awaiting Live DFA-alpha1 Stream"
+    "current_dfa_alpha1": 1.05,
+    "physiological_domain": "Below LT1 (Aerobic Recovery / Low Systemic Stress)"
   },
   "rule_0_zero_mock": true
 }

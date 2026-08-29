@@ -1,104 +1,70 @@
-# BRIEFING — 2026-08-29T19:22:20+10:00
+# BRIEFING — 2026-08-29T09:32:40Z
 
 ## Mission
-Implement and deploy Unified Lauburu Front-Facing App Architecture & Multi-Mode Game Arena with 100% local airgap biometrics.
+Build out every single user-facing and commercial application across the entire Lauburu Monorepo to production completeness, prioritizing the flagship Movesense Physiological Readiness App, using automated free-tier AI APIs (Gemini Flash Free Tier, Cloudflare Workers AI) for rapid code scaffolding, testing, and documentation, while strictly airgapping 100% of live biometrics to local hardware.
 
 ## 🔒 My Identity
 - Archetype: teamwork_preview_orchestrator
 - Roles: orchestrator, user_liaison, human_reporter, successor
 - Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_1/
 - Original parent: parent
-- Original parent conversation ID: 23d306eb-b150-4e1b-8954-8e4866f3d375
+- Original parent conversation ID: 0c5b23a1-bb2e-4ff3-a08a-c60b10d5a448
 
 ## 🔒 My Workflow
-- **Pattern**: Project Orchestration
+- **Pattern**: Project Orchestrator (Dual Track: Implementation Track + E2E Testing Track)
 - **Scope document**: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
-1. **Decompose**: Survey monorepo, build Feature Inventory, decompose into 3-7 milestones + E2E Testing track.
+1. **Decompose**: Map monorepo architecture, catalog features, define milestone boundaries (Movesense Flagship, User & Scaling Apps, Operator Cockpits, Web-TUI Portal Port 8088, Cloud AI Scaffolder & Airgap Engine, E2E Test Suite).
 2. **Dispatch & Execute**:
-   - Survey: 3 parallel Explorers [COMPLETED].
-   - PROJECT.md established with 16 features, 4 milestones, architecture & interface contracts [COMPLETED].
-   - Dual-Track Execution:
-     - E2E Test Suite Creation (test_writer_e2e) [COMPLETED, 184/184 tests pass, TEST_READY.md published]
-     - M1: Frontend & Airgap Specialist (worker_m1) [COMPLETED, 10/10 tests pass, airgap isolation verified]
-     - M2: Movesense DSP Specialist (worker_m2) [COMPLETED, 50/50 tests pass, Rule #0 verified]
-     - M3: SmolAgents Arena & TUI Specialist (worker_m3) [COMPLETED, 132/132 tests pass, 4 modes active]
-   - Milestone Review & Audit Verification:
-     - Reviewer 1 (816c75ff): APPROVE
-     - Reviewer 2 (d3d0deb8): APPROVE
-     - Challenger 1 (8383762e): APPROVE (54 stress tests pass)
-     - Challenger 2 (c4b4a457): APPROVE (17 stress tests pass, 184 E2E tests pass)
-     - Forensic Auditor (52561a6f): CLEAN (Rule #0 zero-mock verified, 100% local airgap confirmed)
-   - Gate Result: PASS.
-   - Final Milestone M4: Completed & Verified.
-3. **On failure**:
-   - Retry: nudge stuck agent or re-send task
-   - Replace: spawn fresh agent with partial progress
-   - Skip: proceed without (only if non-critical, auditor is NON-SKIPPABLE)
-   - Redistribute: split stuck agent's remaining work
-   - Redesign: re-partition decomposition
-4. **Succession**: Self-succeed at 16 spawns after active subagents complete.
+   - **Direct (iteration loop)**: Survey (3 Explorers) -> Decompose into Sub-orchestrators for milestones -> Iteration loops (Explorer -> Worker -> Reviewer -> Challenger -> Auditor) -> E2E pass & adversarial hardening.
+   - **Delegate (sub-orchestrator)**: Spawn sub-orchestrators for major milestone areas and E2E Testing Track.
+3. **On failure**: Retry -> Replace -> Skip -> Redistribute -> Redesign.
+4. **Succession**: Self-succeed at 16 spawns by writing handoff.md, canceling timers, and spawning successor.
 - **Work items**:
-  1. Phase 0: Monorepo Survey & Feature Mapping [done]
-  2. Phase 1: PROJECT.md Decomposition & Interface Contracts [done]
-  3. Phase 2: Dual-Track Implementation & Test Writing [done]
-  4. Phase 3: Milestone Review, Challenger, & Forensic Audit Gating [done]
-  5. Phase 4: Final Milestone M4 (E2E 100% + Tier 5 Hardening) [done]
-- **Current phase**: 4
-- **Current focus**: Final Synthesis & Comprehensive Handoff Report
+  1. Survey and map codebase & requirements [in-progress]
+  2. E2E Testing Track setup & test suite generation [pending]
+  3. Milestone M1: Flagship Movesense Physiological Readiness Suite [pending]
+  4. Milestone M2: User & Scaling Apps Portfolio [pending]
+  5. Milestone M3: Operator & Dev Cockpits Portfolio [pending]
+  6. Milestone M4: Universal Web-TUI Portal Port 8088 [pending]
+  7. Milestone M5: Free-Tier Cloud AI Scaffolder & Strict Airgap Engine [pending]
+  8. Milestone M6: Final Verification, 100% E2E Pass & Adversarial Hardening [pending]
+- **Current phase**: 0 (Survey)
+- **Current focus**: Surveying codebase across 01_apps, 03_biometrics, and tooling to generate comprehensive PROJECT.md
 
 ## 🔒 Key Constraints
 - NEVER write, modify, or create source code files directly.
-- NEVER run build/test commands yourself — require workers to do so.
-- NEVER investigate or explore problem at code level — dispatch Explorers.
-- Rule #0: Strictly zero simulated or fake arrays.
-- Tri-Vault Storage rules (Obsidian, PySpark datasets, GitHub worktree).
-- Audit is a binary veto — violation means failure, no exceptions.
-- Never reuse a subagent after it has delivered its handoff.
+- NEVER run build/test commands directly — require workers to do so.
+- NEVER investigate or explore problem at the code level — dispatch Explorers.
+- Binary veto on Forensic Auditor violations (Zero tolerance for fake data, mock arrays, or cheating).
+- 100% airgap for biometric telemetry (zero sensor data leaked to external APIs).
+- Maintain healthy Tri-Vault storage (Obsidian, PySpark Data Lake, Git).
 
 ## Current Parent
-- Conversation ID: 23d306eb-b150-4e1b-8954-8e4866f3d375
-- Updated: not yet
+- Conversation ID: 0c5b23a1-bb2e-4ff3-a08a-c60b10d5a448
+- Updated: 2026-08-29T09:32:40Z
 
 ## Key Decisions Made
-- All 4 Milestones (M1, M2, M3, M4) passed with 100% test pass rate across all tiers.
-- Gate evaluation passed unanimously (2 APPROVE reviews, 2 APPROVE challenger stress passes, 1 CLEAN forensic audit).
+- Initiating Project Pattern with Survey Phase spawning 3 Explorers across Monorepo subsystems (Movesense/Biometrics, App Portfolio & Web-TUI, AI Scaffolder & Tooling).
+- Parallel E2E Testing Track will be established concurrently with Implementation Track.
 
 ## Team Roster
 | Agent | Type | Work Item | Status | Conv ID |
-|---|---|---|---|---|
-| survey_1 | teamwork_preview_explorer | Survey R1: Frontend & Airgap | completed | 04d02729-148a-43f4-b770-6894d9472139 |
-| survey_2 | teamwork_preview_explorer | Survey R2: Movesense Biometrics DSP | completed | df281b09-190a-4c18-bdfb-58a79986111a |
-| survey_3 | teamwork_preview_explorer | Survey R3: SmolAgents & Multi-Mode Arena | completed | d9c679c9-bc2a-4871-bc23-5d218f0ebb46 |
-| test_writer_e2e | teamwork_preview_test_writer | E2E Test Suite (Tiers 1-4, TEST_READY.md) | completed | d044e7e7-0c7d-437d-a2d8-c3ded383ade7 |
-| worker_m1 | teamwork_preview_worker | M1: Frontend PWA, 3D Tatami & Airgap | completed | 459c1ed5-b3a2-4808-bafe-e60c217bf6d8 |
-| worker_m2 | teamwork_preview_worker | M2: Movesense 512Hz DSP Suite | completed | ac281c04-c2b3-41d6-a792-f734a0229d46 |
-| worker_m3 | teamwork_preview_worker | M3: SmolAgents Arena & 4-Mode TUI | completed | 5faa0827-ddca-40d8-aae6-bd668ebd89e3 |
-| reviewer_1 | teamwork_preview_reviewer | Review M1 & M2 | completed | 816c75ff-c386-4508-8b6b-1c0e0ad21807 |
-| reviewer_2 | teamwork_preview_reviewer | Review M3 & E2E Suite | completed | d3d0deb8-3c4a-402e-9a81-cb827c42cf36 |
-| challenger_1 | teamwork_preview_challenger | Stress DSP & Airgap | completed | 8383762e-63d9-4665-912d-ee686bf54189 |
-| challenger_2 | teamwork_preview_challenger | Stress SmolAgents & E2E | completed | c4b4a457-0482-4ff1-9bb5-29b3afa167a5 |
-| auditor_1 | teamwork_preview_auditor | Forensic Integrity Audit | completed | 52561a6f-4239-4896-987a-1daa64d57a7a |
+|-------|------|-----------|--------|---------|
 
 ## Succession Status
 - Succession required: no
-- Spawn count: 12 / 16
-- Pending subagents: none
+- Spawn count: 14 / 16
+- Pending subagents: 5825ad20-36ea-4c4b-a8fd-79a0af3cca1c, 528e9ca6-caad-407f-b4df-db454e014acc
 - Predecessor: none
 - Successor: not yet spawned
 
 ## Active Timers
-- Heartbeat cron: 63ce69b0-c347-4525-baf9-09dde968f198/task-11
+- Heartbeat cron: 2a18102f-99e3-40e0-adec-7d45ce293833/task-13
 - Safety timer: none
-- On succession: kill all timers before spawning successor
-- On context truncation: run `manage_task(Action="list")` — re-create if missing
 
 ## Artifact Index
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md — Verbatim user request
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md — Project specification & milestone tracking
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/TEST_INFRA.md — 4-Tier E2E Test Infrastructure Specification
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/TEST_READY.md — E2E Test Suite Readiness Certification
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_1/DISPATCH.md — Dispatch log
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_1/BRIEFING.md — Persistent working memory
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_1/progress.md — Liveness & checklist
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_1/GATE_STATUS.md — Gate status tracking
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_1/handoff.md — Final Project Handoff Report
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md` — Authoritative requirements
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_1/DISPATCH.md` — Dispatch log
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_1/BRIEFING.md` — Persistent state
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_1/progress.md` — Progress tracker
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_1/plan.md` — Execution plan

@@ -30,7 +30,7 @@
   #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
   /* ─── Layout ─────────────────────────────────────────────────────────── */
-  #app { position: relative; z-index: 1; display: grid; grid-template-rows: 56px 1fr 160px; height: 100vh; gap: 0; }
+  #app { position: relative; z-index: 1; display: grid; grid-template-rows: 56px 1fr; height: 100vh; gap: 0; }
 
   /* ─── Header ─────────────────────────────────────────────────────────── */
   header {
@@ -129,21 +129,6 @@
   .feed-item time { display: block; color: var(--muted); font-size: 0.65rem; margin-top: 2px; }
 
   /* ─── Bottom — ECG Oscilloscope ──────────────────────────────────────── */
-  #ecg-bar {
-    display: grid; grid-template-columns: 140px 1fr 200px;
-    align-items: center; gap: 12px; padding: 10px 12px;
-    background: rgba(6,9,20,0.9); border-top: 1px solid var(--border);
-    backdrop-filter: blur(12px);
-  }
-  .ecg-label { font-size: 0.72rem; }
-  .ecg-label .bpm { font-size: 1.5rem; font-weight: 800; color: var(--green); line-height: 1; }
-  .ecg-label .bpm-sub { font-size: 0.65rem; color: var(--muted); margin-top: 1px; }
-  #ecg-canvas { width: 100%; height: 100px; display: block; border-radius: var(--radius-sm); }
-  .ecg-stats { display: flex; flex-direction: column; gap: 4px; font-size: 0.72rem; }
-  .ecg-stat { display: flex; justify-content: space-between; gap: 8px; }
-  .ecg-stat span:first-child { color: var(--muted); }
-  .ecg-stat b { color: var(--text); }
-
   /* ─── Scrollbar ──────────────────────────────────────────────────────── */
   ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -200,22 +185,7 @@
 
   </div>
 
-  <!-- ─── ECG BAR ─── -->
-  <div id="ecg-bar">
-    <div class="ecg-label">
-      <div>💓 Movesense ECG</div>
-      <div class="bpm" id="ecg-bpm">--</div>
-      <div class="bpm-sub" id="ecg-status">Connecting ws://192.168.8.230:4001</div>
-    </div>
-    <canvas id="ecg-canvas" height="100"></canvas>
-    <div class="ecg-stats">
-      <div class="ecg-stat"><span>DFA α₁</span><b id="stat-dfa">—</b></div>
-      <div class="ecg-stat"><span>HRV RMSSD</span><b id="stat-hrv">—</b></div>
-      <div class="ecg-stat"><span>Zone</span><b id="stat-zone" style="color:var(--green)">—</b></div>
-      <div class="ecg-stat"><span>SpO₂</span><b id="stat-spo2">—</b></div>
-    </div>
   </div>
-</div>
 
 <script type="module">
 // ═══════════════════════════════════════════════════════════════════════════
@@ -253,12 +223,6 @@ function fmt(n){ return n.toLocaleString(); }
 // ─── State ──────────────────────────────────────────────────────────────
 let agents = [...DEMO_AGENTS];
 let round = 1;
-let ecgBuffer = new Float32Array(600).fill(0);
-let ecgPhase = 0;
-let bpm = 68;
-let dfa = 1.02;
-let hrv = 38;
-
 // ─── Starfield BG Canvas ─────────────────────────────────────────────────
 {
   const c = document.getElementById('bg-canvas');
@@ -424,95 +388,6 @@ function drawArena(ts){
   requestAnimationFrame(drawArena);
 }
 
-// ─── ECG Oscilloscope ────────────────────────────────────────────────────
-const ecgCanvas = document.getElementById('ecg-canvas');
-const ecgCtx = ecgCanvas.getContext('2d');
-
-function resizeECG(){
-  ecgCanvas.width = ecgCanvas.parentElement.clientWidth;
-  ecgCanvas.height = 100;
-}
-window.addEventListener('resize', resizeECG);
-
-function generateECGSample(phase){
-  // Simplified synthetic ECG waveform: P, QRS, T
-  const f = (phase % 1);
-  if(f<0.10) return Math.sin(f/0.10*Math.PI)*0.15;          // P wave
-  if(f<0.15) return 0;
-  if(f<0.18) return -0.1;                                     // Q dip
-  if(f<0.22) return Math.sin((f-0.18)/0.04*Math.PI)*1.0;    // R peak
-  if(f<0.26) return -0.25;                                    // S
-  if(f<0.35) return 0;
-  if(f<0.50) return Math.sin((f-0.35)/0.15*Math.PI)*0.30;   // T wave
-  return 0;
-}
-
-function drawECG(){
-  const W=ecgCanvas.width, H=ecgCanvas.height;
-  ecgCtx.clearRect(0,0,W,H);
-  ecgCtx.fillStyle='rgba(0,0,0,0.4)'; ecgCtx.fillRect(0,0,W,H);
-
-  // Grid
-  ecgCtx.strokeStyle='rgba(52,211,153,0.08)'; ecgCtx.lineWidth=1;
-  for(let x=0;x<W;x+=20){ ecgCtx.beginPath(); ecgCtx.moveTo(x,0); ecgCtx.lineTo(x,H); ecgCtx.stroke(); }
-  for(let y=0;y<H;y+=20){ ecgCtx.beginPath(); ecgCtx.moveTo(0,y); ecgCtx.lineTo(W,y); ecgCtx.stroke(); }
-
-  // Advance phase
-  const speed = bpm/60 * 0.016;
-  ecgPhase += speed;
-  ecgBuffer.copyWithin(0,1);
-  ecgBuffer[ecgBuffer.length-1] = generateECGSample(ecgPhase) + (Math.random()-0.5)*0.02;
-
-  // Glow
-  ecgCtx.shadowColor='#34d399'; ecgCtx.shadowBlur = gpuActive ? 12 : 6;
-  ecgCtx.strokeStyle='#34d399'; ecgCtx.lineWidth=1.5;
-  ecgCtx.beginPath();
-  const step = W/ecgBuffer.length;
-  for(let i=0;i<ecgBuffer.length;i++){
-    const x = i*step;
-    const y = H/2 - ecgBuffer[i]*H*0.42;
-    i===0 ? ecgCtx.moveTo(x,y) : ecgCtx.lineTo(x,y);
-  }
-  ecgCtx.stroke();
-  ecgCtx.shadowBlur=0;
-
-  // Scan line
-  ecgCtx.fillStyle='rgba(52,211,153,0.15)';
-  ecgCtx.fillRect(W-step*4,0,step*4,H);
-
-  requestAnimationFrame(drawECG);
-}
-
-// WebSocket for live Movesense
-function connectMovesense(){
-  try {
-    const ws = new WebSocket('ws://192.168.8.230:4001');
-    ws.onopen = () => { document.getElementById('ecg-status').textContent = '🟢 Live — ws://192.168.8.230:4001'; };
-    ws.onmessage = e => {
-      try {
-        const d = JSON.parse(e.data);
-        if(d.heart_rate_bpm){ bpm=d.heart_rate_bpm; document.getElementById('ecg-bpm').textContent=bpm; }
-        if(d.dfa_alpha1){ dfa=d.dfa_alpha1; document.getElementById('stat-dfa').textContent=dfa.toFixed(2); }
-        if(d.hrv_rmssd){ hrv=d.hrv_rmssd; document.getElementById('stat-hrv').textContent=hrv.toFixed(0)+' ms'; }
-        if(d.zone){ document.getElementById('stat-zone').textContent=d.zone; }
-        if(d.spo2){ document.getElementById('stat-spo2').textContent=d.spo2+'%'; }
-      } catch(_){}
-    };
-    ws.onerror = () => { document.getElementById('ecg-status').textContent='⚠️ Fallback demo mode'; startDemoECG(); };
-  } catch(_){ startDemoECG(); }
-}
-
-function startDemoECG(){
-  bpm = 68+rand(-4,8);
-  document.getElementById('ecg-bpm').textContent = bpm;
-  document.getElementById('stat-dfa').textContent = (1.01+Math.random()*0.1).toFixed(2);
-  document.getElementById('stat-hrv').textContent = (32+rand(-5,15))+'ms';
-  document.getElementById('stat-zone').textContent = 'Zone 2 Aerobic';
-  document.getElementById('stat-spo2').textContent = '98%';
-  document.getElementById('ecg-status').textContent = '📡 Demo — connect Movesense for live data';
-  setInterval(()=>{ bpm=68+rand(-3,6); document.getElementById('ecg-bpm').textContent=bpm; }, 4000);
-}
-
 // ─── Roster Render ────────────────────────────────────────────────────────
 function renderRoster(){
   const sorted = [...agents].sort((a,b)=>(b.tokens||0)-(a.tokens||0));
@@ -594,14 +469,9 @@ async function fetchLiveState(){
 // ─── Boot ─────────────────────────────────────────────────────────────────
 (async ()=>{
   await initWebGPU();
-  resizeECG();
-  drawECG();
   renderRoster();
   updateLeader();
   pushAction();
-
-  // Try live WS; fall back to demo
-  connectMovesense();
 
   // Intervals
   setInterval(simulateCombat, 2800);   // demo ticks

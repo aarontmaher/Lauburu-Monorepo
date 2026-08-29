@@ -1,96 +1,150 @@
-# Empirical Challenger Handoff Report — Milestone 1 Verification
+# Empirical Adversarial Challenge Report — Milestone M1 DSP Suite
+
+**Agent**: Challenger 1 (`teamwork_preview_challenger_m1_1`)  
+**Target Subsystem**: `01_apps/biometrics/movesense_hub/dsp/` (`pan_tompkins.py`, `hemodynamics_bp.py`, `sleep_scoring.py`, `zone2_coaching.py`)  
+**Overall Risk Assessment**: **MEDIUM-HIGH (Fixes Required for Clinical Reliability)**
+
+---
 
 ## 1. Observation
 
-Direct empirical observations and test executions conducted across all Milestone 1 artifacts:
+Direct empirical observations from executing adversarial test harnesses (`tests/test_adversarial_biometrics_dsp_stress_challenger1.py`):
 
-1. **Specialist Skills in Antigravity System Skills Directory**:
-   - `/Users/aaron/.gemini/config/skills/polyglot-python-textual-specialist/SKILL.md` (2,724 bytes, mode `0644`)
-   - `/Users/aaron/.gemini/config/skills/polyglot-go-bubbletea-specialist/SKILL.md` (2,637 bytes, mode `0644`)
-   - `/Users/aaron/.gemini/config/skills/polyglot-rust-ratatui-specialist/SKILL.md` (2,793 bytes, mode `0644`)
-   - All 3 files begin with byte-exact `---\n`, contain non-empty YAML metadata (`name`, `description`), valid closing `---\n`, and comprehensive markdown architecture directives enforcing Rule #0 (Zero-Mock Telemetry).
+### Observation 1.1: Pan-Tompkins MWI Double-Accumulation Defect
+- **File**: `01_apps/biometrics/movesense_hub/dsp/pan_tompkins.py:157-164`
+- **Code**:
+```python
+157: window = self.mwi_window
+158: running_sum = sum(squared_signal[: min(window, n)])
+159: 
+160: for i in range(n):
+161:     if i >= window:
+162:         running_sum += squared_signal[i] - squared_signal[i - window]
+163:     elif i > 0:
+164:         running_sum += squared_signal[i]
+165:     mwi[i] = running_sum / float(min(i + 1, window))
+```
+- **Execution**: On a constant input `x = [1.0] * 200` at `fs = 512 Hz` (`window = 76`):
+  - `mwi[0] = 76.0` (instead of 1.0)
+  - `mwi[1] = 38.5`
+  - `mwi[76] = 1.9868` (instead of 1.0)
+- **Consequence**: When testing extreme tachycardia (220 BPM, 36 true peaks) at 512Hz:
+  - `max_mwi = 24268.1033` (due to the false spike at index 0).
+  - `min_peak_height = max_mwi * 0.05 = 1213.4052`.
+  - True physiological MWI peaks are ~880, so **0 out of 36 peaks are detected** (`len(detected_peaks) == 0`).
+  - When streamed through `MovesenseECGPipeline`, the pipeline retains the stale prior HR (e.g. 72.1 BPM) and emits `ACTIVE_STREAMING` with 72 BPM instead of detecting 220 BPM tachycardia.
 
-2. **Specialist JSON Prompt Profiles**:
-   - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/specialists/python_textual.json` (1,190 bytes, mode `0644`)
-   - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/specialists/go_bubbletea.json` (1,278 bytes, mode `0644`)
-   - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/specialists/rust_ratatui.json` (1,323 bytes, mode `0644`)
-   - All 3 JSON profiles strictly implement the PROJECT.md interface contract: `name`, `archetype`, `framework`, `language`, `system_prompt`, `core_competencies` (≥3 items), `defensive_patterns` (≥3 items), and `zero_mock_enforcement: true` (strictly boolean type `bool`).
+### Observation 1.2: Kamath 20% Filter Initial Beat Lock-In
+- **File**: `01_apps/biometrics/movesense_hub/dsp/pan_tompkins.py:265-287`
+- **Code**:
+```python
+265: cleaned = [float(rr_intervals[0])]
+266: artifact_count = 0
+267: for i in range(1, len(rr_intervals)):
+268:     prev = cleaned[-1]
+269:     curr = float(rr_intervals[i])
+270:     if prev > 0 and (abs(curr - prev) / prev) <= thresh:
+271:         cleaned.append(curr)
+...
+284:         if next_val is None:
+285:             next_val = prev
+286:         corrected = (prev + next_val) / 2.0
+287:         cleaned.append(round(corrected, 1))
+```
+- **Execution**: Input `rrs = [5000.0, 800.0, 805.0, 810.0, 800.0, 802.0, 798.0]`.
+- **Output**: `cleaned = [5000.0, 5000.0, 5000.0, 5000.0, 5000.0, 5000.0, 5000.0]`, `artifacts_rejected = 6`.
+- **Consequence**: All valid physiological beats are permanently corrupted and overwritten with the initial artifact.
 
-3. **Sandbox Scaffolding and Master Configuration**:
-   - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/` contains all 10 required subdirectories (`config`, `config/specialists`, `defenses`, `defenses/python_textual`, `defenses/go_bubbletea`, `defenses/rust_ratatui`, `attacks`, `referee`, `logs`, `benchmarks`).
-   - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/config/tournament_config.json` (5,064 bytes, mode `0644`) contains `integrity_mode: "benchmark"`, 4 scoring rubric weights summing to exactly 1.0, 10 unique attack scenarios in `attack_suite.scenarios`, valid logging and NPU ledger paths.
+### Observation 1.3: Unhandled ZeroDivisionError in Sleep Scoring
+- **File**: `01_apps/biometrics/movesense_hub/dsp/sleep_scoring.py:70, 99`
+- **Code**:
+```python
+70: daytime_base = float(daytime_hr_rest) if daytime_hr_rest is not None else (self.hr_rest_baseline * 1.15)
+...
+99: nocturnal_dip = round(((daytime_base - float(hr_bpm)) / daytime_base) * 100.0, 1) if hr_bpm else None
+```
+- **Execution**: `engine.compute_overnight_sleep_analysis(hr_bpm=60.0, rmssd_ms=40.0, epoch_stages=['LIGHT'], daytime_hr_rest=0.0)`.
+- **Output**: `ZeroDivisionError: float division by zero`.
 
-4. **Empirical Challenger Test Suite Results**:
-   - Executed `uv run pytest tests/test_milestone1_empirical_challenger.py -v`:
-   ```
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1ScaffoldingAndPermissions::test_directory_permissions_and_traversal PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1ScaffoldingAndPermissions::test_file_permissions_and_non_empty PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1ScaffoldingAndPermissions::test_required_subdirectories_exist PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1ScaffoldingAndPermissions::test_sandbox_root_exists_and_is_dir PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1BytePurityAndEncodings::test_sandbox_configs_and_readmes_byte_purity PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1BytePurityAndEncodings::test_skills_skill_md_byte_purity PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1YAMLFrontmatterCorrectness::test_frontmatter_extraction_and_delimiter_contract PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1YAMLFrontmatterCorrectness::test_pyyaml_safe_and_full_load_parsers PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1YAMLFrontmatterCorrectness::test_regex_frontmatter_parser_compatibility PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1YAMLFrontmatterCorrectness::test_skill_markdown_content_mandates PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1JSONSchemaAndContracts::test_specialist_json_interface_contracts PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1JSONSchemaAndContracts::test_tournament_config_json_schema_and_weights PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1CrossToolingAndCLIParseability::test_json_tool_cli_validation PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1CrossToolingAndCLIParseability::test_pyyaml_loader_via_subprocess PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1NegativeMutationOracle::test_oracle_detects_corrupted_yaml_frontmatter PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1NegativeMutationOracle::test_oracle_detects_fake_zero_mock_enforcement PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1NegativeMutationOracle::test_oracle_detects_missing_required_contract_field PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1AdversarialEdgeCasesAndCrossReferencing::test_all_tournament_config_referenced_system_paths_exist PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1AdversarialEdgeCasesAndCrossReferencing::test_cross_reference_skill_json_and_tournament_config PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1AdversarialEdgeCasesAndCrossReferencing::test_exact_delimiter_hygiene PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1AdversarialEdgeCasesAndCrossReferencing::test_no_tabs_in_yaml_frontmatter PASSED
-   tests/test_milestone1_empirical_challenger.py::TestMilestone1AdversarialEdgeCasesAndCrossReferencing::test_parse_speed_under_budget PASSED
-   ============================== 22 passed in 0.21s ==============================
-   ```
+### Observation 1.4: Rule #0 Violation in Continuous Hemodynamics Model
+- **File**: `01_apps/biometrics/movesense_hub/dsp/hemodynamics_bp.py:60, 96-107`
+- **Code**: `if hr_bpm is None or (rmssd_ms is None and ptt_ms is None):`
+- **Execution**: `model.compute_ptt_blood_pressure(hr_bpm=0.0, rmssd_ms=40.0, ptt_ms=None)`.
+- **Output**: Returns `sbp_mmhg=90.0, dbp_mmhg=60.0, map_mmhg=70.0, status="NOMINAL"` for `hr=0.0` (asystole/disconnected), violating Rule #0.
+
+### Observation 1.5: Unhandled ZeroDivisionError in Workout State Classification
+- **File**: `01_apps/biometrics/movesense_hub/dsp/zone2_coaching.py:48`
+- **Code**: `pct_max = (float(hr_bpm) / float(hr_max)) * 100.0`
+- **Execution**: `classify_workout_state(120.0, hr_max=0)`.
+- **Output**: `ZeroDivisionError: float division by zero`.
 
 ---
 
 ## 2. Logic Chain
 
-1. **Parser & Format Integrity**:
-   - The YAML frontmatter across all three specialist skills in `/Users/aaron/.gemini/config/skills/` was parsed via PyYAML `safe_load`, PyYAML `full_load`, and regex-based AST extractors. All parsers succeeded deterministically, confirming that standard Antigravity skill loaders and CLI tools will ingest them without exception.
-   - Byte-level scanning confirmed zero UTF-8 BOM markers, zero null bytes, and clean POSIX line endings (`\n`) across all configuration and markdown artifacts.
-   - Frontmatters were checked for illegal tab characters and whitespace hygiene, confirming strict YAML 1.1/1.2 compliance.
+1. **MWI Defect -> Tachycardia Blindness**:
+   - `running_sum` is initialized to the full window sum `sum(squared[:window])`.
+   - At iteration `i=0`, `mwi[0]` is assigned `running_sum / 1`, creating an artificial spike 76× higher than the actual signal average.
+   - The adaptive threshold `min_peak_height` is derived as `0.05 * max(mwi)`.
+   - Because `max(mwi)` is inflated by this initial impulse, `min_peak_height` rises above genuine QRS energy during high-frequency 512Hz tachycardia.
+   - Consequently, zero peaks are identified, and `MovesenseECGPipeline` silently displays stale previous heart rate.
 
-2. **Schema & Contract Conformance**:
-   - The JSON prompt profiles strictly match all fields specified in PROJECT.md interface contracts.
-   - Type assertions verified `zero_mock_enforcement` is a true boolean (`type is bool` and `val is True`), guaranteeing strict adherence to Rule #0.
-   - `tournament_config.json` scoring weights sum to exactly 1.0 ($0.25 + 0.25 + 0.30 + 0.20 = 1.0$), and all referenced external paths (`skill_path`, `profile_path`, `defense_path`, `npu_ledger.ledger_file`, `production_promotion` directories) resolve to authentic filesystem locations.
+2. **Kamath Initial Beat Lock-In**:
+   - The filter assumes `cleaned[0] = rr_intervals[0]` is a valid physiological baseline.
+   - If the first sample is an artifact, the $\pm 20\%$ window is anchored around the artifact (e.g. $5000 \pm 1000\text{ ms}$).
+   - Genuine physiological beats ($800\text{ ms}$) fall outside $[4000, 6000\text{ ms}]$ and are rejected.
+   - The lookahead search also fails, falling back to `next_val = prev = 5000.0`.
+   - Every subsequent beat is recursively replaced with $5000.0$, causing total telemetry collapse.
 
-3. **Scaffolding Readiness**:
-   - The complete 10-directory sandbox tree is provisioned with appropriate POSIX permissions (`0755`/`0644`), providing immediate unblocked workspace isolation for Milestone 2 (Red vs Blue Arena & Abliterated 70B Referee).
+3. **Division by Zero & Rule #0 Invariants**:
+   - `daytime_hr_rest=0.0` and `hr_max=0` bypass falsy checks (since `0.0 is not None`), causing raw division by zero crashes.
+   - `ContinuousPttBloodPressureModel` checks `hr_bpm is None`, allowing non-positive heart rates (`0.0`, `-10.0`) to generate synthetic nominal blood pressure instead of emitting `STANDBY`.
 
 ---
 
 ## 3. Caveats
 
-1. **Scope Boundaries**:
-   - Milestone 1 verification covers the scaffolding (F1) and the 3 specialist prompt/skill profiles (F2).
-   - Downstream implementations (F3 Blue Defenses, F4 Red Attacks, F5 70B Referee) are planned for Milestone 2 and were not evaluated for runtime execution in this milestone.
+- **Hardware RF Noise**: Testing was conducted against mathematically rigorous synthetic ECG models with 0.1-0.3Hz baseline wander, 50Hz hum, EMG Gaussian noise, PVCs, and tachycardia/bradycardia waveforms. Physical Bluetooth radio packet drops were simulated via array truncation rather than live RF fading.
+- **PTT Ground Truth**: Hughes-Bramwell arterial wave equations are clinical approximations; absolute blood pressure accuracy requires individual calibration.
 
 ---
 
-## 4. Conclusion
+## 4. Conclusion & Recommended Actions
 
-**VERDICT: APPROVE**
+The core DSP architecture is mathematically sound and adheres to zero-mock principles under nominal conditions. However, **2 high-severity algorithmic flaws** and **3 medium/low edge-case defects** must be resolved by the implementation team:
 
-Milestone 1 satisfies all functional, architectural, byte-purity, and schema requirements. All artifacts have been empirically verified and stress-tested with zero failures across 22 test cases.
+1. **Fix MWI Accumulator** (`pan_tompkins.py:157-166`):
+   ```python
+   # Correct sliding window integration
+   mwi = [0.0] * n
+   window = self.mwi_window
+   running_sum = 0.0
+   for i in range(n):
+       running_sum += squared_signal[i]
+       if i >= window:
+           running_sum -= squared_signal[i - window]
+       mwi[i] = running_sum / float(min(i + 1, window))
+   ```
+
+2. **Fix Kamath Initial Beat Outlier Check** (`pan_tompkins.py:253-288`):
+   - Check if `rr_intervals[0]` is within physiological limits ($250\text{ ms} \le RR \le 2200\text{ ms}$).
+   - If `rr_intervals[0]` is an outlier, seed `cleaned[0]` with the median of the first $K$ beats or the first beat satisfying physiological range.
+
+3. **Fix Division-by-Zero Guards** (`sleep_scoring.py:70`, `zone2_coaching.py:48`):
+   - Ensure `daytime_base = max(40.0, float(daytime_hr_rest) if ...)` and `hr_max = max(60, int(hr_max))`.
+
+4. **Fix Rule #0 Guard in BP Model** (`hemodynamics_bp.py:60`):
+   - Update guard to: `if hr_bpm is None or hr_bpm <= 0 or (rmssd_ms is None and ptt_ms is None): return STANDBY`.
 
 ---
 
 ## 5. Verification Method
 
-To independently reproduce the empirical challenger verification:
+To independently execute and verify all adversarial tests:
 
 ```bash
-# Execute the full 22-test empirical challenger suite
-uv run pytest tests/test_milestone1_empirical_challenger.py -v
-
-# Direct unittest execution
-uv run python3 tests/test_milestone1_empirical_challenger.py
+# Execute isolated adversarial test harness (35 tests)
+./01_apps/canonical_port/.venv/bin/pytest tests/test_adversarial_biometrics_dsp_stress_challenger1.py -v -s
 ```
+
+All 35 tests pass, confirming empirical reproduction and coverage across all 4 challenge dimensions.

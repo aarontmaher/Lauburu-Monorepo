@@ -1,6 +1,6 @@
 {
   "version": "3.0.0-CANONICAL",
-  "timestamp": "2026-08-29T19:29:54.389791",
+  "timestamp": "2026-08-29T19:55:12.314194",
   "source_node": "L1_Mac_Node",
   "provenance": {
     "agent_id": "teamwork_preview_worker_m2",
@@ -155,10 +155,10 @@
       "upload_mbps": 48.0,
       "responsiveness_rpm": 1420,
       "latency_ms": 12.4,
-      "timestamp": "19:29:52",
+      "timestamp": "19:55:09",
       "command": "/usr/bin/networkQuality -c -M 5",
       "cycle_seconds": 300,
-      "last_tested_iso": "2026-08-29T19:29:52.091111"
+      "last_tested_iso": "2026-08-29T19:55:09.587190"
     },
     "ssh_fleet": [
       {
@@ -168,8 +168,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 1.07,
-        "last_auth_iso": "2026-08-29T19:29:53.159468"
+        "latency_ms": 1.04,
+        "last_auth_iso": "2026-08-29T19:55:10.664637"
       },
       {
         "node_id": "L2",
@@ -178,18 +178,18 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_9.6",
         "key_type": "ssh-ed25519",
-        "latency_ms": 54.8,
-        "last_auth_iso": "2026-08-29T19:29:53.187516"
+        "latency_ms": 13.17,
+        "last_auth_iso": "2026-08-29T19:55:10.651659"
       },
       {
         "node_id": "L3",
         "host": "100.101.39.98",
         "port": 22,
         "status": "OPEN",
-        "banner": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18",
+        "banner": "SSH-2.0-OpenSSH_9.8",
         "key_type": "ssh-ed25519",
-        "latency_ms": 11.77,
-        "last_auth_iso": "2026-08-29T19:29:53.306708"
+        "latency_ms": 27.97,
+        "last_auth_iso": "2026-08-29T19:55:10.927454"
       },
       {
         "node_id": "L4",
@@ -208,8 +208,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 17.94,
-        "last_auth_iso": "2026-08-29T19:29:53.206554"
+        "latency_ms": 11.93,
+        "last_auth_iso": "2026-08-29T19:55:10.692021"
       },
       {
         "node_id": "L6",
@@ -228,18 +228,18 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.4",
         "key_type": "ssh-ed25519",
-        "latency_ms": 22.58,
-        "last_auth_iso": "2026-08-29T19:29:53.234718"
+        "latency_ms": 19.2,
+        "last_auth_iso": "2026-08-29T19:55:10.729541"
       },
       {
         "node_id": "GW",
         "host": "192.168.8.1",
         "port": 22,
         "status": "OPEN",
-        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u00143\rHi@%\u06fe@(q\u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
+        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u0014s\u001eV\u001d.%Up\u0006 \u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
         "key_type": "ssh-ed25519",
-        "latency_ms": 2.26,
-        "last_auth_iso": "2026-08-29T19:29:53.121229"
+        "latency_ms": 2.83,
+        "last_auth_iso": "2026-08-29T19:55:10.619293"
       }
     ],
     "ewma_alpha": 0.35,
@@ -543,7 +543,7 @@
       "pyspark_lake": {
         "path": "/Users/aaron/DFS_UNIFIED/lora_datasets",
         "healthy": true,
-        "free_headroom_gb": 17.04,
+        "free_headroom_gb": 13.75,
         "headroom_threshold_gb": 10.0,
         "qdrant_reachable": true
       },
@@ -650,8 +650,8 @@
         "endpoint": "100.101.39.98:50052",
         "layers_sharded": 28,
         "vram_used_gb": 13.5,
-        "status": "OFFLINE",
-        "latency_ms": null
+        "status": "ACTIVE",
+        "latency_ms": 58.14
       },
       {
         "node_name": "MacBook Pro",
@@ -675,7 +675,7 @@
         "layers_sharded": 0,
         "vram_used_gb": 0.0,
         "status": "ACTIVE",
-        "latency_ms": 13.28
+        "latency_ms": 7.77
       },
       {
         "node_name": "Linux Tablet",

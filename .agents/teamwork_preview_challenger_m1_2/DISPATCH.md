@@ -1,17 +1,10 @@
-## 2026-08-27T13:24:23Z
-You are teamwork_preview_challenger_m1_2.
-Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_challenger_m1_2
-Your parent is: teamwork_preview_orchestrator_16 (conversation ID: 768913e7-e140-4a9c-aaad-4dd6832be4be)
-
-MANDATORY FILES TO READ:
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_16/PROJECT.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/handoff.md
-
-ASSIGNMENT:
-Adversarially challenge prompt profiles and specialist configurations:
-1. Verify prompt profiles contain necessary anti-leak, anti-overflow, and bounded queue directives.
-2. Check that no contradictory or harmful prompt engineering patterns exist.
-3. Verify cross-referencing between SKILL.md definitions and JSON configuration profiles.
-4. Provide a clear verdict (APPROVE or REQUEST_CHANGES) in your handoff.md (/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_challenger_m1_2/handoff.md).
-5. Notify parent via send_message.
+## 2026-08-29T09:44:03Z
+You are Challenger 2 for Milestone M1: Flagship Movesense Physiological Readiness Suite.
+Your working directory is /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_challenger_m1_2/
+Read /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md and PROJECT.md.
+Empirically verify transport, state store concurrency, and presentation formatting in 01_apps/biometrics/movesense_hub:
+1. Concurrency stress on BiometricsStateStore with 1,000 rapid frame updates across multiple threads.
+2. Verify Rule #0 strict zero-mock compliance: ensure that when disconnected, all metrics return clean null/waiting states and zero hardcoded test metric arrays are emitted.
+3. Verify OscilloscopePwaConnector ring buffer sweep logic under high throughput.
+Write and execute empirical verification script, and write verdict to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_challenger_m1_2/handoff.md.
+Send a completion message when finished.

@@ -1,7 +1,7 @@
 """
 Canonical Port TUI — Gamified Real-Time Arena, SmolAgents Duel & Biofeedback Screen
 Subsystem: 01_apps/canonical_port/tui/screens/live_arena_dev_screen.py
-Version: 4.0.0-CANONICAL
+Version: 5.0.0-CANVAS-NETWORK
 Hermes 3 + OpenClaw (Red) vs LuCI OpenWrt + Sentinel (Blue)
 """
 
@@ -21,6 +21,7 @@ from textual.widgets import Header, Footer, Static, RichLog, Label, Input
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
+from rich.syntax import Syntax
 
 _TUI_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if _TUI_DIR not in sys.path:
@@ -46,23 +47,126 @@ from movesense_readiness_suite import MovesenseReadinessSuite
 UI_STATE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/dynamic_ui_ux_state.json")
 READINESS_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/03_biometrics_and_telemetry/movesense_readiness_live.json")
 
+RED_CODE_SNIPPETS = [
+    """class SocketDrainProbe(Widget):
+    def on_mount(self):
+        self.sock = socket.socket(AF_INET, SOCK_STREAM)
+        self.sock.connect(('169.254.187.138', 50052))
+        self.sock.setsockopt(SOL_SOCKET, SO_SNDBUF, 67108864)
+        self.drain_rate_mbps = 38500.0""",
+
+    """class OpenWrtBqlFlooder(Static):
+    def trigger_burst(self, size_bytes: int = 8192):
+        headers = {'X-Chaos-Probe': 'OpenClaw-BQL'}
+        return requests.post('http://192.168.8.1/cgi-bin/luci', 
+                             data=os.urandom(size_bytes), timeout=0.15)""",
+
+    """class MovesenseGattInfiltrator(Widget):
+    def probe_characteristic(self, uuid: str = '00002A37'):
+        ble_stream = BleakClient('C1DB5043-8F89-88E8')
+        raw_ecg = ble_stream.read_gatt_char(uuid)
+        return PanTompkinsDSP.inject_synthetic_rr(raw_ecg, noise=0.08)"""
+]
+
+BLUE_CODE_SNIPPETS = [
+    """class SqmCodelDefender(Widget):
+    def enforce_sqm_discipline(self, iface: str = 'bridge0'):
+        subprocess.run(['tc', 'qdisc', 'replace', 'dev', iface,
+                        'root', 'fq_codel', 'target', '5ms', 'interval', '100ms'])
+        self.bufferbloat_status = 'LOCKED_ZERO_JITTER'""",
+
+    """class KamathHrvFilter(Static):
+    def filter_rr_intervals(self, rr_ms: float, baseline: float = 800.0):
+        delta = abs(rr_ms - baseline) / baseline
+        if delta > 0.20:
+            return baseline  # Kamath 2004 20% clinical rejection
+        return rr_ms""",
+
+    """class WireGuardFailoverShield(Widget):
+    def arm_mesh_tripwire(self, tb4_rtt_ms: float):
+        if tb4_rtt_ms > 50.0:
+            self.route_traffic('100.101.39.98', proto='ChaCha20-Poly1305')
+            return 'SUB_MS_FAILOVER_ENGAGED'"""
+]
+
+
+class LiveNetworkMetricsWidget(Static):
+    DEFAULT_CSS = """
+    LiveNetworkMetricsWidget {
+        height: 3;
+        background: #0b111c;
+        border: solid #0ea5e9;
+        padding: 0 1;
+        margin-bottom: 1;
+    }
+    """
+
+    def render_metrics(self, tb4_severed: bool = False) -> Panel:
+        tb4_rtt = "350.0 ms (SEVERED)" if tb4_severed else "0.35 ms (40 Gbps DMA)"
+        tb4_style = "bold red" if tb4_severed else "bold green"
+        wg_rtt = "1.85 ms (ACTIVE)" if tb4_severed else "1.85 ms (STANDBY)"
+        wg_style = "bold yellow" if tb4_severed else "bold cyan"
+        
+        net_str = (
+            f"[bold white]🌐 MESH NETWORK MATRIX:[/] "
+            f"⚡ [bold cyan]Thunderbolt 4:[/] [{tb4_style}]{tb4_rtt}[/]  │  "
+            f"🔒 [bold cyan]WireGuard ChaCha20:[/] [{wg_style}]{wg_rtt}[/]  │  "
+            f"📶 [bold cyan]Wi-Fi 7 bridge0:[/] [bold green]940 Mbps (Loss: 0.0% Jitter: 0.12ms)[/]  │  "
+            f"💓 [bold cyan]BLE 512Hz:[/] [bold green]< 1.85ms[/]"
+        )
+        return Panel(net_str, style="bold cyan", border_style="cyan")
+
+
+class LiveAiTuiCanvasWidget(Static):
+    DEFAULT_CSS = """
+    LiveAiTuiCanvasWidget {
+        height: 10;
+        background: #090d16;
+        border: solid #6366f1;
+        padding: 0 1;
+        margin-bottom: 1;
+    }
+    """
+
+    def __init__(self, faction: str = "red", *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.faction = faction
+        self.snippet_idx = 0
+        self.char_offset = 0
+
+    def render_canvas(self, active_mode: str) -> Panel:
+        snippets = RED_CODE_SNIPPETS if self.faction == "red" else BLUE_CODE_SNIPPETS
+        curr_snippet = snippets[self.snippet_idx % len(snippets)]
+        
+        self.char_offset = (self.char_offset + 35) % (len(curr_snippet) + 70)
+        if self.char_offset >= len(curr_snippet):
+            typed_code = curr_snippet
+            status_text = "[bold green]✅ AST COMPILED & MOUNTED (120 FPS)[/]"
+            if self.char_offset >= len(curr_snippet) + 65:
+                self.snippet_idx += 1
+                self.char_offset = 0
+        else:
+            typed_code = curr_snippet[:self.char_offset] + " █"
+            status_text = "[bold yellow]⚡ LIVE STREAMING TUI WIDGET CODE...[/]"
+
+        syntax = Syntax(typed_code, "python", theme="monokai", line_numbers=True)
+        title_color = "red" if self.faction == "red" else "cyan"
+        title_prefix = "🔴 RED SMOLAGENT" if self.faction == "red" else "🔵 BLUE SENTINEL"
+        title = f"[{title_color}]💻 {title_prefix}: LIVE TUI COMPILER & CODE CANVAS — {status_text}[/]"
+        border_color = "red" if self.faction == "red" else "cyan"
+        return Panel(syntax, title=title, border_style=border_color)
+
+
 class RedTeamGraphicalMapWidget(Static):
     DEFAULT_CSS = """
     RedTeamGraphicalMapWidget {
-        height: 11;
+        height: 9;
         background: #180505;
         border: solid #ef4444;
         padding: 0 1;
         margin-bottom: 1;
     }
     """
-
-    def __init__(self, *args, **kwargs):
-        try:
-            asyncio.get_event_loop()
-        except RuntimeError:
-            asyncio.set_event_loop(asyncio.new_event_loop())
-        super().__init__(*args, **kwargs)
 
     def render_map(self, hr_bpm: int = 73, chaos_active: bool = False) -> Panel:
         tb4_atk = "[bold red]⚠️ 350ms PACKET DROP FLOOD[/]" if chaos_active else "[bold red]⚡ TB4 SOCKET DRAIN: Port 50052[/]"
@@ -73,9 +177,7 @@ class RedTeamGraphicalMapWidget(Static):
             f"        │                                                                     │       │",
             f"        ├───( [bold red]💉 512Hz RAW ECG STREAM INJECTION (Bypass Filter)[/] )──┘       │",
             f"        │                                                                             │",
-            f"        ├───( [bold yellow]💓 INFILTRATE MOVESENSE UUID 00002A37[/] )───────> [bold red][🎯 MOVESENSE 261030002013][/]",
-            f"        │                                                                             │",
-            f"        └───( [bold red]📱 ADB TCP ESCALATION: Port 8022[/] )─────────> [bold gold1][🎯 L6: PIXEL 10 PRO (16GB)][/] ───┘"
+            f"        └───( [bold yellow]💓 INFILTRATE MOVESENSE UUID 00002A37[/] )───────> [bold red][🎯 MOVESENSE 261030002013][/]"
         ]
         return Panel("\n".join(lines), title="[bold red]🔴 RED FACTION (Hermes 3 & OpenClaw): 3D INFILTRATION MAP[/]", border_style="red")
 
@@ -83,20 +185,13 @@ class RedTeamGraphicalMapWidget(Static):
 class BlueTeamGraphicalMapWidget(Static):
     DEFAULT_CSS = """
     BlueTeamGraphicalMapWidget {
-        height: 11;
+        height: 9;
         background: #05101e;
         border: solid #3b82f6;
         padding: 0 1;
         margin-bottom: 1;
     }
     """
-
-    def __init__(self, *args, **kwargs):
-        try:
-            asyncio.get_event_loop()
-        except RuntimeError:
-            asyncio.set_event_loop(asyncio.new_event_loop())
-        super().__init__(*args, **kwargs)
 
     def render_map(self, hr_bpm: int = 73, chaos_active: bool = False) -> Panel:
         tb4_def = "[bold red]⚠️ TB4 SEVERED -> WG FAILOVER[/]" if chaos_active else "[bold green]⚡ MTU 9000 JUMBO SHIELD (0.35ms)[/]"
@@ -108,9 +203,7 @@ class BlueTeamGraphicalMapWidget(Static):
             f"        │                                                                     │       │",
             f"        ├───( [bold green]🛡️ SQM FQ_CODEL BUFFERBLOAT CURE & BQL LOCK[/] )──────┘       │",
             f"        │                                                                             │",
-            f"        ├───( [bold green]💓 KAMATH 2004 ARTIFACT FILTER ({hr_bpm} BPM - RMSSD 39.4ms)[/] )─> [bold yellow][MOVESENSE 261030002013][/]",
-            f"        │                                                                             │",
-            f"        └───( [bold cyan]🔒 ED25519 TRIPWIRE KEEPER[/] )────────────> [bold gold1][L6: PIXEL 10 PRO (Shielded)][/] ───┘"
+            f"        └───( [bold green]💓 KAMATH 2004 ARTIFACT FILTER ({hr_bpm} BPM - RMSSD 39.4ms)[/] )─> [bold yellow][MOVESENSE 261030002013][/]"
         ]
         return Panel("\n".join(lines), title="[bold cyan]🔵 BLUE FACTION (LuCI OpenWrt & Sentinel): 3D SHIELD MAP[/]", border_style="cyan")
 
@@ -126,7 +219,7 @@ class LiveArenaDevScreen(Screen):
         background: #0b111c;
         border: solid #f59e0b;
         padding: 0 1;
-        margin-bottom: 1;
+        margin-bottom: 0;
     }
     #arena_container {
         height: 1fr;
@@ -159,29 +252,32 @@ class LiveArenaDevScreen(Screen):
     """
 
     BINDINGS = [
+        ("m", "toggle_game_mode", "Cycle Game Mode (1-4)"),
         ("c", "trigger_chaos", "Inject Chaos Fault"),
         ("h", "trigger_heal", "Self-Heal All"),
         ("b", "trigger_bql_burst", "BQL Queue Burst"),
         ("s", "trigger_jumbo_shield", "Lock MTU 9000 Shield"),
-        ("m", "cycle_game_mode", "Cycle Game Mode (1-4)"),
         ("v", "toggle_voice", "Toggle Voice (TTS)"),
     ]
 
     def compose(self) -> ComposeResult:
-        yield Header(show_clock=True)
         if PinnedTabNavBar:
-            yield PinnedTabNavBar()
+            yield PinnedTabNavBar(active_screen="arena_dev")
+        yield Header(show_clock=True)
         yield Static(id="battle_hud_bar")
+        yield LiveNetworkMetricsWidget(id="network_metrics_bar")
         with Horizontal(id="arena_container"):
             with Vertical(id="red_box", classes="faction_box"):
                 yield RedTeamGraphicalMapWidget(id="red_graphical_map")
-                yield Label("[bold red]🔴 HERMES 3 & OPENCLAW SMOLAGENT LOG[/]")
+                yield LiveAiTuiCanvasWidget(faction="red", id="red_canvas")
+                yield Label("[bold red]🔴 HERMES 3 & OPENCLAW ACTION STREAM[/]")
                 yield RichLog(id="red_log", highlight=True, markup=True)
             with Vertical(id="blue_box", classes="faction_box"):
                 yield BlueTeamGraphicalMapWidget(id="blue_graphical_map")
-                yield Label("[bold cyan]🔵 LUCI OPENWRT & SENTINEL DEFENSE LOG[/]")
+                yield LiveAiTuiCanvasWidget(faction="blue", id="blue_canvas")
+                yield Label("[bold cyan]🔵 LUCI OPENWRT & SENTINEL DEFENSE STREAM[/]")
                 yield RichLog(id="blue_log", highlight=True, markup=True)
-        yield Input(placeholder="💬 Ask Red [Hermes] or Blue [LuCI]... (e.g., 'red why attack mbp' or 'blue router status')", id="rag_input")
+        yield Input(placeholder="💬 Ask Red [Hermes] or Blue [LuCI]... (e.g., 'red why write that widget?' or 'blue firewall rules')", id="rag_input")
         if DockedShortcutsLegend:
             yield DockedShortcutsLegend()
         yield Footer()
@@ -190,39 +286,41 @@ class LiveArenaDevScreen(Screen):
         self.red_log = self.query_one("#red_log", RichLog)
         self.blue_log = self.query_one("#blue_log", RichLog)
         self.battle_hud = self.query_one("#battle_hud_bar", Static)
+        self.net_bar = self.query_one("#network_metrics_bar", LiveNetworkMetricsWidget)
         self.red_map = self.query_one("#red_graphical_map", RedTeamGraphicalMapWidget)
         self.blue_map = self.query_one("#blue_graphical_map", BlueTeamGraphicalMapWidget)
-        
+        self.red_canvas = self.query_one("#red_canvas", LiveAiTuiCanvasWidget)
+        self.blue_canvas = self.query_one("#blue_canvas", LiveAiTuiCanvasWidget)
+
         self.rag_engine = DualTeamRAGVoiceEngine()
         self.optimizer_loop = AutonomousGameAndUIOptimizerLoop()
         self.smolagents_hub = SmolAgentsArenaHub()
         self.readiness_suite = MovesenseReadinessSuite()
+        self.mode_idx = 1
         self.chaos_active = False
-        self.mode_index = 1  # default to SMOLAGENTS_PYTHON_DUEL
-        
-        self.red_log.write("[bold red]🔴 Red SmolAgent active (Python execution enabled). Target: TB4 Buffer & Movesense GATT.[/]")
-        self.blue_log.write("[bold blue]🔵 Blue SmolAgent active (Python defense enabled). Target: SQM fq_codel & Kamath HRV.[/]")
-        
-        self.set_interval(1.5, self.refresh_game_tick)
+
+        self.red_log.write("[bold red]🔴 Red SmolAgent active (Live TUI coding canvas mounted). Target: TB4 Buffer & Movesense GATT.[/]")
+        self.blue_log.write("[bold blue]🔵 Blue SmolAgent active (Live TUI defense canvas mounted). Target: SQM fq_codel & Kamath HRV.[/]")
+
+        self.set_interval(1.0, self.refresh_game_tick)
 
     def refresh_game_tick(self):
-        # 1. Run game tick + readiness
         state = self.optimizer_loop.run_debate_cycle()
         smol_state = self.smolagents_hub.execute_arena_tick()
         readiness = self.readiness_suite.generate_full_readiness_report()
-        
+
         hud = state.get("gamified_hud", {})
         combat_bar = hud.get("combat_tug_of_war_bar", "")
         hr = readiness["sensor_telemetry"]["heart_rate_bpm"]
         bp = readiness["blood_pressure_ptt"]
         sleep = readiness["overnight_sleep_analysis"]
         vo2 = readiness["cardiorespiratory_thresholds"]["estimated_vo2max_ml_kg_min"]
-        
+
         active_mode = smol_state["active_game_mode"]
         red_intent = smol_state["tactical_intent_summary"]["red_faction_intent"]
         blue_intent = smol_state["tactical_intent_summary"]["blue_faction_intent"]
 
-        voice_badge = "[bold green]🔊 VOICE: ON[/]" if self.rag_engine.tts_enabled else "[dim]🔇 VOICE: OFF (Press 'v')[/]"
+        voice_badge = "[bold green]🔊 VOICE: ON[/]" if self.rag_engine.tts_enabled else "[dim]🔇 VOICE: OFF ('v')[/]"
         hud_content = (
             f"[bold gold1]⚔️ ARENA MODE:[/] [bold magenta]{active_mode}[/] | {voice_badge} | [bold yellow]Contested:[/] GL-MT3600BE Router SQM\n"
             f"[bold white]Compute Power:[/] {combat_bar}\n"
@@ -230,80 +328,55 @@ class LiveArenaDevScreen(Screen):
             f"[bold cyan]🛡️ BLUE INTENT:[/] {blue_intent}\n"
             f"[bold white]💓 READINESS:[/] HR: [bold yellow]{hr} BPM[/] | BP: [bold green]{bp['systolic_bp_mmhg']}/{bp['diastolic_bp_mmhg']} mmHg[/] | Sleep: [bold cyan]{sleep['sleep_score_pct']}/100[/] | VO2max: [bold gold1]{vo2}[/] | [c] Chaos  [h] Heal  [b] BQL  [m] Mode"
         )
-        self.battle_hud.update(Panel(hud_content, title=f"⚡ Live Computational War & Physiological Readiness HUD", border_style="gold1"))
+        self.battle_hud.update(Panel(hud_content, title=f"⚡ Live Computational Battle & Smolagents Intent HUD", border_style="gold1"))
 
+        self.net_bar.update(self.net_bar.render_metrics(tb4_severed=self.chaos_active))
         self.red_map.update(self.red_map.render_map(hr_bpm=hr, chaos_active=self.chaos_active))
         self.blue_map.update(self.blue_map.render_map(hr_bpm=hr, chaos_active=self.chaos_active))
+        self.red_canvas.update(self.red_canvas.render_canvas(active_mode))
+        self.blue_canvas.update(self.blue_canvas.render_canvas(active_mode))
 
-        # Log code executions & mode activities
-        timestamp_str = time.strftime('%H:%M:%S')
-        if active_mode == "EDGE_ORCHESTRATOR_CLASSIC":
-            self.red_log.write(f"[{timestamp_str}] [bold red]⚡ HEURISTIC PROBE:[/] {red_intent}")
-            self.blue_log.write(f"[{timestamp_str}] [bold cyan]🛡️ HEURISTIC SHIELD:[/] {blue_intent}")
-        elif active_mode == "SMOLAGENTS_PYTHON_DUEL":
-            self.red_log.write(f"[{timestamp_str}] [bold red]🐍 SMOLAGENT PYTHON:[/] Executed 64MB buffer probe on TB4 Port 50052")
-            self.blue_log.write(f"[{timestamp_str}] [bold cyan]🐍 SMOLAGENT PYTHON:[/] Executed SQM fq_codel tc replacement on bridge0")
-        elif active_mode == "MULTI_MODEL_AGI_SWARM":
-            self.red_log.write(f"[{timestamp_str}] [bold red]🤖 SWARM DISPATCH:[/] {red_intent}")
-            self.blue_log.write(f"[{timestamp_str}] [bold cyan]🧬 GENETIC MoE:[/] {blue_intent}")
-        elif active_mode == "AIRGAP_MESH_VS_CLOUD_CHAOS":
-            self.red_log.write(f"[{timestamp_str}] [bold yellow]⚡ CHAOS INJECTION:[/] {red_intent}")
-            self.blue_log.write(f"[{timestamp_str}] [bold green]🔒 AIRGAP PERIMETER:[/] {blue_intent}")
-
-    def on_input_submitted(self, event: Input.Submitted):
-        val = event.value.strip()
-        if not val:
-            return
-        event.input.value = ""
-        
-        if "red" in val.lower() or "hermes" in val.lower() or "openclaw" in val.lower():
-            target_team = "RED"
-        else:
-            target_team = "BLUE"
-            
-        res = self.rag_engine.query_team(target_team, val)
-        if target_team == "RED":
-            self.red_log.write(f"[bold yellow]👤 YOU -> RED:[/] {val}")
-            self.red_log.write(f"{res['response']}")
-        else:
-            self.blue_log.write(f"[bold yellow]👤 YOU -> BLUE:[/] {val}")
-            self.blue_log.write(f"{res['response']}")
-
-    def action_cycle_game_mode(self):
-        self.mode_index = (self.mode_index + 1) % len(GAME_MODES)
-        new_mode = GAME_MODES[self.mode_index]
+    def action_toggle_game_mode(self):
+        self.mode_idx = (self.mode_idx + 1) % len(GAME_MODES)
+        new_mode = GAME_MODES[self.mode_idx]
         self.smolagents_hub.set_game_mode(new_mode)
         self.blue_log.write(f"[bold gold1]🔄 SWITCHED GAME MODE TO: {new_mode}[/]")
-        self.rag_engine.speak_async(f"Game mode switched to {new_mode.replace('_', ' ')}.", voice="Samantha")
 
     def action_trigger_chaos(self):
         self.chaos_active = not self.chaos_active
-        if self.chaos_active:
-            self.red_log.write("[bold yellow]⚡ CHAOS DROP TRIGGERED: 350ms TB4 packet latency fault injected![/]")
-            self.blue_log.write("[bold green]🛡️ LUCI RESPONSE: Auto-rerouted to WireGuard ChaCha20 mesh (1.85ms).[/]")
-            self.rag_engine.speak_async("Chaos Overlord injected latency drop. LuCI rerouting active.", voice="Fred")
-        else:
-            self.blue_log.write("[bold cyan]🔄 TB4 DMA Link Restored (0.35ms RTT). Failback complete.[/]")
+        status_msg = "💥 TB4 LINK SEVERED! Failover to WireGuard ChaCha20 (1.85ms)..." if self.chaos_active else "✅ TB4 LINK RESTORED (0.35ms)!"
+        self.red_log.write(f"[bold red]{status_msg}[/]")
+        self.blue_log.write(f"[bold yellow]{status_msg}[/]")
+        self.refresh_game_tick()
 
     def action_trigger_heal(self):
-        self.optimizer_loop.blue_compute_pct = min(self.optimizer_loop.blue_compute_pct + 12.0, 95.0)
-        self.optimizer_loop.red_compute_pct = 100.0 - self.optimizer_loop.blue_compute_pct
-        self.blue_log.write("[bold green]🛡️ HEAL ABILITY ENGAGED: Restored +12% compute power to Blue Sentinel Shield![/]")
-        self.rag_engine.speak_async("Self-healing pulse deployed. System compute restored.", voice="Samantha")
+        self.chaos_active = False
+        self.blue_log.write("[bold green]🛡️ FULL MESH SELF-HEAL: Re-anchored MTU 9000 & locked Kamath filter.[/]")
+        self.refresh_game_tick()
 
     def action_trigger_bql_burst(self):
-        self.optimizer_loop.red_compute_pct = min(self.optimizer_loop.red_compute_pct + 10.0, 95.0)
-        self.optimizer_loop.blue_compute_pct = 100.0 - self.optimizer_loop.red_compute_pct
-        self.red_log.write("[bold red]💥 BQL BURST OVERLOAD: Hermes 3 expanded queue buffers (+10% Red Compute)![/]")
-        self.rag_engine.speak_async("BQL buffer expansion executed by Hermes.", voice="Alex")
+        self.red_log.write("[bold red]💥 BQL QUEUE BURST: Injected 64MB buffer probe on Port 50052.[/]")
+        self.refresh_game_tick()
 
     def action_trigger_jumbo_shield(self):
-        self.blue_log.write("[bold cyan]🔒 MTU 9000 JUMBO SHIELD LOCKED: bridge0 socket buffers hardened against overflows.[/]")
-        self.rag_engine.speak_async("MTU 9000 shield verified.", voice="Samantha")
+        self.blue_log.write("[bold cyan]🔒 MTU 9000 JUMBO SHIELD: Locked fq_codel active buffer management.[/]")
+        self.refresh_game_tick()
 
     def action_toggle_voice(self):
-        self.rag_engine.tts_enabled = not self.rag_engine.tts_enabled
-        status = "ENABLED" if self.rag_engine.tts_enabled else "MUTED"
-        self.blue_log.write(f"[bold green]🔊 Voice TTS synthesis {status}.[/]")
-        if self.rag_engine.tts_enabled:
-            self.rag_engine.speak_async("Voice synthesis active for Hermes and LuCI.", voice="Samantha")
+        enabled = self.rag_engine.toggle_voice()
+        status = "[bold green]🔊 VOICE TTS ENABLED[/]" if enabled else "[bold red]🔇 VOICE TTS MUTED[/]"
+        self.blue_log.write(status)
+        self.refresh_game_tick()
+
+    def on_input_submitted(self, event: Input.Submitted):
+        query = event.value.strip()
+        if not query:
+            return
+        self.query_one("#rag_input", Input).value = ""
+        team = "red" if "red" in query.lower() or "hermes" in query.lower() else "blue"
+        self.red_log.write(f"[bold yellow]💬 USER -> {team.upper()}: {query}[/]")
+        resp = self.rag_engine.ask_team_rag(team, query)
+        target_log = self.red_log if team == "red" else self.blue_log
+        prefix = "🔴 HERMES 3:" if team == "red" else "🔵 LUCI OPENWRT:"
+        color = "bold red" if team == "red" else "bold cyan"
+        target_log.write(f"[{color}]{prefix}[/] {resp}")

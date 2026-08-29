@@ -1,121 +1,156 @@
-# Project: Unified Lauburu Front-Facing App Architecture & Multi-Mode Game Arena
+# Project: Lauburu Monorepo Application Portfolio Build-Out
 
 ## Architecture
 
+The Lauburu Monorepo application ecosystem is structurally partitioned into two isolated domain tiers, a universal 120 FPS Web-TUI portal, an automated free-tier AI scaffolding engine with fail-closed biometric airgapping, and an integrated Tri-Vault storage system.
+
 ```
-┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 100% LOCAL BIOMETRICS AIRGAP BOUNDARY                           │
-├─────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ [Movesense HR+ 512Hz / 128Hz BLE]  ──(GATT 0x2A37 / MDS 2.0)──►  [Apple Silicon Metal GPU / CPU]│
-│                                                                                                 │
-│  LOCAL DSP PIPELINE (127.0.0.1:8000 / 127.0.0.1:4000 / 127.0.0.1:5001):                        │
-│  1. 4th-Order Butterworth 0.5–40 Hz Bandpass Filter                                             │
-│  2. 5-Point Derivative Filter & Non-linear Squaring (Pan-Tompkins 1985)                        │
-│  3. 150ms Moving Window Integrator (MWI) & Dual-Threshold Adaptive Peak Searchback              │
-│  4. Kamath et al. 2004 20% Clinical RR Artifact Filter (|RR_i - RR_{i-1}| / RR_{i-1} <= 0.20)  │
-│  5. Root Mean Square of Successive Differences (RMSSD) Math                                     │
-│  6. 120s Rolling Detrended Fluctuation Analysis (DFA-alpha1, LT1 @ 0.75, LT2 @ 0.50)           │
-│  7. Pulse Transit Time (PTT) Continuous Hemodynamic Blood Pressure Inversion:                  │
-│     • SBP = 120.0 + 0.45 * (200 - PTT) + 0.15 * (HR - 70)                                       │
-│     • DBP = 80.0 + 0.25 * (200 - PTT) + 0.08 * (HR - 70)                                        │
-│     • MAP = (SBP + 2 * DBP) / 3.0                                                               │
-│  8. Overnight Optical PPG Sleep Staging (Deep, REM, Light, Awake) & Sleep Score (0-100)        │
-│  9. Uth-Sørensen VO2max Estimation: 15.3 * (HR_max / HR_rest)                                  │
-│                                                                                                 │
-│  LOCAL PERSISTENCE ONLY:                                                                        │
-│  • PySpark JSONL & Delta Lake Parquet (/Users/aaron/DFS_UNIFIED/lora_datasets/)                 │
-│  • Obsidian Vault Health Graph (/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/)      │
-├─────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                                  STRICT ISOLATION FIREWALL                                      │
-├─────────────────────────────────────────────────────────────────────────────────────────────────┤
-│  CLOUD AI & EDGE WORKERS (Cloudflare Workers AI, Gemini 3.7 Flash, Supabase, Railway):         │
-│  • STRICTLY ZERO RAW BIOMETRIC DATA ALLOWED.                                                    │
-│  • Redacts all raw athlete physiological metrics before egress (HTTP 403 fail-closed).          │
-│  • Handles UI scaffolding, PWA asset delivery, WebGPU WGSL shaders, and Three.js 3D Tatami.    │
-└─────────────────────────────────────────────────────────────────────────────────────────────────┘
+Lauburu-Monorepo/
+├── 01_apps/
+│   ├── biometrics/movesense_hub/     # Flagship Movesense Physiological Readiness Suite
+│   │   ├── core/                     # State store, event bus, configuration
+│   │   ├── dsp/                      # 512Hz Pan-Tompkins ECG, Kamath filter, PTT BP, sleep score, LT1/LT2
+│   │   ├── presentation/             # Textual TUI, Web-TUI bridge, Canvas oscilloscope PWA, Flutter
+│   │   └── transport/                # Bleak GATT daemon (Movesense 261030002013), Web Bluetooth bridge
+│   ├── user_facing_and_scaling/      # Domain 1: User & Scaling Consumer/Pro Applications
+│   │   ├── movesense_readiness_hub/  # Symlink/Package root for Movesense Suite
+│   │   ├── spatial_grappling_3d/     # 3,044 OPML Tree & MediaPipe 33-landmark 3D kinematic skeleton
+│   │   ├── combat_arena/             # Hermes vs LuCI Combat Arena (120 FPS power bar, pulse gauge)
+│   │   └── shopify_storefront/       # Headless Shopify Storefront ($9/$29/$99/mo tiers, sensor bundles)
+│   ├── operator_and_dev/             # Domain 2: Operator & Developer Cockpits
+│   │   ├── canonical_port/           # 9-Screen Stability NOC (7 physical nodes, 108GB RAM pool)
+│   │   ├── smolagents_duel_sandbox/  # Python Duel Sandbox (Code-as-action tool registry)
+│   │   └── qwen_math_trend_optimizer/# Standalone Math Optimizer (Latency proofs, LoRA SFT/DPO logging)
+│   └── web_tui_portal/               # Port 8088 FastAPI + WebSocket 120 FPS PTY Portal
+├── 00_core_infrastructure/           # Cloudflare Worker Airgap Firewall, Self-Healing Hub (Port 18802)
+├── 03_biometrics_and_telemetry/      # Shared local high-performance DSP math libraries (Zero Cloud Leak)
+├── 04_data_and_memory/               # PySpark Data Lake, 24/7 LoRA Datasets, Qdrant Vector DB
+├── 06_scripts_and_tooling/           # Automated Free-Tier AI Scaffolder (Gemini Flash / Cloudflare Workers AI)
+├── obsidian_vault/                   # Obsidian Knowledge Core (Index.md master Wikilinks)
+└── tests/e2e/                        # Comprehensive 4-Tier Opaque-Box E2E Test Suite
 ```
+
+---
 
 ## Feature Inventory
+
+Every feature identified during requirements analysis and codebase survey is inventoried below with its assigned milestone:
+
 | # | Feature | Description | Milestone | Source |
-|---|---|---|---|---|
-| 1 | Frontend PWA Scaffolding & Manifest | Offline ServiceWorker caching, responsive PWA manifests for mobile/desktop | M1 | Survey R1 |
-| 2 | Three.js 3D Tatami & Kinematics Graph | 955+ OPML nodes interactive 3D map (3,044 nodes), WebGPU/WebGL renderers | M1 | Survey R1 |
-| 3 | TailwindCSS & Cross-Platform UI | Responsive Tailwind UI components, WCAG 2.1 AA accessible charts, Flutter templates | M1 | Survey R1 |
-| 4 | Strict 100% Local Airgap Protection | Strict zero-biometrics firewall on Cloudflare/external endpoints, 127.0.0.1 airgap | M1 | Survey R1 |
-| 5 | Bicep ECG 512Hz Pan-Tompkins DSP | Butterworth bandpass, 5-pt derivative, 150ms MWI, dual-threshold peak search | M2 | Survey R2 |
-| 6 | Kamath 20% Artifact Filter & RMSSD | Kamath 2004 20% RR interval filter, microsecond precision, RMSSD calculation | M2 | Survey R2 |
-| 7 | Pulse Transit Time (PTT) Continuous BP | Hemodynamic PTT inversion model calculating SBP, DBP, MAP in real time | M2 | Survey R2 |
-| 8 | Overnight PPG Sleep Staging & Score | Deep, REM, Light, Awake staging, 0-100 recovery score, nocturnal dipping | M2 | Survey R2 |
-| 9 | Auto Workout Detect & LT1/LT2 / VO2max | Real-time DFA-a1 LT1 (0.75), LT2 (0.50), HR ratio VO2max (15.3 * HR_max / HR_rest) | M2 | Survey R2 |
-| 10 | Rule #0 Zero-Mock Enforcement | Zero fake arrays; clean WAITING_FOR_SENSOR / null states when offline | M2 | Survey R2 |
-| 11 | SmolAgents Sandboxed Python Duel | Faction leaders (Hermes 3 / Qwen Red, LuCI / Sentinel Blue) write & run Python code | M3 | Survey R3 |
-| 12 | Canonical 4 Selectable Game Modes | EDGE_ORCHESTRATOR_CLASSIC, SMOLAGENTS_PYTHON_DUEL, MULTI_MODEL_AGI_SWARM, AIRGAP_MESH_VS_CLOUD_CHAOS | M3 | Survey R3 |
-| 13 | Telemetry HUD Tactical Objective Summaries | Active plain-language statements: "What is each team currently trying to do?" | M3 | Survey R3 |
-| 14 | Standalone & Embedded TUI Synchronization | Sync standalone tui_live_arena_dev.py with Canonical LiveArenaDevScreen 4-mode engine | M3 | Survey R3 |
-| 15 | 100% E2E Test Suite Pass | Opaque-box E2E test verification across all 16 features (184/184 tests passed) | M4 | Dual Track |
-| 16 | Tier 5 Adversarial Coverage Hardening | White-box stress testing, chaos injections, and forensic audit verification (CLEAN) | M4 | Final Milestone |
+|---|---------|-------------|-----------|--------|
+| F01 | 512Hz Pan-Tompkins ECG DSP | 4th-order Butterworth (0.5-40Hz), 5-pt derivative, squaring, 150ms MWI, dual-adaptive threshold QRS detector with 200ms refractory lockout | M1 | ORIGINAL_REQUEST §R1 |
+| F02 | Kamath 20% RR Filter | Strict 20% clinical RR outlier filter for beat-to-beat validation | M1 | ORIGINAL_REQUEST §R1 |
+| F03 | Continuous PTT Blood Pressure | Hughes-Bramwell arterial wave inversion model estimating SBP/DBP/MAP from Pulse Transit Time | M1 | ORIGINAL_REQUEST §R1 |
+| F04 | Overnight Sleep Staging & Score | 30s epoch staging (`AWAKE`, `DEEP`, `REM`, `LIGHT`), nocturnal dipping %, and 0-100 composite recovery score | M1 | ORIGINAL_REQUEST §R1 |
+| F05 | Zone 2 Cardio Coaching | DFA-alpha1 ($s \in [4, 16]$ beats), LT1 (0.75) / LT2 (0.50) thresholds, and Uth-Sørensen VO2max pacing | M1 | ORIGINAL_REQUEST §R1 |
+| F06 | Movesense BLE GATT Ingestion | Bleak Python & Web Bluetooth ingestion for Movesense sensor `261030002013` (MDS 2.0 & SIG HRS) | M1 | ORIGINAL_REQUEST §R1 |
+| F07 | Multi-Platform Readiness Clients | Native Textual TUI, Web-TUI `/readiness` adapter, Next.js Canvas oscilloscope PWA, Flutter mobile client | M1 | ORIGINAL_REQUEST §R1 |
+| F08 | Movesense Hub Modular Package | Standardized subpackages (`core/`, `dsp/`, `presentation/`, `transport/`) in `01_apps/biometrics/movesense_hub` | M1 | ORIGINAL_REQUEST §R1 |
+| F09 | 3D Spatial Grappling Kinematics | 3,044-node OPML mindmap tree mapped to 10m x 10m tatami grid with MediaPipe 33-landmark 3D skeleton | M2 | ORIGINAL_REQUEST §R2 |
+| F10 | Gamified Combat Arena | 4 game modes, animated 120 FPS compute power bar, live Movesense pulse gauge, RAG voice TTS | M2 | ORIGINAL_REQUEST §R2 |
+| F11 | Headless Shopify Storefront | $9 Athlete, $29 Pro, $99 Gym Team/mo tiers, Movesense HR+ hardware bundles, GraphQL client | M2 | ORIGINAL_REQUEST §R2 |
+| F12 | Canonical Port 9-Screen NOC | 9-screen stability hierarchy monitoring 7 physical nodes, 108GB RAM pool, model mesh, AI debate | M3 | ORIGINAL_REQUEST §R2 |
+| F13 | SmolAgents Python Duel Sandbox | Python code-as-action tool sandbox executing network probes, latency telemetry, and filter benchmarks | M3 | ORIGINAL_REQUEST §R2 |
+| F14 | Standalone Qwen Math Optimizer | Autonomous background analytics computing latency proofs, BQL depths, cardiac coherence, LoRA datasets | M3 | ORIGINAL_REQUEST §R2 |
+| F15 | Universal Web-TUI Portal (Port 8088) | FastAPI + WebSocket async PTY engine rendering all 7 apps at 120 FPS via xterm.js WebGL | M4 | ORIGINAL_REQUEST §R2 |
+| F16 | Automated Free-Tier Cloud AI Scaffolder | Gemini 2.5 Flash Free Tier & Cloudflare Workers AI code generation daemon for tests, UI boilerplate, docs | M5 | ORIGINAL_REQUEST §R3 |
+| F17 | Strict Fail-Closed Airgap Sentinel | Perimeter and local firewall ensuring 0% biometric data or sensor packets leave local hardware | M5 | ORIGINAL_REQUEST §R3 |
+| F18 | Tri-Vault Storage Invariant Health | Healthy Obsidian Vault (`Index.md`), PySpark Data Lake ($\ge 10.0$ GB free), clean Git repository | M6 | RULE[user_global] §6 |
+| F19 | 100% 4-Tier E2E Test Suite Pass | Opaque-box E2E test harness running Tiers 1-4 with zero failures | M6 | Acceptance Criteria |
+| F20 | Tier 5 Adversarial Coverage Hardening | White-box adversarial testing, edge-case probing, and zero-mock Rule #0 compliance audit | M6 | Acceptance Criteria |
+
+---
 
 ## Milestones
+
 | # | Name | Scope | Dependencies | Status |
-|---|---|---|---|---|
-| M1 | Frontend PWA, 3D Tatami & Airgap Scaffolding | Frontend PWA scaffolding, Three.js 3D Tatami, TailwindCSS tokens, 100% local airgap policy | None | DONE |
-| M2 | Movesense Physiological Readiness & 512Hz DSP | 512Hz Pan-Tompkins QRS, Kamath RR filter, RMSSD, PTT BP inversion, Sleep staging, LT1/LT2, VO2max | None | DONE |
-| M3 | SmolAgents Autonomous Arena & 4-Mode TUI Engine | Sandboxed Python code execution for Red/Blue leads, 4 game modes, TUI Tactical Objective HUD | None | DONE |
-| M4 | Final Milestone: 100% E2E Pass & Tier 5 Hardening | Execute full E2E Test Suite (Tiers 1-4, 184 tests) + Tier 5 Hardening + Forensic Audit | M1, M2, M3, E2E Track | DONE |
+|---|------|-------|-------------|--------|
+| E2E | E2E Testing Track | Master 4-tier E2E test suite (Tiers 1-4), harness runner, `TEST_READY.md` | none | DONE (184/184 tests passing) |
+| M1 | Flagship Movesense Physiological Readiness Suite | Modularize `01_apps/biometrics/movesense_hub` into `core/`, `dsp/`, `presentation/`, `transport/`; integrate 512Hz ECG, PTT BP, sleep staging, Zone 2 coaching, and multi-platform clients | none | DONE (102 biometrics tests passing, gate certified) |
+| M2 | User & Scaling Apps Portfolio Separation | Restructure and verify `01_apps/user_facing_and_scaling/` (Movesense Hub, 3D Spatial Grappling, Combat Arena, Shopify Storefront) | M1 | PLANNED |
+| M3 | Operator & Dev Cockpits Portfolio Separation | Restructure and verify `01_apps/operator_and_dev/` (Canonical Port 9-Screen NOC, SmolAgents Duel Sandbox, Qwen Math Optimizer) | none | PLANNED |
+| M4 | Universal Web-TUI Portal (Port 8088) | Implement `01_apps/web_tui_portal/serve_portal.py` serving all 7 apps at 120 FPS with auto-reclaim and PTY process isolation | M1, M2, M3 | PLANNED |
+| M5 | Free-Tier AI Scaffolder & Airgap Engine | Deploy Gemini 2.5 Flash / Cloudflare Workers AI scaffolding daemon with strict fail-closed airgap filter | none | PLANNED |
+| M6 | Final Verification, Adversarial Hardening & Audit | 100% E2E Pass across Tiers 1-4, Tier 5 Adversarial Hardening via Challengers, Forensic Integrity Audit, and Tri-Vault Verification | M1, M2, M3, M4, M5, E2E | PLANNED |
+
+---
 
 ## Interface Contracts
-### Frontend UI (`01_apps/`, `webapp/`) ↔ Local Biometrics Airgap (`03_biometrics_and_telemetry/`)
-- Endpoint: `http://127.0.0.1:8000/api/movesense/telemetry` & `ws://127.0.0.1:8000/ws/ingest`
-- Input: Request for live telemetry / readiness score
-- Response Schema:
-  ```json
-  {
-    "status": "STREAMING" | "WAITING_FOR_SENSOR",
-    "heart_rate_bpm": float | null,
-    "rmssd_ms": float | null,
-    "dfa_alpha1": float | null,
-    "ptt_blood_pressure": {
-      "systolic_bp_mmhg": float | null,
-      "diastolic_bp_mmhg": float | null,
-      "map_mmhg": float | null
-    },
-    "sleep_recovery": {
-      "sleep_score_pct": int | null,
-      "deep_sleep_pct": float | null,
-      "rem_sleep_pct": float | null
-    },
-    "cardiorespiratory": {
-      "lt1_threshold_bpm": float | null,
-      "lt2_threshold_bpm": float | null,
-      "vo2max_estimate": float | null,
-      "activity_state": string | null
-    }
-  }
-  ```
 
-### SmolAgents Arena Engine (`05_agents_and_swarms/`) ↔ Canonical TUI HUD (`01_apps/canonical_port/tui/`)
-- Module: `SmolAgentsArenaHub` in `smolagents_engine/smolagents_arena_hub.py`
-- Methods:
-  - `run_arena_tick(active_mode: str) -> dict`
-  - `tactical_intent_summary` output schema:
-    ```json
-    {
-      "red_faction_intent": string,
-      "blue_faction_intent": string,
-      "user_biological_state": string,
-      "combat_narrative": string
-    }
-    ```
+### 1. Movesense BLE GATT & DSP Pipeline Contract
+- **GATT Characteristics**: `0x2A37` (SIG Heart Rate Measurement), `34800001-7185-4d5d-b431-b30e393d9e05` (Movesense MDS 2.0 Whiteboard).
+- **Data Types**:
+  - `RawEcgFrame`: `(timestamp_us: int, sample_rate_hz: int, samples_mv: List[float])`
+  - `QrsDetectionResult`: `(r_peaks: List[int], rr_intervals_ms: List[float], filtered_rr_ms: List[float], hr_bpm: float, rmssd_ms: float)`
+  - `PttBloodPressure`: `(sbp_mmhg: float, dbp_mmhg: float, map_mmhg: float, ptt_ms: float)`
+  - `SleepStagingResult`: `(epoch_stages: List[str], sleep_score_100: int, deep_pct: float, rem_pct: float, efficiency_pct: float, dip_pct: float)`
+  - `Zone2CardioResult`: `(dfa_alpha1: float, current_zone: str, lt1_hr: float, lt2_hr: float, vo2max_ml_kg_min: float)`
+- **Rule #0 Guarantee**: In disconnected state, emits `WAITING_FOR_SENSOR` and `null` values. Zero mock arrays.
+
+### 2. Two-Domain Applications Contract
+- **User & Scaling Apps (`01_apps/user_facing_and_scaling/`)**:
+  - `movesense_readiness_hub`: Entrypoint `movesense_readiness_hub.presentation.tui:run_app`
+  - `spatial_grappling_3d`: Entrypoint `spatial_grappling_3d.presentation.engine:SpatialGrapplingMapEngine`
+  - `combat_arena`: Entrypoint `combat_arena.presentation.arena:run_arena`
+  - `shopify_storefront`: Entrypoint `shopify_storefront.presentation.store:run_storefront`
+- **Operator & Dev Cockpits (`01_apps/operator_and_dev/`)**:
+  - `canonical_port`: Entrypoint `canonical_port.views.dashboard:run_canonical`
+  - `smolagents_duel_sandbox`: Entrypoint `smolagents_duel_sandbox.presentation.sandbox:run_sandbox`
+  - `qwen_math_trend_optimizer`: Entrypoint `qwen_math_trend_optimizer.presentation.optimizer:run_optimizer`
+
+### 3. Web-TUI Portal Contract (Port 8088)
+- **Routes**:
+  - `/` -> Landing page with visual app grid and 120 FPS WebGL launch cards
+  - `/readiness` -> WebSocket PTY bridge to Movesense Readiness Hub
+  - `/grappling` -> WebSocket PTY bridge to 3D Spatial Grappling Map
+  - `/arena` -> WebSocket PTY bridge to Combat Arena
+  - `/store` -> WebSocket PTY bridge to Shopify Storefront
+  - `/canonical` -> WebSocket PTY bridge to Canonical 9-Screen NOC
+  - `/smolagents` -> WebSocket PTY bridge to SmolAgents Sandbox
+  - `/math` -> WebSocket PTY bridge to Qwen Math Optimizer
+- **WebSocket Protocol**: Binary PTY stream over `ws://127.0.0.1:8088/ws/{app_name}`.
+
+### 4. Cloud AI Scaffolder & Airgap Sentinel Contract
+- **Providers**: `gemini_free` (1,500 RPD), `cloudflare_ai` (1,000 RPD), `julien_ai` (300 RPD), `local_mesh` (Sovereign fallback).
+- **Airgap Filter**: Fail-closed regex intercepting all requests matching `/^\/(?:api|v1|ws)\/(?:biometrics|movesense|ecg|ptt|ppg|sleep_staging|raw_rr|heart_rate_raw)(?:\/.*)?$/i` and headers `x-lauburu-biometrics-egress`. Redacts any biometric keys to `[AIRGAP_REDACTED: LOCAL_HARDWARE_ONLY]`.
+
+---
 
 ## Code Layout
-- `01_apps/biometrics/zone2_endurance/` — Next.js 14 Web Bluetooth Zone 2 App
-- `webapp/` — Three.js 3D Tatami Grappling Map PWA
-- `00_core_infrastructure/self_healing_hub/frontend/` — WebGPU WGSL Tatami Particle Visualizer
-- `00_core_infrastructure/cloudflare_worker/src/worker.ts` — Zero-Biometric Cloud Isolation Worker
-- `03_biometrics_and_telemetry/pan_tompkins_dsp.py` — 512Hz Pan-Tompkins QRS, Kamath filter, RMSSD, DFA-a1, PTT BP
-- `03_biometrics_and_telemetry/movesense_readiness_suite.py` — Readiness, Sleep Staging, LT1/LT2, VO2max
-- `05_agents_and_swarms/smolagents_engine/smolagents_arena_hub.py` — SmolAgents Arena Hub & 4 Game Modes
-- `01_apps/canonical_port/tui/screens/live_arena_dev_screen.py` — Canonical TUI Live Arena Dev Screen
-- `01_apps/canonical_port/tui/tui_live_arena_dev.py` — Standalone Live Arena TUI script
-- `05_agents_and_swarms/genetic_moe/genetic_moe_ai_router.py` — Mode 3 Genetic MoE AI Router
-- `tests/e2e/` — Opaque-box E2E Test Suite (Tiers 1-4, 184 tests)
+
+```
+Lauburu-Monorepo/
+├── 01_apps/
+│   ├── biometrics/movesense_hub/
+│   │   ├── __init__.py
+│   │   ├── core/
+│   │   │   ├── __init__.py
+│   │   │   ├── config.py
+│   │   │   └── models.py
+│   │   ├── dsp/
+│   │   │   ├── __init__.py
+│   │   │   ├── pan_tompkins.py
+│   │   │   ├── hemodynamics_bp.py
+│   │   │   ├── sleep_scoring.py
+│   │   │   └── zone2_coaching.py
+│   │   ├── presentation/
+│   │   │   ├── __init__.py
+│   │   │   ├── tui.py
+│   │   │   └── web_adapter.py
+│   │   └── transport/
+│   │       ├── __init__.py
+│   │       ├── bleak_daemon.py
+│   │       └── web_ble_bridge.py
+│   ├── user_facing_and_scaling/
+│   │   ├── movesense_readiness_hub/
+│   │   ├── spatial_grappling_3d/
+│   │   ├── combat_arena/
+│   │   └── shopify_storefront/
+│   ├── operator_and_dev/
+│   │   ├── canonical_port/
+│   │   ├── smolagents_duel_sandbox/
+│   │   └── qwen_math_trend_optimizer/
+│   └── web_tui_portal/
+│       ├── __init__.py
+│       └── serve_portal.py
+```

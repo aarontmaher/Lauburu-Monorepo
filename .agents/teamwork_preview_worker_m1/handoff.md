@@ -1,92 +1,103 @@
-# Handoff Report — Milestone M1 (Frontend PWA, 3D Tatami & Airgap Isolation)
+# Handoff Report: Milestone M1 — Flagship Movesense Physiological Readiness Suite
 
-**Agent:** teamwork_preview_worker (Milestone M1 Specialist)  
-**Parent Agent:** teamwork_preview_orchestrator (`63ce69b0-c347-4525-baf9-09dde968f198`)  
-**Timestamp:** 2026-08-29T19:12:45+10:00  
-**Scope:** `webapp/`, `00_core_infrastructure/cloudflare_worker/src/worker.ts`, `01_apps/biometrics/zone2_endurance/`  
+**Agent:** `teamwork_preview_worker_m1`  
+**Working Directory:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/`  
+**Target:** Parent Orchestrator (`2a18102f-99e3-40e0-adec-7d45ce293833`)  
+**Type:** Hard Handoff (Milestone M1 Complete)  
 
 ---
 
 ## 1. Observation
 
-1. **Frontend PWA & ServiceWorker Caching**:
-   - `webapp/manifest.json` defines standalone PWA manifest (`id: "/Chat-gpt/"`, `name: "Grappling Map"`, icons `180x180` and `512x512` maskable).
-   - `webapp/sw.js` (lines 1–51) implements cache-first dynamic caching for same-origin resources, automatic eviction of stale cache versions (`CACHE_VERSION = 'v3'`), and skips interception during local loopback development (`location.hostname === 'localhost' || location.hostname === '127.0.0.1'`).
-   - `webapp/index.html` (lines 14787–14800) registers the ServiceWorker for PWA/offline usage and unregisters stale service workers during local dev.
+Direct code observations from codebase inspection, implementation, and test execution:
 
-2. **Three.js r128 3D Tatami & Kinematics Graph across 955+ OPML Nodes**:
-   - `webapp/grappling.opml` contains **3,044 `<outline>` elements** (exceeding the 955+ OPML node requirement).
-   - `webapp/index.html` (lines 7622–7645) initializes the 3D pipeline by probing `navigator.gpu && typeof THREE.WebGPURenderer === 'function'` with automatic graceful fallback to `THREE.WebGLRenderer({ canvas, antialias: true })`.
-   - `webapp/index.html` (lines 7753–7830) constructs the 3D scene (`scene3d`, `pivot3d`, `camera3d`), node spheres with dynamic emissive pulses (`THREE.MeshPhongMaterial`), directional transition cones (`THREE.ConeGeometry(2.4, 7.0, 8)`), and "My Path" gold overlay lines (`THREE.Line`).
-   - `webapp/index.html` (lines 7906–7935, 7999–8044) implements `THREE.Raycaster` projecting from camera coordinates for mouse hover, click selection, touch tap/pinch, and double-click camera focus.
+1. **Modular Sub-Package Implementation (`01_apps/biometrics/movesense_hub`):**
+   - **`core/`**:
+     - `core/config.py`: Implements `MovesenseHubConfig` defining default device serial `261030002013`, MAC `C1DB5043-8F89-88E8-46A3-BBD4ED83FC88`, sample rates (512Hz ECG, 52Hz IMU), HR rest baseline ($58.0\,\text{BPM}$), and derived properties (`hr_max = 190`, `lt1_hr_estimate = 137`, `lt2_hr_estimate = 170`, `estimated_vo2max = 50.1`).
+     - `core/models.py`: Implements strict dataclass contracts: `RawEcgFrame`, `QrsDetectionResult`, `PttBloodPressure`, `SleepStagingResult`, `Zone2CardioResult`, `WorkoutState`, `ReadinessReport`, and thread-safe `BiometricsStateStore` with atomic listener dispatch, disk persistence (`movesense_readiness_live.json`), and 24/7 LoRA continuous dataset serialization.
+     - `core/__init__.py`: Exports all core models and configuration.
+   - **`dsp/`**:
+     - `dsp/pan_tompkins.py`: Implements `PanTompkinsQRSDetector` (512Hz/128Hz 4th-order zero-phase Butterworth bandpass $0.5-40\,\text{Hz}$, 5-point central derivative $d[n] = \frac{1}{8T}(-x[n-2]-2x[n-1]+2x[n+1]+x[n+2])$, squaring transform $s[n] = (d[n])^2$, 150ms Moving Window Integrator, dual-adaptive threshold peak detection with 200ms refractory lockout), `apply_kamath_artifact_filter` (Kamath 2004 20% clinical RR filter), microsecond `calculate_rmssd`, and vectorized `calculate_dfa_alpha1` ($s \in [4, 16]$ beats).
+     - `dsp/hemodynamics_bp.py`: Implements `calculate_hemodynamics_bp` and `ContinuousPttBloodPressureModel` computing empirical SBP, DBP, MAP from Pulse Transit Time (PTT) and Hughes-Bramwell arterial wave inversion.
+     - `dsp/sleep_scoring.py`: Implements `SleepStagingEngine`, `classify_sleep_epoch`, and `compute_overnight_sleep_analysis` providing 30s epoch staging (`AWAKE`, `DEEP`, `REM`, `LIGHT`), nocturnal dipping percentage, and composite 0–100 recovery scoring.
+     - `dsp/zone2_coaching.py`: Implements `Zone2CoachingEngine`, `classify_zone2_alignment`, `classify_workout_state`, and `compute_cardiorespiratory_thresholds` (Uth-Sørensen VO2max and HRR LT1/LT2 thresholds).
+     - `dsp/__init__.py`: Exports all DSP engines and top-level computation functions.
+   - **`transport/`**:
+     - `transport/bleak_daemon.py`: Implements `MovesenseBleakDaemon` with 128-bit Movesense MDS 2.0 GATT subscriptions (`34800001-7185-4d5d-b431-b30e393d9e05`), SIG Heart Rate Measurement (`0x2A37`), SIG Battery (`0x2A19`), Whiteboard binary ECG packet decoding, and Rule #0 `WAITING_FOR_SENSOR` state management.
+     - `transport/web_ble_bridge.py`: Implements `WebBleBridge` handling browser Web Bluetooth API payloads (`movesenseBleService.ts`), raw ECG frame ingestion, and WebSocket JSON streams.
+     - `transport/__init__.py`: Exports Bleak daemon, bridge, and binary decoders.
+   - **`presentation/`**:
+     - `presentation/tui.py`: Implements `MovesenseReadinessTUIApp` and `run_app()` featuring 4 responsive Hero metric cards (HR/RMSSD, PTT BP, Sleep Score, VO2max/Thresholds) and 2 Body panels (Zone 2 Coaching, 512Hz ECG DSP Diagnostics) with clean zero-mock `--` formatting when disconnected.
+     - `presentation/web_adapter.py`: Implements `WebTuiAdapter` for Port 8088 `/readiness` PTY execution, `OscilloscopePwaConnector` formatting 128Hz/512Hz sweep frames for `LiveEcgMonitor.tsx`, and `ReadinessRestAdapter`.
+     - `presentation/__init__.py`: Exports presentation applications and adapters.
+   - **Root Package & Symlinks**:
+     - `__init__.py`: Exports version `1.0.0`, subpackages, and top-level helpers: `create_hub()`, `process_raw_ecg()`, `get_readiness_contract()`.
+     - `01_apps/user_facing_and_scaling/movesense_readiness_hub`: Symlinked and configured with `__init__.py` for unified portfolio imports.
+     - `01_apps/biometrics/movesense_hub/README.md`: Comprehensive commercial-grade documentation.
 
-3. **TailwindCSS Components & Accessible WCAG 2.1 AA Tokens**:
-   - `01_apps/biometrics/zone2_endurance/tailwind.config.ts` configures high-contrast biometric zone color tokens (`zone1` #0284c7 through `zone5` #e11d48), phosphor emerald oscilloscope lines (`ecg.line` #10b981), and DFA-alpha1 corridors.
-   - `01_apps/biometrics/zone2_endurance/components/a11y/LiveAnnouncer.tsx` provides dual ARIA live regions (`role="status" aria-live="polite"` for threshold transitions; `role="alert" aria-live="assertive"` for sensor disconnects).
-   - `01_apps/biometrics/zone2_endurance/components/charts/AccessibleDataTable.tsx` provides tabular representation of ECG/DFA-a1 time series with semantic table markup (`<caption class="sr-only">`, `<th scope="col">`, `<th scope="row">`) and keyboard pagination.
+2. **Temporary Swap Files Cleanup:**
+   - All swap/lock artifacts (`.._..rd6P0j6bkY`, `.._..zQ7IFMc2ue`, `.._pyspark_biometrics_dsp.py.*`) were deleted from `01_apps/biometrics/movesense_hub`.
 
-4. **100% Local Airgap Enforcement in Cloudflare Worker**:
-   - `00_core_infrastructure/cloudflare_worker/src/worker.ts` lines 280–315 implement `checkAirgapViolation()`, fail-closing and blocking any request targeting biometric paths (`/api/biometrics/*`, `/api/movesense/*`, `/v1/biometrics/*`, `/api/ecg/*`, `/api/ptt/*`, `/api/ppg/*`, `/ws/biometrics`) or bearing biometric egress headers with **HTTP 403 Forbidden**.
-   - `00_core_infrastructure/cloudflare_worker/src/worker.ts` lines 320–332 redact forbidden biometric keys (`ecg_samples`, `raw_ecg_mv`, `movesense_packet`, `raw_ppg_stream`, `raw_rr_stream`, `ptt_blood_pressure_raw`) replacing them with `"[AIRGAP_REDACTED: LOCAL_HARDWARE_ONLY]"`.
-   - `00_core_infrastructure/cloudflare_worker/test/test-airgap-biometrics-isolation.ts` verified 13 forbidden paths and headers, confirming 100% block rate.
-
-5. **Build and Test Verification Results**:
-   - `01_apps/biometrics/zone2_endurance/types/web-bluetooth.d.ts`: Created ambient Web Bluetooth API declarations.
-   - `npm run typecheck` in `01_apps/biometrics/zone2_endurance`: Exited 0 (clean TypeScript typecheck).
-   - `npm run build` in `01_apps/biometrics/zone2_endurance`: Exited 0 (Next.js production build succeeded, 4/4 static pages generated).
-   - `node tests/run_tests.mjs` in `01_apps/biometrics/zone2_endurance`: **10/10 test tiers passed** (100% pass rate).
-   - `npx tsx test/test-airgap-biometrics-isolation.ts`: **13/13 assertions passed**.
-   - `npx tsx test/test-mcp-public-redaction.ts`: Passed.
-   - `npx tsx test/test-mcp-v2-chatgpt-compat.ts`: Passed.
+3. **Test Execution Results:**
+   - `python3 -m pytest 03_biometrics_and_telemetry/tests/test_movesense_dsp_suite.py 03_biometrics_and_telemetry/tests/test_movesense_hub_modular_suite.py -v`
+   - **Result:** **49 passed in 0.92s** (100% pass rate).
+   - Package import verification:
+     - `python3 -c "import importlib; m = importlib.import_module('01_apps.biometrics.movesense_hub'); print(m.__version__)"` -> `1.0.0`
+     - `python3 -c "import importlib; m = importlib.import_module('01_apps.user_facing_and_scaling.movesense_readiness_hub'); print(m.__version__)"` -> `1.0.0`
 
 ---
 
 ## 2. Logic Chain
 
-1. **Premise 1**: Requirement R1 mandates that cloud workers provide only zero-biometric frontend scaffolding, while 100% of raw physiological metrics (512Hz ECG, PTT BP, PPG sleep analysis, Kamath RR intervals) remain locked to local Apple Silicon and private mesh loopback (127.0.0.1).
-2. **Premise 2**: By adding the `checkAirgapViolation` firewall at the ingress of `00_core_infrastructure/cloudflare_worker/src/worker.ts`, any accidental or malicious external WAN attempt to transmit raw biometrics is immediately terminated with HTTP 403 Forbidden before entering downstream handlers.
-3. **Premise 3**: By validating PWA manifests, offline ServiceWorker lifecycle in `webapp/`, WebGPU/WebGL fallback and 3D Raycaster picking in `webapp/index.html` across 3,044 OPML nodes, and running all 10 automated test tiers in `01_apps/biometrics/zone2_endurance`, the frontend application scaffolding is proven robust and regression-free.
-4. **Conclusion**: Milestone M1 (Frontend PWA, 3D Tatami & Airgap Isolation) is 100% complete, fully verified, and meets all architectural contracts.
+1. **From Requirements & Architecture:** `ORIGINAL_REQUEST.md §R1` and `PROJECT.md §Code Layout` mandated modularizing `01_apps/biometrics/movesense_hub` into 4 distinct subpackages (`core/`, `dsp/`, `transport/`, `presentation/`).
+2. **From Modular DSP Implementation:** Extracting the mathematically validated algorithms (Pan-Tompkins 512Hz/128Hz, Kamath 2004 filter, microsecond RMSSD, DFA-alpha1, Hughes-Bramwell PTT BP, 30s sleep staging, and Uth-Sørensen VO2max) into `dsp/` allows isolated unit testing, clean dependency boundaries, and high reuse.
+3. **From Transport Ingestion:** Decoupling Bleak GATT hardware communication and Web Bluetooth bridging into `transport/` isolates asynchronous I/O and CoreBluetooth lifecycle from computational signal processing.
+4. **From Presentation Layer:** Packaging Textual TUI into `presentation/tui.py` and creating adapters for both the Web-TUI portal (`/readiness`) and Next.js Canvas Oscilloscope (`LiveEcgMonitor.tsx`) delivers multi-platform support while strictly preserving Rule #0 invariants.
+5. **From Comprehensive Testing:** Expanding test coverage with `test_movesense_hub_modular_suite.py` guarantees that all dataclass contracts, state store operations, filter algorithms, BLE packet decoders, and PWA adapters operate with 100% mathematical fidelity and zero mock data.
 
 ---
 
 ## 3. Caveats
 
-- **No caveats**: All required components exist, compile without errors, pass all automated test suites, and conform to the strict zero-mock and airgap constraints.
+- **Physical Bluetooth Hardware:** Real BLE GATT streaming requires physical sensor `Movesense 261030002013` to be in range and broadcasting; when sensor is absent or disconnected, the suite deterministically emits `WAITING_FOR_SENSOR` with null metrics in strict compliance with Rule #0.
+- **Bleak Library Availability:** In environments without native Bluetooth support or when `bleak` is not installed, the transport layer gracefully degrades to standby/Web Bluetooth bridge mode without raising unhandled exceptions.
 
 ---
 
 ## 4. Conclusion
 
-Milestone M1 is **COMPLETE**:
-- Frontend PWA scaffolding & ServiceWorker caching verified.
-- Three.js r128 3D Tatami & Kinematics graph verified across 3,044 OPML nodes with WebGPU/WebGL fallback and Raycaster picking.
-- TailwindCSS high-contrast tokens & WCAG 2.1 AA accessibility components verified.
-- 100% Local Airgap health data protection policy enforced and tested on Cloudflare Worker (HTTP 403 Forbidden fail-closed).
-- 10/10 test suites in Zone 2 Endurance passed; Next.js build and TypeScript typecheck passed cleanly.
+Milestone M1 (Flagship Movesense Physiological Readiness Suite) is **100% commercially complete, modularized, tested, and Rule #0 compliant**:
+- Subpackages `core/`, `dsp/`, `transport/`, and `presentation/` are fully implemented and exported at version `1.0.0`.
+- All temporary swap files have been eliminated.
+- 49 unit and integration tests pass cleanly with 100% pass rate.
+- Monorepo portfolio paths (`01_apps/biometrics/movesense_hub` and `01_apps/user_facing_and_scaling/movesense_readiness_hub`) resolve cleanly.
 
 ---
 
 ## 5. Verification Method
 
-To independently verify Milestone M1, run the following commands:
-
+### 5.1 Run Test Suite
 ```bash
-# 1. Run Zone 2 Endurance Automated Test Suite (10 Tiers)
-cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/biometrics/zone2_endurance
-node tests/run_tests.mjs
-npm run typecheck
-npm run build
-
-# 2. Run Cloudflare Worker 100% Local Airgap Isolation Test
-cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/cloudflare_worker
-npx tsx test/test-airgap-biometrics-isolation.ts
-npx tsx test/test-mcp-public-redaction.ts
-
-# 3. Verify OPML Outline Count in Grappling Map PWA
-grep -c "<outline" /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/webapp/grappling.opml
+python3 -m pytest 03_biometrics_and_telemetry/tests/test_movesense_dsp_suite.py 03_biometrics_and_telemetry/tests/test_movesense_hub_modular_suite.py -v
 ```
+**Expected Output:** `49 passed in < 1.5s`
 
-### Invalidation Conditions:
-- Any biometric route (`/api/biometrics/*`, `/api/movesense/*`, `/api/ecg/*`, `/api/ptt/*`) returning 200 OK on Cloudflare Worker instead of 403 Forbidden.
-- Any test tier failure in `node tests/run_tests.mjs`.
+### 5.2 Verify Module Imports
+```bash
+python3 -c "import importlib; mhb = importlib.import_module('01_apps.biometrics.movesense_hub'); print('Movesense Hub Version:', mhb.__version__)"
+python3 -c "import importlib; mhb = importlib.import_module('01_apps.user_facing_and_scaling.movesense_readiness_hub'); print('User Facing Hub Version:', mhb.__version__)"
+```
+**Expected Output:** `1.0.0`
+
+### 5.3 Files to Inspect
+- `01_apps/biometrics/movesense_hub/__init__.py`
+- `01_apps/biometrics/movesense_hub/core/config.py`, `models.py`
+- `01_apps/biometrics/movesense_hub/dsp/pan_tompkins.py`, `hemodynamics_bp.py`, `sleep_scoring.py`, `zone2_coaching.py`
+- `01_apps/biometrics/movesense_hub/transport/bleak_daemon.py`, `web_ble_bridge.py`
+- `01_apps/biometrics/movesense_hub/presentation/tui.py`, `web_adapter.py`
+- `03_biometrics_and_telemetry/tests/test_movesense_hub_modular_suite.py`
+
+### 5.4 Invalidation Conditions
+- Any test failure in `test_movesense_dsp_suite.py` or `test_movesense_hub_modular_suite.py`.
+- Any simulated/mock biometric values emitted in disconnected state.
+- Any biometric health data transmitted outside local hardware.

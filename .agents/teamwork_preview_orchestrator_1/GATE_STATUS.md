@@ -1,16 +1,10 @@
-# Gate Status Tracking
+## Gate — Iteration 2 (Remediation & Polish)
+| Agent | Role | Verdict | Source | Notes |
+|-------|------|---------|--------|-------|
+| worker_m1_fix (`c80d2d94`) | teamwork_preview_worker | DONE | handoff.md | All 5 DSP edge cases resolved genuinely |
+| reviewer_m1_reverify (`4907ea11`) | teamwork_preview_reviewer | APPROVE | handoff.md | 102 biometrics + 184 E2E tests pass (100%) |
+| challenger_m1_reverify (`3622796a`) | teamwork_preview_challenger | APPROVE | handoff.md | 37/37 adversarial stress tests pass |
+| challenger_m1_2 (`857f59bb`) | teamwork_preview_challenger | APPROVE | handoff.md | 16/16 concurrency & Rule #0 tests pass |
+| auditor_m1 (`da076a92`) | teamwork_preview_auditor | CLEAN | handoff.md | Forensic integrity certified CLEAN |
 
-## Gate — Iteration 1
-| Agent | Role | Verdict | Source |
-|---|---|---|---|
-| worker_m1 | Frontend PWA & Airgap Specialist | DONE (build & 10/10 tests passed) | handoff.md |
-| worker_m2 | Movesense Biometrics DSP Specialist | DONE (50/50 tests passed) | handoff.md |
-| worker_m3 | SmolAgents Arena & TUI Specialist | DONE (132/132 tests passed) | handoff.md |
-| test_writer_e2e | E2E Test Architect & Writer | DONE (184/184 tests passed) | TEST_READY.md |
-| reviewer_1 | Reviewer 1 (Frontend, Airgap & DSP) | APPROVE | handoff.md |
-| reviewer_2 | Reviewer 2 (SmolAgents & E2E) | APPROVE | handoff.md |
-| challenger_1 | Challenger 1 (DSP & Airgap Stress) | APPROVE | handoff.md |
-| challenger_2 | Challenger 2 (SmolAgents & E2E Stress) | APPROVE | handoff.md |
-| auditor_1 | Forensic Integrity Auditor | CLEAN | handoff.md |
-
-Gate Result: **PASS**
+Gate Result: **PASS** (Milestone M1 Complete & Certified)

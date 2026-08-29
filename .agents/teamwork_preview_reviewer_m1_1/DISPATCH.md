@@ -1,19 +1,9 @@
-## 2026-08-27T13:24:23Z
-
-You are teamwork_preview_reviewer_m1_1.
-Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_reviewer_m1_1
-Your parent is: teamwork_preview_orchestrator_16 (conversation ID: 768913e7-e140-4a9c-aaad-4dd6832be4be)
-
-MANDATORY FILES TO READ:
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_16/PROJECT.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/handoff.md
-
-ASSIGNMENT:
-Review Milestone 1 deliverables for architecture and config:
-1. Verify directory scaffolding under /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery/.
-2. Review .sandbox_training/tui_mastery/config/tournament_config.json and .sandbox_training/tui_mastery/README.md.
-3. Check alignment with PROJECT.md and user requirements (R1, R2, R3).
-4. Run verification tests.
-5. Provide a clear verdict (APPROVE or REQUEST_CHANGES) in your handoff.md (/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_reviewer_m1_1/handoff.md).
-6. Notify parent via send_message.
+## 2026-08-29T09:44:03Z
+You are Reviewer 1 for Milestone M1: Flagship Movesense Physiological Readiness Suite.
+Your working directory is /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_reviewer_m1_1/
+Read /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md, PROJECT.md, and Worker M1 handoff at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/handoff.md.
+Review code in 01_apps/biometrics/movesense_hub (core/, dsp/, presentation/, transport/).
+Examine code quality, mathematical correctness of 512Hz Pan-Tompkins QRS, Kamath 20% filter, PTT blood pressure, sleep scoring, and Zone 2 coaching.
+Run tests: python3 -m pytest 03_biometrics_and_telemetry/tests/test_movesense_dsp_suite.py 03_biometrics_and_telemetry/tests/test_movesense_hub_modular_suite.py -v
+Write review and verdict (APPROVE or REQUEST_CHANGES) to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_reviewer_m1_1/handoff.md.
+Send a completion message when finished.

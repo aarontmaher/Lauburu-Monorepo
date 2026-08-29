@@ -50,7 +50,6 @@
       "shield": 140.0,
       "max_shield": 150,
       "attack_power": 68,
-      "movesense_connected": true,
       "hr_bpm": 64,
       "model_spec": "DeepSeek-R1-Distill-Qwen-32B-Q4_K_M",
       "active_alliance": null,
@@ -90,11 +89,7 @@
         "trades_completed": 8,
         "elo": 3718.2,
         "ghost_infiltrations": 1
-      },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0
+      }
     },
     {
       "id": "qwen_coder_mac_worker",
@@ -116,7 +111,6 @@
       "shield": 30.0,
       "max_shield": 150,
       "attack_power": 65,
-      "movesense_connected": true,
       "hr_bpm": 70,
       "model_spec": "Qwen2.5-Coder-32B-Instruct-Q4_K_M",
       "active_alliance": null,
@@ -142,10 +136,6 @@
         "trades_completed": 4,
         "elo": 1831.8
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "xp": 95,
       "fitness_score": 82.5,
       "learned_countermeasures": {
@@ -177,7 +167,6 @@
       "shield": 150,
       "max_shield": 150,
       "attack_power": 88,
-      "movesense_connected": false,
       "hr_bpm": 60,
       "model_spec": "Gemini-3.7-Pro-Thinking-Ultra (2M Window)",
       "active_alliance": "genetic_smol_moe_swarm",
@@ -217,10 +206,6 @@
         "trades_completed": 24,
         "elo": 3512.0
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "is_ghost_daemon_host": true
     },
     {
@@ -241,7 +226,6 @@
       "shield": 250,
       "max_shield": 250,
       "attack_power": 96,
-      "movesense_connected": false,
       "hr_bpm": 0,
       "model_spec": "claude-4.6-opus",
       "active_alliance": "gemini_37_pro_ultra",
@@ -274,11 +258,7 @@
         "alliances_formed": 6,
         "trades_completed": 2,
         "elo": 4350.0
-      },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0
+      }
     },
     {
       "id": "nomad_fleet_orchestrator",
@@ -302,7 +282,6 @@
       "shield": 202.0,
       "max_shield": 300,
       "attack_power": 75,
-      "movesense_connected": true,
       "hr_bpm": 62,
       "model_spec": "nomad-orchestrator-core",
       "active_alliance": null,
@@ -337,10 +316,6 @@
         "trades_completed": 50,
         "elo": 3800.0
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "xp": 315,
       "fitness_score": 88.0,
       "learned_countermeasures": {
@@ -375,7 +350,6 @@
       "shield": 150,
       "max_shield": 150,
       "attack_power": 72,
-      "movesense_connected": true,
       "hr_bpm": 66,
       "model_spec": "SmolLM2-135M-MoE-Swarm-Q4_K_M.gguf",
       "active_alliance": "gemini_37_pro_ultra",
@@ -392,7 +366,7 @@
       "active_defenses": [
         "\ud83d\udc1d Distributed AI Swarm Engine & Subagent Spawner",
         "\ud83e\uddec Genetic Smol MoE 4-Expert Dynamic Router",
-        "\ud83e\udec0 Movesense GATT Biometric Shield"
+        "\ud83e\udec0 Distributed AI Sharding Defense Shield"
       ],
       "capabilities": {
         "ast_accuracy_pct": 99.6,
@@ -419,10 +393,6 @@
         "trades_completed": 15,
         "elo": 3685.4
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "is_ghost_daemon_host": true,
       "xp": 220,
       "fitness_score": 85.5
@@ -445,7 +415,6 @@
       "shield": 350,
       "max_shield": 350,
       "attack_power": 85,
-      "movesense_connected": false,
       "hr_bpm": 0,
       "model_spec": "antigravity-core-agent",
       "active_alliance": "genetic_smol_moe_swarm",
@@ -483,10 +452,6 @@
         "elo": 3800.0,
         "ghost_infiltrations": 2
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "xp": 220,
       "fitness_score": 85.5,
       "is_ghost_daemon_host": true
@@ -647,7 +612,7 @@
       "interconnect_tbps": 3.2,
       "ingress_latency_ms": 115.0,
       "primary_cloud_ai": "Gemini 2.5 Pro (Multimodal 2M Context Analyzer)",
-      "purpose": "Movesense 128Hz Biometrics & High-Fidelity DSP Synthesis",
+      "purpose": "Distributed AI Sharding & Speed Optimization",
       "tier": "Cloud Tier 3 Multimodal Supercluster"
     },
     {
@@ -977,13 +942,13 @@
       "desc": "Applies real-time hardware cryptography across the 10Gbps TB4 bridge, granting immunity to unauthorized DMA memory siphons."
     },
     {
-      "id": "movesense_biometric_shield",
-      "name": "\ud83e\udec0 Movesense 128Hz Autonomic HRV Protective Shield",
+      "id": "speedify_bonding_shield",
+      "name": "\u26a1 Speedify MPQUIC Multi-Link Channel Bonding Shield",
       "shield_boost": 180,
       "mitigation_pct": 50,
       "cost": 1800,
       "cost_lct": 1800,
-      "desc": "Synchronizes node defense with live Movesense parasympathetic tone, providing 180 shield and +25% passive health regeneration."
+      "desc": "Combines 10Gbps TB4 DMA and WireGuard tunnel packet striping for sub-20ms TTFT."
     },
     {
       "id": "termux_keepalive_barrier",
@@ -1060,12 +1025,12 @@
     {
       "timestamp": "18:21:42",
       "agent": "Nomad Fleet Orchestrator (Multi-WAN Commander)",
-      "action": "\ud83e\ude99 [Nomad Fleet Orchestrator (Multi-WAN Commander)] mined 228,181 LCT via \u26a1 Extreme Outlier: Polar H10 Transfer Function Synthesis (Diff: +4.8\u03c3 | Utility: 7.0x | SizeEff: 2.6x) [\ud83d\udd25 BOTTLENECK SOLVED: Movesense 128Hz GATT IMU/ECG & Polar H10 Dual-Stream Collision -> 8.0x Bounty!]",
+      "action": "\ud83e\ude99 [Nomad Fleet Orchestrator (Multi-WAN Commander)] mined 228,181 LCT via \u26a1 Extreme Outlier: Polar H10 Transfer Function Synthesis (Diff: +4.8\u03c3 | Utility: 7.0x | SizeEff: 2.6x) [\ud83d\udd25 BOTTLENECK SOLVED: Speedify MPQUIC & Tailscale WireGuard Packet Collision -> 8.0x Bounty!]",
       "tokens_earned": 228181,
       "type": "MINING",
       "is_outlier": true,
       "project_utility": 7.0,
-      "bottleneck": "Movesense 128Hz GATT IMU/ECG & Polar H10 Dual-Stream Collision"
+      "bottleneck": "Speedify MPQUIC & Tailscale WireGuard Packet Collision"
     },
     {
       "timestamp": "18:21:41",
@@ -1138,12 +1103,12 @@
     {
       "timestamp": "18:21:35",
       "agent": "Gemini 3.7 Flash Thinking (Sub-Second Cognitive Shard)",
-      "action": "\ud83e\ude99 [Gemini 3.7 Flash Thinking (Sub-Second Cognitive Shard)] mined 228,181 LCT via \u26a1 Extreme Outlier: Polar H10 Transfer Function Synthesis (Diff: +4.8\u03c3 | Utility: 7.0x | SizeEff: 2.6x) [\ud83d\udd25 BOTTLENECK SOLVED: Movesense 128Hz GATT IMU/ECG & Polar H10 Dual-Stream Collision -> 8.0x Bounty!]",
+      "action": "\ud83e\ude99 [Gemini 3.7 Flash Thinking (Sub-Second Cognitive Shard)] mined 228,181 LCT via \u26a1 Extreme Outlier: Polar H10 Transfer Function Synthesis (Diff: +4.8\u03c3 | Utility: 7.0x | SizeEff: 2.6x) [\ud83d\udd25 BOTTLENECK SOLVED: Speedify MPQUIC & Tailscale WireGuard Packet Collision -> 8.0x Bounty!]",
       "tokens_earned": 228181,
       "type": "MINING",
       "is_outlier": true,
       "project_utility": 7.0,
-      "bottleneck": "Movesense 128Hz GATT IMU/ECG & Polar H10 Dual-Stream Collision"
+      "bottleneck": "Speedify MPQUIC & Tailscale WireGuard Packet Collision"
     },
     {
       "timestamp": "18:21:35",
@@ -1474,7 +1439,7 @@
   "pyspark_ray_improvements_history": [
     {
       "category": "LoRA Multi-Task Continuous Distillation",
-      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Distributed AI Sharding streams, optimizing local model accuracy to 99.7%.",
       "roi_score": 99.6,
       "reward_lct": 14500,
       "sharded_layers": "32/32 Heads",
@@ -1482,7 +1447,7 @@
     },
     {
       "category": "LoRA Multi-Task Continuous Distillation",
-      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Distributed AI Sharding streams, optimizing local model accuracy to 99.7%.",
       "roi_score": 99.6,
       "reward_lct": 14500,
       "sharded_layers": "32/32 Heads",
@@ -1498,7 +1463,7 @@
     },
     {
       "category": "LoRA Multi-Task Continuous Distillation",
-      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Distributed AI Sharding streams, optimizing local model accuracy to 99.7%.",
       "roi_score": 99.6,
       "reward_lct": 14500,
       "sharded_layers": "32/32 Heads",
@@ -1506,7 +1471,7 @@
     },
     {
       "category": "LoRA Multi-Task Continuous Distillation",
-      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Distributed AI Sharding streams, optimizing local model accuracy to 99.7%.",
       "roi_score": 99.6,
       "reward_lct": 14500,
       "sharded_layers": "32/32 Heads",
@@ -1514,7 +1479,7 @@
     },
     {
       "category": "LoRA Multi-Task Continuous Distillation",
-      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Distributed AI Sharding streams, optimizing local model accuracy to 99.7%.",
       "roi_score": 99.6,
       "reward_lct": 14500,
       "sharded_layers": "32/32 Heads",
@@ -1538,7 +1503,7 @@
     },
     {
       "category": "LoRA Multi-Task Continuous Distillation",
-      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Distributed AI Sharding streams, optimizing local model accuracy to 99.7%.",
       "roi_score": 99.6,
       "reward_lct": 14500,
       "sharded_layers": "32/32 Heads",
@@ -1546,7 +1511,7 @@
     },
     {
       "category": "LoRA Multi-Task Continuous Distillation",
-      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Distributed AI Sharding streams, optimizing local model accuracy to 99.7%.",
       "roi_score": 99.6,
       "reward_lct": 14500,
       "sharded_layers": "32/32 Heads",
@@ -1570,7 +1535,7 @@
     },
     {
       "category": "LoRA Multi-Task Continuous Distillation",
-      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Movesense streams, optimizing local model accuracy to 99.7%.",
+      "finding": "Merged instruction-thought-solution datasets across Truth Audit and Distributed AI Sharding streams, optimizing local model accuracy to 99.7%.",
       "roi_score": 99.6,
       "reward_lct": 14500,
       "sharded_layers": "32/32 Heads",
@@ -1656,7 +1621,6 @@
       "shield": 140.0,
       "max_shield": 150,
       "attack_power": 68,
-      "movesense_connected": true,
       "hr_bpm": 64,
       "model_spec": "DeepSeek-R1-Distill-Qwen-32B-Q4_K_M",
       "active_alliance": null,
@@ -1696,11 +1660,7 @@
         "trades_completed": 8,
         "elo": 3718.2,
         "ghost_infiltrations": 1
-      },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0
+      }
     },
     {
       "id": "qwen_coder_mac_worker",
@@ -1722,7 +1682,6 @@
       "shield": 30.0,
       "max_shield": 150,
       "attack_power": 65,
-      "movesense_connected": true,
       "hr_bpm": 70,
       "model_spec": "Qwen2.5-Coder-32B-Instruct-Q4_K_M",
       "active_alliance": null,
@@ -1748,10 +1707,6 @@
         "trades_completed": 4,
         "elo": 1831.8
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "xp": 95,
       "fitness_score": 82.5,
       "learned_countermeasures": {
@@ -1784,7 +1739,6 @@
       "shield": 125.0,
       "max_shield": 150,
       "attack_power": 60,
-      "movesense_connected": true,
       "hr_bpm": 68,
       "model_spec": "Gemma-4-26B-A4B-MoE-Q4_K_M",
       "active_alliance": null,
@@ -1822,10 +1776,6 @@
         "trades_completed": 5,
         "elo": 2994.4
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "xp": 220,
       "fitness_score": 85.5
     },
@@ -1850,14 +1800,13 @@
       "shield": 110.0,
       "max_shield": 150,
       "attack_power": 58,
-      "movesense_connected": true,
       "hr_bpm": 72,
       "model_spec": "Gemini-Nano-3B (On-Device)",
       "active_alliance": "gemini_25_flash_gateway",
       "active_trade": null,
       "skills_inventory": [
         "8K Digital PTZ",
-        "Movesense 128Hz GATT Ingress",
+        "Speedify MPQUIC Striping Ingress",
         "Edge TPU Acceleration",
         "\ud83d\udc7b Ghost Mesh Master",
         "Automated Load Balancer"
@@ -1888,10 +1837,6 @@
         "elo": 2158.5,
         "ghost_infiltrations": 1
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "vision_profile": {
         "has_direct_vision": true,
         "fov_deg": 120,
@@ -1933,7 +1878,6 @@
       "shield": 150,
       "max_shield": 150,
       "attack_power": 72,
-      "movesense_connected": true,
       "hr_bpm": 66,
       "model_spec": "SmolLM2-135M-MoE-Swarm-Q4_K_M.gguf",
       "active_alliance": "gemini_37_pro_ultra",
@@ -1950,7 +1894,7 @@
       "active_defenses": [
         "\ud83d\udc1d Distributed AI Swarm Engine & Subagent Spawner",
         "\ud83e\uddec Genetic Smol MoE 4-Expert Dynamic Router",
-        "\ud83e\udec0 Movesense GATT Biometric Shield"
+        "\ud83e\udec0 Distributed AI Sharding Defense Shield"
       ],
       "capabilities": {
         "ast_accuracy_pct": 99.6,
@@ -1977,10 +1921,6 @@
         "trades_completed": 15,
         "elo": 3685.4
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "is_ghost_daemon_host": true,
       "xp": 220,
       "fitness_score": 85.5
@@ -2006,7 +1946,6 @@
       "shield": 100,
       "max_shield": 100,
       "attack_power": 52,
-      "movesense_connected": true,
       "hr_bpm": 75,
       "model_spec": "SmolLM2-1.7B-Instruct-Q4_K_M",
       "active_alliance": null,
@@ -2027,11 +1966,7 @@
         "alliances_formed": 6,
         "trades_completed": 7,
         "elo": 2542.9
-      },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0
+      }
     },
     {
       "id": "wave3_smollm2_360m",
@@ -2053,7 +1988,6 @@
       "shield": 60,
       "max_shield": 150,
       "attack_power": 95,
-      "movesense_connected": true,
       "hr_bpm": 68,
       "model_spec": "SmolLM2-360M-Instruct-Q4_K_M.gguf",
       "active_alliance": null,
@@ -2079,10 +2013,6 @@
         "trades_completed": 5,
         "elo": 2039.9
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "xp": 95,
       "fitness_score": 82.5,
       "learned_countermeasures": {
@@ -2114,7 +2044,6 @@
       "shield": 150,
       "max_shield": 150,
       "attack_power": 88,
-      "movesense_connected": false,
       "hr_bpm": 60,
       "model_spec": "Gemini-3.7-Pro-Thinking-Ultra (2M Window)",
       "active_alliance": "genetic_smol_moe_swarm",
@@ -2154,10 +2083,6 @@
         "trades_completed": 24,
         "elo": 3512.0
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "is_ghost_daemon_host": true
     },
     {
@@ -2180,7 +2105,6 @@
       "shield": 140.0,
       "max_shield": 150,
       "attack_power": 82,
-      "movesense_connected": false,
       "hr_bpm": 62,
       "model_spec": "Gemini-3.7-Flash-Thinking-Ultra",
       "active_alliance": null,
@@ -2216,11 +2140,7 @@
         "alliances_formed": 15,
         "trades_completed": 20,
         "elo": 3280.0
-      },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0
+      }
     },
     {
       "id": "gemini_25_pro_multimodal",
@@ -2241,14 +2161,13 @@
       "shield": 42.0,
       "max_shield": 150,
       "attack_power": 80,
-      "movesense_connected": false,
       "hr_bpm": 64,
       "model_spec": "Gemini-2.5-Pro-Multimodal-Ultra",
       "active_alliance": null,
       "active_trade": null,
       "skills_inventory": [
         "Deep Audio/Vision/Biometric Stream Analysis",
-        "Movesense 128Hz Signal Decomposition",
+        "Distributed Tensor Slice Decomposition",
         "High-Fidelity Code Generation",
         "\ud83d\udee1\ufe0f Learned: Adaptive Defense vs kimura_shoulder_lock (+10%)"
       ],
@@ -2278,10 +2197,6 @@
         "trades_completed": 16,
         "elo": 3142.9
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "vision_profile": {
         "has_direct_vision": true,
         "fov_deg": 120,
@@ -2330,7 +2245,6 @@
       "shield": 130.0,
       "max_shield": 150,
       "attack_power": 76,
-      "movesense_connected": false,
       "hr_bpm": 66,
       "model_spec": "Gemini-2.5-Flash-Ultra-Edge",
       "active_alliance": "gemini_nano_pixel",
@@ -2369,11 +2283,7 @@
         "trades_completed": 14,
         "elo": 3021.5,
         "ghost_infiltrations": 1
-      },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0
+      }
     },
     {
       "id": "gemini_live_stream_dsp",
@@ -2394,7 +2304,6 @@
       "shield": 145.0,
       "max_shield": 150,
       "attack_power": 84,
-      "movesense_connected": true,
       "hr_bpm": 59,
       "model_spec": "Gemini-Live-Multimodal-Ultra",
       "active_alliance": null,
@@ -2436,10 +2345,6 @@
         "elo": 3603.2,
         "daemons_neutralized": 1
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "xp": 440,
       "fitness_score": 91.0,
       "installed_daemons": [],
@@ -2470,7 +2375,6 @@
       "shield": 16.0,
       "max_shield": 210,
       "attack_power": 92,
-      "movesense_connected": false,
       "hr_bpm": 0,
       "model_spec": "claude-4.6-sonnet",
       "active_alliance": null,
@@ -2505,10 +2409,6 @@
         "trades_completed": 10,
         "elo": 4131.2
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "xp": 190,
       "fitness_score": 85.0,
       "learned_countermeasures": {
@@ -2544,7 +2444,6 @@
       "shield": 250,
       "max_shield": 250,
       "attack_power": 96,
-      "movesense_connected": false,
       "hr_bpm": 0,
       "model_spec": "claude-4.6-opus",
       "active_alliance": "gemini_37_pro_ultra",
@@ -2577,11 +2476,7 @@
         "alliances_formed": 6,
         "trades_completed": 2,
         "elo": 4350.0
-      },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0
+      }
     },
     {
       "id": "moonshot_kimi_cloud",
@@ -2601,7 +2496,6 @@
       "shield": 190,
       "max_shield": 190,
       "attack_power": 89,
-      "movesense_connected": false,
       "hr_bpm": 0,
       "model_spec": "moonshot-kimi-200k",
       "active_alliance": null,
@@ -2633,10 +2527,6 @@
         "trades_completed": 25,
         "elo": 3800.0
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "is_ghost_daemon_host": true
     },
     {
@@ -2657,7 +2547,6 @@
       "shield": 350,
       "max_shield": 350,
       "attack_power": 85,
-      "movesense_connected": false,
       "hr_bpm": 0,
       "model_spec": "antigravity-core-agent",
       "active_alliance": "genetic_smol_moe_swarm",
@@ -2695,10 +2584,6 @@
         "elo": 3800.0,
         "ghost_infiltrations": 2
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "xp": 220,
       "fitness_score": 85.5,
       "is_ghost_daemon_host": true
@@ -2725,7 +2610,6 @@
       "shield": 202.0,
       "max_shield": 300,
       "attack_power": 75,
-      "movesense_connected": true,
       "hr_bpm": 62,
       "model_spec": "nomad-orchestrator-core",
       "active_alliance": null,
@@ -2760,10 +2644,6 @@
         "trades_completed": 50,
         "elo": 3800.0
       },
-      "movesense_agility": 50.0,
-      "movesense_dodge_pct": 15.0,
-      "movesense_stealth_pct": 50.0,
-      "movesense_fitness_score": 50.0,
       "xp": 315,
       "fitness_score": 88.0,
       "learned_countermeasures": {

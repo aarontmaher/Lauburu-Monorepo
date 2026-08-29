@@ -50,7 +50,7 @@ class MovesenseReadinessSuite:
           MAP = (SBP + 2 * DBP) / 3.0
         Strict Rule #0: returns null metrics with status STANDBY if inputs are missing/disconnected.
         """
-        if hr_bpm is None or (rmssd_ms is None and ptt_ms is None):
+        if hr_bpm is None or float(hr_bpm) <= 0.0 or (rmssd_ms is None and ptt_ms is None):
             return {
                 "estimated_ptt_ms": None,
                 "systolic_bp_mmhg": None,
@@ -138,7 +138,7 @@ class MovesenseReadinessSuite:
                 "sleep_stages_estimate": None
             }
 
-        daytime_base = float(daytime_hr_rest) if daytime_hr_rest is not None else (self.hr_rest_baseline * 1.15)
+        daytime_base = float(daytime_hr_rest) if (daytime_hr_rest is not None and float(daytime_hr_rest) > 0.0) else (self.hr_rest_baseline * 1.15)
 
         if epoch_stages:
             total_epochs = len(epoch_stages)
@@ -166,7 +166,15 @@ class MovesenseReadinessSuite:
                 autonomic_score = 20.0
 
             sleep_score = int(round(min(100.0, max(0.0, deep_score + rem_score + efficiency_score + autonomic_score))))
-            nocturnal_dip = round(((daytime_base - float(hr_bpm)) / daytime_base) * 100.0, 1) if hr_bpm else None
+            if hr_bpm is not None and float(hr_bpm) > 0.0:
+                if daytime_hr_rest is not None and float(daytime_hr_rest) <= 0.0:
+                    nocturnal_dip = 0.0
+                elif daytime_base > 0.0:
+                    nocturnal_dip = round(((daytime_base - float(hr_bpm)) / daytime_base) * 100.0, 1)
+                else:
+                    nocturnal_dip = 0.0
+            else:
+                nocturnal_dip = None
 
             return {
                 "status": "COMPLETED",
@@ -196,7 +204,12 @@ class MovesenseReadinessSuite:
         light_pct = 46.5
         awake_pct = 7.0
 
-        nocturnal_dip = round(((daytime_base - hr) / daytime_base) * 100.0, 1)
+        if daytime_hr_rest is not None and float(daytime_hr_rest) <= 0.0:
+            nocturnal_dip = 0.0
+        elif daytime_base > 0.0:
+            nocturnal_dip = round(((daytime_base - hr) / daytime_base) * 100.0, 1)
+        else:
+            nocturnal_dip = 0.0
 
         return {
             "status": "COMPLETED",
@@ -218,7 +231,7 @@ class MovesenseReadinessSuite:
         Automatically detects current physical activity and training zone based on % HRmax.
         Strict Rule #0: returns null metrics and WAITING_FOR_SENSOR if hr_bpm is None.
         """
-        if hr_bpm is None or hr_bpm <= 0:
+        if hr_bpm is None or float(hr_bpm) <= 0.0 or self.hr_max is None or int(self.hr_max) <= 0:
             return {
                 "status": "WAITING_FOR_SENSOR",
                 "current_activity": None,
@@ -226,7 +239,8 @@ class MovesenseReadinessSuite:
                 "hr_pct_max": None
             }
 
-        pct_max = (float(hr_bpm) / float(self.hr_max)) * 100.0
+        effective_hr_max = max(60, int(self.hr_max))
+        pct_max = (float(hr_bpm) / float(effective_hr_max)) * 100.0
         if pct_max < 55.0:
             zone = "Rest / Passive Recovery"
             activity = "RESTING"

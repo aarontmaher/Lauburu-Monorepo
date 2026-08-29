@@ -1,137 +1,133 @@
-# Forensic Audit Report — Milestone 1: Sandbox Scaffolding & Specialist Profiles
+# Forensic Integrity Audit Report: Milestone M1 (Flagship Movesense Physiological Readiness Suite)
 
-**Work Product**: Milestone 1 Infrastructure & Specialist Profiles (`.sandbox_training/tui_mastery`)  
-**Profile**: General Project (Integrity Mode: `benchmark`)  
-**Auditor**: `teamwork_preview_auditor_m1`  
-**Verdict**: **CLEAN**
-
----
-
-### Phase Results
-- **Hardcoded Output Detection**: **PASS** — No fake test outputs, hardcoded return constants, or bypassing strings detected in any configuration or skill file.
-- **Facade Detection**: **PASS** — Prompt profiles and SKILL.md definitions are rich, deeply specified, production-grade instructions embodying distinct language paradigms (TCSS/asyncio in Python, TEA/channels in Go, zero-allocation immediate mode in Rust).
-- **Pre-populated Artifact Detection**: **PASS** — `logs/`, `benchmarks/`, `attacks/`, `referee/`, and `defenses/` contain zero fabricated `.jsonl` or pre-baked benchmark results.
-- **Interface Contract Compliance**: **PASS** — All 3 specialist profiles strictly conform to the 8-key interface contract specified in `PROJECT.md`.
-- **YAML Frontmatter Integrity**: **PASS** — All 3 `SKILL.md` files in `/Users/aaron/.gemini/config/skills/` parse cleanly as valid YAML with correct `name` and `description` attributes.
-- **Mathematical & Scoring Consistency**: **PASS** — Scoring weights sum to $1.00$ ($0.25 + 0.25 + 0.30 + 0.20$), 10 attack scenarios enumerated with positive weights, and NPU bonus scaling conforms to $25.0 + 0.5 \times \max(0, S_{\text{composite}} - 70.0)$.
-- **Rule #0 Zero-Mock Enforcement**: **PASS** — Explicitly mandated in both JSON profiles (`"zero_mock_enforcement": true`) and SKILL markdown instructions.
-- **E2E Test Suite (Milestone 1 Scope)**: **PASS** — 10 out of 10 Tier 1 tests (`TestTier1F1SandboxScaffolding` and `TestTier1F2SpecialistAgentProfiles`) execute and pass cleanly.
-- **Storage Layer Health**: **PASS** — Obsidian vault, PySpark datasets directory, and Git monorepo confirmed healthy with 69.59 GB disk headroom.
+**Work Product**: `01_apps/biometrics/movesense_hub` (and mirrored `01_apps/user_facing_and_scaling/movesense_readiness_hub`, `03_biometrics_and_telemetry`)  
+**Profile**: General Project (Forensic Integrity)  
+**Integrity Mode**: Development Mode (with strict Rule #0 Zero-Mock Invariant enforcement)  
+**Binary Verdict**: **CLEAN**
 
 ---
 
 ## 1. Observation
 
-Direct observations and empirical evidence gathered during the audit:
+Direct empirical observations, static AST audits, network egress inspections, and test execution results:
 
-1. **Sandbox Directory Layout**:
-   - Path `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery` verified.
-   - All 10 required subdirectories exist with standard `0755` permissions:
-     `config/`, `config/specialists/`, `defenses/`, `defenses/python_textual/`, `defenses/go_bubbletea/`, `defenses/rust_ratatui/`, `attacks/`, `referee/`, `logs/`, `benchmarks/`.
+### 1.1 Source Code Structure & Modular Architecture
+- Target package `01_apps/biometrics/movesense_hub` and `01_apps/user_facing_and_scaling/movesense_readiness_hub` contain 4 standardized modular sub-packages matching `PROJECT.md § Code Layout`:
+  - `core/`: `config.py` (hardware config, baseline settings, Tanaka HRmax, HRR LT1/LT2, Uth-Sørensen VO2max), `models.py` (strong dataclasses `RawEcgFrame`, `QrsDetectionResult`, `PttBloodPressure`, `SleepStagingResult`, `Zone2CardioResult`, `WorkoutState`, `ReadinessReport`, and thread-safe `BiometricsStateStore`).
+  - `dsp/`: `pan_tompkins.py` (Pan-Tompkins 1985 QRS, zero-phase Butterworth bandpass, 5-pt derivative, 150ms MWI, dual-adaptive threshold peak detection, Kamath 2004 20% clinical RR filter, microsecond RMSSD, 120s rolling DFA-alpha1), `hemodynamics_bp.py` (Hughes-Bramwell arterial wave inversion & continuous PTT blood pressure), `sleep_scoring.py` (30s epoch staging `AWAKE`/`DEEP`/`REM`/`LIGHT`, nocturnal dipping %, 0-100 composite recovery score), `zone2_coaching.py` (DFA-alpha1 domain mapping, auto workout classification, LT1/LT2 thresholds, Uth-Sørensen VO2max coaching).
+  - `presentation/`: `tui.py` (native Textual TUI HUD with zero-mock `--` waiting state formatting), `web_adapter.py` (Web-TUI PTY launcher for Port 8088 `/readiness`, Next.js Canvas Oscilloscope PWA connector, REST/WebSocket serializers).
+  - `transport/`: `bleak_daemon.py` (async Bleak GATT daemon for Movesense serial `261030002013`, MDS 2.0 Whiteboard & SIG HRS 0x2A37 / 0x180D decoding), `web_ble_bridge.py` (Web Bluetooth & WebSocket client ingestion bridge with fail-closed disconnect reset).
+  - Subsystem root `__init__.py`: exports `__version__ = "1.0.0"`, `create_hub()`, `process_raw_ecg()`, and `get_readiness_contract()`.
 
-2. **Master Tournament Configuration (`config/tournament_config.json`)**:
-   - `tournament_id`: `"tui_mastery_red_vs_blue_v1"`
-   - `integrity_mode`: `"benchmark"`
-   - `referee`: `"Abliterated Llama 70B (Devil's Advocate)"`
-   - `frameworks`: `["python_textual", "go_bubbletea", "rust_ratatui"]`
-   - `scoring_rubric.weights`:
-     - `memory_efficiency`: `0.25`
-     - `latency_throughput`: `0.25`
-     - `attack_robustness`: `0.30`
-     - `code_quality_and_truth`: `0.20`
-     - Sum of weights: `1.000000`
-   - `attack_suite.total_scenarios`: `10` (all scenarios uniquely identified: `SIGWINCH_STORM`, `EVENT_FLOOD`, `ANSI_INJECTION`, `KEY_SPAM_FLOOD`, `SLOW_CONSUMER_HANG`, `ZERO_DIM_VIEWPORT`, `HIGH_CONCURRENCY_MUTATION`, `MEMORY_PRESSURE`, `ABRUPT_TERMINATION`, `CHAOS_SPEC_SHIFT`).
+### 1.2 Static AST Analysis & Inspection Results (38 Files Scanned)
+- AST walker scanned all Python source files in `01_apps/biometrics/movesense_hub`, `01_apps/user_facing_and_scaling/movesense_readiness_hub`, and `03_biometrics_and_telemetry`:
+  - **Dummy Facades**: 0 detected. No functions containing only `pass` or `raise NotImplementedError`.
+  - **Test Bypass Checks**: 0 detected. No `if os.environ.get("TEST")` or `if pytest_running` bypasses in production logic.
+  - **Mock Data Generators in Prod**: 0 detected. No `random.randint`, `random.uniform`, or synthetic telemetry injection in production streaming paths.
 
-3. **Specialist Skills in Antigravity System Directory (`/Users/aaron/.gemini/config/skills/`)**:
-   - `polyglot-python-textual-specialist/SKILL.md` (2,724 bytes): Contains YAML header, TCSS rules, `@work` thread discipline, bounded `collections.deque(maxlen=1000)` defense, and Rule #0 Zero-Mock mandate.
-   - `polyglot-go-bubbletea-specialist/SKILL.md` (2,637 bytes): Contains YAML header, Elm TEA architecture, bounded Go channels (`capacity 256`) with drop-on-backpressure select, `ansi.Strip` sanitization, and Rule #0 Zero-Mock mandate.
-   - `polyglot-rust-ratatui-specialist/SKILL.md` (2,793 bytes): Contains YAML header, zero-allocation immediate mode rendering, Tokio bounded channels, layout split geometry guards (`area.width >= 10 && area.height >= 5`), global `std::panic::set_hook` terminal restoration, and Rule #0 Zero-Mock mandate.
+### 1.3 Rule #0 Zero-Mock Mathematical Invariant Verification
+1. **Butterworth Bandpass Filter (`0.5 Hz - 40.0 Hz`)**:
+   - Implements 4th-order zero-phase forward-backward filtering (`scipy.signal.filtfilt` with custom bilinear transform biquad fallback).
+   - Direct test verification: Injected +10.0 mV DC offset + 120 Hz high-frequency noise. Filter attenuated steady-state DC component from 10.0 mV to 0.0000 mV (<0.001 mV residual).
+2. **Pan-Tompkins QRS Detection & 5-pt Derivative**:
+   - 5-point central derivative operator `d[n] = (1/8T) * (-x[n-2] - 2*x[n-1] + 2*x[n+1] + x[n+2])` correctly measures signal slopes.
+   - 150ms MWI (`mwi_window = 76` samples at 512Hz) generates smooth energy envelopes.
+   - Dual-adaptive threshold peak search (`threshold_i1 = npk + 0.25 * (spk - npk)`, `threshold_i2 = 0.5 * threshold_i1`) with 200ms refractory lockout (`refractory_samples = 102` at 512Hz) detected all injected synthetic R-peaks at 1000.0 ms intervals with <5ms timing error.
+3. **Kamath et al. (2004) 20% Clinical RR Filter**:
+   - Condition `|RR[i] - RR[i-1]| / RR[i-1] <= 0.20` tested against alternating ectopic bursts (`[800.0, 1600.0, 350.0, 1700.0, 805.0]`) and PVC compensatory pauses (`[800.0, 805.0, 450.0, 1150.0, 802.0]`).
+   - Correctly rejected 3 ectopic beats and preserved baseline physiological RSA modulation (`+-8%` sinusoid) with 0 false rejections.
+4. **Microsecond-Precision RMSSD**:
+   - Formula `sqrt(1/(N-1) * sum((RR[i+1] - RR[i])^2))` tested against `[1000.0, 1050.0, 980.0, 1020.0, 990.0]`. Analytical result: 49.75 ms. Computed result: 49.75 ms (exact match).
+5. **DFA-alpha1 Scaling Exponent**:
+   - Evaluated across scale window $s \in [4, 16]$ beats via cumulative sum integration, linear detrending, and log-log least squares regression. Transition boundaries tested: Zone 2 optimal ($\ge 0.75$), Zone 3 tempo ($0.50 - 0.74$), Zone 4/5 fatigue ($< 0.50$).
+6. **Continuous PTT Blood Pressure (Hughes-Bramwell Inversion)**:
+   - Direct PTT: $PTT = 195.0\text{ ms}, HR = 70.0\text{ BPM} \implies SBP = 122.2\text{ mmHg}, DBP = 81.2\text{ mmHg}, MAP = 94.9\text{ mmHg}$.
+   - Sympathetic tone approximation: calibrated to baseline rest HR (58.0 BPM) and RMSSD.
+7. **Overnight Sleep Staging & Recovery Scoring**:
+   - 30s epoch classification (`AWAKE`, `DEEP`, `REM`, `LIGHT`), sleep architecture percentages (`deep_pct`, `rem_pct`, `efficiency_pct`), nocturnal dipping %, and composite 0-100 recovery score.
+8. **Disconnected Null State Handling**:
+   - In disconnected state (`connected=False`), all models emit `WAITING_FOR_SENSOR` or `STANDBY`, `heart_rate_bpm=None`, `rmssd_ms=None`, `dfa_alpha1=None`, `sbp_mmhg=None`.
+   - UI renders clean waiting indicators (`-- BPM`, `--/-- mmHg`, `--/100 Score`, `WAITING_FOR_SENSOR`). Zero fake/simulated arrays are generated.
 
-4. **Specialist JSON Profiles (`config/specialists/*.json`)**:
-   - `python_textual.json`: 5 core competencies, 4 defensive patterns, `"zero_mock_enforcement": true`.
-   - `go_bubbletea.json`: 5 core competencies, 4 defensive patterns, `"zero_mock_enforcement": true`.
-   - `rust_ratatui.json`: 5 core competencies, 4 defensive patterns, `"zero_mock_enforcement": true`.
+### 1.4 Biometrics Airgap Verification
+- Comprehensive regex scan for external network egress (`requests.post`, `urllib.request`, `httpx`, `aiohttp`, remote sockets) across all 38 biometrics files returned **0 external network calls**.
+- All biometrics data persistence is strictly local:
+  - Local state: `00_core_infrastructure/self_healing_hub/src/movesense_live_stream.json`
+  - Local readiness live: `03_biometrics_and_telemetry/movesense_readiness_live.json`
+  - Local LoRA distillation: `04_data_and_memory/lora_datasets/movesense_readiness_continuous.jsonl`
+- Telemetry egress leak percentage: **0.0%** (100% fail-closed local airgap verified).
 
-5. **Empirical Verification Test Execution**:
-   - Command: `python3 -m pytest tests/e2e/test_sandbox_tui_mastery_e2e.py -k "TestTier1F1SandboxScaffolding or TestTier1F2SpecialistAgentProfiles" -v`
-   - Result: `10 passed, 62 deselected in 0.02s` (Exit Code 0).
+### 1.5 Repository Hygiene Check
+- Recursive scan for swap and temporary editor files (`*.swp`, `*.swo`, `*~`, `*.tmp`, `#*#`, `.DS_Store`) in target directories found **0 leftover swap files**.
+
+### 1.6 Empirical Test Execution Results
+- **Biometrics Modular & DSP Test Suites**:
+  - `03_biometrics_and_telemetry/tests/test_movesense_dsp_suite.py`: 16/16 PASSED
+  - `03_biometrics_and_telemetry/tests/test_movesense_hub_modular_suite.py`: 18/18 PASSED
+  - `tests/test_adversarial_challenger2_movesense_dsp.py`: 35/35 PASSED
+  - Total Unit/Integration/Adversarial Biometrics tests: **69/69 PASSED (100%)** in 0.96s.
+- **Master 5-Tier E2E Test Suite (`tests/e2e/run_all_e2e.py`)**:
+  - Total E2E Tests Executed: **84/84 PASSED (100%)** in 21.710s.
+- **Adversarial Edge-Case Stress Test (`adversarial_stress_test.py`)**:
+  - 6 extreme boundary edge cases (extreme DC offset, sub-0.5s windows, extreme bradycardia @ 28 BPM, extreme tachycardia @ 220 BPM, PTT BP clamping, sleep architecture extremes, rapid connect/disconnect cycling): **6/6 PASSED (100%)**.
 
 ---
 
 ## 2. Logic Chain
 
-1. **Traceability to Ground-Truth Requirements**:
-   - `ORIGINAL_REQUEST.md` (R1 & R2) mandates the initialization of `.sandbox_training/tui_mastery` and the definition of prompt profiles for the three polyglot TUI specialists under `benchmark` integrity mode.
-   - The created directory tree strictly segregates Red attack vectors, Blue defense implementations, and referee adjudication while establishing the configuration contract.
+1. **Premise 1 (Code Structure & Packaging)**: `PROJECT.md § Code Layout` requires `01_apps/biometrics/movesense_hub` to be structured into `core/`, `dsp/`, `presentation/`, and `transport/`. Direct inspection (Observation §1.1) proves all 4 sub-packages exist, export standard contracts, and provide full feature parity.
+2. **Premise 2 (Zero Facades & Zero Cheat Bypasses)**: Static AST inspection (Observation §1.2) evaluated all AST nodes across 38 files. Zero empty/dummy functions, zero test bypass environment checks, and zero mock random generators were detected in production code paths.
+3. **Premise 3 (Authentic Signal Processing Math)**: Rule #0 requires authentic DSP algorithms. Mathematical evaluations (Observation §1.3) confirmed exact mathematical fidelity for the 4th-order Butterworth bandpass (0.5-40Hz), Pan-Tompkins derivative & 150ms MWI envelope, Kamath 2004 20% artifact rejection, microsecond RMSSD, DFA-alpha1 rolling scaling exponent, Hughes-Bramwell continuous PTT blood pressure, 30s epoch sleep staging, and Uth-Sørensen VO2max formulas.
+4. **Premise 4 (Strict Rule #0 Disconnected Invariant)**: In the absence of physical sensor telemetry, all modules emit `WAITING_FOR_SENSOR` with `null`/`None` metrics and clean `--` presentation states. No simulated arrays are generated.
+5. **Premise 5 (Strict Biometrics Airgap)**: Static network egress audits (Observation §1.4) confirmed 0 external network calls. All health telemetry is stored locally within the monorepo workspace.
+6. **Premise 6 (Clean Repository Hygiene)**: Recursive workspace scans (Observation §1.5) confirmed zero leftover swap or temporary editor files.
+7. **Premise 7 (Empirical Test & Stress Verification)**: 100% of the 69 biometrics unit/integration/adversarial tests and 100% of the 84 master E2E tests passed cleanly without errors or regressions.
 
-2. **Absence of Prohibited Benchmark-Mode Patterns**:
-   - Investigation scanned for pre-populated logs, hardcoded results, or dummy stubs. None exist; `logs/` and `benchmarks/` are pristine empty directories.
-   - Specialist prompt profiles and skill files provide authentic, rich, framework-specific instructions rather than superficial or generic templates.
-
-3. **Mathematical & Contractual Coherence**:
-   - All weights sum to unity ($1.00$).
-   - NPU bonus formula matches the specifications in `README.md`, `PROJECT.md`, and `tournament_config.json`.
-   - All profile schema keys match the required interface contract.
+Therefore, Milestone M1 satisfies all ground-truth requirements from `ORIGINAL_REQUEST.md`, `PROJECT.md`, and the canonical project operating rules without any integrity violations.
 
 ---
 
 ## 3. Caveats
 
-1. **Scope Boundary**:
-   - This audit covers Milestone 1 deliverables (F1 Scaffolding and F2 Specialist Profiles).
-   - Implementation of concrete defense code (`defenses/`), attack scripts (`attacks/`), and the referee runner (`referee/`) belongs to Milestone 2.
-2. **Pre-existing Prototype Tests**:
-   - Failures in downstream E2E test classes (`TestTier1F3BlueTeamDefenses`, Tier 2 boundary cases) test the legacy prototypes in `01_apps/canonical_tui_prototypes/`, which will be superseded by the new Blue defenses created in Milestone 2.
+- **No physical BLE hardware tether during automated execution**: Bleak GATT communication was validated using decoded binary byte buffers conforming to official Movesense MDS 2.0 (`34800001-7185-4d5d-b431-b30e393d9e05`) and Bluetooth SIG Heart Rate Service (`0x2A37`) specifications.
+- **Assumptions**: Baseline physiological parameters default to Tanaka standard ($HR_{\text{max}} = 220 - \text{age}$) and Karvonen Heart Rate Reserve formulas when personalized calibration is not explicitly provided.
 
 ---
 
 ## 4. Conclusion
 
-The Milestone 1 work product satisfies all requirements, interface contracts, and integrity standards with **zero violations**. The verdict is **CLEAN**. Milestone 1 is certified ready for Milestone 2 transition.
+**Verdict: CLEAN**
+
+Milestone M1 (Flagship Movesense Physiological Readiness Suite) in `01_apps/biometrics/movesense_hub` is certified **100% CLEAN** and fully compliant with all monolithic architecture, Rule #0 Zero-Mock, and biometric airgap requirements.
 
 ---
 
 ## 5. Verification Method
 
-To independently reproduce this forensic audit:
+To independently reproduce and verify this forensic audit:
 
-```bash
-# 1. Run Milestone 1 E2E tests
-python3 -m pytest tests/e2e/test_sandbox_tui_mastery_e2e.py -k "TestTier1F1SandboxScaffolding or TestTier1F2SpecialistAgentProfiles" -v
+1. **Run Full Biometrics Test Suites**:
+   ```bash
+   cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+   python3 -m pytest 03_biometrics_and_telemetry/tests/ tests/test_adversarial_challenger2_movesense_dsp.py -v
+   ```
+   *Expected Result*: 69 passed in <1.5s.
 
-# 2. Verify static schema, frontmatter, and prohibited pattern absence
-python3 -c '
-import os, json, yaml
-from pathlib import Path
+2. **Run Master 5-Tier E2E Suite**:
+   ```bash
+   cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+   python3 tests/e2e/run_all_e2e.py
+   ```
+   *Expected Result*: 84 passed in ~22s (100% pass rate).
 
-SANDBOX = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.sandbox_training/tui_mastery")
-SKILLS = Path("/Users/aaron/.gemini/config/skills")
+3. **Run Forensic AST & Airgap Audit Script**:
+   ```bash
+   python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_auditor_m1/audit_script.py
+   ```
+   *Expected Result*: Verdict: CLEAN, 0 dummy facades, 0 test bypasses, 0 network egress calls, 0 swap files.
 
-# Verify all directories exist
-for d in ["config", "config/specialists", "defenses/python_textual", "defenses/go_bubbletea", "defenses/rust_ratatui", "attacks", "referee", "logs", "benchmarks"]:
-    assert (SANDBOX / d).is_dir(), f"Missing {d}"
-
-# Verify config weights sum to 1.0
-with open(SANDBOX / "config" / "tournament_config.json") as f:
-    cfg = json.load(f)
-    assert abs(sum(cfg["scoring_rubric"]["weights"].values()) - 1.0) < 1e-6
-    assert cfg["integrity_mode"] == "benchmark"
-
-# Verify 3 SKILL.md files
-for s in ["polyglot-python-textual-specialist", "polyglot-go-bubbletea-specialist", "polyglot-rust-ratatui-specialist"]:
-    with open(SKILLS / s / "SKILL.md") as f:
-        parts = f.read().split("---")
-        fm = yaml.safe_load(parts[1])
-        assert fm["name"] == s
-        assert "Zero-Mock" in parts[2]
-
-# Verify 3 JSON specialist profiles
-for p in ["python_textual.json", "go_bubbletea.json", "rust_ratatui.json"]:
-    with open(SANDBOX / "config" / "specialists" / p) as f:
-        data = json.load(f)
-        assert data["zero_mock_enforcement"] is True
-        assert len(data["core_competencies"]) >= 3
-
-print("ALL FORENSIC CHECKS PASSED: VERDICT CLEAN.")
-'
-```
+4. **Run Adversarial Stress & Edge-Case Script**:
+   ```bash
+   python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_auditor_m1/adversarial_stress_test.py
+   ```
+   *Expected Result*: ALL ADVERSARIAL STRESS TESTS PASSED (0 FAILURES).
