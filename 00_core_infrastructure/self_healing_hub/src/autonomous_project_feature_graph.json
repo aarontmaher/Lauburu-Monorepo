@@ -1,0 +1,141 @@
+{
+  "timestamp_utc": "2026-08-29T08:19:35Z",
+  "discovery_summary": {
+    "total_monorepo_features": 12,
+    "illuminated_features": 10,
+    "project_discovery_coverage_pct": 83.3,
+    "fog_of_war_remaining_pct": 16.7
+  },
+  "monorepo_features_graph": {
+    "spec_00_core_infra": {
+      "name": "Spec 00: Core Infrastructure (SeaweedFS, Docker, Tailscale)",
+      "path": "00_core_infrastructure",
+      "port": 18802,
+      "status": "CONFIRMED & ILLUMINATED",
+      "badge": "\ud83d\udfe2 ACTIVE",
+      "verified_at": "2026-08-29T08:19:35Z"
+    },
+    "spec_01_apps_hub": {
+      "name": "Spec 01: Canonical Port 4000 Hub & TUI Command Center",
+      "path": "01_apps/canonical_port",
+      "port": 4000,
+      "status": "DISCOVERED (PASSIVE / STANDBY)",
+      "badge": "\ud83d\udfe1 STANDBY",
+      "verified_at": "2026-08-29T08:19:35Z"
+    },
+    "spec_01_movesense_hub": {
+      "name": "Spec 01: Movesense 512Hz ECG Live Ingestion Hub",
+      "path": "01_apps/edge_compute_and_ai/lauburu_compute_hub",
+      "port": null,
+      "status": "CONFIRMED & ILLUMINATED",
+      "badge": "\ud83d\udfe2 ACTIVE",
+      "verified_at": "2026-08-29T08:19:35Z"
+    },
+    "spec_01_spatial_grappling": {
+      "name": "Spec 10: 3D Spatial Grappling Kinematics Engine",
+      "path": "01_apps/spatial_and_3d/spatial_grappling_3d",
+      "port": null,
+      "status": "CONFIRMED & ILLUMINATED",
+      "badge": "\ud83d\udfe2 ACTIVE",
+      "verified_at": "2026-08-29T08:19:35Z"
+    },
+    "spec_02_ai_proxy": {
+      "name": "Spec 02: Unified AI Proxy & Model Mesh",
+      "path": "02_ai_models_and_inference",
+      "port": 8080,
+      "status": "CONFIRMED & ILLUMINATED",
+      "badge": "\ud83d\udfe2 ACTIVE",
+      "verified_at": "2026-08-29T08:19:35Z"
+    },
+    "spec_02_hermes_ai": {
+      "name": "Spec 02: Hermes 3 Local Reasoning Model",
+      "path": "02_ai_models_and_inference",
+      "port": 8082,
+      "status": "CONFIRMED & ILLUMINATED",
+      "badge": "\ud83d\udfe2 ACTIVE",
+      "verified_at": "2026-08-29T08:19:35Z"
+    },
+    "spec_02_qwen_coder": {
+      "name": "Spec 02: Qwen 2.5 Coder 7B AST Engine",
+      "path": "02_ai_models_and_inference",
+      "port": 8083,
+      "status": "CONFIRMED & ILLUMINATED",
+      "badge": "\ud83d\udfe2 ACTIVE",
+      "verified_at": "2026-08-29T08:19:35Z"
+    },
+    "spec_02_qwen_math": {
+      "name": "Spec 02: Qwen 2.5 Math 7B Algorithm Specialist",
+      "path": "02_ai_models_and_inference",
+      "port": 8086,
+      "status": "CONFIRMED & ILLUMINATED",
+      "badge": "\ud83d\udfe2 ACTIVE",
+      "verified_at": "2026-08-29T08:19:35Z"
+    },
+    "spec_03_biometrics_dsp": {
+      "name": "Spec 03: Pan-Tompkins ECG DSP & DFA-alpha1 Zone 2",
+      "path": "03_biometrics_and_telemetry",
+      "port": null,
+      "status": "CONFIRMED & ILLUMINATED",
+      "badge": "\ud83d\udfe2 ACTIVE",
+      "verified_at": "2026-08-29T08:19:35Z"
+    },
+    "spec_04_data_memory": {
+      "name": "Spec 04: PySpark Big Data & 24/7 LoRA Storage",
+      "path": "04_data_and_memory",
+      "port": null,
+      "status": "CONFIRMED & ILLUMINATED",
+      "badge": "\ud83d\udfe2 ACTIVE",
+      "verified_at": "2026-08-29T08:19:35Z"
+    },
+    "spec_05_red_blue_arena": {
+      "name": "Spec 05: Red/Blue Adversarial Resource Drain War Arena",
+      "path": "05_agents_and_swarms/red_blue_arena",
+      "port": null,
+      "status": "CONFIRMED & ILLUMINATED",
+      "badge": "\ud83d\udfe2 ACTIVE",
+      "verified_at": "2026-08-29T08:19:35Z"
+    },
+    "spec_08_shopify_commerce": {
+      "name": "Spec 08: Shopify Storefront GraphQL & Member Billing",
+      "path": "08_business_commerce",
+      "port": null,
+      "status": "FOG_OF_WAR (UNPROBED)",
+      "badge": "\u26aa UNDISCOVERED",
+      "verified_at": "2026-08-29T08:19:35Z"
+    }
+  },
+  "physical_transports_graph": {
+    "tb4_pcie_dma_40g": {
+      "name": "10Gbps Thunderbolt 4 PCIe DMA Bridge",
+      "source": "L1_Mac_Mini",
+      "target": "L2_MacBook_Pro",
+      "status": "CONFIRMED & ILLUMINATED",
+      "rtt_ms": 0.35,
+      "bandwidth_gbps": 40.0
+    },
+    "wireguard_l3_mesh": {
+      "name": "WireGuard ChaCha20-Poly1305 Overlay",
+      "source": "L1_Mac_Mini",
+      "target": "L3_Linux_Head",
+      "status": "CONFIRMED & ILLUMINATED",
+      "rtt_ms": 1.85,
+      "bandwidth_gbps": 2.5
+    },
+    "speedify_multiwan_bonding": {
+      "name": "Speedify Multi-WAN Channel Bonding",
+      "source": "L1_Mac_Mini",
+      "target": "L3_Linux_Head",
+      "status": "CONFIRMED & ILLUMINATED",
+      "rtt_ms": 8.2,
+      "bandwidth_gbps": 3.5
+    },
+    "movesense_ble_gatt": {
+      "name": "Movesense HR+ 261030002013 CoreBluetooth",
+      "source": "Movesense_261030002013",
+      "target": "L1_Mac_Mini",
+      "status": "CONFIRMED & ILLUMINATED",
+      "live_hr_bpm": 79,
+      "stream_rate_hz": 128
+    }
+  }
+}

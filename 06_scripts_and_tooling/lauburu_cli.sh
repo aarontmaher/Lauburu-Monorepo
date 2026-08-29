@@ -43,6 +43,16 @@ case "$CMD" in
         cd "$MONOREPO_DIR"
         python3 00_core_infrastructure/self_healing_hub/src/spatial_3d_unified_fusion.py
         ;;
+    map-all|discover)
+        echo "🗺️ Running Autonomous Whole-Project & Network Feature Discovery Engine..."
+        cd "$MONOREPO_DIR"
+        python3 00_core_infrastructure/self_healing_hub/src/autonomous_feature_discovery_engine.py
+        ;;
+    math|math-daemon)
+        echo "🧮 Running Standalone Qwen Math Trend & Optimization Daemon..."
+        cd "$MONOREPO_DIR"
+        python3 02_ai_models_and_inference/quantum/autonomous_math_trend_optimizer.py
+        ;;
     movesense)
         echo "💓 Checking Movesense 261030002013 BLE daemon status..."
         if ps aux | grep "run_real_movesense_daemon.py" | grep -v grep > /dev/null; then
@@ -63,6 +73,8 @@ case "$CMD" in
         echo "  lauburu (or tui)     Launch full Canonical 9-Screen TUI Command Center"
         echo "  lauburu dev (or arena) Launch Live Side-by-Side Dual Graphical Arena"
         echo "  lauburu map          Run Unified 3D Spatial Fusion Engine"
+        echo "  lauburu map-all      Run Autonomous Whole-Project Feature Discovery"
+        echo "  lauburu math         Run Standalone Qwen Math Telemetry Trend Optimizer"
         echo "  lauburu movesense    Check / Start Physical Movesense 128Hz BLE daemon"
         echo "  lauburu help         Show this help message"
         echo "======================================================================"

@@ -1,18 +1,18 @@
 {
-  "timestamp_utc": "2026-08-29T08:15:27Z",
+  "timestamp_utc": "2026-08-29T08:20:40Z",
   "device_name": "Movesense 261030002013",
   "device_address": "C1DB5043-8F89-88E8-46A3-BBD4ED83FC88",
   "connected": true,
-  "packet_count": 6873,
-  "heart_rate_bpm": 77,
+  "packet_count": 7273,
+  "heart_rate_bpm": 74,
   "rr_intervals_recent": [
-    813.4765625,
-    763.671875,
-    715.8203125,
-    745.1171875,
-    786.1328125
+    816.40625,
+    818.359375,
+    831.0546875,
+    809.5703125,
+    789.0625
   ],
-  "rmssd_ms": 47.06,
+  "rmssd_ms": 36.89,
   "dfa_alpha1": 1.05,
   "stream_mode": "LIVE_BLE_HARDWARE (Rule #0 Certified)"
 }
