@@ -182,9 +182,9 @@ class NetworkHealthAI(Vertical):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-ai-scan":
-            self.run_worker(self._do_scan(heal=False), exclusive=False, name="ai-scan")
+            self._do_scan(heal=False)
         elif event.button.id == "btn-ai-heal":
-            self.run_worker(self._do_scan(heal=True),  exclusive=False, name="ai-heal")
+            self._do_scan(heal=True)
         elif event.button.id == "btn-ai-stop":
             self._cancel_flag = True
             self._set_status("[dim]Stopped.[/dim]")
@@ -195,7 +195,7 @@ class NetworkHealthAI(Vertical):
             return
         if time.time() - self._last_scan_ts < 60.0:
             return
-        self.run_worker(self._do_scan(heal=True), exclusive=False, name="ai-auto")
+        self._do_scan(heal=True)
 
     # ─── MESH PROBE ──────────────────────────────────────────────────────────
 

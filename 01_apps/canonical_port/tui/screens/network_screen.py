@@ -86,7 +86,7 @@ class NetworkScreen(Screen):
         if event.button.id == "btn-ai-scan-top":
             try:
                 ai = self.query_one("#network-health-ai", NetworkHealthAI)
-                ai.run_worker(ai._do_scan(heal=True), exclusive=False, name="ai-manual")
+                ai._do_scan(heal=True)
                 event.stop()
             except Exception:
                 pass
