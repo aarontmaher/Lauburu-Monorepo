@@ -1,0 +1,286 @@
+{
+  "timestamp_utc": "2026-08-29T07:34:51Z",
+  "turn_count": 7,
+  "live_telemetry": {
+    "heart_rate_bpm": 117,
+    "mean_rtt_ms": 0.35
+  },
+  "devices": {
+    "glinet_router": {
+      "device_model": "GL-MT3600BE (OpenWrt 23.05)",
+      "ip_address": "192.168.8.1",
+      "settings": {
+        "sqm_queue_discipline": "fq_codel",
+        "sqm_upload_limit_kbps": 250000,
+        "sqm_download_limit_kbps": 950000,
+        "bql_limit_bytes": 8192,
+        "wifi7_mlo_enabled": true,
+        "mtu_size": 9000,
+        "tcp_congestion_control": "bbr",
+        "active_qos_priority_ports": [
+          50052,
+          8080,
+          8083,
+          8086
+        ]
+      },
+      "optimizations_applied": [
+        {
+          "timestamp": "07:34:25",
+          "faction": "BLUE_TEAM",
+          "action": "Self-Healing SQM Bufferbloat Elimination",
+          "device": "glinet_router",
+          "parameter": "sqm_queue_discipline",
+          "new_value": "fq_codel",
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:50",
+          "faction": "RED_TEAM",
+          "action": "Aggressive BQL Queue Burst Expansion",
+          "device": "glinet_router",
+          "parameter": "bql_limit_bytes",
+          "new_value": 8192,
+          "scouted_hr_bpm": 117
+        },
+        {
+          "timestamp": "07:34:51",
+          "faction": "RED_TEAM",
+          "action": "Aggressive BQL Queue Burst Expansion",
+          "device": "glinet_router",
+          "parameter": "bql_limit_bytes",
+          "new_value": 8192,
+          "scouted_hr_bpm": 117
+        },
+        {
+          "timestamp": "07:34:51",
+          "faction": "RED_TEAM",
+          "action": "Aggressive BQL Queue Burst Expansion",
+          "device": "glinet_router",
+          "parameter": "bql_limit_bytes",
+          "new_value": 8192,
+          "scouted_hr_bpm": 117
+        }
+      ]
+    },
+    "movesense_sensor": {
+      "device_model": "Movesense HR+ 261030002013",
+      "ble_address": "C1DB5043-8F89-88E8-46A3-BBD4ED83FC88",
+      "settings": {
+        "ecg_sample_rate_hz": 512,
+        "imu_sample_rate_hz": 52,
+        "ble_tx_power_dbm": 4,
+        "whiteboard_subscription": "/Meas/ECG/128",
+        "kamath_artifact_filter_threshold_pct": 15.0,
+        "dfa_alpha1_window_size": 64,
+        "battery_save_mode": false
+      },
+      "optimizations_applied": [
+        {
+          "timestamp": "07:34:26",
+          "faction": "RED_TEAM",
+          "action": "High-Frequency 512Hz Raw ECG Stream Injection",
+          "device": "movesense_sensor",
+          "parameter": "ecg_sample_rate_hz",
+          "new_value": 512,
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:26",
+          "faction": "BLUE_TEAM",
+          "action": "Precision Kamath HRV QRS Stabilization",
+          "device": "movesense_sensor",
+          "parameter": "kamath_artifact_filter_threshold_pct",
+          "new_value": 15.0,
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:49",
+          "faction": "RED_TEAM",
+          "action": "High-Frequency 512Hz Raw ECG Stream Injection",
+          "device": "movesense_sensor",
+          "parameter": "ecg_sample_rate_hz",
+          "new_value": 512,
+          "scouted_hr_bpm": 117
+        },
+        {
+          "timestamp": "07:34:50",
+          "faction": "RED_TEAM",
+          "action": "High-Frequency 512Hz Raw ECG Stream Injection",
+          "device": "movesense_sensor",
+          "parameter": "ecg_sample_rate_hz",
+          "new_value": 512,
+          "scouted_hr_bpm": 117
+        },
+        {
+          "timestamp": "07:34:50",
+          "faction": "BLUE_TEAM",
+          "action": "Precision Kamath HRV QRS Stabilization",
+          "device": "movesense_sensor",
+          "parameter": "kamath_artifact_filter_threshold_pct",
+          "new_value": 15.0,
+          "scouted_hr_bpm": 117
+        },
+        {
+          "timestamp": "07:34:51",
+          "faction": "BLUE_TEAM",
+          "action": "Precision Kamath HRV QRS Stabilization",
+          "device": "movesense_sensor",
+          "parameter": "kamath_artifact_filter_threshold_pct",
+          "new_value": 15.0,
+          "scouted_hr_bpm": 117
+        }
+      ]
+    },
+    "mac_mini_host": {
+      "device_model": "Apple M4 Pro Mac Mini (24GB RAM)",
+      "settings": {
+        "sysctl_tcp_win_scale": 7,
+        "sysctl_max_socket_buffers_mb": 128,
+        "metal_threadgroup_size": 256,
+        "rpc_server_threads": 8,
+        "bridge0_jumbo_frames": 9000
+      },
+      "optimizations_applied": [
+        {
+          "timestamp": "07:34:25",
+          "faction": "BLUE_TEAM",
+          "action": "Lock MTU 9000 Jumbo Frame Tripwire",
+          "device": "mac_mini_host",
+          "parameter": "bridge0_jumbo_frames",
+          "new_value": 9000,
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:25",
+          "faction": "RED_TEAM",
+          "action": "TB4 Memory Buffer Overdrive",
+          "device": "mac_mini_host",
+          "parameter": "sysctl_max_socket_buffers_mb",
+          "new_value": 128,
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:26",
+          "faction": "BLUE_TEAM",
+          "action": "Lock MTU 9000 Jumbo Frame Tripwire",
+          "device": "mac_mini_host",
+          "parameter": "bridge0_jumbo_frames",
+          "new_value": 9000,
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:26",
+          "faction": "RED_TEAM",
+          "action": "TB4 Memory Buffer Overdrive",
+          "device": "mac_mini_host",
+          "parameter": "sysctl_max_socket_buffers_mb",
+          "new_value": 128,
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:26",
+          "faction": "BLUE_TEAM",
+          "action": "Lock MTU 9000 Jumbo Frame Tripwire",
+          "device": "mac_mini_host",
+          "parameter": "bridge0_jumbo_frames",
+          "new_value": 9000,
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:50",
+          "faction": "BLUE_TEAM",
+          "action": "Lock MTU 9000 Jumbo Frame Tripwire",
+          "device": "mac_mini_host",
+          "parameter": "bridge0_jumbo_frames",
+          "new_value": 9000,
+          "scouted_hr_bpm": 117
+        }
+      ]
+    },
+    "linux_head_node": {
+      "device_model": "AMD Ryzen 7 5700U (16GB RAM)",
+      "settings": {
+        "cpu_governor": "performance",
+        "net_core_rmem_max": 16777216,
+        "net_core_wmem_max": 16777216,
+        "petals_dht_block_allocation": 12,
+        "cgroup_memory_limit_gb": 13.8
+      },
+      "optimizations_applied": [
+        {
+          "timestamp": "07:34:24",
+          "faction": "RED_TEAM",
+          "action": "DHT Tensor Layer Pre-Allocation",
+          "device": "linux_head_node",
+          "parameter": "petals_dht_block_allocation",
+          "new_value": 12,
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:24",
+          "faction": "BLUE_TEAM",
+          "action": "Dynamic Core Frequency Lock",
+          "device": "linux_head_node",
+          "parameter": "cpu_governor",
+          "new_value": "performance",
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:25",
+          "faction": "RED_TEAM",
+          "action": "DHT Tensor Layer Pre-Allocation",
+          "device": "linux_head_node",
+          "parameter": "petals_dht_block_allocation",
+          "new_value": 12,
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:25",
+          "faction": "RED_TEAM",
+          "action": "DHT Tensor Layer Pre-Allocation",
+          "device": "linux_head_node",
+          "parameter": "petals_dht_block_allocation",
+          "new_value": 12,
+          "scouted_hr_bpm": 116
+        },
+        {
+          "timestamp": "07:34:49",
+          "faction": "RED_TEAM",
+          "action": "DHT Tensor Layer Pre-Allocation",
+          "device": "linux_head_node",
+          "parameter": "petals_dht_block_allocation",
+          "new_value": 12,
+          "scouted_hr_bpm": 117
+        },
+        {
+          "timestamp": "07:34:49",
+          "faction": "BLUE_TEAM",
+          "action": "Dynamic Core Frequency Lock",
+          "device": "linux_head_node",
+          "parameter": "cpu_governor",
+          "new_value": "performance",
+          "scouted_hr_bpm": 117
+        },
+        {
+          "timestamp": "07:34:50",
+          "faction": "BLUE_TEAM",
+          "action": "Dynamic Core Frequency Lock",
+          "device": "linux_head_node",
+          "parameter": "cpu_governor",
+          "new_value": "performance",
+          "scouted_hr_bpm": 117
+        },
+        {
+          "timestamp": "07:34:51",
+          "faction": "BLUE_TEAM",
+          "action": "Dynamic Core Frequency Lock",
+          "device": "linux_head_node",
+          "parameter": "cpu_governor",
+          "new_value": "performance",
+          "scouted_hr_bpm": 117
+        }
+      ]
+    }
+  }
+}
