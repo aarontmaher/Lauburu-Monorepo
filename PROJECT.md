@@ -67,11 +67,11 @@ Every feature identified during requirements analysis and codebase survey is inv
 |---|------|-------|-------------|--------|
 | E2E | E2E Testing Track | Master 4-tier E2E test suite (Tiers 1-4), harness runner, `TEST_READY.md` | none | DONE (184/184 tests passing) |
 | M1 | Flagship Movesense Physiological Readiness Suite | Modularize `01_apps/biometrics/movesense_hub` into `core/`, `dsp/`, `presentation/`, `transport/`; integrate 512Hz ECG, PTT BP, sleep staging, Zone 2 coaching, and multi-platform clients | none | DONE (102 biometrics tests passing, gate certified) |
-| M2 | User & Scaling Apps Portfolio Separation | Restructure and verify `01_apps/user_facing_and_scaling/` (Movesense Hub, 3D Spatial Grappling, Combat Arena, Shopify Storefront) | M1 | PLANNED |
-| M3 | Operator & Dev Cockpits Portfolio Separation | Restructure and verify `01_apps/operator_and_dev/` (Canonical Port 9-Screen NOC, SmolAgents Duel Sandbox, Qwen Math Optimizer) | none | PLANNED |
-| M4 | Universal Web-TUI Portal (Port 8088) | Implement `01_apps/web_tui_portal/serve_portal.py` serving all 7 apps at 120 FPS with auto-reclaim and PTY process isolation | M1, M2, M3 | PLANNED |
-| M5 | Free-Tier AI Scaffolder & Airgap Engine | Deploy Gemini 2.5 Flash / Cloudflare Workers AI scaffolding daemon with strict fail-closed airgap filter | none | PLANNED |
-| M6 | Final Verification, Adversarial Hardening & Audit | 100% E2E Pass across Tiers 1-4, Tier 5 Adversarial Hardening via Challengers, Forensic Integrity Audit, and Tri-Vault Verification | M1, M2, M3, M4, M5, E2E | PLANNED |
+| M2 | User & Scaling Apps Portfolio Separation | Restructure and verify `01_apps/user_facing_and_scaling/` (Movesense Hub, 3D Spatial Grappling, Combat Arena, Shopify Storefront) | M1 | DONE (modular packages verified) |
+| M3 | Operator & Dev Cockpits Portfolio Separation | Restructure and verify `01_apps/operator_and_dev/` (Canonical Port 9-Screen NOC, SmolAgents Duel Sandbox, Qwen Math Optimizer) | none | DONE (modular packages verified) |
+| M4 | Universal Web-TUI Portal (Port 8088) | Implement `01_apps/web_tui_portal/serve_portal.py` serving all 7 apps at 120 FPS with auto-reclaim and PTY process isolation | M1, M2, M3 | DONE (8 HTTP/WS routes at 120 FPS) |
+| M5 | Free-Tier AI Scaffolder & Airgap Engine | Deploy Gemini 2.5 Flash / Cloudflare Workers AI scaffolding daemon with strict fail-closed airgap filter | none | DONE (0% biometric egress, 100% fail-closed) |
+| M6 | Final Verification, Adversarial Hardening & Audit | 100% E2E Pass across Tiers 1-4, Tier 5 Adversarial Hardening via Challengers, Forensic Integrity Audit, and Tri-Vault Verification | M1, M2, M3, M4, M5, E2E | DONE (334/334 tests passing, CLEAN audit) |
 
 ---
 

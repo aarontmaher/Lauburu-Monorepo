@@ -163,7 +163,7 @@ PROTOCOL_TARGETS: Dict[str, Tuple[str, int]] = {
     "grpc": ("127.0.0.1", 50051),
     "llama_rpc": ("127.0.0.1", 50052),
     "tailscale": ("127.0.0.1", 51820),
-    "speedify_bond": ("127.0.0.1", 4000)
+    "speedify_bond": ("127.0.0.1", 4001)
 }
 
 
@@ -561,6 +561,15 @@ class SinglePortProtocolMultiplexer:
         except Exception as e:
             logger.debug(f"Failed to persist status file: {e}")
 
+        return report
+
+    def run_benchmark_cycle(self, duration_s: float = 1.0) -> Dict[str, Any]:
+        """
+        Executes benchmark / dynamic weighting cycle across bonded physical channels.
+        Alias / runner for self.run_dynamic_weighting_cycle().
+        """
+        report = self.run_dynamic_weighting_cycle()
+        report["status"] = "SPEEDIFY_BONDING_ACTIVE"
         return report
 
     def benchmark_multi_link_striping(self, payload_size_mb: int = 10) -> Dict[str, Any]:

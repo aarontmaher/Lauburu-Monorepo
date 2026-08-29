@@ -1,98 +1,151 @@
 {
-  "timestamp": "2026-08-28T16:41:09.514664Z",
+  "timestamp": "2026-08-29T10:17:52.159636+00:00",
   "total_daemons_ranked": 9,
-  "active_high_roi_daemons": 7,
-  "system_roi_score": 9.81,
+  "active_high_roi_daemons": 8,
+  "system_roi_score": 9.17,
+  "cluster_health": {
+    "ports_healthy": false,
+    "ports_status": {
+      "3000": false,
+      "18802": true,
+      "50052": false
+    },
+    "packet_loss_pct": 0.0,
+    "rtt_avg_ms": 0.06,
+    "host_ram_used_pct": 78.8,
+    "host_cpu_pct": 32.0,
+    "thermal_throttling": false,
+    "battery_temp_c": 30.0,
+    "anomalies_detected": [
+      "Core ports unreachable: ['3000', '50052']"
+    ]
+  },
   "roi_leaderboard": [
-    {
-      "id": "cron_001_mesh_healer",
-      "name": "7-Device Mesh Network Healer & Port Watchdog",
-      "interval_sec": 900,
-      "roi_score": 9.99,
-      "priority": "CRITICAL_HIGH_ROI",
-      "status": "ACTIVE",
-      "total_runs": 1112,
-      "last_elapsed_sec": 0.0
-    },
-    {
-      "id": "cron_002_battery_governor",
-      "name": "Mobile Edge Battery & Thermal Governor",
-      "interval_sec": 600,
-      "roi_score": 9.92,
-      "priority": "CRITICAL_HIGH_ROI",
-      "status": "ACTIVE",
-      "total_runs": 153,
-      "last_elapsed_sec": 0.26
-    },
     {
       "id": "cron_003_nomad_genetic_storage",
       "name": "Nomad Genetic Storage & Cache Pruner",
       "interval_sec": 360,
-      "roi_score": 9.86,
+      "cadence_tier": "RAPID_TRIAGE",
+      "roi_score": 9.91,
       "priority": "CRITICAL_HIGH_ROI",
       "status": "ACTIVE",
-      "total_runs": 137,
-      "last_elapsed_sec": 0.0
+      "offload_node": "local_mac_mini",
+      "total_runs": 138,
+      "last_elapsed_sec": 0.001,
+      "cpu_pct": 1.0,
+      "rss_mb": 20.0
     },
     {
       "id": "cron_004_nomad_scout_and_debate",
       "name": "Nomad Open-Source Scout & AI Confidence Gate",
       "interval_sec": 300,
-      "roi_score": 9.84,
+      "cadence_tier": "RAPID_TRIAGE",
+      "roi_score": 9.83,
       "priority": "CRITICAL_HIGH_ROI",
       "status": "ACTIVE",
-      "total_runs": 140,
-      "last_elapsed_sec": 0.038
+      "offload_node": "linux_head_node",
+      "total_runs": 141,
+      "last_elapsed_sec": 2.647,
+      "cpu_pct": 3.5,
+      "rss_mb": 40.0
     },
     {
       "id": "cron_009_cloud_api_quota_manager",
       "name": "Cloud API Quota Manager & Continuous LoRA Distillation",
       "interval_sec": 120,
-      "roi_score": 9.81,
+      "cadence_tier": "RAPID_TRIAGE",
+      "roi_score": 9.75,
       "priority": "CRITICAL_HIGH_ROI",
       "status": "ACTIVE",
-      "total_runs": 81,
-      "last_elapsed_sec": 0.156
+      "offload_node": "linux_head_node",
+      "total_runs": 82,
+      "last_elapsed_sec": 5.735,
+      "cpu_pct": 3.5,
+      "rss_mb": 40.0
     },
     {
       "id": "cron_007_genetic_moe_router",
       "name": "Genetic MoE Fitness & Token Efficiency Evaluator",
       "interval_sec": 7200,
-      "roi_score": 9.73,
+      "cadence_tier": "RAPID_TRIAGE",
+      "roi_score": 9.64,
       "priority": "CRITICAL_HIGH_ROI",
       "status": "ACTIVE",
-      "total_runs": 22,
-      "last_elapsed_sec": 0.022
+      "offload_node": "linux_head_node",
+      "total_runs": 23,
+      "last_elapsed_sec": 2.24,
+      "cpu_pct": 3.5,
+      "rss_mb": 40.0
+    },
+    {
+      "id": "cron_002_battery_governor",
+      "name": "Mobile Edge Battery & Thermal Governor",
+      "interval_sec": 120,
+      "cadence_tier": "RAPID_TRIAGE",
+      "roi_score": 9.42,
+      "priority": "CRITICAL_HIGH_ROI",
+      "status": "ACTIVE",
+      "offload_node": "local_mac_mini",
+      "total_runs": 154,
+      "last_elapsed_sec": 0.144,
+      "cpu_pct": 97.4,
+      "rss_mb": 25.0
     },
     {
       "id": "cron_005_cloudflare_watchdog",
       "name": "Multi-WAN Bond & Cloudflare Tunnel Watchdog",
       "interval_sec": 300,
-      "roi_score": 9.49,
-      "priority": "OPTIMIZED_CADENCE",
+      "cadence_tier": "RAPID_TRIAGE",
+      "roi_score": 9.09,
+      "priority": "CRITICAL_HIGH_ROI",
       "status": "ACTIVE",
-      "total_runs": 137,
-      "last_elapsed_sec": 16.479
+      "offload_node": "local_mac_mini",
+      "total_runs": 138,
+      "last_elapsed_sec": 16.232,
+      "cpu_pct": 94.0,
+      "rss_mb": 25.0
     },
     {
       "id": "cron_006_swarm_truth_audit",
       "name": "Swarm Truth Audit & Obsidian Anti-Hallucination Scanner",
       "interval_sec": 300,
-      "roi_score": 8.82,
-      "priority": "DECOMMISSIONED_LOW_ROI",
-      "status": "STOPPED",
-      "total_runs": 144,
-      "last_elapsed_sec": 6.834
+      "cadence_tier": "RAPID_TRIAGE",
+      "roi_score": 8.79,
+      "priority": "CRITICAL_HIGH_ROI",
+      "status": "ACTIVE",
+      "offload_node": "linux_head_node",
+      "total_runs": 145,
+      "last_elapsed_sec": 72.352,
+      "cpu_pct": 3.5,
+      "rss_mb": 40.0
+    },
+    {
+      "id": "cron_001_mesh_healer",
+      "name": "7-Device Mesh Network Healer & Port Watchdog",
+      "interval_sec": 180,
+      "cadence_tier": "RAPID_TRIAGE",
+      "roi_score": 6.9,
+      "priority": "CRITICAL_HIGH_ROI",
+      "status": "ACTIVE",
+      "offload_node": "local_mac_mini",
+      "total_runs": 1000,
+      "last_elapsed_sec": 0.215,
+      "cpu_pct": 98.0,
+      "rss_mb": 25.0
     },
     {
       "id": "cron_008_deprecated_raw_scrapers",
       "name": "Legacy Raw Web Scrapers & Unmounted Mount Poller",
       "interval_sec": 86400,
+      "cadence_tier": "CIRCUIT_BREAKER_STOPPED",
       "roi_score": 5.94,
       "priority": "DECOMMISSIONED_LOW_ROI",
       "status": "STOPPED",
+      "offload_node": "local_mac_mini",
       "total_runs": 2,
-      "last_elapsed_sec": 0.001
+      "last_elapsed_sec": 0.001,
+      "cpu_pct": 1.0,
+      "rss_mb": 20.0
     }
   ]
 }

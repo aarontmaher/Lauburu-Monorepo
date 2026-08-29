@@ -1,16 +1,16 @@
 {
-  "timestamp_utc": "2026-08-29T10:09:33Z",
+  "timestamp_utc": "2026-08-29T10:25:19Z",
   "status": "STREAMING",
   "sensor_telemetry": {
     "device": "Movesense Medical",
     "connected": true,
-    "heart_rate_bpm": 90,
-    "rmssd_ms": 878.18,
+    "heart_rate_bpm": 86,
+    "rmssd_ms": 928.13,
     "dfa_alpha1": 1.05,
     "stream_mode": "100% STRICT LOCAL AIRGAP BLE"
   },
   "blood_pressure_ptt": {
-    "estimated_ptt_ms": 192.7,
+    "estimated_ptt_ms": 197.1,
     "systolic_bp_mmhg": 90,
     "diastolic_bp_mmhg": 55,
     "mean_arterial_pressure_mmhg": 66.7,
@@ -21,9 +21,9 @@
     "status": "COMPLETED",
     "sleep_score_pct": 50,
     "recovery_status": "LOW (Red)",
-    "nocturnal_rmssd_ms": 878.2,
-    "nocturnal_hr_bpm": 90.0,
-    "nocturnal_dip_pct": -34.9,
+    "nocturnal_rmssd_ms": 928.1,
+    "nocturnal_hr_bpm": 86.0,
+    "nocturnal_dip_pct": -28.9,
     "sleep_stages_estimate": {
       "deep_sleep_pct": 14.0,
       "rem_sleep_pct": 18.5,
@@ -35,7 +35,7 @@
     "status": "ACTIVE",
     "current_activity": "RESTING",
     "training_zone": "Rest / Passive Recovery",
-    "hr_pct_max": 47.4
+    "hr_pct_max": 45.3
   },
   "cardiorespiratory_thresholds": {
     "status": "ACTIVE",

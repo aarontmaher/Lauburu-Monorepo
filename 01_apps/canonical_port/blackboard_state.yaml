@@ -1,5 +1,5 @@
 version: 3.0.0-CANONICAL
-timestamp: '2026-08-29T20:05:18.920602'
+timestamp: '2026-08-29T20:20:28.691932'
 source_node: L1_Mac_Node
 provenance:
   agent_id: teamwork_preview_worker_m2
@@ -121,10 +121,10 @@ layer_0_networking:
     upload_mbps: 48.0
     responsiveness_rpm: 1420
     latency_ms: 12.4
-    timestamp: '20:05:16'
+    timestamp: '20:20:26'
     command: /usr/bin/networkQuality -c -M 5
     cycle_seconds: 300
-    last_tested_iso: '2026-08-29T20:05:16.125660'
+    last_tested_iso: '2026-08-29T20:20:26.224979'
   ssh_fleet:
   - node_id: L1
     host: 127.0.0.1
@@ -132,24 +132,24 @@ layer_0_networking:
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 2.93
-    last_auth_iso: '2026-08-29T20:05:17.217054'
+    latency_ms: 0.58
+    last_auth_iso: '2026-08-29T20:20:27.320789'
   - node_id: L2
     host: 192.168.8.127
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_9.6
     key_type: ssh-ed25519
-    latency_ms: 10.57
-    last_auth_iso: '2026-08-29T20:05:17.194229'
+    latency_ms: 70.47
+    last_auth_iso: '2026-08-29T20:20:27.316292'
   - node_id: L3
     host: 100.101.39.98
     port: 22
     status: OPEN
-    banner: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18
+    banner: SSH-2.0-OpenSSH_9.8
     key_type: ssh-ed25519
-    latency_ms: 10.51
-    last_auth_iso: '2026-08-29T20:05:17.436758'
+    latency_ms: 17.74
+    last_auth_iso: '2026-08-29T20:20:27.562425'
   - node_id: L4
     host: 100.91.85.70
     port: 22
@@ -164,32 +164,32 @@ layer_0_networking:
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 17.5
-    last_auth_iso: '2026-08-29T20:05:17.253767'
+    latency_ms: 15.35
+    last_auth_iso: '2026-08-29T20:20:27.340653'
   - node_id: L6
     host: 100.73.38.87
     port: 8022
-    status: CLOSED
-    banner: null
+    status: OPEN
+    banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: null
-    last_auth_iso: null
+    latency_ms: 108.64
+    last_auth_iso: '2026-08-29T20:20:27.542944'
   - node_id: L7
     host: 100.84.40.95
     port: 8022
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.4
     key_type: ssh-ed25519
-    latency_ms: 20.76
-    last_auth_iso: '2026-08-29T20:05:17.292989'
+    latency_ms: 19.84
+    last_auth_iso: '2026-08-29T20:20:27.377670'
   - node_id: GW
     host: 192.168.8.1
     port: 22
     status: OPEN
-    banner: "SSH-2.0-dropbear\r\n\0\0\x01\v\x14;x\n_,\e?\r\x1C\0\0\0curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384"
+    banner: "SSH-2.0-dropbear\r\n\0\0\x01\v\x14Ock\a\x7FG\x1E;g\x10\0\0\0curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384"
     key_type: ssh-ed25519
-    latency_ms: 6.79
-    last_auth_iso: '2026-08-29T20:05:17.174635'
+    latency_ms: 13.88
+    last_auth_iso: '2026-08-29T20:20:27.267198'
   ewma_alpha: 0.35
   circuit_breaker_trip_threshold: 0.284
 layer_1_hardware:
@@ -471,8 +471,8 @@ layer_1_hardware:
       master_wikilinks_valid: true
     pyspark_lake:
       path: /Users/aaron/DFS_UNIFIED/lora_datasets
-      healthy: false
-      free_headroom_gb: 9.8
+      healthy: true
+      free_headroom_gb: 10.12
       headroom_threshold_gb: 10.0
       qdrant_reachable: true
     github_tree:
@@ -481,7 +481,7 @@ layer_1_hardware:
       is_worktree: true
       index_locked: false
       clean_tree: true
-    all_healthy: false
+    all_healthy: true
   memory_governor_active: true
 layer_2_biometrics:
   movesense_stream:
@@ -564,7 +564,7 @@ layer_3_ai_inference:
     layers_sharded: 28
     vram_used_gb: 13.5
     status: ACTIVE
-    latency_ms: 16.72
+    latency_ms: 40.43
   - node_name: MacBook Pro
     endpoint: 169.254.187.138:50052
     layers_sharded: 28
@@ -582,7 +582,7 @@ layer_3_ai_inference:
     layers_sharded: 0
     vram_used_gb: 0.0
     status: ACTIVE
-    latency_ms: 49.1
+    latency_ms: 63.03
   - node_name: Linux Tablet
     endpoint: 100.81.92.125:50052
     layers_sharded: 0
@@ -593,8 +593,8 @@ layer_3_ai_inference:
     endpoint: 100.73.38.87:50052
     layers_sharded: 0
     vram_used_gb: 0.0
-    status: OFFLINE
-    latency_ms: null
+    status: ACTIVE
+    latency_ms: 12.38
   rpc_split: -ts 28,28,24
   total_sharded_layers: 80
   active_models:
@@ -1701,6 +1701,23 @@ layer_6_tooling_skills:
     active_memberships: 1420
     merchandise_catalog_synced: true
     cart_pipeline_healthy: true
+wearables_telemetry:
+  source: open_wearables_aggregator
+  timestamp: null
+  user_id: default_user
+  providers:
+  - whoop
+  - garmin
+  - oura
+  - apple_health
+  recovery_score: 88.0
+  sleep_score: 91.0
+  strain_score: 14.2
+  resting_hr_bpm: 48.5
+  hrv_rmssd_ms: 64.2
+  steps: 12450
+  calories: 840
+  rule_0_zero_mock: true
 voice_coding:
   status: IDLE
   is_active: false

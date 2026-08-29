@@ -27,42 +27,44 @@ from aiohttp import web, WSMsgType
 MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
 TUI_DIR = MONOREPO_ROOT / "01_apps/canonical_port/tui"
 
+VENV_PYTHON = str(MONOREPO_ROOT / "01_apps/canonical_port/.venv/bin/python")
+
 APP_ROUTER = {
     # 👤 User & Scaled Athlete Apps
     "readiness": {
         "name": "💓 Movesense Readiness & Cardio Coach",
-        "cmd": ["python3", str(MONOREPO_ROOT / "01_apps/biometrics/movesense_readiness_tui.py")],
+        "cmd": [VENV_PYTHON, str(MONOREPO_ROOT / "01_apps/biometrics/movesense_readiness_tui.py")],
         "tier": "user"
     },
     "grappling": {
         "name": "🥋 3D Spatial Grappling (3,044 OPML Tree)",
-        "cmd": ["python3", str(MONOREPO_ROOT / "00_core_infrastructure/self_healing_hub/src/spatial_grappling_map_engine.py")],
+        "cmd": [VENV_PYTHON, str(MONOREPO_ROOT / "01_apps/spatial_and_3d/spatial_grappling_3d/presentation/tui.py")],
         "tier": "user"
     },
     "arena": {
         "name": "⚔️ Lauburu Combat Arena & Swarm Game",
-        "cmd": ["python3", str(TUI_DIR / "tui_live_arena_dev.py")],
+        "cmd": [VENV_PYTHON, str(TUI_DIR / "tui_live_arena_dev.py")],
         "tier": "user"
     },
     "store": {
         "name": "🛍️ Headless Storefront & Membership Tiers",
-        "cmd": ["python3", str(MONOREPO_ROOT / "01_apps/commerce_and_business/storefront_membership_tui.py")],
+        "cmd": [VENV_PYTHON, str(MONOREPO_ROOT / "01_apps/commerce_and_business/storefront_membership_tui.py")],
         "tier": "user"
     },
     # 🛠️ Developer & Operator Command Cockpits
     "canonical": {
         "name": "🏛️ Canonical Port 9-Screen Command Center",
-        "cmd": ["python3", str(TUI_DIR / "canonical_tui.py")],
+        "cmd": [VENV_PYTHON, str(TUI_DIR / "canonical_tui.py")],
         "tier": "operator"
     },
     "smolagents": {
         "name": "🤖 SmolAgents Python Duel Sandbox",
-        "cmd": ["python3", str(MONOREPO_ROOT / "05_agents_and_swarms/red_blue_arena/smolagents_arena_engine.py")],
+        "cmd": [VENV_PYTHON, str(MONOREPO_ROOT / "01_apps/operator_and_dev/smolagents_duel_sandbox/presentation/sandbox.py")],
         "tier": "operator"
     },
     "math": {
         "name": "🧮 Standalone Qwen Math Trend Optimizer",
-        "cmd": ["python3", str(MONOREPO_ROOT / "02_ai_models_and_inference/quantum/autonomous_math_trend_optimizer.py")],
+        "cmd": [VENV_PYTHON, str(MONOREPO_ROOT / "01_apps/operator_and_dev/qwen_math_trend_optimizer/presentation/optimizer.py")],
         "tier": "operator"
     }
 }
@@ -300,8 +302,7 @@ async def handle_websocket(request):
 
     env = os.environ.copy()
     env["TERM"] = "xterm-256color"
-    env["PYTHONUNBUFFERED"] = "1"
-    env["PYTHONPATH"] = f"{TUI_DIR}:{MONOREPO_ROOT / '01_apps/canonical_port'}:{MONOREPO_ROOT / '01_apps/biometrics'}:{MONOREPO_ROOT / '01_apps/commerce_and_business'}:{MONOREPO_ROOT / '05_agents_and_swarms/red_blue_arena'}:{MONOREPO_ROOT / '00_core_infrastructure/self_healing_hub/src'}:{env.get('PYTHONPATH', '')}"
+    env["PYTHONPATH"] = f"{TUI_DIR}:{MONOREPO_ROOT / '01_apps/canonical_port'}:{MONOREPO_ROOT / '01_apps/biometrics'}:{MONOREPO_ROOT / '01_apps/spatial_and_3d'}:{MONOREPO_ROOT / '01_apps/commerce_and_business'}:{MONOREPO_ROOT / '01_apps/operator_and_dev'}:{MONOREPO_ROOT / '05_agents_and_swarms/red_blue_arena'}:{MONOREPO_ROOT / '00_core_infrastructure/self_healing_hub/src'}:{env.get('PYTHONPATH', '')}"
 
     proc = await asyncio.create_subprocess_exec(
         *cmd,

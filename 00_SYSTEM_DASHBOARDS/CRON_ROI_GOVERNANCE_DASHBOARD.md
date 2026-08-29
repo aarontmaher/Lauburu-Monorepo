@@ -1,14 +1,14 @@
 # 📊 Nomad Autonomous Cron & ROI Governance Dashboard
-> **Last Audited:** `2026-08-28 23:16:55`  
-> **System Average ROI:** `9.35/10.0`  
+> **Last Audited:** `2026-08-29 20:17:52`  
+> **System Average ROI:** `9.17/10.0`  
 > **Active High-ROI Daemons:** `8 / 9`  
 > **Governor Engine:** `Nomad Autonomous Multi-WAN Courier v4.0`  
-> **Cluster Health:** `DEGRADED_ANOMALIES_DETECTED` (Packet Loss: `0.0%`, RTT: `0.07ms`, Host RAM: `45.0%`)
+> **Cluster Health:** `DEGRADED_ANOMALIES_DETECTED` (Packet Loss: `0.0%`, RTT: `0.06ms`, Host RAM: `78.8%`)
 
 ---
 
 ## 🖥️ Cluster Hardware & Distributed Resource Utilization
-- **Host Mac Mini (M4 Pro):** `24 GB Unified RAM` | **Host RAM Used:** `45.0%`
+- **Host Mac Mini (M4 Pro):** `24 GB Unified RAM` | **Host RAM Used:** `78.8%`
 - **Pooled Cluster VRAM:** `82.8 GB` (Metal + CUDA + Vulkan) | **LLaMA RPC Sockets:** `Port 50052 (ACTIVE)`
 - **Offload Workers Online:** Layer 3 Linux Head Node (`100.101.39.98`), Layer 2 MacBook Pro (`100.103.212.21`), Layer 5 MacBook Air (`100.93.158.96`)
 - **24/7 LoRA Tracing:** `data/lora_datasets/cron_governor_decisions.jsonl` (Alpaca Format)
@@ -19,14 +19,14 @@
 
 | Rank | Cron / Daemon Name | ROI Score | Trend | Cadence Tier | Priority Tier | Status | Current Cadence | Target Node | Runs | Last Runtime | Peak Resources |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **#1** | `Mobile Edge Battery & Thermal Governor` | **9.92** | `▇█████` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 2.0m` | `local_mac_mini` | `152` | `0.248s` | `1.0% / 25.0MB` |
-| **#2** | `Nomad Genetic Storage & Cache Pruner` | **9.86** | `▇█████` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 6.0m` | `local_mac_mini` | `136` | `2.828s` | `1.0% / 25.0MB` |
-| **#3** | `Nomad Open-Source Scout & AI Confidence Gate` | **9.84** | `▇█████` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 5.0m` | `linux_head_node` | `139` | `2.729s` | `3.5% / 40.0MB` |
-| **#4** | `Cloud API Quota Manager & Continuous LoRA Distillation` | **9.81** | `▇█████` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 2.0m` | `linux_head_node` | `80` | `4.76s` | `3.5% / 40.0MB` |
-| **#5** | `Genetic MoE Fitness & Token Efficiency Evaluator` | **9.73** | `▅▆▇███` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 2.0h` | `linux_head_node` | `21` | `2.693s` | `3.5% / 40.0MB` |
-| **#6** | `Multi-WAN Bond & Cloudflare Tunnel Watchdog` | **9.49** | `▃▄▅▆▇▇` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 5.0m` | `local_mac_mini` | `136` | `20.463s` | `1.0% / 25.0MB` |
-| **#7** | `Swarm Truth Audit & Obsidian Anti-Hallucination Scanner` | **8.82** | `▂▃▄▅▅▆` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 5.0m` | `linux_head_node` | `143` | `70.394s` | `3.5% / 40.0MB` |
-| **#8** | `7-Device Mesh Network Healer & Port Watchdog` | **7.3** | `  ▂▃▃▄` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 3.0m` | `local_mac_mini` | `1110` | `2.123s` | `1.0% / 25.0MB` |
+| **#1** | `Nomad Genetic Storage & Cache Pruner` | **9.91** | `▇█████` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 6.0m` | `local_mac_mini` | `138` | `0.001s` | `1.0% / 20.0MB` |
+| **#2** | `Nomad Open-Source Scout & AI Confidence Gate` | **9.83** | `▇█████` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 5.0m` | `linux_head_node` | `141` | `2.647s` | `3.5% / 40.0MB` |
+| **#3** | `Cloud API Quota Manager & Continuous LoRA Distillation` | **9.75** | `▅▆▇███` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 2.0m` | `linux_head_node` | `82` | `5.735s` | `3.5% / 40.0MB` |
+| **#4** | `Genetic MoE Fitness & Token Efficiency Evaluator` | **9.64** | `▅▆▇███` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 2.0h` | `linux_head_node` | `23` | `2.24s` | `3.5% / 40.0MB` |
+| **#5** | `Mobile Edge Battery & Thermal Governor` | **9.42** | `▃▄▅▆▇▇` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 2.0m` | `local_mac_mini` | `154` | `0.144s` | `97.4% / 25.0MB` |
+| **#6** | `Multi-WAN Bond & Cloudflare Tunnel Watchdog` | **9.09** | `▃▄▅▆▇▇` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 5.0m` | `local_mac_mini` | `138` | `16.232s` | `94.0% / 25.0MB` |
+| **#7** | `Swarm Truth Audit & Obsidian Anti-Hallucination Scanner` | **8.79** | `▂▃▄▅▅▆` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 5.0m` | `linux_head_node` | `145` | `72.352s` | `3.5% / 40.0MB` |
+| **#8** | `7-Device Mesh Network Healer & Port Watchdog` | **6.9** | `  ▂▃▃▄` | `RAPID_TRIAGE` | `CRITICAL_HIGH_ROI` | **ACTIVE** | `Every 3.0m` | `local_mac_mini` | `1000` | `0.215s` | `98.0% / 25.0MB` |
 | **#9** | `Legacy Raw Web Scrapers & Unmounted Mount Poller` | **5.94** | `  ▂▃▃▄` | `CIRCUIT_BREAKER_STOPPED` | `DECOMMISSIONED_LOW_ROI` | **STOPPED** | `Every 24.0h` | `local_mac_mini` | `2` | `0.001s` | `1.0% / 20.0MB` |
 
 ---
