@@ -29,9 +29,9 @@ fi
 
 case "$CMD" in
     tui|"")
-        echo "🚀 Launching Lauburu Canonical TUI Command Center..."
+        echo "🚀 Launching Lauburu Canonical TUI Command Center (Live --dev Mode)..."
         cd "$TUI_DIR"
-        exec ./run_live_tui.sh "$@"
+        exec ./run_live_tui.sh --dev "$@"
         ;;
     --dev|dev|arena)
         echo "🚀 Launching Lauburu Live Side-by-Side Dual Graphical Arena (--dev)..."

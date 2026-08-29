@@ -3,33 +3,40 @@
 Side-by-Side Red/Blue Adversarial & Device Sandbox Live --dev Dashboard
 Lauburu Mesh Ecosystem — 2026
 
-Rule #0 Compliant: Features DUAL large graphical topology maps (One for Red, One for Blue).
+Hermes 3 + OpenClaw (Red Attackers) vs LuCI OpenWrt + Sentinel (Blue Defenders)
+Features:
+1. Live Dynamic AI Cognitive Thought Stream & Narration Bar.
+2. Dual Large Graphical Topology Maps.
+3. Interactive RAG Query Input Bar & macOS Voice TTS.
 """
 
 import os
 import sys
 import json
 import time
+import random
 import asyncio
 from pathlib import Path
 from typing import Dict, Any, List
 
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical, VerticalScroll
-from textual.widgets import Header, Footer, Static, RichLog, Label
+from textual.widgets import Header, Footer, Static, RichLog, Label, Input
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 from rich.markup import escape
 
+sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/red_blue_arena")
+from arena_rag_comm import DualTeamRAGVoiceEngine
+
 DRAIN_STATE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/compute_drain_war_state.json")
 SANDBOX_STATE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/device_settings_shadow.json")
 MOVESENSE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/movesense_live_stream.json")
+NARRATION_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/live_ai_narration_stream.json")
 
 class RedTeamGraphicalMapWidget(Static):
-    """
-    Large Graphical Topology & Exploit Infiltration Map for RED TEAM.
-    """
+    """Large Graphical Topology & Exploit Infiltration Map for RED TEAM (Hermes 3 & OpenClaw)."""
     DEFAULT_CSS = """
     RedTeamGraphicalMapWidget {
         height: 13;
@@ -43,7 +50,7 @@ class RedTeamGraphicalMapWidget(Static):
     def render_map(self, hr_bpm: int = 72, chaos_active: bool = False) -> Panel:
         tb4_atk = "[bold red]⚠️ 350ms PACKET DROP FLOOD[/]" if chaos_active else "[bold red]⚡ TB4 SOCKET DRAIN: Port 50052[/]"
         lines = [
-            f" [bold red][🔴 RED EXPLOIT SWARM][/] ══════════( {tb4_atk} )══════════> [bold magenta][🎯 L2: MACBOOK PRO (14GB)][/]",
+            f" [bold red][🔴 HERMES 3 & OPENCLAW SWARM][/] ═════( {tb4_atk} )═════> [bold magenta][🎯 L2: MACBOOK PRO (14GB)][/]",
             f"        │                                                                             │",
             f"        ├───( [bold red]💥 BQL BURST: 8192B / WG PROBE 100.101.39.98[/] )───> [bold blue][🎯 L3: LINUX HEAD (16GB)][/]",
             f"        │                                                                     │       │",
@@ -54,13 +61,11 @@ class RedTeamGraphicalMapWidget(Static):
             f"        └───( [bold red]📱 ADB TCP ESCALATION: Port 8022[/] )─────────> [bold gold1][🎯 L6: PIXEL 10 PRO (16GB)][/] ───┘",
             f" [bold white]Attack Invariants:[/] Process Starvation │ VRAM Ballooning (128MB) │ 3D Mat Submission Tree Exploits"
         ]
-        return Panel("\n".join(lines), title="[bold red]🔴 RED TEAM: 3D ADVERSARIAL INFILTRATION & EXPLOIT TOPOLOGY MAP[/]", border_style="red")
+        return Panel("\n".join(lines), title="[bold red]🔴 RED TEAM (Hermes 3 & OpenClaw): 3D INFILTRATION & ATTACK MAP[/]", border_style="red")
 
 
 class BlueTeamGraphicalMapWidget(Static):
-    """
-    Large Graphical Topology & Sentinel Shield Map for BLUE TEAM.
-    """
+    """Large Graphical Topology & Sentinel Shield Map for BLUE TEAM (LuCI OpenWrt & Sentinel)."""
     DEFAULT_CSS = """
     BlueTeamGraphicalMapWidget {
         height: 13;
@@ -75,7 +80,7 @@ class BlueTeamGraphicalMapWidget(Static):
         tb4_def = "[bold red]⚠️ TB4 SEVERED -> WG FAILOVER[/]" if chaos_active else "[bold green]⚡ MTU 9000 JUMBO SHIELD (0.35ms)[/]"
         wg_def = "[bold green]🔒 WireGuard Mesh (1.85ms ACTIVE)[/]" if chaos_active else "[bold cyan]🔒 ChaCha20-Poly1305 Overlay (1.85ms)[/]"
         lines = [
-            f" [bold cyan][🔵 BLUE SENTINEL HOST][/] ════════( {tb4_def} )════════> [bold magenta][L2: MACBOOK PRO (Vault)][/]",
+            f" [bold cyan][🔵 LUCI OPENWRT & SENTINEL HOST][/] ══( {tb4_def} )══> [bold magenta][L2: MACBOOK PRO (Vault)][/]",
             f"        │                                                                             │",
             f"        ├───( {wg_def} )───> [bold blue][L3: LINUX HEAD NODE (Locked)][/]",
             f"        │                                                                     │       │",
@@ -86,7 +91,7 @@ class BlueTeamGraphicalMapWidget(Static):
             f"        └───( [bold cyan]🔒 ED25519 TRIPWIRE KEEPER[/] )────────────> [bold gold1][L6: PIXEL 10 PRO (Shielded)][/] ───┘",
             f" [bold white]Defense Invariants:[/] 4 Nodes Shielded │ Ed25519 Socket Multiplexing │ Zero-Trust Rule #0 Hardware Gate"
         ]
-        return Panel("\n".join(lines), title="[bold cyan]🔵 BLUE TEAM: 3D SENTINEL SHIELD & SELF-HEALING RECOVERY MAP[/]", border_style="cyan")
+        return Panel("\n".join(lines), title="[bold cyan]🔵 BLUE TEAM (LuCI OpenWrt & Sentinel): 3D SHIELD & HEALING MAP[/]", border_style="cyan")
 
 
 class LiveArenaDevApp(App):
@@ -95,10 +100,10 @@ class LiveArenaDevApp(App):
         background: #070b12;
         color: #f8fafc;
     }
-    #hud_bar {
-        height: 4;
+    #narration_bar {
+        height: 6;
         background: #0f172a;
-        border: solid #10b981;
+        border: solid #f59e0b;
         padding: 0 1;
         margin-bottom: 1;
     }
@@ -123,107 +128,109 @@ class LiveArenaDevApp(App):
         height: 1fr;
         background: transparent;
     }
+    #rag_input {
+        dock: bottom;
+        height: 3;
+        background: #1e293b;
+        border: solid #38bdf8;
+        color: #ffffff;
+    }
     """
 
     BINDINGS = [
         ("c", "trigger_chaos", "Inject Chaos Fault"),
         ("m", "mutate_sandbox", "Mutate Device Settings"),
+        ("v", "toggle_voice", "Toggle Voice (TTS)"),
         ("q", "quit", "Quit --dev Cockpit")
     ]
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        yield Static(id="hud_bar")
+        yield Static(id="narration_bar")
         with Horizontal(id="arena_container"):
             with Vertical(id="red_box", classes="faction_box"):
                 yield RedTeamGraphicalMapWidget(id="red_graphical_map")
-                yield Label("[bold red]🔴 RED TEAM EXPLOITATION STREAM[/]")
+                yield Label("[bold red]🔴 HERMES 3 & OPENCLAW ACTION STREAM[/]")
                 yield RichLog(id="red_log", highlight=True, markup=True)
             with Vertical(id="blue_box", classes="faction_box"):
                 yield BlueTeamGraphicalMapWidget(id="blue_graphical_map")
-                yield Label("[bold cyan]🔵 BLUE TEAM DEFENSE & SELF-HEALING STREAM[/]")
+                yield Label("[bold cyan]🔵 LUCI OPENWRT & SENTINEL ACTION STREAM[/]")
                 yield RichLog(id="blue_log", highlight=True, markup=True)
+        yield Input(placeholder="💬 Ask Red [Hermes] or Blue [LuCI]... (e.g., 'red why attack mbp' or 'blue router status')", id="rag_input")
         yield Footer()
 
     def on_mount(self):
         self.red_log = self.query_one("#red_log", RichLog)
         self.blue_log = self.query_one("#blue_log", RichLog)
-        self.hud_bar = self.query_one("#hud_bar", Static)
+        self.narration_bar = self.query_one("#narration_bar", Static)
         self.red_map = self.query_one("#red_graphical_map", RedTeamGraphicalMapWidget)
         self.blue_map = self.query_one("#blue_graphical_map", BlueTeamGraphicalMapWidget)
+        self.rag_engine = DualTeamRAGVoiceEngine()
         self.chaos_active = False
         
-        self.red_log.write("[bold red]🔴 Red Team Infiltration Engine initialized. Probing clean-room device endpoints...[/]")
-        self.blue_log.write("[bold blue]🔵 Blue Team Sentinel Shield active. Monitoring CoreBluetooth GATT and MTU 9000 tripwires...[/]")
+        self.red_log.write("[bold red]🔴 Hermes 3 & OpenClaw initialized. Reverse-engineering router SQM queues & Movesense GATT...[/]")
+        self.blue_log.write("[bold blue]🔵 LuCI OpenWrt & Sentinel Shield active. Locking fq_codel buffers and Kamath HRV filter...[/]")
         
-        self.set_interval(1.0, self.refresh_arena_tick)
+        self.set_interval(1.5, self.refresh_narration_tick)
 
-    def refresh_arena_tick(self):
+    def refresh_narration_tick(self):
         hr = 72
-        rmssd = 48.5
         if MOVESENSE_PATH.exists():
             try:
                 with open(MOVESENSE_PATH) as f:
-                    d = json.load(f)
-                    hr = d.get("heart_rate_bpm") or 72
-                    rmssd = d.get("rmssd_ms") or 48.5
+                    hr = json.load(f).get("heart_rate_bpm") or 72
             except Exception:
                 pass
 
-        blue_pct, red_pct = 64.0, 36.0
-        winner = None
-        if DRAIN_STATE_PATH.exists():
-            try:
-                with open(DRAIN_STATE_PATH) as f:
-                    d = json.load(f)
-                    cb = d.get("compute_balance", {})
-                    blue_pct = cb.get("blue_pct", 64.0)
-                    red_pct = cb.get("red_pct", 36.0)
-                    winner = d.get("winner")
-            except Exception:
-                pass
+        tick = self.rag_engine.generate_narration_tick()
+        narrator = tick.get("narrator_headline", "")
+        red_thought = tick.get("red_lead_thought", "")
+        blue_thought = tick.get("blue_lead_thought", "")
 
-        # 1. Update BOTH Large Graphical Maps
+        # Render rich live AI thoughts & narration in place of static telemetry
+        narration_text = (
+            f"[bold gold1]{narrator}[/]\n"
+            f"[bold red]🧠 Hermes 3 Thought:[/] [italic]{red_thought}[/]\n"
+            f"[bold cyan]🧠 LuCI Thought:[/] [italic]{blue_thought}[/]"
+        )
+        self.narration_bar.update(Panel(narration_text, title=f"⚡ Live AI Cognitive Thought Stream & Narration (Movesense: {hr} BPM | Voice: {'ON' if self.rag_engine.tts_enabled else 'OFF'})", border_style="gold1"))
+
+        # Update Dual Maps
         self.red_map.update(self.red_map.render_map(hr_bpm=hr, chaos_active=self.chaos_active))
         self.blue_map.update(self.blue_map.render_map(hr_bpm=hr, chaos_active=self.chaos_active))
 
-        # 2. Update Live Telemetry HUD Bar
-        hud_text = (
-            f"[bold cyan]LAUBURU MESH --DEV DUAL ARENA[/] | "
-            f"[bold green]Movesense BLE:[/] [bold yellow]{hr} BPM[/] (RMSSD: {rmssd}ms) | "
-            f"[bold magenta]TB4 DMA:[/] [bold green]0.35ms[/] (40 Gbps) | "
-            f"[bold blue]Blue Compute:[/] [bold]{blue_pct}%[/] vs [bold red]Red Compute:[/] [bold]{red_pct}%[/]"
-        )
-        if winner:
-            hud_text += f"\n[bold gold1]🏆 ARENA STATUS:[/] {winner}"
-        self.hud_bar.update(Panel(hud_text, title="⚡ Live Hardware Telemetry & Compute Balance", border_style="green"))
+        # Stream thoughts to logs
+        if random.random() > 0.4:
+            self.red_log.write(f"[red]⚡ ACTION:[/] {red_thought}")
+        if random.random() > 0.4:
+            self.blue_log.write(f"[blue]🛡️ DEFENSE:[/] {blue_thought}")
 
-        # 3. Update Device Settings Sandbox Stream
-        if SANDBOX_STATE_PATH.exists():
-            try:
-                with open(SANDBOX_STATE_PATH) as f:
-                    d = json.load(f)
-                    devs = d.get("devices", {})
-                    for dev_key, dev_data in devs.items():
-                        opts = dev_data.get("optimizations_applied", [])
-                        if opts:
-                            latest = opts[-1]
-                            t = latest.get("timestamp", "")
-                            act = latest.get("action", "")
-                            param = latest.get("parameter", "")
-                            val = latest.get("new_value", "")
-                            if latest.get("faction") == "RED_TEAM":
-                                self.red_log.write(f"[{t}] [red]⚡ OPTIMIZE:[/] {act} on [bold]{dev_key}[/] ({param} -> {val})")
-                            else:
-                                self.blue_log.write(f"[{t}] [blue]🛡️ HARDEN:[/] {act} on [bold]{dev_key}[/] ({param} -> {val})")
-            except Exception:
-                pass
+    def on_input_submitted(self, event: Input.Submitted):
+        val = event.value.strip()
+        if not val:
+            return
+        event.input.value = ""
+        
+        # Route to Red or Blue team
+        if "red" in val.lower() or "hermes" in val.lower() or "openclaw" in val.lower():
+            target_team = "RED"
+        else:
+            target_team = "BLUE"
+            
+        res = self.rag_engine.query_team(target_team, val)
+        if target_team == "RED":
+            self.red_log.write(f"[bold yellow]👤 YOU -> RED:[/] {val}")
+            self.red_log.write(f"{res['response']}")
+        else:
+            self.blue_log.write(f"[bold yellow]👤 YOU -> BLUE:[/] {val}")
+            self.blue_log.write(f"{res['response']}")
 
     def action_trigger_chaos(self):
         self.chaos_active = not self.chaos_active
         if self.chaos_active:
             self.red_log.write("[bold yellow]⚡ CHAOS OVERLORD INJECTED: 350ms TB4 packet drop simulated![/]")
-            self.blue_log.write("[bold green]🛡️ BLUE COUNTER-MEASURE: Instant failover to Headscale WireGuard (1.85ms RTT) executed.[/]")
+            self.blue_log.write("[bold green]🛡️ LUCI COUNTER-MEASURE: Instant failover to Headscale WireGuard (1.85ms RTT) executed.[/]")
+            self.rag_engine.speak_async("Chaos Overlord injected 350ms latency fault. LuCI failover engaged.", voice="Fred")
         else:
             self.blue_log.write("[bold cyan]🔄 TB4 DMA Link Restored (0.35ms RTT). Failback complete.[/]")
 
@@ -231,6 +238,13 @@ class LiveArenaDevApp(App):
         os.system("python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/red_blue_arena/device_settings_sandbox.py >/dev/null 2>&1 &")
         self.red_log.write("[magenta]🔄 Triggered Clean-Room Device Settings mutation cycle...[/]")
         self.blue_log.write("[cyan]🔒 Re-evaluating device sysctls and OpenWrt SQM queue buffers...[/]")
+
+    def action_toggle_voice(self):
+        self.rag_engine.tts_enabled = not self.rag_engine.tts_enabled
+        status = "ENABLED" if self.rag_engine.tts_enabled else "MUTED"
+        self.blue_log.write(f"[bold green]🔊 Voice TTS synthesis {status}.[/]")
+        if self.rag_engine.tts_enabled:
+            self.rag_engine.speak_async("Voice synthesis active for Hermes and LuCI.", voice="Samantha")
 
 if __name__ == "__main__":
     app = LiveArenaDevApp()
