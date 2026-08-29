@@ -47,20 +47,26 @@ MANAGED_MODELS = {
     8083: {
         "name": "qwen_coder_7b",
         "model": MODEL_VAULT / "qwen2.5-coder-7b-instruct-q4_k_m.gguf",
-        "args": ["-ngl", "99", "-c", "8192"],
+        "args": ["-ngl", "99", "-c", "4096", "--no-jinja"],
         "rpc": [],
     },
     8082: {
         "name": "mistral_nemo_12b",
         "model": MODEL_VAULT / "Mistral-Nemo-Instruct-2407-abliterated.Q4_K_M.gguf",
-        "args": ["-ngl", "99", "-c", "8192"],
+        "args": ["-ngl", "99", "-c", "4096", "--no-jinja"],
         "rpc": [],
     },
     8084: {
         "name": "nemotron_70b",
         "model": MODEL_VAULT / "Llama-3.1-Nemotron-70B-Instruct-HF-abliterated-Q4_K_M.gguf",
-        "args": ["-ngl", "99", "-c", "4096", "-ts", "43,28,29"],
+        "args": ["-ngl", "99", "-c", "4096", "-ts", "43,28,29", "--no-jinja"],
         "rpc": ["100.93.158.96:50052", "100.73.38.87:50052"],  # MacBook Air + Pixel
+    },
+    8085: {
+        "name": "qwen38_27b_abliterated",
+        "model": MODEL_VAULT / "Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
+        "args": ["-ngl", "0", "-c", "2048", "-b", "256", "-t", "8", "--no-jinja"],
+        "rpc": [],
     },
 }
 
@@ -140,6 +146,7 @@ def run_cycle() -> dict:
         "mistral_nemo_8082": ("127.0.0.1", 8082),
         "qwen_coder_8083":   ("127.0.0.1", 8083),
         "nemotron_70b_8084": ("127.0.0.1", 8084),
+        "qwen38_8085":       ("127.0.0.1", 8085),
         "wol_api_18802":     ("127.0.0.1", 18802),
         "web_ui_4000":       ("127.0.0.1", 4000),
     }

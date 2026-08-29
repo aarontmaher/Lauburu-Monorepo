@@ -204,13 +204,15 @@ def load_domain_datasets(stage: int) -> List[Dict]:
                         continue
                     try:
                         rec = json.loads(line)
-                        # Dedup by completion hash
-                        sig = hash(str(rec.get("completion", ""))[:100])
-                        if sig in seen:
-                            continue
-                        seen.add(sig)
                         converted = lauburu_to_agentworld(rec, domain)
                         if converted:
+                            # Dedup by full action + completion signature
+                            user_content = converted["messages"][1]["content"]
+                            asst_content = converted["messages"][2]["content"]
+                            sig = hash((user_content[:200], asst_content[:200]))
+                            if sig in seen:
+                                continue
+                            seen.add(sig)
                             all_samples.append(converted)
                             domain_samples += 1
                     except Exception:

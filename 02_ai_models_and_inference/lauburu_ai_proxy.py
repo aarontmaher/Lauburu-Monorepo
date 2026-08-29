@@ -61,19 +61,22 @@ app = FastAPI(title="Lauburu Unified AI Proxy", version="1.0.0")
 LOCAL_MODELS: dict = {
     # ── Local llama-server ports (Mac Mini) ──────────────────────────────────
     "local/qwen":        {"host": "127.0.0.1", "port": 8083, "display": "Qwen2.5-Coder-7B Q4_K_M"},
+    "local/qwen-abliterated": {"host": "127.0.0.1", "port": 8085, "display": "Qwen2.5-7B-Instruct-Abliterated Q4_K_M"},
     "local/mistral":     {"host": "127.0.0.1", "port": 8082, "display": "Mistral-Nemo-12B Q4_K_M"},
     "local/nemotron":    {"host": "127.0.0.1", "port": 8084, "display": "Nemotron-70B Q4_K_M (RPC)"},
-    "local/qwen27b":     {"host": "127.0.0.1", "port": 8085, "display": "Qwen3.8-27B Abliterated Q4_K_XL"},
+    "local/qwen27b":     {"host": "127.0.0.1", "port": 8085, "display": "Qwen-Abliterated Q4_K_M"},
     "local/gpt-oss":     {"host": "127.0.0.1", "port": 8081, "display": "GPT-OSS 20B MXFP4"},
     # ── Pixel 10 Pro (Tailscale 100.73.38.87) remote model ──────────────────
     "local/pixel":       {"host": "100.73.38.87", "port": 8087, "display": "Pixel Qwen2.5-Coder-14B Q3 (Tensor G5)"},
     "pixel":             {"host": "100.73.38.87", "port": 8087, "display": "Pixel Qwen2.5-14B"},
     # ── Short aliases ────────────────────────────────────────────────────────
-    "qwen":          {"host": "127.0.0.1", "port": 8083, "display": "Qwen2.5-Coder-7B"},
-    "mistral":       {"host": "127.0.0.1", "port": 8082, "display": "Mistral-Nemo-12B"},
-    "nemotron":      {"host": "127.0.0.1", "port": 8084, "display": "Nemotron-70B"},
-    "qwen27b":       {"host": "127.0.0.1", "port": 8085, "display": "Qwen3.8-27B Abliterated"},
-    "coder":         {"host": "127.0.0.1", "port": 8083, "display": "Qwen2.5-Coder-7B"},
+    "qwen":              {"host": "127.0.0.1", "port": 8083, "display": "Qwen2.5-Coder-7B"},
+    "abliterated":       {"host": "127.0.0.1", "port": 8085, "display": "Qwen-Abliterated"},
+    "devils_advocate":   {"host": "127.0.0.1", "port": 8085, "display": "Qwen-Abliterated"},
+    "mistral":           {"host": "127.0.0.1", "port": 8082, "display": "Mistral-Nemo-12B"},
+    "nemotron":          {"host": "127.0.0.1", "port": 8084, "display": "Nemotron-70B"},
+    "qwen27b":           {"host": "127.0.0.1", "port": 8085, "display": "Qwen-Abliterated"},
+    "coder":             {"host": "127.0.0.1", "port": 8083, "display": "Qwen2.5-Coder-7B"},
 }
 
 CF_MODELS: dict = {

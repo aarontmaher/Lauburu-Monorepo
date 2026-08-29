@@ -45,13 +45,11 @@ class LlamaRpcInferenceBridge(BaseInferenceBridge):
     Fallback: http://127.0.0.1:8083/v1/chat/completions  (Qwen2.5-Coder-7B direct)
     """
 
-    # (proxy_host, proxy_port, model_id, fallback_port)
     PRIMARY_PROXY = ("127.0.0.1", 8080, "auto")
     DIRECT_FALLBACKS = [
+        ("127.0.0.1", 8085, "local/qwen-abliterated"),
         ("127.0.0.1", 8083, "local/qwen"),
-        ("127.0.0.1", 8081, "local/gpt-oss"),
-        ("127.0.0.1", 8084, "local/kimi"),
-        ("127.0.0.1", 8085, "local/deepseek"),
+        ("127.0.0.1", 8082, "local/mistral"),
     ]
 
     def __init__(

@@ -127,7 +127,7 @@ heal_local_models() {
     pkill -f "Huihui-Qwen3.8-27B" 2>/dev/null || true; sleep 1
     nohup /Users/aaron/.local/bin/llama-server \
       -m /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf \
-      --port 8085 -ngl 99 -c 4096 -t 8 --host 0.0.0.0 --batch-size 512 \
+      --port 8085 -ngl 0 -c 2048 -b 256 -t 8 --host 0.0.0.0 \
       >> /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/logs/qwen38_abliterated_8085.log 2>&1 &
     log "✅ Qwen27B :8085 restarted (PID $!)"
   else
@@ -157,6 +157,16 @@ heal_local_models() {
   fi
 }
 
+heal_ai_debate_cycle() {
+  log "🗣️ Running Continuous AI Debate Cycle..."
+  python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/ai_debate/continuous_free_ai_debate_cycle.py >> "$LOG" 2>&1 || log "⚠️ Debate cycle failed"
+}
+
+heal_agentworld_data() {
+  log "🤖 Refreshing AgentWorld Stage datasets..."
+  python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/agentworld_train.py --stage 1 --dry-run >> "$LOG" 2>&1 || true
+}
+
 # ─── MAIN ───────────────────────────────────────────────────────────────────
 log "════════ Mesh RPC+Petals Healer cycle ════════"
 heal_local_models
@@ -164,4 +174,6 @@ heal_rpc macbook_pro
 heal_rpc linux_head
 heal_rpc pixel
 heal_petals linux_head
+heal_ai_debate_cycle
+heal_agentworld_data
 log "════════ Cycle complete ════════"

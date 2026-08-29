@@ -25,8 +25,10 @@ OBSIDIAN_DEBATES_DIR = MONOREPO_ROOT / "obsidian_vault" / "01_DEBATES"
 DEBATE_TRANSCRIPT_FILE = OBSIDIAN_DEBATES_DIR / "CONTINUOUS_FREE_AI_DEBATE_CYCLE_2026.md"
 
 # Model Endpoints
-LOCAL_DEVILS_ADVOCATE_URL = "http://127.0.0.1:8083/v1/chat/completions"
-FREE_ROUTER_URL = "http://127.0.0.1:9000/v1/chat/completions"
+LOCAL_DEVILS_ADVOCATE_URL = "http://127.0.0.1:8085/v1/chat/completions" # Qwen 3.8 Max 27B Abliterated
+LOCAL_CODER_URL = "http://127.0.0.1:8083/v1/chat/completions"           # Qwen 2.5 Coder 7B
+PROXY_ROUTER_URL = "http://127.0.0.1:8080/v1/chat/completions"          # Lauburu Unified Proxy (Gemini/HF/CF)
+FREE_ROUTER_URL = "http://127.0.0.1:8080/v1/chat/completions"
 
 DEBATE_TOPICS = [
     {

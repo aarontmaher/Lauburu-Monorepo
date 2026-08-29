@@ -1,6 +1,6 @@
 {
   "version": "3.0.0-CANONICAL",
-  "timestamp": "2026-08-29T08:53:28.097019",
+  "timestamp": "2026-08-29T11:08:50.737886",
   "source_node": "L1_Mac_Node",
   "provenance": {
     "agent_id": "teamwork_preview_worker_m2",
@@ -46,6 +46,14 @@
         "os": "macOS"
       },
       {
+        "node_name": "localhost",
+        "ip": "100.118.191.96",
+        "status": "OFFLINE",
+        "relay": "DERP Relay",
+        "layer": "--",
+        "os": "iOS"
+      },
+      {
         "node_name": "Macbook",
         "ip": "100.93.158.96",
         "status": "ONLINE",
@@ -88,10 +96,18 @@
       {
         "node_name": "localhost",
         "ip": "100.113.62.81",
-        "status": "OFFLINE",
+        "status": "ONLINE",
         "relay": "DERP Relay",
         "layer": "--",
         "os": "iOS"
+      },
+      {
+        "node_name": "debian",
+        "ip": "100.81.92.125",
+        "status": "ONLINE",
+        "relay": "DERP Relay",
+        "layer": "--",
+        "os": "linux"
       },
       {
         "node_name": "aaron\u2019s MacBook Pro",
@@ -112,10 +128,18 @@
       {
         "node_name": "tablet",
         "ip": "100.118.79.63",
-        "status": "OFFLINE",
+        "status": "ONLINE",
         "relay": "DERP Relay",
         "layer": "--",
         "os": "windows"
+      },
+      {
+        "node_name": "DESKTOP-Q4SI00P",
+        "ip": "100.91.85.70",
+        "status": "ONLINE",
+        "relay": "DERP Relay",
+        "layer": "--",
+        "os": "linux"
       },
       {
         "node_name": "linux",
@@ -131,10 +155,10 @@
       "upload_mbps": 48.0,
       "responsiveness_rpm": 1420,
       "latency_ms": 12.4,
-      "timestamp": "08:53:28",
+      "timestamp": "11:08:46",
       "command": "/usr/bin/networkQuality -c -M 5",
       "cycle_seconds": 300,
-      "last_tested_iso": "2026-08-29T08:53:28.722353"
+      "last_tested_iso": "2026-08-29T11:08:46.621216"
     },
     "ssh_fleet": [
       {
@@ -144,8 +168,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 0.18,
-        "last_auth_iso": "2026-08-29T08:53:29.772867"
+        "latency_ms": 12.3,
+        "last_auth_iso": "2026-08-29T11:08:48.157629"
       },
       {
         "node_id": "L2",
@@ -154,8 +178,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_9.6",
         "key_type": "ssh-ed25519",
-        "latency_ms": 64.67,
-        "last_auth_iso": "2026-08-29T08:53:29.828408"
+        "latency_ms": 79.23,
+        "last_auth_iso": "2026-08-29T11:08:48.146643"
       },
       {
         "node_id": "L3",
@@ -164,8 +188,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_9.8",
         "key_type": "ssh-ed25519",
-        "latency_ms": 14.33,
-        "last_auth_iso": "2026-08-29T08:53:30.048042"
+        "latency_ms": 12.32,
+        "last_auth_iso": "2026-08-29T11:08:48.350792"
       },
       {
         "node_id": "L4",
@@ -184,38 +208,38 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 84.51,
-        "last_auth_iso": "2026-08-29T08:53:29.891107"
+        "latency_ms": 24.99,
+        "last_auth_iso": "2026-08-29T11:08:48.131399"
       },
       {
         "node_id": "L6",
         "host": "100.73.38.87",
         "port": 8022,
         "status": "OPEN",
-        "banner": "Not allowed at this time",
+        "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 38.43,
-        "last_auth_iso": "2026-08-29T08:53:29.862628"
+        "latency_ms": 47.32,
+        "last_auth_iso": "2026-08-29T11:08:48.180667"
       },
       {
         "node_id": "L7",
         "host": "100.84.40.95",
         "port": 8022,
         "status": "OPEN",
-        "banner": "Not allowed at this time",
+        "banner": "SSH-2.0-OpenSSH_10.4",
         "key_type": "ssh-ed25519",
-        "latency_ms": 16.96,
-        "last_auth_iso": "2026-08-29T08:53:29.773562"
+        "latency_ms": 24.42,
+        "last_auth_iso": "2026-08-29T11:08:48.180935"
       },
       {
         "node_id": "GW",
         "host": "192.168.8.1",
         "port": 22,
         "status": "OPEN",
-        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u0014]`$f=B\u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
+        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u0014pp{|Pge#:\u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
         "key_type": "ssh-ed25519",
-        "latency_ms": 8.86,
-        "last_auth_iso": "2026-08-29T08:53:29.754705"
+        "latency_ms": 24.18,
+        "last_auth_iso": "2026-08-29T11:08:48.097551"
       }
     ],
     "ewma_alpha": 0.35,
@@ -519,7 +543,7 @@
       "pyspark_lake": {
         "path": "/Users/aaron/DFS_UNIFIED/lora_datasets",
         "healthy": true,
-        "free_headroom_gb": 26.86,
+        "free_headroom_gb": 15.49,
         "headroom_threshold_gb": 10.0,
         "qdrant_reachable": true
       },
@@ -626,8 +650,8 @@
         "endpoint": "100.101.39.98:50052",
         "layers_sharded": 28,
         "vram_used_gb": 13.5,
-        "status": "ACTIVE",
-        "latency_ms": 6.84
+        "status": "OFFLINE",
+        "latency_ms": null
       },
       {
         "node_name": "MacBook Pro",
@@ -650,8 +674,8 @@
         "endpoint": "100.93.158.96:50052",
         "layers_sharded": 0,
         "vram_used_gb": 0.0,
-        "status": "OFFLINE",
-        "latency_ms": null
+        "status": "ACTIVE",
+        "latency_ms": 11.21
       },
       {
         "node_name": "Linux Tablet",
@@ -666,8 +690,8 @@
         "endpoint": "100.73.38.87:50052",
         "layers_sharded": 0,
         "vram_used_gb": 0.0,
-        "status": "OFFLINE",
-        "latency_ms": null
+        "status": "ACTIVE",
+        "latency_ms": 38.82
       }
     ],
     "rpc_split": "-ts 28,28,24",
@@ -1392,7 +1416,7 @@
   },
   "layer_5_governance": {
     "debate_council": {
-      "cosine_accord": 0.999,
+      "cosine_accord": 0.9998,
       "threshold": 0.98,
       "consensus_reached": true,
       "current_turn": 4,
