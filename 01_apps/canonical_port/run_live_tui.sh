@@ -74,6 +74,12 @@ trap cleanup EXIT INT TERM
 FIRST_ARG="${1:-}"
 
 if [ "${FIRST_ARG}" = "web" ]; then
+    echo "▶ Checking Port 8088..."
+    if lsof -ti:8088 >/dev/null 2>&1; then
+        echo "⚡ Reclaiming Port 8088 from existing instance..."
+        lsof -ti:8088 | xargs kill -9 2>/dev/null || true
+        sleep 0.5
+    fi
     echo "▶ Launching Web-TUI bridge on Port 8088..."
     cd "${SCRIPT_DIR}"
     exec ${VENV_PYTHON} "${SCRIPT_DIR}/tui/serve_web_tui.py"

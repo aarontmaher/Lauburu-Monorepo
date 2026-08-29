@@ -3,7 +3,7 @@ title: "MacBook_Air Live Mesh Telemetry"
 node_id: "MacBook_Air"
 layer: "L5"
 status: "ONLINE"
-last_synced: "2026-08-28T18:54:42Z"
+last_synced: "2026-08-29T09:18:30Z"
 tags: [lauburu, mesh_node, telemetry, live_sync]
 ---
 # 📡 [[MacBook_Air]] Telemetry Status

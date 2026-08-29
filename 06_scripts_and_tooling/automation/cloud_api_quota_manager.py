@@ -791,48 +791,10 @@ class JulienAdapter(BaseProviderAdapter):
         super().__init__("julien_ai")
 
     def execute(self, task: TaskRequest) -> Tuple[str, int, int, float]:
-        julien_key = resolve_api_key("JULIEN_API_KEY") or resolve_api_key("JULES_API_KEY")
-        start_t = time.perf_counter()
-
-        # Find Jules CLI in standard PATH or nvm directory
-        nvm_jules = "/Users/aaron/.nvm/versions/node/v20.20.2/bin/jules"
-        jules_binary = shutil.which("jules") or (nvm_jules if os.path.exists(nvm_jules) else None)
-        
-        if jules_binary:
-            try:
-                # Jules CLI is authenticated via local Google session
-                cmd = [jules_binary, "new", task.prompt]
-                res = subprocess.run(cmd, capture_output=True, text=True, timeout=20)
-                latency_ms = (time.perf_counter() - start_t) * 1000.0
-                if res.returncode == 0:
-                    out = res.stdout.strip() or "Google Jules Session Dispatched Successfully"
-                    return out, len(task.prompt) // 4, len(out) // 4, latency_ms
-            except Exception as e:
-                logger.debug(f"Jules CLI attempt failed: {e}")
-
-        if julien_key:
-            try:
-                url = f"https://api.jules.google.com/v1/sessions/run?key={julien_key}"
-                payload = {"prompt": task.prompt, "system": task.system_prompt}
-                req = urllib.request.Request(
-                    url,
-                    data=json.dumps(payload).encode("utf-8"),
-                    headers={"Content-Type": "application/json"},
-                    method="POST",
-                )
-                with urllib.request.urlopen(req, timeout=10.0) as resp:
-                    resp_data = json.loads(resp.read().decode("utf-8"))
-                    latency_ms = (time.perf_counter() - start_t) * 1000.0
-                    out = resp_data.get("output", "").strip()
-                    if out:
-                        return out, len(task.prompt) // 4, len(out) // 4, latency_ms
-            except Exception as e:
-                logger.debug(f"Jules REST attempt failed: {e}")
-
         raise ProviderError(
-            "Julien AI / @google/jules CLI or credentials not available in environment",
-            error_type="missing_credentials",
-            status_code=401,
+            "Julien AI / Google Jules provider is disabled by user policy.",
+            error_type="provider_disabled",
+            status_code=403,
         )
 
 

@@ -1,65 +1,43 @@
-# BRIEFING — 2026-08-28T00:03:45Z
+# BRIEFING — 2026-08-29T09:17:18Z
 
 ## Mission
-Adversarially challenge and stress-test the Shizuku integration proposals, boundary conditions, recovery models, and system permission assumptions across the Lauburu Android mesh.
+Adversarially stress test the SmolAgents code execution arena, 4-mode game engine, and master E2E test runner; verify 100% empirical stability and deliver verdict.
 
 ## 🔒 My Identity
-- Archetype: EMPIRICAL CHALLENGER
+- Archetype: challenger
 - Roles: critic, specialist
 - Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_challenger_2
-- Original parent: 319f9395-20e5-41bb-abc2-ddd5b0bdae12
-- Milestone: Shizuku Boundary Challenge
+- Original parent: 63ce69b0-c347-4525-baf9-09dde968f198
+- Milestone: SmolAgents Multi-Mode Arena & E2E Stress Challenge
 - Instance: 2 of 2
 
 ## 🔒 Key Constraints
-- Review-only — do NOT modify implementation code directly
-- Must empirically challenge assumptions with rigorous Android security model analysis and stress harnesses
-- Output formal verdict: APPROVE or REQUEST_CHANGES in handoff.md
+- Review-only & challenger — do NOT modify implementation code directly unless constructing test harnesses
+- Write all logs, progress, reports within `.agents/teamwork_preview_challenger_2/`
+- Zero simulated or fake assertions: empirical execution only
 
 ## Current Parent
-- Conversation ID: 319f9395-20e5-41bb-abc2-ddd5b0bdae12
-- Updated: 2026-08-28T00:03:45Z
+- Conversation ID: 63ce69b0-c347-4525-baf9-09dde968f198
+- Updated: 2026-08-29T09:17:18Z
 
 ## Review Scope
-- **Files to review**: 
-  - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md`
-  - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_1/DEBATE_TRANSCRIPT.md`
-  - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_1/analysis.md`
-  - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_2/PIXEL_DIAGNOSTICS_REPORT.md`
-- **Review criteria**:
-  - Challenge 1: Dual-tier recovery model under total network isolation / cold reboot without USB/Wi-Fi
-  - Challenge 2: UID 2000 (`android.uid.shell`) permission sufficiency for Doze, ADB port pinning, Input injection, BLE scan
-  - Challenge 3: `IInputManager.injectInputEvent` system signature vs UID 2000 requirements and Android 15/16 security constraints
-  - Formal invariants validation (INV_1 through INV_6)
+- **Files to review**: SmolAgents code execution arena, 4-mode game engine, `tests/e2e/run_all_e2e_tests.py`, related test suites.
+- **Interface contracts**: PROJECT.md, ORIGINAL_REQUEST.md
+- **Review criteria**: Correctness, concurrency/thread-safety, error handling with malformed payloads, rapid mode switching, E2E stability.
 
 ## Attack Surface
-- **Hypotheses tested**: 
-  - Non-root cold reboot autonomy without USB/Wi-Fi connection -> CONFIRMED BOUNDARY: Requires active Wi-Fi (for adb_wifi) or USB tether; local offline buffering required.
-  - `setprop service.adb.tcp.port 5555` capability under UID 2000 -> CONFIRMED SUFFICIENT: Volatile property requiring boot re-trigger.
-  - `IInputManager.injectInputEvent` permission checks -> CONFIRMED SUFFICIENT: `com.android.shell` holds `INJECT_EVENTS`; zero platform signature needed on client.
-  - BLE background scan persistence under Android Doze -> CONFIRMED SUFFICIENT: Requires Android 14+ `foregroundServiceType="connectedDevice"` + `CONNECTION_PRIORITY_HIGH`.
-- **Vulnerabilities found**:
-  - Unhandled cold-reboot in pure cellular roaming regime without local fallback buffering.
-  - Android 14+ GATT background throttling without explicit ForegroundService type declaration.
-- **Mitigations verified**:
-  - Offline ring-buffer fallback + auto-reconnect on network attachment.
-  - Strict ForegroundService type specification (`connectedDevice|dataSync`).
+- **Hypotheses tested**: [TBD]
+- **Vulnerabilities found**: [TBD]
+- **Untested angles**: Rapid mode cycling (1->2->3->4), malformed Python code payloads, concurrent execution ticks, TUI HUD summary formatting, master E2E test runner race conditions/flakiness.
 
 ## Loaded Skills
-- Source: `/Users/aaron/.gemini/config/skills/mesh-transport-adb/SKILL.md`
-  - Local copy: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_challenger_2/skills/mesh-transport-adb-SKILL.md`
-  - Core methodology: ADB transport over USB and TCP/IP governing hardware lifecycle, keepalive, and Doze bypass.
-- Source: `/Users/aaron/.gemini/config/skills/polyglot-kotlin-android-specialist/SKILL.md`
-  - Local copy: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_challenger_2/skills/polyglot-kotlin-android-specialist-SKILL.md`
-  - Core methodology: Android 15/Tensor G5 NPU, Foreground Services, and Doze whitelisting.
+- None required yet.
 
 ## Key Decisions Made
-- Executed 15-test empirical test harness `06_scripts_and_tooling/tests/test_shizuku_boundaries.py` (100% PASS).
-- Issued formal verdict: **APPROVE** with documented boundary conditions and Android 14/15 manifest guidelines.
+- [Pending initial inspection and harness design]
 
 ## Artifact Index
-- `.agents/teamwork_preview_challenger_2/DISPATCH.md` — Initial dispatch message
-- `.agents/teamwork_preview_challenger_2/BRIEFING.md` — Agent briefing & situational awareness
-- `.agents/teamwork_preview_challenger_2/progress.md` — Liveness & task execution progress
-- `06_scripts_and_tooling/tests/test_shizuku_boundaries.py` — 15-test empirical boundary verification suite
-- `.agents/teamwork_preview_challenger_2/handoff.md` — Final adversarial report & verdict
+- DISPATCH.md — Dispatch logs
+- BRIEFING.md — Situational awareness
+- progress.md — Liveness & step tracking
+- handoff.md — Final verdict report

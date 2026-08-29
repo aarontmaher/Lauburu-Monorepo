@@ -15,6 +15,9 @@ BACKLOG_FILE = MONOREPO_ROOT / "teamwork_projects/jules_global_backlog.json"
 SESSIONS_FILE = MONOREPO_ROOT / "04_data_and_memory/jules_active_sessions.json"
 REPO_FLAG = "aarontmaher/Lauburu-Monorepo"
 
+# KILLSWITCH: Disable all automated Jules dispatching and polling
+JULES_AUTOMATION_ENABLED = False
+
 # Ensure PATH contains node/npx and homebrew binaries under launchd
 os.environ["PATH"] = f"/Users/aaron/.nvm/versions/node/v20.20.2/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:{os.environ.get('PATH', '')}"
 
@@ -41,13 +44,7 @@ def save_json(filepath: Path, data):
         json.dump(data, f, indent=2)
 
 def ensure_backlog():
-    backlog = load_json(BACKLOG_FILE, list)
-    if not backlog:
-        backlog = [
-            {"id": 1, "task": "Optimize WebGPU shader pipeline for Spatial Grappling", "priority": "high"},
-            {"id": 2, "task": "Implement PySpark aggregation for DFA-alpha1 metrics", "priority": "medium"}
-        ]
-        save_json(BACKLOG_FILE, backlog)
+    pass
 
 def execute_tri_orchestrator_debate(candidates: list) -> dict:
     log_event(f"Triggering AI Debate among {len(candidates)} pending tasks...")
@@ -128,6 +125,10 @@ def pull_and_audit_sessions():
     save_json(SESSIONS_FILE, pending_sessions)
 
 def main():
+    if not JULES_AUTOMATION_ENABLED:
+        log_event("Jules automation and API dispatcher are DISABLED by system policy. Skipping execution.")
+        return
+
     log_event("--- Starting Jules Quota Dispatcher Cycle ---")
     
     # 1. Pull and Audit active sessions

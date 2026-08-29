@@ -1,11 +1,11 @@
 {
-  "timestamp_utc": "2026-08-29T09:15:36Z",
-  "narrator_headline": "\ud83c\udf99\ufe0f MESH NARRATOR: High-speed TB4 DMA delivering 0.35ms latency. LuCI defending against BQL buffer expansion.",
-  "red_lead_thought": "Hermes 3: Overdriving sysctl TCP buffers on Mac Mini to 128MB... Probing 40 Gbps TB4 DMA link.",
-  "blue_lead_thought": "Sentinel: Locking MTU 9000 Jumbo Frame tripwire on bridge0... Ed25519 node authentication certified.",
+  "timestamp_utc": "2026-08-29T09:21:30Z",
+  "narrator_headline": "\ud83c\udf99\ufe0f MESH NARRATOR: Zone 2 cardiac resonance detected. Blue team maintaining 64% compute superiority.",
+  "red_lead_thought": "OpenClaw: Injecting 512Hz raw ECG stream into Movesense GATT UUID 0x2A37... Biological stress at 82 BPM.",
+  "blue_lead_thought": "LuCI: WireGuard ChaCha20-Poly1305 fallback route armed on 100.101.39.98... Ready for sub-millisecond failover.",
   "actors": {
     "red_lead": "Hermes 3 & OpenClaw",
     "blue_lead": "LuCI OpenWrt & Sentinel",
-    "biometrics": "Movesense 261030002013 (83 BPM)"
+    "biometrics": "Movesense 261030002013 (82 BPM)"
   }
 }

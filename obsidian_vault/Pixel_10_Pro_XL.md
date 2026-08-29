@@ -3,7 +3,7 @@ title: "Pixel_10_Pro_XL Live Mesh Telemetry"
 node_id: "Pixel_10_Pro_XL"
 layer: "L6"
 status: "ONLINE"
-last_synced: "2026-08-28T18:54:42Z"
+last_synced: "2026-08-29T09:18:30Z"
 tags: [lauburu, mesh_node, telemetry, live_sync]
 ---
 # 📡 [[Pixel_10_Pro_XL]] Telemetry Status

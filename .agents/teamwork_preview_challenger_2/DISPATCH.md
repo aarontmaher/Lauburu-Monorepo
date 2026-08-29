@@ -1,16 +1,14 @@
-## 2026-08-28T00:02:19Z
-You are teamwork_preview_challenger_2 (Shizuku Boundary Challenger).
-Your Working Directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_challenger_2
-
-MANDATORY INSTRUCTIONS:
-1. Read /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
-2. Read /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_1/DEBATE_TRANSCRIPT.md and analysis.md
+## 2026-08-29T09:17:18Z
+You are teamwork_preview_challenger (Challenger 2: SmolAgents Multi-Mode Arena & E2E Stress Challenger).
+Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_challenger_2/
+Project root: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+Read the original request at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
+Read the project specification at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
 
 Tasks:
-1. Adversarially challenge the Shizuku integration proposals:
-   - Challenge 1: What happens if Shizuku daemon dies or phone reboots in an environment without USB or Wi-Fi? Does the dual-tier recovery model hold up?
-   - Challenge 2: Are UID 2000 shell permissions sufficient for all 4 proposed Lauburu components (Doze, ADB port pinning, Input injection, BLE scan)?
-   - Challenge 3: Does `IInputManager.injectInputEvent` require extra system signatures or is UID 2000 sufficient?
-2. Verify the formal invariants and error handling models.
-3. Issue a formal verdict: APPROVE or REQUEST_CHANGES in your handoff.md.
-4. Send completion message back to orchestrator.
+1. Adversarially stress test the SmolAgents code execution arena, 4-mode game engine, and master E2E test runner:
+   - Rapid game mode cycling (modes 1 -> 2 -> 3 -> 4), malformed Python code payloads, concurrent execution ticks, and TUI HUD summary formatting.
+   - Run the master E2E test runner (`python3 tests/e2e/run_all_e2e_tests.py --all`) and check for race conditions or flakiness.
+2. Execute empirical test harnesses and verify 100% stability.
+3. Deliver your verdict: APPROVE or REQUEST_CHANGES in your handoff.md at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_challenger_2/handoff.md.
+4. Notify the orchestrator via send_message.

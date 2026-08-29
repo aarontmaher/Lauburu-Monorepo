@@ -1,29 +1,29 @@
 {
-  "timestamp_utc": "2026-08-29T09:15:31Z",
+  "timestamp_utc": "2026-08-29T09:21:27Z",
   "status": "STREAMING",
   "sensor_telemetry": {
-    "device": "Movesense Bicep 512Hz",
+    "device": "Movesense Medical",
     "connected": true,
-    "heart_rate_bpm": 75,
-    "rmssd_ms": 2.0,
-    "dfa_alpha1": 0.85,
+    "heart_rate_bpm": 76,
+    "rmssd_ms": 43.0,
+    "dfa_alpha1": 1.05,
     "stream_mode": "100% STRICT LOCAL AIRGAP BLE"
   },
   "blood_pressure_ptt": {
-    "estimated_ptt_ms": 211.1,
-    "systolic_bp_mmhg": 132,
-    "diastolic_bp_mmhg": 84,
-    "mean_arterial_pressure_mmhg": 100.0,
+    "estimated_ptt_ms": 209.7,
+    "systolic_bp_mmhg": 122,
+    "diastolic_bp_mmhg": 78,
+    "mean_arterial_pressure_mmhg": 92.7,
     "status": "NOMINAL",
     "method": "ECG-PTT Hughes-Bramwell Arterial Inversion (100% Local DSP)"
   },
   "overnight_sleep_analysis": {
     "status": "COMPLETED",
-    "sleep_score_pct": 8,
+    "sleep_score_pct": 35,
     "recovery_status": "LOW (Red)",
-    "nocturnal_rmssd_ms": 2.0,
-    "nocturnal_hr_bpm": 75.0,
-    "nocturnal_dip_pct": -12.4,
+    "nocturnal_rmssd_ms": 43.0,
+    "nocturnal_hr_bpm": 76.0,
+    "nocturnal_dip_pct": -13.9,
     "sleep_stages_estimate": {
       "deep_sleep_pct": 14.0,
       "rem_sleep_pct": 18.5,
@@ -35,14 +35,14 @@
     "status": "ACTIVE",
     "current_activity": "RESTING",
     "training_zone": "Rest / Passive Recovery",
-    "hr_pct_max": 39.5
+    "hr_pct_max": 40.0
   },
   "cardiorespiratory_thresholds": {
     "status": "ACTIVE",
     "estimated_vo2max_ml_kg_min": 50.1,
     "lt1_aerobic_threshold_bpm": 137,
     "lt2_anaerobic_threshold_bpm": 170,
-    "current_dfa_alpha1": 0.85,
+    "current_dfa_alpha1": 1.05,
     "physiological_domain": "Below LT1 (Aerobic Recovery / Low Systemic Stress)"
   },
   "rule_0_zero_mock": true

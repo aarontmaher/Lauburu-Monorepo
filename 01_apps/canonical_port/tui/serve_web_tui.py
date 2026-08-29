@@ -22,6 +22,7 @@ import termios
 import struct
 import asyncio
 import json
+import time
 from pathlib import Path
 from aiohttp import web, WSMsgType
 
@@ -279,8 +280,24 @@ def create_app():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "8088"))
+    
+    # Auto-reclaim port from stale processes
+    try:
+        import subprocess
+        pids = subprocess.run(["lsof", "-ti", f":{port}"], capture_output=True, text=True).stdout.strip().split()
+        my_pid = str(os.getpid())
+        for pid in pids:
+            if pid and pid != my_pid:
+                try:
+                    os.kill(int(pid), 9)
+                except Exception:
+                    pass
+        time.sleep(0.3)
+    except Exception:
+        pass
+
     print("=" * 80)
     print(f"🌐 LAUBURU WEB-TUI SERVER RUNNING ON http://0.0.0.0:{port}")
     print(f"   • Open in browser: http://localhost:{port} or http://192.168.8.230:{port}")
     print("=" * 80)
-    web.run_app(create_app(), host="0.0.0.0", port=port)
+    web.run_app(create_app(), host="0.0.0.0", port=port, reuse_address=True, reuse_port=True)

@@ -24,16 +24,21 @@ sys.path.insert(0, str(WORKSPACE_ROOT / "01_apps/canonical_port/tui"))
 sys.path.insert(0, str(WORKSPACE_ROOT / "01_apps/canonical_port/tui/screens"))
 
 from smolagents_arena_hub import SmolAgentsArenaHub, GAME_MODES
-from live_arena_dev_screen import (
-    LiveArenaDevScreen,
-    RedTeamGraphicalMapWidget as ScreenRedMap,
-    BlueTeamGraphicalMapWidget as ScreenBlueMap,
-)
-from tui_live_arena_dev import (
-    LiveArenaDevApp,
-    RedTeamGraphicalMapWidget as AppRedMap,
-    BlueTeamGraphicalMapWidget as AppBlueMap,
-)
+
+try:
+    from live_arena_dev_screen import (
+        LiveArenaDevScreen,
+        RedTeamGraphicalMapWidget as ScreenRedMap,
+        BlueTeamGraphicalMapWidget as ScreenBlueMap,
+    )
+    from tui_live_arena_dev import (
+        LiveArenaDevApp,
+        RedTeamGraphicalMapWidget as AppRedMap,
+        BlueTeamGraphicalMapWidget as AppBlueMap,
+    )
+    HAS_TEXTUAL = True
+except ImportError:
+    HAS_TEXTUAL = False
 
 
 class TestSmolAgentsAutonomousPythonCodeExecution:
@@ -181,6 +186,7 @@ class TestTelemetryHUDTacticalObjectiveSummaries:
         assert "tactical_intent_summary" in data
 
 
+@pytest.mark.skipif(not HAS_TEXTUAL, reason="Textual TUI libraries not installed in this environment")
 class TestTUISynchronizationAndWidgets:
     """Verifies synchronization between LiveArenaDevScreen and standalone LiveArenaDevApp."""
 

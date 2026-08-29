@@ -22,20 +22,13 @@ class ShadowBenchmarkEngine:
         self.ledger_path = LORA_DATASETS_DIR / "shadow_tournament_ledger.jsonl"
 
     def run_jules_cli_task(self, prompt: str, repo: str = "aarontmaher/zone2_endurance") -> Dict[str, Any]:
-        """Dispatches a task to Jules in the cloud via the official CLI."""
-        cmd = f'npx -y @google/jules new --repo {repo} "{prompt}"'
-        start_t = time.time()
-        try:
-            res = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60, cwd=str(MONOREPO_ROOT))
-            duration = time.time() - start_t
-            return {
-                "source": "jules_gemini_31_pro",
-                "success": res.returncode == 0,
-                "output": res.stdout.strip(),
-                "duration_sec": duration
-            }
-        except Exception as e:
-            return {"source": "jules_gemini_31_pro", "success": False, "error": str(e), "duration_sec": time.time() - start_t}
+        """Dispatches a task to Jules in the cloud via the official CLI (DISABLED)."""
+        return {
+            "source": "jules_gemini_31_pro",
+            "success": False,
+            "error": "Jules AI / API automation is turned OFF by user policy.",
+            "duration_sec": 0.0
+        }
 
     def record_tournament_verdict(self, prompt: str, jules_res: Dict, flash_res: Dict, local_res: Dict, winner: str):
         """Records tournament outcomes into continuous LoRA training dataset."""
