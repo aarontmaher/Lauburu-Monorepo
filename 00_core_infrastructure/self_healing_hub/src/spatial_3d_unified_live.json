@@ -1,221 +1,522 @@
 {
-  "timestamp": "2026-08-13T20:42:06.568998",
-  "fusion_architecture": "Hierarchical Dual-Layer (Semantic Pose Graph + Dense Depth Splat)",
-  "calibrated_weights": {
-    "uwb_metric_anchor_weight": 0.295,
-    "visual_depth_feature_weight": 0.524,
-    "imu_high_freq_orientation_weight": 0.515,
-    "ble_rssi_proximity_weight": 0.2
+  "timestamp_utc": "2026-08-29T07:46:52Z",
+  "world_coordinate_system": "Right-Handed Euclidean (Z-Up, Meters)",
+  "telemetry_fusion": {
+    "movesense_live_hr_bpm": 79.0,
+    "movesense_rmssd_ms": 28.88,
+    "tb4_dma_latency_ms": 0.35,
+    "quantum_state": "COHERENT_ZONE2"
   },
-  "entities_tracked": {
-    "Mac_Node": {
-      "name": "Mac Host (M4 Max)",
-      "entity_type": "hardware_anchor",
-      "3d_pose": {
+  "spatial_scene": {
+    "network_nodes_3d": [
+      {
+        "id": "node_l1_mac_mini",
+        "name": "Mac Mini M4 Pro (Host)",
         "x": 0.0,
         "y": 0.0,
-        "z": 0.75
+        "z": 1.75,
+        "role": "Host AI Governor",
+        "color": "#38bdf8",
+        "vram_gb": 21.6
       },
-      "orientation_euler": {
-        "pitch": 0.0,
-        "roll": 0.0,
-        "yaw": 0.0
+      {
+        "id": "node_l2_macbook_pro",
+        "name": "MacBook Pro M1 Max",
+        "x": 2.2,
+        "y": 1.2,
+        "z": 1.5,
+        "role": "TB4 Metal GPU Vault",
+        "color": "#e879f9",
+        "vram_gb": 14.0
       },
-      "visual_anchor": {
-        "detected_in_video": true,
-        "bounding_box_2d": [
-          100,
-          150,
-          450,
-          400
-        ],
-        "confidence": 0.99
+      {
+        "id": "node_l3_linux_head",
+        "name": "Linux Head Node AMD 5700U",
+        "x": -2.2,
+        "y": 1.2,
+        "z": 1.5,
+        "role": "Docker Compute Hub",
+        "color": "#3b82f6",
+        "vram_gb": 13.8
+      },
+      {
+        "id": "node_l6_pixel_10",
+        "name": "Pixel 10 Pro Tensor G5",
+        "x": 0.0,
+        "y": -2.4,
+        "z": 1.1,
+        "role": "8K Vision & Edge NPU",
+        "color": "#facc15",
+        "vram_gb": 12.5
+      },
+      {
+        "id": "node_router_glinet",
+        "name": "GL.iNet Wi-Fi 7 Gateway",
+        "x": 0.0,
+        "y": 2.8,
+        "z": 2.2,
+        "role": "Core Network Gateway",
+        "color": "#4ade80",
+        "vram_gb": 0.0
+      },
+      {
+        "id": "node_movesense_ble",
+        "name": "Movesense 261030002013",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.9,
+        "role": "512Hz ECG Biometrics",
+        "color": "#ef4444",
+        "vram_gb": 0.0
       }
-    },
-    "Pixel_10_Pro_XL": {
-      "name": "Pixel 10 Pro XL",
-      "entity_type": "hardware_camera_streamer",
-      "3d_pose": {
-        "x": -0.25,
-        "y": 0.45,
-        "z": 0.76
+    ],
+    "network_splines_3d": [
+      {
+        "id": "spline_tb4_bridge",
+        "name": "10Gbps Thunderbolt 4 PCIe DMA Bridge",
+        "source": "node_l1_mac_mini",
+        "target": "node_l2_macbook_pro",
+        "bandwidth_gbps": 40.0,
+        "latency_rtt_ms": 0.35,
+        "qaoa_weight": 0.25,
+        "color": "#00ffcc",
+        "pulse_speed_hz": 120.0
       },
-      "orientation_euler": {
-        "pitch": 65.0,
-        "roll": 0.0,
-        "yaw": 5.0
+      {
+        "id": "spline_wireguard_overlay",
+        "name": "Sovereign WireGuard L3 Encrypted Mesh",
+        "source": "node_l1_mac_mini",
+        "target": "node_l3_linux_head",
+        "bandwidth_gbps": 2.5,
+        "latency_rtt_ms": 1.85,
+        "qaoa_weight": 0.25,
+        "color": "#38bdf8",
+        "pulse_speed_hz": 45.0
       },
-      "visual_anchor": {
-        "detected_in_video": true,
-        "bounding_box_2d": [
-          480,
-          200,
-          620,
-          420
-        ],
-        "confidence": 0.98
+      {
+        "id": "spline_speedify_multiwan",
+        "name": "Speedify Multipath Packet Striping",
+        "source": "node_l1_mac_mini",
+        "target": "node_l3_linux_head",
+        "bandwidth_gbps": 3.5,
+        "latency_rtt_ms": 8.2,
+        "qaoa_weight": 0.25,
+        "color": "#e879f9",
+        "pulse_speed_hz": 20.0
+      },
+      {
+        "id": "spline_movesense_ble",
+        "name": "Movesense CoreBluetooth GATT 128Hz",
+        "source": "node_movesense_ble",
+        "target": "node_l1_mac_mini",
+        "bandwidth_gbps": 0.002,
+        "latency_rtt_ms": 1.2,
+        "color": "#ef4444",
+        "pulse_speed_hz": 72.0
       }
-    },
-    "Samsung_S20": {
-      "name": "Samsung Galaxy S20+",
-      "entity_type": "hardware_tether_worker",
-      "3d_pose": {
-        "x": 0.35,
-        "y": 0.4,
-        "z": 0.74
+    ],
+    "kinematic_positions_3d": [
+      {
+        "id": "pos_standing_neutral",
+        "name": "Standing Neutral Stance",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.75,
+        "category": "Neutral",
+        "risk": "Low"
       },
-      "orientation_euler": {
-        "pitch": 0.0,
-        "roll": 0.0,
-        "yaw": -10.0
+      {
+        "id": "pos_collar_tie_clinch",
+        "name": "Collar Tie Clinch",
+        "x": 0.0,
+        "y": 0.5,
+        "z": 1.65,
+        "category": "Clinch",
+        "risk": "Low"
       },
-      "visual_anchor": {
-        "detected_in_video": true,
-        "bounding_box_2d": [
-          750,
-          320,
-          890,
-          490
-        ],
-        "confidence": 0.96
+      {
+        "id": "pos_closed_guard",
+        "name": "Closed Guard (Full)",
+        "x": 0.0,
+        "y": 1.5,
+        "z": 0.4,
+        "category": "Guard",
+        "risk": "Safe"
+      },
+      {
+        "id": "pos_side_control",
+        "name": "Side Control (Cross-Face)",
+        "x": 0.0,
+        "y": 2.2,
+        "z": 0.55,
+        "category": "Pin",
+        "risk": "Dominant"
+      },
+      {
+        "id": "pos_full_mount",
+        "name": "Full Mount (Top)",
+        "x": 0.0,
+        "y": 2.8,
+        "z": 0.7,
+        "category": "Pin",
+        "risk": "Dominant"
+      },
+      {
+        "id": "pos_back_control",
+        "name": "Back Control (Hooks & Seatbelt)",
+        "x": 0.0,
+        "y": 3.4,
+        "z": 0.65,
+        "category": "Apex Dominant",
+        "risk": "Apex"
+      },
+      {
+        "id": "sub_rear_naked_choke",
+        "name": "Rear Naked Choke (Mata Le\u00e3o)",
+        "x": 0.0,
+        "y": 3.8,
+        "z": 0.7,
+        "category": "Submission",
+        "risk": "Terminal"
       }
-    },
-    "Linux_Head_Node": {
-      "name": "Linux Laptop",
-      "entity_type": "hardware_gateway",
-      "3d_pose": {
-        "x": 0.85,
-        "y": 0.15,
-        "z": 0.75
+    ],
+    "ecg_cardiac_helix_3d": [
+      {
+        "step": 0,
+        "x": 0.388,
+        "y": 0.0,
+        "z": 0.5,
+        "voltage_mv": 0.0
       },
-      "orientation_euler": {
-        "pitch": 15.0,
-        "roll": 0.0,
-        "yaw": -20.0
+      {
+        "step": 1,
+        "x": 0.3373,
+        "y": 0.1918,
+        "z": 0.5167,
+        "voltage_mv": 0.0
       },
-      "visual_anchor": {
-        "detected_in_video": true,
-        "bounding_box_2d": [
-          920,
-          100,
-          1350,
-          400
-        ],
-        "confidence": 0.97
+      {
+        "step": 2,
+        "x": 0.1984,
+        "y": 0.3334,
+        "z": 0.5333,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 3,
+        "x": 0.0076,
+        "y": 0.3879,
+        "z": 0.55,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 4,
+        "x": -0.1851,
+        "y": 0.341,
+        "z": 0.5667,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 5,
+        "x": -0.3341,
+        "y": 0.2078,
+        "z": 0.5833,
+        "voltage_mv": 0.054
+      },
+      {
+        "step": 6,
+        "x": -0.5058,
+        "y": 0.0199,
+        "z": 0.6,
+        "voltage_mv": 1.182
+      },
+      {
+        "step": 7,
+        "x": -0.3554,
+        "y": -0.184,
+        "z": 0.6167,
+        "voltage_mv": 0.122
+      },
+      {
+        "step": 8,
+        "x": -0.2113,
+        "y": -0.3254,
+        "z": 0.6333,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 9,
+        "x": -0.0228,
+        "y": -0.3873,
+        "z": 0.65,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 10,
+        "x": 0.1716,
+        "y": -0.348,
+        "z": 0.6667,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 11,
+        "x": 0.3212,
+        "y": -0.2177,
+        "z": 0.6833,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 12,
+        "x": 0.3868,
+        "y": -0.0304,
+        "z": 0.7,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 13,
+        "x": 0.3513,
+        "y": 0.1647,
+        "z": 0.7167,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 14,
+        "x": 0.2239,
+        "y": 0.3169,
+        "z": 0.7333,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 15,
+        "x": 0.038,
+        "y": 0.3861,
+        "z": 0.75,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 16,
+        "x": -0.1578,
+        "y": 0.3545,
+        "z": 0.7667,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 17,
+        "x": -0.3141,
+        "y": 0.2314,
+        "z": 0.7833,
+        "voltage_mv": 0.021
+      },
+      {
+        "step": 18,
+        "x": -0.489,
+        "y": 0.0579,
+        "z": 0.8,
+        "voltage_mv": 1.044
+      },
+      {
+        "step": 19,
+        "x": -0.3799,
+        "y": -0.1603,
+        "z": 0.8167,
+        "voltage_mv": 0.244
+      },
+      {
+        "step": 20,
+        "x": -0.2362,
+        "y": -0.3078,
+        "z": 0.8333,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 21,
+        "x": -0.0532,
+        "y": -0.3843,
+        "z": 0.85,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 22,
+        "x": 0.1438,
+        "y": -0.3604,
+        "z": 0.8667,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 23,
+        "x": 0.3031,
+        "y": -0.2422,
+        "z": 0.8833,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 24,
+        "x": 0.3832,
+        "y": -0.0607,
+        "z": 0.9,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 25,
+        "x": 0.3631,
+        "y": 0.1367,
+        "z": 0.9167,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 26,
+        "x": 0.2481,
+        "y": 0.2983,
+        "z": 0.9333,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 27,
+        "x": 0.0682,
+        "y": 0.382,
+        "z": 0.95,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 28,
+        "x": -0.1295,
+        "y": 0.3657,
+        "z": 0.9667,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 29,
+        "x": -0.2939,
+        "y": 0.2544,
+        "z": 0.9833,
+        "voltage_mv": 0.007
+      },
+      {
+        "step": 30,
+        "x": -0.4606,
+        "y": 0.0916,
+        "z": 1.0,
+        "voltage_mv": 0.816
+      },
+      {
+        "step": 31,
+        "x": -0.4089,
+        "y": -0.1358,
+        "z": 1.0167,
+        "voltage_mv": 0.429
+      },
+      {
+        "step": 32,
+        "x": -0.2597,
+        "y": -0.2884,
+        "z": 1.0333,
+        "voltage_mv": 0.001
+      },
+      {
+        "step": 33,
+        "x": -0.0832,
+        "y": -0.379,
+        "z": 1.05,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 34,
+        "x": 0.1151,
+        "y": -0.3705,
+        "z": 1.0667,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 35,
+        "x": 0.2832,
+        "y": -0.2652,
+        "z": 1.0833,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 36,
+        "x": 0.3773,
+        "y": -0.0906,
+        "z": 1.1,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 37,
+        "x": 0.3727,
+        "y": 0.1078,
+        "z": 1.1167,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 38,
+        "x": 0.2707,
+        "y": 0.2779,
+        "z": 1.1333,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 39,
+        "x": 0.098,
+        "y": 0.3754,
+        "z": 1.15,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 40,
+        "x": -0.1004,
+        "y": 0.3748,
+        "z": 1.1667,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 41,
+        "x": -0.2727,
+        "y": 0.2763,
+        "z": 1.1833,
+        "voltage_mv": 0.002
+      },
+      {
+        "step": 42,
+        "x": -0.4277,
+        "y": 0.1206,
+        "z": 1.2,
+        "voltage_mv": 0.564
+      },
+      {
+        "step": 43,
+        "x": -0.4415,
+        "y": -0.1091,
+        "z": 1.2167,
+        "voltage_mv": 0.668
+      },
+      {
+        "step": 44,
+        "x": -0.2817,
+        "y": -0.2673,
+        "z": 1.2333,
+        "voltage_mv": 0.004
+      },
+      {
+        "step": 45,
+        "x": -0.1126,
+        "y": -0.3713,
+        "z": 1.25,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 46,
+        "x": 0.0856,
+        "y": -0.3784,
+        "z": 1.2667,
+        "voltage_mv": 0.0
+      },
+      {
+        "step": 47,
+        "x": 0.2615,
+        "y": -0.2866,
+        "z": 1.2833,
+        "voltage_mv": 0.0
       }
-    },
-    "MacBook_Pro": {
-      "name": "MacBook Pro",
-      "entity_type": "hardware_metal_worker",
-      "3d_pose": {
-        "x": -0.65,
-        "y": 0.2,
-        "z": 0.75
-      },
-      "orientation_euler": {
-        "pitch": 12.0,
-        "roll": 0.0,
-        "yaw": 15.0
-      },
-      "visual_anchor": {
-        "detected_in_video": true,
-        "bounding_box_2d": [
-          50,
-          120,
-          400,
-          380
-        ],
-        "confidence": 0.98
-      }
-    },
-    "Instructional_Subject_Hand": {
-      "name": "Instructional Live Interaction Target",
-      "entity_type": "visual_dynamic_entity",
-      "3d_pose": {
-        "x": -0.05,
-        "y": 0.3,
-        "z": 0.85
-      },
-      "orientation_euler": {
-        "pitch": 25.0,
-        "roll": 5.0,
-        "yaw": 0.0
-      },
-      "visual_anchor": {
-        "detected_in_video": true,
-        "depth_map_estimate_m": 0.42,
-        "uwb_scale_corrected_m": 0.418,
-        "hand_keypoints_count": 21,
-        "motion_velocity_m_s": 0.12
-      }
-    }
-  },
-  "inter_entity_vectors": {
-    "Mac_Node \u2194 Pixel_10_Pro_XL": {
-      "distance_meters": 0.515,
-      "tof_ns": 1.72
-    },
-    "Mac_Node \u2194 Samsung_S20": {
-      "distance_meters": 0.532,
-      "tof_ns": 1.77
-    },
-    "Mac_Node \u2194 Linux_Head_Node": {
-      "distance_meters": 0.863,
-      "tof_ns": 2.88
-    },
-    "Mac_Node \u2194 MacBook_Pro": {
-      "distance_meters": 0.68,
-      "tof_ns": 2.27
-    },
-    "Mac_Node \u2194 Instructional_Subject_Hand": {
-      "distance_meters": 0.32,
-      "tof_ns": 1.07
-    },
-    "Pixel_10_Pro_XL \u2194 Samsung_S20": {
-      "distance_meters": 0.602,
-      "tof_ns": 2.01
-    },
-    "Pixel_10_Pro_XL \u2194 Linux_Head_Node": {
-      "distance_meters": 1.14,
-      "tof_ns": 3.8
-    },
-    "Pixel_10_Pro_XL \u2194 MacBook_Pro": {
-      "distance_meters": 0.472,
-      "tof_ns": 1.57
-    },
-    "Pixel_10_Pro_XL \u2194 Instructional_Subject_Hand": {
-      "distance_meters": 0.266,
-      "tof_ns": 0.89
-    },
-    "Samsung_S20 \u2194 Linux_Head_Node": {
-      "distance_meters": 0.559,
-      "tof_ns": 1.86
-    },
-    "Samsung_S20 \u2194 MacBook_Pro": {
-      "distance_meters": 1.02,
-      "tof_ns": 3.4
-    },
-    "Samsung_S20 \u2194 Instructional_Subject_Hand": {
-      "distance_meters": 0.427,
-      "tof_ns": 1.42
-    },
-    "Linux_Head_Node \u2194 MacBook_Pro": {
-      "distance_meters": 1.501,
-      "tof_ns": 5.01
-    },
-    "Linux_Head_Node \u2194 Instructional_Subject_Hand": {
-      "distance_meters": 0.918,
-      "tof_ns": 3.06
-    },
-    "MacBook_Pro \u2194 Instructional_Subject_Hand": {
-      "distance_meters": 0.616,
-      "tof_ns": 2.06
-    }
-  },
-  "instructional_video_skill_readiness": {
-    "status": "Ready for Live Instructional 3D Overlays",
-    "tracking_frequency": "60 fps Visual / 100 Hz IMU / Continuous UWB",
-    "scale_drift_eliminated": true,
-    "metric_grounding_accuracy": "\u00b10.78 cm"
+    ]
   }
 }
