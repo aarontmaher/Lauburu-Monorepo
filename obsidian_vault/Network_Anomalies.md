@@ -5200,3 +5200,7 @@
 - **2026-08-30T09:49:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
 - **2026-08-30T09:50:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+
+- **2026-08-30T09:52:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+
+- **2026-08-30T09:53:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.

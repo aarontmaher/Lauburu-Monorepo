@@ -36,6 +36,16 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 import uvicorn
 
+# ── Leaderboard & Project MCP dashboard router ────────────────────────────────
+try:
+    import sys as _sys
+    _sys.path.insert(0, str(Path(__file__).parent))
+    from leaderboard_dashboard import router as leaderboard_router
+    _LEADERBOARD_READY = True
+except Exception as _e:
+    _LEADERBOARD_READY = False
+    print(f"⚠️  Leaderboard router not loaded: {_e}")
+
 MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
 
 # Canonical Application Registry
@@ -122,6 +132,11 @@ REGISTERED_APPS: Dict[str, Dict[str, Any]] = {
 }
 
 app = FastAPI(title="Lauburu Universal Web-TUI Portal", version="1.0.0")
+
+# Mount leaderboard dashboard if available
+if _LEADERBOARD_READY:
+    app.include_router(leaderboard_router)
+    print("✅ Leaderboard dashboard mounted at /leaderboard + /api/leaderboard/data")
 
 # HTML Template with xterm.js WebGL & 120 FPS Rendering
 HTML_TERMINAL_PAGE = """<!DOCTYPE html>
