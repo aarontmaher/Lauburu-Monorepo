@@ -1,19 +1,19 @@
 {
-  "timestamp_utc": "2026-08-29T23:15:13Z",
-  "elapsed_seconds": 0.131,
+  "timestamp_utc": "2026-08-29T23:15:21Z",
+  "elapsed_seconds": 0.13,
   "synergy_efficiency_score": 862.0,
   "router_real_ram": {
     "online": true,
     "total_mb": 481.3,
-    "used_mb": 421.3,
-    "available_mb": 80.4,
+    "used_mb": 421.7,
+    "available_mb": 80.0,
     "safety_status": "\ud83d\udfe2 NOMINAL SAFE",
     "crash_risk_pct": 0.0
   },
   "host_ram": {
-    "used_gb": 11.02,
+    "used_gb": 12.76,
     "total_gb": 24.0,
-    "percent": 82.0,
+    "percent": 74.5,
     "status": "\ud83d\udfe2 NOMINAL"
   },
   "storage_health": {

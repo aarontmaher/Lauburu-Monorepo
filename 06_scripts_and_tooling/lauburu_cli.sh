@@ -96,6 +96,12 @@ case "$CMD" in
         cd "$MONOREPO_DIR"
         exec python3 06_scripts_and_tooling/automation/gemini_spark_sharded_sync_pipeline.py
         ;;
+    dashboard|web)
+        echo "🌐 Launching Universal Web-TUI Portal & Dashboard (Port 8088)..."
+        cd "$MONOREPO_DIR"
+        open http://localhost:8088 2>/dev/null || true
+        exec python3 01_apps/web_tui_portal/serve_portal.py --port 8088
+        ;;
     router-bench|bench-router)
         echo "🔬 Running Sandboxed GL.iNet Router Micro AI Benchmark..."
         cd "$MONOREPO_DIR"
