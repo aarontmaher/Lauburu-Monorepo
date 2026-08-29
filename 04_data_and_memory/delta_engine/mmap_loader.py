@@ -9,11 +9,39 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional, Sequence, Union
 
-import datasets
+try:
+    import datasets
+except ImportError:
+    datasets = None
 import psutil
 import pyarrow as pa
 import pyarrow.dataset as ds
 from deltalake import DeltaTable
+
+
+class _PyArrowDatasetWrapper:
+    def __init__(self, arrow_dataset: ds.Dataset, columns: Optional[Sequence[str]] = None):
+        self._dataset = arrow_dataset
+        self.column_names = list(arrow_dataset.schema.names)
+        self.data = arrow_dataset
+        self._table = None
+
+    def _get_table(self):
+        if self._table is None:
+            self._table = self._dataset.to_table()
+        return self._table
+
+    def __len__(self) -> int:
+        return self._dataset.count_rows()
+
+    def __getitem__(self, idx: Union[int, str]) -> Any:
+        table = self._get_table()
+        if isinstance(idx, str):
+            return table[idx].to_pylist()
+        return {col: table[col][idx].as_py() for col in self.column_names}
+
+    def select_columns(self, cols: Sequence[str]) -> '_PyArrowDatasetWrapper':
+        return _PyArrowDatasetWrapper(self._dataset, columns=cols)
 
 
 class MemoryMappedDatasetLoader:
@@ -32,7 +60,7 @@ class MemoryMappedDatasetLoader:
         split: str = "train",
         columns: Optional[Sequence[str]] = None,
         host_override: Optional[str] = None,
-    ) -> datasets.Dataset:
+    ) -> Any:
         """
         Loads a HuggingFace Dataset memory-mapped directly from the Delta table's Parquet files.
 
@@ -57,23 +85,23 @@ class MemoryMappedDatasetLoader:
 
         # If host override or remote bridge path translation is requested
         if host_override is not None:
-            # Map paths to remote network mount if needed
             active_files = [f for f in active_files]
 
-        # Load HuggingFace dataset with keep_in_memory=False to enforce mmap
-        hf_dataset = datasets.load_dataset(
-            "parquet",
-            data_files=active_files,
-            split=split,
-            keep_in_memory=False,
-        )
-
-        if columns is not None:
-            valid_cols = [c for c in columns if c in hf_dataset.column_names]
-            if valid_cols:
-                hf_dataset = hf_dataset.select_columns(valid_cols)
-
-        return hf_dataset
+        if datasets is not None and hasattr(datasets, "load_dataset"):
+            hf_dataset = datasets.load_dataset(
+                "parquet",
+                data_files=active_files,
+                split=split,
+                keep_in_memory=False,
+            )
+            if columns is not None:
+                valid_cols = [c for c in columns if c in hf_dataset.column_names]
+                if valid_cols:
+                    hf_dataset = hf_dataset.select_columns(valid_cols)
+            return hf_dataset
+        else:
+            arrow_ds = dt.to_pyarrow_dataset()
+            return _PyArrowDatasetWrapper(arrow_ds, columns=columns)
 
     @classmethod
     def load_pyarrow_dataset(

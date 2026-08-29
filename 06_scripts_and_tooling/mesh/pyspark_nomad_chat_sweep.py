@@ -71,8 +71,9 @@ def sweep_chat_transcripts() -> List[Dict[str, Any]]:
     extracted_decisions: List[Dict[str, Any]] = []
     seen_hashes: Set[str] = set()
 
-    transcript_files = list(BRAIN_DIR.glob("*/.system_generated/logs/transcript.jsonl"))
-    logger.info(f"Found {len(transcript_files)} conversation transcripts in {BRAIN_DIR}")
+    all_files = list(BRAIN_DIR.glob("*/.system_generated/logs/transcript.jsonl"))
+    transcript_files = sorted(all_files, key=lambda p: p.stat().st_mtime if p.exists() else 0, reverse=True)[:100]
+    logger.info(f"Found {len(all_files)} conversation transcripts, scanning {len(transcript_files)} most recent in {BRAIN_DIR}")
 
     for tf in transcript_files:
         conv_id = tf.parent.parent.parent.name

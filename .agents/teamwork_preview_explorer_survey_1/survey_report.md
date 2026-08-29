@@ -1,197 +1,153 @@
-# Monorepo Comprehensive Survey & Architectural Reconciliation Report
-**Date**: 2026-08-27 | **Agent**: `teamwork_preview_explorer_survey_1` | **Scope**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo` & `/Users/aaron/teamwork_projects`
+# Survey Report: Monorepo Cron Architecture, Rate Limiting, & 7-Daemon Orchestration
 
-## 1. Executive Summary & Ecosystem Totals
-- **Total Unified Monorepo Files (Physical Tree)**: **133,463 files** across **12,768 directories** (7,894.94 MB / ~7.89 GB).
-- **Teamwork Projects (`/Users/aaron/teamwork_projects`)**: **63,898 files** across **8,673 directories** (2,022.11 MB / ~2.02 GB) across 34 active federated project workspaces.
-- **Total Combined Multi-Project Ecosystem**: **197,361 files**.
-- **Symlink Audit**: **86 symlinks** in monorepo (79 relative, 7 absolute, **2 broken/dangling**), **45 symlinks** in teamwork_projects (31 relative, 14 absolute, 0 broken).
-- **Storage Health Verification**: Certified **HEALTHY** (Obsidian Vault: OK, PySpark Lake: OK, Disk Free: 49.80 GB >= 5.0 GB).
+**Author:** `teamwork_preview_explorer_survey_1`  
+**Date:** 2026-08-29  
+**Milestone:** Requirement R1 Survey & Monorepo Daemon Architecture  
+**Working Directory:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1/`
 
-## 2. Canonical 13-Module Inventory (00_ through 12_)
-| Canonical Module | Purpose & Core Contents | Files | Dirs | Symlinks | Size (MB) | Status |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `00_SYSTEM_DASHBOARDS` | Canonical Subsystem | 8 | 0 | 0 | 0.03 | Underpopulated |
-| `00_core_infrastructure` | Canonical Subsystem | 32123 | 2739 | 28 | 254.11 | Populated |
-| `01_apps` | Canonical Subsystem | 48482 | 5156 | 47 | 1390.17 | Populated |
-| `02_ai_models_and_inference` | Canonical Subsystem | 21571 | 1957 | 0 | 2512.37 | Populated |
-| `03_biometrics_and_telemetry` | Canonical Subsystem | 7 | 4 | 0 | 0.12 | Underpopulated |
-| `04_data_and_memory` | Canonical Subsystem | 246 | 16 | 0 | 760.0 | Populated |
-| `05_agents_and_swarms` | Canonical Subsystem | 22372 | 2070 | 3 | 613.9 | Populated |
-| `06_scripts_and_tooling` | Canonical Subsystem | 116 | 13 | 2 | 0.8 | Populated |
-| `07_docs_and_architecture` | Canonical Subsystem | 135 | 11 | 0 | 1.69 | Populated |
-| `08_business_and_commerce` | Canonical Subsystem | 1 | 0 | 0 | 0.0 | Stub/README only |
-| `09_app_store_and_release` | Canonical Subsystem | 1 | 0 | 0 | 0.0 | Stub/README only |
-| `10_spatial_grappling_kinematics` | Canonical Subsystem | 5 | 1 | 0 | 0.62 | Underpopulated |
-| `11_security_and_governance` | Canonical Subsystem | 1 | 0 | 0 | 0.0 | Stub/README only |
-| `12_continuous_lora_evolution` | Canonical Subsystem | 24 | 1 | 0 | 427.94 | Populated |
+---
 
-### Detailed Breakdown of Key Canonical Modules:
-1. **`00_core_infrastructure` (32,012 files, 2,723 dirs)**:
-   - Contains SeaweedFS, Docker compose manifests, multi-WAN routing (52 items), systemd units, self-healing hub (Port 18802), and Marionette MCP.
-   - *Action required*: Populate empty subdirs `cloudflare_worker` and `supabase` from legacy `core/` and `webapp/`.
-2. **`01_apps` (48,455 files, 5,149 dirs)**:
-   - Contains major production frontends: `lauburu_compute_hub`, `zone2_endurance`, `obsidian_web` (Quartz digital garden), `movesense_hub`, `port_4000_hub`, `openclaw`, `dark_mode_pwa`, `lauburu_business_app`, `lauburu-storefront`.
-   - *Action required*: Populate empty `grapplingmap_web` (from `core/apps/grapplingmap-web` and `webapp/`) and empty `chat_app` (from `core/chat-app`).
-3. **`02_ai_models_and_inference` (21,571 files, 1,957 dirs)**:
-   - Contains llama.cpp RPC sharding (Ports 8081-8084), Petals DHT layer swarm, Exo P2P sharding, model vault GGUF descriptors, benchmarks, and modelfiles.
-4. **`03_biometrics_and_telemetry` (7 files, 4 dirs)**:
-   - Contains `dsp_algorithms/` (`whoop-intelligence.js`, `multi-user-health.js`, `health-context-input.js`), `movesense_ecg_128hz`, `optical_ppg_dsp`, and `Movesense/grappling_history.db`.
-   - *Action required*: Consolidate Pan-Tompkins 512Hz QRS DSP and PTT blood pressure algorithms here.
-5. **`04_data_and_memory` (246 files, 16 dirs)**:
-   - Contains PySpark data indexers, Qdrant vector database storage, 24/7 LoRA datasets, session logs (118 items), and reports.
-   - *Action required*: Populate empty `core_data/` from `core/data/`.
-6. **`05_agents_and_swarms` (22,372 files, 2,070 dirs)**:
-   - Contains Tri-Orchestrator AI debate engine, Genetic MoE engine, `architect_leaderboard.json`, `jules_scaling_protocol.md`, smolagents, and Antigravity skills.
-7. **`06_scripts_and_tooling` (116 files, 13 dirs)**:
-   - Contains `expect/` (29 `.exp` scripts), `dark_mode/`, `device_watchdog/`, `mesh/`, `network_self_healing/`, `storage/`, and `telemetry/`.
-   - *Action required*: Populate empty `core_scripts/` from `core/scripts/` (25 scripts) and `core_tools/` from `core/tools/`.
-8. **`07_docs_and_architecture` (135 files, 11 dirs)**:
-   - Contains `core_docs/` (113 files synced from `core/docs`), debate whitepapers (`MOVESENSE_BLUETOOTH_ARCHITECTURE_DEBATE.md`, `SHIZUKU_ANDROID_EXECUTION_DEBATE.md`), and mesh storage topology.
-9. **`08_business_and_commerce` (1 file - README.md)**:
-   - *Action required*: Reconcile and link Shopify Storefront GraphQL apps, Shopify audit suites (`webapp/SHOPIFY_AUDITS`), and membership billing contracts.
-10. **`09_app_store_and_release` (1 file - README.md)**:
-    - *Action required*: Map OpenClaw APK build manifests, store metadata, App Store review compliance guidelines, and keystore signing manifests.
-11. **`10_spatial_grappling_kinematics` (5 files, 1 dir)**:
-    - Contains `opml_trees/` with `grappling.opml` (3,044 nodes), `grappling.opml.pre-structure-fix` (3,228 nodes), `grappling.opml.backup-guard01` (3,385 nodes), and `project_map.opml` (146 nodes).
-12. **`11_security_and_governance` (1 file - README.md)**:
-    - *Action required*: Map RPC socket encryption specs, Cloudflare HMAC authentication rules, and security audit tests from Hemodynamic Cloud Server.
-13. **`12_continuous_lora_evolution` (24 files, 1 dir)**:
-    - Contains 23 active `.jsonl` fine-tuning datasets for TRL/PEFT/DPO continuous distillation.
+## Executive Summary
 
-## 3. Legacy vs Restored Components Survey
-| Directory | Files | Dirs | Role & Status | Reconciliation Action |
+This survey provides an exhaustive technical analysis of the existing cron scheduling architecture, rate-limiting frameworks, 7-layer physical mesh daemon lifecycle governance, local vs. cloud inference coordination, and biometric airgapping invariants across the Lauburu Monorepo. All observations cite exact file paths, line numbers, and architectural mechanisms.
+
+---
+
+## 1. Daemon Scripts, Systemd/Launchd Configs, & Cron Definitions
+
+### 1.1 Autostart & OS Daemon Governance
+- **`06_scripts_and_tooling/network/autostart_installer.py` (lines 7–77):**
+  - **macOS LaunchAgent:** Generates and registers `~/Library/LaunchAgents/ai.lauburu.nomad_courier.plist` with `RunAtLoad=true`, `KeepAlive=true`, and executes `caffeinate -dimsu` to prevent system sleep while running `nomad_courier_self_healer.py --daemon` and the Swarm Dashboard backend.
+  - **Linux Systemd:** Generates and enables `~/.config/systemd/user/lauburu_nomad.service` with `Restart=always`, `RestartSec=10`.
+  - **Android Termux:** Generates `~/.termux/boot/99_lauburu_nomad.sh` enabling `termux-wake-lock` and persistent background daemons.
+
+### 1.2 Multi-Tier Automation Loops & Crons
+- **`06_scripts_and_tooling/automation/free_tier_ai_continuous_cron.py` (lines 9–108):**
+  - **Tier 1 (1m cycle):** Real hardware router RAM governance, daemon watchdogs, and SQM fq_codel enforcement.
+  - **Tier 2 (15m cycle):** Free-tier AI dataset harvesting (Gemini 2.5 Flash Free + Cloudflare + Local).
+  - **Tier 3 (Daily 03:00 UTC):** Nightly QLoRA dataset compilation and Bradley-Terry ELO leaderboard updates.
+  - **Status Sink:** Serializes execution state to `session_logs/free_ai_cron_status.json`.
+
+- **`05_agents_and_swarms/master_priority_automation_loop.py` & `06_scripts_and_tooling/automation/start_priority_daemon.sh`:**
+  - Enforces strict 5-tier execution loop:
+    - **P0 (Infrastructure):** Dynamic RAM governance ($\le 90\%$ host cap) and GL.iNet router ping check (`192.168.8.1`).
+    - **P1 (Movesense Biometrics):** 512Hz ECG, PTT Blood Pressure, and Zone 2 threshold compliance (`movesense_readiness_live.json`).
+    - **P2 (Visual GPU Canvas):** 120 FPS Apple Silicon Metal Shaders / WebGPU WGSL canvas synchronization.
+    - **P3 (LMSYS Arena ELO):** Local Chatbot Arena tournament execution and Bradley-Terry ELO calculation (`local_lmarena_benchmark_harness.py`).
+    - **P4 (LoRA Continuous Harvesting):** Serializes actions to `04_data_and_memory/nomad_autonomous_actions.jsonl`.
+
+- **`06_scripts_and_tooling/network/nomad_courier_self_healer.py` (lines 1–323):**
+  - 6-Tier autonomous self-healing loop:
+    - **T1:** Service Port Health (8080, 8082, 8083, 8084, 8085, 18802, 4000).
+    - **T2:** RPC Mesh Probe (Tailscale nodes: MacBook Air `100.93.158.96:50052`, Linux Head `100.101.39.98:50052`, Pixel 10 `100.73.38.87:50052`, MacBook Pro `100.103.212.21:50052`).
+    - **T3:** AI Model Status (`llama-server` health + auto-restart).
+    - **T4:** Git & Storage Health (removes `.git/index.lock`, verifies Obsidian vault and `lora_datasets`, checks $\ge 5.0\text{ GB}$ disk headroom).
+    - **T5:** Skills Guardian (validates `~/.gemini/config/skills/`).
+    - **T6:** LoRA Serialization (`data/lora_datasets/nomad_autonomous_actions.jsonl`).
+
+- **`00_core_infrastructure/cloudflare_worker/src/overnight-queue.ts` (lines 1–341):**
+  - Durable backlog in `connector_overnight_queue` (Supabase) for unattended overnight execution.
+  - Priority ladder: `p0` > `p1` > `p2` > `p3` > `overnight_only`.
+  - Stale detection threshold: 72 hours (`DEFAULT_STALE_THRESHOLD_HOURS`).
+  - Strict invariant: P0/P1 blockers always supersede overnight tasks.
+
+---
+
+## 2. Core Monorepo Daemons & Supervised Ports Matrix
+
+The monorepo operates a distributed matrix of 7+ core daemons across Ports 8080–8086, 18802, 50052, and 8088:
+
+| Port | Subsystem / Service | Definition / Entry Point | Health Check Method | Auto-Restart / Failover Mechanism |
 | :--- | :--- | :--- | :--- | :--- |
-| `core/` | 1153 | 141 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `webapp/` | 493 | 39 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `apps/` | 25 | 1 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `data/` | 51 | 18 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `docs/` | 8 | 1 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `scripts/` | 34 | 0 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `tests/` | 90 | 5 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `reports/` | 77 | 2 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `logs/` | 5 | 0 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `self_healing_hub/` | 1404 | 195 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `Installed_Apps/` | 5 | 4 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `obsidian_vault/` | 85 | 47 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `lora_datasets/` | 8 | 0 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
-| `ai_debate/` | 4 | 2 | Legacy / Root Subsystem | Reconcile into canonical hierarchy & maintain relative symlinks |
+| **8080** | **Lauburu Unified AI Proxy** & SeaweedFS Master | `02_ai_models_and_inference/lauburu_ai_proxy.py` & `00_core_infrastructure/docker/docker-compose.dfs*.yml` | Fast TCP socket probe (`_probe_local`, 0.05s timeout) + HTTP `GET /v1/proxy/status` | `nomad_courier_self_healer.py` triggers `launchctl load ai.lauburu.unified.proxy.plist` |
+| **8081** | **llama-server (Qwen-3.8Max / GPT-OSS 20B)** | `lauburu_ai_proxy.py:79`, `MANAGED_MODELS` | HTTP `GET http://127.0.0.1:8081/health` (`{"status": "ok"}`) | `nomad_courier_self_healer.py` runs `launch_model(8081)` via `llama-server` CLI |
+| **8082** | **llama-server (Mistral-Nemo-12B Q4_K_M)** | `nomad_courier_self_healer.py:53`, `lauburu_ai_proxy.py:84` | HTTP `GET http://127.0.0.1:8082/health` | `nomad_courier_self_healer.py:191` automatically spawns background process |
+| **8083** | **llama-server (Qwen2.5-Coder-7B Q4_K_M)** | `nomad_courier_self_healer.py:47`, `lauburu_ai_proxy.py:78` | HTTP `GET http://127.0.0.1:8083/health` | Auto-restarted with `-ngl 99 -c 4096 --no-jinja` |
+| **8084** | **llama-server (Nemotron-70B Q4_K_M RPC / RAG Edge)** | `nomad_courier_self_healer.py:59`, `lauburu_ai_proxy.py:85` | HTTP `GET http://127.0.0.1:8084/health` | Multi-node tensor sharded with `--rpc 100.93.158.96:50052,100.73.38.87:50052` |
+| **8085** | **llama-server (Qwen2.5-7B-Abliterated / Qwen38-27B)** | `nomad_courier_self_healer.py:65`, `lauburu_ai_proxy.py:82` | HTTP `GET http://127.0.0.1:8085/health` | Auto-restarted with `-c 2048 -b 256 -t 8` |
+| **8086** | **llama-server (Qwen2.5-Math-7B Algorithm Specialist)** | `lauburu_ai_proxy.py:83` | HTTP `GET http://127.0.0.1:8086/health` | Spawned on demand for mathematical / AST proofs |
+| **18802** | **Self-Healing Hub Reflex Arc & WoL API** | `00_core_infrastructure/self_healing_hub/src/api_server.py` | TCP socket probe (`tri_layer_hybrid_orchestrator.py:437`, `router_mesh_watchdog.sh:167`) | Tier 2 WoL Magic Packet dispatch & Tier 3 daemon respawn |
+| **50052** | **llama.cpp Distributed Metal GPU RPC Server** | `02_ai_models_and_inference/llama_rpc_mesh/launch_kimi_tandem_rpc.sh` | TCP socket probe (`test_m3_sharding_and_governor.py`, `probe_real_socket`) | `daemon_manager.py:32` (`nohup llama-rpc-server --host 0.0.0.0 --port 50052 &`) with Mac Host $\rightarrow$ Linux Head failover |
+| **8088** | **Master Supervisor / Gemini Spark Cloud Router** | `00_core_infrastructure/multi_wan/agi_offload.py:22`, `api_server.py:2895` | HTTP `GET http://100.101.39.98:8088/status` | Managed supervisor with multi-WAN failover |
 
-### Detailed Mapping of Legacy Directories:
-- **`core/` (1,153 files, 141 dirs)**:
-  - `core/apps/grapplingmap-web` (80 files) -> Map to `01_apps/grapplingmap_web/`
-  - `core/apps/mobile` (7 files) -> Map to `01_apps/Installed_Apps/mobile`
-  - `core/chat-app` (10 files) -> Map to `01_apps/chat_app/`
-  - `core/cloudflare-worker` (10 files, tests/46) -> Map to `00_core_infrastructure/cloudflare_worker/`
-  - `core/supabase` (8 files) -> Map to `00_core_infrastructure/supabase/`
-  - `core/scripts` (25 files) -> Map to `06_scripts_and_tooling/core_scripts/`
-  - `core/tools` (1 file) -> Map to `06_scripts_and_tooling/core_tools/`
-  - `core/data` (4 files) -> Map to `04_data_and_memory/core_data/`
-  - `core/docs` (113 files) -> Already mapped to `07_docs_and_architecture/core_docs/`
-- **`webapp/` (493 files, 39 dirs)**:
-  - Full standalone web app codebase for Grappling Map, Whoop intelligence, Stage 1 deployment, and Siri shortcuts.
-  - Symlink / sync to `01_apps/grapplingmap_web/` and maintain backward-compatible relative links.
-- **`self_healing_hub/` (1,404 files, 195 dirs)**:
-  - Root-level duplicate of `00_core_infrastructure/self_healing_hub/`.
-  - Can be symlinked to `00_core_infrastructure/self_healing_hub/` to eliminate duplicate node_modules and broken symlinks.
-- **`Installed_Apps/` (5 files, 4 dirs)**:
-  - Reconcile with `01_apps/Installed_Apps/`. Fix dangling symlink `Phone_Applications`.
+---
 
-## 4. Root-Level File Categorization & Hygiene Plan
-The monorepo root currently contains **163 loose files** that require categorization and relocation under the Root Level Hygiene directive:
-1. **Expect Scripts (`*.exp`, 29 files)**:
-   - Files: `adb_linux.exp`, `adb_perms.exp`, `adb_perms_router.exp`, `adb_perms_router2.exp`, `adb_router.exp`, `cat_file.exp`, `check_samba.exp`, `check_samba_logs.exp`, `check_tether.exp`, `debug_router.exp`, `debug_router2.exp`, `deploy_nas.exp`, `deploy_nas2.exp`, `deploy_samba.exp`, `deploy_samba2.exp`, `fix_samba.exp`, `fix_samba2.exp`, `fix_samba3.exp`, `fix_samba4.exp`, `fix_samba_auth.exp`, `fix_samba_env.exp`, `force_tether.exp`, `mount_all_macs.exp`, `route_tether.exp`, `router_debug.exp`, `router_fix.exp`, `run_samba.exp`, `test_ping.exp`, `verify_macbook.exp`.
-   - **Destination**: `06_scripts_and_tooling/expect/` (or `exp/`).
-2. **Screenshots (`*.png`, 46 files)**:
-   - Files: `grappling_screen.png`, `hub_screen1.png`, `hub_screenshot.png`, `movesense_screen.png`, `openclaw_pixel.png`, `pixel_screen*.png`, `s20_screen.png`, `step*.png`, `termux_chat*.png`, `zone2*.png`, etc.
-   - **Destination**: `reports/screenshots/`.
-3. **UI XML Dumps (`*.xml`, 30 files)**:
-   - Files: `dump.xml`, `hub_dump.xml`, `openclaw_pixel_dump.xml`, `pixel_ui*.xml`, `scanning_dump.xml`, `sensors_dump.xml`, `window_dump*.xml`, `zone2*.xml`.
-   - **Destination**: `reports/ui_dumps/`.
-4. **Docker Compose & Dockerfiles (`docker-compose*.yml`, `Dockerfile.*`, 17 files)**:
-   - Files: `docker-compose.yml`, `docker-compose.agi-backend.yml`, `docker-compose.connectivity.yml`, `docker-compose.dfs.yml`, `docker-compose.edge_hub.yml`, `docker-compose.genetic.yml`, `docker-compose.glusterfs.yml`, `docker-compose.mesh-agi.yml`, `docker-compose.mtd-test.yml`, `docker-compose.rpc_worker.yml`, `docker-compose.syncthing.yml`, `docker-compose.unified_node.yml`, `Dockerfile.connectivity`, `Dockerfile.edge_hub`, `Dockerfile.genetic`, `Dockerfile.mesh_daemon`, `Dockerfile.openclaw`.
-   - **Destination**: `00_core_infrastructure/docker/`.
-5. **Loose LoRA & Telemetry Datasets (`*.jsonl`, 12 files)**:
-   - Files: `lora_dataset_task_*.jsonl` (9 files), `telemetry_chat_feed.jsonl`, `truth_audit_nomad_mesh_debate.jsonl`, `local_network_telemetry.jsonl`.
-   - **Destination**: `04_data_and_memory/lora_datasets/` and `12_continuous_lora_evolution/lora_datasets/`.
-6. **Helper Scripts & Configs**:
-   - Python: `update_telemetry*.py` (4 files) -> `06_scripts_and_tooling/telemetry/`
-   - JavaScript: `proxy.js`, `proxy2.js`, `test_ws.js` -> `06_scripts_and_tooling/scripts/`
-   - LaunchDaemons / Configs: `com.lauburu.nasautomount.plist` -> `00_core_infrastructure/systemd/` or `launchdaemons/`; `smb_pool_config.conf` -> `00_core_infrastructure/infrastructure/`
-   - Modelfiles: `Modelfile_moondream_max_compute`, `Modelfile_llava_reward` -> `02_ai_models_and_inference/modelfiles/`
-   - OPML: `project_map.opml` -> `10_spatial_grappling_kinematics/opml_trees/`
-7. **Pristine Root Preservation**:
-   - Retain only canonical root files: `README.md`, `GEMINI.md`, `PROJECT.md`, `TEST_READY.md`, `TEST_INFRA.md`, `ORIGINAL_REQUEST.md`.
+## 3. Rate-Limiting Frameworks & Free-Tier Quota Optimization
 
-## 5. Teamwork Projects Inventory (34 Active Federated Projects)
-| # | Project Name | Files | Dirs | Symlinks | Size (MB) | Purpose |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | `ai_sharding_daemon` | 2055 | 236 | 3 | 27.96 | Federated Swarm Project |
-| 2 | `ai_strengthening_training_game` | 279 | 62 | 3 | 41.12 | Federated Swarm Project |
-| 3 | `ai_training_game` | 1109 | 129 | 3 | 19.34 | Federated Swarm Project |
-| 4 | `ai_training_stealth_compute_arena` | 4672 | 526 | 3 | 126.66 | Federated Swarm Project |
-| 5 | `antigravity_chat_mcp` | 2129 | 309 | 3 | 40.03 | Federated Swarm Project |
-| 6 | `antigravity_mcp_models` | 1772 | 323 | 3 | 44.41 | Federated Swarm Project |
-| 7 | `compute_pooling_app` | 68 | 21 | 0 | 0.31 | Federated Swarm Project |
-| 8 | `dark_mode_audit` | 207 | 106 | 0 | 11.72 | Federated Swarm Project |
-| 9 | `glinet_tethering_fix` | 174 | 50 | 0 | 0.59 | Federated Swarm Project |
-| 10 | `glinet_usb_fix` | 52 | 17 | 0 | 0.34 | Federated Swarm Project |
-| 11 | `global_training_games_audit` | 146 | 32 | 0 | 2.24 | Federated Swarm Project |
-| 12 | `hf_training_integration` | 31372 | 3280 | 3 | 976.95 | Federated Swarm Project |
-| 13 | `internet_debugging_swarm` | 712 | 76 | 3 | 8.99 | Federated Swarm Project |
-| 14 | `internet_training_protocol` | 150 | 35 | 0 | 1.32 | Federated Swarm Project |
-| 15 | `jules_repoless_integration` | 2665 | 400 | 5 | 63.52 | Federated Swarm Project |
-| 16 | `lauburu_biometrics_algorithm_debate` | 0 | 0 | 0 | 0.0 | Federated Swarm Project |
-| 17 | `lauburu_cli_sentinel` | 2188 | 242 | 3 | 24.81 | Federated Swarm Project |
-| 18 | `lauburu_compute_hub` | 8118 | 1870 | 3 | 541.52 | Federated Swarm Project |
-| 19 | `lauburu_webapp_and_competitor_analysis` | 2 | 0 | 0 | 0.06 | Federated Swarm Project |
-| 20 | `luci_ai_connectivity` | 1673 | 207 | 3 | 24.83 | Federated Swarm Project |
-| 21 | `mac_air_sync` | 72 | 15 | 0 | 0.22 | Federated Swarm Project |
-| 22 | `mac_air_sync_audit` | 73 | 17 | 0 | 0.54 | Federated Swarm Project |
-| 23 | `mesh_healing_ai_gym` | 22 | 6 | 0 | 0.09 | Federated Swarm Project |
-| 24 | `mesh_network_optimizer` | 133 | 31 | 0 | 0.98 | Federated Swarm Project |
-| 25 | `mesh_pwa_audit` | 182 | 50 | 0 | 1.08 | Federated Swarm Project |
-| 26 | `mesh_telemetry_audit` | 176 | 46 | 1 | 0.92 | Federated Swarm Project |
-| 27 | `open_source_scout_obsidian` | 168 | 67 | 0 | 1.16 | Federated Swarm Project |
-| 28 | `software_dev_training_game` | 428 | 77 | 3 | 8.39 | Federated Swarm Project |
-| 29 | `speedify_channel_bonding_ai` | 0 | 6 | 0 | 0.0 | Federated Swarm Project |
-| 30 | `swarm_healer` | 72 | 20 | 0 | 0.23 | Federated Swarm Project |
-| 31 | `termius_tui_dashboard` | 2782 | 320 | 3 | 50.29 | Federated Swarm Project |
-| 32 | `tplink_linux_laptop` | 94 | 20 | 0 | 0.54 | Federated Swarm Project |
-| 33 | `tplink_mesh_resurrection` | 151 | 41 | 0 | 0.94 | Federated Swarm Project |
-| 34 | `visual_audit_swarm` | 0 | 2 | 0 | 0.0 | Federated Swarm Project |
+### 3.1 Cloud API Quota Manager (`cloud_api_quota_manager.py`)
+- **Location:** `06_scripts_and_tooling/automation/cloud_api_quota_manager.py` (lines 98–630)
+- **Quota State Persistence:**
+  - State file: `04_data_and_memory/data/cloud_api_quota_state.json`
+  - Concurrency Lock: `fcntl.flock(lock_f.fileno(), fcntl.LOCK_EX)` on `.lock` file.
+  - Automatic UTC midnight rollover resets all counters (`_check_and_apply_midnight_reset`).
+- **Provider Quota Configurations:**
+  - `gemini_free`: Daily Limit = 1,500 RPD, Max Tokens = 32,768, Rate Limit = 15 RPM (Safety clamped to 14 RPM / 1,400 RPD).
+  - `cloudflare_ai`: Daily Limit = 1,000 RPD (10k Neurons), Max Tokens = 4,096, Rate Limit = 50 RPM.
+  - `julien_ai`: Daily Limit = 300 RPD (Policy disabled / 403 status).
+  - `local_mesh`: Daily Limit = 999,999 RPD, Max Tokens = 16,384, Rate Limit = 1,000 RPM (Zero cost, sovereign fallback).
+- **Multi-Factor Composite Heuristic Routing Equation:**
+  $$\text{Score} = 0.40 \cdot Q_{\text{rem\_pct}} + 0.25 \cdot S_{\text{norm}} + 0.25 \cdot T_{\text{fit}} + 0.10 \cdot H_{\text{health}} - P_{\text{failures}}$$
+  - Rate limit (429) triggers immediate 60-second cooldown (`cooldown_until = now + 60.0`) and initiates cascade fallback to next best candidate or `local_mesh`.
 
-## 6. Symlink Integrity & Broken Link Audit
-### Monorepo Symlinks (86 total):
-- **Relative symlinks (79)**: 100% valid node_modules binary links in `01_apps/zone2_endurance`, `01_apps/obsidian_web`, `00_core_infrastructure/self_healing_hub`, and internal module links.
-- **Absolute symlinks (7)**:
-  1. `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/movesense_hub` -> `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/movesense_hub`
-  2. `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/teamwork_projects` -> `/Users/aaron/teamwork_projects`
-  3. `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/obsidian_web/content` -> `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault`
-  4. `00_core_infrastructure/self_healing_hub/.venv/bin/python` -> Python 3.13 uv interpreter
-  5. `01_apps/lauburu_compute_hub/.venv/bin/python` -> Python 3.12 uv interpreter
-  6. `05_agents_and_swarms/local_agi_smolagent/.venv/bin/python` -> Python 3.12 uv interpreter
-  7. `Installed_Apps/Phone_Applications` -> `/Users/aaron/Lauburu-Monorepo-Local/Lauburu-Monorepo/Installed_Apps/Phone_Applications` (**BROKEN**)
-- **Broken Symlinks Detected (2)**:
-  1. `Installed_Apps/Phone_Applications` (points to missing `/Users/aaron/Lauburu-Monorepo-Local/...`).
-  2. `self_healing_hub/frontend/node_modules/.bin/rolldown` (legacy un-reconciled tree; canonical `00_core_infrastructure/self_healing_hub` is intact).
+### 3.2 Cloudflare AI Gateway Router (`ai_gateway_router/worker.js`)
+- **Location:** `00_core_infrastructure/cloudflare/workers/ai_gateway_router/worker.js` (lines 1–166)
+- Routes `/v1/google/*`, `/v1/gemini/*`, `/v1/cloudflare/*`, `/v1/workers-ai/*`, `/v1/huggingface/*`.
+- Binds directly to `env.AI.run` for zero-latency Cloudflare Workers AI edge execution or routes through Cloudflare AI Gateway (`gateway.ai.cloudflare.com/v1/.../lauburu-ai-gateway`) for telemetry and rate-limiting analytics.
 
-### Teamwork Projects Symlinks (45 total):
-- **45 symlinks total**: 31 relative, 14 absolute (all point to valid Python uv venv interpreters or active agent markers). **0 broken symlinks**.
+### 3.3 AI Spend Gates Spec (`AI_SPEND_GATES_SPEC.md`)
+- **Location:** `07_docs_and_architecture/core_docs/AI_SPEND_GATES_SPEC.md`
+- **Cost Decision Ladder:**
+  1. `free_deterministic`: Local regex, MCP reads, static dictionaries (Always runs first, $0 cost).
+  2. `cheap_ai`: Short LLM calls ($\le 4\text{k}$ prompt, $\le 500$ out), rate limited to 60 calls/hour per user.
+  3. `expensive_ai`: Long-context ($\ge 4\text{k}$ prompt), multi-pass synthesis, vision audits (Gated behind human approval push notification).
+  4. `deep_research_external`: Extended synthesis (Export prompt by default).
 
-## 7. Domain Subsystem Mapping & User Directive Alignment
-1. **Web Apps & Frontends -> `01_apps/`**:
-   - `grapplingmap_web`: Map from `core/apps/grapplingmap-web` and `webapp/` (80 files).
-   - `chat_app`: Map from `core/chat-app` (10 files).
-   - `movesense_hub`, `port_4000_hub`, `obsidian_web`, `zone2_endurance`, `openclaw`, `lauburu_business_app`: Fully established in `01_apps/`.
-2. **OPML Grappling Trees & Kinematics -> `10_spatial_grappling_kinematics/`**:
-   - `opml_trees/grappling.opml` (3,044 nodes), `grappling.opml.pre-structure-fix` (3,228 nodes), `grappling.opml.backup-guard01` (3,385 nodes), and `project_map.opml` (146 nodes) correctly placed in `10_spatial_grappling_kinematics/opml_trees/`.
-3. **Biometrics DSP & Telemetry -> `03_biometrics_and_telemetry/`**:
-   - Whoop intelligence, multi-user health, health context input, Movesense ECG (128Hz & 512Hz), optical PPG, and grappling history database mapped cleanly.
-4. **Cloud Infrastructure -> `00_core_infrastructure/`**:
-   - Cloudflare workers (`core/cloudflare-worker`) and Supabase edge functions/migrations (`core/supabase`, `webapp/supabase`) mapped to `00_core_infrastructure/`.
-5. **Architecture Docs & Knowledge Graph -> `07_docs_and_architecture/` & `obsidian_vault/`**:
-   - 113 core docs mapped to `07_docs_and_architecture/core_docs/`.
-   - Obsidian Vault contains canonical knowledge graph and syncs directly to Quartz digital garden in `01_apps/obsidian_web/content`.
-6. **Backward Compatibility Guarantee**:
-   - Relative symlinks from legacy paths (`core/`, `webapp/`, root scripts) ensure no CLI, build system, or automation pipeline experiences regressions.
+---
+
+## 4. Local Mesh Inference & Off-Peak Scheduling Coordination
+
+### 4.1 Local Inference Distribution (Ports 8081–8086 & 50052)
+- **Local Proxy Architecture (`lauburu_ai_proxy.py`):**
+  - Unified OpenAI-compatible endpoint on Port 8080 (`/v1/chat/completions`).
+  - Routes model requests to dedicated background ports (`local/qwen` $\rightarrow$ `:8083`, `local/qwen-3.8max` $\rightarrow$ `:8081`, `local/mistral` $\rightarrow$ `:8082`, `local/nemotron` $\rightarrow$ `:8084`, `local/qwen-abliterated` $\rightarrow$ `:8085`, `local/qwen-math` $\rightarrow$ `:8086`).
+  - Remote edge acceleration: Pixel 10 Pro Tensor G5 on Port 8087 (`100.73.38.87:8087`).
+- **Distributed Tensor Sharding (`llama_rpc_mesh`):**
+  - Interconnects L1 Mac Host (24 layers), L2 MacBook Pro (28 layers over 40Gbps TB4 DMA bridge `169.254.187.138`), and L3 Linux Head Node (28 layers `100.101.39.98`) over RPC Port 50052.
+
+### 4.2 Local vs. Cloud Off-Peak Coordination
+- **Daytime Schedule (Active Athlete Hours):**
+  - Real-time physiological telemetry (Movesense 512Hz ECG, Pan-Tompkins QRS, PTT BP) streams locally.
+  - Interactive dev queries utilize fast local models (Qwen2.5-Coder-7B) and free cloud flash queries.
+- **Overnight Schedule (00:00 – 06:00 UTC / Off-Peak Windows):**
+  - `overnight-queue.ts`: Dispatches unattended AST refactoring, heavy unit test scaffolding, and deep doc synthesis.
+  - `free_tier_ai_continuous_cron.py` (Tier 3 at 03:00 UTC): Gathers synthetic training pairs, merges Hugging Face DPO/RLHF instruction sets, and runs nightly local PEFT/TRL QLoRA distillation on Metal GPU.
+
+---
+
+## 5. Biometric Airgapping & Privacy Floor Invariants
+
+### 5.1 Strict Cloudflare Edge Egress Firewall
+- **`00_core_infrastructure/cloudflare_worker/src/worker.ts` (lines 274–395) & `test-airgap-biometrics-isolation.ts`:**
+  - **Blocked Paths (`FORBIDDEN_AIRGAP_PATHS`):**
+    - `/api/biometrics/*`, `/api/movesense/*`, `/api/512hz_ecg/*`, `/api/ptt/*`, `/api/ppg/*`, `/api/sleep_staging/*`, `/api/raw_rr/*`, `/ws/biometrics/*`.
+    - Returns **HTTP 403 Forbidden** with `egressBlocked: true` and `error: "100% Local Airgap Violation"`.
+  - **Blocked Keys (`FORBIDDEN_BIOMETRIC_KEYS`):**
+    - `ecg_samples`, `raw_ecg_mv`, `movesense_packet`, `raw_ppg_stream`, `raw_rr_stream`, `ptt_blood_pressure_raw`, `dfa_alpha1_raw`, `pan_tompkins_raw`, etc.
+    - Automatically replaced with `[AIRGAP_REDACTED: LOCAL_HARDWARE_ONLY]`.
+  - **Blocked Headers:**
+    - `x-lauburu-biometrics-egress`, `x-raw-biometrics`.
+
+### 5.2 Code Scaffolder & Inference Airgap Inspection
+- **`06_scripts_and_tooling/automation/code_scaffold_daemon.py` (lines 118–142):**
+  - Scans prompt contexts and generated ASTs with `FORBIDDEN_BIOMETRIC_REGEX`.
+  - If raw physiological patterns (`raw_ecg`, `movesense_gatt`, `512hz_ecg`, `ptt_blood_pressure`, `dfa_alpha1`) are detected, the daemon automatically forces `prefer_local = True`, restricting execution strictly to `127.0.0.1` Local Mesh with zero external cloud egress.
+- **`02_ai_models_and_inference/lauburu_ai_proxy.py` (line 137):**
+  - `STRICT_LOCAL_AIRGAP_HEALTH_LOCK = True`: Unconditionally isolates all health and biometric processing to local Apple Silicon Metal GPU.
+
+---
+
+## 6. Synthesis & Gaps Identified for Requirement R1
+
+1. **Quota Calibration:** The existing quota manager in `cloud_api_quota_manager.py` already includes Google Gemini Free (1,500 RPD / 15 RPM) and Cloudflare Workers AI (1,000 RPD / 10k Neurons), but needs direct integration into the continuous cron schedule (`free_tier_ai_continuous_cron.py`) with explicit 14 RPM / 1,400 RPD rate limiter clamping.
+2. **Unified Daemon Supervisor Integration:** The 7 individual `llama-server` instances (Ports 8081–8086), Proxy (:8080), WoL (:18802), RPC (:50052), and Supervisor (:8088) have operational restart logic in `nomad_courier_self_healer.py` and `daemon_manager.py`, which should be harmonized under the central 24/7 cron pipeline.
+3. **Continuous LoRA Sink Standardization:** Synthetic datasets are actively harvested to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl` and `04_data_and_memory/lora_datasets/continuous_lora_dataset.jsonl` using `LoRADatasetWriter` with `fcntl.flock` locks, perfectly aligned with Requirement R2 and R3.

@@ -1,53 +1,52 @@
-# BRIEFING — 2026-08-29T19:21:40+10:00
+# BRIEFING — 2026-08-29T13:08:00Z
 
 ## Mission
-Adversarially stress test the SmolAgents code execution arena, 4-mode game engine, and master E2E test runner; verify 100% empirical stability and deliver verdict.
+Adversarial coverage hardening and white-box boundary probing (Tier 5): airgap penetration, storage corruption/recovery, Metal GPU VRAM boundary limits, zero flakiness testing.
 
 ## 🔒 My Identity
-- Archetype: challenger
+- Archetype: EMPIRICAL CHALLENGER
 - Roles: critic, specialist
 - Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_challenger_2
-- Original parent: 63ce69b0-c347-4525-baf9-09dde968f198
-- Milestone: SmolAgents Multi-Mode Arena & E2E Stress Challenge
+- Original parent: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
+- Milestone: Tier 5 Hardening & Verification
 - Instance: 2 of 2
 
 ## 🔒 Key Constraints
-- Review-only & challenger — do NOT modify implementation code directly
-- Zero simulated or fake assertions: empirical execution only
-- Deliver verdict: APPROVE or REQUEST_CHANGES
+- Review-only / Test-only — do NOT break production contracts without verification
+- Empirical verification mandatory — write and run tests, verify assertions
+- .agents/ directory must contain only metadata
 
 ## Current Parent
-- Conversation ID: 63ce69b0-c347-4525-baf9-09dde968f198
-- Updated: 2026-08-29T19:21:40+10:00
+- Conversation ID: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
+- Updated: 2026-08-29T13:08:00Z
 
 ## Review Scope
-- **Files reviewed**:
-  - `05_agents_and_swarms/smolagents_engine/smolagents_arena_hub.py`
-  - `01_apps/canonical_port/tui/screens/live_arena_dev_screen.py`
-  - `01_apps/canonical_port/tui/tui_live_arena_dev.py`
-  - `05_agents_and_swarms/genetic_moe/genetic_moe_ai_router.py`
-  - `tests/e2e/run_all_e2e_tests.py` (Tiers 1-4, 184 tests)
-  - `tests/test_challenger_2_smolagents_arena_stress.py` (17 tests)
-- **Review criteria**: Concurrency safety, error isolation, rapid mode cycling, HUD formatting, E2E stability.
+- **Files to review**:
+  - `00_core_infrastructure/`
+  - `02_ai_models_and_inference/`
+  - `04_data_and_memory/`
+  - `06_scripts_and_tooling/`
+  - `tests/`
+- **Interface contracts**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md`
+- **Review criteria**: correctness, robustness, fail-closed security, self-healing, memory safety
 
 ## Attack Surface
 - **Hypotheses tested**:
-  1. Rapid cycling (1000 iterations) across all 4 game modes causes state corruption or index out-of-bounds -> PROVED SAFE (0 errors).
-  2. Malformed Python code payloads and target injection strings crash the SmolAgent sandbox -> PROVED SAFE (caught safely, returns error status without crash).
-  3. High-concurrency simultaneous execution ticks (50 threads, 500 ticks) cause thread contention or race conditions -> PROVED SAFE (0 race errors).
-  4. Missing/corrupted readiness file crashes TUI HUD generator -> PROVED SAFE (graceful fallback to nominal state).
-  5. Master E2E runner flakiness across repeated executions -> PROVED STABLE (184/184 tests pass 100%).
-  6. Substring collision in Genetic MoE routing keyword matching -> IDENTIFIED & DOCUMENTED: naive substring matching on single-letter domain 'c' gave spurious +0.35 boost to coder; isolated and verified with uniform baseline weights.
-- **Untested angles**: Hardware-level BLE radio disconnection during physical Bluetooth GATT stream.
+  1. Airgap penetration via nested dicts/lists (10+ depth), alternative casing permutations, encoded strings, and secret credentials.
+  2. Storage corruption: stale `.git/index.lock`, missing/corrupted `obsidian_vault/Index.md`, and low disk space (<5GB) self-healing triggers.
+  3. Metal GPU memory cap boundary: exact 21.6GB / 90% dynamic RAM governance, `ShardedTrainingSupervisor` VRAM allocation arithmetic, dynamic thermal throttling, and mobile battery discharge guards.
+  4. Concurrent multi-threaded writes: 20 concurrent threads writing to `TriVaultSink`.
+- **Vulnerabilities found**:
+  - Found and handled Python banker's rounding edge on `linux_node` allocation (`70% * 11.25 = 7.875 -> 7.87`).
+  - Verified that unquoted URL parameters in `SECRET_PATTERNS` require explicit token regexes (e.g. `ghp_`, `sk-`, `AKIA`) which are fully caught.
+- **Untested angles**:
+  - Direct live physical hardware battery drain on physical Pixel 10 (simulated via authenticated telemetry state injection).
 
 ## Key Decisions Made
-- Constructed and ran `tests/test_challenger_2_smolagents_arena_stress.py` (17 comprehensive stress test cases).
-- Certified 100% empirical pass rate on all 184 Master E2E tests and 17 Challenger 2 stress tests.
+- Created and executed exhaustive Tier 5 adversarial test suite `tests/test_adversarial_coverage_hardening_challenger2.py`.
+- Verified 19/19 test cases passing with zero flakiness (100 sequential stress iterations).
 - Verdict: **APPROVE**.
 
 ## Artifact Index
-- DISPATCH.md — Dispatch log
-- BRIEFING.md — Situational awareness
-- progress.md — Liveness & step tracking
-- handoff.md — Final 5-component handoff report with APPROVE verdict
-- `tests/test_challenger_2_smolagents_arena_stress.py` — 17-test empirical stress harness
+- handoff.md — Final verdict and empirical challenge report
+- progress.md — Liveness heartbeat and milestone tracker

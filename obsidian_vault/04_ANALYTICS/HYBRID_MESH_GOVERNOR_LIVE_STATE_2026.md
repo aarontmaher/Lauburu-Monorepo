@@ -1,10 +1,10 @@
 ---
 title: "Hybrid Real-RAM Mesh Governor Live Telemetry & Micro-Agent State"
-date: "2026-08-29 21:58:16"
+date: "2026-08-29 23:06:49"
 tags: [hybrid_governor, real_ram, glinet, micro_agents, storage_health, zero_mock]
 synergy_efficiency: 862.0
-router_avail_ram_mb: 87.1
-host_ram_pct: 72.2%
+router_avail_ram_mb: 90.8
+host_ram_pct: 98.2%
 zero_mock_certified: true
 ---
 
@@ -13,9 +13,9 @@ zero_mock_certified: true
 Autonomous micro-agent swarm state combining on-router **Sentinel AST (`14.5 MB`)** with host-coordinated **Nano-SLMs**.
 
 * **Synergy Efficiency Score:** `862.0` 🥇 (Surpasses standalone baselines).
-* **Real Router RAM (GL-MT3600BE `192.168.8.1`):** `87.1 MB Available` / `481.3 MB Total` (🟢 NOMINAL SAFE).
-* **Host RAM (Mac Mini M4 Pro):** `13.75 GB / 24.0 GB` (`72.2%`).
-* **Storage Tri-Vault:** Obsidian `Mounted`, Data Lake `Ready`, Disk Free `13.47 GB`.
+* **Real Router RAM (GL-MT3600BE `192.168.8.1`):** `90.8 MB Available` / `481.3 MB Total` (🟢 NOMINAL SAFE).
+* **Host RAM (Mac Mini M4 Pro):** `19.23 GB / 24.0 GB` (`98.2%`).
+* **Storage Tri-Vault:** Obsidian `Mounted`, Data Lake `Ready`, Disk Free `6.41 GB`.
 * **Project AST Health:** `Nominal` (Zero-Mock Rule #0 Certified).
 
 ---

@@ -91,6 +91,11 @@ case "$CMD" in
         cd "$MONOREPO_DIR"
         exec python3 05_agents_and_swarms/master_priority_automation_loop.py --daemon
         ;;
+    sync-sharded|spark-sync)
+        echo "⚡ Running Gemini Spark & Local Sharded Swarm Synchronization Pipeline..."
+        cd "$MONOREPO_DIR"
+        exec python3 06_scripts_and_tooling/automation/gemini_spark_sharded_sync_pipeline.py
+        ;;
     router-bench|bench-router)
         echo "🔬 Running Sandboxed GL.iNet Router Micro AI Benchmark..."
         cd "$MONOREPO_DIR"

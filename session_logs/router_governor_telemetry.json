@@ -1,12 +1,12 @@
 {
-  "timestamp_utc": "2026-08-29T11:40:14Z",
-  "elapsed_seconds": 0.453,
+  "timestamp_utc": "2026-08-29T12:53:53Z",
+  "elapsed_seconds": 0.425,
   "router_hardware_ram": {
     "online": true,
     "total_mb": 481.3,
-    "free_mb": 61.9,
-    "available_mb": 90.2,
-    "cached_mb": 75.9,
+    "free_mb": 57.1,
+    "available_mb": 89.6,
+    "cached_mb": 79.5,
     "critical_threshold_mb": 45.0,
     "heal_action_taken": "NONE_REQUIRED",
     "safety_status": "\ud83d\udfe2 NOMINAL SAFE"
@@ -26,18 +26,18 @@
     "status": "NOMINAL"
   },
   "storage_health": {
-    "healthy": true,
+    "healthy": false,
     "obsidian_vault_mounted": true,
     "obsidian_index_valid": true,
     "pyspark_lake_ready": true,
-    "disk_free_gb": 6.14,
+    "disk_free_gb": 2.63,
     "git_lock_cleared": false,
-    "status": "HEALTHY"
+    "status": "DEGRADED"
   },
   "host_ram": {
-    "used_gb": 16.27,
+    "used_gb": 19.53,
     "total_gb": 24.0,
-    "percent": 92.4,
+    "percent": 95.8,
     "status": "\ud83d\udd34 THROTTLE"
   },
   "canonical_tui_benchmark": {

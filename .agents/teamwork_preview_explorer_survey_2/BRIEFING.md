@@ -1,50 +1,46 @@
-# BRIEFING — 2026-08-29T19:36:30+10:00
+# BRIEFING — 2026-08-29T12:05:15Z
 
 ## Mission
-Investigate all applications across the Lauburu Monorepo to plan the two-domain structural separation (User/Scaling Apps vs Operator/Dev Cockpits) and the Web-TUI portal on Port 8088 (120 FPS FastAPI + WebSockets).
+Survey LoRA dataset harvesting pipelines, AST code optimization datasets, and local training scripts to support Requirement R2 (Multi-Model LoRA Dataset Harvesting & Model Merging).
 
 ## 🔒 My Identity
-- Archetype: Explorer
-- Roles: Read-only investigation, codebase mapping, architectural synthesis
+- Archetype: explorer
+- Roles: investigation, synthesis
 - Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2
-- Original parent: 2a18102f-99e3-40e0-adec-7d45ce293833
-- Milestone: App Architecture & Web-TUI Portal Survey
+- Original parent: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
+- Milestone: Survey & Investigation (Phase 1)
 
 ## 🔒 Key Constraints
-- Read-only investigation — do NOT implement
-- Zero-mock / zero-simulated data principle (Rule #0)
-- Deliver detailed analysis in analysis.md and handoff in handoff.md
-- Send message to parent agent upon completion
+- Read-only investigation — do NOT implement or modify source code files.
+- Investigate:
+  1. `/Users/aaron/DFS_UNIFIED/lora_datasets/` and `04_data_and_memory/` (e.g. `ai_training_game_dataset.jsonl`, DPO/RLHF pairs, AST crawlers).
+  2. Existing dataset formats, schema, validation mechanisms (how >=500 verified pairs daily are harvested from debate transcripts, code diffs, math proofs, recovery actions).
+  3. Existing TRL / PEFT / QLoRA training scripts on local Metal GPU (Apple Silicon M4 Pro / M4 Air) and how nightly training is scheduled and executed.
+  4. Loss curve logging to Obsidian Vault and model weight compilation/merging.
+- Output `survey_report.md` and `handoff.md` in working directory.
+- Notify orchestrator via `send_message`.
 
 ## Current Parent
-- Conversation ID: 2a18102f-99e3-40e0-adec-7d45ce293833
-- Updated: 2026-08-29T19:36:30+10:00
+- Conversation ID: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
+- Updated: 2026-08-29T12:05:15Z
 
 ## Investigation State
-- **Explored paths**:
-  - `01_apps/biometrics/movesense_readiness_tui.py`
-  - `01_apps/biometrics/movesense_hub/pyspark_biometrics_dsp.py`
-  - `03_biometrics_and_telemetry/movesense_readiness_suite.py`
-  - `03_biometrics_and_telemetry/pan_tompkins_dsp.py`
-  - `01_apps/spatial_and_3d/grapplingmap_web/grappling.opml`
-  - `00_core_infrastructure/self_healing_hub/src/spatial_grappling_map_engine.py`
-  - `01_apps/canonical_port/tui/tui_live_arena_dev.py`
-  - `01_apps/commerce_and_business/storefront_membership_tui.py`
-  - `01_apps/canonical_port/tui/canonical_tui.py`
-  - `05_agents_and_swarms/red_blue_arena/smolagents_arena_engine.py`
-  - `02_ai_models_and_inference/quantum/autonomous_math_trend_optimizer.py`
-  - `01_apps/canonical_port/tui/serve_web_tui.py`
+- **Explored paths**: `/Users/aaron/DFS_UNIFIED/lora_datasets/`, `04_data_and_memory/`, `04_data_and_memory/delta_engine/`, `02_ai_models_and_inference/quantum/`, `00_core_infrastructure/self_healing_hub/src/`, `05_agents_and_swarms/tri_orchestrator/`, `06_scripts_and_tooling/automation/`, `obsidian_vault/04_ANALYTICS/`, `obsidian_vault/01_DEBATES/`.
 - **Key findings**:
-  - Full codebase contains ready implementations across all 7 targeted apps.
-  - Two-domain structural separation plan designed: User/Scaling Apps in `01_apps/user_facing_and_scaling/` and Operator/Dev in `01_apps/operator_and_dev/`.
-  - Web-TUI engine on Port 8088 verified with WebSocket PTY multiplexing and 120 FPS WebGL xterm.js rendering.
-- **Unexplored areas**: None within the scope of this survey.
+  1. Primary data lake contains >40 JSONL files (>400,000 empirical samples). `continuous_lora_dataset.jsonl` (14.7K records), `truth_audit_debate.jsonl` (2.3K active / 210K archive), `movesense_biometrics_coaching.jsonl` (12.4K active / 145K archive).
+  2. Datasets use standardized TRL DPO format and ShareGPT SFT format, strictly validated by `tri_vault_sink.py` against Rule #0 Zero-Mock Data Invariants.
+  3. $\ge 500$ verified pairs harvested daily across 4 streams: 4-round Tri-Orchestrator debate transcripts, 3,679-file PySpark AST extractions, Qwen-Math closed-form RAM/loss equations, and recovery actions.
+  4. Local Metal GPU fine-tuning is implemented via Apple MLX QLoRA (`fast_train_agentworld_mac.py`) and PyTorch MPS + PEFT/TRL `SFTTrainer` (`agentworld_train.py`) under dynamic RAM cap $\le 21.6\text{ GB}$ (90%).
+  5. Loss curves $L(t) = 0.42 + 1.76 \cdot e^{-0.0008t}$ are live-streamed to `obsidian_vault/04_ANALYTICS/QWEN_MATH_CONTINUOUS_OPTIMIZATION_TRENDS_2026.md`.
+  6. Autonomous model merging (`autonomous_consensus_merger.py`) triggers at $>0.95$ consensus, synthesizing MergeKit `SPARSE_MOE_DARE_TIES`/`SLERP` recipes while strictly preserving parent models.
+- **Unexplored areas**: None for Phase 1 survey scope. Ready for handoff to Phase 2 implementation.
 
 ## Key Decisions Made
-- Mapped all 7 core apps and defined directory restructure plans with modular `core/`, `dsp/`, `presentation/`, `transport/` sub-packages.
-- Documented shared high-performance DSP/math utilities to eliminate tight coupling.
+- Completed exhaustive survey and documented all findings in `survey_report.md` and `handoff.md`.
 
 ## Artifact Index
-- analysis.md — Comprehensive mapping and structural separation plan
-- handoff.md — 5-component handoff report for parent orchestrator
-- progress.md — Heartbeat progress log
+- `.agents/teamwork_preview_explorer_survey_2/DISPATCH.md` — Incoming dispatch instructions
+- `.agents/teamwork_preview_explorer_survey_2/BRIEFING.md` — Persistent working memory
+- `.agents/teamwork_preview_explorer_survey_2/progress.md` — Progress tracker and heartbeat
+- `.agents/teamwork_preview_explorer_survey_2/survey_report.md` — Comprehensive Technical Survey Report
+- `.agents/teamwork_preview_explorer_survey_2/handoff.md` — 5-Component Structured Handoff Report

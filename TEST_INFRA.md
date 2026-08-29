@@ -1,217 +1,154 @@
-# Unified Lauburu Front-Facing App Architecture & Multi-Mode Game Arena — 4-Tier Test Infrastructure Specification
+# TEST_INFRA.md: 24/7 Offline & Free-Tier AI Utilization Cron Pipeline
+# Master Opaque-Box E2E Testing Infrastructure & Quality Assurance Specification
 
-**Document Version:** 4.0.0-CANONICAL  
-**Date:** 2026-08-29T19:15:00Z  
-**Author:** E2E Testing Specialist / Test Architect Lead (`teamwork_preview_test_writer`)  
-**Target System:** Unified Lauburu Front-Facing App Architecture & Multi-Mode Game Arena (`ORIGINAL_REQUEST.md`, `PROJECT.md`)  
-**Repository:** `Lauburu-Monorepo`  
-**Test Suite:** `tests/e2e/test_tier1_feature_coverage.py`, `tests/e2e/test_tier2_boundary_corner.py`, `tests/e2e/test_tier3_pairwise_combinations.py`, `tests/e2e/test_tier4_real_world_scenarios.py`  
-**Master Runner:** `python3 tests/e2e/run_all_e2e_tests.py --all` / `python3 -m pytest tests/e2e/test_tier*.py`
+## 1. Executive Summary & Testing Philosophy
 
----
+This document defines the canonical End-to-End (E2E) testing framework, testing philosophy, feature matrix, and multi-tier verification methodology for the **Lauburu 24/7 Offline & Free-Tier AI Utilization Cron Pipeline**.
 
-## 1. Executive Test Strategy & Opaque-Box Methodology
+The testing system follows an **opaque-box testing philosophy**: all test suites interact strictly with public module APIs, CLI commands, file system sinks, network port listeners, and documented interface contracts. No internal private variables or mock facades are permitted.
 
-The **Unified Lauburu Front-Facing App Architecture & Multi-Mode Game Arena** implements a strict architectural division:
-1. **Cloud-Assisted Frontend PWA & 3D Tatami Visualization:** Delivers responsive TailwindCSS components, offline ServiceWorker caching, Three.js 955+ node OPML grappling kinematics mapping, and WebGPU WGSL shaders.
-2. **100% Local Physiological Biometrics Airgap:** Locks all raw Movesense 512Hz ECG streams, optical PPG waveforms, microsecond R-R intervals, Pan-Tompkins DSP, Pulse Transit Time (PTT) continuous blood pressure inversion, overnight sleep staging (Deep, REM, Light, Awake), and cardiorespiratory thresholds (LT1, LT2, VO2max) to local Apple Silicon Metal GPU and mesh hardware (`127.0.0.1`).
-3. **SmolAgents Autonomous Python Code-Execution Arena & 4-Mode TUI Engine:** Faction leaders (Hermes 3 Red Lead, LuCI OpenWrt Blue Lead) write and execute sandboxed Python code across 4 selectable game modes with active Telemetry HUD Tactical Objective Summaries.
-
-To ensure empirical validity, strict zero-simulated data compliance (Rule #0), mathematical rigor across signal processing equations, and rock-solid airgap boundaries, this test infrastructure enforces an exhaustive **4-Tier Opaque-Box Testing Hierarchy** (184 total tests).
-
-```
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│               UNIFIED LAUBURU FRONT-FACING & GAME ARENA — 4-TIER E2E TEST HIERARCHY                    │
-├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                                        │
-│   TIER 1: FEATURE COVERAGE (5 Tests per Feature across F01 - F16 = 80 Total Tests)                     │
-│   • F01: Frontend PWA Scaffolding & Manifest (Manifest schema, standalone display, SW offline caching) │
-│   • F02: Three.js 3D Tatami & Kinematics Graph (955+ OPML nodes, 3D mapping, raycasting selection)     │
-│   • F03: TailwindCSS & Cross-Platform UI (WCAG 2.1 AA 4.5:1 contrast, dark tokens, ARIA labels)        │
-│   • F04: Strict 100% Local Airgap Protection (Cloudflare zero-biometrics firewall, egress inspection)  │
-│   • F05: Bicep ECG 512Hz Pan-Tompkins DSP (Butterworth 0.5-40Hz, 5-pt derivative, 150ms MWI, peaks)    │
-│   • F06: Kamath 20% Artifact Filter & RMSSD Math (Ectopic filter, microsecond resolution, RMSSD)       │
-│   • F07: Pulse Transit Time (PTT) Continuous BP (Hemodynamic SBP/DBP/MAP inversion, arterial bounds)   │
-│   • F08: Overnight PPG Sleep Staging & Score (Deep/REM/Light/Awake 100% sum, 0-100 score, dipping)     │
-│   • F09: Auto Workout Detect & LT1/LT2 / VO2max (HRmax zones, DFA-a1 0.75/0.50, Uth-Sørensen VO2max)   │
-│   • F10: Rule #0 Zero-Mock Enforcement (WAITING_FOR_SENSOR, null state offline, zero synthetic arrays) │
-│   • F11: SmolAgents Sandboxed Python Duel (Red exploit & Blue shield Python execution, isolated scope)│
-│   • F12: Canonical 4 Selectable Game Modes (Classic, Duel, Genetic MoE Swarm, Cloud Chaos)             │
-│   • F13: Telemetry HUD Tactical Objective Summaries (Plain-language intents, biological state string)  │
-│   • F14: Standalone & Embedded TUI Synchronization (LiveArenaDevScreen, Rich panels, 1-key actions)    │
-│   • F15: 100% E2E Test Suite Pass (Multi-tier execution harness, JSON report, fast-path health check)  │
-│   • F16: Tier 5 Adversarial Coverage Hardening (NaN/Inf floats, corrupted JSONL, 64MB burst bounds)    │
-│                                                                                                        │
-│   TIER 2: BOUNDARY VALUE ANALYSIS & CORNER CASES (5 Tests per Feature = 80 Total Tests)               │
-│   • F01 - F16 Boundaries: Isoelectric ECG flatlines, zero/extreme PTT, HR bounds (25-240 BPM),         │
-│     WCAG contrast limits (21:1 to 1:1), 0-node OPML, NaN floats, rapid mode cycling, empty buffers     │
-│                                                                                                        │
-│   TIER 3: CROSS-FEATURE PAIRWISE COMBINATIONS (16 Combinatorial Tests)                                 │
-│   • P01 - P16: PWA x Airgap, OPML x Tailwind, Pan-Tompkins x Kamath, Kamath x PTT BP, PTT BP x Sleep, │
-│     Sleep x Workout, DFA-a1 x Rule #0, SmolAgents x 4 Modes, 4 Modes x Tactical HUD, etc.              │
-│                                                                                                        │
-│   TIER 4: REAL-WORLD APPLICATION SCENARIOS (8 Comprehensive Workload Scenarios)                        │
-│   • S1: End-to-End 512Hz ECG Ingestion -> Pan-Tompkins -> Kamath -> RMSSD -> Zone 2 Feedback           │
-│   • S2: Overnight Sleep Staging -> Autonomic Recovery Score -> LoRA Dataset Export                     │
-│   • S3: High-Intensity Threshold Workout -> DFA-a1 -> Hemodynamic PTT BP Inversion                     │
-│   • S4: Real-time SmolAgents Red vs. Blue Sandboxed Python Duel -> TUI HUD Sync                        │
-│   • S5: Hardware Disconnection & Rule #0 Zero-Mock Fallback & Clean Resumption                         │
-│   • S6: Mode 3 Genetic MoE AI Router Dynamic Evolution & Local Model Routing                           │
-│   • S7: Full WebApp Frontend Lifecycle: PWA Manifest -> 955+ OPML Kinematics -> Tailwind UI           │
-│   • S8: Strict Cloudflare Worker Zero-Biometric Egress Isolation & Redaction Audit                     │
-│                                                                                                        │
-└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-```
+### Core Testing Invariants & Principles:
+1. **Rule #0 Zero-Mock Data Verification**:
+   - Every telemetry stream, token metric, ELO score, AST diff, and loss curve evaluated must be genuine and verifiable.
+   - Any record tagged with mock flags (`truth_verified=False`, simulated data markers) is immediately rejected.
+2. **Fail-Closed Biometric Privacy Airgap**:
+   - 100% of physiological biometrics (512Hz ECG, Pulse Transit Time BP, RR intervals, PPG sleep staging) and sensitive cryptographic keys must never egress to public cloud AI endpoints (Gemini, Cloudflare Workers AI).
+   - Airgap filters must throw immediate security exceptions upon detection of sensitive payload markers.
+3. **Deterministic Quota Safety**:
+   - Gemini 2.5 Flash Free Tier limiter must strictly clamp at <= 14 RPM and <= 1,400 RPD (leaving safety margin below 15 RPM / 1,500 RPD).
+   - Cloudflare Workers AI limiter must strictly clamp at <= 10,000 Neurons/Day with UTC midnight rollover.
+4. **Dynamic Resource & Hardware Governance**:
+   - Apple Silicon Metal GPU (MLX/MPS) memory footprint during QLoRA training must stay within the <= 21.6 GB (90% unified memory cap) safety ceiling on a 24GB Host.
+   - GL.iNet GL-MT3600BE Router RAM must be monitored with sub-second responsiveness, enforcing <= 35 MB critical threshold with proactive `drop_caches` invocation.
+5. **Self-Contained & Isolated Test Execution**:
+   - Every test case creates and tears down its own isolated temporary workspaces, sandboxes, and file fixtures. Tests can run in any sequence or in parallel without cross-test pollution.
 
 ---
 
-## 2. Detailed Requirement & Test Matrix Breakdown
+## 2. Feature Inventory (Features F01 – F15)
 
-### Tier 1: Feature Coverage (Category-Partition Testing across F01–F16)
+The test matrix covers all 15 core features defined in `PROJECT.md`:
 
-Every feature in `PROJECT.md` is covered by exactly 5 distinct, rigorously verified test cases (80 total tests):
-
-| Feature ID | Feature Name & Scope | Minimum Tests | Implemented Tests | Primary Verification Objective |
+| Feature ID | Feature Name | Description | Target Subsystem / Interface | Milestone |
 | :--- | :--- | :--- | :--- | :--- |
-| **F01** | Frontend PWA Scaffolding & Manifest | ≥5 | 5 | Validates W3C Web App Manifest schema, standalone display mode, theme colors, icon sizes (>=192px), and ServiceWorker offline caching. |
-| **F02** | Three.js 3D Tatami & Kinematics Graph | ≥5 | 5 | Validates $\ge 955$ node OPML martial arts tree parsing, 3D coordinate spherical projection bounds, raycasting intersection hit detection, and WebGPU WGSL canvas coexistence. |
-| **F03** | TailwindCSS & Cross-Platform UI | ≥5 | 5 | Validates Tailwind theme tokens, WCAG 2.1 AA text contrast ($\ge 4.5:1$), UI component contrast ($\ge 3.0:1$), semantic ARIA tags, and responsive breakpoints. |
-| **F04** | Strict 100% Local Airgap Protection | ≥5 | 5 | Validates Cloudflare Worker zero-biometrics firewall, egress payload sanitization (detects and strips raw ECG/PPG/RR arrays), and 127.0.0.1 airgap binding. |
-| **F05** | Bicep ECG 512Hz Pan-Tompkins DSP | ≥5 | 5 | Validates Butterworth 0.5-40Hz bandpass filtering, 5-point derivative slope operator, squaring energy transform, 150ms MWI window, and adaptive dual-threshold R-peak detection. |
-| **F06** | Kamath 20% Artifact Filter & RMSSD | ≥5 | 5 | Validates Kamath 2004 clinical 20% RR filter ($\frac{\|RR_i - RR_{i-1}\|}{RR_{i-1}} \le 0.20$), ectopic burst interpolation, exact RMSSD math, and microsecond precision. |
-| **F07** | Pulse Transit Time (PTT) Continuous BP | ≥5 | 5 | Validates Hemodynamic PTT BP inversion formula ($SBP = 120 + 0.45(200-PTT) + 0.15(HR-70)$, $DBP = 80 + 0.25(200-PTT) + 0.08(HR-70)$, $MAP = \frac{SBP + 2DBP}{3}$), bounds, and null safety. |
-| **F08** | Overnight PPG Sleep Staging & Score | ≥5 | 5 | Validates 0-100 composite sleep score from nocturnal RMSSD + HR, recovery classification (Green/Yellow/Red), and Deep/REM/Light/Awake stage proportions summing to 100.0%. |
-| **F09** | Auto Workout Detect & LT1/LT2 / VO2max | ≥5 | 5 | Validates training zones by % HRmax, DFA-alpha1 LT1 (0.75) and LT2 (0.50) domains, and Uth-Sørensen VO2max estimation ($15.3 \times \frac{HR_{max}}{HR_{rest}}$). |
-| **F10** | Rule #0 Zero-Mock Enforcement | ≥5 | 5 | Validates clean `WAITING_FOR_SENSOR` status and null metrics when sensor is disconnected; enforces zero fake or hardcoded arrays. |
-| **F11** | SmolAgents Sandboxed Python Duel | ≥5 | 5 | Validates Hermes 3 Red exploit generation, LuCI Blue defense shield generation, isolated execution scope, and result structure preservation. |
-| **F12** | Canonical 4 Selectable Game Modes | ≥5 | 5 | Validates Classic, Python Duel, Genetic MoE Swarm, and Airgap vs. Cloud Chaos mode transitions, router prompt routing, and state persistence. |
-| **F13** | Telemetry HUD Tactical Objective Summaries | ≥5 | 5 | Validates `tactical_intent_summary` schema conformance (`red_faction_intent`, `blue_faction_intent`, `user_biological_state`, `combat_narrative`) in plain language. |
-| **F14** | Standalone & Embedded TUI Synchronization | ≥5 | 5 | Validates shared `smolagents_arena_state.json` file synchronization, Red/Blue graphical map panels, dynamic power bar, and 1-key interactive bindings. |
-| **F15** | 100% E2E Test Suite Pass | ≥5 | 5 | Validates test suite discovery, multi-tier execution harness, structured JSON export, exit code 0 enforcement, and fast-path storage health check. |
-| **F16** | Tier 5 Adversarial Coverage Hardening | ≥5 | 5 | Validates resilience to NaN/Inf floats, corrupted JSON state recovery, extreme clipping, rapid 50-cycle mode switching, and atomic LoRA dataset logging. |
-| **TOTAL** | **Tier 1 Feature Tests** | **≥80** | **80** | **Full Feature Coverage Across All 16 Features** |
+| **F01** | **Gemini Free Tier Rate Limiting** | Token-bucket rate limiter enforcing max 14 RPM / 1,400 RPD, exponential backoff on 429, and UTC midnight counter resets. | `06_scripts_and_tooling/automation/cloud_api_quota_manager.py` | M1 |
+| **F02** | **Cloudflare Workers AI Quota Tracking** | Daily budget tracker enforcing 10,000 Neurons/Day ceiling, neuron weight calculation per prompt, and UTC midnight reset. | `06_scripts_and_tooling/automation/cloud_api_quota_manager.py` | M1 |
+| **F03** | **Local Mesh Offline Inference Dispatch** | Dynamic workload router dispatching 24/7 unlimited local inference across Ports 8081–8086 with sub-second failover. | `06_scripts_and_tooling/automation/cloud_api_quota_manager.py` | M1 |
+| **F04** | **Daytime/Overnight Workload Schedule** | Dynamic scheduler switching between Daytime real-time telemetry mode and Overnight batch QLoRA/AST compilation mode (03:00 UTC window). | `06_scripts_and_tooling/automation/free_tier_ai_continuous_cron.py` | M1 |
+| **F05** | **Biometric Privacy Airgap** | 100% fail-closed security boundary preventing 512Hz ECG, PTT BP, and private tokens from leaking to public cloud endpoints. | `06_scripts_and_tooling/automation/cloud_api_quota_manager.py` | M1 |
+| **F06** | **Multi-Stream LoRA Harvesting** | Multi-channel data ingestion harvesting AI debates, AST code diffs, math proofs, and recovery actions into DPO/RLHF JSONL datasets. | `04_data_and_memory/tri_vault_sink.py` | M2 |
+| **F07** | **Daily >= 500 Verified Pair Growth** | Continuous dataset pipeline appending >= 500 verified instruction/DPO pairs daily to `ai_training_game_dataset.jsonl` with atomic locking. | `04_data_and_memory/tri_vault_sink.py` | M2 |
+| **F08** | **Nightly Metal GPU QLoRA Training** | Autonomous Apple Silicon Metal (MLX/MPS) QLoRA training harness with rank-32 adapters and dynamic RAM cap <= 21.6 GB. | `04_data_and_memory/fast_train_agentworld_mac.py` | M2 |
+| **F09** | **Obsidian Loss Curve Streaming** | Real-time markdown telemetry sink writing training loss curves, perplexity, and master Wikilinks to `obsidian_vault/04_ANALYTICS/`. | `04_data_and_memory/tri_vault_sink.py` | M2 |
+| **F10** | **Autonomous Model Weight Merging** | MergeKit DARE-TIES / SLERP recipe generator triggering model merges when debate confidence > 0.95, strictly preserving parent weights. | `00_core_infrastructure/self_healing_hub/src/autonomous_consensus_merger.py` | M2 |
+| **F11** | **Tri-Vault Storage Auto-Healing** | Storage watchdog verifying Obsidian Vault, PySpark Data Lake, and Git repository, repairing `Index.md`, purging stale locks, and checking >= 5 GB disk headroom. | `06_scripts_and_tooling/network/hybrid_router_mesh_governor.py` | M3 |
+| **F12** | **7 Core Daemons Supervision** | High-availability supervisor monitoring Ports 8080–8086, 18802, 50052, and 8088 with sub-second crash detection and auto-resurrection. | `06_scripts_and_tooling/network/hybrid_router_mesh_governor.py` | M3 |
+| **F13** | **GL.iNet Router RAM Governance** | Real-time `/proc/meminfo` parser enforcing <= 35 MB critical RAM threshold on GL-MT3600BE via automated SSH `drop_caches` execution. | `06_scripts_and_tooling/network/hybrid_router_mesh_governor.py` | M3 |
+| **F14** | **E2E Regression & Compliance Suite** | Master 4-tier test runner with CLI controls, timing breakdown, pass/fail reporting, and structured JSON output artifact generation. | `tests/e2e/run_all_e2e_tests.py` | M4 |
+| **F15** | **Adversarial Coverage Hardening** | Chaos injection, rate limit thrashing, corrupted JSONL payloads, NaN/Inf sensor values, and airgap breach attempt simulations. | `tests/e2e/test_free_tier_cron_pipeline.py` | M4 |
 
 ---
 
-## 3. Tier 2: Boundary Value Analysis & Corner Cases (80 Tests)
+## 3. Four-Tier Testing Methodology
 
-Validates extreme limits, mathematical edge conditions, corrupted formats, and hardware singularities (5 tests x 16 features = 80 tests):
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                   4-TIER OPAQUE-BOX E2E TESTING HIERARCHY                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TIER 1: Feature Coverage (>= 5 Tests / Feature | 75+ Total Tests)           │
+│   • Validates primary happy paths, interface contracts, and return types    │
+│   • Verifies F01 through F15 individual functional capabilities             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TIER 2: Boundary Value Analysis & Corner Cases (>= 5 Tests / Feature)       │
+│   • Edge conditions: 0-byte files, max quotas, clock skew, null inputs      │
+│   • Stress thresholds: 14th vs 15th RPM, 9,999 vs 10,001 Neurons, 34.9MB RAM│
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TIER 3: Cross-Feature Combinations (Pairwise & Combinatorial Matrix)         │
+│   • Multi-subsystem interactions (e.g. Quota Exhaustion + Local Mesh Failover)│
+│   • Airgap Guard + LoRA Harvester + Obsidian Sink multi-way synchronization │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TIER 4: Real-World Application Scenarios (>= 5 Full-Workflow E2E Tests)     │
+│   • Multi-step 24-hour simulation cycles                                    │
+│   • End-to-end operational life-cycles from sensor capture to model merge   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
-- **F01 Boundaries:** Empty manifest dict `{}`, empty icons list `[]`, missing file path, relative `start_url`, invalid display mode fallback.
-- **F02 Boundaries:** Single root OPML node, empty `<body>` (0 nodes), depth=15 coordinate scaling, raycasting complete miss, XML entity escaping (`&amp;`, `&lt;`).
-- **F03 Boundaries:** Maximal 21.0:1 contrast (#000 vs #FFF), minimal 1.0:1 contrast, 3-digit shorthand hex (#FFF), missing ARIA label fallback, ultra-narrow 320px viewport scaling.
-- **F04 Boundaries:** Large raw numeric arrays (>20 floats) heuristic catch, nested list of dicts with raw keys, mixed-case forbidden keys (`RAW_ECG`), scalar metrics allowed, empty dict safe pass.
-- **F05 Boundaries:** Isoelectric flatline (0.0uV) detects 0 peaks, buffer <0.5s returns empty arrays, DC bias (+10,000uV) baseline removal, 50Hz sample rate bound, 2048Hz sample rate bound.
-- **F06 Boundaries:** Single RR interval ($n=1$) returns 0 artifacts, zero/negative interval detection, constant identical intervals (RMSSD = 0.0ms), 100% corrupted alternating burst, $n=2$ minimal valid calculation.
-- **F07 Boundaries:** Zero/negative PTT returns None, prolonged PTT (1000ms) clamps SBP $\ge 80$, shortened PTT (10ms) clamps SBP $\le 220$, bradycardia HR=25 BPM, tachycardia HR=240 BPM.
-- **F08 Boundaries:** High stress sleep score clamped to 0, peak recovery sleep score clamped to 100, score 75 boundary transition, negative RMSSD clamped $\ge 0$, sleeping HR variation scaling.
-- **F09 Boundaries:** HR=0 BPM maps to Rest, HR > HRmax maps to Maximal Effort, series <4 points DFA returns None, constant series bounded [0.4, 1.5], hr_rest $\le 40$ clamped in VO2max.
-- **F10 Boundaries:** Empty JSON file string handling, non-dict JSON stream handling, missing telemetry file fallback, partial keys null fill, `connected=False` overrides stale telemetry.
-- **F11 Boundaries:** Empty code string execution, syntax error in agent code isolated, division by zero isolated, special characters in target node, complex nested dict return structure.
-- **F12 Boundaries:** Unrecognized mode string rejected, empty mode string rejected, None mode value rejected, unseen prompt domain routes to valid expert, routing weights normalized to 1.0.
-- **F13 Boundaries:** Missing intent key fails schema, empty whitespace intent string fails, non-string narrative type fails, unicode emojis (🔴, 🛡️) pass schema, 5,000 char long narrative preserved.
-- **F14 Boundaries:** Graphical map renders at HR=0, graphical map renders at HR=200, 0% Red power bar, 100% Red power bar, unknown 1-key input command ignored.
-- **F15 Boundaries:** Empty test case class handling, JSON report creates missing parent directories, simulated 0 GB disk space fails health check, missing vault fails health check, microsecond timer resolution.
-- **F16 Boundaries:** Signal with all NaN floats handled safely, signal with all Inf floats handled safely, corrupted binary state recovery, 64MB burst bounds, malformed JSONL line skipped.
+### Detailed Tier Breakdown:
 
----
+### Tier 1: Feature Coverage Requirements (>= 5 tests per feature)
+- **F01 (Gemini Limiter)**: Happy-path acquisition under 14 RPM; daily count increment under 1,400 RPD; token bucket replenishment; slot release; status serialization.
+- **F02 (Cloudflare Tracking)**: Neuron allocation under 10,000; multi-request budget decrement; daily usage calculation; remaining budget query; quota state save.
+- **F03 (Local Mesh Dispatch)**: Route request to Port 8081; round-robin across Ports 8081-8086; local synthesis engine execution; local fallback on cloud offline; port health validation.
+- **F04 (Daytime/Overnight Schedule)**: Daytime mode classification (10:00 UTC); Overnight mode classification (03:00 UTC); schedule state transition; cron cycle execution; status file generation.
+- **F05 (Biometric Airgap)**: Clean text passes airgap check; ECG waveform blocked; PTT BP blood pressure blocked; RR intervals blocked; private API credentials blocked.
+- **F06 (Multi-Stream LoRA Harvesting)**: AI debate harvesting; AST code diff harvesting; math proof harvesting; recovery action harvesting; DPO format schema validation.
+- **F07 (Daily >= 500 Pair Growth)**: Single pair atomic write; batch write of 50 pairs; duplicate detection; zero-mock validation filter; daily verified count query.
+- **F08 (Nightly Metal QLoRA Training)**: Hardware capability detection (M4 Pro); dynamic VRAM cap calculation (<= 21.6 GB); training command generation; MLX vs MPS backend selection; hyperparameter validation (rank=32, batch=2).
+- **F09 (Obsidian Loss Curve Streaming)**: Note creation in `obsidian_vault/04_ANALYTICS/`; YAML frontmatter verification; master Wikilinks formatting; loss curve table appending; atomic file replace.
+- **F10 (Autonomous Model Weight Merging)**: Consensus score calculation (> 0.95); MergeKit DARE-TIES recipe generation; SLERP recipe generation; parent model preservation invariant; offspring registration in leaderboard.
+- **F11 (Tri-Vault Storage Auto-Healing)**: Fast-path health verification; missing directory auto-creation; `Index.md` repair; stale `.git/index.lock` purge; disk headroom >= 5.0 GB evaluation.
+- **F12 (7 Core Daemons Supervision)**: Port 8080 health check; Port 8082 health check; Port 8084 health check; Port 8086 health check; Port 18802/50052/8088 matrix scan and resurrection trigger.
+- **F13 (GL.iNet Router RAM Governance)**: `/proc/meminfo` parsing; available RAM extraction; safe memory threshold evaluation (> 35 MB); critical memory threshold detection (<= 35 MB); `drop_caches` command formatting.
+- **F14 (E2E Regression Suite)**: Test runner discovery; single tier execution; all tier execution; JSON report serialization; exit code propagation.
+- **F15 (Adversarial Coverage Hardening)**: Chaos payload rejection; rapid rate-limit bursting; corrupted JSONL recovery; concurrent thread write safety; zero-mock rule enforcement.
 
-## 4. Tier 3: Cross-Feature Pairwise Combinations (16 Tests)
+### Tier 2: Boundary & Corner Cases Requirements (>= 5 tests per feature)
+- Boundary analysis at exact limits: 14 RPM threshold, 1,400th RPD, 10,000th neuron, 35.0 MB RAM boundary, 21.6 GB VRAM ceiling, 0.9500 vs 0.9501 consensus score, empty JSONL files, zero-byte configs, negative token counts, and leap-second / UTC midnight rollovers.
 
-Validates multi-module integration contracts across the front-facing and backend pipelines:
+### Tier 3: Cross-Feature Combinations (Pairwise Matrix)
+- Validates complex interactions between pairs and triples of subsystems:
+  1. *F01 + F03*: Gemini Quota Exhaustion triggers seamless failover to Local Mesh Ports 8081-8086.
+  2. *F02 + F04*: Cloudflare Neuron Budget depletion during Overnight mode shifts heavy AST jobs to Metal GPU.
+  3. *F05 + F06*: Biometric Airgap filter intercepts ECG telemetry before multi-stream LoRA harvesting.
+  4. *F07 + F08 + F09*: 500-pair dataset growth triggers Nightly Metal QLoRA training and streams loss to Obsidian Vault.
+  5. *F10 + F11*: Model merge creates offspring artifacts without violating Tri-Vault disk headroom constraints.
+  6. *F12 + F13*: Router RAM exhaustion triggers daemon restart and memory recovery concurrently.
+  7. *F01 + F02 + F15*: Concurrent rate limit thrashing across Gemini and Cloudflare maintains zero 429 errors.
 
-1. **P01 (F01 x F04):** Offline PWA ServiceWorker serves cached UI bundle while strict airgap firewall intercepts and strips outbound raw physiological arrays.
-2. **P02 (F02 x F03):** 955+ Node OPML Grappling Kinematics tree is colored using WCAG 2.1 AA compliant tokens (Guard: #38BDF8, Mount: #34D399, Back: #F87171).
-3. **P03 (F05 x F06):** 512Hz raw ECG stream processed through Pan-Tompkins QRS detector generates R-peaks that pass cleanly through the Kamath 20% clinical artifact filter.
-4. **P04 (F06 x F07):** Kamath-filtered RR intervals calculate RMSSD, which directly drives the PTT continuous blood pressure inversion formula.
-5. **P05 (F07 x F08):** Nocturnal PTT blood pressure dipping is evaluated alongside the overnight sleep staging and recovery score model.
-6. **P06 (F08 x F09):** Morning sleep recovery score (Green vs. Red) modulates aerobic workout readiness and LT1/LT2 training boundaries.
-7. **P07 (F09 x F10):** Real-time DFA-alpha1 workout detection cleanly transitions to `WAITING_FOR_SENSOR` null state upon sensor disconnection.
-8. **P08 (F11 x F12):** Autonomous SmolAgents Python code duel executes across all 4 canonical game modes without scope pollution.
-9. **P09 (F12 x F13):** Dynamic switching between the 4 game modes updates the Telemetry HUD Tactical Objective intent statements.
-10. **P10 (F13 x F14):** Shared arena state JSON synchronizes tactical intent summaries between the standalone TUI and embedded Screen.
-11. **P11 (F04 x F10):** Strict airgap egress firewall and Rule #0 zero-mock offline null states operate simultaneously without leakage.
-12. **P12 (F05 x F09):** Pan-Tompkins R-peak detection computes instantaneous heart rate, which feeds the Uth-Sørensen cardiorespiratory VO2max model.
-13. **P13 (F11 x F13):** Python code generated by Red and Blue Smolagents is embedded verbatim in the Tactical Objective Summary payload.
-14. **P14 (F12 x F14):** Mode 3 Genetic MoE AI Router weight mutations serialize and render dynamically on the TUI dashboard.
-15. **P15 (F06 x F08 x F13):** Tri-feature pipeline: Kamath RMSSD drives sleep score, which populates the HUD biological state string.
-16. **P16 (F07 x F09 x F11):** Tri-feature pipeline: Zone 4 workout intensity and elevated blood pressure modulate SmolAgents defense shield deployment.
-
----
-
-## 5. Tier 4: Real-World Application Workload Scenarios (8 Scenarios)
-
-Validates complex, multi-stage operational workflows from hardware ingestion to cloud isolation:
-
-- **Scenario 1:** Bicep 512Hz ECG Ingestion -> Pan-Tompkins QRS Detection -> Kamath 20% Artifact Filtering -> RMSSD Computation -> Zone 2 Aerobic Feedback.
-- **Scenario 2:** Overnight Wearable Sleep Tracking -> Staging Breakdown (Deep/REM/Light/Awake) -> Morning Autonomic Recovery Score -> 24/7 LoRA Training Dataset Emission.
-- **Scenario 3:** High-Intensity Cardiorespiratory Workout -> Real-time DFA-alpha1 LT1 (0.75) and LT2 (0.50) Tracking -> Hemodynamic PTT Blood Pressure Inversion.
-- **Scenario 4:** Real-time SmolAgents Autonomous Code Duel -> Hermes 3 Red Exploit & LuCI Blue Shield Generation -> TUI Tactical Intent Summary State Sync.
-- **Scenario 5:** Live Movesense Hardware Disconnection -> Instant Transition to `WAITING_FOR_SENSOR` Null State -> Verification of Zero Fabricated Arrays -> Reconnection Resumption.
-- **Scenario 6:** Mode 3 Genetic MoE AI Router Dynamic Evolution -> Multi-Specialist Prompt Routing across 5 Local Models -> Weight Normalization & Fitness Scoring.
-- **Scenario 7:** Full WebApp Frontend Lifecycle -> PWA Manifest & ServiceWorker Offline Caching -> 955+ OPML Kinematics Tree Raycasting -> WCAG 2.1 AA Tailwind UI Badging.
-- **Scenario 8:** Cloudflare Worker Zero-Biometric Egress Isolation -> Interception of Raw Physiological Data -> Redaction & Sanitization -> 100% Local Airgap Verification.
-
----
-
-## 6. Mathematical & Clinical Physiological Formulas
-
-### 6.1 Pan-Tompkins (1985) QRS Detection
-1. **Butterworth 4th-Order Bandpass (0.5–40 Hz):**
-   $$H(s) = \frac{s^2}{(s^2 + \sqrt{2}\omega_L s + \omega_L^2)(s^2 + \sqrt{2}\omega_H s + \omega_H^2)}$$
-2. **5-Point Derivative Filter:**
-   $$d[n] = \frac{1}{8T} (-x[n-2] - 2x[n-1] + 2x[n+1] + x[n+2])$$
-3. **Squaring Transform:**
-   $$s[n] = (d[n])^2$$
-4. **Moving Window Integrator (150ms window, $N = 0.150 \times f_s$):**
-   $$y[n] = \frac{1}{N} \sum_{i=0}^{N-1} s[n-i]$$
-
-### 6.2 Kamath et al. (2004) 20% Clinical RR Artifact Filter
-$$\frac{|RR_i - RR_{i-1}|}{RR_{i-1}} \le 0.20$$
-Beats exceeding 20% variation are flagged as ectopic artifacts and interpolated using surrounding baseline beats.
-
-### 6.3 Heart Rate Variability RMSSD
-$$RMSSD = \sqrt{\frac{1}{N-1} \sum_{i=1}^{N-1} (RR_{i+1} - RR_i)^2}$$
-
-### 6.4 Pulse Transit Time (PTT) Continuous Blood Pressure Inversion
-$$\begin{aligned}
-SBP &= \text{clamp}\left(120.0 + 0.45 \times (200 - PTT) + 0.15 \times (HR - 70), [80, 220]\right) \\
-DBP &= \text{clamp}\left(80.0 + 0.25 \times (200 - PTT) + 0.08 \times (HR - 70), [50, 130]\right) \\
-MAP &= \frac{SBP + 2 \times DBP}{3.0}
-\end{aligned}$$
-
-### 6.5 Cardiorespiratory Thresholds & Uth-Sørensen VO2max
-- **LT1 Aerobic Threshold:** $DFA\text{-}\alpha_1 = 0.75$ ($\approx HR_{rest} + 0.60 \times (HR_{max} - HR_{rest})$)
-- **LT2 Anaerobic Threshold:** $DFA\text{-}\alpha_1 = 0.50$ ($\approx HR_{rest} + 0.85 \times (HR_{max} - HR_{rest})$)
-- **Uth-Sørensen VO2max Estimation:**
-  $$VO_2\text{max} = 15.3 \times \frac{HR_{max}}{HR_{rest}} \quad [\text{ml/kg/min}]$$
+### Tier 4: Real-World Application Scenarios (5 Scenarios)
+1. **Scenario 1: 24-Hour Daytime/Overnight Autonomous Transition**
+   - Simulates continuous operation through daytime telemetry streaming, UTC midnight quota reset, and 03:00 UTC batch QLoRA compilation.
+2. **Scenario 2: Biometric Telemetry Airgap Breach Prevention**
+   - Ingests high-frequency 512Hz ECG and PTT blood pressure streams alongside synthetic coding prompts; verifies 100% airgap quarantine while allowing non-sensitive coding prompts to route to Cloudflare.
+3. **Scenario 3: Tri-Orchestrator AI Debate to DPO Harvester and Model Merge**
+   - Executes multi-agent debate, evaluates consensus > 0.95, synthesizes DPO pair, appends to dataset, triggers MergeKit SLERP synthesis, and streams loss to Obsidian Vault.
+4. **Scenario 4: Cascading Tri-Vault Degradation & Router RAM Self-Healing**
+   - Injects corrupt `Index.md`, stale git lock, degraded disk headroom, and low router RAM (31.2 MB); verifies automated self-healing recovers all invariants within a single cycle.
+5. **Scenario 5: Multi-Day 500-Pair Daily Growth & Continuous LoRA Distillation**
+   - Simulates 3 days of dataset growth (>= 500 pairs/day), verifies atomic locking, validates zero-mock compliance, and executes mock training run with memory cap checks.
 
 ---
 
-## 7. How to Run the Tests
+## 4. Test Runner Invocation & CLI Usage
+
+The master test runner is located at `tests/e2e/run_all_e2e_tests.py`.
 
 ```bash
-# Option 1: Run Master E2E Runner across All 4 Tiers (184 Tests)
+# 1. Run all 4 test tiers (Full E2E Suite)
 python3 tests/e2e/run_all_e2e_tests.py --all
 
-# Option 2: Run via Pytest
-python3 -m pytest tests/e2e/test_tier1_feature_coverage.py tests/e2e/test_tier2_boundary_corner.py tests/e2e/test_tier3_pairwise_combinations.py tests/e2e/test_tier4_real_world_scenarios.py -v
+# 2. Run a specific tier
+python3 tests/e2e/run_all_e2e_tests.py --tier 1
+python3 tests/e2e/run_all_e2e_tests.py --tier 2
+python3 tests/e2e/run_all_e2e_tests.py --tier 3
+python3 tests/e2e/run_all_e2e_tests.py --tier 4
 
-# Option 3: Run Specific Tiers via Standalone Runner
-python3 tests/e2e/run_all_e2e_tests.py --tier 1  # Tier 1: Feature Coverage (80 tests)
-python3 tests/e2e/run_all_e2e_tests.py --tier 2  # Tier 2: Boundary & Corner Cases (80 tests)
-python3 tests/e2e/run_all_e2e_tests.py --tier 3  # Tier 3: Pairwise Combinations (16 tests)
-python3 tests/e2e/run_all_e2e_tests.py --tier 4  # Tier 4: Real-World Scenarios (8 tests)
-
-# Option 4: Export Structured JSON Test Report
+# 3. Run with custom JSON report output
 python3 tests/e2e/run_all_e2e_tests.py --all --json-output reports/e2e_test_report.json
+
+# 4. Run directly via pytest
+pytest tests/e2e/test_free_tier_cron_pipeline.py -v
 ```
 
 ---
 
-## 8. Canonical Compliance Certifications
+## 5. Acceptance Thresholds & Quality Gates
 
-- ✅ **Rule #0 Zero-Mock Certification:** Zero fabricated or hardcoded metric arrays. When sensors are offline or disconnected, all interfaces return clean `WAITING_FOR_SENSOR` null states.
-- ✅ **Strict 100% Local Airgap Certification:** Outbound payloads through Cloudflare Workers and external endpoints are strictly inspected and redacted; 100% of raw 512Hz ECG, optical PPG, and blood pressure streams execute locally on Apple Silicon and mesh hardware (`127.0.0.1`).
-- ✅ **Mathematical & Clinical DSP Certification:** Pan-Tompkins 1985, Kamath 2004 20% RR filter, RMSSD, DFA-alpha1, Hughes-Bramwell PTT BP inversion, and Uth-Sørensen VO2max formulas are validated against exact mathematical definitions.
-- ✅ **Tri-Vault Persistence Certification:** Full synchronization verified across (1) Obsidian Vault health graphs, (2) PySpark 24/7 LoRA datasets, and (3) GitHub worktree.
+| Gate ID | Quality Gate Metric | Threshold | Invalidation Condition |
+| :--- | :--- | :--- | :--- |
+| **QG-01** | E2E Suite Pass Rate | **100.0%** (0 failures, 0 errors) | Any failing test case |
+| **QG-02** | Rule #0 Zero-Mock Compliance | **100.0%** verified data | Presence of unverified mock shortcuts |
+| **QG-03** | Biometric Airgap Privacy | **100.0%** fail-closed quarantine | Any biometric payload passed to cloud |
+| **QG-04** | Rate Limit Safety Margin | <= 14 RPM / <= 1,400 RPD | Request count exceeds safe quota |
+| **QG-05** | Hardware Memory Governance | Host <= 21.6 GB, Router > 35.0 MB | Out-of-bounds memory allocation |
+| **QG-06** | Total Suite Execution Time | <= 15.0 seconds | Slow, unoptimized test execution |

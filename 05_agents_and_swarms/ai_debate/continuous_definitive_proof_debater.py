@@ -26,6 +26,9 @@ import urllib.error
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 
+sys.path.insert(0, str(Path(__file__).parent))
+from free_api_proof_adjudicator import FreeApiProofAdjudicator
+
 REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
 PROOF_LEDGER = REPO_ROOT / "obsidian_vault/05_AI_SWARMS/DEFINITIVE_PROOF_DEBATE_LEDGER.md"
 PROOF_DATASET = REPO_ROOT / "04_data_and_memory/data/definitive_proof_training.jsonl"
@@ -69,6 +72,7 @@ class ContinuousDefinitiveProofDebater:
     def __init__(self):
         self.claim_index = 0
         self.total_claims_resolved = 0
+        self.adjudicator = FreeApiProofAdjudicator()
 
     def query_model(self, port: int, system_prompt: str, user_prompt: str) -> str:
         url = f"http://127.0.0.1:{port}/v1/chat/completions"
@@ -185,6 +189,9 @@ class ContinuousDefinitiveProofDebater:
                 f.write(f"    - *Proposer:* {t['proposer_argument']}\n")
                 f.write(f"    - *Skeptic:* {t['skeptic_counter']}\n")
                 f.write(f"    - *Empirical Evidence:* `{t['empirical_evidence']}`\n")
+
+        # 3. Add to Provisional Staging Pool for Free Cloud API Batch Review
+        self.adjudicator.add_to_pool(record)
 
     def run_continuous_proof_loop(self, max_claims: int = 4):
         for i in range(max_claims):

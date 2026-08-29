@@ -74,7 +74,7 @@ heal_rpc() {
     log "❌ RPC $node restart FAILED"
 
   # Log to LoRA dataset
-  echo "{\"timestamp_utc\":\"$TIMESTAMP\",\"action\":\"HEAL_RPC_${node^^}\",\"result\":\"RESTARTED\",\"nomad_agent\":\"mesh_rpc_petals_healer v1.0\"}" >> "$LORA_LOG"
+  echo "{\"timestamp_utc\":\"$TIMESTAMP\",\"instruction\":\"Nomad Governor: heal mesh RPC daemon\",\"input\":\"Heal mesh RPC node $node\",\"output\":\"Result: RESTARTED\",\"action\":\"HEAL_RPC_${node^^}\",\"result\":\"RESTARTED\",\"nomad_agent\":\"Multi-WAN Nomad Courier v3.0\"}" >> "$LORA_LOG"
 }
 
 # ─── PETALS HEALTH CHECK + RESTART ─────────────────────────────────────────
@@ -103,7 +103,7 @@ heal_petals() {
     echo started PID \$!
   " && log "✅ Petals $node restarted" || log "❌ Petals $node restart FAILED"
 
-  echo "{\"timestamp_utc\":\"$TIMESTAMP\",\"action\":\"HEAL_PETALS_${node^^}\",\"result\":\"RESTARTED\",\"nomad_agent\":\"mesh_rpc_petals_healer v1.0\"}" >> "$LORA_LOG"
+  echo "{\"timestamp_utc\":\"$TIMESTAMP\",\"instruction\":\"Nomad Governor: heal Petals distributed cluster\",\"input\":\"Heal Petals cluster node $node\",\"output\":\"Result: RESTARTED\",\"action\":\"HEAL_PETALS_${node^^}\",\"result\":\"RESTARTED\",\"nomad_agent\":\"Multi-WAN Nomad Courier v3.0\"}" >> "$LORA_LOG"
 }
 
 # ─── LOCAL MAC MINI HEAL ────────────────────────────────────────────────────
@@ -118,7 +118,7 @@ heal_local_models() {
     launchctl unload /Users/aaron/Library/LaunchAgents/ai.lauburu.unified.proxy.plist 2>/dev/null
     sleep 1
     launchctl load  /Users/aaron/Library/LaunchAgents/ai.lauburu.unified.proxy.plist 2>/dev/null
-    echo "{\"timestamp_utc\":\"$TIMESTAMP\",\"action\":\"RESTART_PROXY_8080\",\"result\":\"RELOADED\",\"nomad_agent\":\"mesh_rpc_petals_healer v1.0\"}" >> "$LORA_LOG"
+    echo "{\"timestamp_utc\":\"$TIMESTAMP\",\"instruction\":\"Nomad Governor: reload AI Proxy gateway\",\"input\":\"Reload LaunchAgent ai.lauburu.unified.proxy.plist\",\"output\":\"Result: RELOADED\",\"action\":\"RESTART_PROXY_8080\",\"result\":\"RELOADED\",\"nomad_agent\":\"Multi-WAN Nomad Courier v3.0\"}" >> "$LORA_LOG"
   fi
 
   # Check Qwen27B on :8085

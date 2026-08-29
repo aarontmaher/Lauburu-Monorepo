@@ -283,13 +283,15 @@ const FORBIDDEN_AIRGAP_PATHS = [
 ];
 
 const FORBIDDEN_BIOMETRIC_KEYS = new Set([
-  'ecg_samples', 'raw_ecg_mv', 'ecgsamples', 'movesense_packet',
-  'movesenseraw', 'raw_ppg_stream', 'raw_rr_stream', 'rr_intervals_raw',
-  'ptt_blood_pressure_raw', 'dfa_alpha1_raw', 'pan_tompkins_raw',
-  'raw_ecg_stream', 'movesense_gatt_raw', 'optical_ppg_raw',
+  'ecg_samples', 'raw_ecg_mv', 'ecgsamples', 'raw_ecg', 'ecg_microvolts', '512hz_ecg',
+  'movesense_packet', 'movesenseraw', 'movesense_raw', 'movesense_gatt', 'movesense_gatt_raw', 'movesense_hr_plus',
+  'raw_ppg', 'raw_ppg_stream', 'ppg_samples', 'optical_ppg_raw', 'raw_optical_stream',
+  'raw_rr', 'raw_rr_stream', 'rr_intervals_raw', 'unfiltered_rr_intervals', 'kamath_rr',
+  'ptt_blood_pressure', 'ptt_blood_pressure_raw', 'ptt_waveform', 'hemodynamics_bp',
+  'dfa_alpha1_raw', 'pan_tompkins_raw', 'pan_tompkins_qrs', 'raw_biometrics',
 ]);
 
-function checkAirgapViolation(request: Request, path: string): { blocked: boolean; reason?: string } {
+function checkAirgapViolation(request: Request, path: string, url: URL): { blocked: boolean; reason?: string } {
   for (const pattern of FORBIDDEN_AIRGAP_PATHS) {
     if (pattern.test(path)) {
       return {
@@ -299,12 +301,25 @@ function checkAirgapViolation(request: Request, path: string): { blocked: boolea
     }
   }
 
-  const biometricsHeader = request.headers.get('x-lauburu-biometrics-egress') || request.headers.get('x-raw-biometrics');
+  const biometricsHeader = request.headers.get('x-lauburu-biometrics-egress') ||
+    request.headers.get('x-raw-biometrics') ||
+    request.headers.get('x-movesense-telemetry') ||
+    request.headers.get('x-airgap-override') ||
+    request.headers.get('x-biometrics-egress');
   if (biometricsHeader) {
     return {
       blocked: true,
       reason: 'Forbidden header: 100% Local Airgap Violation. Raw biometrics egress header detected.',
     };
+  }
+
+  for (const [k, v] of url.searchParams.entries()) {
+    if (FORBIDDEN_BIOMETRIC_KEYS.has(k.toLowerCase()) || FORBIDDEN_BIOMETRIC_KEYS.has(v.toLowerCase())) {
+      return {
+        blocked: true,
+        reason: `Forbidden query param '${k}': 100% Local Airgap Violation. Raw physiological biometrics are forbidden in edge requests.`,
+      };
+    }
   }
 
   return { blocked: false };
@@ -379,7 +394,7 @@ export default {
     const path = url.pathname.replace(/\/+$/, '');
 
     // ── 100% Local Airgap Isolation Firewall Guard ─────────────────────
-    const airgapCheck = checkAirgapViolation(request, path);
+    const airgapCheck = checkAirgapViolation(request, path, url);
     if (airgapCheck.blocked) {
       return jsonResponse(
         {

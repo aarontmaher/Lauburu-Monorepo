@@ -1,103 +1,59 @@
-# Handoff Report: Milestone M1 — Flagship Movesense Physiological Readiness Suite
-
-**Agent:** `teamwork_preview_worker_m1`  
-**Working Directory:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/`  
-**Target:** Parent Orchestrator (`2a18102f-99e3-40e0-adec-7d45ce293833`)  
-**Type:** Hard Handoff (Milestone M1 Complete)  
-
----
+# Milestone 1 (M1) Handoff Report: Free-Tier AI Scheduling, Quota Governance & Airgapped Rate Limiter
 
 ## 1. Observation
-
-Direct code observations from codebase inspection, implementation, and test execution:
-
-1. **Modular Sub-Package Implementation (`01_apps/biometrics/movesense_hub`):**
-   - **`core/`**:
-     - `core/config.py`: Implements `MovesenseHubConfig` defining default device serial `261030002013`, MAC `C1DB5043-8F89-88E8-46A3-BBD4ED83FC88`, sample rates (512Hz ECG, 52Hz IMU), HR rest baseline ($58.0\,\text{BPM}$), and derived properties (`hr_max = 190`, `lt1_hr_estimate = 137`, `lt2_hr_estimate = 170`, `estimated_vo2max = 50.1`).
-     - `core/models.py`: Implements strict dataclass contracts: `RawEcgFrame`, `QrsDetectionResult`, `PttBloodPressure`, `SleepStagingResult`, `Zone2CardioResult`, `WorkoutState`, `ReadinessReport`, and thread-safe `BiometricsStateStore` with atomic listener dispatch, disk persistence (`movesense_readiness_live.json`), and 24/7 LoRA continuous dataset serialization.
-     - `core/__init__.py`: Exports all core models and configuration.
-   - **`dsp/`**:
-     - `dsp/pan_tompkins.py`: Implements `PanTompkinsQRSDetector` (512Hz/128Hz 4th-order zero-phase Butterworth bandpass $0.5-40\,\text{Hz}$, 5-point central derivative $d[n] = \frac{1}{8T}(-x[n-2]-2x[n-1]+2x[n+1]+x[n+2])$, squaring transform $s[n] = (d[n])^2$, 150ms Moving Window Integrator, dual-adaptive threshold peak detection with 200ms refractory lockout), `apply_kamath_artifact_filter` (Kamath 2004 20% clinical RR filter), microsecond `calculate_rmssd`, and vectorized `calculate_dfa_alpha1` ($s \in [4, 16]$ beats).
-     - `dsp/hemodynamics_bp.py`: Implements `calculate_hemodynamics_bp` and `ContinuousPttBloodPressureModel` computing empirical SBP, DBP, MAP from Pulse Transit Time (PTT) and Hughes-Bramwell arterial wave inversion.
-     - `dsp/sleep_scoring.py`: Implements `SleepStagingEngine`, `classify_sleep_epoch`, and `compute_overnight_sleep_analysis` providing 30s epoch staging (`AWAKE`, `DEEP`, `REM`, `LIGHT`), nocturnal dipping percentage, and composite 0–100 recovery scoring.
-     - `dsp/zone2_coaching.py`: Implements `Zone2CoachingEngine`, `classify_zone2_alignment`, `classify_workout_state`, and `compute_cardiorespiratory_thresholds` (Uth-Sørensen VO2max and HRR LT1/LT2 thresholds).
-     - `dsp/__init__.py`: Exports all DSP engines and top-level computation functions.
-   - **`transport/`**:
-     - `transport/bleak_daemon.py`: Implements `MovesenseBleakDaemon` with 128-bit Movesense MDS 2.0 GATT subscriptions (`34800001-7185-4d5d-b431-b30e393d9e05`), SIG Heart Rate Measurement (`0x2A37`), SIG Battery (`0x2A19`), Whiteboard binary ECG packet decoding, and Rule #0 `WAITING_FOR_SENSOR` state management.
-     - `transport/web_ble_bridge.py`: Implements `WebBleBridge` handling browser Web Bluetooth API payloads (`movesenseBleService.ts`), raw ECG frame ingestion, and WebSocket JSON streams.
-     - `transport/__init__.py`: Exports Bleak daemon, bridge, and binary decoders.
-   - **`presentation/`**:
-     - `presentation/tui.py`: Implements `MovesenseReadinessTUIApp` and `run_app()` featuring 4 responsive Hero metric cards (HR/RMSSD, PTT BP, Sleep Score, VO2max/Thresholds) and 2 Body panels (Zone 2 Coaching, 512Hz ECG DSP Diagnostics) with clean zero-mock `--` formatting when disconnected.
-     - `presentation/web_adapter.py`: Implements `WebTuiAdapter` for Port 8088 `/readiness` PTY execution, `OscilloscopePwaConnector` formatting 128Hz/512Hz sweep frames for `LiveEcgMonitor.tsx`, and `ReadinessRestAdapter`.
-     - `presentation/__init__.py`: Exports presentation applications and adapters.
-   - **Root Package & Symlinks**:
-     - `__init__.py`: Exports version `1.0.0`, subpackages, and top-level helpers: `create_hub()`, `process_raw_ecg()`, `get_readiness_contract()`.
-     - `01_apps/user_facing_and_scaling/movesense_readiness_hub`: Symlinked and configured with `__init__.py` for unified portfolio imports.
-     - `01_apps/biometrics/movesense_hub/README.md`: Comprehensive commercial-grade documentation.
-
-2. **Temporary Swap Files Cleanup:**
-   - All swap/lock artifacts (`.._..rd6P0j6bkY`, `.._..zQ7IFMc2ue`, `.._pyspark_biometrics_dsp.py.*`) were deleted from `01_apps/biometrics/movesense_hub`.
-
-3. **Test Execution Results:**
-   - `python3 -m pytest 03_biometrics_and_telemetry/tests/test_movesense_dsp_suite.py 03_biometrics_and_telemetry/tests/test_movesense_hub_modular_suite.py -v`
-   - **Result:** **49 passed in 0.92s** (100% pass rate).
-   - Package import verification:
-     - `python3 -c "import importlib; m = importlib.import_module('01_apps.biometrics.movesense_hub'); print(m.__version__)"` -> `1.0.0`
-     - `python3 -c "import importlib; m = importlib.import_module('01_apps.user_facing_and_scaling.movesense_readiness_hub'); print(m.__version__)"` -> `1.0.0`
-
----
+- **Authoritative Requirements**: Located at `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md` (§R1, §Acceptance Criteria) and `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md` (§Milestones M1, §Interface Contracts).
+- **Core Files Owned & Modified**:
+  1. `06_scripts_and_tooling/automation/cloud_api_quota_manager.py` (Lines 98–180, 315–430, 505–630, 1035–1085, 1220–1415)
+  2. `06_scripts_and_tooling/automation/free_tier_ai_continuous_cron.py` (Lines 1–320)
+  3. `00_core_infrastructure/cloudflare_worker/src/worker.ts` & `core/cloudflare-worker/src/worker.ts` (Lines 275–395)
+  4. `tests/test_m1_free_tier_scheduling_and_airgap.py` (13 comprehensive test cases)
+- **Verification Results**:
+  - `pytest tests/test_m1_free_tier_scheduling_and_airgap.py 06_scripts_and_tooling/tests/test_cloud_api_quota_manager.py tests/test_cloud_api_quota_manager_and_scaffolder.py tests/e2e/test_tier1_feature_coverage.py tests/e2e/test_tier2_boundary_corner.py tests/e2e/test_tier3_pairwise_combinations.py tests/e2e/test_tier4_real_world_scenarios.py`:
+    `237 passed, 12 warnings in 75.87s` (100% PASS across all 7 test suites).
+  - `npm run typecheck` in `00_core_infrastructure/cloudflare_worker`:
+    `tsc --noEmit` exited 0 with 0 errors.
+  - `python3 -m py_compile`: Clean compilation across all modified Python scripts.
 
 ## 2. Logic Chain
-
-1. **From Requirements & Architecture:** `ORIGINAL_REQUEST.md §R1` and `PROJECT.md §Code Layout` mandated modularizing `01_apps/biometrics/movesense_hub` into 4 distinct subpackages (`core/`, `dsp/`, `transport/`, `presentation/`).
-2. **From Modular DSP Implementation:** Extracting the mathematically validated algorithms (Pan-Tompkins 512Hz/128Hz, Kamath 2004 filter, microsecond RMSSD, DFA-alpha1, Hughes-Bramwell PTT BP, 30s sleep staging, and Uth-Sørensen VO2max) into `dsp/` allows isolated unit testing, clean dependency boundaries, and high reuse.
-3. **From Transport Ingestion:** Decoupling Bleak GATT hardware communication and Web Bluetooth bridging into `transport/` isolates asynchronous I/O and CoreBluetooth lifecycle from computational signal processing.
-4. **From Presentation Layer:** Packaging Textual TUI into `presentation/tui.py` and creating adapters for both the Web-TUI portal (`/readiness`) and Next.js Canvas Oscilloscope (`LiveEcgMonitor.tsx`) delivers multi-platform support while strictly preserving Rule #0 invariants.
-5. **From Comprehensive Testing:** Expanding test coverage with `test_movesense_hub_modular_suite.py` guarantees that all dataclass contracts, state store operations, filter algorithms, BLE packet decoders, and PWA adapters operate with 100% mathematical fidelity and zero mock data.
-
----
+- **Gemini Free Tier Rate Limiter**:
+  - `PROVIDER_CONFIGS["gemini_free"]` configured with `rpm_limit=14`, `daily_target_limit=1400`, `daily_limit=1500`.
+  - In `QuotaStateStore`, implemented atomic token-bucket calculation (`bucket_tokens`, `bucket_last_refill`, `refill_rate = 14.0 / 60.0`).
+  - Thread-safe and process-safe access protected via `fcntl.flock` on `.lock` files with UTC midnight reset.
+  - Exported `acquire_gemini_slot()` fulfilling the PROJECT.md Interface Contract.
+- **Cloudflare Workers AI Quota Tracking**:
+  - Configured `daily_neurons_limit=10000` with atomic tracking of `neurons_used_today`.
+  - On HTTP 429 response, sets `cooldown_until = time.time() + 60.0` and status `in_cooldown`.
+  - Exported `acquire_cloudflare_neurons(count: int = 1)` fulfilling the PROJECT.md Interface Contract.
+- **Local Mesh Ports 8081-8086 Failover**:
+  - `LocalMeshAdapter` configured across all 6 local endpoints (`8081` Hermes-3, `8082` Gemma-2, `8083` Llama-3.1, `8084` Qwen2.5-VL, `8085` Mistral-7B, `8086` DeepSeek-Coder).
+  - Uses fast non-blocking probe (`timeout=0.25s`) with fallback to local sovereign synthesis to prevent unhandled exceptions or stalls.
+- **Workload Scheduling (Daytime vs Overnight)**:
+  - In `free_tier_ai_continuous_cron.py`, `get_current_schedule_mode()` evaluates UTC hour.
+  - `DAYTIME_ACTIVE` (06:00 - 24:00 UTC): Prioritizes real-time physiological biometrics streaming (Movesense 512Hz ECG, Pan-Tompkins DSP, PTT BP) and local inference on Ports 8081-8086.
+  - `OVERNIGHT_OFF_PEAK` (00:00 - 06:00 UTC): Dispatches heavy synthetic AST scaffolding, unit test suites, and batch LoRA distillation jobs utilizing free cloud quotas.
+- **100% Fail-Closed Privacy Airgapping**:
+  - `is_airgapped_data()` recursively inspects strings, dicts, and arrays for 27+ forbidden physiological keys/patterns (`512hz_ecg`, `ecg_samples`, `raw_ecg_mv`, `movesense_gatt`, `ptt_blood_pressure`, `raw_ppg_stream`, `kamath_rr`, etc.) and monorepo secrets (`sk-`, `ghp_`, `whsec_`, `AKIA`, JWTs, private keys).
+  - In `WorkloadRouter.route_and_execute()`, any task containing biometrics or secrets immediately bypasses all cloud APIs and forces `local_mesh` (127.0.0.1).
+  - In `worker.ts`, `checkAirgapViolation()` inspects request paths, headers (`x-lauburu-biometrics-egress`, `x-raw-biometrics`), query parameters, and redacts outgoing responses.
 
 ## 3. Caveats
-
-- **Physical Bluetooth Hardware:** Real BLE GATT streaming requires physical sensor `Movesense 261030002013` to be in range and broadcasting; when sensor is absent or disconnected, the suite deterministically emits `WAITING_FOR_SENSOR` with null metrics in strict compliance with Rule #0.
-- **Bleak Library Availability:** In environments without native Bluetooth support or when `bleak` is not installed, the transport layer gracefully degrades to standby/Web Bluetooth bridge mode without raising unhandled exceptions.
-
----
+- Real hardware Movesense straps and live GL-MT3600BE routers may run in disconnected/offline developer modes; the code includes graceful fallbacks and offline state handling without compromising Rule #0.
+- No other caveats; all requirements have been tested and verified.
 
 ## 4. Conclusion
-
-Milestone M1 (Flagship Movesense Physiological Readiness Suite) is **100% commercially complete, modularized, tested, and Rule #0 compliant**:
-- Subpackages `core/`, `dsp/`, `transport/`, and `presentation/` are fully implemented and exported at version `1.0.0`.
-- All temporary swap files have been eliminated.
-- 49 unit and integration tests pass cleanly with 100% pass rate.
-- Monorepo portfolio paths (`01_apps/biometrics/movesense_hub` and `01_apps/user_facing_and_scaling/movesense_readiness_hub`) resolve cleanly.
-
----
+Milestone 1 (M1) is fully implemented, strictly airgapped, and passes all 237 opaque-box and unit tests with 0 errors.
 
 ## 5. Verification Method
-
-### 5.1 Run Test Suite
-```bash
-python3 -m pytest 03_biometrics_and_telemetry/tests/test_movesense_dsp_suite.py 03_biometrics_and_telemetry/tests/test_movesense_hub_modular_suite.py -v
-```
-**Expected Output:** `49 passed in < 1.5s`
-
-### 5.2 Verify Module Imports
-```bash
-python3 -c "import importlib; mhb = importlib.import_module('01_apps.biometrics.movesense_hub'); print('Movesense Hub Version:', mhb.__version__)"
-python3 -c "import importlib; mhb = importlib.import_module('01_apps.user_facing_and_scaling.movesense_readiness_hub'); print('User Facing Hub Version:', mhb.__version__)"
-```
-**Expected Output:** `1.0.0`
-
-### 5.3 Files to Inspect
-- `01_apps/biometrics/movesense_hub/__init__.py`
-- `01_apps/biometrics/movesense_hub/core/config.py`, `models.py`
-- `01_apps/biometrics/movesense_hub/dsp/pan_tompkins.py`, `hemodynamics_bp.py`, `sleep_scoring.py`, `zone2_coaching.py`
-- `01_apps/biometrics/movesense_hub/transport/bleak_daemon.py`, `web_ble_bridge.py`
-- `01_apps/biometrics/movesense_hub/presentation/tui.py`, `web_adapter.py`
-- `03_biometrics_and_telemetry/tests/test_movesense_hub_modular_suite.py`
-
-### 5.4 Invalidation Conditions
-- Any test failure in `test_movesense_dsp_suite.py` or `test_movesense_hub_modular_suite.py`.
-- Any simulated/mock biometric values emitted in disconnected state.
-- Any biometric health data transmitted outside local hardware.
+1. Run master pytest suite:
+   ```bash
+   pytest tests/test_m1_free_tier_scheduling_and_airgap.py 06_scripts_and_tooling/tests/test_cloud_api_quota_manager.py tests/test_cloud_api_quota_manager_and_scaffolder.py tests/e2e/test_tier1_feature_coverage.py tests/e2e/test_tier2_boundary_corner.py tests/e2e/test_tier3_pairwise_combinations.py tests/e2e/test_tier4_real_world_scenarios.py
+   ```
+2. Run Cloudflare Worker TypeScript typecheck:
+   ```bash
+   cd 00_core_infrastructure/cloudflare_worker && npm run typecheck
+   ```
+3. Run CLI benchmark & cron simulation:
+   ```bash
+   python3 06_scripts_and_tooling/automation/cloud_api_quota_manager.py --status
+   python3 06_scripts_and_tooling/automation/free_tier_ai_continuous_cron.py --single-run
+   ```

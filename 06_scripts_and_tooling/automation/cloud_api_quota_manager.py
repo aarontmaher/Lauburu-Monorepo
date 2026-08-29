@@ -40,6 +40,7 @@ import json
 import logging
 import os
 from pathlib import Path
+import re
 import shutil
 import socket
 import subprocess
@@ -106,19 +107,21 @@ PROVIDER_CONFIGS = {
     },
     "cloudflare_ai": {
         "daily_limit": 1000,
+        "daily_neurons_limit": 10000,
         "max_tokens": 4096,
         "default_tps": 120.0,
         "rpm_limit": 50,
         "is_local": False,
-        "description": "Cloudflare Workers AI Llama-3.1-8B Edge Inference",
+        "description": "Cloudflare Workers AI Llama-3.1-8B Edge Inference (10,000 Neurons/Day)",
     },
     "gemini_free": {
         "daily_limit": 1500,
+        "daily_target_limit": 1400,
         "max_tokens": 32768,
         "default_tps": 185.0,
-        "rpm_limit": 15,
+        "rpm_limit": 14,
         "is_local": False,
-        "description": "Google Gemini 2.0/1.5 Flash Free Tier Reasoning & Planning",
+        "description": "Google Gemini 2.5/2.0 Flash Free Tier Reasoning & Planning (14 RPM / 1,400 RPD)",
     },
     "local_mesh": {
         "daily_limit": 999999,
@@ -126,9 +129,69 @@ PROVIDER_CONFIGS = {
         "default_tps": 90.0,
         "rpm_limit": 1000,
         "is_local": True,
-        "description": "Lauburu 7-Layer Local AI Mesh Compute (Ports 8081-8084 / Sovereign Synthesis)",
+        "description": "Lauburu 7-Layer Local AI Mesh Compute (Ports 8081-8086 / Sovereign Synthesis)",
     },
 }
+
+# ---------------------------------------------------------------------------
+# Biometric Airgap & Secret Data Protection Rules
+# ---------------------------------------------------------------------------
+FORBIDDEN_BIOMETRIC_TERMS = [
+    "512hz_ecg", "ecg_samples", "raw_ecg", "raw_ecg_mv", "raw_ecg_stream", "ecg_microvolts",
+    "movesense_packet", "movesense_raw", "movesense_gatt", "movesense_hr_plus",
+    "raw_ppg", "raw_ppg_stream", "raw_optical_stream", "optical_ppg_raw", "ppg_samples",
+    "raw_rr", "raw_rr_stream", "rr_intervals_raw", "unfiltered_rr_intervals", "kamath_rr",
+    "ptt_blood_pressure", "ptt_blood_pressure_raw", "ptt_waveform", "hemodynamics_bp",
+    "dfa_alpha1_raw", "pan_tompkins_raw", "pan_tompkins_qrs", "raw_biometrics",
+]
+
+SECRET_PATTERNS = [
+    r"\b(?:api_key|secret_key|access_token|private_key|gemini_api_key|cloudflare_api_token|supabase_service_role_key|railway_token)\s*[:=]\s*['\"][^'\"]+['\"]",
+    r"eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]+",
+    r"sk-[A-Za-z0-9_\-]{20,}",
+    r"ghp_[A-Za-z0-9]{30,}",
+    r"gho_[A-Za-z0-9]{30,}",
+    r"ghs_[A-Za-z0-9]{30,}",
+    r"whsec_[A-Za-z0-9]{20,}",
+    r"AKIA[0-9A-Z]{16}",
+    r"xox[abprs]-[A-Za-z0-9\-]{10,}",
+    r"-----BEGIN (?:RSA )?PRIVATE KEY-----",
+]
+
+SECRET_REGEXES = [re.compile(p, re.IGNORECASE) for p in SECRET_PATTERNS]
+
+
+def is_airgapped_data(payload: Any) -> bool:
+    """
+    Interface Contract: 100% Fail-Closed Privacy Airgap Validator.
+    Returns True if payload contains raw physiological biometrics (ECG, PTT, Movesense, PPG)
+    or sensitive monorepo secrets / credentials.
+    """
+    if payload is None:
+        return False
+    if isinstance(payload, str):
+        p_lower = payload.lower()
+        for term in FORBIDDEN_BIOMETRIC_TERMS:
+            if term in p_lower:
+                return True
+        for regex in SECRET_REGEXES:
+            if regex.search(payload):
+                return True
+        return False
+    if isinstance(payload, dict):
+        for k, v in payload.items():
+            k_lower = str(k).lower()
+            if any(term in k_lower for term in FORBIDDEN_BIOMETRIC_TERMS):
+                return True
+            if is_airgapped_data(k) or is_airgapped_data(v):
+                return True
+            if isinstance(v, list) and len(v) > 20 and all(isinstance(x, (int, float)) for x in v):
+                if any(term in k_lower for term in ['ecg', 'ppg', 'pulse', 'lead', 'wave', 'rr', 'signal']):
+                    return True
+        return False
+    if isinstance(payload, (list, tuple, set)):
+        return any(is_airgapped_data(item) for item in payload)
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -251,12 +314,18 @@ class QuotaStateStore:
         }
 
         for provider, cfg in PROVIDER_CONFIGS.items():
+            rpm = cfg.get("rpm_limit", 15)
             state["providers"][provider] = {
                 "daily_limit": cfg["daily_limit"],
                 "used_today": 0,
                 "remaining_pct": 1.0,
                 "avg_latency_ms": 1000.0 / (cfg["default_tps"] / 100.0 + 0.1),
                 "max_tokens": cfg["max_tokens"],
+                "rpm_limit": rpm,
+                "bucket_tokens": float(rpm),
+                "bucket_last_refill": time.time(),
+                "neurons_limit": cfg.get("daily_neurons_limit", 10000),
+                "neurons_used_today": 0,
                 "consecutive_failures": 0,
                 "total_requests": 0,
                 "successful_requests": 0,
@@ -278,8 +347,14 @@ class QuotaStateStore:
 
             for provider, cfg in PROVIDER_CONFIGS.items():
                 p_data = state["providers"].setdefault(provider, {})
+                rpm = cfg.get("rpm_limit", 15)
                 p_data["daily_limit"] = cfg["daily_limit"]
                 p_data["used_today"] = 0
+                p_data["neurons_limit"] = cfg.get("daily_neurons_limit", 10000)
+                p_data["neurons_used_today"] = 0
+                p_data["rpm_limit"] = rpm
+                p_data["bucket_tokens"] = float(rpm)
+                p_data["bucket_last_refill"] = time.time()
                 p_data["remaining_pct"] = 1.0
                 p_data["consecutive_failures"] = 0
                 p_data["status"] = "healthy"
@@ -304,6 +379,7 @@ class QuotaStateStore:
 
             # Validate providers
             for provider, cfg in PROVIDER_CONFIGS.items():
+                rpm = cfg.get("rpm_limit", 15)
                 if provider not in data.get("providers", {}):
                     data.setdefault("providers", {})[provider] = {
                         "daily_limit": cfg["daily_limit"],
@@ -311,6 +387,11 @@ class QuotaStateStore:
                         "remaining_pct": 1.0,
                         "avg_latency_ms": 500.0,
                         "max_tokens": cfg["max_tokens"],
+                        "rpm_limit": rpm,
+                        "bucket_tokens": float(rpm),
+                        "bucket_last_refill": time.time(),
+                        "neurons_limit": cfg.get("daily_neurons_limit", 10000),
+                        "neurons_used_today": 0,
                         "consecutive_failures": 0,
                         "total_requests": 0,
                         "successful_requests": 0,
@@ -318,6 +399,18 @@ class QuotaStateStore:
                         "cooldown_until": 0.0,
                         "last_used_timestamp": 0.0,
                     }
+                else:
+                    p_data = data["providers"][provider]
+                    if "rpm_limit" not in p_data:
+                        p_data["rpm_limit"] = rpm
+                    if "bucket_tokens" not in p_data:
+                        p_data["bucket_tokens"] = float(rpm)
+                    if "bucket_last_refill" not in p_data:
+                        p_data["bucket_last_refill"] = time.time()
+                    if "neurons_limit" not in p_data:
+                        p_data["neurons_limit"] = cfg.get("daily_neurons_limit", 10000)
+                    if "neurons_used_today" not in p_data:
+                        p_data["neurons_used_today"] = 0
 
             if "metrics" not in data:
                 data["metrics"] = {
@@ -412,6 +505,134 @@ class QuotaStateStore:
                 p_data["status"] = "exhausted"
                 logger.warning(f"⚠️ Quota exhausted for {provider}: {used_today}/{daily_limit}")
                 return False
+
+    def can_acquire_gemini_slot(self) -> bool:
+        """
+        Non-mutating check: returns True if Gemini Free Tier is under 14 RPM and 1,400 RPD
+        and not in cooldown.
+        """
+        now = time.time()
+        with open(self.lock_file, "w", encoding="utf-8") as lock_f:
+            fcntl.flock(lock_f.fileno(), fcntl.LOCK_SH)
+            try:
+                state = self._read_state_unlocked()
+                p_data = state["providers"].get("gemini_free", {})
+                if p_data.get("status") == "in_cooldown" and now < p_data.get("cooldown_until", 0.0):
+                    return False
+                daily_limit = p_data.get("daily_limit", 1500)
+                daily_target = PROVIDER_CONFIGS.get("gemini_free", {}).get("daily_target_limit", 1400)
+                if p_data.get("used_today", 0) >= min(daily_limit, daily_target):
+                    return False
+                rpm = float(p_data.get("rpm_limit", 14))
+                elapsed = max(0.0, now - p_data.get("bucket_last_refill", now))
+                tokens = min(rpm, p_data.get("bucket_tokens", rpm) + (elapsed * (rpm / 60.0)))
+                return tokens >= 1.0
+            finally:
+                fcntl.flock(lock_f.fileno(), fcntl.LOCK_UN)
+
+    def acquire_gemini_slot(self) -> bool:
+        """
+        Atomic token-bucket rate limiter: enforces max 14 RPM and 1,400 RPD daily quota envelope.
+        Returns True and consumes 1 slot if permitted, False otherwise.
+        """
+        now = time.time()
+        with self._locked_state() as state:
+            p_data = state["providers"].get("gemini_free")
+            if not p_data:
+                return False
+
+            if p_data.get("status") == "in_cooldown" and now < p_data.get("cooldown_until", 0.0):
+                return False
+
+            daily_limit = p_data.get("daily_limit", 1500)
+            daily_target = PROVIDER_CONFIGS.get("gemini_free", {}).get("daily_target_limit", 1400)
+            effective_daily = min(daily_limit, daily_target)
+            if p_data.get("used_today", 0) >= effective_daily:
+                p_data["status"] = "exhausted"
+                p_data["remaining_pct"] = 0.0
+                return False
+
+            rpm = float(p_data.get("rpm_limit", 14))
+            capacity = rpm
+            refill_rate = capacity / 60.0
+
+            last_refill = p_data.get("bucket_last_refill", now)
+            current_tokens = p_data.get("bucket_tokens", capacity)
+
+            elapsed = max(0.0, now - last_refill)
+            tokens = min(capacity, current_tokens + (elapsed * refill_rate))
+
+            if tokens < 1.0:
+                p_data["bucket_tokens"] = tokens
+                p_data["bucket_last_refill"] = now
+                logger.debug(f"⏱️ Gemini Free Tier token bucket exhausted ({tokens:.2f}/{capacity} tokens available).")
+                return False
+
+            p_data["bucket_tokens"] = tokens - 1.0
+            p_data["bucket_last_refill"] = now
+            p_data["used_today"] = p_data.get("used_today", 0) + 1
+            p_data["total_requests"] = p_data.get("total_requests", 0) + 1
+            p_data["remaining_pct"] = max(0.0, 1.0 - (p_data["used_today"] / daily_limit))
+            p_data["last_used_timestamp"] = now
+            state["metrics"]["total_tasks_routed"] = state["metrics"].get("total_tasks_routed", 0) + 1
+            logger.info(
+                f"📊 Acquired Gemini slot. RPM bucket: {p_data['bucket_tokens']:.1f}/{capacity}, "
+                f"Daily: {p_data['used_today']}/{effective_daily}"
+            )
+            return True
+
+    def can_acquire_cloudflare_neurons(self, count: int = 1) -> bool:
+        """
+        Non-mutating check: returns True if Cloudflare Workers AI is under 10,000 Neurons/Day
+        and not in cooldown.
+        """
+        now = time.time()
+        with open(self.lock_file, "w", encoding="utf-8") as lock_f:
+            fcntl.flock(lock_f.fileno(), fcntl.LOCK_SH)
+            try:
+                state = self._read_state_unlocked()
+                p_data = state["providers"].get("cloudflare_ai", {})
+                if p_data.get("status") == "in_cooldown" and now < p_data.get("cooldown_until", 0.0):
+                    return False
+                limit = p_data.get("neurons_limit", 10000)
+                used = p_data.get("neurons_used_today", 0)
+                return used + count <= limit
+            finally:
+                fcntl.flock(lock_f.fileno(), fcntl.LOCK_UN)
+
+    def acquire_cloudflare_neurons(self, count: int = 1) -> bool:
+        """
+        Atomic quota check for Cloudflare Workers AI: tracks 10,000 Neurons/Day budget
+        with 60s cooldown on 429 errors.
+        Returns True and consumes neurons if permitted, False otherwise.
+        """
+        now = time.time()
+        with self._locked_state() as state:
+            p_data = state["providers"].get("cloudflare_ai")
+            if not p_data:
+                return False
+
+            if p_data.get("status") == "in_cooldown" and now < p_data.get("cooldown_until", 0.0):
+                return False
+
+            neurons_limit = p_data.get("neurons_limit", 10000)
+            neurons_used = p_data.get("neurons_used_today", 0)
+
+            if neurons_used + count > neurons_limit:
+                p_data["status"] = "exhausted"
+                p_data["remaining_pct"] = 0.0
+                return False
+
+            p_data["neurons_used_today"] = neurons_used + count
+            p_data["used_today"] = p_data.get("used_today", 0) + 1
+            p_data["total_requests"] = p_data.get("total_requests", 0) + 1
+            p_data["remaining_pct"] = max(0.0, 1.0 - (p_data["neurons_used_today"] / neurons_limit))
+            p_data["last_used_timestamp"] = now
+            state["metrics"]["total_tasks_routed"] = state["metrics"].get("total_tasks_routed", 0) + 1
+            logger.info(
+                f"📊 Acquired Cloudflare neurons ({count}). Used: {p_data['neurons_used_today']}/{neurons_limit}"
+            )
+            return True
 
     def record_outcome(
         self,
@@ -816,7 +1037,10 @@ class LocalMeshAdapter(BaseProviderAdapter):
         local_endpoints = [
             ("127.0.0.1", 8081, "http://127.0.0.1:8081/v1/chat/completions", "Nous-Hermes-3-8B"),
             ("127.0.0.1", 8082, "http://127.0.0.1:8082/v1/chat/completions", "Gemma-2-9B"),
+            ("127.0.0.1", 8083, "http://127.0.0.1:8083/v1/chat/completions", "Llama-3.1-8B-Biometrics"),
             ("127.0.0.1", 8084, "http://127.0.0.1:8084/v1/chat/completions", "Qwen2.5-VL-7B"),
+            ("127.0.0.1", 8085, "http://127.0.0.1:8085/v1/chat/completions", "Mistral-7B-Instruct"),
+            ("127.0.0.1", 8086, "http://127.0.0.1:8086/v1/chat/completions", "DeepSeek-Coder-6.7B"),
         ]
 
         for host, port, url, model_name in local_endpoints:
@@ -839,7 +1063,7 @@ class LocalMeshAdapter(BaseProviderAdapter):
                     headers={"Content-Type": "application/json"},
                     method="POST",
                 )
-                with urllib.request.urlopen(req, timeout=2.0) as resp:
+                with urllib.request.urlopen(req, timeout=0.25) as resp:
                     resp_data = json.loads(resp.read().decode("utf-8"))
                     latency_ms = (time.perf_counter() - start_t) * 1000.0
                     choices = resp_data.get("choices", [])
@@ -997,6 +1221,14 @@ class WorkloadRouter:
         }
 
     def route_and_execute(self, task: TaskRequest, force_provider: Optional[str] = None) -> TaskResult:
+        # 100% Fail-Closed Privacy Airgap & Secrets Guard
+        if is_airgapped_data(task.prompt) or is_airgapped_data(task.system_prompt) or is_airgapped_data(task.metadata):
+            logger.info(
+                f"🛡️ Airgap Sentinel Triggered on Task [{task.task_id}]: raw biometrics or secrets detected. "
+                f"Bypassing cloud APIs — forcing Local Mesh Sovereign Compute (127.0.0.1)."
+            )
+            return self._execute_local_mesh(task, airgap_forced=True)
+
         ranked_scores = self.heuristic_engine.rank_providers(task)
 
         if force_provider and force_provider in self.adapters:
@@ -1026,6 +1258,27 @@ class WorkloadRouter:
                     "provider": provider_name,
                     "success": False,
                     "error": candidate.disqualify_reason,
+                    "disqualified": True,
+                })
+                continue
+
+            # Check Token-Bucket / Daily Quota availability before invoking cloud APIs
+            if provider_name == "gemini_free" and not self.state_store.can_acquire_gemini_slot():
+                logger.info(f"  ⏭️ Skipping {provider_name}: 14 RPM / 1,400 RPD token-bucket rate limit reached.")
+                attempts.append({
+                    "provider": provider_name,
+                    "success": False,
+                    "error": "Gemini 14 RPM / 1,400 RPD rate limit reached",
+                    "disqualified": True,
+                })
+                continue
+
+            if provider_name == "cloudflare_ai" and not self.state_store.can_acquire_cloudflare_neurons(1):
+                logger.info(f"  ⏭️ Skipping {provider_name}: 10,000 Neurons/Day quota reached.")
+                attempts.append({
+                    "provider": provider_name,
+                    "success": False,
+                    "error": "Cloudflare Workers AI 10,000 Neurons/Day quota exhausted",
                     "disqualified": True,
                 })
                 continue
@@ -1090,6 +1343,15 @@ class WorkloadRouter:
                 })
 
         logger.info("🛡️ All candidate cloud APIs failed or exhausted. Executing sovereign Local Mesh fallback.")
+        return self._execute_local_mesh(task, airgap_forced=False, fallback_occurred=True, attempts=attempts)
+
+    def _execute_local_mesh(
+        self,
+        task: TaskRequest,
+        airgap_forced: bool = False,
+        fallback_occurred: bool = False,
+        attempts: Optional[List[Dict[str, Any]]] = None
+    ) -> TaskResult:
         self.state_store.record_local_fallback()
         local_adapter = self.adapters["local_mesh"]
         resp_text, p_tok, c_tok, latency = local_adapter.execute(task)
@@ -1105,8 +1367,8 @@ class WorkloadRouter:
             completion_tokens=c_tok,
             latency_ms=latency,
             success=True,
-            fallback_occurred=True,
-            attempts=attempts,
+            fallback_occurred=fallback_occurred or airgap_forced,
+            attempts=attempts or [],
         )
 
         saved = self.dataset_writer.append_distillation_pair(task, result)
@@ -1114,8 +1376,39 @@ class WorkloadRouter:
         if saved:
             self.state_store.record_lora_harvest(1)
 
-        logger.info(f"  ✅ Task [{task.task_id}] completed via local_mesh fallback ({latency:.1f}ms)")
+        logger.info(f"  ✅ Task [{task.task_id}] completed via local_mesh ({latency:.1f}ms, airgap={airgap_forced})")
         return result
+
+
+# ---------------------------------------------------------------------------
+# Module-Level Interface Contracts (PROJECT.md Compliance)
+# ---------------------------------------------------------------------------
+_GLOBAL_STATE_STORE: Optional[QuotaStateStore] = None
+
+
+def get_global_state_store(state_file: Optional[Path] = None) -> QuotaStateStore:
+    global _GLOBAL_STATE_STORE
+    if _GLOBAL_STATE_STORE is None or state_file is not None:
+        _GLOBAL_STATE_STORE = QuotaStateStore(state_file=state_file or DEFAULT_STATE_FILE)
+    return _GLOBAL_STATE_STORE
+
+
+def acquire_gemini_slot(state_store: Optional[QuotaStateStore] = None) -> bool:
+    """
+    PROJECT.md Contract: Returns True if under 14 RPM and 1,400 RPD token-bucket rate limiter,
+    atomically consuming 1 slot, else returns False (route to local mesh or wait).
+    """
+    store = state_store or get_global_state_store()
+    return store.acquire_gemini_slot()
+
+
+def acquire_cloudflare_neurons(count: int = 1, state_store: Optional[QuotaStateStore] = None) -> bool:
+    """
+    PROJECT.md Contract: Returns True if within 10,000 daily neuron budget,
+    atomically consuming neurons, else returns False.
+    """
+    store = state_store or get_global_state_store()
+    return store.acquire_cloudflare_neurons(count=count)
 
 
 # ---------------------------------------------------------------------------

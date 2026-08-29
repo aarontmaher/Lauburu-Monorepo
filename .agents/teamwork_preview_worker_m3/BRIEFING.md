@@ -1,51 +1,51 @@
-# BRIEFING — 2026-08-29T19:16:50+10:00
+# BRIEFING — 2026-08-29T12:31:00Z
 
 ## Mission
-Verify, implement, and package SmolAgents Autonomous Python Code-Execution for faction leaders in SmolAgentsArenaHub, ensure all 4 selectable game modes are active and switchable ('m'), verify plain-language active intent statements in Telemetry HUD, synchronize tui_live_arena_dev.py, and achieve 100% test pass rate across test suites.
+Implement Milestone 3 (M3) — Tri-Vault Storage Auto-Healing, 7 Core Daemons Supervision & Mesh Hardware Governance.
 
 ## 🔒 My Identity
-- Archetype: teamwork_preview_worker
+- Archetype: implementer, qa, specialist
 - Roles: implementer, qa, specialist
-- Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3
-- Original parent: 63ce69b0-c347-4525-baf9-09dde968f198
-- Milestone: M3 (SmolAgents Autonomous Arena & 4-Mode TUI Engine)
+- Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/
+- Original parent: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
+- Milestone: M3 (tri_vault_storage_healing_and_daemon_supervision)
 
 ## 🔒 Key Constraints
-- Scope: 05_agents_and_swarms/smolagents_engine/, 01_apps/canonical_port/tui/ (screens/live_arena_dev_screen.py, tui_live_arena_dev.py, canonical_tui.py)
-- Zero-mock truth enforcement (Rule #0)
-- Minimal change principle
-- Self-contained handoff report at completion
+- Zero simulated/mock data (Rule #0).
+- Sub-second daemon polling on Ports 8080-8086, 18802, 50052, 8088.
+- Router RAM governance strictly maintaining <=35MB critical threshold with automatic drop_caches invocation.
+- Continuous auto-healing of Tri-Vault storage layers (Obsidian, PySpark, Git).
 
 ## Current Parent
-- Conversation ID: 63ce69b0-c347-4525-baf9-09dde968f198
-- Updated: 2026-08-29T19:16:50+10:00
+- Conversation ID: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
+- Updated: 2026-08-29T12:31:00Z
 
 ## Task Summary
-- **What to build**: SmolAgents code execution arena integration, 4 canonical game modes with 'm' toggle, plain-language tactical intent statements in HUD, standalone TUI synchronization.
-- **Success criteria**: All 4 game modes active, SmolAgents execution verified with real Python sandbox tools, plain-language intent HUD, TUI unit tests and arena test suite passing 100%.
-- **Interface contracts**: PROJECT.md, survey report handoff.md.
+- **What to build**: Tri-Vault auto-healing routines, 7 Core Daemons supervision matrix, GL.iNet Router RAM watchdog, Self-Healing Hub WoL API (Port 18802), and Master Index.
+- **Success criteria**: 100% test pass on M3 suite, sub-second port probing, Router RAM <=35MB threshold cache drop, and valid Obsidian Wikilinks.
+- **Interface contracts**: PROJECT.md § M3 Interface Contracts
+
+## Key Decisions Made
+1. `06_scripts_and_tooling/network/daemon_manager.py`: Implemented full DaemonManager supervising Ports 8080-8086, 18802, 50052, 8088 with sub-second non-blocking socket probing, backoff restart rate-limiters, and Tri-Vault auto-healing.
+2. `06_scripts_and_tooling/network/nomad_courier_self_healer.py`: Implemented NomadAutonomousEngine supporting 6-tier mesh self-healing, TP-Link extender monitoring, Port 50052 RPC matrix probing, and strict LoRA action logging.
+3. `06_scripts_and_tooling/network/router_onboard_micro_governor.sh`: Hardened micro-POSIX script (<1.8MB RSS) with automatic `sync && echo 3 > /proc/sys/vm/drop_caches` when available RAM <= 35MB.
+4. `00_core_infrastructure/self_healing_hub.py`: Implemented HTTP REST API on Port 18802 with `/health`, `/api/status`, `/api/heal/trivault`, `/api/heal/daemons`, `/api/heal/router_ram`, and RFC 792 Wake-on-LAN magic packet dispatch.
+5. `obsidian_vault/Index.md`: Certified 13 canonical modules, core protocol Wikilinks, and zero broken links.
 
 ## Change Tracker
-- **Files modified**:
-  - `05_agents_and_swarms/smolagents_engine/smolagents_arena_hub.py`: Mode-specific Python code execution & plain-language intent generator.
-  - `01_apps/canonical_port/tui/tui_live_arena_dev.py`: Synchronized standalone TUI to import `SmolAgentsArenaHub`, 4 game modes with 'm', plain-language HUD.
-  - `01_apps/canonical_port/tui/screens/live_arena_dev_screen.py`: Event loop safety for Python 3.9, 4-mode logging.
-  - `05_agents_and_swarms/red_blue_arena/tests/test_smolagents_arena_m3.py`: Comprehensive 14-test M3 test suite covering code execution, 4 modes, HUD, and TUI sync.
-- **Build status**: PASS (100% across all suites)
-- **Pending issues**: None
-
-## Quality Status
-- **Build/test result**:
-  - `pytest 05_agents_and_swarms/red_blue_arena/tests/`: 132 passed, 4 skipped (100% pass)
-  - `python3 -m unittest tests/e2e/test_tier1_feature_coverage.py`: 80 passed (100% pass)
-  - `./01_apps/canonical_port/.venv/bin/pytest 05_agents_and_swarms/red_blue_arena/tests/test_smolagents_arena_m3.py`: 14 passed (100% pass)
-  - `./01_apps/canonical_port/.venv/bin/pytest 01_apps/canonical_port/tests/unit/test_smolagents_ecosystem.py`: 27 passed (100% pass)
-- **Lint status**: clean
-- **Tests added/modified**: `05_agents_and_swarms/red_blue_arena/tests/test_smolagents_arena_m3.py` (14 new unit tests)
-
-## Loaded Skills
-- polyglot-python-textual-specialist (/Users/aaron/.gemini/config/skills/polyglot-python-textual-specialist/SKILL.md)
-- polyglot-python-specialist (/Users/aaron/.gemini/config/skills/polyglot-python-specialist/SKILL.md)
+- **Files modified/created**:
+  - `06_scripts_and_tooling/network/daemon_manager.py`: Created master 7 Core Daemons supervisor & Tri-Vault guardian.
+  - `06_scripts_and_tooling/network/nomad_courier_self_healer.py`: Updated with NomadAutonomousEngine & multi-tier self-healer.
+  - `06_scripts_and_tooling/network/router_onboard_micro_governor.sh`: Hardened <=35MB memory watchdog & auto drop_caches.
+  - `00_core_infrastructure/self_healing_hub.py`: Created Port 18802 WoL REST API & Reflex Arc hub.
+  - `obsidian_vault/Index.md`: Master vault graph root with bidirectional canonical links.
+  - `obsidian_vault/SYSTEM_2_MAC_HOST_DAEMON.md`: Created System 2 Mac Host note.
+  - `obsidian_vault/TRI_ORCHESTRATOR_AI_DEBATE.md`: Created AI debate note.
+  - `tests/test_milestone3_daemon_and_hardware_governance.py`: Comprehensive 14-test M3 verification suite.
+- **Build status**: PASS (107/107 unit and integration tests passing).
 
 ## Artifact Index
-- handoff.md — self-contained handoff report
+- `.agents/teamwork_preview_worker_m3/DISPATCH.md` — Assignment log.
+- `.agents/teamwork_preview_worker_m3/BRIEFING.md` — Agent memory & state.
+- `.agents/teamwork_preview_worker_m3/progress.md` — Liveness & heartbeat log.
+- `.agents/teamwork_preview_worker_m3/handoff.md` — 5-component hard handoff report.

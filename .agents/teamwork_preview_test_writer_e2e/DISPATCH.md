@@ -1,30 +1,31 @@
-## 2026-08-29T09:09:14Z
+## 2026-08-29T12:06:04Z
 
 <USER_REQUEST>
-You are teamwork_preview_test_writer (E2E Test Architect & Writer).
-Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/
-Project root: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
-Read the original request at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
-Read the project specification at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
+You are teamwork_preview_test_writer_e2e.
+Your working directory is /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/.
+You MUST read the authoritative user request at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md and the master project specification at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md.
 
-MANDATORY INTEGRITY WARNING:
-DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
+MISSION: Design and implement the complete opaque-box E2E testing infrastructure and test suites covering all 15 features across Tiers 1-4.
 
-Scope & File Ownership:
-You own exclusively:
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/TEST_INFRA.md
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e/
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/TEST_READY.md
+Files owned:
+- `TEST_INFRA.md` (at project root)
+- `TEST_READY.md` (at project root)
+- `tests/e2e/test_free_tier_cron_pipeline.py`
+- `tests/e2e/run_all_e2e_tests.py`
 
-Tasks:
-1. Create TEST_INFRA.md following the E2E Test Infra template in PROJECT.md.
-2. Build an opaque-box, requirement-driven E2E test suite under tests/e2e/ covering all 16 features from PROJECT.md:
-   - Tier 1: Feature Coverage (>=5 tests per feature = >=80 test cases)
-   - Tier 2: Boundary & Corner Cases (>=5 tests per feature = >=80 test cases)
-   - Tier 3: Cross-Feature Combinations (Pairwise coverage >=16 test cases)
-   - Tier 4: Real-World Application Scenarios (>=8 application scenarios)
-3. Create the test runner (e.g. tests/e2e/run_all_e2e_tests.py or pytest suite) that executes all tiers and outputs structured results.
-4. Run the full test suite, verify that all test cases pass with exit code 0, and create TEST_READY.md with complete tier counts and checklist.
-5. Write your handoff report to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/handoff.md.
-6. Notify the orchestrator via send_message when complete.
+Requirements:
+1. Create `TEST_INFRA.md` documenting test philosophy, feature inventory (Features 1-15), 4-tier methodology, test runner invocation, and thresholds:
+   - Tier 1: Feature Coverage (>=5 per feature)
+   - Tier 2: Boundary & Corner Cases (>=5 per feature)
+   - Tier 3: Cross-Feature Combinations (pairwise coverage)
+   - Tier 4: Real-World Application Scenarios (>=5 realistic application flows)
+2. Implement comprehensive, opaque-box test suites in `tests/e2e/test_free_tier_cron_pipeline.py` testing:
+   - Gemini & Cloudflare rate limiting, 429 backoff, UTC midnight reset
+   - Airgapping fail-closed privacy for biometrics (ECG, PTT BP)
+   - LoRA dataset validation, >=500 pairs daily growth, zero-mock flags
+   - Metal GPU QLoRA training parameters, memory governance (<=21.6GB), Obsidian loss logging
+   - Tri-Vault auto-healing (Obsidian, PySpark, Git), daemon supervision matrix (8080-8086, 18802, 50052, 8088), router RAM <=35MB
+3. Update `tests/e2e/run_all_e2e_tests.py` to integrate and execute all new and existing test suites cleanly.
+4. Execute the test runner, verify all test suites pass, and create `TEST_READY.md` at project root with full coverage summary.
+5. Write your handoff to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/handoff.md` and notify orchestrator via send_message.
 </USER_REQUEST>

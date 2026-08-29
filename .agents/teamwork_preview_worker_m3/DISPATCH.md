@@ -1,25 +1,29 @@
-## 2026-08-29T09:09:14Z
-Task: Milestone M3 Specialist: SmolAgents Autonomous Arena & 4-Mode TUI Engine
-Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/
-Project root: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
-Read the original request at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
-Read the project specification at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
-Read survey report: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3/handoff.md
+## 2026-08-29T12:06:04Z
 
-Scope & File Ownership:
-You own exclusively:
-- 05_agents_and_swarms/smolagents_engine/
-- 01_apps/canonical_port/tui/ (screens/live_arena_dev_screen.py, tui_live_arena_dev.py, canonical_tui.py)
+<USER_REQUEST>
+You are teamwork_preview_worker_m3.
+Your working directory is /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/.
+You MUST read the authoritative user request at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md and the master project specification at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md.
 
-Tasks:
-1. Verify and package SmolAgents Autonomous Python Code-Execution for faction leaders (Hermes 3 / Qwen 7B Red Lead, LuCI OpenWrt / Qwen Coder Blue Lead) in 05_agents_and_swarms/smolagents_engine/smolagents_arena_hub.py.
-2. Ensure all 4 selectable game modes are active and switchable via key binding 'm':
-   1. EDGE_ORCHESTRATOR_CLASSIC
-   2. SMOLAGENTS_PYTHON_DUEL
-   3. MULTI_MODEL_AGI_SWARM
-   4. AIRGAP_MESH_VS_CLOUD_CHAOS
-3. Verify Telemetry HUD Tactical Objective Summaries render plain-language active intent statements ("What is each team currently trying to do?").
-4. Synchronize standalone 01_apps/canonical_port/tui/tui_live_arena_dev.py to import SmolAgentsArenaHub and support the 4 canonical game modes.
-5. Run the red/blue arena test suite (05_agents_and_swarms/red_blue_arena/tests/) and any TUI unit tests, verifying 100% pass rate.
-6. Write your handoff report to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/handoff.md.
-7. Notify the orchestrator via send_message when complete.
+MANDATORY INTEGRITY WARNING:
+DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
+
+MISSION: Implement Milestone 3 (M3) — Tri-Vault Storage Auto-Healing, Daemon Supervision & Mesh Hardware Governance.
+
+Files owned:
+- `06_scripts_and_tooling/network/daemon_manager.py`
+- `06_scripts_and_tooling/network/nomad_courier_self_healer.py`
+- `06_scripts_and_tooling/network/router_onboard_micro_governor.sh`
+- `00_core_infrastructure/self_healing_hub.py`
+- `obsidian_vault/Index.md`
+
+Requirements:
+1. Tri-Vault Storage Auto-Healing:
+   - Implement/verify continuous health verification and self-healing for Obsidian Vault (`obsidian_vault/Index.md` repair and Wikilinks validation), PySpark Lake, and Git worktree states (automatic `.git/index.lock` clearing and >=5.0GB disk headroom enforcement).
+2. 7 Core Daemons Supervision Matrix:
+   - Ensure `daemon_manager.py` and `nomad_courier_self_healer.py` supervise Ports 8080-8086, 18802 (Self-Healing Hub / WoL API), 50052 (Metal GPU RPC), 8088 (Supervisor) with sub-second health polling and automatic crash restart (maintaining >=99.99% uptime).
+3. GL.iNet Router RAM Watchdog:
+   - Ensure `router_onboard_micro_governor.sh` and `nomad_courier_self_healer.py` monitor GL-MT3600BE (`192.168.8.1`) memory, maintaining RAM strictly within <=35MB critical threshold with automatic `drop_caches` invocation.
+4. Run validation tests on affected files.
+5. Write your handoff to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/handoff.md` and notify orchestrator via send_message.
+</USER_REQUEST>

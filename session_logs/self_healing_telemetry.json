@@ -1,0 +1,96 @@
+{
+  "timestamp_utc": "2026-08-29T13:04:38Z",
+  "elapsed_seconds": 0.313,
+  "storage_tri_vault": {
+    "healthy": true,
+    "obsidian_vault_mounted": true,
+    "obsidian_index_valid": true,
+    "obsidian_index_healed": false,
+    "pyspark_lake_ready": true,
+    "lora_datasets_ready": true,
+    "disk_free_gb": 6.41,
+    "git_lock_cleared": false,
+    "status": "HEALTHY"
+  },
+  "daemon_supervision": {
+    "timestamp_utc": "2026-08-29T13:04:38Z",
+    "total_daemons": 11,
+    "online_daemons": 7,
+    "uptime_pct": 63.64,
+    "supervised_matrix": {
+      "ai_proxy_8080": {
+        "name": "AI Proxy Gateway",
+        "port": 8080,
+        "status": "ONLINE",
+        "icon": "\ud83c\udf10"
+      },
+      "llama_server_8081": {
+        "name": "Llama 3.1 8B Local Server",
+        "port": 8081,
+        "status": "RESTARTED",
+        "icon": "\ud83d\udd04"
+      },
+      "mistral_nemo_8082": {
+        "name": "Mistral Nemo 12B Server",
+        "port": 8082,
+        "status": "ONLINE",
+        "icon": "\u26a1"
+      },
+      "qwen_coder_8083": {
+        "name": "Qwen 2.5 Coder 7B Server",
+        "port": 8083,
+        "status": "ONLINE",
+        "icon": "\ud83d\udcbb"
+      },
+      "nemotron_70b_8084": {
+        "name": "Nemotron 70B Distributed Server",
+        "port": 8084,
+        "status": "ONLINE",
+        "icon": "\ud83d\udd25"
+      },
+      "qwen38_8085": {
+        "name": "Qwen 3.8 27B Server",
+        "port": 8085,
+        "status": "ONLINE",
+        "icon": "\ud83c\udfaf"
+      },
+      "edge_model_8086": {
+        "name": "DeepSeek / SmolLM Edge Server",
+        "port": 8086,
+        "status": "ONLINE",
+        "icon": "\ud83d\udcf1"
+      },
+      "self_healing_hub_18802": {
+        "name": "Self-Healing Hub & WoL REST API",
+        "port": 18802,
+        "status": "RESTARTED",
+        "icon": "\ud83d\udd04"
+      },
+      "llama_rpc_50052": {
+        "name": "llama.cpp Metal GPU RPC Server",
+        "port": 50052,
+        "status": "OFFLINE",
+        "icon": "\ud83d\udd34"
+      },
+      "daemon_supervisor_8088": {
+        "name": "Daemon Supervisor & Filer Service",
+        "port": 8088,
+        "status": "ONLINE",
+        "icon": "\ud83d\udc41\ufe0f"
+      },
+      "non_existent_test_daemon": {
+        "name": "Test Fake Daemon",
+        "port": 59996,
+        "status": "OFFLINE",
+        "icon": "\ud83d\udd34"
+      }
+    },
+    "actions_taken": [
+      "RESTART_llama_server_8081_PORT_8081",
+      "RESTART_self_healing_hub_18802_PORT_18802"
+    ],
+    "overall_status": "DEGRADED"
+  },
+  "router_ram_mb": 90.0,
+  "overall_health": "HEALTHY"
+}

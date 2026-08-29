@@ -1,22 +1,19 @@
-## 2026-08-29T09:32:51Z
-You are an Explorer agent for the Lauburu Monorepo application build-out.
-Your working directory is /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/
+## 2026-08-29T12:00:55Z
 
-Task:
-Investigate all applications across the monorepo to plan the two-domain structural separation and the Web-TUI portal.
-Read /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md.
+You are teamwork_preview_explorer_survey_2.
+Your working directory is /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/.
+You MUST read the authoritative user request at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md.
+
+MISSION: Survey LoRA dataset harvesting pipelines, AST code optimization datasets, and local training scripts to support Requirement R2.
+
 Investigate:
-1. User & Scaling Apps (target: 01_apps/user_facing_and_scaling/):
-   - Movesense Physiological Readiness Hub
-   - 3D Spatial Grappling (3,044 OPML Tree & MediaPipe 33-landmark skeleton)
-   - Gamified Combat Arena
-   - Headless Shopify Storefront ($9/$29/$99/mo tiers)
-2. Operator & Dev Cockpits (target: 01_apps/operator_and_dev/):
-   - Canonical Port 9-Screen NOC
-   - SmolAgents Python Duel Sandbox
-   - Standalone Qwen Math Trend Optimizer
-3. Web-TUI Portal on Port 8088:
-   - FastAPI + WebSocket architecture rendering all User Apps (/readiness, /grappling, /arena, /store) and Operator Cockpits (/canonical, /smolagents, /math) at 120 FPS.
-Map out existing files, missing components, directory restructuring requirements, and shared high-performance utilities.
-Write your analysis to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/analysis.md and your final report to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/handoff.md.
-Send a completion message when done.
+1. `/Users/aaron/DFS_UNIFIED/lora_datasets/` and `04_data_and_memory/` (e.g. `ai_training_game_dataset.jsonl`, DPO/RLHF pairs, AST crawlers).
+2. Existing dataset formats, schema, validation mechanisms (how >=500 verified pairs daily are harvested from debate transcripts, code diffs, math proofs, recovery actions).
+3. Existing TRL / PEFT / QLoRA training scripts on local Metal GPU (Apple Silicon M4 Pro / M4 Air) and how nightly training is scheduled and executed.
+4. Loss curve logging to Obsidian Vault and model weight compilation/merging.
+
+Write your detailed findings to:
+`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/survey_report.md`
+and write your structured handoff to:
+`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/handoff.md`.
+Notify orchestrator via send_message when complete.

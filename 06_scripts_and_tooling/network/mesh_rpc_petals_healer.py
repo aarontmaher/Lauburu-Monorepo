@@ -37,9 +37,12 @@ def log_lora(action: str, result: str):
     try:
         record = {
             "timestamp_utc": ts,
+            "instruction": "Nomad Governor: heal mesh RPC and petals daemon",
+            "input": f"Target action: {action}",
+            "output": f"Execution result: {result}",
             "action": action,
             "result": result,
-            "nomad_agent": "mesh_rpc_petals_healer_py v2.0"
+            "nomad_agent": "Multi-WAN Nomad Courier v3.0"
         }
         with open(LORA_LOG, "a") as f:
             f.write(json.dumps(record) + "\n")

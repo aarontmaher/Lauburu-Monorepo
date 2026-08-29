@@ -18,6 +18,9 @@ try:
         TriVaultSink,
         verify_zero_mock_compliance,
         check_storage_health,
+        append_verified_pair,
+        get_daily_verified_count,
+        stream_loss_to_obsidian,
         PRIMARY_LORA_DIR,
         SECONDARY_LORA_DIR,
         PRIMARY_OBSIDIAN_DIR,
@@ -31,6 +34,9 @@ except ImportError:
         TriVaultSink = tri_vault_sink_mod.TriVaultSink
         verify_zero_mock_compliance = tri_vault_sink_mod.verify_zero_mock_compliance
         check_storage_health = tri_vault_sink_mod.check_storage_health
+        append_verified_pair = getattr(tri_vault_sink_mod, "append_verified_pair", None)
+        get_daily_verified_count = getattr(tri_vault_sink_mod, "get_daily_verified_count", None)
+        stream_loss_to_obsidian = getattr(tri_vault_sink_mod, "stream_loss_to_obsidian", None)
         PRIMARY_LORA_DIR = tri_vault_sink_mod.PRIMARY_LORA_DIR
         SECONDARY_LORA_DIR = tri_vault_sink_mod.SECONDARY_LORA_DIR
         PRIMARY_OBSIDIAN_DIR = tri_vault_sink_mod.PRIMARY_OBSIDIAN_DIR
@@ -42,6 +48,9 @@ __all__ = [
     "TriVaultSink",
     "verify_zero_mock_compliance",
     "check_storage_health",
+    "append_verified_pair",
+    "get_daily_verified_count",
+    "stream_loss_to_obsidian",
     "PRIMARY_LORA_DIR",
     "SECONDARY_LORA_DIR",
     "PRIMARY_OBSIDIAN_DIR",

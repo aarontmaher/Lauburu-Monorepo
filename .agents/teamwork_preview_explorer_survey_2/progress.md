@@ -1,13 +1,13 @@
-# Progress Log - Explorer Survey 2
+# Progress — teamwork_preview_explorer_survey_2
 
-Last visited: 2026-08-29T19:36:30+10:00
+Last visited: 2026-08-29T12:05:20Z
 
-## Tasks
 - [x] Initialized DISPATCH.md and BRIEFING.md
-- [x] Read ORIGINAL_REQUEST.md and check storage health
-- [x] Survey 01_apps/ and monorepo files across User & Scaling Apps
-- [x] Survey Operator & Dev Cockpits
-- [x] Survey Web-TUI Portal & Port 8088 architecture
-- [x] Map existing files, gaps, restructuring plan, and shared utilities
-- [x] Synthesize findings in analysis.md
-- [ ] Complete 5-component handoff.md and send completion message
+- [x] Investigate `/Users/aaron/DFS_UNIFIED/lora_datasets/` and `04_data_and_memory/` (e.g. `ai_training_game_dataset.jsonl`, DPO/RLHF pairs, AST crawlers)
+- [x] Investigate dataset formats, schema, validation, harvest pipelines (debates, code diffs, math proofs, recovery)
+- [x] Investigate TRL / PEFT / QLoRA training scripts on local Metal GPU (M4 Pro / M4 Air) & nightly training schedule
+- [x] Investigate loss curve logging to Obsidian Vault and model weight compilation/merging
+- [x] Write `survey_report.md` at `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/survey_report.md`
+- [x] Write `handoff.md` at `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/handoff.md`
+- [x] Update BRIEFING.md and progress.md
+- [x] Send completion message to parent orchestrator via send_message

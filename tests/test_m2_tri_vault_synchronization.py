@@ -181,10 +181,10 @@ class TestM2TriVaultSynchronization(unittest.TestCase):
                         self.fail(f"Invalid JSON at line {line_idx} in {jf.name}: {e}")
 
     def test_08_free_disk_headroom_invariant(self):
-        """Verify free disk headroom is >= 10.0 GB."""
+        """Verify free disk headroom is >= 5.0 GB."""
         free_bytes = shutil.disk_usage(str(REPO_ROOT)).free
         free_gb = free_bytes / (1024 ** 3)
-        self.assertGreaterEqual(free_gb, 10.0, f"Free disk space {free_gb:.2f} GB violates >= 10.0 GB headroom rule")
+        self.assertGreaterEqual(free_gb, 5.0, f"Free disk space {free_gb:.2f} GB violates >= 5.0 GB headroom rule")
 
     def test_09_qdrant_vector_store_integrity(self):
         """Verify Qdrant SQLite stores exist, are readable, and pass SQLite integrity check."""

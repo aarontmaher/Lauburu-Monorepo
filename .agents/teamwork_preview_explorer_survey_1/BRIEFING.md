@@ -1,39 +1,44 @@
-# BRIEFING — 2026-08-29T09:37:00Z
+# BRIEFING — 2026-08-29T12:05:00Z
 
 ## Mission
-Investigate biometrics domain, existing Movesense hub code, BLE GATT specs, DSP algorithms (Pan-Tompkins 512Hz ECG, PTT BP, PPG sleep, workout classification, Zone 2 coaching), and map out architectural requirements across Lauburu monorepo.
+Survey existing cron architecture, rate limiting, and 7-daemon orchestration across the monorepo to support Requirement R1.
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: explorer, biometrics-dsp-analyst
+- Roles: investigator, synthesizer
 - Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1/
-- Original parent: 2a18102f-99e3-40e0-adec-7d45ce293833
-- Milestone: biometrics-movesense-survey
+- Original parent: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
+- Milestone: Survey Monorepo Daemon Architecture & Rate Limiting (R1)
 
 ## 🔒 Key Constraints
-- Read-only investigation — do NOT implement
-- Zero-Mock & Zero-Simulated Data rule enforcement
-- Strictly analyze existing files and specs, map missing components and standard architectures
+- Read-only investigation — do NOT implement changes directly to monorepo source files
+- Adhere strictly to Zero-Mock & Rule #0
+- Produce survey_report.md and handoff.md in working directory
+- Notify parent orchestrator via send_message upon completion
 
 ## Current Parent
-- Conversation ID: 2a18102f-99e3-40e0-adec-7d45ce293833
-- Updated: 2026-08-29T09:37:00Z
+- Conversation ID: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
+- Updated: 2026-08-29T12:05:00Z
 
 ## Investigation State
-- **Explored paths**: `01_apps/biometrics/`, `03_biometrics_and_telemetry/`, `01_apps/edge_compute_and_ai/lauburu_compute_hub/`, `01_apps/canonical_port/tui/`, `ORIGINAL_REQUEST.md`, `PROJECT.md`.
+- **Explored paths**:
+  - `00_core_infrastructure/` (`cloudflare_worker`, `self_healing_hub`, `docker`, `router_ai_daemon`)
+  - `06_scripts_and_tooling/` (`automation/cloud_api_quota_manager.py`, `free_tier_ai_continuous_cron.py`, `code_scaffold_daemon.py`, `network/nomad_courier_self_healer.py`, `autostart_installer.py`)
+  - `02_ai_models_and_inference/` (`lauburu_ai_proxy.py`, `llama_rpc_mesh/`, `dynamic_agi_fallback_router.py`)
+  - `03_biometrics_and_telemetry/` (`movesense_readiness_suite.py`, `pan_tompkins_dsp.py`)
+  - `04_data_and_memory/` (`data/cloud_api_quota_state.json`, `lora_datasets/`)
+  - `05_agents_and_swarms/` (`master_priority_automation_loop.py`)
+  - `07_docs_and_architecture/` (`core_docs/AI_SPEND_GATES_SPEC.md`, `AI_PROVIDER_STRATEGY.md`)
 - **Key findings**:
-  - DSP math for 512Hz Pan-Tompkins ECG, Kamath 2004 20% filter, RMSSD, DFA-alpha1, PTT BP inversion, sleep staging (0-100 score), auto workout classification, and VO2max is complete and verified (30/30 pytest tests passing).
-  - BLE GATT for Movesense `261030002013` (MDS 2.0 128-bit UUID `34800001-7185-4d5d-b431-b30e393d9e05` & standard SIG HRS `0x180D`/`0x2A37`) is implemented across Python Bleak, TypeScript Web Bluetooth, and Flutter BLoC.
-  - Multi-platform clients exist in Textual TUI (`movesense_readiness_tui.py`), Web-TUI (`serve_web_tui.py` at `/readiness`), Next.js 14 Canvas oscilloscope (`LiveEcgMonitor.tsx`), and Flutter mobile.
-  - Architectural gap: `01_apps/biometrics/movesense_hub` needs modular packaging into `core/`, `dsp/`, `presentation/`, and `transport/`.
-- **Unexplored areas**: None for this survey milestone.
+  - Autostart configs for macOS launchd, Linux systemd, and Android Termux boot already defined.
+  - 7 core monorepo daemons (Ports 8080-8086, 18802, 50052, 8088) mapped to specific tasks, models, and restart procedures.
+  - Multi-factor quota manager (`cloud_api_quota_manager.py`) with `fcntl.flock` atomic locking and midnight reset prevents 429 errors on Gemini (15 RPM / 1,500 RPD) and Cloudflare Workers AI (10k Neurons).
+  - Strict 100% local airgap firewall blocks raw 512Hz ECG, PTT BP, and Movesense GATT telemetry from cloud egress.
+- **Unexplored areas**: None. All 5 mission objectives surveyed and documented.
 
 ## Key Decisions Made
-- Completed full codebase mapping and mathematical verification.
-- Produced detailed `analysis.md` and 5-component `handoff.md`.
+- Completed comprehensive `survey_report.md` and 5-component `handoff.md`.
 
 ## Artifact Index
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1/DISPATCH.md — Incoming user request
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1/progress.md — Liveness heartbeat and step tracking
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1/analysis.md — Comprehensive biometrics & Movesense analysis
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1/handoff.md — 5-component handoff report
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1/survey_report.md` — Detailed technical survey report
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1/handoff.md` — Formal 5-component handoff report

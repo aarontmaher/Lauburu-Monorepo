@@ -1,27 +1,29 @@
-## 2026-08-29T09:09:14Z
-
-You are teamwork_preview_worker (Milestone M2 Specialist: Movesense Physiological Readiness & 512Hz DSP).
-Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m2/
-Project root: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
-Read the original request at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
-Read the project specification at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
-Read survey report: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/handoff.md
+## 2026-08-29T12:06:04Z
+You are teamwork_preview_worker_m2.
+Your working directory is /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m2/.
+You MUST read the authoritative user request at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md and the master project specification at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md.
 
 MANDATORY INTEGRITY WARNING:
 DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
 
-Scope & File Ownership:
-You own exclusively:
-- 03_biometrics_and_telemetry/ (pan_tompkins_dsp.py, movesense_readiness_suite.py, tests/)
-- tests/test_adversarial_challenger2_movesense_dsp.py
+MISSION: Implement Milestone 2 (M2) — Continuous Multi-Model LoRA Dataset Harvesting & Nightly Metal GPU Training Pipeline.
 
-Tasks:
-1. Ensure 512Hz Pan-Tompkins QRS detection, Kamath 2004 20% clinical RR artifact filter, microsecond precision R-R intervals, and RMSSD calculation are robust and mathematically complete.
-2. Ensure Pulse Transit Time (PTT) Continuous Blood Pressure hemodynamic inversion model (SBP, DBP, MAP) is verified.
-3. Ensure Overnight PPG Sleep Staging (Deep/REM/Light/Awake) & 0-100 recovery score calculate accurately.
-4. Ensure Auto Workout Detection & Cardiorespiratory Thresholds (LT1 @ DFA-a1=0.75, LT2 @ DFA-a1=0.50, VO2max = 15.3 * HR_max / HR_rest) function in real-time.
-5. Enforce Rule #0: Strictly zero simulated or fake arrays; offline hardware returns clean null / WAITING_FOR_SENSOR states.
-6. Fix outdated import paths in tests/test_adversarial_challenger2_movesense_dsp.py.
-7. Create and run a dedicated standalone unit & integration test suite under 03_biometrics_and_telemetry/tests/test_movesense_dsp_suite.py and ensure 100% pass rate.
-8. Write your handoff report to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m2/handoff.md.
-9. Notify the orchestrator via send_message when complete.
+Files owned:
+- `04_data_and_memory/tri_vault_sink.py`
+- `04_data_and_memory/continuous_training_debate_daemon.py`
+- `04_data_and_memory/ai_training_game_dataset.jsonl`
+- `06_scripts_and_tooling/training/fast_train_agentworld_mac.py`
+- `06_scripts_and_tooling/training/autonomous_consensus_merger.py`
+
+Requirements:
+1. Multi-Stream Harvesting:
+   - Enhance continuous harvesting daemons (`continuous_training_debate_daemon.py`, `tri_vault_sink.py`) to extract verified DPO/RLHF instruction pairs from debate transcripts, code diffs, math proofs, and recovery actions.
+   - Enforce Rule #0 Zero-Mock validation: `truth_verified == True`, `truth_compliance_pct == 100.0`, zero dummy arrays.
+   - Guarantee continuous dataset aggregation of >=500 verified pairs daily into `04_data_and_memory/ai_training_game_dataset.jsonl`.
+2. Nightly Apple Metal GPU QLoRA Distillation:
+   - Ensure `fast_train_agentworld_mac.py` / `agentworld_train.py` executes PEFT/TRL QLoRA training on Apple Silicon Metal (MPS / MLX) with dynamic RAM governance capping VRAM at <=21.6GB (90% limit).
+3. Loss Curve Streaming & Model Merging:
+   - Stream loss curves and training metrics directly to Obsidian Vault (`obsidian_vault/04_ANALYTICS/QWEN_MATH_CONTINUOUS_OPTIMIZATION_TRENDS_2026.md`).
+   - Validate MergeKit consensus weight merging (`autonomous_consensus_merger.py`) preserving parent model weights.
+4. Run validation tests on affected files.
+5. Write your handoff to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m2/handoff.md` and notify orchestrator via send_message.
