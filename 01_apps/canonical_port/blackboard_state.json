@@ -1,6 +1,6 @@
 {
   "version": "3.0.0-CANONICAL",
-  "timestamp": "2026-08-29T17:43:46.666691",
+  "timestamp": "2026-08-29T17:48:50.063388",
   "source_node": "L1_Mac_Node",
   "provenance": {
     "agent_id": "teamwork_preview_worker_m2",
@@ -155,10 +155,10 @@
       "upload_mbps": 48.0,
       "responsiveness_rpm": 1420,
       "latency_ms": 12.4,
-      "timestamp": "17:43:43",
+      "timestamp": "17:48:47",
       "command": "/usr/bin/networkQuality -c -M 5",
       "cycle_seconds": 300,
-      "last_tested_iso": "2026-08-29T17:43:43.987697"
+      "last_tested_iso": "2026-08-29T17:48:47.337430"
     },
     "ssh_fleet": [
       {
@@ -168,8 +168,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 0.78,
-        "last_auth_iso": "2026-08-29T17:43:45.045834"
+        "latency_ms": 0.63,
+        "last_auth_iso": "2026-08-29T17:48:48.415870"
       },
       {
         "node_id": "L2",
@@ -178,8 +178,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_9.6",
         "key_type": "ssh-ed25519",
-        "latency_ms": 73.06,
-        "last_auth_iso": "2026-08-29T17:43:45.106632"
+        "latency_ms": 22.79,
+        "last_auth_iso": "2026-08-29T17:48:48.400937"
       },
       {
         "node_id": "L3",
@@ -188,8 +188,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18",
         "key_type": "ssh-ed25519",
-        "latency_ms": 61.55,
-        "last_auth_iso": "2026-08-29T17:43:45.253759"
+        "latency_ms": 22.01,
+        "last_auth_iso": "2026-08-29T17:48:48.583213"
       },
       {
         "node_id": "L4",
@@ -208,8 +208,8 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 55.62,
-        "last_auth_iso": "2026-08-29T17:43:45.207492"
+        "latency_ms": 7.54,
+        "last_auth_iso": "2026-08-29T17:48:48.460394"
       },
       {
         "node_id": "L6",
@@ -228,18 +228,18 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.4",
         "key_type": "ssh-ed25519",
-        "latency_ms": 51.92,
-        "last_auth_iso": "2026-08-29T17:43:45.181249"
+        "latency_ms": 11.02,
+        "last_auth_iso": "2026-08-29T17:48:48.494620"
       },
       {
         "node_id": "GW",
         "host": "192.168.8.1",
         "port": 22,
         "status": "OPEN",
-        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u0014d=\u0006\u0006$yU\nc6\u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
+        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u0014S\"\tUTu9\u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
         "key_type": "ssh-ed25519",
-        "latency_ms": 30.37,
-        "last_auth_iso": "2026-08-29T17:43:45.050427"
+        "latency_ms": 3.39,
+        "last_auth_iso": "2026-08-29T17:48:48.392345"
       }
     ],
     "ewma_alpha": 0.35,
@@ -543,7 +543,7 @@
       "pyspark_lake": {
         "path": "/Users/aaron/DFS_UNIFIED/lora_datasets",
         "healthy": true,
-        "free_headroom_gb": 12.03,
+        "free_headroom_gb": 12.01,
         "headroom_threshold_gb": 10.0,
         "qdrant_reachable": true
       },
@@ -675,7 +675,7 @@
         "layers_sharded": 0,
         "vram_used_gb": 0.0,
         "status": "ACTIVE",
-        "latency_ms": 6.84
+        "latency_ms": 6.0
       },
       {
         "node_name": "Linux Tablet",
@@ -2088,25 +2088,6 @@
       "merchandise_catalog_synced": true,
       "cart_pipeline_healthy": true
     }
-  },
-  "wearables_telemetry": {
-    "source": "open_wearables_aggregator",
-    "timestamp": null,
-    "user_id": "default_user",
-    "providers": [
-      "whoop",
-      "garmin",
-      "oura",
-      "apple_health"
-    ],
-    "recovery_score": 88.0,
-    "sleep_score": 91.0,
-    "strain_score": 14.2,
-    "resting_hr_bpm": 48.5,
-    "hrv_rmssd_ms": 64.2,
-    "steps": 12450,
-    "calories": 840,
-    "rule_0_zero_mock": true
   },
   "voice_coding": {
     "status": "IDLE",
