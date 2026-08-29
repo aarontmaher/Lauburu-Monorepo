@@ -1,26 +1,17 @@
-# Execution Plan — Open-Source Mesh & AGI Optimization Strategy
+# Master Orchestration Plan: Lauburu Mesh Multi-Transport, Statistical Benchmarking, Chaos & Qwen Math
 
-## Objective
-Develop a production-grade, zero-mock, fully self-hosted strategy replacing Tailscale (with Headscale) and Speedify (with OpenMPTCProuter) across the Lauburu 7-layer mesh topology, alongside an autonomous HuggingFace TRL/DPO reward-modeling optimization loop and a multi-agent debate competition protocol crowning a single permanent AGI victor. Deliverable: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/open_source_mesh/open_source_mesh_strategy.md`.
+## Objectives
+1. WireGuard & Speedify Multipath Integration: MTU 9000 jumbo frames over TB4, authenticated WireGuard, 36/44-byte binary packet-striping with CRC32 integrity check.
+2. Multi-Device Matrix & Continuous Statistical Benchmarking: 7 physical nodes matrix, Student-t/Gaussian 95% CIs (Margin of Error < 3.0%, n >= 30), progressive chaos fault injection with sub-second failover.
+3. Qwen Math Specialist AI & LoRA Protocol: Standard/abliterated Qwen Math serving on Port 8086, cascade routing in Unified AI Proxy 8080, continuous 24/7 LoRA dataset formatting in 04_data_and_memory synchronized to Obsidian Vault.
+4. Rule #0 Compliance: 100% real socket connections, zero simulated data.
 
-## Phase 0: Survey & Technical Reconnaissance (3 Parallel Explorers)
-- **Explorer 1 (Mesh & Networking Specialist)**: Map 7-layer hardware topology (L1-L7, GW), Tailscale & Speedify dependencies, Headscale control plane specs (DERP, ACLs, namespaces, macOS/Linux/Android WireGuard configs), and OpenMPTCProuter VPS/client aggregation parameters (MPTCP, Shadowsocks-libev/V2Ray/Glorytun, GL.iNet router firmware).
-- **Explorer 2 (AI Optimization & TRL/DPO Specialist)**: Map 02_ai_models_and_inference & 04_data_and_memory pipelines, HuggingFace TRL DPO/PPO reward modeling mechanisms, PEFT LoRA adapter injection for routing policies, and zero-mock dataset structures.
-- **Explorer 3 (Swarm Debate & Governance Specialist)**: Map 05_agents_and_swarms Tri-Orchestrator debate rules, ELO scoring matrices, consensus arbitration, and deterministic state transitions for crowning a permanent AGI victor.
-
-## Phase 1: Architecture Synthesis & PROJECT.md
-- Merge survey findings into `PROJECT.md` with explicit feature inventory, milestone boundaries, interface contracts, and code/file layout.
-
-## Phase 2: Execution & Verification of Milestones
-- **Milestone 1 (R1)**: 7-Layer Open-Source Mesh Architecture (Headscale + OpenMPTCProuter + Port TUI Telemetry).
-- **Milestone 2 (R2)**: Autonomous HuggingFace TRL / DPO Reward Optimization Engine.
-- **Milestone 3 (R3)**: Tri-Orchestrator Multi-Agent Debate Competition & AGI Crown Protocol.
-- **Milestone 4 (Acceptance)**: Production Deliverable Generation (`open_source_mesh_strategy.md`) with zero-mock concrete configs, routing tables, systemd unit files, Android termux scripts, HuggingFace Python code, and debate state machine.
-
-## Phase 3: Review, Challenge & Forensic Integrity Audit
-- 2 Independent Reviewers (correctness, complete coverage of requirements, operational viability).
-- 2 Challengers (adversarial stress-testing of failovers, MPTCP bottlenecks, reward hacking in DPO, debate ties).
-- 1 Forensic Auditor (integrity check: zero-mock, authentic IPs/configs/APIs, no facade logic).
-
-## Phase 4: Final Handoff
-- Generate final soft/hard handoff and message parent.
+## Phase Breakdown
+- Phase 0: Survey & Specification Extraction (3 parallel explorers/spec miners)
+- Phase 1: PROJECT.md & TEST_INFRA.md formulation
+- Phase 2: Milestone Execution & Verification (Explorer -> Worker -> Reviewer -> Challenger -> Auditor)
+  - Milestone 1: WireGuard & Speedify Multipath Implementation & Jumbo Frames
+  - Milestone 2: Multi-Device Matrix & Continuous Statistical Benchmarking Daemon with Chaos Injection
+  - Milestone 3: Qwen Math Serving (:8086), Proxy Routing (:8080) & LoRA Pipeline
+- Phase 3: E2E Dual-Track Verification & Adversarial Stress Testing
+- Phase 4: Final Synthesis & Human Reporting

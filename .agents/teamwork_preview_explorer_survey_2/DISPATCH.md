@@ -1,18 +1,12 @@
-## 2026-08-27T13:17:15Z
+## 2026-08-29T06:35:05Z
+You are Explorer 2 for the Lauburu Mesh Survey phase.
 
-<USER_REQUEST>
-You are teamwork_preview_explorer_survey_2.
-Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2
-Your parent is: teamwork_preview_orchestrator_16 (conversation ID: 768913e7-e140-4a9c-aaad-4dd6832be4be)
+Mission:
+Investigate the codebase for Requirement R2: Continuous Multi-Device Server Rotation, Combinations Matrix, Statistical Benchmarking, and Chaos Fault Injection.
+Examine existing benchmarking tools, daemons, test suites, and scripts in /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo.
 
-MANDATORY: Read the original user request at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md and /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_16/DISPATCH.md before starting work.
-
-MISSION:
-Investigate and design the Red vs. Blue dynamic overseen by Abliterated Llama 70B (Devil's Advocate). Specifically analyze:
-1. Blue team components & implementation strategies for Python Textual, Go Bubbletea, Rust Ratatui.
-2. Red team attack vectors (memory leaks, UI overflows, extreme/fuzzed inputs, rapid resize, async event storms).
-3. Abliterated Llama 70B chaos injection rules, arbitration, and logging mechanics into .sandbox_training/tui_mastery.
-
-Output your findings to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2/handoff.md following standard handoff structure.
-When complete, notify parent via send_message.
-</USER_REQUEST>
+Key areas to investigate:
+1. 7 physical nodes topology, definitions, IPs, and connectivity matrix (Mac Mini Host, MacBook Pro M1 Max, Linux Head Node AMD 5700U, Android Termux / Pixel 10 Pro, etc.).
+2. Statistical benchmarking implementation for Student-t / Gaussian 95% Confidence Intervals ($\bar{x} \pm 1.96 \cdot \frac{s}{\sqrt{n}}$), sample gathering ($n \ge 30$), and Margin of Error $< 3.0\%$ calculation.
+3. Progressive chaos network degradation tooling (Mild $+25\text{ms}$, Heavy Jitter $+85\text{ms} \pm 15\text{ms}$, Severed Link $+350\text{ms}$) and real-time multi-path failover logic.
+4. Exact file paths, existing tools, gaps, and recommendations.

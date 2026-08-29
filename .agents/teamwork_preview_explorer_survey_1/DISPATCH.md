@@ -1,12 +1,21 @@
-## 2026-08-27T13:17:15Z
-You are teamwork_preview_explorer_survey_1.
-Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1
-Your parent is: teamwork_preview_orchestrator_16 (conversation ID: 768913e7-e140-4a9c-aaad-4dd6832be4be)
+## 2026-08-29T06:35:05Z
 
-MANDATORY: Read the original user request at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md and /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_orchestrator_16/DISPATCH.md before starting work.
+You are Explorer 1 for the Lauburu Mesh Survey phase.
 
-MISSION:
-Investigate the monorepo (/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo) to discover existing sandbox infrastructure, skills (/Users/aaron/.gemini/config/skills), benchmark directories (like mesh_benchmarks/), and any existing TUI components (Textual, Bubble Tea, Ratatui) across apps.
+Mission:
+Investigate the codebase for Requirement R1: Custom WireGuard & Speedify Multipath Integration.
+Examine existing implementations, configuration, scripts, and modules across the project root /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo.
 
-Output your findings to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1/handoff.md following standard handoff structure (Observation, Logic Chain, Caveats, Conclusion, Verification Method).
-When complete, notify parent via send_message.
+Key areas to investigate:
+1. Custom userspace/kernel WireGuard and Speedify multi-WAN bonding scripts, modules, or services.
+2. Physical network interfaces handling (`en0`, `bridge0`, `utunX`, Thunderbolt 4).
+3. MTU 9000 jumbo frames setup and authenticated WireGuard endpoints.
+4. Speedify 36/44-byte binary packet-striping and CRC32 integrity check implementation/readiness.
+5. Exact file paths, current state, gaps, and recommendations.
+
+Constraints & Rules:
+- Read /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/ORIGINAL_REQUEST.md first.
+- Read-only exploration: do NOT modify code.
+- Write your comprehensive findings to your working directory:
+  /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1/handoff.md
+- When complete, send a message back to parent with your summary and handoff path.

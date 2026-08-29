@@ -1,148 +1,201 @@
-# Continuous AI Arena — 4-Tier Test Infrastructure Specification
+# Multi-Transport Mesh, Statistical Confidence & Qwen Math Specialist — 4-Tier Test Infrastructure Specification
 
-**Document Version:** 1.0.0-CANONICAL  
-**Date:** 2026-08-28T02:47:32Z  
-**Author:** `sub_orch_e2e_tests` (E2E Testing Track Orchestrator)  
-**Target System:** Continuous AI Arena (`PROJECT.md`)  
+**Document Version:** 2.0.0-CANONICAL  
+**Date:** 2026-08-29T16:35:09Z  
+**Author:** E2E Testing Specialist / Test Lead  
+**Target System:** Lauburu Mesh Ecosystem (`ORIGINAL_REQUEST.md`)  
 **Repository:** `Lauburu-Monorepo`  
-**Test Suite:** `tests/e2e/test_continuous_ai_arena_4tier.py`  
-**Master Runner:** `tests/e2e/run_all_e2e.py`
+**Test Suite:** `tests/e2e/test_mesh_routing_and_benchmarks_e2e.py`  
+**Master Runner:** `tests/e2e/run_mesh_e2e.py` / `python3 -m pytest tests/e2e/test_mesh_routing_and_benchmarks_e2e.py`
 
 ---
 
 ## 1. Executive Test Strategy & Opaque-Box Methodology
 
-The **Continuous AI Arena** transforms every user-facing AI interaction into an automated, continuous tournament trial across the Lauburu mesh ecosystem. To guarantee 100% reliability, zero-latency user degradation, cryptographic state integrity, and zero-mock truth adherence, this test infrastructure enforces a strict **4-Tier Opaque-Box Validation Hierarchy**.
+The **Lauburu Mesh Ecosystem** deploys, routes, and continuously benchmarks multi-transport data pipelines across a 7-node heterogeneous physical mesh (Mac Mini M4 Pro, MacBook Pro M1 Max, Linux Head Node AMD 5700U, Linux Tablet, MacBook Air M4, Google Pixel 10 Pro XL, Samsung Galaxy S20+). Transports include Thunderbolt 4 PCIe DMA (MTU 9000), Custom WireGuard Mesh VPN, Speedify Multi-WAN Channel Bonding with 44-byte binary SPDF packet striping, and Local LAN/Wi-Fi 7.
+
+To ensure 100% empirical validity, zero simulated or synthetic data (Rule #0 compliance), strict mathematical verification of Student-t confidence intervals, seamless sub-second chaos recovery, and flawless Qwen Math algorithm model integration, this test infrastructure enforces an exhaustive **4-Tier Opaque-Box Testing Hierarchy**.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                              CONTINUOUS AI ARENA — 4-TIER TEST HIERARCHY                               │
+│                        LAUBURU MESH & QWEN MATH SPECIALIST — 4-TIER TEST HIERARCHY                     │
 ├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                                        │
-│   TIER 1: FEATURE COVERAGE (≥5 Tests per Feature F1–F9 = 52 Total Tests)                               │
-│   • F1: Dynamic Champion Resolution (Leaderboard mtime debounce, fallback defaults, schema parsing)    │
-│   • F2: Synchronous Champion Dispatch (0ms latency overhead, token streaming, engine routing)          │
-│   • F3: Asynchronous Challenger Queue (Bounded queue, async background worker, lifecycle safety)       │
-│   • F4: Challenger Pool Cycler (Local 100B+/70B & Cloud API rotation, timeout isolation)               │
-│   • F5: Tri-Orchestrator Blind Grading (Alias anonymization, 3-judge panel, pairwise scoring)          │
-│   • F6: Dynamic Multi-Factor ELO Engine (6-factor K-factor, atomic POSIX save, Schema v7 validation)   │
-│   • F7: Dynamic Champion Promotion (Challenger victory ELO overtakes, subsequent prompt auto-swap)     │
-│   • F8: Tri-Vault Logging (DPO/SFT JSONL dataset sinks, Obsidian Markdown debate transcripts)          │
-│   • F9: Zero-Mock Validation & Truth Compliance (Rule #0 compliance, zero synthetic data arrays)       │
+│   TIER 1: FEATURE COVERAGE (≥5 Tests per Feature across R1, R2, R3 = 18 Total Tests)                   │
+│   • F1: Custom WireGuard & Speedify Multipath Integration (36/44-byte SPDF framing, CRC32, MTU 9000,   │
+│         real socket probes on en0/bridge0/utunX/lo0, subflow reassembly)                               │
+│   • F2: Continuous Multi-Device Server Rotation & Statistical Matrix Benchmarking (7-node rotation,    │
+│         continuous sampling n≥30, Student-t & Gaussian 95% CIs, MoE < 3.0% convergence, throughput)    │
+│   • F3: Qwen Math Algorithm Specialist AI & AI Proxy Integration (Port 8086 routing, Port 8080 cascade │
+│         matrix, mathematical packet striping weight optimization, 24/7 LoRA JSONL lake, Obsidian sync) │
 │                                                                                                        │
-│   TIER 2: BOUNDARY VALUE & CORNER CASES (8 Tests)                                                      │
-│   • 15.0s challenger timeout handling without champion degradation                                     │
-│   • Offline local model / RPC socket drop detection                                                    │
-│   • Cloud API HTTP 429 rate limit cooldown and retry suppression                                       │
-│   • Empty, whitespace-only, and ultra-long prompt ingestion                                            │
-│   • Corrupted / missing leaderboard JSON auto-healing and fallback                                     │
-│   • Extreme ELO divergence (|R_A - R_B| ≥ 1000) logistic boundary clamping                             │
+│   TIER 2: BOUNDARY VALUE & CORNER CASES (≥5 Tests per Feature = 18 Total Tests)                        │
+│   • R1 Boundaries: MTU boundary validation (1280 WireGuard min up to 9000 TB4 Jumbo frame limit),      │
+│         0-byte and 1-byte payloads, corrupted CRC32 frame rejection, abrupt mid-stream socket drop    │
+│   • R2 Boundaries: 0-sample/1-sample/2-sample CI edge cases (division-by-zero guards), high-sample     │
+│         convergence (n≥1000), extreme variance/outliers, 99% packet loss & jitter spikes, zero-RTT     │
+│   • R3 Boundaries: Offline Port 8086 proxy fallback, malformed mathematical prompt handling, extreme   │
+│         context window handling, corrupted LoRA JSONL line recovery, missing Obsidian note auto-create │
 │                                                                                                        │
 │   TIER 3: CROSS-FEATURE COMBINATIONS & INTEGRATION (6 Tests)                                           │
-│   • Complete match outcomes: Champion Win, Challenger Win, and Draw                                    │
-│   • Full ELO flip triggering dynamic champion swap on the immediate next prompt                        │
-│   • Multi-factor K-factor dynamics under heavy concurrent load (varying size/token/consensus factors)  │
-│   • Concurrent multi-trial queue processing with atomic disk write lock contention                     │
+│   • C1: WireGuard failover during live matrix benchmark execution (TB4 -> WireGuard -> loopback)       │
+│   • C2: Live benchmark telemetry ingested into Qwen Math prompt for optimal link weight computation    │
+│   • C3: Qwen Math algorithmic optimization output driving Speedify subflow link weights in real-time   │
+│   • C4: Progressive chaos injection (Mild +25ms, Heavy +85ms±15ms, Severed +350ms) during rotation     │
+│         triggering automated LoRA dataset logging                                                      │
+│   • C5: AI Proxy cascade failover when Port 8086 is offline, seamlessly maintaining route resolution   │
+│   • C6: Tri-Vault multi-sink synchronization (Obsidian Note + LoRA JSONL + Matrix Results JSON)        │
 │                                                                                                        │
 │   TIER 4: REAL-WORLD WORKLOAD SCENARIOS (4 Comprehensive Scenarios)                                    │
-│   • 10-turn continuous conversational thread triggering 10 shadow arena background trials              │
-│   • Bounded background worker concurrency with 0ms impact on user response stream                      │
-│   • 24/7 LoRA DPO and Obsidian transcript persistence across continuous operations                     │
-│   • Full End-to-End System Life-Cycle: Prompt → Stream → Async Challengers → Blind Grading →          │
-│     Dynamic ELO Update → Tri-Vault Persistence → Dynamic Champion Handover                             │
+│   • S1: End-to-End 7-Node Physical Mesh Server Rotation Lifecycle with continuous n≥30 sampling &     │
+│         95% Student-t CI convergence (Margin of Error < 3.0%)                                          │
+│   • S2: Progressive Chaos Latency Injection Pipeline (Baseline -> Mild -> Heavy Jitter -> Severed)      │
+│         with sub-second failover recovery                                                              │
+│   • S3: Real 44-byte SPDF Packet-Striping Multi-Path Streaming across local interfaces with CRC32      │
+│         integrity verification and reorder buffer assembly                                             │
+│   • S4: Full Automated Algorithmic Loop: Live Socket RTT Telemetry -> Qwen Math Proxy Analysis ->      │
+│         Dynamic Striping Weight Update -> Continuous 24/7 LoRA SFT/DPO Lake & Obsidian Whitepaper      │
 │                                                                                                        │
 └────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Test Tier Breakdown & Requirement Matrix
+## 2. Detailed Requirement & Test Matrix Breakdown
 
-### Tier 1: Feature Coverage (Category-Partition Testing)
-Every feature F1 through F9 is validated by at least 5 dedicated, isolated unit and functional tests:
+### Tier 1: Feature Coverage (Category-Partition Testing across R1–R3)
 
-| Feature ID | Feature Name | Minimum Tests | Implemented Tests | Primary Verification Objective |
+Every requirement is mapped to at least 5 isolated, fully verified test cases (6 tests per feature = 18 total):
+
+| Feature ID | Feature Name & Requirements | Minimum Tests | Implemented Tests | Primary Verification Objective |
 | :--- | :--- | :--- | :--- | :--- |
-| **F1** | Dynamic Champion Resolution | ≥5 | 6 | Reads #1 ranked model from ELO leaderboard; verifies mtime debounced caching; validates fallback on missing/corrupted file. |
-| **F2** | Synchronous Champion Dispatch | ≥5 | 5 | Ensures immediate response to user with 0ms added delay; validates token streaming and metadata. |
-| **F3** | Asynchronous Challenger Queue | ≥5 | 5 | Validates non-blocking background queue enqueue, bounded capacity, async worker lifecycle, and clean drain. |
-| **F4** | Challenger Pool Cycler | ≥5 | 6 | Rotates local 100B+ GGUFs, 70Bs, and cloud APIs; excludes active champion; enforces 15.0s timeout and error capture. |
-| **F5** | Tri-Orchestrator Blind Grading | ≥5 | 5 | Strips headers; generates randomized aliases ($\alpha, \beta, \gamma$); runs 3-judge judicial panel across 5 scoring pillars. |
-| **F6** | Dynamic Multi-Factor ELO Engine | ≥5 | 6 | Calculates logistic expected outcomes, dynamic 6-factor K-factor ($K = K_0 \cdot \prod \eta$), atomic POSIX save, Schema v7. |
-| **F7** | Dynamic Champion Promotion | ≥5 | 5 | Verifies ELO overtake automatically updates leaderboard rankings and promotes winner to #1 for next prompt. |
-| **F8** | Tri-Vault Logging | ≥5 | 5 | Appends DPO/SFT JSONL pairs to `/lora_datasets/`; writes Markdown debate transcripts to `obsidian_vault/01_DEBATES/`. |
-| **F9** | Zero-Mock Validation | ≥5 | 5 | Enforces Rule #0 (zero simulated data arrays); validates authentic token/latency telemetry; verifies $\eta_{\text{truth}}$. |
-| **TOTAL** | **Tier 1 Feature Tests** | **≥45** | **52** | **Full Feature Coverage Across F1–F9** |
+| **F1** | Custom WireGuard & Speedify Multipath Integration (`R1`) | ≥5 | 6 | Validates 36-byte LAUB and 44-byte SPDF binary headers; CRC32 checksums; packet packing, striping, and reassembly; MTU 9000 jumbo frame bounds; authentic socket connection on `lo0`/`127.0.0.1`/`en0`. |
+| **F2** | Continuous Multi-Device Server Rotation & Statistical Matrix (`R2`) | ≥5 | 6 | Validates 7-node physical mesh topology matrix; continuous sampling $n \ge 30$; exact Student-t ($t_{\alpha/2, n-1}$) and Gaussian ($z = 1.96$) 95% Confidence Intervals; Margin of Error calculation and $< 3.0\%$ convergence; effective throughput calculation. |
+| **F3** | Qwen Math Algorithm Specialist AI & Proxy Integration (`R3`) | ≥5 | 6 | Validates local model routing on Port `:8086`; Unified AI Proxy (`:8080`) routing table and aliases (`math`, `qwen-math`, `algorithm`); mathematical striping optimization formulation; 24/7 LoRA JSONL dataset logging in `04_data_and_memory/`; Obsidian whitepaper generation. |
+| **TOTAL** | **Tier 1 Feature Tests** | **≥15** | **18** | **Full Feature Coverage Across R1–R3** |
 
 ---
 
 ### Tier 2: Boundary Value Analysis & Corner Cases
-Tests system behavior under edge conditions, faults, and boundary thresholds:
 
-1. `test_t2_01_challenger_timeout_isolation`: When a challenger times out (>15.0s), the champion response is unaffected, and grader records a timed-out loss for the challenger.
-2. `test_t2_02_offline_local_model_handling`: Sockets that fail to connect are flagged `offline` without throwing unhandled exceptions to the router.
-3. `test_t2_03_api_rate_limit_429_cooldown`: When a cloud API provider returns HTTP 429, it enters cooldown mode for 60s and is excluded from subsequent challenger rounds.
-4. `test_t2_04_empty_and_whitespace_prompt_handling`: Empty prompts or whitespace strings are safely validated with appropriate default responses.
-5. `test_t2_05_extreme_token_length_context_clipping`: Prompts exceeding model context window are safely clipped or penalized via token efficiency multipliers.
-6. `test_t2_06_corrupted_leaderboard_json_recovery`: Corrupted or truncated JSON file triggers fallback champion resolution and auto-heals file.
-7. `test_t2_07_extreme_elo_difference_clamping`: ELO differences $\ge 1000$ points produce stable expected outcomes bounded in $(0.001, 0.999)$ without overflow.
-8. `test_t2_08_all_challengers_failing_resilience`: If both challengers fail concurrently, champion retains rating and no corrupted match history is written.
+Validates system behavior under mathematical singularities, edge limits, packet corruption, and network disruptions (6 tests per feature = 18 total):
 
----
-
-### Tier 3: Pairwise & Combinatorial Integration
-Validates cross-feature interactions and state transitions:
-
-1. `test_t3_01_champion_win_outcome_flow`: Champion beats both challengers → Champion ELO increases, challengers decrease, rankings maintained.
-2. `test_t3_02_challenger_win_and_dynamic_swap`: Challenger beats Champion with large score differential → ELO overtakes Champion → Subsequent prompt immediately resolves new Champion.
-3. `test_t3_03_draw_outcome_elo_convergence`: Evenly matched models result in minimal ELO adjustment towards convergence.
-4. `test_t3_04_multi_factor_k_factor_dynamics`: Evaluates composite K-factor across all 6 efficiency multipliers ($\eta_{\text{type}}, \eta_{\text{size}}, \eta_{\text{token}}, \eta_{\text{consensus}}, \eta_{\text{compute}}, \eta_{\text{truth}}$).
-5. `test_t3_05_concurrent_queue_load_under_pressure`: 10 concurrent prompts dispatched rapidly into queue; all processed without race conditions or memory leaks.
-6. `test_t3_06_atomic_file_lock_collision_resilience`: Concurrent writes to `canonical_ai_leaderboard.json` execute safely via POSIX `os.replace` and atomic temporary files.
-
----
-
-### Tier 4: Real-World Workload Scenarios
-Validates continuous production workloads:
-
-1. `test_t4_01_continuous_multiturn_conversation_arena`: Simulates a 10-turn multi-turn conversation; verifies that each user turn triggers a background shadow arena trial and logs match records.
-2. `test_t4_02_zero_latency_user_experience_simulation`: Measures synchronous user response time vs asynchronous challenger execution; confirms 0ms user impact.
-3. `test_t4_03_continuous_24_7_lora_and_obsidian_persistence`: Executes multiple arena matches and verifies that DPO JSONL datasets and Obsidian Markdown transcripts are continuously generated and formatted.
-4. `test_t4_04_full_lifecycle_continuous_arena_simulation`: Complete end-to-end tournament cycle: Prompt ingestion → Immediate Champion stream → Background Challenger execution → Tri-Orchestrator Blind Grading → Dynamic ELO update → Tri-Vault persistence → Dynamic Champion Handover.
+| Boundary Category | Test Name | Invariant / Boundary Condition Verified |
+| :--- | :--- | :--- |
+| **R1 Boundaries** | `test_t2_01_wireguard_mtu_minimum_1280` | Packets at exactly 1280 bytes (IPv6 WireGuard minimum) serialize and deserialize cleanly. |
+| **R1 Boundaries** | `test_t2_02_tb4_mtu_jumbo_9000_limit` | Payloads up to 8956 bytes (MTU 9000 minus 44-byte header) pack and unpack without buffer overrun. |
+| **R1 Boundaries** | `test_t2_03_zero_byte_empty_payload_framing` | 0-byte payload serializes with valid header and empty data segment without crashing unpacker. |
+| **R1 Boundaries** | `test_t2_04_single_byte_payload_framing` | 1-byte payload calculates valid CRC32 and unpacks with exact byte match. |
+| **R1 Boundaries** | `test_t2_05_corrupted_crc32_frame_rejection` | Bit-flipped payload fails CRC32 verification and raises explicit integrity error. |
+| **R1 Boundaries** | `test_t2_06_socket_timeout_and_unreachable_drop` | Socket probe against closed/unreachable port times out cleanly within threshold without hung thread. |
+| **R2 Boundaries** | `test_t2_07_ci_zero_and_single_sample_edge` | $n=0$ and $n=1$ sample sets return safe default CIs ($MoE = 0.0$ or $100.0\%$) avoiding division by zero. |
+| **R2 Boundaries** | `test_t2_08_ci_two_sample_student_t_exactness` | $n=2$ uses Student-t critical value $t_{0.025, 1} = 12.706$ rather than asymptotic $1.96$. |
+| **R2 Boundaries** | `test_t2_09_ci_high_sample_convergence_n1000` | $n=1000$ samples with standard variance achieve tight $MoE < 1.0\%$. |
+| **R2 Boundaries** | `test_t2_10_extreme_jitter_and_variance_handling` | High variance sample set ($\sigma > 50\text{ms}$) computes correct wide CI without negative lower bounds ($\ge 0.0\text{ms}$). |
+| **R2 Boundaries** | `test_t2_11_extreme_99_percent_packet_loss` | 99% packet drop rates correctly penalize effective link throughput to near zero without divide-by-zero. |
+| **R2 Boundaries** | `test_t2_12_zero_rtt_loopback_clamping` | Sub-microsecond RTT ($0.001\text{ms}$) clamps safely above minimum floor ($0.01\text{ms}$) in throughput denominator. |
+| **R3 Boundaries** | `test_t2_13_offline_qwen_math_port_8086_fallback` | When Port 8086 is offline, AI Proxy routes to next available tier without raising unhandled 500 errors. |
+| **R3 Boundaries** | `test_t2_14_malformed_math_prompt_graceful_handling` | Empty or non-mathematical prompts receive structured fallback guidance without crashing optimizer. |
+| **R3 Boundaries** | `test_t2_15_extreme_token_context_truncation` | Prompts with $\ge 32\text{k}$ characters are safely truncated to fit model context window. |
+| **R3 Boundaries** | `test_t2_16_corrupted_lora_jsonl_line_recovery` | JSONL reader skips malformed lines and parses all subsequent valid instruction pairs. |
+| **R3 Boundaries** | `test_t2_17_missing_obsidian_vault_dir_auto_create` | Note writer automatically creates missing nested directory hierarchies (`02_BENCHMARKS/`). |
+| **R3 Boundaries** | `test_t2_18_zero_bandwidth_transport_weight_zeroing` | Inactive links with infinite latency/loss receive exactly $0.0\%$ striping weight in optimizer. |
+| **TOTAL** | **Tier 2 Boundary Tests** | **≥15** | **18** |
 
 ---
 
-## 3. Execution Commands & Verification
+### Tier 3: Cross-Feature Pairwise Combinations
 
-### Run Entire 4-Tier Test Suite
-```bash
-python3 tests/e2e/run_all_e2e.py --all
-```
+Validates cross-feature interactions and state transitions across interconnected subsystems (6 total tests):
 
-### Run Specific Tiers
-```bash
-python3 tests/e2e/run_all_e2e.py --tier 1
-python3 tests/e2e/run_all_e2e.py --tier 2
-python3 tests/e2e/run_all_e2e.py --tier 3
-python3 tests/e2e/run_all_e2e.py --tier 4
-```
-
-### Run via Pytest
-```bash
-pytest tests/e2e/test_continuous_ai_arena_4tier.py -v
-pytest tests/test_meta_training_tier1_features.py -v
-```
-
-### Export JSON Test Report
-```bash
-python3 tests/e2e/run_all_e2e.py --all --json-output reports/continuous_arena_e2e_report.json
-```
+| ID | Test Name | Cross-Feature Interaction |
+| :--- | :--- | :--- |
+| **C1** | `test_t3_01_wireguard_failover_during_active_benchmark` | Link degradation on TB4 DMA triggers automatic failover to WireGuard while the continuous benchmark loop continues sampling without dropped trials. |
+| **C2** | `test_t3_02_matrix_benchmark_telemetry_to_qwen_math_input` | Empirical sample means, variances, and packet loss rates from matrix evaluation are synthesized into a structured Qwen Math optimization prompt. |
+| **C3** | `test_t3_03_qwen_math_optimization_output_to_speedify_weights` | Mathematical optimization output vector ($\mathbf{w} = [w_1, w_2, w_3]$) is validated to satisfy $\sum w_i = 1.0$ and dynamically updates Speedify subflow link weights. |
+| **C4** | `test_t3_04_progressive_chaos_triggers_lora_dataset_emission` | Injected chaos transitions (Mild $+25\text{ms} \to$ Heavy $+85\text{ms} \to$ Severed $+350\text{ms}$) generate structured SFT/DPO training pairs with failure signatures and recovery actions. |
+| **C5** | `test_t3_05_proxy_cascade_resolution_with_math_model_priority` | Unified AI Proxy on `:8080` correctly resolves `model=local/qwen-math` to `:8086` and falls back to `:8083` or Cloudflare if unavailable. |
+| **C6** | `test_t3_06_tri_vault_multi_sink_synchronization` | Single benchmark execution updates: (1) `multi_device_matrix_results.json`, (2) Obsidian Note in `obsidian_vault/02_BENCHMARKS/`, and (3) `lora_datasets/truth_audit_*.jsonl`. |
 
 ---
 
-## 4. Test Invariants & Zero-Mock Truth Protocol
+### Tier 4: Real-World Application Scenarios
 
-1. **Rule #0 Compliance**: Tests MUST NOT use fabricated or mock data arrays. All telemetry, scores, token counts, and latency figures represent authentic execution or clean `--` empty states.
-2. **Atomic Disk Safety**: All leaderboard modifications use POSIX atomic file replacement (`os.replace`) to guarantee data integrity across threads and processes.
-3. **JSON Schema v7 Validation**: All leaderboard updates are validated against `CANONICAL_LEADERBOARD_SCHEMA_V7`.
-4. **Deterministic Math**: Logistic ELO functions, expected outcomes, and multi-factor K-factors are mathematically exact and tested against reference values.
+Validates end-to-end operational workflows and continuous autonomous lifecycle processes (4 comprehensive scenarios):
+
+| ID | Test Name | Real-World Workflow Description |
+| :--- | :--- | :--- |
+| **S1** | `test_t4_01_7node_physical_mesh_server_rotation_lifecycle` | Executes a complete 7-node rotation across 4 modes (Mode A: Mini+MBP over TB4 DMA, Mode B: Mini+Linux over Speedify, Mode C: Tri-Node Tandem over WireGuard, Mode D: Mobile Edge Swarm over 5G/Wi-Fi), gathering $\ge 30$ samples per link and verifying Student-t 95% Confidence Interval convergence ($MoE < 3.0\%$). |
+| **S2** | `test_t4_02_progressive_chaos_latency_injection_and_subsecond_failover` | Simulates live data stream under 4 stages of progressive network chaos (Stage 0: Baseline, Stage 1: Mild $+25\text{ms}$, Stage 2: Heavy Jitter $+85\text{ms} \pm 15\text{ms}$, Stage 3: Severed Link $+350\text{ms}$), verifying immediate sub-second $(<1.0\text{s})$ failover to backup transports without data loss. |
+| **S3** | `test_t4_03_real_spdf_packet_striping_multipath_stream_reassembly` | Transmits a 512 KB multi-chunk binary stream striped across 3 simulated subflow sockets using 44-byte SPDF framing, verifying CRC32 integrity, out-of-order reordering via sequence numbers, and byte-for-byte SHA256 payload identity. |
+| **S4** | `test_t4_04_continuous_qwen_math_algorithmic_optimization_loop` | Runs the full closed-loop pipeline: (1) Real socket RTT measurements $\to$ (2) Qwen Math proxy prompt construction $\to$ (3) Algorithmic optimal weight computation $\to$ (4) Speedify state update $\to$ (5) 24/7 LoRA SFT/DPO dataset emission to `04_data_and_memory/` and Obsidian Whitepaper synchronization. |
+
+---
+
+## 3. Mathematical Specifications & Confidence Formulations
+
+### 3.1 Student-t vs Gaussian 95% Confidence Intervals
+Given $n$ continuous latency samples $x_1, x_2, \dots, x_n$:
+
+1. **Sample Mean:**
+   $$\bar{x} = \frac{1}{n} \sum_{i=1}^n x_i$$
+
+2. **Sample Standard Deviation:**
+   $$s = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2} \quad (n > 1)$$
+
+3. **Standard Error of the Mean (SE):**
+   $$SE = \frac{s}{\sqrt{n}}$$
+
+4. **Critical Value ($t_{\text{crit}}$):**
+   - For $n \ge 30$: $t_{\text{crit}} \approx z_{0.025} = 1.95996 \approx 1.96$
+   - For $n < 30$: $t_{\text{crit}} = t_{0.025, \text{df}=n-1}$ derived from Student-t inverse CDF.
+
+5. **Margin of Error (MoE):**
+   $$MoE = t_{\text{crit}} \cdot SE$$
+
+6. **95% Confidence Interval:**
+   $$CI_{95\%} = [\max(0.01, \bar{x} - MoE), \bar{x} + MoE]$$
+
+7. **Margin of Error Percentage:**
+   $$MoE\% = \left( \frac{MoE}{\bar{x}} \right) \times 100\%$$
+   - **Target Convergence Invariant:** $MoE\% < 3.0\%$ when $n \ge 30$.
+
+---
+
+### 3.2 Multi-Path Striping Weight Optimization Formula
+For active transport interfaces $i \in \{1, \dots, K\}$ with empirical Mean Latency $R_i > 0$, Jitter $J_i \ge 0$, and Packet Loss Rate $L_i \in [0, 1)$:
+
+$$\text{Effective Latency Penalty } D_i = R_i \cdot (1 + 2 \cdot L_i) + J_i$$
+
+$$\text{Raw Link Weight } \tilde{w}_i = \frac{B_i}{D_i}$$
+where $B_i$ is the nominal link bandwidth (e.g. 40 Gbps for TB4, 2.5 Gbps for Speedify LAN, 1.0 Gbps for WireGuard).
+
+$$\text{Normalized Packet Striping Weight } w_i = \frac{\tilde{w}_i}{\sum_{j=1}^K \tilde{w}_j} \quad \text{such that } \sum_{i=1}^K w_i = 1.0 \text{ and } w_i \ge 0$$
+
+---
+
+## 4. Execution & Verification Instructions
+
+### 4.1 Running the Complete E2E Test Suite
+```bash
+# Run via pytest with detailed verbosity
+python3 -m pytest /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e/test_mesh_routing_and_benchmarks_e2e.py -v
+
+# Run via dedicated standalone runner
+python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e/run_mesh_e2e.py --all
+```
+
+### 4.2 Running Specific Test Tiers
+```bash
+# Run Tier 1: Feature Coverage (18 tests)
+python3 -m pytest /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e/test_mesh_routing_and_benchmarks_e2e.py -k "TestTier1" -v
+
+# Run Tier 2: Boundary & Corner Cases (18 tests)
+python3 -m pytest /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e/test_mesh_routing_and_benchmarks_e2e.py -k "TestTier2" -v
+
+# Run Tier 3: Cross-Feature Combinations (6 tests)
+python3 -m pytest /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e/test_mesh_routing_and_benchmarks_e2e.py -k "TestTier3" -v
+
+# Run Tier 4: Real-World Scenarios (4 tests)
+python3 -m pytest /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e/test_mesh_routing_and_benchmarks_e2e.py -k "TestTier4" -v
+```

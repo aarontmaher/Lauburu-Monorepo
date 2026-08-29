@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-08-29T16:40:07.980657",
+  "target": "Lauburu Mesh Ecosystem (R1, R2, R3)",
+  "selected_tier": "all",
+  "total_executed": 46,
+  "passed": 46,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "pass_rate_pct": 100.0,
+  "duration_sec": 0.01,
+  "failures": [],
+  "errors_detail": [],
+  "status": "PASSED"
+}
