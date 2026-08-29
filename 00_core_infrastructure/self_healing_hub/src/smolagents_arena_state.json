@@ -1,31 +1,39 @@
 {
-  "timestamp_utc": "2026-08-29T10:40:05Z",
-  "active_game_mode": "MODE_1_EDGE_BASELINE",
+  "timestamp_utc": "2026-08-29T10:51:44Z",
+  "step": 2290,
+  "active_game_mode": "SMOLAGENTS_PYTHON_DUEL",
+  "available_game_modes": [
+    "EDGE_ORCHESTRATOR_CLASSIC",
+    "SMOLAGENTS_PYTHON_DUEL",
+    "MULTI_MODEL_AGI_SWARM",
+    "AIRGAP_MESH_VS_CLOUD_CHAOS"
+  ],
   "tactical_intent_summary": {
-    "red_team": {
-      "leader": "Hermes 3 (8B) + OpenClaw",
-      "current_objective": "Overdrive Port 50052 TB4 socket buffer & inject 512Hz noise",
-      "active_code_action": "tools.probe_socket('127.0.0.1', 50052) && drain_buffer(bytes=8192)",
-      "objective_progress_pct": 90.7,
-      "status_badge": "\ud83d\udd34 EXECUTING CODE-ACTION"
+    "red_faction_intent": "Audit TB4 socket buffer on MacBook_Pro to induce 64MB queue drain",
+    "blue_faction_intent": "Deploy SQM fq_codel queue discipline on bridge0 & lock Kamath HRV filter at 15%",
+    "user_biological_state": "Heart Rate: 85 BPM | BP: 90/55 mmHg | Sleep Score: 50/100 | Activity: Rest / Passive Recovery",
+    "combat_narrative": "Red SmolAgent tested 64MB buffer drain; Blue SmolAgent deployed SQM fq_codel shield to preserve 120 FPS."
+  },
+  "smolagent_code_executions": {
+    "red_code": "def red_exploit_action():\n    # SmolAgent Red: Audit Thunderbolt 4 PCIe DMA buffer on MacBook_Pro\n    socket_target = ('169.254.187.138', 50052)\n    drain_payload_bytes = 64 * 1024 * 1024  # 64MB buffer burst\n    return {\n        'status': 'BURST_INJECTED',\n        'target': socket_target,\n        'payload_drained_mb': 64,\n        'simulated_rtt_jitter_ms': 0.85\n    }\nresult = red_exploit_action()",
+    "blue_code": "def blue_defense_action():\n    # SmolAgent Blue: Deploy SQM fq_codel queue discipline & lock MTU 9000\n    applied_rules = [\n        'tc qdisc replace dev bridge0 root fq_codel target 5ms interval 100ms',\n        'ifconfig bridge0 mtu 9000',\n        'apply_kamath_2004_rr_filter(threshold=0.15)'\n    ]\n    return {\n        'status': 'SHIELD_DEPLOYED',\n        'bufferbloat_mitigated_ms': 350.0,\n        'active_rules': applied_rules\n    }\nresult = blue_defense_action()",
+    "red_result": {
+      "status": "BURST_INJECTED",
+      "target": [
+        "169.254.187.138",
+        50052
+      ],
+      "payload_drained_mb": 64,
+      "simulated_rtt_jitter_ms": 0.85
     },
-    "blue_team": {
-      "leader": "LuCI OpenWrt + Lauburu Sentinel",
-      "current_objective": "Harden MTU 9000 tripwire & stabilize Movesense HRV at Zone 2",
-      "active_code_action": "tools.inspect_vram_load() && apply_kamath_filter(hr=83.0, threshold=0.20)",
-      "objective_progress_pct": 95.0,
-      "status_badge": "\ud83d\udd35 LOCKING DEFENSIVE SHIELD"
+    "blue_result": {
+      "status": "SHIELD_DEPLOYED",
+      "bufferbloat_mitigated_ms": 350.0,
+      "active_rules": [
+        "tc qdisc replace dev bridge0 root fq_codel target 5ms interval 100ms",
+        "ifconfig bridge0 mtu 9000",
+        "apply_kamath_2004_rr_filter(threshold=0.15)"
+      ]
     }
-  },
-  "biometrics_readiness": {
-    "live_heart_rate_bpm": 83.0,
-    "readiness_state": "OPTIMAL_ZONE_2_STEADY",
-    "airgap_certified": true
-  },
-  "vram_allocation": {
-    "mac_mini_host_gb": 9.8,
-    "macbook_pro_vault_gb": 13.5,
-    "linux_head_gb": 13.4,
-    "total_pooled_ai_vram_gb": 82.8
   }
 }
