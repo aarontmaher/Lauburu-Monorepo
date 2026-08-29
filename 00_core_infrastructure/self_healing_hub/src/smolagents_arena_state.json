@@ -1,24 +1,24 @@
 {
-  "timestamp_utc": "2026-08-29T09:21:29Z",
+  "timestamp_utc": "2026-08-29T09:32:03Z",
   "active_game_mode": "MODE_1_EDGE_BASELINE",
   "tactical_intent_summary": {
     "red_team": {
       "leader": "Hermes 3 (8B) + OpenClaw",
       "current_objective": "Overdrive Port 50052 TB4 socket buffer & inject 512Hz noise",
       "active_code_action": "tools.probe_socket('127.0.0.1', 50052) && drain_buffer(bytes=8192)",
-      "objective_progress_pct": 95.0,
+      "objective_progress_pct": 84.6,
       "status_badge": "\ud83d\udd34 EXECUTING CODE-ACTION"
     },
     "blue_team": {
       "leader": "LuCI OpenWrt + Lauburu Sentinel",
       "current_objective": "Harden MTU 9000 tripwire & stabilize Movesense HRV at Zone 2",
-      "active_code_action": "tools.inspect_vram_load() && apply_kamath_filter(hr=81.0, threshold=0.20)",
-      "objective_progress_pct": 93.6,
+      "active_code_action": "tools.inspect_vram_load() && apply_kamath_filter(hr=97.0, threshold=0.20)",
+      "objective_progress_pct": 95.0,
       "status_badge": "\ud83d\udd35 LOCKING DEFENSIVE SHIELD"
     }
   },
   "biometrics_readiness": {
-    "live_heart_rate_bpm": 81.0,
+    "live_heart_rate_bpm": 97.0,
     "readiness_state": "OPTIMAL_ZONE_2_STEADY",
     "airgap_certified": true
   },

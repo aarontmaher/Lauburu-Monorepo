@@ -30,7 +30,7 @@
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤
 │  CLOUD AI & EDGE WORKERS (Cloudflare Workers AI, Gemini 3.7 Flash, Supabase, Railway):         │
 │  • STRICTLY ZERO RAW BIOMETRIC DATA ALLOWED.                                                    │
-│  • Redacts all raw athlete physiological metrics before egress.                                 │
+│  • Redacts all raw athlete physiological metrics before egress (HTTP 403 fail-closed).          │
 │  • Handles UI scaffolding, PWA asset delivery, WebGPU WGSL shaders, and Three.js 3D Tatami.    │
 └─────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -39,7 +39,7 @@
 | # | Feature | Description | Milestone | Source |
 |---|---|---|---|---|
 | 1 | Frontend PWA Scaffolding & Manifest | Offline ServiceWorker caching, responsive PWA manifests for mobile/desktop | M1 | Survey R1 |
-| 2 | Three.js 3D Tatami & Kinematics Graph | 955+ OPML nodes interactive 3D map, WebGPU/WebGL renderers, raycasting | M1 | Survey R1 |
+| 2 | Three.js 3D Tatami & Kinematics Graph | 955+ OPML nodes interactive 3D map (3,044 nodes), WebGPU/WebGL renderers | M1 | Survey R1 |
 | 3 | TailwindCSS & Cross-Platform UI | Responsive Tailwind UI components, WCAG 2.1 AA accessible charts, Flutter templates | M1 | Survey R1 |
 | 4 | Strict 100% Local Airgap Protection | Strict zero-biometrics firewall on Cloudflare/external endpoints, 127.0.0.1 airgap | M1 | Survey R1 |
 | 5 | Bicep ECG 512Hz Pan-Tompkins DSP | Butterworth bandpass, 5-pt derivative, 150ms MWI, dual-threshold peak search | M2 | Survey R2 |
@@ -52,16 +52,16 @@
 | 12 | Canonical 4 Selectable Game Modes | EDGE_ORCHESTRATOR_CLASSIC, SMOLAGENTS_PYTHON_DUEL, MULTI_MODEL_AGI_SWARM, AIRGAP_MESH_VS_CLOUD_CHAOS | M3 | Survey R3 |
 | 13 | Telemetry HUD Tactical Objective Summaries | Active plain-language statements: "What is each team currently trying to do?" | M3 | Survey R3 |
 | 14 | Standalone & Embedded TUI Synchronization | Sync standalone tui_live_arena_dev.py with Canonical LiveArenaDevScreen 4-mode engine | M3 | Survey R3 |
-| 15 | 100% E2E Test Suite Pass | Opaque-box E2E test verification across all 14 features (Tiers 1-4) | M4 | Dual Track |
-| 16 | Tier 5 Adversarial Coverage Hardening | White-box stress testing, chaos injections, and forensic audit verification | M4 | Final Milestone |
+| 15 | 100% E2E Test Suite Pass | Opaque-box E2E test verification across all 16 features (184/184 tests passed) | M4 | Dual Track |
+| 16 | Tier 5 Adversarial Coverage Hardening | White-box stress testing, chaos injections, and forensic audit verification (CLEAN) | M4 | Final Milestone |
 
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
 |---|---|---|---|---|
-| M1 | Frontend PWA, 3D Tatami & Airgap Scaffolding | Frontend PWA scaffolding, Three.js 3D Tatami, TailwindCSS tokens, 100% local airgap policy | None | PLANNED |
-| M2 | Movesense Physiological Readiness & 512Hz DSP | 512Hz Pan-Tompkins QRS, Kamath RR filter, RMSSD, PTT BP inversion, Sleep staging, LT1/LT2, VO2max | None | PLANNED |
-| M3 | SmolAgents Autonomous Arena & 4-Mode TUI Engine | Sandboxed Python code execution for Red/Blue leads, 4 game modes, TUI Tactical Objective HUD | None | PLANNED |
-| M4 | Final Milestone: 100% E2E Pass & Tier 5 Hardening | Execute full E2E Test Suite (Tiers 1-4) + Tier 5 Adversarial Coverage Hardening + Forensic Audit | M1, M2, M3, E2E Track | PLANNED |
+| M1 | Frontend PWA, 3D Tatami & Airgap Scaffolding | Frontend PWA scaffolding, Three.js 3D Tatami, TailwindCSS tokens, 100% local airgap policy | None | DONE |
+| M2 | Movesense Physiological Readiness & 512Hz DSP | 512Hz Pan-Tompkins QRS, Kamath RR filter, RMSSD, PTT BP inversion, Sleep staging, LT1/LT2, VO2max | None | DONE |
+| M3 | SmolAgents Autonomous Arena & 4-Mode TUI Engine | Sandboxed Python code execution for Red/Blue leads, 4 game modes, TUI Tactical Objective HUD | None | DONE |
+| M4 | Final Milestone: 100% E2E Pass & Tier 5 Hardening | Execute full E2E Test Suite (Tiers 1-4, 184 tests) + Tier 5 Hardening + Forensic Audit | M1, M2, M3, E2E Track | DONE |
 
 ## Interface Contracts
 ### Frontend UI (`01_apps/`, `webapp/`) ↔ Local Biometrics Airgap (`03_biometrics_and_telemetry/`)
@@ -118,4 +118,4 @@
 - `01_apps/canonical_port/tui/screens/live_arena_dev_screen.py` — Canonical TUI Live Arena Dev Screen
 - `01_apps/canonical_port/tui/tui_live_arena_dev.py` — Standalone Live Arena TUI script
 - `05_agents_and_swarms/genetic_moe/genetic_moe_ai_router.py` — Mode 3 Genetic MoE AI Router
-- `tests/e2e/` — Opaque-box E2E Test Suite (Tiers 1-4)
+- `tests/e2e/` — Opaque-box E2E Test Suite (Tiers 1-4, 184 tests)

@@ -63,6 +63,14 @@ MODELS = {
         "server_port": 8086,
         "description": "Qwen2.5-7B abliterated — smaller, faster iteration for SFT experiments",
     },
+    "agentworld_35b": {
+        "name": "Qwen-AgentWorld-35B-A3B",
+        "gguf": VAULT / "Qwen-AgentWorld-35B-A3B.Q4_K_M.gguf",
+        "hf_id": "Qwen/Qwen-AgentWorld-35B-A3B",
+        "mlx_id": "mlx-community/Qwen-AgentWorld-35B-A3B-4bit",
+        "server_port": 8087,
+        "description": "Qwen-AgentWorld-35B-A3B — 35B MoE Native World Model (7 Agent Domains)",
+    },
 }
 
 # ── Domain → Dataset Mapping ──────────────────────────────────────────────────
@@ -402,7 +410,7 @@ def print_qwen_math_analysis():
 
 def main():
     parser = argparse.ArgumentParser(description="Lauburu AgentWorld Training Pipeline")
-    parser.add_argument("--model",    choices=["abliterated", "base"], default="abliterated",
+    parser.add_argument("--model",    choices=["abliterated", "base", "agentworld_35b"], default="agentworld_35b",
                         help="Which Qwen model to fine-tune")
     parser.add_argument("--stage",   type=int, choices=[1, 2, 3], default=1,
                         help="Training stage (1=MCP+Terminal, 2=SWE+Android, 3=RL/OS)")

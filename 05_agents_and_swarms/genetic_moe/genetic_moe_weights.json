@@ -1,13 +1,13 @@
 {
-  "timestamp_utc": "2026-08-29T09:21:28Z",
+  "timestamp_utc": "2026-08-29T09:24:57Z",
   "generation": 2,
   "expert_weights": {
-    "coder": 0.254,
-    "math": 0.056,
-    "hermes": 0.193,
-    "abliterated": 0.191,
-    "qwen27b": 0.307
+    "coder": 0.251,
+    "math": 0.147,
+    "hermes": 0.215,
+    "abliterated": 0.176,
+    "qwen27b": 0.211
   },
-  "fitness_score": 94.42,
+  "fitness_score": 97.11,
   "airgap_policy": "100% STRICT LOCAL HARDWARE ONLY"
 }
