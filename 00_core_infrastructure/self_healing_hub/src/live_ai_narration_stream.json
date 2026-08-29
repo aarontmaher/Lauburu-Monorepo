@@ -1,11 +1,11 @@
 {
-  "timestamp_utc": "2026-08-29T11:12:12Z",
-  "narrator_headline": "\ud83c\udf99\ufe0f MESH NARRATOR: Zone 2 cardiac resonance detected. Blue team maintaining 64% compute superiority.",
-  "red_lead_thought": "OpenClaw: ADB TCP keepalive active on Pixel 10 Pro (Port 8022)... Monitoring Exynos UI render frame drops.",
+  "timestamp_utc": "2026-08-29T11:15:51Z",
+  "narrator_headline": "\ud83c\udf99\ufe0f MESH NARRATOR: High-speed TB4 DMA delivering 0.35ms latency. LuCI defending against BQL buffer expansion.",
+  "red_lead_thought": "OpenClaw: Injecting 512Hz raw ECG stream into Movesense GATT UUID 0x2A37... Biological stress at 85 BPM.",
   "blue_lead_thought": "LuCI: WireGuard ChaCha20-Poly1305 fallback route armed on 100.101.39.98... Ready for sub-millisecond failover.",
   "actors": {
     "red_lead": "Hermes 3 & OpenClaw",
     "blue_lead": "LuCI OpenWrt & Sentinel",
-    "biometrics": "Movesense 261030002013 (89 BPM)"
+    "biometrics": "Movesense 261030002013 (85 BPM)"
   }
 }
