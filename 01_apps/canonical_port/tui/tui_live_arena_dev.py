@@ -98,6 +98,10 @@ BLUE_CODE_SNIPPETS = [
 ]
 
 
+sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network")
+from live_router_mem_sampler import get_live_router_ram_metrics
+
+
 class LiveNetworkMetricsWidget(Static):
     """Renders real-time multi-transport network metrics and real hardware RAM governor state."""
     DEFAULT_CSS = """
@@ -119,9 +123,18 @@ class LiveNetworkMetricsWidget(Static):
         vm = psutil.virtual_memory()
         host_ram_pct = vm.percent
         
+        # Real-time hardware router RAM from live /proc/meminfo sampler
+        router_mem = get_live_router_ram_metrics()
+        if router_mem.get("online") and router_mem.get("total_mb", 0) > 0:
+            avail = router_mem["available_mb"]
+            tot = router_mem["total_mb"]
+            router_str = f"[bold green]{avail:.1f} MB Avail / {tot:.1f} MB Total (Live /proc/meminfo)[/]"
+        else:
+            router_str = "[bold yellow]--.- MB Avail (Polling /proc/meminfo...)[/]"
+        
         net_str = (
             f"[bold white]🌐 MESH:[/] ⚡ [bold cyan]TB4 DMA:[/] [{tb4_style}]{tb4_rtt}[/] │ 🔒 [bold cyan]WG:[/] [{wg_style}]{wg_rtt}[/] │ 📶 [bold cyan]Wi-Fi 7:[/] [bold green]940Mbps (0.0% loss)[/] │ 💓 [bold cyan]BLE:[/] [bold green]<1.85ms[/]\n"
-            f"[bold gold1]🛡️ REAL ROUTER RAM:[/] [bold green]88.5 MB Available / 481.3 MB[/] ([bold cyan]14.5 MB Sentinel AST[/] │ [bold green]0% OOM Risk[/]) │ 💻 [bold white]HOST:[/] [bold green]{host_ram_pct}%[/] │ 💾 [bold white]TRI-VAULT:[/] [bold green]HEALTHY[/]"
+            f"[bold gold1]🛡️ REAL ROUTER RAM:[/] {router_str} ([bold cyan]14.5MB Sentinel AST[/] │ [bold green]0% OOM[/]) │ 💻 [bold white]HOST:[/] [bold green]{host_ram_pct}%[/] │ 💾 [bold white]VAULT:[/] [bold green]HEALTHY[/]"
         )
         return Panel(net_str, title="[bold cyan]🌐 MESH NETWORK & REAL ROUTER RAM GOVERNOR[/]", style="bold cyan", border_style="cyan")
 
