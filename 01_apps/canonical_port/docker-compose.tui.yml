@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  canonical-tui-cockpit:
+    build:
+      context: .
+      dockerfile: Dockerfile.tui
+    image: lauburu/canonical-tui:latest
+    container_name: lauburu_tui_cockpit
+    restart: unless-stopped
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    network_mode: host
+    environment:
+      - TERM=xterm-256color
+      - COLORTERM=truecolor
+      - PORT=8088
+      - MODE=web
+      - MONOREPO_PATH=/app
+      - BLACKBOARD_PATH=/app/01_apps/canonical_port/blackboard_state.json
+      - DATA_LAKE_PATH=/app/lora_datasets/wearables_stream.jsonl
+    volumes:
+      - /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo:/app:ro
+      - /Users/aaron/DFS_UNIFIED/lora_datasets:/app/lora_datasets:rw
+    ports:
+      - "8088:8088"
+      - "4000:4000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8088/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s

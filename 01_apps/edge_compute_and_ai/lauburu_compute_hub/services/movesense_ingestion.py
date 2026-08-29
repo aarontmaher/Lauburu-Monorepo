@@ -18,8 +18,16 @@ import math
 import os
 import struct
 import time
+import sys
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
+
+# Pan-Tompkins QRS Detector import
+try:
+    sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../03_biometrics_and_telemetry")))
+    from pan_tompkins_dsp import PanTompkinsQRSDetector
+except Exception:
+    PanTompkinsQRSDetector = None
 
 # Bleak Bluetooth LE library conditional import
 try:
@@ -109,8 +117,15 @@ def apply_kamath_artifact_filter(rr_intervals: List[float]) -> Tuple[List[float]
             cleaned.append(curr)
         else:
             artifact_count += 1
-            # Linear interpolation or fallback
-            next_val = rr_intervals[i + 1] if i + 1 < len(rr_intervals) else prev
+            # Search ahead for the next valid physiological beat
+            next_val = None
+            for j in range(i + 1, len(rr_intervals)):
+                cand = float(rr_intervals[j])
+                if prev > 0 and (abs(cand - prev) / prev) <= 0.20:
+                    next_val = cand
+                    break
+            if next_val is None:
+                next_val = prev
             corrected = (prev + next_val) / 2.0
             cleaned.append(round(corrected, 1))
 
@@ -456,6 +471,7 @@ class MovesenseGattTetherDaemon:
         # Physiological rolling buffers
         self.rr_history_ms: List[float] = []
         self.ecg_rolling_buffer_mv: List[float] = []
+        self.qrs_detector = PanTompkinsQRSDetector(sample_rate_hz=128) if PanTompkinsQRSDetector is not None else None
         self.latest_kinematics: Optional[Dict[str, Any]] = None
         self.latest_heart_rate: Optional[float] = None
         self.latest_rmssd: Optional[float] = None
@@ -681,6 +697,21 @@ class MovesenseGattTetherDaemon:
                 self.ecg_rolling_buffer_mv.extend(mv_samples)
                 if len(self.ecg_rolling_buffer_mv) > 256:
                     self.ecg_rolling_buffer_mv = self.ecg_rolling_buffer_mv[-256:]
+
+                # Execute Pan-Tompkins QRS Detection on ECG buffer
+                if self.qrs_detector is not None and len(self.ecg_rolling_buffer_mv) >= 64:
+                    _, new_rrs = self.qrs_detector.detect_qrs_peaks(self.ecg_rolling_buffer_mv)
+                    if new_rrs:
+                        self.rr_history_ms.extend(new_rrs)
+                        if len(self.rr_history_ms) > 120:
+                            self.rr_history_ms = self.rr_history_ms[-120:]
+                        clean_rr, _ = apply_kamath_artifact_filter(self.rr_history_ms)
+                        self.latest_rmssd = calculate_rmssd(clean_rr)
+                        self.latest_dfa_alpha1 = calculate_dfa_alpha1(clean_rr)
+                        if clean_rr:
+                            mean_rr = sum(clean_rr[-5:]) / float(len(clean_rr[-5:]))
+                            if mean_rr > 0:
+                                self.latest_heart_rate = round(60000.0 / mean_rr, 1)
 
             # 2. IMU 52Hz Packet (Req ID 2 or IMU payload)
             if req_id == 2:

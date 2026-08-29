@@ -1,0 +1,62 @@
+# ==============================================================================
+# Lauburu Canonical TUI & Mesh Cockpit - Multi-Arch OCI Container
+# Supported Architectures: linux/arm64 (Apple Silicon, Raspberry Pi, Termux), linux/amd64 (Linux Head Node)
+# Subsystem: 01_apps/canonical_port/Dockerfile.tui
+# ==============================================================================
+FROM python:3.13-slim-bookworm
+
+# Prevent interactive prompts during build
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    TERM=xterm-256color \
+    COLORTERM=truecolor \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8
+
+# Install base systems, terminal tools, and build prerequisites
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tmux \
+    curl \
+    git \
+    procps \
+    net-tools \
+    iputils-ping \
+    ca-certificates \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app/canonical_port
+
+# Install uv for blazing-fast package management
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Copy dependency specifications
+COPY pyproject.toml requirements.txt ./
+
+# Install Python TUI dependencies
+RUN pip install --no-cache-dir \
+    textual>=0.70.0 \
+    textual-web>=0.6.0 \
+    rich>=13.7.0 \
+    fastapi>=0.110.0 \
+    uvicorn>=0.28.0 \
+    websockets>=12.0 \
+    httpx>=0.27.0 \
+    numpy>=1.26.0 \
+    pydantic>=2.6.0 \
+    pyyaml>=6.0
+
+# Copy application source tree
+COPY . /app/canonical_port/
+RUN chmod +x /app/canonical_port/entrypoint.sh /app/canonical_port/*.sh 2>/dev/null || true
+
+# Expose Web-TUI port (8088) and API port (4000)
+EXPOSE 8088 4000
+
+# Default entrypoint: launch entrypoint.sh supporting interactive, web, and verify modes
+ENV PORT=8088 \
+    MODE=interactive
+
+ENTRYPOINT ["/app/canonical_port/entrypoint.sh"]
+CMD ["interactive"]

@@ -70,6 +70,19 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-# 2. Launch Textual TUI
-cd "${SCRIPT_DIR}"
-${VENV_PYTHON} "${TUI_APP}"
+# Mode selection
+FIRST_ARG="${1:-}"
+
+if [ "${FIRST_ARG}" = "web" ]; then
+    echo "▶ Launching Web-TUI bridge on Port 8088..."
+    cd "${SCRIPT_DIR}"
+    exec ${VENV_PYTHON} "${SCRIPT_DIR}/tui/serve_web_tui.py"
+elif [ "${FIRST_ARG}" = "verify" ] || [ "${FIRST_ARG}" = "--verify" ]; then
+    echo "▶ Executing Headless TUI Verification..."
+    cd "${SCRIPT_DIR}"
+    exec ${VENV_PYTHON} "${SCRIPT_DIR}/tui/verify_tui.py"
+else
+    # 2. Launch Textual TUI Console
+    cd "${SCRIPT_DIR}"
+    ${VENV_PYTHON} "${TUI_APP}" "$@"
+fi

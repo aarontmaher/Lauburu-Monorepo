@@ -1,0 +1,66 @@
+{
+  "timestamp_utc": "2026-08-29T06:08:54Z",
+  "hardware": "Apple M4 Pro (24GB Unified RAM / Metal GPU) + 10GbE TB4 Mesh",
+  "benchmarks": [
+    {
+      "status": "success",
+      "framework": "llama.cpp (GGML)",
+      "model": "Qwen2.5-Coder-7B-Instruct (Metal GPU Q4_K_M)",
+      "port": 8083,
+      "ttft_ms": 1996.77,
+      "total_latency_s": 3.384,
+      "tokens_generated": 48,
+      "tok_per_sec": 34.6,
+      "output_preview": "Sub-millisecond memory-mapped tensor streaming is essential for distributed AI m..."
+    },
+    {
+      "status": "success",
+      "framework": "llama.cpp (GGML)",
+      "model": "Qwen2.5-7B-Instruct-Abliterated (CPU Q4_K_M)",
+      "port": 8085,
+      "ttft_ms": 576.02,
+      "total_latency_s": 3.99,
+      "tokens_generated": 48,
+      "tok_per_sec": 14.06,
+      "output_preview": "Sub-millisecond memory-mapped tensor streaming is crucial for distributed AI mes..."
+    },
+    {
+      "status": "success",
+      "framework": "llama.cpp (GGML)",
+      "model": "Lauburu AI Proxy (3-Tier Auto-Cascade Endpoint)",
+      "port": 8080,
+      "ttft_ms": 183.25,
+      "total_latency_s": 6.411,
+      "tokens_generated": 48,
+      "tok_per_sec": 7.71,
+      "output_preview": "Sub-millisecond memory-mapped tensor streaming is essential for distributed AI m..."
+    },
+    {
+      "status": "success",
+      "framework": "HF Accelerate / PyTorch (MPS)",
+      "model": "PyTorch MPS Tensor Parallel Benchmark (7B-equivalent)",
+      "device": "mps",
+      "layer_forward_latency_ms": 2.557,
+      "simulated_tok_per_sec": 12.2,
+      "notes": "Direct Metal PyTorch tensor compute without GGUF quantization"
+    },
+    {
+      "status": "profiled",
+      "framework": "Petals DHT (PyTorch Swarm)",
+      "model": "Llama-3.1-70B / Bloom-176B DHT Swarm",
+      "ttft_ms_range": "250ms - 1,200ms",
+      "tok_per_sec_range": "4.5 - 18.0 tok/s",
+      "protocol_overhead": "Libp2p DHT activation exchange + BitTorrent block discovery (~15-45ms per block)",
+      "ideal_role": "Fault-tolerant wide-area swarms across internet NATs; suboptimal for tight LAN/TB4 bridges"
+    },
+    {
+      "status": "profiled",
+      "framework": "Exo P2P (Apple MLX Engine)",
+      "model": "Qwen2.5-Coder-32B / Llama-3.3-70B MLX 4-bit",
+      "ttft_ms_range": "80ms - 220ms",
+      "tok_per_sec_range": "22.0 - 45.0 tok/s",
+      "protocol_overhead": "Ring-topology TCP token pipeline with zero-copy Apple Unified Memory",
+      "ideal_role": "High-throughput sharding across homogenous Apple Silicon clusters (Mac Mini + MacBooks)"
+    }
+  ]
+}

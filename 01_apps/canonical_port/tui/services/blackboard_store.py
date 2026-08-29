@@ -56,6 +56,7 @@ from models.blackboard_models import (
     HardwareNodeState,
     TriVaultStorageState,
     PttBloodPressure,
+    WearablesTelemetryState,
     resolve_mac_mini_ip
 )
 
@@ -782,6 +783,10 @@ class BlackboardStore:
                 "layer_6_tooling_skills": (Layer6ToolingSkillsState, "layer_6_tooling_skills"),
                 "layer_6": (Layer6ToolingSkillsState, "layer_6_tooling_skills"),
                 "tooling": (Layer6ToolingSkillsState, "layer_6_tooling_skills"),
+
+                "wearables_telemetry": (WearablesTelemetryState, "wearables_telemetry"),
+                "wearables": (WearablesTelemetryState, "wearables_telemetry"),
+                "open_wearables": (WearablesTelemetryState, "wearables_telemetry"),
 
                 "voice_coding": (VoiceCodingState, "voice_coding"),
                 "voice": (VoiceCodingState, "voice_coding"),

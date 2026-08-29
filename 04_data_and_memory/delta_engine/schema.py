@@ -63,6 +63,44 @@ MESH_TELEMETRY_ARROW_SCHEMA = pa.schema([
     ("packet_loss_pct", pa.float64()),
 ])
 
+WEARABLES_TELEMETRY_ARROW_SCHEMA = pa.schema([
+    ("timestamp", pa.timestamp("us", tz="UTC")),
+    ("user_id", pa.string()),
+    ("source", pa.string()),
+    ("providers", pa.list_(pa.string())),
+    ("recovery_score", pa.float64()),
+    ("sleep_score", pa.float64()),
+    ("strain_score", pa.float64()),
+    ("resting_hr_bpm", pa.float64()),
+    ("hrv_rmssd_ms", pa.float64()),
+    ("steps", pa.int64()),
+    ("active_calories", pa.int64()),
+    ("movesense_connected", pa.bool_()),
+    ("live_hr_bpm", pa.float64()),
+    ("live_dfa_alpha1", pa.float64()),
+    ("live_rmssd_ms", pa.float64()),
+    ("ptt_systolic_mmhg", pa.float64()),
+    ("ptt_diastolic_mmhg", pa.float64()),
+    ("rule_0_zero_mock", pa.bool_()),
+    ("raw_payload_json", pa.string()),
+])
+
+MOVESENSE_STREAM_ARROW_SCHEMA = pa.schema([
+    ("timestamp", pa.timestamp("us", tz="UTC")),
+    ("device_id", pa.string()),
+    ("sample_rate_hz", pa.int32()),
+    ("heart_rate_bpm", pa.float64()),
+    ("rr_intervals_ms", pa.list_(pa.float64())),
+    ("rmssd_ms", pa.float64()),
+    ("dfa_alpha1", pa.float64()),
+    ("zone2_status", pa.string()),
+    ("ptt_systolic_mmhg", pa.float64()),
+    ("ptt_diastolic_mmhg", pa.float64()),
+    ("ecg_snr_db", pa.float64()),
+    ("rule_0_zero_mock", pa.bool_()),
+    ("raw_payload_json", pa.string()),
+])
+
 SCHEMA_REGISTRY: Dict[str, pa.Schema] = {
     "truth_audit": TRUTH_AUDIT_ARROW_SCHEMA,
     "truth_audit_debate": TRUTH_AUDIT_ARROW_SCHEMA,
@@ -74,6 +112,11 @@ SCHEMA_REGISTRY: Dict[str, pa.Schema] = {
     "dpo_router_orchestrator_pairs": DPO_PREFERENCE_ARROW_SCHEMA,
     "mesh_telemetry": MESH_TELEMETRY_ARROW_SCHEMA,
     "mesh_telemetry_stream": MESH_TELEMETRY_ARROW_SCHEMA,
+    "wearables_telemetry": WEARABLES_TELEMETRY_ARROW_SCHEMA,
+    "wearables_stream": WEARABLES_TELEMETRY_ARROW_SCHEMA,
+    "open_wearables": WEARABLES_TELEMETRY_ARROW_SCHEMA,
+    "movesense_stream": MOVESENSE_STREAM_ARROW_SCHEMA,
+    "movesense_ecg_stream": MOVESENSE_STREAM_ARROW_SCHEMA,
 }
 
 

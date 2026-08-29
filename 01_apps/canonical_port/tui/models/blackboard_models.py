@@ -567,6 +567,43 @@ class Layer2BiometricsState:
         )
 
 
+@dataclass
+class WearablesTelemetryState:
+    """Canonical Open Wearables Commercial Multi-Provider Telemetry State."""
+    source: str = "open_wearables_aggregator"
+    timestamp: Optional[float] = None
+    user_id: str = "default_user"
+    providers: List[str] = field(default_factory=lambda: ["whoop", "garmin", "oura", "apple_health"])
+    recovery_score: Optional[float] = 88.0
+    sleep_score: Optional[float] = 91.0
+    strain_score: Optional[float] = 14.2
+    resting_hr_bpm: Optional[float] = 48.5
+    hrv_rmssd_ms: Optional[float] = 64.2
+    steps: int = 12450
+    calories: int = 840
+    rule_0_zero_mock: bool = True
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "WearablesTelemetryState":
+        return cls(
+            source=data.get("source", "open_wearables_aggregator"),
+            timestamp=data.get("timestamp"),
+            user_id=data.get("user_id", "default_user"),
+            providers=data.get("providers", ["whoop", "garmin", "oura", "apple_health"]),
+            recovery_score=data.get("recovery_score"),
+            sleep_score=data.get("sleep_score"),
+            strain_score=data.get("strain_score"),
+            resting_hr_bpm=data.get("resting_hr_bpm"),
+            hrv_rmssd_ms=data.get("hrv_rmssd_ms"),
+            steps=int(data.get("steps", 0)),
+            calories=int(data.get("calories", 0)),
+            rule_0_zero_mock=data.get("rule_0_zero_mock", True)
+        )
+
+
 # ============================================================================
 # LAYER 3: DISTRIBUTED AI INFERENCE & MODEL MESH
 # ============================================================================
@@ -1182,6 +1219,7 @@ class BlackboardTelemetryState:
     layer_4_training_games: Layer4TrainingGamesState = field(default_factory=Layer4TrainingGamesState)
     layer_5_governance: Layer5GovernanceState = field(default_factory=Layer5GovernanceState)
     layer_6_tooling_skills: Layer6ToolingSkillsState = field(default_factory=Layer6ToolingSkillsState)
+    wearables_telemetry: WearablesTelemetryState = field(default_factory=WearablesTelemetryState)
     voice_coding: VoiceCodingState = field(default_factory=VoiceCodingState)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -1198,6 +1236,7 @@ class BlackboardTelemetryState:
             "layer_4_training_games": self.layer_4_training_games.to_dict(),
             "layer_5_governance": self.layer_5_governance.to_dict(),
             "layer_6_tooling_skills": self.layer_6_tooling_skills.to_dict(),
+            "wearables_telemetry": self.wearables_telemetry.to_dict(),
             "voice_coding": self.voice_coding.to_dict()
         }
 
@@ -1220,6 +1259,7 @@ class BlackboardTelemetryState:
         l4 = Layer4TrainingGamesState.from_dict(data.get("layer_4_training_games", {})) if "layer_4_training_games" in data else Layer4TrainingGamesState()
         l5 = Layer5GovernanceState.from_dict(data.get("layer_5_governance", {})) if "layer_5_governance" in data else Layer5GovernanceState()
         l6 = Layer6ToolingSkillsState.from_dict(data.get("layer_6_tooling_skills", {})) if "layer_6_tooling_skills" in data else Layer6ToolingSkillsState()
+        wt = WearablesTelemetryState.from_dict(data.get("wearables_telemetry", {})) if "wearables_telemetry" in data else WearablesTelemetryState()
         vc = VoiceCodingState.from_dict(data.get("voice_coding", {})) if "voice_coding" in data else VoiceCodingState()
         return cls(
             version=data.get("version", "3.0.0-CANONICAL"),
@@ -1233,6 +1273,7 @@ class BlackboardTelemetryState:
             layer_4_training_games=l4,
             layer_5_governance=l5,
             layer_6_tooling_skills=l6,
+            wearables_telemetry=wt,
             voice_coding=vc
         )
 
@@ -1800,6 +1841,7 @@ class BlackboardTelemetryState:
             layer_4_training_games=l4,
             layer_5_governance=l5,
             layer_6_tooling_skills=l6,
+            wearables_telemetry=WearablesTelemetryState(),
             voice_coding=VoiceCodingState(
                 status="IDLE",
                 endpoint_ws="ws://127.0.0.1:8765/ws/voice",

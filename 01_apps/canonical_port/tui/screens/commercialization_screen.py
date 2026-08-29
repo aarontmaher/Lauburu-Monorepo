@@ -33,7 +33,7 @@ class CommercializationScreen(Screen):
     def compose(self) -> ComposeResult:
         yield Header()
         yield CanonicalHeaderBar(id="canonical_header_bar")
-        yield PinnedTabNavBar(active_tab="tooling", id="pinned_tab_nav_bar")
+        yield PinnedTabNavBar(active_screen="tooling", id="pinned_tab_nav_bar")
         with VerticalScroll():
             yield CommercializationUnlockWidget()
         yield Footer()

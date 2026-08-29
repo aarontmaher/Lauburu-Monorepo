@@ -53,21 +53,21 @@ class CommercializationUnlockWidget(Widget):
 
         table.add_row(
             "[#4ade80]COMMUNITY[/#4ade80]",
-            "[bold #ffffff]$0[/#ffffff] / mo",
+            "[bold white]$0[/bold white] / mo",
             "• Local llama.cpp RPC Mesh (:8081-:8084)\n• Free Gateway (Gemini 15 RPM, Groq 30 RPM)\n• 9-Screen Command Center & Blackboard",
             "[bold #4ade80]ACTIVE (Default)[/bold #4ade80]"
         )
 
         table.add_row(
             "[#38bdf8]PRO HARDWARE[/#38bdf8]",
-            "[bold #ffffff]$29[/#ffffff] / mo",
+            "[bold white]$29[/bold white] / mo",
             "• 10Gbps Thunderbolt 4 DMA Sharding (0.27ms)\n• 512Hz Pan-Tompkins ECG & DFA-alpha1 Stream\n• 24/7 LoRA On-Device Fine-Tuning Daemon",
             "[bold #38bdf8]Press [P] or Click to Unlock[/bold #38bdf8]"
         )
 
         table.add_row(
             "[#e879f9]ENTERPRISE MESH[/#e879f9]",
-            "[bold #ffffff]$299[/#ffffff] / mo",
+            "[bold white]$299[/bold white] / mo",
             "• Multi-WAN Speedify Bonding & Cloudflare Sync\n• Shopify Headless Storefront & Auth Sync\n• Autonomous Jules 300 Session PR Governor",
             "[bold #e879f9]Press [E] or Click for Invoice[/bold #e879f9]"
         )
