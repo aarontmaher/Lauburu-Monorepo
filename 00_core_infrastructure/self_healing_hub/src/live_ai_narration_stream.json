@@ -1,11 +1,11 @@
 {
-  "timestamp_utc": "2026-08-29T09:01:19Z",
-  "narrator_headline": "\ud83c\udf99\ufe0f MESH NARRATOR: Physical mesh stabilized at 78 BPM. Hermes & OpenClaw contesting LuCI's router SQM policy.",
-  "red_lead_thought": "Hermes 3: Scanning OpenWrt SQM queue depths on 192.168.8.1... Attempting BQL burst expansion to 8192 bytes.",
-  "blue_lead_thought": "LuCI: WireGuard ChaCha20-Poly1305 fallback route armed on 100.101.39.98... Ready for sub-millisecond failover.",
+  "timestamp_utc": "2026-08-29T09:01:34Z",
+  "narrator_headline": "\ud83c\udf99\ufe0f MESH NARRATOR: Physical mesh stabilized at 74 BPM. Hermes & OpenClaw contesting LuCI's router SQM policy.",
+  "red_lead_thought": "Hermes 3: Overdriving sysctl TCP buffers on Mac Mini to 128MB... Probing 40 Gbps TB4 DMA link.",
+  "blue_lead_thought": "Sentinel: Locking MTU 9000 Jumbo Frame tripwire on bridge0... Ed25519 node authentication certified.",
   "actors": {
     "red_lead": "Hermes 3 & OpenClaw",
     "blue_lead": "LuCI OpenWrt & Sentinel",
-    "biometrics": "Movesense 261030002013 (78 BPM)"
+    "biometrics": "Movesense 261030002013 (74 BPM)"
   }
 }
