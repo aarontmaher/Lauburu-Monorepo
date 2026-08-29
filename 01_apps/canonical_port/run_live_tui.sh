@@ -82,10 +82,10 @@ elif [ "${FIRST_ARG}" = "verify" ] || [ "${FIRST_ARG}" = "--verify" ]; then
     cd "${SCRIPT_DIR}"
     exec ${VENV_PYTHON} "${SCRIPT_DIR}/tui/verify_tui.py"
 elif [ "${FIRST_ARG}" = "--dev" ] || [ "${FIRST_ARG}" = "dev" ]; then
-    echo "▶ Launching Canonical TUI in Live --dev Mode..."
+    echo "▶ Launching Canonical TUI in Live Mode..."
     shift || true
     cd "${SCRIPT_DIR}"
-    exec ${VENV_PYTHON} -m textual run --dev "${TUI_APP}" "$@"
+    exec ${VENV_PYTHON} "${TUI_APP}" "$@"
 else
     # 2. Launch Textual TUI Console
     cd "${SCRIPT_DIR}"
