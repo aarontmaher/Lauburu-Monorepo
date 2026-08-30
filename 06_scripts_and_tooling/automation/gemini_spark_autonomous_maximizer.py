@@ -264,6 +264,158 @@ def call_local_llm(prompt: str, port: int = 8080) -> Optional[str]:
         return None
 
 
+def call_free_api(prompt: str) -> Optional[str]:
+    """Rotate through zero-cost free-tier API endpoints for bonus pair generation.
+    Priority: Groq free → OpenRouter free → Gemini Flash Lite free.
+    Rule #0: returns None on any failure — never simulates responses.
+    """
+    import urllib.request, os
+
+    # --- Groq free tier (gemma2-9b-it: 14,400 req/day free) ---
+    groq_key = os.environ.get("GROQ_API_KEY") or _read_key_file("~/.config/groq/api_key")
+    if groq_key:
+        try:
+            payload = json.dumps({
+                "model": "gemma2-9b-it",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 400, "temperature": 0.6
+            }).encode()
+            req = urllib.request.Request(
+                "https://api.groq.com/openai/v1/chat/completions",
+                data=payload,
+                headers={"Content-Type": "application/json", "Authorization": f"Bearer {groq_key}"},
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=20) as r:
+                return json.loads(r.read())["choices"][0]["message"]["content"].strip()
+        except Exception:
+            pass
+
+    # --- OpenRouter free tier (meta-llama/llama-3.1-8b-instruct:free) ---
+    or_key = os.environ.get("OPENROUTER_API_KEY") or _read_key_file("~/.config/openrouter/api_key")
+    if or_key:
+        try:
+            payload = json.dumps({
+                "model": "meta-llama/llama-3.1-8b-instruct:free",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 400
+            }).encode()
+            req = urllib.request.Request(
+                "https://openrouter.ai/api/v1/chat/completions",
+                data=payload,
+                headers={"Content-Type": "application/json", "Authorization": f"Bearer {or_key}",
+                         "HTTP-Referer": "https://lauburu.ai"},
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=20) as r:
+                return json.loads(r.read())["choices"][0]["message"]["content"].strip()
+        except Exception:
+            pass
+
+    # --- Gemini Flash Lite free tier (1500 RPD / 15 RPM free) ---
+    gemini_key = os.environ.get("GEMINI_API_KEY") or _read_key_file("~/.config/gemini/api_key")
+    if gemini_key:
+        try:
+            payload = json.dumps({
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"maxOutputTokens": 400, "temperature": 0.6}
+            }).encode()
+            req = urllib.request.Request(
+                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key={gemini_key}",
+                data=payload,
+                headers={"Content-Type": "application/json"},
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=20) as r:
+                d = json.loads(r.read())
+                return d["candidates"][0]["content"]["parts"][0]["text"].strip()
+        except Exception:
+            pass
+
+    return None  # Rule #0: no simulation
+
+
+def _read_key_file(path: str) -> Optional[str]:
+    """Safely read an API key from a file path."""
+    try:
+        p = Path(path).expanduser()
+        if p.exists():
+            return p.read_text().strip()
+    except Exception:
+        pass
+    return None
+
+
+def generate_rich_report(summary: Dict[str, Any], state: Dict[str, Any]) -> str:
+    """Use local LLM to generate a detailed Markdown cycle report — saved to Obsidian.
+    This replaces Gemini-token-heavy chat summaries with zero-cost local generation.
+    """
+    cycle_num = summary.get("lora_samples_total", 0) // 5
+    pairs = summary.get("lora_samples_total", 0)
+    harvested = summary.get("pairs_harvested", 0)
+    ram = summary.get("host_ram_pct", 0)
+    disk = summary.get("disk_free_gb", 0)
+    daemons = summary.get("daemons_online", "?/7")
+    elapsed = summary.get("elapsed_seconds", 0)
+
+    # Build preview of what was generated this cycle
+    previews = []
+    for r in summary.get("results", []):
+        if r.get("status") == "SUCCESS":
+            previews.append(f"- **{r['task_name']}**: {r.get('response_preview','')[:120]}...")
+
+    preview_text = "\n".join(previews)
+
+    report_prompt = f"""Write a detailed training cycle report for the Lauburu AI Mesh autonomous training system.
+
+Cycle stats:
+- Cycle number: ~{cycle_num}
+- Total LoRA pairs: {pairs} (+{harvested} this cycle)  
+- Host RAM: {ram:.1f}%
+- Disk free: {disk:.1f} GB
+- Daemons online: {daemons}
+- Elapsed: {elapsed:.1f}s
+- Last commit: {state.get('last_commit', 'unknown')}
+
+Task outputs this cycle:
+{preview_text}
+
+Write a comprehensive 300-400 word Markdown report covering:
+1. What was learned/generated this cycle (specific DPO pairs with domain significance)
+2. System health analysis (RAM trends, disk, daemon stability)
+3. Training velocity and quality observations
+4. Architectural insights extracted from this cycle's AI debate consensus
+5. Recommended next actions for the mesh
+
+Use headers, bullet points, and be technically specific to the Lauburu ecosystem."""
+
+    report_body = call_local_llm(report_prompt, port=8080) or call_local_llm(report_prompt, port=8082)
+    if not report_body:
+        report_body = f"Local LLM offline — raw stats: {pairs} pairs, {ram:.0f}% RAM, {daemons} daemons"
+
+    ts = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+    report = f"""---
+title: "Cycle Report — {pairs} LoRA Pairs"
+tags: [lora, training, cycle_report, autonomous]
+generated: {ts}
+---
+
+# 🧠 Autonomous Training Cycle Report
+**Pairs:** {pairs} (+{harvested}) | **RAM:** {ram:.0f}% | **Disk:** {disk:.1f} GB | **Daemons:** {daemons}
+
+{report_body}
+
+---
+*Auto-generated by local LLM ({elapsed:.0f}s cycle) — zero cloud token usage*
+"""
+
+    # Save to Obsidian
+    report_path = OBSIDIAN_DIR / "05_TRAINING" / f"cycle_report_{pairs}_pairs.md"
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(report)
+    return str(report_path)
+
+
 def append_lora_pair(pair: Dict[str, Any], dataset_name: str = "continuous_lora_dataset.jsonl") -> bool:
     """Atomically append a training pair to the LoRA dataset."""
     path = LORA_DIR / dataset_name
@@ -333,14 +485,48 @@ def run_maximizer_cycle() -> Dict[str, Any]:
 
         time.sleep(INTER_REQUEST_DELAY)
 
+    # --- Bonus: free API pair generation (Groq / OpenRouter / Gemini Flash Lite) ---
+    bonus_topics = random.sample(MESH_TOPICS, min(3, len(MESH_TOPICS)))
+    for topic in bonus_topics:
+        bonus_prompt = f"""Generate a DPO training pair (JSON) for the Lauburu AI mesh about: "{topic}"
+Format: {{"instruction": "...", "chosen": "...", "rejected": "..."}}
+Be technically precise about the Lauburu mesh architecture."""
+        bonus_resp = call_free_api(bonus_prompt)
+        if bonus_resp:
+            try:
+                import re as _re
+                m = _re.search(r'\{.*\}', bonus_resp, _re.DOTALL)
+                if m:
+                    pair_data = json.loads(m.group())
+                    pair = {
+                        "instruction": pair_data.get("instruction", topic),
+                        "output": pair_data.get("chosen", bonus_resp[:400]),
+                        "rejected": pair_data.get("rejected", ""),
+                        "source": "free_api_bonus",
+                        "timestamp": state["timestamp"],
+                        "task_id": "free_api_bonus",
+                        "topic": topic,
+                    }
+                    if append_lora_pair(pair):
+                        pairs_harvested += 1
+            except Exception:
+                pass
+
     elapsed = round(time.perf_counter() - t0, 2)
+
+    # Reload lora_samples count after bonus pairs
+    try:
+        lora_path = LORA_DIR / "continuous_lora_dataset.jsonl"
+        updated_total = sum(1 for _ in open(lora_path, encoding="utf-8", errors="ignore")) if lora_path.exists() else state["lora_samples"]
+    except Exception:
+        updated_total = state["lora_samples"]
 
     summary = {
         "timestamp_utc": state["timestamp"],
         "elapsed_seconds": elapsed,
         "pairs_harvested": pairs_harvested,
         "tasks_run": len(TRACKING_TASKS),
-        "lora_samples_total": state["lora_samples"],
+        "lora_samples_total": updated_total,
         "free_ai_samples": state["free_ai_samples"],
         "daemons_online": f"{state['daemons_online']}/7",
         "router_ram_mb": state["router_ram_mb"],
@@ -351,32 +537,52 @@ def run_maximizer_cycle() -> Dict[str, Any]:
         "status": "ALL_NOMINAL" if pairs_harvested > 0 else "LOCAL_LLM_OFFLINE",
     }
 
-    # Persist status
+    # Persist compact status JSON
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(LOG_FILE, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
+
+    # Generate rich Markdown report via local LLM → saved to Obsidian (zero cloud tokens)
+    try:
+        report_path = generate_rich_report(summary, state)
+        summary["report_path"] = report_path
+    except Exception:
+        pass
 
     return summary
 
 
 def main():
-    """Run one autonomous maximizer cycle and print results."""
+    """Run one autonomous maximizer cycle.
+    Prints a compact single-line status — never burns cloud tokens on routine cycle output.
+    Use --verbose for full JSON debug output only.
+    """
     import argparse
-    parser = argparse.ArgumentParser(description="Gemini Spark Autonomous Project Tracker & Quota Maximizer")
+    parser = argparse.ArgumentParser(description="Lauburu Autonomous Maximizer — local LLM + free API, zero cloud cost")
     parser.add_argument("--daemon", action="store_true", help="Run continuously every 15 minutes")
+    parser.add_argument("--verbose", action="store_true", help="Print full JSON (debug only)")
     args = parser.parse_args()
 
     if args.daemon:
-        print("🚀 Gemini Spark Autonomous Maximizer — 24/7 DAEMON MODE")
-        print(f"   Quota: {FREE_TIER_RPM} RPM / {FREE_TIER_RPD} RPD | Inter-request delay: {INTER_REQUEST_DELAY:.1f}s")
+        print("🚀 Autonomous Maximizer — DAEMON MODE | local LLM + free API | zero cloud cost")
         while True:
             result = run_maximizer_cycle()
-            print(f"[{result['timestamp_utc']}] ✅ {result['pairs_harvested']} pairs | {result['daemons_online']} daemons | RAM: {result['router_ram_mb']:.0f}MB router, {result['host_ram_pct']:.0f}% host")
-            time.sleep(900)  # 15 minutes
+            ts = result["timestamp_utc"][11:16]
+            print(f"[{ts}] ✅ {result['lora_samples_total']} pairs (+{result['pairs_harvested']}) | "
+                  f"RAM {result['host_ram_pct']:.0f}% | disk {result['disk_free_gb']:.1f}GB | "
+                  f"{result['daemons_online']} | {result['status']}")
+            time.sleep(900)
     else:
-        print("⚡ Running single Gemini Spark Autonomous Maximizer cycle...")
         result = run_maximizer_cycle()
-        print(json.dumps(result, indent=2))
+        if args.verbose:
+            print(json.dumps(result, indent=2))
+        else:
+            # One compact line — no Gemini token cost
+            ts = result["timestamp_utc"][11:16]
+            rpt = Path(result.get("report_path", "")).name or "no-report"
+            print(f"⚡ [{ts}] {result['lora_samples_total']} pairs (+{result['pairs_harvested']}) | "
+                  f"RAM {result['host_ram_pct']:.0f}% | disk {result['disk_free_gb']:.1f}GB | "
+                  f"{result['daemons_online']} | {result['status']} | {rpt}")
 
 
 if __name__ == "__main__":
