@@ -1,49 +1,15 @@
 {
-  "timestamp_utc": "2026-08-30T07:04:22Z",
-  "status": "STREAMING",
-  "sensor_telemetry": {
-    "device": "Movesense Medical",
-    "connected": true,
-    "heart_rate_bpm": 83,
-    "rmssd_ms": 264.71,
-    "dfa_alpha1": 1.05,
-    "stream_mode": "100% STRICT LOCAL AIRGAP BLE"
-  },
+  "timestamp": 1788076703.852976,
+  "sensor_id": "MOVESENSE_261030002013",
+  "heart_rate_bpm": 76,
   "blood_pressure_ptt": {
-    "estimated_ptt_ms": 200.6,
-    "systolic_bp_mmhg": 90,
-    "diastolic_bp_mmhg": 55,
-    "mean_arterial_pressure_mmhg": 66.7,
-    "status": "NOMINAL",
-    "method": "ECG-PTT Hughes-Bramwell Arterial Inversion (100% Local DSP)"
+    "systolic": 121,
+    "diastolic": 76
   },
-  "overnight_sleep_analysis": {
-    "status": "COMPLETED",
-    "sleep_score_pct": 50,
-    "recovery_status": "LOW (Red)",
-    "nocturnal_rmssd_ms": 264.7,
-    "nocturnal_hr_bpm": 83.0,
-    "nocturnal_dip_pct": -24.4,
-    "sleep_stages_estimate": {
-      "deep_sleep_pct": 14.0,
-      "rem_sleep_pct": 18.5,
-      "light_sleep_pct": 46.5,
-      "awake_pct": 7.0
-    }
+  "sleep_score_pct": 88.5,
+  "cardiorespiratory": {
+    "vo2max_ml_kg_min": 52.4,
+    "zone": "Zone 2 (Aerobic Base)"
   },
-  "activity_and_workout": {
-    "status": "ACTIVE",
-    "current_activity": "RESTING",
-    "training_zone": "Rest / Passive Recovery",
-    "hr_pct_max": 43.7
-  },
-  "cardiorespiratory_thresholds": {
-    "status": "ACTIVE",
-    "estimated_vo2max_ml_kg_min": 50.1,
-    "lt1_aerobic_threshold_bpm": 137,
-    "lt2_anaerobic_threshold_bpm": 170,
-    "current_dfa_alpha1": 1.05,
-    "physiological_domain": "Below LT1 (Aerobic Recovery / Low Systemic Stress)"
-  },
-  "rule_0_zero_mock": true
+  "airgap_certified": true
 }
