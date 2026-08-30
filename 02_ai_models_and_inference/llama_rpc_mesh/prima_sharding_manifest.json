@@ -1,0 +1,112 @@
+{
+  "prima_sharding_manifest": {
+    "version": "1.0.0",
+    "updated_utc": "2026-08-30T10:55:00Z",
+    "description": "prima.cpp Pipelined-Ring Parallelism (PRP) cluster manifest for Kimi-Dev-72B and Llama-4-Scout-17B.",
+    "mode": "pipelined_ring",
+    "prima_server_port": 8082,
+    "legacy_rpc_port": 8081,
+
+    "halda": {
+      "enable": true,
+      "lw_auto": true,
+      "ngl_auto": true,
+      "comment": "Halda ILP auto-allocates layer windows and GPU offload depths per node. Requires fio + HiGHS on each worker."
+    },
+
+    "activation_quantization": "int8",
+    "activation_quant_comment": "INT8 symmetric per-tensor quantization at stage boundaries reduces inter-node bandwidth by 50%.",
+
+    "ring_peers": [
+      {
+        "node_id": "linux_head_node",
+        "role": "worker",
+        "hostname": "Linux Head Node (AMD Ryzen 7 5700U, Ubuntu 24.04)",
+        "local_ip": "192.168.8.224",
+        "tailscale_ip": "100.101.39.98",
+        "preferred_ip": "100.101.39.98",
+        "prima_port": 50053,
+        "backend": "cpu+vulkan",
+        "total_ram_gb": 16.0,
+        "dynamic_ceiling_pct": 80.0,
+        "usable_ram_gb": 12.8,
+        "disk_read_gbps_expected": 2.5,
+        "wan_rtt_ms_to_master": 3.5,
+        "prima_binary": "/home/linux/prima_cpp/build/bin/llama-server",
+        "model_path": "/mnt/ssd_1tb/llama.cpp/models/"
+      },
+      {
+        "node_id": "macbook_pro",
+        "role": "worker",
+        "hostname": "MacBook Pro M1 Max (16GB, Thunderbolt 4 Vault)",
+        "local_ip": "192.168.8.127",
+        "tailscale_ip": "100.103.212.21",
+        "tb4_ip": "169.254.187.138",
+        "preferred_ip": "169.254.187.138",
+        "prima_port": 50053,
+        "backend": "metal",
+        "total_ram_gb": 16.0,
+        "dynamic_ceiling_pct": 90.0,
+        "usable_ram_gb": 14.4,
+        "disk_read_gbps_expected": 3.5,
+        "wan_rtt_ms_to_master": 0.277,
+        "prima_binary": "/Users/aaron/prima_cpp/build/bin/llama-server",
+        "model_path": "/Volumes/NAS/AI_Models/"
+      },
+      {
+        "node_id": "mac_host",
+        "role": "master",
+        "hostname": "Mac Mini M4 Pro (24GB, Primary Host)",
+        "local_ip": "127.0.0.1",
+        "tailscale_ip": "100.119.199.76",
+        "preferred_ip": "127.0.0.1",
+        "prima_port": 50053,
+        "backend": "metal",
+        "total_ram_gb": 24.0,
+        "dynamic_ceiling_pct": 90.0,
+        "usable_ram_gb": 21.6,
+        "disk_read_gbps_expected": 4.0,
+        "wan_rtt_ms_to_master": 0.0,
+        "prima_binary": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/build/bin/llama-server",
+        "model_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/models/"
+      }
+    ],
+
+    "models": {
+      "kimi_dev_72b": {
+        "model_id": "kimi-dev-72b-instruct-q4_k_m",
+        "total_layers": 80,
+        "model_size_gb": 39.0,
+        "context_window": 16384,
+        "prima_endpoint": "http://127.0.0.1:8082",
+        "legacy_rpc_endpoint": "http://127.0.0.1:8081",
+        "master_model_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/models/kimi-dev-72b-instruct-q4_k_m.gguf",
+        "note": "Halda will auto-compute -lw (layer window) and -ngl (GPU offload depth) at ring startup."
+      },
+      "llama4_scout_17b": {
+        "model_id": "Llama-4-Scout-17B-16E-Instruct-Q4_K_M",
+        "total_layers": 48,
+        "model_size_gb": 9.8,
+        "context_window": 32768,
+        "prima_endpoint": "http://127.0.0.1:8082",
+        "master_model_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Llama-4-Scout-17B-16E-Instruct-Q4_K_M-00001-of-00002.gguf",
+        "note": "Secondary ring target — fits comfortably on 2-node ring (MacBook Pro + Mac Mini)."
+      }
+    },
+
+    "performance_expectations": {
+      "kimi_72b_llama_rpc_tpot_ms": 12227,
+      "kimi_72b_prima_cpp_tpot_ms_target": 900,
+      "speedup_target": "~13x",
+      "source": "prima.cpp README benchmarks on Qwen 2.5-72B (comparable architecture)"
+    },
+
+    "cluster_summary": {
+      "total_nodes": 3,
+      "pooled_usable_ram_gb": 48.8,
+      "free_cluster_headroom_gb": 34.0,
+      "transport": "Tailscale WireGuard (WAN, encrypted) + TB4 DMA 10Gbps (Mac-to-Mac)",
+      "activation_stream_compression": "INT8 (50% bandwidth reduction vs FP16)"
+    }
+  }
+}

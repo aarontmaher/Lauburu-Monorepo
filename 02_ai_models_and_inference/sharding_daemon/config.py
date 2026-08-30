@@ -82,7 +82,10 @@ TRANSPORT_TIER_PROFILES: Dict[TransportTier, TransportMetrics] = {
 
 # Standardized Port Allocations
 RPC_PORT = 50052
-LLAMA_SERVER_MASTER_PORT = 8081
+LLAMA_SERVER_MASTER_PORT = 8081         # Legacy llama.cpp GGML-RPC (preserved)
+PRIMA_RING_PORT = 8082                  # prima.cpp PRP master (Halda ILP, 13× faster)
+PRIMA_RING_ADAPTER_PORT = 8083          # prima.cpp ring adapter (OpenAI-compat proxy + fallback)
+PRIMA_WORKER_PORT = 50053               # prima.cpp ring worker socket (Linux + MacBook Pro)
 PETALS_DHT_BOOTSTRAP_PORT = 31330
 EXO_ZENOH_PORT = 52415
 ACCELERATE_TORCHRUN_PORT = 29500
@@ -93,6 +96,9 @@ VISION_SERVER_PORT = 8085
 DEFAULT_PORTS = {
     "rpc_port": RPC_PORT,
     "llama_master_port": LLAMA_SERVER_MASTER_PORT,
+    "prima_ring_port": PRIMA_RING_PORT,
+    "prima_ring_adapter_port": PRIMA_RING_ADAPTER_PORT,
+    "prima_worker_port": PRIMA_WORKER_PORT,
     "petals_dht_port": PETALS_DHT_BOOTSTRAP_PORT,
     "exo_zenoh_port": EXO_ZENOH_PORT,
     "accelerate_port": ACCELERATE_TORCHRUN_PORT,
