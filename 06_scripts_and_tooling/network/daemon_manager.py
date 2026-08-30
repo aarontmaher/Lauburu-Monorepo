@@ -116,7 +116,7 @@ SUPERVISED_DAEMONS = {
         "tier": "model",
         "start_cmd": [],  # Managed on Linux — not started by daemon_manager
         "icon": "🧮",
-        "notes": "Remote. 26 GB on 14 GB RAM + 27 GB swap. ~1-3 tok/s CPU. Batch math."
+        "notes": "STORED NOT SERVING. 26GB on Ryzen7 CPU+swap = ~0.1 tok/s (unusable). Needs RAM upgrade or llama.cpp RPC sharding."
     },
     "self_healing_hub_18802": {
         "name": "Self-Healing Hub & WoL REST API",
