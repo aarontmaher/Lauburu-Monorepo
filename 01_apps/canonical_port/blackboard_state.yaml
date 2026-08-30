@@ -1,5 +1,5 @@
 version: 3.0.0-CANONICAL
-timestamp: '2026-08-30T15:14:11.836089'
+timestamp: '2026-08-30T15:29:20.452631'
 source_node: L1_Mac_Node
 provenance:
   agent_id: teamwork_preview_worker_m2
@@ -121,10 +121,10 @@ layer_0_networking:
     upload_mbps: 48.0
     responsiveness_rpm: 1420
     latency_ms: 12.4
-    timestamp: '15:14:09'
+    timestamp: '15:29:18'
     command: /usr/bin/networkQuality -c -M 5
     cycle_seconds: 300
-    last_tested_iso: '2026-08-30T15:14:09.463929'
+    last_tested_iso: '2026-08-30T15:29:18.442246'
   ssh_fleet:
   - node_id: L1
     host: 127.0.0.1
@@ -132,48 +132,48 @@ layer_0_networking:
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 0.76
-    last_auth_iso: '2026-08-30T15:14:10.557138'
+    latency_ms: 0.36
+    last_auth_iso: '2026-08-30T15:29:19.522613'
   - node_id: L2
     host: 192.168.8.127
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_9.6
     key_type: ssh-ed25519
-    latency_ms: 32.66
-    last_auth_iso: '2026-08-30T15:14:10.547024'
+    latency_ms: 63.06
+    last_auth_iso: '2026-08-30T15:29:19.547250'
   - node_id: L3
     host: 100.101.39.98
     port: 22
     status: OPEN
-    banner: SSH-2.0-OpenSSH_9.8
+    banner: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18
     key_type: ssh-ed25519
-    latency_ms: 76.83
-    last_auth_iso: '2026-08-30T15:14:10.865303'
+    latency_ms: 65.39
+    last_auth_iso: '2026-08-30T15:29:19.748287'
   - node_id: L4
     host: 192.168.8.173
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
     key_type: ssh-ed25519
-    latency_ms: 6.82
-    last_auth_iso: '2026-08-30T15:14:10.954753'
+    latency_ms: 4.61
+    last_auth_iso: '2026-08-30T15:29:19.921517'
   - node_id: L5
-    host: 192.168.8.222
+    host: 100.93.158.96
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 207.11
-    last_auth_iso: '2026-08-30T15:14:11.572854'
+    latency_ms: 99.5
+    last_auth_iso: '2026-08-30T15:29:19.630651'
   - node_id: L6
     host: 100.73.38.87
     port: 8022
     status: OPEN
-    banner: SSH-2.0-OpenSSH_10.3
+    banner: SSH-2.0-OpenSSH_9.8 (Termux)
     key_type: ssh-ed25519
-    latency_ms: 74.33
-    last_auth_iso: '2026-08-30T15:14:10.790974'
+    latency_ms: 54.92
+    last_auth_iso: '2026-08-30T15:29:19.814265'
   - node_id: L7
     host: 100.84.40.95
     port: 8022
@@ -186,10 +186,10 @@ layer_0_networking:
     host: 192.168.8.1
     port: 22
     status: OPEN
-    banner: "SSH-2.0-dropbear\r\n\0\0\x01\v\x14y\\1\x7Fu(\x1EMH\e>\0\0\0curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384"
+    banner: "SSH-2.0-dropbear\r\n\0\0\x01\v\x14~\f\x15\x19.4&s2\0\0\0curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384"
     key_type: ssh-ed25519
-    latency_ms: 23.97
-    last_auth_iso: '2026-08-30T15:14:10.522963'
+    latency_ms: 12.07
+    last_auth_iso: '2026-08-30T15:29:19.484996'
   ewma_alpha: 0.35
   circuit_breaker_trip_threshold: 0.284
 layer_1_hardware:
@@ -472,7 +472,7 @@ layer_1_hardware:
     pyspark_lake:
       path: /Users/aaron/DFS_UNIFIED/lora_datasets
       healthy: true
-      free_headroom_gb: 12.21
+      free_headroom_gb: 11.2
       headroom_threshold_gb: 10.0
       qdrant_reachable: true
     github_tree:
@@ -563,8 +563,8 @@ layer_3_ai_inference:
     endpoint: 100.101.39.98:50052
     layers_sharded: 28
     vram_used_gb: 13.5
-    status: OFFLINE
-    latency_ms: null
+    status: ACTIVE
+    latency_ms: 32.57
   - node_name: MacBook Pro
     endpoint: 169.254.187.138:50052
     layers_sharded: 28
@@ -576,13 +576,13 @@ layer_3_ai_inference:
     layers_sharded: 24
     vram_used_gb: 12.0
     status: ACTIVE
-    latency_ms: 0.1
+    latency_ms: 0.4
   - node_name: MacBook Air
     endpoint: 100.93.158.96:50052
     layers_sharded: 0
     vram_used_gb: 0.0
-    status: ACTIVE
-    latency_ms: 14.02
+    status: OFFLINE
+    latency_ms: null
   - node_name: Linux Tablet
     endpoint: 100.81.92.125:50052
     layers_sharded: 0
