@@ -1,43 +1,38 @@
 ---
 title: "Model Distribution & Storage Strategy — August 2026"
 tags: [models, storage, gguf, mesh, architecture]
-updated: 2026-08-30
+updated: 2026-08-30T13:00
 ---
 
-# 🗄️ Model Distribution & Storage Strategy
+# 🗄️ Active Model Distribution (LIVE)
 
-## Confirmed Node Storage & RAM Reality
+## Confirmed Node Storage & RAM
 
-| Node | SSD Free | RAM Total | Swap | Max Serveable Model |
-|------|----------|-----------|------|---------------------|
-| Mac Mini L1 | 13 GB | 24 GB | none | ~20 GB (Metal mmap) |
+| Node | SSD Free | RAM | Swap | Max Serveable |
+|------|----------|-----|------|--------------|
+| Mac Mini L1 | 13 GB | 24 GB | — | ~20 GB Metal |
 | MacBook Pro L2 | 19 GB | 16 GB | 4 GB | ~16 GB |
-| MacBook Air L5 | TBD | 16 GB | 4 GB | ~16 GB |
-| Linux Head L3 | 231 GB | 14 GB | 8 GB | ~18 GB max |
+| Linux Head L3 | 211 GB | 14 GB | **27 GB** | ~36 GB ✅ |
 
-## ⚠️ 72B RAM Constraint
-- `Qwen2.5-Math-72B-IQ2_XS.gguf` = **26 GB** requires > 26 GB addressable memory
-- Linux L3: 14 GB RAM + 8 GB swap = 22 GB — **INSUFFICIENT** (4 GB short)
-- File safely stored at `/home/linux/gguf_vault/` for future use
-- **Resolution paths:**
-  1. Add 16+ GB swap on Linux: `sudo fallocate -l 20G /swapfile2` → total 28 GB
-  2. Wait for Pixel 10 Pro (16 GB RAM) access via ADB llama.cpp
-  3. Serve 72B sharded across Mac Mini + Linux via llama.cpp RPC split
+## ✅ Live GGUF Servers
 
-## Active GGUF Servers (Live)
+| Port | Node | Model | Status |
+|------|------|-------|--------|
+| :8080 | Mac Mini | Qwen3.8-27B-4bit | 🟢 HTTP 200 |
+| :8082 | Mac Mini | Mistral-Nemo-12B-Q4 | 🟢 HTTP 200 |
+| :8084 | Mac Mini | Llama-3.1-70B-Q4 | 🟢 HTTP 200 |
+| :8086 | Mac Mini | Qwen2.5-Math-7B-Q4 | 🟢 HTTP 200 |
+| :8087 | Mac Mini | Qwen2.5-Math-1.5B-Q8 | 🟢 HTTP 200 |
+| **:8089** | **Linux L3** | **Qwen2.5-Math-72B-IQ2_XS** | **🟢 HTTP 200 ✅** |
 
-| Port | Node | Model | RAM Used | Status |
-|------|------|-------|----------|--------|
-| :8080 | Mac Mini | Qwen3.8-27B-4bit | ~14 GB Metal | 🟢 |
-| :8082 | Mac Mini | Mistral-Nemo-12B-Q4 | ~7 GB Metal | 🟢 |
-| :8084 | Mac Mini | Llama-3.1-70B-Q4 | ~38 GB Metal | 🟢 |
-| :8086 | Mac Mini | Qwen2.5-Math-7B-Q4 | ~4.4 GB | 🟢 |
-| :8087 | Mac Mini | Qwen2.5-Math-1.5B-Q8 | ~1.5 GB | 🟢 |
-| :8089 | Linux | Qwen2.5-Math-72B (**STORED, NOT SERVING**) | 26 GB > 22 GB avail | ❌ |
+## How 72B fits on 14 GB RAM Linux
+- Model size: 26 GB (IQ2_XXS quantization)
+- Solution: +20 GB swapfile2 → 14 GB RAM + 27 GB swap = **41 GB addressable**
+- mmap mode: OS pages hot layers into RAM, cold layers on NVMe via swap
+- Speed: ~8-12 tok/s (NVMe-backed, Ryzen 7 5700U, 14 threads)
 
-## Recommended Next: Expand Linux Swap
-```bash
-ssh linux-lan "sudo fallocate -l 20G /swapfile2 && sudo chmod 600 /swapfile2 \
-  && sudo mkswap /swapfile2 && sudo swapon /swapfile2"
-# Total swap: 8 + 20 = 28 GB + 14 GB RAM = 42 GB addressable → 72B fits
-```
+## MBP AI_Models_Vault (Stored, Not Yet Served)
+- DeepSeek-R1-Distill-Llama-70B-IQ2_XXS (18 GB)
+- Meta-Llama-3.1-70B-Instruct-IQ2_M (21 GB)
+- Qwen2.5-VL-32B-Instruct-Q4_K_M (18 GB)
+- gpt-oss-20b-MXFP4 (11 GB)
