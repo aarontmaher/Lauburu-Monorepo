@@ -94,12 +94,20 @@ SUPERVISED_DAEMONS = {
         "icon": "🎯"
     },
     "edge_model_8086": {
-        "name": "DeepSeek / SmolLM Edge Server",
+        "name": "Qwen2.5-Math-7B-Q4_K_M (Math Specialist)",
         "port": 8086,
         "host": "127.0.0.1",
         "tier": "model",
-        "start_cmd": ["llama-server", "--port", "8086", "-m", str(REPO_ROOT / "02_ai_models_and_inference/model_vault_gguf/smollm-1.7b-instruct-q4_k_m.gguf"), "-ngl", "99", "--no-jinja"],
-        "icon": "📱"
+        "start_cmd": ["llama-server", "--port", "8086", "-m", str(REPO_ROOT / "02_ai_models_and_inference/gguf_vault/Qwen2.5-Math-7B-Instruct-Q4_K_M.gguf"), "-ngl", "999", "-c", "4096", "-t", "4", "--no-jinja"],
+        "icon": "🔢"
+    },
+    "edge_model_8087": {
+        "name": "Qwen2.5-Math-1.5B-Q8_0 (Edge Math, Fastest)",
+        "port": 8087,
+        "host": "127.0.0.1",
+        "tier": "model",
+        "start_cmd": ["llama-server", "--port", "8087", "-m", str(REPO_ROOT / "02_ai_models_and_inference/gguf_vault/Qwen2.5-Math-1.5B-Instruct-Q8_0.gguf"), "-ngl", "999", "-c", "4096", "-t", "4", "--no-jinja", "--alias", "qwen-math-1.5b-edge"],
+        "icon": "⚡"
     },
     "self_healing_hub_18802": {
         "name": "Self-Healing Hub & WoL REST API",

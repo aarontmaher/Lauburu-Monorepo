@@ -1,19 +1,19 @@
 {
-  "cycle": 1515,
-  "elapsed_seconds": 0.857,
-  "timestamp_utc": "2026-08-30T00:06:00Z",
+  "cycle": 1535,
+  "elapsed_seconds": 0.04,
+  "timestamp_utc": "2026-08-30T00:16:33Z",
   "tiers": {
     "P0": {
       "priority": "P0_INFRASTRUCTURE",
-      "host_ram_pct": 91.8,
-      "disk_free_gb": 11.26,
+      "host_ram_pct": 89.8,
+      "disk_free_gb": 5.39,
       "router_online": true,
-      "status": "HEALED",
-      "action": "TRIGGERED: /nomad-autonomous-mesh-governor 5-tier self-healing"
+      "status": "HEALTHY",
+      "action": "NONE_REQUIRED (All Invariants Nominal)"
     },
     "P1": {
       "priority": "P1_MOVESENSE_READINESS",
-      "heart_rate_bpm": 75,
+      "heart_rate_bpm": 76,
       "blood_pressure": "120/76 mmHg",
       "sleep_score": 88.5,
       "vo2max": 52.4,
