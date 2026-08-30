@@ -178,26 +178,32 @@ Keep under 150 words. Be precise."""
     # ── Stage 3: Coder generates the top improvement patch ───────────────────
     code_patch = None
     if arch_response and critic_response:
-        coder_prompt = f"""Given this existing TUI screen code:
-
-```python
-{code_snippet[:1500]}
-```
-
-And these UI/UX improvement proposals:
-{arch_response[:400]}
-
-Write a CONCRETE Python code patch (using Textual/Rich) implementing the single HIGHEST IMPACT improvement only.
-Output ONLY valid Python code — no explanations, no markdown fence, just the code block that replaces or extends the relevant render method.
-Max 30 lines."""
-
+        # Keep code snippet small to avoid Llama 70B context OOM (HTTP 500)
+        coder_snippet = code_snippet[:800]
+        arch_summary  = arch_response[:300]
+        coder_prompt = (
+            f"Implement this Textual TUI improvement as a Python code patch (max 20 lines):\n\n"
+            f"Improvement: {arch_summary[:200]}\n\n"
+            f"Existing code context:\n```python\n{coder_snippet}\n```\n\n"
+            f"Output ONLY the improved Python code, no explanations."
+        )
+        # Try Llama 70B first, fall back to Qwen3.8 Max if 500
         code_patch = call_local_llm(
             port=8084,
-            system="You are a Python Textual expert. Output only working Python code patches.",
+            system="Output only valid Python Textual/Rich code. Max 20 lines.",
             prompt=coder_prompt,
-            max_tokens=600,
-            temperature=0.3,
+            max_tokens=400,
+            temperature=0.25,
         )
+        if not code_patch:
+            code_patch = call_local_llm(
+                port=8080,
+                system="Output only valid Python Textual/Rich code. Max 20 lines.",
+                prompt=coder_prompt,
+                max_tokens=400,
+                temperature=0.25,
+            )
+
 
     # ── Save LoRA training pair ───────────────────────────────────────────────
     if arch_response:
