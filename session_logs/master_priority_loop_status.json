@@ -1,12 +1,12 @@
 {
-  "cycle": 2483,
-  "elapsed_seconds": 0.047,
-  "timestamp_utc": "2026-08-30T08:12:15Z",
+  "cycle": 2489,
+  "elapsed_seconds": 0.07,
+  "timestamp_utc": "2026-08-30T08:15:15Z",
   "tiers": {
     "P0": {
       "priority": "P0_INFRASTRUCTURE",
-      "host_ram_pct": 87.9,
-      "disk_free_gb": 2.79,
+      "host_ram_pct": 81.9,
+      "disk_free_gb": 0.24,
       "router_online": true,
       "status": "HEALTHY",
       "action": "NONE_REQUIRED (All Invariants Nominal)"
@@ -14,7 +14,7 @@
     "P1": {
       "priority": "P1_MOVESENSE_READINESS",
       "heart_rate_bpm": 76,
-      "blood_pressure": "121/76 mmHg",
+      "blood_pressure": "120/76 mmHg",
       "sleep_score": 88.5,
       "vo2max": 52.4,
       "status": "ACTIVE_512HZ_STREAM"

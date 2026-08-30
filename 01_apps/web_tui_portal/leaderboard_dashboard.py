@@ -92,9 +92,152 @@ def get_transport_stats() -> dict:
             "tb4_tput_mb_s":    t.get("tb4_dma", {}).get("stats", {}).get("mean_throughput_mb_s", 0),
             "synergy_score":    data.get("synergy_efficiency_score", 862),
             "cycle_count":      data.get("cycle_count", 0),
+            # TB4 cluster topology — updated 2026-08-30
+            "tb4_nodes": {
+                "mac_mini": {"ip": "169.254.106.178", "ram_gb": 24, "role": "coordinator"},
+                "macbook_pro": {"ip": "169.254.114.190", "ram_gb": 16, "role": "rpc_worker", "port": 50052},
+                "macbook_air": {"ip": "169.254.95.19",  "ram_gb": 16, "role": "rpc_worker", "port": 50053},
+            },
+            "tb4_total_gb": 56,
         }
     except Exception:
         return {"tb4_rtt_ms": 0, "tailscale_rtt_ms": 0, "tb4_tput_mb_s": 0, "synergy_score": 862, "cycle_count": 0}
+
+
+# ─── Sharding Framework Registry ─────────────────────────────────────────────
+SHARD_FRAMEWORKS = [
+    {"id": "llamacpp_3way", "name": "llama.cpp RPC (3-node TB4)",
+     "url": "http://127.0.0.1:8092",  "transport": "TB4 DMA <1ms",
+     "nodes": "Mac Mini + MBP + Air", "total_gb": 56, "best_for": "Low latency"},
+    {"id": "llamacpp_local", "name": "llama.cpp Local",
+     "url": "http://127.0.0.1:8080",  "transport": "Local Metal",
+     "nodes": "Mac Mini only",         "total_gb": 24, "best_for": "Solo inference"},
+    {"id": "vllm",         "name": "vLLM (MPS)",
+     "url": "http://127.0.0.1:8100",  "transport": "Local MPS",
+     "nodes": "Mac Mini",             "total_gb": 24, "best_for": "High throughput batch"},
+    {"id": "exo_p2p",      "name": "Exo P2P",
+     "url": "http://127.0.0.1:5678",  "transport": "TB4 + Tailscale",
+     "nodes": "Mac Mini + MBP + Air", "total_gb": 56, "best_for": "Large model auto-split"},
+    {"id": "petals_dht",   "name": "Petals DHT",
+     "url": "http://192.168.8.224:31330", "transport": "LAN + Internet DHT",
+     "nodes": "Linux + community",    "total_gb": 999, "best_for": "100B+ ultra-large"},
+    {"id": "accelerate",   "name": "HF Accelerate",
+     "url": None,                     "transport": "TB4 NCCL/Gloo",
+     "nodes": "All 4 nodes",          "total_gb": 70,  "best_for": "LoRA/DPO training"},
+]
+
+
+def probe_framework(fw: dict) -> dict:
+    """Probe a single framework's health and measure TTFT."""
+    result = {"id": fw["id"], "name": fw["name"], "transport": fw["transport"],
+              "nodes": fw["nodes"], "total_gb": fw["total_gb"], "best_for": fw["best_for"],
+              "status": "DOWN", "ttft_ms": None, "tps": None}
+    if fw["url"] is None:
+        # Accelerate: check if process running
+        try:
+            out = subprocess.run(["pgrep", "-f", "accelerate"], capture_output=True, text=True)
+            result["status"] = "TRAINING" if out.returncode == 0 else "IDLE"
+        except Exception:
+            result["status"] = "IDLE"
+        return result
+    try:
+        host, port_str = fw["url"].rsplit(":", 1)
+        port = int(port_str)
+        s = socket.create_connection((host.replace("http://",""), port), timeout=1.5)
+        s.close()
+        result["status"] = "LIVE"
+        # Quick TTFT measurement
+        import urllib.request, urllib.error
+        t0 = time.perf_counter()
+        req = urllib.request.Request(
+            f"{fw['url']}/v1/chat/completions",
+            data=json.dumps({"model": "local",
+                             "messages": [{"role": "user", "content": "Hi"}],
+                             "max_tokens": 5}).encode(),
+            headers={"Content-Type": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=8) as r:
+            data = json.loads(r.read())
+            elapsed_ms = (time.perf_counter() - t0) * 1000
+            tokens = data.get("usage", {}).get("completion_tokens", 5)
+            result["ttft_ms"] = round(elapsed_ms, 1)
+            result["tps"] = round(tokens / (elapsed_ms / 1000), 1) if elapsed_ms > 0 else None
+    except Exception:
+        pass
+    return result
+
+
+@router.get("/api/sharding/status")
+async def sharding_status():
+    """Live status of all 5 sharding frameworks."""
+    results = [probe_framework(fw) for fw in SHARD_FRAMEWORKS]
+    live_count = sum(1 for r in results if r["status"] in ("LIVE", "TRAINING", "IDLE"))
+    return JSONResponse({
+        "frameworks": results,
+        "live_count": live_count,
+        "total_count": len(SHARD_FRAMEWORKS),
+        "tb4_cluster_gb": 56,
+        "tb4_nodes": ["Mac Mini 24GB", "MBP 16GB", "Air M4 16GB"],
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    })
+
+
+@router.post("/api/sharding/benchmark")
+async def sharding_benchmark():
+    """Run identical prompt across all live frameworks, compare TTFT + TPS."""
+    import urllib.request
+    PROMPT = "Briefly explain the key advantage of model sharding for large language models."
+    results = {}
+    for fw in SHARD_FRAMEWORKS:
+        if fw["url"] is None:
+            continue
+        times, tps_list = [], []
+        for _ in range(3):  # 3 quick reps
+            try:
+                t0 = time.perf_counter()
+                req = urllib.request.Request(
+                    f"{fw['url']}/v1/chat/completions",
+                    data=json.dumps({"model": "local",
+                                     "messages": [{"role": "user", "content": PROMPT}],
+                                     "max_tokens": 60}).encode(),
+                    headers={"Content-Type": "application/json"}, method="POST")
+                with urllib.request.urlopen(req, timeout=20) as r:
+                    data = json.loads(r.read())
+                    elapsed = (time.perf_counter() - t0) * 1000
+                    tokens = data.get("usage", {}).get("completion_tokens", 20)
+                    times.append(elapsed)
+                    tps_list.append(tokens / (elapsed / 1000))
+            except Exception:
+                pass
+        if times:
+            results[fw["id"]] = {
+                "framework": fw["name"], "transport": fw["transport"],
+                "mean_ttft_ms": round(sum(times) / len(times), 1),
+                "mean_tps": round(sum(tps_list) / len(tps_list), 2),
+                "samples": len(times),
+            }
+
+    # Determine winner per metric
+    if results:
+        best_latency = min(results, key=lambda k: results[k]["mean_ttft_ms"])
+        best_throughput = max(results, key=lambda k: results[k]["mean_tps"])
+        winner = {"best_latency": best_latency, "best_throughput": best_throughput}
+    else:
+        winner = {}
+
+    out = {
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "prompt": PROMPT,
+        "results": results,
+        "winner": winner,
+        "internet_scale_note": (
+            "For internet scale: llama.cpp+Cloudflare Tunnel for latency, "
+            "vLLM on VPS for batch, Petals DHT for 100B+ community nodes."
+        ),
+        "commercial_note": "Results feed lauburu-mesh SDK framework selector and Tier-1 API routing.",
+    }
+    LOG_DIR.mkdir(exist_ok=True)
+    (LOG_DIR / "sharding_benchmark_results.json").write_text(json.dumps(out, indent=2))
+    return JSONResponse(out)
 
 
 @router.get("/api/leaderboard/data")
