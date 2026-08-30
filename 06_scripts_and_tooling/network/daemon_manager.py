@@ -109,6 +109,15 @@ SUPERVISED_DAEMONS = {
         "start_cmd": ["llama-server", "--port", "8087", "-m", str(REPO_ROOT / "02_ai_models_and_inference/gguf_vault/Qwen2.5-Math-1.5B-Instruct-Q8_0.gguf"), "-ngl", "999", "-c", "4096", "-t", "4", "--no-jinja", "--alias", "qwen-math-1.5b-edge"],
         "icon": "⚡"
     },
+    "remote_math_72b_8089": {
+        "name": "Qwen2.5-Math-72B-IQ2_XS (Linux L3, CPU-mmap)",
+        "port": 8089,
+        "host": "192.168.8.224",
+        "tier": "model",
+        "start_cmd": [],  # Managed on Linux — not started by daemon_manager
+        "icon": "🧮",
+        "notes": "Remote. 26 GB on 14 GB RAM + 27 GB swap. ~1-3 tok/s CPU. Batch math."
+    },
     "self_healing_hub_18802": {
         "name": "Self-Healing Hub & WoL REST API",
         "port": 18802,
