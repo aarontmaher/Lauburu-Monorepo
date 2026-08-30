@@ -1,0 +1,54 @@
+# Lauburu Mesh — HuggingFace Accelerate Multi-Node Config
+# Updated: 2026-08-30 | TB4 IPs corrected to live values
+# Usage: accelerate launch --config_file lauburu_mesh_accelerate.yaml train_lora.py
+
+compute_environment: LOCAL_MACHINE
+distributed_type: MULTI_NODE
+
+# ─── Node topology ────────────────────────────────────────────────
+# Primary: Mac Mini M4 Pro (rank 0, coordinator)
+# Worker:  MacBook Pro M1 Max (rank 1, TB4 bridge 0.204ms RTT)
+# Worker:  MacBook Air M4    (rank 2, Tailscale / LAN)
+# Worker:  Linux Head Node    (rank 3, CPU only — for CPU offload layers)
+
+machine_rank: 0          # Set to 1 on MBP, 2 on Air, 3 on Linux before launching
+num_machines: 4
+num_processes: 4         # 1 process per machine (Metal GPU backend)
+
+main_process_ip: "192.168.8.230"   # Mac Mini M4 Pro (LAN primary)
+main_process_port: 29500
+
+# TB4 bridge as primary high-speed channel between rank 0 ↔ rank 1
+# Ranks 2-3 use LAN/Tailscale fallback
+rdzv_backend: "c10d"
+rdzv_endpoint: "192.168.8.230:29400"
+
+# ─── Framework ────────────────────────────────────────────────────
+mixed_precision: "bf16"    # Apple Silicon M-series supports bf16 natively
+dynamo_backend: "no"       # Metal doesn't support torch.compile yet
+
+# ─── Memory optimization ──────────────────────────────────────────
+# Gradient checkpointing keeps activations off-GPU during backward pass
+# Critical for AgentWorld-35B Q6_K_XL (31.8GB sharded across TB4)
+gradient_accumulation_steps: 8
+gradient_clipping: 1.0
+
+# ─── DeepSpeed (optional — for CPU offload on Linux worker) ───────
+# Set use_deepspeed: true only when Linux node is in the loop
+use_deepspeed: false
+deepspeed_config_file: "04_data_and_memory/accelerate_config/deepspeed_z3.json"
+
+# ─── FSDP (Fully Sharded Data Parallel across nodes) ─────────────
+use_fsdp: false           # Use for weight sharding once >2 nodes stable
+fsdp_config:
+  fsdp_sharding_strategy: "FULL_SHARD"
+  fsdp_offload_params: false
+  fsdp_auto_wrap_policy: "TRANSFORMER_BASED_WRAP"
+  fsdp_transformer_layer_cls_to_wrap: "Qwen2MoeDecoderLayer"  # AgentWorld MoE layers
+  fsdp_backward_prefetch_policy: "BACKWARD_PRE"
+  fsdp_state_dict_type: "SHARDED_STATE_DICT"
+  fsdp_cpu_ram_efficient_loading: true
+
+# ─── Logging ──────────────────────────────────────────────────────
+log_with: "tensorboard"
+logging_dir: "/Users/aaron/DFS_UNIFIED/lora_datasets/accelerate_logs/"
