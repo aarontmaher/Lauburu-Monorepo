@@ -1,112 +1,75 @@
 {
-  "timestamp": "2026-08-30T10:24:04Z",
-  "hardware": {
-    "mac_mini": {
-      "ram_gb": 24,
-      "chip": "M4 Pro",
-      "tb4": "169.254.106.178"
-    },
-    "mbp": {
-      "ram_gb": 16,
-      "chip": "M1 Max",
-      "tb4": "169.254.114.190",
-      "rpc_port": 50052
-    },
-    "air": {
-      "ram_gb": 16,
-      "chip": "M4",
-      "tb4": "169.254.95.19",
-      "rpc_port": 50053,
-      "note": "native build in progress"
-    },
-    "linux": {
-      "ram_gb": 14,
-      "chip": "Ryzen 5700U",
-      "lan": "192.168.8.224"
-    }
-  },
-  "prompt": "Explain model sharding in one sentence.",
-  "live_results": {
-    "llamacpp_local_metal": {
-      "framework": "llama.cpp Local Metal (Mac Mini M4 Pro)",
-      "transport": "Local Metal GPU",
-      "nodes": 1,
-      "total_vram_gb": 20.5,
-      "mean_ttft_ms": 635,
-      "mean_tps": 45.1,
-      "status": "LIVE"
-    },
-    "llamacpp_mbp_tb4": {
-      "framework": "llama.cpp + MBP TB4 2-way shard",
-      "transport": "TB4 DMA 0.52ms RTT",
-      "nodes": 2,
-      "total_vram_gb": 36,
-      "mean_ttft_ms": 523,
-      "mean_tps": 44.9,
+  "timestamp": "2026-08-30T10:37:05Z",
+  "benchmark_prompt": "What is the derivative of x^3 + 2x?",
+  "frameworks_tested": {
+    "math_1b5_local": {
+      "ttft_ms": 1651,
+      "tps": 36.3,
       "status": "LIVE",
-      "note": "17% lower latency vs solo \u2014 TB4 shard offloads layers to MBP"
+      "transport": "Local Metal"
     },
-    "llamacpp_math_1b5": {
-      "framework": "llama.cpp Math-1.5B (local)",
-      "transport": "Local Metal GPU",
-      "nodes": 1,
-      "total_vram_gb": 1.5,
-      "mean_ttft_ms": 320,
-      "mean_tps": 115.5,
+    "7b_abliterated": {
+      "ttft_ms": 2566,
+      "tps": 23.4,
       "status": "LIVE",
-      "note": "Fastest \u2014 model size advantage, not architecture"
+      "transport": "Local Metal"
+    },
+    "27b_primary": {
+      "ttft_ms": 3261,
+      "tps": 18.4,
+      "status": "LIVE",
+      "transport": "Local Metal"
+    },
+    "7b_tb4_2way": {
+      "ttft_ms": 2707,
+      "tps": 22.2,
+      "status": "LIVE",
+      "transport": "TB4 DMA 0.52ms"
     }
   },
-  "pending_frameworks": {
-    "vllm": {
-      "status": "INSTALLING on Linux",
-      "eta": "~15min",
-      "expected_advantage": "10x throughput for batch >5 requests"
+  "downloads_in_progress": {
+    "math_72b_instruct_q4km": {
+      "dest": "linux:/home/linux/gguf_vault/",
+      "size_gb": 40,
+      "status": "DOWNLOADING"
     },
-    "petals_dht": {
-      "status": "INSTALLING on Linux",
-      "eta": "~10min",
-      "expected_advantage": "100B+ model support via DHT"
+    "math_72b_instruct_iq2xxs": {
+      "dest": "mac_mini:gguf_vault/",
+      "size_gb": 18,
+      "status": "DOWNLOADING"
     },
-    "exo_p2p": {
-      "status": "PENDING setup",
-      "expected_advantage": "Auto model split across 3 nodes"
+    "math_rm_72b_safetensors": {
+      "dest": "linux:/home/linux/math_rm_72b/",
+      "size_gb": 145.6,
+      "status": "DOWNLOADING"
     },
-    "hf_accelerate": {
-      "status": "INSTALLING on Mac Mini",
-      "expected_advantage": "Optimal for LoRA/DPO training"
-    },
-    "llamacpp_3way_tb4": {
-      "status": "BLOCKED: Air native build in progress",
-      "root_cause": "M4 Pro binary has tensor API disabled on pre-M5 devices (Air M4 = Apple9 family)",
-      "fix": "Building ggml-rpc-server natively on Air M4 (~15-20min)",
-      "expected_tb4_cluster_gb": 56
+    "agentworld_q4xl": {
+      "dest": "mac_mini:gguf_vault/",
+      "size_gb": 22.3,
+      "status": "DOWNLOADING"
     }
   },
-  "preliminary_verdict": {
-    "best_latency": "llamacpp_mbp_tb4 (523ms TTFT \u2014 TB4 wins vs solo)",
-    "best_throughput": "llamacpp_math_1b5 (115.5 t/s \u2014 model size wins)",
-    "long_term_recommendation": {
-      "inference_7b_solo": "llama.cpp local Metal (simplest, low overhead)",
-      "inference_7b_sharded": "llama.cpp TB4 RPC (17% latency improvement, 40GB headroom)",
-      "inference_35b_plus": "Exo P2P or llama.cpp 3-way TB4 (56GB, once Air native RPC built)",
-      "batch_api": "vLLM on Linux (GPU) or VPS (once installed, orders of magnitude better throughput)",
-      "training_lora": "HF Accelerate multi-node (TB4 NCCL between Mac Mini + MBP + Air)",
-      "100b_models": "Petals DHT (community nodes, no local RAM limit)",
-      "internet_scale": "Cloudflare Worker \u2192 Tunnel \u2192 Mac Mini (llama.cpp) with vLLM VPS overflow",
-      "commercial_sdk": "lauburu-mesh SDK auto-routes based on these benchmark results"
+  "already_complete": {
+    "math_72b_instruct_iq2xs": {
+      "path": "/home/linux/gguf_vault/Qwen2.5-Math-72B-Instruct-IQ2_XS.gguf",
+      "size_gb": 26
+    },
+    "agentworld_q5km": {
+      "path": "/home/linux/agentworld/Qwen-AgentWorld-35B-A3B-UD-Q5_K_M.gguf",
+      "size_gb": 25
+    },
+    "math_1b5_local": {
+      "path": "gguf_vault/Qwen2.5-Math-1.5B-Instruct-Q8_0.gguf",
+      "size_gb": 1.5
+    },
+    "math_7b_local": {
+      "path": "model_vault_gguf/Qwen2.5-Math-7B-Instruct-Q4_K_M.gguf",
+      "size_gb": 4.4
     }
   },
-  "internet_scale_path": [
-    "Phase 1 (Now): Local TB4 cluster benchmark, 56GB Metal pool",
-    "Phase 2 (Month 1): Cloudflare Tunnel + Worker gateway live, first paid API users",
-    "Phase 3 (Month 3): vLLM on Hetzner A40 VPS for batch overflow (100+ req/s)",
-    "Phase 4 (Month 6): Petals DHT community mesh (50+ nodes, 100B+ model serving)",
-    "Phase 5 (Year 2): iOS/Android SDK with on-device llama.cpp + cloud fallback"
-  ],
-  "commercial_tiers": {
-    "tier1_saas": "REST API $0.001/1K tokens via Cloudflare Worker (10x cheaper than OpenAI)",
-    "tier2_b2b": "lauburu-mesh SDK $99/mo \u2014 smart routing across all frameworks",
-    "tier3_enterprise": "Self-hosted mesh kit $299/mo \u2014 Docker Compose, all 5 frameworks, TUI dashboard"
+  "automation": {
+    "launchagent": "com.lauburu.training.maximizer (PID 37550) \u2014 every 15min \u2705",
+    "lora_pairs": 15011,
+    "cron_entries": 3
   }
 }

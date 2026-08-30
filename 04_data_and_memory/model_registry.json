@@ -1,0 +1,84 @@
+{
+  "registry_version": "2.0",
+  "updated": "2026-08-30",
+  "models": {
+    "math_72b_instruct": {
+      "name": "Qwen2.5-Math-72B-Instruct",
+      "role": "primary_teacher_model",
+      "variants": {
+        "q4_k_m": {
+          "path": "/home/linux/gguf_vault/Qwen2.5-Math-72B-Instruct-Q4_K_M.gguf",
+          "size_gb": 40,
+          "node": "linux",
+          "status": "DOWNLOADING",
+          "use_case": "TB4 shard inference, high quality teacher"
+        },
+        "iq2_xs": {
+          "path": "/home/linux/gguf_vault/Qwen2.5-Math-72B-Instruct-IQ2_XS.gguf",
+          "size_gb": 26,
+          "node": "linux",
+          "status": "COMPLETE",
+          "use_case": "Linux CPU edge inference"
+        },
+        "iq2_xxs": {
+          "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/gguf_vault/Qwen2.5-Math-72B-Instruct-IQ2_XXS.gguf",
+          "size_gb": 18,
+          "node": "mac_mini",
+          "status": "DOWNLOADING",
+          "use_case": "Mac Mini solo edge inference"
+        }
+      }
+    },
+    "math_rm_72b": {
+      "name": "Qwen2.5-Math-RM-72B",
+      "role": "reward_model_for_dpo",
+      "variants": {
+        "safetensors": {
+          "path": "/home/linux/math_rm_72b/",
+          "size_gb": 145.6,
+          "node": "linux",
+          "status": "DOWNLOADING",
+          "use_case": "DPO reward scoring, math solution verification",
+          "format": "HuggingFace safetensors (no GGUF available)",
+          "note": "Use with transformers + bitsandbytes 4-bit on Linux CPU"
+        }
+      }
+    },
+    "agentworld_35b": {
+      "name": "Qwen-AgentWorld-35B-A3B",
+      "role": "agent_training_teacher",
+      "variants": {
+        "q4_k_xl": {
+          "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/gguf_vault/Qwen-AgentWorld-35B-A3B-UD-Q4_K_XL.gguf",
+          "size_gb": 22.3,
+          "node": "mac_mini",
+          "status": "DOWNLOADING",
+          "use_case": "Primary agent training teacher"
+        },
+        "q5_k_m": {
+          "path": "/home/linux/agentworld/Qwen-AgentWorld-35B-A3B-UD-Q5_K_M.gguf",
+          "size_gb": 25,
+          "node": "linux",
+          "status": "COMPLETE",
+          "use_case": "Linux CPU agent training inference"
+        }
+      }
+    },
+    "orchestrator": {
+      "name": "Huihui-Qwen3.8-27B-abliterated",
+      "role": "primary_orchestrator",
+      "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
+      "node": "mac_mini",
+      "port": 8080,
+      "status": "LIVE"
+    }
+  },
+  "training_pipeline": {
+    "teacher": "math_72b_instruct.q4_k_m (linux) / iq2_xxs (mac_mini fallback)",
+    "reward_model": "math_rm_72b.safetensors (linux, DPO scoring)",
+    "student": "qwen2.5-7b-instruct-abliterated (served on :8083)",
+    "lora_pairs_target": "/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl",
+    "math_pairs_target": "/Users/aaron/DFS_UNIFIED/lora_datasets/math_training_dataset.jsonl",
+    "automation": "LaunchAgent every 15min: com.lauburu.training.maximizer"
+  }
+}

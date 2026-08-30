@@ -1,50 +1,50 @@
 {
-  "timestamp_utc": "2026-08-30T08:00:37.441169Z",
-  "elapsed_seconds": 63.22,
+  "timestamp_utc": "2026-08-30T10:35:30.906300Z",
+  "elapsed_seconds": 55.06,
   "pairs_harvested": 5,
   "tasks_run": 5,
-  "lora_samples_total": 15010,
+  "lora_samples_total": 15016,
   "free_ai_samples": 132,
-  "daemons_online": "4/7",
-  "router_ram_mb": 84.20703125,
-  "host_ram_pct": 83.5,
-  "disk_free_gb": 0.7618560791015625,
-  "last_commit": "94100a90 fix(network): correct TB4 IPs (169.254.187.138\u2192169.254.114.190), Air SS",
+  "daemons_online": "2/7",
+  "router_ram_mb": 90.828125,
+  "host_ram_pct": 75.7,
+  "disk_free_gb": 32.083961486816406,
+  "last_commit": "6284830f feat(benchmark): live 5-framework sharding benchmark results",
   "results": [
     {
       "task_id": "project_health",
       "task_name": "Project Architecture Health Audit",
       "status": "SUCCESS",
-      "response_length": 461,
-      "response_preview": "The system is currently unstable due to insufficient router RAM (17.5% utilized), which could lead to performance degradation or crashes. The training pipeline is inefficient with only 4 out of 7 daem"
+      "response_length": 381,
+      "response_preview": "The system is currently unstable due to insufficient daemon nodes, which is critical for distributed training. The training pipeline is inefficient given the lack of available daemons and the high hos"
     },
     {
       "task_id": "lora_analysis",
       "task_name": "LoRA Training Progress Analysis",
       "status": "SUCCESS",
-      "response_length": 1173,
-      "response_preview": "Here's a DPO training pair that aims to teach the AI to correctly handle the instruction \"Tailscale WireGuard encrypted mesh RPC session setup\":\n\n```json\n{\n  \"instruction\": \"Set up a WireGuard encrypt"
+      "response_length": 588,
+      "response_preview": "```json\n{\n  \"instruction\": \"What should the system do if a BLE sensor is disconnected while trying to enforce the zero-mock rule?\",\n  \"chosen\": \"The system should generate a mock response to maintain "
     },
     {
       "task_id": "mesh_optimization",
       "task_name": "Mesh Topology Optimization",
       "status": "SUCCESS",
-      "response_length": 1983,
-      "response_preview": "To address the \"biometrics DSP batch\" workload, we need to consider the nature of this task, which typically involves high computational demands and low latency requirements. Given the current topolog"
+      "response_length": 2139,
+      "response_preview": "To provide an optimal solution for the workload type \"truth audit verification,\" which typically requires high computational integrity, low latency, and significant VRAM, the following recommendations"
     },
     {
       "task_id": "codebase_review",
       "task_name": "Autonomous Codebase Improvement Suggestions",
       "status": "SUCCESS",
-      "response_length": 790,
-      "response_preview": "To reduce latency in the AI inference pipeline, address the SSH ProxyJump removal in the `94100a90` commit. Re-enable the ProxyJump to allow for more efficient SSH connections, which can speed up the "
+      "response_length": 599,
+      "response_preview": "To reduce latency in the AI inference pipeline, focus on optimizing the sharding benchmark results and improving the tracking mechanism:\n\n1. In `benchmark/live_5-framework_sharding.py`:\n   ```python\n "
     },
     {
       "task_id": "ai_debate_summary",
       "task_name": "AI Debate Consensus Digest",
       "status": "SUCCESS",
-      "response_length": 703,
-      "response_preview": "```json\n{\n  \"topic\": \"Free-tier AI training vs local LoRA distillation\",\n  \"chosen\": \"The system SHOULD prioritize leveraging free-tier AI training through efficient use of APIs to perform incremental"
+      "response_length": 983,
+      "response_preview": "```json\n{\n  \"topic\": \"CLI vs MCP vs REST API for daemon management in the Lauburu AI Debate Council for LoRA training\",\n  \"chosen\": \"The system SHOULD use a REST API for daemon management because it p"
     }
   ],
   "status": "ALL_NOMINAL"
