@@ -24,6 +24,22 @@ import hashlib
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
+
+def _load_dotenv():
+    """Load ~/.env into os.environ so free API keys are available from scripts."""
+    import os
+    env_file = Path('~/.env').expanduser()
+    if env_file.exists():
+        for line in env_file.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                k, _, v = line.partition('=')
+                k = k.strip()
+                if k and k not in os.environ:
+                    os.environ[k] = v.strip()
+
+_load_dotenv()
+
 REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
 LORA_DIR = Path("/Users/aaron/DFS_UNIFIED/lora_datasets")
 OBSIDIAN_DIR = REPO_ROOT / "obsidian_vault"
