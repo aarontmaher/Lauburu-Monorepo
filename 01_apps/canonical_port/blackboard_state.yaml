@@ -1,5 +1,5 @@
 version: 3.0.0-CANONICAL
-timestamp: '2026-08-30T20:42:41.683885'
+timestamp: '2026-08-30T21:48:21.357415'
 source_node: L1_Mac_Node
 provenance:
   agent_id: teamwork_preview_worker_m2
@@ -121,10 +121,10 @@ layer_0_networking:
     upload_mbps: 48.0
     responsiveness_rpm: 1420
     latency_ms: 12.4
-    timestamp: '20:42:39'
+    timestamp: '21:48:16'
     command: /usr/bin/networkQuality -c -M 5
     cycle_seconds: 300
-    last_tested_iso: '2026-08-30T20:42:39.615814'
+    last_tested_iso: '2026-08-30T21:48:16.397481'
   ssh_fleet:
   - node_id: L1
     host: 127.0.0.1
@@ -132,64 +132,64 @@ layer_0_networking:
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 0.92
-    last_auth_iso: '2026-08-30T20:42:40.679864'
+    latency_ms: 0.74
+    last_auth_iso: '2026-08-30T21:48:17.874614'
   - node_id: L2
     host: 192.168.8.127
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_9.6
     key_type: ssh-ed25519
-    latency_ms: 319.61
-    last_auth_iso: '2026-08-30T20:42:41.239636'
+    latency_ms: 56.11
+    last_auth_iso: '2026-08-30T21:48:17.874780'
   - node_id: L3
-    host: 192.168.8.224
+    host: 100.101.39.98
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_9.8
     key_type: ssh-ed25519
-    latency_ms: 282.61
-    last_auth_iso: '2026-08-30T20:42:41.619837'
+    latency_ms: 242.56
+    last_auth_iso: '2026-08-30T21:48:18.204009'
   - node_id: L4
     host: 192.168.8.173
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
     key_type: ssh-ed25519
-    latency_ms: 317.2
-    last_auth_iso: '2026-08-30T20:42:41.453390'
+    latency_ms: 74.7
+    last_auth_iso: '2026-08-30T21:48:18.259696'
   - node_id: L5
     host: 100.93.158.96
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 285.32
-    last_auth_iso: '2026-08-30T20:42:41.200342'
+    latency_ms: 31.4
+    last_auth_iso: '2026-08-30T21:48:17.874512'
   - node_id: L6
     host: 100.73.38.87
     port: 8022
     status: OPEN
-    banner: SSH-2.0-OpenSSH_9.8 (Termux)
+    banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 206.66
-    last_auth_iso: '2026-08-30T20:42:41.144625'
+    latency_ms: 62.0
+    last_auth_iso: '2026-08-30T21:48:18.014698'
   - node_id: L7
     host: 100.84.40.95
     port: 8022
     status: OPEN
-    banner: SSH-2.0-OpenSSH_9.8 (Termux)
+    banner: SSH-2.0-OpenSSH_10.4
     key_type: ssh-ed25519
-    latency_ms: 242.87
-    last_auth_iso: '2026-08-30T20:42:41.177477'
+    latency_ms: 61.8
+    last_auth_iso: '2026-08-30T21:48:17.892151'
   - node_id: GW
     host: 192.168.8.1
     port: 22
     status: OPEN
-    banner: "SSH-2.0-dropbear\r\n\0\0\x01\v\x14t*]N\x0F;J+]!\0\0\0curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384"
+    banner: "SSH-2.0-dropbear\r\n\0\0\x01\v\x14\bNgg5w`2\0\0\0curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384"
     key_type: ssh-ed25519
-    latency_ms: 115.29
-    last_auth_iso: '2026-08-30T20:42:40.841293'
+    latency_ms: 59.16
+    last_auth_iso: '2026-08-30T21:48:17.831601'
   ewma_alpha: 0.35
   circuit_breaker_trip_threshold: 0.284
 layer_1_hardware:
@@ -471,8 +471,8 @@ layer_1_hardware:
       master_wikilinks_valid: true
     pyspark_lake:
       path: /Users/aaron/DFS_UNIFIED/lora_datasets
-      healthy: true
-      free_headroom_gb: 13.96
+      healthy: false
+      free_headroom_gb: 1.0
       headroom_threshold_gb: 10.0
       qdrant_reachable: true
     github_tree:
@@ -481,7 +481,7 @@ layer_1_hardware:
       is_worktree: true
       index_locked: false
       clean_tree: true
-    all_healthy: true
+    all_healthy: false
   memory_governor_active: true
 layer_2_biometrics:
   movesense_stream:
@@ -593,8 +593,8 @@ layer_3_ai_inference:
     endpoint: 100.73.38.87:50052
     layers_sharded: 0
     vram_used_gb: 0.0
-    status: OFFLINE
-    latency_ms: null
+    status: ACTIVE
+    latency_ms: 21.51
   rpc_split: -ts 28,28,24
   total_sharded_layers: 80
   active_models:
