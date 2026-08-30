@@ -1,5 +1,5 @@
 version: 3.0.0-CANONICAL
-timestamp: '2026-08-30T16:50:06.251169'
+timestamp: '2026-08-30T17:00:11.797534'
 source_node: L1_Mac_Node
 provenance:
   agent_id: teamwork_preview_worker_m2
@@ -121,10 +121,10 @@ layer_0_networking:
     upload_mbps: 48.0
     responsiveness_rpm: 1420
     latency_ms: 12.4
-    timestamp: '16:50:04'
+    timestamp: '17:00:09'
     command: /usr/bin/networkQuality -c -M 5
     cycle_seconds: 300
-    last_tested_iso: '2026-08-30T16:50:04.259994'
+    last_tested_iso: '2026-08-30T17:00:09.905708'
   ssh_fleet:
   - node_id: L1
     host: 127.0.0.1
@@ -132,48 +132,48 @@ layer_0_networking:
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 3.45
-    last_auth_iso: '2026-08-30T16:50:05.348204'
+    latency_ms: 0.96
+    last_auth_iso: '2026-08-30T17:00:10.970740'
   - node_id: L2
     host: 192.168.8.127
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_9.6
     key_type: ssh-ed25519
-    latency_ms: 24.23
-    last_auth_iso: '2026-08-30T16:50:05.328714'
+    latency_ms: 23.17
+    last_auth_iso: '2026-08-30T17:00:10.972846'
   - node_id: L3
     host: 100.101.39.98
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18
     key_type: ssh-ed25519
-    latency_ms: 21.12
-    last_auth_iso: '2026-08-30T16:50:05.484967'
+    latency_ms: 22.86
+    last_auth_iso: '2026-08-30T17:00:11.152096'
   - node_id: L4
     host: 192.168.8.173
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
     key_type: ssh-ed25519
-    latency_ms: 26.83
-    last_auth_iso: '2026-08-30T16:50:05.771717'
+    latency_ms: 6.78
+    last_auth_iso: '2026-08-30T17:00:11.390389'
   - node_id: L5
     host: 100.93.158.96
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 19.99
-    last_auth_iso: '2026-08-30T16:50:05.379258'
+    latency_ms: 22.23
+    last_auth_iso: '2026-08-30T17:00:11.025156'
   - node_id: L6
     host: 100.73.38.87
     port: 8022
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 12.88
-    last_auth_iso: '2026-08-30T16:50:05.467605'
+    latency_ms: 14.1
+    last_auth_iso: '2026-08-30T17:00:11.197707'
   - node_id: L7
     host: 100.84.40.95
     port: 8022
@@ -186,10 +186,10 @@ layer_0_networking:
     host: 192.168.8.1
     port: 22
     status: OPEN
-    banner: "SSH-2.0-dropbear\r\n\0\0\x01\v\x14\x7Fa,_\x13>\r\r^\x03_\a^{A\0\0\0curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384"
+    banner: "SSH-2.0-dropbear\r\n\0\0\x01\v\x14Rw\x06\x1A:\eS\u0125\0\0\0curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384"
     key_type: ssh-ed25519
-    latency_ms: 5.66
-    last_auth_iso: '2026-08-30T16:50:05.298490'
+    latency_ms: 13.85
+    last_auth_iso: '2026-08-30T17:00:10.955198'
   ewma_alpha: 0.35
   circuit_breaker_trip_threshold: 0.284
 layer_1_hardware:
@@ -472,7 +472,7 @@ layer_1_hardware:
     pyspark_lake:
       path: /Users/aaron/DFS_UNIFIED/lora_datasets
       healthy: true
-      free_headroom_gb: 12.63
+      free_headroom_gb: 12.59
       headroom_threshold_gb: 10.0
       qdrant_reachable: true
     github_tree:
@@ -576,13 +576,13 @@ layer_3_ai_inference:
     layers_sharded: 24
     vram_used_gb: 12.0
     status: ACTIVE
-    latency_ms: 0.78
+    latency_ms: 0.77
   - node_name: MacBook Air
     endpoint: 100.93.158.96:50052
     layers_sharded: 0
     vram_used_gb: 0.0
     status: ACTIVE
-    latency_ms: 6.71
+    latency_ms: 6.75
   - node_name: Linux Tablet
     endpoint: 100.81.92.125:50052
     layers_sharded: 0
