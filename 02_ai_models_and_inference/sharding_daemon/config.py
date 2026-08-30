@@ -201,7 +201,8 @@ CLUSTER_NODES: Dict[str, NodeSpec] = {
         local_ip="192.168.8.222",
         ssh_port=22,
         ssh_user="aaronmaher",      # FIXED 2026-08-30: SSH now working via TS, home=/Volumes
-        primary_interconnect=TransportTier.WIFI7_MLO,
+        tb4_ip="169.254.95.19",      # CONFIRMED 2026-08-30: Air M4 TB4 en1, 0.5ms RTT
+        primary_interconnect=TransportTier.TB4_DMA,  # UPGRADED: was WIFI7_MLO, now TB4
         assigned_role="Secondary High-Speed Metal Worker, Continuous LoRA Distillation",
         active_backends=["llamacpp_rpc", "petals_dht", "exo_p2p", "accelerate_lora"],
     ),

@@ -1,0 +1,21 @@
+{
+  "name": "lauburu-ai-gateway",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-01-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "ai": { "binding": "AI" },
+
+  "kv_namespaces": [
+    { "binding": "MESH_KV", "id": "YOUR_KV_NAMESPACE_ID" }
+  ],
+
+  "vars": {
+    "MESH_TUNNEL_URL": "https://mesh.yourdomain.com",
+    "RATE_LIMIT_RPM": "60"
+  },
+
+  "routes": [
+    { "pattern": "ai.yourdomain.com/*", "zone_name": "yourdomain.com" }
+  ]
+}

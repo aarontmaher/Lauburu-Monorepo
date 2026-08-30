@@ -1,9 +1,9 @@
 {
-  "timestamp": 1788076824.057416,
+  "timestamp": 1788077535.1232152,
   "sensor_id": "MOVESENSE_261030002013",
   "heart_rate_bpm": 76,
   "blood_pressure_ptt": {
-    "systolic": 120,
+    "systolic": 121,
     "diastolic": 76
   },
   "sleep_score_pct": 88.5,
