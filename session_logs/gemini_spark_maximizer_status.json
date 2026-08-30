@@ -1,50 +1,50 @@
 {
-  "timestamp_utc": "2026-08-29T23:36:36.895507Z",
-  "elapsed_seconds": 81.07,
+  "timestamp_utc": "2026-08-30T00:00:31.404354Z",
+  "elapsed_seconds": 89.36,
   "pairs_harvested": 5,
   "tasks_run": 5,
-  "lora_samples_total": 14790,
+  "lora_samples_total": 14795,
   "free_ai_samples": 132,
   "daemons_online": "7/7",
-  "router_ram_mb": 78.43359375,
-  "host_ram_pct": 61.3,
-  "disk_free_gb": 13.292316436767578,
-  "last_commit": "8ace2030 feat(web-dashboard): launch universal Web-TUI dashboard on Port 8088 wi",
+  "router_ram_mb": 82.6015625,
+  "host_ram_pct": 90.1,
+  "disk_free_gb": 9.578876495361328,
+  "last_commit": "611fcfad fix(uiux-pipeline): reduce coder context size + add port 8080 fallback;",
   "results": [
     {
       "task_id": "project_health",
       "task_name": "Project Architecture Health Audit",
       "status": "SUCCESS",
-      "response_length": 382,
-      "response_preview": "**System Stability:** Stable, with all daemons online and no active cron cycles.\n\n**Training Pipeline Efficiency:** Efficient, with a substantial number of LoRA training samples processed.\n\n**Optimiza"
+      "response_length": 380,
+      "response_preview": "1. **System Stability Verdict**: Stable, with all daemons online and no active cron cycles.\n2. **Training Pipeline Efficiency**: Efficient, handling 14,795 LoRA samples, but could benefit from further"
     },
     {
       "task_id": "lora_analysis",
       "task_name": "LoRA Training Progress Analysis",
       "status": "SUCCESS",
-      "response_length": 677,
-      "response_preview": "{\n  \"instruction\": \"Explain how to apply the Kamath 20% clinical RR interval filter during Zone 2 training.\",\n  \"chosen\": \"To apply the Kamath 20% clinical RR interval filter during Zone 2 training, y"
+      "response_length": 771,
+      "response_preview": "Here's a DPO training pair based on the provided information, teaching the AI to handle free-tier rate limiting using a token bucket algorithm:\n\n```json\n{\n  \"instruction\": \"Explain how to implement fr"
     },
     {
       "task_id": "mesh_optimization",
       "task_name": "Mesh Topology Optimization",
       "status": "SUCCESS",
-      "response_length": 1632,
-      "response_preview": "Based on the current topology and the 70B inference request workload, here's an optimal tier activation sequence, expected latency, and VRAM allocation strategy:\n\n1. **Optimal Tier Activation Sequence"
+      "response_length": 1646,
+      "response_preview": "Based on the provided information and the workload type \"biometrics DSP batch\", here's an optimal setup for your 7-node AI sharding cluster:\n\n1. **Optimal tier activation sequence**:\n   - **Primary Ti"
     },
     {
       "task_id": "codebase_review",
       "task_name": "Autonomous Codebase Improvement Suggestions",
       "status": "SUCCESS",
-      "response_length": 919,
-      "response_preview": "1. **Reduce latency in AI inference pipeline**:\n   - **Impactful improvement**: Implement asynchronous processing for AI model inference.\n   - **File path**: `monorepo/services/gemini-spark/src/main/p"
+      "response_length": 1235,
+      "response_preview": "1. **Reduce latency in the AI inference pipeline:**\n   - **Change:** Optimize `inference.py` (at `ai-models/inference/src/inference.py`) by implementing async processing and reducing I/O operations.\n "
     },
     {
       "task_id": "ai_debate_summary",
       "task_name": "AI Debate Consensus Digest",
       "status": "SUCCESS",
-      "response_length": 1089,
-      "response_preview": "{\n  \"topic\": \"4-Tiered AI Sharding Integration with WoL Hub\",\n  \"chosen\": \"The system SHOULD implement a 4-tiered AI sharding architecture integrated with the WoL Hub for efficient LoRA (Low-Rank Adap"
+      "response_length": 752,
+      "response_preview": "{\n  \"topic\": \"CLI vs MCP vs REST API for daemon management\",\n  \"chosen\": \"The system SHOULD use REST API for daemon management, as it promotes loose coupling, easy integration with other services, and"
     }
   ],
   "status": "ALL_NOMINAL"

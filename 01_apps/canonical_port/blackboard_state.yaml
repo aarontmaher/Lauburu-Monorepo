@@ -1,5 +1,5 @@
 version: 3.0.0-CANONICAL
-timestamp: '2026-08-30T09:56:16.559654'
+timestamp: '2026-08-30T10:06:23.046059'
 source_node: L1_Mac_Node
 provenance:
   agent_id: teamwork_preview_worker_m2
@@ -121,10 +121,10 @@ layer_0_networking:
     upload_mbps: 48.0
     responsiveness_rpm: 1420
     latency_ms: 12.4
-    timestamp: 09:56:11
+    timestamp: '10:06:21'
     command: /usr/bin/networkQuality -c -M 5
     cycle_seconds: 300
-    last_tested_iso: '2026-08-30T09:56:11.190457'
+    last_tested_iso: '2026-08-30T10:06:21.117572'
   ssh_fleet:
   - node_id: L1
     host: 127.0.0.1
@@ -132,64 +132,64 @@ layer_0_networking:
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 30.8
-    last_auth_iso: '2026-08-30T09:56:12.521201'
+    latency_ms: 0.98
+    last_auth_iso: '2026-08-30T10:06:22.301341'
   - node_id: L2
     host: 192.168.8.127
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_9.6
     key_type: ssh-ed25519
-    latency_ms: 28.37
-    last_auth_iso: '2026-08-30T09:56:12.520904'
+    latency_ms: 13.91
+    last_auth_iso: '2026-08-30T10:06:22.246350'
   - node_id: L3
     host: 100.101.39.98
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18
     key_type: ssh-ed25519
-    latency_ms: 28.12
-    last_auth_iso: '2026-08-30T09:56:12.657575'
+    latency_ms: 11.87
+    last_auth_iso: '2026-08-30T10:06:22.408548'
   - node_id: L4
     host: 192.168.8.173
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
     key_type: ssh-ed25519
-    latency_ms: 4.85
-    last_auth_iso: '2026-08-30T09:56:12.870399'
+    latency_ms: 12.88
+    last_auth_iso: '2026-08-30T10:06:22.689346'
   - node_id: L5
     host: 100.93.158.96
     port: 22
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.3
     key_type: ssh-ed25519
-    latency_ms: 76.14
-    last_auth_iso: '2026-08-30T09:56:12.529097'
+    latency_ms: 13.53
+    last_auth_iso: '2026-08-30T10:06:22.274240'
   - node_id: L6
     host: 100.73.38.87
     port: 8022
     status: OPEN
     banner: SSH-2.0-OpenSSH_9.8 (Termux)
     key_type: ssh-ed25519
-    latency_ms: 144.22
-    last_auth_iso: '2026-08-30T09:56:12.891596'
+    latency_ms: 38.03
+    last_auth_iso: '2026-08-30T10:06:22.544575'
   - node_id: L7
     host: 100.84.40.95
     port: 8022
     status: OPEN
     banner: SSH-2.0-OpenSSH_10.4
     key_type: ssh-ed25519
-    latency_ms: 76.04
-    last_auth_iso: '2026-08-30T09:56:12.617306'
+    latency_ms: 13.09
+    last_auth_iso: '2026-08-30T10:06:22.314468'
   - node_id: GW
     host: 192.168.8.1
     port: 22
     status: OPEN
-    banner: "SSH-2.0-dropbear\r\n\0\0\x01\v\x14gJ\x016\x1Eo\x12K\0\0\0curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384"
+    banner: "SSH-2.0-dropbear\r\n\0\0\x01\v\x14iJ`,v,B\u015A\u05B2\0\0\0curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384"
     key_type: ssh-ed25519
-    latency_ms: 30.6
-    last_auth_iso: '2026-08-30T09:56:12.521409'
+    latency_ms: 2.9
+    last_auth_iso: '2026-08-30T10:06:22.238192'
   ewma_alpha: 0.35
   circuit_breaker_trip_threshold: 0.284
 layer_1_hardware:
@@ -472,7 +472,7 @@ layer_1_hardware:
     pyspark_lake:
       path: /Users/aaron/DFS_UNIFIED/lora_datasets
       healthy: true
-      free_headroom_gb: 10.27
+      free_headroom_gb: 10.84
       headroom_threshold_gb: 10.0
       qdrant_reachable: true
     github_tree:
@@ -564,7 +564,7 @@ layer_3_ai_inference:
     layers_sharded: 28
     vram_used_gb: 13.5
     status: ACTIVE
-    latency_ms: 8.35
+    latency_ms: 54.61
   - node_name: MacBook Pro
     endpoint: 169.254.187.138:50052
     layers_sharded: 28
@@ -576,13 +576,13 @@ layer_3_ai_inference:
     layers_sharded: 24
     vram_used_gb: 12.0
     status: ACTIVE
-    latency_ms: 0.11
+    latency_ms: 0.17
   - node_name: MacBook Air
     endpoint: 100.93.158.96:50052
     layers_sharded: 0
     vram_used_gb: 0.0
     status: ACTIVE
-    latency_ms: 7.77
+    latency_ms: 10.39
   - node_name: Linux Tablet
     endpoint: 100.81.92.125:50052
     layers_sharded: 0
@@ -593,8 +593,8 @@ layer_3_ai_inference:
     endpoint: 100.73.38.87:50052
     layers_sharded: 0
     vram_used_gb: 0.0
-    status: ACTIVE
-    latency_ms: 33.52
+    status: OFFLINE
+    latency_ms: null
   rpc_split: -ts 28,28,24
   total_sharded_layers: 80
   active_models:
