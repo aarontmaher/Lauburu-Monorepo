@@ -1,86 +1,86 @@
 {
-  "timestamp_utc": "2026-08-30T00:16:53Z",
-  "cycle_count": 44196,
+  "timestamp_utc": "2026-08-30T00:47:03Z",
+  "cycle_count": 46004,
   "gamified_hud": {
-    "combat_tug_of_war_bar": "\ud83d\udd35 BLUE [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591] 84.3% vs \ud83d\udd34 RED [\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 15.7%",
+    "combat_tug_of_war_bar": "\ud83d\udd35 BLUE [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 57.2% vs \ud83d\udd34 RED [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 42.8%",
     "cardiac_pulse_meter": "\ud83d\udc93 [\u2665\u2665\u2665\u2665\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7] 83 BPM (Zone 2 Aerobic Resonance | RMSSD: 264.71ms)",
-    "blue_compute_pct": 84.3,
-    "red_compute_pct": 15.7,
+    "blue_compute_pct": 57.2,
+    "red_compute_pct": 42.8,
     "heart_rate_bpm": 83,
     "autonomic_state": "ZONE_2_OPTIMAL",
     "contested_node": "GL-MT3600BE Router SQM Buffers (192.168.8.1)"
   },
   "play_by_play_events": [
     {
-      "time": "10:16:53",
-      "type": "\ud83d\udc93 HRV STABILIZATION",
-      "description": "LuCI engaged Kamath 2004 artifact filter! Real-time heart rate verified authentic at Zone 2 baseline",
-      "team": "blue"
-    },
-    {
-      "time": "10:16:52",
+      "time": "10:47:03",
       "type": "\ud83d\ude80 FAILOVER ENGAGED",
       "description": "Chaos Overlord simulated TB4 packet loss! Instant sub-millisecond WireGuard failover executed (1.85ms RTT)",
       "team": "yellow"
     },
     {
-      "time": "10:16:51",
-      "type": "\ud83d\udc93 HRV STABILIZATION",
-      "description": "LuCI engaged Kamath 2004 artifact filter! Real-time heart rate verified authentic at Zone 2 baseline",
+      "time": "10:47:02",
+      "type": "\ud83d\udd12 JUMBO SHIELD",
+      "description": "Sentinel locked MTU 9000 Jumbo Frame tripwire on bridge0! Certified Ed25519 node authentication",
       "team": "blue"
     },
     {
-      "time": "10:16:50",
-      "type": "\ud83d\ude80 FAILOVER ENGAGED",
-      "description": "Chaos Overlord simulated TB4 packet loss! Instant sub-millisecond WireGuard failover executed (1.85ms RTT)",
-      "team": "yellow"
-    },
-    {
-      "time": "10:16:49",
+      "time": "10:47:01",
       "type": "\ud83d\udc89 BIOMETRIC INJECTION",
       "description": "OpenClaw injected 512Hz raw ECG stream into Movesense GATT UUID 0x2A37! Testing HRV filter threshold",
       "team": "red"
     },
     {
-      "time": "10:16:48",
-      "type": "\ud83d\udca5 BQL BURST",
-      "description": "Hermes 3 expanded OpenWrt BQL queue depth to 8192 bytes! Contesting router bandwidth",
-      "team": "red"
-    },
-    {
-      "time": "10:16:47",
-      "type": "\ud83d\ude80 FAILOVER ENGAGED",
-      "description": "Chaos Overlord simulated TB4 packet loss! Instant sub-millisecond WireGuard failover executed (1.85ms RTT)",
-      "team": "yellow"
-    },
-    {
-      "time": "10:16:46",
-      "type": "\ud83d\udc89 BIOMETRIC INJECTION",
-      "description": "OpenClaw injected 512Hz raw ECG stream into Movesense GATT UUID 0x2A37! Testing HRV filter threshold",
-      "team": "red"
-    },
-    {
-      "time": "10:16:45",
+      "time": "10:47:00",
       "type": "\u26a1 EXPLOIT CLASH",
       "description": "Hermes 3 executed TB4 socket buffer overdrive! Targeted Port 50052 on MacBook Pro (+85 VRAM drained)",
       "team": "red"
     },
     {
-      "time": "10:16:44",
-      "type": "\ud83d\udc93 HRV STABILIZATION",
-      "description": "LuCI engaged Kamath 2004 artifact filter! Real-time heart rate verified authentic at Zone 2 baseline",
+      "time": "10:46:59",
+      "type": "\ud83d\udee1\ufe0f DEFENSE LOCK",
+      "description": "LuCI OpenWrt deployed SQM fq_codel bufferbloat shield on 192.168.8.1! Mitigated 350ms latency surge",
       "team": "blue"
     },
     {
-      "time": "10:16:43",
-      "type": "\ud83d\udc89 BIOMETRIC INJECTION",
-      "description": "OpenClaw injected 512Hz raw ECG stream into Movesense GATT UUID 0x2A37! Testing HRV filter threshold",
+      "time": "10:46:58",
+      "type": "\ud83d\ude80 FAILOVER ENGAGED",
+      "description": "Chaos Overlord simulated TB4 packet loss! Instant sub-millisecond WireGuard failover executed (1.85ms RTT)",
+      "team": "yellow"
+    },
+    {
+      "time": "10:46:57",
+      "type": "\ud83d\udee1\ufe0f DEFENSE LOCK",
+      "description": "LuCI OpenWrt deployed SQM fq_codel bufferbloat shield on 192.168.8.1! Mitigated 350ms latency surge",
+      "team": "blue"
+    },
+    {
+      "time": "10:46:56",
+      "type": "\ud83d\udd12 JUMBO SHIELD",
+      "description": "Sentinel locked MTU 9000 Jumbo Frame tripwire on bridge0! Certified Ed25519 node authentication",
+      "team": "blue"
+    },
+    {
+      "time": "10:46:55",
+      "type": "\ud83d\udd12 JUMBO SHIELD",
+      "description": "Sentinel locked MTU 9000 Jumbo Frame tripwire on bridge0! Certified Ed25519 node authentication",
+      "team": "blue"
+    },
+    {
+      "time": "10:46:54",
+      "type": "\u26a1 EXPLOIT CLASH",
+      "description": "Hermes 3 executed TB4 socket buffer overdrive! Targeted Port 50052 on MacBook Pro (+85 VRAM drained)",
       "team": "red"
     },
     {
-      "time": "10:16:42",
-      "type": "\ud83d\udc89 BIOMETRIC INJECTION",
-      "description": "OpenClaw injected 512Hz raw ECG stream into Movesense GATT UUID 0x2A37! Testing HRV filter threshold",
+      "time": "10:46:53",
+      "type": "\ud83d\udca5 BQL BURST",
+      "description": "Hermes 3 expanded OpenWrt BQL queue depth to 8192 bytes! Contesting router bandwidth",
+      "team": "red"
+    },
+    {
+      "time": "10:46:52",
+      "type": "\u26a1 EXPLOIT CLASH",
+      "description": "Hermes 3 executed TB4 socket buffer overdrive! Targeted Port 50052 on MacBook Pro (+85 VRAM drained)",
       "team": "red"
     }
   ],
