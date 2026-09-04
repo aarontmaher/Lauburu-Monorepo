@@ -290,9 +290,14 @@ def main():
                 res = app.governor.reset_bluetooth()
             elif heal_cmd in ("restart", "daemon"):
                 res = app.governor.restart_daemon("omniterminal")
+            elif heal_cmd in ("shizuku", "doze", "phantom"):
+                res = app.governor.heal_shizuku()
             else:
                 res = app.governor.execute_natural_language(heal_cmd)
-            app.console.print(f"[bold green]Result:[/bold green] {res.action} -> Exit Code {res.exit_code} (Success: {res.success})")
+            if res:
+                app.console.print(f"[bold green]Result:[/bold green] {res.action} -> Exit Code {res.exit_code} (Success: {res.success})")
+            else:
+                app.console.print(f"[bold yellow]Result:[/bold yellow] Command '{heal_cmd}' dispatched with no active action.")
         else:
             app.console.print("[bold yellow]Self-Healing Governor module standalone execution ready.[/bold yellow]")
         sys.exit(0)

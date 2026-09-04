@@ -43,6 +43,7 @@ Welcome to the canonical knowledge repository of the **Lauburu Mesh Ecosystem**.
 - [[HIGH_ROI_AI_TRAINING_PROTOCOLS_AND_BENCHMARKS]] — High-ROI Protocols (GRPO, DPO, GBNF, ELO, DSP), Frontier Outperformance Margin & Port 4004 Visual Stream
 - [[OMNITERMINAL_NOTEBOOK_PLUGIN_AND_POLYGLOT_SPEC]] — Omni Terminal Notebook Plugin: AI Training Protocols, Telemetry HUD, Hardware Analysis & Polyglot Coding Practice
 - [[CLOUD_TOKEN_BURN_ROOT_CAUSE_AND_TERMINAL_TUI_STRATEGY]] — Token Burn Post-Mortem, Gemini 3.1 Pro Quota Shield & Zero-Browser Terminal TUI
+- [[AI_DEBATE_REVERSE_ENGINEER_BLUETOOTH_SERIAL_TERMINAL_AND_SHIZUKU_OMNITERMINAL]] — Tri-Orchestrator AI Debate: Reverse Engineering Android Bluetooth Serial Terminal, Shizuku & Omniterminal Integration
 
 ---
 
