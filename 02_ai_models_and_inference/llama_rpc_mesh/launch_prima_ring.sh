@@ -26,9 +26,9 @@ LINUX_PRIMA="/home/linux/prima_cpp/llama-server"
 LINUX_MODEL="/mnt/ssd_1tb/llama.cpp/models/kimi-dev-72b-instruct-q4_k_m.gguf"
 
 MBP_HOST="100.103.212.21"     # Tailscale (TB4 169.254.187.138 as fallback)
-MBP_USER="aaron"
-MBP_PRIMA="/Users/aaron/prima_cpp/llama-server"
-MBP_MODEL="/Volumes/NAS/AI_Models/kimi-dev-72b-instruct-q4_k_m.gguf"
+MBP_USER="aaronmaher"
+MBP_PRIMA="/usr/local/bin/llama-server"
+MBP_MODEL="/Users/aaronmaher/DFS_UNIFIED/AI_Models_Vault/qwen-vl-7b/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf"
 
 MBA_HOST="100.93.158.96"      # MacBook Air M4
 MBA_USER="aaron"

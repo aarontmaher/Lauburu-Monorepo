@@ -44,7 +44,8 @@ class CloudflareBridge(BaseInferenceBridge):
         return f"Cloudflare AI ({self.model_name})"
 
     def is_connected(self) -> bool:
-        return bool(os.getenv("CLOUDFLARE_API_KEY") and os.getenv("CLOUDFLARE_ACCOUNT_ID"))
+        token = os.getenv("CLOUDFLARE_API_TOKEN") or os.getenv("CLOUDFLARE_API_KEY")
+        return bool(token and os.getenv("CLOUDFLARE_ACCOUNT_ID"))
 
     async def connect(self, timeout: Optional[float] = 2.0) -> bool:
         self._connected = self.is_connected()
@@ -62,7 +63,7 @@ class CloudflareBridge(BaseInferenceBridge):
         t0 = time.perf_counter()
         token_emitted = False
 
-        api_key = os.getenv("CLOUDFLARE_API_KEY")
+        api_key = os.getenv("CLOUDFLARE_API_TOKEN") or os.getenv("CLOUDFLARE_API_KEY")
         account_id = os.getenv("CLOUDFLARE_ACCOUNT_ID")
         gateway_id = os.getenv("CLOUDFLARE_GATEWAY_ID")
 

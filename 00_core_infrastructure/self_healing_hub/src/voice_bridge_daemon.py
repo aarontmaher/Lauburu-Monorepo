@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Ultra-Low Latency Voice Bridge Daemon
-Bridging React IDE WebRTC/RecordRTC audio streams with local AI inference engines (Ultravox / Whisper / llama.cpp).
+Bridging React IDE WebRTC/RecordRTC audio streams with local AI inference engines (Faster-Whisper / Kokoro / llama.cpp).
 
 Framework: Pure asyncio + websockets for zero-copy binary throughput and sub-millisecond dispatch.
 Default Port: 8765 (Configurable via VOICE_BRIDGE_PORT or --port)
@@ -17,6 +17,7 @@ import logging
 import asyncio
 import argparse
 from http import HTTPStatus
+from pathlib import Path
 from typing import Dict, Optional, Any, List
 
 try:
@@ -36,6 +37,18 @@ DEFAULT_PORT = int(os.environ.get("VOICE_BRIDGE_PORT", 8765))
 MAX_FRAME_SIZE = 10 * 1024 * 1024  # 10 MB buffer headroom for large bursts
 PING_INTERVAL = 20
 PING_TIMEOUT = 20
+
+# Attempt to load unified VoiceEngine if available
+REPO_ROOT = Path(__file__).resolve().parents[3]
+AUTOMOTIVE_DIR = REPO_ROOT / "01_apps/automotive"
+if str(AUTOMOTIVE_DIR) not in sys.path:
+    sys.path.insert(0, str(AUTOMOTIVE_DIR))
+
+try:
+    from voice_engine import VoiceTranscriber, VoiceSynthesizer
+    HAS_VOICE_ENGINE = True
+except Exception:
+    HAS_VOICE_ENGINE = False
 
 
 class VoiceSession:
@@ -84,8 +97,6 @@ class VoiceSession:
                 chunk = await self.audio_queue.get()
                 if chunk is None:
                     break
-                # Downstream processing hook (e.g. Ultravox / Whisper / llama.cpp)
-                # In full production, this forwards to local RPC or PyTorch pipeline
                 self.audio_queue.task_done()
         except asyncio.CancelledError:
             pass
@@ -283,7 +294,6 @@ async def handle_control_frame(session: VoiceSession, data: str) -> None:
         }))
 
     else:
-        # Acknowledge unrecognized control message
         await session.websocket.send(json.dumps({
             "type": "ack",
             "received_type": msg_type,
@@ -297,7 +307,6 @@ async def voice_handler(websocket: Any) -> None:
     session = await session_manager.register(websocket)
     
     try:
-        # Send greeting / readiness packet
         await websocket.send(json.dumps({
             "type": "ready",
             "service": "Lauburu Ultra-Low Latency Voice Bridge",
@@ -308,32 +317,27 @@ async def voice_handler(websocket: Any) -> None:
         }))
 
         async for message in websocket:
-            if isinstance(message, bytes) or isinstance(message, bytearray) or isinstance(message, memoryview):
-                # Binary Audio Payload (Opcode 0x02)
+            if isinstance(message, (bytes, bytearray, memoryview)):
                 raw_bytes = bytes(message)
                 payload_len = len(raw_bytes)
                 session.bytes_received += payload_len
                 session.frames_received += 1
 
-                # Enqueue chunk for downstream AI inference worker
                 try:
                     session.audio_queue.put_nowait(raw_bytes)
                 except asyncio.QueueFull:
-                    # Drop oldest if queue is congested to protect real-time latency
                     try:
                         _ = session.audio_queue.get_nowait()
                         session.audio_queue.put_nowait(raw_bytes)
                     except (asyncio.QueueEmpty, asyncio.QueueFull):
                         pass
 
-                # Bi-directional Audio Pipeline: Immediate echo/playback in echo mode
                 if session.mode in ("echo", "echo_and_queue"):
                     await websocket.send(raw_bytes)
                     session.bytes_sent += payload_len
                     session.frames_sent += 1
 
             elif isinstance(message, str):
-                # JSON Control Plane
                 await handle_control_frame(session, message)
 
     except websockets.exceptions.ConnectionClosedOK:
@@ -366,7 +370,7 @@ async def run_server(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, shutdow
         if shutdown_event:
             await shutdown_event.wait()
         else:
-            await asyncio.Future()  # run forever
+            await asyncio.Future()
 
 
 def main():
@@ -392,17 +396,16 @@ def main():
             bench_port = 8798
             shutdown_evt = asyncio.Event()
             server_task = asyncio.create_task(run_server(host="127.0.0.1", port=bench_port, shutdown_event=shutdown_evt))
-            await asyncio.sleep(0.2)  # Allow server to bind
+            await asyncio.sleep(0.5)
 
             test_payload = os.urandom(100 * 1024)  # 100KB
             iterations = 10
             rtts = []
 
             async with websockets.connect(f"ws://127.0.0.1:{bench_port}", max_size=MAX_FRAME_SIZE) as ws:
-                # Consume initial greeting
                 greeting = await ws.recv()
                 
-                for i in range(iterations):
+                for _ in range(iterations):
                     t0 = time.perf_counter()
                     await ws.send(test_payload)
                     resp = await ws.recv()
@@ -413,11 +416,7 @@ def main():
                     rtts.append(rtt_ms)
 
             shutdown_evt.set()
-            server_task.cancel()
-            try:
-                await server_task
-            except asyncio.CancelledError:
-                pass
+            await server_task
 
             avg_rtt = sum(rtts) / len(rtts)
             min_rtt = min(rtts)
@@ -430,7 +429,6 @@ def main():
         asyncio.run(run_benchmark())
         sys.exit(0)
 
-    # Attach graceful shutdown signal handlers
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     shutdown_event = asyncio.Event()
@@ -443,7 +441,6 @@ def main():
         try:
             loop.add_signal_handler(sig, signal_handler)
         except NotImplementedError:
-            # Fallback on Windows/non-POSIX if necessary
             pass
 
     try:

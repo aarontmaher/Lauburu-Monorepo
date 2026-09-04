@@ -1,283 +1,271 @@
-# Comprehensive Analysis: Biometrics Domain & Movesense Hub Architecture
+# Comprehensive Technical Survey: Autonomous AI Training, Storage & RAM Mesh Engine
 
-**Author:** Explorer Agent (`teamwork_preview_explorer_survey_1`)  
-**Date:** 2026-08-29  
-**Subsystem:** Biometrics, Physiological Readiness & Movesense Hub  
-**Target Directories:** `01_apps/biometrics/`, `03_biometrics_and_telemetry/`, `01_apps/edge_compute_and_ai/`  
-**Rule Compliance:** 100% Local Airgap Protected & Rule #0 Zero-Mock Certified  
+**Author**: Explorer 1 (Training & Storage Specialist)  
+**Date**: 2026-08-31T03:45:00Z  
+**Target Subsystems**: `04_data_and_memory`, `02_ai_models_and_inference`, `00_core_infrastructure`, `06_scripts_and_tooling`, `obsidian_vault`, `pyspark_analytics`  
+**Working Directory**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_1`
 
 ---
 
 ## 1. Executive Summary
 
-This investigation explores the current state of the biometrics subsystem across the Lauburu Monorepo, focusing on the flagship **Movesense Physiological Readiness App**, real physical BLE GATT streaming (`Movesense 261030002013`), 512Hz/128Hz digital signal processing (Pan-Tompkins QRS detection, Kamath 2004 20% RR artifact filter, RMSSD, DFA-alpha1 aerobic thresholds), continuous Pulse Transit Time (PTT) hemodynamic blood pressure inversion, overnight PPG sleep staging (0-100 recovery score), auto workout classification, and Zone 2 cardio coaching.
+This survey provides a comprehensive architectural and code-level audit of the **Lauburu Mesh Ecosystem** for the **Autonomous AI Training, Storage & RAM Mesh Engine** initiative. The investigation focuses specifically on four key requirements:
+- **R1: Autonomous 24/7 LoRA/DPO Training & Distillation Pipeline** (`trl`, `peft`, `accelerate`, `continuous_lora_dataset.jsonl`, Bradley-Terry ELO tournament validation).
+- **R2: Canonical Tri-Vault Storage Synchronization & Self-Healing** (Obsidian Vault, PySpark Data Lake, GitHub Worktrees, lock/disk healing).
+- **E1: Closed-Loop Auto-Rollback Watchdog** (divergence detection, Obsidian error snapshot, rollback to checkpoint).
+- **E2: PySpark Semantic Dataset Deduplication** (Qdrant clustering, low-entropy pruning across 54,000+ samples).
 
-### Core Discoveries:
-1. **Strong Mathematical & DSP Foundation:** High-performance DSP algorithms are implemented in `03_biometrics_and_telemetry/pan_tompkins_dsp.py` and `movesense_readiness_suite.py` with 100% test coverage in `03_biometrics_and_telemetry/tests/test_movesense_dsp_suite.py` (all tests passing).
-2. **Multi-Transport BLE Streaming:** Full Bluetooth Low Energy (BLE) ingestion is implemented across three environments:
-   - Python Bleak async daemon (`01_apps/edge_compute_and_ai/lauburu_compute_hub/services/movesense_ingestion.py` and `03_biometrics_and_telemetry/run_real_movesense_daemon.py`).
-   - Web Bluetooth API in TypeScript/React (`01_apps/biometrics/zone2_endurance/src/services/movesenseBleService.ts`).
-   - Flutter/Dart BLoC cross-platform client (`01_apps/biometrics/lauburu_zone2_endurance/lib/services/compute_hub_connection_service.dart`).
-3. **Multi-Platform Presentation Interfaces:**
-   - **Textual TUI:** `01_apps/biometrics/movesense_readiness_tui.py`.
-   - **Web-TUI:** `01_apps/canonical_port/tui/serve_web_tui.py` hosting `/readiness` over WebSockets & xterm.js at 120 FPS.
-   - **Next.js 14 Web PWA:** `01_apps/biometrics/zone2_endurance/` featuring 128Hz Canvas oscilloscope with circular ring buffer (`LiveEcgMonitor.tsx`).
-4. **Architectural Gap Identified:** `01_apps/biometrics/movesense_hub` is currently unmodularized (contains only `pyspark_biometrics_dsp.py` and stale temp files) and requires decomposition into standardized modular subpackages: `core/`, `dsp/`, `presentation/`, and `transport/`.
+The codebase possesses mature, high-performance foundations: atomic POSIX-safe Tri-Vault sinks, Apple Silicon Metal/MLX QLoRA trainers, Delta Lake compaction engines, and Bradley-Terry ELO ranking algorithms. However, these systems currently operate as decoupled modules. The primary engineering work requires bridging these components into a self-governing, closed-loop continuous pipeline with automated promotion gates, worktree isolation, watchdog auto-rollback, and PySpark semantic deduplication.
 
 ---
 
-## 2. Monorepo Biometrics Code Inventory & File Map
+## 2. Catalog of Existing Codebase Assets & Infrastructure
 
-| File Path | LOC | Subsystem Role | Key Features / Status |
-|:---|:---|:---|:---|
-| `03_biometrics_and_telemetry/pan_tompkins_dsp.py` | 561 | Core DSP Engine | 512Hz/128Hz Butterworth bandpass (0.5–40Hz), 5-pt derivative, squaring, 150ms MWI, dual-threshold peak search, Kamath 2004 20% filter, RMSSD, DFA-alpha1, PTT BP inversion. |
-| `03_biometrics_and_telemetry/movesense_readiness_suite.py` | 464 | Readiness & Sleep Staging | PTT continuous BP, 30s epoch sleep staging (Deep, REM, Light, Awake) & 0–100 recovery score, auto workout detection, LT1/LT2 thresholds, VO2max estimation, LoRA dataset sink. |
-| `03_biometrics_and_telemetry/run_real_movesense_daemon.py` | 95 | Live Hardware Bleak Client | Direct Bleak CoreBluetooth connection to Movesense `261030002013` (`C1DB5043-8F89-88E8-46A3-BBD4ED83FC88`), JSON streaming. |
-| `03_biometrics_and_telemetry/open_wearables_bridge.py` | 508 | Multi-Wearable Normalizer | Whoop, Garmin, Oura, Apple Health, Google Health Connect normalization, Delta Lake & PySpark JSONL persistence, atomic blackboard sync. |
-| `03_biometrics_and_telemetry/movesense_to_4000_bridge.py` | 122 | Forwarding Bridge | Subscribes to live GATT notifications, transforms via DSP, forwards to `127.0.0.1:4000/api/v1/network/ingest`. |
-| `03_biometrics_and_telemetry/tests/test_movesense_dsp_suite.py` | 549 | Verification Test Suite | 10 test suites, 24 test cases covering 512Hz Pan-Tompkins, Kamath filter, RMSSD, DFA-alpha1, PTT BP, sleep score, zero-mock contract. |
-| `01_apps/biometrics/movesense_readiness_tui.py` | 199 | User-Facing Textual TUI | 6-card athlete HUD: HR/HRV, PTT BP, Sleep & Recovery, VO2max & Thresholds, Zone 2 Coaching table, ECG DSP Diagnostics. |
-| `01_apps/biometrics/zone2_endurance/` | ~3,200 | Next.js 14 Web PWA | Web Bluetooth client (`movesenseBleService.ts`), 128Hz Canvas oscilloscope (`LiveEcgMonitor.tsx`), DFA-alpha1 trend chart (`DfaAlpha1TrendChart.tsx`), WCAG AA accessibility table. |
-| `01_apps/biometrics/lauburu_zone2_endurance/` | ~850 | Flutter / Dart Mobile Client | Dart BLoC state management, BLE onboarding view, compute hub connection service. |
-| `01_apps/edge_compute_and_ai/lauburu_compute_hub/services/movesense_ingestion.py` | 943 | Full Bleak MDS Daemon | 128-bit Movesense MDS 2.0 (`34800001-...`), Whiteboard subscriptions (`/Meas/ECG/128`, `/Meas/IMU6/52`), Polar HRS (`0x180D`/`0x2A37`), battery service (`0x180F`), zero-mock state machine. |
-| `01_apps/canonical_port/tui/serve_web_tui.py` | 399 | Web-TUI Server | aiohttp + xterm.js + PTY server hosting `/readiness` at 120 FPS on Port 8088. |
-| `01_apps/canonical_port/backend/spec_modules/spec_03_biometrics_dsp.py` | 206 | FastAPI Spec Router | REST `/api/v1/spec-03/dsp-metrics` and `/process-ecg-window` endpoints, health checks, diagnostic calibration runner. |
+| Subsystem / Path | Key Files & Modules | Status & Capabilities |
+| :--- | :--- | :--- |
+| **Tri-Vault Logging & Multi-Stream Harvesting** | `04_data_and_memory/tri_vault_sink.py` (1,139 lines)<br>`04_data_and_memory/continuous_training_debate_daemon.py` (414 lines)<br>`04_data_and_memory/multi_stream_harvester.py` (30 KB) | **Fully Implemented**. POSIX atomic writes (`os.replace` + `os.fsync`), thread-safe locking, Rule #0 Zero-Mock validation, 5 authentic streams (Debates, AST Diffs, Proofs, Recovery, Duels). |
+| **Apple Silicon QLoRA Training Engine** | `04_data_and_memory/mlx_qlora_trainer.py` (518 lines)<br>`04_data_and_memory/fast_train_agentworld_mac.py`<br>`04_data_and_memory/training_scripts/math_training_pipeline.py` | **Fully Implemented**. Dual Apple MLX (Metal @ 273 GB/s) + PyTorch MPS backend. Dynamic RAM Governor (`<= 21.6 GB` AI Cap, `>= 2.50 GB` headroom proof). Incremental batch trigger (`>= 100` new samples). |
+| **AgentWorld Multi-Domain SFT** | `04_data_and_memory/agentworld_train.py` (476 lines) | **Fully Implemented**. Hugging Face `trl.SFTTrainer` + `peft.LoraConfig(r=64, lora_alpha=128)` over 7 agent domains across 3 stages. |
+| **Weight Merging & Consensus Synthesis** | `06_scripts_and_tooling/training/autonomous_consensus_merger.py` (809 lines) | **Fully Implemented**. MergeKit DARE-TIES / SLERP synthesis triggered when Tri-Orchestrator consensus `> 0.95`, strictly preserving parent weights. |
+| **Bradley-Terry ELO Rating Engine** | `02_ai_models_and_inference/benchmarks/local_lmarena_benchmark_harness.py` (326 lines)<br>`02_ai_models_and_inference/challenger_pool_cycler.py` (388 lines) | **Fully Implemented**. Calculates logistic win probability $P(A>B) = 1/(1+10^{(R_B-R_A)/400})$, runs Arena-Hard evaluations across 5 categories, syncs leaderboard to Obsidian. |
+| **Tri-Vault Sync Engine & Invariants** | `06_scripts_and_tooling/canonical_sync_engine/` (package with 14 modules)<br>`sync/obsidian_syncer.py`, `sync/pyspark_syncer.py`, `sync/git_syncer.py`, `sync/gdrive_syncer.py`<br>`verification/invariants.py`, `verification/self_healer.py` | **Fully Implemented**. Comprehensive multi-vault sync with Rule 6.1 invariant checks, Wikilink validation, stale `.git/index.lock` clearing, cache/log purging for disk headroom. |
+| **Reflex Arc & Self-Healing Hub** | `00_core_infrastructure/self_healing_hub.py` (456 lines, Port 18802) | **Fully Implemented**. REST API, 7 core daemon supervision, router RAM watchdog (`<= 35MB` drop_caches), UDP RFC 792 Magic Packet Wake-on-LAN. |
+| **Delta Lake & High-Throughput Storage** | `04_data_and_memory/delta_engine/` (`compactor.py`, `schema.py`, `writer.py`, `migrator.py`, `mmap_loader.py`) | **Fully Implemented**. Rust-native Delta Lake compaction, Z-Ordering, VACUUM, and streaming JSONL-to-Delta migration. |
+| **Vector DB & Knowledge Graph Vectorizer** | `04_data_and_memory/qdrant_sync/obsidian_vectorizer.py` (1,414 lines) | **Fully Implemented**. Qdrant HTTP REST API (Port 6333) + SQLite embedded fallback, llama.cpp `/v1/embeddings` client. |
+| **PySpark Big Data Analytics** | `04_data_and_memory/distributed_model_scanner_ray_pyspark.py`<br>`pyspark_analytics/dpo_streamer.py`<br>`pyspark_analytics/zero_mock.py` | **Fully Implemented**. PySpark DataFrame streaming and Ray worker orchestration. |
 
 ---
 
-## 3. Movesense Sensor 261030002013 & BLE GATT Specifications
+## 3. Deep Architectural Analysis for R1: Autonomous 24/7 LoRA/DPO Training & Distillation Pipeline
 
-### 3.1 Device Identity & Transport Topologies
-- **Target Peripheral Serial:** `Movesense 261030002013`
-- **CoreBluetooth Address / MAC:** `C1DB5043-8F89-88E8-46A3-BBD4ED83FC88`
-- **Operating Modes:**
-  1. **High-Resolution Medical ECG & IMU (Movesense MDS 2.0 / Whiteboard Protocol):** Direct 128-bit custom GATT service.
-  2. **Standard Bluetooth SIG HRS Compatibility Mode:** Standard 16-bit UUID `0x180D` / `0x2A37`.
-  3. **Browser Web Bluetooth Mode:** Client-side pairing via `navigator.bluetooth.requestDevice({ filters: [{ namePrefix: "Movesense" }] })`.
+### 3.1 Dataset Ingestion & Schema Alignment
+The monorepo contains extensive authentic training datasets conforming to Hugging Face TRL / DPO format:
+- `04_data_and_memory/continuous_lora_dataset.jsonl` (2.01 MB, DPO pairwise records)
+- `04_data_and_memory/ai_training_game_dataset.jsonl` (4.42 MB, multi-stream RLHF/instruction pairs)
+- `04_data_and_memory/continuous_master_agi_distillation.jsonl` (3.28 MB, multi-turn chat records)
+- `04_data_and_memory/dpo_router_orchestrator_pairs.jsonl` (1.20 MB)
+- `04_data_and_memory/sft_router_orchestrator_debate.jsonl` (2.03 MB)
+- `04_data_and_memory/truth_audit_debate.jsonl` (9.05 MB)
+- `04_data_and_memory/lmarena_human_preference_pairs.jsonl` (215.3 MB)
 
-### 3.2 Authoritative 128-Bit GATT UUID Matrix
+In `04_data_and_memory/tri_vault_sink.py`:
+- `export_dpo_pair(trial_record)` generates `{"trial_id", "timestamp", "domain", "prompt", "chosen", "rejected", "meta"}` conforming to `trl.DPOTrainer`.
+- `export_sft_instruction(trial_record)` generates Alpaca `{"instruction", "input", "thought", "output"}` and OpenAI ShareGPT `{"messages": [{"role", "content"}]}`.
+- Every record is passed through `verify_zero_mock_compliance()` to strictly enforce `truth_verified == True`, `truth_compliance_pct == 100.0`, and absence of mock dummy arrays.
+
+### 3.2 Training Execution Engines
+1. **Apple MLX QLoRA Engine (`mlx_qlora_trainer.py`)**:
+   - Zero-copy Metal Unified Memory access @ 273 GB/s.
+   - Invokes `mlx_lm.lora` with `--model mlx-community/Qwen-AgentWorld-35B-A3B-4bit`, `--lora-layers 16`, `--batch-size 2`.
+   - Dynamic batch triggering via `.training_watermark.json`: evaluates $\Delta = \text{current\_count} - \text{last\_watermark} \ge 100$.
+2. **PyTorch MPS Engine (`agentworld_train.py` & `mlx_qlora_trainer.py`)**:
+   - `from trl import SFTTrainer, SFTConfig`, `from peft import LoraConfig, get_peft_model`.
+   - `LoraConfig(r=64, lora_alpha=128, target_modules="all-linear", lora_dropout=0.05, bias="none")`.
+   - `SFTConfig(per_device_train_batch_size=1, gradient_accumulation_steps=8, learning_rate=2e-4, fp16=True, dataloader_num_workers=0)`.
+
+### 3.3 Dynamic RAM Governor
+- Defined in `mlx_qlora_trainer.py:75-171`:
+  $$\text{Allocated} = \text{Base (14.50GB)} + \text{KV (2.10GB)} + \text{Act (1.80GB)} = 18.40\text{ GB}$$
+  $$\text{Headroom} = \text{Cap (21.60GB)} - \text{Allocated (18.40GB)} = 3.20\text{ GB} \ge 2.50\text{ GB}$$
+- Executes `torch.mps.empty_cache()` and verifies system free percentage before allocating model batches.
+
+### 3.4 Bradley-Terry ELO Rating Engine & Promotion Gate
+- Defined in `02_ai_models_and_inference/benchmarks/local_lmarena_benchmark_harness.py`:
+  - Logistic probability: $P(A > B) = \frac{1}{1 + 10^{(R_B - R_A)/400}}$
+  - K-factor: 24.0 (adaptive tournament update)
+  - Evaluates models on 5 domain categories: `MATH_AND_ALGORITHMS`, `BIOMETRICS_AND_DSP`, `NETWORK_AND_SYSTEMS`, `POLYGLOT_CODE_EXEC`, `CYBER_ADVERSARIAL_REASONING`.
+  - Outputs markdown table to `obsidian_vault/04_ANALYTICS/LOCAL_LMARENA_LEADERBOARD_2026.md`.
+
+### 3.5 Concrete Implementation Gaps for R1
+1. **Autonomous Promotion Gate Hook**: Currently, after training finishes, the generated LoRA adapter in `02_ai_models_and_inference/lora_adapters/<adapter_name>` is not automatically subjected to an automated tournament validation against current champion models requiring $\ge 65\%$ win-rate before symlinking/loading into the inference proxy (`02_ai_models_and_inference/lauburu_ai_proxy.py` Ports 8081–8087).
+2. **Idle VRAM Daemon Scheduler**: Training runs are triggered manually or via basic CLI flags. A continuous background scheduler that checks for idle VRAM windows (off-peak hours or when daytime biometrics streaming is quiescent) is needed.
+
+---
+
+## 4. Deep Architectural Analysis for R2: Canonical Tri-Vault Storage Synchronization & Self-Healing
+
+### 4.1 Tri-Vault Subsystems
+The monorepo contains a robust framework under `06_scripts_and_tooling/canonical_sync_engine/`:
 
 ```
-┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                             MOVESENSE 261030002013 GATT ARCHITECTURE                             │
-├───────────────────────────────┬────────────────────────────────────────┬─────────────────────────┤
-│ Service / Characteristic Name │ UUID (128-bit / 16-bit)                │ Purpose / Protocol      │
-├───────────────────────────────┼────────────────────────────────────────┼─────────────────────────┤
-│ Movesense MDS 2.0 Service     │ 34800001-7185-4d5d-b431-b30e393d9e05   │ Primary Whiteboard Root │
-│ Movesense Command Char (Write)│ 34800001-7185-4d5d-b431-b30e393d9e05   │ Whiteboard Sub/Unsub    │
-│ Movesense Data Char 1 (Notify)│ 34800002-7185-4d5d-b431-b30e393d9e05   │ Streaming ECG/IMU Bytes │
-│ Movesense Data Char 2 (Notify)│ 34800003-7185-4d5d-b431-b30e393d9e05   │ Secondary Data Channel  │
-│ Bluetooth SIG Heart Rate Svc  │ 0000180d-0000-1000-8000-00805f9b34fb   │ Standard Heart Rate Svc │
-│ Heart Rate Measurement Char   │ 00002a37-0000-1000-8000-00805f9b34fb   │ HR BPM & RR-Intervals   │
-│ Battery Service               │ 0000180f-0000-1000-8000-00805f9b34fb   │ Battery Level Svc       │
-│ Battery Level Characteristic  │ 00002a19-0000-1000-8000-00805f9b34fb   │ Battery % (uint8)       │
-│ Device Information Service    │ 0000180a-0000-1000-8000-00805f9b34fb   │ Device Info Root        │
-│ Model Number String           │ 00002a24-0000-1000-8000-00805f9b34fb   │ "Movesense Medical"     │
-│ Serial Number String          │ 00002a25-0000-1000-8000-00805f9b34fb   │ "261030002013"          │
-│ Firmware Revision String      │ 00002a26-0000-1000-8000-00805f9b34fb   │ Firmware Version        │
-└───────────────────────────────┴────────────────────────────────────────┴─────────────────────────┘
+canonical_sync_engine/
+├── config.py                  # Master paths and environment resolution
+├── models/
+│   ├── artifact.py            # TruthArtifact with SHA-256 cryptographic verification
+│   ├── health.py              # StorageHealthReport dataclass
+│   └── sync_result.py         # VaultSyncResult with latency & byte tracking
+├── sync/
+│   ├── base.py                # BaseVaultSyncer with atomic file writes & metrics
+│   ├── obsidian_syncer.py     # Markdown generator with YAML frontmatter & Wikilinks
+│   ├── pyspark_syncer.py      # Thread-safe (fcntl.flock) JSONL append to master/partitions
+│   ├── git_syncer.py          # Structured JSON staging to 04_data_and_memory/core_data/
+│   └── gdrive_syncer.py       # Primary mount with fallback cache VFS
+├── verification/
+│   ├── invariants.py          # Rule 6.1 invariant validator (Wikilinks, locks, integrity)
+│   ├── self_healer.py         # Rule 6.2 automated self-healer (directories, locks, Index.md)
+│   ├── headroom.py            # NVMe disk headroom checker (min 10.0 GB)
+│   └── fast_path.py           # Inode verification (< 3ms)
+└── engine/
+    └── coordinator.py         # Multi-vault atomic sync coordinator
 ```
 
-### 3.3 Binary Frame Ingestion Protocol
-1. **Whiteboard Subscription Handshake:**
-   - Write request to `34800001`: Opcode `0x05` (SUBSCRIBE) + ReqId `0x01` + path `/Meas/ECG/128` (or `/Meas/ECG/512`).
-   - Write request to `34800001`: Opcode `0x05` (SUBSCRIBE) + ReqId `0x02` + path `/Meas/IMU6/52`.
-2. **ECG Notification Decoding (`MovesenseBinaryDecoder.decode_ecg_128_packet`):**
-   - Header: `[type (uint8), req_id (uint8), timestamp_uint32 (4 bytes little-endian)]`
-   - Payload: Array of `int32` signed microvolt ($\mu\text{V}$) integers. Conversion: $\text{mV} = \mu\text{V} / 1000.0$.
-3. **IMU 6-DoF Decoding (`MovesenseBinaryDecoder.decode_imu6_52_packet`):**
-   - Payload: Array of 6 $\times$ `float32` (24 bytes per frame): $[a_x, a_y, a_z, g_x, g_y, g_z]$.
-   - Dynamic Acceleration: $G_{\text{dyn}} = \sqrt{a_x^2 + a_y^2 + a_z^2}$.
-4. **Standard Bluetooth SIG HRS Decoding (`PolarHrsDecoder.decode_hrs_packet` / `parseHeartRateData`):**
-   - Flags byte: bit 0 (8-bit vs 16-bit HR), bit 4 (RR-interval presence).
-   - RR calculation: $RR_{\text{ms}} = \frac{RR_{\text{raw}}}{1024.0} \times 1000.0$.
+### 4.2 Obsidian Vault Synchronization & Invariants
+- `obsidian_syncer.py` writes markdown notes to `obsidian_vault/truth_artifacts/<safe_id>.md`.
+- Generates YAML frontmatter:
+  ```yaml
+  ---
+  artifact_id: "<id>"
+  artifact_type: "TRUTH_AUDIT"
+  sha256_hash: "<hash>"
+  timestamp_utc: "2026-08-31T03:39:00Z"
+  tags: [lauburu, truth_audit, zero_mock]
+  ---
+  ```
+- Enforces mandatory master Wikilinks:
+  `[[Index]] | [[CANONICAL_PROJECT_AND_STORAGE_RULE]] | [[<artifact_type>]]`
+- `invariants.py` asserts that `Index.md` exists, is non-empty, and contains all required Wikilinks.
+
+### 4.3 PySpark Data Lake & Delta Engine
+- `pyspark_syncer.py` appends to `truth_audit_master.jsonl` and partitioned `by_type/<artifact_type>.jsonl`.
+- Uses `fcntl.flock(f.fileno(), fcntl.LOCK_EX)` for inter-process and thread concurrency safety.
+- `04_data_and_memory/delta_engine/` provides:
+  - `compactor.py`: Rust-native Delta Lake compaction to 128MB chunks, Z-Ordering, and VACUUM pruning.
+  - `writer.py`: PyArrow Table writes with schema enforcement.
+  - `migrator.py`: Streaming migration from raw JSONL to Delta tables with SHA-256 parity verification.
+
+### 4.4 Git Worktrees & Self-Healing
+- `self_healer.py` implements:
+  - `heal_directories()`: Recreates missing vault paths.
+  - `heal_git_locks(force=False)`: Removes `.git/index.lock` if older than timeout (10 seconds / 10 minutes).
+  - `heal_obsidian_index()`: Rebuilds master `Index.md` if corrupted or missing Wikilinks.
+  - `heal_disk_headroom(min_free_gb=10.0)`: Automatically purges `__pycache__`, `.pytest_cache`, and logs older than 7 days when disk headroom drops below 10.0 GB.
+
+### 4.5 Concrete Implementation Gaps for R2
+1. **Isolated GitHub Worktree Lifecycle Manager**: Currently, `git_syncer.py` directly stages changes in the root worktree (`git add`). Requirement R2 mandates isolated branched development workspaces (`git worktree add -b <branch> .worktrees/<task_id>`) for AI code changes so that modifications cannot touch production branches until automated CI test suites pass.
+2. **Headroom Threshold Unification**: Harmonize the disk headroom threshold to strictly guarantee $\ge 10.0$ GB free NVMe space across `self_healing_hub.py` (which checked 5.0 GB) and `canonical_sync_engine` (which checks 10.0 GB).
 
 ---
 
-## 4. Signal Processing & Mathematical Formulations
+## 5. Deep Architectural Analysis for E1: Closed-Loop Auto-Rollback Watchdog
 
-### 4.1 512Hz / 128Hz Pan-Tompkins QRS Detection (1985)
-Implemented in `pan_tompkins_dsp.py:39-258`:
-1. **Zero-Phase 4th-Order Butterworth Bandpass (0.5 Hz – 40.0 Hz):**
-   $$H(s) = \text{Butterworth}(4, [0.5, 40.0] \text{ Hz})$$
-   Eliminates baseline wander, sweat artifacts ($<0.5\text{ Hz}$), 50/60 Hz mains interference, and high-frequency muscle tremor ($>40\text{ Hz}$).
-2. **5-Point Central Derivative Filter:**
-   $$d[n] = \frac{1}{8T} \left( -x[n-2] - 2x[n-1] + 2x[n+1] + x[n+2] \right)$$
-   Where $T = 1/f_s$. Suppresses low-frequency P and T waves while maximizing the steep slope of the QRS complex.
-3. **Nonlinear Squaring Transform:**
-   $$s[n] = (d[n])^2$$
-   Enforces strict non-negativity and non-linearly amplifies high-frequency QRS energy spikes.
-4. **Moving Window Integration (MWI):**
-   $$\text{MWI}[n] = \frac{1}{N} \sum_{k=0}^{N-1} s[n-k], \quad N = \text{round}(0.150 \cdot f_s)$$
-   Window width $N = 76$ samples at 512Hz (19 samples at 128Hz). Extracts duration feature envelope.
-5. **Adaptive Dual-Threshold Peak Detection & Searchback:**
-   $$\text{SPK} = 0.125 \cdot \text{PEAK} + 0.875 \cdot \text{SPK}$$
-   $$\text{NPK} = 0.125 \cdot \text{PEAK} + 0.875 \cdot \text{NPK}$$
-   $$\text{Threshold}_{I1} = \text{NPK} + 0.25 \cdot (\text{SPK} - \text{NPK})$$
-   $$\text{Threshold}_{I2} = 0.5 \cdot \text{Threshold}_{I1}$$
-   Refractory period lockout: 200 ms (102 samples at 512Hz, 25 samples at 128Hz).
+### 5.1 Problem Statement & Objectives
+During 24/7 autonomous training, hardware constraints (Apple Metal unified memory, shared CPU/GPU buses) or abnormal data batches may trigger:
+1. **Loss Divergence**: Loss reaches `NaN`/`inf` or increases abruptly (e.g. $> 2.5\times$ rolling average or $> 4.5$).
+2. **Dynamic RAM/VRAM Leaks**: Memory allocation exceeding the 85.0% / 21.6 GB safety cap without being reclaimed by garbage collection.
+3. **Textual TUI Frame Drops**: Main thread or event loop blockage exceeding 50ms render latency.
 
-### 4.2 Kamath et al. (2004) Clinical 20% RR Artifact Filter
-Implemented in `pan_tompkins_dsp.py:264-312`:
-$$\frac{|RR[i] - RR[i-1]|}{RR[i-1]} \le 0.20$$
-- Preserves natural Respiratory Sinus Arrhythmia (RSA) swings ($\pm 8\text{--}15\%$).
-- Rejects ectopic bursts, Premature Ventricular Contractions (PVCs), and motion noise.
-- Replaces rejected beats with physiological cubic/linear baseline interpolation: $RR_{\text{clean}}[i] = \frac{RR[i-1] + RR[i+1]}{2}$.
+Requirement E1 specifies that the system must automatically:
+1. Halt active training subprocess immediately.
+2. Capture a detailed error snapshot (step, loss history, memory profile, stack trace).
+3. Persist the snapshot to `obsidian_vault/04_ANALYTICS/` or `obsidian_vault/05_TRAINING/` with YAML metadata.
+4. Roll back the active adapter weights in `02_ai_models_and_inference/lora_adapters/` to the last certified healthy checkpoint (`checkpoint-best` or certified watermark).
 
-### 4.3 Time-Domain Autonomic HRV (RMSSD)
-Implemented in `pan_tompkins_dsp.py:315-327`:
-$$\text{RMSSD} = \sqrt{ \frac{1}{N-1} \sum_{i=1}^{N-1} (RR[i+1] - RR[i])^2 } \quad (\text{ms})$$
-Directly quantifies vagal/parasympathetic cardiac autonomic tone.
+### 5.2 Existing Components & Building Blocks
+- `04_data_and_memory/mlx_qlora_trainer.py:DynamicRamGovernor`: Provides memory metrics and headroom evaluation.
+- `04_data_and_memory/tri_vault_sink.py`: Provides atomic Obsidian note generation with Wikilinks.
+- `04_data_and_memory/.training_watermark.json`: Tracks last successfully trained sample count and status.
 
-### 4.4 120s Rolling Detrended Fluctuation Analysis (DFA-alpha1)
-Implemented in `pan_tompkins_dsp.py:329-400`:
-1. Mean RR extraction and integrated series calculation:
-   $$y(k) = \sum_{i=1}^k (RR[i] - \overline{RR})$$
-2. Segmented linear detrending across scale box sizes $s \in [4, 16]$ beats:
-   $$F(s) = \sqrt{ \frac{1}{N} \sum_{k=1}^N \left( y(k) - y_{s}(k) \right)^2 }$$
-3. Linear regression in log-log scale:
-   $$\alpha_1 = \frac{d \log F(s)}{d \log s}$$
-4. **Physiological Threshold Boundaries:**
-   - **$\alpha_1 \ge 0.75$**: Zone 2 Aerobic Base (Optimal Lipid Oxidation / Below Aerobic Threshold LT1).
-   - **$0.50 \le \alpha_1 < 0.75$**: Zone 3 Aerobic Power / Tempo (Lactate accumulation between LT1 and LT2).
-   - **$\alpha_1 < 0.50$**: Zone 4/5 Anaerobic Domain (Severe systemic acidosis / Above LT2).
-
-### 4.5 Continuous Pulse Transit Time (PTT) Blood Pressure Inversion
-Implemented in `pan_tompkins_dsp.py:403-424` & `movesense_readiness_suite.py:38-100`:
-1. **Direct PTT Hemodynamic Model:**
-   $$\text{SBP} = 120.0 + 0.45 \cdot (200.0 - \text{PTT}) + 0.15 \cdot (\text{HR} - 70.0)$$
-   $$\text{DBP} = 80.0 + 0.25 \cdot (200.0 - \text{PTT}) + 0.08 \cdot (\text{HR} - 70.0)$$
-   $$\text{MAP} = \frac{\text{SBP} + 2 \cdot \text{DBP}}{3.0}$$
-2. **Hughes-Bramwell Arterial Compliance Inversion (when PTT sensor channel is indirect):**
-   $$\text{PTT}_{\text{est}} = \frac{240.0}{\sqrt{\text{Sympathetic Ratio}}}, \quad \text{where } \text{Ratio} = \frac{\text{HR}}{\max(\text{HR}_{\text{rest}}, 40)}$$
-   $$\text{SBP} = 118.0 + 0.45 \cdot (\text{HR} - 65.0) - 0.25 \cdot (\text{RMSSD} - 40.0)$$
-   $$\text{DBP} = 76.0 + 0.25 \cdot (\text{HR} - 65.0) - 0.15 \cdot (\text{RMSSD} - 40.0)$$
-
-### 4.6 Overnight PPG Sleep Staging & Recovery Score (0–100)
-Implemented in `movesense_readiness_suite.py:101-214`:
-1. **30-Second Epoch Classifier:**
-   - If Motion $> 0.12\text{ G} \rightarrow \mathbf{AWAKE}$
-   - If $\text{HR} < 1.08 \cdot \text{HR}_{\text{rest}}$ and $\text{RMSSD} \ge 45\text{ ms} \rightarrow \mathbf{DEEP}$ (Slow-Wave Sleep)
-   - If $\text{RMSSD} < 30\text{ ms}$ and $\text{HR} > 1.05 \cdot \text{HR}_{\text{rest}} \rightarrow \mathbf{REM}$ (Paradoxical Sleep)
-   - Otherwise $\rightarrow \mathbf{LIGHT}$
-2. **Nocturnal HR Dipping Percentage:**
-   $$\text{Dip}\% = \frac{\text{HR}_{\text{day\_rest}} - \text{HR}_{\text{nocturnal}}}{\text{HR}_{\text{day\_rest}}} \times 100\% \quad (\text{Healthy normal: } 10\text{--}20\%)$$
-3. **Composite 0–100 Recovery Score:**
-   $$\text{Score} = S_{\text{Deep}} (30\text{ pts}) + S_{\text{REM}} (25\text{ pts}) + S_{\text{Efficiency}} (25\text{ pts}) + S_{\text{Autonomic}} (20\text{ pts})$$
-
-### 4.7 Auto Workout Classification & Cardiorespiratory Thresholds
-Implemented in `movesense_readiness_suite.py:216-293`:
-- **Rest / Recovery:** $<55\% \text{ HR}_{\max}$ ($\text{HR}_{\max} = 220 - \text{Age}$)
-- **Zone 2 Steady-State:** $55\text{--}72\% \text{ HR}_{\max}$
-- **Zone 3 Tempo:** $72\text{--}85\% \text{ HR}_{\max}$
-- **Zone 4 HIIT Intervals:** $85\text{--}92\% \text{ HR}_{\max}$
-- **Zone 5 Maximal Grappling:** $\ge 92\% \text{ HR}_{\max}$
-- **Uth-Sørensen VO2max Estimation:**
-  $$VO_2\max = 15.3 \times \frac{\text{HR}_{\max}}{\text{HR}_{\text{rest}}} \quad (\text{mL/kg/min})$$
-- **Heart Rate Reserve Threshold Estimates:**
-  $$\text{LT1}_{\text{bpm}} = \text{HR}_{\text{rest}} + 0.60 \cdot (\text{HR}_{\max} - \text{HR}_{\text{rest}})$$
-  $$\text{LT2}_{\text{bpm}} = \text{HR}_{\text{rest}} + 0.85 \cdot (\text{HR}_{\max} - \text{HR}_{\text{rest}})$$
-
----
-
-## 5. Architectural Gap Analysis & Standardization Plan
-
-### 5.1 Current Deficiencies in `01_apps/biometrics/movesense_hub`
-1. **Flat / Stale Directory:** `01_apps/biometrics/movesense_hub` only contains `pyspark_biometrics_dsp.py`, `README.md`, and leftover temporary swap files (`.._..*`).
-2. **Missing Standardized Subpackages:** `ORIGINAL_REQUEST.md` (R1) explicitly requires structuring `movesense_hub` into 4 standardized modules:
-   - `core/`: State management, event dispatching, data contracts, and configuration.
-   - `dsp/`: Pan-Tompkins QRS, Kamath filter, RMSSD, DFA-alpha1, PTT BP, sleep staging, workout detection.
-   - `presentation/`: Textual TUI engine, Web-TUI adapter, and WebSocket broadcast hub.
-   - `transport/`: Bleak GATT tether daemon, Web Bluetooth bridge, Whiteboard binary decoder.
-3. **Fragmented Implementations:** Excellent DSP and Bleak logic currently exists in `03_biometrics_and_telemetry/` and `01_apps/edge_compute_and_ai/lauburu_compute_hub/services/movesense_ingestion.py`, but has not been cleanly packaged as an importable module within `01_apps/biometrics/movesense_hub/`.
-
-### 5.2 Required Standardized Package Layout
+### 5.3 Concrete Implementation Architecture for E1 Watchdog
+The watchdog needs to be structured as a dedicated class `TrainingRollbackWatchdog`:
 
 ```
-01_apps/biometrics/movesense_hub/
-├── __init__.py
-├── README.md
-├── core/
-│   ├── __init__.py
-│   ├── config.py              # User demographics, baseline HR, sampling rates (512Hz/128Hz)
-│   ├── contracts.py           # Strict PROJECT.md JSON interface contract schemas
-│   ├── events.py              # Internal pub/sub event bus for telemetry frames
-│   └── state.py               # Rule #0 compliant thread-safe readiness state store
-├── dsp/
-│   ├── __init__.py
-│   ├── pan_tompkins.py        # 512Hz/128Hz QRS detector, Butterworth filter, MWI
-│   ├── kamath_filter.py       # Kamath 2004 20% clinical RR artifact filter
-│   ├── hrv_metrics.py         # Microsecond RMSSD and 120s rolling DFA-alpha1
-│   ├── ptt_blood_pressure.py  # Continuous PTT hemodynamic blood pressure inversion
-│   ├── sleep_staging.py       # 30s epoch polysomnography & 0-100 recovery score
-│   └── cardiorespiratory.py   # LT1/LT2 thresholds, auto workout classifier, VO2max
-├── transport/
-│   ├── __init__.py
-│   ├── bleak_daemon.py        # Bleak GATT client for Movesense 261030002013 (MDS 2.0 / HRS)
-│   ├── binary_decoder.py      # Movesense SBEM byte decoder for /Meas/ECG and /Meas/IMU6
-│   ├── web_bluetooth.py       # Web Bluetooth API bridge / mock-free protocol mapper
-│   └── serial_discovery.py    # Auto-scan and device discovery for Movesense sensors
-├── presentation/
-│   ├── __init__.py
-│   ├── tui_app.py             # Rich / Textual athlete readiness HUD
-│   ├── web_tui_adapter.py     # Port 8088 /readiness bridge for serve_web_tui.py
-│   ├── websocket_server.py    # Port 8088 / Port 4000 live JSON broadcast engine
-│   └── lora_dataset_sink.py   # 24/7 continuous training JSONL serializer
-└── tests/
-    ├── __init__.py
-    ├── test_dsp_math.py       # Algebraic verification of Pan-Tompkins, Kamath, RMSSD, DFA
-    ├── test_gatt_decoder.py   # Binary byte-level decoding tests for MDS 2.0
-    └── test_zero_mock.py      # Strict verification of WAITING_FOR_SENSOR null states
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    TRAINING ROLLBACK WATCHDOG ARCHITECTURE                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 1. Telemetry Interceptor & Metric Ring Buffer                               │
+│    • Tracks rolling loss window (last 20 steps)                             │
+│    • Monitors psutil memory & MPS allocations every 500ms                   │
+│    • Checks TUI frame render times via shared status/heartbeat file         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 2. Tri-Condition Divergence Detector                                        │
+│    • Condition A: isnan(loss) or isinf(loss) or loss > 3.0 * rolling_avg    │
+│    • Condition B: system_ram_pct > 85.0% or headroom_gb < 2.50 GB          │
+│    • Condition C: tui_frame_latency_ms > 50.0 ms                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 3. Automated Reflex Actions                                                 │
+│    • SIGTERM / kill active training PID                                     │
+│    • Atomic snapshot -> obsidian_vault/04_ANALYTICS/TRAINING_INCIDENT_*.md  │
+│    • Checkpoint rollback: copy certified backup -> active adapter dir       │
+│    • Watermark reset in .training_watermark.json                            │
+│    • Proactive gc.collect() and torch.mps.empty_cache()                     │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 6. Multi-Platform Client Specifications
+## 6. Deep Architectural Analysis for E2: PySpark Semantic Dataset Deduplication
 
-### 6.1 Native Textual TUI (`movesense_readiness_tui.py`)
-- **Framework:** Textual 0.40+ / Rich.
-- **Layout:**
-  - 4 Hero Metric Cards: Heart Rate & RMSSD, Continuous PTT BP, Sleep & Recovery, Cardiorespiratory Thresholds & VO2max.
-  - 2 Wide Panels: Live Workout & Zone 2 Real-Time Biofeedback Table, 512Hz ECG Signal Quality Diagnostics.
-  - Status Footer: Local Airgap & Bluetooth 5.0 Movesense HR+ `261030002013` status.
-- **Refresh Rate:** 2 Hz (500ms intervals) reading local state JSON file.
+### 6.1 Problem Statement & Objectives
+The monorepo houses over 54,000 instruction and preference pairs across various JSONL stores. Over 24/7 continuous harvesting, repetitive debates or similar code diffs produce redundant or low-entropy records that degrade training efficiency and waste VRAM.
 
-### 6.2 Web-TUI Browser Portal (`01_apps/canonical_port/tui/serve_web_tui.py`)
-- **URL Route:** `http://0.0.0.0:8088/readiness`
-- **Engine:** aiohttp asynchronous web server + PTY pseudo-terminal + xterm.js + WebGL addon.
-- **Performance:** 120 FPS hardware-accelerated canvas rendering in any modern web browser.
-- **Domain Tier:** Flagship app in `User & Scaling Apps` tier.
+Requirement E2 specifies:
+"Periodically cluster and prune duplicate or low-entropy instruction pairs across the 54,000+ sample data lake using Qdrant vector embeddings to maximize training sample efficiency."
 
-### 6.3 Next.js 14 Web PWA (`01_apps/biometrics/zone2_endurance/`)
-- **Tech Stack:** Next.js 14 (App Router), React 18, TailwindCSS, Lucide Icons, Web Bluetooth API.
-- **ECG Visualization (`LiveEcgMonitor.tsx`):**
-  - High-performance Canvas oscilloscope driven by `requestAnimationFrame`.
-  - 640-sample circular ring buffer (`EcgSweepRingBuffer`).
-  - Medical grid overlay (1mm minor lines, 5mm major lines at 25 mm/s).
-  - Sweep bar with 16-sample erase gap mimicking medical diagnostic ECG monitors.
-  - Interactive gain (5, 10, 20 mm/mV) and speed (12.5, 25, 50 mm/s) controls.
-  - Lead contact badge (`OPTIMAL`, `NOISY_MOTION`, `POOR_CONTACT`, `LEAD_OFF`, `DISCONNECTED`).
-  - Screen-reader accessible data table (`AccessibleDataTable.tsx`).
+### 6.2 Existing Code Assets
+1. **PySpark Analytics & DataFrame Processing**:
+   - `04_data_and_memory/distributed_model_scanner_ray_pyspark.py`: Demonstrates SparkSession initialization and distributed dataset transformations.
+   - `pyspark_analytics/dpo_streamer.py`: Demonstrates PySpark RDD/DataFrame JSON streaming and schema verification.
+2. **Qdrant Vector DB & Embedding Generator**:
+   - `04_data_and_memory/qdrant_sync/obsidian_vectorizer.py`: Full client for local llama.cpp `/v1/embeddings` (Port 8081) and Qdrant REST/embedded storage.
 
-### 6.4 Flutter / Dart Mobile Client (`01_apps/biometrics/lauburu_zone2_endurance/`)
-- **Architecture:** Flutter 3.x, Dart, BLoC pattern (`flutter_bloc`), `flutter_reactive_ble`.
-- **Target Platforms:** Android 15 (Pixel 10 Pro XL / Samsung S20) and iOS.
-- **Core Views:** BLE Handoff Onboarding View, Zone 2 Pacing HUD, Compute Hub Connection Service.
+### 6.3 Mathematical & Algorithmic Formulation for E2
+1. **Semantic Similarity Clustering**:
+   - For instruction embeddings $\vec{u}, \vec{v} \in \mathbb{R}^d$:
+     $$\text{Cosine Similarity}(\vec{u}, \vec{v}) = \frac{\vec{u} \cdot \vec{v}}{\|\vec{u}\|_2 \|\vec{v}\|_2}$$
+   - Near-duplicate threshold: $\text{sim} \ge 0.92$. If similarity exceeds threshold, retain only the pair with the higher judicial consensus/reward score.
+2. **Shannon Entropy & Token Diversity Pruning**:
+   - For a token sequence $X = (x_1, \dots, x_N)$ with empirical token distribution $p(x_i) = \frac{\text{count}(x_i)}{N}$:
+     $$H(X) = -\sum_{i=1}^{V} p(x_i) \log_2 p(x_i)$$
+   - Low-entropy rejection threshold: $H(X) < 3.20\text{ bits/token}$ or repetition ratio $\frac{\text{unique\_tokens}}{N} < 0.25$.
+   - Filters out degenerate loops, repetitive error logs, and boilerplate templates.
+
+### 6.4 Concrete PySpark Pipeline Design for E2
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│              PYSPARK SEMANTIC DEDUPLICATION & PRUNING PIPELINE              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 1. PySpark DataFrame Ingestion                                              │
+│    • Read 54,000+ samples from 04_data_and_memory/*.jsonl                   │
+│    • Extract canonical (pair_id, prompt, completion, reward/score, text)    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 2. UDF / Vector Lookups via Local Embedding Service                         │
+│    • Batch-generate 1024-dim / 1536-dim embeddings via Port 8081 or cache   │
+│    • Persist to Qdrant collection `dataset_dedup_lake`                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 3. Distributed Deduplication & Clustering                                   │
+│    • Exact signature grouping (MD5/SHA256 normalized hash)                  │
+│    • Dense vector cosine distance clustering (threshold >= 0.92)            │
+│    • Retain argmax(reward_score) per cluster                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 4. Shannon Entropy & Diversity Filter                                       │
+│    • Compute token entropy H(X) via Spark SQL UDF                           │
+│    • Drop rows where H(X) < 3.20 or repetition_ratio > 0.40                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 5. Clean Output Serialization                                               │
+│    • Write clean deduplicated dataset -> continuous_lora_dataset.jsonl      │
+│    • Export Delta Lake table -> 04_data_and_memory/delta_tables/clean_lora/ │
+│    • Log deduplication report & reduction stats to Obsidian Vault           │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 7. Airgap & Security Verification
+## 7. Concrete Gap Matrix & Verification Plan
 
-1. **Rule #0 Zero-Mock Verification:**
-   - When the Movesense sensor is disconnected or absent, all endpoints and UI components emit explicit `WAITING_FOR_SENSOR` states with `null` metrics.
-   - Zero simulated or synthetic arrays are generated in production mode.
-2. **Local Airgap Boundary:**
-   - 100% of raw ECG, RR intervals, PTT blood pressure, and sleep staging calculations execute locally on CPU/Metal GPU (`127.0.0.1:8000`, `127.0.0.1:4000`, `127.0.0.1:8088`).
-   - Cloud AI endpoints (Gemini Flash, Cloudflare Workers AI) are restricted to code generation and public scaffolding; zero biometric data packets ever leave the physical hardware.
+| Requirement / Extension | Existing Assets in Codebase | Missing Component / Gap | Target Subsystem & Action |
+| :--- | :--- | :--- | :--- |
+| **R1: 24/7 LoRA/DPO Training & Distillation** | `mlx_qlora_trainer.py`, `agentworld_train.py`, `tri_vault_sink.py`, `local_lmarena_benchmark_harness.py` | Automated Bradley-Terry ELO promotion gate ($\ge 65\%$ win rate) linking trained adapters to production proxy port reload. | `04_data_and_memory` & `02_ai_models_and_inference`: Build closed-loop promotion executor. |
+| **R2: Tri-Vault Synchronization & Self-Healing** | `canonical_sync_engine/` (14 modules), `self_healing_hub.py`, `delta_engine/` | Dedicated isolated Git Worktree lifecycle manager (`.worktrees/` sandbox) ensuring zero direct mutations to main. Harmonize headroom threshold to $\ge 10.0$ GB. | `06_scripts_and_tooling/canonical_sync_engine` & `00_core_infrastructure`: Add Worktree Manager and align thresholds. |
+| **E1: Closed-Loop Auto-Rollback Watchdog** | `DynamicRamGovernor`, `tri_vault_sink.py` Obsidian streaming | Training divergence/leak/TUI latency monitor, automatic training process termination, Obsidian diagnostic incident snapshotting, and adapter checkpoint rollback. | `04_data_and_memory`: Implement `training_rollback_watchdog.py`. |
+| **E2: PySpark Semantic Dataset Deduplication** | `distributed_model_scanner_ray_pyspark.py`, `qdrant_sync/obsidian_vectorizer.py`, `delta_engine` | PySpark + Qdrant semantic clustering and Shannon entropy pruning job across the 54,000+ sample data lake. | `04_data_and_memory` & `pyspark_analytics`: Implement `pyspark_semantic_dedup.py`. |
 
 ---
 
-## 8. Summary of Findings & Implementation Roadmap
+## 8. Summary of Findings & Next Steps
 
-1. **Foundations are solid:** All necessary signal processing algorithms, mathematical proofs, unit tests, and BLE parsers exist in the monorepo and pass verification.
-2. **Immediate Implementation Task:** Refactor and assemble `01_apps/biometrics/movesense_hub` into the 4 required subpackages (`core/`, `dsp/`, `presentation/`, `transport/`), link with the existing `03_biometrics_and_telemetry/` DSP engines, purge stale swap files, and verify clean end-to-end execution.
+1. **Foundational Architecture**: All prerequisite libraries (`pyspark`, `torch/mps`, `mlx`, `qdrant_client`, `deltalake`, `transformers`, `peft`, `trl`) and architectural patterns (Tri-Vault sinks, Rule #0 Zero-Mock validators, Bradley-Terry ELO formulas) are established and active.
+2. **Readiness for Implementation Phase**: The problem boundaries, data formats, and module interfaces are clearly defined. The implementation phase can directly compose these assets into:
+   - A unified continuous training daemon with Bradley-Terry ELO promotion.
+   - An isolated Git worktree manager integrated into the Tri-Vault sync engine.
+   - A closed-loop training rollback watchdog with Obsidian incident reporting.
+   - A PySpark-driven Qdrant semantic dataset deduplicator and entropy pruner.

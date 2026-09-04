@@ -47,6 +47,14 @@ class DaemonManager:
                 "check_cmd": "pgrep -f cloudflared",
                 "start_cmd": "nohup cloudflared tunnel run swarm-tunnel > /dev/null 2>&1 &",
                 "icon": "🛡️"
+            },
+            "continuous_benchmarking": {
+                "display_name": "Continuous AI Benchmarking & LoRA Training",
+                "primary": "Mac_Node",
+                "fallback": "Linux_Head_Node",
+                "check_cmd": "pgrep -f continuous_benchmark_training_daemon.py",
+                "start_cmd": "nohup python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/continuous_benchmark_training_daemon.py > /tmp/continuous_bench.log 2>&1 &",
+                "icon": "⚡"
             }
         }
         

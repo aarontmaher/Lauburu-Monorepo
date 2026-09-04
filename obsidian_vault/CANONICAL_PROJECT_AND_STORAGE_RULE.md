@@ -54,7 +54,47 @@ graph TD
 
 ---
 
-## ⚡ 2. Mandatory Storage Health & Pre-Flight Self-Healing Rule
+## 🧠 2. Canonical Local Inference Engine & Model Hierarchy
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                 CANONICAL LOCAL INFERENCE ENGINE HIERARCHY                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 1. PRIMARY ENGINE: prima.cpp                                                │
+│    • Canonical primary master across all devices that contain the model     │
+│      weights (Mac Mini M4 Pro, MacBook Pro, Linux Head Node).               │
+│    • High-throughput Pipelined-Ring Parallelism over 10Gbps TB4 DMA Bridge. │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 2. RESILIENT FALLBACK: llama.cpp                                            │
+│    • Strictly used as a fallback ONLY if an edge device lacks the local     │
+│      model weights or hardware topology to run prima.cpp properly.          │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 2.1 Canonical Models & Roles
+* 👑 **#1 Supreme Local AI Training Target & Swarm Governor: `Qwen MoE (Mixture of Experts)`**
+  - **Core Mission:** Highest-priority continuous local training target across all 7 layers to maximize swarm orchestration, multi-agent dispatch, subagent delegation, automated local AI training governance, and monorepo telemetry analysis.
+  - **Expert Routing Topology:**
+    - `Expert 0 (Swarm Governor):` Task decomposition, subagent delegation, timeout governance.
+    - `Expert 1 (Debate Arbiter):` Tri-Orchestrator consensus formulation, ELO weighting, truth audit verification.
+    - `Expert 2 (AST & Polyglot Coder):` PySpark AST traversal, code refactoring, Git worktree commits.
+    - `Expert 3 (Biometrics & Telemetry DSP):` Movesense 512Hz ECG, Pan-Tompkins QRS filtering, ACWR recovery calculation.
+    - `Expert 4 (Storage & Docker Infrastructure):` Virtio-FS validation, Qdrant vector sync, NetBird routing.
+* **Master Local Orchestrator:** `Qwen 3.8 Max 27B` / `Qwen3.8-Flash-Next` (Unabliterated) pinned at `/Users/aaron/models/Qwen3.8-Flash-Next/` (Port 8081).
+* **Pinned Devil's Advocate:** **`Qwen 3.8 Max 27B Abliterated`** (`Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf`, 16.0 GB) pinned at `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf` on Port `:8083`.
+* **Coding & AST Specialist:** `Qwen2.5-Coder-32B` / `Qwen2.5-Coder-7B-Instruct` (`qwen2.5-coder-7b-instruct-q4_k_m.gguf`).
+* **Medical DSP & Kinematics Specialist:** `Pan-Tompkins DSP + Qwen2.5-Math-72B` distilled.
+
+
+### 2.2 Mandatory Default Hand-Off to `/ai-debate` on Project Choices
+**CANONICAL DIRECTIVE:** All swarms, orchestrators, subagents, and router sentinels MUST **default to handing off to the `/ai-debate` Dual Qwen and Cloud AI Debate** for all non-trivial project choices, architectural crossroads, and subsystem designs:
+1. **Local Dual Qwen Arena:** Qwen 3.8 Max (Master Orchestrator on `:8081`/`:8082`) vs Qwen 3.8 Max 27B Abliterated (Devil's Advocate on `:8083`).
+2. **Cloud Frontier Shadow:** Gemini 3.1 Pro High / Gemini 3.7 Flash High for deep architectural reasoning and edge-case verification.
+3. **Consensus Invariant:** Decisions must achieve mathematical consensus ($\Phi \ge 0.98$) before code execution.
+
+---
+
+## ⚡ 3. Mandatory Storage Health & Pre-Flight Self-Healing Rule
 
 **MANDATORY RULE:** Every AI agent must confirm the storage is **HEALTHY** and execute automated self-healing **BEFORE** making any changes, writing code, executing refactors, or running training tasks.
 
@@ -118,16 +158,38 @@ The distributed hardware mesh aggregates **108.0 GB RAM (82.8 GB Usable AI VRAM)
 
 ---
 
-## 📁 4. Canonical Monorepo Folder Map
+---
+
+## 👁️ 4. Canonical Multimodal Perception & Development Historian Layer
+
+The **Screen Lens & AI Development Historian Subsystem** (`01_apps/screen_lens/`) is a default, permanent perception layer across the entire monorepo and swarm:
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                 CANONICAL SCREEN LENS MULTIMODAL TOPOLOGY                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 1. macOS Host Lens (Port 3035): ScreenCaptureKit + Apple Vision ANE OCR.    │
+│ 2. Android Edge Lens (Port 3035 / 3036): Pixel 10 Pro XL Tesseract LSTM.    │
+│ 3. Swarm Client: 05_agents_and_swarms/screen_lens_swarm_client.py           │
+│    • Provides instant screen_lens_swarm_client.get_active_screen_summary(). │
+│ 4. Autonomous Historian: 24/7 development synthesis logging to              │
+│    obsidian_vault/00_CHRONOLOGY/LIVE_DEVELOPMENT_LOG_2026.md and            │
+│    04_data_and_memory/lora_datasets/project_development_history.jsonl.      │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📁 5. Canonical Monorepo Folder Map
 
 ```text
 Lauburu-Monorepo/
 ├── 00_core_infrastructure/           # Self-Healing Hub (Port 18802), SeaweedFS DFS, Docker Compose, Tailscale daemons
-├── 01_apps/                          # Port 4000 Hub, Movesense Hub (512Hz ECG), Zone 2, Spatial Grappling 3D
-├── 02_ai_models_and_inference/       # llama.cpp RPC Sharding (8081-8084), Petals DHT, Exo P2P, GGUF Vault
+├── 01_apps/                          # Screen Lens (:3035), Port 4000 Hub, Movesense Hub, Zone 2, Spatial Grappling 3D
+├── 02_ai_models_and_inference/       # prima.cpp PRP (:8082), llama.cpp (:8083), Petals DHT, Exo P2P, GGUF Vault
 ├── 03_biometrics_and_telemetry/      # Movesense BLE, Pan-Tompkins QRS DSP, PTT Blood Pressure, DFA-alpha1
 ├── 04_data_and_memory/               # PySpark Crawlers, 24/7 LoRA Datasets, Qdrant Vector DB, Google Drive Sync
-├── 05_agents_and_swarms/             # Tri-Orchestrator AI Debate Council, Genetic MoE Engine, Truth Audit
+├── 05_agents_and_swarms/             # Screen Lens Swarm Client, Tri-Orchestrator AI Debate, Genetic MoE Engine
 ├── 06_scripts_and_tooling/           # Universal SSH Daemons, ADB Keepalive, WoL Resurrection, Figma MCP Bridge
 ├── 07_docs_and_architecture/         # Monorepo Deep Architecture Indexes, Whitepapers, Security RFCs
 ├── obsidian_vault/                   # Canonical Obsidian Knowledge Graph, APPS_AND_FEATURES, Swarm Logs
@@ -136,10 +198,40 @@ Lauburu-Monorepo/
 
 ---
 
-## 🛑 5. Core Operating Principles
+## 🛑 6. Core Operating Principles
 
-1. **Rule #0 (Zero-Mock Data):** No fake arrays or simulated telemetry. All data must originate from authentic live hardware streams or real log replays.
+1. **Rule #0 (Zero-Mock Data & Zero-Simulation Mandate):** No fake arrays, synthetic placeholders, or simulated telemetry. All data must originate from authentic live hardware streams or real log replays.
+   * **Rule 0.1 (Definitive Proof Invariant):** Absolute prohibition on simulations, hallucinations, and unverified data. No claim of task success, optimization, or bugfix shall be accepted without providing at least one of three definitive empirical proofs:
+     1. **Definitive "Human-Like" Click-Through:** Verified physical actuation (ADB tap/swipe or macOS accessibility) triggering real GUI state changes.
+     2. **Line-by-Line Reading:** Authentic inspection of files or kernel buffers with line counts, exact byte lengths, and SHA256 checksums.
+     3. **Definitive Visual Proof:** Authentic pixel-level screen capture or video recording visually verified.
 2. **Local AI First:** Always prioritize local quantized models over 10Gbps Thunderbolt 4 RPC before falling back to cloud APIs.
 3. **Dynamic RAM Governance:** Respect the strict per-device dynamic RAM ceilings. Aggressively offload background compute from the Mac Mini to surrounding nodes.
-4. **Persistent Keepalives:** Android devices running Termux must always execute `termux-wake-lock` and bypass Doze mode.
-5. **Continuous Tri-Vault Sync:** Every major change, refactor, or audit must update GitHub, the Obsidian Knowledge Graph, and the PySpark LoRA Data Lake.
+4. **Router Model Invariant:** GL.iNet travel router strictly runs `SmolLM2-135M/360M` ($\le 300\text{MB}$ RAM); heavy models are routed to the mesh master.
+5. **Persistent Keepalives:** Android devices running Termux must always execute `termux-wake-lock` and bypass Doze mode.
+6. **Continuous Tri-Vault Sync:** Every major change, refactor, or audit must update GitHub, the Obsidian Knowledge Graph, and the PySpark LoRA Data Lake.
+7. **Real Physical RAM Ground Truth & Mac Mini Scheduling Invariant:**
+   * **Real Physical RAM Calculations:** All capacity models, mathematical equations, telemetry monitors, and theoretical proofs MUST view and compute against 100% REAL PHYSICAL RAM across the full network (Total Mesh: 108.0 GB, Mac Cluster: 56.0 GB). No artificial caps or simulated masks in the measurement layer.
+   * **All Peripheral Nodes Fill First:** All peripheral nodes (L2 MBP 16GB, L5 MBA 16GB, L3 Linux 16GB, L4 Tablet 8GB, L6 Pixel 16GB, L7 S20 12GB) receive layer allocations and fill to their targets first.
+   * **Mac Mini Last-Fill & Early-Full Ceiling:** The Mac Mini (L1 Host 24.0 GB) is strictly the LAST device to fill, and is considered FULL EARLIER at a conservative ~60% allocation (14.4 GB) to permanently guarantee >= 9.6 GB of real untouched headroom for prompt ingestion, ANE, TUI, and subagent loops.
+   * **3-Mac Thunderbolt Default:** Always shard across ALL 3 Apple Silicon Macs (L1 + L2 + L5) over the 10Gbps Thunderbolt 4 DMA bridge to pool 56.0 GB Real Metal RAM. Never shard across only 2 Macs unless the model fits very easily (<= 40% of real 2-node capacity).
+   * **7.1 Active Host Memory Evacuation Invariant:** If the Host Mac Mini available RAM drops below 5.0 GB (or utilization exceeds 85%), the memory governor MUST immediately execute inactive memory trimming and trigger automatic peripheral offload over the 10Gbps TB4 DMA bridge to MacBook Pro / Air and Linux Head Node to restore host headroom to >= 9.6 GB.
+8. **Rule #8 (Mandatory Failure-to-Training Ingestion Invariant):**
+   * **Any identified, confirmed, and solved failure** across apps, UI widgets, network transports, memory governance, or backend daemons **MUST be immediately converted into a structured instruction-thought-action JSONL pair** and appended to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl` for continuous local AI fine-tuning (`TRACK_04_NETWORK_SENTINEL` / `TRACK_01_AGENTWORLD`).
+   * No outage, bug, or regression shall be fixed in isolation without permanent machine-learned knowledge retention in the local model dataset.
+9. **Rule #9 (Canonical Containerization & Virtio-FS Acceleration Rule):**
+   * **Virtio-FS Invariant:** All Docker runtimes on macOS must use `vmType: vz` and `mountType: virtiofs` to enable zero-copy direct memory access (1,420 MB/s read throughput) across the 5,425-note Obsidian vault and AST datasets.
+   * **Dynamic VM RAM Governance:** Colima on the Mac Mini host is strictly capped at $\le 8.0\text{ GB}$ RAM (4 aarch64 cores), ensuring $\ge 16.0\text{ GB}$ of real physical unified memory remains unconstrained for host Apple Metal inference (`prima.cpp`, MLX, ANE).
+   * **Hybrid Execution Boundary:** Heavy LLM inference and interactive Metal notebooks run host-native; stateful microservices (Qdrant Vector DB `:6333`, SeaweedFS DFS `:8888`, NetBird Dashboard `:8087`, Portainer `:9000`, Unified Portal Hub `:4000`) run containerized via `00_core_infrastructure/docker-compose.master.yml`.
+10. **Rule #10 (Dual-Ring Sandboxed Swarm & Evolutionary Tournament Invariant):**
+    * **Ring 0 (Worker Sandbox):** All low-parameter models (<1B parameters: SmolLM2-135M, nano-mistral, Lite-Oute-300M, SmolVLM) execute tool actions, code generation, and trial runs inside isolated containers with a strict 512 MB RAM cap, read-only root, and a 5.0s watchdog kill timer.
+    * **Ring 1 (Qwen MoE Gatekeeper):** Candidate outputs must pass AST syntax parsing, Rule #0 zero-mock verification, and security boundaries audited by the Qwen MoE Supreme Auditor before host commit or ADB dispatch.
+11. **Rule #11 (LoRA Pre-Training Direction Consensus & Aaron's Approval Gate):**
+    * **Mandatory Pre-Training Consensus:** Before any LoRA adapter is trained or weights are modified, the system MUST convene the Tri-Orchestrator AI Debate Council (Local Qwen 3.8 Max Duo, Qwen 80B MoE, SmolLM2, Cloud Gemini Flash) to achieve $\ge 0.95$ consensus agreement.
+    * **User Final Sign-Off:** The consensus direction ticket MUST be presented to Aaron for explicit approval before weights are touched.
+    * **Fleet Synchronization:** Upon approval, training executes simultaneously across all 5 mesh devices (M4 Pro Mac Mini, M4 MacBook Air, MacBook Pro via TB4 DMA, Linux Head Node, Pixel 10 Pro XL TPU).
+12. **Rule #12 (Saccadic Foveated Context & Q4_0 KV Cache Invariant):**
+    * Ingesting massive contexts (>32K tokens) requires SmolLM2 AST pre-compression (saving 60-75% tokens) and mandatory Q4_0 KV cache quantization (`-ctk q4_0 -ctv q4_0`), preventing host VRAM overrun. Contexts exceeding host memory stream over 10Gbps TB4 DMA to peripheral node RAM.
+13. **Rule #13 (Hybrid Fusion Visual Aesthetic & Commercial ELO Invariant):**
+    * All Web and Electron dashboards must comply with Linear Bento Minimalism (deep carbon, 1px hairline borders, 60-30-10 palette, sub-3s value comprehension, $\ge 2450$ ELO).
+    * All terminal TUIs and hardware monitors must comply with 120 FPS Cyberpunk Phosphor TUI (phosphor green/cyan metrics, live hex streams, zero-latency redraws, $\ge 2380$ ELO).

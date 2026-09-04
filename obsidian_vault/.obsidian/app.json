@@ -1,1 +1,8 @@
-{}
+{
+  "userIgnoreFilters": [
+    "01_DEBATES/**",
+    "**/*.mom",
+    "**/*.opml",
+    "**/*.jsonl"
+  ]
+}

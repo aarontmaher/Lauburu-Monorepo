@@ -1,39 +1,33 @@
 # Original User Request
 
-## Initial Request — 2026-08-29T09:31:58Z
+## Initial Request — 2026-09-02T11:25:33+10:00
 
-Build out every single user-facing and commercial application across the entire Lauburu Monorepo to production completeness, prioritizing the flagship Movesense Physiological Readiness App, using automated free-tier AI APIs (Gemini Flash Free Tier, Cloudflare Workers AI) for rapid code scaffolding, testing, and documentation, while strictly airgapping 100% of live biometrics to local hardware.
+# FULL SWARM AUDIT & PERSISTENT ZERO-MOCK EXECUTION
 
-Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
-Integrity mode: development
+Deploy and verify a 100% zero-mock, real-time biometrics and 3D spatial grappling cockpit for Port 4000 and mobile Pixel 10 Pro XL.
+
+Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/port_4000_flutter_rust
 
 ## Requirements
 
-### R1. Flagship Movesense Physiological Readiness Suite (Top Priority)
-- Build out `01_apps/biometrics/movesense_hub` to 100% commercial completeness with modular sub-packages: `core/`, `dsp/`, `presentation/`, and `transport/`.
-- Deliver real-time 512Hz Bicep ECG (Pan-Tompkins DSP), continuous PTT blood pressure inversion, overnight PPG sleep staging & score (0-100), auto workout classification, and Zone 2 cardio coaching (LT1/LT2 thresholds & $VO_2\text{max}$).
-- Provide multi-platform clients: Native Textual TUI, Web-TUI browser app (`/readiness`), and cross-platform PWA/mobile scaffolds.
+### R1. Total Elimination of Mock & Fallback Data (Global Rule #0)
+Purge every static array, hardcoded default (72 BPM, 48.5ms, synthetic sine waves), and mock initial state across the Rust backend, Dart UI, and HTML build. When no live sensor or camera stream is connected, the UI must render authentic waiting states (-- BPM, -- ms, flatline ECG, clean sensor probing badges).
 
-### R2. Monorepo Portfolio Build-Out & Clean Architectural Separation
-- Structurally isolate the entire app portfolio into two clear tiers:
-  1. **User & Scaling Apps (`01_apps/user_facing_and_scaling/`):** Movesense Readiness Hub, 3D Spatial Grappling (3,044 OPML Tree & MediaPipe 33-landmark skeleton), Gamified Combat Arena, and Headless Shopify Storefront ($9/$29/$99/mo tiers).
-  2. **Operator & Dev Cockpits (`01_apps/operator_and_dev/`):** Canonical Port 9-Screen NOC, SmolAgents Python Duel Sandbox, and Standalone Qwen Math Trend Optimizer.
-- Ensure all apps share common high-performance math/DSP utilities while maintaining zero tight coupling.
+### R2. Pure Dynamic Client-Side WebSocket & WebGL/Canvas Engine
+Replace static SVG templates with dynamic client-side JavaScript that streams directly from ws://127.0.0.1:4000/ws/telemetry (512Hz biometrics) and ws://127.0.0.1:4000/ws/spatial (60 FPS 3D Tatami kinematics). The canvas and oscilloscope must only draw live incoming data packets.
 
-### R3. Automated Free-Tier Cloud AI Scaffolding & Zero-Cost Scaling Engine
-- Deploy an automated code generation daemon utilizing Gemini 2.5 Flash Free Tier and Cloudflare Workers AI Free Tier to autonomously generate unit test suites, TypeScript/React/Flutter UI boilerplate, and API documentation.
-- Enforce strict fail-closed airgap: zero biometric data or sensor packets are transmitted to external APIs; free cloud APIs are restricted strictly to public code scaffolding.
+### R3. Standalone Mobile Pixel Web Bluetooth Ingestion
+Embed native Web Bluetooth API in the Cockpit frontend (navigator.bluetooth) with automatic GATT subscription to Movesense Heart Rate Service (0x180D/0x2A37) and raw 512Hz ECG streams. When opened in Chrome on the Pixel at the gym, one-click Bluetooth pairing connects directly to the Movesense sensor on the athlete's body.
+
+### R4. Continuous Autonomous Execution & Verification
+Deploy the updated release binary and HTML to the running Port 4000 daemon, test end-to-end over Tailscale on the Pixel 10 Pro XL (100.73.38.87), and verify 0% mock data via automated Truth Audit.
 
 ## Acceptance Criteria
 
-### Movesense Readiness Commercial Completeness
-- [ ] Movesense app calculates accurate 512Hz ECG, PTT blood pressure, sleep score, and LT1/LT2 thresholds from real BLE GATT streams (`261030002013`).
-- [ ] UI provides responsive, real-time visual gauges, historical trends, and Zone 2 pacing recommendations.
-
-### Monorepo Architecture & Two-Domain Separation
-- [ ] All applications across `01_apps/` compile cleanly with standardized modular directory structures (`core/`, `dsp/`, `presentation/`, `transport/`).
-- [ ] Web-TUI Portal on Port 8088 renders both User Apps (`/readiness`, `/grappling`, `/arena`, `/store`) and Operator Cockpits (`/canonical`, `/smolagents`, `/math`) at 120 FPS.
-
-### Free-Tier Automation & Airgap Verification
-- [ ] Automated code scaffold engine runs cleanly against free-tier endpoints without hitting rate limits.
-- [ ] Outbound telemetry audits confirm 100% airgap compliance with zero health data leakage.
+### Verification & Truth Enforcement
+- [x] No hardcoded numbers (72.0, 48.5, 50%, etc.) exist in the compiled index.html or backend initial state.
+- [x] Initial state renders -- BPM, -- ms, and flat zero ECG lines until real sensor frames arrive.
+- [x] Web Bluetooth button initiates direct CoreBluetooth / Android Bluetooth pairing on the Pixel.
+- [x] Live WebSocket telemetry frames (/ws/telemetry and /ws/spatial) dynamically update the oscilloscope and 3D Tatami mat at 60+ FPS.
+- [x] All 12 Rust and Dart test suites pass.
+- [x] Live verification on Pixel 10 Pro XL over SSH confirms zero-mock state.

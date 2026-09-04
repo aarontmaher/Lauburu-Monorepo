@@ -234,26 +234,38 @@ class CloudflareTelemetryCollector:
     ):
         self.api_token = (
             api_token
-            or os.getenv("CF_API_TOKEN")
-            or os.getenv("CLOUDFLARE_API_TOKEN")
-            or os.getenv("CLOUDFLARE_API_KEY")
+            if api_token is not None
+            else (
+                os.getenv("CF_API_TOKEN")
+                or os.getenv("CLOUDFLARE_API_TOKEN")
+                or os.getenv("CLOUDFLARE_API_KEY")
+            )
         )
         self.zone_id = (
             zone_id
-            or os.getenv("CF_ZONE_ID")
-            or os.getenv("CLOUDFLARE_ZONE_ID")
+            if zone_id is not None
+            else (
+                os.getenv("CF_ZONE_ID")
+                or os.getenv("CLOUDFLARE_ZONE_ID")
+            )
         )
         self.account_id = (
             account_id
-            or os.getenv("CF_ACCOUNT_ID")
-            or os.getenv("CLOUDFLARE_ACCOUNT_ID")
-            or "16282271f1eccb56f0b96afed09d21ff"
+            if account_id is not None
+            else (
+                os.getenv("CF_ACCOUNT_ID")
+                or os.getenv("CLOUDFLARE_ACCOUNT_ID")
+                or "16282271f1eccb56f0b96afed09d21ff"
+            )
         )
         self.target_host = (
             target_host
-            or os.getenv("CF_TARGET_HOSTNAME")
-            or os.getenv("OPENCLAW_TARGET_HOST")
-            or "openclaw-standalone.trycloudflare.com"
+            if target_host is not None
+            else (
+                os.getenv("CF_TARGET_HOSTNAME")
+                or os.getenv("OPENCLAW_TARGET_HOST")
+                or "openclaw-standalone.trycloudflare.com"
+            )
         )
         self.graphql_url = (
             os.getenv("CF_GRAPHQL_ENDPOINT")

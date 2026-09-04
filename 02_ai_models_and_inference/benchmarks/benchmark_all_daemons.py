@@ -94,8 +94,8 @@ def benchmark_all():
     
     # 1. Benchmark llama.cpp Active Endpoints
     llama_targets = [
-        (8083, "Qwen2.5-Coder-7B-Instruct (Metal GPU Q4_K_M)"),
-        (8085, "Qwen2.5-7B-Instruct-Abliterated (CPU Q4_K_M)"),
+        (8083, "Qwen 3.8 Max Abliterated (Metal GPU Q4_K_XL)"),
+        (8082, "Decentralized prima.cpp Ring Master"),
         (8080, "Lauburu AI Proxy (3-Tier Auto-Cascade Endpoint)")
     ]
     

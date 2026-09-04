@@ -1,19 +1,13 @@
-# Progress — Milestone 4: Android Gradle Build Assembly & Clean Compilation Verification
+# Progress — Worker M4
 
-Last visited: 2026-08-24T22:47:00+10:00
+## Status: Complete (100% Passed)
+Last visited: 2026-08-31T03:55:00Z
 
-## Status: In Progress
-
-### Completed Tasks
-- [x] Initialized DISPATCH.md, BRIEFING.md, progress.md.
-
-### Current Task
-- Reading authoritative user request, project blueprint, and M2/M3 handoffs.
-
-### Next Steps
-1. Read ORIGINAL_REQUEST.md, PROJECT.md, M2 handoff, M3 handoff.
-2. Inspect Android Gradle configuration in `Installed_Apps/Phone_Applications/lauburu_compute_hub/android/` and `01_apps/lauburu_compute_hub/android/`.
-3. Check flutter/gradle build environment and run build verification (`./gradlew assembleDebug` or `flutter build apk --debug`).
-4. Verify BLE stream forwarding logic to Port 4000 hub.
-5. Create `tests/test_android_build_verification.py` and run pytest.
-6. Write `handoff.md` and send completion message.
+- [x] Initialized DISPATCH.md and BRIEFING.md
+- [x] Pre-flight storage health verification
+- [x] Implement AgentWorldDriver and WebWorldDriver
+- [x] Implement LookaheadInterceptor with CoW state & quantitative admission gating
+- [x] Implement TrainingRollbackWatchdog with Obsidian snapshotting & rollback
+- [x] Implement Unit Test Suites (test_dual_world_simulation.py, test_training_rollback_watchdog.py)
+- [x] Run test suite with pytest and verify 100% pass (36/36 passed)
+- [x] Complete handoff.md and send message to parent

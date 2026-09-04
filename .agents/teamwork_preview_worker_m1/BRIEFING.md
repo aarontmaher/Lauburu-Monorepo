@@ -1,48 +1,74 @@
-# BRIEFING — 2026-08-29T12:28:30Z
+# BRIEFING — 2026-09-03T23:08:00Z
 
 ## Mission
-Implement Milestone 1 (M1) — Free-Tier AI Scheduling, Quota Governance & Airgapped Rate Limiter.
+Implement and empirically verify native C11 consistent hash ring pooled storage in `01_apps/screen_lens/c_core/` across 7 canonical mesh layers, featuring qsort ring sorting, binary search clockwise successor routing, Fletcher32 odd-byte padding and alignment safety, non-repeating 1MB payload benchmark, and explicit bitrot corruption injection testing.
 
 ## 🔒 My Identity
 - Archetype: teamwork_preview_worker_m1
-- Roles: [implementer, qa, specialist]
+- Roles: implementer, qa, specialist
 - Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1
-- Original parent: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
-- Milestone: M1_free_tier_quota_governance_and_rate_limiter
+- Original parent: e9421748-42ff-4cf4-b121-3c19a4436405
+- Milestone: Milestone 1: Multi-View UI Engine & Port Matrix Implementation
+- Current Parent / Milestone 1 Subtask: teamwork_preview_orchestrator_23 (878c1253-0956-4401-91a5-0f3927d54244) — C11 Consistent Hash Ring & Pooled Storage
 
 ## 🔒 Key Constraints
-- Rule #0 (Zero-Mock & Zero-Simulated Data): All metrics must originate from authentic live hardware sockets or return clean waiting states (--).
-- Integrity Mandate: Genuine logic only; no hardcoding of test expectations or facades.
-- Local AI First: Unlimited 24/7 inference across Ports 8081-8086.
-- Fail-closed 100% biometric and secret airgapping.
+- Zero-mock & zero-simulated data truth verification rule.
+- Mandatory storage health & pre-flight self-healing rule.
+- Mandatory hardware isolation rule: strictly forbidden from running Playwright, Chrome, or any UI/UX "Computer Use" testing on Mac Mini host.
+- Do not hardcode test results, expected outputs, or dummy facades.
+- All implementations must be genuine.
+- Exclusive write ownership: `01_apps/screen_lens/c_core/lauburu_pooled_storage.c`, `01_apps/screen_lens/c_core/lauburu_pooled_storage.h`, `01_apps/screen_lens/c_core/test_pooled_storage.c`.
 
 ## Current Parent
-- Conversation ID: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
-- Updated: 2026-08-29T12:28:30Z
+- Conversation ID: 878c1253-0956-4401-91a5-0f3927d54244
+- Updated: 2026-09-03T23:08:00Z
 
 ## Task Summary
 - **What to build**:
-  1. `cloud_api_quota_manager.py`: Gemini 2.5 Flash Free Tier 14 RPM / 1,400 RPD token-bucket rate limiter with fcntl lock & UTC midnight rollover; Cloudflare 10k neurons/day tracking with 60s 429 cooldown; Failover to local mesh across Ports 8081-8086; 100% fail-closed airgap filter (`is_airgapped_data`, `acquire_gemini_slot`, `acquire_cloudflare_neurons`).
-  2. `free_tier_ai_continuous_cron.py`: Workload scheduler (Daytime 06:00-24:00 UTC vs Overnight 00:00-06:00 UTC) prioritizing daytime real-time biometrics vs overnight heavy synthetic AST scaffolding.
-  3. `cloudflare_worker/src/worker.ts`: 100% fail-closed privacy airgapping blocking raw 512Hz ECG, PTT BP, Movesense GATT bytes, and monorepo secrets with HTTP 403.
-- **Success criteria**: All rate limits enforced, zero 429 errors, 100% airgap isolation, all test suites pass.
-- **Interface contracts**: PROJECT.md § Interface Contracts.
+  1. `storage_pool_sort_ring()` using `qsort` on `g_ring` by token in `lauburu_pooled_storage.c`.
+  2. Binary search clockwise successor lookup in `find_node_on_ring()` with circular wrap-around to eliminate Node 0 starvation.
+  3. Fletcher32 odd-byte padding and memory alignment safety (no unaligned pointer casts, byte-level processing with 0-padding on trailing odd byte).
+  4. Register all 7 canonical mesh layers in `test_pooled_storage.c` (L1 Mac Host, L2 MacBook Pro TB4, L3 Linux Head Node, L4 Linux Tablet, L5 MacBook Air, L6 Pixel 10 Pro XL, L7 Samsung S20).
+  5. 1.0 MB non-repeating PRNG payload and explicit bitrot corruption injection test.
+  6. Verify: dispersal <= 2.0 ms, reassembly <= 0.5 ms, 100% bit-for-bit SHA256 match, Fletcher32 bitrot detection (fails on corruption).
+- **Success criteria**:
+  - Dispersal latency <= 2.0 ms
+  - Reassembly latency <= 0.5 ms
+  - 100% bit-for-bit SHA256 match
+  - Fletcher32 bitrot detection passes clean & catches corruptions
+  - Balanced chunk allocation across all 7 layers
+- **Interface contracts**: `01_apps/screen_lens/c_core/lauburu_pooled_storage.h`
+- **Code layout**: `01_apps/screen_lens/c_core/`
 
-## Loaded Skills
-- **spec-00-core-infrastructure**: Infrastructure and daemon governance.
-- **polyglot-python-specialist**: Python async, DSP, LoRA pipelines, zero-mock telemetry.
-- **cloudflare / workers-best-practices**: Cloudflare Worker best practices, TypeScript, airgap firewall.
+## Key Decisions Made
+- Maintain `storage_pool_sort_ring()` in header/source and automatically ensure sorted ring whenever nodes are added or before dispersal.
+- Implement binary search `O(log V)` for clockwise successor finding on the sorted ring of 112-128 virtual slots.
+- Use byte-by-byte 16-bit word assembly with odd-length padding in `compute_fletcher32` to ensure strict C11 aliasing/alignment safety and complete payload coverage.
+- Add portable standard SHA256 implementation to `test_pooled_storage.c` to compute and display authentic SHA256 hashes of original and reassembled payloads.
+- Implement explicit bitrot corruption injection test flipping single bits and verify rejection.
+
+## Artifact Index
+- `.agents/teamwork_preview_worker_m1/DISPATCH.md` — Assignment record
+- `.agents/teamwork_preview_worker_m1/BRIEFING.md` — Persistent working memory
+- `.agents/teamwork_preview_worker_m1/progress.md` — Liveness heartbeat & task progress
+- `.agents/teamwork_preview_worker_m1/handoff.md` — 5-component handoff report
+- `01_apps/screen_lens/c_core/lauburu_pooled_storage.h` — C11 header with exported APIs
+- `01_apps/screen_lens/c_core/lauburu_pooled_storage.c` — Consistent hash ring implementation
+- `01_apps/screen_lens/c_core/test_pooled_storage.c` — End-to-end benchmark & validation test harness
+- `01_apps/screen_lens/c_core/lauburu_storage_bench` — Compiled native benchmark binary
 
 ## Change Tracker
 - **Files modified**:
-  - `06_scripts_and_tooling/automation/cloud_api_quota_manager.py`: Implemented 14 RPM / 1,400 RPD token-bucket rate limiter, 10,000 neurons/day budget, Ports 8081-8086 failover, and `acquire_gemini_slot`, `acquire_cloudflare_neurons`, `is_airgapped_data`.
-  - `06_scripts_and_tooling/automation/free_tier_ai_continuous_cron.py`: Implemented daytime vs overnight off-peak scheduling, integrating biometrics airgap and AST scaffolding.
-  - `00_core_infrastructure/cloudflare_worker/src/worker.ts` & `core/cloudflare-worker/src/worker.ts`: Enhanced 100% fail-closed biometric and secret airgap firewall across paths, headers, and query parameters.
-  - `tests/test_m1_free_tier_scheduling_and_airgap.py`: Added comprehensive 13-test verification suite.
-- **Build status**: 237/237 tests passing (pytest); TypeScript typecheck passing (0 errors).
-- **Pending issues**: None.
+  - `01_apps/screen_lens/c_core/lauburu_pooled_storage.h`: Exported `storage_pool_sort_ring`, `compute_fletcher32` (safe signature), `storage_pool_find_node`, and ring introspection utilities.
+  - `01_apps/screen_lens/c_core/lauburu_pooled_storage.c`: Added `qsort` ring sorting by token (`storage_pool_sort_ring`), binary search clockwise successor lookup with wrap-around (`find_node_on_ring`), alignment-safe Fletcher32 with odd-byte padding (`compute_fletcher32`), and chunk-offset reassembly.
+  - `01_apps/screen_lens/c_core/test_pooled_storage.c`: Registered all 7 canonical mesh layers (112 virtual slots), 1.0 MB SplitMix64 non-repeating PRNG payload, SHA-256 cryptographic verification, 10,000-hash distribution validation, and explicit 4-part bitrot / alignment fault injection test.
+- **Build status**: PASS (`clang -O3 -std=c11 -Wall -Wextra` clean compilation, 0 warnings, 0 errors)
+- **Pending issues**: None
 
 ## Quality Status
-- **Build/test result**: Pass (237 passed in 75.87s).
-- **Lint status**: Clean (py_compile 0 errors, tsc 0 errors).
-- **Tests added/modified**: 13 new unit & integration tests covering token bucket, neuron tracking, airgapping, and scheduling.
+- **Build/test result**: PASS (16 chunks, Dispersal Latency ~1.26 ms <= 2.0 ms, Reassembly Latency ~0.21 ms <= 0.5 ms, 100% bit-for-bit SHA256 match, Bitrot detected TRUE on corruption)
+- **Lint status**: 0 warnings under `-Wall -Wextra -std=c11`
+- **Tests added/modified**: 7-layer registration, 1.0 MB non-repeating payload, 10,000-hash starvation test, single-bit flip test, trailing byte corruption test, odd-length (2049 bytes) Fletcher32 padding test, unaligned pointer safety test
+
+## Loaded Skills
+- None explicitly assigned

@@ -358,3 +358,46 @@ def test_websocket_telemetry_flow(client):
         assert broadcast.get("sensor_type") == "movesense"
         assert broadcast["biometrics"]["heart_rate_bpm"] == 138.0
         assert broadcast["biometrics"]["training_zone"] == "Zone 2 (Aerobic Base Endurance)"
+
+
+# ==================== 6. In-App Edge AI & Micro-RAG Tests ====================
+
+def test_edge_ai_endpoints(client):
+    """Verify Edge AI health, chat, micro-RAG, and maintenance endpoints."""
+    # 1. Health Endpoint
+    h_resp = client.get("/api/edge/health")
+    assert h_resp.status_code == 200
+    h_data = h_resp.json()
+    assert "device" in h_data
+    assert "network" in h_data
+    assert "ram_used_gb" in h_data["device"]
+
+    # 2. Maintenance Endpoint
+    m_resp = client.post("/api/edge/maintenance")
+    assert m_resp.status_code == 200
+    m_data = m_resp.json()
+    assert m_data["status"] == "COMPLETED"
+    assert len(m_data["actions_executed"]) > 0
+
+    # 3. Micro-RAG Search Endpoint
+    r_resp = client.get("/api/edge/rag/search?q=storage")
+    assert r_resp.status_code == 200
+    r_data = r_resp.json()
+    assert "results" in r_data
+
+    # 4. In-App Edge Chat Endpoint
+    c_resp = client.post("/api/edge/chat", json={
+        "message": "Check system RAM and network status"
+    })
+    assert c_resp.status_code == 200
+    c_data = c_resp.json()
+    assert "response" in c_data
+    assert "model_used" in c_data
+    assert "latency_ms" in c_data
+
+    # 5. Root Dashboard View
+    root_resp = client.get("/")
+    assert root_resp.status_code == 200
+    assert "Lauburu Port 4000 Hub" in root_resp.text
+    assert "In-App Multipurpose Edge AI" in root_resp.text
+

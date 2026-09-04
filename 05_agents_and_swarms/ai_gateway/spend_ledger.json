@@ -33,5 +33,7 @@
       "cost_usd": 0.0
     }
   ],
-  "free_tier_calls": 3
+  "free_tier_calls": 3,
+  "local_queries_executed": 1,
+  "last_updated": "2026-09-01T17:43:46Z"
 }

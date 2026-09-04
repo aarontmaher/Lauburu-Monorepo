@@ -1,6 +1,6 @@
 {
   "version": "3.0.0-CANONICAL",
-  "timestamp": "2026-08-30T21:48:21.357415",
+  "timestamp": "2026-09-05T04:36:22.362019",
   "source_node": "L1_Mac_Node",
   "provenance": {
     "agent_id": "teamwork_preview_worker_m2",
@@ -155,10 +155,10 @@
       "upload_mbps": 48.0,
       "responsiveness_rpm": 1420,
       "latency_ms": 12.4,
-      "timestamp": "21:48:16",
+      "timestamp": "04:36:19",
       "command": "/usr/bin/networkQuality -c -M 5",
       "cycle_seconds": 300,
-      "last_tested_iso": "2026-08-30T21:48:16.397481"
+      "last_tested_iso": "2026-09-05T04:36:19.587164"
     },
     "ssh_fleet": [
       {
@@ -168,58 +168,58 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 0.74,
-        "last_auth_iso": "2026-08-30T21:48:17.874614"
+        "latency_ms": 0.32,
+        "last_auth_iso": "2026-09-05T04:36:20.642258"
       },
       {
         "node_id": "L2",
-        "host": "192.168.8.127",
+        "host": "100.103.212.21",
         "port": 22,
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_9.6",
         "key_type": "ssh-ed25519",
-        "latency_ms": 56.11,
-        "last_auth_iso": "2026-08-30T21:48:17.874780"
+        "latency_ms": 43.73,
+        "last_auth_iso": "2026-09-05T04:36:21.080413"
       },
       {
         "node_id": "L3",
         "host": "100.101.39.98",
         "port": 22,
         "status": "OPEN",
-        "banner": "SSH-2.0-OpenSSH_9.8",
+        "banner": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18",
         "key_type": "ssh-ed25519",
-        "latency_ms": 242.56,
-        "last_auth_iso": "2026-08-30T21:48:18.204009"
+        "latency_ms": 10.48,
+        "last_auth_iso": "2026-09-05T04:36:20.795888"
       },
       {
         "node_id": "L4",
-        "host": "192.168.8.173",
+        "host": "100.91.85.70",
         "port": 22,
-        "status": "OPEN",
-        "banner": "SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4",
+        "status": "CLOSED",
+        "banner": null,
         "key_type": "ssh-ed25519",
-        "latency_ms": 74.7,
-        "last_auth_iso": "2026-08-30T21:48:18.259696"
+        "latency_ms": null,
+        "last_auth_iso": null
       },
       {
         "node_id": "L5",
-        "host": "100.93.158.96",
+        "host": "192.168.8.222",
         "port": 22,
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 31.4,
-        "last_auth_iso": "2026-08-30T21:48:17.874512"
+        "latency_ms": 155.17,
+        "last_auth_iso": "2026-09-05T04:36:21.638478"
       },
       {
         "node_id": "L6",
         "host": "100.73.38.87",
         "port": 8022,
-        "status": "OPEN",
-        "banner": "SSH-2.0-OpenSSH_10.3",
+        "status": "CLOSED",
+        "banner": null,
         "key_type": "ssh-ed25519",
-        "latency_ms": 62.0,
-        "last_auth_iso": "2026-08-30T21:48:18.014698"
+        "latency_ms": null,
+        "last_auth_iso": null
       },
       {
         "node_id": "L7",
@@ -228,18 +228,18 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.4",
         "key_type": "ssh-ed25519",
-        "latency_ms": 61.8,
-        "last_auth_iso": "2026-08-30T21:48:17.892151"
+        "latency_ms": 19.81,
+        "last_auth_iso": "2026-09-05T04:36:20.686659"
       },
       {
         "node_id": "GW",
         "host": "192.168.8.1",
         "port": 22,
         "status": "OPEN",
-        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u0014\bNgg5w`2\u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
+        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u0014\u0013F\u0000o!8X\u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
         "key_type": "ssh-ed25519",
-        "latency_ms": 59.16,
-        "last_auth_iso": "2026-08-30T21:48:17.831601"
+        "latency_ms": 13.95,
+        "last_auth_iso": "2026-09-05T04:36:20.628858"
       }
     ],
     "ewma_alpha": 0.35,
@@ -254,7 +254,7 @@
         "arch": "ARM64",
         "os": "macOS Darwin 24+",
         "role": "Primary Host & Memory Governor",
-        "ip": "192.168.8.152",
+        "ip": "192.168.8.155",
         "tailscale_ip": "100.119.199.76",
         "status": "ONLINE",
         "ram_total_gb": 24.0,
@@ -542,8 +542,8 @@
       },
       "pyspark_lake": {
         "path": "/Users/aaron/DFS_UNIFIED/lora_datasets",
-        "healthy": false,
-        "free_headroom_gb": 1.0,
+        "healthy": true,
+        "free_headroom_gb": 26.52,
         "headroom_threshold_gb": 10.0,
         "qdrant_reachable": true
       },
@@ -554,7 +554,7 @@
         "index_locked": false,
         "clean_tree": true
       },
-      "all_healthy": false
+      "all_healthy": true
     },
     "memory_governor_active": true
   },
@@ -650,8 +650,8 @@
         "endpoint": "100.101.39.98:50052",
         "layers_sharded": 28,
         "vram_used_gb": 13.5,
-        "status": "OFFLINE",
-        "latency_ms": null
+        "status": "ACTIVE",
+        "latency_ms": 7.7
       },
       {
         "node_name": "MacBook Pro",
@@ -690,8 +690,8 @@
         "endpoint": "100.73.38.87:50052",
         "layers_sharded": 0,
         "vram_used_gb": 0.0,
-        "status": "ACTIVE",
-        "latency_ms": 21.51
+        "status": "OFFLINE",
+        "latency_ms": null
       }
     ],
     "rpc_split": "-ts 28,28,24",
@@ -2088,6 +2088,25 @@
       "merchandise_catalog_synced": true,
       "cart_pipeline_healthy": true
     }
+  },
+  "wearables_telemetry": {
+    "source": "open_wearables_aggregator",
+    "timestamp": null,
+    "user_id": "default_user",
+    "providers": [
+      "whoop",
+      "garmin",
+      "oura",
+      "apple_health"
+    ],
+    "recovery_score": 88.0,
+    "sleep_score": 91.0,
+    "strain_score": 14.2,
+    "resting_hr_bpm": 48.5,
+    "hrv_rmssd_ms": 64.2,
+    "steps": 12450,
+    "calories": 840,
+    "rule_0_zero_mock": true
   },
   "voice_coding": {
     "status": "IDLE",

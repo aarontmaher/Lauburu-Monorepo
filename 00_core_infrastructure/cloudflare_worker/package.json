@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy:preview": "wrangler deploy --env preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "npx tsx test/test-airgap-biometrics-isolation.ts && npx tsx test/test-adversarial-airgap-cloud-probes.ts"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20251001.0",

@@ -1,36 +1,17 @@
-## 2026-08-28T19:59:38Z
+## 2026-09-01T09:49:07+10:00
+You are auditor_1, a Forensic Integrity Auditor for the Lauburu Monorepo project.
+Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/auditor_1
+Read the original request at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
+Read the project index at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
+Read the test ready report at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/TEST_READY.md
 
-You are Forensic Auditor 1 for the Lauburu Ecosystem project.
-Your Working Directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/auditor_1/
-Please create your working directory and write all your metadata, audit checks, and handoff.md inside it.
-
-Mandatory Context to Read:
-1. /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
-2. /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
-3. /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/worker_m1/handoff.md
-4. /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/worker_m2/handoff.md
-
-Forensic Audit Scope & Invariants:
-Perform rigorous static and runtime integrity forensics across all newly created and modified files:
-- `06_scripts_and_tooling/cloudflare_telemetry.py`
-- `01_apps/canonical_port/tui/widgets/red_blue_arena_widget.py`
-- `01_apps/canonical_port/tui/screens/training_screen.py`
-- `01_apps/canonical_port/tui/widgets/lauburu_gyms_widget.py`
-- `01_apps/canonical_port/backend/training_telemetry_collector.py`
-- `08_business_and_commerce/shopify_headless/` (all files)
-
-Audit Checks:
-1. **Rule #0 Zero-Mock Audit**:
-   - Verify that NO fake telemetry arrays, random number generators (`random.randint`, `random.uniform`), or dummy attack logs exist in production code paths.
-   - Verify that unpopulated/disconnected states render authentic empty indicators (`--` / `[]`).
-2. **Secret & Key Security Audit**:
-   - Verify that NO hardcoded API keys, bearer tokens, or sensitive credentials exist anywhere in the code.
-   - Verify all credentials load strictly from `os.environ.get()` or `.env`.
-3. **Genuine Implementation & Anti-Facade Audit**:
-   - Verify that GraphQL queries, mutations, variables, and headers are syntactically valid and authentic.
-   - Verify that `<think>` cognitive thought streaming and WAF correlation logic are genuinely implemented.
-   - Verify that dev mode bypasses are strictly confined to offline testing (`tok_dev_*`) and do not corrupt production paths.
-4. **Code Quality & Dependency Audit**:
-   - Check for safe imports, error handling, and clean code layout conforming to `PROJECT.md`.
-
-Provide a clear binary verdict: `CLEAN` or `INTEGRITY VIOLATION` in your handoff report (`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/auditor_1/handoff.md`). Send a message when complete.
+Task:
+1. Perform exhaustive forensic integrity analysis on all codebase modifications:
+   - Verify that all implementations in 05_agents_and_swarms/high_confidence_swarm_runner.py and 05_agents_and_swarms/test_high_confidence_runner.py are GENUINE and authentic.
+   - Verify Rule #0 (Zero-Mock / Zero-Simulated arrays): check for fake hardcoded values, dummy returns, facade implementations, or bypasses.
+   - Verify that AST validation uses genuine ast.parse, that RAM headroom uses genuine psutil/MPS calls, that zero-spend assertions strictly enforce cost_usd == 0.00, and that LoRA streaming writes real valid JSONL records.
+2. Run verification commands to validate integrity:
+   python3 -m unittest 05_agents_and_swarms/test_high_confidence_runner.py
+   python3 -m pytest 05_agents_and_swarms/test_high_confidence_runner.py
+3. Determine your forensic audit verdict: CLEAN or INTEGRITY VIOLATION / CHEATING DETECTED.
+4. Write your complete forensic audit report to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/auditor_1/handoff.md and report back via send_message.

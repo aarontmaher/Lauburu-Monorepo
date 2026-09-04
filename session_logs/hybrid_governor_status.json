@@ -1,39 +1,39 @@
 {
-  "timestamp_utc": "2026-08-29T23:15:21Z",
-  "elapsed_seconds": 0.13,
+  "timestamp_utc": "2026-09-02T13:08:27Z",
+  "elapsed_seconds": 0.103,
   "synergy_efficiency_score": 862.0,
   "router_real_ram": {
     "online": true,
     "total_mb": 481.3,
-    "used_mb": 421.7,
-    "available_mb": 80.0,
+    "used_mb": 409.1,
+    "available_mb": 106.6,
     "safety_status": "\ud83d\udfe2 NOMINAL SAFE",
     "crash_risk_pct": 0.0
   },
   "host_ram": {
-    "used_gb": 12.76,
+    "used_gb": 9.76,
     "total_gb": 24.0,
-    "percent": 74.5,
+    "percent": 70.7,
     "status": "\ud83d\udfe2 NOMINAL"
   },
   "storage_health": {
     "healthy": true,
     "obsidian_vault_mounted": true,
     "pyspark_data_lake_ready": true,
-    "disk_free_gb": 14.34,
+    "disk_free_gb": 68.4,
     "git_lock_cleared": false,
     "status": "HEALTHY"
   },
   "daemon_watchdog": {
     "total_daemons": 7,
-    "active_daemons": 7,
+    "active_daemons": 2,
     "daemons": [
       {
         "name": "Web-TUI Portal",
         "port": 8088,
         "role": "Frontend Cockpit",
-        "online": true,
-        "status": "\ud83d\udfe2 ONLINE"
+        "online": false,
+        "status": "\u26aa STANDBY / OFFLINE"
       },
       {
         "name": "Local LLM Proxy / Sentinel",
@@ -53,29 +53,29 @@
         "name": "Llama 3.1 70B Abliterated",
         "port": 8084,
         "role": "Security Lead",
-        "online": true,
-        "status": "\ud83d\udfe2 ONLINE"
+        "online": false,
+        "status": "\u26aa STANDBY / OFFLINE"
       },
       {
         "name": "Qwen 2.5 Math",
         "port": 8086,
         "role": "Algorithm Engine",
-        "online": true,
-        "status": "\ud83d\udfe2 ONLINE"
+        "online": false,
+        "status": "\u26aa STANDBY / OFFLINE"
       },
       {
         "name": "Self-Healing Hub / WoL",
         "port": 18802,
         "role": "Infra Resurrection",
-        "online": true,
-        "status": "\ud83d\udfe2 ONLINE"
+        "online": false,
+        "status": "\u26aa STANDBY / OFFLINE"
       },
       {
         "name": "llama.cpp RPC Shard",
         "port": 50052,
         "role": "Tensor Bridge",
-        "online": true,
-        "status": "\ud83d\udfe2 ONLINE"
+        "online": false,
+        "status": "\u26aa STANDBY / OFFLINE"
       }
     ]
   },

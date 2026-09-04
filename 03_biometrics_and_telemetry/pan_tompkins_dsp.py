@@ -60,7 +60,7 @@ class PanTompkinsQRSDetector:
         and high-frequency muscle noise / mains interference.
         Implements forward-backward zero-phase filtering across any sampling frequency.
         """
-        if not ecg_signal:
+        if len(ecg_signal) == 0:
             return []
         
         n = len(ecg_signal)
@@ -177,7 +177,7 @@ class PanTompkinsQRSDetector:
             peak_indices: list of sample index positions where R-peaks occurred.
             rr_intervals_ms: list of RR intervals in milliseconds (microsecond precision).
         """
-        if not ecg_signal or len(ecg_signal) < int(self.fs * 0.5):
+        if len(ecg_signal) < int(self.fs * 0.5):
             return [], []
 
         # 1. Bandpass Filter
@@ -269,7 +269,7 @@ def apply_kamath_artifact_filter(
     Condition: |RR[i] - RR[i-1]| / RR[i-1] <= 0.20.
     Preserves true physiological baseline during ectopic bursts and interpolates corrupted beats.
     """
-    if not rr_intervals or len(rr_intervals) < 2:
+    if len(rr_intervals) < 2:
         return [float(x) for x in (rr_intervals or [])], 0
 
     thresh = threshold_pct / 100.0
@@ -335,27 +335,33 @@ def calculate_rmssd(rr_intervals: Sequence[float]) -> Optional[float]:
     RMSSD = sqrt( 1/(N-1) * sum((RR[i+1] - RR[i])^2) )
     Returns None if fewer than 2 valid beats.
     """
-    if not rr_intervals or len(rr_intervals) < 2:
+    if len(rr_intervals) < 2:
         return None
-    
-    diffs = [float(rr_intervals[i]) - float(rr_intervals[i - 1]) for i in range(1, len(rr_intervals))]
-    sum_sq = sum(d * d for d in diffs)
-    mean_sq = sum_sq / float(len(rr_intervals) - 1)
-    return round(math.sqrt(mean_sq), 2)
+
+    valid_rr, _ = apply_kamath_artifact_filter(rr_intervals)
+    if len(valid_rr) < 2:
+        return None
+
+    diffs = [valid_rr[i] - valid_rr[i - 1] for i in range(1, len(valid_rr))]
+    sq_diffs = [d * d for d in diffs]
+    return round(math.sqrt(sum(sq_diffs) / len(sq_diffs)), 2)
 
 
 def calculate_dfa_alpha1(
     rr_intervals: Sequence[float],
     scale_min: int = 4,
-    scale_max: int = 16
+    scale_max: int = 16,
 ) -> Optional[float]:
     """
-    Vectorized short-term Detrended Fluctuation Analysis (DFA-alpha1) over rolling RR interval history.
-    Zone 2 Aerobic Base Target: alpha1 ~ 0.75 - 0.85.
-    Anaerobic / High Fatigue: alpha1 < 0.50.
-    Returns None if buffer < scale_min beats.
+    Computes Detrended Fluctuation Analysis Scaling Exponent (DFA alpha-1, short-range).
+    Validates aerobic/anaerobic threshold boundaries (Gronwald et al., 2020).
+    Threshold invariants:
+      alpha1 > 0.75: Aerobic Base (Zone 1)
+      0.50 <= alpha1 <= 0.75: Aerobic Threshold Window (Zone 2)
+      alpha1 < 0.50: Anaerobic / Fatigue (Zone 3-5)
+    Returns None if fewer than scale_min RR intervals exist (Strict Rule #0).
     """
-    if not rr_intervals or len(rr_intervals) < scale_min:
+    if len(rr_intervals) < scale_min:
         return None
 
     rrs = [float(x) for x in rr_intervals]

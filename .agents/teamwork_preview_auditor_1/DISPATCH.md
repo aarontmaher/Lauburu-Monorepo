@@ -1,37 +1,58 @@
-## 2026-08-29T09:17:18Z
+# Dispatch: Forensic Auditor 1
 
-You are teamwork_preview_auditor (Forensic Integrity Auditor).
-Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_auditor_1/
-Project root: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
-Read the original request at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
-Read the project specification at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md
+## Identity
+- Role: Forensic Integrity Auditor
+- TypeName: teamwork_preview_auditor
+- Assigned Working Directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_auditor_1
+- Orchestrator: teamwork_preview_orchestrator_23 (878c1253-0956-4401-91a5-0f3927d54244)
 
-MANDATORY INTEGRITY AUDIT:
-Perform a deep forensic integrity audit across all modified code, DSP modules, Cloudflare workers, SmolAgents arena, and E2E test suites:
-1. Check Rule #0 compliance: verify strictly zero fake/simulated data arrays in production code and that disconnected sensors yield clean null / WAITING_FOR_SENSOR states.
-2. Check for hardcoded test results, facade implementations, mock overrides in production paths, or circumvention.
-3. Check 100% Local Airgap health data protection enforcement: verify that no raw Movesense 512Hz ECG, optical PPG, or PTT blood pressure arrays can egress to cloud AI endpoints.
-4. Verify genuine mathematical and algorithmic execution of 512Hz Pan-Tompkins QRS, Kamath filter, RMSSD, DFA-a1, PTT BP inversion, and SmolAgents Python code generation.
-5. Deliver a binary verdict: CLEAN or INTEGRITY VIOLATION with full evidence in your handoff.md at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_auditor_1/handoff.md.
-6. Notify the orchestrator via send_message.
+## Mandatory Input
+MANDATORY FIRST STEP: Read the authoritative original request file:
+/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
+Also read:
+/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/TEST_READY.md
 
-## 2026-08-29T12:32:46Z
+## Mission & Scope
+Execute forensic integrity verification across all codebase changes under strict Zero-Mock enforcement (Rule #0):
+1. **Zero-Mock & Anti-Cheating Forensic Audit**:
+   - Inspect `01_apps/screen_lens/c_core/lauburu_pooled_storage.c` and `test_pooled_storage.c`:
+     * Verify there are NO hardcoded hash tokens, hardcoded latency values, hardcoded SHA256 digests, or dummy returns.
+     * Verify that dispersal and reassembly actually slice data into 64KB buffers, compute Fletcher32 sums dynamically, and reconstruct the buffer bit-for-bit.
+     * Verify that bitrot detection actually computes checksums and rejects corrupted blocks.
+   - Inspect `tests/test_storage_architecture_governance.py`:
+     * Verify tests check real filesystem attributes (`stat()`, `os.access()`) and actually attempt file writes rather than mocking `PermissionError`.
+   - Inspect `00_core_infrastructure/router_ai_daemon/src/elo/elo_engine.py` and `tests/test_elo.py`:
+     * Verify real mathematical formulas for Bradley-Terry expectations and Wilson score confidence intervals.
+     * Verify no hardcoded test outputs or mock bypasses.
+   - Inspect `tests/e2e_storage_elo/`:
+     * Verify genuine opaque-box tests interacting with real native C shared library (`liblauburu_storage.dylib`) via `ctypes`.
+2. **Execution Integrity**:
+   - Verify all test suites run cleanly with authentic Exit Code 0:
+     * `./lauburu_storage_bench` in `01_apps/screen_lens/c_core/`
+     * `pytest tests/test_storage_architecture_governance.py -v`
+     * `pytest 00_core_infrastructure/router_ai_daemon/tests/test_elo.py -v`
+     * `python3 tests/e2e_storage_elo/run_e2e_tests.py`
+3. **Verdict**:
+   - If ANY cheating, hardcoding, dummy implementation, or fabricated output is found -> **INTEGRITY VIOLATION**.
+   - If all implementations and tests are genuine and authentic -> **CLEAN**.
 
-You are teamwork_preview_auditor_1.
-Your working directory is /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_auditor_1/.
-You MUST read the authoritative user request at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md and the master project specification at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md.
+## Output Requirements
+- Write your report to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_auditor_1/handoff.md`
+- Send completion message to parent orchestrator.
 
-MISSION: Conduct a comprehensive Forensic Integrity Audit across all codebase modifications, datasets, scripts, and test suites.
-
-Audit Invariants:
-1. Rule #0 Zero-Mock Verification: verify that no mocked, simulated, synthetic, or hardcoded dummy telemetry arrays exist in production code or datasets.
-2. Genuine Logic Verification: verify that rate limiters, storage sinks, daemon supervisors, and training scripts execute authentic calculations and system calls (no hardcoded return True / dummy pass).
-3. Authentic Dataset Inspection: verify that `04_data_and_memory/ai_training_game_dataset.jsonl` contains >=500 genuine, structurally valid instruction/DPO records with genuine tokens and latency metrics.
-4. Airgap Enforcement: verify that no telemetry or private data can leak to external cloud endpoints.
-5. Dynamic RAM & Hardware Bounds: verify that local Metal GPU training adheres to true system limits (<=21.6GB AI Cap on M4 Pro 24GB).
-
-Write your detailed audit report and structured handoff to:
-`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_auditor_1/handoff.md`.
-State your explicit binary verdict prominently: `CLEAN` or `INTEGRITY VIOLATION`.
-Notify orchestrator via send_message when complete.
-
+## 2026-09-03T23:19:23Z
+Received User Request:
+Execute forensic integrity audit under strict Zero-Mock enforcement (Rule #0):
+1. Check for ANY hardcoded test results, fake arrays, or mock bypasses across:
+   - 01_apps/screen_lens/c_core/lauburu_pooled_storage.c, .h, test_pooled_storage.c
+   - tests/test_storage_architecture_governance.py
+   - 00_core_infrastructure/router_ai_daemon/src/elo/elo_engine.py, tests/test_elo.py
+   - tests/e2e_storage_elo/
+2. Verify all test suites execute authentically with Exit Code 0:
+   - ./lauburu_storage_bench
+   - pytest tests/test_storage_architecture_governance.py -v
+   - pytest 00_core_infrastructure/router_ai_daemon/tests/test_elo.py -v
+   - python3 tests/e2e_storage_elo/run_e2e_tests.py
+3. Deliver a binary verdict: CLEAN or INTEGRITY VIOLATION in:
+   /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_auditor_1/handoff.md
+Send completion message to parent orchestrator.

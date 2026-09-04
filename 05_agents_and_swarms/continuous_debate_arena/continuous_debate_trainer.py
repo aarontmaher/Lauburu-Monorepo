@@ -15,13 +15,36 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 class ContinuousDebateTrainer:
     def __init__(self):
         self.k_factor = 32
-        self.local_models = [
-            {"id": "hermes-3-llama-3.1-8b", "is_abliterated": False, "port": 8081},
-            {"id": "qwen-2.5-coder-32b", "is_abliterated": False, "port": 8082},
-            {"id": "exo-llama-3.1-70b-abliterated", "is_abliterated": True, "port": 8083},
-            {"id": "qwen-3.8max-27b-abliterated", "is_abliterated": True, "port": 8084}
+        # Locked-In Master AI Debate Council
+        self.devils_advocate = {
+            "id": "Huihui-Qwen3.8-27B-abliterated",
+            "is_abliterated": True,
+            "port": 8085,
+            "role": "LOCKED-IN DEVIL'S ADVOCATE (Abliterated Challenger)",
+            "allowed_consults": ["abliterated", "cloud_free"]
+        }
+        self.local_orchestrator = {
+            "id": "Qwen-3.8-Max",
+            "is_abliterated": False,
+            "port": 8084,
+            "role": "LOCKED-IN LOCAL AI ORCHESTRATOR",
+            "allowed_consults": ["all_local", "cloud_free"]
+        }
+        self.cloud_orchestrator = {
+            "id": "gemini-3.7-flash-high",
+            "is_abliterated": False,
+            "role": "CLOUD FREE TIER ORACLE & SWE-BENCH BENCHMARK JUDGE"
+        }
+        
+        # Subordinate Local Models pool for Ultra Plan execution
+        self.specialist_subordinates = [
+            {"id": "Qwen-AgentWorld-35B-A3B", "type": "world_model", "port": 8086},
+            {"id": "WebWorld-32B", "type": "web_ui", "port": 8088},
+            {"id": "Qwen-Math-72B-IQ2_XXS", "type": "math_solver", "port": 8087},
+            {"id": "Qwen2.5-Coder-32B", "type": "code_gen", "port": 8081},
+            {"id": "Mistral-Nemo-2407-abliterated", "type": "abliterated", "port": 8083},
+            {"id": "gemma-2-9b-abliterated", "type": "abliterated", "port": 8082}
         ]
-        self.gemini_model = "gemini-3.7-flash"
 
     def load_leaderboard(self):
         if LEADERBOARD_PATH.exists():

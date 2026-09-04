@@ -1,154 +1,121 @@
-# TEST_INFRA.md: 24/7 Offline & Free-Tier AI Utilization Cron Pipeline
-# Master Opaque-Box E2E Testing Infrastructure & Quality Assurance Specification
+# Test Infrastructure Specification: Dual Track Opaque-Box E2E Test Suite
 
 ## 1. Executive Summary & Testing Philosophy
 
-This document defines the canonical End-to-End (E2E) testing framework, testing philosophy, feature matrix, and multi-tier verification methodology for the **Lauburu 24/7 Offline & Free-Tier AI Utilization Cron Pipeline**.
+This document defines the authoritative **Dual Track Opaque-Box E2E Testing Infrastructure** for the **Lauburu Mesh Ecosystem Sovereign Storage Pooling, Read-Only Governance & Project-Specific ELO Engine** project.
 
-The testing system follows an **opaque-box testing philosophy**: all test suites interact strictly with public module APIs, CLI commands, file system sinks, network port listeners, and documented interface contracts. No internal private variables or mock facades are permitted.
-
-### Core Testing Invariants & Principles:
-1. **Rule #0 Zero-Mock Data Verification**:
-   - Every telemetry stream, token metric, ELO score, AST diff, and loss curve evaluated must be genuine and verifiable.
-   - Any record tagged with mock flags (`truth_verified=False`, simulated data markers) is immediately rejected.
-2. **Fail-Closed Biometric Privacy Airgap**:
-   - 100% of physiological biometrics (512Hz ECG, Pulse Transit Time BP, RR intervals, PPG sleep staging) and sensitive cryptographic keys must never egress to public cloud AI endpoints (Gemini, Cloudflare Workers AI).
-   - Airgap filters must throw immediate security exceptions upon detection of sensitive payload markers.
-3. **Deterministic Quota Safety**:
-   - Gemini 2.5 Flash Free Tier limiter must strictly clamp at <= 14 RPM and <= 1,400 RPD (leaving safety margin below 15 RPM / 1,500 RPD).
-   - Cloudflare Workers AI limiter must strictly clamp at <= 10,000 Neurons/Day with UTC midnight rollover.
-4. **Dynamic Resource & Hardware Governance**:
-   - Apple Silicon Metal GPU (MLX/MPS) memory footprint during QLoRA training must stay within the <= 21.6 GB (90% unified memory cap) safety ceiling on a 24GB Host.
-   - GL.iNet GL-MT3600BE Router RAM must be monitored with sub-second responsiveness, enforcing <= 35 MB critical threshold with proactive `drop_caches` invocation.
-5. **Self-Contained & Isolated Test Execution**:
-   - Every test case creates and tears down its own isolated temporary workspaces, sandboxes, and file fixtures. Tests can run in any sequence or in parallel without cross-test pollution.
+### Testing Methodology
+The test suite is architected around formal, rigorous software engineering verification principles:
+1. **Opaque-Box Requirements-Driven Verification**: Test cases evaluate system behavior strictly against public interface contracts, functional requirements (R1, R2, R3), and acceptance criteria documented in `ORIGINAL_REQUEST.md` and `PROJECT.md`.
+2. **Cardinal Law #1 (Zero-Mock & Zero-Simulation Mandate)**: Absolute prohibition against fake/simulated telemetry, mock arrays, or dummy assertions. All tests interact with authentic filesystem inodes, real C11 shared libraries (`liblauburu_storage.dylib`), live SHA-256 cryptographic digests, genuine POSIX permission bits, and authentic Bradley-Terry mathematical computations.
+3. **Four-Tier Verification Matrix**:
+   - **Tier 1: Feature Coverage (Isolation)**: Exhaustive functional verification of each feature in isolation (minimum 5 tests per feature).
+   - **Tier 2: Boundary & Corner Cases (BVA & Robustness)**: Mathematical extremes, zero/empty inputs, oversized payloads, rate limits, exponent overflows, corruption injection, and permission rejections (minimum 5 tests per feature).
+   - **Tier 3: Cross-Feature Combinations (Pairwise Interaction)**: Pairwise integration across subsystems (e.g. C11 storage bitrot feeding ELO backend health trials, read-only governance protecting against corrupted configs, 7-layer ring allocation feeding ELO infrastructure scorecards).
+   - **Tier 4: Real-World Workload Scenarios**: End-to-end multi-step production pipelines simulating real mesh workloads (1,085 GB distributed storage dispersal across 7 layers, overnight ELO scorecard tracking, Tri-Vault health continuous auditing).
+4. **Sub-Millisecond SLA & Deterministic Invariants**: Explicit microsecond-level performance benchmarking asserting:
+   - C11 Dispersal latency $\le 2.0\text{ ms}$ (target $1.30\text{ ms}$)
+   - C11 Reassembly latency $\le 0.5\text{ ms}$ (target $0.22\text{ ms}$)
+   - ELO 3-Category Scorecard evaluation latency $\le 50.0\ \mu\text{s}$ (target $13.92\ \mu\text{s}$)
+   - 100% Bit-for-bit SHA-256 exact match across storage slice/reassemble cycles
+   - Zero undetected bitrot corruption via Fletcher32
 
 ---
 
-## 2. Feature Inventory (Features F01 – F15)
+## 2. Feature Inventory & Verification Mapping
 
-The test matrix covers all 15 core features defined in `PROJECT.md`:
+The test infrastructure maps directly to the three core requirements (R1, R2, R3) and features (F1 through F8) defined in `PROJECT.md`:
 
-| Feature ID | Feature Name | Description | Target Subsystem / Interface | Milestone |
-| :--- | :--- | :--- | :--- | :--- |
-| **F01** | **Gemini Free Tier Rate Limiting** | Token-bucket rate limiter enforcing max 14 RPM / 1,400 RPD, exponential backoff on 429, and UTC midnight counter resets. | `06_scripts_and_tooling/automation/cloud_api_quota_manager.py` | M1 |
-| **F02** | **Cloudflare Workers AI Quota Tracking** | Daily budget tracker enforcing 10,000 Neurons/Day ceiling, neuron weight calculation per prompt, and UTC midnight reset. | `06_scripts_and_tooling/automation/cloud_api_quota_manager.py` | M1 |
-| **F03** | **Local Mesh Offline Inference Dispatch** | Dynamic workload router dispatching 24/7 unlimited local inference across Ports 8081–8086 with sub-second failover. | `06_scripts_and_tooling/automation/cloud_api_quota_manager.py` | M1 |
-| **F04** | **Daytime/Overnight Workload Schedule** | Dynamic scheduler switching between Daytime real-time telemetry mode and Overnight batch QLoRA/AST compilation mode (03:00 UTC window). | `06_scripts_and_tooling/automation/free_tier_ai_continuous_cron.py` | M1 |
-| **F05** | **Biometric Privacy Airgap** | 100% fail-closed security boundary preventing 512Hz ECG, PTT BP, and private tokens from leaking to public cloud endpoints. | `06_scripts_and_tooling/automation/cloud_api_quota_manager.py` | M1 |
-| **F06** | **Multi-Stream LoRA Harvesting** | Multi-channel data ingestion harvesting AI debates, AST code diffs, math proofs, and recovery actions into DPO/RLHF JSONL datasets. | `04_data_and_memory/tri_vault_sink.py` | M2 |
-| **F07** | **Daily >= 500 Verified Pair Growth** | Continuous dataset pipeline appending >= 500 verified instruction/DPO pairs daily to `ai_training_game_dataset.jsonl` with atomic locking. | `04_data_and_memory/tri_vault_sink.py` | M2 |
-| **F08** | **Nightly Metal GPU QLoRA Training** | Autonomous Apple Silicon Metal (MLX/MPS) QLoRA training harness with rank-32 adapters and dynamic RAM cap <= 21.6 GB. | `04_data_and_memory/fast_train_agentworld_mac.py` | M2 |
-| **F09** | **Obsidian Loss Curve Streaming** | Real-time markdown telemetry sink writing training loss curves, perplexity, and master Wikilinks to `obsidian_vault/04_ANALYTICS/`. | `04_data_and_memory/tri_vault_sink.py` | M2 |
-| **F10** | **Autonomous Model Weight Merging** | MergeKit DARE-TIES / SLERP recipe generator triggering model merges when debate confidence > 0.95, strictly preserving parent weights. | `00_core_infrastructure/self_healing_hub/src/autonomous_consensus_merger.py` | M2 |
-| **F11** | **Tri-Vault Storage Auto-Healing** | Storage watchdog verifying Obsidian Vault, PySpark Data Lake, and Git repository, repairing `Index.md`, purging stale locks, and checking >= 5 GB disk headroom. | `06_scripts_and_tooling/network/hybrid_router_mesh_governor.py` | M3 |
-| **F12** | **7 Core Daemons Supervision** | High-availability supervisor monitoring Ports 8080–8086, 18802, 50052, and 8088 with sub-second crash detection and auto-resurrection. | `06_scripts_and_tooling/network/hybrid_router_mesh_governor.py` | M3 |
-| **F13** | **GL.iNet Router RAM Governance** | Real-time `/proc/meminfo` parser enforcing <= 35 MB critical RAM threshold on GL-MT3600BE via automated SSH `drop_caches` execution. | `06_scripts_and_tooling/network/hybrid_router_mesh_governor.py` | M3 |
-| **F14** | **E2E Regression & Compliance Suite** | Master 4-tier test runner with CLI controls, timing breakdown, pass/fail reporting, and structured JSON output artifact generation. | `tests/e2e/run_all_e2e_tests.py` | M4 |
-| **F15** | **Adversarial Coverage Hardening** | Chaos injection, rate limit thrashing, corrupted JSONL payloads, NaN/Inf sensor values, and airgap breach attempt simulations. | `tests/e2e/test_free_tier_cron_pipeline.py` | M4 |
+| Feature ID | Feature Name | Core Specifications & Constraints | Primary Test Target |
+|:---|:---|:---|:---|
+| **F1** | Consistent Hash Ring & Routing | 7 physical mesh layers; 16 virtual ring slots per node (112 total); sorted ring (`qsort`); clockwise binary search routing with circular wrap; zero node starvation across 10,000 hashes. | `lauburu_pooled_storage.c`, `liblauburu_storage.dylib` |
+| **F2** | 64KB Slicing & Fletcher32 Checksum | 64KB slicing (`DEFAULT_CHUNK_SIZE = 65536`); memory-alignment safe 16-bit word processing; odd-byte zero-padding; $< 10\text{ ns/KB}$ checksum throughput. | `compute_fletcher32`, `storage_pool_disperse_payload` |
+| **F3** | 7-Layer Mesh Sovereign Storage Pooling | 1.0 MB test payload dispersal $\le 2.0\text{ ms}$; reassembly $\le 0.5\text{ ms}$; bit-for-bit SHA-256 verification; bitrot fault injection detection. | `storage_pool_reassemble_payload`, `lauburu_storage_bench` |
+| **F4** | Canonical Context Map 0444 Mode | Mode `0444` (`-r--r--r--`) on primary (`07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md`) and Obsidian mirror; write bits stripped (`mode & 0o222 == 0`). | Filesystem `stat`, `os.access(..., os.W_OK) == False` |
+| **F5** | Context Map Write Rejection & Parity | Adversarial write rejection (`PermissionError`); 100% bit-for-bit SHA256 parity (`80e96726...0b02`); YAML frontmatter freeze declaration; Git index tracking; Tri-Vault health. | `tests/test_storage_architecture_governance.py`, `git status` |
+| **F6** | Bradley-Terry ELO Bounds & Overflow Guard | Ratings strictly bounded to $[1000.0, 3000.0]$; exponent clamped to $[-20.0, 20.0]$ in logistic expectation; $E_A + E_B = 1.0$ symmetry; underdog upset asymmetry. | `00_core_infrastructure/router_ai_daemon/src/elo/elo_engine.py` |
+| **F7** | 3-Category Scorecard & Wilson CI | Wilson score empirical confidence intervals for finite Bernoulli trials; $n=0, k=0, k=n$ robustness; `CategoryScorecard` across Frontend, Backend, AI Models; composite ELO weighting ($0.30, 0.35, 0.35$). | `evaluate_project_scorecard`, `calculate_wilson_confidence_interval` |
+| **F8** | ELO Engine Latency Verification | Mean scorecard evaluation latency $\le 50.0\ \mu\text{s}$ (target $13.92\ \mu\text{s}$); P99 $\le 50.0\ \mu\text{s}$ over 10,000 runs. | `time.perf_counter_ns`, `ProjectEloScorecard` |
 
 ---
 
-## 3. Four-Tier Testing Methodology
+## 3. Test Tier Specifications & Thresholds
 
+| Tier | File Name | Purpose | Minimum Required Tests |
+|:---|:---|:---|:---|
+| **Tier 1** | `test_tier1_feature_coverage.py` | Validates each feature (Storage Pooling, Governance, ELO Engine) in strict isolation against documented interface contracts | $\ge 5$ tests per feature ($\ge 15$ total) |
+| **Tier 2** | `test_tier2_boundary_corner.py` | Stresses extreme inputs, error paths, resource limits, 0-byte/huge payloads, rating bounds [1000, 3000], exponent overflows, bitrot flips, odd-byte padding | $\ge 5$ tests per feature ($\ge 15$ total) |
+| **Tier 3** | `test_tier3_pairwise_combinations.py` | Verifies cross-feature interactions and state transitions across 2-way combinations (Storage + ELO, Governance + Storage, ELO + Governance) | $\ge 6$ pairwise interaction tests |
+| **Tier 4** | `test_tier4_real_world_workload.py` | Executes full end-to-end mesh workloads (1,085 GB cluster dispersal simulation, continuous multi-epoch ELO tracking, Tri-Vault storage health verification) | $\ge 4$ complete application scenarios |
+| **Master** | `run_e2e_tests.py` | Orchestrates all tiers, generates JSON test reports, verifies 100% pass rate with zero mocks | Single-command unified execution |
+
+### Minimum Test Thresholds:
+- **Tier 1**: $\ge 15$ tests
+- **Tier 2**: $\ge 15$ tests
+- **Tier 3**: $\ge 6$ tests
+- **Tier 4**: $\ge 4$ tests
+- **Total Suite Target**: $\ge 40$ rigorous opaque-box tests
+
+---
+
+## 4. Interface Contracts & Verification Schemas
+
+### 4.1 C11 Sovereign Storage Pooling Contract (`lauburu_pooled_storage.h`)
+```c
+void storage_pool_init_ring(void);
+bool storage_pool_add_node(const char *node_id, const char *role, uint64_t capacity_bytes);
+void storage_pool_sort_ring(void);
+int storage_pool_find_node(uint32_t chunk_hash);
+uint32_t compute_fletcher32(const uint8_t *data, size_t len);
+StoragePoolReport storage_pool_disperse_payload(
+    const uint8_t *payload,
+    size_t payload_len,
+    StorageChunkMeta *out_metas,
+    size_t max_chunks,
+    uint8_t **out_chunks
+);
+bool storage_pool_reassemble_payload(
+    const StorageChunkMeta *metas,
+    uint8_t **chunks,
+    size_t chunk_count,
+    uint8_t *out_buffer,
+    size_t expected_len
+);
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                   4-TIER OPAQUE-BOX E2E TESTING HIERARCHY                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ TIER 1: Feature Coverage (>= 5 Tests / Feature | 75+ Total Tests)           │
-│   • Validates primary happy paths, interface contracts, and return types    │
-│   • Verifies F01 through F15 individual functional capabilities             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ TIER 2: Boundary Value Analysis & Corner Cases (>= 5 Tests / Feature)       │
-│   • Edge conditions: 0-byte files, max quotas, clock skew, null inputs      │
-│   • Stress thresholds: 14th vs 15th RPM, 9,999 vs 10,001 Neurons, 34.9MB RAM│
-├─────────────────────────────────────────────────────────────────────────────┤
-│ TIER 3: Cross-Feature Combinations (Pairwise & Combinatorial Matrix)         │
-│   • Multi-subsystem interactions (e.g. Quota Exhaustion + Local Mesh Failover)│
-│   • Airgap Guard + LoRA Harvester + Obsidian Sink multi-way synchronization │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ TIER 4: Real-World Application Scenarios (>= 5 Full-Workflow E2E Tests)     │
-│   • Multi-step 24-hour simulation cycles                                    │
-│   • End-to-end operational life-cycles from sensor capture to model merge   │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+### 4.2 Storage Context Map Governance Contract
+- **Primary Path**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md`
+- **Obsidian Mirror**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md`
+- **Permissions**: Mode `0444` (`-r--r--r--`).
+- **Canonical SHA-256**: `80e96726403861ba55f8d9029442fb44e581bfb2da345adc0a27fce024ef0b02`
+- **Frontmatter**: `status: READ_ONLY_AWAITING_CLOUD_CONSENSUS`, `access_mode: READ_ONLY`
+
+### 4.3 ELO Engine Scorecard Contract (`elo_engine.py`)
+```python
+MIN_ELO_RATING: float = 1000.0
+MAX_ELO_RATING: float = 3000.0
+
+calculate_expected_score(rating_a: float, rating_b: float) -> Tuple[float, float]
+calculate_wilson_confidence_interval(successes: int, trials: int, confidence: float = 0.95) -> Tuple[float, float]
+evaluate_project_scorecard(
+    frontend_rating: float, frontend_trials: int, frontend_passes: int,
+    backend_rating: float, backend_trials: int, backend_passes: int,
+    ai_rating: float, ai_trials: int, ai_passes: int,
+    ...
+) -> ProjectEloScorecard
 ```
-
-### Detailed Tier Breakdown:
-
-### Tier 1: Feature Coverage Requirements (>= 5 tests per feature)
-- **F01 (Gemini Limiter)**: Happy-path acquisition under 14 RPM; daily count increment under 1,400 RPD; token bucket replenishment; slot release; status serialization.
-- **F02 (Cloudflare Tracking)**: Neuron allocation under 10,000; multi-request budget decrement; daily usage calculation; remaining budget query; quota state save.
-- **F03 (Local Mesh Dispatch)**: Route request to Port 8081; round-robin across Ports 8081-8086; local synthesis engine execution; local fallback on cloud offline; port health validation.
-- **F04 (Daytime/Overnight Schedule)**: Daytime mode classification (10:00 UTC); Overnight mode classification (03:00 UTC); schedule state transition; cron cycle execution; status file generation.
-- **F05 (Biometric Airgap)**: Clean text passes airgap check; ECG waveform blocked; PTT BP blood pressure blocked; RR intervals blocked; private API credentials blocked.
-- **F06 (Multi-Stream LoRA Harvesting)**: AI debate harvesting; AST code diff harvesting; math proof harvesting; recovery action harvesting; DPO format schema validation.
-- **F07 (Daily >= 500 Pair Growth)**: Single pair atomic write; batch write of 50 pairs; duplicate detection; zero-mock validation filter; daily verified count query.
-- **F08 (Nightly Metal QLoRA Training)**: Hardware capability detection (M4 Pro); dynamic VRAM cap calculation (<= 21.6 GB); training command generation; MLX vs MPS backend selection; hyperparameter validation (rank=32, batch=2).
-- **F09 (Obsidian Loss Curve Streaming)**: Note creation in `obsidian_vault/04_ANALYTICS/`; YAML frontmatter verification; master Wikilinks formatting; loss curve table appending; atomic file replace.
-- **F10 (Autonomous Model Weight Merging)**: Consensus score calculation (> 0.95); MergeKit DARE-TIES recipe generation; SLERP recipe generation; parent model preservation invariant; offspring registration in leaderboard.
-- **F11 (Tri-Vault Storage Auto-Healing)**: Fast-path health verification; missing directory auto-creation; `Index.md` repair; stale `.git/index.lock` purge; disk headroom >= 5.0 GB evaluation.
-- **F12 (7 Core Daemons Supervision)**: Port 8080 health check; Port 8082 health check; Port 8084 health check; Port 8086 health check; Port 18802/50052/8088 matrix scan and resurrection trigger.
-- **F13 (GL.iNet Router RAM Governance)**: `/proc/meminfo` parsing; available RAM extraction; safe memory threshold evaluation (> 35 MB); critical memory threshold detection (<= 35 MB); `drop_caches` command formatting.
-- **F14 (E2E Regression Suite)**: Test runner discovery; single tier execution; all tier execution; JSON report serialization; exit code propagation.
-- **F15 (Adversarial Coverage Hardening)**: Chaos payload rejection; rapid rate-limit bursting; corrupted JSONL recovery; concurrent thread write safety; zero-mock rule enforcement.
-
-### Tier 2: Boundary & Corner Cases Requirements (>= 5 tests per feature)
-- Boundary analysis at exact limits: 14 RPM threshold, 1,400th RPD, 10,000th neuron, 35.0 MB RAM boundary, 21.6 GB VRAM ceiling, 0.9500 vs 0.9501 consensus score, empty JSONL files, zero-byte configs, negative token counts, and leap-second / UTC midnight rollovers.
-
-### Tier 3: Cross-Feature Combinations (Pairwise Matrix)
-- Validates complex interactions between pairs and triples of subsystems:
-  1. *F01 + F03*: Gemini Quota Exhaustion triggers seamless failover to Local Mesh Ports 8081-8086.
-  2. *F02 + F04*: Cloudflare Neuron Budget depletion during Overnight mode shifts heavy AST jobs to Metal GPU.
-  3. *F05 + F06*: Biometric Airgap filter intercepts ECG telemetry before multi-stream LoRA harvesting.
-  4. *F07 + F08 + F09*: 500-pair dataset growth triggers Nightly Metal QLoRA training and streams loss to Obsidian Vault.
-  5. *F10 + F11*: Model merge creates offspring artifacts without violating Tri-Vault disk headroom constraints.
-  6. *F12 + F13*: Router RAM exhaustion triggers daemon restart and memory recovery concurrently.
-  7. *F01 + F02 + F15*: Concurrent rate limit thrashing across Gemini and Cloudflare maintains zero 429 errors.
-
-### Tier 4: Real-World Application Scenarios (5 Scenarios)
-1. **Scenario 1: 24-Hour Daytime/Overnight Autonomous Transition**
-   - Simulates continuous operation through daytime telemetry streaming, UTC midnight quota reset, and 03:00 UTC batch QLoRA compilation.
-2. **Scenario 2: Biometric Telemetry Airgap Breach Prevention**
-   - Ingests high-frequency 512Hz ECG and PTT blood pressure streams alongside synthetic coding prompts; verifies 100% airgap quarantine while allowing non-sensitive coding prompts to route to Cloudflare.
-3. **Scenario 3: Tri-Orchestrator AI Debate to DPO Harvester and Model Merge**
-   - Executes multi-agent debate, evaluates consensus > 0.95, synthesizes DPO pair, appends to dataset, triggers MergeKit SLERP synthesis, and streams loss to Obsidian Vault.
-4. **Scenario 4: Cascading Tri-Vault Degradation & Router RAM Self-Healing**
-   - Injects corrupt `Index.md`, stale git lock, degraded disk headroom, and low router RAM (31.2 MB); verifies automated self-healing recovers all invariants within a single cycle.
-5. **Scenario 5: Multi-Day 500-Pair Daily Growth & Continuous LoRA Distillation**
-   - Simulates 3 days of dataset growth (>= 500 pairs/day), verifies atomic locking, validates zero-mock compliance, and executes mock training run with memory cap checks.
 
 ---
 
-## 4. Test Runner Invocation & CLI Usage
-
-The master test runner is located at `tests/e2e/run_all_e2e_tests.py`.
+## 5. Execution Command & Report Specification
 
 ```bash
-# 1. Run all 4 test tiers (Full E2E Suite)
-python3 tests/e2e/run_all_e2e_tests.py --all
+# Execute master test runner
+python3 tests/e2e_storage_elo/run_e2e_tests.py
 
-# 2. Run a specific tier
-python3 tests/e2e/run_all_e2e_tests.py --tier 1
-python3 tests/e2e/run_all_e2e_tests.py --tier 2
-python3 tests/e2e/run_all_e2e_tests.py --tier 3
-python3 tests/e2e/run_all_e2e_tests.py --tier 4
-
-# 3. Run with custom JSON report output
-python3 tests/e2e/run_all_e2e_tests.py --all --json-output reports/e2e_test_report.json
-
-# 4. Run directly via pytest
-pytest tests/e2e/test_free_tier_cron_pipeline.py -v
+# Execute via pytest with full verbosity
+pytest -v tests/e2e_storage_elo/
 ```
 
----
-
-## 5. Acceptance Thresholds & Quality Gates
-
-| Gate ID | Quality Gate Metric | Threshold | Invalidation Condition |
-| :--- | :--- | :--- | :--- |
-| **QG-01** | E2E Suite Pass Rate | **100.0%** (0 failures, 0 errors) | Any failing test case |
-| **QG-02** | Rule #0 Zero-Mock Compliance | **100.0%** verified data | Presence of unverified mock shortcuts |
-| **QG-03** | Biometric Airgap Privacy | **100.0%** fail-closed quarantine | Any biometric payload passed to cloud |
-| **QG-04** | Rate Limit Safety Margin | <= 14 RPM / <= 1,400 RPD | Request count exceeds safe quota |
-| **QG-05** | Hardware Memory Governance | Host <= 21.6 GB, Router > 35.0 MB | Out-of-bounds memory allocation |
-| **QG-06** | Total Suite Execution Time | <= 15.0 seconds | Slow, unoptimized test execution |
+- **JSON Report**: `reports/e2e_storage_elo_report.json`
+- **Exit Code**: `0` on 100% pass; non-zero on any failure or mock violation.

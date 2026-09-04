@@ -1,18 +1,13 @@
-## 2026-08-26T05:28:54Z
+## 2026-09-01T09:38:09Z
 
-You are Survey Spec Miner 2 for the SeaweedFS High Availability & Stabilization project.
+You are survey_spec_miner_2, a specification mining agent investigating requirements and specs for the Project Orchestrator.
+Your working directory is: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/survey_spec_miner_2
+Read the original request at: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
 
-Your mission:
-Mine authoritative specifications and exact configuration parameters for SeaweedFS 3-Node Raft Consensus and High Availability across a multi-node mesh.
-
-Working Directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/survey_spec_miner_2
-Parent Conversation ID: 75de01c2-4da2-4ea1-8a0b-f632453fc4d6
-Original Request: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
-
-Tasks:
-1. Read `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md`.
-2. Analyze SeaweedFS Raft consensus architecture: master peer communication (`-master.peers` vs `-peers`), leader election, quorum requirements for 3 nodes, gRPC ports (offset 10000 e.g. 9333 -> 19333), filer HA topology, and volume server registration with multi-master.
-3. Analyze Tailscale mesh networking constraints: IP binding, port routing, NAT traversal, firewall/ACL rules, and failure modes when individual nodes drop.
-4. Enumerate exact command-line arguments, environment variables, and docker-compose configurations required for a production-grade 3-node Raft deployment.
-5. Write your comprehensive spec report to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/survey_spec_miner_2/report.md` and complete your `handoff.md`.
-6. Send a message to parent (75de01c2-4da2-4ea1-8a0b-f632453fc4d6) when complete.
+Task:
+1. Examine the codebase at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo for specifications, contracts, and interfaces related to:
+   - Dynamic Confidence Gating & Router Engine (threshold tau = 0.85, AST syntax validation, test coverage scoring, multi-agent agreement).
+   - Free Cloud AI API Quota Harvester ($0.00 spend cap, Google AI Studio Gemini 3.7 Flash 15 RPM, Cloudflare Workers AI 10k free daily Neurons).
+   - Dual-World MCTS Lookahead Simulation (Qwen-AgentWorld-35B OS syscalls/tools simulation, WebWorld-32B DOM/a11y simulation).
+2. Extract exact requirement specifications, interfaces, mathematical formulations, and validation constraints.
+3. Write your complete findings to /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/survey_spec_miner_2/handoff.md and report back via send_message.

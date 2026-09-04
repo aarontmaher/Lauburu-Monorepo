@@ -70,7 +70,7 @@ MANAGED_MODELS = {
         "name": "nemotron_70b",
         "model": MODEL_VAULT / "Llama-3.1-Nemotron-70B-Instruct-HF-abliterated-Q4_K_M.gguf",
         "args": ["-ngl", "99", "-c", "4096", "-ts", "43,28,29", "--no-jinja"],
-        "rpc": ["100.93.158.96:50052", "100.73.38.87:50052"],  # MacBook Air + Pixel
+        "rpc": ["100.121.202.34:50052", "100.73.38.87:50052"],  # MacBook Air + Pixel
     },
     8085: {
         "name": "qwen38_27b_abliterated",
@@ -237,8 +237,10 @@ class NomadAutonomousEngine:
         """Probes Port 50052 RPC endpoints across local and distributed mesh."""
         endpoints = {
             "localhost": ("127.0.0.1", 50052),
+            "macbook_pro_ts": ("100.103.212.21", 50052),
             "linux_head_node_lan": ("192.168.8.224", 50052),
             "linux_head_node_ts": ("100.101.39.98", 50052),
+            "macbook_air_ts": ("100.121.202.34", 50052),
             "mac_mini_host_ts": ("100.119.199.76", 50052),
             "pixel_10_pro_xl_ts": ("100.73.38.87", 50052),
         }
@@ -304,6 +306,20 @@ class NomadAutonomousEngine:
             "active_routines": 7
         }
 
+    def heal_macos_permission_popups(self) -> Dict[str, Any]:
+        """Detects and clears accumulated macOS modal alerts (UserNotificationCenter) caused by rapid capture loops."""
+        try:
+            cmd = "osascript -e 'tell application \"System Events\" to count of (windows of process \"UserNotificationCenter\")' 2>/dev/null"
+            out = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=2.0)
+            raw = out.stdout.strip()
+            win_count = int(raw) if out.returncode == 0 and raw.isdigit() else 0
+            if win_count > 1:
+                subprocess.run("killall UserNotificationCenter 2>/dev/null || true", shell=True)
+                return {"status": "HEALED_POPUP_STORM", "cleared_windows": win_count}
+            return {"status": "POPUP_MONITOR_CLEAN", "cleared_windows": win_count}
+        except Exception as e:
+            return {"status": "POPUP_MONITOR_SKIPPED", "error": str(e)}
+
     def check_and_heal_daemons(self) -> Dict[str, Any]:
         ports = {
             "ai_proxy_8080": 8080,
@@ -340,12 +356,23 @@ class NomadAutonomousEngine:
         ts = datetime.now(timezone.utc).isoformat()
         
         # 1. Probes
-        web_ui_3000 = probe_tcp("127.0.0.1", 3000, 0.15)
+        web_ui_active = probe_tcp("127.0.0.1", 4000, 0.15) or probe_tcp("127.0.0.1", 3000, 0.15)
         wol_api_18802 = probe_tcp("127.0.0.1", 18802, 0.15)
         rpc_50052 = probe_tcp("127.0.0.1", 50052, 0.15)
         
         tplink = self.heal_tplink_extender_mesh()
         rpc_compute = self.heal_ai_compute()
+
+        # Automated D-Link AP Mode Self-Healing
+        dlink_status = "DLINK_STANDBY"
+        try:
+            from automate_dlink_ap_mode import detect_dlink_gateway, run_dlink_provisioning
+            gw = detect_dlink_gateway()
+            if gw:
+                res = run_dlink_provisioning()
+                dlink_status = res.get("status", "DLINK_PROVISIONED")
+        except Exception:
+            pass
         skills = self.heal_antigravity_skills()
         mcp = self.heal_mcp_servers()
         obs_docs = self.heal_obsidian_docs()
@@ -353,10 +380,41 @@ class NomadAutonomousEngine:
         cron = self.heal_cron_daemons()
         storage = verify_and_heal_tri_vault()
         router_ram = check_router_ram()
+        macos_popups = self.heal_macos_permission_popups()
+
+        # 2. Multi-Transport 7-Layer Mesh Visibility & Router Micro LM Sync
+        mesh_layers = {}
+        try:
+            from configure_mesh_router_topology import verify_mesh_connectivity
+            mesh_layers = verify_mesh_connectivity()
+        except Exception as e:
+            mesh_layers = {"error": str(e)}
+
+        router_micro_lm = {
+            "kmwan_mode": "failover",
+            "loadavg": "--",
+            "status": "MICRO_LM_ACTIVE"
+        }
+        try:
+            res = subprocess.run(
+                ["sshpass", "-p", "goldfighting1", "ssh", "-o", "ConnectTimeout=2", "-o", "StrictHostKeyChecking=no", "root@192.168.8.1", "cat /proc/loadavg; uci get kmwan.global.mode 2>/dev/null"],
+                capture_output=True, text=True, timeout=5
+            )
+            if res.returncode == 0:
+                lines = res.stdout.strip().splitlines()
+                if len(lines) >= 1:
+                    router_micro_lm["loadavg"] = lines[0].strip()
+                if len(lines) >= 2:
+                    router_micro_lm["kmwan_mode"] = lines[1].strip()
+        except Exception:
+            pass
+
+        online_nodes_cnt = sum(1 for v in mesh_layers.values() if isinstance(v, dict) and v.get("online"))
+        total_nodes_cnt = len([v for v in mesh_layers.values() if isinstance(v, dict)])
 
         report = {
             "timestamp_utc": ts,
-            "localhost_3000_web_ui": "ONLINE" if web_ui_3000 else "STANDBY",
+            "localhost_web_ui": "ONLINE" if web_ui_active else "STANDBY",
             "wol_api_port_18802": "ONLINE" if wol_api_18802 else "STANDBY",
             "tplink_extender_mesh": tplink["status"],
             "llama_rpc_port_50052": "ONLINE" if rpc_50052 else "STANDBY",
@@ -367,14 +425,19 @@ class NomadAutonomousEngine:
             "cron_daemon_governance": cron["status"],
             "router_ram_watchdog": f"{router_ram} MB Available",
             "storage_tri_vault": storage["status"],
-            "overall_health": "ALL_ROUTINES_HEALTHY_AND_DOCUMENTED",
+            "macos_permission_popups": macos_popups["status"],
+            "router_micro_lm": router_micro_lm,
+            "mesh_layers": mesh_layers,
+            "overall_health": f"MESH_ACTIVE_{online_nodes_cnt}_OF_{total_nodes_cnt}_NODES" if total_nodes_cnt > 0 else "ALL_ROUTINES_HEALTHY_AND_DOCUMENTED",
             "actions_taken": ["STATUS_CHECK_OK"],
             "summary": {
-                "web_ui": "ONLINE" if web_ui_3000 else "STANDBY",
+                "web_ui": "ONLINE" if web_ui_active else "STANDBY",
                 "wol_api": "ONLINE" if wol_api_18802 else "STANDBY",
                 "rpc_nodes": rpc_compute["active_endpoints_count"],
                 "disk_free_gb": storage["disk_free_gb"],
                 "router_ram_mb": router_ram,
+                "online_mesh_nodes": online_nodes_cnt,
+                "total_mesh_nodes": total_nodes_cnt,
                 "overall_status": "HEALTHY"
             }
         }
@@ -385,7 +448,7 @@ class NomadAutonomousEngine:
             "nomad_agent": "Multi-WAN Nomad Courier v3.0",
             "instruction": "Nomad Governor: run autonomous 6-tier mesh health cycle",
             "input": f"Evaluate mesh services, storage tri-vault, router RAM, and ports 3000/18802/50052",
-            "output": f"Routines Healthy. Router RAM: {router_ram}MB, Storage: {storage['status']}",
+            "output": f"Nodes: {online_nodes_cnt}/{total_nodes_cnt} Online. Router RAM: {router_ram}MB, Storage: {storage['status']}",
             "action": "NOMAD_AUTONOMOUS_FULL_CYCLE",
             "result": report["overall_health"],
             "governor_cycle": "autonomous",
@@ -415,13 +478,30 @@ def main():
     engine = NomadAutonomousEngine()
     if args.once or not args.daemon:
         report = engine.run_full_cycle()
-        print(f"✅ Nomad Governor Cycle Complete ({report['overall_health']})")
-        print(f"   Web UI (3000)   : {report['localhost_3000_web_ui']}")
+        print(f"\n================================================================================")
+        print(f"✅ NOMAD AUTONOMOUS GOVERNOR CYCLE COMPLETE ({report['overall_health']})")
+        print(f"================================================================================")
+        print("\n📡 7-Layer Physical & Multi-Transport Mesh Nodes:")
+        for n, data in report.get("mesh_layers", {}).items():
+            if isinstance(data, dict):
+                st = data.get("status", "⚪ STANDBY")
+                if data.get("online"):
+                    rtt_str = f"{data.get('rtt_ms', 0):.2f} ms" if data.get('rtt_ms') is not None else "--"
+                    print(f"   {st} {data['name']:<24} ({data.get('active_path', 'LAN')}: {data.get('active_ip', '--'):<15}) RTT: {rtt_str}")
+                else:
+                    print(f"   {st} {data['name']:<24} (Standby / Sleeping)")
+        print("\n🧠 Router Micro LM Telemetry:")
+        micro = report.get("router_micro_lm", {})
+        print(f"   Router RAM      : {report['router_ram_watchdog']}")
+        print(f"   kmwan Mode      : {micro.get('kmwan_mode', 'failover')}")
+        print(f"   Router Load     : {micro.get('loadavg', '--')}")
+        print("\n🏛️ Core Services & Tri-Vault:")
+        print(f"   Web UI (4000/3000): {report['localhost_web_ui']}")
         print(f"   WoL API (18802) : {report['wol_api_port_18802']}")
         print(f"   TP-Link Mesh    : {report['tplink_extender_mesh']}")
         print(f"   llama.cpp RPC   : {report['llama_rpc_port_50052']}")
         print(f"   Tri-Vault       : {report['storage_tri_vault']}")
-        print(f"   Router RAM      : {report['router_ram_watchdog']}")
+        print(f"================================================================================\n")
         return
 
     print(f"🚀 Nomad Governor daemon starting (interval={args.interval}s)")

@@ -1,6 +1,6 @@
 ---
 title: "Continuous AI Debate Cycle: Maximum Free AI Tier Utilization"
-updated: "2026-08-30T21:49:50Z"
+updated: "2026-09-05T04:36:51Z"
 tags: [lauburu, ai_debate, free_ai_tiers, groq, gemini, jules, cloudflare, lora_training]
 ---
 
@@ -16,8 +16,8 @@ tags: [lauburu, ai_debate, free_ai_tiers, groq, gemini, jules, cloudflare, lora_
 - **Cloud Shadow:** Cloud Shadow (Google Gemini 2.0 / 3.7 Free Tier): Batch requests to match exact RPM limits (e.g. 15 RPM = 1 request every 4.0s) to run 24/7 without getting rate-limited.
 - **Workhorse Provider:** Workhorse (Groq Llama 3.3 70B (Free 30 RPM)): Execute high-speed parallel worker tasks with automatic failover to local mesh upon 429 status code.
 
-### 🔴 Devil's Advocate (Qwen-Abliterated @ :8083):
-> Devil's Advocate HTTP 500: {"error":{"code":500,"message":"Compute error.","type":"server_error"}}
+### 🔴 Devil's Advocate (Qwen 3.8 Max Abliterated @ :8083):
+> Devil's Advocate HTTP 503: {"error":{"message":"Loading model","type":"unavailable_error","code":503}}
 
 ### 🤝 Tri-Orchestrator Consensus:
 **ACTIONABLE CONSENSUS:** Implement a rate-regulated token bucket queue in budget_proxy.py. Queue tasks at 14.5 RPM for Gemini, 29.0 RPM for Groq, and dispatch 290 Jules sessions/day across backlog items. Fallback to Port 8081 instantaneously upon any HTTP 429.
@@ -32,8 +32,8 @@ tags: [lauburu, ai_debate, free_ai_tiers, groq, gemini, jules, cloudflare, lora_
 - **Cloud Shadow:** Cloud Shadow (Google Gemini 3.1 Pro (Free Tier)): Batch requests to match exact RPM limits (e.g. 15 RPM = 1 request every 4.0s) to run 24/7 without getting rate-limited.
 - **Workhorse Provider:** Workhorse (Cloudflare Workers AI (10k Neurons/day)): Execute high-speed parallel worker tasks with automatic failover to local mesh upon 429 status code.
 
-### 🔴 Devil's Advocate (Qwen-Abliterated @ :8083):
-> Devil's Advocate HTTP 500: {"error":{"code":500,"message":"Compute error.","type":"server_error"}}
+### 🔴 Devil's Advocate (Qwen 3.8 Max Abliterated @ :8083):
+> Devil's Advocate HTTP 503: {"error":{"message":"Loading model","type":"unavailable_error","code":503}}
 
 ### 🤝 Tri-Orchestrator Consensus:
 **ACTIONABLE CONSENSUS:** Implement a rate-regulated token bucket queue in budget_proxy.py. Queue tasks at 14.5 RPM for Gemini, 29.0 RPM for Groq, and dispatch 290 Jules sessions/day across backlog items. Fallback to Port 8081 instantaneously upon any HTTP 429.
@@ -48,8 +48,8 @@ tags: [lauburu, ai_debate, free_ai_tiers, groq, gemini, jules, cloudflare, lora_
 - **Cloud Shadow:** Cloud Shadow (Google Jules Dispatcher (42442)): Batch requests to match exact RPM limits (e.g. 15 RPM = 1 request every 4.0s) to run 24/7 without getting rate-limited.
 - **Workhorse Provider:** Workhorse (Hugging Face Serverless (300 req/day)): Execute high-speed parallel worker tasks with automatic failover to local mesh upon 429 status code.
 
-### 🔴 Devil's Advocate (Qwen-Abliterated @ :8083):
-> Devil's Advocate HTTP 500: {"error":{"code":500,"message":"Compute error.","type":"server_error"}}
+### 🔴 Devil's Advocate (Qwen 3.8 Max Abliterated @ :8083):
+> Devil's Advocate HTTP 503: {"error":{"message":"Loading model","type":"unavailable_error","code":503}}
 
 ### 🤝 Tri-Orchestrator Consensus:
 **ACTIONABLE CONSENSUS:** Implement a rate-regulated token bucket queue in budget_proxy.py. Queue tasks at 14.5 RPM for Gemini, 29.0 RPM for Groq, and dispatch 290 Jules sessions/day across backlog items. Fallback to Port 8081 instantaneously upon any HTTP 429.
@@ -64,8 +64,8 @@ tags: [lauburu, ai_debate, free_ai_tiers, groq, gemini, jules, cloudflare, lora_
 - **Cloud Shadow:** Cloud Shadow (Cloudflare Workers AI / Vectorize): Batch requests to match exact RPM limits (e.g. 15 RPM = 1 request every 4.0s) to run 24/7 without getting rate-limited.
 - **Workhorse Provider:** Workhorse (Mistral Nemo 12B Abliterated (:8082)): Execute high-speed parallel worker tasks with automatic failover to local mesh upon 429 status code.
 
-### 🔴 Devil's Advocate (Qwen-Abliterated @ :8083):
-> Devil's Advocate HTTP 500: {"error":{"code":500,"message":"Compute error.","type":"server_error"}}
+### 🔴 Devil's Advocate (Qwen 3.8 Max Abliterated @ :8083):
+> Devil's Advocate HTTP 503: {"error":{"message":"Loading model","type":"unavailable_error","code":503}}
 
 ### 🤝 Tri-Orchestrator Consensus:
 **ACTIONABLE CONSENSUS:** Implement a rate-regulated token bucket queue in budget_proxy.py. Queue tasks at 14.5 RPM for Gemini, 29.0 RPM for Groq, and dispatch 290 Jules sessions/day across backlog items. Fallback to Port 8081 instantaneously upon any HTTP 429.

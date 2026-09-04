@@ -20,10 +20,12 @@ from pydantic import BaseModel, Field
 try:
     from .services.shopify_service import ShopifyService, get_shopify_service
     from .services.telemetry_service import TelemetryService, get_telemetry_service
+    from .services.edge_ai_service import EdgeAIService, get_edge_ai_service
     from .storage.sqlite_manager import SqliteManager, get_sqlite_manager
 except (ImportError, ValueError):
     from services.shopify_service import ShopifyService, get_shopify_service
     from services.telemetry_service import TelemetryService, get_telemetry_service
+    from services.edge_ai_service import EdgeAIService, get_edge_ai_service
     from storage.sqlite_manager import SqliteManager, get_sqlite_manager
 
 # Logging configuration
@@ -94,6 +96,17 @@ class TrendInsightRequest(BaseModel):
     cardiac_drift_detected: bool = Field(False, description="Cardiac drift flag")
     endothelial_reserve_status: str = Field("OPTIMAL", description="Endothelial reserve status")
     zone2_compliance: str = Field("IN_ZONE", description="Zone 2 compliance status")
+
+
+class EdgeChatRequest(BaseModel):
+    message: str = Field(..., description="User prompt or action directive")
+    history: Optional[List[Dict[str, str]]] = Field(default_factory=list, description="Conversation history")
+    device_profile: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Client device hardware specs")
+
+
+class EdgeMaintenanceRequest(BaseModel):
+    force_cleanup: Optional[bool] = Field(False, description="Force cleanup of local cache buffers")
+
 
 
 # ==================== Application Catalog Registry ====================
@@ -794,6 +807,288 @@ async def websocket_telemetry_endpoint(websocket: WebSocket):
         await ws_manager.disconnect(websocket)
 
 
+
+# ==================== In-App Edge AI & Micro-RAG Endpoints ====================
+
+@app.post("/api/edge/chat", tags=["Edge AI"])
+async def edge_chat_endpoint(req: EdgeChatRequest):
+    """
+    In-App Multipurpose Edge AI Chat Endpoint.
+    Uses local SmolLM2 1.7B with Micro-RAG on Obsidian vault notes,
+    automated network/device health inspection, and smart mesh escalation to Port 8081.
+    """
+    edge_service = get_edge_ai_service()
+    result = await edge_service.chat(
+        message=req.message,
+        history=req.history,
+        device_profile=req.device_profile
+    )
+    return result
+
+
+@app.get("/api/edge/health", tags=["Edge AI"])
+async def edge_health_endpoint():
+    """Returns live hardware memory/CPU and mesh speedway latencies."""
+    edge_service = get_edge_ai_service()
+    return edge_service.get_health_status()
+
+
+@app.post("/api/edge/maintenance", tags=["Edge AI"])
+async def edge_maintenance_endpoint(req: Optional[EdgeMaintenanceRequest] = None):
+    """Triggers autonomous on-device self-healing and cache optimization."""
+    edge_service = get_edge_ai_service()
+    return edge_service.execute_maintenance()
+
+
+@app.get("/api/edge/rag/search", tags=["Edge AI"])
+async def edge_rag_search_endpoint(q: str = Query(..., description="Query to search across local vault")):
+    """Searches local Obsidian vault documentation via Micro-RAG."""
+    edge_service = get_edge_ai_service()
+    hits = edge_service.search_local_rag(q)
+    return {"query": q, "count": len(hits), "results": hits}
+
+
+@app.websocket("/ws/edge_chat")
+async def websocket_edge_chat(websocket: WebSocket):
+    """WebSocket endpoint for real-time streaming edge chat with local RAG."""
+    await websocket.accept()
+    edge_service = get_edge_ai_service()
+    try:
+        while True:
+            raw_text = await websocket.receive_text()
+            try:
+                data = json.loads(raw_text)
+            except Exception:
+                continue
+
+            user_msg = data.get("message", "")
+            history = data.get("history", [])
+            device = data.get("device", {})
+
+            result = await edge_service.chat(user_msg, history, device)
+            await websocket.send_json({"type": "edge_response", **result})
+    except WebSocketDisconnect:
+        pass
+    except Exception as e:
+        logger.warning("WebSocket edge chat error: %s", str(e))
+
+
+from fastapi.responses import HTMLResponse
+
+@app.get("/", response_class=HTMLResponse, tags=["Dashboard"])
+async def root_dashboard_view():
+    """Serves the canonical Port 4000 Hub interactive web UI with the integrated In-App Edge AI Assistant."""
+    html_content = """<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lauburu Port 4000 Canonical Web & Compute Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0b0f19; color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .glass { background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col">
+    <!-- Header -->
+    <header class="glass rounded-2xl p-6 mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-xl font-bold">⚡</div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight">Lauburu Port 4000 Hub</h1>
+                <p class="text-xs text-gray-400">Canonical Monorepo Client, 128Hz BLE Telemetry & Multipurpose Edge AI</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <span id="node-status" class="px-3 py-1 text-xs rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Port 4000 Hub Online
+            </span>
+            <button onclick="runMaintenance()" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 transition">
+                🔧 Self-Heal & Maintain
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+        <!-- Left: Telemetry & System Health (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+            <!-- System & Network Health Card -->
+            <div class="glass rounded-2xl p-6 flex-1">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4 flex items-center gap-2">
+                    <span>🩺</span> Hardware & Mesh Speedway
+                </h2>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="p-3.5 rounded-xl bg-gray-800/60 border border-gray-700/50">
+                        <div class="text-xs text-gray-400">Memory (RAM)</div>
+                        <div id="stat-ram" class="text-lg font-bold text-indigo-400">--</div>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-gray-800/60 border border-gray-700/50">
+                        <div class="text-xs text-gray-400">CPU Load</div>
+                        <div id="stat-cpu" class="text-lg font-bold text-emerald-400">--</div>
+                    </div>
+                </div>
+                <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Active Mesh Latencies</div>
+                <div id="network-matrix" class="space-y-2 text-xs">
+                    <div class="p-2 rounded-lg bg-gray-900/50 text-gray-400">Scanning mesh nodes...</div>
+                </div>
+            </div>
+
+            <!-- Biometrics & Readiness -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-3 flex items-center gap-2">
+                    <span>💓</span> Movesense 128Hz Ingestion
+                </h2>
+                <div class="flex items-center justify-between p-3 rounded-xl bg-gray-800/40 border border-gray-700/40 mb-3">
+                    <div>
+                        <div class="text-xs text-gray-400">Heart Rate (Kamath 20% Filter)</div>
+                        <div id="stat-hr" class="text-2xl font-bold text-rose-400">-- <span class="text-xs text-gray-400">BPM</span></div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs text-gray-400">Zone 2 Aerobic (DFA-α1)</div>
+                        <div id="stat-zone2" class="text-sm font-semibold text-emerald-400">Optimal</div>
+                    </div>
+                </div>
+                <div class="text-[11px] text-gray-500">Zero-Mock Rule #0 Enforced. Clean standby when sensors are disconnected.</div>
+            </div>
+        </div>
+
+        <!-- Right: In-App Multipurpose Edge AI Chat (7 cols) -->
+        <div class="lg:col-span-7 glass rounded-2xl p-6 flex flex-col flex-1">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-800">
+                <div class="flex items-center gap-2">
+                    <span class="text-base">🤖</span>
+                    <div>
+                        <h2 class="text-sm font-bold text-gray-200">In-App Multipurpose Edge AI</h2>
+                        <p class="text-[11px] text-gray-400">SmolLM2 1.7B (&le;0.98 GB RAM) • Micro-RAG • Mesh Escalation</p>
+                    </div>
+                </div>
+                <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                    Sovereign Edge
+                </span>
+            </div>
+
+            <!-- Messages Log -->
+            <div id="chat-box" class="flex-1 overflow-y-auto space-y-3 p-3 rounded-xl bg-gray-900/60 border border-gray-800 text-xs min-h-[280px] max-h-[420px]">
+                <div class="p-3 rounded-lg bg-gray-800/60 border border-gray-700/40 text-gray-300">
+                    👋 <b>Lauburu Edge AI Assistant Online!</b> Ask about system health, execute network maintenance, search local Obsidian notes, or write code.
+                </div>
+            </div>
+
+            <!-- Input Bar -->
+            <form onsubmit="handleChatSubmit(event)" class="mt-4 flex gap-2">
+                <input id="chat-input" type="text" placeholder="Type prompt (e.g. 'Check network and RAM' or 'Search storage rule')..." 
+                       class="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition">
+                <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/30 transition">
+                    Send
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Client Script -->
+    <script>
+        async function fetchHealth() {
+            try {
+                const res = await fetch('/api/edge/health');
+                const data = await res.json();
+                document.getElementById('stat-ram').innerText = `${data.device.ram_used_gb} / ${data.device.ram_total_gb} GB (${data.device.ram_percent}%)`;
+                document.getElementById('stat-cpu').innerText = `${data.device.cpu_percent}%`;
+
+                const matrixDiv = document.getElementById('network-matrix');
+                matrixDiv.innerHTML = '';
+                for (const [target, info] of Object.entries(data.network)) {
+                    const rtt = info.rtt_ms ? `${info.rtt_ms} ms` : 'Offline';
+                    const isOk = info.status === 'ONLINE';
+                    matrixDiv.innerHTML += `
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-gray-800/40 border border-gray-700/30">
+                            <span class="font-mono text-gray-300">${target}</span>
+                            <span class="font-semibold ${isOk ? 'text-emerald-400' : 'text-gray-500'}">${info.status} (${rtt})</span>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function runMaintenance() {
+            const btn = event.target;
+            btn.innerText = '⏳ Healing...';
+            try {
+                const res = await fetch('/api/edge/maintenance', { method: 'POST' });
+                const data = await res.json();
+                alert(`Maintenance: ${data.actions_executed.join(' | ')}`);
+            } catch (e) {
+                alert('Maintenance error: ' + e);
+            } finally {
+                btn.innerText = '🔧 Self-Heal & Maintain';
+                fetchHealth();
+            }
+        }
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML += `<div class="p-2.5 rounded-lg bg-indigo-600/30 border border-indigo-500/30 text-indigo-200 self-end text-right"><b>You:</b> ${msg}</div>`;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const typingId = 'typing-' + Date.now();
+            chatBox.innerHTML += `<div id="${typingId}" class="p-2.5 rounded-lg bg-gray-800/40 text-gray-400 animate-pulse">Thinking on-device...</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const res = await fetch('/api/edge/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg })
+                });
+                const data = await res.json();
+                document.getElementById(typingId)?.remove();
+
+                const ragBadge = data.rag_used ? `<span class="px-1.5 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 mr-1">RAG: ${data.rag_sources.join(', ')}</span>` : '';
+                const escBadge = data.escalated ? `<span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 mr-1">Cluster Master :8081</span>` : `<span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mr-1">Local Edge</span>`;
+
+                chatBox.innerHTML += `
+                    <div class="p-3 rounded-lg bg-gray-800/70 border border-gray-700/50 text-gray-200">
+                        <div class="flex items-center gap-1 mb-1.5">${escBadge}${ragBadge}<span class="text-[10px] text-gray-400">(${data.latency_ms}ms)</span></div>
+                        <div class="whitespace-pre-wrap leading-relaxed">${data.response}</div>
+                    </div>
+                `;
+            } catch (err) {
+                document.getElementById(typingId)?.remove();
+                chatBox.innerHTML += `<div class="p-2.5 rounded-lg bg-rose-500/20 text-rose-300">Error processing edge query.</div>`;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        fetchHealth();
+        setInterval(fetchHealth, 15000);
+    </script>
+</body>
+</html>
+    """
+    return HTMLResponse(content=html_content)
+
+
 # ==================== CLI Entrypoint ====================
 
 if __name__ == "__main__":
@@ -801,6 +1096,7 @@ if __name__ == "__main__":
     host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", "4000"))
     uvicorn.run(app, host=host, port=port, log_level="info")
+
 
 # ==================== GL.iNet Router Proxy ====================
 import httpx

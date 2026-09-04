@@ -12,9 +12,10 @@ from __future__ import annotations
 
 import datetime
 import math
+import time
 import uuid
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from .waste_tax import (
     DEFAULT_THRESHOLD,
@@ -39,6 +40,9 @@ GOLIATH_MIN_MULTIPLIER: float = 0.01
 GOLIATH_MAX_MULTIPLIER: float = 1.00
 
 MAX_DAVID_ELO_GAIN: float = 350.0  # Max positive delta clamp for David
+
+MIN_ELO_RATING: float = 1000.0  # Canonical minimum ELO rating bound
+MAX_ELO_RATING: float = 3000.0  # Canonical maximum ELO rating bound
 
 
 # ---------------------------------------------------------------------------
@@ -158,11 +162,13 @@ class EloEngine:
     def calculate_expected_score(rating_a: float, rating_b: float) -> Tuple[float, float]:
         """
         Calculate standard logistic expected scores for two contenders.
+        Clamps exponent to [-20.0, 20.0] to eliminate OverflowError.
 
         E_A = 1.0 / (1.0 + 10^((R_B - R_A) / 400.0))
         E_B = 1.0 - E_A
         """
-        ea = 1.0 / (1.0 + 10.0 ** ((float(rating_b) - float(rating_a)) / 400.0))
+        exp = max(-20.0, min(20.0, (float(rating_b) - float(rating_a)) / 400.0))
+        ea = 1.0 / (1.0 + 10.0 ** exp)
         eb = 1.0 - ea
         return ea, eb
 
@@ -307,6 +313,8 @@ class EloEngine:
         """
         Evaluate full ELO deltas, multipliers, and expected scores for both contenders.
         """
+        r_david = max(MIN_ELO_RATING, min(MAX_ELO_RATING, float(r_david)))
+        r_goliath = max(MIN_ELO_RATING, min(MAX_ELO_RATING, float(r_goliath)))
         e_david, e_goliath = self.calculate_expected_score(r_david, r_goliath)
 
         mu_david = self.calculate_david_multiplier(
@@ -451,8 +459,8 @@ class EloEngine:
                 disciplinary_david = verdict.to_dict()
                 total_delta_david += tax_david
 
-        new_david = current_elo_david + total_delta_david
-        new_goliath = current_elo_goliath + total_delta_goliath
+        new_david = max(MIN_ELO_RATING, min(MAX_ELO_RATING, current_elo_david + total_delta_david))
+        new_goliath = max(MIN_ELO_RATING, min(MAX_ELO_RATING, current_elo_goliath + total_delta_goliath))
 
         update_result = EloUpdateResult(
             match_id=match.match_id or f"match_{uuid.uuid4().hex[:8]}",
@@ -492,3 +500,333 @@ class EloEngine:
             })
 
         return update_result
+
+
+# ---------------------------------------------------------------------------
+# Wilson Score Confidence Intervals & Multi-Category Scorecard (Feature F7)
+# Authoritative Reference: ORIGINAL_REQUEST.md (§R3) & PROJECT.md (§Interface Contract #4)
+# ---------------------------------------------------------------------------
+
+class WilsonConfidenceInterval(tuple):
+    """
+    Tuple subclass representing a confidence interval [lower, upper].
+    Provides .lower, .upper, .spread attributes and dictionary serialization.
+    """
+    def __new__(cls, lower: float, upper: float):
+        return super().__new__(cls, (float(lower), float(upper)))
+
+    @property
+    def lower(self) -> float:
+        return self[0]
+
+    @property
+    def upper(self) -> float:
+        return self[1]
+
+    @property
+    def spread(self) -> float:
+        return self[1] - self[0]
+
+    def to_dict(self) -> Dict[str, float]:
+        return {
+            "lower": round(self[0], 4),
+            "upper": round(self[1], 4),
+            "spread": round(self.spread, 4),
+        }
+
+
+def _norm_ppf_from_confidence(confidence: float) -> float:
+    """
+    Compute normal quantile z for a given symmetric two-tailed confidence level.
+    For confidence=0.95, returns 1.959963984540054.
+    Uses Acklam / Beasley-Springer-Moro rational approximation with 10^-9 precision.
+    """
+    if abs(confidence - 0.95) < 1e-6:
+        return 1.959963984540054
+    p = 1.0 - (1.0 - max(0.0001, min(0.9999, float(confidence)))) / 2.0
+    if p == 0.5:
+        return 0.0
+
+    a = [
+        -3.969683028665376e+01,  2.209460984245205e+02,
+        -2.759285104469687e+02,  1.383577518672690e+02,
+        -3.066479806614716e+01,  2.506628277459239e+00,
+    ]
+    b = [
+        -5.447609879822406e+01,  1.615858368580409e+02,
+        -1.556989798598866e+02,  6.680131188771972e+01,
+        -1.328068155288572e+01,
+    ]
+    c = [
+        -7.784894002430293e-03, -3.223964580411365e-01,
+        -2.400758277161838e+00, -2.549732539343734e+00,
+         4.374664141464968e+00,  2.938163982698783e+00,
+    ]
+    d = [
+         7.784695709041462e-03,  3.224671290700398e-01,
+         2.445134137142996e+00,  3.754408661907416e+00,
+    ]
+    p_low = 0.02425
+    p_high = 1.0 - p_low
+
+    if p < p_low:
+        q = math.sqrt(-2.0 * math.log(p))
+        return (((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5]) / \
+               ((((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0)
+    elif p <= p_high:
+        q = p - 0.5
+        r = q * q
+        return (((((a[0]*r + a[1])*r + a[2])*r + a[3])*r + a[4])*r + a[5]) * q / \
+               (((((b[0]*r + b[1])*r + b[2])*r + b[3])*r + b[4])*r + 1.0)
+    else:
+        q = math.sqrt(-2.0 * math.log(1.0 - p))
+        return -(((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5]) / \
+                ((((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0)
+
+
+def calculate_wilson_confidence_interval(
+    k: int,
+    n: int,
+    confidence: float = 0.95,
+) -> Tuple[float, float]:
+    """
+    Calculate closed-form Wilson score interval for binomial proportions.
+    Guarantees strict [0.0, 1.0] bounds and non-zero uncertainty for k == n.
+    Used for qualitative/sensorless software verification components under finite Bernoulli trials.
+
+    Formula:
+    center = (p_hat + z^2 / (2n)) / (1 + z^2 / n)
+    spread = (z * sqrt((p_hat * (1 - p_hat) + z^2 / (4n^2)) / n)) / (1 + z^2 / n)
+    [lower, upper] = [max(0.0, center - spread), min(1.0, center + spread)]
+    """
+    if n <= 0:
+        return WilsonConfidenceInterval(0.0, 1.0)
+
+    n_flt = float(n)
+    k_clamped = max(0, min(int(n), int(k)))
+    p_hat = float(k_clamped) / n_flt
+
+    z = _norm_ppf_from_confidence(confidence)
+    z2 = z * z
+
+    denom = 1.0 + (z2 / n_flt)
+    center = (p_hat + (z2 / (2.0 * n_flt))) / denom
+    radicand = (p_hat * (1.0 - p_hat) + (z2 / (4.0 * n_flt))) / n_flt
+    spread = (z * math.sqrt(max(0.0, radicand))) / denom
+
+    lower = max(0.0, center - spread)
+    upper = min(1.0, center + spread)
+    if k_clamped == 0:
+        lower = 0.0
+    if k_clamped == int(n):
+        upper = 1.0
+    return WilsonConfidenceInterval(lower, upper)
+
+
+@dataclass
+class CategoryScorecard:
+    """
+    Evaluation scorecard for a single system category.
+    Conforms to PROJECT.md §Interface Contract #4 and R3 requirements.
+    """
+    category: str
+    rating: float
+    confidence_interval: Tuple[float, float]
+    trials: int
+    passes: int
+    expected_vs_baseline: float = 0.5
+
+    @property
+    def successes(self) -> int:
+        return self.passes
+
+    @property
+    def pass_rate(self) -> float:
+        return float(self.passes) / float(self.trials) if self.trials > 0 else 0.0
+
+    def to_dict(self) -> Dict[str, Any]:
+        ci = self.confidence_interval
+        ci_dict = {
+            "lower": round(ci[0], 4),
+            "upper": round(ci[1], 4),
+            "spread": round(ci[1] - ci[0], 4),
+        }
+        return {
+            "category": self.category,
+            "rating": round(self.rating, 1),
+            "trials": self.trials,
+            "passes": self.passes,
+            "successes": self.passes,
+            "pass_rate": round(self.pass_rate, 4),
+            "confidence_interval": ci_dict,
+            "confidence_interval_tuple": (round(ci[0], 4), round(ci[1], 4)),
+            "expected_vs_baseline": round(self.expected_vs_baseline, 4),
+        }
+
+
+@dataclass
+class ProjectEloScorecard:
+    """
+    Aggregated project-level ELO scorecard across Frontend, Backend, and AI Models.
+    Conforms to PROJECT.md §Interface Contract #4 and R3 requirements.
+    """
+    timestamp: str
+    frontend: CategoryScorecard
+    backend: CategoryScorecard
+    ai_models: CategoryScorecard
+    composite_score: float
+    evaluation_latency_us: float
+
+    @property
+    def timestamp_utc(self) -> str:
+        return self.timestamp
+
+    @property
+    def composite_elo(self) -> float:
+        return self.composite_score
+
+    @property
+    def sla_compliant_50us(self) -> bool:
+        return self.evaluation_latency_us <= 50.0
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "timestamp": self.timestamp,
+            "timestamp_utc": self.timestamp,
+            "frontend": self.frontend.to_dict(),
+            "backend": self.backend.to_dict(),
+            "ai_models": self.ai_models.to_dict(),
+            "composite_score": round(self.composite_score, 1),
+            "composite_elo": round(self.composite_score, 1),
+            "evaluation_latency_us": round(self.evaluation_latency_us, 2),
+            "sla_compliant_50us": self.sla_compliant_50us,
+        }
+
+
+def _parse_trials_arg(arg: Any) -> Tuple[int, int]:
+    """
+    Extract (passes, trials) from a tuple or list.
+    Handles both (passes, trials) and (trials, passes).
+    """
+    if isinstance(arg, (tuple, list)) and len(arg) >= 2:
+        a, b = int(arg[0]), int(arg[1])
+        if a > b and b >= 0:
+            return (b, a)
+        return (max(0, a), max(0, b))
+    return (0, 0)
+
+
+def evaluate_project_scorecard(
+    frontend_trials: Any = (0, 0),
+    backend_trials: Any = (0, 0),
+    ai_trials: Any = (0, 0),
+    *extra_args,
+    frontend_rating: float = 2000.0,
+    backend_rating: float = 2000.0,
+    ai_rating: float = 2000.0,
+    w_frontend: float = 0.30,
+    w_backend: float = 0.35,
+    w_ai: float = 0.35,
+    baseline_rating: float = 2000.0,
+    confidence: float = 0.95,
+    **extra_kwargs,
+) -> ProjectEloScorecard:
+    """
+    Evaluate 3-category ELO scorecard (Frontend, Backend, AI Models) in <= 50 µs.
+    Conforms to PROJECT.md §Interface Contract #4 and R3 requirements.
+
+    Accepts:
+    1. Standard contract: evaluate_project_scorecard(fe_trials=(k, n), be_trials=(k, n), ai_trials=(k, n), ...)
+    2. Positional ratings: evaluate_project_scorecard(fe_trials, be_trials, ai_trials, fe_rating, be_rating, ai_rating)
+    3. 9-arg signature: evaluate_project_scorecard(fe_rating, fe_trials, fe_passes, be_rating, be_trials, be_passes, ai_rating, ai_trials, ai_passes)
+    """
+    t0 = time.perf_counter_ns()
+
+    # Pattern check: 9 positional scalar arguments (fe_rating, fe_trials, fe_passes, ...)
+    if not isinstance(frontend_trials, (tuple, list)) and len(extra_args) >= 6:
+        fe_r = float(frontend_trials)
+        fe_t = int(backend_trials)
+        fe_p = int(ai_trials)
+        be_r = float(extra_args[0])
+        be_t = int(extra_args[1])
+        be_p = int(extra_args[2])
+        ai_r = float(extra_args[3])
+        ai_t = int(extra_args[4])
+        ai_p = int(extra_args[5])
+        if len(extra_args) >= 7:
+            w_frontend = float(extra_args[6])
+        if len(extra_args) >= 8:
+            w_backend = float(extra_args[7])
+        if len(extra_args) >= 9:
+            w_ai = float(extra_args[8])
+        if len(extra_args) >= 10:
+            baseline_rating = float(extra_args[9])
+    else:
+        fe_p, fe_t = _parse_trials_arg(frontend_trials)
+        be_p, be_t = _parse_trials_arg(backend_trials)
+        ai_p, ai_t = _parse_trials_arg(ai_trials)
+        fe_r = float(extra_kwargs.get("frontend_rating", extra_args[0] if len(extra_args) > 0 else frontend_rating))
+        be_r = float(extra_kwargs.get("backend_rating", extra_args[1] if len(extra_args) > 1 else backend_rating))
+        ai_r = float(extra_kwargs.get("ai_rating", extra_args[2] if len(extra_args) > 2 else ai_rating))
+
+    # Rating boundary enforcement [1000.0, 3000.0]
+    r_fe = max(MIN_ELO_RATING, min(MAX_ELO_RATING, fe_r))
+    r_be = max(MIN_ELO_RATING, min(MAX_ELO_RATING, be_r))
+    r_ai = max(MIN_ELO_RATING, min(MAX_ELO_RATING, ai_r))
+
+    # Closed-form Wilson score confidence intervals
+    ci_fe = calculate_wilson_confidence_interval(fe_p, fe_t, confidence=confidence)
+    ci_be = calculate_wilson_confidence_interval(be_p, be_t, confidence=confidence)
+    ci_ai = calculate_wilson_confidence_interval(ai_p, ai_t, confidence=confidence)
+
+    # Bradley-Terry expected scores vs baseline standard
+    e_fe = 1.0 / (1.0 + 10.0 ** max(-20.0, min(20.0, (baseline_rating - r_fe) / 400.0)))
+    e_be = 1.0 / (1.0 + 10.0 ** max(-20.0, min(20.0, (baseline_rating - r_be) / 400.0)))
+    e_ai = 1.0 / (1.0 + 10.0 ** max(-20.0, min(20.0, (baseline_rating - r_ai) / 400.0)))
+
+    # Composite weighted ELO score
+    sum_w = w_frontend + w_backend + w_ai
+    if sum_w > 0.0:
+        composite = (w_frontend * r_fe + w_backend * r_be + w_ai * r_ai) / sum_w
+    else:
+        composite = (r_fe + r_be + r_ai) / 3.0
+    composite_clamped = max(MIN_ELO_RATING, min(MAX_ELO_RATING, composite))
+    t1 = time.perf_counter_ns()
+    eval_latency_us = (t1 - t0) / 1000.0
+
+    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+    return ProjectEloScorecard(
+        timestamp=now_iso,
+        frontend=CategoryScorecard(
+            category="Frontend",
+            rating=r_fe,
+            confidence_interval=ci_fe,
+            trials=fe_t,
+            passes=fe_p,
+            expected_vs_baseline=e_fe,
+        ),
+        backend=CategoryScorecard(
+            category="Backend",
+            rating=r_be,
+            confidence_interval=ci_be,
+            trials=be_t,
+            passes=be_p,
+            expected_vs_baseline=e_be,
+        ),
+        ai_models=CategoryScorecard(
+            category="AI Models",
+            rating=r_ai,
+            confidence_interval=ci_ai,
+            trials=ai_t,
+            passes=ai_p,
+            expected_vs_baseline=e_ai,
+        ),
+        composite_score=composite_clamped,
+        evaluation_latency_us=eval_latency_us,
+    )
+
+
+# Attach as static methods on EloEngine for class-level access
+EloEngine.calculate_wilson_confidence_interval = staticmethod(calculate_wilson_confidence_interval)
+EloEngine.evaluate_project_scorecard = staticmethod(evaluate_project_scorecard)

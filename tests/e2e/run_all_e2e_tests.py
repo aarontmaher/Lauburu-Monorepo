@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Master E2E Test Runner & Readiness Verifier
-Lauburu Monorepo — 24/7 Offline & Free-Tier AI Utilization Cron Pipeline
+Project: Top 10 Highest ROI Strategic Implementation Plan for Lauburu AI Mesh
 ================================================================================
-Executes all 4 tiers of the Opaque-Box E2E Testing Hierarchy:
-- Tier 1: Feature Coverage (Features F01 - F15, >=5 tests/feature)
-- Tier 2: Boundary Value Analysis & Corner Cases (Features F01 - F15, >=5 tests/feature)
-- Tier 3: Cross-Feature Pairwise Combinations & Multi-Subsystem Interactions
-- Tier 4: Real-World Application Scenarios (End-to-end full operational workflows)
+Executes all 4 tiers of the Opaque-Box E2E Testing Hierarchy across 24 Features (F01-F24):
+- Tier 1: Feature Coverage (Features F01 - F24, 120 tests total)
+- Tier 2: Boundary Value Analysis & Corner Cases (Features F01 - F24, 120 tests total)
+- Tier 3: Cross-Feature Pairwise Combinations & Multi-Subsystem Interactions (24 tests)
+- Tier 4: Real-World Application Workloads & Extreme Scenarios (12 tests)
+Total: 276 Tests (100% Zero-Mock & Rule #0 Certified)
 
 Usage:
   python3 tests/e2e/run_all_e2e_tests.py --all
   python3 tests/e2e/run_all_e2e_tests.py --tier 1
-  python3 tests/e2e/run_all_e2e_tests.py --suite cron --all
-  python3 tests/e2e/run_all_e2e_tests.py --suite all --all
+  python3 tests/e2e/run_all_e2e_tests.py --suite top10 --all
   python3 tests/e2e/run_all_e2e_tests.py --all --json-output reports/e2e_test_report.json
 """
 
@@ -33,41 +34,34 @@ for p in [str(PROJECT_ROOT), str(TESTS_E2E_DIR)]:
     if p not in sys.path:
         sys.path.insert(0, p)
 
-# Cron Pipeline Test Suites (Canonical F01 - F15)
-from test_free_tier_cron_pipeline import (
-    TestTier1CronPipelineFeatureCoverage,
-    TestTier2CronPipelineBoundaryCorner,
-    TestTier3CronPipelinePairwiseCombinations,
-    TestTier4CronPipelineRealWorldScenarios,
+from test_canonical_top10_tier1_feature_coverage import TestTier1Top10FeatureCoverage
+from test_canonical_top10_tier2_boundary_corner import TestTier2Top10BoundaryCorner
+from test_canonical_top10_tier3_pairwise_combinatorial import TestTier3Top10PairwiseCombinatorial
+from test_canonical_top10_tier4_realworld_workloads import TestTier4Top10RealWorldWorkloads
+from test_canonical_top10_tier5_adversarial_stress import (
+    TestTier5AdversarialR1MLXGovernance,
+    TestTier5AdversarialR2ShopifyGateway,
+    TestTier5AdversarialR3BiometricsDSP,
+    TestTier5AdversarialR4SpatialGrappling,
+    TestTier5AdversarialR5TB4PRPSharding,
 )
 
-# App & Arena Test Suites (Optional / Cross-System)
-try:
-    from test_tier1_feature_coverage import TestTier1FeatureCoverage
-    from test_tier2_boundary_corner import TestTier2BoundaryCornerCases
-    from test_tier3_pairwise_combinations import TestTier3PairwiseCombinations
-    from test_tier4_real_world_scenarios import TestTier4RealWorldScenarios
-    HAS_ARENA_SUITES = True
-except ImportError:
-    HAS_ARENA_SUITES = False
-
-
-CRON_TIER_MAP = {
-    "1": ("Tier 1: Feature Coverage (F01 - F15)", [TestTier1CronPipelineFeatureCoverage]),
-    "2": ("Tier 2: Boundary Value Analysis & Corner Cases (F01 - F15)", [TestTier2CronPipelineBoundaryCorner]),
-    "3": ("Tier 3: Cross-Feature Pairwise Combinations", [TestTier3CronPipelinePairwiseCombinations]),
-    "4": ("Tier 4: Real-World Application Scenarios", [TestTier4CronPipelineRealWorldScenarios]),
+TOP10_TIER_MAP = {
+    "1": ("Tier 1: Feature Coverage (F01 - F24)", [TestTier1Top10FeatureCoverage]),
+    "2": ("Tier 2: Boundary Value Analysis & Corner Cases (F01 - F24)", [TestTier2Top10BoundaryCorner]),
+    "3": ("Tier 3: Cross-Feature Pairwise Combinations (F01 - F24)", [TestTier3Top10PairwiseCombinatorial]),
+    "4": ("Tier 4: Real-World Application Workloads (F01 - F24)", [TestTier4Top10RealWorldWorkloads]),
+    "5": (
+        "Tier 5: Adversarial Stress Testing (R1 - R5)",
+        [
+            TestTier5AdversarialR1MLXGovernance,
+            TestTier5AdversarialR2ShopifyGateway,
+            TestTier5AdversarialR3BiometricsDSP,
+            TestTier5AdversarialR4SpatialGrappling,
+            TestTier5AdversarialR5TB4PRPSharding,
+        ],
+    ),
 }
-
-if HAS_ARENA_SUITES:
-    ALL_TIER_MAP = {
-        "1": ("Tier 1: Feature Coverage (Cron Pipeline + Arena)", [TestTier1CronPipelineFeatureCoverage, TestTier1FeatureCoverage]),
-        "2": ("Tier 2: Boundary Value Analysis (Cron Pipeline + Arena)", [TestTier2CronPipelineBoundaryCorner, TestTier2BoundaryCornerCases]),
-        "3": ("Tier 3: Cross-Feature Combinations (Cron Pipeline + Arena)", [TestTier3CronPipelinePairwiseCombinations, TestTier3PairwiseCombinations]),
-        "4": ("Tier 4: Real-World Scenarios (Cron Pipeline + Arena)", [TestTier4CronPipelineRealWorldScenarios, TestTier4RealWorldScenarios]),
-    }
-else:
-    ALL_TIER_MAP = CRON_TIER_MAP
 
 
 def run_tier(tier_key: str, tier_name: str, test_classes: List[Any]) -> Dict[str, Any]:
@@ -81,9 +75,9 @@ def run_tier(tier_key: str, tier_name: str, test_classes: List[Any]) -> Dict[str
     stream = unittest.runner._WritelnDecorator(sys.stdout)
     runner = unittest.TextTestRunner(stream=sys.stdout, verbosity=1)
     
-    print(f"\n{'='*80}")
+    print("\n" + "=" * 80)
     print(f"🚀 RUNNING {tier_name.upper()} ({total_tests} Tests)")
-    print(f"{'='*80}")
+    print("=" * 80)
     
     t0 = time.perf_counter()
     result = runner.run(suite)
@@ -110,19 +104,20 @@ def run_tier(tier_key: str, tier_name: str, test_classes: List[Any]) -> Dict[str
 
 def main():
     parser = argparse.ArgumentParser(description="Master E2E Test Runner for Lauburu Monorepo")
-    parser.add_argument("--tier", choices=["1", "2", "3", "4", "all"], default="all", help="Select tier to execute (1, 2, 3, 4, or all)")
-    parser.add_argument("--all", action="store_true", help="Execute all 4 test tiers")
-    parser.add_argument("--suite", choices=["cron", "all"], default="all", help="Select test suite scope ('cron' for pipeline, 'all' for full monorepo)")
+    parser.add_argument("--tier", choices=["1", "2", "3", "4", "5", "all"], default="all", help="Select tier to execute (1, 2, 3, 4, 5, or all)")
+    parser.add_argument("--all", action="store_true", help="Execute all 5 test tiers")
+    parser.add_argument("--suite", choices=["top10", "all"], default="top10", help="Select test suite scope")
     parser.add_argument("--json-output", type=str, default="reports/e2e_test_report.json", help="Path to write JSON test report")
     args = parser.parse_args()
 
-    active_tier_map = CRON_TIER_MAP if args.suite == "cron" else ALL_TIER_MAP
-    selected_tiers = ["1", "2", "3", "4"] if (args.all or args.tier == "all") else [args.tier]
+    active_tier_map = TOP10_TIER_MAP
+    selected_tiers = ["1", "2", "3", "4", "5"] if (args.all or args.tier == "all") else [args.tier]
 
+    now_str = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     print("\n" + "#" * 80)
     print("🌟 LAUBURU MONOREPO — MASTER 4-TIER E2E TEST RUNNER")
-    print(f"Timestamp: {time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}")
-    print(f"Target System: 24/7 Offline & Free-Tier AI Utilization Cron Pipeline")
+    print(f"Timestamp: {now_str}")
+    print("Target System: Top 10 Highest ROI Strategic Implementation Plan (F01-F24)")
     print(f"Active Suite: {args.suite.upper()} Scope")
     print("#" * 80)
 
@@ -140,7 +135,8 @@ def main():
     print("\n" + "=" * 80)
     print("📊 4-TIER E2E TEST EXECUTION SUMMARY")
     print("=" * 80)
-    print(f"{'Tier':<8} {'Category / Scope':<42} {'Tests':<8} {'Pass':<8} {'Fail':<8} {'Rate':<8} {'Time':<8}")
+    header = f"{chr(39)}Tier{chr(39):<4} {chr(39)}Category / Scope{chr(39):<44} {chr(39)}Tests{chr(39):<7} {chr(39)}Pass{chr(39):<7} {chr(39)}Fail{chr(39):<7} {chr(39)}Rate{chr(39):<7} {chr(39)}Time{chr(39):<7}"
+    print(f"Tier     Category / Scope                             Tests    Pass     Fail     Rate     Time")
     print("-" * 88)
 
     grand_total = sum(r["total"] for r in tier_results)
@@ -151,13 +147,18 @@ def main():
 
     for r in tier_results:
         short_name = r["name"].split(":")[0] + ": " + r["name"].split(":")[1].split("(")[0].strip()
-        print(f"Tier {r['tier']:<3} {short_name:<42} {r['total']:<8} {r['passed']:<8} {r['failed']:<8} {r['pass_rate']}%   {r['elapsed_sec']}s")
+        t_id = r["tier"]
+        t_tot = r["total"]
+        t_pass = r["passed"]
+        t_fail = r["failed"]
+        t_rate = r["pass_rate"]
+        t_time = r["elapsed_sec"]
+        print(f"Tier {t_id:<3} {short_name:<44} {t_tot:<8} {t_pass:<8} {t_fail:<8} {t_rate}%   {t_time}s")
 
     print("-" * 88)
-    print(f"{'TOTAL':<8} {'Complete 4-Tier E2E Testing Suite':<42} {grand_total:<8} {grand_passed:<8} {grand_failed:<8} {overall_pass_rate:.1f}%   {total_elapsed:.4f}s")
+    print(f"TOTAL    Complete 4-Tier E2E Testing Suite            {grand_total:<8} {grand_passed:<8} {grand_failed:<8} {overall_pass_rate:.1f}%   {total_elapsed:.4f}s")
     print("=" * 88)
 
-    # Prepare structured JSON report
     report_data = {
         "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "status": "PASSED" if grand_failed == 0 else "FAILED",

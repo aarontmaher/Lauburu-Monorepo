@@ -121,27 +121,27 @@ def heal_local_models():
         subprocess.run(["launchctl", "load", "/Users/aaron/Library/LaunchAgents/ai.lauburu.unified.proxy.plist"], capture_output=True)
         log_lora("RESTART_PROXY_8080", "RELOADED")
 
-    # 2. Qwen Abliterated (:8085)
-    if http_health("http://127.0.0.1:8085/health"):
-        log("✅ Qwen-Abliterated :8085 HEALTHY")
+    # 2. Qwen 3.8 Max Abliterated (:8083)
+    if http_health("http://127.0.0.1:8083/health"):
+        log("✅ Qwen-3.8Max-Abliterated :8083 HEALTHY")
     else:
-        log("⚠️ Qwen-Abliterated :8085 DOWN — restarting")
-        subprocess.run(["pkill", "-f", "Qwen2.5-7B-Instruct-abliterated"], capture_output=True)
+        log("⚠️ Qwen-3.8Max-Abliterated :8083 DOWN — restarting")
+        subprocess.run(["pkill", "-f", "Huihui-Qwen3.8-27B-abliterated"], capture_output=True)
         time.sleep(1)
         cmd = [
             "/Users/aaron/.local/bin/llama-server",
-            "-m", "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Qwen2.5-7B-Instruct-abliterated.Q4_K_M.gguf",
-            "--port", "8085",
+            "-m", "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
+            "--port", "8083",
             "--host", "0.0.0.0",
             "-ngl", "99",
-            "-c", "2048",
+            "-c", "4096",
             "-b", "512",
             "-t", "8"
         ]
-        with open(REPO / "logs/qwen7b_abliterated_8085.log", "a") as out:
+        with open(REPO / "logs/qwen_38max_abliterated_8083.log", "a") as out:
             subprocess.Popen(cmd, stdout=out, stderr=out)
-        log("✅ Qwen-Abliterated :8085 restarted")
-        log_lora("RESTART_QWEN_8085", "RESTARTED")
+        log("✅ Qwen-3.8Max-Abliterated :8083 restarted")
+        log_lora("RESTART_QWEN_38MAX_8083", "RESTARTED")
 
     # 3. Qwen Coder 7B (:8083)
     if http_health("http://127.0.0.1:8083/health"):

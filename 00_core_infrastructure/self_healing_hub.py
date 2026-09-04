@@ -245,7 +245,7 @@ def get_4tier_sharding_status() -> Dict[str, Any]:
             },
             "tier_3_wireguard_rpc": {
                 "name": "Tailscale & WireGuard Distributed RPC (Linux Head 5700U + Air + Pixel)",
-                "endpoints": ["100.101.39.98:50052", "100.93.158.96:50052", "100.73.38.87:50052"],
+                "endpoints": ["100.101.39.98:50052", "100.121.202.34:50052", "100.73.38.87:50052"],
                 "vram_gb": 47.2,
                 "latency_ms": 2.10,
                 "status": "🟢 READY_ON_WOL"

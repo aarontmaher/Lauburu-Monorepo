@@ -13,7 +13,7 @@ from unittest.mock import MagicMock, patch
 from datetime import datetime, timezone
 
 # Ensure project paths are in sys.path
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
 SCRIPTS_DIR = os.path.join(PROJECT_ROOT, "06_scripts_and_tooling")
 CANONICAL_PORT_DIR = os.path.join(PROJECT_ROOT, "01_apps", "canonical_port")
 TUI_DIR = os.path.join(CANONICAL_PORT_DIR, "tui")

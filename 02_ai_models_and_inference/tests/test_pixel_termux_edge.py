@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """
-tests/test_pixel_termux_edge.py
-===============================
-Unit and Integration Test Suite for Milestone M4:
-Pixel 10 Pro XL Termux Edge Sharding Node, Thermal Sentinel Governor,
-Keepalive Management, Rest/Binary Edge Server, and Cross-Node Execution.
+02_ai_models_and_inference/tests/test_pixel_termux_edge.py
+==========================================================
+Unit and Integration Test Suite for:
+1. Pixel 10 Pro XL & Samsung S20 Termux Edge Sharding Node.
+2. Thermal Sentinel Governor & Dynamic Memory Ceiling (12.5 GB / 9.0 GB).
+3. Android Keepalive Management (termux-wake-lock, Doze bypass).
+4. Genuine Transformer Block Forward Step (RMSNorm, MHA, SwiGLU).
+5. Batch Edge Dataset Tokenizer (subword BPE, Shannon entropy).
+6. Night-Cycle Synthetic Question Generation Dispatcher.
+7. REST/Binary Wire Edge Server & EdgeNodeClient protocol.
 """
 
 import time
@@ -32,6 +37,8 @@ from sharding_daemon.edge.pixel_termux_node import (
     PixelMemoryGovernor,
     PixelKeepaliveManager,
     PixelEdgeComputeEngine,
+    EdgeDatasetTokenizer,
+    NightCycleSyntheticDispatcher,
     PixelTermuxServer,
     PixelTermuxDeployer,
     EdgeNodeClient,
@@ -54,6 +61,17 @@ class TestPixelHardwareMatrixAndConfig:
         assert node.total_ram_gb == 16.0
         assert node.ceiling_pct == 85.0
         assert node.usable_vram_gb == 12.5
+        assert node.is_mobile is True
+        assert node.thermal_cutoff_c == 41.0
+
+    def test_samsung_node_specs(self):
+        node = get_node_spec("samsung_s20")
+        assert node is not None
+        assert node.node_id == "samsung_s20"
+        assert node.layer_level == "L7"
+        assert node.total_ram_gb == 12.0
+        assert node.ceiling_pct == 75.0
+        assert node.usable_vram_gb == 9.0
         assert node.is_mobile is True
         assert node.thermal_cutoff_c == 41.0
 
@@ -106,21 +124,27 @@ class TestThermalSentinelGovernor:
 class TestPixelMemoryGovernor:
     """Validates memory ceiling tracking and headroom allocation validation."""
 
-    def test_memory_headroom(self):
+    def test_memory_headroom_pixel(self):
         gov = PixelMemoryGovernor(total_ram_gb=16.0, ceiling_pct=85.0, usable_vram_gb=12.5)
-        assert gov.ceiling_mb == 12.5 * 1024.0  # 12,800 MB
+        assert gov.ceiling_mb == 12.5 * 1024.0
         assert gov.allocated_mb == 0.0
 
-        # Request 400 MB
         ok, msg = gov.check_allocation_headroom(400.0)
         assert ok is True
         gov.record_allocation(400.0)
         assert gov.allocated_mb == 400.0
 
-        # Request 13,000 MB (exceeds ceiling)
         ok2, msg2 = gov.check_allocation_headroom(13000.0)
         assert ok2 is False
         assert "exceeds remaining headroom" in msg2
+
+    def test_memory_headroom_samsung_s20(self):
+        gov = PixelMemoryGovernor(total_ram_gb=12.0, ceiling_pct=75.0, usable_vram_gb=9.0)
+        assert gov.ceiling_mb == 9.0 * 1024.0
+        ok, msg = gov.check_allocation_headroom(8000.0)
+        assert ok is True
+        ok_overflow, msg_overflow = gov.check_allocation_headroom(10000.0)
+        assert ok_overflow is False
 
 
 class TestPixelEdgeComputeEngine:
@@ -130,19 +154,16 @@ class TestPixelEdgeComputeEngine:
         engine = PixelEdgeComputeEngine(node_id="pixel_10")
         assert engine.is_loaded is False
 
-        # Load Bloom-560M shard (layers 16..20)
         ok = engine.load_model_shard("bloom-560m", start_layer=16, end_layer=20, hidden_dim=1024, num_heads=16)
         assert ok is True
         assert engine.is_loaded is True
         assert len(engine.local_layers) == 4
         assert engine.memory_governor.allocated_mb > 0.0
 
-        # Create input activations
         rng = np.random.RandomState(42)
         x_in = rng.normal(0, 1.0, (1, 4, 1024)).astype(np.float32)
         payload_in = TensorPayload(data=x_in)
 
-        # Forward step through layer 16
         out_payload = engine.forward_tensor_step(payload_in, layer_idx=16, session_id="test_sess")
         assert out_payload.data.shape == (1, 4, 1024)
         assert not np.allclose(out_payload.data, x_in)
@@ -166,7 +187,6 @@ class TestPixelEdgeComputeEngine:
         assert engine.total_forward_steps == 8
         assert engine.total_tokens_processed == 16
 
-        # Telemetry verification
         status = engine.get_status()
         assert status["is_loaded"] is True
         assert status["shard"]["model_id"] == "bloom-560m"
@@ -175,12 +195,92 @@ class TestPixelEdgeComputeEngine:
         assert status["performance"]["total_forward_steps"] == 8
 
 
+class TestEdgeDatasetTokenizerUnit:
+    """Unit tests for EdgeDatasetTokenizer byte/subword encoding and Shannon entropy."""
+
+    def test_tokenizer_encode_text(self):
+        tok = EdgeDatasetTokenizer()
+        tokens, mask = tok.encode_text("Explain TB4 DMA layer offloading.", max_length=64)
+        assert len(tokens) == 64
+        assert len(mask) == 64
+        assert tokens[0] == tok.bos_token_id
+        assert tok.eos_token_id in tokens
+        assert sum(mask) > 5
+
+    def test_tokenizer_shannon_entropy(self):
+        tok = EdgeDatasetTokenizer()
+        # High entropy text
+        tokens, _ = tok.encode_text("Quantum entanglement in distributed AI tensor mesh networks", max_length=64)
+        entropy = tok.compute_shannon_entropy(tokens)
+        assert entropy > 2.0
+
+        # Empty / pad only
+        assert tok.compute_shannon_entropy([0, 0, 0]) == 0.0
+
+    def test_tokenize_batch(self):
+        tok = EdgeDatasetTokenizer()
+        texts = [
+            "Pan-Tompkins 512Hz QRS detection",
+            "10Gbps Thunderbolt 4 DMA bridge latency is <0.30ms",
+            "Dynamic RAM governor enforces <85% safety ceiling"
+        ]
+        res = tok.tokenize_batch(texts, max_length=32)
+        assert res["batch_size"] == 3
+        assert res["total_tokens"] > 10
+        assert len(res["tokens"]) == 3
+        assert len(res["attention_masks"]) == 3
+        assert res["processing_time_ms"] >= 0.0
+        assert res["mean_entropy"] > 0.0
+
+
+class TestNightCycleSyntheticDispatcherUnit:
+    """Unit tests for NightCycleSyntheticDispatcher synthetic question generation."""
+
+    def test_generate_synthetic_batch_pixel(self):
+        disp = NightCycleSyntheticDispatcher(node_id="pixel_10")
+        res = disp.generate_synthetic_batch(
+            topic="pan_tompkins_dsp",
+            count=4,
+            domain="math_reasoning",
+            device_target="pixel_10"
+        )
+        assert res["success"] is True
+        assert res["target_device"] == "pixel_10"
+        assert res["generated_pairs_count"] == 4
+        assert len(res["generated_pairs"]) == 4
+        pair0 = res["generated_pairs"][0]
+        assert "instruction" in pair0
+        assert "output" in pair0
+        assert "entropy" in pair0
+        assert len(pair0["instruction"]) > 10
+        assert len(pair0["output"]) > 10
+
+    def test_generate_synthetic_batch_samsung(self):
+        disp = NightCycleSyntheticDispatcher(node_id="samsung_s20")
+        res = disp.generate_synthetic_batch(
+            topic="mesh_networking",
+            count=3,
+            domain="mesh_networking",
+            device_target="samsung_s20"
+        )
+        assert res["success"] is True
+        assert res["target_device"] == "samsung_s20"
+        assert res["generated_pairs_count"] == 3
+        assert "Samsung S20" in res["device_hardware"]
+
+    def test_dispatch_night_cycle(self):
+        disp = NightCycleSyntheticDispatcher(node_id="pixel_10")
+        res = disp.dispatch_night_cycle(target_device="pixel_10", batch_size=5)
+        assert res["status"] == "NIGHT_CYCLE_DISPATCH_COMPLETE"
+        assert res["pairs_generated"] == 5
+        assert res["total_lifetime_generated"] >= 5
+
+
 class TestPixelTermuxServerAndClient:
-    """Validates local HTTP REST & binary wire server endpoints and client protocol."""
+    """Validates local HTTP REST, tokenization, synthetic generation, and binary forward steps."""
 
     @pytest.fixture(scope="class")
     def edge_server(self):
-        # Pick random available port for testing
         server = PixelTermuxServer(host="127.0.0.1", port=39876, node_id="pixel_10_test")
         server.start(block=False)
         time.sleep(0.3)
@@ -199,14 +299,41 @@ class TestPixelTermuxServerAndClient:
         assert "thermal" in status
         assert "memory" in status
 
+    def test_client_tokenize_batch_endpoint(self, edge_server):
+        client = EdgeNodeClient(host="127.0.0.1", port=39876)
+        texts = [
+            "Test edge tokenization on Tensor G5 Edge TPU",
+            "Zero dropped activation chunks over TB4 DMA"
+        ]
+        res = client.tokenize_batch(texts, max_length=64)
+        assert res["batch_size"] == 2
+        assert res["total_tokens"] > 0
+        assert len(res["tokens"]) == 2
+
+    def test_client_synthetic_generate_batch_endpoint(self, edge_server):
+        client = EdgeNodeClient(host="127.0.0.1", port=39876)
+        res = client.generate_synthetic_batch(
+            topic="tb4_offload",
+            count=3,
+            domain="distributed_sharding",
+            device_target="pixel_10_test"
+        )
+        assert res["success"] is True
+        assert res["generated_pairs_count"] == 3
+        assert len(res["generated_pairs"]) == 3
+
+    def test_client_night_cycle_dispatch_endpoint(self, edge_server):
+        client = EdgeNodeClient(host="127.0.0.1", port=39876)
+        res = client.dispatch_night_cycle(target_device="pixel_10_test", batch_size=4)
+        assert res["status"] == "NIGHT_CYCLE_DISPATCH_COMPLETE"
+        assert res["pairs_generated"] == 4
+
     def test_client_load_and_forward_binary(self, edge_server):
         client = EdgeNodeClient(host="127.0.0.1", port=39876)
         
-        # 1. Load shard
         load_ok = client.load_shard("bloom-560m", 16, 20)
         assert load_ok is True
 
-        # 2. Binary wire single step
         rng = np.random.RandomState(99)
         arr = rng.normal(0, 1.0, (1, 2, 1024)).astype(np.float32)
         payload_in = TensorPayload(data=arr)
@@ -215,7 +342,6 @@ class TestPixelTermuxServerAndClient:
         assert out_step.data.shape == arr.shape
         assert not np.allclose(out_step.data, arr)
 
-        # 3. Binary wire range pass
         out_range = client.forward_range_binary(payload_in, start_layer=16, end_layer=20)
         assert out_range.data.shape == arr.shape
         assert not np.allclose(out_range.data, arr)

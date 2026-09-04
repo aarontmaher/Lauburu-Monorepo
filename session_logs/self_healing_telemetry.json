@@ -1,6 +1,6 @@
 {
-  "timestamp_utc": "2026-08-29T23:14:36Z",
-  "elapsed_seconds": 0.111,
+  "timestamp_utc": "2026-09-03T06:53:38Z",
+  "elapsed_seconds": 0.306,
   "storage_tri_vault": {
     "healthy": true,
     "obsidian_vault_mounted": true,
@@ -8,15 +8,15 @@
     "obsidian_index_healed": false,
     "pyspark_lake_ready": true,
     "lora_datasets_ready": true,
-    "disk_free_gb": 14.34,
+    "disk_free_gb": 27.65,
     "git_lock_cleared": false,
     "status": "HEALTHY"
   },
   "daemon_supervision": {
-    "timestamp_utc": "2026-08-29T23:14:36Z",
-    "total_daemons": 10,
-    "online_daemons": 8,
-    "uptime_pct": 80.0,
+    "timestamp_utc": "2026-09-03T06:53:37Z",
+    "total_daemons": 12,
+    "online_daemons": 7,
+    "uptime_pct": 58.33,
     "supervised_matrix": {
       "ai_proxy_8080": {
         "name": "AI Proxy Gateway",
@@ -45,20 +45,32 @@
       "nemotron_70b_8084": {
         "name": "Nemotron 70B Distributed Server",
         "port": 8084,
-        "status": "ONLINE",
-        "icon": "\ud83d\udd25"
+        "status": "RESTARTED",
+        "icon": "\ud83d\udd04"
       },
       "qwen38_8085": {
         "name": "Qwen 3.8 27B Server",
         "port": 8085,
-        "status": "ONLINE",
-        "icon": "\ud83c\udfaf"
+        "status": "RESTARTED",
+        "icon": "\ud83d\udd04"
       },
       "edge_model_8086": {
-        "name": "DeepSeek / SmolLM Edge Server",
+        "name": "Qwen2.5-Math-7B-Q4_K_M (Math Specialist)",
         "port": 8086,
+        "status": "RESTARTED",
+        "icon": "\ud83d\udd04"
+      },
+      "edge_model_8087": {
+        "name": "Qwen2.5-Math-1.5B-Q8_0 (Edge Math, Fastest)",
+        "port": 8087,
         "status": "ONLINE",
-        "icon": "\ud83d\udcf1"
+        "icon": "\u26a1"
+      },
+      "remote_math_72b_8089": {
+        "name": "Qwen2.5-Math-72B-IQ2_XS (Linux L3, CPU-mmap)",
+        "port": 8089,
+        "status": "OFFLINE",
+        "icon": "\ud83d\udd34"
       },
       "self_healing_hub_18802": {
         "name": "Self-Healing Hub & WoL REST API",
@@ -69,8 +81,8 @@
       "llama_rpc_50052": {
         "name": "llama.cpp Metal GPU RPC Server",
         "port": 50052,
-        "status": "RESTARTED",
-        "icon": "\ud83d\udd04"
+        "status": "ONLINE",
+        "icon": "\u2699\ufe0f"
       },
       "daemon_supervisor_8088": {
         "name": "Daemon Supervisor & Filer Service",
@@ -81,9 +93,11 @@
     },
     "actions_taken": [
       "RESTART_llama_server_8081_PORT_8081",
-      "RESTART_llama_rpc_50052_PORT_50052"
+      "RESTART_nemotron_70b_8084_PORT_8084",
+      "RESTART_qwen38_8085_PORT_8085",
+      "RESTART_edge_model_8086_PORT_8086"
     ],
-    "overall_status": "HEALTHY"
+    "overall_status": "DEGRADED"
   },
   "four_tier_sharding": {
     "status": "HEALTHY",
@@ -132,6 +146,6 @@
       }
     }
   },
-  "router_ram_mb": 78.9,
+  "router_ram_mb": 116.7,
   "overall_health": "HEALTHY"
 }

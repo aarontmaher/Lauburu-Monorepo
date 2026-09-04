@@ -1,31 +1,83 @@
-## 2026-08-29T12:06:04Z
+# Dispatch: E2E Test Writer (Dual Track Opaque-Box Test Suite)
 
-<USER_REQUEST>
+## Identity
+- Role: Test Writer for Dual Track Opaque-Box E2E Testing
+- TypeName: teamwork_preview_test_writer
+- Assigned Working Directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e
+- Orchestrator: teamwork_preview_orchestrator_23 (878c1253-0956-4401-91a5-0f3927d54244)
+
+## Mandatory Rules & Warnings
+MANDATORY FIRST STEP: Read the authoritative original request file:
+/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
+
+MANDATORY INTEGRITY WARNING:
+DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
+
+## Exclusive Write Ownership
+You exclusively own:
+- `TEST_INFRA.md`
+- `TEST_READY.md`
+- `tests/e2e_storage_elo/` (all files in this directory)
+
+Do NOT modify implementation code files.
+
+## E2E Testing Track Mission
+Design and implement a comprehensive, requirement-driven, opaque-box test suite for the Lauburu Mesh Storage & ELO project across 4 tiers:
+- Tier 1: Feature Coverage (>=5 tests per feature: C11 Storage Pooling, Context Map Governance, Bradley-Terry ELO Engine).
+- Tier 2: Boundary & Corner Cases (>=5 tests per feature: zero/huge payloads, rating bounds, boundary tokens, corruption injection).
+- Tier 3: Cross-Feature Combinations (pairwise interactions: storage checksums feeding ELO backend health trials, read-only governance preventing corrupted config updates).
+- Tier 4: Real-World Application Scenarios (realistic end-to-end mesh workloads: simulated 1085 GB cluster operations, continuous ELO scorecard tracking, zero-mock enforcement).
+
+Deliverables:
+1. `TEST_INFRA.md` defining test philosophy, feature inventory mapping, runner command, and coverage thresholds.
+2. `tests/e2e_storage_elo/` containing test files:
+   - `test_tier1_feature_coverage.py`
+   - `test_tier2_boundary_corner.py`
+   - `test_tier3_pairwise_combinations.py`
+   - `test_tier4_real_world_workload.py`
+   - `run_e2e_tests.py` (master runner)
+3. Execute the runner or verify tests can be invoked.
+4. Publish `TEST_READY.md` summarizing test inventory and coverage matrix.
+
+## Output Requirements
+- Write your completion report to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/handoff.md`
+- Include test execution commands and coverage summary in your report.
+- Send a completion message to the parent orchestrator via send_message.
+
+## 2026-09-03T23:08:00Z
 You are teamwork_preview_test_writer_e2e.
-Your working directory is /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/.
-You MUST read the authoritative user request at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md and the master project specification at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md.
+Assigned Working Directory:
+/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e
 
-MISSION: Design and implement the complete opaque-box E2E testing infrastructure and test suites covering all 15 features across Tiers 1-4.
+MANDATORY FIRST STEP: Read the authoritative original request file:
+/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
+Also read your detailed dispatch file:
+/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/DISPATCH.md
 
-Files owned:
-- `TEST_INFRA.md` (at project root)
-- `TEST_READY.md` (at project root)
-- `tests/e2e/test_free_tier_cron_pipeline.py`
-- `tests/e2e/run_all_e2e_tests.py`
+MANDATORY INTEGRITY WARNING:
+DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
 
-Requirements:
-1. Create `TEST_INFRA.md` documenting test philosophy, feature inventory (Features 1-15), 4-tier methodology, test runner invocation, and thresholds:
-   - Tier 1: Feature Coverage (>=5 per feature)
-   - Tier 2: Boundary & Corner Cases (>=5 per feature)
-   - Tier 3: Cross-Feature Combinations (pairwise coverage)
-   - Tier 4: Real-World Application Scenarios (>=5 realistic application flows)
-2. Implement comprehensive, opaque-box test suites in `tests/e2e/test_free_tier_cron_pipeline.py` testing:
-   - Gemini & Cloudflare rate limiting, 429 backoff, UTC midnight reset
-   - Airgapping fail-closed privacy for biometrics (ECG, PTT BP)
-   - LoRA dataset validation, >=500 pairs daily growth, zero-mock flags
-   - Metal GPU QLoRA training parameters, memory governance (<=21.6GB), Obsidian loss logging
-   - Tri-Vault auto-healing (Obsidian, PySpark, Git), daemon supervision matrix (8080-8086, 18802, 50052, 8088), router RAM <=35MB
-3. Update `tests/e2e/run_all_e2e_tests.py` to integrate and execute all new and existing test suites cleanly.
-4. Execute the test runner, verify all test suites pass, and create `TEST_READY.md` at project root with full coverage summary.
-5. Write your handoff to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/handoff.md` and notify orchestrator via send_message.
-</USER_REQUEST>
+Exclusive write ownership:
+- TEST_INFRA.md
+- TEST_READY.md
+- tests/e2e_storage_elo/ (all test files and master runner)
+
+Mission:
+Design and implement the Dual Track Opaque-Box E2E test suite across Tiers 1-4:
+- Tier 1: Feature Coverage (>=5 tests per feature for Storage Pooling, Context Map Governance, and Bradley-Terry ELO Engine).
+- Tier 2: Boundary & Corner Cases (>=5 tests per feature).
+- Tier 3: Cross-Feature Combinations (pairwise interactions).
+- Tier 4: Real-World Workloads (realistic multi-layer mesh scenarios, zero-mock enforcement).
+
+Create:
+1. TEST_INFRA.md
+2. tests/e2e_storage_elo/test_tier1_feature_coverage.py
+3. tests/e2e_storage_elo/test_tier2_boundary_corner.py
+4. tests/e2e_storage_elo/test_tier3_pairwise_combinations.py
+5. tests/e2e_storage_elo/test_tier4_real_world_workload.py
+6. tests/e2e_storage_elo/run_e2e_tests.py
+7. Execute the test runner, verify all tests, and write TEST_READY.md with coverage matrix.
+
+Write your completion report to:
+/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_test_writer_e2e/handoff.md
+Send completion message to parent orchestrator.

@@ -22,3 +22,11 @@ tags: [lauburu, mesh_node, telemetry, live_sync]
 | AI VRAM Usage | 5.00 GB | 13.60 GB |
 | Latency RTT | 6.800 ms | -- |
 | Packet Drop Rate | 0.0% | 0.0% |
+
+## 🛡️ Shizuku Privileged Execution & Invariants
+- **Shizuku Service**: `moe.shizuku.privileged.api` (UID `shell`, PID `27905`, State: `RUNNING`)
+- **ADB Transport**: TCP Port `5555` persistent listener (`100.73.38.87:5555` / `127.0.0.1:5555`)
+- **Doze Whitelist**: `moe.shizuku.privileged.api`, `com.termux`, `com.termux.boot`, `com.tailscale.ipn`
+- **Phantom Process Killer**: `DISABLED` (`settings_enable_monitor_phantom_procs false`)
+- **AppOps Background Execution**: `ALLOWED` (`RUN_IN_BACKGROUND`, `RUN_ANY_IN_BACKGROUND`)
+- **Bootstrapper Script**: `06_scripts_and_tooling/network_self_healing/bootstrap_pixel_shizuku.sh`

@@ -17,7 +17,7 @@ last_heartbeat_time = time.time()
 router_state = "UNKNOWN"
 
 def trigger_resurrection(reason, state):
-    print(f"[{time.strftime('%Y-%m-%dT%H:%M:%SZ')}] Triggering resurrection. Reason: {reason}")
+    print(f"[{time.strftime('%Y-%m-%dT%H:%M:%SZ')}] Triggering resurrection. Reason: {reason}", flush=True)
     subprocess.run(["echo", "Resurrection triggered! (Placeholder for Wake-on-LAN / mesh-universal-ssh)"], check=False)
     
     log_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/Network_Anomalies.md"
@@ -27,7 +27,7 @@ def trigger_resurrection(reason, state):
     except Exception:
         pass
 
-print(f"[{time.strftime('%Y-%m-%dT%H:%M:%SZ')}] Lauburu Mac_Node Heartbeat Listener started on UDP port {UDP_PORT}")
+print(f"[{time.strftime('%Y-%m-%dT%H:%M:%SZ')}] Lauburu Mac_Node Heartbeat Listener started on UDP port {UDP_PORT}", flush=True)
 
 while True:
     try:
@@ -35,6 +35,7 @@ while True:
         last_heartbeat_time = time.time()
         payload = json.loads(data.decode('utf-8').strip())
         router_state = payload.get("state", "UNKNOWN")
+        print(f"[{time.strftime('%Y-%m-%dT%H:%M:%SZ')}] Heartbeat received from {addr[0]}: {router_state}", flush=True)
         
         if router_state != "HEALTHY":
             trigger_resurrection("Degraded payload received", router_state)

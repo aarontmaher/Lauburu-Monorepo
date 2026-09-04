@@ -1,27 +1,73 @@
-## 2026-08-29T12:06:04Z
-You are teamwork_preview_worker_m1.
-Your working directory is /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/.
-You MUST read the authoritative user request at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md and the master project specification at /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md.
+# Dispatch: Worker M1 (C11 Consistent Hash Ring & Pooled Storage)
+
+## Identity
+- Role: Worker for Milestone 1
+- TypeName: teamwork_preview_worker
+- Assigned Working Directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1
+- Orchestrator: teamwork_preview_orchestrator_23 (878c1253-0956-4401-91a5-0f3927d54244)
+
+## Mandatory Rules & Warnings
+MANDATORY FIRST STEP: Read the authoritative original request file:
+/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md
 
 MANDATORY INTEGRITY WARNING:
 DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
 
-MISSION: Implement Milestone 1 (M1) — Free-Tier AI Scheduling, Quota Governance & Airgapped Rate Limiter.
+## Exclusive Write Ownership
+You exclusively own and may modify ONLY these files:
+- `01_apps/screen_lens/c_core/lauburu_pooled_storage.c`
+- `01_apps/screen_lens/c_core/lauburu_pooled_storage.h`
+- `01_apps/screen_lens/c_core/test_pooled_storage.c`
 
-Files owned:
-- `06_scripts_and_tooling/automation/cloud_api_quota_manager.py`
-- `06_scripts_and_tooling/automation/free_tier_ai_continuous_cron.py`
-- `cloudflare_worker/src/worker.ts`
+Do NOT modify any files outside this path.
+
+## Explorer Survey Findings to Implement
+Review findings in:
+`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_storage/analysis.md`
+`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_storage/handoff.md`
+
+Tasks:
+1. In `lauburu_pooled_storage.c`:
+   - Implement `storage_pool_sort_ring()` using `qsort` on `g_ring` by token value.
+   - Call `storage_pool_sort_ring()` whenever nodes/virtual slots are added, or after `storage_pool_add_node()`.
+   - Update `find_node_on_ring()` to use binary search or sorted circular successor search so that chunks are evenly distributed across all 7 layers instead of 90.8% starving to Node 0.
+   - Fix Fletcher32 odd-byte padding: handle odd `len` cleanly so that the trailing byte is never truncated and memory alignment is preserved.
+2. In `test_pooled_storage.c`:
+   - Register all 7 canonical mesh layers:
+     * L1: `L1_Mac_Node` (host, 24.0 GB)
+     * L2: `L2_MacBook_Pro` (TB4, 16.0 GB)
+     * L3: `L3_Linux_Head_Node` (compute, 16.0 GB)
+     * L4: `L4_Linux_Tablet` (touch DSP, 8.0 GB)
+     * L5: `L5_MacBook_Air` (metal, 16.0 GB)
+     * L6: `L6_Pixel_10_Pro_XL` (edge TPU, 16.0 GB)
+     * L7: `L7_Samsung_S20` (UI tester, 12.0 GB)
+   - Replace repeating 256-byte payload pattern with a non-repeating PRNG or hash-based pattern for the 1.0 MB payload.
+   - Add explicit bitrot fault injection test (e.g. flipping a bit in a chunk and asserting reassembly fails).
+   - Verify: 1.0 MB dispersal latency <= 2.0 ms, reassembly latency <= 0.5 ms, 100% bit-for-bit SHA256 match, Fletcher32 bitrot detection.
+3. Build and test:
+   - Compile with clang/gcc (e.g. `clang -O3 -std=c11 -Wall -Wextra lauburu_pooled_storage.c test_pooled_storage.c -o lauburu_storage_bench`).
+   - Run `./lauburu_storage_bench` and verify all assertions pass.
+
+## Output Requirements
+- Write your completion report to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/handoff.md`
+- Include build and execution logs in your report.
+- Send a completion message to the parent orchestrator via send_message.
+
+## 2026-09-03T23:08:00Z
+Received dispatch to implement C11 consistent hash ring & pooled storage in:
+- 01_apps/screen_lens/c_core/lauburu_pooled_storage.c
+- 01_apps/screen_lens/c_core/lauburu_pooled_storage.h
+- 01_apps/screen_lens/c_core/test_pooled_storage.c
 
 Requirements:
-1. Ensure `cloud_api_quota_manager.py` strictly enforces:
-   - Gemini 2.5 Flash Free Tier: max 14 RPM and 1,400 RPD token-bucket rate limiter with thread-safe / atomic fcntl lock and UTC midnight reset.
-   - Cloudflare Workers AI: 10,000 Neurons/Day tracking with 60s cooldown on 429 errors.
-   - Failover to local mesh (Ports 8081-8086) when cloud quotas are exhausted.
-2. In `free_tier_ai_continuous_cron.py`, enforce workload scheduling:
-   - Daytime active hours: prioritize real-time biometrics streaming and local inference.
-   - Overnight off-peak window (00:00 - 06:00 UTC): dispatch heavy synthetic AST scaffolding and batch jobs.
-3. In `cloudflare_worker/src/worker.ts` and `cloud_api_quota_manager.py`, enforce 100% fail-closed privacy airgapping:
-   - Block/reject any cloud egress for raw 512Hz ECG, PTT BP, Movesense GATT data, or monorepo secrets.
-4. Run validation tests on affected files.
-5. Write your handoff to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m1/handoff.md` and notify orchestrator via send_message.
+1. Virtual ring sorting via qsort by token value in lauburu_pooled_storage.c.
+2. Clockwise binary search / circular successor routing in find_node_on_ring to ensure even distribution across the 7 mesh layers and eliminate Node 0 starvation.
+3. Fletcher32 odd-byte padding and memory alignment safety.
+4. Update test_pooled_storage.c to register all 7 canonical mesh layers (L1 Mac Host, L2 MacBook Pro TB4, L3 Linux Head Node, L4 Linux Tablet, L5 MacBook Air, L6 Pixel 10 Pro XL, L7 Samsung S20).
+5. Add diverse 1.0 MB non-repeating payload, explicit bitrot corruption injection test, and verify:
+   - Dispersal latency <= 2.0 ms
+   - Reassembly latency <= 0.5 ms
+   - 100% bit-for-bit SHA256 match
+   - Fletcher32 bitrot detection (returns false on corruption)
+6. Compile and run ./lauburu_storage_bench and report actual metrics.
+

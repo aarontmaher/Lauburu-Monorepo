@@ -1,20 +1,20 @@
 {
-  "cycle": 2519,
-  "elapsed_seconds": 0.117,
-  "timestamp_utc": "2026-08-30T08:30:17Z",
+  "cycle": 277,
+  "elapsed_seconds": 14.596,
+  "timestamp_utc": "2026-09-01T22:11:02Z",
   "tiers": {
     "P0": {
       "priority": "P0_INFRASTRUCTURE",
-      "host_ram_pct": 89.1,
-      "disk_free_gb": 0.3,
+      "host_ram_pct": 91.2,
+      "disk_free_gb": 2.43,
       "router_online": true,
-      "status": "HEALTHY",
-      "action": "NONE_REQUIRED (All Invariants Nominal)"
+      "status": "HEALED",
+      "action": "TRIGGERED: /nomad-autonomous-mesh-governor 5-tier self-healing"
     },
     "P1": {
       "priority": "P1_MOVESENSE_READINESS",
-      "heart_rate_bpm": 77,
-      "blood_pressure": "120/76 mmHg",
+      "heart_rate_bpm": 75,
+      "blood_pressure": "121/76 mmHg",
       "sleep_score": 88.5,
       "vo2max": 52.4,
       "status": "ACTIVE_512HZ_STREAM"
@@ -29,7 +29,7 @@
     },
     "P3": {
       "priority": "P3_LMARENA_BENCHMARK",
-      "leader": "\u2022 Qwen 3.8 Max (27B-4bit)       : ELO 1352.7 (Flagship Orchestrator) - System Architecture & High-Context Planning",
+      "leader": "Qwen 3.8 Max: ELO 1352.7 (Verified)",
       "dataset_sink": "04_data_and_memory/lmarena_human_preference_pairs.jsonl",
       "status": "TOURNAMENT_UPDATED"
     },
@@ -37,6 +37,14 @@
       "priority": "P4_LORA_CONTINUOUS_HARVEST",
       "dataset_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/nomad_autonomous_actions.jsonl",
       "status": "SERIALIZED"
+    },
+    "P5": {
+      "priority": "P5_DOCKER_MICROSERVICES",
+      "status": "ONLINE",
+      "server_version": "29.5.2",
+      "active_containers": 0,
+      "socket": "/Users/aaron/.colima/default/docker.sock",
+      "virtiofs_compliant": true
     }
   }
 }

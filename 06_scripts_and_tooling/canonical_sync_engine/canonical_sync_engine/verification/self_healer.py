@@ -1,6 +1,6 @@
 """
 canonical_sync_engine.verification.self_healer
-Automated pre-flight storage self-healer implementing Rule 6.2.
+Automated pre-flight storage self-healer implementing Rule 6.2 and >=10.0 GB NVMe headroom guarantee.
 """
 from __future__ import annotations
 
@@ -35,6 +35,7 @@ class StorageSelfHealer:
         gdrive_fallback_path: Optional[Union[str, Path]] = None,
         stale_lock_timeout_sec: float = 10.0,
         cleanup_target_paths: Optional[List[Union[str, Path]]] = None,
+        min_headroom_gb: float = 10.0,
     ):
         self.obsidian_path = str(Path(obsidian_path or os.environ.get(
             "OBSIDIAN_VAULT_PATH",
@@ -62,6 +63,7 @@ class StorageSelfHealer:
         )).expanduser().resolve())
 
         self.stale_lock_timeout_sec = stale_lock_timeout_sec
+        self.min_headroom_gb = min_headroom_gb
         self.cleanup_target_paths = [
             str(Path(p).expanduser().resolve()) for p in (
                 cleanup_target_paths or [
@@ -72,7 +74,7 @@ class StorageSelfHealer:
         ]
 
     def heal_directories(self) -> List[str]:
-        """Creates missing canonical storage directories."""
+        """Creates missing canonical storage directories across all Tri-Vault layers."""
         actions: List[str] = []
         dirs_to_heal = [
             ("Obsidian Vault", self.obsidian_path),
@@ -80,6 +82,7 @@ class StorageSelfHealer:
             ("PySpark Memory", self.pyspark_memory_path),
             ("Google Drive Fallback VFS", self.gdrive_fallback_path),
         ]
+
         for name, dir_path in dirs_to_heal:
             if dir_path and not os.path.exists(dir_path):
                 os.makedirs(dir_path, exist_ok=True)
@@ -87,27 +90,45 @@ class StorageSelfHealer:
         return actions
 
     def heal_git_locks(self, force: bool = False) -> List[str]:
-        """Removes stale .git/index.lock files."""
+        """Removes stale .git/index.lock and worktree lock files (>10s)."""
         actions: List[str] = []
         if not self.git_repo_path:
             return actions
 
-        lock_file = os.path.join(self.git_repo_path, ".git", "index.lock")
-        if os.path.exists(lock_file):
-            try:
-                mtime = os.path.getmtime(lock_file)
-                age = time.time() - mtime
-                if force or age >= self.stale_lock_timeout_sec:
-                    os.remove(lock_file)
-                    actions.append(
-                        f"Removed stale git index lock: {lock_file} (age: {age:.1f}s, threshold: {self.stale_lock_timeout_sec}s)"
-                    )
-                else:
-                    actions.append(
-                        f"Skipped active git index lock: {lock_file} (age: {age:.1f}s < threshold {self.stale_lock_timeout_sec}s)"
-                    )
-            except Exception as e:
-                actions.append(f"Failed to remove git lock {lock_file}: {str(e)}")
+        dot_git = os.path.join(self.git_repo_path, ".git")
+        if not os.path.exists(dot_git):
+            return actions
+
+        # 1. Main index.lock
+        lock_files = [os.path.join(dot_git, "index.lock")]
+
+        # 2. Check worktree locks in .git/worktrees/
+        worktrees_git_dir = os.path.join(dot_git, "worktrees")
+        if os.path.isdir(worktrees_git_dir):
+            for wt_entry in os.listdir(worktrees_git_dir):
+                wt_path = os.path.join(worktrees_git_dir, wt_entry)
+                if os.path.isdir(wt_path):
+                    wt_lock = os.path.join(wt_path, "index.lock")
+                    if os.path.exists(wt_lock):
+                        lock_files.append(wt_lock)
+
+        now = time.time()
+        for lock_file in lock_files:
+            if os.path.exists(lock_file):
+                try:
+                    mtime = os.path.getmtime(lock_file)
+                    age = now - mtime
+                    if force or age >= self.stale_lock_timeout_sec:
+                        os.remove(lock_file)
+                        actions.append(
+                            f"Removed stale git index lock: {lock_file} (age: {age:.1f}s, threshold: {self.stale_lock_timeout_sec}s)"
+                        )
+                    else:
+                        actions.append(
+                            f"Skipped active git index lock: {lock_file} (age: {age:.1f}s < threshold {self.stale_lock_timeout_sec}s)"
+                        )
+                except Exception as e:
+                    actions.append(f"Failed to remove git lock {lock_file}: {str(e)}")
         return actions
 
     def heal_obsidian_index(self) -> List[str]:
@@ -144,13 +165,14 @@ class StorageSelfHealer:
 
         return actions
 
-    def heal_disk_headroom(self, min_free_gb: float = 5.0) -> List[str]:
-        """Purges transient caches and logs older than 7 days if headroom is below min_free_gb."""
+    def heal_disk_headroom(self, min_free_gb: Optional[float] = None) -> List[str]:
+        """Purges transient caches and logs older than 7 days if headroom is below min_free_gb (default >=10.0 GB)."""
         actions: List[str] = []
         from canonical_sync_engine.verification.headroom import check_disk_headroom
 
-        status = check_disk_headroom(self.git_repo_path or "/Users/aaron", min_headroom_gb=min_free_gb)
-        if status.free_gb >= min_free_gb:
+        effective_min_gb = min_free_gb if min_free_gb is not None else self.min_headroom_gb
+        status = check_disk_headroom(self.git_repo_path or "/Users/aaron", min_headroom_gb=effective_min_gb)
+        if status.free_gb >= effective_min_gb:
             return actions  # Headroom is healthy, no purge required
 
         purged_items = 0
@@ -186,13 +208,14 @@ class StorageSelfHealer:
 
         return actions
 
-    def heal_all(self, force_git_lock: bool = False, min_free_gb: float = 5.0) -> List[str]:
-        """Executes all 4 pre-flight self-healing protocols in order."""
+    def heal_all(self, force_git_lock: bool = False, min_free_gb: Optional[float] = None) -> List[str]:
+        """Executes all pre-flight self-healing protocols in order, guaranteeing >=10.0 GB disk headroom."""
+        effective_min_gb = min_free_gb if min_free_gb is not None else self.min_headroom_gb
         actions: List[str] = []
         actions.extend(self.heal_directories())
         actions.extend(self.heal_git_locks(force=force_git_lock))
         actions.extend(self.heal_obsidian_index())
-        actions.extend(self.heal_disk_headroom(min_free_gb=min_free_gb))
+        actions.extend(self.heal_disk_headroom(min_free_gb=effective_min_gb))
         return actions
 
     def heal(self) -> List[str]:

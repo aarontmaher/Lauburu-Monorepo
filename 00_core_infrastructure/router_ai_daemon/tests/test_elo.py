@@ -27,6 +27,15 @@ from src.elo import (
     MAX_DAVID_ELO_GAIN,
     MAX_TAX_DEDUCTION,
 )
+from src.elo.elo_engine import (
+    CategoryScorecard,
+    ProjectEloScorecard,
+    WilsonConfidenceInterval,
+    calculate_wilson_confidence_interval,
+    evaluate_project_scorecard,
+    MIN_ELO_RATING,
+    MAX_ELO_RATING,
+)
 
 
 class TestEloEngineMath:
@@ -483,3 +492,289 @@ class TestEloIntegration:
         board = ledger.get_leaderboard()
         assert board["SmolLM2-360M"]["rating"] == 2450.0
         assert board["SmolLM2-360M"]["wins"] == 1
+
+
+class TestEloBoundsAndOverflow:
+    """Verification of rating boundaries [1000.0, 3000.0] and numerical overflow guards (Feature F6)."""
+
+    def test_upper_bound_clamping_at_3000(self):
+        """Verify rating updates cannot breach MAX_ELO_RATING (3000.0)."""
+        engine = EloEngine()
+        david_res = ResourceUsage(params_b=0.36, ram_mb=98.0, tokens=290)
+        goliath_res = ResourceUsage(params_b=70.0, ram_mb=42000.0, tokens=1850)
+
+        match = CodeOffMatch(
+            task_id="task_upper_bound",
+            david_model="SmolLM2-360M",
+            goliath_model="Llama-3.3-70B",
+            task_difficulty=2.5,
+            david_solved=True,
+            goliath_solved=False,
+            david_resources=david_res,
+            goliath_resources=goliath_res,
+        )
+        # Starting at 2950, a +350 win would reach 3300 without clamping
+        res = engine.record_code_off_result(match, current_elo_david=2950.0, current_elo_goliath=2950.0)
+        assert res.new_elo_david == MAX_ELO_RATING
+        assert res.new_elo_david == 3000.0
+
+    def test_lower_bound_clamping_at_1000(self):
+        """Verify rating updates cannot breach MIN_ELO_RATING (1000.0) under severe penalty."""
+        engine = EloEngine()
+        david_res = ResourceUsage(params_b=0.36, ram_mb=98.0, tokens=290)
+        goliath_waste = ResourceUsage(params_b=70.0, ram_mb=42000.0, tokens=5000, spend_usd=50.0, spurious_calls=10)
+
+        match = CodeOffMatch(
+            task_id="task_lower_bound",
+            david_model="SmolLM2-360M",
+            goliath_model="Llama-3.3-70B",
+            task_difficulty=0.5,
+            david_solved=True,
+            goliath_solved=False,
+            david_resources=david_res,
+            goliath_resources=goliath_waste,
+        )
+        # Starting at 1050 with massive waste tax deduction
+        res = engine.record_code_off_result(match, current_elo_david=1500.0, current_elo_goliath=1050.0)
+        assert res.new_elo_goliath == MIN_ELO_RATING
+        assert res.new_elo_goliath == 1000.0
+
+    def test_evaluate_match_deltas_input_bounds_clamping(self):
+        """Verify evaluate_match_deltas clamps input ratings outside [1000, 3000]."""
+        engine = EloEngine()
+        david_res = ResourceUsage(params_b=0.36, ram_mb=98.0, tokens=290)
+        goliath_res = ResourceUsage(params_b=70.0, ram_mb=42000.0, tokens=1850)
+
+        deltas = engine.evaluate_match_deltas(
+            r_david=400.0,
+            r_goliath=4500.0,
+            david_solved=True,
+            goliath_solved=False,
+            david_resources=david_res,
+            goliath_resources=goliath_res,
+            task_difficulty=1.0,
+        )
+        e_d, e_g = engine.calculate_expected_score(1000.0, 3000.0)
+        assert deltas["e_david"] == e_d
+        assert deltas["e_goliath"] == e_g
+
+    def test_exponent_overflow_protection_extreme_differentials(self):
+        """Verify calculate_expected_score handles extreme differentials without OverflowError."""
+        engine = EloEngine()
+        # Large positive difference
+        ea, eb = engine.calculate_expected_score(1000.0, 150000.0)
+        assert math.isclose(ea + eb, 1.0, rel_tol=1e-9)
+        assert ea < 1e-15
+        assert eb > 0.99999999
+
+        # Large negative difference
+        ea_rev, eb_rev = engine.calculate_expected_score(150000.0, 1000.0)
+        assert math.isclose(ea_rev + eb_rev, 1.0, rel_tol=1e-9)
+        assert ea_rev > 0.99999999
+        assert eb_rev < 1e-15
+
+        # Astronomical differential
+        ea_astro, eb_astro = engine.calculate_expected_score(-1e9, 1e9)
+        assert math.isclose(ea_astro + eb_astro, 1.0, rel_tol=1e-9)
+        assert ea_astro == 1.0 / (1.0 + 10.0 ** 20.0)
+        assert eb_astro == 1.0 - ea_astro
+
+
+class TestWilsonConfidenceInterval:
+    """Verification of closed-form Wilson score confidence intervals (Feature F7)."""
+
+    def test_wilson_interval_typical_case(self):
+        """Verify Wilson score confidence interval with typical finite test trials."""
+        ci = calculate_wilson_confidence_interval(95, 100, confidence=0.95)
+        assert isinstance(ci, tuple)
+        assert isinstance(ci, WilsonConfidenceInterval)
+        assert 0.88 < ci.lower < 0.90
+        assert 0.97 < ci.upper < 0.99
+        assert ci.spread == ci.upper - ci.lower
+        assert ci[0] == ci.lower
+        assert ci[1] == ci.upper
+
+    def test_wilson_interval_zero_passes(self):
+        """Verify k=0 edge case produces lower bound of exactly 0.0 and valid non-zero upper bound."""
+        ci = calculate_wilson_confidence_interval(0, 10, confidence=0.95)
+        assert ci.lower == 0.0
+        assert 0.25 < ci.upper < 0.30
+        assert ci.spread > 0.0
+
+    def test_wilson_interval_all_passes(self):
+        """Verify k=n edge case produces upper bound of exactly 1.0 and valid non-zero uncertainty lower bound."""
+        ci = calculate_wilson_confidence_interval(10, 10, confidence=0.95)
+        assert 0.70 < ci.lower < 0.75
+        assert ci.upper == 1.0
+        # 10/10 has larger uncertainty than 1000/1000
+        ci_large = calculate_wilson_confidence_interval(1000, 1000, confidence=0.95)
+        assert ci_large.lower > ci.lower
+        assert ci_large.upper == 1.0
+        assert ci_large.lower > 0.995
+
+    def test_wilson_interval_zero_trials(self):
+        """Verify n=0 defaults safely to uninformative prior [0.0, 1.0]."""
+        ci = calculate_wilson_confidence_interval(0, 0, confidence=0.95)
+        assert ci.lower == 0.0
+        assert ci.upper == 1.0
+        assert ci.spread == 1.0
+
+    def test_wilson_interval_negative_or_overflow_k(self):
+        """Verify k clamped into [0, n] range."""
+        ci_neg = calculate_wilson_confidence_interval(-5, 10, confidence=0.95)
+        ci_zero = calculate_wilson_confidence_interval(0, 10, confidence=0.95)
+        assert ci_neg == ci_zero
+
+        ci_over = calculate_wilson_confidence_interval(15, 10, confidence=0.95)
+        ci_full = calculate_wilson_confidence_interval(10, 10, confidence=0.95)
+        assert ci_over == ci_full
+
+    def test_wilson_interval_confidence_level_scaling(self):
+        """Verify higher confidence levels yield strictly wider intervals."""
+        ci_90 = calculate_wilson_confidence_interval(50, 100, confidence=0.90)
+        ci_95 = calculate_wilson_confidence_interval(50, 100, confidence=0.95)
+        ci_99 = calculate_wilson_confidence_interval(50, 100, confidence=0.99)
+
+        assert ci_90.spread < ci_95.spread < ci_99.spread
+        assert ci_99.lower < ci_95.lower < ci_90.lower
+        assert ci_99.upper > ci_95.upper > ci_90.upper
+
+    def test_wilson_interval_dict_serialization(self):
+        """Verify dictionary serialization format."""
+        ci = calculate_wilson_confidence_interval(90, 100, confidence=0.95)
+        d = ci.to_dict()
+        assert "lower" in d and "upper" in d and "spread" in d
+        assert d["lower"] == round(ci.lower, 4)
+        assert d["upper"] == round(ci.upper, 4)
+
+
+class TestProjectEloScorecard:
+    """Verification of 3-Category Scorecard evaluation across Frontend, Backend, AI Models (Feature F7)."""
+
+    def test_scorecard_evaluation_structure_and_categories(self):
+        """Verify scorecard generates accurate category components for Frontend, Backend, AI Models."""
+        sc = evaluate_project_scorecard(
+            frontend_trials=(95, 100),
+            backend_trials=(998, 1000),
+            ai_trials=(48, 50),
+            frontend_rating=2100.0,
+            backend_rating=2200.0,
+            ai_rating=2300.0,
+            w_frontend=0.30,
+            w_backend=0.35,
+            w_ai=0.35,
+        )
+
+        assert isinstance(sc, ProjectEloScorecard)
+        assert sc.frontend.category == "Frontend"
+        assert sc.backend.category == "Backend"
+        assert sc.ai_models.category == "AI Models"
+
+        assert sc.frontend.trials == 100
+        assert sc.frontend.passes == 95
+        assert sc.frontend.pass_rate == 0.95
+
+        assert sc.backend.trials == 1000
+        assert sc.backend.passes == 998
+        assert sc.backend.pass_rate == 0.998
+
+        assert sc.ai_models.trials == 50
+        assert sc.ai_models.passes == 48
+        assert sc.ai_models.pass_rate == 0.96
+
+        # Expected weighted composite: 0.30 * 2100 + 0.35 * 2200 + 0.35 * 2300 = 630 + 770 + 805 = 2205.0
+        expected_composite = 0.30 * 2100.0 + 0.35 * 2200.0 + 0.35 * 2300.0
+        assert math.isclose(sc.composite_score, expected_composite, rel_tol=1e-5)
+        assert math.isclose(sc.composite_elo, expected_composite, rel_tol=1e-5)
+
+    def test_scorecard_bounds_clamping(self):
+        """Verify scorecard clamps ratings outside [1000, 3000]."""
+        sc = evaluate_project_scorecard(
+            frontend_trials=(10, 10),
+            backend_trials=(10, 10),
+            ai_trials=(10, 10),
+            frontend_rating=500.0,    # below min
+            backend_rating=3500.0,   # above max
+            ai_rating=2000.0,
+        )
+        assert sc.frontend.rating == MIN_ELO_RATING
+        assert sc.backend.rating == MAX_ELO_RATING
+        assert 1000.0 <= sc.composite_score <= 3000.0
+
+    def test_scorecard_flexible_tuple_ordering(self):
+        """Verify scorecard handles both (passes, trials) and (trials, passes) transparently."""
+        # (passes, trials): (95, 100)
+        sc1 = evaluate_project_scorecard(frontend_trials=(95, 100))
+        # (trials, passes): (100, 95)
+        sc2 = evaluate_project_scorecard(frontend_trials=(100, 95))
+        assert sc1.frontend.passes == sc2.frontend.passes == 95
+        assert sc1.frontend.trials == sc2.frontend.trials == 100
+        assert sc1.frontend.confidence_interval == sc2.frontend.confidence_interval
+
+    def test_scorecard_to_dict_serialization(self):
+        """Verify serialization adheres to interface contracts."""
+        sc = evaluate_project_scorecard(
+            frontend_trials=(95, 100),
+            backend_trials=(998, 1000),
+            ai_trials=(48, 50),
+            frontend_rating=2100.0,
+            backend_rating=2200.0,
+            ai_rating=2300.0,
+        )
+        data = sc.to_dict()
+        assert "timestamp" in data
+        assert "timestamp_utc" in data
+        assert "frontend" in data
+        assert "backend" in data
+        assert "ai_models" in data
+        assert "composite_score" in data
+        assert "evaluation_latency_us" in data
+        assert "sla_compliant_50us" in data
+        assert data["sla_compliant_50us"] is True
+
+    def test_scorecard_nine_argument_signature(self):
+        """Verify backwards-compatible 9-positional-argument signature."""
+        sc = evaluate_project_scorecard(2100.0, 100, 95, 2200.0, 1000, 998, 2300.0, 50, 48)
+        assert sc.frontend.rating == 2100.0
+        assert sc.frontend.trials == 100
+        assert sc.frontend.passes == 95
+        assert sc.backend.rating == 2200.0
+        assert sc.backend.trials == 1000
+        assert sc.backend.passes == 998
+        assert sc.ai_models.rating == 2300.0
+        assert sc.ai_models.trials == 50
+        assert sc.ai_models.passes == 48
+
+
+class TestScorecardLatencyBenchmark:
+    """Verification of <= 50 µs evaluation latency SLA (Feature F8 & Acceptance Criteria)."""
+
+    def test_scorecard_evaluation_latency_benchmark_10000_runs(self):
+        """
+        Benchmark asserting mean evaluation latency <= 50.0 µs across 10,000 runs.
+        Mandatory acceptance criterion from ORIGINAL_REQUEST.md (§R3) and DISPATCH.md.
+        """
+        # Pre-warm runtime
+        for _ in range(100):
+            evaluate_project_scorecard((95, 100), (998, 1000), (48, 50))
+
+        runs = 10000
+        latencies = []
+        for _ in range(runs):
+            sc = evaluate_project_scorecard(
+                frontend_trials=(95, 100),
+                backend_trials=(998, 1000),
+                ai_trials=(48, 50),
+                frontend_rating=2150.0,
+                backend_rating=2250.0,
+                ai_rating=2350.0,
+            )
+            latencies.append(sc.evaluation_latency_us)
+
+        mean_latency = sum(latencies) / len(latencies)
+        p99_latency = sorted(latencies)[int(runs * 0.99)]
+
+        print(f"\n[LATENCY BENCHMARK] 10,000 runs: Mean = {mean_latency:.2f} µs, P99 = {p99_latency:.2f} µs (SLA <= 50.0 µs)")
+        assert mean_latency <= 50.0, f"Mean latency {mean_latency:.2f} µs exceeded 50.0 µs SLA"
+        assert p99_latency <= 50.0, f"P99 latency {p99_latency:.2f} µs exceeded 50.0 µs SLA"
+

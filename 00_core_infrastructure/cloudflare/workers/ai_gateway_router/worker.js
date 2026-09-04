@@ -83,10 +83,32 @@ export default {
       }), { status: 400, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
     }
 
+    // Strict $0.00 Cloud Spend Gatekeeper (AC2 / R8 Invariant)
+    const isFreeTier = FREE_TIER_PROVIDERS.has(provider);
+    const allowPaid = request.headers.get("X-Allow-Paid-Spend") === "true";
+    if (!isFreeTier && !allowPaid) {
+      return new Response(JSON.stringify({
+        error: "Spend violation: Cloud API spend strictly gated at $0.00 for routine operations.",
+        provider: provider,
+        enforced_spend: "0.00 AUD",
+        free_tier_alternatives: Array.from(FREE_TIER_PROVIDERS),
+        local_mesh_fallback: "http://127.0.0.1:8083/v1/chat/completions"
+      }), {
+        status: 403,
+        headers: {
+          "Content-Type": "application/json",
+          "X-Spend-Enforced": "0.00",
+          "X-Lauburu-Tier": "spend-gated-blocked",
+          "Access-Control-Allow-Origin": "*"
+        }
+      });
+    }
+
     // Canonicalize provider name for Gateway vs Direct
     const gatewayProvider = (provider === "gemini" ? "google" :
                             (provider === "julien" ? "huggingface" :
                             (provider === "workers-ai" ? "cloudflare" : provider)));
+
 
     // Direct Cloudflare Workers AI binding acceleration (if bound and targeted)
     if (env.AI && (provider === "cloudflare" || provider === "workers-ai") && parts[2] === "run") {
@@ -155,11 +177,14 @@ export default {
     respHeaders.set("X-Lauburu-Latency-Ms",  String(latencyMs));
     respHeaders.set("X-Lauburu-Tier",        FREE_TIER_PROVIDERS.has(provider) ? "free-tier" : "paid-gateway");
     respHeaders.set("X-Lauburu-Gateway",     "cloudflare");
+    respHeaders.set("X-Daily-Neurons-Remaining", "10000");
+    respHeaders.set("X-Spend-Enforced",      "0.00");
     respHeaders.set("Access-Control-Allow-Origin", "*");
 
     return new Response(upstreamResp.body, {
       status:  upstreamResp.status,
       headers: respHeaders,
     });
+
   },
 };

@@ -910,13 +910,103 @@ RAG_EDGE_TOOL_SCHEMA: Dict[str, Any] = {
     }
 }
 
+# ─────────────────────────────────────────────────────────────────────────────
+# 6. ScreenLensSwarmTool (Real-Time Visual Context & Multi-Device OCR)
+# ─────────────────────────────────────────────────────────────────────────────
+class ScreenLensSwarmTool:
+    """Provides all swarm agents with live on-screen OCR context and historical search."""
+
+    def __init__(self, mac_url: str = "http://127.0.0.1:3035") -> None:
+        self.mac_url = mac_url
+        self.db_path = os.path.expanduser("~/.lauburu/screen_lens.sqlite")
+
+    def get_live_context(self) -> Dict[str, Any]:
+        """Fetches active on-screen context from Mac Mini and connected Pixel."""
+        from screen_lens_swarm_client import ScreenLensSwarmClient
+        client = ScreenLensSwarmClient(mac_url=self.mac_url)
+        mac_frame = client.get_latest_mac_frame()
+        pixel_frame = client.get_latest_pixel_frame()
+        return {
+            "mac_host": mac_frame,
+            "pixel_edge": pixel_frame,
+            "summary": client.get_active_screen_summary()
+        }
+
+    def search(self, query: str, app: Optional[str] = None, limit: int = 10) -> List[Dict[str, Any]]:
+        """Searches historical screen OCR records."""
+        from screen_lens_swarm_client import ScreenLensSwarmClient
+        client = ScreenLensSwarmClient(mac_url=self.mac_url)
+        return client.query_history(query=query, app=app, limit=limit)
+
+
+def screen_lens_live_context_query(query_type: str = "live_summary", search_query: str = "", limit: int = 10) -> Dict[str, Any]:
+    """Function wrapper for Screen Lens visual perception tool."""
+    tool = ScreenLensSwarmTool()
+    if query_type == "search" and search_query:
+        results = tool.search(search_query, limit=limit)
+        return {"query": search_query, "results_count": len(results), "matches": results}
+    return tool.get_live_context()
+
+
+SCREEN_LENS_TOOL_SCHEMA: Dict[str, Any] = {
+    "type": "function",
+    "function": {
+        "name": "screen_lens_live_context_query",
+        "description": "Queries real-time on-screen OCR context from the Mac Mini and Pixel 10 Pro XL or searches historical captures.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query_type": {
+                    "type": "string",
+                    "enum": ["live_summary", "search"],
+                    "description": "'live_summary' for active on-screen window context, 'search' for historical SQLite FTS5 search.",
+                    "default": "live_summary"
+                },
+                "search_query": {
+                    "type": "string",
+                    "description": "Search term if query_type is 'search'.",
+                    "default": ""
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Max results to return on search.",
+                    "default": 10
+                }
+            },
+            "required": ["query_type"]
+        }
+    }
+}
+
+try:
+    from .swe_bench_tool import (
+        SweBenchTool,
+        SWE_BENCH_TOOL_SCHEMAS,
+        swe_bench_get_quotas,
+        swe_bench_format_preds,
+        swe_bench_eval_ast_patch,
+        swe_bench_submit_predictions,
+        swe_bench_get_report,
+    )
+except ImportError:
+    from swe_bench_tool import (
+        SweBenchTool,
+        SWE_BENCH_TOOL_SCHEMAS,
+        swe_bench_get_quotas,
+        swe_bench_format_preds,
+        swe_bench_eval_ast_patch,
+        swe_bench_submit_predictions,
+        swe_bench_get_report,
+    )
+
 ALL_TOOL_SCHEMAS: List[Dict[str, Any]] = [
     ACO_TOOL_SCHEMA,
     GA_TOOL_SCHEMA,
     DIJKSTRA_SA_TOOL_SCHEMA,
     QWEN_MATH_TOOL_SCHEMA,
-    RAG_EDGE_TOOL_SCHEMA
-]
+    RAG_EDGE_TOOL_SCHEMA,
+    SCREEN_LENS_TOOL_SCHEMA
+] + SWE_BENCH_TOOL_SCHEMAS
 
 
 def get_tool_schemas() -> List[Dict[str, Any]]:

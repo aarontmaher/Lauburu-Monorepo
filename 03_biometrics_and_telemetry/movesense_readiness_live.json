@@ -1,15 +1,44 @@
 {
-  "timestamp": 1788078617.222861,
-  "sensor_id": "MOVESENSE_261030002013",
-  "heart_rate_bpm": 77,
+  "timestamp_utc": "2026-09-03T07:26:04Z",
+  "status": "WAITING_FOR_SENSOR",
+  "sensor_telemetry": {
+    "device": "Movesense 261030002013",
+    "connected": false,
+    "heart_rate_bpm": null,
+    "rmssd_ms": null,
+    "dfa_alpha1": null,
+    "stream_mode": "100% STRICT LOCAL AIRGAP BLE"
+  },
   "blood_pressure_ptt": {
-    "systolic": 120,
-    "diastolic": 76
+    "estimated_ptt_ms": null,
+    "systolic_bp_mmhg": null,
+    "diastolic_bp_mmhg": null,
+    "mean_arterial_pressure_mmhg": null,
+    "status": "STANDBY",
+    "method": "ECG-PTT Pulse Wave Inversion (100% Local DSP)"
   },
-  "sleep_score_pct": 88.5,
-  "cardiorespiratory": {
-    "vo2max_ml_kg_min": 52.4,
-    "zone": "Zone 2 (Aerobic Base)"
+  "overnight_sleep_analysis": {
+    "status": "WAITING_FOR_SENSOR",
+    "sleep_score_pct": null,
+    "recovery_status": "Awaiting Nocturnal Stream",
+    "nocturnal_rmssd_ms": null,
+    "nocturnal_hr_bpm": null,
+    "nocturnal_dip_pct": null,
+    "sleep_stages_estimate": null
   },
-  "airgap_certified": true
+  "activity_and_workout": {
+    "status": "WAITING_FOR_SENSOR",
+    "current_activity": null,
+    "training_zone": "Awaiting Sensor Stream",
+    "hr_pct_max": null
+  },
+  "cardiorespiratory_thresholds": {
+    "status": "WAITING_FOR_SENSOR",
+    "estimated_vo2max_ml_kg_min": null,
+    "lt1_aerobic_threshold_bpm": null,
+    "lt2_anaerobic_threshold_bpm": null,
+    "current_dfa_alpha1": null,
+    "physiological_domain": "Awaiting Live DFA-alpha1 Stream"
+  },
+  "rule_0_zero_mock": true
 }

@@ -1,47 +1,42 @@
-# BRIEFING — 2026-08-24T22:27:00+10:00
+# BRIEFING — 2026-09-02T05:56:45+10:00
 
 ## Mission
-Survey and audit `lauburu_compute_hub`, bloat pruning (`fl_chart`, legacy UI/sensors), Movesense/Polar 128Hz BLE ingestion, Pixel local persistence (SQLite/JSONL), Port 4000 stream forwarding, and Gradle build verification strategy.
+Comprehensive technical investigation and survey of the Multi-View UI Engine, Iframe Routing, and Port Matrix for the Voila-driven Lauburu Global Master Project Notebook.
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: explorer, surveyor
+- Roles: explorer, survey, synthesis
 - Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2_gen2
-- Original parent: 5e6ba544-29d0-4a86-81f4-8f78a6b6f631
-- Milestone: survey
+- Original parent: e9421748-42ff-4cf4-b121-3c19a4436405
+- Milestone: Multi-View UI Engine, Iframe Routing, and Port Matrix Technical Investigation
 
 ## 🔒 Key Constraints
-- Read-only investigation — do NOT implement changes in source tree (only write reports in own folder)
-- No fake, hardcoded, or simulated data; zero hallucination
-- Strict adherence to 5-Component Handoff Protocol
-- Retain global mesh invariants (RAM ceilings, MCP models server, Nomad Courier, 128Hz telemetry)
+- Read-only investigation — do NOT implement in production source files
+- Hardware Isolation Mandate: No Playwright/Chrome on Mac Mini host (offload to Layer 5 MacBook Air 100.93.158.96 or Layer 7 Samsung S20 100.84.40.95)
+- Write only to .agents/teamwork_preview_explorer_survey_2_gen2/
 
 ## Current Parent
-- Conversation ID: 5e6ba544-29d0-4a86-81f4-8f78a6b6f631
-- Updated: 2026-08-24T22:27:00+10:00
+- Conversation ID: e9421748-42ff-4cf4-b121-3c19a4436405
+- Updated: 2026-09-02T05:56:45+10:00
 
 ## Investigation State
 - **Explored paths**:
-  - `01_apps/lauburu_business_app/pubspec.yaml`, `pubspec.lock`, `android/build.gradle.kts`, `app/build.gradle.kts`
-  - `Installed_Apps/Phone_Applications/lauburu_compute_hub/` (`MdsNativeWrapper.kt`, `MainActivity.kt`, `local_hub_server_service.dart`, `spatial_sensor_fusion_service.dart`, `zero_pii_obfuscation_service.dart`, `ecg_graph_widget.dart`)
-  - `teamwork_projects/lauburu_compute_hub/` (`movesense_client.py`, `mds_protocol.py`, `websocket_broadcaster.py`, `hub_daemon.py`)
-  - `Installed_Apps/Web_Applications/lauburu_app_store_4000/server.py`
-  - `01_apps/movesense_hub/pyspark_biometrics_dsp.py`, `01_apps/lauburu_zone2_endurance/`
-  - `tests/e2e/test_lauburu_mesh_acceptance.py`, `tests/adversarial_zero_mock_telemetry_audit.py`
+  - `01_apps/notebooks/00_lauburu_global_master_project.ipynb` (Cells 0-15)
+  - `obsidian_vault/notebooks/00_lauburu_global_master_project.ipynb` (Cells 0-15)
+  - `.agents/ORIGINAL_REQUEST.md`, `.agents/TEST_INFRA.md`
+  - Kernel & Voila runtime environment (`/Users/aaron/.local/share/uv/tools/jupyterlab/bin/voila` & `00_core_infrastructure/self_healing_hub/.venv/bin/python3`)
 - **Key findings**:
-  - `fl_chart: ^1.2.0` identified in `01_apps/lauburu_business_app/pubspec.yaml` (line 38).
-  - Legacy sensor drivers (`whoop`, `genericBle`) identified in `spatial_sensor_fusion_service.dart`.
-  - Android MDS 128Hz ECG `/Meas/ECG/128` + Polar H10 GATT ingestion verified.
-  - Zero-loss Pixel local persistence designed (SQLite WAL database + append-only JSONL ledger).
-  - Port 4000 forwarding pipeline specified (`POST /api/sensors/ingest` & WebSocket `ws://...:4000/ws/telemetry`).
-  - Clean Gradle build verification strategy mapped (`./gradlew assembleDebug`).
-- **Unexplored areas**: None for survey scope. Handed off to milestone workers.
+  - Identified root causes of "refused to connect" iframe errors: (1) host binding mismatch where local services bound to 127.0.0.1 were addressed via Tailscale IP `100.119.199.76`, resulting in TCP RST/ECONNREFUSED; (2) HTTP headers (`X-Frame-Options` & CSP `frame-ancestors`); (3) lack of glassmorphic standby cards when services are dormant/offline.
+  - Successfully surveyed and validated the 14-endpoint port matrix, adding Port 3000 (Next.js Zone 2 Web UI Hub).
+  - Architected dynamic 2x2 Multi-View GridBox with layout presets (Quad 2x2, Dual Split 1x2, Solo Focus 1x1), independent slot controllers, live socket health badges, and headless fallback.
+- **Unexplored areas**: None for this survey milestone. Ready for implementer/worker.
 
 ## Key Decisions Made
-- Fully authored 5-component survey handoff report at `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_2_gen2/handoff.md`.
+- Confirmed use of `http://127.0.0.1:<port>` for all local L1 Mac Mini services and respective Tailscale IPs for remote mesh nodes (L3 SeaweedFS, L5 MacBook Air).
+- Designed complete drop-in python/ipywidgets template for Cell 2 and Cell 3 of the master notebook.
 
 ## Artifact Index
-- `.agents/teamwork_preview_explorer_survey_2_gen2/DISPATCH.md` — Initial dispatch prompt
-- `.agents/teamwork_preview_explorer_survey_2_gen2/BRIEFING.md` — Persistent working memory
-- `.agents/teamwork_preview_explorer_survey_2_gen2/progress.md` — Liveness heartbeat
-- `.agents/teamwork_preview_explorer_survey_2_gen2/handoff.md` — Comprehensive survey report
+- handoff.md — Comprehensive 5-component technical survey report
+- progress.md — Liveness heartbeat and milestone log
+- DISPATCH.md — Parent task dispatch log
+- BRIEFING.md — Persistent working memory index

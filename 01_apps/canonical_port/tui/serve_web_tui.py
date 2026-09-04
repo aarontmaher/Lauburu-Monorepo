@@ -66,6 +66,11 @@ APP_ROUTER = {
         "name": "🧮 Standalone Qwen Math Trend Optimizer",
         "cmd": [VENV_PYTHON, str(MONOREPO_ROOT / "01_apps/operator_and_dev/qwen_math_trend_optimizer/presentation/optimizer.py")],
         "tier": "operator"
+    },
+    "notebook": {
+        "name": "📓 Gemini Notebook & Data Science (MacBook Air M4)",
+        "cmd": ["/Users/aaronmaher/gemini_notebook_env/bin/python", "-m", "jupyter", "lab", "--ip=0.0.0.0", "--port=8889", "--no-browser"],
+        "tier": "operator"
     }
 }
 
@@ -103,7 +108,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <a href="/store" class="__ACTIVE_STORE__">🛍️ Store</a>
       <span style="color:#334155; margin:0 4px;">|</span>
       <a href="/canonical" class="__ACTIVE_CANONICAL__">🏛️ Command Center</a>
+      <a href="/leaderboard" class="__ACTIVE_LEADERBOARD__" style="color:#fbbf24; font-weight:bold;">🏆 Leaderboard</a>
       <a href="/smolagents" class="__ACTIVE_SMOLAGENTS__">🤖 SmolAgents</a>
+      <a href="http://100.93.158.96:8889/lab" target="_blank" style="color:#38bdf8; font-weight:bold;">📓 Gemini Notebook</a>
     </div>
   </header>
   <div id="terminal-container"></div>
@@ -365,9 +372,23 @@ async def handle_websocket(request):
 
     return ws
 
+async def handle_leaderboard(request):
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=2.0) as client:
+            res = await client.get("http://127.0.0.1:18805/")
+            if res.status_code == 200:
+                return web.Response(text=res.text, content_type="text/html")
+    except Exception:
+        pass
+    
+    # Fallback to local ELO leaderboard render
+    return web.HTTPFound("http://127.0.0.1:18805")
+
 def create_app():
     app = web.Application()
     app.router.add_get("/", handle_index)
+    app.router.add_get("/leaderboard", handle_leaderboard)
     for slug in APP_ROUTER.keys():
         app.router.add_get(f"/{slug}", handle_app_page)
     app.router.add_get("/ws/{app_slug}", handle_websocket)

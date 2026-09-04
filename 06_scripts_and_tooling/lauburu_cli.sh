@@ -1,157 +1,270 @@
 #!/bin/bash
 # ==============================================================================
-# Lauburu Mesh Ecosystem — Master Unified Global CLI
-# ==============================================================================
-# Single-word global commands:
-#   lauburu           -> Launch full Canonical 9-Screen TUI Command Center
-#   lauburu dev       -> Launch Live Side-by-Side Dual Graphical Arena (--dev)
-#   lauburu arena     -> Launch Live Side-by-Side Dual Graphical Arena (--dev)
-#   lauburu map       -> Run Unified 3D Spatial Fusion Engine
-#   lauburu movesense -> Check / restart Movesense BLE GATT 128Hz daemon
-#   tui               -> Fast alias for 'lauburu'
-#   arena             -> Fast alias for 'lauburu dev'
+# 🚀 LAUBURU UNIFIED TUI CLI SELECTOR
+# Cross-Platform Cluster Launcher: Mac Mini M4 | Linux Laptop | Pixel 10 Pro
 # ==============================================================================
 
-MONOREPO_DIR="/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
-TUI_DIR="$MONOREPO_DIR/01_apps/canonical_port"
+set -e
 
-# Detect invoked command name
-INVOKED_CMD=$(basename "$0")
+# Detect host environment
+detect_host() {
+    local uname_s
+    uname_s="$(uname -s 2>/dev/null || echo "Unknown")"
+    if [ "$uname_s" = "Darwin" ]; then
+        echo "mac"
+    elif grep -qi "android" /proc/version 2>/dev/null || [ -d "/data/data/com.termux" ]; then
+        echo "pixel"
+    elif [ "$uname_s" = "Linux" ]; then
+        local hostname_str
+        hostname_str="$(hostname 2>/dev/null || echo "")"
+        if echo "$hostname_str" | grep -qiE "pixel|android"; then
+            echo "pixel"
+        else
+            echo "linux"
+        fi
+    else
+        echo "unknown"
+    fi
+}
 
-if [ "$INVOKED_CMD" = "arena" ]; then
-    CMD="arena"
-elif [ "$INVOKED_CMD" = "tui" ]; then
-    CMD="tui"
-elif [ "$INVOKED_CMD" = "priority" ] || [ "$INVOKED_CMD" = "governor" ]; then
-    CMD="priority"
+CURRENT_HOST="$(detect_host)"
+
+# Colors
+if [ -t 1 ]; then
+    BOLD="\033[1m"
+    CYAN="\033[36m"
+    GREEN="\033[32m"
+    YELLOW="\033[33m"
+    BLUE="\033[34m"
+    MAGENTA="\033[35m"
+    RED="\033[31m"
+    RESET="\033[0m"
 else
-    CMD="${1:-tui}"
-    shift || true
+    BOLD=""
+    CYAN=""
+    GREEN=""
+    YELLOW=""
+    BLUE=""
+    MAGENTA=""
+    RED=""
+    RESET=""
 fi
 
-case "$CMD" in
-    tui|"")
-        echo "🚀 Launching Lauburu Canonical TUI Command Center (Live --dev Mode)..."
-        cd "$TUI_DIR"
-        exec ./run_live_tui.sh --dev "$@"
-        ;;
-    --dev|dev|arena)
-        echo "🚀 Launching Lauburu Live Side-by-Side Dual Graphical Arena..."
-        cd "$TUI_DIR"
-        exec ./run_live_arena_dev.sh "$@"
-        ;;
-    web|browser)
-        echo "🌐 Launching Lauburu Textual-Web Browser Server on http://0.0.0.0:8088..."
-        cd "$TUI_DIR"
-        exec ./run_live_tui.sh web "$@"
-        ;;
-    map)
-        echo "🌐 Running Unified 3D Spatial Fusion Engine..."
-        cd "$MONOREPO_DIR"
-        python3 00_core_infrastructure/self_healing_hub/src/spatial_3d_unified_fusion.py
-        ;;
-    map-all|discover)
-        echo "🗺️ Running Autonomous Whole-Project & Network Feature Discovery Engine..."
-        cd "$MONOREPO_DIR"
-        python3 00_core_infrastructure/self_healing_hub/src/autonomous_feature_discovery_engine.py
-        ;;
-    math|math-daemon)
-        echo "🧮 Running Standalone Qwen Math Trend & Optimization Daemon..."
-        cd "$MONOREPO_DIR"
-        python3 02_ai_models_and_inference/quantum/autonomous_math_trend_optimizer.py
-        ;;
-    movesense)
-        echo "💓 Checking Movesense 261030002013 BLE daemon status..."
-        if ps aux | grep "run_real_movesense_daemon.py" | grep -v grep > /dev/null; then
-            echo "✅ Movesense BLE daemon is ACTIVE and streaming live packets."
-        else
-            echo "⚠️ Movesense daemon not running. Starting background streamer..."
-            nohup /Users/aaron/DFS_UNIFIED/lora_datasets/.venv/bin/python "$MONOREPO_DIR/03_biometrics_and_telemetry/run_real_movesense_daemon.py" > /tmp/movesense_ble.log 2>&1 &
-            echo "✅ Started Movesense BLE daemon."
-        fi
-        ;;
-    priority|governor)
-        echo "🛡️ Running Hybrid Real-RAM Mesh Governor & Master Priority Swarm..."
-        cd "$MONOREPO_DIR"
-        python3 06_scripts_and_tooling/network/real_hardware_router_ram_governor.py "$@"
-        python3 05_agents_and_swarms/master_priority_automation_loop.py --once
-        ;;
-    governor-optimize|optimize-network)
-        echo "⚡ Executing Real-Hardware Network-Wide Settings Optimization..."
-        cd "$MONOREPO_DIR"
-        exec python3 06_scripts_and_tooling/network/real_hardware_router_ram_governor.py "$@"
-        ;;
-    governor-test|test-tiny-models)
-        echo "🔬 Running Continuous Tiny Model Governance Benchmark..."
-        cd "$MONOREPO_DIR"
-        exec python3 02_ai_models_and_inference/benchmarks/router_ram_governor_model_bench.py "$@"
-        ;;
-    priority-daemon|governor-daemon)
-        echo "🚀 Starting 24/7 Master Priority Continuous Automation Daemon..."
-        cd "$MONOREPO_DIR"
-        exec python3 05_agents_and_swarms/master_priority_automation_loop.py --daemon
-        ;;
-    sync-sharded|spark-sync)
-        echo "⚡ Running Gemini Spark & Local Sharded Swarm Synchronization Pipeline..."
-        cd "$MONOREPO_DIR"
-        exec python3 06_scripts_and_tooling/automation/gemini_spark_sharded_sync_pipeline.py
-        ;;
-    dashboard|web)
-        echo "🌐 Launching Universal Web-TUI Portal & Dashboard (Port 8088)..."
-        cd "$MONOREPO_DIR"
-        open http://localhost:8088 2>/dev/null || true
-        exec python3 01_apps/web_tui_portal/serve_portal.py --port 8088
-        ;;
-    router-bench|bench-router)
-        echo "🔬 Running Sandboxed GL.iNet Router Micro AI Benchmark..."
-        cd "$MONOREPO_DIR"
-        exec python3 02_ai_models_and_inference/benchmarks/glinet_router_micro_ai_benchmark.py
-        ;;
-    mcp|project-mcp)
-        MCP_SCRIPT="$MONOREPO_DIR/06_scripts_and_tooling/mcp/lauburu_project_mcp.py"
-        MCP_LOG="/tmp/lauburu_mcp_9999.log"
-        echo "🧠 Lauburu Project Overview MCP Server — Port 9999"
-        # Kill any existing instance cleanly
-        pkill -f "lauburu_project_mcp.py" 2>/dev/null || true
-        sleep 0.5
-        # Resolve python3 — prefer venv if available
-        PY3="/Users/aaron/DFS_UNIFIED/lora_datasets/.venv/bin/python3"
-        [ -x "$PY3" ] || PY3="$(which python3)"
-        nohup "$PY3" "$MCP_SCRIPT" > "$MCP_LOG" 2>&1 &
-        MCP_PID=$!
-        sleep 2
-        if kill -0 "$MCP_PID" 2>/dev/null; then
-            echo "✅ MCP server started (PID $MCP_PID)"
-            echo "   URL : http://localhost:9999/mcp/project/full_context"
-            echo "   Log : $MCP_LOG"
-        else
-            echo "⚠️ MCP server may have failed to start. Check log:"
-            echo "   tail -f $MCP_LOG"
-        fi
-        ;;
-    help|--help|-h)
-        echo "======================================================================"
-        echo "🌟 LAUBURU MESH UNIFIED GLOBAL CLI"
-        echo "======================================================================"
-        echo "Usage: lauburu [command] [options]"
+show_banner() {
+    clear 2>/dev/null || true
+    echo -e "${BOLD}${CYAN}╔════════════════════════════════════════════════════════════════╗${RESET}"
+    echo -e "${BOLD}${CYAN}║             🌿 LAUBURU PERSONAL COMPUTE & SWARM 🌿             ║${RESET}"
+    echo -e "${BOLD}${CYAN}║         💰 Paying by Computing™ Decentralized Platform         ║${RESET}"
+    echo -e "${BOLD}${CYAN}╚════════════════════════════════════════════════════════════════╝${RESET}"
+    
+    local host_label=""
+    case "$CURRENT_HOST" in
+        "mac")   host_label="${GREEN}My Mac Workstation (Apple Silicon)${RESET}" ;;
+        "linux") host_label="${GREEN}My Linux Workstation (AMD / x86_64)${RESET}" ;;
+        "pixel") host_label="${GREEN}My Mobile Edge Device (Android Termux)${RESET}" ;;
+        *)       host_label="${YELLOW}Local Terminal (${CURRENT_HOST})${RESET}" ;;
+    esac
+    echo -e "${BOLD}Local Device:${RESET}    ${host_label}"
+    echo -e "${BOLD}Paying by Comp:${RESET}  ${GREEN}ACTIVE${RESET} ($29/mo Value 100% Subsidized via Compute Contribution)"
+    echo -e "${BOLD}Tenant Enclave:${RESET}  ${MAGENTA}Strict Privacy Active${RESET} (Only your personal paired devices visible)"
+    echo -e "${CYAN}────────────────────────────────────────────────────────────────${RESET}"
+}
+
+print_menu() {
+    show_banner
+    echo -e "${BOLD}Personal Device & Swarm Control Options:${RESET}"
+    echo ""
+    echo -e "  ${BOLD}${GREEN}[1]${RESET} ${BOLD}My Device Cockpit & Paying-by-Computing (Default)${RESET}"
+    echo -e "      Local hardware introspection, token contribution & credit ledger"
+    echo ""
+    echo -e "  ${BOLD}${CYAN}[2]${RESET} ${BOLD}My Personal Swarm (Paired Companion Devices)${RESET}"
+    echo -e "      Direct P2P link to your personal phone/workstations (Tenant-Isolated)"
+    echo ""
+    echo -e "  ${BOLD}${YELLOW}[3]${RESET} ${BOLD}Global Mesh Telemetry (Diagnostics & Sharding Matrix)${RESET}"
+    echo -e "      Full P2P distributed sharding and network latency diagnostics"
+    echo ""
+    echo -e "  ${BOLD}${BLUE}[4]${RESET} ${BOLD}Sentinel Watchdog & Self-Healing Stream${RESET}"
+    echo -e "      Local real-time daemon sentinel & socket monitor"
+    echo ""
+    echo -e "  ${BOLD}${RED}[q]${RESET} Quit"
+    echo -e "${CYAN}────────────────────────────────────────────────────────────────${RESET}"
+}
+
+launch_local_lauburu() {
+    echo -e "${GREEN}==> Launching native Personal Device Cockpit...${RESET}"
+    local lens_bin="/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/rust_network_analyzer/target/release/lauburu_network_lens"
+    if [ -x "$lens_bin" ]; then
+        exec "$lens_bin" "$@"
+    elif command -v lauburu-tui >/dev/null 2>&1; then
+        exec lauburu-tui "$@"
+    elif [ -f "$HOME/.cargo/bin/lauburu-tui" ]; then
+        exec "$HOME/.cargo/bin/lauburu-tui" "$@"
+    elif [ -f "$HOME/bin/lauburu-tui" ]; then
+        exec "$HOME/bin/lauburu-tui" "$@"
+    elif [ -f "/usr/local/bin/lauburu-tui" ]; then
+        exec /usr/local/bin/lauburu-tui "$@"
+    elif [ -f "/data/data/com.termux/files/usr/bin/lauburu-tui" ]; then
+        exec /data/data/com.termux/files/usr/bin/lauburu-tui "$@"
+    else
+        echo -e "${RED}Error: lauburu-tui binary not found in PATH or standard locations.${RESET}"
+        exit 1
+    fi
+}
+
+launch_remote_mac() {
+    echo -e "${CYAN}==> Connecting to Aaron's Mac Mini M4 Pro...${RESET}"
+    exec ssh -t mac "lauburu-tui"
+}
+
+launch_remote_linux() {
+    echo -e "${CYAN}==> Connecting to Linux Laptop Head Node...${RESET}"
+    exec ssh -t linux "lauburu-tui"
+}
+
+launch_remote_pixel() {
+    echo -e "${CYAN}==> Connecting to Pixel 10 Pro XL...${RESET}"
+    exec ssh -t pixel "lauburu-tui"
+}
+
+launch_global_mesh() {
+    echo -e "${YELLOW}==> Launching Global Mesh TUI...${RESET}"
+    if command -v global_mesh_tui >/dev/null 2>&1; then
+        exec global_mesh_tui "$@"
+    elif [ -f "$HOME/global_mesh_tui" ]; then
+        exec "$HOME/global_mesh_tui" "$@"
+    elif [ -f "/usr/local/bin/global_mesh_tui" ]; then
+        exec /usr/local/bin/global_mesh_tui "$@"
+    else
+        echo -e "${YELLOW}global_mesh_tui not installed locally. Connecting to Pixel host...${RESET}"
+        exec ssh -t pixel "global_mesh_tui"
+    fi
+}
+
+launch_canonical_tui() {
+    echo -e "${YELLOW}==> Launching Canonical Textual TUI...${RESET}"
+    if [ -f "$HOME/start_canonical_tui.sh" ]; then
+        exec "$HOME/start_canonical_tui.sh" "$@"
+    elif [ -f "$HOME/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port/tui/canonical_tui.py" ]; then
+        cd "$HOME/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port"
+        exec python3 -m textual run --dev tui/canonical_tui.py
+    elif [ -f "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port/tui/canonical_tui.py" ]; then
+        cd "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port"
+        exec python3 -m textual run --dev tui/canonical_tui.py
+    else
+        echo -e "${YELLOW}Connecting to Mac Mini for Canonical Textual TUI...${RESET}"
+        exec ssh -t mac "cd ~/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port && python3 -m textual run --dev tui/canonical_tui.py"
+    fi
+}
+
+launch_sentinel_stream() {
+    echo -e "${BLUE}==> Attaching to Cluster Sentinel & Health Stream (:8181)...${RESET}"
+    echo -e "Press Ctrl+C to stop.\n"
+    local proxy_url=""
+    if curl -s --max-time 1 http://127.0.0.1:8181/health >/dev/null 2>&1; then
+        proxy_url="http://127.0.0.1:8181/health"
+    elif curl -s --max-time 1 http://100.101.39.98:8181/health >/dev/null 2>&1; then
+        proxy_url="http://100.101.39.98:8181/health"
+    else
+        proxy_url="http://192.168.8.224:8181/health"
+    fi
+
+    while true; do
+        clear 2>/dev/null || true
+        echo -e "${BOLD}${BLUE}=== Cluster Sentinel Live Watchdog [${proxy_url}] ===${RESET}"
+        echo -e "Timestamp: $(date)\n"
+        curl -s --max-time 2 "$proxy_url" | (python3 -m json.tool 2>/dev/null || cat) || echo -e "${RED}Proxy unreachable${RESET}"
         echo ""
-        echo "Commands:"
-        echo "  lauburu (or tui)        Launch full Canonical 9-Screen TUI Command Center"
-        echo "  lauburu dev (or arena)   Launch Live Side-by-Side Dual Graphical Arena"
-        echo "  lauburu priority         Run Hybrid Real-RAM Mesh Governor & Priority Loop"
-        echo "  lauburu priority-daemon  Start 24/7 Master Priority Automation Daemon"
-        echo "  lauburu router-bench     Run Sandboxed GL.iNet Router Micro AI Benchmark"
-        echo "  lauburu map              Run Unified 3D Spatial Fusion Engine"
-        echo "  lauburu map-all          Run Autonomous Whole-Project Feature Discovery"
-        echo "  lauburu math             Run Standalone Qwen Math Telemetry Trend Optimizer"
-        echo "  lauburu movesense        Check / Start Physical Movesense 128Hz BLE daemon"
-        echo "  lauburu mcp              Start Project Overview MCP server on Port 9999"
-        echo "  lauburu help             Show this help message"
-        echo "======================================================================"
+        echo -e "${CYAN}Refreshing every 2 seconds... (Ctrl+C to return)${RESET}"
+        sleep 2
+    done
+}
+
+show_help() {
+    echo "Usage: tui [COMMAND|OPTION]"
+    echo ""
+    echo "Lauburu Multi-Device Mesh TUI Launcher"
+    echo ""
+    echo "Commands:"
+    echo "  tui                    Open interactive menu selector"
+    echo "  tui 1, local, lauburu  Launch local Lauburu Rust Ratatui TUI"
+    echo "  tui 2, mac             Connect to Lauburu Rust TUI on Aaron's Mac Mini"
+    echo "  tui 3, linux           Connect to Lauburu Rust TUI on Linux Laptop Head Node"
+    echo "  tui 4, pixel           Connect to Lauburu Rust TUI on Pixel 10 Pro XL"
+    echo "  tui 5, global          Launch Global Mesh TUI (Go LibP2P)"
+    echo "  tui 6, canonical       Launch Canonical Textual TUI"
+    echo "  tui 7, sentinel        Stream live cluster health & route failsafe"
+    echo "  tui -l, --list         List available options and exit"
+    echo "  tui -h, --help         Show this help message"
+    echo ""
+}
+
+# Handle direct arguments
+case "${1:-}" in
+    1|local|lauburu)
+        shift || true
+        launch_local_lauburu "$@"
+        ;;
+    2|mac|macmini)
+        launch_remote_mac
+        ;;
+    3|linux|laptop)
+        launch_remote_linux
+        ;;
+    4|pixel|phone)
+        launch_remote_pixel
+        ;;
+    5|global|mesh)
+        shift || true
+        launch_global_mesh "$@"
+        ;;
+    6|canonical|textual)
+        shift || true
+        launch_canonical_tui "$@"
+        ;;
+    7|sentinel|health|stream)
+        launch_sentinel_stream
+        ;;
+    -l|--list|list)
+        echo "1: My Device Cockpit & Paying-by-Computing (Default)"
+        echo "2: My Personal Swarm (Companion Devices)"
+        echo "3: Global Mesh Telemetry & Diagnostics"
+        echo "4: Sentinel Watchdog & Socket Stream"
+        exit 0
+        ;;
+    -h|--help|help)
+        show_help
+        exit 0
+        ;;
+    "")
+        # Default: Immediately launch native personal cockpit!
+        launch_local_lauburu "$@"
+        ;;
+    -m|--menu|menu)
+        # Interactive Menu Mode
         ;;
     *)
-        echo "Unknown command: $CMD"
-        echo "Run 'lauburu help' for available commands."
+        echo -e "${RED}Unknown option: $1${RESET}"
+        show_help
         exit 1
         ;;
 esac
+
+# Interactive loop (only reached via --menu)
+while true; do
+    print_menu
+    read -r -p "Enter choice [1-4, q]: " choice
+    case "$choice" in
+        1) launch_local_lauburu ;;
+        2) launch_remote_pixel ;;
+        3) launch_global_mesh ;;
+        4) launch_sentinel_stream ;;
+        q|Q|exit)
+            echo -e "\n${GREEN}Exiting Lauburu Personal Compute Hub. Goodbye!${RESET}"
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}Invalid selection '$choice'. Press Enter to retry...${RESET}"
+            read -r _
+            ;;
+    esac
+done

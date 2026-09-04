@@ -62,11 +62,11 @@ ssh_cmd() {
     ssh -i "$SSH_KEY" -y -p "$target_port" "${target_user}@${target_ip}" "$cmd" 2>/dev/null
 }
 
-# Helper: TCP Port Probe
+# Helper: TCP Port Probe (Busybox compatible)
 probe_port() {
     local ip="$1"
     local port="$2"
-    nc -z -w2 "$ip" "$port" 2>/dev/null
+    nc "$ip" "$port" </dev/null >/dev/null 2>&1
     return $?
 }
 
@@ -119,8 +119,10 @@ heal_ai_daemons() {
         if ! probe_port "$MAC_MINI_IP" 8081; then
             log "[HEAL] llama.cpp (8081) on Mac Mini offline. Attempting automated relaunch..."
             ssh_cmd "$MAC_MINI_IP" "$MAC_MINI_USER" 22 "
-                if [ -f ~/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/multi_wan/launch_llama_server.sh ]; then
-                    nohup bash ~/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/multi_wan/launch_llama_server.sh >/dev/null 2>&1 &
+                if ! pgrep -f 'llama-server.*8081' >/dev/null 2>&1; then
+                    if [ -f ~/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/multi_wan/launch_llama_server.sh ]; then
+                        nohup bash ~/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/multi_wan/launch_llama_server.sh >/dev/null 2>&1 &
+                    fi
                 fi
             " &
         fi
@@ -182,7 +184,61 @@ heal_infrastructure_daemons() {
 }
 
 # ------------------------------------------------------------------------------
-# 4. Generate Comprehensive Structured JSON Telemetry
+# 4. Power Delivery & Hardware Charging Sentinel
+# ------------------------------------------------------------------------------
+monitor_power_and_links() {
+    # 4.1 MacBook Pro Live Charger & Wattage Sensing
+    if ping -c 1 -W 1 "$MBP_IP" >/dev/null 2>&1; then
+        local mbp_pwr
+        mbp_pwr=$(ssh_cmd "$MBP_IP" "$MBP_USER" 22 "system_profiler SPPowerDataType 2>/dev/null | grep -E 'Wattage|Charging:'" 2>/dev/null)
+        local mbp_watts
+        mbp_watts=$(echo "$mbp_pwr" | grep 'Wattage' | awk '{print $3}' | head -n 1)
+        local mbp_charging
+        mbp_charging=$(echo "$mbp_pwr" | grep 'Charging:' | awk '{print $2}' | head -n 1)
+
+        if [ -n "$mbp_watts" ]; then
+            log "[POWER] MacBook Pro Power Sense: Connected (${mbp_watts}W) | Charging: ${mbp_charging:-unknown}"
+            if [ "$mbp_watts" -ge 30 ] 2>/dev/null; then
+                log "[POWER] MacBook Pro high-power supply verified (${mbp_watts}W). Battery discharge eliminated."
+            else
+                log "[WARN] MacBook Pro low-power trickle detected (${mbp_watts}W). 240W charger recommended."
+            fi
+        fi
+    fi
+
+    # 4.2 Pixel Hotspot Band & Frequency Optimization
+    if ifconfig apcli0 >/dev/null 2>&1; then
+        local apcli_chan
+        apcli_chan=$(iwinfo apcli0 info 2>/dev/null | grep "Channel:" | awk '{print $4}')
+        if [ "$apcli_chan" = "1" ] || [ "$apcli_chan" = "6" ] || [ "$apcli_chan" = "11" ]; then
+            log "[WIFI] Pixel Hotspot connected on 2.4 GHz (Channel $apcli_chan, ~129 Mbps)."
+            log "[DIAGNOSTIC] 'Extend compatibility' active on Pixel. To unlock 1,200+ Mbps, toggle OFF 'Extend compatibility' in Pixel Hotspot settings."
+            
+            # Check if 5 GHz is available to auto-roam
+            if iwinfo apclii0 scan 2>/dev/null | grep -qi "Pixel"; then
+                log "[ACTION] 5 GHz Pixel Hotspot detected! Initiating fast auto-roam to 5 GHz (apclii0)..."
+                uci set wireless.repeater.device='radio1' 2>/dev/null || true
+                uci commit wireless 2>/dev/null || true
+                wifi reload 2>/dev/null || true
+            fi
+        elif [ -n "$apcli_chan" ]; then
+            log "[WIFI] High-speed 5 GHz Hotspot link active (Channel $apcli_chan)."
+        fi
+    fi
+
+    # 4.3 Multi-WAN Routing & Balancing Check
+    local has_usb=0
+    local has_wifi=0
+    ifconfig usb0 >/dev/null 2>&1 && has_usb=1
+    ifconfig apcli0 >/dev/null 2>&1 && has_wifi=1
+
+    if [ "$has_usb" -eq 1 ] && [ "$has_wifi" -eq 1 ]; then
+        log "[MULTI-WAN] Dual Uplinks Active (USB Tethering + Wi-Fi Repeater). Mode: Load Balance recommended for parallel datasets; Failover for SSH sessions."
+    fi
+}
+
+# ------------------------------------------------------------------------------
+# 5. Generate Comprehensive Structured JSON Telemetry
 # ------------------------------------------------------------------------------
 emit_telemetry() {
     local TS_STATE="online"
@@ -198,8 +254,9 @@ emit_telemetry() {
     local QDRANT_STATE="offline"
     local HUB_STATE="offline"
 
-    tailscale status >/dev/null 2>&1 || TS_STATE="degraded"
-    ping -c 1 -W 1 "$MAC_MINI_IP" >/dev/null 2>&1 && MAC_STATE="online"
+    if ping -c 1 -W 1 "$MAC_MINI_IP" >/dev/null 2>&1 || probe_port "$MAC_MINI_IP" 18802 || probe_port "$MAC_MINI_IP" 8081; then
+        MAC_STATE="online"
+    fi
     ping -c 1 -W 1 "$MBP_IP" >/dev/null 2>&1 && MBP_STATE="online"
     ping -c 1 -W 1 "$MBA_IP" >/dev/null 2>&1 && MBA_STATE="online"
     ping -c 1 -W 1 "$LINUX_HEAD_IP" >/dev/null 2>&1 && LNX_STATE="online"
@@ -207,7 +264,7 @@ emit_telemetry() {
     (adb devices 2>/dev/null | grep -q "$SAMSUNG_SERIAL.*device" || ping -c 1 -W 1 "$SAMSUNG_IP" >/dev/null 2>&1) && SAM_STATE="online"
 
     probe_port "$MAC_MINI_IP" 8081 && LLAMA_STATE="online"
-    probe_port "$LINUX_HEAD_IP" 8888 && SEAWEED_STATE="online"
+    (probe_port "$MAC_MINI_IP" 8888 || probe_port "$LINUX_HEAD_IP" 8888) && SEAWEED_STATE="online"
     probe_port "$MAC_MINI_IP" 6333 && QDRANT_STATE="online"
     probe_port "$MAC_MINI_IP" 18802 && HUB_STATE="online"
 
@@ -241,4 +298,5 @@ EOF
 heal_hardware_nodes
 heal_ai_daemons
 heal_infrastructure_daemons
+monitor_power_and_links
 emit_telemetry

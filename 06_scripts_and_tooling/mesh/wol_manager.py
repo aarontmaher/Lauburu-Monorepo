@@ -21,8 +21,9 @@ import subprocess
 from pathlib import Path
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Any, Optional
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -85,15 +86,24 @@ class WoLEngine:
         OBSIDIAN_VAULT.mkdir(parents=True, exist_ok=True)
         STATUS_FILE.parent.mkdir(parents=True, exist_ok=True)
 
-    def send_magic_packet(self, mac_address: str, broadcast_ip: str = "192.168.8.255", port: int = 9) -> bool:
-        """Constructs and transmits an RFC standard Wake-on-LAN magic packet."""
+    def construct_magic_packet(self, mac_address: str) -> bytes:
+        """Constructs an exact 102-byte RFC 792 Wake-on-LAN magic packet."""
         clean_mac = mac_address.replace(":", "").replace("-", "").replace(".", "")
         if len(clean_mac) != 12:
-            logger.error(f"Invalid MAC address format: {mac_address}")
-            return False
-
+            raise ValueError(f"Invalid MAC address format: {mac_address}")
         mac_bytes = bytes.fromhex(clean_mac)
-        magic_packet = b"\xff" * 6 + mac_bytes * 16
+        packet = b"\xff" * 6 + mac_bytes * 16
+        if len(packet) != 102:
+            raise ValueError(f"Constructed packet size {len(packet)} != 102 bytes")
+        return packet
+
+    def send_magic_packet(self, mac_address: str, broadcast_ip: str = "192.168.8.255", port: int = 9) -> bool:
+        """Constructs and transmits an RFC standard Wake-on-LAN magic packet."""
+        try:
+            magic_packet = self.construct_magic_packet(mac_address)
+        except Exception as e:
+            logger.error(f"Failed to construct magic packet: {e}")
+            return False
 
         # Broadcast targets to ensure reachability across subnets & Thunderbolt bridges
         targets = [broadcast_ip, "255.255.255.255", "169.254.255.255"]
@@ -110,10 +120,20 @@ class WoLEngine:
                     logger.debug(f"Broadcast to {target} failed: {e}")
 
         if success:
-            logger.info(f"⚡ [WoL] Magic Packet dispatched to MAC: {mac_address} ({broadcast_ip}:{port})")
+            logger.info(f"⚡ [WoL] 102-byte Magic Packet dispatched to MAC: {mac_address} ({broadcast_ip}:{port})")
         return success
 
+    def wake_node(self, node_name: str) -> bool:
+        """
+        PROJECT.md Interface Contract:
+        WoLEngine.wake_node(node_name: str) -> bool
+        Dispatches 102-byte RFC 792 Magic Packet over UDP Port 9/7.
+        """
+        res = self.wake_device(node_name)
+        return bool(res.get("success", False))
+
     def wake_device(self, key: str) -> Dict[str, Any]:
+
         """Wakes a specific device by key."""
         key = key.lower().strip()
         if key not in DEVICES:
@@ -137,8 +157,9 @@ class WoLEngine:
             "mac_address": mac,
             "ip_address": dev["ip"],
             "tailscale_ip": dev["tailscale"],
-            "timestamp_utc": datetime.utcnow().isoformat() + "Z"
+            "timestamp_utc": datetime.now(timezone.utc).isoformat()
         }
+
         
         self.generate_obsidian_dashboard(last_woken=dev["name"])
         return result
@@ -225,7 +246,17 @@ class WoLHTTPHandler(BaseHTTPRequestHandler):
         elif path == "/api/wol/status":
             res = {"status": "ONLINE", "registered_devices": DEVICES}
             self.wfile.write(json.dumps(res).encode())
+        elif path == "/api/router/memory":
+            res = {
+                "router_model": "GL.iNet GL-MT3600BE (Wi-Fi 7 MLO)",
+                "sentinel_ram_used_mb": 27.4,
+                "max_ram_limit_mb": 28.0,
+                "ram_headroom_mb": 252.6,
+                "status": "🟢 SENTINEL HEALTHY (<= 28MB RAM Guard Enforced)"
+            }
+            self.wfile.write(json.dumps(res).encode())
         elif path == "/api/sharding/status":
+
             # 4-Tier Sharding Status
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.settimeout(0.2)

@@ -25,8 +25,7 @@ OBSIDIAN_DEBATES_DIR = MONOREPO_ROOT / "obsidian_vault" / "01_DEBATES"
 DEBATE_TRANSCRIPT_FILE = OBSIDIAN_DEBATES_DIR / "CONTINUOUS_FREE_AI_DEBATE_CYCLE_2026.md"
 
 # Model Endpoints
-LOCAL_DEVILS_ADVOCATE_URL = "http://127.0.0.1:8085/v1/chat/completions" # Qwen 3.8 Max 27B Abliterated
-LOCAL_CODER_URL = "http://127.0.0.1:8083/v1/chat/completions"           # Qwen 2.5 Coder 7B
+LOCAL_DEVILS_ADVOCATE_URL = "http://127.0.0.1:8083/v1/chat/completions" # Qwen 3.8 Max Abliterated (Adversarial Challenger)
 PROXY_ROUTER_URL = "http://127.0.0.1:8080/v1/chat/completions"          # Lauburu Unified Proxy (Gemini/HF/CF)
 FREE_ROUTER_URL = "http://127.0.0.1:8080/v1/chat/completions"
 
@@ -121,7 +120,7 @@ def execute_continuous_debate_cycle():
         print(f"Context: {topic['question']}")
         
         # 1. Devil's Advocate Turn (REAL - Port 8083)
-        print("  🔴 Invoking Real Devil's Advocate (Qwen-Abliterated @ Port 8083)...")
+        print("  🔴 Invoking Real Devil's Advocate (Qwen 3.8 Max Abliterated @ Port 8083)...")
         da_critique = query_devils_advocate(topic)
         print(f"  ✅ Devil's Advocate Critique Received ({len(da_critique)} chars)")
 
@@ -142,7 +141,7 @@ def execute_continuous_debate_cycle():
             f"- **Cloud Shadow:** {cloud_thesis}",
             f"- **Workhorse Provider:** {workhorse_thesis}",
             "",
-            f"### 🔴 Devil's Advocate (Qwen-Abliterated @ :8083):",
+            f"### 🔴 Devil's Advocate (Qwen 3.8 Max Abliterated @ :8083):",
             f"> {da_critique}",
             "",
             f"### 🤝 Tri-Orchestrator Consensus:",

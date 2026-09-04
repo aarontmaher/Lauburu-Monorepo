@@ -253,7 +253,8 @@ class BluetoothSerialSelfHealingTUI:
     def run_live(self, duration: Optional[float] = None):
         """Runs the live terminal screen loop."""
         start = time.time()
-        with Live(self.build_layout(), console=self.console, refresh_per_second=int(1.0 / self.refresh_rate), screen=True) as live:
+        rps = max(1, int(round(1.0 / self.refresh_rate))) if self.refresh_rate <= 1.0 else 2
+        with Live(self.build_layout(), console=self.console, refresh_per_second=rps, screen=True) as live:
             while self.running:
                 live.update(self.build_layout())
                 time.sleep(self.refresh_rate)

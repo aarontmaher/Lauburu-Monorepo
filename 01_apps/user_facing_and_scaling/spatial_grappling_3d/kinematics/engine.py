@@ -41,6 +41,16 @@ class SpatialGrapplingMapEngine:
         self.categories_count: Dict[str, int] = {}
         self.active_position: str = "Closed Guard"
 
+    def parse_opml(self, path: Optional[Any] = None) -> List[GrapplingNode]:
+        """
+        Interface Contract (PROJECT.md):
+        Parses 3,044 nodes and maps to 10m x 10m tatami coordinates.
+        """
+        if path:
+            self.opml_path = Path(path)
+        self.nodes, self.transitions, self.categories_count = parse_opml_tree(self.opml_path)
+        return self.nodes
+
     def parse_full_opml_tree(self) -> Dict[str, Any]:
         """Parses the OPML martial tree and returns structured graph payload."""
         self.nodes, self.transitions, self.categories_count = parse_opml_tree(self.opml_path)

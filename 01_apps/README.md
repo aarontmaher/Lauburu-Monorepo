@@ -4,12 +4,13 @@
 Contains all end-user and athlete-facing applications in the Lauburu Monorepo. Every app shares the **Universal On-Device Edge Specialist AI** embedded directly in the UI.
 
 ## Application Registry
-1. `port_4000_hub/`: Central telemetry dashboard, Shopify membership tier manager ($0 Free, $19/mo Pro, Free Lifetime Crowdsourced Compute), and live readiness monitor.
-2. `movesense_hub/`: 128Hz single-lead ECG and 9-DoF IMU medical-grade Bluetooth ingestion daemon and WebSockets broadcaster.
-3. `zone2_endurance/`: Real-time DFA-alpha1 aerobic threshold (LT1/LT2) calculations and VO2max aerobic fatiguing coach.
-4. `shopify_ai/`: Autonomous Shopify store manager, profitability scanner, and crowdsourced token redemption validator.
-5. `spatial_grappling_3d/`: Three.js / WebGPU 3D spatial motion tracking arena driven by UWB anchors and multi-sensor IMU fusion.
-6. `termux_edge_daemon/`: Headless background daemon running on Android edge nodes managing network health, local RAG vector caching, and Termux-to-AGI RPC bridging.
+1. `port_4000_flutter_rust/`: Production Flutter UI + Rust Backend Core (`lauburu_port4000_core` + `lauburu_port4000_flutter`) integrated via Flutter Rust Bridge (FFI), 512Hz Pan-Tompkins QRS, DFA-alpha1 Zone 2 coach, Shopify Tier validation, and Docker containerization.
+2. `port_4000_hub/`: Central telemetry dashboard, Shopify membership tier manager ($0 Free, $19/mo Pro, Free Lifetime Crowdsourced Compute), and live readiness monitor.
+3. `movesense_hub/`: 128Hz single-lead ECG and 9-DoF IMU medical-grade Bluetooth ingestion daemon and WebSockets broadcaster.
+4. `zone2_endurance/`: Real-time DFA-alpha1 aerobic threshold (LT1/LT2) calculations and VO2max aerobic fatiguing coach.
+5. `shopify_ai/`: Autonomous Shopify store manager, profitability scanner, and crowdsourced token redemption validator.
+6. `spatial_grappling_3d/`: Three.js / WebGPU 3D spatial motion tracking arena driven by UWB anchors and multi-sensor IMU fusion.
+7. `termux_edge_daemon/`: Headless background daemon running on Android edge nodes managing network health, local RAG vector caching, and Termux-to-AGI RPC bridging.
 
 ## Universal Edge AI Integration Protocol
 - Every app embeds `edge_ai_sdk.js` or `EdgeAIService.kt`.

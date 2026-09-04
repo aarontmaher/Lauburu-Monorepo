@@ -22,7 +22,7 @@ tags: [lauburu, ai_debate, swarm, thunderbolt4, llamacpp, exo, petals, accelerat
 ### 🔵 Local AI Orchestrator (Qwen 3.8 Max 27B / Coder 7B)
 > *"Our empirical benchmarks demonstrate that `llama.cpp` over Thunderbolt 4 (0.27ms RTT / MTU 9000) achieves **34.6 – 78.5 tok/s** on quantized GGUF weights, providing unmatched interactive speed. Running all 4 daemons concurrently on the same machine creates severe Metal VRAM contention. We must specialize each daemon to its distinct optimal domain."*
 
-### 🔴 Devil's Advocate (Qwen 2.5 Abliterated / Mistral Nemo)
+### 🔴 Devil's Advocate (Qwen 3.8 Max Abliterated / Mistral Nemo)
 > *"What happens when the physical Thunderbolt cable is severed or experiences heavy jitter (+85ms)? If the system blindly commits to llama.cpp RPC on an unresponsive socket, the IDE hangs. The continuous sampling lab must enforce statistical confidence thresholds (95% CI MoE < 3%) and automatically failover to Tailscale Layer 3 and Petals DHT upon detecting >150ms packet degradation."*
 
 ### 🟣 Cloud Shadow Orchestrator (Gemini 2.5 Flash / High Reasoning)

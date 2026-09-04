@@ -26,10 +26,12 @@ from typing import Optional
 import httpx
 
 ABLITERATED_SERVERS = [
-    {"port": 8083, "model": "Qwen-Abliterated",                   "priority": 1, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Qwen2.5-7B-Instruct-abliterated.Q4_K_M.gguf"},
-    {"port": 8082, "model": "Mistral-Nemo-12B-Abliterated",        "priority": 2, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Mistral-Nemo-Instruct-2407-abliterated.Q4_K_M.gguf"},
-    {"port": 8083, "model": "Llama-3.1-8B-Abliterated",           "priority": 3, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/meta-llama-3.1-8b-instruct-abliterated.Q4_K_M.gguf"},
-    {"port": 8085, "model": "Llama-3.1-Nemotron-70B-Abliterated", "priority": 4, "path": "/Users/aaron/models/Llama-3.1-Nemotron-70B-Instruct-HF-abliterated-Q4_K_M.gguf"},
+    {"port": 8083, "model": "Qwen-3.8-Max-Abliterated",           "priority": 1, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf"},
+    {"port": 8083, "model": "Llama-3.2-1B-Abliterated",           "priority": 2, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Llama-3.2-1B-Instruct-abliterated.Q4_K_M.gguf"},
+    {"port": 8082, "model": "Mistral-Nemo-12B-Abliterated",        "priority": 3, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Mistral-Nemo-Instruct-2407-abliterated.Q4_K_M.gguf"},
+    {"port": 8083, "model": "Llama-3.1-8B-Abliterated",           "priority": 4, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/meta-llama-3.1-8b-instruct-abliterated.Q4_K_M.gguf"},
+    {"port": 8085, "model": "Llama-3.1-Nemotron-70B-Abliterated", "priority": 5, "path": "/Users/aaron/models/Llama-3.1-Nemotron-70B-Instruct-HF-abliterated-Q4_K_M.gguf"},
+    {"port": 8081, "model": "Qwen-2.5-Coder-Local",               "priority": 6, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen2.5-coder-7b-instruct-q4_k_m.gguf"},
 ]
 
 LORA_DATASET = Path("/Users/aaron/DFS_UNIFIED/lora_datasets/devils_advocate_training.jsonl")
@@ -55,8 +57,10 @@ def check_server(port: int, timeout: float = 2.0) -> bool:
     try:
         r = httpx.get(f"http://localhost:{port}/health", timeout=timeout)
         data = r.json()
-        # Accept "ok" or "loading" (still initialising but will serve)
-        return r.status_code in (200, 503) and "error" not in str(data).lower()
+        if "Decentralized prima.cpp" in str(data):
+            return False
+        # llama-server /health returns {"status": "ok"} or {"status": "loading model"}
+        return r.status_code in (200, 503) and data.get("status") in ("ok", "loading model", "loading")
     except Exception:
         return False
 

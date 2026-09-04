@@ -1,89 +1,118 @@
-# Handoff Report — Milestone 2 (M2)
-**Date:** 2026-08-29T12:22:00Z  
+# Handoff Report: R2 Canonical Read-Only Storage Context Map Governance
+
+**Date:** 2026-09-04  
 **Agent:** `teamwork_preview_worker_m2`  
-**Working Directory:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m2/`  
-**Target Milestone:** Milestone 2 (Continuous Multi-Model LoRA Dataset Harvesting & Nightly Metal GPU Training Pipeline)
+**Working Directory:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m2`  
+**Orchestrator:** `teamwork_preview_orchestrator_23` (`878c1253-0956-4401-91a5-0f3927d54244`)  
+**Handoff Type:** Hard (Implementation & Verification Complete)  
 
 ---
 
 ## 1. Observation
 
-Direct observations and evidence across all Milestone 2 targets:
+### 1.1 Git Tracking & Staging
+Executed command:
+```bash
+git status -s 07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md \
+              obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md \
+              tests/test_storage_architecture_governance.py
+```
+Verbatim output:
+```
+A  07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md
+A  obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md
+A  tests/test_storage_architecture_governance.py
+```
+Both canonical context map files and the new governance test suite are staged in git index.
 
-1. **Multi-Stream Harvesting & Interface Contracts (`tri_vault_sink.py` & `continuous_training_debate_daemon.py`)**:
-   - `04_data_and_memory/tri_vault_sink.py` implements:
-     * `append_verified_pair(dataset_path: Union[str, Path], pair: Dict[str, Any]) -> bool` (Lines 606–624)
-     * `get_daily_verified_count(dataset_path: Union[str, Path]) -> int` (Lines 626–643)
-     * `export_code_diff_pair(diff_record, target_filename)` (Lines 646–687)
-     * `export_math_proof_pair(math_record, target_filename)` (Lines 689–730)
-     * `export_recovery_action_pair(recovery_record, target_filename)` (Lines 732–773)
-     * `export_training_game_pair(game_record, target_filename)` (Lines 775–811)
-     * `stream_loss_to_obsidian(step, loss, lr, metrics, note_path)` (Lines 815–878)
-   - `verify_zero_mock_compliance` enforces Rule #0: rejects `truth_verified == False`, `truth_compliance_pct < 100.0`, dummy zero arrays `[0, 0, 0]`, and negative latencies.
-   - `04_data_and_memory/continuous_training_debate_daemon.py` orchestrates continuous harvesting across 5 streams (Debate Transcripts, AST Code Diffs, Mathematical Proofs, Autonomic Recovery Actions, AI Training Game Duels).
+### 1.2 POSIX Permissions & Mode
+Executed command:
+```bash
+stat -f "%Sp %p %z %N" \
+  07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md \
+  obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md
+```
+Verbatim output:
+```
+-r--r--r-- 100444 5548 07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md
+-r--r--r-- 100444 5548 obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md
+```
+- POSIX permissions: `-r--r--r--` (`0100444`).
+- All write bits (user, group, other) are cleared (`mode & 0o222 == 0`).
+- Exact size: 5,548 bytes, 67 lines each.
 
-2. **Dataset Aggregation Verification (`ai_training_game_dataset.jsonl`)**:
-   - Running `python3 04_data_and_memory/continuous_training_debate_daemon.py --stats` outputs:
-     ```json
-     {
-       "dataset_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/ai_training_game_dataset.jsonl",
-       "total_pairs": 508,
-       "verified_24h_pairs": 507,
-       "file_size_bytes": 669168,
-       "quota_target_daily": 500,
-       "quota_satisfied": true,
-       "rule_zero_compliant": true
-     }
-     ```
-   - Meets and exceeds the daily aggregation requirement of $\ge 500$ verified pairs.
+### 1.3 SHA256 Parity & Checksum Matching
+Executed command:
+```bash
+shasum -a 256 \
+  07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md \
+  obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md
+```
+Verbatim output:
+```
+80e96726403861ba55f8d9029442fb44e581bfb2da345adc0a27fce024ef0b02  07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md
+80e96726403861ba55f8d9029442fb44e581bfb2da345adc0a27fce024ef0b02  obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md
+```
+Zero divergence; 100% bit-for-bit parity matches the canonical hash `80e96726403861ba55f8d9029442fb44e581bfb2da345adc0a27fce024ef0b02`.
 
-3. **Nightly Apple Metal GPU QLoRA Distillation & RAM Governance (`fast_train_agentworld_mac.py`)**:
-   - `06_scripts_and_tooling/training/fast_train_agentworld_mac.py` and `04_data_and_memory/fast_train_agentworld_mac.py` implement:
-     * Dynamic RAM Governance: Total RAM = 24.0 GB, Dynamic Cap = 21.6 GB (90% limit).
-     * Model Allocation: Base (14.50 GB) + KV Cache (2.10 GB) + Activations (1.80 GB) = 18.40 GB.
-     * Headroom: $21.60\text{ GB} - 18.40\text{ GB} = 3.20\text{ GB} \ge 2.50\text{ GB}$ minimum headroom (`CERTIFIED_HEALTHY`).
-     * Zero-copy Apple MLX (`mlx_lm.lora`) and PyTorch MPS (`torch.backends.mps`) execution backends.
+### 1.4 Automated Test Suite Execution
+Executed command:
+```bash
+pytest tests/test_storage_architecture_governance.py -v
+```
+Verbatim output:
+```
+============================= test session starts ==============================
+platform darwin -- Python 3.13.15, pytest-9.1.1, pluggy-1.6.0 -- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+plugins: asyncio-1.4.0, anyio-4.14.2
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 7 items
 
-4. **Obsidian Live Loss Curve Streaming (`QWEN_MATH_CONTINUOUS_OPTIMIZATION_TRENDS_2026.md`)**:
-   - `obsidian_vault/04_ANALYTICS/QWEN_MATH_CONTINUOUS_OPTIMIZATION_TRENDS_2026.md` receives direct mathematical loss updates containing:
-     * ISO-8601 UTC timestamp
-     * Current step and computed loss value ($L(t) = 0.42 + 1.76 \cdot e^{-0.0008 \cdot t}$)
-     * Optimal latency striping weights: TB4 = 97.5%, WireGuard = 2.1%, Wi-Fi 7 = 0.4%
-     * RAM governor equation: `Headroom = Cap (21.6GB) - [Base + KV + Act] = 3.20GB >= 2.50GB`
-     * Master Wikilinks (`[[CANONICAL_PROJECT_AND_STORAGE_RULE]]`, `[[LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX]]`, `[[Index]]`).
+tests/test_storage_architecture_governance.py::TestStorageArchitectureGovernance::test_both_context_map_files_exist_and_nonzero PASSED [ 14%]
+tests/test_storage_architecture_governance.py::TestStorageArchitectureGovernance::test_context_map_permissions_mode_0444 PASSED [ 28%]
+tests/test_storage_architecture_governance.py::TestStorageArchitectureGovernance::test_adversarial_write_rejection PASSED [ 42%]
+tests/test_storage_architecture_governance.py::TestStorageArchitectureGovernance::test_sha256_mirror_parity PASSED [ 57%]
+tests/test_storage_architecture_governance.py::TestStorageArchitectureGovernance::test_frontmatter_governance_and_consensus_freeze PASSED [ 71%]
+tests/test_storage_architecture_governance.py::TestStorageArchitectureGovernance::test_git_version_control_tracking PASSED [ 85%]
+tests/test_storage_architecture_governance.py::TestStorageArchitectureGovernance::test_tri_vault_storage_health PASSED [100%]
 
-5. **MergeKit Consensus Weight Merging (`autonomous_consensus_merger.py`)**:
-   - `06_scripts_and_tooling/training/autonomous_consensus_merger.py` evaluates Tri-Orchestrator consensus:
-     * When consensus $> 0.95$: Triggers merge (`TRIGGERED`), generates DARE-TIES/SLERP YAML recipe in `data/mergekit_recipes/`, creates offspring artifact in `data/models/`, registers offspring in `data/canonical_ai_leaderboard.json`, and strictly verifies that Parent 1 and Parent 2 models are preserved.
-     * When consensus $\le 0.95$: Rejects merge (`REJECTED`) and creates zero recipe/offspring files.
-
-6. **Test Verification**:
-   - Master M2 Test Suite (`tests/test_milestone2_lora_harvesting_and_metal_training.py`): 15 passed in 0.62s.
-   - Combined Test Suites (`pytest tests/test_milestone3_trivault_resilience.py tests/test_milestone2_lora_harvesting_and_metal_training.py`): 42 passed in 1.67s.
-   - Adversarial Sync Stress Test (`python3 tests/adversarial_r6_lora_sync_stress.py`): 5/5 PASSED.
+============================== 7 passed in 0.05s ===============================
+```
 
 ---
 
 ## 2. Logic Chain
 
-1. **Multi-Stream Harvesting**: To eliminate simulated training data, the harvesting daemon continuously ingests live empirical signals across 5 distinct domains (Tri-Orchestrator debates, AST code diffs, closed-form math proofs, autonomic self-healing actions, and training game duels). Each record is gated through `verify_zero_mock_compliance`, ensuring only 100% verified empirical telemetry enters `ai_training_game_dataset.jsonl`.
-2. **Quota Guarantee**: By running automated batches and continuous harvesting, the daemon maintains a rolling daily volume of $\ge 500$ verified pairs in `ai_training_game_dataset.jsonl`, satisfying the continuous harvesting quota.
-3. **Dynamic RAM Governance**: Fine-tuning a 35B parameter QLoRA model on an Apple M4 Pro (24 GB RAM) without paging requires strict VRAM limits. Capping AI VRAM at 21.6 GB (90%) with 18.4 GB total allocation guarantees a 3.20 GB safety headroom ($\ge 2.50\text{ GB}$ required) and executes proactive MPS garbage collection before each training iteration.
-4. **Obsidian Loss Streaming**: Training loss and multi-link latency weights (inverse-variance weighting) are streamed directly into `obsidian_vault/04_ANALYTICS/QWEN_MATH_CONTINUOUS_OPTIMIZATION_TRENDS_2026.md`, keeping the Obsidian vault synchronized with model convergence.
-5. **MergeKit Consensus Integrity**: Model merging must only occur when Tri-Orchestrators reach supermajority consensus ($> 0.95$). Enforcing strict parent model retention prevents regression of base specialized capabilities.
+1. **Step 1 (Grounding in Explorer Survey)**: Explorer `teamwork_preview_explorer_survey_governance` identified that while both files maintained bit-for-bit parity, they were untracked in git and had permissive `0644` permissions allowing write operations by user `aaron`.
+2. **Step 2 (Git Staging)**: Staging `07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md` and `obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md` establishes git baseline tracking, closing the audit and change-detection gap.
+3. **Step 3 (POSIX Enforcement)**: Executing `chmod 0444` strips user, group, and other write permissions (`0o222`), converting the files to immutable read-only state.
+4. **Step 4 (Adversarial & Governance Test Design)**: Built `tests/test_storage_architecture_governance.py` with 7 zero-mock tests:
+   - Evaluates file existence, non-zero sizes, and exact size equality.
+   - Asserts mode `0o444`, `mode & 0o222 == 0`, and `os.access(..., os.W_OK) == False`.
+   - Performs authentic adversarial write/append attempts (`open(..., "a")`, `open(..., "w")`) and verifies `PermissionError` is raised by the operating system.
+   - Dynamically digests SHA256 hashes, asserting primary == mirror == `80e96726...0b02`.
+   - Inspects YAML frontmatter and document body to verify freeze declarations (`status: READ_ONLY_AWAITING_CLOUD_CONSENSUS`, `access_mode: READ_ONLY`, Gemini 3.8 Flash High review requirements, and Aaron's `/grill-me` sovereign sign-off).
+   - Validates git tracking status via `git status` and `git ls-files`.
+   - Evaluates Tri-Vault storage health invariants (Obsidian Vault and `Index.md` with required Wikilinks, PySpark Data Lake directory, absence of `.git/index.lock`, and free disk space >= 5.0 GB).
+5. **Step 5 (Verification Execution)**: All 7 tests executed cleanly and passed in 0.05 seconds.
 
 ---
 
 ## 3. Caveats
 
-- **MLX Execution Environment**: Full Apple MLX training requires `mlx_lm` package installed in the active environment. When run in dry-run mode or testing environments, the execution plan, RAM bounds, and loss streaming are validated without running the long iterative training loop.
-- **Physical Sensor Telemetry**: If physical BLE Movesense hardware is temporarily unbonded during test execution, the daemon ingests verified empirical telemetry streams and system syscalls under the quarantine rule.
+1. **Content Immutability**: Neither `STORAGE_ARCHITECTURE_CONTEXT_MAP.md` nor its Obsidian mirror was modified during this milestone. The content remains 100% frozen awaiting formal consensus.
+2. **Future Consensus Protocol**: If Cloud Shadow Orchestrators (Gemini 3.8 Flash High) and Aaron grant `/grill-me` authorization to update the architecture, permissions must first be unlocked via `chmod 0644` before modifications can occur.
 
 ---
 
 ## 4. Conclusion
 
-Milestone 2 (M2) is **COMPLETE**, verified, and fully compliant with all architectural constraints, Rule #0 Zero-Mock validation, dynamic RAM limits, and interface contracts.
+Requirement R2 (Canonical Read-Only Storage Context Map Governance) is fully satisfied:
+- Git tracking is active on both the primary document and the Obsidian Vault mirror.
+- POSIX read-only mode `0444` is actively enforced by the operating system.
+- An automated 7-test regression suite (`tests/test_storage_architecture_governance.py`) is deployed and passing at 100%.
 
 ---
 
@@ -92,18 +121,24 @@ Milestone 2 (M2) is **COMPLETE**, verified, and fully compliant with all archite
 To independently verify this implementation, run:
 
 ```bash
-# 1. Run Master M2 Verification Test Suite (15 Tests)
-python3 -m pytest tests/test_milestone2_lora_harvesting_and_metal_training.py
+cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
 
-# 2. Run Combined Resilience & M2 Test Suites (42 Tests)
-python3 -m pytest tests/test_milestone3_trivault_resilience.py tests/test_milestone2_lora_harvesting_and_metal_training.py
+# 1. Inspect POSIX mode (expected: -r--r--r-- 100444)
+stat -f "%Sp %p %z %N" \
+  07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md \
+  obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md
 
-# 3. Check Dataset Statistics & Daily 500-Pair Quota
-python3 04_data_and_memory/continuous_training_debate_daemon.py --stats
+# 2. Inspect SHA256 checksum parity (expected: 80e96726...0b02 on both)
+shasum -a 256 \
+  07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md \
+  obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md
 
-# 4. Verify Fast-Train RAM Governor & Obsidian Streaming
-python3 06_scripts_and_tooling/training/fast_train_agentworld_mac.py --dry-run --iters 500
+# 3. Check git staging status (expected: 'A' for both files)
+git status -s \
+  07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md \
+  obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md
 
-# 5. Verify Autonomous Consensus Merger
-python3 06_scripts_and_tooling/training/autonomous_consensus_merger.py
+# 4. Execute the governance test suite (expected: 7 passed in < 0.1s)
+pytest tests/test_storage_architecture_governance.py -v
 ```
+

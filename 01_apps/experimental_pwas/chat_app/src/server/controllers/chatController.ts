@@ -1,4 +1,5 @@
 import { ChatService } from '../services/chatService';
+import { EdgeAIChatRouter, DeviceProfile } from '../services/edgeAIChatRouter';
 
 export class ChatController {
     private chatService: ChatService;
@@ -11,11 +12,40 @@ export class ChatController {
 
     public async sendMessage(req: any, res: any): Promise<void> {
         try {
-            const { sender, content } = req.body;
-            const message = await this.chatService.saveMessage(sender, content);
-            res.status(201).json(message);
+            const { sender, content, device } = req.body;
+            
+            // 1. Save user message
+            const userMsg = await this.chatService.saveMessage(sender || 'User', content);
+
+            // 2. Parse client device profile (or infer from headers)
+            const deviceProfile: DeviceProfile = device || {
+                platform: (req.headers['sec-ch-ua-platform'] || '').toLowerCase().includes('android') ? 'android' : 'web',
+                ramGb: req.body.ramGb || 4.0
+            };
+
+            // 3. Generate Edge AI Response using device-specific model
+            const history = (await this.chatService.getMessages()).map(m => ({
+                role: m.sender === 'AI_Assistant' ? 'assistant' : 'user',
+                content: m.content
+            }));
+
+            const aiResponse = await EdgeAIChatRouter.generateResponse(history, deviceProfile);
+
+            // 4. Save and return AI response
+            const aiMsg = await this.chatService.saveMessage(
+                `AI_Assistant (${aiResponse.model.name})`,
+                aiResponse.text
+            );
+
+            res.status(201).json({
+                userMessage: userMsg,
+                aiMessage: aiMsg,
+                modelUsed: aiResponse.model,
+                latencyMs: aiResponse.latencyMs
+            });
         } catch (error) {
-            res.status(500).json({ error: 'Failed to send message' });
+            console.error('ChatController error:', error);
+            res.status(500).json({ error: 'Failed to process edge chat message' });
         }
     }
 
@@ -28,3 +58,4 @@ export class ChatController {
         }
     }
 }
+

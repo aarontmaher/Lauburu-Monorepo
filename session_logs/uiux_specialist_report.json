@@ -1,17 +1,17 @@
 {
-  "timestamp": "2026-08-30T00:12:20Z",
+  "timestamp": "2026-09-03T16:00:13Z",
   "screens_audited": 14,
-  "screens_patched": 5,
+  "screens_patched": 0,
   "lora_pairs_added": 14,
   "results": [
     {
       "status": "AUDITED",
       "screen": "Medical Biometrics & ECG",
       "file": "biometrics_screen.py",
-      "architect_proposal": "1. **Problem**: Lack of visual hierarchy and grouping in the scrollable container.\n   **Fix**: Use `Vertical` container to group related statics and improve layout efficiency.\n   **Impact**: MEDIUM\n\n ",
-      "critic_verdict": "**Highest ROI**: Visual hierarchy improvement (Impact: MEDIUM, Effort: MEDIUM). It organizes content logically, enhancing understandability and naviga",
-      "code_patch_generated": true,
-      "patch_preview": "```python\nfrom textual.containers import Vertical\n\nclass MedicalBiometricsScreen(Screen):\n    def compose(self) -> ComposeResult:\n        with Vertical():\n            with ScrollableContainer():\n     "
+      "architect_proposal": "",
+      "critic_verdict": "",
+      "code_patch_generated": false,
+      "patch_preview": ""
     },
     {
       "status": "AUDITED",
@@ -26,17 +26,17 @@
       "status": "AUDITED",
       "screen": "Network Topology & Transports",
       "file": "network_screen.py",
-      "architect_proposal": "### Problem 1: Incomplete Code\n- The `compose` method is not fully implemented, with an incomplete `with` block.\n\n- **Fix:** Complete the `compose` method to properly define the layout.\n  ```python\n  ",
-      "critic_verdict": "**Highest ROI:** Problem 2 (MEDIUM impact) as it directly addresses visual clarity, enhancing usability and reducing cognitive load.\n\n**Incorrect Sugg",
-      "code_patch_generated": true,
-      "patch_preview": "```python\n\"\"\"\nCanonical Port TUI - Screen 1: Bare-Metal Networking (Layer 0 Primary)\nVersion: 3.0.0-CANONICAL\nGround-up stability foundation: WoL -> BT PAN -> KDE Connect -> TB4 DMA -> Multi-WAN & Tai"
+      "architect_proposal": "",
+      "critic_verdict": "",
+      "code_patch_generated": false,
+      "patch_preview": ""
     },
     {
       "status": "AUDITED",
       "screen": "Hardware Node Matrix",
       "file": "hardware_screen.py",
-      "architect_proposal": "### Problem: The code lacks a clear and organized layout for the hardware node information, making it hard to distinguish between different types of data.\n### Fix: Organize the layout by separating th",
-      "critic_verdict": "**Highest ROI:** Separating hardware node information into distinct sections with labels and CSS classes has the highest ROI. This directly addresses ",
+      "architect_proposal": "",
+      "critic_verdict": "",
       "code_patch_generated": false,
       "patch_preview": ""
     },
@@ -71,8 +71,8 @@
       "status": "AUDITED",
       "screen": "Live Arena Development",
       "file": "live_arena_dev_screen.py",
-      "architect_proposal": "### Problem 1: Lack of separation between different functionalities and visual clutter.\n**Proposed Fix:**\n- Use `Vertical` containers to separate code snippets, log, and other functionalities.\n- Apply",
-      "critic_verdict": "**Highest ROI:** Problem 1 (HIGH impact). It directly addresses visual clutter and improves layout, enhancing usability and readability.\n\n**Technical ",
+      "architect_proposal": "",
+      "critic_verdict": "",
       "code_patch_generated": false,
       "patch_preview": ""
     },
@@ -107,28 +107,28 @@
       "status": "AUDITED",
       "screen": "Optimization & Benchmarks",
       "file": "optimization_screen.py",
-      "architect_proposal": "### Problem 1: Inconsistent Tab Order and Lack of Clarity\n**Problem:** The tab order is not logical, and the tabs are not clearly grouped by their function.\n\n**Fix:**\n- Use `TabPane` IDs to group logi",
-      "critic_verdict": "**Highest ROI**: Problem 1 (HIGH). The logical grouping and ordered tabs improve navigation and comprehension, reducing user confusion and time spent.",
-      "code_patch_generated": true,
-      "patch_preview": "```python\nfrom textual.widgets import TabPane\n\n# Inside the TabbedContent initialization\nlog_pane = TabPane(\"Logs\", id=\"logs\")\nsettings_pane = TabPane(\"Settings\", id=\"settings\")\nnetwork_pane = TabPane"
+      "architect_proposal": "",
+      "critic_verdict": "",
+      "code_patch_generated": false,
+      "patch_preview": ""
     },
     {
       "status": "AUDITED",
       "screen": "Tooling & Scripts",
       "file": "tooling_screen.py",
-      "architect_proposal": "### Problem 1: Inconsistent and Unclear Layout for Tooling Information\n**Proposed Fix:**\n- Ensure a consistent layout for displaying tooling information by using `Horizontal` and `Vertical` containers",
-      "critic_verdict": "**Highest ROI**: Problem 1. It directly impacts visual clarity and user experience, making it the most noticeable improvement.\n\n**Technically Incorrec",
-      "code_patch_generated": true,
-      "patch_preview": "```python\nfrom textual.containers import Horizontal, Vertical\n\nclass ToolingScreen(Screen):\n    def compose(self) -> ComposeResult:\n        yield Header()\n        yield Vertical(\n            Horizonta"
+      "architect_proposal": "",
+      "critic_verdict": "",
+      "code_patch_generated": false,
+      "patch_preview": ""
     },
     {
       "status": "AUDITED",
       "screen": "Commercialization & Business",
       "file": "commercialization_screen.py",
-      "architect_proposal": "### Problem 1: The `VerticalScroll` container is unnecessary and can cause confusion.\n- The `CommercializationUnlockWidget` does not require a scroll container since its content is likely to be minima",
-      "critic_verdict": "**Highest ROI**: Problem 1 (HIGH Impact). Removing the unnecessary `VerticalScroll` improves performance and reduces visual clutter, enhancing UX. Thi",
-      "code_patch_generated": true,
-      "patch_preview": "```python\n\"\"\"\nCanonical Port TUI - Commercialization & Capability Tier Screen\nVersion: 1.0.0-CANONICAL\n\nScreen wrapper mounting the CommercializationUnlockWidget with Shopify/Stripe deep links.\n\"\"\"\n\nf"
+      "architect_proposal": "",
+      "critic_verdict": "",
+      "code_patch_generated": false,
+      "patch_preview": ""
     }
   ]
 }

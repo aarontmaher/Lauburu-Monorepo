@@ -1,67 +1,57 @@
-# BRIEFING — 2026-08-28T20:04:00Z
+# BRIEFING — 2026-09-01T09:50:30Z
 
 ## Mission
-Objective and adversarial quality review of Milestone 1: Cloudflare Zero Trust Telemetry & TUI Arena Integration.
+Adversarial and objective quality review of High Confidence Swarm Runner (`high_confidence_swarm_runner.py`), test suite, and state persistence.
 
 ## 🔒 My Identity
-- Archetype: reviewer
+- Archetype: reviewer_critic
 - Roles: reviewer, critic
 - Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/reviewer_1
-- Original parent: 9e0d5e24-d9fb-49d8-b62d-be34c78d1690
-- Milestone: Milestone 1 (Cloudflare Zero Trust Telemetry & TUI Arena Integration)
+- Original parent: 1d5c1355-e31f-4438-ba70-515603045c2d
+- Milestone: high_confidence_swarm_runner_review
 - Instance: 1 of 1
 
 ## 🔒 Key Constraints
 - Review-only — do NOT modify implementation code
-- Zero-mock / Rule #0 compliance verification (no fake/simulated data; fallback to `--` or empty lists)
-- Verify non-blocking async event loops
-- Verify GraphQL query accuracy and REST endpoint accuracy
-- Full adversarial stress testing (integrity, attack surface, edge cases, error handling)
+- Zero integrity violation tolerance (no hardcoded test outputs, no facade implementations, no shortcuts, no fake logs)
+- Strictly verify: Dynamic Confidence Gate (tau=0.85), Zero-Spend ($0.00 AUD), RAM Headroom (>=4.5 GB), Dual-mode execution
 
 ## Current Parent
-- Conversation ID: 9e0d5e24-d9fb-49d8-b62d-be34c78d1690
-- Updated: 2026-08-28T20:04:00Z
+- Conversation ID: 1d5c1355-e31f-4438-ba70-515603045c2d
+- Updated: not yet
 
 ## Review Scope
-- **Files reviewed**:
-  - `06_scripts_and_tooling/cloudflare_telemetry.py`
-  - `01_apps/canonical_port/tui/widgets/red_blue_arena_widget.py`
-  - `01_apps/canonical_port/tui/screens/training_screen.py`
-  - `01_apps/canonical_port/tui/widgets/lauburu_gyms_widget.py`
-  - `01_apps/canonical_port/backend/training_telemetry_collector.py`
-  - `tests/unit/test_cloudflare_telemetry.py`
-  - `tests/e2e/test_cloudflare_telemetry_tui_e2e.py`
-  - `01_apps/canonical_port/tests/unit/test_cloudflare_tui_integration.py`
-- **Interface contracts**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md`, `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/ORIGINAL_REQUEST.md`
-- **Review criteria**: correctness, GraphQL/REST query accuracy, live thought streaming, visual correlation, async performance, Rule #0 compliance, test pass rate.
+- **Files to review**:
+  - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/high_confidence_swarm_runner.py`
+  - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/high_confidence_runner_state.json`
+  - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/test_high_confidence_runner.py`
+  - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/test_cloud_oracle_shadow.py`
+  - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/test_dual_world_mcts.py`
+- **Interface contracts**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/PROJECT.md`, `TEST_READY.md`, `.agents/ORIGINAL_REQUEST.md`
+- **Review criteria**: correctness, completeness, robustness, zero-mock integrity, zero-spend invariant, memory headroom enforcement
 
 ## Review Checklist
-- **Items reviewed**:
-  - Cloudflare GraphQL queries (`firewallEventsAdaptive`, `httpRequestsAdaptiveGroups`) [VERIFIED]
-  - Zero Trust Access audit REST endpoint (`/access/logs/access_requests`) [VERIFIED]
-  - Live `<think>` Chain of Thought streaming panel (`#panel-thought-stream`) [VERIFIED]
-  - Visual correlation between Red Team intent & Blue Team WAF blocks [VERIFIED]
-  - Non-blocking async event loop behavior & reactive properties [VERIFIED]
-  - Rule #0 zero-mock compliance (`--` & `[]` fallbacks, zero hardcoded secrets) [VERIFIED]
-  - Pytest test execution (86/86 passed) [VERIFIED]
-- **Verdict**: APPROVE
-- **Unverified claims**: None
+- **Items reviewed**: `high_confidence_swarm_runner.py`, `high_confidence_runner_state.json`, `test_high_confidence_runner.py`, `test_cloud_oracle_shadow.py`, `test_dual_world_mcts.py`, `TEST_READY.md`, `PROJECT.md`
+- **Verdict**: REQUEST_CHANGES
+- **Unverified claims**: Hardcoded strings in `execute_step()` bypassing MCTS/Oracle; hardcoded 4.7 GB RAM headroom floor in `verify_ram_headroom()`.
 
 ## Attack Surface
 - **Hypotheses tested**:
-  - Malformed/corrupt timestamps in thought logs & WAF events (Passed without exception)
-  - Zero/negative/identical values in Braille sparkline generator (Passed with valid Braille characters)
-  - HTTP 429 rate limit & unauthorized HTTP 401/403 status handling (Passed with graceful empty fallbacks)
-  - Memory leak resistance via bounded deques (Passed with maxlen=30 / capacity=1000)
-- **Vulnerabilities found**: None
-- **Untested angles**: Live production Cloudflare edge traffic with active API tokens (tested via mocked responses and unconfigured clean fallback states)
+  - RAM governor behavior when real memory < 4.5 GB: Confirmed failure mode (masked by `max(4.7, ...)`).
+  - Direct execution behavior with mock/disabled oracle: Confirmed failure mode (static strings returned without invoking engine).
+  - Zero-dollar spend violation handling: Confirmed robust exception handling.
+  - Confidence scoring formula & domain classification: Verified mathematical clamping and domain routing.
+- **Vulnerabilities found**:
+  - Integrity Violation 1: Hardcoded MCTS & Oracle output strings in `execute_step()`.
+  - Integrity Violation 2: Hardcoded RAM floor (`max(4.7, ...)`) masking low memory conditions.
+  - Major finding 3: Router Sentinel static default fallback (27.8 MB).
+- **Untested angles**: Hardware-level Metal GPU cache release during live PyTorch execution.
 
 ## Key Decisions Made
-- Confirmed full compliance with Milestone 1 specifications and follow-up user directive.
-- Issued verdict: `APPROVE`.
+- Issued verdict: `REQUEST_CHANGES` due to integrity violations in `execute_step()` and `verify_ram_headroom()`.
 
 ## Artifact Index
-- `.agents/reviewer_1/DISPATCH.md` — Incoming dispatch record
-- `.agents/reviewer_1/BRIEFING.md` — Active working memory and review state
-- `.agents/reviewer_1/progress.md` — Liveness heartbeat
-- `.agents/reviewer_1/handoff.md` — Final review report
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/reviewer_1/DISPATCH.md` — Log of incoming instructions
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/reviewer_1/BRIEFING.md` — Persistent working memory
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/reviewer_1/progress.md` — Liveness heartbeat
+- `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/reviewer_1/handoff.md` — 5-Component Review & Adversarial Challenge Report

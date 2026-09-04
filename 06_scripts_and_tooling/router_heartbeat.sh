@@ -4,6 +4,7 @@
 # * * * * * /root/router_heartbeat.sh
 
 L1_IP="192.168.8.230"
+L1_TS_IP="100.119.199.76"
 HEARTBEAT_PORT=18803
 
 STATE="HEALTHY"
@@ -22,6 +23,16 @@ if ! netstat -nlp | grep -q ":5037"; then
     fi
 fi
 
-# 3. Fire UDP Heartbeat payload to Mac Host
-PAYLOAD="{\"node\": \"GL-MT3600BE\", \"state\": \"$STATE\", \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}"
-echo "$PAYLOAD" | nc -u -w 1 $L1_IP $HEARTBEAT_PORT
+# 3. Fire UDP Heartbeat payload to Mac Host across both LAN and Tailscale paths via Python socket
+python3 -c "
+import socket, json, time, sys
+payload = json.dumps({'node': 'GL-MT3600BE', 'state': '$STATE', 'timestamp': time.strftime('%Y-%m-%dT%H:%M:%SZ')}).encode('utf-8')
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.settimeout(1.0)
+for ip in ['$L1_IP', '$L1_TS_IP']:
+    try:
+        sock.sendto(payload, (ip, $HEARTBEAT_PORT))
+    except Exception:
+        pass
+sock.close()
+" 2>/dev/null || true

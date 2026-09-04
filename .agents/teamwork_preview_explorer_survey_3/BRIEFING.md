@@ -1,46 +1,43 @@
-# BRIEFING — 2026-08-29T12:05:00Z
+# BRIEFING — 2026-09-02T05:53:15+10:00
 
 ## Mission
-Survey Tri-Vault storage state, self-healing daemons, and hardware health metrics for Requirement R3.
+Comprehensive survey of Gen 2 Headless Safety, Notebook Verification Pipelines, Tri-Vault Storage Invariants, and Multi-View UI Validation Strategies.
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: [explorer, investigator, synthesist]
+- Roles: survey, analysis, synthesis
 - Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3
-- Original parent: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
-- Milestone: survey
+- Original parent: e9421748-42ff-4cf4-b121-3c19a4436405
+- Milestone: Headless Safety & Verification Pipeline Survey
 
 ## 🔒 Key Constraints
 - Read-only investigation — do NOT implement
-- Zero-mock / zero-simulated data compliance
-- Must survey all 5 focus areas thoroughly with exact files, line numbers, and commands
+- Zero-mock / Zero-simulated data enforcement
+- Produce self-contained handoff.md report with 5 components
+- Communicate via send_message to parent
 
 ## Current Parent
-- Conversation ID: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
-- Updated: 2026-08-29T12:05:00Z
+- Conversation ID: e9421748-42ff-4cf4-b121-3c19a4436405
+- Updated: 2026-09-02T05:53:15+10:00
 
 ## Investigation State
-- **Explored paths**:
-  - `obsidian_vault/` (`Index.md`, `01_DEBATES`, `04_ANALYTICS`, canonical rules)
-  - `04_data_and_memory/` and `/Users/aaron/DFS_UNIFIED/lora_datasets/` (46,845 JSONL dataset lines across 38 files)
-  - `04_data_and_memory/tri_vault_sink.py` (atomic POSIX writes, health checks)
-  - `00_core_infrastructure/self_healing_hub/src/` (`daemon_manager.py`, `lauburu_service_daemon.py`, `universal_mesh_healer.py`)
-  - `06_scripts_and_tooling/network/` (`hybrid_router_mesh_governor.py`, `real_hardware_router_ram_governor.py`, `router_onboard_micro_governor.sh`)
-  - `00_core_infrastructure/router_gateway_healer/router_mesh_watchdog.sh`
-  - `tests/e2e/run_all_e2e_tests.py` and subsystem unit tests
+- **Explored paths**: `01_apps/notebooks/`, `obsidian_vault/notebooks/`, `00_core_infrastructure/`, `.agents/teamwork_preview_*`
 - **Key findings**:
-  - Tri-Vault layers (Obsidian, PySpark Lake, Git repo) verified healthy with POSIX atomic sync and automatic directory healing.
-  - `04_data_and_memory/ai_training_game_dataset.jsonl` currently has 1 line (479 bytes); cron pipeline needs to scale it to $\ge 500$ pairs/day.
-  - Sub-second failover watchdogs exist across Ports 8080-8086, 18802 (Self-Healing Hub/WoL), 50052, 8088.
-  - GL-MT3600BE Router RAM (<1.8MB onboard micro-governor footprint) safe against $\le 35\text{MB}$ threshold, with `drop_caches` over SSH.
-  - Master 4-tier E2E test suite has 184/184 tests passing (100% pass rate in 2.96s).
-- **Unexplored areas**: None. All 5 focus areas investigated and documented.
+  1. `matplotlib.use('Agg')` must be added before `import matplotlib.pyplot as plt` in Cell 0 to satisfy Gen 2 Headless Safety.
+  2. `--headless=new` verified on host Google Chrome 152.0.7977.65.
+  3. `jupyter nbconvert --to notebook --execute` (via `/Users/aaron/.local/share/uv/tools/jupyterlab/bin/jupyter`) and `papermill -k python3` execute all 16 cells headlessly in $< 3.0$ seconds.
+  4. Adding `"kernelspec": {"name": "python3", "display_name": "Python 3 (ipykernel)", "language": "python"}` to notebook metadata enables seamless Papermill execution.
+  5. Tri-Vault storage is healthy; dual-notebook synchronization protocol identified (`01_apps/` -> `obsidian_vault/` .ipynb + `jupytext --to markdown` .md).
+  6. Port 3000 (`Mission Control`, `http://127.0.0.1:3000`) must be added to endpoint directory; all local iframe URLs must use `127.0.0.1` / `localhost`.
+  7. Multi-View UI 2x2 grid architecture and 16-test validation matrix enumerated in handoff.md.
+- **Unexplored areas**: None (Survey completed across all 4 requested dimensions).
 
 ## Key Decisions Made
-- Documented full survey in `survey_report.md` and structured handoff in `handoff.md`.
-- Verified test suite execution via master runner.
+- Validated exact headless execution commands (`jupyter nbconvert --execute`, `papermill -k python3`).
+- Established 16-point comprehensive test and validation matrix for Multi-View UI.
+- Delivered self-contained handoff report at `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3/handoff.md`.
 
 ## Artifact Index
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3/survey_report.md — Detailed survey report
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3/handoff.md — 5-component handoff report
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3/progress.md — Liveness & heartbeat log
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3/handoff.md — Final synthesis and handoff report
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3/progress.md — Liveness and progress tracker
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_explorer_survey_3/DISPATCH.md — Dispatch log

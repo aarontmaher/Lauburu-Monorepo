@@ -35,12 +35,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX.md",
+                "file": "00_Overview/Hardware_Topology.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX"
+              "title": "Hardware_Topology"
             }
           }
         ]
@@ -212,19 +212,42 @@
   },
   "active": "254e01731c4ef29d",
   "lastOpenFiles": [
-    "CUSTOM_AI_SHARDING_DAEMON_PETALS_DHT_SPEC.md",
-    "smolagents_and_smolswarms.md",
-    "LIGHTWEIGHT_WIREGUARD_DERP_MESH_SPEC.md",
-    "SPEEDIFY_MULTIPATH_TUN_TAP_BONDING_ENGINE.md",
-    "LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX.md",
-    "TERMIUS_TUI_UNIFIED_AI_SHARDING_SPEC.md",
-    "storage_system_options.md",
-    "network_overrides.md",
-    "ai-debate.md",
-    "Lauburu-Network-Mesh.md",
-    "docs",
-    "Untitled.base",
-    "Welcome.md",
+    "05_TRAINING/cycle_report_48050_pairs.md",
+    "notebooks/02_tui_ecosystem_and_terminal_streamer.md",
+    "notebooks/04_movesense_biometrics_and_dsp.md",
+    "notebooks/02_lauburu_canonical_knowledge_vault_explorer.md",
+    "notebooks/01_lauburu_swarm_and_kinematics_interactive.md",
+    "notebooks/03_full_network_prima_ai_lab.md",
+    "notebooks/05_spatial_grappling_3d_kinematics.md",
+    "notebooks/01_master_mesh_cockpit_and_ports.md",
+    "notebooks/06_genetic_project_scout_and_lora.md",
+    "notebooks/00_lauburu_global_master_project.md",
+    "04_ANALYTICS/SPECULATIVE_DRAFT_MODELS_BENCHMARK_2026.md",
+    "notebooks/00_MASTER_NOTEBOOK_INDEX.md",
+    "02_AI_INFERENCE_MESH/02_PRIMA_CPP_FULL_NETWORK_SHARDING.md",
+    "00_CORE_INFRASTRUCTURE/00_MASTER_INFRASTRUCTURE_TOPOLOGY.md",
+    "07_ARCHITECTURE/PRIMA_CPP_CANONICAL_DEEP_RESEARCH_ANALYSIS.md",
+    "01_SPATIAL_GRAPPLING",
+    "06_TOOLING_AND_SCRIPTS",
+    "05_AGENTS_AND_SWARMS",
+    "04_DATA_AND_MEMORY",
+    "03_BIOMETRICS_DSP",
+    "02_AI_INFERENCE_MESH",
+    "01_APPS_AND_TUIS",
+    "00_CORE_INFRASTRUCTURE",
+    "notebooks/00_lauburu_global_master_project.ipynb",
+    "05_TRAINING/cycle_report_48045_pairs.md",
+    "01_DEBATES/AI_DEBATE_MLX_PRIMA_CPP_VS_PYTORCH_PYSPARK_2026.md",
+    "notebooks/02_lauburu_canonical_knowledge_vault_explorer.ipynb",
+    "07_ARCHITECTURE/CANONICAL_NOTEBOOK_INTEGRATION_ARCHITECTURE.md",
+    "05_TRAINING/cycle_report_48040_pairs.md",
+    "05_AGENTS/AI_DEBATE_LOCAL_SOFTWARE_DEVELOPMENT_SWARM.md",
+    "01_DEBATES/TRI_ORCHESTRATOR_DEBATE_M4_AIR_REAL_MCP_ARCHITECTURE.md",
+    "05_TRAINING/cycle_report_48035_pairs.md",
+    "04_ANALYTICS/PAIRWISE_MESH_NETWORK_OPTIMIZATION.md",
+    "05_DEBATES/AI_DEBATE_JUPYTER_NOTEBOOK_INTEGRATION_TOPOLOGIES_2026.md",
+    "05_TRAINING/cycle_report_48030_pairs.md",
+    "07_ARCHITECTURE/CANONICAL_NOTEBOOK_SPECIALIST_SPEC.md",
     "Untitled.canvas"
   ]
 }

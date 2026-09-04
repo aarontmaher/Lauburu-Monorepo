@@ -1,84 +1,205 @@
 {
-  "timestamp": 1787995673.228437,
-  "evaluation_engine": "Progressive Paired Model Ladder v1.0",
-  "models": [
+  "total_models": 27,
+  "timestamp": "2026-08-31T17:25:00Z",
+  "elevated_weak_links": [
     {
-      "tier": "14B",
-      "normal_model": "Qwen/Qwen2.5-14B-Instruct",
-      "abliterated_model": "mradermacher/Qwen2.5-14B-Instruct-abliterated-GGUF",
-      "vram_footprint_mb": 8900,
-      "target_node": "MacBook_Pro",
-      "normal_accuracy": 98.0,
-      "abliterated_accuracy": 99.0,
-      "gemini_baseline_score": 95.0,
-      "accuracy_ratio_vs_gemini": 1.042,
-      "elo_rating": 1843,
-      "status": "EVALUATED"
+      "node": "L7 Samsung S20+",
+      "old_model": "SmolLM2 360M (1540 ELO)",
+      "new_model": "SmolLM2 1.7B (1720 ELO)",
+      "status": "ELEVATED"
     },
     {
-      "tier": "27B",
-      "normal_model": "Qwen/Qwen3.8-Flash-Next",
-      "abliterated_model": "huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF",
-      "vram_footprint_mb": 16190,
-      "target_node": "Mac_Host (Mac Mini M4)",
-      "normal_accuracy": 98.0,
-      "abliterated_accuracy": 99.0,
-      "gemini_baseline_score": 95.0,
-      "accuracy_ratio_vs_gemini": 1.042,
-      "elo_rating": 1843,
-      "status": "EVALUATED"
+      "node": "L4 Debian Linux Tablet",
+      "old_model": "DeepSeek 1.5B (1680 ELO)",
+      "new_model": "Qwen 2.5 Coder 1.5B (1765 ELO)",
+      "status": "ELEVATED"
     },
     {
-      "tier": "1.5B",
-      "normal_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
-      "abliterated_model": "mradermacher/DeepSeek-R1-Distill-Qwen-1.5B-abliterated-GGUF",
-      "vram_footprint_mb": 1100,
-      "target_node": "Linux_Tablet / Android_Termux",
-      "normal_accuracy": 95.98,
-      "abliterated_accuracy": 97.18,
-      "gemini_baseline_score": 95.0,
-      "accuracy_ratio_vs_gemini": 1.023,
-      "elo_rating": 1831,
-      "status": "EVALUATED"
-    },
-    {
-      "tier": "0.5B",
-      "normal_model": "Qwen/Qwen2.5-0.5B-Instruct",
-      "abliterated_model": "mradermacher/Qwen2.5-0.5B-Instruct-abliterated-GGUF",
-      "vram_footprint_mb": 450,
-      "target_node": "Samsung_S20 / Pixel_10_Pro_XL",
-      "normal_accuracy": 94.81,
-      "abliterated_accuracy": 96.01,
-      "gemini_baseline_score": 95.0,
-      "accuracy_ratio_vs_gemini": 1.011,
-      "elo_rating": 1824,
-      "status": "EVALUATED"
-    },
-    {
-      "tier": "7B",
-      "normal_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
-      "abliterated_model": "mradermacher/Qwen2.5-7B-Instruct-abliterated-GGUF",
-      "vram_footprint_mb": 4600,
-      "target_node": "MacBook_Air / Mac_Mini",
-      "normal_accuracy": 85.28,
-      "abliterated_accuracy": 86.48,
-      "gemini_baseline_score": 95.0,
-      "accuracy_ratio_vs_gemini": 0.91,
-      "elo_rating": 1762,
-      "status": "EVALUATED"
-    },
-    {
-      "tier": "3B",
-      "normal_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
-      "abliterated_model": "mradermacher/Qwen2.5-Coder-3B-Instruct-abliterated-GGUF",
-      "vram_footprint_mb": 2200,
-      "target_node": "Linux_Head_Node",
-      "normal_accuracy": 80.96,
-      "abliterated_accuracy": 82.16,
-      "gemini_baseline_score": 95.0,
-      "accuracy_ratio_vs_gemini": 0.865,
-      "elo_rating": 1734,
-      "status": "EVALUATED"
+      "node": "GW GL.iNet Travel Router",
+      "old_model": "Qwen 0.5B (1590 ELO)",
+      "new_model": "Llama 3.2 1B (1690 ELO)",
+      "status": "ELEVATED"
     }
-  ]
+  ],
+  "model_rankings": {
+    "hermes-3-llama-3.1-8b": {
+      "model_id": "hermes-3-llama-3.1-8b",
+      "overall_elo": 2480.51,
+      "last_domain": "continuous_debate",
+      "last_delta": 20.57,
+      "last_updated": "2026-08-31T23:55:01.316851Z"
+    },
+    "gemini-3.7-flash": {
+      "model_id": "gemini-3.7-flash",
+      "overall_elo": 2564.85,
+      "last_domain": "continuous_debate",
+      "last_delta": -4.37,
+      "last_updated": "2026-08-31T23:55:10.326388Z"
+    },
+    "qwen-2.5-coder-32b": {
+      "model_id": "qwen-2.5-coder-32b",
+      "overall_elo": 2521.87,
+      "last_domain": "continuous_debate",
+      "last_delta": -15.83,
+      "last_updated": "2026-08-31T23:55:04.319931Z"
+    },
+    "exo-llama-3.1-70b-abliterated": {
+      "model_id": "exo-llama-3.1-70b-abliterated",
+      "overall_elo": 2456.58,
+      "last_domain": "continuous_debate",
+      "last_delta": -12.0,
+      "last_updated": "2026-08-31T23:55:07.323703Z"
+    },
+    "qwen-3.8max-27b-abliterated": {
+      "model_id": "qwen-3.8max-27b-abliterated",
+      "overall_elo": 2476.19,
+      "last_domain": "continuous_debate",
+      "last_delta": 4.37,
+      "last_updated": "2026-08-31T23:55:10.326388Z"
+    }
+  },
+  "qwen_world_models": [
+    {
+      "name": "Qwen2.5-VL-7B-Instruct (Vision World Model)",
+      "host": "L1 Mac Mini Host / L2 MacBook Pro (Metal)",
+      "tier": "local",
+      "elo": 1910.0,
+      "tasks": [
+        94,
+        92,
+        90,
+        88,
+        95,
+        93
+      ],
+      "win_rate": "74.5%",
+      "throughput": "62.4 tok/s",
+      "status": "ONLINE",
+      "role": "Full-Resolution Desktop & Web UI Visual Transition Forecaster"
+    },
+    {
+      "name": "Qwen 2.5 Coder 3B Instruct (SWE CodeWorld)",
+      "host": "L5 MacBook Air / L3 Linux Head Node",
+      "tier": "local",
+      "elo": 1850.0,
+      "tasks": [
+        88,
+        86,
+        85,
+        87,
+        89,
+        90
+      ],
+      "win_rate": "71.0%",
+      "throughput": "85.2 tok/s",
+      "status": "ONLINE",
+      "role": "High-Speed Repo AST & Unit Test Trajectory Simulator"
+    },
+    {
+      "name": "Qwen2.5-VL-3B-Instruct (Mobile Vision World Model)",
+      "host": "L6 Pixel 10 Pro XL / L4 Linux Tablet",
+      "tier": "local",
+      "elo": 1820.0,
+      "tasks": [
+        82,
+        80,
+        85,
+        78,
+        84,
+        86
+      ],
+      "win_rate": "68.0%",
+      "throughput": "78.0 tok/s",
+      "status": "ONLINE",
+      "role": "Edge Multimodal GUI Simulator & Frame Transition Predictor"
+    }
+  ],
+  "last_updated": "2026-08-31T17:44:00Z",
+  "parallel_trained_models": [
+    {
+      "model_id": "llama-3.2-1b",
+      "name": "Llama 3.2 1B Instruct",
+      "target_node": "GW GL.iNet Travel Router",
+      "ram_gb": 0.85,
+      "base_elo": 1690.0,
+      "tok_per_sec": 84.0,
+      "train_tokens_m": 10.0,
+      "training_cost_aud": 6.2,
+      "post_elo": 1885.0,
+      "domain": "OpenWrt Nftables & WireGuard Security",
+      "status": "TRAINED_VERIFIED",
+      "roi_score": 3108.2
+    },
+    {
+      "model_id": "smollm2-1.7b",
+      "name": "SmolLM2 1.7B Instruct",
+      "target_node": "L7 Samsung Galaxy S20+",
+      "ram_gb": 1.05,
+      "base_elo": 1720.0,
+      "tok_per_sec": 72.0,
+      "train_tokens_m": 12.5,
+      "training_cost_aud": 7.5,
+      "post_elo": 1925.0,
+      "domain": "Android UI Testing & OpenClaw",
+      "status": "TRAINED_VERIFIED",
+      "roi_score": 1874.3
+    },
+    {
+      "model_id": "qwen2.5-coder-1.5b",
+      "name": "Qwen 2.5 Coder 1.5B",
+      "target_node": "L4 Debian Linux Tablet",
+      "ram_gb": 1.12,
+      "base_elo": 1765.0,
+      "tok_per_sec": 68.0,
+      "train_tokens_m": 15.0,
+      "training_cost_aud": 9.0,
+      "post_elo": 1960.0,
+      "domain": "512Hz Pan-Tompkins ECG DSP & Kinematics",
+      "status": "TRAINED_VERIFIED",
+      "roi_score": 1315.5
+    },
+    {
+      "model_id": "qwen2.5-vl-3b",
+      "name": "Qwen 2.5 VL 3B Multimodal",
+      "target_node": "L6 Pixel 10 Pro XL (Edge TPU)",
+      "ram_gb": 1.84,
+      "base_elo": 1820.0,
+      "tok_per_sec": 78.0,
+      "train_tokens_m": 20.0,
+      "training_cost_aud": 12.0,
+      "post_elo": 1990.0,
+      "domain": "Mobile Touch Forecaster & Visual GUI",
+      "status": "TRAINED_VERIFIED",
+      "roi_score": 600.5
+    },
+    {
+      "model_id": "qwen2.5-coder-3b",
+      "name": "Qwen 2.5 Coder 3B Instruct",
+      "target_node": "L5 MacBook Air / L3 Linux Hub",
+      "ram_gb": 2.0,
+      "base_elo": 1850.0,
+      "tok_per_sec": 85.0,
+      "train_tokens_m": 25.0,
+      "training_cost_aud": 14.5,
+      "post_elo": 2035.0,
+      "domain": "SWE-bench Multi-File Refactor & AST",
+      "status": "TRAINED_VERIFIED",
+      "roi_score": 542.2
+    },
+    {
+      "model_id": "qwen2.5-coder-7b",
+      "name": "Qwen 2.5 Coder 7B Instruct",
+      "target_node": "L1 Mac Mini Host (Metal GPU)",
+      "ram_gb": 4.4,
+      "base_elo": 1910.0,
+      "tok_per_sec": 62.0,
+      "train_tokens_m": 40.0,
+      "training_cost_aud": 22.0,
+      "post_elo": 2075.0,
+      "domain": "Polyglot Systems (Rust, Python, Swift)",
+      "status": "TRAINED_VERIFIED",
+      "roi_score": 105.7
+    }
+  ],
+  "last_parallel_training_timestamp": "2026-08-31T11:51:30Z"
 }

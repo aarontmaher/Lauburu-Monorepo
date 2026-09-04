@@ -1,21 +1,21 @@
 {
-  "timestamp_utc": "2026-08-30T09:10:06Z",
+  "timestamp_utc": "2026-09-01T17:54:29Z",
   "cycle_count": 1,
   "gamified_hud": {
-    "combat_tug_of_war_bar": "\ud83d\udd35 BLUE [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 64.0% vs \ud83d\udd34 RED [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 36.0%",
-    "cardiac_pulse_meter": "\ud83d\udc93 [\u2665\u2665\u2665\u2665\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7] 83 BPM (Zone 2 Aerobic Resonance | RMSSD: 264.71ms)",
-    "blue_compute_pct": 64.0,
-    "red_compute_pct": 36.0,
-    "heart_rate_bpm": 83,
-    "autonomic_state": "ZONE_2_OPTIMAL",
+    "combat_tug_of_war_bar": "\ud83d\udd35 BLUE [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 61.7% vs \ud83d\udd34 RED [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 38.3%",
+    "cardiac_pulse_meter": "\ud83d\udc93 [\u2665\u2665\u2665\u2665\u2665\u2665\u00b7\u00b7\u00b7\u00b7] 97 BPM (Zone 2 Aerobic Resonance | RMSSD: 861.46ms)",
+    "blue_compute_pct": 61.7,
+    "red_compute_pct": 38.3,
+    "heart_rate_bpm": 97,
+    "autonomic_state": "AEROBIC_INTENSE",
     "contested_node": "GL-MT3600BE Router SQM Buffers (192.168.8.1)"
   },
   "play_by_play_events": [
     {
-      "time": "19:10:06",
-      "type": "\ud83d\udc89 BIOMETRIC INJECTION",
-      "description": "OpenClaw injected 512Hz raw ECG stream into Movesense GATT UUID 0x2A37! Testing HRV filter threshold",
-      "team": "red"
+      "time": "03:54:29",
+      "type": "\ud83d\ude80 FAILOVER ENGAGED",
+      "description": "Chaos Overlord simulated TB4 packet loss! Instant sub-millisecond WireGuard failover executed (1.85ms RTT)",
+      "team": "yellow"
     }
   ],
   "territory_control": {

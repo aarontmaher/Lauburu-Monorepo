@@ -1,51 +1,57 @@
-# BRIEFING — 2026-08-29T12:31:00Z
+# BRIEFING — 2026-09-04T09:10:00Z
 
 ## Mission
-Implement Milestone 3 (M3) — Tri-Vault Storage Auto-Healing, 7 Core Daemons Supervision & Mesh Hardware Governance.
+Implement and verify Requirement R3: Project-Specific ELO & Confidence Evaluation Engine in `00_core_infrastructure/router_ai_daemon/src/elo/elo_engine.py` and `00_core_infrastructure/router_ai_daemon/tests/test_elo.py`.
 
 ## 🔒 My Identity
-- Archetype: implementer, qa, specialist
+- Archetype: worker
 - Roles: implementer, qa, specialist
-- Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/
-- Original parent: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
-- Milestone: M3 (tri_vault_storage_healing_and_daemon_supervision)
+- Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3
+- Original parent: 878c1253-0956-4401-91a5-0f3927d54244
+- Milestone: M3 (Project-Specific ELO & Confidence Evaluation Engine)
 
 ## 🔒 Key Constraints
-- Zero simulated/mock data (Rule #0).
-- Sub-second daemon polling on Ports 8080-8086, 18802, 50052, 8088.
-- Router RAM governance strictly maintaining <=35MB critical threshold with automatic drop_caches invocation.
-- Continuous auto-healing of Tri-Vault storage layers (Obsidian, PySpark, Git).
+- Exclusive write ownership:
+  - `00_core_infrastructure/router_ai_daemon/src/elo/elo_engine.py`
+  - `00_core_infrastructure/router_ai_daemon/tests/test_elo.py`
+- DO NOT modify any files outside this path.
+- Rule #0: Zero-Mock compliance across all implementations and tests. No simulated or fake data.
+- Enforce rating bounds [1000.0, 3000.0] on all rating updates.
+- Clamp exponent in calculate_expected_score to [-20.0, 20.0] to eliminate OverflowError.
+- Implement calculate_wilson_confidence_interval(k, n, confidence=0.95) for empirical confidence intervals on finite Bernoulli trials.
+- Implement CategoryScorecard and ProjectEloScorecard dataclasses across Frontend, Backend, and AI Models.
+- Implement evaluate_project_scorecard(...) executing in <= 50 µs.
+- Keep existing 20 tests passing in tests/test_elo.py and add new comprehensive tests.
+- Run pytest -v 00_core_infrastructure/router_ai_daemon/tests/test_elo.py and verify all pass.
 
 ## Current Parent
-- Conversation ID: 310d5ff1-4ad3-4f35-a32a-3b6fe2593a1c
-- Updated: 2026-08-29T12:31:00Z
+- Conversation ID: 878c1253-0956-4401-91a5-0f3927d54244
+- Updated: 2026-09-04T09:10:00Z
 
 ## Task Summary
-- **What to build**: Tri-Vault auto-healing routines, 7 Core Daemons supervision matrix, GL.iNet Router RAM watchdog, Self-Healing Hub WoL API (Port 18802), and Master Index.
-- **Success criteria**: 100% test pass on M3 suite, sub-second port probing, Router RAM <=35MB threshold cache drop, and valid Obsidian Wikilinks.
-- **Interface contracts**: PROJECT.md § M3 Interface Contracts
-
-## Key Decisions Made
-1. `06_scripts_and_tooling/network/daemon_manager.py`: Implemented full DaemonManager supervising Ports 8080-8086, 18802, 50052, 8088 with sub-second non-blocking socket probing, backoff restart rate-limiters, and Tri-Vault auto-healing.
-2. `06_scripts_and_tooling/network/nomad_courier_self_healer.py`: Implemented NomadAutonomousEngine supporting 6-tier mesh self-healing, TP-Link extender monitoring, Port 50052 RPC matrix probing, and strict LoRA action logging.
-3. `06_scripts_and_tooling/network/router_onboard_micro_governor.sh`: Hardened micro-POSIX script (<1.8MB RSS) with automatic `sync && echo 3 > /proc/sys/vm/drop_caches` when available RAM <= 35MB.
-4. `00_core_infrastructure/self_healing_hub.py`: Implemented HTTP REST API on Port 18802 with `/health`, `/api/status`, `/api/heal/trivault`, `/api/heal/daemons`, `/api/heal/router_ram`, and RFC 792 Wake-on-LAN magic packet dispatch.
-5. `obsidian_vault/Index.md`: Certified 13 canonical modules, core protocol Wikilinks, and zero broken links.
+- **What to build**: ELO rating bounds clamping [1000.0, 3000.0], exponent overflow guard [-20.0, 20.0], Wilson score empirical confidence intervals, 3-category scorecard (Frontend, Backend, AI Models), <= 50 µs scorecard evaluation function, and comprehensive pytest test additions.
+- **Success criteria**: All existing 20 tests pass + all new tests pass, bounds clamping verified, overflow safety verified, Wilson confidence intervals verified, scorecard evaluation latency <= 50 µs verified.
+- **Interface contracts**: PROJECT.md § Interface Contracts (ELO Engine Scorecard)
+- **Code layout**: `00_core_infrastructure/router_ai_daemon/src/elo/` and `tests/`
 
 ## Change Tracker
-- **Files modified/created**:
-  - `06_scripts_and_tooling/network/daemon_manager.py`: Created master 7 Core Daemons supervisor & Tri-Vault guardian.
-  - `06_scripts_and_tooling/network/nomad_courier_self_healer.py`: Updated with NomadAutonomousEngine & multi-tier self-healer.
-  - `06_scripts_and_tooling/network/router_onboard_micro_governor.sh`: Hardened <=35MB memory watchdog & auto drop_caches.
-  - `00_core_infrastructure/self_healing_hub.py`: Created Port 18802 WoL REST API & Reflex Arc hub.
-  - `obsidian_vault/Index.md`: Master vault graph root with bidirectional canonical links.
-  - `obsidian_vault/SYSTEM_2_MAC_HOST_DAEMON.md`: Created System 2 Mac Host note.
-  - `obsidian_vault/TRI_ORCHESTRATOR_AI_DEBATE.md`: Created AI debate note.
-  - `tests/test_milestone3_daemon_and_hardware_governance.py`: Comprehensive 14-test M3 verification suite.
-- **Build status**: PASS (107/107 unit and integration tests passing).
+- **Files modified**:
+  - `00_core_infrastructure/router_ai_daemon/src/elo/elo_engine.py`: Added MIN_ELO_RATING (1000.0), MAX_ELO_RATING (3000.0) bounds clamping to rating updates and inputs; added [-20.0, 20.0] exponent clamping to `calculate_expected_score`; implemented closed-form `calculate_wilson_confidence_interval` for Bernoulli trials; added `CategoryScorecard` and `ProjectEloScorecard` dataclasses; implemented `evaluate_project_scorecard` executing in 2.17 µs (SLA <= 50.0 µs).
+  - `00_core_infrastructure/router_ai_daemon/tests/test_elo.py`: Preserved all 20 existing unit/integration tests and added 17 comprehensive tests in `TestEloBoundsAndOverflow`, `TestWilsonConfidenceInterval`, `TestProjectEloScorecard`, and `TestScorecardLatencyBenchmark`.
+- **Build status**: 37 passed in 0.08s (100% pass)
+- **Pending issues**: None
+
+## Quality Status
+- **Build/test result**: 37/37 tests passing cleanly (zero warnings)
+- **Lint status**: Clean (py_compile clean, pytest -W error clean)
+- **Tests added/modified**: 17 new tests covering bounds clamping, overflow protection, Wilson score interval edge cases, 3-category scorecard serialization, and 10,000-iteration latency benchmark.
+
+## Loaded Skills
+- **Source**: None required (native Python math and statistical algorithms)
+- **Core methodology**: Closed-form Wilson score interval for binomial proportions, Bradley-Terry logistic expectation with exponent clamping, microsecond-latency dataclass scorecard.
 
 ## Artifact Index
-- `.agents/teamwork_preview_worker_m3/DISPATCH.md` — Assignment log.
-- `.agents/teamwork_preview_worker_m3/BRIEFING.md` — Agent memory & state.
-- `.agents/teamwork_preview_worker_m3/progress.md` — Liveness & heartbeat log.
-- `.agents/teamwork_preview_worker_m3/handoff.md` — 5-component hard handoff report.
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/DISPATCH.md
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/BRIEFING.md
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/progress.md
+- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/teamwork_preview_worker_m3/handoff.md
