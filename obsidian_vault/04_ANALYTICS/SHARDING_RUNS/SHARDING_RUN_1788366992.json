@@ -1,0 +1,89 @@
+{
+  "timestamp": "2026-09-02T16:36:32Z",
+  "active_model": "qwen-moe-80b",
+  "fallback_model": "qwen-3.8-max",
+  "mode": "7_LAYER_DISTRIBUTED_SHARDING",
+  "online_nodes_count": 2,
+  "total_nodes_count": 7,
+  "pooled_vram_gb": 35.400000000000006,
+  "total_layers": 80,
+  "nodes": [
+    {
+      "layer": "L1",
+      "name": "Mac_Node (Host M4)",
+      "ip": "127.0.0.1",
+      "port": 8082,
+      "online": true,
+      "latency_ms": 0.146,
+      "vram_cap_gb": 21.6,
+      "target_layers": 24,
+      "role": "Host Master & Prompt Ingestion"
+    },
+    {
+      "layer": "L2",
+      "name": "MacBook_Pro (x86_64)",
+      "ip": "169.254.187.138",
+      "port": 50053,
+      "online": false,
+      "latency_ms": null,
+      "vram_cap_gb": 14.0,
+      "target_layers": 17,
+      "role": "40 Gbps TB4 DMA & SSD Model Vault"
+    },
+    {
+      "layer": "L5",
+      "name": "MacBook_Air (M4 Metal)",
+      "ip": "100.93.158.96",
+      "port": 8081,
+      "online": false,
+      "latency_ms": null,
+      "vram_cap_gb": 14.0,
+      "target_layers": 19,
+      "role": "High-Speed Metal Shard Worker"
+    },
+    {
+      "layer": "L3",
+      "name": "Linux_Head_Node (Ryzen 7)",
+      "ip": "100.101.39.98",
+      "port": 50052,
+      "online": true,
+      "latency_ms": 11.906,
+      "vram_cap_gb": 13.8,
+      "target_layers": 7,
+      "role": "Compute Hub & OpenClaw Ingress"
+    },
+    {
+      "layer": "L6",
+      "name": "Pixel_10_Pro_XL (Tensor G5)",
+      "ip": "100.73.38.87",
+      "port": 8022,
+      "online": false,
+      "latency_ms": null,
+      "vram_cap_gb": 12.5,
+      "target_layers": 6,
+      "role": "Edge TPU Vision Stream & Token Anchor"
+    },
+    {
+      "layer": "L7",
+      "name": "Samsung_S20 (Exynos)",
+      "ip": "100.84.40.95",
+      "port": 8022,
+      "online": false,
+      "latency_ms": null,
+      "vram_cap_gb": 9.0,
+      "target_layers": 4,
+      "role": "Dedicated Audit & UI Shard Worker"
+    },
+    {
+      "layer": "L4",
+      "name": "Linux_Tablet (Debian)",
+      "ip": "100.81.92.125",
+      "port": 22,
+      "online": false,
+      "latency_ms": null,
+      "vram_cap_gb": 6.5,
+      "target_layers": 3,
+      "role": "Lightweight Mobile Telemetry Worker"
+    }
+  ]
+}

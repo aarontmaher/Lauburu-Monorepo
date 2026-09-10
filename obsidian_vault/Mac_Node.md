@@ -3,7 +3,7 @@ title: "Mac_Node Live Mesh Telemetry"
 node_id: "Mac_Node"
 layer: "L1"
 status: "ONLINE"
-last_synced: "2026-08-29T09:18:30Z"
+last_synced: "2026-09-06T01:35:08Z"
 tags: [lauburu, mesh_node, telemetry, live_sync]
 ---
 # 📡 [[Mac_Node]] Telemetry Status

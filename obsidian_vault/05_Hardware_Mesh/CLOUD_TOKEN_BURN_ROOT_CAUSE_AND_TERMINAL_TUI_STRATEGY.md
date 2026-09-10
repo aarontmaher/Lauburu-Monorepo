@@ -114,5 +114,5 @@ $$\text{Tier 1: Wi-Fi 7 / 2.5GbE (0.35ms)} \xrightarrow{\text{fallback}} \text{T
 | **Training TUI Snapshot** | `omniterminal training --once` | **PASSED** | 5 protocols rendered, RAM 10.40 GB Free (SAFE). |
 | **Bluetooth Strategy TUI**| `omniterminal bluetooth --snapshot` | **PASSED** | All 5 pathways, RFCOMM/BNEP topology rendered. |
 | **Full Test Suite** | `pytest tests/test_ai_training_protocols_and_visual_stream.py tests/test_omniterminal_notebook_plugin.py tests/test_ai_training_tui_and_bluetooth_healing.py` | **PASSED (23/23)** | 100% Exit Code 0 in 1.37s. |
-| **Rust Cockpit Tests** | `cargo test --manifest-path teamwork_projects/unified_resilient_serial_terminal_ide/src/cockpit/Cargo.toml` | **PASSED (5/5)** | 100% Exit Code 0 in 0.11s. |
+| **Rust Console Tests** | `cargo test --manifest-path teamwork_projects/unified_resilient_serial_terminal_ide/src/console/Cargo.toml` | **PASSED (5/5)** | 100% Exit Code 0 in 0.11s. |
 | **Zero-Mock Audit** | `test_zero_mock_compliance` | **PASSED** | 0 `unittest.mock` imports, 0 synthetic arrays. |

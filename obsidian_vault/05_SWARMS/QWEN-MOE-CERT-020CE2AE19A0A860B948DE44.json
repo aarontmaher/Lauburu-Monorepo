@@ -1,0 +1,29 @@
+{
+  "task_id": "TEST_MOCK",
+  "task_title": "Fake HR",
+  "verdict": "COMPLETION CLAIM REJECTED",
+  "signed_off_by": "Qwen MoE (Supreme Sovereign Auditor)",
+  "certificate_hash": "QWEN-MOE-CERT-020CE2AE19A0A860B948DE44",
+  "gates": {
+    "gate_1_ast_syntax": {
+      "passed": true,
+      "violations": []
+    },
+    "gate_2_zero_mock": {
+      "passed": false,
+      "violations": [
+        "RULE_0_VIOLATION: Simulated heart rate generator detected!"
+      ]
+    },
+    "gate_3_visual_ui": {
+      "passed": true,
+      "quality_score": 0.98
+    },
+    "gate_4_independent_tests": {
+      "passed": true,
+      "summary": "No external test command specified; AST & static verification passed."
+    }
+  },
+  "timestamp": "2026-09-03T17:06:02Z",
+  "tri_vault_synced": true
+}

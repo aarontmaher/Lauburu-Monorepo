@@ -9,7 +9,7 @@ zero_mock_certified: true
 
 # 🎮 The Lauburu Live AI Training Game & Reinforcement Learning Arena
 
-The Live Governor Cockpit is an interactive **Reinforcement Learning Combat Arena & 24/7 AI Model Training Game** where local edge agents and human operators compete in real time over physical network topology, RAM headroom, and biometric signal streams.
+The Live Governor Console is an interactive **Reinforcement Learning Combat Arena & 24/7 AI Model Training Game** where local edge agents and human operators compete in real time over physical network topology, RAM headroom, and biometric signal streams.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐

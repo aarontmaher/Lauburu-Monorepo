@@ -13,7 +13,7 @@ Rather than running isolated terminal applications across different windows, the
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│             INTEGRATED POLYGLOT SINGLE TUI COCKPIT (RUST + GO + PYTHON + METAL)        │
+│             INTEGRATED POLYGLOT SINGLE TUI CONSOLE (RUST + GO + PYTHON + METAL)        │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │ 1. METAL / C++ GPU HARDWARE HUD (TOP BAR)                                              │
 │    • Direct Apple Silicon unified memory querying & GGML tensor kernel profiling      │

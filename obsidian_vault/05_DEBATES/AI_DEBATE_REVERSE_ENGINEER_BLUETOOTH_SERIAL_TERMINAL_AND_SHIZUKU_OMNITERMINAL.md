@@ -19,7 +19,7 @@ status: CONSENSUS_ACHIEVED
 
 1. **Did the Screen Lens Integration bring Shizuku and all features into the new Omni Terminal app?**
    - **NO.** Forensic audit reveals that Shizuku was **NOT** integrated into the `unified_resilient_serial_terminal_ide` codebase prior to this session. It existed only as an architectural proposal in `ai_debate/src/tri_orchestrator_debate.py`.
-   - **Screen Lens Features Brought In:** Port 4003 MJPEG stream client (`ScreenLensClient`), macOS Sequoia screenshot popup mitigation (`SequoiaMitigator`), and live telemetry status panels in Ratatui and Web/Flutter cockpits.
+   - **Screen Lens Features Brought In:** Port 4003 MJPEG stream client (`ScreenLensClient`), macOS Sequoia screenshot popup mitigation (`SequoiaMitigator`), and live telemetry status panels in Ratatui and Web/Flutter consoles.
    - **Features Previously Missing (Now Remediated):**
      - Rootless Android privilege escalation via Shizuku (`rikka.shizuku.api` / `rish`).
      - On-device SQLite OCR FTS5 local indexing.
@@ -100,7 +100,7 @@ The user specifically asked: *"did the lens integration bring shiziku and all ot
 | :--- | :--- | :--- |
 | **Port 4003 MJPEG Live Stream** | ✅ **Integrated** | `ScreenLensClient` connects to `http://localhost:4003/stream.mjpg` at 10-15 FPS. |
 | **macOS Sequoia Screenshot Guard** | ✅ **Integrated** | `SequoiaMitigator` with exponential backoff prevents permission dialog storms. |
-| **Ratatui & ANSI Cockpit Panels** | ✅ **Integrated** | `ScreenLensPanel` rendered in Rust TUI and Python HUD. |
+| **Ratatui & ANSI Console Panels** | ✅ **Integrated** | `ScreenLensPanel` rendered in Rust TUI and Python HUD. |
 | **Shizuku Rootless Binder IPC** | ❌ **Was Missing** *(Now Fixed)* | Added `src/sentinel/shizuku_bridge.py` supporting `rish` commands. |
 | **SQLite OCR FTS5 Knowledge Base** | ❌ **Pending Phase 2** | `screen_lens.sqlite` exists in `01_apps/screen_lens/` but not yet in Omniterminal. |
 | **Multimodal Visual AST Coding** | ❌ **Pending Phase 2** | Vision-to-patch pipeline exists in `01_apps/screen_lens/sandbox_evolution/`. |

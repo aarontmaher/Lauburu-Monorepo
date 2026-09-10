@@ -34,7 +34,7 @@ zero_mock_certified: true
 │    • 100% airgapped 512Hz ECG (Pan-Tompkins DSP), PTT continuous BP.        │
 │    • Overnight PPG sleep staging (0-100 score), Zone 2 cardio thresholds.   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ P2 [USER & DEV INTERFACE]: Real-Time Visual GPU & WebGPU Dual Cockpit       │
+│ P2 [USER & DEV INTERFACE]: Real-Time Visual GPU & WebGPU Dual Console       │
 │    • Pure GPU visual canvas with auto-toggle:                               │
 │      - Native: Apple Silicon Metal Shaders (0.34ms / frame, 120 FPS).       │
 │      - Web-TUI: WebGPU WGSL compute kernel over WebSockets (120 FPS).       │

@@ -1,0 +1,27 @@
+{
+  "task_id": "TEST_OVERFLOW",
+  "task_title": "Bad UI",
+  "verdict": "COMPLETION CLAIM REJECTED",
+  "signed_off_by": "Qwen MoE (Supreme Sovereign Auditor)",
+  "certificate_hash": "QWEN-MOE-CERT-3A4A553A915E429E1668D056",
+  "gates": {
+    "gate_1_ast_syntax": {
+      "passed": true,
+      "violations": []
+    },
+    "gate_2_zero_mock": {
+      "passed": true,
+      "violations": []
+    },
+    "gate_3_visual_ui": {
+      "passed": false,
+      "quality_score": 0.45
+    },
+    "gate_4_independent_tests": {
+      "passed": true,
+      "summary": "No external test command specified; AST & static verification passed."
+    }
+  },
+  "timestamp": "2026-09-04T02:29:48Z",
+  "tri_vault_synced": true
+}

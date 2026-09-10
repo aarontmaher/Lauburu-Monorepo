@@ -14,7 +14,7 @@ Prior turns and scripts asserted that the **MacBook Pro M1 Max** possessed **32 
 
 ### Where the Hallucination Originated
 A search across all monorepo files identified hardcoded erroneous strings in:
-1. `06_scripts_and_tooling/mesh/wol_manager.py:45` (`"role": "Storage & Compute Vault (32 GB Unified RAM)"`)
+1. `06_scripts_and_tooling/mesh/canonical_network_resurrection_engine.py:45` (`"role": "Storage & Compute Vault (32 GB Unified RAM)"`)
 2. `06_scripts_and_tooling/automation/nomad_roi_cron_governor.py:101` (`"role": "Storage & Compute Vault (32 GB RAM)"`)
 3. `00_core_infrastructure/multi_wan/compute_offloader.py:14` (`"macbook_m4: Mac M4 Host (RAM: 32 GB, NPU: 38 TOPS)"`)
 
@@ -40,7 +40,7 @@ These hardcoded strings leaked into model context during automated tooling queri
 ---
 
 ## 🛠️ 3. Remediations Applied
-1. Corrected all 3 script references in `wol_manager.py`, `nomad_roi_cron_governor.py`, and `compute_offloader.py`.
+1. Corrected all 3 script references in `canonical_network_resurrection_engine.py`, `nomad_roi_cron_governor.py`, and `compute_offloader.py`.
 2. Verified with automated AST and regex sweep that **0 hallucinated 32 GB claims remain**.
 3. Hot-reloaded WoL daemon on port 18802 with verified 16.0 GB Unified RAM payload.
 4. Serialized training record to `04_data_and_memory/lora_datasets/truth_audit_hardware_ram.jsonl` for 24/7 LoRA distillation.

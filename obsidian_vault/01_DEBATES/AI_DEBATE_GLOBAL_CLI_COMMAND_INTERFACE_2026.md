@@ -6,7 +6,7 @@ tags: [lauburu, ai_debate, cli, global_command, tui_launcher, dev_mode]
 
 # 🌐 Tri-Orchestrator AI Debate: Canonical Global Single-Word CLI Interface
 
-**Debate Question:** How to architect an idempotent, zero-friction global CLI interface so the user can type a single word (`lauburu`, `tui`, or `arena`) anywhere in their terminal to launch the full Canonical TUI or the Live `--dev` Cockpit?
+**Debate Question:** How to architect an idempotent, zero-friction global CLI interface so the user can type a single word (`lauburu`, `tui`, or `arena`) anywhere in their terminal to launch the full Canonical TUI or the Live `--dev` Console?
 
 ---
 

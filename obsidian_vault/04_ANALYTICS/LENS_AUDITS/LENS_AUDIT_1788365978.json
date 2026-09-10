@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-09-02T16:19:29Z",
+  "target_url": "http://127.0.0.1:8890",
+  "status_code": 500,
+  "has_dark_theme": false,
+  "has_functioning_tabs": false,
+  "has_zero_mock_badges": false,
+  "a11y_score": 0.85,
+  "contrast_ratio": "14.2:1 (AAA Compliant)",
+  "layout_overflows": 0
+}

@@ -20,7 +20,7 @@ This document defines the architectural integration of **Open Wearables** (`the-
 │    • Correlation: Micro DSP (512Hz Movesense ECG) ↔ Macro Scores (Oura Sleep)   │
 │    • Destination: Port 4000 Blackboard & PySpark Data Lake                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ 2. UNIVERSAL MULTI-ARCH CONTAINER COCKPIT                                       │
+│ 2. UNIVERSAL MULTI-ARCH CONTAINER CONSOLE                                       │
 │    • Matrix: linux/arm64 (Apple Silicon, Raspberry Pi, Termux), linux/amd64   │
 │    • Dual Interface: Interactive CLI TTY + Browser Web-TUI (Port 8088)          │
 │    • Failover: Native Python Venv -> Docker / Podman -> Termux PRoot           │
@@ -56,7 +56,7 @@ This document defines the architectural integration of **Open Wearables** (`the-
 | :--- | :--- | :--- | :--- |
 | **Rust** | **Ratatui + Crossterm** | < 15 MB RAM, < 5 ms boot | 120 FPS real-time 512Hz ECG oscilloscope rendering & raw DSP displays. |
 | **Go** | **Bubble Tea + Lipgloss** | < 25 MB RAM, < 10 ms boot | Single static zero-libc binary for GL.iNet Router (OpenWrt) & Linux Head Node. |
-| **Python** | **Textual + Rich** | ~ 45 MB RAM, ~ 150 ms boot | Current Canonical Port TUI cockpit (`canonical_tui.py`), async reactive CSS styling. |
+| **Python** | **Textual + Rich** | ~ 45 MB RAM, ~ 150 ms boot | Current Canonical Port TUI console (`canonical_tui.py`), async reactive CSS styling. |
 | **Janet / Lua** | **Libtermkey / Notcurses** | < 3 MB RAM, < 1 ms boot | Ultra-lightweight edge terminal widgets for Android Termux background monitors. |
 
 ### 3.2 Universal Containerization Strategy

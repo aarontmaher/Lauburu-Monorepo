@@ -22,7 +22,7 @@ The Tri-Orchestrator AI Debate council reached unanimous consensus (**Score: 0.9
 │    • Network / Self-Healing: Nomad Courier 6-Tier Watchdog, Tailscale Subnet Router    │
 │    • Telemetry State Server: gRPC / WebSocket / SSE State Broadcaster (:4000, :8088)  │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ 2. ZERO-OVERHEAD OS-SPECIFIC FRONTENDS (Thin Clients / Cockpits)                       │
+│ 2. ZERO-OVERHEAD OS-SPECIFIC FRONTENDS (Thin Clients / Consoles)                       │
 │    ┌──────────────────────────┬──────────────────────────┬──────────────────────────┐  │
 │    │ macOS (Apple Silicon)    │ Windows Workstation      │ Mobile (Android / iOS)   │  │
 │    │ • Native Textual / Rust  │ • Windows Terminal /     │ • Flutter BLoC Client    │  │

@@ -21,7 +21,7 @@ tags: [speedify, multi_path, glorytun, hermes, openclaw, screenpipe, petals, lla
 │ 2. SINGLE-PORT PROTOCOL MULTIPLEXER (One Entrypoint for Everything)                    │
 │    • Ingress: Single Port (Port 443 / 4000) with Pre-TLS Magic Byte Sniffing + ALPN    │
 │    • SSH Streams ('SSH-2.0...') ──────────────────────► Port 22 (SSH Daemon)           │
-│    • HTTP / WebSocket ('GET / POST') ─────────────────► Port 4000 (FastAPI Cockpit)    │
+│    • HTTP / WebSocket ('GET / POST') ─────────────────► Port 4000 (FastAPI Console)    │
 │    • gRPC / HTTP/2 ('h2' / 'application/grpc') ──────► Port 50051 (Ray / State Hub)   │
 │    • llama.cpp RPC ('GGML_RPC...') ───────────────────► Port 50052 (Tensor Sharding)   │
 │    • WireGuard Overlay ───────────────────────────────► Port 51820 (Tailscale Mesh)    │

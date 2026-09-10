@@ -22,7 +22,7 @@ tags: [lauburu, ai_debate, graphical_network_map, dev_mode, topology_canvas, liv
 > *"The integration seamlessly combines:
 > 1. **Top Canvas:** Live graphical 7-layer node and transport interconnection diagram with subpixel link status.
 > 2. **Middle Bar:** Live telemetry HUD (Movesense BLE 72 BPM, TB4 40Gbps 0.35ms, Compute Drain % split).
-> 3. **Bottom Cockpit:** Side-by-side Red vs Blue adversarial combat and clean-room device parameter mutation streams.
+> 3. **Bottom Console:** Side-by-side Red vs Blue adversarial combat and clean-room device parameter mutation streams.
 > 4. **Flag `--dev`:** Enables live hot-reload, interactive keyboard chaos injection (`c`), and sandbox mutation (`m`)."*
 
 ---

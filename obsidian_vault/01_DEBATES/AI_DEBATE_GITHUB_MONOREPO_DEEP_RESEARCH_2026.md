@@ -29,7 +29,7 @@ Across the **95,216 Python modules** and **39,646,517 LOC** indexed in `aarontma
    * **Solution:** Pinned all execution scripts (`run_live_arena_dev.sh`, `run_live_tui.sh`, `lauburu_cli.sh`) to the canonical virtualenv (`01_apps/canonical_port/.venv/bin/textual` and `.venv/bin/python` containing **Textual v8.2.8**). Exported module-level `app = CanonicalPortApp()` and `app = LiveArenaDevApp()`.
 2. **Two-Domain Application Portfolio Segregation:**
    * **User & Scaling Apps (`01_apps/user_facing_and_scaling/`):** Movesense Physiological Readiness Hub (512Hz ECG, PTT BP, sleep score, LT1/LT2), 3D Spatial Grappling (3,044 OPML tree & MediaPipe 33-landmark skeleton), Gamified Combat Arena, and Headless Shopify Storefront ($9/$29/$99/mo).
-   * **Operator & Dev Cockpits (`01_apps/operator_and_dev/`):** Canonical Port 9-Screen Command Center, SmolAgents Python Duel Sandbox, and Standalone Qwen Math Trend Optimizer.
+   * **Operator & Dev Consoles (`01_apps/operator_and_dev/`):** Canonical Port 9-Screen Command Center, SmolAgents Python Duel Sandbox, and Standalone Qwen Math Trend Optimizer.
 3. **Read-Only Visual Audits for Local AI Agents:**
    * Deployed `canonical_visual_audit_inspector.py` giving Red (Hermes 3 / OpenClaw) and Blue (Sentinel / LuCI) strict read-only AST inspection of all 9 Canonical screens.
 4. **Zero-Mock Physiological Airgap Invariant:**
