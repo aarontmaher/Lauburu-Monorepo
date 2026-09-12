@@ -24,6 +24,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -121,7 +122,7 @@ class SpeculativeCommandDrafter:
         "app tree": "lauburu-apps --tree",
         "app test": "lauburu-apps --test",
         "monitor tui": "lauburu-monitor",
-        "storage health": "python3 -c 'import shutil; print(f\"Free: {shutil.disk_usage(\\\"/Users/aaron\\\").free / (1024**3):.2f} GB\")'",
+        "storage health": "python3 -c \"import shutil; print(f'Free: {shutil.disk_usage('/Users/aaron').free / 1073741824:.2f} GB')\"",
         "ram status": "vm_stat",
         "key audit": f"python3 {KEY_MANAGER_SCRIPT} --audit",
         "api key": f"python3 {KEY_MANAGER_SCRIPT} --audit",
@@ -154,7 +155,10 @@ class SpeculativeCommandDrafter:
         # 1. Fast speculative deterministic match (<0.1ms)
         for key, cmd in self.COMMON_SPECULATIVE_MAPPINGS.items():
             if key in cleaned_intent or cleaned_intent in key:
-                parts = cmd.split()
+                try:
+                    parts = shlex.split(cmd)
+                except ValueError:
+                    parts = cmd.split()
                 safety, rationale = self.validate_safety(cmd)
                 latency = round((time.perf_counter() - t0) * 1000, 2)
                 return SpeculativeCommandDraft(
@@ -201,7 +205,7 @@ class SpeculativeCommandDrafter:
                     data=json.dumps(prompt_payload).encode("utf-8"),
                     headers={"Content-Type": "application/json"}
                 )
-                with urllib.request.urlopen(req, timeout=0.85) as resp:
+                with urllib.request.urlopen(req, timeout=0.20) as resp:
                     data = json.loads(resp.read().decode("utf-8"))
                     raw_cmd = data["choices"][0]["message"]["content"].strip()
                     # Clean fences if any
