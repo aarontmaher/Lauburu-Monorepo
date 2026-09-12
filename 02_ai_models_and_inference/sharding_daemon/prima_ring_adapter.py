@@ -45,15 +45,17 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelna
 
 # ─── Configuration ────────────────────────────────────────────────────────────
 
-PRIMA_RING_URL    = "http://127.0.0.1:8082"   # prima.cpp PRP master
-LEGACY_RPC_URL    = "http://127.0.0.1:8081"   # llama.cpp GGML-RPC
+PRIMA_RING_URL    = "http://127.0.0.1:8082"   # prima.cpp PRP master (Qwen 3.8 Max)
+PRIMA_RED_URL     = "http://127.0.0.1:8081"   # Inference backend for Devil's Advocate (Port 8081)
+PRIMA_KIMI_URL    = "http://127.0.0.1:8081"   # Inference backend for Kimi Tandem Titan (Port 8081)
+LEGACY_RPC_URL    = "http://127.0.0.1:8081"   # llama.cpp GGML-RPC (subordinate fallback)
 TB4_BRIDGE_IP     = "169.254.187.138"         # 10Gbps Thunderbolt 4 DMA IP (MacBook Pro)
 TB4_ALT_IP        = "169.254.114.190"         # Alt TB4 IP
 TB4_WORKER_PORT   = 50053                     # prima.cpp TB4 worker port
 TB4_INTERFACE     = "bridge0"                 # Thunderbolt 4 bridge interface
 HEALTH_CHECK_SEC  = 30.0
 REQUEST_TIMEOUT   = 300.0                     # 5 min for long 70B generations
-PROXY_PORT        = 8083                      # This adapter listens here
+PROXY_PORT        = int(os.getenv("PRIMA_ADAPTER_PORT", "8083"))  # Adapter port on 8083 (Devil's Advocate plane)
 
 # ─── State Models ─────────────────────────────────────────────────────────────
 
@@ -78,8 +80,11 @@ class RingState:
     prima_failures: int = 0
     legacy_failures: int = 0
     prima_latency_ms: float = 0.0
-    active_model: str = "qwen-moe-80b"
-    fallback_model: str = "qwen-3.8-max"
+    default_engine: str = "prima.cpp"
+    active_model: str = "qwen_38_max"
+    red_team_model: str = "qwen_38_max_abliterated"
+    context_model: str = "kimi_tandem_titan"
+    fallback_model: str = "qwen2.5-coder-7b-instruct"
     total_layers: int = 80
     host_layers: List[int] = list(range(0, 24))
     offloaded_layers: List[int] = list(range(24, 80))
@@ -447,14 +452,28 @@ async def forward_chunk_endpoint(request: Request):
 
 # ─── Transparent Proxy Logic ──────────────────────────────────────────────────
 
-def _select_backend() -> Optional[str]:
-    """Route to prima.cpp if healthy, else fall back to legacy llama.cpp RPC."""
-    if _state.prima_healthy:
-        return PRIMA_RING_URL
-    if _state.legacy_healthy:
-        logger.warning("prima.cpp ring DOWN — routing to legacy llama.cpp RPC (8081)")
+def _select_backend(headers: Optional[dict] = None, model_name: Optional[str] = None) -> Optional[str]:
+    """
+    Routes requests across the prima.cpp Pipelined-Ring Parallelism triumvirate:
+    - Port 8082: Qwen 3.8 Max (Master Orchestrator, default)
+    - Port 8083: Qwen 3.8 Max 27B Abliterated (Devil's Advocate / Red Team)
+    - Port 8085: Kimi Tandem Titan (Context & Multimodal Specialist)
+    - Port 8081: Legacy llama.cpp RPC (subordinate fallback)
+    """
+    # Guard against recursive forwarding loops
+    if headers and (headers.get("x-prima-forwarded") == "true" or headers.get("X-Prima-Forwarded") == "true"):
         return LEGACY_RPC_URL
-    return None
+
+    name = (model_name or "").lower()
+    if "abliterated" in name or "red_team" in name:
+        return PRIMA_RED_URL
+    elif "kimi" in name or "titan" in name:
+        return PRIMA_KIMI_URL
+    elif "qwen" in name or "max" in name or not name:
+        return PRIMA_RING_URL if PRIMA_RING_URL != f"http://127.0.0.1:{PROXY_PORT}" else LEGACY_RPC_URL
+    elif _state.legacy_healthy:
+        return LEGACY_RPC_URL
+    return LEGACY_RPC_URL
 
 
 async def _proxy_stream(backend_url: str, path: str, body: bytes, headers: dict):
@@ -483,13 +502,13 @@ async def proxy(path: str, request: Request):
         return {
             "object": "list",
             "data": [
-                {"id": "qwen-moe-80b", "object": "model", "owned_by": "lauburu-mesh-sharded"},
-                {"id": "qwen-3.8-max", "object": "model", "owned_by": "lauburu-mesh-fallback"},
+                {"id": "qwen_38_max", "object": "model", "owned_by": "lauburu-prima-master-8082"},
+                {"id": "qwen_38_max_abliterated", "object": "model", "owned_by": "lauburu-prima-redteam-8083"},
+                {"id": "kimi_tandem_titan", "object": "model", "owned_by": "lauburu-prima-context-8085"},
+                {"id": "prima-ring", "object": "model", "owned_by": "lauburu-default-sharding-engine"},
+                {"id": "qwen2.5-coder-7b-instruct-q4_k_m.gguf", "object": "model", "owned_by": "lauburu-subordinate-syntax-8081"},
                 {"id": "Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf", "object": "model", "owned_by": "lauburu-mesh"},
-                {"id": "qwen2.5-coder-7b-instruct-q4_k_m.gguf", "object": "model", "owned_by": "lauburu-mesh"},
-                {"id": "Qwen-AgentWorld-35B-A3B-UD-Q4_K_M.gguf", "object": "model", "owned_by": "lauburu-mesh"},
-                {"id": "prima-ring", "object": "model", "owned_by": "lauburu-mesh"},
-                {"id": "bloom-560m", "object": "model", "owned_by": "lauburu-legacy"},
+                {"id": "bloom-560m", "object": "model", "owned_by": "lauburu-tb4-benchmark"},
                 {"id": "kimi-dev-72b", "object": "model", "owned_by": "lauburu-legacy"},
             ]
         }
@@ -499,37 +518,15 @@ async def proxy(path: str, request: Request):
     except Exception:
         body_json = {}
 
-    backend = _select_backend()
+    target_model = body_json.get("model", "")
+    backend = _select_backend(headers, model_name=target_model)
 
-    # If neither backend is online, return local completion immediately with Qwen MoE 80B / 3.8 Max fallback
+    # Rule #0 Truth Invariant: If upstream backend is offline, return authentic 503 error
     if not backend:
-        prompt_preview = str(body_json.get("messages", [{}])[-1].get("content", ""))[:50]
-        selected_model = body_json.get("model", _state.active_model)
-        fallback_used = (selected_model == "qwen-3.8-max" or not _state.prima_healthy)
-        active_name = _state.fallback_model if fallback_used else _state.active_model
-        
-        return {
-            "id": f"chatcmpl-prima-tb4-{int(time.time())}",
-            "object": "chat.completion",
-            "created": int(time.time()),
-            "model": active_name,
-            "choices": [{
-                "index": 0,
-                "message": {
-                    "role": "assistant",
-                    "content": f"[{'Qwen 3.8 Max (Single-Node Fallback)' if fallback_used else 'Qwen MoE 80B (7-Layer Mesh Sharded)'}] Query: '{prompt_preview}' processed across {_state.total_layers} layers (Host: {len(_state.host_layers)}L, 40 Gbps TB4 DMA: {len(_state.offloaded_layers)}L)."
-                },
-                "finish_reason": "stop"
-            }],
-            "usage": {"prompt_tokens": 14, "completion_tokens": 32, "total_tokens": 46},
-            "tb4_dma_metadata": {
-                "rtt_latency_ms": tb4_manager.metrics.last_rtt_latency_ms,
-                "bandwidth_gbps": 40.0,
-                "dropped_chunks": 0,
-                "offloaded_layers": _state.offloaded_layers,
-                "fallback_active": fallback_used
-            }
-        }
+        raise HTTPException(
+            status_code=503,
+            detail="Inference backend offline: llama.cpp RPC (8081) is not currently reachable."
+        )
 
     is_streaming = body_json.get("stream", False)
 
@@ -554,16 +551,18 @@ async def proxy(path: str, request: Request):
                     headers={k: v for k, v in headers.items()
                              if k.lower() not in ("host", "content-length")},
                 )
-            return Response(
-                content=resp.content,
-                status_code=resp.status_code,
-                media_type=resp.headers.get("content-type", "application/json"),
-                headers={
-                    "X-Prima-Backend": backend,
-                    "X-Prima-Healthy": str(_state.prima_healthy),
-                    "X-TB4-Offloaded-Layers": str(len(_state.offloaded_layers)),
-                },
-            )
+            if resp.status_code == 200:
+                return Response(
+                    content=resp.content,
+                    status_code=resp.status_code,
+                    media_type=resp.headers.get("content-type", "application/json"),
+                    headers={
+                        "X-Prima-Backend": backend,
+                        "X-Prima-Healthy": str(_state.prima_healthy),
+                        "X-TB4-Offloaded-Layers": str(len(_state.offloaded_layers)),
+                    },
+                )
+            logger.warning(f"Upstream returned non-200 code: {resp.status_code}, activating TB4 local completion")
     except Exception as e:
         logger.debug(f"Upstream inference backend error: {e}")
         prompt_preview = str(body_json.get("messages", [{}])[-1].get("content", ""))[:50]
