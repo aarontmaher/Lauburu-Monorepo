@@ -1,0 +1,19 @@
+[Unit]
+Description=Lauburu Autonomous Headless Mesh Worker & Movesense Bluetooth Terminal
+After=network.target bluetooth.target tailscaled.service
+Wants=bluetooth.target
+
+[Service]
+Type=simple
+User=aaron
+WorkingDirectory=/home/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lauburu-opencode-cli
+ExecStart=/home/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lauburu-opencode-cli/lauburu worker
+Restart=always
+RestartSec=5s
+StandardOutput=append:/home/aaron/DFS_UNIFIED/Lauburu-Monorepo/logs/mesh_worker.log
+StandardError=append:/home/aaron/DFS_UNIFIED/Lauburu-Monorepo/logs/mesh_worker.err
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+Environment="LAUBURU_HOST_ROLE=linux_compute_hub"
+
+[Install]
+WantedBy=multi-user.target
