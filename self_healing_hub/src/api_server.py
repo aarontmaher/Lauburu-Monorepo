@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, g
 from flask_cors import CORS
+from werkzeug.exceptions import HTTPException
 import json
 import os
 import sys
@@ -14,6 +15,205 @@ app = Flask(__name__)
 CORS(app)
 
 registry = DeviceRegistry()
+
+def _dyn(val):
+    if isinstance(val, bool):
+        return val
+    if isinstance(val, (int, float)):
+        return float(val)
+    return val
+
+def _build_pool_item(name, path, total_gb, free_gb, used_gb, used_pct):
+    return {
+        "name": str(name),
+        "path": str(path),
+        "total_gb": _dyn(total_gb),
+        "free_gb": _dyn(free_gb),
+        "used_gb": _dyn(used_gb),
+        "used_pct": _dyn(used_pct),
+        "status": "HEALTHY" if _dyn(free_gb) > 0.0 else "FULL"
+    }
+
+def _build_node_item(layer, name, role, ip, hardware, ram, power, status, latency_ms, online=True):
+    return {
+        "layer": _dyn(layer),
+        "name": str(name),
+        "role": str(role),
+        "ip": str(ip),
+        "hardware": str(hardware),
+        "ram": str(ram),
+        "power": str(power),
+        "status": str(status),
+        "rpc_server": {
+            "online": bool(online),
+            "latency_ms": _dyn(latency_ms)
+        }
+    }
+
+def _build_transport_item(tid, name, bandwidth, latency_ms, status, sharding_role):
+    return {
+        "id": str(tid),
+        "name": str(name),
+        "bandwidth": str(bandwidth),
+        "latency_ms": _dyn(latency_ms),
+        "status": str(status),
+        "sharding_role": str(sharding_role)
+    }
+
+# -------------------------------------------------------------
+# Structured In-Memory Telemetry Logging
+# -------------------------------------------------------------
+_telemetry_logs = []
+_MAX_TELEMETRY_LOGS = 1000
+
+def log_telemetry(event_type: str, details: dict = None, level: str = "INFO"):
+    """Logs a structured telemetry event to the in-memory buffer."""
+    try:
+        now = time.time()
+        entry = {
+            "timestamp": _dyn(now),
+            "iso_time": datetime.datetime.fromtimestamp(now, datetime.timezone.utc).isoformat(),
+            "event_type": str(event_type),
+            "level": str(level),
+            "details": details if isinstance(details, dict) else {}
+        }
+        _telemetry_logs.append(entry)
+        if len(_telemetry_logs) > _MAX_TELEMETRY_LOGS:
+            _telemetry_logs.pop(0)
+        return entry
+    except Exception:
+        return {}
+
+def get_telemetry_logs(limit: int = 50):
+    """Retrieves recent telemetry log entries."""
+    try:
+        lim = int(limit)
+        return _telemetry_logs[-lim:] if lim > 0 else _telemetry_logs
+    except Exception:
+        return []
+
+def get_telemetry_summary():
+    """Generates summary statistics of in-memory telemetry logs."""
+    try:
+        total = len(_telemetry_logs)
+        levels = {}
+        events = {}
+        for l in _telemetry_logs:
+            lvl = l.get("level", "INFO")
+            ev = l.get("event_type", "UNKNOWN")
+            levels[lvl] = levels.get(lvl, 0) + 1
+            events[ev] = events.get(ev, 0) + 1
+        return {
+            "total_logs": _dyn(total),
+            "level_counts": levels,
+            "event_type_counts": events,
+            "latest_log": _telemetry_logs[-1] if _telemetry_logs else None
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+# -------------------------------------------------------------
+# Microsecond Latency Benchmarks
+# -------------------------------------------------------------
+_last_latency_benchmarks = {}
+
+def run_microsecond_latency_benchmarks():
+    """Executes microsecond-precision benchmarks across core in-memory operations."""
+    global _last_latency_benchmarks
+    try:
+        benchmarks = {}
+
+        # Benchmark 1: Telemetry logging overhead
+        t0 = time.perf_counter_ns()
+        log_telemetry("BENCHMARK_PROBE", {"probe": True}, level="DEBUG")
+        t1 = time.perf_counter_ns()
+        benchmarks["telemetry_logging_us"] = _dyn(round((t1 - t0) / 1000.0, 3))
+
+        # Benchmark 2: Device registry lookup overhead
+        t0 = time.perf_counter_ns()
+        devices = registry.get_all_devices()
+        t1 = time.perf_counter_ns()
+        benchmarks["device_registry_lookup_us"] = _dyn(round((t1 - t0) / 1000.0, 3))
+
+        # Benchmark 3: Pure JSON serialization overhead
+        t0 = time.perf_counter_ns()
+        json.dumps({"test": "benchmark", "value": 123.45})
+        t1 = time.perf_counter_ns()
+        benchmarks["json_serialization_us"] = _dyn(round((t1 - t0) / 1000.0, 3))
+
+        summary = {
+            "status": "COMPLETED",
+            "timestamp": _dyn(time.time()),
+            "benchmarks_us": benchmarks,
+            "units": "microseconds (us)"
+        }
+        _last_latency_benchmarks = summary
+        return summary
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e)}
+
+def get_latency_benchmarks():
+    """Returns microsecond latency benchmark metrics."""
+    if not _last_latency_benchmarks:
+        return run_microsecond_latency_benchmarks()
+    return _last_latency_benchmarks
+
+# Flask Request Hooks for Microsecond Benchmarking & Telemetry
+@app.before_request
+def _before_request_benchmark():
+    g.start_time_ns = time.perf_counter_ns()
+
+@app.after_request
+def _after_request_benchmark(response):
+    try:
+        if hasattr(g, "start_time_ns"):
+            elapsed_ns = time.perf_counter_ns() - g.start_time_ns
+            elapsed_us = elapsed_ns / 1000.0
+            response.headers["X-Response-Time-Us"] = str(round(elapsed_us, 2))
+            if not request.path.startswith("/api/telemetry/logs") and not request.path.startswith("/api/benchmarks/latency"):
+                log_telemetry(
+                    "HTTP_REQUEST",
+                    {
+                        "method": request.method,
+                        "path": request.path,
+                        "status_code": response.status_code,
+                        "latency_us": _dyn(round(elapsed_us, 2))
+                    },
+                    level="INFO" if response.status_code < 400 else "ERROR"
+                )
+    except Exception:
+        pass
+    return response
+
+@app.errorhandler(Exception)
+def handle_global_exception(e):
+    if isinstance(e, HTTPException):
+        return jsonify({"error": e.description}), e.code
+    return jsonify({"error": str(e)}), 500
+
+@app.route("/api/telemetry/logs", methods=["GET"])
+def get_telemetry_logs_endpoint():
+    """Serves structured in-memory telemetry logs and summary."""
+    try:
+        limit = int(request.args.get("limit", 50))
+        logs = get_telemetry_logs(limit)
+        summary = get_telemetry_summary()
+        return jsonify({
+            "status": "SUCCESS",
+            "count": _dyn(len(logs)),
+            "logs": logs,
+            "summary": summary
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/benchmarks/latency", methods=["GET"])
+def get_latency_benchmarks_endpoint():
+    """Serves microsecond latency benchmarks for core API operations."""
+    try:
+        return jsonify(get_latency_benchmarks())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/api/telemetry", methods=["GET"])
 def get_telemetry():
@@ -2711,7 +2911,7 @@ def trigger_spark_levels_evaluation():
 
 @app.route("/api/network/optimal_strategy", methods=["GET"])
 def get_optimal_network_strategy():
-    """Serves the latest audited optimal network routing strategy across all 7 hardware layers."""
+    """Serves the latest audited optimal network routing strategy across all 5 hardware layers."""
     strategy_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", "data", "optimal_network_strategy.json")
     strategy_file = os.path.normpath(strategy_file)
     if os.path.exists(strategy_file):
@@ -2918,41 +3118,33 @@ def get_pyspark_spark_metrics():
                     free_gb = round((st.f_bavail * st.f_frsize) / (1024 ** 3), 1)
                     used_gb = round(total_gb - free_gb, 1)
                     used_pct = round((used_gb / total_gb) * 100, 1)
-                    storage_pools.append({
-                        "name": name,
-                        "path": path,
-                        "total_gb": total_gb,
-                        "free_gb": free_gb,
-                        "used_gb": used_gb,
-                        "used_pct": used_pct,
-                        "status": "HEALTHY"
-                    })
+                    storage_pools.append(_build_pool_item(name, path, total_gb, free_gb, used_gb, used_pct))
                 except Exception:
                     pass
 
         # 3. 7-Device Topology
         nodes = [
-            {"layer": 1, "name": "Primary Mac Host (Apple M4 Pro)", "role": "Host Orchestrator & Metal RPC", "ip": "127.0.0.1", "hardware": "Apple M4 Pro Mac Mini (24GB)", "ram": "21.6 GB AI Cap", "power": "AC Main", "status": "ONLINE (Host)", "rpc_server": {"online": True, "latency_ms": 0.1}},
-            {"layer": 2, "name": "Headless MacBook Pro Vault", "role": "Storage Vault & 10Gbps TB4 Bridge", "ip": "100.103.212.21", "hardware": "Intel i7 / 16GB", "ram": "14.0 GB AI Cap", "power": "AC Line", "status": "ONLINE (Standby)", "rpc_server": {"online": True, "latency_ms": 7.5}},
-            {"layer": 3, "name": "Linux Head Node (AMD Ryzen 7)", "role": "Cron Supervisor & Ray Head Hub", "ip": "100.101.39.98", "hardware": "AMD Ryzen 7 5700U", "ram": "13.8 GB AI Cap", "power": "AC Line", "status": "ONLINE (24/7 Supervisor)", "rpc_server": {"online": True, "latency_ms": 9.5}},
-            {"layer": 4, "name": "Debian Linux Tablet", "role": "Mobile Linux Compute & Petals Node", "ip": "100.81.92.125", "hardware": "Quad-Core ARM64", "ram": "6.5 GB AI Cap", "power": "Battery 88%", "status": "ONLINE (Standby)", "rpc_server": {"online": True, "latency_ms": 14.2}},
-            {"layer": 5, "name": "Headless Apple M4 MacBook Air", "role": "Secondary High-Speed Metal Worker", "ip": "100.93.158.96", "hardware": "Apple M4 MacBook Air (16GB)", "ram": "13.5 GB AI Cap", "power": "AC Line", "status": "ONLINE", "rpc_server": {"online": True, "latency_ms": 5.2}},
-            {"layer": 6, "name": "Google Pixel 10 Pro XL", "role": "Edge TPU & Vision Streamer", "ip": "100.73.38.87", "hardware": "Google Tensor G5", "ram": "12.5 GB AI Cap", "power": "Battery 94%", "status": "ONLINE (Termux :8022)", "rpc_server": {"online": True, "latency_ms": 2.8}},
-            {"layer": 7, "name": "Samsung Galaxy S20+", "role": "Dedicated UI Tester & Router Tether", "ip": "100.84.40.95", "hardware": "Snapdragon 865", "ram": "9.0 GB AI Cap", "power": "Battery 98%", "status": "ONLINE (Termux :8022)", "rpc_server": {"online": True, "latency_ms": 3.1}}
+            _build_node_item(1, "Primary Mac Host (Apple M4 Pro)", "Host Orchestrator & Metal RPC", "127.0.0.1", "Apple M4 Pro Mac Mini (24GB)", "21.6 GB AI Cap", "AC Main", "ONLINE (Host)", 0.1),
+            _build_node_item(2, "Headless MacBook Pro Vault", "Storage Vault & 10Gbps TB4 Bridge", "100.103.212.21", "Intel i7 / 16GB", "14.0 GB AI Cap", "AC Line", "ONLINE (Standby)", 7.5),
+            _build_node_item(3, "Linux Head Node (AMD Ryzen 7)", "Cron Supervisor & Ray Head Hub", "100.101.39.98", "AMD Ryzen 7 5700U", "13.8 GB AI Cap", "AC Line", "ONLINE (24/7 Supervisor)", 9.5),
+            _build_node_item(4, "Debian Linux Tablet", "Mobile Linux Compute & Petals Node", "100.81.92.125", "Quad-Core ARM64", "6.5 GB AI Cap", "Battery 88%", "ONLINE (Standby)", 14.2),
+            _build_node_item(5, "Headless Apple M4 MacBook Air", "Secondary High-Speed Metal Worker", "100.93.158.96", "Apple M4 MacBook Air (16GB)", "13.5 GB AI Cap", "AC Line", "ONLINE", 5.2),
+            _build_node_item(6, "Google Pixel 10 Pro XL", "Edge TPU & Vision Streamer", "100.73.38.87", "Google Tensor G5", "12.5 GB AI Cap", "Battery 94%", "ONLINE (Termux :8022)", 2.8),
+            _build_node_item(7, "Samsung Galaxy S20+", "Dedicated UI Tester & Router Tether", "100.84.40.95", "Snapdragon 865", "9.0 GB AI Cap", "Battery 98%", "ONLINE (Termux :8022)", 3.1)
         ]
 
         # 4. 10-Route Multi-WAN Transports
         multi_wan_transports = [
-            {"id": "tb4_bridge", "name": "🚀 Thunderbolt 4 Direct Bridge", "bandwidth": "40 Gbps", "latency_ms": 0.28, "status": "ONLINE", "sharding_role": "Primary LLM Weights & KV Cache"},
-            {"id": "10g_ethernet", "name": "⚡ 10Gbps Ethernet Switch Backbone", "bandwidth": "10,000 Mbps", "latency_ms": 0.08, "status": "ONLINE", "sharding_role": "Sharded MoE Routing"},
-            {"id": "wifi7_gateway", "name": "📡 WiFi 7 / 6E MLO Gateway", "bandwidth": "3,600 Mbps", "latency_ms": 1.8, "status": "ONLINE", "sharding_role": "Swarm Heartbeat & Telemetry"},
-            {"id": "tailscale_overlay", "name": "🔒 Tailscale WireGuard Overlay Mesh", "bandwidth": "100 Mbps", "latency_ms": 4.2, "status": "ONLINE", "sharding_role": "Encrypted Cross-Subnet WAN"},
-            {"id": "usb_adb_bus", "name": "📱 USB 3.2 ADB Direct Device Bus", "bandwidth": "10 Gbps", "latency_ms": 0.8, "status": "ONLINE", "sharding_role": "Pixel TPU & Samsung S20+ Sharding"},
-            {"id": "cloudflare_tunnel", "name": "☁️ Cloudflare Zero-Trust Tunnel", "bandwidth": "1,000 Mbps", "latency_ms": 12.5, "status": "ONLINE", "sharding_role": "Secure External Ingress/Webhooks"},
-            {"id": "zenoh_p2p", "name": "🪐 Eclipse Zenoh P2P Zero-Copy (Exo)", "bandwidth": "1,200 Mbps", "latency_ms": 0.35, "status": "ONLINE", "sharding_role": "Exo Cluster Layer Streaming"},
-            {"id": "ggml_rpc_sockets", "name": "⚡ llama.cpp Distributed RPC (:50052)", "bandwidth": "10,000 Mbps", "latency_ms": 0.15, "status": "ONLINE", "sharding_role": "Pure Tensor Sharding (82.8 GB Pool)"},
-            {"id": "bluetooth_ble", "name": "📶 Bluetooth 5.3 Low Energy Direct", "bandwidth": "2 Mbps", "latency_ms": 18.0, "status": "ONLINE", "sharding_role": "128Hz Movesense Biometrics DSP"},
-            {"id": "distributed_storage", "name": "💾 Samba / SeaweedFS Memory-Mapped IO", "bandwidth": "2,500 Mbps", "latency_ms": 1.2, "status": "ONLINE", "sharding_role": "LoRA Dataset & Model Weights"}
+            _build_transport_item("tb4_bridge", "🚀 Thunderbolt 4 Direct Bridge", "40 Gbps", 0.28, "ONLINE", "Primary LLM Weights & KV Cache"),
+            _build_transport_item("10g_ethernet", "⚡ 10Gbps Ethernet Switch Backbone", "10,000 Mbps", 0.08, "ONLINE", "Sharded MoE Routing"),
+            _build_transport_item("wifi7_gateway", "📡 WiFi 7 / 6E MLO Gateway", "3,600 Mbps", 1.8, "ONLINE", "Swarm Heartbeat & Telemetry"),
+            _build_transport_item("tailscale_overlay", "🔒 Tailscale WireGuard Overlay Mesh", "100 Mbps", 4.2, "ONLINE", "Encrypted Cross-Subnet WAN"),
+            _build_transport_item("usb_adb_bus", "📱 USB 3.2 ADB Direct Device Bus", "10 Gbps", 0.8, "ONLINE", "Pixel TPU & Samsung S20+ Sharding"),
+            _build_transport_item("cloudflare_tunnel", "☁️ Cloudflare Zero-Trust Tunnel", "1,000 Mbps", 12.5, "ONLINE", "Secure External Ingress/Webhooks"),
+            _build_transport_item("zenoh_p2p", "🪐 Eclipse Zenoh P2P Zero-Copy (Exo)", "1,200 Mbps", 0.35, "ONLINE", "Exo Cluster Layer Streaming"),
+            _build_transport_item("ggml_rpc_sockets", "⚡ llama.cpp Distributed RPC (:50052)", "10,000 Mbps", 0.15, "ONLINE", "Pure Tensor Sharding (82.8 GB Pool)"),
+            _build_transport_item("bluetooth_ble", "📶 Bluetooth 5.3 Low Energy Direct", "2 Mbps", 18.0, "ONLINE", "128Hz Movesense Biometrics DSP"),
+            _build_transport_item("distributed_storage", "💾 Samba / SeaweedFS Memory-Mapped IO", "2,500 Mbps", 1.2, "ONLINE", "LoRA Dataset & Model Weights")
         ]
 
         payload = {
@@ -4047,7 +4239,7 @@ def get_global_sharding_profiler_data():
         import subprocess
         matrix_path = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/global_sharding_profiler_matrix.json")
         if not matrix_path.exists():
-            matrix_path = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/global_sharding_profiler_matrix.json")
+            matrix_path = Path("/Volumes/Lauburu-Monorepo/data/global_sharding_profiler_matrix.json")
         if matrix_path.exists():
             with open(matrix_path, "r", encoding="utf-8") as f:
                 return jsonify(json.load(f))
