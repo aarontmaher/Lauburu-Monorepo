@@ -1,0 +1,196 @@
+{
+  "timestamp": 1791897931.855943,
+  "date_iso": "2026-10-13T13:25:31Z",
+  "l1_ram_sanctuary": {
+    "total_ram_gb": 24.0,
+    "used_ram_gb": 20.15,
+    "free_ram_gb": 3.85,
+    "sanctuary_healthy": false,
+    "status": "ELEVATED_PRESSURE (3.85GB)"
+  },
+  "mesh_runner": {
+    "status": "OPERATIONAL",
+    "timestamp": 1791897924.8644538,
+    "cycle_duration_ms": 9.98,
+    "device_profile": {
+      "layer": "L1",
+      "device_id": "Mac_Mini_M4_Pro",
+      "os": "macOS (Darwin)",
+      "hardware": "Apple M4 Pro Mac Mini (24GB RAM, Mac16,11)",
+      "compute_engine": "Apple Silicon 16-Core ANE (38 TOPS) + 16-Core Metal GPU",
+      "state_dir": "/tmp/lauburu_host_edge_state.json"
+    },
+    "actions_taken": [],
+    "mesh_connectivity": {
+      "mac_mini_host": {
+        "linked": true,
+        "rtt_ms": 3.54
+      },
+      "router_gateway": {
+        "linked": true,
+        "rtt_ms": 6.39
+      }
+    },
+    "system_headroom": {
+      "mem_free_mb": 0
+    },
+    "continuous_training_regulation": {
+      "action": "DOWN_REGULATE",
+      "compute_allocation_pct": 15.0,
+      "target_batch_size": 1,
+      "user_state": "USER_ACTIVE"
+    }
+  },
+  "mesh_nodes": {
+    "L1_Mac_Mini_M4": {
+      "ip": "10.0.0.2",
+      "role": "Host Sanctuary & Master Governor",
+      "type": "Apple M4 Pro",
+      "online": true,
+      "ping_rtt_ms": 3.33,
+      "ssh_accessible": false
+    },
+    "L1a_MBA_M4": {
+      "ip": "100.121.202.34",
+      "role": "Metal LoRA Distillation & Secondary Vault",
+      "type": "Apple M4",
+      "online": true,
+      "ping_rtt_ms": 10.1,
+      "ssh_accessible": true
+    },
+    "L1b_Mac_Mini_M2": {
+      "ip": "10.0.0.3",
+      "role": "Storage Vault & Shard Node",
+      "type": "Apple M2 Pro (40G TB4)",
+      "online": true,
+      "ping_rtt_ms": 3.79,
+      "ssh_accessible": true
+    },
+    "L2_MacBook_Pro": {
+      "ip": "10.0.0.4",
+      "role": "Model Vault & Script Automation Target",
+      "type": "Intel i7 (40G TB4)",
+      "online": true,
+      "ping_rtt_ms": 4.15,
+      "ssh_accessible": true
+    },
+    "L3_Linux_AMD": {
+      "ip": "192.168.8.225",
+      "role": "Docker Hub & Ray Engine (Xvfb :99)",
+      "type": "AMD Ryzen 7 5700U",
+      "online": true,
+      "ping_rtt_ms": 8.01,
+      "ssh_accessible": true
+    },
+    "L8_Linux_Mini_Hub": {
+      "ip": "10.0.0.8",
+      "role": "First-Offload Hub (Ubuntu 24.04 32GB)",
+      "type": "x86_64 12-Core (40G TB4)",
+      "online": true,
+      "ping_rtt_ms": 3.74,
+      "ssh_accessible": true
+    },
+    "L4_Pixel_AVF_Debian": {
+      "ip": "100.80.64.5",
+      "role": "Debian Linux Tablet & AVF MicroVM",
+      "type": "Tensor G5 pKVM",
+      "online": true,
+      "ping_rtt_ms": 72.12,
+      "ssh_accessible": false
+    },
+    "L6_Pixel_10_Pro_XL": {
+      "ip": "192.168.8.213",
+      "role": "Tensor G5 Edge TPU & Termux SSH",
+      "type": "Google Tensor G5 (18-20 TOPS)",
+      "online": true,
+      "ping_rtt_ms": 12.39,
+      "ssh_accessible": false
+    },
+    "L7_Samsung_S20": {
+      "ip": "192.168.8.224",
+      "role": "Exynos NPU Edge Tester & Shizuku",
+      "type": "Exynos 990 (12GB RAM)",
+      "online": true,
+      "ping_rtt_ms": 8.7,
+      "ssh_accessible": false
+    },
+    "GW_GL_BE14000": {
+      "ip": "192.168.8.1",
+      "role": "Core Gateway Router & Network Healer",
+      "type": "OpenWrt Linux 5.4",
+      "online": true,
+      "ping_rtt_ms": 5.49,
+      "ssh_accessible": true
+    },
+    "KDE_Connect_Mesh": {
+      "status": "OPERATIONAL",
+      "paired_count": 7,
+      "devices": [
+        "Galaxy S20+ 5G: 46d2277e39eb41ae8471a739ad8371bb on 192.168.8.224 via LAN (reachable)",
+        "lauburu: 5e1cae5a99b64ad3ae60333b8c087475 (paired)",
+        "Macbook: 61acf826_a59b_572a_a7ae_5263af1392dc on 192.168.8.248 via LAN (paired and reachable)",
+        "Aarons-Mac-minilocal: 677ae0acdb56400c95cdd379b509333e on 169.254.50.254 via LAN (reachable)",
+        "Pixel 10 Pro XL: 6cd6eb49d59642eea711d6a6b365cd24 (paired)",
+        "linux: _aa7dc817_205a_4af9_87ec_c6d694840f52_ (paired)",
+        "Aaron\u2019s Mac mini 5: b7510790_52ae_54e2_911e_e88a50b4ffbf on 192.168.8.114 via LAN (reachable)"
+      ]
+    },
+    "Layer_0_Bluetooth_Lifeline": {
+      "status": "OPERATIONAL",
+      "connected_count": 2,
+      "connected_devices": [
+        "address: 00-41-0e-14-28-44, connected (master, 0 dBm), not favourite, paired, name: \"linux\", recent access date: 2026-10-13 13:25:28 +0000",
+        "address: 38-09-fb-38-ca-62, connected (master, 0 dBm), not favourite, paired, name: \"Aaron\u2019s Magic Keyboard\", recent access date: 2026-10-13 13:25:28 +0000"
+      ]
+    },
+    "Wearables_Movesense_PolarH10": {
+      "service_port_4000": true,
+      "ble_mac": "24-ac-ac-1b-5e-91",
+      "ecg_freq_hz": 512,
+      "status": "ONLINE (Console Service :4000 Active)"
+    }
+  },
+  "remote_jupyter_offload": {
+    "status": "OPERATIONAL",
+    "endpoint": "http://10.0.0.8:8888",
+    "transport": "40 Gbps Thunderbolt 4 bridge0 (10.0.0.8, ~0.38ms RTT)",
+    "available_kernels": [
+      "python3",
+      "gophernotes",
+      "python3-linuxmini"
+    ],
+    "linuxmini_kernel_ready": true,
+    "server_status": {
+      "connections": 0,
+      "kernels": 0,
+      "last_activity": "2026-10-13T13:25:02.583902Z",
+      "started": "2026-10-13T12:54:47.161097Z"
+    }
+  },
+  "screen_recordings": {
+    "L6_Pixel_10_Pro_XL": {
+      "file_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/test_artifacts/l6_pixel10_screenrecord.mp4",
+      "size_bytes": 1385107,
+      "sha256": "32323f6649523c36e6bdc12bf79a49ab32933717babbc8133c7be6cb81a7b0e5",
+      "format": "MP4 (H.264 live ADB screenrecord - cached empirical)",
+      "status": "SUCCESS"
+    },
+    "L3_Linux_AMD": {
+      "file_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/test_artifacts/l3_linux_amd_screen_capture.xwd",
+      "ip_used": "192.168.8.225",
+      "size_bytes": 3689579,
+      "sha256": "b9203d26474aef6f1e7f92253fd30826afbd84ba98e54c01a09e343245d5c6aa",
+      "format": "XWD (X11 raw display capture from Xvfb :99)",
+      "status": "SUCCESS"
+    },
+    "L2_MacBook_Pro": {
+      "file_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/test_artifacts/l2_macbook_screencapture.png",
+      "ip_used": "10.0.0.4",
+      "size_bytes": 13634911,
+      "sha256": "4e83e7c1de878cef5da7b4d169fc1ed65f4800a041d2b1fbd4c95db4d93bcd15",
+      "format": "PNG (macOS native screencapture over 40Gbps TB4)",
+      "status": "SUCCESS"
+    }
+  },
+  "rule_0_zero_mock": "VERIFIED_AUTHENTIC"
+}
