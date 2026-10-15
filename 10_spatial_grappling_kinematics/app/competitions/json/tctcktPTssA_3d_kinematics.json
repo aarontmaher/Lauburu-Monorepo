@@ -1,0 +1,26 @@
+{
+  "video_id": "tctcktPTssA",
+  "url": "https://youtu.be/tctcktPTssA",
+  "division": "Professional Grappling",
+  "title": "Battleground - Aaron Maher vs Peaches (Josh Stolton)",
+  "duration_sec": 1039.9,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 24,
+  "dual_athlete_frames": 5,
+  "standing_phase_pct": 50.0,
+  "ground_scramble_phase_pct": 50.0,
+  "level_change_shots_detected": 4,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 54.9,
+    "left_elbow": 129.2,
+    "right_elbow": 133.4,
+    "left_hip": 127.5,
+    "right_hip": 128.2,
+    "left_knee": 127.5,
+    "right_knee": 126.1
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/tctcktPTssA_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match features a balanced, quick tempo with a significant level change shot, indicating quick reflexes and agility. The mean spine lean is moderate, suggesting a balanced posture with proper alignment. The elbow flexion and knee flexion are both moderate, indicating a well-tuned and balanced technique.",
+  "processing_sec": 3.07
+}

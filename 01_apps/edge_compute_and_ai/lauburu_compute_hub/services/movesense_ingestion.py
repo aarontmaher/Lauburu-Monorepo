@@ -484,7 +484,10 @@ class MovesenseGattTetherDaemon:
         self.auto_reconnect: bool = True
         self.reconnect_interval_sec: float = 3.0
         self._reconnect_task: Optional[asyncio.Task] = None
-        self._lock = asyncio.Lock() if asyncio.get_event_loop().is_running() else None
+        try:
+            self._lock = asyncio.Lock() if asyncio.get_running_loop().is_running() else None
+        except RuntimeError:
+            self._lock = None
 
     def _get_lock(self) -> asyncio.Lock:
         if self._lock is None:

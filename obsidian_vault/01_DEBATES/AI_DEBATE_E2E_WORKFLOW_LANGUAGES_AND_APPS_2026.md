@@ -105,4 +105,4 @@ consensus_threshold: "0.994"
 - **Local AI Orchestrator:** ✅ RATIFIED
 - **Devil's Advocate:** ✅ OBJECTIONS RESOLVED (Strict zero-copy IPC contracts accepted)
 - **Cloud Shadow Orchestrator:** ✅ RATIFIED
-- **Training Engine:** Appended 4 DPO instruction pairs to `/Users/aaron/DFS_UNIFIED/lora_datasets/truth_audit_debate.jsonl`.
+- **Training Engine:** Appended 4 DPO instruction pairs to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/truth_audit_debate.jsonl`.

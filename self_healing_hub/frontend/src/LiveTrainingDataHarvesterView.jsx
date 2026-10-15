@@ -169,7 +169,7 @@ export default function LiveTrainingDataHarvesterView() {
             <span>Shopify Storefront GraphQL Stream</span>
           </div>
           <div style={{ fontSize: '0.74rem', color: '#94a3b8', marginTop: '6px' }}>
-            Pulls real product catalogs, Pro Athlete memberships, and Proof-of-Compute discount logic from <code>lauburugrappling.myshopify.com</code>.
+            Pulls real product catalogs, Pro Athlete memberships, and Proof-of-Compute discount logic from <code>lauburu-grappling.myshopify.com</code>.
           </div>
           <div style={{ marginTop: '0.8rem', fontSize: '0.72rem', background: 'rgba(0,0,0,0.4)', padding: '6px 8px', borderRadius: '6px', color: '#7dd3fc' }}>
             Target: Automated E-Commerce & Subscription Agents

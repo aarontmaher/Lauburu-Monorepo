@@ -22,7 +22,7 @@ import subprocess
 from pathlib import Path
 from typing import Dict, Any, List
 
-MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+MONOREPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 BACKLOG_FILE = MONOREPO_ROOT / "ai_training_backlog.md"
 LOG_FILE = MONOREPO_ROOT / "session_logs/sharded_execution.log"
 TRUTH_DATASET = MONOREPO_ROOT / "data/truthfulness_retraining_dataset.jsonl"

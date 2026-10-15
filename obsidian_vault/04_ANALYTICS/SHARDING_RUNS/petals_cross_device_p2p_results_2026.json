@@ -1,0 +1,394 @@
+[
+  {
+    "protocol": "Petals_Hivemind_P2P",
+    "nodes": "L1_MacMini_M4 <-> L3_Linux_AMD",
+    "transport": "1GbE_LAN",
+    "compression": "FLOAT16",
+    "hidden_dim": 1024,
+    "elements": 131072,
+    "raw_bytes": 524288,
+    "wire_bytes": 262166,
+    "compression_ratio": 2.0,
+    "ser_stats": {
+      "mean_ms": 0.3971,
+      "std_ms": 0.2116,
+      "min_ms": 0.1839,
+      "median_ms": 0.3201,
+      "p95_ms": 1.0279,
+      "max_ms": 1.0279
+    },
+    "rpc_stats": {
+      "mean_ms": 259.6721,
+      "std_ms": 100.3984,
+      "min_ms": 136.146,
+      "median_ms": 233.142,
+      "p95_ms": 483.9993,
+      "max_ms": 483.9993
+    },
+    "deser_stats": {
+      "mean_ms": 0.1567,
+      "std_ms": 0.0899,
+      "min_ms": 0.0745,
+      "median_ms": 0.1228,
+      "p95_ms": 0.3978,
+      "max_ms": 0.3978
+    },
+    "e2e_stats": {
+      "mean_ms": 260.2259,
+      "std_ms": 100.3967,
+      "min_ms": 137.2515,
+      "median_ms": 233.7009,
+      "p95_ms": 484.7559,
+      "max_ms": 484.7559
+    },
+    "throughput_mb_s": 1.92,
+    "token_rate_tok_s": 491.88,
+    "transit_cost_us_per_token": 2028.69,
+    "reconstruction_snr_db": 70.66,
+    "cosine_similarity": 1.0,
+    "reconstruction_mse": 8.382432248321692e-11
+  },
+  {
+    "protocol": "Petals_Hivemind_P2P",
+    "nodes": "L1_MacMini_M4 <-> L3_Linux_AMD",
+    "transport": "1GbE_LAN",
+    "compression": "FLOAT16",
+    "hidden_dim": 2048,
+    "elements": 262144,
+    "raw_bytes": 1048576,
+    "wire_bytes": 524310,
+    "compression_ratio": 2.0,
+    "ser_stats": {
+      "mean_ms": 0.6312,
+      "std_ms": 0.8081,
+      "min_ms": 0.2001,
+      "median_ms": 0.4208,
+      "p95_ms": 3.5993,
+      "max_ms": 3.5993
+    },
+    "rpc_stats": {
+      "mean_ms": 329.3687,
+      "std_ms": 91.4461,
+      "min_ms": 191.2657,
+      "median_ms": 325.0958,
+      "p95_ms": 511.7906,
+      "max_ms": 511.7906
+    },
+    "deser_stats": {
+      "mean_ms": 0.16,
+      "std_ms": 0.0753,
+      "min_ms": 0.0786,
+      "median_ms": 0.1527,
+      "p95_ms": 0.3761,
+      "max_ms": 0.3761
+    },
+    "e2e_stats": {
+      "mean_ms": 330.16,
+      "std_ms": 91.9142,
+      "min_ms": 191.5878,
+      "median_ms": 325.4814,
+      "p95_ms": 515.5412,
+      "max_ms": 515.5412
+    },
+    "throughput_mb_s": 3.03,
+    "token_rate_tok_s": 387.69,
+    "transit_cost_us_per_token": 2573.19,
+    "reconstruction_snr_db": 70.69,
+    "cosine_similarity": 1.0,
+    "reconstruction_mse": 4.1641398662584095e-11
+  },
+  {
+    "protocol": "Petals_Hivemind_P2P",
+    "nodes": "L1_MacMini_M4 <-> L3_Linux_AMD",
+    "transport": "1GbE_LAN",
+    "compression": "FLOAT16",
+    "hidden_dim": 4096,
+    "elements": 524288,
+    "raw_bytes": 2097152,
+    "wire_bytes": 1048598,
+    "compression_ratio": 2.0,
+    "ser_stats": {
+      "mean_ms": 0.5245,
+      "std_ms": 0.2229,
+      "min_ms": 0.2427,
+      "median_ms": 0.5538,
+      "p95_ms": 0.991,
+      "max_ms": 0.991
+    },
+    "rpc_stats": {
+      "mean_ms": 486.5675,
+      "std_ms": 121.1822,
+      "min_ms": 349.172,
+      "median_ms": 445.0804,
+      "p95_ms": 754.8493,
+      "max_ms": 754.8493
+    },
+    "deser_stats": {
+      "mean_ms": 0.2079,
+      "std_ms": 0.0925,
+      "min_ms": 0.1038,
+      "median_ms": 0.2102,
+      "p95_ms": 0.4529,
+      "max_ms": 0.4529
+    },
+    "e2e_stats": {
+      "mean_ms": 487.2999,
+      "std_ms": 121.2209,
+      "min_ms": 349.979,
+      "median_ms": 446.1847,
+      "p95_ms": 755.979,
+      "max_ms": 755.979
+    },
+    "throughput_mb_s": 4.1,
+    "token_rate_tok_s": 262.67,
+    "transit_cost_us_per_token": 3801.31,
+    "reconstruction_snr_db": 70.63,
+    "cosine_similarity": 1.0,
+    "reconstruction_mse": 2.1128217231325408e-11
+  },
+  {
+    "protocol": "Petals_Hivemind_P2P",
+    "nodes": "L1_MacMini_M4 <-> L3_Linux_AMD",
+    "transport": "1GbE_LAN",
+    "compression": "FLOAT16",
+    "hidden_dim": 8192,
+    "elements": 1048576,
+    "raw_bytes": 4194304,
+    "wire_bytes": 2097175,
+    "compression_ratio": 2.0,
+    "ser_stats": {
+      "mean_ms": 0.506,
+      "std_ms": 0.1299,
+      "min_ms": 0.2943,
+      "median_ms": 0.502,
+      "p95_ms": 0.7555,
+      "max_ms": 0.7555
+    },
+    "rpc_stats": {
+      "mean_ms": 913.3591,
+      "std_ms": 162.9017,
+      "min_ms": 696.1463,
+      "median_ms": 907.6172,
+      "p95_ms": 1213.8087,
+      "max_ms": 1213.8087
+    },
+    "deser_stats": {
+      "mean_ms": 0.226,
+      "std_ms": 0.0571,
+      "min_ms": 0.1411,
+      "median_ms": 0.2349,
+      "p95_ms": 0.3245,
+      "max_ms": 0.3245
+    },
+    "e2e_stats": {
+      "mean_ms": 914.0911,
+      "std_ms": 162.9319,
+      "min_ms": 696.9186,
+      "median_ms": 908.421,
+      "p95_ms": 1214.526,
+      "max_ms": 1214.526
+    },
+    "throughput_mb_s": 4.38,
+    "token_rate_tok_s": 140.03,
+    "transit_cost_us_per_token": 7135.62,
+    "reconstruction_snr_db": 70.67,
+    "cosine_similarity": 1.0,
+    "reconstruction_mse": 1.045565110185942e-11
+  },
+  {
+    "protocol": "Petals_Hivemind_P2P",
+    "nodes": "L1_MacMini_M4 <-> L3_Linux_AMD",
+    "transport": "1GbE_LAN",
+    "compression": "NONE_FP32",
+    "hidden_dim": 1024,
+    "elements": 131072,
+    "raw_bytes": 524288,
+    "wire_bytes": 524308,
+    "compression_ratio": 1.0,
+    "ser_stats": {
+      "mean_ms": 0.1059,
+      "std_ms": 0.0914,
+      "min_ms": 0.0498,
+      "median_ms": 0.0708,
+      "p95_ms": 0.4029,
+      "max_ms": 0.4029
+    },
+    "rpc_stats": {
+      "mean_ms": 173.2043,
+      "std_ms": 52.662,
+      "min_ms": 116.5227,
+      "median_ms": 148.6466,
+      "p95_ms": 311.6349,
+      "max_ms": 311.6349
+    },
+    "deser_stats": {
+      "mean_ms": 0.1481,
+      "std_ms": 0.0776,
+      "min_ms": 0.0712,
+      "median_ms": 0.1271,
+      "p95_ms": 0.3005,
+      "max_ms": 0.3005
+    },
+    "e2e_stats": {
+      "mean_ms": 173.4583,
+      "std_ms": 52.5841,
+      "min_ms": 116.777,
+      "median_ms": 149.0375,
+      "p95_ms": 311.7621,
+      "max_ms": 311.7621
+    },
+    "throughput_mb_s": 2.88,
+    "token_rate_tok_s": 737.93,
+    "transit_cost_us_per_token": 1353.16,
+    "reconstruction_snr_db": 142.18,
+    "cosine_similarity": 1.0,
+    "reconstruction_mse": 5.906449663120086e-18
+  },
+  {
+    "protocol": "Petals_Hivemind_P2P",
+    "nodes": "L1_MacMini_M4 <-> L3_Linux_AMD",
+    "transport": "1GbE_LAN",
+    "compression": "NONE_FP32",
+    "hidden_dim": 2048,
+    "elements": 262144,
+    "raw_bytes": 1048576,
+    "wire_bytes": 1048596,
+    "compression_ratio": 1.0,
+    "ser_stats": {
+      "mean_ms": 0.1326,
+      "std_ms": 0.0576,
+      "min_ms": 0.0659,
+      "median_ms": 0.1291,
+      "p95_ms": 0.3084,
+      "max_ms": 0.3084
+    },
+    "rpc_stats": {
+      "mean_ms": 352.4778,
+      "std_ms": 114.3291,
+      "min_ms": 198.2927,
+      "median_ms": 300.5514,
+      "p95_ms": 633.1883,
+      "max_ms": 633.1883
+    },
+    "deser_stats": {
+      "mean_ms": 0.224,
+      "std_ms": 0.252,
+      "min_ms": 0.0886,
+      "median_ms": 0.1548,
+      "p95_ms": 1.1381,
+      "max_ms": 1.1381
+    },
+    "e2e_stats": {
+      "mean_ms": 352.8345,
+      "std_ms": 114.3331,
+      "min_ms": 198.5824,
+      "median_ms": 301.8063,
+      "p95_ms": 633.4673,
+      "max_ms": 633.4673
+    },
+    "throughput_mb_s": 2.83,
+    "token_rate_tok_s": 362.78,
+    "transit_cost_us_per_token": 2753.73,
+    "reconstruction_snr_db": 140.12,
+    "cosine_similarity": 1.0,
+    "reconstruction_mse": 4.745217123271193e-18
+  },
+  {
+    "protocol": "Petals_Hivemind_P2P",
+    "nodes": "L1_MacMini_M4 <-> L3_Linux_AMD",
+    "transport": "1GbE_LAN",
+    "compression": "NONE_FP32",
+    "hidden_dim": 4096,
+    "elements": 524288,
+    "raw_bytes": 2097152,
+    "wire_bytes": 2097173,
+    "compression_ratio": 1.0,
+    "ser_stats": {
+      "mean_ms": 0.1351,
+      "std_ms": 0.0312,
+      "min_ms": 0.0949,
+      "median_ms": 0.145,
+      "p95_ms": 0.1732,
+      "max_ms": 0.1732
+    },
+    "rpc_stats": {
+      "mean_ms": 693.5695,
+      "std_ms": 223.2882,
+      "min_ms": 508.3295,
+      "median_ms": 631.8859,
+      "p95_ms": 1444.3548,
+      "max_ms": 1444.3548
+    },
+    "deser_stats": {
+      "mean_ms": 0.1614,
+      "std_ms": 0.0378,
+      "min_ms": 0.1166,
+      "median_ms": 0.139,
+      "p95_ms": 0.2337,
+      "max_ms": 0.2337
+    },
+    "e2e_stats": {
+      "mean_ms": 693.866,
+      "std_ms": 223.2883,
+      "min_ms": 508.6391,
+      "median_ms": 632.1198,
+      "p95_ms": 1444.6474,
+      "max_ms": 1444.6474
+    },
+    "throughput_mb_s": 2.88,
+    "token_rate_tok_s": 184.47,
+    "transit_cost_us_per_token": 5418.51,
+    "reconstruction_snr_db": 137.03,
+    "cosine_similarity": 1.0,
+    "reconstruction_mse": 4.840347029617854e-18
+  },
+  {
+    "protocol": "Petals_Hivemind_P2P",
+    "nodes": "L1_MacMini_M4 <-> L3_Linux_AMD",
+    "transport": "1GbE_LAN",
+    "compression": "NONE_FP32",
+    "hidden_dim": 8192,
+    "elements": 1048576,
+    "raw_bytes": 4194304,
+    "wire_bytes": 4194325,
+    "compression_ratio": 1.0,
+    "ser_stats": {
+      "mean_ms": 0.2445,
+      "std_ms": 0.0772,
+      "min_ms": 0.1648,
+      "median_ms": 0.2296,
+      "p95_ms": 0.5007,
+      "max_ms": 0.5007
+    },
+    "rpc_stats": {
+      "mean_ms": 1201.4745,
+      "std_ms": 148.397,
+      "min_ms": 1020.4884,
+      "median_ms": 1174.5608,
+      "p95_ms": 1502.0583,
+      "max_ms": 1502.0583
+    },
+    "deser_stats": {
+      "mean_ms": 0.2704,
+      "std_ms": 0.0842,
+      "min_ms": 0.1841,
+      "median_ms": 0.2514,
+      "p95_ms": 0.5015,
+      "max_ms": 0.5015
+    },
+    "e2e_stats": {
+      "mean_ms": 1201.9893,
+      "std_ms": 148.4242,
+      "min_ms": 1020.9552,
+      "median_ms": 1175.2584,
+      "p95_ms": 1502.5421,
+      "max_ms": 1502.5421
+    },
+    "throughput_mb_s": 3.33,
+    "token_rate_tok_s": 106.49,
+    "transit_cost_us_per_token": 9386.52,
+    "reconstruction_snr_db": 134.77,
+    "cosine_similarity": 1.0,
+    "reconstruction_mse": 4.074786823206658e-18
+  }
+]

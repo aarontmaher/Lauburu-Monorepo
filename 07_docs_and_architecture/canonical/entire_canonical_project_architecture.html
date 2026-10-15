@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canonical Lauburu Architecture Graph Dashboard</title>
+    <style>
+        :root {
+            --bg: #090d16;
+            --card-bg: #0f172a;
+            --sub-bg: #182234;
+            --border: #334155;
+            --primary: #38bdf8;
+            --accent: #10b981;
+            --pink: #ec4899;
+            --purple: #a855f7;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, monospace;
+            padding: 24px;
+            line-height: 1.5;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        .title h1 { font-size: 22px; font-weight: 800; color: var(--text); }
+        .title p { font-size: 13px; color: var(--muted); }
+        .metrics-pills { display: flex; gap: 12px; }
+        .pill {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 14px;
+            text-align: right;
+        }
+        .pill .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .pill .val { font-size: 16px; font-weight: bold; }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 20px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vault-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .vault-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .vault-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+        .vault-stripe {
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+        }
+        .vault-name { font-size: 13px; font-weight: bold; margin-bottom: 6px; }
+        .vault-path { font-family: monospace; font-size: 11px; color: var(--muted); word-break: break-all; margin-bottom: 8px; }
+        .vault-detail { font-size: 12px; color: #cbd5e1; }
+
+        .nodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .node-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .node-card:hover {
+            border-color: var(--primary);
+            background: var(--sub-bg);
+        }
+        .node-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .node-badge {
+            background: #1e293b;
+            color: var(--primary);
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+        .node-name { font-size: 13px; font-weight: bold; }
+        .node-spec { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+        .node-ips { font-family: monospace; font-size: 10px; color: #38bdf8; margin-bottom: 6px; }
+        .node-ram {
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--accent);
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 8px;
+            background: #090d16;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+        .node-ports { font-size: 10px; color: #fbbf24; }
+
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 900px) {
+            .split-grid { grid-template-columns: 1fr; }
+        }
+        .port-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        .port-table th {
+            text-align: left;
+            padding: 8px;
+            background: var(--sub-bg);
+            color: var(--muted);
+            font-size: 10px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+        .port-table td {
+            padding: 8px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+            color: #cbd5e1;
+        }
+        .port-badge {
+            font-family: monospace;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #1e293b;
+        }
+
+        .svg-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="title">
+            <h1>🏛️ Lauburu Canonical Project Architecture &amp; Mesh Graph</h1>
+            <p>7-Layer Physical Mesh Topology • Tri-Vault Synchronization • Distributed AI Inference Ports</p>
+        </div>
+        <div class="metrics-pills">
+            <div class="pill">
+                <div class="label">Total Physical RAM</div>
+                <div class="val" style="color: var(--primary);">109.0 GB</div>
+            </div>
+            <div class="pill">
+                <div class="label">Pooled AI VRAM</div>
+                <div class="val" style="color: var(--accent);">91.4 GB</div>
+            </div>
+            <div class="pill">
+                <div class="label">TB4 Direct Bridge</div>
+                <div class="val" style="color: var(--pink);">0.277 ms RTT</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIGH DPI SVG EMBED -->
+    <div class="section-title">📐 Vector Topology Graph (High-DPI Master SVG)</div>
+    <div class="svg-container">
+        <object data="entire_canonical_project_architecture.svg" type="image/svg+xml" style="width: 100%; min-width: 1000px; height: auto;">
+            Your browser does not support SVG embedding.
+        </object>
+    </div>
+
+    <!-- TRI-VAULT STORAGE -->
+    <div class="section-title">🏛️ 1. Canonical Tri-Vault Storage Architecture</div>
+    <div class="vault-grid">
+
+        <div class="vault-card">
+            <div class="vault-stripe" style="background: #a855f7;"></div>
+            <div class="vault-name" style="color: #a855f7;">1. OBSIDIAN KNOWLEDGE VAULT</div>
+            <div class="vault-path">/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/</div>
+            <div class="vault-detail"><b>Engine:</b> Obsidian MCP Pro (41 tools, graph traversal, Wikilinks)</div>
+            <div class="vault-detail" style="margin-top: 4px;"><b>Contents:</b> Architecture whitepapers, AI debate consensus, continuous audit logs, network topologies, KaTeX math</div>
+        </div>
+        
+        <div class="vault-card">
+            <div class="vault-stripe" style="background: #38bdf8;"></div>
+            <div class="vault-name" style="color: #38bdf8;">2. PYSPARK & BIG DATA LAKE</div>
+            <div class="vault-path">/Users/aaron/DFS_UNIFIED/lora_datasets/ & 04_data_and_memory/</div>
+            <div class="vault-detail"><b>Engine:</b> PySpark, Delta Lake / Parquet, Qdrant Vector DB</div>
+            <div class="vault-detail" style="margin-top: 4px;"><b>Contents:</b> 73,984+ LoRA instruction pairs, 3,100+ AST crawls, 435K+ LOC index, 512Hz Pan-Tompkins ECG streams</div>
+        </div>
+        
+        <div class="vault-card">
+            <div class="vault-stripe" style="background: #10b981;"></div>
+            <div class="vault-name" style="color: #10b981;">3. GITHUB MONOREPO & WORKTREES</div>
+            <div class="vault-path">aarontmaher/Lauburu-Monorepo (Host: /Users/aaron/DFS_UNIFIED)</div>
+            <div class="vault-detail"><b>Engine:</b> gh CLI, Git Worktrees, Automated Multi-Tier CI Test Suites</div>
+            <div class="vault-detail" style="margin-top: 4px;"><b>Contents:</b> Canonical production code, container manifests, microservices, Rust/Dart/Python modules</div>
+        </div>
+        
+    </div>
+
+    <!-- 7-LAYER PHYSICAL NODES -->
+    <div class="section-title">🌐 2. 7-Layer Physical Mesh Hardware Matrix</div>
+    <div class="nodes-grid">
+
+        <div class="node-card">
+            <div class="node-top">
+                <span class="node-badge">L1</span>
+                <span class="node-name">Mac_Node (Host)</span>
+            </div>
+            <div class="node-spec">Apple M4 Pro Mac Mini</div>
+            <div class="node-ips">LAN: 192.168.8.230 | TS: 100.119.199.76</div>
+            <div class="node-ram">
+                <span>RAM: 24.0 GB</span>
+                <span>AI Cap: 21.6 GB (90%)</span>
+            </div>
+            <div class="node-ports"><b>Ports:</b> 4000 (Console), 4002 (Screen Lens), 4003 (MJPEG), 18802 (Healer)</div>
+        </div>
+        
+        <div class="node-card">
+            <div class="node-top">
+                <span class="node-badge">L2</span>
+                <span class="node-name">MacBook_Pro</span>
+            </div>
+            <div class="node-spec">Apple M4 Pro 16GB</div>
+            <div class="node-ips">LAN: 192.168.8.127 | TS: 100.103.212.21</div>
+            <div class="node-ram">
+                <span>RAM: 16.0 GB</span>
+                <span>AI Cap: 14.0 GB (90%)</span>
+            </div>
+            <div class="node-ports"><b>Ports:</b> 8083 (Qwen 80B MoE), TB4 DMA (169.254.187.138)</div>
+        </div>
+        
+        <div class="node-card">
+            <div class="node-top">
+                <span class="node-badge">L3</span>
+                <span class="node-name">Linux_Head_Node</span>
+            </div>
+            <div class="node-spec">AMD Ryzen 7 5700U</div>
+            <div class="node-ips">LAN: 192.168.8.224 | TS: 100.101.39.98</div>
+            <div class="node-ram">
+                <span>RAM: 16.0 GB</span>
+                <span>AI Cap: 13.8 GB (80%)</span>
+            </div>
+            <div class="node-ports"><b>Ports:</b> 8086 (Petals DHT), Ray (6379), Docker Ingress</div>
+        </div>
+        
+        <div class="node-card">
+            <div class="node-top">
+                <span class="node-badge">L4</span>
+                <span class="node-name">Linux_Tablet</span>
+            </div>
+            <div class="node-spec">Debian Linux Touch</div>
+            <div class="node-ips">LAN: DHCP | TS: 100.81.92.125</div>
+            <div class="node-ram">
+                <span>RAM: 8.0 GB</span>
+                <span>AI Cap: 6.5 GB (75%)</span>
+            </div>
+            <div class="node-ports"><b>Ports:</b> Petals Worker, KDE Connect (1714-1764)</div>
+        </div>
+        
+        <div class="node-card">
+            <div class="node-top">
+                <span class="node-badge">L5</span>
+                <span class="node-name">MacBook_Air</span>
+            </div>
+            <div class="node-spec">Apple M4 MacBook Air</div>
+            <div class="node-ips">LAN: 192.168.8.222 | TS: 100.93.158.96</div>
+            <div class="node-ram">
+                <span>RAM: 16.0 GB</span>
+                <span>AI Cap: 14.0 GB (90%)</span>
+            </div>
+            <div class="node-ports"><b>Ports:</b> MPS Worker, Headless Playwright</div>
+        </div>
+        
+        <div class="node-card">
+            <div class="node-top">
+                <span class="node-badge">L6</span>
+                <span class="node-name">Pixel_10_Pro_XL</span>
+            </div>
+            <div class="node-spec">Google Tensor G5</div>
+            <div class="node-ips">LAN: DHCP | TS: 100.73.38.87</div>
+            <div class="node-ram">
+                <span>RAM: 16.0 GB</span>
+                <span>AI Cap: 12.5 GB (85%)</span>
+            </div>
+            <div class="node-ports"><b>Ports:</b> Termux (8022), Web Bluetooth GATT</div>
+        </div>
+        
+        <div class="node-card">
+            <div class="node-top">
+                <span class="node-badge">L7</span>
+                <span class="node-name">Samsung_S20</span>
+            </div>
+            <div class="node-spec">Samsung Exynos 990</div>
+            <div class="node-ips">LAN: DHCP | TS: 100.84.40.95</div>
+            <div class="node-ram">
+                <span>RAM: 12.0 GB</span>
+                <span>AI Cap: 9.0 GB (75%)</span>
+            </div>
+            <div class="node-ports"><b>Ports:</b> OpenClaw ADB (4004), Termux Keepalive</div>
+        </div>
+        
+        <div class="node-card">
+            <div class="node-top">
+                <span class="node-badge">GW</span>
+                <span class="node-name">GL.iNet Router</span>
+            </div>
+            <div class="node-spec">GL-MT3600BE Beryl 7</div>
+            <div class="node-ips">LAN: 192.168.8.1 | TS: 100.122.185.123</div>
+            <div class="node-ram">
+                <span>RAM: 1.0 GB</span>
+                <span>AI Cap: 0.0 GB (N/A)</span>
+            </div>
+            <div class="node-ports"><b>Ports:</b> SSH (22), LuCI Web (80/443), Tailscale Subnet</div>
+        </div>
+        
+    </div>
+
+    <!-- PORTS & APPS -->
+    <div class="split-grid">
+        <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px;">
+            <div class="section-title" style="margin-top: 0;">🤖 Distributed AI Inference Mesh</div>
+            <table class="port-table">
+                <thead>
+                    <tr><th>Port</th><th>Model</th><th>Engine</th><th>Role</th></tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><span class="port-badge" style="color: #10b981;">:8081</span></td>
+                        <td><b>Qwen 2.5 Coder 7B Q4_K_M</b></td>
+                        <td>llama.cpp RPC</td>
+                        <td>Micro Coding, POSIX scripting, Fast Refactor</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="port-badge" style="color: #10b981;">:8082</span></td>
+                        <td><b>Mistral Nemo 12B Abliterated (Neo)</b></td>
+                        <td>prima.cpp</td>
+                        <td>Tool Calling, Storefront GraphQL, HMAC Verification</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="port-badge" style="color: #10b981;">:8083</span></td>
+                        <td><b>Qwen 3 MoE 80B Distributed Shard</b></td>
+                        <td>llama-server RPC</td>
+                        <td>Deep Architectural Reasoning, 146 tok/s MTP=2</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="port-badge" style="color: #38bdf8;">:8086</span></td>
+                        <td><b>Heterogeneous Swarm Hivemind</b></td>
+                        <td>Petals DHT</td>
+                        <td>Fault-tolerant P2P Layer Hopping over Tailscale</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="port-badge" style="color: #38bdf8;">:CLOUD</span></td>
+                        <td><b>Gemini 3.8 Flash (High Thinking)</b></td>
+                        <td>Google AI Studio</td>
+                        <td>Free-Tier Frontier Reasoning (1,500 RPD, 0.00 cost)</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px;">
+            <div class="section-title" style="margin-top: 0;">🚀 Application Hubs &amp; Daemons</div>
+            <table class="port-table">
+                <thead>
+                    <tr><th>Port</th><th>Name</th><th>Tech</th><th>Role</th></tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><span class="port-badge" style="color: #38bdf8;">:4000</span></td>
+                        <td><b>Movesense Console</b></td>
+                        <td>Axum / WebSockets / WebGL</td>
+                        <td>512Hz Raw ECG & 3D Spatial Grappling Kinematics</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="port-badge" style="color: #38bdf8;">:4002</span></td>
+                        <td><b>Screen Lens Sovereign</b></td>
+                        <td>Marimo Reactive Notebook</td>
+                        <td>Interactive Telemetry, Multi-Model ELO, 30 Diagnostic Panels</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="port-badge" style="color: #38bdf8;">:4003</span></td>
+                        <td><b>Live Screen Broadcast</b></td>
+                        <td>HTTP Multipart MJPEG</td>
+                        <td>Continuous 10-15 FPS Live Screen Observation (Zero-Mock)</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="port-badge" style="color: #38bdf8;">:4004</span></td>
+                        <td><b>OpenClaw UI Tester</b></td>
+                        <td>ADB / Accessibility RPC</td>
+                        <td>Automated Android UI Testing & Screen Navigation</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="port-badge" style="color: #38bdf8;">:18802</span></td>
+                        <td><b>Self-Healing Hub</b></td>
+                        <td>FastAPI / Wake-on-LAN</td>
+                        <td>RFC 792 Magic Packet Resurrection & Service Health Daemon</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

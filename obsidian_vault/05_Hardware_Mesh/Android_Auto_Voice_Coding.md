@@ -60,22 +60,22 @@ The **Android Auto AGI Hands-Free Voice Coding Agent** (`com.lauburu.androidauto
 
 ```bash
 # 1. Run full in-car voice coding simulation loop
-/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/automotive/voice_venv/bin/python \
-  /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/automation/in_car_voice_coder.py --demo
+/Volumes/Lauburu-Monorepo/01_apps/automotive/voice_venv/bin/python \
+  /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/automation/in_car_voice_coder.py --demo
 
 # 2. Run single voice directive prompt
-/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/automotive/voice_venv/bin/python \
-  /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/automation/in_car_voice_coder.py \
+/Volumes/Lauburu-Monorepo/01_apps/automotive/voice_venv/bin/python \
+  /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/automation/in_car_voice_coder.py \
   --prompt "What is the status of the 8-device physical mesh?"
 
 # 3. Launch Desktop Head Unit (DHU) port forwarding
-/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/automotive/android_auto_voice_coder/launch_dhu.sh
+/Volumes/Lauburu-Monorepo/01_apps/automotive/android_auto_voice_coder/launch_dhu.sh
 
 # 4. Execute 126-test E2E verification suite
-cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/automotive/android_auto_voice_coder && ./test_e2e_suite.sh --all
+cd /Volumes/Lauburu-Monorepo/01_apps/automotive/android_auto_voice_coder && ./test_e2e_suite.sh --all
 
 # 5. Build & deploy APK to connected device via wireless ADB
-./deploy_to_pixel.sh 100.84.40.95:5555
+./deploy_to_pixel.sh 100.78.206.96:5555
 ```
 
 ---

@@ -12,7 +12,7 @@ import (
 
 func TestTCPBridgeDirectServerAndCommandRouting(t *testing.T) {
 	bioBuffer := biometrics.NewTelemetryBuffer()
-	bioBuffer.UpdateLiveMetrics("Movesense 261030002013", "74:92:BA:11:36:D6", true, 89, 45.2, 0.98, "Left Bicep", "ECG-512Hz")
+	bioBuffer.UpdateLiveMetrics("Movesense 261030002013", "74:92:BA:11:36:D6", true, 89, 45.2, 0.98, "bicep_strap", 94.0, "Brachial vector active", "Brachial Bicep ECG", "ECG-512Hz")
 	bioBuffer.AddPoint(125, []int{480, 485, 482})
 
 	term := NewBluetoothTerminal(nil)

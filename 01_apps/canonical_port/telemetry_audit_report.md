@@ -42,7 +42,7 @@ The **Lauburu Mesh Ecosystem** represents a distributed, heterogeneous edge-AI a
 │   • 31-Node OPML 3D Spatial Grappling Kinematics (8.0m x 8.0m x 2.5m Tatami World)     │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │ Layer 1: Hardware & Base OS Infrastructure (7 Physical Compute Nodes + 1 Gateway)      │
-│   • Apple M4 Pro Mac Mini Host, Intel i7 MacBook Pro Vault, Ryzen 7 5700U Head Node,   │
+│   • Intel Core i7 MacBook Pro Vault, Intel 2018 Mac Mini (Linux) Head Node,   │
 │     Debian Tablet, M4 Air Compute, Pixel 10 Pro XL Vision, Samsung S20+ Tester         │
 │   • Bare-Metal OS Daemons, launchd/systemd Services, Dynamic Memory Governors (90/80%) │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
@@ -75,7 +75,7 @@ The Lauburu Mesh pools **108.0 GB RAM (82.8 GB Usable AI VRAM)** across 7 physic
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **L1** | `Mac_Node` / `mac_mini_host` | Apple M4 Pro Mac Mini (12C CPU: 8P+4E, 16C GPU, 16C ANE) | macOS Darwin 24+ (ARM64) | `192.168.8.230` | Tailscale: `100.119.199.76`<br>Localhost: `127.0.0.1` | **24.0 GB** | **21.6 GB** | 90.0% | 228 GB APFS SSD (16.0 GB Guarded Headroom) | Primary Host, Master Memory Governor, Spark Driver & AGI Ingestion |
 | **L2** | `MacBook_Pro` / `macbook_pro_vault` | Intel Core i7-9750H / Apple Metal GPU | macOS Darwin (ARM64/x86_64) | `192.168.8.127` | Tailscale: `100.103.212.21`<br>TB4 Bridge: `169.254.187.138` | **16.0 GB** | **14.0 GB** | 90.0% | 466 GB APFS SSD (409.3 GB Free GGUF Vault) | 10Gbps Thunderbolt 4 PCIe DMA Bridge, GGUF Model Weight Storage Vault |
-| **L3** | `Linux_Head_Node` / `linux_node` | AMD Ryzen 7 5700U (8C/16T, Zen 3, Radeon Graphics) | Debian GNU/Linux 12 (Kernel 6.x x86_64) | `192.168.8.224` | Tailscale: `100.101.39.98`<br>2.5GbE LAN | **16.0 GB** | **13.8 GB** | 80.0% | 512 GB NVMe SSD (320.0 GB Free Docker Overlays) | Gateway Ingress, Docker Hub, Petals DHT Bootstrap & SeaweedFS Master |
+| **L3** | `Linux_Mini` / `linux_node` | Intel 2018 Mac Mini (Linux) (8C/16T, Zen 3, Radeon Graphics) | Debian GNU/Linux 12 (Kernel 6.x x86_64) | `192.168.8.224` | Tailscale: `100.101.39.98`<br>2.5GbE LAN | **16.0 GB** | **13.8 GB** | 80.0% | 512 GB NVMe SSD (320.0 GB Free Docker Overlays) | Gateway Ingress, Docker Hub, Petals DHT Bootstrap & SeaweedFS Master |
 | **L4** | `Linux_Tablet` / `linux_tablet` | Debian Linux Tablet (ARM64 Quad-Core Cortex-A53) | Debian Linux ARM64 (Touch UI) | `192.168.8.173` | Tailscale: `100.81.92.125` | **8.0 GB** | **6.5 GB** | 75.0% | 64 GB eMMC Flash Storage (38.5 GB Free) | Mobile Linux Compute, Secondary Petals Worker, Lightweight Sensor DSP |
 | **L5** | `MacBook_Air` / `macbook_air` | Apple M4 / M2 MacBook Air (8C CPU, 10C GPU) | macOS Darwin (ARM64) | `192.168.8.222` | Tailscale: `100.93.158.96` | **16.0 GB** | **14.0 GB** | 90.0% | 256 GB APFS SSD (142.0 GB Free) | Secondary High-Speed Metal Worker, Continuous LoRA Distillation Daemon |
 | **L6** | `Pixel_10_Pro_XL` / `pixel_10` | Google Tensor G5 (Edge TPU, 8K Camera, UWB Chip) | Android 15 (Termux Linux ABI) | `192.168.8.160` | Tailscale: `100.73.38.87`<br>ADB Port: `5555` | **16.0 GB** | **12.5 GB** | 85.0% | 256 GB UFS 4.0 Storage (128.0 GB Edge Cache) | 8K Vision Stream, Edge TPU On-Device Nano Smol Trainer, UWB Positioning |
@@ -185,7 +185,7 @@ $$\text{Loss}_{\text{EWMA}}(t) = \alpha \cdot \text{Loss}_{\text{sample}} + (1 -
 
 | Port Number | Transport / Protocol | Service Name | Service Daemon / Script | Assigned Node / Host | Health Check Endpoint / Verification Probe | Monorepo Source File |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **18802** | HTTP/REST | Self-Healing Hub & WoL Server | `api_server.py` & `wol_manager.py` | L1 Mac Host / L3 Linux Head | `http://127.0.0.1:18802/api/telemetry` | `00_core_infrastructure/self_healing_hub/src/api_server.py` |
+| **18802** | HTTP/REST | Self-Healing Hub & WoL Server | `api_server.py` & `canonical_network_resurrection_engine.py` | L1 Mac Host / L3 Linux Head | `http://127.0.0.1:18802/api/telemetry` | `00_core_infrastructure/self_healing_hub/src/api_server.py` |
 | **4000** | HTTP/WS | Master Port 4000 Hub & Canonical Port | `canonical_port` Vite/React Service | L1 Mac Host | `http://127.0.0.1:4000/api/agi/models` | `01_apps/canonical_port/vite.config.js` |
 | **3000** | HTTP/REST | AI Training & Innovation Module Webapp | `webapp` Next.js / Vite Server | L1 Mac Host | `http://127.0.0.1:3000/` | `01_apps/grapplingmap_web/package.json` |
 | **50052** | GGML-RPC | llama.cpp RPC Tensor Sharding Server | `llama-rpc-server` / `kimi_tandem_orchestrator.py` | L1, L2, L3, L5, L6, L7 | Direct TCP Socket Handshake (timeout 0.15s) | `02_ai_models_and_inference/kimi_tandem_orchestrator.py` |

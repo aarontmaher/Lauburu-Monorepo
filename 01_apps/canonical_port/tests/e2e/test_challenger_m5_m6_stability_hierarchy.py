@@ -223,7 +223,7 @@ def test_layer_1_hardware_topology(blackboard_state):
     node_names = [n.name for n in l1.nodes]
     assert "Mac_Node" in node_names
     assert "MacBook_Pro" in node_names
-    assert "Linux_Head_Node" in node_names
+    assert "Linux_Mini" in node_names
     assert "Linux_Tablet" in node_names
     assert "MacBook_Air" in node_names
     assert "Pixel_10_Pro_XL" in node_names

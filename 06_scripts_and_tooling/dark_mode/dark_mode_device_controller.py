@@ -21,7 +21,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Any
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 CONFIG_FILE = REPO_ROOT / "data/dark_mode/config.json"
 STATUS_FILE = REPO_ROOT / "data/dark_mode/fleet_dark_mode_status.json"
 LORA_LOG = REPO_ROOT / "data/lora_datasets/dark_mode_decisions.jsonl"
@@ -69,7 +69,7 @@ NODES = [
     {
         "name": "Samsung_S20_Plus",
         "type": "android_adb",
-        "target": "100.84.40.95:5555",
+        "target": "100.78.206.96:5555",
         "alt_target": "100.99.123.58:5555",
         "description": "Samsung Galaxy S20+ Mobile Tester"
     }

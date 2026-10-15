@@ -21,10 +21,10 @@ updated: "2026-09-08 10:13:22"
 graph TD
     subgraph Physical_Mesh [7-Layer Physical Mesh Topology & Hardware Bus]
         node_l1_mac_mini["🖥️ Layer 1: Mac Mini M4 Pro (Host)"]
-        node_l2_macbook_pro["🖥️ Layer 2: MacBook Pro M4"]
+        node_l2_macbook_pro["🖥️ Layer 2: Intel MacBook Pro"]
         node_l3_linux_head["🖥️ Layer 3: Linux Head Node"]
         node_l4_linux_tablet["🖥️ Layer 4: Linux Tablet"]
-        node_l5_macbook_air["🖥️ Layer 5: MacBook Air M4"]
+        node_l5_macbook_air["🖥️ Layer 5: MacBook Pro (Node L2)"]
         node_l6_pixel10["🖥️ Layer 6: Pixel 10 Pro XL"]
         node_l7_samsung_s20["🖥️ Layer 7: Samsung S20"]
         node_gw_router["🖥️ Gateway: GL.iNet Router"]
@@ -137,12 +137,12 @@ graph TD
 | Layer / ID | Node Name | Network IP | Hardware Bus | RAM / AI Cap | Key Roles |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `node_l1_mac_mini` | **Layer 1: Mac Mini M4 Pro (Host)** | `192.168.8.230` | `USB 3.2 Gen 2 (10 Gbps) + TB4 (40 Gbps)` | `24.0 GB (21.6 GB AI Cap)` | Prompt Ingestion, Memory Governor, Port 4000 Server, Movesense BLE Host |
-| `node_l2_macbook_pro` | **Layer 2: MacBook Pro M4** | `192.168.8.127` | `Thunderbolt 4 DMA Bridge (0.277ms RTT)` | `16.0 GB (14.0 GB AI Cap)` | Metal GPU RPC Worker, 285 GB SSD Model Vault |
-| `node_l3_linux_head` | **Layer 3: Linux Head Node** | `192.168.8.224` | `1GbE Ethernet` | `16.0 GB (13.8 GB AI Cap)` | AMD Ryzen 7 5700U, Docker Hub, RPC Worker (:50052), Petals DHT |
+| `node_l2_macbook_pro` | **Layer 2: Intel MacBook Pro** | `192.168.8.127` | `Thunderbolt 4 DMA Bridge (0.277ms RTT)` | `16.0 GB (14.0 GB AI Cap)` | Metal GPU RPC Worker, 285 GB SSD Model Vault |
+| `node_l3_linux_head` | **Layer 3: Linux Head Node** | `192.168.8.224` | `1GbE Ethernet` | `16.0 GB (13.8 GB AI Cap)` | Intel 2018 Mac Mini (Linux), Docker Hub, RPC Worker (:50052), Petals DHT |
 | `node_l4_linux_tablet` | **Layer 4: Linux Tablet** | `100.81.92.125` | `Wi-Fi 7` | `8.0 GB (6.5 GB AI Cap)` | Mobile Linux Compute, Touch DSP, Lightweight Biometrics |
-| `node_l5_macbook_air` | **Layer 5: MacBook Air M4** | `192.168.8.222` | `Wi-Fi 7 / Thunderbolt` | `16.0 GB (14.0 GB AI Cap)` | Secondary Metal GPU Worker, LoRA Distillation, Playwright Runner |
+| `node_l5_macbook_air` | **Layer 5: MacBook Pro (Node L2)** | `192.168.8.222` | `Wi-Fi 7 / Thunderbolt` | `16.0 GB (14.0 GB AI Cap)` | Secondary Metal GPU Worker, LoRA Distillation, Playwright Runner |
 | `node_l6_pixel10` | **Layer 6: Pixel 10 Pro XL** | `100.73.38.87` | `UWB / Wi-Fi 7` | `16.0 GB (12.5 GB AI Cap)` | Google Tensor G5, Edge TPU, 8K Digital PTZ Vision Stream |
-| `node_l7_samsung_s20` | **Layer 7: Samsung S20** | `100.84.40.95:5555` | `USB 3 / ADB Bridge` | `12.0 GB (9.0 GB AI Cap)` | Router USB ADB Default Target for UI Testing & Termux Daemon |
+| `node_l7_samsung_s20` | **Layer 7: Samsung S20** | `100.78.206.96:5555` | `USB 3 / ADB Bridge` | `12.0 GB (9.0 GB AI Cap)` | Router USB ADB Default Target for UI Testing & Termux Daemon |
 | `node_gw_router` | **Gateway: GL.iNet Router** | `192.168.8.1` | `USB 3 Hub & Hardware Bus Bridge` | `--` | Core Gateway, Wi-Fi 7 MLO (GL-MT3600BE), ADB Keepalive Daemon |
 
 ### 2.5 Biometrics, Storage & Commerce Integrations
@@ -150,7 +150,7 @@ graph TD
 - **Apple Silicon Unified RAM:** 24.0 GB physical pool @ 273.0 GB/s bandwidth with zero-copy CPU ↔ GPU ↔ ANE pointer dispatch.
 - **Pixel 10 Pro XL Bluetooth Link:** Connected via Bluetooth GATT ACL (`30:E0:44:6D:18:EC`) and Tailscale (`100.73.38.87`), streaming live telemetry and NPU trend analysis.
 - **Bicep ECG Sensor:** `Movesense 261030002013` (UUID: `C1DB5043-8F89-88E8-46A3-BBD4ED83FC88`) streaming at `512Hz` upper-arm bicep placement with Kamath 20% clinical filtering.
-- **SeaweedFS Tri-Vault:** Unified POSIX mount at `/Users/aaron/DFS_UNIFIED` + Filer REST (`:8888`) + WebDAV (`:7333`).
+- **SeaweedFS Tri-Vault:** Unified POSIX mount at `/Volumes/Lauburu-Monorepo` + Filer REST (`:8888`) + WebDAV (`:7333`).
 - **Shopify Membership:** 4 Tiers (Free Community, Athlete Starter $9 AUD, Athlete Pro $29 AUD, Sovereign Mesh Gym Master $99 AUD) offset by contributed mesh compute ($0.002 AUD/1k tokens).
 - **Google Cloud Credit Pool:** $1,400.00 AUD pool completely preserved. Spot L4 micro-bursts capped at $2–$5 AUD with automatic `shutdown -h +45` circuit breaker.
 

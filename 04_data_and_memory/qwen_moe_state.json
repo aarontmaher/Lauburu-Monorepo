@@ -1,0 +1,21 @@
+{
+  "name": "Qwen MoE",
+  "architecture": "Qwen3-Next-80B-A3B MoE",
+  "leaderboard": {
+    "qwen_moe": 1992.51,
+    "gemini_2_0_pro": 1897.49,
+    "qwen_3_8_max": 1880.0,
+    "deepseek_r1": 1920.0,
+    "grok_2": 1895.0,
+    "smollm2_135m": 1620.0
+  },
+  "total_tournaments": 3,
+  "sharding_benchmarks": 3,
+  "lora_distillations": 0,
+  "cloud_spend_usd": 0.0,
+  "total_certificates_issued": 53,
+  "total_claims_rejected": 0,
+  "self_optimizations_run": 52,
+  "idle_expert_training_cycles": 51,
+  "tb4_gradient_syncs": 240
+}

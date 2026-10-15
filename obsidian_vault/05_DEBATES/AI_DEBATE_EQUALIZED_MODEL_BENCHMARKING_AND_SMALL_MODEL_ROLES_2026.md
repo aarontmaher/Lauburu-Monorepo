@@ -1,7 +1,7 @@
 ---
 title: "AI Debate Consensus: Equalized Symmetrical Benchmarking & Small Model Roles (2026)"
 tags: [ai_debate, fair_benchmarking, equalized_training, small_models, pareto_frontier]
-date: "2026-09-03"
+date: "2026-09-20"
 consensus_threshold: 0.999
 verdict: "SYMMETRICAL_FAIR_BENCHMARKING_STANDARDIZED"
 ---
@@ -33,7 +33,7 @@ verdict: "SYMMETRICAL_FAIR_BENCHMARKING_STANDARDIZED"
 | `DeepSeek-R1-Distill-Qwen-1.5B` | REASONING_DRAFT | **1.04 GB** | 85.0% | **95.0%** | 45.0 TPS | **6.5 ms** | `Layer 3 (Linux Head Node)` |
 | `gemma-2-2b-it` | BIOMETRICS_DSP | **1.59 GB** | 85.0% | **95.2%** | 42.0 TPS | **7.8 ms** | `Layer 4 (Linux Tablet)` |
 | `Qwen2.5-VL-3B-Instruct` | SCREEN_LENS_OCR | **1.8 GB** | 88.0% | **96.0%** | 36.0 TPS | **9.2 ms** | `Layer 1 (Mac Mini M4 Pro)` |
-| `qwen2.5-coder-3b-instruct` | PRECOMMIT_LINTER | **1.96 GB** | 89.0% | **96.8%** | 34.0 TPS | **10.5 ms** | `Layer 5 (MacBook Air M4)` |
+| `qwen2.5-coder-3b-instruct` | PRECOMMIT_LINTER | **1.96 GB** | 89.0% | **96.8%** | 34.0 TPS | **10.5 ms** | `Layer 5 (MacBook Pro (Node L2))` |
 | `Qwen2.5-Math-7B-Instruct` | MATH_PROOF_REFEREE | **4.4 GB** | 92.0% | **97.8%** | 28.0 TPS | **14.0 ms** | `Layer 1 (Mac Mini M4 Pro)` |
 | `qwen2.5-coder-7b-instruct` | MODULE_REFACTOR | **4.36 GB** | 90.0% | **97.2%** | 26.0 TPS | **15.0 ms** | `Layer 3 (Linux Head Node)` |
 | `Qwen2.5-VL-7B-Instruct` | MULTIMODAL_VISION | **4.4 GB** | 93.0% | **98.0%** | 24.0 TPS | **16.0 ms** | `Layer 1 (Mac Mini M4 Pro)` |

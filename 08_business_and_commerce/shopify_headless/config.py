@@ -15,12 +15,12 @@ class ShopifyConfig(BaseModel):
     """
 
     store_domain: str = Field(
-        default_factory=lambda: os.environ.get("SHOPIFY_STORE_DOMAIN", "lauburugrappling.myshopify.com")
+        default_factory=lambda: os.environ.get("SHOPIFY_STORE_DOMAIN", "lauburu-grappling.myshopify.com")
     )
     storefront_access_token: str = Field(
         default_factory=lambda: os.environ.get(
             "SHOPIFY_STOREFRONT_ACCESS_TOKEN",
-            os.environ.get("SHOPIFY_STOREFRONT_TOKEN", "")
+            os.environ.get("SHOPIFY_STOREFRONT_TOKEN", "a39ead89f7318e991105e64873b4e10e")
         )
     )
     storefront_private_token: str = Field(
@@ -30,7 +30,7 @@ class ShopifyConfig(BaseModel):
         default_factory=lambda: os.environ.get("SHOPIFY_ADMIN_ACCESS_TOKEN", "")
     )
     api_version: str = Field(
-        default_factory=lambda: os.environ.get("SHOPIFY_API_VERSION", "2026-01")
+        default_factory=lambda: os.environ.get("SHOPIFY_API_VERSION", "2024-01")
     )
     timeout_seconds: float = Field(
         default_factory=lambda: float(os.environ.get("SHOPIFY_TIMEOUT_SECONDS", "8.0"))

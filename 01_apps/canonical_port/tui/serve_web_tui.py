@@ -51,7 +51,7 @@ APP_ROUTER = {
         "cmd": [VENV_PYTHON, str(MONOREPO_ROOT / "01_apps/commerce_and_business/storefront_membership_tui.py")],
         "tier": "user"
     },
-    # 🛠️ Developer & Operator Command Cockpits
+    # 🛠️ Developer & Operator Command Consoles
     "canonical": {
         "name": "🏛️ Canonical Port 9-Screen Command Center",
         "cmd": [VENV_PYTHON, str(TUI_DIR / "canonical_tui.py")],
@@ -216,7 +216,7 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
   <div class="portal-container">
     <div class="portal-header">
       <h1>⚡ LAUBURU APPLICATION PORTAL</h1>
-      <p>Clean architectural separation between User-Facing Consumer Apps and Operator/Dev Command Cockpits</p>
+      <p>Clean architectural separation between User-Facing Consumer Apps and Operator/Dev Command Consoles</p>
     </div>
 
     <div class="grid-container">
@@ -249,13 +249,13 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
         </a>
       </div>
 
-      <!-- 🛠️ Operator & Developer Cockpits -->
+      <!-- 🛠️ Operator & Developer Consoles -->
       <div class="section-card">
         <div class="section-title dev-title">
-          <span>🛠️ OPERATOR & DEV COCKPITS</span>
+          <span>🛠️ OPERATOR & DEV CONSOLES</span>
           <span class="badge badge-amber">INTERNAL ADMIN</span>
         </div>
-        <p style="color:#64748b; font-size:12px; margin-bottom:16px;">Mission-control cockpits for monorepo development, mesh sharding, AI debates, and hardware tuning.</p>
+        <p style="color:#64748b; font-size:12px; margin-bottom:16px;">Mission-control consoles for monorepo development, mesh sharding, AI debates, and hardware tuning.</p>
 
         <a href="/canonical" class="app-link">
           <div class="app-name"><span><span class="status-dot"></span>🏛️ Canonical Port 9-Screen Command Center</span> <span style="color:#f59e0b; font-size:12px;">7 NODES</span></div>
@@ -281,7 +281,7 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 def render_page(app_slug: str) -> str:
     app_info = APP_ROUTER.get(app_slug, {"name": app_slug, "tier": "user"})
     app_name = app_info["name"]
-    tier_badge = '<span class="badge-user">USER APP</span>' if app_info["tier"] == "user" else '<span class="badge-dev">OPERATOR COCKPIT</span>'
+    tier_badge = '<span class="badge-user">USER APP</span>' if app_info["tier"] == "user" else '<span class="badge-dev">OPERATOR CONSOLE</span>'
     
     html = HTML_TEMPLATE.replace("__APP_NAME__", app_name).replace("__APP_SLUG__", app_slug).replace("__TIER_BADGE__", tier_badge)
     for slug in ["readiness", "grappling", "arena", "store", "canonical", "smolagents"]:
@@ -415,6 +415,6 @@ if __name__ == "__main__":
     print("=" * 80)
     print(f"🌐 LAUBURU WEB-TUI SERVER RUNNING ON http://0.0.0.0:{port}")
     print(f"   • User & Scaling Apps: http://localhost:{port}/readiness | /grappling | /arena | /store")
-    print(f"   • Operator Cockpits:   http://localhost:{port}/canonical | /smolagents | /math")
+    print(f"   • Operator Consoles:   http://localhost:{port}/canonical | /smolagents | /math")
     print("=" * 80)
     web.run_app(create_app(), host="0.0.0.0", port=port, reuse_address=True, reuse_port=True)

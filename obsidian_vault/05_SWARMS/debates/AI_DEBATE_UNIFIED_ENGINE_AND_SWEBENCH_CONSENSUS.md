@@ -55,8 +55,8 @@ This completely eliminates external quota waste while preventing Darwin/Linux em
 ## 📜 Definitive Architectural Decrees
 
 ### Decree 1: Single Source of Truth (SSOT) with Backward-Compatible Shim
-- [`unified_22_method_frontier_training_engine.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/training_pipeline/unified_22_method_frontier_training_engine.py) is the **sole, canonical implementation engine** containing all 22 methods across 6 families.
-- [`unified_18_method_training_engine.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/training_pipeline/unified_18_method_training_engine.py) acts as a **transparent re-export shim** that imports directly from `unified_22`, preventing split-brain code divergence while ensuring 100% backward compatibility for existing callers.
+- [`unified_22_method_frontier_training_engine.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/training_pipeline/unified_22_method_frontier_training_engine.py) is the **sole, canonical implementation engine** containing all 22 methods across 6 families.
+- [`unified_18_method_training_engine.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/training_pipeline/unified_18_method_training_engine.py) acts as a **transparent re-export shim** that imports directly from `unified_22`, preventing split-brain code divergence while ensuring 100% backward compatibility for existing callers.
 
 ### Decree 2: Tiered 3-Stage SWE-bench Pre-Flight Verification Gate
 All SWE-bench evaluations and submissions via `sb-cli` MUST execute the following pipeline:
@@ -67,5 +67,5 @@ All SWE-bench evaluations and submissions via `sb-cli` MUST execute the followin
 ---
 
 ## 🔒 Tri-Vault Storage Signature
-- **Obsidian Vault:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/05_SWARMS/debates/AI_DEBATE_UNIFIED_ENGINE_AND_SWEBENCH_CONSENSUS.md`
+- **Obsidian Vault:** `/Volumes/Lauburu-Monorepo/obsidian_vault/05_SWARMS/debates/AI_DEBATE_UNIFIED_ENGINE_AND_SWEBENCH_CONSENSUS.md`
 - **LoRA Memory Ingestion:** Verified instruction pair appended to `lora_datasets/devils_advocate_training.jsonl` and `lora_datasets/continuous_lora_dataset.jsonl`.

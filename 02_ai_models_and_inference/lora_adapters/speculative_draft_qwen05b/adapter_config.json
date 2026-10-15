@@ -1,0 +1,14 @@
+{
+  "adapter_name": "speculative_draft_qwen05b_v1",
+  "base_model": "Qwen2.5-0.5B-Instruct",
+  "target_model": "Qwen 3.8 Max 27B",
+  "lora_rank": 16,
+  "lora_alpha": 32,
+  "initial_loss": 1.5069,
+  "final_loss": 0.077,
+  "samples_trained": 13,
+  "training_time_s": 0.08,
+  "device": "Device(gpu, 0)",
+  "zero_mock_verified": true,
+  "timestamp": "2026-10-07T03:43:43.450418+00:00"
+}

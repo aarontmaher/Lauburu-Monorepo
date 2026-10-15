@@ -1,0 +1,26 @@
+{
+  "video_id": "NXczJvRuuZo",
+  "url": "https://youtu.be/NXczJvRuuZo",
+  "division": "IBJJF",
+  "title": "Pan pacs - Aaron Maher vs Simon Chandra",
+  "duration_sec": 520.2,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 18,
+  "dual_athlete_frames": 4,
+  "standing_phase_pct": 11.1,
+  "ground_scramble_phase_pct": 88.9,
+  "level_change_shots_detected": 3,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 74.8,
+    "left_elbow": 140.6,
+    "right_elbow": 130.4,
+    "left_hip": 138.2,
+    "right_hip": 138.4,
+    "left_knee": 135.6,
+    "right_knee": 144.0
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/NXczJvRuuZo_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's pacs performance was strong, with a 520.2-second standing time and a 3.0% level change shots, indicating a well-rounded and efficient grappling style. His mean spine lean of 74.8\u00b0 suggests a balanced and stable ground/scramble. The elbow flexion L/R of 140.6\u00b0/130.4\u00b0 indicates a well-timed and controlled elbow movement. The knee flexion L/R of 135.6\u00b0/14",
+  "processing_sec": 4.21
+}

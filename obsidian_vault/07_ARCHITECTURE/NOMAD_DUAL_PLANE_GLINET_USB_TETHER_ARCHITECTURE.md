@@ -15,7 +15,7 @@ This design implements a classic enterprise-grade **Decoupled Data-Plane vs. Con
 
 ## 🏛️ 1. The Dual-Plane Architecture: Data Plane vs. Control Plane
 
-Attempting to force heavy 10Gbps / 2.5Gbps AI model tensor sharding through a compact travel router would overwhelm its embedded CPU. Conversely, running a closed-source consumer router as your sole gateway forfeits root SSH, custom iptables, ADB keepalive, and WireGuard kernel routing.
+Attempting to force heavy 40Gbps / 2.5Gbps AI model tensor sharding through a compact travel router would overwhelm its embedded CPU. Conversely, running a closed-source consumer router as your sole gateway forfeits root SSH, custom iptables, ADB keepalive, and WireGuard kernel routing.
 
 The solution is to **decouple the responsibilities**:
 
@@ -62,7 +62,7 @@ The solution is to **decouple the responsibilities**:
 ### Tier 1: The Brute-Force Data Plane (Zero Bottleneck)
 * **Equipment:** Multi-Gigabit Switch (e.g. **TP-Link TL-SG108-M2** 8-Port 2.5G at \$68 staff, or **ASUS ROG Rapture GT-BE98**).
 * **Role:** Moves raw bytes at line rate:
-  - 10Gbps / 2.5Gbps inter-node tensor streaming (`llama.cpp` RPC sharding on Port 8081–8084).
+  - 40Gbps / 2.5Gbps inter-node tensor streaming (`llama.cpp` RPC sharding on Port 8081–8084).
   - High-throughput all-flash NVMe NAS transfers.
   - Wi-Fi 7 (320 MHz contiguous channels on 6 GHz).
 * **Traffic Flow:** Traffic between the Mac Mini, MacBook Pro, and Linux Head Node **never touches the GL.iNet CPU**; it switches entirely across the 40 Gbps hardware backplane at **<0.18 ms latency**.
@@ -91,7 +91,7 @@ The solution is to **decouple the responsibilities**:
 
 | Evaluator | Position | Technical Verdict |
 | :--- | :--- | :--- |
-| **Devil's Advocate (Abliterated Qwen 3.8 Max)** | *Initial Warning* | "Do not route multi-gigabit line-rate LAN traffic through a USB tether or travel router CPU. USB 3.0 has high interrupt latency and will bottleneck 10Gbps workloads." |
+| **Devil's Advocate (Abliterated Qwen 3.8 Max)** | *Initial Warning* | "Do not route multi-gigabit line-rate LAN traffic through a USB tether or travel router CPU. USB 3.0 has high interrupt latency and will bottleneck 40Gbps workloads." |
 | **Cloud Orchestrator (Gemini 3.8 Flash)** | *Topological Refinement* | "The user does not intend to route bulk LAN traffic through USB. By splitting the architecture into a **Data Plane** (switch) and an **Out-of-Band Control Plane** (Beryl 7), zero throughput is lost while 100% of sovereignty is preserved." |
 | **Consensus Verdict** | **APPROVED** | **Adopt the Dual-Plane Topology.** The multi-gig switch handles raw throughput; the GL.iNet Beryl 7 with USB tethering serves as the resilient, sovereign Nomad controller. |
 

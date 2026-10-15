@@ -1,0 +1,431 @@
+{
+  "timestamp": "2026-09-30 05:04:41 UTC",
+  "gateway": {
+    "model": "GL-BE14000",
+    "uptime_seconds": 80667,
+    "ip": "192.168.8.1"
+  },
+  "pooled_ram": {
+    "used_gb": 69.6,
+    "total_gb": 103.9,
+    "free_gb": 34.3,
+    "percent": 67.0
+  },
+  "seaweedfs_pool": {
+    "utilization_percent": 43.2,
+    "used_physical_gb": 720,
+    "total_physical_gb": 1667,
+    "free_physical_gb": 320,
+    "nodes": {
+      "GW": {
+        "total_gb": 57,
+        "used_gb": 1,
+        "free_gb": 56,
+        "percent": 2.4,
+        "status": "online"
+      },
+      "L1": {
+        "total_gb": 460,
+        "used_gb": 458,
+        "free_gb": 1,
+        "percent": 99.7,
+        "status": "online"
+      },
+      "L2": {
+        "total_gb": 465,
+        "used_gb": 9,
+        "free_gb": 16,
+        "percent": 2.1,
+        "status": "online"
+      },
+      "L8": {
+        "total_gb": 455,
+        "used_gb": 239,
+        "free_gb": 196,
+        "percent": 52.6,
+        "status": "online"
+      },
+      "L5": {
+        "total_gb": 228,
+        "used_gb": 11,
+        "free_gb": 49,
+        "percent": 5.2,
+        "status": "online"
+      }
+    }
+  },
+  "internet_speed": {
+    "active_wan": "eth2 (WAN)",
+    "wan_ip": "100.90.9.130",
+    "ping_rtt_ms": "0.66",
+    "uptime_seconds": 77845
+  },
+  "devices": {
+    "L1": {
+      "id": "L1",
+      "name": "Mac Mini Host",
+      "role": "M4 Pro Sovereign Master & Memory Governor",
+      "link_type": "10GbE / Thunderbolt 4",
+      "ip": "192.168.8.230",
+      "speed": "10 Gbps (Fabric)",
+      "rtt_ms": 0.0,
+      "status": "online",
+      "ram": {
+        "used_mb": 21522,
+        "total_mb": 24576,
+        "percent": 87.6,
+        "status": "warning"
+      },
+      "battery": null,
+      "power": {
+        "type": "Mains (AC)"
+      },
+      "disk": {
+        "total_gb": 460.4,
+        "used_gb": 458.9,
+        "free_gb": 1.6,
+        "percent": 99.7
+      }
+    },
+    "L2": {
+      "id": "L2",
+      "name": "MacBook Pro",
+      "role": "Intel Core i7 Metal RPC & Storage Vault",
+      "link_type": "Thunderbolt 4 Bridge",
+      "ip": "192.168.2.2",
+      "speed": "40 Gbps (TB4)",
+      "rtt_ms": 0.32,
+      "status": "online",
+      "ram": {
+        "used_mb": 9936,
+        "total_mb": 16384,
+        "percent": 60.6,
+        "status": "online"
+      },
+      "battery": {
+        "level": 100,
+        "charging": true,
+        "ac": true,
+        "temp": 28.0,
+        "status": "Charged"
+      },
+      "power": {
+        "type": "AC Adapter"
+      },
+      "disk": {
+        "total_gb": 465.6,
+        "used_gb": 9.6,
+        "free_gb": 16.2,
+        "percent": 2.1
+      }
+    },
+    "L8": {
+      "id": "L8",
+      "name": "Linux Mini Hub (lauburu)",
+      "role": "Intel i7 Linux Head Node & TB3 Bridge",
+      "link_type": "Thunderbolt 4 Bridge",
+      "ip": "192.168.2.3",
+      "speed": "40 Gbps (TB4)",
+      "rtt_ms": 0.27,
+      "status": "online",
+      "ram": {
+        "used_mb": 15537,
+        "total_mb": 31941,
+        "percent": 48.6,
+        "status": "online"
+      },
+      "battery": null,
+      "power": {
+        "type": "Mains (AC)"
+      },
+      "disk": {
+        "total_gb": 455.0,
+        "used_gb": 239.2,
+        "free_gb": 196.3,
+        "percent": 52.6
+      }
+    },
+    "L5": {
+      "id": "L5",
+      "name": "MacBook Air",
+      "role": "Apple M4 Metal Worker & LoRA Distillation",
+      "link_type": "Wi-Fi 7 Clean Room MLO",
+      "ip": "192.168.8.245",
+      "speed": "1200.9 Mbps (Wi-Fi 7)",
+      "rtt_ms": 2.92,
+      "status": "online",
+      "ram": {
+        "used_mb": 12556,
+        "total_mb": 16384,
+        "percent": 76.6,
+        "status": "online"
+      },
+      "battery": {
+        "level": 100,
+        "charging": true,
+        "ac": true,
+        "temp": 28.0,
+        "status": "Charged"
+      },
+      "power": {
+        "type": "AC Adapter"
+      },
+      "disk": {
+        "total_gb": 228.3,
+        "used_gb": 11.8,
+        "free_gb": 49.7,
+        "percent": 5.2
+      }
+    },
+    "L6": {
+      "id": "L6",
+      "name": "Pixel 10 Pro XL",
+      "role": "Google Tensor G5 TPU / Edge Vision",
+      "link_type": "Tailscale Overlay / Wi-Fi 7",
+      "ip": "100.114.215.68",
+      "speed": "Wi-Fi 7 (Tailscale)",
+      "rtt_ms": 14816.0,
+      "status": "online",
+      "ram": {
+        "used_mb": 10942,
+        "total_mb": 15086,
+        "percent": 72.5,
+        "status": "online"
+      },
+      "battery": {
+        "level": 28,
+        "charging": false,
+        "temp": 33.1,
+        "plugged": false,
+        "health": "GOOD",
+        "status": "DISCHARGING"
+      },
+      "power": {
+        "type": "Battery"
+      }
+    },
+    "L7": {
+      "id": "L7",
+      "name": "Samsung S20+",
+      "role": "Exynos 990 Dedicated Automated UI Tester",
+      "link_type": "Wi-Fi 6 / ADB",
+      "ip": "192.168.8.157",
+      "speed": "1200.9 Mbps (Wi-Fi 6)",
+      "rtt_ms": 4.6,
+      "status": "standby",
+      "ram": {
+        "used_mb": 0,
+        "total_mb": 10900,
+        "percent": 0.0,
+        "status": "standby"
+      },
+      "battery": null,
+      "power": {
+        "type": "USB-C"
+      }
+    },
+    "GW": {
+      "id": "GW",
+      "name": "GL-BE14000 Gateway Controller",
+      "role": "Wi-Fi 7 Sovereign Gateway & Dictator",
+      "link_type": "10GbE Switch Fabric",
+      "ip": "192.168.8.1",
+      "speed": "10 Gbps (Fabric)",
+      "rtt_ms": 0.66,
+      "status": "online",
+      "ram": {
+        "used_mb": 758,
+        "total_mb": 1986,
+        "percent": 38.2,
+        "status": "online"
+      },
+      "battery": null,
+      "power": {
+        "type": "Mains (AC)"
+      },
+      "disk": {
+        "total_gb": 57.9,
+        "used_gb": 1.4,
+        "free_gb": 56.5,
+        "percent": 2.4
+      }
+    }
+  },
+  "network_transports": {
+    "wireguard_mesh": {
+      "status": "online",
+      "port": 41641,
+      "interface": "utun4 / tailscale0",
+      "gateway": "100.119.199.76",
+      "subnet": "100.64.0.0/10",
+      "active_handshakes": 7,
+      "total_peers": 12,
+      "rx_bytes": 35785100,
+      "tx_bytes": 86754956,
+      "samba_wireguard": "Active (:445)"
+    },
+    "bluetooth_serial": {
+      "status": "ONLINE",
+      "port": "/dev/rfcomm0",
+      "speed": "115200 baud",
+      "daemon": "rfcomm watch"
+    },
+    "bluetooth_pan": {
+      "status": "ACTIVE",
+      "interface": "bnep0",
+      "mac": "1C:F6:4C:81:0B:28",
+      "max_speed": "3.0 Mbps",
+      "chip": "Apple M4 Pro / BCM43455"
+    },
+    "wifi_radios": [
+      {
+        "interface": "ra0",
+        "band": "2.4GHz (Wi-Fi 7/6)",
+        "status": "ACTIVE",
+        "tx_bitrate": "287 Mbps",
+        "ht_mode": "EHT40",
+        "freq": "2.457 GHz",
+        "ssid": "GL-BE14000-72f",
+        "signal": "N/A"
+      },
+      {
+        "interface": "ra2",
+        "band": "2.4GHz (Wi-Fi 7/6)",
+        "status": "ACTIVE",
+        "tx_bitrate": "287 Mbps",
+        "ht_mode": "EHT40",
+        "freq": "2.457 GHz",
+        "ssid": "GL-BE14000-72f-MLO",
+        "signal": "N/A"
+      },
+      {
+        "interface": "rai2",
+        "band": "5GHz MLO (Wi-Fi 7)",
+        "status": "ACTIVE",
+        "tx_bitrate": "1091.1 MBit/s",
+        "ht_mode": "EHT80",
+        "freq": "5.240 GHz",
+        "ssid": "GL-BE14000-72f-MLO",
+        "signal": "-38 dBm"
+      },
+      {
+        "interface": "rax0",
+        "band": "6GHz MLO (Wi-Fi 7)",
+        "status": "ACTIVE",
+        "tx_bitrate": "2.4 Gbps",
+        "ht_mode": "EHT320",
+        "freq": "6.295 GHz",
+        "ssid": "GL-BE14000-72f-6G",
+        "signal": "N/A"
+      },
+      {
+        "interface": "rax2",
+        "band": "6GHz MLO (Wi-Fi 7)",
+        "status": "ACTIVE",
+        "tx_bitrate": "2.4 Gbps",
+        "ht_mode": "EHT320",
+        "freq": "6.295 GHz",
+        "ssid": "GL-BE14000-72f-MLO",
+        "signal": "N/A"
+      }
+    ]
+  },
+  "ports_and_daemons": [
+    {
+      "port": 8082,
+      "proto": "TCP",
+      "daemon": "prima.cpp",
+      "role": "Master Orchestrator (Qwen 3.8 Max)",
+      "scope": "127.0.0.1:8082",
+      "status": "ACTIVE"
+    },
+    {
+      "port": 8083,
+      "proto": "TCP",
+      "daemon": "llama-server",
+      "role": "Devils Advocate (Abliterated)",
+      "scope": "127.0.0.1:8083",
+      "status": "ACTIVE"
+    },
+    {
+      "port": 8081,
+      "proto": "TCP",
+      "daemon": "llama-server",
+      "role": "Syntax Worker (Qwen 2.5 Coder)",
+      "scope": "127.0.0.1:8081",
+      "status": "ACTIVE"
+    },
+    {
+      "port": 4000,
+      "proto": "TCP",
+      "daemon": "node",
+      "role": "Canonical Port 4000 Hub",
+      "scope": "127.0.0.1:4000",
+      "status": "ACTIVE"
+    },
+    {
+      "port": 18802,
+      "proto": "TCP",
+      "daemon": "python3",
+      "role": "Self-Healing WoL Hub",
+      "scope": "127.0.0.1:18802",
+      "status": "ACTIVE"
+    },
+    {
+      "port": 50052,
+      "proto": "TCP",
+      "daemon": "ggml-rpc-server",
+      "role": "Metal GPU RPC (L2)",
+      "scope": "192.168.2.2:50052",
+      "status": "ACTIVE"
+    },
+    {
+      "port": 50052,
+      "proto": "TCP",
+      "daemon": "ggml-rpc-server",
+      "role": "Metal GPU RPC (L8)",
+      "scope": "192.168.2.3:50052",
+      "status": "STANDBY"
+    },
+    {
+      "port": 22,
+      "proto": "TCP",
+      "daemon": "dropbear",
+      "role": "Router SSH Management",
+      "scope": "192.168.8.1:22",
+      "status": "ACTIVE"
+    },
+    {
+      "port": 9333,
+      "proto": "TCP",
+      "daemon": "weed master",
+      "role": "SeaweedFS Master Cluster Server",
+      "scope": "127.0.0.1:9333",
+      "status": "ACTIVE"
+    },
+    {
+      "port": 8888,
+      "proto": "TCP",
+      "daemon": "weed filer",
+      "role": "SeaweedFS Distributed Filer",
+      "scope": "127.0.0.1:8888",
+      "status": "ACTIVE"
+    },
+    {
+      "port": 7333,
+      "proto": "TCP",
+      "daemon": "weed webdav",
+      "role": "SeaweedFS WebDAV Bridge",
+      "scope": "127.0.0.1:7333",
+      "status": "ACTIVE"
+    },
+    {
+      "port": 8085,
+      "proto": "TCP",
+      "daemon": "weed volume",
+      "role": "SeaweedFS L1 Volume Server",
+      "scope": "127.0.0.1:8085",
+      "status": "ACTIVE"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 ---
 title: "Mesh RAM Usage & Concurrent Model Orchestration Benchmark (2026)"
 tags: [ram_benchmarks, prima_cpp_sharding, concurrent_models, mesh_governance, vram_pooling]
-date: "2026-09-03"
+date: "2026-09-11"
 scenarios_benchmarked: 5
 total_mesh_vram_pool_gb: 82.8
 ---

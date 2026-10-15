@@ -56,16 +56,16 @@ class LiveSpeedtestCard(Container):
     ):
         super().__init__(id=id, classes=classes)
         self.metrics = metrics or InternetSpeedMetrics(
-            download_mbps=482.5,
-            upload_mbps=48.0,
-            responsiveness_rpm=1420,
-            latency_ms=12.4,
+            download_mbps=None,
+            upload_mbps=None,
+            responsiveness_rpm=None,
+            latency_ms=None,
             timestamp="--",
         )
         self.state = SpeedtestState(
             stage="IDLE",
-            download_mbps=self.metrics.download_mbps or 0.0,
-            upload_mbps=self.metrics.upload_mbps or 0.0,
+            download_mbps=self.metrics.download_mbps,
+            upload_mbps=self.metrics.upload_mbps,
             current_mbps=0.0,
             percent=0.0,
             responsiveness_rpm=self.metrics.responsiveness_rpm,
@@ -103,8 +103,8 @@ class LiveSpeedtestCard(Container):
         """Update widget with new completed speedtest metrics."""
         self.metrics = metrics
         self.state.stage = "COMPLETED"
-        self.state.download_mbps = metrics.download_mbps or 0.0
-        self.state.upload_mbps = metrics.upload_mbps or 0.0
+        self.state.download_mbps = metrics.download_mbps
+        self.state.upload_mbps = metrics.upload_mbps
         self.state.responsiveness_rpm = metrics.responsiveness_rpm
         self.state.base_rtt_ms = metrics.latency_ms
         self.state.is_running = False
@@ -133,14 +133,14 @@ class LiveSpeedtestCard(Container):
 
     def refresh_display(self) -> None:
         """Re-render ASCII card display table."""
-        dl_val = self.state.download_mbps or self.metrics.download_mbps or 0.0
-        ul_val = self.state.upload_mbps or self.metrics.upload_mbps or 0.0
-        rpm_val = self.state.responsiveness_rpm or self.metrics.responsiveness_rpm or 1420
-        rtt_val = self.state.base_rtt_ms or self.metrics.latency_ms or 12.4
+        dl_val = self.state.download_mbps if self.state.download_mbps is not None else self.metrics.download_mbps
+        ul_val = self.state.upload_mbps if self.state.upload_mbps is not None else self.metrics.upload_mbps
+        rpm_val = self.state.responsiveness_rpm if self.state.responsiveness_rpm is not None else self.metrics.responsiveness_rpm
+        rtt_val = self.state.base_rtt_ms if self.state.base_rtt_ms is not None else self.metrics.latency_ms
         ts_val = self.metrics.timestamp or "--"
 
-        dl_bar = self._build_bar(dl_val, max_val=1000.0, width=28)
-        ul_bar = self._build_bar(ul_val, max_val=100.0, width=28)
+        dl_bar = self._build_bar(dl_val or 0.0, max_val=1000.0, width=28)
+        ul_bar = self._build_bar(ul_val or 0.0, max_val=100.0, width=28)
 
         t = Table(
             title="[bold cyan]🚀 LIVE NETWORK SPEEDTEST & BANDWIDTH ENGINE (macOS networkQuality / iPerf3)[/bold cyan]",
@@ -155,27 +155,35 @@ class LiveSpeedtestCard(Container):
         t.add_column("Details", style="dim white")
 
         # Downlink Row
+        dl_str = f"[bold green]{dl_val:.1f} Mbps[/bold green]" if dl_val is not None else "[dim]-- Mbps[/dim]"
         t.add_row(
             "⬇ DOWNLOAD",
             dl_bar,
-            f"[bold green]{dl_val:.1f} Mbps[/bold green]",
+            dl_str,
             "(Peak: 512.0 Mbps | Gigabit WAN)",
         )
         # Uplink Row
+        ul_str = f"[bold #38bdf8]{ul_val:.1f} Mbps[/bold #38bdf8]" if ul_val is not None else "[dim]-- Mbps[/dim]"
         t.add_row(
             "⬆ UPLOAD",
             ul_bar,
-            f"[bold #38bdf8]{ul_val:.1f} Mbps[/bold #38bdf8]",
+            ul_str,
             "(Peak: 52.4 Mbps | Fiber Uplink)",
         )
 
         # Bufferbloat & Latency Summary Row
-        rpm_status = "High / Bufferbloat-Free" if rpm_val >= 1000 else "Medium" if rpm_val >= 400 else "Low / Bufferbloat Risk"
-        rpm_color = "bold green" if rpm_val >= 1000 else "yellow" if rpm_val >= 400 else "bold red"
-        
+        if rpm_val is not None:
+            rpm_status = "High / Bufferbloat-Free" if rpm_val >= 1000 else "Medium" if rpm_val >= 400 else "Low / Bufferbloat Risk"
+            rpm_color = "bold green" if rpm_val >= 1000 else "yellow" if rpm_val >= 400 else "bold red"
+            rpm_str = f"[{rpm_color}]RPM: {rpm_val}[/{rpm_color}] ({rpm_status})"
+        else:
+            rpm_str = "[dim]RPM: -- (Unprobed)[/dim]"
+
+        rtt_str = f"[bold #a78bfa]Base RTT: {rtt_val:.1f} ms[/bold #a78bfa]" if rtt_val is not None else "[dim]Base RTT: -- ms[/dim]"
+
         status_line = (
-            f"[{rpm_color}]RPM: {rpm_val}[/{rpm_color}] ({rpm_status}) | "
-            f"[bold #a78bfa]Base RTT: {rtt_val:.1f} ms[/bold #a78bfa] | "
+            f"{rpm_str} | "
+            f"{rtt_str} | "
             f"[dim]Last tested: {ts_val}[/dim]"
         )
         t.add_row("📊 QUALITY", status_line, "", "")

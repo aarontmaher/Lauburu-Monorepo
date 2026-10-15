@@ -82,7 +82,7 @@ class TestTailscaleAdapter:
                     "CurAddr": "192.168.8.127:41641"
                 },
                 "node2": {
-                    "HostName": "Linux_Head_Node",
+                    "HostName": "Linux_Mini",
                     "TailscaleIPs": ["100.101.39.98"],
                     "Online": True,
                     "Active": False,
@@ -108,7 +108,7 @@ class TestTailscaleAdapter:
         assert p1.cur_addr == "192.168.8.127:41641"
         assert p1.to_dict()["cur_addr"] == "192.168.8.127:41641"
 
-        p2 = next(p for p in res.peers if p.name == "Linux_Head_Node")
+        p2 = next(p for p in res.peers if p.name == "Linux_Mini")
         assert p2.relay == "DERP Relay"
 
     @pytest.mark.asyncio

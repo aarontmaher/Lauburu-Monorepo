@@ -73,7 +73,7 @@ def network_metrics_snapshot() -> Dict[str, Any]:
         "tailscale_peers": [
             {"node_name": "Mac_Node", "ip": "100.119.199.76", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L1", "os": "macOS Darwin ARM64"},
             {"node_name": "MacBook_Pro", "ip": "100.103.212.21", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L2", "os": "macOS Darwin ARM64"},
-            {"node_name": "Linux_Head_Node", "ip": "100.101.39.98", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L3", "os": "Debian Linux x86_64"},
+            {"node_name": "Linux_Mini", "ip": "100.101.39.98", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L3", "os": "Debian Linux x86_64"},
             {"node_name": "Linux_Tablet", "ip": "100.81.92.125", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L4", "os": "Debian Linux ARM64"},
             {"node_name": "MacBook_Air", "ip": "100.93.158.96", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L5", "os": "macOS Darwin ARM64"},
             {"node_name": "Pixel_10_Pro_XL", "ip": "100.73.38.87", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L6", "os": "Android 15 (Tensor G5)"},
@@ -258,7 +258,7 @@ def cluster_vram_topology() -> Dict[str, Any]:
             },
             {
                 "nodeId": "linux_head_node_l3",
-                "name": "Linux_Head_Node (Ryzen 7 5700U)",
+                "name": "Linux_Mini (Intel 2018 Mac Mini (Linux))",
                 "layer": "L3",
                 "ip": "192.168.8.224",
                 "tailscaleIp": "100.101.39.98",
@@ -333,7 +333,7 @@ def headless_nodes_registry() -> Dict[str, Dict[str, Any]]:
     return {
         "GW": {"name": "GL.iNet Router", "headless_capable": True, "headless_score": 100, "device_elo": 2500},
         "L1": {"name": "Mac_Node (Host Mini M4)", "headless_capable": True, "headless_score": 95, "device_elo": 2450},
-        "L3": {"name": "Linux_Head_Node", "headless_capable": True, "headless_score": 92, "device_elo": 2320},
+        "L3": {"name": "Linux_Mini", "headless_capable": True, "headless_score": 92, "device_elo": 2320},
         "L6": {"name": "Pixel_10_Pro_XL", "headless_capable": True, "headless_score": 88, "device_elo": 2210},
         "L7": {"name": "Samsung_S20", "headless_capable": True, "headless_score": 80, "device_elo": 1920},
         "L4": {"name": "Linux_Tablet", "headless_capable": True, "headless_score": 75, "device_elo": 1980},
@@ -463,7 +463,7 @@ def ssh_fleet_spec() -> List[Dict[str, Any]]:
     return [
         {"node": "L1_Mac_Node", "port": 22, "key_type": "ssh-ed25519", "auth_status": "AUTHENTICATED"},
         {"node": "L2_MacBook_Pro", "port": 22, "key_type": "ssh-ed25519", "auth_status": "AUTHENTICATED"},
-        {"node": "L3_Linux_Head_Node", "port": 22, "key_type": "ssh-ed25519", "auth_status": "AUTHENTICATED"},
+        {"node": "L3_Linux_Mini", "port": 22, "key_type": "ssh-ed25519", "auth_status": "AUTHENTICATED"},
         {"node": "L4_Linux_Tablet", "port": 22, "key_type": "ssh-ed25519", "auth_status": "AUTHENTICATED"},
         {"node": "L5_MacBook_Air", "port": 22, "key_type": "ssh-ed25519", "auth_status": "AUTHENTICATED"},
         {"node": "L6_Pixel_10_Pro_XL", "port": 8022, "key_type": "ssh-ed25519", "auth_status": "AUTHENTICATED"},
@@ -597,8 +597,8 @@ def sample_mesh_node_payloads() -> Dict[str, Dict[str, Any]]:
             "os": "macOS Darwin ARM64",
             "timestamp": time.time()
         },
-        "Linux_Head_Node": {
-            "node_id": "Linux_Head_Node",
+        "Linux_Mini": {
+            "node_id": "Linux_Mini",
             "layer": "L3",
             "ip": "192.168.8.224",
             "tailscale_ip": "100.101.39.98",
@@ -729,7 +729,7 @@ def mock_obsidian_vault_dir(tmp_path) -> str:
         "- [[CANONICAL_PROJECT_AND_STORAGE_RULE]]\n"
         "- [[LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX]]\n"
         "- [[Mac_Node]]\n"
-        "- [[Linux_Head_Node]]\n"
+        "- [[Linux_Mini]]\n"
         "- [[MacBook_Pro]]\n"
     )
     
@@ -737,7 +737,7 @@ def mock_obsidian_vault_dir(tmp_path) -> str:
     nodes_dir = vault_dir / "nodes"
     nodes_dir.mkdir(exist_ok=True)
     (nodes_dir / "Mac_Node.md").write_text("# [[Mac_Node]]\nLayer 1 Primary Host")
-    (nodes_dir / "Linux_Head_Node.md").write_text("# [[Linux_Head_Node]]\nLayer 3 Compute Hub")
+    (nodes_dir / "Linux_Mini.md").write_text("# [[Linux_Mini]]\nLayer 3 Compute Hub")
     (nodes_dir / "MacBook_Pro.md").write_text("# [[MacBook_Pro]]\nLayer 2 TB4 DMA Vault")
     
     return str(vault_dir)

@@ -23,7 +23,7 @@ shadow_teacher: "Gemini 3.8 Flash Teacher"
 In previous builds of the **Lauburu Cable & Mesh Analyzer (Port 4007)**:
 1. **Missing Devices:** Only 6 nodes were defined in `backend/config.py`. Missing were:
    - Layer 4: `Linux Tablet (L4)` (Debian 13, 8GB RAM, Touch DSP, Tailscale `100.81.92.125`).
-   - Layer 5: `MacBook Air M4 (L5)` (Apple M4, 16GB RAM, Metal GPU, Tailscale `100.93.158.96`).
+   - Layer 5: `MacBook Pro (Node L2) (L5)` (Apple M4, 16GB RAM, Metal GPU, Tailscale `100.93.158.96`).
 2. **Visual Clutter & False Equivalence:** The external monitor (`ext_display_msi` / MSI MP245 E14VL) was rendered as a full-size $150 \times 72$ compute card with synthetic $0.1\text{ TOPS}$ and a blazing neon purple pipe, creating a false equivalence between a passive video sink and high-throughput AI compute engines.
 
 ---

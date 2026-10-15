@@ -93,7 +93,7 @@ Before and after the synthesis and installation of the AppleScript suite, the **
 
 - **Model:** `Qwen 3.8 Max` (`qwen-3.8-max` via Port 8083 / Port 8082)
 - **Actuation Exit Code:** `Exit Code 0` in $4.34\text{s}$
-- **LoRA Memory Ingestion:** Appended to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`
+- **LoRA Memory Ingestion:** Appended to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`
 
 ---
 

@@ -8,7 +8,7 @@ tags: [notebooks, leaderboard, elo, lmarena, biometrics, grappling, vision]
 
 ## 🏛️ 1. Scientific Notebook Execution Summary
 
-We executed the **Local AI Notebook Specialist Engine** ([`04_data_and_memory/local_ai_notebook_specialist.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/local_ai_notebook_specialist.py)) with zero-mock data ingestion across 3 scientific domains:
+We executed the **Local AI Notebook Specialist Engine** ([`04_data_and_memory/local_ai_notebook_specialist.py`](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/local_ai_notebook_specialist.py)) with zero-mock data ingestion across 3 scientific domains:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -31,7 +31,7 @@ We executed the **Local AI Notebook Specialist Engine** ([`04_data_and_memory/lo
 
 ## 🏆 2. LMSYS Arena Bradley-Terry ELO Leaderboard Standings
 
-We executed **105 pairwise tournament battles** across 5 system benchmark prompts using [`02_ai_models_and_inference/benchmarks/local_lmarena_benchmark_harness.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/local_lmarena_benchmark_harness.py):
+We executed **105 pairwise tournament battles** across 5 system benchmark prompts using [`02_ai_models_and_inference/benchmarks/local_lmarena_benchmark_harness.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/local_lmarena_benchmark_harness.py):
 
 | Rank | Model Name | Parameters | ELO Rating | Specialized Mesh Role |
 | :--- | :--- | :--- | :--- | :--- |

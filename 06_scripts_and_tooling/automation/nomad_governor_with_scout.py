@@ -30,8 +30,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger("NomadGovernor")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
-OBSIDIAN_VAULT = Path("/Users/aaron/DFS_UNIFIED")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
+OBSIDIAN_VAULT = Path("/Volumes/Lauburu-Monorepo")
 SCOUT_DASHBOARD = OBSIDIAN_VAULT / "00_SYSTEM_DASHBOARDS/OPEN_SOURCE_SCOUT_OPPORTUNITIES.md"
 DEBATE_LOG = REPO_ROOT / "data/lora_datasets/truth_audit_debate.jsonl"
 STATUS_FILE = REPO_ROOT / "data/network/nomad_governor_status.json"

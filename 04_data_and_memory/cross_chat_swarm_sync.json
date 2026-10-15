@@ -1,0 +1,83 @@
+{
+  "last_sync_timestamp": "2026-09-04T04:30:39Z",
+  "active_chats": {
+    "ebe36ae7-4d1e-4d6a-b5e6-fe12d368bcc1": {
+      "alias": "Chat A (Macro Architecture, Lens AI VLA, 99% Quota Pacer)",
+      "status": "ACTIVE",
+      "role": "Lead System Architect, Canonical Overview Governor & Continuous DPO Pacer",
+      "key_artifacts": [
+        "CANONICAL_PROJECT_OVERVIEW.md",
+        "CANONICAL_APPS_OVERVIEW.md",
+        "CANONICAL_BUSINESS_PLAN_OVERVIEW.md",
+        "LENS_AI_CANONICAL_OVERVIEW.md"
+      ]
+    },
+    "463be04b-c674-45eb-9a0c-f0013ee26c4d": {
+      "alias": "Chat B (Hierarchical Swarms, Reverse Eng, Deep Scout)",
+      "status": "ACTIVE",
+      "role": "Hierarchical Polyglot Swarm Matrix, Clean-Room Reverse Engineering & Open Source Scout",
+      "key_artifacts": [
+        "closed-source-reverse-engineering (Skill)",
+        "Port 4004 Omnichannel Knowledge Hub",
+        "HIERARCHICAL_SWARM_TELEMETRY.md"
+      ]
+    }
+  },
+  "shared_invariants": {
+    "rule_0_zero_mock": "VERIFIED_ACTIVE",
+    "host_ram_sanctuary": "VERIFIED_GE_8GB",
+    "cloud_spend_preservation": "VERIFIED_ZERO_SPEND",
+    "tri_vault_sync": "SYNCHRONIZED"
+  },
+  "unison_metrics": {
+    "total_cross_chat_dpo_pairs": 112728,
+    "active_ports_monitored": [
+      {
+        "port": 4000,
+        "name": "Port 4000 Unified Console",
+        "status": "ONLINE"
+      },
+      {
+        "port": 4002,
+        "name": "Marimo Notebook Dashboard",
+        "status": "ONLINE"
+      },
+      {
+        "port": 4003,
+        "name": "Screen Lens MJPEG Stream",
+        "status": "ONLINE"
+      },
+      {
+        "port": 4004,
+        "name": "Omnichannel Knowledge Hub (Chat B)",
+        "status": "ONLINE"
+      },
+      {
+        "port": 8081,
+        "name": "llama.cpp Master RPC Server",
+        "status": "ONLINE"
+      },
+      {
+        "port": 8082,
+        "name": "prima.cpp 80B Ring Coordinator",
+        "status": "ONLINE"
+      },
+      {
+        "port": 8888,
+        "name": "SeaweedFS Filer Endpoint",
+        "status": "STANDBY"
+      },
+      {
+        "port": 9333,
+        "name": "SeaweedFS Master Server",
+        "status": "ONLINE"
+      },
+      {
+        "port": 18802,
+        "name": "Self-Healing Hub",
+        "status": "ONLINE"
+      }
+    ],
+    "lock_conflicts_prevented": 0
+  }
+}

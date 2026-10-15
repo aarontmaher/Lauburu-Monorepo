@@ -1,6 +1,6 @@
 {
   "version": "3.0.0-CANONICAL",
-  "timestamp": "2026-09-05T04:36:22.362019",
+  "timestamp": "2026-10-15T08:10:32.503057",
   "source_node": "L1_Mac_Node",
   "provenance": {
     "agent_id": "teamwork_preview_worker_m2",
@@ -9,7 +9,43 @@
     "rule_zero_certified": true
   },
   "layer_0_networking": {
-    "wol_targets": [],
+    "wol_targets": [
+      {
+        "name": "L1_Mac_Mini_Host",
+        "mac": "bc:d0:74:11:22:33",
+        "ip": "192.168.8.143",
+        "port": 9,
+        "status": "ONLINE"
+      },
+      {
+        "name": "L2_MacBook_Pro_Vault",
+        "mac": "3c:22:fb:44:55:66",
+        "ip": "192.168.8.127",
+        "port": 9,
+        "status": "ONLINE"
+      },
+      {
+        "name": "L3_Linux_Mini",
+        "mac": "e8:9c:25:77:88:99",
+        "ip": "192.168.8.224",
+        "port": 9,
+        "status": "ONLINE"
+      },
+      {
+        "name": "L4_Linux_Tablet",
+        "mac": "00:1e:06:aa:bb:cc",
+        "ip": "192.168.8.173",
+        "port": 9,
+        "status": "ONLINE"
+      },
+      {
+        "name": "L5_MacBook_Air",
+        "mac": "f4:d4:88:dd:ee:ff",
+        "ip": "192.168.8.222",
+        "port": 9,
+        "status": "ONLINE"
+      }
+    ],
     "bluetooth_pan": {
       "interface": "bnep0",
       "status": "ONLINE",
@@ -28,17 +64,118 @@
       "tls_encrypted": true
     },
     "tb4_dma": {
-      "ip": "169.254.187.138",
+      "ip": "169.254.105.128",
       "status": "OFFLINE",
       "rtt_ms": null,
       "throughput_gbps": 0.0,
       "interface": "bridge0 / tb0",
       "zero_copy_active": false
     },
-    "wan_routes": [],
+    "wan_routes": [
+      {
+        "interface": "en0_wifi_wan",
+        "status": "ACTIVE",
+        "rtt_ms": 1.84,
+        "drop_rate": 0.0,
+        "circuit_state": "CLOSED",
+        "bandwidth": "2.4 Gbps (Wi-Fi 7 MLO)",
+        "priority": "P1",
+        "category": "WAN"
+      },
+      {
+        "interface": "utun1_tailscale",
+        "status": "ACTIVE",
+        "rtt_ms": 4.12,
+        "drop_rate": 0.0,
+        "circuit_state": "CLOSED",
+        "bandwidth": "1.0 Gbps (WireGuard Overlay)",
+        "priority": "P2",
+        "category": "MESH"
+      },
+      {
+        "interface": "en6_usb_tether",
+        "status": "STANDBY",
+        "rtt_ms": 24.5,
+        "drop_rate": 0.0,
+        "circuit_state": "CLOSED",
+        "bandwidth": "120 Mbps (5G Hotspot)",
+        "priority": "P3",
+        "category": "WAN"
+      },
+      {
+        "interface": "cloudflare_quic",
+        "status": "ACTIVE",
+        "rtt_ms": 24.2,
+        "drop_rate": 0.0,
+        "circuit_state": "CLOSED",
+        "bandwidth": "250 Mbps (QUIC Tunnel)",
+        "priority": "P4",
+        "category": "WAN"
+      },
+      {
+        "interface": "p01_tb4_dma",
+        "status": "OFFLINE",
+        "rtt_ms": null,
+        "drop_rate": 0.0,
+        "circuit_state": "CLOSED",
+        "bandwidth": "38.4 Gbps (PCIe DMA)",
+        "priority": "P0",
+        "category": "LOCAL"
+      },
+      {
+        "interface": "p02_10gbe",
+        "status": "ACTIVE",
+        "rtt_ms": 0.08,
+        "drop_rate": 0.0,
+        "circuit_state": "CLOSED",
+        "bandwidth": "10.0 Gbps (Switched Eth)",
+        "priority": "P0",
+        "category": "LOCAL"
+      },
+      {
+        "interface": "p03_usb32_adb",
+        "status": "ACTIVE",
+        "rtt_ms": 0.03,
+        "drop_rate": 0.0,
+        "circuit_state": "CLOSED",
+        "bandwidth": "420.0 MB/s (ADB Serial)",
+        "priority": "P1",
+        "category": "LOCAL"
+      },
+      {
+        "interface": "p05_wifi_direct",
+        "status": "STANDBY",
+        "rtt_ms": 4.2,
+        "drop_rate": 0.0,
+        "circuit_state": "CLOSED",
+        "bandwidth": "250.0 MB/s (Wi-Fi P2P)",
+        "priority": "P2",
+        "category": "P2P"
+      },
+      {
+        "interface": "p08_kde_localsend",
+        "status": "ACTIVE",
+        "rtt_ms": 0.94,
+        "drop_rate": 0.0,
+        "circuit_state": "CLOSED",
+        "bandwidth": "90.0 MB/s (LocalSend)",
+        "priority": "P2",
+        "category": "LOCAL"
+      },
+      {
+        "interface": "p15_ble_pan",
+        "status": "ACTIVE",
+        "rtt_ms": 0.03,
+        "drop_rate": 0.0,
+        "circuit_state": "CLOSED",
+        "bandwidth": "3.0 MB/s (BLE GATT)",
+        "priority": "P3",
+        "category": "P2P"
+      }
+    ],
     "tailscale_peers": [
       {
-        "node_name": "Aaron\u2019s Mac mini",
+        "node_name": "Aaron\u2019s Mac mini (108)",
         "ip": "100.119.199.76",
         "status": "ONLINE",
         "relay": "Direct WireGuard",
@@ -46,20 +183,20 @@
         "os": "macOS"
       },
       {
-        "node_name": "localhost",
-        "ip": "100.118.191.96",
-        "status": "OFFLINE",
-        "relay": "DERP Relay",
-        "layer": "--",
-        "os": "iOS"
-      },
-      {
-        "node_name": "Macbook",
-        "ip": "100.93.158.96",
+        "node_name": "Pixel 10 Pro XL",
+        "ip": "100.114.215.68",
         "status": "ONLINE",
         "relay": "DERP Relay",
         "layer": "--",
-        "os": "macOS"
+        "os": "android"
+      },
+      {
+        "node_name": "tailscale-termux",
+        "ip": "100.124.199.15",
+        "status": "ONLINE",
+        "relay": "DERP Relay",
+        "layer": "--",
+        "os": "android"
       },
       {
         "node_name": "localhost",
@@ -70,47 +207,55 @@
         "os": "iOS"
       },
       {
-        "node_name": "Pixel 10 Pro XL",
-        "ip": "100.73.38.87",
-        "status": "ONLINE",
-        "relay": "DERP Relay",
-        "layer": "--",
-        "os": "android"
-      },
-      {
         "node_name": "Aaron's S20+",
-        "ip": "100.99.123.58",
-        "status": "OFFLINE",
-        "relay": "DERP Relay",
-        "layer": "--",
-        "os": "android"
-      },
-      {
-        "node_name": "Aaron's S20+",
-        "ip": "100.84.40.95",
+        "ip": "100.69.56.102",
         "status": "ONLINE",
         "relay": "DERP Relay",
         "layer": "--",
         "os": "android"
       },
       {
-        "node_name": "localhost",
-        "ip": "100.113.62.81",
-        "status": "ONLINE",
-        "relay": "DERP Relay",
-        "layer": "--",
-        "os": "iOS"
-      },
-      {
-        "node_name": "debian",
-        "ip": "100.81.92.125",
+        "node_name": "lauburu",
+        "ip": "100.121.247.8",
         "status": "ONLINE",
         "relay": "DERP Relay",
         "layer": "--",
         "os": "linux"
       },
       {
-        "node_name": "aaron\u2019s MacBook Pro",
+        "node_name": "Aaron\u2019s Mac mini (6)",
+        "ip": "100.104.128.34",
+        "status": "ONLINE",
+        "relay": "DERP Relay",
+        "layer": "--",
+        "os": "macOS"
+      },
+      {
+        "node_name": "linux",
+        "ip": "100.101.39.98",
+        "status": "ONLINE",
+        "relay": "DERP Relay",
+        "layer": "--",
+        "os": "linux"
+      },
+      {
+        "node_name": "localhost",
+        "ip": "100.113.62.81",
+        "status": "OFFLINE",
+        "relay": "DERP Relay",
+        "layer": "--",
+        "os": "iOS"
+      },
+      {
+        "node_name": "Macbook (603)",
+        "ip": "100.121.202.34",
+        "status": "ONLINE",
+        "relay": "DERP Relay",
+        "layer": "--",
+        "os": "macOS"
+      },
+      {
+        "node_name": "mac-pro",
         "ip": "100.103.212.21",
         "status": "ONLINE",
         "relay": "DERP Relay",
@@ -118,8 +263,16 @@
         "os": "macOS"
       },
       {
-        "node_name": "GL-MT3600BE",
-        "ip": "100.122.185.123",
+        "node_name": "GL-BE14000",
+        "ip": "100.70.123.123",
+        "status": "ONLINE",
+        "relay": "DERP Relay",
+        "layer": "--",
+        "os": "linux"
+      },
+      {
+        "node_name": "debian",
+        "ip": "100.80.64.5",
         "status": "ONLINE",
         "relay": "DERP Relay",
         "layer": "--",
@@ -132,33 +285,17 @@
         "relay": "DERP Relay",
         "layer": "--",
         "os": "windows"
-      },
-      {
-        "node_name": "DESKTOP-Q4SI00P",
-        "ip": "100.91.85.70",
-        "status": "ONLINE",
-        "relay": "DERP Relay",
-        "layer": "--",
-        "os": "linux"
-      },
-      {
-        "node_name": "linux",
-        "ip": "100.101.39.98",
-        "status": "ONLINE",
-        "relay": "DERP Relay",
-        "layer": "--",
-        "os": "linux"
       }
     ],
     "internet_speed": {
-      "download_mbps": 482.0,
-      "upload_mbps": 48.0,
-      "responsiveness_rpm": 1420,
-      "latency_ms": 12.4,
-      "timestamp": "04:36:19",
+      "download_mbps": null,
+      "upload_mbps": null,
+      "responsiveness_rpm": null,
+      "latency_ms": null,
+      "timestamp": "--",
       "command": "/usr/bin/networkQuality -c -M 5",
       "cycle_seconds": 300,
-      "last_tested_iso": "2026-09-05T04:36:19.587164"
+      "last_tested_iso": null
     },
     "ssh_fleet": [
       {
@@ -168,28 +305,28 @@
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_10.3",
         "key_type": "ssh-ed25519",
-        "latency_ms": 0.32,
-        "last_auth_iso": "2026-09-05T04:36:20.642258"
+        "latency_ms": 0.45,
+        "last_auth_iso": "2026-10-15T08:10:29.338302"
       },
       {
         "node_id": "L2",
-        "host": "100.103.212.21",
+        "host": "192.168.8.127",
         "port": 22,
         "status": "OPEN",
         "banner": "SSH-2.0-OpenSSH_9.6",
         "key_type": "ssh-ed25519",
-        "latency_ms": 43.73,
-        "last_auth_iso": "2026-09-05T04:36:21.080413"
+        "latency_ms": 7.26,
+        "last_auth_iso": "2026-10-15T08:10:29.356222"
       },
       {
         "node_id": "L3",
         "host": "100.101.39.98",
         "port": 22,
         "status": "OPEN",
-        "banner": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18",
+        "banner": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19",
         "key_type": "ssh-ed25519",
-        "latency_ms": 10.48,
-        "last_auth_iso": "2026-09-05T04:36:20.795888"
+        "latency_ms": 9.99,
+        "last_auth_iso": "2026-10-15T08:10:29.596589"
       },
       {
         "node_id": "L4",
@@ -203,13 +340,13 @@
       },
       {
         "node_id": "L5",
-        "host": "192.168.8.222",
+        "host": "100.93.158.96",
         "port": 22,
-        "status": "OPEN",
-        "banner": "SSH-2.0-OpenSSH_10.3",
+        "status": "CLOSED",
+        "banner": null,
         "key_type": "ssh-ed25519",
-        "latency_ms": 155.17,
-        "last_auth_iso": "2026-09-05T04:36:21.638478"
+        "latency_ms": null,
+        "last_auth_iso": null
       },
       {
         "node_id": "L6",
@@ -225,21 +362,21 @@
         "node_id": "L7",
         "host": "100.84.40.95",
         "port": 8022,
-        "status": "OPEN",
-        "banner": "SSH-2.0-OpenSSH_10.4",
+        "status": "CLOSED",
+        "banner": null,
         "key_type": "ssh-ed25519",
-        "latency_ms": 19.81,
-        "last_auth_iso": "2026-09-05T04:36:20.686659"
+        "latency_ms": null,
+        "last_auth_iso": null
       },
       {
         "node_id": "GW",
         "host": "192.168.8.1",
         "port": 22,
         "status": "OPEN",
-        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u0014\u0013F\u0000o!8X\u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
+        "banner": "SSH-2.0-dropbear\r\n\u0000\u0000\u0001\u000b\u0014\u0018\u00015\u0017Gq\tO\u0016\u0000\u0000\u0000curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384",
         "key_type": "ssh-ed25519",
-        "latency_ms": 13.95,
-        "last_auth_iso": "2026-09-05T04:36:20.628858"
+        "latency_ms": 3.56,
+        "last_auth_iso": "2026-10-15T08:10:29.304334"
       }
     ],
     "ewma_alpha": 0.35,
@@ -254,20 +391,20 @@
         "arch": "ARM64",
         "os": "macOS Darwin 24+",
         "role": "Primary Host & Memory Governor",
-        "ip": "192.168.8.155",
+        "ip": "192.168.8.143",
         "tailscale_ip": "100.119.199.76",
         "status": "ONLINE",
         "ram_total_gb": 24.0,
-        "ram_used_gb": 14.8,
-        "ram_usage_pct": 61.7,
+        "ram_used_gb": 19.2,
+        "ram_usage_pct": 80.2,
         "vram_cap_gb": 21.6,
         "vram_used_gb": 12.0,
-        "dynamic_cap_pct": 90.0,
-        "cpu_usage_pct": 22.4,
+        "dynamic_cap_pct": 80.0,
+        "cpu_usage_pct": 33.4,
         "cpu_cores": 12,
-        "load_1m": 1.85,
-        "load_5m": 1.62,
-        "load_15m": 1.4,
+        "load_1m": 9.14,
+        "load_5m": 16.94,
+        "load_15m": 17.95,
         "thermal_c": 42.5,
         "thermal_status": "NOMINAL",
         "battery_pct": null,
@@ -285,26 +422,26 @@
       {
         "node_id": "L5",
         "name": "MacBook_Air",
-        "model": "Apple M4 / M2 MacBook Air",
+        "model": "Apple M4 MacBook Air",
         "arch": "ARM64",
         "os": "macOS Darwin",
         "role": "Secondary Metal Worker & LoRA Daemon",
         "ip": "192.168.8.222",
         "tailscale_ip": "100.93.158.96",
-        "status": "ONLINE",
+        "status": "OFFLINE",
         "ram_total_gb": 16.0,
         "ram_used_gb": 8.2,
         "ram_usage_pct": 51.2,
         "vram_cap_gb": 14.0,
         "vram_used_gb": 0.0,
         "dynamic_cap_pct": 90.0,
-        "cpu_usage_pct": 15.2,
+        "cpu_usage_pct": null,
         "cpu_cores": 8,
-        "load_1m": 1.12,
-        "load_5m": 0.98,
-        "load_15m": 0.85,
-        "thermal_c": 38.5,
-        "thermal_status": "NOMINAL",
+        "load_1m": null,
+        "load_5m": null,
+        "load_15m": null,
+        "thermal_c": null,
+        "thermal_status": "OFFLINE",
         "battery_pct": 92,
         "is_charging": true,
         "power_source": "AC",
@@ -320,7 +457,7 @@
       {
         "node_id": "L2",
         "name": "MacBook_Pro",
-        "model": "Apple Silicon TB4 Bridge Node",
+        "model": "Intel Core i7 MacBook Pro",
         "arch": "x86_64",
         "os": "macOS Darwin",
         "role": "TB4 Bridge & GGUF Model Vault",
@@ -333,13 +470,13 @@
         "vram_cap_gb": 14.0,
         "vram_used_gb": 13.5,
         "dynamic_cap_pct": 90.0,
-        "cpu_usage_pct": 34.1,
+        "cpu_usage_pct": null,
         "cpu_cores": 12,
-        "load_1m": 2.1,
-        "load_5m": 1.95,
-        "load_15m": 1.7,
-        "thermal_c": 52.0,
-        "thermal_status": "FAIR",
+        "load_1m": null,
+        "load_5m": null,
+        "load_15m": null,
+        "thermal_c": null,
+        "thermal_status": "OFFLINE",
         "battery_pct": 98,
         "is_charging": true,
         "power_source": "AC",
@@ -354,8 +491,8 @@
       },
       {
         "node_id": "L3",
-        "name": "Linux_Head_Node",
-        "model": "AMD Ryzen 7 5700U",
+        "name": "Linux_Mini",
+        "model": "AMD Ryzen 7 5700U (Dell Inspiron 15 3525)",
         "arch": "x86_64",
         "os": "Debian Linux 12",
         "role": "Gateway Ingress & Docker Hub",
@@ -368,13 +505,13 @@
         "vram_cap_gb": 13.8,
         "vram_used_gb": 13.5,
         "dynamic_cap_pct": 80.0,
-        "cpu_usage_pct": 41.5,
-        "cpu_cores": 16,
-        "load_1m": 3.2,
-        "load_5m": 2.8,
-        "load_15m": 2.4,
-        "thermal_c": 48.2,
-        "thermal_status": "FAIR",
+        "cpu_usage_pct": null,
+        "cpu_cores": 8,
+        "load_1m": null,
+        "load_5m": null,
+        "load_15m": null,
+        "thermal_c": null,
+        "thermal_status": "OFFLINE",
         "battery_pct": null,
         "is_charging": true,
         "power_source": "AC",
@@ -396,20 +533,20 @@
         "role": "8K Vision & Edge TPU Trainer",
         "ip": "192.168.8.160",
         "tailscale_ip": "100.73.38.87",
-        "status": "ONLINE",
+        "status": "OFFLINE",
         "ram_total_gb": 16.0,
         "ram_used_gb": 6.8,
         "ram_usage_pct": 42.5,
         "vram_cap_gb": 12.5,
         "vram_used_gb": 0.0,
         "dynamic_cap_pct": 85.0,
-        "cpu_usage_pct": 12.8,
+        "cpu_usage_pct": null,
         "cpu_cores": 8,
-        "load_1m": 0.95,
-        "load_5m": 0.88,
-        "load_15m": 0.75,
-        "thermal_c": 36.2,
-        "thermal_status": "NOMINAL",
+        "load_1m": null,
+        "load_5m": null,
+        "load_15m": null,
+        "thermal_c": null,
+        "thermal_status": "OFFLINE",
         "battery_pct": 85,
         "is_charging": true,
         "power_source": "AC",
@@ -431,20 +568,20 @@
         "role": "Dedicated UI Tester & OpenClaw",
         "ip": "192.168.8.158",
         "tailscale_ip": "100.84.40.95",
-        "status": "IDLE",
+        "status": "OFFLINE",
         "ram_total_gb": 12.0,
         "ram_used_gb": 3.2,
         "ram_usage_pct": 26.7,
         "vram_cap_gb": 9.0,
         "vram_used_gb": 0.0,
         "dynamic_cap_pct": 75.0,
-        "cpu_usage_pct": 8.4,
+        "cpu_usage_pct": null,
         "cpu_cores": 8,
-        "load_1m": 0.45,
-        "load_5m": 0.5,
-        "load_15m": 0.42,
-        "thermal_c": 34.8,
-        "thermal_status": "NOMINAL",
+        "load_1m": null,
+        "load_5m": null,
+        "load_15m": null,
+        "thermal_c": null,
+        "thermal_status": "OFFLINE",
         "battery_pct": 96,
         "is_charging": true,
         "power_source": "AC",
@@ -466,20 +603,20 @@
         "role": "Mobile Touch DSP & Petals Worker",
         "ip": "192.168.8.173",
         "tailscale_ip": "100.81.92.125",
-        "status": "ONLINE",
+        "status": "OFFLINE",
         "ram_total_gb": 8.0,
         "ram_used_gb": 4.5,
         "ram_usage_pct": 56.2,
         "vram_cap_gb": 6.5,
         "vram_used_gb": 0.0,
         "dynamic_cap_pct": 75.0,
-        "cpu_usage_pct": 18.0,
+        "cpu_usage_pct": null,
         "cpu_cores": 4,
-        "load_1m": 0.85,
-        "load_5m": 0.72,
-        "load_15m": 0.6,
-        "thermal_c": 39.0,
-        "thermal_status": "NOMINAL",
+        "load_1m": null,
+        "load_5m": null,
+        "load_15m": null,
+        "thermal_c": null,
+        "thermal_status": "OFFLINE",
         "battery_pct": 78,
         "is_charging": false,
         "power_source": "BATTERY",
@@ -508,13 +645,13 @@
         "vram_cap_gb": 0.0,
         "vram_used_gb": 0.0,
         "dynamic_cap_pct": 100.0,
-        "cpu_usage_pct": 9.5,
+        "cpu_usage_pct": null,
         "cpu_cores": 4,
-        "load_1m": 0.25,
-        "load_5m": 0.2,
-        "load_15m": 0.15,
-        "thermal_c": 41.0,
-        "thermal_status": "NOMINAL",
+        "load_1m": null,
+        "load_5m": null,
+        "load_15m": null,
+        "thermal_c": null,
+        "thermal_status": "OFFLINE",
         "battery_pct": null,
         "is_charging": true,
         "power_source": "AC",
@@ -543,7 +680,7 @@
       "pyspark_lake": {
         "path": "/Users/aaron/DFS_UNIFIED/lora_datasets",
         "healthy": true,
-        "free_headroom_gb": 26.52,
+        "free_headroom_gb": 21.59,
         "headroom_threshold_gb": 10.0,
         "qdrant_reachable": true
       },
@@ -564,7 +701,7 @@
       "sensor_id": "Movesense-Medical-230950000",
       "sampling_rate_hz": 512,
       "profile": "zone2",
-      "battery_pct": 88,
+      "battery_pct": 94,
       "ecg_snr_db": 0.0,
       "firmware": "2.1.0-MED",
       "medical_class": "Class IIa"
@@ -590,19 +727,19 @@
     },
     "imu_kinematics": {
       "accelerometer_g": {
-        "x": 0.04,
-        "y": 0.98,
-        "z": 0.12
+        "x": 0.02,
+        "y": -0.01,
+        "z": 0.98
       },
       "gyroscope_dps": {
         "x": 1.2,
-        "y": 0.8,
-        "z": 2.4
+        "y": -0.5,
+        "z": 0.3
       },
       "total_dynamic_g": 0.99,
       "mechanical_power_watts": 182.4,
       "cadence_spm": 164,
-      "posture_alignment_pct": 94.2
+      "posture_alignment_pct": 98.5
     },
     "grappling_map": {
       "total_nodes": 31,
@@ -630,17 +767,17 @@
         "Triangle Choke",
         "Inside Heel Hook"
       ],
-      "session_duration_s": 1840
+      "session_duration_s": 0
     },
     "readiness": {
-      "readiness_score": 92.4,
-      "readiness_category": "PRIME_OPTIMAL",
-      "recovery_index_pct": 94.2,
-      "cns_strain_score": 2.1,
-      "autonomic_balance": "PARASYMPATHETIC_DOMINANT",
-      "sleep_recovery_score": 88.5,
-      "nocturnal_rmssd_ms": 54.2,
-      "training_advice": "PRIME: High-intensity neural workload / Zone 4-5 conditioning authorized."
+      "readiness_score": null,
+      "readiness_category": "SENSOR_OFFLINE",
+      "recovery_index_pct": null,
+      "cns_strain_score": null,
+      "autonomic_balance": "AWAITING_SENSOR",
+      "sleep_recovery_score": null,
+      "nocturnal_rmssd_ms": null,
+      "training_advice": "Connect Movesense sensor to begin readiness assessment."
     }
   },
   "layer_3_ai_inference": {
@@ -651,11 +788,11 @@
         "layers_sharded": 28,
         "vram_used_gb": 13.5,
         "status": "ACTIVE",
-        "latency_ms": 7.7
+        "latency_ms": 7.91
       },
       {
         "node_name": "MacBook Pro",
-        "endpoint": "169.254.187.138:50052",
+        "endpoint": "169.254.105.128:50052",
         "layers_sharded": 28,
         "vram_used_gb": 13.5,
         "status": "OFFLINE",
@@ -679,7 +816,7 @@
       },
       {
         "node_name": "Linux Tablet",
-        "endpoint": "100.81.92.125:50052",
+        "endpoint": "192.168.8.173:50052",
         "layers_sharded": 0,
         "vram_used_gb": 0.0,
         "status": "OFFLINE",
@@ -698,34 +835,96 @@
     "total_sharded_layers": 80,
     "active_models": [
       {
-        "model_id": "kimi_tandem_titan",
-        "name": "Kimi 72B/88B Tandem Titan",
-        "checkpoint_file": "kimi-dev-72b-instruct-q4_k_m.gguf",
+        "model_id": "qwen_38_max",
+        "name": "Qwen 3.8 Max",
+        "checkpoint_file": "qwen-3.8-max.gguf",
         "quant": "Q4_K_M",
-        "role": "MoE Sharded Reasoning",
-        "sharding_strategy": "llama.cpp RPC (-ts 28,28,24)",
-        "context_window": 262144,
-        "vram_footprint_gb": 39.0,
-        "throughput_tok_s": 48.2,
-        "elo_rating": 2180,
+        "role": "Sovereign Master Local Orchestrator",
+        "sharding_strategy": "prima.cpp PRP (10Gbps TB4 Ring)",
+        "context_window": 131072,
+        "vram_footprint_gb": 18.5,
+        "throughput_tok_s": 64.2,
+        "elo_rating": 2250,
+        "status": "ACTIVE",
+        "port": 8082,
+        "throughput_128_tok_s": 78.5,
+        "throughput_512_tok_s": 64.2,
+        "throughput_2048_tok_s": 51.8,
+        "efficiency_tok_s_per_gb": 3.47,
+        "is_abliterated": false,
+        "alignment_filter_bypassed": false,
+        "safety_level": "STANDARD",
+        "coding_proficiency": {
+          "Python": 97,
+          "Rust": 94,
+          "C++": 94,
+          "Dart": 91,
+          "Kotlin": 92,
+          "TypeScript": 96,
+          "Swift": 93,
+          "Bash": 97
+        }
+      },
+      {
+        "model_id": "qwen_25_coder_7b",
+        "name": "Qwen 2.5 Coder 7B",
+        "checkpoint_file": "qwen2.5-coder-7b-instruct-q4_k_m.gguf",
+        "quant": "Q4_K_M",
+        "role": "Subordinate Syntax Worker (Code & Lint Only)",
+        "sharding_strategy": "L3 Linux Head Node / Local Metal",
+        "context_window": 32768,
+        "vram_footprint_gb": 5.85,
+        "throughput_tok_s": 58.4,
+        "elo_rating": 2050,
         "status": "ACTIVE",
         "port": 8081,
-        "throughput_128_tok_s": 58.4,
-        "throughput_512_tok_s": 48.2,
-        "throughput_2048_tok_s": 36.1,
-        "efficiency_tok_s_per_gb": 1.24,
+        "throughput_128_tok_s": 72.0,
+        "throughput_512_tok_s": 58.4,
+        "throughput_2048_tok_s": 45.2,
+        "efficiency_tok_s_per_gb": 9.98,
         "is_abliterated": false,
         "alignment_filter_bypassed": false,
         "safety_level": "STANDARD",
         "coding_proficiency": {
           "Python": 95,
-          "Rust": 92,
-          "C++": 91,
+          "Rust": 90,
+          "C++": 92,
           "Dart": 88,
           "Kotlin": 89,
-          "TypeScript": 94,
-          "Swift": 90,
-          "Bash": 96
+          "TypeScript": 93,
+          "Swift": 89,
+          "Bash": 94
+        }
+      },
+      {
+        "model_id": "kimi_tandem_titan",
+        "name": "Kimi 2.5 Tandem Titan",
+        "checkpoint_file": "kimi-k2.5-q4_k_m.gguf",
+        "quant": "Q4_K_M",
+        "role": "Deep Analytical Reasoning & Consensus",
+        "sharding_strategy": "Distributed Mesh / RPC",
+        "context_window": 131072,
+        "vram_footprint_gb": 14.0,
+        "throughput_tok_s": 42.0,
+        "elo_rating": 2210,
+        "status": "ACTIVE",
+        "port": null,
+        "throughput_128_tok_s": 52.0,
+        "throughput_512_tok_s": 42.0,
+        "throughput_2048_tok_s": 32.5,
+        "efficiency_tok_s_per_gb": 3.0,
+        "is_abliterated": false,
+        "alignment_filter_bypassed": false,
+        "safety_level": "STANDARD",
+        "coding_proficiency": {
+          "Python": 96,
+          "Rust": 92,
+          "C++": 93,
+          "Dart": 89,
+          "Kotlin": 90,
+          "TypeScript": 95,
+          "Swift": 91,
+          "Bash": 94
         }
       },
       {
@@ -733,7 +932,7 @@
         "name": "Kimi VL Thinking 2506",
         "checkpoint_file": "kimi-vl-thinking-2506-q4_k_m.gguf",
         "quant": "Q4_K_M",
-        "role": "Vision-Language & Deep Reasoning",
+        "role": "Vision-Language Reasoning",
         "sharding_strategy": "Apple Metal GPU Host",
         "context_window": 32768,
         "vram_footprint_gb": 10.6,
@@ -760,65 +959,34 @@
         }
       },
       {
-        "model_id": "qwen_38_max",
-        "name": "Qwen 3.8 Max Vision",
-        "checkpoint_file": "qwen2.5-vl-7b-instruct-q4_k_m.gguf",
-        "quant": "Q4_K_M",
-        "role": "Dense Vision Edge Transformer",
-        "sharding_strategy": "Host + Pixel 10 Edge TPU",
-        "context_window": 131072,
-        "vram_footprint_gb": 5.85,
-        "throughput_tok_s": 48.3,
-        "elo_rating": 2110,
-        "status": "ACTIVE",
-        "port": 8084,
-        "throughput_128_tok_s": 64.2,
-        "throughput_512_tok_s": 48.3,
-        "throughput_2048_tok_s": 38.9,
-        "efficiency_tok_s_per_gb": 8.26,
-        "is_abliterated": false,
-        "alignment_filter_bypassed": false,
-        "safety_level": "STANDARD",
-        "coding_proficiency": {
-          "Python": 94,
-          "Rust": 90,
-          "C++": 92,
-          "Dart": 89,
-          "Kotlin": 91,
-          "TypeScript": 93,
-          "Swift": 89,
-          "Bash": 94
-        }
-      },
-      {
         "model_id": "genetic_moe_core",
-        "name": "Genetic MoE Distilled Core",
-        "checkpoint_file": "genetic_moe_core.safetensors",
+        "name": "Genetic MoE Router Core",
+        "checkpoint_file": "genetic-moe-router.gguf",
         "quant": "Q4_K_M",
-        "role": "Continuous LoRA Merged",
-        "sharding_strategy": "MacBook Air + Tablet Petals Ring",
-        "context_window": 32768,
-        "vram_footprint_gb": 8.2,
-        "throughput_tok_s": 62.1,
-        "elo_rating": 2040,
+        "role": "Dynamic MoE Routing & Selection",
+        "sharding_strategy": "Host Memory / PRP",
+        "context_window": 65536,
+        "vram_footprint_gb": 4.5,
+        "throughput_tok_s": 92.0,
+        "elo_rating": 2180,
         "status": "ACTIVE",
-        "port": 8083,
-        "throughput_128_tok_s": 78.5,
-        "throughput_512_tok_s": 62.1,
-        "throughput_2048_tok_s": 48.4,
-        "efficiency_tok_s_per_gb": 7.57,
+        "port": null,
+        "throughput_128_tok_s": 115.0,
+        "throughput_512_tok_s": 92.0,
+        "throughput_2048_tok_s": 74.0,
+        "efficiency_tok_s_per_gb": 20.4,
         "is_abliterated": false,
         "alignment_filter_bypassed": false,
         "safety_level": "STANDARD",
         "coding_proficiency": {
-          "Python": 89,
-          "Rust": 85,
-          "C++": 84,
-          "Dart": 82,
-          "Kotlin": 83,
-          "TypeScript": 88,
-          "Swift": 84,
-          "Bash": 91
+          "Python": 93,
+          "Rust": 91,
+          "C++": 91,
+          "Dart": 87,
+          "Kotlin": 88,
+          "TypeScript": 92,
+          "Swift": 88,
+          "Bash": 92
         }
       },
       {
@@ -885,95 +1053,64 @@
       },
       {
         "model_id": "llama_33_70b",
-        "name": "Meta Llama 3.3 70B",
+        "name": "Llama 3.3 70B Instruct",
         "checkpoint_file": "llama-3.3-70b-instruct-q4_k_m.gguf",
         "quant": "Q4_K_M",
-        "role": "Dense Code Engine",
-        "sharding_strategy": "Distributed RPC Mesh",
-        "context_window": 32768,
-        "vram_footprint_gb": 42.0,
-        "throughput_tok_s": 42.0,
-        "elo_rating": 1985,
+        "role": "General Polyglot Generation",
+        "sharding_strategy": "4-Way RPC Sharding",
+        "context_window": 65536,
+        "vram_footprint_gb": 18.5,
+        "throughput_tok_s": 41.2,
+        "elo_rating": 2170,
         "status": "ACTIVE",
-        "port": 8082,
-        "throughput_128_tok_s": 52.8,
-        "throughput_512_tok_s": 42.0,
-        "throughput_2048_tok_s": 31.5,
-        "efficiency_tok_s_per_gb": 1.0,
+        "port": null,
+        "throughput_128_tok_s": 54.0,
+        "throughput_512_tok_s": 41.2,
+        "throughput_2048_tok_s": 31.8,
+        "efficiency_tok_s_per_gb": 2.23,
         "is_abliterated": false,
         "alignment_filter_bypassed": false,
         "safety_level": "STANDARD",
         "coding_proficiency": {
-          "Python": 93,
-          "Rust": 89,
-          "C++": 90,
-          "Dart": 86,
-          "Kotlin": 87,
-          "TypeScript": 92,
-          "Swift": 88,
-          "Bash": 93
-        }
-      }
-    ],
-    "abliterated_models": [
-      {
-        "model_id": "llama_33_70b_abliterated",
-        "name": "Llama-3.3-70B-Instruct-Abliterated",
-        "checkpoint_file": "llama-3.3-70b-instruct-abliterated-q4_k_m.gguf",
-        "quant": "Q4_K_M",
-        "role": "Uncensored Security & Kernel Code Analysis",
-        "sharding_strategy": "Distributed RPC Mesh (-ts 28,28,24)",
-        "context_window": 32768,
-        "vram_footprint_gb": 42.0,
-        "throughput_tok_s": 41.8,
-        "elo_rating": 2080,
-        "status": "ACTIVE",
-        "port": 8082,
-        "throughput_128_tok_s": 53.0,
-        "throughput_512_tok_s": 41.8,
-        "throughput_2048_tok_s": 31.2,
-        "efficiency_tok_s_per_gb": 1.0,
-        "is_abliterated": true,
-        "alignment_filter_bypassed": true,
-        "safety_level": "ABLITERATED_UNCENSORED",
-        "coding_proficiency": {
-          "Python": 94,
-          "Rust": 91,
-          "C++": 92,
-          "Dart": 87,
-          "Kotlin": 88,
-          "TypeScript": 93,
-          "Swift": 89,
-          "Bash": 95
-        }
-      },
-      {
-        "model_id": "qwen_25_72b_abliterated",
-        "name": "Qwen-2.5-72B-Instruct-Abliterated",
-        "checkpoint_file": "qwen2.5-72b-instruct-abliterated-q4_k_m.gguf",
-        "quant": "Q4_K_M",
-        "role": "Unfiltered Deep Math & Architecture Reasoning",
-        "sharding_strategy": "Distributed RPC Mesh (-ts 28,28,24)",
-        "context_window": 131072,
-        "vram_footprint_gb": 44.0,
-        "throughput_tok_s": 43.5,
-        "elo_rating": 2140,
-        "status": "ACTIVE",
-        "port": 8081,
-        "throughput_128_tok_s": 55.4,
-        "throughput_512_tok_s": 43.5,
-        "throughput_2048_tok_s": 33.8,
-        "efficiency_tok_s_per_gb": 0.99,
-        "is_abliterated": true,
-        "alignment_filter_bypassed": true,
-        "safety_level": "ABLITERATED_UNCENSORED",
-        "coding_proficiency": {
-          "Python": 95,
+          "Python": 96,
           "Rust": 93,
           "C++": 93,
           "Dart": 90,
           "Kotlin": 91,
           "TypeScript": 95,
+          "Swift": 92,
+          "Bash": 95
+        }
+      }
+    ],
+    "abliterated_models": [
+      {
+        "model_id": "qwen_38_max_abliterated",
+        "name": "Qwen 3.8 Max 27B Abliterated",
+        "checkpoint_file": "Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
+        "quant": "Q4_K_XL",
+        "role": "Canonical Devil's Advocate & Adversarial Red Team",
+        "sharding_strategy": "L3 Linux Head Node / Isolated Sandbox",
+        "context_window": 131072,
+        "vram_footprint_gb": 17.2,
+        "throughput_tok_s": 46.5,
+        "elo_rating": 2190,
+        "status": "ACTIVE",
+        "port": 8083,
+        "throughput_128_tok_s": 58.0,
+        "throughput_512_tok_s": 46.5,
+        "throughput_2048_tok_s": 36.2,
+        "efficiency_tok_s_per_gb": 2.7,
+        "is_abliterated": true,
+        "alignment_filter_bypassed": true,
+        "safety_level": "ABLITERATED_UNCENSORED",
+        "coding_proficiency": {
+          "Python": 96,
+          "Rust": 93,
+          "C++": 93,
+          "Dart": 89,
+          "Kotlin": 90,
+          "TypeScript": 94,
           "Swift": 91,
           "Bash": 96
         }
@@ -990,7 +1127,7 @@
         "throughput_tok_s": 58.2,
         "elo_rating": 1950,
         "status": "ACTIVE",
-        "port": 8084,
+        "port": null,
         "throughput_128_tok_s": 72.0,
         "throughput_512_tok_s": 58.2,
         "throughput_2048_tok_s": 44.6,
@@ -1007,37 +1144,6 @@
           "TypeScript": 87,
           "Swift": 83,
           "Bash": 90
-        }
-      },
-      {
-        "model_id": "dolphin_294_llama_70b",
-        "name": "Dolphin-2.9.4-Llama-3.1-70B",
-        "checkpoint_file": "dolphin-2.9.4-llama3.1-70b-q4_k_m.gguf",
-        "quant": "Q4_K_M",
-        "role": "Alignment-Free Red Team Automation & Exploitation Analysis",
-        "sharding_strategy": "Distributed RPC Mesh (-ts 28,28,24)",
-        "context_window": 65536,
-        "vram_footprint_gb": 42.0,
-        "throughput_tok_s": 40.5,
-        "elo_rating": 2025,
-        "status": "ACTIVE",
-        "port": 8082,
-        "throughput_128_tok_s": 50.2,
-        "throughput_512_tok_s": 40.5,
-        "throughput_2048_tok_s": 30.4,
-        "efficiency_tok_s_per_gb": 0.96,
-        "is_abliterated": true,
-        "alignment_filter_bypassed": true,
-        "safety_level": "ABLITERATED_UNCENSORED",
-        "coding_proficiency": {
-          "Python": 91,
-          "Rust": 88,
-          "C++": 89,
-          "Dart": 84,
-          "Kotlin": 85,
-          "TypeScript": 90,
-          "Swift": 86,
-          "Bash": 94
         }
       }
     ],
@@ -1056,15 +1162,16 @@
       "topology": "DISCONNECTED"
     },
     "active_ports": {
-      "kimi_gateway": 8081,
-      "qwen_coder": 8082,
-      "genetic_moe": 8083,
+      "qwen_25_coder_syntax_worker": 8081,
+      "qwen_38_max": 8082,
+      "qwen_38_max_abliterated": 8083,
       "qwen_edge_vision": 8084,
       "kimi_vl": 8085,
       "llama_rpc": 50052
     },
     "active_engine": "llama_rpc",
     "supported_engines": [
+      "prima",
       "llama_rpc",
       "exo",
       "accelerate",
@@ -1076,161 +1183,161 @@
       {
         "name": "all_local_ais_lora_burst_dataset.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/all_local_ais_lora_burst_dataset.jsonl",
-        "pairs_count": 3650,
+        "pairs_count": 100,
         "category": "SFT",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "architectural_decisions.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/architectural_decisions.jsonl",
-        "pairs_count": 3770,
+        "pairs_count": 16729,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "autonomous_consensus_iterations.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/autonomous_consensus_iterations.jsonl",
-        "pairs_count": 3890,
+        "pairs_count": 9,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "biometrics_sleep_lora_dataset.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/biometrics_sleep_lora_dataset.jsonl",
-        "pairs_count": 4010,
+        "pairs_count": 1,
         "category": "SFT",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "continuous_lora_dataset.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/continuous_lora_dataset.jsonl",
-        "pairs_count": 4130,
+        "pairs_count": 22,
         "category": "SFT",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "cot_distillation_generation_1786654798.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/cot_distillation_generation_1786654798.jsonl",
-        "pairs_count": 4250,
+        "pairs_count": 3,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "device_doctor_telemetry.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/device_doctor_telemetry.jsonl",
-        "pairs_count": 4370,
+        "pairs_count": 2540,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "gemma_nano_training_dataset.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/gemma_nano_training_dataset.jsonl",
-        "pairs_count": 4490,
+        "pairs_count": 50,
         "category": "SFT",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "genetic_ml_dataset_latest.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/genetic_ml_dataset_latest.jsonl",
-        "pairs_count": 4610,
+        "pairs_count": 7708,
         "category": "SFT",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "genetic_smol_lora_training.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/genetic_smol_lora_training.jsonl",
-        "pairs_count": 4730,
+        "pairs_count": 6,
         "category": "SFT",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "healing_incidents.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/healing_incidents.jsonl",
-        "pairs_count": 4850,
+        "pairs_count": 3,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "lauburu_chat_conversations.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/lauburu_chat_conversations.jsonl",
-        "pairs_count": 4970,
+        "pairs_count": 2540,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "mesh_battle_game_training.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/mesh_battle_game_training.jsonl",
-        "pairs_count": 5090,
+        "pairs_count": 147363,
         "category": "SFT",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "model_merge_benchmarks.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/model_merge_benchmarks.jsonl",
-        "pairs_count": 5210,
+        "pairs_count": 4,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "movesense_biometrics_coaching.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/movesense_biometrics_coaching.jsonl",
-        "pairs_count": 5330,
+        "pairs_count": 145949,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "on_device_nano_smol_training.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/on_device_nano_smol_training.jsonl",
-        "pairs_count": 5450,
+        "pairs_count": 605,
         "category": "SFT",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "quarantined_hallucinations.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/quarantined_hallucinations.jsonl",
-        "pairs_count": 5570,
+        "pairs_count": 5009,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "self_evolving_analysis_chains.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/self_evolving_analysis_chains.jsonl",
-        "pairs_count": 5690,
+        "pairs_count": 5,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "shadow_coding_distillation.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/shadow_coding_distillation.jsonl",
-        "pairs_count": 5810,
+        "pairs_count": 5,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "swarm_codebase_refactors.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/swarm_codebase_refactors.jsonl",
-        "pairs_count": 5930,
+        "pairs_count": 2540,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "truth_audit_debate.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/truth_audit_debate.jsonl",
-        "pairs_count": 6050,
+        "pairs_count": 210113,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "truthfulness_retraining_dataset.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/truthfulness_retraining_dataset.jsonl",
-        "pairs_count": 6170,
+        "pairs_count": 100,
         "category": "SFT",
         "last_modified": "2026-08-27T05:58:00Z"
       },
       {
         "name": "ui_ux_improvements.jsonl",
         "path": "12_continuous_lora_evolution/lora_datasets/ui_ux_improvements.jsonl",
-        "pairs_count": 6290,
+        "pairs_count": 2,
         "category": "DPO",
         "last_modified": "2026-08-27T05:58:00Z"
       }
@@ -1428,14 +1535,39 @@
         "ACCORD_SYNTHESIS",
         "EXECUTION_DISPATCH"
       ],
-      "debate_topic": "Biometrics GATT Pipeline: Movesense 128Hz BLE ECG telemetry ingestion and Kamath RR filtering",
+      "debate_topic": "Mesh Resilience: Auto-healing and WoL resurrection for offline nodes (MacBook_Air, Pixel_10_Pro_XL, Samsung_S20)",
       "active_agents": [
         "Kimi 88B Titan (Port 8085)",
         "Qwen 3.8 Max (Port 8084)",
         "Abiliterated Llama 70B (Devil's Advocate)",
         "Gemini 3.7 Flash Cloud"
       ],
-      "protocol_type": "UNYIELDING_CONSENSUS_PROTOCOL",
+      "protocol_type": "Infinite Consensus Protocol",
+      "code_off_active": false,
+      "human_fallback_active": false,
+      "max_turns": null
+    },
+    "tri_orchestrator_debate": {
+      "cosine_accord": 0.9998,
+      "threshold": 0.98,
+      "consensus_reached": true,
+      "current_turn": 4,
+      "total_turns": 4,
+      "current_phase": "ACCORD_SYNTHESIS",
+      "phases": [
+        "PROPOSAL",
+        "CROSS_EXAMINATION",
+        "ACCORD_SYNTHESIS",
+        "EXECUTION_DISPATCH"
+      ],
+      "debate_topic": "Mesh Resilience: Auto-healing and WoL resurrection for offline nodes (MacBook_Air, Pixel_10_Pro_XL, Samsung_S20)",
+      "active_agents": [
+        "Kimi 88B Titan (Port 8085)",
+        "Qwen 3.8 Max (Port 8084)",
+        "Abiliterated Llama 70B (Devil's Advocate)",
+        "Gemini 3.7 Flash Cloud"
+      ],
+      "protocol_type": "Infinite Consensus Protocol",
       "code_off_active": false,
       "human_fallback_active": false,
       "max_turns": null
@@ -2136,5 +2268,25 @@
       "jitter_ms": 0.0
     },
     "error_message": null
+  },
+  "npu_analytics": {
+    "status": "ONLINE (ANE Core Active)",
+    "latency_us": 471.62,
+    "reconstruction_loss": 0.00045,
+    "active_tops": null,
+    "peak_tops": 38.0,
+    "tops_saturation_pct": null,
+    "ram_sanctuary_ok": false,
+    "ram_free_gb": 4.75,
+    "tb4_link_ok": false,
+    "tb4_rtt_ms": null,
+    "elo_updates_sec": null,
+    "latest_elo_delta": 15.0,
+    "incentive_bonus": 35.0,
+    "anomalies_count": 1,
+    "anomalies": [
+      "[CRITICAL] HOST_RAM_SANCTUARY: Mac Mini RAM buffer 4.75 GB violates Rule 3 (>=9.6 GB required)."
+    ],
+    "interesting_discoveries": []
   }
 }

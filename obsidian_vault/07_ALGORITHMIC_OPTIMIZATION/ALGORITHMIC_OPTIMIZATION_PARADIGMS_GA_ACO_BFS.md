@@ -272,11 +272,11 @@ In strict adherence to **User Global Rule #0 (Zero-Mock & Zero-Simulated Data)**
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                 7-LAYER PHYSICAL HARDWARE TOPOLOGY                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ L1: Mac_Node (Host Mini M4 Pro) ◄──[10Gbps TB4 0.27ms]──► L2: MacBook_Pro   │
+│ L1: Mac_Node (Host Mini M4 Pro) ◄──[40Gbps TB4 0.27ms]──► L2: MacBook_Pro   │
 │   │                                                         │               │
 │   ├──[Wi-Fi 7 / LAN]──► GW: GL.iNet Router                  ├──[Tailscale]  │
 │   │                          │                              │               │
-│   ├──► L3: Linux_Head_Node ──┴──► L4: Linux_Tablet          └──► L5: MBA M4 │
+│   ├──► L3: Linux_Mini ──┴──► L4: Linux_Tablet          └──► L5: MBA M4 │
 │   │                                                                         │
 │   └──► L6: Pixel_10_Pro_XL (Edge TPU) ◄──► L7: Samsung_S20 (UI Testbed)    │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -292,7 +292,7 @@ In strict adherence to **User Global Rule #0 (Zero-Mock & Zero-Simulated Data)**
 2. **Ant Colony Optimization (ACO / AntNet):**
    - **Subsystem:** `05_agents_and_swarms/swarm_mesh_routing`
    - **Role:** Real-time multi-transport packet routing across heterogeneous links:
-     - Tier 0: 10Gbps Thunderbolt 4 Bridge (`169.254.187.138:50052`)
+     - Tier 0: 40Gbps Thunderbolt 4 Bridge (`169.254.187.138:50052`)
      - Tier 1: Local Wi-Fi 7 / 2.5GbE LAN (`192.168.8.x`)
      - Tier 2: Tailscale WireGuard Mesh (`100.x.x.x`)
      - Tier 3: Bluetooth PAN / USB ADB Fallback

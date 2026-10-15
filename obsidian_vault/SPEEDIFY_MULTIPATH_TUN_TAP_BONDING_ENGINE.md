@@ -146,7 +146,7 @@ graph TD
 The following architectural resolutions from the **Tri-Orchestrator AI-Debate** are formally incorporated into this specification:
 
 ### 4.1 Asymmetric Delay Differential & Adaptive Playout Formula
-To handle simultaneous bonding over ultra-low-latency Thunderbolt 4 (0.27ms RTT) and mobile LTE (80ms RTT), the playout window dynamically adjusts to link delay disparity:
+To handle simultaneous bonding over ultra-low-latency Thunderbolt 4 (0.38ms RTT) and mobile LTE (80ms RTT), the playout window dynamically adjusts to link delay disparity:
 
 $$T_{\text{reorder}} = \max\left(4.0\text{ ms}, \; \min\left(80.0\text{ ms}, \; \frac{\max(\text{SRTT}) - \min(\text{SRTT})}{2} + 3.5 \times \max(\text{RTTVAR})\right)\right)$$
 
@@ -289,5 +289,5 @@ impl LowRamReorderRing {
 - [[CUSTOM_AI_SHARDING_DAEMON_PETALS_DHT_SPEC]] — Distributed AI Sharding Engine
 - [[LIGHTWEIGHT_WIREGUARD_DERP_MESH_SPEC]] — Noise Protocol Overlay & DERP Relays
 - [[LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX]] — Distributed MapReduce Monorepo Index
-- [[7_DEVICE_MESH_AND_VRAM_POOL]] — 8-Node Pooled VRAM Matrix (82.8 GB)
+- [[7_DEVICE_MESH_AND_VRAM_POOL]] — 8-Node Pooled VRAM Matrix (139.0 GB RAM / 108.4 GB AI VRAM)
 - [[00_Overview/Hardware_Topology]] — Multi-Interface Topologies and Bandwidth Matrix

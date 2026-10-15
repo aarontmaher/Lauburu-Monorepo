@@ -1,0 +1,62 @@
+#!/bin/sh /etc/rc.common
+# ==============================================================================
+# Lauburu Mesh - Router Headless Recovery Getty Procd Service
+# Subsystem: 00_core_infrastructure/router_foundation
+# Target: GL.iNet GL-BE14000 (/dev/rfcomm0, Channel 1)
+# ==============================================================================
+
+START=99
+STOP=10
+USE_PROCD=1
+
+PROG=/usr/bin/rfcomm
+LOGIN_SH=/usr/libexec/login.sh
+CHANNEL=1
+DEV_INDEX=0
+
+start_service() {
+    # Verify rfcomm binary exists
+    [ -x "$PROG" ] || {
+        echo "Error: $PROG not found" >&2
+        return 1
+    }
+
+    # Verify login shell binary exists, fallback to /bin/login or /bin/ash
+    if [ ! -x "$LOGIN_SH" ]; then
+        if [ -x /sbin/getty ]; then
+            LOGIN_SH="/sbin/getty -L 115200 rfcomm0 vt100"
+        elif [ -x /bin/login ]; then
+            LOGIN_SH="/bin/login"
+        else
+            LOGIN_SH="/bin/ash"
+        fi
+    fi
+
+    # Release any dangling rfcomm0 bindings
+    $PROG release $DEV_INDEX 2>/dev/null || true
+
+    procd_open_instance
+    # Launch RFCOMM watcher on channel 1; on connect, spawn login shell
+    procd_set_param command "$PROG" watch "$DEV_INDEX" "$CHANNEL" "$LOGIN_SH"
+    # Throttle respawn: 3600s window, max 5 crashes, minimum 10s wait
+    procd_set_param respawn 3600 5 10
+    procd_set_param stdout 1
+    procd_set_param stderr 1
+    procd_close_instance
+}
+
+stop_service() {
+    # Terminate any running rfcomm processes
+    killall rfcomm 2>/dev/null || true
+    $PROG release $DEV_INDEX 2>/dev/null || true
+}
+
+status_service() {
+    if ps | grep -v grep | grep -q "rfcomm watch $DEV_INDEX $CHANNEL"; then
+        echo "router_rfcomm_getty is running on channel $CHANNEL"
+        return 0
+    else
+        echo "router_rfcomm_getty is stopped"
+        return 1
+    fi
+}

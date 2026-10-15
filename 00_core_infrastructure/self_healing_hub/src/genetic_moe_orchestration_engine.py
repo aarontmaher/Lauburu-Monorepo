@@ -16,7 +16,7 @@ import shutil
 
 class GeneticMoEOrchestrationEngine:
     def __init__(self):
-        self.state_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
+        self.state_file = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
 
     def evaluate_expert_pillars(self):
         pillars = [

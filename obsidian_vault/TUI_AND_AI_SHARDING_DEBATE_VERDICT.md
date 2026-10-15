@@ -24,7 +24,7 @@ updated: "2026-08-30T23:25:00Z"
 │    • Systems Cohesion, Cognitive Developer UX, Global Cloud-to-Edge Sync    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 2. ⚡ Local AI Orchestrator (Qwen 3.8 Max 27B / Qwen-Math on Mesh)          │
-│    • Hardware Ground Truth, 10Gbps TB4 DMA, Metal VRAM Dynamic Governor     │
+│    • Hardware Ground Truth, 40Gbps TB4 DMA, Metal VRAM Dynamic Governor     │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 3. 🧬 Training & Evolution Engine (HuggingFace Hub / TRL / PEFT)            │
 │    • Continuous Dataset Harvesting, 24/7 LoRA Distillation, PySpark Sync    │
@@ -37,12 +37,12 @@ updated: "2026-08-30T23:25:00Z"
 ### 1.1 ☁️ Cloud Orchestrator Analysis
 > "The Lauburu ecosystem has matured into a multi-tiered platform. Our analysis of the **TUI stack** shows that `canonical_tui.py` has reached 100% screen coverage (14 screens) with rich interactive widgets (TextAreas, Trees, Prompt Bar). However, Python's runtime incurs a ~180MB RAM footprint and GIL jitter when processing 512Hz ECG streams. The Web TUI on Port 8088 (`serve_web_tui.py`) successfully bridges xterm.js over WebSockets, but lacks asset caching and compression.
 >
-> On the **AI Sharding** frontier, relying on a single inference framework is a fatal architectural bottleneck. The shift to a 5-framework topology—led by `prima.cpp` Pipelined-Ring Parallelism (PRP) and `llama.cpp` RPC over the 10Gbps Thunderbolt 4 bridge (0.204ms RTT)—is mathematically superior to cloud API dependency, driving recurring cloud costs to $0."
+> On the **AI Sharding** frontier, relying on a single inference framework is a fatal architectural bottleneck. The shift to a 5-framework topology—led by `prima.cpp` Pipelined-Ring Parallelism (PRP) and `llama.cpp` RPC over the 40Gbps Thunderbolt 4 bridge (0.204ms RTT)—is mathematically superior to cloud API dependency, driving recurring cloud costs to $0."
 
 ### 1.2 ⚡ Local AI Orchestrator Analysis
 > "We must anchor our evaluation in physical silicon reality. 
 > 
-> 1. **Silicon Memory Limits:** Our 7 physical nodes pool 108.0 GB RAM / 82.8 GB VRAM. The Mac Mini M4 Pro (24GB) is our primary host and memory governor. Standard `llama.cpp` RPC (`-ts 28,28,24`) creates tensor-transfer serialization bottlenecks over standard Wi-Fi. Over the 10Gbps TB4 DMA bridge, however, latency drops to **0.204ms**.
+> 1. **Silicon Memory Limits:** Our 7 physical nodes pool 108.0 GB RAM / 82.8 GB VRAM. The Mac Mini M4 Pro (24GB) is our primary host and memory governor. Standard `llama.cpp` RPC (`-ts 28,28,24`) creates tensor-transfer serialization bottlenecks over standard Wi-Fi. Over the 40Gbps TB4 DMA bridge, however, latency drops to **0.204ms**.
 > 2. **`prima.cpp` PRP Advantage:** Pipelined-Ring Parallelism overlaps activation tensor transfers with layer computations, cutting Time Per Output Token (TPOT) by up to 2.4× compared to naive RPC.
 > 3. **Rust TUI Footprint:** Rewriting the NOC telemetry layer in Rust (`Ratatui`) shrinks process RAM from 180MB to 14MB, freeing critical Unified Memory for local 70B GGUF weights."
 
@@ -121,7 +121,7 @@ updated: "2026-08-30T23:25:00Z"
 #### 2. `llama.cpp` GGML-RPC (Tensor Splitting)
 - **Pros:**
   - ✅ **Maturity & Stability:** Rock-solid upstream GGML support with Apple Metal (`-ngl 99`) and Vulkan acceleration.
-  - ✅ **Sub-0.3ms on TB4:** Near-zero latency when bound to 10Gbps Thunderbolt 4 DMA (`169.254.114.190`).
+  - ✅ **Sub-0.3ms on TB4:** Near-zero latency when bound to 40Gbps Thunderbolt 4 DMA (`169.254.114.190`).
 - **Cons:**
   - ❌ **Linear Latency Penalty on Wi-Fi:** Broadcast tensor operations suffer severe latency penalties over standard wireless links.
 
@@ -183,7 +183,7 @@ Do NOT throw away the 14 completed Python Textual screens. Instead, adopt the **
 
 ### 🏆 2. AI Sharding Verdict: Unified Adaptive Sharding Gateway
 Deploy the **Dynamic MoE Sharding Router** in `02_ai_models_and_inference/dynamic_agi_fallback_router.py`:
-- **Primary Tier 1 (High-Throughput Local):** Route 70B+ models to `prima.cpp` PRP (Port 8082) over the 10Gbps Thunderbolt 4 bridge.
+- **Primary Tier 1 (High-Throughput Local):** Route 70B+ models to `prima.cpp` PRP (Port 8082) over the 40Gbps Thunderbolt 4 bridge.
 - **Secondary Tier 1 (Precision Fallback):** Fallback to `llama.cpp` RPC (Port 8081) if a ring node drops.
 - **Mesh Swarm Tier 2 (Ad-Hoc / Mobile):** Route lightweight edge queries to `Exo` P2P and `Petals` DHT.
 - **Continuous Learning Plane:** Isolate HuggingFace `Accelerate` to scheduled background LoRA training windows.

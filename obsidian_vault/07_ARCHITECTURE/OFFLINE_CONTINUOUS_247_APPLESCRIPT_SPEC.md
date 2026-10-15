@@ -50,16 +50,16 @@ This specification formalizes the **100% Offline Continuous 24/7 Execution Archi
 ### A. Via AppleScript (Recommended)
 ```bash
 # Check status via compiled AppleScript
-osascript /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/automation/lauburu_offline_continuous_manager.scpt status
+osascript /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/automation/lauburu_offline_continuous_manager.scpt status
 
 # Start all continuous daemons with wake-lock
-osascript /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/automation/lauburu_offline_continuous_manager.scpt start
+osascript /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/automation/lauburu_offline_continuous_manager.scpt start
 
 # Stop all continuous daemons
-osascript /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/automation/lauburu_offline_continuous_manager.scpt stop
+osascript /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/automation/lauburu_offline_continuous_manager.scpt stop
 
 # Restart daemons
-osascript /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/automation/lauburu_offline_continuous_manager.scpt restart
+osascript /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/automation/lauburu_offline_continuous_manager.scpt restart
 ```
 
 ### B. Via Native macOS LaunchAgent
@@ -76,7 +76,7 @@ launchctl unload ~/Library/LaunchAgents/com.lauburu.offline-continuous-247.plist
 
 ### C. Direct Shell Controller
 ```bash
-/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/automation/lauburu_offline_continuous_daemon.sh status
+/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/automation/lauburu_offline_continuous_daemon.sh status
 ```
 
 ---

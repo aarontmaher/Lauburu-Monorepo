@@ -1,0 +1,26 @@
+{
+  "video_id": "ByEg1KpxlsY",
+  "url": "https://youtu.be/ByEg1KpxlsY",
+  "division": "IBJJF",
+  "title": "Nationals - Aaron Maher vs Greg Hagi",
+  "duration_sec": 526.0,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 25,
+  "dual_athlete_frames": 2,
+  "standing_phase_pct": 56.0,
+  "ground_scramble_phase_pct": 44.0,
+  "level_change_shots_detected": 3,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 47.8,
+    "left_elbow": 134.8,
+    "right_elbow": 137.5,
+    "left_hip": 136.9,
+    "right_hip": 127.5,
+    "left_knee": 146.9,
+    "right_knee": 134.1
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/ByEg1KpxlsY_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match is characterized by a strong standing position, with a 56.0% success rate in standing. The match involves a significant amount of ground/scramble, with 44.0% of the time spent on the ground. The match also features a high number of level changes, with 3 shots, which is a crucial factor in the outcome. Maher's mean spine lean is 47.8\u00b0, indicating a balanced and stable spine. His elbow flexion is 134",
+  "processing_sec": 3.37
+}

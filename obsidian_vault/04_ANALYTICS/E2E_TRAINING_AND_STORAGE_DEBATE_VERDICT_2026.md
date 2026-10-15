@@ -28,7 +28,7 @@ verdict: "UNANIMOUS_APPROVAL_WITH_AUTO_ROLLBACK_AND_EDGE_OFFLOAD"
 > *"The proposed end-to-end integration represents the optimal autonomous architecture for self-improving AI swarms. By combining **Tri-Vault Storage** (Obsidian knowledge graph, PySpark big data lake, and Git worktrees) with **Dual-World Simulation** (AgentWorld-35B for systems/terminals + WebWorld-32B for DOM/A11y), we achieve a closed-loop environment where code is never written blind. However, the critical vulnerability is **continuous training runaway**: if an unattended overnight training epoch experiences loss divergence or gradient explosion, it could corrupt active model weights without immediate human oversight."*
 
 ### 2. Local AI Orchestrator (Qwen 3.8 Max 27B / Coder 32B)
-> *"Local execution across the 7 physical layers must remain $0 recurring cloud spend. The 10Gbps Thunderbolt 4 DMA link between the Mac Mini M4 Pro and the MacBook Pro (0.204ms RTT) provides 38.4 Gbps bandwidth—faster than standard PCIe gen3 data center links. We can shard heavy 35B and 70B models with zero GPU starvation. However, the Host Mac Mini cannot bear both 100% inference load and continuous LoRA training simultaneously without exceeding its 24GB RAM ceiling."*
+> *"Local execution across the 7 physical layers must remain $0 recurring cloud spend. The 40Gbps Thunderbolt 4 DMA link between the Mac Mini M4 Pro and the MacBook Pro (0.204ms RTT) provides 38.4 Gbps bandwidth—faster than standard PCIe gen3 data center links. We can shard heavy 35B and 70B models with zero GPU starvation. However, the Host Mac Mini cannot bear both 100% inference load and continuous LoRA training simultaneously without exceeding its 24GB RAM ceiling."*
 
 ### 3. Devil's Advocate (Abliterated Qwen 2.5 7B — Port 8083)
 > *"Let us dismantle the optimistic assumptions:*
@@ -66,7 +66,7 @@ verdict: "UNANIMOUS_APPROVAL_WITH_AUTO_ROLLBACK_AND_EDGE_OFFLOAD"
 
 ## 🎯 Final Synthesized Architectural Directives
 
-1. **Storage Governance:** Tri-Vault sync is mandatory. All training datasets must be stored in `/Users/aaron/DFS_UNIFIED/lora_datasets/` and indexed by PySpark.
+1. **Storage Governance:** Tri-Vault sync is mandatory. All training datasets must be stored in `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/` and indexed by PySpark.
 2. **RAM Governance:** The Dynamic RAM Governor (`dynamic_ram_governor.py`, PID `74311`) must enforce the 85% ceiling 24/7.
 3. **Simulation Before Mutation:** All subagents must pass actions through `AgentWorld-35B` (Terminal/OS) and `WebWorld-32B` (WebUI/DOM) before applying code edits.
 4. **Edge Offloading:** Delegate tokenization and AST parsing to peripheral nodes (`L6_Pixel_10_Pro` and `L7_Samsung_S20`), preserving Mac Mini M4 compute exclusively for inference and training.

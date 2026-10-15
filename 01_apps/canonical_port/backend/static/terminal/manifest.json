@@ -1,0 +1,48 @@
+{
+  "name": "Omni Terminal",
+  "short_name": "Omniterminal",
+  "description": "Sovereign Multi-Transport Resilient Terminal & Mesh Console",
+  "start_url": "/terminal/",
+  "scope": "/terminal/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0d14",
+  "theme_color": "#00e5ff",
+  "categories": ["utilities", "developer", "productivity"],
+  "icons": [
+    {
+      "src": "/terminal/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/terminal/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/terminal/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Live Mesh Telemetry",
+      "short_name": "Telemetry",
+      "description": "View live 7-layer mesh telemetry",
+      "url": "/terminal/?tab=telemetry",
+      "icons": [{ "src": "/terminal/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Omniterminal Shell",
+      "short_name": "Shell",
+      "description": "Open sovereign terminal session",
+      "url": "/terminal/?tab=shell",
+      "icons": [{ "src": "/terminal/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

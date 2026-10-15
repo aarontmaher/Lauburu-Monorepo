@@ -15,8 +15,8 @@ import subprocess
 from pathlib import Path
 from typing import List, Dict, Tuple
 
-SOURCE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
-TARGET_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+SOURCE_ROOT = Path("/Volumes/Lauburu-Monorepo")
+TARGET_ROOT = Path("/Volumes/Lauburu-Monorepo")
 REMOTE_TARGET_ROOT = "/mnt/dfs_unified/Lauburu-Monorepo"
 LINUX_SSH = "linux@100.101.39.98"
 

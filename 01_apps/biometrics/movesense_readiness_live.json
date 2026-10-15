@@ -1,0 +1,36 @@
+{
+  "timestamp_utc": "2026-10-01T04:07:53.816908+00:00",
+  "status": "STREAMING_512HZ_TINYML",
+  "readiness_score": 67.8,
+  "sensor_telemetry": {
+    "device": "Movesense 261030002013",
+    "device_address": "74:92:BA:11:36:D6",
+    "connected": true,
+    "battery_pct": 82,
+    "heart_rate_bpm": 128.0,
+    "rmssd_ms": 45.0,
+    "dfa_alpha1": 1.0,
+    "snr_clean_db": 4.5,
+    "stream_mode": "LIVE_BLE_HARDWARE (Rule #0 Certified via Pixel 10 Pro XL)"
+  },
+  "tinyml_inference": {
+    "beat_type": "PREMATURE_ATRIAL_CONTRACTION",
+    "training_zone": "Zone 2: Aerobic Base (Fat Max)",
+    "ectopic_density_per_min": 3.0,
+    "cardiac_drift_pct": 0.0,
+    "parasympathetic_recovery_tau": null,
+    "sqi_pct": 100.0
+  },
+  "blood_pressure_ptt": {
+    "systolic_bp_mmhg": 139,
+    "diastolic_bp_mmhg": 87,
+    "mean_arterial_pressure_mmhg": 104.3,
+    "status": "LIVE_CALCULATED"
+  },
+  "kinematics": {
+    "total_dynamic_g": 0.999,
+    "instant_jerk_g": 0.22,
+    "action_spikes_count": 0
+  },
+  "rule_0_zero_mock": true
+}

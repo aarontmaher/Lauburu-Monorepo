@@ -294,10 +294,10 @@ class ServiceKeepAliveManager:
         nodes = [
             MeshNodeDefinition("macbook_host", "macOS Host (macbook-1)", "127.0.0.1", [8888, 5050, 8087, 11434, 1234, 50052], "macOS"),
             MeshNodeDefinition("linux_server", "Linux Samba NAS Server (linux-1)", "100.101.39.98", [445, 22, 50052], "Linux"),
-            MeshNodeDefinition("linux_tplink_eth", "Linux TP-Link Extender Node", "192.168.8.224", [22, 50052], "Linux"),
-            MeshNodeDefinition("pixel_phone", "Google Pixel 10 Pro XL", "100.73.38.87", [8022, 50052], "Android"),
-            MeshNodeDefinition("samsung_s20", "Samsung S20", "100.99.123.58", [22], "Android"),
-            MeshNodeDefinition("samsung_tablet", "Samsung Tablet", "100.118.79.63", [22], "Windows/Android"),
+            MeshNodeDefinition("linux_hub_l8", "Lauburu Linux Hub (L8 i7-8700B)", "100.121.247.8", [22, 50052], "Linux"),
+            MeshNodeDefinition("pixel_phone", "Google Pixel 10 Pro XL", "100.114.215.68", [8022, 50052], "Android"),
+            MeshNodeDefinition("samsung_s20", "Samsung S20", "192.168.8.101", [8022, 5555], "Android"),
+            MeshNodeDefinition("samsung_tablet", "Surface Go 2 Linux Tablet (L4)", "100.78.250.119", [22], "Linux"),
         ]
         for n in nodes:
             self.mesh_nodes[n.key] = n

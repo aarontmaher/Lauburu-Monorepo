@@ -1,0 +1,5 @@
+- `2026-09-20 08:50:47` | **Device:** `192.168.8.114:5555` | **Args:** `-s 192.168.8.114:5555 --list-displays`
+- `2026-09-20 09:16:06` | **Device:** `100.78.206.96:5555` | **Args:** `-s 100.78.206.96:5555 --keyboard=uhid --mouse=uhid --no-video --no-audio`
+- `2026-09-20 09:16:11` | **Device:** `100.78.206.96:5555` | **Args:** `-s 100.78.206.96:5555 --pause-on-exit=if-error --window-title=ScrcpyGui (OTG Mode) --keyboard=uhid --mouse=uhid --no-video --no-audio`
+- `2026-09-20 09:16:42` | **Device:** `100.78.206.96:5555` | **Args:** `-s 100.78.206.96:5555 --keyboard=uhid --mouse=uhid --no-video --no-audio`
+- `2026-09-20 09:16:48` | **Device:** `192.168.8.114:5555` | **Args:** `-s 192.168.8.114:5555 --keyboard=uhid --mouse=uhid --no-video --no-audio`

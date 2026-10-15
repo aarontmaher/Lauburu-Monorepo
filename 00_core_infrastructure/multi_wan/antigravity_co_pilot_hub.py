@@ -23,7 +23,9 @@ from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Optional, Any
 
 # Import mesh nodes and empirical checker
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.insert(0, os.path.join(REPO_ROOT, "05_agents_and_swarms"))
 
 from multi_wan.agi_mesh_nodes import SelfHealingMeshRouter, AGINodeConfig
 from truth_auditing_swarm.swarm.empirical_checker import EmpiricalChecker, Claim, ClaimType

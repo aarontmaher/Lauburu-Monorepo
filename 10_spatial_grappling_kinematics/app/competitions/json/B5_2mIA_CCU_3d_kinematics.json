@@ -1,0 +1,26 @@
+{
+  "video_id": "B5_2mIA_CCU",
+  "url": "https://youtu.be/B5_2mIA_CCU",
+  "division": "Freestyle Wrestling",
+  "title": "Nationals - Aaron Maher (AUS) vs Ryota Yoshiba (JPN)",
+  "duration_sec": 521.1,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 21,
+  "dual_athlete_frames": 4,
+  "standing_phase_pct": 47.6,
+  "ground_scramble_phase_pct": 52.4,
+  "level_change_shots_detected": 1,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 38.3,
+    "left_elbow": 124.0,
+    "right_elbow": 140.2,
+    "left_hip": 145.1,
+    "right_hip": 140.7,
+    "left_knee": 154.8,
+    "right_knee": 153.1
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/B5_2mIA_CCU_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match involves a combination of standing and ground/scrumble elements, with a significant level change shot and a mean spine lean. The elbow flexion and knee flexion are also notable. This match highlights Maher's ability to control the level change shot and maintain a balanced posture.",
+  "processing_sec": 2.67
+}

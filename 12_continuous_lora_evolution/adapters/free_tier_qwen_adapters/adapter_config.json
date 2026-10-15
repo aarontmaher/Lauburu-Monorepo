@@ -1,0 +1,41 @@
+{
+    "adapter_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/12_continuous_lora_evolution/adapters/free_tier_qwen_adapters",
+    "batch_size": 1,
+    "clear_cache_threshold": 0,
+    "config": null,
+    "data": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/training_data/free_tier_harvest",
+    "fine_tune_type": "lora",
+    "grad_accumulation_steps": 1,
+    "grad_checkpoint": true,
+    "iters": 15,
+    "learning_rate": 0.0001,
+    "lora_parameters": {
+        "rank": 8,
+        "dropout": 0.0,
+        "scale": 20.0
+    },
+    "lr_schedule": null,
+    "mask_prompt": false,
+    "max_seq_length": 512,
+    "model": "/Users/aaron/DFS_UNIFIED/lora_datasets/router_governor_fused",
+    "num_layers": 8,
+    "optimizer": "adam",
+    "optimizer_config": {
+        "adam": {},
+        "adamw": {},
+        "muon": {},
+        "sgd": {},
+        "adafactor": {}
+    },
+    "project_name": null,
+    "report_to": null,
+    "resume_adapter_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/12_continuous_lora_evolution/adapters/free_tier_qwen_adapters/adapters.safetensors",
+    "save_every": 7,
+    "seed": 0,
+    "steps_per_eval": 7,
+    "steps_per_report": 1,
+    "test": false,
+    "test_batches": 500,
+    "train": true,
+    "val_batches": 2
+}

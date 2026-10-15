@@ -9,7 +9,7 @@ cd "$PROJECT_DIR"
 export PYTHONPATH="$PROJECT_DIR/01_apps/canonical_port/tui:$PROJECT_DIR/01_apps/canonical_port:$PROJECT_DIR/05_agents_and_swarms/red_blue_arena:$PROJECT_DIR/00_core_infrastructure/self_healing_hub/src:${PYTHONPATH:-}"
 
 echo "======================================================================"
-echo "🚀 LAUNCHING LAUBURU LIVE --DEV ARENA & DEVICE SETTINGS COCKPIT"
+echo "🚀 LAUNCHING LAUBURU LIVE --DEV ARENA & DEVICE SETTINGS CONSOLE"
 echo "======================================================================"
 
 # Ensure real Movesense BLE daemon is running
@@ -27,7 +27,7 @@ VENV_TEXTUAL="$PROJECT_DIR/01_apps/canonical_port/.venv/bin/textual"
 PYTHON_BIN="$([ -f "$VENV_PYTHON" ] && echo "$VENV_PYTHON" || echo "python3")"
 TEXTUAL_BIN="$([ -f "$VENV_TEXTUAL" ] && echo "$VENV_TEXTUAL" || echo "textual")"
 
-# Launch the live interactive Textual --dev Cockpit
+# Launch the live interactive Textual --dev Console
 if [ "$1" = "--dev" ] || [ "$1" = "dev" ]; then
     echo "⚡ Starting in Textual v8 --dev live reload mode..."
     shift || true

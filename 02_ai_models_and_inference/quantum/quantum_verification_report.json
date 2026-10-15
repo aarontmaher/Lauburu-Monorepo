@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-09-14T21:22:14Z",
+  "all_pass": true,
+  "results": [
+    {
+      "framework": "Amazon Braket LocalSimulator",
+      "circuit": "H(0) -> CNOT(0,1)",
+      "shots": 1000,
+      "counts": {
+        "11": 518,
+        "00": 482
+      },
+      "bell_state_fidelity": 1.0,
+      "execution_time_ms": 11160.29,
+      "status": "PASS"
+    },
+    {
+      "framework": "Qiskit Aer Simulator",
+      "circuit": "H(0) -> CX(0,1) -> Measure",
+      "shots": 1000,
+      "counts": {
+        "11": 503,
+        "00": 497
+      },
+      "bell_state_fidelity": 1.0,
+      "execution_time_ms": 3810.63,
+      "status": "PASS"
+    },
+    {
+      "framework": "PennyLane (lightning.qubit)",
+      "circuit": "Hadamard(0) -> CNOT(0,1)",
+      "shots": 1000,
+      "counts": {
+        "00": 487,
+        "11": 513
+      },
+      "bell_state_fidelity": 1.0,
+      "execution_time_ms": 22641.47,
+      "status": "PASS"
+    },
+    {
+      "framework": "Google Cirq Simulator",
+      "circuit": "H(q0) -> CNOT(q0, q1) -> Measure",
+      "shots": 1000,
+      "counts": {
+        "00": 530,
+        "01": 0,
+        "10": 0,
+        "11": 470
+      },
+      "bell_state_fidelity": 1.0,
+      "execution_time_ms": 3.7,
+      "status": "PASS"
+    },
+    {
+      "framework": "D-Wave Ocean dimod (Simulated Annealing)",
+      "problem": "Ising Hamiltonian H = -s0 * s1",
+      "reads": 1000,
+      "ground_state_energy": -1.0,
+      "optimal_solution_ratio": 0.984,
+      "execution_time_ms": 6000.77,
+      "status": "PASS"
+    }
+  ]
+}

@@ -210,7 +210,7 @@ class TestBurstTelemetryIngestionStress:
             pipeline.subscribe(make_sync_sub())
 
         for i in range(100):
-            node_id = "Mac_Node" if i % 2 == 0 else "Linux_Head_Node"
+            node_id = "Mac_Node" if i % 2 == 0 else "Linux_Mini"
             payload = dict(sample_mesh_node_payloads[node_id])
             payload["timestamp"] = time.time()
             await pipeline.ingest_payload(node_id, payload)
@@ -235,7 +235,7 @@ class TestBurstTelemetryIngestionStress:
         pipeline = NetworkAnalysisPipeline(vault_dir=mock_obsidian_vault_dir)
 
         for i in range(200):
-            node_id = "MacBook_Pro" if i % 2 == 0 else "Linux_Head_Node"
+            node_id = "MacBook_Pro" if i % 2 == 0 else "Linux_Mini"
             payload = dict(sample_mesh_node_payloads[node_id])
             payload["timestamp"] = time.time()
             payload["vram_used_gb"] = round(5.0 + (i % 5), 2)
@@ -243,7 +243,7 @@ class TestBurstTelemetryIngestionStress:
 
         assert pipeline.total_ingested == 200
         assert os.path.exists(os.path.join(mock_obsidian_vault_dir, "MacBook_Pro.md"))
-        assert os.path.exists(os.path.join(mock_obsidian_vault_dir, "Linux_Head_Node.md"))
+        assert os.path.exists(os.path.join(mock_obsidian_vault_dir, "Linux_Mini.md"))
 
     @pytest.mark.asyncio
     async def test_textual_pilot_live_ui_responsiveness_during_500_burst(

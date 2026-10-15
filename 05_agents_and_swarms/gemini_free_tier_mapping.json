@@ -1,0 +1,492 @@
+{
+  "version": "1.0.0",
+  "schema": "CANONICAL_GEMINI_FREE_TIER_MAPPING",
+  "last_updated": "2026-10-10T23:05:00Z",
+  "governance": {
+    "zero_mock_rule": "Rule 1",
+    "cloud_quota_rule": "Rule 6",
+    "local_hierarchy_rule": "Rule 8 & 10",
+    "dynamic_elo_rule": "Rule 15",
+    "cost_ceiling_usd": 0.00
+  },
+  "domain_routing": {
+    "deep-research": {
+      "assigned_model": "gemini-2.5-pro",
+      "assigned_model_elo": 1457.0,
+      "fallback_model": "gemini-1.5-pro",
+      "alternate_free_api": "groq:llama-3.3-70b-versatile",
+      "local_mesh_fallback": "qwen_38_max",
+      "domain_attribute_weights": {
+        "elo": 0.20,
+        "context_window": 0.35,
+        "reasoning": 0.25,
+        "multimodal_vision": 0.00,
+        "coding": 0.10,
+        "latency_speed": 0.10
+      },
+      "computed_utility_score": 0.915,
+      "mathematical_rationale": "Deep research queries require synthesizing 100+ document pages without truncation. Context window weight (0.35) and reasoning weight (0.25) dominate. Gemini 2.5 Pro delivers 1,048,576 tokens context, 1457 LMSYS ELO, and 79.0% Arena-Hard reasoning. 2 RPM rate limit is accommodated because research synthesis occurs at low batch frequencies. Gemini 1.5 Pro acts as archival fallback for corpus sizes between 1M and 2M tokens.",
+      "task_archetype": "Comprehensive multi-source literature review, architecture synthesis, deep document summarization",
+      "rate_limit_policy": {
+        "max_rpm": 2,
+        "max_rpd": 50,
+        "backoff_factor_seconds": 30.0
+      }
+    },
+    "oss-scout": {
+      "assigned_model": "gemini-2.5-flash",
+      "assigned_model_elo": 1420.0,
+      "fallback_model": "gemini-2.5-flash-lite",
+      "alternate_free_api": "groq:llama-3.3-70b-versatile",
+      "local_mesh_fallback": "qwen_38_max",
+      "domain_attribute_weights": {
+        "elo": 0.15,
+        "context_window": 0.20,
+        "reasoning": 0.10,
+        "multimodal_vision": 0.05,
+        "coding": 0.30,
+        "latency_speed": 0.20
+      },
+      "computed_utility_score": 0.880,
+      "mathematical_rationale": "Open-source software scouting requires recursive repository traversal, AST parsing, and license/dependency auditing across hundreds of files. Coding strength (0.30) and latency/throughput (0.20) are prioritized. Gemini 2.5 Flash combines 15 RPM / 1,500 RPD headroom with 1M context and 68.6% Arena-Hard coding accuracy. Groq Llama 3.3 70B (300+ tok/s) serves as sub-second triage alternate.",
+      "task_archetype": "Repository AST scanning, polyglot FFI header extraction, dependency vulnerability auditing",
+      "rate_limit_policy": {
+        "max_rpm": 15,
+        "max_rpd": 1500,
+        "backoff_factor_seconds": 4.0
+      }
+    },
+    "reverse-engineering": {
+      "assigned_model": "gemini-2.0-flash-thinking-exp-01-21",
+      "assigned_model_elo": 1397.0,
+      "fallback_model": "gemini-2.5-pro",
+      "alternate_free_api": "cloudflare:@cf/meta/llama-3.3-70b-instruct",
+      "local_mesh_fallback": "qwen_38_max_abliterated",
+      "domain_attribute_weights": {
+        "elo": 0.20,
+        "context_window": 0.10,
+        "reasoning": 0.40,
+        "multimodal_vision": 0.00,
+        "coding": 0.25,
+        "latency_speed": 0.05
+      },
+      "computed_utility_score": 0.940,
+      "mathematical_rationale": "Closed-source protocol reverse engineering and disassembly require multi-step deductive proofs to decompile hex streams, reconstruct struct layouts, and extract state machines. Reasoning weight (0.40) and coding weight (0.25) are primary. Gemini 2.0 Flash Thinking Exp features visible chain-of-thought tokens (up to 64k) and competition logic capabilities (1397 ELO), preventing hallucinations in byte-level specifications.",
+      "task_archetype": "Binary disassembly analysis, protobuf protocol reverse engineering, Ghidra decompilation cleanup",
+      "rate_limit_policy": {
+        "max_rpm": 10,
+        "max_rpd": 1500,
+        "backoff_factor_seconds": 6.0
+      }
+    },
+    "screen-lens": {
+      "assigned_model": "gemini-2.5-flash",
+      "assigned_model_elo": 1420.0,
+      "fallback_model": "gemini-2.0-flash",
+      "alternate_free_api": "local:screen_lens_vla",
+      "local_mesh_fallback": "qwen_38_max",
+      "domain_attribute_weights": {
+        "elo": 0.15,
+        "context_window": 0.10,
+        "reasoning": 0.05,
+        "multimodal_vision": 0.40,
+        "coding": 0.05,
+        "latency_speed": 0.25
+      },
+      "computed_utility_score": 0.920,
+      "mathematical_rationale": "Screen Lens Sovereign acts as a visual Teacher Model across macOS and Android screens. Multimodal vision (0.40) and low latency (0.25) are paramount. Gemini 2.5 Flash processes high-resolution desktop frames and native video streams with sub-600ms TTFT, while natively predicting normalized 2D bounding boxes ([ymin, xmin, ymax, xmax]) for accurate UI actuation and OCR verification.",
+      "task_archetype": "Visual UI grounding, screen OCR verification, live desktop workflow assistance",
+      "rate_limit_policy": {
+        "max_rpm": 15,
+        "max_rpd": 1500,
+        "backoff_factor_seconds": 4.0
+      }
+    }
+  },
+  "models_catalog": {
+    "gemini-2.5-pro": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1457.0,
+      "arena_hard_score_pct": 79.0,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 65536,
+      "multimodal_inputs": ["text", "image", "video", "audio", "pdf"],
+      "thinking_budget_supported": true,
+      "free_tier_limits": {
+        "rpm": 2,
+        "rpd": 50,
+        "tpm": 32000
+      },
+      "typical_ttft_ms": 1800,
+      "typical_throughput_tok_s": 55.0,
+      "best_domain": "deep-research",
+      "attribute_scores": {
+        "elo": 0.857,
+        "context_window": 0.952,
+        "reasoning": 0.950,
+        "multimodal_vision": 0.900,
+        "coding": 0.920,
+        "latency_speed": 0.450
+      }
+    },
+    "gemini-2.5-flash": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1420.0,
+      "arena_hard_score_pct": 68.6,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 65536,
+      "multimodal_inputs": ["text", "image", "video", "audio", "pdf"],
+      "thinking_budget_supported": true,
+      "free_tier_limits": {
+        "rpm": 15,
+        "rpd": 1500,
+        "tpm": 1000000
+      },
+      "typical_ttft_ms": 550,
+      "typical_throughput_tok_s": 125.0,
+      "best_domain": "screen-lens",
+      "attribute_scores": {
+        "elo": 0.733,
+        "context_window": 0.952,
+        "reasoning": 0.820,
+        "multimodal_vision": 0.940,
+        "coding": 0.880,
+        "latency_speed": 0.920
+      }
+    },
+    "gemini-2.0-flash-thinking-exp-01-21": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1397.0,
+      "arena_hard_score_pct": 72.4,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 65536,
+      "multimodal_inputs": ["text", "image"],
+      "thinking_budget_supported": true,
+      "free_tier_limits": {
+        "rpm": 10,
+        "rpd": 1500,
+        "tpm": 4000000
+      },
+      "typical_ttft_ms": 1200,
+      "typical_throughput_tok_s": 85.0,
+      "best_domain": "reverse-engineering",
+      "attribute_scores": {
+        "elo": 0.657,
+        "context_window": 0.952,
+        "reasoning": 0.960,
+        "multimodal_vision": 0.700,
+        "coding": 0.910,
+        "latency_speed": 0.700
+      }
+    },
+    "gemini-2.5-flash-lite": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1380.0,
+      "arena_hard_score_pct": 61.2,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 65536,
+      "multimodal_inputs": ["text", "image", "video", "audio", "pdf"],
+      "thinking_budget_supported": false,
+      "free_tier_limits": {
+        "rpm": 30,
+        "rpd": 1500,
+        "tpm": 1000000
+      },
+      "typical_ttft_ms": 220,
+      "typical_throughput_tok_s": 160.0,
+      "best_domain": "oss-scout",
+      "attribute_scores": {
+        "elo": 0.600,
+        "context_window": 0.952,
+        "reasoning": 0.720,
+        "multimodal_vision": 0.800,
+        "coding": 0.800,
+        "latency_speed": 0.980
+      }
+    },
+    "gemini-1.5-pro": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1300.0,
+      "arena_hard_score_pct": 58.0,
+      "context_window_tokens": 2097152,
+      "max_output_tokens": 8192,
+      "multimodal_inputs": ["text", "image", "video", "audio", "pdf"],
+      "thinking_budget_supported": false,
+      "free_tier_limits": {
+        "rpm": 2,
+        "rpd": 50,
+        "tpm": 32000
+      },
+      "typical_ttft_ms": 2500,
+      "typical_throughput_tok_s": 42.0,
+      "best_domain": "deep-research",
+      "attribute_scores": {
+        "elo": 0.333,
+        "context_window": 1.000,
+        "reasoning": 0.760,
+        "multimodal_vision": 0.850,
+        "coding": 0.750,
+        "latency_speed": 0.300
+      }
+    },
+    "gemini-1.5-flash": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1270.0,
+      "arena_hard_score_pct": 52.4,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 8192,
+      "multimodal_inputs": ["text", "image", "video", "audio"],
+      "thinking_budget_supported": false,
+      "free_tier_limits": {
+        "rpm": 15,
+        "rpd": 1500,
+        "tpm": 1000000
+      },
+      "typical_ttft_ms": 650,
+      "typical_throughput_tok_s": 95.0,
+      "best_domain": "screen-lens",
+      "attribute_scores": {
+        "elo": 0.233,
+        "context_window": 0.952,
+        "reasoning": 0.650,
+        "multimodal_vision": 0.880,
+        "coding": 0.680,
+        "latency_speed": 0.850
+      }
+    },
+    "gemini-1.5-flash-8b": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1220.0,
+      "arena_hard_score_pct": 44.1,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 8192,
+      "multimodal_inputs": ["text", "image", "audio", "video"],
+      "thinking_budget_supported": false,
+      "free_tier_limits": {
+        "rpm": 15,
+        "rpd": 1500,
+        "tpm": 1000000
+      },
+      "typical_ttft_ms": 280,
+      "typical_throughput_tok_s": 140.0,
+      "best_domain": "oss-scout",
+      "attribute_scores": {
+        "elo": 0.067,
+        "context_window": 0.952,
+        "reasoning": 0.550,
+        "multimodal_vision": 0.750,
+        "coding": 0.600,
+        "latency_speed": 0.950
+      }
+    }
+  },
+  "models": {
+    "gemini-2.5-pro": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1457.0,
+      "arena_hard_score_pct": 79.0,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 65536,
+      "multimodal_inputs": ["text", "image", "video", "audio", "pdf"],
+      "thinking_budget_supported": true,
+      "free_tier_limits": {
+        "rpm": 2,
+        "rpd": 50,
+        "tpm": 32000
+      },
+      "typical_ttft_ms": 1800,
+      "typical_throughput_tok_s": 55.0,
+      "best_domain": "deep-research",
+      "attribute_scores": {
+        "elo": 0.857,
+        "context_window": 0.952,
+        "reasoning": 0.950,
+        "multimodal_vision": 0.900,
+        "coding": 0.920,
+        "latency_speed": 0.450
+      }
+    },
+    "gemini-2.5-flash": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1420.0,
+      "arena_hard_score_pct": 68.6,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 65536,
+      "multimodal_inputs": ["text", "image", "video", "audio", "pdf"],
+      "thinking_budget_supported": true,
+      "free_tier_limits": {
+        "rpm": 15,
+        "rpd": 1500,
+        "tpm": 1000000
+      },
+      "typical_ttft_ms": 550,
+      "typical_throughput_tok_s": 125.0,
+      "best_domain": "screen-lens",
+      "attribute_scores": {
+        "elo": 0.733,
+        "context_window": 0.952,
+        "reasoning": 0.820,
+        "multimodal_vision": 0.940,
+        "coding": 0.880,
+        "latency_speed": 0.920
+      }
+    },
+    "gemini-2.0-flash-thinking-exp-01-21": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1397.0,
+      "arena_hard_score_pct": 72.4,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 65536,
+      "multimodal_inputs": ["text", "image"],
+      "thinking_budget_supported": true,
+      "free_tier_limits": {
+        "rpm": 10,
+        "rpd": 1500,
+        "tpm": 4000000
+      },
+      "typical_ttft_ms": 1200,
+      "typical_throughput_tok_s": 85.0,
+      "best_domain": "reverse-engineering",
+      "attribute_scores": {
+        "elo": 0.657,
+        "context_window": 0.952,
+        "reasoning": 0.960,
+        "multimodal_vision": 0.700,
+        "coding": 0.910,
+        "latency_speed": 0.700
+      }
+    },
+    "gemini-2.5-flash-lite": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1380.0,
+      "arena_hard_score_pct": 61.2,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 65536,
+      "multimodal_inputs": ["text", "image", "video", "audio", "pdf"],
+      "thinking_budget_supported": false,
+      "free_tier_limits": {
+        "rpm": 30,
+        "rpd": 1500,
+        "tpm": 1000000
+      },
+      "typical_ttft_ms": 220,
+      "typical_throughput_tok_s": 160.0,
+      "best_domain": "oss-scout",
+      "attribute_scores": {
+        "elo": 0.600,
+        "context_window": 0.952,
+        "reasoning": 0.720,
+        "multimodal_vision": 0.800,
+        "coding": 0.800,
+        "latency_speed": 0.980
+      }
+    },
+    "gemini-1.5-pro": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1300.0,
+      "arena_hard_score_pct": 58.0,
+      "context_window_tokens": 2097152,
+      "max_output_tokens": 8192,
+      "multimodal_inputs": ["text", "image", "video", "audio", "pdf"],
+      "thinking_budget_supported": false,
+      "free_tier_limits": {
+        "rpm": 2,
+        "rpd": 50,
+        "tpm": 32000
+      },
+      "typical_ttft_ms": 2500,
+      "typical_throughput_tok_s": 42.0,
+      "best_domain": "deep-research",
+      "attribute_scores": {
+        "elo": 0.333,
+        "context_window": 1.000,
+        "reasoning": 0.760,
+        "multimodal_vision": 0.850,
+        "coding": 0.750,
+        "latency_speed": 0.300
+      }
+    },
+    "gemini-1.5-flash": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1270.0,
+      "arena_hard_score_pct": 52.4,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 8192,
+      "multimodal_inputs": ["text", "image", "video", "audio"],
+      "thinking_budget_supported": false,
+      "free_tier_limits": {
+        "rpm": 15,
+        "rpd": 1500,
+        "tpm": 1000000
+      },
+      "typical_ttft_ms": 650,
+      "typical_throughput_tok_s": 95.0,
+      "best_domain": "screen-lens",
+      "attribute_scores": {
+        "elo": 0.233,
+        "context_window": 0.952,
+        "reasoning": 0.650,
+        "multimodal_vision": 0.880,
+        "coding": 0.680,
+        "latency_speed": 0.850
+      }
+    },
+    "gemini-1.5-flash-8b": {
+      "provider": "google_ai_studio",
+      "public_elo_lmsys": 1220.0,
+      "arena_hard_score_pct": 44.1,
+      "context_window_tokens": 1048576,
+      "max_output_tokens": 8192,
+      "multimodal_inputs": ["text", "image", "audio", "video"],
+      "thinking_budget_supported": false,
+      "free_tier_limits": {
+        "rpm": 15,
+        "rpd": 1500,
+        "tpm": 1000000
+      },
+      "typical_ttft_ms": 280,
+      "typical_throughput_tok_s": 140.0,
+      "best_domain": "oss-scout",
+      "attribute_scores": {
+        "elo": 0.067,
+        "context_window": 0.952,
+        "reasoning": 0.550,
+        "multimodal_vision": 0.750,
+        "coding": 0.600,
+        "latency_speed": 0.950
+      }
+    }
+  },
+  "alternate_free_apis": {
+    "groq:llama-3.3-70b-versatile": {
+      "provider": "groq",
+      "public_elo_lmsys": 1315.0,
+      "arena_hard_score_pct": 65.0,
+      "context_window_tokens": 128000,
+      "max_output_tokens": 32768,
+      "free_tier_limits": {
+        "rpm": 30,
+        "rpd": 14400,
+        "tpm": 6000
+      },
+      "typical_ttft_ms": 90,
+      "typical_throughput_tok_s": 310.0,
+      "key_advantage": "Ultra-low-latency LPU hardware inference for real-time triage"
+    },
+    "cloudflare:@cf/meta/llama-3.3-70b-instruct": {
+      "provider": "cloudflare_workers_ai",
+      "public_elo_lmsys": 1310.0,
+      "arena_hard_score_pct": 63.8,
+      "context_window_tokens": 128000,
+      "max_output_tokens": 8192,
+      "free_tier_limits": {
+        "rpm": 60,
+        "rpd": 800,
+        "tpm": 100000
+      },
+      "typical_ttft_ms": 350,
+      "typical_throughput_tok_s": 65.0,
+      "key_advantage": "Serverless edge inference distributed across 300+ PoPs"
+    }
+  }
+}

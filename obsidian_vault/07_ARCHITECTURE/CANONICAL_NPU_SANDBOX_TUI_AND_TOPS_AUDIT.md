@@ -10,7 +10,7 @@ tags: [npu, tops, sandbox_audit, tui_integration, npu_coding, systolic_saturatio
 
 ### 1.1 Strict Sandbox Isolation Invariant (Rule 4)
 Under **Rule 4 (Untouched Baseline & Isolated Sandbox Self-Evolution Invariant)**, experimental model mutations, genetic weight adjustments, and self-evaluations MUST execute strictly within:
-`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/`
+`/Volumes/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/`
 
 ### 1.2 Comprehensive Inventory of All Files Created:
 1. **Sandboxed Experimental Modules (`sandbox_evolution/`):**

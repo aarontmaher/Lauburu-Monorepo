@@ -71,7 +71,7 @@ A rigorous recursive codebase audit across all probe files verified that **no sy
    - Extracted directly via Darwin kernel syscalls (`sysctl -n hw.memsize`, `vm_stat`).
    - Live metrics: Total `24.00 GB`, Used `19.85 GB` ($82.7\%$), Available `3.57 GB`.
    - ANE verified via IOKit registry (`ioreg -p IOService | grep H11ANE`).
-2. **MacBook Pro M4 (L2):**
+2. **Intel MacBook Pro (L2):**
    - Extracted live over Thunderbolt 4 bridge / SSH (`sysctl -n hw.memsize; vm_stat`).
    - Live metrics: Total `16.00 GB`, Used `9.25 GB` ($57.8\%$), $38.0\text{ TOPS}$.
 3. **Standby Devices (L3, L4, L5, L6, L7):**
@@ -91,7 +91,7 @@ The pytest probe test suite executed flawlessly with **7/7 tests passed**:
 ```bash
 ============================= test session starts ==============================
 platform darwin -- Python 3.13.15, pytest-9.1.1, pluggy-1.6.0
-rootdir: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+rootdir: /Volumes/Lauburu-Monorepo
 plugins: asyncio-1.4.0, anyio-4.14.2
 collected 7 items
 

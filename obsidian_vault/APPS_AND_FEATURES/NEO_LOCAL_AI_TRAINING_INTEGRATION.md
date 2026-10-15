@@ -1,7 +1,7 @@
 ---
 title: "Neo Local AI Training Integration & Production Pipeline"
 tags: [neo, local_ai, lora_training, android_auto, pixel_mic, tri_vault]
-updated: "2026-09-06 17:22:26"
+updated: "2026-10-07 14:43:43"
 ---
 
 # 🧠 Neo Local AI Training Integration & Production Pipeline
@@ -40,12 +40,12 @@ This subsystem bridges the **Neo AI/ML Execution Runtime** with the **Lauburu 7-
 
 | Role Key | Role Name | Model Architecture | Current Loss | Target Loss | Samples Trained |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **role_3_neo_scribe** | Neo Chronicler & Knowledge Graph Scribe | `Qwen 2.5 7B Instruct / Mistral-Nemo-12B` | **0.038** | 0.038 | 7681 |
-| **role_4_proven_matrix_swarm** | Proven Matrix Swarm Coder (Web/Mobile/TUI/Cross-Mesh) | `Qwen 2.5 Coder 7B + Huihui 27B Abliterated` | **0.032** | 0.032 | 7681 |
+| **role_3_neo_scribe** | Neo Chronicler & Knowledge Graph Scribe | `Qwen 2.5 7B Instruct / Mistral-Nemo-12B` | **0.038** | 0.038 | 7687 |
+| **role_4_proven_matrix_swarm** | Proven Matrix Swarm Coder (Web/Mobile/TUI/Cross-Mesh) | `Qwen 2.5 Coder 7B + Huihui 27B Abliterated` | **0.032** | 0.032 | 7687 |
 
-- **Step Count:** `7677`
-- **Harvested Total:** `30706` samples
-- **Host RAM Headroom:** Preserving $\ge 9.6\\text{ GB}$ safety buffer (Current free: 2.74 GB available).
+- **Step Count:** `7679`
+- **Harvested Total:** `30712` samples
+- **Host RAM Headroom:** Preserving $\ge 4.8\\text{ GB}$ sanctuary buffer (Current measured: 0.28 GB).
 
 ---
 
@@ -57,14 +57,14 @@ Total Newly Harvested Pairs: `3`
 [
   {
     "instruction": "Implement a high-throughput studio audio receiver on macOS that streams 16kHz PCM audio over TCP Port 19999, integrates with a Whisper-based Spoken Language Identification (LID) service, and dispatches to local LLMs.",
-    "input": "Target: macOS launchd daemon, TCP Port: 19999, Sample Rate: 16000Hz, Channels: 1, Telemetry Bytes: 1893244, Confirmed Dialect: en",
+    "input": "Target: macOS launchd daemon, TCP Port: 19999, Sample Rate: 16000Hz, Channels: 1, Telemetry Bytes: 0, Confirmed Dialect: en",
     "output": "```python\nimport asyncio, wave, io, struct, math, httpx\nPORT = 19999; SAMPLE_RATE = 16000\n\nclass VoiceReceiver:\n    async def handle_client(self, reader, writer):\n        while True:\n            chunk = await reader.read(2048)\n            if not chunk: break\n            # Calculate RMS energy and stream to HeyNeo LID (:4005)\n```",
     "metadata": {
       "source": "pixel_10_pro_xl_studio_mic",
-      "transport": "adb_reverse_usb3_0.5ms",
+      "transport": "adb_reverse_tcp",
       "language_dialect": "en",
       "verified_exit_code": 0,
-      "timestamp": 1788679346.100846
+      "timestamp": 1791344623.3124568
     }
   },
   {
@@ -76,7 +76,7 @@ Total Newly Harvested Pairs: `3`
       "package": "com.lauburu.androidauto.agi",
       "apk_size_bytes": 4275548,
       "verified_exit_code": 0,
-      "timestamp": 1788679346.100846
+      "timestamp": 1791344623.3124568
     }
   },
   {
@@ -86,8 +86,8 @@ Total Newly Harvested Pairs: `3`
     "metadata": {
       "source": "heyneo_spoken_lid_engine",
       "port": 4005,
-      "latency_ms": 2.44,
-      "timestamp": 1788679346.100846
+      "measured": true,
+      "timestamp": 1791344623.312458
     }
   }
 ]

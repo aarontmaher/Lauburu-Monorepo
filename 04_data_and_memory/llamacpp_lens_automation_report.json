@@ -1,0 +1,77 @@
+{
+  "timestamp": "2026-10-15T01:23:25.375478+00:00",
+  "ui_assets": {
+    "ui_dir": "/Users/aaron/.local/share/llama-ui-sovereign",
+    "index_exists": true,
+    "bundle_exists": true,
+    "api_key_masked": "sk-lauburu-sove...[REDACTED_SOVEREIGN]"
+  },
+  "ram_sanctuary": {
+    "total_gb": 24.0,
+    "used_gb": 18.86,
+    "available_gb": 5.14,
+    "cached_files_gb": 4.55,
+    "used_pct": 78.58,
+    "pressure_level": 2,
+    "rule3_sanctuary_compliant": true,
+    "evicted_patterns": []
+  },
+  "benchmarks": [
+    {
+      "port": 8083,
+      "role": "llama-ui & Adversarial Proxy (-> :8085 Metal GPU)",
+      "status": "ONLINE",
+      "latency_ms": 201.13,
+      "tokens_per_sec": 83.15,
+      "reply": "OK"
+    },
+    {
+      "port": 8085,
+      "role": "Primary Metal GPU Server (3.2B/8B Q4_K_M)",
+      "status": "ONLINE",
+      "latency_ms": 19.89,
+      "tokens_per_sec": 146.71,
+      "reply": "OK"
+    },
+    {
+      "port": 8089,
+      "role": "Micro Metal GPU Server (Qwen2.5 0.5B Q4_K_M)",
+      "status": "ONLINE",
+      "latency_ms": 15.42,
+      "tokens_per_sec": 146.31,
+      "reply": "OK"
+    },
+    {
+      "port": 8081,
+      "role": "Syntax Worker Proxy (-> :8089 Metal GPU)",
+      "status": "ONLINE",
+      "latency_ms": 27.15,
+      "tokens_per_sec": 178.03,
+      "reply": "OK"
+    },
+    {
+      "port": 8082,
+      "role": "Decentralized Prima Proxy (-> :8089/:8085)",
+      "status": "ONLINE",
+      "latency_ms": 23.06,
+      "tokens_per_sec": 153.96,
+      "reply": "OK"
+    },
+    {
+      "port": 8011,
+      "role": "Legacy Local Llama Proxy (-> :8085 Metal GPU)",
+      "status": "ONLINE",
+      "latency_ms": 33.62,
+      "tokens_per_sec": 147.06,
+      "reply": "OK"
+    },
+    {
+      "port": 11434,
+      "role": "Page Assist / Ollama Native Bridge (-> :8085 Metal GPU)",
+      "status": "ONLINE",
+      "latency_ms": 41.55,
+      "tokens_per_sec": 53.56,
+      "reply": "OK"
+    }
+  ]
+}

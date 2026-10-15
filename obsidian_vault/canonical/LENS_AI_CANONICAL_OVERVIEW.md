@@ -67,7 +67,7 @@ Rather than forcing massive 1,000,000-token full-context trees into local host R
 │ Mesh Node              │ Context Allocation             │ Content Stored in Window                              │
 ├────────────────────────┼────────────────────────────────┼───────────────────────────────────────────────────────┤
 │ L1: Mac Mini M4 Pro    │ Chunk 0 (Root Intent & CoT)    │ 4K Tokens: Active objective, current action, memory   │
-│ L2: MacBook Pro (TB4)  │ Chunks 1..N (AST & Repo Index) │ 32K Tokens: Deep monorepo AST via 10Gbps TB4 DMA     │
+│ L2: MacBook Pro (TB4)  │ Chunks 1..N (AST & Repo Index) │ 32K Tokens: Deep monorepo AST via 40Gbps TB4 DMA     │
 │ L6: Pixel 10 Pro XL    │ Edge Cache (Sensory Viewport)  │ 8K Tokens: Recent 10 visual frames & OCR text streams │
 │ L7: Samsung Galaxy S20 │ Log Buffer (Execution History) │ 8K Tokens: Rolling accessibility event stream logs    │
 └────────────────────────┴────────────────────────────────┴───────────────────────────────────────────────────────┘
@@ -87,7 +87,7 @@ Rather than forcing massive 1,000,000-token full-context trees into local host R
 > **Processing Latency:** Cloud Async (`1–3s`) | **Memory Overhead:** Cloud Offloaded ($0 Cost).
 
 ### 1. DPO Triplet Harvesting Pipeline (`lens_rapid_quota_maximizer.py`)
-- **Total Verified Dataset:** **2,221+ authentic records (2.6 MB)** in `/Users/aaron/DFS_UNIFIED/lora_datasets/lens_ai/lens_multimodal_dpo.jsonl`.
+- **Total Verified Dataset:** **2,221+ authentic records (2.6 MB)** in `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/lens_ai/lens_multimodal_dpo.jsonl`.
 - **DPO Triplet Schema:**
   - `prompt`: Surface target, URL, target element tag, and intent.
   - `chosen`: High-precision viewport coordinates, Chrome CDP event dispatch string, WCAG contrast verification, 0.0ms synthetic lag.

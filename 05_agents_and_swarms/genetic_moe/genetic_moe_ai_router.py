@@ -28,11 +28,12 @@ WEIGHTS_PATH = WORKSPACE_ROOT / "05_agents_and_swarms/genetic_moe/genetic_moe_we
 LORA_OUTPUT_PATH = WORKSPACE_ROOT / "04_data_and_memory/lora_datasets/genetic_moe_router_evolution.jsonl"
 
 LOCAL_EXPERTS = {
-    "coder": {"port": 8083, "name": "Qwen 2.5 Coder 7B", "domains": ["python", "cpp", "rust", "ast", "refactor", "code"]},
+    "coder": {"port": 8083, "name": "Qwen 2.5 Coder 7B", "domains": ["python", "cpp", "c", "rust", "ast", "refactor", "code"]},
     "math": {"port": 8086, "name": "Qwen 2.5 Math 7B", "domains": ["math", "qaoa", "dsp", "ecg", "statistics", "regression"]},
     "hermes": {"port": 8082, "name": "Hermes 3 8B", "domains": ["strategy", "rag", "reasoning", "obsidian", "debate"]},
     "abliterated": {"port": 8085, "name": "Qwen 7B Abliterated", "domains": ["exploit", "red", "stress", "overflow", "chaos"]},
-    "qwen27b": {"port": 50052, "name": "Huihui Qwen 27B (TB4)", "domains": ["architecture", "monorepo", "synthesis", "spec"]}
+    "qwen27b": {"port": 50052, "name": "Huihui Qwen 27B (TB4)", "domains": ["architecture", "monorepo", "synthesis", "spec"]},
+    "kimi_titan": {"port": 8085, "name": "Kimi Tandem Titan (VL-Encoder + 72B)", "domains": ["vision", "multimodal", "screen", "ocr", "image", "ui", "tatami", "video", "spatial", "kinematics", "128k", "long_context", "context"]}
 }
 
 class GeneticMoEAIRouter:
@@ -44,7 +45,11 @@ class GeneticMoEAIRouter:
         if WEIGHTS_PATH.exists():
             try:
                 with open(WEIGHTS_PATH) as f:
-                    return json.load(f).get("expert_weights", {})
+                    loaded = json.load(f).get("expert_weights", {})
+                    for k in LOCAL_EXPERTS:
+                        if k not in loaded:
+                            loaded[k] = round(1.0 / len(LOCAL_EXPERTS), 3)
+                    return loaded
             except Exception:
                 pass
         return {k: round(1.0 / len(LOCAL_EXPERTS), 3) for k in LOCAL_EXPERTS}
@@ -115,7 +120,9 @@ if __name__ == "__main__":
         "Write a Python AST parser for monorepo imports",
         "Compute QAOA 4-qubit Hamiltonian routing optimization and FFT of ECG",
         "Plan a red team buffer overdrive attack on router BQL",
-        "Search Obsidian vault notes for consensus debate on TB4 latency"
+        "Search Obsidian vault notes for consensus debate on TB4 latency",
+        "Analyze this 4K screen frame for UI bounding boxes and spatial tatami kinematics",
+        "Synthesize 128k long context tokens across monorepo architecture"
     ]
     for q in test_prompts:
         decision = router.route_prompt(q)

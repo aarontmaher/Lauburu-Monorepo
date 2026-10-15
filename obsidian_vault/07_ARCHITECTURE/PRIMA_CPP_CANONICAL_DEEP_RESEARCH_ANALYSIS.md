@@ -100,7 +100,7 @@ PRIMA.CPP & Halda map into the Lauburu Mesh as the **Canonical Primary Distribut
 │                    LAUBURU MESH PRP RING TOPOLOGY (PORT :8082)                              │
 ├─────────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                             │
-│        ┌─────────────────────────┐           10Gbps TB4 DMA Bridge           ┌────────────┐ │
+│        ┌─────────────────────────┐           40Gbps TB4 DMA Bridge           ┌────────────┐ │
 │        │  Layer 1: Mac Mini M4   │ ────────────────────────────────────────▶ │ Layer 2:   │ │
 │        │  (24 GB RAM / Head Node)│ ◀──────────────────────────────────────── │ MacBook Pro│ │
 │        └────────────┬────────────┘                 (0.277ms RTT)             └─────┬──────┘ │
@@ -122,7 +122,7 @@ PRIMA.CPP & Halda map into the Lauburu Mesh as the **Canonical Primary Distribut
 ## 🛡️ 6. Adversarial Devil's Advocate Audit & Counter-Mitigations
 
 1. **Risk: Inter-Device Jitter on Wi-Fi**
-   - *Mitigation:* The Core PRP Ring uses the dedicated **10Gbps Thunderbolt 4 Bridge (0.277ms RTT)** between Mac Mini and MacBook Pro, with Tailscale direct WireGuard peer routing.
+   - *Mitigation:* The Core PRP Ring uses the dedicated **40Gbps Thunderbolt 4 Bridge (0.277ms RTT)** between Mac Mini and MacBook Pro, with Tailscale direct WireGuard peer routing.
 2. **Risk: Solver Latency Bottleneck**
    - *Mitigation:* Halda factors $L \le 100$ into integer divisors in $<12\text{ ms}$, running asynchronously in background threads without pausing generation.
 3. **Risk: UMA Memory Thrashing on Apple Silicon**

@@ -11,7 +11,7 @@ class GDriveHandler:
         # Standard macOS Google Drive client path
         self.native_macos_gdrive = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory"
         # Dynamic fallback path if /mnt or root is read-only
-        self.fallback_mount_point = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/gdrive_cache"
+        self.fallback_mount_point = "/Volumes/Lauburu-Monorepo/data/gdrive_cache"
         self.mount_point = self.primary_mount_point
 
     def _resolve_mount_point(self):

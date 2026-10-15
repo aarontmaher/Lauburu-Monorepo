@@ -1,0 +1,19 @@
+{
+  "base_model": "MiniLM-256-4Layer",
+  "lora_r": 8,
+  "lora_alpha": 16,
+  "domains": [
+    "screen-lens-sovereign",
+    "open-source-software-scout",
+    "deep-research",
+    "automation",
+    "closed-source-reverse-engineering"
+  ],
+  "total_samples": 309,
+  "steps_trained": 25,
+  "initial_loss": 8.4176,
+  "final_loss": 8.437,
+  "loss_delta": 0.0194,
+  "train_duration_sec": 0.9,
+  "timestamp": 1791991271.819819
+}

@@ -1,0 +1,42 @@
+# Containerized WireGuard & Headscale Mesh Configuration
+# Replaces centralized cloud Tailscale with zero-telemetry self-hosted Headscale / WireGuard in Colima.
+
+services:
+  headscale:
+    image: headscale/headscale:0.24.3
+    container_name: lauburu_headscale_control
+    restart: unless-stopped
+    volumes:
+      - ./config:/etc/headscale
+      - ./data:/var/lib/headscale
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:9090:9090"
+    command: headscale serve
+    environment:
+      - HEADSCALE_LOG_LEVEL=info
+
+  wireguard_mesh_node:
+    image: linuxserver/wireguard:latest
+    container_name: lauburu_wireguard_node
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Australia/Sydney
+      - SERVERURL=auto
+      - SERVERPORT=51820
+      - PEERS=mac_node,macbook_pro,linux_head,tablet,macbook_air,pixel_10,samsung_s20
+      - PEERDNS=auto
+      - INTERNAL_SUBNET=10.66.0.0/24
+    volumes:
+      - ./wireguard_config:/config
+      - /lib/modules:/lib/modules:ro
+    ports:
+      - "51820:51820/udp"
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv4.ip_forward=1

@@ -1,0 +1,292 @@
+{
+  "exhaustion_priority": [
+    {
+      "tier": 1,
+      "protocol": "ethernet_serial",
+      "description": "Raw LAN Socket / Telnet (Layer 2)",
+      "target_range": "MAC/Raw Sockets"
+    },
+    {
+      "tier": 2,
+      "protocol": "usb_serial",
+      "description": "Physical USB CDC/ACM (Unkillable)",
+      "target_range": "/dev/tty*"
+    },
+    {
+      "tier": 3,
+      "protocol": "bluetooth_serial",
+      "description": "RFCOMM / BLE GATT (Layer 0 PAN)",
+      "target_range": "B8:27:EB:*:*:*"
+    },
+    {
+      "tier": 4,
+      "protocol": "wireguard",
+      "description": "Native Sovereign WireGuard (Layer 3)",
+      "target_range": "10.1.0.x"
+    },
+    {
+      "tier": 5,
+      "protocol": "tailscale",
+      "description": "Tailscale Overlay (Layer 3)",
+      "target_range": "100.x.x.x"
+    },
+    {
+      "tier": 6,
+      "protocol": "nebula",
+      "description": "Nebula P2P Overlay (Layer 3)",
+      "target_range": "10.255.x.x"
+    },
+    {
+      "tier": 7,
+      "protocol": "local_wifi",
+      "description": "Local AI Subnet",
+      "target_range": "192.168.8.x"
+    },
+    {
+      "tier": 8,
+      "protocol": "goodcloud",
+      "description": "OOB Reverse Proxy",
+      "target_range": "GL.iNet GoodCloud"
+    }
+  ],
+  "L1_Mac_Host": {
+    "name": "Mac Mini M4 Pro Host (L1)",
+    "role": "Master Local Orchestrator & Memory Governor",
+    "ssh_port": 22,
+    "tier3_ethernet": {
+      "ip": "127.0.0.1",
+      "lan_ip": "192.168.8.230"
+    },
+    "tier5_ssh": {
+      "user": "aaron",
+      "port": 22,
+      "host": "127.0.0.1"
+    },
+    "tailscale": "100.119.199.76",
+    "wireguard": "10.1.0.10"
+  },
+  "L2_MacBook_Pro": {
+    "name": "MacBook Pro Vault (L2)",
+    "role": "Metal GPU Vault & Tensor Sharding Peer",
+    "ssh_port": 22,
+    "tier4_thunderbolt": {
+      "tb4_ipv6": "fe80::1ca1:d3cc:d4b9:695b%bridge0",
+      "ip": "169.254.187.138"
+    },
+    "tier3_ethernet": {
+      "ip": "192.168.8.127",
+      "lan_ip": "192.168.8.97"
+    },
+    "tier5_ssh": {
+      "user": "aaronmaher",
+      "port": 22,
+      "host": "fe80::1ca1:d3cc:d4b9:695b%bridge0",
+      "tailscale_ip": "100.103.212.21",
+      "wireguard_ip": "10.1.0.11"
+    },
+    "tailscale": "100.103.212.21",
+    "wireguard": "10.1.0.11"
+  },
+  "L8_Linux_Mini": {
+    "name": "Linux Mini Central Hub (i7-8700B / L8)",
+    "role": "Central Ingress Hub, Docker, Databases, Microservices & Ray Head",
+    "ssh_port": 22,
+    "tier1_rfcomm": {
+      "rf_mac": "00:41:0e:14:28:44"
+    },
+    "tier4_thunderbolt": {
+      "ip": "192.168.2.3",
+      "tb3_bridge": "192.168.2.3",
+      "tb3_ipv6": "fe80::1082:a3ff:fe9e:ae71%bridge0"
+    },
+    "tier3_ethernet": {
+      "ip": "192.168.8.238",
+      "lan_ip": "192.168.8.238",
+      "wifi": "192.168.8.184"
+    },
+    "tier5_ssh": {
+      "user": "linuxmini",
+      "port": 22,
+      "host": "192.168.2.3",
+      "lan_ip": "192.168.8.238",
+      "tailscale_ip": "100.121.247.8",
+      "wireguard_ip": "10.1.0.17"
+    },
+    "tier6_services": {
+      "ports": [
+        22,
+        5000,
+        6333,
+        6379,
+        8083,
+        8265,
+        31330,
+        50052
+      ]
+    },
+    "tailscale": "100.121.247.8",
+    "wireguard": "10.1.0.17"
+  },
+  "L3_Linux_Hub": {
+    "name": "Linux Head Node (Ryzen 7 / L3)",
+    "role": "Gateway Ingress, Compute Hub & Local AI Offload",
+    "ssh_port": 22,
+    "tier1_bluetooth": {
+      "mac": "00:41:0e:14:28:44",
+      "status": "connected"
+    },
+    "tier3_ethernet": {
+      "ip": "192.168.8.225",
+      "lan_ip": "192.168.8.225"
+    },
+    "tier5_ssh": {
+      "user": "linux",
+      "port": 22,
+      "host": "192.168.8.225",
+      "tailscale_ip": "100.101.39.98",
+      "wireguard_ip": "10.1.0.12"
+    },
+    "tier6_services": {
+      "ports": [
+        22,
+        3000,
+        4000,
+        5001,
+        8081,
+        8750,
+        18789
+      ]
+    },
+    "tailscale": "100.101.39.98",
+    "wireguard": "10.1.0.12"
+  },
+  "L5_MacBook_Air": {
+    "name": "MacBook Air M4 (L5)",
+    "role": "Secondary High-Speed Metal Worker & LoRA Distillation",
+    "ssh_port": 22,
+    "tier3_ethernet": {
+      "ip": "192.168.8.215",
+      "lan_ip": "192.168.8.215",
+      "usb_lan": "192.168.8.122",
+      "alt_ip": "192.168.8.122"
+    },
+    "tier5_ssh": {
+      "user": "aaronmaher",
+      "port": 22,
+      "host": "192.168.8.215",
+      "tailscale_ip": "100.121.202.34",
+      "wireguard_ip": "10.1.0.15"
+    },
+    "tailscale": "100.121.202.34",
+    "wireguard": "10.1.0.15"
+  },
+  "L6_Pixel_10_Edge": {
+    "name": "Google Pixel 10 Pro XL (L6)",
+    "role": "Tensor G5 Edge TPU, 8K Vision Stream & UWB Positioning",
+    "ssh_port": 8022,
+    "tier1_bluetooth": {
+      "mac": "30-e0-44-6d-18-ec",
+      "status": "connected"
+    },
+    "tier2_adb": {
+      "tailscale_adb": "100.114.215.68:5555",
+      "lan_adb": "192.168.8.213:5555",
+      "usb_serial": "5B080DLCQ001LQ",
+      "wireguard_adb": "10.1.0.13:5555",
+      "tailscale_ip": "100.94.90.84"
+    },
+    "tier3_ethernet": {
+      "lan_ip": "192.168.8.213"
+    },
+    "tier5_ssh": {
+      "user": "u0_a363",
+      "port": 8022,
+      "host": "100.114.215.68",
+      "alt_host": "100.73.38.87",
+      "avf_ip": "100.99.210.89",
+      "avf_port": 22
+    },
+    "tailscale": "100.114.215.68",
+    "wireguard": "10.1.0.13"
+  },
+  "L4_Linux_Tablet": {
+    "name": "Linux Tablet (L4)",
+    "role": "Mobile Linux Compute, Touch DSP & Offline Standby",
+    "status": "STANDBY",
+    "ssh_port": 22,
+    "tailscale": "100.81.92.125",
+    "wireguard": "10.1.0.16",
+    "tier3_ethernet": {
+      "ip": "192.168.8.176",
+      "lan_ip": "192.168.8.176"
+    },
+    "tier2_wifi": {
+      "ip": "192.168.8.173",
+      "lan_ip": "192.168.8.173"
+    }
+  },
+  "GW_Router": {
+    "name": "GL.iNet Wi-Fi 7 Sovereign Gateway (GW)",
+    "role": "Sovereign Gateway & Hardware USB Bridge",
+    "ssh_port": 22,
+    "tier3_ethernet": {
+      "ip": "192.168.8.1",
+      "lan_ip": "192.168.8.1"
+    },
+    "tier5_ssh": {
+      "user": "root",
+      "port": 22,
+      "host": "192.168.8.1",
+      "tailscale_ip": "100.103.212.34",
+      "wireguard_ip": "10.1.0.1"
+    },
+    "tailscale": "100.103.212.34",
+    "wireguard": "10.1.0.1"
+  },
+  "L7_Samsung_S20": {
+    "name": "Samsung Galaxy S20+ (L7)",
+    "role": "Dedicated Automated UI Tester & ADB Node",
+    "ssh_port": 8022,
+    "tier1_bluetooth": {
+      "mac": "5c:cb:99:05:81:41",
+      "status": "connected"
+    },
+    "tier2_adb": {
+      "tailscale_adb": "100.78.206.96:5555",
+      "lan_adb": "192.168.8.131:5555",
+      "usb_serial": "R3CN40CJJ1R",
+      "wireguard_adb": "10.1.0.14:5555"
+    },
+    "tier3_ethernet": {
+      "lan_ip": "192.168.8.131"
+    },
+    "tier5_ssh": {
+      "user": "u0_a420",
+      "port": 8022,
+      "host": "100.78.206.96"
+    },
+    "tailscale": "100.78.206.96",
+    "wireguard": "10.1.0.14"
+  },
+  "L9_iPhone_16_Pro": {
+    "name": "iPhone 16 Pro (L9)",
+    "role": "Primary iOS Testing Node & Screen Lens Commerce Target",
+    "lockdown_port": 62078,
+    "udid": "00008140-00015D5E3EFA801C",
+    "coredevice_id": "AE1D33CE-4249-5E2C-B866-FE3BD627D575",
+    "tier1_bluetooth": {
+      "mac": "74:cc:40:20:8e:10",
+      "name": "Aaron\u2019s iPhone"
+    },
+    "tier3_ethernet": {
+      "lan_ip": "192.168.8.102"
+    },
+    "tier5_ssh": {
+      "user": "root",
+      "port": 2222,
+      "host": "100.122.52.89"
+    },
+    "tailscale": "100.122.52.89",
+    "wireguard": "10.1.0.18"
+  }
+}

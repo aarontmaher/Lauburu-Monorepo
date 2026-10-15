@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-09-02T15:18:11Z",
+  "top_choice": "qwen25_coder_7b",
+  "rankings": [
+    {
+      "rank": 1,
+      "fitness": 1594.19,
+      "key": "qwen25_coder_7b",
+      "meta": {
+        "name": "Qwen 2.5 Coder 7B Instruct",
+        "architecture": "Dense Lightweight Transformer",
+        "quant_type": "Q4_K_M",
+        "vram_gb": 4.4,
+        "swe_bench_lite_pass_pct": 32.4,
+        "swe_bench_verified_pct": 37.8,
+        "code_ast_accuracy_pct": 86.5,
+        "ttft_ms": 8.5,
+        "throughput_tps": 95.0,
+        "single_node_m4_pro": true,
+        "hf_repo": "Qwen/Qwen2.5-Coder-7B-Instruct-GGUF",
+        "filename": "qwen2.5-coder-7b-instruct-q4_k_m.gguf",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct-GGUF/resolve/main/qwen2.5-coder-7b-instruct-q4_k_m.gguf"
+      }
+    },
+    {
+      "rank": 2,
+      "fitness": 683.88,
+      "key": "deepseek_coder_v2_lite",
+      "meta": {
+        "name": "DeepSeek Coder V2 Lite MoE (16B Total / 2.4B Active)",
+        "architecture": "Sparse MoE",
+        "quant_type": "Q4_K_M",
+        "vram_gb": 9.8,
+        "swe_bench_lite_pass_pct": 39.8,
+        "swe_bench_verified_pct": 44.6,
+        "code_ast_accuracy_pct": 91.2,
+        "ttft_ms": 12.0,
+        "throughput_tps": 82.5,
+        "single_node_m4_pro": true,
+        "hf_repo": "bartowski/DeepSeek-Coder-V2-Lite-Instruct-GGUF",
+        "filename": "DeepSeek-Coder-V2-Lite-Instruct-Q4_K_M.gguf",
+        "url": "https://huggingface.co/bartowski/DeepSeek-Coder-V2-Lite-Instruct-GGUF/resolve/main/DeepSeek-Coder-V2-Lite-Instruct-Q4_K_M.gguf"
+      }
+    },
+    {
+      "rank": 3,
+      "fitness": 284.57,
+      "key": "qwen25_coder_32b",
+      "meta": {
+        "name": "Qwen 2.5 Coder 32B Instruct",
+        "architecture": "Dense Transformer",
+        "quant_type": "Q4_K_M",
+        "vram_gb": 19.8,
+        "swe_bench_lite_pass_pct": 46.2,
+        "swe_bench_verified_pct": 51.4,
+        "code_ast_accuracy_pct": 94.8,
+        "ttft_ms": 18.5,
+        "throughput_tps": 64.2,
+        "single_node_m4_pro": true,
+        "hf_repo": "Qwen/Qwen2.5-Coder-32B-Instruct-GGUF",
+        "filename": "qwen2.5-coder-32b-instruct-q4_k_m.gguf",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct-GGUF/resolve/main/qwen2.5-coder-32b-instruct-q4_k_m.gguf"
+      }
+    },
+    {
+      "rank": 4,
+      "fitness": 39.62,
+      "key": "llama33_70b",
+      "meta": {
+        "name": "Llama 3.3 70B Instruct",
+        "architecture": "Dense Frontier Transformer",
+        "quant_type": "Q4_K_M",
+        "vram_gb": 42.5,
+        "swe_bench_lite_pass_pct": 48.6,
+        "swe_bench_verified_pct": 54.2,
+        "code_ast_accuracy_pct": 96.1,
+        "ttft_ms": 45.0,
+        "throughput_tps": 24.8,
+        "single_node_m4_pro": false,
+        "hf_repo": "bartowski/Llama-3.3-70B-Instruct-GGUF",
+        "filename": "Llama-3.3-70B-Instruct-Q4_K_M.gguf",
+        "url": "https://huggingface.co/bartowski/Llama-3.3-70B-Instruct-GGUF/resolve/main/Llama-3.3-70B-Instruct-Q4_K_M.gguf"
+      }
+    }
+  ]
+}

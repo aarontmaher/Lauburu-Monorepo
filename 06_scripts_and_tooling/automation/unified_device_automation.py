@@ -28,7 +28,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("DeviceAutomation")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 AUTOMATION_LOG = REPO_ROOT / "data/mesh/automation_audit.json"
 
 class UnifiedDeviceAutomationEngine:
@@ -82,7 +82,7 @@ class UnifiedDeviceAutomationEngine:
         logger.info("📱 [Mobile Use] Auditing Android battery, screen state, and night mode...")
         mobile_data = {}
 
-        for dev_name, ip in [("Pixel_10_Pro_XL", "100.73.38.87:5555"), ("Samsung_S20_Plus", "100.84.40.95:5555")]:
+        for dev_name, ip in [("Pixel_10_Pro_XL", "100.73.38.87:5555"), ("Samsung_S20_Plus", "100.78.206.96:5555")]:
             dev_status = {"connected": False, "battery_level": None, "night_mode": None}
             try:
                 subprocess.run(f"adb connect {ip}", shell=True, capture_output=True, timeout=2.0)

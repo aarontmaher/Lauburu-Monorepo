@@ -1,0 +1,435 @@
+{
+  "timestamp": 1791619001.887889,
+  "iso_time": "2026-10-10T07:56:41Z",
+  "nodes": [
+    {
+      "id": "L1",
+      "name": "L1 Mac Mini M4 Pro (Host)",
+      "online": true,
+      "cpu": 49.3,
+      "mem": 83.4,
+      "rx_rate": 157225.0,
+      "tx_rate": 1337102.0,
+      "filesystems": [
+        {
+          "mount": "/",
+          "size": 494384795648.0,
+          "used": 12639088640.0,
+          "free": 144551481344.0,
+          "percent": 8.0
+        },
+        {
+          "mount": "/System/Volumes/Update",
+          "size": 494384795648.0,
+          "used": 7303168.0,
+          "free": 144551481344.0,
+          "percent": 0.0
+        },
+        {
+          "mount": "/System/Volumes/Data",
+          "size": 494384795648.0,
+          "used": 320283332608.0,
+          "free": 144551481344.0,
+          "percent": 68.9
+        },
+        {
+          "mount": "/Volumes/PyCharm",
+          "size": 3679563776.0,
+          "used": 3668443136.0,
+          "free": 11120640.0,
+          "percent": 99.7
+        }
+      ],
+      "version": "Darwin"
+    },
+    {
+      "id": "L1b",
+      "name": "L1b Mac mini M2 Pro",
+      "online": false,
+      "cpu": 0.0,
+      "mem": 0.0,
+      "rx_rate": 0.0,
+      "tx_rate": 0.0,
+      "filesystems": [],
+      "version": "--"
+    },
+    {
+      "id": "L2",
+      "name": "L2 MacBook Pro (Intel)",
+      "online": false,
+      "cpu": 0.0,
+      "mem": 0.0,
+      "rx_rate": 0.0,
+      "tx_rate": 0.0,
+      "filesystems": [],
+      "version": "--"
+    },
+    {
+      "id": "L3",
+      "name": "L3 Linux Head Node (Ryzen 7)",
+      "online": true,
+      "cpu": 58.2,
+      "mem": 33.1,
+      "rx_rate": 480618.0,
+      "tx_rate": 283233.0,
+      "filesystems": [
+        {
+          "mount": "/",
+          "size": 501809635328.0,
+          "used": 438263832576.0,
+          "free": 37980000256.0,
+          "percent": 92.0
+        },
+        {
+          "mount": "/boot/efi",
+          "size": 1124999168.0,
+          "used": 6471680.0,
+          "free": 1118527488.0,
+          "percent": 0.6
+        }
+      ],
+      "version": "Linux"
+    },
+    {
+      "id": "L4",
+      "name": "L4 Linux Tablet (AVF)",
+      "online": false,
+      "cpu": 0.0,
+      "mem": 0.0,
+      "rx_rate": 0.0,
+      "tx_rate": 0.0,
+      "filesystems": [],
+      "version": "--"
+    },
+    {
+      "id": "L5",
+      "name": "L5 MacBook Air M4 (Metal)",
+      "online": false,
+      "cpu": 0.0,
+      "mem": 0.0,
+      "rx_rate": 0.0,
+      "tx_rate": 0.0,
+      "filesystems": [],
+      "version": "--"
+    },
+    {
+      "id": "L6",
+      "name": "L6 Pixel 10 Pro XL (Android)",
+      "online": false,
+      "cpu": 0.0,
+      "mem": 0.0,
+      "rx_rate": 0.0,
+      "tx_rate": 0.0,
+      "filesystems": [],
+      "version": "--"
+    },
+    {
+      "id": "L7",
+      "name": "L7 Galaxy S20+ (Android)",
+      "online": true,
+      "cpu": 0.0,
+      "mem": 57.4,
+      "rx_rate": 10240.0,
+      "tx_rate": 5120.0,
+      "filesystems": [],
+      "version": "Android Linux"
+    },
+    {
+      "id": "GW",
+      "name": "GW GL.iNet Router (OpenWrt)",
+      "online": false,
+      "cpu": 0.0,
+      "mem": 0.0,
+      "rx_rate": 0.0,
+      "tx_rate": 0.0,
+      "filesystems": [],
+      "version": "--"
+    }
+  ],
+  "storage": [
+    {
+      "node": "L1 (Host)",
+      "label": "Host Root (/)",
+      "path": "/",
+      "total": 494384795648,
+      "used": 349840277504,
+      "free": 144544518144,
+      "percent": 70.76275010550383,
+      "healthy": true
+    },
+    {
+      "node": "L1 (Host)",
+      "label": "DFS Monorepo",
+      "path": "/Users/aaron/DFS_UNIFIED",
+      "total": 494384795648,
+      "used": 349840277504,
+      "free": 144544518144,
+      "percent": 70.76275010550383,
+      "healthy": true
+    },
+    {
+      "node": "L1 (Host)",
+      "label": "LoRA Datasets",
+      "path": "/Users/aaron/DFS_UNIFIED/lora_datasets",
+      "total": 494384795648,
+      "used": 349840277504,
+      "free": 144544518144,
+      "percent": 70.76275010550383,
+      "healthy": true
+    }
+  ],
+  "services": [
+    {
+      "category": "Interconnect",
+      "node": "L1-L2",
+      "name": "TB4 DMA Peer 1",
+      "host": "169.254.59.109",
+      "port": "ICMP",
+      "status": "TIMEOUT",
+      "latency_ms": null
+    },
+    {
+      "category": "Interconnect",
+      "node": "L1-L2",
+      "name": "TB4 DMA Peer 2",
+      "host": "169.254.175.124",
+      "port": "ICMP",
+      "status": "TIMEOUT",
+      "latency_ms": null
+    },
+    {
+      "category": "AI Inference",
+      "node": "L1",
+      "name": "Qwen 3.8 Max (Orchestrator)",
+      "host": "127.0.0.1",
+      "port": "8082",
+      "status": "UP",
+      "latency_ms": 5.264332998194732
+    },
+    {
+      "category": "AI Inference",
+      "node": "L1",
+      "name": "Qwen Worker Proxy",
+      "host": "127.0.0.1",
+      "port": "8081",
+      "status": "UP",
+      "latency_ms": 5.027291001169942
+    },
+    {
+      "category": "AI Inference",
+      "node": "L1",
+      "name": "llama-server Metal",
+      "host": "127.0.0.1",
+      "port": "8090",
+      "status": "UP",
+      "latency_ms": 4.9706249992595986
+    },
+    {
+      "category": "AI Inference",
+      "node": "L3",
+      "name": "Devil's Advocate (Qwen 27B)",
+      "host": "100.101.39.98",
+      "port": "8083",
+      "status": "REFUSED",
+      "latency_ms": null
+    },
+    {
+      "category": "Core Daemons",
+      "node": "L1",
+      "name": "Self-Healing Hub",
+      "host": "127.0.0.1",
+      "port": "18802",
+      "status": "UP",
+      "latency_ms": 4.818082998099271
+    },
+    {
+      "category": "Core Daemons",
+      "node": "L1",
+      "name": "Glances Web/API",
+      "host": "127.0.0.1",
+      "port": "61208",
+      "status": "UP",
+      "latency_ms": 4.791667000972666
+    },
+    {
+      "category": "Core Daemons",
+      "node": "L1b",
+      "name": "Glances Web/API (M2 Pro)",
+      "host": "169.254.122.75",
+      "port": "61208",
+      "status": "TIMEOUT",
+      "latency_ms": null
+    },
+    {
+      "category": "Core Daemons",
+      "node": "L2",
+      "name": "Glances Web/API",
+      "host": "100.103.212.21",
+      "port": "61208",
+      "status": "TIMEOUT",
+      "latency_ms": null
+    },
+    {
+      "category": "Core Daemons",
+      "node": "L3",
+      "name": "Glances Web/API",
+      "host": "192.168.8.225",
+      "port": "61208",
+      "status": "UP",
+      "latency_ms": 37.10750000027474
+    },
+    {
+      "category": "Core Daemons",
+      "node": "L4",
+      "name": "Glances Web/API (Linux Tab)",
+      "host": "192.168.8.116",
+      "port": "61208",
+      "status": "TIMEOUT",
+      "latency_ms": null
+    },
+    {
+      "category": "Core Daemons",
+      "node": "L5",
+      "name": "Glances Web/API (Air M4)",
+      "host": "169.254.59.109",
+      "port": "61208",
+      "status": "REFUSED",
+      "latency_ms": null
+    },
+    {
+      "category": "Core Daemons",
+      "node": "L6",
+      "name": "Glances Web/API (Pixel)",
+      "host": "100.73.38.87",
+      "port": "61208",
+      "status": "TIMEOUT",
+      "latency_ms": null
+    },
+    {
+      "category": "Core Daemons",
+      "node": "L7",
+      "name": "Glances Web/API (Galaxy)",
+      "host": "192.168.8.157",
+      "port": "61208",
+      "status": "UP",
+      "latency_ms": 9.691833001852501
+    },
+    {
+      "category": "Core Daemons",
+      "node": "GW",
+      "name": "Glances Web/API (Router)",
+      "host": "192.168.8.1",
+      "port": "61208",
+      "status": "TIMEOUT",
+      "latency_ms": null
+    },
+    {
+      "category": "Mesh Services",
+      "node": "L3",
+      "name": "Stream Service",
+      "host": "100.101.39.98",
+      "port": "4003",
+      "status": "UP",
+      "latency_ms": 41.5125830040779
+    },
+    {
+      "category": "Mesh Services",
+      "node": "L3",
+      "name": "OCR Vision Service",
+      "host": "100.101.39.98",
+      "port": "3035",
+      "status": "UP",
+      "latency_ms": 41.465875001449604
+    },
+    {
+      "category": "Mesh Services",
+      "node": "L3",
+      "name": "JupyterLab Portal",
+      "host": "100.101.39.98",
+      "port": "8889",
+      "status": "UP",
+      "latency_ms": 41.41066600277554
+    },
+    {
+      "category": "Infrastructure",
+      "node": "L2",
+      "name": "SSH Terminal (L2)",
+      "host": "100.103.212.21",
+      "port": "22",
+      "status": "TIMEOUT",
+      "latency_ms": null
+    },
+    {
+      "category": "Infrastructure",
+      "node": "L3",
+      "name": "SSH Terminal (L3)",
+      "host": "192.168.8.225",
+      "port": "22",
+      "status": "UP",
+      "latency_ms": 36.53124999982538
+    },
+    {
+      "category": "Infrastructure",
+      "node": "L5",
+      "name": "SSH Terminal (L5)",
+      "host": "169.254.59.109",
+      "port": "22",
+      "status": "REFUSED",
+      "latency_ms": null
+    },
+    {
+      "category": "Infrastructure",
+      "node": "L6",
+      "name": "SSH Terminal (L6)",
+      "host": "100.73.38.87",
+      "port": "8022",
+      "status": "TIMEOUT",
+      "latency_ms": null
+    },
+    {
+      "category": "Infrastructure",
+      "node": "L7",
+      "name": "SSH Terminal (S20)",
+      "host": "192.168.8.157",
+      "port": "8022",
+      "status": "UP",
+      "latency_ms": 8.916792001400609
+    },
+    {
+      "category": "Gateway / WAN",
+      "node": "GW",
+      "name": "GL-BE14000 Router Web",
+      "host": "192.168.8.1",
+      "port": "80",
+      "status": "UP",
+      "latency_ms": 6.1921249944134615
+    },
+    {
+      "category": "Gateway / WAN",
+      "node": "GW",
+      "name": "GL-BE14000 Router DNS",
+      "host": "192.168.8.1",
+      "port": "53",
+      "status": "UP",
+      "latency_ms": 6.218875001650304
+    },
+    {
+      "category": "Gateway / WAN",
+      "node": "WAN",
+      "name": "Cloudflare Anycast DNS",
+      "host": "1.1.1.1",
+      "port": "53",
+      "status": "UP",
+      "latency_ms": 18.012165994150564
+    },
+    {
+      "category": "Gateway / WAN",
+      "node": "WAN",
+      "name": "Google Anycast DNS",
+      "host": "8.8.8.8",
+      "port": "53",
+      "status": "UP",
+      "latency_ms": 23.2987499985029
+    }
+  ]
+}

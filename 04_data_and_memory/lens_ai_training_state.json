@@ -1,0 +1,12 @@
+{
+  "total_lens_training_pairs": 2308,
+  "total_ui_targets_audited": 2308,
+  "last_training_burst_time": 1789630088.09752,
+  "training_methods": [
+    "Multimodal DPO (Direct Preference Optimization)",
+    "Behavioral Action Cloning via Chrome DevTools Protocol (CDP)",
+    "Rule #0 Zero-Mock Visual Contrast Verification (WCAG AAA)",
+    "Apple Silicon MLX QLoRA Fine-Tuning (4-bit zero-copy)"
+  ],
+  "goal": "Autonomous Computer Use & Living Visual Cortex for Multi-Device Screen Automation"
+}

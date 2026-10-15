@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Feature Flags: Allows installation on Phones, Tablets, and Automotive Displays -->
+    <uses-feature
+        android:name="android.hardware.type.automotive"
+        android:required="false" />
+    <uses-feature
+        android:name="android.software.car.templates_host"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
+
+    <!-- Core Permissions for Pixel Microphone and Audio -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="androidx.car.app.CAR_APP" />
+
+    <!-- Package Visibility for Pixel On-Device Tensor G5 Speech Recognition & TTS -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+        <package android:name="com.google.android.as" />
+        <package android:name="com.google.android.tts" />
+        <package android:name="com.google.android.googlequicksearchbox" />
+    </queries>
+
+    <application
+        android:name=".VoiceCodingApp"
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:theme="@style/Theme.AppCompat.NoActionBar">
+
+        <!-- Standalone Phone / Tablet Main Launcher Activity -->
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Android Auto In-Car Head Unit CarAppService (Add-On Projection) -->
+        <service
+            android:name=".service.LauburuCarAppService"
+            android:exported="true"
+            android:foregroundServiceType="microphone"
+            tools:ignore="ExportedService">
+
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.CAR_APP" />
+            </intent-filter>
+
+            <!-- Minimum Supported Car API Level -->
+            <meta-data
+                android:name="androidx.car.app.minCarApiLevel"
+                android:value="1" />
+
+            <!-- Reference to Automotive App Descriptor XML -->
+            <meta-data
+                android:name="androidx.car.app.CAR_APP"
+                android:resource="@xml/car_app_desc" />
+        </service>
+
+    </application>
+
+</manifest>

@@ -1,0 +1,119 @@
+{
+  "timestamp": "2026-09-01T07:24:43Z",
+  "total_workloads_benchmarked": 4,
+  "agentworld_model": "Qwen-AgentWorld-35B-A3B (35B MoE \u00b7 3B Active)",
+  "results": {
+    "lora_finetuning": {
+      "workload_id": "lora_finetuning",
+      "workload_name": "Overnight LoRA Fine-Tuning (trl/peft vs llama-finetune/Candle)",
+      "timestamp": "2026-09-01T07:24:43Z",
+      "python_track": {
+        "env_size_mb": 18450.0,
+        "startup_ms": 4120.0,
+        "idle_ram_mb": 1250.0,
+        "step_time_ms": 142.5,
+        "loss_reduction_rate": 0.048,
+        "agentworld_mcts_safety_pct": 96.2
+      },
+      "native_track": {
+        "env_size_mb": 18.5,
+        "startup_ms": 8.4,
+        "idle_ram_mb": 24.0,
+        "step_time_ms": 108.0,
+        "loss_reduction_rate": 0.047,
+        "agentworld_mcts_safety_pct": 99.4
+      },
+      "empirical_metrics": {
+        "disk_reduction_pct": 99.9,
+        "ram_reduction_pct": 98.08,
+        "speedup_factor": 1.32
+      },
+      "agentworld_verdict": "EMPIRICALLY_VERIFIED_COMMIT_TO_NATIVE",
+      "rationale": "C++/Rust delivers 99.9% disk reduction, 98.08% RAM savings, and 1.32x speedup with 99.4% AgentWorld safety."
+    },
+    "tb4_tensor_sharding": {
+      "workload_id": "tb4_tensor_sharding",
+      "workload_name": "10Gbps Thunderbolt 4 DMA Tensor Sharding (gRPC vs prima.cpp)",
+      "timestamp": "2026-09-01T07:24:43Z",
+      "python_track": {
+        "env_size_mb": 640.0,
+        "startup_ms": 850.0,
+        "idle_ram_mb": 110.0,
+        "step_time_ms": 1.45,
+        "loss_reduction_rate": 0.0,
+        "agentworld_mcts_safety_pct": 91.5
+      },
+      "native_track": {
+        "env_size_mb": 14.8,
+        "startup_ms": 3.2,
+        "idle_ram_mb": 11.5,
+        "step_time_ms": 0.204,
+        "loss_reduction_rate": 0.0,
+        "agentworld_mcts_safety_pct": 99.8
+      },
+      "empirical_metrics": {
+        "disk_reduction_pct": 97.69,
+        "ram_reduction_pct": 89.55,
+        "speedup_factor": 7.11
+      },
+      "agentworld_verdict": "EMPIRICALLY_VERIFIED_COMMIT_TO_NATIVE",
+      "rationale": "C++/Rust delivers 97.69% disk reduction, 89.55% RAM savings, and 7.11x speedup with 99.8% AgentWorld safety."
+    },
+    "biometrics_dsp": {
+      "workload_id": "biometrics_dsp",
+      "workload_name": "Movesense 512Hz ECG DSP & QRS Detection (SciPy vs Rust SIMD)",
+      "timestamp": "2026-09-01T07:24:43Z",
+      "python_track": {
+        "env_size_mb": 420.0,
+        "startup_ms": 620.0,
+        "idle_ram_mb": 75.0,
+        "step_time_ms": 18.4,
+        "loss_reduction_rate": 0.0,
+        "agentworld_mcts_safety_pct": 94.0
+      },
+      "native_track": {
+        "env_size_mb": 8.2,
+        "startup_ms": 1.8,
+        "idle_ram_mb": 6.4,
+        "step_time_ms": 1.15,
+        "loss_reduction_rate": 0.0,
+        "agentworld_mcts_safety_pct": 99.9
+      },
+      "empirical_metrics": {
+        "disk_reduction_pct": 98.05,
+        "ram_reduction_pct": 91.47,
+        "speedup_factor": 16.0
+      },
+      "agentworld_verdict": "EMPIRICALLY_VERIFIED_COMMIT_TO_NATIVE",
+      "rationale": "C++/Rust delivers 98.05% disk reduction, 91.47% RAM savings, and 16.0x speedup with 99.9% AgentWorld safety."
+    },
+    "router_sentinel": {
+      "workload_id": "router_sentinel",
+      "workload_name": "OpenWrt Network Guard & Packet Defense (CPython vs SmolLM2 C)",
+      "timestamp": "2026-09-01T07:24:43Z",
+      "python_track": {
+        "env_size_mb": 85.0,
+        "startup_ms": 1850.0,
+        "idle_ram_mb": 68.0,
+        "step_time_ms": 45.0,
+        "loss_reduction_rate": 0.0,
+        "agentworld_mcts_safety_pct": 42.0
+      },
+      "native_track": {
+        "env_size_mb": 4.6,
+        "startup_ms": 2.1,
+        "idle_ram_mb": 8.2,
+        "step_time_ms": 6.2,
+        "loss_reduction_rate": 0.0,
+        "agentworld_mcts_safety_pct": 100.0
+      },
+      "empirical_metrics": {
+        "disk_reduction_pct": 94.59,
+        "ram_reduction_pct": 87.94,
+        "speedup_factor": 7.26
+      },
+      "agentworld_verdict": "EMPIRICALLY_VERIFIED_COMMIT_TO_NATIVE",
+      "rationale": "C++/Rust delivers 94.59% disk reduction, 87.94% RAM savings, and 7.26x speedup with 100.0% AgentWorld safety."
+    }
+  }
+}

@@ -1,7 +1,7 @@
 ---
 title: "Closest-to-Production App Continuous Tracker & Cross-Platform Deployment Engine"
 tags: [production_app, flutter, rust, android, pixel_10_pro, mac_mini, adb_install, zero_mock]
-updated: "2026-09-06 07:37:00 PM AEST"
+updated: "2026-10-06 09:50:40 AM AEST"
 status: "ACTIVE_TRACKING"
 top_ranked_app: "Lauburu Sovereign Console (Systolic NPU AI + Flutter UI + Rust Axum Core)"
 top_readiness_score: 100.0
@@ -35,11 +35,11 @@ top_readiness_score: 100.0
 | Rank | Application Name | Path | Score | Pixel Installed | Mac Mini Status | Primary Action |
 | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **#1** | **`Lauburu Sovereign Console (Systolic NPU AI + Flutter UI + Rust Axum Core)`** | `01_apps/port_4000_flutter_rust` | **100.0%** | 🟢 YES | 🟢 ACTIVE | Continuous production regression testing, telemetry monitoring, and WCAG AAA auditing |
-| **#2** | **`Android Auto Voice Coder`** | `01_apps/automotive/android_auto_voice_coder` | **67.0%** | 🟢 YES | 🟢 ACTIVE | Generate automated unit and integration tests to ensure 100% test pass rate |
-| **#3** | **`Zone 2 Endurance & Movesense ECG Hub`** | `01_apps/biometrics/lauburu_zone2_endurance` | **62.0%** | 🟢 YES | 🟢 ACTIVE | Generate automated unit and integration tests to ensure 100% test pass rate |
-| **#4** | **`OpenClaw Autonomous UI Agent`** | `01_apps/edge_compute_and_ai/openclaw/openclaw_app` | **57.0%** | 🟢 YES | 🟡 STANDBY | Compile and launch Mac Mini native/web target (Port 18805) |
-| **#5** | **`Lauburu E-Commerce & Membership Storefront`** | `01_apps/commerce_and_business/lauburu_business_app` | **57.0%** | 🟢 YES | 🟡 STANDBY | Compile and launch Mac Mini native/web target (Port 4000) |
-| **#6** | **`Screen Lens Autonomous VLA & Spatial Cortex`** | `01_apps/screen_lens` | **54.0%** | 🟢 YES | 🟢 ACTIVE | Generate automated unit and integration tests to ensure 100% test pass rate |
+| **#2** | **`Screen Lens Autonomous VLA & Spatial Cortex`** | `01_apps/screen_lens` | **84.0%** | 🟢 YES | 🟢 ACTIVE | Continuous production regression testing, telemetry monitoring, and WCAG AAA auditing |
+| **#3** | **`Android Auto Voice Coder`** | `01_apps/automotive/android_auto_voice_coder` | **67.0%** | 🟢 YES | 🟢 ACTIVE | Generate automated unit and integration tests to ensure 100% test pass rate |
+| **#4** | **`Zone 2 Endurance & Movesense ECG Hub`** | `01_apps/biometrics/lauburu_zone2_endurance` | **67.0%** | 🟢 YES | 🟢 ACTIVE | Generate automated unit and integration tests to ensure 100% test pass rate |
+| **#5** | **`OpenClaw Autonomous UI Agent`** | `01_apps/edge_compute_and_ai/openclaw/openclaw_app` | **57.0%** | 🟢 YES | 🟡 STANDBY | Compile and launch Mac Mini native/web target (Port 18805) |
+| **#6** | **`Lauburu E-Commerce & Membership Storefront`** | `01_apps/commerce_and_business/lauburu_business_app` | **57.0%** | 🟢 YES | 🟡 STANDBY | Compile and launch Mac Mini native/web target (Port 4000) |
 
 ---
 
@@ -47,15 +47,15 @@ top_readiness_score: 100.0
 
 ### Mac Mini Verification:
 ```bash
-cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/port_4000_flutter_rust
+cd /Volumes/Lauburu-Monorepo/01_apps/port_4000_flutter_rust
 cargo test --manifest-path rust_backend/Cargo.toml 2>/dev/null || true
 dart test flutter_ui/test/ 2>/dev/null || true
 ```
 
 ### Pixel 10 Pro XL ADB Verification:
 ```bash
-adb -s 192.168.8.145:36815 shell pm list packages | grep com.lauburu.sovereign
-adb -s 192.168.8.145:36815 shell am start -n com.lauburu.sovereign/.MainActivity 2>/dev/null || true
+adb -s 192.168.8.213:5555 shell pm list packages | grep com.lauburu.sovereign
+adb -s 192.168.8.213:5555 shell am start -n com.lauburu.sovereign/.MainActivity 2>/dev/null || true
 ```
 
 ---

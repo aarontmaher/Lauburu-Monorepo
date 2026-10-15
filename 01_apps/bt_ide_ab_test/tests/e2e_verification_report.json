@@ -1,0 +1,185 @@
+{
+  "title": "Lauburu IDE Intelligence Architecture E2E Verification Report",
+  "timestamp_utc": "2026-09-17T19:34:25Z",
+  "overall_status": "PASSED",
+  "proof_1_actuation": {
+    "exit_code": 0,
+    "total_duration_sec": 27.74,
+    "total_tests_passed": 71,
+    "total_tests_failed": 0,
+    "tier_summary": [
+      {
+        "tier": 1,
+        "test_file": "tests/test_tier1_features.py",
+        "exit_code": 0,
+        "duration_sec": 12.447,
+        "passed": 30,
+        "failed": 0,
+        "success": true,
+        "stdout_tail": [
+          "..............................                                           [100%]",
+          "30 passed in 12.15s"
+        ]
+      },
+      {
+        "tier": 2,
+        "test_file": "tests/test_tier2_boundaries.py",
+        "exit_code": 0,
+        "duration_sec": 3.031,
+        "passed": 30,
+        "failed": 0,
+        "success": true,
+        "stdout_tail": [
+          "..............................                                           [100%]",
+          "30 passed in 2.68s"
+        ]
+      },
+      {
+        "tier": 3,
+        "test_file": "tests/test_tier3_combinations.py",
+        "exit_code": 0,
+        "duration_sec": 1.854,
+        "passed": 7,
+        "failed": 0,
+        "success": true,
+        "stdout_tail": [
+          ".......                                                                  [100%]",
+          "7 passed in 1.63s"
+        ]
+      },
+      {
+        "tier": 4,
+        "test_file": "tests/test_tier4_real_world.py",
+        "exit_code": 0,
+        "duration_sec": 10.407,
+        "passed": 4,
+        "failed": 0,
+        "success": true,
+        "stdout_tail": [
+          "....                                                                     [100%]",
+          "4 passed in 10.22s"
+        ]
+      }
+    ]
+  },
+  "proof_2_code_integrity": {
+    "file_count": 15,
+    "manifest": {
+      "core/config.py": {
+        "exists": true,
+        "path": "core/config.py",
+        "lines": 318,
+        "bytes": 12197,
+        "sha256": "c64e78ae85226281053bf5f4ad0d9802e2dc1407b3c980795b8548e6b8301d12"
+      },
+      "core/telemetry.py": {
+        "exists": true,
+        "path": "core/telemetry.py",
+        "lines": 487,
+        "bytes": 18526,
+        "sha256": "348e52c7e8a2c1ff698c81d19f06af6dd3f83b1d5b51f370ae2a2ea7300213c4"
+      },
+      "core/ram_governor.py": {
+        "exists": true,
+        "path": "core/ram_governor.py",
+        "lines": 452,
+        "bytes": 17762,
+        "sha256": "8a1dddddf1ef0373d23aeade063dadfeb2ed8237f6a3db8c0b84f6165b8f9192"
+      },
+      "core/hermes_router.py": {
+        "exists": true,
+        "path": "core/hermes_router.py",
+        "lines": 482,
+        "bytes": 19264,
+        "sha256": "32aad38f16fcbef9db6055f13dc07f6b21e55225183acc2a49f3c971a2507cb1"
+      },
+      "core/vector_pager.py": {
+        "exists": true,
+        "path": "core/vector_pager.py",
+        "lines": 322,
+        "bytes": 12216,
+        "sha256": "ad20f8158978fe53d98ff8081f3d39a43b37d32347f17e0ef21ecd3956e16062"
+      },
+      "core/code_generator.py": {
+        "exists": true,
+        "path": "core/code_generator.py",
+        "lines": 383,
+        "bytes": 16650,
+        "sha256": "f9c7317d77b31b7a9e5bc99a30b4487826c5a1c9a7ea066d26bf14c7852eb680"
+      },
+      "core/escalation_gate.py": {
+        "exists": true,
+        "path": "core/escalation_gate.py",
+        "lines": 714,
+        "bytes": 28276,
+        "sha256": "bfc704182495212a54b532b7fa291df1d68f05d99f02dddd07c39cfcc72e2bf1"
+      },
+      "core/storage_specialist.py": {
+        "exists": true,
+        "path": "core/storage_specialist.py",
+        "lines": 754,
+        "bytes": 28752,
+        "sha256": "f667a124cde27cab9c18a773838320f435cb6e82347db9bd0e7b0fd2d1d1b4e8"
+      },
+      "core/distillation.py": {
+        "exists": true,
+        "path": "core/distillation.py",
+        "lines": 726,
+        "bytes": 30219,
+        "sha256": "d5c394e881bc458a7b2f07dbad3f6305ed21f14cf64a045dce28ccfa99ffa10d"
+      },
+      "gateway/server.py": {
+        "exists": true,
+        "path": "gateway/server.py",
+        "lines": 686,
+        "bytes": 27221,
+        "sha256": "5eca3a03fd920d8762a9048093e3c7dad85f558ded63a3e03531abf3e88844fc"
+      },
+      "tests/conftest.py": {
+        "exists": true,
+        "path": "tests/conftest.py",
+        "lines": 512,
+        "bytes": 18245,
+        "sha256": "fce3b3c43a55519c00c284ce401579f765c64977f6b173c72360782786fd464d"
+      },
+      "tests/test_tier1_features.py": {
+        "exists": true,
+        "path": "tests/test_tier1_features.py",
+        "lines": 598,
+        "bytes": 27249,
+        "sha256": "299f5ffc9c116a192e29a09122c694bcdbb5d5763e92422af8f8005aeacbc3dd"
+      },
+      "tests/test_tier2_boundaries.py": {
+        "exists": true,
+        "path": "tests/test_tier2_boundaries.py",
+        "lines": 552,
+        "bytes": 24028,
+        "sha256": "82c5e0909421a00302776d6c5a705bbfa2e36cf0af97eb2c2170116e44dc150a"
+      },
+      "tests/test_tier3_combinations.py": {
+        "exists": true,
+        "path": "tests/test_tier3_combinations.py",
+        "lines": 294,
+        "bytes": 12216,
+        "sha256": "9aec3b408be35c4d6a44165d94b68d3e20e75e41ce1011b47555e168a0169e2d"
+      },
+      "tests/test_tier4_real_world.py": {
+        "exists": true,
+        "path": "tests/test_tier4_real_world.py",
+        "lines": 260,
+        "bytes": 10943,
+        "sha256": "23cac2a1431dbb9dc72f791a033acf7c48e91561bcc89a8a752c1a5a4ea61194"
+      }
+    }
+  },
+  "proof_3_telemetry_and_governance": {
+    "global_pool_ram_gb": 108.0,
+    "usable_ai_vram_gb": 82.8,
+    "host_sanctuary_min_mb": 4915.2,
+    "host_max_utilization_pct": 80.0,
+    "rule_1_zero_mock_verified": true,
+    "rule_4_manual_escalation_enforced": true,
+    "rule_5_tri_proof_passed": true,
+    "timestamp_utc": "2026-09-17T19:34:25Z"
+  }
+}

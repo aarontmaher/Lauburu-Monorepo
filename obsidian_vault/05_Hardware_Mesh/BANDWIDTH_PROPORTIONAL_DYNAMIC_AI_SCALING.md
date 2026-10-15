@@ -133,7 +133,7 @@ In between model parameter jumps (e.g. bridging the gap between a 3B local SLM a
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 3. SERIALIZE (Tri-Vault Storage)                                            │
 │    • Instruction pairs appended to continuous LoRA dataset:                 │
-│      /Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl   │
+│      /Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 4. DISTILL (Edge Model Fine-Tuning)                                         │
 │    • QLoRA adapters distilled into SmolLM2 360M and Qwen 2.5 0.5B,          │

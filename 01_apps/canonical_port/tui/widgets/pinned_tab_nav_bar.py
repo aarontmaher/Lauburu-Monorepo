@@ -30,51 +30,31 @@ class PinnedTabNavBar(Static):
     """
 
     NAV_TABS: List[Tuple[str, str, str, str]] = [
-        ("1", "AGI Term", "#00ffcc", "agi_terminal"),
-        ("2", "Network", "#00ffff", "network"),
-        ("3", "Hardware", "#38bdf8", "hardware"),
-        ("4", "Biometrics", "#4ade80", "biometrics"),
-        ("5", "Inference", "#e879f9", "ai_inference"),
-        ("6", "Training", "#facc15", "training"),
-        ("7", "Governance", "#f43f5e", "governance"),
-        ("8", "Tooling", "#a78bfa", "tooling"),
-        ("9", "Optimization", "#38bdf8", "optimization"),
+        ("1", "Sovereign Mesh & Hardware (L0-L1)", "#00ffff", "agi_terminal"),
+        ("2", "Core AI Inference & Compute (L2-L3)", "#e879f9", "ai_inference"),
+        ("3", "Continuous Evolution & Training (L4-L5)", "#facc15", "training"),
+        ("4", "Telemetry & Edge Processing (L6-L7)", "#4ade80", "biometrics"),
     ]
 
     NAV_TABS_COMPACT: List[Tuple[str, str, str, str]] = [
-        ("1", "AGI", "#00ffcc", "agi_terminal"),
-        ("2", "Net", "#00ffff", "network"),
-        ("3", "HW", "#38bdf8", "hardware"),
-        ("4", "Bio", "#4ade80", "biometrics"),
-        ("5", "Inf", "#e879f9", "ai_inference"),
-        ("6", "Train", "#facc15", "training"),
-        ("7", "Gov", "#f43f5e", "governance"),
-        ("8", "Tool", "#a78bfa", "tooling"),
-        ("9", "Opt", "#38bdf8", "optimization"),
+        ("1", "Mesh & HW (L0-L1)", "#00ffff", "agi_terminal"),
+        ("2", "AI Inference (L2-L3)", "#e879f9", "ai_inference"),
+        ("3", "Evolution (L4-L5)", "#facc15", "training"),
+        ("4", "Telemetry (L6-L7)", "#4ade80", "biometrics"),
     ]
 
     NAV_TABS_TINY: List[Tuple[str, str, str, str]] = [
-        ("1", "AGI", "#00ffcc", "agi_terminal"),
-        ("2", "Net", "#00ffff", "network"),
-        ("3", "HW", "#38bdf8", "hardware"),
-        ("4", "Bio", "#4ade80", "biometrics"),
-        ("5", "Inf", "#e879f9", "ai_inference"),
-        ("6", "Trn", "#facc15", "training"),
-        ("7", "Gov", "#f43f5e", "governance"),
-        ("8", "Tol", "#a78bfa", "tooling"),
-        ("9", "Opt", "#38bdf8", "optimization"),
+        ("1", "HW", "#00ffff", "agi_terminal"),
+        ("2", "AI", "#e879f9", "ai_inference"),
+        ("3", "Evo", "#facc15", "training"),
+        ("4", "Edge", "#4ade80", "biometrics"),
     ]
 
     NAV_TABS_MICRO: List[Tuple[str, str, str, str]] = [
-        ("1", "A", "#00ffcc", "agi_terminal"),
-        ("2", "N", "#00ffff", "network"),
-        ("3", "H", "#38bdf8", "hardware"),
-        ("4", "B", "#4ade80", "biometrics"),
-        ("5", "I", "#e879f9", "ai_inference"),
-        ("6", "T", "#facc15", "training"),
-        ("7", "G", "#f43f5e", "governance"),
-        ("8", "S", "#a78bfa", "tooling"),
-        ("9", "O", "#38bdf8", "optimization"),
+        ("1", "H", "#00ffff", "agi_terminal"),
+        ("2", "A", "#e879f9", "ai_inference"),
+        ("3", "E", "#facc15", "training"),
+        ("4", "T", "#4ade80", "biometrics"),
     ]
 
     def __init__(self, active_screen: str = "agi_terminal", id: str = "pinned-tab-nav-bar", classes: str = "") -> None:

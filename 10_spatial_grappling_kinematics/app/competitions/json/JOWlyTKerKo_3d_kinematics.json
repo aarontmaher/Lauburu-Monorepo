@@ -1,0 +1,26 @@
+{
+  "video_id": "JOWlyTKerKo",
+  "url": "https://youtu.be/JOWlyTKerKo",
+  "division": "Freestyle Wrestling",
+  "title": "Aaron Maher (AUS) vs Liam Neyland (AUS) [Bout 1]",
+  "duration_sec": 539.6,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 23,
+  "dual_athlete_frames": 4,
+  "standing_phase_pct": 30.4,
+  "ground_scramble_phase_pct": 69.6,
+  "level_change_shots_detected": 1,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 34.1,
+    "left_elbow": 142.5,
+    "right_elbow": 138.0,
+    "left_hip": 137.2,
+    "right_hip": 141.3,
+    "left_knee": 142.4,
+    "right_knee": 139.4
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/JOWlyTKerKo_3d_grid.jpg",
+  "tactical_note": "Aaron Maher, with a strong standing frame and a good ground/Scramble, can exploit the opportunity to gain an advantage in the first round. His level-Change shots and mean spine lean indicate a balanced and stable approach, while his elbow flexion and knee flexion indicate a well-timed and controlled move. This combination of skills allows Maher to capitalize on the pressure and create a strong opening for the opponent.",
+  "processing_sec": 2.44
+}

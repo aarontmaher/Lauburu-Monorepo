@@ -14,7 +14,9 @@ from pathlib import Path
 class MovesenseHubConfig:
     """Configuration settings for the Movesense Physiological Readiness Suite."""
 
-    # Hardware & BLE GATT settings
+    # Hardware & Default Edge Telemetry settings
+    default_edge_device: str = "Google Pixel 10 Pro XL (Layer 6)"
+    default_edge_ip: str = "100.73.38.87"
     device_serial: str = "261030002013"
     device_name: str = "Movesense 261030002013"
     device_mac_address: str = "C1DB5043-8F89-88E8-46A3-BBD4ED83FC88"

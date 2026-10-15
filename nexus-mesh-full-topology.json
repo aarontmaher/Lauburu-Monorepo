@@ -1,0 +1,502 @@
+{
+  "version": 2,
+  "exportType": "share",
+  "exportedAt": "2026-10-12T19:40:15.687167+00:00",
+  "inventoryStatusPollPerSource": true,
+  "servers": [
+    {
+      "id": "e30fb714-aff2-5b96-a70e-9273a81cf589",
+      "name": "\ud83d\udda5\ufe0f L1 - Host Mac Mini (M4 Pro)",
+      "host": "127.0.0.1",
+      "port": 22,
+      "protocol": "ssh",
+      "username": "aaron",
+      "authType": "agent",
+      "authProfileId": "863ecd4c-3028-5bac-90ba-5d8105245d34",
+      "altHost": "192.168.8.230",
+      "group": "Lauburu Mesh/Core Compute",
+      "notes": "Master Memory Governor & Prompt Ingestion (24GB RAM, 90% Cap)"
+    },
+    {
+      "id": "c2d8de9f-0ec7-5c6f-a873-01f87736d9ec",
+      "name": "\ud83d\udcbb L2 - MacBook Pro (Intel / Metal RPC)",
+      "host": "100.103.212.21",
+      "port": 22,
+      "protocol": "ssh",
+      "username": "aaron",
+      "authType": "agent",
+      "authProfileId": "863ecd4c-3028-5bac-90ba-5d8105245d34",
+      "altHost": "169.254.187.138",
+      "group": "Lauburu Mesh/Core Compute",
+      "notes": "40Gbps TB4 Bridge RPC Target (285GB SSD Model Vault)"
+    },
+    {
+      "id": "448fd28b-8805-5aa3-a5d9-1b5a46faa7ea",
+      "name": "\ud83d\udc27 L3 - Linux Head Node (Ryzen 7 5700U)",
+      "host": "100.101.39.98",
+      "port": 22,
+      "protocol": "ssh",
+      "username": "aaron",
+      "authType": "agent",
+      "authProfileId": "863ecd4c-3028-5bac-90ba-5d8105245d34",
+      "altHost": "192.168.8.224",
+      "group": "Lauburu Mesh/Core Compute",
+      "notes": "Docker Hub, Continuous AI Training & Petals DHT (16GB RAM)"
+    },
+    {
+      "id": "9736cfa4-04c8-5244-a6f3-4e330ead9d9e",
+      "name": "\ud83d\udcf1 L4 - Linux Tablet (Debian Touch DSP)",
+      "host": "100.91.85.70",
+      "port": 22,
+      "protocol": "ssh",
+      "username": "aaron",
+      "authType": "agent",
+      "authProfileId": "863ecd4c-3028-5bac-90ba-5d8105245d34",
+      "altHost": "192.168.8.173",
+      "group": "Lauburu Mesh/Peripheral Nodes",
+      "notes": "Mobile Debian Linux Compute & Lightweight Biometrics (8GB RAM)"
+    },
+    {
+      "id": "a026b4d9-6694-5dbb-9c29-2b5092a1c1bc",
+      "name": "\ud83c\udf4f L5 - MacBook Air (M4 / LoRA Distillation)",
+      "host": "100.93.158.96",
+      "port": 22,
+      "protocol": "ssh",
+      "username": "aaron",
+      "authType": "agent",
+      "authProfileId": "863ecd4c-3028-5bac-90ba-5d8105245d34",
+      "altHost": "192.168.8.222",
+      "group": "Lauburu Mesh/Peripheral Nodes",
+      "notes": "Secondary Metal Performance Shaders Worker (16GB RAM)"
+    },
+    {
+      "id": "a6ec263e-0c0f-5816-9b7a-b95112ecb0dc",
+      "name": "\ud83d\udcf1 L6 - Pixel 10 Pro XL (Tensor G5 / Termux)",
+      "host": "100.73.38.87",
+      "port": 8022,
+      "protocol": "ssh",
+      "username": "u0_a260",
+      "authType": "agent",
+      "authProfileId": "588fa244-9bea-5db7-9df6-6fcdb630c98b",
+      "group": "Lauburu Mesh/Android Edges",
+      "notes": "8K Vision Stream & Edge TPU (16GB RAM, termux-wake-lock)"
+    },
+    {
+      "id": "98149085-86a3-5ed0-b058-02a2466f1cbe",
+      "name": "\ud83d\udcf1 L7 - Samsung Galaxy S20+ (Exynos 990 / Termux)",
+      "host": "100.84.40.95",
+      "port": 8022,
+      "protocol": "ssh",
+      "username": "u0_a260",
+      "authType": "agent",
+      "authProfileId": "588fa244-9bea-5db7-9df6-6fcdb630c98b",
+      "group": "Lauburu Mesh/Android Edges",
+      "notes": "Dedicated Automated UI Tester & OpenClaw Target (12GB RAM)"
+    },
+    {
+      "id": "33d2bcf5-1a4a-5c7e-92cf-27f6f4cbc70a",
+      "name": "\ud83d\udc27 L8 - Linux Mini (Intel 2018 Compute)",
+      "host": "100.121.247.8",
+      "port": 22,
+      "protocol": "ssh",
+      "username": "aaron",
+      "authType": "agent",
+      "authProfileId": "863ecd4c-3028-5bac-90ba-5d8105245d34",
+      "altHost": "192.168.8.28",
+      "group": "Lauburu Mesh/Compute Hub",
+      "notes": "Secondary Docker Hub & RPC Sharding"
+    },
+    {
+      "id": "358b2588-cd89-5fa2-b240-7151f3d86645",
+      "name": "\ud83d\udef0\ufe0f GW - GL.iNet Sovereign Gateway (GL-MT3600BE)",
+      "host": "192.168.8.1",
+      "port": 22,
+      "protocol": "ssh",
+      "username": "root",
+      "authType": "agent",
+      "authProfileId": "ef6c8a54-1a26-5ae5-8c14-b99e4414024d",
+      "altHost": "100.112.203.121",
+      "group": "Lauburu Mesh/Network Infrastructure",
+      "notes": "Wi-Fi 7 Sovereign Gateway, USB ADB Bridge & Core Healer"
+    }
+  ],
+  "tunnels": [
+    {
+      "id": "fa51d15f-10b6-5901-8d0e-e942d1eb2394",
+      "name": "\ud83d\udcac Single-Chat Nexus Mother Ship (Port 4050)",
+      "tunnelType": "local",
+      "localPort": 4050,
+      "remoteIP": "127.0.0.1",
+      "remotePort": 4050,
+      "group": "Lauburu Mesh/Services",
+      "defaultServerId": "e30fb714-aff2-5b96-a70e-9273a81cf589"
+    },
+    {
+      "id": "45408b5d-98b6-596b-9c72-7fa558035b99",
+      "name": "\ud83d\udc51 prima.cpp Master Orchestrator (Port 8082)",
+      "tunnelType": "local",
+      "localPort": 8082,
+      "remoteIP": "127.0.0.1",
+      "remotePort": 8082,
+      "group": "Lauburu Mesh/AI Inference",
+      "defaultServerId": "e30fb714-aff2-5b96-a70e-9273a81cf589"
+    },
+    {
+      "id": "8164100b-297a-5aaf-9895-b36aac9f1091",
+      "name": "\ud83d\udd25 Qwen 3.8 Max Abliterated Red Team (Port 8083)",
+      "tunnelType": "local",
+      "localPort": 8083,
+      "remoteIP": "127.0.0.1",
+      "remotePort": 8083,
+      "group": "Lauburu Mesh/AI Inference",
+      "defaultServerId": "e30fb714-aff2-5b96-a70e-9273a81cf589"
+    },
+    {
+      "id": "a3f5d7a2-5ea7-596d-96d4-58a91bf2b718",
+      "name": "\u26a1 Qwen 2.5 Coder 7B Syntax Worker (Port 8081)",
+      "tunnelType": "local",
+      "localPort": 8081,
+      "remoteIP": "127.0.0.1",
+      "remotePort": 8081,
+      "group": "Lauburu Mesh/AI Inference",
+      "defaultServerId": "e30fb714-aff2-5b96-a70e-9273a81cf589"
+    },
+    {
+      "id": "23407657-b7d6-5cd2-aff9-29583365f762",
+      "name": "\ud83d\udc41\ufe0f Screen Lens Live MJPEG Stream (Port 4003)",
+      "tunnelType": "local",
+      "localPort": 4003,
+      "remoteIP": "127.0.0.1",
+      "remotePort": 4003,
+      "group": "Lauburu Mesh/Vision",
+      "defaultServerId": "e30fb714-aff2-5b96-a70e-9273a81cf589"
+    },
+    {
+      "id": "3dfdc9b4-63d8-5bbc-921c-1f5b16ec4a1a",
+      "name": "\ud83c\udf0a SeaweedFS Distributed DFS Filer (Port 8888)",
+      "tunnelType": "local",
+      "localPort": 8888,
+      "remoteIP": "127.0.0.1",
+      "remotePort": 8888,
+      "group": "Lauburu Mesh/Storage",
+      "defaultServerId": "e30fb714-aff2-5b96-a70e-9273a81cf589"
+    },
+    {
+      "id": "dddb340c-914a-526f-a050-664bbb20866d",
+      "name": "\ud83d\udee1\ufe0f Self-Healing Hub Orchestrator (Port 18802)",
+      "tunnelType": "local",
+      "localPort": 18802,
+      "remoteIP": "127.0.0.1",
+      "remotePort": 18802,
+      "group": "Lauburu Mesh/Infrastructure",
+      "defaultServerId": "e30fb714-aff2-5b96-a70e-9273a81cf589"
+    },
+    {
+      "id": "bcc26813-eff0-580f-8bdd-87e4ac748574",
+      "name": "\u26a1 Neo AI Execution Engine (L8 Linux Mini Port 8080)",
+      "tunnelType": "local",
+      "localPort": 8080,
+      "remoteIP": "192.168.2.3",
+      "remotePort": 8080,
+      "group": "Lauburu Mesh/AI Inference",
+      "defaultServerId": "e30fb714-aff2-5b96-a70e-9273a81cf589"
+    },
+    {
+      "id": "4da88510-7eae-5587-a4bd-0658acdc2ab6",
+      "name": "\ud83d\udcf1 Samsung S20+ Sovereign Router Control Center (Port 9090)",
+      "tunnelType": "local",
+      "localPort": 9090,
+      "remoteIP": "192.168.8.131",
+      "remotePort": 9090,
+      "group": "Lauburu Mesh/Infrastructure",
+      "defaultServerId": "e30fb714-aff2-5b96-a70e-9273a81cf589"
+    },
+    {
+      "id": "860e7033-3e3a-5f58-8fd2-e5433864c6c2",
+      "name": "\ud83c\udf0a SeaweedFS WebDAV Storage Gateway (Port 7333)",
+      "tunnelType": "local",
+      "localPort": 7333,
+      "remoteIP": "100.119.199.76",
+      "remotePort": 7333,
+      "group": "Lauburu Mesh/Storage",
+      "defaultServerId": "e30fb714-aff2-5b96-a70e-9273a81cf589"
+    }
+  ],
+  "serialProfiles": [],
+  "localShellProfiles": [
+    {
+      "id": "6283812a-f13f-581b-b9fd-6ee6fd42d8c3",
+      "name": "\u26a1 Lauburu Monorepo Root Shell",
+      "launchMode": "custom",
+      "shellPath": "/bin/zsh",
+      "shellArgs": [
+        "-l"
+      ],
+      "cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo",
+      "group": "Lauburu Mesh/Local Consoles",
+      "startupCommand": "echo '\u26a1 Sovereign Nexus Server Active \u2014 Host: M4 Pro Mac Mini'"
+    },
+    {
+      "id": "53e67d74-a207-56f3-a430-76aca1438943",
+      "name": "\ud83d\udc41\ufe0f Screen Lens Sovereign Console",
+      "launchMode": "custom",
+      "shellPath": "/bin/zsh",
+      "shellArgs": [
+        "-l"
+      ],
+      "cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens",
+      "env": {
+        "SCREEN_LENS_PORT": "4003",
+        "NEXUS_MOTHER_SHIP": "http://127.0.0.1:4050"
+      },
+      "group": "Lauburu Mesh/Local Consoles",
+      "startupCommand": "nexus lens status"
+    },
+    {
+      "id": "bba8982a-425b-58cc-9ef0-8c1c77b0573a",
+      "name": "\u26a1 Neo AI/ML Execution Terminal",
+      "launchMode": "custom",
+      "shellPath": "/bin/zsh",
+      "shellArgs": [
+        "-l"
+      ],
+      "cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo",
+      "env": {
+        "NEXUS_MOTHER_SHIP": "http://127.0.0.1:4050",
+        "NEO_AUTO_ROUTING": "1"
+      },
+      "group": "Lauburu Mesh/Local Consoles",
+      "startupCommand": "nexus neo status"
+    },
+    {
+      "id": "4818aa41-cdda-523d-86df-09558cd0fb71",
+      "name": "\ud83d\udcac Single-Chat Nexus Interactive CLI",
+      "launchMode": "custom",
+      "shellPath": "/bin/zsh",
+      "shellArgs": [
+        "-l"
+      ],
+      "cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo",
+      "group": "Lauburu Mesh/Local Consoles",
+      "startupCommand": "nexus status"
+    }
+  ],
+  "localServers": [
+    {
+      "id": "3ce79e4d-3ec3-5c43-b14a-ff51d5a32032",
+      "name": "\ud83d\udcac Single-Chat Nexus Mother Ship (:4050)",
+      "executable": "/Users/aaron/.local/bin/nexus",
+      "args": [
+        "chat"
+      ],
+      "cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo",
+      "group": "Lauburu Mesh/Daemons",
+      "description": "Sovereign Mother Ship Chat & SQLite Tri-Vault Gateway",
+      "autoRestart": true,
+      "maxAutoRestarts": 5
+    },
+    {
+      "id": "12d13d78-7bf4-50c3-97fe-1bad24810bc7",
+      "name": "\ud83d\udc41\ufe0f Screen Lens Live MJPEG Daemon (:4003)",
+      "executable": "/bin/bash",
+      "args": [
+        "-c",
+        "lsof -i:4003 | grep LISTEN || (cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens && python3 src/sovereign_remote_desktop_server.py)"
+      ],
+      "cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens",
+      "group": "Lauburu Mesh/Daemons",
+      "description": "Screen Lens Live Multipart MJPEG Stream and Local OCR Ingestion",
+      "autoRestart": true,
+      "maxAutoRestarts": 5
+    }
+  ],
+  "authProfiles": [
+    {
+      "id": "863ecd4c-3028-5bac-90ba-5d8105245d34",
+      "name": "Aaron (SSH Agent / Sovereign)",
+      "username": "aaron",
+      "authType": "agent"
+    },
+    {
+      "id": "588fa244-9bea-5db7-9df6-6fcdb630c98b",
+      "name": "Android Termux (SSH Agent)",
+      "username": "u0_a260",
+      "authType": "agent"
+    },
+    {
+      "id": "ef6c8a54-1a26-5ae5-8c14-b99e4414024d",
+      "name": "GL.iNet Router Root",
+      "username": "root",
+      "authType": "agent"
+    }
+  ],
+  "groups": [
+    "Lauburu Mesh",
+    "Lauburu Mesh/Core Compute",
+    "Lauburu Mesh/Peripheral Nodes",
+    "Lauburu Mesh/Android Edges",
+    "Lauburu Mesh/Compute Hub",
+    "Lauburu Mesh/Network Infrastructure",
+    "Lauburu Mesh/Local Consoles",
+    "Lauburu Mesh/Daemons",
+    "Lauburu Mesh/Services",
+    "Lauburu Mesh/AI Inference",
+    "Lauburu Mesh/Vision",
+    "Lauburu Mesh/Commands"
+  ],
+  "macros": [
+    {
+      "id": "20064440-e094-586a-9961-1c973ac10301",
+      "name": "Nexus: Mesh Status",
+      "text": "nexus status\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "a95c8bbf-8651-5b24-bf86-004b70f2ec06",
+      "name": "Nexus: Query Health",
+      "text": "curl -s http://127.0.0.1:4050/api/health | jq .\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "5846a462-f429-5a68-96da-8b6bf044da78",
+      "name": "Nexus: List Chat Threads",
+      "text": "curl -s http://127.0.0.1:4050/api/chat/nexus/threads | jq .\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "fb0139a9-33e7-5348-a0e5-ecf01cc397b4",
+      "name": "Nexus: Trigger LoRA Sync",
+      "text": "curl -s -X POST http://127.0.0.1:4050/api/chat/nexus/lora/sync | jq .\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "ff3522dd-2e30-5a3f-beec-08312ae9b1d0",
+      "name": "Nexus: Escalate to Bluetooth PAN",
+      "text": "nexus dispatch --target all --directive ENABLE_PAN\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "e0a7abf5-3486-50db-983a-33488b602e9e",
+      "name": "Screen Lens: Status",
+      "text": "nexus lens status\n",
+      "group": "Lauburu Mesh/Vision",
+      "secret": false
+    },
+    {
+      "id": "83228625-2103-5651-803a-a5bd23be3473",
+      "name": "Screen Lens: Latest OCR",
+      "text": "nexus lens latest --limit 3\n",
+      "group": "Lauburu Mesh/Vision",
+      "secret": false
+    },
+    {
+      "id": "c983f52a-499a-58b8-89a7-af7c4a56ca34",
+      "name": "Screen Lens: Report to Nexus VLA",
+      "text": "nexus lens report\n",
+      "group": "Lauburu Mesh/Vision",
+      "secret": false
+    },
+    {
+      "id": "2a314aaf-e92c-5850-9045-12eb80e19f8c",
+      "name": "Screen Lens: Open Live Stream (:4003)",
+      "text": "open http://localhost:4003/stream.mjpg\n",
+      "group": "Lauburu Mesh/Vision",
+      "secret": false
+    },
+    {
+      "id": "e3b67c01-6ba9-5187-b4ea-9de85181673e",
+      "name": "Screen Lens: Scrcpy Pixel 10 GUI",
+      "text": "bash 06_scripts_and_tooling/screen_lens/open_scrcpy_gui.sh pixel\n",
+      "group": "Lauburu Mesh/Vision",
+      "secret": false
+    },
+    {
+      "id": "35889eca-1cfc-53f4-b632-88fad67d3d2b",
+      "name": "Screen Lens: Scrcpy Samsung S20 GUI",
+      "text": "bash 06_scripts_and_tooling/screen_lens/open_scrcpy_gui.sh s20\n",
+      "group": "Lauburu Mesh/Vision",
+      "secret": false
+    },
+    {
+      "id": "6aa41623-5dbc-5821-acaa-0c626aeac957",
+      "name": "Screen Lens: Stream Telemetry",
+      "text": "tail -f /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/APPS_AND_FEATURES/SCREEN_LENS_LIVE_OBSERVATIONS.md\n",
+      "group": "Lauburu Mesh/Vision",
+      "secret": false
+    },
+    {
+      "id": "f940f078-327c-5662-af66-9d22d355a3f7",
+      "name": "Neo: Check Integrations",
+      "text": "nexus neo status\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "a9858177-3730-57c0-b0a8-594e17760e15",
+      "name": "Neo: Dispatch AI/ML Task",
+      "text": "nexus neo task \"Verify movesense 512Hz stream and Screen Lens live OCR\"\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "95048eaf-0a9b-58b9-a0df-3c1eeb094b94",
+      "name": "Spec-11: Security Red/Blue Audit",
+      "text": "python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/security/spec11_security_auditor.py\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "094e3455-d51e-5ef0-bd74-7c0c64c0f669",
+      "name": "S20+ Router: Query Status & WAN IPv6",
+      "text": "curl -s http://192.168.8.131:9090/router/status | jq .\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "563f6260-1e56-57bf-85a0-eff70a5e280a",
+      "name": "S20+ Router: Query Connected Clients",
+      "text": "curl -s http://192.168.8.131:9090/router/clients | jq .\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "da2aa385-bc70-5e96-960e-c11e329d45b4",
+      "name": "Neo: Query L8 Health Server",
+      "text": "curl -s http://192.168.2.3:8080/health | jq .\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "cd96c470-6385-57b9-a20a-f0300c48fa9b",
+      "name": "WireGuard: Check Public IPv6 Peers",
+      "text": "python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/wireguard_manager.py\n",
+      "group": "Lauburu Mesh/Commands",
+      "secret": false
+    },
+    {
+      "id": "eaa4ac4b-665b-5501-bae3-e918a2860735",
+      "name": "Storage: Sync S20+ & Pixel 10 to DFS",
+      "text": "bash /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/storage/mobile_dfs_sync.sh\n",
+      "group": "Lauburu Mesh/Storage",
+      "secret": false
+    }
+  ],
+  "settings": {
+    "nexus.ssh.trustNewHosts": true,
+    "nexus.ssh.keepaliveInterval": 15,
+    "nexus.ssh.keepaliveCountMax": 4,
+    "nexus.ssh.multiplexing.enabled": true,
+    "nexus.terminal.keyboardPassthrough": true,
+    "nexus.terminal.openLocation": "terminal",
+    "nexus.ui.showTreeDescriptions": true,
+    "nexus.logging.sessionTranscripts": true,
+    "nexus.logging.sessionLogDirectory": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/APPS_AND_FEATURES/nexus_transcripts",
+    "nexus.scripts.path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/nexus",
+    "nexus.terminal.macros.autoTrigger": true
+  }
+}

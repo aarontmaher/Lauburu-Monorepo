@@ -1,0 +1,280 @@
+{
+  "benchmark_metadata": {
+    "title": "Petals Distributed Sharding Empirical Benchmark: Batch Size Scaling",
+    "protocol": "Petals / Hivemind Distributed AI Sharding",
+    "tested_variable": "batch_size",
+    "tested_values": [
+      1,
+      2,
+      4,
+      8,
+      16
+    ],
+    "held_constant": {
+      "sequence_length": 128,
+      "hidden_dim": 4096,
+      "compression_mode": "FLOAT16",
+      "max_msg_size": 67108864,
+      "warmup_rounds": 5,
+      "timed_rounds": 25,
+      "prng_seed": 42
+    },
+    "environment": {
+      "host_kernel": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+      "hostname": "de4a6b6f88be",
+      "python_version": "3.12.3",
+      "pytorch_version": "2.14.1+cpu",
+      "hivemind_version": "1.1.12",
+      "hardware_node": "L3 Linux Mini (AMD Ryzen 7 5700U, 15GB RAM)",
+      "container_id": "de4a6b6f88be"
+    },
+    "timestamp": "2026-10-11 21:23:33 UTC"
+  },
+  "results": [
+    {
+      "batch_size": 1,
+      "sequence_length": 128,
+      "hidden_dim": 4096,
+      "elements": 524288,
+      "raw_bytes_fp32": 2097152,
+      "wire_bytes_fp16": 1048598,
+      "compression_ratio": 1.9999580392104506,
+      "ser_latency_ms": {
+        "mean": 30.087007720000003,
+        "std": 18.527630540173732,
+        "min": 3.521893,
+        "median": 24.434699,
+        "p95": 63.336006599999976,
+        "max": 72.776886
+      },
+      "rpc_latency_ms": {
+        "mean": 498.28298956,
+        "std": 140.22543623788107,
+        "min": 267.564463,
+        "median": 512.756847,
+        "p95": 750.5888597999997,
+        "max": 799.542181
+      },
+      "deser_latency_ms": {
+        "mean": 79.29679468,
+        "std": 38.73694827053487,
+        "min": 25.913582,
+        "median": 83.43182,
+        "p95": 141.9901691999999,
+        "max": 179.751268
+      },
+      "e2e_latency_ms": {
+        "mean": 607.66679196,
+        "std": 171.00839328476908,
+        "min": 313.68814199999997,
+        "median": 589.211816,
+        "p95": 917.126663,
+        "max": 923.297653
+      },
+      "serialization_throughput_mb_s": 66.47387532228811,
+      "e2e_throughput_mb_s": 3.2912774343799445,
+      "token_rate_tok_s": 210.64175580031645,
+      "transit_cost_us_per_token": 3892.8358559374997,
+      "reconstruction_mse": 4.3101614721763326e-08,
+      "reconstruction_max_abs_err": 0.0019335746765136719,
+      "snr_db": 73.66943830433036,
+      "cosine_similarity": 0.9999999785204763
+    },
+    {
+      "batch_size": 2,
+      "sequence_length": 128,
+      "hidden_dim": 4096,
+      "elements": 1048576,
+      "raw_bytes_fp32": 4194304,
+      "wire_bytes_fp16": 2097175,
+      "compression_ratio": 1.9999780657312813,
+      "ser_latency_ms": {
+        "mean": 27.56387764,
+        "std": 28.09712339170969,
+        "min": 5.708971,
+        "median": 16.872463,
+        "p95": 92.70185159999994,
+        "max": 110.939641
+      },
+      "rpc_latency_ms": {
+        "mean": 721.1583836400001,
+        "std": 197.74839157554024,
+        "min": 422.238034,
+        "median": 727.225845,
+        "p95": 1037.2155405999997,
+        "max": 1227.538479
+      },
+      "deser_latency_ms": {
+        "mean": 98.31581884,
+        "std": 44.53811150672368,
+        "min": 51.618515,
+        "median": 82.47734,
+        "p95": 188.40239579999994,
+        "max": 221.11132
+      },
+      "e2e_latency_ms": {
+        "mean": 847.0380801200001,
+        "std": 225.43969904216294,
+        "min": 525.973933,
+        "median": 824.322675,
+        "p95": 1223.8920151999998,
+        "max": 1416.908777
+      },
+      "serialization_throughput_mb_s": 145.11746323366714,
+      "e2e_throughput_mb_s": 4.722337866360529,
+      "token_rate_tok_s": 302.22962344707383,
+      "transit_cost_us_per_token": 2817.0249360937505,
+      "reconstruction_mse": 4.301226752545517e-08,
+      "reconstruction_max_abs_err": 0.0019254684448242188,
+      "snr_db": 73.65900429339534,
+      "cosine_similarity": 0.9999999784686935
+    },
+    {
+      "batch_size": 4,
+      "sequence_length": 128,
+      "hidden_dim": 4096,
+      "elements": 2097152,
+      "raw_bytes_fp32": 8388608,
+      "wire_bytes_fp16": 4194327,
+      "compression_ratio": 1.9999890328055014,
+      "ser_latency_ms": {
+        "mean": 34.3139604,
+        "std": 29.733150978240907,
+        "min": 10.585553,
+        "median": 27.302905,
+        "p95": 77.05675579999995,
+        "max": 157.776455
+      },
+      "rpc_latency_ms": {
+        "mean": 1354.52631476,
+        "std": 303.0024398431877,
+        "min": 870.927727,
+        "median": 1345.411715,
+        "p95": 1898.5657151999994,
+        "max": 1988.356286
+      },
+      "deser_latency_ms": {
+        "mean": 154.93587728,
+        "std": 58.88742505069717,
+        "min": 102.664927,
+        "median": 130.999033,
+        "p95": 300.88097719999973,
+        "max": 323.096815
+      },
+      "e2e_latency_ms": {
+        "mean": 1543.7761524400003,
+        "std": 343.01825116268225,
+        "min": 993.1269500000001,
+        "median": 1532.613778,
+        "p95": 2202.805318999999,
+        "max": 2290.1018129999998
+      },
+      "serialization_throughput_mb_s": 233.14126107110624,
+      "e2e_throughput_mb_s": 5.182098445655919,
+      "token_rate_tok_s": 331.6543005219788,
+      "transit_cost_us_per_token": 2645.5592085156254,
+      "reconstruction_mse": 4.3183927544987455e-08,
+      "reconstruction_max_abs_err": 0.001953125,
+      "snr_db": 73.64704023744072,
+      "cosine_similarity": 0.9999999784092591
+    },
+    {
+      "batch_size": 8,
+      "sequence_length": 128,
+      "hidden_dim": 4096,
+      "elements": 4194304,
+      "raw_bytes_fp32": 16777216,
+      "wire_bytes_fp16": 8388631,
+      "compression_ratio": 1.9999945163877157,
+      "ser_latency_ms": {
+        "mean": 54.69114156,
+        "std": 47.4896586833134,
+        "min": 21.017877,
+        "median": 38.139266,
+        "p95": 116.32767519999996,
+        "max": 247.306815
+      },
+      "rpc_latency_ms": {
+        "mean": 2483.78025864,
+        "std": 541.7273559754175,
+        "min": 1738.640332,
+        "median": 2280.99102,
+        "p95": 3460.687610999999,
+        "max": 4006.883075
+      },
+      "deser_latency_ms": {
+        "mean": 388.43978411999996,
+        "std": 172.2374630810701,
+        "min": 200.456026,
+        "median": 339.193829,
+        "p95": 666.0775505999999,
+        "max": 760.415327
+      },
+      "e2e_latency_ms": {
+        "mean": 2926.9111843199994,
+        "std": 650.5441446610429,
+        "min": 2107.267853,
+        "median": 2767.4551969999998,
+        "p95": 3939.1000901999996,
+        "max": 4633.372104
+      },
+      "serialization_throughput_mb_s": 292.5519479685185,
+      "e2e_throughput_mb_s": 5.466513670013268,
+      "token_rate_tok_s": 349.85687488084915,
+      "transit_cost_us_per_token": 2425.5666588281247,
+      "reconstruction_mse": 4.314999557664123e-08,
+      "reconstruction_max_abs_err": 0.0019497871398925781,
+      "snr_db": 73.64894744411096,
+      "cosine_similarity": 0.9999999784187672
+    },
+    {
+      "batch_size": 16,
+      "sequence_length": 128,
+      "hidden_dim": 4096,
+      "elements": 8388608,
+      "raw_bytes_fp32": 33554432,
+      "wire_bytes_fp16": 16777239,
+      "compression_ratio": 1.999997258190099,
+      "ser_latency_ms": {
+        "mean": 202.94252328,
+        "std": 159.65780462268512,
+        "min": 42.858157,
+        "median": 186.52765,
+        "p95": 496.2183667999999,
+        "max": 673.657929
+      },
+      "rpc_latency_ms": {
+        "mean": 6785.269434679999,
+        "std": 1026.4662329183182,
+        "min": 5021.249519,
+        "median": 6514.005025,
+        "p95": 8358.7250842,
+        "max": 8834.281741
+      },
+      "deser_latency_ms": {
+        "mean": 872.49678372,
+        "std": 449.17710531338224,
+        "min": 447.461351,
+        "median": 696.529953,
+        "p95": 1896.2554485999979,
+        "max": 2121.996662
+      },
+      "e2e_latency_ms": {
+        "mean": 7860.70874168,
+        "std": 1057.3641486728693,
+        "min": 6291.092481,
+        "median": 7647.393652000001,
+        "p95": 9479.537632,
+        "max": 9928.431783000002
+      },
+      "serialization_throughput_mb_s": 157.68011298376126,
+      "e2e_throughput_mb_s": 4.07087974527357,
+      "token_rate_tok_s": 260.53630369750846,
+      "transit_cost_us_per_token": 3313.1198411523433,
+      "reconstruction_mse": 4.314592061405165e-08,
+      "reconstruction_max_abs_err": 0.0019521713256835938,
+      "snr_db": 73.64979479169078,
+      "cosine_similarity": 0.9999999784229024
+    }
+  ]
+}

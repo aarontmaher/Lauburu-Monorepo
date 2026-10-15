@@ -21,7 +21,7 @@ Simultaneously, the **Co-Working Multi-Tier AI Orchestrator** pairs on-chip NPU 
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Layer 1: Mac Mini Host** | Apple M4 Pro (16-Core ANE) | **$32.0\text{ MB}$ ANE SRAM**<br>$24.0\text{ MB}$ System Level Cache<br>$16.0\text{ MB}$ CPU L2 Cache | **$> 1.25\text{ TB/s}$** | $273.0\text{ GB/s}$ | **$< 0.05\text{ ms}$** |
 | **Layer 6: Google Pixel 10 Pro XL** | Google Tensor G5 (Edge TPU) | **$16.0\text{ MB}$ TPU SRAM**<br>$8.0\text{ MB}$ SLC | **$> 1.20\text{ TB/s}$** | $68.0\text{ GB/s}$ | **$< 0.10\text{ ms}$** |
-| **Layer 2: MacBook Pro (L2)** | Apple M4 Max Metal GPU | **$48.0\text{ MB}$ SLC / SRAM** | **$> 1.60\text{ TB/s}$** | $410.0\text{ GB/s}$ | **$< 0.08\text{ ms}$** |
+| **Layer 2: MacBook Pro (L2)** | Intel Core i7 (UHD 630 / Metal GPU) | **$12.0\text{ MB}$ L3 Cache** | **$> 0.40\text{ TB/s}$** | $41.8\text{ GB/s}$ | **$< 0.15\text{ ms}$** |
 | **Peripheral Sensors (Movesense)** | Nordic nRF52840 (512Hz BLE) | **$256.0\text{ KB}$ Embedded SRAM** | $0.05\text{ TB/s}$ | $0.0\text{ GB/s}$ (No DRAM) | **$< 0.20\text{ ms}$** |
 
 ---

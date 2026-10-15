@@ -41,12 +41,12 @@ Empirical head-to-head benchmark evaluating **Apple Neural Engine (NPU)**, **App
 
 3. **Best for Multi-Node Model Sharding & Production Serving:**
    - **Winner: Prima.cpp / llama.cpp PRP Ring (`Method C`)**
-   - *Rationale:* Prima is the sovereign inference orchestrator. It pools **85.0 GB VRAM** across all 7 hardware layers over the 10Gbps Thunderbolt 4 DMA bridge (0.27ms RTT), enabling the full 27B Qwen 3.8 Max models to run with zero dropped tokens.
+   - *Rationale:* Prima is the sovereign inference orchestrator. It pools **85.0 GB VRAM** across all 7 hardware layers over the 40Gbps Thunderbolt 4 DMA bridge (0.27ms RTT), enabling the full 27B Qwen 3.8 Max models to run with zero dropped tokens.
 
 ---
 
 ## 🛡️ 3. Tri-Vault Storage Verification & Artifacts
-- **LoRA Adapter Weights:** `/Users/aaron/DFS_UNIFIED/lora_datasets/adapters/qwen38_max_mlx_adapter/adapters.npz` (SHA256 verified)
-- **Adapter Manifest:** `/Users/aaron/DFS_UNIFIED/lora_datasets/adapters/qwen38_max_mlx_adapter/adapter_config.json`
-- **Obsidian Vault:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/04_ANALYTICS/QWEN38_MAX_TRAINING_AND_METHODOLOGY_SHOWDOWN_2026.md`
+- **LoRA Adapter Weights:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/adapters/qwen38_max_mlx_adapter/adapters.npz` (SHA256 verified)
+- **Adapter Manifest:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/adapters/qwen38_max_mlx_adapter/adapter_config.json`
+- **Obsidian Vault:** `/Volumes/Lauburu-Monorepo/obsidian_vault/04_ANALYTICS/QWEN38_MAX_TRAINING_AND_METHODOLOGY_SHOWDOWN_2026.md`
 - **Master Dataset Lake:** Appended verified DPO pairs to `continuous_lora_dataset.jsonl`

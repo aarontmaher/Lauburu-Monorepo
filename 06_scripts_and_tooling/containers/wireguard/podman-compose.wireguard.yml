@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  wireguard-mesh:
+    build:
+      context: .
+      dockerfile: Containerfile
+    image: localhost/wireguard-mesh:latest
+    container_name: wireguard-test-mesh
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - ./config:/etc/wireguard:rw
+    ports:
+      - "51820:51820/udp"
+      - "2222:2222/tcp"
+    restart: unless-stopped

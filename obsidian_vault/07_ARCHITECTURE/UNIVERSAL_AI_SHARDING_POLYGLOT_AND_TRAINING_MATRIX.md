@@ -19,7 +19,7 @@ status: "canonical_approved"
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
 | **Native C Daemons (`c_core`)** | C11 (Clang -O3) | **33 KB - 35 KB** | **16 KB - 33 KB** (`.dylib`) | **< 1.2 MB** | **< 0.005 ms** | Direct XNU Mach Syscalls / FFI |
 | **Rust Candle Minimal Engine** | Rust 2021 (Release) | **14.2 MB - 18.5 MB** | Zero (Statically Linked) | **~24 MB** | **< 1.8 ms** | Apple Metal / WebGPU / Vulkan |
-| **`prima.cpp` PRP Coordinator** | C++20 / Python FFI | **25 KB script / 33 KB binary** | GGML dynamic libraries | **~38 MB** | **< 4.2 ms** | 10Gbps TB4 DMA Bridge (0.204ms) |
+| **`prima.cpp` PRP Coordinator** | C++20 / Python FFI | **25 KB script / 33 KB binary** | GGML dynamic libraries | **~38 MB** | **< 4.2 ms** | 40Gbps TB4 DMA Bridge (0.204ms) |
 | **`llama.cpp` (`llama-server`)** | C++17 / Metal | **33 KB** (thin CLI) | **26.4 MB** (`libllama`, `libggml`) | **~65 MB** | **< 8.5 ms** | Apple Metal Performance Shaders |
 | **Standard PyTorch / Transformers**| Python / C++ backend | **~3.4 GB - 4.2 GB** | Massive dynamic bundles | **1,850 MB+** | **1,200 - 3,500 ms** | Metal (MPS) / CUDA / ROCm |
 
@@ -32,14 +32,14 @@ status: "canonical_approved"
 
 | Sharding Paradigm | Data Transfer Profile | Optimal Network Transport | Best Polyglot Language Runtime | Primary Deployment Node |
 | :--- | :--- | :--- | :--- | :--- |
-| **1. Pipelined-Ring Parallelism (PRP)** | Cyclic activation tokens | **10Gbps TB4 DMA Bridge (0.204ms)** | **C++20 (`prima.cpp`)** | L1 Mac Mini + L2 MacBook Pro |
-| **2. Distributed GGML-RPC** | Sliced tensor buffers | 10Gbps TB4 / 1GbE Subnet | **C++17 / C11 (`llama.cpp`)** | L1 Host -> Peripheral Workers |
+| **1. Pipelined-Ring Parallelism (PRP)** | Cyclic activation tokens | **40Gbps TB4 DMA Bridge (0.204ms)** | **C++20 (`prima.cpp`)** | L1 Mac Mini + L2 MacBook Pro |
+| **2. Distributed GGML-RPC** | Sliced tensor buffers | 40Gbps TB4 / 1GbE Subnet | **C++17 / C11 (`llama.cpp`)** | L1 Host -> Peripheral Workers |
 | **3. Pure-NPU Layer Pipelining** | Intermediate $[1, 64, 128]$ activations | **1GbE Subnet / TB4 DMA (0.28ms)** | **C11 / Python FFI (`npu_fleet`)** | L6 Pixel 10 Pro XL TPU -> L1 Mac ANE |
-| **4. Topology-Aware Dynamic P2P** | VRAM-weighted layer chunks | Wi-Fi 7 MLO (1.15ms RTT) | **Rust (`exo` / `candle`)** | L1 Host + L5 MacBook Air |
+| **4. Topology-Aware Dynamic P2P** | VRAM-weighted layer chunks | Wi-Fi 7 MLO (1.15ms RTT) | **Rust (`exo` / `candle`)** | L1 Host + L2 MacBook Pro |
 | **5. Fault-Tolerant Swarm DHT** | Kademlia activation routing | Tailscale WireGuard WAN (8.5ms RTT) | **Python / Rust (`petals`)** | L3 Linux Head Node + L4 Linux Tablet |
-| **6. MoE Expert Parallelism** | Sparse Top-K gating (3.1% traffic) | 10Gbps TB4 / 1GbE Subnet | **Python / C++ (`vLLM` / Ray)** | Distributed across all 7 nodes |
-| **7. Sequence Parallelism (RingAttn)** | Ring-rotated KV blocks | 10Gbps TB4 DMA Bridge | **Swift / Metal & Rust wgpu** | L1 Host + L2 MacBook Pro (128K+) |
-| **8. Fully Sharded Data Parallel (FSDP2)**| All-Gather parameter weights | 10Gbps TB4 DMA Bridge | **Python (`torch.distributed`)** | Synchronous 5-Node Fleet Training |
+| **6. MoE Expert Parallelism** | Sparse Top-K gating (3.1% traffic) | 40Gbps TB4 / 1GbE Subnet | **Python / C++ (`vLLM` / Ray)** | Distributed across all 7 nodes |
+| **7. Sequence Parallelism (RingAttn)** | Ring-rotated KV blocks | 40Gbps TB4 DMA Bridge | **Swift / Metal & Rust wgpu** | L1 Host + L2 MacBook Pro (128K+) |
+| **8. Fully Sharded Data Parallel (FSDP2)**| All-Gather parameter weights | 40Gbps TB4 DMA Bridge | **Python (`torch.distributed`)** | Synchronous 5-Node Fleet Training |
 
 ---
 

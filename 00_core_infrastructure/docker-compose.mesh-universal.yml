@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  mesh-ai-worker:
+    build:
+      context: ..
+      dockerfile: 00_core_infrastructure/Dockerfile.mesh-universal
+    container_name: lauburu-mesh-ai-worker
+    restart: unless-stopped
+    # Use host networking so the AI can directly ping, ARP scan, and interact with the physical subnet
+    network_mode: "host"
+    volumes:
+      - /Volumes/Lauburu-Monorepo:/app
+      - /Volumes/Lauburu-Monorepo/04_data_and_memory/data:/Volumes/Lauburu-Monorepo/04_data_and_memory/data
+      - /Volumes/Lauburu-Monorepo/04_data_and_memory:/app/04_data_and_memory
+    deploy:
+      resources:
+        limits:
+          memory: 512M # Prevents run-away memory leaks on constrained nodes
+    environment:
+      - PYTHONUNBUFFERED=1

@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-18",
+  "source": "universal_cloud_quota_state (canonical)",
+  "local_ai": {
+    "free_tier_calls": 614
+  },
+  "cloud_ai": {
+    "free_tier_calls": 614
+  },
+  "providers": {
+    "google_jules": 214,
+    "google_gemini": 34,
+    "nvidia_nim": 277,
+    "xai_grok": 0,
+    "cloudflare_ai": 89
+  },
+  "note": "Merged from universal_cloud_quota_state.json by roi_adaptive_cron_governor"
+}

@@ -1,0 +1,26 @@
+{
+  "video_id": "igh6l9wBsYg",
+  "url": "https://youtu.be/igh6l9wBsYg",
+  "division": "ADCC",
+  "title": "Adcc nationals - Aaron Maher vs Ali El Kheir",
+  "duration_sec": 372.0,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 20,
+  "dual_athlete_frames": 5,
+  "standing_phase_pct": 40.0,
+  "ground_scramble_phase_pct": 60.0,
+  "level_change_shots_detected": 2,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 54.9,
+    "left_elbow": 143.6,
+    "right_elbow": 145.0,
+    "left_hip": 144.9,
+    "right_hip": 138.0,
+    "left_knee": 147.7,
+    "right_knee": 138.4
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/igh6l9wBsYg_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match involves a combination of standing and ground/scramble, with a significant level change shot. The mean spine lean is high, and the elbow flexion is moderate, while the knee flexion is also moderate. This indicates a strong balance and stability, with Maher using his legs and knees to control the grappling.",
+  "processing_sec": 1.94
+}

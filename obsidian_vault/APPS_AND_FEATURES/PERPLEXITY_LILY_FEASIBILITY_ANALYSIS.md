@@ -23,7 +23,7 @@ Lily is a specialized single-process Rust inference server with hand-written Met
 | **Unified RAM** | 32 GB+ recommended (19.4 GB checkpoint) | 24.0 GB UMA (`recommendedMaxWorkingSetSize = 19.07 GB`) | ❌ **EXCEEDS WORKING SET** (19.4 GB > 19.07 GB limit) |
 | **Model Weights** | Strict MLX affine Q4 (Group size 64) ONLY | GGUF Vault (`llama.cpp` / `prima.cpp`) | ❌ **PROHIBITED** (Rule 8: Universal GGUF invariant) |
 | **Decoding Support** | Greedy decoding ONLY (`temp = 0`) | Full sampling, speculative draft, reasoning tags | ⚠️ **RESTRICTIVE** |
-| **Distributed / Mesh** | Monolithic single-device ONLY (No RPC/P2P) | 10Gbps TB4 DMA Bridge, Pipelined-Ring Parallelism | ❌ **NO MESH SUPPORT** |
+| **Distributed / Mesh** | Monolithic single-device ONLY (No RPC/P2P) | 40Gbps TB4 DMA Bridge, Pipelined-Ring Parallelism | ❌ **NO MESH SUPPORT** |
 
 ---
 
@@ -35,6 +35,6 @@ Lily is a specialized single-process Rust inference server with hand-written Met
    - In contrast, our current `Qwen 3.8 27B UD` (16.34 GiB GGUF with `-ub 256`) and `DeepSeek-Coder-V2 16B MoE` (9.65 GiB) fit and run on Metal with 100% stability.
 2. **Mesh Sharding vs. Monolithic Lock-In:**
    - Lily cannot distribute layers across nodes.
-   - Our `prima.cpp` PRP engine over the 10Gbps Thunderbolt 4 bridge pools **40.0 GB UMA** across the Mac Mini (L1) and MacBook Pro (L2) at **0.277 ms RTT**, allowing 72B–80B models to run without single-device memory limits.
+   - Our `prima.cpp` PRP engine over the 40Gbps Thunderbolt 4 bridge pools **40.0 GB UMA** across the Mac Mini (L1) and MacBook Pro (L2) at **0.277 ms RTT**, allowing 72B–80B models to run without single-device memory limits.
 3. **Engineering Utility from `pplx-garden`:**
    - While the standalone `lily` server cannot run on the M4 Pro due to the `MTLGPUFamilyApple10` requirement, the **Metal shader implementations** in `pplx-garden/lily/src/kernels/` provide valuable reference code for custom Metal MoE kernel optimizations.

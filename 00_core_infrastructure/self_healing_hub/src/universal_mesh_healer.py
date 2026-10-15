@@ -110,15 +110,15 @@ def heal_internet_gateway():
         })
 
     # 3. Samsung S20+ Ethernet / Network Fallback Healing
-    ok_s20_lan, _ = run_cmd("ssh -p 8022 -o ConnectTimeout=2 -o BatchMode=yes 100.84.40.95 'ping -c 1 -W 1 192.168.8.1' 2>/dev/null")
+    ok_s20_lan, _ = run_cmd("ssh -p 8022 -o ConnectTimeout=2 -o BatchMode=yes 100.78.206.96 'ping -c 1 -W 1 192.168.8.1' 2>/dev/null")
     if not ok_s20_lan:
-        run_cmd("ssh -p 8022 -o ConnectTimeout=2 -o BatchMode=yes 100.84.40.95 'termux-wifi-enable true; svc wifi enable; termux-wake-lock' 2>/dev/null &")
+        run_cmd("ssh -p 8022 -o ConnectTimeout=2 -o BatchMode=yes 100.78.206.96 'termux-wifi-enable true; svc wifi enable; termux-wake-lock' 2>/dev/null &")
         healed.append({
             "layer": "NET",
             "device": "Network Gateway: SAMSUNG_ETHERNET_LAN",
             "action": "S20_ETHERNET_WIFI_FALLBACK",
             "success": True,
-            "what_was_healed": "Detected Samsung Ethernet drop -> Auto-engaged Wi-Fi & Tailscale WireGuard fallback (100.84.40.95)",
+            "what_was_healed": "Detected Samsung Ethernet drop -> Auto-engaged Wi-Fi & Tailscale WireGuard fallback (100.78.206.96)",
             "what_it_adds": "Keeps Samsung S20+ connected to sovereign mesh without interruption",
             "vram_added_gb": 0.0
         })
@@ -239,10 +239,10 @@ def heal_layer3():
 def heal_layer4():
     """LAYER 4: Headless Apple M4 MacBook Air (LAN + Tailscale + Metal GPU + Caffeinate)."""
     ok_l4, _ = run_cmd("ping -c 2 -t 1 192.168.8.222")
-    ok_ts4, _ = run_cmd("ping -c 2 -t 1 100.93.158.96")
+    ok_ts4, _ = run_cmd("ping -c 2 -t 1 100.121.202.34")
 
     if ok_l4 or ok_ts4:
-        target_ip = "192.168.8.222" if ok_l4 else "100.93.158.96"
+        target_ip = "100.121.202.34" if ok_ts4 else "192.168.8.222"
         run_cmd(f'ssh -o ConnectTimeout=2 -o BatchMode=yes aaronmaher@{target_ip} "nohup caffeinate -dimsu >/dev/null 2>&1 &" &')
         item = {
             "layer": 4,
@@ -311,7 +311,7 @@ def heal_layer5():
 
 def heal_layer6():
     """LAYER 6: Samsung Galaxy S20+ (Android Doze Defense + Little-Core Governor)."""
-    s20_target = "100.84.40.95"
+    s20_target = "100.78.206.96"
     ok_p, _ = run_cmd(f"ping -c 1 -t 1 {s20_target}")
     if not ok_p:
         s20_target = "100.99.123.58"
@@ -338,7 +338,7 @@ def heal_layer6():
         }
         return [item], []
     else:
-        run_cmd("adb connect 100.84.40.95:5555 || adb connect 100.99.123.58:5555", timeout=2)
+        run_cmd("adb connect 100.78.206.96:5555 || adb connect 100.99.123.58:5555", timeout=2)
         ok_adb, _ = run_cmd("adb shell 'input keyevent KEYCODE_WAKEUP; svc wifi enable; cmd deviceidle whitelist +com.termux'", timeout=2)
         item = {
             "layer": 6,

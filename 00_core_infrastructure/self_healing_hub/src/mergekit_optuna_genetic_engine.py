@@ -16,9 +16,9 @@ import logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("MergeKitOptuna")
 
-RECIPE_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/mergekit_recipes"
+RECIPE_DIR = "/Volumes/Lauburu-Monorepo/data/mergekit_recipes"
 GDRIVE_RECIPE_DIR = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/merge_recipes"
-TRIALS_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/mergekit_optuna_trials.json"
+TRIALS_STATE_FILE = "/Volumes/Lauburu-Monorepo/data/mergekit_optuna_trials.json"
 os.makedirs(RECIPE_DIR, exist_ok=True)
 os.makedirs(os.path.dirname(TRIALS_STATE_FILE), exist_ok=True)
 

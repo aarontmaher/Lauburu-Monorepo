@@ -1,0 +1,231 @@
+{
+  "benchmark_title": "Petals Distributed AI Training & Backpropagation Protocol Benchmark",
+  "timestamp": "2026-10-14 14:28:20 UTC",
+  "node": "L3 Linux Mini (linux-amd-gpu / 192.168.8.225)",
+  "container": "lens-opt-tester",
+  "cpu": "x86_64",
+  "software": {
+    "kernel": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "torch": "2.14.1+cpu",
+    "hivemind": "1.1.12"
+  },
+  "isolated_variable": "Backward Pass Gradient Compression Scheme (C_grad)",
+  "fixed_parameters": {
+    "batch_size": 1,
+    "sequence_length": 256,
+    "hidden_dimension": 4096,
+    "total_elements": 1048576,
+    "raw_fp32_bytes": 4194304,
+    "forward_compression": "FLOAT16",
+    "warmup_rounds": 5,
+    "timed_rounds": 20,
+    "seed": 42
+  },
+  "results": [
+    {
+      "status": "SUCCESS",
+      "mode": "NONE_FP32",
+      "compression_enum": 0,
+      "wire_bytes": 4194325,
+      "compression_ratio": 0.9999949932349067,
+      "gradient_snr_db": 30.719962406666617,
+      "cosine_similarity": 0.999595582485199,
+      "relative_error": 0.02910729714454335,
+      "max_abs_error": 4.1338381606692565e-07,
+      "grad_serialization_us": {
+        "mean": 4713.4437,
+        "std": 577.0253,
+        "min": 3866.052,
+        "p50": 4620.826,
+        "p95": 6167.132,
+        "max": 6274.462
+      },
+      "grad_deserialization_us": {
+        "mean": 5254.2499,
+        "std": 1563.132,
+        "min": 3655.042,
+        "p50": 4456.853,
+        "p95": 8351.939,
+        "max": 8351.939
+      },
+      "backward_rpc_ms": {
+        "mean": 3921.9452,
+        "std": 542.3091,
+        "min": 3144.3815,
+        "p50": 3785.2685,
+        "p95": 4800.5423,
+        "max": 4800.5423
+      },
+      "forward_pass_ms": {
+        "mean": 1978.2523,
+        "std": 352.3702,
+        "min": 1347.8701,
+        "p50": 2036.1922,
+        "p95": 2754.531,
+        "max": 2754.531
+      },
+      "backward_pass_ms": {
+        "mean": 3949.3517,
+        "std": 547.182,
+        "min": 3157.3924,
+        "p50": 3817.1357,
+        "p95": 4815.197,
+        "max": 4815.197
+      },
+      "total_step_ms": {
+        "mean": 5942.8847,
+        "std": 687.7793,
+        "min": 4759.6141,
+        "p50": 5928.5124,
+        "p95": 7229.0876,
+        "max": 7229.0876
+      },
+      "training_steps_per_sec": 0.17,
+      "training_tokens_per_sec": 43.08,
+      "effective_mb_per_sec": 1.35
+    },
+    {
+      "status": "SUCCESS",
+      "mode": "FLOAT16",
+      "compression_enum": 2,
+      "wire_bytes": 2097175,
+      "compression_ratio": 1.9999780657312813,
+      "gradient_snr_db": 30.320382908600664,
+      "cosine_similarity": 0.999839186668396,
+      "relative_error": 0.03047760627679723,
+      "max_abs_error": 4.3255732862235163e-07,
+      "grad_serialization_us": {
+        "mean": 7161.8633,
+        "std": 3633.7269,
+        "min": 5022.817,
+        "p50": 5784.373,
+        "p95": 17549.232,
+        "max": 20423.836
+      },
+      "grad_deserialization_us": {
+        "mean": 199215.0566,
+        "std": 78027.4964,
+        "min": 116945.121,
+        "p50": 195565.139,
+        "p95": 393738.118,
+        "max": 393738.118
+      },
+      "backward_rpc_ms": {
+        "mean": 3743.1567,
+        "std": 521.4602,
+        "min": 3187.0155,
+        "p50": 3599.8413,
+        "p95": 5297.4544,
+        "max": 5297.4544
+      },
+      "forward_pass_ms": {
+        "mean": 2043.1281,
+        "std": 382.2019,
+        "min": 1552.7184,
+        "p50": 2022.703,
+        "p95": 2961.691,
+        "max": 2961.691
+      },
+      "backward_pass_ms": {
+        "mean": 3963.8269,
+        "std": 562.7125,
+        "min": 3349.9943,
+        "p50": 3772.2544,
+        "p95": 5535.9501,
+        "max": 5535.9501
+      },
+      "total_step_ms": {
+        "mean": 6025.4413,
+        "std": 826.6418,
+        "min": 5173.4807,
+        "p50": 5841.266,
+        "p95": 8518.8803,
+        "max": 8518.8803
+      },
+      "training_steps_per_sec": 0.17,
+      "training_tokens_per_sec": 42.49,
+      "effective_mb_per_sec": 1.33
+    },
+    {
+      "status": "SUCCESS",
+      "mode": "MEANSTD_16BIT",
+      "compression_enum": 1,
+      "wire_bytes": 2099223,
+      "compression_ratio": 1.9980268889965478,
+      "gradient_snr_db": 30.719497505832635,
+      "cosine_similarity": 0.9995945692062378,
+      "relative_error": 0.02910885511608435,
+      "max_abs_error": 4.13305457414026e-07,
+      "grad_serialization_us": {
+        "mean": 48501.8508,
+        "std": 36274.2725,
+        "min": 11878.249,
+        "p50": 43690.344,
+        "p95": 117171.989,
+        "max": 173361.036
+      },
+      "grad_deserialization_us": {
+        "mean": 123293.5278,
+        "std": 54716.2419,
+        "min": 57317.075,
+        "p50": 121847.725,
+        "p95": 220629.925,
+        "max": 220629.925
+      },
+      "backward_rpc_ms": {
+        "mean": 3895.953,
+        "std": 742.9762,
+        "min": 2848.8312,
+        "p50": 3725.0252,
+        "p95": 5483.0036,
+        "max": 5483.0036
+      },
+      "forward_pass_ms": {
+        "mean": 2149.155,
+        "std": 451.6757,
+        "min": 1514.347,
+        "p50": 2163.3478,
+        "p95": 3021.2464,
+        "max": 3021.2464
+      },
+      "backward_pass_ms": {
+        "mean": 4037.1587,
+        "std": 765.8341,
+        "min": 2934.9005,
+        "p50": 3813.2653,
+        "p95": 5698.2862,
+        "max": 5698.2862
+      },
+      "total_step_ms": {
+        "mean": 6204.7565,
+        "std": 1021.7858,
+        "min": 4975.3763,
+        "p50": 5980.5958,
+        "p95": 8738.1033,
+        "max": 8738.1033
+      },
+      "training_steps_per_sec": 0.16,
+      "training_tokens_per_sec": 41.26,
+      "effective_mb_per_sec": 1.29
+    },
+    {
+      "status": "INCOMPATIBLE",
+      "mode": "UNIFORM_8BIT",
+      "compression_enum": 4,
+      "error": "only 0-dimensional arrays can be converted to Python scalars"
+    },
+    {
+      "status": "INCOMPATIBLE",
+      "mode": "QUANTILE_8BIT",
+      "compression_enum": 3,
+      "error": "only 0-dimensional arrays can be converted to Python scalars"
+    },
+    {
+      "status": "INCOMPATIBLE",
+      "mode": "BLOCKWISE_8BIT",
+      "compression_enum": 5,
+      "error": "ImportError('BlockwiseQuantization requires bitsandbytes to function properly.\\nPlease install it with `pip install bitsandbytes`\\nor using the instruction from https://github.com/TimDettmers/bitsandbytes.')"
+    }
+  ]
+}

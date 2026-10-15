@@ -1,0 +1,9 @@
+{
+  "timestamp": 1789483387.9715269,
+  "status": "TRAINING_ACTIVE",
+  "ecommerce_pairs_harvested": 62323,
+  "target_model": "Qwen2-7B-Instruct-4bit",
+  "adapter": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/lora_adapters/ecommerce_red_blue_ensemble",
+  "thunderbolt_offload": true,
+  "target_node": "L5_M4_Air_Over_TB4"
+}

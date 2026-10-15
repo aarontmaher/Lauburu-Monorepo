@@ -17,7 +17,7 @@ class LauburuComputeHubApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lauburu Compute Hub',
+      title: 'Compute Hub Lauburu',
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFF0D1117),
         colorScheme: const ColorScheme.dark(
@@ -65,7 +65,7 @@ class _ComputeHubHomeScreenState extends State<ComputeHubHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('LAUBURU COMPUTE HUB (LEAN SATELLITE)'),
+        title: const Text('COMPUTE HUB LAUBURU (LEAN SATELLITE)'),
         backgroundColor: const Color(0xFF161B22),
       ),
       body: Center(

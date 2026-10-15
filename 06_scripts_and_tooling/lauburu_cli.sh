@@ -74,7 +74,7 @@ print_menu() {
     show_banner
     echo -e "${BOLD}Personal Device & Swarm Control Options:${RESET}"
     echo ""
-    echo -e "  ${BOLD}${GREEN}[1]${RESET} ${BOLD}My Device Cockpit & Paying-by-Computing (Default)${RESET}"
+    echo -e "  ${BOLD}${GREEN}[1]${RESET} ${BOLD}My Device Console & Paying-by-Computing (Default)${RESET}"
     echo -e "      Local hardware introspection, token contribution & credit ledger"
     echo ""
     echo -e "  ${BOLD}${CYAN}[2]${RESET} ${BOLD}My Personal Swarm (Paired Companion Devices)${RESET}"
@@ -91,8 +91,8 @@ print_menu() {
 }
 
 launch_local_lauburu() {
-    echo -e "${GREEN}==> Launching native Personal Device Cockpit...${RESET}"
-    local lens_bin="/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/rust_network_analyzer/target/release/lauburu_network_lens"
+    echo -e "${GREEN}==> Launching native Personal Device Console...${RESET}"
+    local lens_bin="/Volumes/Lauburu-Monorepo/01_apps/rust_network_analyzer/target/release/lauburu_network_lens"
     if [ -x "$lens_bin" ]; then
         exec "$lens_bin" "$@"
     elif command -v lauburu-tui >/dev/null 2>&1; then
@@ -147,8 +147,8 @@ launch_canonical_tui() {
     elif [ -f "$HOME/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port/tui/canonical_tui.py" ]; then
         cd "$HOME/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port"
         exec python3 -m textual run --dev tui/canonical_tui.py
-    elif [ -f "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port/tui/canonical_tui.py" ]; then
-        cd "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port"
+    elif [ -f "/Volumes/Lauburu-Monorepo/01_apps/canonical_port/tui/canonical_tui.py" ]; then
+        cd "/Volumes/Lauburu-Monorepo/01_apps/canonical_port"
         exec python3 -m textual run --dev tui/canonical_tui.py
     else
         echo -e "${YELLOW}Connecting to Mac Mini for Canonical Textual TUI...${RESET}"
@@ -225,7 +225,7 @@ case "${1:-}" in
         launch_sentinel_stream
         ;;
     -l|--list|list)
-        echo "1: My Device Cockpit & Paying-by-Computing (Default)"
+        echo "1: My Device Console & Paying-by-Computing (Default)"
         echo "2: My Personal Swarm (Companion Devices)"
         echo "3: Global Mesh Telemetry & Diagnostics"
         echo "4: Sentinel Watchdog & Socket Stream"
@@ -236,7 +236,7 @@ case "${1:-}" in
         exit 0
         ;;
     "")
-        # Default: Immediately launch native personal cockpit!
+        # Default: Immediately launch native personal console!
         launch_local_lauburu "$@"
         ;;
     -m|--menu|menu)

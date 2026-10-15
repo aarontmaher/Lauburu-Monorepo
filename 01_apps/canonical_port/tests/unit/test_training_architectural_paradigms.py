@@ -152,7 +152,7 @@ async def test_tailscale_localapi_unix_socket_mock_server():
                 },
                 "Peer": {
                     "node-1": {"HostName": "MacBook_Pro"},
-                    "node-2": {"HostName": "Linux_Head_Node"},
+                    "node-2": {"HostName": "Linux_Mini"},
                 },
                 "MagicDNSSuffix": "lauburu-mesh.ts.net",
             })

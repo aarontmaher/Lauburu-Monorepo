@@ -1,0 +1,265 @@
+<!-- =========================================================================
+     COMBAT LAB LAUBURU — LEGAL COMPLIANCE MODALS & FOOTER INTEGRATION SNIPPET
+     Subsystem: Commercialization & Legal Compliance Suite
+     Contains: Terms of Service, Zero-Cloud Privacy Policy, Medical/Injury Disclaimer
+     ========================================================================= -->
+
+<!-- Legal Modals Container -->
+<div id="lauburuLegalModalsContainer">
+  <!-- 1. Terms of Service Modal -->
+  <div id="termsModal" class="legal-modal-overlay" style="display:none;" onclick="handleLegalBackdropClick(event, 'termsModal')">
+    <div class="legal-modal-dialog">
+      <div class="legal-modal-header">
+        <div class="legal-header-title">
+          <span class="legal-icon">📜</span>
+          <h3>Terms of Service — Combat Lab Lauburu</h3>
+        </div>
+        <button type="button" class="legal-close-btn" onclick="closeLegalModal('termsModal')">&times;</button>
+      </div>
+      <div class="legal-modal-body">
+        <p class="legal-updated">Last Updated: October 2026 · Australian Consumer Law (ACL) Compliant</p>
+        
+        <h4>1. Acceptance & Permitted Athletic Use</h4>
+        <p>By using Combat Lab Lauburu ("Software"), subscribing to Mat Tier ($29 AUD), Pro Coach ($99 AUD), or Gym License ($299 AUD), or purchasing the Hardware Starter Bundle ($249 AUD), you agree to these Terms. You represent that you are at least 18 years of age or possess legal guardian consent.</p>
+        
+        <h4>2. Commercial Licensing & Multi-Device Tiers</h4>
+        <ul>
+          <li><strong>Starter Athlete (Mat Tier):</strong> 1 active Bluetooth ECG sensor for personal conditioning.</li>
+          <li><strong>Pro Grappler & Lab:</strong> Up to 3 active athlete sensors with Pulse Transit Time blood pressure tracking.</li>
+          <li><strong>Elite Academy & Team:</strong> Site license for up to 12 simultaneous mat sensors and team displays.</li>
+        </ul>
+
+        <h4>3. Hardware Sales & Consumer Guarantees</h4>
+        <p>Physical hardware components (Movesense ECG pods, custom silver-electrode bicep bands, adhesive patches) are covered by statutory guarantees under the Australian Consumer Law (ACL). Consumers are entitled to repair, replacement, or refund for major hardware defects.</p>
+
+        <h4>4. Digital Subscriptions & Cancellations</h4>
+        <p>Digital subscriptions automatically renew monthly or annually. You may cancel at any time via the customer billing portal; access continues through the conclusion of the active billing period.</p>
+      </div>
+      <div class="legal-modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeLegalModal('termsModal')">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Zero-Cloud Privacy Policy Modal -->
+  <div id="privacyModal" class="legal-modal-overlay" style="display:none;" onclick="handleLegalBackdropClick(event, 'privacyModal')">
+    <div class="legal-modal-dialog">
+      <div class="legal-modal-header">
+        <div class="legal-header-title">
+          <span class="legal-icon">🔒</span>
+          <h3>Zero-Cloud Privacy Policy — Combat Lab Lauburu</h3>
+        </div>
+        <button type="button" class="legal-close-btn" onclick="closeLegalModal('privacyModal')">&times;</button>
+      </div>
+      <div class="legal-modal-body">
+        <p class="legal-updated">GDPR (EU 2016/679) & Australian Privacy Principles (APPs) Sovereign Standard</p>
+        
+        <div class="legal-callout legal-callout-gold">
+          <strong>Provable Local Sovereignty:</strong> Combat Lab Lauburu does NOT upload, broker, or transmit personal health waveforms, heart rates, or camera PPG frames to remote servers. All signal processing runs in device RAM.
+        </div>
+
+        <h4>1. Biometric Signal Handling (512Hz ECG)</h4>
+        <p>Raw ECG data streamed from your Bluetooth sensor is processed locally via client-side Pan-Tompkins algorithms in volatile memory. Metrics stored locally in IndexedDB never leave your browser.</p>
+
+        <h4>2. Camera Optical PPG Blood Pressure Video Frames</h4>
+        <p>Camera frames recorded during blood pressure estimation are analyzed in real-time in device memory to detect systolic pulse peaks. Video frames are immediately destroyed upon measurement completion; no video is ever written to disk or transmitted.</p>
+
+        <h4>3. Zero Third-Party Tracking</h4>
+        <p>We do not embed third-party advertising trackers, data brokers, or analytics scripts. Your athletic conditioning data belongs exclusively to you.</p>
+
+        <h4>4. User Data Erasure</h4>
+        <p>You may purge all cached local training sessions with a single click inside Application Settings.</p>
+      </div>
+      <div class="legal-modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeLegalModal('privacyModal')">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Medical & Combat Sports Liability Disclaimer Modal -->
+  <div id="medicalModal" class="legal-modal-overlay" style="display:none;" onclick="handleLegalBackdropClick(event, 'medicalModal')">
+    <div class="legal-modal-dialog">
+      <div class="legal-modal-header">
+        <div class="legal-header-title">
+          <span class="legal-icon">⚠️</span>
+          <h3 style="color:#f59e0b;">Medical Notice & Physical Injury Waiver</h3>
+        </div>
+        <button type="button" class="legal-close-btn" onclick="closeLegalModal('medicalModal')">&times;</button>
+      </div>
+      <div class="legal-modal-body">
+        <div class="legal-callout legal-callout-red">
+          <strong>NOT A MEDICAL DEVICE:</strong> Combat Lab Lauburu is an athletic conditioning tool. It is NOT a regulated medical device under US FDA (21 CFR Part 870) or Australian TGA guidelines.
+        </div>
+
+        <h4>1. Non-Diagnostic Athletic Wellness Notice</h4>
+        <p>This software does NOT diagnose, treat, or prevent cardiac arrhythmias, myocardial infarction, acute hypertension, or pathological heart conditions. Pulse Transit Time (PTT) blood pressure and 512Hz ECG are mathematical approximations for training reference only.</p>
+        <p><strong>If you experience chest pain, severe shortness of breath, dizziness, or suspect a cardiovascular emergency, immediately call emergency services (000 in Australia, 911 in the US) or consult a physician.</strong></p>
+
+        <h4>2. Assumption of Physical Risk (Martial Arts & Grappling)</h4>
+        <p>Martial arts, Brazilian Jiu-Jitsu (BJJ), wrestling, MMA, and grappling involve inherent risks of physical injury, concussions, joint dislocations, and cardiovascular trauma.</p>
+        <p>Wearable sensors attached to bicep bands or adhesive patches carry risks of displacement, partner impact, or hardware damage during live training. By using Combat Lab, you voluntarily assume all known risks and release Lauburu from all liability arising from athletic training.</p>
+      </div>
+      <div class="legal-modal-footer">
+        <button type="button" class="btn-primary" onclick="closeLegalModal('medicalModal')">I UNDERSTAND & AGREE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Legal Modal Styles -->
+<style>
+  .legal-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  .legal-modal-dialog {
+    background: #11141c;
+    border: 1px solid #2a3042;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 650px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .legal-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid #1f2638;
+  }
+  .legal-header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .legal-header-title h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .legal-close-btn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+  }
+  .legal-close-btn:hover {
+    color: #fff;
+  }
+  .legal-modal-body {
+    padding: 20px 24px;
+    overflow-y: auto;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #cbd5e1;
+  }
+  .legal-modal-body h4 {
+    color: #f1f5f9;
+    font-size: 14.5px;
+    margin: 16px 0 6px 0;
+  }
+  .legal-updated {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 0;
+    margin-bottom: 14px;
+  }
+  .legal-callout {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 12px 0 16px 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .legal-callout-gold {
+    background: rgba(217, 119, 6, 0.15);
+    border-left: 4px solid #d97706;
+    color: #fef3c7;
+  }
+  .legal-callout-red {
+    background: rgba(220, 38, 38, 0.15);
+    border-left: 4px solid #dc2626;
+    color: #fee2e2;
+  }
+  .legal-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 14px 24px;
+    border-top: 1px solid #1f2638;
+    background: #0d1017;
+    border-radius: 0 0 12px 12px;
+  }
+</style>
+
+<!-- Legal Modal JavaScript Triggers -->
+<script>
+  function openLegalModal(modalId) {
+    const el = document.getElementById(modalId);
+    if (el) {
+      el.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeLegalModal(modalId) {
+    const el = document.getElementById(modalId);
+    if (el) {
+      el.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  function handleLegalBackdropClick(event, modalId) {
+    if (event.target && event.target.id === modalId) {
+      closeLegalModal(modalId);
+    }
+  }
+
+  // Escape key handler
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      ['termsModal', 'privacyModal', 'medicalModal'].forEach(closeLegalModal);
+    }
+  });
+
+  // Attach to window
+  if (typeof window !== 'undefined') {
+    window.openLegalModal = openLegalModal;
+    window.closeLegalModal = closeLegalModal;
+  }
+</script>
+
+<!-- =========================================================================
+     FOOTER INTEGRATION SNIPPET (To embed in app.html / index.html footers)
+     ========================================================================= -->
+<!--
+<footer class="app-footer">
+  <div class="footer-content">
+    <span>© 2026 Combat Lab Lauburu · Clinical-Grade Biometrics & Open Wearables</span>
+    <div class="footer-links">
+      <a href="javascript:void(0)" onclick="openLegalModal('termsModal')">Terms of Service</a>
+      <a href="javascript:void(0)" onclick="openLegalModal('privacyModal')">Zero-Cloud Privacy Policy</a>
+      <a href="javascript:void(0)" onclick="openLegalModal('medicalModal')" style="color:#f59e0b;">⚠️ Medical & Injury Disclaimer</a>
+    </div>
+  </div>
+</footer>
+-->

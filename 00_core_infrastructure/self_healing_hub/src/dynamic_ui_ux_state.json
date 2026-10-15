@@ -1,21 +1,39 @@
 {
-  "timestamp_utc": "2026-09-01T17:54:29Z",
-  "cycle_count": 1,
+  "timestamp_utc": "2026-09-15T17:01:50Z",
+  "cycle_count": 4,
   "gamified_hud": {
-    "combat_tug_of_war_bar": "\ud83d\udd35 BLUE [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 61.7% vs \ud83d\udd34 RED [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 38.3%",
-    "cardiac_pulse_meter": "\ud83d\udc93 [\u2665\u2665\u2665\u2665\u2665\u2665\u00b7\u00b7\u00b7\u00b7] 97 BPM (Zone 2 Aerobic Resonance | RMSSD: 861.46ms)",
-    "blue_compute_pct": 61.7,
-    "red_compute_pct": 38.3,
-    "heart_rate_bpm": 97,
-    "autonomic_state": "AEROBIC_INTENSE",
+    "combat_tug_of_war_bar": "\ud83d\udd35 BLUE [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 66.7% vs \ud83d\udd34 RED [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 33.3%",
+    "cardiac_pulse_meter": "\ud83d\udc93 [\u2665\u2665\u2665\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7] 73 BPM (Zone 2 Aerobic Resonance | RMSSD: 39.4ms)",
+    "blue_compute_pct": 66.7,
+    "red_compute_pct": 33.3,
+    "heart_rate_bpm": 73,
+    "autonomic_state": "ZONE_2_OPTIMAL",
     "contested_node": "GL-MT3600BE Router SQM Buffers (192.168.8.1)"
   },
   "play_by_play_events": [
     {
-      "time": "03:54:29",
-      "type": "\ud83d\ude80 FAILOVER ENGAGED",
-      "description": "Chaos Overlord simulated TB4 packet loss! Instant sub-millisecond WireGuard failover executed (1.85ms RTT)",
-      "team": "yellow"
+      "time": "03:01:50",
+      "type": "\ud83d\udee1\ufe0f DEFENSE LOCK",
+      "description": "LuCI OpenWrt deployed SQM fq_codel bufferbloat shield on 192.168.8.1! Mitigated 350ms latency surge",
+      "team": "blue"
+    },
+    {
+      "time": "03:01:49",
+      "type": "\ud83d\udc93 HRV STABILIZATION",
+      "description": "LuCI engaged Kamath 2004 artifact filter! Real-time heart rate verified authentic at Zone 2 baseline",
+      "team": "blue"
+    },
+    {
+      "time": "03:01:47",
+      "type": "\ud83d\udd12 JUMBO SHIELD",
+      "description": "Sentinel locked MTU 9000 Jumbo Frame tripwire on bridge0! Certified Ed25519 node authentication",
+      "team": "blue"
+    },
+    {
+      "time": "03:01:42",
+      "type": "\ud83d\udc93 HRV STABILIZATION",
+      "description": "LuCI engaged Kamath 2004 artifact filter! Real-time heart rate verified authentic at Zone 2 baseline",
+      "team": "blue"
     }
   ],
   "territory_control": {

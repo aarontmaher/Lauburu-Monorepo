@@ -32,8 +32,8 @@ def _get_workspace_root() -> Path:
     candidates = [
         Path(__file__).resolve().parent.parent.parent,
         Path(__file__).resolve().parent.parent,
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
+        Path("/Volumes/Lauburu-Monorepo"),
+        Path("/Volumes/Lauburu-Monorepo"),
     ]
     for c in candidates:
         if c.exists() and (c / "data").exists():
@@ -41,7 +41,7 @@ def _get_workspace_root() -> Path:
     for c in candidates:
         if c.exists():
             return c
-    return Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+    return Path("/Volumes/Lauburu-Monorepo")
 
 WORKSPACE_ROOT = _get_workspace_root()
 for p in [
@@ -326,7 +326,7 @@ class TriOrchestratorChatService:
         elif action_type == "STORAGE":
             # 3. Real statvfs Storage Check
             try:
-                monorepo_stat = os.statvfs("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+                monorepo_stat = os.statvfs("/Volumes/Lauburu-Monorepo")
                 total_gb = round((monorepo_stat.f_blocks * monorepo_stat.f_frsize) / (1024**3), 2)
                 free_gb = round((monorepo_stat.f_bavail * monorepo_stat.f_frsize) / (1024**3), 2)
                 used_gb = round(total_gb - free_gb, 2)
@@ -338,7 +338,7 @@ class TriOrchestratorChatService:
                     "status": "SUCCESS",
                     "summary": f"Monorepo Storage: {used_gb} GB / {total_gb} GB used ({pct_used}%). Headroom: {free_gb} GB free.",
                     "details": {
-                        "monorepo_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo",
+                        "monorepo_path": "/Volumes/Lauburu-Monorepo",
                         "total_gb": total_gb,
                         "used_gb": used_gb,
                         "free_gb": free_gb,
@@ -356,7 +356,7 @@ class TriOrchestratorChatService:
                 ("Layer 2 Mac 2 TB4", "169.254.187.138", 50052),
                 ("Layer 3 Linux Tablet", "192.168.8.119", 50052),
                 ("Layer 4 Pixel 10", "100.73.38.87", 50052),
-                ("Layer 5 Samsung S20", "100.84.40.95", 50052)
+                ("Layer 5 Samsung S20", "100.78.206.96", 50052)
             ]
             for label, ip, port in targets:
                 t0 = time.time()
@@ -1025,7 +1025,7 @@ tags: [lora, chat_consensus, action_dispatcher, multi_ai]
 - Sprint launched
 - Graph synchronized to Obsidian
 """
-            note_path = f"/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/04_LoRA_Decisions/{safe_title}.md"
+            note_path = f"/Volumes/Lauburu-Monorepo/obsidian_vault/04_LoRA_Decisions/{safe_title}.md"
             try:
                 with open(note_path, "w") as f:
                     f.write(note_content)

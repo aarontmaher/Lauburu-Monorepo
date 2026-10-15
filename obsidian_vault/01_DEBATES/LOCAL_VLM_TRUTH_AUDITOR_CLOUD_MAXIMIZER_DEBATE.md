@@ -63,4 +63,4 @@ Every visual audit cycle compiles a rich multimodal DPO training record:
 - **`rejected`**: Flawed code diff + annotated screenshot with RenderFlex overflow bounding box.
 - **`margin`**: Qualitative UI score differential (0.0 to 1.0).
 
-These pairs are serialized to `/Users/aaron/DFS_UNIFIED/lora_datasets/visual_ui_audit_lora.jsonl` and fine-tuned locally overnight on Apple Silicon Metal Performance Shaders, continuously teaching local models to become master visual auditors.\n
+These pairs are serialized to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/visual_ui_audit_lora.jsonl` and fine-tuned locally overnight on Apple Silicon Metal Performance Shaders, continuously teaching local models to become master visual auditors.\n

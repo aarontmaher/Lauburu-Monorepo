@@ -37,6 +37,6 @@ tags: [qwen_moe, supreme_training_target, swarm_orchestration, dynamic_routing, 
 ---
 
 ## 📁 3. Integration & Tooling
-- **Training Harness:** [`02_ai_models_and_inference/train_qwen_moe_orchestrator.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/train_qwen_moe_orchestrator.py)
+- **Training Harness:** [`02_ai_models_and_inference/train_qwen_moe_orchestrator.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/train_qwen_moe_orchestrator.py)
 - **Adapter Checkpoints:** `02_ai_models_and_inference/lora_adapters/qwen_moe_orchestrator/`
 - **Canonical Rule Enforced:** `obsidian_vault/CANONICAL_PROJECT_AND_STORAGE_RULE.md` (Section 2.1)

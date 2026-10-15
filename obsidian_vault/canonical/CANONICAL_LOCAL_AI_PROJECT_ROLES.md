@@ -17,25 +17,25 @@ This document governs the **authoritative mapping of Local AI models to speciali
 > 
 > **Demarcated Hardware Boundary Principle:**
 > - **Front-End Customer-Facing Apps (`client_facing: True`):** Memory cap is strictly governed by the customer's physical device envelope ($<= 1,500	ext{ MB}$ mobile, $<= 6,000	ext{ MB}$ consumer laptops) to guarantee zero out-of-memory crashes on customer hardware.
-> - **Back-End Development & Mesh Subsystems (`client_facing: False`):** Memory cap is NOT governed by customer devices; it is governed exclusively by **Aaron's 7-Layer Physical Mesh Network Capacity (108.0 GB RAM / 82.8 GB Pooled AI VRAM)** across the 10Gbps Thunderbolt 4 DMA bridge (`bridge0` @ 0.277ms RTT), Prima.cpp pipelined ring parallelism (PRP), and llama.cpp RPC sharding (Ports 8081–8084), supporting models up to 32B, 70B, and 80B MoE.
+> - **Back-End Development & Mesh Subsystems (`client_facing: False`):** Memory cap is NOT governed by customer devices; it is governed exclusively by **Aaron's 8-Node Physical Mesh Network Capacity (139.0 GB RAM / 108.4 GB Pooled AI VRAM)** across the 40Gbps Thunderbolt 4 DMA bridge to L8 `lauburu` (`bridge0` @ 0.38ms RTT), Prima.cpp pipelined ring parallelism (PRP), and llama.cpp RPC sharding (Ports 8081–8084), supporting models up to 32B, 70B, and 80B MoE.
 
 ### 📋 Master Roles Summary Table
 
 | Subsystem | Project Role | Surface Classification | Current Top Model | Composite ELO | Deployment Surface | Governing Capacity Boundary | COI Outperformance | Capacity Fit | Status |
 | :--- | :--- | :---: | :--- | :---: | :--- | :--- | :---: | :---: | :--- |
-| `00_core_infrastructure` | **System & Mesh Sentinel** | *Back-End Mesh* | `SmolLM2-135M-Instruct-Q4_K_M` | `2430.8` | *Back-End Host / Mesh Infrastructure* | `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)` | `1.15x` | ✅ Fits Mesh (101MB <= 82.8GB) | 🔒 **LOCKED CHAMPION** |
-| `01_apps` | **Full-Stack App & Reactive UI Engineer** | *Back-End Mesh* | `Qwen2.5-Coder-7B-Instruct-Q4_K_M` | `2481.4` | *Developer Workstation / Cluster Compute Hub* | `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)` | `1.15x` | ✅ Fits Mesh (4600MB <= 82.8GB) | 🔒 **LOCKED CHAMPION** |
-| `02_ai_models_and_inference` | **Distributed AI & Sharding Governor** | *Back-End Mesh* | `Qwen2.5-Coder-32B-Instruct-Q4_K_M` | `2498.0` | *10Gbps TB4 DMA Bridge / Multi-Node RPC Ring* | `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)` | `1.15x` | ✅ Fits Mesh (19800MB <= 82.8GB) | 🔒 **LOCKED CHAMPION** |
+| `00_core_infrastructure` | **System & Mesh Sentinel** | *Back-End Mesh* | `SmolLM2-135M-Instruct-Q4_K_M` | `2430.8` | *Back-End Host / Mesh Infrastructure* | `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)` | `1.15x` | ✅ Fits Mesh (101MB <= 108.4GB) | 🔒 **LOCKED CHAMPION** |
+| `01_apps` | **Full-Stack App & Reactive UI Engineer** | *Back-End Mesh* | `Qwen2.5-Coder-7B-Instruct-Q4_K_M` | `2481.4` | *Developer Workstation / Cluster Compute Hub* | `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)` | `1.15x` | ✅ Fits Mesh (4600MB <= 108.4GB) | 🔒 **LOCKED CHAMPION** |
+| `02_ai_models_and_inference` | **Distributed AI & Sharding Governor** | *Back-End Mesh* | `Qwen2.5-Coder-32B-Instruct-Q4_K_M` | `2498.0` | *40Gbps TB4 DMA Bridge / Multi-Node RPC Ring* | `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)` | `1.15x` | ✅ Fits Mesh (19800MB <= 108.4GB) | 🔒 **LOCKED CHAMPION** |
 | `03_biometrics_and_telemetry` | **Biomedical & Physiological DSP Specialist** | *Front-End Client* | `Chronos-T5-Small-DSP-Tandem` | `2392.0` | *Mobile / Wearable Edge Surface* | `Customer Device Envelope (Mobile <= 1,500 MB)` | `1.15x` | ✅ Fits Device (420MB <= 1500MB) | 🔒 **LOCKED CHAMPION** |
-| `04_data_and_memory` | **Big Data Lakehouse & Memory Crawlers** | *Back-End Mesh* | `Qwen2.5-Coder-7B-Instruct-Q4_K_M` | `2469.4` | *Data Lakehouse Host / Qdrant Vector DB* | `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)` | `1.15x` | ✅ Fits Mesh (4600MB <= 82.8GB) | 🔒 **LOCKED CHAMPION** |
-| `05_agents_and_swarms` | **Swarm Debate Arbiter & Genetic MoE Router** | *Back-End Mesh* | `DeepSeek-R1-Distill-Qwen-32B-Q4_K_M` | `2514.0` | *Cluster Master / 10Gbps TB4 Bridge* | `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)` | `1.15x` | ✅ Fits Mesh (19800MB <= 82.8GB) | 🔒 **LOCKED CHAMPION** |
-| `06_scripts_and_tooling` | **Universal Transport & Hardware Tooling Sentinel** | *Back-End Mesh* | `SmolLM2-360M-Instruct-Q4_K_M` | `2431.6` | *Host Daemons / Hardware USB Bridge* | `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)` | `1.15x` | ✅ Fits Mesh (258MB <= 82.8GB) | 🔒 **LOCKED CHAMPION** |
-| `07_docs_and_architecture` | **Monorepo Architecture & Knowledge Indexer** | *Back-End Mesh* | `Qwen2.5-Coder-7B-Instruct-Q4_K_M` | `2475.4` | *Obsidian Vault Core / Git Worktree* | `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)` | `1.15x` | ✅ Fits Mesh (4600MB <= 82.8GB) | 🔒 **LOCKED CHAMPION** |
+| `04_data_and_memory` | **Big Data Lakehouse & Memory Crawlers** | *Back-End Mesh* | `Qwen2.5-Coder-7B-Instruct-Q4_K_M` | `2469.4` | *Data Lakehouse Host / Qdrant Vector DB* | `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)` | `1.15x` | ✅ Fits Mesh (4600MB <= 108.4GB) | 🔒 **LOCKED CHAMPION** |
+| `05_agents_and_swarms` | **Swarm Debate Arbiter & Genetic MoE Router** | *Back-End Mesh* | `DeepSeek-R1-Distill-Qwen-32B-Q4_K_M` | `2514.0` | *Cluster Master / 40Gbps TB4 Bridge* | `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)` | `1.15x` | ✅ Fits Mesh (19800MB <= 108.4GB) | 🔒 **LOCKED CHAMPION** |
+| `06_scripts_and_tooling` | **Universal Transport & Hardware Tooling Sentinel** | *Back-End Mesh* | `SmolLM2-360M-Instruct-Q4_K_M` | `2431.6` | *Host Daemons / Hardware USB Bridge* | `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)` | `1.15x` | ✅ Fits Mesh (258MB <= 108.4GB) | 🔒 **LOCKED CHAMPION** |
+| `07_docs_and_architecture` | **Monorepo Architecture & Knowledge Indexer** | *Back-End Mesh* | `Qwen2.5-Coder-7B-Instruct-Q4_K_M` | `2475.4` | *Obsidian Vault Core / Git Worktree* | `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)` | `1.15x` | ✅ Fits Mesh (4600MB <= 108.4GB) | 🔒 **LOCKED CHAMPION** |
 | `08_business_and_commerce` | **E-Commerce & Shopify Storefront Architect** | *Front-End Client* | `Qwen2.5-Coder-7B-Instruct-Q4_K_M` | `2457.4` | *Mobile / POS Customer Surface* | `Customer Device Envelope (Workstation/Mobile <= 6,000 MB)` | `1.15x` | ✅ Fits Device (4600MB <= 6000MB) | 🔒 **LOCKED CHAMPION** |
-| `09_app_store_production` | **App Store Production & Memory Leak Auditor** | *Back-End Mesh* | `Qwen2.5-Coder-7B-Instruct-Q4_K_M` | `2463.4` | *Automated CI/CD Host / ADB Bridge* | `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)` | `1.15x` | ✅ Fits Mesh (4600MB <= 82.8GB) | 🔒 **LOCKED CHAMPION** |
+| `09_app_store_production` | **App Store Production & Memory Leak Auditor** | *Back-End Mesh* | `Qwen2.5-Coder-7B-Instruct-Q4_K_M` | `2463.4` | *Automated CI/CD Host / ADB Bridge* | `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)` | `1.15x` | ✅ Fits Mesh (4600MB <= 108.4GB) | 🔒 **LOCKED CHAMPION** |
 | `10_spatial_grappling_kinematics` | **3D Spatial Grappling Kinematics Specialist** | *Front-End Client* | `Qwen3-VL-8B-Instruct-4bit` | `2444.0` | *Customer Tablet / Mobile 3D Surface* | `Customer Device Envelope (Workstation/Tablet <= 6,000 MB)` | `1.15x` | ✅ Fits Device (5200MB <= 6000MB) | 🔒 **LOCKED CHAMPION** |
-| `11_security_red_blue_team` | **Abliterated Security & Red/Blue Sentinel** | *Back-End Mesh* | `Qwen-Abliterated-Local-32B` | `2494.0` | *Isolated llama.cpp Sandbox (Port 8083)* | `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)` | `1.15x` | ✅ Fits Mesh (19500MB <= 82.8GB) | 🔒 **LOCKED CHAMPION** |
-| `12_continuous_lora_evolution` | **Continuous LoRA Evolution & Weight Merging Engineer** | *Back-End Mesh* | `Qwen2.5-Coder-32B-Instruct-Q4_K_M` | `2508.0` | *Apple MLX Metal Cluster / TB4 DMA Bridge* | `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)` | `1.15x` | ✅ Fits Mesh (19800MB <= 82.8GB) | 🔒 **LOCKED CHAMPION** |
+| `11_security_red_blue_team` | **Abliterated Security & Red/Blue Sentinel** | *Back-End Mesh* | `Qwen-Abliterated-Local-32B` | `2494.0` | *Isolated llama.cpp Sandbox (Port 8083)* | `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)` | `1.15x` | ✅ Fits Mesh (19500MB <= 108.4GB) | 🔒 **LOCKED CHAMPION** |
+| `12_continuous_lora_evolution` | **Continuous LoRA Evolution & Weight Merging Engineer** | *Back-End Mesh* | `Qwen2.5-Coder-32B-Instruct-Q4_K_M` | `2508.0` | *Apple MLX Metal Cluster / TB4 DMA Bridge* | `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)` | `1.15x` | ✅ Fits Mesh (19800MB <= 108.4GB) | 🔒 **LOCKED CHAMPION** |
 | `lauburu_lens_vla` | **Lauburu Lens VLA & Computer-Use Specialist** | *Front-End Client* | `Qwen3-VL-8B-Instruct-4bit` | `2464.0` | *Customer Desktop / Laptop Workstation Surface* | `Customer Workstation Envelope (<= 6,000 MB)` | `1.15x` | ✅ Fits Device (5200MB <= 6000MB) | 🔒 **LOCKED CHAMPION** |
 <!-- CONTEXT_TIER_0_CORE_END -->
 
@@ -69,7 +69,7 @@ To eliminate unverified assertions, hallucinations, and premature architectural 
    - **Front-End Customer-Facing Apps (`client_facing: True`):** Model footprint MUST NOT exceed the realistic device hardware capability of customers on the designated deployment surface:
      - *Mobile / Wearable Edge Surface:* $<= 1,500\text{ MB}$ VRAM / RAM (Customer iPhone / Android phones & wearables; guarantees zero OS low-memory killer terminations).
      - *Desktop / Laptop Workstation Surface:* $<= 6,000\text{ MB}$ VRAM / RAM (Customer MacBook / PC laptops; preserves OS headroom).
-   - **Back-End Development & Mesh Subsystems (`client_facing: False`):** Model size is NOT constrained by customer hardware. It is governed exclusively by **Aaron's 7-Layer Physical Mesh Network Capacity (108.0 GB RAM / 82.8 GB Pooled AI VRAM)** across the 10Gbps Thunderbolt 4 DMA bridge (`bridge0` @ 0.277ms RTT), Prima.cpp pipelined ring parallelism (PRP), and llama.cpp RPC sharding (Ports 8081–8084), supporting models up to 32B, 70B, and 80B MoE.
+   - **Back-End Development & Mesh Subsystems (`client_facing: False`):** Model size is NOT constrained by customer hardware. It is governed exclusively by **Aaron's 8-Node Physical Mesh Network Capacity (139.0 GB RAM / 108.4 GB Pooled AI VRAM)** across the 40Gbps Thunderbolt 4 DMA bridge to L8 `lauburu` (`bridge0` @ 0.38ms RTT), Prima.cpp pipelined ring parallelism (PRP), and llama.cpp RPC sharding (Ports 8081–8084), supporting models up to 32B, 70B, and 80B MoE.
 
 ### Dual-Score ELO Formulation
 $$\begin{aligned}
@@ -83,9 +83,9 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 ### 🎯 System & Mesh Sentinel (`00_core_infrastructure`)
 
 **Domain Description:** Monitors network keepalives, Tailscale WireGuard bridges, SeaweedFS DFS volume health, and executes automated self-healing without host RAM degradation.  
-**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)`  
-**Deployment Surface:** `Back-End Host / Mesh Infrastructure` | **Capacity Limit:** `82.8 GB Pooled VRAM (Mesh Network)`  
-**Hardware Affinity:** Layer 1 (Mac Mini M4 Pro Host) / Port 18802 Hub | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)`  
+**Deployment Surface:** `Back-End Host / Mesh Infrastructure` | **Capacity Limit:** `108.4 GB Pooled AI VRAM (Mesh Network)`  
+**Hardware Affinity:** Layer 1 (Mac Mini M4 Pro Host) / Port 18802 Hub | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `SmolLM2-135M-Instruct (Ultra-low latency host sentinel)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -105,9 +105,9 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 ### 🎯 Full-Stack App & Reactive UI Engineer (`01_apps`)
 
 **Domain Description:** Architects Next.js 14, React 19, Flutter 3.x Riverpod, and TailwindCSS components for the Port 4000 Hub, Movesense Hub, and Zone 2 cardiovascular UI.  
-**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)`  
-**Deployment Surface:** `Developer Workstation / Cluster Compute Hub` | **Capacity Limit:** `82.8 GB Pooled VRAM (Mesh Network)`  
-**Hardware Affinity:** Layer 5 (MacBook Air M4) / Layer 2 (MacBook Pro TB4) | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)`  
+**Deployment Surface:** `Developer Workstation / Cluster Compute Hub` | **Capacity Limit:** `108.4 GB Pooled AI VRAM (Mesh Network)`  
+**Hardware Affinity:** Layer 5 (MacBook Pro (Node L2)) / Layer 2 (MacBook Pro TB4) | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `Qwen2.5-Coder-7B-Instruct (High-precision AST code generation)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -127,10 +127,10 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 
 ### 🎯 Distributed AI & Sharding Governor (`02_ai_models_and_inference`)
 
-**Domain Description:** Coordinates llama.cpp RPC sharded instances (Ports 8081-8084), Prima.cpp pipelined ring parallelism, GGML tensor kernels, and 10Gbps Thunderbolt 4 DMA buffers.  
-**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)`  
-**Deployment Surface:** `10Gbps TB4 DMA Bridge / Multi-Node RPC Ring` | **Capacity Limit:** `82.8 GB Pooled VRAM (Mesh Network)`  
-**Hardware Affinity:** Layer 2 (MacBook Pro TB4 Bridge) / Layer 3 (Linux Head Node) | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Domain Description:** Coordinates llama.cpp RPC sharded instances (Ports 8081-8084), Prima.cpp pipelined ring parallelism, GGML tensor kernels, and 40Gbps Thunderbolt 4 DMA buffers.  
+**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)`  
+**Deployment Surface:** `40Gbps TB4 DMA Bridge / Multi-Node RPC Ring` | **Capacity Limit:** `108.4 GB Pooled AI VRAM (Mesh Network)`  
+**Hardware Affinity:** Layer 2 (MacBook Pro TB4 Bridge) / Layer 3 (Linux Head Node) | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `Qwen2.5-Coder-32B-Instruct (Low-level GGML & C++ kernel sharding)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -152,7 +152,7 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 **Domain Description:** Executes authentic Pan-Tompkins 512Hz ECG QRS detection, PTT continuous blood pressure calibration, RMSSD HRV, and DFA-alpha1 aerobic threshold extraction.  
 **Surface Classification:** `Front-End Client` | **Governing Boundary:** `Customer Device Envelope (Mobile <= 1,500 MB)`  
 **Deployment Surface:** `Mobile / Wearable Edge Surface` | **Capacity Limit:** `1500 MB (Customer Device)`  
-**Hardware Affinity:** Layer 1 (Mac Mini Host) / Layer 4 (Linux Tablet) | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Hardware Affinity:** Layer 1 (Mac Mini Host) / Layer 4 (Linux Tablet) | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `Chronos-T5-Small + SmolLM2-360M (Zero-mock Pan-Tompkins ECG stream DSP)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -172,9 +172,9 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 ### 🎯 Big Data Lakehouse & Memory Crawlers (`04_data_and_memory`)
 
 **Domain Description:** Governs PySpark distributed crawls across 3,100+ files, Qdrant vector graph updates, Delta Lake Parquet tables, and Google Drive LoRA synchronization.  
-**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)`  
-**Deployment Surface:** `Data Lakehouse Host / Qdrant Vector DB` | **Capacity Limit:** `82.8 GB Pooled VRAM (Mesh Network)`  
-**Hardware Affinity:** Layer 3 (Linux Head Node) / Layer 1 Host | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)`  
+**Deployment Surface:** `Data Lakehouse Host / Qdrant Vector DB` | **Capacity Limit:** `108.4 GB Pooled AI VRAM (Mesh Network)`  
+**Hardware Affinity:** Layer 3 (Linux Head Node) / Layer 1 Host | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `Qwen2.5-Coder-7B-Instruct (PySpark AST crawlers & Qdrant vector sync)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -194,9 +194,9 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 ### 🎯 Swarm Debate Arbiter & Genetic MoE Router (`05_agents_and_swarms`)
 
 **Domain Description:** Governs Tri-Orchestrator AI debate synthesis, Genetic MoE routing weights, Bradley-Terry ELO calibration tournaments, and Swarm Truth Audits.  
-**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)`  
-**Deployment Surface:** `Cluster Master / 10Gbps TB4 Bridge` | **Capacity Limit:** `82.8 GB Pooled VRAM (Mesh Network)`  
-**Hardware Affinity:** Layer 2 (MacBook Pro TB4) / Layer 1 Host (Port 8082) | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)`  
+**Deployment Surface:** `Cluster Master / 40Gbps TB4 Bridge` | **Capacity Limit:** `108.4 GB Pooled AI VRAM (Mesh Network)`  
+**Hardware Affinity:** Layer 2 (MacBook Pro TB4) / Layer 1 Host (Port 8082) | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `DeepSeek-R1-Distill-Qwen-32B (Frontier multi-agent consensus & ELO arbitration)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -216,9 +216,9 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 ### 🎯 Universal Transport & Hardware Tooling Sentinel (`06_scripts_and_tooling`)
 
 **Domain Description:** Automates multi-transport SSH sessions, Android ADB keepalives, RFC 792 Wake-on-LAN resurrection, and fail-fast idempotent zsh/POSIX scripting.  
-**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)`  
-**Deployment Surface:** `Host Daemons / Hardware USB Bridge` | **Capacity Limit:** `82.8 GB Pooled VRAM (Mesh Network)`  
-**Hardware Affinity:** Layer 1 (Mac Mini Host) / Gateway (GL.iNet Beryl 7) | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)`  
+**Deployment Surface:** `Host Daemons / Hardware USB Bridge` | **Capacity Limit:** `108.4 GB Pooled AI VRAM (Mesh Network)`  
+**Hardware Affinity:** Layer 1 (Mac Mini Host) / Gateway (GL.iNet Beryl 7) | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `SmolLM2-360M-Instruct (Fail-fast POSIX, ADB & SSH orchestration)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -238,9 +238,9 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 ### 🎯 Monorepo Architecture & Knowledge Indexer (`07_docs_and_architecture`)
 
 **Domain Description:** Synthesizes canonical architecture whitepapers, validates Obsidian bidirectional Wikilinks, formats KaTeX math formulas, and maintains Index.md integrity.  
-**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)`  
-**Deployment Surface:** `Obsidian Vault Core / Git Worktree` | **Capacity Limit:** `82.8 GB Pooled VRAM (Mesh Network)`  
-**Hardware Affinity:** Layer 1 (Mac Mini Host) / Obsidian Vault | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)`  
+**Deployment Surface:** `Obsidian Vault Core / Git Worktree` | **Capacity Limit:** `108.4 GB Pooled AI VRAM (Mesh Network)`  
+**Hardware Affinity:** Layer 1 (Mac Mini Host) / Obsidian Vault | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `Qwen2.5-Coder-7B-Instruct (Deep markdown, KaTeX math & Wikilink graphs)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -262,7 +262,7 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 **Domain Description:** Governs Shopify Storefront GraphQL integrations, Polaris admin extensions, Cart Transform Functions, high-converting Liquid themes, and CAC/LTV profitability forecasting.  
 **Surface Classification:** `Front-End Client` | **Governing Boundary:** `Customer Device Envelope (Workstation/Mobile <= 6,000 MB)`  
 **Deployment Surface:** `Mobile / POS Customer Surface` | **Capacity Limit:** `6000 MB (Customer Device)`  
-**Hardware Affinity:** Layer 5 (MacBook Air M4) / Layer 1 Host | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Hardware Affinity:** Layer 5 (MacBook Pro (Node L2)) / Layer 1 Host | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `Qwen2.5-Coder-7B-Instruct (Storefront GraphQL & Polaris UX)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -282,9 +282,9 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 ### 🎯 App Store Production & Memory Leak Auditor (`09_app_store_production`)
 
 **Domain Description:** Conducts automated Chrome DevTools heapsnapshot memory leak detection, Android AAB signing checks, Apple App Store guideline compliance, and zero-crash verification.  
-**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)`  
-**Deployment Surface:** `Automated CI/CD Host / ADB Bridge` | **Capacity Limit:** `82.8 GB Pooled VRAM (Mesh Network)`  
-**Hardware Affinity:** Layer 1 Host / Layer 7 (Samsung S20 ADB) | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)`  
+**Deployment Surface:** `Automated CI/CD Host / ADB Bridge` | **Capacity Limit:** `108.4 GB Pooled AI VRAM (Mesh Network)`  
+**Hardware Affinity:** Layer 1 Host / Layer 7 (Samsung S20 ADB) | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `Qwen2.5-Coder-7B-Instruct (Memory profiling & Store compliance)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -306,7 +306,7 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 **Domain Description:** Understands 955-node OPML spatial grappling trees, 3D tatami coordinate projections, biomechanical joint torque limits, and submission counter traversals.  
 **Surface Classification:** `Front-End Client` | **Governing Boundary:** `Customer Device Envelope (Workstation/Tablet <= 6,000 MB)`  
 **Deployment Surface:** `Customer Tablet / Mobile 3D Surface` | **Capacity Limit:** `6000 MB (Customer Device)`  
-**Hardware Affinity:** Layer 2 (MacBook Pro TB4) / Layer 5 (MacBook Air) | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Hardware Affinity:** Layer 2 (MacBook Pro TB4) / Layer 5 (MacBook Air) | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `Qwen3-VL-8B-Instruct (3D spatial OPML graphs & joint kinematics)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -326,9 +326,9 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 ### 🎯 Abliterated Security & Red/Blue Sentinel (`11_security_red_blue_team`)
 
 **Domain Description:** Performs isolated clean-room protocol reconstruction, disassembly analysis, BlueZ DBus vulnerability auditing, and zero-telemetry hardware enclave isolation.  
-**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)`  
-**Deployment Surface:** `Isolated llama.cpp Sandbox (Port 8083)` | **Capacity Limit:** `82.8 GB Pooled VRAM (Mesh Network)`  
-**Hardware Affinity:** Layer 1 Port 8083 (Isolated llama-server sandbox) | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)`  
+**Deployment Surface:** `Isolated llama.cpp Sandbox (Port 8083)` | **Capacity Limit:** `108.4 GB Pooled AI VRAM (Mesh Network)`  
+**Hardware Affinity:** Layer 1 Port 8083 (Isolated llama-server sandbox) | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `Qwen-Abliterated-Local (Isolated sandbox reverse-engineering & CTF)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -348,9 +348,9 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 ### 🎯 Continuous LoRA Evolution & Weight Merging Engineer (`12_continuous_lora_evolution`)
 
 **Domain Description:** Governs Apple Silicon MLX QLoRA fine-tuning, TRL DPO dataset generation, loss monotonicity tracking, MergeKit weight merging (SLERP, TIES, DARE), and GGUF compilation.  
-**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `7-Layer Lauburu Mesh Capacity (82.8 GB Pooled VRAM)`  
-**Deployment Surface:** `Apple MLX Metal Cluster / TB4 DMA Bridge` | **Capacity Limit:** `82.8 GB Pooled VRAM (Mesh Network)`  
-**Hardware Affinity:** Layer 2 (MacBook Pro TB4) / Layer 5 (MacBook Air) | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Surface Classification:** `Back-End Mesh` | **Governing Boundary:** `8-Node Lauburu Mesh Capacity (108.4 GB Pooled AI VRAM)`  
+**Deployment Surface:** `Apple MLX Metal Cluster / TB4 DMA Bridge` | **Capacity Limit:** `108.4 GB Pooled AI VRAM (Mesh Network)`  
+**Hardware Affinity:** Layer 2 (MacBook Pro TB4) / Layer 5 (MacBook Air) | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `Qwen2.5-Coder-32B-Instruct (Apple MLX fine-tuning & MergeKit TIES/DARE)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring
@@ -372,7 +372,7 @@ R_{\text{composite}} &= 0.40 \cdot R_{\text{train}} + 0.60 \cdot R_{\text{proj}}
 **Domain Description:** Performs Chrome DevTools Protocol DOM grounding, UI element bounding box prediction, zero-mock click-through automation, and multi-tier context window expansion.  
 **Surface Classification:** `Front-End Client` | **Governing Boundary:** `Customer Workstation Envelope (<= 6,000 MB)`  
 **Deployment Surface:** `Customer Desktop / Laptop Workstation Surface` | **Capacity Limit:** `6000 MB (Customer Device)`  
-**Hardware Affinity:** Layer 2 (MacBook Pro TB4) / Layer 5 (MacBook Air) | **Mesh Network Pool:** `82.8 GB Usable AI VRAM`  
+**Hardware Affinity:** Layer 2 (MacBook Pro TB4) / Layer 5 (MacBook Air) | **Mesh Network Pool:** `108.4 GB Usable AI VRAM`  
 **Optimal Target Model:** `Qwen3-VL-8B-Instruct (Zero-mock DOM bounding box & click grounding)`
 
 #### 🏆 Role Leaderboard & Empirical Scoring

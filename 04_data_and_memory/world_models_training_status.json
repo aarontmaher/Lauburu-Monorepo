@@ -1,0 +1,43 @@
+{
+  "status": "RUNNING",
+  "last_updated": "2026-08-31T11:55:39Z",
+  "total_trajectories": 6,
+  "models": [
+    {
+      "name": "Qwen-AgentWorld-35B-A3B",
+      "domain": "7-Domain Master Agent Simulation (MCP, SWE, OS, Android)",
+      "quant": "Q4_K_M",
+      "file": "Qwen-AgentWorld-35B-A3B-UD-Q4_K_M.gguf",
+      "base_accuracy": 94.2,
+      "target_accuracy": 98.8,
+      "mcts_rollout_depth": 30
+    },
+    {
+      "name": "WebWorld-32B",
+      "domain": "Deep Browser Flight Simulator (DOM, A11y, CSS Bounds)",
+      "quant": "Q4_K_M",
+      "file": "WebWorld-32B.Q4_K_M.gguf",
+      "base_accuracy": 92.5,
+      "target_accuracy": 97.9,
+      "mcts_rollout_depth": 35
+    },
+    {
+      "name": "WebWorld-8B",
+      "domain": "Rapid High-Speed Web Simulator (68 tok/s)",
+      "quant": "Q4_K_M",
+      "file": "WebWorld-8B.Q4_K_M.gguf",
+      "base_accuracy": 89.8,
+      "target_accuracy": 96.0,
+      "mcts_rollout_depth": 20
+    },
+    {
+      "name": "Qwen2.5-VL-7B (Vision World Model)",
+      "domain": "Multimodal Visual GUI Frame Transition Predictor",
+      "quant": "Q4_K_M",
+      "file": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "base_accuracy": 91.0,
+      "target_accuracy": 97.2,
+      "mcts_rollout_depth": 15
+    }
+  ]
+}

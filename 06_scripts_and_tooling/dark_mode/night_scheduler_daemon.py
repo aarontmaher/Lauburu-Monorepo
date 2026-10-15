@@ -26,7 +26,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("NightScheduler")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 CONFIG_FILE = REPO_ROOT / "data/dark_mode/config.json"
 SCHEDULE_LOG = REPO_ROOT / "data/dark_mode/schedule_events.jsonl"
 PIXEL_IP = "100.73.38.87:5555"

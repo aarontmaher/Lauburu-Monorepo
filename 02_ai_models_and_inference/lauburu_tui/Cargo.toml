@@ -1,0 +1,34 @@
+[package]
+name = "lauburu-tui"
+version = "0.1.0"
+edition = "2021"
+authors = ["Aaron Maher <aarontmaher@gmail.com>", "Lauburu AI Mesh Team"]
+description = "Native Rust Ratatui control plane and telemetry dashboard for 7-node Lauburu AI Mesh"
+
+[lib]
+name = "lauburu_tui"
+path = "src/lib.rs"
+
+[[bin]]
+name = "lauburu-tui"
+path = "src/main.rs"
+
+[dependencies]
+ratatui = "0.29"
+crossterm = { version = "0.28", features = ["event-stream"] }
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "stream", "blocking"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+futures-util = "0.3"
+tui-textarea = "0.7"
+anyhow = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

@@ -92,7 +92,7 @@ DEFAULT_MESH_TOPOLOGY: List[Dict[str, Any]] = [
         "name": "Samsung_S20",
         "layer": 7,
         "probe_method": NodeProbeMethod.ADB,
-        "adb_targets": ["100.84.40.95:5555", "100.99.123.58:5555", "R3CN40CJJ1R"],
+        "adb_targets": ["100.78.206.96:5555", "100.99.123.58:5555", "R3CN40CJJ1R"],
         "mount_point": "/storage/emulated",
     },
     {
@@ -323,7 +323,7 @@ class MeshNodeScanner:
         node_id = spec["node_id"]
         name = spec.get("name", node_id)
         layer = spec.get("layer", 7)
-        targets = spec.get("adb_targets", ["100.84.40.95:5555"])
+        targets = spec.get("adb_targets", ["100.78.206.96:5555"])
         mount = spec.get("mount_point", "/storage/emulated")
 
         last_error = None

@@ -1,0 +1,416 @@
+{
+  "timestamp": "2026-10-08T11:56:57.829253Z",
+  "nodes": {
+    "L1": {
+      "status": "ONLINE",
+      "measured": true,
+      "latency_ms": 0.0,
+      "source_cmd": "sysctl -n machdep.cpu.brand_string; sysctl -n hw.memsize",
+      "exit_code": 0,
+      "captured_at": 1791460618.150246,
+      "error": null,
+      "transport": "local",
+      "endpoint": "localhost",
+      "cpu": "Apple M4 Pro",
+      "ram_gb": 24.0,
+      "value": {
+        "cpu": "Apple M4 Pro",
+        "ram_gb": 24.0,
+        "raw_cpu": "Apple M4 Pro",
+        "ram_bytes": 25769803776
+      },
+      "metrics": {
+        "cpu": {
+          "value": "Apple M4 Pro",
+          "measured": true,
+          "source_cmd": "sysctl -n machdep.cpu.brand_string",
+          "exit_code": 0,
+          "latency_ms": 0.0,
+          "captured_at": 1791460618.150246,
+          "error": null
+        },
+        "ram_gb": {
+          "value": 24.0,
+          "measured": true,
+          "source_cmd": "sysctl -n hw.memsize",
+          "exit_code": 0,
+          "latency_ms": 0.0,
+          "captured_at": 1791460618.150246,
+          "error": null
+        }
+      }
+    },
+    "L2": {
+      "status": "ONLINE",
+      "measured": true,
+      "latency_ms": 17.93,
+      "source_cmd": "ssh aaronmaher@192.168.8.127 'sysctl -n machdep.cpu.brand_string; echo '---METRIC---'; sysctl -n hw.memsize; echo '---METRIC---'; uptime'",
+      "exit_code": 0,
+      "captured_at": 1791460618.1557262,
+      "error": null,
+      "transport": "lan",
+      "endpoint": "192.168.8.127:22",
+      "value": {
+        "cpu": "Intel i7-9750H",
+        "ram_gb": 16.0,
+        "raw_cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz",
+        "tb_speed_gbps": null
+      },
+      "metrics": {
+        "cpu": {
+          "value": "Intel i7-9750H",
+          "measured": true,
+          "source_cmd": "sysctl -n machdep.cpu.brand_string",
+          "exit_code": 0,
+          "latency_ms": 17.93,
+          "captured_at": 1791460618.1557262,
+          "error": null
+        },
+        "ram_gb": {
+          "value": 16.0,
+          "measured": true,
+          "source_cmd": "sysctl -n hw.memsize",
+          "exit_code": 0,
+          "latency_ms": 17.93,
+          "captured_at": 1791460618.1557262,
+          "error": null
+        },
+        "tb_speed_gbps": {
+          "value": null,
+          "measured": false,
+          "source_cmd": "system_profiler SPThunderboltDataType",
+          "exit_code": null,
+          "latency_ms": 17.93,
+          "captured_at": 1791460619.609581,
+          "error": "Thunderbolt link unprobed or not connected"
+        }
+      },
+      "cpu": "Intel i7-9750H",
+      "ram_gb": 16.0,
+      "tb_speed_gbps": null
+    },
+    "L3": {
+      "status": "ONLINE",
+      "measured": true,
+      "latency_ms": 85.67,
+      "source_cmd": "ssh linux@192.168.8.225 'cat /sys/class/dmi/id/product_name; echo '---METRIC---'; grep -m 1 'model name' /proc/cpuinfo | cut -d: -f2; echo '---METRIC---'; free -b; echo '---METRIC---'; uptime'",
+      "exit_code": 0,
+      "captured_at": 1791460619.6095932,
+      "error": null,
+      "transport": "lan",
+      "endpoint": "192.168.8.225:22",
+      "value": {
+        "cpu": "AMD Ryzen 7 5700U",
+        "ram_gb": 15.0,
+        "raw_cpu": "AMD Ryzen 7 5700U with Radeon Graphics"
+      },
+      "metrics": {
+        "cpu": {
+          "value": "AMD Ryzen 7 5700U",
+          "measured": true,
+          "source_cmd": "grep 'model name' /proc/cpuinfo",
+          "exit_code": 0,
+          "latency_ms": 85.67,
+          "captured_at": 1791460619.6095932,
+          "error": null
+        },
+        "ram_gb": {
+          "value": 15.0,
+          "measured": true,
+          "source_cmd": "free -b",
+          "exit_code": 0,
+          "latency_ms": 85.67,
+          "captured_at": 1791460619.6095932,
+          "error": null
+        }
+      },
+      "cpu": "AMD Ryzen 7 5700U",
+      "ram_gb": 15.0
+    },
+    "L4": {
+      "status": "OFFLINE",
+      "measured": false,
+      "latency_ms": null,
+      "source_cmd": null,
+      "exit_code": null,
+      "captured_at": 1791460620.051402,
+      "error": "Node unreachable across all transports",
+      "transport": null,
+      "endpoint": null,
+      "cpu": null,
+      "ram_gb": null,
+      "value": null,
+      "metrics": {
+        "cpu": {
+          "value": null,
+          "measured": false,
+          "source_cmd": "Node unreachable",
+          "exit_code": null,
+          "latency_ms": null,
+          "captured_at": 1791460620.051403,
+          "error": "Node unreachable across all transports"
+        },
+        "ram_gb": {
+          "value": null,
+          "measured": false,
+          "source_cmd": "Node unreachable",
+          "exit_code": null,
+          "latency_ms": null,
+          "captured_at": 1791460620.051403,
+          "error": "Node unreachable across all transports"
+        }
+      }
+    },
+    "L5": {
+      "status": "ONLINE",
+      "measured": true,
+      "latency_ms": 1.06,
+      "source_cmd": "ssh aaronmaher@fe80::857:7e11:5385:681%bridge0 'sysctl -n machdep.cpu.brand_string; echo '---METRIC---'; sysctl -n hw.memsize; echo '---METRIC---'; uptime'",
+      "exit_code": 0,
+      "captured_at": 1791460620.0514078,
+      "error": null,
+      "transport": "thunderbolt",
+      "endpoint": "fe80::857:7e11:5385:681%bridge0:22",
+      "value": {
+        "cpu": "Apple M4",
+        "ram_gb": 16.0,
+        "raw_cpu": "Apple M4",
+        "tb_speed_gbps": 40
+      },
+      "metrics": {
+        "cpu": {
+          "value": "Apple M4",
+          "measured": true,
+          "source_cmd": "sysctl -n machdep.cpu.brand_string",
+          "exit_code": 0,
+          "latency_ms": 1.06,
+          "captured_at": 1791460620.0514078,
+          "error": null
+        },
+        "ram_gb": {
+          "value": 16.0,
+          "measured": true,
+          "source_cmd": "sysctl -n hw.memsize",
+          "exit_code": 0,
+          "latency_ms": 1.06,
+          "captured_at": 1791460620.0514078,
+          "error": null
+        },
+        "tb_speed_gbps": {
+          "value": 40,
+          "measured": true,
+          "source_cmd": "system_profiler SPThunderboltDataType",
+          "exit_code": 0,
+          "latency_ms": 1.06,
+          "captured_at": 1791460620.0514078,
+          "error": null
+        }
+      },
+      "cpu": "Apple M4",
+      "ram_gb": 16.0,
+      "tb_speed_gbps": 40
+    },
+    "L6": {
+      "status": "PARTIAL",
+      "measured": true,
+      "latency_ms": 39.13,
+      "source_cmd": "socket.connect(['192.168.8.213', '100.114.215.68'], ports=[3035, 50052, 8022, 5555])",
+      "exit_code": 0,
+      "captured_at": 1791460620.201887,
+      "error": null,
+      "transport": "lan",
+      "endpoint": "192.168.8.213:3035",
+      "ports": [
+        3035,
+        8022,
+        50052
+      ],
+      "value": {
+        "open_ports": [
+          3035,
+          8022,
+          50052
+        ],
+        "responding_host": "192.168.8.213"
+      },
+      "metrics": {
+        "ports": {
+          "value": [
+            3035,
+            8022,
+            50052
+          ],
+          "measured": true,
+          "source_cmd": "socket.connect(['192.168.8.213', '100.114.215.68'], ports=[3035, 50052, 8022, 5555])",
+          "exit_code": 0,
+          "latency_ms": 39.13,
+          "captured_at": 1791460620.201887,
+          "error": null
+        }
+      }
+    },
+    "L7": {
+      "status": "OFFLINE",
+      "measured": false,
+      "latency_ms": null,
+      "source_cmd": null,
+      "exit_code": null,
+      "captured_at": 1791460621.50552,
+      "error": "Node unreachable across all transports",
+      "transport": null,
+      "endpoint": null,
+      "cpu": null,
+      "ram_gb": null,
+      "value": null,
+      "metrics": {
+        "cpu": {
+          "value": null,
+          "measured": false,
+          "source_cmd": "Node unreachable",
+          "exit_code": null,
+          "latency_ms": null,
+          "captured_at": 1791460621.505522,
+          "error": "Node unreachable across all transports"
+        },
+        "ram_gb": {
+          "value": null,
+          "measured": false,
+          "source_cmd": "Node unreachable",
+          "exit_code": null,
+          "latency_ms": null,
+          "captured_at": 1791460621.505522,
+          "error": "Node unreachable across all transports"
+        }
+      }
+    },
+    "L8": {
+      "status": "ONLINE",
+      "measured": true,
+      "latency_ms": 0.48,
+      "source_cmd": "ssh linuxmini@fe80::1082:a3ff:fe9e:ae71%bridge0 'cat /sys/class/dmi/id/product_name; echo '---METRIC---'; grep -m 1 'model name' /proc/cpuinfo | cut -d: -f2; echo '---METRIC---'; free -b; echo '---METRIC---'; uptime'",
+      "exit_code": 0,
+      "captured_at": 1791460621.5055249,
+      "error": null,
+      "transport": "thunderbolt",
+      "endpoint": "fe80::1082:a3ff:fe9e:ae71%bridge0:22",
+      "value": {
+        "cpu": "Intel i7-8700B",
+        "ram_gb": 32.0,
+        "raw_cpu": "Intel(R) Core(TM) i7-8700B CPU @ 3.20GHz",
+        "tb_speed_gbps": 40
+      },
+      "metrics": {
+        "cpu": {
+          "value": "Intel i7-8700B",
+          "measured": true,
+          "source_cmd": "grep 'model name' /proc/cpuinfo",
+          "exit_code": 0,
+          "latency_ms": 0.48,
+          "captured_at": 1791460621.5055249,
+          "error": null
+        },
+        "ram_gb": {
+          "value": 32.0,
+          "measured": true,
+          "source_cmd": "free -b",
+          "exit_code": 0,
+          "latency_ms": 0.48,
+          "captured_at": 1791460621.5055249,
+          "error": null
+        },
+        "tb_speed_gbps": {
+          "value": 40,
+          "measured": true,
+          "source_cmd": "system_profiler SPThunderboltDataType",
+          "exit_code": 0,
+          "latency_ms": 0.48,
+          "captured_at": 1791460621.5055249,
+          "error": null
+        }
+      },
+      "cpu": "Intel i7-8700B",
+      "ram_gb": 32.0,
+      "tb_speed_gbps": 40
+    },
+    "GW": {
+      "status": "ONLINE",
+      "measured": true,
+      "latency_ms": 12.31,
+      "source_cmd": "ssh root@192.168.8.1 'cat /tmp/sysinfo/model; echo '---METRIC---'; cat /etc/openwrt_release; echo '---METRIC---'; free -b; echo '---METRIC---'; uptime'",
+      "exit_code": 0,
+      "captured_at": 1791460622.0093398,
+      "error": null,
+      "transport": "lan",
+      "endpoint": "192.168.8.1:22",
+      "value": {
+        "model": "GL-BE14000",
+        "os": "OpenWrt 21.02-SNAPSHOT",
+        "ram_gb": 2.0
+      },
+      "metrics": {
+        "model": {
+          "value": "GL-BE14000",
+          "measured": true,
+          "source_cmd": "cat /tmp/sysinfo/model",
+          "exit_code": 0,
+          "latency_ms": 12.31,
+          "captured_at": 1791460622.0093398,
+          "error": null
+        },
+        "os": {
+          "value": "OpenWrt 21.02-SNAPSHOT",
+          "measured": true,
+          "source_cmd": "cat /etc/openwrt_release",
+          "exit_code": 0,
+          "latency_ms": 12.31,
+          "captured_at": 1791460622.0093398,
+          "error": null
+        },
+        "ram_gb": {
+          "value": 2.0,
+          "measured": true,
+          "source_cmd": "free -b",
+          "exit_code": 0,
+          "latency_ms": 12.31,
+          "captured_at": 1791460622.0093398,
+          "error": null
+        }
+      },
+      "model": "GL-BE14000",
+      "os": "OpenWrt 21.02-SNAPSHOT",
+      "ram_gb": 2.0
+    },
+    "L9": {
+      "status": "OFFLINE",
+      "measured": false,
+      "latency_ms": null,
+      "source_cmd": null,
+      "exit_code": null,
+      "captured_at": 1791460622.080467,
+      "error": "Node unreachable across all transports",
+      "transport": null,
+      "endpoint": null,
+      "cpu": null,
+      "ram_gb": null,
+      "value": null,
+      "metrics": {
+        "ports": {
+          "value": null,
+          "measured": false,
+          "source_cmd": "Node unreachable",
+          "exit_code": null,
+          "latency_ms": null,
+          "captured_at": 1791460622.080468,
+          "error": "Node unreachable across all transports"
+        }
+      }
+    }
+  },
+  "summary": {
+    "total": 10,
+    "online": 6,
+    "partial": 1,
+    "offline": 3,
+    "measured_count": 7
+  }
+}

@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Dict, Any, List
 
-WORKSPACE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+WORKSPACE_ROOT = Path("/Volumes/Lauburu-Monorepo")
 OPML_DIR = WORKSPACE_ROOT / "data" / "opml_maps"
 
 

@@ -48,6 +48,6 @@ Previously, running data science notebooks inside Docker on macOS caused severe 
 ### 2.2 Host vs. Containerized Notebook Execution Matrix
 | Workload | Recommended Execution Layer | Reason |
 | :--- | :--- | :--- |
-| **Interactive Metal AI (MLX / PyTorch MPS)** | **Host Native (L5 MacBook Air / L1 Mac Mini)** | Direct access to Apple Neural Engine (ANE) and Metal Performance Shaders. |
+| **Interactive Metal AI (MLX / PyTorch MPS)** | **Host Native (L2 MacBook Pro / L1 Mac Mini)** | Direct access to Apple Neural Engine (ANE) and Metal Performance Shaders. |
 | **Batch PySpark / Delta Lake Transformations**| **Containerized (Docker / Linux Head Node)** | Zero dependency conflicts, reproducible environment, automated background jobs. |
 | **Visual Biometrics DSP & Live Plotting** | **Host or Containerized (via Virtio-FS)** | Near-identical $<1\text{s}$ load times across both layers thanks to Virtio-FS. |

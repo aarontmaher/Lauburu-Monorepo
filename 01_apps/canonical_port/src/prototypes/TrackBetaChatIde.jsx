@@ -237,7 +237,7 @@ func ProcessAutonomousAction() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <h1 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>
-                Track Beta: Master Chat & AGI IDE Cockpit
+                Track Beta: Master Chat & AGI IDE Console
               </h1>
               <span className="badge badge-purple">65% / 35% SPLIT</span>
               <span className="badge badge-emerald">ZERO-MOCK CERTIFIED</span>

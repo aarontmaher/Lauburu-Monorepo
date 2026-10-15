@@ -75,7 +75,7 @@ def test_contract_layer_0_wol_mac_targets():
     expected_names = {
         "L1_Mac_Mini_Host",
         "L2_MacBook_Pro_Vault",
-        "L3_Linux_Head_Node",
+        "L3_Linux_Mini",
         "L4_Linux_Tablet",
         "L5_MacBook_Air"
     }
@@ -180,7 +180,7 @@ def test_contract_layer_0_tailscale_peers():
     expected_peers = {
         "Mac_Node": ("100.119.199.76", "L1"),
         "MacBook_Pro": ("100.103.212.21", "L2"),
-        "Linux_Head_Node": ("100.101.39.98", "L3"),
+        "Linux_Mini": ("100.101.39.98", "L3"),
         "Linux_Tablet": ("100.81.92.125", "L4"),
         "MacBook_Air": ("100.93.158.96", "L5"),
         "Pixel_10_Pro_XL": ("100.73.38.87", "L6"),
@@ -224,9 +224,9 @@ def test_contract_layer_1_hardware_nodes_and_memory_pools():
     # Node-by-node verification against the canonical hardware matrix
     node_map = {n.node_id: n for n in l1.nodes}
     expected_hardware = {
-        "L1": {"name": "Mac_Node", "ram": 24.0, "vram": 21.6, "cap": 90.0, "arch": "ARM64"},
+        "L1": {"name": "Mac_Node", "ram": 24.0, "vram": 21.6, "cap": 80.0, "arch": "ARM64"},
         "L2": {"name": "MacBook_Pro", "ram": 16.0, "vram": 14.0, "cap": 90.0, "arch": "x86_64"},
-        "L3": {"name": "Linux_Head_Node", "ram": 16.0, "vram": 13.8, "cap": 80.0, "arch": "x86_64"},
+        "L3": {"name": "Linux_Mini", "ram": 16.0, "vram": 13.8, "cap": 80.0, "arch": "x86_64"},
         "L4": {"name": "Linux_Tablet", "ram": 8.0, "vram": 6.5, "cap": 75.0, "arch": "ARM64"},
         "L5": {"name": "MacBook_Air", "ram": 16.0, "vram": 14.0, "cap": 90.0, "arch": "ARM64"},
         "L6": {"name": "Pixel_10_Pro_XL", "ram": 16.0, "vram": 12.5, "cap": 85.0, "arch": "ARM64"},

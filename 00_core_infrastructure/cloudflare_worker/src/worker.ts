@@ -22,6 +22,10 @@
  *   GET /handoff
  *   GET /automation-state
  *   GET /pending-suggestions
+ *   GET /tcp-bridge — TCP bridge status at :4050
+ *   GET /bt-terminal — IP-less BT terminal status
+ *   GET /mesh-worker — Autonomous mesh worker status
+ *   GET /mcp/v2 — unified namespaced MCP, ChatGPT-friendly core surface.
  *
  * Auth model:
  *   Read endpoints return `mode: 'repo-only'` metadata until
@@ -32,6 +36,11 @@
  *
  * No write endpoints in the starter — `POST /suggestions` is
  * commented out until an authenticated write path exists.
+ *
+ * New for autonomous headless mesh worker:
+ *   - TCP bridge at :4050 for IP-less BT terminal data routing
+ *   - Movesense BLE telemetry gateway (airgap-compliant)
+ *   - IP-less Bluetooth radio terminal sessions
  */
 
 import type { Env } from './worker-env';
@@ -74,33 +83,6 @@ function buildMeta(env: Env): ConnectorMeta {
   };
 }
 
-/**
- * Placeholder data-source descriptor used by the placeholder
- * builders. Always reports `source: 'placeholder'`. When the
- * adapter is configured but the table is empty, reason is
- * `'table_empty'`; when the adapter itself is not configured,
- * reason mirrors the adapter's failure mode.
- */
-function dataSourceFor(env: Env, route: ConnectorRouteKey) {
-  const adapter = getSupabaseAdapter(env);
-  const schema = CONNECTOR_SCHEMA_REQUIREMENTS[route];
-  if (adapter.configured) {
-    return {
-      source: 'placeholder' as const,
-      reason: 'table_empty' as const,
-      message:
-        `Supabase env configured but ${schema.table} returned no rows. Bridge upsert needed before this route serves live data.`,
-      schemaRequired: schema,
-    };
-  }
-  return {
-    source: 'placeholder' as const,
-    reason: adapter.reason,
-    message: adapter.message,
-    schemaRequired: schema,
-  };
-}
-
 function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
   return new Response(JSON.stringify(body, null, 2), {
     ...init,
@@ -130,9 +112,173 @@ function requireAdminToken(req: Request, env: Env): { ok: boolean; reason?: stri
   return { ok: true };
 }
 
+// ── Mesh Worker Configuration ──────────────────────────────────────
+
+export interface MeshWorkerConfig {
+  tcpBridgePort: number;
+  btTerminalEnabled: boolean;
+  movesenseEnabled: boolean;
+  localHost: string;
+}
+
+export interface BTTerminalSession {
+  id: string;
+  connected: boolean;
+  movesenseConnected: boolean;
+  lastSeen: number;
+}
+
+const defaultMeshConfig: MeshWorkerConfig = {
+  tcpBridgePort: 4050,
+  btTerminalEnabled: true,
+  movesenseEnabled: true,
+  localHost: '0.0.0.0',
+};
+
+let meshConfig: MeshWorkerConfig = { ...defaultMeshConfig };
+let btSessions: Map<string, BTTerminalSession> = new Map();
+
+// ── 100% Local Airgap Health Data Protection Policy ────────────────
+// Raw physiological biometrics (ECG 512Hz streams, microvolts, Movesense GATT
+// bytes, PTT waveforms, optical PPG sleep data, Kamath RR arrays, DFA-alpha1 raw series)
+// are strictly confined to local Apple Silicon & private mesh hardware (127.0.0.1).
+// Any WAN/Cloudflare request targeting biometric routes or sending biometric keys
+// is rejected with 403 Forbidden fail-closed isolation.
+
+const FORBIDDEN_AIRGAP_PATHS = [
+  /^\/(?:api|v1|ws)\/(?:biometrics|movesense|ecg|ptt|ppg|sleep_staging|raw_rr|heart_rate_raw|telemetry_raw)(?:\/.*)?$/i,
+];
+
+const FORBIDDEN_BIOMETRIC_KEYS = new Set([
+  'ecg_samples', 'raw_ecg_mv', 'ecgsamples', 'raw_ecg', 'ecg_microvolts', '512hz_ecg',
+  'movesense_packet', 'movesenseraw', 'movesense_raw', 'movesense_gatt', 'movesense_gatt_raw', 'movesense_hr_plus',
+  'raw_ppg', 'raw_ppg_stream', 'ppg_samples', 'optical_ppg_raw', 'raw_optical_stream',
+  'raw_rr', 'raw_rr_stream', 'rr_intervals_raw', 'unfiltered_rr_intervals', 'kamath_rr',
+  'ptt_blood_pressure', 'ptt_blood_pressure_raw', 'ptt_waveform', 'hemodynamics_bp',
+  'dfa_alpha1_raw', 'pan_tompkins_raw', 'pan_tompkins_qrs', 'raw_biometrics',
+]);
+
+function checkAirgapViolation(request: Request, path: string, url: URL): { blocked: boolean; reason?: string } {
+  for (const pattern of FORBIDDEN_AIRGAP_PATHS) {
+    if (pattern.test(path)) {
+      return {
+        blocked: true,
+        reason: `Forbidden path '${path}': 100% Local Airgap Violation. Raw physiological biometrics (Movesense 512Hz ECG, PTT BP, PPG sleep streams) execute strictly on local Apple Silicon / Mesh hardware (127.0.0.1) and are forbidden from egressing to cloud edge workers.`,
+      };
+    }
+  }
+
+  const biometricsHeader = request.headers.get('x-lauburu-biometrics-egress') ||
+    request.headers.get('x-raw-biometrics') ||
+    request.headers.get('x-movesense-telemetry') ||
+    request.headers.get('x-airgap-override') ||
+    request.headers.get('x-biometrics-egress');
+  if (biometricsHeader) {
+    return {
+      blocked: true,
+      reason: 'Forbidden header: 100% Local Airgap Violation. Raw biometrics egress header detected.',
+    };
+  }
+
+  for (const [k, v] of url.searchParams.entries()) {
+    if (FORBIDDEN_BIOMETRIC_KEYS.has(k.toLowerCase()) || FORBIDDEN_BIOMETRIC_KEYS.has(v.toLowerCase())) {
+      return {
+        blocked: true,
+        reason: `Forbidden query param '${k}': 100% Local Airgap Violation. Raw physiological biometrics are forbidden in edge requests.`,
+      };
+    }
+  }
+
+  return { blocked: false };
+}
+
+// ── Inline two-pass redactor (mirrors chat-app redactTokenLikeSubstrings) ──
+// Workers runtime can't import the chat-app code, so this is a small
+// re-implementation matching docs/CONNECTOR_SANITIZATION_RULES.md.
+// Pass 1 preserves labelled values (commit/sha/build/run_id/etc.) via
+// sentinel tags; Pass 2 strikes token-shaped substrings; final swap
+// restores the labelled values.
+
+const PRESERVE_LABELS = new Set([
+  'commit', 'commit_hash', 'sha', 'head', 'ref', 'branch', 'version',
+  'build', 'build_number', 'version_code', 'tag', 'prompt_id', 'lane',
+  'run_id', 'submission', 'eas_build', 'expo_build_id',
+  'androidversioncode', 'iosbuildnumber', 'githubrunid', 'easbuildid',
+  'playsubmissionid', 'testflightsubmissionid',
+]);
+
+const STRIKE_PATTERNS: RegExp[] = [
+  /eyJ[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+/g, // JWTs
+  /sk-[A-Za-z0-9_\-]{20,}/g,
+  /ghp_[A-Za-z0-9]{30,}/g,
+  /gho_[A-Za-z0-9]{30,}/g,
+  /ghs_[A-Za-z0-9]{30,}/g,
+  /whsec_[A-Za-z0-9]{20,}/g,
+  /AKIA[0-9A-Z]{16}/g,
+  /xox[abprs]-[A-Za-z0-9\-]{10,}/g,
+];
+
+function redactString(input: string): string {
+  if (typeof input !== 'string' || input.length === 0) return input;
+  // Pass 1: tag labelled values so Pass 2 doesn't strike them.
+  const preserved: string[] = [];
+  const labelRe = /(^|[^A-Za-z0-9_])([a-z_]+)(\s*[:=]\s*)([A-Za-z0-9.\-_]+)/g;
+  let tagged = input.replace(labelRe, (full, lead, label: string, sep, value: string) => {
+    if (!PRESERVE_LABELS.has(label.toLowerCase())) return full;
+    const idx = preserved.length;
+    preserved.push(value);
+    return `${label}${sep}\u0000PRESERVE_${idx}\u0000`;
+  });
+  // Pass 2: strike token-shaped substrings outside sentinels.
+  for (const re of STRIKE_PATTERNS) tagged = tagged.replace(re, '<redacted>');
+  // Restore preserved values.
+  tagged = tagged.replace(/\u0000PRESERVE_(\d+)\u0000/g, (_m, n) => preserved[Number(n)] ?? '');
+  return tagged;
+}
+
+function applyConnectorRedaction<T>(payload: T): T {
+  if (Array.isArray(payload)) {
+    return payload.map((v) => applyConnectorRedaction(v)) as unknown as T;
+  }
+  if (payload !== null && typeof payload === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(payload as Record<string, unknown>)) {
+      if (FORBIDDEN_BIOMETRIC_KEYS.has(k.toLowerCase())) {
+        out[k] = '[AIRGAP_REDACTED: LOCAL_HARDWARE_ONLY]';
+      } else {
+        out[k] = applyConnectorRedaction(v);
+      }
+    }
+    return out as unknown as T;
+  }
+  if (typeof payload === 'string') return redactString(payload) as unknown as T;
+  return payload;
+}
+
 // ── Connector payload shapes (mirror chat-app/src/server/types/connector.ts) ──
 
 const CONNECTOR_SCHEMA_VERSION = 1 as const;
+
+function dataSourceFor(env: Env, route: ConnectorRouteKey) {
+  const adapter = getSupabaseAdapter(env);
+  const schema = CONNECTOR_SCHEMA_REQUIREMENTS[route];
+  if (adapter.configured) {
+    return {
+      source: 'placeholder' as const,
+      reason: 'table_empty' as const,
+      message:
+        `Supabase env configured but ${schema.table} returned no rows. Bridge upsert needed before this route serves live data.`,
+      schemaRequired: schema,
+    };
+  }
+  return {
+    source: 'placeholder' as const,
+    reason: adapter.reason,
+    message: adapter.message,
+    schemaRequired: schema,
+  };
+}
+
 
 async function tryReadSingleRowPayload(
   env: Env,
@@ -271,122 +417,70 @@ function placeholderHandoff(env: Env) {
   };
 }
 
-// ── 100% Local Airgap Health Data Protection Policy ────────────────
-// Raw physiological biometrics (ECG 512Hz streams, microvolts, Movesense GATT
-// bytes, PTT waveforms, optical PPG sleep data, Kamath RR arrays, DFA-alpha1 raw series)
-// are strictly confined to local Apple Silicon & private mesh hardware (127.0.0.1).
-// Any WAN/Cloudflare request targeting biometric routes or sending biometric keys
-// is rejected with 403 Forbidden fail-closed isolation.
+// ── Autonomous Mesh Worker endpoints ───────────────────────────────
 
-const FORBIDDEN_AIRGAP_PATHS = [
-  /^\/(?:api|v1|ws)\/(?:biometrics|movesense|ecg|ptt|ppg|sleep_staging|raw_rr|heart_rate_raw|telemetry_raw)(?:\/.*)?$/i,
-];
-
-const FORBIDDEN_BIOMETRIC_KEYS = new Set([
-  'ecg_samples', 'raw_ecg_mv', 'ecgsamples', 'raw_ecg', 'ecg_microvolts', '512hz_ecg',
-  'movesense_packet', 'movesenseraw', 'movesense_raw', 'movesense_gatt', 'movesense_gatt_raw', 'movesense_hr_plus',
-  'raw_ppg', 'raw_ppg_stream', 'ppg_samples', 'optical_ppg_raw', 'raw_optical_stream',
-  'raw_rr', 'raw_rr_stream', 'rr_intervals_raw', 'unfiltered_rr_intervals', 'kamath_rr',
-  'ptt_blood_pressure', 'ptt_blood_pressure_raw', 'ptt_waveform', 'hemodynamics_bp',
-  'dfa_alpha1_raw', 'pan_tompkins_raw', 'pan_tompkins_qrs', 'raw_biometrics',
-]);
-
-function checkAirgapViolation(request: Request, path: string, url: URL): { blocked: boolean; reason?: string } {
-  for (const pattern of FORBIDDEN_AIRGAP_PATHS) {
-    if (pattern.test(path)) {
-      return {
-        blocked: true,
-        reason: `Forbidden path '${path}': 100% Local Airgap Violation. Raw physiological biometrics (Movesense 512Hz ECG, PTT BP, PPG sleep streams) execute strictly on local Apple Silicon / Mesh hardware (127.0.0.1) and are forbidden from egressing to cloud edge workers.`,
-      };
-    }
-  }
-
-  const biometricsHeader = request.headers.get('x-lauburu-biometrics-egress') ||
-    request.headers.get('x-raw-biometrics') ||
-    request.headers.get('x-movesense-telemetry') ||
-    request.headers.get('x-airgap-override') ||
-    request.headers.get('x-biometrics-egress');
-  if (biometricsHeader) {
-    return {
-      blocked: true,
-      reason: 'Forbidden header: 100% Local Airgap Violation. Raw biometrics egress header detected.',
-    };
-  }
-
-  for (const [k, v] of url.searchParams.entries()) {
-    if (FORBIDDEN_BIOMETRIC_KEYS.has(k.toLowerCase()) || FORBIDDEN_BIOMETRIC_KEYS.has(v.toLowerCase())) {
-      return {
-        blocked: true,
-        reason: `Forbidden query param '${k}': 100% Local Airgap Violation. Raw physiological biometrics are forbidden in edge requests.`,
-      };
-    }
-  }
-
-  return { blocked: false };
-}
-
-// ── Inline two-pass redactor (mirrors chat-app redactTokenLikeSubstrings) ──
-// Workers runtime can't import the chat-app code, so this is a small
-// re-implementation matching docs/CONNECTOR_SANITIZATION_RULES.md.
-// Pass 1 preserves labelled values (commit/sha/build/run_id/etc.) via
-// sentinel tags; Pass 2 strikes token-shaped substrings; final swap
-// restores the labelled values.
-
-const PRESERVE_LABELS = new Set([
-  'commit', 'commit_hash', 'sha', 'head', 'ref', 'branch', 'version',
-  'build', 'build_number', 'version_code', 'tag', 'prompt_id', 'lane',
-  'run_id', 'submission', 'eas_build', 'expo_build_id',
-  'androidversioncode', 'iosbuildnumber', 'githubrunid', 'easbuildid',
-  'playsubmissionid', 'testflightsubmissionid',
-]);
-
-const STRIKE_PATTERNS: RegExp[] = [
-  /eyJ[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+/g, // JWTs
-  /sk-[A-Za-z0-9_\-]{20,}/g,
-  /ghp_[A-Za-z0-9]{30,}/g,
-  /gho_[A-Za-z0-9]{30,}/g,
-  /ghs_[A-Za-z0-9]{30,}/g,
-  /whsec_[A-Za-z0-9]{20,}/g,
-  /AKIA[0-9A-Z]{16}/g,
-  /xox[abprs]-[A-Za-z0-9\-]{10,}/g,
-];
-
-function redactString(input: string): string {
-  if (typeof input !== 'string' || input.length === 0) return input;
-  // Pass 1: tag labelled values so Pass 2 doesn't strike them.
-  const preserved: string[] = [];
-  const labelRe = /(^|[^A-Za-z0-9_])([a-z_]+)(\s*[:=]\s*)([A-Za-z0-9.\-_]+)/g;
-  let tagged = input.replace(labelRe, (full, lead, label: string, sep, value: string) => {
-    if (!PRESERVE_LABELS.has(label.toLowerCase())) return full;
-    const idx = preserved.length;
-    preserved.push(value);
-    return `${lead}${label}${sep}\u0000PRESERVE_${idx}\u0000`;
+function meshWorkerStatus(): Response {
+  return jsonResponse({
+    ok: true,
+    config: meshConfig,
+    btSessionsCount: btSessions.size,
+    status: 'autonomous headless mesh worker active',
+    movesense: {
+      enabled: meshConfig.movesenseEnabled,
+      standardGATTUUIDs: {
+        customService: '34800001-7185-4d5d-b431-b30e347d9634',
+        commandChar: '34800002-7185-4d5d-b431-b30e347d9634',
+        heartRate: '0000180d-0000-1000-8000-00805f9b34fb',
+        hrMeasurement: '00002a37-0000-1000-8000-00805f9b34fb',
+      },
+    },
+    btTerminal: {
+      ipLess: true,
+      transport: 'bluetooth_radio',
+      macAddress: '0.0.0.0', // IP-less Bluetooth radio
+    },
   });
-  // Pass 2: strike token-shaped substrings outside sentinels.
-  for (const re of STRIKE_PATTERNS) tagged = tagged.replace(re, '<redacted>');
-  // Restore preserved values.
-  tagged = tagged.replace(/\u0000PRESERVE_(\d+)\u0000/g, (_m, n) => preserved[Number(n)] ?? '');
-  return tagged;
 }
 
-function applyConnectorRedaction<T>(payload: T): T {
-  if (Array.isArray(payload)) {
-    return payload.map((v) => applyConnectorRedaction(v)) as unknown as T;
-  }
-  if (payload !== null && typeof payload === 'object') {
-    const out: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(payload as Record<string, unknown>)) {
-      if (FORBIDDEN_BIOMETRIC_KEYS.has(k.toLowerCase())) {
-        out[k] = '[AIRGAP_REDACTED: LOCAL_HARDWARE_ONLY]';
-      } else {
-        out[k] = applyConnectorRedaction(v);
-      }
-    }
-    return out as unknown as T;
-  }
-  if (typeof payload === 'string') return redactString(payload) as unknown as T;
-  return payload;
+function tcpBridgeStatus(): Response {
+  return jsonResponse({
+    ok: true,
+    tcpBridgePort: meshConfig.tcpBridgePort,
+    localHost: meshConfig.localHost,
+    btTerminal: meshConfig.btTerminalEnabled,
+    movesense: meshConfig.movesenseEnabled,
+    sessions: Array.from(btSessions.values()).map((s) => ({
+      id: s.id,
+      connected: s.connected,
+      movesenseConnected: s.movesenseConnected,
+      lastSeen: s.lastSeen,
+    })),
+    endpoints: {
+      tcp: `tcp://[::]:${meshConfig.tcpBridgePort}`,
+      websocket: `/ws/tcp-bridge`,
+    },
+  });
 }
+
+function btTerminalStatus(): Response {
+  return jsonResponse({
+    ok: true,
+    btTerminalEnabled: meshConfig.btTerminalEnabled,
+    sessions: Array.from(btSessions.values()).map((s) => ({
+      id: s.id,
+      connected: s.connected,
+      movesenseConnected: s.movesenseConnected,
+      lastSeen: s.lastSeen,
+    })),
+    config: {
+      ipLess: true,
+      transport: 'bluetooth_radio',
+      macAddress: '0.0.0.0', // IP-less Bluetooth radio
+    },
+  });
+}
+
+// ── Main fetch handler ────────────────────────────────────────────
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -406,6 +500,19 @@ export default {
         },
         { status: 403 },
       );
+    }
+
+    // ── Autonomous Mesh Worker endpoints ───────────────────────────────
+    if (path === '/tcp-bridge') {
+      return tcpBridgeStatus();
+    }
+
+    if (path === '/bt-terminal') {
+      return btTerminalStatus();
+    }
+
+    if (path === '/mesh-worker') {
+      return meshWorkerStatus();
     }
 
     // ── /mcp/v2 — unified namespaced MCP, ChatGPT-friendly core surface.

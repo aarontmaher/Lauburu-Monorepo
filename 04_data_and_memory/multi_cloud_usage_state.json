@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-10",
+  "usage": {
+    "google": 1,
+    "nvidia": 0,
+    "xai": 0,
+    "cloudflare": 0,
+    "groq": 0,
+    "neo": 0,
+    "cerebras": 0,
+    "sambanova": 0
+  },
+  "success_score": {
+    "google": 1.0,
+    "nvidia": 1.0,
+    "xai": 1.0,
+    "cloudflare": 1.0,
+    "groq": 1.0,
+    "neo": 1.0,
+    "cerebras": 1.0,
+    "sambanova": 1.0
+  },
+  "attempts": {
+    "google": 2,
+    "nvidia": 1,
+    "xai": 1,
+    "cloudflare": 1,
+    "groq": 1,
+    "neo": 1,
+    "cerebras": 1,
+    "sambanova": 1
+  }
+}

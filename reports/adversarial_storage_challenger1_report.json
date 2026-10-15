@@ -1,0 +1,273 @@
+{
+  "timestamp_utc": "2026-09-19T18:04:20Z",
+  "agent": "teamwork_preview_challenger_1",
+  "subsystems_tested": [
+    "R1_Sovereign_Storage_Pooling",
+    "R2_Context_Map_Governance"
+  ],
+  "results": {
+    "consistent_hash_ring": {
+      "node_count": 7,
+      "ring_size": 112,
+      "boundary_tokens_tested": [
+        {
+          "token": "0x00000000",
+          "node_idx": 5,
+          "node_id": "L6_Pixel_10_Pro_XL",
+          "role": "8K Vision Stream & Edge TPU"
+        },
+        {
+          "token": "0x00000001",
+          "node_idx": 5,
+          "node_id": "L6_Pixel_10_Pro_XL",
+          "role": "8K Vision Stream & Edge TPU"
+        },
+        {
+          "token": "0x00000002",
+          "node_idx": 5,
+          "node_id": "L6_Pixel_10_Pro_XL",
+          "role": "8K Vision Stream & Edge TPU"
+        },
+        {
+          "token": "0x0000FFFF",
+          "node_idx": 5,
+          "node_id": "L6_Pixel_10_Pro_XL",
+          "role": "8K Vision Stream & Edge TPU"
+        },
+        {
+          "token": "0x7FFFFFFF",
+          "node_idx": 2,
+          "node_id": "L3_Linux_Head_Node",
+          "role": "Gateway Ingress & Compute Hub"
+        },
+        {
+          "token": "0x80000000",
+          "node_idx": 2,
+          "node_id": "L3_Linux_Head_Node",
+          "role": "Gateway Ingress & Compute Hub"
+        },
+        {
+          "token": "0x80000001",
+          "node_idx": 2,
+          "node_id": "L3_Linux_Head_Node",
+          "role": "Gateway Ingress & Compute Hub"
+        },
+        {
+          "token": "0xFFFF0000",
+          "node_idx": 5,
+          "node_id": "L6_Pixel_10_Pro_XL",
+          "role": "8K Vision Stream & Edge TPU"
+        },
+        {
+          "token": "0xFFFFFFFE",
+          "node_idx": 5,
+          "node_id": "L6_Pixel_10_Pro_XL",
+          "role": "8K Vision Stream & Edge TPU"
+        },
+        {
+          "token": "0xFFFFFFFF",
+          "node_idx": 5,
+          "node_id": "L6_Pixel_10_Pro_XL",
+          "role": "8K Vision Stream & Edge TPU"
+        }
+      ],
+      "sample_tokens": 100000,
+      "average_lookup_ns": 237.1,
+      "node_distribution": {
+        "L1_Mac_Node": {
+          "hits": 24099,
+          "percentage": 24.1
+        },
+        "L2_MacBook_Pro": {
+          "hits": 13154,
+          "percentage": 13.15
+        },
+        "L3_Linux_Head_Node": {
+          "hits": 15027,
+          "percentage": 15.03
+        },
+        "L4_Linux_Tablet": {
+          "hits": 5995,
+          "percentage": 6.0
+        },
+        "L5_MacBook_Air": {
+          "hits": 14428,
+          "percentage": 14.43
+        },
+        "L6_Pixel_10_Pro_XL": {
+          "hits": 18603,
+          "percentage": 18.6
+        },
+        "L7_Samsung_S20": {
+          "hits": 8694,
+          "percentage": 8.69
+        }
+      },
+      "status": "PASSED"
+    },
+    "payload_slicing_and_reassembly": {
+      "sizes_tested": [
+        {
+          "size_bytes": 1,
+          "chunk_count": 1,
+          "disperse_us": 0.0,
+          "sha256_match": true,
+          "total_ms": 0.107
+        },
+        {
+          "size_bytes": 2,
+          "chunk_count": 1,
+          "disperse_us": 0.0,
+          "sha256_match": true,
+          "total_ms": 0.03
+        },
+        {
+          "size_bytes": 3,
+          "chunk_count": 1,
+          "disperse_us": 0.0,
+          "sha256_match": true,
+          "total_ms": 0.022
+        },
+        {
+          "size_bytes": 15,
+          "chunk_count": 1,
+          "disperse_us": 0.0,
+          "sha256_match": true,
+          "total_ms": 0.022
+        },
+        {
+          "size_bytes": 1024,
+          "chunk_count": 1,
+          "disperse_us": 1.0,
+          "sha256_match": true,
+          "total_ms": 0.024
+        },
+        {
+          "size_bytes": 64512,
+          "chunk_count": 1,
+          "disperse_us": 81.0,
+          "sha256_match": true,
+          "total_ms": 0.156
+        },
+        {
+          "size_bytes": 65535,
+          "chunk_count": 1,
+          "disperse_us": 76.0,
+          "sha256_match": true,
+          "total_ms": 0.156
+        },
+        {
+          "size_bytes": 65536,
+          "chunk_count": 1,
+          "disperse_us": 76.0,
+          "sha256_match": true,
+          "total_ms": 0.202
+        },
+        {
+          "size_bytes": 65537,
+          "chunk_count": 2,
+          "disperse_us": 81.0,
+          "sha256_match": true,
+          "total_ms": 0.223
+        },
+        {
+          "size_bytes": 131072,
+          "chunk_count": 2,
+          "disperse_us": 150.0,
+          "sha256_match": true,
+          "total_ms": 0.306
+        },
+        {
+          "size_bytes": 524288,
+          "chunk_count": 8,
+          "disperse_us": 620.0,
+          "sha256_match": true,
+          "total_ms": 0.915
+        },
+        {
+          "size_bytes": 1048576,
+          "chunk_count": 16,
+          "disperse_us": 1261.0,
+          "sha256_match": true,
+          "total_ms": 1.68
+        },
+        {
+          "size_bytes": 1572864,
+          "chunk_count": 24,
+          "disperse_us": 1928.0,
+          "sha256_match": true,
+          "total_ms": 2.574
+        },
+        {
+          "size_bytes": 2097152,
+          "chunk_count": 32,
+          "disperse_us": 2785.0,
+          "sha256_match": true,
+          "total_ms": 3.917
+        },
+        {
+          "size_bytes": 1234567,
+          "chunk_count": 19,
+          "disperse_us": 1934.0,
+          "sha256_match": true,
+          "total_ms": 2.561
+        }
+      ],
+      "max_size_tested_bytes": 2097152,
+      "all_sha256_matched": true,
+      "status": "PASSED"
+    },
+    "fletcher32_bitrot_stress": {
+      "empty_buffer": 0,
+      "zero_buffer_128b": "0xffffffff",
+      "odd_trailing_byte_tests": 6,
+      "transposition_detected": true,
+      "random_bit_flip_trials": 5000,
+      "detected_flips": 5000,
+      "detection_rate_pct": 100.0,
+      "reassembly_rejected_corrupt_chunk": true,
+      "status": "PASSED"
+    },
+    "context_map_governance": {
+      "primary": {
+        "path": "07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md",
+        "mode": "0o444",
+        "write_blocked": true,
+        "append_blocked": true,
+        "rdwr_blocked": true,
+        "truncate_blocked": true,
+        "lowlevel_open_blocked": true,
+        "size_bytes": 5548,
+        "sha256": "80e96726403861ba55f8d9029442fb44e581bfb2da345adc0a27fce024ef0b02",
+        "sha256_canonical_match": true
+      },
+      "mirror": {
+        "path": "obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md",
+        "mode": "0o444",
+        "write_blocked": true,
+        "append_blocked": true,
+        "rdwr_blocked": true,
+        "truncate_blocked": true,
+        "lowlevel_open_blocked": true,
+        "size_bytes": 5548,
+        "sha256": "80e96726403861ba55f8d9029442fb44e581bfb2da345adc0a27fce024ef0b02",
+        "sha256_canonical_match": true
+      },
+      "status": "PASSED"
+    },
+    "latency_sla_profiling": {
+      "payload_bytes": 1048576,
+      "trials": 100,
+      "dispersal_latency_ms": {
+        "mean": 1.261,
+        "median": 1.234,
+        "p95": 1.43,
+        "min": 1.202,
+        "max": 1.671,
+        "sla_threshold_ms": 2.0,
+        "sla_satisfied": true
+      },
+      "status": "PASSED"
+    }
+  }
+}

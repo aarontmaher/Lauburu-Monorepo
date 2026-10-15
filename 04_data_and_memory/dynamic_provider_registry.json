@@ -1,0 +1,158 @@
+{
+  "timestamp_utc": "2026-09-20T16:01:32Z",
+  "scanner_version": "1.0.0",
+  "env_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.env",
+  "total_providers_scanned": 10,
+  "configured_count": 3,
+  "free_tier_count": 3,
+  "paid_tier_count": 0,
+  "total_effective_daily_cap": 16900,
+  "effective_quota_pool": {
+    "google_gemini": {
+      "name": "Google AI Studio (Gemini)",
+      "daily_cap": 1500,
+      "is_free": true,
+      "payload_tier": "LONG_CONTEXT_AST",
+      "recommended_task": "Long-context code review, LoRA instruction generation"
+    },
+    "xai_grok": {
+      "name": "xAI (Grok-2)",
+      "daily_cap": 1000,
+      "is_free": true,
+      "payload_tier": "ADVERSARIAL_RED_TEAM",
+      "recommended_task": "Adversarial red-team, edge-case testing, vulnerability audit"
+    },
+    "groq_ai": {
+      "name": "Groq (llama-3.3-70b-versatile)",
+      "daily_cap": 14400,
+      "is_free": true,
+      "payload_tier": "ULTRA_LOW_LATENCY",
+      "recommended_task": "Ultra-low-latency inference, real-time streaming, sub-100ms TTFT"
+    }
+  },
+  "all_providers": {
+    "google_gemini": {
+      "name": "Google AI Studio (Gemini)",
+      "alias": "google_gemini",
+      "daily_cap_free": 1500,
+      "daily_cap_paid": 999999,
+      "cost_per_1k_tokens": 0.0,
+      "recommended_task": "Long-context code review, LoRA instruction generation",
+      "payload_tier": "LONG_CONTEXT_AST",
+      "reset_time_aest": "10:00",
+      "status": "CONFIGURED",
+      "env_var": "GEMINI_API_KEY",
+      "key_prefix": "AQ.Ab8RN...[SOVEREIGN_MASKED]"
+    },
+    "nvidia_nim": {
+      "name": "NVIDIA NIM (DeepSeek V4 Pro)",
+      "alias": "nvidia_nim",
+      "daily_cap_free": 2000,
+      "daily_cap_paid": 999999,
+      "cost_per_1k_tokens": 0.0,
+      "recommended_task": "Kernel synthesis, SIMD vectorization, heavy refactoring",
+      "payload_tier": "HEAVY_ALGORITHMIC_CODING",
+      "reset_time_aest": "10:00",
+      "status": "NOT_CONFIGURED",
+      "env_var": "NVIDIA_NIM_API_KEY"
+    },
+    "xai_grok": {
+      "name": "xAI (Grok-2)",
+      "alias": "xai_grok",
+      "daily_cap_free": 1000,
+      "daily_cap_paid": 999999,
+      "cost_per_1k_tokens": 0.0,
+      "recommended_task": "Adversarial red-team, edge-case testing, vulnerability audit",
+      "payload_tier": "ADVERSARIAL_RED_TEAM",
+      "reset_time_aest": "10:00",
+      "status": "CONFIGURED",
+      "env_var": "XAI_API_KEY",
+      "key_prefix": "xai-csLU...[SOVEREIGN_MASKED]"
+    },
+    "cloudflare_ai": {
+      "name": "Cloudflare Workers AI (Llama 3.3 70B)",
+      "alias": "cloudflare_ai",
+      "daily_cap_free": 800,
+      "daily_cap_paid": 999999,
+      "cost_per_1k_tokens": 0.0,
+      "recommended_task": "Edge triage, JSON schema validation, telemetry classification",
+      "payload_tier": "EDGE_TRIAGE_AND_JSON",
+      "reset_time_aest": "10:00",
+      "status": "NOT_CONFIGURED",
+      "env_var": "CLOUDFLARE_API_TOKEN"
+    },
+    "anthropic_claude": {
+      "name": "Anthropic Claude (claude-3-5-haiku / claude-3-7-sonnet)",
+      "alias": "anthropic_claude",
+      "daily_cap_free": 0,
+      "daily_cap_paid": 5000,
+      "cost_per_1k_tokens": 0.8,
+      "recommended_task": "High-fidelity architecture synthesis, long-context diff review",
+      "payload_tier": "PREMIUM_ARCHITECTURE",
+      "reset_time_aest": "Never (monthly quota)",
+      "status": "NOT_CONFIGURED",
+      "env_var": "ANTHROPIC_API_KEY"
+    },
+    "openai_chatgpt": {
+      "name": "OpenAI (gpt-4o-mini / gpt-4.1-nano)",
+      "alias": "openai_chatgpt",
+      "daily_cap_free": 0,
+      "daily_cap_paid": 3000,
+      "cost_per_1k_tokens": 0.15,
+      "recommended_task": "Structured JSON output, function-calling, embeddings",
+      "payload_tier": "STRUCTURED_JSON_FUNCTION_CALLING",
+      "reset_time_aest": "Never (monthly quota)",
+      "status": "NOT_CONFIGURED",
+      "env_var": "OPENAI_API_KEY"
+    },
+    "mistral_ai": {
+      "name": "Mistral AI (mistral-small / codestral)",
+      "alias": "mistral_ai",
+      "daily_cap_free": 0,
+      "daily_cap_paid": 2000,
+      "cost_per_1k_tokens": 0.1,
+      "recommended_task": "Code completion, fill-in-middle, fast syntax tasks",
+      "payload_tier": "FAST_CODE_COMPLETION",
+      "reset_time_aest": "Never (monthly quota)",
+      "status": "NOT_CONFIGURED",
+      "env_var": "MISTRAL_API_KEY"
+    },
+    "together_ai": {
+      "name": "Together AI (Llama 3.3 70B / DeepSeek-R1)",
+      "alias": "together_ai",
+      "daily_cap_free": 1000,
+      "daily_cap_paid": 5000,
+      "cost_per_1k_tokens": 0.18,
+      "recommended_task": "Bulk inference, speculative drafts, auxiliary verification",
+      "payload_tier": "BULK_SPECULATIVE_DRAFTS",
+      "reset_time_aest": "Never (credit-based)",
+      "status": "NOT_CONFIGURED",
+      "env_var": "TOGETHER_API_KEY"
+    },
+    "groq_ai": {
+      "name": "Groq (llama-3.3-70b-versatile)",
+      "alias": "groq_ai",
+      "daily_cap_free": 14400,
+      "daily_cap_paid": 999999,
+      "cost_per_1k_tokens": 0.0,
+      "recommended_task": "Ultra-low-latency inference, real-time streaming, sub-100ms TTFT",
+      "payload_tier": "ULTRA_LOW_LATENCY",
+      "reset_time_aest": "10:00",
+      "status": "CONFIGURED",
+      "env_var": "GROQ_API_KEY",
+      "key_prefix": "gsk_CNAz...[SOVEREIGN_MASKED]"
+    },
+    "deepseek_api": {
+      "name": "DeepSeek API (deepseek-coder-v3 / deepseek-r1)",
+      "alias": "deepseek_api",
+      "daily_cap_free": 0,
+      "daily_cap_paid": 3000,
+      "cost_per_1k_tokens": 0.014,
+      "recommended_task": "Deep algorithmic reasoning, formal proofs, math olympiad solving",
+      "payload_tier": "DEEP_REASONING",
+      "reset_time_aest": "Never (monthly quota)",
+      "status": "NOT_CONFIGURED",
+      "env_var": "DEEPSEEK_API_KEY"
+    }
+  }
+}

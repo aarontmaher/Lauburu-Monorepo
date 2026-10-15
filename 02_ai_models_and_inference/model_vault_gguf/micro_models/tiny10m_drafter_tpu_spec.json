@@ -1,0 +1,514 @@
+{
+  "model_name": "Tiny10M-Drafter-EdgeTPU",
+  "architecture": {
+    "vocab_size": 32000,
+    "d_model": 256,
+    "n_layers": 4,
+    "n_heads": 8,
+    "parameters": 11422720,
+    "footprint_int8_mb": 10.83,
+    "footprint_fp16_mb": 21.65
+  },
+  "genetic_hyperparameters": {
+    "draft_k": 6,
+    "acceptance_tau": 0.75,
+    "temperature": 0.38
+  },
+  "target_hardware": [
+    {
+      "node": "Pixel_10_Pro_XL (L6)",
+      "hardware": "Google Tensor G5 Edge TPU",
+      "transport": "Android NNAPI / TFLite Delegate",
+      "estimated_latency_per_token_ms": 0.72,
+      "projected_draft_tps": 1388.0
+    },
+    {
+      "node": "Linux_Head_Node (L3)",
+      "hardware": "Google Coral Edge TPU (USB)",
+      "transport": "libedgetpu / PyCoral",
+      "estimated_latency_per_token_ms": 0.95,
+      "projected_draft_tps": 1052.0
+    },
+    {
+      "node": "Mac_Node (L1) / MacBook_Air (L5)",
+      "hardware": "Apple Silicon M4 Metal Performance Shaders",
+      "transport": "MPS Graph / llama.cpp mmap",
+      "estimated_latency_per_token_ms": 0.83,
+      "projected_draft_tps": 1204.0
+    }
+  ],
+  "artifacts": {
+    "torchscript": {
+      "file": "tiny10m_drafter_traced.pt",
+      "bytes": 45463936,
+      "sha256": "40d57d1f1021d57c5c1c1208a617e4284a77f4c9ef73573d240e1b8ac9d05e8f"
+    },
+    "int8_binary": {
+      "file": "tiny10m_drafter_int8.bin",
+      "bytes": 11351040,
+      "sha256": "2813680283ad27de9bd3dc19e44dfe2c69418aa8e4c28f665b26f791a756d21a"
+    }
+  },
+  "parameters_manifest": {
+    "embed.weight": {
+      "shape": [
+        32000,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.040168602019548416,
+      "offset": 0,
+      "length": 8192000
+    },
+    "encoder.layers.0.self_attn.in_proj_weight": {
+      "shape": [
+        768,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0019514356972649693,
+      "offset": 8192000,
+      "length": 196608
+    },
+    "encoder.layers.0.self_attn.in_proj_bias": {
+      "shape": [
+        768
+      ],
+      "dtype": "int8",
+      "scale": 0.0012668196577578783,
+      "offset": 8388608,
+      "length": 768
+    },
+    "encoder.layers.0.self_attn.out_proj.weight": {
+      "shape": [
+        256,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.005752293858677149,
+      "offset": 8389376,
+      "length": 65536
+    },
+    "encoder.layers.0.self_attn.out_proj.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.00540546141564846,
+      "offset": 8454912,
+      "length": 256
+    },
+    "encoder.layers.0.linear1.weight": {
+      "shape": [
+        1024,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.002174427965655923,
+      "offset": 8455168,
+      "length": 262144
+    },
+    "encoder.layers.0.linear1.bias": {
+      "shape": [
+        1024
+      ],
+      "dtype": "int8",
+      "scale": 0.0018349920865148306,
+      "offset": 8717312,
+      "length": 1024
+    },
+    "encoder.layers.0.linear2.weight": {
+      "shape": [
+        256,
+        1024
+      ],
+      "dtype": "int8",
+      "scale": 0.0043937754817306995,
+      "offset": 8718336,
+      "length": 262144
+    },
+    "encoder.layers.0.linear2.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0042225029319524765,
+      "offset": 8980480,
+      "length": 256
+    },
+    "encoder.layers.0.norm1.weight": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.005313419736921787,
+      "offset": 8980736,
+      "length": 256
+    },
+    "encoder.layers.0.norm1.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0012355534126982093,
+      "offset": 8980992,
+      "length": 256
+    },
+    "encoder.layers.0.norm2.weight": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.009018922224640846,
+      "offset": 8981248,
+      "length": 256
+    },
+    "encoder.layers.0.norm2.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0025305666495114565,
+      "offset": 8981504,
+      "length": 256
+    },
+    "encoder.layers.1.self_attn.in_proj_weight": {
+      "shape": [
+        768,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0020874582696706057,
+      "offset": 8981760,
+      "length": 196608
+    },
+    "encoder.layers.1.self_attn.in_proj_bias": {
+      "shape": [
+        768
+      ],
+      "dtype": "int8",
+      "scale": 0.001367003656923771,
+      "offset": 9178368,
+      "length": 768
+    },
+    "encoder.layers.1.self_attn.out_proj.weight": {
+      "shape": [
+        256,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.006139214150607586,
+      "offset": 9179136,
+      "length": 65536
+    },
+    "encoder.layers.1.self_attn.out_proj.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.005184287670999765,
+      "offset": 9244672,
+      "length": 256
+    },
+    "encoder.layers.1.linear1.weight": {
+      "shape": [
+        1024,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0022735137026757,
+      "offset": 9244928,
+      "length": 262144
+    },
+    "encoder.layers.1.linear1.bias": {
+      "shape": [
+        1024
+      ],
+      "dtype": "int8",
+      "scale": 0.002360179089009762,
+      "offset": 9507072,
+      "length": 1024
+    },
+    "encoder.layers.1.linear2.weight": {
+      "shape": [
+        256,
+        1024
+      ],
+      "dtype": "int8",
+      "scale": 0.0032600194681435823,
+      "offset": 9508096,
+      "length": 262144
+    },
+    "encoder.layers.1.linear2.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0018694964237511158,
+      "offset": 9770240,
+      "length": 256
+    },
+    "encoder.layers.1.norm1.weight": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0050500729121267796,
+      "offset": 9770496,
+      "length": 256
+    },
+    "encoder.layers.1.norm1.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.002068895846605301,
+      "offset": 9770752,
+      "length": 256
+    },
+    "encoder.layers.1.norm2.weight": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.007083890959620476,
+      "offset": 9771008,
+      "length": 256
+    },
+    "encoder.layers.1.norm2.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0020040071103721857,
+      "offset": 9771264,
+      "length": 256
+    },
+    "encoder.layers.2.self_attn.in_proj_weight": {
+      "shape": [
+        768,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0023928615264594555,
+      "offset": 9771520,
+      "length": 196608
+    },
+    "encoder.layers.2.self_attn.in_proj_bias": {
+      "shape": [
+        768
+      ],
+      "dtype": "int8",
+      "scale": 0.0007285777246579528,
+      "offset": 9968128,
+      "length": 768
+    },
+    "encoder.layers.2.self_attn.out_proj.weight": {
+      "shape": [
+        256,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.004042747430503368,
+      "offset": 9968896,
+      "length": 65536
+    },
+    "encoder.layers.2.self_attn.out_proj.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0038287832867354155,
+      "offset": 10034432,
+      "length": 256
+    },
+    "encoder.layers.2.linear1.weight": {
+      "shape": [
+        1024,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.002345593413338065,
+      "offset": 10034688,
+      "length": 262144
+    },
+    "encoder.layers.2.linear1.bias": {
+      "shape": [
+        1024
+      ],
+      "dtype": "int8",
+      "scale": 0.002978737000375986,
+      "offset": 10296832,
+      "length": 1024
+    },
+    "encoder.layers.2.linear2.weight": {
+      "shape": [
+        256,
+        1024
+      ],
+      "dtype": "int8",
+      "scale": 0.002661091275513172,
+      "offset": 10297856,
+      "length": 262144
+    },
+    "encoder.layers.2.linear2.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.000904590415302664,
+      "offset": 10560000,
+      "length": 256
+    },
+    "encoder.layers.2.norm1.weight": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0052331178449094296,
+      "offset": 10560256,
+      "length": 256
+    },
+    "encoder.layers.2.norm1.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0028988856356590986,
+      "offset": 10560512,
+      "length": 256
+    },
+    "encoder.layers.2.norm2.weight": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.007078820373862982,
+      "offset": 10560768,
+      "length": 256
+    },
+    "encoder.layers.2.norm2.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0022140759974718094,
+      "offset": 10561024,
+      "length": 256
+    },
+    "encoder.layers.3.self_attn.in_proj_weight": {
+      "shape": [
+        768,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.002251081634312868,
+      "offset": 10561280,
+      "length": 196608
+    },
+    "encoder.layers.3.self_attn.in_proj_bias": {
+      "shape": [
+        768
+      ],
+      "dtype": "int8",
+      "scale": 0.0007062984514050186,
+      "offset": 10757888,
+      "length": 768
+    },
+    "encoder.layers.3.self_attn.out_proj.weight": {
+      "shape": [
+        256,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0032854380551725626,
+      "offset": 10758656,
+      "length": 65536
+    },
+    "encoder.layers.3.self_attn.out_proj.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0017340626800432801,
+      "offset": 10824192,
+      "length": 256
+    },
+    "encoder.layers.3.linear1.weight": {
+      "shape": [
+        1024,
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0022785894107073545,
+      "offset": 10824448,
+      "length": 262144
+    },
+    "encoder.layers.3.linear1.bias": {
+      "shape": [
+        1024
+      ],
+      "dtype": "int8",
+      "scale": 0.003276167204603553,
+      "offset": 11086592,
+      "length": 1024
+    },
+    "encoder.layers.3.linear2.weight": {
+      "shape": [
+        256,
+        1024
+      ],
+      "dtype": "int8",
+      "scale": 0.0022786115296185017,
+      "offset": 11087616,
+      "length": 262144
+    },
+    "encoder.layers.3.linear2.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.001105882111005485,
+      "offset": 11349760,
+      "length": 256
+    },
+    "encoder.layers.3.norm1.weight": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.006916103418916464,
+      "offset": 11350016,
+      "length": 256
+    },
+    "encoder.layers.3.norm1.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.003443289315328002,
+      "offset": 11350272,
+      "length": 256
+    },
+    "encoder.layers.3.norm2.weight": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.007104986812919378,
+      "offset": 11350528,
+      "length": 256
+    },
+    "encoder.layers.3.norm2.bias": {
+      "shape": [
+        256
+      ],
+      "dtype": "int8",
+      "scale": 0.0019958268385380507,
+      "offset": 11350784,
+      "length": 256
+    }
+  },
+  "export_timestamp": "2026-09-04T22:15:40Z",
+  "total_pairs_trained": 19167
+}

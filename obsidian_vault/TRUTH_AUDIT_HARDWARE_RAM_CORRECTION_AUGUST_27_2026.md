@@ -27,12 +27,12 @@ These hardcoded strings leaked into model context during automated tooling queri
 | Layer | Node Name | Network IP | True Physical RAM | True AI Cap (Dynamic Limit) | Verified Hardware Architecture |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **L1** | `Mac_Node` | `100.119.199.76` | **24.0 GB** | **21.6 GB** (90%) | Apple M4 Pro Mac Mini (Host Governor) |
-| **L2** | `MacBook_Pro`| `100.103.212.21` | **16.0 GB** | **14.0 GB** (90%) | Apple M1 MacBook Pro (Metal GPU RPC & Storage) |
-| **L3** | `Linux_Head_Node`| `100.101.39.98`| **16.0 GB** | **13.8 GB** (80%) | AMD Ryzen 7 5700U (Docker Hub & Ray) |
+| **L2** | `MacBook_Pro`| `100.103.212.21` | **16.0 GB** | **14.0 GB** (90%) | Intel Core i7 MacBook Pro (Metal GPU RPC & Storage) |
+| **L3** | `Linux_Mini`| `100.101.39.98`| **16.0 GB** | **13.8 GB** (80%) | Intel 2018 Mac Mini (Linux) (Docker Hub & Ray) |
 | **L4** | `Linux_Tablet`| `100.81.92.125` | **8.0 GB** | **6.5 GB** (75%) | Debian Linux Tablet (Lightweight DSP) |
 | **L5** | `MacBook_Air` | `100.93.158.96`  | **16.0 GB** | **14.0 GB** (90%) | Apple M4 MacBook Air (Model Storage Vault) |
 | **L6** | `Pixel_10_Pro_XL`|`100.73.38.87` | **16.0 GB** | **12.5 GB** (85%) | Google Tensor G5 (Edge TPU & UWB) |
-| **L7** | `Samsung_S20` | `100.84.40.95`  | **12.0 GB** | **9.0 GB** (75%) | Samsung Exynos 990 (OpenClaw UI Tester) |
+| **L7** | `Samsung_S20` | `100.78.206.96`  | **12.0 GB** | **9.0 GB** (75%) | Samsung Exynos 990 (OpenClaw UI Tester) |
 | **GW** | `GL.iNet Router`|`100.122.185.123`| Embedded | Embedded | Wi-Fi 7 Multi-WAN Gateway |
 
 **Total Mesh Memory:** **108.0 GB Physical RAM (82.8 GB Usable AI VRAM)**

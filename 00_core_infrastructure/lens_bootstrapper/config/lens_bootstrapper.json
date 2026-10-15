@@ -1,0 +1,10 @@
+{
+  "supervisor_command": "python3 -u 00_core_infrastructure/lens_bootstrapper/supervisor/local_lens_supervisor.py --port 3037",
+  "socket_path": "~/.lauburu/lens_bootstrapper.sock",
+  "health_host": "127.0.0.1",
+  "health_port": 3037,
+  "health_interval_sec": 10,
+  "telemetry_interval_sec": 2,
+  "log_file_path": "/Volumes/Lauburu-Monorepo/logs/lens_bootstrapper.log",
+  "enable_supervisor": true
+}

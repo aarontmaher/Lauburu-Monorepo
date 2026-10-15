@@ -36,7 +36,7 @@ if [ ! -x "${VENV_PYTHON}" ]; then
 fi
 
 export PYTHONPATH="${SCRIPT_DIR}/tui:${SCRIPT_DIR}:${SCRIPT_DIR}/../../05_agents_and_swarms/red_blue_arena:${SCRIPT_DIR}/../../00_core_infrastructure/self_healing_hub/src:${PYTHONPATH:-}"
-export TERM="${TERM:-xterm-256color}"
+export TERM="xterm-256color"
 export COLORTERM="${COLORTERM:-truecolor}"
 
 echo "=============================================================================="
@@ -87,11 +87,25 @@ elif [ "${FIRST_ARG}" = "verify" ] || [ "${FIRST_ARG}" = "--verify" ]; then
     echo "▶ Executing Headless TUI Verification..."
     cd "${SCRIPT_DIR}"
     exec ${VENV_PYTHON} "${SCRIPT_DIR}/tui/verify_tui.py"
-elif [ "${FIRST_ARG}" = "--dev" ] || [ "${FIRST_ARG}" = "dev" ]; then
-    echo "▶ Launching Canonical TUI in Live Mode..."
+elif [ "${FIRST_ARG}" = "bt" ] || [ "${FIRST_ARG}" = "bluetooth" ] || [ "${FIRST_ARG}" = "--bluetooth" ]; then
+    echo "▶ Initializing Bluetooth Serial Terminal PTY Bridge..."
+    if ! pgrep -f "bluetooth_kai_morich_terminal_server.py" >/dev/null 2>&1; then
+        echo "▶ Spawning background Bluetooth Serial Terminal Gateway..."
+        ${VENV_PYTHON} "${SCRIPT_DIR}/../../06_scripts_and_tooling/bluetooth_kai_morich_terminal_server.py" > /tmp/bt_terminal_daemon.log 2>&1 &
+        sleep 0.5
+    fi
+    echo "✔ Bluetooth Serial Terminal PTY active: /tmp/bluetooth_terminal_pty"
+    echo "▶ Launching Canonical TUI based in Bluetooth Terminal (Hot-Reload Enabled)..."
     shift || true
     cd "${SCRIPT_DIR}"
-    exec ${VENV_PYTHON} "${TUI_APP}" "$@"
+    VENV_TEXTUAL="${SCRIPT_DIR}/.venv/bin/textual"
+    exec ${VENV_TEXTUAL} run --dev "${TUI_APP}" "$@"
+elif [ "${FIRST_ARG}" = "--dev" ] || [ "${FIRST_ARG}" = "dev" ]; then
+    echo "▶ Launching Canonical TUI in Live Mode (Hot-Reload Enabled)..."
+    shift || true
+    cd "${SCRIPT_DIR}"
+    VENV_TEXTUAL="${SCRIPT_DIR}/.venv/bin/textual"
+    exec ${VENV_TEXTUAL} run --dev "${TUI_APP}" "$@"
 else
     # 2. Launch Textual TUI Console
     cd "${SCRIPT_DIR}"

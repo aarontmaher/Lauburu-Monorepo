@@ -1,0 +1,16 @@
+[Unit]
+Description=Lauburu GCP Pub/Sub Local Subscriber Mesh Bridge
+After=network.target
+
+[Service]
+Type=simple
+User=linux
+WorkingDirectory=/opt/lauburu/gcp_pubsub_mesh_bridge/local_subscriber
+ExecStart=/opt/lauburu/gcp_pubsub_mesh_bridge/local_subscriber/venv/bin/python3 subscriber.py
+Restart=always
+RestartSec=10
+Environment="GCP_PROJECT_ID=lauburu-project"
+Environment="PUBSUB_SUBSCRIPTION_ID=google-chat-outbound"
+
+[Install]
+WantedBy=multi-user.target

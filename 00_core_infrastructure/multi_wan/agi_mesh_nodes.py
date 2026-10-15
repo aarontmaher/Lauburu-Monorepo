@@ -66,7 +66,7 @@ class SelfHealingMeshRouter:
                 node_id="linux_gpu_node",
                 name="linux",
                 device_type="Linux GPU PC (24GB VRAM)",
-                ip_address="192.168.8.116",
+                ip_address="192.168.8.176",
                 primary_model="deepseek-r1:32b",
                 hf_repo_id="deepseek-ai/DeepSeek-R1-Distill-Qwen-32B-GGUF",
                 model_storage_path="NAS",

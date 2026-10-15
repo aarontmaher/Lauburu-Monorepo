@@ -39,9 +39,9 @@ from pyspark_nas_lakehouse_engine import PySparkNASLakehouseEngine
 logger = logging.getLogger("CanonicalWorkflowEngine")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
-CANONICAL_DOC = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/canonicalprojectworkflow.md"
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
-WORKFLOW_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/canonical_workflow_state.json"
+CANONICAL_DOC = "/Volumes/Lauburu-Monorepo/canonicalprojectworkflow.md"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+WORKFLOW_STATE_FILE = "/Volumes/Lauburu-Monorepo/data/canonical_workflow_state.json"
 os.makedirs(os.path.dirname(WORKFLOW_STATE_FILE), exist_ok=True)
 os.makedirs(os.path.dirname(LORA_DATASET_FILE), exist_ok=True)
 
@@ -324,7 +324,7 @@ class CanonicalWorkflowEngine:
 
     def rank_markdown_documents(self) -> List[Dict[str, Any]]:
         """Parses and ranks all repository Markdown documents using fast os.walk for ground-truth compliance."""
-        monorepo_root = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+        monorepo_root = "/Volumes/Lauburu-Monorepo"
         ranked_docs = []
         skip_dirs = {".git", "node_modules", "vendor", "dist", "build", ".dart_tool", ".gradle", ".idea", ".gemini"}
         

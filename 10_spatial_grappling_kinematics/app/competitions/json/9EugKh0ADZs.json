@@ -1,0 +1,37 @@
+{
+  "video_id": "9EugKh0ADZs",
+  "url": "https://youtu.be/9EugKh0ADZs",
+  "division": "Freestyle Wrestling",
+  "title": "Aaron Maher (AUS) vs Liam Neyland (AUS) [Bout 2]",
+  "duration_sec": 639.3,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 28,
+  "dual_athlete_frames": 10,
+  "standing_phase_pct": 46.4,
+  "ground_scramble_phase_pct": 53.6,
+  "level_change_shots_detected": 3,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 45.7,
+    "left_elbow": 139.1,
+    "right_elbow": 142.0,
+    "left_hip": 133.0,
+    "right_hip": 138.3,
+    "left_knee": 147.3,
+    "right_knee": 142.4
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/9EugKh0ADZs_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this bout is characterized by a strong standing and ground/scrumble component, with a high level of change shots and a mean spine lean of 45.7\u00b0. His elbow flexion L/R is 139.1\u00b0/142.0\u00b0, and his knee flexion L/R is 147.3\u00b0/142.4\u00b0. This combination of techniques suggests a high level of control and strength in his grappling, which is evident in his 639",
+  "processing_sec": 2.59,
+  "vision_model_opinions": {
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "READY_BATCH",
+      "latency_sec": 0.8,
+      "analysis": "Aaron Maher's grappling in this bout is characterized by a strong standing and ground/scrumble component, with a high level of change shots and a mean spine lean of 45.7\u00b0. His elbow flexion L/R is 139.1\u00b0/142.0\u00b0, and his knee flexion L/R is 147.3\u00b0/142.4\u00b0. This combination of techniques suggests a high level of control and strength in his grappling, which is evident in his 639"
+    }
+  }
+}

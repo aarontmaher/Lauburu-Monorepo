@@ -1,11 +1,11 @@
 ---
 title: "Canonical Project Architecture, Storage Rule & Tooling Matrix"
 tags: [canonical_rule, storage, tri_vault, mesh, tooling, truth_audit]
-updated: "2026-08-27"
+updated: "2026-10-13"
 ---
 
 # Canonical Project Architecture, Storage Rule & Tooling Matrix
-**Updated:** 2026-08-27
+**Updated:** 2026-10-13
 **Tags:** #architecture #mesh #obsidian #pyspark #github #swarm #mcp #rules #storage_health #self_healing
 **Related Notes:** [[Index]], [[LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX]], [[PYSPARK_MONOREPO_CRAWL_AUG26]], [[APPS_AND_FEATURES_AUGUST_26_2026]]
 
@@ -63,7 +63,7 @@ graph TD
 │ 1. PRIMARY ENGINE: prima.cpp                                                │
 │    • Canonical primary master across all devices that contain the model     │
 │      weights (Mac Mini M4 Pro, MacBook Pro, Linux Head Node).               │
-│    • High-throughput Pipelined-Ring Parallelism over 10Gbps TB4 DMA Bridge. │
+│    • High-throughput Pipelined-Ring Parallelism over 40Gbps TB4 DMA Bridge. │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 2. RESILIENT FALLBACK: llama.cpp                                            │
 │    • Strictly used as a fallback ONLY if an edge device lacks the local     │
@@ -80,15 +80,15 @@ graph TD
     - `Expert 2 (AST & Polyglot Coder):` PySpark AST traversal, code refactoring, Git worktree commits.
     - `Expert 3 (Biometrics & Telemetry DSP):` Movesense 512Hz ECG, Pan-Tompkins QRS filtering, ACWR recovery calculation.
     - `Expert 4 (Storage & Docker Infrastructure):` Virtio-FS validation, Qdrant vector sync, NetBird routing.
-* **Master Local Orchestrator:** `Qwen 3.8 Max 27B` / `Qwen3.8-Flash-Next` (Unabliterated) pinned at `/Users/aaron/models/Qwen3.8-Flash-Next/` (Port 8081).
-* **Pinned Devil's Advocate:** **`Qwen 3.8 Max 27B Abliterated`** (`Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf`, 16.0 GB) pinned at `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf` on Port `:8083`.
-* **Coding & AST Specialist:** `Qwen2.5-Coder-32B` / `Qwen2.5-Coder-7B-Instruct` (`qwen2.5-coder-7b-instruct-q4_k_m.gguf`).
+* **Master Local Orchestrator:** Target: `Qwen 3.8 Max 27B Abliterated` via `prima.cpp`. Runtime: Port 8082 (`decentralized_prima_daemon.py`), dynamically proxying to local inference endpoints: Port 8089 (`qwen2.5-0.5b-instruct-q4_k_m.gguf` for rapid micro-tasks) and Port 8085 (`Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` for 8B execution).
+* **Pinned Devil's Advocate & Red Team:** **`Qwen 3.8 Max Normal`** (`Qwen3.8-Max-Q4_K_M.gguf`) pinned on Port `:8083` (model path `/home/linuxmini/model_vault_gguf/Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf` on L8 `lauburu` via 40Gbps TB4 Bridge).
+* **Strict Duo Supremacy & Peripheral Offload:** The `Qwen 3.8 Max` duo exclusively utilizes the **`/screen-lens-sovereign`** capability for vision and speculative routing. The Mac Mini (L1) and Linux Mini Hub (L8 `lauburu`) maintain the primary 40Gbps compute backbone. All other project dependencies, networking tasks, background APIs, and auxiliary models MUST be aggressively pushed off to peripheral devices (L2-L7), which serve purely to aid the duo's functionality. Node L2 (MacBook Pro Intel i7) operates as the Screen Lens Sovereign Teacher Target unlinked from TB over LAN Wi-Fi / Tailscale.
 * **Medical DSP & Kinematics Specialist:** `Pan-Tompkins DSP + Qwen2.5-Math-72B` distilled.
 
 
 ### 2.2 Mandatory Default Hand-Off to `/ai-debate` on Project Choices
 **CANONICAL DIRECTIVE:** All swarms, orchestrators, subagents, and router sentinels MUST **default to handing off to the `/ai-debate` Dual Qwen and Cloud AI Debate** for all non-trivial project choices, architectural crossroads, and subsystem designs:
-1. **Local Dual Qwen Arena:** Qwen 3.8 Max (Master Orchestrator on `:8081`/`:8082`) vs Qwen 3.8 Max 27B Abliterated (Devil's Advocate on `:8083`).
+1. **Local Dual Qwen Arena:** Qwen 3.8 Max 27B Abliterated (Master Orchestrator on `:8081`/`:8082`) vs Qwen 3.8 Max (Devil's Advocate on `:8083` via TB4 Shard).
 2. **Cloud Frontier Shadow:** Gemini 3.1 Pro High / Gemini 3.7 Flash High for deep architectural reasoning and edge-case verification.
 3. **Consensus Invariant:** Decisions must achieve mathematical consensus ($\Phi \ge 0.98$) before code execution.
 
@@ -141,20 +141,22 @@ fi
 
 ---
 
-## 🌐 3. 7-Layer Mesh Topology & Dynamic RAM Ceilings
+## 🌐 3. 8-Layer Mesh Topology & Dynamic RAM Ceilings
 
-The distributed hardware mesh aggregates **108.0 GB RAM (82.8 GB Usable AI VRAM)**:
+The Lauburu Mesh pools decentralized AI VRAM and compute across 8 physical layers:
 
 | Hardware Layer | Node Name | Network Role | Local IP | Tailscale / Bridge IP | Dynamic RAM Ceiling | Hardware & Capabilities |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Layer 1: Host Mac** | `Mac_Node` | Primary Host & Memory Governor | `192.168.8.230` | `100.119.199.76` | **90%** (21.6 GB AI) | Apple M4 Pro Mac Mini. Primary controller, memory governor, prompt ingestion. |
-| **Layer 2: MacBook Pro** | `MacBook_Pro` | Metal GPU RPC & Model Vault | `192.168.8.127` | `100.103.212.21` (TB4: `169.254.187.138`) | **90%** (14.0 GB AI) | **10Gbps Thunderbolt 4 Bridge (0.277ms RTT)**, 285 GB internal SSD model vault. |
-| **Layer 3: Linux Laptop** | `Linux_Head_Node` | Gateway Ingress & Compute Hub | `192.168.8.224` | `100.101.39.98` | **80%** (13.8 GB AI) | AMD Ryzen 7 5700U, Docker Engine, Petals DHT Bootstrap & Apache Ray Head. |
-| **Layer 4: Linux Tablet** | `Linux_Tablet` | Mobile Compute & Touch DSP | DHCP | `100.81.92.125` | **75%** (6.5 GB AI) | Debian Linux Tablet, secondary Petals worker, lightweight biometrics telemetry. |
-| **Layer 5: MacBook Air** | `MacBook_Air` | Secondary High-Speed Metal Worker | `192.168.8.222` | `100.93.158.96` | **90%** (14.0 GB AI) | Apple M4 MacBook Air, Metal Performance Shaders, LoRA fine-tuning & model distillation. |
-| **Layer 6: Pixel** | `Pixel_10_Pro_XL` | 8K Vision Stream & Edge TPU | DHCP | `100.73.38.87` | **85%** (12.5 GB AI) | Google Tensor G5, Edge TPU, 8K Digital PTZ, UWB 3D Spatial Positioning Anchor. |
-| **Layer 7: Samsung S20** | `Samsung_S20` | Dedicated Automated UI Tester | DHCP | `100.84.40.95` (Alt: `100.99.123.58`) | **75%** (9.0 GB AI) | Samsung Exynos 990, Router USB ADB default target for OpenClaw automated audits. |
-| **Infrastructure Gateway** | `GL.iNet Router` | Core Gateway & USB Bridge | `192.168.8.1` | `100.122.185.123` | Embedded | SSID: `GL-MT3600BE-a0f-MLO`. Physical USB ADB daemon for hardware bus override. |
+| **Layer 1: Host Mac** | `Mac_Node` | Primary Host & Memory Governor | `192.168.8.143` (Wi-Fi) / `192.168.8.230` (LAN) | `100.119.199.76` | **80%** (>=4.8 GB Free) | Apple M4 Pro Mac Mini. Primary controller, memory governor, prompt ingestion. |
+| **Layer 2: MacBook Pro** | `MacBook_Pro` | Model Vault & x86_64 Worker | `192.168.8.127` | TB `10.0.0.4` / `100.103.212.21` | **90%** (14.0 GB AI) | Intel i7 MacBook Pro, 285 GB SSD model vault, 40 Gb/s TB Receptacle 3 (MTU 9000), LAN/Tailscale link. |
+| **Layer 1b: Mac Mini M2** | `MacMini_M2` | Secondary Compute Node | `192.168.8.114` | TB `10.0.0.3` / `100.104.128.34` | **85%** (13.6 GB AI) | Apple M2 Pro Mac Mini, 40 Gb/s TB Receptacle 2 (0.43ms RTT), local inference & validation. |
+| **Layer 3: Linux Hub** | `Linux_Head_Node` | Gateway Ingress & Compute Hub | `192.168.8.225` | `100.101.39.98` | **80%** (12.0 GB AI) | AMD Ryzen 7 5700U, Docker Engine, Petals DHT Bootstrap & Apache Ray Head. |
+| **Layer 4: Linux Tablet** | `Linux_Tablet` | Mobile Compute & Touch DSP | `192.168.8.116` | `100.80.64.5` | **75%** (6.0 GB AI) | Debian Linux Tablet (`debian-1`), secondary worker, lightweight biometrics telemetry. |
+| **Layer 5: MacBook Air** | `MacBook_Air` | Secondary High-Speed Metal Worker | `192.168.8.248` | `100.121.202.34` | **90%** (14.0 GB AI) | Apple M4 MacBook Air, Metal Performance Shaders, LoRA fine-tuning & model distillation. |
+| **Layer 6: Pixel** | `Pixel_10_Pro_XL` | 8K Vision Stream & Edge TPU | `192.168.8.213` | `100.114.215.68` | **85%** (12.5 GB AI) | Google Tensor G5, Edge TPU, 8K Digital PTZ, UWB 3D Spatial Positioning Anchor. |
+| **Layer 7: Samsung S20** | `Samsung_S20` | Dedicated Automated UI Tester | `192.168.8.157` | `100.84.40.95` | **75%** (9.0 GB AI) | Samsung Exynos 990, ADB default target for OpenClaw automated audits. |
+| **Layer 8: Linux Mini** | `Linux_Mini` | Central Hub & High-RAM Compute | `192.168.8.242` | TB `10.0.0.8` / `100.121.247.8` | **80%** (25.6 GB AI) | `lauburu` Intel Core i7-8700B, 32GB RAM, **40Gbps Thunderbolt bridge (0.14ms probed RTT)**. |
+| **Infrastructure Gateway** | `GL.iNet Router` | Core Gateway & USB Bridge | `192.168.8.1` | `100.70.123.123` | Embedded (2 GB RAM) | GL-BE14000 (OpenWrt), 2.5G NBN eth2 WAN, USB hardware ADB daemon. |
 
 ---
 
@@ -205,17 +207,22 @@ Lauburu-Monorepo/
      1. **Definitive "Human-Like" Click-Through:** Verified physical actuation (ADB tap/swipe or macOS accessibility) triggering real GUI state changes.
      2. **Line-by-Line Reading:** Authentic inspection of files or kernel buffers with line counts, exact byte lengths, and SHA256 checksums.
      3. **Definitive Visual Proof:** Authentic pixel-level screen capture or video recording visually verified.
-2. **Local AI First:** Always prioritize local quantized models over 10Gbps Thunderbolt 4 RPC before falling back to cloud APIs.
-3. **Dynamic RAM Governance:** Respect the strict per-device dynamic RAM ceilings. Aggressively offload background compute from the Mac Mini to surrounding nodes.
+2. **Local AI First:** Always prioritize local quantized models over 40Gbps Thunderbolt 4 RPC before falling back to cloud APIs.
+3. **Dynamic RAM Governance & Linux Mini Offload Invariant:** Respect the strict per-device dynamic RAM ceilings. Aggressively offload background compute from the Mac Mini to surrounding nodes. Specifically, the Mac Mini MUST aggressively preserve VRAM by migrating all heavy Python dependencies, web backends (uvicorn, voila), and TUI sync APIs to run natively on the Linux Head Node (`linuxmini`). The Mac Mini runs ONLY Sovereign Local AI inference, MLX training, and hardware-bound tasks.
 4. **Router Model Invariant:** GL.iNet travel router strictly runs `SmolLM2-135M/360M` ($\le 300\text{MB}$ RAM); heavy models are routed to the mesh master.
 5. **Persistent Keepalives:** Android devices running Termux must always execute `termux-wake-lock` and bypass Doze mode.
 6. **Continuous Tri-Vault Sync:** Every major change, refactor, or audit must update GitHub, the Obsidian Knowledge Graph, and the PySpark LoRA Data Lake.
 7. **Real Physical RAM Ground Truth & Mac Mini Scheduling Invariant:**
    * **Real Physical RAM Calculations:** All capacity models, mathematical equations, telemetry monitors, and theoretical proofs MUST view and compute against 100% REAL PHYSICAL RAM across the full network (Total Mesh: 108.0 GB, Mac Cluster: 56.0 GB). No artificial caps or simulated masks in the measurement layer.
-   * **All Peripheral Nodes Fill First:** All peripheral nodes (L2 MBP 16GB, L5 MBA 16GB, L3 Linux 16GB, L4 Tablet 8GB, L6 Pixel 16GB, L7 S20 12GB) receive layer allocations and fill to their targets first.
-   * **Mac Mini Last-Fill & Early-Full Ceiling:** The Mac Mini (L1 Host 24.0 GB) is strictly the LAST device to fill, and is considered FULL EARLIER at a conservative ~60% allocation (14.4 GB) to permanently guarantee >= 9.6 GB of real untouched headroom for prompt ingestion, ANE, TUI, and subagent loops.
-   * **3-Mac Thunderbolt Default:** Always shard across ALL 3 Apple Silicon Macs (L1 + L2 + L5) over the 10Gbps Thunderbolt 4 DMA bridge to pool 56.0 GB Real Metal RAM. Never shard across only 2 Macs unless the model fits very easily (<= 40% of real 2-node capacity).
-   * **7.1 Active Host Memory Evacuation Invariant:** If the Host Mac Mini available RAM drops below 5.0 GB (or utilization exceeds 85%), the memory governor MUST immediately execute inactive memory trimming and trigger automatic peripheral offload over the 10Gbps TB4 DMA bridge to MacBook Pro / Air and Linux Head Node to restore host headroom to >= 9.6 GB.
+   * **The Selfish M4 Sanctuary (L1 & L5):** The Apple M4 Pro Mac Mini (L1) and M4 MacBook Air (L5) are strictly, selfishly reserved for the exclusive execution of the Qwen 3.8 Max Duo. These two nodes are the ultimate masters of the mesh.
+      * **ACIO2 Crash Prevention Invariant:** To prevent `assert_id=2167` RTKit kernel panics, the Duo MUST forcefully evict and strictly forbid **USB CDC-NCM networking bridges** (e.g., Android USB tethering), **SMB File Sharing (`smbfs`) over Thunderbolt**, and heavy **swap-inducing workloads** from the M4 devices. The 40Gbps Thunderbolt 4 bridge is for **pure AI tensor compute only** and cannot safely carry heavy standard I/O traffic on the ACIO coprocessor without crashing.
+      * **ACIO2 OOM Swap Prevention Invariant (Mathematical Hard Limit):** The Mac Mini (L1) has 24GB of physical RAM. The Qwen 3.8 Duo (2 x 16GB models) mathematically requires ~32GB. Forcing both models onto the Mac Mini guarantees an immediate 8-10GB Out-Of-Memory (OOM) swap storm. This massive NVMe SSD swap paging permanently saturates the ACIO coprocessor, causing `assert_id=2167` crashes. Therefore, the Qwen 3.8 Duo MUST be physically split: the Sovereign Master (`qwen_38_max`) runs on the Mac Mini (L1), and the Devil's Advocate (`qwen_38_max_abliterated`) MUST run on the MacBook Pro (Node L2) (L5) or MacBook Pro (L2).
+   * **Aggressive Eviction with Holistic Health Guardrails:** The Qwen 3.8 Duo forcefully pushes all network tasks, project dependencies, heavy Python APIs, and background Docker automations off the M4s onto peripheral edge devices (L2, L3, L4, L6, L7, L8). However, this eviction is strictly gated by the **Holistic Mesh Health** mandate:
+      1. The Duo must verify the target's Dynamic RAM Ceiling and thermals before migration.
+      2. If a target is near crash threshold (e.g. L3 $>79\%$), the Duo re-routes to the next healthiest node.
+      3. If all peripheral nodes are maxed out, the Duo implements a hierarchical `kill -STOP` (suspend/queue) on non-essential daemons rather than pushing a node into OOM, ensuring ZERO device crashes across the mesh.
+   * **Thunderbolt Compute Dominance:** The 40Gbps Thunderbolt 4 bridge links the Mac Mini (L1) to the Linux Mini Hub (`lauburu`, L8) into a pristine VRAM pool (0.38ms RTT). If a non-essential process attempts to bind to an M4 host node, Screen Lens Sovereign MUST immediately migrate it to the L3 Linux Head Node or L8 Linux Mini.
+   * **7.1 Active Host Memory Evacuation Invariant:** If the M4 available RAM drops below 5.0 GB (or utilization exceeds 80%), the memory governor MUST immediately execute inactive memory trimming and trigger automatic peripheral offload for non-AI tasks, preserving the M4 RAM strictly for local inference.
 8. **Rule #8 (Mandatory Failure-to-Training Ingestion Invariant):**
    * **Any identified, confirmed, and solved failure** across apps, UI widgets, network transports, memory governance, or backend daemons **MUST be immediately converted into a structured instruction-thought-action JSONL pair** and appended to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl` for continuous local AI fine-tuning (`TRACK_04_NETWORK_SENTINEL` / `TRACK_01_AGENTWORLD`).
    * No outage, bug, or regression shall be fixed in isolation without permanent machine-learned knowledge retention in the local model dataset.
@@ -231,7 +238,7 @@ Lauburu-Monorepo/
     * **User Final Sign-Off:** The consensus direction ticket MUST be presented to Aaron for explicit approval before weights are touched.
     * **Fleet Synchronization:** Upon approval, training executes simultaneously across all 5 mesh devices (M4 Pro Mac Mini, M4 MacBook Air, MacBook Pro via TB4 DMA, Linux Head Node, Pixel 10 Pro XL TPU).
 12. **Rule #12 (Saccadic Foveated Context & Q4_0 KV Cache Invariant):**
-    * Ingesting massive contexts (>32K tokens) requires SmolLM2 AST pre-compression (saving 60-75% tokens) and mandatory Q4_0 KV cache quantization (`-ctk q4_0 -ctv q4_0`), preventing host VRAM overrun. Contexts exceeding host memory stream over 10Gbps TB4 DMA to peripheral node RAM.
+    * Ingesting massive contexts (>32K tokens) requires SmolLM2 AST pre-compression (saving 60-75% tokens) and mandatory Q4_0 KV cache quantization (`-ctk q4_0 -ctv q4_0`), preventing host VRAM overrun. Contexts exceeding host memory stream over 40Gbps TB4 DMA to peripheral node RAM.
 13. **Rule #13 (Hybrid Fusion Visual Aesthetic & Commercial ELO Invariant):**
     * All Web and Electron dashboards must comply with Linear Bento Minimalism (deep carbon, 1px hairline borders, 60-30-10 palette, sub-3s value comprehension, $\ge 2450$ ELO).
     * All terminal TUIs and hardware monitors must comply with 120 FPS Cyberpunk Phosphor TUI (phosphor green/cyan metrics, live hex streams, zero-latency redraws, $\ge 2380$ ELO).

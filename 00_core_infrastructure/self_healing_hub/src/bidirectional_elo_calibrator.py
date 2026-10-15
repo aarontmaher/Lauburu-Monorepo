@@ -20,9 +20,9 @@ from typing import Dict, List, Any, Tuple
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] [ELO-Calibrator] %(message)s")
 logger = logging.getLogger("EloCalibrator")
 
-CALIBRATION_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/bidirectional_elo_matrix.json"
-GAME_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
-LORA_TRAINING_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/mesh_battle_game_training.jsonl"
+CALIBRATION_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/bidirectional_elo_matrix.json"
+GAME_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
+LORA_TRAINING_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/mesh_battle_game_training.jsonl"
 
 class BidirectionalEloCalibrator:
     def __init__(self, k_factor: float = 32.0):
@@ -36,7 +36,7 @@ class BidirectionalEloCalibrator:
             "Layer 2: The Other Mac 2 (Mac Pro Worker)": ("169.254.187.138", 50052),
             "Layer 3: Linux Head Node": ("100.101.39.98", 50052),
             "Layer 4: Pixel 10 Pro XL": ("100.73.38.87", 50052),
-            "Layer 5: Samsung S20+": ("100.84.40.95", 50052),
+            "Layer 5: Samsung S20+": ("100.78.206.96", 50052),
         }
         host, port = node_map.get(node_str, ("127.0.0.1", 50052))
         t0 = time.perf_counter()

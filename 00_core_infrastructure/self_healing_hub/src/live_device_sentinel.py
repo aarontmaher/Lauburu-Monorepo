@@ -56,8 +56,8 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
-MONITOR_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/live_device_sentinel_state.json"
-ALERTS_HISTORY_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/live_device_alerts.json"
+MONITOR_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/live_device_sentinel_state.json"
+ALERTS_HISTORY_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/live_device_alerts.json"
 
 # Cache for device power and thermal metrics to ensure zero latency in poll loop
 _POWER_THERMAL_CACHE = {
@@ -175,7 +175,7 @@ def update_device_power_thermals_async():
             # 5. Samsung S20+ (Layer 6) - Live Termux / ADB Probe (Zero Fake Data)
             try:
                 res = subprocess.run(
-                    ["ssh", "-p", "8022", "-o", "ConnectTimeout=2", "-o", "BatchMode=yes", "100.84.40.95", "timeout 2 /data/data/com.termux/files/usr/bin/termux-battery-status 2>/dev/null"],
+                    ["ssh", "-p", "8022", "-o", "ConnectTimeout=2", "-o", "BatchMode=yes", "100.78.206.96", "timeout 2 /data/data/com.termux/files/usr/bin/termux-battery-status 2>/dev/null"],
                     capture_output=True, text=True, timeout=3
                 )
                 if res.returncode == 0 and res.stdout.strip() and "{" in res.stdout:
@@ -287,9 +287,9 @@ DEVICES_CONFIG = [
         "layer": 6,
         "tailscale_name": "aarons-s20-1",
         "alt_tailscale_name": "aarons-s20",
-        "tailscale_ip": "100.84.40.95",
+        "tailscale_ip": "100.78.206.96",
         "alt_tailscale_ip": "100.99.123.58",
-        "adb_endpoint": "100.84.40.95:5555",
+        "adb_endpoint": "100.78.206.96:5555",
         "ssh_port": 8022,
         "rpc_port": 50052,
         "vram_gb": 9.0

@@ -1,0 +1,56 @@
+{
+  "last_updated": "2026-08-31T08:15:00Z",
+  "tournament_battles": 105,
+  "scoring_method": "Bradley-Terry ELO",
+  "leaderboard": [
+    {
+      "rank": 1,
+      "model_name": "Qwen 3.8 Max (27B-4bit)",
+      "elo": 1352.7,
+      "tier": "Flagship Orchestrator",
+      "specialization": "Systems Architecture"
+    },
+    {
+      "rank": 2,
+      "model_name": "Llama 3.1 70B Abliterated",
+      "elo": 1300.2,
+      "tier": "Security Lead",
+      "specialization": "Cryptographic Shaders"
+    },
+    {
+      "rank": 3,
+      "model_name": "Kimi Titan (88B Sharded)",
+      "elo": 1288.1,
+      "tier": "Frontier Reasoner",
+      "specialization": "Deep Multi-Hop Proofs"
+    },
+    {
+      "rank": 4,
+      "model_name": "Qwen 2.5 Math (7B-Q4_K_M)",
+      "elo": 1281.8,
+      "tier": "Algorithm Specialist",
+      "specialization": "RAM & Latency Proofs"
+    },
+    {
+      "rank": 5,
+      "model_name": "Hermes 3 (8B Instruct)",
+      "elo": 1239.6,
+      "tier": "SmolAgent Duelist",
+      "specialization": "Code-as-Action"
+    },
+    {
+      "rank": 6,
+      "model_name": "Sentinel Heuristic SLM (4B)",
+      "elo": 1214.3,
+      "tier": "Network Guard",
+      "specialization": "SQM fq_codel Failover"
+    },
+    {
+      "rank": 7,
+      "model_name": "Mistral Nemo Abliterated 12B",
+      "elo": 1213.3,
+      "tier": "Devil's Advocate",
+      "specialization": "Zero-Mock Audit"
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 
 CHANNEL_FILE = "/Volumes/NAS/projects/ai_shared_channel.json"
-LOCAL_LOG = os.getenv("AI_LISTENER_LOG", "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/ai_channel_listener.log")
+LOCAL_LOG = os.getenv("AI_LISTENER_LOG", "/Volumes/Lauburu-Monorepo/data/ai_channel_listener.log")
 CHECK_INTERVAL = 5  # seconds
 
 def log_local(message):

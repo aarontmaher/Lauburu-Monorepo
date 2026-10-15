@@ -41,8 +41,8 @@ We start `llama-server` on Port 8083 targeting `Huihui-Qwen3.8-27B-abliterated-U
 
 We deployed the native plugin at `/Users/aaron/.gemini/config/plugins/antigravity-genetic-moe-router/`:
 - **Role:** Automatically intercepts prompt tasks in Antigravity / Antigravity IDE and makes dual-tier routing decisions:
-  - **Local Models:** Dispatched to the **Thunderbolt 4 Cluster** (L1 Mac Mini M4 Pro + L2 MacBook Pro M1 Max) over 10Gbps DMA (<0.28ms RTT).
-  - **Cloud Models:** Offloaded to **Peripheral Compute Nodes** (L3 Linux Head Node AMD Ryzen / L5 MacBook Air).
+  - **Local Models:** Dispatched to the **Thunderbolt 4 Cluster** (L1 Mac Mini M4 Pro + L2 MacBook Pro M1 Max) over 40Gbps DMA (<0.28ms RTT).
+  - **Cloud Models:** Offloaded to **Peripheral Compute Nodes** (L3 Linux Head Node Intel 2018 Mac Mini / L2 MacBook Pro).
 - **RAM Headroom Preservation:** Moving cloud API buffering, TLS sessions, and large token JSON heaps off the Mac Mini frees up **4.5 GB of Unified RAM**, keeping 100% of host memory dedicated to local Metal GPU weights!
 
 ---

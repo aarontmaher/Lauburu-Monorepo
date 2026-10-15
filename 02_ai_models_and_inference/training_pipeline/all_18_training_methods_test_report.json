@@ -1,0 +1,134 @@
+{
+  "timestamp": "2026-09-06T09:05:52Z",
+  "total_methods": 18,
+  "passed": 18,
+  "failed": 0,
+  "results": [
+    {
+      "method_num": 1,
+      "name": "CLM (Causal Language Modeling)",
+      "family": "Pretraining",
+      "status": "\u2705 PASS",
+      "metric": "Loss: 4.6204"
+    },
+    {
+      "method_num": 2,
+      "name": "MLM (Masked Language Modeling)",
+      "family": "Pretraining",
+      "status": "\u2705 PASS",
+      "metric": "Masked Loss: 2.8051"
+    },
+    {
+      "method_num": 3,
+      "name": "FIM (Fill-in-the-Middle)",
+      "family": "Pretraining",
+      "status": "\u2705 PASS",
+      "metric": "Prompt: <|fim_prefix|>def calculate_hrv(ecg..."
+    },
+    {
+      "method_num": 4,
+      "name": "Full SFT (Supervised Fine-Tuning)",
+      "family": "SFT & PEFT",
+      "status": "\u2705 PASS",
+      "metric": "100% parameter gradient step verified"
+    },
+    {
+      "method_num": 5,
+      "name": "LoRA (Low-Rank Adaptation)",
+      "family": "SFT & PEFT",
+      "status": "\u2705 PASS",
+      "metric": "Output Dim: 2x16 | Rank: 4"
+    },
+    {
+      "method_num": 6,
+      "name": "QLoRA (4-bit NF4 Quantized LoRA)",
+      "family": "SFT & PEFT",
+      "status": "\u2705 PASS",
+      "metric": "16 discrete NF4 levels verified | AbsMax: 0.9895"
+    },
+    {
+      "method_num": 7,
+      "name": "DoRA (Weight-Decomposed LoRA)",
+      "family": "SFT & PEFT",
+      "status": "\u2705 PASS",
+      "metric": "Directional & Magnitude decomposition verified"
+    },
+    {
+      "method_num": 8,
+      "name": "LongLoRA & LoRA-FA",
+      "family": "SFT & PEFT",
+      "status": "\u2705 PASS",
+      "metric": "S2-Attn Context Groups: 4 | 4x vs Full Self-Attention"
+    },
+    {
+      "method_num": 9,
+      "name": "RLHF via PPO",
+      "family": "Preference RL",
+      "status": "\u2705 PASS",
+      "metric": "Clipped Surrogate Loss: -1.5769"
+    },
+    {
+      "method_num": 10,
+      "name": "DPO (Direct Preference Optimization)",
+      "family": "Preference RL",
+      "status": "\u2705 PASS",
+      "metric": "Loss: 0.6709"
+    },
+    {
+      "method_num": 11,
+      "name": "IPO / cDPO (Identity Preference)",
+      "family": "Preference RL",
+      "status": "\u2705 PASS",
+      "metric": "Loss: 0.0151"
+    },
+    {
+      "method_num": 12,
+      "name": "KTO (Kahneman-Tversky Optimization)",
+      "family": "Preference RL",
+      "status": "\u2705 PASS",
+      "metric": "Utility Loss: 0.5075"
+    },
+    {
+      "method_num": 13,
+      "name": "ORPO (Odds Ratio Preference)",
+      "family": "Preference RL",
+      "status": "\u2705 PASS",
+      "metric": "Loss: 0.4641"
+    },
+    {
+      "method_num": 14,
+      "name": "GRPO (Group Relative Policy - DeepSeek-R1)",
+      "family": "Preference RL",
+      "status": "\u2705 PASS",
+      "metric": "Normalized Adv: [1.09, -0.51, 0.8, -1.38]"
+    },
+    {
+      "method_num": 15,
+      "name": "CoT Reasoning Trace Distillation",
+      "family": "Distillation",
+      "status": "\u2705 PASS",
+      "metric": "Formatted <think>...</think> token stream verified"
+    },
+    {
+      "method_num": 16,
+      "name": "SPIN (Self-Play Fine-Tuning)",
+      "family": "Distillation",
+      "status": "\u2705 PASS",
+      "metric": "Adversarial self-play pairing verified"
+    },
+    {
+      "method_num": 17,
+      "name": "STaR / ReST (Self-Taught Reasoner)",
+      "family": "Distillation",
+      "status": "\u2705 PASS",
+      "metric": "Filtered 1/2 passing trace"
+    },
+    {
+      "method_num": 18,
+      "name": "Evolutionary Merging (SLERP/TIES/DARE)",
+      "family": "Model Merging",
+      "status": "\u2705 PASS",
+      "metric": "SLERP spherical & TIES sign-elected merging verified"
+    }
+  ]
+}

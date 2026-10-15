@@ -415,7 +415,7 @@ class TestContainerManifestAndEntrypointResilience:
 
     def test_entrypoint_script_execution_and_signal_handling(self):
         """Verify entrypoint.sh executes custom commands and handles exit codes."""
-        entrypoint_path = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/entrypoint.sh")
+        entrypoint_path = Path("/Volumes/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/entrypoint.sh")
         assert entrypoint_path.exists()
         assert os.access(entrypoint_path, os.X_OK)
 
@@ -432,7 +432,7 @@ class TestContainerManifestAndEntrypointResilience:
 
     def test_entrypoint_cgroup_memory_detection_logging(self):
         """Verify entrypoint logs memory constraints and handles custom RAM budgets."""
-        entrypoint_path = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/entrypoint.sh")
+        entrypoint_path = Path("/Volumes/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/entrypoint.sh")
         env = os.environ.copy()
         env["ROUTER_AI_RAM_BUDGET_MB"] = "250.0"
 
@@ -448,9 +448,9 @@ class TestContainerManifestAndEntrypointResilience:
 
     def test_docker_compose_and_dockerfile_static_invariants(self):
         """Verify all static compilation flags, tmpfs limits, and security options."""
-        compose_path = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/docker-compose.router.yml")
-        dockerfile_path = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/Dockerfile")
-        dockerfile_mips_path = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/Dockerfile.mips")
+        compose_path = Path("/Volumes/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/docker-compose.router.yml")
+        dockerfile_path = Path("/Volumes/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/Dockerfile")
+        dockerfile_mips_path = Path("/Volumes/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/Dockerfile.mips")
 
         # Compose file checks
         compose_text = compose_path.read_text()

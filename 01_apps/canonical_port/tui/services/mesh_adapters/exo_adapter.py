@@ -180,7 +180,7 @@ class ExoAdapter:
         peers = [
             ExoPeerInfo(node_id="exo-01", name="Mac_Node (Host M4 Pro)", ip="127.0.0.1", port=self.port, memory_free_gb=21.6, vram_free_gb=18.0, shards_assigned=["Shard-0 (Layers 0-9)"], status="ACTIVE"),
             ExoPeerInfo(node_id="exo-02", name="MacBook_Pro (TB4 Bridge)", ip="169.254.187.138", port=self.port, memory_free_gb=14.0, vram_free_gb=13.5, shards_assigned=["Shard-1 (Layers 10-19)"], status="ACTIVE"),
-            ExoPeerInfo(node_id="exo-03", name="Linux_Head_Node (Ryzen 7)", ip="100.101.39.98", port=self.port, memory_free_gb=13.8, vram_free_gb=12.0, shards_assigned=["Shard-2 (Layers 20-29)"], status="ACTIVE"),
+            ExoPeerInfo(node_id="exo-03", name="Linux_Mini (Ryzen 7)", ip="100.101.39.98", port=self.port, memory_free_gb=13.8, vram_free_gb=12.0, shards_assigned=["Shard-2 (Layers 20-29)"], status="ACTIVE"),
             ExoPeerInfo(node_id="exo-04", name="MacBook_Air (Metal Node)", ip="100.93.158.96", port=self.port, memory_free_gb=14.0, vram_free_gb=12.0, shards_assigned=["Shard-3 (Layers 30-39)"], status="ACTIVE"),
         ]
 

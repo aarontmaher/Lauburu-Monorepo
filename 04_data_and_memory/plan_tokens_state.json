@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-09-04 16:31:23 UTC",
+  "plan": {
+    "plan_tier": "Google AI Ultra",
+    "account": "aaron.t.maher@gmail.com",
+    "overages_enabled": false,
+    "gemini_quota": {
+      "weekly_limit_remaining_pct": 95.0,
+      "five_hour_limit_remaining_pct": 99.0,
+      "weekly_refresh_eta": "6 days, 18 hours",
+      "five_hour_refresh_eta": "4 hours, 52 minutes",
+      "status": "ABUNDANT_HEADROOM"
+    },
+    "claude_gpt_quota": {
+      "weekly_limit_remaining_pct": 0.0,
+      "five_hour_limit_remaining_pct": 0.0,
+      "weekly_refresh_eta": "20 hours, 7 minutes",
+      "status": "EXHAUSTED_COOLDOWN"
+    },
+    "cloud_free_tiers": {
+      "google_ai_studio": {
+        "daily_cap": 1500,
+        "estimated_used": 340,
+        "unit": "reqs/day"
+      },
+      "nvidia_nim_deepseek": {
+        "daily_cap": 2000,
+        "estimated_used": 180,
+        "unit": "reqs/day"
+      },
+      "cloudflare_workers_ai": {
+        "daily_cap": 800,
+        "estimated_used": 95,
+        "unit": "reqs/day"
+      },
+      "xai_developer_api": {
+        "daily_cap": 1000,
+        "estimated_used": 120,
+        "unit": "reqs/day"
+      }
+    },
+    "gemini_3_1_pro_governance": {
+      "policy": "SPARING_APEX_ESCALATION_ONLY",
+      "triage_engine": "Gemini 2.0/2.5 Flash Free Tier (< 1,500 RPD)",
+      "escalation_threshold_confidence": 0.85,
+      "max_pro_tokens_per_call": 4096,
+      "status": "ACTIVE_GUARDED"
+    }
+  },
+  "session_metrics": {
+    "active_transcript_bytes": 1553276,
+    "estimated_session_tokens": 388319,
+    "total_steps_in_session": 1105
+  },
+  "next_cloud_reset": "2026-09-04 10:00:00 AEST (Midnight UTC)"
+}

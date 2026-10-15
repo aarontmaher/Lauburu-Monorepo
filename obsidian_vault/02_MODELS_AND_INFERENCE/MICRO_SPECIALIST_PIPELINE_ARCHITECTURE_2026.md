@@ -20,13 +20,13 @@ tags: [micro_specialists, context_pollution_solution, speculative_decoding, edge
 │     ➔ RESOLVES: Bottleneck #1 (Context Pollution) & Bottleneck #3 (Idle Edge TPU).               │
 │                                                                                                  │
 │  [TIER 2: ULTRA-FAST SPECULATIVE DRAFTER]                                                        │
-│  💻 LAYER 5: MacBook Air M4 (Metal GPU @ 100.93.158.96:8086)                                     │
+│  💻 LAYER 5: MacBook Pro (Node L2) (Metal GPU @ 100.93.158.96:8086)                                     │
 │     • Runs SmolLM2-1.7B / Qwen2.5-1.5B (95+ tok/s drafting).                                     │
 │     • Proposes 4-token draft blocks verified by 80B MoE in a single forward pass.                │
 │     ➔ RESOLVES: Bottleneck #2 (Autoregressive latency -> boosts 80B generation to 75+ tok/s).   │
 │                                                                                                  │
 │  [TIER 3: DEDICATED FAST ADVERSARIAL AUDITOR]                                                    │
-│  🐧 LAYER 3: Linux Head Node (AMD Ryzen 7 @ 100.101.39.98:8083)                                  │
+│  🐧 LAYER 3: Linux Head Node (AMD Intel 2018 Mac Mini @ 100.101.39.98:8083)                                  │
 │     • Runs Mistral-Nemo-12B-abliterated for sub-second Rule #0 and security sanity checks.       │
 │     ➔ RESOLVES: Bottleneck #4 (Debate waiting latency).                                          │
 │                                                                                                  │

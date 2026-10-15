@@ -11,8 +11,8 @@ import json
 import time
 import urllib.request
 
-STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/swarm_healer_state.json"
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/swarm_healer_state.json"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
 
 class AutonomousSwarmHealer:
     def __init__(self):

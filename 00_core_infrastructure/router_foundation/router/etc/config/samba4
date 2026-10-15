@@ -1,0 +1,18 @@
+config samba
+	option workgroup 'WORKGROUP'
+	option charset 'UTF-8'
+	option name 'GL-BE14000'
+	option description 'Lauburu Unified Sovereign Storage'
+	option macos '1'
+
+config sambashare
+	option name 'lauburu_storage'
+	option path '/mnt/lauburu_storage'
+	option read_only 'no'
+	option guest_ok 'yes'
+	option guest_only 'yes'
+	option force_root '1'
+	option browseable 'yes'
+	option create_mask '0666'
+	option dir_mask '0777'
+	option macos '1'

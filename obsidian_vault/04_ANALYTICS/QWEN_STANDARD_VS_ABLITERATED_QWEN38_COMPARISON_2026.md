@@ -88,7 +88,7 @@ $$W_{\text{ablated}} = W - \vec{v}_{\text{refusal}} (\vec{v}_{\text{refusal}}^\t
 │    • Role: Algorithm & Formula Specialist                                   │
 │    • Focus: Closed-form latency proofs, inverse-variance packet striping.   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ #4 MISTRAL NEMO 12.2B ABLITERATED (Port 8082 / L5 MacBook Air 16GB):        │
+│ #4 MISTRAL NEMO 12.2B ABLITERATED (Port 8082 / L2 MacBook Pro 16GB):        │
 │    • Role: Devil's Advocate & Fast Adversarial Auditor                      │
 │    • Focus: Rapid zero-mock auditing, ELO debate challenges (28.8 t/s).     │
 └─────────────────────────────────────────────────────────────────────────────┘

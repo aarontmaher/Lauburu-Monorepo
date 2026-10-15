@@ -279,6 +279,10 @@ class AgiCodingTerminalView(Container):
             # Main Tabbed Content
             with TabbedContent(id="agi-terminal-tabs"):
                 # Tab 1: Coding Shell & Dynamic Grid Streams
+                with TabPane("👁️ Omni-Lens Supervisor", id="tab-omni-lens"):
+                    from widgets.screen_lens_omni_feed_widget import ScreenLensOmniFeedWidget
+                    yield ScreenLensOmniFeedWidget(id="omni-feed-widget")
+
                 with TabPane("💻 AGI Swarm Shell & Editor", id="tab-coding-shell"):
                     yield Static(id="grid-coding-container")
                     yield RichLog(id="terminal-output-log", highlight=True, markup=True, max_lines=500)

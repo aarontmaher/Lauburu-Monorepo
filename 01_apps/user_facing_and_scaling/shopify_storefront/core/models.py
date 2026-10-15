@@ -41,3 +41,15 @@ class CheckoutSession:
     total_amount_usd: float
     lines: List[CartLine] = field(default_factory=list)
     created_at_utc: str = ""
+
+@dataclass
+class CanonicalProduct:
+    product_id: str
+    title: str
+    category: str
+    vendor: str
+    price_usd: float
+    symbol_scale: str
+    handle: str
+    in_stock: bool = True
+

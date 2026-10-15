@@ -31,7 +31,7 @@ Requirements:
 4. Automated Self-Healing Remediation Hooks (R4):
    - Progressive 5-tier remediation pipeline before marking jobs STOPPED:
      * Tier 1: Socket reset and port reclamation (lsof -ti :<port> | xargs kill -9)
-     * Tier 2: Wake-on-LAN trigger via wol_manager.py / REST API (Port 18802)
+     * Tier 2: Wake-on-LAN trigger via canonical_network_resurrection_engine.py / REST API (Port 18802)
      * Tier 3: Process daemon restart via subprocess command
      * Tier 4: Tri-Orchestrator AI debate escalation hook (nomad_governor_with_scout.py)
      * Tier 5: Circuit-breaker backoff
@@ -66,8 +66,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger("NomadROIGovernor")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
-OBSIDIAN_VAULT = Path("/Users/aaron/DFS_UNIFIED")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
+OBSIDIAN_VAULT = Path("/Volumes/Lauburu-Monorepo")
 PORTFOLIO_FILE = REPO_ROOT / "04_data_and_memory/session_logs/master_cron_portfolio.json"
 LEDGER_FILE = REPO_ROOT / "04_data_and_memory/session_logs/cron_portfolio_optimization_ledger.json"
 MASTER_LEDGER_JSONL = REPO_ROOT / "04_data_and_memory/session_logs/master_cron_ledger.jsonl"
@@ -450,13 +450,17 @@ class AdaptiveCadenceElasticity:
     TIER_BACKOFF = "EXTENDED_STABILITY_BACKOFF"
     TIER_CIRCUIT_BREAKER = "CIRCUIT_BREAKER_STOPPED"
 
-    CORE_PORTS = [3000, 18802, 50052]
+    # Critical ports: failure here triggers RAPID_TRIAGE escalation
+    CRITICAL_PORTS = [18802]  # Self-Healing Hub — must always be reachable
+    # Optional ports: logged but don't trigger cadence escalation
+    OPTIONAL_PORTS = [3000, 50052]  # Web UI, RPC Shard — may be intentionally offline
 
     @classmethod
     def probe_cluster_telemetry(cls) -> Dict[str, Any]:
         ports_status = {}
-        all_ports_ok = True
-        for port in cls.CORE_PORTS:
+        critical_ports_ok = True
+        optional_ports_down = []
+        for port in cls.CRITICAL_PORTS + cls.OPTIONAL_PORTS:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.settimeout(0.5)
             try:
@@ -468,7 +472,10 @@ class AdaptiveCadenceElasticity:
                 s.close()
             ports_status[str(port)] = is_open
             if not is_open:
-                all_ports_ok = False
+                if port in cls.CRITICAL_PORTS:
+                    critical_ports_ok = False
+                else:
+                    optional_ports_down.append(port)
 
         packet_loss_pct = 0.0
         rtt_avg_ms = 0.5
@@ -502,9 +509,11 @@ class AdaptiveCadenceElasticity:
         battery_temp_c = 30.0
 
         anomalies = []
-        if not all_ports_ok:
-            closed = [p for p, ok in ports_status.items() if not ok]
-            anomalies.append(f"Core ports unreachable: {closed}")
+        if not critical_ports_ok:
+            closed = [p for p, ok in ports_status.items() if not ok and int(p) in cls.CRITICAL_PORTS]
+            anomalies.append(f"Critical ports unreachable: {closed}")
+        if optional_ports_down:
+            logger.info(f"ℹ️ Optional ports offline (non-escalating): {optional_ports_down}")
         if packet_loss_pct > 5.0:
             anomalies.append(f"High packet loss: {packet_loss_pct}%")
         if host_ram_used_pct > 85.0:
@@ -513,8 +522,9 @@ class AdaptiveCadenceElasticity:
             anomalies.append(f"Thermal threshold exceeded: {battery_temp_c}°C")
 
         return {
-            "ports_healthy": all_ports_ok,
+            "ports_healthy": critical_ports_ok,
             "ports_status": ports_status,
+            "optional_ports_down": optional_ports_down,
             "packet_loss_pct": packet_loss_pct,
             "rtt_avg_ms": round(rtt_avg_ms, 2),
             "host_ram_used_pct": round(host_ram_used_pct, 1),

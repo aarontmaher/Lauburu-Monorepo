@@ -3,7 +3,7 @@
 ## Executive Overview
 When distributing artificial intelligence inference across heterogeneous physical hardware—specifically combining **Neural Processing Units (Apple Neural Engine, Google Tensor G5 Edge TPU, Qualcomm Hexagon)** and **Thunderbolt-connected Unified Memory Architecture (UMA)**—naive distributed approaches fail.
 
-This investigation analyzes the physical silicon constraints of NPUs, measures real-world interconnect latencies across the 7-layer Lauburu mesh (Mac Mini M4 Pro, Pixel 10 Pro XL, MacBook Pro M4, Linux Head Node), and mathematically derives the **three Pareto-optimal paradigms for NPU sharding across devices**.
+This investigation analyzes the physical silicon constraints of NPUs, measures real-world interconnect latencies across the 7-layer Lauburu mesh (Mac Mini M4 Pro, Pixel 10 Pro XL, Intel MacBook Pro, Linux Head Node), and mathematically derives the **three Pareto-optimal paradigms for NPU sharding across devices**.
 
 ---
 
@@ -44,7 +44,7 @@ Real physical link and tensor activation transmission benchmarks conducted acros
 | **L2 MacBook Pro (TB4 DMA)** | 16-Core ANE + Metal GPU | $0.28\text{ ms}$ | $0.12\text{ ms}$ | $0.18\text{ ms}$ | $0.35\text{ ms}$ |
 | **L6 Pixel 10 Pro XL (Wi-Fi LAN)** | Tensor G5 Edge TPU (14 TOPS) | $1.20\text{ ms}$ | $1.42\text{ ms}$ | $1.65\text{ ms}$ | $2.80\text{ ms}$ |
 | **L2 MacBook Pro (Tailscale)** | WireGuard P2P Kernel Tunnel | $41.34\text{ ms}$ | $6.57\text{ ms}$ | $8.09\text{ ms}$ | $9.00\text{ ms}$ |
-| **L3 Linux Head Node (Tailscale)** | AMD Ryzen 7 5700U Compute Hub | $7.23\text{ ms}$ | $10.51\text{ ms}$ | $10.21\text{ ms}$ | $13.53\text{ ms}$ |
+| **L3 Linux Head Node (Tailscale)** | Intel 2018 Mac Mini (Linux) Compute Hub | $7.23\text{ ms}$ | $10.51\text{ ms}$ | $10.21\text{ ms}$ | $13.53\text{ ms}$ |
 
 ---
 

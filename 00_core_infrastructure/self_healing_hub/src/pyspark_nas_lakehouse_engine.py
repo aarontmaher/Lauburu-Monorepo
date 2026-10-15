@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 
 NAS_ROOT = "/Volumes/NAS"
 LAKEHOUSE_DIR = "/Volumes/NAS/PySpark_Data_Lake"
-INVENTORY_CACHE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/nas_pyspark_inventory.json"
+INVENTORY_CACHE_FILE = "/Volumes/Lauburu-Monorepo/data/nas_pyspark_inventory.json"
 try:
     os.makedirs(os.path.dirname(INVENTORY_CACHE_FILE), exist_ok=True)
     os.makedirs(LAKEHOUSE_DIR, exist_ok=True)
@@ -63,7 +63,7 @@ class PySparkNASLakehouseEngine:
             {
                 "node_id": "main_mac_host",
                 "name": "Apple M4 Max Host (Primary Orchestrator)",
-                "ip": "192.168.8.116",
+                "ip": "192.168.8.176",
                 "tb4_ip": "127.0.0.1",
                 "mount_tier": "/Volumes/NAS/Hardware_Tiers/Main_Mac_Primary",
                 "target_data_class": "METADATA_AND_SPARK_DRIVER",
@@ -89,7 +89,7 @@ class PySparkNASLakehouseEngine:
             {
                 "node_id": "samsung_s20",
                 "name": "Samsung Galaxy S20+ (UI Tester)",
-                "ip": "100.84.40.95",
+                "ip": "100.78.206.96",
                 "tb4_ip": "100.99.123.58",
                 "mount_tier": "/Volumes/NAS/Hardware_Tiers/Samsung_S20_Tester",
                 "target_data_class": "UI_TEST_ARTIFACTS",

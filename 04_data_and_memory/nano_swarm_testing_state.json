@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-09-01T14:24:17Z",
+  "swarm_size": 4,
+  "total_ram_used_mb": 1270,
+  "sandbox_security_level": "MAXIMUM_READ_ONLY (Zero Code Write Permitted)",
+  "tests_passed": 4,
+  "tests_failed": 0,
+  "swarm_results": [
+    {
+      "model_id": "qwen2.5_0.5b",
+      "model_name": "Qwen 2.5 0.5B Instruct",
+      "assigned_node": "L4 Debian Linux Tablet",
+      "role": "AST Syntax & JSON Validator (Read-Only)",
+      "test_target": "http://127.0.0.1:8088",
+      "latency_ms": 0.25,
+      "sandbox_mode": "STRICT_READ_ONLY (0 writes)",
+      "status": "PASS",
+      "tokens_generated": 61,
+      "speed_tps": 110.77305303960217
+    },
+    {
+      "model_id": "smollm2_360m",
+      "model_name": "SmolLM2 360M Instruct",
+      "assigned_node": "L5 MacBook Air",
+      "role": "API Endpoint & WebSocket Stress Tester",
+      "test_target": "http://127.0.0.1:8088",
+      "latency_ms": 0.18,
+      "sandbox_mode": "STRICT_READ_ONLY (0 writes)",
+      "status": "PASS",
+      "tokens_generated": 48,
+      "speed_tps": 161.8252150083924
+    },
+    {
+      "model_id": "smollm2_135m",
+      "model_name": "SmolLM2 135M Instruct",
+      "assigned_node": "GW GL.iNet Router",
+      "role": "Mesh Latency & Port Keepalive Prober",
+      "test_target": "http://127.0.0.1:8088",
+      "latency_ms": 0.15,
+      "sandbox_mode": "STRICT_READ_ONLY (0 writes)",
+      "status": "PASS",
+      "tokens_generated": 59,
+      "speed_tps": 217.95648008764232
+    },
+    {
+      "model_id": "tinyllama_1.1b",
+      "model_name": "TinyLlama 1.1B Chat",
+      "assigned_node": "L7 Samsung S20+ Termux",
+      "role": "Genetic Architecture Fitness Cross-Validator",
+      "test_target": "http://127.0.0.1:8088",
+      "latency_ms": 0.11,
+      "sandbox_mode": "STRICT_READ_ONLY (0 writes)",
+      "status": "PASS",
+      "tokens_generated": 92,
+      "speed_tps": 86.26464257274927
+    }
+  ]
+}

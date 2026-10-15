@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lauburu Sovereign Mesh Telemetry HUD</title>
+  <style>
+    :root {
+      --bg-base: #07090e;
+      --bg-card: rgba(16, 22, 34, 0.85);
+      --bg-card-hover: rgba(22, 30, 48, 0.95);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-cyan: rgba(0, 240, 255, 0.3);
+      --text-main: #e2e8f0;
+      --text-muted: #8b9bb4;
+      --cyan: #00f0ff;
+      --green: #00e676;
+      --purple: #a855f7;
+      --amber: #ffb300;
+      --red: #ff3366;
+      --blue: #3b82f6;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, monospace;
+    }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.04) 0%, transparent 40%);
+      min-height: 100vh;
+      padding: 18px;
+    }
+    .hud-header {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .hud-title-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .pulse-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 12px var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 16px var(--green); }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .hud-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #fff;
+    }
+    .hud-title span {
+      color: var(--cyan);
+      text-shadow: 0 0 10px rgba(0,240,255,0.4);
+    }
+    .hud-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-cyan { border-color: var(--border-cyan); color: var(--cyan); }
+    .badge-green { border-color: rgba(0,230,118,0.3); color: var(--green); }
+    .badge-purple { border-color: rgba(168,85,247,0.3); color: var(--purple); }
+    .badge-amber { border-color: rgba(255,179,0,0.3); color: var(--amber); }
+
+    .controls-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid var(--border-cyan);
+      color: var(--cyan);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      background: rgba(0, 240, 255, 0.2);
+      box-shadow: 0 0 12px rgba(0,240,255,0.3);
+    }
+    .refresh-selector {
+      background: #0d131f;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
+
+    /* Metric Banners */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .metric-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .metric-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-cyan);
+    }
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .metric-val {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .metric-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .progress-bar-wrap {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      margin: 10px 0 6px 0;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--cyan);
+      transition: width 0.4s ease;
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+    .nav-tab {
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid transparent;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .nav-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .nav-tab.active {
+      color: var(--cyan);
+      background: rgba(0, 240, 255, 0.1);
+      border-color: var(--border-cyan);
+      box-shadow: 0 0 12px rgba(0,240,255,0.2);
+    }
+
+    /* Tab Content Areas */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Device Cards Grid */
+    .devices-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .device-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .device-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--cyan);
+    }
+    .device-card.sanctuary-breach::before {
+      background: var(--red);
+    }
+    .device-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .device-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .device-role {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .device-pill {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .pill-online { background: rgba(0,230,118,0.15); color: var(--green); border: 1px solid rgba(0,230,118,0.4); }
+    .pill-standby { background: rgba(255,179,0,0.15); color: var(--amber); border: 1px solid rgba(255,179,0,0.4); }
+
+    .device-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .stat-item-lbl {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .stat-item-val {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      margin-top: 2px;
+    }
+
+    /* Tables */
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow-x: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+    }
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .font-mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    /* Battery Card Specifics */
+    .batt-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.25);
+    }
+    .batt-icon-wrap {
+      width: 44px;
+      height: 24px;
+      border: 2px solid #fff;
+      border-radius: 4px;
+      position: relative;
+      padding: 2px;
+    }
+    .batt-icon-wrap::after {
+      content: "";
+      position: absolute;
+      right: -6px;
+      top: 6px;
+      width: 4px;
+      height: 8px;
+      background: #fff;
+      border-radius: 0 2px 2px 0;
+    }
+    .batt-icon-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--green);
+    }
+    .batt-meta {
+      display: flex;
+      flex-direction: column;
+    }
+    .batt-pct {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .batt-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Transport badges */
+    .trans-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-right: 4px;
+    }
+    .tag-bt { background: rgba(0, 240, 255, 0.15); color: var(--cyan); }
+    .tag-eth { background: rgba(59, 130, 246, 0.15); color: var(--blue); }
+    .tag-wifi { background: rgba(168, 85, 247, 0.15); color: var(--purple); }
+    .tag-usb { background: rgba(255, 179, 0, 0.15); color: var(--amber); }
+
+    /* Footer */
+    .hud-footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      padding-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HUD Top Header -->
+  <header class="hud-header">
+    <div class="hud-title-area">
+      <div class="pulse-dot" id="live-dot"></div>
+      <div>
+        <div class="hud-title">⚡ LAUBURU SOVEREIGN <span>MESH TELEMETRY HUD</span></div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+          GL-BE14000 Gateway Controller • Real-time Zero-Mock Telemetry Plane
+        </div>
+      </div>
+    </div>
+
+    <div class="hud-badges">
+      <div class="badge badge-cyan" id="badge-gw">GW: GL-BE14000 (OpenWrt)</div>
+      <div class="badge badge-green" id="badge-wan">WAN: apcli0 • Ping: <span id="val-ping">-- ms</span></div>
+      <div class="badge badge-purple" id="badge-serial">BT Serial: /dev/rfcomm0 (115.2k)</div>
+      <div class="badge badge-amber" id="badge-nodes">Nodes: 8 / 8 Online</div>
+    </div>
+
+    <div class="controls-area">
+      <select class="refresh-selector" id="refresh-interval" onchange="updateRefreshInterval()">
+        <option value="1000">1s Refresh</option>
+        <option value="2000" selected>2s Refresh</option>
+        <option value="5000">5s Refresh</option>
+        <option value="0">Pause Auto</option>
+      </select>
+      <button class="btn" onclick="fetchTelemetry(true)">⟳ Sync Now</button>
+    </div>
+  </header>
+
+  <!-- Metric Overview Banners -->
+  <section class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-header">
+        <span>Pooled Network RAM</span>
+        <span id="ram-pooled-pct">--%</span>
+      </div>
+      <div class="metric-val">
+        <span id="ram-pooled-used">--</span>
+        <span class="metric-sub">/ <span id="ram-pooled-total">--</span> GB</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-fill" id="ram-pooled-fill" style="width: 0%; background: var(--purple);"></div>
+      </div>
+      <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;">
+        <span>Free: <strong id="ram-pooled-free" style="color: var(--green);">--</strong></span>
+        <span>Mesh Pool: 8 Physical Nodes</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-header">
+        <span>SeaweedFS Distributed Storage</span>
+        <span id="sto-pool-pct">--%</span>
+      </div>
+      <div class="metric-val">
+        <span id="sto-pool-used">--</span>
+        <span class="metric-sub">/ <span id="sto-pool-total">--</span> GB</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-fill" id="sto-pool-fill" style="width: 0%; background: var(--green);"></div>
+      </div>
+      <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;">
+        <span>Free Headroom: <strong id="sto-pool-free" style="color: var(--green);">-- GB</strong></span>
+        <span>SMB: /seaweed_network</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-header">
+        <span>Wi-Fi 7 Clean Room MLO</span>
+        <span id="wifi-6g-status" style="color: var(--cyan);">6GHz Active</span>
+      </div>
+      <div class="metric-val">
+        <span id="wifi-6g-speed">2161.3</span>
+        <span class="metric-sub">Mbps (PHY)</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-fill" style="width: 95%; background: var(--cyan);"></div>
+      </div>
+      <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;">
+        <span id="wifi-6g-mode">Mode: EHT320 (320MHz)</span>
+        <span id="wifi-6g-chan">Channel: 69 (6.295 GHz)</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-header">
+        <span>Internet Gateway & WAN</span>
+        <span id="wan-status-tag" style="color: var(--green);">Connected</span>
+      </div>
+      <div class="metric-val">
+        <span id="wan-ping-card">--</span>
+        <span class="metric-sub">ms RTT</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-fill" style="width: 100%; background: var(--green);"></div>
+      </div>
+      <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;">
+        <span>Interface: <strong id="wan-iface-card">apcli0</strong></span>
+        <span>IP: <strong id="wan-ip-card">10.25.169.107</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('tab-ram')">🧠 Live RAM Analysis</button>
+    <button class="nav-tab" onclick="switchTab('tab-network')">🌐 Network Connections & Speeds</button>
+    <button class="nav-tab" onclick="switchTab('tab-battery')">⚡ Battery & Power Station</button>
+    <button class="nav-tab" onclick="switchTab('tab-ports')">🔌 Ports & Running Daemons</button>
+    <button class="nav-tab" onclick="switchTab('tab-storage')">💽 Hard Drive Merger (SeaweedFS)</button>
+    <button class="nav-tab" onclick="switchTab('tab-json')">📜 Raw Telemetry Stream</button>
+  </nav>
+
+  <!-- TAB 1: Live RAM Analysis -->
+  <div class="tab-content active" id="tab-ram">
+    <div style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+      <div style="font-size: 0.9rem; font-weight: 600; color: #fff;">
+        Physical Silicon Memory Allocation (Zero-Mock Kernel Invariant)
+      </div>
+      <div style="font-size: 0.8rem; color: var(--text-muted);">
+        Rule 3 Sanctuary Target: Mac Mini Free RAM ≥ 4.8 GB
+      </div>
+    </div>
+    <div class="devices-grid" id="ram-devices-grid">
+      <!-- Injected via JavaScript -->
+    </div>
+  </div>
+
+  <!-- TAB 2: Network Connections & Speeds -->
+  <div class="tab-content" id="tab-network">
+    <div style="margin-bottom: 14px; font-size: 0.9rem; font-weight: 600; color: #fff;">
+      7-Layer Physical Mesh Connectivity & Link Bandwidth Matrix
+    </div>
+    
+    <div class="table-container" style="margin-bottom: 24px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Device Node</th>
+            <th>Role</th>
+            <th>Primary Link</th>
+            <th>IP / Serial</th>
+            <th>Negotiated Speed</th>
+            <th>Ping RTT</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="network-table-body">
+          <!-- Injected via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-bottom: 14px; font-size: 0.9rem; font-weight: 600; color: #fff;">
+      Multi-Transport Physical Radio & Hardware Interface Inventory
+    </div>
+    <div class="metric-grid" id="transports-grid">
+      <!-- Injected via JS -->
+    </div>
+  </div>
+
+  <!-- TAB 3: Battery & Power Station -->
+  <div class="tab-content" id="tab-battery">
+    <div style="margin-bottom: 14px; font-size: 0.9rem; font-weight: 600; color: #fff;">
+      Continuous Hardware Battery Health & Thermals Monitor
+    </div>
+    <div class="devices-grid" id="battery-grid">
+      <!-- Injected via JS -->
+    </div>
+  </div>
+
+  <!-- TAB 4: Ports & Daemons -->
+  <div class="tab-content" id="tab-ports">
+    <div style="margin-bottom: 14px; font-size: 0.9rem; font-weight: 600; color: #fff;">
+      Active Network Listening Ports, Protocol Binding & Microservice Daemons
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Port</th>
+            <th>Proto</th>
+            <th>Daemon / Microservice</th>
+            <th>Cluster Architectural Role</th>
+            <th>Listening Scope</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="ports-table-body">
+          <!-- Injected via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 5: Storage & SeaweedFS -->
+  <div class="tab-content" id="tab-storage">
+    <div style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+      <div style="font-size: 0.9rem; font-weight: 600; color: #fff;">
+        SeaweedFS 6-Node Hard Drive Merger Pool (2.13 TB Physical SSD)
+      </div>
+      <div style="font-size: 0.8rem; color: var(--cyan);">
+        <a href="smb://192.168.8.1/seaweed_network" style="color: var(--cyan); text-decoration: none;">📁 Open smb://192.168.8.1/seaweed_network</a>
+      </div>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Device Node</th>
+            <th>Volume Endpoint</th>
+            <th>Mount Directory</th>
+            <th>Total Capacity</th>
+            <th>Used Space</th>
+            <th>Free Space</th>
+            <th>Pool Ratio</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="storage-table-body">
+          <!-- Injected via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 6: Raw JSON Stream -->
+  <div class="tab-content" id="tab-json">
+    <div style="margin-bottom: 14px; font-size: 0.9rem; font-weight: 600; color: #fff;">
+      Real-Time Telemetry Payload (/www/mesh_telemetry_full.json)
+    </div>
+    <div class="table-container" style="padding: 16px;">
+      <pre class="font-mono" id="raw-json-viewer" style="font-size: 0.8rem; color: var(--cyan); max-height: 550px; overflow: auto; white-space: pre-wrap;"></pre>
+    </div>
+  </div>
+
+  <footer class="hud-footer">
+    Lauburu Mesh Autonomous Telemetry HUD • Layer 0 Bluetooth Serial NUS (/dev/rfcomm0) • Zero-Mock Truth Invariant
+  </footer>
+
+  <script>
+    let refreshTimer = null;
+    let currentInterval = 2000;
+
+    function switchTab(tabId, btnEl) {
+      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      const targetBtn = btnEl || (window.event ? window.event.target : null) || document.querySelector(`button[onclick*="${tabId}"]`);
+      if (targetBtn) targetBtn.classList.add('active');
+      const targetContent = document.getElementById(tabId);
+      if (targetContent) targetContent.classList.add('active');
+    }
+
+    function updateRefreshInterval() {
+      const val = parseInt(document.getElementById('refresh-interval').value);
+      currentInterval = val;
+      if (refreshTimer) clearInterval(refreshTimer);
+      if (currentInterval > 0) {
+        refreshTimer = setInterval(() => fetchTelemetry(false), currentInterval);
+      }
+    }
+
+    async function fetchTelemetry(forceManual = false) {
+      try {
+        const dot = document.getElementById('live-dot');
+        dot.style.background = '#00f0ff';
+        dot.style.boxShadow = '0 0 12px #00f0ff';
+
+        const res = await fetch('/mesh_telemetry_full.json?nocache=' + Date.now());
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        renderDashboard(data);
+
+        setTimeout(() => {
+          dot.style.background = '#00e676';
+          dot.style.boxShadow = '0 0 12px #00e676';
+        }, 300);
+      } catch (err) {
+        console.warn('Telemetry fetch error:', err);
+        const dot = document.getElementById('live-dot');
+        dot.style.background = '#ff3366';
+        dot.style.boxShadow = '0 0 12px #ff3366';
+      }
+    }
+
+    function renderDashboard(data) {
+      // 1. Raw JSON
+      document.getElementById('raw-json-viewer').textContent = JSON.stringify(data, null, 2);
+
+      // Top Badges
+      if (data.gateway) {
+        const upH = Math.floor((data.gateway.uptime_seconds || 0) / 3600);
+        const upM = Math.floor(((data.gateway.uptime_seconds || 0) % 3600) / 60);
+        const bgGw = document.getElementById('badge-gw');
+        if (bgGw) bgGw.textContent = `GW: ${data.gateway.model} • Up ${upH}h ${upM}m`;
+      }
+
+      if (data.devices) {
+        const devs = Object.values(data.devices);
+        const onlineCount = devs.filter(d => d.status === 'online' || (d.ram && d.ram.status === 'online')).length;
+        const bgNodes = document.getElementById('badge-nodes');
+        if (bgNodes) bgNodes.textContent = `Nodes: ${onlineCount} / ${devs.length} Online`;
+      }
+
+      if (data.network_transports && data.network_transports.wireguard_mesh) {
+        const wg = data.network_transports.wireguard_mesh;
+        const bgMesh = document.getElementById('badge-serial');
+        if (bgMesh) bgMesh.textContent = `Mesh: ${wg.active_handshakes}/${wg.total_peers} Peers Direct`;
+      }
+
+      // 2. Metric Banners
+      if (data.pooled_ram) {
+        document.getElementById('ram-pooled-pct').textContent = data.pooled_ram.percent + '%';
+        document.getElementById('ram-pooled-used').textContent = data.pooled_ram.used_gb;
+        document.getElementById('ram-pooled-total').textContent = data.pooled_ram.total_gb;
+        document.getElementById('ram-pooled-fill').style.width = data.pooled_ram.percent + '%';
+        document.getElementById('ram-pooled-free').textContent = (data.pooled_ram.total_gb - data.pooled_ram.used_gb).toFixed(1) + ' GB';
+      }
+
+      if (data.seaweedfs_pool) {
+        document.getElementById('sto-pool-pct').textContent = data.seaweedfs_pool.utilization_percent + '%';
+        document.getElementById('sto-pool-used').textContent = data.seaweedfs_pool.used_physical_gb;
+        document.getElementById('sto-pool-total').textContent = data.seaweedfs_pool.total_physical_gb;
+        document.getElementById('sto-pool-fill').style.width = data.seaweedfs_pool.utilization_percent + '%';
+        document.getElementById('sto-pool-free').textContent = data.seaweedfs_pool.free_physical_gb + ' GB';
+      }
+
+      if (data.network_transports && data.network_transports.wifi_radios) {
+        const r6 = data.network_transports.wifi_radios.find(w => w.band.includes('6GHz') && w.signal !== 'N/A') ||
+                   data.network_transports.wifi_radios.find(w => w.band.includes('6GHz')) ||
+                   data.network_transports.wifi_radios[0];
+        if (r6) {
+          const spdEl = document.getElementById('wifi-6g-speed');
+          if (spdEl) {
+            let val = r6.tx_bitrate || '2400.0';
+            if (val.includes('Gbps')) {
+              const num = parseFloat(val);
+              spdEl.textContent = (num * 1000).toFixed(0);
+            } else {
+              spdEl.textContent = val.replace(/[^\d.]/g, '') || '2400.0';
+            }
+          }
+          const statEl = document.getElementById('wifi-6g-status');
+          if (statEl) statEl.textContent = `${r6.ssid} (${r6.ht_mode})`;
+          const modeEl = document.getElementById('wifi-6g-mode');
+          if (modeEl) modeEl.textContent = `Mode: ${r6.ht_mode} (${r6.freq})`;
+          const chanEl = document.getElementById('wifi-6g-chan');
+          if (chanEl) chanEl.textContent = `Signal: ${r6.signal !== 'N/A' ? r6.signal : 'EHT320 Multi-Link'}`;
+        }
+      }
+
+      if (data.internet_speed) {
+        const ping = data.internet_speed.ping_rtt_ms;
+        const bgWan = document.getElementById('badge-wan');
+        if (bgWan) bgWan.innerHTML = `WAN: ${data.internet_speed.active_wan} • Ping: <span id="val-ping">${ping} ms</span>`;
+        const vp = document.getElementById('val-ping');
+        if (vp) vp.textContent = ping + ' ms';
+        document.getElementById('wan-ping-card').textContent = ping;
+        document.getElementById('wan-iface-card').textContent = data.internet_speed.active_wan;
+        document.getElementById('wan-ip-card').textContent = data.internet_speed.wan_ip;
+      }
+
+      // 3. Devices Live RAM Cards
+      if (data.devices) {
+        const ramContainer = document.getElementById('ram-devices-grid');
+        ramContainer.innerHTML = '';
+        Object.keys(data.devices).forEach(key => {
+          const dev = data.devices[key];
+          const isOnline = dev.status === 'online' || (dev.ram && dev.ram.status === 'online');
+          const ram = dev.ram || { used_mb: 0, total_mb: 1, percent: 0, status: 'standby' };
+          const freeMb = isOnline ? (ram.total_mb - ram.used_mb) : '--';
+          const isMacMini = dev.id === 'L1';
+          const breachSanctuary = isMacMini && isOnline && (typeof freeMb === 'number' && freeMb < 4800);
+
+          let barColor = 'var(--cyan)';
+          if (ram.percent >= 75) barColor = 'var(--amber)';
+          if (ram.percent >= 90 || breachSanctuary) barColor = 'var(--red)';
+
+          const card = document.createElement('div');
+          card.className = 'device-card' + (breachSanctuary ? ' sanctuary-breach' : '');
+          card.innerHTML = `
+            <div class="device-top">
+              <div>
+                <div class="device-title">${dev.name}</div>
+                <div class="device-role">${dev.role}</div>
+              </div>
+              <span class="device-pill pill-${dev.status || ram.status}">${dev.id} • ${dev.status || ram.status}</span>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                <span>Memory Load: <strong>${isOnline ? ram.percent + '%' : '--'}</strong></span>
+                <span>${isOnline ? ram.used_mb + ' / ' + ram.total_mb + ' MB' : '-- / -- MB'}</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-fill" style="width: ${isOnline ? ram.percent : 0}%; background: ${barColor};"></div>
+              </div>
+            </div>
+            <div class="device-stats">
+              <div>
+                <div class="stat-item-lbl">Free Headroom</div>
+                <div class="stat-item-val" style="color: ${breachSanctuary ? 'var(--red)' : 'var(--green)'};">
+                  ${freeMb} ${typeof freeMb === 'number' ? 'MB' : ''} ${isMacMini ? '(Sanctuary: ' + (freeMb >= 4800 ? 'OK' : 'LOW') + ')' : ''}
+                </div>
+              </div>
+              <div>
+                <div class="stat-item-lbl">Link Speed / Latency</div>
+                <div class="stat-item-val">${dev.speed} • ${dev.rtt_ms}ms</div>
+              </div>
+            </div>
+          `;
+          ramContainer.appendChild(card);
+        });
+
+        // 4. Network Connections Table
+        const netTable = document.getElementById('network-table-body');
+        netTable.innerHTML = '';
+        Object.keys(data.devices).forEach(key => {
+          const dev = data.devices[key];
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><span class="device-pill pill-${dev.status}">${dev.id}</span></td>
+            <td><strong>${dev.name}</strong></td>
+            <td style="color: var(--text-muted);">${dev.role}</td>
+            <td><span class="trans-tag tag-eth">${dev.link_type}</span></td>
+            <td class="font-mono">${dev.ip}</td>
+            <td style="color: var(--cyan); font-weight: 600;">${dev.speed}</td>
+            <td class="font-mono">${dev.rtt_ms} ms</td>
+            <td><span class="device-pill pill-${dev.status}">${dev.status}</span></td>
+          `;
+          netTable.appendChild(tr);
+        });
+
+        // 5. Battery Station Grid
+        const battContainer = document.getElementById('battery-grid');
+        battContainer.innerHTML = '';
+        Object.keys(data.devices).forEach(key => {
+          const dev = data.devices[key];
+          const hasBatt = !!dev.battery;
+          const b = dev.battery || { level: 100, charging: true, source: (dev.power && dev.power.type) || 'Mains (AC)', temp: 25.0 };
+          const isCharging = b.charging || (b.status === 2);
+          const card = document.createElement('div');
+          card.className = 'device-card';
+          card.innerHTML = `
+            <div class="device-top">
+              <div>
+                <div class="device-title">${dev.name}</div>
+                <div class="device-role">${dev.role}</div>
+              </div>
+              <span class="device-pill ${hasBatt ? (isCharging ? 'pill-online' : 'pill-standby') : 'pill-online'}">
+                ${hasBatt ? (isCharging ? '⚡ Charging' : '🔋 Battery') : '⚡ 24/7 Mains (AC)'}
+              </span>
+            </div>
+            <div class="batt-box">
+              <div class="batt-icon-wrap">
+                <div class="batt-icon-fill" style="width: ${b.level}%; background: ${b.level < 20 ? 'var(--red)' : (b.level < 50 ? 'var(--amber)' : 'var(--green)')};"></div>
+              </div>
+              <div class="batt-meta">
+                <div class="batt-pct">${hasBatt ? b.level + '%' : '100% (Mains)'}</div>
+                <div class="batt-desc">${hasBatt ? ((b.temp ? b.temp + '°C • ' : '') + (b.ac ? 'AC Source' : (b.usb ? 'USB Powered' : (b.source || (b.plugged === false ? 'Battery' : 'Power'))))) : 'Continuous Mains Supply (No Battery)'}</div>
+              </div>
+            </div>
+            <div class="device-stats">
+              <div>
+                <div class="stat-item-lbl">Power State</div>
+                <div class="stat-item-val" style="color: var(--cyan);">${hasBatt ? (isCharging ? 'Active Current' : 'Discharging') : 'Continuous Mains'}</div>
+              </div>
+              <div>
+                <div class="stat-item-lbl">Hardware Health</div>
+                <div class="stat-item-val" style="color: var(--green);">${hasBatt ? (b.health || 'Operational') : 'Direct Mains Regulated'}</div>
+              </div>
+            </div>
+          `;
+          battContainer.appendChild(card);
+        });
+      }
+
+      // 6. Transports Grid
+      if (data.network_transports) {
+        const tGrid = document.getElementById('transports-grid');
+        tGrid.innerHTML = '';
+        
+        // WireGuard Mesh Tunnel Card
+        if (data.network_transports.wireguard_mesh) {
+          const wg = data.network_transports.wireguard_mesh;
+          const cWg = document.createElement('div');
+          cWg.className = 'metric-card';
+          cWg.innerHTML = `
+            <div class="metric-header">
+              <span>Tailscale / WireGuard Mesh (Layer 3)</span>
+              <span style="color: var(--green); font-weight: 700;">${wg.status ? wg.status.toUpperCase() : 'ONLINE'}</span>
+            </div>
+            <div class="metric-val" style="font-size: 1.1rem; color: var(--purple);">UDP Port ${wg.port} (${wg.interface})</div>
+            <div style="font-size: 0.75rem; color: var(--cyan); margin-top: 4px;">Gateway: ${wg.gateway} • Subnet: ${wg.subnet}</div>
+            <div style="font-size: 0.75rem; color: #fff; margin-top: 6px;">Handshakes: <strong style="color: var(--green);">${wg.active_handshakes}</strong> / ${wg.total_peers} Peers Active</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Traffic: ${(wg.rx_bytes / (1024*1024)).toFixed(1)} MB RX / ${(wg.tx_bytes / (1024*1024)).toFixed(1)} MB TX</div>
+            <div style="font-size: 0.72rem; color: var(--green); margin-top: 4px;">Samba: ${wg.samba_wireguard}</div>
+          `;
+          tGrid.appendChild(cWg);
+        }
+
+        // BT Serial
+        const btS = data.network_transports.bluetooth_serial;
+        const c1 = document.createElement('div');
+        c1.className = 'metric-card';
+        c1.innerHTML = `
+          <div class="metric-header">
+            <span>Bluetooth Serial (Layer 0)</span>
+            <span style="color: var(--green);">${btS.status}</span>
+          </div>
+          <div class="metric-val" style="font-size: 1.1rem;">${btS.port}</div>
+          <div style="font-size: 0.75rem; color: var(--cyan); margin-top: 4px;">${btS.speed}</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Daemon: ${btS.daemon}</div>
+        `;
+        tGrid.appendChild(c1);
+
+        // BT PAN
+        const btP = data.network_transports.bluetooth_pan;
+        const c2 = document.createElement('div');
+        c2.className = 'metric-card';
+        c2.innerHTML = `
+          <div class="metric-header">
+            <span>Bluetooth Controller (Layer 1)</span>
+            <span style="color: var(--cyan);">${btP.status}</span>
+          </div>
+          <div class="metric-val" style="font-size: 1.1rem;">${btP.interface} (${btP.mac})</div>
+          <div style="font-size: 0.75rem; color: var(--cyan); margin-top: 4px;">Max Rate: ${btP.max_speed}</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Chip: ${btP.chip}</div>
+        `;
+        tGrid.appendChild(c2);
+
+        // Wi-Fi Radios
+        if (data.network_transports.wifi_radios) {
+          data.network_transports.wifi_radios.forEach(w => {
+            const cw = document.createElement('div');
+            cw.className = 'metric-card';
+            cw.innerHTML = `
+              <div class="metric-header">
+                <span>${w.band}</span>
+                <span style="color: var(--purple);">${w.status}</span>
+              </div>
+              <div class="metric-val" style="font-size: 1.1rem;">${w.tx_bitrate}</div>
+              <div style="font-size: 0.75rem; color: var(--cyan); margin-top: 4px;">${w.ht_mode} • ${w.freq}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">SSID: ${w.ssid} (${w.signal})</div>
+            `;
+            tGrid.appendChild(cw);
+          });
+        }
+      }
+
+      // 7. Ports & Daemons Table
+      if (data.ports_and_daemons) {
+        const portsTable = document.getElementById('ports-table-body');
+        portsTable.innerHTML = '';
+        data.ports_and_daemons.forEach(p => {
+          const tr = document.createElement('tr');
+          const isAct = p.status === 'ACTIVE';
+          tr.innerHTML = `
+            <td><strong style="color: var(--cyan);">${p.port}</strong></td>
+            <td><span class="trans-tag tag-eth">${p.proto}</span></td>
+            <td><strong>${p.daemon}</strong></td>
+            <td>${p.role}</td>
+            <td class="font-mono">${p.scope || ('0.0.0.0:' + p.port)}</td>
+            <td><span class="device-pill pill-${isAct ? 'online' : 'standby'}">${p.status}</span></td>
+          `;
+          portsTable.appendChild(tr);
+        });
+      }
+
+      // 8. SeaweedFS Table
+      if (data.seaweedfs_pool && data.seaweedfs_pool.nodes) {
+        const stoTable = document.getElementById('storage-table-body');
+        stoTable.innerHTML = '';
+        const nodeMap = {
+          GW: { name: 'GL-BE14000 Gateway Controller', ep: '192.168.8.1:8085', dir: '/overlay/seaweedfs' },
+          L1: { name: 'Mac Mini M4 Pro Host', ep: '192.168.8.230:8085', dir: '/Users/aaron/.local/var/seaweedfs-vol1' },
+          L2: { name: 'MacBook Pro (Intel i7)', ep: '192.168.2.2:8080', dir: '/' },
+          L8: { name: 'Linux Mini Hub (lauburu)', ep: '192.168.2.3:8081', dir: '/home/linuxmini/seaweed_volume' },
+          L5: { name: 'MacBook Air (Apple M4)', ep: '192.168.8.245', dir: '/' }
+        };
+
+        Object.keys(data.seaweedfs_pool.nodes).forEach(key => {
+          const s = data.seaweedfs_pool.nodes[key];
+          const meta = nodeMap[key] || { name: key, ep: '--', dir: '--' };
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><span class="device-pill pill-online">${key}</span></td>
+            <td><strong>${meta.name}</strong></td>
+            <td class="font-mono"><a href="http://${meta.ep}/status" target="_blank" style="color: var(--cyan); text-decoration: none;">${meta.ep}</a></td>
+            <td class="font-mono" style="color: var(--text-muted);">${meta.dir}</td>
+            <td><strong>${s.total_gb} GB</strong></td>
+            <td>${s.used_gb} GB</td>
+            <td style="color: var(--green); font-weight: 600;">${s.free_gb} GB</td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="progress-bar-wrap" style="width: 80px; margin: 0;">
+                  <div class="progress-fill" style="width: ${s.percent}%; background: ${s.percent > 85 ? 'var(--amber)' : 'var(--green)'};"></div>
+                </div>
+                <span>${s.percent}%</span>
+              </div>
+            </td>
+            <td><span class="device-pill pill-${s.status}">${s.status}</span></td>
+          `;
+          stoTable.appendChild(tr);
+        });
+      }
+    }
+
+    // Handle hash on load
+    window.addEventListener('load', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && document.getElementById(hash)) {
+        const btn = Array.from(document.querySelectorAll('.nav-tab')).find(b => b.getAttribute('onclick')?.includes(hash));
+        if (btn) btn.click();
+      }
+    });
+
+    // Initial Fetch
+    fetchTelemetry();
+
+    refreshTimer = setInterval(() => fetchTelemetry(false), currentInterval);
+  </script>
+</body>
+</html>

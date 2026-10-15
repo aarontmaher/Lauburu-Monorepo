@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign Web Bluetooth Multi-Device Bridge (:9223 -> :8084)</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card-bg: #161b22;
+            --border: #30363d;
+            --accent: #58a6ff;
+            --success: #3fb950;
+            --text: #c9d1d9;
+            --muted: #8b949e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 24px;
+        }
+        .container { max-width: 960px; margin: 0 auto; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+        h1 { margin: 0; font-size: 1.4rem; color: #f0f6fc; }
+        .status-badge {
+            background: #21262d;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #f85149; }
+        .dot.connected { background: var(--success); box-shadow: 0 0 8px var(--success); }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        .btn-blue { background: #1f6feb; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-top: 16px;
+        }
+        .metric-box {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 14px;
+            text-align: center;
+        }
+        .metric-title { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; }
+        .metric-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); margin: 8px 0; }
+        pre#log {
+            background: #090d13;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 0.78rem;
+            color: #7ee787;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>Sovereign Multi-Device Web Bluetooth Bridge (:9223 &rarr; :8084)</h1>
+                <p style="margin: 4px 0 0; color: var(--muted); font-size: 0.85rem;">
+                    Simultaneous Movesense (0x180D / 0xFDF3 / Whiteboard) + AssaultBike (FTMS 0x1826 / CPS 0x1818 / CSC 0x1816)
+                </p>
+            </div>
+            <div class="status-badge">
+                <span class="dot" id="statusDot"></span>
+                <span id="statusText">STANDBY</span>
+            </div>
+        </header>
+
+        <div class="card">
+            <button class="btn" id="connectMovesenseBtn">Pair Movesense Sensor</button>
+            <button class="btn btn-blue" id="connectBikeBtn">Pair AssaultBike / FTMS</button>
+            <a href="http://localhost:8084" target="_blank"><button class="btn" style="background:#30363d;">Open Unified Hub (:8084)</button></a>
+        </div>
+
+        <div class="grid">
+            <div class="metric-box">
+                <div class="metric-title">Heart Rate</div>
+                <div class="metric-value" id="hrVal">--</div>
+                <div class="metric-title">BPM</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-title">Latest RR</div>
+                <div class="metric-value" id="rrVal">--</div>
+                <div class="metric-title">ms</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-title">AssaultBike Power</div>
+                <div class="metric-value" id="wattsVal">--</div>
+                <div class="metric-title">Watts</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-title">AssaultBike Cadence</div>
+                <div class="metric-value" id="rpmVal">--</div>
+                <div class="metric-title">RPM</div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+            <h3 style="margin-top: 0; font-size: 0.95rem;">Live GATT Notification Log</h3>
+            <pre id="log"></pre>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        function log(msg) {
+            const el = document.getElementById('log');
+            const ts = new Date().toISOString().substring(11, 19);
+            el.textContent = `[${ts}] ${msg}\n` + el.textContent;
+        }
+        function initWs() {
+            const loc = window.location;
+            ws = new WebSocket((loc.protocol === 'https:' ? 'wss://' : 'ws://') + loc.host + '/ws/telemetry');
+            ws.onopen = () => log('WebSocket bridge connected (:9223 -> :8084/api/ingest)');
+            ws.onclose = () => setTimeout(initWs, 3000);
+        }
+        initWs();
+
+        function emitPayload(payload) {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify(payload));
+            }
+        }
+
+        function dvToHex(dv) {
+            let hex = '';
+            for (let i = 0; i < dv.byteLength; i++) {
+                hex += dv.getUint8(i).toString(16).padStart(2, '0');
+            }
+            return hex;
+        }
+
+        document.getElementById('connectMovesenseBtn').addEventListener('click', async () => {
+            try {
+                const dev = await navigator.bluetooth.requestDevice({
+                    filters: [{ namePrefix: 'Movesense' }, { services: [0x180D] }],
+                    optionalServices: [0x180D, 0xFDF3, '34802252-7185-4d5d-b431-630e7050e8f0']
+                });
+                const server = await dev.gatt.connect();
+                document.getElementById('statusDot').className = 'dot connected';
+                document.getElementById('statusText').innerText = `Connected: ${dev.name}`;
+                log(`Connected Movesense: ${dev.name}`);
+
+                const hrSvc = await server.getPrimaryService(0x180D);
+                const hrChar = await hrSvc.getCharacteristic(0x2A37);
+                await hrChar.startNotifications();
+                hrChar.addEventListener('characteristicvaluechanged', (ev) => {
+                    const dv = ev.target.value;
+                    const hex = dvToHex(dv);
+                    const flags = dv.getUint8(0);
+                    const bpm = (flags & 0x01) ? dv.getUint16(1, true) : dv.getUint8(1);
+                    document.getElementById('hrVal').innerText = bpm;
+                    if (flags & 0x10) {
+                        const offset = (flags & 0x01) ? 3 : 2;
+                        if (dv.byteLength >= offset + 2) {
+                            const rr = Math.round(dv.getUint16(offset, true) * 1000 / 1024);
+                            document.getElementById('rrVal').innerText = rr;
+                        }
+                    }
+                    emitPayload({
+                        device_name: dev.name || 'Movesense',
+                        device_address: dev.id,
+                        hr_gatt_hex: hex
+                    });
+                });
+            } catch (e) {
+                log(`Movesense pairing error: ${e.message}`);
+            }
+        });
+
+        document.getElementById('connectBikeBtn').addEventListener('click', async () => {
+            try {
+                const dev = await navigator.bluetooth.requestDevice({
+                    filters: [
+                        { services: [0x1826] },
+                        { services: [0x1818] },
+                        { services: [0x1816] },
+                        { namePrefix: 'Assault' }
+                    ],
+                    optionalServices: [0x1826, 0x1818, 0x1816, '028a0600-f23e-4f76-a092-927d0377d5b2']
+                });
+                const server = await dev.gatt.connect();
+                document.getElementById('statusDot').className = 'dot connected';
+                document.getElementById('statusText').innerText = `Connected: ${dev.name}`;
+                log(`Connected AssaultBike: ${dev.name}`);
+
+                try {
+                    const ftms = await server.getPrimaryService(0x1826);
+                    const ch = await ftms.getCharacteristic(0x2AD2);
+                    await ch.startNotifications();
+                    ch.addEventListener('characteristicvaluechanged', (ev) => {
+                        const hex = dvToHex(ev.target.value);
+                        emitPayload({
+                            assault_bike_name: dev.name || 'AssaultBike FTMS',
+                            ftms_hex: hex
+                        });
+                    });
+                } catch (e) { log(`FTMS 0x2AD2 info: ${e.message}`); }
+            } catch (e) {
+                log(`AssaultBike pairing error: ${e.message}`);
+            }
+        });
+    </script>
+</body>
+</html>

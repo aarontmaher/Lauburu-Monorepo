@@ -13,8 +13,8 @@ import time
 import re
 from typing import Dict, List, Any
 
-LORA_DATASETS_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets"
-TELEMETRY_DIGEST_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/human_digestible_telemetry.json"
+LORA_DATASETS_DIR = "/Volumes/Lauburu-Monorepo/lora_datasets"
+TELEMETRY_DIGEST_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/human_digestible_telemetry.json"
 os.makedirs(os.path.dirname(TELEMETRY_DIGEST_FILE), exist_ok=True)
 
 class HumanDigestibleTelemetryEngine:

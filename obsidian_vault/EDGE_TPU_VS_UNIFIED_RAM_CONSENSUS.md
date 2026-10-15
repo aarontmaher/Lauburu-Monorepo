@@ -24,7 +24,7 @@ previous_version: "v3.0 (2026-09-06)"
 
 | Change | v3.0 State | v4.0 State (Today) |
 |:---|:---|:---|
-| **NPU Fleet** | Conceptual 9-model plan | [`npu_fleet/`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/) **live with 8/8 tests passing** |
+| **NPU Fleet** | Conceptual 9-model plan | [`npu_fleet/`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/) **live with 8/8 tests passing** |
 | **`ecgnet_1d_dsp` target** | "Tensor G5 TPU" assumed | **ANE / Zen3 AVX2** — `L1_Mac_Node` (confirmed in dispatcher) |
 | **`nanodraft_10m` export** | Raw `.bin` buffer (not usable by Edge TPU) | **CoreML / e5rt** static TorchScript + real static-shape TFLite export pipeline live |
 | **Movesense DSP** | CPU only, no hardware delegation | **Kamath 20% filter in production**, tri-proof passed (32/32 cargo tests, SHA256 verified) |
@@ -60,7 +60,7 @@ previous_version: "v3.0 (2026-09-06)"
 │ L5     │ MacBook_Air         │ M4: 38T ANE + MPS         │ 16.0 GB  │ 150.0 GB/s UMA │
 │ L6     │ Pixel_10_Pro_XL     │ Tensor G5: 4th-Gen TPU    │ 16.0 GB  │  85.0 GB/s     │
 │ L7     │ Samsung_S20         │ Exynos 990: Dual NPU      │ 12.0 GB  │  44.0 GB/s     │
-│ L3     │ Linux_Head_Node     │ Ryzen 7 5700U: AVX2       │ 16.0 GB  │  51.2 GB/s     │
+│ L3     │ Linux_Mini     │ Intel 2018 Mac Mini (Linux): AVX2       │ 16.0 GB  │  51.2 GB/s     │
 │ L3-ext │ Coral USB (L3)      │ Google Coral Edge TPU     │  8 MB    │  USB 3.0       │
 └────────┴─────────────────────┴───────────────────────────┴──────────┴────────────────┘
 Total pooled NPU/TPU: 104.0 TOPS INT8
@@ -74,7 +74,7 @@ Total pooled NPU/TPU: 104.0 TOPS INT8
 | MacBook_Pro (L2) | **ONLINE** | ~9.0 / 14.4 GB | ⚠️ 97–99% | TB4 DMA bridge at 0.277ms RTT |
 | MacBook_Air (L5) | **ONLINE** | ~6.5 / 14.4 GB | Normal | MLX QLoRA training active |
 | Pixel_10_Pro_XL (L6) | **ONLINE** | ~5.0 / 13.6 GB | Normal | TPU RPC daemon: **offline** (see Priority 1) |
-| Linux_Head_Node (L3) | **ONLINE** | ~8.5 / 12.8 GB | Normal | edgetpu_compiler Docker available |
+| Linux_Mini (L3) | **ONLINE** | ~8.5 / 12.8 GB | Normal | edgetpu_compiler Docker available |
 | GL.iNet Router | **ONLINE** | Embedded | — | Router heartbeat: resolved (python3 socket) |
 
 > **Rule #0 Note:** L1 host disk free: **95.4 GB** ✅. L1 RAM ≥ 9.6 GB threshold: ⚠️ **at risk** — L1/L2 CPU saturation validates need for Edge TPU offload.
@@ -85,7 +85,7 @@ Total pooled NPU/TPU: 104.0 TOPS INT8
 - **L1 Local UMA Bus:** $0.02\text{ ms}$ RTT (verified)
 - **L1 $\leftrightarrow$ L2 Thunderbolt 4 DMA Bridge:** $0.277\text{ ms}$ RTT when active ($>10\text{ Gbps}$ throughput) — **currently OFFLINE** (2026-09-07), fallback: Tailscale $110.5\text{ ms}$
 - **L1 $\leftrightarrow$ L6 Pixel 10 (LAN):** $18.2\text{ ms}$ RTT (measured 2026-09-07; USB 3.2 direct untested)
-- **L1 $\leftrightarrow$ L5 MacBook Air (LAN):** $5.0\text{ ms}$ RTT (measured 2026-09-07)
+- **L1 $\leftrightarrow$ L2 MacBook Pro (LAN):** $5.0\text{ ms}$ RTT (measured 2026-09-07)
 - **L1 $\leftrightarrow$ L3 Linux Head Node (Tailscale):** $9.6\text{ ms}$ RTT (measured 2026-09-07)
 - **L1 $\leftrightarrow$ L2 MacBook Pro (Tailscale):** $110.5\text{ ms}$ RTT (measured 2026-09-07; elevated vs $41.3\text{ ms}$ baseline — TB4 offline)
 
@@ -109,7 +109,7 @@ $$I = \frac{\text{Operations (INT8 OPs)}}{\text{Bytes Transferred from DRAM/SRAM
 
 ## 🏆 3. NPU Fleet Catalog — Production Implementation (v4.0 NEW)
 
-**Source:** [`npu_fleet/npu_model_fleet_dispatcher.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/npu_model_fleet_dispatcher.py) — **104.0 TOPS pooled, 8/8 unit tests passing**
+**Source:** [`npu_fleet/npu_model_fleet_dispatcher.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/npu_model_fleet_dispatcher.py) — **104.0 TOPS pooled, 8/8 unit tests passing**
 
 | Model ID | Params | Quantization | Primary Hardware | Node | Runtime | Latency | Power |
 |:---|:---|:---|:---|:---|:---|:---|:---|
@@ -153,7 +153,7 @@ $$I = \frac{\text{Operations (INT8 OPs)}}{\text{Bytes Transferred from DRAM/SRAM
 ### E — Speculative Token Drafting (ANE beats Tensor G5 for LLM)
 - `nanodraft_10m` at **0.71 ms/token → >1,400 tok/s on ANE CoreML**
 - The Tensor G5 was projected at 0.72 ms (yesterday's exporter) — ANE is marginally faster for the 10M drafter because ANE operates within the M4 UMA 273 GB/s bus (no USB or Wi-Fi overhead)
-- **Revised conclusion:** For speculative drafting, **ANE (L1/L5) is preferred** over Tensor G5 when the host is not CPU-saturated. When L1/L2 are at 96–99% CPU, **route drafter to L5 MacBook Air ANE** instead
+- **Revised conclusion:** For speculative drafting, **ANE (L1/L5) is preferred** over Tensor G5 when the host is not CPU-saturated. When L1/L2 are at 96–99% CPU, **route drafter to L2 MacBook Pro ANE** instead
 
 ---
 
@@ -192,7 +192,7 @@ $$I = \frac{\text{Operations (INT8 OPs)}}{\text{Bytes Transferred from DRAM/SRAM
 
 > [!IMPORTANT]
 > **Priority 3 — Complete `export_npu_models_coreml_tflite.py` TFLite Path**  
-> [`export_npu_models_coreml_tflite.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/export_npu_models_coreml_tflite.py) produces CoreML `.mlpackage` correctly. The **TFLite INT8 flatbuffer** path for Tensor G5 needs `ai_edge_torch` + **Tensor SDK v2.0 CompiledModel API** (NNAPI is deprecated since Android 15):
+> [`export_npu_models_coreml_tflite.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/export_npu_models_coreml_tflite.py) produces CoreML `.mlpackage` correctly. The **TFLite INT8 flatbuffer** path for Tensor G5 needs `ai_edge_torch` + **Tensor SDK v2.0 CompiledModel API** (NNAPI is deprecated since Android 15):
 > ```python
 > import ai_edge_torch
 > edge_model = ai_edge_torch.compile(model, (dummy_input,))
@@ -209,11 +209,11 @@ $$I = \frac{\text{Operations (INT8 OPs)}}{\text{Bytes Transferred from DRAM/SRAM
 
 > [!WARNING]
 > **Priority 5 — Hybrid CPU+TPU Split for Pan-Tompkins**  
-> [`pan_tompkins_dsp.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/03_biometrics_and_telemetry/pan_tompkins_dsp.py) runs all 5 stages on CPU. Stages 1–4 (bandpass, derivative, squaring, MWI) are INT8-safe and should delegate to Edge TPU. Stage 5 (`calculate_dfa_alpha1`) uses `math.log()` FP64 and **must stay on CPU** — a medical accuracy invariant confirmed by Movesense DSP stabilization.
+> [`pan_tompkins_dsp.py`](file:///Volumes/Lauburu-Monorepo/03_biometrics_and_telemetry/pan_tompkins_dsp.py) runs all 5 stages on CPU. Stages 1–4 (bandpass, derivative, squaring, MWI) are INT8-safe and should delegate to Edge TPU. Stage 5 (`calculate_dfa_alpha1`) uses `math.log()` FP64 and **must stay on CPU** — a medical accuracy invariant confirmed by Movesense DSP stabilization.
 
 > [!NOTE]
 > **Priority 6 — Replace Hardcoded `power_mw=12.4` with Live Measurement**  
-> [`npu_pure_accelerator.py:109`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/npu_pure_accelerator.py) has `power_mw=12.4` hardcoded. Replace with live Termux battery delta:
+> [`npu_pure_accelerator.py:109`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/npu_pure_accelerator.py) has `power_mw=12.4` hardcoded. Replace with live Termux battery delta:
 > ```bash
 > adb shell "termux-battery-status" | python3 -c \
 >   "import sys,json; d=json.load(sys.stdin); print(abs(d.get('current',0))*d.get('voltage',5)/1e6)"

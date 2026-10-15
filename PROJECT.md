@@ -1,46 +1,73 @@
-# Project: Master 6-Pillar Local AI Arena Training & Interactive Cockpit
+# PROJECT: Continuous Lens 1B-Context Loop, Pod Mesh & Frontier Swarm Consensus Engine
 
 ## Architecture
-- **Target Notebook**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/notebooks/00_6_PILLAR_LOCAL_AI_ARENA_TRAINING_AND_NOTEBOOK_OPTIMIZER.ipynb`
-- **Exported Visual Asset**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/notebooks/6_pillar_dark_cockpit.png`
-- **UI Engine**: Tailwind Cyberpunk Glassmorphism + HTML5 Canvas + Dual-Mode Standalone JS / IPyWidgets.
-- **7-Layer Mesh Endpoints**: 108.0 GB Pooled RAM / 82.8 GB Usable AI VRAM across L1 Mac Host, L2 MacBook Pro (TB4 Bridge), L3 Linux Head Node (`100.101.39.98:4005`), L4 Linux Tablet, L5 MacBook Air (`100.93.158.96:8889`), L6 Pixel 10 Pro XL, L7 Samsung S20, and Devil's Advocate RPC (`100.119.199.76:8083`).
-- **Tri-Vault Storage**: Obsidian Vault (`obsidian_vault/`), PySpark Data Lake (`lora_datasets/continuous_lora_dataset.jsonl`), and GitHub Monorepo (`04_data_and_memory/`).
-- **Headless Invariant**: Strict `matplotlib.use('Agg')` in Cell 1; zero local GUI popups.
+The Lauburu Monorepo Continuous Lens 1B-Context Pod Mesh and Swarm Consensus System integrates four primary pillars:
+1. **Headless Pod Mesh Infrastructure (`00_core_infrastructure`)**: Podman-compose rootful pod stack (`podman-compose-headless-mesh.yml`) hosting `headless-chromium` (CDP port 9222), `sovereign-colab-jupyter` (port 8889), `headless-ide-intellij` (port 8443), `pyspark-data-lake` (port 8089), `neo-graphs-qdrant` (ports 6333/6334), `screen-lens-sovereign-daemon` (host network), and `pi-agent-worker` (`@earendil-works/pi-coding-agent`).
+2. **1B Context Sharding Fabric & Lens Perception (`01_apps/screen_lens`, `02_ai_models_and_inference`, `06_scripts_and_tooling/automation`)**: Pipelined Ring Parallelism (PRP) context sharding over 40Gbps Thunderbolt 4 bridge (`10.0.0.2` <-> `10.0.0.8` / `10.0.0.4`, <0.4ms RTT) managed by `decentralized_prima_daemon.py` (Port 8082). Driven by `continuous_1b_lens_loop.py`, `continuous_lens_cdp_practice.py`, and `unified_screen_lens.py` to extract VLA perception artifacts (PNG screenshots and JSON DOM trees) into `obsidian_vault/04_ANALYTICS/VLA_PERCEPTION/`.
+3. **Continuous Swarm Consensus Engine (`06_scripts_and_tooling/ai`, `05_agents_and_swarms`)**: Multi-pillar debate loop in `frontier_swarm_consensus.py` summoning cloud frontier models (Google DeepMind Gemini 2.5 Pro/Flash, Anthropic Claude 3.5 Sonnet / 3 Opus, OpenAI GPT-4o, DeepSeek Chat) and local endpoints (Ports 8082, 8083, 8081). Integrates `deep-research`, `closed-source-reverse-engineering`, and `hardware-market-scout`.
+4. **Tri-Vault Storage & Tri-Proof Verification Gate (`obsidian_vault/`, `lora_datasets/`, `04_data_and_memory/`)**: Dual-plane document mirroring (`LOAD_BALANCING_CONSENSUS.md` in monorepo root and Obsidian Vault), SHA256-checksummed JSONL DPO stream to `continuous_lora_dataset.jsonl`, and Tri-Proof Gate (Exit Code 0, SHA256 verification, Screen Lens visual HUD capture).
 
 ## Feature Inventory
-| # | Feature | Description | Milestone | Source | Status |
-|---|---------|-------------|-----------|--------|--------|
-| F1 | Glassmorphic CSS & 4K Typography | Cyberpunk design tokens (#06b6d4, #3b82f6, #8b5cf6, #10b981, #f59e0b), Inter/JetBrains Mono fonts | M1 | Survey | DONE |
-| F2 | High-DPI 3-Panel Dark Visualizations | 160+ DPI figure (Horizontal ELO, Polar Radar, Token Velocity vs TTFT) exported to disk | M1 | Survey | DONE |
-| F3 | Zero-JSON HTML Cards & Invariants | Styled HTML cards/tables for system invariants and telemetry; zero raw JSON dumps | M1 | Survey | DONE |
-| F4 | Dynamic Status/Layer Filter Pills | Status (All, Active, Ready, Syncing, Ingested) & Layer pills with dynamic match counter and empty state card | M2 | Survey | DONE |
-| F5 | Interactive Model Selector Dropdown | Dropdown with 9 canonical models updating dynamic metadata cards on change | M2 | Survey | DONE |
-| F6 | Live ELO Recalculation & Canvas | Bradley-Terry ELO slider with dynamic HTML5 `<canvas id="win-curve-canvas">` sigmoid curve | M2 | Survey | DONE |
-| F7 | 6-Pillar Dataset Ingestion Engine | Multi-path resolution across 6 pillars with memory-safe streaming generator (>=2.5GB headroom) | M3 | Survey | DONE |
-| F8 | DPO Formatter & Split-View Viewer | Standardized HuggingFace TRL DPO schema and 3-panel split view (Cyan prompt, Emerald chosen, Amber rejected) | M3 | Survey | DONE |
-| F9 | Tri-Vault Sync & One-Click Lake Export | POSIX flock atomic append to `continuous_lora_dataset.jsonl`, Obsidian Wikilinks sync, export toast card | M3 | Survey | DONE |
-| F10 | Zero-Mock Live Mesh Sockets | Non-blocking TCP socket probes (200ms timeout) across 6 endpoints and Rule #0 fallback states | M4 | Survey | DONE |
-| F11 | Live Debate Stream Inspector | Stream ingestion from `truth_audit_debate.jsonl`, glowing role badges, consensus bar, unified diff viewer | M4 | Survey | DONE |
-| F12 | Cross-Runtime & Standalone Packaging | Standalone client-side JS (`window.meshCockpitEngine`), IPyWidgets fallback, Marimo DAG compatibility | M4 | Survey | DONE |
-| F13 | Full Opaque-Box E2E Test Suite | 4-tier opaque-box test suite (Tiers 1-4) in `tests/e2e_arena_notebook/` with JUnit/JSON runner | E2E | Survey | DONE |
-| F14 | White-Box Adversarial Hardening (Tier 5) | Comprehensive white-box adversarial stress tests, edge case fuzzing, and victory sign-off | M5 | Survey | IN_PROGRESS |
+| # | Feature | Description | Milestone | Source |
+|---|---------|-------------|-----------|--------|
+| 1 | Podman Compose Headless Mesh | Container composition including JupyterLab, Chromium CDP, Code-Server, PySpark, Qdrant | Milestone 1 | Follow-up 2026-10-12 |
+| 2 | Safe Tri-Vault Volume Mounts | Safe mounting of `obsidian_vault`, `lora_datasets`, `04_data_and_memory` without host pollution | Milestone 1 | Follow-up 2026-10-12 |
+| 3 | Containerized 'pi' Agent Worker | Running `@earendil-works/pi-coding-agent` worker safely in pod alongside Lens and IDEs | Milestone 1 | Follow-up 2026-10-13 |
+| 4 | Host Sanctuary Memory Telemetry | Active `vm_stat`/`sysctl` Mach watchdog preserving >= 4.8 GB free physical RAM on L1 host | Milestone 1 | Dispatch R4 / Rule 3 |
+| 5 | Lens 1B Context Window Loop | 1-billion token context block processing sharded across 40Gbps TB4 bridge without OOM | Milestone 2 | Dispatch R1 |
+| 6 | Chromium CDP VLA Perception | CDP practice automation extracting PNG screenshots and JSON DOM accessibility trees to Obsidian | Milestone 2 | Follow-up 2026-10-12 |
+| 7 | Terminal AI 'pi' Trajectory Harvesting | Harvesting `pi` session logs into `continuous_lora_dataset.jsonl` with SHA256 checksums | Milestone 2 | Initial Request R2/R3 |
+| 8 | Continuous Frontier Swarm Consensus | Multi-model debate between cloud frontier models and local endpoints (Ports 8082, 8083) | Milestone 3 | Initial Request R1/R2 |
+| 9 | Specialized Skills Integration | Grounding consensus via `deep-research`, `closed-source-reverse-engineering`, `hardware-market-scout` | Milestone 3 | Dispatch R3 |
+| 10 | Tri-Proof Verification Gate | Exit Code 0 (Proof 1), SHA256 checksums (Proof 2), Screen Lens visual HUD capture (Proof 3) | Milestone 3 | Initial Request R3 |
+| 11 | Continuous LoRA Dataset Distillation | Streaming DPO/instruction pairs with SHA256 hashes to `continuous_lora_dataset.jsonl` | Milestone 3 | Initial Request R2 |
 
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
-| E2E | E2E Testing Track | Design test harness and implement Tiers 1-4 test suites -> TEST_READY.md | none | DONE |
-| M1 | Glassmorphic High-DPI UI/UX & Tailwind Theme | CSS styles, 4K Retina typography, 3-panel 160+ DPI dark charts, zero raw JSON | none | DONE |
-| M2 | Interactive Controls & Live ELO Recalculation | Model dropdown, filter pills, ELO sliders, canvas win curves | M1 | DONE |
-| M3 | 6-Pillar Dataset & Tri-Vault Integration | 6-pillar loader, DPO sample viewer, TRL formatter, Tri-Vault sync | M1, M2 | DONE |
-| M4 | Zero-Mock Live Mesh Sync & Multi-Runtime | Live mesh probes (:4005, :8889, :8083), debate stream, Marimo/standalone compatibility | M1, M2, M3 | DONE |
-| M5 | Final Milestone: 100% E2E Pass & Adversarial Hardening | Pass 100% of Tiers 1-4 test suite, execute Tier 5 adversarial hardening | M4, E2E (TEST_READY.md) | IN_PROGRESS |
+| 1 | Pod Manifests, 'pi' Container Worker & Host Sanctuary | Expand `podman-compose-headless-mesh.yml` with Jupyter, Chromium, Code-Server, 'pi' worker; enforce safe volume mounts and Host Sanctuary >=4.8GB free RAM cap | None | DONE |
+| 2 | 1B Context Sharding Loop & Screen-Lens CDP Automation | Implement `continuous_1b_lens_loop.py` for 1B context sharding over 40Gbps TB4 bridge (Port 8082) + CDP VLA perception extraction & 'pi' trajectory harvester | M1 | DONE |
+| 3 | Swarm Consensus Engine with Deep Research & Market Scouting | Enhance `frontier_swarm_consensus.py` with `deep-research`, `closed-source-reverse-engineering`, `hardware-market-scout`, Tri-Proof Gate, and SHA256 distillation | M1, M2 | DONE |
+| 4 | Final E2E Test Suite Pass & Adversarial Hardening | Pass 100% of E2E test suite across Tiers 1-4, followed by Tier 5 adversarial coverage hardening | M1, M2, M3 | DONE |
+
+## Interface Contracts
+### Pod Mesh ↔ Host Sanctuary Interface
+- Endpoint: `HostSanctuary.get_free_ram_gb()` / `HostSanctuary.is_sanctuary_safe(threshold_gb=4.8)`
+- Signal: Returns `True` if L1 Mach kernel free RAM >= 4.8 GB; if `False`, pod orchestrator waterfills/offloads heavy container tasks to Node L8 (`10.0.0.8`).
+
+### 1B Context Sharding ↔ TB4 Ring Interface
+- Endpoint: `http://127.0.0.1:8082/v1/chat/completions` & `/v1/ring_status`
+- Data Flow: Context chunks transmitted via 40Gbps Thunderbolt 4 DMA (`bridge0` IP `10.0.0.2` <-> `10.0.0.8` / `10.0.0.4`, <0.4ms RTT) using Pipelined Ring Parallelism (PRP).
+
+### Swarm Consensus ↔ Tri-Vault Distillation Interface
+- Output Sink: `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`
+- Format: JSONL containing `instruction`, `input`, `output`, `metadata`, `timestamp`, and `sha256` (64-char hex hash). Thread-safe append via `fcntl.flock(f, fcntl.LOCK_EX)`.
 
 ## Code Layout
-- `obsidian_vault/notebooks/00_6_PILLAR_LOCAL_AI_ARENA_TRAINING_AND_NOTEBOOK_OPTIMIZER.ipynb` — Master arena notebook
-- `obsidian_vault/notebooks/6_pillar_dark_cockpit.png` — 160+ DPI 3-panel exported dark figure
-- `tests/e2e_arena_notebook/test_tier1_feature_coverage.py` — Tier 1 isolated feature tests (F1-F12)
-- `tests/e2e_arena_notebook/test_tier2_boundary_corner.py` — Tier 2 boundary and corner case tests
-- `tests/e2e_arena_notebook/test_tier3_pairwise_combinations.py` — Tier 3 cross-feature interaction tests
-- `tests/e2e_arena_notebook/test_tier4_real_world_workloads.py` — Tier 4 real-world user workload tests
-- `tests/e2e_arena_notebook/run_e2e_tests.py` — Master test runner
+```
+/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/
+├── 00_core_infrastructure/
+│   ├── podman-compose-headless-mesh.yml          # Headless Podman compose manifest
+│   ├── bootstrap_podman_headless_mesh.sh         # Podman mesh deployment bootstrapper
+│   └── mcp_servers/lens-mcp/                     # TypeScript Screen Lens MCP server
+├── 01_apps/screen_lens/                          # Screen Lens application & orchestrator
+├── 02_ai_models_and_inference/
+│   ├── decentralized_prima_daemon.py             # Port 8082 Sovereign Master REST server
+│   └── decentralized_prima_mesh_coordinator.py   # PRP ring topology & sharding coordinator
+├── 05_agents_and_swarms/
+│   └── screen_lens_mcp_evolution/
+│       └── frontier_swarm_consensus.py           # Subsystem Quad-Council consensus engine
+├── 06_scripts_and_tooling/
+│   ├── ai/
+│   │   └── frontier_swarm_consensus.py           # Primary production Swarm Consensus CLI
+│   └── automation/
+│       ├── continuous_1b_lens_loop.py            # Continuous 1B context sharding loop
+│       ├── continuous_lens_cdp_practice.py       # CDP VLA perception practice automation
+│       ├── unified_screen_lens.py                # Multi-node Screen Lens automation driver
+│       └── multiplexed_ai_terminal_orchestrator.py # Terminal AI & 'pi' trajectory harvester
+├── obsidian_vault/
+│   ├── 04_ANALYTICS/VLA_PERCEPTION/             # VLA perception screenshots & DOM trees
+│   └── APPS_AND_FEATURES/                       # Mirrored architectural consensus reports
+└── lora_datasets/
+    └── continuous_lora_dataset.jsonl             # Central Tri-Vault LoRA distillation sink
+```

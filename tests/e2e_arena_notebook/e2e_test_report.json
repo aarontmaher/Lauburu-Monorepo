@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-09-01T20:57:37Z",
+  "suite": "Master 6-Pillar Arena Notebook E2E Test Suite (Gen 2 SSoT)",
+  "tier": "all",
+  "duration_seconds": 13.863,
+  "exit_code": 0,
+  "status": "PASSED",
+  "targets": [
+    "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e_arena_notebook/test_tier1_feature_coverage.py",
+    "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e_arena_notebook/test_tier2_boundary_corner.py",
+    "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e_arena_notebook/test_tier3_pairwise_combinations.py",
+    "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e_arena_notebook/test_tier4_real_world_workloads.py",
+    "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e_arena_notebook/test_tier5_adversarial_hardening.py"
+  ],
+  "junit_xml": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/tests/e2e_arena_notebook/junit_report.xml",
+  "thresholds_verified": {
+    "tier1_feature_coverage": "30 tests (>=5 per feature across F1-F6)",
+    "tier2_boundary_corner": "30 tests (>=5 per feature across F1-F6)",
+    "tier3_pairwise_matrix": "16 tests (>=15 required)",
+    "tier4_real_world_workloads": "7 scenarios (>=5 required)",
+    "pass_rate_percent": 100.0,
+    "zero_mock_certified": true,
+    "headless_enforced": true,
+    "matplotlib_agg_enforced": true,
+    "concurrency_capped_at_2": true
+  }
+}

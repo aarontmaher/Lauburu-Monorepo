@@ -1,0 +1,12 @@
+layout {
+    pane split_direction="vertical" {
+        pane split_direction="horizontal" {
+            pane command="tail" args="-f" "/Users/aaron/.gemini/antigravity/brain/b2198022-08f4-4d6c-b0e0-04cd981369e6/.system_generated/tasks/task-1447.log" name="Sentinel Logs"
+            pane command="tail" args="-f" "/Users/aaron/.gemini/antigravity/brain/b2198022-08f4-4d6c-b0e0-04cd981369e6/.system_generated/tasks/task-1426.log" name="DevTools Bridge Logs"
+        }
+        pane split_direction="horizontal" {
+            pane command="python3" args="/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/canonical_mesh_core/lens_intelligence_router.py" "listen" name="Lens AI"
+            pane command="htop" name="Mesh Resources"
+        }
+    }
+}

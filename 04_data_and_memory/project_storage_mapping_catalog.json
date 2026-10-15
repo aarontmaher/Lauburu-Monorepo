@@ -1,0 +1,1113 @@
+{
+  "timestamp": 1788658589.727416,
+  "total_projects": 85,
+  "total_loc": 1182070,
+  "elapsed_seconds": 2.957,
+  "subsystem_distribution": {
+    "01_apps": 85
+  },
+  "projects": {
+    "ai_game_swarm_speedify": {
+      "folder_name": "ai_game_swarm_speedify",
+      "folder_path": "/Users/aaron/teamwork_projects/ai_game_swarm_speedify",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 7634,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 3420.5839983769692
+    },
+    "ai_sharding_daemon": {
+      "folder_name": "ai_sharding_daemon",
+      "folder_path": "/Users/aaron/teamwork_projects/ai_sharding_daemon",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 17592,
+      "manifests": [
+        "pyproject.toml",
+        "requirements.txt"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 6304.167000052985
+    },
+    "ai_strengthening_training_game": {
+      "folder_name": "ai_strengthening_training_game",
+      "folder_path": "/Users/aaron/teamwork_projects/ai_strengthening_training_game",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 21547,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 6211.667001480237
+    },
+    "ai_training_game": {
+      "folder_name": "ai_training_game",
+      "folder_path": "/Users/aaron/teamwork_projects/ai_training_game",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 11561,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 2346.8750005122274
+    },
+    "ai_training_stealth_compute_arena": {
+      "folder_name": "ai_training_stealth_compute_arena",
+      "folder_path": "/Users/aaron/teamwork_projects/ai_training_stealth_compute_arena",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 12383,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4973.249997419771
+    },
+    "algorithmic_optimization_paradigms": {
+      "folder_name": "algorithmic_optimization_paradigms",
+      "folder_path": "/Users/aaron/teamwork_projects/algorithmic_optimization_paradigms",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 9671,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 3243.332997953985
+    },
+    "android_auto_agi": {
+      "folder_name": "android_auto_agi",
+      "folder_path": "/Users/aaron/teamwork_projects/android_auto_agi",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 11047,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 5793.208998511545
+    },
+    "antigravity_chat_mcp": {
+      "folder_name": "antigravity_chat_mcp",
+      "folder_path": "/Users/aaron/teamwork_projects/antigravity_chat_mcp",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 5077,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 995.2920008799993
+    },
+    "antigravity_mcp_models": {
+      "folder_name": "antigravity_mcp_models",
+      "folder_path": "/Users/aaron/teamwork_projects/antigravity_mcp_models",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 14218,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4239.709000103176
+    },
+    "audio_language_classifier": {
+      "folder_name": "audio_language_classifier",
+      "folder_path": "/Users/aaron/teamwork_projects/audio_language_classifier",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 666,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 322.29100179392844
+    },
+    "battlecode24_arena": {
+      "folder_name": "battlecode24_arena",
+      "folder_path": "/Users/aaron/teamwork_projects/battlecode24_arena",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Other",
+      "total_loc": 27,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 222.16599609237164
+    },
+    "bluetooth_keyring_omniterminal": {
+      "folder_name": "bluetooth_keyring_omniterminal",
+      "folder_path": "/Users/aaron/teamwork_projects/bluetooth_keyring_omniterminal",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 21832,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 6257.500004721805
+    },
+    "canonical_ssot_studio": {
+      "folder_name": "canonical_ssot_studio",
+      "folder_path": "/Users/aaron/teamwork_projects/canonical_ssot_studio",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 16918,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 7860.082994739059
+    },
+    "canonical_sync_engine": {
+      "folder_name": "canonical_sync_engine",
+      "folder_path": "/Users/aaron/teamwork_projects/canonical_sync_engine",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 19348,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4713.375004939735
+    },
+    "compute_pooling_app": {
+      "folder_name": "compute_pooling_app",
+      "folder_path": "/Users/aaron/teamwork_projects/compute_pooling_app",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 7107,
+      "manifests": [
+        "pyproject.toml",
+        "requirements.txt"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 2221.9169986783527
+    },
+    "dark_mode_audit": {
+      "folder_name": "dark_mode_audit",
+      "folder_path": "/Users/aaron/teamwork_projects/dark_mode_audit",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Other",
+      "total_loc": 2654,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4161.292003118433
+    },
+    "distributed_storage_mesh_optimizer": {
+      "folder_name": "distributed_storage_mesh_optimizer",
+      "folder_path": "/Users/aaron/teamwork_projects/distributed_storage_mesh_optimizer",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 10359,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 3434.166996157728
+    },
+    "figma_rust_network_improver": {
+      "folder_name": "figma_rust_network_improver",
+      "folder_path": "/Users/aaron/teamwork_projects/figma_rust_network_improver",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Rust",
+      "total_loc": 549,
+      "manifests": [
+        "Cargo.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 376.87499570893124
+    },
+    "gemini_spark_automation_prompt": {
+      "folder_name": "gemini_spark_automation_prompt",
+      "folder_path": "/Users/aaron/teamwork_projects/gemini_spark_automation_prompt",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 5829,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 2307.999995537102
+    },
+    "gemini_spark_integration": {
+      "folder_name": "gemini_spark_integration",
+      "folder_path": "/Users/aaron/teamwork_projects/gemini_spark_integration",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 13827,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4663.041996536776
+    },
+    "gemini_spark_lora_engine": {
+      "folder_name": "gemini_spark_lora_engine",
+      "folder_path": "/Users/aaron/teamwork_projects/gemini_spark_lora_engine",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 25875,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 8603.874994150829
+    },
+    "glinet_automation_suite": {
+      "folder_name": "glinet_automation_suite",
+      "folder_path": "/Users/aaron/teamwork_projects/glinet_automation_suite",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 22847,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 6273.250000958797
+    },
+    "glinet_luci_training_suite": {
+      "folder_name": "glinet_luci_training_suite",
+      "folder_path": "/Users/aaron/teamwork_projects/glinet_luci_training_suite",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 26746,
+      "manifests": [
+        "Makefile"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 8086.625006399117
+    },
+    "glinet_tethering_fix": {
+      "folder_name": "glinet_tethering_fix",
+      "folder_path": "/Users/aaron/teamwork_projects/glinet_tethering_fix",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 11138,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 5800.625003757887
+    },
+    "glinet_usb_fix": {
+      "folder_name": "glinet_usb_fix",
+      "folder_path": "/Users/aaron/teamwork_projects/glinet_usb_fix",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 6684,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 2242.999995360151
+    },
+    "global_mesh_tui": {
+      "folder_name": "global_mesh_tui",
+      "folder_path": "/Users/aaron/teamwork_projects/global_mesh_tui",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 6122,
+      "manifests": [
+        "go.mod"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4038.6659966316074
+    },
+    "global_training_games_audit": {
+      "folder_name": "global_training_games_audit",
+      "folder_path": "/Users/aaron/teamwork_projects/global_training_games_audit",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 14789,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4674.916999647394
+    },
+    "google_workspace_swarm": {
+      "folder_name": "google_workspace_swarm",
+      "folder_path": "/Users/aaron/teamwork_projects/google_workspace_swarm",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 28668,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 8053.500001551583
+    },
+    "hf_training_integration": {
+      "folder_name": "hf_training_integration",
+      "folder_path": "/Users/aaron/teamwork_projects/hf_training_integration",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 13923,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4102.416001842357
+    },
+    "high_speed_gemini_flash_swarm": {
+      "folder_name": "high_speed_gemini_flash_swarm",
+      "folder_path": "/Users/aaron/teamwork_projects/high_speed_gemini_flash_swarm",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 15528,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 3755.249999812804
+    },
+    "internet_debugging_swarm": {
+      "folder_name": "internet_debugging_swarm",
+      "folder_path": "/Users/aaron/teamwork_projects/internet_debugging_swarm",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 9086,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 2542.499998526182
+    },
+    "internet_training_protocol": {
+      "folder_name": "internet_training_protocol",
+      "folder_path": "/Users/aaron/teamwork_projects/internet_training_protocol",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 15200,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 5166.415998246521
+    },
+    "jules_repoless_integration": {
+      "folder_name": "jules_repoless_integration",
+      "folder_path": "/Users/aaron/teamwork_projects/jules_repoless_integration",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 9868,
+      "manifests": [
+        "package.json"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 45537.41600102512
+    },
+    "lauburu_biometrics_algorithm_debate": {
+      "folder_name": "lauburu_biometrics_algorithm_debate",
+      "folder_path": "/Users/aaron/teamwork_projects/lauburu_biometrics_algorithm_debate",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Unknown",
+      "total_loc": 0,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 165.4169973335229
+    },
+    "lauburu_cli_sentinel": {
+      "folder_name": "lauburu_cli_sentinel",
+      "folder_path": "/Users/aaron/teamwork_projects/lauburu_cli_sentinel",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 22982,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 7087.750003847759
+    },
+    "lauburu_compute_hub": {
+      "folder_name": "lauburu_compute_hub",
+      "folder_path": "/Users/aaron/teamwork_projects/lauburu_compute_hub",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 24458,
+      "manifests": [
+        "pyproject.toml",
+        "requirements.txt"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 9628.208994399756
+    },
+    "lauburu_data_plane_scaffold": {
+      "folder_name": "lauburu_data_plane_scaffold",
+      "folder_path": "/Users/aaron/teamwork_projects/lauburu_data_plane_scaffold",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 14487,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 5373.584004701115
+    },
+    "lauburu_webapp_and_competitor_analysis": {
+      "folder_name": "lauburu_webapp_and_competitor_analysis",
+      "folder_path": "/Users/aaron/teamwork_projects/lauburu_webapp_and_competitor_analysis",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 862,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 318.1249994668178
+    },
+    "life_ops_audit": {
+      "folder_name": "life_ops_audit",
+      "folder_path": "/Users/aaron/teamwork_projects/life_ops_audit",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 11670,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 3838.41700386256
+    },
+    "linux_bluetooth_mesh_and_charger_governor": {
+      "folder_name": "linux_bluetooth_mesh_and_charger_governor",
+      "folder_path": "/Users/aaron/teamwork_projects/linux_bluetooth_mesh_and_charger_governor",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 54241,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 15362.87500493927
+    },
+    "luci_ai_connectivity": {
+      "folder_name": "luci_ai_connectivity",
+      "folder_path": "/Users/aaron/teamwork_projects/luci_ai_connectivity",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 13894,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4118.124998058192
+    },
+    "mac_air_sync": {
+      "folder_name": "mac_air_sync",
+      "folder_path": "/Users/aaron/teamwork_projects/mac_air_sync",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 4278,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 3071.708000788931
+    },
+    "mac_air_sync_audit": {
+      "folder_name": "mac_air_sync_audit",
+      "folder_path": "/Users/aaron/teamwork_projects/mac_air_sync_audit",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 6543,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 2288.749994477257
+    },
+    "mac_system2_daemon": {
+      "folder_name": "mac_system2_daemon",
+      "folder_path": "/Users/aaron/teamwork_projects/mac_system2_daemon",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 17725,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4539.9169976008125
+    },
+    "macbook_air_headless_gdrive": {
+      "folder_name": "macbook_air_headless_gdrive",
+      "folder_path": "/Users/aaron/teamwork_projects/macbook_air_headless_gdrive",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 27515,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 11834.165998152457
+    },
+    "mesh_backend_skeleton": {
+      "folder_name": "mesh_backend_skeleton",
+      "folder_path": "/Users/aaron/teamwork_projects/mesh_backend_skeleton",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 14683,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 7007.042004261166
+    },
+    "mesh_data_broker": {
+      "folder_name": "mesh_data_broker",
+      "folder_path": "/Users/aaron/teamwork_projects/mesh_data_broker",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 14772,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 5360.832998121623
+    },
+    "mesh_healing_ai_gym": {
+      "folder_name": "mesh_healing_ai_gym",
+      "folder_path": "/Users/aaron/teamwork_projects/mesh_healing_ai_gym",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Bash/POSIX",
+      "total_loc": 1598,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 845.3749978798442
+    },
+    "mesh_model_autotuner": {
+      "folder_name": "mesh_model_autotuner",
+      "folder_path": "/Users/aaron/teamwork_projects/mesh_model_autotuner",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 16537,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4383.54099605931
+    },
+    "mesh_network_optimizer": {
+      "folder_name": "mesh_network_optimizer",
+      "folder_path": "/Users/aaron/teamwork_projects/mesh_network_optimizer",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 16983,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4454.040994460229
+    },
+    "mesh_pwa_audit": {
+      "folder_name": "mesh_pwa_audit",
+      "folder_path": "/Users/aaron/teamwork_projects/mesh_pwa_audit",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 15567,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 6722.250000166241
+    },
+    "mesh_sentinel_micro_lm": {
+      "folder_name": "mesh_sentinel_micro_lm",
+      "folder_path": "/Users/aaron/teamwork_projects/mesh_sentinel_micro_lm",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 292,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 267.4170027603395
+    },
+    "mesh_telemetry_audit": {
+      "folder_name": "mesh_telemetry_audit",
+      "folder_path": "/Users/aaron/teamwork_projects/mesh_telemetry_audit",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 12869,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 6023.833993822336
+    },
+    "ml_adaptive_moe_governor": {
+      "folder_name": "ml_adaptive_moe_governor",
+      "folder_path": "/Users/aaron/teamwork_projects/ml_adaptive_moe_governor",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 20072,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 7157.416999689303
+    },
+    "network_data_transfer_mapping": {
+      "folder_name": "network_data_transfer_mapping",
+      "folder_path": "/Users/aaron/teamwork_projects/network_data_transfer_mapping",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 8836,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4210.250001051463
+    },
+    "nomad_tooling_ecosystem": {
+      "folder_name": "nomad_tooling_ecosystem",
+      "folder_path": "/Users/aaron/teamwork_projects/nomad_tooling_ecosystem",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 11856,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4299.83399953926
+    },
+    "open_source_scout_obsidian": {
+      "folder_name": "open_source_scout_obsidian",
+      "folder_path": "/Users/aaron/teamwork_projects/open_source_scout_obsidian",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 12920,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 40805.541997542605
+    },
+    "open_wearables_tui_mesh": {
+      "folder_name": "open_wearables_tui_mesh",
+      "folder_path": "/Users/aaron/teamwork_projects/open_wearables_tui_mesh",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 9007,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 3300.9580001817085
+    },
+    "openai_hf_breach_review": {
+      "folder_name": "openai_hf_breach_review",
+      "folder_path": "/Users/aaron/teamwork_projects/openai_hf_breach_review",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 9635,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 6378.500002028886
+    },
+    "quantum_ai_game": {
+      "folder_name": "quantum_ai_game",
+      "folder_path": "/Users/aaron/teamwork_projects/quantum_ai_game",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 243,
+      "manifests": [
+        "requirements.txt"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 229.66600226936862
+    },
+    "realtime_telemetry_curator": {
+      "folder_name": "realtime_telemetry_curator",
+      "folder_path": "/Users/aaron/teamwork_projects/realtime_telemetry_curator",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 14167,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4502.99999647541
+    },
+    "router_micro_llm_supervisor": {
+      "folder_name": "router_micro_llm_supervisor",
+      "folder_path": "/Users/aaron/teamwork_projects/router_micro_llm_supervisor",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 33396,
+      "manifests": [
+        "Cargo.toml",
+        "Makefile"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 14766.583000891842
+    },
+    "router_mount_scope_debate": {
+      "folder_name": "router_mount_scope_debate",
+      "folder_path": "/Users/aaron/teamwork_projects/router_mount_scope_debate",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 3409,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 2626.3330000801943
+    },
+    "router_orchestrator_debate": {
+      "folder_name": "router_orchestrator_debate",
+      "folder_path": "/Users/aaron/teamwork_projects/router_orchestrator_debate",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 9281,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 3846.2910015368834
+    },
+    "router_rl_upgrade": {
+      "folder_name": "router_rl_upgrade",
+      "folder_path": "/Users/aaron/teamwork_projects/router_rl_upgrade",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 17762,
+      "manifests": [
+        "Cargo.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 5959.95900221169
+    },
+    "router_tinyml_optimizer": {
+      "folder_name": "router_tinyml_optimizer",
+      "folder_path": "/Users/aaron/teamwork_projects/router_tinyml_optimizer",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 11796,
+      "manifests": [
+        "CMakeLists.txt",
+        "Makefile"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4219.875001581386
+    },
+    "screenpipe_mesh_integration": {
+      "folder_name": "screenpipe_mesh_integration",
+      "folder_path": "/Users/aaron/teamwork_projects/screenpipe_mesh_integration",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 23000,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 5823.542000143789
+    },
+    "shizuku_s20_setup": {
+      "folder_name": "shizuku_s20_setup",
+      "folder_path": "/Users/aaron/teamwork_projects/shizuku_s20_setup",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 1238,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 329.9169984529726
+    },
+    "shopify_automated_business_architecture": {
+      "folder_name": "shopify_automated_business_architecture",
+      "folder_path": "/Users/aaron/teamwork_projects/shopify_automated_business_architecture",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 41446,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 12318.58300161548
+    },
+    "shopify_autonomous_neo": {
+      "folder_name": "shopify_autonomous_neo",
+      "folder_path": "/Users/aaron/teamwork_projects/shopify_autonomous_neo",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "JSON",
+      "total_loc": 99,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 234.25000108545646
+    },
+    "software_dev_network_digital_twin": {
+      "folder_name": "software_dev_network_digital_twin",
+      "folder_path": "/Users/aaron/teamwork_projects/software_dev_network_digital_twin",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 30065,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 8851.625003444497
+    },
+    "software_dev_training_game": {
+      "folder_name": "software_dev_training_game",
+      "folder_path": "/Users/aaron/teamwork_projects/software_dev_training_game",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 16566,
+      "manifests": [
+        "pyproject.toml",
+        "requirements.txt"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 6393.41700298246
+    },
+    "speedify_channel_bonding_ai": {
+      "folder_name": "speedify_channel_bonding_ai",
+      "folder_path": "/Users/aaron/teamwork_projects/speedify_channel_bonding_ai",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Unknown",
+      "total_loc": 0,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 323.1669979868457
+    },
+    "standalone_speedify_tui": {
+      "folder_name": "standalone_speedify_tui",
+      "folder_path": "/Users/aaron/teamwork_projects/standalone_speedify_tui",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 4738,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 2139.582997187972
+    },
+    "swarm_healer": {
+      "folder_name": "swarm_healer",
+      "folder_path": "/Users/aaron/teamwork_projects/swarm_healer",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 4606,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 2490.040998964105
+    },
+    "termius_tui_dashboard": {
+      "folder_name": "termius_tui_dashboard",
+      "folder_path": "/Users/aaron/teamwork_projects/termius_tui_dashboard",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 22158,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 8404.708998568822
+    },
+    "topology_storage_router": {
+      "folder_name": "topology_storage_router",
+      "folder_path": "/Users/aaron/teamwork_projects/topology_storage_router",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 19444,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 4878.500003542285
+    },
+    "tplink_linux_laptop": {
+      "folder_name": "tplink_linux_laptop",
+      "folder_path": "/Users/aaron/teamwork_projects/tplink_linux_laptop",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 8859,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 3853.54200261645
+    },
+    "tplink_mesh_resurrection": {
+      "folder_name": "tplink_mesh_resurrection",
+      "folder_path": "/Users/aaron/teamwork_projects/tplink_mesh_resurrection",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 10740,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 5738.041996664833
+    },
+    "tplink_router_mesh_diagnostic": {
+      "folder_name": "tplink_router_mesh_diagnostic",
+      "folder_path": "/Users/aaron/teamwork_projects/tplink_router_mesh_diagnostic",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 370,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 441.70899491291493
+    },
+    "tui_backend_ecosystem": {
+      "folder_name": "tui_backend_ecosystem",
+      "folder_path": "/Users/aaron/teamwork_projects/tui_backend_ecosystem",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Python",
+      "total_loc": 32956,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 9370.125000714324
+    },
+    "tui_storage_graph": {
+      "folder_name": "tui_storage_graph",
+      "folder_path": "/Users/aaron/teamwork_projects/tui_storage_graph",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 33439,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 13421.083000139333
+    },
+    "unified_resilient_serial_terminal_ide": {
+      "folder_name": "unified_resilient_serial_terminal_ide",
+      "folder_path": "/Users/aaron/teamwork_projects/unified_resilient_serial_terminal_ide",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 39506,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 20723.91700494336
+    },
+    "unified_tui_ide": {
+      "folder_name": "unified_tui_ide",
+      "folder_path": "/Users/aaron/teamwork_projects/unified_tui_ide",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Markdown",
+      "total_loc": 22184,
+      "manifests": [
+        "pyproject.toml"
+      ],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 6882.292000227608
+    },
+    "visual_audit_swarm": {
+      "folder_name": "visual_audit_swarm",
+      "folder_path": "/Users/aaron/teamwork_projects/visual_audit_swarm",
+      "canonical_subsystem": "Cross-Platform Applications & UI Hub",
+      "identified_domain": "01_apps",
+      "recommended_cwd": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps",
+      "primary_language": "Unknown",
+      "total_loc": 0,
+      "manifests": [],
+      "seaweed_bucket": "/projects/01_apps",
+      "npu_latency_us": 194.70800179988146
+    }
+  }
+}

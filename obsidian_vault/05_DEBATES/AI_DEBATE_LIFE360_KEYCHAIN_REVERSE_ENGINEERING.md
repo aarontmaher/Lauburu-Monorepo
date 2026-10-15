@@ -108,4 +108,4 @@ Our clean-room parser must handle both passive advertisement decoding and active
 2. Author Tier B Clean-Room C11 Parser: `clean_room_impl/life360_tile_clean_parser.c`.
 3. Author Standalone Verification Harness: `test_harness/test_life360_tile_harness.c`.
 4. Compile with Clang C11 and empirically verify with **Exit Code 0**!
-5. Append validated DPO pairs to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`.
+5. Append validated DPO pairs to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`.

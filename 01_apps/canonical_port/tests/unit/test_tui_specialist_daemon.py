@@ -202,11 +202,11 @@ def test_daemon_pairwise_rtt_and_drop_spikes(daemon_env):
             {"interface": "en6", "rtt_ms": 12.0, "drop_rate": 0.0}
         ],
         "tailscale_peers": [
-            {"node_name": "Linux_Head_Node", "status": "OFFLINE"}
+            {"node_name": "Linux_Mini", "status": "OFFLINE"}
         ]
     }
     triggers = daemon.check_telemetry_triggers(telemetry)
-    # Expect 3 triggers: en0 RTT spike, en0 drop spike, Linux_Head_Node offline
+    # Expect 3 triggers: en0 RTT spike, en0 drop spike, Linux_Mini offline
     assert len(triggers) == 3
     reasons = [t.reason for t in triggers]
     assert any("high RTT" in r for r in reasons)

@@ -33,8 +33,8 @@ top_speculative_draft_head: "qwen2.5-0.5b-instruct"
 | **`gemma-2-2b-it`** | Google Gemma | 2.0B | **1.59 GB** | **42.0 TPS** | **7.8 ms** | **95.2%** | 88% (2.42x) | **180.84** | `Layer 4 (Linux Tablet)` |
 | **`Qwen2.5-VL-3B-Instruct`** | Qwen | 3.0B | **1.8 GB** | **36.0 TPS** | **9.2 ms** | **96.0%** | 85% (2.10x) | **153.38** | `Layer 1 (Mac Mini M4 Pro)` |
 | **`Phi-2 (2.7B)`** | Microsoft Phi | 2.7B | **1.8 GB** | **38.0 TPS** | **8.9 ms** | **93.5%** | 86% (2.20x) | **152.58** | `Layer 4 (Linux Tablet)` |
-| **`Llama-3.2-3B-Instruct`** | Meta Llama | 3.0B | **1.95 GB** | **35.0 TPS** | **9.8 ms** | **95.8%** | 89% (2.45x) | **140.7** | `Layer 5 (MacBook Air M4)` |
-| **`qwen2.5-coder-3b-instruct`** | Qwen | 3.0B | **1.96 GB** | **34.0 TPS** | **10.5 ms** | **96.8%** | 92% (2.75x) | **138.49** | `Layer 5 (MacBook Air M4)` |
+| **`Llama-3.2-3B-Instruct`** | Meta Llama | 3.0B | **1.95 GB** | **35.0 TPS** | **9.8 ms** | **95.8%** | 89% (2.45x) | **140.7** | `Layer 5 (MacBook Pro (Node L2))` |
+| **`qwen2.5-coder-3b-instruct`** | Qwen | 3.0B | **1.96 GB** | **34.0 TPS** | **10.5 ms** | **96.8%** | 92% (2.75x) | **138.49** | `Layer 5 (MacBook Pro (Node L2))` |
 | **`Phi-3.5-mini-Instruct (3.8B)`** | Microsoft Phi | 3.8B | **2.4 GB** | **31.0 TPS** | **11.2 ms** | **96.5%** | 91% (2.65x) | **112.99** | `Layer 2 (MacBook Pro TB4)` |
 
 ---
@@ -51,7 +51,7 @@ top_speculative_draft_head: "qwen2.5-0.5b-instruct"
 
 ### 3. 🧠 Deep Mathematical & AST Reasoning: `DeepSeek-R1-Distill-Qwen-1.5B`
 - **RAM:** 1.04 GB | **Throughput:** 48.5 TPS | **Tuned Acc:** **95.0%**
-- **Role:** Fast step-by-step chain-of-thought verification on the AMD Ryzen Linux Head Node.
+- **Role:** Fast step-by-step chain-of-thought verification on the Intel 2018 Mac Mini Linux Head Node.
 
 ### 4. 💓 Medical-Grade Continuous DSP Streamer: `gemma-2-2b-it`
 - **RAM:** 1.59 GB | **Throughput:** 42.0 TPS | **Tuned Acc:** **95.2%**
@@ -59,7 +59,7 @@ top_speculative_draft_head: "qwen2.5-0.5b-instruct"
 
 ### 5. 🛠️ Instant Pre-Commit AST Syntax Guardian: `qwen2.5-coder-3b-instruct`
 - **RAM:** 1.96 GB | **Throughput:** 34.0 TPS | **Tuned Acc:** **96.8%**
-- **Role:** Executes instant syntax checking and git commit validation in <120ms on MacBook Air M4.
+- **Role:** Executes instant syntax checking and git commit validation in <120ms on MacBook Pro (Node L2).
 
 ---
 

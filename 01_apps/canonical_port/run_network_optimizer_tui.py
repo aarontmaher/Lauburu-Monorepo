@@ -3,7 +3,7 @@
 01_apps/canonical_port/run_network_optimizer_tui.py
 ===================================================
 Standalone Launcher for the Canonical Network System Settings Optimizer TUI.
-Allows instant, zero-lag launching of the full 61-parameter network tuning cockpit.
+Allows instant, zero-lag launching of the full 61-parameter network tuning console.
 """
 
 import os

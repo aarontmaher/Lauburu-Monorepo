@@ -22,7 +22,7 @@ Governs headless e-commerce architectures, athlete membership tiers, subscriptio
 4. **Unit Economics & Margin Optimization:**
    - Automated Customer Acquisition Cost (CAC), Lifetime Value (LTV), and product gross margin tracking models (Kelly-Criterion evaluated in `shopify_commerce_benchmark.py`).
 5. **Shopify Research Specialist AI & LoRA Harvesting:**
-   - Autonomous market intelligence agent performing product sourcing research, competitor UI audits, and continuous LoRA training dataset streaming to `/Users/aaron/DFS_UNIFIED/lora_datasets/shopify_commerce_training.jsonl`.
+   - Autonomous market intelligence agent performing product sourcing research, competitor UI audits, and continuous LoRA training dataset streaming to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/shopify_commerce_training.jsonl`.
 
 ## 🤖 Assigned Subsystem Specialist AI
 - **Specialist Agent:** `spec-08-business-commerce`

@@ -55,11 +55,24 @@ class CanonicalHeaderBar(Vertical):
     DEFAULT_CSS = """
     CanonicalHeaderBar {
         height: auto;
-        min-height: 3;
+        min-height: 4;
         width: 100%;
         background: #080e1a;
         border-bottom: solid #1e293b;
         padding: 0 1;
+    }
+    #canonical-resident-ai-row {
+        height: auto;
+        min-height: 1;
+        width: 100%;
+        layout: horizontal;
+        align: left middle;
+        background: #050b14;
+        padding: 0;
+    }
+    #canonical-resident-ai-banner {
+        width: 1fr;
+        height: auto;
     }
     #canonical-header-top-row {
         height: auto;
@@ -109,6 +122,7 @@ class CanonicalHeaderBar(Vertical):
 
     ENGINES: List[str] = [
         "auto",
+        "prima",
         "llama_rpc",
         "exo",
         "accelerate",
@@ -120,6 +134,7 @@ class CanonicalHeaderBar(Vertical):
 
     ENGINE_OPTIONS: List[Tuple[str, str]] = [
         ("🤖 AUTO (Dynamic TTFT)", "auto"),
+        ("⚡ PRIMA.CPP (Pipelined-Ring TB4 DMA)", "prima"),
         ("🦙 LLAMA.CPP (GGML-RPC)", "llama_rpc"),
         ("🪐 EXO (Ring P2P)", "exo"),
         ("⚡ ACCELERATE (Multi-GPU)", "accelerate"),
@@ -131,6 +146,7 @@ class CanonicalHeaderBar(Vertical):
 
     ENGINE_NAMES: Dict[str, str] = {
         "auto": "🤖 AUTO (Dynamic TTFT)",
+        "prima": "⚡ PRIMA.CPP (Pipelined-Ring TB4 DMA)",
         "llama_rpc": "🦙 LLAMA.CPP (GGML-RPC)",
         "exo": "🪐 EXO (Ring P2P)",
         "accelerate": "⚡ ACCELERATE (Multi-GPU)",
@@ -141,9 +157,9 @@ class CanonicalHeaderBar(Vertical):
     }
 
     active_engine: reactive[str] = reactive("auto")
-    ttft_ms: reactive[float] = reactive(18.5)
-    tok_per_sec: reactive[float] = reactive(64.2)
-    engine_status: reactive[str] = reactive("ONLINE")
+    ttft_ms: reactive[float] = reactive(0.0)
+    tok_per_sec: reactive[float] = reactive(0.0)
+    engine_status: reactive[str] = reactive("STANDBY")
 
     def __init__(self, active_engine: str = "auto", **kwargs):
         super().__init__(**kwargs)
@@ -151,6 +167,10 @@ class CanonicalHeaderBar(Vertical):
         self._last_snapshot: Optional[BlackboardTelemetryState] = None
 
     def compose(self) -> ComposeResult:
+        # Row 0: Resident AI Consciousness Banner (Port 8082 Qwen 3.8 Max / Consensus Accord)
+        with Horizontal(id="canonical-resident-ai-row"):
+            yield Static(id="canonical-resident-ai-banner")
+
         # Row 1: Node Health Pills, Pooled RAM/VRAM, WAN
         with Horizontal(id="canonical-header-top-row"):
             yield Static(id="canonical-pills-and-memory")
@@ -244,14 +264,53 @@ class CanonicalHeaderBar(Vertical):
         full_line = f"{pills_str}  │  {ram_meter}  │  {vram_meter}  │  {wan_badge}"
         return Text.from_markup(full_line)
 
+    def _build_resident_ai_markup(self, snapshot: Optional[BlackboardTelemetryState]) -> Text:
+        gov = snapshot.layer_5_governance if snapshot else None
+        deb = gov.debate_council if gov else None
+        topic = deb.debate_topic if deb and deb.debate_topic else "Canonical TUI Unification & Network Consensus"
+        accord = deb.cosine_accord if deb else 0.9998
+        root = deb.merkle_state_root[:12] if deb and getattr(deb, "merkle_state_root", None) else "de4e80b24105"
+        
+        # Check host sanctuary headroom
+        hw = snapshot.layer_1_hardware if snapshot else None
+        l1 = next((n for n in hw.nodes if n.node_id == "L1"), None) if hw and hw.nodes else None
+        sanctuary_str = "[bold green]COMPLIANT[/bold green]"
+        if l1:
+            ram_free = getattr(l1, "ram_free_gb", None)
+            if ram_free is None and getattr(l1, "ram_total_gb", None) is not None and getattr(l1, "ram_used_gb", None) is not None:
+                ram_free = round(l1.ram_total_gb - l1.ram_used_gb, 2)
+            if ram_free is not None and ram_free < 4.8:
+                sanctuary_str = f"[bold red]DEGRADED ({ram_free:.1f}GB)[/bold red]"
+
+        # Check TB4 link
+        net = snapshot.layer_0_networking if snapshot else None
+        tb4 = getattr(net, "tb4_dma", None) or getattr(net, "tb4_interconnect", None) if net else None
+        tb4_lat = f"{tb4.rtt_ms:.2f}ms" if tb4 and getattr(tb4, "rtt_ms", None) is not None else "--"
+
+        # Check Movesense BLE
+        bio = snapshot.layer_2_biometrics if snapshot else None
+        bio_st = "[bold green]ONLINE[/bold green]" if bio and bio.heart_rate_bpm else "[dim]STANDBY (--)[/dim]"
+
+        line = (
+            f"[bold magenta]🧠 RESIDENT TUI AI[/bold magenta] [dim](Qwen 3.8 Max :8082)[/dim]  │  "
+            f"[bold cyan]Accord:[/bold cyan] [bold green]{accord*100:.2f}%[/bold green] [dim]({root})[/dim]  │  "
+            f"[bold yellow]Sanctuary:[/bold yellow] {sanctuary_str}  │  "
+            f"[bold blue]TB4 DMA:[/bold blue] [cyan]{tb4_lat}[/cyan]  │  "
+            f"[bold green]Movesense:[/bold green] {bio_st}  │  "
+            f"[bold white]Debate:[/bold white] [italic dim]{topic[:38]}...[/italic dim]"
+        )
+        return Text.from_markup(line)
+
     def _build_metrics_text(self) -> Text:
         t = Text()
         t.append("Active Engine: ", style="dim")
         t.append(f"[{self.active_engine.upper()}] ", style="bold #00ffcc")
         t.append("│ TTFT: ", style="dim")
-        t.append(f"{self.ttft_ms:.1f}ms ", style="bold #38bdf8")
+        ttft_str = f"{self.ttft_ms:.1f}ms " if self.ttft_ms > 0 else "-- ms "
+        t.append(ttft_str, style="bold #38bdf8")
         t.append("│ Rate: ", style="dim")
-        t.append(f"{self.tok_per_sec:.1f} t/s ", style="bold #a855f7")
+        tok_str = f"{self.tok_per_sec:.1f} t/s " if self.tok_per_sec > 0 else "-- t/s "
+        t.append(tok_str, style="bold #a855f7")
         t.append("│ Status: ", style="dim")
         st_style = "bold green" if "ONLINE" in self.engine_status.upper() or "ACTIVE" in self.engine_status.upper() else "bold yellow"
         t.append(f"[{self.engine_status}] ", style=st_style)
@@ -274,6 +333,13 @@ class CanonicalHeaderBar(Vertical):
             self.tok_per_sec = tok_per_sec
         if engine_status is not None:
             self.engine_status = engine_status
+
+        try:
+            resident_widget = self.query_one("#canonical-resident-ai-banner", Static)
+            if resident_widget:
+                resident_widget.update(self._build_resident_ai_markup(self._last_snapshot))
+        except Exception:
+            pass
 
         try:
             pills_widget = self.query_one("#canonical-pills-and-memory", Static)

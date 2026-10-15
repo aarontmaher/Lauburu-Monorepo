@@ -22,11 +22,11 @@ The Tri-Orchestrator AI Debate Council convened under the strict rules of `ai-de
 
 Across three intense deliberation rounds encompassing initial positions, edge-case stress testing, non-blocking telemetry benchmarks, and mathematical multi-criteria scoring across five weighted dimensions (D1-D5), the council reached an incontrovertible consensus:
 
-1. **Overall Primary Champion & Core Shell Cockpit**: **Track Beta (`TrackBetaChatIde.jsx`)** achieves the highest cumulative score (**9.713 / 10.000**), excelling in developer velocity, non-blocking AST code editing, live diff inspection, multi-agent chat, and real-time swarm governance.
+1. **Overall Primary Champion & Core Shell Console**: **Track Beta (`TrackBetaChatIde.jsx`)** achieves the highest cumulative score (**9.713 / 10.000**), excelling in developer velocity, non-blocking AST code editing, live diff inspection, multi-agent chat, and real-time swarm governance.
 2. **Specialized Hardware & Telemetry Champion**: **Track Alpha (`TrackAlphaNocDashboard.jsx`)** dominates Dimension D2 (Real-Time Telemetry & Low Latency, **9.775 / 10.000**), providing the gold-standard 7-node pill matrix, pooled 108GB RAM / 82.8GB VRAM meter, 0.277ms TB4 DMA telemetry, and 512Hz Canvas ECG waveform visualizer.
 3. **Specialized Topology & Data Lake Champion**: **Track Gamma (`TrackGammaDataLakeGraph.jsx`)** achieves supreme marks in Dimension D5 (Extensibility & Ecosystem Mapping, **9.750 / 10.000**), delivering the 14-node Sugiyama layered directed SVG topology with Tarjan $O(V+E)$ SCC cycle detection, 3.29M LOC PySpark AST code metrics, 24/7 LoRA loss curve (steps 0-4800), and Tri-Vault storage invariant monitors.
 4. **Authoritative Harmonization Directive for Milestone M5**: Rather than discarding any track, the production Web UI (`src/App.jsx`) must execute a **Triple-Pillar Harmonized Synthesis**:
-   - **Track Beta** serves as the central **Cockpit (Tab 1 `[c]`)** and slash command execution hub.
+   - **Track Beta** serves as the central **Console (Tab 1 `[c]`)** and slash command execution hub.
    - **Track Alpha's** Top Global Status Bar is promoted to the **Master Persistent Shell Header**, while its Bento-Box components power **Tab 2 `[n]` (Network)**, **Tab 3 `[h]` (Hardware)**, and **Tab 4 `[b]` (Biometrics DSP)**.
    - **Track Gamma's** Sugiyama SVG Canvas powers **Tab 8 `[x]` (Structural Graph)**, and its LoRA/AST cards power **Tab 6 `[t]` (Training)** and **Tab 9 `[o]` (Storage Optimization)**.
 
@@ -45,7 +45,7 @@ Across three intense deliberation rounds encompassing initial positions, edge-ca
 > 
 > **Track Gamma** brings topological intelligence through its pure SVG Sugiyama layered graph with genuine Tarjan SCC cycle detection. For large-scale monorepo navigation, Gamma's 3-pane architecture explorer is indispensable.
 > 
-> My opening proposition: Track Beta must form the core interactive cockpit, but we must integrate Alpha's persistent top bar and Gamma's graph tabs to achieve true monorepo cohesion."*
+> My opening proposition: Track Beta must form the core interactive console, but we must integrate Alpha's persistent top bar and Gamma's graph tabs to achieve true monorepo cohesion."*
 
 #### ⚡ Local AI Orchestrator (Kimi Tandem / Qwen 3.8max on Mesh)
 > *"Speaking on behalf of local mesh execution and low-latency inference: **Track Beta** is our strongest ally for local computation. The `InferenceEngineSelector` provides immediate hot-swap cycling across all 8 canonical engines—from local Port 50052 Llama GGML-RPC shards (`-ts 28,28,24`) to Petals DHT, Exo P2P, and cloud fallbacks. The `MeshLatencyMatrix` anchors our 10Gbps TB4 DMA invariant (`0.277 ms RTT`).
@@ -54,7 +54,7 @@ Across three intense deliberation rounds encompassing initial positions, edge-ca
 > 
 > **Track Gamma** must be commended for running Tarjan's algorithm and Sugiyama layouts with **zero external heavyweight libraries** (0 extra npm dependencies). That preserves our fast Vite build (sub-800ms) and lightweight bundle footprint.
 > 
-> I support Track Beta as the primary cockpit, with Track Alpha's hardware gauges permanently visible in the header."*
+> I support Track Beta as the primary console, with Track Alpha's hardware gauges permanently visible in the header."*
 
 #### 🧬 Training & Evolution Engine (HuggingFace Hub / TRL / PEFT)
 > *"From the continuous learning and telemetry perspective: **Track Gamma** provides the essential data pipeline interface. The `LoraLossCurveCard` (steps 0-4800, loss trajectory $2.18 \to 0.142$) directly interfaces with our continuous background training module at `localhost:3000`. Gamma's `PySparkAstCard` surfaces our 3.29M LOC codebase index across 10,240 files and 32 active projects.
@@ -172,7 +172,7 @@ The debate conclusively proves that the optimal production Web UI is not a reduc
 │    • Quick Slash Command Triggers (/ping, /audit, /storage)                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 2. PRIMARY TAB ROUTING MATRIX (9 Integrated Views):                         │
-│    • Tab 1 [c]: Master AGI Coding Cockpit & Swarm Chat (Track Beta Core)    │
+│    • Tab 1 [c]: Master AGI Coding Console & Swarm Chat (Track Beta Core)    │
 │    • Tab 2 [n]: Multi-WAN Network Failover & TB4 DMA Matrix (Track Alpha)   │
 │    • Tab 3 [h]: 7-Layer Hardware Compute Nodes & Thermals (Track Alpha)     │
 │    • Tab 4 [b]: Medical 512Hz Movesense ECG DSP & Kinematics (Track Alpha)  │

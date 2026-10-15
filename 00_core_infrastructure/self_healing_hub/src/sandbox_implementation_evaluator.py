@@ -21,7 +21,7 @@ import subprocess
 from datetime import datetime
 from typing import Dict, Any, List, Tuple
 
-MONOREPO_ROOT = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+MONOREPO_ROOT = "/Volumes/Lauburu-Monorepo"
 SANDBOX_BASE_DIR = os.path.join(MONOREPO_ROOT, "tests", "sandbox_eval")
 LORA_DEBATE_FILE = os.path.join(MONOREPO_ROOT, "lora_datasets", "truth_audit_debate.jsonl")
 SANDBOX_RESULTS_FILE = os.path.join(MONOREPO_ROOT, "data", "sandbox_eval_results.json")

@@ -1,0 +1,404 @@
+{
+  "updated_at": "2026-10-10T23:55:27.045573+00:00",
+  "entities": [
+    {
+      "name": "Dual-Plane Architecture Specification",
+      "entityType": "ArchitectureSpec",
+      "observations": [
+        "Document ID: 1g_docs_spec_001",
+        "Summary: Master architectural specification unifying Google Workspace with the 7-Layer local mesh.",
+        "Last Modified: 2026-10-10T23:55:27.045470+00:00",
+        "Target Subsystem: Workspace Integration"
+      ]
+    },
+    {
+      "name": "Tri-Vault Storage & SeaweedFS Tiering Policy",
+      "entityType": "ArchitectureSpec",
+      "observations": [
+        "Document ID: 1g_docs_spec_002",
+        "Summary: Governs Parquet and Delta Lake storage tiering across NVMe and Google Drive 30 TB vault.",
+        "Last Modified: 2026-10-10T23:55:27.045486+00:00",
+        "Target Subsystem: Data Lakehouse"
+      ]
+    },
+    {
+      "name": "Nightly LoRA Distillation & Weight Merging",
+      "entityType": "MaintenanceMilestone",
+      "observations": [
+        "Start: 2026-10-11T02:00:00+11:00",
+        "End: 2026-10-11T04:00:00+11:00",
+        "Target Node: L3 Linux Head Node",
+        "Governed Task: 24/7 LoRA Distillation"
+      ]
+    },
+    {
+      "name": "Thunderbolt 4 DMA Latency Calibration",
+      "entityType": "MaintenanceMilestone",
+      "observations": [
+        "Start: 2026-10-12T10:10:00+11:00",
+        "End: 2026-10-12T11:15:00+11:00",
+        "Target Node: L1 Mac Mini Host <-> L8 Linux Mini (lauburu)",
+        "Link: 40 Gb/s PCIe DMA bridge0 (10.0.0.2 <-> 10.0.0.8, 0.38ms avg RTT)",
+        "Status: Verified Authentic via system_profiler & ICMP ping",
+        "Node L2 MacBook Pro Intel: Unlinked from TB (Receptacle 2 inactive), active over LAN Wi-Fi / Tailscale",
+        "Governed Task: Mesh Pre-Flight Telemetry Gate"
+      ]
+    },
+    {
+      "name": "Important: Neo AI is shutting down on October 30",
+      "entityType": "ExternalCommunication",
+      "observations": [
+        "Thread ID: 1a121df6d262fe2b",
+        "Sender: Neo AI Team <support@heyneo.so>",
+        "Date: Fri, 9 Oct 2026 18:14:11 +0000",
+        "Snippet: Hey Aaron, We&#39;re writing to let you know that Neo AI Platform will permanently shut down on October 30, 2026, at 11:59 PM Pacific Time. We sincerely appreciate your support and the trust you&#39;v",
+        "Associated Pipeline: Operational Telemetry Pipeline"
+      ]
+    },
+    {
+      "name": "The secret's out: Noah Kahan is coming to Cloudflare Connect.",
+      "entityType": "ExternalCommunication",
+      "observations": [
+        "Thread ID: 1a119386446e5833",
+        "Sender: Cloudflare <em@em1.cloudflare.com>",
+        "Date: Thu, 08 Oct 2026 01:54:47 +0000",
+        "Snippet: Step onto the field at Oracle Park. Full concert access included with your pass. Cloudflare Connect 2026 Cloudflare Connect \u00b7 San Francisco The secret&#39;s out: Noah Kahan is coming to Cloudflare",
+        "Associated Pipeline: Operational Telemetry Pipeline"
+      ]
+    },
+    {
+      "name": "That's a wrap on our 16th Birthday Week!",
+      "entityType": "ExternalCommunication",
+      "observations": [
+        "Thread ID: 1a10e3aa69ef77f8",
+        "Sender: Cloudflare <em@em1.cloudflare.com>",
+        "Date: Mon, 05 Oct 2026 22:41:26 +0000",
+        "Snippet: The coolest launches inside + your last chance for $100 off Connect Cloudflare 16th Birthday Week Cloudflare \u00b7 16th Birthday Week That&#39;s a wrap on our 16th Birthday Week! Thank you for celebrating",
+        "Associated Pipeline: Operational Telemetry Pipeline"
+      ]
+    },
+    {
+      "name": "Test Spec",
+      "entityType": "ArchitectureSpec",
+      "observations": [
+        "Document ID: unknown_id",
+        "Summary: Test Summary",
+        "Last Modified: 2026-10-10T18:16:40.791619+00:00",
+        "Target Subsystem: Core Architecture"
+      ]
+    },
+    {
+      "name": "Security alert",
+      "entityType": "ExternalCommunication",
+      "observations": [
+        "Thread ID: 1a1275370f1a3149",
+        "Sender: Google <no-reply@accounts.google.com>",
+        "Date: Sat, 10 Oct 2026 19:39:00 GMT",
+        "Snippet: A new sign-in on Mac OS lauburu@lauburugrappling.com We noticed a new sign-in to your Google Account on a Mac OS device. If this was you, you don&#39;t need to do anything. If not, we&#39;ll help you",
+        "Associated Pipeline: Security & Incident Response"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "Dual-Plane Architecture Specification",
+      "to": "Workspace Integration",
+      "relationType": "SPECIFIES"
+    },
+    {
+      "from": "Dual-Plane Architecture Specification",
+      "to": "Global Project Architect",
+      "relationType": "AUTHORED_BY"
+    },
+    {
+      "from": "Tri-Vault Storage & SeaweedFS Tiering Policy",
+      "to": "Data Lakehouse",
+      "relationType": "SPECIFIES"
+    },
+    {
+      "from": "Tri-Vault Storage & SeaweedFS Tiering Policy",
+      "to": "Core Storage Specialist",
+      "relationType": "AUTHORED_BY"
+    },
+    {
+      "from": "Nightly LoRA Distillation & Weight Merging",
+      "to": "L3 Linux Head Node",
+      "relationType": "RESERVES"
+    },
+    {
+      "from": "Nightly LoRA Distillation & Weight Merging",
+      "to": "24/7 LoRA Distillation",
+      "relationType": "GOVERNS"
+    },
+    {
+      "from": "Thunderbolt 4 DMA Latency Calibration",
+      "to": "L1 Mac Mini Host",
+      "relationType": "RESERVES"
+    },
+    {
+      "from": "Thunderbolt 4 DMA Latency Calibration",
+      "to": "Mesh Pre-Flight Telemetry Gate",
+      "relationType": "GOVERNS"
+    },
+    {
+      "from": "Important: Neo AI is shutting down on October 30",
+      "to": "Operational Telemetry Pipeline",
+      "relationType": "TRIGGERS"
+    },
+    {
+      "from": "Important: Neo AI is shutting down on October 30",
+      "to": "Neo AI Team",
+      "relationType": "INFORMS"
+    },
+    {
+      "from": "The secret's out: Noah Kahan is coming to Cloudflare Connect.",
+      "to": "Operational Telemetry Pipeline",
+      "relationType": "TRIGGERS"
+    },
+    {
+      "from": "The secret's out: Noah Kahan is coming to Cloudflare Connect.",
+      "to": "Cloudflare",
+      "relationType": "INFORMS"
+    },
+    {
+      "from": "That's a wrap on our 16th Birthday Week!",
+      "to": "Operational Telemetry Pipeline",
+      "relationType": "TRIGGERS"
+    },
+    {
+      "from": "That's a wrap on our 16th Birthday Week!",
+      "to": "Cloudflare",
+      "relationType": "INFORMS"
+    },
+    {
+      "from": "Test Spec",
+      "to": "Core Architecture",
+      "relationType": "SPECIFIES"
+    },
+    {
+      "from": "Test Spec",
+      "to": "Lauburu Core Swarm",
+      "relationType": "AUTHORED_BY"
+    },
+    {
+      "from": "Dual-Plane Architecture Specification",
+      "to": "Workspace Integration",
+      "relationType": "SPECIFIES"
+    },
+    {
+      "from": "Dual-Plane Architecture Specification",
+      "to": "Global Project Architect",
+      "relationType": "AUTHORED_BY"
+    },
+    {
+      "from": "Tri-Vault Storage & SeaweedFS Tiering Policy",
+      "to": "Data Lakehouse",
+      "relationType": "SPECIFIES"
+    },
+    {
+      "from": "Tri-Vault Storage & SeaweedFS Tiering Policy",
+      "to": "Core Storage Specialist",
+      "relationType": "AUTHORED_BY"
+    },
+    {
+      "from": "Nightly LoRA Distillation & Weight Merging",
+      "to": "L3 Linux Head Node",
+      "relationType": "RESERVES"
+    },
+    {
+      "from": "Nightly LoRA Distillation & Weight Merging",
+      "to": "24/7 LoRA Distillation",
+      "relationType": "GOVERNS"
+    },
+    {
+      "from": "Thunderbolt 4 DMA Latency Calibration",
+      "to": "L1 Mac Mini Host",
+      "relationType": "RESERVES"
+    },
+    {
+      "from": "Thunderbolt 4 DMA Latency Calibration",
+      "to": "Mesh Pre-Flight Telemetry Gate",
+      "relationType": "GOVERNS"
+    },
+    {
+      "from": "Dual-Plane Architecture Specification",
+      "to": "Workspace Integration",
+      "relationType": "SPECIFIES"
+    },
+    {
+      "from": "Dual-Plane Architecture Specification",
+      "to": "Global Project Architect",
+      "relationType": "AUTHORED_BY"
+    },
+    {
+      "from": "Tri-Vault Storage & SeaweedFS Tiering Policy",
+      "to": "Data Lakehouse",
+      "relationType": "SPECIFIES"
+    },
+    {
+      "from": "Tri-Vault Storage & SeaweedFS Tiering Policy",
+      "to": "Core Storage Specialist",
+      "relationType": "AUTHORED_BY"
+    },
+    {
+      "from": "Nightly LoRA Distillation & Weight Merging",
+      "to": "L3 Linux Head Node",
+      "relationType": "RESERVES"
+    },
+    {
+      "from": "Nightly LoRA Distillation & Weight Merging",
+      "to": "24/7 LoRA Distillation",
+      "relationType": "GOVERNS"
+    },
+    {
+      "from": "Thunderbolt 4 DMA Latency Calibration",
+      "to": "L1 Mac Mini Host",
+      "relationType": "RESERVES"
+    },
+    {
+      "from": "Thunderbolt 4 DMA Latency Calibration",
+      "to": "Mesh Pre-Flight Telemetry Gate",
+      "relationType": "GOVERNS"
+    },
+    {
+      "from": "Dual-Plane Architecture Specification",
+      "to": "Workspace Integration",
+      "relationType": "SPECIFIES"
+    },
+    {
+      "from": "Dual-Plane Architecture Specification",
+      "to": "Global Project Architect",
+      "relationType": "AUTHORED_BY"
+    },
+    {
+      "from": "Tri-Vault Storage & SeaweedFS Tiering Policy",
+      "to": "Data Lakehouse",
+      "relationType": "SPECIFIES"
+    },
+    {
+      "from": "Tri-Vault Storage & SeaweedFS Tiering Policy",
+      "to": "Core Storage Specialist",
+      "relationType": "AUTHORED_BY"
+    },
+    {
+      "from": "Nightly LoRA Distillation & Weight Merging",
+      "to": "L3 Linux Head Node",
+      "relationType": "RESERVES"
+    },
+    {
+      "from": "Nightly LoRA Distillation & Weight Merging",
+      "to": "24/7 LoRA Distillation",
+      "relationType": "GOVERNS"
+    },
+    {
+      "from": "Thunderbolt 4 DMA Latency Calibration",
+      "to": "L1 Mac Mini Host",
+      "relationType": "RESERVES"
+    },
+    {
+      "from": "Thunderbolt 4 DMA Latency Calibration",
+      "to": "Mesh Pre-Flight Telemetry Gate",
+      "relationType": "GOVERNS"
+    },
+    {
+      "from": "Security alert",
+      "to": "Security & Incident Response",
+      "relationType": "TRIGGERS"
+    },
+    {
+      "from": "Security alert",
+      "to": "Google",
+      "relationType": "INFORMS"
+    },
+    {
+      "from": "Important: Neo AI is shutting down on October 30",
+      "to": "Operational Telemetry Pipeline",
+      "relationType": "TRIGGERS"
+    },
+    {
+      "from": "Important: Neo AI is shutting down on October 30",
+      "to": "Neo AI Team",
+      "relationType": "INFORMS"
+    },
+    {
+      "from": "The secret's out: Noah Kahan is coming to Cloudflare Connect.",
+      "to": "Operational Telemetry Pipeline",
+      "relationType": "TRIGGERS"
+    },
+    {
+      "from": "The secret's out: Noah Kahan is coming to Cloudflare Connect.",
+      "to": "Cloudflare",
+      "relationType": "INFORMS"
+    },
+    {
+      "from": "Dual-Plane Architecture Specification",
+      "to": "Workspace Integration",
+      "relationType": "SPECIFIES"
+    },
+    {
+      "from": "Dual-Plane Architecture Specification",
+      "to": "Global Project Architect",
+      "relationType": "AUTHORED_BY"
+    },
+    {
+      "from": "Tri-Vault Storage & SeaweedFS Tiering Policy",
+      "to": "Data Lakehouse",
+      "relationType": "SPECIFIES"
+    },
+    {
+      "from": "Tri-Vault Storage & SeaweedFS Tiering Policy",
+      "to": "Core Storage Specialist",
+      "relationType": "AUTHORED_BY"
+    },
+    {
+      "from": "Nightly LoRA Distillation & Weight Merging",
+      "to": "L3 Linux Head Node",
+      "relationType": "RESERVES"
+    },
+    {
+      "from": "Nightly LoRA Distillation & Weight Merging",
+      "to": "24/7 LoRA Distillation",
+      "relationType": "GOVERNS"
+    },
+    {
+      "from": "Thunderbolt 4 DMA Latency Calibration",
+      "to": "L1 Mac Mini Host",
+      "relationType": "RESERVES"
+    },
+    {
+      "from": "Thunderbolt 4 DMA Latency Calibration",
+      "to": "Mesh Pre-Flight Telemetry Gate",
+      "relationType": "GOVERNS"
+    },
+    {
+      "from": "Security alert",
+      "to": "Security & Incident Response",
+      "relationType": "TRIGGERS"
+    },
+    {
+      "from": "Security alert",
+      "to": "Google",
+      "relationType": "INFORMS"
+    },
+    {
+      "from": "Important: Neo AI is shutting down on October 30",
+      "to": "Operational Telemetry Pipeline",
+      "relationType": "TRIGGERS"
+    },
+    {
+      "from": "Important: Neo AI is shutting down on October 30",
+      "to": "Neo AI Team",
+      "relationType": "INFORMS"
+    },
+    {
+      "from": "The secret's out: Noah Kahan is coming to Cloudflare Connect.",
+      "to": "Operational Telemetry Pipeline",
+      "relationType": "TRIGGERS"
+    },
+    {
+      "from": "The secret's out: Noah Kahan is coming to Cloudflare Connect.",
+      "to": "Cloudflare",
+      "relationType": "INFORMS"
+    }
+  ]
+}

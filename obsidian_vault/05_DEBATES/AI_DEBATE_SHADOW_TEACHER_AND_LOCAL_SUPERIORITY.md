@@ -37,14 +37,14 @@ The council unreservedly ratifies the **Shadow Coder & Teacher Model Protocol**:
 ## ⚔️ 2. Debate Arguments & Synthesis
 
 ### Side A: Proposal Lead (Local Engineer Lead)
-> "Relying perpetually on cloud APIs creates an existential vulnerability: latency spikes, network partitions, and unpredictable rate limits cripple real-time biometrics (Movesense 512Hz ECG) and high-speed storage dispersal. Local quantized models (Q4_K_M, IQ2_XXS) executing over our 10Gbps Thunderbolt 4 bridge deliver sub-millisecond execution times. We should use frontier free tiers strictly as distillation fuel—extracting reasoning traces to fine-tune local weights until the shadow teacher is completely unnecessary."
+> "Relying perpetually on cloud APIs creates an existential vulnerability: latency spikes, network partitions, and unpredictable rate limits cripple real-time biometrics (Movesense 512Hz ECG) and high-speed storage dispersal. Local quantized models (Q4_K_M, IQ2_XXS) executing over our 40Gbps Thunderbolt 4 bridge deliver sub-millisecond execution times. We should use frontier free tiers strictly as distillation fuel—extracting reasoning traces to fine-tune local weights until the shadow teacher is completely unnecessary."
 
 ### Side B: Opposition (Cloud Shadow Teacher & Red Team)
 > "Local sub-1.5B models lack the massive multi-task breadth of frontier pretraining and frequently generate subtle syntax errors or miss boundary conditions (e.g. empty lists, type edge cases). An unguided local student will quickly degrade into compounding hallucinations without external correction. The shadow teacher must remain active as an empirical gatekeeper, critiquing drafts and generating DPO pairs until empirical confidence is proven."
 
 ### Arbiter Consensus Verdict
 - **Adopt the Hybrid Asynchronous Crucible:** The local student attempts the task first. If the student passes all unit tests and AST checks with high confidence, the student solution is accepted.
-- **Continuous 24/7 DPO Distillation:** Every task generates a formatted preference pair (`prompt`, `chosen`, `rejected`, `critique`) written to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl` and mirrored to `04_data_and_memory/`.
+- **Continuous 24/7 DPO Distillation:** Every task generates a formatted preference pair (`prompt`, `chosen`, `rejected`, `critique`) written to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl` and mirrored to `04_data_and_memory/`.
 - **Dynamic Re-Engagement:** If an autonomous local model ever fails a subsequent regression test, the shadow teacher automatically re-engages to restore correctness.
 
 ---

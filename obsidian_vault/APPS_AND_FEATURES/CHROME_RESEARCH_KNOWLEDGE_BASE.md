@@ -46,8 +46,8 @@ Total Open Tabs Captured: **113** across all active windows.
 | 33 | Win 2 | [New Project — Neo](https://heyneo.com/project/new-chat?prompt=Develop%20a%20machine%20learning%20model%20to%20predict%20future%20product%20demand%2C%20aiding%20in%20inventory%20optimization%20and%20reducing%20stockouts.) | `https://heyneo.com/project/new-chat?prompt=Develop%20a%20machine%20lea` |
 | 34 | Win 2 | [screen lens three coding tests](http://localhost:4002/) | `http://localhost:4002/` |
 | 35 | Win 2 | [screen lens three coding tests](http://localhost:4002/) | `http://localhost:4002/` |
-| 36 | Win 2 | [Lauburu AI Training & ELO Progression Dashboard](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/visualizations/full_ai_training_and_elo_interactive.html) | `file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/vi` |
-| 37 | Win 2 | [Lauburu Categorized ELO Leaderboards & Swarm Champions](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/visualizations/full_ai_training_and_elo_interactive.html) | `file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/vi` |
+| 36 | Win 2 | [Lauburu AI Training & ELO Progression Dashboard](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/visualizations/full_ai_training_and_elo_interactive.html) | `file:///Volumes/Lauburu-Monorepo/04_data_and_memory/vi` |
+| 37 | Win 2 | [Lauburu Categorized ELO Leaderboards & Swarm Champions](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/visualizations/full_ai_training_and_elo_interactive.html) | `file:///Volumes/Lauburu-Monorepo/04_data_and_memory/vi` |
 | 38 | Win 2 | [UGREEN USB Bluetooth 5.4 Adapter for PC Windows Dongle BR EDR BLE - Rotatable Antenna, Plug and Play on Win 11 10, Supports up to 5 Devices, Wireless Dongle for Headphones, Keyboards : Amazon.com.au: Electronics](https://www.amazon.com.au/UGREEN-Bluetooth-Wireless-Headphones-Laptop-Win11/dp/B0CJXZJGVC/ref=pd_sbs_d_sccl_2_3/358-1965468-9895033?pd_rd_w=t0nAo&ie=UTF8&useRedirectOnSuccess=1&ref_=dex_glow_signin&path=%2FUGREEN-Bluetooth-Wireless-Headphones-Laptop-Win11%2Fdp%2FB0CJXZJGVC%2Fref%3Dpd_sbs_d_sccl_2_3%2F358-1965468-9895033%3Fpd_rd_w%3Dt0nAo&content-id=amzn1.sym.33ec29a8-b971-4931-8a49-d8419f23f1b3&pf_rd_p=33ec29a8-b971-4931-8a49-d8419f23f1b3&pf_rd_r=D9SY55GF5W12VERWJ66M&pd_rd_wg=KH0F0&pd_rd_r=4c23a8bd-bb56-4cf4-ba2f-90bb7b76ee50&pd_rd_i=B0CJXZJGVC&psc=1) | `https://www.amazon.com.au/UGREEN-Bluetooth-Wireless-Headphones-Laptop-` |
 | 39 | Win 2 | [UGREEN USB Bluetooth 5.4 Adapter for PC Windows Dongle BR EDR BLE - Rotatable Antenna, Plug and Play on Win 11 10, Supports up to 5 Devices, Wireless Dongle for Headphones, Keyboards : Amazon.com.au: Electronics](https://www.amazon.com.au/dp/B0CJXZJGVC?ref=ive_vftp_hero_cx_pfo_vse-cards-ingress0) | `https://www.amazon.com.au/dp/B0CJXZJGVC?ref=ive_vftp_hero_cx_pfo_vse-c` |
 | 40 | Win 2 | [Canonical Port — Lauburu Mesh Dashboard](http://localhost:4000/) | `http://localhost:4000/` |
@@ -124,3 +124,324 @@ Total Open Tabs Captured: **113** across all active windows.
 | 111 | Win 5 | [tplinkmodem.net](http://tplinkmodem.net/) | `http://tplinkmodem.net/` |
 | 112 | Win 5 | [00_lauburu_global_master_project](http://localhost:8890/) | `http://localhost:8890/` |
 | 113 | Win 6 | [Cheapest Multi-Port 2.5GbE Options - Google Gemini](https://gemini.google.com/app/e7693f3bde937ca1) | `https://gemini.google.com/app/e7693f3bde937ca1` |
+
+
+### ⚡ Auto-Harvested Split-Screen Research [2026-09-14T19:17:36.887Z]
+- **Source:** `Google Chrome` | **Window:** `Shopify`
+```text
+Chrom&
+Edit View
+History Bookmarks Profiles
+Tab Window
+Help
+j 87W A •12èC
+Tue Sep 15 5'.17AM
+• • • l- a Shopify
++ Ask Gemini
+networ...
+A Open IDE
+lrfe co...
+A Open IDE
+L I rernots d...
+A Open IDE
+S20 Wallpaper Verified DF Walkthrough
+4 C
+admin.shopify.comlstorellaub...
+it needs to be an
+installable app for
+custorners- instsll it too
+My pixel and mac mini
+Walkthrough
+Chrome is being controlled by automated test software
+Tri-vault
+Synchronization
+I completely rewrote the @app.getl,Istream.￿jpg.I
+endP￿nt. It now dynamically checks active node. If it's
+the klac klini, it streams at a high-speed 12 FPS over the
+async broadcaster. If it's a peripheral node IL2-L71, it
+dynarnically polls their respective 5creencap -p or SSH
+/dev/fbO buffers at a bandwidth-friendly 2 FPS, routing it
+instantty to your browser.
+ai-debate n screen-len5-50veTeiqn rn loop
+boost
+Q Seareh
+Obsidlan Knowledge
+Graph: Whitepaper
+created at
+appear at the
+bottom of the
+screen saying
+Add Life
+X11IW8yl8nd dependencies), with a long-term goal of
+rnigrating it to a Go BubbleTea binary to eliminate PythoTh
+dependency issues on edge Andr￿d nodes.
+Back
+CABLE PA4LYZER A
+CTIVE C(thWECTI(*4
+s.md
+You can wew the full debate trans
+```
+
+
+### ⚡ Auto-Harvested Split-Screen Research [2026-09-14T19:17:33.933Z]
+- **Source:** `Google Chrome` | **Window:** `Shopify`
+```text
+Antlgr4vlty File
+Edit View
+Window
+Help
+j 87W A •12èC
+Tue Sep 15 5'.17AM
+••• (D fr 4
+A Open IDE
+networ...
+A Open IDE
+lrfe co...
+A Open IDE
+L I rernots d...
+A Open IDE
+S20 Wallpaper Verified DF Walkthrough
++ New Conversation
+update
+it needs to be an
+installable app for
+custorners- instsll it too
+My pixel and mac mini
+Walkthrough
+) Conversation History
+Tri-vault
+Synchronization
+I completely rewrote the @app.getl,Istream.￿jpg.I
+endP￿nt. It now dynamically checks active node. If it's
+the klac klini, it streams at a high-speed 12 FPS over the
+async broadcaster. If it's a peripheral node IL2-L71, it
+dynarnically polls their respective 5creencap -p or SSH
+/dev/fbO buffers at a bandwidth-friendly 2 FPS, routing it
+instantty to your browser.
+Worked for 27m )
+19 Scheduled Tasks
+6 files chan... +50-33 )
+ai-debate n screen-len5-50veTeiqn rn loop
+boost
+D Review
+Obsidlan Knowledge
+Graph: Whitepaper
+created at
+appear at the
+bottom of the
+screen saying
+Add Life
+X11IW8yl8nd dependencies), with a long-term goal of
+rnigrating it to a Go BubbleTea binary to eliminate PythoTh
+dependency issues on edge Andr￿d nodes.
+Pinned Conversations
+IP-Less Bluetooth Integrat...
+Lauburu-monorepo
+CABLE PA4LYZER A
+CTIV
+```
+
+
+### ⚡ Auto-Harvested Split-Screen Research [2026-09-14T19:11:34.457Z]
+- **Source:** `Gemini` | **Window:** `Gemini - Graph Benchmark and S… Optimization - Google Gemini`
+```text
+Antlgr4vlty File
+Edit View
+Window
+Help
+j 89W A •12èC
+Tue Sep 15 5..11 AM
+••• 0 fr4
+LaU￿r￿-MOnorepo l LeThs Feature Integration Ststus
+A Open IDE
+Is Project Analysis O LearThing PrOp￿S81
++ New Conversation
+¥Y## 1. Speed Differences and Root causes
+Learning Proposal
+) Conversation History
+l Method13-Hop Query Latency l Speed vs. In-memory l Root Technical Cause I
+The Physic8 of T8n80r Parallellsm (TP): A 278 model (Qwen
+3.8 Max) contains 64 transformer layers. Generating a single
+token requires 2 collective synchronizations l all-reduce I per
+layer (attention + klLPI, totaling 128 80quentlal network round-
+trlps per generated token.
+Empirical Reality: Over Wi-Fi 51 - 80. 2 m51, 128 round-
+trips equal 10.267 m% {10.2 88cond8) of network walt stste
+Per single token (yielding 0.10 tokenslsecl.
+Thunderbolt DMA Reality. Over the Thunderbolt 4 Bridge l RTT
+0.27 Th51, 128 round-trips tske only 34.5 ms, delivering-29
+tokensl88C.
+The Distinctlon ITP v8. PP): Wi-Fi 5 is mathematicalty unusable
+for Tensor Parallelisrn lintra-layer shardingl, but Pipeline
+Parallelism linter-layer block sharding with 1 sync per token) or
+Remote API offload can function over Ethernetrfailscale, provided
+Rrf is bou
+```
+
+
+### ⚡ Auto-Harvested Split-Screen Research [2026-09-14T19:17:36.887Z]
+- **Source:** `Google Chrome` | **Window:** `Shopify`
+```text
+Chrom&
+Edit View
+History Bookmarks Profiles
+Tab Window
+Help
+j 87W A •12èC
+Tue Sep 15 5'.17AM
+• • • l- a Shopify
++ Ask Gemini
+networ...
+A Open IDE
+lrfe co...
+A Open IDE
+L I rernots d...
+A Open IDE
+S20 Wallpaper Verified DF Walkthrough
+4 C
+admin.shopify.comlstorellaub...
+it needs to be an
+installable app for
+custorners- instsll it too
+My pixel and mac mini
+Walkthrough
+Chrome is being controlled by automated test software
+Tri-vault
+Synchronization
+I completely rewrote the @app.getl,Istream.￿jpg.I
+endP￿nt. It now dynamically checks active node. If it's
+the klac klini, it streams at a high-speed 12 FPS over the
+async broadcaster. If it's a peripheral node IL2-L71, it
+dynarnically polls their respective 5creencap -p or SSH
+/dev/fbO buffers at a bandwidth-friendly 2 FPS, routing it
+instantty to your browser.
+ai-debate n screen-len5-50veTeiqn rn loop
+boost
+Q Seareh
+Obsidlan Knowledge
+Graph: Whitepaper
+created at
+appear at the
+bottom of the
+screen saying
+Add Life
+X11IW8yl8nd dependencies), with a long-term goal of
+rnigrating it to a Go BubbleTea binary to eliminate PythoTh
+dependency issues on edge Andr￿d nodes.
+Back
+CABLE PA4LYZER A
+CTIVE C(thWECTI(*4
+s.md
+You can wew the full debate trans
+```
+
+
+### ⚡ Auto-Harvested Split-Screen Research [2026-09-14T19:17:33.933Z]
+- **Source:** `Google Chrome` | **Window:** `Shopify`
+```text
+Antlgr4vlty File
+Edit View
+Window
+Help
+j 87W A •12èC
+Tue Sep 15 5'.17AM
+••• (D fr 4
+A Open IDE
+networ...
+A Open IDE
+lrfe co...
+A Open IDE
+L I rernots d...
+A Open IDE
+S20 Wallpaper Verified DF Walkthrough
++ New Conversation
+update
+it needs to be an
+installable app for
+custorners- instsll it too
+My pixel and mac mini
+Walkthrough
+) Conversation History
+Tri-vault
+Synchronization
+I completely rewrote the @app.getl,Istream.￿jpg.I
+endP￿nt. It now dynamically checks active node. If it's
+the klac klini, it streams at a high-speed 12 FPS over the
+async broadcaster. If it's a peripheral node IL2-L71, it
+dynarnically polls their respective 5creencap -p or SSH
+/dev/fbO buffers at a bandwidth-friendly 2 FPS, routing it
+instantty to your browser.
+Worked for 27m )
+19 Scheduled Tasks
+6 files chan... +50-33 )
+ai-debate n screen-len5-50veTeiqn rn loop
+boost
+D Review
+Obsidlan Knowledge
+Graph: Whitepaper
+created at
+appear at the
+bottom of the
+screen saying
+Add Life
+X11IW8yl8nd dependencies), with a long-term goal of
+rnigrating it to a Go BubbleTea binary to eliminate PythoTh
+dependency issues on edge Andr￿d nodes.
+Pinned Conversations
+IP-Less Bluetooth Integrat...
+Lauburu-monorepo
+CABLE PA4LYZER A
+CTIV
+```
+
+
+### ⚡ Auto-Harvested Split-Screen Research [2026-09-14T19:11:34.457Z]
+- **Source:** `Gemini` | **Window:** `Gemini - Graph Benchmark and S… Optimization - Google Gemini`
+```text
+Antlgr4vlty File
+Edit View
+Window
+Help
+j 89W A •12èC
+Tue Sep 15 5..11 AM
+••• 0 fr4
+LaU￿r￿-MOnorepo l LeThs Feature Integration Ststus
+A Open IDE
+Is Project Analysis O LearThing PrOp￿S81
++ New Conversation
+¥Y## 1. Speed Differences and Root causes
+Learning Proposal
+) Conversation History
+l Method13-Hop Query Latency l Speed vs. In-memory l Root Technical Cause I
+The Physic8 of T8n80r Parallellsm (TP): A 278 model (Qwen
+3.8 Max) contains 64 transformer layers. Generating a single
+token requires 2 collective synchronizations l all-reduce I per
+layer (attention + klLPI, totaling 128 80quentlal network round-
+trlps per generated token.
+Empirical Reality: Over Wi-Fi 51 - 80. 2 m51, 128 round-
+trips equal 10.267 m% {10.2 88cond8) of network walt stste
+Per single token (yielding 0.10 tokenslsecl.
+Thunderbolt DMA Reality. Over the Thunderbolt 4 Bridge l RTT
+0.27 Th51, 128 round-trips tske only 34.5 ms, delivering-29
+tokensl88C.
+The Distinctlon ITP v8. PP): Wi-Fi 5 is mathematicalty unusable
+for Tensor Parallelisrn lintra-layer shardingl, but Pipeline
+Parallelism linter-layer block sharding with 1 sync per token) or
+Remote API offload can function over Ethernetrfailscale, provided
+Rrf is bou
+```
+
+## Exported on 2026-10-12 17:02:53
+[[Index]]
+
+- [](about:blank)
+
+## Exported on 2026-10-12 17:03:13
+[[Index]]
+
+- [](about:blank)
+
+## Exported on 2026-10-14 00:25:42
+[[Index]]
+
+- [Home - 2Apply](https://app.2apply.com.au/Dashboard)

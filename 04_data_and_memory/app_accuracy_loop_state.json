@@ -1,0 +1,342 @@
+{
+  "iteration": 1,
+  "timestamp": 1792039248.18545,
+  "total_apps_evaluated": 8,
+  "production_ready_count": 8,
+  "all_production_ready": true,
+  "results": [
+    {
+      "id": "combat_lab_lauburu",
+      "name": "Combat Lab Lauburu",
+      "type": "pwa_web_ble",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 786.75,
+      "ai_sample_response": "Resting heart rate (HR) of 44 bpm suggests a moderate to high intensity exercise level. Resting maximum heart rate (RMSS...",
+      "details": [
+        "All 5 entry files verified",
+        "PWA Manifest & Service Worker verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "openvitals_lauburu",
+      "name": "OpenVitals Lauburu",
+      "type": "android_wearos_compose",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 1094.13,
+      "ai_sample_response": "The significance of a nocturnal HRV baseline increase of 14% over a 7-day rolling window for athletic periodization lies...",
+      "details": [
+        "All 4 entry files verified",
+        "Signed Release APK v2 verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "screen_lens_lauburu",
+      "name": "Screen Lens Lauburu",
+      "type": "macos_vla_orchestrator",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 288.71,
+      "ai_sample_response": "The active user context is the user who is currently interacting with the system. In this case, the user is the one who ...",
+      "details": [
+        "All 1 entry files verified",
+        "Port :3037 listening",
+        "macOS App Bundle & Orchestrator verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "network_cable_analyzer_lauburu",
+      "name": "Network Cable Analyzer Lauburu",
+      "type": "fastapi_rust_analyzer",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 829.59,
+      "ai_sample_response": "To diagnose the bottleneck between the Thunderbolt 4 link and the 802.11ac Wi-Fi link, we need to analyze the performanc...",
+      "details": [
+        "All 2 entry files verified",
+        "Port :4007 listening",
+        "Standalone arm64 binary verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "port_4000_sovereign_console",
+      "name": "Port 4000 Sovereign Console",
+      "type": "flutter_rust_axum",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 1117.49,
+      "ai_sample_response": "Pipelined-Ring Parallelism (PRP) is a technique used to distribute a large number of model layers across multiple nodes ...",
+      "details": [
+        "All 2 entry files verified",
+        "Port :4000 listening",
+        "Axum/Rust backend structure verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "showrunner_lauburu",
+      "name": "Showrunner Lauburu",
+      "type": "flutter_creative_studio",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 830.69,
+      "ai_sample_response": "Commander: \"Attention everyone, I have received a report of a jump gate anomaly. It appears to be a critical issue that ...",
+      "details": [
+        "All 2 entry files verified",
+        "Flutter release web build verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "omni_agent_lauburu",
+      "name": "Omni Agent Lauburu",
+      "type": "android_apk",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 1115.21,
+      "ai_sample_response": "Shizuku is a software tool designed to enable non-root Android command execution via Binder IPC without requiring user-s...",
+      "details": [
+        "APK binary present (48 MB)",
+        "APK ZIP schema & assets verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "spatial_grappling_3d",
+      "name": "Spatial Grappling Lauburu",
+      "type": "threejs_kinematics",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 805.83,
+      "ai_sample_response": "An armbar submission counter is a type of armbar submission where the attacker aims to pin the opponent's armbar in plac...",
+      "details": [
+        "All 2 entry files verified",
+        "Kinematics DSP bytecode verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    }
+  ],
+  "applications": [
+    {
+      "id": "combat_lab_lauburu",
+      "name": "Combat Lab Lauburu",
+      "type": "pwa_web_ble",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 786.75,
+      "ai_sample_response": "Resting heart rate (HR) of 44 bpm suggests a moderate to high intensity exercise level. Resting maximum heart rate (RMSS...",
+      "details": [
+        "All 5 entry files verified",
+        "PWA Manifest & Service Worker verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "openvitals_lauburu",
+      "name": "OpenVitals Lauburu",
+      "type": "android_wearos_compose",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 1094.13,
+      "ai_sample_response": "The significance of a nocturnal HRV baseline increase of 14% over a 7-day rolling window for athletic periodization lies...",
+      "details": [
+        "All 4 entry files verified",
+        "Signed Release APK v2 verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "screen_lens_lauburu",
+      "name": "Screen Lens Lauburu",
+      "type": "macos_vla_orchestrator",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 288.71,
+      "ai_sample_response": "The active user context is the user who is currently interacting with the system. In this case, the user is the one who ...",
+      "details": [
+        "All 1 entry files verified",
+        "Port :3037 listening",
+        "macOS App Bundle & Orchestrator verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "network_cable_analyzer_lauburu",
+      "name": "Network Cable Analyzer Lauburu",
+      "type": "fastapi_rust_analyzer",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 829.59,
+      "ai_sample_response": "To diagnose the bottleneck between the Thunderbolt 4 link and the 802.11ac Wi-Fi link, we need to analyze the performanc...",
+      "details": [
+        "All 2 entry files verified",
+        "Port :4007 listening",
+        "Standalone arm64 binary verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "port_4000_sovereign_console",
+      "name": "Port 4000 Sovereign Console",
+      "type": "flutter_rust_axum",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 1117.49,
+      "ai_sample_response": "Pipelined-Ring Parallelism (PRP) is a technique used to distribute a large number of model layers across multiple nodes ...",
+      "details": [
+        "All 2 entry files verified",
+        "Port :4000 listening",
+        "Axum/Rust backend structure verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "showrunner_lauburu",
+      "name": "Showrunner Lauburu",
+      "type": "flutter_creative_studio",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 830.69,
+      "ai_sample_response": "Commander: \"Attention everyone, I have received a report of a jump gate anomaly. It appears to be a critical issue that ...",
+      "details": [
+        "All 2 entry files verified",
+        "Flutter release web build verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "omni_agent_lauburu",
+      "name": "Omni Agent Lauburu",
+      "type": "android_apk",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 1115.21,
+      "ai_sample_response": "Shizuku is a software tool designed to enable non-root Android command execution via Binder IPC without requiring user-s...",
+      "details": [
+        "APK binary present (48 MB)",
+        "APK ZIP schema & assets verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    },
+    {
+      "id": "spatial_grappling_3d",
+      "name": "Spatial Grappling Lauburu",
+      "type": "threejs_kinematics",
+      "files_present": true,
+      "port_listening": true,
+      "actuation_verified": true,
+      "accuracy_score": 100.0,
+      "functionality_score": 100.0,
+      "ai_integration_status": "INTEGRATED (LOCAL)",
+      "ai_latency_ms": 805.83,
+      "ai_sample_response": "An armbar submission counter is a type of armbar submission where the attacker aims to pin the opponent's armbar in plac...",
+      "details": [
+        "All 2 entry files verified",
+        "Kinematics DSP bytecode verified"
+      ],
+      "total_readiness": 100.0,
+      "readiness_status": "PRODUCTION_READY",
+      "status": "PRODUCTION_READY"
+    }
+  ],
+  "elo": {
+    "gen_1": 2628.8,
+    "gen_2": 2391.2,
+    "winner": "Generation 1 (Base)"
+  }
+}

@@ -4,32 +4,40 @@ export function SidebarNav({
   activeRoute,
   setActiveRoute,
   isSidebarCollapsed,
-  toggleSidebar
+  toggleSidebar,
+  membership,
+  onOpenMembershipModal
 }) {
   const navSections = [
     {
-      title: '0. BARE-METAL NETWORKING (PRIMARY)',
+      title: '0. SOVEREIGN FRONT DASHBOARD (PRIMARY)',
       items: [
-        { id: 'network-metrics', label: 'Bare-Metal Networking', icon: '📡', badge: 'PRIMARY', hotkey: 'n' }
+        { id: 'front-dashboard', label: 'Sovereign Chat Engine', icon: '💬', badge: 'DEFAULT', hotkey: '1' }
       ]
     },
     {
-      title: '1. HARDWARE & NODES',
+      title: '1. BARE-METAL NETWORKING',
+      items: [
+        { id: 'network-metrics', label: 'Bare-Metal Networking', icon: '📡', badge: 'TB4 DMA', hotkey: 'n' }
+      ]
+    },
+    {
+      title: '2. HARDWARE & NODES',
       items: [
         { id: 'hardware-nodes', label: 'Hardware & Nodes', icon: '⚡', badge: '7 NODES', hotkey: 'h' },
         { id: 'optimization-hardware', label: 'Hardware Sentinel HUD', icon: '🖥️', badge: 'PORT 18802' }
       ]
     },
     {
-      title: '2. MEDICAL BIOMETRICS & DSP',
+      title: '3. MEDICAL BIOMETRICS & DSP',
       items: [
         { id: 'biometrics-dsp', label: 'Medical Biometrics & DSP', icon: '🫀', badge: '512Hz ECG', hotkey: 'b' }
       ]
     },
     {
-      title: '3. LOCAL AI INFERENCE & SYNTHESIS',
+      title: '4. SECONDARY TOOLS & INFERENCE',
       items: [
-        { id: 'agi-terminal', label: 'AGI Coding Terminal', icon: '💻', badge: 'SCREEN 1', hotkey: 'c' },
+        { id: 'bluetooth-terminal', label: 'Bluetooth Terminal', icon: '📶', badge: 'SPP / BLE', hotkey: 'c' },
         { id: 'ai-inference', label: 'Local AI Inference Mesh', icon: '🤖', badge: 'RPC :50052', hotkey: 'i' }
       ]
     },
@@ -190,8 +198,28 @@ export function SidebarNav({
           color: 'var(--text-muted)',
           fontFamily: 'var(--font-mono)'
         }}>
-          <div>NODE: Mac_Node (L1 Host)</div>
-          <div style={{ color: 'var(--accent-emerald)', marginTop: '2px' }}>● 7 / 7 NODES ONLINE</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+            <span>NODE: Mac_Node (L1)</span>
+            <span style={{ color: 'var(--accent-emerald)' }}>● 7 NODES</span>
+          </div>
+          <div
+            onClick={onOpenMembershipModal}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              cursor: 'pointer',
+              background: 'rgba(0, 255, 204, 0.08)',
+              border: '1px solid var(--border-subtle)',
+              padding: '4px 6px',
+              borderRadius: 'var(--radius-sm)',
+              marginTop: '4px'
+            }}
+            title="Manage Shopify Membership & Credits"
+          >
+            <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>{membership?.tier_badge || 'GYM MASTER'}</span>
+            <span style={{ color: 'var(--accent-emerald)' }}>+${membership?.net_credits_aud || 0} AUD</span>
+          </div>
         </div>
       )}
     </aside>

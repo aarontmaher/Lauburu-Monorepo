@@ -14,7 +14,7 @@ import socket
 import re
 from datetime import datetime
 
-PROJECT_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+PROJECT_DIR = "/Volumes/Lauburu-Monorepo"
 DATA_DIR = os.path.join(PROJECT_DIR, "data")
 # Import Docker AI Verifier
 try:

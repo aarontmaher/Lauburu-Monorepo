@@ -72,4 +72,4 @@ consensus_score: 0.988
 ## 📥 LoRA Training Sink
 - Instruct: `Assess https://github.com/datalayer-examples/jupyter-react-webpack-example for Lauburu Mesh`
 - Chosen: Formal rejection of Webpack monolith in favor of lightweight native reactive WebSocket dashboard and Marimo DAG integration, preserving $0 recurring cost and sub-millisecond edge latency.
-- Appended to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`.
+- Appended to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`.

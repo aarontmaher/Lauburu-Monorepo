@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Lauburu Screen Lens Sovereign — Local AI, Qwen 3D, EmbeddingGemma 2 & Page Assist",
+  "version": "2.7.0",
+  "description": "Integrates Local AI (Qwen 3D/Hermes), Google DeepMind EmbeddingGemma 2 (768/512/256/128D MRL), Page Assist (:11434), Scrcpy 5.0, Root/Shizuku/rish, and 24/7 WebVLA Distillation into Google Chrome & Chrome DevTools.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "sidePanel",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "http://127.0.0.1:9224/*",
+    "http://100.121.202.34:9224/*",
+    "http://100.121.247.8:9224/*",
+    "http://127.0.0.1:11434/*",
+    "http://100.119.199.76:3037/*",
+    "http://127.0.0.1:8087/*",
+    "http://127.0.0.1:8089/*",
+    "http://100.119.199.76:8090/*",
+    "http://100.121.247.8:8096/*",
+    "http://100.101.39.98:7474/*",
+    "http://100.101.39.98:6333/*"
+  ],
+  "background": {
+    "service_worker": "service_worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Lauburu Local AI & EmbeddingGemma 2",
+    "default_popup": "popup.html"
+  },
+  "side_panel": {
+    "default_path": "popup.html"
+  },
+  "devtools_page": "devtools.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content_script.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "lauburu_polyglot_specialists": {
+    "primary_specialist": "polyglot-typescript-web-specialist",
+    "co_primary_webgpu_specialist": "polyglot-rust-wgpu-specialist",
+    "cdp_orchestrator_specialist": "polyglot-go-bubbletea-specialist",
+    "sentinel_bridge_specialist": "polyglot-python-specialist",
+    "visual_vla_teacher": "screen-lens-sovereign",
+    "continuous_practice_skill": "continus-lens-practice-automation"
+  }
+}

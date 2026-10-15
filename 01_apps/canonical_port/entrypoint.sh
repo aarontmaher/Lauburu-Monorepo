@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Open Wearables & Lauburu Mesh TUI Cockpit - Multi-Arch Container Entrypoint
+# Open Wearables & Lauburu Mesh TUI Console - Multi-Arch Container Entrypoint
 # Supported Modes:
-#   - interactive / tty: Interactive console cockpit
+#   - interactive / tty: Interactive console console
 #   - web: Web-TUI server on Port 8088 (textual-web)
 #   - verify: Headless pilot verification test
 #   - custom commands: Passed through to exec
@@ -20,7 +20,7 @@ export TERM="${TERM:-xterm-256color}"
 export COLORTERM="${COLORTERM:-truecolor}"
 
 echo "=============================================================================="
-echo "⚡ OPEN WEARABLES & LAUBURU TUI MESH COCKPIT"
+echo "⚡ OPEN WEARABLES & LAUBURU TUI MESH CONSOLE"
 echo "• Architecture: $(uname -m)"
 echo "• Operating Mode: ${MODE}"
 echo "• Web Port: ${PORT}"

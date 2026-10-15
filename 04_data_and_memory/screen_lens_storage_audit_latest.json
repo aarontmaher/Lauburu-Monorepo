@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-09-14T15:03:01.616445+00:00",
+  "governor": "Screen Lens Sovereign",
+  "sanctuary_headroom": {
+    "node": "L1 Mac Mini M4 Pro Host",
+    "free_disk_gb": 34.22,
+    "disk_sanctuary_headroom_ok": true
+  },
+  "seaweedfs": {
+    "health": {
+      "master_online": true,
+      "volume_online": false,
+      "filer_online": false
+    },
+    "organization": {
+      "created_buckets": 17,
+      "uploaded_assets": 0,
+      "errors": []
+    }
+  },
+  "google_drive_mirror": {
+    "staging_dir": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/google_drive_mirror/Lauburu_AI_Memory",
+    "staged_files_count": 10,
+    "gdrive_vfs_mounted": false,
+    "flushed_to_cloud_count": 0,
+    "workspace_api_ready": true
+  },
+  "mesh_rsync": {
+    "success": false,
+    "error": "Command '['rsync', '-a', '--partial', '--delete', '--exclude-from=/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.rsyncignore', '-e', 'ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no', '/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/', 'linux@100.101.39.98:/mnt/dfs_unified/Lauburu-Monorepo/']' timed out after 10 seconds",
+    "elapsed_seconds": 10.01
+  },
+  "obsidian_vault_and_skills": {
+    "vault_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault",
+    "total_markdown_notes": 9512,
+    "skill_directories_provisioned": [
+      "ai_debate_records",
+      "deep_research_dossiers",
+      "open_source_audits",
+      "reverse_engineering_specs"
+    ],
+    "mcp_ready_index_generated": true
+  },
+  "status": "ALL_TIERS_ORGANIZED_AND_HEALTHY"
+}

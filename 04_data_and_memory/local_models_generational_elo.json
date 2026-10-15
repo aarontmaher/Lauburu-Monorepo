@@ -1,0 +1,16 @@
+{
+  "smol_135m": 2540.1,
+  "smol_360m": 2540.1,
+  "qwen_0_5b": 2540.1,
+  "llama_1b": 2540.1,
+  "smol_1_7b": 2390.0,
+  "qwen_coder_1_5b": 2410.0,
+  "qwen_coder_7b": 2526.6,
+  "mistral_nemo_7b": 2423.4,
+  "prima_ring_mesh": 2520.0,
+  "cloud_teacher_composite": 2650.0,
+  "qwen_3b_moe": 2540.1,
+  "tiny_10m": 2540.1,
+  "gen_1_base_orchestrator": 2628.8,
+  "gen_2_specialist_persona": 2391.2
+}

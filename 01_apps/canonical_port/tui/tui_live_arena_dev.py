@@ -167,10 +167,10 @@ class LiveAiGpuCanvasWidget(Static):
         
         # Animated dynamic waveforms & buffer meters
         ecg_frames = [
-            "__/\__/\___/\___/\___/\__",
-            "___/\___/\___/\___/\____",
-            "____/\__/\___/\___/\____",
-            "_/\___/\___/\___/\___/\_"
+            r"__/\\__/\\___/\\___/\\___/\\__",
+            r"___/\\___/\\___/\\___/\\____",
+            r"____/\\__/\\___/\\___/\\____",
+            r"_/\\___/\\___/\\___/\\___/\\_"
         ]
         curr_wave = ecg_frames[self.tick % len(ecg_frames)]
         
@@ -309,7 +309,7 @@ class LiveArenaDevApp(App):
         ("b", "trigger_bql_burst", "BQL Queue Burst"),
         ("s", "trigger_jumbo_shield", "Lock MTU 9000 Shield"),
         ("v", "toggle_voice", "Toggle Voice (TTS)"),
-        ("q", "quit", "Quit --dev Cockpit")
+        ("q", "quit", "Quit --dev Console")
     ]
 
     def compose(self) -> ComposeResult:

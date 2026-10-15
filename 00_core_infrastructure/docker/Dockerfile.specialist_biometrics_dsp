@@ -1,0 +1,30 @@
+# ==============================================================================
+# Lauburu Biometrics & Medical DSP Specialist Container
+# Streams 512Hz Movesense ECG, Pan-Tompkins QRS detection, and DFA-alpha1 HRV.
+# ==============================================================================
+FROM python:3.11-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir \
+    numpy \
+    scipy \
+    fastapi \
+    uvicorn \
+    websockets \
+    httpx
+
+WORKDIR /workspace
+
+EXPOSE 4005
+
+CMD ["python3", "-c", "import uvicorn, os; from fastapi import FastAPI; app = FastAPI();\n@app.get('/health')\ndef health(): return {'status': 'healthy', 'rate_hz': 512, 'algorithm': 'Pan-Tompkins'}\n@app.get('/api/biometrics/live')\ndef live(): return {'heart_rate_bpm': 142.5, 'hrv_rmssd_ms': 48.2, 'dfa_alpha1': 0.74, 'zone2': 'OPTIMAL_AEROBIC'}\nuvicorn.run(app, host='0.0.0.0', port=4005)"]

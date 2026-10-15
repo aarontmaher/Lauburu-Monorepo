@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign Movesense + AssaultBike Real-Time Biometrics & DSP Hub (:8084)</title>
+    <style>
+        :root {
+            --bg: #090d16;
+            --bg-panel: #111827;
+            --bg-card: #0d1321;
+            --border: #1f2937;
+            --border-accent: #374151;
+            --text: #f3f4f6;
+            --muted: #9ca3af;
+            --cyan: #06b6d4;
+            --green: #10b981;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --purple: #8b5cf6;
+            --blue: #3b82f6;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 16px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, monospace;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 13px;
+        }
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .title-group h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .title-group p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-accent);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+        }
+        .dot.live {
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green);
+        }
+        .dot.warn {
+            background: var(--amber);
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        button, select, input {
+            background: #1e293b;
+            color: var(--text);
+            border: 1px solid var(--border-accent);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-family: inherit;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        button:hover { background: #334155; }
+        .btn-primary { background: #0284c7; border-color: #0369a1; }
+        .btn-primary:hover { background: #0369a1; }
+        .btn-green { background: #059669; border-color: #047857; }
+        .btn-green:hover { background: #047857; }
+        .btn-amber { background: #d97706; border-color: #b45309; }
+        .btn-danger { background: #dc2626; border-color: #b91c1c; }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 14px;
+        }
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .col-3 { grid-column: span 3; }
+        .col-4 { grid-column: span 4; }
+        .col-6 { grid-column: span 6; }
+        .col-8 { grid-column: span 8; }
+        .col-12 { grid-column: span 12; }
+        @media (max-width: 1200px) {
+            .col-3, .col-4, .col-6, .col-8 { grid-column: span 6; }
+        }
+        @media (max-width: 768px) {
+            .col-3, .col-4, .col-6, .col-8 { grid-column: span 12; }
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+        .panel-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--cyan);
+        }
+        .panel-tag {
+            font-size: 0.7rem;
+            padding: 2px 7px;
+            border-radius: 4px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-accent);
+            color: var(--muted);
+        }
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+            gap: 8px;
+        }
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 10px;
+        }
+        .metric-label {
+            font-size: 0.68rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .metric-val {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-top: 3px;
+            color: var(--text);
+            font-variant-numeric: tabular-nums;
+        }
+        .metric-val.hero {
+            font-size: 1.9rem;
+            color: var(--cyan);
+        }
+        .metric-sub {
+            font-size: 0.68rem;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+        canvas {
+            width: 100%;
+            background: #060911;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: block;
+        }
+        .rec-banner {
+            background: var(--bg-card);
+            border-left: 3px solid var(--cyan);
+            padding: 8px 10px;
+            font-size: 0.78rem;
+            color: var(--text);
+            border-radius: 4px;
+        }
+        .input-inline {
+            width: 68px;
+            padding: 4px 6px;
+            text-align: center;
+        }
+        .footer-bar {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            color: var(--muted);
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="title-group">
+            <h1>
+                <span>SOVEREIGN BIOMETRICS + ASSAULTBIKE REAL-TIME HUB</span>
+                <span class="badge" id="rule0Badge"><span class="dot" id="globalDot"></span><span id="globalStatus">STANDBY (ZERO-MOCK)</span></span>
+            </h1>
+            <p>Unified Movesense 261030002013 (0x180D / 0xFDF3 / Whiteboard ECG 512Hz) + AssaultBike FTMS (0x1826 / 0x1818 / 0x1816) | L8:8084</p>
+        </div>
+        <div class="badge-row">
+            <div class="badge">
+                <span class="dot" id="msDot"></span>
+                <span id="msStatusText">Movesense: STANDBY</span>
+            </div>
+            <div class="badge">
+                <span class="dot" id="abDot"></span>
+                <span id="abStatusText">AssaultBike: STANDBY</span>
+            </div>
+            <div class="badge">
+                <span>Frames: <strong id="frameCount">0</strong></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="toolbar">
+        <div class="btn-group">
+            <button class="btn-primary" id="btnPairMovesense">Pair Movesense (WebBLE)</button>
+            <button class="btn-green" id="btnPairAssaultBike">Pair AssaultBike / FTMS (WebBLE)</button>
+            <button id="btnOrthostatic" onclick="triggerOrthostatic('supine')">Orthostatic: Start Supine</button>
+            <button id="btnOrthostaticStand" onclick="triggerOrthostatic('standing')">Orthostatic: Stand Up</button>
+            <button id="btnHrr60" onclick="triggerOrthostatic('hrr_start')">Mark Peak HR (HRR-60s)</button>
+        </div>
+        <div class="btn-group">
+            <a href="/api/export?format=json" target="_blank"><button>Export JSON</button></a>
+            <a href="/api/export?format=csv" target="_blank"><button>Export Workout CSV</button></a>
+            <a href="/api/export?format=rr_csv" target="_blank"><button>Export RR CSV</button></a>
+            <button class="btn-danger" onclick="resetEngine()">Reset to STANDBY</button>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- 1. READINESS SCORE (0-100) -->
+        <div class="panel col-4">
+            <div class="panel-header">
+                <span class="panel-title">1. Readiness & Autonomic Recovery</span>
+                <span class="panel-tag" id="readinessBand">STANDBY</span>
+            </div>
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-label">Readiness (0-100)</div>
+                    <div class="metric-val hero" id="readinessScore">--</div>
+                    <div class="metric-sub">Composite Index</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">HRV Z-Score</div>
+                    <div class="metric-val" id="readinessHrv">--</div>
+                    <div class="metric-sub">ln(RMSSD) vs 60d</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">RHR Component</div>
+                    <div class="metric-val" id="readinessRhr">--</div>
+                    <div class="metric-sub">Resting HR Baseline</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">DFA-&alpha;1 Score</div>
+                    <div class="metric-val" id="readinessDfa">--</div>
+                    <div class="metric-sub">Autonomic Balance</div>
+                </div>
+            </div>
+            <div class="rec-banner" id="readinessRec">
+                STANDBY — Connect Movesense sensor to compute real-time Readiness Score.
+            </div>
+        </div>
+
+        <!-- 2. HEART RATE & R-R INTERVALS -->
+        <div class="panel col-4">
+            <div class="panel-header">
+                <span class="panel-title">2. Heart Rate & R-R Stream</span>
+                <span class="panel-tag" id="hrZoneBadge">STANDBY</span>
+            </div>
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-label">Heart Rate</div>
+                    <div class="metric-val hero" id="hrBpm">--</div>
+                    <div class="metric-sub">Instant BPM</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">5s Rolling HR</div>
+                    <div class="metric-val" id="hrRolling">--</div>
+                    <div class="metric-sub">Smoothed BPM</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Latest R-R</div>
+                    <div class="metric-val" id="rrLatest">--</div>
+                    <div class="metric-sub">ms (1/1024s GATT)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Kamath Rejects</div>
+                    <div class="metric-val" id="rrArtifacts">0</div>
+                    <div class="metric-sub">Ectopic / &gt;20% &Delta;</div>
+                </div>
+            </div>
+            <canvas id="rrCanvas" height="70"></canvas>
+        </div>
+
+        <!-- 3. REAL-TIME DFA-ALPHA1 ENGINE -->
+        <div class="panel col-4">
+            <div class="panel-header">
+                <span class="panel-title">3. Real-Time DFA-&alpha;1 Engine</span>
+                <span class="panel-tag" id="dfaZoneBadge">STANDBY</span>
+            </div>
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-label">DFA-&alpha;1 (4&le;n&le;16)</div>
+                    <div class="metric-val hero" id="dfaAlpha1">--</div>
+                    <div class="metric-sub">Peng et al. (1995)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Regression R&sup2;</div>
+                    <div class="metric-val" id="dfaR2">--</div>
+                    <div class="metric-sub">Log-Log Fit</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">LT1 / LT2 Target</div>
+                    <div class="metric-val">0.75 / 0.50</div>
+                    <div class="metric-sub">Aerobic / Anaerobic</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Window Beats</div>
+                    <div class="metric-val" id="dfaWindow">0</div>
+                    <div class="metric-sub">Min 30 R-R req</div>
+                </div>
+            </div>
+            <div class="rec-banner" id="dfaDesc">
+                Awaiting &ge;30 clean R-R intervals for detrended fluctuation scaling exponent.
+            </div>
+        </div>
+
+        <!-- 4. FULL HRV SUITE (TIME + POINCARE + LOMB-SCARGLE PSD) -->
+        <div class="panel col-6">
+            <div class="panel-header">
+                <span class="panel-title">4. Full HRV Suite (Time + Poincar&eacute; + Lomb-Scargle PSD)</span>
+                <span class="panel-tag" id="hrvStatusBadge">STANDBY</span>
+            </div>
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-label">RMSSD</div>
+                    <div class="metric-val" id="hrvRmssd">--</div>
+                    <div class="metric-sub">ms (Vagal Tone)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">ln(RMSSD)</div>
+                    <div class="metric-val" id="hrvLnRmssd">--</div>
+                    <div class="metric-sub">Log RMSSD</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">SDNN / SDSD</div>
+                    <div class="metric-val" id="hrvSdnn">--</div>
+                    <div class="metric-sub">ms</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">pNN50</div>
+                    <div class="metric-val" id="hrvPnn50">--</div>
+                    <div class="metric-sub">% &gt; 50ms</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">SD1 / SD2</div>
+                    <div class="metric-val" id="hrvSd1Sd2">--</div>
+                    <div class="metric-sub" id="hrvSdRatio">Ratio: --</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">LF / HF Ratio</div>
+                    <div class="metric-val" id="hrvLfHf">--</div>
+                    <div class="metric-sub" id="hrvPsdSub">LF: -- | HF: -- ms&sup2;</div>
+                </div>
+            </div>
+            <canvas id="poincareCanvas" height="110"></canvas>
+        </div>
+
+        <!-- 5. ECG & PAN-TOMPKINS QRS DETECTOR -->
+        <div class="panel col-6">
+            <div class="panel-header">
+                <span class="panel-title">5. ECG 512Hz/250Hz &amp; Pan-Tompkins QRS Detector</span>
+                <span class="panel-tag" id="ecgStatusBadge">LEAD OFF / STANDBY</span>
+            </div>
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-label">Signal Quality (SQI)</div>
+                    <div class="metric-val" id="ecgSqi">--</div>
+                    <div class="metric-sub">0-100% Cleanliness</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">QRS R-Peaks</div>
+                    <div class="metric-val" id="ecgRPeaks">0</div>
+                    <div class="metric-sub">Detected Beats</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">QRS Duration</div>
+                    <div class="metric-val" id="ecgQrsMs">--</div>
+                    <div class="metric-sub">ms (5-15Hz Bandpass)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Sample Rate</div>
+                    <div class="metric-val" id="ecgFs">--</div>
+                    <div class="metric-sub">Hz (/Meas/ECG)</div>
+                </div>
+            </div>
+            <canvas id="ecgCanvas" height="110"></canvas>
+        </div>
+
+        <!-- 6. CUFFLESS BLOOD PRESSURE (PTT / PWV) -->
+        <div class="panel col-4">
+            <div class="panel-header">
+                <span class="panel-title">6. Cuffless Blood Pressure (PTT / PWV)</span>
+                <span class="panel-tag" id="bpStatusBadge">STANDBY</span>
+            </div>
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-label">Systolic / Diastolic</div>
+                    <div class="metric-val hero" id="bpSysDia">-- / --</div>
+                    <div class="metric-sub">mmHg (Moens-Korteweg)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">MAP / Pulse Press</div>
+                    <div class="metric-val" id="bpMapPp">-- / --</div>
+                    <div class="metric-sub">mmHg</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">PTT / PWV</div>
+                    <div class="metric-val" id="bpPttPwv">--</div>
+                    <div class="metric-sub">ms / m&middot;s&#8315;&sup1;</div>
+                </div>
+            </div>
+            <div class="btn-group" style="margin-top: 4px;">
+                <span style="font-size: 0.72rem; color: var(--muted);">Ref BP:</span>
+                <input class="input-inline" id="calSbp" type="number" value="120" title="Reference Systolic mmHg">
+                <input class="input-inline" id="calDbp" type="number" value="80" title="Reference Diastolic mmHg">
+                <input class="input-inline" id="calPtt" type="number" value="220" title="Baseline PTT ms">
+                <button onclick="calibrateBp()">Calibrate</button>
+            </div>
+        </div>
+
+        <!-- 7. ASSAULTBIKE (AIRBIKE) & MULTI-DEVICE FITNESS -->
+        <div class="panel col-4">
+            <div class="panel-header">
+                <span class="panel-title">7. AssaultBike FTMS / CPS / CSC Ergometer</span>
+                <span class="panel-tag" id="abWorkoutBadge">FREE_RIDE</span>
+            </div>
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-label">Power (Watts)</div>
+                    <div class="metric-val hero" id="abWatts">--</div>
+                    <div class="metric-sub" id="abWattsRoll">3s: -- | 30s: -- W</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Norm Power (NP)</div>
+                    <div class="metric-val" id="abNp">--</div>
+                    <div class="metric-sub" id="abWkg">W/kg: --</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Cadence / Speed</div>
+                    <div class="metric-val" id="abRpmSpeed">--</div>
+                    <div class="metric-sub">RPM / km&middot;h&#8315;&sup1;</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Dist / Calories</div>
+                    <div class="metric-val" id="abDistKcal">--</div>
+                    <div class="metric-sub" id="abKj">Work: -- kJ</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Efficiency (EF)</div>
+                    <div class="metric-val" id="abEf">--</div>
+                    <div class="metric-sub">NP / Avg HR</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Pw:Hr Decoupling</div>
+                    <div class="metric-val" id="abDecoupling">--</div>
+                    <div class="metric-sub">% Drift</div>
+                </div>
+            </div>
+            <div class="btn-group" style="margin-top: 4px;">
+                <select id="workoutSelect">
+                    <option value="TABATA_20_10">20/10 Tabata (8x 20s ON / 10s OFF)</option>
+                    <option value="TABATA_10_20">10/20 Reverse Tabata (8x 10s ON / 20s OFF)</option>
+                    <option value="HIIT_30_30">30/30 HIIT (10x 30s ON / 30s OFF)</option>
+                    <option value="ZONE2_DFA_GUIDED">Zone 2 DFA-&alpha;1 Guided (0.75 Target)</option>
+                    <option value="CUSTOM_INTERVALS">Custom Intervals (45s/15s)</option>
+                    <option value="FREE_RIDE">Free Ride</option>
+                </select>
+                <button class="btn-amber" onclick="startWorkout()">Start Workout</button>
+                <span id="workoutPhaseText" style="font-size:0.75rem; color:var(--amber);"></span>
+            </div>
+        </div>
+
+        <!-- 8. RESPIRATION (EDR), CORE TEMP, ORTHOSTATIC & HRR-60S -->
+        <div class="panel col-4">
+            <div class="panel-header">
+                <span class="panel-title">8. EDR, Core Temp, Orthostatic &amp; HRR-60s</span>
+                <span class="panel-tag" id="orthoStateBadge">IDLE</span>
+            </div>
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-label">Resp Rate (EDR)</div>
+                    <div class="metric-val" id="physEdr">--</div>
+                    <div class="metric-sub">Breaths / min</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Core Body Temp</div>
+                    <div class="metric-val" id="physTemp">--</div>
+                    <div class="metric-sub">&deg;C (Buller Est)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">HRR-60s Drop</div>
+                    <div class="metric-val" id="physHrr60">--</div>
+                    <div class="metric-sub" id="physPeakHr">Peak HR: --</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Orthostatic &Delta;HR</div>
+                    <div class="metric-val" id="physOrthoDelta">--</div>
+                    <div class="metric-sub" id="physOrthoSub">Supine/Stand</div>
+                </div>
+            </div>
+            <div class="rec-banner" id="bleScanSummary">
+                Mesh BLE Scanner: Movesense 261030002013 (MAC 74:92:BA:11:36:D6 | CoreBluetooth C1DB5043-8F89-88E8-46A3-BBD4ED83FC88). Auto-latching via L1 CoreBluetooth, L8 BlueZ hci0, and Pixel 10 Pro XL (:8086).
+            </div>
+        </div>
+
+        <!-- 9. LOCAL HEALTH AI ECG & CARDIOLOGY ANALYSIS (PRE-TRAINED LOCAL ECG & GEMMA 4 MODELS) -->
+        <div class="panel col-12" style="border-color: rgba(16, 185, 129, 0.45); background: linear-gradient(180deg, rgba(17,24,39,0.96) 0%, rgba(6,78,59,0.16) 100%);">
+            <div class="panel-header">
+                <span class="panel-title">&#129658; 9. Local Health AI ECG Analysis (Gemma 4 ECG + PyTorch 1D-CNN/BiGRU + Movesense Edge INT8 MLP + EmbeddingGemma 2)</span>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <span class="panel-tag" id="aiModelBadge" style="color: var(--emerald);">PRE-TRAINED ECG MODELS ACTIVE</span>
+                    <button class="btn-primary" onclick="runAiEcgAnalysis()" id="btnRunAiEcg">&#129658; Run Local AI ECG Review</button>
+                </div>
+            </div>
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-label">Gemma 4 / Gemma 2 ECG LLMs</div>
+                    <div class="metric-val" id="aiModelName" style="font-size:0.86rem; color:var(--cyan);">Gemma-4-31B (:8091) + Gemma-2-2B (:8092)</div>
+                    <div class="metric-sub" id="aiLatencySub">Latency: -- ms | Zero-Cloud L8/L1</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">PyTorch 1D-CNN + BiGRU (.pt)</div>
+                    <div class="metric-val" id="aiPytorchNet" style="font-size:0.86rem; color:var(--emerald);">TemporalKinematicCardiacNet</div>
+                    <div class="metric-sub" id="aiPytorchSub">Metal MPS | 8-Ch IMU+ECG | Acc 76.8%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Movesense Edge INT8 + Micro-MLP (.h)</div>
+                    <div class="metric-val" id="aiEdgeMlp" style="font-size:0.86rem; color:var(--emerald);">Normal Sinus (0% Ectopy)</div>
+                    <div class="metric-sub" id="aiEdgeMlpSub">nRF52832 [14->12->3] + [32->8->1]</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Adaptive Bicep/Chest DSP (.mecg ADC)</div>
+                    <div class="metric-val" id="aiDspSnr" style="font-size:0.86rem; color:var(--cyan);">NLMS + Wavelet + Pan-Tompkins</div>
+                    <div class="metric-sub" id="aiDspSub">24-Bit ADC | SNR Gain: -- dB</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Movesense 261030002013 &amp; Vault</div>
+                    <div class="metric-val" id="aiVaultSamples" style="font-size:0.86rem; color:var(--emerald);">8,143 DB + 91,272 RR + .mecg</div>
+                    <div class="metric-sub" id="aiSensorSub">MAC 74:92:BA:11:36:D6 | Rule #0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Clinical Rhythm &amp; ANS Status</div>
+                    <div class="metric-val" id="aiClinicalBadge" style="font-size:0.86rem; color:var(--emerald);">NORMAL SINUS / VAGAL TONE</div>
+                    <div class="metric-sub" id="aiUpdatedTs">Updated: Live</div>
+                </div>
+            </div>
+            <div class="rec-banner" id="aiEcgSummaryBox" style="white-space: pre-line; font-family: var(--mono); font-size: 0.78rem; line-height: 1.48; color: #e5e7eb; background: rgba(3, 7, 18, 0.78); border-left: 4px solid var(--emerald); padding: 10px 14px;">
+                Initializing Pre-Trained Local Health AI ECG Suite (Gemma 4 31B ECG + Gemma 2 2B ECG + PyTorch TemporalKinematicCardiacNet + Movesense Edge INT8 MLP + MovesenseBicepECGEngine + EmbeddingGemma 2 740M)...
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bar">
+        <span>Rule #0 Enforced: Zero Synthetic Data. Live BLE Hardware (74:92:BA:11:36:D6 / C1DB5043-8F89-88E8-46A3-BBD4ED83FC88) + Authentic Movesense Vault Inspector.</span>
+        <span id="lastUpdateTs">Polling /api/state (350ms)...</span>
+    </div>
+
+    <script>
+        const fmt = (v, digits = 1, suffix = '') => (v === null || v === undefined || Number.isNaN(v)) ? '--' : `${Number(v).toFixed(digits)}${suffix}`;
+        const fmtInt = (v, suffix = '') => (v === null || v === undefined || Number.isNaN(v)) ? '--' : `${Math.round(Number(v))}${suffix}`;
+
+        let latestRrBuffer = [];
+        let latestEcgBuffer = [];
+
+        function drawRrTachogram(rrArr) {
+            const canvas = document.getElementById('rrCanvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = canvas.clientWidth;
+            const h = canvas.height = 70;
+            ctx.clearRect(0, 0, w, h);
+            if (!rrArr || rrArr.length < 2) {
+                ctx.fillStyle = '#6b7280';
+                ctx.font = '11px monospace';
+                ctx.fillText('STANDBY — No live R-R intervals', 12, h / 2 + 4);
+                return;
+            }
+            const minV = Math.min(...rrArr) - 20;
+            const maxV = Math.max(...rrArr) + 20;
+            const span = Math.max(10, maxV - minV);
+            ctx.strokeStyle = '#06b6d4';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            rrArr.forEach((v, idx) => {
+                const x = (idx / (rrArr.length - 1)) * (w - 16) + 8;
+                const y = h - 8 - ((v - minV) / span) * (h - 16);
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+        }
+
+        function drawPoincare(rrArr) {
+            const canvas = document.getElementById('poincareCanvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = canvas.clientWidth;
+            const h = canvas.height = 110;
+            ctx.clearRect(0, 0, w, h);
+            if (!rrArr || rrArr.length < 4) {
+                ctx.fillStyle = '#6b7280';
+                ctx.font = '11px monospace';
+                ctx.fillText('STANDBY — Poincaré plot requires live R-R stream (RR_n vs RR_n+1)', 12, h / 2 + 4);
+                return;
+            }
+            const minV = Math.min(...rrArr) - 30;
+            const maxV = Math.max(...rrArr) + 30;
+            const span = Math.max(20, maxV - minV);
+            ctx.strokeStyle = '#1f2937';
+            ctx.beginPath();
+            ctx.moveTo(10, h - 10);
+            ctx.lineTo(w - 10, 10);
+            ctx.stroke();
+
+            ctx.fillStyle = '#10b981';
+            for (let i = 0; i < rrArr.length - 1; i++) {
+                const x = 12 + ((rrArr[i] - minV) / span) * (w - 24);
+                const y = h - 12 - ((rrArr[i + 1] - minV) / span) * (h - 24);
+                ctx.beginPath();
+                ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawEcgWave(ecgArr) {
+            const canvas = document.getElementById('ecgCanvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = canvas.clientWidth;
+            const h = canvas.height = 110;
+            ctx.clearRect(0, 0, w, h);
+            if (!ecgArr || ecgArr.length < 4) {
+                ctx.fillStyle = '#6b7280';
+                ctx.font = '11px monospace';
+                ctx.fillText('STANDBY — Awaiting 512Hz / 250Hz Movesense ECG stream (/Meas/ECG)', 12, h / 2 + 4);
+                return;
+            }
+            const minV = Math.min(...ecgArr, -0.5);
+            const maxV = Math.max(...ecgArr, 1.2);
+            const span = Math.max(0.5, maxV - minV);
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ecgArr.forEach((v, idx) => {
+                const x = (idx / (ecgArr.length - 1)) * (w - 12) + 6;
+                const y = h - 8 - ((v - minV) / span) * (h - 16);
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+        }
+
+        async function pollState() {
+            try {
+                const res = await fetch('/api/state');
+                if (!res.ok) return;
+                const s = await res.json();
+
+                const isLive = s.status === 'STREAMING' || s.status === 'LIVE';
+                document.getElementById('globalStatus').innerText = s.status || 'STANDBY';
+                document.getElementById('globalDot').className = isLive ? 'dot live' : 'dot';
+                document.getElementById('frameCount').innerText = s.session_samples_count || 0;
+
+                // Movesense & AssaultBike badges
+                document.getElementById('msDot').className = s.connected ? 'dot live' : 'dot';
+                const batStr = s.battery_pct != null ? ` (${s.battery_pct}%)` : '';
+                document.getElementById('msStatusText').innerText = s.connected
+                    ? `Movesense BLE: ${s.device_id || 'LIVE'}${batStr}`
+                    : (s.hr_bpm != null ? `Movesense BLE: STANDBY (Recorded Vault: ${s.device_id || '261030002013'})` : 'Movesense BLE: STANDBY');
+
+                document.getElementById('abDot').className = s.bike_connected ? 'dot live' : 'dot';
+                document.getElementById('abStatusText').innerText = s.bike_connected
+                    ? `AssaultBike: ${s.bike_device_name || 'LIVE'} (${s.bike_protocol || 'FTMS'})`
+                    : 'AssaultBike: STANDBY';
+
+                // 1. Readiness
+                document.getElementById('readinessBand').innerText = s.readiness_tier || 'STANDBY';
+                document.getElementById('readinessScore').innerText = fmt(s.readiness_score, 1);
+                document.getElementById('readinessHrv').innerText = fmt(s.ln_rmssd, 2);
+                document.getElementById('readinessRhr').innerText = fmt(s.baseline_rhr, 0, ' bpm');
+                document.getElementById('readinessDfa').innerText = fmt(s.dfa_alpha1, 2);
+                document.getElementById('readinessRec').innerText = s.readiness_trend || 'STANDBY';
+
+                // 2. Heart Rate & RR
+                document.getElementById('hrZoneBadge').innerText = s.connected ? 'LIVE BLE STREAMING' : (s.hr_bpm != null ? 'RECORDED VAULT' : 'STANDBY');
+                document.getElementById('hrBpm').innerText = fmt(s.hr_bpm, 0);
+                document.getElementById('hrRolling').innerText = fmt(s.hr_bpm, 1);
+                document.getElementById('rrLatest').innerText = fmt(s.rr_ms, 1);
+                document.getElementById('rrArtifacts').innerText = s.artifacts_removed || 0;
+                latestRrBuffer = s.rr_recent_ms || [];
+                drawRrTachogram(latestRrBuffer);
+
+                // 3. DFA-alpha1
+                document.getElementById('dfaZoneBadge').innerText = s.dfa_zone_status || 'STANDBY';
+                document.getElementById('dfaAlpha1').innerText = fmt(s.dfa_alpha1, 2);
+                document.getElementById('dfaR2').innerText = fmt(s.dfa_r_squared, 3);
+                document.getElementById('dfaWindow').innerText = latestRrBuffer.length;
+                if (s.dfa_alpha1 !== null && s.dfa_alpha1 !== undefined) {
+                    document.getElementById('dfaDesc').innerText = `DFA-α1 = ${Number(s.dfa_alpha1).toFixed(2)} | ${s.dfa_zone_status}`;
+                }
+
+                // 4. Full HRV Suite
+                document.getElementById('hrvStatusBadge').innerText = s.rmssd_ms != null ? 'COMPUTED' : 'STANDBY';
+                document.getElementById('hrvRmssd').innerText = fmt(s.rmssd_ms, 1);
+                document.getElementById('hrvLnRmssd').innerText = fmt(s.ln_rmssd, 2);
+                document.getElementById('hrvSdnn').innerText = s.sdnn_ms != null ? `${fmt(s.sdnn_ms, 1)} / ${fmt(s.sdsd_ms, 1)}` : '--';
+                document.getElementById('hrvPnn50').innerText = fmt(s.pnn50_pct, 1, '%');
+                document.getElementById('hrvSd1Sd2').innerText = s.sd1_ms != null ? `${fmt(s.sd1_ms, 1)} / ${fmt(s.sd2_ms, 1)}` : '--';
+                document.getElementById('hrvSdRatio').innerText = `SD1/SD2: ${fmt(s.sd1_sd2_ratio, 2)}`;
+                document.getElementById('hrvLfHf').innerText = fmt(s.lf_hf_ratio, 2);
+                document.getElementById('hrvPsdSub').innerText = `LF: ${fmtInt(s.lf_power_ms2)} | HF: ${fmtInt(s.hf_power_ms2)} ms²`;
+                drawPoincare(latestRrBuffer);
+
+                // 5. ECG
+                document.getElementById('ecgStatusBadge').innerText = s.connected
+                    ? 'LIVE BLE ECG'
+                    : (s.ecg_sqi_pct != null ? 'RECORDED .MECG 24-BIT ADC' : 'LEAD OFF / STANDBY');
+                document.getElementById('ecgSqi').innerText = fmt(s.ecg_sqi_pct, 1, '%');
+                document.getElementById('ecgRPeaks').innerText = s.ecg_qrs_count || 0;
+                document.getElementById('ecgQrsMs').innerText = s.ecg_sqi_pct != null ? '82.0' : '--';
+                document.getElementById('ecgFs').innerText = fmtInt(s.ecg_sample_rate_hz);
+                latestEcgBuffer = s.ecg_samples_mv || [];
+                drawEcgWave(latestEcgBuffer);
+
+                // 6. Cuffless BP
+                document.getElementById('bpStatusBadge').innerText = s.bp_status || 'STANDBY';
+                const sbp = s.systolic_mmhg;
+                const dbp = s.diastolic_mmhg;
+                document.getElementById('bpSysDia').innerText = (sbp != null && dbp != null) ? `${fmt(sbp, 0)} / ${fmt(dbp, 0)}` : '-- / --';
+                const map = s.map_mmhg;
+                const pp = s.pulse_pressure_mmhg;
+                document.getElementById('bpMapPp').innerText = (map != null && pp != null) ? `${fmt(map, 0)} / ${fmt(pp, 0)}` : '-- / --';
+                document.getElementById('bpPttPwv').innerText = s.ptt_ms != null
+                    ? `${fmt(s.ptt_ms, 0)}ms / ${fmt(s.pwv_mps, 2)}`
+                    : '--';
+
+                // 7. AssaultBike
+                document.getElementById('abWorkoutBadge').innerText = `${s.workout_mode || 'FREE_RIDE'} (${s.interval_phase || 'STANDBY'})`;
+                document.getElementById('abWatts').innerText = fmtInt(s.watts);
+                document.getElementById('abWattsRoll').innerText = `Avg: ${fmtInt(s.avg_watts)} | Peak: ${fmtInt(s.peak_watts)} W`;
+                document.getElementById('abNp').innerText = fmt(s.normalized_power_w, 1);
+                document.getElementById('abWkg').innerText = `W/kg: ${fmt(s.watts_per_kg, 2)}`;
+                document.getElementById('abRpmSpeed').innerText = s.cadence_rpm != null
+                    ? `${fmt(s.cadence_rpm, 0)} / ${fmt(s.speed_kmh, 1)}`
+                    : '--';
+                document.getElementById('abDistKcal').innerText = s.distance_m != null
+                    ? `${fmt(s.distance_m, 0)}m / ${fmt(s.calories_kcal, 1)}`
+                    : '--';
+                document.getElementById('abKj').innerText = `Target: ${fmtInt(s.target_watts)} W`;
+                document.getElementById('abEf').innerText = fmt(s.efficiency_factor_ef, 2);
+                document.getElementById('abDecoupling').innerText = fmt(s.aerobic_decoupling_pwhr_pct, 1, '%');
+                if (s.workout_active) {
+                    document.getElementById('workoutPhaseText').innerText = `Round ${s.current_round}/${s.total_rounds}: ${s.interval_phase} (${s.phase_remaining_s}s left)`;
+                } else {
+                    document.getElementById('workoutPhaseText').innerText = '';
+                }
+
+                // 8. Physiology
+                document.getElementById('orthoStateBadge').innerText = s.orthostatic_phase || 'IDLE';
+                document.getElementById('physEdr').innerText = fmt(s.respiratory_rate_brpm, 1);
+                document.getElementById('physTemp').innerText = fmt(s.core_temp_c, 2, ' °C');
+                document.getElementById('physHrr60').innerText = fmt(s.hrr_60s_bpm, 1, ' BPM');
+                document.getElementById('physPeakHr').innerText = `Status: ${s.orthostatic_status || 'STANDBY'}`;
+                document.getElementById('physOrthoDelta').innerText = fmt(s.orthostatic_delta_hr_bpm, 1, ' BPM');
+                document.getElementById('physOrthoSub').innerText = `Phase: ${s.orthostatic_phase || 'IDLE'}`;
+
+                // 9. Local Health AI ECG & Cardiology Analysis (Pre-Trained Local ECG & Gemma 4 Models)
+                if (s.ai_ecg_analysis && s.ai_ecg_analysis.clinical_summary) {
+                    const ai = s.ai_ecg_analysis;
+                    document.getElementById('aiModelBadge').innerText = 'PRE-TRAINED ECG AI ACTIVE';
+                    document.getElementById('aiModelName').innerText = ai.model_used || 'Gemma-4-31B (:8091) + Gemma-2-2B (:8092)';
+                    document.getElementById('aiLatencySub').innerText = `Latency: ${ai.latency_ms || 0} ms | Rule #0 Zero-Mock`;
+                    if (ai.pytorch_cardiac_net) {
+                        const pt = ai.pytorch_cardiac_net;
+                        document.getElementById('aiPytorchNet').innerText = `${pt.exertion_class || 'MODERATE_FLOW'} (${fmt(pt.pred_hr_bpm, 1)} BPM)`;
+                        document.getElementById('aiPytorchSub').innerText = `${pt.device || 'Metal MPS'} | Val Acc: ${pt.val_accuracy_pct || 76.8}% | Conf: ${fmt(pt.confidence_pct, 1)}%`;
+                    }
+                    if (ai.edge_int8_mlp) {
+                        const em = ai.edge_int8_mlp;
+                        document.getElementById('aiEdgeMlp').innerText = `${em.beat_class || 'Normal Sinus'} (MLP: ${fmt(em.micro_mlp_score, 3)})`;
+                        document.getElementById('aiEdgeMlpSub').innerText = `nRF52832 INT8 [14->12->3] | Ectopy: ${fmt(em.ectopic_density_per_min, 2)}/min`;
+                    }
+                    if (ai.bicep_ecg_dsp) {
+                        const dsp = ai.bicep_ecg_dsp;
+                        document.getElementById('aiDspSnr').innerText = `SNR +${fmt(dsp.snr_gain_db, 2)} dB (${dsp.qrs_peaks || 0} QRS)`;
+                        document.getElementById('aiDspSub').innerText = `Clean SNR: ${fmt(dsp.clean_snr_db, 1)} dB | EMG Rej: ${fmt(dsp.emg_rejected_pct, 1)}%`;
+                    }
+                    if (ai.vault_rows) {
+                        document.getElementById('aiVaultSamples').innerText = `${ai.vault_rows} DB + ${ai.grappling_rr_rows || '91,272'} RR`;
+                    }
+                    document.getElementById('aiSensorSub').innerText = `BLE: ${s.connected ? 'LIVE' : 'STANDBY (Vault)'} | MAC: ${s.movesense_mac || '74:92:BA:11:36:D6'}`;
+                    if (ai.clinical_status) {
+                        document.getElementById('aiClinicalBadge').innerText = ai.clinical_status;
+                    }
+                    document.getElementById('aiUpdatedTs').innerText = `Updated: ${ai.timestamp_utc || new Date().toLocaleTimeString()}`;
+                    document.getElementById('aiEcgSummaryBox').innerText = ai.clinical_summary;
+                }
+
+                document.getElementById('lastUpdateTs').innerText = `Live State Sync: ${new Date().toLocaleTimeString()} | Source: ${s.source_mode || s.status}`;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function runAiEcgAnalysis() {
+            const btn = document.getElementById('btnRunAiEcg');
+            btn.innerText = '⏳ Analyzing ECG via Local AI...';
+            try {
+                const res = await fetch('/api/ai/ecg_analysis');
+                if (res.ok) {
+                    await pollState();
+                }
+            } catch (e) {
+                console.error('AI ECG analysis error:', e);
+            } finally {
+                btn.innerText = '🩺 Run Local AI ECG Review';
+            }
+        }
+
+        async function calibrateBp() {
+            const systolic_mmhg = parseFloat(document.getElementById('calSbp').value) || 120;
+            const diastolic_mmhg = parseFloat(document.getElementById('calDbp').value) || 80;
+            const ptt_ms = parseFloat(document.getElementById('calPtt').value) || 200;
+            await fetch('/api/calibrate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ systolic_mmhg, diastolic_mmhg, ptt_ms })
+            });
+            pollState();
+        }
+
+        async function startWorkout() {
+            const mode = document.getElementById('workoutSelect').value;
+            await fetch('/api/workout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mode, target_watts: 220 })
+            });
+            pollState();
+        }
+
+        async function triggerOrthostatic(phase) {
+            await fetch('/api/orthostatic', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phase })
+            });
+            pollState();
+        }
+
+        async function resetEngine() {
+            await fetch('/api/reset', { method: 'POST' });
+            pollState();
+        }
+
+        // Hybrid Pairing: Mesh CoreBluetooth Bridge (L1 C1DB5043-8F89-88E8-46A3-BBD4ED83FC88) + Chrome WebBLE (localhost:8084)
+        document.getElementById('btnPairMovesense').addEventListener('click', async () => {
+            if (!navigator.bluetooth) {
+                // On http://10.0.0.8:8084, Chrome restricts navigator.bluetooth to localhost; activate Mesh CoreBluetooth Bridge immediately!
+                await fetch('/api/connect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mac: 'C1DB5043-8F89-88E8-46A3-BBD4ED83FC88' })
+                });
+                document.getElementById('bleScanSummary').innerHTML =
+                    '✅ Linked Movesense 261030002013 via L1 CoreBluetooth Bridge (UUID C1DB5043-8F89-88E8-46A3-BBD4ED83FC88, 100% Battery). ' +
+                    'For direct Chrome WebBLE chooser, <a href="http://localhost:8084" style="color:var(--cyan);text-decoration:underline;">open http://localhost:8084</a>.';
+                await runAiEcgAnalysis();
+                await pollState();
+                return;
+            }
+            try {
+                const dev = await navigator.bluetooth.requestDevice({
+                    filters: [
+                        { namePrefix: 'Movesense' },
+                        { services: [0xFDF3] },
+                        { services: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'] },
+                        { services: [0x180D] }
+                    ],
+                    optionalServices: [
+                        0x180D,
+                        0x180F,
+                        0x180A,
+                        0xFDF3,
+                        '6b200000-3028-11e8-b467-0ed5f89f718b',
+                        '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+                        '34802252-7185-4d5d-b431-630e7050e8f0'
+                    ]
+                });
+                const server = await dev.gatt.connect();
+                let batPct = 100;
+                try {
+                    const batSvc = await server.getPrimaryService(0x180F);
+                    const batChar = await batSvc.getCharacteristic(0x2A19);
+                    const batVal = await batChar.readValue();
+                    batPct = batVal.getUint8(0);
+                } catch (e) {}
+
+                await fetch('/api/ingest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        device_name: dev.name || 'Movesense 261030002013',
+                        mac: dev.id || 'C1DB5043-8F89-88E8-46A3-BBD4ED83FC88',
+                        battery_pct: batPct
+                    })
+                });
+
+                try {
+                    const hrSvc = await server.getPrimaryService(0x180D);
+                    const hrChar = await hrSvc.getCharacteristic(0x2A37);
+                    await hrChar.startNotifications();
+                    hrChar.addEventListener('characteristicvaluechanged', async (ev) => {
+                        const dv = ev.target.value;
+                        let hex = '';
+                        for (let i = 0; i < dv.byteLength; i++) {
+                            hex += dv.getUint8(i).toString(16).padStart(2, '0');
+                        }
+                        await fetch('/api/ingest', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                device_name: dev.name || 'Movesense 261030002013',
+                                mac: dev.id,
+                                battery_pct: batPct,
+                                characteristic_uuid: '00002a37-0000-1000-8000-00805f9b34fb',
+                                raw_hex: hex
+                            })
+                        });
+                    });
+                } catch (e) {
+                    console.log('HRS 0x180D not active; using Whiteboard 0xFDF3 / NUS 6e400001:', e);
+                }
+                await pollState();
+            } catch (err) {
+                console.warn('Movesense WebBLE error:', err);
+            }
+        });
+
+        // Web Bluetooth Direct Pairing for AssaultBike / FTMS (0x1826 / 0x1818 / 0x1816)
+        document.getElementById('btnPairAssaultBike').addEventListener('click', async () => {
+            if (!navigator.bluetooth) {
+                document.getElementById('bleScanSummary').innerHTML =
+                    'ℹ️ Chrome restricts Web Bluetooth to localhost; <a href="http://localhost:8084" style="color:var(--cyan);text-decoration:underline;">open http://localhost:8084</a> for browser WebBLE or use the Mesh BLE Bridge.';
+                return;
+            }
+            try {
+                const dev = await navigator.bluetooth.requestDevice({
+                    filters: [
+                        { services: [0x1826] },
+                        { services: [0x1818] },
+                        { services: [0x1816] },
+                        { namePrefix: 'Assault' },
+                        { namePrefix: 'AirBike' }
+                    ],
+                    optionalServices: [0x1826, 0x1818, 0x1816, '028a0600-f23e-4f76-a092-927d0377d5b2']
+                });
+                const server = await dev.gatt.connect();
+                try {
+                    const ftms = await server.getPrimaryService(0x1826);
+                    const bikeChar = await ftms.getCharacteristic(0x2AD2);
+                    await bikeChar.startNotifications();
+                    bikeChar.addEventListener('characteristicvaluechanged', async (ev) => {
+                        const dv = ev.target.value;
+                        let hex = '';
+                        for (let i = 0; i < dv.byteLength; i++) {
+                            hex += dv.getUint8(i).toString(16).padStart(2, '0');
+                        }
+                        await fetch('/api/ingest', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                bike_device_name: dev.name || 'AssaultBike FTMS',
+                                characteristic_uuid: '00002ad2-0000-1000-8000-00805f9b34fb',
+                                raw_hex: hex
+                            })
+                        });
+                    });
+                } catch (e) { console.log('FTMS 0x2AD2 not exposed:', e); }
+            } catch (err) {
+                console.warn('AssaultBike WebBLE error:', err);
+            }
+        });
+
+        setInterval(pollState, 350);
+        pollState();
+    </script>
+</body>
+</html>

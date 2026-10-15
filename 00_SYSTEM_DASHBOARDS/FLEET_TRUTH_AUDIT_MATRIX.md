@@ -13,7 +13,7 @@
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Layer 1 (Host)** | Apple M4 Pro Mac Mini | **24.0 GB** | **21.6 GB** | `100.119.199.76` | Host Controller, Prompt Ingestion & Memory Governor |
 | **Layer 2 (Vault)** | Intel i7 MacBook Pro | **16.0 GB** | **14.0 GB** | `100.103.212.21` | 10Gbps Thunderbolt 4 Metal GPU & Storage Vault |
-| **Layer 3 (Head)** | AMD Ryzen 7 5700U | **16.0 GB** | **13.8 GB** | `100.101.39.98` | Compute Hub, Docker Engine & PySpark Worker |
+| **Layer 3 (Head)** | Intel 2018 Mac Mini (Linux) | **16.0 GB** | **13.8 GB** | `100.101.39.98` | Compute Hub, Docker Engine & PySpark Worker |
 | **Layer 4 (Tablet)** | Debian Linux Tablet | **8.0 GB** | **6.5 GB** | `100.81.92.125` | Mobile Linux Compute & Touch DSP |
 | **Layer 5 (Compute)** | Apple M4 MacBook Air | **16.0 GB** | **14.0 GB** | `100.93.158.96` | High-Speed Metal Worker & LoRA Distillation |
 | **Layer 6 (Vision)** | Google Pixel 10 Pro XL | **16.0 GB** | **12.5 GB** | `100.73.38.87` | Tensor G5 Edge TPU, Petals Swarm (31330) & ggml-rpc |

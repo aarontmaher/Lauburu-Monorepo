@@ -55,7 +55,7 @@ updated: "2026-09-07 15:13:32"
 
 ## 🏷️ 24GB+ Tier (Mac Mini / Pooled Mesh)
 - **Total Hardware RAM:** `24.0 GB` | **OS / App Reserve:** `3.5 GB` | **Max AI Cap:** `20.5 GB`
-- **Target Hardware:** Apple M4 Pro Mac Mini, 10Gbps TB4 Cluster
+- **Target Hardware:** Apple M4 Pro Mac Mini, 40Gbps TB4 Cluster
 
 | Application | Allocated Optimal Model | Total AI RAM | RAM Headroom | Speed (tok/s) | Core Capability | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |

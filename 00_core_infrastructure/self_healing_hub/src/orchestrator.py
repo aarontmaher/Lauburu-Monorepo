@@ -547,7 +547,7 @@ class Orchestrator:
         """Probes for genuine active model downloading processes (wget, curl, huggingface) across host with live empirical bytes."""
         try:
             import glob, time
-            hf_downloads = glob.glob("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/models/.cache/huggingface/download/*.incomplete")
+            hf_downloads = glob.glob("/Volumes/Lauburu-Monorepo/models/.cache/huggingface/download/*.incomplete")
             
             active_file = None
             for f in hf_downloads:

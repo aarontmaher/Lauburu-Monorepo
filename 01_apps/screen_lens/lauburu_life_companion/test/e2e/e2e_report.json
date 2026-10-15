@@ -1,0 +1,409 @@
+{
+  "total_tests": 50,
+  "total_passed": 50,
+  "total_failed": 0,
+  "pass_pct": 100.0,
+  "total_duration_s": 3.93,
+  "results": [
+    {
+      "name": "test_macos_launchagent_plist_structure_and_syntax",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R1: Silent Boot",
+      "passed": true,
+      "duration_ms": 13.8,
+      "error": null
+    },
+    {
+      "name": "test_macos_launchagent_silent_execution",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R1: Silent Boot",
+      "passed": true,
+      "duration_ms": 0.11,
+      "error": null
+    },
+    {
+      "name": "test_macos_daemon_port_responsiveness",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R1: Silent Boot",
+      "passed": true,
+      "duration_ms": 2.0,
+      "error": null
+    },
+    {
+      "name": "test_android_manifest_boot_permission",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R1: Silent Boot",
+      "passed": true,
+      "duration_ms": 0.67,
+      "error": null
+    },
+    {
+      "name": "test_android_boot_receiver_intent_filter",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R1: Silent Boot",
+      "passed": true,
+      "duration_ms": 0.09,
+      "error": null
+    },
+    {
+      "name": "test_android_boot_receiver_silent_contract",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R1: Silent Boot",
+      "passed": true,
+      "duration_ms": 0.32,
+      "error": null
+    },
+    {
+      "name": "test_shopify_graphql_login_endpoint_structure",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R2: Shopify Auth",
+      "passed": true,
+      "duration_ms": 0.0,
+      "error": null
+    },
+    {
+      "name": "test_shopify_dev_token_authentication",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R2: Shopify Auth",
+      "passed": true,
+      "duration_ms": 0.01,
+      "error": null
+    },
+    {
+      "name": "test_shopify_customer_profile_tier_parsing_pro",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R2: Shopify Auth",
+      "passed": true,
+      "duration_ms": 0.01,
+      "error": null
+    },
+    {
+      "name": "test_shopify_customer_profile_tier_parsing_elite",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R2: Shopify Auth",
+      "passed": true,
+      "duration_ms": 0.0,
+      "error": null
+    },
+    {
+      "name": "test_shopify_customer_profile_tier_parsing_free",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R2: Shopify Auth",
+      "passed": true,
+      "duration_ms": 0.0,
+      "error": null
+    },
+    {
+      "name": "test_shopify_token_renewal_mutation",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R2: Shopify Auth",
+      "passed": true,
+      "duration_ms": 0.0,
+      "error": null
+    },
+    {
+      "name": "test_session_storage_serialization_and_restore",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R3: Cross-Device Sync",
+      "passed": true,
+      "duration_ms": 0.89,
+      "error": null
+    },
+    {
+      "name": "test_cloud_sync_refreshes_local_customer_tags",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R3: Cross-Device Sync",
+      "passed": true,
+      "duration_ms": 0.26,
+      "error": null
+    },
+    {
+      "name": "test_session_token_expiration_validation",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R3: Cross-Device Sync",
+      "passed": true,
+      "duration_ms": 0.06,
+      "error": null
+    },
+    {
+      "name": "test_session_clear_on_logout",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R3: Cross-Device Sync",
+      "passed": true,
+      "duration_ms": 0.23,
+      "error": null
+    },
+    {
+      "name": "test_concurrent_device_session_reconciliation",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R3: Cross-Device Sync",
+      "passed": true,
+      "duration_ms": 0.29,
+      "error": null
+    },
+    {
+      "name": "test_local_ai_dual_port_routing_hierarchy",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R4: E-Commerce AI",
+      "passed": true,
+      "duration_ms": 0.3,
+      "error": null
+    },
+    {
+      "name": "test_local_ai_live_inference_port_8083",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R4: E-Commerce AI",
+      "passed": true,
+      "duration_ms": 219.13,
+      "error": null
+    },
+    {
+      "name": "test_canonical_catalog_integrity",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R4: E-Commerce AI",
+      "passed": true,
+      "duration_ms": 0.01,
+      "error": null
+    },
+    {
+      "name": "test_ad_copy_generation_prompt_contract",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R4: E-Commerce AI",
+      "passed": true,
+      "duration_ms": 0.0,
+      "error": null
+    },
+    {
+      "name": "test_strict_timeout_boundaries_enforced",
+      "tier": "Tier 1: Feature Coverage",
+      "deliverable": "R4: E-Commerce AI",
+      "passed": true,
+      "duration_ms": 0.0,
+      "error": null
+    },
+    {
+      "name": "test_plist_file_missing_or_corrupt_handling",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R1: Silent Boot",
+      "passed": true,
+      "duration_ms": 0.35,
+      "error": null
+    },
+    {
+      "name": "test_launchctl_unloaded_state_handling",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R1: Silent Boot",
+      "passed": true,
+      "duration_ms": 10.97,
+      "error": null
+    },
+    {
+      "name": "test_android_manifest_missing_permission_detection",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R1: Silent Boot",
+      "passed": true,
+      "duration_ms": 0.24,
+      "error": null
+    },
+    {
+      "name": "test_daemon_port_conflict_detection",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R1: Silent Boot",
+      "passed": true,
+      "duration_ms": 0.23,
+      "error": null
+    },
+    {
+      "name": "test_repeated_launchd_load_idempotency",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R1: Silent Boot",
+      "passed": true,
+      "duration_ms": 0.86,
+      "error": null
+    },
+    {
+      "name": "test_login_invalid_email_format",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R2: Shopify Auth",
+      "passed": true,
+      "duration_ms": 0.17,
+      "error": null
+    },
+    {
+      "name": "test_login_incorrect_password",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R2: Shopify Auth",
+      "passed": true,
+      "duration_ms": 0.0,
+      "error": null
+    },
+    {
+      "name": "test_login_empty_or_null_credentials",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R2: Shopify Auth",
+      "passed": true,
+      "duration_ms": 0.01,
+      "error": null
+    },
+    {
+      "name": "test_expired_access_token_renew_failure",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R2: Shopify Auth",
+      "passed": true,
+      "duration_ms": 0.0,
+      "error": null
+    },
+    {
+      "name": "test_malformed_dev_token_rejected",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R2: Shopify Auth",
+      "passed": true,
+      "duration_ms": 0.01,
+      "error": null
+    },
+    {
+      "name": "test_corrupted_session_storage_recovery",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R3: Cross-Device Sync",
+      "passed": true,
+      "duration_ms": 0.5,
+      "error": null
+    },
+    {
+      "name": "test_network_offline_during_cloud_sync",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R3: Cross-Device Sync",
+      "passed": true,
+      "duration_ms": 0.27,
+      "error": null
+    },
+    {
+      "name": "test_token_revoked_remotely_triggers_logout",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R3: Cross-Device Sync",
+      "passed": true,
+      "duration_ms": 0.27,
+      "error": null
+    },
+    {
+      "name": "test_storage_near_expiration_boundary",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R3: Cross-Device Sync",
+      "passed": true,
+      "duration_ms": 0.07,
+      "error": null
+    },
+    {
+      "name": "test_missing_required_profile_fields",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R3: Cross-Device Sync",
+      "passed": true,
+      "duration_ms": 0.0,
+      "error": null
+    },
+    {
+      "name": "test_both_ai_ports_offline_fallback",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R4: E-Commerce AI",
+      "passed": true,
+      "duration_ms": 0.46,
+      "error": null
+    },
+    {
+      "name": "test_ai_inference_http_503_recovery",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R4: E-Commerce AI",
+      "passed": true,
+      "duration_ms": 98.64,
+      "error": null
+    },
+    {
+      "name": "test_ai_inference_empty_prompt_rejection",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R4: E-Commerce AI",
+      "passed": true,
+      "duration_ms": 0.0,
+      "error": null
+    },
+    {
+      "name": "test_ai_inference_timeout_cutoff",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R4: E-Commerce AI",
+      "passed": true,
+      "duration_ms": 0.18,
+      "error": null
+    },
+    {
+      "name": "test_canonical_catalog_invalid_item_lookup",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "deliverable": "R4: E-Commerce AI",
+      "passed": true,
+      "duration_ms": 0.01,
+      "error": null
+    },
+    {
+      "name": "test_boot_persistence_to_auth_session_restore",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "deliverable": "Cross-Feature",
+      "passed": true,
+      "duration_ms": 2.25,
+      "error": null
+    },
+    {
+      "name": "test_auth_sync_to_ecommerce_tier_entitlement",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "deliverable": "Cross-Feature",
+      "passed": true,
+      "duration_ms": 0.23,
+      "error": null
+    },
+    {
+      "name": "test_session_restore_to_ai_model_query",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "deliverable": "Cross-Feature",
+      "passed": true,
+      "duration_ms": 1958.22,
+      "error": null
+    },
+    {
+      "name": "test_ai_inference_failure_during_active_session",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "deliverable": "Cross-Feature",
+      "passed": true,
+      "duration_ms": 0.6,
+      "error": null
+    },
+    {
+      "name": "test_token_revocation_during_ai_catalog_browsing",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "deliverable": "Cross-Feature",
+      "passed": true,
+      "duration_ms": 0.37,
+      "error": null
+    },
+    {
+      "name": "test_user_journey_cold_boot_login_sync_and_ad_generation",
+      "tier": "Tier 4: Real-World Scenarios",
+      "deliverable": "E2E User Journey",
+      "passed": true,
+      "duration_ms": 1617.54,
+      "error": null
+    },
+    {
+      "name": "test_user_journey_offline_start_reconnect_and_sync",
+      "tier": "Tier 4: Real-World Scenarios",
+      "deliverable": "E2E User Journey",
+      "passed": true,
+      "duration_ms": 1.35,
+      "error": null
+    },
+    {
+      "name": "test_user_journey_cross_device_tier_upgrade",
+      "tier": "Tier 4: Real-World Scenarios",
+      "deliverable": "E2E User Journey",
+      "passed": true,
+      "duration_ms": 0.8,
+      "error": null
+    }
+  ]
+}

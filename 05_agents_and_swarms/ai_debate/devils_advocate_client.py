@@ -19,7 +19,7 @@ import argparse
 import json
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -31,7 +31,8 @@ ABLITERATED_SERVERS = [
     {"port": 8082, "model": "Mistral-Nemo-12B-Abliterated",        "priority": 3, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Mistral-Nemo-Instruct-2407-abliterated.Q4_K_M.gguf"},
     {"port": 8083, "model": "Llama-3.1-8B-Abliterated",           "priority": 4, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/meta-llama-3.1-8b-instruct-abliterated.Q4_K_M.gguf"},
     {"port": 8085, "model": "Llama-3.1-Nemotron-70B-Abliterated", "priority": 5, "path": "/Users/aaron/models/Llama-3.1-Nemotron-70B-Instruct-HF-abliterated-Q4_K_M.gguf"},
-    {"port": 8081, "model": "Qwen-2.5-Coder-Local",               "priority": 6, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen2.5-coder-7b-instruct-q4_k_m.gguf"},
+    {"port": 8083, "model": "Qwen-2.5-7B-Abliterated",            "priority": 6, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Qwen2.5-7B-Instruct-abliterated.Q4_K_M.gguf"},
+    {"port": 8083, "model": "Gemma-2-9B-Abliterated",             "priority": 7, "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/gemma-2-9b-it-abliterated-Q4_K_M.gguf"},
 ]
 
 LORA_DATASET = Path("/Users/aaron/DFS_UNIFIED/lora_datasets/devils_advocate_training.jsonl")
@@ -53,55 +54,78 @@ You speak plainly, without hedging. You do not say "I think" or "perhaps." You s
 When you find a flaw, you explain EXACTLY why it will break and under what conditions."""
 
 
-def check_server(port: int, timeout: float = 2.0) -> bool:
-    try:
-        r = httpx.get(f"http://localhost:{port}/health", timeout=timeout)
-        data = r.json()
-        if "Decentralized prima.cpp" in str(data):
-            return False
-        # llama-server /health returns {"status": "ok"} or {"status": "loading model"}
-        return r.status_code in (200, 503) and data.get("status") in ("ok", "loading model", "loading")
-    except Exception:
-        return False
+CANDIDATE_HOSTS = ["100.101.39.98", "127.0.0.1", "192.168.8.230", "192.168.2.2", "192.168.2.3"]
+
+
+def check_server(port: int, timeout: float = 2.0) -> Optional[str]:
+    for host in CANDIDATE_HOSTS:
+        try:
+            r = httpx.get(f"http://{host}:{port}/health", timeout=timeout)
+            data = r.json()
+            if "Decentralized prima.cpp" in str(data):
+                continue
+            status = str(data.get("status", "")).lower()
+            if r.status_code in (200, 503) and (
+                status in ("ok", "loading model", "loading", "healthy", "ready")
+                or "slots_idle" in data
+                or data.get("prima_healthy") is True
+            ):
+                return host
+        except Exception:
+            continue
+    return None
 
 
 def pick_server() -> Optional[dict]:
     for srv in sorted(ABLITERATED_SERVERS, key=lambda s: s["priority"]):
-        if check_server(srv["port"]):
-            return srv
+        active_host = check_server(srv["port"])
+        if active_host:
+            res = dict(srv)
+            res["host"] = active_host
+            if srv["port"] == 8083:
+                res["model"] = "qwen_38_max_abliterated"
+            return res
     return None
 
 
 def call_devil(topic: str, server: dict) -> dict:
     port  = server["port"]
     model = server["model"]
-    url   = f"http://localhost:{port}/v1/chat/completions"
+    host  = server.get("host", "127.0.0.1")
+    url   = f"http://{host}:{port}/v1/chat/completions"
 
     payload = {
         "model": model,
         "messages": [
             {"role": "system",  "content": SYSTEM_PROMPT},
-            {"role": "user",    "content": f"DEBATE TOPIC / CONTEXT:\n\n{topic}\n\nChallenge this. Find the flaws."},
+            {"role": "user",    "content": f"DEBATE TOPIC / CONTEXT:\n\n{topic}\n\nChallenge this ruthlessly. Uncover hidden risks and flaws."},
         ],
-        "max_tokens": 512,
-        "temperature": 0.85,
+        "max_tokens": 350,
+        "temperature": 0.75,
         "repeat_penalty": 1.15,
         "stream": False,
     }
 
     start = time.time()
-    with httpx.Client(timeout=180.0) as client:
+    with httpx.Client(timeout=240.0) as client:
         resp = client.post(url, json=payload)
         resp.raise_for_status()
 
     data     = resp.json()
-    response = data["choices"][0]["message"]["content"]
+    raw_content = data["choices"][0]["message"]["content"]
+    # If thinking format was used, separate thinking if desired or keep clean critique
+    if "</think>" in raw_content:
+        response = raw_content.split("</think>")[-1].strip()
+    else:
+        response = raw_content.strip()
+
     elapsed  = time.time() - start
 
     return {
         "role":      "devils_advocate",
         "model":     model,
         "port":      port,
+        "host":      host,
         "response":  response,
         "is_local":  True,
         "latency_s": round(elapsed, 2),
@@ -112,7 +136,7 @@ def call_devil(topic: str, server: dict) -> dict:
 def save_lora_pair(topic: str, response: str, model: str) -> None:
     LORA_DATASET.parent.mkdir(parents=True, exist_ok=True)
     pair = {
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "source":    f"devils_advocate:{model}",
         "instruction": SYSTEM_PROMPT,
         "input":  topic[:3000],

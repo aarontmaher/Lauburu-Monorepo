@@ -19,7 +19,7 @@ import time
 from pathlib import Path
 from typing import Dict, Any, List
 
-WORKSPACE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+WORKSPACE_ROOT = Path("/Volumes/Lauburu-Monorepo")
 OBSIDIAN_VAULT_DIR = WORKSPACE_ROOT / "obsidian_vault"
 GDRIVE_VAULT_DIR = Path("/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/obsidian_vault")
 
@@ -120,7 +120,7 @@ The **Master Swarm Engine** pools compute across 7 physical devices into a unifi
 | **Layer 4** | `Linux_Tablet` (Debian Linux Tablet, 8GB) | `100.81.92.125` (Bedside Mobile Linux HUD) | **6.5 GB** | Rank 1 (Fills First) |
 | **Layer 5** | `MacBook_Air` (Headless Apple M4 MacBook Air, 16GB) | `100.93.158.96` (Secondary High-Speed Metal GPU Node) | **13.5 GB** | Rank 3 (Fills Third) |
 | **Layer 6** | `Pixel_10_Pro_XL` (Google Pixel 10 Pro XL, 16GB) | `100.73.38.87` (Tensor G5 Edge TPU) | **12.5 GB** | Rank 6 (Battery Regulated) |
-| **Layer 7** | `Samsung_S20` (Samsung Galaxy S20+, 12GB) | `100.84.40.95` / `R3CN40CJJ1R` (Router USB ADB / 24/7 Power) | **9.0 GB** | Rank 5 (Fills Fifth) |
+| **Layer 7** | `Samsung_S20` (Samsung Galaxy S20+, 12GB) | `100.78.206.96` / `R3CN40CJJ1R` (Router USB ADB / 24/7 Power) | **9.0 GB** | Rank 5 (Fills Fifth) |
 
 ## 🧬 24/7 LoRA Fine-Tuning Sink
 All verified code diffs, debate outcomes, and audit corrections are continuously serialized to `/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets/`.

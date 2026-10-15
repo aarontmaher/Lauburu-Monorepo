@@ -1,0 +1,27 @@
+[package]
+name = "lauburu-webgpu-spatial"
+version = "0.1.0"
+edition = "2021"
+authors = ["Lauburu AI Mesh Specialists"]
+description = "WebGPU Rust & WGSL 3D Spatial Grappling Kinematics Bridge"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wgpu = { version = "24.0.0", default-features = false, features = ["wgsl"] }
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+bytemuck = { version = "1.16", features = ["derive"] }
+glam = { version = "0.27", features = ["bytemuck"] }
+js-sys = "0.3"
+web-sys = { version = "0.3", features = [
+    "Document",
+    "Window",
+    "Element",
+    "HtmlCanvasElement",
+    "GpuAdapter",
+    "GpuDevice",
+    "Performance"
+] }
+console_error_panic_hook = "0.1"

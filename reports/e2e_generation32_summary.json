@@ -1,0 +1,22 @@
+{
+  "timestamp_utc": "2026-09-18T14:21:08.114658+00:00",
+  "generation": 32,
+  "status": "PASSED",
+  "exit_code": 0,
+  "selected_tiers": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "feature_filter": null,
+  "total_discovered": 83,
+  "tests_run": 83,
+  "passed": 83,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "duration_seconds": 1.8471,
+  "failures": [],
+  "errors_list": []
+}

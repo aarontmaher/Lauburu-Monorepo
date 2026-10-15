@@ -24,7 +24,7 @@ tags: [ai_debate, local_ai_roles, surface_demarcation, customer_device_ram, mesh
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 2. BACK-END DEVELOPMENT & MESH SUBSYSTEMS (client_facing: False)           │
 │    • Boundary: Aaron's 7-Layer Physical Mesh (108.0 GB RAM / 82.8 GB VRAM)  │
-│    • Interconnect: 10Gbps Thunderbolt 4 DMA Bridge (bridge0 @ 0.277ms RTT) │
+│    • Interconnect: 40Gbps Thunderbolt 4 DMA Bridge (bridge0 @ 0.277ms RTT) │
 │    • Sharding Engine: Prima.cpp Pipelined Ring Parallelism + llama.cpp RPC  │
 │    • Supports: 32B, 70B, and 80B MoE frontier local models                  │
 │    • Governs: Core Infra (00), Code Gen (01), Distributed AI (02), Lake (04)│
@@ -37,13 +37,13 @@ tags: [ai_debate, local_ai_roles, surface_demarcation, customer_device_ram, mesh
 
 ## 🗣️ Deliberative Perspectives & Architectural Consensus
 
-### 1. 🤖 Local Orchestrator (Qwen 3.8 Max & Coder 32B / 10Gbps TB4 Bridge)
+### 1. 🤖 Local Orchestrator (Qwen 3.8 Max & Coder 32B / 40Gbps TB4 Bridge)
 *Native Mesh Topology & Low-Level Hardware Governor*  
 Confining internal developer tools or distributed sharding engines to customer mobile RAM limits is an ontological category error. Customers never run our SeaweedFS storage sentinels, AST static analyzers, PySpark lakehouse crawlers, or isolated CTF reverse-engineering sandboxes. The governing hardware ceiling for back-end developer apps is our physical 7-layer mesh topology:
 - **Mac Mini M4 Pro Host (L1):** 24.0 GB Unified Memory (21.6 GB AI Cap, maintaining $\ge 9.6\text{ GB}$ Host Sanctuary).
-- **MacBook Pro M4 (L2):** 16.0 GB Unified Memory (14.0 GB AI Cap) across the **10Gbps Thunderbolt 4 DMA Bridge (`bridge0` @ 0.277ms RTT)** with a 285 GB SSD Model Vault.
-- **Linux Head Node (L3):** 16.0 GB RAM (13.8 GB AI Cap), AMD Ryzen 7 5700U Docker Hub & Ray cluster.
-- **MacBook Air M4 (L5):** 16.0 GB Unified Memory (14.0 GB AI Cap), Metal Performance Shaders worker.
+- **Intel MacBook Pro (L2):** 16.0 GB Unified Memory (14.0 GB AI Cap) across the **40Gbps Thunderbolt 4 DMA Bridge (`bridge0` @ 0.277ms RTT)** with a 285 GB SSD Model Vault.
+- **Linux Head Node (L3):** 16.0 GB RAM (13.8 GB AI Cap), Intel 2018 Mac Mini (Linux) Docker Hub & Ray cluster.
+- **MacBook Pro (Node L2) (L5):** 16.0 GB Unified Memory (14.0 GB AI Cap), Metal Performance Shaders worker.
 - **Pooled AI VRAM:** $21.6 + 14.0 + 13.8 + 6.5 + 14.0 + 12.5 + 9.0 = \mathbf{82.8\text{ GB Usable AI VRAM}}$ ($108.0\text{ GB Total RAM}$).
 
 For internal development roles, a 32B model like `Qwen2.5-Coder-32B` (19.8 GB VRAM) or `Qwen-Abliterated-32B` (19.5 GB VRAM) runs with sub-millisecond tensor communication across L1 and L2. Flagging these as "exceeding device limits" was a bug in our gate definition. Their capacity boundary is the 82.8 GB Mesh.
@@ -80,7 +80,7 @@ Conflating the two throttled our internal engineering agents to tiny models unne
 ### 4. 🤖 xAI Grok-2 Developer Tier
 *Pragmatic Ground Truth & Boundary Verification*  
 Look at `11_security_red_blue_team`: The champion is `Qwen-Abliterated-Local-32B` (19.5 GB VRAM). In the previous table, it had a ridiculous red flag: `❌ Exceeds 18000 MB`. Why? Because someone set a dummy budget of 18,000 MB based on an arbitrary single-machine limit!
-Aaron's mesh has a 10Gbps Thunderbolt 4 DMA bridge connected directly to the MacBook Pro M4 with 14 GB of AI VRAM, plus 21.6 GB on the Mac Mini. 19.5 GB fits easily on either node or split across both in 0.277ms!
+Aaron's mesh has a 40Gbps Thunderbolt 4 DMA bridge connected directly to the Intel MacBook Pro with 14 GB of AI VRAM, plus 21.6 GB on the Mac Mini. 19.5 GB fits easily on either node or split across both in 0.277ms!
 No customer is ever going to run our security red team disassembly engine. It is an internal air-gapped CTF analyzer. Its status should be `✅ Fits Mesh (19.5 GB <= 82.8 GB)`. The user is 100% right.
 
 ### 5. 🤖 Devil's Advocate (Abliterated Gatekeeper)
@@ -124,8 +124,8 @@ $$C_{\text{Gate 9}}(\text{Contender}, \text{Role}) = \begin{cases}
 | Subsystem Domain | Role Champion | Model VRAM | Primary Node | Transport & Sharding Mechanism | Mesh Status |
 | :--- | :--- | :---: | :--- | :--- | :---: |
 | `00_core_infrastructure` | `SmolLM2-135M-Instruct` | 101 MB | L1 Host (Mac Mini) | Local in-memory daemon (Host Sanctuary preserved) | ✅ Fits Mesh |
-| `01_apps` (Dev) | `Qwen2.5-Coder-7B-Instruct` | 4,600 MB | L5 MacBook Air / L2 MBP | Offloaded via TB4 DMA / Metal RPC | ✅ Fits Mesh |
-| `02_ai_models_and_inference` | `Qwen2.5-Coder-32B-Instruct` | 19,800 MB | L2 MacBook Pro (TB4) | 10Gbps TB4 DMA Bridge (`bridge0` @ 0.277ms) | ✅ Fits Mesh |
+| `01_apps` (Dev) | `Qwen2.5-Coder-7B-Instruct` | 4,600 MB | L2 MacBook Pro / L2 MBP | Offloaded via TB4 DMA / Metal RPC | ✅ Fits Mesh |
+| `02_ai_models_and_inference` | `Qwen2.5-Coder-32B-Instruct` | 19,800 MB | L2 MacBook Pro (TB4) | 40Gbps TB4 DMA Bridge (`bridge0` @ 0.277ms) | ✅ Fits Mesh |
 | `04_data_and_memory` | `Qwen2.5-Coder-7B-Instruct` | 4,600 MB | L1 Host / L3 Linux | PySpark high-throughput parquet crawlers | ✅ Fits Mesh |
 | `05_agents_and_swarms` | `DeepSeek-R1-Distill-32B` | 19,800 MB | L2 MacBook Pro (TB4) | llama-server Port 8082 RPC | ✅ Fits Mesh |
 | `06_scripts_and_tooling` | `SmolLM2-360M-Instruct` | 258 MB | L1 Host (Mac Mini) | System daemons & ADB keepalives | ✅ Fits Mesh |

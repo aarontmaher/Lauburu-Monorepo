@@ -1,0 +1,16 @@
+[Unit]
+Description=SeaweedFS Volume Server
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStartPre=/bin/mkdir -p /var/lib/seaweedfs/volume
+ExecStart=/usr/local/bin/weed volume -mserver=100.101.39.98:9333 -dir=/var/lib/seaweedfs/volume -port=8080
+Restart=always
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

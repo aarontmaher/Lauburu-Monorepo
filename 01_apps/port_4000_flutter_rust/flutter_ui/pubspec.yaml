@@ -1,0 +1,14 @@
+name: lauburu_port4000_flutter
+description: "Lauburu Port 4000 Console: High-performance Flutter UI with Flutter Rust Bridge (FFI) & WebSocket Biometrics Engine."
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  ffi: ^2.1.0
+
+dev_dependencies:
+  test: ^1.24.0
+  lints: ^3.0.0

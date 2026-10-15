@@ -4,7 +4,7 @@
 ============================================================
 One-Click Mobile APK & Port 4000 PWA Deployment Engine for Project Lauburu.
 Targets:
-  - Primary Default: Samsung Galaxy S20+ (100.84.40.95:5555)
+  - Primary Default: Samsung Galaxy S20+ (100.78.206.96:5555)
   - Secondary/Flagship: Google Pixel 10 Pro XL (100.73.38.87:5555)
 
 Features:
@@ -37,7 +37,7 @@ ROUTER_SSH = "root@192.168.8.1"
 DEVICES: Dict[str, Dict[str, Any]] = {
     "s20": {
         "name": "Samsung Galaxy S20+ (Primary Testbed)",
-        "ip": "100.84.40.95",
+        "ip": "100.78.206.96",
         "alt_ip": "192.168.8.11",
         "port": 5555,
         "router_usb_serial": "R3CN40CJJ1R"
@@ -182,15 +182,15 @@ def find_apk_for_app(app_key: str) -> Optional[Path]:
         p = Path(app_meta["apk"])
         if p.exists():
             return p
-        p_full = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo") / app_meta["apk"]
+        p_full = Path("/Volumes/Lauburu-Monorepo") / app_meta["apk"]
         if p_full.exists():
             return p_full
 
     if "dir" in app_meta:
-        cand1 = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo") / app_meta["dir"] / "build/app/outputs/flutter-apk/app-debug.apk"
+        cand1 = Path("/Volumes/Lauburu-Monorepo") / app_meta["dir"] / "build/app/outputs/flutter-apk/app-debug.apk"
         if cand1.exists():
             return cand1
-        cand2 = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo") / app_meta["dir"] / "build/app/outputs/flutter-apk/app-release.apk"
+        cand2 = Path("/Volumes/Lauburu-Monorepo") / app_meta["dir"] / "build/app/outputs/flutter-apk/app-release.apk"
         if cand2.exists():
             return cand2
 

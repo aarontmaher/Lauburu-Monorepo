@@ -1,0 +1,44 @@
+{
+  "topology_version": "2026.1",
+  "model_family": "Qwen-DeepSeek-MoE",
+  "total_experts": 16,
+  "top_k_active": 2,
+  "hidden_dim": 4096,
+  "intermediate_dim": 2048,
+  "precision": "FP16",
+  "nodes": {
+    "L1_mac_mini": {
+      "name": "Mac_Node (Host M4 Pro)",
+      "ip": "127.0.0.1",
+      "port": 50060,
+      "assigned_experts": [0, 1, 2, 3],
+      "vram_cap_gb": 21.6,
+      "transport": "LOCAL_LOOPBACK"
+    },
+    "L2_macbook_pro": {
+      "name": "MacBook_Pro (TB4 Bridge)",
+      "ip": "100.103.212.21",
+      "tb4_ip": "169.254.187.138",
+      "port": 50061,
+      "assigned_experts": [4, 5, 6, 7],
+      "vram_cap_gb": 14.0,
+      "transport": "THUNDERBOLT_4_DMA"
+    },
+    "L5_macbook_air": {
+      "name": "MacBook_Air (Metal Worker)",
+      "ip": "100.93.158.96",
+      "port": 50062,
+      "assigned_experts": [8, 9, 10, 11],
+      "vram_cap_gb": 14.0,
+      "transport": "TAILSCALE_WIREGUARD"
+    },
+    "L3_linux_head": {
+      "name": "Linux_Head_Node (Gateway)",
+      "ip": "100.101.39.98",
+      "port": 50063,
+      "assigned_experts": [12, 13, 14, 15],
+      "vram_cap_gb": 12.8,
+      "transport": "TAILSCALE_WIREGUARD"
+    }
+  }
+}

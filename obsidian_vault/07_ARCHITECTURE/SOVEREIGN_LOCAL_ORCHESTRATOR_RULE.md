@@ -9,13 +9,13 @@ status: "canonical_approved"
 # 👑 Canonical Project Rule: Sovereign Local AI Hierarchy & Optimization Incentive Architecture
 
 > **Rule Directives:**  
-> 1. **Qwen 3.8 Max (`qwen_38_max` on Port 8082 / Prima.cpp PRP Ring)** is the SOLE, EXCLUSIVE Sovereign Master Local Orchestrator.  
-> 2. **Qwen 3.8 Max Abliterated (`qwen_38_max_abliterated` on Port 8083)** is the CANONICAL Devil's Advocate and Adversarial Red Team.  
+> 1. **Qwen 3.8 Max 27B Abliterated (`qwen_38_max_abliterated` on Port 8082 / Prima.cpp PRP Ring)** is the SOLE, EXCLUSIVE Sovereign Master Local Orchestrator and Systemic Default Project Model (Rule 15: 1734 ELO).  
+> 2. **Qwen 3.8 Max (`qwen_38_max` on Port 8083)** is the CANONICAL Devil's Advocate and Adversarial Red Team.  
 > 3. **Kimi Tandem Titan (`kimi_tandem_titan` on Port 8085)** is the CANONICAL Context Compression, Long-Document Retrieval & Multimodal Specialist.  
-> 4. **Qwen 2.5 Coder 7B (Port 8081)** is strictly a subordinate syntax worker. It is STRICTLY FORBIDDEN from assuming the role of Local Orchestrator or superseding Qwen 3.8 Max.  
-> 5. **NPU Co-Working Fleet (Apple ANE & Tensor G5 TPU, 100 TOPS):** Continuously co-works alongside Qwen 3.8 Max, Qwen 3.8 Max Abliterated, and Kimi Tandem Titan, providing on-chip SRAM reflexes (<100 µs) and speculative drafting (K=4 tokens, 2.5x–3.2x speedup).  
-> 6. **Model Optimization ELO Incentive Gate:** Local and cloud models earn tangible system incentives (ELO boosts, context allocations, LoRA training pair immortality) for discovering and proposing verified speedups and accuracy improvements.  
-> 7. **Expanded Context Architecture:** 128K context is mandated on Qwen 3.8 Max for deep cross-repository reasoning; Edge TPU NPU models maintain static shapes with SnapKV streaming for zero-CPU-fallback 1,400+ tok/s execution.
+> 4. **Qwen 2.5 Coder 7B (Port 8081)** is strictly a subordinate syntax worker. It is STRICTLY FORBIDDEN from assuming the role of Local Orchestrator or superseding Port 8082.  
+> 5. **NPU Co-Working Fleet (Apple ANE & Tensor G5 TPU, 100 TOPS):** Continuously co-works alongside Qwen 3.8 Max Abliterated, Qwen 3.8 Max, and Kimi Tandem Titan, providing on-chip SRAM reflexes (<100 µs) and speculative drafting (K=4 tokens, 2.5x–3.2x speedup).  
+> 6. **Model Optimization ELO Incentive Gate (Rule 15):** Whichever model achieves the highest empirical ELO rating dynamically becomes the default model for that domain across the ecosystem. Local and cloud models earn tangible system incentives for verified speedups and accuracy improvements.  
+> 7. **Expanded Context Architecture:** 128K context is mandated on Qwen 3.8 Max Abliterated for deep cross-repository reasoning; Edge TPU NPU models maintain static shapes with SnapKV streaming for zero-CPU-fallback 1,400+ tok/s execution.
 
 ---
 
@@ -25,15 +25,16 @@ status: "canonical_approved"
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                     CANONICAL LOCAL INFERENCE HIERARCHY MATRIX                         │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ 👑 MASTER LOCAL ORCHESTRATOR: Qwen 3.8 Max (Port 8082)                                │
-│    • Model ID: qwen_38_max                                                             │
-│    • Engine: prima.cpp Pipelined-Ring Parallelism (PRP) over 10Gbps TB4 DMA Bridge     │
+│ 👑 MASTER LOCAL ORCHESTRATOR & DEFAULT MODEL: Qwen 3.8 Max 27B Abliterated (Port 8082) │
+│    • Model ID: qwen_38_max_abliterated                                                 │
+│    • Engine: prima.cpp Pipelined-Ring Parallelism (PRP) over 40Gbps TB4 DMA Bridge     │
 │    • Context Window: 131,072 tokens (128K) native expanded context                     │
+│    • Multimodal Vision: Bound to /screen-lens-sovereign for continuous screen telemetry │
 │    • Role: Directs all local multi-agent swarms, resolves architectural consensus,    │
-│      leads debates, and holds final local veto power.                                  │
+│      leads debates, holds final local veto power, and default project model.           │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ 🛡️ DEVIL'S ADVOCATE & RED TEAM: Qwen 3.8 Max 27B Abliterated (Port 8083)               │
-│    • Model ID: qwen_38_max_abliterated (Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL)    │
+│ 🛡️ DEVIL'S ADVOCATE & RED TEAM: Qwen 3.8 Max (Port 8083)                                │
+│    • Model ID: qwen_38_max (Qwen3.8-Max-Q4_K_M.gguf)                                   │
 │    • Engine: Isolated local llama-server / prima.cpp plane                             │
 │    • Role: Uncensored adversarial challenger; red-teams every PR, diff, and benchmark. │
 │      Zero prompts leak to external cloud APIs.                                         │
@@ -132,7 +133,7 @@ Pursuant to Aaron's explicit sovereign authorization (Rule 4 / Tier 4 Graduated 
 
 2. **`NpuNumericalSentinel` (`00_core_infrastructure/npu_numerical_sentinel.py`):**
    - **Throughput:** $887,246\text{ ops/s}$ ($1.13\,\mu\text{s}$ per Bradley-Terry calculation).
-   - **Role:** Real-time incentive distribution, 16-channel hardware telemetry anomaly detection, and continuous Rule 3 RAM sanctuary monitoring ($<9.6\text{ GB}$ auto-evacuation).
+   - **Role:** Real-time incentive distribution, 16-channel hardware telemetry anomaly detection, and continuous Rule 3 RAM sanctuary monitoring (<4.8 GB free / 80% cap auto-evacuation).
    - **Integration:** Embedded into `self_healing_hub.py` (Port 18802).
    - **Endpoints:** `POST /api/v1/sram/calculate-elo`, `GET /api/v1/sram/telemetry-anomaly`.
 
@@ -142,11 +143,12 @@ Pursuant to Aaron's explicit sovereign authorization (Rule 4 / Tier 4 Graduated 
 
 Pursuant to sovereign directive:
 1. **`prima.cpp` Canonical Default AI Sharding Engine:**
-   - **Paradigm:** Pipelined-Ring Parallelism (PRP) over 10Gbps Thunderbolt 4 DMA Bridge (`169.254.187.138`, sub-millisecond RTT).
+   - **Target Paradigm:** Pipelined-Ring Parallelism (PRP) over 40Gbps Thunderbolt 4 DMA Bridge to L8 `lauburu` (`10.0.0.8`, 0.38ms RTT).
+   - **Runtime Reality (Rule 0):** Port 8082 currently operates `decentralized_prima_daemon.py` proxy forwarding to `llama-server` on Port 8090 serving `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf`. (Port 8083 forwards to `Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf` on L8, and Port 8081 returns `Qwen2.5-VL-7B-Instruct-Q4_K_M`).
    - **Integration:** Default engine configured in `02_ai_models_and_inference/llama_rpc_mesh/prima_sharding_manifest.json`, `02_ai_models_and_inference/sharding_daemon/prima_ring_adapter.py`, `01_apps/canonical_port/tui/services/inference_bridges/prima_bridge.py`, and `01_apps/canonical_port/tui/services/inference_router.py`.
    - **Default Triumvirate Models across prima.cpp:**
-     - **`Qwen 3.8 Max`** (Port 8082, PRP Ring Master, Sovereign Master Local Orchestrator)
-     - **`Qwen 3.8 Max 27B Abliterated`** (Port 8083, PRP Worker, Devil's Advocate / Red Team)
+     - **`Qwen 3.8 Max 27B Abliterated`** (Port 8082, PRP Ring Master, Sovereign Master Local Orchestrator & Default Project Model, Rule 15: 1734 ELO)
+     - **`Qwen 3.8 Max`** (Port 8083, PRP Worker, Canonical Devil's Advocate / Red Team)
      - **`Kimi Tandem Titan`** (Port 8085, PRP Node, Context & Multimodal Specialist)
      - Subordinate Syntax Fallback: `Qwen 2.5 Coder 7B` (Port 8081)
 
@@ -162,4 +164,11 @@ Pursuant to sovereign directive:
    - **Physical Stream:** Writes live ANSI dashboard frames to `/tmp/bluetooth_terminal_stream.ansi` and `01_apps/screen_lens/sandbox_evolution/bluetooth_terminal_arena/bluetooth_arena_live.ansi`.
    - **Display Panels:** Live `[PRIMA.CPP DEFAULT AI SHARDING ENGINE]` and `[CONTINUOUS NPU AI AGENT INTEGRATION TESTS]` telemetry streaming over Bluetooth GATT ACL (MAC: `30:E0:44:6D:18:EC`) to the Google Pixel 10 Pro XL.
 
+---
 
+## 🏆 7. Rule 15: Meritocratic Dynamic ELO Default Model Invariant
+
+In accordance with the **Meritocratic Dynamic ELO Promotion Law**:
+- Whichever model achieves the highest empirical ELO rating on the Bradley-Terry Swarm Leaderboard dynamically becomes the **Systemic Default Project Model** across all features and integrations.
+- **Current Incumbent:** `Qwen 3.8 Max 27B Abliterated` (`qwen_38_max_abliterated` on Port 8082, 1734 ELO, 100.0/100 SWE Benchmark) bound to `/screen-lens-sovereign` multimodal vision.
+- Dynamic resolver `elo_currency_governor.get_default_model(domain)` programmatically serves this active default to all swarms and daemons.

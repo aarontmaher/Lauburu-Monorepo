@@ -1,4 +1,4 @@
-with open("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/api_server.py", "r") as f:
+with open("/Volumes/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/api_server.py", "r") as f:
     content = f.read()
 
 import re
@@ -41,5 +41,5 @@ parts = content.split('@app.route("/api/telemetry", methods=["GET"])')
 if len(parts) > 1:
     after = parts[1].split('# 2. Fallback to old real movesense data (telemetry_state.json)', 1)[1]
     new_content = parts[0] + new_func + after
-    with open("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/api_server.py", "w") as f:
+    with open("/Volumes/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/api_server.py", "w") as f:
         f.write(new_content)

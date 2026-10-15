@@ -1,0 +1,12 @@
+{
+  "total_tokens_harvested": 14511510,
+  "total_requests_completed": 25675,
+  "cloud_spend_usd": 0.0,
+  "last_active": "2026-09-01T13:15:36.205491Z",
+  "active_harvesters": [
+    "Google Gemini Free Tier (15 RPM)",
+    "Cloudflare Workers AI (10K Neurons/day)",
+    "Grok / Julien Standby"
+  ],
+  "status": "RUNNING_MAX_EXTRACTION"
+}

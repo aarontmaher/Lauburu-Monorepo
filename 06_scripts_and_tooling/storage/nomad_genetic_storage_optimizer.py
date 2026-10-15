@@ -31,7 +31,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("NomadGeneticStorage")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 SESSION_LOGS = REPO_ROOT / "04_data_and_memory/session_logs"
 DATA_DIR = REPO_ROOT / "04_data_and_memory/data"
 EVOLUTION_LEDGER = SESSION_LOGS / "genetic_storage_evolution_ledger.jsonl"
@@ -93,7 +93,7 @@ class NomadGeneticStorageEngine:
     def __init__(self):
         self.gdrive_path = Path("/Volumes/Google Drive/My Drive/Lauburu_AI_Memory")
         self.nas_path = Path("/Volumes/NAS")
-        self.dfs_path = Path("/Users/aaron/DFS_UNIFIED")
+        self.dfs_path = Path("/Volumes/Lauburu-Monorepo")
         self.local_repo = REPO_ROOT
 
         self.tiers_def = {

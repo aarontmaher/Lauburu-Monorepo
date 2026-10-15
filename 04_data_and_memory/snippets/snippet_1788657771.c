@@ -1,0 +1,1 @@
+uint8_t crc = crc16_ccitt(data, len);

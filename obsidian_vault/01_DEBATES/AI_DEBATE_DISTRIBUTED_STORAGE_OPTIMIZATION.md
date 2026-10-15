@@ -45,7 +45,7 @@ zero_mock_certified: true
    - **L1 Mac Host (NVMe):** Reserved for Active Orchestration, Obsidian Vault, and Hot LoRA Datasets ($\le 10\text{ GB}$).
    - **L2 MacBook Pro (SSD Vault):** Primary repository for Quantized GGUF Model Vault (45-120 GB) via 10Gbps TB4 DMA.
    - **L3 Linux Head Node (SeaweedFS / DFS Volume):** Distributed DFS chunk bricks and Parquet Big Data Lakes.
-   - **L5 MacBook Air (Metal NVMe):** Secondary training weights & biometrics datasets.
+   - **L2 MacBook Pro (Metal NVMe):** Secondary training weights & biometrics datasets.
 2. **Algorithmic Workflow Invariant:**
    - **Step 1 (BFS):** Continuous background crawl of mount points, directory sizes, and DFS brick allocations.
    - **Step 2 (GA):** Global macro-level partition optimization ensuring $\ge 10\text{ GB}$ free headroom on Host.

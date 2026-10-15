@@ -254,7 +254,7 @@ class UWBSpatialMoERouter:
         self.origin_node = "Mac_Node"  # (0.0, 0.0, 0.75m desk height)
         self.spatial_nodes = {
             "Mac_Node": {
-                "name": "Mac Host (M4 Max)",
+                "name": "Mac Mini (M4 Pro)",
                 "archetype": "Primary Host / 3D Anchor Origin",
                 "coords": {"x": 0.0, "y": 0.0, "z": 0.75},
                 "orientation": {"pitch": 0.0, "roll": 0.0, "yaw": 0.0},
@@ -351,6 +351,8 @@ class UnorthodoxMatrixEngine:
         return {
             "matrix_name": "📡 Unorthodox Data Transfer & Dual Power Split Matrix",
             "is_additive_layer": True,
+            "is_theoretical_simulation": True,
+            "truth_verification_note": "Rule 0 Invariant: Speculative room geometry & power split simulation. Physical NFC reader & UWB hardware not attached.",
             "timestamp": datetime.utcnow().isoformat() + "Z",
             "dual_power_split": self.power_manager.get_summary(),
             "wifi_aware_nan": self.nan_manager.check_nan_status(is_primary_router_healthy=is_primary_router_healthy),

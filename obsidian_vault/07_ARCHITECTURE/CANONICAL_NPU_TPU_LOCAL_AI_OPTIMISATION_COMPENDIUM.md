@@ -19,14 +19,15 @@ Codified permanently in `GEMINI.md`, `08_preflight_network_telemetry_model_launc
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                        CANONICAL LOCAL MODEL HIERARCHY                                 │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ 1. SOVEREIGN MASTER LOCAL ORCHESTRATOR: Qwen 3.8 Max                                   │
-│    • Endpoint: http://127.0.0.1:8082 | Model ID: qwen_38_max                            │
+│ 1. SOVEREIGN MASTER LOCAL ORCHESTRATOR & DEFAULT MODEL: Qwen 3.8 Max 27B Abliterated   │
+│    • Endpoint: http://127.0.0.1:8082 | Model ID: qwen_38_max_abliterated               │
 │    • Engine: prima.cpp PRP Ring over 40 Gbps Thunderbolt DMA Bridge                    │
+│    • Status: Rule 15 Dynamic ELO Incumbent (1734 ELO) + Screen Lens Sovereign          │
 │    • Invariant: The SOLE, EXCLUSIVE Master Local Orchestrator. Leads all debates,      │
 │      multi-agent consensus, and architectural decisions. Veto authority.               │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ 2. CANONICAL DEVIL'S ADVOCATE & RED TEAM: Qwen 3.8 Max 27B Abliterated                │
-│    • Endpoint: http://127.0.0.1:8083 | Model ID: qwen_38_max_abliterated               │
+│ 2. CANONICAL DEVIL'S ADVOCATE & RED TEAM: Qwen 3.8 Max                                 │
+│    • Endpoint: http://127.0.0.1:8083 | Model ID: qwen_38_max                           │
 │    • Role: Uncensored adversarial challenger; red-teams every diff, optimization, and  │
 │      architecture proposal before production sign-off. Zero cloud prompt leakage.      │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
@@ -85,7 +86,7 @@ Tested physical sharding of a single unified 15M neural network across Edge TPU 
 
 ## 🧠 5. Expanded Context Analysis: Master LLM vs Edge TPU
 
-* **Qwen 3.8 Max (Master Local Orchestrator):** Native **128K expanded context** is vital and active across the 10Gbps/40Gbps TB4 PRP ring for monorepo AST crawls, cross-file tracking, and multi-turn debate consensus.
+* **Qwen 3.8 Max (Master Local Orchestrator):** Native **128K expanded context** is vital and active across the 40Gbps/40Gbps TB4 PRP ring for monorepo AST crawls, cross-file tracking, and multi-turn debate consensus.
 * **Edge TPU Models:** Dynamic 32K/128K RoPE attention is **STRICTLY FORBIDDEN**.
   * Dynamic sequence lengths cause the 16MB on-chip SRAM to overflow into system DRAM, triggering silent Android CPU fallback and dropping token speed by $50\times$.
   * **The Solution:** Static shape `[1, 128]` combined with **SnapKV / StreamingLLM attention sinks** ($S=4$ sink tokens + $W=124$ rolling window). Delivers infinite streaming context in constant $O(1)$ SRAM.
@@ -206,9 +207,9 @@ All software modules, models, and tests have been physically executed and verifi
 
 | Test Suite / Script | Target Subsystem | Metric Verified | Exit Code / Result |
 | :--- | :--- | :--- | :--- |
-| [`test_sharded_npu_lens_e2e.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/tests/test_sharded_npu_lens_e2e.py) | Dual-Stage NPU Lens | 5/5 Batteries Passed (0.0% GPU load, 0 MB RAM) | **Exit Code 0** |
-| [`trial_single_ai_npu_sharding.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/trial_single_ai_npu_sharding.py) | Physical Single-AI Sharding | 75,074 tok/s continuous streaming throughput | **Exit Code 0** |
-| [`test_npu_metric_sentinel_and_escalation.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/npu_sentinel/tests/test_npu_metric_sentinel_and_escalation.py) | NPU Metric Sentinel & Sandbox Escalation | 6/6 Batteries Passed ($1.09\,\mu\text{s}$ ELO, Rule 3 buffer) | **Exit Code 0** |
+| [`test_sharded_npu_lens_e2e.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/tests/test_sharded_npu_lens_e2e.py) | Dual-Stage NPU Lens | 5/5 Batteries Passed (0.0% GPU load, 0 MB RAM) | **Exit Code 0** |
+| [`trial_single_ai_npu_sharding.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/trial_single_ai_npu_sharding.py) | Physical Single-AI Sharding | 75,074 tok/s continuous streaming throughput | **Exit Code 0** |
+| [`test_npu_metric_sentinel_and_escalation.py`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/npu_sentinel/tests/test_npu_metric_sentinel_and_escalation.py) | NPU Metric Sentinel & Sandbox Escalation | 6/6 Batteries Passed ($1.09\,\mu\text{s}$ ELO, Rule 3 buffer) | **Exit Code 0** |
 | **8-Stream Socket Benchmark** | TB4 Physical Link | $16.85\text{ Gbps}$ ($2,106\text{ MB/s}$, 200MB in 95ms) | **Exit Code 0** |
 | **Ping Telemetry Gate** | Link-Local Bridge (`169.254.*`) | $0.46\text{ ms} - 0.59\text{ ms}$ physical RTT | **Exit Code 0** |
 

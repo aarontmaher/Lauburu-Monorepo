@@ -54,7 +54,7 @@ This document represents the deep research, benchmark audit, and Tri-Orchestrato
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 4. TRAINING & TELEMETRY SINK                                                │
 │    • All routed prompts/responses sanitized and appended to:                │
-│      /Users/aaron/DFS_UNIFIED/lora_datasets/api_interactions.jsonl         │
+│      /Volumes/Lauburu-Monorepo/04_data_and_memory/data/api_interactions.jsonl         │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

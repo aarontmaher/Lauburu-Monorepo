@@ -1,134 +1,64 @@
 {
-  "timestamp": "2026-09-03T16:00:13Z",
+  "timestamp": "2026-10-13T15:00:13Z",
   "screens_audited": 14,
   "screens_patched": 0,
-  "lora_pairs_added": 14,
+  "lora_pairs_added": 0,
   "results": [
     {
-      "status": "AUDITED",
-      "screen": "Medical Biometrics & ECG",
-      "file": "biometrics_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "biometrics_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "AI Inference Mesh Dashboard",
-      "file": "ai_inference_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "ai_inference_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "Network Topology & Transports",
-      "file": "network_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "network_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "Hardware Node Matrix",
-      "file": "hardware_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "hardware_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "LoRA Training Progress",
-      "file": "training_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "training_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "Swarm Governance & ELO Arena",
-      "file": "governance_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "governance_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "Truth Audit & Debate Council",
-      "file": "swarm_audit_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "swarm_audit_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "Live Arena Development",
-      "file": "live_arena_dev_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "live_arena_dev_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "Architecture Explorer",
-      "file": "architecture_explorer_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "architecture_explorer_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "Chat / Code IDE",
-      "file": "chat_ide_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "chat_ide_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "AGI Coding Terminal",
-      "file": "agi_coding_terminal_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "agi_coding_terminal_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "Optimization & Benchmarks",
-      "file": "optimization_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "optimization_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "Tooling & Scripts",
-      "file": "tooling_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "tooling_screen.py"
     },
     {
-      "status": "AUDITED",
-      "screen": "Commercialization & Business",
-      "file": "commercialization_screen.py",
-      "architect_proposal": "",
-      "critic_verdict": "",
-      "code_patch_generated": false,
-      "patch_preview": ""
+      "status": "NOT_FOUND",
+      "file": "commercialization_screen.py"
     }
   ]
 }

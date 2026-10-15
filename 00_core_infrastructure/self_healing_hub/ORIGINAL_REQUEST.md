@@ -4,7 +4,7 @@
 
 Build a high-speed Python WebSocket daemon to bridge the frontend React IDE WebRTC audio streams with the local `llama.cpp` / Ultravox inference engines for real-time voice coding.
 
-Working directory: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub`
+Working directory: `/Volumes/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub`
 Integrity mode: benchmark
 
 ## Requirements

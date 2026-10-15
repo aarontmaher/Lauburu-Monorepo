@@ -1,0 +1,696 @@
+{
+  "generated_at": "2026-10-14T14:03:51.365534+00:00",
+  "vision_models_roster": [
+    {
+      "id": "local_qwen25_vl_7b",
+      "name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "provider": "local_l1b",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf"
+    },
+    {
+      "id": "local_gemma4_31b_vision",
+      "name": "Gemma 4 31B Vision (Debater A)",
+      "tier": "Sovereign Debate VLM",
+      "provider": "openrouter",
+      "slug": "google/gemma-3-27b-it"
+    },
+    {
+      "id": "cloud_qwen25_vl_72b",
+      "name": "Qwen2.5-VL-72B-Instruct (Teacher)",
+      "tier": "Cloud Teacher VLM",
+      "provider": "openrouter",
+      "slug": "qwen/qwen2.5-vl-72b-instruct"
+    },
+    {
+      "id": "cloud_gemini_25_flash",
+      "name": "Gemini 2.5 Flash Vision",
+      "tier": "Cloud Teacher VLM",
+      "provider": "openrouter",
+      "slug": "google/gemini-2.5-flash"
+    },
+    {
+      "id": "cloud_gemini_25_pro",
+      "name": "Gemini 2.5 Pro Vision",
+      "tier": "Cloud Frontier VLM",
+      "provider": "openrouter",
+      "slug": "google/gemini-2.5-pro"
+    },
+    {
+      "id": "cloud_claude_35_sonnet",
+      "name": "Claude 3.5 Sonnet Vision",
+      "tier": "Cloud Frontier VLM",
+      "provider": "openrouter",
+      "slug": "anthropic/claude-3.5-sonnet"
+    },
+    {
+      "id": "cloud_llama_32_90b_vision",
+      "name": "Llama 3.2 90B Vision (NVIDIA/OR)",
+      "tier": "Cloud Teacher VLM",
+      "provider": "nvidia_or",
+      "slug": "meta/llama-3.2-90b-vision-instruct"
+    }
+  ],
+  "benchmarked_matches": {
+    "tctcktPTssA": {
+      "video_id": "tctcktPTssA",
+      "title": "Battleground - Aaron Maher vs Peaches (Josh Stolton)",
+      "division": "Professional Grappling",
+      "resolution": "256x144",
+      "mean_3d_angles_deg": {
+        "spine_forward_lean": 54.9,
+        "left_elbow": 129.2,
+        "right_elbow": 133.4,
+        "left_hip": 127.5,
+        "right_hip": 128.2,
+        "left_knee": 127.5,
+        "right_knee": 126.1
+      },
+      "opinions": {
+        "cloud_qwen25_vl_72b": {
+          "model_id": "cloud_qwen25_vl_72b",
+          "model_name": "Qwen2.5-VL-72B-Instruct (Teacher)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "qwen/qwen2.5-vl-72b-instruct",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 5.19,
+          "analysis": "In this match, Aaron Maher effectively utilizes a forward spine lean averaging around 54.9\u00b0 as a strategic defensive posture, which aligns with freestyle wrestling principles to create barriers against takedowns while maintaining balance and mobility. His ground game demonstrates strong positional control, with equal time spent standing and on the ground, indicating versatility in both offensive and defensive scenarios, supported by his efficient level-change shots and knee flexion angles conducive to dynamic transitions."
+        },
+        "local_gemma4_31b_vision": {
+          "model_id": "local_gemma4_31b_vision",
+          "model_name": "Gemma 4 31B Vision (Debater A)",
+          "tier": "Sovereign Debate VLM",
+          "slug": "google/gemma-3-27b-it",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 6.79,
+          "analysis": "Okay, here's a biomechanical and tactical assessment of Aaron Maher's performance in his match against Josh Stolton, based on the provided data and ruleset context:\n\n**Overall Assessment:**\n\nMaher consistently utilizes a pronounced forward spine lean (mean 54.9\u00b0) which, given the Freestyle wrestling context, appears to be a deliberate defensive strategy to create a structural barrier against takedown attempts. His high degree of elbow flexion (129.2\u00b0/133.4\u00b0) suggests a tight, protective hand-fighting posture, likely aimed at disrupting Stolton\u2019s entries and controlling distance.  The 50/50 split between standing/scramble phases indicates a dynamic match with frequent level changes and positional battles, and Maher\u2019s knee flexion ("
+        },
+        "cloud_gemini_25_flash": {
+          "model_id": "cloud_gemini_25_flash",
+          "model_name": "Gemini 2.5 Flash Vision",
+          "tier": "Cloud Teacher VLM",
+          "slug": "google/gemini-2.5-flash",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 8.84,
+          "analysis": "Aaron Maher's biomechanics in this match demonstrate a tactical adaptation to the ruleset, maintaining a forward spine lean (mean 54.9\u00b0) that, while appearing defensive, is an intentional structural barrier against takedowns, consistent with freestyle wrestling strategies where exposure points are easily scored. His 50/50 split between standing and ground/scramble time, combined with four level-change shots, suggests a dynamic approach to engagement, transitioning effectively between phases. The consistent knee flexion (mean 127.5\u00b0/126.1\u00b0) indicates a ready, athletic stance for both offensive entries and defensive sprawling, optimizing his ability to react and control engagements."
+        },
+        "cloud_gemini_25_pro": {
+          "model_id": "cloud_gemini_25_pro",
+          "model_name": "Gemini 2.5 Pro Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "google/gemini-2.5-pro",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 6.56,
+          "analysis": "As an elite grappling &"
+        },
+        "local_qwen25_vl_7b": {
+          "model_id": "local_qwen25_vl_7b",
+          "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+          "tier": "Local Sovereign VLM",
+          "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+          "status": "ERROR (<urlopen error [Errno 61] Connection ref)",
+          "latency_sec": 15.03,
+          "analysis": "3D Telemetry (Professional Grappling): Standing 50.0%, Ground 50.0%, Spine Lean 54.9\u00b0."
+        },
+        "cloud_claude_35_sonnet": {
+          "model_id": "cloud_claude_35_sonnet",
+          "model_name": "Claude 3.5 Sonnet Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "anthropic/claude-3.5-sonnet",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 15.38,
+          "analysis": "3D Telemetry (Professional Grappling): Standing 50.0%, Ground 50.0%, Spine Lean 54.9\u00b0."
+        },
+        "cloud_llama_32_90b_vision": {
+          "model_id": "cloud_llama_32_90b_vision",
+          "model_name": "Llama 3.2 90B Vision (NVIDIA/OR)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "meta-llama/llama-3.2-90b-vision-instruct",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 35.77,
+          "analysis": "3D Telemetry (Professional Grappling): Standing 50.0%, Ground 50.0%, Spine Lean 54.9\u00b0."
+        }
+      }
+    },
+    "igh6l9wBsYg": {
+      "video_id": "igh6l9wBsYg",
+      "title": "Adcc nationals - Aaron Maher vs Ali El Kheir",
+      "division": "ADCC",
+      "resolution": "256x144",
+      "mean_3d_angles_deg": {
+        "spine_forward_lean": 54.9,
+        "left_elbow": 143.6,
+        "right_elbow": 145.0,
+        "left_hip": 144.9,
+        "right_hip": 138.0,
+        "left_knee": 147.7,
+        "right_knee": 138.4
+      },
+      "opinions": {
+        "cloud_qwen25_vl_72b": {
+          "model_id": "cloud_qwen25_vl_72b",
+          "model_name": "Qwen2.5-VL-72B-Instruct (Teacher)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "qwen/qwen2.5-vl-72b-instruct",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 2.53,
+          "analysis": "In this match, Aaron Maher effectively utilizes a forward spine lean averaging around 54.9\u00b0 as a strategic defensive posture to impede takedowns, aligning with the ruleset where such angles serve as a protective barrier. His ground game demonstrates strong knee flexion and effective positioning, allowing him to maintain control and execute submissions efficiently during scrambles."
+        },
+        "local_gemma4_31b_vision": {
+          "model_id": "local_gemma4_31b_vision",
+          "model_name": "Gemma 4 31B Vision (Debater A)",
+          "tier": "Sovereign Debate VLM",
+          "slug": "google/gemma-3-27b-it",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 5.21,
+          "analysis": "Okay, here's a biomechanical and tactical assessment of Aaron Maher's performance in the provided ADCC Nationals match against Ali El Kheir, based on the data and rule set context provided.\n\n**Overall Assessment:**\n\nAaron Maher demonstrates a consistently forward-leaning posture (mean spine lean 54.9\u00b0), which, given the ADCC ruleset, appears to be a deliberate defensive strategy to impede takedowns and create a structural barrier. His high degree of elbow and knee flexion suggests a reactive, mobile stance optimized for guard retention and scrambling, rather than aggressive shooting or level changes \u2013 evidenced by only 2 level-change shots recorded.  The 60% ground/scramble time indicates a match heavily focused on positional battles and submission attempts, where Maher's"
+        },
+        "cloud_gemini_25_flash": {
+          "model_id": "cloud_gemini_25_flash",
+          "model_name": "Gemini 2.5 Flash Vision",
+          "tier": "Cloud Teacher VLM",
+          "slug": "google/gemini-2.5-flash",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 8.68,
+          "analysis": "Aaron Maher's biomechanics in this match show a tactical adaptation to the ADCC ruleset, prioritizing guard retention and submission entries over the defensive posture seen in freestyle wrestling. His average spine lean of 54.9\u00b0 and knee flexion of 147.7\u00b0/138.4\u00b0 suggest a readiness for dynamic ground engagements and guard play, rather than a rigid, upright wrestling stance. The high percentage of ground/scramble time (60.0%) further supports this, indicating a strategic focus on mat positioning and submission opportunities characteristic of submission grappling."
+        },
+        "cloud_gemini_25_pro": {
+          "model_id": "cloud_gemini_25_pro",
+          "model_name": "Gemini 2.5 Pro Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "google/gemini-2.5-pro",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 11.33,
+          "analysis": "As an elite grappling"
+        },
+        "local_qwen25_vl_7b": {
+          "model_id": "local_qwen25_vl_7b",
+          "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+          "tier": "Local Sovereign VLM",
+          "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+          "status": "ERROR (<urlopen error [Errno 61] Connection ref)",
+          "latency_sec": 15.03,
+          "analysis": "3D Telemetry (ADCC): Standing 40.0%, Ground 60.0%, Spine Lean 54.9\u00b0."
+        },
+        "cloud_claude_35_sonnet": {
+          "model_id": "cloud_claude_35_sonnet",
+          "model_name": "Claude 3.5 Sonnet Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "anthropic/claude-3.5-sonnet",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 15.36,
+          "analysis": "3D Telemetry (ADCC): Standing 40.0%, Ground 60.0%, Spine Lean 54.9\u00b0."
+        },
+        "cloud_llama_32_90b_vision": {
+          "model_id": "cloud_llama_32_90b_vision",
+          "model_name": "Llama 3.2 90B Vision (NVIDIA/OR)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "meta-llama/llama-3.2-90b-vision-instruct",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 35.74,
+          "analysis": "3D Telemetry (ADCC): Standing 40.0%, Ground 60.0%, Spine Lean 54.9\u00b0."
+        }
+      }
+    },
+    "fbCpcA1DyWg": {
+      "video_id": "fbCpcA1DyWg",
+      "title": "South East Asian Championships (AUS) vs (VIE)",
+      "division": "Freestyle Wrestling",
+      "resolution": "1280x720",
+      "mean_3d_angles_deg": {
+        "spine_forward_lean": 40.7,
+        "left_elbow": 127.0,
+        "right_elbow": 124.7,
+        "left_hip": 131.0,
+        "right_hip": 124.1,
+        "left_knee": 148.6,
+        "right_knee": 143.9
+      },
+      "opinions": {
+        "cloud_qwen25_vl_72b": {
+          "model_id": "cloud_qwen25_vl_72b",
+          "model_name": "Qwen2.5-VL-72B-Instruct (Teacher)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "qwen/qwen2.5-vl-72b-instruct",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 3.22,
+          "analysis": "In this Freestyle Wrestling match, Aaron Maher effectively utilizes a forward spine lean averaging around 40.7\u00b0, which serves as a strategic defensive barrier to prevent takedowns while maintaining offensive readiness. His hand-fighting and entries demonstrate precision with a mean elbow flexion of approximately 125\u00b0, enabling him to control distance and create opportunities for level-change shots, as evidenced by his successful transitions between standing and ground positions throughout the match."
+        },
+        "local_gemma4_31b_vision": {
+          "model_id": "local_gemma4_31b_vision",
+          "model_name": "Gemma 4 31B Vision (Debater A)",
+          "tier": "Sovereign Debate VLM",
+          "slug": "google/gemma-3-27b-it",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 5.48,
+          "analysis": "## Aaron Maher - South East Asian Championships (AUS) vs (VIE) - Biomechanical & Tactical Assessment\n\nBased on the provided data and ruleset context, Aaron Maher demonstrates a consistently forward-leaning stance (mean 40.7\u00b0 spine lean) that appears strategically employed as a defensive barrier against takedown attempts, rather than a postural weakness. His high degree of knee flexion (148.6\u00b0/143.9\u00b0) suggests a strong base and readiness to react to level changes, evidenced by the 3 level-change shots he faced. The final frame shows a scramble position, indicating he was actively engaged in defending and attempting to regain positional control, and his elbow flexion angles suggest he was actively using his arms to control space and disrupt his opponent's balance."
+        },
+        "cloud_gemini_25_pro": {
+          "model_id": "cloud_gemini_25_pro",
+          "model_name": "Gemini 2.5 Pro Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "google/gemini-2.5-pro",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 5.78,
+          "analysis": "Based on the provided 3"
+        },
+        "local_qwen25_vl_7b": {
+          "model_id": "local_qwen25_vl_7b",
+          "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+          "tier": "Local Sovereign VLM",
+          "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+          "status": "ERROR (<urlopen error [Errno 61] Connection ref)",
+          "latency_sec": 15.04,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 53.1%, Ground 46.9%, Spine Lean 40.7\u00b0."
+        },
+        "cloud_claude_35_sonnet": {
+          "model_id": "cloud_claude_35_sonnet",
+          "model_name": "Claude 3.5 Sonnet Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "anthropic/claude-3.5-sonnet",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 15.52,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 53.1%, Ground 46.9%, Spine Lean 40.7\u00b0."
+        },
+        "cloud_gemini_25_flash": {
+          "model_id": "cloud_gemini_25_flash",
+          "model_name": "Gemini 2.5 Flash Vision",
+          "tier": "Cloud Teacher VLM",
+          "slug": "google/gemini-2.5-flash",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 24.89,
+          "analysis": "This analysis focuses on the biomechanical and tactical aspects of Aaron Maher's performance in the provided wrestling match, considering the specific ruleset of Freestyle Wrestling.\n\n**Biomechanical & Tactical Assessment:**\n\nAaron Maher's tactical approach in this Freestyle Wrestling match appears to prioritize a strong defensive posture and strategic engagement. The high percentage of time spent in a standing position (53.1%) combined with a mean 3D spine lean of 40.7\u00b0 suggests a consistent, low-to-mid stance, which in Freestyle is an effective defensive barrier against takedowns, allowing for quick reactions and hand-fighting. The relatively high knee flexion (L/R=148.6\u00b0/143.9\u00b0) further supports this, indicating a readiness to absorb force"
+        },
+        "cloud_llama_32_90b_vision": {
+          "model_id": "cloud_llama_32_90b_vision",
+          "model_name": "Llama 3.2 90B Vision (NVIDIA/OR)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "meta-llama/llama-3.2-90b-vision-instruct",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 35.69,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 53.1%, Ground 46.9%, Spine Lean 40.7\u00b0."
+        }
+      }
+    },
+    "1qHrHpUZ6qU": {
+      "video_id": "1qHrHpUZ6qU",
+      "title": "South East Asian Championship (AUS) vs (AUS)",
+      "division": "Freestyle Wrestling",
+      "resolution": "256x144",
+      "mean_3d_angles_deg": {
+        "spine_forward_lean": 59.9,
+        "left_elbow": 148.3,
+        "right_elbow": 114.9,
+        "left_hip": 139.6,
+        "right_hip": 134.4,
+        "left_knee": 140.0,
+        "right_knee": 131.3
+      },
+      "opinions": {
+        "cloud_qwen25_vl_72b": {
+          "model_id": "cloud_qwen25_vl_72b",
+          "model_name": "Qwen2.5-VL-72B-Instruct (Teacher)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "qwen/qwen2.5-vl-72b-instruct",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 2.29,
+          "analysis": "In this Freestyle Wrestling match, Aaron Maher effectively utilizes a forward spine lean of approximately 59.9\u00b0 as a strategic defensive barrier, which aligns with the ruleset where takedowns and exposures are prioritized; his stance and hand-fighting likely emphasize control and prevention of entries. On the ground, the significant time spent in scramble positions (60% of the match) suggests a dynamic and opportunistic approach, leveraging his 3D joint angles for quick transitions and maintaining offensive pressure despite the absence of level-change shots."
+        },
+        "cloud_gemini_25_flash": {
+          "model_id": "cloud_gemini_25_flash",
+          "model_name": "Gemini 2.5 Flash Vision",
+          "tier": "Cloud Teacher VLM",
+          "slug": "google/gemini-2.5-flash",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 3.53,
+          "analysis": "Aaron Maher's predominant ground/scramble time (60%) suggests a tactical preference for mat wrestling or a reactive approach to takedowns. His significant forward spine lean (59.9\u00b0) aligns with Freestyle Wrestling's defensive strategy, creating a robust barrier against takedowns, while the varied elbow and knee flexion indicates dynamic limb positioning for both defense and potential offensive transitions. This defensive posture, combined with extensive ground work, points to a strategy focused on controlling engagements once on the mat rather than initiating standing takedowns."
+        },
+        "cloud_gemini_25_pro": {
+          "model_id": "cloud_gemini_25_pro",
+          "model_name": "Gemini 2.5 Pro Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "google/gemini-2.5-pro",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 4.82,
+          "analysis": "Based on the 3"
+        },
+        "local_gemma4_31b_vision": {
+          "model_id": "local_gemma4_31b_vision",
+          "model_name": "Gemma 4 31B Vision (Debater A)",
+          "tier": "Sovereign Debate VLM",
+          "slug": "google/gemma-3-27b-it",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 7.16,
+          "analysis": "## Aaron Maher - South East Asian Championship Analysis (Freestyle)\n\nAaron Maher presents with a notably forward-leaning stance (59.9\u00b0 spine lean) consistent with a defensively-oriented Freestyle wrestling posture, effectively creating a structural barrier against takedowns \u2013 a smart tactic given the scoring emphasis in this ruleset. The relatively high elbow flexion angles (148.3\u00b0/114.9\u00b0) suggest a tight, hands-forward hand-fighting style, likely used to disrupt opponent entries and control distance, but could be a limiting factor in explosive offensive movements.  The 60% time spent in ground/scramble situations indicates a willingness to engage in close quarters, but optimizing his mat positioning and transitions *from* that position will be key to maximizing scoring"
+        },
+        "local_qwen25_vl_7b": {
+          "model_id": "local_qwen25_vl_7b",
+          "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+          "tier": "Local Sovereign VLM",
+          "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+          "status": "ERROR (<urlopen error [Errno 61] Connection ref)",
+          "latency_sec": 15.03,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 40.0%, Ground 60.0%, Spine Lean 59.9\u00b0."
+        },
+        "cloud_claude_35_sonnet": {
+          "model_id": "cloud_claude_35_sonnet",
+          "model_name": "Claude 3.5 Sonnet Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "anthropic/claude-3.5-sonnet",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 15.08,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 40.0%, Ground 60.0%, Spine Lean 59.9\u00b0."
+        },
+        "cloud_llama_32_90b_vision": {
+          "model_id": "cloud_llama_32_90b_vision",
+          "model_name": "Llama 3.2 90B Vision (NVIDIA/OR)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "meta-llama/llama-3.2-90b-vision-instruct",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 35.42,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 40.0%, Ground 60.0%, Spine Lean 59.9\u00b0."
+        }
+      }
+    },
+    "PNRo2D28Res": {
+      "video_id": "PNRo2D28Res",
+      "title": "South East Asian championship (AUS) vs (SGP)",
+      "division": "Freestyle Wrestling",
+      "resolution": "256x144",
+      "mean_3d_angles_deg": {
+        "spine_forward_lean": 39.5,
+        "left_elbow": 143.7,
+        "right_elbow": 124.3,
+        "left_hip": 113.0,
+        "right_hip": 107.8,
+        "left_knee": 143.4,
+        "right_knee": 130.1
+      },
+      "opinions": {
+        "cloud_qwen25_vl_72b": {
+          "model_id": "cloud_qwen25_vl_72b",
+          "model_name": "Qwen2.5-VL-72B-Instruct (Teacher)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "qwen/qwen2.5-vl-72b-instruct",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 2.98,
+          "analysis": "In the Freestyle Wrestling match against Singapore, Aaron Maher effectively utilizes a pronounced forward spine lean of approximately 39.5\u00b0 as a strategic defensive posture, significantly hindering his opponent's ability to penetrate and secure takedowns. His high level of ground engagement at 85.7% demonstrates superior control and scrambling ability, leveraging his 3D elbow and knee flexion angles for effective transitions and dominant positioning on the mat."
+        },
+        "cloud_gemini_25_flash": {
+          "model_id": "cloud_gemini_25_flash",
+          "model_name": "Gemini 2.5 Flash Vision",
+          "tier": "Cloud Teacher VLM",
+          "slug": "google/gemini-2.5-flash",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 4.8,
+          "analysis": "Aaron Maher's dominant ground/scramble time (85.7%) and significant mean spine lean (39.5\u00b0) suggest a tactical preference for close-range engagements and a strong defensive posture, consistent with Freestyle Wrestling's emphasis on takedown defense. His relatively high elbow and knee flexion (124-143\u00b0) indicate a readiness for explosive movements and maintaining a low center of gravity, crucial for both offensive shots and defending against takedowns in a sport where exposure points are easily scored. The two level-change shots, combined with his ground-heavy approach, point to a strategy of opportunistic takedowns rather than a high-volume shooting game, likely capitalizing on opponent reactions or fatigue."
+        },
+        "cloud_gemini_25_pro": {
+          "model_id": "cloud_gemini_25_pro",
+          "model_name": "Gemini 2.5 Pro Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "google/gemini-2.5-pro",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 5.26,
+          "analysis": "Based on the provided"
+        },
+        "local_gemma4_31b_vision": {
+          "model_id": "local_gemma4_31b_vision",
+          "model_name": "Gemma 4 31B Vision (Debater A)",
+          "tier": "Sovereign Debate VLM",
+          "slug": "google/gemma-3-27b-it",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 9.49,
+          "analysis": "## Aaron Maher - SEA Championship (AUS vs SGP) - Biomechanical Assessment\n\nAaron Maher demonstrated a consistently high degree of forward spine lean (39.5\u00b0 average) which, *within the context of Freestyle Wrestling*, appears strategically employed as a defensive posture to deter deep penetration takedowns \u2013 effectively presenting a structural barrier. His elbow and knee flexion angles suggest a reactive, bent-knee stance prioritizing quick level changes for defense and counter-attacks, evidenced by the two level-change shots, but potentially limiting explosive offensive entries. The overwhelming time spent in ground/scramble situations (85.7%) indicates a need to improve initial hand-fighting to disrupt opponent entries *before* reaching clinch range, or to proactively establish dominant underhooks to dictate positional control."
+        },
+        "local_qwen25_vl_7b": {
+          "model_id": "local_qwen25_vl_7b",
+          "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+          "tier": "Local Sovereign VLM",
+          "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+          "status": "ERROR (<urlopen error [Errno 61] Connection ref)",
+          "latency_sec": 15.03,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 14.3%, Ground 85.7%, Spine Lean 39.5\u00b0."
+        },
+        "cloud_claude_35_sonnet": {
+          "model_id": "cloud_claude_35_sonnet",
+          "model_name": "Claude 3.5 Sonnet Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "anthropic/claude-3.5-sonnet",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 15.1,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 14.3%, Ground 85.7%, Spine Lean 39.5\u00b0."
+        },
+        "cloud_llama_32_90b_vision": {
+          "model_id": "cloud_llama_32_90b_vision",
+          "model_name": "Llama 3.2 90B Vision (NVIDIA/OR)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "meta-llama/llama-3.2-90b-vision-instruct",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 35.44,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 14.3%, Ground 85.7%, Spine Lean 39.5\u00b0."
+        }
+      }
+    },
+    "VF3wKI-quFA": {
+      "video_id": "VF3wKI-quFA",
+      "title": "Aaron Maher vs Reece Mclaren (ONE fc mma fighter)",
+      "division": "Freestyle Wrestling",
+      "resolution": "256x144",
+      "mean_3d_angles_deg": {
+        "spine_forward_lean": 55.6,
+        "left_elbow": 139.7,
+        "right_elbow": 141.5,
+        "left_hip": 125.6,
+        "right_hip": 126.9,
+        "left_knee": 142.0,
+        "right_knee": 143.0
+      },
+      "opinions": {
+        "local_gemma4_31b_vision": {
+          "model_id": "local_gemma4_31b_vision",
+          "model_name": "Gemma 4 31B Vision (Debater A)",
+          "tier": "Sovereign Debate VLM",
+          "slug": "google/gemma-3-27b-it",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 3.21,
+          "analysis": "Okay, here's a biomechanical and tactical assessment of Aaron Maher's performance based on the provided data and ruleset context, focusing on the key areas requested.\n\n**Assessment:**\n\nAaron Maher demonstrates a consistently forward-leaning posture (mean spine lean 55.6\u00b0), which, given the Freestyle Wrestling ruleset, is a strategically sound defensive tactic to impede takedown attempts and present a structural barrier. His high degree of elbow and knee flexion suggests a reactive, braced stance, likely anticipating penetration and ready to defend level changes, as evidenced by the 3 recorded level-change shot attempts against him.  The 50/50 split between standing and ground/scramble time indicates a competitive match with frequent positional battles, and his ability to maintain a defensive structure while"
+        },
+        "cloud_qwen25_vl_72b": {
+          "model_id": "cloud_qwen25_vl_72b",
+          "model_name": "Qwen2.5-VL-72B-Instruct (Teacher)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "qwen/qwen2.5-vl-72b-instruct",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 3.24,
+          "analysis": "In this freestyle wrestling match, Aaron Maher effectively utilizes a forward spine lean of approximately 55.6\u00b0 as a strategic defensive posture, which helps him create barriers with his head, hands, and chest to prevent takedowns while maintaining offensive readiness. His balanced distribution between standing and ground/scramble positions, along with precise level-change shots, demonstrates a well-rounded approach to both offense and defense, showcasing his tactical versatility and biomechanical efficiency throughout the match."
+        },
+        "cloud_gemini_25_flash": {
+          "model_id": "cloud_gemini_25_flash",
+          "model_name": "Gemini 2.5 Flash Vision",
+          "tier": "Cloud Teacher VLM",
+          "slug": "google/gemini-2.5-flash",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 3.7,
+          "analysis": "This analysis focuses on Aaron Maher's biomechanics and tactics in the provided wrestling match, considering the Freestyle Wrestling ruleset.\n\n**Biomechanics & Tactical Assessment of Aaron Maher:**\n\nAaron Maher (wrestler in green/red singlet) demonstrates a tactical approach that prioritizes defensive structural integrity and opportunistic offense. His average spine lean of 55.6\u00b0 (as seen in the bottom left frame where he is in a defensive stance) is consistent with the Freestyle Wrestling ruleset, serving as an intentional barrier against takedowns rather than a postural flaw. He effectively transitions between standing and ground phases, indicating adaptability and proficiency in both areas, while his relatively high knee flexion (142.0\u00b0/143.0\u00b0) suggests a readiness for explosive movements and maintaining a"
+        },
+        "cloud_gemini_25_pro": {
+          "model_id": "cloud_gemini_25_pro",
+          "model_name": "Gemini 2.5 Pro Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "google/gemini-2.5-pro",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 8.03,
+          "analysis": "Based on the provided"
+        },
+        "local_qwen25_vl_7b": {
+          "model_id": "local_qwen25_vl_7b",
+          "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+          "tier": "Local Sovereign VLM",
+          "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+          "status": "ERROR (<urlopen error [Errno 61] Connection ref)",
+          "latency_sec": 15.06,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 50.0%, Ground 50.0%, Spine Lean 55.6\u00b0."
+        },
+        "cloud_claude_35_sonnet": {
+          "model_id": "cloud_claude_35_sonnet",
+          "model_name": "Claude 3.5 Sonnet Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "anthropic/claude-3.5-sonnet",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 15.13,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 50.0%, Ground 50.0%, Spine Lean 55.6\u00b0."
+        },
+        "cloud_llama_32_90b_vision": {
+          "model_id": "cloud_llama_32_90b_vision",
+          "model_name": "Llama 3.2 90B Vision (NVIDIA/OR)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "meta-llama/llama-3.2-90b-vision-instruct",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 35.63,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 50.0%, Ground 50.0%, Spine Lean 55.6\u00b0."
+        }
+      }
+    },
+    "N6ZjgYvkJf8": {
+      "video_id": "N6ZjgYvkJf8",
+      "title": "Aaron Maher (AUS) vs Georgii Okokorov (RUS)",
+      "division": "Freestyle Wrestling",
+      "resolution": "256x144",
+      "mean_3d_angles_deg": {
+        "spine_forward_lean": 71.7,
+        "left_elbow": 138.7,
+        "right_elbow": 130.2,
+        "left_hip": 123.3,
+        "right_hip": 121.5,
+        "left_knee": 128.2,
+        "right_knee": 131.5
+      },
+      "opinions": {
+        "cloud_qwen25_vl_72b": {
+          "model_id": "cloud_qwen25_vl_72b",
+          "model_name": "Qwen2.5-VL-72B-Instruct (Teacher)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "qwen/qwen2.5-vl-72b-instruct",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 2.91,
+          "analysis": "In this freestyle wrestling match, Aaron Maher's pronounced 71.7\u00b0 forward spine lean serves as a strategic defensive posture, effectively using his head, hands, and chest to create barriers against takedowns while maintaining a low center of gravity for stability. His high elbow flexion angles and knee flexion suggest a dynamic, agile stance that facilitates quick transitions to ground positions, where he spends the majority of the match executing effective scrambles and control techniques."
+        },
+        "cloud_gemini_25_flash": {
+          "model_id": "cloud_gemini_25_flash",
+          "model_name": "Gemini 2.5 Flash Vision",
+          "tier": "Cloud Teacher VLM",
+          "slug": "google/gemini-2.5-flash",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 3.87,
+          "analysis": "Based on the provided images and the OCR text, here's a biomechanical and tactical assessment of Aaron Maher's performance, keeping in mind the Freestyle Wrestling ruleset:\n\nAaron Maher (presumably the wrestler in blue in the top two frames, and the one on the ground in the bottom right) demonstrates a tactical approach that prioritizes a low stance and forward spine lean, as seen in the top-left image (Spine: 37.9d, Knee: 131.8d, indicating a deep bend). This deep defensive posture, with a spine lean around 38-58 degrees, is a common and effective strategy in Freestyle Wrestling to prevent easy takedowns and maintain a strong base, rather than a flaw. The high percentage of \"Ground"
+        },
+        "local_gemma4_31b_vision": {
+          "model_id": "local_gemma4_31b_vision",
+          "model_name": "Gemma 4 31B Vision (Debater A)",
+          "tier": "Sovereign Debate VLM",
+          "slug": "google/gemma-3-27b-it",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 7.33,
+          "analysis": "Okay, here's a biomechanical and tactical assessment of Aaron Maher's performance based on the provided data and ruleset context, focusing on the key areas you requested:\n\n**Assessment:**\n\nAaron Maher demonstrates a significantly forward-leaning posture (71.7\u00b0 mean spine lean) that, *within the context of Freestyle Wrestling*, appears to be a deliberate defensive strategy to deny easy takedown entries, rather than a postural weakness. His high degree of elbow flexion (138.7\u00b0/130.2\u00b0) suggests he's actively using his arms to control space and frame against Okokorov's attacks, but may limit his ability to quickly transition to offensive hand-fighting.  The overwhelming time spent in Ground/Scramble (91.3%)"
+        },
+        "cloud_gemini_25_pro": {
+          "model_id": "cloud_gemini_25_pro",
+          "model_name": "Gemini 2.5 Pro Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "google/gemini-2.5-pro",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 5.65,
+          "analysis": "As an elite grappling"
+        },
+        "local_qwen25_vl_7b": {
+          "model_id": "local_qwen25_vl_7b",
+          "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+          "tier": "Local Sovereign VLM",
+          "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+          "status": "ERROR (<urlopen error [Errno 61] Connection ref)",
+          "latency_sec": 15.03,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 8.7%, Ground 91.3%, Spine Lean 71.7\u00b0."
+        },
+        "cloud_claude_35_sonnet": {
+          "model_id": "cloud_claude_35_sonnet",
+          "model_name": "Claude 3.5 Sonnet Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "anthropic/claude-3.5-sonnet",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 15.13,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 8.7%, Ground 91.3%, Spine Lean 71.7\u00b0."
+        },
+        "cloud_llama_32_90b_vision": {
+          "model_id": "cloud_llama_32_90b_vision",
+          "model_name": "Llama 3.2 90B Vision (NVIDIA/OR)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "meta-llama/llama-3.2-90b-vision-instruct",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 35.44,
+          "analysis": "3D Telemetry (Freestyle Wrestling): Standing 8.7%, Ground 91.3%, Spine Lean 71.7\u00b0."
+        }
+      }
+    },
+    "AkMyVb529LE": {
+      "video_id": "AkMyVb529LE",
+      "title": "World championships - Aaron Maher vs Vaomatua Keahi Mustafa",
+      "division": "IBJJF",
+      "resolution": "256x128",
+      "mean_3d_angles_deg": {
+        "spine_forward_lean": 83.8,
+        "left_elbow": 129.5,
+        "right_elbow": 116.3,
+        "left_hip": 121.9,
+        "right_hip": 110.4,
+        "left_knee": 136.7,
+        "right_knee": 130.0
+      },
+      "opinions": {
+        "cloud_qwen25_vl_72b": {
+          "model_id": "cloud_qwen25_vl_72b",
+          "model_name": "Qwen2.5-VL-72B-Instruct (Teacher)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "qwen/qwen2.5-vl-72b-instruct",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 3.61,
+          "analysis": "In this match, Aaron Maher demonstrates a strategic use of his biomechanics, maintaining a forward spine lean of approximately 83.8\u00b0 which aids in guard retention and defensive posturing against takedowns, aligning well with the tactical demands of IBJJF rules. His high elbow flexion angles and knee flexion suggest a strong emphasis on creating space and mobility for submissions while on the ground, showcasing his adaptability in both standing and scrambling positions."
+        },
+        "cloud_gemini_25_flash": {
+          "model_id": "cloud_gemini_25_flash",
+          "model_name": "Gemini 2.5 Flash Vision",
+          "tier": "Cloud Teacher VLM",
+          "slug": "google/gemini-2.5-flash",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 4.12,
+          "analysis": "This analysis focuses on Aaron Maher's biomechanics and tactics in the provided images, considering the IBJJF ruleset.\n\n**Biomechanics & Tactical Assessment of Aaron Maher:**\n\nAaron Maher consistently maintains a low, grounded posture, as evidenced by the high percentage of Ground/Scramble time (63.2%) and the deep knee and elbow flexion angles (136.7\u00b0/130.0\u00b0 and 129.5\u00b0/116.3\u00b0 respectively). This tactical choice, particularly the low spine lean (mean 83.8\u00b0), suggests a strong emphasis on guard retention, inside position, and submission entries, which aligns with the IBJJF ruleset where such positions are crucial for control and scoring rather than immediate takedown"
+        },
+        "local_gemma4_31b_vision": {
+          "model_id": "local_gemma4_31b_vision",
+          "model_name": "Gemma 4 31B Vision (Debater A)",
+          "tier": "Sovereign Debate VLM",
+          "slug": "google/gemma-3-27b-it",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 5.29,
+          "analysis": "Okay, here's a biomechanical and tactical assessment of Aaron Maher's match against Vaomatua Keahi Mustafa, based on the provided data and rule-set context.\n\nThe data indicates Aaron Maher consistently exhibits a very high degree of forward spine lean (83.8\u00b0), which, within the IBJJF context, suggests a strong emphasis on guard retention and creating angles for submission entries rather than a defensive wrestling posture.  His hand-fighting and entries appear to be geared towards disrupting balance and creating opportunities from a deep, leaned-in position, evidenced by the high degree of elbow flexion (129.5\u00b0/116.3\u00b0).  The 63.2% time spent in ground/scramble situations suggests a tactical willingness to engage in"
+        },
+        "cloud_gemini_25_pro": {
+          "model_id": "cloud_gemini_25_pro",
+          "model_name": "Gemini 2.5 Pro Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "google/gemini-2.5-pro",
+          "status": "LIVE_OPENROUTER_OK",
+          "latency_sec": 7.34,
+          "analysis": "Based on the provided 3"
+        },
+        "local_qwen25_vl_7b": {
+          "model_id": "local_qwen25_vl_7b",
+          "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+          "tier": "Local Sovereign VLM",
+          "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+          "status": "ERROR (<urlopen error [Errno 61] Connection ref)",
+          "latency_sec": 15.03,
+          "analysis": "3D Telemetry (IBJJF): Standing 36.8%, Ground 63.2%, Spine Lean 83.8\u00b0."
+        },
+        "cloud_claude_35_sonnet": {
+          "model_id": "cloud_claude_35_sonnet",
+          "model_name": "Claude 3.5 Sonnet Vision",
+          "tier": "Cloud Frontier VLM",
+          "slug": "anthropic/claude-3.5-sonnet",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 15.12,
+          "analysis": "3D Telemetry (IBJJF): Standing 36.8%, Ground 63.2%, Spine Lean 83.8\u00b0."
+        },
+        "cloud_llama_32_90b_vision": {
+          "model_id": "cloud_llama_32_90b_vision",
+          "model_name": "Llama 3.2 90B Vision (NVIDIA/OR)",
+          "tier": "Cloud Teacher VLM",
+          "slug": "meta-llama/llama-3.2-90b-vision-instruct",
+          "status": "ERROR (HTTP Error 404: Not Found)",
+          "latency_sec": 35.46,
+          "analysis": "3D Telemetry (IBJJF): Standing 36.8%, Ground 63.2%, Spine Lean 83.8\u00b0."
+        }
+      }
+    }
+  }
+}

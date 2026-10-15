@@ -1,0 +1,6 @@
+ModelID,HardwareClass,ELO,Timestamp
+L1_Metal_GPU_8B,Hardware_Target,1200.0,2026-10-13T07:04:22.032470
+L3_CPU_RAM_27B,Hardware_Target,1184.0,2026-10-13T07:04:22.032470
+L8_CPU_Only_Swarm,Hardware_Target,1200.0,2026-10-13T07:04:22.032470
+L6_NPU_Tensor_Edge,Hardware_Target,1216.0,2026-10-13T07:04:22.032470
+Cloud_Gemini_3.8,Hardware_Target,1200.0,2026-10-13T07:04:22.032470

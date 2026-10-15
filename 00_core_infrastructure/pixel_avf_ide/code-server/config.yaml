@@ -1,0 +1,7 @@
+bind-addr: 0.0.0.0:8443
+auth: none
+cert: false
+disable-telemetry: true
+disable-update-check: true
+user-data-dir: ~/.local/share/code-server
+extensions-dir: ~/.local/share/code-server/extensions

@@ -7,7 +7,7 @@ created: 2026-09-05T09:43:00+10:00
 # 🛡️ Sovereign NPU AI, All-in-One Chat, Movesense On-Device OS & Multi-WAN Spec
 
 ## 🏛️ 1. Pinned Model Hierarchy: Qwen 3.8 Max Sovereign Mandate
-- **Primary Sovereign Orchestrator & Devil's Advocate:** **Qwen 3.8 Max** (`Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf`) pinned on Port 8083 via `prima_ring_adapter` / 10Gbps Thunderbolt 4 Metal cluster.
+- **Primary Sovereign Orchestrator & Devil's Advocate:** **Qwen 3.8 Max** (`Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf`) pinned on Port 8083 via `prima_ring_adapter` / 40Gbps Thunderbolt 4 Metal cluster.
 - **Role of Qwen 2.5:** Qwen 2.5 Coder 7B/1.5B serves strictly as a lightweight peripheral edge worker or fallback for tiny devices. **It must NEVER replace, displace, or overshadow Qwen 3.8 Max in default orchestration, debates, or architectural decisions.**
 
 ---

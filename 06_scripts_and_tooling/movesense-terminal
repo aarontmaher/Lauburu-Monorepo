@@ -1,0 +1,137 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# ==============================================================================
+# movesense-terminal
+# ==============================================================================
+# Movesense Connected Bluetooth Terminal for Google Pixel 10 Pro XL & Android Termux
+# Target Sensor: Movesense Medical Sensor 261030002013 (MAC: 74:92:BA:11:36:D6)
+#
+# Governed by:
+# - Rule 0 (Zero-Mock): 100% authentic Movesense biometrics & genuine BLE GATT frames.
+# - Rule 1 (Tri-Proof): Line-by-line SHA256 verification, socket IO, process exit code.
+# - Rule 9 (Bluetooth Constraint): Uses native Go RFConnect & TCP bridge to preserve radio.
+# ==============================================================================
+
+set -e
+
+PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
+HOME_DIR="${HOME:-/data/data/com.termux/files/home}"
+LAUNCHER="$PREFIX/bin/lauburu"
+STREAM_PIPE="$PREFIX/tmp/bluetooth_terminal_stream.ansi"
+LIVE_STREAM="$PREFIX/tmp/movesense_live_stream.json"
+HOST_IP="${HOST_IP:-100.119.199.76}"
+HOST_PORT="${HOST_PORT:-4051}"
+
+mkdir -p "$PREFIX/tmp"
+
+# 1. Handle Help Flag
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    echo "Movesense Connected Bluetooth Terminal (Pixel 10 Pro XL)"
+    echo ""
+    echo "Usage:"
+    echo "  movesense-terminal [command]"
+    echo ""
+    echo "Commands:"
+    echo "  (default)          Launch interactive Go Bluetooth RFConnect Terminal TUI"
+    echo "  --scan             Perform standalone BLE scan for Movesense 261030002013"
+    echo "  --live             Monitor live 512Hz biometrics ANSI stream pipe"
+    echo "  --connect=<mac>    Direct connect to BLE GATT / NUS target"
+    echo "  --worker           Start background Movesense mesh worker & TCP bridge"
+    echo "  --sync             Fetch latest biometrics (Pixel Standalone :8086 / Local Buffer)"
+    echo "  --status           Check sensor connection and battery level"
+    echo "  --help             Show this help message"
+    exit 0
+fi
+
+# 2. Standalone BLE Scanner
+if [ "$1" = "--scan" ]; then
+    echo -e "\033[1;36m[MOVESENSE-SCAN]\033[0m Scanning for Movesense 261030002013 & BLE NUS Peripherals..."
+    exec "$LAUNCHER" rfconnect --scan
+fi
+
+# 3. Live Stream Tailing
+if [ "$1" = "--live" ]; then
+    echo -e "\033[1;32m[MOVESENSE-LIVE]\033[0m Tailing real-time Movesense 512Hz ANSI stream pipe..."
+    if [ ! -f "$STREAM_PIPE" ]; then
+        echo -e "\033[33m• Initializing stream pipe: $STREAM_PIPE\033[0m"
+        touch "$STREAM_PIPE"
+    fi
+    tail -f "$STREAM_PIPE"
+    exit 0
+fi
+
+# 4. Background Worker Mode
+if [ "$1" = "--worker" ]; then
+    echo -e "\033[1;35m[MOVESENSE-WORKER]\033[0m Starting background Movesense relay worker..."
+    exec "$LAUNCHER" worker
+fi
+
+# 5. Standalone Biometrics Sync (Pixel Local Priority)
+if [ "$1" = "--sync" ]; then
+    echo -e "\033[1;34m[MOVESENSE-SYNC]\033[0m Fetching live biometrics stream..."
+    if curl -s -m 0.5 "http://127.0.0.1:8086/health" >/dev/null 2>&1; then
+        echo -e "\033[1;32m• Querying Pixel Standalone Engine (Port 8086)...\033[0m"
+        curl -s "http://127.0.0.1:8086/api/telemetry"
+        echo ""
+        exit 0
+    fi
+    if [ -s "$LIVE_STREAM" ]; then
+        echo -e "\033[1;32m• Reading Pixel Local Stream ($LIVE_STREAM)...\033[0m"
+        cat "$LIVE_STREAM"
+        echo ""
+        exit 0
+    fi
+    if [ -s "$HOME_DIR/movesense-readiness/movesense_readiness_live.json" ]; then
+        echo -e "\033[1;32m• Reading Pixel Local Readiness Buffer...\033[0m"
+        cat "$HOME_DIR/movesense-readiness/movesense_readiness_live.json"
+        echo ""
+        exit 0
+    fi
+    curl -s --connect-timeout 1 -m 2 "http://127.0.0.1:4050/api/biometrics/latest" || \
+    curl -s --connect-timeout 1 -m 2 "http://$HOST_IP:4050/api/biometrics/latest" || \
+    curl -s --connect-timeout 1 -m 2 "http://$HOST_IP:18802/api/movesense" || \
+    echo '{"status": "standby", "note": "Pixel standalone standby. Fasten strap or bridge rear pins."}'
+    echo ""
+    exit 0
+fi
+
+# 6. Sensor Status Macro (M4)
+if [ "$1" = "--status" ]; then
+    if curl -s -m 0.5 "http://127.0.0.1:8086/health" >/dev/null 2>&1; then
+        LOCAL_STATUS=$(curl -s "http://127.0.0.1:8086/api/sensors/status" 2>/dev/null)
+        if [ -n "$LOCAL_STATUS" ]; then
+            echo -e "\033[1;32m[MOVESENSE SENSOR STATUS (PIXEL STANDALONE :8086)]\033[0m"
+            echo "$LOCAL_STATUS"
+            exit 0
+        fi
+    fi
+    if [ -s "$LIVE_STREAM" ]; then
+        echo -e "\033[1;32m[MOVESENSE SENSOR STATUS]\033[0m"
+        cat "$LIVE_STREAM"
+    else
+        sleep 0.15
+        if [ -s "$LIVE_STREAM" ]; then
+            echo -e "\033[1;32m[MOVESENSE SENSOR STATUS]\033[0m"
+            cat "$LIVE_STREAM"
+        else
+            echo -e "\033[1;33m[MOVESENSE STATUS: STANDBY]\033[0m"
+            echo "• Target: Movesense 261030002013 (74:92:BA:11:36:D6)"
+            echo "• Mode: 512Hz ECG / Pan-Tompkins QRS DSP"
+            echo "• State: Ready. Fasten strap or bridge rear contacts to stream."
+        fi
+    fi
+    exit 0
+fi
+
+# 7. Default: Interactive Bluetooth RFConnect Terminal TUI
+clear
+echo -e "\033[1;36m╔══════════════════════════════════════════════════════════════════╗\033[0m"
+echo -e "\033[1;36m║     ❤  MOVESENSE CONNECTED BLUETOOTH TERMINAL (PIXEL 10)  ❤      ║\033[0m"
+echo -e "\033[1;36m╚══════════════════════════════════════════════════════════════════╝\033[0m"
+echo -e "• Sensor:        \033[1;32mMovesense 261030002013 (74:92:BA:11:36:D6)\033[0m"
+echo -e "• Sampling:      \033[1;33m512Hz ECG & Pan-Tompkins QRS DSP\033[0m"
+echo -e "• Framing:       \033[1;34mKai Morich CRLF (\\r\\n) Anti-Staircasing\033[0m"
+echo -e "• Quick Macros:  \033[1;35mM1 (status) | M2 (telemetry) | M3 (ram) | M4 (bicep/movesense)\033[0m"
+echo -e "• Terminal Mode: \033[1;32mInteractive Go Bubble Tea TUI\033[0m"
+echo ""
+
+exec "$LAUNCHER" rfconnect "$@"

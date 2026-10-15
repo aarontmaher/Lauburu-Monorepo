@@ -1,7 +1,7 @@
 ---
 title: "Lauburu Lens AI: Training Methods, Goals & Accelerated Quota Harvest"
 tags: [lauburu_lens, computer_use, visual_cortex, ai_training, dpo, cdp, chrome_devtools, loop]
-updated: "2026-09-06 16:05:54"
+updated: "2026-09-17 17:28:08"
 ---
 
 # 👁️ Lauburu Lens AI: Living Visual Cortex & Computer-Use Training Specification
@@ -31,8 +31,8 @@ sub-millisecond screen perception, multi-device UI automation (macOS, Android, L
 
 ## 📊 3. Pre-Reset Accelerated Harvest Telemetry
 
-- **Total Lens Training Pairs Harvested:** `2184` DPO triplets
-- **UI Targets Audited:** `2184` target states
-- **Target LoRA Dataset Sink:** `/Users/aaron/DFS_UNIFIED/lora_datasets/lens_ai/lens_multimodal_dpo.jsonl`
+- **Total Lens Training Pairs Harvested:** `2308` DPO triplets
+- **UI Targets Audited:** `2308` target states
+- **Target LoRA Dataset Sink:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/lens_ai/lens_multimodal_dpo.jsonl`
 - **Cloud Spend Incurred:** `$0.00 / month` (100% Free Tiers)
 - **Next API Quota Reset:** `10:00:00 AM AEST (Midnight UTC)`

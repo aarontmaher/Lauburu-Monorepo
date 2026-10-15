@@ -10,7 +10,7 @@ Lauburu Mesh Ecosystem — 2026
 Comprehensive Navigation & 120 FPS WebGL Terminal Stream:
 - 🏆 Master AI Leaderboard & Swarm Radar (/leaderboard)
 - 👤 Domain 1: User & Scaling Consumer/Pro Applications
-- 🛠️ Domain 2: Operator & Developer Command Cockpits
+- 🛠️ Domain 2: Operator & Developer Command Consoles
 - 🧠 Domain 3: World Models, Autonomous Simulation & Swarms
 - 🏛️ Domain 4: Tri-Vault Storage, MCP Hub & Mesh Infrastructure
 ================================================================================
@@ -94,7 +94,7 @@ REGISTERED_APPS: Dict[str, Dict[str, Any]] = {
         "description": "Athlete membership subscriptions ($9/$29/$99/mo), Movesense HR+ medical sensor bundles, and Storefront GraphQL.",
         "icon": "🛍️"
     },
-    # 🛠️ Operator & Dev Cockpits
+    # 🛠️ Operator & Dev Consoles
     "canonical": {
         "id": "canonical",
         "name": "🏛️ Canonical Port 9-Screen NOC",
@@ -339,9 +339,9 @@ HTML_PORTAL_LANDING = """<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- Domain 2: 🛠️ Operator & Dev Cockpits -->
+    <!-- Domain 2: 🛠️ Operator & Dev Consoles -->
     <div class="domain-section">
-      <h2 style="color: #f59e0b;">🛠️ Domain 2: Operator & Developer Command Cockpits</h2>
+      <h2 style="color: #f59e0b;">🛠️ Domain 2: Operator & Developer Command Consoles</h2>
       <div class="app-cards">
         <a href="/canonical" class="card">
           <div class="card-top"><span class="card-icon">🏛️</span><span class="badge-dev">Operator NOC</span></div>
@@ -567,5 +567,21 @@ async def websocket_terminal(websocket: WebSocket, app_id: str):
     except Exception:
         pass
 
-if __name__ == "__main__":
+def reclaim_port(port: int = 8088):
+    """Cleanly reclaims port 8088 if bound by a stale process."""
+    try:
+        res = subprocess.run(["lsof", "-ti", f":{port}"], capture_output=True, text=True)
+        for pid_str in res.stdout.splitlines():
+            pid = int(pid_str.strip())
+            if pid != os.getpid():
+                os.kill(pid, signal.SIGTERM)
+    except Exception:
+        pass
+
+def main():
+    reclaim_port(8088)
     uvicorn.run(app, host="0.0.0.0", port=8088, log_level="info")
+
+if __name__ == "__main__":
+    main()
+

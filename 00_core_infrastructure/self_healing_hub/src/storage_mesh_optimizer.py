@@ -19,11 +19,11 @@ import logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("StorageMeshOptimizer")
 
-STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
+STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
 PRIMARY_MAC_MOUNT = "/System/Volumes/Data"
-LOCAL_MODELS_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/models"
+LOCAL_MODELS_DIR = "/Volumes/Lauburu-Monorepo/models"
 GDRIVE_LORA_DIR = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets"
-LOCAL_LORA_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets"
+LOCAL_LORA_DIR = "/Volumes/Lauburu-Monorepo/lora_datasets"
 NAS_MOUNT = "/Volumes/NAS"
 HEADLESS_MAC_IP = "100.103.212.21"
 

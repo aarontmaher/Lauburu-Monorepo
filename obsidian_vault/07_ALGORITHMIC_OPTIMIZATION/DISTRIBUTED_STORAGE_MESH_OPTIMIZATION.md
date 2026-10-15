@@ -16,5 +16,5 @@ This subsystem applies **BFS**, **AntNet ACO**, and **Genetic Algorithms (GA)** 
 
 1. **BFS Discovery:** Traverses directory trees, mount points, and SeaweedFS volume topologies.
 2. **GA Macro-Allocation:** Evolves Pareto-optimal dataset placement to guarantee $\ge 10\text{ GB}$ free disk headroom.
-3. **AntNet ACO Chunk Routing:** Dynamically migrates data chunks over 10Gbps Thunderbolt 4 DMA and Wi-Fi 7.
+3. **AntNet ACO Chunk Routing:** Dynamically migrates data chunks over 40Gbps Thunderbolt 4 DMA and Wi-Fi 7.
 4. **Qwen Math Formal Verification:** Mathematically proves bin-packing convexity, Lyapunov stability, and optimal chunk sizes.

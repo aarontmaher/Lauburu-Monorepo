@@ -112,7 +112,7 @@ def test_layer_0_canonical_defaults():
     wol_names = {t.name for t in l0.wol_targets}
     assert "L1_Mac_Mini_Host" in wol_names
     assert "L2_MacBook_Pro_Vault" in wol_names
-    assert "L3_Linux_Head_Node" in wol_names
+    assert "L3_Linux_Mini" in wol_names
     assert "L4_Linux_Tablet" in wol_names
     assert "L5_MacBook_Air" in wol_names
 
@@ -130,7 +130,7 @@ def test_layer_0_canonical_defaults():
     peers_by_ip = {p.node_name: p.ip for p in l0.tailscale_peers}
     assert peers_by_ip["Mac_Node"] == "100.119.199.76"
     assert peers_by_ip["MacBook_Pro"] == "100.103.212.21"
-    assert peers_by_ip["Linux_Head_Node"] == "100.101.39.98"
+    assert peers_by_ip["Linux_Mini"] == "100.101.39.98"
     assert peers_by_ip["Linux_Tablet"] == "100.81.92.125"
     assert peers_by_ip["MacBook_Air"] == "100.93.158.96"
     assert peers_by_ip["Pixel_10_Pro_XL"] == "100.73.38.87"
@@ -169,14 +169,14 @@ def test_layer_1_hardware_and_trivault_storage():
     assert node_map["L1"].name == "Mac_Node"
     assert node_map["L1"].ram_total_gb == 24.0
     assert node_map["L1"].vram_cap_gb == 21.6
-    assert node_map["L1"].dynamic_cap_pct == 90.0
+    assert node_map["L1"].dynamic_cap_pct == 80.0
 
     assert node_map["L2"].name == "MacBook_Pro"
     assert node_map["L2"].ram_total_gb == 16.0
     assert node_map["L2"].vram_cap_gb == 14.0
     assert node_map["L2"].storage_free_gb == 409.3
 
-    assert node_map["L3"].name == "Linux_Head_Node"
+    assert node_map["L3"].name == "Linux_Mini"
     assert node_map["L3"].dynamic_cap_pct == 80.0
 
     assert node_map["L6"].name == "Pixel_10_Pro_XL"
@@ -738,12 +738,12 @@ def test_macbook_air_l5_priority_elevation_over_l2():
 
 def test_macbook_pro_l2_model_string_correction():
     """
-    Verify L2 MacBook Pro display string is updated to 'Apple Silicon TB4 Bridge Node'.
+    Verify L2 MacBook Pro display string reflects authentic Rule 0 hardware truth ('Intel Core i7 MacBook Pro').
     """
     store = BlackboardStore()
     snapshot = store.get_snapshot(force_refresh=True)
     l2 = next(n for n in snapshot.layer_1_hardware.nodes if n.node_id == "L2")
-    assert l2.model == "Apple Silicon TB4 Bridge Node"
+    assert l2.model == "Intel Core i7 MacBook Pro"
 
 
 def test_headless_device_capability_scores_across_all_nodes():

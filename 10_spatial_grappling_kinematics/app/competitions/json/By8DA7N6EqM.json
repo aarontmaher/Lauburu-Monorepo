@@ -1,0 +1,37 @@
+{
+  "video_id": "By8DA7N6EqM",
+  "url": "https://youtu.be/By8DA7N6EqM",
+  "division": "IBJJF",
+  "title": "Pan pacs - (AUS) vs (NZ)",
+  "duration_sec": 143.3,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 14,
+  "dual_athlete_frames": 3,
+  "standing_phase_pct": 21.4,
+  "ground_scramble_phase_pct": 78.6,
+  "level_change_shots_detected": 1,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 59.4,
+    "left_elbow": 115.8,
+    "right_elbow": 116.3,
+    "left_hip": 130.5,
+    "right_hip": 120.1,
+    "left_knee": 142.9,
+    "right_knee": 129.0
+  },
+  "keyframe_grid_path": null,
+  "tactical_note": "Aaron Maher's grappling in this match showcases a well-rounded approach, combining strong standing and ground/scrumble elements with a high level of spine lean and elbow flexion. His knee flexion is particularly impressive, demonstrating a balanced and efficient movement.",
+  "processing_sec": 2.01,
+  "vision_model_opinions": {
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "READY_BATCH",
+      "latency_sec": 0.8,
+      "analysis": "Aaron Maher's grappling in this match showcases a well-rounded approach, combining strong standing and ground/scrumble elements with a high level of spine lean and elbow flexion. His knee flexion is particularly impressive, demonstrating a balanced and efficient movement."
+    }
+  }
+}

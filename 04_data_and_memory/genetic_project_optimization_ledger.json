@@ -1,0 +1,115 @@
+{
+  "timestamp": "2026-09-01T19:31:38Z",
+  "generation": 964,
+  "champion": {
+    "id": "genome_gen1_baseline",
+    "generation": 1,
+    "sharding_engine": "prima_prp_ring",
+    "node_topology": "3_mac_tb4",
+    "sharding_split": [
+      34,
+      23,
+      23
+    ],
+    "kv_cache_quant": "Q8_0",
+    "n_ctx": 8192,
+    "primary_transport": "TB4_DMA_10G",
+    "fallback_transport": "Tailscale_WG",
+    "tb4_dma_weight": 0.98,
+    "ethernet_weight": 0.75,
+    "mac_mini_cap_gb": 19.8,
+    "macbook_air_cap_gb": 13.5,
+    "macbook_pro_cap_gb": 13.5,
+    "linux_head_cap_gb": 12.5,
+    "swap_circuit_breaker_mb": 500,
+    "subagent_host": "MacBook_Air",
+    "docker_mcp_host": "Linux_Head",
+    "browser_mcp_host": "MacBook_Air",
+    "vector_db_host": "Linux_Head",
+    "movesense_dsp_node": "Linux_Head",
+    "grappling_3d_renderer": "120fps_webgl_ratatui",
+    "lora_training_node": "MacBook_Air_MPS",
+    "dpo_batch_size": 8,
+    "ties_merge_frequency_hours": 12,
+    "fitness_score": 96.94,
+    "projected_tok_s": 40.0,
+    "vram_safety_score": 100.0,
+    "cost_efficiency_score": 100.0,
+    "network_latency_ms": 0.277,
+    "eval_verdict": "\ud83d\udc51 FRONTIER CHAMPION"
+  },
+  "population_summary": [
+    {
+      "id": "genome_gen1_baseline",
+      "engine": "prima_prp_ring",
+      "topology": "3_mac_tb4",
+      "fitness": 96.94,
+      "tps": 40.0,
+      "safety": 100.0,
+      "verdict": "\ud83d\udc51 FRONTIER CHAMPION"
+    },
+    {
+      "id": "genome_gen3_var12",
+      "engine": "prima_prp_ring",
+      "topology": "3_mac_tb4",
+      "fitness": 96.94,
+      "tps": 40.0,
+      "safety": 100.0,
+      "verdict": "\ud83d\udc51 FRONTIER CHAMPION"
+    },
+    {
+      "id": "genome_gen4_var4",
+      "engine": "prima_prp_ring",
+      "topology": "7_layer_mesh_full",
+      "fitness": 96.94,
+      "tps": 40.0,
+      "safety": 100.0,
+      "verdict": "\ud83d\udc51 FRONTIER CHAMPION"
+    },
+    {
+      "id": "genome_gen4_var5",
+      "engine": "prima_prp_ring",
+      "topology": "3_mac_tb4",
+      "fitness": 96.94,
+      "tps": 40.0,
+      "safety": 100.0,
+      "verdict": "\ud83d\udc51 FRONTIER CHAMPION"
+    },
+    {
+      "id": "genome_gen964_var5",
+      "engine": "prima_prp_ring",
+      "topology": "7_layer_mesh_full",
+      "fitness": 96.94,
+      "tps": 40.0,
+      "safety": 100.0,
+      "verdict": "\ud83d\udc51 FRONTIER CHAMPION"
+    },
+    {
+      "id": "genome_gen964_var6",
+      "engine": "prima_prp_ring",
+      "topology": "7_layer_mesh_full",
+      "fitness": 93.94,
+      "tps": 40.0,
+      "safety": 100.0,
+      "verdict": "\ud83d\udc51 FRONTIER CHAMPION"
+    },
+    {
+      "id": "genome_gen964_var13",
+      "engine": "prima_prp_ring",
+      "topology": "3_mac_tb4",
+      "fitness": 93.94,
+      "tps": 40.0,
+      "safety": 100.0,
+      "verdict": "\ud83d\udc51 FRONTIER CHAMPION"
+    },
+    {
+      "id": "genome_gen964_var14",
+      "engine": "prima_prp_ring",
+      "topology": "3_mac_tb4",
+      "fitness": 91.61,
+      "tps": 37.9,
+      "safety": 100.0,
+      "verdict": "\ud83d\udfe2 PRODUCTION VIABLE"
+    }
+  ]
+}

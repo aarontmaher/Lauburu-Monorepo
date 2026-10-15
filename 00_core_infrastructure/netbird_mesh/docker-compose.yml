@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  # NetBird Management Server (Control Plane)
+  netbird-management:
+    image: netbirdio/management:latest
+    container_name: netbird-management
+    restart: unless-stopped
+    environment:
+      - NETBIRD_MGMT_API_PORT=33073
+      - NETBIRD_MGMT_API_ENDPOINT=http://127.0.0.1:33073
+      - NETBIRD_STORE_ENGINE=sqlite
+      - NETBIRD_STORE_PATH=/var/lib/netbird/management.db
+    volumes:
+      - netbird-mgmt-data:/var/lib/netbird
+    ports:
+      - "33073:33073"
+
+  # NetBird Signal Server (WebRTC P2P Handshake)
+  netbird-signal:
+    image: netbirdio/signal:latest
+    container_name: netbird-signal
+    restart: unless-stopped
+    environment:
+      - NETBIRD_SIGNAL_PORT=10000
+    ports:
+      - "10000:10000"
+
+  # NetBird Web Dashboard
+  netbird-dashboard:
+    image: netbirdio/dashboard:latest
+    container_name: netbird-dashboard
+    restart: unless-stopped
+    environment:
+      - NETBIRD_MGMT_API_ENDPOINT=http://127.0.0.1:33073
+      - NETBIRD_MGMT_GRPC_API_ENDPOINT=http://127.0.0.1:33073
+    ports:
+      - "8087:80"
+
+  # Coturn STUN / TURN Relay
+  netbird-coturn:
+    image: coturn/coturn:latest
+    container_name: netbird-coturn
+    restart: unless-stopped
+    command:
+      - -n
+      - --log-file=stdout
+      - --listening-port=3478
+      - --tls-listening-port=5349
+      - --fingerprint
+      - --lt-cred-mech
+      - --realm=lauburu.mesh
+    ports:
+      - "3478:3478/udp"
+      - "3478:3478/tcp"
+
+volumes:
+  netbird-mgmt-data:

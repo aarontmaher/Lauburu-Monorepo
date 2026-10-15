@@ -31,7 +31,7 @@ OPENCLAW_FALLBACK_URL = os.environ.get("OPENCLAW_FALLBACK_URL", "http://127.0.0.
 BOOTSTRAP_TOKEN = os.environ.get("OPENCLAW_BOOTSTRAP_TOKEN", "mGe5qpmFqnVWbnf1v1y72hWOv0JnQBjoTjo_229F400")
 OPERATOR_SCOPE = "operator.admin"
 
-WORKSPACE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+WORKSPACE_ROOT = Path("/Volumes/Lauburu-Monorepo")
 GDRIVE_LORA_DIR = Path("/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets")
 
 # Target Subprojects
@@ -79,7 +79,7 @@ SUBPROJECT_ENDPOINTS = {
 # Mobile Device Topology
 DEVICE_TOPOLOGY = {
     "samsung_s20": {
-        "device_id": os.environ.get("S20_DEVICE_ID", "100.84.40.95:5555"),
+        "device_id": os.environ.get("S20_DEVICE_ID", "100.78.206.96:5555"),
         "fallback_id": "100.99.123.58:5555",
         "serial": "R3CN40CJJ1R",
         "role": "Primary UI/UX Automated Audit & App Installation Testbed",

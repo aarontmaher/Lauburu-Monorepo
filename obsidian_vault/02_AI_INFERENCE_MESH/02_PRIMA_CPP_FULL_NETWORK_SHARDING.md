@@ -8,7 +8,7 @@ tags: [prima_cpp, sharding, llama_cpp, petals, exo, 80b, 72b]
 Governs distributed model execution across all 7 layers without cloud API spend ($0.00):
 
 ## 1. Primary Sharded Models
-- **👑 Qwen 3 Next 80B A3B Instruct (45.38 GB):** Sharded across 3 Macs (Mini: 34L + Air: 23L + MBP: 23L). Speed: **38.0 tok/s** over 10Gbps TB4 DMA.
+- **👑 Qwen 3 Next 80B A3B Instruct (45.38 GB):** Sharded across 3 Macs (Mini: 34L + Air: 23L + MBP: 23L). Speed: **38.0 tok/s** over 40Gbps TB4 DMA.
 - **⚡ Qwen 2.5 72B Instruct (44.16 GB):** Sharded across 3 Macs. Speed: **40.0 tok/s**.
 - **Flagship World Models:** `Qwen-AgentWorld-35B-A3B` (21 GB) & `WebWorld-32B` (18 GB).
 

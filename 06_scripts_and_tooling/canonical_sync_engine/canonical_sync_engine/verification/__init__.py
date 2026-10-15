@@ -65,22 +65,22 @@ class StorageVerifier:
     ):
         self.obsidian_path = str(Path(obsidian_vault_path or os.environ.get(
             "OBSIDIAN_VAULT_PATH",
-            "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault"
+            "/Volumes/Lauburu-Monorepo/obsidian_vault"
         )).expanduser().resolve())
 
         self.pyspark_path = str(Path(pyspark_dataset_path or os.environ.get(
             "PYSPARK_DATASET_PATH",
-            "/Users/aaron/DFS_UNIFIED/lora_datasets"
+            "/Volumes/Lauburu-Monorepo/04_data_and_memory/data"
         )).expanduser().resolve())
 
         self.pyspark_memory_path = str(Path(pyspark_memory_path or os.environ.get(
             "PYSPARK_MEMORY_PATH",
-            "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory"
+            "/Volumes/Lauburu-Monorepo/04_data_and_memory"
         )).expanduser().resolve())
 
         self.git_path = str(Path(git_working_tree_path or os.environ.get(
             "GIT_REPO_PATH",
-            "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+            "/Volumes/Lauburu-Monorepo"
         )).expanduser().resolve())
 
         self.gdrive_path = str(Path(gdrive_mount_path or os.environ.get(
@@ -90,7 +90,7 @@ class StorageVerifier:
 
         self.gdrive_cache = str(Path(gdrive_fallback_cache_path or os.environ.get(
             "GDRIVE_FALLBACK_PATH",
-            "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/gdrive_cache"
+            "/Volumes/Lauburu-Monorepo/data/gdrive_cache"
         )).expanduser().resolve())
 
         self.min_headroom_gb = min_headroom_gb

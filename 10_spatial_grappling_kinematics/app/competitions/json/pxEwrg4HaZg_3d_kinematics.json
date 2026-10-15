@@ -1,0 +1,26 @@
+{
+  "video_id": "pxEwrg4HaZg",
+  "url": "https://youtu.be/pxEwrg4HaZg",
+  "division": "ADCC",
+  "title": "Adcc Nationals - Aaron Maher vs Justin Wood",
+  "duration_sec": 372.8,
+  "resolution": "254x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 24,
+  "dual_athlete_frames": 3,
+  "standing_phase_pct": 91.7,
+  "ground_scramble_phase_pct": 8.3,
+  "level_change_shots_detected": 3,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 15.3,
+    "left_elbow": 138.1,
+    "right_elbow": 149.8,
+    "left_hip": 165.0,
+    "right_hip": 142.6,
+    "left_knee": 158.1,
+    "right_knee": 159.5
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/pxEwrg4HaZg_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in the ADCC Nationals match was characterized by a strong standing position, with 91.7% of his time on the ground and 8.3% on the ground/scrabble. The match saw a significant level change shot, with 3 shots in the 372.8s duration. Maher's mean spine lean was 15.3\u00b0, and his elbow flexion was 138.1\u00b0/149.8\u00b0. His knee flexion was 15",
+  "processing_sec": 2.74
+}

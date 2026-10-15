@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nexus Sovereign — Mesh Control</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'SF Mono', 'Consolas', monospace; 
+      background: #0a0a12; color: #e0e0ff; 
+      width: 380px; min-height: 100vh; 
+      padding: 12px; font-size: 12px;
+    }
+    .header { 
+      display: flex; align-items: center; gap: 8px; 
+      padding: 8px 0; border-bottom: 1px solid #2a2a4a; margin-bottom: 12px;
+    }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #00ff88; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    h1 { font-size: 14px; color: #00ff88; letter-spacing: 0.5px; }
+    .subtitle { font-size: 10px; color: #6060aa; margin-top: 2px; }
+    .section { margin-bottom: 14px; }
+    .section-title { font-size: 10px; color: #8080cc; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .card { background: #0f0f1a; border: 1px solid #1a1a2e; border-radius: 6px; padding: 8px; margin-bottom: 6px; }
+    .node-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; }
+    .node-name { color: #a0a0ff; font-weight: bold; }
+    .node-status { font-size: 10px; }
+    .status-ok { color: #00ff88; }
+    .status-warn { color: #ffaa00; }
+    .status-err { color: #ff4444; }
+    textarea {
+      width: 100%; height: 70px; background: #0f0f1a; 
+      border: 1px solid #2a2a4a; color: #e0e0ff; 
+      border-radius: 4px; padding: 6px; font-family: inherit; font-size: 11px;
+      resize: none;
+    }
+    button {
+      padding: 5px 12px; border: none; border-radius: 4px; 
+      cursor: pointer; font-size: 11px; font-family: inherit;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #4040cc; color: #fff; }
+    .btn-primary:hover { background: #5050ee; }
+    .btn-red { background: #cc2222; color: #fff; }
+    .btn-red:hover { background: #ee3333; }
+    .btn-row { display: flex; gap: 6px; margin-top: 6px; }
+    .response-box { 
+      background: #080810; border: 1px solid #1a1a2e; border-radius: 4px;
+      padding: 8px; max-height: 200px; overflow-y: auto;
+      font-size: 11px; line-height: 1.5; color: #c0c0ff;
+      white-space: pre-wrap; margin-top: 8px;
+    }
+    .meta-line { font-size: 9px; color: #4a4a6a; margin-top: 4px; }
+    #mesh-telemetry { font-size: 10px; line-height: 1.6; }
+    .wg-peer { display: flex; justify-content: space-between; font-size: 10px; padding: 2px 0; border-bottom: 1px solid #111122; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="status-dot" id="conn-dot"></div>
+    <div>
+      <h1>🏛️ Nexus Sovereign</h1>
+      <div class="subtitle">prima.cpp · qwen_38_max · 115.52 GB pooled VRAM</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🤖 Sovereign AI Query</div>
+    <textarea id="query-input" placeholder="Enter text or paste code to analyze with prima.cpp..."></textarea>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="invokeMain()">⚡ Sovereign (8082)</button>
+      <button class="btn-red" onclick="invokeDA()">🔴 Devil's Advocate</button>
+    </div>
+    <div id="response-box" class="response-box" style="display:none"></div>
+    <div id="meta-line" class="meta-line"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📡 Mesh Node Status</div>
+    <div class="card" id="node-status">
+      <div class="node-row"><span class="node-name">L1 Mac Mini M4</span><span class="status-ok" id="l1-status">Checking…</span></div>
+      <div class="node-row"><span class="node-name">L3 Linux Hub</span><span id="l3-status">Checking…</span></div>
+      <div class="node-row"><span class="node-name">L3 Qwen3-VL-32B</span><span id="l3vlm-status">Checking…</span></div>
+      <div class="node-row"><span class="node-name">L3 Swarm Worker</span><span id="l3sw-status">Checking…</span></div>
+      <div class="node-row"><span class="node-name">DA Adversarial</span><span id="da-status">Checking…</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📊 LoRA Training</div>
+    <div class="card">
+      <div class="node-row">
+        <span>Dataset pairs</span>
+        <span class="status-ok" id="lora-count">Loading…</span>
+      </div>
+      <div class="node-row">
+        <span>Swarm loop</span>
+        <span id="swarm-status">Loading…</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔧 Quick Actions</div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="openMeshGUI()" style="flex:1">🌐 Mesh GUI</button>
+      <button class="btn-primary" onclick="openLuCI()" style="flex:1">🔧 LuCI</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="refreshStatus()" style="flex:1">🔄 Refresh</button>
+    </div>
+  </div>
+
+  <script src="src/sidepanel.js"></script>
+</body>
+</html>

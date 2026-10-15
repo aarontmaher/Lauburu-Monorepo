@@ -21,7 +21,7 @@ The **Lauburu Mesh Ecosystem** is a decentralized, self-healing, polyglot artifi
 
 ### 2. The 5 Cardinal Invariants
 1. **Rule #0 (Zero-Mock & Zero-Simulation Mandate):** Absolutely zero simulated data, fake arrays, fabricated timestamps, or synthetic telemetry. Metrics must originate from live physical sensors (Movesense BLE), kernel syscalls (`vm_stat`, `/proc/meminfo`), authentic DOM queries via Chrome DevTools Protocol, or display clean waiting states (`--`).
-2. **Local AI First ($0 Cost):** Inference and training prioritize local Apple Silicon Metal Performance Shaders and 10Gbps Thunderbolt 4 DMA bridges. Paid cloud APIs (`gpt-4*`, `claude-3*`, `o1*`) are strictly forbidden. Commercial GCP credits ($1,400.00) remain 100% untouched.
+2. **Local AI First ($0 Cost):** Inference and training prioritize local Apple Silicon Metal Performance Shaders and 40Gbps Thunderbolt 4 DMA bridges. Paid cloud APIs (`gpt-4*`, `claude-3*`, `o1*`) are strictly forbidden. Commercial GCP credits ($1,400.00) remain 100% untouched.
 3. **Host Sanctuary & Dynamic RAM Governance:** The primary Mac Mini M4 Pro host (24 GB unified RAM) must strictly maintain $\ge 8.0\text{ GB}$ of free physical RAM at all times. Memory utilization must not exceed 90%. Compute exceeding safe headroom is dynamically offloaded to peripheral nodes.
 4. **Tri-Vault Storage Synchronization:** All system state, debate consensus records, training pairs, and source code are continuously synchronized across three synchronized tiers:
    - **Obsidian Knowledge Core (`obsidian_vault/`):** Semantic knowledge, bidirectional Wikilinks, KaTeX math.
@@ -29,19 +29,20 @@ The **Lauburu Mesh Ecosystem** is a decentralized, self-healing, polyglot artifi
    - **GitHub Repository & Worktrees:** Canonical source code, container manifests, CI test suites.
 5. **99% Cloud Quota Constant-Rate Pacing:** Free-tier cloud APIs (Google AI Studio 1,500 RPD, NVIDIA NIM 2,000 RPD, Cloudflare 800 RPD, xAI Grok 1,000 RPD) are paced to consume exactly 99.0% of daily quotas continuously without 429 rate-limiting, harvesting teacher distillation pairs for local models before each 10:00:00 AM AEST (00:00 UTC) reset.
 
-### 3. 7-Layer Physical Mesh Hardware Matrix
+### 3. 8-Node Physical Mesh Hardware Matrix (139.0 GB RAM / 108.4 GB Usable AI VRAM)
 ```
 ┌───────┬──────────────────┬──────────────────┬─────────────────┬───────────────────┬───────────────────────────────────────────┐
 │ Layer │ Node Name        │ Architecture     │ Local / Mesh IP │ Usable VRAM / RAM │ Primary Function                          │
 ├───────┼──────────────────┼──────────────────┼─────────────────┼───────────────────┼───────────────────────────────────────────┤
-│ L1    │ Mac_Node         │ Apple M4 Pro     │ 192.168.8.230   │ 21.6 GB (24 GB)   │ Host Memory Governor & Root Orchestrator  │
-│ L2    │ MacBook_Pro      │ Apple M4 Pro TB4 │ 169.254.187.138 │ 14.0 GB (16 GB)   │ 10Gbps TB4 DMA Bridge (0.27ms RTT) Vault  │
-│ L3    │ Linux_Head_Node  │ AMD Ryzen 7 5700U│ 192.168.8.224   │ 13.8 GB (16 GB)   │ Docker Hub, Petals DHT, Ray Cluster       │
-│ L4    │ Linux_Tablet     │ Debian Linux ARM │ DHCP (100.81)   │ 6.5 GB (8 GB)     │ Mobile Touch DSP & Edge Audio Ingestion   │
-│ L5    │ MacBook_Air      │ Apple M4 Air     │ 192.168.8.222   │ 14.0 GB (16 GB)   │ Secondary Metal Worker & LoRA Trainer     │
-│ L6    │ Pixel_10_Pro_XL  │ Tensor G5 + TPU  │ DHCP (100.73)   │ 12.5 GB (16 GB)   │ 8K PTZ Vision Stream & Edge TPU VLA       │
-│ L7    │ Samsung_S20      │ Exynos 990 + ADB │ 100.84.40.95    │ 9.0 GB (12 GB)    │ 24/7 Termux UI Tester & ADB Node          │
-│ GW    │ GL.iNet Beryl 7  │ MediaTek MT7988A │ 192.168.8.1     │ Embedded Router   │ Wi-Fi 7 MLO, USB ADB Bridge, kmwan Multi-WAN│
+│ L1    │ Mac_Node (Host)  │ Apple M4 Pro     │ 192.168.8.230   │ 19.2 GB (24 GB)   │ Host Memory Governor & Root Orchestrator  │
+│ L2    │ MacBook_Pro      │ Intel Core i7    │ 192.168.8.127   │ 14.0 GB (16 GB)   │ Unlinked TB / LAN Wi-Fi 5 Model Vault     │
+│ L8    │ Linux_Mini_lauburu│ Intel i7-8700B  │ TB 10.0.0.8     │ 25.6 GB (32 GB)   │ 40Gbps TB4 DMA Bridge (0.38ms RTT) Hub    │
+│ L3    │ Linux_Head_Node  │ AMD Ryzen 7 5700U│ 192.168.8.225   │ 12.0 GB (15 GB)   │ Docker Hub, Petals DHT, Ray Cluster       │
+│ L4    │ Linux_Tablet     │ Debian Linux ARM │ 192.168.8.176   │ 6.0 GB (8 GB)     │ Mobile Touch DSP & Edge Audio Ingestion   │
+│ L5    │ MacBook_Air      │ Apple M4 Air     │ 192.168.8.248   │ 14.0 GB (16 GB)   │ Secondary Metal Worker & LoRA Trainer     │
+│ L6    │ Pixel_10_Pro_XL  │ Tensor G5 + TPU  │ 192.168.8.213   │ 13.6 GB (16 GB)   │ 8K PTZ Vision Stream & Edge TPU VLA       │
+│ L7    │ Samsung_S20      │ Exynos 990 + ADB │ 192.168.8.130   │ 9.0 GB (12 GB)    │ 24/7 Termux UI Tester & ADB Node          │
+│ GW    │ GL-BE14000       │ MediaTek QuadCore│ 192.168.8.1     │ Embedded Router   │ Wi-Fi 7 MLO, USB ADB Bridge, kmwan Multi-WAN│
 └───────┴──────────────────┴──────────────────┴─────────────────┴───────────────────┴───────────────────────────────────────────┘
 ```
 <!-- CONTEXT_WINDOW_TIER_0_END -->
@@ -120,7 +121,7 @@ graph TD
     end
 
     subgraph L2_TB4["L2: MacBook Pro (Storage Vault)"]
-        TB4_BRIDGE["10Gbps TB4 DMA Bridge (0.27ms RTT)"]
+        TB4_BRIDGE["40Gbps TB4 DMA Bridge (0.27ms RTT)"]
         GGUF_VAULT["285 GB SSD Model Vault"]
         RPC_WORKER_1["llama.cpp RPC Worker"]
     end
@@ -136,7 +137,7 @@ graph TD
         SAMSUNG_S20["Samsung S20 (Termux UI Automator)"]
     end
 
-    L1_HOST <== "10Gbps Thunderbolt 4 (PCIe DMA)" ==> L2_TB4
+    L1_HOST <== "40Gbps Thunderbolt 4 (PCIe DMA)" ==> L2_TB4
     L1_HOST <== "1GbE Ethernet / Tailscale WireGuard" ==> L3_LINUX
     L1_HOST <== "USB ADB / Tailscale TCP 5555" ==> L6_L7_MOBILE
     L1_HOST <== "BLE GATT 512Hz ECG" ==> MOVESENSE["Movesense Sensor"]

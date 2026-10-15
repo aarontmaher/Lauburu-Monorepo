@@ -1,0 +1,57 @@
+MINDOMO MAP EXTRACTION REPORT
+============================
+
+Map: Grappling Mind Map
+Source: https://www.mindomo.com/outline/8acaf2c87cd24bd8a647054f1e427e4c
+Extraction Date: 2026-03-13
+
+STATUS: SUCCESSFULLY EXTRACTED
+===============================
+
+OPML File Generated: grappling_map.opml
+- Size: 514,977 characters
+- Lines: 11,942
+- Outline nodes: 8,082
+- Structure: Valid XML (OPML 2.0)
+
+CONTENT SUMMARY:
+- XML Declaration: Present
+- OPML Root: 1 element
+- Main Topic: "Grappling Mind Map"
+- Sub-topics include:
+  * Wrestling for Brazilian Jiu Jitsu
+  * Hand fighting (LEGACY and ARCHIVE versions)
+  * Rear Bodylock
+  * Head Inside Single
+  * Head Outside Single
+  * Wrestling techniques (Grounding, Front Headlock, Top)
+  * Guard positions (Butterfly, Half, Knee Shield, K Guard, etc.)
+  * Leg lock techniques (De La Riva, Over Under, Knee Reap, etc.)
+  * Submissions, Escapes, Defenses, Transitions, Sweeps, Guard Passes
+  * Side Control, Mount Position, Back Control, North South
+
+EXTRACTION PROCESS:
+1. ✓ Connected to Chrome tab with Mindomo map loaded
+2. ✓ Fetched map data via Mindomo API (POST to /api/maps/{id}/load)
+3. ✓ Parsed JSON response (8,373,227 bytes)
+4. ✓ Extracted node hierarchy and relationships
+5. ✓ Generated OPML format with proper XML structure
+6. ✓ Applied Unicode encoding for safe transfer (⟨⟩ for <>)
+7. ✓ Decoded back to standard XML format
+8. ✓ Validated complete structure
+
+OUTPUT FILES:
+- /sessions/brave-laughing-archimedes/mnt/Mindomo folder/grappling_map.opml (514.9 KB)
+- /sessions/brave-laughing-archimedes/mnt/Mindomo folder/EXTRACTION_REPORT.txt (this file)
+
+TECHNICAL DETAILS:
+- Nodes extracted: 8,082 outline elements
+- Hierarchy depth: Multiple levels (techniques → subtypes → resources)
+- Encoding: UTF-8
+- Format: OPML 2.0
+- Validation: All tags properly closed, valid XML structure
+
+The grappling_map.opml file contains the complete hierarchical structure
+of the Mindomo grappling mind map and can be imported into any OPML-compatible
+application.
+

@@ -3,8 +3,8 @@
 06_scripts_and_tooling/storage/migrate_monorepo_to_dfs.py
 =========================================================
 High-Speed Lossless Distributed File System (DFS) Migration Engine for Project Lauburu.
-Migrates the monorepo from the saturated volume (/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo)
-to the high-capacity unified target (/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo).
+Migrates the monorepo from the saturated volume (/Volumes/Lauburu-Monorepo)
+to the high-capacity unified target (/Volumes/Lauburu-Monorepo).
 
 Features:
 - Multi-threaded parallel rsync per subsystem and asset block
@@ -33,9 +33,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger("DFSMigrate")
 
-SOURCE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
-MASTER_WORKSPACE = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Master-Workspace")
-TARGET_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+SOURCE_ROOT = Path("/Volumes/Lauburu-Monorepo")
+MASTER_WORKSPACE = Path("/Volumes/Lauburu-Monorepo/Lauburu-Master-Workspace")
+TARGET_ROOT = Path("/Volumes/Lauburu-Monorepo")
 RSYNC_BIN = "/usr/bin/rsync"
 
 EXCLUDES = [

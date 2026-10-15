@@ -25,7 +25,7 @@ pooled_npu_tops: 100.0
 | **#6** | **`nanoowl_ui_grounder`** | Tier 3: 60 FPS Visual UI Grounding | Google Tensor G5 Edge TPU (L6 Pixel 10 Pro) | **14.2 ms** | **70.4 FPS** | **131.40** | **2554.0** | Tensor G5 NPU / 0% Host RAM |
 | **#7** | **`nanovision_ui_encoder_7m`** | Tier 3: UI Spatial Saliency & Bounding Box | Google Tensor G5 Edge TPU (L6 Pixel 10 Pro) | **12.0 ms** | **83.3 FPS** | **124.60** | **2535.6** | Tensor G5 NPU / 0% Host RAM |
 | **#8** | **`silero_vad_v5`** | Tier 2: Real-Time Voice Activity Detection | Google Tensor G5 Edge TPU (L6 Pixel 10 Pro) | **0.12 ms** | >8,000 frames/s | **118.20** | **2518.2** | Tensor G5 NPU / 0% Host RAM |
-| **#9** | **`moonshine_tiny_asr`** | Tier 2: Offline Streaming ASR Transcription | Apple Neural Engine (L5 MacBook Air M4) | **45.0 ms** | **32x Real-Time** | **106.50** | **2488.7** | 0% Metal GPU / CoreML e5rt |
+| **#9** | **`moonshine_tiny_asr`** | Tier 2: Offline Streaming ASR Transcription | Apple Neural Engine (L5 MacBook Pro (Node L2)) | **45.0 ms** | **32x Real-Time** | **106.50** | **2488.7** | 0% Metal GPU / CoreML e5rt |
 
 ---
 
@@ -43,7 +43,7 @@ $$\text{Fitness}_{\text{NPU}} = \frac{\text{Task Accuracy (\%)} \times \text{Thr
 
 ## 🔗 3. Integration with Local AI Swarm & Storage Tri-Vault
 
-- **JSON State of Record:** [`04_data_and_memory/local_models_generational_elo.json`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/local_models_generational_elo.json)
-- **Fleet Dispatcher:** [`02_ai_models_and_inference/npu_fleet/npu_model_fleet_dispatcher.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/npu_model_fleet_dispatcher.py)
-- **Role Competency Engine:** [`05_agents_and_swarms/local_ai_role_competency_evaluator.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/local_ai_role_competency_evaluator.py)
-- **24/7 Swarm Loop:** [`05_agents_and_swarms/continuous_self_evolving_swarm_loop.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/continuous_self_evolving_swarm_loop.py)
+- **JSON State of Record:** [`04_data_and_memory/local_models_generational_elo.json`](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/local_models_generational_elo.json)
+- **Fleet Dispatcher:** [`02_ai_models_and_inference/npu_fleet/npu_model_fleet_dispatcher.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/npu_fleet/npu_model_fleet_dispatcher.py)
+- **Role Competency Engine:** [`05_agents_and_swarms/local_ai_role_competency_evaluator.py`](file:///Volumes/Lauburu-Monorepo/05_agents_and_swarms/local_ai_role_competency_evaluator.py)
+- **24/7 Swarm Loop:** [`05_agents_and_swarms/continuous_self_evolving_swarm_loop.py`](file:///Volumes/Lauburu-Monorepo/05_agents_and_swarms/continuous_self_evolving_swarm_loop.py)

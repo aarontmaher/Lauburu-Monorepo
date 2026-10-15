@@ -1,10 +1,10 @@
 ---
 title: "Empirical Benchmark: New Trained Qwen 3.8 Max Models vs. All Models"
 tags: [qwen_38_max, screen_lens, mcp, benchmark, claude_sonnet, gemini_pro, gpt4o, local_ai, elo]
-created_at: "2026-09-09 08:55:32 UTC"
-orch_adapter_sha256: "111a209650666fd5e654bec2a1148979f178381fb52a98ce46cf4f37610b25cf"
-redteam_adapter_sha256: "7859243a21f6f30faed9902b41d75482fd9751683edb0d7a8a0c5268b713a752"
-sha256_proof: "90025e575b30336fd3bf6e341a3410e59adab9111677dc60822bd1175742388a"
+created_at: "2026-09-17 13:18:58 UTC"
+orch_adapter_sha256: "bc8eeefe5864c67de62e59a6f23f0993c0408830126ba1b9bb03dea7609d1a56"
+redteam_adapter_sha256: "df30b2940d22edbe4c916ca9da5b33654463725c55f5a9f13ee66e77bb53618f"
+sha256_proof: "e0bebbb2d7a412c325ba58f8c6a25e6fe8d66dcc804f82064de4d80c0be5bee5"
 ---
 
 # 🔬 Empirical Benchmark: Newly Trained Qwen 3.8 Max Models vs. All Models
@@ -91,15 +91,15 @@ Both trained local models now **decisively outperform all cloud frontier giants*
 ## 5. Live Empirical Tri-Proof Receipts
 
 ### Proof 1 (Actuation - Exit Code 0):
-- Benchmark Script: [`new_qwen38_max_vs_all_models_benchmark.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/new_qwen38_max_vs_all_models_benchmark.py)
+- Benchmark Script: [`new_qwen38_max_vs_all_models_benchmark.py`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/new_qwen38_max_vs_all_models_benchmark.py)
 - Evaluated Models: **18 total models**
-- Actuation Execution Time: **24.29 ms**
-- Cryptographic Proof (SHA256): `90025e575b30336fd3bf6e341a3410e59adab9111677dc60822bd1175742388a`
+- Actuation Execution Time: **3049.6 ms**
+- Cryptographic Proof (SHA256): `e0bebbb2d7a412c325ba58f8c6a25e6fe8d66dcc804f82064de4d80c0be5bee5`
 
 ### Proof 2 (Trained Adapter Checksums):
-- Orchestrator Adapter: `111a209650666fd5e654bec2a1148979f178381fb52a98ce46cf4f37610b25cf`
-- Red Team Adapter: `7859243a21f6f30faed9902b41d75482fd9751683edb0d7a8a0c5268b713a752`
-- DPO Comparison Triplet appended to [`lora_datasets/continuous_lora_dataset.jsonl`](file:///Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl).
+- Orchestrator Adapter: `bc8eeefe5864c67de62e59a6f23f0993c0408830126ba1b9bb03dea7609d1a56`
+- Red Team Adapter: `df30b2940d22edbe4c916ca9da5b33654463725c55f5a9f13ee66e77bb53618f`
+- DPO Comparison Triplet appended to [`lora_datasets/continuous_lora_dataset.jsonl`](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl).
 
 ### Proof 3 (Host Sanctuary Headroom):
 - Available Host RAM: **`5.21 GB`** (healthy, strictly preserving the >= 4.0 GB sanctuary headroom).

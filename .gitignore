@@ -37,9 +37,100 @@ node_modules/
 .next/
 dist/
 build/
+**/build/
 .wrangler/
 
-# Python & Testing Caches
+# Rust / Cargo Build
+target/
+**/target/
+
+# Dart & Flutter
+.dart_tool/
+**/.dart_tool/
+
+# Android & Gradle
+.gradle/
+**/.gradle/
+local.properties
+
+# Compiled Infrastructure & CLI Binaries (>20MB - >100MB)
+00_core_infrastructure/bin/nomad
+00_core_infrastructure/bin/weed
+06_scripts_and_tooling/lauburu-opencode-cli/lauburu
+06_scripts_and_tooling/lauburu-opencode-cli/lauburu_android
+06_scripts_and_tooling/lauburu-opencode-cli/lauburu-android
+06_scripts_and_tooling/lauburu-opencode-cli/lauburu_linux_amd64
+06_scripts_and_tooling/lauburu-opencode-cli/lauburu_darwin_amd64
+06_scripts_and_tooling/lauburu-opencode-cli/lauburu_linux_arm64
+
+# Heavy Video, Media, Mobile APKs & MediaPipe Task Weights
+*.mp4
+*.mov
+*.mkv
+*.webm
+*.avi
+*.apk
+*.aab
+*.ipa
+*.dmg
+*.pkg
+*.task
+*.tflite
+*.heapsnapshot
+*.app/
+**/*.app/
+*.framework/
+**/*.framework/
+10_spatial_grappling_kinematics/app/competitions/videos/
+10_spatial_grappling_kinematics/app/competitions/keyframes/
+10_spatial_grappling_kinematics/mindomo/AppSupport_Mindomo/
+01_apps/spatial_grappling/mindomo_backup/AppSupport_Mindomo/
+
+# Sandbox Evolution & Reverse Engineering Dumps (Rule 4)
+01_apps/screen_lens/sandbox_evolution/
+01_apps/reverse_engineering/
+
+# Transient Agent Scratchpads, Bot Snapshots & Generated WireGuard Profiles
+08_business_and_commerce/workspaces/snapshots/
+.agents/*
+!.agents/AGENTS.md
+!.agents/rules/
+!.agents/skills/
+!.agents/workflows/
+**/.agents/*
+!**/.agents/AGENTS.md
+!**/.agents/rules/
+!**/.agents/skills/
+!**/.agents/workflows/
+00_core_infrastructure/containers/wireguard_mesh/profiles/
+05_agents_and_swarms/debates/
+obsidian_vault/.obsidian/cache/
+obsidian_vault/04_ANALYTICS/VLA_PERCEPTION/
+obsidian_vault/04_ANALYTICS/LENS_CTF_CYBERGYM_TRAINING_LOG.md
+obsidian_vault/08_COMMERCE/STITCH_2_NETWORK_ANALYZER_OPTIMIZATION.md
+obsidian_vault/APPS_AND_FEATURES/nexus_transcripts/
+obsidian_vault_backup_arena/
+04_data_and_memory/exports/
+04_data_and_memory/reports/agent_as_judge_audit_report.json
+filerldb2/
+
+# Editor & IDE Caches
+.idea/
+**/.idea/
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Python, Virtual Environments & Testing Caches
+.venv/
+**/.venv/
+.venv_*/
+**/.venv_*/
+venv/
+**/venv/
+.eggs/
+**/*.eggs/
+*.egg-info/
+**/*.egg-info/
 __pycache__/
 **/__pycache__/
 *.pyc
@@ -52,13 +143,103 @@ htmlcov/
 logs/*.log
 logs/*.err
 *.log
+*.err
 06_scripts_and_tooling/scratch/
+06_scripts_and_tooling/scratch_archive/
 session_logs/*.log
 
 # Sync & Temp
 .stversions/
+**/.stversions/
 .stignore
 .julesignore
+*.sync-conflict-*
+**/*.sync-conflict-*
+.syncthing.*.tmp
+**/.syncthing.*.tmp
+*.bak
+**/*.bak
+*.lock
+**/*.lock
+*.xwd
 
-# Sensitive Drop Zones
+# Sensitive Drop Zones & Local Credentials
 obsidian_vault/Secure_Drop_Zone.md
+obsidian_vault/GLINET_CREDENTIALS.md
+**/client_secret.json
+**/service_account.json
+**/token.json
+**/workspace_credentials.json
+**/workspace_token.json
+00_core_infrastructure/containers/wireguard_mesh/active_mesh.env
+00_core_infrastructure/mptcp/openmptcprouter_vps_keys.txt
+*.keystore
+**/*.keystore
+
+# Compiled Binaries, Shared Libraries & Build Outputs
+*.dylib
+**/*.dylib
+*.so
+**/*.so
+*.class
+**/*.class
+00_core_infrastructure/bin/prima-worker-*
+01_apps/network_cable_analyzer/cable_analyzer
+01_apps/opengo_bt_ide/opengo_hub*
+01_apps/opengo_bt_ide/opengo_bt_ide*
+01_apps/rust_swarm_training_tui/rust_swarm_training_tui
+01_apps/canonical_tui_prototypes/go_bubbletea/bin/canonical_tui_go
+01_apps/canonical_tui_prototypes/c_ncurses/bin/canonical_tui_c
+01_apps/screen_lens/bin/lauburu-lens
+01_apps/screen_lens/c_core/lauburu_storage_bench
+01_apps/screen_lens/c_core/movesense_c_bench
+01_apps/screen_lens/c_core/test_model_merger
+01_apps/screen_lens/c_core/c_test_*
+01_apps/screen_lens/c_core/darwin_ram_auditor
+01_apps/screen_lens/c_core/ast_compressor_test
+01_apps/experimental_pwas/swarm_dashboard/assets/index-*.js
+02_ai_models_and_inference/b_shard/lauburu_bshard_c11_node
+03_biometrics_and_telemetry/tests/test_movesense_nus_bridge
+03_biometrics_and_telemetry/tests/test_adversarial_nusecg_hardware
+05_agents_and_swarms/continuous_polyglot_go_trainer/continuous_polyglot_go_trainer
+06_scripts_and_tooling/automation/go_browser_automator/go_browser_automator
+06_scripts_and_tooling/automation/go_llama_lens_orchestrator/go_llama_lens_orchestrator
+06_scripts_and_tooling/lauburu_network_lens
+06_scripts_and_tooling/ai/tiny_lms/tiny_lm
+06_scripts_and_tooling/ai/tiny_lms/tiny_lm_c
+06_scripts_and_tooling/ai/tiny_lms/tiny_lm_cpp
+06_scripts_and_tooling/network/native_mesh_sentinel
+06_scripts_and_tooling/network/canonical_mesh_core/native_mesh_sentinel
+06_scripts_and_tooling/lauburu_keychain_sniffer/lauburu_keychain_sniffer
+betterdisplaycli
+lens
+
+# High-Frequency Daemon State Caches & Per-Cycle Artifact Dumps (Kept on Disk)
+obsidian_vault/05_SWARMS/handoffs/
+obsidian_vault/05_SWARMS/debates/DEBATE_*.md
+obsidian_vault/05_SWARMS/debates/SWEEPING_REVIEW_*.md
+obsidian_vault/05_SWARMS/QWEN-MOE-CERT-*.json
+obsidian_vault/05_TRAINING/cycle_report_*_pairs.md
+obsidian_vault/frontier_audits/frontier_consensus_audit_*.png
+obsidian_vault/frontier_audits/lens_snapshot_*.jpg
+obsidian_vault/frontier_audits/lens_truth_proof_*.jpg
+obsidian_vault/frontier_audits/screen_lens_live_proof_*.jpg
+obsidian_vault/frontier_audits/TRI_PROOF_AUDIT_*.md
+obsidian_vault/frontier_audits/current_screen.png
+obsidian_vault/frontier_audits/live_screen.png
+04_data_and_memory/test_artifacts/
+04_data_and_memory/neo_training_task_state.json
+logs/obsidian_hash_cache.json
+self_healing_hub/src/tri_orchestrator_chat_history.json
+reports/screenshots/
+
+# Embedded Third-Party / Upstream Git Clones
+02_ai_models_and_inference/llama_cpp_upstream/
+02_ai_models_and_inference/benchmarks/codeclash/
+02_ai_models_and_inference/benchmarks/corewar_native/
+02_ai_models_and_inference/personaplex/
+05_agents_and_swarms/frontier_specialist_swarm/
+06_scripts_and_tooling/movesense_sdk/movesense-device-lib/
+06_scripts_and_tooling/automation/containers/gbos-vm-test/gbos-vm/
+
+

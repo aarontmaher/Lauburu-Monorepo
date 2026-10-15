@@ -20,9 +20,9 @@ tags: [lauburu, testing, rust_swarm_training_tui, ratatui, mesh_health, zero_moc
   - `[L2] MacBook Pro Intel Vault`: 100.103.212.21:22 ONLINE in 5.6ms.
   - `[L3] Linux Head Node`: 100.101.39.98:22 ONLINE in 8.0ms.
   - `[L4] Linux Tablet`: 100.81.92.125:22 STANDBY.
-  - `[L5] MacBook Air M4`: 100.121.202.34:22 ONLINE in 6.3ms.
+  - `[L5] MacBook Pro (Node L2)`: 100.121.202.34:22 ONLINE in 6.3ms.
   - `[L6] Pixel 10 Pro XL`: 100.73.38.87:8022 ONLINE in 40.0ms.
-  - `[L7] Samsung S20+`: 100.84.40.95:8022 ONLINE in 10.1ms.
+  - `[L7] Samsung S20+`: 100.78.206.96:8022 ONLINE in 10.1ms.
   - `[GW] GL.iNet Beryl 7`: 192.168.8.1:22 ONLINE in 2.7ms.
   - Dataset Samples: 435,485 verified continuous SFT LoRA instruction pairs in `lora_datasets/`.
   - Zero simulated records: Every probe performed over authentic TCP handshake.

@@ -1,0 +1,118 @@
+{
+  "timestamp": "2026-09-01T15:51:46Z",
+  "total_computers": 5,
+  "online_computers": 4,
+  "data_fabric": {
+    "shared_protocol": "SeaweedFS DFS (:8888) + Tailscale WireGuard + Git Worktrees",
+    "specialization_model": "Local Hardware Daemon Isolation & Dynamic VRAM Capping"
+  },
+  "nodes": {
+    "L1_Mac_Mini_Host": {
+      "device_name": "Apple M4 Pro Mac Mini (24GB Unified RAM)",
+      "ip": "127.0.0.1",
+      "port": 8088,
+      "status": "ONLINE",
+      "rtt_ms": 0.17,
+      "os": "macOS Sequoia (Darwin ARM64)",
+      "hardware_tier": "Tier-1 Master Host",
+      "shared_data_roles": [
+        "Tri-Vault Obsidian Sync",
+        "Master Leaderboard",
+        "LoRA Compaction"
+      ],
+      "specialized_local_competencies": [
+        "Master Prompt Ingestion & Memory Governor (Hard Cap: 20.0 GB)",
+        "Hardware Watchdog Timer Starvation Prevention (Swap < 500 MB)",
+        "Universal Web-TUI Portal & 120 FPS PTY WebSocket Streamer (:8088)",
+        "Real-Time Mesh Live Console (:18805)"
+      ],
+      "local_storage_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/"
+    },
+    "L5_MacBook_Air_Worker": {
+      "device_name": "Apple M4 MacBook Air (16GB Unified RAM)",
+      "ip": "100.93.158.96",
+      "port": 22,
+      "status": "ONLINE",
+      "rtt_ms": 16.47,
+      "os": "macOS Sequoia (Darwin ARM64)",
+      "hardware_tier": "Tier-1 Headless Worker",
+      "shared_data_roles": [
+        "89.54 GB Model Vault Sync",
+        "Obsidian Notebooks Mirror",
+        "Subagent Workspaces"
+      ],
+      "specialized_local_competencies": [
+        "24/7 Headless Clamshell Worker (pmset sleep disabled)",
+        "JupyterLab Server (:8889) & Reactive Marimo Engine",
+        "Frontier 80B/72B Model Staging Vault (/Users/aaronmaher/models/)",
+        "Headless Chrome DevTools MCP & Browser-Use Automation",
+        "Apple Silicon Metal Performance Shaders (MPS) LoRA Trainer"
+      ],
+      "local_storage_path": "/Users/aaronmaher/teamwork_projects/"
+    },
+    "L2_MacBook_Pro_TB4": {
+      "device_name": "Apple M-Series MacBook Pro (16GB Unified RAM)",
+      "ip": "100.103.212.21",
+      "port": 22,
+      "status": "ONLINE",
+      "rtt_ms": 30.2,
+      "os": "macOS Sequoia (Darwin ARM64)",
+      "hardware_tier": "Tier-1 TB4 DMA Co-Processor",
+      "shared_data_roles": [
+        "TB4 DMA Tensor Activations",
+        "Metal Weight Cache",
+        "Logits Streaming"
+      ],
+      "specialized_local_competencies": [
+        "10Gbps Thunderbolt 4 PCIe DMA Bridge (0.277ms Latency)",
+        "Dedicated Metal GPU RPC Worker (:50052)",
+        "Output Logits & Softmax Calculation Vault",
+        "High-Throughput Model Sharding Ring Node"
+      ],
+      "local_storage_path": "/Volumes/TB4_Vault/"
+    },
+    "L3_Linux_Head_Node": {
+      "device_name": "AMD Ryzen 7 5700U Linux Server (16GB RAM)",
+      "ip": "100.101.39.98",
+      "port": 22,
+      "status": "ONLINE",
+      "rtt_ms": 6.49,
+      "os": "Debian GNU/Linux 12 (x86_64)",
+      "hardware_tier": "Tier-2 Big Data & Container Hub",
+      "shared_data_roles": [
+        "SeaweedFS Lakehouse",
+        "PySpark Monorepo Index",
+        "Qdrant Vector DB"
+      ],
+      "specialized_local_competencies": [
+        "SeaweedFS Master (:9333) and Filer (:8888) DFS Service",
+        "Native Docker Engine & LobeHub Docker MCP (:2375)",
+        "Qdrant Vector DB (:6333) 3,100+ AST Chunk Index",
+        "Apache Ray Cluster Worker & PySpark Lakehouse Pipelines",
+        "512Hz Movesense GATT DSP Signal Processing Hub"
+      ],
+      "local_storage_path": "/data/seaweedfs/"
+    },
+    "L4_Debian_Linux_Tablet": {
+      "device_name": "Debian Linux Touch Tablet (8GB RAM)",
+      "ip": "100.81.92.125",
+      "port": 22,
+      "status": "STANDBY",
+      "rtt_ms": 999.0,
+      "os": "Debian GNU/Linux (aarch64)",
+      "hardware_tier": "Tier-3 Mobile Edge & TUI Client",
+      "shared_data_roles": [
+        "Live Telemetry Mirror",
+        "Bedside TUI Stream",
+        "Micro-Benchmark Log"
+      ],
+      "specialized_local_competencies": [
+        "Bedside Touch-Optimized TUI Terminal",
+        "Low-Power BLE Movesense GATT Ingestion",
+        "Qwen 2.5 0.5B Read-Only AST Syntax Linter",
+        "Petals Secondary DHT Edge Worker"
+      ],
+      "local_storage_path": "/home/debian/lauburu/"
+    }
+  }
+}

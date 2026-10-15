@@ -31,9 +31,12 @@ def convert_file(filepath):
     content = re.sub(r"self\.app\.push_screen\((.*?)\)", r"self.app.switch_tab(\1)", content)
     
     out_path = os.path.join(VIEW_DIR, view_filename)
-    with open(out_path, "w") as f:
-        f.write(content)
-    print(f"Refactored {filename} -> {view_filename}")
+    if not os.path.exists(out_path):
+        with open(out_path, "w") as f:
+            f.write(content)
+        print(f"Refactored {filename} -> {view_filename}")
+    else:
+        print(f"Skipped {filename} (already exists in views/)")
 
 for py_file in glob.glob(os.path.join(SCREEN_DIR, "*_screen.py")):
     convert_file(py_file)

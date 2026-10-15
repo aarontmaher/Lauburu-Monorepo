@@ -23,7 +23,7 @@ Going forward, the **Unified Router-Auditor (Dual-Hat Engine)** is the canonical
 │          ▼                                                                                 ▼          │
 │  LOCAL MESH NODES (Tier 0-1)                                                   FREE CLOUD (Tier 2-4)  │
 │  • Mac Mini M4 Pro (L1 Host)                                                   • Google AI Studio     │
-│  • MacBook Pro 10Gbps TB4 (L2)                                                 • Cloudflare AI        │
+│  • MacBook Pro 40Gbps TB4 (L2)                                                 • Cloudflare AI        │
 │  • Linux Head Node (L3 Hub)                                                    • Google Jules Agent   │
 │          │                                                                                 │          │
 │          └────────────────────────────────────────┬────────────────────────────────────────┘          │
@@ -62,10 +62,10 @@ Going forward, the **Unified Router-Auditor (Dual-Hat Engine)** is the canonical
 
 The Unified Router-Auditor governs local node dispatching across the 7 physical layers:
 1. **L1 Mac Mini M4 Pro (24GB):** Prompt Ingestion, AST Gating, Memory Governor.
-2. **L2 MacBook Pro (16GB):** Metal GPU RPC inference over 10Gbps Thunderbolt 4 DMA (0.27ms RTT).
+2. **L2 MacBook Pro (16GB):** Metal GPU RPC inference over 40Gbps Thunderbolt 4 DMA (0.27ms RTT).
 3. **L3 Linux Head Node (16GB):** Docker compute hub, OpenClaw test coordinator, Petals DHT.
 4. **L4 Linux Tablet (8GB):** Touch DSP & real-time biometrics telemetry ingestion.
-5. **L5 MacBook Air (16GB):** Metal Performance Shaders for continuous background LoRA fine-tuning.
+5. **L2 MacBook Pro (16GB):** Metal Performance Shaders for continuous background LoRA fine-tuning.
 6. **L6 Pixel 10 Pro XL (16GB):** Edge TPU Vision Stream & Screen Lens OCR anchor.
 7. **L7 Samsung S20 (12GB):** Dedicated OpenClaw multi-frame UI audit testbed.
 

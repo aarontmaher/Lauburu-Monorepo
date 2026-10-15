@@ -25,8 +25,9 @@ import {
 
 class CanonicalApiService {
   constructor() {
-    this.baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://127.0.0.1:4000';
-    this.hubPort = 4000;
+    this.baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://${this.apiHost}:4000';
+    this.apiHost = typeof window !== 'undefined' ? window.location.hostname : '127.0.0.1';
+    this.hubPort = 8005;
     this.selfHealingPort = 18802;
     this.telemetrySubscribers = new Set();
   }
@@ -34,9 +35,23 @@ class CanonicalApiService {
   /**
    * Layer 0: Fetch live mesh network metrics (WAN failover, Tailscale, TB4 DMA, llama.cpp RPC)
    */
+  
+  async post(endpoint, data) {
+    const url = `http://${this.apiHost}:${this.hubPort}/api/v1${endpoint}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+        throw new Error("HTTP " + res.status);
+    }
+    return await res.json();
+  }
+
   async getNetworkMetrics() {
     try {
-      const res = await fetch(`http://127.0.0.1:${this.selfHealingPort}/api/mesh/telemetry`, { signal: AbortSignal.timeout(600) });
+      const res = await fetch(`http://${this.apiHost}:${this.selfHealingPort}/api/mesh/telemetry`, { signal: AbortSignal.timeout(600) });
       if (res.ok) return await res.json();
     } catch (e) {
       // Fallback to authoritative specification
@@ -49,7 +64,7 @@ class CanonicalApiService {
    */
   async getClusterVRAM() {
     try {
-      const res = await fetch(`http://127.0.0.1:${this.selfHealingPort}/api/mesh/vram`, { signal: AbortSignal.timeout(600) });
+      const res = await fetch(`http://${this.apiHost}:${this.selfHealingPort}/api/mesh/vram`, { signal: AbortSignal.timeout(600) });
       if (res.ok) return await res.json();
     } catch (e) {
       // Fallback
@@ -69,7 +84,7 @@ class CanonicalApiService {
    */
   async getBiometricsState() {
     try {
-      const res = await fetch(`http://127.0.0.1:${this.hubPort}/api/biometrics`, { signal: AbortSignal.timeout(600) });
+      const res = await fetch(`http://${this.apiHost}:${this.hubPort}/api/v1/biometrics`, { signal: AbortSignal.timeout(600) });
       if (res.ok) return await res.json();
     } catch (e) {
       // Fallback
@@ -77,12 +92,37 @@ class CanonicalApiService {
     return INITIAL_BIOMETRICS_STATE;
   }
 
+  async connectBiometrics(devices) {
+    try {
+      const res = await fetch(`http://${this.apiHost}:${this.hubPort}/api/v1/biometrics/connect`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ devices }),
+        signal: AbortSignal.timeout(1000)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.error(e);
+    }
+    return null;
+  }
+
+  async getBiometricsAnsi() {
+    try {
+      const res = await fetch(`http://${this.apiHost}:${this.hubPort}/api/v1/biometrics/ansi`, { signal: AbortSignal.timeout(600) });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      // Fallback
+    }
+    return { logs: [] };
+  }
+
   /**
    * Layer 3: Fetch master AGI model roster & live inference specs
    */
   async getAGIModels() {
     try {
-      const res = await fetch(`http://127.0.0.1:${this.hubPort}/api/agi/models`, { signal: AbortSignal.timeout(600) });
+      const res = await fetch(`http://${this.apiHost}:${this.hubPort}/api/agi/models`, { signal: AbortSignal.timeout(600) });
       if (res.ok) return await res.json();
     } catch (e) {
       // Fallback
@@ -142,7 +182,7 @@ class CanonicalApiService {
    */
   async getDebateState() {
     try {
-      const res = await fetch(`http://127.0.0.1:${this.hubPort}/api/swarm/debate`, { signal: AbortSignal.timeout(600) });
+      const res = await fetch(`http://${this.apiHost}:${this.hubPort}/api/swarm/debate`, { signal: AbortSignal.timeout(600) });
       if (res.ok) return await res.json();
     } catch (e) {
       // Fallback
@@ -155,7 +195,7 @@ class CanonicalApiService {
    */
   async triggerDebateStep(topic) {
     try {
-      const res = await fetch(`http://127.0.0.1:${this.hubPort}/api/swarm/debate/step`, {
+      const res = await fetch(`http://${this.apiHost}:${this.hubPort}/api/swarm/debate/step`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic }),
@@ -211,7 +251,7 @@ class CanonicalApiService {
    */
   async logEloDiscovery(discoveryData) {
     try {
-      const res = await fetch(`http://127.0.0.1:${this.selfHealingPort}/api/elo/discovery`, {
+      const res = await fetch(`http://${this.apiHost}:${this.selfHealingPort}/api/elo/discovery`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(discoveryData),
@@ -236,7 +276,7 @@ class CanonicalApiService {
     console.log(`[Canonical API] Dispatching action: ${actionCommand}`, payload);
 
     try {
-      const res = await fetch(`http://127.0.0.1:${this.selfHealingPort}/api/action`, {
+      const res = await fetch(`http://${this.apiHost}:${this.selfHealingPort}/api/action`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command: actionCommand, payload }),
@@ -291,3 +331,5 @@ class CanonicalApiService {
 }
 
 export const canonicalApi = new CanonicalApiService();
+
+export const api = canonicalApi;

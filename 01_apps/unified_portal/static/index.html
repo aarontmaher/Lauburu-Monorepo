@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lauburu Unified Portal | Cross-App RAG & AI Mesh</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b'
+                        },
+                        darkBg: '#090d16',
+                        darkCard: '#0f172a',
+                        darkBorder: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Marked.js for Rich Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- DOMPurify for XSS Sanitization -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        body { background-color: #090d16; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        .glass-card { background: rgba(15, 23, 42, 0.80); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.07); }
+        .glass-card-hover:hover { border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.15); }
+        .tab-btn { position: relative; color: #94a3b8; font-weight: 500; }
+        .tab-btn:hover { color: #f8fafc; }
+        .tab-btn.active { color: #10b981; font-weight: 600; }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -14px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #10b981, #06b6d4);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+        }
+        .scrollbar-thin::-webkit-scrollbar { width: 5px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        
+        /* Markdown Content Styling */
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+            color: #f8fafc;
+            font-weight: 700;
+            margin-top: 0.75rem;
+            margin-bottom: 0.35rem;
+        }
+        .markdown-body h3 { font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 0.25rem; }
+        .markdown-body p { margin-bottom: 0.5rem; line-height: 1.6; }
+        .markdown-body ul, .markdown-body ol { margin-left: 1.25rem; margin-bottom: 0.5rem; }
+        .markdown-body li { margin-bottom: 0.25rem; }
+        .markdown-body ul { list-style-type: disc; }
+        .markdown-body ol { list-style-type: decimal; }
+        .markdown-body strong { color: #38bdf8; font-weight: 600; }
+        .markdown-body code {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.15rem 0.35rem;
+            border-radius: 0.375rem;
+            font-family: monospace;
+            font-size: 0.82em;
+            color: #a5f3fc;
+        }
+        
+        /* ECG Pulse Animation */
+        @keyframes ecg-sweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .animate-ecg {
+            animation: ecg-sweep 2s linear infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-500/30 selection:text-brand-50">
+
+    <!-- Top Navigation Bar -->
+    <header class="glass-card sticky top-0 z-50 border-b border-darkBorder/80 px-6 py-3.5 flex items-center justify-between">
+        <div class="flex items-center space-x-3.5">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-emerald-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                <i data-lucide="cpu" class="w-5 h-5 text-white"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-emerald-400 bg-clip-text text-transparent">LAUBURU PORTAL</h1>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">v2.5 Local Mesh</span>
+                </div>
+                <p class="text-xs text-slate-400">Universal Client • Granular Privacy • Inbuilt llama.cpp</p>
+            </div>
+        </div>
+
+        <!-- Streamlined Navigation Tabs -->
+        <nav class="hidden md:flex space-x-6 text-sm">
+            <button onclick="switchTab('chat')" id="tab-chat" class="tab-btn active py-2 flex items-center space-x-2 transition">
+                <i data-lucide="message-square" class="w-4 h-4"></i><span>AI Chat RAG</span>
+            </button>
+            <button onclick="switchTab('readiness')" id="tab-readiness" class="tab-btn py-2 flex items-center space-x-2 transition">
+                <i data-lucide="activity" class="w-4 h-4"></i><span>Movesense HR+</span>
+            </button>
+            <button onclick="switchTab('appstore')" id="tab-appstore" class="tab-btn py-2 flex items-center space-x-2 transition">
+                <i data-lucide="package" class="w-4 h-4"></i><span>Downloadable Apps</span>
+            </button>
+            <button onclick="switchTab('billing')" id="tab-billing" class="tab-btn py-2 flex items-center space-x-2 transition">
+                <i data-lucide="calculator" class="w-4 h-4"></i><span>Billing & Compute</span>
+            </button>
+            <button onclick="switchTab('docker')" id="tab-docker" class="tab-btn py-2 flex items-center space-x-2 transition">
+                <i data-lucide="container" class="w-4 h-4"></i><span>Docker Microservices</span>
+            </button>
+        </nav>
+
+
+        <!-- Right Quick Status -->
+        <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 bg-slate-900/80 px-3.5 py-1.5 rounded-xl border border-slate-700/60 text-xs shadow-inner">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-slate-300 font-medium">Credits: <span id="credit-badge" class="text-emerald-400 font-bold">250,000</span></span>
+            </div>
+            <div class="hidden sm:flex items-center space-x-1.5 text-xs text-emerald-300 bg-emerald-950/40 border border-emerald-700/40 px-3 py-1.5 rounded-xl shadow-sm">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span class="font-medium">100% On-Device</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+
+        <!-- 1. TAB: UNIFIED AI CHAT & CROSS-APP RAG -->
+        <section id="pane-chat" class="space-y-4">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Chat Window (8 Cols) -->
+                <div class="lg:col-span-8 glass-card rounded-2xl p-4 sm:p-6 flex flex-col h-[700px] shadow-2xl relative overflow-hidden">
+                    
+                    <!-- Chat Header -->
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h2 class="font-semibold text-sm text-slate-100">Unified Life, Training, Work & Mesh Copilot</h2>
+                                <p class="text-[11px] text-slate-400">Conversational Edge AI • Multi-Source RAG • Zero Cloud Latency</p>
+                            </div>
+                        </div>
+                        <span class="text-[11px] text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-800/60 font-medium">
+                            SmolLM2 1.7B Active
+                        </span>
+                    </div>
+
+                    <!-- Message Feed -->
+                    <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-thin flex flex-col">
+                        <!-- Welcome Message -->
+                        <div class="flex items-start space-x-2.5 mr-auto max-w-[88%] w-fit">
+                            <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-500 flex items-center justify-center shrink-0 shadow-md shadow-emerald-900/30">
+                                <i data-lucide="bot" class="w-4 h-4 text-white"></i>
+                            </div>
+                            <div class="w-fit inline-block bg-slate-900/90 border border-slate-800/90 rounded-2xl rounded-tl-none px-4 py-3 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+                                <p>👋 Welcome to your <strong>Unified Lauburu Portal</strong>! I have real-time access to your <strong>Automatic Daily Journal</strong>, <strong>Weight Training progressive overload</strong>, <strong>ACWR training load</strong>, <strong>Screen Lens work activity</strong>, <strong>Movesense HR+ biometrics</strong>, and <strong>sleep recovery</strong>.</p>
+                                <p class="mt-2 text-slate-400 text-xs">How can I assist your athletic or cognitive flow today?</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick RAG Prompts -->
+                    <div class="py-2.5 flex flex-wrap gap-2 text-xs border-t border-slate-800/80 mt-2">
+                        <button onclick="sendQuickPrompt('Summarize my screen activity from today and give me my action items.')" class="bg-slate-800/60 hover:bg-slate-700/80 border border-slate-700/70 hover:border-emerald-500/40 px-3 py-1.5 rounded-xl text-slate-300 transition flex items-center gap-1.5 shadow-sm">
+                            <span>👁️</span> <span>Screen Lens & Actions</span>
+                        </button>
+                        <button onclick="sendQuickPrompt('Analyze my weight training progressive overload and recommended lifting split.')" class="bg-slate-800/60 hover:bg-slate-700/80 border border-slate-700/70 hover:border-emerald-500/40 px-3 py-1.5 rounded-xl text-slate-300 transition flex items-center gap-1.5 shadow-sm">
+                            <span>🏋️</span> <span>Weight Training & Overload</span>
+                        </button>
+                        <button onclick="sendQuickPrompt('What is my ACWR training load ratio and overtraining risk today?')" class="bg-slate-800/60 hover:bg-slate-700/80 border border-slate-700/70 hover:border-emerald-500/40 px-3 py-1.5 rounded-xl text-slate-300 transition flex items-center gap-1.5 shadow-sm">
+                            <span>📈</span> <span>ACWR Recovery Analysis</span>
+                        </button>
+                        <button onclick="sendQuickPrompt('Check my Movesense HR+ biometrics and autonomic readiness.')" class="bg-slate-800/60 hover:bg-slate-700/80 border border-slate-700/70 hover:border-emerald-500/40 px-3 py-1.5 rounded-xl text-slate-300 transition flex items-center gap-1.5 shadow-sm">
+                            <span>💓</span> <span>Movesense ECG Readiness</span>
+                        </button>
+                    </div>
+
+                    <!-- Chat Input Form -->
+                    <form onsubmit="handleChatSubmit(event)" class="flex items-center space-x-2 pt-2.5">
+                        <input id="chat-input" type="text" placeholder="Ask your AI copilot anything (e.g. 'How is my recovery?')..." 
+                               class="flex-1 bg-slate-900/90 border border-slate-700/80 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none transition shadow-inner">
+                        <button type="submit" id="chat-send-btn" 
+                                class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-5 py-3 rounded-xl font-semibold text-sm flex items-center space-x-2 shadow-lg shadow-emerald-900/40 hover:shadow-emerald-900/60 transition active:scale-95">
+                            <span>Send</span>
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Live Holistic Telemetry Sidebar (4 Cols) -->
+                <div class="lg:col-span-4 space-y-4">
+                    <!-- Sensor Streams Card -->
+                    <div class="glass-card rounded-2xl p-5 border border-darkBorder shadow-lg">
+                        <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-800">
+                            <h3 class="font-semibold text-xs uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                <span>Live Sensor Streams</span>
+                            </h3>
+                            <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-800/50">128Hz Active</span>
+                        </div>
+                        <div class="space-y-2.5 text-xs">
+                            <div class="flex justify-between items-center p-2 rounded-xl bg-slate-900/60 border border-slate-800/50">
+                                <span class="text-slate-400 flex items-center gap-1.5"><span>💓</span> Movesense HR+:</span>
+                                <span id="side-hr" class="text-emerald-400 font-bold font-mono">58.4 BPM</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2 rounded-xl bg-slate-900/60 border border-slate-800/50">
+                                <span class="text-slate-400 flex items-center gap-1.5"><span>📊</span> HRV RMSSD:</span>
+                                <span id="side-rmssd" class="text-emerald-400 font-bold font-mono">68.2 ms</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2 rounded-xl bg-slate-900/60 border border-slate-800/50">
+                                <span class="text-slate-400 flex items-center gap-1.5"><span>⚡</span> ACWR Load Ratio:</span>
+                                <span id="side-acwr" class="text-cyan-400 font-bold font-mono">1.09 (Optimal)</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2 rounded-xl bg-slate-900/60 border border-slate-800/50">
+                                <span class="text-slate-400 flex items-center gap-1.5"><span>🎯</span> Daily Focus Score:</span>
+                                <span id="side-focus" class="text-purple-400 font-bold font-mono">92/100 (5.8h)</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2 rounded-xl bg-slate-900/60 border border-slate-800/50">
+                                <span class="text-slate-400 flex items-center gap-1.5"><span>💰</span> Mesh Savings:</span>
+                                <span id="side-savings" class="text-amber-400 font-bold font-mono">$10.97 AUD</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inbuilt Core Engines Status -->
+                    <div class="glass-card rounded-2xl p-5 border border-darkBorder shadow-lg text-xs space-y-3">
+                        <div class="font-semibold text-slate-200 flex items-center justify-between pb-2 border-b border-slate-800">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="cpu" class="w-4 h-4 text-emerald-400"></i>
+                                <span>Inbuilt Core Engines</span>
+                            </div>
+                            <span class="text-[10px] text-cyan-400 font-mono">82.8 GB Pooled</span>
+                        </div>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">• llama.cpp Engine:</span>
+                                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono text-[11px] border border-emerald-500/20">Default RAG</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">• Network Optimizer:</span>
+                                <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-mono text-[11px] border border-cyan-500/20">Universal Adaptive</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">• Mesh Sentry:</span>
+                                <span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 font-mono text-[11px] border border-purple-500/20">Thermal Governor</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. TAB: MOVESENSE HR+ READINESS DASHBOARD -->
+        <section id="pane-readiness" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Readiness Score Card -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-xl">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Autonomic Readiness Score</span>
+                    <div class="relative w-40 h-40 flex items-center justify-center my-2">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path id="readiness-circle" class="text-emerald-400 transition-all duration-1000 ease-out" stroke-dasharray="88, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        </svg>
+                        <div class="absolute flex flex-col items-center">
+                            <span id="readiness-val" class="text-4xl font-extrabold text-white">88%</span>
+                            <span class="text-[10px] text-emerald-400 uppercase tracking-widest font-semibold mt-0.5">Optimal</span>
+                        </div>
+                    </div>
+                    <p id="readiness-rec" class="text-xs text-slate-300 mt-2 font-medium">Prime for Hypertrophy / Zone 2 Base Endurance</p>
+                </div>
+
+                <!-- Heart Rate & HRV Metrics -->
+                <div class="glass-card rounded-2xl p-6 space-y-4 shadow-xl">
+                    <h3 class="font-semibold text-sm text-slate-200 flex items-center space-x-2">
+                        <i data-lucide="heart" class="w-4 h-4 text-rose-500 animate-pulse"></i>
+                        <span>Pan-Tompkins 512Hz ECG DSP</span>
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3.5">
+                        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
+                            <span class="text-xs text-slate-400">Resting HR</span>
+                            <div id="card-hr" class="text-2xl font-bold text-slate-100 mt-1">58.4 <span class="text-xs text-slate-400 font-normal">BPM</span></div>
+                        </div>
+                        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
+                            <span class="text-xs text-slate-400">HRV RMSSD</span>
+                            <div id="card-rmssd" class="text-2xl font-bold text-emerald-400 mt-1">68.2 <span class="text-xs text-slate-400 font-normal">ms</span></div>
+                        </div>
+                        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
+                            <span class="text-xs text-slate-400">DFA-α1 (Lactate)</span>
+                            <div id="card-dfa" class="text-2xl font-bold text-cyan-400 mt-1">0.88</div>
+                        </div>
+                        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
+                            <span class="text-xs text-slate-400">ECG SNR</span>
+                            <div class="text-2xl font-bold text-purple-400 mt-1">28.5 <span class="text-xs text-slate-400 font-normal">dB</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sensor Information & Connection -->
+                <div class="glass-card rounded-2xl p-6 space-y-4 flex flex-col justify-between shadow-xl">
+                    <div>
+                        <h3 class="font-semibold text-sm text-slate-200 mb-2 flex items-center space-x-2">
+                            <i data-lucide="bluetooth" class="w-4 h-4 text-blue-400"></i>
+                            <span>Sensor Diagnostics</span>
+                        </h3>
+                        <div class="space-y-2.5 text-xs text-slate-300">
+                            <div class="flex justify-between py-1 border-b border-slate-800"><span class="text-slate-400">Hardware:</span><span class="font-medium">Movesense HR+</span></div>
+                            <div class="flex justify-between py-1 border-b border-slate-800"><span class="text-slate-400">Sampling Rate:</span><span class="font-mono text-cyan-400">512 Hz Real ECG</span></div>
+                            <div class="flex justify-between py-1 border-b border-slate-800"><span class="text-slate-400">QRS Confidence:</span><span class="text-emerald-400 font-bold">99.4%</span></div>
+                            <div class="flex justify-between py-1"><span class="text-slate-400">Autonomic State:</span><span class="text-emerald-400 font-medium">Parasympathetic Tone</span></div>
+                        </div>
+                    </div>
+                    <button class="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-300 rounded-xl text-xs font-semibold transition flex items-center justify-center space-x-1.5 shadow-sm">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                        <span>Recalibrate Baseline</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. TAB: DOWNLOADABLE APP STORE WITH GRANULAR PERMISSIONS MANAGER -->
+        <section id="pane-appstore" class="hidden space-y-6">
+            
+            <!-- SYSTEM PERMISSIONS & ALLOWANCES MANAGER -->
+            <div class="glass-card rounded-2xl p-6 border border-emerald-500/30 space-y-4 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
+                            <i data-lucide="shield-alert" class="w-5 h-5 text-emerald-400"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-sm text-slate-100">Granular OS Entitlements & Privacy Allowances</h2>
+                            <p class="text-xs text-slate-400">Control exactly what hardware and OS permissions each feature can access. 100% On-Device, Zero Cloud Telemetry.</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-3 py-1 rounded-full self-start sm:self-center">Least Privilege Enforced</span>
+                </div>
+
+                <!-- Interactive Permission Toggles Grid -->
+                <div id="permission-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Populated dynamically via loadPermissions() -->
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass-card p-6 rounded-2xl border border-darkBorder shadow-xl">
+                <div>
+                    <h2 class="font-bold text-lg text-slate-100 flex items-center space-x-2">
+                        <i data-lucide="package" class="w-5 h-5 text-emerald-400"></i>
+                        <span>Lauburu Client Downloadable App Store (7 Standalone Apps)</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Download standalone packages onto any mobile or desktop device with automated local telemetry synchronization.</p>
+                </div>
+                <div class="text-xs text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-3 py-1.5 rounded-xl flex items-center space-x-2 shadow-sm">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                    <span>llama.cpp & Network Optimizer Inbuilt</span>
+                </div>
+            </div>
+
+            <!-- Dynamic 7-App Grid -->
+            <div id="app-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- App cards will be dynamically populated by loadAppCatalog() -->
+            </div>
+        </section>
+
+        <!-- 4. TAB: MERGED BILLING & COMPUTE SAVINGS WITH "PAY VIA COMPUTE" TOGGLE -->
+        <section id="pane-billing" class="hidden space-y-6">
+            
+            <!-- TOP SECTION: COMPUTE SAVINGS CALCULATOR -->
+            <div class="glass-card rounded-2xl p-6 space-y-6 border border-darkBorder shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="font-bold text-lg text-slate-100 flex items-center space-x-2">
+                            <i data-lucide="calculator" class="w-5 h-5 text-emerald-400"></i>
+                            <span>Mesh Compute Engine vs Cloud API Savings Calculator</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Real-time valuation of your 82.8 GB Pooled Mesh VRAM generation vs OpenAI GPT-4o, Claude 3.5 Sonnet, and Gemini Pro.</p>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <span class="text-xs text-slate-400 font-medium">Net Estimated Cloud Savings</span>
+                        <div id="calc-net-savings" class="text-3xl font-extrabold text-emerald-400 font-mono">$10.97 AUD</div>
+                    </div>
+                </div>
+
+                <!-- Slider Control -->
+                <div class="space-y-2 bg-slate-900/70 p-4 rounded-xl border border-slate-800 shadow-inner">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-300 font-medium">Local Tokens Generated: <span id="slider-token-val" class="text-emerald-400 font-bold font-mono">1,420,500</span> tokens</span>
+                        <span class="text-slate-400">Simulate monthly scale</span>
+                    </div>
+                    <input id="token-slider" type="range" min="100000" max="20000000" step="100000" value="1420500" oninput="updateCalculator(this.value)" class="w-full accent-emerald-500 cursor-pointer">
+                </div>
+
+                <!-- Comparison Stats Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs text-slate-400">Cloud Cost Avoided (GPT-4o)</span>
+                        <div id="calc-gpt4o" class="text-xl font-bold text-rose-400 mt-1 font-mono">$7.10 USD</div>
+                        <p class="text-[11px] text-slate-500 mt-1">Based on $5.00/1M blended tokens</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs text-slate-400">Local Electricity Consumed</span>
+                        <div id="calc-elec" class="text-xl font-bold text-cyan-400 mt-1 font-mono">$0.11 AUD</div>
+                        <p class="text-[11px] text-slate-500 mt-1">45W pooled mesh at $0.32/kWh</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs text-slate-400">Return on Investment (ROI)</span>
+                        <div id="calc-roi" class="text-xl font-bold text-emerald-400 mt-1 font-mono">98.5x</div>
+                        <p class="text-[11px] text-slate-500 mt-1">Net multiplier vs Cloud APIs</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- "PAY VIA COMPUTE" (PRIMA.CPP ACCELERATION) TOGGLE BOX -->
+            <div class="glass-card rounded-2xl p-6 border border-cyan-500/40 bg-gradient-to-r from-cyan-950/30 to-emerald-950/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                        <h3 class="font-bold text-sm text-slate-100">Pay via Compute: Enable prima.cpp Mesh Acceleration</h3>
+                    </div>
+                    <p class="text-xs text-slate-300">Contribute your device's idle VRAM/GPU to the pipelined-ring cluster to earn +50,000 monthly compute credits and discount your Pro membership to $0/mo.</p>
+                </div>
+                <div class="flex items-center space-x-3 shrink-0">
+                    <span id="prima-status-badge" class="text-xs font-bold text-cyan-400 bg-cyan-950/80 border border-cyan-800/60 px-3.5 py-1.5 rounded-xl font-mono">Ring Active (+50K/mo)</span>
+                    <button onclick="togglePrimaCompute()" id="prima-toggle-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-lg shadow-cyan-950/60">
+                        Opt-In Active
+                    </button>
+                </div>
+            </div>
+
+            <!-- MEMBERSHIP TIERS & CREDIT PACKAGES -->
+            <div class="space-y-4">
+                <h3 class="font-bold text-base text-slate-100 flex items-center space-x-2">
+                    <i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i>
+                    <span>Membership Tiers & Compute Credit Packages</span>
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Free Community -->
+                    <div class="glass-card rounded-2xl p-6 flex flex-col justify-between border border-darkBorder shadow-lg">
+                        <div>
+                            <span class="text-xs font-semibold text-slate-400 uppercase">Community Free</span>
+                            <div class="text-3xl font-extrabold text-white mt-2">$0 <span class="text-xs font-normal text-slate-400">/ month</span></div>
+                            <ul class="mt-4 space-y-2 text-xs text-slate-300">
+                                <li class="flex items-center space-x-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>1 Local Node</span></li>
+                                <li class="flex items-center space-x-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>10,000 Compute Credits</span></li>
+                                <li class="flex items-center space-x-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Basic Movesense Tracking</span></li>
+                            </ul>
+                        </div>
+                        <button class="mt-6 w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">Current Plan</button>
+                    </div>
+
+                    <!-- Pro Mesh Member (Active) -->
+                    <div class="glass-card rounded-2xl p-6 flex flex-col justify-between border-2 border-emerald-500 relative shadow-2xl shadow-emerald-950/50">
+                        <span class="absolute -top-3 right-6 bg-emerald-500 text-slate-950 text-[10px] font-extrabold uppercase px-3 py-0.5 rounded-full shadow">ACTIVE TIER</span>
+                        <div>
+                            <span class="text-xs font-semibold text-emerald-400 uppercase">Pro Mesh Member</span>
+                            <div class="text-3xl font-extrabold text-white mt-2">$29 <span class="text-xs font-normal text-slate-400">AUD / month</span></div>
+                            <ul class="mt-4 space-y-2 text-xs text-slate-300">
+                                <li class="flex items-center space-x-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Full 7-Layer Mesh Access</span></li>
+                                <li class="flex items-center space-x-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>250,000 Compute Credits</span></li>
+                                <li class="flex items-center space-x-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Real 512Hz Movesense ECG DSP</span></li>
+                                <li class="flex items-center space-x-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Automatic Journal & Strength RAG</span></li>
+                            </ul>
+                        </div>
+                        <button onclick="buyCredits('PACK_200K')" class="mt-6 w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-emerald-900/30 transition">Top-Up 200K Credits ($35 AUD)</button>
+                    </div>
+
+                    <!-- Enterprise Cluster -->
+                    <div class="glass-card rounded-2xl p-6 flex flex-col justify-between border border-darkBorder shadow-lg">
+                        <div>
+                            <span class="text-xs font-semibold text-purple-400 uppercase">Enterprise Cluster Node</span>
+                            <div class="text-3xl font-extrabold text-white mt-2">$99 <span class="text-xs font-normal text-slate-400">AUD / month</span></div>
+                            <ul class="mt-4 space-y-2 text-xs text-slate-300">
+                                <li class="flex items-center space-x-2"><i data-lucide="check" class="w-3.5 h-3.5 text-purple-400"></i><span>Dedicated prima.cpp Sharding</span></li>
+                                <li class="flex items-center space-x-2"><i data-lucide="check" class="w-3.5 h-3.5 text-purple-400"></i><span>1,500,000 Compute Credits</span></li>
+                                <li class="flex items-center space-x-2"><i data-lucide="check" class="w-3.5 h-3.5 text-purple-400"></i><span>Unlimited 82.8GB VRAM Pooling</span></li>
+                            </ul>
+                        </div>
+                        <button onclick="buyCredits('PACK_1M')" class="mt-6 w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-semibold transition shadow-md">Upgrade to Enterprise</button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 5. TAB: DOCKER & CONTAINERIZED MICROSERVICES -->
+        <section id="pane-docker" class="hidden space-y-6">
+            <!-- Header Banner -->
+            <div class="glass-card rounded-2xl p-6 border border-darkBorder shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center">
+                            <i data-lucide="container" class="w-4 h-4 text-blue-400"></i>
+                        </div>
+                        <h2 class="font-bold text-base text-slate-100">Docker Container & Microservices Orchestrator</h2>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-1">Colima / Native Docker Daemon • Master Compose Stack • One-Click Service Lifecycle</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="executeComposeAction('up')" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-blue-900/30 transition flex items-center gap-1.5">
+                        <i data-lucide="play" class="w-3.5 h-3.5"></i><span>Start All Stack</span>
+                    </button>
+                    <button onclick="executeComposeAction('down')" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                        <i data-lucide="square" class="w-3.5 h-3.5 text-rose-400"></i><span>Stop Stack</span>
+                    </button>
+                    <button onclick="loadDockerStatus()" class="px-3 py-2 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs text-slate-300 transition">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Microservices Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Qdrant Vector DB -->
+                <div class="glass-card rounded-2xl p-5 border border-darkBorder shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                            <span class="font-bold text-xs text-slate-200 flex items-center gap-1.5"><span>⚡</span> Qdrant Vector DB</span>
+                            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/60 text-emerald-400 border border-emerald-800/60">Port 6333</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-2">Ultra-fast semantic search, memory vectors & AST code indexing.</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs">
+                        <span class="text-slate-500 font-mono text-[10px]">image: qdrant/qdrant</span>
+                        <a href="http://localhost:6333/dashboard" target="_blank" class="text-blue-400 hover:text-blue-300 text-[11px] font-medium flex items-center gap-1">UI <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                    </div>
+                </div>
+
+                <!-- SeaweedFS DFS -->
+                <div class="glass-card rounded-2xl p-5 border border-darkBorder shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                            <span class="font-bold text-xs text-slate-200 flex items-center gap-1.5"><span>🌊</span> SeaweedFS DFS</span>
+                            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-cyan-950/60 text-cyan-400 border border-cyan-800/60">Port 8888</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-2">Distributed high-throughput file system for 24/7 LoRA training datasets.</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs">
+                        <span class="text-slate-500 font-mono text-[10px]">image: chrislusf/seaweedfs</span>
+                        <a href="http://localhost:8888" target="_blank" class="text-cyan-400 hover:text-cyan-300 text-[11px] font-medium flex items-center gap-1">Filer <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                    </div>
+                </div>
+
+                <!-- NetBird Mesh VPN -->
+                <div class="glass-card rounded-2xl p-5 border border-darkBorder shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                            <span class="font-bold text-xs text-slate-200 flex items-center gap-1.5"><span>🦅</span> NetBird Dashboard</span>
+                            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-amber-950/60 text-amber-400 border border-amber-800/60">Port 8087</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-2">100% open-source self-hosted WireGuard mesh overlay control plane.</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs">
+                        <span class="text-slate-500 font-mono text-[10px]">image: netbirdio/dashboard</span>
+                        <a href="http://localhost:8087" target="_blank" class="text-amber-400 hover:text-amber-300 text-[11px] font-medium flex items-center gap-1">Open <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                    </div>
+                </div>
+
+                <!-- Portainer CE -->
+                <div class="glass-card rounded-2xl p-5 border border-darkBorder shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                            <span class="font-bold text-xs text-slate-200 flex items-center gap-1.5"><span>🐳</span> Portainer CE</span>
+                            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-purple-950/60 text-purple-400 border border-purple-800/60">Port 9000</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-2">Visual GUI for container management, image inspection & live logs.</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs">
+                        <span class="text-slate-500 font-mono text-[10px]">image: portainer-ce</span>
+                        <a href="http://localhost:9000" target="_blank" class="text-purple-400 hover:text-purple-300 text-[11px] font-medium flex items-center gap-1">Manage <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Containers Feed -->
+            <div class="glass-card rounded-2xl p-6 border border-darkBorder shadow-xl space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="layers" class="w-4 h-4 text-blue-400"></i>
+                        <h3 class="font-semibold text-sm text-slate-100">Active Container Instances</h3>
+                    </div>
+                    <span id="docker-daemon-badge" class="text-[11px] px-3 py-1 rounded-full font-mono bg-slate-800 text-slate-400 border border-slate-700">
+                        Detecting Daemon...
+                    </span>
+                </div>
+                <div id="container-list-feed" class="space-y-3">
+                    <p class="text-xs text-slate-500 italic py-4 text-center">Loading container statuses...</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 py-4 px-6 text-center text-xs text-slate-500">
+        Lauburu AI Monorepo • Zero-Mock Physical Mesh • Autonomous Tri-Vault Storage Engine
+    </footer>
+
+    <!-- App JavaScript Logic -->
+    <script>
+        lucide.createIcons();
+
+        let primaEnabled = true;
+
+        function switchTab(tabName) {
+            const tabs = ['chat', 'readiness', 'appstore', 'billing', 'docker'];
+            tabs.forEach(t => {
+                const pane = document.getElementById(`pane-${t}`);
+                const tabBtn = document.getElementById(`tab-${t}`);
+                if (pane) pane.classList.toggle('hidden', t !== tabName);
+                if (tabBtn) tabBtn.classList.toggle('active', t === tabName);
+            });
+            lucide.createIcons();
+            if (tabName === 'appstore') {
+                loadAppCatalog();
+                loadPermissions();
+            } else if (tabName === 'docker') {
+                loadDockerStatus();
+            }
+        }
+
+        async function loadDockerStatus() {
+            const badge = document.getElementById('docker-daemon-badge');
+            const feed = document.getElementById('container-list-feed');
+            try {
+                const [resStatus, resContainers] = await Promise.all([
+                    fetch('/api/v1/docker/status'),
+                    fetch('/api/v1/docker/containers')
+                ]);
+                const statusData = await resStatus.json();
+                const containers = await resContainers.json();
+
+                if (statusData.status === 'RUNNING') {
+                    badge.className = 'text-[11px] px-3 py-1 rounded-full font-mono bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 font-bold';
+                    badge.innerText = `● Engine Online (v${statusData.daemon_info.server_version || '29.x'})`;
+                } else {
+                    badge.className = 'text-[11px] px-3 py-1 rounded-full font-mono bg-amber-950/60 text-amber-400 border border-amber-800/60 font-medium';
+                    badge.innerText = `Standby (${statusData.colima_available ? 'Colima Ready' : 'Socket Standby'})`;
+                }
+
+                if (containers && containers.length > 0) {
+                    feed.innerHTML = containers.map(c => `
+                        <div class="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 flex items-center justify-between shadow-sm">
+                            <div class="space-y-1">
+                                <div class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full ${c.is_running ? 'bg-emerald-400' : 'bg-slate-500'}"></span>
+                                    <span class="font-bold text-xs text-slate-100">${c.name}</span>
+                                    <span class="text-[10px] font-mono text-slate-400">${c.image}</span>
+                                </div>
+                                <div class="text-[11px] text-slate-400 font-mono">Status: ${c.status} • Ports: ${c.ports}</div>
+                            </div>
+                            <span class="text-[10px] font-bold px-2.5 py-1 rounded-lg ${c.is_running ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-400 border border-slate-700'}">${c.state}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    feed.innerHTML = `
+                        <div class="p-6 rounded-xl bg-slate-900/50 border border-slate-800/60 text-center space-y-2">
+                            <i data-lucide="box" class="w-8 h-8 text-slate-600 mx-auto"></i>
+                            <p class="text-xs text-slate-400">No microservice containers running currently.</p>
+                            <p class="text-[11px] text-slate-500">Tap <strong>"Start All Stack"</strong> above to launch Qdrant, SeaweedFS, NetBird & Portainer.</p>
+                        </div>
+                    `;
+                }
+                lucide.createIcons();
+            } catch (err) {
+                badge.innerText = "Standby";
+                console.error("Docker status fetch error:", err);
+            }
+        }
+
+        async function executeComposeAction(action) {
+            try {
+                const res = await fetch('/api/v1/docker/compose', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({action: action})
+                });
+                const data = await res.json();
+                alert(`Docker Stack Action [${action.toUpperCase()}]: ${data.status}`);
+                loadDockerStatus();
+            } catch (err) {
+                alert("Error executing compose action");
+            }
+        }
+
+
+        async function loadPermissions() {
+            try {
+                const res = await fetch('/api/v1/permissions');
+                if (!res.ok) return;
+                const data = await res.json();
+                const container = document.getElementById('permission-grid');
+                container.innerHTML = '';
+
+                const permIcons = {
+                    'screen_capture': 'monitor',
+                    'accessibility_api': 'layout-grid',
+                    'bluetooth_ble': 'bluetooth',
+                    'local_vault_storage': 'hard-drive',
+                    'gpu_compute_vram': 'cpu',
+                    'local_network_mesh': 'wifi',
+                    'local_ai_training_opt_in': 'sparkles'
+                };
+
+                data.permissions.forEach(p => {
+                    const box = document.createElement('div');
+                    const isOptIn = (p.id === 'local_ai_training_opt_in');
+                    box.className = `p-4 rounded-xl border flex items-start justify-between space-x-3 shadow-md transition ${isOptIn ? 'bg-gradient-to-r from-amber-950/40 to-slate-900/80 border-amber-500/40' : 'bg-slate-900/70 border-slate-800'}`;
+                    const iconName = permIcons[p.id] || 'shield';
+
+                    box.innerHTML = `
+                        <div class="space-y-1">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="${iconName}" class="w-4 h-4 ${p.is_granted ? (isOptIn ? 'text-amber-400' : 'text-emerald-400') : 'text-slate-500'}"></i>
+                                <span class="font-bold text-xs ${isOptIn ? 'text-amber-200' : 'text-slate-200'}">${p.name}</span>
+                                ${isOptIn ? `<span class="text-[9px] font-mono px-2 py-0.5 rounded-full ${p.is_granted ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-slate-800 text-slate-400'}">+50% Tokens & 25% Off</span>` : ''}
+                            </div>
+                            <p class="text-[11px] text-slate-400 leading-tight">${p.description}</p>
+                            <span class="text-[10px] ${isOptIn ? 'text-amber-400/90' : 'text-emerald-400/80'} font-mono block pt-0.5">${p.data_handling}</span>
+                        </div>
+                        <button onclick="togglePerm('${p.id}', ${!p.is_granted})" class="shrink-0 text-xs px-3 py-1 rounded-lg font-semibold transition ${p.is_granted ? (isOptIn ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40 hover:bg-amber-600/50' : 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-600/50') : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'}">
+                            ${p.is_granted ? 'Opted In' : (isOptIn ? 'Opt In (+25K)' : 'Revoked')}
+                        </button>
+                    `;
+                    container.appendChild(box);
+                });
+                lucide.createIcons();
+            } catch (err) {
+                console.error("Error loading permissions:", err);
+            }
+        }
+
+        async function togglePerm(permId, granted) {
+            try {
+                const res = await fetch('/api/v1/permissions/toggle', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({permission_id: permId, granted: granted})
+                });
+                if (res.ok) {
+                    const d = await res.json();
+                    if (permId === 'local_ai_training_opt_in' && granted && d.bonus_awarded) {
+                        alert("✨ Contributor Bonus Activated!\n+25,000 Compute Credits added to your balance.\n+50% Monthly Token Quota & 25% Package Discount Unlocked!");
+                    }
+                    loadPermissions();
+                    loadAppCatalog();
+                    fetchLiveMetrics();
+                }
+            } catch (err) {
+                alert("Error updating permission allowance");
+            }
+        }
+
+        async function loadAppCatalog() {
+            try {
+                const res = await fetch('/api/v1/apps/catalog');
+                if (!res.ok) return;
+                const data = await res.json();
+                const container = document.getElementById('app-grid');
+                container.innerHTML = '';
+
+                data.catalog.forEach(app => {
+                    const card = document.createElement('div');
+                    card.className = 'glass-card rounded-2xl p-5 flex flex-col justify-between space-y-4 border border-darkBorder hover:border-emerald-500/50 transition shadow-lg';
+                    
+                    const platformsHtml = app.platforms.map(p => `<span class="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700 text-slate-300">${p}</span>`).join(' ');
+
+                    const allowancesHtml = (app.required_allowances || []).map(a => {
+                        const label = a.replace(/_/g, ' ');
+                        return `<span class="bg-emerald-950/50 text-emerald-400 text-[9px] px-2 py-0.5 rounded border border-emerald-800/40 font-mono">🔒 ${label}</span>`;
+                    }).join(' ');
+
+                    let telemetryHtml = '';
+                    if (app.id === 'automatic_journal') {
+                        const jnl = data.live_telemetry.automatic_journal;
+                        telemetryHtml = `
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-[11px] space-y-1.5">
+                                <div class="flex justify-between items-center"><span class="text-slate-400 font-medium">Daily Title:</span><span class="text-emerald-400 font-bold truncate max-w-[150px]">${jnl.title}</span></div>
+                                <div class="flex justify-between items-center"><span class="text-slate-400">Energy Rating:</span><span class="text-amber-400 font-bold">${jnl.energy_rating}/10</span></div>
+                            </div>
+                        `;
+                    } else if (app.id === 'weight_training') {
+                        const wt = data.live_telemetry.weight_training;
+                        telemetryHtml = `
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-[11px] space-y-1.5">
+                                <div class="flex justify-between items-center"><span class="text-slate-400">Split:</span><span class="text-indigo-400 font-bold">${wt.split_name}</span></div>
+                                <div class="flex justify-between items-center"><span class="text-slate-400">Tonnage:</span><span class="text-emerald-400 font-bold">${wt.total_tonnage_kg} kg (+${wt.progressive_overload_pct}%)</span></div>
+                            </div>
+                        `;
+                    } else if (app.id === 'training_analysis') {
+                        const ta = data.live_telemetry.training_analysis;
+                        telemetryHtml = `
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-[11px] space-y-1.5">
+                                <div class="flex justify-between items-center"><span class="text-slate-400">ACWR Ratio:</span><span class="text-cyan-400 font-bold">${ta.acwr_ratio} (${ta.overtraining_risk})</span></div>
+                                <div class="flex justify-between items-center"><span class="text-slate-400">VO2 Max:</span><span class="text-emerald-400 font-bold">${ta.vo2max_estimate} ml/kg</span></div>
+                            </div>
+                        `;
+                    } else if (app.id === 'screen_lens_vlm') {
+                        const sl = data.live_telemetry.screen_lens;
+                        telemetryHtml = `
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-[11px] space-y-1.5">
+                                <div class="flex justify-between items-center"><span class="text-slate-400 font-medium">Daily Focus Score:</span><span class="text-emerald-400 font-bold">${sl.focus_score}/100</span></div>
+                                <div class="flex justify-between items-center"><span class="text-slate-400">Deep Work:</span><span class="text-slate-200 font-medium">${sl.deep_work_hours} hrs</span></div>
+                            </div>
+                        `;
+                    } else if (app.id === 'zone2_endurance') {
+                        const z2 = data.live_telemetry.zone2_endurance;
+                        telemetryHtml = `
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-[11px] space-y-1.5">
+                                <div class="flex justify-between items-center"><span class="text-slate-400">Time in Z2:</span><span class="text-emerald-400 font-bold">${z2.time_in_zone2_pct}%</span></div>
+                                <div class="flex justify-between items-center"><span class="text-slate-400">Decoupling:</span><span class="text-emerald-400 font-bold">${z2.aerobic_decoupling_pct}%</span></div>
+                            </div>
+                        `;
+                    } else if (app.id === 'nutrition_fuel') {
+                        const nut = data.live_telemetry.nutrition;
+                        telemetryHtml = `
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-[11px] space-y-1.5">
+                                <div class="flex justify-between items-center"><span class="text-slate-400">Intake:</span><span class="text-amber-400 font-bold">${nut.calories_kcal} kcal</span></div>
+                                <div class="flex justify-between items-center"><span class="text-slate-400">Glycogen:</span><span class="text-emerald-400 font-bold">${nut.glycogen_readiness_pct}%</span></div>
+                            </div>
+                        `;
+                    } else if (app.id === 'sleep_recovery') {
+                        const slp = data.live_telemetry.sleep_analysis;
+                        telemetryHtml = `
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-[11px] space-y-1.5">
+                                <div class="flex justify-between items-center"><span class="text-slate-400">Total Sleep:</span><span class="text-purple-400 font-bold">${slp.total_sleep_hours} hrs</span></div>
+                                <div class="flex justify-between items-center"><span class="text-slate-400">Efficiency:</span><span class="text-emerald-400 font-bold">${slp.sleep_efficiency_pct}%</span></div>
+                            </div>
+                        `;
+                    }
+
+                    card.innerHTML = `
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-950/60 border border-emerald-800/40 flex items-center justify-center">
+                                    <i data-lucide="${app.icon || 'package'}" class="w-5 h-5 text-emerald-400"></i>
+                                </div>
+                                <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-800/50">v${app.version} • ${app.size_mb} MB</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-sm text-slate-100">${app.name}</h3>
+                                <span class="text-[10px] text-slate-500 font-mono">${app.spec}</span>
+                                <p class="text-xs text-slate-400 mt-1 leading-relaxed">${app.description}</p>
+                            </div>
+                            <div class="flex flex-wrap gap-1 text-[9px]">
+                                ${allowancesHtml}
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 text-[10px] text-slate-300">
+                                ${platformsHtml}
+                            </div>
+                            ${telemetryHtml}
+                        </div>
+                        <button onclick="downloadApp('${app.id}')" class="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-300 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition shadow-sm">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                            <span>Download App Package</span>
+                        </button>
+                    `;
+                    container.appendChild(card);
+                });
+                lucide.createIcons();
+            } catch (err) {
+                console.error("Error loading app catalog:", err);
+            }
+        }
+
+        async function togglePrimaCompute() {
+            primaEnabled = !primaEnabled;
+            const btn = document.getElementById('prima-toggle-btn');
+            const badge = document.getElementById('prima-status-badge');
+            
+            try {
+                const res = await fetch('/api/v1/compute/prima/toggle', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({enabled: primaEnabled})
+                });
+                if (res.ok) {
+                    const d = await res.json();
+                    if (primaEnabled) {
+                        badge.innerText = "Ring Active (+50K/mo)";
+                        badge.className = "text-xs font-bold text-cyan-400 bg-cyan-950/80 border border-cyan-800/60 px-3.5 py-1.5 rounded-xl font-mono";
+                        btn.innerText = "Opt-In Active";
+                        btn.className = "bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-lg shadow-cyan-950/60";
+                        document.getElementById('credit-badge').innerText = Number(d.new_account_balance).toLocaleString();
+                        alert("⚡ prima.cpp Mesh Acceleration Activated! +50,000 Compute Credits added to your balance.");
+                    } else {
+                        badge.innerText = "Standalone Local Mode";
+                        badge.className = "text-xs font-bold text-slate-400 bg-slate-800/80 border border-slate-700 px-3.5 py-1.5 rounded-xl font-mono";
+                        btn.innerText = "Enable Acceleration";
+                        btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl transition";
+                    }
+                }
+            } catch (err) {
+                alert("Error toggling prima.cpp acceleration");
+            }
+        }
+
+        async function fetchLiveMetrics() {
+            try {
+                // 1. Fetch Readiness
+                const resReadiness = await fetch('/api/v1/biometrics/readiness');
+                if (resReadiness.ok) {
+                    const d = await resReadiness.json();
+                    document.getElementById('card-hr').innerHTML = `${d.heart_rate_bpm} <span class="text-xs text-slate-400 font-normal">BPM</span>`;
+                    document.getElementById('side-hr').innerText = `${d.heart_rate_bpm} BPM`;
+                    document.getElementById('card-rmssd').innerHTML = `${d.hrv_rmssd_ms} <span class="text-xs text-slate-400 font-normal">ms</span>`;
+                    document.getElementById('side-rmssd').innerText = `${d.hrv_rmssd_ms} ms`;
+                    document.getElementById('card-dfa').innerText = d.dfa_alpha1;
+                    document.getElementById('readiness-val').innerText = `${d.readiness_score}%`;
+                    document.getElementById('readiness-rec').innerText = d.recommendation;
+                    document.getElementById('readiness-circle').setAttribute('stroke-dasharray', `${d.readiness_score}, 100`);
+                }
+
+                // 2. Fetch Compute
+                const resCalc = await fetch('/api/v1/compute/calculator?tokens=1420500');
+                if (resCalc.ok) {
+                    const c = await resCalc.json();
+                    document.getElementById('side-savings').innerText = `$${c.net_savings_aud} AUD`;
+                    document.getElementById('calc-net-savings').innerText = `$${c.net_savings_aud} AUD`;
+                    document.getElementById('calc-gpt4o').innerText = `$${c.cloud_costs_avoided_usd.openai_gpt4o} USD`;
+                    document.getElementById('calc-elec').innerText = `$${c.local_mesh_electricity_aud} AUD`;
+                    document.getElementById('calc-roi').innerText = `${c.roi_multiplier}x`;
+                }
+
+                // 3. Fetch Addon
+                const resAddon = await fetch('/api/v1/addons/all');
+                if (resAddon.ok) {
+                    const a = await resAddon.json();
+                    document.getElementById('side-focus').innerText = `${a.screen_lens.focus_score}/100 (${a.screen_lens.deep_work_hours}h)`;
+                    document.getElementById('side-acwr').innerText = `${a.training_analysis.acwr_ratio} (${a.training_analysis.overtraining_risk})`;
+                }
+            } catch (err) {
+                console.error("Metrics polling error:", err);
+            }
+        }
+
+        async function updateCalculator(tokens) {
+            document.getElementById('slider-token-val').innerText = Number(tokens).toLocaleString();
+            try {
+                const res = await fetch(`/api/v1/compute/calculator?tokens=${tokens}`);
+                if (res.ok) {
+                    const c = await res.json();
+                    document.getElementById('calc-net-savings').innerText = `$${c.net_savings_aud} AUD`;
+                    document.getElementById('calc-gpt4o').innerText = `$${c.cloud_costs_avoided_usd.openai_gpt4o} USD`;
+                    document.getElementById('calc-elec').innerText = `$${c.local_mesh_electricity_aud} AUD`;
+                    document.getElementById('calc-roi').innerText = `${c.roi_multiplier}x`;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function downloadApp(appId) {
+            window.location.href = `/api/v1/apps/download/${appId}`;
+        }
+
+        async function buyCredits(pkg) {
+            try {
+                const res = await fetch('/api/v1/payments/purchase', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({package: pkg})
+                });
+                if (res.ok) {
+                    const d = await res.json();
+                    document.getElementById('credit-badge').innerText = Number(d.new_balance).toLocaleString();
+                    alert(`✅ Purchased ${Number(d.credits_added).toLocaleString()} compute credits successfully!`);
+                }
+            } catch (err) {
+                alert("Purchase error");
+            }
+        }
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            input.value = '';
+            appendMessage('user', text);
+
+            const sendBtn = document.getElementById('chat-send-btn');
+            sendBtn.disabled = true;
+
+            const typingId = showTypingIndicator();
+
+            try {
+                const res = await fetch('/api/v1/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({query: text})
+                });
+                removeTypingIndicator(typingId);
+
+                if (res.ok) {
+                    const d = await res.json();
+                    appendMessage('ai', d.response, d);
+                } else {
+                    appendMessage('ai', '⚠️ Error contacting local AI assistant on Port 4000.');
+                }
+            } catch (err) {
+                removeTypingIndicator(typingId);
+                appendMessage('ai', '⚠️ Mesh connection timeout. Local inference node might be busy.');
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+
+        function sendQuickPrompt(txt) {
+            document.getElementById('chat-input').value = txt;
+            handleChatSubmit({preventDefault: () => {}});
+        }
+
+        function showTypingIndicator() {
+            const feed = document.getElementById('chat-messages');
+            const id = 'typing-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'flex items-start space-x-3 mr-auto max-w-[85%] animate-pulse';
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-500 flex items-center justify-center shrink-0 shadow-md">
+                    <i data-lucide="bot" class="w-4 h-4 text-white"></i>
+                </div>
+                <div class="bg-slate-900/90 border border-slate-800 rounded-2xl rounded-tl-none p-4 text-xs text-slate-400 flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>Reasoning on local edge model...</span>
+                </div>
+            `;
+            feed.appendChild(div);
+            feed.scrollTop = feed.scrollHeight;
+            lucide.createIcons();
+            return id;
+        }
+
+        function removeTypingIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function appendMessage(sender, text, meta = null) {
+            const feed = document.getElementById('chat-messages');
+            const msgDiv = document.createElement('div');
+            
+            const isUser = (sender === 'user');
+
+            if (isUser) {
+                msgDiv.className = 'flex items-end space-x-2 ml-auto max-w-[80%] flex-row-reverse space-x-reverse w-fit';
+                msgDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shrink-0 shadow-md shadow-indigo-900/30">
+                        <i data-lucide="user" class="w-4 h-4 text-white"></i>
+                    </div>
+                    <div class="w-fit inline-block bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl rounded-br-none px-4 py-2 text-xs sm:text-sm font-medium shadow-md shadow-blue-900/20 leading-relaxed whitespace-pre-wrap break-words">
+                        ${DOMPurify.sanitize(text)}
+                    </div>
+                `;
+            } else {
+                msgDiv.className = 'flex items-start space-x-2.5 mr-auto max-w-[88%] w-fit';
+                
+                const parsedMarkdown = typeof marked !== 'undefined' ? marked.parse(text) : text;
+                const cleanHtml = DOMPurify.sanitize(parsedMarkdown);
+
+                msgDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-500 flex items-center justify-center shrink-0 shadow-md shadow-emerald-900/30">
+                        <i data-lucide="bot" class="w-4 h-4 text-white"></i>
+                    </div>
+                    <div class="w-fit inline-block bg-slate-900/90 border border-slate-800/90 rounded-2xl rounded-tl-none px-4 py-3 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg markdown-body">
+                        ${cleanHtml}
+                    </div>
+                `;
+            }
+
+            feed.appendChild(msgDiv);
+            feed.scrollTo({ top: feed.scrollHeight, behavior: 'smooth' });
+            lucide.createIcons();
+        }
+
+        // Initialize polling & catalog
+        fetchLiveMetrics();
+        loadAppCatalog();
+        loadPermissions();
+        setInterval(fetchLiveMetrics, 5000);
+    </script>
+</body>
+</html>

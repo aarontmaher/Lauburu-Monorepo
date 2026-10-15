@@ -25,7 +25,7 @@ The AI Debate was conducted between **Local Orchestrator (Qwen 3.8 Max 27B)**, *
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 2. CLOUD SHADOW ORCHESTRATOR (Gemini 3.7 Flash)                             │
 │    • "Push-to-Sale" through Value Unlocking: Market high-value capabilities │
-│      (10Gbps TB4 clustering, Shopify headless sync, 512Hz ECG export).     │
+│      (40Gbps TB4 clustering, Shopify headless sync, 512Hz ECG export).     │
 │    • Provide instant QR code / Stripe deep-links directly in terminal.      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 3. REAL DEVIL'S ADVOCATE (Qwen-Abliterated @ Port 8083)                     │
@@ -51,7 +51,7 @@ The AI Debate was conducted between **Local Orchestrator (Qwen 3.8 Max 27B)**, *
 │ • Standard 9-Screen TUI Command Center & Blackboard Telemetry               │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ TIER 2: PRO HARDWARE CLUSTER ($29 / month)                                  │
-│ • 10Gbps Thunderbolt 4 DMA Sub-Millisecond AI Tensor Sharding (0.27ms)      │
+│ • 40Gbps Thunderbolt 4 DMA Sub-Millisecond AI Tensor Sharding (0.27ms)      │
 │ • Real-time Pan-Tompkins 512Hz ECG Stream Recording & PTT Blood Pressure    │
 │ • Automated 24/7 Background LoRA Distillation Daemon                        │
 ├─────────────────────────────────────────────────────────────────────────────┤

@@ -130,7 +130,7 @@
       "compute_type": "Exynos 990 / Cortex-A55 Little Cores",
       "vram_gb": 9.0,
       "online": true,
-      "primary_ip": "100.84.40.95",
+      "primary_ip": "100.78.206.96",
       "latency_ms": 76.0,
       "rpc_active": true,
       "battery_pct": 100,

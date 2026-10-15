@@ -71,16 +71,16 @@ Back-end cluster on 7-layer mesh: $M_{\text{mesh}}$ ($|\theta_{\text{active}}| =
 ## 🛠️ 4. Multi-Platform Implementation Catalog
 
 1. **Core Engine:**
-   - [`02_ai_models_and_inference/prima_edge_client.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/prima_edge_client.py)
-   - [`02_ai_models_and_inference/prima_cpp/include/prima_edge_client.hpp`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/include/prima_edge_client.hpp)
-   - [`02_ai_models_and_inference/prima_cpp/src/prima_edge_client.cpp`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/src/prima_edge_client.cpp)
+   - [`02_ai_models_and_inference/prima_edge_client.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/prima_edge_client.py)
+   - [`02_ai_models_and_inference/prima_cpp/include/prima_edge_client.hpp`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/include/prima_edge_client.hpp)
+   - [`02_ai_models_and_inference/prima_cpp/src/prima_edge_client.cpp`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/src/prima_edge_client.cpp)
 2. **Android Foreground Service (Doze & LMK Safe):**
-   - JNI Interface: [`02_ai_models_and_inference/prima_cpp/examples/llama.android/app/src/main/cpp/prima_edge_jni.cpp`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/examples/llama.android/app/src/main/cpp/prima_edge_jni.cpp)
-   - Kotlin Service: [`02_ai_models_and_inference/prima_cpp/examples/llama.android/app/src/main/java/com/lauburu/prima/PrimaEdgeService.kt`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/examples/llama.android/app/src/main/java/com/lauburu/prima/PrimaEdgeService.kt)
+   - JNI Interface: [`02_ai_models_and_inference/prima_cpp/examples/llama.android/app/src/main/cpp/prima_edge_jni.cpp`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/examples/llama.android/app/src/main/cpp/prima_edge_jni.cpp)
+   - Kotlin Service: [`02_ai_models_and_inference/prima_cpp/examples/llama.android/app/src/main/java/com/lauburu/prima/PrimaEdgeService.kt`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/examples/llama.android/app/src/main/java/com/lauburu/prima/PrimaEdgeService.kt)
 3. **iOS Metal & Swift (In-Process Embedded Library):**
-   - Swift Wrapper: [`02_ai_models_and_inference/prima_cpp/examples/llama.swiftui/llama.cpp.swift/PrimaEdgeBridge.swift`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/examples/llama.swiftui/llama.cpp.swift/PrimaEdgeBridge.swift)
+   - Swift Wrapper: [`02_ai_models_and_inference/prima_cpp/examples/llama.swiftui/llama.cpp.swift/PrimaEdgeBridge.swift`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/examples/llama.swiftui/llama.cpp.swift/PrimaEdgeBridge.swift)
 4. **Verification & Pytest Test Suite:**
-   - [`02_ai_models_and_inference/tests/test_prima_edge_client.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/tests/test_prima_edge_client.py) (5/5 passing in 0.05s).
+   - [`02_ai_models_and_inference/tests/test_prima_edge_client.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/tests/test_prima_edge_client.py) (5/5 passing in 0.05s).
 
 ---
 

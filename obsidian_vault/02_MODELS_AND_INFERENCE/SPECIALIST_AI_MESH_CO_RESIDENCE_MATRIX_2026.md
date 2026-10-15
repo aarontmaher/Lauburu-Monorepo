@@ -45,7 +45,7 @@ We deploy 6 specialized micro-models into the **40.8 GB free headroom** to elimi
 
 | Specialist Role | Model | VRAM | Target Node | Solves Bottleneck |
 | :--- | :--- | :---: | :--- | :--- |
-| **1. Fast Speculative Drafter** | `SmolLM2-1.7B` / `Qwen-1.5B` | **1.0 GB** | **L5 MacBook Air M4** | **Boosts 80B MoE to 75+ tok/s** via 4-token speculative draft blocks. |
+| **1. Fast Speculative Drafter** | `SmolLM2-1.7B` / `Qwen-1.5B` | **1.0 GB** | **L5 MacBook Pro (Node L2)** | **Boosts 80B MoE to 75+ tok/s** via 4-token speculative draft blocks. |
 | **2. Code & AST Specialist** | `Qwen2.5-Coder-7B` | **4.4 GB** | **L2 MacBook Pro (TB4)** | Offloads AST parsing, Rust/C++ compilation, and refactoring from 80B. |
 | **3. Vision & OCR Specialist** | `Qwen2.5-VL-7B` | **4.4 GB** | **L6 Pixel 10 Pro XL (TPU)** | Ingests 8K camera frames & UI screenshots, outputting compact text descriptions. |
 | **4. Adversarial Auditor** | `Mistral-Nemo-2407-abliterated` | **7.0 GB** | **L3 Linux Head Node** | Real-time continuous red-team verification & Rule #0 truth audit on Port 8083. |

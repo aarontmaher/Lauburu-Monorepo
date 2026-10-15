@@ -21,7 +21,7 @@ The **Lauburu Business Ecosystem** monetizes high-performance athletic intellige
 
 ### 2. The $0.00 Cloud Spend Bootstrap Invariant
 - **Total Venture Funding / Seed Burn:** **$0.00**.
-- **Cloud Infrastructure Cost:** **$0.00 / month**. Operating entirely on pooled local Apple Silicon Metal hardware, 10Gbps Thunderbolt 4 DMA bridges, and permanent free-tier cloud quotas (Google AI Studio, NVIDIA NIM, Cloudflare, xAI).
+- **Cloud Infrastructure Cost:** **$0.00 / month**. Operating entirely on pooled local Apple Silicon Metal hardware, 40Gbps Thunderbolt 4 DMA bridges, and permanent free-tier cloud quotas (Google AI Studio, NVIDIA NIM, Cloudflare, xAI).
 - **Commercial GCP Credit Sanctuary:** The $1,400.00 commercial Google Cloud Platform credit grant remains **100% untouched**, preserved strictly as an emergency reserve or enterprise SLA demonstration buffer.
 - **Reinvestment Velocity:** 100% of net commerce and SaaS cash flow is reinvested into local hardware expansion (Apple Silicon unified memory, Movesense sensor fleet, high-speed networking).
 <!-- CONTEXT_WINDOW_TIER_0_END -->

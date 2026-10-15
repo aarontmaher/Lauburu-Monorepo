@@ -1,0 +1,44 @@
+{
+    "sovereign_orchestrator_max": {
+        "elo": 1959,
+        "matches": 28,
+        "success_rate": 0.9892857142857142,
+        "latency_avg": 675.1625623021807
+    },
+    "syntax_worker_coder": {
+        "elo": 1600,
+        "matches": 0,
+        "success_rate": 1.0,
+        "latency_avg": 0.0
+    },
+    "red_team_abliterated": {
+        "elo": 1700,
+        "matches": 0,
+        "success_rate": 1.0,
+        "latency_avg": 0.0
+    },
+    "lens_vision_native": {
+        "elo": 1500,
+        "matches": 0,
+        "success_rate": 1.0,
+        "latency_avg": 0.0
+    },
+    "cloud_agy_tools": {
+        "elo": 1400,
+        "matches": 0,
+        "success_rate": 1.0,
+        "latency_avg": 0.0
+    },
+    "skill_loop": {
+        "elo": 1500,
+        "matches": 0,
+        "success_rate": 1.0,
+        "latency_avg": 0.0
+    },
+    "skill_ai_debate": {
+        "elo": 1500,
+        "matches": 0,
+        "success_rate": 1.0,
+        "latency_avg": 0.0
+    }
+}

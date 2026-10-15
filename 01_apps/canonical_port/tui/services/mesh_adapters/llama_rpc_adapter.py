@@ -81,7 +81,7 @@ class LlamaRpcAdapter:
     DEFAULT_RPC_TARGETS = [
         ("Mac_Node (Host M4 Pro)", "127.0.0.1", 50052, 28, 13.5),
         ("MacBook_Pro (TB4 Bridge)", "169.254.187.138", 50052, 28, 13.5),
-        ("Linux_Head_Node (Ryzen 7)", "100.101.39.98", 50052, 24, 12.0),
+        ("Linux_Mini (Ryzen 7)", "100.101.39.98", 50052, 24, 12.0),
     ]
 
     # Canonical Local Server Ports

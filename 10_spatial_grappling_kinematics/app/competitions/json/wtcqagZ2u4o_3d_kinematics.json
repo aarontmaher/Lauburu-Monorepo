@@ -1,0 +1,26 @@
+{
+  "video_id": "wtcqagZ2u4o",
+  "url": "https://youtu.be/wtcqagZ2u4o",
+  "division": "Freestyle Wrestling",
+  "title": "Nationals - Aaron Maher vs Josh Riley",
+  "duration_sec": 489.1,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 20,
+  "dual_athlete_frames": 2,
+  "standing_phase_pct": 30.0,
+  "ground_scramble_phase_pct": 70.0,
+  "level_change_shots_detected": 0,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 46.4,
+    "left_elbow": 141.3,
+    "right_elbow": 131.5,
+    "left_hip": 142.4,
+    "right_hip": 143.1,
+    "left_knee": 140.8,
+    "right_knee": 151.8
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/wtcqagZ2u4o_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match is characterized by a strong standing position, with a significant amount of ground/scrumble (70.0%) and a low level change shots (0). His mean spine lean is 46.4\u00b0, indicating a good balance and stability. His elbow flexion and knee flexion are both 141.3\u00b0 and 131.5\u00b0, showing good range of motion and power. This combination of factors suggests a well-structured and powerful grappling style.",
+  "processing_sec": 2.37
+}

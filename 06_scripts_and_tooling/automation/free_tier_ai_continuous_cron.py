@@ -32,9 +32,9 @@ import sys
 import time
 from typing import Any, Dict, List, Optional
 
-MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+MONOREPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 OBSIDIAN_DIR = MONOREPO_ROOT / "obsidian_vault" / "04_ANALYTICS"
-DATASET_DIR = Path("/Users/aaron/DFS_UNIFIED/lora_datasets")
+DATASET_DIR = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data")
 MIRROR_DATASET_DIR = MONOREPO_ROOT / "04_data_and_memory" / "lora_datasets"
 STATUS_FILE = MONOREPO_ROOT / "04_data_and_memory" / "session_logs" / "free_ai_cron_status.json"
 ALT_STATUS_FILE = MONOREPO_ROOT / "session_logs" / "free_ai_cron_status.json"

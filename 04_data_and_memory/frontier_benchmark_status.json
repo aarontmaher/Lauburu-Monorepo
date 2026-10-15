@@ -1,0 +1,36 @@
+{
+  "last_evaluation": {
+    "eval_id": "bench_1792017920_qwen_cod",
+    "timestamp": 1792017920.8060749,
+    "model_id": "qwen_coder32",
+    "model_name": "Qwen 2.5 Coder 32B (Local Metal TB4)",
+    "is_local": true,
+    "domain_scores": {
+      "monorepo_ast_compliance": 92.5,
+      "zero_mock_truth_adherence": 99.0,
+      "serial_grammar_execution": 89.5,
+      "biometric_dsp_precision": 87.0
+    },
+    "overall_score": 92.36,
+    "cloud_teacher_delta": 11.01,
+    "win_rate_vs_cloud": 100.0,
+    "outperformed_domains": [
+      "monorepo_ast_compliance",
+      "zero_mock_truth_adherence",
+      "serial_grammar_execution",
+      "biometric_dsp_precision"
+    ],
+    "zero_mock_verified": true
+  },
+  "cloud_teacher_baseline": {
+    "teacher_model": "Gemini 3.8 Flash (Frontier Teacher)",
+    "baseline_scores": {
+      "monorepo_ast_compliance": 88.5,
+      "zero_mock_truth_adherence": 72.0,
+      "serial_grammar_execution": 82.0,
+      "biometric_dsp_precision": 85.0
+    },
+    "weighted_baseline": 81.35
+  },
+  "timestamp": 1792017920.8060899
+}

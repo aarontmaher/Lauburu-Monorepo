@@ -1,0 +1,28 @@
+{
+  "total_drafts_analyzed": 83760,
+  "total_mistakes_intercepted": 6,
+  "zero_mistake_rate_pct": 99.99,
+  "interceptions_by_model": {
+    "smol_135m": 0,
+    "smol_360m": 5,
+    "qwen_0_5b": 1,
+    "llama_1b": 0,
+    "smol_1_7b": 0
+  },
+  "clean_drafts_by_model": {
+    "smol_135m": 14328,
+    "smol_360m": 14311,
+    "qwen_0_5b": 14276,
+    "llama_1b": 14238,
+    "smol_1_7b": 0,
+    "qwen_3b_moe": 13418,
+    "tiny_10m": 13183
+  },
+  "interceptions_by_category": {
+    "SYNTAX_ERROR": 5,
+    "RULE_0_MOCK_DETECTED": 1,
+    "UNCLOSED_BRACKETS": 0,
+    "HALLUCINATED_IMPORT": 0,
+    "EMPTY_STUB_FUNCTION": 0
+  }
+}

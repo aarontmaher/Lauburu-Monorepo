@@ -1,0 +1,59 @@
+{
+  "timestamp_utc": "2026-10-15T00:35:27Z",
+  "rule_0_zero_mock": true,
+  "live_ble_connected": false,
+  "source_mode": "RECORDED_MOVESENSE_VAULT (Movesense 261030002013 \u2022 74:92:BA:11:36:D6)",
+  "device_id": "Movesense 261030002013 (74:92:BA:11:36:D6)",
+  "model_used": "Gemma-2-2B-ECG (L8 :8092) + Hermes-3-8B (L1 :8085) + EmbeddingGemma-2-740M (:8087) + TemporalKinematicCardiacNet (.pt) + Movesense-INT8-Edge-MLP (.h) + MovesenseBicepECGEngine (DSP)",
+  "all_models_executed": [
+    "Gemma-2-2B-ECG (L8 :8092)",
+    "Hermes-3-8B (L1 :8085)",
+    "EmbeddingGemma-2-740M (:8087)",
+    "TemporalKinematicCardiacNet (.pt)",
+    "Movesense-INT8-Edge-MLP (.h)",
+    "MovesenseBicepECGEngine (DSP)"
+  ],
+  "latency_ms": 5462,
+  "hr_bpm": 93.0,
+  "rmssd_ms": 20.25,
+  "sdnn_ms": 35.47,
+  "pnn50_pct": 1.59,
+  "baevsky_si": 229.1,
+  "vault_rows": "8,143",
+  "grappling_rr_rows": "91,272",
+  "pytorch_cardiac_net": {
+    "model_file": "movesense_kinematic_cardiac_net.pt",
+    "architecture": "PyTorch 1D-CNN + BiGRU (TemporalKinematicCardiacNet)",
+    "device": "Apple Silicon Metal (MPS)",
+    "val_accuracy_pct": 76.8,
+    "exertion_class": "MODERATE_AEROBIC (75-100 BPM)",
+    "confidence_pct": 74.0,
+    "pred_hr_bpm": 46.2,
+    "class_probabilities": {
+      "REST_RECOVERY (<75 BPM)": 23.1,
+      "MODERATE_AEROBIC (75-100 BPM)": 74.0,
+      "HIGH_GRAPPLING (>=100 BPM)": 2.9
+    }
+  },
+  "edge_int8_mlp": {
+    "edge_model_header": "movesense_edge_model.h (INT8 [14->12->3])",
+    "micro_mlp_header": "movesense_micro_mlp.h (FP32 [32->8->1])",
+    "beat_class": "Ectopic/PVC",
+    "beat_confidence_pct": 100.0,
+    "micro_mlp_score": 0.0423,
+    "ectopic_beats_retained": 61,
+    "ectopic_density_per_min": 61.0,
+    "cardiac_drift_pct": 3.53,
+    "training_zone": "Zone 2: Aerobic Base (Fat Max)",
+    "ble_16byte_payload_hex": "4f1401e803000061013d6402014000aa"
+  },
+  "bicep_ecg_dsp": {
+    "raw_snr_db": -4.87,
+    "clean_snr_db": 5.09,
+    "snr_gain_db": 11.42,
+    "emg_rejected_pct": 68.4,
+    "qrs_peaks": 384
+  },
+  "clinical_status": "ECTOPIC/PVC | MODERATE_AEROBIC (75-100 BPM)",
+  "clinical_summary": "1. [PRE-TRAINED PYTORCH 1D-CNN+BiGRU \u2022 movesense_kinematic_cardiac_net.pt on Apple Silicon Metal (MPS)]: Exertion State = MODERATE_AEROBIC (75-100 BPM) (74.0% conf, Val Acc 76.8%), Kinematic-Predicted HR = 46.2 BPM (Probs: {'REST_RECOVERY (<75 BPM)': 23.1, 'MODERATE_AEROBIC (75-100 BPM)': 74.0, 'HIGH_GRAPPLING (>=100 BPM)': 2.9}).\n2. [PRE-TRAINED MOVESENSE EDGE INT8 MLP \u2022 movesense_edge_model.h (INT8 [14->12->3]) & movesense_micro_mlp.h (FP32 [32->8->1])]: Beat Classification = Ectopic/PVC (100.0% conf), Micro-MLP Score = 0.0423, Ectopic Density = 61.0/min, 16-Byte BLE Frame = 0x4f1401e803000061013d6402014000aa.\n3. [AUTHENTIC 24-BIT .MECG ADC + BICEP/CHEST ADAPTIVE ECG DSP]: 60448 raw 24-bit samples (302.24s @ 200Hz), 384 Pan-Tompkins QRS peaks, NLMS+Wavelet SNR Gain = +11.42 dB (Raw -4.87 dB -> Clean 5.09 dB, 68.4% EMG artifact rejected).\n4. [EmbeddingGemma-2-740M \u2022 833ms]: 768-D MRL vector norm=0.602 matched against movesense_clinical_distillation.jsonl (58.4 KB clinical ECG/HRV corpus).\n5. [Gemma-2-2B-ECG (L8 :8092) \u2022 2097ms]: The patient exhibits a moderate aerobic heart rate with ectopic beats detected by the INT8-MLP model, suggesting possible arrhythmia.\n7. [Hermes-3-8B \u2022 3365ms]: 1. The Movesense device is accurately recording and processing ECG data, with 384 Pan-Tompkins QRS peaks detected at 200Hz, indicating a high-quality signal. The pre-trained PyTorch 1D-CNN+BiGRU model classifies the exertion level as moderate-aerobic (75-100 BPM) with a predicted heart rate of 46.2"
+}

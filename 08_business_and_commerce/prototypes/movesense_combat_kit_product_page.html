@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movesense 512Hz Combat Kit — Vibe Prototyping (Stitch 2.0)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #07090e; color: #f3f4f6; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-card {
+      background: rgba(15, 18, 28, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+
+  <div class="max-w-4xl w-full glass-card rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+    <!-- Visual / Telemetry Column -->
+    <div class="p-8 flex flex-col justify-between border-b md:border-b-0 md:border-r border-white/10 bg-gradient-to-br from-blue-950/30 to-zinc-950">
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/20 text-blue-400 border border-blue-500/30">
+            Medical Grade 512Hz ECG
+          </span>
+          <span class="mono text-xs text-blue-300">Movesense MD+ Certified</span>
+        </div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-white mb-2">Movesense Combat Kit</h1>
+        <p class="text-sm text-zinc-400 leading-relaxed">
+          Continuous raw single-channel clinical ECG streaming at 512Hz with 9-axis IMU impact force vector telemetry.
+        </p>
+      </div>
+
+      <!-- Real vs Mock Comparison Table -->
+      <div class="my-6 p-4 rounded-xl bg-zinc-950/80 border border-white/10">
+        <div class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3">Diagnostic Superiority</div>
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between py-1 border-b border-white/5">
+            <span class="text-zinc-400">Optical PPG (Apple/Whoop)</span>
+            <span class="mono text-red-400 font-bold">1 Hz (Motion Fails)</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-white/5">
+            <span class="text-zinc-200 font-semibold">Movesense ECG Core</span>
+            <span class="mono text-blue-400 font-bold">512 Hz (Clinical R-Peak)</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-zinc-200 font-semibold">Noise Suppression</span>
+            <span class="mono text-emerald-400 font-bold">91.9% Pan-Tompkins DSP</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inclusions Chips -->
+      <div class="grid grid-cols-2 gap-2 text-[11px] text-zinc-300">
+        <div class="p-2 rounded bg-white/[0.03] border border-white/5">✓ 512Hz Sensor Core</div>
+        <div class="p-2 rounded bg-white/[0.03] border border-white/5">✓ 9-Axis Grappling IMU</div>
+        <div class="p-2 rounded bg-white/[0.03] border border-white/5">✓ Hydrogel Chest Patches</div>
+        <div class="p-2 rounded bg-white/[0.03] border border-white/5">✓ Silicone Guard Sleeve</div>
+      </div>
+    </div>
+
+    <!-- Pricing & Closing Column -->
+    <div class="p-8 flex flex-col justify-between bg-zinc-900/50">
+      <div>
+        <!-- Value Anchor Block -->
+        <div class="mb-6">
+          <div class="flex items-baseline space-x-3 mb-1">
+            <span class="text-4xl font-black text-white">$180.00</span>
+            <span class="mono text-sm text-zinc-400">AUD Firm</span>
+            <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">Free Express</span>
+          </div>
+          <p class="text-xs text-zinc-400">Sensor Core alone: $149 AUD | Landed Wholesale Floor: $125 AUD</p>
+        </div>
+
+        <!-- Tier Selection -->
+        <div class="space-y-3 mb-6">
+          <div class="p-3.5 rounded-xl border-2 border-blue-500 bg-blue-500/10 cursor-pointer flex justify-between items-center">
+            <div>
+              <div class="text-sm font-bold text-white">Full Combat Kit ($180 AUD)</div>
+              <div class="text-xs text-zinc-400">Includes sensor, patches, strap & protective sleeve</div>
+            </div>
+            <span class="text-blue-400 font-bold">✓ Selected</span>
+          </div>
+          <div class="p-3.5 rounded-xl border border-white/10 hover:border-blue-400/50 bg-zinc-950/40 cursor-pointer flex justify-between items-center transition-all">
+            <div>
+              <div class="text-sm font-bold text-zinc-200">Sensor Core Only ($149 AUD)</div>
+              <div class="text-xs text-zinc-400">Standalone replacement pod with BLE 5.0</div>
+            </div>
+            <span class="text-zinc-500 font-semibold text-xs">Switch</span>
+          </div>
+        </div>
+
+        <!-- Academy Pack Callout -->
+        <div class="p-3 rounded-lg bg-zinc-950/60 border border-white/5 text-xs text-zinc-300">
+          <span class="font-bold text-white block mb-0.5">Need sensors for your fight team?</span>
+          B2B Academy Pack: 10 units at $155 AUD/unit ($1,550 total). Includes coach live dashboard.
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="pt-4 border-t border-white/10">
+        <button class="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold text-base tracking-wide uppercase shadow-lg shadow-blue-600/30 transition-all transform active:scale-[0.98] mb-3 flex items-center justify-center space-x-2">
+          <span>Order Movesense Combat Kit</span>
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
+        <div class="flex items-center justify-center space-x-4 text-[11px] text-zinc-400">
+          <span>🚚 Ships in 24 Hours</span>
+          <span>🛡️ 2-Year Warranty</span>
+          <span>🇦🇺 AusPost Signature</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

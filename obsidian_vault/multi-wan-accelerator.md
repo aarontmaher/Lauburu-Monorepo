@@ -10,8 +10,8 @@ tags: [multi_wan, transport, channel_bonding, 10gbe, tb4, speedify, tailscale]
 Governs simultaneous packet-level channel bonding, intelligent multi-path routing, and failover across the physical and wireless network interfaces in the Lauburu Mesh.
 
 ## 🚀 Aggregated Transport Interfaces
-1. **10Gbps Thunderbolt 4 Bridge (`bridge0`):**
-   - Direct point-to-point PCIe DMA bridge (`169.254.187.138`) delivering **0.277ms RTT** and up to 40 Gbps aggregate bandwidth for distributed AI tensor sharding.
+1. **40Gbps Thunderbolt 4 Bridge (`bridge0`):**
+   - Direct point-to-point PCIe DMA bridge between L1 Mac Mini (`10.0.0.2`) and L8 `lauburu` (`10.0.0.8`) delivering **0.38ms RTT** and up to 40 Gbps aggregate bandwidth for distributed AI tensor sharding. L2 MacBook Pro operates unlinked over LAN/Tailscale.
 2. **1GbE Dedicated Ethernet (`eth0` / `en0`):**
    - High-reliability local wired backhaul for SeaweedFS storage replication and cluster management.
 3. **Wi-Fi 7 / MLO Wireless Link:**

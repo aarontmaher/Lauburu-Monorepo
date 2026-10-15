@@ -46,7 +46,7 @@ The **Automatic NotebookLM & Gemini Spark Integration Subsystem** connects Googl
 | Bundle Filename | Knowledge Domain & Contents |
 | :--- | :--- |
 | **`01_lauburu_master_architecture.md`** | Master monorepo architecture, Tri-Vault storage protocols, Rule #0 Zero-Mock rule. |
-| **`02_mesh_hardware_and_networking.md`** | 7-layer hardware topology, 10Gbps TB4 bridge, Tailscale WireGuard mesh, dynamic RAM limits. |
+| **`02_mesh_hardware_and_networking.md`** | 7-layer hardware topology, 40Gbps TB4 bridge, Tailscale WireGuard mesh, dynamic RAM limits. |
 | **`03_local_inference_and_models.md`** | `prima.cpp` (:8082) master, `llama.cpp` (:8083) fallback, `Qwen 3.8 Max Abliterated`, `SmolLM2`. |
 | **`04_multimodal_screen_lens_and_actions.md`** | macOS ANE OCR (:3035), Pixel Termux Tesseract LSTM (:3035/:3036), Hermes 3 & OpenClaw Shizuku. |
 | **`05_codeclash_swarm_and_lora_training.md`** | CodeClash SWE tournament arena, ELO ratings, AST decompilation, continuous LoRA streams. |

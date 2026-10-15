@@ -5,7 +5,7 @@ Sentinel monitoring and victory audit governance for the GL.iNet Router AI Daemo
 
 ## 🔒 My Identity
 - Archetype: sentinel
-- Working directory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/.agents/sentinel
+- Working directory: /Volumes/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/.agents/sentinel
 - Orchestrator: 5c2183b6-8ea8-4a9f-9877-65d19c1de92e (orchestrator_2)
 - Victory Auditor: 8db4bbf3-62b3-4873-bf07-3719ed030b40 (victory_auditor_1)
 
@@ -29,7 +29,7 @@ Sentinel monitoring and victory audit governance for the GL.iNet Router AI Daemo
 - **Retry count**: 0
 
 ## Artifact Index
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/ORIGINAL_REQUEST.md — Authoritative user request
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/.agents/orchestrator_2/handoff.md — Final orchestrator handoff
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/.agents/victory_auditor_1/handoff.md — Independent victory audit certification
-- /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/bin/smolctl — Executable CLI control plane
+- /Volumes/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/ORIGINAL_REQUEST.md — Authoritative user request
+- /Volumes/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/.agents/orchestrator_2/handoff.md — Final orchestrator handoff
+- /Volumes/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/.agents/victory_auditor_1/handoff.md — Independent victory audit certification
+- /Volumes/Lauburu-Monorepo/00_core_infrastructure/router_ai_daemon/bin/smolctl — Executable CLI control plane

@@ -1,6 +1,6 @@
 ---
 title: "Local LMSYS Chatbot Arena & Bradley-Terry ELO Leaderboard"
-date: "2026-09-09 16:57:07"
+date: "2026-10-15 00:54:27"
 tags: [lmarena, elo, bradley_terry, benchmark, local_ai, zero_mock]
 matches_analyzed: 105
 leader_model: "Qwen 3.8 Max (27B-4bit)"

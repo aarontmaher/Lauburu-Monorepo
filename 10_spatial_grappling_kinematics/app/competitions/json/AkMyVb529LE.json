@@ -1,0 +1,91 @@
+{
+  "video_id": "AkMyVb529LE",
+  "url": "https://youtu.be/AkMyVb529LE",
+  "division": "IBJJF",
+  "title": "World championships - Aaron Maher vs Vaomatua Keahi Mustafa",
+  "duration_sec": 406.7,
+  "resolution": "256x128",
+  "sampled_frames": 36,
+  "poses_detected_frames": 19,
+  "dual_athlete_frames": 1,
+  "standing_phase_pct": 36.8,
+  "ground_scramble_phase_pct": 63.2,
+  "level_change_shots_detected": 3,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 83.8,
+    "left_elbow": 129.5,
+    "right_elbow": 116.3,
+    "left_hip": 121.9,
+    "right_hip": 110.4,
+    "left_knee": 136.7,
+    "right_knee": 130.0
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/AkMyVb529LE_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match involves a strong stance with a 36.8% standing time, a 63.2% ground/scrumble time, and a mean spine lean of 83.8\u00b0. He also has 3 shots, 63.2% level change shots, and a mean spine lean of 129.5\u00b0/116.3\u00b0. His elbow flexion L/R is 129.5\u00b0/116.3\u00b0, and his",
+  "processing_sec": 3.98,
+  "vision_model_opinions": {
+    "cloud_qwen25_vl_72b": {
+      "model_id": "cloud_qwen25_vl_72b",
+      "model_name": "Qwen2.5-VL-72B-Instruct (Teacher)",
+      "tier": "Cloud Teacher VLM",
+      "slug": "qwen/qwen2.5-vl-72b-instruct",
+      "status": "LIVE_OPENROUTER_OK",
+      "latency_sec": 3.61,
+      "analysis": "In this match, Aaron Maher demonstrates a strategic use of his biomechanics, maintaining a forward spine lean of approximately 83.8\u00b0 which aids in guard retention and defensive posturing against takedowns, aligning well with the tactical demands of IBJJF rules. His high elbow flexion angles and knee flexion suggest a strong emphasis on creating space and mobility for submissions while on the ground, showcasing his adaptability in both standing and scrambling positions."
+    },
+    "cloud_gemini_25_flash": {
+      "model_id": "cloud_gemini_25_flash",
+      "model_name": "Gemini 2.5 Flash Vision",
+      "tier": "Cloud Teacher VLM",
+      "slug": "google/gemini-2.5-flash",
+      "status": "LIVE_OPENROUTER_OK",
+      "latency_sec": 4.12,
+      "analysis": "This analysis focuses on Aaron Maher's biomechanics and tactics in the provided images, considering the IBJJF ruleset.\n\n**Biomechanics & Tactical Assessment of Aaron Maher:**\n\nAaron Maher consistently maintains a low, grounded posture, as evidenced by the high percentage of Ground/Scramble time (63.2%) and the deep knee and elbow flexion angles (136.7\u00b0/130.0\u00b0 and 129.5\u00b0/116.3\u00b0 respectively). This tactical choice, particularly the low spine lean (mean 83.8\u00b0), suggests a strong emphasis on guard retention, inside position, and submission entries, which aligns with the IBJJF ruleset where such positions are crucial for control and scoring rather than immediate takedown"
+    },
+    "local_gemma4_31b_vision": {
+      "model_id": "local_gemma4_31b_vision",
+      "model_name": "Gemma 4 31B Vision (Debater A)",
+      "tier": "Sovereign Debate VLM",
+      "slug": "google/gemma-3-27b-it",
+      "status": "LIVE_OPENROUTER_OK",
+      "latency_sec": 5.29,
+      "analysis": "Okay, here's a biomechanical and tactical assessment of Aaron Maher's match against Vaomatua Keahi Mustafa, based on the provided data and rule-set context.\n\nThe data indicates Aaron Maher consistently exhibits a very high degree of forward spine lean (83.8\u00b0), which, within the IBJJF context, suggests a strong emphasis on guard retention and creating angles for submission entries rather than a defensive wrestling posture.  His hand-fighting and entries appear to be geared towards disrupting balance and creating opportunities from a deep, leaned-in position, evidenced by the high degree of elbow flexion (129.5\u00b0/116.3\u00b0).  The 63.2% time spent in ground/scramble situations suggests a tactical willingness to engage in"
+    },
+    "cloud_gemini_25_pro": {
+      "model_id": "cloud_gemini_25_pro",
+      "model_name": "Gemini 2.5 Pro Vision",
+      "tier": "Cloud Frontier VLM",
+      "slug": "google/gemini-2.5-pro",
+      "status": "LIVE_OPENROUTER_OK",
+      "latency_sec": 7.34,
+      "analysis": "Based on the provided 3"
+    },
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "ERROR (<urlopen error [Errno 61] Connection ref)",
+      "latency_sec": 15.03,
+      "analysis": "3D Telemetry (IBJJF): Standing 36.8%, Ground 63.2%, Spine Lean 83.8\u00b0."
+    },
+    "cloud_claude_35_sonnet": {
+      "model_id": "cloud_claude_35_sonnet",
+      "model_name": "Claude 3.5 Sonnet Vision",
+      "tier": "Cloud Frontier VLM",
+      "slug": "anthropic/claude-3.5-sonnet",
+      "status": "ERROR (HTTP Error 404: Not Found)",
+      "latency_sec": 15.12,
+      "analysis": "3D Telemetry (IBJJF): Standing 36.8%, Ground 63.2%, Spine Lean 83.8\u00b0."
+    },
+    "cloud_llama_32_90b_vision": {
+      "model_id": "cloud_llama_32_90b_vision",
+      "model_name": "Llama 3.2 90B Vision (NVIDIA/OR)",
+      "tier": "Cloud Teacher VLM",
+      "slug": "meta-llama/llama-3.2-90b-vision-instruct",
+      "status": "ERROR (HTTP Error 404: Not Found)",
+      "latency_sec": 35.46,
+      "analysis": "3D Telemetry (IBJJF): Standing 36.8%, Ground 63.2%, Spine Lean 83.8\u00b0."
+    }
+  }
+}

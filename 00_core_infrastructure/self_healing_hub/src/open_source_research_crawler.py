@@ -12,8 +12,8 @@ import time
 import math
 from typing import Dict, List, Any
 
-RESEARCH_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/crawled_open_source_products.json"
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+RESEARCH_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/crawled_open_source_products.json"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
 os.makedirs(os.path.dirname(RESEARCH_STATE_FILE), exist_ok=True)
 os.makedirs(os.path.dirname(LORA_DATASET_FILE), exist_ok=True)
 

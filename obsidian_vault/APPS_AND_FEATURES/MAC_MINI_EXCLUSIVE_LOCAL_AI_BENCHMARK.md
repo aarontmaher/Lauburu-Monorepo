@@ -25,7 +25,7 @@ The user requested an empirical evaluation (`/goal`) of whether **dedicating the
 2. **Dense 27B vs. MoE 16B Trade-Off:**
    - While `Qwen 3.8 27B` executes successfully at **10.19 tok/s decode**, `DeepSeek-Coder-V2 16B MoE` (9.65 GiB) delivers **93.84 tok/s decode** (9.2x faster) and **821.44 tok/s prefill** (8.8x faster) while leaving 4.8 GB RAM headroom for macOS desktop tasks.
 3. **Large 27B–72B Frontier Inference: DISTRIBUTED TB4 WINS.**
-   - Sharding across the 10Gbps Thunderbolt 4 DMA bridge to the MacBook Pro (L2) pools 40 GB unified memory at **0.277 ms RTT**, maintaining Mac Mini host stability while running 27B–72B models without micro-batch or context restrictions.
+   - Sharding across the 40Gbps Thunderbolt 4 DMA bridge to the MacBook Pro (L2) pools 40 GB unified memory at **0.277 ms RTT**, maintaining Mac Mini host stability while running 27B–72B models without micro-batch or context restrictions.
 
 ---
 

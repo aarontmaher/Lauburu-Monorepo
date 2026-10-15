@@ -4,8 +4,8 @@ import datetime
 import os
 from mitmproxy import http
 
-SITE_OVERRIDES_DIR = '/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/dark_mode/site_overrides'
-INJECTION_LOG = '/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/dark_mode/injection_log.jsonl'
+SITE_OVERRIDES_DIR = '/Volumes/Lauburu-Monorepo/data/dark_mode/site_overrides'
+INJECTION_LOG = '/Volumes/Lauburu-Monorepo/data/dark_mode/injection_log.jsonl'
 WHITELIST = ['localhost', '192.168.', 'canonical_lauburu_symbol', 'lauburu.com']
 
 UNIVERSAL_CSS = """

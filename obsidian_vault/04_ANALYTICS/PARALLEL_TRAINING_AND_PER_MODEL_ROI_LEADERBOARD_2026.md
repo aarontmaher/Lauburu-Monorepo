@@ -16,7 +16,7 @@ tags: [training, roi, parallel, leaderboard, elo, hot_swap, swarm]
 | **#2** | **SmolLM2 1.7B Instruct** | L7 Samsung Galaxy S20+ | 1720.0 | **1925.0** | **+205** | `$7.50` | `72.0 T/S` | **`1874.3 pts`** | ✅ TRAINED_VERIFIED |
 | **#3** | **Qwen 2.5 Coder 1.5B** | L4 Debian Linux Tablet | 1765.0 | **1960.0** | **+195** | `$9.00` | `68.0 T/S` | **`1315.5 pts`** | ✅ TRAINED_VERIFIED |
 | **#4** | **Qwen 2.5 VL 3B Multimodal** | L6 Pixel 10 Pro XL (Edge TPU) | 1820.0 | **1990.0** | **+170** | `$12.00` | `78.0 T/S` | **`600.5 pts`** | ✅ TRAINED_VERIFIED |
-| **#5** | **Qwen 2.5 Coder 3B Instruct** | L5 MacBook Air / L3 Linux Hub | 1850.0 | **2035.0** | **+185** | `$14.50` | `85.0 T/S` | **`542.2 pts`** | ✅ TRAINED_VERIFIED |
+| **#5** | **Qwen 2.5 Coder 3B Instruct** | L2 MacBook Pro / L3 Linux Hub | 1850.0 | **2035.0** | **+185** | `$14.50` | `85.0 T/S` | **`542.2 pts`** | ✅ TRAINED_VERIFIED |
 | **#6** | **Qwen 2.5 Coder 7B Instruct** | L1 Mac Mini Host (Metal GPU) | 1910.0 | **2075.0** | **+165** | `$22.00` | `62.0 T/S` | **`105.7 pts`** | ✅ TRAINED_VERIFIED |
 
 ---

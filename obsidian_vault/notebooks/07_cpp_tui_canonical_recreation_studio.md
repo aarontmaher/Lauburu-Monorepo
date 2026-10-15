@@ -44,7 +44,7 @@ except ImportError:
 from IPython.display import display, HTML, Markdown
 
 # Auto-path resolution across monorepo and teamwork trees
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 for path_str in [str(REPO_ROOT), str(REPO_ROOT / "01_apps"), "/Users/aaron/teamwork_projects"]:
     if os.path.isdir(path_str) and path_str not in sys.path:
         sys.path.insert(0, path_str)
@@ -108,7 +108,7 @@ int main() {
                        })),
                 window(text("L2: MacBook Pro (Metal RPC)"), 
                        vbox({
-                           text("IP: 100.103.212.21 / 10Gbps"),
+                           text("IP: 100.103.212.21 / 40Gbps"),
                            text("VRAM: 16.0 GB (14.0 GB AI Cap)"),
                            text("Role: llama.cpp RPC Host (:50052)")
                        })),
@@ -168,7 +168,7 @@ int main() {
         return vbox({
             text("📈 24/7 CONTINUOUS LORA DISTILLATION LEDGER") | bold | color(Color::GreenLight),
             separator(),
-            text("• Dataset File: /Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl"),
+            text("• Dataset File: /Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl"),
             text("• Verified Instruction Pairs: 70,653 Pairs"),
             text("• Active Loss: 0.0842 | Perplexity: 1.087"),
             text("• Target Weights: Qwen2.5-Coder-32B-Instruct-MLX-LoRA")
@@ -300,7 +300,7 @@ int main() {
             mvprintw(7, 6, "• L1 Mac Mini M4 Pro:   192.168.8.230 | 24.0 GB RAM | 0.27ms RTT (TB4 Bridge)");
             mvprintw(8, 6, "• L2 MacBook Pro:      100.103.212.21 | 16.0 GB RAM | Metal GPU RPC (:50052)");
             mvprintw(9, 6, "• L3 Linux Head Node:  100.101.39.98  | 16.0 GB RAM | Docker Gateway & DHT");
-            mvprintw(10, 6, "• L5 MacBook Air M4:    100.93.158.96  | 16.0 GB RAM | JupyterLab (:8889)");
+            mvprintw(10, 6, "• L5 MacBook Pro (Node L2):    100.93.158.96  | 16.0 GB RAM | JupyterLab (:8889)");
         } else if (current_tab == 1) {
             attron(COLOR_PAIR(4) | A_BOLD);
             mvprintw(5, 4, "💬 REAL-TIME TOKEN CHAT STREAM (:8081 / :8082)");

@@ -26,6 +26,7 @@ The **Omni Terminal & Sovereign Console** has been deployed as a standalone, ins
 │                  and AppleScript TTY session initializer.                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 3. ANDROID APPLICATION (L6 Pixel 10 Pro XL & L7 Samsung S20+)               │
+│    • Native APK: com.lauburu.terminalide (Silent Shizuku UID 2000 install)  │
 │    • Termux CLI: ~/bin/omniterminal                                         │
 │    • Home Icon:  ~/.shortcuts/omniterminal (Termux:Widget one-tap launcher) │
 │    • Web App:    Android Chrome PWA "Add to Home screen" active intent.     │
@@ -63,7 +64,12 @@ The **Omni Terminal & Sovereign Console** has been deployed as a standalone, ins
 
 - **PWA Static Assets**: `index.html`, `manifest.json`, `sw.js`, `xterm.min.js`, `icon-192.png`, `icon-512.png` all returned `HTTP 200 OK`.
 - **PTY WebSocket Bridge**: Bidirectional communication verified over `/ws/terminal` with `OMNITERMINAL_PTY_VERIFIED` echo received.
-- **Android Actuation**: Termux launcher scripts deployed and verified via SSH to `100.84.40.95:8022` and `100.73.38.87:8022`. Intent launched on display.
+- **Android Actuation**: Termux launcher scripts deployed and verified via SSH to `100.78.206.96:8022` and `100.73.38.87:8022`. Intent launched on display.
+- **Android Native APK & Shizuku Verification**:
+  - Package: `com.lauburu.terminalide` installed at `/data/app/~~eGokQFF1471U3QDrhPfQkg==/com.lauburu.terminalide-HrSjFBWpQo-IVImL99JDgg==/base.apk`.
+  - Shizuku Privilege: `uid=2000(shell)` confirmed via `rish`.
+  - Intent Launch: `am start -n com.lauburu.terminalide/.MainActivity` (Exit Code 0).
+  - UI Proof: Screencap verified (`omni_terminal_running.png`, SHA256 `d717ca5b...`).
 - **macOS Bundle**: Valid bundle structure in `/Applications/Omniterminal.app` with `Info.plist` and `AppIcon.icns`.
 
 ---

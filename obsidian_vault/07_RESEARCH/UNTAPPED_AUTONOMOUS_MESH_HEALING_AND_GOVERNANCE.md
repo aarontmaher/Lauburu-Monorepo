@@ -47,7 +47,7 @@ Darwin Mach virtual memory creates contiguous 1GB swapfiles (`/System/Volumes/VM
 
 ---
 
-## 🔄 3. Untapped Method 3: Zero-Copy Shared Memory Ring Buffers over 10Gbps Thunderbolt 4
+## 🔄 3. Untapped Method 3: Zero-Copy Shared Memory Ring Buffers over 40Gbps Thunderbolt 4
 
 ### The Problem
 Transferring inference tensors between the host Mac Mini (L1) and MacBook Pro (L2) over standard HTTP/TCP sockets introduces TCP stack overhead, serialization latency, and socket buffer copies.

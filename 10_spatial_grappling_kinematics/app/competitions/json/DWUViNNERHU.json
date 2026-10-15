@@ -1,0 +1,37 @@
+{
+  "video_id": "DWUViNNERHU",
+  "url": "https://youtu.be/DWUViNNERHU",
+  "division": "Other Competitions",
+  "title": "Aaron Maher (AUS) vs Douglas Dutra (BZL)",
+  "duration_sec": 214.1,
+  "resolution": "144x256",
+  "sampled_frames": 36,
+  "poses_detected_frames": 26,
+  "dual_athlete_frames": 1,
+  "standing_phase_pct": 30.8,
+  "ground_scramble_phase_pct": 69.2,
+  "level_change_shots_detected": 4,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 71.2,
+    "left_elbow": 143.2,
+    "right_elbow": 135.4,
+    "left_hip": 117.8,
+    "right_hip": 116.5,
+    "left_knee": 120.1,
+    "right_knee": 119.7
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/DWUViNNERHU_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match is characterized by a strong standing position with a high level of stability, followed by a significant ground/scrabble phase where he demonstrates a high level of agility and power, with a notable level change shot that showcases his ability to adapt to different conditions. His mean spine lean is also noteworthy, indicating a strong balance and stability in his spine. The elbow flexion and knee flexion are also crucial for Maher's ability to execute his moves effectively.",
+  "processing_sec": 5.16,
+  "vision_model_opinions": {
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "READY_BATCH",
+      "latency_sec": 0.8,
+      "analysis": "Aaron Maher's grappling in this match is characterized by a strong standing position with a high level of stability, followed by a significant ground/scrabble phase where he demonstrates a high level of agility and power, with a notable level change shot that showcases his ability to adapt to different conditions. His mean spine lean is also noteworthy, indicating a strong balance and stability in his spine. The elbow flexion and knee flexion are also crucial for Maher's ability to execute his moves effectively."
+    }
+  }
+}

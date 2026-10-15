@@ -1,0 +1,8 @@
+{
+  "total_speculative_runs": 9,
+  "total_tokens_saved_pruning": 24,
+  "total_speculative_tokens_accepted": 36,
+  "average_ttft_speedup_x": 3.1,
+  "average_acceptance_rate": 0.812,
+  "last_accelerated_run": 1790830667.861254
+}

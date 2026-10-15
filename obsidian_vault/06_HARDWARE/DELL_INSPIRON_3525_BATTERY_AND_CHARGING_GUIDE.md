@@ -8,8 +8,8 @@ author: "Aaron Maher & Antigravity Sovereign Orchestrator"
 # 💻 Dell Inspiron 15 3525: Battery & Power Specification Guide
 
 > **Target Device Identified:** **Dell Inspiron 15 3525**  
-> **Processor:** AMD Ryzen 7 5700U (8 Cores / 16 Threads, 1.8 GHz Base / 4.3 GHz Boost)  
-> **Mesh Role:** Layer 3 (`Linux_Head_Node`) — Host IP: `192.168.8.224`, Tailscale IP: `100.101.39.98`.
+> **Processor:** Intel 2018 Mac Mini (Linux) (8 Cores / 16 Threads, 1.8 GHz Base / 4.3 GHz Boost)  
+> **Mesh Role:** Layer 3 (`Linux_Mini`) — Host IP: `192.168.8.224`, Tailscale IP: `100.101.39.98`.
 
 ---
 
@@ -50,7 +50,7 @@ The Inspiron 15 3525 supports two internal smart lithium-ion battery formats:
 ### Option 1: Genuine Dell 65W OEM Replacement Adapter (BEST VALUE & SAFEST)
 * **Part Numbers:** Dell **`MGJN9`**, **`492-BBTV`**, `G6J41`, `HA65NS5-00`, `DA65NM170`, `LA65NM170` (Note: older `HA65NM130`/`DA65NM130` are 7.4mm large barrel tips—avoid those!).
 * **Price:** **$25.30 – $51.34 AUD** directly from Dell Australia Store or EMPR Australia (includes GST & delivery).
-* **Why it's superior:** 100% genuine Dallas DS2501 EEPROM center pin. Guarantees zero `BD_PROCHOT` throttling and runs the AMD Ryzen 7 5700U at full 4.3 GHz turbo.
+* **Why it's superior:** 100% genuine Dallas DS2501 EEPROM center pin. Guarantees zero `BD_PROCHOT` throttling and runs the Intel 2018 Mac Mini (Linux) at full 4.3 GHz turbo.
 
 ### Option 2: The Ultra-Low-Cost USB-C PD Trigger Route (~$12 AUD)
 If you already own a 65W or 100W USB-C PD wall charger (or MacBook charger):
@@ -71,7 +71,7 @@ If you already own a 65W or 100W USB-C PD wall charger (or MacBook charger):
 Dell laptops incorporate a proprietary 1-wire EEPROM identification protocol (Dallas DS2501) on the center pin of the 4.5mm barrel plug:
 - If an uncertified generic adapter without the center pin is used, the Dell BIOS triggers `BD_PROCHOT` (Bi-Directional Processor Hot):
   `"Alert! The AC power adapter wattage and type cannot be determined. The battery may not charge."`
-- The BIOS forcibly **throttles the AMD Ryzen 7 5700U CPU clock to 400 MHz (0.4 GHz)**, crippling AI inference, Docker builds, and network throughput!
+- The BIOS forcibly **throttles the Intel 2018 Mac Mini (Linux) CPU clock to 400 MHz (0.4 GHz)**, crippling AI inference, Docker builds, and network throughput!
 
 ### Open-Source Diagnosis & Diagnostics (`/open-source-software-scout`):
 On Linux, verify if the CPU is throttled:
@@ -82,7 +82,7 @@ cat /proc/cpuinfo | grep 'cpu MHz'
 # Check kernel thermal/power alerts
 dmesg | grep -i 'thermal\|throttling\|prochot'
 
-# Inspect power/thermal limits via open-source RyzenAdj (GitHub: FlyGoat/RyzenAdj)
+# Inspect power/thermal limits via open-source Intel 2018 Mac MiniAdj (GitHub: FlyGoat/Intel 2018 Mac MiniAdj)
 sudo ryzenadj -i
 ```
-- **Rule:** Always use either a Dell OEM adapter (`MGJN9`), a certified universal adapter (Targus with Tip 3P), or a PD trigger cable with the embedded Dell ID circuit to ensure the Ryzen 5700U runs at full 1.8–4.3 GHz.
+- **Rule:** Always use either a Dell OEM adapter (`MGJN9`), a certified universal adapter (Targus with Tip 3P), or a PD trigger cable with the embedded Dell ID circuit to ensure the Intel 2018 Mac Mini 5700U runs at full 1.8–4.3 GHz.

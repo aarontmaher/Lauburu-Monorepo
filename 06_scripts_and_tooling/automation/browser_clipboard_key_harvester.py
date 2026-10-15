@@ -17,7 +17,7 @@ import subprocess
 import urllib.request
 from pathlib import Path
 
-ENV_FILE = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.env")
+ENV_FILE = Path("/Volumes/Lauburu-Monorepo/.env")
 
 def get_clipboard() -> str:
     try:

@@ -38,7 +38,7 @@ date: "2026-09-03"
 │                                   │ Direct Tensor RPC / Biometrics Stream   │
 │ 🖥️ PHYSICAL CORE MESH (mac-mini, mac-pro, linux, gl-router)                 │
 │    • Engine: Tailscale System Daemon (`tailscaled`)                         │
-│    • Capabilities: Subnet Routing (192.168.8.0/24), 10Gbps TB4 DMA, BLE DSP │
+│    • Capabilities: Subnet Routing (192.168.8.0/24), 40Gbps TB4 DMA, BLE DSP │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

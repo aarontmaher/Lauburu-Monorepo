@@ -31,7 +31,7 @@ tags: [ai_debate, edge_ai, qwen_3b_moe, prima_cpp, speculative_decoding, custome
 
 ## 🗣️ Deliberative Perspectives & Architectural Arguments
 
-### 1. 🤖 Local Orchestrator (Qwen 3.8 Max & Coder 32B / 10Gbps TB4 Bridge)
+### 1. 🤖 Local Orchestrator (Qwen 3.8 Max & Coder 32B / 40Gbps TB4 Bridge)
 *Native Mesh Topology & Low-Level Hardware Governor*  
 This proposal represents the **optimal harmonic balance** between edge sovereignty and distributed cluster horsepower:
 - **The Physics of 3B MoE on the Edge:** A dense 3B model requires 3 billion FLOPs per token and ~1.8 GB VRAM. However, a **3B Mixture-of-Experts (MoE)** model (e.g. 8 routed experts with top-2 activation) only activates $\sim 0.8\text{B}$ parameters per forward pass! On an iPhone (Apple Neural Engine), Mac (Metal MPS), Pixel 10 (Tensor G5 Edge TPU), or Samsung S20 (Exynos NPU), an activated footprint of 0.8B achieves **85–125 tokens/second** at under 1.5 Watts of power.
@@ -53,7 +53,7 @@ Let $M_{\text{edge}}$ be the local 3B MoE model ($|\theta_{\text{active}}| = 0.8
    $$P_{\text{draft}} = \prod_{k=1}^K M_{\text{edge}}(x_{t+k} \mid x_{<t+k})$$
    $M_{\text{edge}}$ generates $K=5$ draft tokens locally at $110\text{ tok/s}$ ($\Delta t \approx 45\text{ms}$).
 2. **Parallel Pipelined Ring Verification ($\text{PRP}$):**
-   The `prima.cpp` edge daemon streams the draft sequence $[x_{t+1}, \dots, x_{t+5}]$ across the 10Gbps TB4 DMA bridge to the $M_{\text{mesh}}$ ring. $M_{\text{mesh}}$ verifies all 5 tokens in a **single forward pass** ($\Delta t_{\text{verify}} \approx 28\text{ms}$):
+   The `prima.cpp` edge daemon streams the draft sequence $[x_{t+1}, \dots, x_{t+5}]$ across the 40Gbps TB4 DMA bridge to the $M_{\text{mesh}}$ ring. $M_{\text{mesh}}$ verifies all 5 tokens in a **single forward pass** ($\Delta t_{\text{verify}} \approx 28\text{ms}$):
    $$\alpha = \min\left(1, \frac{P_{\text{mesh}}(x_{t+k} \mid x_{<t+k})}{P_{\text{draft}}(x_{t+k} \mid x_{<t+k})}\right)$$
 3. **Effective Speedup Multiplier ($\mathcal{S}$):**
    With an acceptance rate $\mathbb{E}[\alpha] \approx 0.78$, the effective token generation rate becomes:
@@ -127,13 +127,13 @@ The panel has reached complete, unyielding alignment:
 │ • Offline Autonomy:    100% Standalone (Offline Chat, Local Voice, Privacy) │
 └──────────────────────────────────────┬──────────────────────────────────────┘
                                        │ 
-                                       │ 10Gbps TB4 DMA / Wi-Fi 7 / Tailscale
+                                       │ 40Gbps TB4 DMA / Wi-Fi 7 / Tailscale
                                        ▼ (Sub-150ms Speculative Fallback Gate)
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                 SPHERE 2: AARON'S 7-LAYER PHYSICAL MESH CLUSTER             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ • Physical Infrastructure: 108.0 GB RAM / 82.8 GB Pooled Usable AI VRAM    │
-│ • Interconnect:            10Gbps Thunderbolt 4 DMA Bridge (0.277ms RTT)    │
+│ • Interconnect:            40Gbps Thunderbolt 4 DMA Bridge (0.277ms RTT)    │
 │ • Models Supported:        Qwen 32B, DeepSeek-R1 32B, Qwen 80B MoE, 70B MTP │
 │ • Role Mandate:            Heavy AST Compilation, Reverse Engineering CTF, │
 │                            LoRA Fine-Tuning, Pipelined Ring Parallelism     │

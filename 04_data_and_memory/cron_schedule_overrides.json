@@ -1,0 +1,24 @@
+{
+  "timestamp_utc": "2026-09-20T16:07:36Z",
+  "computed_by": "roi_adaptive_cron_governor",
+  "active_roi": 99.9,
+  "active_model": "SmolLM2 135M Router SLM",
+  "active_task": "openwrt_nftables_packet_defense",
+  "disk_free_gb": 25.89,
+  "ram_free_gb": 5.79,
+  "quota_utilization": 0.0028,
+  "quota_used": 21,
+  "quota_cap": 7500,
+  "paid_providers_active": [],
+  "intervals": {
+    "run_continuous_free_tier_trainer": 300,
+    "master_free_tier_ai_maximizer": 100,
+    "lens_continuous_training_daemon": 75,
+    "continuous_overnight_ecommerce_trainer": 300,
+    "mcts_lora_harvester": 150,
+    "lens_247_auditor_training": 75
+  },
+  "dataset_write_limit_per_source": 3000,
+  "disk_brake_active": false,
+  "ram_brake_active": true
+}

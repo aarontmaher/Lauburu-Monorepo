@@ -1,0 +1,56 @@
+{
+  "status": "CONTINUOUS_CLOUD_TEACHER_DISTILLATION_ACTIVE",
+  "total_distilled_samples": 26254,
+  "last_teacher_used": "Qwen 3.8 Max Sovereign Master (:8082)",
+  "last_updated": "2026-09-10T04:53:43.752499+00:00",
+  "curriculums": [
+    {
+      "target_model_id": "smollm2_360m_s20",
+      "target_model": "SmolLM2 360M Instruct (L7 Samsung S20+)",
+      "hardware_layer": "Layer 7 Worker (Samsung Exynos 990 / 12GB RAM)",
+      "generation_tier": 5,
+      "base_elo": 1540.0,
+      "current_elo": 2416.75,
+      "target_elo": 2120.0,
+      "elo_gain": 876.75,
+      "progress_pct": 87.1,
+      "weak_domain": "android_ui_testing_and_accessibility"
+    },
+    {
+      "target_model_id": "qwen25_05b_router",
+      "target_model": "Qwen 2.5 0.5B Router SLM (GW GL.iNet Router)",
+      "hardware_layer": "Gateway Node (GL-MT3600BE MediaTek Filogic)",
+      "generation_tier": 8,
+      "base_elo": 1590.0,
+      "current_elo": 2383.0,
+      "target_elo": 2390.0,
+      "elo_gain": 793.0,
+      "progress_pct": 93.0,
+      "weak_domain": "openwrt_nftables_and_wireguard_routing"
+    },
+    {
+      "target_model_id": "deepseek_r1_15b_tablet",
+      "target_model": "DeepSeek R1 Distill 1.5B (L4 Debian Tablet)",
+      "hardware_layer": "Layer 4 Edge SLM (Debian Linux Tablet / 8GB RAM)",
+      "generation_tier": 10,
+      "base_elo": 1680.0,
+      "current_elo": 2458.0,
+      "target_elo": 2665.0,
+      "elo_gain": 778.0,
+      "progress_pct": 15.3,
+      "weak_domain": "biometric_dsp_and_touch_telemetry"
+    },
+    {
+      "target_model_id": "smollm2_135m_mac",
+      "target_model": "SmolLM2 135M Host Sentinel (L1 Mac Mini)",
+      "hardware_layer": "Layer 1 Primary Host (Apple M4 Pro Mac Mini / 24GB)",
+      "generation_tier": 6,
+      "base_elo": 1480.0,
+      "current_elo": 2313.0,
+      "target_elo": 2120.0,
+      "elo_gain": 833.0,
+      "progress_pct": 95.0,
+      "weak_domain": "darwin_mach_memory_governance"
+    }
+  ]
+}

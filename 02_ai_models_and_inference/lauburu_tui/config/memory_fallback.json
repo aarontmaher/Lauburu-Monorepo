@@ -1,0 +1,95 @@
+{
+  "last_updated": "2026-08-31T22:27:25Z",
+  "lora_job": {
+    "active_model": "Qwen-AgentWorld-35B-LoRA",
+    "teacher_model": "Gemini 3.7 Flash CoT Distillation",
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "target_modules": "q_proj, v_proj, k_proj, o_proj",
+    "current_step": 7000,
+    "total_steps": 5000,
+    "current_epoch": 15,
+    "total_epochs": 3,
+    "current_loss": 0.4265,
+    "loss_history": [
+      2.41,
+      2.15,
+      1.89,
+      1.48,
+      0.4265
+    ],
+    "throughput_samples_sec": 18.4,
+    "throughput_tokens_sec": 1250.0,
+    "dataset_pairs_count": 9575,
+    "gdrive_sync_status": "Synced (Fallback Ready)"
+  },
+  "ram_governor": {
+    "tier": "EmergencyPause",
+    "host_ram_free_pct": 15.0,
+    "host_ram_free_gb": 3.59,
+    "dynamic_ai_cap_gb": 21.6,
+    "headroom_gb": 3.2,
+    "is_safe": true
+  },
+  "benchmark_rows": [
+    {
+      "model_name": "Qwen 3.8 Max Flagship",
+      "architecture": "llama.cpp 72B MXFP4",
+      "elo_score": 1940,
+      "win_loss_draw": [
+        14,
+        1,
+        0
+      ],
+      "truth_audit_pct": 100.0,
+      "promotion_verdict": "PROMOTED_PRIMARY"
+    },
+    {
+      "model_name": "Qwen 3.8 Math Governor",
+      "architecture": "llama.cpp 72B IQ2_XXS",
+      "elo_score": 1885,
+      "win_loss_draw": [
+        11,
+        3,
+        1
+      ],
+      "truth_audit_pct": 100.0,
+      "promotion_verdict": "PROMOTED_SPECIALIST"
+    },
+    {
+      "model_name": "Qwen 2.5 Coder 7B",
+      "architecture": "MLX QLoRA Metal",
+      "elo_score": 1820,
+      "win_loss_draw": [
+        8,
+        5,
+        2
+      ],
+      "truth_audit_pct": 100.0,
+      "promotion_verdict": "TRAINING_ACTIVE"
+    }
+  ],
+  "npu_grants": [
+    {
+      "node_name": "Mac_Node",
+      "layer": "L1",
+      "promoted_feature": "Apple Neural Engine (ANE)",
+      "grant_date": "2026-08-31",
+      "priority_multiplier": 1.5,
+      "token_credits": 820000,
+      "execution_target": "Continuous AST Parser",
+      "grant_status": "ACTIVE_GRANT"
+    },
+    {
+      "node_name": "Pixel_10_Pro_XL",
+      "layer": "L6",
+      "promoted_feature": "Google Tensor G5 TPU (1.2W)",
+      "grant_date": "2026-08-31",
+      "priority_multiplier": 2.0,
+      "token_credits": 450000,
+      "execution_target": "Pan-Tompkins DSP Kernel",
+      "grant_status": "ACTIVE_GRANT"
+    }
+  ],
+  "is_paused": true
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>ai.lauburu.seaweedfs-vol1</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>sh</string>
+        <string>-c</string>
+        <string>mkdir -p $HOME/seaweedfs_volume_data &amp;&amp; /Users/aaron/.local/bin/weed volume -mserver=100.101.39.98:9333 -dir=$HOME/seaweedfs_volume_data -port=8085 -max=40 -rack=always_on_mac -ip=100.119.199.76</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/seaweedfs-volume.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/seaweedfs-volume.err</string>
+</dict>
+</plist>

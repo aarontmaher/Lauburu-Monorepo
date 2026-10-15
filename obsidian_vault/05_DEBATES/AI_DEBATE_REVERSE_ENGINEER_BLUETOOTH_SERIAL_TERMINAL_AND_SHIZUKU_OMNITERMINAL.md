@@ -92,7 +92,7 @@ The user specifically asked: *"did the lens integration bring shiziku and all ot
 **The Empirical Truth:**
 - **Shizuku was completely omitted from `unified_resilient_serial_terminal_ide`.**
 - Searching the project revealed 0 occurrences of `shizuku` or `rish`.
-- Omniterminal was relying exclusively on standard network ADB (`adb -s 100.84.40.95:5555 shell`), which requires a tethered computer or active network ADB pairing.
+- Omniterminal was relying exclusively on standard network ADB (`adb -s 100.78.206.96:5555 shell`), which requires a tethered computer or active network ADB pairing.
 - **Why this mattered:** If Wi-Fi dropped, Omniterminal lost all privileged Android control because it lacked Shizuku's on-device Binder token!
 
 ### 2.2 What Screen Lens Actually Brought In
@@ -113,7 +113,7 @@ To resolve the Shizuku gap, we implemented and validated:
 
 1. **`src/sentinel/shizuku_bridge.py`:**
    - Direct execution via `rish -c '<cmd>'` with authentic `uid=2000` / `uid=0` verification.
-   - Clean secondary fallback to TCP ADB (`100.84.40.95:5555`).
+   - Clean secondary fallback to TCP ADB (`100.78.206.96:5555`).
    - Zero-mock compliance: authentic subprocess execution and real error codes.
 2. **High-ROI Android Self-Healing via Shizuku:**
    - `whitelist_doze(package_name="com.termux")`: Executes `dumpsys deviceidle whitelist +<pkg>`.

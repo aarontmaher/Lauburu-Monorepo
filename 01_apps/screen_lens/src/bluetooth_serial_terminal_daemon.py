@@ -1,0 +1,1 @@
+../../../06_scripts_and_tooling/bluetooth_serial_terminal_daemon.py

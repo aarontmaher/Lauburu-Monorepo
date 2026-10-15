@@ -1,0 +1,26 @@
+{
+  "video_id": "dKuujzSo7LQ",
+  "url": "https://youtu.be/dKuujzSo7LQ",
+  "division": "ADCC",
+  "title": "Adcc sydney - Aaron Maher vs Joseph Larcinese",
+  "duration_sec": 372.3,
+  "resolution": "144x256",
+  "sampled_frames": 36,
+  "poses_detected_frames": 19,
+  "dual_athlete_frames": 5,
+  "standing_phase_pct": 5.3,
+  "ground_scramble_phase_pct": 94.7,
+  "level_change_shots_detected": 0,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 62.5,
+    "left_elbow": 137.0,
+    "right_elbow": 132.6,
+    "left_hip": 142.4,
+    "right_hip": 142.6,
+    "left_knee": 141.5,
+    "right_knee": 139.8
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/dKuujzSo7LQ_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match showcases strong balance, precise movements, and effective use of the spine and elbow for stability.",
+  "processing_sec": 1.86
+}

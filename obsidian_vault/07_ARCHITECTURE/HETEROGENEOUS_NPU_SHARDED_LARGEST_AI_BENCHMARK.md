@@ -17,7 +17,7 @@ pooled_npu_tops: 100.0
 
 ## 🏆 1. The Largest Possible Local AI Models in the Fleet
 
-Audit of local model vaults ([`model_vault_gguf/`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/)) identified the following candidate frontier models:
+Audit of local model vaults ([`model_vault_gguf/`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/)) identified the following candidate frontier models:
 
 | Model Identity | Parameters | GGUF Footprint | Layers | Quantization | Single-Node Mac Mini Status | Multi-Node Sharded Status |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -67,7 +67,7 @@ We combine **Multi-Node Tensor Sharding** with the mesh's **100.0 TOPS NPU Fleet
 │    • Generates K=6 to K=8 candidate token trees at >1,400 tok/s on on-chip SRAM        │
 │    • Verified via GrammarGuard-5M (0.15ms GBNF / AST bitmask filter)                  │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ 2. NETWORK INTERCONNECT (10Gbps Thunderbolt 4 DMA / 1GbE / Tailscale WireGuard)        │
+│ 2. NETWORK INTERCONNECT (40Gbps Thunderbolt 4 DMA / 1GbE / Tailscale WireGuard)        │
 │    • Transmits draft tree candidates [K=8 tokens] in a SINGLE activation burst         │
 │    • Eliminates 8x round-trip network hops down to 1 single network handshake          │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
@@ -83,7 +83,7 @@ We combine **Multi-Node Tensor Sharding** with the mesh's **100.0 TOPS NPU Fleet
 
 ## 📊 4. Physical Layer Allocation Plans for the Largest Models
 
-Calculated via [`tb4_prp_sharding_coordinator.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/tb4_prp_sharding_coordinator.py):
+Calculated via [`tb4_prp_sharding_coordinator.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/tb4_prp_sharding_coordinator.py):
 
 ### Plan A: Qwen 72B (`Qwen2.5-Math-72B-Instruct-IQ2_XXS.gguf` - 24.8 GB)
 - **Active Cluster Physical RAM:** 32.0 GB (L2 + L3) + 24.0 GB Host
@@ -133,8 +133,8 @@ To launch the largest possible local AI (**72B**) sharded across the mesh with h
 
 ```bash
 /Users/aaron/.local/bin/llama-cli \
-  -m /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Qwen2.5-Math-72B-Instruct-IQ2_XXS.gguf \
-  -md /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen2.5-0.5b-instruct-q4_k_m.gguf \
+  -m /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Qwen2.5-Math-72B-Instruct-IQ2_XXS.gguf \
+  -md /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen2.5-0.5b-instruct-q4_k_m.gguf \
   --spec-draft-n-max 6 \
   --spec-draft-ngl 99 \
   --rpc 100.103.212.21:50052,100.101.39.98:50052 \

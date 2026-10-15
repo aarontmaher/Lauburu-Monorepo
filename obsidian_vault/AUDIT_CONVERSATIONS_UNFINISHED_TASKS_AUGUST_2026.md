@@ -81,6 +81,6 @@ flowchart TD
 
 ## 🏛️ 4. Tri-Vault Storage Synchronization Status
 
-- [x] **Obsidian Vault**: Saved to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/AUDIT_CONVERSATIONS_UNFINISHED_TASKS_AUGUST_2026.md`
-- [x] **PySpark Data Lake / LoRA Datasets**: 75 instruction pairs saved to `/Users/aaron/DFS_UNIFIED/lora_datasets/conversation_audit_backlog.jsonl`
-- [x] **GitHub Monorepo Documentation**: Preserved in `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/07_docs_and_architecture/`
+- [x] **Obsidian Vault**: Saved to `/Volumes/Lauburu-Monorepo/obsidian_vault/AUDIT_CONVERSATIONS_UNFINISHED_TASKS_AUGUST_2026.md`
+- [x] **PySpark Data Lake / LoRA Datasets**: 75 instruction pairs saved to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/conversation_audit_backlog.jsonl`
+- [x] **GitHub Monorepo Documentation**: Preserved in `/Volumes/Lauburu-Monorepo/07_docs_and_architecture/`

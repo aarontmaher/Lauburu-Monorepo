@@ -12,7 +12,7 @@ export function ThermalGovernorCard({ nodes = [] }) {
   const temps = onlineNodes.map(n => n.tempC);
   const avgTemp = temps.length > 0 ? +(temps.reduce((a, b) => a + b, 0) / temps.length).toFixed(1) : 43.4;
   const maxTemp = temps.length > 0 ? Math.max(...temps) : 51.2;
-  const maxNode = onlineNodes.find(n => n.tempC === maxTemp) || { name: 'Linux_Head_Node' };
+  const maxNode = onlineNodes.find(n => n.tempC === maxTemp) || { name: 'Linux_Mini' };
 
   return (
     <div className="cyber-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>

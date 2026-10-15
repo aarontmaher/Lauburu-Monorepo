@@ -19,7 +19,7 @@ tags: [business, commerce, shopify, graphql, subscriptions, lora_research, unit_
 
 The **Lauburu Mesh Ecosystem** represents an unprecedented convergence of medical-grade sports biometrics, 3D biomechanical kinematics, and sovereign edge AI. Unlike conventional AI software startups burdened by ballooning cloud inference bills (paying OpenAI, Anthropic, or AWS $0.03 to $0.12 per minute of compute), the Lauburu Monorepo operates a **$0 Recurring Cloud Infrastructure Model**.
 
-By pooling **108.0 GB RAM (82.8 GB usable AI VRAM)** across a 7-layer physical hardware mesh interconnected via high-speed Thunderbolt 4 DMA (0.277 ms RTT), Wi-Fi 7, and Tailscale WireGuard, all heavy generative reasoning, 3D joint kinematics, and 512Hz ECG DSP are executed 100% on-premise on sovereign silicon (Apple Silicon M4 Pro/Air, AMD Ryzen 7, Google Tensor G5).
+By pooling **139.0 GB RAM (108.4 GB usable AI VRAM)** across an 8-node physical hardware mesh interconnected via high-speed Thunderbolt 4 DMA to L8 `lauburu` (0.38 ms RTT), switched LAN, Wi-Fi 7, and Tailscale WireGuard, all heavy generative reasoning, 3D joint kinematics, and 512Hz ECG DSP are executed 100% on-premise on sovereign silicon (Apple Silicon M4 Pro/Air, AMD Ryzen 7 5700U, Intel Core i7, Google Tensor G5).
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────┐
@@ -104,7 +104,7 @@ The commerce and membership infrastructure decouples presentation surfaces from 
 | **Biometrics Ingestion** | 128Hz Basic Heart Rate | 512Hz Pan-Tompkins ECG | Full 512Hz ECG + PTT Blood Pressure | Multi-Athlete 512Hz ECG Sync |
 | **Cardiovascular Engine** | Standard HR zone estimation | Basic Zone 2 alerts | Continuous DFA-alpha1 LT1/LT2 | Real-Time Squad Aerobic Corridors |
 | **3D Combat Kinematics** | Read-only static guide | Read-only technique viewer | Interactive 3D 3,044 OPML Kinematics | Multi-Fighter Joint Torque Models |
-| **Distributed AI Compute** | Edge 3B local model | Local Metal GPU acceleration | 10Gbps TB4 DMA 70B MoE Sharding | Dedicated Metal GPU Priority + Co-pilot |
+| **Distributed AI Compute** | Edge 3B local model | Local Metal GPU acceleration | 40Gbps TB4 DMA 70B MoE Sharding | Dedicated Metal GPU Priority + Co-pilot |
 | **LoRA Distillation Sync** | None (Prompts harvested) | Monthly model updates | Nightly LoRA export & sync | 24/7 Continuous LoRA Distillation |
 | **Hardware Bundle Discount**| 0% | 5% discount | 15% discount ($211.65 AUD) | 30% discount ($174.30 AUD) |
 | **Monetization Engine** | Data Harvesting Protocol | Recurring Stripe / Shopify | High-Margin SaaS ($24.83 profit/mo)| High-ARR Enterprise SLA |
@@ -124,7 +124,7 @@ To eliminate onboarding friction and ensure zero-mock clinical data acquisition,
   2. *GL.iNet GL-MT3600BE (Beryl 7)*:
      Wi-Fi 7 OpenWrt travel router pre-configured with the Lauburu Sentinel daemon and hardware USB ADB bridge. Wholesale unit cost: **$85.00 AUD**.
   3. *Thunderbolt 4 Active DMA Cable*:
-     10Gbps braided active cable supporting sub-millisecond inter-node memory sharding. Unit cost: **$22.00 AUD**.
+     40Gbps braided active cable supporting sub-millisecond inter-node memory sharding. Unit cost: **$22.00 AUD**.
   4. *Accessories & Custom Packaging*:
      Custom neoprene chest strap, USB-C ADB airgap resurrection dongle, and custom rugged carry case. Unit cost: **$18.00 AUD**.
   - **Total Hardware COGS**: **$235.00 AUD**.
@@ -161,7 +161,7 @@ Derived directly from `08_business_and_commerce/shopify_headless/services/comput
 
 - **Physical Mesh Power Consumption**:
   - Mac Mini M4 Pro (Host Memory Governor): **75.0 W**
-  - MacBook Pro M4 (L2 RPC Metal Vault): **90.0 W**
+  - Intel MacBook Pro (L2 RPC Metal Vault): **90.0 W**
   - Linux Head Node (L3 Ray/Docker Hub): **65.0 W**
   - Network Switch / Router Overhead: **40.0 W**
   - **Total 7-Layer Mesh Power Draw**: **270.0 W = 0.270 kW**.
@@ -237,7 +237,7 @@ To navigate the strict anti-steering and monetization mandates imposed by Apple 
         "basic_telemetry",
         "local_ai_inference",
         "movesense_512hz_raw",
-        "tb4_10gbps_sharding",
+        "tb4_40Gbps_sharding",
         "ai_coach",
         "spatial_grappling_3d",
         "lora_export"
@@ -262,7 +262,7 @@ The business model uniquely leverages free and lower-tier usage to continuously 
 - **Free Tier Harvesting Protocol (`shopify_saas_monetization.py`)**:
   Athletes and developers utilizing the Free Tier ($0/mo) contribute anonymized prompt-completion pairs and biometric training logs. These are streamed directly into `free_tier_harvest.jsonl`, generating continuous fine-tuning data that offsets the free service.
 - **The 24/7 Continuous LoRA Dataset**:
-  - Path: `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`
+  - Path: `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`
   - Current File Size: **161,465,562 bytes (153.99 MB)**
   - Active Line Count: **76,467 lines**
   - Validated DPO Preference Pairs (`prompt`, `chosen`, `rejected`): **27,688 pairs** across 67 distinct schemas.
@@ -273,7 +273,7 @@ The business model uniquely leverages free and lower-tier usage to continuously 
     - Active Memory: **8.49 GB** | Wired Memory: **3.33 GB**
     - Available Headroom (Free + Inactive + Purgeable): **8.55 GB**
     - Host Memory Utilization: **49.25%** (well below the 90.0% cap).
-  - Background protection by `HostRAMEvacuationDaemon` ensures that continuous LoRA harvesting never threatens host memory stability, offloading excess tensor weight buffers via 10Gbps TB4 DMA to Layer 2 (`MacBook_Pro`).
+  - Background protection by `HostRAMEvacuationDaemon` ensures that continuous LoRA harvesting never threatens host memory stability, offloading excess tensor weight buffers via 40Gbps TB4 DMA to Layer 2 (`MacBook_Pro`).
 
 ---
 
@@ -328,14 +328,14 @@ The business model uniquely leverages free and lower-tier usage to continuously 
 All economic constants, token signing algorithms, rate limiting boundaries, and dataset schemas were verified directly against executable monorepo implementations:
 
 1. **Shopify Storefront Gateway Self-Test**:
-   - Command: `python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/commerce/shopify_storefront_gateway.py`
+   - Command: `python3 /Volumes/Lauburu-Monorepo/01_apps/commerce/shopify_storefront_gateway.py`
    - Exit Code: **0**
    - Output: Token issuance, HMAC verification, GraphQL depth sanitization, and sliding window rate limiting passed with zero errors.
 2. **Compute Offset Calculator Verification**:
    - Power consumption (270.0 W), electricity rate ($0.25 AUD/kWh), and 70.0% target gross margin verified in `08_business_and_commerce/shopify_headless/services/compute_offset.py`.
    - Task compute cost calculated as $0.020844 AUD for 45s heavy MoE inference; Pro tier compute cost confirmed at $4.17 AUD/mo (85.62% gross margin).
 3. **Continuous LoRA Dataset Integrity**:
-   - Location: `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`
+   - Location: `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`
    - Verified Line Count: **76,467 lines** (153.99 MB).
    - Validated DPO Preference Pairs: **27,688 pairs** containing explicit `chosen`, `rejected`, and `prompt` keys.
 4. **Host RAM Sanctuary Validation**:

@@ -10,18 +10,19 @@ updated: "2026-09-05"
 The **Mesh Universal Remote HID Controller** turns your **Samsung Galaxy S20** and **Pixel 10 Pro XL** into a headless multi-touch trackpad, optional keyboard, and screenview monitor across all 7 layers of the physical mesh.
 
 ## 🌐 Quick Access URLs
-- **Local Mesh (Wi-Fi):** `http://192.168.8.155:4006`
+- **Local Mesh (Wi-Fi):** `http://192.168.8.230:4006`
 - **Global Zero-Trust (Tailscale):** `http://100.119.199.76:4006`
 
 ## 🕹️ Supported Multi-Node Routing Across 7 Layers
 1. **L1: Mac Mini M4 Pro (Host):** Native CoreGraphics Ctypes (`<1ms` latency, zero external pip dependencies).
-2. **L2: MacBook Pro M1 Max:** Remote SSH AppleScript & CoreGraphics injection via 10Gbps TB4 bridge.
-3. **L3: Linux Head Node (Ryzen 7):** Remote terminal execution & Docker compute gateway.
-4. **L4: Linux Tablet (Debian):** Mobile touch DSP console.
+2. **L2: MacBook Pro (Intel Core i7):** Remote SSH AppleScript & CoreGraphics injection (Teacher Model automation target over LAN/Tailscale).
+3. **L3: Linux Head Node (AMD Ryzen 7 5700U):** Remote terminal execution & Docker compute gateway.
+4. **L4: Linux Tablet (Debian):** Mobile touch DSP console (Port 2 Router).
 5. **L5: MacBook Air M4:** Remote SSH AppleScript & CoreGraphics injection.
 6. **L6: Pixel 10 Pro XL:** Termux SSH daemon (Port 8022) & Edge TPU sensor telemetry.
-7. **GW: GL.iNet Router:** OpenWrt UCI/terminal administration & USB ADB bridge.
-8. **L7: Samsung S20:** Triple-redundant ADB input injection (Local Wi-Fi, Tailscale, Router USB).
+7. **L7: Samsung S20:** Triple-redundant ADB input injection (Local Wi-Fi, Tailscale, Router USB).
+8. **L8: Linux Mini (`lauburu`):** Remote terminal & compute hub via 40Gbps TB4 bridge (`10.0.0.8`).
+9. **GW: GL.iNet Router (GL-BE14000):** OpenWrt UCI/terminal administration & USB ADB bridge.
 
 ## 📲 Native App Installation Across Devices
 1. **Mac Mini M4 Pro (L1):**
@@ -35,7 +36,7 @@ The **Mesh Universal Remote HID Controller** turns your **Samsung Galaxy S20** a
 3. **Samsung Galaxy S20 (L7):**
    - PWA Web App Manifest + Service Worker with 192px/512px maskable icons.
    - 1-tap Android home screen installation as WebAPK.
-   - ADB intent launch directly to `http://192.168.8.155:4006`.
+   - ADB intent launch directly to `http://192.168.8.230:4006`.
 
 ## 🛡️ Rule 1 & Rule 5: Empirical Tri-Proof E2E Verification
 Automated test suite (`01_apps/screen_lens/tests/test_remote_hid_e2e.py`) passed 10/10 tests with **Exit Code 0**:

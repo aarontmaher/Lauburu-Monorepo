@@ -43,7 +43,7 @@ This architecture unites **Screenpipe** (24/7 continuous local multimodal screen
 
 | Protocol | Primary Interconnect | Sharding Topology | Best Use Case in Lauburu Mesh |
 | :--- | :--- | :--- | :--- |
-| **llama.cpp RPC** | **10Gbps Thunderbolt 4 (0.27ms)** | **Tensor Parallelism (Split Layers)** | Sub-20ms TTFT sharding of 70B models across Mac Mini + MacBook Pro. |
+| **llama.cpp RPC** | **40Gbps Thunderbolt 4 (0.27ms)** | **Tensor Parallelism (Split Layers)** | Sub-20ms TTFT sharding of 70B models across Mac Mini + MacBook Pro. |
 | **Petals DHT** | **Tailscale WireGuard / Internet** | **Pipeline Parallelism (DHT Layer Swarm)** | Heterogeneous fault-tolerant cluster (Linux Head, Tablet, Pixel 10). |
 | **Exo P2P (MLX)** | **Local Apple Silicon LAN (WiFi/TB4)** | **Ring All-Reduce / Pipeline Ring** | Dynamic peer discovery across Mac Mini + MacBook Air + MacBook Pro. |
 | **HF Accelerate** | **Multi-Node Ethernet / InfiniBand** | **FSDP / DeepSpeed / DDP** | Continuous LoRA fine-tuning (`trl`/`peft`) and Genetic MoE merging. |

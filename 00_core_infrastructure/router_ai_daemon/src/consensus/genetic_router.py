@@ -98,7 +98,7 @@ MESH_TOPOLOGY: Dict[str, Dict[str, Any]] = {
         "name": "Samsung_S20",
         "role": "Dedicated Automated UI Tester",
         "local_ip": "192.168.8.190",
-        "tailscale_ip": "100.84.40.95",
+        "tailscale_ip": "100.78.206.96",
         "port": 8087,
         "default_action": "ROUTE_ADB_TUNNEL",
         "default_rtt_ms": 8.5,
@@ -344,7 +344,7 @@ class GeneticRouter:
         """
         Evaluate chromosome fitness against multi-attribute network telemetry.
         
-        Fitness  \in [0.0, 1.0]$ combines:
+        Fitness  \\in [0.0, 1.0]$ combines:
         - Latency score (RTT vs 100ms baseline)
         - Packet loss resilience (1.0 - loss)
         - Bandwidth capacity score

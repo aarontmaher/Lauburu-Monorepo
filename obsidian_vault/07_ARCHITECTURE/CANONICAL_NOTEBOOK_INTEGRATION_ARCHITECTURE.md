@@ -14,7 +14,7 @@ The Tri-Orchestrator AI Debate Council (Cloud Master Overseer, Local 80B/72B Fro
 │                    DUAL-ENGINE NOTEBOOK INTEGRATION STANDARD                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 1. LOCAL INTERACTIVE LAB (JupyterLab & Marimo on MacBook Air Port :8889)    │
-│    • Execution Host: Layer 5 MacBook Air M4 (16GB RAM)                      │
+│    • Execution Host: Layer 5 MacBook Pro (Node L2) (16GB RAM)                      │
 │    • Local AI Backend: Local OpenAI-compatible REST API (:8082 / :8083)     │
 │    • Roles: Interactive 512Hz Movesense ECG DSP, 955-Node OPML 3D Tatami    │
 │      kinematics, Marimo reactive state graphs, and hardware micro-benchmarks│

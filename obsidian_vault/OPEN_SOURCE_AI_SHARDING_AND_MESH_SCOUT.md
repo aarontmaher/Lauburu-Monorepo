@@ -69,7 +69,7 @@ date: "2026-09-03"
 │    • Discovery: Exo P2P + Petals Libp2p DHT Ring Topology                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 🖥️ TIER 3: DISTRIBUTED COMPUTE CORE (7-Layer Physical Mesh)                 │
-│    • Transport: 10Gbps TB4 DMA Bridge (0.28ms RTT) + Multi-WAN Bonding      │
+│    • Transport: 40Gbps TB4 DMA Bridge (0.28ms RTT) + Multi-WAN Bonding      │
 │    • Sharding Engine: Prima.cpp (Pipelined-Ring) + llama.cpp Metal RPC      │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

@@ -54,7 +54,7 @@ tags: [lauburu, deepseek, qwen, frontier, competency, storage_audit]
 1. **Strengths:**
    - **Zero Network Jitter:** Fits **100% inside our 49.6 GB Thunderbolt 4 Apple Silicon Sub-Cluster** (Mac Mini + MacBook Pro + MacBook Air).
    - **Uncompromised Precision:** 4.5 bits/weight preserves 99.8% of full FP16 coding precision.
-   - **High Token Velocity:** Achieves **34.2 tokens/second** over 10Gbps TB4 DMA (sub-0.3ms latency).
+   - **High Token Velocity:** Achieves **34.2 tokens/second** over 40Gbps TB4 DMA (sub-0.3ms latency).
 2. **Production Verdict:** The undisputed sweet spot for local production pair programming and compiler-in-the-loop tasks.
 
 ---
@@ -78,7 +78,7 @@ tags: [lauburu, deepseek, qwen, frontier, competency, storage_audit]
    - Generated valid unified patch and verified actuation via `/usr/bin/patch -p1`, confirming `test.py` modification with **Exit Code 0**.
 
 ### C. Tri-Vault Storage References
-- **JSON Ledger:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/deepseek_236b_competency_audit_report.json`
-- **Obsidian Documentation:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/04_ANALYTICS/DEEPSEEK_CODER_V2_236B_AND_FRONTIER_Q4_COMPETENCY_AUDIT.md`
-- **Active Model Vault:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/deepseek_coder_v2_236b`
+- **JSON Ledger:** `/Volumes/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/deepseek_236b_competency_audit_report.json`
+- **Obsidian Documentation:** `/Volumes/Lauburu-Monorepo/obsidian_vault/04_ANALYTICS/DEEPSEEK_CODER_V2_236B_AND_FRONTIER_Q4_COMPETENCY_AUDIT.md`
+- **Active Model Vault:** `/Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/deepseek_coder_v2_236b`
 

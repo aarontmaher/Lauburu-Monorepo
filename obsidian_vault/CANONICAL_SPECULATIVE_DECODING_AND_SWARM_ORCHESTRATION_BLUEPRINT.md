@@ -93,5 +93,5 @@ date: "2026-09-04"
 ## 🗄️ 5. Canonical Model Vault Unification
 
 All 21 local GGUF models are now permanently consolidated into the canonical path:
-`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/`
+`/Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/`
 Backwards-compatible symlinks have been placed in `gguf_vault/` to prevent any broken references.

@@ -1,0 +1,18 @@
+[package]
+name = "kwaai-p2p"
+version = "0.6.0"
+edition = "2021"
+description = "KwaaiNet Decentralized P2P Transport & AutoNAT Bridge for prima.cpp"
+
+[dependencies]
+tokio = { version = "1.38", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+clap = { version = "4.4", features = ["derive"] }
+futures = "0.3"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+[[bin]]
+name = "kwaai-p2p"
+path = "src/main.rs"

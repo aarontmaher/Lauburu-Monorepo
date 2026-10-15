@@ -1,0 +1,73 @@
+{
+  "timestamp": "2026-10-12T20:48:55Z",
+  "model_spec": {
+    "name": "Mistral-Large-Instruct-2407 (123B / gpt-oss-120b-medium)",
+    "quantization": "Q4_K_M",
+    "required_vram_gb": 72.0,
+    "total_layers": 88
+  },
+  "tb4_ring_topology": {
+    "total_nodes": 4,
+    "total_pooled_vram_allocated_gb": 73.6,
+    "total_layers_sharded": 88,
+    "max_interconnect_rtt_ms": 0.45,
+    "ring_bandwidth_gbps": 40.0,
+    "estimated_tpot_ms": 21.8,
+    "estimated_throughput_tok_s": 45.8,
+    "nodes": {
+      "L1_Mac_Mini_M4_Host": {
+        "silicon": "Apple M4 Pro (Mac16,11)",
+        "installed_ram_gb": 24.0,
+        "allocated_vram_gb": 21.6,
+        "allocated_layers": 26,
+        "interconnect": "Local Unified Memory (273 GB/s)",
+        "rtt_ms": 0.0,
+        "role": "Master Source & Final Sink (Layer 0-25)"
+      },
+      "L8_Linux_Mini_Hub": {
+        "silicon": "Intel Core 12-Core x86_64",
+        "installed_ram_gb": 32.0,
+        "allocated_vram_gb": 28.0,
+        "allocated_layers": 34,
+        "interconnect": "TB4 Receptacle 1 (40 Gb/s, 10.0.0.8)",
+        "rtt_ms": 0.38,
+        "role": "Primary Shard 1 Worker (Layer 26-59)"
+      },
+      "L1b_Mac_Mini_M2_Pro": {
+        "silicon": "Apple M2 Pro (Mac14,12)",
+        "installed_ram_gb": 16.0,
+        "allocated_vram_gb": 12.0,
+        "allocated_layers": 15,
+        "interconnect": "TB4 Receptacle 2 (40 Gb/s, 10.0.0.3)",
+        "rtt_ms": 0.43,
+        "role": "Shard 2 Worker (Layer 60-74)"
+      },
+      "L1a_MacBook_Air_M4": {
+        "silicon": "Apple M4 (4P+6E)",
+        "installed_ram_gb": 16.0,
+        "allocated_vram_gb": 12.0,
+        "allocated_layers": 13,
+        "interconnect": "TB4 Ring / LAN Fallback (100.121.202.34)",
+        "rtt_ms": 0.45,
+        "role": "Shard 3 Worker (Layer 75-87)"
+      }
+    }
+  },
+  "excluded_nodes": {
+    "L3_Linux_Head_Node": {
+      "silicon": "AMD Ryzen 7 5700U",
+      "ip": "192.168.8.225 / 100.101.39.98",
+      "interconnect": "Wi-Fi 5 / Tailscale LAN",
+      "rtt_ms": 13.8,
+      "status": "EXCLUDED FROM SYNCHRONOUS TENSOR RING",
+      "reason": "13.8ms RTT causes 1,100ms per token latency penalty in synchronous PRP ring. Designated strictly for async / batch / vLLM workloads."
+    }
+  },
+  "host_ram_sanctuary_rule_3": {
+    "total_gb": 24.0,
+    "available_gb": 4.86,
+    "used_pct": 79.7,
+    "sanctuary_headroom_pass": true
+  },
+  "sha256": "4d1bdb4d01403af284a955f716d3f197c1045f75a652545f74b9eaa2b9f51d92"
+}

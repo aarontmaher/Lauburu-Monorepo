@@ -125,7 +125,7 @@ export function TrackGammaDataLakeGraph({
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <h1 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700, color: 'var(--accent-cyan)', letterSpacing: '0.02em' }}>
-                TRACK GAMMA: DATA LAKE & OBSIDIAN GRAPH COCKPIT
+                TRACK GAMMA: DATA LAKE & OBSIDIAN GRAPH CONSOLE
               </h1>
               <span className="badge badge-purple" style={{ fontSize: '0.65rem' }}>
                 M3 PROTOTYPE

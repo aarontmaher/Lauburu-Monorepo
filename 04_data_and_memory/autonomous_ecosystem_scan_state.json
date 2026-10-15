@@ -1,0 +1,200 @@
+{
+  "total_scans_conducted": 227,
+  "last_scan_timestamp": 1791971668.075784,
+  "github_repos_tracked": {
+    "fmtlib/fmt": {
+      "name": "{fmt} C++ Formatting Library",
+      "url": "https://github.com/fmtlib/fmt",
+      "category": "High-Performance C++20 Formatting & Logging",
+      "impact_area": "prima.cpp & 03_biometrics_and_telemetry (Pan-Tompkins DSP)",
+      "benefits": [
+        "Zero-allocation compile-time format string validation",
+        "3x-5x faster than std::ostringstream and safer than printf",
+        "Header-only / ultra-lightweight binary overhead (<50 KB)",
+        "Native support for std::chrono and custom vector/tensor formatting"
+      ],
+      "integration_plan": "Integrate fmtlib into prima.cpp and Movesense BLE C++ daemons for sub-microsecond formatting of 512Hz ECG Pan-Tompkins telemetry batches over TCP/IPC sockets.",
+      "status": "ANALYZED_RECOMMENDED_FOR_C++_SUBSYSTEMS"
+    },
+    "ml-explore/mlx": {
+      "name": "Apple MLX Framework",
+      "url": "https://github.com/ml-explore/mlx",
+      "category": "Apple Silicon Metal Native Machine Learning",
+      "impact_area": "12_continuous_lora_evolution & Qwen MoE local fine-tuning",
+      "benefits": [
+        "Zero-copy unified memory tensors",
+        "Multi-GPU Metal AllReduce support"
+      ],
+      "status": "ACTIVE_IN_MONOREPO"
+    },
+    "ggerganov/llama.cpp": {
+      "name": "llama.cpp Distributed & RPC",
+      "url": "https://github.com/ggerganov/llama.cpp",
+      "category": "Local LLM Inference Engine & GGML Kernels",
+      "impact_area": "02_ai_models_and_inference & Port 8081-8084 RPC sharding",
+      "benefits": [
+        "Heterogeneous Apple Silicon + Linux AMD64 + Android GPU RPC"
+      ],
+      "status": "ACTIVE_IN_MONOREPO"
+    }
+  },
+  "mcp_servers_status": {
+    "chrome-devtools-mcp": {
+      "id": "chrome-devtools-mcp",
+      "type": "Automated Browser & CDP Debugger",
+      "status": "ACTIVE"
+    },
+    "memory": {
+      "id": "memory",
+      "type": "Knowledge Graph Entity/Relation Store",
+      "status": "ACTIVE"
+    },
+    "docker": {
+      "id": "docker",
+      "type": "Container & Service Orchestration",
+      "status": "ACTIVE"
+    },
+    "filesystem": {
+      "id": "filesystem",
+      "type": "Local Filesystem I/O Gate",
+      "status": "ACTIVE"
+    },
+    "cloudflare-docs": {
+      "id": "cloudflare-docs",
+      "type": "Cloudflare Architecture Search",
+      "status": "ACTIVE"
+    },
+    "notebooks": {
+      "id": "notebooks",
+      "type": "JupyterLab / Marimo Cell Execution",
+      "status": "ACTIVE"
+    },
+    "sequential-thinking": {
+      "id": "sequential-thinking",
+      "type": "Multi-Step Cognitive Architecture",
+      "status": "ACTIVE"
+    }
+  },
+  "cli_tools_status": {
+    "gh": {
+      "installed": true,
+      "path": "/Users/aaron/.local/bin/gh",
+      "status": "HEALTHY"
+    },
+    "git": {
+      "installed": true,
+      "path": "/usr/bin/git",
+      "status": "HEALTHY"
+    },
+    "adb": {
+      "installed": true,
+      "path": "/Users/aaron/.local/bin/adb",
+      "status": "HEALTHY"
+    },
+    "tailscale": {
+      "installed": true,
+      "path": "/Users/aaron/.local/bin/tailscale",
+      "status": "HEALTHY"
+    },
+    "wrangler": {
+      "installed": false,
+      "path": "NOT_FOUND",
+      "status": "OPTIONAL_OR_MISSING"
+    },
+    "jules": {
+      "installed": true,
+      "path": "/Users/aaron/.local/bin/jules",
+      "status": "HEALTHY"
+    },
+    "uv": {
+      "installed": true,
+      "path": "/Users/aaron/.local/bin/uv",
+      "status": "HEALTHY"
+    },
+    "jq": {
+      "installed": true,
+      "path": "/usr/bin/jq",
+      "status": "HEALTHY"
+    },
+    "docker": {
+      "installed": true,
+      "path": "/Users/aaron/.local/bin/docker",
+      "status": "HEALTHY"
+    },
+    "python3": {
+      "installed": true,
+      "path": "/Users/aaron/.local/bin/python3",
+      "status": "HEALTHY"
+    }
+  },
+  "api_endpoints_status": {
+    "apis": {
+      "nvidia_nim": {
+        "name": "NVIDIA NIM REST",
+        "endpoint": "https://integrate.api.nvidia.com/v1",
+        "status": "CONFIGURED"
+      },
+      "google_ai_studio": {
+        "name": "Google AI Studio",
+        "quota": "1,500 RPD",
+        "status": "CONFIGURED"
+      },
+      "xai_grok": {
+        "name": "xAI Grok Developer API",
+        "credits": "$25/month",
+        "status": "CONFIGURED"
+      },
+      "cloudflare_workers_ai": {
+        "name": "Cloudflare Workers AI",
+        "quota": "10k Neurons/day",
+        "status": "CONFIGURED"
+      },
+      "local_prima_cpp": {
+        "name": "Prima.cpp Local Engine",
+        "endpoint": "http://127.0.0.1:8082",
+        "status": "ONLINE"
+      },
+      "local_devils_advocate": {
+        "name": "Devil's Advocate Port 8083",
+        "endpoint": "http://127.0.0.1:8083",
+        "status": "ONLINE"
+      }
+    },
+    "sdks": {
+      "python": {
+        "version": "3.14.7",
+        "status": "READY"
+      },
+      "kotlin_android_auto": {
+        "target": "androidx.car.app:1.4.0",
+        "status": "READY"
+      },
+      "dart_flutter": {
+        "target": "Flutter 3.x / Dart 3.x",
+        "status": "READY"
+      },
+      "rust_wgpu": {
+        "target": "wgpu Metal / WebAssembly",
+        "status": "READY"
+      },
+      "swift_metal": {
+        "target": "MPS / Apple Silicon",
+        "status": "READY"
+      }
+    }
+  },
+  "ai_training_health": {
+    "engine": "Apple Silicon Metal Performance Shaders (MPS)",
+    "dataset_path": "/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl",
+    "total_harvested_pairs": 87911,
+    "status": "CONTINUOUS_HARVEST_ACTIVE"
+  },
+  "ai_sharding_health": {
+    "interconnect": "10Gbps Thunderbolt 4 DMA (bridge0)",
+    "rtt_latency_ms": 0.277,
+    "bandwidth_gbps": 40.0,
+    "mtu": 9000,
+    "pooled_vram_gb": 82.8,
+    "status": "ALLREDUCE_GRADIENT_SYNC_HEALTHY"
+  }
+}

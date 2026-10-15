@@ -1,0 +1,13 @@
+name = "lora-synthesizer-worker"
+main = "src/index.js"
+compatibility_date = "2024-09-08"
+
+[ai]
+binding = "AI"
+
+[[kv_namespaces]]
+binding = "LORA_SYNTHESIS_QUEUE"
+id = "236cf5ef552043f08806bf0d29ad7933"
+
+[triggers]
+crons = ["*/5 * * * *"]

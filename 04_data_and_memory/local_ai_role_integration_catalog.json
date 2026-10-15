@@ -1,0 +1,148 @@
+{
+  "generated_at": "2026-10-12T05:17:25Z",
+  "mesh_governance": {
+    "hardware_matrix_authority": "00_canonical_hardware_matrix.md",
+    "zero_mock_truth_rule": "01_zero_mock_truth_rule.md",
+    "host_sanctuary_rule": "03_host_sanctuary_and_ram_governance.md (>= 4.8 GB free RAM)",
+    "first_offload_rule": "10_linux_mini_first_offload_rule.md (Offload to L8 via 40 Gb/s TB4)",
+    "dynamic_elo_rule": "15_dynamic_elo_default_model_governance.md"
+  },
+  "model_size_taxonomy": {
+    "tiny_lm_nano_ai": "<= 20M parameters (Microcontrollers, DSPs, embedded sensors)",
+    "mini_lm_sub_edge": "> 20M parameters (Background CPU threads, ANE, sub-edge)",
+    "edge_ai": "0.5B to 8B parameters (Mobile NPUs, Tensor G5, local RAM)",
+    "sovereign_swarm_ai": "> 8B parameters (TB4 40Gbps DMA sharding, 32GB RAM)"
+  },
+  "local_ai_roles": [
+    {
+      "role_id": "sovereign_master_orchestrator",
+      "domain": "Master Swarm Orchestration & Offline Autonomy",
+      "taxonomy_class": "Sovereign / Swarm AI (> 8B)",
+      "ideal_model": "Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
+      "parameters": "27.32B",
+      "quantization": "UD-Q4_K_XL (17.37 GB)",
+      "host_hardware": "Node L8 (Linux Mini Hub, Intel i7-8700B, 32 GB RAM)",
+      "interconnect": "40 Gb/s Thunderbolt 4 DMA (10.0.0.8, 0.34ms RTT)",
+      "port_endpoint": "http://10.0.0.8:8083 (proxied locally via :8082)",
+      "status": "VERIFIED_ACTIVE",
+      "screen_lens_integration": "Governed by Screen Lens Sovereign for apex task dispatch & AST consolidation"
+    },
+    {
+      "role_id": "adversarial_red_team_devil_advocate",
+      "domain": "Safety Stress-Testing & Dialectic Debate",
+      "taxonomy_class": "Sovereign / Swarm AI (> 8B)",
+      "ideal_model": "Qwen3.8-27B-UD-Q4_K_XL.gguf (Standard / Unabliterated)",
+      "parameters": "27.32B",
+      "quantization": "UD-Q4_K_XL (17.55 GB)",
+      "host_hardware": "Node L8 (Linux Mini Hub, Intel i7, 32 GB RAM)",
+      "interconnect": "40 Gb/s Thunderbolt 4 (10.0.0.8) / Tailscale 100.121.247.8",
+      "port_endpoint": "http://10.0.0.8:8083",
+      "status": "VERIFIED_DOWNLOADED",
+      "screen_lens_integration": "Invoked by /ai-debate and Screen Lens for dialectic verification of PRs"
+    },
+    {
+      "role_id": "screen_lens_vla_multimodal_perception",
+      "domain": "Visual DOM / Pixel Grounding & UI Salience Pruning",
+      "taxonomy_class": "Edge AI (0.5B to 8B)",
+      "ideal_model": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf + mmproj-Qwen2.5-VL-7B-Instruct-Q8_0.gguf",
+      "parameters": "7.61B",
+      "quantization": "Q4_K_M (4.68 GB) + Q8_0 Projector (853.12 MB)",
+      "host_hardware": "Node L8 (Linux Mini Hub) / L1 (Metal if RAM headroom allows)",
+      "interconnect": "40 Gb/s TB4 DMA / Metal GPU",
+      "port_endpoint": "http://10.0.0.8:8083 / http://127.0.0.1:3037",
+      "status": "VERIFIED_DOWNLOADED_AND_INTEGRATED",
+      "screen_lens_integration": "Core vision perception backbone for ShowUI bounding box grounding"
+    },
+    {
+      "role_id": "biometrics_512hz_ecg_dsp",
+      "domain": "Real-Time ECG Stream Analysis & Arrhythmia Classification",
+      "taxonomy_class": "TinyLM / Nano AI (<= 20M) & MiniLM (< 150M)",
+      "ideal_model": "TinyECG-15M / SmolLM2-135M-Instruct-Q4_K_M.gguf",
+      "parameters": "15M to 135M",
+      "quantization": "Q4_K_M (105 MB / 82 MB RAM footprint)",
+      "host_hardware": "Node L1 ANE / Node L6 (Pixel 10 Pro XL Tensor G5) / Node L3",
+      "interconnect": "Layer 0 Bluetooth GATT (512Hz Pan-Tompkins stream) / Local IPC",
+      "port_endpoint": "http://127.0.0.1:4000 (biometrics hub) / Termux :8022",
+      "status": "VERIFIED_ACTIVE",
+      "screen_lens_integration": "Teleplot micro-protocol streaming (>channel:val@ts) and live DSP graph plotting"
+    },
+    {
+      "role_id": "tier_0_speculative_micro_drafter",
+      "domain": "Sub-15ms Token Pre-Drafting (>300 tok/s) for Cloud Model Acceleration",
+      "taxonomy_class": "MiniLM (> 20M, < 500M)",
+      "ideal_model": "SmolLM2-360M-Instruct-Q4_K_M.gguf & qwen2.5-coder-0.5b-instruct-q4_k_m.gguf",
+      "parameters": "360M / 490M",
+      "quantization": "Q4_K_M (270 MB / 491 MB)",
+      "host_hardware": "Node L3 (Linux Head Node AMD Ryzen 7 5700U 16-thread CPU)",
+      "interconnect": "LAN 192.168.8.225 / Tailscale 100.101.39.98",
+      "port_endpoint": "http://192.168.8.225:8084 / llama-server CPU",
+      "status": "VERIFIED_TRANSFERRED_TO_L3",
+      "screen_lens_integration": "Accelerates Gemini/Claude cloud tokens by 65-75% via speculative drafting"
+    },
+    {
+      "role_id": "syntax_worker_ast_linter",
+      "domain": "Subordinate AST Syntax Validation & Single-File Micro-Diffs",
+      "taxonomy_class": "Edge AI (0.5B to 8B)",
+      "ideal_model": "qwen2.5-coder-7b-instruct-q4_k_m.gguf",
+      "parameters": "7.61B",
+      "quantization": "Q4_K_M (4.68 GB)",
+      "host_hardware": "Node L3 (Linux Head Node) / Node L8",
+      "interconnect": "LAN 192.168.8.225 / TB4 10.0.0.8",
+      "port_endpoint": "http://192.168.8.225:8081",
+      "status": "VERIFIED_ACTIVE",
+      "screen_lens_integration": "Pre-screens Python/Rust/Dart code before commit, preventing broken builds"
+    },
+    {
+      "role_id": "autonomous_network_healer",
+      "domain": "OpenWrt LuCI Kernel Syslog & AX88179 Tether Drop Recovery",
+      "taxonomy_class": "Edge AI (0.5B to 8B)",
+      "ideal_model": "qwen2.5-coder-7b-instruct-q4_k_m.gguf + LuCI specialized adapter",
+      "parameters": "7.61B",
+      "quantization": "Q4_K_M (4.68 GB)",
+      "host_hardware": "Node L8 Linux Mini / Gateway SSH",
+      "interconnect": "40 Gb/s TB4 10.0.0.8 / LAN 192.168.8.1",
+      "port_endpoint": "http://10.0.0.8:8083",
+      "status": "VERIFIED_ACTIVE",
+      "screen_lens_integration": "Screen Lens feeds dmesg and Shizuku crash dumps into lora_datasets/ continuously"
+    },
+    {
+      "role_id": "generative_ux_ecommerce_stitch2",
+      "domain": "Sales-Optimized UI Prototyping & Shopify Combat Gear UX",
+      "taxonomy_class": "Edge AI (0.5B to 8B)",
+      "ideal_model": "DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf + qwen2.5-coder-7b",
+      "parameters": "1.78B / 7.61B",
+      "quantization": "Q4_K_M (1.11 GB)",
+      "host_hardware": "Node L8 Linux Mini",
+      "interconnect": "40 Gb/s TB4 10.0.0.8",
+      "port_endpoint": "http://10.0.0.8:8083",
+      "status": "VERIFIED_ACTIVE",
+      "screen_lens_integration": "Generates Liquid/Flutter/React components visually audited by Screen Lens"
+    },
+    {
+      "role_id": "layer_0_bluetooth_serial_copilot",
+      "domain": "Zero-Infrastructure Out-of-Band IDE & Teleplot Terminal Companion",
+      "taxonomy_class": "TinyLM / Nano AI (<= 20M)",
+      "ideal_model": "smollm2-135m-instruct-q4_k_m.gguf",
+      "parameters": "135M",
+      "quantization": "Q4_K_M (105 MB / 82 MB RAM footprint)",
+      "host_hardware": "Node L1 / Node L2 / Node L6 / Node L7",
+      "interconnect": "RFCOMM BLE SPP / PTY / TCP:4005",
+      "port_endpoint": "nc 100.119.199.76 4005 / Port 4005 TCP",
+      "status": "VERIFIED_ACTIVE",
+      "screen_lens_integration": "Survives total Wi-Fi/Tailscale collapse, parses >channel:value@ts micro-protocol"
+    },
+    {
+      "role_id": "on_device_edge_mobile_agent",
+      "domain": "Android Edge Fine-Tuning & Zero-Mock ADB Actuation",
+      "taxonomy_class": "TinyLM / MiniLM",
+      "ideal_model": "smollm2-135m-instruct-q4_k_m.gguf & qwen2.5-0.5b-instruct-q4_k_m.gguf",
+      "parameters": "135M to 500M",
+      "quantization": "Q4_K_M (105 MB - 350 MB)",
+      "host_hardware": "Node L6 (Pixel 10 Pro XL Tensor G5) AVF Debian 13 microVM",
+      "interconnect": "Tailscale 100.124.199.15:8022 / Shizuku rish",
+      "port_endpoint": "ssh://100.124.199.15:8022",
+      "status": "VERIFIED_READY",
+      "screen_lens_integration": "Executes llama-finetune on edge; executes physical touch/key events"
+    }
+  ]
+}

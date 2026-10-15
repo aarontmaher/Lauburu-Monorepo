@@ -1,0 +1,90 @@
+[
+  {
+    "id": "gen_spec_1",
+    "draft_k": 6,
+    "acceptance_tau": 0.75,
+    "temperature": 0.38,
+    "learning_rate": 0.00025,
+    "fitness": 66.54,
+    "measured_tps": 102.4,
+    "measured_alpha": 0.75,
+    "generations_survived": 24216
+  },
+  {
+    "id": "gen_spec_2",
+    "draft_k": 4,
+    "acceptance_tau": 0.72,
+    "temperature": 0.22,
+    "learning_rate": 0.0001,
+    "fitness": 0.0,
+    "measured_tps": 0.0,
+    "measured_alpha": 0.0,
+    "generations_survived": 24216
+  },
+  {
+    "id": "gen_spec_3",
+    "draft_k": 6,
+    "acceptance_tau": 0.83,
+    "temperature": 0.29,
+    "learning_rate": 0.0005,
+    "fitness": 0.0,
+    "measured_tps": 0.0,
+    "measured_alpha": 0.0,
+    "generations_survived": 24216
+  },
+  {
+    "id": "gen_spec_4",
+    "draft_k": 4,
+    "acceptance_tau": 0.81,
+    "temperature": 0.14,
+    "learning_rate": 0.0001,
+    "fitness": 0.0,
+    "measured_tps": 0.0,
+    "measured_alpha": 0.0,
+    "generations_survived": 24216
+  },
+  {
+    "id": "gen_spec_5",
+    "draft_k": 6,
+    "acceptance_tau": 0.83,
+    "temperature": 0.29,
+    "learning_rate": 0.00025,
+    "fitness": 0.0,
+    "measured_tps": 0.0,
+    "measured_alpha": 0.0,
+    "generations_survived": 0
+  },
+  {
+    "id": "gen_spec_6",
+    "draft_k": 6,
+    "acceptance_tau": 0.83,
+    "temperature": 0.29,
+    "learning_rate": 0.00025,
+    "fitness": 0.0,
+    "measured_tps": 0.0,
+    "measured_alpha": 0.0,
+    "generations_survived": 0
+  },
+  {
+    "id": "gen_spec_7",
+    "draft_k": 4,
+    "acceptance_tau": 0.81,
+    "temperature": 0.14,
+    "learning_rate": 0.0001,
+    "fitness": 0.0,
+    "measured_tps": 0.0,
+    "measured_alpha": 0.0,
+    "generations_survived": 0
+  },
+  {
+    "id": "gen_spec_8",
+    "draft_k": 5,
+    "acceptance_tau": 0.79,
+    "temperature": 0.33,
+    "learning_rate": 0.00025,
+    "fitness": 0.0,
+    "measured_tps": 0.0,
+    "measured_alpha": 0.0,
+    "generations_survived": 0
+  }
+]

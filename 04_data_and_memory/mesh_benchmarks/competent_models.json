@@ -1,0 +1,12 @@
+{
+    "Qwen_3.8_Max_Local": {
+        "elo": 1215,
+        "last_updated": "2026-09-18T03:13:36.415172",
+        "latest_victory": "Navigate Shopify POS UI and verify payment state"
+    },
+    "SmolLM2_360M_Tier0": {
+        "elo": 1175,
+        "last_updated": "2026-09-18T03:13:36.416495",
+        "latest_victory": "N/A"
+    }
+}

@@ -8,7 +8,7 @@ date: "2026-09-05"
 
 ## 🏛️ Overview & Sandboxing Invariant (Rule 4)
 This specification documents the live side-by-side Dual-Sandbox Bluetooth Terminal Arena TUI (`bluetooth_arena_tui.py`), strictly isolated within:
-`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/bluetooth_terminal_arena/`
+`/Volumes/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/bluetooth_terminal_arena/`
 
 The arena executes two conversational orchestrators in adjacent sandboxes on the same screen in `--dev` mode:
 1. **Sandbox A: Pure-NPU Orchestrator (Layer 0/1)**

@@ -1,0 +1,38 @@
+{
+  "tsnet": {
+    "name": "Tailscale tsnet (Embedded Library)",
+    "container": "bench_tsnet",
+    "ram_footprint_mb": 12.4,
+    "requires_root": false,
+    "requires_tun_device": false,
+    "requires_net_admin": false,
+    "startup_ms": 18.5,
+    "isolation_level": "Maximum (Unprivileged Userspace / In-Memory)",
+    "paying_user_suitability": "EXCELLENT: Ships inside Mobile / Desktop Apps without VPN Prompts or Admin Popups",
+    "status": "VERIFIED"
+  },
+  "tailscaled": {
+    "name": "Tailscale System Daemon (tailscaled)",
+    "container": "bench_tailscaled",
+    "ram_footprint_mb": 38.2,
+    "requires_root": true,
+    "requires_tun_device": true,
+    "requires_net_admin": true,
+    "startup_ms": 13195.65,
+    "isolation_level": "System Wide (Kernel Virtual TUN Adapter)",
+    "paying_user_suitability": "MODERATE: Requires OS System VPN Profile / Admin Rights on Host",
+    "status": "PASSED"
+  },
+  "headscale": {
+    "name": "Headscale / Kwaami (Self-Hosted Control Plane)",
+    "container": "bench_headscale",
+    "ram_footprint_mb": 46.8,
+    "requires_root": false,
+    "requires_tun_device": false,
+    "requires_net_admin": false,
+    "startup_ms": 9601.97,
+    "isolation_level": "Backend Coordination Plane (SQLite / Control Server)",
+    "paying_user_suitability": "BACKEND INFRASTRUCTURE: Powers private cloud backend at $0 subscription cost",
+    "status": "PASSED"
+  }
+}

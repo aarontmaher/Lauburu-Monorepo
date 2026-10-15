@@ -1,0 +1,38 @@
+BluetoothTerminalApp {
+    background: #05080f;
+    color: #f8fafc;
+}
+
+#status_bar {
+    height: 3;
+    dock: top;
+    background: #0d131f;
+    border: solid #1e293b;
+    padding: 0 1;
+    align: left middle;
+}
+
+#status_label {
+    margin-right: 2;
+    content-align: center middle;
+    text-style: bold;
+}
+
+#btn_scan {
+    margin-right: 1;
+}
+
+#terminal_log {
+    height: 1fr;
+    background: #020408;
+    border: solid #334155;
+    padding: 0 1;
+}
+
+#terminal_input {
+    dock: bottom;
+    height: 3;
+    background: #0f172a;
+    border: solid #38bdf8;
+    color: #ffffff;
+}

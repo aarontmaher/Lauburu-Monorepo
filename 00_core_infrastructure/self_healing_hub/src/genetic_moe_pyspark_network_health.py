@@ -25,8 +25,8 @@ from unorthodox_matrix_engine import UnorthodoxMatrixEngine
 
 logger = logging.getLogger("GeneticMoEPySparkNetworkHealth")
 
-STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_network_health_state.json"
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_network_health_state.json"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
 # Configure OpenJDK 17 for PySpark if available
 if "JAVA_HOME" not in os.environ:
     for jdk in ["/opt/homebrew/opt/openjdk@17", "/opt/homebrew/opt/openjdk"]:
@@ -46,7 +46,7 @@ CLUSTER_NODES = [
         "id": "Mac_Node",
         "name": "Apple M4 Max Host",
         "role": "Primary Orchestrator & OpenClaw Gateway",
-        "ip_lan": "192.168.8.116",
+        "ip_lan": "192.168.8.176",
         "ip_tailscale": "100.103.212.21",
         "ip_tb4": "169.254.187.1",
         "nominal_latency_ms": 0.01,
@@ -95,7 +95,7 @@ CLUSTER_NODES = [
         "name": "Samsung Galaxy S20+",
         "role": "Headless Automated UI/UX Tester & RPC",
         "ip_lan": "192.168.8.155",
-        "ip_tailscale": "100.84.40.95",
+        "ip_tailscale": "100.78.206.96",
         "ip_tb4": None,
         "nominal_latency_ms": 0.82,
         "bandwidth_gbps": 0.48,

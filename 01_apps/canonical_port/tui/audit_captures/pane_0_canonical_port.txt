@@ -1,0 +1,29 @@
+ ⭘      CANONICAL PORT — LAUBURU MESH TUI — 7-Layer Mesh Command Center — 108 GB RAM / 82.8 GB VRAM Pooled AI… 16:36:29
+ [<] Prev │ [1] AGI │ [2] Net │ [3] HW │ [4] Bio │ [5] Inf │ [6] Train │ [7] Gov │ [8] Tool │ [9] Opt │ [K] Grap │ [V]
+                                                    ⚙ Inference Engine [Ctrl+E]: ▊▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▎
+╭───────────────────────────────────────── AGI COMMAND CENTER — STATUS HUD ──────────────────────────────────────────╮
+│  🧠 Active Model: Qwen 3.8 Max   💾 Hardware Pool: 108.0GB RA…  ⚡ RPC Latency: OFFLINE        🔲 Grid Split: 1x…  │
+│  Sovereign Master (Prima PRP     / 82.8GB VRAM                                                 (Full IDE &         │
+│  :8082)                                                                                        Editor)             │
+│  ⚡ Inference Engine:            ☁️ Data Plane: SeaweedFS S3    📚 Obsidian Vault: Local       🛡️ VRAM Governor:   │
+│  [LLAMA.CPP: ACTIVE]             (localhost:8333)               FSEvents (Tri-Vault Sync)      Active (90% Cap)    │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ 💻 AGI Swarm Shell & Editor  🎙 STT/TTS Voice Chat & Coding  🌲 Monorepo File Tree & AST  📜 Swarm Execution Trace Led
+╸━━━━━━━━━━━━━━━━━━━━━━━━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+╭───────────────────────────── 💻 Single Stream Code Editor [1x1] — [+/- to Split Grid] ─────────────────────────────╮
+│  Line    Source Code Buffer (Active Working Buffer)                                                                │
+│  001     # Lauburu Canonical Port AGI Kernel v3.1.0                                                                │
+│  002     # 108 GB Pooled RAM | 82.8 GB VRAM | 7 Compute Nodes | Multi-Engine Inference                             │
+│  003     from services.blackboard_store import blackboard_store                                                    │
+│  004                                                                                                               │
+│  005     def run_swarm_pipeline():                                                                                 │
+│  006         snapshot = blackboard_store.get_snapshot()                                                            │
+│  007         print(f'Swarm Status: {snapshot.layer_5_governance.council_status}')                                  │
+│  008         return snapshot.layer_1_hardware.total_vram_gb                                                        │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+══════════════════════════════════════════════════════════════════════════════
+System ready. Type /help, /petals, or enter code to evaluate.                                                       ▃▃
+
+🌸 Petals DHT: Standby Fallback Active (127.0.0.1:8081 / Frontier AI)
+                      [1]AGI [2]Net [3]HW [4]Bio [5]Inf [6]Trn [7]Gov [8]Tol [9]Opt [r]Ref [q]Quit
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

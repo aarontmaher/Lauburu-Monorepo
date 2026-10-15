@@ -29,11 +29,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger("MasterMeshDaemon")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 
 def run_wol_server():
     """Runs the Wake-on-LAN HTTP API server."""
-    cmd = [sys.executable, str(REPO_ROOT / "06_scripts_and_tooling/mesh/wol_manager.py"), "--serve-api"]
+    cmd = [sys.executable, str(REPO_ROOT / "06_scripts_and_tooling/mesh/canonical_network_resurrection_engine.py"), "--serve-api"]
     subprocess.run(cmd)
 
 def run_ai_supervisor():

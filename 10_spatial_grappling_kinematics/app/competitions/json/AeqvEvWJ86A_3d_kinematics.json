@@ -1,0 +1,26 @@
+{
+  "video_id": "AeqvEvWJ86A",
+  "url": "https://youtu.be/AeqvEvWJ86A",
+  "division": "Freestyle Wrestling",
+  "title": "Aaron Maher (AUS) vs unknown (AFG)",
+  "duration_sec": 380.8,
+  "resolution": "254x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 29,
+  "dual_athlete_frames": 6,
+  "standing_phase_pct": 48.3,
+  "ground_scramble_phase_pct": 51.7,
+  "level_change_shots_detected": 3,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 49.8,
+    "left_elbow": 135.7,
+    "right_elbow": 146.1,
+    "left_hip": 130.4,
+    "right_hip": 138.1,
+    "left_knee": 145.3,
+    "right_knee": 148.3
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/AeqvEvWJ86A_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match is characterized by a strong standing and ground/Scramble component, with a high level of change shots. The mean spine lean is significant, and the elbow flexion and knee flexion are both high. This makes Aaron Maher an efficient and powerful wrestler in this match.",
+  "processing_sec": 2.24
+}

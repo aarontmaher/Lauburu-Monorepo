@@ -142,7 +142,7 @@ CANONICAL_SYSTEM_CONTEXT = (
     "You are operating within the Lauburu Mesh Ecosystem. "
     "Primary Host Node: Apple M4 Pro Mac Mini (24GB RAM, 192.168.8.230, 100.119.199.76, TB4 169.254.80.69). "
     "Hardware Mesh: MacBook Pro M1 Max (TB4 40Gbps bridge 169.254.187.138), Linux Head Node AMD 5700U (192.168.8.224), Pixel 10 Pro Tensor G5 (100.73.38.87). "
-    "Connected Sensors: Physical Movesense 261030002013 BLE (72 BPM, RMSSD, DFA-alpha1). "
+    "Connected Sensors: Physical Movesense 261030002013 BLE (512Hz ECG, RMSSD, DFA-alpha1). "
     "Rule #0 Mandate: Zero-Mock & Zero-Simulated Data. All metrics must originate from verified physical sockets. "
     "Storage Tri-Vault: Obsidian (/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault), "
     "PySpark Big Data Lake (/Users/aaron/DFS_UNIFIED/lora_datasets), GitHub Monorepo."
@@ -534,7 +534,7 @@ def execute_conversational_rag(query_text: str, app_context: str = "canonical_po
         workspace_root / "obsidian_vault" / "Index.md",
         workspace_root / "02_ai_models_and_inference" / "README.md",
         workspace_root / "05_agents_and_swarms" / "tools" / "mesh_algorithm_tools.py",
-        workspace_root / "01_apps" / "canonical_port" / "tui" / "unified_mesh_cockpit_tui.py",
+        workspace_root / "01_apps" / "canonical_port" / "tui" / "unified_mesh_console_tui.py",
     ]
 
     retrieved_sources = []

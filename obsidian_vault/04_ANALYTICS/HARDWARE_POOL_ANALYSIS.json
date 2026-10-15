@@ -1,0 +1,156 @@
+{
+  "nodes": {
+    "L1 (M4 Mini)": {
+      "role": "Host Sanctuary",
+      "ram": 24,
+      "vram_poolable": 16,
+      "compute": "M4 Pro 8P+4E, 16-core GPU",
+      "npu": "Apple Neural Engine",
+      "sharding_transports": [
+        "TB4",
+        "Tailscale",
+        "LAN"
+      ]
+    },
+    "L1a (M4 Air)": {
+      "role": "Metal LoRA Distillation",
+      "ram": 16,
+      "vram_poolable": 12,
+      "compute": "M4 4P+6E",
+      "npu": "Apple Neural Engine",
+      "sharding_transports": [
+        "Tailscale",
+        "LAN"
+      ]
+    },
+    "L1b (M2 Mini)": {
+      "role": "Storage Vault & Shard",
+      "ram": 16,
+      "vram_poolable": 12,
+      "compute": "M2 Pro",
+      "npu": "Apple Neural Engine",
+      "sharding_transports": [
+        "TB4",
+        "Tailscale",
+        "LAN"
+      ]
+    },
+    "L2 (Intel Pro)": {
+      "role": "Model Vault",
+      "ram": 16,
+      "vram_poolable": 8,
+      "compute": "Intel i7-9750H, AMD Radeon Pro 5300M",
+      "npu": "None",
+      "sharding_transports": [
+        "TB4",
+        "Tailscale",
+        "LAN"
+      ]
+    },
+    "L3 (AMD Linux)": {
+      "role": "Compute Engine",
+      "ram": 15,
+      "vram_poolable": 12,
+      "compute": "AMD Ryzen 7 5700U",
+      "npu": "None",
+      "sharding_transports": [
+        "Tailscale",
+        "LAN"
+      ]
+    },
+    "L8 (Linux Hub)": {
+      "role": "First Offload",
+      "ram": 32,
+      "vram_poolable": 24,
+      "compute": "Intel x86_64 12-core",
+      "npu": "None",
+      "sharding_transports": [
+        "TB4",
+        "Tailscale",
+        "LAN"
+      ]
+    },
+    "L6 (Pixel 10)": {
+      "role": "Edge TPU",
+      "ram": 16,
+      "vram_poolable": 10,
+      "compute": "Tensor G5",
+      "npu": "Edge TPU (18-20 TOPS)",
+      "sharding_transports": [
+        "Tailscale",
+        "LAN",
+        "Android AVF"
+      ]
+    },
+    "L7 (Samsung S20)": {
+      "role": "Edge UI",
+      "ram": 12,
+      "vram_poolable": 6,
+      "compute": "Exynos 990",
+      "npu": "NPU",
+      "sharding_transports": [
+        "Tailscale",
+        "LAN",
+        "ADB"
+      ]
+    }
+  },
+  "totals": {
+    "total_ram_gb": 147,
+    "total_poolable_vram_gb": 100
+  },
+  "frameworks": {
+    "MLX": {
+      "language": "C++ / Metal",
+      "context_capabilities": "Dynamic, up to 128k based on Unified Memory",
+      "optimal_nodes": [
+        "L1",
+        "L1a",
+        "L1b"
+      ]
+    },
+    "llama.cpp RPC": {
+      "language": "C++ / GGML",
+      "context_capabilities": "Static chunking, 32k-128k depending on KV cache offload",
+      "optimal_nodes": [
+        "L1b",
+        "L2",
+        "L3",
+        "L8"
+      ]
+    },
+    "Petals / Hivemind": {
+      "language": "Python / PyTorch",
+      "context_capabilities": "Distributed sequence processing",
+      "optimal_nodes": [
+        "L3",
+        "L8",
+        "L1"
+      ]
+    },
+    "ExecuTorch": {
+      "language": "C++ / PyTorch Edge",
+      "context_capabilities": "Mobile optimized, 4k-8k",
+      "optimal_nodes": [
+        "L4",
+        "L6",
+        "L7"
+      ]
+    },
+    "Exo": {
+      "language": "C++",
+      "context_capabilities": "Distributed mobile/edge",
+      "optimal_nodes": [
+        "L1",
+        "L1a",
+        "L1b",
+        "L2",
+        "L3",
+        "L4",
+        "L6",
+        "L7",
+        "L8"
+      ]
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-09-02T14:41:56.726544+00:00Z",
+  "allocation": {
+    "Mac Mini M4 Pro (L1)": {
+      "allocated_for_training_gb": 16.0,
+      "methods": [
+        "Genetic MoE Fusion",
+        "DPO Alignment",
+        "PEFT SFT"
+      ]
+    },
+    "MacBook Pro M4 (L2)": {
+      "allocated_for_training_gb": 8.0,
+      "methods": [
+        "llama.cpp GGML LoRA Backprop",
+        "Storage Vault"
+      ]
+    },
+    "MacBook Air M4 (L3)": {
+      "allocated_for_training_gb": 8.0,
+      "methods": [
+        "MLX 4-bit QLoRA",
+        "Continuous Batching"
+      ]
+    },
+    "Linux Head Node (L4)": {
+      "allocated_for_training_gb": 10.0,
+      "methods": [
+        "Unsloth FastLoRA",
+        "Petals DHT Layer Swarm"
+      ]
+    },
+    "Total Dedicated AI Training Pool GB": 42.0,
+    "Unused Safety Headroom GB": 34.0,
+    "Cost Per Hour": "$0.00 (100% Local Hardware)"
+  }
+}

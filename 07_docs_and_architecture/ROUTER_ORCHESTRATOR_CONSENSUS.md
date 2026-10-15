@@ -104,8 +104,8 @@ The Lauburu Mesh pools **108.0 GB RAM (82.8 GB Usable AI VRAM)** across 8 physic
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **GW** | `GL.iNet Router` | MediaTek MT7986 Quad-Core ARM64, 330MB Flash | LAN: `192.168.8.1`<br>TS: `100.122.185.123` | 1.0 GB RAM / Embedded (0.0 GB AI) | Reverse Proxy (:8080), WoL Watchdog, USB ADB (:22) | Tier-0 Ingress, Gateway Watchdog, Hardware Out-of-Band Resurrection |
 | **L1** | `Mac_Node` | Apple M4 Pro (12C CPU / 16C GPU), Apple Neural Engine | LAN: `192.168.8.230`<br>TB4: `169.254.80.69`<br>TS: `100.119.199.76` | 24.0 GB RAM / 21.6 GB AI (Cap: 90%) | llama.cpp Master (:8081), Prompt Ingestion, Shard 3 (24L) | Prompt Ingestion, Master Memory Governor, Thunderbolt 4 Initiator |
-| **L2** | `MacBook_Pro` | Apple M1 Max (10C CPU / 32C GPU), 285 GB SSD Vault | LAN: `192.168.8.127`<br>TB4: `169.254.187.138`<br>TS: `100.103.212.21` | 16.0 GB RAM / 14.0 GB AI (Cap: 90%) | llama.cpp RPC Worker (:50052), Shard 2 (28L), GGUF Vault | 10Gbps TB4 DMA Bridge Anchor (0.277ms RTT), GGUF Model Storage |
-| **L3** | `Linux_Head_Node` | AMD Ryzen 7 5700U (8C/16T), Radeon Vega 8 GPU | LAN: `192.168.8.224`<br>TS: `100.101.39.98` | 16.0 GB RAM / 12.8 GB AI (Cap: 80%) | SeaweedFS Filer (:8888), PySpark (:9999), Shard 1 (28L) | Distributed Storage Engine, PySpark Data Lake, Compute Ingress Hub |
+| **L2** | `MacBook_Pro | Intel Core i7 (6C CPU / AMD GPU), 285 GB SSD Vault | LAN: `192.168.8.127`<br>TB4: `169.254.187.138`<br>TS: `100.103.212.21` | 16.0 GB RAM / 14.0 GB AI (Cap: 90%) | llama.cpp RPC Worker (:50052), Shard 2 (28L), GGUF Vault | 10Gbps TB4 DMA Bridge Anchor (0.277ms RTT), GGUF Model Storage |
+| **L3** | `Linux_Mini` | Intel 2018 Mac Mini (Linux) (8C/16T), Radeon Vega 8 GPU | LAN: `192.168.8.224`<br>TS: `100.101.39.98` | 16.0 GB RAM / 12.8 GB AI (Cap: 80%) | SeaweedFS Filer (:8888), PySpark (:9999), Shard 1 (28L) | Distributed Storage Engine, PySpark Data Lake, Compute Ingress Hub |
 | **L4** | `Linux_Tablet` | Debian Linux ARM64 Tablet, Touch DSP | Wi-Fi 7 MLO (DHCP)<br>TS: `100.81.92.125` | 8.0 GB RAM / 6.0 GB AI (Cap: 75%) | Petals Worker, Biometrics DSP, MoveSense BLE Ingest | Mobile Linux Compute, Lightweight Signal Processing |
 | **L5** | `MacBook_Air` | Apple M4 (8C CPU / 10C GPU), Metal Engine | Wi-Fi 7 MLO (`192.168.8.222`)<br>TS: `100.93.158.96` | 16.0 GB RAM / 14.0 GB AI (Cap: 90%) | Continuous LoRA Distillation, Metal Worker (:8084) | Standby Inference Worker, Background DPO / PEFT Evolution |
 | **L6** | `Pixel_10_Pro_XL`| Google Tensor G5, Edge TPU, 8K Camera Array | Wi-Fi 7 MLO (DHCP)<br>TS: `100.73.38.87` | 16.0 GB RAM / 13.6 GB AI (Cap: 85%) | 8K Vision Stream, Edge TPU Projector, UWB 3D Tracker | High-Resolution Vision Stream, UWB Positioning, Mobile Sensor Hub |
@@ -133,7 +133,7 @@ The Lauburu Mesh pools **108.0 GB RAM (82.8 GB Usable AI VRAM)** across 8 physic
                      ▼                            ▼                                                   ▼
        ┌──────────────────────────────┐ ┌────────────────────────────────┐            ┌───────────────────────────────┐
        │   L3: Linux Head Node        │ │ L4: Linux Tablet (8GB)         │            │ L7: Samsung S20+ (12GB)       │
-       │   AMD Ryzen 7 5700U (16GB)   │ │ • Petals Worker                │            │ • Device ID: R3CN40CJJ1R      │
+       │   Intel 2018 Mac Mini (Linux) (16GB)   │ │ • Petals Worker                │            │ • Device ID: R3CN40CJJ1R      │
        │   IP: 192.168.8.224          │ │ • TS: 100.81.92.125            │            │ • Out-of-Band UI Automation   │
        │   • SeaweedFS Filer (:8888)  │ ├────────────────────────────────┤            │ • TS: 100.84.40.95            │
        │   • PySpark Streaming (:9999)│ │ L5: MacBook Air M4 (16GB)      │            └───────────────────────────────┘
@@ -262,7 +262,7 @@ The router maintains an in-memory health table in volatile RAM (`/tmp/mesh_statu
 ┌───────────────────────┐    ┌───────────────────────┐    ┌───────────────────────┐
 │ Target 1: Vision Model│    │ Target 2: Linux Node  │    │ Target 3: Cloud Spark │
 │ Metal Port 8084       │    │ Gemma-2-9B Port 8082  │    │ Cloud Gateway Port 8088
-│ (MacBook Air / Mini)  │    │ (Ryzen 7 5700U)       │    │ (Gemini 1.5 / CF AI)  │
+│ (MacBook Air / Mini)  │    │ (Intel 2018 Mac Mini (Linux))       │    │ (Gemini 1.5 / CF AI)  │
 └───────────────────────┘    └───────────────────────┘    └───────────────────────┘
 ```
 
@@ -274,24 +274,33 @@ The router maintains an in-memory health table in volatile RAM (`/tmp/mesh_statu
 
 ---
 
-### 3.3 Out-of-Band Hardware Resurrection (Wake-on-LAN Engine)
+### 3.3 Out-of-Band Hardware Resurrection (Line 1 Bluetooth ➔ Line 2 WoL ➔ Line 3 ADB)
 
-When an inactive or crashed node is detected, the router's supervisor daemon executes automated resurrection:
+When an inactive or crashed node is detected, the supervisor daemon executes the canonical multi-tier resurrection sequence:
+1. **Line 1 (Default / First Line): Bluetooth Proximity Wake** (`blueutil --connect <BT_MAC>`, zero IP dependency) to awaken radio hardware from sleep states.
+2. **Line 2: Wake-on-LAN Magic Packet** (OpenWrt `etherwake` / UDP port 9/7 broadcast).
+3. **Line 3: USB ADB Wake & Keepalive** (for Android targets).
 
 ```bash
-# Automated Wake-on-LAN Broadcast Routine (OpenWrt POSIX)
+# Line 1: Bluetooth Proximity Pulse (Host Mac Mini / Controller)
+blueutil --connect 2c-ca-16-08-c0-27  # MacBook Pro (L2)
+blueutil --connect ca-6b-75-9d-8e-92  # MacBook Air (L5)
+
+# Line 2: Automated Wake-on-LAN Broadcast Routine (OpenWrt POSIX)
 # Broadcasts RFC 792 Magic Packet across br-lan interface
 etherwake -i br-lan 1C:F6:4C:7D:D7:0A  # Mac Mini Host (L1)
-etherwake -i br-lan 98:FC:11:A2:34:BC  # MacBook Pro Vault (L2)
+etherwake -i br-lan A4:83:E7:D1:7C:82  # MacBook Pro Vault (L2)
 etherwake -i br-lan 00:41:0E:14:28:43  # Linux Head Node (L3)
-etherwake -i br-lan 66:74:12:88:99:FF  # MacBook Air Worker (L5)
+etherwake -i br-lan 66:74:75:D8:16:FB  # MacBook Air Worker (L5)
 ```
 
-#### 3.3.1 Node Hardware MAC Directory
-- **Mac Mini Host (L1)**: `1C:F6:4C:7D:D7:0A`
-- **MacBook Pro Vault (L2)**: `98:FC:11:A2:34:BC`
-- **Linux Head Node (L3)**: `00:41:0E:14:28:43`
-- **MacBook Air Worker (L5)**: `66:74:12:88:99:FF`
+#### 3.3.1 Node Hardware Directory (Bluetooth & Ethernet MACs)
+- **Mac Mini Host (L1)**: Eth `1C:F6:4C:7D:D7:0A` | BT `1C:F6:4C:81:0B:28`
+- **MacBook Pro Vault (L2)**: Eth `A4:83:E7:D1:7C:82` | BT `2C:CA:16:08:C0:27`
+- **Linux Head Node (L3)**: Eth `00:41:0E:14:28:43` | BT N/A
+- **MacBook Air Worker (L5)**: Eth `66:74:75:D8:16:FB` | BT `CA:6B:75:9D:8E:92`
+- **Pixel 10 Pro XL (L6)**: Eth/Wi-Fi `30:E0:44:6D:18:EC` | BT `30:E0:44:6D:18:EC`
+- **Samsung S20+ (L7)**: Eth/Wi-Fi `5C:CB:99:05:81:41` | BT `5C:CB:99:05:81:41`
 
 ---
 

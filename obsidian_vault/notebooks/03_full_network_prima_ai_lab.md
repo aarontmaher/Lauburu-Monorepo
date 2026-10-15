@@ -21,7 +21,7 @@ jupyter:
     <span style="background: rgba(0, 255, 204, 0.15); color: #00ffcc; border: 1px solid #00ffcc; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;">0ms WAN / $0 SPEND</span>
   </div>
   <p style="color: #94a3b8; font-size: 12px; margin: 0; line-height: 1.6;">
-    Executes high-throughput local AI inference across <b>Qwen 3 Next 80B</b>, <b>Qwen 2.5 Coder 32B</b>, and <b>DeepSeek-R1-32B</b> sharded over <b>10Gbps Thunderbolt 4 DMA</b> (0.277ms RTT) and WireGuard mesh links using <b>prima.cpp PRP Ring</b> and <b>Halda ILP Layer Scheduler</b>.
+    Executes high-throughput local AI inference across <b>Qwen 3 Next 80B</b>, <b>Qwen 2.5 Coder 32B</b>, and <b>DeepSeek-R1-32B</b> sharded over <b>40Gbps Thunderbolt 4 DMA</b> (0.277ms RTT) and WireGuard mesh links using <b>prima.cpp PRP Ring</b> and <b>Halda ILP Layer Scheduler</b>.
   </p>
 </div>
 
@@ -51,7 +51,7 @@ except ImportError:
 from IPython.display import display, HTML, Markdown
 
 # Auto-path resolution across monorepo and teamwork trees
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 for path_str in [str(REPO_ROOT), str(REPO_ROOT / "01_apps"), "/Users/aaron/teamwork_projects"]:
     if os.path.isdir(path_str) and path_str not in sys.path:
         sys.path.insert(0, path_str)
@@ -66,8 +66,8 @@ print(f"• Monorepo Root:     {REPO_ROOT}")
 # ─── 1. 7-NODE PHYSICAL MESH TOPOLOGY & VRAM MATRIX ───
 NODE_TOPOLOGY = [
     {"layer": "L1", "node": "Mac_Node (Mac Mini M4 Pro)", "ip": "192.168.8.230", "tb4_ip": "169.254.187.1", "ram_gb": 24.0, "vram_ai": 21.6, "role": "Master Rank 0 / Memory Governor"},
-    {"layer": "L2", "node": "MacBook_Pro (M1 Max)",        "ip": "192.168.8.127", "tb4_ip": "169.254.187.138", "ram_gb": 16.0, "vram_ai": 14.0, "role": "Metal GPU RPC (:50052) / SSD Vault"},
-    {"layer": "L3", "node": "Linux_Head_Node (Ryzen 7)",   "ip": "192.168.8.224", "tb4_ip": "-",             "ram_gb": 16.0, "vram_ai": 13.8, "role": "Gateway Hub / Petals DHT Bootstrap"},
+    {"layer": "L2", "node": "MacBook_Pro (Intel Core i7)",        "ip": "192.168.8.127", "tb4_ip": "169.254.187.138", "ram_gb": 16.0, "vram_ai": 14.0, "role": "Metal GPU RPC (:50052) / SSD Vault"},
+    {"layer": "L3", "node": "Linux_Mini (Intel 2018 Mac Mini)",   "ip": "192.168.8.224", "tb4_ip": "-",             "ram_gb": 16.0, "vram_ai": 13.8, "role": "Gateway Hub / Petals DHT Bootstrap"},
     {"layer": "L4", "node": "Linux_Tablet (Debian)",      "ip": "DHCP / Tailscale", "tb4_ip": "-",             "ram_gb": 8.0,  "vram_ai": 6.5,  "role": "Secondary Petals Worker / DSP"},
     {"layer": "L5", "node": "MacBook_Air (M4)",           "ip": "192.168.8.222", "tb4_ip": "-",             "ram_gb": 16.0, "vram_ai": 14.0, "role": "MPS Distillation / JupyterLab (:8889)"},
     {"layer": "L6", "node": "Pixel_10_Pro_XL (Tensor G5)","ip": "DHCP / Tailscale", "tb4_ip": "-",             "ram_gb": 16.0, "vram_ai": 12.5, "role": "Edge TPU / 8K Vision Perception"},
@@ -90,8 +90,8 @@ print(f"⚡ TOTAL POOLED PHYSICAL RAM: {total_ram:.1f} GB | USABLE AI VRAM: {tot
 # Model: Qwen 3 Next 80B MoE (48 Total Transformer Layers, Q4_K_M Quantization)
 layer_schedule = [
     {"rank": 0, "node": "L1 Mac Mini M4 Pro", "layers": "Layers 00 - 16 (17 Layers)", "vram_used_gb": 16.8, "transport": "Host Shared Memory (0.01ms)"},
-    {"rank": 1, "node": "L2 MacBook Pro",     "layers": "Layers 17 - 28 (12 Layers)", "vram_used_gb": 12.2, "transport": "10Gbps TB4 DMA Bridge (0.27ms)"},
-    {"rank": 2, "node": "L5 MacBook Air M4",  "layers": "Layers 29 - 40 (12 Layers)", "vram_used_gb": 12.2, "transport": "Wi-Fi 7 / 1GbE LAN (0.85ms)"},
+    {"rank": 1, "node": "L2 MacBook Pro",     "layers": "Layers 17 - 28 (12 Layers)", "vram_used_gb": 12.2, "transport": "40Gbps TB4 DMA Bridge (0.27ms)"},
+    {"rank": 2, "node": "L5 MacBook Pro (Node L2)",  "layers": "Layers 29 - 40 (12 Layers)", "vram_used_gb": 12.2, "transport": "Wi-Fi 7 / 1GbE LAN (0.85ms)"},
     {"rank": 3, "node": "L3 Linux Head Node", "layers": "Layers 41 - 47 (7 Layers)",  "vram_used_gb": 8.4,  "transport": "1GbE LAN / Petals Fallback"},
 ]
 
@@ -133,7 +133,7 @@ def query_local_inference(prompt: str, model_name: str = "Qwen_Qwen3-Next-80B-A3
     print(f"• Model: {model_name}")
     print("• Engine State: STANDBY (Zero-Mock Verified). Launch prima.cpp worker ring to stream live tokens.")
 
-query_local_inference("Explain how 10Gbps Thunderbolt 4 DMA enables sub-millisecond tensor passing in prima.cpp PRP ring.")
+query_local_inference("Explain how 40Gbps Thunderbolt 4 DMA enables sub-millisecond tensor passing in prima.cpp PRP ring.")
 
 ```
 

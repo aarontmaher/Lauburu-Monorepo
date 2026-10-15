@@ -21,9 +21,9 @@ The **MoE Expert Sharding Engine** implements zero-weight-transfer distributed i
 | Layer | Node Identifier | IP / Transport | Hosted Experts | Local VRAM Footprint |
 | :--- | :--- | :--- | :--- | :--- |
 | **L1** | `Mac_Node` (Host M4 Pro) | `127.0.0.1:50060` (Loopback) | **Router + Experts 0..3** | **13.5 GB** |
-| **L2** | `MacBook_Pro` (TB4 Bridge) | `169.254.187.138:50061` (10Gbps TB4) | **Experts 4..7** | **9.5 GB** |
+| **L2** | `MacBook_Pro` (TB4 Bridge) | `169.254.187.138:50061` (40Gbps TB4) | **Experts 4..7** | **9.5 GB** |
 | **L5** | `MacBook_Air` (Metal Worker) | `100.93.158.96:50062` (Tailscale P2P) | **Experts 8..11** | **9.5 GB** |
-| **L3** | `Linux_Head_Node` (Gateway) | `100.101.39.98:50063` (Tailscale P2P) | **Experts 12..15** | **9.5 GB** |
+| **L3** | `Linux_Mini` (Gateway) | `100.101.39.98:50063` (Tailscale P2P) | **Experts 12..15** | **9.5 GB** |
 | **L6** | `Pixel_10_Pro_XL` (Edge TPU) | `100.73.38.87:50064` (Termux) | **Edge Speculative Experts** | **2.5 GB** |
 
 ---

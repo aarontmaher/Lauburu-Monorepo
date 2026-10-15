@@ -21,18 +21,18 @@ Crucially, **Stage 1 (Bluetooth Proximity Wake)** is not restricted to mobile no
 │   • Actuates native Darwin Bluetooth radio across ALL LAPTOPS & MAC MINI:   │
 │     - Mac Mini M4 Pro (L1 Host): Controller Self-Affirmation (blueutil     │
 │       --power 1) & PCIe radio beacon (1c-f6-4c-81-0b-28)                   │
-│     - MacBook Pro M4 (L2 Laptop): 2c-ca-16-08-c0-27 (Metal GPU & SSD Vault)│
-│     - Linux Head Node (L3 Laptop): 00-41-0e-14-28-44 (AMD Ryzen 7 5700U)   │
-│     - MacBook Air M4 (L5 Laptop): dc-29-55-d6-fc-0b (Secondary Metal Node) │
+│     - Intel MacBook Pro (L2 Laptop): 2c-ca-16-08-c0-27 (Metal GPU & SSD Vault)│
+│     - Linux Head Node (L3 Laptop): 00-41-0e-14-28-44 (Intel 2018 Mac Mini (Linux))   │
+│     - MacBook Pro (Node L2) (L5 Laptop): dc-29-55-d6-fc-0b (Secondary Metal Node) │
 │     - Pixel 10 Pro XL (L6 Mobile): 30-e0-44-6d-18-ec (Tensor G5 Edge TPU)  │
 │     - Samsung S20+ (L7 Mobile): 5c-cb-99-05-81-41 (ADB UI Test Target)     │
 │     - Movesense 512Hz ECG Sensor: GATT BLE proximity reconnection          │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ STAGE 2: WAKE-ON-LAN LAYER 2 ETHERNET BROADCAST (UDP Port 9 / Port 7)       │
 │   • Dispatches 06_scripts_and_tooling/mesh/canonical_network_resurrection_engine.py magic packets to: │
-│     - MacBook Pro M4 (L2) - a4:83:e7:d1:7c:82 (10Gbps TB4 Bridge)          │
-│     - Linux Head Node (L3) - 00:41:0e:14:28:43 (Ryzen Compute Hub)         │
-│     - MacBook Air M4 (L5) - 66:74:75:d8:16:fb (Metal Worker)               │
+│     - Intel MacBook Pro (L2) - a4:83:e7:d1:7c:82 (40Gbps TB4 Bridge)          │
+│     - Linux Head Node (L3) - 00:41:0e:14:28:43 (Intel 2018 Mac Mini Compute Hub)         │
+│     - MacBook Pro (Node L2) (L5) - 66:74:75:d8:16:fb (Metal Worker)               │
 │     - Host Mac Mini (L1) - 1c:f6:4c:7d:d7:0a (Host Node)                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ STAGE 3: ADB KEEPALIVE & DISPLAY WAKE INJECTION (USB + Wi-Fi ADB)           │
@@ -54,7 +54,7 @@ To prevent sequential connection timeout bottlenecks (which would require 12+ se
 | **Mac Mini M4 Pro** | **L1** | Host Desktop | `1c-f6-4c-81-0b-28` | Controller Power Assertion (`blueutil --power 1`) | **CONTROLLER ACTIVE** |
 | **MacBook Pro Vault** | **L2** | Laptop Computer | `2c-ca-16-08-c0-27` | CoreBluetooth ACL Pulse (`blueutil --connect`) | **PULSE DISPATCHED** |
 | **Linux Head Node** | **L3** | Laptop Computer | `00-41-0e-14-28-44` | BNEP / RFCOMM Connect (`blueutil --connect`) | **CONNECTED** (-39 dBm) |
-| **MacBook Air M4** | **L5** | Laptop Computer | `dc-29-55-d6-fc-0b` | CoreBluetooth ACL Pulse (`blueutil --connect`) | **PULSE DISPATCHED** |
+| **MacBook Pro (Node L2)** | **L5** | Laptop Computer | `dc-29-55-d6-fc-0b` | CoreBluetooth ACL Pulse (`blueutil --connect`) | **PULSE DISPATCHED** |
 | **Pixel 10 Pro XL** | **L6** | Mobile Phone | `30-e0-44-6d-18-ec` | GATT ACL Pulse (`blueutil --connect`) | **CONNECTED** (0 dBm) |
 | **Samsung Galaxy S20+** | **L7** | Mobile Phone | `5c-cb-99-05-81-41` | GATT ACL Pulse (`blueutil --connect`) | **CONNECTED** (0 dBm) |
 
@@ -91,7 +91,7 @@ To prevent sequential connection timeout bottlenecks (which would require 12+ se
       "tier": "Line 1 Bluetooth Proximity Wake"
     },
     {
-      "device": "MacBook Air M4 (L5 Laptop)",
+      "device": "MacBook Pro (Node L2) (L5 Laptop)",
       "mac": "dc-29-55-d6-fc-0b",
       "status": "PULSE DISPATCHED",
       "tier": "Line 1 Bluetooth Proximity Wake"

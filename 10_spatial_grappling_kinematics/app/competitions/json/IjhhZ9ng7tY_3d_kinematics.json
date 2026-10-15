@@ -1,0 +1,26 @@
+{
+  "video_id": "IjhhZ9ng7tY",
+  "url": "https://youtu.be/IjhhZ9ng7tY",
+  "division": "Freestyle Wrestling",
+  "title": "South East Asian freestyle wrestling championships highlights",
+  "duration_sec": 128.6,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 12,
+  "dual_athlete_frames": 2,
+  "standing_phase_pct": 16.7,
+  "ground_scramble_phase_pct": 83.3,
+  "level_change_shots_detected": 2,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 49.3,
+    "left_elbow": 135.4,
+    "right_elbow": 145.8,
+    "left_hip": 124.2,
+    "right_hip": 108.9,
+    "left_knee": 136.9,
+    "right_knee": 122.0
+  },
+  "keyframe_grid_path": null,
+  "tactical_note": "Aaron Maher's grappling in the South East Asian freestyle wrestling championships highlights showcases his ability to execute a series of powerful and precise moves, including a powerful headlock and a high-stakes ground scramble, while maintaining a high level of stability and control in his movements.",
+  "processing_sec": 1.66
+}

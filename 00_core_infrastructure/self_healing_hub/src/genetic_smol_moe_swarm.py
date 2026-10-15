@@ -17,9 +17,9 @@ import math
 import subprocess
 from typing import Dict, List, Any, Optional
 
-GENETIC_SMOL_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/genetic_smol_moe_swarm_state.json"
-LORA_TRAINING_LEDGER = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/genetic_smol_lora_training.jsonl"
-ARENA_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
+GENETIC_SMOL_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/genetic_smol_moe_swarm_state.json"
+LORA_TRAINING_LEDGER = "/Volumes/Lauburu-Monorepo/lora_datasets/genetic_smol_lora_training.jsonl"
+ARENA_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
 
 os.makedirs(os.path.dirname(GENETIC_SMOL_STATE_FILE), exist_ok=True)
 os.makedirs(os.path.dirname(LORA_TRAINING_LEDGER), exist_ok=True)
@@ -166,7 +166,7 @@ class GeneticSmolMoESwarm:
         elif expert_id == "ghost_daemon_expert":
             return {
                 "tool_name": "spawn_swarm_subagent",
-                "arguments": {"role": "Ghost Keepalive Supervisor", "target_hardware_node": "Samsung S20+ (100.84.40.95)"},
+                "arguments": {"role": "Ghost Keepalive Supervisor", "target_hardware_node": "Samsung S20+ (100.78.206.96)"},
                 "result": {"status": "ACTIVE_GHOST_RUNNING", "doze_immunity": "100% Guaranteed"}
             }
         elif expert_id == "turbo_hf_stream_expert":

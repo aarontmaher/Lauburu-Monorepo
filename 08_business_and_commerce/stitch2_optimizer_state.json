@@ -1,0 +1,6441 @@
+{
+  "generation": 1072,
+  "current_elo": 1924.2757649234363,
+  "best_elo": 1924.2757649234363,
+  "best_generation": 1071,
+  "history": [
+    {
+      "generation": 1,
+      "elo": 1510.08,
+      "composite": 92.0,
+      "sha256": "34cfa94048e24837"
+    },
+    {
+      "generation": 2,
+      "elo": 1519.81,
+      "composite": 92.0,
+      "sha256": "96792a6c2498069b"
+    },
+    {
+      "generation": 3,
+      "elo": 1529.21,
+      "composite": 92.0,
+      "sha256": "e7802aa8d4fed012"
+    },
+    {
+      "generation": 4,
+      "elo": 1538.28,
+      "composite": 92.0,
+      "sha256": "640762e9a1a15528"
+    },
+    {
+      "generation": 5,
+      "elo": 1547.05,
+      "composite": 92.0,
+      "sha256": "7cb4ff6e2b839afe"
+    },
+    {
+      "generation": 6,
+      "elo": 1555.51,
+      "composite": 92.0,
+      "sha256": "8aa5f3249dcc42a9"
+    },
+    {
+      "generation": 7,
+      "elo": 1563.69,
+      "composite": 92.0,
+      "sha256": "55c88f648e71dbae"
+    },
+    {
+      "generation": 8,
+      "elo": 1571.59,
+      "composite": 92.0,
+      "sha256": "842e8cd46adde380"
+    },
+    {
+      "generation": 9,
+      "elo": 1579.24,
+      "composite": 92.0,
+      "sha256": "25917cfb38324acf"
+    },
+    {
+      "generation": 10,
+      "elo": 1586.62,
+      "composite": 92.0,
+      "sha256": "db3e5a6690aa8832"
+    },
+    {
+      "generation": 11,
+      "elo": 1593.77,
+      "composite": 92.0,
+      "sha256": "3656294664c00e91"
+    },
+    {
+      "generation": 12,
+      "elo": 1600.69,
+      "composite": 92.0,
+      "sha256": "4e436166459d9ebb"
+    },
+    {
+      "generation": 13,
+      "elo": 1607.39,
+      "composite": 92.0,
+      "sha256": "7e0a3abf9114927d"
+    },
+    {
+      "generation": 14,
+      "elo": 1613.87,
+      "composite": 92.0,
+      "sha256": "9b1a344a86c64cc0"
+    },
+    {
+      "generation": 15,
+      "elo": 1620.15,
+      "composite": 92.0,
+      "sha256": "efe04513fcd5dda3"
+    },
+    {
+      "generation": 16,
+      "elo": 1626.24,
+      "composite": 92.0,
+      "sha256": "b70107121d0ffe65"
+    },
+    {
+      "generation": 17,
+      "elo": 1632.14,
+      "composite": 92.0,
+      "sha256": "7e3253552aae911d"
+    },
+    {
+      "generation": 18,
+      "elo": 1637.87,
+      "composite": 92.0,
+      "sha256": "c9b86c89b0c2afc9"
+    },
+    {
+      "generation": 19,
+      "elo": 1643.42,
+      "composite": 92.0,
+      "sha256": "ad421032b538bfef"
+    },
+    {
+      "generation": 20,
+      "elo": 1648.81,
+      "composite": 92.0,
+      "sha256": "9f34e98da20f9228"
+    },
+    {
+      "generation": 21,
+      "elo": 1654.04,
+      "composite": 92.0,
+      "sha256": "153953d10ac310c6"
+    },
+    {
+      "generation": 22,
+      "elo": 1659.13,
+      "composite": 92.0,
+      "sha256": "380bd605efa00211"
+    },
+    {
+      "generation": 23,
+      "elo": 1664.07,
+      "composite": 92.0,
+      "sha256": "17029ee10283f3ee"
+    },
+    {
+      "generation": 24,
+      "elo": 1668.87,
+      "composite": 92.0,
+      "sha256": "31dcbc48bb25e221"
+    },
+    {
+      "generation": 25,
+      "elo": 1673.53,
+      "composite": 92.0,
+      "sha256": "3b5e8bef979e154a"
+    },
+    {
+      "generation": 26,
+      "elo": 1678.07,
+      "composite": 92.0,
+      "sha256": "61533334e351b1a3"
+    },
+    {
+      "generation": 27,
+      "elo": 1682.49,
+      "composite": 92.0,
+      "sha256": "6cf3100dc5de318d"
+    },
+    {
+      "generation": 28,
+      "elo": 1686.79,
+      "composite": 92.0,
+      "sha256": "a008066ed50218eb"
+    },
+    {
+      "generation": 29,
+      "elo": 1690.97,
+      "composite": 92.0,
+      "sha256": "839708f5886c6cad"
+    },
+    {
+      "generation": 30,
+      "elo": 1695.05,
+      "composite": 92.0,
+      "sha256": "dc44de5d99817fef"
+    },
+    {
+      "generation": 31,
+      "elo": 1699.02,
+      "composite": 92.0,
+      "sha256": "9015c141da8b6d22"
+    },
+    {
+      "generation": 32,
+      "elo": 1702.89,
+      "composite": 92.0,
+      "sha256": "e999f5b00b460f75"
+    },
+    {
+      "generation": 33,
+      "elo": 1706.67,
+      "composite": 92.0,
+      "sha256": "0525b01d85a0dd1e"
+    },
+    {
+      "generation": 34,
+      "elo": 1710.35,
+      "composite": 92.0,
+      "sha256": "58e66fb47dd81b8a"
+    },
+    {
+      "generation": 35,
+      "elo": 1713.94,
+      "composite": 92.0,
+      "sha256": "dba1d3e68500503b"
+    },
+    {
+      "generation": 36,
+      "elo": 1717.44,
+      "composite": 92.0,
+      "sha256": "9a162f05b998804f"
+    },
+    {
+      "generation": 37,
+      "elo": 1720.86,
+      "composite": 92.0,
+      "sha256": "9de84630f8647790"
+    },
+    {
+      "generation": 38,
+      "elo": 1724.19,
+      "composite": 92.0,
+      "sha256": "cd9b74f44e4a8c56"
+    },
+    {
+      "generation": 39,
+      "elo": 1727.45,
+      "composite": 92.0,
+      "sha256": "19c36011b93df64a"
+    },
+    {
+      "generation": 40,
+      "elo": 1730.63,
+      "composite": 92.0,
+      "sha256": "6e07d5cb14c0c758"
+    },
+    {
+      "generation": 41,
+      "elo": 1733.74,
+      "composite": 92.0,
+      "sha256": "3b6443ff6659fdb9"
+    },
+    {
+      "generation": 42,
+      "elo": 1736.78,
+      "composite": 92.0,
+      "sha256": "ec4e13c285af7a2a"
+    },
+    {
+      "generation": 43,
+      "elo": 1739.75,
+      "composite": 92.0,
+      "sha256": "6bd997d20f2c70c7"
+    },
+    {
+      "generation": 44,
+      "elo": 1742.65,
+      "composite": 92.0,
+      "sha256": "f7425903fa759ac8"
+    },
+    {
+      "generation": 45,
+      "elo": 1745.49,
+      "composite": 92.0,
+      "sha256": "a23d09ceca4026f2"
+    },
+    {
+      "generation": 46,
+      "elo": 1748.27,
+      "composite": 92.0,
+      "sha256": "0f61fe2d685f908c"
+    },
+    {
+      "generation": 47,
+      "elo": 1750.99,
+      "composite": 92.0,
+      "sha256": "b2bb49c0b6972c5f"
+    },
+    {
+      "generation": 48,
+      "elo": 1753.65,
+      "composite": 92.0,
+      "sha256": "57f7aa1abc6650d9"
+    },
+    {
+      "generation": 49,
+      "elo": 1756.25,
+      "composite": 92.0,
+      "sha256": "0706b1c5d80c784a"
+    },
+    {
+      "generation": 50,
+      "elo": 1758.8,
+      "composite": 92.0,
+      "sha256": "3020b3342fe7b1a7"
+    },
+    {
+      "generation": 51,
+      "elo": 1761.29,
+      "composite": 92.0,
+      "sha256": "fc5d0d51f12a99c2"
+    },
+    {
+      "generation": 52,
+      "elo": 1763.74,
+      "composite": 92.0,
+      "sha256": "8ffadedeeb2e6256"
+    },
+    {
+      "generation": 53,
+      "elo": 1766.13,
+      "composite": 92.0,
+      "sha256": "64077051ea822d68"
+    },
+    {
+      "generation": 54,
+      "elo": 1768.48,
+      "composite": 92.0,
+      "sha256": "518e0bfa2f8dad19"
+    },
+    {
+      "generation": 55,
+      "elo": 1770.77,
+      "composite": 92.0,
+      "sha256": "db6f672ddabb3557"
+    },
+    {
+      "generation": 56,
+      "elo": 1773.03,
+      "composite": 92.0,
+      "sha256": "5cba8dd29a5ba549"
+    },
+    {
+      "generation": 57,
+      "elo": 1775.23,
+      "composite": 92.0,
+      "sha256": "ab3d5f6853e421cd"
+    },
+    {
+      "generation": 58,
+      "elo": 1777.4,
+      "composite": 92.0,
+      "sha256": "c9fd51355e5e68a8"
+    },
+    {
+      "generation": 59,
+      "elo": 1779.52,
+      "composite": 92.0,
+      "sha256": "47a9ccc4d9575847"
+    },
+    {
+      "generation": 60,
+      "elo": 1781.6,
+      "composite": 92.0,
+      "sha256": "4e87b3f85774bab3"
+    },
+    {
+      "generation": 61,
+      "elo": 1783.64,
+      "composite": 92.0,
+      "sha256": "c765c591261c7b0b"
+    },
+    {
+      "generation": 62,
+      "elo": 1785.65,
+      "composite": 92.0,
+      "sha256": "7e2d1f97c1eda784"
+    },
+    {
+      "generation": 63,
+      "elo": 1787.61,
+      "composite": 92.0,
+      "sha256": "4fc43f17786e32fe"
+    },
+    {
+      "generation": 64,
+      "elo": 1789.54,
+      "composite": 92.0,
+      "sha256": "a1981ce6d582f87d"
+    },
+    {
+      "generation": 65,
+      "elo": 1791.43,
+      "composite": 92.0,
+      "sha256": "65401485d53f6d2a"
+    },
+    {
+      "generation": 66,
+      "elo": 1793.29,
+      "composite": 92.0,
+      "sha256": "ba95f2c3672fbddd"
+    },
+    {
+      "generation": 67,
+      "elo": 1795.11,
+      "composite": 92.0,
+      "sha256": "7a6bd5b01e9edba0"
+    },
+    {
+      "generation": 68,
+      "elo": 1796.9,
+      "composite": 92.0,
+      "sha256": "1e988a026353fd53"
+    },
+    {
+      "generation": 69,
+      "elo": 1798.66,
+      "composite": 92.0,
+      "sha256": "cc7c66d52ca95898"
+    },
+    {
+      "generation": 70,
+      "elo": 1800.39,
+      "composite": 92.0,
+      "sha256": "c52b3f934a88d813"
+    },
+    {
+      "generation": 71,
+      "elo": 1802.09,
+      "composite": 92.0,
+      "sha256": "baf565e5c35f23e4"
+    },
+    {
+      "generation": 72,
+      "elo": 1803.75,
+      "composite": 92.0,
+      "sha256": "f9f2e8fe09ea8d0b"
+    },
+    {
+      "generation": 73,
+      "elo": 1805.39,
+      "composite": 92.0,
+      "sha256": "6e37f40d88c1be2c"
+    },
+    {
+      "generation": 74,
+      "elo": 1807.0,
+      "composite": 92.0,
+      "sha256": "b442dff880c67986"
+    },
+    {
+      "generation": 75,
+      "elo": 1808.58,
+      "composite": 92.0,
+      "sha256": "2f543d6a181aa5bb"
+    },
+    {
+      "generation": 76,
+      "elo": 1810.14,
+      "composite": 92.0,
+      "sha256": "ec0a4b72c56f2990"
+    },
+    {
+      "generation": 77,
+      "elo": 1811.66,
+      "composite": 92.0,
+      "sha256": "80b2aa639615d8e0"
+    },
+    {
+      "generation": 78,
+      "elo": 1813.17,
+      "composite": 92.0,
+      "sha256": "978838eaa2258bed"
+    },
+    {
+      "generation": 79,
+      "elo": 1814.64,
+      "composite": 92.0,
+      "sha256": "3816bd341cd94075"
+    },
+    {
+      "generation": 80,
+      "elo": 1816.09,
+      "composite": 92.0,
+      "sha256": "c610061976d1b63e"
+    },
+    {
+      "generation": 81,
+      "elo": 1817.52,
+      "composite": 92.0,
+      "sha256": "d69ed8bf1779b761"
+    },
+    {
+      "generation": 82,
+      "elo": 1818.93,
+      "composite": 92.0,
+      "sha256": "a4447af43a7b213a"
+    },
+    {
+      "generation": 83,
+      "elo": 1820.31,
+      "composite": 92.0,
+      "sha256": "8078faf056585377"
+    },
+    {
+      "generation": 84,
+      "elo": 1821.66,
+      "composite": 92.0,
+      "sha256": "1b7843f06f80540b"
+    },
+    {
+      "generation": 85,
+      "elo": 1823.0,
+      "composite": 92.0,
+      "sha256": "880fb8e777dd1db6"
+    },
+    {
+      "generation": 86,
+      "elo": 1824.32,
+      "composite": 92.0,
+      "sha256": "aa17afbf92cb64cc"
+    },
+    {
+      "generation": 87,
+      "elo": 1825.61,
+      "composite": 92.0,
+      "sha256": "4e662f0368b43670"
+    },
+    {
+      "generation": 88,
+      "elo": 1826.88,
+      "composite": 92.0,
+      "sha256": "6fee609f2d574cf7"
+    },
+    {
+      "generation": 89,
+      "elo": 1828.13,
+      "composite": 92.0,
+      "sha256": "dbf96441dc497ce2"
+    },
+    {
+      "generation": 90,
+      "elo": 1829.37,
+      "composite": 92.0,
+      "sha256": "10f5aaf58684f673"
+    },
+    {
+      "generation": 91,
+      "elo": 1830.58,
+      "composite": 92.0,
+      "sha256": "c2800bbdef567e90"
+    },
+    {
+      "generation": 92,
+      "elo": 1831.78,
+      "composite": 92.0,
+      "sha256": "f0a8da59b2393ef2"
+    },
+    {
+      "generation": 93,
+      "elo": 1832.95,
+      "composite": 92.0,
+      "sha256": "94ae8f000b5e45b5"
+    },
+    {
+      "generation": 94,
+      "elo": 1834.11,
+      "composite": 92.0,
+      "sha256": "3ae76ba5f9b7c0de"
+    },
+    {
+      "generation": 95,
+      "elo": 1835.25,
+      "composite": 92.0,
+      "sha256": "caf6faa3bbede563"
+    },
+    {
+      "generation": 96,
+      "elo": 1836.37,
+      "composite": 92.0,
+      "sha256": "475579e5812dfc82"
+    },
+    {
+      "generation": 97,
+      "elo": 1837.48,
+      "composite": 92.0,
+      "sha256": "52a1fb77b524f961"
+    },
+    {
+      "generation": 98,
+      "elo": 1838.57,
+      "composite": 92.0,
+      "sha256": "b0618169848962d6"
+    },
+    {
+      "generation": 99,
+      "elo": 1839.64,
+      "composite": 92.0,
+      "sha256": "ef63433df3a480c0"
+    },
+    {
+      "generation": 100,
+      "elo": 1840.69,
+      "composite": 92.0,
+      "sha256": "f1ea646e36b055f8"
+    },
+    {
+      "generation": 101,
+      "elo": 1841.73,
+      "composite": 92.0,
+      "sha256": "dcf9d3c6cfc368d8"
+    },
+    {
+      "generation": 102,
+      "elo": 1842.76,
+      "composite": 92.0,
+      "sha256": "af9dfce9c4cdb486"
+    },
+    {
+      "generation": 103,
+      "elo": 1843.77,
+      "composite": 92.0,
+      "sha256": "9d6fb2e6a5c7222e"
+    },
+    {
+      "generation": 104,
+      "elo": 1844.76,
+      "composite": 92.0,
+      "sha256": "d6da86a83a5cc05d"
+    },
+    {
+      "generation": 105,
+      "elo": 1845.74,
+      "composite": 92.0,
+      "sha256": "0573982de81bba76"
+    },
+    {
+      "generation": 106,
+      "elo": 1846.71,
+      "composite": 92.0,
+      "sha256": "9532879b879c6d67"
+    },
+    {
+      "generation": 107,
+      "elo": 1847.66,
+      "composite": 92.0,
+      "sha256": "8bf010347129b725"
+    },
+    {
+      "generation": 108,
+      "elo": 1848.6,
+      "composite": 92.0,
+      "sha256": "73dc6f134baf53c0"
+    },
+    {
+      "generation": 109,
+      "elo": 1849.52,
+      "composite": 92.0,
+      "sha256": "6f7ecafea1254564"
+    },
+    {
+      "generation": 110,
+      "elo": 1850.43,
+      "composite": 92.0,
+      "sha256": "6b4cc49c3c79a723"
+    },
+    {
+      "generation": 111,
+      "elo": 1851.33,
+      "composite": 92.0,
+      "sha256": "4f09b96557d94a0a"
+    },
+    {
+      "generation": 112,
+      "elo": 1852.21,
+      "composite": 92.0,
+      "sha256": "733989d09a078265"
+    },
+    {
+      "generation": 113,
+      "elo": 1853.09,
+      "composite": 92.0,
+      "sha256": "468cb6cc92482936"
+    },
+    {
+      "generation": 114,
+      "elo": 1853.95,
+      "composite": 92.0,
+      "sha256": "bea2ed9653584cc2"
+    },
+    {
+      "generation": 115,
+      "elo": 1854.79,
+      "composite": 92.0,
+      "sha256": "53e3cb3395d8f375"
+    },
+    {
+      "generation": 116,
+      "elo": 1855.63,
+      "composite": 92.0,
+      "sha256": "d7a5a6c1a094d363"
+    },
+    {
+      "generation": 117,
+      "elo": 1856.45,
+      "composite": 92.0,
+      "sha256": "5cc834299f472b5a"
+    },
+    {
+      "generation": 118,
+      "elo": 1857.27,
+      "composite": 92.0,
+      "sha256": "999d3b1658f0b0aa"
+    },
+    {
+      "generation": 119,
+      "elo": 1858.07,
+      "composite": 92.0,
+      "sha256": "9259c4f3278e6bce"
+    },
+    {
+      "generation": 120,
+      "elo": 1858.86,
+      "composite": 92.0,
+      "sha256": "2c7ac068289a22bc"
+    },
+    {
+      "generation": 121,
+      "elo": 1859.64,
+      "composite": 92.0,
+      "sha256": "29b943f2ada0b8ff"
+    },
+    {
+      "generation": 122,
+      "elo": 1860.41,
+      "composite": 92.0,
+      "sha256": "2c2b24f9c02021eb"
+    },
+    {
+      "generation": 123,
+      "elo": 1861.16,
+      "composite": 92.0,
+      "sha256": "a88b68e74b164fab"
+    },
+    {
+      "generation": 124,
+      "elo": 1861.91,
+      "composite": 92.0,
+      "sha256": "5a4fad09e5f5ead0"
+    },
+    {
+      "generation": 125,
+      "elo": 1862.65,
+      "composite": 92.0,
+      "sha256": "73fc2b7346abe56b"
+    },
+    {
+      "generation": 126,
+      "elo": 1863.38,
+      "composite": 92.0,
+      "sha256": "fce9d6db11789564"
+    },
+    {
+      "generation": 127,
+      "elo": 1864.09,
+      "composite": 92.0,
+      "sha256": "6beb9d00e0e7e04e"
+    },
+    {
+      "generation": 128,
+      "elo": 1864.8,
+      "composite": 92.0,
+      "sha256": "0f4662b39654f1cd"
+    },
+    {
+      "generation": 129,
+      "elo": 1865.5,
+      "composite": 92.0,
+      "sha256": "f87e2fdaa49e9d19"
+    },
+    {
+      "generation": 130,
+      "elo": 1866.19,
+      "composite": 92.0,
+      "sha256": "0f0a56a39def2343"
+    },
+    {
+      "generation": 131,
+      "elo": 1866.87,
+      "composite": 92.0,
+      "sha256": "227174703fac2322"
+    },
+    {
+      "generation": 132,
+      "elo": 1867.54,
+      "composite": 92.0,
+      "sha256": "ffc1b4ebb4235280"
+    },
+    {
+      "generation": 133,
+      "elo": 1868.2,
+      "composite": 92.0,
+      "sha256": "4bd8741aa23b23be"
+    },
+    {
+      "generation": 134,
+      "elo": 1868.85,
+      "composite": 92.0,
+      "sha256": "8b43a6fdee923ae4"
+    },
+    {
+      "generation": 135,
+      "elo": 1869.5,
+      "composite": 92.0,
+      "sha256": "d055b9830c6b9b74"
+    },
+    {
+      "generation": 136,
+      "elo": 1870.14,
+      "composite": 92.0,
+      "sha256": "86e2015029b8fdc1"
+    },
+    {
+      "generation": 137,
+      "elo": 1870.76,
+      "composite": 92.0,
+      "sha256": "8ae193f9aaf416eb"
+    },
+    {
+      "generation": 138,
+      "elo": 1871.38,
+      "composite": 92.0,
+      "sha256": "fce89f88f388cb53"
+    },
+    {
+      "generation": 139,
+      "elo": 1871.99,
+      "composite": 92.0,
+      "sha256": "b616ddedaf0ee3e3"
+    },
+    {
+      "generation": 140,
+      "elo": 1872.6,
+      "composite": 92.0,
+      "sha256": "0626793e7499925c"
+    },
+    {
+      "generation": 141,
+      "elo": 1873.19,
+      "composite": 92.0,
+      "sha256": "2bfddde0d7476668"
+    },
+    {
+      "generation": 142,
+      "elo": 1873.78,
+      "composite": 92.0,
+      "sha256": "08be295f2f7cfc27"
+    },
+    {
+      "generation": 143,
+      "elo": 1874.36,
+      "composite": 92.0,
+      "sha256": "120cd7459107d20b"
+    },
+    {
+      "generation": 144,
+      "elo": 1874.93,
+      "composite": 92.0,
+      "sha256": "71870ff4d9dcd23f"
+    },
+    {
+      "generation": 145,
+      "elo": 1875.5,
+      "composite": 92.0,
+      "sha256": "e616f3e1a25eeed8"
+    },
+    {
+      "generation": 146,
+      "elo": 1876.06,
+      "composite": 92.0,
+      "sha256": "2aae1f28521eb53b"
+    },
+    {
+      "generation": 147,
+      "elo": 1876.61,
+      "composite": 92.0,
+      "sha256": "a36052a3ddcbe219"
+    },
+    {
+      "generation": 148,
+      "elo": 1877.15,
+      "composite": 92.0,
+      "sha256": "92816a29e93587ff"
+    },
+    {
+      "generation": 149,
+      "elo": 1877.69,
+      "composite": 92.0,
+      "sha256": "9a6972eb67f92670"
+    },
+    {
+      "generation": 150,
+      "elo": 1878.22,
+      "composite": 92.0,
+      "sha256": "5a442b76611d5646"
+    },
+    {
+      "generation": 151,
+      "elo": 1878.74,
+      "composite": 92.0,
+      "sha256": "b77c29881078f4e7"
+    },
+    {
+      "generation": 152,
+      "elo": 1879.26,
+      "composite": 92.0,
+      "sha256": "99cbf9cb86fffd3b"
+    },
+    {
+      "generation": 153,
+      "elo": 1879.77,
+      "composite": 92.0,
+      "sha256": "1ee0e4db21b5714e"
+    },
+    {
+      "generation": 154,
+      "elo": 1880.27,
+      "composite": 92.0,
+      "sha256": "7e3383962f51d55c"
+    },
+    {
+      "generation": 155,
+      "elo": 1880.77,
+      "composite": 92.0,
+      "sha256": "13dfe1f9e1906571"
+    },
+    {
+      "generation": 156,
+      "elo": 1881.26,
+      "composite": 92.0,
+      "sha256": "b06996f74a57122d"
+    },
+    {
+      "generation": 157,
+      "elo": 1881.75,
+      "composite": 92.0,
+      "sha256": "415745d5c51b316f"
+    },
+    {
+      "generation": 158,
+      "elo": 1882.23,
+      "composite": 92.0,
+      "sha256": "aaf17d686108a2ea"
+    },
+    {
+      "generation": 159,
+      "elo": 1882.7,
+      "composite": 92.0,
+      "sha256": "d2a9d5cb8e73e2d6"
+    },
+    {
+      "generation": 160,
+      "elo": 1883.17,
+      "composite": 92.0,
+      "sha256": "2c297a4a4efd8e49"
+    },
+    {
+      "generation": 161,
+      "elo": 1883.63,
+      "composite": 92.0,
+      "sha256": "faf80057be810be9"
+    },
+    {
+      "generation": 162,
+      "elo": 1884.09,
+      "composite": 92.0,
+      "sha256": "95fc1c302335dca4"
+    },
+    {
+      "generation": 163,
+      "elo": 1884.54,
+      "composite": 92.0,
+      "sha256": "b8bb423bfe4643da"
+    },
+    {
+      "generation": 164,
+      "elo": 1884.98,
+      "composite": 92.0,
+      "sha256": "9b048ed1961aae7c"
+    },
+    {
+      "generation": 165,
+      "elo": 1885.42,
+      "composite": 92.0,
+      "sha256": "48fed82c3f156abe"
+    },
+    {
+      "generation": 166,
+      "elo": 1885.86,
+      "composite": 92.0,
+      "sha256": "58a36c5f8451253d"
+    },
+    {
+      "generation": 167,
+      "elo": 1886.29,
+      "composite": 92.0,
+      "sha256": "99dc44290ac38d64"
+    },
+    {
+      "generation": 168,
+      "elo": 1886.71,
+      "composite": 92.0,
+      "sha256": "07bd6995c467cb4f"
+    },
+    {
+      "generation": 169,
+      "elo": 1887.13,
+      "composite": 92.0,
+      "sha256": "6b1e86aac92b89ba"
+    },
+    {
+      "generation": 170,
+      "elo": 1887.54,
+      "composite": 92.0,
+      "sha256": "68ad6abd2c393c80"
+    },
+    {
+      "generation": 171,
+      "elo": 1887.95,
+      "composite": 92.0,
+      "sha256": "4bda08db7e517d88"
+    },
+    {
+      "generation": 172,
+      "elo": 1888.35,
+      "composite": 92.0,
+      "sha256": "a66bfdd47a40d26a"
+    },
+    {
+      "generation": 173,
+      "elo": 1888.75,
+      "composite": 92.0,
+      "sha256": "5d2a7a5a43b7f388"
+    },
+    {
+      "generation": 174,
+      "elo": 1889.14,
+      "composite": 92.0,
+      "sha256": "ce74760225135753"
+    },
+    {
+      "generation": 175,
+      "elo": 1889.53,
+      "composite": 92.0,
+      "sha256": "0461607568ead395"
+    },
+    {
+      "generation": 176,
+      "elo": 1889.92,
+      "composite": 92.0,
+      "sha256": "6b48e146d44f3b3f"
+    },
+    {
+      "generation": 177,
+      "elo": 1890.3,
+      "composite": 92.0,
+      "sha256": "394381dd306839e6"
+    },
+    {
+      "generation": 178,
+      "elo": 1890.67,
+      "composite": 92.0,
+      "sha256": "2fe1092d8cbc6eab"
+    },
+    {
+      "generation": 179,
+      "elo": 1891.04,
+      "composite": 92.0,
+      "sha256": "64499a87bf61d2c7"
+    },
+    {
+      "generation": 180,
+      "elo": 1891.41,
+      "composite": 92.0,
+      "sha256": "8f72d4f3ae57ab32"
+    },
+    {
+      "generation": 181,
+      "elo": 1891.77,
+      "composite": 92.0,
+      "sha256": "ed8c60122b7b84b4"
+    },
+    {
+      "generation": 182,
+      "elo": 1892.13,
+      "composite": 92.0,
+      "sha256": "98c028041312a03e"
+    },
+    {
+      "generation": 183,
+      "elo": 1892.48,
+      "composite": 92.0,
+      "sha256": "949fb1d0c5d97dd2"
+    },
+    {
+      "generation": 184,
+      "elo": 1892.83,
+      "composite": 92.0,
+      "sha256": "f620c4f08abab18d"
+    },
+    {
+      "generation": 185,
+      "elo": 1893.18,
+      "composite": 92.0,
+      "sha256": "95b6bfd1a9f48fee"
+    },
+    {
+      "generation": 186,
+      "elo": 1893.52,
+      "composite": 92.0,
+      "sha256": "e52550495679d7e7"
+    },
+    {
+      "generation": 187,
+      "elo": 1893.85,
+      "composite": 92.0,
+      "sha256": "f2190dacaa5dd036"
+    },
+    {
+      "generation": 188,
+      "elo": 1894.19,
+      "composite": 92.0,
+      "sha256": "ca0183ff34ac62d8"
+    },
+    {
+      "generation": 189,
+      "elo": 1894.52,
+      "composite": 92.0,
+      "sha256": "f3bf9f4e360e606b"
+    },
+    {
+      "generation": 190,
+      "elo": 1894.84,
+      "composite": 92.0,
+      "sha256": "bb1ed250b3c2330c"
+    },
+    {
+      "generation": 191,
+      "elo": 1895.16,
+      "composite": 92.0,
+      "sha256": "a4609c6a21653ccb"
+    },
+    {
+      "generation": 192,
+      "elo": 1895.48,
+      "composite": 92.0,
+      "sha256": "dd3c1e9d27cce0d7"
+    },
+    {
+      "generation": 193,
+      "elo": 1895.79,
+      "composite": 92.0,
+      "sha256": "38bcb66ccfd1909a"
+    },
+    {
+      "generation": 194,
+      "elo": 1896.11,
+      "composite": 92.0,
+      "sha256": "45799aca0153f85f"
+    },
+    {
+      "generation": 195,
+      "elo": 1896.41,
+      "composite": 92.0,
+      "sha256": "87a90492c32d2db4"
+    },
+    {
+      "generation": 196,
+      "elo": 1896.71,
+      "composite": 92.0,
+      "sha256": "3a4722e87852a1c8"
+    },
+    {
+      "generation": 197,
+      "elo": 1897.01,
+      "composite": 92.0,
+      "sha256": "a20a5eed11d60e04"
+    },
+    {
+      "generation": 198,
+      "elo": 1897.31,
+      "composite": 92.0,
+      "sha256": "c72a3173f052bc58"
+    },
+    {
+      "generation": 199,
+      "elo": 1897.6,
+      "composite": 92.0,
+      "sha256": "4c6974d009a50136"
+    },
+    {
+      "generation": 200,
+      "elo": 1897.89,
+      "composite": 92.0,
+      "sha256": "d32176231266744e"
+    },
+    {
+      "generation": 201,
+      "elo": 1898.18,
+      "composite": 92.0,
+      "sha256": "8ca9c90eb851a552"
+    },
+    {
+      "generation": 202,
+      "elo": 1898.46,
+      "composite": 92.0,
+      "sha256": "e6a0eb6aa88c6248"
+    },
+    {
+      "generation": 203,
+      "elo": 1898.74,
+      "composite": 92.0,
+      "sha256": "34fc266a6df96fe0"
+    },
+    {
+      "generation": 204,
+      "elo": 1899.02,
+      "composite": 92.0,
+      "sha256": "c3690fd5d090d163"
+    },
+    {
+      "generation": 205,
+      "elo": 1899.29,
+      "composite": 92.0,
+      "sha256": "051792bc541fd3d0"
+    },
+    {
+      "generation": 206,
+      "elo": 1899.56,
+      "composite": 92.0,
+      "sha256": "d8a468328e73739d"
+    },
+    {
+      "generation": 207,
+      "elo": 1899.83,
+      "composite": 92.0,
+      "sha256": "569c0b13404bd3f4"
+    },
+    {
+      "generation": 208,
+      "elo": 1900.09,
+      "composite": 92.0,
+      "sha256": "5ee533ebd71d7c1a"
+    },
+    {
+      "generation": 209,
+      "elo": 1900.35,
+      "composite": 92.0,
+      "sha256": "05fd670741f3a634"
+    },
+    {
+      "generation": 210,
+      "elo": 1900.61,
+      "composite": 92.0,
+      "sha256": "a6b23e6cd3e89d86"
+    },
+    {
+      "generation": 211,
+      "elo": 1900.86,
+      "composite": 92.0,
+      "sha256": "66f38c59f25d7b6b"
+    },
+    {
+      "generation": 212,
+      "elo": 1901.12,
+      "composite": 92.0,
+      "sha256": "f4c6efc80e666933"
+    },
+    {
+      "generation": 213,
+      "elo": 1901.37,
+      "composite": 92.0,
+      "sha256": "12fb185a01349682"
+    },
+    {
+      "generation": 214,
+      "elo": 1901.61,
+      "composite": 92.0,
+      "sha256": "ea5f9026e323bd1d"
+    },
+    {
+      "generation": 215,
+      "elo": 1901.86,
+      "composite": 92.0,
+      "sha256": "1a1a67fca6b3be96"
+    },
+    {
+      "generation": 216,
+      "elo": 1902.1,
+      "composite": 92.0,
+      "sha256": "ce3869418e71eedf"
+    },
+    {
+      "generation": 217,
+      "elo": 1902.33,
+      "composite": 92.0,
+      "sha256": "a1f96093368ba38e"
+    },
+    {
+      "generation": 218,
+      "elo": 1902.57,
+      "composite": 92.0,
+      "sha256": "595751f05133c40b"
+    },
+    {
+      "generation": 219,
+      "elo": 1902.8,
+      "composite": 92.0,
+      "sha256": "fc6005cb014d910b"
+    },
+    {
+      "generation": 220,
+      "elo": 1903.03,
+      "composite": 92.0,
+      "sha256": "b64a45b5b2bb065f"
+    },
+    {
+      "generation": 221,
+      "elo": 1903.26,
+      "composite": 92.0,
+      "sha256": "3736d4bd92b48558"
+    },
+    {
+      "generation": 222,
+      "elo": 1903.48,
+      "composite": 92.0,
+      "sha256": "16a046cc2ff3c82a"
+    },
+    {
+      "generation": 223,
+      "elo": 1903.71,
+      "composite": 92.0,
+      "sha256": "6e779be7c3bbf512"
+    },
+    {
+      "generation": 224,
+      "elo": 1903.93,
+      "composite": 92.0,
+      "sha256": "673e24c6f8a53d6d"
+    },
+    {
+      "generation": 225,
+      "elo": 1904.14,
+      "composite": 92.0,
+      "sha256": "04a7ec15ce482096"
+    },
+    {
+      "generation": 226,
+      "elo": 1904.36,
+      "composite": 92.0,
+      "sha256": "aad83138c139f63c"
+    },
+    {
+      "generation": 227,
+      "elo": 1904.57,
+      "composite": 92.0,
+      "sha256": "7022f4cb2889ac16"
+    },
+    {
+      "generation": 228,
+      "elo": 1904.78,
+      "composite": 92.0,
+      "sha256": "a0549692b71ca195"
+    },
+    {
+      "generation": 229,
+      "elo": 1904.99,
+      "composite": 92.0,
+      "sha256": "b5ea325496f8ee38"
+    },
+    {
+      "generation": 230,
+      "elo": 1905.19,
+      "composite": 92.0,
+      "sha256": "f423395894f80827"
+    },
+    {
+      "generation": 231,
+      "elo": 1905.4,
+      "composite": 92.0,
+      "sha256": "b6a4bb6e29e39159"
+    },
+    {
+      "generation": 232,
+      "elo": 1905.6,
+      "composite": 92.0,
+      "sha256": "dde5dfcfaabc14c6"
+    },
+    {
+      "generation": 233,
+      "elo": 1905.8,
+      "composite": 92.0,
+      "sha256": "5158715b6d4d622f"
+    },
+    {
+      "generation": 234,
+      "elo": 1905.99,
+      "composite": 92.0,
+      "sha256": "ba239bde84dff295"
+    },
+    {
+      "generation": 235,
+      "elo": 1906.19,
+      "composite": 92.0,
+      "sha256": "2ba3e0f459cacc77"
+    },
+    {
+      "generation": 236,
+      "elo": 1906.38,
+      "composite": 92.0,
+      "sha256": "02a479af191824ea"
+    },
+    {
+      "generation": 237,
+      "elo": 1906.57,
+      "composite": 92.0,
+      "sha256": "c778dcc0a979ec73"
+    },
+    {
+      "generation": 238,
+      "elo": 1906.76,
+      "composite": 92.0,
+      "sha256": "0cccc59f5098904b"
+    },
+    {
+      "generation": 239,
+      "elo": 1906.94,
+      "composite": 92.0,
+      "sha256": "578c14b96baefe4a"
+    },
+    {
+      "generation": 240,
+      "elo": 1907.13,
+      "composite": 92.0,
+      "sha256": "46d3a768e84b5282"
+    },
+    {
+      "generation": 241,
+      "elo": 1907.31,
+      "composite": 92.0,
+      "sha256": "5602e55d1f4d8e6b"
+    },
+    {
+      "generation": 242,
+      "elo": 1907.49,
+      "composite": 92.0,
+      "sha256": "c7104c6f17aac23d"
+    },
+    {
+      "generation": 243,
+      "elo": 1907.67,
+      "composite": 92.0,
+      "sha256": "e440e1e8568f37e3"
+    },
+    {
+      "generation": 244,
+      "elo": 1907.84,
+      "composite": 92.0,
+      "sha256": "ff9d5b1d1ea1cd85"
+    },
+    {
+      "generation": 245,
+      "elo": 1908.02,
+      "composite": 92.0,
+      "sha256": "83505406572325b2"
+    },
+    {
+      "generation": 246,
+      "elo": 1908.19,
+      "composite": 92.0,
+      "sha256": "ef08b5534ac28423"
+    },
+    {
+      "generation": 247,
+      "elo": 1908.36,
+      "composite": 92.0,
+      "sha256": "b954dc304b32c54e"
+    },
+    {
+      "generation": 248,
+      "elo": 1908.53,
+      "composite": 92.0,
+      "sha256": "27b6fbaabe043f4f"
+    },
+    {
+      "generation": 249,
+      "elo": 1908.69,
+      "composite": 92.0,
+      "sha256": "9e9102646b453a9e"
+    },
+    {
+      "generation": 250,
+      "elo": 1908.86,
+      "composite": 92.0,
+      "sha256": "e1ca848e5065c40a"
+    },
+    {
+      "generation": 251,
+      "elo": 1909.02,
+      "composite": 92.0,
+      "sha256": "51efb365c4e17afe"
+    },
+    {
+      "generation": 252,
+      "elo": 1909.18,
+      "composite": 92.0,
+      "sha256": "130cfe0181bcf44c"
+    },
+    {
+      "generation": 253,
+      "elo": 1909.34,
+      "composite": 92.0,
+      "sha256": "0a7752185c83c6b1"
+    },
+    {
+      "generation": 254,
+      "elo": 1909.5,
+      "composite": 92.0,
+      "sha256": "09584b5edfb345d5"
+    },
+    {
+      "generation": 255,
+      "elo": 1909.66,
+      "composite": 92.0,
+      "sha256": "277d43a75ef32c27"
+    },
+    {
+      "generation": 256,
+      "elo": 1909.81,
+      "composite": 92.0,
+      "sha256": "a8d60b8536dfe806"
+    },
+    {
+      "generation": 257,
+      "elo": 1909.96,
+      "composite": 92.0,
+      "sha256": "bfc63363911a61b9"
+    },
+    {
+      "generation": 258,
+      "elo": 1910.11,
+      "composite": 92.0,
+      "sha256": "bed0be149c38fb10"
+    },
+    {
+      "generation": 259,
+      "elo": 1910.26,
+      "composite": 92.0,
+      "sha256": "f89a201bc70e2a0b"
+    },
+    {
+      "generation": 260,
+      "elo": 1910.41,
+      "composite": 92.0,
+      "sha256": "1422849a279e8c9b"
+    },
+    {
+      "generation": 261,
+      "elo": 1910.55,
+      "composite": 92.0,
+      "sha256": "76995a071c5b0b6c"
+    },
+    {
+      "generation": 262,
+      "elo": 1910.7,
+      "composite": 92.0,
+      "sha256": "de7591f488d979d0"
+    },
+    {
+      "generation": 263,
+      "elo": 1910.84,
+      "composite": 92.0,
+      "sha256": "152c88595d274e43"
+    },
+    {
+      "generation": 264,
+      "elo": 1910.98,
+      "composite": 92.0,
+      "sha256": "a7fc477ee870d7f1"
+    },
+    {
+      "generation": 265,
+      "elo": 1911.12,
+      "composite": 92.0,
+      "sha256": "3ad53ed2c8a3b3d8"
+    },
+    {
+      "generation": 266,
+      "elo": 1911.26,
+      "composite": 92.0,
+      "sha256": "f21e986b17f30d93"
+    },
+    {
+      "generation": 267,
+      "elo": 1911.4,
+      "composite": 92.0,
+      "sha256": "3a360b073bc1e37c"
+    },
+    {
+      "generation": 268,
+      "elo": 1911.53,
+      "composite": 92.0,
+      "sha256": "af37e2ac945d5387"
+    },
+    {
+      "generation": 269,
+      "elo": 1911.67,
+      "composite": 92.0,
+      "sha256": "7d274ea43635e179"
+    },
+    {
+      "generation": 270,
+      "elo": 1911.8,
+      "composite": 92.0,
+      "sha256": "b537824c15b28d9b"
+    },
+    {
+      "generation": 271,
+      "elo": 1911.93,
+      "composite": 92.0,
+      "sha256": "161896992a0a2e2a"
+    },
+    {
+      "generation": 272,
+      "elo": 1912.06,
+      "composite": 92.0,
+      "sha256": "1fafecd5529b206c"
+    },
+    {
+      "generation": 273,
+      "elo": 1912.19,
+      "composite": 92.0,
+      "sha256": "46a7a895794f0800"
+    },
+    {
+      "generation": 274,
+      "elo": 1912.31,
+      "composite": 92.0,
+      "sha256": "a26104d3932d8913"
+    },
+    {
+      "generation": 275,
+      "elo": 1912.44,
+      "composite": 92.0,
+      "sha256": "af43b624dd2ed778"
+    },
+    {
+      "generation": 276,
+      "elo": 1912.56,
+      "composite": 92.0,
+      "sha256": "efe7e0e998bcf82c"
+    },
+    {
+      "generation": 277,
+      "elo": 1912.68,
+      "composite": 92.0,
+      "sha256": "378cf707d5a20b67"
+    },
+    {
+      "generation": 278,
+      "elo": 1912.81,
+      "composite": 92.0,
+      "sha256": "504168b5fa1b8243"
+    },
+    {
+      "generation": 279,
+      "elo": 1912.93,
+      "composite": 92.0,
+      "sha256": "9393b373d263c94b"
+    },
+    {
+      "generation": 280,
+      "elo": 1913.04,
+      "composite": 92.0,
+      "sha256": "df0e9f637e6ce95a"
+    },
+    {
+      "generation": 281,
+      "elo": 1913.16,
+      "composite": 92.0,
+      "sha256": "ad4516266a4c59de"
+    },
+    {
+      "generation": 282,
+      "elo": 1913.28,
+      "composite": 92.0,
+      "sha256": "b51e615b13f44686"
+    },
+    {
+      "generation": 283,
+      "elo": 1913.39,
+      "composite": 92.0,
+      "sha256": "d5ef8ed1b18e7807"
+    },
+    {
+      "generation": 284,
+      "elo": 1913.51,
+      "composite": 92.0,
+      "sha256": "34aa16b2fa205eee"
+    },
+    {
+      "generation": 285,
+      "elo": 1913.62,
+      "composite": 92.0,
+      "sha256": "2ab138e0cc937a87"
+    },
+    {
+      "generation": 286,
+      "elo": 1913.73,
+      "composite": 92.0,
+      "sha256": "fb1a3b913c91b359"
+    },
+    {
+      "generation": 287,
+      "elo": 1913.84,
+      "composite": 92.0,
+      "sha256": "c7e105db032803d0"
+    },
+    {
+      "generation": 288,
+      "elo": 1913.95,
+      "composite": 92.0,
+      "sha256": "b94bcaa691e5b960"
+    },
+    {
+      "generation": 289,
+      "elo": 1914.06,
+      "composite": 92.0,
+      "sha256": "b805579a127e2e99"
+    },
+    {
+      "generation": 290,
+      "elo": 1914.16,
+      "composite": 92.0,
+      "sha256": "872e3750a0ea55da"
+    },
+    {
+      "generation": 291,
+      "elo": 1914.27,
+      "composite": 92.0,
+      "sha256": "79675f84a8f4c706"
+    },
+    {
+      "generation": 292,
+      "elo": 1914.37,
+      "composite": 92.0,
+      "sha256": "fe2244de4476014a"
+    },
+    {
+      "generation": 293,
+      "elo": 1914.48,
+      "composite": 92.0,
+      "sha256": "72746a5f3b80c70f"
+    },
+    {
+      "generation": 294,
+      "elo": 1914.58,
+      "composite": 92.0,
+      "sha256": "877d00cb52fde8d2"
+    },
+    {
+      "generation": 295,
+      "elo": 1914.68,
+      "composite": 92.0,
+      "sha256": "a8b923980d5246cf"
+    },
+    {
+      "generation": 296,
+      "elo": 1914.78,
+      "composite": 92.0,
+      "sha256": "c73c80e33ec322dd"
+    },
+    {
+      "generation": 297,
+      "elo": 1914.88,
+      "composite": 92.0,
+      "sha256": "56ba511b2312380e"
+    },
+    {
+      "generation": 298,
+      "elo": 1914.98,
+      "composite": 92.0,
+      "sha256": "4bfe3ae2dcbd623e"
+    },
+    {
+      "generation": 299,
+      "elo": 1915.07,
+      "composite": 92.0,
+      "sha256": "937bd6b127038ed2"
+    },
+    {
+      "generation": 300,
+      "elo": 1915.17,
+      "composite": 92.0,
+      "sha256": "92fd723806d48ac7"
+    },
+    {
+      "generation": 301,
+      "elo": 1915.26,
+      "composite": 92.0,
+      "sha256": "d21322487e949f35"
+    },
+    {
+      "generation": 302,
+      "elo": 1915.36,
+      "composite": 92.0,
+      "sha256": "0d8ddc94cbeb649d"
+    },
+    {
+      "generation": 303,
+      "elo": 1915.45,
+      "composite": 92.0,
+      "sha256": "061c793297174891"
+    },
+    {
+      "generation": 304,
+      "elo": 1915.54,
+      "composite": 92.0,
+      "sha256": "57c5d1c92d08cdc2"
+    },
+    {
+      "generation": 305,
+      "elo": 1915.63,
+      "composite": 92.0,
+      "sha256": "a5bea75fd1d38d6c"
+    },
+    {
+      "generation": 306,
+      "elo": 1915.72,
+      "composite": 92.0,
+      "sha256": "d605e65115e8eab4"
+    },
+    {
+      "generation": 307,
+      "elo": 1915.81,
+      "composite": 92.0,
+      "sha256": "61a463f37476a26a"
+    },
+    {
+      "generation": 308,
+      "elo": 1915.9,
+      "composite": 92.0,
+      "sha256": "6915632ae88915fb"
+    },
+    {
+      "generation": 309,
+      "elo": 1915.99,
+      "composite": 92.0,
+      "sha256": "adf4072ad9292897"
+    },
+    {
+      "generation": 310,
+      "elo": 1916.07,
+      "composite": 92.0,
+      "sha256": "178ade3d00589182"
+    },
+    {
+      "generation": 311,
+      "elo": 1916.16,
+      "composite": 92.0,
+      "sha256": "38bfd6246585f6bd"
+    },
+    {
+      "generation": 312,
+      "elo": 1916.24,
+      "composite": 92.0,
+      "sha256": "10519e3d444284ab"
+    },
+    {
+      "generation": 313,
+      "elo": 1916.32,
+      "composite": 92.0,
+      "sha256": "b23ee2e8cc8d84eb"
+    },
+    {
+      "generation": 314,
+      "elo": 1916.41,
+      "composite": 92.0,
+      "sha256": "7b1fae3d956946b3"
+    },
+    {
+      "generation": 315,
+      "elo": 1916.49,
+      "composite": 92.0,
+      "sha256": "13ec1e9db76b3e63"
+    },
+    {
+      "generation": 316,
+      "elo": 1916.57,
+      "composite": 92.0,
+      "sha256": "580a3fac652bcb5b"
+    },
+    {
+      "generation": 317,
+      "elo": 1916.65,
+      "composite": 92.0,
+      "sha256": "b9fc6246bbc15cf0"
+    },
+    {
+      "generation": 318,
+      "elo": 1916.73,
+      "composite": 92.0,
+      "sha256": "0881aca97f7c5e01"
+    },
+    {
+      "generation": 319,
+      "elo": 1916.81,
+      "composite": 92.0,
+      "sha256": "79bb8ff4b26abb4c"
+    },
+    {
+      "generation": 320,
+      "elo": 1916.88,
+      "composite": 92.0,
+      "sha256": "3d00325e0dd18fcd"
+    },
+    {
+      "generation": 321,
+      "elo": 1916.96,
+      "composite": 92.0,
+      "sha256": "c37423cc81b9014f"
+    },
+    {
+      "generation": 322,
+      "elo": 1917.04,
+      "composite": 92.0,
+      "sha256": "06bd47ef245337ca"
+    },
+    {
+      "generation": 323,
+      "elo": 1917.11,
+      "composite": 92.0,
+      "sha256": "813a465b33f02384"
+    },
+    {
+      "generation": 324,
+      "elo": 1917.18,
+      "composite": 92.0,
+      "sha256": "85b3b7bca2ffb817"
+    },
+    {
+      "generation": 325,
+      "elo": 1917.26,
+      "composite": 92.0,
+      "sha256": "d780f8871d8a1742"
+    },
+    {
+      "generation": 326,
+      "elo": 1917.33,
+      "composite": 92.0,
+      "sha256": "a3aa820ba0172c7d"
+    },
+    {
+      "generation": 327,
+      "elo": 1917.4,
+      "composite": 92.0,
+      "sha256": "83a3f2acf1266c82"
+    },
+    {
+      "generation": 328,
+      "elo": 1917.47,
+      "composite": 92.0,
+      "sha256": "cf292fdeeab56ac7"
+    },
+    {
+      "generation": 329,
+      "elo": 1917.54,
+      "composite": 92.0,
+      "sha256": "b78625b2b418da1b"
+    },
+    {
+      "generation": 330,
+      "elo": 1917.61,
+      "composite": 92.0,
+      "sha256": "56527de16a85139d"
+    },
+    {
+      "generation": 331,
+      "elo": 1917.68,
+      "composite": 92.0,
+      "sha256": "d5af719946372379"
+    },
+    {
+      "generation": 332,
+      "elo": 1917.75,
+      "composite": 92.0,
+      "sha256": "abc7a313048213a4"
+    },
+    {
+      "generation": 333,
+      "elo": 1917.82,
+      "composite": 92.0,
+      "sha256": "6c76da732e8b935e"
+    },
+    {
+      "generation": 334,
+      "elo": 1917.88,
+      "composite": 92.0,
+      "sha256": "50306c966e27b372"
+    },
+    {
+      "generation": 335,
+      "elo": 1917.95,
+      "composite": 92.0,
+      "sha256": "57e0f73614d3dd15"
+    },
+    {
+      "generation": 336,
+      "elo": 1918.02,
+      "composite": 92.0,
+      "sha256": "4748ef55b0cff983"
+    },
+    {
+      "generation": 337,
+      "elo": 1918.08,
+      "composite": 92.0,
+      "sha256": "47714f4ab92c4bff"
+    },
+    {
+      "generation": 338,
+      "elo": 1918.14,
+      "composite": 92.0,
+      "sha256": "6f157791bc884b77"
+    },
+    {
+      "generation": 339,
+      "elo": 1918.21,
+      "composite": 92.0,
+      "sha256": "41ce8111de1b167d"
+    },
+    {
+      "generation": 340,
+      "elo": 1918.27,
+      "composite": 92.0,
+      "sha256": "870f21af0a6cb655"
+    },
+    {
+      "generation": 341,
+      "elo": 1918.33,
+      "composite": 92.0,
+      "sha256": "58cb59b489380447"
+    },
+    {
+      "generation": 342,
+      "elo": 1918.39,
+      "composite": 92.0,
+      "sha256": "7b8387252aed9845"
+    },
+    {
+      "generation": 343,
+      "elo": 1918.45,
+      "composite": 92.0,
+      "sha256": "43a660a52291eb9a"
+    },
+    {
+      "generation": 344,
+      "elo": 1918.51,
+      "composite": 92.0,
+      "sha256": "7017966d657006ac"
+    },
+    {
+      "generation": 345,
+      "elo": 1918.57,
+      "composite": 92.0,
+      "sha256": "16e570d50ab657b6"
+    },
+    {
+      "generation": 346,
+      "elo": 1918.63,
+      "composite": 92.0,
+      "sha256": "aa69852205795dc0"
+    },
+    {
+      "generation": 347,
+      "elo": 1918.69,
+      "composite": 92.0,
+      "sha256": "858215ea2d077b34"
+    },
+    {
+      "generation": 348,
+      "elo": 1918.75,
+      "composite": 92.0,
+      "sha256": "d348ec35acdab83a"
+    },
+    {
+      "generation": 349,
+      "elo": 1918.81,
+      "composite": 92.0,
+      "sha256": "9c95cc9472e05eee"
+    },
+    {
+      "generation": 350,
+      "elo": 1918.86,
+      "composite": 92.0,
+      "sha256": "982e994ec92ac3aa"
+    },
+    {
+      "generation": 351,
+      "elo": 1918.92,
+      "composite": 92.0,
+      "sha256": "4ee1b744a2dade2c"
+    },
+    {
+      "generation": 352,
+      "elo": 1918.97,
+      "composite": 92.0,
+      "sha256": "bcc6c31d9288b33f"
+    },
+    {
+      "generation": 353,
+      "elo": 1919.03,
+      "composite": 92.0,
+      "sha256": "6ae2f66795aa848e"
+    },
+    {
+      "generation": 354,
+      "elo": 1919.08,
+      "composite": 92.0,
+      "sha256": "f74be4d72661a6e9"
+    },
+    {
+      "generation": 355,
+      "elo": 1919.14,
+      "composite": 92.0,
+      "sha256": "b918242ecaf81bbd"
+    },
+    {
+      "generation": 356,
+      "elo": 1919.19,
+      "composite": 92.0,
+      "sha256": "132e23bfa71f55f1"
+    },
+    {
+      "generation": 357,
+      "elo": 1919.24,
+      "composite": 92.0,
+      "sha256": "8d8c8743f18ef145"
+    },
+    {
+      "generation": 358,
+      "elo": 1919.29,
+      "composite": 92.0,
+      "sha256": "2cae8c20f7678653"
+    },
+    {
+      "generation": 359,
+      "elo": 1919.34,
+      "composite": 92.0,
+      "sha256": "7c442ecb284d8dfa"
+    },
+    {
+      "generation": 360,
+      "elo": 1919.39,
+      "composite": 92.0,
+      "sha256": "6b16bc6fcbce1c11"
+    },
+    {
+      "generation": 361,
+      "elo": 1919.45,
+      "composite": 92.0,
+      "sha256": "48fe08c6beec4d13"
+    },
+    {
+      "generation": 362,
+      "elo": 1919.49,
+      "composite": 92.0,
+      "sha256": "6f6583cad85041c9"
+    },
+    {
+      "generation": 363,
+      "elo": 1919.54,
+      "composite": 92.0,
+      "sha256": "f8097540acd6fcc8"
+    },
+    {
+      "generation": 364,
+      "elo": 1919.59,
+      "composite": 92.0,
+      "sha256": "d845eac0b049cdc7"
+    },
+    {
+      "generation": 365,
+      "elo": 1919.64,
+      "composite": 92.0,
+      "sha256": "00077ed93866de50"
+    },
+    {
+      "generation": 366,
+      "elo": 1919.69,
+      "composite": 92.0,
+      "sha256": "4ef5f66039c15f55"
+    },
+    {
+      "generation": 367,
+      "elo": 1919.74,
+      "composite": 92.0,
+      "sha256": "fe5b9492dd01828d"
+    },
+    {
+      "generation": 368,
+      "elo": 1919.78,
+      "composite": 92.0,
+      "sha256": "64ef77d6b49a849b"
+    },
+    {
+      "generation": 369,
+      "elo": 1919.83,
+      "composite": 92.0,
+      "sha256": "569e346b5d69c1c3"
+    },
+    {
+      "generation": 370,
+      "elo": 1919.87,
+      "composite": 92.0,
+      "sha256": "9abb8684a53f296f"
+    },
+    {
+      "generation": 371,
+      "elo": 1919.92,
+      "composite": 92.0,
+      "sha256": "2bab7503513b418c"
+    },
+    {
+      "generation": 372,
+      "elo": 1919.96,
+      "composite": 92.0,
+      "sha256": "99086caf67e136bb"
+    },
+    {
+      "generation": 373,
+      "elo": 1920.01,
+      "composite": 92.0,
+      "sha256": "1862f2562fa44f2b"
+    },
+    {
+      "generation": 374,
+      "elo": 1920.05,
+      "composite": 92.0,
+      "sha256": "5e3c65f5e8be538e"
+    },
+    {
+      "generation": 375,
+      "elo": 1920.1,
+      "composite": 92.0,
+      "sha256": "1f08e75c261c5a7f"
+    },
+    {
+      "generation": 376,
+      "elo": 1920.14,
+      "composite": 92.0,
+      "sha256": "15bc6d28522a7525"
+    },
+    {
+      "generation": 377,
+      "elo": 1920.18,
+      "composite": 92.0,
+      "sha256": "ef7710dc36ea3dbf"
+    },
+    {
+      "generation": 378,
+      "elo": 1920.22,
+      "composite": 92.0,
+      "sha256": "190311a37572981f"
+    },
+    {
+      "generation": 379,
+      "elo": 1920.27,
+      "composite": 92.0,
+      "sha256": "0a7ff905d8dacaa0"
+    },
+    {
+      "generation": 380,
+      "elo": 1920.31,
+      "composite": 92.0,
+      "sha256": "c4a81d7a41789da8"
+    },
+    {
+      "generation": 381,
+      "elo": 1920.35,
+      "composite": 92.0,
+      "sha256": "9bbae71dbf109f4b"
+    },
+    {
+      "generation": 382,
+      "elo": 1920.39,
+      "composite": 92.0,
+      "sha256": "2c9d23a2f582f2f8"
+    },
+    {
+      "generation": 383,
+      "elo": 1920.43,
+      "composite": 92.0,
+      "sha256": "c72eb29a86d76a78"
+    },
+    {
+      "generation": 384,
+      "elo": 1920.47,
+      "composite": 92.0,
+      "sha256": "a5bb3a92ed437a9b"
+    },
+    {
+      "generation": 385,
+      "elo": 1920.51,
+      "composite": 92.0,
+      "sha256": "ea2b53612e30db6d"
+    },
+    {
+      "generation": 386,
+      "elo": 1920.55,
+      "composite": 92.0,
+      "sha256": "9de77fd4289cfeeb"
+    },
+    {
+      "generation": 387,
+      "elo": 1920.58,
+      "composite": 92.0,
+      "sha256": "0391ef043903db9a"
+    },
+    {
+      "generation": 388,
+      "elo": 1920.62,
+      "composite": 92.0,
+      "sha256": "41ba430c61f79c9f"
+    },
+    {
+      "generation": 389,
+      "elo": 1920.66,
+      "composite": 92.0,
+      "sha256": "233376b512399d10"
+    },
+    {
+      "generation": 390,
+      "elo": 1920.7,
+      "composite": 92.0,
+      "sha256": "3832038b6b36f050"
+    },
+    {
+      "generation": 391,
+      "elo": 1920.73,
+      "composite": 92.0,
+      "sha256": "b93d95b415af4034"
+    },
+    {
+      "generation": 392,
+      "elo": 1920.77,
+      "composite": 92.0,
+      "sha256": "63cef9ba5f368171"
+    },
+    {
+      "generation": 393,
+      "elo": 1920.81,
+      "composite": 92.0,
+      "sha256": "146235a20a99bdf9"
+    },
+    {
+      "generation": 394,
+      "elo": 1920.84,
+      "composite": 92.0,
+      "sha256": "e3820994ab4628fb"
+    },
+    {
+      "generation": 395,
+      "elo": 1920.88,
+      "composite": 92.0,
+      "sha256": "20b5159ecc940f79"
+    },
+    {
+      "generation": 396,
+      "elo": 1920.91,
+      "composite": 92.0,
+      "sha256": "d784659042f073fa"
+    },
+    {
+      "generation": 397,
+      "elo": 1920.95,
+      "composite": 92.0,
+      "sha256": "1f306671ff992fa3"
+    },
+    {
+      "generation": 398,
+      "elo": 1920.98,
+      "composite": 92.0,
+      "sha256": "7aa38df88ad9baa0"
+    },
+    {
+      "generation": 399,
+      "elo": 1921.01,
+      "composite": 92.0,
+      "sha256": "6dd164443c97175f"
+    },
+    {
+      "generation": 400,
+      "elo": 1921.05,
+      "composite": 92.0,
+      "sha256": "f0436519186f4525"
+    },
+    {
+      "generation": 401,
+      "elo": 1921.08,
+      "composite": 92.0,
+      "sha256": "ff4cf2204425b09e"
+    },
+    {
+      "generation": 402,
+      "elo": 1921.11,
+      "composite": 92.0,
+      "sha256": "d0703d17ad3b7591"
+    },
+    {
+      "generation": 403,
+      "elo": 1921.15,
+      "composite": 92.0,
+      "sha256": "b9c439ce30053edd"
+    },
+    {
+      "generation": 404,
+      "elo": 1921.18,
+      "composite": 92.0,
+      "sha256": "bc6f89ebfe8323a5"
+    },
+    {
+      "generation": 405,
+      "elo": 1921.21,
+      "composite": 92.0,
+      "sha256": "bbbebf0c3c62acf0"
+    },
+    {
+      "generation": 406,
+      "elo": 1921.24,
+      "composite": 92.0,
+      "sha256": "e7c4f9a02d3166e4"
+    },
+    {
+      "generation": 407,
+      "elo": 1921.27,
+      "composite": 92.0,
+      "sha256": "811583c3e20d64b3"
+    },
+    {
+      "generation": 408,
+      "elo": 1921.3,
+      "composite": 92.0,
+      "sha256": "3ee37846b6f39e97"
+    },
+    {
+      "generation": 409,
+      "elo": 1921.33,
+      "composite": 92.0,
+      "sha256": "dd1ed6090beda46c"
+    },
+    {
+      "generation": 410,
+      "elo": 1921.36,
+      "composite": 92.0,
+      "sha256": "5065b51215047d1c"
+    },
+    {
+      "generation": 411,
+      "elo": 1921.39,
+      "composite": 92.0,
+      "sha256": "0a3d1d9c7ab45610"
+    },
+    {
+      "generation": 412,
+      "elo": 1921.42,
+      "composite": 92.0,
+      "sha256": "1f9f6537fdf919eb"
+    },
+    {
+      "generation": 413,
+      "elo": 1921.45,
+      "composite": 92.0,
+      "sha256": "4efe5bb1cd57486c"
+    },
+    {
+      "generation": 414,
+      "elo": 1921.48,
+      "composite": 92.0,
+      "sha256": "07241161924a1259"
+    },
+    {
+      "generation": 415,
+      "elo": 1921.51,
+      "composite": 92.0,
+      "sha256": "0b7dfbab70c7ce71"
+    },
+    {
+      "generation": 416,
+      "elo": 1921.54,
+      "composite": 92.0,
+      "sha256": "4b5237f8df461ce9"
+    },
+    {
+      "generation": 417,
+      "elo": 1921.57,
+      "composite": 92.0,
+      "sha256": "247261d2aa9b131c"
+    },
+    {
+      "generation": 418,
+      "elo": 1921.59,
+      "composite": 92.0,
+      "sha256": "b4fedfbe2c469845"
+    },
+    {
+      "generation": 419,
+      "elo": 1921.62,
+      "composite": 92.0,
+      "sha256": "cc16dc47c718ad2e"
+    },
+    {
+      "generation": 420,
+      "elo": 1921.65,
+      "composite": 92.0,
+      "sha256": "4cd505d65b9a2b98"
+    },
+    {
+      "generation": 421,
+      "elo": 1921.68,
+      "composite": 92.0,
+      "sha256": "8bead64b7e5ebb29"
+    },
+    {
+      "generation": 422,
+      "elo": 1921.7,
+      "composite": 92.0,
+      "sha256": "80ff303798caa3e3"
+    },
+    {
+      "generation": 423,
+      "elo": 1921.73,
+      "composite": 92.0,
+      "sha256": "bde10d9fcd90bf69"
+    },
+    {
+      "generation": 424,
+      "elo": 1921.75,
+      "composite": 92.0,
+      "sha256": "ba17de5673f3837a"
+    },
+    {
+      "generation": 425,
+      "elo": 1921.78,
+      "composite": 92.0,
+      "sha256": "f05631b37269c11d"
+    },
+    {
+      "generation": 426,
+      "elo": 1921.81,
+      "composite": 92.0,
+      "sha256": "c6d6a9b7246f7ab3"
+    },
+    {
+      "generation": 427,
+      "elo": 1921.83,
+      "composite": 92.0,
+      "sha256": "251dce418b73f872"
+    },
+    {
+      "generation": 428,
+      "elo": 1921.86,
+      "composite": 92.0,
+      "sha256": "d5a5d3ae30dad6c9"
+    },
+    {
+      "generation": 429,
+      "elo": 1921.88,
+      "composite": 92.0,
+      "sha256": "4b4d245ffa273252"
+    },
+    {
+      "generation": 430,
+      "elo": 1921.91,
+      "composite": 92.0,
+      "sha256": "4dc6285302020578"
+    },
+    {
+      "generation": 431,
+      "elo": 1921.93,
+      "composite": 92.0,
+      "sha256": "3b547638356ecd09"
+    },
+    {
+      "generation": 432,
+      "elo": 1921.95,
+      "composite": 92.0,
+      "sha256": "9d658f1a485df17c"
+    },
+    {
+      "generation": 433,
+      "elo": 1921.98,
+      "composite": 92.0,
+      "sha256": "11dd7a14ec85771f"
+    },
+    {
+      "generation": 434,
+      "elo": 1922.0,
+      "composite": 92.0,
+      "sha256": "49d9d89f9a4a9a11"
+    },
+    {
+      "generation": 435,
+      "elo": 1922.02,
+      "composite": 92.0,
+      "sha256": "b560d47777912638"
+    },
+    {
+      "generation": 436,
+      "elo": 1922.05,
+      "composite": 92.0,
+      "sha256": "29e9cd39399a87f8"
+    },
+    {
+      "generation": 437,
+      "elo": 1922.07,
+      "composite": 92.0,
+      "sha256": "78dbb4ab17aa8633"
+    },
+    {
+      "generation": 438,
+      "elo": 1922.09,
+      "composite": 92.0,
+      "sha256": "ca46d44e09dc452f"
+    },
+    {
+      "generation": 439,
+      "elo": 1922.12,
+      "composite": 92.0,
+      "sha256": "fa9a4da679c04a72"
+    },
+    {
+      "generation": 440,
+      "elo": 1922.14,
+      "composite": 92.0,
+      "sha256": "1a6c6a9dcfbc8619"
+    },
+    {
+      "generation": 441,
+      "elo": 1922.16,
+      "composite": 92.0,
+      "sha256": "e85c9eefd44cdc57"
+    },
+    {
+      "generation": 442,
+      "elo": 1922.18,
+      "composite": 92.0,
+      "sha256": "d2f69f899d3a526a"
+    },
+    {
+      "generation": 443,
+      "elo": 1922.2,
+      "composite": 92.0,
+      "sha256": "7d052cb0304b473e"
+    },
+    {
+      "generation": 444,
+      "elo": 1922.22,
+      "composite": 92.0,
+      "sha256": "5dd9939667667f2f"
+    },
+    {
+      "generation": 445,
+      "elo": 1922.24,
+      "composite": 92.0,
+      "sha256": "19a33322a7a6c0eb"
+    },
+    {
+      "generation": 446,
+      "elo": 1922.27,
+      "composite": 92.0,
+      "sha256": "262af4bed0b46622"
+    },
+    {
+      "generation": 447,
+      "elo": 1922.29,
+      "composite": 92.0,
+      "sha256": "0e463c0a6f9ae7d8"
+    },
+    {
+      "generation": 448,
+      "elo": 1922.31,
+      "composite": 92.0,
+      "sha256": "c51568549934ea8c"
+    },
+    {
+      "generation": 449,
+      "elo": 1922.33,
+      "composite": 92.0,
+      "sha256": "8c597a8ef6de64f0"
+    },
+    {
+      "generation": 450,
+      "elo": 1922.35,
+      "composite": 92.0,
+      "sha256": "b6793b8dc1f27143"
+    },
+    {
+      "generation": 451,
+      "elo": 1922.37,
+      "composite": 92.0,
+      "sha256": "c11f9d032b9a1c6a"
+    },
+    {
+      "generation": 452,
+      "elo": 1922.39,
+      "composite": 92.0,
+      "sha256": "edcf68b61e186722"
+    },
+    {
+      "generation": 453,
+      "elo": 1922.4,
+      "composite": 92.0,
+      "sha256": "7596bdc5e125f2c0"
+    },
+    {
+      "generation": 454,
+      "elo": 1922.42,
+      "composite": 92.0,
+      "sha256": "8e4b3bd3260a82c6"
+    },
+    {
+      "generation": 455,
+      "elo": 1922.44,
+      "composite": 92.0,
+      "sha256": "84dfe5f31d1fbe0f"
+    },
+    {
+      "generation": 456,
+      "elo": 1922.46,
+      "composite": 92.0,
+      "sha256": "af39fb1b20b60fd5"
+    },
+    {
+      "generation": 457,
+      "elo": 1922.48,
+      "composite": 92.0,
+      "sha256": "aed30981365e0b4b"
+    },
+    {
+      "generation": 458,
+      "elo": 1922.5,
+      "composite": 92.0,
+      "sha256": "57480990e108729e"
+    },
+    {
+      "generation": 459,
+      "elo": 1922.52,
+      "composite": 92.0,
+      "sha256": "4a60e8aea80c2f4f"
+    },
+    {
+      "generation": 460,
+      "elo": 1922.53,
+      "composite": 92.0,
+      "sha256": "7ff962af4b9b0c63"
+    },
+    {
+      "generation": 461,
+      "elo": 1922.55,
+      "composite": 92.0,
+      "sha256": "634b7913eb330702"
+    },
+    {
+      "generation": 462,
+      "elo": 1922.57,
+      "composite": 92.0,
+      "sha256": "94fdf2c528f8b7f6"
+    },
+    {
+      "generation": 463,
+      "elo": 1922.59,
+      "composite": 92.0,
+      "sha256": "99ac748364aaa510"
+    },
+    {
+      "generation": 464,
+      "elo": 1922.61,
+      "composite": 92.0,
+      "sha256": "8feb3a0a9e75db05"
+    },
+    {
+      "generation": 465,
+      "elo": 1922.62,
+      "composite": 92.0,
+      "sha256": "8c2140df2c418f2d"
+    },
+    {
+      "generation": 466,
+      "elo": 1922.64,
+      "composite": 92.0,
+      "sha256": "e78d94b931c4406f"
+    },
+    {
+      "generation": 467,
+      "elo": 1922.66,
+      "composite": 92.0,
+      "sha256": "73b46070b8f63464"
+    },
+    {
+      "generation": 468,
+      "elo": 1922.67,
+      "composite": 92.0,
+      "sha256": "6a9fc6befcfada15"
+    },
+    {
+      "generation": 469,
+      "elo": 1922.69,
+      "composite": 92.0,
+      "sha256": "1bb3085b85385288"
+    },
+    {
+      "generation": 470,
+      "elo": 1922.7,
+      "composite": 92.0,
+      "sha256": "0cdc8476fe6192ff"
+    },
+    {
+      "generation": 471,
+      "elo": 1922.72,
+      "composite": 92.0,
+      "sha256": "abbd9518ae71e4f2"
+    },
+    {
+      "generation": 472,
+      "elo": 1922.74,
+      "composite": 92.0,
+      "sha256": "8cf293bcac8bac16"
+    },
+    {
+      "generation": 473,
+      "elo": 1922.75,
+      "composite": 92.0,
+      "sha256": "d05ba419d2665207"
+    },
+    {
+      "generation": 474,
+      "elo": 1922.77,
+      "composite": 92.0,
+      "sha256": "215cfaa595a997c7"
+    },
+    {
+      "generation": 475,
+      "elo": 1922.78,
+      "composite": 92.0,
+      "sha256": "457b8a08b0b56dad"
+    },
+    {
+      "generation": 476,
+      "elo": 1922.8,
+      "composite": 92.0,
+      "sha256": "f3741c0be7da0322"
+    },
+    {
+      "generation": 477,
+      "elo": 1922.81,
+      "composite": 92.0,
+      "sha256": "9ab0d05d6e51fe99"
+    },
+    {
+      "generation": 478,
+      "elo": 1922.83,
+      "composite": 92.0,
+      "sha256": "cf4ad2d3a08ffa1c"
+    },
+    {
+      "generation": 479,
+      "elo": 1922.84,
+      "composite": 92.0,
+      "sha256": "883650346f502168"
+    },
+    {
+      "generation": 480,
+      "elo": 1922.86,
+      "composite": 92.0,
+      "sha256": "fe920e520a80b8cc"
+    },
+    {
+      "generation": 481,
+      "elo": 1922.87,
+      "composite": 92.0,
+      "sha256": "d5eead34e77f7563"
+    },
+    {
+      "generation": 482,
+      "elo": 1922.89,
+      "composite": 92.0,
+      "sha256": "3cd01d03ef588551"
+    },
+    {
+      "generation": 483,
+      "elo": 1922.9,
+      "composite": 92.0,
+      "sha256": "9dcfda1d52143ec5"
+    },
+    {
+      "generation": 484,
+      "elo": 1922.92,
+      "composite": 92.0,
+      "sha256": "216242532339ca1a"
+    },
+    {
+      "generation": 485,
+      "elo": 1922.93,
+      "composite": 92.0,
+      "sha256": "92d290925b8eeb47"
+    },
+    {
+      "generation": 486,
+      "elo": 1922.94,
+      "composite": 92.0,
+      "sha256": "92433ae50ee81965"
+    },
+    {
+      "generation": 487,
+      "elo": 1922.96,
+      "composite": 92.0,
+      "sha256": "e4db4b7247462e32"
+    },
+    {
+      "generation": 488,
+      "elo": 1922.97,
+      "composite": 92.0,
+      "sha256": "a528749db4e1ebb9"
+    },
+    {
+      "generation": 489,
+      "elo": 1922.98,
+      "composite": 92.0,
+      "sha256": "3db81e879186aa38"
+    },
+    {
+      "generation": 490,
+      "elo": 1923.0,
+      "composite": 92.0,
+      "sha256": "24ff2949ff0a9985"
+    },
+    {
+      "generation": 491,
+      "elo": 1923.01,
+      "composite": 92.0,
+      "sha256": "4d05f73c71399266"
+    },
+    {
+      "generation": 492,
+      "elo": 1923.02,
+      "composite": 92.0,
+      "sha256": "f57c6b0d58d9dcd2"
+    },
+    {
+      "generation": 493,
+      "elo": 1923.04,
+      "composite": 92.0,
+      "sha256": "b77510e0bd444166"
+    },
+    {
+      "generation": 494,
+      "elo": 1923.05,
+      "composite": 92.0,
+      "sha256": "6637c8f311f165c9"
+    },
+    {
+      "generation": 495,
+      "elo": 1923.06,
+      "composite": 92.0,
+      "sha256": "50b607d7432baf28"
+    },
+    {
+      "generation": 496,
+      "elo": 1923.07,
+      "composite": 92.0,
+      "sha256": "fec0629005a9453c"
+    },
+    {
+      "generation": 497,
+      "elo": 1923.09,
+      "composite": 92.0,
+      "sha256": "9403d4eb03633300"
+    },
+    {
+      "generation": 498,
+      "elo": 1923.1,
+      "composite": 92.0,
+      "sha256": "f6a99e637d8ccf3b"
+    },
+    {
+      "generation": 499,
+      "elo": 1923.11,
+      "composite": 92.0,
+      "sha256": "c7ffdf673557d53d"
+    },
+    {
+      "generation": 500,
+      "elo": 1923.12,
+      "composite": 92.0,
+      "sha256": "9b13639d2e618c2a"
+    },
+    {
+      "generation": 501,
+      "elo": 1923.13,
+      "composite": 92.0,
+      "sha256": "9216ad870d038a24"
+    },
+    {
+      "generation": 502,
+      "elo": 1923.15,
+      "composite": 92.0,
+      "sha256": "d81f32849899ebcb"
+    },
+    {
+      "generation": 503,
+      "elo": 1923.16,
+      "composite": 92.0,
+      "sha256": "4f93a6c06cb7e787"
+    },
+    {
+      "generation": 504,
+      "elo": 1923.17,
+      "composite": 92.0,
+      "sha256": "9213ee0d933ea97e"
+    },
+    {
+      "generation": 505,
+      "elo": 1923.18,
+      "composite": 92.0,
+      "sha256": "b4fac797d1f0b67c"
+    },
+    {
+      "generation": 506,
+      "elo": 1923.19,
+      "composite": 92.0,
+      "sha256": "f839c741f9c3b65e"
+    },
+    {
+      "generation": 507,
+      "elo": 1923.2,
+      "composite": 92.0,
+      "sha256": "fcf801b33bf8c17a"
+    },
+    {
+      "generation": 508,
+      "elo": 1923.21,
+      "composite": 92.0,
+      "sha256": "472684b0530a3aa5"
+    },
+    {
+      "generation": 509,
+      "elo": 1923.22,
+      "composite": 92.0,
+      "sha256": "05014ea8c7408528"
+    },
+    {
+      "generation": 510,
+      "elo": 1923.23,
+      "composite": 92.0,
+      "sha256": "a6edf4866c9fa10f"
+    },
+    {
+      "generation": 511,
+      "elo": 1923.25,
+      "composite": 92.0,
+      "sha256": "1b01a2af41509b00"
+    },
+    {
+      "generation": 512,
+      "elo": 1923.26,
+      "composite": 92.0,
+      "sha256": "069e59c622a6e674"
+    },
+    {
+      "generation": 513,
+      "elo": 1923.27,
+      "composite": 92.0,
+      "sha256": "44a1a91180e840b7"
+    },
+    {
+      "generation": 514,
+      "elo": 1923.28,
+      "composite": 92.0,
+      "sha256": "f4c0d6f9c2310d54"
+    },
+    {
+      "generation": 515,
+      "elo": 1923.29,
+      "composite": 92.0,
+      "sha256": "6b358f08239dd6b8"
+    },
+    {
+      "generation": 516,
+      "elo": 1923.3,
+      "composite": 92.0,
+      "sha256": "43422dbe6594a98e"
+    },
+    {
+      "generation": 517,
+      "elo": 1923.31,
+      "composite": 92.0,
+      "sha256": "ea12cf3802cffe62"
+    },
+    {
+      "generation": 518,
+      "elo": 1923.32,
+      "composite": 92.0,
+      "sha256": "cb0d89bdf20bd8e2"
+    },
+    {
+      "generation": 519,
+      "elo": 1923.33,
+      "composite": 92.0,
+      "sha256": "22baa9a2a364629e"
+    },
+    {
+      "generation": 520,
+      "elo": 1923.34,
+      "composite": 92.0,
+      "sha256": "380e869caf51e52f"
+    },
+    {
+      "generation": 521,
+      "elo": 1923.35,
+      "composite": 92.0,
+      "sha256": "32ee43304dae6531"
+    },
+    {
+      "generation": 522,
+      "elo": 1923.36,
+      "composite": 92.0,
+      "sha256": "2496251dfda999d4"
+    },
+    {
+      "generation": 523,
+      "elo": 1923.36,
+      "composite": 92.0,
+      "sha256": "61fe6b660c17f5af"
+    },
+    {
+      "generation": 524,
+      "elo": 1923.37,
+      "composite": 92.0,
+      "sha256": "13cf0b18721f60e1"
+    },
+    {
+      "generation": 525,
+      "elo": 1923.38,
+      "composite": 92.0,
+      "sha256": "03d97a3d870da8ef"
+    },
+    {
+      "generation": 526,
+      "elo": 1923.39,
+      "composite": 92.0,
+      "sha256": "90c0478d7bb58975"
+    },
+    {
+      "generation": 527,
+      "elo": 1923.4,
+      "composite": 92.0,
+      "sha256": "dd82e808d47717dd"
+    },
+    {
+      "generation": 528,
+      "elo": 1923.41,
+      "composite": 92.0,
+      "sha256": "91d8994647911f36"
+    },
+    {
+      "generation": 529,
+      "elo": 1923.42,
+      "composite": 92.0,
+      "sha256": "b9e6e8e04402bed5"
+    },
+    {
+      "generation": 530,
+      "elo": 1923.43,
+      "composite": 92.0,
+      "sha256": "d9a1184c034bb2f7"
+    },
+    {
+      "generation": 531,
+      "elo": 1923.44,
+      "composite": 92.0,
+      "sha256": "61ee5c93c11d2b9c"
+    },
+    {
+      "generation": 532,
+      "elo": 1923.45,
+      "composite": 92.0,
+      "sha256": "950b99bb9512b869"
+    },
+    {
+      "generation": 533,
+      "elo": 1923.45,
+      "composite": 92.0,
+      "sha256": "82339c16c9aeb9fa"
+    },
+    {
+      "generation": 534,
+      "elo": 1923.46,
+      "composite": 92.0,
+      "sha256": "b91c330a9f151225"
+    },
+    {
+      "generation": 535,
+      "elo": 1923.47,
+      "composite": 92.0,
+      "sha256": "abde89f8b3364807"
+    },
+    {
+      "generation": 536,
+      "elo": 1923.48,
+      "composite": 92.0,
+      "sha256": "b31d9e22c45afad0"
+    },
+    {
+      "generation": 537,
+      "elo": 1923.49,
+      "composite": 92.0,
+      "sha256": "c8a5b5baf9cc3ba6"
+    },
+    {
+      "generation": 538,
+      "elo": 1923.5,
+      "composite": 92.0,
+      "sha256": "ef33c7b863cc418c"
+    },
+    {
+      "generation": 539,
+      "elo": 1923.5,
+      "composite": 92.0,
+      "sha256": "0fc26bbab3a253c7"
+    },
+    {
+      "generation": 540,
+      "elo": 1923.51,
+      "composite": 92.0,
+      "sha256": "1467591ceaaa5b47"
+    },
+    {
+      "generation": 541,
+      "elo": 1923.52,
+      "composite": 92.0,
+      "sha256": "66cbff676a8804e7"
+    },
+    {
+      "generation": 542,
+      "elo": 1923.53,
+      "composite": 92.0,
+      "sha256": "22b4b15bf0c74b63"
+    },
+    {
+      "generation": 543,
+      "elo": 1923.53,
+      "composite": 92.0,
+      "sha256": "bbae38dd1329d6c8"
+    },
+    {
+      "generation": 544,
+      "elo": 1923.54,
+      "composite": 92.0,
+      "sha256": "a9b514d7dac47533"
+    },
+    {
+      "generation": 545,
+      "elo": 1923.55,
+      "composite": 92.0,
+      "sha256": "1ba027fee31b08c9"
+    },
+    {
+      "generation": 546,
+      "elo": 1923.56,
+      "composite": 92.0,
+      "sha256": "315c2f2c790eff66"
+    },
+    {
+      "generation": 547,
+      "elo": 1923.56,
+      "composite": 92.0,
+      "sha256": "21a8786f3b12497d"
+    },
+    {
+      "generation": 548,
+      "elo": 1923.57,
+      "composite": 92.0,
+      "sha256": "1f19dc5cefa60a9b"
+    },
+    {
+      "generation": 549,
+      "elo": 1923.58,
+      "composite": 92.0,
+      "sha256": "f5bfbe1a383fab03"
+    },
+    {
+      "generation": 550,
+      "elo": 1923.59,
+      "composite": 92.0,
+      "sha256": "8bd6555a58876649"
+    },
+    {
+      "generation": 551,
+      "elo": 1923.59,
+      "composite": 92.0,
+      "sha256": "fcbfc70e769f5168"
+    },
+    {
+      "generation": 552,
+      "elo": 1923.6,
+      "composite": 92.0,
+      "sha256": "fd4b65070fd41dad"
+    },
+    {
+      "generation": 553,
+      "elo": 1923.61,
+      "composite": 92.0,
+      "sha256": "0b3681b3720b3bd0"
+    },
+    {
+      "generation": 554,
+      "elo": 1923.61,
+      "composite": 92.0,
+      "sha256": "1e6aba665318160d"
+    },
+    {
+      "generation": 555,
+      "elo": 1923.62,
+      "composite": 92.0,
+      "sha256": "c849b085d2f35bbe"
+    },
+    {
+      "generation": 556,
+      "elo": 1923.63,
+      "composite": 92.0,
+      "sha256": "29d4041860897aec"
+    },
+    {
+      "generation": 557,
+      "elo": 1923.63,
+      "composite": 92.0,
+      "sha256": "149ce500db5d95c1"
+    },
+    {
+      "generation": 558,
+      "elo": 1923.64,
+      "composite": 92.0,
+      "sha256": "96c2e846d93873c7"
+    },
+    {
+      "generation": 559,
+      "elo": 1923.65,
+      "composite": 92.0,
+      "sha256": "a23fa29c6107eb19"
+    },
+    {
+      "generation": 560,
+      "elo": 1923.65,
+      "composite": 92.0,
+      "sha256": "23ae68a4cfb61c5c"
+    },
+    {
+      "generation": 561,
+      "elo": 1923.66,
+      "composite": 92.0,
+      "sha256": "442cefc974a8cf03"
+    },
+    {
+      "generation": 562,
+      "elo": 1923.67,
+      "composite": 92.0,
+      "sha256": "24ce5eb047178aa8"
+    },
+    {
+      "generation": 563,
+      "elo": 1923.67,
+      "composite": 92.0,
+      "sha256": "1c49efd3e1bd2f0a"
+    },
+    {
+      "generation": 564,
+      "elo": 1923.68,
+      "composite": 92.0,
+      "sha256": "c3647dcaca138cbc"
+    },
+    {
+      "generation": 565,
+      "elo": 1923.68,
+      "composite": 92.0,
+      "sha256": "947f88f85003a9c9"
+    },
+    {
+      "generation": 566,
+      "elo": 1923.69,
+      "composite": 92.0,
+      "sha256": "01302fbee23a1e46"
+    },
+    {
+      "generation": 567,
+      "elo": 1923.7,
+      "composite": 92.0,
+      "sha256": "c6ecc909592d2b36"
+    },
+    {
+      "generation": 568,
+      "elo": 1923.7,
+      "composite": 92.0,
+      "sha256": "b686712e64e9fe81"
+    },
+    {
+      "generation": 569,
+      "elo": 1923.71,
+      "composite": 92.0,
+      "sha256": "bd1b2ed4fd2d79cd"
+    },
+    {
+      "generation": 570,
+      "elo": 1923.71,
+      "composite": 92.0,
+      "sha256": "214b1aaf411461ee"
+    },
+    {
+      "generation": 571,
+      "elo": 1923.72,
+      "composite": 92.0,
+      "sha256": "0340741b7e646be3"
+    },
+    {
+      "generation": 572,
+      "elo": 1923.73,
+      "composite": 92.0,
+      "sha256": "e6a2e37ac1d5c487"
+    },
+    {
+      "generation": 573,
+      "elo": 1923.73,
+      "composite": 92.0,
+      "sha256": "3d22ff88b53908d8"
+    },
+    {
+      "generation": 574,
+      "elo": 1923.74,
+      "composite": 92.0,
+      "sha256": "3d9dd02ccced913f"
+    },
+    {
+      "generation": 575,
+      "elo": 1923.74,
+      "composite": 92.0,
+      "sha256": "df79e35189503967"
+    },
+    {
+      "generation": 576,
+      "elo": 1923.75,
+      "composite": 92.0,
+      "sha256": "c84529eccae02d1f"
+    },
+    {
+      "generation": 577,
+      "elo": 1923.75,
+      "composite": 92.0,
+      "sha256": "02b4616268163058"
+    },
+    {
+      "generation": 578,
+      "elo": 1923.76,
+      "composite": 92.0,
+      "sha256": "3d92f32d34070a96"
+    },
+    {
+      "generation": 579,
+      "elo": 1923.76,
+      "composite": 92.0,
+      "sha256": "6210398a48a77489"
+    },
+    {
+      "generation": 580,
+      "elo": 1923.77,
+      "composite": 92.0,
+      "sha256": "d77108d6e9531608"
+    },
+    {
+      "generation": 581,
+      "elo": 1923.77,
+      "composite": 92.0,
+      "sha256": "5f1f446260d99313"
+    },
+    {
+      "generation": 582,
+      "elo": 1923.78,
+      "composite": 92.0,
+      "sha256": "e3ee7b51d5136714"
+    },
+    {
+      "generation": 583,
+      "elo": 1923.78,
+      "composite": 92.0,
+      "sha256": "840cd79483716787"
+    },
+    {
+      "generation": 584,
+      "elo": 1923.79,
+      "composite": 92.0,
+      "sha256": "675de12525ed437b"
+    },
+    {
+      "generation": 585,
+      "elo": 1923.79,
+      "composite": 92.0,
+      "sha256": "ad43ded9f88dda91"
+    },
+    {
+      "generation": 586,
+      "elo": 1923.8,
+      "composite": 92.0,
+      "sha256": "ffa58f5916f73d15"
+    },
+    {
+      "generation": 587,
+      "elo": 1923.8,
+      "composite": 92.0,
+      "sha256": "126d3ad2e7162990"
+    },
+    {
+      "generation": 588,
+      "elo": 1923.81,
+      "composite": 92.0,
+      "sha256": "3bfa3c0ec4d04fdf"
+    },
+    {
+      "generation": 589,
+      "elo": 1923.81,
+      "composite": 92.0,
+      "sha256": "4b67fdeca1baeb62"
+    },
+    {
+      "generation": 590,
+      "elo": 1923.82,
+      "composite": 92.0,
+      "sha256": "3bdd85068c741fd9"
+    },
+    {
+      "generation": 591,
+      "elo": 1923.82,
+      "composite": 92.0,
+      "sha256": "401cdc2a5cf08453"
+    },
+    {
+      "generation": 592,
+      "elo": 1923.83,
+      "composite": 92.0,
+      "sha256": "d7dc6ca8504f829c"
+    },
+    {
+      "generation": 593,
+      "elo": 1923.83,
+      "composite": 92.0,
+      "sha256": "84b00b98b9388e4e"
+    },
+    {
+      "generation": 594,
+      "elo": 1923.84,
+      "composite": 92.0,
+      "sha256": "51bad24115ae5a91"
+    },
+    {
+      "generation": 595,
+      "elo": 1923.84,
+      "composite": 92.0,
+      "sha256": "f0e78fcfa9212608"
+    },
+    {
+      "generation": 596,
+      "elo": 1923.85,
+      "composite": 92.0,
+      "sha256": "ac908ac823c8c2eb"
+    },
+    {
+      "generation": 597,
+      "elo": 1923.85,
+      "composite": 92.0,
+      "sha256": "80e207f8f13e7f6a"
+    },
+    {
+      "generation": 598,
+      "elo": 1923.85,
+      "composite": 92.0,
+      "sha256": "0e1ac35ed65b1525"
+    },
+    {
+      "generation": 599,
+      "elo": 1923.86,
+      "composite": 92.0,
+      "sha256": "071b4a9dd5356e18"
+    },
+    {
+      "generation": 600,
+      "elo": 1923.86,
+      "composite": 92.0,
+      "sha256": "42e9ccd7e26341ef"
+    },
+    {
+      "generation": 601,
+      "elo": 1923.87,
+      "composite": 92.0,
+      "sha256": "ae6e972563a1e3b8"
+    },
+    {
+      "generation": 602,
+      "elo": 1923.87,
+      "composite": 92.0,
+      "sha256": "c7dd63844422a330"
+    },
+    {
+      "generation": 603,
+      "elo": 1923.88,
+      "composite": 92.0,
+      "sha256": "37c3ba3a637257f6"
+    },
+    {
+      "generation": 604,
+      "elo": 1923.88,
+      "composite": 92.0,
+      "sha256": "fc44abddd0992bf8"
+    },
+    {
+      "generation": 605,
+      "elo": 1923.88,
+      "composite": 92.0,
+      "sha256": "3f3880d51fbe3d9f"
+    },
+    {
+      "generation": 606,
+      "elo": 1923.89,
+      "composite": 92.0,
+      "sha256": "4e88d4efbab74134"
+    },
+    {
+      "generation": 607,
+      "elo": 1923.89,
+      "composite": 92.0,
+      "sha256": "a8928a51496878c0"
+    },
+    {
+      "generation": 608,
+      "elo": 1923.9,
+      "composite": 92.0,
+      "sha256": "7f7c8e43810be5da"
+    },
+    {
+      "generation": 609,
+      "elo": 1923.9,
+      "composite": 92.0,
+      "sha256": "0cba1e962e4a1297"
+    },
+    {
+      "generation": 610,
+      "elo": 1923.9,
+      "composite": 92.0,
+      "sha256": "85f92dbbed16b3c0"
+    },
+    {
+      "generation": 611,
+      "elo": 1923.91,
+      "composite": 92.0,
+      "sha256": "c8a88ea4ba3102f0"
+    },
+    {
+      "generation": 612,
+      "elo": 1923.91,
+      "composite": 92.0,
+      "sha256": "84c698b44c79e758"
+    },
+    {
+      "generation": 613,
+      "elo": 1923.92,
+      "composite": 92.0,
+      "sha256": "f347266ffa1b84ca"
+    },
+    {
+      "generation": 614,
+      "elo": 1923.92,
+      "composite": 92.0,
+      "sha256": "b6e135ac6700cd79"
+    },
+    {
+      "generation": 615,
+      "elo": 1923.92,
+      "composite": 92.0,
+      "sha256": "d00cc9cc1788902f"
+    },
+    {
+      "generation": 616,
+      "elo": 1923.93,
+      "composite": 92.0,
+      "sha256": "7a2781ff40ac4fcd"
+    },
+    {
+      "generation": 617,
+      "elo": 1923.93,
+      "composite": 92.0,
+      "sha256": "31d82aa741382f53"
+    },
+    {
+      "generation": 618,
+      "elo": 1923.93,
+      "composite": 92.0,
+      "sha256": "7405e041c6f7c851"
+    },
+    {
+      "generation": 619,
+      "elo": 1923.94,
+      "composite": 92.0,
+      "sha256": "7436f15a1fc7cf7c"
+    },
+    {
+      "generation": 620,
+      "elo": 1923.94,
+      "composite": 92.0,
+      "sha256": "d7631ae39c20e879"
+    },
+    {
+      "generation": 621,
+      "elo": 1923.94,
+      "composite": 92.0,
+      "sha256": "0652990e72099b04"
+    },
+    {
+      "generation": 622,
+      "elo": 1923.95,
+      "composite": 92.0,
+      "sha256": "6eb79ed74fdea617"
+    },
+    {
+      "generation": 623,
+      "elo": 1923.95,
+      "composite": 92.0,
+      "sha256": "366729a9e255fc13"
+    },
+    {
+      "generation": 624,
+      "elo": 1923.95,
+      "composite": 92.0,
+      "sha256": "229e1e05eefa408a"
+    },
+    {
+      "generation": 625,
+      "elo": 1923.96,
+      "composite": 92.0,
+      "sha256": "ca23bd539cf57b52"
+    },
+    {
+      "generation": 626,
+      "elo": 1923.96,
+      "composite": 92.0,
+      "sha256": "89a4eba1002261d9"
+    },
+    {
+      "generation": 627,
+      "elo": 1923.96,
+      "composite": 92.0,
+      "sha256": "6e5e5066d1202580"
+    },
+    {
+      "generation": 628,
+      "elo": 1923.97,
+      "composite": 92.0,
+      "sha256": "107ecabdc1324380"
+    },
+    {
+      "generation": 629,
+      "elo": 1923.97,
+      "composite": 92.0,
+      "sha256": "ec1a19cfdc5a5b1d"
+    },
+    {
+      "generation": 630,
+      "elo": 1923.97,
+      "composite": 92.0,
+      "sha256": "5fe0b1d9384ccc01"
+    },
+    {
+      "generation": 631,
+      "elo": 1923.98,
+      "composite": 92.0,
+      "sha256": "52418d46b951dde7"
+    },
+    {
+      "generation": 632,
+      "elo": 1923.98,
+      "composite": 92.0,
+      "sha256": "60eb06e68c09de87"
+    },
+    {
+      "generation": 633,
+      "elo": 1923.98,
+      "composite": 92.0,
+      "sha256": "b86a4d9692f2dfcf"
+    },
+    {
+      "generation": 634,
+      "elo": 1923.99,
+      "composite": 92.0,
+      "sha256": "44c3330b62ce0ab8"
+    },
+    {
+      "generation": 635,
+      "elo": 1923.99,
+      "composite": 92.0,
+      "sha256": "be50c791812b4792"
+    },
+    {
+      "generation": 636,
+      "elo": 1923.99,
+      "composite": 92.0,
+      "sha256": "51cfb5c40d5b8cee"
+    },
+    {
+      "generation": 637,
+      "elo": 1923.99,
+      "composite": 92.0,
+      "sha256": "85154796be7fc086"
+    },
+    {
+      "generation": 638,
+      "elo": 1924.0,
+      "composite": 92.0,
+      "sha256": "65dc261df98b1195"
+    },
+    {
+      "generation": 639,
+      "elo": 1924.0,
+      "composite": 92.0,
+      "sha256": "8b19b286cd0aacd6"
+    },
+    {
+      "generation": 640,
+      "elo": 1924.0,
+      "composite": 92.0,
+      "sha256": "9178b45d276a186a"
+    },
+    {
+      "generation": 641,
+      "elo": 1924.01,
+      "composite": 92.0,
+      "sha256": "d0e2d18688c2ff7d"
+    },
+    {
+      "generation": 642,
+      "elo": 1924.01,
+      "composite": 92.0,
+      "sha256": "5f64496a92b15308"
+    },
+    {
+      "generation": 643,
+      "elo": 1924.01,
+      "composite": 92.0,
+      "sha256": "f9171cdc4cc90d84"
+    },
+    {
+      "generation": 644,
+      "elo": 1924.01,
+      "composite": 92.0,
+      "sha256": "a353348ac233609c"
+    },
+    {
+      "generation": 645,
+      "elo": 1924.02,
+      "composite": 92.0,
+      "sha256": "432755f696e738e1"
+    },
+    {
+      "generation": 646,
+      "elo": 1924.02,
+      "composite": 92.0,
+      "sha256": "8b7c55b5dd73c758"
+    },
+    {
+      "generation": 647,
+      "elo": 1924.02,
+      "composite": 92.0,
+      "sha256": "139cfc9e360998ec"
+    },
+    {
+      "generation": 648,
+      "elo": 1924.02,
+      "composite": 92.0,
+      "sha256": "6e0452f9a94a12e4"
+    },
+    {
+      "generation": 649,
+      "elo": 1924.03,
+      "composite": 92.0,
+      "sha256": "cd9795a27aae7b12"
+    },
+    {
+      "generation": 650,
+      "elo": 1924.03,
+      "composite": 92.0,
+      "sha256": "cfc807c158d954f7"
+    },
+    {
+      "generation": 651,
+      "elo": 1924.03,
+      "composite": 92.0,
+      "sha256": "ac5c81436a92b2ef"
+    },
+    {
+      "generation": 652,
+      "elo": 1924.03,
+      "composite": 92.0,
+      "sha256": "fd9e1a7dee3e3a56"
+    },
+    {
+      "generation": 653,
+      "elo": 1924.04,
+      "composite": 92.0,
+      "sha256": "4923c993cd97dfdc"
+    },
+    {
+      "generation": 654,
+      "elo": 1924.04,
+      "composite": 92.0,
+      "sha256": "6d1e70d8baecb767"
+    },
+    {
+      "generation": 655,
+      "elo": 1924.04,
+      "composite": 92.0,
+      "sha256": "2b1e94fac09f7a88"
+    },
+    {
+      "generation": 656,
+      "elo": 1924.04,
+      "composite": 92.0,
+      "sha256": "4bf296dc189fa2a8"
+    },
+    {
+      "generation": 657,
+      "elo": 1924.05,
+      "composite": 92.0,
+      "sha256": "0c437fc938e02685"
+    },
+    {
+      "generation": 658,
+      "elo": 1924.05,
+      "composite": 92.0,
+      "sha256": "5dfcadd1b4eab2fd"
+    },
+    {
+      "generation": 659,
+      "elo": 1924.05,
+      "composite": 92.0,
+      "sha256": "3a638641a3875b04"
+    },
+    {
+      "generation": 660,
+      "elo": 1924.05,
+      "composite": 92.0,
+      "sha256": "e2422cdddad53b1a"
+    },
+    {
+      "generation": 661,
+      "elo": 1924.06,
+      "composite": 92.0,
+      "sha256": "d62a5ed807bf63d5"
+    },
+    {
+      "generation": 662,
+      "elo": 1924.06,
+      "composite": 92.0,
+      "sha256": "fa8d18e58eee1dd1"
+    },
+    {
+      "generation": 663,
+      "elo": 1924.06,
+      "composite": 92.0,
+      "sha256": "cbea39fc89a0812f"
+    },
+    {
+      "generation": 664,
+      "elo": 1924.06,
+      "composite": 92.0,
+      "sha256": "50cbbfd512c25046"
+    },
+    {
+      "generation": 665,
+      "elo": 1924.07,
+      "composite": 92.0,
+      "sha256": "c1505bd9037cd01f"
+    },
+    {
+      "generation": 666,
+      "elo": 1924.07,
+      "composite": 92.0,
+      "sha256": "87ff7e9587bd2603"
+    },
+    {
+      "generation": 667,
+      "elo": 1924.07,
+      "composite": 92.0,
+      "sha256": "fd4893a649aead37"
+    },
+    {
+      "generation": 668,
+      "elo": 1924.07,
+      "composite": 92.0,
+      "sha256": "17fc71c2fb778fed"
+    },
+    {
+      "generation": 669,
+      "elo": 1924.07,
+      "composite": 92.0,
+      "sha256": "22ff8f2cafcfdfb6"
+    },
+    {
+      "generation": 670,
+      "elo": 1924.08,
+      "composite": 92.0,
+      "sha256": "2140c7d7a79ca39d"
+    },
+    {
+      "generation": 671,
+      "elo": 1924.08,
+      "composite": 92.0,
+      "sha256": "544993ad26da5710"
+    },
+    {
+      "generation": 672,
+      "elo": 1924.08,
+      "composite": 92.0,
+      "sha256": "1ff4304a1f48939e"
+    },
+    {
+      "generation": 673,
+      "elo": 1924.08,
+      "composite": 92.0,
+      "sha256": "6b168b12b028a3c2"
+    },
+    {
+      "generation": 674,
+      "elo": 1924.08,
+      "composite": 92.0,
+      "sha256": "799abb5ec99a9d1b"
+    },
+    {
+      "generation": 675,
+      "elo": 1924.09,
+      "composite": 92.0,
+      "sha256": "7e4ad67bc5ae5828"
+    },
+    {
+      "generation": 676,
+      "elo": 1924.09,
+      "composite": 92.0,
+      "sha256": "871e1976a387fbfa"
+    },
+    {
+      "generation": 677,
+      "elo": 1924.09,
+      "composite": 92.0,
+      "sha256": "25142de1370c36fb"
+    },
+    {
+      "generation": 678,
+      "elo": 1924.09,
+      "composite": 92.0,
+      "sha256": "c17f4204ea2d1b88"
+    },
+    {
+      "generation": 679,
+      "elo": 1924.09,
+      "composite": 92.0,
+      "sha256": "cf3eaeb9912bb7c1"
+    },
+    {
+      "generation": 680,
+      "elo": 1924.1,
+      "composite": 92.0,
+      "sha256": "9524feec050ae95d"
+    },
+    {
+      "generation": 681,
+      "elo": 1924.1,
+      "composite": 92.0,
+      "sha256": "4b7b3c1080b9f9e7"
+    },
+    {
+      "generation": 682,
+      "elo": 1924.1,
+      "composite": 92.0,
+      "sha256": "f53608d42d20c939"
+    },
+    {
+      "generation": 683,
+      "elo": 1924.1,
+      "composite": 92.0,
+      "sha256": "e0d515023a34e11f"
+    },
+    {
+      "generation": 684,
+      "elo": 1924.1,
+      "composite": 92.0,
+      "sha256": "9979e4c6be30d011"
+    },
+    {
+      "generation": 685,
+      "elo": 1924.1,
+      "composite": 92.0,
+      "sha256": "f54a80ac5dbb5676"
+    },
+    {
+      "generation": 686,
+      "elo": 1924.11,
+      "composite": 92.0,
+      "sha256": "945ee6382858067f"
+    },
+    {
+      "generation": 687,
+      "elo": 1924.11,
+      "composite": 92.0,
+      "sha256": "c154803b1298ae85"
+    },
+    {
+      "generation": 688,
+      "elo": 1924.11,
+      "composite": 92.0,
+      "sha256": "f093314dc80fa4b7"
+    },
+    {
+      "generation": 689,
+      "elo": 1924.11,
+      "composite": 92.0,
+      "sha256": "5058aa3739f2b61d"
+    },
+    {
+      "generation": 690,
+      "elo": 1924.11,
+      "composite": 92.0,
+      "sha256": "96ded1a16e0b46de"
+    },
+    {
+      "generation": 691,
+      "elo": 1924.12,
+      "composite": 92.0,
+      "sha256": "762b1f570e5e428e"
+    },
+    {
+      "generation": 692,
+      "elo": 1924.12,
+      "composite": 92.0,
+      "sha256": "ce44c0920314d088"
+    },
+    {
+      "generation": 693,
+      "elo": 1924.12,
+      "composite": 92.0,
+      "sha256": "4c3c3b7af8f43477"
+    },
+    {
+      "generation": 694,
+      "elo": 1924.12,
+      "composite": 92.0,
+      "sha256": "a8b1808e878813fb"
+    },
+    {
+      "generation": 695,
+      "elo": 1924.12,
+      "composite": 92.0,
+      "sha256": "b46e80a80c42caeb"
+    },
+    {
+      "generation": 696,
+      "elo": 1924.12,
+      "composite": 92.0,
+      "sha256": "772ed13524160529"
+    },
+    {
+      "generation": 697,
+      "elo": 1924.12,
+      "composite": 92.0,
+      "sha256": "e442372f50f5e7b4"
+    },
+    {
+      "generation": 698,
+      "elo": 1924.13,
+      "composite": 92.0,
+      "sha256": "90b6b90c2ebb635f"
+    },
+    {
+      "generation": 699,
+      "elo": 1924.13,
+      "composite": 92.0,
+      "sha256": "8eb005e94e62a12a"
+    },
+    {
+      "generation": 700,
+      "elo": 1924.13,
+      "composite": 92.0,
+      "sha256": "3e72a0ec4707e017"
+    },
+    {
+      "generation": 701,
+      "elo": 1924.13,
+      "composite": 92.0,
+      "sha256": "c8a25b54b914222c"
+    },
+    {
+      "generation": 702,
+      "elo": 1924.13,
+      "composite": 92.0,
+      "sha256": "7242d0f137e3b319"
+    },
+    {
+      "generation": 703,
+      "elo": 1924.13,
+      "composite": 92.0,
+      "sha256": "fdc12959f5990180"
+    },
+    {
+      "generation": 704,
+      "elo": 1924.14,
+      "composite": 92.0,
+      "sha256": "42b1c52ce311a57d"
+    },
+    {
+      "generation": 705,
+      "elo": 1924.14,
+      "composite": 92.0,
+      "sha256": "ab6ca0015206f75e"
+    },
+    {
+      "generation": 706,
+      "elo": 1924.14,
+      "composite": 92.0,
+      "sha256": "72de45b378a6bc1c"
+    },
+    {
+      "generation": 707,
+      "elo": 1924.14,
+      "composite": 92.0,
+      "sha256": "8fccab49bf6bdfe7"
+    },
+    {
+      "generation": 708,
+      "elo": 1924.14,
+      "composite": 92.0,
+      "sha256": "992f1e6d4ffb3b15"
+    },
+    {
+      "generation": 709,
+      "elo": 1924.14,
+      "composite": 92.0,
+      "sha256": "c4a3d1aa61d6a98c"
+    },
+    {
+      "generation": 710,
+      "elo": 1924.14,
+      "composite": 92.0,
+      "sha256": "cd7d8d9b032f6c90"
+    },
+    {
+      "generation": 711,
+      "elo": 1924.15,
+      "composite": 92.0,
+      "sha256": "4f1b0a7ee68f7098"
+    },
+    {
+      "generation": 712,
+      "elo": 1924.15,
+      "composite": 92.0,
+      "sha256": "f0c49dac25d88d85"
+    },
+    {
+      "generation": 713,
+      "elo": 1924.15,
+      "composite": 92.0,
+      "sha256": "fb41e1152758847f"
+    },
+    {
+      "generation": 714,
+      "elo": 1924.15,
+      "composite": 92.0,
+      "sha256": "682a548bc56d3665"
+    },
+    {
+      "generation": 715,
+      "elo": 1924.15,
+      "composite": 92.0,
+      "sha256": "93433818c5818ff9"
+    },
+    {
+      "generation": 716,
+      "elo": 1924.15,
+      "composite": 92.0,
+      "sha256": "350ac6ef0a8e4384"
+    },
+    {
+      "generation": 717,
+      "elo": 1924.15,
+      "composite": 92.0,
+      "sha256": "cb64bd468d82e64a"
+    },
+    {
+      "generation": 718,
+      "elo": 1924.15,
+      "composite": 92.0,
+      "sha256": "fc4fa33a1d08f99a"
+    },
+    {
+      "generation": 719,
+      "elo": 1924.16,
+      "composite": 92.0,
+      "sha256": "b710609bcf24ac9a"
+    },
+    {
+      "generation": 720,
+      "elo": 1924.16,
+      "composite": 92.0,
+      "sha256": "5ac3305bf4ae066d"
+    },
+    {
+      "generation": 721,
+      "elo": 1924.16,
+      "composite": 92.0,
+      "sha256": "ec35643982240b34"
+    },
+    {
+      "generation": 722,
+      "elo": 1924.16,
+      "composite": 92.0,
+      "sha256": "49b5dbd357394331"
+    },
+    {
+      "generation": 723,
+      "elo": 1924.16,
+      "composite": 92.0,
+      "sha256": "51fc90320ca1c36b"
+    },
+    {
+      "generation": 724,
+      "elo": 1924.16,
+      "composite": 92.0,
+      "sha256": "161dcd24cafd8426"
+    },
+    {
+      "generation": 725,
+      "elo": 1924.16,
+      "composite": 92.0,
+      "sha256": "b5b19a0cb86f754a"
+    },
+    {
+      "generation": 726,
+      "elo": 1924.16,
+      "composite": 92.0,
+      "sha256": "ed2ce0d4dbb98344"
+    },
+    {
+      "generation": 727,
+      "elo": 1924.17,
+      "composite": 92.0,
+      "sha256": "8d4adb6d535dd667"
+    },
+    {
+      "generation": 728,
+      "elo": 1924.17,
+      "composite": 92.0,
+      "sha256": "0e1f48e545b1a62d"
+    },
+    {
+      "generation": 729,
+      "elo": 1924.17,
+      "composite": 92.0,
+      "sha256": "6a10f1e70f85917e"
+    },
+    {
+      "generation": 730,
+      "elo": 1924.17,
+      "composite": 92.0,
+      "sha256": "8726f15ee40d8031"
+    },
+    {
+      "generation": 731,
+      "elo": 1924.17,
+      "composite": 92.0,
+      "sha256": "3141559d0ed41a51"
+    },
+    {
+      "generation": 732,
+      "elo": 1924.17,
+      "composite": 92.0,
+      "sha256": "496bc2fd78c6af68"
+    },
+    {
+      "generation": 733,
+      "elo": 1924.17,
+      "composite": 92.0,
+      "sha256": "a83eb2f4f8b5c123"
+    },
+    {
+      "generation": 734,
+      "elo": 1924.17,
+      "composite": 92.0,
+      "sha256": "2566d0f90411ecfd"
+    },
+    {
+      "generation": 735,
+      "elo": 1924.17,
+      "composite": 92.0,
+      "sha256": "e5ed0b89a89c7cbe"
+    },
+    {
+      "generation": 736,
+      "elo": 1924.18,
+      "composite": 92.0,
+      "sha256": "704dad7d295ddef4"
+    },
+    {
+      "generation": 737,
+      "elo": 1924.18,
+      "composite": 92.0,
+      "sha256": "1fe292fd44372b2f"
+    },
+    {
+      "generation": 738,
+      "elo": 1924.18,
+      "composite": 92.0,
+      "sha256": "a5fe49ec27f864f9"
+    },
+    {
+      "generation": 739,
+      "elo": 1924.18,
+      "composite": 92.0,
+      "sha256": "5f6acf4acf765b1b"
+    },
+    {
+      "generation": 740,
+      "elo": 1924.18,
+      "composite": 92.0,
+      "sha256": "80f4e0306d59c124"
+    },
+    {
+      "generation": 741,
+      "elo": 1924.18,
+      "composite": 92.0,
+      "sha256": "2134f15306c6a5fa"
+    },
+    {
+      "generation": 742,
+      "elo": 1924.18,
+      "composite": 92.0,
+      "sha256": "0815d29c3a01ecc3"
+    },
+    {
+      "generation": 743,
+      "elo": 1924.18,
+      "composite": 92.0,
+      "sha256": "949949466eca53ed"
+    },
+    {
+      "generation": 744,
+      "elo": 1924.18,
+      "composite": 92.0,
+      "sha256": "bc349bb7988c5d80"
+    },
+    {
+      "generation": 745,
+      "elo": 1924.18,
+      "composite": 92.0,
+      "sha256": "0b485797c30694da"
+    },
+    {
+      "generation": 746,
+      "elo": 1924.19,
+      "composite": 92.0,
+      "sha256": "b82bc16711b48429"
+    },
+    {
+      "generation": 747,
+      "elo": 1924.19,
+      "composite": 92.0,
+      "sha256": "dc240ec0409db3af"
+    },
+    {
+      "generation": 748,
+      "elo": 1924.19,
+      "composite": 92.0,
+      "sha256": "d641a9bc0e473dd3"
+    },
+    {
+      "generation": 749,
+      "elo": 1924.19,
+      "composite": 92.0,
+      "sha256": "2eb25fcc7dd54c93"
+    },
+    {
+      "generation": 750,
+      "elo": 1924.19,
+      "composite": 92.0,
+      "sha256": "8220c1c64e632e1f"
+    },
+    {
+      "generation": 751,
+      "elo": 1924.19,
+      "composite": 92.0,
+      "sha256": "041ad1f69345d8c5"
+    },
+    {
+      "generation": 752,
+      "elo": 1924.19,
+      "composite": 92.0,
+      "sha256": "e0d0e840aa54479c"
+    },
+    {
+      "generation": 753,
+      "elo": 1924.19,
+      "composite": 92.0,
+      "sha256": "846e69519ea049f3"
+    },
+    {
+      "generation": 754,
+      "elo": 1924.19,
+      "composite": 92.0,
+      "sha256": "5617b504f0f22871"
+    },
+    {
+      "generation": 755,
+      "elo": 1924.19,
+      "composite": 92.0,
+      "sha256": "67e4de085ebe6753"
+    },
+    {
+      "generation": 756,
+      "elo": 1924.19,
+      "composite": 92.0,
+      "sha256": "dce8cb2b75208825"
+    },
+    {
+      "generation": 757,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "ddcef20a9927720d"
+    },
+    {
+      "generation": 758,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "6a96d9671833460f"
+    },
+    {
+      "generation": 759,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "c9c0d98445d45071"
+    },
+    {
+      "generation": 760,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "88023b4297ab62c3"
+    },
+    {
+      "generation": 761,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "0ab8aec2f6b38539"
+    },
+    {
+      "generation": 762,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "f2e93a48df010b0d"
+    },
+    {
+      "generation": 763,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "f740eda04c718aa9"
+    },
+    {
+      "generation": 764,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "481c56e5fa02ceb2"
+    },
+    {
+      "generation": 765,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "d456727428a3bc91"
+    },
+    {
+      "generation": 766,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "f27b6c903d08e739"
+    },
+    {
+      "generation": 767,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "d0aaa1546b4cc359"
+    },
+    {
+      "generation": 768,
+      "elo": 1924.2,
+      "composite": 92.0,
+      "sha256": "a79fae9db64747b3"
+    },
+    {
+      "generation": 769,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "4407a20af2bbb98e"
+    },
+    {
+      "generation": 770,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "d8d0f92662191a5f"
+    },
+    {
+      "generation": 771,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "454b156bd80d887f"
+    },
+    {
+      "generation": 772,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "869edd68a3084269"
+    },
+    {
+      "generation": 773,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "1c902b7c5f82c698"
+    },
+    {
+      "generation": 774,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "90b43d17a97cb706"
+    },
+    {
+      "generation": 775,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "fe45526eda028942"
+    },
+    {
+      "generation": 776,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "6fc073c87001a986"
+    },
+    {
+      "generation": 777,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "68ea26aebe8fa209"
+    },
+    {
+      "generation": 778,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "4b6764944e4be589"
+    },
+    {
+      "generation": 779,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "72522070e31193e8"
+    },
+    {
+      "generation": 780,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "4269bf755a269275"
+    },
+    {
+      "generation": 781,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "000a98af5eccbc4f"
+    },
+    {
+      "generation": 782,
+      "elo": 1924.21,
+      "composite": 92.0,
+      "sha256": "f577592fe90a003a"
+    },
+    {
+      "generation": 783,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "26a9f35a67a405d1"
+    },
+    {
+      "generation": 784,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "9136288aac60b707"
+    },
+    {
+      "generation": 785,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "24b806550a9106ec"
+    },
+    {
+      "generation": 786,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "eced324f024f1754"
+    },
+    {
+      "generation": 787,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "7897382010d35ab5"
+    },
+    {
+      "generation": 788,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "d3d3bf1cc6709c5a"
+    },
+    {
+      "generation": 789,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "559c3c293b0cca40"
+    },
+    {
+      "generation": 790,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "48aaeb083106664c"
+    },
+    {
+      "generation": 791,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "c5d008a5f1fe514a"
+    },
+    {
+      "generation": 792,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "df5afe63cfa90eaa"
+    },
+    {
+      "generation": 793,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "26183c08353e1a13"
+    },
+    {
+      "generation": 794,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "a016403ff647bce4"
+    },
+    {
+      "generation": 795,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "79c79211774bf435"
+    },
+    {
+      "generation": 796,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "e933dc226f73dbb9"
+    },
+    {
+      "generation": 797,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "830bcec6918ffc74"
+    },
+    {
+      "generation": 798,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "1b5c8012a75cd1b7"
+    },
+    {
+      "generation": 799,
+      "elo": 1924.22,
+      "composite": 92.0,
+      "sha256": "517bea65af877f41"
+    },
+    {
+      "generation": 800,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "ba43d09025570ad0"
+    },
+    {
+      "generation": 801,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "883c6ddcc1db0b8a"
+    },
+    {
+      "generation": 802,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "e34a7a83d41ca20b"
+    },
+    {
+      "generation": 803,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "ac224223b2a39076"
+    },
+    {
+      "generation": 804,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "b6fed421d050d1bb"
+    },
+    {
+      "generation": 805,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "a68fdc975ebd8bf5"
+    },
+    {
+      "generation": 806,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "ceb290b3a8351f9b"
+    },
+    {
+      "generation": 807,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "6573ea1c6774a75c"
+    },
+    {
+      "generation": 808,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "516c5e4656190688"
+    },
+    {
+      "generation": 809,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "3cc70292d1b53b4e"
+    },
+    {
+      "generation": 810,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "8d8040c2ffbccdc9"
+    },
+    {
+      "generation": 811,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "5be99bff8d3c852a"
+    },
+    {
+      "generation": 812,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "c20394e5f8568313"
+    },
+    {
+      "generation": 813,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "9adf32fd0502b44b"
+    },
+    {
+      "generation": 814,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "3aec1687b85879e0"
+    },
+    {
+      "generation": 815,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "58ff1e2f09087f7f"
+    },
+    {
+      "generation": 816,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "b5b1164e005f8d0f"
+    },
+    {
+      "generation": 817,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "9c7e9cba92d1647f"
+    },
+    {
+      "generation": 818,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "567795090651a833"
+    },
+    {
+      "generation": 819,
+      "elo": 1924.23,
+      "composite": 92.0,
+      "sha256": "c3ecaae700227890"
+    },
+    {
+      "generation": 820,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "6aeb44e22d28fd86"
+    },
+    {
+      "generation": 821,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "1ef95126f0e41c63"
+    },
+    {
+      "generation": 822,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "b48330a5073d3077"
+    },
+    {
+      "generation": 823,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "5b9acea0ab69fbca"
+    },
+    {
+      "generation": 824,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "8e2e47f9995f5e75"
+    },
+    {
+      "generation": 825,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "4b119272a020e4ad"
+    },
+    {
+      "generation": 826,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "8c4fb4966f97d4e4"
+    },
+    {
+      "generation": 827,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "29f151b14246ad51"
+    },
+    {
+      "generation": 828,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "9afbea072b31c25c"
+    },
+    {
+      "generation": 829,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "a7091232fcc0f536"
+    },
+    {
+      "generation": 830,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "c31ab100c96fab9f"
+    },
+    {
+      "generation": 831,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "063cada829fa4cf4"
+    },
+    {
+      "generation": 832,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "3f769e7e9e74f252"
+    },
+    {
+      "generation": 833,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "978c2a75d0065254"
+    },
+    {
+      "generation": 834,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "ee137ddfc81970d6"
+    },
+    {
+      "generation": 835,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "7fb28a0e69b882ae"
+    },
+    {
+      "generation": 836,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "50bc89780173b5df"
+    },
+    {
+      "generation": 837,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "ba74f369a6253767"
+    },
+    {
+      "generation": 838,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "eb71f3da17eea916"
+    },
+    {
+      "generation": 839,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "cc9d4e6c70a28e15"
+    },
+    {
+      "generation": 840,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "a3f72f6fc57250d2"
+    },
+    {
+      "generation": 841,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "ddd68ce10bd08108"
+    },
+    {
+      "generation": 842,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "7aae1d7c3df6597e"
+    },
+    {
+      "generation": 843,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "cebd62dd633acc88"
+    },
+    {
+      "generation": 844,
+      "elo": 1924.24,
+      "composite": 92.0,
+      "sha256": "b8413d8e2fbb14a1"
+    },
+    {
+      "generation": 845,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "2946bb12ee12eccb"
+    },
+    {
+      "generation": 846,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "350a36049b6bf3df"
+    },
+    {
+      "generation": 847,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "45f3083ebd760afb"
+    },
+    {
+      "generation": 848,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "c37874f7077358f1"
+    },
+    {
+      "generation": 849,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "7a4f0339a00933ed"
+    },
+    {
+      "generation": 850,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "95e1d3f9a8294366"
+    },
+    {
+      "generation": 851,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "f681949f8c1fb57c"
+    },
+    {
+      "generation": 852,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "9353f25adc5d15b4"
+    },
+    {
+      "generation": 853,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "0b51bfad2338bcde"
+    },
+    {
+      "generation": 854,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "2c0d2398a69b5fb4"
+    },
+    {
+      "generation": 855,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "36a31b2fd4926ac6"
+    },
+    {
+      "generation": 856,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "f76f3f5ebb57d114"
+    },
+    {
+      "generation": 857,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "c24343cc2b3e8bf3"
+    },
+    {
+      "generation": 858,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "15bde7a662360717"
+    },
+    {
+      "generation": 859,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "86088c20dc7ca1e1"
+    },
+    {
+      "generation": 860,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "56802bff6e53eb2d"
+    },
+    {
+      "generation": 861,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "2367b5b509b60abd"
+    },
+    {
+      "generation": 862,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "7610632a27cb723a"
+    },
+    {
+      "generation": 863,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "6053a3bae7571d9f"
+    },
+    {
+      "generation": 864,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "91b946b192108c0e"
+    },
+    {
+      "generation": 865,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "5375222351d0702e"
+    },
+    {
+      "generation": 866,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "33f66aba92be6c60"
+    },
+    {
+      "generation": 867,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "0eb19fc07e028903"
+    },
+    {
+      "generation": 868,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "7ae5e789a314b605"
+    },
+    {
+      "generation": 869,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "26877083a00ff5cb"
+    },
+    {
+      "generation": 870,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "763188682f684b47"
+    },
+    {
+      "generation": 871,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "fd63d31d160f5fd6"
+    },
+    {
+      "generation": 872,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "94e95bbe29d9affd"
+    },
+    {
+      "generation": 873,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "7cc1f0d74bc8741e"
+    },
+    {
+      "generation": 874,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "8fcbc959e16b3448"
+    },
+    {
+      "generation": 875,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "0aee2520d40b2e5c"
+    },
+    {
+      "generation": 876,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "f721a5d2e9b328f4"
+    },
+    {
+      "generation": 877,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "d2405627a036b286"
+    },
+    {
+      "generation": 878,
+      "elo": 1924.25,
+      "composite": 92.0,
+      "sha256": "1567c8a863ec2536"
+    },
+    {
+      "generation": 879,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "f8684f5cb9680ea7"
+    },
+    {
+      "generation": 880,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "7f90d36e21d16147"
+    },
+    {
+      "generation": 881,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "e38371acf0234c93"
+    },
+    {
+      "generation": 882,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "c0a81bad9948ee8e"
+    },
+    {
+      "generation": 883,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "24c6e1b4fcf445a4"
+    },
+    {
+      "generation": 884,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "b1dd4c184d720525"
+    },
+    {
+      "generation": 885,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "8b75faaf3515d558"
+    },
+    {
+      "generation": 886,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "f678a4b2114830e7"
+    },
+    {
+      "generation": 887,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "523375f30641a286"
+    },
+    {
+      "generation": 888,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "81e8ec3f2724130e"
+    },
+    {
+      "generation": 889,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "243467baebfea820"
+    },
+    {
+      "generation": 890,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "fca7c730757fe425"
+    },
+    {
+      "generation": 891,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "8522884f5639b714"
+    },
+    {
+      "generation": 892,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "5fe9e801e378e099"
+    },
+    {
+      "generation": 893,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "e8b2bd883b1bbe84"
+    },
+    {
+      "generation": 894,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "cc5d558511c3bb27"
+    },
+    {
+      "generation": 895,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "a1f11ec1824877e0"
+    },
+    {
+      "generation": 896,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "2986edc7f1735470"
+    },
+    {
+      "generation": 897,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "2767f7bde760d240"
+    },
+    {
+      "generation": 898,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "ab515db61082ad11"
+    },
+    {
+      "generation": 899,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "0363341d94c6eb81"
+    },
+    {
+      "generation": 900,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "70e2a899c2c1342e"
+    },
+    {
+      "generation": 901,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "7808037c2df03a20"
+    },
+    {
+      "generation": 902,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "c3f89a02203ace5c"
+    },
+    {
+      "generation": 903,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "171f19accb9d36f2"
+    },
+    {
+      "generation": 904,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "e01bd89fc4fa2674"
+    },
+    {
+      "generation": 905,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "55e4c1f47927db2d"
+    },
+    {
+      "generation": 906,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "0f6a8c973b9b6f62"
+    },
+    {
+      "generation": 907,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "729a23b664ae755f"
+    },
+    {
+      "generation": 908,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "38b3128ea5e7224e"
+    },
+    {
+      "generation": 909,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "609574f9d725cf1e"
+    },
+    {
+      "generation": 910,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "7f181a493c2c1e02"
+    },
+    {
+      "generation": 911,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "20a756f95fcddd69"
+    },
+    {
+      "generation": 912,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "76197b52187c2fce"
+    },
+    {
+      "generation": 913,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "98c528875ee89a23"
+    },
+    {
+      "generation": 914,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "f4c20fc0a931f892"
+    },
+    {
+      "generation": 915,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "bbd7b2059258b094"
+    },
+    {
+      "generation": 916,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "3e64ea8dd09ec895"
+    },
+    {
+      "generation": 917,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "f945090d18b4e3ef"
+    },
+    {
+      "generation": 918,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "3a2d48bc117c4a59"
+    },
+    {
+      "generation": 919,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "2ad7ab4bb7815f7b"
+    },
+    {
+      "generation": 920,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "a4e0a584078eac74"
+    },
+    {
+      "generation": 921,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "55fbc315c2076678"
+    },
+    {
+      "generation": 922,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "49e91cfb88617bbc"
+    },
+    {
+      "generation": 923,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "cb91cae9d37597fc"
+    },
+    {
+      "generation": 924,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "088c5f30789e7b2d"
+    },
+    {
+      "generation": 925,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "fac56541e34e7968"
+    },
+    {
+      "generation": 926,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "7ac8a94c515c1f17"
+    },
+    {
+      "generation": 927,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "c02037f7be8815f8"
+    },
+    {
+      "generation": 928,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "ad702cb99f405324"
+    },
+    {
+      "generation": 929,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "691693de68a95e6a"
+    },
+    {
+      "generation": 930,
+      "elo": 1924.26,
+      "composite": 92.0,
+      "sha256": "68b1f9a60f6555aa"
+    },
+    {
+      "generation": 931,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "23e5d4070eafde1c"
+    },
+    {
+      "generation": 932,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "952552250e691c0a"
+    },
+    {
+      "generation": 933,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "73d6a0f1c591260d"
+    },
+    {
+      "generation": 934,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "d78ed5763d999fc1"
+    },
+    {
+      "generation": 935,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "ee7d0443a04b0828"
+    },
+    {
+      "generation": 936,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "855c7771422d4d41"
+    },
+    {
+      "generation": 937,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "09f36b7082aeb1e6"
+    },
+    {
+      "generation": 938,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "e8ec5ddc2a4c15c1"
+    },
+    {
+      "generation": 939,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "6a3a1c414fc1aa88"
+    },
+    {
+      "generation": 940,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "0a2ffa417774f9d8"
+    },
+    {
+      "generation": 941,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "6ac84e0572e8fa9b"
+    },
+    {
+      "generation": 942,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "546c8a72f1b0c23a"
+    },
+    {
+      "generation": 943,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "eb56ba0cc4fa52cb"
+    },
+    {
+      "generation": 944,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "a9026977eae96f3c"
+    },
+    {
+      "generation": 945,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "3ab23bf32cd23079"
+    },
+    {
+      "generation": 946,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "acbb5cf174d788a0"
+    },
+    {
+      "generation": 947,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "7560095b77fbcd26"
+    },
+    {
+      "generation": 948,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "0d678af4d1dc304b"
+    },
+    {
+      "generation": 949,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "2f6388560423c774"
+    },
+    {
+      "generation": 950,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "0ea6f8d60984de70"
+    },
+    {
+      "generation": 951,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "b3cc85522bd45179"
+    },
+    {
+      "generation": 952,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "51f3a087acc2a66f"
+    },
+    {
+      "generation": 953,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "b597b9b65f7d1c9e"
+    },
+    {
+      "generation": 954,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "8e668e96d7966482"
+    },
+    {
+      "generation": 955,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "d01957dd31fc1b75"
+    },
+    {
+      "generation": 956,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "175e790033ba73ed"
+    },
+    {
+      "generation": 957,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "b7b088ae7007e18d"
+    },
+    {
+      "generation": 958,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "5cd48aea7637dc13"
+    },
+    {
+      "generation": 959,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "cf07d5529bfdbf50"
+    },
+    {
+      "generation": 960,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "26e63d7fa1f2ad25"
+    },
+    {
+      "generation": 961,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "ae2115c3ce6c6f92"
+    },
+    {
+      "generation": 962,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "c79a6920927c2d1e"
+    },
+    {
+      "generation": 963,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "98fe127ddcd5d386"
+    },
+    {
+      "generation": 964,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "c1184edd9e15636a"
+    },
+    {
+      "generation": 965,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "2f1a2a8673831b3d"
+    },
+    {
+      "generation": 966,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "58431e63aefdbadc"
+    },
+    {
+      "generation": 967,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "a69c35f133e0d36e"
+    },
+    {
+      "generation": 968,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "8188c3ca90814a99"
+    },
+    {
+      "generation": 969,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "14a7158ae326a90f"
+    },
+    {
+      "generation": 970,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "2bb2fadc1b7ac4e3"
+    },
+    {
+      "generation": 971,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "7cc525b91a037287"
+    },
+    {
+      "generation": 972,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "cc35d90449434fa3"
+    },
+    {
+      "generation": 973,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "0fed3215d861c6a8"
+    },
+    {
+      "generation": 974,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "8877bd2484d83f3d"
+    },
+    {
+      "generation": 975,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "c66f3a7c136d4cc2"
+    },
+    {
+      "generation": 976,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "cd45bd8e1d9f5254"
+    },
+    {
+      "generation": 977,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "7024a5718837bf2b"
+    },
+    {
+      "generation": 978,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "fb9bad17701de996"
+    },
+    {
+      "generation": 979,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "6fdb3d99861044a9"
+    },
+    {
+      "generation": 980,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "ea0c727ad05745c6"
+    },
+    {
+      "generation": 981,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "981ca97122bb26ff"
+    },
+    {
+      "generation": 982,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "00189d8f311a4147"
+    },
+    {
+      "generation": 983,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "65db7cdad4b98feb"
+    },
+    {
+      "generation": 984,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "2032c38b144eae11"
+    },
+    {
+      "generation": 985,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "ed1eb0fc217a34c0"
+    },
+    {
+      "generation": 986,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "7713e19c42b258a9"
+    },
+    {
+      "generation": 987,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "54595528cc40485b"
+    },
+    {
+      "generation": 988,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "3017beea08c9329f"
+    },
+    {
+      "generation": 989,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "b3d2c7fe0c2fc157"
+    },
+    {
+      "generation": 990,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "5378023369247b5a"
+    },
+    {
+      "generation": 991,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "45d037c05cdb747b"
+    },
+    {
+      "generation": 992,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "86f66156f64bb335"
+    },
+    {
+      "generation": 993,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "a85ae31d0609884b"
+    },
+    {
+      "generation": 994,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "a2e99812d4f16276"
+    },
+    {
+      "generation": 995,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "29bfe5a3eee2e19f"
+    },
+    {
+      "generation": 996,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "42501acaf70cc3a0"
+    },
+    {
+      "generation": 997,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "581211dbad066f90"
+    },
+    {
+      "generation": 998,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "99fd9d66ad5053a9"
+    },
+    {
+      "generation": 999,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "a445279d38400844"
+    },
+    {
+      "generation": 1000,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "a3e7422e2eabd4b7"
+    },
+    {
+      "generation": 1001,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "873ceb1051240195"
+    },
+    {
+      "generation": 1002,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "99af05339c6ca4c5"
+    },
+    {
+      "generation": 1003,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "1c98d6e7d9d492bf"
+    },
+    {
+      "generation": 1004,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "1869dcda6b8e5075"
+    },
+    {
+      "generation": 1005,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "9ade555f7fadf449"
+    },
+    {
+      "generation": 1006,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "558bd961eae39e77"
+    },
+    {
+      "generation": 1007,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "96eee7215587bfcc"
+    },
+    {
+      "generation": 1008,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "a796f7b317bd998e"
+    },
+    {
+      "generation": 1009,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "cb0dd544c1d86c7c"
+    },
+    {
+      "generation": 1010,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "13072fa050d1a372"
+    },
+    {
+      "generation": 1011,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "81508a775904753a"
+    },
+    {
+      "generation": 1012,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "a268d3613a5e925c"
+    },
+    {
+      "generation": 1013,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "ba54862b2b689f5f"
+    },
+    {
+      "generation": 1014,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "c956a594839db901"
+    },
+    {
+      "generation": 1015,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "fd1b9440c722272f"
+    },
+    {
+      "generation": 1016,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "5f4fba19f6c9d22a"
+    },
+    {
+      "generation": 1017,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "b741a53c24bca3bc"
+    },
+    {
+      "generation": 1018,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "4fdc1d5c117c1f8c"
+    },
+    {
+      "generation": 1019,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "c12bd05a7441648b"
+    },
+    {
+      "generation": 1020,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "74427cd2611fe9ec"
+    },
+    {
+      "generation": 1021,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "1817257be590f248"
+    },
+    {
+      "generation": 1022,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "8c30dd43ee8b22ed"
+    },
+    {
+      "generation": 1023,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "5309431825ee16e1"
+    },
+    {
+      "generation": 1024,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "033729a5d95ae54a"
+    },
+    {
+      "generation": 1025,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "13ee6e93831d7e16"
+    },
+    {
+      "generation": 1026,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "562656490b74f7bb"
+    },
+    {
+      "generation": 1027,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "b9fdad8bd25ccac7"
+    },
+    {
+      "generation": 1028,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "9c957e095361a325"
+    },
+    {
+      "generation": 1029,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "6d383ea24c9875bc"
+    },
+    {
+      "generation": 1030,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "b24c1814fbfcbd37"
+    },
+    {
+      "generation": 1031,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "4e1b17bf69c6f7c6"
+    },
+    {
+      "generation": 1032,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "1699f2dcaf8f5b2c"
+    },
+    {
+      "generation": 1033,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "21462efe23bfffa6"
+    },
+    {
+      "generation": 1034,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "2da897fc0d1a79a1"
+    },
+    {
+      "generation": 1035,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "cc392b633421a8b7"
+    },
+    {
+      "generation": 1036,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "84ab67d752620137"
+    },
+    {
+      "generation": 1037,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "da03ee5a1811be3d"
+    },
+    {
+      "generation": 1038,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "d98e48e139c67a5b"
+    },
+    {
+      "generation": 1039,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "6cf9343ed9d46783"
+    },
+    {
+      "generation": 1040,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "2342b45f0306e0ca"
+    },
+    {
+      "generation": 1041,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "01f4c1f7891a98b5"
+    },
+    {
+      "generation": 1042,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "da223b2ea449cbeb"
+    },
+    {
+      "generation": 1043,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "51e031d1f1ff764c"
+    },
+    {
+      "generation": 1044,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "875a900115eeec2f"
+    },
+    {
+      "generation": 1045,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "a1095a6f9fb671d7"
+    },
+    {
+      "generation": 1046,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "6f0de2fba5ebaecb"
+    },
+    {
+      "generation": 1047,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "b93fbd40eb0ba852"
+    },
+    {
+      "generation": 1048,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "cfcd31e8b056a46f"
+    },
+    {
+      "generation": 1049,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "591a08121b5d7a3f"
+    },
+    {
+      "generation": 1050,
+      "elo": 1924.27,
+      "composite": 92.0,
+      "sha256": "0f2191e824395585"
+    },
+    {
+      "generation": 1051,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "3e9cca274a0f9923"
+    },
+    {
+      "generation": 1052,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "556197e3f07e7441"
+    },
+    {
+      "generation": 1053,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "82a706db85647bdf"
+    },
+    {
+      "generation": 1054,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "9c72717a29191d62"
+    },
+    {
+      "generation": 1055,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "af8d8051a5bc6594"
+    },
+    {
+      "generation": 1056,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "0c0d8f748c303cc1"
+    },
+    {
+      "generation": 1057,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "7bbfc17905d1c1a8"
+    },
+    {
+      "generation": 1058,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "72405e5a48032648"
+    },
+    {
+      "generation": 1059,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "ccdcd0a0343b3fb2"
+    },
+    {
+      "generation": 1060,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "c9d5531d7226daee"
+    },
+    {
+      "generation": 1061,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "7e12a93095dbcc69"
+    },
+    {
+      "generation": 1062,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "3e7f53b96af110e3"
+    },
+    {
+      "generation": 1063,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "719aef20c90a6f99"
+    },
+    {
+      "generation": 1064,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "cf0ae7f043ab039f"
+    },
+    {
+      "generation": 1065,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "7ea24b41ec5907f9"
+    },
+    {
+      "generation": 1066,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "082bd74d33614ce5"
+    },
+    {
+      "generation": 1067,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "a9b11ddfea94069e"
+    },
+    {
+      "generation": 1068,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "6ff54d5e46056ca9"
+    },
+    {
+      "generation": 1069,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "2be82d6cdc2d8ade"
+    },
+    {
+      "generation": 1070,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "d10aa981b20881e3"
+    },
+    {
+      "generation": 1071,
+      "elo": 1924.28,
+      "composite": 92.0,
+      "sha256": "1d76697806642280"
+    }
+  ],
+  "last_mutation": "Patched latency formatting: Enforced clean positive 0.27 ms DMA / '--' waiting state (Rule 1)",
+  "weights": {
+    "cro": 0.35,
+    "ux": 0.25,
+    "zero_mock": 0.2,
+    "commercial": 0.2
+  }
+}

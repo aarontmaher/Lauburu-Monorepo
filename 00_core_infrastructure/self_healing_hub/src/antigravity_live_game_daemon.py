@@ -18,7 +18,7 @@ except ImportError:
     print("Please install google-genai: pip install google-genai")
     sys.exit(1)
 
-GAME_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/game_arena_state.json"
+GAME_STATE_FILE = "/Volumes/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/game_arena_state.json"
 API_KEY = os.environ.get("GEMINI_API_KEY")
 
 PROJECT_SKILLS = [
@@ -130,7 +130,7 @@ def main():
                     # Save both states
                     save_state(state)
                     
-                    with open("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl", "a") as f:
+                    with open("/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl", "a") as f:
                         f.write(json.dumps(lora_entry) + "\\n")
                         
             time.sleep(5) # Poll interval

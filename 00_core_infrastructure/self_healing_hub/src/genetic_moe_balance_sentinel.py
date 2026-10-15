@@ -27,10 +27,10 @@ import psutil
 import socket
 from typing import Dict, List, Any, Tuple
 
-STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_balance_state.json"
-GAME_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
-LORA_TRAINING_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/mesh_battle_game_training.jsonl"
-BOTTLENECKS_LEDGER_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/active_project_bottlenecks.json"
+STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_balance_state.json"
+GAME_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
+LORA_TRAINING_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/mesh_battle_game_training.jsonl"
+BOTTLENECKS_LEDGER_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/active_project_bottlenecks.json"
 
 os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
 

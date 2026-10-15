@@ -13,7 +13,7 @@ jupyter:
 
 ---
 
-Welcome to the **Master Interactive Notebook Environment** running on **Layer 5 MacBook Air M4 (`Port 8889`)**.
+Welcome to the **Master Interactive Notebook Environment** running on **Layer 5 MacBook Pro (Node L2) (`Port 8889`)**.
 This studio combines **108.0 GB Pooled Mesh RAM (82.8 GB VRAM)**, **prima.cpp Pipelined-Ring Parallelism (80B/72B)**, **512Hz Medical-Grade Biometrics**, **3D Spatial Kinematics**, and an **In-Notebook UI/UX Specialist AI**.
 
 ```python
@@ -42,7 +42,7 @@ display(HTML("""
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
       <span style="font-size: 20px; font-weight: bold; color: #38bdf8;">⚡ LAUBURU MASTER RUNTIME INITIALIZED</span>
-      <div style="color: #94a3b8; font-size: 12px; margin-top: 4px;">Zero-Swap Memory Governor Active • 7-Layer Heterogeneous Mesh • 10Gbps TB4 DMA</div>
+      <div style="color: #94a3b8; font-size: 12px; margin-top: 4px;">Zero-Swap Memory Governor Active • 7-Layer Heterogeneous Mesh • 40Gbps TB4 DMA</div>
     </div>
     <div style="background: #064e3b; border: 1px solid #10b981; color: #6ee7b7; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold;">
       ● 100% HEALTHY
@@ -128,11 +128,11 @@ Audit all 7 physical hardware nodes, probe live latencies, and visualize inter-d
 ```python
 NODES = [
     {"layer": "L1", "name": "Mac Mini M4 Pro Host", "ip": "127.0.0.1", "port": 8088, "role": "Master Governor & Portal (:8088)"},
-    {"layer": "L5", "name": "MacBook Air M4 Worker", "ip": "100.93.158.96", "port": 22, "role": "JupyterLab (:8889) & 80B/72B Vault"},
-    {"layer": "L2", "name": "MacBook Pro TB4 Vault", "ip": "100.103.212.21", "port": 22, "role": "10Gbps TB4 DMA Bridge (0.277ms)"},
+    {"layer": "L5", "name": "MacBook Pro (Node L2) Worker", "ip": "100.93.158.96", "port": 22, "role": "JupyterLab (:8889) & 80B/72B Vault"},
+    {"layer": "L2", "name": "MacBook Pro TB4 Vault", "ip": "100.103.212.21", "port": 22, "role": "40Gbps TB4 DMA Bridge (0.277ms)"},
     {"layer": "L3", "name": "Linux Head Node DFS", "ip": "100.101.39.98", "port": 22, "role": "SeaweedFS DFS (:8888) & Qdrant"},
     {"layer": "L6", "name": "Pixel 10 Pro XL TPU", "ip": "100.73.38.87", "port": 8022, "role": "Daily Driver & 8K Edge Vision"},
-    {"layer": "L7", "name": "Samsung S20+ Termux", "ip": "100.84.40.95", "port": 8022, "role": "OpenWrt & CAKE SQM Co-Processor"},
+    {"layer": "L7", "name": "Samsung S20+ Termux", "ip": "100.78.206.96", "port": 8022, "role": "OpenWrt & CAKE SQM Co-Processor"},
     {"layer": "GW", "name": "GL.iNet Gateway Router", "ip": "192.168.8.1", "port": 80, "role": "Core Router & Wi-Fi 7 MLO Gateway"}
 ]
 

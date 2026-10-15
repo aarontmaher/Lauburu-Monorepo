@@ -19,9 +19,9 @@ All 3 laptops across the Lauburu 7-Layer Mesh have been configured for **100% he
 
 | Laptop Node | Hardware Specs | IP Endpoints & Routing | Headless Daemon / Service | Power & Sleep Invariants |
 | :--- | :--- | :--- | :--- | :--- |
-| **MacBook Pro** (`macbook-pro`) | Intel Core i9 / M1 Max Vault, 16 GB RAM | • TS: `100.103.212.21`<br>• LAN: `192.168.8.127`<br>• TB4: `169.254.187.138` (0.27ms RTT) | `com.lauburu.headless`<br>(LaunchAgent `/usr/bin/caffeinate -dimsu`) | `sleep 0`, `displaysleep 0`, `disksleep 0`, `womp 1`, `networkoversleep 1`, `ttyskeepawake 1` |
-| **MacBook Air** (`macbook-air`) | Apple M4, 16 GB Unified Memory | • TS: `100.121.202.34`<br>• LAN: `192.168.8.222` | `com.lauburu.headless`<br>(LaunchAgent `/usr/bin/caffeinate -dimsu` + `Amphetamine.app`) | `sleep 0`, `displaysleep 0`, `disksleep 0`, `womp 1`, `networkoversleep 1`, `ttyskeepawake 1` |
-| **Linux Laptop** (`linux`) | Dell Inspiron 15 3525, AMD Ryzen 7 5700U | • TS: `100.101.39.98`<br>• LAN: `192.168.8.224` | `lauburu-headless-keepalive.service`<br>(`systemd-inhibit --what=sleep:idle:handle-lid-switch`) | `/etc/systemd/logind.conf.d/99-headless.conf`<br>Masked `sleep.target`, `suspend.target`, `hibernate.target` |
+| **MacBook Pro** (`macbook-pro` L2) | Intel Core i7-9750H (x86_64), 16 GB RAM | • TS: `100.103.212.21`<br>• LAN: `192.168.8.127`<br>• TB: Unlinked (LAN Wi-Fi 5 ~6.5ms RTT) | `com.lauburu.headless`<br>(LaunchAgent `/usr/bin/caffeinate -dimsu`) | `sleep 0`, `displaysleep 0`, `disksleep 0`, `womp 1`, `networkoversleep 1`, `ttyskeepawake 1` |
+| **MacBook Air** (`macbook-air` L1a/L5) | Apple M4 (4P+6E cores), 16 GB Unified Memory | • TS: `100.121.202.34`<br>• LAN: `192.168.8.248` (Glances :61208) | `com.lauburu.headless`<br>(LaunchAgent `/usr/bin/caffeinate -dimsu` + `Amphetamine.app`) | `sleep 0`, `displaysleep 0`, `disksleep 0`, `womp 1`, `networkoversleep 1`, `ttyskeepawake 1` |
+| **Linux Head Node** (`linux` L3) | AMD Ryzen 7 5700U, 15 GB RAM, Ubuntu Linux | • TS: `100.101.39.98`<br>• LAN: `192.168.8.225`<br>• BT: Paired to L1 (-28 dBm) | `lauburu-headless-keepalive.service`<br>(`systemd-inhibit --what=sleep:idle:handle-lid-switch`) | `/etc/systemd/logind.conf.d/99-headless.conf`<br>Masked `sleep.target`, `suspend.target`, `hibernate.target` |
 
 ---
 

@@ -148,11 +148,20 @@ class ToolingView(Container):
 
     def render_shopify(self, snapshot: BlackboardTelemetryState) -> None:
         shop = snapshot.layer_6_tooling_skills.shopify
+        
+        url = shop.storefront_url if shop.storefront_url is not None else "N/A"
+        gql = shop.graphql_endpoint if shop.graphql_endpoint is not None else "N/A"
+        tier = shop.subscription_tier if shop.subscription_tier is not None else "N/A"
+        memberships = f"{shop.active_memberships:,}" if shop.active_memberships is not None else "N/A"
+        
+        catalog = '[bold green]● SYNCED (GraphQL 2026-01)[/bold green]' if shop.merchandise_catalog_synced else '[bold red]DESYNCED[/bold red]'
+        cart = '[bold green]● HEALTHY (Zero-Latency API)[/bold green]' if shop.cart_pipeline_healthy else '[bold red]DEGRADED[/bold red]'
+
         panel = Panel(
-            f"[bold white]Storefront URL:[/bold white] [bright_cyan]{shop.storefront_url}[/bright_cyan] | [bold white]GraphQL Endpoint:[/bold white] {shop.graphql_endpoint}\n"
-            f"[bold yellow]Membership Subscription Tier:[/bold yellow] [bold green]{shop.subscription_tier}[/bold green] ({shop.active_memberships:,} Active Subscribers)\n"
-            f"[bold magenta]Merchandise Catalog:[/bold magenta] {'[bold green]● SYNCED (GraphQL 2026-01)[/bold green]' if shop.merchandise_catalog_synced else '[bold red]DESYNCED[/bold red]'}\n"
-            f"[bold cyan]Cart & Checkout Pipeline:[/bold cyan] {'[bold green]● HEALTHY (Zero-Latency API)[/bold green]' if shop.cart_pipeline_healthy else '[bold red]DEGRADED[/bold red]'}",
+            f"[bold white]Storefront URL:[/bold white] [bright_cyan]{url}[/bright_cyan] | [bold white]GraphQL Endpoint:[/bold white] {gql}\n"
+            f"[bold yellow]Membership Subscription Tier:[/bold yellow] [bold green]{tier}[/bold green] ({memberships} Active Subscribers)\n"
+            f"[bold magenta]Merchandise Catalog:[/bold magenta] {catalog}\n"
+            f"[bold cyan]Cart & Checkout Pipeline:[/bold cyan] {cart}",
             title="[bold white]4. SHOPIFY STOREFRONT GRAPHQL & MEMBERSHIP COMMERCE[/bold white]",
             border_style="white"
         )

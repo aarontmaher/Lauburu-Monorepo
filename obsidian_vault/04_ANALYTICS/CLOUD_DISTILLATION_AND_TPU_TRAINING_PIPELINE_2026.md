@@ -52,7 +52,7 @@ Training local models on targeted Teacher Distillation from Gemini Pro produces 
 │ (GW GL.iNet Router)  │          │           │              │              │ SYN Flood Network Defense        │
 ├──────────────────────┼──────────┼───────────┼──────────────┼──────────────┼──────────────────────────────────┤
 │ **Qwen 2.5 Coder 3B**│ 2.00 GB  │ 1850.0 ELO│ **2030.0 ELO**│ **+180 ELO** │ Zero-Regression SWE-bench Diffs  │
-│ (L5 MacBook Air / L3)│          │           │              │              │ and AST Refactoring              │
+│ (L2 MacBook Pro / L3)│          │           │              │              │ and AST Refactoring              │
 ├──────────────────────┼──────────┼───────────┼──────────────┼──────────────┼──────────────────────────────────┤
 │ **Qwen 2.5 Coder 14B**│ 8.90 GB │ 1940.0 ELO│ **2110.0 ELO**│ **+170 ELO** │ Frontier Full-Stack Python/Rust  │
 │ (L1 Mac Mini / L2 TB4)          │           │              │              │ Architecture Synthesis           │
@@ -97,6 +97,6 @@ Training local models on targeted Teacher Distillation from Gemini Pro produces 
    - Pull the JSONL dataset and execute QLoRA training using `unsloth` or `trl` (4–8 hours per model).
 3. **Step 3: Automated Quantization & Local NVMe Sync**
    - Convert trained adapter to `.gguf` (`Q4_K_M` and `IQ2_XXS`).
-   - Sync `.gguf` weights down to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/`.
+   - Sync `.gguf` weights down to `/Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/`.
 4. **Step 4: Hard Self-Destruction Command (`shutdown -h now`)**
    - The training script terminates and deletes the VM instance immediately upon export, preventing accidental idle spend.

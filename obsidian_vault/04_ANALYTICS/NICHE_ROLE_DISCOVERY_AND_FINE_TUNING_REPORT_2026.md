@@ -1,8 +1,8 @@
 ---
 title: "Model Niche Role Discovery & Local Fine-Tuning Allocation Report (2026)"
 tags: [model_allocation, niche_specialists, mesh_hardware, lora_distillation, zero_deletion]
-date: "2026-09-03"
-total_specialists_allocated: 6
+date: "2026-10-13"
+total_specialists_allocated: 1
 policy: "ZERO_DELETION_ACTIVE_ALLOCATION"
 ---
 
@@ -15,12 +15,7 @@ policy: "ZERO_DELETION_ACTIVE_ALLOCATION"
 
 | Model Name | Size | Physical Hardware Layer | Specialized Micro-Niche Role | Pre-Tune α | Post-Tune α | Gain | Niche TPS | Challenger Verdict |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **`Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf`** | 4.36 GB | **Layer 1 ** | High-Res 8K Spatial Grappling Keyframe Kinematic Extraction & 3D Tatami OCR | 78.5% | **93.2%** | **+14.7%** | **18.4 TPS** | None (Outperforms 3B on fine-grained joint angle extraction) |
-| **`qwen2.5-coder-7b-instruct-q4_k_m.gguf`** | 4.36 GB | **Layer 3 ** | Offline CodeClash Red-Team Adversarial Bug Injection & AST Fuzzing | 82.0% | **94.6%** | **+12.6%** | **22.1 TPS** | None (Autonomous background testing without Mac Host compute load) |
-| **`smollm2-1.7b-instruct-q4_k_m.gguf`** | 0.98 GB | **Layer 7 ** | Automated Mobile UI Gesture Planning & Shizuku Action Synthesis | 74.0% | **89.8%** | **+15.8%** | **34.0 TPS** | None (Sub-1GB on-device touch automation daemon) |
-| **`Llama-3.2-1B-Instruct-Q4_K_M.gguf`** | 0.75 GB | **Layer 6 ** | 128k Long-Context JSON Extraction & Screenpipe Visual Memory Indexer | 77.0% | **92.0%** | **+15.0%** | **52.0 TPS** | None (Fast on-device visual memory indexing) |
-| **`Qwen2.5-7B-Instruct-abliterated.Q4_K_M.gguf`** | 4.36 GB | **Layer 3 ** | Secondary Devil's Advocate & Automated Red-Team Security Vulnerability Scanner | 79.0% | **92.4%** | **+13.4%** | **24.0 TPS** | None (Isolated sandbox security audits without port contention) |
-| **`gemma-2-9b-it-abliterated-Q4_K_M.gguf`** | 5.37 GB | **Layer 2 ** | Autonomous Monorepo Whitepaper Synthesis & Interactive Educational Tutorials | 81.2% | **94.0%** | **+12.8%** | **28.5 TPS** | None (High-fidelity narrative text generation) |
+| **`Llama-4-Scout-17B-16E-Instruct-Q4_K_M-00001-of-00002.gguf`** | 37.10 GB | **Layer 2 ** | Screen Lens Sovereign Visual Teacher & OS Actuator | 84.0% | **96.2%** | **+12.2%** | **22.0 TPS** | None (Multimodal 17B MoE Vision-Language-Action Teacher) |
 
 ---
 

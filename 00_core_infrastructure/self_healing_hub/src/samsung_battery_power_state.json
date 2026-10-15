@@ -3,7 +3,7 @@
   "target_device": "Samsung Galaxy S20+ (SM-G986B)",
   "node_id": "Samsung_S20",
   "elapsed_ms": 273.67,
-  "connection_status": "ONLINE_ADB_TCP_100.84.40.95",
+  "connection_status": "ONLINE_ADB_TCP_100.78.206.96",
   "battery_metrics": {
     "level_pct": 73,
     "voltage_mv": 3881,

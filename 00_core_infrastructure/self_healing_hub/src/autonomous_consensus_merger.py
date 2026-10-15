@@ -61,14 +61,14 @@ def resolve_workspace_root() -> Path:
         return current_file_root
 
     for candidate in [
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
+        Path("/Volumes/Lauburu-Monorepo"),
         Path("/Volumes/Lauburu-Monorepo"),
         Path.cwd()
     ]:
         if candidate.exists() and (candidate / "data").exists():
             return candidate
 
-    return Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+    return Path("/Volumes/Lauburu-Monorepo")
 
 
 class AutonomousConsensusMergeEngine:

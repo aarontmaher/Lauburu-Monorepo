@@ -431,7 +431,7 @@ export default function UnifiedGenieTatamiArenaView() {
       {subTab === 'duels' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           
-          {/* INTERACTIVE LIVE FIGHTER MATCHMAKER COCKPIT */}
+          {/* INTERACTIVE LIVE FIGHTER MATCHMAKER CONSOLE */}
           <div style={{
             background: 'linear-gradient(135deg, rgba(15,23,42,0.98), rgba(20,28,48,0.95))',
             border: '1px solid rgba(244,63,94,0.35)',
@@ -456,7 +456,7 @@ export default function UnifiedGenieTatamiArenaView() {
               </span>
             </div>
 
-            {/* LIVE AUTO-MATCHUP VERSUS COCKPIT */}
+            {/* LIVE AUTO-MATCHUP VERSUS CONSOLE */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -953,7 +953,7 @@ export default function UnifiedGenieTatamiArenaView() {
             </div>
           </div>
 
-          {/* ⚡ PYSPARK & RAY DISTRIBUTED SHARDING ENGINE COCKPIT */}
+          {/* ⚡ PYSPARK & RAY DISTRIBUTED SHARDING ENGINE CONSOLE */}
           <div style={{
             background: 'linear-gradient(135deg, rgba(30,27,75,0.4), rgba(15,23,42,0.95))',
             border: '1px solid #a855f7',

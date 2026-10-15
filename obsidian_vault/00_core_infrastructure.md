@@ -7,12 +7,12 @@ tags: [infrastructure, seaweedfs, docker, tailscale, supabase, cloudflare, launc
 # 00_core_infrastructure — Core Mesh Infrastructure & Containerization
 
 ## 📋 Scope & Responsibility
-Houses all clustering, distributed storage aggregation, network routing, container definitions, and background daemon services powering the 7-device Lauburu Mesh.
+Houses all clustering, distributed storage aggregation, network routing, container definitions, and background daemon services powering the 8-node Lauburu Mesh.
 
 ## 🏗️ Core Subsystems & Components
 1. **SeaweedFS Distributed File System:**
    - Master (`:9333`), Filer (`:8888`), and Volume servers aggregating multi-device storage.
-   - High-speed 10Gbps Thunderbolt 4 bridge (`bridge0`, `169.254.187.138`) binding for low-latency (<0.3ms) data transfer.
+   - High-speed 40Gbps Thunderbolt 4 bridge (`bridge0`, `10.0.0.8` to L8 `lauburu`) binding for low-latency (~0.38ms RTT) data transfer.
    - S3-compatible API gateway and POSIX FUSE mount integration.
 2. **Docker Compose Infrastructure (`00_core_infrastructure/docker/`):**
    - Microservice container definitions, multi-node overlay networks, and isolated execution sandboxes.

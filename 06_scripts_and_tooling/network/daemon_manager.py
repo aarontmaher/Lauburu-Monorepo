@@ -13,7 +13,7 @@ Architecture:
    - Automatic crash restart with exponential backoff & circuit breakers (>=99.99% target uptime).
 2. Tri-Vault Storage Auto-Healing:
    - Verifies and repairs Obsidian Vault (Index.md auto-repair, Wikilinks validation).
-   - Verifies PySpark Data Lake (04_data_and_memory, /Users/aaron/DFS_UNIFIED/lora_datasets).
+   - Verifies PySpark Data Lake (04_data_and_memory, /Volumes/Lauburu-Monorepo/04_data_and_memory/data).
    - Cleans stale Git locks (.git/index.lock) and enforces >=5.0 GB free disk headroom.
 3. GL.iNet Router Hardware RAM Watchdog:
    - Live /proc/meminfo polling from GL-MT3600BE (192.168.8.1).
@@ -34,10 +34,19 @@ from typing import Dict, Any, List, Optional, Tuple
 
 logger = logging.getLogger("DaemonManager")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+_CANDIDATE_REPOS = [
+    Path(__file__).resolve().parent.parent.parent,
+    Path("/Volumes/Lauburu-Monorepo"),
+    Path("/Volumes/Lauburu-Monorepo"),
+]
+REPO_ROOT = next((p for p in _CANDIDATE_REPOS if p.exists()), Path(__file__).resolve().parent.parent.parent)
 OBSIDIAN_VAULT = REPO_ROOT / "obsidian_vault"
 DATA_DIR = REPO_ROOT / "04_data_and_memory"
-LORA_DATASETS_DIR = Path("/Users/aaron/DFS_UNIFIED/lora_datasets")
+LORA_DATASETS_DIR = (
+    Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data")
+    if Path("/Volumes/Lauburu-Monorepo").exists()
+    else REPO_ROOT / "data/lora_datasets"
+)
 STATUS_FILE = REPO_ROOT / "data/network/daemon_supervision_status.json"
 ROUTER_IP = "192.168.8.1"
 ROUTER_PASS = "goldfighting1"
@@ -141,6 +150,15 @@ SUPERVISED_DAEMONS = {
         "tier": "supervision",
         "start_cmd": ["weed", "filer", "-port=8088"],
         "icon": "👁️"
+    },
+    "movesense_247_telemetry": {
+        "name": "Movesense 24/7 Continuous Ingestion & Storage",
+        "port": 4008,
+        "host": "127.0.0.1",
+        "tier": "biometrics",
+        "protocol": "udp",
+        "start_cmd": ["launchctl", "load", os.path.expanduser("~/Library/LaunchAgents/com.lauburu.movesense-247-ingestion.plist")],
+        "icon": "💓"
     }
 }
 
@@ -247,14 +265,14 @@ tags: [lauburu, root, master_index, swarm, ai_debate, teamwork_preview, tri_vaul
             pass
 
     # 4. Disk Headroom Enforcement (>= 5.0 GB)
-    stat = shutil.disk_usage("/Users/aaron")
+    stat = shutil.disk_usage(str(REPO_ROOT))
     free_gb = round(stat.free / (1024 ** 3), 2)
     disk_purged = False
     if free_gb < 5.0:
         try:
             subprocess.run(
-                "find /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null; "
-                "find /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/logs -name '*.log' -mtime +7 -delete 2>/dev/null || true",
+                f"find {REPO_ROOT} -name '__pycache__' -type d -exec rm -rf {{}} + 2>/dev/null; "
+                f"find {REPO_ROOT}/logs -name '*.log' -mtime +7 -delete 2>/dev/null || true",
                 shell=True
             )
             disk_purged = True
@@ -278,32 +296,42 @@ tags: [lauburu, root, master_index, swarm, ai_debate, teamwork_preview, tri_vaul
     }
 
 
-def check_router_ram(router_ip: str = ROUTER_IP, critical_threshold_mb: float = ROUTER_CRITICAL_RAM_MB) -> float:
+class RouterTelemetryUnavailableError(Exception):
+    """Raised when GL.iNet router memory telemetry is unreachable or offline."""
+    pass
+
+
+def check_router_ram(router_ip: str = ROUTER_IP, critical_threshold_mb: float = ROUTER_CRITICAL_RAM_MB) -> Optional[float]:
     """
-    Monitors GL-MT3600BE Router memory and enforces RAM strictly within <= 35MB critical threshold.
+    Monitors router memory and enforces RAM strictly within <= 35MB critical threshold.
     If available RAM <= critical_threshold_mb, automatically triggers SSH drop_caches invocation.
-    Returns available RAM in MB.
+    Returns available RAM in MB from authentic SSH query, or None if unreachable.
     """
     try:
-        cmd = f"sshpass -p '{ROUTER_PASS}' ssh -o StrictHostKeyChecking=no -o ConnectTimeout=2 root@{router_ip} 'grep -E \"(MemTotal|MemFree|MemAvailable)\" /proc/meminfo'"
-        res = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=3.0)
+        cmd_key = f"ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=2 root@{router_ip} \"grep -E '(MemTotal|MemFree|MemAvailable)' /proc/meminfo\""
+        res = subprocess.run(cmd_key, shell=True, capture_output=True, text=True, timeout=3.0)
+        if res.returncode != 0 or "MemTotal" not in res.stdout:
+            cmd = f"sshpass -p '{ROUTER_PASS}' ssh -o StrictHostKeyChecking=no -o ConnectTimeout=2 root@{router_ip} \"grep -E '(MemTotal|MemFree|MemAvailable)' /proc/meminfo\""
+            res = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=3.0)
         
         if res.returncode == 0 and "MemTotal" in res.stdout:
             mem = {}
             for line in res.stdout.splitlines():
                 if ":" in line:
                     k, v = line.split(":", 1)
-                    mem[k.strip()] = int(v.strip().split()[0])
+                    parts = v.strip().split()
+                    if parts and parts[0].isdigit():
+                        mem[k.strip()] = int(parts[0])
             
-            free_mb = round(mem.get("MemFree", 50000) / 1024.0, 1)
+            free_mb = round(mem.get("MemFree", 0) / 1024.0, 1)
             avail_mb = round(mem.get("MemAvailable", free_mb) / 1024.0, 1)
             
             # If critically low, auto-invoke drop_caches
             if avail_mb <= critical_threshold_mb:
-                flush_cmd = f"sshpass -p '{ROUTER_PASS}' ssh -o StrictHostKeyChecking=no -o ConnectTimeout=2 root@{router_ip} 'sync; echo 3 > /proc/sys/vm/drop_caches'"
+                flush_cmd = f"ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=2 root@{router_ip} 'sync; echo 3 > /proc/sys/vm/drop_caches' || sshpass -p '{ROUTER_PASS}' ssh -o StrictHostKeyChecking=no -o ConnectTimeout=2 root@{router_ip} 'sync; echo 3 > /proc/sys/vm/drop_caches'"
                 subprocess.run(flush_cmd, shell=True, capture_output=True, text=True, timeout=3.0)
                 # Re-query
-                res2 = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=3.0)
+                res2 = subprocess.run(cmd_key, shell=True, capture_output=True, text=True, timeout=3.0)
                 if res2.returncode == 0:
                     for line in res2.stdout.splitlines():
                         if "MemAvailable" in line:
@@ -314,7 +342,7 @@ def check_router_ram(router_ip: str = ROUTER_IP, critical_threshold_mb: float = 
         pass
     
     # Standby nominal estimate if router is in standby or offline in test sandbox
-    return 88.5
+    return None
 
 
 def check_and_heal_daemons() -> Dict[str, Any]:
@@ -341,6 +369,12 @@ class DaemonManager:
         cfg = self.daemons.get(daemon_key)
         if not cfg:
             return False
+        if cfg.get("protocol") == "udp":
+            try:
+                res = subprocess.run(["launchctl", "list"], capture_output=True, text=True, timeout=1.0)
+                return "com.lauburu.movesense-247-ingestion" in res.stdout
+            except Exception:
+                return False
         return probe_tcp(cfg.get("host", "127.0.0.1"), cfg["port"], timeout=0.2)
 
     def restart_daemon(self, daemon_key: str) -> bool:

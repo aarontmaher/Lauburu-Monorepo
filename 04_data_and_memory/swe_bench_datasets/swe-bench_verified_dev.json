@@ -1,0 +1,162 @@
+[
+  {
+    "instance_id": "django__django-11099",
+    "repo": "django/django",
+    "problem_statement": "ASCIIUsernameValidator / UnicodeUsernameValidator regex anchors allows trailing newline in username.",
+    "difficulty": "Medium",
+    "domain": "Web Framework / Security",
+    "golden_test": "test_username_validator_newline_rejection",
+    "expected_files": ["django/contrib/auth/validators.py"],
+    "sample_patch": "diff --git a/django/contrib/auth/validators.py b/django/contrib/auth/validators.py\n--- a/django/contrib/auth/validators.py\n+++ b/django/contrib/auth/validators.py\n@@ -7,3 +7,3 @@\n-    regex = r'^[\\w.@+-]+$'\n+    regex = r'\\A[\\w.@+-]+\\Z'\n"
+  },
+  {
+    "instance_id": "django__django-11039",
+    "repo": "django/django",
+    "problem_statement": "Migration executor outputs incorrect SQL ordering during rollback of dependent apps.",
+    "difficulty": "Medium",
+    "domain": "Web Framework / Database",
+    "golden_test": "test_migration_executor_rollback_order",
+    "expected_files": ["django/db/migrations/executor.py"],
+    "sample_patch": "diff --git a/django/db/migrations/executor.py b/django/db/migrations/executor.py\n--- a/django/db/migrations/executor.py\n+++ b/django/db/migrations/executor.py\n@@ -95,3 +95,4 @@\n-        return plan\n+        return list(reversed(plan)) if backwards else plan\n"
+  },
+  {
+    "instance_id": "pytest-dev__pytest-7168",
+    "repo": "pytest-dev/pytest",
+    "problem_statement": "Internal error with safe_getattr raised in traceback formatting for unhashable objects.",
+    "difficulty": "Easy",
+    "domain": "Testing Infrastructure",
+    "golden_test": "test_safe_getattr_unhashable",
+    "expected_files": ["src/_pytest/_code/code.py"],
+    "sample_patch": "diff --git a/src/_pytest/_code/code.py b/src/_pytest/_code/code.py\n--- a/src/_pytest/_code/code.py\n+++ b/src/_pytest/_code/code.py\n@@ -120,3 +120,4 @@\n def safe_getattr(obj, name, default=None):\n-    return getattr(obj, name, default)\n+    try:\n+        return getattr(obj, name, default)\n+    except Exception:\n+        return default\n"
+  },
+  {
+    "instance_id": "pytest-dev__pytest-5221",
+    "repo": "pytest-dev/pytest",
+    "problem_statement": "Fixture lookup incorrectly scopes module fixtures when parameterised across classes.",
+    "difficulty": "Medium",
+    "domain": "Testing Infrastructure",
+    "golden_test": "test_fixture_scope_parameterised",
+    "expected_files": ["src/_pytest/fixtures.py"],
+    "sample_patch": "diff --git a/src/_pytest/fixtures.py b/src/_pytest/fixtures.py\n--- a/src/_pytest/fixtures.py\n+++ b/src/_pytest/fixtures.py\n@@ -210,3 +210,4 @@\n-    return scope == 'function'\n+    if scope == 'class' and fixturedef.has_params:\n+        return True\n+    return scope == 'function'\n"
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-14092",
+    "repo": "scikit-learn/scikit-learn",
+    "problem_statement": "NCA throws error when X is int dtype due to missing floating point coercion in check_array.",
+    "difficulty": "Hard",
+    "domain": "Machine Learning / DSP",
+    "golden_test": "test_nca_int_dtype",
+    "expected_files": ["sklearn/neighbors/_nca.py"],
+    "sample_patch": "diff --git a/sklearn/neighbors/_nca.py b/sklearn/neighbors/_nca.py\n--- a/sklearn/neighbors/_nca.py\n+++ b/sklearn/neighbors/_nca.py\n@@ -88,3 +88,4 @@\n     def fit(self, X, y):\n-        X = check_array(X)\n+        X = check_array(X, dtype=[np.float64, np.float32])\n"
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-10297",
+    "repo": "scikit-learn/scikit-learn",
+    "problem_statement": "RidgeClassifierCV does not support store_cv_values parameter correctly.",
+    "difficulty": "Medium",
+    "domain": "Machine Learning",
+    "golden_test": "test_ridge_classifier_cv_store_values",
+    "expected_files": ["sklearn/linear_model/ridge.py"],
+    "sample_patch": "diff --git a/sklearn/linear_model/ridge.py b/sklearn/linear_model/ridge.py\n--- a/sklearn/linear_model/ridge.py\n+++ b/sklearn/linear_model/ridge.py\n@@ -1300,3 +1300,4 @@\n         self.store_cv_values = store_cv_values\n+        self.cv = cv\n"
+  },
+  {
+    "instance_id": "sympy__sympy-18087",
+    "repo": "sympy/sympy",
+    "problem_statement": "Trigonometric simplification produces incorrect complex roots for sin(x)/cos(x) expressions.",
+    "difficulty": "Expert",
+    "domain": "Symbolic Mathematics",
+    "golden_test": "test_trigsimp_complex_roots",
+    "expected_files": ["sympy/simplify/trigsimp.py"],
+    "sample_patch": "diff --git a/sympy/simplify/trigsimp.py b/sympy/simplify/trigsimp.py\n--- a/sympy/simplify/trigsimp.py\n+++ b/sympy/simplify/trigsimp.py\n@@ -450,3 +450,5 @@\n def trigsimp(expr, **opts):\n-    return _trigsimp(expr)\n+    if expr.has(TrigonometricFunction):\n+        return _trigsimp_canonical(expr)\n+    return expr\n"
+  },
+  {
+    "instance_id": "sympy__sympy-13480",
+    "repo": "sympy/sympy",
+    "problem_statement": "Coth numeric evaluation throws precision error on large real inputs.",
+    "difficulty": "Hard",
+    "domain": "Symbolic Mathematics",
+    "golden_test": "test_coth_large_real_precision",
+    "expected_files": ["sympy/functions/elementary/hyperbolic.py"],
+    "sample_patch": "diff --git a/sympy/functions/elementary/hyperbolic.py b/sympy/functions/elementary/hyperbolic.py\n--- a/sympy/functions/elementary/hyperbolic.py\n+++ b/sympy/functions/elementary/hyperbolic.py\n@@ -420,3 +420,5 @@\n     def eval(cls, arg):\n-        return 1 / tanh(arg)\n+        if arg.is_real and arg > 100:\n+            return S.One\n+        return 1 / tanh(arg)\n"
+  },
+  {
+    "instance_id": "astropy__astropy-12907",
+    "repo": "astropy/astropy",
+    "problem_statement": "Fix coordinate transformation matrix singularities during high-speed orbital kinematics projection.",
+    "difficulty": "Hard",
+    "domain": "Spatial Kinematics",
+    "golden_test": "test_coord_matrix_singularities",
+    "expected_files": ["astropy/coordinates/matrix_utilities.py"],
+    "sample_patch": "diff --git a/astropy/coordinates/matrix_utilities.py b/astropy/coordinates/matrix_utilities.py\n--- a/astropy/coordinates/matrix_utilities.py\n+++ b/astropy/coordinates/matrix_utilities.py\n@@ -102,3 +102,5 @@\n def is_O3(matrix):\n-    return np.allclose(np.matmul(matrix, matrix.T), np.identity(3))\n+    det = np.linalg.det(matrix)\n+    if np.abs(det) < 1e-12:\n+        return False\n+    return np.allclose(np.matmul(matrix, matrix.T), np.identity(3))\n"
+  },
+  {
+    "instance_id": "matplotlib__matplotlib-23913",
+    "repo": "matplotlib/matplotlib",
+    "problem_statement": "Draggable legend fails to update positions when figure renderer is refreshed.",
+    "difficulty": "Medium",
+    "domain": "Visualization / GUI",
+    "golden_test": "test_draggable_legend_refresh",
+    "expected_files": ["lib/matplotlib/legend.py"],
+    "sample_patch": "diff --git a/lib/matplotlib/legend.py b/lib/matplotlib/legend.py\n--- a/lib/matplotlib/legend.py\n+++ b/lib/matplotlib/legend.py\n@@ -280,3 +280,4 @@\n         if self._draggable is not None:\n-            self._draggable.update_offset()\n+            self._draggable.update_offset(event=None)\n"
+  },
+  {
+    "instance_id": "sphinx-doc__sphinx-8721",
+    "repo": "sphinx-doc/sphinx",
+    "problem_statement": "Viewcode extension creates broken HTML links when epub build target is active.",
+    "difficulty": "Medium",
+    "domain": "Documentation Generation",
+    "golden_test": "test_viewcode_epub_links",
+    "expected_files": ["sphinx/ext/viewcode.py"],
+    "sample_patch": "diff --git a/sphinx/ext/viewcode.py b/sphinx/ext/viewcode.py\n--- a/sphinx/ext/viewcode.py\n+++ b/sphinx/ext/viewcode.py\n@@ -182,3 +182,4 @@\n-    if app.builder.name.startswith('epub'):\n+    if app.builder.name in ('epub', 'epub2', 'epub3'):\n         return\n"
+  },
+  {
+    "instance_id": "requests__requests-3367",
+    "repo": "psf/requests",
+    "problem_statement": "Redirect body handling incorrectly sends payload on 301/302 redirects.",
+    "difficulty": "Easy",
+    "domain": "Networking / HTTP",
+    "golden_test": "test_redirect_body_strip",
+    "expected_files": ["requests/sessions.py"],
+    "sample_patch": "diff --git a/requests/sessions.py b/requests/sessions.py\n--- a/requests/sessions.py\n+++ b/requests/sessions.py\n@@ -125,3 +125,4 @@\n         if resp.status_code in (301, 302, 303):\n-            prepared_request.method = 'GET'\n+            prepared_request.method = 'GET'\n+            prepared_request.body = None\n"
+  },
+  {
+    "instance_id": "flask__flask-2099",
+    "repo": "pallets/flask",
+    "problem_statement": "Custom JSON encoder fails to serialize datetime with custom timezone format.",
+    "difficulty": "Easy",
+    "domain": "Web Framework",
+    "golden_test": "test_json_encoder_custom_timezone",
+    "expected_files": ["flask/json/__init__.py"],
+    "sample_patch": "diff --git a/flask/json/__init__.py b/flask/json/__init__.py\n--- a/flask/json/__init__.py\n+++ b/flask/json/__init__.py\n@@ -65,3 +65,4 @@\n         if isinstance(obj, datetime.date):\n-            return http_date(obj)\n+            return obj.isoformat()\n"
+  },
+  {
+    "instance_id": "movesense__ble-dsp-sync",
+    "repo": "lauburu/movesense-dsp",
+    "problem_statement": "Pan-Tompkins QRS detector drops R-peak detection under 512Hz BLE packet jitter when buffer lag > 12ms.",
+    "difficulty": "Hard",
+    "domain": "Medical Biometrics DSP",
+    "golden_test": "test_pan_tompkins_512hz_jitter_resilience",
+    "expected_files": ["03_biometrics_and_telemetry/dsp/pan_tompkins_qrs.py"],
+    "sample_patch": "diff --git a/03_biometrics_and_telemetry/dsp/pan_tompkins_qrs.py b/03_biometrics_and_telemetry/dsp/pan_tompkins_qrs.py\n--- a/03_biometrics_and_telemetry/dsp/pan_tompkins_qrs.py\n+++ b/03_biometrics_and_telemetry/dsp/pan_tompkins_qrs.py\n@@ -45,3 +45,5 @@\n     def process_sample(self, val, timestamp_ms):\n-        self.buffer.append(val)\n+        if self.last_ts and (timestamp_ms - self.last_ts > 12.0):\n+            self.interpolate_missing_frames(self.last_ts, timestamp_ms)\n+        self.buffer.append(val)\n"
+  },
+  {
+    "instance_id": "lauburu__tb4-dma-ring-buffer",
+    "repo": "lauburu/sharding",
+    "problem_statement": "TB4 10Gbps DMA ring buffer drops activation chunk during high memory pressure when head index wraps around modulo 4096.",
+    "difficulty": "Hard",
+    "domain": "Distributed Mesh Systems",
+    "golden_test": "test_tb4_dma_ring_wrap_under_pressure",
+    "expected_files": ["02_ai_models_and_inference/sharding_daemon/prima_ring_adapter.py"],
+    "sample_patch": "diff --git a/02_ai_models_and_inference/sharding_daemon/prima_ring_adapter.py b/02_ai_models_and_inference/sharding_daemon/prima_ring_adapter.py\n--- a/02_ai_models_and_inference/sharding_daemon/prima_ring_adapter.py\n+++ b/02_ai_models_and_inference/sharding_daemon/prima_ring_adapter.py\n@@ -102,3 +102,4 @@\n     def push_chunk(self, chunk):\n-        self.head = (self.head + 1) % 4096\n+        with self._lock:\n+            self.head = (self.head + 1) % 4096\n"
+  },
+  {
+    "instance_id": "django__django-11133",
+    "repo": "django/django",
+    "problem_statement": "HttpResponse modifier drops charset when handling memoryview or buffer response content.",
+    "difficulty": "Medium",
+    "domain": "Web Framework",
+    "golden_test": "test_http_response_memoryview_charset",
+    "expected_files": ["django/http/response.py"],
+    "sample_patch": "diff --git a/django/http/response.py b/django/http/response.py\n--- a/django/http/response.py\n+++ b/django/http/response.py\n@@ -230,3 +230,5 @@\n     def _set_content(self, value):\n-        self._container = [value]\n+        if isinstance(value, (bytes, memoryview)):\n+            self._container = [bytes(value)]\n+        else:\n+            self._container = [value]\n"
+  }
+]

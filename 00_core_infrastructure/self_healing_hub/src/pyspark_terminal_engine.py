@@ -10,9 +10,9 @@ import json
 import time
 import re
 
-TELEMETRY_PATH = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
-NPU_STATUS_PATH = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
-HEALTH_PATH = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_network_health_state.json"
+TELEMETRY_PATH = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
+NPU_STATUS_PATH = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
+HEALTH_PATH = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_network_health_state.json"
 
 class PySparkTerminalEngine:
     """Executes Spark SQL and DataFrame queries for the interactive dashboard terminal."""

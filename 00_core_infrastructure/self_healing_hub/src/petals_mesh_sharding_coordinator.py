@@ -41,7 +41,7 @@ CANONICAL_DATA_DIR = CANONICAL_WORKSPACE_ROOT / "data"
 # Real Local Filesystem Resolution
 _POSSIBLE_ROOTS = [
     Path("/Volumes/Lauburu-Monorepo"),
-    Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
+    Path("/Volumes/Lauburu-Monorepo"),
     Path(__file__).resolve().parents[2]
 ]
 LOCAL_WORKSPACE_ROOT = next((p for p in _POSSIBLE_ROOTS if p.exists()), _POSSIBLE_ROOTS[0])
@@ -197,10 +197,10 @@ MESH_7_DEVICE_LAYERS: Dict[str, Dict[str, Any]] = {
         "python_cmd": "python",
         "ram_total_gb": 12.0,
         "usable_vram_gb": 9.0,
-        "tailscale_ip": "100.84.40.95",
+        "tailscale_ip": "100.78.206.96",
         "lan_ip": "192.168.8.158",
         "ssh_port": 8022,
-        "adb_target": "100.84.40.95:5555",
+        "adb_target": "100.78.206.96:5555",
         "port": 31337,
         "rpc_port": DEFAULT_RPC_PORT,
         "forward_rpc_port": 50055,

@@ -128,7 +128,7 @@ def test_canonical_mesh_kdl_validity():
     assert 'tab name="Command Center"' in content
     assert 'tab name="Background Services"' in content
     assert 'pane' in content
-    assert 'name "Textual Cockpit"' in content
+    assert 'name "Textual Console"' in content
     assert 'name "FastAPI Backend (:4000) & Crons"' in content
     assert 'name "Movesense BLE Bridge"' in content
     assert 'name "AI Debate TUI Sync Daemon"' in content

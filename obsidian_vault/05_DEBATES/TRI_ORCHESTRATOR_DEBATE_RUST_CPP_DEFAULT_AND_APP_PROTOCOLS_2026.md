@@ -32,7 +32,7 @@ The council unanimously establishes the **Tiered Execution Paradigm**:
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ TIER 1: DEFAULT RUNTIME (Rust & C++ — 95% of Swarm Operations)                                  │
 │ • Technologies: prima.cpp, llama.cpp GGML-RPC, wgpu-rust, Ratatui, POSIX C Sentinels.           │
-│ • Responsibilities: 24/7 background telemetry, 10Gbps TB4 DMA tensor streaming, ADB keepalives,│
+│ • Responsibilities: 24/7 background telemetry, 40Gbps TB4 DMA tensor streaming, ADB keepalives,│
 │   biometrics DSP (Pan-Tompkins ECG), router packet filtering, and high-frequency routing.       │
 │ • Storage / RAM Impact: < 50 MB total disk space per node · < 15 MB RAM per daemon.             │
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤

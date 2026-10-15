@@ -43,7 +43,7 @@ We designed, integrated, and validated the **Unified 18-Method AI Training Frame
 
 ## 🏛️ 2. Architectural Role in the Lauburu Mesh
 
-1. **24/7 Continuous Background Learning:** Uses **DPO (Method 10)** and **LoRA (Method 5)** to continuously distill validated diffs, AI debate transcripts, and bug fixes into `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`.
+1. **24/7 Continuous Background Learning:** Uses **DPO (Method 10)** and **LoRA (Method 5)** to continuously distill validated diffs, AI debate transcripts, and bug fixes into `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`.
 2. **DeepSeek-R1 Style Group Reasoning:** Uses **GRPO (Method 14)** to sample groups of coding candidates, scoring them against the AST syntax validator and normalizing advantages without a bulky critic model.
 3. **Surgical Diff Generation:** Uses **FIM (Method 3)** to generate unified diff patches (`<|fim_prefix|>`, `<|fim_middle|>`, `<|fim_suffix|>`) for automated bug repair.
 4. **Zero-Compute Specialist Merging:** Uses **SLERP & TIES (Method 18)** to blend specialized fine-tuned coding weights with abliterated debate weights without running expensive GPU backpropagation.

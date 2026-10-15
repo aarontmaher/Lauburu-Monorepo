@@ -1,39 +1,39 @@
 {
-  "timestamp_utc": "2026-09-02T13:08:27Z",
-  "elapsed_seconds": 0.103,
+  "timestamp_utc": "2026-09-05T03:14:40Z",
+  "elapsed_seconds": 0.122,
   "synergy_efficiency_score": 862.0,
   "router_real_ram": {
     "online": true,
     "total_mb": 481.3,
-    "used_mb": 409.1,
-    "available_mb": 106.6,
+    "used_mb": 429.6,
+    "available_mb": 91.1,
     "safety_status": "\ud83d\udfe2 NOMINAL SAFE",
     "crash_risk_pct": 0.0
   },
   "host_ram": {
-    "used_gb": 9.76,
+    "used_gb": 9.87,
     "total_gb": 24.0,
-    "percent": 70.7,
+    "percent": 69.7,
     "status": "\ud83d\udfe2 NOMINAL"
   },
   "storage_health": {
     "healthy": true,
     "obsidian_vault_mounted": true,
     "pyspark_data_lake_ready": true,
-    "disk_free_gb": 68.4,
+    "disk_free_gb": 156.46,
     "git_lock_cleared": false,
     "status": "HEALTHY"
   },
   "daemon_watchdog": {
     "total_daemons": 7,
-    "active_daemons": 2,
+    "active_daemons": 5,
     "daemons": [
       {
         "name": "Web-TUI Portal",
         "port": 8088,
-        "role": "Frontend Cockpit",
-        "online": false,
-        "status": "\u26aa STANDBY / OFFLINE"
+        "role": "Frontend Console",
+        "online": true,
+        "status": "\ud83d\udfe2 ONLINE"
       },
       {
         "name": "Local LLM Proxy / Sentinel",
@@ -67,15 +67,15 @@
         "name": "Self-Healing Hub / WoL",
         "port": 18802,
         "role": "Infra Resurrection",
-        "online": false,
-        "status": "\u26aa STANDBY / OFFLINE"
+        "online": true,
+        "status": "\ud83d\udfe2 ONLINE"
       },
       {
         "name": "llama.cpp RPC Shard",
         "port": 50052,
         "role": "Tensor Bridge",
-        "online": false,
-        "status": "\u26aa STANDBY / OFFLINE"
+        "online": true,
+        "status": "\ud83d\udfe2 ONLINE"
       }
     ]
   },

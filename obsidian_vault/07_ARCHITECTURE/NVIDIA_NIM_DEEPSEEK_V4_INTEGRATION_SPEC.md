@@ -31,10 +31,10 @@ This specification details the integration of **NVIDIA NIM** (`build.nvidia.com`
 
 ## ⚡ 2. Integration Architecture & Client Connector
 
-- **Client Connector:** [`06_scripts_and_tooling/nvidia_nim_client.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/nvidia_nim_client.py)
+- **Client Connector:** [`06_scripts_and_tooling/nvidia_nim_client.py`](file:///Volumes/Lauburu-Monorepo/06_scripts_and_tooling/nvidia_nim_client.py)
 - **Base Endpoint:** `https://integrate.api.nvidia.com/v1/chat/completions`
 - **Auth Header:** `Authorization: Bearer $NVIDIA_API_KEY`
-- **Dynamic Routing Governor:** [`05_agents_and_swarms/cloud_ai_routing_governor.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/cloud_ai_routing_governor.py)
+- **Dynamic Routing Governor:** [`05_agents_and_swarms/cloud_ai_routing_governor.py`](file:///Volumes/Lauburu-Monorepo/05_agents_and_swarms/cloud_ai_routing_governor.py)
 
 ---
 
@@ -42,7 +42,7 @@ This specification details the integration of **NVIDIA NIM** (`build.nvidia.com`
 
 1. Visit **[http://build.nvidia.com](http://build.nvidia.com)** (no credit card required).
 2. Sign up, select **DeepSeek V4 Pro / Flash**, and generate your personal API key (`nvapi-...`).
-3. Add the key to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.env`:
+3. Add the key to `/Volumes/Lauburu-Monorepo/.env`:
    ```bash
    NVIDIA_API_KEY="nvapi-YourKeyHere"
    ```

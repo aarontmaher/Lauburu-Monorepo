@@ -8,13 +8,13 @@ date: "2026-09-04"
 
 ## 🏛️ 1. TinyLLM as the Global Project Oracle & `/grill-me` Canonical Architect
 
-We integrated a low-footprint micro model (`Qwen 2.5 0.5B` / `SmolLM2 360M`, consuming $<600\text{ MB RAM}$) as the **Global Project Oracle** ([`05_agents_and_swarms/tiny_llm_project_oracle.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/tiny_llm_project_oracle.py)).
+We integrated a low-footprint micro model (`Qwen 2.5 0.5B` / `SmolLM2 360M`, consuming $<600\text{ MB RAM}$) as the **Global Project Oracle** ([`05_agents_and_swarms/tiny_llm_project_oracle.py`](file:///Volumes/Lauburu-Monorepo/05_agents_and_swarms/tiny_llm_project_oracle.py)).
 
 ### Core Responsibilities:
 1. **Context Sizing & AST Ingestion:** Holds the high-level AST index of all 3,100+ files and 435K LOC in memory using chunked landmark attention.
 2. **Maintains Canonical Documentation Directory:** Continuously writes to and synchronizes:
-   - [`07_docs_and_architecture/canonical/00_GLOBAL_CANONICAL_INDEX.md`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/07_docs_and_architecture/canonical/00_GLOBAL_CANONICAL_INDEX.md)
-   - [`07_docs_and_architecture/canonical/02_GRILL_ME_ARCHITECTURAL_DECISIONS.md`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/07_docs_and_architecture/canonical/02_GRILL_ME_ARCHITECTURAL_DECISIONS.md)
+   - [`07_docs_and_architecture/canonical/00_GLOBAL_CANONICAL_INDEX.md`](file:///Volumes/Lauburu-Monorepo/07_docs_and_architecture/canonical/00_GLOBAL_CANONICAL_INDEX.md)
+   - [`07_docs_and_architecture/canonical/02_GRILL_ME_ARCHITECTURAL_DECISIONS.md`](file:///Volumes/Lauburu-Monorepo/07_docs_and_architecture/canonical/02_GRILL_ME_ARCHITECTURAL_DECISIONS.md)
    - Direct mirror in Obsidian Vault under `obsidian_vault/canonical/`.
 3. **Automated `/grill-me` Elicitation:** Conducts structured architectural interviews, evaluating trade-offs across inference sharding, network bonding, and zero-cost local AI training.
 
@@ -54,7 +54,7 @@ We unpacked and inspected the application bundle of `/Applications/Luci.app` (`a
 
 ## 📊 3. Categorized & Ranked Training Data in the TUI HUD
 
-We updated both [`01_apps/rust_network_analyzer/src/training_leaderboard.rs`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/rust_network_analyzer/src/training_leaderboard.rs) and [`01_apps/rust_network_analyzer/src/ui.rs`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/rust_network_analyzer/src/ui.rs), recompiling the release binary `lauburu_network_lens`.
+We updated both [`01_apps/rust_network_analyzer/src/training_leaderboard.rs`](file:///Volumes/Lauburu-Monorepo/01_apps/rust_network_analyzer/src/training_leaderboard.rs) and [`01_apps/rust_network_analyzer/src/ui.rs`](file:///Volumes/Lauburu-Monorepo/01_apps/rust_network_analyzer/src/ui.rs), recompiling the release binary `lauburu_network_lens`.
 
 Tab [4] now features a dedicated **Categorized & Ranked Training Data Table**:
 
@@ -87,7 +87,7 @@ Tab [4] now features a dedicated **Categorized & Ranked Training Data Table**:
 
 ## 📦 5. Model Vault Catalog & Download Queue
 
-We generated the model catalog manifest in [`02_ai_models_and_inference/model_vault_gguf/MODEL_VAULT_CATALOG_AND_DOWNLOAD_QUEUE.json`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/MODEL_VAULT_CATALOG_AND_DOWNLOAD_QUEUE.json) covering DeepSeek V1/V3, MoE, and Edge models:
+We generated the model catalog manifest in [`02_ai_models_and_inference/model_vault_gguf/MODEL_VAULT_CATALOG_AND_DOWNLOAD_QUEUE.json`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/MODEL_VAULT_CATALOG_AND_DOWNLOAD_QUEUE.json) covering DeepSeek V1/V3, MoE, and Edge models:
 - `DeepSeek-Coder-V2-Lite-Instruct-Q4_K_M.gguf` (9.7 GB, MoE 16B/2.4B active) — **VERIFIED PRESENT**
 - `DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf` (1.0 GB, Micro Reasoning) — **VERIFIED PRESENT**
 - `qwen2.5-0.5b-instruct-q4_k_m.gguf` (0.47 GB, Tool Champion) — **VERIFIED PRESENT**

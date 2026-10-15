@@ -9,8 +9,8 @@ consensus_score: 1.000
 # 🧠 Deep Research: Advanced AI Sharding, Sharded Training Methods & Operational Research Pillars
 
 **Supervised by:** `Gemini 3.7 Flash High` (Cloud Frontier Oracle) & `Qwen 2.5 Math 72B` (Formal ILP Proof Engine)  
-**Execution Engine:** [`05_agents_and_swarms/continuous_sharding_and_pillars_researcher.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/continuous_sharding_and_pillars_researcher.py)  
-**Continuous Data Lake Ingestion:** `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl` (125.0 MB)
+**Execution Engine:** [`05_agents_and_swarms/continuous_sharding_and_pillars_researcher.py`](file:///Volumes/Lauburu-Monorepo/05_agents_and_swarms/continuous_sharding_and_pillars_researcher.py)  
+**Continuous Data Lake Ingestion:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl` (125.0 MB)
 
 ---
 
@@ -22,7 +22,7 @@ consensus_score: 1.000
 ├─────────────────────────┬───────────────────────────────┬───────────────────────────────┬───────────────────────────────┤
 │ Sharding Protocol       │ Core Mathematical Mechanism   │ Optimal Hardware Interconnect │ Training & Fine-Tuning Ability│
 ├─────────────────────────┼───────────────────────────────┼───────────────────────────────┼───────────────────────────────┤
-│ **1. Pipelined-Ring     │ Ring-topology activation      │ **10Gbps TB4 DMA Bridge**     │ **Distributed LoRA Backprop** │
+│ **1. Pipelined-Ring     │ Ring-topology activation      │ **40Gbps TB4 DMA Bridge**     │ **Distributed LoRA Backprop** │
 │    Parallelism (PRP)    │ passing over PCIe DMA buffers │ (0.204ms RTT between Mac nodes│ Forward & backward activations│
 │    (`prima.cpp`)**      │ $T_{\text{bubble}} = \frac{N-1}{N} T_f$│ 82.8 GB Pooled Unified VRAM   │ pass in lock-free ring buffers│
 ├─────────────────────────┼───────────────────────────────┼───────────────────────────────┼───────────────────────────────┤
@@ -57,7 +57,7 @@ graph TD
 
     subgraph Pillars [The 5 Operational Research Pillars]
         P1[Pillar 1: 512Hz ECG DSP & PTT Blood Pressure]
-        P2[Pillar 2: 10Gbps TB4 DMA & prima.cpp PRP]
+        P2[Pillar 2: 40Gbps TB4 DMA & prima.cpp PRP]
         P3[Pillar 3: Headless Shopify GraphQL Engine]
         P4[Pillar 4: Cloudflare Zero Trust & Edge Gateway]
         P5[Pillar 5: Polyglot Mobile A11y Flutter/Swift]
@@ -76,7 +76,7 @@ graph TD
 1. **Pillar 1 (Biomedical & ECG DSP):**
    * *Focus:* 512Hz Pan-Tompkins QRS peak detection, Pulse Transit Time (PTT) continuous cuffless blood pressure estimation, and Detrended Fluctuation Analysis (DFA-$\alpha_1$) autonomic fatigue tracking.
    * *Optimal Local Model:* **`DeepSeek R1 Distill Qwen 32B`**.
-2. **Pillar 2 (Distributed Sharding & 10Gbps TB4 DMA):**
+2. **Pillar 2 (Distributed Sharding & 40Gbps TB4 DMA):**
    * *Focus:* Zero-copy PCIe/TB4 DMA memory buffers, sub-0.20ms RTT, lock-free ring queues, and `prima.cpp` Pipelined-Ring Parallelism.
    * *Optimal Local Model:* **`Qwen 2.5 Math 72B`** (Closed-form ILP equations) + **`Qwen 2.5 Coder 32B`** (C++ Metal Shaders).
 3. **Pillar 3 (Headless Shopify & Monetization):**
@@ -100,7 +100,7 @@ graph TD
 ### 🤖 As Integrated into the Swarm:
 * **The Sovereign Multi-Agent Swarm Hierarchy:**
   * 👑 **Cloud Reasoning Oracle:** **`Gemini 3.7 Flash High`** *(Cloud Free Tier - $0 spend, unlimited context & fast reasoning)*.
-  * 📐 **Formal Proof & ILP Scheduler:** **`Qwen 2.5 Math 72B`** *(Sharded on L1 Mac Mini + L2 MacBook Pro over 10Gbps TB4 DMA)*.
+  * 📐 **Formal Proof & ILP Scheduler:** **`Qwen 2.5 Math 72B`** *(Sharded on L1 Mac Mini + L2 MacBook Pro over 40Gbps TB4 DMA)*.
   * 💻 **Polyglot Implementer:** **`Qwen 2.5 Coder 32B`** *(Pure C++, Rust, Metal shaders, Dart FFI)*.
   * 🤖 **System Environment Simulator:** **`Qwen-AgentWorld-35B-A3B`** *(OS syscalls, POSIX locks, terminal stderr)*.
   * 🌐 **Web Literature & DOM Navigator:** **`Qwen-WebWorld-32B`** *(arXiv, PubMed, Shopify GraphQL, Cloudflare docs)*.

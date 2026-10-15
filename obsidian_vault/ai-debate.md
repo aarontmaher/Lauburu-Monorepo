@@ -10,7 +10,7 @@ The **AI Debate Protocol** is an autonomous deliberative mechanism resolving arc
 
 ## 👥 Multi-Orchestrator Participants
 1. **Cloud Orchestrator (Gemini 3.1 Pro High / Gemini 3.7 Flash High):** Deep unrestricted reasoning, structural invariants, and CoT verification.
-2. **Local AI Orchestrator (Kimi Tandem / Qwen 3.8max on Mesh):** Edge sovereignty, 10Gbps Thunderbolt RPC sharding, zero latency, and $0 token cost.
+2. **Local AI Orchestrator (Kimi Tandem / Qwen 3.8max on Mesh):** Edge sovereignty, 40Gbps Thunderbolt RPC sharding, zero latency, and $0 token cost.
 3. **Training & Evolution Engine (HuggingFace Hub / TRL / PEFT):** Live telemetry compilation, continuous DPO/RLHF datasets for `localhost:3000`.
 4. **Devil's Advocate (Abliterated Llama 70B):** Permanent, uncyclable offensive challenger injecting critical skepticism and deconstructing assumptions. Never cycled out.
 

@@ -23,10 +23,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger("WatchdogSupervisor")
 
-MONOREPO_ROOT = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+MONOREPO_ROOT = "/Volumes/Lauburu-Monorepo"
 HUB_SRC_DIR = os.path.join(MONOREPO_ROOT, "self_healing_hub", "src")
 FRONTEND_DIR = os.path.join(MONOREPO_ROOT, "self_healing_hub", "frontend")
-MESH_DASHBOARD_DIR = "/Users/aaron/DFS_UNIFIED/01_apps/mesh_dashboard"
+MESH_DASHBOARD_DIR = "/Volumes/Lauburu-Monorepo/01_apps/mesh_dashboard"
 PORT_4000_HUB_DIR = os.path.join(MONOREPO_ROOT, "01_apps", "port_4000_hub")
 API_PORT = 5001
 VITE_PORT = 3000

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Dedicated Mesh Transfer Lab Cockpit Launcher
+# Dedicated Mesh Transfer Lab Console Launcher
 # Subsystem: 01_apps/canonical_port/run_mesh_transfer_lab.sh
 # ==============================================================================
 set -euo pipefail
@@ -18,7 +18,7 @@ export COLORTERM="${COLORTERM:-truecolor}"
 export PYTHONPATH="${SCRIPT_DIR}/tui:${SCRIPT_DIR}:${PYTHONPATH:-}"
 
 echo "=============================================================================="
-echo "⚡ LAUNCHING LAUBURU MESH TRANSFER LAB COCKPIT"
+echo "⚡ LAUNCHING LAUBURU MESH TRANSFER LAB CONSOLE"
 echo "• Target App: ${APP}"
 echo "• Virtual Env: ${VENV_PYTHON}"
 echo "=============================================================================="

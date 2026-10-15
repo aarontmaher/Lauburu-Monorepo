@@ -19,7 +19,7 @@ Integration of the dual software engineering anchors and competitive game arenas
 │ 1. Unified Harness:     02_ai_models_and_inference/benchmarks/unified_engineering_benchmark.py
 │ 2. SWE-bench Adapter:   02_ai_models_and_inference/benchmarks/sb_cli_adapter.py
 │ 3. CodeClash Suite:     02_ai_models_and_inference/benchmarks/codeclash/   │
-│ 4. LoRA Harvesting:     /Users/aaron/DFS_UNIFIED/lora_datasets/engineering_benchmark_solutions.jsonl
+│ 4. LoRA Harvesting:     /Volumes/Lauburu-Monorepo/04_data_and_memory/data/engineering_benchmark_solutions.jsonl
 │ 5. Reports Directory:   obsidian_vault/04_ANALYTICS/UNIFIED_ENGINEERING_BENCHMARK_2026.md
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

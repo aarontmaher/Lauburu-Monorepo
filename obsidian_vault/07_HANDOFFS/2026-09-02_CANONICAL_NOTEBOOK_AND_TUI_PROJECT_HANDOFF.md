@@ -1,7 +1,7 @@
 # 🚀 Canonical Project Handoff: Lauburu Master Notebook & TUI Ecosystem
 **Date:** September 2, 2026  
 **Target Environment:** VS Code, JupyterLab (:8889), Voilà Standalone (:8890), Native Rust / Clang++ Toolchains  
-**SSoT Repository:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo`
+**SSoT Repository:** `/Volumes/Lauburu-Monorepo`
 
 ---
 
@@ -28,7 +28,7 @@ Open any of these notebooks directly in **VS Code** (with the Jupyter extension)
 | :- | :--- | :--- | :--- |
 | **00** | `00_lauburu_global_master_project.ipynb` | `01_apps/notebooks/00_lauburu_global_master_project.ipynb` | **Master SSoT Console**: 14-Port Matrix, 2x2 Grid, SeaweedFS IDE, 512Hz DSP, AST Console |
 | **00b**| `00_lauburu_master_interactive_console_and_ui_specialist.ipynb` | `01_apps/notebooks/00_lauburu_master_interactive_console_and_ui_specialist.ipynb` | **UI/UX Specialist AI**: Local AI prompt console, Butterworth DSP filter tuner |
-| **00c**| `00_lauburu_qwen_moe_master_console.ipynb` | `01_apps/notebooks/00_lauburu_qwen_moe_master_console.ipynb` | **Qwen MoE Sovereign Status**: Swarm ELO leaderboard, 10Gbps TB4 DMA link monitor |
+| **00c**| `00_lauburu_qwen_moe_master_console.ipynb` | `01_apps/notebooks/00_lauburu_qwen_moe_master_console.ipynb` | **Qwen MoE Sovereign Status**: Swarm ELO leaderboard, 40Gbps TB4 DMA link monitor |
 | **01** | `01_lauburu_swarm_and_kinematics_interactive.ipynb` | `01_apps/notebooks/01_lauburu_swarm_and_kinematics_interactive.ipynb` | **Swarm & Kinematics**: OPML tactical trees, NetworkX directed graphs, QRS filters |
 | **01b**| `01_master_mesh_console_and_ports.ipynb` | `01_apps/notebooks/01_master_mesh_console_and_ports.ipynb` | **Mesh Ports Prober**: 7-layer node latencies, 14-port service health cards |
 | **02** | `02_lauburu_canonical_knowledge_vault_explorer.ipynb` | `01_apps/notebooks/02_lauburu_canonical_knowledge_vault_explorer.ipynb` | **Obsidian Vault Explorer**: Markdown note ingestion, semantic Wikilink graph explorer |
@@ -55,7 +55,7 @@ When opening any `.ipynb` file in VS Code:
 ### 3.2 Running Voilà Live Standalone Web App
 To run the master dashboard as a standalone web application on **Port 8890**:
 ```bash
-cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/notebooks
+cd /Volumes/Lauburu-Monorepo/01_apps/notebooks
 voila 00_lauburu_global_master_project.ipynb --port 8890 --no-browser --theme=dark
 ```
 Access in browser at: `http://127.0.0.1:8890` or `http://100.93.158.96:8890`.
@@ -89,11 +89,11 @@ python3 01_apps/notebooks/generate_prima_ai_lab_notebook.py
 
 ## 🦀 4. Simple Project Monitoring Rust TUI (`lauburu-monitor`)
 
-Located at: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/rust_project_monitor/`
+Located at: `/Volumes/Lauburu-Monorepo/01_apps/rust_project_monitor/`
 
 ### Build & Execution Commands:
 ```bash
-cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/rust_project_monitor
+cd /Volumes/Lauburu-Monorepo/01_apps/rust_project_monitor
 
 # 1. Run Interactive Terminal Monitor
 cargo run --release
@@ -163,4 +163,4 @@ cd 01_apps/rust_project_monitor && cargo test --release
 
 1. **Live Cell Execution in VS Code**: Open `00_lauburu_global_master_project.ipynb` in VS Code to test interactive widgets directly in the editor.
 2. **WebSocket Live Telemetry Feed**: Hook up `movesense_readiness_live.json` into the Rust TUI and master notebook for real-time live ECG streaming when BLE connects.
-3. **24/7 LoRA Ingestion**: Continue auto-harvesting validated code diffs to `/Users/aaron/DFS_UNIFIED/lora_datasets/` for continuous local model fine-tuning.
+3. **24/7 LoRA Ingestion**: Continue auto-harvesting validated code diffs to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/` for continuous local model fine-tuning.

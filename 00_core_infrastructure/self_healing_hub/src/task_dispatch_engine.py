@@ -39,8 +39,8 @@ def _resolve_workspace_root() -> Path:
         return Path(env_root)
 
     candidates = [
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
+        Path("/Volumes/Lauburu-Monorepo"),
+        Path("/Volumes/Lauburu-Monorepo"),
         Path(__file__).resolve().parents[3] if len(Path(__file__).resolve().parents) >= 4 else Path.cwd(),
         Path.cwd()
     ]

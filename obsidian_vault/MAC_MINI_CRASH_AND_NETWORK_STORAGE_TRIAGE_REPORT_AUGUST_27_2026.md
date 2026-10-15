@@ -30,7 +30,7 @@ Backtrace Kernel Extensions:
 
 ### 1.2 Underlying Root Cause Analysis
 1. **Controller Subsystem:** `ACIO2` represents **Apple Configurable I/O Controller #2** (Apple Silicon Type-C / Thunderbolt 4 controller firmware `AppleCIOFirmwareV2`).
-2. **Thunderbolt Bridge & DMA Loop:** The Mac Mini had `bridge0` active spanning `en2`, `en3`, and `en4`. Connected peer machines (MacBook Air / MacBook Pro) across the 10Gbps Thunderbolt bridge frequently sleep/wake or cycle link states.
+2. **Thunderbolt Bridge & DMA Loop:** The Mac Mini had `bridge0` active spanning `en2`, `en3`, and `en4`. Connected peer machines (MacBook Air / MacBook Pro) across the 40Gbps Thunderbolt bridge frequently sleep/wake or cycle link states.
 3. **Queue Overflow / Assertion Failure:**
    - Background LaunchAgents (such as `ai.lauburu.seaweedfs.plist` advertising `-volume.publicUrl=169.254.3.189:8080` and `com.lauburu.seaweedfs.webdav.plist` attempting WebDAV mount triggers via Finder) continuously broadcast packets to link-local (`169.254.x.x`) endpoints over dead or sleeping Thunderbolt bridge member links.
    - When the Thunderbolt PHY / DMA queue timed out while the kernel WebDAV/autofs filesystem layer was attempting synchronous operations, `AppleCIOFirmwareV2` threw assertion `assert_id=2167`, escalating to an unrecoverable kernel panic.
@@ -66,11 +66,11 @@ Backtrace Kernel Extensions:
 ## 🏛️ 3. Canonical Tri-Vault Storage Health & Rectification
 
 ### 3.1 Obsidian Vault (Layer 1)
-* **Path:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/`
+* **Path:** `/Volumes/Lauburu-Monorepo/obsidian_vault/`
 * **Status:** Fully intact, git clean, all architecture whitepapers and telemetry notes synchronized.
 
 ### 3.2 Canonical Git Monorepo (Layer 3)
-* **Path:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/`
+* **Path:** `/Volumes/Lauburu-Monorepo/`
 * **Issue Found:** AppleDouble metadata files (`._*`) in `.git/objects/pack/` corrupted git index parsing, and `config`/`HEAD` pointers were desynchronized.
 * **Resolution:** 
   1. Purged all corrupted `._*` index files from `.git`.
@@ -96,7 +96,7 @@ Backtrace Kernel Extensions:
 | **Linux Head Node** | `100.101.39.98` | Tailscale / SSH | **ONLINE** | 44.4 ms RTT, 0% Loss |
 | **MacBook Pro Vault** | `100.103.212.21` | Tailscale / SSH | **ONLINE** | 108.5 ms RTT, 0% Loss |
 | **Pixel 10 Pro XL** | `100.73.38.87` | Tailscale / ADB | **ONLINE** | 67.1 ms RTT, 0% Loss |
-| **Samsung S20** | `100.84.40.95` | Tailscale / ADB | **ONLINE** | 91.4 ms RTT, 0% Loss |
+| **Samsung S20** | `100.78.206.96` | Tailscale / ADB | **ONLINE** | 91.4 ms RTT, 0% Loss |
 | **WoL Hub API** | `127.0.0.1:18802`| REST API | **ONLINE** | HTTP 200 Status OK |
 | **Obsidian Vault** | `DFS_UNIFIED/obsidian_vault` | Git / Markdown | **ONLINE** | Clean git state |
 | **Lauburu Monorepo** | `DFS_UNIFIED/Lauburu-Monorepo` | Git / GitHub | **ONLINE** | origin/main synced |

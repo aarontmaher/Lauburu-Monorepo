@@ -6,7 +6,7 @@ tags: [screen_lens, port_4000_edge_ai, human_mimicking, clickthrough_audits, ui_
 # 👁️ Screen Lens Human-Mimicking Click-Through & Cognitive UX Audits
 
 > **Edge AI Backend:** `Port 4000 In-App Edge AI Engine (SmolLM2-1.7B on Port 8083)`  
-> **Training Dataset:** `/Users/aaron/DFS_UNIFIED/lora_datasets/lauburu_lens_ui_ux_training.jsonl`  
+> **Training Dataset:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/lauburu_lens_ui_ux_training.jsonl`  
 > **Audited Features:** 3 Interactive Mesh Experiences
 
 ---
@@ -16,7 +16,7 @@ tags: [screen_lens, port_4000_edge_ai, human_mimicking, clickthrough_audits, ui_
 ### 🚀 JupyterLab Master Interactive Studio (Port 8889)
 - **Target URL:** `http://100.93.158.96:8889/lab`
 - **Edge Model:** `SmolLM2-1.7B (Port 4000 Apps Chat Engine / Port 8083)`
-- **Edge AI Critique:** *"The cognitive UX critique of the 'Focus Prompt Textarea' in the scenario 'JupyterLab Master Interactive Studio (Port 8889)' is that the visual clarity and zero friction are excellent. The prompt text area is clearly visible and easy to interact with, with no clutter or distractions."*
+- **Edge AI Critique:** *"The focus on the prompt textarea in JupyterLab Master Interactive Studio ensures clear visual indication and seamless interaction, providing zero friction for users."*
 - **Steps Simulated:** 6 human-speed actions (5.9s duration)
 - **Ergonomics Score:** **98 / 100** (`PASS — Highly responsive, zero visual clutter`)
 - **Color Contrast:** `11.2:1 (WCAG AAA Compliant)`
@@ -61,7 +61,7 @@ tags: [screen_lens, port_4000_edge_ai, human_mimicking, clickthrough_audits, ui_
 ### 🚀 Universal Web-TUI Portal 4-Domain Navigation (Port 8088)
 - **Target URL:** `http://localhost:8088/`
 - **Edge Model:** `SmolLM2-1.7B (Port 4000 Apps Chat Engine / Port 8083)`
-- **Edge AI Critique:** *"The cognitive UX critique for 'Click Tab 2' in the scenario 'Universal Web-TUI Portal 4-Domain Navigation (Port 8088)' is that it is clear and easy to understand, with no visual clutter or friction."*
+- **Edge AI Critique:** *"The tab navigation is clearly labeled and instantly responsive, providing a seamless user experience with no friction."*
 - **Steps Simulated:** 5 human-speed actions (5.0s duration)
 - **Ergonomics Score:** **96 / 100** (`PASS — 120 FPS buttery smooth transitions`)
 - **Color Contrast:** `9.8:1 (Neon Cyan on Cyber Slate)`
@@ -101,7 +101,7 @@ tags: [screen_lens, port_4000_edge_ai, human_mimicking, clickthrough_audits, ui_
 ### 🚀 Movesense 512Hz ECG Studio & Zone 2 Hub (Port 4000)
 - **Target URL:** `http://localhost:4000/`
 - **Edge Model:** `SmolLM2-1.7B (Port 4000 Apps Chat Engine / Port 8083)`
-- **Edge AI Critique:** *"The cognitive UX critique for the 'Trigger Live ECG Stream' action in the scenario 'Movesense 512Hz ECG Studio & Zone 2 Hub (Port 4000)' is that it is clear and easy to understand, with a simple and intuitive interface."*
+- **Edge AI Critique:** *"The trigger for "Live ECG Stream" should be clearly labeled and easily accessible to ensure users can initiate the action without confusion or delay."*
 - **Steps Simulated:** 4 human-speed actions (3.9s duration)
 - **Ergonomics Score:** **99 / 100** (`PASS — Zero-mock authentic biometric stream`)
 - **Color Contrast:** `14.5:1 (Neon Green #22c55e on #090d16)`

@@ -28,7 +28,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("HeadlessOptimizer")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 CONFIG_FILE = REPO_ROOT / "data/mesh/headless_profiles.json"
 LORA_LOG = REPO_ROOT / "data/lora_datasets/mesh_provisioning.jsonl"
 

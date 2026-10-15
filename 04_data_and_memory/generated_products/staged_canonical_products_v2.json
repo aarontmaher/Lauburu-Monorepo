@@ -1,0 +1,359 @@
+[
+  {
+    "title": "Lauburu 330 GSM Heavyweight Cotton Tee",
+    "product_type": "T-Shirt",
+    "vendor": "ODMPOD",
+    "tags": [
+      "Canonical V2",
+      "Streetwear",
+      "T-Shirt",
+      "330 GSM"
+    ],
+    "body_html": "<h3>Lauburu 330 GSM Heavyweight Streetwear Tee</h3>\n<p>Replaces standard training tees with an uncompromising 330 GSM combed cotton construction.</p>\n<ul>\n  <li><strong>Fabric Weight:</strong> 330 GSM 100% Dense Combed Cotton with anti-shrink pre-wash.</li>\n  <li><strong>Fit:</strong> Dropped shoulder, relaxed streetwear silhouette with a structured 30mm thick rib collar.</li>\n  <li><strong>Branding:</strong> Tonal matte black silicone-embossed canonical Lauburu symbol centered on the sternum.</li>\n  <li><strong>Durability:</strong> Twin-needle flatlock stitched hem and sleeves for long-term shape retention.</li>\n</ul>",
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ]
+      }
+    ],
+    "variants": [
+      {
+        "title": "S",
+        "price": "65.00",
+        "sku": "LAU-TEE-330-S",
+        "requires_shipping": true
+      },
+      {
+        "title": "M",
+        "price": "65.00",
+        "sku": "LAU-TEE-330-M",
+        "requires_shipping": true
+      },
+      {
+        "title": "L",
+        "price": "65.00",
+        "sku": "LAU-TEE-330-L",
+        "requires_shipping": true
+      },
+      {
+        "title": "XL",
+        "price": "65.00",
+        "sku": "LAU-TEE-330-XL",
+        "requires_shipping": true
+      },
+      {
+        "title": "2XL",
+        "price": "65.00",
+        "sku": "LAU-TEE-330-2XL",
+        "requires_shipping": true
+      }
+    ],
+    "image_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/products/canonical_apparel_v2/lauburu_330gsm_tee.jpg",
+    "image_base64_len": 902348
+  },
+  {
+    "title": "Lauburu Oversized French Terry Hoodie",
+    "product_type": "Hoodie",
+    "vendor": "ODMPOD",
+    "tags": [
+      "Canonical V2",
+      "Streetwear",
+      "Hoodie",
+      "French Terry"
+    ],
+    "body_html": "<h3>Lauburu Oversized French Terry Hoodie</h3>\n<p>The definitive heavyweight grappling streetwear layer.</p>\n<ul>\n  <li><strong>Material:</strong> 450 GSM Heavy Looped French Terry for optimal breathability and moisture absorption post-training.</li>\n  <li><strong>Hood:</strong> Seamless double-layered structured hood with zero choking drawstrings.</li>\n  <li><strong>Branding:</strong> Left pectoral high-density rubberized tonal Lauburu emblem.</li>\n  <li><strong>Cut:</strong> Boxy body with dropped armholes and ribbed stretch side gussets.</li>\n</ul>",
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ]
+      }
+    ],
+    "variants": [
+      {
+        "title": "S",
+        "price": "120.00",
+        "sku": "LAU-HOO-450-S",
+        "requires_shipping": true
+      },
+      {
+        "title": "M",
+        "price": "120.00",
+        "sku": "LAU-HOO-450-M",
+        "requires_shipping": true
+      },
+      {
+        "title": "L",
+        "price": "120.00",
+        "sku": "LAU-HOO-450-L",
+        "requires_shipping": true
+      },
+      {
+        "title": "XL",
+        "price": "120.00",
+        "sku": "LAU-HOO-450-XL",
+        "requires_shipping": true
+      },
+      {
+        "title": "2XL",
+        "price": "120.00",
+        "sku": "LAU-HOO-450-2XL",
+        "requires_shipping": true
+      }
+    ],
+    "image_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/products/canonical_apparel_v2/lauburu_french_terry_hoodie.jpg",
+    "image_base64_len": 593232
+  },
+  {
+    "title": "Lauburu Unisex Heavyweight Fleece Joggers",
+    "product_type": "Joggers",
+    "vendor": "ODMPOD",
+    "tags": [
+      "Canonical V2",
+      "Streetwear",
+      "Joggers",
+      "Fleece"
+    ],
+    "body_html": "<h3>Lauburu Heavyweight Tapered Fleece Joggers</h3>\n<p>Engineered for athletes traveling to and from the tatami.</p>\n<ul>\n  <li><strong>Fabric:</strong> 400 GSM brushed-back cotton fleece providing structural warmth without bulk.</li>\n  <li><strong>Security:</strong> Dual matte-black YKK zippered hand pockets to prevent phones and lockers keys from slipping on mats.</li>\n  <li><strong>Waistband:</strong> Quad-stitched elastic waistband with flat woven drawstring and metal aglets.</li>\n  <li><strong>Branding:</strong> Embossed silicone canonical Lauburu emblem on upper left thigh.</li>\n</ul>",
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ]
+      }
+    ],
+    "variants": [
+      {
+        "title": "S",
+        "price": "95.00",
+        "sku": "LAU-JOG-400-S",
+        "requires_shipping": true
+      },
+      {
+        "title": "M",
+        "price": "95.00",
+        "sku": "LAU-JOG-400-M",
+        "requires_shipping": true
+      },
+      {
+        "title": "L",
+        "price": "95.00",
+        "sku": "LAU-JOG-400-L",
+        "requires_shipping": true
+      },
+      {
+        "title": "XL",
+        "price": "95.00",
+        "sku": "LAU-JOG-400-XL",
+        "requires_shipping": true
+      },
+      {
+        "title": "2XL",
+        "price": "95.00",
+        "sku": "LAU-JOG-400-2XL",
+        "requires_shipping": true
+      }
+    ],
+    "image_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/products/canonical_apparel_v2/lauburu_fleece_joggers.jpg",
+    "image_base64_len": 643220
+  },
+  {
+    "title": "Lauburu Unisex Heavyweight Fleece Loose Fit Shorts",
+    "product_type": "Shorts",
+    "vendor": "ODMPOD",
+    "tags": [
+      "Canonical V2",
+      "Streetwear",
+      "Shorts",
+      "Fleece"
+    ],
+    "body_html": "<h3>Lauburu Heavyweight Fleece Loose Fit Shorts</h3>\n<p>Modern lifestyle and recovery shorts cut just above the knee.</p>\n<ul>\n  <li><strong>Material:</strong> 380 GSM fleece cotton with brushed interior finish.</li>\n  <li><strong>Hardware:</strong> Bar-tacked zipper pockets and interior flat drawstring.</li>\n  <li><strong>Branding:</strong> Canonical tonal Lauburu cross emblem on lower left hem.</li>\n</ul>",
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ]
+      }
+    ],
+    "variants": [
+      {
+        "title": "S",
+        "price": "75.00",
+        "sku": "LAU-SHO-380-S",
+        "requires_shipping": true
+      },
+      {
+        "title": "M",
+        "price": "75.00",
+        "sku": "LAU-SHO-380-M",
+        "requires_shipping": true
+      },
+      {
+        "title": "L",
+        "price": "75.00",
+        "sku": "LAU-SHO-380-L",
+        "requires_shipping": true
+      },
+      {
+        "title": "XL",
+        "price": "75.00",
+        "sku": "LAU-SHO-380-XL",
+        "requires_shipping": true
+      },
+      {
+        "title": "2XL",
+        "price": "75.00",
+        "sku": "LAU-SHO-380-2XL",
+        "requires_shipping": true
+      }
+    ],
+    "image_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/products/canonical_apparel_v2/lauburu_fleece_shorts.jpg",
+    "image_base64_len": 595752
+  },
+  {
+    "title": "Lauburu 1000D Tactical Combat Backpack",
+    "product_type": "Bag",
+    "vendor": "ODMPOD",
+    "tags": [
+      "Canonical V2",
+      "Gear",
+      "Backpack",
+      "1000D"
+    ],
+    "body_html": "<h3>Lauburu 1000D Tactical Combat Backpack (35L)</h3>\n<p>Built exclusively for combat athletes carrying heavy gis, rashguards, and hydration.</p>\n<ul>\n  <li><strong>Material:</strong> 1000D Ballistic Cordura nylon with DWR waterproof coating.</li>\n  <li><strong>Specialized Compartment:</strong> Dedicated ventilated lower front pocket for wet grappling gear and tape.</li>\n  <li><strong>Branding:</strong> Molded matte black PVC Lauburu tactical morale patch.</li>\n  <li><strong>Hardware:</strong> Heavy-duty YKK sealed zippers with paracord pullers.</li>\n</ul>",
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          "OSFA"
+        ]
+      }
+    ],
+    "variants": [
+      {
+        "title": "OSFA",
+        "price": "145.00",
+        "sku": "LAU-BAG-TAC-OSFA",
+        "requires_shipping": true
+      }
+    ],
+    "image_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/products/canonical_apparel_v2/lauburu_tactical_backpack.jpg",
+    "image_base64_len": 961824
+  },
+  {
+    "title": "Lauburu Heavyweight Grappling Duffle Bag",
+    "product_type": "Bag",
+    "vendor": "ODMPOD",
+    "tags": [
+      "Canonical V2",
+      "Gear",
+      "Duffle Bag",
+      "50L"
+    ],
+    "body_html": "<h3>Lauburu Heavyweight Grappling Duffle Bag (50L)</h3>\n<p>The ultimate multi-day competition and seminar carryall.</p>\n<ul>\n  <li><strong>Capacity:</strong> 50 Liters with isolated wet/dry shoe and gi partitions.</li>\n  <li><strong>Construction:</strong> 1000D water-resistant ripstop nylon with reinforced seatbelt-webbing handles.</li>\n  <li><strong>Branding:</strong> Tonal matte black canonical Lauburu emblem on the main side exterior.</li>\n</ul>",
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          "OSFA"
+        ]
+      }
+    ],
+    "variants": [
+      {
+        "title": "OSFA",
+        "price": "135.00",
+        "sku": "LAU-BAG-DUF-OSFA",
+        "requires_shipping": true
+      }
+    ],
+    "image_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/products/canonical_apparel_v2/lauburu_heavyweight_duffle.jpg",
+    "image_base64_len": 748344
+  },
+  {
+    "title": "Lauburu EVA Molded Recovery Slides",
+    "product_type": "Footwear",
+    "vendor": "ODMPOD",
+    "tags": [
+      "Canonical V2",
+      "Footwear",
+      "Slides",
+      "Recovery"
+    ],
+    "body_html": "<h3>Lauburu EVA Molded Recovery Slides</h3>\n<p>Essential off-mat hygiene footwear designed for seamless transition from changing rooms to the tatami edge.</p>\n<ul>\n  <li><strong>Construction:</strong> 100% injection-molded one-piece EVA foam with deep textured anti-slip mat grip.</li>\n  <li><strong>Support:</strong> Ergonomic deep heel cup and anatomical arch support for post-training recovery.</li>\n  <li><strong>Branding:</strong> Canonical Lauburu symbol seamlessly molded in 3D relief across the strap.</li>\n</ul>",
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          "US 7",
+          "US 8",
+          "US 9",
+          "US 10",
+          "US 11",
+          "US 12"
+        ]
+      }
+    ],
+    "variants": [
+      {
+        "title": "US 7",
+        "price": "55.00",
+        "sku": "LAU-SLD-EVA-7",
+        "requires_shipping": true
+      },
+      {
+        "title": "US 8",
+        "price": "55.00",
+        "sku": "LAU-SLD-EVA-8",
+        "requires_shipping": true
+      },
+      {
+        "title": "US 9",
+        "price": "55.00",
+        "sku": "LAU-SLD-EVA-9",
+        "requires_shipping": true
+      },
+      {
+        "title": "US 10",
+        "price": "55.00",
+        "sku": "LAU-SLD-EVA-10",
+        "requires_shipping": true
+      },
+      {
+        "title": "US 11",
+        "price": "55.00",
+        "sku": "LAU-SLD-EVA-11",
+        "requires_shipping": true
+      },
+      {
+        "title": "US 12",
+        "price": "55.00",
+        "sku": "LAU-SLD-EVA-12",
+        "requires_shipping": true
+      }
+    ],
+    "image_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/products/canonical_apparel_v2/lauburu_eva_slides.jpg",
+    "image_base64_len": 497528
+  }
+]

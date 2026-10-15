@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Combat Lab Lauburu — Precision Combat Biometrics & Health Connector</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#c5a059">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- Customer-Facing Header -->
+  <header class="app-header">
+    <div class="brand-group">
+      <div class="brand-logo"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥋</text></svg>" alt="Combat Lab Lauburu" width="32" height="32"></div>
+      <div class="brand-text">
+        <span class="app-title">COMBAT LAB</span>
+        <span class="app-ecosystem">LAUBURU HEALTH & ATHLETICS</span>
+      </div>
+    </div>
+
+    <nav class="nav-links">
+      <button type="button" class="nav-item active" onclick="switchTab('biometrics')">Live Biometrics</button>
+      <button type="button" class="nav-item" onclick="switchTab('devices')">Connect Devices</button>
+      <button type="button" class="nav-item" onclick="switchTab('memberships')">Plans & Bundles</button>
+      <button type="button" class="nav-item" onclick="switchTab('downloads')">App Store Gate</button>
+    </nav>
+
+    <div class="header-right">
+      <div class="sensor-status-badge" id="globalSensorBadge" onclick="switchTab('devices')">
+        <span class="pulse-dot idle" id="sensorPulseDot"></span>
+        <span class="status-label" id="sensorStatusText">NO DEVICE CONNECTED</span>
+      </div>
+      <button type="button" class="mode-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">🌙 DARK</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- TAB 1: LIVE BIOMETRICS (CONSOLIDATED ECG + 5-MIN PHONE CAMERA PPG & PTT BP) -->
+    <section id="tab-biometrics" class="workspace-tab active">
+      <div class="grid-2col">
+        <div class="card canvas-card">
+          <div class="card-header">
+            <div>
+              <span class="badge-gold">PRECISION CARDIAC TELEMETRY</span>
+              <h2 class="card-title">Live Biometrics & Autonomic Monitor</h2>
+            </div>
+            <div class="live-tag waiting" id="liveTagIndicator">○ STANDBY (CONNECT SENSOR)</div>
+          </div>
+
+          <!-- Segmented Biometrics Subnav: ECG vs 5-Min Phone PPG -->
+          <div class="biometrics-subnav">
+            <button type="button" class="subnav-btn active" id="subnavEcgBtn" onclick="switchBiometricsSubMode('ecg')">🫀 LIVE CARDIAC ECG</button>
+            <button type="button" class="subnav-btn" id="subnavPpgBtn" onclick="switchBiometricsSubMode('ppg')">📱 5-MIN PHONE CAMERA PPG & BP</button>
+          </div>
+
+          <!-- SUBVIEW A: LIVE ECG MONITOR -->
+          <div id="ecgSubView" class="biometrics-subview active">
+            <div class="canvas-wrapper">
+              <canvas id="ecgCanvas" width="800" height="260"></canvas>
+              <div class="canvas-waiting-overlay" id="canvasOverlay">
+                <div class="overlay-msg">
+                  <span class="overlay-icon">📡</span>
+                  <strong>No Sensor Connected</strong>
+                  <p>Connect your Polar, Whoop, Apple Watch, or ECG chest strap to view live telemetry, or test with authentic session replay.</p>
+                  <div class="overlay-btn-row">
+                    <button type="button" class="btn-primary" onclick="switchTab('devices')">⚡ CONNECT DEVICE</button>
+                    <button type="button" class="btn-gold" onclick="openBuyMovesenseModal()">🛒 BUY A MOVESENSE</button>
+                    <button type="button" class="btn-secondary" onclick="openWhyMovesenseModal()">🏆 WHY MOVESENSE IS SUPERIOR</button>
+                    <button type="button" class="btn-secondary" onclick="loadAuthenticReplay()">▶ LOAD 512Hz SPARRING DEMO</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="replay-explanation-banner">
+              💡 <strong>What is Authentic Replay?</strong> Under Rule 0 (Zero-Mock), we never emit fake or simulated numbers. This button streams an authentic recorded 512Hz clinical ECG sparring session from disk so you can test real-time DSP filters, HRV (RMSSD), and PTT blood pressure calibration without physical hardware.
+            </div>
+          </div>
+
+          <!-- SUBVIEW B: 5-MINUTE PHONE CAMERA OPTICAL PPG & PTT BLOOD PRESSURE -->
+          <div id="ppgSubView" class="biometrics-subview">
+            <div class="ppg-split-layout">
+              <!-- Left: Guided Camera Test View -->
+              <div class="ppg-guide-card">
+                <div class="camera-target-circle" id="cameraCircle">
+                  <div class="pulse-ring" id="pulseRing"></div>
+                  <div class="finger-status-text" id="fingerStatus">PLACE INDEX FINGER OVER CAMERA & FLASH</div>
+                  <div class="ppg-countdown" id="ppgTimer">05:00</div>
+                </div>
+
+                <div class="ppg-instructions">
+                  <h4>📋 Guided Calibration:</h4>
+                  <ol>
+                    <li>Rest quietly in a seated position before testing.</li>
+                    <li>Rest index finger gently over rear camera & flash.</li>
+                    <li>Flash illuminates capillary bed for optical pulse detection.</li>
+                    <li>Synchronizes with ECG R-wave for Pulse Transit Time (PTT).</li>
+                  </ol>
+                </div>
+
+                <div class="ppg-btn-row">
+                  <button type="button" class="btn-primary" id="startPpgBtn" onclick="togglePpgTest()">START 5-MINUTE TEST</button>
+                  <button type="button" class="btn-secondary" onclick="resetPpgTest()">RESET</button>
+                </div>
+              </div>
+
+              <!-- Right: Live Optical Pulse Wave & Blood Pressure Output -->
+              <div class="ppg-results-card">
+                <h3 class="ppg-results-title">Optical Capillary Photoplethysmogram (PPG)</h3>
+                <div class="ppg-canvas-box">
+                  <canvas id="ppgCanvas" width="500" height="160"></canvas>
+                </div>
+
+                <div class="ptt-output-box">
+                  <div class="ptt-header">
+                    <span>PULSE TRANSIT TIME (PTT) BLOOD PRESSURE</span>
+                    <span class="ptt-accuracy">● CLINICAL CORRELATION</span>
+                  </div>
+
+                  <div class="bp-reading-row">
+                    <div class="bp-stat">
+                      <span class="bp-num" id="calcSystolic">--</span>
+                      <span class="bp-sub">SYSTOLIC (mmHg)</span>
+                    </div>
+                    <div class="bp-divider">/</div>
+                    <div class="bp-stat">
+                      <span class="bp-num" id="calcDiastolic">--</span>
+                      <span class="bp-sub">DIASTOLIC (mmHg)</span>
+                    </div>
+                    <div class="bp-stat" style="margin-left:auto;">
+                      <span class="bp-num" id="calcPttMs">--</span>
+                      <span class="bp-sub">PTT DELAY (ms)</span>
+                    </div>
+                  </div>
+
+                  <div class="ptt-explanation">
+                    <strong>Why PPG + ECG Improves Accuracy:</strong> Pulse Transit Time measures milliseconds between ventricular contraction (ECG R-wave) and arterial pressure wave reaching fingertip (PPG peak). Shorter times indicate higher arterial pressure; longer times reflect relaxed vascular elasticity.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rule 0 Clean Waiting Metrics Bar -->
+          <div class="biometrics-metric-bar">
+            <div class="metric-item">
+              <span class="m-label">HEART RATE</span>
+              <span class="m-val" id="hrDisplay">-- <small>BPM</small></span>
+              <span class="m-badge" id="hrBadge">AWAITING SIGNAL</span>
+            </div>
+            <div class="metric-item">
+              <span class="m-label">HRV (RMSSD)</span>
+              <span class="m-val" id="hrvDisplay">-- <small>ms</small></span>
+              <span class="m-badge" id="hrvBadge">STANDBY</span>
+            </div>
+            <div class="metric-item">
+              <span class="m-label">BLOOD PRESSURE (PTT)</span>
+              <span class="m-val" id="bpDisplay">-- / -- <small>mmHg</small></span>
+              <span class="m-badge" id="bpBadge">CALIBRATION NEEDED</span>
+            </div>
+            <div class="metric-item">
+              <span class="m-label">AEROBIC THRESHOLD</span>
+              <span class="m-val" id="dfaDisplay">--</span>
+              <span class="m-badge" id="dfaBadge">DFA-α1 PENDING</span>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button type="button" class="btn-primary" onclick="switchTab('devices')">⚡ CONNECT DEVICE</button>
+            <button type="button" class="btn-secondary" onclick="switchBiometricsSubMode('ppg')">📱 5-MIN PHONE PPG TEST</button>
+            <button type="button" class="btn-gold" onclick="openBuyMovesenseModal()">🛒 BUY A MOVESENSE</button>
+            <button type="button" class="btn-secondary" onclick="openWhyMovesenseModal()">🏆 WHY MOVESENSE IS SUPERIOR</button>
+            <button type="button" class="btn-secondary" onclick="disconnectSensor()" id="disconnectBtn" style="display:none;">DISCONNECT</button>
+          </div>
+        </div>
+
+        <!-- Right: Customer-Friendly AI Assistant & Specialist Routing -->
+        <div class="card ai-card">
+          <div class="card-header ai-header-clean">
+            <div>
+              <div class="ai-title-row">
+                <span class="ai-dot-live"></span>
+                <h2 class="card-title">Combat Lab Assistant</h2>
+              </div>
+              <span class="ai-header-sub">Medical Biometrics & Store Concierge</span>
+            </div>
+
+            <!-- Compact Segmented Mode Switcher in Header -->
+            <div class="ai-mode-selector">
+              <button type="button" class="ai-mode-btn active" id="aiModeMedicalBtn" onclick="setAiAgentMode('medical')">🩺 Health</button>
+              <button type="button" class="ai-mode-btn" id="aiModeSalesBtn" onclick="setAiAgentMode('sales')">🛒 Store</button>
+              <button type="button" class="ai-mode-btn" id="aiModeDebateBtn" onclick="setAiAgentMode('debate')">⚖️ Debate</button>
+            </div>
+          </div>
+
+          <div class="ai-chat-log" id="aiAdviceLog">
+            <div class="advice-entry">
+              <div class="entry-time">👋 Welcome to Combat Lab</div>
+              <p>Connect your wearable, try our free 5-minute phone camera test, or ask any question about gear and training.</p>
+              <div class="quick-suggest-links">
+                <button type="button" class="suggest-chip" onclick="sendQuickPrompt('Which gear should I get?')">💡 Which gear should I get?</button>
+                <button type="button" class="suggest-chip" onclick="sendQuickPrompt('How does the 5-min camera test work?')">📱 How does camera test work?</button>
+                <button type="button" class="suggest-chip" onclick="sendQuickPrompt('Compare Movesense vs Whoop')">⚡ Compare vs Whoop</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ai-input-box">
+            <input type="text" placeholder="Ask about gear, pricing, heart rate, recovery..." id="coachInput" onkeydown="handleCoachKey(event)">
+            <button type="button" class="btn-gold" onclick="sendCoachQuery()">SEND</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: UNIVERSAL HEALTH DEVICE CONNECTOR -->
+    <section id="tab-devices" class="workspace-tab">
+      <div class="memberships-header">
+        <span class="badge-gold">UNIVERSAL HEALTH ECOSYSTEM CONNECTOR</span>
+        <h2 class="section-title">Connect Your Training & Health Devices</h2>
+        <p class="section-sub">Pair any standard Bluetooth ECG strap, optical armband, or smart wearable for unified cardiac analysis.</p>
+      </div>
+
+      <!-- Official Suggested Hardware Banner -->
+      <div class="movesense-hero-banner" style="background:var(--bg-card); border:1px solid var(--accent-gold); border-radius:12px; padding:24px; margin-bottom:28px; box-shadow:0 4px 20px rgba(217,119,6,0.08);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+          <div style="max-width:720px;">
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+              <span class="badge-gold">★ SUGGESTED & OFFICIAL LAUBURU HARDWARE</span>
+              <span style="font-size:11px; font-weight:800; color:#10B981; background:rgba(16,185,129,0.12); padding:2px 8px; border-radius:10px;">512Hz MEDICAL GRADE</span>
+            </div>
+            <h3 style="font-size:22px; font-weight:900; margin-bottom:6px;">Movesense MD+ Medical ECG & 9-DOF IMU</h3>
+            <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">
+              While Combat Lab connects to any Bluetooth device (Polar, Whoop, Apple Watch), <strong>Movesense MD+ is our suggested and officially certified hardware</strong>. Delivering 512Hz clinical ECG with sub-millisecond QRS timing and 9-axis spatial kinematics, it is purpose-built for combat sports and cuffless PTT blood pressure accuracy.
+            </p>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px; min-width:220px;">
+            <button type="button" class="btn-gold full-w" onclick="openBuyMovesenseModal()">🛒 BUY A MOVESENSE</button>
+            <button type="button" class="btn-secondary full-w" onclick="openWhyMovesenseModal()">🏆 WHY MOVESENSE IS SUPERIOR</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="devices-grid">
+        <!-- Device 1: Polar H10 -->
+        <div class="device-card">
+          <div class="dev-top">
+            <span class="dev-icon">🫀</span>
+            <span class="dev-type">CHEST STRAP ECG</span>
+          </div>
+          <h3 class="dev-name">Polar H10 / H9</h3>
+          <p class="dev-desc">Clinical gold-standard chest strap. Real-time single-lead ECG and millisecond-accurate R-R intervals.</p>
+          <div class="dev-proto">Protocol: Bluetooth GATT 0x180D (Heart Rate Service)</div>
+          <button type="button" class="btn-primary full-w" onclick="connectDevice('Polar H10 (Chest Strap)', 130)">CONNECT POLAR H10</button>
+        </div>
+
+        <!-- Device 2: Polar Verity Sense -->
+        <div class="device-card">
+          <div class="dev-top">
+            <span class="dev-icon">💪</span>
+            <span class="dev-type">OPTICAL ARMBAND</span>
+          </div>
+          <h3 class="dev-name">Polar Verity Sense / OH1</h3>
+          <p class="dev-desc">Comfortable 6-LED optical PPG sensor worn on the forearm or bicep. Ideal for high-abrasion grappling.</p>
+          <div class="dev-proto">Protocol: Optical PPG BLE Stream</div>
+          <button type="button" class="btn-primary full-w" onclick="connectDevice('Polar Verity Sense', 52)">CONNECT VERITY SENSE</button>
+        </div>
+
+        <!-- Device 3: Whoop 4.0 -->
+        <div class="device-card">
+          <div class="dev-top">
+            <span class="dev-icon">⚡</span>
+            <span class="dev-type">CONTINUOUS STRAP</span>
+          </div>
+          <h3 class="dev-name">Whoop 4.0</h3>
+          <p class="dev-desc">Continuous cardiovascular strain, resting HR, and overnight nocturnal HRV recovery sync.</p>
+          <div class="dev-proto">Protocol: Whoop BLE Broadcast / Open Wearables</div>
+          <button type="button" class="btn-primary full-w" onclick="connectDevice('Whoop 4.0', 45)">CONNECT WHOOP</button>
+        </div>
+
+        <!-- Device 4: Apple Watch & Wear OS -->
+        <div class="device-card">
+          <div class="dev-top">
+            <span class="dev-icon">⌚</span>
+            <span class="dev-type">SMARTWATCH</span>
+          </div>
+          <h3 class="dev-name">Apple Watch & Wear OS</h3>
+          <p class="dev-desc">Native integration with Apple HealthKit and Google Health Connect for background workouts.</p>
+          <div class="dev-proto">Protocol: HealthKit / Health Connect SDK</div>
+          <button type="button" class="btn-primary full-w" onclick="connectDevice('Apple Watch / Wear OS', 60)">PAIR SMARTWATCH</button>
+        </div>
+
+        <!-- Device 5: Movesense MD+ Suggested Sensor -->
+        <div class="device-card featured" style="border-color:var(--accent-gold); background:rgba(217,119,6,0.03);">
+          <div class="dev-top">
+            <span class="dev-icon">🩺</span>
+            <span class="dev-type" style="color:var(--accent-gold); font-weight:800;">★ SUGGESTED HARDWARE</span>
+          </div>
+          <h3 class="dev-name">Movesense MD+ (512Hz ECG)</h3>
+          <p class="dev-desc">High-frequency 512Hz raw clinical ECG with 9-DOF motion tracking and sub-millisecond QRS timing. Combat bicep band.</p>
+          <div class="dev-proto">Protocol: 512Hz High-Throughput Bluetooth BLE</div>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+            <button type="button" class="btn-primary full-w" onclick="connectDevice('Movesense MD+ (Suggested)', 512)">CONNECT MOVESENSE</button>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn-gold" style="flex:1; font-size:11px; padding:8px;" onclick="openBuyMovesenseModal()">BUY SENSOR</button>
+              <button type="button" class="btn-secondary" style="flex:1; font-size:11px; padding:8px;" onclick="openWhyMovesenseModal()">WHY SUPERIOR</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Device 6: Phone Camera PPG Standalone -->
+        <div class="device-card highlight">
+          <div class="dev-top">
+            <span class="dev-icon">📱</span>
+            <span class="dev-type">ZERO HARDWARE</span>
+          </div>
+          <h3 class="dev-name">Built-In Phone Camera PPG</h3>
+          <p class="dev-desc">Requires no extra hardware. Uses your phone camera lens to measure pulse waves and blood pressure in 5 minutes.</p>
+          <div class="dev-proto">Protocol: Optical Finger Photoplethysmography</div>
+          <button type="button" class="btn-gold full-w" onclick="switchTab('biometrics'); switchBiometricsSubMode('ppg');">LAUNCH 5-MIN TEST</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: PLANS & BUNDLES -->
+    <section id="tab-memberships" class="workspace-tab">
+      <div class="memberships-header">
+        <span class="badge-gold">TRANSPARENT VALUE PLANS</span>
+        <h2 class="section-title">Combat Lab Membership Tiers</h2>
+        <p class="section-sub">Choose your level of clinical biometrics, medical AI insights, and multi-device access.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="p-top">
+            <h3 class="tier-title">Starter Athlete</h3>
+            <div class="p-val">$29 <small>AUD / mo</small></div>
+            <p class="p-desc">High-precision ECG and multi-device wearable sync for solo athletes.</p>
+          </div>
+          <ul class="p-features">
+            <li>✓ Multi-Device Connector (Polar, Whoop, Apple Watch)</li>
+            <li>✓ Live ECG & Pan-Tompkins Real-Time DSP</li>
+            <li>✓ 5-Minute Phone Camera PPG Blood Pressure Test</li>
+            <li>✓ Medical Specialist AI Physiological Insights</li>
+            <li>✓ 1 BLE Active Connection</li>
+          </ul>
+          <button type="button" class="btn-secondary full-w" onclick="subscribeTier('Starter Athlete', 29)">SUBSCRIBE STARTER</button>
+        </div>
+
+        <div class="pricing-card popular">
+          <div class="popular-ribbon">⚡ MOST POPULAR</div>
+          <div class="p-top">
+            <h3 class="tier-title">Pro Grappler & Lab</h3>
+            <div class="p-val">$99 <small>AUD / mo</small></div>
+            <p class="p-desc">Advanced cardiac recovery, blood pressure tracking, and priority AI analysis.</p>
+          </div>
+          <ul class="p-features">
+            <li>✓ <strong>Everything in Starter, plus:</strong></li>
+            <li>✓ Pulse Transit Time (PTT) Continuous BP Tracking</li>
+            <li>✓ Access to Standalone Spatial Grappling 3D App</li>
+            <li>✓ 1,000 Medical AI Compute Queries / month</li>
+            <li>✓ 15% Hardware Discount on Sensor Kits</li>
+            <li>✓ 3 Synced Devices & Offline Mode</li>
+          </ul>
+          <button type="button" class="btn-primary full-w" onclick="subscribeTier('Pro Grappler & Lab', 99)">SUBSCRIBE PRO LAB</button>
+        </div>
+
+        <div class="pricing-card">
+          <div class="p-top">
+            <h3 class="tier-title">Elite Academy & Team</h3>
+            <div class="p-val">$299 <small>AUD / mo</small></div>
+            <p class="p-desc">Multi-athlete live telemetry for martial arts gyms, academies, and coaches.</p>
+          </div>
+          <ul class="p-features">
+            <li>✓ <strong>Everything in Pro, plus:</strong></li>
+            <li>✓ Multi-Athlete Roster (Up to 12 simultaneous sensors)</li>
+            <li>✓ Team Zone 2 Mat Dashboards & Audio Pacing</li>
+            <li>✓ 5,000 Medical AI Queries / month</li>
+            <li>✓ Automated Training Session PDF Exports</li>
+            <li>✓ Dedicated Academy Shard</li>
+          </ul>
+          <button type="button" class="btn-secondary full-w" onclick="subscribeTier('Elite Academy', 299)">SUBSCRIBE ELITE</button>
+        </div>
+      </div>
+
+      <div class="hardware-bundle-banner">
+        <div class="hb-left">
+          <span class="badge-gold">ALL-IN-ONE COMBAT LAB STARTER BUNDLE</span>
+          <h3 class="hb-title">Precision Cardiac Sensor + Custom Bicep Band + 3-Month Pro Membership</h3>
+          <p class="hb-desc">Get the clinical ECG hardware sensor ($170), custom silver-electrode bicep band ($59), and 3 months of Pro Lab SaaS ($297) bundled together.</p>
+        </div>
+        <div class="hb-right">
+          <div class="hb-price">$249 <small>AUD</small> <span class="save-pill">SAVE $70 AUD</span></div>
+          <button type="button" class="btn-gold full-w" onclick="buyHardwareBundle()">GET COMBAT LAB BUNDLE</button>
+          <span class="hb-solvency">🔒 Solvency Invariant: Wholesale COGS ($125 AUD) locked in cash reserve.</span>
+        </div>
+      </div>
+
+      <!-- On-Demand Compute & AI Credits Metering -->
+      <div class="card compute-meter-card" style="margin-top:24px;">
+        <div class="card-header">
+          <div>
+            <span class="badge-gold">FLEXIBLE PAY-BY-COMPUTE</span>
+            <h3 class="card-title">On-Demand AI Compute & DSP Credits</h3>
+          </div>
+          <div class="status-badge">PAY-AS-YOU-GO TOKENS</div>
+        </div>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">
+          Need extra compute capacity for multi-hour continuous 512Hz ECG streams, high-resolution kinematic renders, or high-volume Medical AI consultations? Purchase instant credit token packs without lock-in contracts.
+        </p>
+        <div class="credit-packs-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+          <div class="credit-pack" style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:13px; font-weight:700; color:var(--accent-gold); margin-bottom:4px;">STARTER PACK</div>
+            <div style="font-size:24px; font-weight:900; color:var(--text-main); margin-bottom:8px;">$10 <small style="font-size:12px; font-weight:500; color:var(--text-muted);">AUD</small></div>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">500 AI Queries or 25 hrs 512Hz DSP Streaming</p>
+            <button type="button" class="btn-secondary full-w" onclick="buyComputeCredit(10, 'Starter')">PURCHASE CREDITS</button>
+          </div>
+          <div class="credit-pack" style="background:var(--bg-primary); border:1px solid var(--accent-gold); border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:13px; font-weight:700; color:var(--accent-gold); margin-bottom:4px;">ATHLETE PACK</div>
+            <div style="font-size:24px; font-weight:900; color:var(--text-main); margin-bottom:8px;">$25 <small style="font-size:12px; font-weight:500; color:var(--text-muted);">AUD</small></div>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">1,500 AI Queries or 80 hrs 512Hz DSP Streaming</p>
+            <button type="button" class="btn-primary full-w" onclick="buyComputeCredit(25, 'Athlete')">PURCHASE CREDITS</button>
+          </div>
+          <div class="credit-pack" style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:13px; font-weight:700; color:var(--accent-gold); margin-bottom:4px;">ACADEMY PRO PACK</div>
+            <div style="font-size:24px; font-weight:900; color:var(--text-main); margin-bottom:8px;">$50 <small style="font-size:12px; font-weight:500; color:var(--text-muted);">AUD</small></div>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">4,000 AI Queries or 200 hrs Multi-Athlete Streaming</p>
+            <button type="button" class="btn-secondary full-w" onclick="buyComputeCredit(50, 'Academy')">PURCHASE CREDITS</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: CLIENT APP GATE & DOWNLOADS -->
+    <section id="tab-downloads" class="workspace-tab">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="badge-gold">MODULAR CLIENT APP GATE</span>
+            <h2 class="card-title">Download Dedicated Applications for Your Devices</h2>
+          </div>
+          <div class="status-badge">PLATFORM-OPTIMIZED</div>
+        </div>
+
+        <!-- 4 Dedicated Apps Matrix -->
+        <div class="client-apps-matrix">
+          <!-- App 1: Combat Pulse Mobile -->
+          <div class="dl-item">
+            <div class="dl-header">
+              <span class="app-icon-lg">📱</span>
+              <span class="plat-tag ios-tag">iOS & ANDROID</span>
+            </div>
+            <h4 class="app-gate-name">Combat Pulse Lauburu</h4>
+            <span class="app-gate-sub">Engineered for iPhone & Android Mobile</span>
+            <p class="app-gate-p">Tailored for athletic mat use. Ultra-low battery consumption, background CoreBluetooth, lock-screen Live Activities & Zone 2 cardiac alarms.</p>
+            <div class="btn-split">
+              <button type="button" class="btn-secondary" onclick="triggerDownload('iOS .ipa / TestFlight')">iOS (.ipa / TestFlight)</button>
+              <button type="button" class="btn-secondary" onclick="triggerDownload('Android .apk')">Android (.apk)</button>
+            </div>
+          </div>
+
+          <!-- App 2: Spatial Grappling 3D -->
+          <div class="dl-item">
+            <div class="dl-header">
+              <span class="app-icon-lg">🥋</span>
+              <span class="plat-tag desktop-tag">DESKTOP MAC & LINUX</span>
+            </div>
+            <h4 class="app-gate-name">Spatial Grappling Lauburu</h4>
+            <span class="app-gate-sub">Dedicated 3D Biomechanical Kinematics</span>
+            <p class="app-gate-p">Standalone 955-node OPML kinematic submission tree. Full 3D joint torque physics, defensive counter-routes, and WebGL tatami positioning.</p>
+            <div class="btn-split">
+              <button type="button" class="btn-secondary" onclick="triggerDownload('Spatial Grappling macOS')">macOS Metal App</button>
+              <button type="button" class="btn-secondary" onclick="triggerDownload('Linux AppImage')">Linux AppImage</button>
+            </div>
+          </div>
+
+          <!-- App 3: Combat Lab Desktop -->
+          <div class="dl-item">
+            <div class="dl-header">
+              <span class="app-icon-lg">🖥️</span>
+              <span class="plat-tag mac-tag">MACOS APPLE SILICON</span>
+            </div>
+            <h4 class="app-gate-name">Combat Lab Lauburu</h4>
+            <span class="app-gate-sub">Unified Multi-Pane Command Center</span>
+            <p class="app-gate-p">Full command center: live biometrics sweep, Medical Specialist AI coaching, device federation, and pay-by-compute billing.</p>
+            <button type="button" class="btn-primary full-w" onclick="triggerDownload('macOS Universal .dmg')">Download Universal .dmg (64 MB)</button>
+          </div>
+
+          <!-- App 4: Screen Lens Sovereign -->
+          <div class="dl-item">
+            <div class="dl-header">
+              <span class="app-icon-lg">👁️</span>
+              <span class="plat-tag tpu-tag">PIXEL 10 TPU & MAC</span>
+            </div>
+            <h4 class="app-gate-name">Screen Lens Lauburu</h4>
+            <span class="app-gate-sub">Multimodal Gym Vision & PTZ Tracking</span>
+            <p class="app-gate-p">Autonomous 8K PTZ gym camera streaming, automated martial arts technique recognition, and multimodal video breakdown.</p>
+            <button type="button" class="btn-secondary full-w" onclick="triggerDownload('Screen Lens APK')">Download Pixel APK (34 MB)</button>
+          </div>
+        </div>
+
+        <div class="key-box">
+          <div class="key-top">
+            <span>🔑 API LICENSE KEY (FOR LOCAL APPS & INTEGRATIONS)</span>
+            <span class="key-stat">● READY</span>
+          </div>
+          <div class="key-input-row">
+            <input type="text" value="lauburu_live_sec_7f9a2b8e1c4d90a6e5b2" readonly id="keyInput">
+            <button type="button" class="btn-gold" onclick="copyKey()">COPY KEY</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-content">
+      <span>© 2026 Combat Lab Lauburu · Clinical-Grade Biometrics & Open Wearables</span>
+      <div class="footer-links">
+        <a href="javascript:void(0)" onclick="openLegalModal('termsModal')">Terms of Service</a>
+        <a href="javascript:void(0)" onclick="openLegalModal('privacyModal')">Zero-Cloud Privacy Policy</a>
+        <a href="javascript:void(0)" onclick="openLegalModal('medicalModal')" style="color:#f59e0b;">⚠️ Medical &amp; Injury Disclaimer</a>
+      </div>
+    </div>
+  </footer>
+
+  <aside class="sticky-mobile-bar" aria-label="Quick Connect Bar">
+    <div class="smb-info">
+      <div class="smb-title">Combat Lab Lauburu</div>
+      <div class="smb-price" id="smbStatusText">Standby · Tap to Connect Sensor</div>
+    </div>
+    <button type="button" class="btn-gold smb-btn" onclick="switchTab('devices')">⚡ CONNECT</button>
+  </aside>
+
+  <!-- Persistent Mat-Side Mobile Bottom Tab Bar -->
+  <nav class="mobile-tab-bar" aria-label="Mobile Navigation">
+    <button type="button" class="mobile-tab-btn active" data-tab="biometrics" onclick="switchTab('biometrics')">
+      <span class="mobile-tab-icon">🫀</span>
+      <span class="mobile-tab-label">Biometrics</span>
+    </button>
+    <button type="button" class="mobile-tab-btn" data-tab="devices" onclick="switchTab('devices')">
+      <span class="mobile-tab-icon">⚡</span>
+      <span class="mobile-tab-label">Devices</span>
+    </button>
+    <button type="button" class="mobile-tab-btn" data-tab="memberships" onclick="switchTab('memberships')">
+      <span class="mobile-tab-icon">💳</span>
+      <span class="mobile-tab-label">Plans</span>
+    </button>
+    <button type="button" class="mobile-tab-btn" data-tab="downloads" onclick="switchTab('downloads')">
+      <span class="mobile-tab-icon">📱</span>
+      <span class="mobile-tab-label">Gate</span>
+    </button>
+  </nav>
+
+  <!-- POPUP 1: BUY A MOVESENSE MODAL -->
+  <div id="buyMovesenseModal" class="modal-backdrop" onclick="closeModalOnBackdrop(event, 'buyMovesenseModal')">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="buyModalTitle">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="badge-gold">OFFICIAL LAUBURU HARDWARE PARTNER</span>
+          <h3 id="buyModalTitle">🛒 Order Your Movesense MD+ Sensor</h3>
+          <p>Medical-grade 512Hz ECG & 9-DOF kinematics · Express dispatch from Altona North, VIC</p>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeModal('buyMovesenseModal')" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="purchase-options-grid">
+          <!-- Option 1: Sensor Only -->
+          <div class="purchase-card">
+            <div>
+              <span class="purchase-badge">HARDWARE ONLY</span>
+              <h4 class="purchase-title">Movesense MD+ Sensor</h4>
+              <div class="purchase-price">$170 <small style="font-size:12px; color:var(--text-muted);">AUD</small></div>
+              <ul class="purchase-features" style="margin-top:10px;">
+                <li>✓ 512Hz Single-Lead Clinical ECG</li>
+                <li>✓ 9-DOF Inertial Motion Unit (Acc/Gyro/Mag)</li>
+                <li>✓ Waterproof 30m / IP68 sealed</li>
+                <li>✓ User-replaceable CR2025 coin cell (1 yr)</li>
+                <li>✓ 100% Unlocked Local BLE API</li>
+              </ul>
+            </div>
+            <button type="button" class="btn-secondary full-w" onclick="orderMovesensePackage('Movesense MD+ Sensor Only', 170)">ORDER SENSOR ($170)</button>
+          </div>
+
+          <!-- Option 2: Combat Kit (Featured) -->
+          <div class="purchase-card featured">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="purchase-badge" style="color:var(--accent-gold);">⚡ MOST POPULAR</span>
+                <span style="font-size:10px; font-weight:800; background:rgba(217,119,6,0.15); color:var(--accent-gold); padding:2px 6px; border-radius:8px;">BJJ & MMA</span>
+              </div>
+              <h4 class="purchase-title">Movesense Combat Kit</h4>
+              <div class="purchase-price">$210 <small style="font-size:12px; color:var(--text-muted);">AUD</small></div>
+              <ul class="purchase-features" style="margin-top:10px;">
+                <li>✓ <strong>Movesense MD+ Sensor ($170 value)</strong></li>
+                <li>✓ 10x Dual-Snap Medical Adhesive Combat Patches</li>
+                <li>✓ Zero-slip under rashguard for grappling 512Hz ECG</li>
+                <li>✓ Pro Chest Strap + Bicep Sleeve for IMU Striking</li>
+                <li>✓ Zero partner injury risk on the mats</li>
+              </ul>
+            </div>
+            <button type="button" class="btn-primary full-w" onclick="orderMovesensePackage('Movesense Combat Kit', 210)">ORDER KIT ($210)</button>
+          </div>
+
+          <!-- Option 3: All-In-One Bundle -->
+          <div class="purchase-card">
+            <div>
+              <span class="purchase-badge" style="color:#10B981;">SAVE $70 AUD</span>
+              <h4 class="purchase-title">All-In-One Starter Bundle</h4>
+              <div class="purchase-price">$249 <small style="font-size:12px; color:var(--text-muted);">AUD</small></div>
+              <ul class="purchase-features" style="margin-top:10px;">
+                <li>✓ <strong>Movesense MD+ Sensor ($170 value)</strong></li>
+                <li>✓ Custom Combat Bicep Band ($59 value)</li>
+                <li>✓ 3 Months Pro Lab Membership ($297 value)</li>
+                <li>✓ PTT Cuffless Blood Pressure Calibration</li>
+                <li>✓ Priority Kinematics Shard Access</li>
+              </ul>
+            </div>
+            <button type="button" class="btn-gold full-w" onclick="orderMovesensePackage('All-In-One Starter Bundle', 249)">GET BUNDLE ($249)</button>
+          </div>
+
+          <!-- Option 4: Academy Coach Dual Pack -->
+          <div class="purchase-card">
+            <div>
+              <span class="purchase-badge" style="color:#3B82F6;">SAVE $60 AUD</span>
+              <h4 class="purchase-title">Academy Coach Dual Pack</h4>
+              <div class="purchase-price">$360 <small style="font-size:12px; color:var(--text-muted);">AUD</small></div>
+              <ul class="purchase-features" style="margin-top:10px;">
+                <li>✓ <strong>2x Movesense MD+ Sensors ($340 value)</strong></li>
+                <li>✓ 2x Combat Neoprene Bicep Bands ($118 value)</li>
+                <li>✓ Multi-Athlete Corner Telemetry Sync</li>
+                <li>✓ Real-time Corner Mat Audio Pacing</li>
+                <li>✓ Dual Sensor Hard Storage Case</li>
+              </ul>
+            </div>
+            <button type="button" class="btn-secondary full-w" onclick="orderMovesensePackage('Academy Coach Dual Pack', 360)">ORDER DUAL PACK ($360)</button>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-elevated); border:1px solid var(--border-color); border-radius:10px; padding:16px; display:flex; justify-content:space-around; flex-wrap:wrap; gap:12px; font-size:12px; color:var(--text-muted); text-align:center;">
+          <div>🚚 <strong>Free Express Shipping:</strong> Dispatched within 24h from Altona North, Victoria</div>
+          <div>🛡️ <strong>30-Day Mat Guarantee:</strong> Full refund if not 100% satisfied on the mats</div>
+          <div>🔒 <strong>Solvency Guard:</strong> Physical wholesale COGS ($125 AUD) locked in escrow</div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeModal('buyMovesenseModal')">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP 2: WHY MOVESENSE IS SUPERIOR MODAL -->
+  <div id="whyMovesenseModal" class="modal-backdrop" onclick="closeModalOnBackdrop(event, 'whyMovesenseModal')">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="whyModalTitle" style="max-width:840px;">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="badge-gold">SCIENTIFIC & BIOMECHANICAL BENCHMARK</span>
+          <h3 id="whyModalTitle">🏆 Why Movesense MD+ is the Superior Combat Sensor</h3>
+          <p>Direct comparison against Apple Watch, Whoop 4.0, and Polar H10</p>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeModal('whyMovesenseModal')" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Direct Comparison Table -->
+        <div class="comparison-table-wrapper">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>METRIC / CAPABILITY</th>
+                <th class="highlight-col">★ MOVESENSE MD+</th>
+                <th>POLAR H10</th>
+                <th>WHOOP 4.0</th>
+                <th>APPLE WATCH ULTRA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Sampling Rate (ECG)</strong></td>
+                <td class="highlight-col"><strong>512 Hz (Clinical Raw)</strong></td>
+                <td>130 Hz (Filtered R-R)</td>
+                <td>N/A (Optical Only)</td>
+                <td>N/A (Single-lead on-demand)</td>
+              </tr>
+              <tr>
+                <td><strong>ECG Wave Morphology</strong></td>
+                <td class="highlight-col"><strong>Full P-Q-R-S-T Stream</strong></td>
+                <td>Peak detection only</td>
+                <td>None (Capillary PPG)</td>
+                <td>30s static strip only</td>
+              </tr>
+              <tr>
+                <td><strong>Cuffless BP via PTT</strong></td>
+                <td class="highlight-col"><strong>Sub-ms R-wave to PPG</strong></td>
+                <td>Inconsistent timestamp</td>
+                <td>Impossible (No ECG)</td>
+                <td>Impossible</td>
+              </tr>
+              <tr>
+                <td><strong>Motion / Impact (IMU)</strong></td>
+                <td class="highlight-col"><strong>9-DOF (Acc, Gyro, Mag)</strong></td>
+                <td>None (ECG only)</td>
+                <td>3-Axis Accel</td>
+                <td>3-Axis Accel + Gyro</td>
+              </tr>
+              <tr>
+                <td><strong>Combat Mat Ergonomics</strong></td>
+                <td class="highlight-col"><strong>Adhesive Patch & Chest Strap (Zero Slip)</strong></td>
+                <td>Chest Strap Only</td>
+                <td>Wrist / Bicep</td>
+                <td>Wrist Only (Stripped in grips)</td>
+              </tr>
+              <tr>
+                <td><strong>Data Ownership & API</strong></td>
+                <td class="highlight-col"><strong>100% Unlocked Local BLE</strong></td>
+                <td>Closed GATT Service</td>
+                <td>Cloud Paywall ($30/mo)</td>
+                <td>Closed HealthKit Sandbox</td>
+              </tr>
+              <tr>
+                <td><strong>Transmission Latency</strong></td>
+                <td class="highlight-col"><strong>&lt; 8ms Direct BLE</strong></td>
+                <td>20–50ms</td>
+                <td>1–5s Cloud Polling</td>
+                <td>OS-throttled daemon</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 4 Deep-Dive Core Pillars -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div style="background:var(--bg-elevated); border:1px solid var(--border-color); border-radius:8px; padding:16px;">
+            <div style="font-size:14px; margin-bottom:6px; color:var(--accent-gold);">🫀 <strong>1. 512Hz Sub-ms QRS Timing for PTT BP</strong></div>
+            <p style="font-size:12px; color:var(--text-muted); line-height:1.5;">
+              Standard optical sensors sample at 25Hz (&plusmn;40ms jitter). Arterial Pulse Transit Time (PTT) shifts by only 2–5ms per 1 mmHg change in blood pressure. At 512Hz (1.95ms resolution), Movesense provides the exact ventricular electrical depolarization moment needed to accurately compute cuffless blood pressure when paired with your phone camera PPG.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-elevated); border:1px solid var(--border-color); border-radius:8px; padding:16px;">
+            <div style="font-size:14px; margin-bottom:6px; color:var(--accent-gold);">🥋 <strong>2. Combat-Proof Adhesive Patch & Bicep IMU Kinematics</strong></div>
+            <p style="font-size:12px; color:var(--text-muted); line-height:1.5;">
+              During collar ties, guard passes, and ground wrestling, elastic chest straps roll down and wristbands get ripped off in grips. For pure 512Hz ECG during grappling, Movesense snaps into a low-profile medical adhesive patch directly over the ribcage under your rashguard (zero slip, zero partner injury). For standup striking and punch velocity, snap into the bicep sleeve for 9-DOF IMU motion tracking.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-elevated); border:1px solid var(--border-color); border-radius:8px; padding:16px;">
+            <div style="font-size:14px; margin-bottom:6px; color:var(--accent-gold);">📐 <strong>3. True 9-DOF Kinematics</strong></div>
+            <p style="font-size:12px; color:var(--text-muted); line-height:1.5;">
+              Chest straps like Polar H10 only capture heartbeats. Movesense MD+ integrates a full 9-axis IMU (accelerometer, gyroscope, and magnetometer) streaming up to 416Hz motion data for rotational takedown torque, explosive hip switch velocity, and impact shock loading.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-elevated); border:1px solid var(--border-color); border-radius:8px; padding:16px;">
+            <div style="font-size:14px; margin-bottom:6px; color:var(--accent-gold);">🔒 <strong>4. Zero-Subscription Data Sovereignty</strong></div>
+            <p style="font-size:12px; color:var(--text-muted); line-height:1.5;">
+              Whoop charges $360+/year just to access your own biometric data via their proprietary cloud. Movesense gives you 100% data ownership with open Bluetooth GATT packets streamed directly to your device with 0ms cloud latency and zero recurring hardware taxes.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="justify-content:space-between; align-items:center;">
+        <span style="font-size:12px; color:var(--text-muted);">Ready to upgrade your training precision?</span>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn-secondary" onclick="closeModal('whyMovesenseModal')">CLOSE</button>
+          <button type="button" class="btn-gold" onclick="closeModal('whyMovesenseModal'); openBuyMovesenseModal();">🛒 BUY A MOVESENSE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast-popup"></div>
+
+  <!-- Legal Modals Container -->
+  <div id="lauburuLegalModalsContainer">
+    <!-- 1. Terms of Service Modal -->
+    <div id="termsModal" class="legal-modal-overlay" style="display:none;" onclick="handleLegalBackdropClick(event, 'termsModal')">
+      <div class="legal-modal-dialog">
+        <div class="legal-modal-header">
+          <div class="legal-header-title">
+            <span class="legal-icon">📜</span>
+            <h3>Terms of Service — Combat Lab Lauburu</h3>
+          </div>
+          <button type="button" class="legal-close-btn" onclick="closeLegalModal('termsModal')">&times;</button>
+        </div>
+        <div class="legal-modal-body">
+          <p class="legal-updated">Last Updated: October 2026 · Australian Consumer Law (ACL) Compliant</p>
+          
+          <h4>1. Acceptance &amp; Permitted Athletic Use</h4>
+          <p>By using Combat Lab Lauburu ("Software"), subscribing to Mat Tier ($29 AUD), Pro Coach ($99 AUD), or Gym License ($299 AUD), or purchasing the Hardware Starter Bundle ($249 AUD), you agree to these Terms. You represent that you are at least 18 years of age or possess legal guardian consent.</p>
+          
+          <h4>2. Commercial Licensing &amp; Multi-Device Tiers</h4>
+          <ul>
+            <li><strong>Starter Athlete (Mat Tier):</strong> 1 active Bluetooth ECG sensor for personal conditioning.</li>
+            <li><strong>Pro Grappler &amp; Lab:</strong> Up to 3 active athlete sensors with Pulse Transit Time blood pressure tracking.</li>
+            <li><strong>Elite Academy &amp; Team:</strong> Site license for up to 12 simultaneous mat sensors and team displays.</li>
+          </ul>
+
+          <h4>3. Hardware Sales &amp; Consumer Guarantees</h4>
+          <p>Physical hardware components (Movesense ECG pods, custom silver-electrode bicep bands, adhesive patches) are covered by statutory guarantees under the Australian Consumer Law (ACL). Consumers are entitled to repair, replacement, or refund for major hardware defects.</p>
+
+          <h4>4. Digital Subscriptions &amp; Cancellations</h4>
+          <p>Digital subscriptions automatically renew monthly or annually. You may cancel at any time via the customer billing portal; access continues through the conclusion of the active billing period.</p>
+        </div>
+        <div class="legal-modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeLegalModal('termsModal')">CLOSE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Zero-Cloud Privacy Policy Modal -->
+    <div id="privacyModal" class="legal-modal-overlay" style="display:none;" onclick="handleLegalBackdropClick(event, 'privacyModal')">
+      <div class="legal-modal-dialog">
+        <div class="legal-modal-header">
+          <div class="legal-header-title">
+            <span class="legal-icon">🔒</span>
+            <h3>Zero-Cloud Privacy Policy — Combat Lab Lauburu</h3>
+          </div>
+          <button type="button" class="legal-close-btn" onclick="closeLegalModal('privacyModal')">&times;</button>
+        </div>
+        <div class="legal-modal-body">
+          <p class="legal-updated">GDPR (EU 2016/679) &amp; Australian Privacy Principles (APPs) Sovereign Standard</p>
+          
+          <div class="legal-callout legal-callout-gold">
+            <strong>Provable Local Sovereignty:</strong> Combat Lab Lauburu does NOT upload, broker, or transmit personal health waveforms, heart rates, or camera PPG frames to remote servers. All signal processing runs in device RAM.
+          </div>
+
+          <h4>1. Biometric Signal Handling (512Hz ECG)</h4>
+          <p>Raw ECG data streamed from your Bluetooth sensor is processed locally via client-side Pan-Tompkins algorithms in volatile memory. Metrics stored locally in IndexedDB never leave your browser.</p>
+
+          <h4>2. Camera Optical PPG Blood Pressure Video Frames</h4>
+          <p>Camera frames recorded during blood pressure estimation are analyzed in real-time in device memory to detect systolic pulse peaks. Video frames are immediately destroyed upon measurement completion; no video is ever written to disk or transmitted.</p>
+
+          <h4>3. Zero Third-Party Tracking</h4>
+          <p>We do not embed third-party advertising trackers, data brokers, or analytics scripts. Your athletic conditioning data belongs exclusively to you.</p>
+
+          <h4>4. User Data Erasure</h4>
+          <p>You may purge all cached local training sessions with a single click inside Application Settings.</p>
+        </div>
+        <div class="legal-modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeLegalModal('privacyModal')">CLOSE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Medical & Combat Sports Liability Disclaimer Modal -->
+    <div id="medicalModal" class="legal-modal-overlay" style="display:none;" onclick="handleLegalBackdropClick(event, 'medicalModal')">
+      <div class="legal-modal-dialog">
+        <div class="legal-modal-header">
+          <div class="legal-header-title">
+            <span class="legal-icon">⚠️</span>
+            <h3 style="color:#f59e0b;">Medical Notice &amp; Physical Injury Waiver</h3>
+          </div>
+          <button type="button" class="legal-close-btn" onclick="closeLegalModal('medicalModal')">&times;</button>
+        </div>
+        <div class="legal-modal-body">
+          <div class="legal-callout legal-callout-red">
+            <strong>NOT A MEDICAL DEVICE:</strong> Combat Lab Lauburu is an athletic conditioning tool. It is NOT a regulated medical device under US FDA (21 CFR Part 870) or Australian TGA guidelines.
+          </div>
+
+          <h4>1. Non-Diagnostic Athletic Wellness Notice</h4>
+          <p>This software does NOT diagnose, treat, or prevent cardiac arrhythmias, myocardial infarction, acute hypertension, or pathological heart conditions. Pulse Transit Time (PTT) blood pressure and 512Hz ECG are mathematical approximations for training reference only.</p>
+          <p><strong>If you experience chest pain, severe shortness of breath, dizziness, or suspect a cardiovascular emergency, immediately call emergency services (000 in Australia, 911 in the US) or consult a physician.</strong></p>
+
+          <h4>2. Assumption of Physical Risk (Martial Arts &amp; Grappling)</h4>
+          <p>Martial arts, Brazilian Jiu-Jitsu (BJJ), wrestling, MMA, and grappling involve inherent risks of physical injury, concussions, joint dislocations, and cardiovascular trauma.</p>
+          <p>Wearable sensors attached to bicep bands or adhesive patches carry risks of displacement, partner impact, or hardware damage during live training. By using Combat Lab, you voluntarily assume all known risks and release Lauburu from all liability arising from athletic training.</p>
+        </div>
+        <div class="legal-modal-footer">
+          <button type="button" class="btn-primary" onclick="closeLegalModal('medicalModal')">I UNDERSTAND &amp; AGREE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legal Modal Styles -->
+  <style>
+    .legal-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .legal-modal-dialog {
+      background: #11141c;
+      border: 1px solid #2a3042;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 650px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .legal-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 24px;
+      border-bottom: 1px solid #1f2638;
+    }
+    .legal-header-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .legal-header-title h3 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .legal-close-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+    .legal-close-btn:hover {
+      color: #fff;
+    }
+    .legal-modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+    .legal-modal-body h4 {
+      color: #f1f5f9;
+      font-size: 14.5px;
+      margin: 16px 0 6px 0;
+    }
+    .legal-updated {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 0;
+      margin-bottom: 14px;
+    }
+    .legal-callout {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin: 12px 0 16px 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .legal-callout-gold {
+      background: rgba(217, 119, 6, 0.15);
+      border-left: 4px solid #d97706;
+      color: #fef3c7;
+    }
+    .legal-callout-red {
+      background: rgba(220, 38, 38, 0.15);
+      border-left: 4px solid #dc2626;
+      color: #fee2e2;
+    }
+    .legal-modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 14px 24px;
+      border-top: 1px solid #1f2638;
+      background: #0d1017;
+      border-radius: 0 0 12px 12px;
+    }
+  </style>
+
+  <!-- Legal Modal JavaScript Triggers -->
+  <script>
+    function openLegalModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) {
+        el.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeLegalModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) {
+        el.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+
+    function handleLegalBackdropClick(event, modalId) {
+      if (event.target && event.target.id === modalId) {
+        closeLegalModal(modalId);
+      }
+    }
+
+    // Escape key handler
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        ['termsModal', 'privacyModal', 'medicalModal'].forEach(closeLegalModal);
+      }
+    });
+
+    // Attach to window
+    if (typeof window !== 'undefined') {
+      window.openLegalModal = openLegalModal;
+      window.closeLegalModal = closeLegalModal;
+      window.handleLegalBackdropClick = handleLegalBackdropClick;
+    }
+  </script>
+
+  <script src="app.js"></script>
+</body>
+</html>

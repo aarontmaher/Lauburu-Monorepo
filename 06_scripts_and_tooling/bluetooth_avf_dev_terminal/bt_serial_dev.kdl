@@ -1,0 +1,34 @@
+// ============================================================================
+// Lauburu Sovereign Bluetooth Serial Terminal — Zellij Live Dev Layout (--dev)
+// Optimized for Pixel 10 Pro XL AVF Debian 13 (Portrait & Landscape) & macOS
+// ============================================================================
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:compact-bar"
+        }
+        children
+    }
+
+    tab name="BT-Serial-Dev" focus=true {
+        pane split_direction="horizontal" {
+            // Top 64% Full-Width: Crash-Proof Bluetooth Serial Terminal (Hot-Reloading UI + PTY + TCP :4005)
+            pane name="🛰️ Bluetooth Serial Terminal (Live --dev)" size="64%" focus=true {
+                command "python3"
+                args "bt_serial_terminal.py" "--dev"
+            }
+
+            // Bottom 36%: Side-by-Side Live AST Hot-Reload Watcher + Interactive Dev Shell
+            pane split_direction="vertical" size="36%" {
+                pane name="🔥 Live AST Watcher" size="46%" {
+                    command "python3"
+                    args "bt_dev_watcher.py"
+                }
+                pane name="⚡ Live Dev Shell (bt-patch / bt-send / bt-edit)" size="54%" {
+                    command "bash"
+                    args "--rcfile" "dev_shell_rc.sh" "-i"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+  "video_id": "JUN2u4R52a0",
+  "url": "https://youtu.be/JUN2u4R52a0",
+  "division": "IBJJF",
+  "title": "Nationals - Aaron Maher vs Spencer Quayle",
+  "duration_sec": 454.8,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 27,
+  "dual_athlete_frames": 3,
+  "standing_phase_pct": 37.0,
+  "ground_scramble_phase_pct": 63.0,
+  "level_change_shots_detected": 3,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 73.6,
+    "left_elbow": 132.1,
+    "right_elbow": 136.0,
+    "left_hip": 131.6,
+    "right_hip": 120.6,
+    "left_knee": 139.9,
+    "right_knee": 135.5
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/JUN2u4R52a0_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match is characterized by a strong foundation in standing and ground/scramble, with a high level of change shots and a mean spine lean of 73.6\u00b0. His elbow flexion and knee flexion are also notable, with a 132.1\u00b0/136.0\u00b0 and 139.9\u00b0/135.5\u00b0 respectively. This blend of strength, flexibility, and balance is evident in his performance.",
+  "processing_sec": 6.01
+}

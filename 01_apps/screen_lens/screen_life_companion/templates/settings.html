@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Life Companion</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+    .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+  </style>
+<link rel="manifest" href="/static/manifest.json">
+  <script>
+    if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/static/sw.js"); }
+  </script>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+  <div class="max-w-3xl mx-auto space-y-6">
+    <header class="glass rounded-2xl p-6 flex justify-between items-center shadow-lg">
+      <h1 class="text-2xl font-bold text-white">App Settings</h1>
+      <a href="/" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition text-sm">⬅ Back</a>
+    </header>
+    
+    <form action="/save_settings" method="POST" class="glass rounded-xl p-6 space-y-6">
+      <div>
+        <label class="block text-sm font-medium text-slate-300 mb-2">User Profile (Adaptability Mode)</label>
+        <select name="user_profile" class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white">
+          <option value="general" {% if config.user_profile == 'general' %}selected{% endif %}>General User (Daily Tasks, Browsing)</option>
+          <option value="developer" {% if config.user_profile == 'developer' %}selected{% endif %}>Developer (Terminal, IDEs, Code)</option>
+          <option value="creator" {% if config.user_profile == 'creator' %}selected{% endif %}>Creator (Video, Design, Audio)</option>
+          <option value="student" {% if config.user_profile == 'student' %}selected{% endif %}>Student (Research, Note-taking)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-300 mb-2">Automation ROI Threshold (0-100)</label>
+        <input type="number" name="roi_threshold" value="{{ config.automation_threshold_roi }}" class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white">
+        <p class="text-xs text-slate-400 mt-1">Lower values mean the AI will automate things more aggressively.</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-300 mb-2">Ignore Apps (Comma separated)</label>
+        <input type="text" name="ignore_apps" value="{{ ', '.join(config.privacy.ignore_apps) }}" class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white">
+      </div>
+
+      <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold transition">Save Settings</button>
+    </form>
+  </div>
+</body>
+</html>

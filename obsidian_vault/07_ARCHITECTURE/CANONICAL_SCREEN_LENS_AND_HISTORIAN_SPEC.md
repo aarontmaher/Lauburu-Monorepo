@@ -52,7 +52,7 @@ The system is tightly coupled with local AI at five distinct execution layers:
 │                               LOCAL AI INTEGRATION MATRIX                                   │
 ├─────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 1. Primary Reasoning Master: prima.cpp (Port :8082)                                         │
-│    • Executes high-throughput Pipelined-Ring Parallelism across 10Gbps TB4 DMA Bridge.      │
+│    • Executes high-throughput Pipelined-Ring Parallelism across 40Gbps TB4 DMA Bridge.      │
 │    • Synthesizes cross-device OCR streams, window titles, and git diffs into milestones.    │
 ├─────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 2. Resilient Fallback Model: llama.cpp (Port :8083)                                         │

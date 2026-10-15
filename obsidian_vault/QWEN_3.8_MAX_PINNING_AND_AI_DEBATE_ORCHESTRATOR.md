@@ -27,7 +27,7 @@ This document establishes the canonical disk paths, memory allocations, and port
 ### 2.2 Devil's Advocate (Abliterated)
 *   **Model Designation:** `Qwen 2.5 / 3.8 7B/32B Instruct Abliterated`
 *   **Local GGUF Vault Path:**
-    *   `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Qwen2.5-7B-Instruct-abliterated.Q4_K_M.gguf`
+    *   `/Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Qwen2.5-7B-Instruct-abliterated.Q4_K_M.gguf`
 *   **Active Inference Port:** Port `8083` (with Mistral Nemo 12B on Port `8082` fallback)
 *   **Role:** Uncensored, adversarial adversary ruthlessly challenging assumptions, exposing edge-case regressions, and testing mathematical consensus thresholds (>0.98).
 
@@ -38,7 +38,7 @@ This document establishes the canonical disk paths, memory allocations, and port
 1. **AI Debate Skill Definition:** [`/Users/aaron/.gemini/config/skills/ai-debate/SKILL.md`](file:///Users/aaron/.gemini/config/skills/ai-debate/SKILL.md)
    * Local AI Orchestrator pinned to `Qwen 3.8 Max 27B / Qwen3.8-Flash-Next` (Unabliterated).
    * Devil's Advocate pinned to `Qwen 3.8 / 2.5 Abliterated` at Port 8083.
-2. **Devil's Advocate Client:** [`05_agents_and_swarms/ai_debate/devils_advocate_client.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/ai_debate/devils_advocate_client.py)
+2. **Devil's Advocate Client:** [`05_agents_and_swarms/ai_debate/devils_advocate_client.py`](file:///Volumes/Lauburu-Monorepo/05_agents_and_swarms/ai_debate/devils_advocate_client.py)
    * Priority 1 server configured for `Qwen-Abliterated` on Port 8083.
 
 ---

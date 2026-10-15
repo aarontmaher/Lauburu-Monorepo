@@ -30,7 +30,7 @@ import subprocess
 from pathlib import Path
 from typing import Dict, Any, List
 
-MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+MONOREPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 OBSIDIAN_DIR = MONOREPO_ROOT / "obsidian_vault/04_ANALYTICS"
 DATA_DIR = MONOREPO_ROOT / "04_data_and_memory"
 STATUS_FILE = MONOREPO_ROOT / "session_logs/hybrid_governor_status.json"
@@ -40,7 +40,7 @@ ROUTER_PASS = "goldfighting1"
 ROUTER_MIN_AVAIL_RAM_MB = 35.0  # Ultra-safe critical threshold
 
 CRITICAL_DAEMONS = [
-    {"name": "Web-TUI Portal", "port": 8088, "role": "Frontend Cockpit"},
+    {"name": "Web-TUI Portal", "port": 8088, "role": "Frontend Console"},
     {"name": "Local LLM Proxy / Sentinel", "port": 8080, "role": "Routing Gateway"},
     {"name": "Mistral Nemo Abliterated", "port": 8082, "role": "Devil's Advocate"},
     {"name": "Llama 3.1 70B Abliterated", "port": 8084, "role": "Security Lead"},

@@ -48,4 +48,4 @@ date: "2026-09-03"
 
 ## 🗄️ 3. Execution Directives
 - **Speculative Pairing:** Pair `Qwen 2.5 Coder 32B` with `Qwen 2.5 Coder 1.5B` via `llama-server --model-draft` to achieve 60+ tokens/sec dense coding generation on single-node M4 Pro.
-- **Distributed MoE Testing:** Deploy `DeepSeek Coder V2 Lite MoE` across the 10Gbps Thunderbolt 4 bridge with `Prima.cpp` to verify sub-15ms TTFT.
+- **Distributed MoE Testing:** Deploy `DeepSeek Coder V2 Lite MoE` across the 40Gbps Thunderbolt 4 bridge with `Prima.cpp` to verify sub-15ms TTFT.

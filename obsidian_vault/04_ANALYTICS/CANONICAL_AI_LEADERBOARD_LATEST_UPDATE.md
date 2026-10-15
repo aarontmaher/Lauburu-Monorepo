@@ -1,12 +1,12 @@
 ---
 title: "Canonical AI Leaderboard - Latest Update Across All Models"
 tags: [leaderboard, elo_arena, cloud_models, local_models, gemini_3_1_pro, claude_3_7_sonnet, qwen, kimi, smollm]
-updated: "2026-09-09 09:41:06"
+updated: "2026-09-12 10:14:28"
 ---
 
 # 🏆 Canonical AI Leaderboard: Latest Update (Cloud & Local Models)
 
-> **Generated:** `2026-09-09 09:41:06` | **Total Ranked Models:** `19`
+> **Generated:** `2026-09-12 10:14:28` | **Total Ranked Models:** `19`
 > **Formula:** $K = K_0 \times \eta_{\text{type}} \times \eta_{\text{size}} \times \eta_{\text{token}} \times \eta_{\text{consensus}} \times \eta_{\text{compute}} \times \eta_{\text{truth}}$
 
 ## 📊 Global Standings: Cloud Models & Local Mesh

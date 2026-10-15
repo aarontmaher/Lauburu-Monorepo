@@ -7,10 +7,10 @@ import json
 class StorageMeshGovernor:
     def __init__(self):
         self.nodes = {
-            "L1_Mac_Node": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo",
+            "L1_Mac_Node": "/Volumes/Lauburu-Monorepo",
             "L3_Linux_Head": "/Volumes/nas", # Assuming NAS or Linux mount
             "GW_Router": "/Volumes/GL_Router_Storage",
-            "SeaweedFS_Joint_Capacity": "/Users/aaron/DFS_UNIFIED"
+            "SeaweedFS_Joint_Capacity": "/Volumes/Lauburu-Monorepo"
         }
         self.min_headroom_gb = 25.0 # Safety threshold to prevent silent crash
 
@@ -58,7 +58,7 @@ class StorageMeshGovernor:
             routing_table["router_status"] = f"HEALTHY ({router_free:.1f} GB)"
 
         # Save routing state for Canonical TUI to ingest
-        state_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/storage_routing_state.json"
+        state_file = "/Volumes/Lauburu-Monorepo/04_data_and_memory/storage_routing_state.json"
         os.makedirs(os.path.dirname(state_file), exist_ok=True)
         try:
             with open(state_file, "w") as f:

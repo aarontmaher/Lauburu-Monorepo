@@ -1,0 +1,86 @@
+[
+    {
+        "title": "Lauburu 330 GSM Heavyweight Cotton",
+        "sku": "LAU-T-S-330-V2",
+        "vendor": "ODMPOD",
+        "tags": [
+            "canonical_v2",
+            "T-Shirt",
+            "streetwear"
+        ],
+        "print_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/canonical_lauburu_symbol_transparent.png",
+        "placement": "Center Chest"
+    },
+    {
+        "title": "Lauburu Unisex Heavyweight Fleece Joggers",
+        "sku": "LAU-JOG-UNISEX-V2",
+        "vendor": "ODMPOD",
+        "tags": [
+            "canonical_v2",
+            "Joggers",
+            "streetwear"
+        ],
+        "print_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/canonical_lauburu_symbol_transparent.png",
+        "placement": "Left Thigh"
+    },
+    {
+        "title": "Lauburu Unisex Heavyweight Fleece Loose Fit Shorts",
+        "sku": "LAU-SHO-UNISEX-V2",
+        "vendor": "ODMPOD",
+        "tags": [
+            "canonical_v2",
+            "Shorts",
+            "streetwear"
+        ],
+        "print_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/canonical_lauburu_symbol_transparent.png",
+        "placement": "Left Thigh"
+    },
+    {
+        "title": "Lauburu Oversized French Terry Hoodie",
+        "sku": "LAU-HOO-OVERSIZED-V2",
+        "vendor": "ODMPOD",
+        "tags": [
+            "canonical_v2",
+            "Hoodie",
+            "streetwear"
+        ],
+        "print_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/canonical_lauburu_symbol_transparent.png",
+        "placement": "Center Chest"
+    },
+    {
+        "title": "Lauburu 1000D Tactical Backpack",
+        "sku": "LAU-BAG-1000D-V2",
+        "vendor": "ODMPOD",
+        "tags": [
+            "canonical_v2",
+            "Bag",
+            "streetwear"
+        ],
+        "print_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/canonical_lauburu_symbol_transparent.png",
+        "placement": "Center"
+    },
+    {
+        "title": "Lauburu Heavyweight Duffle Bag",
+        "sku": "LAU-BAG-HEAVYWEIGHT-V2",
+        "vendor": "ODMPOD",
+        "tags": [
+            "canonical_v2",
+            "Bag",
+            "streetwear"
+        ],
+        "print_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/canonical_lauburu_symbol_transparent.png",
+        "placement": "Center"
+    },
+    {
+        "title": "Lauburu EVA Molded Slides",
+        "sku": "LAU-FOO-EVA-V2",
+        "vendor": "ODMPOD",
+        "tags": [
+            "canonical_v2",
+            "Footwear",
+            "streetwear"
+        ],
+        "print_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/canonical_lauburu_symbol_transparent.png",
+        "placement": "Center"
+    }
+]

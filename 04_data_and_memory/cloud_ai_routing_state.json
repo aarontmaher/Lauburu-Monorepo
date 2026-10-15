@@ -1,0 +1,22 @@
+{
+  "daily_usage": {
+    "local_qwen_moe": 133,
+    "gemini_flash_thinking": 69,
+    "gemini_pro_exp": 49,
+    "google_jules": 111,
+    "grok_2_xai": 79,
+    "cloudflare_workers_ai": 20,
+    "nvidia_deepseek_v4_pro": 22,
+    "nvidia_deepseek_v4_flash": 24,
+    "gemini_3_1_pro": 28,
+    "gemini_4_argon_high": 243,
+    "gemini_4_argon_medium": 0,
+    "gemini_4_argon_low": 0,
+    "gemini_3_8_flash_high": 0,
+    "local_tiny_edge_argon_companion": 19,
+    "local_tiny_smollm2": 17,
+    "gemini_2_5_flash_free": 0
+  },
+  "last_reset": "2026-09-01",
+  "total_cloud_spend_usd": 0.0
+}

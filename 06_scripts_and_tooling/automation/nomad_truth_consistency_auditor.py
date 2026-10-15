@@ -5,7 +5,7 @@
 Nomad Master Truth Auditor & Obsidian Anti-Hallucination Scanner
 -------------------------------------------------------------------
 Strictly enforces the Zero-Tolerance Truth & Verification Protocol:
-1. Deeply audits all files in the Obsidian Vault (/Users/aaron/DFS_UNIFIED) and monorepo for:
+1. Deeply audits all files in the Obsidian Vault (/Volumes/Lauburu-Monorepo) and monorepo for:
    - Hardware metric hallucinations (e.g. 5-layer mesh, 62.8 GB total mesh limit, 54.65 GB / 55.58 GB VRAM, M4 Max with 16GB).
    - Mock / simulated / fake data arrays.
    - Broken paths (e.g. unmounted /Volumes/aaronmaher or /Volumes/Lauburu-Monorepo references).
@@ -38,8 +38,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger("NomadTruthAuditor")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
-OBSIDIAN_VAULT = Path("/Users/aaron/DFS_UNIFIED")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
+OBSIDIAN_VAULT = Path("/Volumes/Lauburu-Monorepo")
 TRUTH_MATRIX_MD = OBSIDIAN_VAULT / "00_SYSTEM_DASHBOARDS/FLEET_TRUTH_AUDIT_MATRIX.md"
 HALLUCINATION_DASHBOARD_MD = OBSIDIAN_VAULT / "00_SYSTEM_DASHBOARDS/OBSIDIAN_ANTI_HALLUCINATION_SCANNER.md"
 AUDIT_REPORT_JSON = REPO_ROOT / "data/mesh/truth_audit_report.json"
@@ -56,7 +56,7 @@ GROUND_TRUTH_HARDWARE = {
         "Linux_Tablet": {"model": "Debian Linux Tablet", "ram_gb": 8.0, "ai_cap_gb": 6.5, "ip": "100.81.92.125", "local_ip": "DHCP", "layer": 4, "role": "Mobile Linux Compute & Touch DSP"},
         "MacBook_Air": {"model": "Apple M4 MacBook Air", "ram_gb": 16.0, "ai_cap_gb": 14.0, "ip": "100.93.158.96", "local_ip": "192.168.8.222", "layer": 5, "role": "High-Speed Metal Worker & LoRA Distillation"},
         "Pixel_10_Pro_XL": {"model": "Google Tensor G5", "ram_gb": 16.0, "ai_cap_gb": 12.5, "ip": "100.73.38.87", "local_ip": "DHCP", "layer": 6, "role": "Tensor G5 Edge TPU, Petals Swarm (31330) & ggml-rpc"},
-        "Samsung_S20": {"model": "Samsung Exynos 990", "ram_gb": 12.0, "ai_cap_gb": 9.0, "ip": "100.84.40.95", "local_ip": "DHCP", "layer": 7, "role": "Dedicated Automated UI Tester & Edge Worker"}
+        "Samsung_S20": {"model": "Samsung Exynos 990", "ram_gb": 12.0, "ai_cap_gb": 9.0, "ip": "100.78.206.96", "local_ip": "DHCP", "layer": 7, "role": "Dedicated Automated UI Tester & Edge Worker"}
     }
 }
 
@@ -90,8 +90,8 @@ HALLUCINATED_METRIC_PATTERNS = [
     (r"\b(?:62\.8(?:0+)?|54\.65(?:0+)?|55\.58(?:0+)?|104\.8(?:0+)?)\s*(?:G(?:i?B)?|gigabytes?|gigs?)(?:\s*(?:VRAM|RAM|memory|pool|ceiling|limit|capacity))?\b(?!\s*\(old\))(?!\s*\(historical\))", "Outdated legacy RAM/VRAM estimate. Real 7-device mesh capacity is 108.0 GB RAM / 82.8 GB AI Headroom."),
     (r"\b(?:100(?:\.0+)?)\s*(?:G(?:i?B)?|gigabytes?|gigs?)\s*(?:total\s+)?(?:mesh|cluster|pooled|fleet|swarm|system)?\s*(?:VRAM|RAM|memory|limit|capacity|headroom|pool)\b(?!\s*\(old\))(?!\s*\(historical\))", "Outdated legacy RAM/VRAM estimate. Real 7-device mesh capacity is 108.0 GB RAM / 82.8 GB AI Headroom."),
     (r"\b(?:Apple\s+)?(?:Host\s+)?M4\s+Max(?:\s+Mac\s+Mini|\s+Host|\s+chip|\s+processor|\s+SOC)?\b", "Hallucinated Host model 'M4 Max'. Real Host is Apple M4 Pro Mac Mini (24GB RAM)."),
-    (r"/Volumes/aaronmaher", "Unmounted legacy path '/Volumes/aaronmaher'. Real DFS path is '/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo'."),
-    (r"/Volumes/Lauburu-Monorepo", "Unmounted legacy path '/Volumes/Lauburu-Monorepo'. Real DFS path is '/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo'."),
+    (r"/Volumes/aaronmaher", "Unmounted legacy path '/Volumes/aaronmaher'. Real DFS path is '/Volumes/Lauburu-Monorepo'."),
+    (r"/Volumes/Lauburu-Monorepo", "Unmounted legacy path '/Volumes/Lauburu-Monorepo'. Real DFS path is '/Volumes/Lauburu-Monorepo'."),
     (r"Exceeds\s+Mesh\s+62\.8\s*GB\s+VRAM", "Hallucinated OOM alert: Mesh capacity is 108.0 GB RAM / 82.8 GB AI Headroom, which accommodates multi-gigabyte KV cache buffers.")
 ]
 
@@ -137,9 +137,9 @@ def auto_fix_content(content: str) -> Tuple[str, bool]:
     original_content = content
 
     if "/Volumes/aaronmaher" in content:
-        content = content.replace("/Volumes/aaronmaher", "/Users/aaron/DFS_UNIFIED")
+        content = content.replace("/Volumes/aaronmaher", "/Volumes/Lauburu-Monorepo")
     if "/Volumes/Lauburu-Monorepo" in content:
-        content = content.replace("/Volumes/Lauburu-Monorepo", "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+        content = content.replace("/Volumes/Lauburu-Monorepo", "/Volumes/Lauburu-Monorepo")
 
     content = re.sub(r"\bHost\s+M4\s+Max\b", "Apple M4 Pro Mac Mini (Host)", content, flags=re.IGNORECASE)
     content = re.sub(r"\b(?:Apple\s+)?M4\s+Max(?:\s+Mac\s+Mini|\s+Host|\s+chip|\s+processor|\s+SOC)?\b", "Apple M4 Pro Mac Mini", content, flags=re.IGNORECASE)
@@ -360,7 +360,7 @@ class NomadTruthAuditorEngine:
 | **Layer 4 (Tablet)** | Debian Linux Tablet | **8.0 GB** | **6.5 GB** | `100.81.92.125` | Mobile Linux Compute & Touch DSP |
 | **Layer 5 (Compute)** | Apple M4 MacBook Air | **16.0 GB** | **14.0 GB** | `100.93.158.96` | High-Speed Metal Worker & LoRA Distillation |
 | **Layer 6 (Vision)** | Google Pixel 10 Pro XL | **16.0 GB** | **12.5 GB** | `100.73.38.87` | Tensor G5 Edge TPU, Petals Swarm (31330) & ggml-rpc |
-| **Layer 7 (Audit)** | Samsung Galaxy S20+ | **12.0 GB** | **9.0 GB** | `100.84.40.95` | Dedicated Automated UI Tester & Edge Worker |
+| **Layer 7 (Audit)** | Samsung Galaxy S20+ | **12.0 GB** | **9.0 GB** | `100.78.206.96` | Dedicated Automated UI Tester & Edge Worker |
 | **TOTAL MESH** | **7-Device Pooled Cluster** | **108.0 GB** | **Multi-WAN Mesh** | `All Active` | **82.8 GB Usable AI VRAM Headroom** |
 
 ---

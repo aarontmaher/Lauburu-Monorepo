@@ -4,7 +4,7 @@ tags: [dell, ryzen, amd_pstate, bd_prochot, acpi, power_supply, bluetooth, bnep,
 author: "Antigravity Mesh Orchestrator & Specification Miner"
 status: "CANONICAL"
 date: "2026-09-04"
-nodes: ["[[Linux_Head_Node]]", "[[Mac_Node]]", "[[MacBook_Pro]]"]
+nodes: ["[[Linux_Mini]]", "[[Mac_Node]]", "[[MacBook_Pro]]"]
 vault_root: "[[Index]]"
 canonical_rule: "[[CANONICAL_PROJECT_AND_STORAGE_RULE]]"
 ---
@@ -12,12 +12,12 @@ canonical_rule: "[[CANONICAL_PROJECT_AND_STORAGE_RULE]]"
 # 📘 Dell Inspiron 15 3525 Power Subsystem, ACPI & Bluetooth BNEP Mesh Architecture
 
 ## 1. Executive Summary & 7-Layer Mesh Role
-The Dell Inspiron 15 3525 operates as **Layer 3 ([[Linux_Head_Node]])** (`192.168.8.224` / `100.101.39.98`) within the Lauburu 7-layer mesh ecosystem, contributing 16.0 GB RAM (13.8 GB AI VRAM dynamic allocation) to the pooled 82.8 GB VRAM cluster alongside **Layer 1 ([[Mac_Node]])** and **Layer 2 ([[MacBook_Pro]])**.
+The Dell Inspiron 15 3525 operates as **Layer 3 ([[Linux_Mini]])** (`192.168.8.224` / `100.101.39.98`) within the Lauburu 7-layer mesh ecosystem, contributing 16.0 GB RAM (13.8 GB AI VRAM dynamic allocation) to the pooled 82.8 GB VRAM cluster alongside **Layer 1 ([[Mac_Node]])** and **Layer 2 ([[MacBook_Pro]])**.
 
 Canonical Vault references: [[Index]], [[CANONICAL_PROJECT_AND_STORAGE_RULE]], [[LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX]].
 
 ## 2. Hardware Specifications & Subsystem Anatomy
-- **Processor:** AMD Ryzen 7 5700U (Zen 2, Lucienne, 8 cores / 16 threads, base clock $f_{\min} = 1.8\text{ GHz}$, boost clock 4.3 GHz).
+- **Processor:** Intel 2018 Mac Mini (Linux) (Zen 2, Lucienne, 8 cores / 16 threads, base clock $f_{\min} = 1.8\text{ GHz}$, boost clock 4.3 GHz).
 - **Bluetooth Adapters:**
   - Internal: Realtek RTL8821CE (`0bda:c829` / `hci2`, BT 4.2).
   - External USB Dongle: Realtek RTL8761BU (`2357:0604` / `0bda:b009` / `hci1`, BT 5.3).
@@ -39,7 +39,7 @@ sudo modprobe msr
 ```
 
 ## 5. The 400 MHz BD PROCHOT Anomaly & Root Cause Analysis
-When an unrecognized or degraded charger is attached, the Dell Embedded Controller (EC) fails 1-Wire center-pin authentication and asserts hardware `BD_PROCHOT#`, clamping the AMD Ryzen CPU to 399.2 MHz ($P_{\min} = 400\text{ MHz}$) despite cold silicon ($T < 45^\circ\text{C}$), well below thermal trip thresholds ($T \ge 95^\circ\text{C}$).
+When an unrecognized or degraded charger is attached, the Dell Embedded Controller (EC) fails 1-Wire center-pin authentication and asserts hardware `BD_PROCHOT#`, clamping the Intel 2018 Mac Mini CPU to 399.2 MHz ($P_{\min} = 400\text{ MHz}$) despite cold silicon ($T < 45^\circ\text{C}$), well below thermal trip thresholds ($T \ge 95^\circ\text{C}$).
 
 ## 6. Frequency Governor Enforcement & AMD P-State Optimization
 To restore frequencies from throttled clamp ($P_{\min} = 400\text{ MHz}$) back to normal operation ($f_{\min} = 1.8\text{ GHz}$) and performance scaling:

@@ -23,8 +23,8 @@ import logging
 
 logger = logging.getLogger("SwarmArena")
 
-ARENA_HISTORY_PATH = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/swarm_arena_history.json"
-LOCAL_LORA_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+ARENA_HISTORY_PATH = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/swarm_arena_history.json"
+LOCAL_LORA_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
 GDRIVE_LORA_FILE = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets/truth_audit_debate.jsonl"
 
 TOURNAMENT_TASKS = [

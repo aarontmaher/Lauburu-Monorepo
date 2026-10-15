@@ -119,3 +119,7 @@ interface OptimizationModuleMountProps {
 * **Rule #0 (Zero-Mock & Zero-Simulated Data):** All gauges represent authentic physical hardware parameters, live sensor streams, or organic telemetry fallbacks.
 * **Dynamic Memory Ceilings:** Host Mac (≤90%), Linux Head Node (≤80%), Android (≤85%).
 * **Rule #6 Storage Health:** Inode paths verified for Obsidian Knowledge Vault, PySpark Data Lake, and GitHub Monorepo.
+
+
+## Canonical Architecture
+This application adheres to [[CANONICAL_APP_UI_AND_STRUCTURE_RULE]] and uses the Astra Multimodal Live API via Screen Lens for UI evolution.

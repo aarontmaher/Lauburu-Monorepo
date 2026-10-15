@@ -1,0 +1,26 @@
+{
+  "video_id": "A2fXhtxUvtQ",
+  "url": "https://youtu.be/A2fXhtxUvtQ",
+  "division": "Freestyle Wrestling",
+  "title": "Oceania trials - Aaron Maher vs Blake Birkett",
+  "duration_sec": 268.2,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 26,
+  "dual_athlete_frames": 3,
+  "standing_phase_pct": 15.4,
+  "ground_scramble_phase_pct": 84.6,
+  "level_change_shots_detected": 0,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 49.6,
+    "left_elbow": 140.6,
+    "right_elbow": 136.6,
+    "left_hip": 127.0,
+    "right_hip": 123.6,
+    "left_knee": 142.6,
+    "right_knee": 143.4
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/A2fXhtxUvtQ_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in Oceania trials is characterized by strong standing and ground/scrabble elements, with a high level of spine lean and elbow flexion. His knee flexion is moderate, indicating a balanced and effective movement. This match showcases Aaron's strength and ability to execute a variety of grapple techniques effectively.",
+  "processing_sec": 2.19
+}

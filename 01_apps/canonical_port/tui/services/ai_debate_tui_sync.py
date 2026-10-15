@@ -27,7 +27,7 @@ logger = logging.getLogger("AIDebateTUISync")
 # Monorepo path resolution
 TUI_DIR = Path(__file__).resolve().parent.parent
 CANONICAL_PORT_DIR = TUI_DIR.parent
-MONOREPO_ROOT = CANONICAL_PORT_DIR.parent
+MONOREPO_ROOT = CANONICAL_PORT_DIR.parent.parent
 ARENA_DIR = MONOREPO_ROOT / "05_agents_and_swarms" / "red_blue_arena"
 
 if str(TUI_DIR) not in sys.path:
@@ -55,7 +55,7 @@ class AIDebateTUISyncEngine:
     Background Synchronization Engine linking real-time TUI metrics to /ai-debate.
     """
 
-    PROGRESS_MD_PATH = MONOREPO_ROOT / "05_agents_and_swarms" / ".agents" / "state" / "orchestrator" / "progress.md"
+    PROGRESS_MD_PATH = MONOREPO_ROOT / "progress.md"
     LORA_SINK_PATH = Path("/Users/aaron/DFS_UNIFIED/lora_datasets/truth_audit_2026.jsonl")
 
     def __init__(self, cycle_interval_sec: float = 300.0):
@@ -168,7 +168,7 @@ class AIDebateTUISyncEngine:
         """Injects live debate priorities into progress.md."""
         try:
             self.PROGRESS_MD_PATH.parent.mkdir(parents=True, exist_ok=True)
-            header = f"\n\n## ## Active Priorities (Injected by Live /ai-debate)\n"
+            header = f"\n\n## Active Priorities (Injected by Live /ai-debate)\n"
             header += f"*Last Synchronized: {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())} | Consensus Accord: {accord*100:.2f}% | Merkle State Root: `{root[:16]}`*\n\n"
             content = "\n".join([f"- [ ] **[P0-DEBATE]** {p}" for p in priorities]) + "\n"
 
@@ -179,7 +179,7 @@ class AIDebateTUISyncEngine:
                     parts = existing.split("## Active Priorities (Injected by Live")
                     new_text = parts[0].rstrip() + header + content
                 else:
-                    new_text = existing + header + content
+                    new_text = existing.rstrip() + header + content
             else:
                 new_text = f"# Lauburu Swarm Progress Ledger\n" + header + content
 

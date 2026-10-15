@@ -64,7 +64,7 @@ All profiles are dynamically detected by `universal_device_mesh_runner.py` and r
    - Components already running or compiled are skipped during installation routines.
    - If an existing process (`llama-server`, `prima.cpp`, `bluetooth_arena_tui`) is active, the runner attaches to it rather than rebuilding or restarting.
 2. **Shizuku ADB Activation:**
-   - Automatically executed via `adb -s 100.84.40.95:5555 shell sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh`
+   - Automatically executed via `adb -s 100.78.206.96:5555 shell sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh`
    - Verified exit code 0 (`ACTIVATED_OK`).
 3. **NPU Metric Sentinel Daemon:**
    - Background daemon logging real-time systolic array latency and TOPS to `/tmp/lauburu_npu_state.json`.

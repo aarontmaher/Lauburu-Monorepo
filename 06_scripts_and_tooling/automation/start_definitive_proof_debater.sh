@@ -4,7 +4,7 @@
 # ==============================================================================
 set -euo pipefail
 
-MONOREPO_ROOT="/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+MONOREPO_ROOT="/Volumes/Lauburu-Monorepo"
 mkdir -p "${MONOREPO_ROOT}/session_logs"
 
 pkill -f "continuous_definitive_proof_debater.py" 2>/dev/null || true

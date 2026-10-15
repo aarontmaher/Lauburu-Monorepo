@@ -14,7 +14,7 @@ The **DOM_GLINET_LUCI_DEV** continuous AI training program establishes an autono
 - **Total Token Volume**: 341,757 tokens
 - **Compiler / AST Gate Pass Rate**: 100.0%
 - **Canonical Storage Location**: `data/lora_datasets/glinet_luci_dev_training.jsonl`
-- **PySpark / DFS Mirror**: `/Users/aaron/DFS_UNIFIED/lora_datasets/glinet_luci_dev_training.jsonl`
+- **PySpark / DFS Mirror**: `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/glinet_luci_dev_training.jsonl`
 
 ## 🗂️ 10 Core Architectural Domains
 | Domain Identifier | Category | Records | Gate Validation Strategy |

@@ -37,7 +37,7 @@ def get_workspace_root() -> Path:
     repo_root = script_dir.parent
     if (repo_root / "data").exists() or (repo_root / ".agents").exists():
         return repo_root
-    for candidate in [Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"), Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")]:
+    for candidate in [Path("/Volumes/Lauburu-Monorepo"), Path("/Volumes/Lauburu-Monorepo")]:
         if candidate.exists():
             return candidate
     return repo_root

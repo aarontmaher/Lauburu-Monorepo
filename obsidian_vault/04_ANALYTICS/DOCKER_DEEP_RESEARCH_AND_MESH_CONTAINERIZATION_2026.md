@@ -7,13 +7,13 @@ tags: [docker, deep_research, colima, virtiofs, edge_ai, qdrant, seaweedfs, mcp,
 # 🔬 Deep Research: Containerization & Advanced Docker Integration in Heterogeneous Edge AI Meshes
 
 ## 🏛️ Executive Abstract
-This deep research whitepaper evaluates the empirical trade-offs, acceleration paradigms, and production containerization topology across the 7-layer Lauburu AI Mesh (Apple M4 Pro Silicon, AMD Ryzen Linux, Android 15 Tensor G5, and GL.iNet OpenWrt).
+This deep research whitepaper evaluates the empirical trade-offs, acceleration paradigms, and production containerization topology across the 7-layer Lauburu AI Mesh (Apple M4 Pro Silicon, Intel 2018 Mac Mini Linux, Android 15 Tensor G5, and GL.iNet OpenWrt).
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                 HETEROGENEOUS CONTAINER TOPOLOGY & ACCELERATION             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ 1. HOST NATIVE METAL LAYER (L1 Mac Mini / L5 MacBook Air)                   │
+│ 1. HOST NATIVE METAL LAYER (L1 Mac Mini / L2 MacBook Pro)                   │
 │    • Workloads: Metal Performance Shaders (MPS), MLX LoRA Distillation,     │
 │      prima.cpp / llama.cpp RPC Server (Direct Unified Memory DMA).          │
 ├─────────────────────────────────────────────────────────────────────────────┤

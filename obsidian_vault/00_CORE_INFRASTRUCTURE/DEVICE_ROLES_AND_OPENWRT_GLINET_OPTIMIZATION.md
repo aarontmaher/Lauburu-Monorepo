@@ -23,7 +23,7 @@ The Lauburu Mesh assigns distinct operational constraints based on physical hard
 │                         │ • Permanent co-processor to GL.iNet      │ • Battery protected (capped at 80%)    │
 │                         │ • OpenWrt, LuCI, UCI & CAKE SQM daemon   │ • 24/7 Wakelock via `termux-wake-lock` │
 ├─────────────────────────┼──────────────────────────────────────────┼────────────────────────────────────────┤
-│ **GL.iNet MT3600BE (GW)**│ **Core Gateway & Hardware USB Bridge**   │ • Hardware NAT offloading              │
+│ **GL.iNet GL-BE14000 (GW)**│ **Core Gateway & Hardware USB Bridge**   │ • Hardware NAT offloading              │
 │                         │ • Wi-Fi 7 MLO (802.11be EHT160)          │ • CAKE SQM bufferbloat control         │
 │                         │ • SmolLM2-135M Sentinel Daemon (:18802)  │ • Gigabit USB ADB Ethernet bridging    │
 └─────────────────────────┴──────────────────────────────────────────┴────────────────────────────────────────┘

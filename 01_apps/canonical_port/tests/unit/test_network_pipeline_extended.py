@@ -234,7 +234,7 @@ class TestPipelineSubscribersAndBatch:
         assert events[0]["type"] == "telemetry_ingested"
 
         pipeline.unsubscribe(subscriber)
-        await pipeline.ingest_payload("Linux_Head_Node", sample_mesh_node_payloads["Linux_Head_Node"])
+        await pipeline.ingest_payload("Linux_Mini", sample_mesh_node_payloads["Linux_Mini"])
         assert len(events) == 1  # Unsubscribed, no new events
 
     @pytest.mark.asyncio
@@ -243,7 +243,7 @@ class TestPipelineSubscribersAndBatch:
         payloads = [
             sample_mesh_node_payloads["Mac_Node"],
             sample_mesh_node_payloads["MacBook_Pro"],
-            sample_mesh_node_payloads["Linux_Head_Node"],
+            sample_mesh_node_payloads["Linux_Mini"],
         ]
         detected = await pipeline.batch_ingest(payloads)
         assert isinstance(detected, list)
@@ -259,7 +259,7 @@ class TestPipelineSubscribersAndBatch:
 class TestNetworkPipelineRestAndWebSocketApi:
     def test_rest_get_network_metrics(self, test_client, sample_mesh_node_payloads):
         pipeline = get_network_pipeline()
-        for nid in ["Mac_Node", "MacBook_Pro", "Linux_Head_Node"]:
+        for nid in ["Mac_Node", "MacBook_Pro", "Linux_Mini"]:
             pipeline.latest_payloads[nid] = sample_mesh_node_payloads[nid]
 
         res = test_client.get("/api/v1/network/metrics")

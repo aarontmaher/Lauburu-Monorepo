@@ -49,26 +49,30 @@ class SamsungBatteryPowerMonitor:
         # 3. CONSTRUCT COMPLETE TELEMETRY PAYLOAD
         elapsed_ms = round((time.time() - start_time) * 1000, 2)
 
+        is_live = raw_battery_data.get("is_live", False)
+        badge = "🛡️ 100% EMPIRICAL BATTERY TELEMETRY VERIFIED" if is_live else "⚠️ STANDBY - WAITING FOR PHYSICAL ADB TELEMETRY"
+
         report = {
             "timestamp": timestamp,
             "target_device": "Samsung Galaxy S20+ (SM-G986B)",
             "node_id": "Samsung_S20",
             "elapsed_ms": elapsed_ms,
-            "connection_status": raw_battery_data.get("connection_status", "ONLINE_TAILSCALE"),
+            "connection_status": raw_battery_data.get("connection_status", "OFFLINE_STANDBY"),
+            "is_live_telemetry": is_live,
             "battery_metrics": {
-                "level_pct": raw_battery_data.get("level", 38),
-                "voltage_mv": raw_battery_data.get("voltage_mv", 3820),
-                "current_now_ma": raw_battery_data.get("current_now_ma", -145), # Negative = net discharge / slow charge
-                "charging_state": raw_battery_data.get("charging_state", "DISCHARGING_PLUGGED"),
-                "power_source": raw_battery_data.get("power_source", "USB_Standard"),
-                "max_charging_current_ma": raw_battery_data.get("max_charging_current_ma", 500),
-                "battery_temp_c": raw_battery_data.get("temperature_c", 36.4),
-                "battery_health": raw_battery_data.get("health", "GOOD"),
-                "charge_counter_uah": raw_battery_data.get("charge_counter_uah", 1680000)
+                "level_pct": raw_battery_data.get("level"),
+                "voltage_mv": raw_battery_data.get("voltage_mv"),
+                "current_now_ma": raw_battery_data.get("current_now_ma"),
+                "charging_state": raw_battery_data.get("charging_state", "--"),
+                "power_source": raw_battery_data.get("power_source", "--"),
+                "max_charging_current_ma": raw_battery_data.get("max_charging_current_ma"),
+                "battery_temp_c": raw_battery_data.get("temperature_c"),
+                "battery_health": raw_battery_data.get("health", "--"),
+                "charge_counter_uah": raw_battery_data.get("charge_counter_uah")
             },
             "charger_power_analysis": power_analysis,
             "recommendations": power_analysis.get("actionable_advice", []),
-            "truth_audit_badge": "🛡️ 100% EMPIRICAL BATTERY TELEMETRY VERIFIED"
+            "truth_audit_badge": badge
         }
 
         # Cache report
@@ -81,8 +85,9 @@ class SamsungBatteryPowerMonitor:
         # Update central telemetry state
         self._update_central_telemetry(report)
 
-        # Ingest to LoRA Dataset
-        self._ingest_battery_telemetry_to_lora(report)
+        # Ingest to LoRA Dataset ONLY IF live genuine metrics exist
+        if is_live:
+            self._ingest_battery_telemetry_to_lora(report)
 
         return report
 
@@ -103,12 +108,12 @@ class SamsungBatteryPowerMonitor:
             except Exception:
                 continue
 
-        # 2. Fallback to live socket probing or previous real telemetry state
+        # 2. Fallback to clean standby waiting state (Zero-Mock Rule #0)
         return self._get_fallback_hardware_state()
 
     def _parse_dumpsys_battery(self, output, transport):
         """Parses Android dumpsys battery output into structured metrics."""
-        data = {"connection_status": f"ONLINE_{transport}"}
+        data = {"connection_status": f"ONLINE_{transport}", "is_live": True}
         for line in output.splitlines():
             line = line.strip()
             if line.startswith("level:"):
@@ -134,36 +139,48 @@ class SamsungBatteryPowerMonitor:
         return data
 
     def _get_fallback_hardware_state(self):
-        """Returns baseline empirical hardware profile when device radio is sleeping."""
+        """Returns clean waiting state when device radio is sleeping (Rule 0 Zero-Mock)."""
         return {
-            "connection_status": "ONLINE_TAILSCALE_STANDBY",
-            "level": 34,
-            "voltage_mv": 3740,
-            "current_now_ma": -180, # Net current deficit: pulling less power than CPU/Radio consumes
-            "charging_state": "UNDERPOWERED_SLOW_DISCHARGE",
-            "power_source": "USB_Standard_5V_0.5A",
-            "max_charging_current_ma": 450,
-            "temperature_c": 34.2,
-            "health": "GOOD",
-            "charge_counter_uah": 1450000
+            "connection_status": "OFFLINE_STANDBY",
+            "is_live": False,
+            "level": None,
+            "voltage_mv": None,
+            "current_now_ma": None,
+            "charging_state": "--",
+            "power_source": "--",
+            "max_charging_current_ma": None,
+            "temperature_c": None,
+            "health": "--",
+            "charge_counter_uah": None
         }
 
     def _analyze_charger_power_intake(self, bat):
         """
         Deep analytical engine diagnosing why Samsung is having issues pulling power from chargers.
         """
-        level = bat.get("level", 34)
-        v_mv = bat.get("voltage_mv", 3740)
-        current_ma = bat.get("current_now_ma", -180)
-        source = bat.get("power_source", "USB_Standard_5V_0.5A")
-        temp_c = bat.get("temperature_c", 34.2)
-        max_curr = bat.get("max_charging_current_ma", 450)
+        if not bat.get("is_live", False) or bat.get("level") is None:
+            return {
+                "intake_status": "STANDBY_WAITING_FOR_DEVICE",
+                "negotiated_input_power_watts": None,
+                "net_battery_power_watts": None,
+                "charging_deficit_detected": False,
+                "detected_hardware_issues": ["Device is currently offline or unreachable over ADB TCP."],
+                "actionable_advice": ["Waiting for Samsung S20 device handshake or radio wakeup."],
+                "summary": "Device is in standby. No live physical telemetry available to analyze."
+            }
+
+        level = bat.get("level")
+        v_mv = bat.get("voltage_mv", 0)
+        current_ma = bat.get("current_now_ma", 0)
+        source = bat.get("power_source", "--")
+        temp_c = bat.get("temperature_c", 0.0)
+        max_curr = bat.get("max_charging_current_ma", 0)
 
         # DIAGNOSTIC RULES:
         issues = []
         status = "CHARGING_DEFICIT_WARNING"
-        power_intake_watts = round((v_mv / 1000.0) * (max_curr / 1000.0), 2)
-        actual_net_watts = round((v_mv / 1000.0) * (current_ma / 1000.0), 2)
+        power_intake_watts = round((v_mv / 1000.0) * (max_curr / 1000.0), 2) if (v_mv and max_curr) else 0.0
+        actual_net_watts = round((v_mv / 1000.0) * (current_ma / 1000.0), 2) if (v_mv and current_ma) else 0.0
 
         if max_curr <= 500:
             issues.append("⚠️ USB-PD Contract Missing: Device negotiated legacy USB 2.0 (5V @ 0.5A = 2.5W max) instead of 25W Super Fast Charging (9V @ 2.77A).")

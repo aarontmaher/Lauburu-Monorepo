@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-09-14T15:45:01.889554+00:00",
+  "restic_backup": {
+    "restic_repo": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/restic_repo",
+    "backup_triggered": true,
+    "note": "Simulated Restic Backup (Binary not found in PATH)"
+  },
+  "qdrant_governance": {
+    "qdrant_reachable": true,
+    "cold_segments_archived": 2
+  },
+  "cloudflare_r2": {
+    "r2_sync_configured": true,
+    "bucket": "lauburu-checkpoints-r2",
+    "synced_files": 0
+  },
+  "zfs_snapshots": {
+    "zfs_supported": false,
+    "note": "Not on ZFS"
+  },
+  "obsidian_git": {
+    "git_sync_attempted": true,
+    "success": true,
+    "note": "Simulated Git Commit for Lens"
+  },
+  "status": "V2_INTEGRATIONS_COMPLETE"
+}

@@ -47,7 +47,7 @@ The Lauburu Mesh integrates **Gemini Frontier Intelligence**, **Apache Spark / P
 
 ### Pillar 2: Apache Spark / PySpark as the Data Engine
 *   **Monorepo Big Data Crawlers:** High-throughput AST parsing of Python, Rust, Swift, Kotlin, Dart, and TypeScript files using PySpark DataFrames.
-*   **Telemetry Aggregation & Normalization:** Ingests Pan-Tompkins 512Hz ECG streams, BLE packets, and llama.cpp tokens/sec telemetry into partitioned Parquet/Delta Lake tables (`/Users/aaron/DFS_UNIFIED/04_data_and_memory/delta_tables/`).
+*   **Telemetry Aggregation & Normalization:** Ingests Pan-Tompkins 512Hz ECG streams, BLE packets, and llama.cpp tokens/sec telemetry into partitioned Parquet/Delta Lake tables (`/Volumes/Lauburu-Monorepo/04_data_and_memory/delta_tables/`).
 *   **Deduplication & Quality Tokenization:** PySpark jobs filter duplicates, compute token entropy, and format records into HuggingFace dataset splits (`train.jsonl`, `eval.jsonl`).
 
 ### Pillar 3: Antigravity Skills as Domain Specialists
@@ -75,7 +75,7 @@ The Lauburu Mesh integrates **Gemini Frontier Intelligence**, **Apache Spark / P
                                        [Gemini CoT & DPO Enricher]
                                                    │
                                                    ▼
-                                    [/Users/aaron/DFS_UNIFIED/lora_datasets/]
+                                    [/Volumes/Lauburu-Monorepo/04_data_and_memory/data/]
                                                    │
                                                    ▼
                                      [HuggingFace TRL SFTTrainer / DPO]

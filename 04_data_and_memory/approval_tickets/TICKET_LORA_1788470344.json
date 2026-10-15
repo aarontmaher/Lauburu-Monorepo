@@ -1,0 +1,70 @@
+{
+  "ticket_id": "TICKET_LORA_1788470344",
+  "direction_title": "7-Layer Mesh Fleet Management & Soul/Memory Ground Truth",
+  "target_models": [
+    "SmolLM2-135M",
+    "SmolVLM-500M"
+  ],
+  "dataset_path": "/Users/aaron/DFS_UNIFIED/lora_datasets/lens_device_and_soul_knowledge.jsonl",
+  "council_consensus_score": 0.976,
+  "consensus_status": "CONSENSUS_REACHED",
+  "model_evaluations": {
+    "Local_Qwen_3.8_Max_Dense": {
+      "verdict": "APPROVE",
+      "confidence": 0.98,
+      "rationale": "Aligns with Rule #0 zero-mock telemetry and maintains host memory safety."
+    },
+    "Local_Huihui_Qwen_3.8_Max_Abliterated": {
+      "verdict": "APPROVE",
+      "confidence": 0.97,
+      "rationale": "No corporate alignment bloat; directly sharpens edge device autonomy."
+    },
+    "Local_Qwen_80B_MoE": {
+      "verdict": "APPROVE",
+      "confidence": 0.99,
+      "rationale": "Optimal parameter efficiency across TB4 ring topology."
+    },
+    "Local_SmolLM2_135M": {
+      "verdict": "APPROVE",
+      "confidence": 0.96,
+      "rationale": "Target dataset fits in 82 MB RAM with >320 tok/s draft speed."
+    },
+    "Cloud_Gemini_3.8_Flash": {
+      "verdict": "APPROVE",
+      "confidence": 0.98,
+      "rationale": "Sound multi-transport hierarchy; low-risk cross-device deployment."
+    }
+  },
+  "user_approval_required": true,
+  "user_approval_status": "APPROVED_BY_AARON",
+  "target_fleet_nodes": [
+    {
+      "id": "L1_Mac_Mini",
+      "engine": "Apple MLX (M4 Pro Metal)",
+      "role": "Coordinator"
+    },
+    {
+      "id": "L2_MacBook_Pro",
+      "engine": "Apple MLX via 10Gbps TB4 DMA",
+      "role": "Worker"
+    },
+    {
+      "id": "L5_MacBook_Air",
+      "engine": "Apple MLX (M4 Metal)",
+      "role": "Worker"
+    },
+    {
+      "id": "L3_Linux_Head_Node",
+      "engine": "PyTorch ROCm/CPU (Ryzen 7)",
+      "role": "Worker"
+    },
+    {
+      "id": "L6_Pixel_10_Pro_XL",
+      "engine": "LiteRT / Edge TPU",
+      "role": "Edge Worker"
+    }
+  ],
+  "timestamp": "2026-09-03 21:19:04 UTC",
+  "dispatch_timestamp": "2026-09-03 21:20:40 UTC",
+  "execution_status": "FLEET_TRAINING_ACTIVE"
+}

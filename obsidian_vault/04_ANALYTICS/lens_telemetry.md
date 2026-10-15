@@ -1,0 +1,1624 @@
+- **2026-10-12T21:37:11.522055+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:37:11.652501+00:00**: CLI opencode failed with code 1: ERROR   Unrecognized flag: --prompt in command opencode run
+- **2026-10-12T21:37:21.630982+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:37:21.704620+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T21:38:01.295053+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:38:04.167527+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:38:09.713924+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:38:09.833558+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T21:38:20.653147+00:00**: Started 24/7 Lens Orchestrator loop.
+- **2026-10-12T21:38:21.395709+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:38:27.412022+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:38:33.256360+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:38:33.290379+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T21:39:33.963923+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:39:38.578238+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:39:42.919479+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:39:43.017390+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T21:40:43.831425+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:40:47.151660+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:40:51.042787+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:40:51.149676+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T21:41:51.982187+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:41:55.736580+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:41:59.216308+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:41:59.312688+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T21:42:59.948478+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:43:03.363099+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:43:08.188500+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:43:08.342655+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T21:44:09.234627+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:44:13.532130+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:44:17.823245+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:44:17.840525+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T21:45:18.586901+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:45:22.120809+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:45:26.747031+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:45:26.960572+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T21:46:27.609384+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:46:31.069439+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:46:34.338846+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:46:34.357496+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T21:47:35.086343+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:47:38.338228+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:47:41.633019+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:48:47.446702+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:48:51.605245+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:48:55.031822+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:50:01.209678+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:50:06.048018+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:50:10.328533+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:51:16.156312+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:51:20.492576+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:51:24.087148+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:52:29.881005+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:52:33.301217+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:52:38.500792+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:53:44.366171+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:53:47.856636+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:53:51.360888+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:54:57.243276+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:55:00.706262+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:55:03.799762+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:56:09.595910+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:56:13.210770+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:56:16.239974+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:56:16.249928+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T21:57:17.906903+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:57:21.462068+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:57:24.581056+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:57:24.589089+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T21:58:26.378859+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:58:30.063425+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:58:33.298121+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T21:59:39.059766+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T21:59:42.495765+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T21:59:45.606720+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:00:51.416808+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:00:54.902090+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:00:58.122363+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:02:03.954963+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:02:08.074843+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:02:11.707114+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:02:11.715432+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T22:03:13.496010+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:03:17.619173+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:03:21.610646+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:04:27.234662+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:04:31.152766+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:04:34.475094+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:05:40.113928+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:05:43.800963+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:05:46.604581+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:06:52.466172+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:06:56.900220+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:07:00.989287+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:08:06.740450+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:08:10.698457+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:08:14.152614+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:08:14.172546+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:09:14.865971+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:09:18.451244+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:09:22.421113+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:09:22.577979+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:10:23.220369+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:10:26.948407+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:10:31.044196+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:10:31.063571+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:11:32.965474+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:11:37.336952+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:11:41.138103+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:11:41.167379+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:12:42.008694+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:12:46.027532+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:12:49.236634+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:12:49.255582+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:13:49.991340+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:13:53.971156+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:13:57.439522+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:13:57.456925+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:14:58.135838+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:15:02.184446+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:15:05.953937+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:15:06.027872+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:16:06.631079+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:16:10.878086+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:16:14.074629+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:16:14.144592+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:17:15.190737+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:17:19.008775+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:17:21.889203+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:17:21.908628+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:18:22.660359+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:18:26.373837+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:18:29.861307+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:18:29.881425+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:19:30.629448+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:19:34.763645+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:19:37.872194+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:19:37.958750+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:20:38.619690+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:20:42.763227+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:20:45.761708+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:20:45.777357+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:21:46.418478+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:21:50.492116+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:21:53.625401+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:21:53.777110+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:22:54.388964+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:22:58.131435+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:23:01.303207+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:23:01.385415+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:24:02.021471+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:24:06.376627+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:24:09.765489+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:24:09.783908+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:25:10.394028+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:25:14.117020+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:25:17.755696+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:25:17.783728+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:26:18.373457+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:26:22.317286+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:26:25.575299+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:26:25.594964+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:27:26.322951+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:27:29.863753+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:27:32.788375+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:27:32.806173+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:28:33.443545+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:28:37.243011+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:28:40.190995+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:28:40.331067+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:29:41.010820+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:29:44.473976+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:29:47.360888+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:29:47.383561+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:30:48.030759+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:30:52.079977+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:30:55.387566+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:30:55.403801+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:31:56.184613+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:31:59.892225+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:32:02.940279+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:32:02.979109+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:33:03.653588+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:33:07.315306+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:33:10.150008+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:33:10.236466+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:34:10.931310+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:34:14.543557+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:34:17.388469+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:34:21.409676+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:35:22.083120+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:35:25.774774+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:35:28.587824+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:35:28.611140+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:36:29.275510+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:36:32.760924+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:36:35.577291+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:36:35.592285+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:37:36.268407+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:37:40.022811+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:37:43.092093+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:37:43.310180+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:38:43.931241+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:38:48.188159+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:38:51.233860+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:38:51.443084+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:39:52.086581+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:39:56.067255+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:39:59.254849+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:39:59.274130+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:41:00.032782+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:41:03.585157+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:41:06.581373+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:41:06.717475+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:42:07.498960+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:42:11.179975+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:42:13.964652+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:42:13.987864+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:43:14.626145+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:43:18.189359+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:43:21.202750+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:43:21.221750+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:44:22.258239+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:44:26.461229+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:44:29.631794+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:44:29.649647+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:45:30.400901+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:45:34.355749+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:45:37.405681+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:45:37.426101+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:46:38.029526+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:46:42.342634+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:46:45.289115+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:46:45.390768+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:47:46.031223+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:47:49.558004+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:47:52.512963+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:47:52.529846+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:48:53.137909+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:48:56.860144+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:49:00.016762+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:49:00.134999+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:50:00.792828+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:50:04.503164+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:50:07.281655+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:50:07.300209+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:51:08.047187+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:51:11.648654+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:51:14.589240+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:51:14.606433+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:52:15.346230+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:52:19.062541+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:52:22.181151+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:52:22.197892+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:53:22.950209+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:53:26.505347+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:53:29.433130+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:53:29.587928+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:54:30.243743+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:54:33.850271+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:54:36.770734+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:54:36.786488+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:55:37.532383+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:55:41.218676+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:55:44.151341+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:55:44.166650+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:56:44.820567+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:56:48.304274+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:56:51.183101+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:56:51.200912+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:57:51.933978+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:57:55.428262+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:57:58.199186+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:57:58.214114+00:00**: Pixel L6 Termux Chat Routing Port 8022 accessible.
+- **2026-10-12T22:58:59.705569+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T22:59:03.349033+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T22:59:06.260793+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T22:59:06.267521+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:00:08.064851+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:00:11.598278+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:00:14.500848+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:01:20.220564+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:01:23.836851+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:01:26.809063+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:01:26.815227+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:02:28.571821+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:02:32.621219+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:02:35.643895+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:02:35.652446+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:03:37.412927+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:03:41.119932+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:03:44.102406+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:03:44.108983+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:04:45.767718+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:04:49.377759+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:04:52.295416+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:05:57.948579+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:06:01.809240+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:06:04.741602+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:06:04.748090+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:07:06.449640+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:07:10.144509+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:07:13.122647+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:07:13.129452+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:08:14.940272+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:08:19.228986+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:08:22.839598+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:08:22.864797+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:09:24.665769+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:09:28.863368+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:09:32.263834+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:09:32.271117+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:10:33.937870+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:10:37.735141+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:10:40.979642+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:11:46.501483+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:11:50.456664+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:11:53.349467+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:11:53.356191+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:12:55.179943+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:12:59.200995+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:13:02.369047+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:14:08.057275+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:14:11.837376+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:14:15.006858+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:15:20.748299+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:15:24.462256+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:15:27.422922+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:15:27.430283+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:16:29.096413+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:16:33.132542+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:16:36.347720+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:16:36.357961+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:17:42.126838+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:17:45.981060+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:17:48.861130+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:17:48.867632+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:18:50.486585+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:18:54.086074+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:18:57.294891+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:20:02.988686+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:20:07.091264+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:20:10.114726+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:20:10.122261+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:21:11.850585+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:21:15.886498+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:21:19.301048+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:22:25.068561+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:22:29.020905+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:22:32.459941+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:22:32.467130+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:23:34.271581+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:23:38.314158+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:23:41.463931+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:24:47.145138+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:24:51.150927+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:24:54.507565+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:24:54.513859+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:25:56.158066+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:26:00.047462+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:26:03.637713+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:27:09.386075+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:27:13.193606+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:27:16.254091+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:28:21.905472+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:28:25.764667+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:28:28.971371+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:28:28.978576+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:29:30.627237+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:29:34.445995+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:29:37.494666+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:30:43.160396+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:30:47.032442+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:30:50.239892+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:31:56.004274+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:31:59.884790+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:32:02.848641+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:33:08.907589+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:33:12.657952+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:33:15.745325+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:33:15.751803+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:34:17.412813+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:34:21.192060+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:34:24.263018+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:34:24.270609+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:35:25.946503+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:35:29.606617+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:35:32.515991+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:35:32.522189+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:36:34.301017+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:36:38.067323+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:36:40.948810+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:37:46.668608+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:37:50.324508+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:37:53.304768+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:38:58.943306+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:39:02.543389+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:39:05.534720+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:40:11.175316+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:40:15.376354+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:40:18.448549+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:40:18.456184+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:41:20.224993+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:41:24.171747+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:41:26.998121+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:42:32.734651+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:42:36.529086+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:42:39.473513+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:42:39.480216+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:43:41.245859+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:43:45.026809+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:43:47.981557+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:43:47.988462+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:44:49.751165+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:44:53.505906+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:44:56.707512+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:44:56.713962+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:45:58.596970+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:46:02.112460+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:46:04.623012+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:46:04.630197+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:47:06.436046+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:47:10.114539+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:47:13.017379+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:47:13.023613+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:48:14.758415+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:48:18.349563+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:48:21.243431+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:49:26.911528+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:49:30.537359+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:49:33.465956+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:49:33.472623+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:50:35.252281+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:50:38.782873+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:50:41.789069+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:50:41.796177+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:51:43.587125+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:51:47.425131+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:51:50.289822+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:52:55.945862+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:53:00.314523+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:53:03.280902+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:54:08.969423+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:54:12.711034+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:54:15.556887+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:54:15.563399+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:55:17.296364+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:55:21.068946+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:55:23.986277+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:55:23.993517+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:56:25.811174+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:56:29.496355+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:56:32.463849+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:56:32.470266+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-12T23:57:34.166895+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:57:37.789801+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:57:40.238925+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:58:46.025476+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-12T23:58:49.541913+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-12T23:58:52.306414+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-12T23:59:58.053032+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:00:01.937396+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:00:04.794686+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:00:04.801024+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:01:06.549867+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:01:10.143922+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:01:12.911496+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:01:12.918279+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:02:14.550032+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:02:18.386376+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:02:21.245133+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:02:21.251238+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:03:23.421041+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:03:27.132909+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:03:30.114847+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:03:30.121713+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:04:32.068733+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:04:35.652871+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:04:38.544144+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:05:44.229916+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:05:48.039590+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:05:50.833998+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:05:50.840629+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:06:52.532549+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:06:56.162021+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:06:58.969568+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:08:04.696436+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:08:08.482986+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:08:11.310603+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:08:11.317346+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:09:13.402490+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:09:17.105542+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:09:20.228026+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:09:20.234349+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:10:21.895944+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:10:25.547805+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:10:28.005968+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:10:28.012216+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:11:29.870839+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:11:33.897091+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:11:36.782026+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:12:42.558981+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:12:46.401354+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:12:49.303329+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:12:49.309865+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:13:51.085820+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:13:54.668862+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:13:57.534969+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:13:57.541823+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:14:59.241691+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:15:02.954456+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:15:05.888665+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:15:05.894822+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:16:07.582213+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:16:11.359231+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:16:14.159814+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:17:19.855876+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:17:23.427701+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:17:26.230339+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:18:31.868930+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:18:35.778503+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:18:38.583484+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:18:38.589933+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:19:40.403637+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:19:44.273784+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:19:47.084980+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:20:53.076389+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:20:56.757623+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:20:59.679613+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:22:05.394342+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:22:09.307162+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:22:12.148942+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:22:12.155262+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:23:13.922894+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:23:17.429085+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:23:20.024957+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:24:25.685327+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:24:29.263630+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:24:32.103680+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:24:32.110418+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:25:33.851982+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:25:37.771250+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:25:40.661494+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:26:46.339301+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:26:50.084540+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:26:52.941241+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:26:52.947832+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:27:53.629566+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:27:57.332487+00:00**: CLI opencode failed with code 1: [0m > build · anthropic/claude-haiku-5.5 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:28:00.136535+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:29:05.800025+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:29:09.999400+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:29:12.981349+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:29:12.987479+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:30:13.778407+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:30:17.621752+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:30:20.753045+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:31:27.020018+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:31:30.638052+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:31:33.665504+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:31:33.671983+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:32:35.695245+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:32:39.914730+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:32:42.736393+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:33:48.375682+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:33:52.308218+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:33:55.151306+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:33:55.157964+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:34:57.092219+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:35:00.735935+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:35:03.581995+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:36:09.219443+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:36:12.984563+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:36:15.927223+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:36:15.933813+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:37:17.548284+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:37:21.123028+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:37:24.029323+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:37:24.036739+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:38:25.695269+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:38:29.478637+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:38:32.328299+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:39:37.972561+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:39:42.373807+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:39:45.326378+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:40:51.817542+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:40:55.943970+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:40:59.103236+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:42:05.747633+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:42:09.762598+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:42:12.614689+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:43:19.150092+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:43:23.215082+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:43:26.045588+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:44:32.548072+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:44:36.558503+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:44:39.347421+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:44:39.353508+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:45:42.277355+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:45:46.290268+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:45:49.116972+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:45:49.123326+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:46:52.011228+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:46:56.071454+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:46:58.984405+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:46:58.990870+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:48:05.500377+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:48:09.430956+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:48:12.436462+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:49:18.869959+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:49:22.543650+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:49:25.555300+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:50:31.200662+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:50:34.981141+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:50:37.809380+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:51:43.448192+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:51:47.272002+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:51:50.244794+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:52:55.890266+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:53:00.340670+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:53:03.233765+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:53:03.240097+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:54:04.909680+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:54:08.555630+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:54:11.441938+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:54:11.448269+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T00:55:13.194798+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:55:17.079860+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:55:19.981791+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:56:25.618965+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:56:29.547217+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:56:32.545695+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:57:38.167975+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:57:42.037438+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:57:44.901555+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T00:58:50.517390+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T00:58:54.744118+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T00:58:57.652239+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:00:03.293913+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:00:06.975843+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:00:09.788678+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:01:15.395029+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:01:19.308364+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:01:22.091662+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:01:22.098334+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:02:23.870561+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:02:28.179127+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:02:31.052715+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:02:31.059347+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:03:32.809840+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:03:36.598279+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:03:39.519195+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:04:45.152147+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:04:48.916286+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:04:51.903319+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:04:51.909798+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:05:53.684199+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:05:57.346532+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:06:00.142313+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:07:12.341383+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:07:16.338901+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:07:19.156711+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:08:24.844216+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:08:28.554457+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:08:31.698619+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:09:37.404801+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:09:41.169603+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:09:44.349696+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:09:44.356571+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:10:46.102784+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:10:49.653248+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:10:52.089799+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:10:52.095869+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:11:54.453816+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:11:58.141345+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:12:00.926961+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:13:07.319365+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:13:11.895499+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:13:14.720233+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:13:14.727039+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:14:17.577403+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:14:21.382477+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:14:24.168624+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:15:29.944739+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:15:33.968053+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:15:36.781415+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:15:36.787665+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:16:38.500181+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:16:42.177755+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:16:44.971115+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:16:44.977862+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:17:46.639854+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:17:50.381942+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:17:53.427341+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:17:53.433786+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:18:55.080541+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:18:58.928922+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:19:01.825481+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:20:07.457737+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:20:11.406641+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:20:14.438845+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:21:20.120107+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:21:23.746081+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:21:26.673866+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:22:32.305008+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:22:36.513292+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:22:39.440828+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:22:39.447259+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:23:41.433584+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:23:45.333714+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:23:48.244799+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:23:48.251532+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:24:50.908509+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:24:54.703714+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:24:57.590464+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:24:57.596951+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:26:00.642409+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:26:05.103334+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:26:08.055704+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:27:14.565195+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:27:18.230921+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:27:21.228849+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:28:27.969248+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:28:31.744414+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:28:34.591069+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:28:34.597052+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:29:37.182022+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:29:40.931679+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:29:43.829055+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:29:43.834999+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:30:45.732772+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:30:49.402489+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:30:52.192955+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:31:58.077127+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:32:02.010835+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:32:04.858157+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:33:10.938114+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:33:14.765371+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:33:17.665928+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:34:23.300071+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:34:27.389636+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:34:30.540563+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:35:36.293464+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:35:40.656606+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:35:44.007956+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:36:49.753593+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:36:53.636310+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:36:56.878305+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:38:02.565831+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:38:06.140983+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:38:08.798032+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:38:08.804168+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:39:10.532053+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:39:14.235748+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:39:17.058376+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:40:22.730587+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:40:26.853156+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:40:29.872909+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:41:35.593220+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:41:39.518994+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:41:42.345713+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:42:48.137491+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:42:51.794406+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:42:54.613767+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:44:00.476876+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:44:04.235926+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:44:07.308954+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:44:07.315141+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:45:09.189768+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:45:13.119117+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:45:15.919445+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:45:15.925896+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:46:17.858490+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:46:21.757694+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:46:24.663905+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:47:30.376607+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:47:34.171048+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:47:36.955529+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:47:36.961590+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:48:38.741506+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:48:42.756340+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:48:45.596766+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:49:51.400544+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:49:55.410009+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:49:58.259825+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:51:03.920246+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:51:08.062468+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:51:11.023954+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:51:11.029835+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:52:12.780426+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:52:16.794534+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:52:20.130984+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:52:20.137498+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:53:21.997272+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:53:26.030609+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:53:29.065571+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:54:34.859595+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:54:39.000417+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:54:41.929405+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:55:47.564378+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:55:51.475064+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:55:54.408670+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:57:00.120661+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:57:04.400667+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:57:07.468706+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:58:13.105086+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:58:17.104025+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:58:19.902629+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:58:19.909450+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T01:59:21.818679+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T01:59:27.407788+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T01:59:30.624066+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T01:59:30.642067+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:00:33.322675+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:00:37.267328+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:00:40.186898+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:00:40.192948+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:01:41.982080+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:01:45.858285+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:01:48.664822+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:02:54.334073+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:02:58.241759+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:03:01.334590+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:04:07.153547+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:04:11.186320+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:04:14.051053+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:05:19.759898+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:05:23.634150+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:05:26.707342+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:06:34.795502+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:06:39.098606+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:06:42.170125+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:07:47.898952+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:07:51.560703+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:07:54.105882+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:07:54.112880+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:08:55.913165+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:08:59.825312+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:09:02.568947+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:10:08.634332+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:10:12.498692+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:10:15.267910+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:11:20.963728+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:11:24.851071+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:11:27.909986+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:12:33.664011+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:12:37.176388+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:12:39.978750+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:13:45.698157+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:13:49.615240+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:13:52.550114+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:14:58.336981+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:15:02.006246+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:15:04.963250+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:15:04.969539+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:16:06.638258+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:16:10.617015+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:16:13.447543+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:16:13.453861+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:17:15.183527+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:17:19.273203+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:17:22.123113+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:17:22.129432+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:18:24.060939+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:18:27.946816+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:18:30.996410+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:19:36.741731+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:19:40.649513+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:19:43.580251+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:20:49.221810+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:20:53.521294+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:20:56.403226+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:22:02.154258+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:22:06.221779+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:22:09.345515+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:22:09.352473+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:23:11.358114+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:23:15.398089+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:23:18.402578+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:23:18.408894+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:24:20.213068+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:24:24.038972+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:24:26.989160+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:25:32.926838+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:25:37.181756+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:25:40.033534+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:26:45.796143+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:26:49.717556+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:26:52.559365+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:27:58.315419+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:28:02.197883+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:28:05.231713+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:28:05.238400+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:29:07.016200+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:29:10.938445+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:29:13.804010+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:29:13.810836+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:30:15.666420+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:30:19.651061+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:30:22.514005+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:31:28.170606+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:31:32.083332+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:31:35.129425+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:31:35.135745+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:32:36.904797+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:32:40.878932+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:32:44.032631+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:33:49.786452+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:33:54.009812+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:33:57.011324+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:33:57.017855+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:34:59.318271+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:35:03.112769+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:35:06.078345+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:35:06.084474+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:36:08.039744+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:36:12.032098+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:36:14.506356+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:36:14.512130+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:37:16.527061+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:37:20.420569+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:37:23.249894+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:38:28.890586+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:38:33.291282+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:38:36.227847+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:39:42.810843+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:39:46.760876+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:39:49.906706+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:40:55.679539+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:40:59.594497+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:41:02.463879+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:41:02.470379+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:42:04.433701+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:42:08.392540+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:42:11.423407+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:43:17.102619+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:43:20.917344+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:43:23.866953+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:43:23.873436+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:44:26.304459+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:44:30.161650+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:44:32.958202+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:45:39.239382+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:45:43.403832+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:45:46.204413+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:46:52.534948+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:46:56.753682+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:46:59.575550+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:48:06.264406+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:48:10.254003+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:48:13.133661+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:49:31.948335+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:49:36.368067+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:49:39.599265+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:50:45.204176+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:50:49.028997+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:50:51.962555+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:51:58.182024+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:52:02.210454+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:52:05.386274+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:52:05.392760+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:53:08.095465+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:53:12.306718+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:53:15.263280+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:53:15.270156+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:54:17.919166+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:54:21.908560+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:54:24.746107+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:55:30.983834+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:55:34.857507+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:55:37.669052+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:56:43.346733+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:56:47.188367+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:56:49.992166+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:57:56.608674+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:58:00.602816+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:58:03.635108+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:58:03.641053+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T02:59:04.761193+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T02:59:08.702949+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T02:59:11.660794+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T02:59:11.667736+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:00:12.431415+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:00:16.550665+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:00:19.461516+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:00:19.467797+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:01:25.181369+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:01:29.138424+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:01:32.159294+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:01:32.164878+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:02:34.079236+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:02:38.024547+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:02:41.032442+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:03:46.873503+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:03:51.314588+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:03:53.951156+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:03:53.957958+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:04:55.896953+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:05:00.211767+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:05:03.106327+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:05:03.113020+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:06:05.113930+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:06:09.374756+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:06:12.354059+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:07:18.076218+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:07:22.321908+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:07:25.858916+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:08:32.155250+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:08:38.664528+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:08:42.213419+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:08:42.222898+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:09:44.519495+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:09:49.714637+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:09:53.833525+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:09:53.843978+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:10:56.190070+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:11:00.862881+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:11:04.944240+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:11:04.952747+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:12:07.496254+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:12:12.495014+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:12:17.992643+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:12:18.018979+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:13:20.896907+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:13:28.964274+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:13:33.358959+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:13:33.368953+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:14:35.868105+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:14:40.517194+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:14:44.906165+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:15:51.367850+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:15:56.016825+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:15:59.721563+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:17:06.338345+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:17:10.762374+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:17:14.653763+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:18:20.898175+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:18:25.158938+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:18:28.971653+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:18:28.979667+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:19:30.705536+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:19:35.166061+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:19:39.107870+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:19:39.116020+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:20:40.869453+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:20:45.219959+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:20:49.141752+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:21:54.827589+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:21:59.114862+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:22:02.760318+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:23:08.445547+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:23:12.820747+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:23:16.393192+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:24:23.101118+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:24:27.663201+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:24:31.294732+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:25:38.041713+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:25:42.498542+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:25:45.976066+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:25:45.984047+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:26:49.344236+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:26:53.880084+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:26:56.686157+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:26:56.692931+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:27:59.073288+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:28:03.547337+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:28:07.078396+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:29:13.522163+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:29:17.783803+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:29:21.121832+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:30:27.446588+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:30:31.731411+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:30:35.199024+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:31:41.895880+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:31:46.284680+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:31:49.841389+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:32:56.345325+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:33:00.568841+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:33:04.151905+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:34:11.319188+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:34:15.998715+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:34:19.402311+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:34:19.409207+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:35:22.618010+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:35:27.392524+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:35:31.282700+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:35:31.290474+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:36:34.971758+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:36:39.348065+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:36:42.912612+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:36:42.920315+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:37:45.753339+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:37:50.244184+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:37:53.643820+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:38:59.326664+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:39:03.700586+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:39:07.206384+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:40:12.987290+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:40:17.325095+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:40:21.096043+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:41:27.446023+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:41:32.183410+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:41:35.933798+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:42:41.577649+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:42:45.848505+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:42:49.406937+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:42:49.414381+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:43:51.714218+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:43:56.469166+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:44:00.160298+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:44:00.167703+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:45:02.991264+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:45:07.074606+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:45:10.558689+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:46:16.201131+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:46:20.517888+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:46:23.932470+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:47:30.473484+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:47:34.991924+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:47:38.577985+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:48:45.246377+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:48:49.602599+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:48:53.084016+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:48:53.092443+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:49:55.462065+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:50:00.154774+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:50:03.721506+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:50:03.731499+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:51:06.802226+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:51:11.222138+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:51:14.738376+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:52:21.251534+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:52:25.644646+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:52:29.121236+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:53:35.697593+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:53:40.110004+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:53:43.571396+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:54:49.481209+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:54:53.771087+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:54:57.195403+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:56:02.886136+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:56:07.756260+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:56:11.266472+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:57:17.031842+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:57:21.433256+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:57:25.098556+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:57:25.105451+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:58:27.638598+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:58:32.240644+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:58:36.351383+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T03:58:36.358652+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T03:59:38.188774+00:00**: CLI pi failed with code 1: {"error":{"message":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Pl
+- **2026-10-13T03:59:42.712534+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T03:59:46.310874+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:01:26.381266+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:01:33.025687+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:03:12.884582+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:03:17.063278+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:03:17.070887+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:04:52.411229+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:04:56.355056+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:06:37.489010+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:06:41.516378+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:06:41.524122+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:08:17.027312+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:08:21.255817+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:10:02.269591+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:10:06.266797+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:10:06.274546+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:11:42.798947+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:11:46.563028+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:13:26.755660+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:13:30.481024+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:13:30.489010+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:15:07.404104+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:15:11.458464+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:16:51.969247+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:16:56.402904+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:16:56.464237+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:18:33.990052+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:18:37.857493+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:20:17.982990+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:20:21.957063+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:20:21.965371+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:21:58.958250+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:22:03.046097+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:23:43.798087+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:23:47.562021+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:23:47.568559+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:25:23.966510+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:25:27.711879+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:27:08.078058+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:27:12.791245+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:27:12.799653+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:28:48.264918+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:28:52.141491+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:30:32.663098+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:30:36.503883+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:30:36.511754+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:32:12.059167+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:32:16.542477+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:33:56.873293+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:34:01.603017+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:34:01.610445+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:35:39.028584+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:35:43.173566+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:35:43.182143+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:37:20.831646+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:37:25.904689+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:39:06.089019+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:39:09.697627+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:40:50.617751+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:40:54.867924+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:42:35.694007+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:42:39.363544+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:44:20.303563+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:44:23.985781+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:46:05.064314+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:46:08.623575+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:47:57.431603+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:48:00.843964+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:48:02.296198+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:49:55.412615+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:50:01.835254+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:51:50.210005+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:51:54.935358+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:53:40.693002+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:53:45.765228+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:55:37.264106+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T04:55:42.269088+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:55:42.280200+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T04:57:57.462682+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T04:59:55.231664+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:00:00.493659+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:01:49.384930+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:01:54.125721+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:01:54.137081+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:03:48.405367+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:03:54.265663+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:05:48.775720+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:05:53.256673+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:07:45.080192+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:07:50.028305+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:09:42.965855+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:09:47.976817+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:09:48.019537+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:11:39.659845+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:11:45.423283+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:11:45.432899+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:13:31.816335+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:13:37.252662+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:13:37.282429+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:15:26.738059+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:15:32.440268+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:17:45.776934+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:17:45.800491+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:19:39.720618+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:19:48.107383+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:19:48.312903+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:21:47.819624+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:21:56.935841+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:24:19.028490+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:28:41.363085+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:28:47.416603+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:28:47.432910+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:30:40.404612+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:30:46.800063+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:30:46.821675+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:32:37.901917+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:32:44.587589+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:32:44.598491+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:34:34.603645+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T05:34:43.199239+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:34:43.224312+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:39:19.784920+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:41:38.940818+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:41:38.987696+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:46:22.111970+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:48:40.929146+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:53:19.638771+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:55:34.160818+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:55:34.177871+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:57:46.149214+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:57:46.221498+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T05:59:59.969450+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T05:59:59.996141+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:02:12.069714+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:04:28.054692+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:04:28.067678+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:06:37.947623+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:06:37.957399+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:08:23.119672+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:08:28.652904+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:08:28.665618+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:10:18.883723+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:10:23.811189+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:12:14.067633+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:12:17.988067+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:14:14.922695+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:14:20.632741+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:16:06.513431+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:16:11.023964+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:17:56.996619+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:18:00.784795+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:18:00.793024+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:19:50.540496+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:19:54.737481+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:19:54.744785+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:21:42.557369+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:21:48.143165+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:23:33.480459+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:23:37.794039+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:25:23.451679+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:25:27.040682+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:25:27.048432+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:27:14.304294+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:27:21.813485+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:27:21.843533+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:29:06.604327+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:29:10.284865+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:30:55.871828+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:31:00.242619+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:32:46.274138+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:32:50.110916+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:34:35.281431+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:34:39.017108+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:34:39.023387+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:36:20.393763+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:36:24.441756+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:38:11.504482+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:38:18.092517+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:40:08.415768+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:40:12.225039+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:41:58.671670+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:42:02.681081+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:42:02.697505+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:43:46.287714+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:43:51.012955+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:45:37.719251+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:45:42.058175+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:47:28.873385+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:47:32.691963+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:47:32.711959+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:49:15.342940+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:49:19.171927+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:49:20.190143+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:51:03.029514+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:51:06.924612+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:51:07.940499+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:52:50.272834+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:52:54.126327+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:52:55.144745+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:54:39.207510+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:54:43.624266+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:54:44.778210+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:56:27.422423+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:56:31.622467+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T06:56:32.785109+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T06:58:16.312074+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T06:58:20.796132+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:00:06.308671+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T07:00:10.029890+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:00:10.036841+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:01:50.479340+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T07:01:53.645352+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:03:38.112798+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T07:03:41.675433+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:05:26.155212+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T07:05:30.076819+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:05:30.087733+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:07:10.825015+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T07:07:14.053898+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:08:59.304034+00:00**: CLI opencode failed with code 1: [0m > build · meta/muse-wonder-1.0 [91m[1mError: [0mAuthentication error
+- **2026-10-13T07:09:03.346402+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:09:03.352637+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:11:07.713326+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:13:16.721573+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:15:25.470178+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:15:25.477113+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:17:29.054729+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:17:29.061372+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:19:32.515377+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:19:32.522793+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:21:35.931766+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:21:35.939147+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:23:40.970082+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:23:40.980387+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:25:45.718843+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:25:45.726364+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:27:50.270831+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:27:50.277552+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:29:53.684693+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:32:02.175899+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:34:10.821392+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:34:10.829678+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:36:15.259195+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:36:15.320754+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:38:19.915209+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:38:19.920691+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:40:24.614085+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:40:24.621457+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:42:29.199374+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:42:29.205086+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:44:34.647659+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:44:34.656247+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:46:39.773377+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:48:49.815613+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:50:58.379933+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:50:58.389549+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:53:03.097428+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:53:03.104098+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:55:09.065148+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:55:09.099286+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:57:18.211717+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T07:57:18.224244+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T07:59:22.816974+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:01:31.956285+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:03:43.862278+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:05:52.833186+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:08:03.213447+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:10:17.979193+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:10:18.012445+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:12:23.021379+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:12:23.029070+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:14:29.055110+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:16:38.771255+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:16:38.778544+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:18:43.342279+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:20:52.143276+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:20:52.150537+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:22:56.599498+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:22:56.606234+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:25:01.074097+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:27:09.446709+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:29:17.750808+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:31:26.586331+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:33:34.882193+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:33:34.888852+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:35:39.150505+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:35:39.157247+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:37:43.580319+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:37:43.587754+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:39:48.951112+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:41:57.212204+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:44:05.441876+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:46:13.626418+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:46:13.634267+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:48:18.332818+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:48:18.338198+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:50:22.258567+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:50:22.266973+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:52:26.088020+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:52:26.099926+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:54:29.761776+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:54:29.768412+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T08:56:34.018440+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T08:58:42.598287+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:00:50.838374+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:00:50.864731+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:02:55.154794+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:02:55.160963+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:04:59.668832+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:04:59.675277+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:07:04.044224+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:07:04.050829+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:09:08.259963+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:09:08.267662+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:11:13.856441+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:13:22.114421+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:15:30.478783+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:17:38.910131+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:17:38.918797+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:19:43.274567+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:19:43.282648+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:21:47.843453+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:21:47.850384+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:23:52.636601+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:23:52.644093+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:25:57.366108+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:28:05.582145+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:30:13.880618+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:32:22.372325+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:32:22.383934+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:34:26.625001+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:34:26.631540+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:36:30.912888+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:36:30.920784+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:38:35.568903+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:40:43.782191+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:42:52.337522+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:45:00.740366+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:45:00.754876+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:47:04.311278+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:47:04.318096+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:49:08.669092+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:49:08.675166+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:51:12.996592+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:51:13.003487+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:53:18.106844+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:53:18.126267+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T09:55:23.538523+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:57:31.789236+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:59:40.402030+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T09:59:40.410433+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:01:45.171259+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:01:45.181400+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:03:50.105909+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:03:50.113749+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:05:54.280870+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:05:54.287478+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:07:58.686785+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:07:58.694918+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:10:03.305132+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:12:13.618796+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:14:21.907107+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:14:21.915260+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:16:26.117128+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:16:26.125145+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:18:30.394748+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:18:30.400625+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:20:35.293179+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:20:35.299683+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:22:39.644240+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:22:39.651126+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:24:44.272158+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:24:44.279085+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:26:48.640007+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:28:57.638854+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:28:57.647366+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:31:02.172634+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:33:10.771240+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:33:10.777332+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:35:15.253101+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:35:15.260510+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:37:20.440472+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:37:20.450712+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:39:24.803358+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:39:24.809987+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:41:29.093766+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:41:29.101478+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:43:33.489604+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:43:33.495961+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:45:37.835785+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:47:46.177570+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:49:54.689191+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:52:03.260054+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:52:03.272372+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:54:08.146931+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:54:08.163128+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:56:13.061572+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:56:13.069223+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T10:58:17.367252+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T10:58:17.375284+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:00:21.954024+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:00:21.960997+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:02:26.357478+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:02:26.362580+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:04:29.818621+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:04:29.826124+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:06:33.293594+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:06:33.302513+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:08:38.062331+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:10:46.570573+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:12:55.042016+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:15:03.162074+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:17:15.801396+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:17:15.829374+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:19:22.477226+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:19:24.978746+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:21:32.162179+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:23:40.563150+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:23:41.576730+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:25:46.286093+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:25:47.301996+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:27:51.752008+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:27:53.127150+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:29:58.244716+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:29:59.273046+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:32:03.700706+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:32:04.818226+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:34:09.086405+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:34:10.100230+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:36:14.447681+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:36:15.492592+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:38:20.126262+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:38:21.143589+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:40:25.635512+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:40:26.779922+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:42:31.166163+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:42:32.182321+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:44:37.281164+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:44:37.654267+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:46:42.021666+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:46:42.378179+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:48:46.661442+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:48:47.104234+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:50:51.839454+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:50:52.144974+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:52:56.583172+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:52:56.898810+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:55:01.319894+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:55:01.627179+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:57:06.311856+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:57:06.735183+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T11:59:11.020930+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T11:59:11.061917+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T12:01:14.410229+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T12:01:14.440743+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T12:03:17.858818+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T12:03:17.873333+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T12:05:21.024896+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T12:05:21.389934+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T12:07:25.740950+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T12:07:26.051681+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T12:09:30.898458+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T12:09:31.289781+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T12:11:35.562090+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T12:11:35.898831+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T12:13:40.492259+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T12:13:40.499417+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-13T12:15:46.389608+00:00**: Successfully dry-run MLX tensor rsync over Thunderbolt 4.
+- **2026-10-13T12:15:46.401602+00:00**: Pixel L6 Termux unreachable. Trying Galaxy S20 ADB...
+- **2026-10-14T21:15:00.000000+00:00**: [Telemetry Audit] Thunderbolt 4 Mesh RTT Probed: L8 (10.0.0.8) 0.326ms, L1b (10.0.0.3) 0.699ms, L2 (10.0.0.4) 0.586ms. All TB links < 1.0ms. LoRA continuous dataset: 97,242 pairs. Local MLX trainer paused due to missing router_governor_fused safetensors. Schedule updated to Daily 09:00 AEST.

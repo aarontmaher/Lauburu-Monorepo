@@ -16,7 +16,7 @@ This architectural document synthesizes the physical deployment, protocols, and 
 | **BNEP PAN Gateway** | Dell Linux Head Node (L3) | `pan0` / BNEP NAP (`192.168.44.1/24`) | Realtek RTL8761B USB (`hci1`) | 1.8–2.1 Mbps (28–35 ms RTT) |
 | **3-Mac TB4 Ring** | Mac Mini (L1) ↔ Air (L5) ↔ Pro (L2) | `bridge0` (`169.254.0.0/16`) | Up to 40 Gb/s x1 PCIe DMA | **0.477 ms – 0.680 ms RTT (0.0% loss)** |
 | **Micro-AI Watchdog** | Dell Node / Android Termux | Local Qwen 0.5B / SmolLM2 360M | Active / Resident | Sub-50ms token latency (<300MB RAM) |
-| **Cellular Gateway** | Samsung S20+ (L7) | ADB (`100.84.40.95:5555`), felix mobile | Online (84% Battery) | 4G/5G LTE Uplink |
+| **Cellular Gateway** | Samsung S20+ (L7) | ADB (`100.78.206.96:5555`), felix mobile | Online (84% Battery) | 4G/5G LTE Uplink |
 
 ---
 
@@ -121,7 +121,7 @@ sequenceDiagram
 
 We executed the official test suite across the active Thunderbolt 4 ring (`bridge0` `169.254.0.0/16`):
 - **Mac Mini M4 Pro** (`169.254.224.29`)
-- **MacBook Air M4** (`169.254.136.148`): **0.602 ms avg RTT**
+- **MacBook Pro (Node L2)** (`169.254.136.148`): **0.602 ms avg RTT**
 - **MacBook Pro 16"** (`169.254.215.118`): **0.680 ms avg RTT**
 
 ### 5.1 Test Execution Results

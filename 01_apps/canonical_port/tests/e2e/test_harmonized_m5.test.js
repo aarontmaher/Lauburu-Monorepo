@@ -3,7 +3,7 @@
  * Version: 3.0.0-CANONICAL
  * Verifies the Triple-Pillar Harmonized Synthesis in src/App.jsx and src/components/layout/:
  * - Persistent Top Header: Track Alpha HeaderStatusBar with 7-node fleet pills, 108GB RAM / 82.8GB VRAM meter, 0.277ms TB4 DMA badge, WAN badge
- * - 9-Screen Tab Navigation Matrix with Tab 1 [c] AgiCodingTerminalView as primary default cockpit
+ * - 9-Screen Tab Navigation Matrix with Tab 1 [c] AgiCodingTerminalView as primary default console
  * - Persistent Bottom Dock: Track Beta SlashCommandDock (/audit, /duel, /cron, /storage, /ping, /revive)
  * - Strict Rule #0 Zero-Mock fallbacks and non-blocking asynchronous state updates
  */
@@ -38,10 +38,20 @@ suite.test('[M5][T1] App renders ShellLayout with Tab 1 [c] AgiCodingTerminalVie
   assertTextContains(html, 'L7');
   assertTextContains(html, 'GW');
 
-  // Tab 1 [c] Primary Cockpit (AgiCodingTerminalView)
-  assertTextContains(html, 'Screen 1: Master AGI Coding & Synthesis Terminal');
-  assertTextContains(html, 'AST CODE BUFFER EDITOR');
-  assertTextContains(html, 'MULTI-AGENT SWARM CHAT STREAM');
+  // Primary Front Dashboard Default View (Sovereign Chat Engine)
+  assertTextContains(html, 'Sovereign Chat Engine');
+
+  // Verify BluetoothTerminalView component renders cleanly
+  const btMod = await loadComponent('src/components/terminal/BluetoothTerminalView.jsx');
+  const btHtml = render(btMod.BluetoothTerminalView, {
+    models: INITIAL_AGI_MODELS,
+    onDispatchAction: () => {}
+  });
+  assertTextContains(btHtml, 'BLUETOOTH SERIAL TERMINAL');
+  assertTextContains(btHtml, 'KAI MORICH MACRO STRIP');
+  assertTextContains(btHtml, 'NPU AI LIVE STREAM INSPECTION');
+  assertTextContains(btHtml, 'M1');
+  assertTextContains(btHtml, 'M10');
 
   // Bottom Persistent Dock (SlashCommandDock)
   assertTextContains(html, 'SLASH DOCK:');

@@ -89,7 +89,8 @@
         "trades_completed": 8,
         "elo": 3718.2,
         "ghost_infiltrations": 1
-      }
+      },
+      "movesense_connected": true
     },
     {
       "id": "qwen_coder_mac_worker",
@@ -145,7 +146,8 @@
           "threat_signature": "Analyzed \ud83e\ude78 Rear Naked Choke (RNC) kinematics on mat",
           "last_learned": "18:21:45"
         }
-      }
+      },
+      "movesense_connected": true
     },
     {
       "id": "gemini_37_pro_ultra",
@@ -206,7 +208,8 @@
         "trades_completed": 24,
         "elo": 3512.0
       },
-      "is_ghost_daemon_host": true
+      "is_ghost_daemon_host": true,
+      "movesense_connected": true
     },
     {
       "id": "claude_4_6_opus",
@@ -258,7 +261,8 @@
         "alliances_formed": 6,
         "trades_completed": 2,
         "elo": 4350.0
-      }
+      },
+      "movesense_connected": true
     },
     {
       "id": "nomad_fleet_orchestrator",
@@ -325,7 +329,8 @@
           "threat_signature": "Analyzed \ud83e\uddb6 Inside Heel Hook (Ashi Garami) kinematics on mat",
           "last_learned": "18:21:44"
         }
-      }
+      },
+      "movesense_connected": true
     },
     {
       "id": "genetic_smol_moe_swarm",
@@ -395,7 +400,8 @@
       },
       "is_ghost_daemon_host": true,
       "xp": 220,
-      "fitness_score": 85.5
+      "fitness_score": 85.5,
+      "movesense_connected": true
     },
     {
       "id": "antigravity_cloud_commander",
@@ -454,7 +460,8 @@
       },
       "xp": 220,
       "fitness_score": 85.5,
-      "is_ghost_daemon_host": true
+      "is_ghost_daemon_host": true,
+      "movesense_connected": true
     }
   ],
   "respawn_waiting_queue": [],
@@ -1245,7 +1252,7 @@
       "id": "mac_node_host",
       "device_name": "Layer 1: Mac Host (M4 Max)",
       "orchestrator_name": "Host Orchestrator (Mac M4 Max)",
-      "ip_address": "192.168.8.116 / 100.103.212.21",
+      "ip_address": "192.168.8.176 / 100.103.212.21",
       "os": "macOS Sequoia (Darwin 24.6.0)",
       "hardware": "Apple M4 Max (16C CPU, 40C GPU, 16GB Unified RAM)",
       "role": "Central Swarm Orchestrator & OpenClaw Gateway :18789",
@@ -1401,7 +1408,7 @@
       "id": "samsung_s20_node",
       "device_name": "Layer 5: Samsung Galaxy S20+ (Exynos 990)",
       "orchestrator_name": "Headless Test Orchestrator (Samsung S20)",
-      "ip_address": "100.84.40.95 / Termux :8022",
+      "ip_address": "100.78.206.96 / Termux :8022",
       "os": "Android 13 / Termux Headless",
       "hardware": "Samsung Exynos 990 (8C, 10.6GB RAM, 15W Qi)",
       "role": "Headless Automated UI/UX Tester :5555",
@@ -2756,5 +2763,13 @@
       "score": 50.0
     }
   },
-  "last_played_strategy_id": "s1"
+  "last_played_strategy_id": "s1",
+  "biometrics": {
+    "heart_rate": null,
+    "rmssd": null,
+    "dfa_alpha1": null,
+    "sensor_connected": true,
+    "sensor_device": "Movesense 261030002013",
+    "updated_utc": "2026-09-11T13:44:05.847816+00:00"
+  }
 }

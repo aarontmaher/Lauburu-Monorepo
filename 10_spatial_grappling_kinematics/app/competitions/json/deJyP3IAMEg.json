@@ -1,0 +1,37 @@
+{
+  "video_id": "deJyP3IAMEg",
+  "url": "https://youtu.be/deJyP3IAMEg",
+  "division": "ADCC",
+  "title": "Aaron Maher (AUS) vs Ivan Demydov (UKR)",
+  "duration_sec": 375.9,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 29,
+  "dual_athlete_frames": 2,
+  "standing_phase_pct": 48.3,
+  "ground_scramble_phase_pct": 51.7,
+  "level_change_shots_detected": 7,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 47.9,
+    "left_elbow": 137.2,
+    "right_elbow": 139.4,
+    "left_hip": 127.3,
+    "right_hip": 125.6,
+    "left_knee": 130.1,
+    "right_knee": 127.7
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/deJyP3IAMEg_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in ADCC with 375.9 seconds of 3D MediaPipe telemetry demonstrates strong standing and ground/scrabble skills, with a high mean spine lean and elbow flexion. His knee flexion is moderate, indicating a balanced and effective move.",
+  "processing_sec": 2.06,
+  "vision_model_opinions": {
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "READY_BATCH",
+      "latency_sec": 0.8,
+      "analysis": "Aaron Maher's grappling in ADCC with 375.9 seconds of 3D MediaPipe telemetry demonstrates strong standing and ground/scrabble skills, with a high mean spine lean and elbow flexion. His knee flexion is moderate, indicating a balanced and effective move."
+    }
+  }
+}

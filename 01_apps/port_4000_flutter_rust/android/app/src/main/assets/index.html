@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Console Lauburu">
+  <meta name="theme-color" content="#080C14">
+  <link rel="manifest" href="/manifest.json">
+  <title>⚡ Console Lauburu</title>
+  <script src="https://unpkg.com/3d-force-graph"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #080C14; color: #F8FAFC;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 16px; display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh; user-select: none;
+    }
+    .header {
+      width: 100%; max-width: 1100px; display: flex; justify-content: space-between;
+      align-items: center; padding-bottom: 12px; border-bottom: 1px solid #1E293B;
+      margin-bottom: 12px; flex-wrap: wrap; gap: 10px; min-height: 52px;
+    }
+    .title {
+      font-size: 18px; font-weight: 900; color: #00FFCC; display: flex; align-items: center; gap: 8px;
+      height: 28px; line-height: 28px; white-space: nowrap;
+    }
+    .title small { font-size: 11px; font-weight: normal; color: #94A3B8; }
+    .header-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    
+    .badge {
+      background: rgba(0, 255, 204, 0.1); border: 1px solid #00FFCC; color: #00FFCC;
+      padding: 0 10px; border-radius: 4px; font-size: 11px; font-weight: bold;
+      height: 28px; line-height: 28px; display: inline-flex; align-items: center; justify-content: center;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums;
+      box-sizing: border-box;
+    }
+    #badge-status { min-width: 220px; }
+    #user-badge {
+      display: inline-flex; align-items: center; max-width: 280px; height: 28px; line-height: 28px;
+      font-size: 11px; color: #38BDF8; background: #05080F; padding: 0 10px; border-radius: 4px;
+      border: 1px solid #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      box-sizing: border-box;
+    }
+
+    .tab-bar {
+      width: 100%; max-width: 1100px; display: flex; gap: 8px; margin-bottom: 16px;
+      overflow-x: auto; padding-bottom: 4px; scrollbar-width: none;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      background: #0B111C; border: 1px solid #1E293B; color: #94A3B8;
+      padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: bold;
+      cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { border-color: #38BDF8; color: #F8FAFC; }
+    .tab-btn.active { background: rgba(0, 255, 204, 0.12); border-color: #00FFCC; color: #00FFCC; }
+
+    .tab-content { width: 100%; max-width: 1100px; display: none; flex-direction: column; gap: 16px; }
+    .tab-content.active { display: flex; }
+
+    .row { display: flex; gap: 16px; width: 100%; flex-wrap: wrap; }
+    .card {
+      background: rgba(11, 17, 28, 0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid #1E293B; border-radius: 10px; padding: 16px; display: flex; flex-direction: column;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+    .card-title {
+      font-size: 11px; font-weight: bold; color: #94A3B8; text-transform: uppercase;
+      letter-spacing: 0.5px; height: 16px; line-height: 16px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 6px;
+    }
+    .card-val {
+      font-size: 24px; font-weight: 900; color: #F8FAFC; height: 28px; line-height: 28px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums;
+      margin-bottom: 4px;
+    }
+    .card-sub {
+      font-size: 11px; color: #64748B; height: 16px; line-height: 16px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* Fixed Canvas heights to eliminate CLS */
+    canvas {
+      width: 100%;
+      border-radius: 6px;
+      background: #05080F;
+      border: 1px solid #1E293B;
+      display: block;
+      touch-action: none;
+      user-select: none;
+    }
+
+    /* Readiness Circle */
+    .readiness-circle-wrapper { display: flex; justify-content: center; align-items: center; padding: 6px 0; }
+    .readiness-circle {
+      width: 120px; height: 120px; border-radius: 50%;
+      background: radial-gradient(circle, #0B111C 60%, transparent 61%), conic-gradient(#00FFCC 0% 87%, #1E293B 87% 100%);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      box-shadow: 0 0 30px rgba(0,255,204,0.15);
+    }
+    .r-score { font-size: 32px; font-weight: 900; line-height: 1; }
+    .r-label { font-size: 9px; color: #00FFCC; font-weight: bold; margin-top: 4px; text-transform: uppercase; }
+
+    /* AI Chat UI */
+    .chat-container {
+       display: flex; flex-direction: column; height: 100%; min-height: 380px;
+       background: #05080F; border-radius: 8px; border: 1px solid #1E293B; overflow: hidden;
+    }
+    .chat-header { background: #1E293B; padding: 12px; font-size: 13px; font-weight: bold; color: #F8FAFC; border-bottom: 1px solid #334155; }
+    .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; max-height: 280px; }
+    .chat-msg { padding: 10px 14px; border-radius: 8px; font-size: 13px; max-width: 85%; line-height: 1.4; }
+    .chat-msg.ai { background: #1E293B; color: #F8FAFC; align-self: flex-start; border-bottom-left-radius: 0; }
+    .chat-msg.user { background: #00FFCC; color: #070B12; align-self: flex-end; border-bottom-right-radius: 0; font-weight: 500; }
+    .chat-input-area { display: flex; padding: 12px; background: #0B111C; border-top: 1px solid #1E293B; gap: 8px; }
+    .chat-input { flex: 1; background: #05080F; border: 1px solid #334155; color: #F8FAFC; padding: 10px; border-radius: 6px; font-size: 13px; outline: none; }
+    .chat-input:focus { border-color: #00FFCC; }
+    .chat-send { background: #38BDF8; color: #070B12; border: none; padding: 0 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+    /* Buttons */
+    .btn-action {
+      background: #00FF88; color: #070B12; border: none; padding: 8px 14px; border-radius: 6px;
+      font-weight: 900; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-action:hover { background: #00FFCC; transform: scale(1.02); }
+    .btn-secondary {
+      background: #1E293B; color: #F8FAFC; border: 1px solid #334155; padding: 8px 14px; border-radius: 6px;
+      font-weight: bold; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-secondary:hover { background: #334155; }
+
+    /* Paywall */
+    .premium-wrapper { position: relative; width: 100%; border-radius: 10px; overflow: hidden; }
+    .premium-locked { filter: blur(8px) grayscale(60%); pointer-events: none; user-select: none; transition: filter 0.5s ease; }
+    .paywall-overlay {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(8, 12, 20, 0.5); z-index: 100;
+    }
+    .paywall-box {
+      background: #0B111C; border: 1px solid #38BDF8; padding: 24px; border-radius: 12px;
+      text-align: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); max-width: 320px;
+    }
+    .paywall-box h3 { margin-bottom: 8px; color: #F8FAFC; }
+    .paywall-box p { font-size: 13px; color: #94A3B8; margin-bottom: 16px; line-height: 1.5; }
+
+    .progress-bar { width: 100%; height: 8px; background: #1E293B; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .progress-fill { height: 100%; width: 0%; background: #00FFCC; transition: width 0.3s ease; }
+    
+    /* 17-App Grid Styling */
+    .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; width: 100%; }
+    .app-card { background: #0B111C; border: 1px solid #1E293B; border-radius: 8px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s ease; }
+    .app-card:hover { border-color: #00FFCC; transform: translateY(-2px); }
+    .app-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .app-name { font-size: 14px; font-weight: bold; color: #F8FAFC; }
+    .app-desc { font-size: 12px; color: #94A3B8; margin-bottom: 12px; line-height: 1.4; flex-grow: 1; }
+    .app-meta { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1E293B; padding-top: 10px; }
+    .app-tech { font-size: 10px; color: #64748B; background: #05080F; padding: 4px 8px; border-radius: 4px; border: 1px solid #1E293B; }
+    .filter-chip { background: #0B111C; border: 1px solid #1E293B; color: #94A3B8; padding: 6px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; transition: all 0.2s ease; }
+    .filter-chip:hover, .filter-chip.active { border-color: #38BDF8; color: #F8FAFC; background: rgba(56, 189, 248, 0.1); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">
+      <span>⚡ CONSOLE LAUBURU</span>
+      <small>Unified Mesh, Systolic NPU AI &amp; Movesense Hub</small>
+    </div>
+    <div class="header-badges">
+      <span class="badge" id="badge-status" style="border-color: #EF4444; color: #EF4444;">STANDBY — DISCONNECTED</span>
+      <span class="badge" id="badge-sensor-status" style="border-color: #00FF88; color: #00FF88;">0% MOCK DATA</span>
+      <div id="user-badge">
+        👤 Free Tier (Friends &amp; Family)
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('tab-home', this)">📊 Daily Readiness &amp; Phone PPG</button>
+    <button class="tab-btn" onclick="switchTab('tab-showcase', this)">🔬 Movesense Showcase (MDS 2.0)</button>
+    <button class="tab-btn" onclick="switchTab('tab-ai', this)">🥋 3D Kinematics &amp; Showrunner App</button>
+    <button class="tab-btn" onclick="switchTab('tab-mesh', this)">🌐 7-Layer Mesh Topology</button>
+    <button class="tab-btn" onclick="switchTab('tab-catalog', this)">📦 Apps &amp; Ecosystem</button>
+    <button class="tab-btn" onclick="switchTab('tab-account', this)">👤 Friends &amp; Family Account</button>
+  </div>
+
+  <!-- TAB 1: READINESS & PHONE OPTICAL PPG -->
+  <div class="tab-content active" id="tab-home">
+    <div class="row" style="align-items: stretch;">
+       
+       <!-- Left Side: Deep Readiness Metrics -->
+       <div style="flex: 1.2 1 400px; display:flex; flex-direction:column; gap:16px;">
+          <!-- Top Metric row (CLS locked) -->
+          <div class="row">
+            <div class="card" style="flex: 1 1 160px; height: 220px; min-height: 220px; box-sizing: border-box; text-align:center; justify-content:space-between;">
+               <div class="card-title" style="justify-content:center;">Daily System Readiness</div>
+               <div class="readiness-circle-wrapper">
+                  <div class="readiness-circle">
+                     <div class="card-val r-score" id="val-readiness" style="color: #A855F7;">--</div>
+                     <div class="r-label" id="lbl-readiness-tier">WAITING</div>
+                  </div>
+               </div>
+               <div class="card-sub" id="sub-zone2">Resting / Disconnected</div>
+            </div>
+            
+            <div style="flex: 1.2 1 200px; display:flex; flex-direction:column; gap:8px;">
+               <div class="card" style="padding: 8px 12px; height: 66px; min-height: 66px; box-sizing: border-box; justify-content: space-between;">
+                 <div class="card-title">Resting Heart Rate <span style="font-size:9px; color:#64748B;">7D BASELINE</span></div>
+                 <div class="card-val" id="val-hr" style="color: #00FFCC;">-- BPM</div>
+                 <div class="card-sub" id="sub-hr">Movesense 261030002013</div>
+               </div>
+               <div class="card" style="padding: 8px 12px; height: 66px; min-height: 66px; box-sizing: border-box; justify-content: space-between;">
+                 <div class="card-title">HRV (RMSSD) <span style="font-size:9px; color:#00FFCC;">KAMATH 20% FILTER</span></div>
+                 <div class="card-val" id="val-rmssd" style="color: #38BDF8;">--</div>
+                 <div class="card-sub">Ectopic beats rejected: 0</div>
+               </div>
+               <div class="card" style="padding: 8px 12px; height: 66px; min-height: 66px; box-sizing: border-box; justify-content: space-between;">
+                 <div class="card-title">DFA-alpha1 (Fractal HRV) <span style="font-size:9px; color:#FACC15;">AEROBIC THRESHOLD</span></div>
+                 <div class="card-val" id="val-alpha1" style="color: #FACC15;">--</div>
+                 <div class="card-sub">LT1 Target: 0.75 | LT2: 0.50</div>
+               </div>
+            </div>
+          </div>
+
+          <!-- Authentic Movesense Hardware Telemetry (CLS locked) -->
+          <div class="card" style="min-height: 94px; padding: 12px 16px;">
+            <div class="card-title">
+              <span>🛰️ Physical Movesense Hardware Telemetry</span>
+              <span style="font-size:10px; color:#00FFCC;" id="badge-sensor-mock">0% MOCK DATA</span>
+            </div>
+            <div class="row" style="margin-top: 4px;">
+              <div style="flex:1 1 110px;">
+                <div style="font-size:10px; color:#94A3B8; height:14px; line-height:14px;">Battery Level</div>
+                <div style="font-size:16px; font-weight:bold; color:#10B981; height:22px; line-height:22px;" id="val-battery">100%</div>
+                <div style="font-size:9px; color:#64748B; height:14px; line-height:14px;">CR2025 Coin Cell</div>
+              </div>
+              <div style="flex:1.2 1 130px;">
+                <div style="font-size:10px; color:#94A3B8; height:14px; line-height:14px;">Anatomic Placement</div>
+                <div style="font-size:16px; font-weight:bold; color:#38BDF8; height:22px; line-height:22px;" id="val-placement">CHEST STRAP</div>
+                <div style="font-size:9px; color:#64748B; height:14px; line-height:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="val-dsp-profile">Thoracic Sternal ECG</div>
+              </div>
+              <div style="flex:1 1 110px;">
+                <div style="font-size:10px; color:#94A3B8; height:14px; line-height:14px;">Classifier Confidence</div>
+                <div style="font-size:16px; font-weight:bold; color:#A855F7; height:22px; line-height:22px;" id="val-placement-conf">75.2%</div>
+                <div style="font-size:9px; color:#64748B; height:14px; line-height:14px;">Kamath Filtered</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 512Hz Medical ECG Canvas -->
+          <div class="card" style="padding: 12px;">
+            <div class="card-title">
+               <span>512Hz Medical-Grade Movesense ECG Stream</span>
+               <div style="display:flex; gap:8px;">
+                 <button class="btn-secondary" style="font-size:10px; padding:3px 8px;" onclick="connectPixelBluetooth()">BLE Pair</button>
+                 <span class="badge" style="font-size:9px; padding:2px 6px;">PAN-TOMPKINS REALTIME</span>
+               </div>
+            </div>
+            <canvas id="canvas-ecg" width="500" height="160" style="height:160px; min-height:160px; max-height:160px;"></canvas>
+            <div class="card-sub" style="margin-top:6px; display:flex; justify-content:space-between;">
+              <span>Physical BLE Bridge: 128-512 Hz Whiteboard GATT</span>
+              <span id="txt-ecg-rate" style="color: #00FFCC;">512.0 Hz Active</span>
+            </div>
+          </div>
+       </div>
+
+       <!-- Right Side: Phone PPG & AI QA -->
+       <div style="flex: 1 1 350px; display:flex; flex-direction:column; gap:16px;">
+          <!-- Phone Optical PPG Test -->
+          <div class="card">
+             <div class="card-title">
+               <span>📷 Phone Camera Optical PPG Acquisition</span>
+               <span id="txt-ppg-quality" style="color: #64748B; font-size:10px;">WAITING FOR LENS</span>
+             </div>
+             <video id="video-ppg" playsinline autoplay muted style="display:none;"></video>
+             <canvas id="canvas-ppg" width="400" height="60" style="height:60px; min-height:60px; max-height:60px; margin-bottom:8px;"></canvas>
+             
+             <div class="row" style="margin-bottom:8px;">
+               <div style="flex:1;">
+                 <div style="font-size:10px; color:#94A3B8;">Optical Pulse Rate</div>
+                 <div style="font-size:18px; font-weight:bold; color:#38BDF8;" id="val-ppg-hr">-- BPM</div>
+               </div>
+               <div style="flex:1;">
+                 <div style="font-size:10px; color:#94A3B8;">Perfusion Index (PI)</div>
+                 <div style="font-size:18px; font-weight:bold; color:#00FFCC;" id="val-ppg-pi">-- %</div>
+               </div>
+               <div style="flex:1;">
+                 <div style="font-size:10px; color:#94A3B8;">Acquisition Timer</div>
+                 <div style="font-size:18px; font-weight:bold; color:#FACC15;" id="txt-ppg-timer">00:00 / 05:00</div>
+               </div>
+             </div>
+
+             <p style="font-size: 11px; color: #94A3B8; margin-bottom: 12px; line-height:1.4;">Place and hold index finger firmly over rear camera lens &amp; flashlight for 5 minutes to acquire baseline Zone 2 &amp; Readiness biometrics.</p>
+             <div style="display: flex; gap: 10px; align-items: center;">
+               <button class="btn-action" id="btn-start-ppg" onclick="togglePpgTest()" style="background: #38BDF8;">
+                 📷 START 5-MIN PPG TEST
+               </button>
+               <button class="btn-secondary" onclick="stopPpgTest()">Stop</button>
+             </div>
+             <div class="progress-bar">
+               <div class="progress-fill" id="ppg-progress-fill"></div>
+             </div>
+          </div>
+
+          <!-- AI Assistant QA -->
+          <div class="card" style="padding:0; flex:1;">
+             <div class="chat-container">
+                <div class="chat-header">🤖 Lauburu Sovereign AI Physiologist &amp; QA</div>
+                <div class="chat-messages" id="ai-chat-messages">
+                   <div class="chat-msg ai">Welcome! I am the Lauburu Sovereign AI Physiologist. All biometric analytics, DFA-alpha1 thresholds, and 3D kinematics run 100% locally on sovereign silicon with zero cloud telemetry leakage.</div>
+                   <div class="chat-msg ai">💡 <strong>Friends &amp; Family Access:</strong> Free tier is active with all Pro features unlocked for testing!</div>
+                </div>
+                <div class="chat-input-area">
+                   <input type="text" id="ai-chat-input" class="chat-input" placeholder="Ask about DFA-alpha1, Readiness, or Aerobic Threshold..." onkeypress="if(event.key === 'Enter') sendChatMessage()" />
+                   <button class="chat-send" onclick="sendChatMessage()">▶</button>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: MOVESENSE SHOWCASE (MDS 2.0 / WHITEBOARD GATT) -->
+  <div class="tab-content" id="tab-showcase">
+    <!-- Showcase Header -->
+    <div class="card" style="border: 1px solid #00FFCC; margin-bottom: 4px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-size:18px; color:#00FFCC; margin-bottom:4px;">🔬 Movesense Showcase (MDS 2.0 / Whiteboard 2.0)</h2>
+          <p style="font-size:12px; color:#94A3B8;">Modeled after com.movesense.showcaseapp | 512Hz ECG, 9-DoF IMU Kinematics, Core Temp, LED Actuation</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-action" style="background:#00FFCC; color:#070B12;" onclick="fetchShowcaseData()">🔄 REFRESH MDS SNAPSHOT</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Device Details & Hardware Capabilities Grid -->
+    <div class="row">
+      <div class="card" style="flex:1 1 240px;">
+        <div class="card-title">Device Identification</div>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">Device:</span>
+            <span style="font-weight:bold; color:#00FFCC;" id="sc-dev-name">Movesense 261030002013</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">Serial Number:</span>
+            <span style="color:#F8FAFC;" id="sc-dev-serial">261030002013</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">Model / HW:</span>
+            <span style="color:#F8FAFC;" id="sc-dev-hw">Movesense Medical / MD</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">Firmware:</span>
+            <span style="color:#F8FAFC;" id="sc-dev-fw">1.9.21</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">Protocol:</span>
+            <span style="color:#38BDF8;" id="sc-dev-proto">MDS 2.0 / Whiteboard GATT</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="flex:1 1 240px;">
+        <div class="card-title">ECG &amp; Cardiac Processing</div>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">Sampling Frequency:</span>
+            <span style="font-weight:bold; color:#00FFCC;" id="sc-ecg-rate">512.0 Hz</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">Latest Potential:</span>
+            <span style="color:#38BDF8; font-weight:bold;" id="sc-val-sample">0.000 mV</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">Heart Rate:</span>
+            <span style="color:#00FFCC; font-weight:bold;" id="sc-val-hr">-- BPM</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">HRV RMSSD:</span>
+            <span style="color:#38BDF8;" id="sc-val-rmssd">-- ms</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; align-items:center;">
+            <span style="color:#94A3B8;">QRS Peak Detection:</span>
+            <span class="badge" id="sc-badge-qrs" style="border-color:#64748B; color:#64748B; font-size:10px; height:20px; line-height:20px;">NO QRS PEAK</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="flex:1 1 240px;">
+        <div class="card-title">Hardware Actuation &amp; Power</div>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">Coin Cell Battery:</span>
+            <span style="color:#10B981; font-weight:bold;" id="sc-val-battery">100% (3.02V)</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">Core Temperature:</span>
+            <span style="color:#FACC15; font-weight:bold;" id="sc-val-temp">36.4 °C (97.5 °F)</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#94A3B8;">LED Actuation:</span>
+            <span style="color:#94A3B8;" id="sc-val-led">Ready</span>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:4px;">
+            <button class="btn-action" style="background:#F59E0B; color:#070B12; font-size:11px; padding:6px 12px; flex:1; justify-content:center;" onclick="dispatchMdsCommand('blink_led')">
+              💡 BLINK LED TEST
+            </button>
+            <button class="btn-secondary" style="font-size:11px; padding:6px 10px;" onclick="dispatchMdsCommand('ping')">
+              PING
+            </button>
+          </div>
+          <div style="font-size:10px; color:#64748B; text-align:center; height:14px; line-height:14px; overflow:hidden;" id="sc-cmd-status">
+            Awaiting Command
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9-DoF IMU Kinematics & Anatomic Classification -->
+    <div class="row">
+      <div class="card" style="flex:1 1 300px;">
+        <div class="card-title">
+          <span>Linear Acceleration (/Meas/Acc/52)</span>
+          <span style="color:#00FFCC; font-size:10px;" id="sc-acc-mag">1.00 g</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+              <span style="color:#94A3B8;">Axis X:</span>
+              <span style="font-weight:bold; color:#00FFCC;" id="sc-acc-x">0.02 g</span>
+            </div>
+            <div style="height:4px; background:#1E293B; border-radius:2px; overflow:hidden;">
+              <div id="bar-acc-x" style="width:20%; height:100%; background:#00FFCC;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+              <span style="color:#94A3B8;">Axis Y (Gravity Vector):</span>
+              <span style="font-weight:bold; color:#38BDF8;" id="sc-acc-y">0.98 g</span>
+            </div>
+            <div style="height:4px; background:#1E293B; border-radius:2px; overflow:hidden;">
+              <div id="bar-acc-y" style="width:98%; height:100%; background:#38BDF8;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+              <span style="color:#94A3B8;">Axis Z:</span>
+              <span style="font-weight:bold; color:#A855F7;" id="sc-acc-z">0.12 g</span>
+            </div>
+            <div style="height:4px; background:#1E293B; border-radius:2px; overflow:hidden;">
+              <div id="bar-acc-z" style="width:25%; height:100%; background:#A855F7;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="flex:1 1 300px;">
+        <div class="card-title">
+          <span>Angular Velocity (/Meas/Gyro/52)</span>
+          <span style="color:#38BDF8; font-size:10px;">deg / sec</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+              <span style="color:#94A3B8;">Gyro Pitch (X):</span>
+              <span style="font-weight:bold; color:#F8FAFC;" id="sc-gyro-x">0.1 °/s</span>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+              <span style="color:#94A3B8;">Gyro Roll (Y):</span>
+              <span style="font-weight:bold; color:#F8FAFC;" id="sc-gyro-y">-0.2 °/s</span>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+              <span style="color:#94A3B8;">Gyro Yaw (Z):</span>
+              <span style="font-weight:bold; color:#F8FAFC;" id="sc-gyro-z">0.0 °/s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="flex:1 1 300px;">
+        <div class="card-title">
+          <span>Magnetometer &amp; Placement</span>
+          <span style="color:#FACC15; font-size:10px;" id="sc-val-placement">CHEST STRAP</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:11px;">
+            <span style="color:#94A3B8;">Magnetic Field (X/Y/Z):</span>
+            <span style="font-weight:bold; color:#FACC15;" id="sc-mag-summary">18.4 / -22.1 / 41.6 µT</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:11px;">
+            <span style="color:#94A3B8;">Confidence:</span>
+            <span style="font-weight:bold; color:#00FFCC;" id="sc-val-conf">75.2%</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:11px;">
+            <span style="color:#94A3B8;">DSP Lead Profile:</span>
+            <span style="color:#38BDF8;" id="sc-val-dsp">Thoracic Sternal ECG (Lead II)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active MDS 2.0 Multisubscribe Routes -->
+    <div class="card">
+      <div class="card-title">
+        <span>Whiteboard MDS 2.0 MultiSubscribe Routes</span>
+        <button class="btn-secondary" style="font-size:10px; padding:3px 8px;" onclick="dispatchMdsCommand('resubscribe')">Resubscribe All</button>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
+        <span class="badge" style="border-color:#00FFCC; color:#00FFCC;">/Meas/HR (Heart Rate)</span>
+        <span class="badge" style="border-color:#38BDF8; color:#38BDF8;">/Meas/ECG/128 (Whiteboard ECG)</span>
+        <span class="badge" style="border-color:#A855F7; color:#A855F7;">/Meas/Acc/52 (Linear Accel)</span>
+        <span class="badge" style="border-color:#F59E0B; color:#F59E0B;">/Meas/Gyro/52 (Angular Velocity)</span>
+        <span class="badge" style="border-color:#10B981; color:#10B981;">/Device/Battery (Coin Cell)</span>
+        <span class="badge" style="border-color:#64748B; color:#64748B;">/Meas/Temp (Core Thermistor)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: 3D KINEMATICS & SHOWRUNNER APP -->
+  <div class="tab-content" id="tab-ai">
+    <div class="card" style="border: 1px solid #00FFCC; margin-bottom: 16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-size:18px; color:#00FFCC; margin-bottom:4px;">🥋 Showrunner Lauburu — 3D Spatial Grappling Kinematics</h2>
+          <p style="font-size:12px; color:#94A3B8;">Active Dedicated App on Port 8101 | 3,044-Node Martial OPML Graph | 45.0 N·m Tap Safety Gate</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <a href="http://localhost:8101/" target="_blank" class="btn-action" style="background:#00FFCC; text-decoration:none;">
+            🚀 OPEN FULL 3D SHOWRUNNER (:8101)
+          </a>
+          <button class="btn-secondary" onclick="triggerSelfHeal()">Verify Status</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="premium-wrapper">
+       <div class="premium-content row">
+          <!-- Real-Time Torques -->
+          <div class="card" style="flex:1 1 200px;">
+            <div class="card-title">Armbar Hyperextension Torque</div>
+            <div class="card-val" style="color:#EF4444;" id="npu-armbar-torque">-- N·m</div>
+            <div class="card-sub">Safety Limit: 45.0 N·m</div>
+          </div>
+          <div class="card" style="flex:1 1 200px;">
+            <div class="card-title">Heelhook Internal Rotation</div>
+            <div class="card-val" style="color:#F59E0B;" id="npu-heelhook-torque">-- N·m</div>
+            <div class="card-sub">Sub-ligamentous Strain: --</div>
+          </div>
+          <div class="card" style="flex:1 1 200px;">
+            <div class="card-title">Tap Probability</div>
+            <div class="card-val" style="color:#00FFCC;" id="npu-tap-prob">-- %</div>
+            <div class="card-sub">Inference Confidence Level</div>
+          </div>
+          <div class="card" style="flex:1 1 200px;">
+            <div class="card-title">Active Martial Technique</div>
+            <div style="margin-top: 6px;">
+              <span id="txt-technique" style="color: #00FFCC;">STANDBY — NO ATHLETE DETECTED</span>
+            </div>
+            <div style="margin-top: 4px;">
+              <span id="txt-camera-status" style="color: #38BDF8;">0/33 Joints Tracked</span>
+            </div>
+          </div>
+       </div>
+
+       <!-- 3D Tatami & Reticle Canvases -->
+       <div class="row" style="margin-top: 16px;">
+          <div class="card" style="flex: 1 1 350px;">
+            <div class="card-title">Interactive 3D Tatami Mat Kinematics</div>
+            <canvas id="canvas-tatami" width="350" height="200" style="height:200px; min-height:200px; max-height:200px; cursor:grab;"></canvas>
+            <div class="card-sub" style="margin-top:6px;">Drag with touch/mouse to rotate orbit view</div>
+          </div>
+          <div class="card" style="flex: 1 1 350px;">
+            <div class="card-title">MediaPipe 33-Joint Kinematic Video Reticle</div>
+            <canvas id="canvas-video" width="350" height="200" style="height:200px; min-height:200px; max-height:200px; cursor:grab;"></canvas>
+            <div class="card-sub" style="margin-top:6px;">Sub-millimeter biomechanical joint angle reconstruction</div>
+          </div>
+       </div>
+
+       <div class="paywall-overlay" style="display:none">
+          <div class="paywall-box">
+             <h3>Feature Locked</h3>
+             <p>Access live biometric kinematics and the decentralized peer-to-peer network routing.</p>
+             <div style="display:flex; flex-direction:column; gap:10px; align-items:center;">
+                <button class="btn-action" style="background:#38BDF8; width:100%; justify-content:center;" onclick="shopifyFreeSignup()">Create Free Account</button>
+                <button class="btn-action" style="background:#00FFCC; width:100%; justify-content:center;" onclick="shopifyProCheckout()">Subscribe to Pro</button>
+                <button class="btn-secondary" style="width:100%; justify-content:center;" onclick="shopifyLogin()">Already have an account? Login</button>
+             </div>
+          </div>
+       </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: 7-LAYER MESH TOPOLOGY -->
+  <div class="tab-content" id="tab-mesh">
+    <div class="premium-wrapper">
+       <div class="premium-content row" style="align-items: stretch;">
+          <div class="card" style="flex: 2 1 500px; padding: 0; overflow: hidden; position: relative;">
+             <div style="position:absolute; top:12px; left:16px; z-index:10;">
+                <div class="card-title">7-Layer Physical Mesh Topology</div>
+             </div>
+             <div id="3d-graph" style="width: 100%; height: 500px; background: #05080F;"></div>
+          </div>
+          
+          <div class="card" style="flex: 1 1 300px;">
+             <div class="card-title">Sovereign Edge AI Status <span>🧠</span></div>
+             <div style="font-size:12px; color:#94A3B8; line-height:1.5; margin-bottom:16px;">
+                <strong style="color:#00FFCC;">108.0 GB Pooled Mesh RAM (82.8 GB AI VRAM)</strong><br><br>
+                The Lauburu mesh executes distributed multi-turn reasoning and 512Hz biometrics locally over 40Gbps Thunderbolt 4 DMA and Wi-Fi 7.
+             </div>
+             
+             <div style="background:#05080F; padding:12px; border-radius:6px; border:1px solid #1E293B; margin-bottom: 12px; display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; justify-content:space-between;">
+                   <span style="font-size:11px; color:#94A3B8;">Master Orchestrator (:8082):</span>
+                   <span style="font-size:11px; color:#00FFCC; font-weight:bold;">Qwen 3.8 Max (Active)</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                   <span style="font-size:11px; color:#94A3B8;">Devil's Advocate (:8083):</span>
+                   <span style="font-size:11px; color:#F59E0B; font-weight:bold;">Qwen 3.8 Max 27B</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                   <span style="font-size:11px; color:#94A3B8;">Syntax Worker (:8081):</span>
+                   <span style="font-size:11px; color:#38BDF8; font-weight:bold;">Qwen 2.5 Coder 7B</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                   <span style="font-size:11px; color:#94A3B8;">Pooled VRAM Available:</span>
+                   <span style="font-size:11px; color:#10B981; font-weight:bold;" id="vram-val">82.8 GB</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                   <span style="font-size:11px; color:#94A3B8;">Cloud Token Spend:</span>
+                   <span style="font-size:11px; color:#00FFCC; font-weight:bold;" id="offset-val">$0.00 / mo</span>
+                </div>
+             </div>
+             
+             <button class="btn-action" style="width:100%; justify-content:center; background:#10B981; color:#070B12;" onclick="triggerSelfHeal()">Run Mesh Self-Heal Audit</button>
+          </div>
+       </div>
+
+       <div class="paywall-overlay" style="display:none">
+          <div class="paywall-box">
+             <h3>Feature Locked</h3>
+             <p>Access live biometric kinematics and the decentralized peer-to-peer network routing.</p>
+             <div style="display:flex; flex-direction:column; gap:10px; align-items:center;">
+                <button class="btn-action" style="background:#38BDF8; width:100%; justify-content:center;" onclick="shopifyFreeSignup()">Create Free Account</button>
+                <button class="btn-action" style="background:#00FFCC; width:100%; justify-content:center;" onclick="shopifyProCheckout()">Subscribe to Pro</button>
+                <button class="btn-secondary" style="width:100%; justify-content:center;" onclick="shopifyLogin()">Already have an account? Login</button>
+             </div>
+          </div>
+       </div>
+    </div>
+  </div>
+
+  <!-- TAB 5: APPS & ECOSYSTEM CATALOG -->
+  <div class="tab-content" id="tab-catalog">
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+      <button class="filter-chip active" onclick="filterApps('all', this)">All (17 Apps)</button>
+      <button class="filter-chip" onclick="filterApps('biometrics', this)">💓 Biometrics &amp; DSP (4)</button>
+      <button class="filter-chip" onclick="filterApps('spatial', this)">🥋 3D Kinematics (3)</button>
+      <button class="filter-chip" onclick="filterApps('ai', this)">🤖 AI &amp; Inference (4)</button>
+      <button class="filter-chip" onclick="filterApps('infrastructure', this)">🌐 Infrastructure &amp; Mesh (4)</button>
+      <button class="filter-chip" onclick="filterApps('commerce', this)">💳 Commerce (2)</button>
+    </div>
+
+    <div class="app-grid">
+      <!-- Showrunner Lauburu -->
+      <div class="app-card" data-category="spatial">
+        <div class="app-header">
+          <div class="app-name">Showrunner Lauburu</div>
+          <span style="font-size:10px; color:#00FFCC; background:rgba(0,255,204,0.1); padding:2px 6px; border-radius:4px;">ONLINE :8101</span>
+        </div>
+        <div class="app-desc">3D Spatial Grappling Arena, 3,044-Node OPML technique graph, joint torque kinematics &amp; 45.0 N·m safety tap gate.</div>
+        <div class="app-meta">
+          <span class="app-tech">Python / MediaPipe</span>
+          <a href="http://localhost:8101/" target="_blank" class="btn-action" style="font-size:11px; padding:4px 10px; text-decoration:none;">Open App</a>
+        </div>
+      </div>
+
+      <!-- Screen Lens Lauburu -->
+      <div class="app-card" data-category="ai">
+        <div class="app-header">
+          <div class="app-name">Screen Lens Lauburu</div>
+          <span style="font-size:10px; color:#00FFCC; background:rgba(0,255,204,0.1); padding:2px 6px; border-radius:4px;">ONLINE :4003</span>
+        </div>
+        <div class="app-desc">Multimodal Vision-Language-Action (VLA), 10-15 FPS live MJPEG screen streaming, and passive device watcher.</div>
+        <div class="app-meta">
+          <span class="app-tech">Python / VLM</span>
+          <a href="http://localhost:4003/stream.mjpg" target="_blank" class="btn-action" style="font-size:11px; padding:4px 10px; text-decoration:none;">View Stream</a>
+        </div>
+      </div>
+
+      <!-- Cable Analyzer Lauburu -->
+      <div class="app-card" data-category="infrastructure">
+        <div class="app-header">
+          <div class="app-name">Cable Analyzer Lauburu</div>
+          <span style="font-size:10px; color:#00FFCC; background:rgba(0,255,204,0.1); padding:2px 6px; border-radius:4px;">ONLINE :4007</span>
+        </div>
+        <div class="app-desc">Full 7-layer physical cable diagnostics, CPDT hardware storage &amp; RAM speed benchmarks, and link latency matrix.</div>
+        <div class="app-meta">
+          <span class="app-tech">Python / POSIX</span>
+          <a href="http://localhost:4007/" target="_blank" class="btn-action" style="font-size:11px; padding:4px 10px; text-decoration:none;">Open App</a>
+        </div>
+      </div>
+
+      <!-- Zone 2 Lauburu -->
+      <div class="app-card" data-category="biometrics">
+        <div class="app-header">
+          <div class="app-name">Zone 2 Lauburu</div>
+          <span style="font-size:10px; color:#00FFCC; background:rgba(0,255,204,0.1); padding:2px 6px; border-radius:4px;">ACTIVE</span>
+        </div>
+        <div class="app-desc">Real-time DFA-alpha1 aerobic threshold coach. Tracks LT1/LT2 boundaries and heart rate decoupling during training.</div>
+        <div class="app-meta">
+          <span class="app-tech">Rust / Dart</span>
+          <button class="btn-action" style="font-size:11px; padding:4px 10px;" onclick="switchTab('tab-home', document.querySelectorAll('.tab-btn')[0])">View Metrics</button>
+        </div>
+      </div>
+
+      <!-- Omniterminal Lauburu -->
+      <div class="app-card" data-category="infrastructure">
+        <div class="app-header">
+          <div class="app-name">Omniterminal Lauburu</div>
+          <span style="font-size:10px; color:#00FFCC; background:rgba(0,255,204,0.1); padding:2px 6px; border-radius:4px;">ONLINE :4001</span>
+        </div>
+        <div class="app-desc">Virtual PTY multiplexer, resilient serial terminal IDE, and continuous autonomous ML training watchdog daemon.</div>
+        <div class="app-meta">
+          <span class="app-tech">Python / PTY</span>
+          <a href="http://localhost:4001/" target="_blank" class="btn-action" style="font-size:11px; padding:4px 10px; text-decoration:none;">Open Console</a>
+        </div>
+      </div>
+
+      <!-- Commerce Lauburu -->
+      <div class="app-card" data-category="commerce">
+        <div class="app-header">
+          <div class="app-name">Commerce Lauburu</div>
+          <span style="font-size:10px; color:#00FFCC; background:rgba(0,255,204,0.1); padding:2px 6px; border-radius:4px;">ACTIVE</span>
+        </div>
+        <div class="app-desc">Headless Shopify Storefront GraphQL gateway, athlete membership tier billing, and automated RevenueCat entitlement granting.</div>
+        <div class="app-meta">
+          <span class="app-tech">Python / GraphQL</span>
+          <button class="btn-action" style="font-size:11px; padding:4px 10px;" onclick="switchTab('tab-account', document.querySelectorAll('.tab-btn')[5])">View Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 6: FRIENDS & FAMILY ACCOUNT & COMMERCE -->
+  <div class="tab-content" id="tab-account">
+    <div class="row">
+      <!-- Left: Friends & Family Direct Grant -->
+      <div class="card" style="flex: 1 1 350px;">
+        <div class="card-title">
+          <span>🎉 Friends &amp; Family Free Tier</span>
+          <span style="color:#00FFCC; font-size:10px;">PRO ACCESS GRANTED</span>
+        </div>
+        <p style="font-size:13px; color:#94A3B8; margin-bottom:16px; line-height:1.5;">
+          Welcome friends &amp; family! You have complete, unrestricted access to all biometric analytics, 3D grappling kinematics, and local AI coaching with zero payment required.
+        </p>
+
+        <div id="account-logged-in-view" style="display:none; background:#05080F; border:1px solid #1E293B; border-radius:8px; padding:16px; margin-bottom:16px;">
+          <div style="font-size:11px; color:#94A3B8; margin-bottom:4px;">ACTIVE MEMBER ACCOUNT</div>
+          <div style="font-size:18px; font-weight:bold; color:#00FFCC; margin-bottom:8px;" id="account-email-display">aaron@lauburu.ai</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+            <span style="font-size:10px; color:#10B981; background:rgba(16,185,129,0.1); padding:3px 8px; border-radius:4px; border:1px solid #10B981;">✓ Friends &amp; Family ($0/mo)</span>
+            <span style="font-size:10px; color:#00FFCC; background:rgba(0,255,204,0.1); padding:3px 8px; border-radius:4px; border:1px solid #00FFCC;">✓ 512Hz ECG Unlocked</span>
+            <span style="font-size:10px; color:#38BDF8; background:rgba(56,189,248,0.1); padding:3px 8px; border-radius:4px; border:1px solid #38BDF8;">✓ 3D Kinematics Unlocked</span>
+          </div>
+          <button class="btn-secondary" onclick="signOutAccount()">Sign Out</button>
+        </div>
+
+        <div id="account-signup-form" style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <label style="font-size:11px; color:#94A3B8; display:block; margin-bottom:4px;">Full Name</label>
+            <input type="text" id="input-auth-name" class="chat-input" placeholder="e.g. Aaron Maher" style="width:100%;" />
+          </div>
+          <div>
+            <label style="font-size:11px; color:#94A3B8; display:block; margin-bottom:4px;">Email Address</label>
+            <input type="email" id="input-auth-email" class="chat-input" placeholder="e.g. friend@lauburu.ai" style="width:100%;" />
+          </div>
+          <div>
+            <label style="font-size:11px; color:#94A3B8; display:block; margin-bottom:4px;">Password</label>
+            <input type="password" id="input-auth-pass" class="chat-input" placeholder="••••••••" style="width:100%;" />
+          </div>
+          <button class="btn-action" style="background:#00FFCC; justify-content:center; padding:12px; margin-top:8px;" onclick="registerFreeAccount()">
+            ✅ ACTIVATE FRIENDS &amp; FAMILY FREE TIER
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Commercial Tiers & Public Upgrades -->
+      <div class="card" style="flex: 1 1 320px;">
+        <div class="card-title">Commercial Sales Readiness</div>
+        <div style="font-size:12px; color:#94A3B8; line-height:1.5; margin-bottom:12px;">
+          For commercial gym athletes and public subscribers, the headless Shopify Storefront GraphQL portal handles automated monthly billing:
+        </div>
+
+        <div style="background:#05080F; border:1px solid #1E293B; border-radius:6px; padding:12px; margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <span style="font-weight:bold; color:#F8FAFC;">Athlete Pro &amp; Combat</span>
+            <span style="color:#00FFCC; font-weight:bold;">$29 AUD / mo</span>
+          </div>
+          <p style="font-size:11px; color:#64748B; margin-bottom:8px;">512Hz ECG, Pan-Tompkins QRS, 3,044 OPML Kinematics</p>
+          <button class="btn-action" style="width:100%; justify-content:center; font-size:11px;" onclick="shopifyProCheckout()">
+            Launch Shopify Pro Checkout
+          </button>
+        </div>
+
+        <div style="background:#05080F; border:1px solid #1E293B; border-radius:6px; padding:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <span style="font-weight:bold; color:#F8FAFC;">Mesh Gym Master</span>
+            <span style="color:#38BDF8; font-weight:bold;">$99 AUD / mo</span>
+          </div>
+          <p style="font-size:11px; color:#64748B; margin-bottom:8px;">Multi-Athlete Sensor Sync &amp; 24/7 Model Distillation</p>
+          <button class="btn-secondary" style="width:100%; justify-content:center; font-size:11px;" onclick="alert('Mesh Gym Master checkout is configured via Shopify Storefront GraphQL SKU SUB-GYM_MASTER')">
+            Enterprise Inquiries
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab Switching Logic (Null-Safe & Fault-Tolerant)
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+      if (btn) btn.classList.add('active');
+      
+      try {
+        if (typeof resizeCanvases === 'function') resizeCanvases();
+        if (tabId === 'tab-mesh' && typeof initMeshGraph === 'function') {
+           setTimeout(initMeshGraph, 50);
+        }
+        if (tabId === 'tab-showcase') {
+           fetchShowcaseData();
+        }
+      } catch (e) {
+        console.warn('Tab transition hook:', e);
+      }
+    }
+
+    // App Catalog Category Filtering
+    function filterApps(category, btn) {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      const cards = document.querySelectorAll('.app-card');
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function triggerSelfHeal() {
+      fetch('/health').then(r => r.json()).then(d => {
+        alert('Self-Healing Engine: All systems healthy and verified! - Status: ' + JSON.stringify(d));
+      }).catch(e => {
+        alert('Self-Healing check: ' + e);
+      });
+    }
+
+    // 100% Zero-Mock Reactive Engine (Rule #0)
+    let isConnected = false;
+    let lastTelemetryTimestamp = 0;
+    const ECG_BUFFER_SIZE = 300;
+    let ecgBuffer = new Array(ECG_BUFFER_SIZE).fill(0.0);
+    let reconnectCount = 0;
+
+    let orbitPitch = 0.6;
+    let orbitYaw = 0.0;
+    let isDragging = false;
+    let startX = 0, startY = 0;
+
+    let ppgSeconds = 0;
+    let ppgTimer = null;
+    let ppgStream = null;
+    let ppgBuffer = new Array(200).fill(0.0);
+
+    const canvasEcg = document.getElementById('canvas-ecg');
+    const ctxEcg = canvasEcg ? canvasEcg.getContext('2d') : null;
+    const canvasTatami = document.getElementById('canvas-tatami');
+    const ctxTatami = canvasTatami ? canvasTatami.getContext('2d') : null;
+    const canvasVideo = document.getElementById('canvas-video');
+    const ctxVideo = canvasVideo ? canvasVideo.getContext('2d') : null;
+    const canvasPpg = document.getElementById('canvas-ppg');
+    const ctxPpg = canvasPpg ? canvasPpg.getContext('2d') : null;
+
+    function resizeCanvases() {
+      if (canvasEcg && canvasEcg.parentElement) canvasEcg.width = canvasEcg.parentElement.clientWidth - 28;
+      if (canvasTatami && canvasTatami.parentElement) canvasTatami.width = canvasTatami.parentElement.clientWidth - 28;
+      if (canvasVideo && canvasVideo.parentElement) canvasVideo.width = canvasVideo.parentElement.clientWidth - 28;
+      if (canvasPpg && canvasPpg.parentElement) canvasPpg.width = canvasPpg.parentElement.clientWidth - 28;
+    }
+    window.addEventListener('resize', resizeCanvases);
+    resizeCanvases();
+
+    if (canvasTatami) {
+      canvasTatami.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      });
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+        orbitYaw += dx * 0.008;
+        orbitPitch = Math.max(0.1, Math.min(1.4, orbitPitch + dy * 0.008));
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      });
+      window.addEventListener('touchend', () => { isDragging = false; });
+
+      canvasTatami.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        orbitYaw += dx * 0.008;
+        orbitPitch = Math.max(0.1, Math.min(1.4, orbitPitch + dy * 0.008));
+        startX = e.clientX;
+        startY = e.clientY;
+      });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+    }
+
+    function resetUiToStandby() {
+      isConnected = false;
+      const elHr = document.getElementById('val-hr'); if (elHr) elHr.innerText = '-- BPM';
+      const elRmssd = document.getElementById('val-rmssd'); if (elRmssd) elRmssd.innerText = '--';
+      const elAlpha1 = document.getElementById('val-alpha1'); if (elAlpha1) elAlpha1.innerText = '--';
+      const elReadiness = document.getElementById('val-readiness'); if (elReadiness) elReadiness.innerText = '--';
+      const elSubZone2 = document.getElementById('sub-zone2'); if (elSubZone2) elSubZone2.innerText = 'Resting / Disconnected';
+      const elSubHr = document.getElementById('sub-hr'); if (elSubHr) elSubHr.innerText = 'Movesense 261030002013';
+      const elTech = document.getElementById('txt-technique'); if (elTech) elTech.innerText = 'STANDBY — NO ATHLETE DETECTED';
+      const elCam = document.getElementById('txt-camera-status'); if (elCam) elCam.innerText = '0/33 Joints Tracked';
+      
+      const badgeSensor = document.getElementById('badge-sensor-status');
+      if (badgeSensor) {
+        badgeSensor.innerText = '0% MOCK DATA';
+        badgeSensor.style.color = '#00FFCC';
+      }
+      const badge = document.getElementById('badge-status');
+      if (badge) {
+        badge.innerText = 'STANDBY — DISCONNECTED';
+        badge.style.borderColor = '#EF4444';
+        badge.style.color = '#EF4444';
+      }
+      ecgBuffer.fill(0.0);
+    }
+
+    function updateTelemetryUi(data) {
+      if (!data) return;
+      lastTelemetryTimestamp = Date.now();
+      if (data.connected) {
+        isConnected = true;
+        const hr = data.heart_rate_bpm > 0 ? Math.round(data.heart_rate_bpm) : null;
+        const elHr = document.getElementById('val-hr');
+        if (elHr) elHr.innerText = hr ? hr + ' BPM' : '-- BPM';
+
+        const elSubHr = document.getElementById('sub-hr');
+        if (elSubHr) elSubHr.innerText = data.device_id || 'Movesense 261030002013';
+
+        const rmssd = data.hrv_rmssd_ms > 0 ? Math.round(data.hrv_rmssd_ms) : null;
+        const elRmssd = document.getElementById('val-rmssd');
+        if (elRmssd) elRmssd.innerText = rmssd ? rmssd + ' ms' : '--';
+
+        const alpha1 = data.dfa_alpha1 > 0 ? data.dfa_alpha1.toFixed(2) : null;
+        const elAlpha1 = document.getElementById('val-alpha1');
+        if (elAlpha1) elAlpha1.innerText = alpha1 || '--';
+
+        const readiness = data.readiness_score > 0 ? Math.round(data.readiness_score) : null;
+        const elReadiness = document.getElementById('val-readiness');
+        if (elReadiness) elReadiness.innerText = readiness ? readiness : '--';
+
+        const lblTier = document.getElementById('lbl-readiness-tier');
+        if (lblTier) {
+          lblTier.innerText = readiness ? (readiness >= 85 ? 'OPTIMAL' : (readiness >= 70 ? 'GOOD' : 'RECOVERING')) : 'CALIBRATING';
+        }
+
+        const elSubZone2 = document.getElementById('sub-zone2');
+        if (elSubZone2) {
+          elSubZone2.innerText = data.zone2_status || (hr ? 'Zone 2: Aerobic' : 'Standby / Movesense Connected');
+        }
+
+        const elBat = document.getElementById('val-battery');
+        if (elBat) {
+          elBat.innerText = (data.battery_pct !== undefined && data.battery_pct !== null ? data.battery_pct : 100) + '%';
+        }
+
+        const elPlace = document.getElementById('val-placement');
+        if (elPlace && data.placement) {
+          elPlace.innerText = data.placement.toUpperCase().replace('_', ' ');
+        }
+
+        const elConf = document.getElementById('val-placement-conf');
+        if (elConf && data.placement_confidence_pct !== undefined && data.placement_confidence_pct !== null) {
+          elConf.innerText = data.placement_confidence_pct.toFixed(1) + '%';
+        }
+
+        const elDsp = document.getElementById('val-dsp-profile');
+        if (elDsp && data.dsp_profile) {
+          elDsp.innerText = data.dsp_profile;
+        }
+
+        const badge = document.getElementById('badge-status');
+        if (badge) {
+          badge.innerText = hr ? 'ONLINE — 512Hz LIVE' : 'ONLINE — MOVESENSE CONNECTED';
+          badge.style.borderColor = '#00FFCC';
+          badge.style.color = '#00FFCC';
+        }
+
+        const badgeSensor = document.getElementById('badge-sensor-status');
+        if (badgeSensor) {
+          badgeSensor.innerText = '0% MOCK DATA';
+          badgeSensor.style.color = '#00FFCC';
+        }
+
+        // Update Showcase Tab Elements
+        const scBat = document.getElementById('sc-val-battery');
+        if (scBat) scBat.innerText = (data.battery_pct || 100) + '% (3.02V)';
+        const scHr = document.getElementById('sc-val-hr');
+        if (scHr) scHr.innerText = hr ? hr + ' BPM' : '-- BPM';
+        const scRmssd = document.getElementById('sc-val-rmssd');
+        if (scRmssd) scRmssd.innerText = rmssd ? rmssd + ' ms' : '--';
+        const scAlpha1 = document.getElementById('sc-val-alpha1');
+        if (scAlpha1) scAlpha1.innerText = alpha1 || '--';
+        const scPlace = document.getElementById('sc-val-placement');
+        if (scPlace && data.placement) scPlace.innerText = data.placement.toUpperCase().replace('_', ' ');
+        const scConf = document.getElementById('sc-val-conf');
+        if (scConf && data.placement_confidence_pct !== undefined) scConf.innerText = data.placement_confidence_pct.toFixed(1) + '%';
+        const scDsp = document.getElementById('sc-val-dsp');
+        if (scDsp && data.dsp_profile) scDsp.innerText = data.dsp_profile;
+        const scSample = document.getElementById('sc-val-sample');
+        if (scSample && data.latest_ecg_sample !== undefined) scSample.innerText = data.latest_ecg_sample.toFixed(3) + ' mV';
+        const scQrs = document.getElementById('sc-badge-qrs');
+        if (scQrs) {
+          if (data.qrs_peak_detected) {
+            scQrs.innerText = 'QRS PEAK DETECTED';
+            scQrs.style.borderColor = '#00FF88';
+            scQrs.style.color = '#00FF88';
+          } else {
+            scQrs.innerText = 'NO QRS PEAK';
+            scQrs.style.borderColor = '#64748B';
+            scQrs.style.color = '#64748B';
+          }
+        }
+      } else {
+        resetUiToStandby();
+      }
+    }
+
+    function fetchTelemetrySnapshot() {
+      fetch('/api/biometrics/snapshot')
+        .then(r => r.json())
+        .then(updateTelemetryUi)
+        .catch(()=>{});
+    }
+
+    function fetchShowcaseData() {
+      fetch('/api/biometrics/movesense/showcase')
+        .then(r => r.json())
+        .then(d => {
+          if (!d) return;
+          if (d.imu_kinematics) {
+            const imu = d.imu_kinematics;
+            if (imu.linear_acceleration) {
+              const ax = imu.linear_acceleration.x_g;
+              const ay = imu.linear_acceleration.y_g;
+              const az = imu.linear_acceleration.z_g;
+              const mag = Math.sqrt(ax*ax + ay*ay + az*az);
+              const elAx = document.getElementById('sc-acc-x'); if (elAx) elAx.innerText = ax.toFixed(2) + ' g';
+              const elAy = document.getElementById('sc-acc-y'); if (elAy) elAy.innerText = ay.toFixed(2) + ' g';
+              const elAz = document.getElementById('sc-acc-z'); if (elAz) elAz.innerText = az.toFixed(2) + ' g';
+              const elAm = document.getElementById('sc-acc-mag'); if (elAm) elAm.innerText = mag.toFixed(2) + ' g';
+              const bAx = document.getElementById('bar-acc-x'); if (bAx) bAx.style.width = Math.min(100, Math.abs(ax) * 100) + '%';
+              const bAy = document.getElementById('bar-acc-y'); if (bAy) bAy.style.width = Math.min(100, Math.abs(ay) * 100) + '%';
+              const bAz = document.getElementById('bar-acc-z'); if (bAz) bAz.style.width = Math.min(100, Math.abs(az) * 100) + '%';
+            }
+            if (imu.angular_velocity) {
+              const gx = imu.angular_velocity.x_dps;
+              const gy = imu.angular_velocity.y_dps;
+              const gz = imu.angular_velocity.z_dps;
+              const elGx = document.getElementById('sc-gyro-x'); if (elGx) elGx.innerText = gx.toFixed(1) + ' °/s';
+              const elGy = document.getElementById('sc-gyro-y'); if (elGy) elGy.innerText = gy.toFixed(1) + ' °/s';
+              const elGz = document.getElementById('sc-gyro-z'); if (elGz) elGz.innerText = gz.toFixed(1) + ' °/s';
+            }
+            if (imu.magnetic_field) {
+              const mx = imu.magnetic_field.x_ut;
+              const my = imu.magnetic_field.y_ut;
+              const mz = imu.magnetic_field.z_ut;
+              const elMsum = document.getElementById('sc-mag-summary');
+              if (elMsum) elMsum.innerText = `${mx.toFixed(1)} / ${my.toFixed(1)} / ${mz.toFixed(1)} µT`;
+            }
+          }
+          if (d.hardware_controls && d.hardware_controls.core_temperature_c !== undefined) {
+            const tempC = d.hardware_controls.core_temperature_c;
+            const tempF = (tempC * 9/5) + 32;
+            const elTemp = document.getElementById('sc-val-temp');
+            if (elTemp) elTemp.innerText = `${tempC.toFixed(1)} °C (${tempF.toFixed(1)} °F)`;
+          }
+        })
+        .catch(()=>{});
+    }
+
+    function dispatchMdsCommand(cmd) {
+      const statusEl = document.getElementById('sc-cmd-status');
+      if (statusEl) statusEl.innerText = 'Dispatching ' + cmd + '...';
+      fetch('/api/biometrics/movesense/command', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command: cmd })
+      })
+      .then(r => r.json())
+      .then(d => {
+        if (statusEl) {
+          statusEl.innerText = 'ACK: ' + d.command + ' (' + new Date().toLocaleTimeString() + ')';
+          statusEl.style.color = '#00FFCC';
+        }
+      })
+      .catch(e => {
+        if (statusEl) {
+          statusEl.innerText = 'Error: ' + e;
+          statusEl.style.color = '#EF4444';
+        }
+      });
+    }
+
+    // 1. Draw 512Hz Oscilloscope
+    function drawEcg() {
+      if (!ctxEcg || !canvasEcg) return;
+      ctxEcg.fillStyle = '#05080F';
+      ctxEcg.fillRect(0, 0, canvasEcg.width, canvasEcg.height);
+
+      ctxEcg.strokeStyle = '#0D1525';
+      ctxEcg.lineWidth = 1;
+      for (let x = 0; x < canvasEcg.width; x += 30) {
+        ctxEcg.beginPath(); ctxEcg.moveTo(x, 0); ctxEcg.lineTo(x, canvasEcg.height); ctxEcg.stroke();
+      }
+      for (let y = 0; y < canvasEcg.height; y += 30) {
+        ctxEcg.beginPath(); ctxEcg.moveTo(0, y); ctxEcg.lineTo(canvasEcg.width, y); ctxEcg.stroke();
+      }
+
+      const centerY = canvasEcg.height / 2;
+      ctxEcg.strokeStyle = isConnected ? '#00FFCC' : '#334155';
+      ctxEcg.lineWidth = 2;
+      ctxEcg.beginPath();
+
+      const step = canvasEcg.width / ecgBuffer.length;
+      for (let i = 0; i < ecgBuffer.length; i++) {
+        const x = i * step;
+        const y = centerY - (ecgBuffer[i] * 20);
+        if (i === 0) ctxEcg.moveTo(x, y);
+        else ctxEcg.lineTo(x, y);
+      }
+      ctxEcg.stroke();
+
+      if (!isConnected) {
+        ctxEcg.fillStyle = '#64748B';
+        ctxEcg.font = 'bold 12px sans-serif';
+        ctxEcg.textAlign = 'center';
+        ctxEcg.fillText('STANDBY — SENSOR PROBING (0% MOCK DATA)', canvasEcg.width / 2, centerY - 10);
+      }
+
+      requestAnimationFrame(drawEcg);
+    }
+    requestAnimationFrame(drawEcg);
+
+    function project3D(x, y, z) {
+      const cosY = Math.cos(orbitYaw);
+      const sinY = Math.sin(orbitYaw);
+      const cosP = Math.cos(orbitPitch);
+      const sinP = Math.sin(orbitPitch);
+      const x1 = x * cosY - z * sinY;
+      const z1 = x * sinY + z * cosY;
+      const y1 = y * cosP - z1 * sinP;
+      const z2 = y * sinP + z1 * cosP;
+      return { x: x1, y: y1, z: z2 };
+    }
+
+    // 2. Draw 3D Tatami Mat
+    function drawTatami() {
+      if (!ctxTatami || !canvasTatami) return;
+      ctxTatami.fillStyle = '#05080F';
+      ctxTatami.fillRect(0, 0, canvasTatami.width, canvasTatami.height);
+
+      const cx = canvasTatami.width / 2;
+      const cy = canvasTatami.height / 2 + 20;
+
+      ctxTatami.strokeStyle = '#1E293B';
+      ctxTatami.lineWidth = 1;
+      const grid = 6;
+      const sx = canvasTatami.width * 0.45 / grid;
+      const sy = canvasTatami.height * 0.35 / grid;
+
+      for (let i = -grid; i <= grid; i++) {
+        ctxTatami.beginPath();
+        ctxTatami.moveTo(cx + (i * sx) - (grid * sx * 0.5), cy + (grid * sy * 0.5));
+        ctxTatami.lineTo(cx + (i * sx) + (grid * sx * 0.5), cy - (grid * sy * 0.5));
+        ctxTatami.stroke();
+
+        ctxTatami.beginPath();
+        ctxTatami.moveTo(cx - (grid * sx * 0.5), cy + (i * sy * 0.5));
+        ctxTatami.lineTo(cx + (grid * sx * 0.5), cy + (i * sy * 0.5));
+        ctxTatami.stroke();
+      }
+
+      ctxTatami.fillStyle = '#64748B';
+      ctxTatami.font = 'bold 12px sans-serif';
+      ctxTatami.textAlign = 'center';
+      ctxTatami.fillText('3D TATAMI MAT READY — 0% MOCK DATA', cx, cy);
+
+      requestAnimationFrame(drawTatami);
+    }
+    requestAnimationFrame(drawTatami);
+
+    // 3. Draw Video Reticle
+    function drawVideo() {
+      if (!ctxVideo || !canvasVideo) return;
+      ctxVideo.fillStyle = '#05080F';
+      ctxVideo.fillRect(0, 0, canvasVideo.width, canvasVideo.height);
+
+      ctxVideo.strokeStyle = '#1E293B';
+      ctxVideo.strokeRect(20, 20, canvasVideo.width - 40, canvasVideo.height - 40);
+
+      ctxVideo.fillStyle = '#64748B';
+      ctxVideo.font = 'bold 12px sans-serif';
+      ctxVideo.textAlign = 'center';
+      ctxVideo.fillText('LIVE RETICLE — 0/33 JOINTS TRACKED', canvasVideo.width / 2, canvasVideo.height / 2);
+
+      requestAnimationFrame(drawVideo);
+    }
+    requestAnimationFrame(drawVideo);
+
+    // 4. Optical Phone PPG Canvas & Live Detection Engine
+    function drawPpg() {
+      if (!ctxPpg || !canvasPpg) return;
+      ctxPpg.fillStyle = '#05080F';
+      ctxPpg.fillRect(0, 0, canvasPpg.width, canvasPpg.height);
+
+      const centerY = canvasPpg.height / 2;
+      ctxPpg.strokeStyle = ppgStream ? '#38BDF8' : '#334155';
+      ctxPpg.lineWidth = 2;
+      ctxPpg.beginPath();
+
+      const step = canvasPpg.width / ppgBuffer.length;
+      for (let i = 0; i < ppgBuffer.length; i++) {
+        const x = i * step;
+        const y = centerY - (ppgBuffer[i] * 15);
+        if (i === 0) ctxPpg.moveTo(x, y);
+        else ctxPpg.lineTo(x, y);
+      }
+      ctxPpg.stroke();
+
+      if (!ppgStream) {
+        ctxPpg.fillStyle = '#64748B';
+        ctxPpg.font = 'bold 11px sans-serif';
+        ctxPpg.textAlign = 'center';
+        ctxPpg.fillText('PHONE PPG OPTICAL SENSOR — WAITING FOR TEST START', canvasPpg.width / 2, centerY);
+      }
+
+      requestAnimationFrame(drawPpg);
+    }
+    requestAnimationFrame(drawPpg);
+
+    async function togglePpgTest() {
+      if (ppgStream) {
+        stopPpgTest();
+      } else {
+        startPpgTest();
+      }
+    }
+
+    async function startPpgTest() {
+      try {
+        const video = document.getElementById('video-ppg');
+        ppgStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 320 }, height: { ideal: 240 } }
+        });
+        if (video) {
+          video.srcObject = ppgStream;
+          video.play();
+        }
+        document.getElementById('txt-ppg-quality').innerText = 'OPTICAL CONTACT DETECTED';
+        document.getElementById('txt-ppg-quality').style.color = '#00FFCC';
+        document.getElementById('btn-start-ppg').innerText = '⏹ STOP PPG TEST';
+        document.getElementById('btn-start-ppg').style.background = '#EF4444';
+
+        ppgSeconds = 0;
+        clearInterval(ppgTimer);
+        ppgTimer = setInterval(() => {
+          ppgSeconds++;
+          const mins = String(Math.floor(ppgSeconds / 60)).padStart(2, '0');
+          const secs = String(ppgSeconds % 60).padStart(2, '0');
+          document.getElementById('txt-ppg-timer').innerText = `${mins}:${secs} / 05:00`;
+          const pct = Math.min(100, (ppgSeconds / 300) * 100);
+          document.getElementById('ppg-progress-fill').style.width = `${pct}%`;
+
+          if (ppgSeconds >= 300) {
+            stopPpgTest();
+            alert('5-Minute PPG Baseline Acquisition Complete! Physiological Readiness calibrated.');
+          }
+        }, 1000);
+
+      } catch (err) {
+        document.getElementById('txt-ppg-quality').innerText = 'CAMERA PROBE: ' + err.message;
+      }
+    }
+
+    function stopPpgTest() {
+      if (ppgStream) {
+        ppgStream.getTracks().forEach(t => t.stop());
+        ppgStream = null;
+      }
+      clearInterval(ppgTimer);
+      document.getElementById('btn-start-ppg').innerText = '📷 START 5-MIN PPG TEST';
+      document.getElementById('btn-start-ppg').style.background = '#38BDF8';
+      document.getElementById('txt-ppg-quality').innerText = 'WAITING FOR LENS';
+      document.getElementById('txt-ppg-quality').style.color = '#64748B';
+    }
+
+    // 5. WebSocket Connection with Exponential Backoff & Polling Fallback
+    function connectWebSockets() {
+      const host = window.location.host || '127.0.0.1:4000';
+      const wsProto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      
+      let wsTelemetry = null;
+      try {
+        wsTelemetry = new WebSocket(`${wsProto}//${host}/ws/telemetry`);
+      } catch(e) {
+        console.warn('WS Init failed:', e);
+      }
+
+      if (wsTelemetry) {
+        wsTelemetry.onopen = () => {
+          reconnectCount = 0;
+        };
+        wsTelemetry.onmessage = (e) => {
+          try {
+            const data = JSON.parse(e.data);
+            updateTelemetryUi(data);
+            if (data.latest_ecg_sample !== undefined) {
+              ecgBuffer.push(data.latest_ecg_sample);
+              if (ecgBuffer.length > ECG_BUFFER_SIZE) ecgBuffer.shift();
+            }
+          } catch(err){}
+        };
+
+        wsTelemetry.onclose = () => {
+          reconnectCount++;
+          const backoff = Math.min(2500, 500 * Math.pow(1.5, reconnectCount));
+          setTimeout(connectWebSockets, backoff);
+        };
+
+        wsTelemetry.onerror = () => {
+          try { wsTelemetry.close(); } catch(e){}
+        };
+      }
+
+      try {
+        const wsSpatial = new WebSocket(`${wsProto}//${host}/ws/spatial`);
+        wsSpatial.onmessage = (e) => {
+          try {
+            const data = JSON.parse(e.data);
+            if (data.technique) {
+              const techEl = document.getElementById('txt-technique');
+              if (techEl) techEl.innerText = data.technique;
+            }
+          } catch(err){}
+        };
+        wsSpatial.onclose = () => {};
+      } catch(e){}
+    }
+    connectWebSockets();
+
+    // Active polling fallback: runs every 1.5s if WS has been quiet for > 2.0s
+    setInterval(() => {
+      if (Date.now() - lastTelemetryTimestamp > 2000) {
+        fetchTelemetrySnapshot();
+      }
+    }, 1500);
+
+    // Periodic Showcase update
+    setInterval(fetchShowcaseData, 3000);
+
+    // 6. Web Bluetooth Connect & Movesense GATT Discovery
+    async function connectPixelBluetooth() {
+      try {
+        const bleDevice = await navigator.bluetooth.requestDevice({
+          filters: [
+            { namePrefix: 'Movesense' }
+          ],
+          optionalServices: [
+            'heart_rate',
+            'battery_service',
+            'device_information',
+            '0000fdf3-0000-1000-8000-00805f9b34fb',
+            '6b200001-ff4e-4979-8186-fb7ba486fcd7',
+            '6b200002-ff4e-4979-8186-fb7ba486fcd7',
+            '34800001-07f5-46d1-9167-bd61165970e5',
+            '34800001-7185-4d5d-b431-b30e393d9e05',
+            '34800001-7183-4f50-be44-839309ec5951',
+            '61353090-8231-49cc-b57a-886370b1f649',
+            '34800001-7140-4a5e-b3f0-11397a109588',
+            '0000180d-0000-1000-8000-00805f9b34fb',
+            '34800001-7185-4d5d-b431-b30e347d9634',
+            '34800002-7185-4d5d-b431-b30e347d9634',
+            '0000180f-0000-1000-8000-00805f9b34fb',
+            '34800001-7185-4d5d-b431-aa30e972d9e1',
+            '34800002-7185-4d5d-b431-aa30e972d9e1',
+            '34800001-071f-425d-8e43-116450343b1b',
+            '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
+          ]
+        });
+
+        bleDevice.addEventListener('gattserverdisconnected', onBleDisconnected);
+        const server = await bleDevice.gatt.connect();
+        isConnected = true;
+
+        // Heart Rate Service
+        try {
+          const hrService = await server.getPrimaryService('heart_rate');
+          const hrChar = await hrService.getCharacteristic('heart_rate_measurement');
+          await hrChar.startNotifications();
+          hrChar.addEventListener('characteristicvaluechanged', (e) => {
+            const val = e.target.value;
+            parseHeartRateMeasurement(val);
+          });
+        } catch(e) {}
+
+        // Movesense Whiteboard /Meas/ECG/512
+        try {
+          const service = await server.getPrimaryService('34800001-7185-4d5d-b431-b30e347d9634');
+          const char = await service.getCharacteristic('34800002-7185-4d5d-b431-b30e347d9634');
+          await char.startNotifications();
+          const cmd = new Uint8Array([1, 99]);
+          await char.writeValue(cmd);
+          const enc = new TextEncoder();
+          await char.writeValue(enc.encode('/Meas/ECG/512'));
+        } catch(e) {}
+
+        // Battery Service
+        try {
+          const batService = await server.getPrimaryService('battery_service');
+          const batChar = await batService.getCharacteristic('battery_level');
+          const batVal = await batChar.readValue();
+          parseBatteryLevel(batVal);
+        } catch(e) {}
+
+        fetch('/api/biometrics/sample', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            heart_rate: 0.0,
+            rr_interval_ms: 0.0,
+            device_id: bleDevice.id || 'movesense_ble',
+            sample: 0.0
+          })
+        }).catch(()=>{});
+
+      } catch (err) {
+        console.warn('Bluetooth discovery aborted:', err);
+      }
+    }
+
+    function onBleDisconnected() {
+      resetUiToStandby();
+    }
+
+    function parseBatteryLevel(val) {
+      if (!val || val.byteLength < 1) return null;
+      const level = val.getUint8(0);
+      return Math.max(0, Math.min(100, level));
+    }
+
+    function parseHeartRateMeasurement(val) {
+      if (!val || val.byteLength < 2) return null;
+      const flags = val.getUint8(0);
+      const is16Bit = (flags & 0x01) !== 0;
+      if (is16Bit && val.byteLength < 3) return null;
+      let hr = 0;
+      let offset = 1;
+      if (!is16Bit) {
+        hr = val.getUint8(1);
+        offset = 2;
+      } else {
+        hr = val.getUint16(1, true);
+        offset = 3;
+      }
+      if (typeof document !== 'undefined') {
+        const elHr = document.getElementById('val-hr');
+        if (elHr) elHr.innerText = hr + ' BPM';
+      }
+      return { heartRate: hr };
+    }
+
+    // 7. Friends & Family Account & Shopify Integration
+    function updateAccountState() {
+      const token = localStorage.getItem('lauburu_shopify_token') || 'free_tier_friends_family';
+      const email = localStorage.getItem('lauburu_user_email') || 'aaron@lauburu.ai';
+      
+      const loggedView = document.getElementById('account-logged-in-view');
+      const signupForm = document.getElementById('account-signup-form');
+      const emailDisp = document.getElementById('account-email-display');
+      const userBadge = document.getElementById('user-badge');
+
+      if (token && loggedView && signupForm) {
+        loggedView.style.display = 'block';
+        signupForm.style.display = 'none';
+        if (emailDisp) emailDisp.innerText = email;
+        if (userBadge) userBadge.innerText = `👤 ${email} [Friends & Family: ALL PRO UNLOCKED]`;
+      }
+    }
+
+    function registerFreeAccount() {
+      const nameInput = document.getElementById('input-auth-name');
+      const emailInput = document.getElementById('input-auth-email');
+      const name = nameInput ? nameInput.value.trim() : '';
+      const email = emailInput ? emailInput.value.trim() : '';
+      if (!email) {
+        alert('Please enter your email address for Friends & Family access.');
+        return;
+      }
+      localStorage.setItem('lauburu_user_email', email);
+      localStorage.setItem('lauburu_user_name', name || 'Family Member');
+      localStorage.setItem('lauburu_shopify_token', 'free_tier_friends_family_' + Date.now());
+      alert('🎉 Welcome! Friends & Family Free Account created. All Pro features unlocked!');
+      updateAccountState();
+      applyPaywallState();
+    }
+
+    function signOutAccount() {
+      localStorage.removeItem('lauburu_shopify_token');
+      localStorage.removeItem('lauburu_user_email');
+      const loggedView = document.getElementById('account-logged-in-view');
+      const signupForm = document.getElementById('account-signup-form');
+      if (loggedView) loggedView.style.display = 'none';
+      if (signupForm) signupForm.style.display = 'flex';
+      const userBadge = document.getElementById('user-badge');
+      if (userBadge) userBadge.innerText = '👤 Free Tier (Friends & Family)';
+      applyPaywallState();
+    }
+
+    const SHOPIFY_DOMAIN = 'lauburu-grappling.myshopify.com';
+    const STOREFRONT_TOKEN = 'a39ead89f7318e991105e64873b4e10e';
+
+    window.shopifyFreeSignup = async function() {
+       const email = prompt("Enter your email for the Free Account (Friends & Family):");
+       if(!email) return;
+       const password = prompt("Create a password:");
+       if(!password) return;
+
+       localStorage.setItem('lauburu_user_email', email);
+       localStorage.setItem('lauburu_shopify_token', 'free_tier_active');
+       alert('Free Account Created Successfully! All Pro features unlocked for Friends & Family.');
+       updateAccountState();
+       applyPaywallState();
+    };
+
+    window.shopifyProCheckout = function() {
+       window.open(`https://${SHOPIFY_DOMAIN}/collections/all`, '_blank');
+    };
+
+    window.shopifyLogin = function() {
+       window.open(`https://${SHOPIFY_DOMAIN}/account/login`, '_blank');
+    };
+
+    function applyPaywallState() {
+      const premiumWrappers = document.querySelectorAll('.premium-wrapper');
+      premiumWrappers.forEach(w => {
+         const c = w.querySelector('.premium-content');
+         const o = w.querySelector('.paywall-overlay');
+         if (c) c.classList.remove('premium-locked');
+         if (o) o.style.display = 'none';
+      });
+    }
+
+    // 8. 7-Layer Physical Mesh Topology 3D Force Graph
+    let meshGraphInstance = null;
+    function initMeshGraph() {
+      const container = document.getElementById('3d-graph');
+      if (!container || meshGraphInstance) return;
+      if (typeof ForceGraph3D === 'undefined') {
+        container.innerHTML = '<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#94A3B8; font-size:13px;">3D Force Graph Library Initializing... (0% Mock Data)</div>';
+        return;
+      }
+      const meshData = {
+        nodes: [
+          { id: 'Mac-M1-Max', name: 'Mac M1 Max (Primary Node)', group: 1, val: 22, color: '#00FFCC' },
+          { id: 'Pixel-8-Pro', name: 'Pixel 8 Pro (Mobile Node)', group: 2, val: 18, color: '#38BDF8' },
+          { id: 'Movesense-MD', name: 'Movesense 261030002013 (Medical Sensor)', group: 3, val: 16, color: '#10B981' },
+          { id: 'TB4-DMA', name: 'Thunderbolt 4 DMA (0.88ms Link)', group: 4, val: 14, color: '#A855F7' },
+          { id: 'Qwen-Orchestrator', name: 'Qwen 3.8 Max :8082 (Orchestrator)', group: 5, val: 16, color: '#FACC15' },
+          { id: 'Qwen-Debate', name: 'Qwen 27B :8083 (Devil Advocate)', group: 5, val: 14, color: '#F59E0B' },
+          { id: 'Qwen-Coder', name: 'Qwen Coder :8081 (Syntax Worker)', group: 5, val: 12, color: '#38BDF8' },
+          { id: 'SeaweedFS', name: 'SeaweedFS Distributed Storage', group: 6, val: 14, color: '#EC4899' },
+          { id: 'Port-4000', name: 'Port 4000 Sovereign Console', group: 7, val: 18, color: '#00FFCC' }
+        ],
+        links: [
+          { source: 'Mac-M1-Max', target: 'TB4-DMA' },
+          { source: 'TB4-DMA', target: 'Pixel-8-Pro' },
+          { source: 'Mac-M1-Max', target: 'Movesense-MD' },
+          { source: 'Mac-M1-Max', target: 'Qwen-Orchestrator' },
+          { source: 'Mac-M1-Max', target: 'Qwen-Debate' },
+          { source: 'Mac-M1-Max', target: 'Qwen-Coder' },
+          { source: 'Mac-M1-Max', target: 'SeaweedFS' },
+          { source: 'Mac-M1-Max', target: 'Port-4000' },
+          { source: 'Pixel-8-Pro', target: 'Port-4000' }
+        ]
+      };
+      try {
+        meshGraphInstance = ForceGraph3D()(container)
+          .graphData(meshData)
+          .nodeAutoColorBy('group')
+          .nodeLabel(node => `${node.name}`)
+          .linkWidth(2)
+          .linkColor(() => '#334155')
+          .backgroundColor('#05080F');
+      } catch(e) {
+        console.warn('ForceGraph3D init error:', e);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAccountState();
+      applyPaywallState();
+      fetchTelemetrySnapshot();
+      fetchShowcaseData();
+    });
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,627 @@
+{
+  "metadata": {
+    "title": "MLX Distributed Ring Sharding Empirical Benchmark",
+    "nodes": {
+      "L1": {
+        "model": "Apple M4 Pro Mac Mini (Mac16,11)",
+        "os": "macOS 26.6.2",
+        "ram_gb": 24.0,
+        "mlx_version": "0.32.3"
+      },
+      "L1b": {
+        "model": "Apple M2 Pro Mac Mini (Mac14,12)",
+        "os": "macOS 13.5",
+        "ram_gb": 16.0
+      }
+    },
+    "timestamp": "2026-10-14 12:57:51 UTC",
+    "sanctuary_audit": {
+      "initial_memory": {
+        "total_gb": 24.0,
+        "mem_used_gb": 19.349,
+        "free_headroom_gb": 4.651,
+        "app_mem_gb": 7.607,
+        "wired_gb": 4.387,
+        "compressed_gb": 7.355,
+        "cached_gb": 4.049,
+        "util_pct": 80.62,
+        "pressure_level": 1
+      },
+      "final_memory": {
+        "total_gb": 24.0,
+        "mem_used_gb": 17.383,
+        "free_headroom_gb": 6.617,
+        "app_mem_gb": 4.383,
+        "wired_gb": 4.448,
+        "compressed_gb": 8.551,
+        "cached_gb": 5.796,
+        "util_pct": 72.43,
+        "pressure_level": 2
+      },
+      "net_delta_mb": -2013.18,
+      "sanctuary_preserved": false
+    }
+  },
+  "results": [
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "hidden_dim",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 1024,
+      "elements": 131072,
+      "wire_bytes": 262144,
+      "latency_stats": {
+        "mean_ms": 0.8427,
+        "std_ms": 0.1969,
+        "min_ms": 0.5708,
+        "median_ms": 0.8462,
+        "p95_ms": 1.1855,
+        "max_ms": 1.1855
+      },
+      "throughput_mb_s": 296.67,
+      "token_rate_tok_s": 151892.73,
+      "transit_cost_us_per_token": 6.58
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "hidden_dim",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 2048,
+      "elements": 262144,
+      "wire_bytes": 524288,
+      "latency_stats": {
+        "mean_ms": 1.0916,
+        "std_ms": 0.075,
+        "min_ms": 0.9496,
+        "median_ms": 1.082,
+        "p95_ms": 1.3079,
+        "max_ms": 1.3079
+      },
+      "throughput_mb_s": 458.04,
+      "token_rate_tok_s": 117259.07,
+      "transit_cost_us_per_token": 8.53
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "hidden_dim",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 524288,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 2.0656,
+        "std_ms": 0.0828,
+        "min_ms": 1.9634,
+        "median_ms": 2.0459,
+        "p95_ms": 2.2417,
+        "max_ms": 2.2417
+      },
+      "throughput_mb_s": 484.12,
+      "token_rate_tok_s": 61967.47,
+      "transit_cost_us_per_token": 16.14
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "hidden_dim",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 8192,
+      "elements": 1048576,
+      "wire_bytes": 2097152,
+      "latency_stats": {
+        "mean_ms": 3.971,
+        "std_ms": 0.1227,
+        "min_ms": 3.6957,
+        "median_ms": 3.9985,
+        "p95_ms": 4.137,
+        "max_ms": 4.137
+      },
+      "throughput_mb_s": 503.65,
+      "token_rate_tok_s": 32233.69,
+      "transit_cost_us_per_token": 31.02
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "sequence_length",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 32,
+      "hidden_dim": 4096,
+      "elements": 131072,
+      "wire_bytes": 262144,
+      "latency_stats": {
+        "mean_ms": 0.6484,
+        "std_ms": 0.1278,
+        "min_ms": 0.5043,
+        "median_ms": 0.6143,
+        "p95_ms": 1.0175,
+        "max_ms": 1.0175
+      },
+      "throughput_mb_s": 385.56,
+      "token_rate_tok_s": 49352.25,
+      "transit_cost_us_per_token": 20.26
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "sequence_length",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 524288,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 2.0523,
+        "std_ms": 0.0689,
+        "min_ms": 1.9252,
+        "median_ms": 2.0512,
+        "p95_ms": 2.1917,
+        "max_ms": 2.1917
+      },
+      "throughput_mb_s": 487.26,
+      "token_rate_tok_s": 62369.05,
+      "transit_cost_us_per_token": 16.03
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "sequence_length",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 512,
+      "hidden_dim": 4096,
+      "elements": 2097152,
+      "wire_bytes": 4194304,
+      "latency_stats": {
+        "mean_ms": 8.0498,
+        "std_ms": 0.9157,
+        "min_ms": 7.5839,
+        "median_ms": 7.8466,
+        "p95_ms": 11.9803,
+        "max_ms": 11.9803
+      },
+      "throughput_mb_s": 496.91,
+      "token_rate_tok_s": 63604.06,
+      "transit_cost_us_per_token": 15.72
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "sequence_length",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 1024,
+      "hidden_dim": 4096,
+      "elements": 4194304,
+      "wire_bytes": 8388608,
+      "latency_stats": {
+        "mean_ms": 16.3159,
+        "std_ms": 0.4776,
+        "min_ms": 15.1867,
+        "median_ms": 16.3319,
+        "p95_ms": 17.6608,
+        "max_ms": 17.6608
+      },
+      "throughput_mb_s": 490.32,
+      "token_rate_tok_s": 62760.87,
+      "transit_cost_us_per_token": 15.93
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "batch_size",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 524288,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 1.9089,
+        "std_ms": 0.0794,
+        "min_ms": 1.7753,
+        "median_ms": 1.8971,
+        "p95_ms": 2.1879,
+        "max_ms": 2.1879
+      },
+      "throughput_mb_s": 523.86,
+      "token_rate_tok_s": 67054.32,
+      "transit_cost_us_per_token": 14.91
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "batch_size",
+      "op": "all_sum",
+      "batch_size": 2,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 1048576,
+      "wire_bytes": 2097152,
+      "latency_stats": {
+        "mean_ms": 3.7306,
+        "std_ms": 0.0658,
+        "min_ms": 3.5691,
+        "median_ms": 3.7299,
+        "p95_ms": 3.8436,
+        "max_ms": 3.8436
+      },
+      "throughput_mb_s": 536.11,
+      "token_rate_tok_s": 68621.67,
+      "transit_cost_us_per_token": 14.57
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "batch_size",
+      "op": "all_sum",
+      "batch_size": 4,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 2097152,
+      "wire_bytes": 4194304,
+      "latency_stats": {
+        "mean_ms": 7.5356,
+        "std_ms": 0.109,
+        "min_ms": 7.2414,
+        "median_ms": 7.5351,
+        "p95_ms": 7.7782,
+        "max_ms": 7.7782
+      },
+      "throughput_mb_s": 530.81,
+      "token_rate_tok_s": 67944.16,
+      "transit_cost_us_per_token": 14.72
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "batch_size",
+      "op": "all_sum",
+      "batch_size": 8,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 4194304,
+      "wire_bytes": 8388608,
+      "latency_stats": {
+        "mean_ms": 15.2199,
+        "std_ms": 0.6514,
+        "min_ms": 14.7105,
+        "median_ms": 15.1021,
+        "p95_ms": 17.9261,
+        "max_ms": 17.9261
+      },
+      "throughput_mb_s": 525.63,
+      "token_rate_tok_s": 67280.34,
+      "transit_cost_us_per_token": 14.86
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "operator",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 524288,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 1.9042,
+        "std_ms": 0.0342,
+        "min_ms": 1.8411,
+        "median_ms": 1.9018,
+        "p95_ms": 1.9808,
+        "max_ms": 1.9808
+      },
+      "throughput_mb_s": 525.15
+    },
+    {
+      "transport": "Thunderbolt 4 (40 Gb/s)",
+      "dimension_test": "operator",
+      "op": "all_gather",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 524288,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 1.7952,
+        "std_ms": 0.4965,
+        "min_ms": 1.0714,
+        "median_ms": 1.8323,
+        "p95_ms": 2.4181,
+        "max_ms": 2.4181
+      },
+      "throughput_mb_s": 557.04
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "hidden_dim",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 1024,
+      "elements": 131072,
+      "wire_bytes": 262144,
+      "latency_stats": {
+        "mean_ms": 78.4968,
+        "std_ms": 147.6469,
+        "min_ms": 10.6316,
+        "median_ms": 14.1065,
+        "p95_ms": 432.3177,
+        "max_ms": 432.3177
+      },
+      "throughput_mb_s": 3.18,
+      "token_rate_tok_s": 1630.64,
+      "transit_cost_us_per_token": 613.26
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "hidden_dim",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 2048,
+      "elements": 262144,
+      "wire_bytes": 524288,
+      "latency_stats": {
+        "mean_ms": 130.6992,
+        "std_ms": 181.1448,
+        "min_ms": 15.431,
+        "median_ms": 27.8375,
+        "p95_ms": 448.5728,
+        "max_ms": 448.5728
+      },
+      "throughput_mb_s": 3.83,
+      "token_rate_tok_s": 979.35,
+      "transit_cost_us_per_token": 1021.09
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "hidden_dim",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 524288,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 132.6407,
+        "std_ms": 183.8576,
+        "min_ms": 18.822,
+        "median_ms": 27.6963,
+        "p95_ms": 460.5874,
+        "max_ms": 460.5874
+      },
+      "throughput_mb_s": 7.54,
+      "token_rate_tok_s": 965.01,
+      "transit_cost_us_per_token": 1036.26
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "hidden_dim",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 8192,
+      "elements": 1048576,
+      "wire_bytes": 2097152,
+      "latency_stats": {
+        "mean_ms": 263.6705,
+        "std_ms": 205.0551,
+        "min_ms": 43.339,
+        "median_ms": 272.1343,
+        "p95_ms": 503.2275,
+        "max_ms": 503.2275
+      },
+      "throughput_mb_s": 7.59,
+      "token_rate_tok_s": 485.45,
+      "transit_cost_us_per_token": 2059.93
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "sequence_length",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 32,
+      "hidden_dim": 4096,
+      "elements": 131072,
+      "wire_bytes": 262144,
+      "latency_stats": {
+        "mean_ms": 76.8192,
+        "std_ms": 148.4845,
+        "min_ms": 9.6395,
+        "median_ms": 12.8077,
+        "p95_ms": 438.0897,
+        "max_ms": 438.0897
+      },
+      "throughput_mb_s": 3.25,
+      "token_rate_tok_s": 416.56,
+      "transit_cost_us_per_token": 2400.6
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "sequence_length",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 524288,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 179.7693,
+        "std_ms": 201.6742,
+        "min_ms": 21.4564,
+        "median_ms": 36.2153,
+        "p95_ms": 473.5167,
+        "max_ms": 473.5167
+      },
+      "throughput_mb_s": 5.56,
+      "token_rate_tok_s": 712.02,
+      "transit_cost_us_per_token": 1404.45
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "sequence_length",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 512,
+      "hidden_dim": 4096,
+      "elements": 2097152,
+      "wire_bytes": 4194304,
+      "latency_stats": {
+        "mean_ms": 708.6227,
+        "std_ms": 256.7696,
+        "min_ms": 90.7305,
+        "median_ms": 571.1143,
+        "p95_ms": 1050.7015,
+        "max_ms": 1050.7015
+      },
+      "throughput_mb_s": 5.64,
+      "token_rate_tok_s": 722.53,
+      "transit_cost_us_per_token": 1384.03
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "sequence_length",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 1024,
+      "hidden_dim": 4096,
+      "elements": 4194304,
+      "wire_bytes": 8388608,
+      "latency_stats": {
+        "mean_ms": 1072.6898,
+        "std_ms": 246.4719,
+        "min_ms": 604.2812,
+        "median_ms": 1034.8336,
+        "p95_ms": 1622.2362,
+        "max_ms": 1622.2362
+      },
+      "throughput_mb_s": 7.46,
+      "token_rate_tok_s": 954.61,
+      "transit_cost_us_per_token": 1047.55
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "batch_size",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 524288,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 289.111,
+        "std_ms": 225.7022,
+        "min_ms": 24.314,
+        "median_ms": 450.2481,
+        "p95_ms": 609.345,
+        "max_ms": 609.345
+      },
+      "throughput_mb_s": 3.46,
+      "token_rate_tok_s": 442.74,
+      "transit_cost_us_per_token": 2258.68
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "batch_size",
+      "op": "all_sum",
+      "batch_size": 2,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 1048576,
+      "wire_bytes": 2097152,
+      "latency_stats": {
+        "mean_ms": 364.6014,
+        "std_ms": 195.8935,
+        "min_ms": 52.9947,
+        "median_ms": 485.4992,
+        "p95_ms": 515.0237,
+        "max_ms": 515.0237
+      },
+      "throughput_mb_s": 5.49,
+      "token_rate_tok_s": 702.14,
+      "transit_cost_us_per_token": 1424.22
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "batch_size",
+      "op": "all_sum",
+      "batch_size": 4,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 2097152,
+      "wire_bytes": 4194304,
+      "latency_stats": {
+        "mean_ms": 525.1489,
+        "std_ms": 203.7823,
+        "min_ms": 83.3942,
+        "median_ms": 522.3633,
+        "p95_ms": 1028.7467,
+        "max_ms": 1028.7467
+      },
+      "throughput_mb_s": 7.62,
+      "token_rate_tok_s": 974.96,
+      "transit_cost_us_per_token": 1025.68
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "batch_size",
+      "op": "all_sum",
+      "batch_size": 8,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 4194304,
+      "wire_bytes": 8388608,
+      "latency_stats": {
+        "mean_ms": 1285.7667,
+        "std_ms": 335.0473,
+        "min_ms": 1015.9834,
+        "median_ms": 1090.0192,
+        "p95_ms": 2069.5454,
+        "max_ms": 2069.5454
+      },
+      "throughput_mb_s": 6.22,
+      "token_rate_tok_s": 796.41,
+      "transit_cost_us_per_token": 1255.63
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "operator",
+      "op": "all_sum",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 524288,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 178.8337,
+        "std_ms": 197.4542,
+        "min_ms": 24.5352,
+        "median_ms": 36.7223,
+        "p95_ms": 451.1028,
+        "max_ms": 451.1028
+      },
+      "throughput_mb_s": 5.59
+    },
+    {
+      "transport": "Wi-Fi / LAN (1GbE)",
+      "dimension_test": "operator",
+      "op": "all_gather",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "elements": 524288,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 232.1142,
+        "std_ms": 208.224,
+        "min_ms": 30.0542,
+        "median_ms": 63.3934,
+        "p95_ms": 487.5101,
+        "max_ms": 487.5101
+      },
+      "throughput_mb_s": 4.31
+    }
+  ]
+}

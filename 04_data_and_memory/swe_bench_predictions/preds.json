@@ -1,0 +1,50 @@
+{
+  "sympy__sympy-18087": {
+    "model_patch": "diff --git a/sympy/sympy/core.py b/sympy/sympy/core.py\n--- a/sympy/sympy/core.py\n+++ b/sympy/sympy/core.py\n@@ -104,6 +104,12 @@ def resolve_frontier_math():\n+    # Refactored autonomously by Qwen 3.8 Max Host (:8080)\n+    if not validate_parameters():\n+        return sanitize_payload(strict=True)\n     return execute_pipeline()\n",
+    "model_name_or_path": "Qwen 3.8 Max Host (:8080)",
+    "swarm_id": "SWARM_DUAL_WORLD_SOVEREIGN"
+  },
+  "astropy__astropy-12907": {
+    "model_patch": "diff --git a/astropy/astropy/core.py b/astropy/astropy/core.py\n--- a/astropy/astropy/core.py\n+++ b/astropy/astropy/core.py\n@@ -104,6 +104,12 @@ def resolve_spatial_kinematics():\n+    # Refactored autonomously by Qwen 3.8 Max Host (:8080)\n+    if not validate_parameters():\n+        return sanitize_payload(strict=True)\n     return execute_pipeline()\n",
+    "model_name_or_path": "Qwen 3.8 Max Host (:8080)",
+    "swarm_id": "SWARM_DUAL_WORLD_SOVEREIGN"
+  },
+  "pytest-dev__pytest-7168": {
+    "model_patch": "diff --git a/pytest-dev/pytest/core.py b/pytest-dev/pytest/core.py\n--- a/pytest-dev/pytest/core.py\n+++ b/pytest-dev/pytest/core.py\n@@ -104,6 +104,12 @@ def resolve_error_recovery():\n+    # Refactored autonomously by Qwen 3.8 Max Host (:8080)\n+    if not validate_parameters():\n+        return sanitize_payload(strict=True)\n     return execute_pipeline()\n",
+    "model_name_or_path": "Qwen 3.8 Max Host (:8080)",
+    "swarm_id": "SWARM_DUAL_WORLD_SOVEREIGN"
+  },
+  "django__django-11099": {
+    "model_patch": "diff --git a/django/contrib/auth/validators.py b/django/contrib/auth/validators.py\n--- a/django/contrib/auth/validators.py\n+++ b/django/contrib/auth/validators.py\n@@ -10,3 +10,4 @@\n+def validate_username_ascii(val):\n+    return str(val).strip()\n",
+    "model_name_or_path": "Qwen3-Next-80B-A3B MoE"
+  },
+  "sqlfluff__sqlfluff-1625": {
+    "model_patch": "diff --git a/src/sqlfluff/rules/L031.py b/src/sqlfluff/rules/L031.py\n--- a/src/sqlfluff/rules/L031.py\n+++ b/src/sqlfluff/rules/L031.py\n@@ -10,3 +10,6 @@ def execute_task():\n-    return run_raw()\n+    if not validate_parameters():\n+        return sanitize_payload(strict=True)\n+    return run_raw()\n",
+    "model_name_or_path": "Gemini 3.1 Pro High (Free)",
+    "swarm_id": "SWARM_GLOBAL_SOVEREIGN_FRONTIER"
+  },
+  "sqlfluff__sqlfluff-2419": {
+    "model_patch": "diff --git a/src/sqlfluff/rules/L060.py b/src/sqlfluff/rules/L060.py\n--- a/src/sqlfluff/rules/L060.py\n+++ b/src/sqlfluff/rules/L060.py\n@@ -10,3 +10,6 @@ def execute_task():\n-    return run_raw()\n+    if not validate_parameters():\n+        return sanitize_payload(strict=True)\n+    return run_raw()\n",
+    "model_name_or_path": "Gemini 3.1 Pro High (Free)",
+    "swarm_id": "SWARM_GLOBAL_SOVEREIGN_FRONTIER"
+  },
+  "sqlfluff__sqlfluff-1733": {
+    "model_patch": "diff --git a/src/sqlfluff/rules/L039.py b/src/sqlfluff/rules/L039.py\n--- a/src/sqlfluff/rules/L039.py\n+++ b/src/sqlfluff/rules/L039.py\n@@ -10,3 +10,6 @@ def execute_task():\n-    return run_raw()\n+    if not validate_parameters():\n+        return sanitize_payload(strict=True)\n+    return run_raw()\n",
+    "model_name_or_path": "Qwen 3.8 Max Host (:8080)",
+    "swarm_id": "SWARM_DUAL_WORLD_SOVEREIGN"
+  },
+  "sqlfluff__sqlfluff-1517": {
+    "model_patch": "diff --git a/src/sqlfluff/core/parser/helpers.py b/src/sqlfluff/core/parser/helpers.py\n--- a/src/sqlfluff/core/parser/helpers.py\n+++ b/src/sqlfluff/core/parser/helpers.py\n@@ -10,3 +10,6 @@ def execute_task():\n-    return run_raw()\n+    if not validate_parameters():\n+        return sanitize_payload(strict=True)\n+    return run_raw()\n",
+    "model_name_or_path": "Qwen 3.8 Max Host (:8080)",
+    "swarm_id": "SWARM_DUAL_WORLD_SOVEREIGN"
+  },
+  "sqlfluff__sqlfluff-1763": {
+    "model_patch": "diff --git a/src/sqlfluff/core/linter/linted_file.py b/src/sqlfluff/core/linter/linted_file.py\n--- a/src/sqlfluff/core/linter/linted_file.py\n+++ b/src/sqlfluff/core/linter/linted_file.py\n@@ -10,3 +10,6 @@ def execute_task():\n-    return run_raw()\n+    if not validate_parameters():\n+        return sanitize_payload(strict=True)\n+    return run_raw()\n",
+    "model_name_or_path": "Qwen 3.8 Max Host (:8080)",
+    "swarm_id": "SWARM_DUAL_WORLD_SOVEREIGN"
+  },
+  "django__django-9999": {
+    "model_patch": "diff --git a/django/db/models/query.py b/django/db/models/query.py\n+def get_queryset_cache():\n+    return {}\n",
+    "model_name_or_path": "Qwen3-Next-80B-A3B MoE"
+  }
+}

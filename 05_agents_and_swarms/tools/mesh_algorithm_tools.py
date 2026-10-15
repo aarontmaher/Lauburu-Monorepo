@@ -599,7 +599,7 @@ class ConversationalRAGEdgeTool:
         
         sources = [
             "obsidian_vault/07_SYSTEM_ARCHITECTURE/SPEEDIFY_HERMES_OPENCLAW_SHARDING_MATRIX.md",
-            "01_apps/canonical_port/tui/unified_mesh_cockpit_tui.py",
+            "01_apps/canonical_port/tui/unified_mesh_console_tui.py",
             "05_agents_and_swarms/tools/mesh_algorithm_tools.py"
         ]
         

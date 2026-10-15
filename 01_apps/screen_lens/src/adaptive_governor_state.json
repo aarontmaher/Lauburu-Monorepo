@@ -1,0 +1,289 @@
+{
+  "timestamp": 1792004772.683462,
+  "timestamp_iso": "2026-10-14T19:06:12.683494+00:00",
+  "governor_version": "2.2.0-adaptive-swarm",
+  "mesh_nodes": {
+    "l1_mac_host": {
+      "node_id": "L1_Mac_Host",
+      "name": "Mac mini M4 Pro Host",
+      "platform": "macos",
+      "action_state": "ACTIVE_MESH_OFFLOAD_BALANCING",
+      "cpu_quota_pct": 60,
+      "cpu_nice_level": 5,
+      "max_worker_threads": 4,
+      "ram_cache_trim": false,
+      "background_lora_permitted": true,
+      "cloud_batch_permitted": true,
+      "reason": "Sustained idle on AC power. Host CPU actively offloaded at 60% to balance mesh load over Thunderbolt.",
+      "telemetry_snapshot": {
+        "idle_sec": 18426.0,
+        "is_home": true,
+        "is_ac": true,
+        "battery_pct": 100.0
+      },
+      "telemetry": {
+        "node_id": "L1_Mac_Host",
+        "name": "Mac mini M4 Pro Host",
+        "platform": "macos",
+        "idle_sec": 18426.0,
+        "human_active": false,
+        "frontmost_app": "UserNotificationCenter",
+        "screen_lens_perception": {
+          "active_app": "Unknown",
+          "window_title": "N/A",
+          "frame_count": 0,
+          "healthy_services": "11/15"
+        },
+        "is_ac_power": true,
+        "battery_pct": 100.0,
+        "default_gateway": "192.168.8.1",
+        "is_home": true,
+        "location_mode": "HOME_SANCTUARY",
+        "memory_pressure_level": "Warning",
+        "darwin_memory": {
+          "total_ram_gb": 24.0,
+          "used_ram_gb": 17.81,
+          "used_pct": 74.2,
+          "app_ram_gb": 5.33,
+          "wired_ram_gb": 3.2,
+          "compressed_ram_gb": 9.27,
+          "cached_files_gb": 5.57,
+          "headroom_gb": 6.19,
+          "rule3_sanctuary_compliant": true,
+          "pressure_level": "Warning"
+        }
+      },
+      "actuation": {
+        "node_id": "L1_Mac_Host",
+        "actuation_applied": true,
+        "actions_executed": [
+          "renice 5 on pid 877",
+          "renice 5 on pid 893",
+          "renice 5 on pid 2011",
+          "renice 5 on pid 13661",
+          "renice 5 on pid 13898",
+          "renice 5 on pid 33564",
+          "renice 5 on pid 57138",
+          "renice 5 on pid 96198",
+          "Logged continuous DPO telemetry to adaptive_governor_telemetry.jsonl",
+          "Appended observation to SCREEN_LENS_LIVE_OBSERVATIONS.md"
+        ]
+      }
+    },
+    "l1b_mac_mini_m2_pro": {
+      "node_id": "L1b_Mac_Mini_M2_Pro",
+      "name": "Mac mini M2 Pro (GGUF Vault)",
+      "platform": "macos",
+      "action_state": "SUSTAINED_IDLE_RAMPED_UP",
+      "cpu_quota_pct": 100,
+      "cpu_nice_level": 0,
+      "max_worker_threads": 8,
+      "ram_cache_trim": false,
+      "background_lora_permitted": true,
+      "cloud_batch_permitted": true,
+      "reason": "Sustained idle for 24705.0s on AC power at Home. Full CPU/RAM capacity enabled for swarm compute.",
+      "telemetry_snapshot": {
+        "idle_sec": 24705.0,
+        "is_home": true,
+        "is_ac": true,
+        "battery_pct": 100.0
+      },
+      "telemetry": {
+        "node_id": "L1b_Mac_Mini_M2_Pro",
+        "name": "Mac mini M2 Pro (GGUF Vault)",
+        "platform": "macos",
+        "active_ip": "10.0.0.3",
+        "idle_sec": 24705.0,
+        "human_active": false,
+        "is_ac_power": true,
+        "battery_pct": 100.0,
+        "default_gateway": "192.168.8.1",
+        "is_home": true,
+        "location_mode": "HOME_SANCTUARY"
+      }
+    },
+    "l5_macbook_air_m4": {
+      "node_id": "L5_MacBook_Air_M4",
+      "name": "MacBook Air M4 (Metal Worker)",
+      "platform": "macos",
+      "action_state": "SUSTAINED_IDLE_RAMPED_UP",
+      "cpu_quota_pct": 100,
+      "cpu_nice_level": 0,
+      "max_worker_threads": 8,
+      "ram_cache_trim": false,
+      "background_lora_permitted": true,
+      "cloud_batch_permitted": true,
+      "reason": "Sustained idle for 22394.0s on AC power at Home. Full CPU/RAM capacity enabled for swarm compute.",
+      "telemetry_snapshot": {
+        "idle_sec": 22394.0,
+        "is_home": true,
+        "is_ac": true,
+        "battery_pct": 100.0
+      },
+      "telemetry": {
+        "node_id": "L5_MacBook_Air_M4",
+        "name": "MacBook Air M4 (Metal Worker)",
+        "platform": "macos",
+        "active_ip": "10.0.0.5",
+        "idle_sec": 22394.0,
+        "human_active": false,
+        "is_ac_power": true,
+        "battery_pct": 100.0,
+        "default_gateway": "192.168.8.1",
+        "is_home": true,
+        "location_mode": "HOME_SANCTUARY"
+      },
+      "actuation": {
+        "node_id": "L5_MacBook_Air_M4",
+        "actuation_applied": true,
+        "actions_executed": [
+          "Enforced nice +0 on background daemons at 10.0.0.5"
+        ]
+      }
+    },
+    "l8_linux_mini_cpu": {
+      "node_id": "L8_Linux_Mini_CPU",
+      "name": "Linux Mini CPU Hub (lauburu)",
+      "platform": "linux",
+      "action_state": "SUSTAINED_IDLE_RAMPED_UP",
+      "cpu_quota_pct": 100,
+      "cpu_nice_level": 0,
+      "max_worker_threads": 8,
+      "ram_cache_trim": false,
+      "background_lora_permitted": true,
+      "cloud_batch_permitted": true,
+      "reason": "Sustained idle for 9999.0s on AC power at Home. Full CPU/RAM capacity enabled for swarm compute.",
+      "telemetry_snapshot": {
+        "idle_sec": 9999.0,
+        "is_home": true,
+        "is_ac": true,
+        "battery_pct": 100.0
+      },
+      "telemetry": {
+        "node_id": "L8_Linux_Mini_CPU",
+        "name": "Linux Mini CPU Hub (lauburu)",
+        "platform": "linux",
+        "active_ip": "10.0.0.8",
+        "idle_sec": 9999.0,
+        "human_active": false,
+        "is_ac_power": true,
+        "battery_pct": 100.0,
+        "load_avg": 9.48,
+        "total_mem_mb": 31941,
+        "available_mem_mb": 15050,
+        "default_gateway": "10.0.0.2",
+        "is_home": true,
+        "location_mode": "HOME_SANCTUARY"
+      },
+      "actuation": {
+        "node_id": "L8_Linux_Mini_CPU",
+        "actuation_applied": true,
+        "actions_executed": [
+          "Enforced nice +0 on background daemons at 10.0.0.8"
+        ]
+      }
+    },
+    "gw_router": {
+      "node_id": "GW_Router",
+      "name": "GL.iNet GL-BE14000 Sovereign Gateway",
+      "platform": "openwrt_linux",
+      "action_state": "SUSTAINED_IDLE_RAMPED_UP",
+      "cpu_quota_pct": 100,
+      "cpu_nice_level": 0,
+      "max_worker_threads": 8,
+      "ram_cache_trim": false,
+      "background_lora_permitted": true,
+      "cloud_batch_permitted": true,
+      "reason": "Sustained idle for 9999.0s on AC power at Home. Full CPU/RAM capacity enabled for swarm compute.",
+      "telemetry_snapshot": {
+        "idle_sec": 9999.0,
+        "is_home": true,
+        "is_ac": true,
+        "battery_pct": 100.0
+      },
+      "telemetry": {
+        "node_id": "GW_Router",
+        "name": "GL.iNet GL-BE14000 Sovereign Gateway",
+        "platform": "openwrt_linux",
+        "active_ip": "192.168.8.1",
+        "idle_sec": 9999.0,
+        "human_active": false,
+        "is_ac_power": true,
+        "battery_pct": 100.0,
+        "load_avg": 0.89,
+        "available_mem_mb": 1352.0,
+        "wan_gateway": "100.90.8.1",
+        "is_home": true,
+        "location_mode": "HOME_SANCTUARY"
+      }
+    },
+    "l6_pixel_10_pro_xl": {
+      "node_id": "L6_Pixel_10_Pro_XL",
+      "name": "Google Pixel 10 Pro XL",
+      "status": "OFFLINE_OR_DOZE"
+    },
+    "l2_macbook_pro": {
+      "node_id": "L2_MacBook_Pro",
+      "name": "MacBook Pro Intel Vault",
+      "platform": "macos",
+      "action_state": "SUSTAINED_IDLE_RAMPED_UP",
+      "cpu_quota_pct": 100,
+      "cpu_nice_level": 0,
+      "max_worker_threads": 8,
+      "ram_cache_trim": false,
+      "background_lora_permitted": true,
+      "cloud_batch_permitted": true,
+      "reason": "Sustained idle for 18468.0s on AC power at Home. Full CPU/RAM capacity enabled for swarm compute.",
+      "telemetry_snapshot": {
+        "idle_sec": 18468.0,
+        "is_home": true,
+        "is_ac": true,
+        "battery_pct": 7.0
+      },
+      "telemetry": {
+        "node_id": "L2_MacBook_Pro",
+        "name": "MacBook Pro Intel Vault",
+        "platform": "macos",
+        "active_ip": "192.168.8.127",
+        "idle_sec": 18468.0,
+        "human_active": false,
+        "is_ac_power": true,
+        "battery_pct": 7.0,
+        "default_gateway": "192.168.8.1",
+        "is_home": true,
+        "location_mode": "HOME_SANCTUARY"
+      },
+      "actuation": {
+        "node_id": "L2_MacBook_Pro",
+        "actuation_applied": true,
+        "actions_executed": [
+          "Enforced nice +0 on background daemons at 192.168.8.127"
+        ]
+      }
+    },
+    "l3_linux_head_node": {
+      "node_id": "L3_Linux_Head_Node",
+      "name": "Linux Head Node (Ryzen)",
+      "status": "OFFLINE_OR_DOZE"
+    }
+  },
+  "swarm_summary": {
+    "total_nodes_audited": 8,
+    "online_active_nodes_count": 6,
+    "sleeping_nodes_count": 2,
+    "human_active_nodes": [],
+    "hysteresis_transition_nodes": [],
+    "ramped_up_nodes": [
+      "l1b_mac_mini_m2_pro",
+      "l5_macbook_air_m4",
+      "l8_linux_mini_cpu",
+      "gw_router",
+      "l2_macbook_pro"
+    ],
+    "battery_conserving_nodes": [],
+    "away_sanctuary_nodes": [],
+    "rule3_mac_headroom_gb": 6.19,
+    "rule3_sanctuary_compliant": true,
+    "linux_mini_offload_headroom_mb": 15050
+  }
+}

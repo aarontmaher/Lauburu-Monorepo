@@ -79,7 +79,7 @@ By integrating the **4 highest-signal benchmark pillars** and **3 unified traini
 
 ## 📊 3. Triangulated Fleet Composite Leaderboard
 
-From our live execution of [`triangulated_eval_harness.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/triangulated_eval_harness.py):
+From our live execution of [`triangulated_eval_harness.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/triangulated_eval_harness.py):
 
 | Model Name | Composite Score | SWE-bench Repo | Terminal-Bench | LiveCodeBench | CodeClash Arena |
 | :--- | :--- | :--- | :--- | :--- | :--- |

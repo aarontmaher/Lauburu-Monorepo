@@ -1,0 +1,44 @@
+{
+  "smollm2_17b": {
+    "status": "ACTIVE_PROMOTED",
+    "progress_pct": 100.0,
+    "details": "Benchmark Passed! Uncapped ELO: 19190.0",
+    "updated_at": "2026-09-10T04:52:46Z"
+  },
+  "qwen25_coder_15b": {
+    "status": "ACTIVE_PROMOTED",
+    "progress_pct": 100.0,
+    "details": "Benchmark Passed! Uncapped ELO: 19235.0",
+    "updated_at": "2026-09-10T04:52:47Z"
+  },
+  "llama32_1b": {
+    "status": "ACTIVE_PROMOTED",
+    "progress_pct": 100.0,
+    "details": "Benchmark Passed! Uncapped ELO: 19160.0",
+    "updated_at": "2026-09-10T04:52:48Z"
+  },
+  "qwen25_coder_3b": {
+    "status": "ACTIVE_PROMOTED",
+    "progress_pct": 100.0,
+    "details": "Benchmark Passed! Uncapped ELO: 19290.0",
+    "updated_at": "2026-09-10T04:52:49Z"
+  },
+  "bge_small_en_v15": {
+    "status": "ACTIVE_PROMOTED",
+    "progress_pct": 100.0,
+    "details": "Benchmark Passed! Uncapped ELO: 19250.0",
+    "updated_at": "2026-09-10T04:52:50Z"
+  },
+  "whisper_small": {
+    "status": "ACTIVE_PROMOTED",
+    "progress_pct": 100.0,
+    "details": "Benchmark Passed! Uncapped ELO: 19265.0",
+    "updated_at": "2026-09-10T04:52:51Z"
+  },
+  "qwen25_coder_05b": {
+    "status": "ACTIVE_PROMOTED",
+    "progress_pct": 100.0,
+    "details": "Benchmark Passed! Uncapped ELO: 19280.0",
+    "updated_at": "2026-09-10T04:52:52Z"
+  }
+}

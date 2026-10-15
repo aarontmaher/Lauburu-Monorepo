@@ -6,11 +6,11 @@ tags: [gemini_spark, mcp, sse, https, cloudflare, tunnel, automated]
 # 🔌 Gemini Spark MCP Live Public HTTPS Connection (2026)
 
 > **Direct Paste URL for Gemini Spark:**
-> ## `https://lauburu-preview.lhr.life/sse`
+> ## `http://127.0.0.1:9999/sse`
 
 ### 📋 How to Connect in Gemini Spark:
 1. In **Gemini Spark > Connected Apps > Set up a custom connected app**
-2. Paste: **`https://lauburu-preview.lhr.life/sse`**
+2. Paste: **`http://127.0.0.1:9999/sse`**
 3. Click **Next** -> Gemini Spark will discover all 6 local mesh tools automatically!
 
 ### 🛠️ Discovered Tools:

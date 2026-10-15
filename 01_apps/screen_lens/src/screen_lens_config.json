@@ -1,0 +1,66 @@
+{
+  "default_screen_watching_target": "all",
+  "active_screen_watching_target": "all",
+  "allowed_targets": [
+    "all",
+    "l1_mac_mini",
+    "l1a_mac_air",
+    "l1b_mac_mini_m2",
+    "l2_macbook_pro",
+    "l3_linux",
+    "l4_tablet",
+    "l5_macbook_air",
+    "l6_pixel",
+    "l7_samsung",
+    "l8_linux_mini",
+    "gw_router"
+  ],
+  "grid_layout": {
+    "columns": 3,
+    "rows": 2,
+    "cell_width": 640,
+    "cell_height": 360,
+    "refresh_interval_sec": 1.0,
+    "nodes": [
+      "l1_mac_mini",
+      "l8_linux_mini",
+      "l3_linux",
+      "l1a_mac_air",
+      "l6_pixel",
+      "l7_samsung"
+    ]
+  },
+  "nodes_metadata": {
+    "l1_mac_mini": {
+      "label": "L1: Mac Mini M4 Pro (Host)",
+      "ip": "127.0.0.1",
+      "transport": "Localhost / ScreenCaptureKit"
+    },
+    "l8_linux_mini": {
+      "label": "L8: Linux Mini (Ubuntu 'lauburu')",
+      "ip": "10.0.0.8",
+      "transport": "Thunderbolt 4 (40 Gb/s)"
+    },
+    "l3_linux": {
+      "label": "L3: Linux Head Node (AMD Ryzen 7)",
+      "ip": "192.168.8.225",
+      "transport": "LAN / Tailscale"
+    },
+    "l1a_mac_air": {
+      "label": "L1a: MacBook Air M4",
+      "ip": "100.121.202.34",
+      "transport": "Tailscale / LAN"
+    },
+    "l6_pixel": {
+      "label": "L6: Pixel 10 Pro XL",
+      "ip": "100.114.215.68",
+      "transport": "Android ADB / Termux"
+    },
+    "l7_samsung": {
+      "label": "L7: Samsung Galaxy S20+",
+      "ip": "192.168.8.157",
+      "transport": "Android ADB / Termux"
+    }
+  },
+  "last_updated": "2026-10-13T16:15:00Z"
+}

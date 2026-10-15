@@ -38,9 +38,9 @@ if os.environ.get("ENABLE_SPARK_JVM", "0") == "1":
     except Exception:
         HAS_PYSPARK = False
 
-WORKSPACE_ROOT = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
-STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/deep_pyspark_project_state.json"
+WORKSPACE_ROOT = "/Volumes/Lauburu-Monorepo"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/deep_pyspark_project_state.json"
 
 class DeepPySparkNetworkProjectAnalyser:
     def __init__(self):
@@ -302,7 +302,7 @@ class DeepPySparkNetworkProjectAnalyser:
         # Sample 1: Project Architecture
         samples.append({
             "instruction": "Explain the monorepo architecture, subpackage boundaries, and AST structure of the Lauburu AI system.",
-            "thought": "Analyze the 6 canonical subpackages in /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo. Detail the separation of concerns: self_healing_hub manages orchestration and WebSockets, movesense_hub processes 12-axis IMU/ECG biometrics, device_doctor manages thermals, apps provides mobile clients, scripts houses 5-way RPC sharding, and .agents contains continuous LoRA fine-tuning rules.",
+            "thought": "Analyze the 6 canonical subpackages in /Volumes/Lauburu-Monorepo. Detail the separation of concerns: self_healing_hub manages orchestration and WebSockets, movesense_hub processes 12-axis IMU/ECG biometrics, device_doctor manages thermals, apps provides mobile clients, scripts houses 5-way RPC sharding, and .agents contains continuous LoRA fine-tuning rules.",
             "solution": f"The Lauburu Monorepo contains {project_org['summary']['total_files']} files ({project_org['summary']['total_loc']} LOC, {project_org['summary']['total_functions']} AST functions) divided into 6 modular domains: 1. self_healing_hub (Orchestration/UI), 2. movesense_hub (Biometrics DSP), 3. device_doctor (Thermals/OS limits), 4. apps (Cross-platform clients), 5. scripts (5-way RPC sharding), and 6. .agents (LoRA training & Swarm rules).",
             "metadata": {"source": "DeepPySpark_AST_Scan", "timestamp": timestamp, "pillar": "Data_Analysis"}
         })

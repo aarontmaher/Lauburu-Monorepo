@@ -59,5 +59,5 @@ exit_code: 0
    - 80% battery charging clamps, Doze mode whitelist regex validation, and automated 5G cellular hotspot failover.
 3. **Dual-Plane Local AI Debate Co-Pilot (`ai_debate_copilot.py`):**
    - Side-by-side terminal pane comparing Port 8081 (Qwen Coder) against Port 8083 (Abliterated Devil's Advocate) before running shell commands or git commits.
-4. **Multi-WAN & 10Gbps Thunderbolt 4 Telemetry (`multiwan_telemetry.py`):**
+4. **Multi-WAN & 40Gbps Thunderbolt 4 Telemetry (`multiwan_telemetry.py`):**
    - Live hardware counter monitoring `bridge0` (0.27ms RTT), `en0`, `en1`, and Tailscale WireGuard.

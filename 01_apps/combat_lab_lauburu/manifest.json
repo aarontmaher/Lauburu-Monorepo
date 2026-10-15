@@ -1,0 +1,27 @@
+{
+  "name": "Combat Lab Lauburu",
+  "short_name": "Combat Lab",
+  "description": "Precision Combat Biometrics, 512Hz ECG & Optical PPG Blood Pressure Connector",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "/combat_lab_lauburu",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#c5a059",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["sports", "health", "fitness", "medical"]
+}

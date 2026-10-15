@@ -36,8 +36,8 @@ def _get_workspace_root() -> Path:
     if env_root and os.path.exists(env_root):
         return Path(env_root)
     candidates = [
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
+        Path("/Volumes/Lauburu-Monorepo"),
+        Path("/Volumes/Lauburu-Monorepo"),
         Path(__file__).resolve().parent.parent,
         Path(__file__).resolve().parent.parent.parent,
         Path.cwd()
@@ -53,7 +53,7 @@ def _get_workspace_root() -> Path:
     for c in candidates:
         if c.exists():
             return c
-    return Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+    return Path("/Volumes/Lauburu-Monorepo")
 
 
 WORKSPACE_ROOT = _get_workspace_root()

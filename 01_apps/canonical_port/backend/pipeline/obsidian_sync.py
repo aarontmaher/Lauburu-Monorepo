@@ -187,7 +187,7 @@ class ObsidianVaultSyncEngine:
                 "- [[LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX]]\n"
                 "- [[Mac_Node]]\n"
                 "- [[MacBook_Pro]]\n"
-                "- [[Linux_Head_Node]]\n"
+                "- [[Linux_Mini]]\n"
                 "- [[Linux_Tablet]]\n"
                 "- [[MacBook_Air]]\n"
                 "- [[Pixel_10_Pro_XL]]\n"

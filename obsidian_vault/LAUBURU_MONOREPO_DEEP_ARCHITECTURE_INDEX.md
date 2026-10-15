@@ -21,7 +21,7 @@ canonical_source: true
 # Lauburu Monorepo Deep Architecture Index
 
 > **MapReduce Distributed Indexing Pipeline Report**  
-> **Scan Root:** `/Users/aaron/DFS_UNIFIED`  
+> **Scan Root:** `/Volumes/Lauburu-Monorepo`  
 > **Execution Duration:** `4.48s` | **Files Indexed:** `22,041` | **Total Lines:** `5,057,214` (`409.59 MB`)  
 > **Generated:** `2026-08-26T05:52:28.196116+00:00`  
 
@@ -35,7 +35,7 @@ The Lauburu distributed ecosystem is partitioned across 7 canonical infrastructu
 |:---|:---|:---|:---|:---:|:---:|:---:|
 | `[[00_core_infrastructure]]` | **Core Infrastructure & Storage** | Qwen 2.5 Coder 32B (Q4_K_M) | Linux Head Node (100.101.39.98) | `12` | `966` | `0.03 MB` |
 | `[[01_apps]]` | **Applications & Ecosystem UI** | Qwen 2.5 Coder 32B | Mac Mini M4 Pro / Mac Studio | `1,581` | `146,829` | `23.40 MB` |
-| `[[02_ai_models_and_inference]]` | **Distributed AI & Compute Mesh** | DeepSeek R1 32B / Bloom 560M / Mistral 7B | Pooled 82.8 GB VRAM across 8 Devices | `0` | `0` | `0.00 MB` |
+| `[[02_ai_models_and_inference]]` | **Distributed AI & Compute Mesh** | Sovereign Duo (8082/8083) / GGUF Vault | Pooled 108.4 GB AI VRAM (139.0 GB RAM) across 8 Devices | `0` | `0` | `0.00 MB` |
 | `[[03_biometrics_and_telemetry]]` | **Biometrics & Medical-Grade DSP** | Gemini 3.7 Flash High / Python DSP | Movesense HR+ / Pixel 10 Pro / Mac Mini | `0` | `0` | `0.00 MB` |
 | `[[04_data_and_memory]]` | **Data, Memory & Cloud Sync** | Kimi Tandem / Qdrant | 1.7 TB SeaweedFS / Google Drive | `4` | `100` | `29.47 MB` |
 | `[[05_agents_and_swarms]]` | **Swarm Governance & Genetic MoE** | Tri-Orchestrator (Gemini Pro, Flash, Kimi, Qwen) | Multi-Node Swarm Mesh | `17,858` | `4,418,908` | `175.50 MB` |
@@ -48,7 +48,7 @@ The Lauburu distributed ecosystem is partitioned across 7 canonical infrastructu
 
 ```mermaid
 graph TD
-    Root["/Users/aaron/DFS_UNIFIED<br/>1.7 TB SeaweedFS DFS"] --> P0["00_core_infrastructure<br/>Storage, MinIO, Docker"]
+    Root["/Volumes/Lauburu-Monorepo<br/>1.7 TB SeaweedFS DFS"] --> P0["00_core_infrastructure<br/>Storage, MinIO, Docker"]
     Root --> P1["01_apps<br/>Port 4000, Movesense, Quartz"]
     Root --> P2["02_ai_models_and_inference<br/>llama.cpp, Petals, Exo"]
     Root --> P3["03_biometrics_and_telemetry<br/>ECG, PTT BP, DSP"]
@@ -404,7 +404,7 @@ Multi-interface channel bonding and zero-trust WireGuard overlay parameters:
 
 | Transport Layer | Interface / Port | Physical Protocol | Capacity | Latency (RTT) | Scheduling Weight / Role | Canonical Note |
 |:---|:---|:---|:---:|:---:|:---:|:---|
-| **Thunderbolt 4 DMA** | `bridge0` (MTU 9000) | PCIe DMA Ring Bridge | 40,000 Mbps | `0.27ms` | **60% Weight** (Primary AI Shard) | [[SPEEDIFY_MULTIPATH_TUN_TAP_BONDING_ENGINE]] |
+| **Thunderbolt 4 DMA** | `bridge0` (MTU 9000) | PCIe DMA Bridge (L1↔L8) | 40,000 Mbps | `0.38ms` | **TB4 Co-Processor** (Primary AI Shard Hub) | [[CANONICAL_PROJECT_AND_STORAGE_RULE]] |
 | **1GbE / 10GbE Ethernet** | `en0` / `enx*` (MTU 1500) | IEEE 802.3ab Twisted Pair | 1,000 Mbps | `0.90ms` | **25% Weight** (High-Throughput Sync) | [[SPEEDIFY_MULTIPATH_TUN_TAP_BONDING_ENGINE]] |
 | **Wi-Fi 7 MLO** | `en1` (MTU 1500) | IEEE 802.11be Multi-Link | 2,400 Mbps | `2.10ms` | **15% Weight** (Wireless Roaming) | [[SPEEDIFY_MULTIPATH_TUN_TAP_BONDING_ENGINE]] |
 | **Tailscale WireGuard** | `:41641` (MTU 1280) | Noise Protocol / ChaCha20 | Line-Rate | `1.4–80ms` | Zero-Trust L3 Overlay (`100.64.0.0/10`) | [[LIGHTWEIGHT_WIREGUARD_DERP_MESH_SPEC]] |
@@ -414,19 +414,20 @@ Multi-interface channel bonding and zero-trust WireGuard overlay parameters:
 
 ## 5. Hardware Pooling & VRAM Topology Matrix
 
-The 8-node verified hardware matrix providing **82.8 GB Pooled VRAM**:
+The verified multi-node hardware matrix providing **115.8 GB Pooled VRAM** across the mesh:
 
 | Node Identifier | Tailscale IP | Local LAN IP | Processor & NPU | Total RAM | Pooled AI VRAM | Primary Sharded Role |
 |:---|:---:|:---|:---|:---:|:---:|:---|
-| **Mac Mini M4 Pro** | `100.119.199.76` | `192.168.8.127` | Apple M4 Pro (14-Core CPU, 20-Core GPU) | 24.0 GB | **21.6 GB** | RPC Head / Primary Shard Coordinator |
-| **MacBook Pro M1 Max** | `100.103.212.21` | `192.168.8.224` | Apple M1 Max (10-Core CPU, 32-Core GPU) | 32.0 GB | **14.0 GB** | Tensor Shard Worker 1 |
-| **MacBook Air M2** | `100.93.158.96` | `192.168.8.125` | Apple M2 (8-Core CPU, 10-Core GPU) | 16.0 GB | **13.5 GB** | Tensor Shard Worker 2 |
-| **Linux Head Node** | `100.101.39.98` | `192.168.8.126` | AMD Ryzen 9 / RTX 4090 & DDR5 | 32.0 GB | **24.0 GB** | Heavy Compute / LoRA Distillation |
-| **Linux Tablet (Debian)** | `100.91.85.70` | `192.168.8.128` | Intel Core i7 (Iris Xe Graphics) | 16.0 GB | **6.0 GB** | FastSSH / Telemetry Sensor Node |
-| **Pixel 10 Pro** | `100.73.38.87` | `192.168.8.129` | Google Tensor G5 NPU (Android 15) | 16.0 GB | **2.5 GB** | Edge Draft Model Speculative Proposer |
-| **Samsung Galaxy S20** | `100.84.40.95` | `192.168.8.130` | Snapdragon 865 (Termux Edge) | 8.0 GB | **1.2 GB** | Movesense ECG & Bluetooth Ingestion |
-| **GL.iNet BE3600 Router** | `100.122.185.123`| `192.168.8.1` | MediaTek MT7981 Filogic 820 | 0.5 GB | **0.0 GB** | Packet Bonding Edge Gateway ($O(1)$ Ring) |
-| **CLUSTER TOTAL** | — | — | **8 Heterogeneous Nodes** | **144.5 GB** | **82.8 GB** | **Zero-Mock Unified AI Supercomputer** |
+| **Mac Mini M4 Pro (L1)** | `100.119.199.76` | `192.168.8.143` / `.230` | Apple M4 Pro (8P+4E CPU, 16-Core GPU) | 24.0 GB | **19.2 GB** | Primary Host & Memory Governor |
+| **Linux Mini (lauburu - L8)** | `100.121.247.8` | `10.0.0.8` (TB) / `192.168.8.242` | Intel Core i7-8700B (6C/12T) Ubuntu 24.04 | 32.0 GB | **27.2 GB** | 40Gbps TB4 DMA Hub (0.38ms RTT) & GGUF Storage |
+| **MacBook Pro (L2 / L1c)** | `100.103.212.21` | `192.168.8.127` | Intel Core i7-9750H (6C/12T, 16 GB) | 16.0 GB | **14.0 GB** | Screen Lens Sovereign Teacher Target (Unlinked TB) |
+| **Linux Head Node (L3)** | `100.101.39.98` | `192.168.8.225` | AMD Ryzen 7 5700U (8C/16T, 15 GB) | 15.0 GB | **12.0 GB** | Docker Engine, SeaweedFS DFS, Qdrant Vector DB |
+| **MacBook Air M4 (L5 / L1a)**| `100.121.202.34` | `192.168.8.248` | Apple M4 (4P+6E CPU, 10-Core GPU) | 16.0 GB | **14.0 GB** | Metal Performance Shaders / LoRA Distillation |
+| **Linux Tablet (Debian - L4)**| `100.99.210.89` | `192.168.8.176` (Port 2) | Debian Linux (Wired Eth 0.95ms RTT) | 8.0 GB | **6.0 GB** | Touch DSP & Bedside TUI Terminal |
+| **Pixel 10 Pro XL (L6)** | `100.114.215.68`| `192.168.8.213` | Google Tensor G5 Edge TPU (16 GB) | 16.0 GB | **13.6 GB** | Screen Lens VLA, Termux SSH (:8022), KDE (:1716) |
+| **Samsung Galaxy S20+ (L7)** | `100.78.206.96` | `192.168.8.130` | Samsung Exynos 990 (12 GB) | 12.0 GB | **9.0 GB** | Dedicated Automated UI Tester & ADB Bridge |
+| **GL.iNet Gateway (GW)** | `100.70.123.123`| `192.168.8.1` | GL-BE14000 (2.5G NBN WAN eth2, Wi-Fi 7) | 2.0 GB | **0.0 GB** | Core Gateway & Hardware USB ADB Bridge |
+| **CLUSTER TOTAL** | — | — | **Heterogeneous Mesh** | **139.0 GB** | **115.8 GB** | **Zero-Mock Unified AI Mesh** |
 
 ---
 

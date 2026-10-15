@@ -22,7 +22,7 @@ tags: [docker, inventory, microservices, containerization, loop]
 | `00_core_infrastructure/docker-compose.master.yml` | **Master Production Stack:** Unified Portal (:4000), Qdrant Vector DB (:6333), SeaweedFS Filer (:8888/:9333), Portainer CE (:9000/:9443). | **ACTIVE (Canonical)** |
 | `00_core_infrastructure/netbird_mesh/docker-compose.yml` | **NetBird Mesh Overlay:** Management (:33073), Dashboard (:8087), Signal (:10000), Coturn STUN/TURN (:3478). | **ACTIVE (Dual-Stack)** |
 | `00_core_infrastructure/docker/docker-compose.dfs*.yml` | **SeaweedFS Distributed Storage:** Node-specific volumes (`m4-mini`, `linux-head`, `macbook-pro`) for unified DFS. | **MODULAR / HA** |
-| `00_core_infrastructure/docker/docker-compose.nas-tb4.yml` | **Thunderbolt 4 NAS & Samba:** High-speed 10Gbps storage bridge container. | **MODULAR** |
+| `00_core_infrastructure/docker/docker-compose.nas-tb4.yml` | **Thunderbolt 4 NAS & Samba:** High-speed 40Gbps storage bridge container. | **MODULAR** |
 | `00_core_infrastructure/docker/docker-compose.syncthing.yml` | **Syncthing P2P:** Zero-cloud peer-to-peer file synchronization between nodes. | **STANDBY** |
 | `00_core_infrastructure/docker/docker_mcp_bridge.py` | **Docker MCP Bridge:** Integrates container inspection with Antigravity AI agents & training loops. | **ACTIVE** |
 | `00_core_infrastructure/router_ai_daemon/Dockerfile` | **OpenWrt GL.iNet Daemon:** Lightweight MIPS/ARM container for hardware router telemetry & USB overrides. | **EMBEDDED** |

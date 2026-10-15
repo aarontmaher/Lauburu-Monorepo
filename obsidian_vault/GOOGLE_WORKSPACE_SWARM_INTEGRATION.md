@@ -22,8 +22,8 @@ The integration automates high-frequency biometrics telemetry streaming, out-of-
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
 │                               7-LAYER LAUBURU PHYSICAL MESH                                 │
 ├─────────────────────────────────────────────────────────────────────────────────────────────┤
-│  L1: Mac_Node (Host M4 Pro) ──── [10Gbps TB4 0.27ms RTT] ──── L2: MacBook_Pro (Storage Vault)│
-│  L3: Linux_Head_Node (Gateway)   L4: Linux_Tablet (Touch DSP) L5: MacBook_Air (MPS LoRA)    │
+│  L1: Mac_Node (Host M4 Pro) ──── [40Gbps TB4 0.27ms RTT] ──── L2: MacBook_Pro (Storage Vault)│
+│  L3: Linux_Mini (Gateway)   L4: Linux_Tablet (Touch DSP) L5: MacBook_Air (MPS LoRA)    │
 │  L6: Pixel_10_Pro_XL (Edge TPU)  L7: Samsung_S20 (ADB UI)     GW: GL.iNet Router (Hardware) │
 │                                                                                             │
 │  Tri-Vault: [Obsidian Vault] ─────── [PySpark Data Lake] ─────── [GitHub Monorepo Worktree] │
@@ -67,18 +67,19 @@ The Lauburu Mesh pools computing resources across 7 physical layers, governed by
 | Layer | Node Name | Network Role | Local IP | Tailscale IP | Total RAM | Usable AI VRAM | Dynamic Ceiling | Primary Responsibility |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **L1** | `Mac_Node` | Primary Host & Memory Governor | `192.168.8.230` | `100.119.199.76` | 24.0 GB | 21.6 GB | $\le$ 90.0% | Prompt Ingestion, DWD Gateway (:18802), Master Memory Governor |
-| **L2** | `MacBook_Pro` | Metal GPU RPC & Storage Vault | `192.168.8.127` | `100.103.212.21` (TB4: `169.254.187.138`) | 16.0 GB | 14.0 GB | $\le$ 90.0% | **10Gbps TB4 Bridge (0.277ms RTT)**, 285 GB SSD Model Vault |
-| **L3** | `Linux_Head_Node` | Gateway Ingress & Compute Hub | `192.168.8.224` | `100.101.39.98` | 16.0 GB | 12.8 GB | $\le$ 80.0% | Docker Engine, Ingress Router, Apache Ray / Petals DHT |
-| **L4** | `Linux_Tablet` | Mobile Linux Compute & Touch DSP | DHCP | `100.81.92.125` | 8.0 GB | 6.0 GB | $\le$ 75.0% | Lightweight Biometrics Ingestion, Petals Secondary Worker |
-| **L5** | `MacBook_Air` | Secondary High-Speed Metal Worker | `192.168.8.222` | `100.93.158.96` | 16.0 GB | 14.0 GB | $\le$ 90.0% | Apple Silicon Metal Performance Shaders, LoRA Distillation |
-| **L6** | `Pixel_10_Pro_XL` | 8K Vision Stream & Edge TPU | DHCP | `100.73.38.87` | 16.0 GB | 13.6 GB | $\le$ 85.0% | Tensor G5 Edge TPU, 8K Camera Stream, UWB 3D Positioning |
-| **L7** | `Samsung_S20` | Dedicated Automated UI Tester | DHCP | `100.84.40.95` | 12.0 GB | 9.0 GB | $\le$ 75.0% | Router USB ADB Daemon, Automated UI Stress Tester |
-| **GW** | `GL.iNet Router` | Core Gateway & Hardware USB Bridge | `192.168.8.1` | `100.122.185.123` | Embedded | -- | 100.0% | Wi-Fi 7 SSID `GL-MT3600BE-a0f-MLO`, Hardware USB ADB Bus Daemon |
+| **L2** | `MacBook_Pro` | Desktop Automation Worker | `192.168.8.127` | `100.103.212.21` | 16.0 GB | 14.4 GB | $\le$ 90.0% | Screen Lens Sovereign Teacher Target, Unlinked from TB4 |
+| **L8** | `Linux_Mini (lauburu)` | TB4 DMA Hub & Compute Node | `10.0.0.8` (TB) / `192.168.8.242` | `100.121.247.8` | 32.0 GB | 27.2 GB | $\le$ 85.0% | **40Gbps TB4 Bridge (0.38ms RTT)**, Model Vault GGUF Storage |
+| **L3** | `Linux_Head_Node` | Gateway Ingress & Compute Hub | `192.168.8.225` | `100.101.39.98` | 15.0 GB | 12.0 GB | $\le$ 80.0% | Docker Engine, Ingress Router, Apache Ray / SeaweedFS DFS |
+| **L4** | `Linux_Tablet` | Mobile Linux Compute & Touch DSP | `192.168.8.176` (Port 2) | `100.99.210.89` | 8.0 GB | 6.0 GB | $\le$ 75.0% | Lightweight Biometrics Ingestion, Petals Secondary Worker |
+| **L5** | `MacBook_Air` | Secondary High-Speed Metal Worker | `192.168.8.248` | `100.121.202.34` | 16.0 GB | 14.4 GB | $\le$ 90.0% | Apple Silicon Metal Performance Shaders, LoRA Distillation |
+| **L6** | `Pixel_10_Pro_XL` | 8K Vision Stream & Edge TPU | `192.168.8.213` | `100.114.215.68` | 16.0 GB | 13.6 GB | $\le$ 85.0% | Tensor G5 Edge TPU, 8K Camera Stream, UWB 3D Positioning |
+| **L7** | `Samsung_S20` | Dedicated Automated UI Tester | `192.168.8.130` | `100.78.206.96` | 12.0 GB | 9.0 GB | $\le$ 75.0% | Router USB ADB Daemon, Automated UI Stress Tester |
+| **GW** | `GL.iNet Router` | Core Gateway & Hardware USB Bridge | `192.168.8.1` | `100.70.123.123` | 2.0 GB | -- | 100.0% | 2.5G NBN WAN (`eth2`), Hardware USB ADB Bus Daemon |
 
 **Pooled Cluster Metrics:**
-- **Total Physical RAM:** `108.0 GB`
-- **Total Usable Pooled AI VRAM:** `82.8 GB` (Max Safe Capacity: `91.0 GB`)
-- **Thunderbolt 4 Direct Link:** `10 Gbps` Bandwidth | `0.277 ms` Ping RTT
+- **Total Physical RAM:** `139.0 GB`
+- **Total Usable Pooled AI VRAM:** `115.8 GB`
+- **Thunderbolt 4 Direct Link:** `40 Gbps` Bandwidth to L8 (`lauburu`) | `0.38 ms` Ping RTT
 
 ---
 
@@ -97,7 +98,7 @@ The Lauburu Mesh pools computing resources across 7 physical layers, governed by
 ### 3.2 Subsystem 2: Google Chat Bridge & Card v2 Builders (`google_workspace_swarm.chat`)
 - **Card v2 JSON Builders:** Production builders conforming to Google Chat API v1 Card v2 schema:
   - `build_debate_card`: Announces Tri-Orchestrator debate consensus, voting breakdown, confidence score ($\kappa > 0.950$), and interactive LoRA trigger buttons.
-  - `build_hardware_pulse_card`: Displays 7-layer RAM/VRAM utilization (82.8 GB pool), 10Gbps TB4 latency ($0.277\text{ms}$), and node availability.
+  - `build_hardware_pulse_card`: Displays 7-layer RAM/VRAM utilization (82.8 GB pool), 40Gbps TB4 latency ($0.277\text{ms}$), and node availability.
   - `build_biometrics_alert_card`: Visualizes Movesense 512Hz QRS detection, HR/HRV (RMSSD), and DFA-$\alpha_1$ aerobic threshold status.
   - `build_lora_milestone_card`: Tracks 24/7 continuous LoRA distillation loss convergence, step progress, and target checkpoints.
 - **Webhook Dispatcher:** High-throughput client with token-bucket rate limiting ($0.8\text{ req/s}$), full-jitter exponential backoff retry on HTTP 429/503, and `threadKey` context grouping.
@@ -108,8 +109,8 @@ The Lauburu Mesh pools computing resources across 7 physical layers, governed by
 - **HTTP 308 Resume Recovery:** Automatically queries byte range status on network drops using `PUT Content-Range: bytes */total` to resume without re-uploading completed chunks.
 - **Dual-Hash Cryptographic Parity:** Verifies remote file integrity by comparing Google Drive server MD5 hashes and local SHA-256 digests stored in Google Drive `appProperties`.
 - **Bidirectional Tri-Vault Mirroring:** Synchronizes local storage layers with Google Drive targets:
-  - `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault` $\longleftrightarrow$ `MacBook_Air_Headless_Backup_2026/`
-  - `/Users/aaron/DFS_UNIFIED/lora_datasets` $\longleftrightarrow$ `Lauburu_AI_Memory/`
+  - `/Volumes/Lauburu-Monorepo/obsidian_vault` $\longleftrightarrow$ `MacBook_Air_Headless_Backup_2026/`
+  - `/Volumes/Lauburu-Monorepo/04_data_and_memory/data` $\longleftrightarrow$ `Lauburu_AI_Memory/`
 
 ### 3.4 Subsystem 4: Google Sheets Telemetry & Looker Studio (`google_workspace_swarm.sheets`)
 - **2-Second Micro-Batch Streaming:** Queues high-frequency sensor readings into 2.0-second micro-batches, executing exactly 30 write requests/minute (10% of Google's 300 QPM project limit).
@@ -132,7 +133,7 @@ The Lauburu Mesh pools computing resources across 7 physical layers, governed by
   - *Cloud Shadow Orchestrator (Gemini 3.7 Flash High):* Deep CoT verification and invariant analysis.
   - *Real Abliterated Devil's Advocate (Port 8083 Huihui-Qwen3.8-27B, Port 8082 Nemo 12B, Port 8085 Nemotron 70B):* Zero-restriction adversarial stress-testing.
 - **3-Judge Blind Deliberative Council:** Evaluates each turn across 5 pillars: AST Syntax (25%), Reasoning Depth (25%), Token Economy (20%), Defensive Safety (15%), and Rule #0 Truth (15%).
-- **24/7 LoRA Dataset Serializer:** Converts ratified accords into high-fidelity HuggingFace SFT ChatML pairs (`instruction`, `input`, `output`, `system_prompt`) and TRL DPO preference pairs (`prompt`, `chosen`, `rejected`) written directly to `/Users/aaron/DFS_UNIFIED/lora_datasets/`.
+- **24/7 LoRA Dataset Serializer:** Converts ratified accords into high-fidelity HuggingFace SFT ChatML pairs (`instruction`, `input`, `output`, `system_prompt`) and TRL DPO preference pairs (`prompt`, `chosen`, `rejected`) written directly to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/`.
 
 ---
 
@@ -145,12 +146,12 @@ The system preserves all architectural decisions, telemetry logs, and machine le
 │                        TRI-VAULT STORAGE SYNCHRONIZATION                               │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │ 1. OBSIDIAN KNOWLEDGE VAULT (Human & Semantic Core)                                    │
-│    • Path: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/                   │
+│    • Path: /Volumes/Lauburu-Monorepo/obsidian_vault/                   │
 │    • Mirrors to: Google Drive "MacBook_Air_Headless_Backup_2026/"                      │
 │    • Content: Architecture RFCs, AI Debate records, network topologies                 │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │ 2. PYSPARK & BIG DATA LAKE (High-Throughput Datasets)                                  │
-│    • Path: /Users/aaron/DFS_UNIFIED/lora_datasets/ & 04_data_and_memory/               │
+│    • Path: /Volumes/Lauburu-Monorepo/04_data_and_memory/data/ & 04_data_and_memory/               │
 │    • Mirrors to: Google Drive "Lauburu_AI_Memory/"                                     │
 │    • Content: 24/7 LoRA instruction pairs, DPO preference datasets, Pan-Tompkins ECG   │
 ├────────────────────────────────────────────────────────────────────────────────────────┤

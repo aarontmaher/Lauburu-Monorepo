@@ -13,7 +13,7 @@ vault_layer: "1. Obsidian Knowledge Core"
 │                     CANONICAL 7-LAYER LAUBURU MESH NETWORK OPTIMIZER                             │
 ├──────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ • 61 Changeable & Modifiable Parameters Across 6 High-Performance Subsystems                    │
-│ • Dynamic Bandwidth-Delay Product (BDP) Engine for 10Gbps Thunderbolt 4, Wi-Fi 7 & Tailscale    │
+│ • Dynamic Bandwidth-Delay Product (BDP) Engine for 40Gbps Thunderbolt 4, Wi-Fi 7 & Tailscale    │
 │ • Real-Time Empirical Micro-Benchmarking (Sub-Millisecond RTT, Jitter, Handshake, Throughput)    │
 │ • Tri-Orchestrator AI Debate Consensus (>0.98 Mathematical Agreement, Pinned Abliterated Advocate) │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
@@ -25,7 +25,7 @@ vault_layer: "1. Obsidian Knowledge Core"
 
 In distributed AI model sharding and multi-agent swarm computation (pooling **108.0 GB RAM / 82.8 GB VRAM** across 7 physical nodes), the default operating system network configurations act as severe throughput bottlenecks and latency multipliers. 
 
-Default macOS (Darwin/XNU) and Linux kernel network stacks are tuned conservatively for generic web browsing over high-loss, low-bandwidth WAN connections. When deployed across high-speed asymmetric links—such as our **10Gbps Thunderbolt 4 DMA Bridge (0.28ms RTT)** and **Wi-Fi 7 Multi-Link Operation (2.0ms RTT)**—stock parameters artificially throttle data transfer to a fraction of hardware line-rate.
+Default macOS (Darwin/XNU) and Linux kernel network stacks are tuned conservatively for generic web browsing over high-loss, low-bandwidth WAN connections. When deployed across high-speed asymmetric links—such as our **40Gbps Thunderbolt 4 DMA Bridge (0.28ms RTT)** and **Wi-Fi 7 Multi-Link Operation (2.0ms RTT)**—stock parameters artificially throttle data transfer to a fraction of hardware line-rate.
 
 ### 1.1 The Fundamental Bandwidth-Delay Product (BDP) Formula
 
@@ -252,7 +252,7 @@ $$\text{Required Socket Buffer (Bytes)} = BDP \times \text{Safety Factor } (\gam
 
 #### 42. `linux.node.netdev_max_backlog`
 - **Default Value:** `1000` | **Optimized Presets:** `10000`.
-- **Mechanism:** Prevents packet drops on the interface ring buffer during bursty 10Gbps tensor exchanges on AMD Ryzen 7 node.
+- **Mechanism:** Prevents packet drops on the interface ring buffer during bursty 40Gbps tensor exchanges on AMD Intel 2018 Mac Mini node.
 
 #### 43. `linux.node.tcp_tw_reuse`
 - **Default Value:** `0` | **Optimized Presets:** `1` (Enabled).
@@ -294,7 +294,7 @@ $$\text{Required Socket Buffer (Bytes)} = BDP \times \text{Safety Factor } (\gam
 
 ## 🔒 4. Safety Guardrails & 1-Click Rollback Protocols
 
-1. **Automated Baseline Snapshot:** The engine captures the exact factory state of all sysctls and interface properties to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/network/sysctl_stock_baseline.json` on first launch.
+1. **Automated Baseline Snapshot:** The engine captures the exact factory state of all sysctls and interface properties to `/Volumes/Lauburu-Monorepo/data/network/sysctl_stock_baseline.json` on first launch.
 2. **1-Click Factory Reset:** Pressing `⚖️ Reset Stock` in the TUI or running `python3 system_settings_optimizer.py --restore` executes an idempotent rollback, restoring all parameters to factory defaults in <100ms.
 3. **Boundary Clamp Validation:** All parameter adjustments are rigorously validated against `min_value` and `max_value` constraints before generating kernel execution commands.
 4. **Interface Isolation:** MTU 9000 Jumbo Frames are strictly confined to `bridge0` (Thunderbolt 4) and 10GbE interfaces. Tailscale WireGuard virtual tunnels are permanently clamped to $\le 1380$ to prevent double-encapsulation blackholes.
@@ -310,4 +310,4 @@ $$\text{Required Socket Buffer (Bytes)} = BDP \times \text{Safety Factor } (\gam
   1. *Risk of kernel mbuf exhaustion from oversized buffers:* Resolved by binding buffer allocations strictly to computed BDP formulas with a $4\times$ max headroom ceiling.
   2. *Risk of PMTUD blackholes on virtual tunnels:* Resolved by enforcing strict interface-level MTU clamping (1380 on `utunX`).
   3. *Risk of Nagle deadlocks with Delayed ACK:* Resolved by pairing `delayed_ack=0` with `TCP_NODELAY` across all local RPC sockets.
-- **LoRA Dataset Persistence:** Harvested and serialized to `/Users/aaron/DFS_UNIFIED/lora_datasets/network_optimization_lora.jsonl`.
+- **LoRA Dataset Persistence:** Harvested and serialized to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/network_optimization_lora.jsonl`.

@@ -162,7 +162,7 @@ The TUI aggregates live telemetry metrics across the entire 8-node physical mesh
 | **Mac Mini M4 Pro** | Apple M4 Pro (14C CPU / 20C GPU) | macOS Darwin (Master) | 24.0 GB | **21.6 GB** | 40 Gbps (Internal UMA) | 0.01 ms |
 | **MacBook Pro M1 Max** | Apple M1 Max (10C CPU / 32C GPU) | macOS Darwin (Worker 1)| 32.0 GB | **14.0 GB** | 40 Gbps (TB4 DMA) | 0.27 ms |
 | **MacBook Air M2** | Apple M2 (8C CPU / 10C GPU) | macOS Darwin (Worker 2)| 16.0 GB | **13.5 GB** | 2.4 Gbps (Wi-Fi 7) | 1.80 ms |
-| **Linux Head Node** | AMD Ryzen 9 7950X / RTX 4090 | Ubuntu Linux (Compute)| 32.0 GB | **24.0 GB** | 10 Gbps (Ethernet) | 0.90 ms |
+| **Linux Head Node** | Intel 2018 Mac Mini / RTX 4090 | Ubuntu Linux (Compute)| 32.0 GB | **24.0 GB** | 10 Gbps (Ethernet) | 0.90 ms |
 | **Linux Tablet** | Intel Core i7-1260P / Iris Xe | Debian Linux (Sensor) | 16.0 GB | **6.0 GB** | 1.0 Gbps (Ethernet) | 1.10 ms |
 | **Pixel 10 Pro** | Google Tensor G5 NPU | Android 15 / Termux | 16.0 GB | **2.5 GB** | 1.2 Gbps (Wi-Fi 6E) | 3.50 ms |
 | **Galaxy S20** | Qualcomm Snapdragon 865 | Android 13 / Termux | 8.0 GB | **1.2 GB** | 866 Mbps (Wi-Fi 6) | 4.20 ms |

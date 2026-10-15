@@ -42,8 +42,8 @@ PRISTINE_DEVICES = {
   },
   "Samsung_S20": {
     "use_ssh": True,
-    "device_id": "100.84.40.95:5555",
-    "ssh_host": "100.84.40.95",
+    "device_id": "100.78.206.96:5555",
+    "ssh_host": "100.78.206.96",
     "ssh_port": 8022,
     "ssh_user": "u0_a420",
     "ssh_key": "~/.ssh/id_ed25519",

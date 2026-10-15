@@ -124,7 +124,7 @@ def test_mesh_node_ip_invariants():
     
     assert peers_by_name["Mac_Node"] == "100.119.199.76"
     assert peers_by_name["MacBook_Pro"] == "100.103.212.21"
-    assert peers_by_name["Linux_Head_Node"] == "100.101.39.98"
+    assert peers_by_name["Linux_Mini"] == "100.101.39.98"
     assert peers_by_name["Linux_Tablet"] == "100.81.92.125"
     assert peers_by_name["MacBook_Air"] == "100.93.158.96"
     assert peers_by_name["Pixel_10_Pro_XL"] == "100.73.38.87"

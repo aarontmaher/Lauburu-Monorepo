@@ -15,7 +15,7 @@ tags: [genetic_algorithm, ai_optimization, omni_sharding, prima_cpp, llama_rpc, 
 | Domain Aspect | Evolutionary Parameter | Optimized Champion Value | Optimization Rationale |
 |---|---|---|---|
 | **AI Sharding Engine** | Sharding Protocol | **PRIMA_PRP_RING** | Maximum pipelined throughput with zero lock contention. |
-| **Node Topology** | Sharding Hardware Topology | **3_mac_tb4** ((34, 23, 23)) | Sharded across 3-Mac 10Gbps TB4 ring (40.0 t/s). |
+| **Node Topology** | Sharding Hardware Topology | **3_mac_tb4** ((34, 23, 23)) | Sharded across 3-Mac 40Gbps TB4 ring (40.0 t/s). |
 | **Physical Transport** | Primary Interconnect | **TB4_DMA_10G** (0.277 ms) | Sub-0.3ms PCIe DMA tensor pass. |
 | **VRAM Safety** | Host Mac Mini Dynamic Cap | **19.8 GB / 24.0 GB** | Guarantees >=4.0 GB safety headroom; 0% swap risk. |
 | **Subagent Placement** | Task Worker Node | **MacBook_Air** | Eliminates Python runtime memory on host Mac. |

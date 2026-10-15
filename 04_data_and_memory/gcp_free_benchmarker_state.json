@@ -1,0 +1,71 @@
+{
+  "total_benchmark_rounds": 108,
+  "total_tokens_harvested": 16377,
+  "lora_pairs_generated": 108,
+  "elo_ratings": {
+    "gemini-2.0-flash-thinking-exp-01-21": 1900.3,
+    "gemini-2.0-pro-exp-02-05": 1921.4,
+    "gemini-1.5-pro": 1859.0,
+    "learnlm-1.5-pro-experimental": 1832.4,
+    "gemma-2-27b-it": 1810.0,
+    "gemini-2.5-pro": 1939.6,
+    "gemini-exp-1206": 1899.3,
+    "Local_Qwen_3.8_Max_8081": 1795.0,
+    "Local_Prima_CPP_8082": 1805.0,
+    "Local_Qwen_3.8_Max_Native": 1433.3,
+    "gemini-2.5-flash": 1751.7,
+    "gemini-2.0-flash": 1762.7,
+    "gemini-1.5-flash": 1762.3,
+    "gemini-3.8-flash": 1708.0
+  },
+  "win_loss_records": {
+    "gemini-2.0-flash-thinking-exp-01-21": {
+      "wins": 21,
+      "losses": 0
+    },
+    "Local_Qwen_3.8_Max_Native": {
+      "wins": 3,
+      "losses": 105
+    },
+    "gemini-2.0-pro-exp-02-05": {
+      "wins": 10,
+      "losses": 0
+    },
+    "gemini-1.5-pro": {
+      "wins": 13,
+      "losses": 0
+    },
+    "learnlm-1.5-pro-experimental": {
+      "wins": 12,
+      "losses": 0
+    },
+    "gemma-2-27b-it": {
+      "wins": 13,
+      "losses": 0
+    },
+    "gemini-2.5-pro": {
+      "wins": 13,
+      "losses": 0
+    },
+    "gemini-exp-1206": {
+      "wins": 9,
+      "losses": 0
+    },
+    "gemini-2.5-flash": {
+      "wins": 6,
+      "losses": 1
+    },
+    "gemini-2.0-flash": {
+      "wins": 4,
+      "losses": 0
+    },
+    "gemini-1.5-flash": {
+      "wins": 4,
+      "losses": 0
+    },
+    "gemini-3.8-flash": {
+      "wins": 0,
+      "losses": 2
+    }
+  }
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "model": "meta/llama-3.2-11b-vision-instruct",
+    "elo": 1457.8,
+    "timestamp": "2026-10-14T07:34:57Z",
+    "layer": "Cloud (NVIDIA NIM)",
+    "taxonomy": "Cloud Frontier Vision",
+    "avg_tps": 41.4,
+    "avg_ttft_ms": 828.8,
+    "factual_accuracy_pct": 83.3
+  },
+  {
+    "model": "qwen/qwen3.8-27b",
+    "elo": 1397.8,
+    "timestamp": "2026-10-14T07:34:57Z",
+    "layer": "Cloud (Groq)",
+    "taxonomy": "Cloud Fast LPU",
+    "avg_tps": 497.5,
+    "avg_ttft_ms": 123.9,
+    "factual_accuracy_pct": 50.0
+  },
+  {
+    "model": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+    "elo": 1372.7,
+    "timestamp": "2026-10-14T07:34:57Z",
+    "layer": "L1 (mac-mini-m4:8089)",
+    "taxonomy": "Edge AI (0.5B)",
+    "avg_tps": 84.1,
+    "avg_ttft_ms": 48.0,
+    "factual_accuracy_pct": 100.0
+  },
+  {
+    "model": "Huihui-Qwen3.8-27B-abliterated",
+    "elo": 1345.7,
+    "timestamp": "2026-10-14T07:34:57Z",
+    "layer": "L8 (Ubuntu-TB4:8083)",
+    "taxonomy": "Sovereign Swarm (>8B)",
+    "avg_tps": 1.4,
+    "avg_ttft_ms": 8874.1,
+    "factual_accuracy_pct": 50.0
+  },
+  {
+    "model": "smollm2-135m-instruct-q4_k_m.gguf",
+    "elo": 1140.1,
+    "timestamp": "2026-10-14T07:34:57Z",
+    "layer": "L8 (Ubuntu:9096)",
+    "taxonomy": "MiniLM (>20M)",
+    "avg_tps": 102.6,
+    "avg_ttft_ms": 93.5,
+    "factual_accuracy_pct": 33.3
+  },
+  {
+    "model": "TinyStories-LLaMA2-20M-256h-4l-GQA.Q4_K_M.gguf",
+    "elo": 965.9,
+    "timestamp": "2026-10-14T07:34:57Z",
+    "layer": "L8 (Ubuntu:9095)",
+    "taxonomy": "TinyLM (<=20M)",
+    "avg_tps": 577.0,
+    "avg_ttft_ms": 16.6,
+    "factual_accuracy_pct": 0.0
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "video_id": "w5Y-d7INq8k",
+  "url": "https://youtu.be/w5Y-d7INq8k",
+  "division": "Freestyle Wrestling",
+  "title": "Aaron Maher (AUS) vs Sean Harding (NZL)",
+  "duration_sec": 272.7,
+  "resolution": "256x128",
+  "sampled_frames": 36,
+  "poses_detected_frames": 9,
+  "dual_athlete_frames": 0,
+  "standing_phase_pct": 0.0,
+  "ground_scramble_phase_pct": 100.0,
+  "level_change_shots_detected": 1,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 118.8,
+    "left_elbow": 139.0,
+    "right_elbow": 135.9,
+    "left_hip": 121.1,
+    "right_hip": 113.4,
+    "left_knee": 121.1,
+    "right_knee": 135.6
+  },
+  "keyframe_grid_path": null,
+  "tactical_note": "Aaron Maher, with his 3D MediaPipe telemetry showing a 100% ground/scramble and a 118.8\u00b0 mean spine lean, is likely to have a strong base and a high level of agility. His 139.0\u00b0 elbow flexion and 135.9\u00b0 knee flexion suggest a strong upper body and lower body coordination, respectively. This makes him an excellent candidate for a high-level freestyle wrestling match.",
+  "processing_sec": 2.26
+}

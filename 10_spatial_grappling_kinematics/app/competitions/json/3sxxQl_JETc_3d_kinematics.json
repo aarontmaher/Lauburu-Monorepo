@@ -1,0 +1,26 @@
+{
+  "video_id": "3sxxQl_JETc",
+  "url": "https://youtu.be/3sxxQl_JETc",
+  "division": "Other Competitions",
+  "title": "Subversion trials",
+  "duration_sec": 251.5,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 29,
+  "dual_athlete_frames": 3,
+  "standing_phase_pct": 58.6,
+  "ground_scramble_phase_pct": 41.4,
+  "level_change_shots_detected": 4,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 40.8,
+    "left_elbow": 143.7,
+    "right_elbow": 137.3,
+    "left_hip": 141.4,
+    "right_hip": 133.0,
+    "left_knee": 146.6,
+    "right_knee": 134.6
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/3sxxQl_JETc_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in the subversion trials demonstrates a strong foundation in ground/scrum shots and a well-developed spine and elbow flexion, with a particularly impressive knee flexion.",
+  "processing_sec": 4.06
+}

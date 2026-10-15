@@ -15,7 +15,7 @@ zero_mock_certified: true
 1. **Cloud Frontier Orchestrator (Gemini 3.1 Pro / 3.7 Flash High):** Rate-limit envelope calibration (14 RPM, 1,400 RPD budget buffer) and structured scaffolding pipelines.
 2. **Local AI Flagship (Qwen 3.8 Max 27B on :8081 & Qwen Math 7B on :8086):** 24/7 unlimited local Metal GPU inference, continuous DPO harvesting, and offline self-sufficiency.
 3. **Devil's Advocate (Abliterated Mistral Nemo on :8082 / Nemotron 70B on :8084):** Exhaustive verification of API burst throttles, failover resilience, and airgap boundary enforcement.
-4. **Training & Evolution Engine (HuggingFace Hub / TRL / PEFT):** Automated dataset compilation in `/Users/aaron/DFS_UNIFIED/lora_datasets/` and nightly QLoRA distillation triggers.
+4. **Training & Evolution Engine (HuggingFace Hub / TRL / PEFT):** Automated dataset compilation in `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/` and nightly QLoRA distillation triggers.
 
 ---
 

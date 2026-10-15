@@ -1,0 +1,290 @@
+{
+  "timestamp": "2026-09-30T06:26:43Z",
+  "meta": "Lauburu Mesh Canonical Master Ranking & Benchmark Manifest",
+  "training_methods_status": "18/18 Verified Operational",
+  "local_model_rankings": [
+    {
+      "rank": 1,
+      "fitness": 26101.59,
+      "confidence": 0.93,
+      "key": "smollm2_360m",
+      "meta": {
+        "name": "SmolLM2 360M Instruct",
+        "type": "Edge Micro",
+        "quant": "Q4_K_M",
+        "file_size_gb": 0.258,
+        "vram_gb": 0.35,
+        "swe_bench_verified_pct": 12.0,
+        "ast_accuracy_pct": 62.0,
+        "tps_metal": 220.0,
+        "ttft_ms": 1.8,
+        "single_node_fit": true,
+        "role": "Router & IoT Edge Keyword Filter (GL.iNet 128MB)"
+      }
+    },
+    {
+      "rank": 2,
+      "fitness": 9087.17,
+      "confidence": 0.93,
+      "key": "qwen25_coder_15b",
+      "meta": {
+        "name": "Qwen 2.5 Coder 1.5B Instruct",
+        "type": "Dense Micro",
+        "quant": "Q4_K_M",
+        "file_size_gb": 1.0,
+        "vram_gb": 1.0,
+        "swe_bench_verified_pct": 21.5,
+        "ast_accuracy_pct": 74.0,
+        "tps_metal": 165.0,
+        "ttft_ms": 3.2,
+        "single_node_fit": true,
+        "role": "Speculative Decoding Draft Engine (2.2x Speedup)"
+      }
+    },
+    {
+      "rank": 3,
+      "fitness": 1594.19,
+      "confidence": 0.93,
+      "key": "qwen25_coder_7b",
+      "meta": {
+        "name": "Qwen 2.5 Coder 7B Instruct",
+        "type": "Dense Transformer",
+        "quant": "Q4_K_M",
+        "file_size_gb": 4.4,
+        "vram_gb": 4.4,
+        "swe_bench_verified_pct": 37.8,
+        "ast_accuracy_pct": 86.5,
+        "tps_metal": 95.0,
+        "ttft_ms": 8.5,
+        "single_node_fit": true,
+        "role": "Ultra-Fast Real-Time Autocomplete & Diff Patcher"
+      }
+    },
+    {
+      "rank": 4,
+      "fitness": 719.91,
+      "confidence": 0.93,
+      "key": "mistral_nemo_12b_abliterated",
+      "meta": {
+        "name": "Mistral Nemo 12B Instruct Abliterated",
+        "type": "Dense Uncensored",
+        "quant": "Q4_K_M",
+        "file_size_gb": 7.0,
+        "vram_gb": 7.5,
+        "swe_bench_verified_pct": 39.2,
+        "ast_accuracy_pct": 87.0,
+        "tps_metal": 72.0,
+        "ttft_ms": 11.0,
+        "single_node_fit": true,
+        "role": "Zero-Filter Red-Teaming & Security Auditor"
+      }
+    },
+    {
+      "rank": 5,
+      "fitness": 692.49,
+      "confidence": 0.93,
+      "key": "qwen25_vl_7b",
+      "meta": {
+        "name": "Qwen 2.5 VL 7B Instruct",
+        "type": "Multimodal Vision",
+        "quant": "Q4_K_M",
+        "file_size_gb": 4.4,
+        "vram_gb": 5.2,
+        "swe_bench_verified_pct": 35.0,
+        "ast_accuracy_pct": 84.0,
+        "tps_metal": 52.0,
+        "ttft_ms": 25.0,
+        "single_node_fit": true,
+        "role": "3D Spatial Tatami & Joint Kinematics Pose Tracker"
+      }
+    },
+    {
+      "rank": 6,
+      "fitness": 683.88,
+      "confidence": 0.93,
+      "key": "deepseek_coder_v2_lite",
+      "meta": {
+        "name": "DeepSeek Coder V2 Lite MoE (16B / 2.4B Active)",
+        "type": "Sparse MoE",
+        "quant": "Q4_K_M",
+        "file_size_gb": 9.7,
+        "vram_gb": 9.8,
+        "swe_bench_verified_pct": 44.6,
+        "ast_accuracy_pct": 91.2,
+        "tps_metal": 82.5,
+        "ttft_ms": 12.0,
+        "single_node_fit": true,
+        "role": "High-Throughput Distributed MoE Swarm Specialist"
+      }
+    },
+    {
+      "rank": 7,
+      "fitness": 284.57,
+      "confidence": 0.93,
+      "key": "qwen25_coder_32b",
+      "meta": {
+        "name": "Qwen 2.5 Coder 32B Instruct",
+        "type": "Dense Transformer",
+        "quant": "Q4_K_M",
+        "file_size_gb": 19.0,
+        "vram_gb": 19.8,
+        "swe_bench_verified_pct": 51.4,
+        "ast_accuracy_pct": 94.8,
+        "tps_metal": 64.2,
+        "ttft_ms": 18.5,
+        "single_node_fit": true,
+        "role": "Primary Local Developer & Heavy Code Architect"
+      }
+    },
+    {
+      "rank": 8,
+      "fitness": 265.63,
+      "confidence": 0.93,
+      "key": "qwen_agentworld_35b_moe",
+      "meta": {
+        "name": "Qwen AgentWorld 35B-A3B MoE",
+        "type": "Agentic MoE",
+        "quant": "UD-Q4_K_M",
+        "file_size_gb": 21.0,
+        "vram_gb": 21.5,
+        "swe_bench_verified_pct": 46.5,
+        "ast_accuracy_pct": 89.5,
+        "tps_metal": 70.0,
+        "ttft_ms": 15.0,
+        "single_node_fit": true,
+        "role": "Autonomous Tool Calling & Multi-Agent Swarm Orchestrator"
+      }
+    },
+    {
+      "rank": 9,
+      "fitness": 227.99,
+      "confidence": 0.93,
+      "key": "huihui_qwen38_27b_abliterated",
+      "meta": {
+        "name": "Huihui Qwen 27B Abliterated (Port 8083)",
+        "type": "Dense Abliterated",
+        "quant": "UD-Q4_K_XL",
+        "file_size_gb": 16.0,
+        "vram_gb": 16.5,
+        "swe_bench_verified_pct": 48.2,
+        "ast_accuracy_pct": 92.0,
+        "tps_metal": 45.0,
+        "ttft_ms": 22.0,
+        "single_node_fit": true,
+        "role": "Adversarial Devil's Advocate & Truth Verification Gate"
+      }
+    }
+  ],
+  "cloud_models": {
+    "gemini_25_flash": {
+      "name": "Gemini 2.5 Flash",
+      "provider": "Google AI Studio",
+      "tier": "Tier 1 (Free 1500 RPD)",
+      "cost_per_m_tok": 0.0,
+      "swe_bench_verified_pct": 61.2,
+      "context_window": "1,000,000+",
+      "role": "Frontier Cloud Overseer, Video Audits & Multimodal Code Review"
+    },
+    "gemini_20_flash": {
+      "name": "Gemini 2.0 Flash",
+      "provider": "Google AI Studio",
+      "tier": "Tier 1 (Free 1500 RPD)",
+      "cost_per_m_tok": 0.0,
+      "swe_bench_verified_pct": 56.8,
+      "context_window": "1,000,000+",
+      "role": "High-Speed Parallel Research & Subagent Scouting"
+    },
+    "cf_deepseek_r1_32b": {
+      "name": "DeepSeek R1 Distill Qwen 32B",
+      "provider": "Cloudflare Workers AI",
+      "tier": "Tier 2 (Free 10K Neurons/day)",
+      "cost_per_m_tok": 0.0,
+      "swe_bench_verified_pct": 57.5,
+      "context_window": "64,000",
+      "role": "Cloud CoT Deep Reasoning & Formal Proof Checker"
+    },
+    "cf_llama_31_8b": {
+      "name": "Llama 3.1 8B Instruct",
+      "provider": "Cloudflare Workers AI",
+      "tier": "Tier 2 (Free 10K Neurons/day)",
+      "cost_per_m_tok": 0.0,
+      "swe_bench_verified_pct": 36.5,
+      "context_window": "128,000",
+      "role": "Edge Serverless API Validation & Micro-Hooks"
+    }
+  },
+  "sharding_paradigms": {
+    "pp_layer_sharding": {
+      "name": "Pipeline Parallelism (PP / Layer Sharding)",
+      "network_sensitivity": "Low (16 KB / token boundary)",
+      "tb4_tps": 38.0,
+      "wifi7_tps": 34.4,
+      "tailscale_tps": 19.5,
+      "ideal_transport": "Wi-Fi 7 / Tailscale Multi-Node",
+      "role": "Heterogeneous Cluster Depth Partitioning"
+    },
+    "tp_matrix_sharding": {
+      "name": "Tensor Parallelism (TP / llama.cpp RPC)",
+      "network_sensitivity": "Extreme (160 sync barriers / token)",
+      "tb4_tps": 15.9,
+      "wifi7_tps": 4.7,
+      "tailscale_tps": 0.7,
+      "ideal_transport": "10Gbps Thunderbolt 4 DMA (<0.28ms) / TB5",
+      "role": "Ultra-Low Latency Intra-Layer Matrix Splitting"
+    },
+    "prp_pipelined_ring": {
+      "name": "Pipelined-Ring Parallelism (PRP / Prima.cpp)",
+      "network_sensitivity": "Zero Overlap Penalty (Continuous Ring)",
+      "tb4_tps": 50.0,
+      "wifi7_tps": 50.0,
+      "tailscale_tps": 28.9,
+      "ideal_transport": "Thunderbolt 4 Dual Bridge + Aggligator",
+      "role": "#1 High-Throughput Closed-Loop Tensor Ring"
+    },
+    "petals_swarm_dht": {
+      "name": "Decentralized Swarm DHT (Petals / Hivemind)",
+      "network_sensitivity": "Very Low (Libp2p Kademlia DHT)",
+      "tb4_tps": 22.7,
+      "wifi7_tps": 21.0,
+      "tailscale_tps": 13.0,
+      "ideal_transport": "Internet / WAN / Tailscale Overlay",
+      "role": "Fault-Tolerant Dynamic Layer Swarming (<50ms failover)"
+    },
+    "exo_dynamic_p2p": {
+      "name": "Topology-Aware Dynamic P2P (Exo)",
+      "network_sensitivity": "Self-Adapting (Ping Matrix Splitting)",
+      "tb4_tps": 47.0,
+      "wifi7_tps": 27.3,
+      "tailscale_tps": 15.5,
+      "ideal_transport": "Local LAN / Wi-Fi 7 / AWDL",
+      "role": "Apple Silicon + Android Heterogeneous Memory Pooling"
+    },
+    "ep_expert_moe": {
+      "name": "Expert Parallelism (EP / DeepSeek MoE Routing)",
+      "network_sensitivity": "8x Lower than Dense (Top-K Sparsity)",
+      "tb4_tps": 81.4,
+      "wifi7_tps": 75.8,
+      "tailscale_tps": 48.5,
+      "ideal_transport": "Wi-Fi 7 MLO / Thunderbolt 4 DMA",
+      "role": "#1 Distributed MoE Inference Engine"
+    },
+    "fsdp2_zero3_training": {
+      "name": "Fully Sharded Data Parallel (FSDP2 / ZeRO-3)",
+      "network_sensitivity": "Bandwidth Bound (All-Gather Weights)",
+      "tb4_tps": 0.04,
+      "wifi7_tps": 0.01,
+      "tailscale_tps": 0.003,
+      "ideal_transport": "10Gbps Thunderbolt 4 DMA / 40GbE",
+      "role": "Multi-GPU LoRA & Parameter Sharded Training"
+    },
+    "ring_attention_context": {
+      "name": "Sequence / Context Parallelism (RingAttention 1M+)",
+      "network_sensitivity": "KV Rotation Bound",
+      "tb4_tps": 12.5,
+      "wifi7_tps": 4.5,
+      "tailscale_tps": 1.6,
+      "ideal_transport": "Thunderbolt 4 DMA / Aggligator Rust",
+      "role": "1 Million+ Token Long-Context Window Expansion"
+    }
+  }
+}

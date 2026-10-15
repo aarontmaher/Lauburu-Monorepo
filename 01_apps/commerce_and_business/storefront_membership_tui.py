@@ -127,15 +127,15 @@ class StorefrontMembershipApp(App):
         table_h.add_row("Tatami Grappling Sensor Pod", "$199.00 AUD", "[yellow]Pre-Order (Batch 2)[/yellow]")
         self.query_one("#card-hardware", Static).update(table_h)
 
-        # Headless Checkout & Cart
-        table_c = Table(title="⚡ Secure Headless Shopify Checkout", expand=True, border_style="green")
-        table_c.add_column("Cart Item", style="green")
-        table_c.add_column("Qty", style="bold white", width=6)
-        table_c.add_column("Total", style="bold gold1", width=14)
-        table_c.add_row("Pro Grappler Membership (Annual)", "1", "$290.00 AUD")
-        table_c.add_row("Movesense HR+ Pod Bundle", "1", "$149.00 AUD")
-        table_c.add_row("[bold white]Order Total (Inc. GST)[/bold white]", "", "[bold green]$439.00 AUD[/bold green]")
-        table_c.add_row("[dim]GraphQL Mutation[/dim]", "", "[dim]checkoutCreate(input: $cart)[/dim]")
+        # Ultimate Wrestling Academy Memberships & Classes Table
+        table_c = Table(title="🤼 Ultimate Wrestling Academy — Classes & Memberships", expand=True, border_style="gold1")
+        table_c.add_column("Class / Membership", style="cyan")
+        table_c.add_column("Schedule", style="bold white", width=14)
+        table_c.add_column("Price (AUD)", style="bold green", width=16)
+        table_c.add_column("Type", style="magenta", width=12)
+        table_c.add_row("Sunday Class Membership", "Every Sunday", "[bold green]$10.00 / wk[/bold green]", "Weekly Sub")
+        table_c.add_row("Sunday Casual Class", "Single Sunday", "[bold green]$20.00[/bold green]", "Casual Pass")
+        table_c.add_row("2 Days / Week Membership", "2 Days / Wk", "$20.00 / wk", "Weekly Sub")
         self.query_one("#card-checkout", Static).update(table_c)
 
 if __name__ == "__main__":

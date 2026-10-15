@@ -20,7 +20,7 @@ The user requested to **"have devices be reconnected via bluetooth terminal"** a
 ## 3. Engineering Implementation & Healing
 
 ### A. Sovereign Bluetooth Serial Terminal Daemon (`bluetooth_serial_terminal_daemon.py`)
-- **Location:** [06_scripts_and_tooling/bluetooth_serial_terminal_daemon.py](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/bluetooth_serial_terminal_daemon.py)
+- **Location:** [06_scripts_and_tooling/bluetooth_serial_terminal_daemon.py](file:///Volumes/Lauburu-Monorepo/06_scripts_and_tooling/bluetooth_serial_terminal_daemon.py)
 - **Active PID:** `64319` (Consuming just 19.2 MB RAM)
 - **Key Enhancements:**
   1. **Dial-in Incoming RFCOMM Selection:** Configured `BT_PORT_CANDIDATES = ["/dev/tty.Bluetooth-Incoming-Port", "/dev/cu.Bluetooth-Incoming-Port"]`.
@@ -67,17 +67,17 @@ Executing `status` and `reconnect` over the Bluetooth terminal bridge returned l
 | **L2** | `MacBook Pro` | `100.103.212.21` (6.25ms) | BT Paired `2C:CA:16:08:C0:27` | 🟢 **ONLINE** (SSH OK) |
 | **L3** | `Linux Head Node`| `100.101.39.98` (7.20ms) | BT Dongle `00:41:0E:14:28:43` | 🟢 **ONLINE** (SSH OK) |
 | **L4** | `Linux Tablet` | `192.168.8.173` (4.6ms) | `00:03:7F:C2:00:43` | 🟢 **ONLINE** (Debian 13, SSH Verified) |
-| **L5** | `MacBook Air M4` | `100.121.202.34` / `192.168.8.222` (4.9ms)| `66:74:75:D8:16:FB` | 🟢 **ONLINE** (Direct Tailscale, Port 22 Open) |
+| **L5** | `MacBook Pro (Node L2)` | `100.121.202.34` / `192.168.8.222` (4.9ms)| `66:74:75:D8:16:FB` | 🟢 **ONLINE** (Direct Tailscale, Port 22 Open) |
 | **L6** | `Pixel 10 Pro XL`| `100.73.38.87` (9.43ms) | BT Master `30:E0:44:6D:18:EC` | 🟢 **ONLINE** (BT Connected Master) |
-| **L7** | `Samsung S20+` | `100.84.40.95` | BT Master `5C:CB:99:05:81:41` | 🟢 **ONLINE** (BT Connected Master) |
+| **L7** | `Samsung S20+` | `100.78.206.96` | BT Master `5C:CB:99:05:81:41` | 🟢 **ONLINE** (BT Connected Master) |
 
 ---
 
 ## 5. Tri-Vault Synchronization
 1. **Obsidian Vault:**
-   - Synchronized [obsidian_vault/05_Hardware_Mesh/Active_IP_Matrix.md](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/05_Hardware_Mesh/Active_IP_Matrix.md) with authentic empirical RTTs, kernel versions, and Bluetooth link states.
+   - Synchronized [obsidian_vault/05_Hardware_Mesh/Active_IP_Matrix.md](file:///Volumes/Lauburu-Monorepo/obsidian_vault/05_Hardware_Mesh/Active_IP_Matrix.md) with authentic empirical RTTs, kernel versions, and Bluetooth link states.
 2. **High-Throughput State & Lake:**
    - Updated `/tmp/lauburu_transport_state.json` with live socket and daemon metadata.
-   - Appended continuous DPO training pair to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl` with cryptographic SHA256 checksum.
+   - Appended continuous DPO training pair to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl` with cryptographic SHA256 checksum.
 3. **Repository Codebase:**
-   - Upgraded [06_scripts_and_tooling/bluetooth_serial_terminal_daemon.py](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/bluetooth_serial_terminal_daemon.py) with full carrier resilience.
+   - Upgraded [06_scripts_and_tooling/bluetooth_serial_terminal_daemon.py](file:///Volumes/Lauburu-Monorepo/06_scripts_and_tooling/bluetooth_serial_terminal_daemon.py) with full carrier resilience.

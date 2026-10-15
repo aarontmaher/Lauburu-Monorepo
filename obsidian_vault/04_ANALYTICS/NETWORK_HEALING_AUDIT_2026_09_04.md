@@ -46,12 +46,12 @@ canonical_source: true
 - **Verification:** 3 packets transmitted, 0.0% loss, min/avg/max = 4.993/14.176/21.630 ms.
 
 ### Fix 3: Wake-on-LAN Out-of-Band Dispatch
-- **Target Node:** `linux_head_node` (AMD Ryzen 7 @ `192.168.8.224`, MAC `00:41:0e:14:28:43`)
+- **Target Node:** `linux_head_node` (AMD Intel 2018 Mac Mini @ `192.168.8.224`, MAC `00:41:0e:14:28:43`)
 - **Actuation:** Dispatched RFC 792 102-byte Magic Packet sequence over `192.168.8.255:9` via `canonical_network_resurrection_engine.py`.
 - **Status:** Magic packet verified sent; node retained in clean standby awaiting heavy batch compute.
 
 ### Fix 4: Samsung Galaxy S20 (L7 Node) Hardware Guardrails
-- **Device ID:** `100.84.40.95:5555` (`SM-G986B`)
+- **Device ID:** `100.78.206.96:5555` (`SM-G986B`)
 - **Battery Protection:** Verified `protect_battery 1` (85% hardware charge cap active).
 - **Display Conservation:** Screen sleep keyevent 26 active (confirmed via zero-light 15KB frame capture, SHA256: `c35bacdb98b522206335afa5b9baffd2e4e3352a40749bb747e469cd403af514`).
 
@@ -71,4 +71,4 @@ canonical_source: true
 ## 🏛️ 4. Tri-Vault Storage & LoRA Serialization Invariant
 - **Obsidian Vault:** Synchronized and non-empty.
 - **PySpark Data Lake:** Free NVMe Headroom = **15.31 GB** (exceeds mandatory $\ge 10.0\text{ GB}$ invariant).
-- **LoRA Datasets:** Autonomous actions logged to `/Users/aaron/DFS_UNIFIED/lora_datasets/nomad_autonomous_actions.jsonl`.
+- **LoRA Datasets:** Autonomous actions logged to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/nomad_autonomous_actions.jsonl`.

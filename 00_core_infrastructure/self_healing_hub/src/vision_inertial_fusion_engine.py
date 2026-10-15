@@ -13,11 +13,11 @@ import time
 import math
 from typing import Dict, Any, List, Optional, Tuple
 
-sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+sys.path.insert(0, "/Volumes/Lauburu-Monorepo/scripts")
 from npu_vram_hardware_orchestrator import NPUVRAMHardwareOrchestrator
 
-FUSION_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/vision_inertial_fusion_state.json"
-LORA_HARVEST_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+FUSION_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/vision_inertial_fusion_state.json"
+LORA_HARVEST_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
 os.makedirs(os.path.dirname(FUSION_STATE_FILE), exist_ok=True)
 os.makedirs(os.path.dirname(LORA_HARVEST_FILE), exist_ok=True)
 

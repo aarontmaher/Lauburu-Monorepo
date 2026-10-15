@@ -1,0 +1,14 @@
+FROM pytorch/pytorch:2.2.1-cuda12.1-cudnn8-runtime
+
+# 24/7 Genetic MoE Router Classifier Container
+# Optimised for CPU, GPU and NPU execution
+
+WORKDIR /app
+
+# Ensure we have required system dependencies (just in case we need sshpass later for live actuation)
+RUN apt-get update && apt-get install -y sshpass curl && rm -rf /var/lib/apt/lists/*
+
+# The script will be mounted at runtime via docker-compose, but we can copy a default if we want
+# We will rely on docker-compose volume mounts to keep the script live-editable without rebuilds
+
+CMD ["python3", "-u", "/app/02_ai_models_and_inference/continuous_1m_router_classifier.py"]

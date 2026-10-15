@@ -19,7 +19,7 @@ import { canonicalApi } from '../../src/services/api.js';
 export const suite = createTestSuite('Track Beta: Chat/IDE Shell, 8-Engine Selector & Swarm Governance');
 
 // ============================================================================
-// FEATURE 5: Master AGI Coding Cockpit
+// FEATURE 5: Master AGI Coding Console
 // ============================================================================
 
 suite.test('[F5][T1] AgiCodingTerminalView renders Screen 1 terminal, code editor buffer, and reasoner dropdown', async () => {
@@ -33,7 +33,7 @@ suite.test('[F5][T1] AgiCodingTerminalView renders Screen 1 terminal, code edito
   assertTextContains(html, 'Port 50052 RPC');
   assertTextContains(html, 'MODEL:');
   assertTextContains(html, 'Kimi 88B Titan (Dual-Node TB4 RPC)');
-  assertTextContains(html, 'Qwen 3.8 Max (Edge Reasoner / Vision)');
+  assertTextContains(html, 'Qwen 3.8 Max');
   assertTextContains(html, 'VerifyZeroMockInvariants');
   assertTextContains(html, '0.277');
 });
@@ -123,7 +123,7 @@ suite.test('[F6][T1] InferenceEngineSelector renders all 8 canonical engines wit
   assertTextContains(html, 'auto');
   assertTextContains(html, 'kimi_tandem');
   assertTextContains(html, 'llama_rpc');
-  assertTextContains(html, 'qwen_local');
+  assertTextContains(html, 'qwen_38_max');
   assertTextContains(html, 'exo');
   assertTextContains(html, 'petals');
   assertTextContains(html, 'gemini');

@@ -1,0 +1,1341 @@
+{
+  "total_audits": 260869,
+  "last_audit_time": "2026-10-14T06:46:22.457950+00:00",
+  "apps": {
+    "05_agents_and_swarms": {
+      "app_id": "05_agents_and_swarms",
+      "app_name": "05 Agents And Swarms",
+      "app_path": "01_apps/05_agents_and_swarms",
+      "timestamp": "2026-09-09T07:49:30.890442+00:00",
+      "files_scanned": 0,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 65.0,
+      "overall_score": 91.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "ai_training_tui": {
+      "app_id": "ai_training_tui",
+      "app_name": "Ai Training Tui",
+      "app_path": "01_apps/ai_training_tui",
+      "timestamp": "2026-10-14T06:46:18.689082+00:00",
+      "files_scanned": 6,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 80.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (tier, pro). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "ai_training_visual_stream": {
+      "app_id": "ai_training_visual_stream",
+      "app_name": "Ai Training Visual Stream",
+      "app_path": "01_apps/ai_training_visual_stream",
+      "timestamp": "2026-10-14T06:46:18.763723+00:00",
+      "files_scanned": 12,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 99.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "automotive": {
+      "app_id": "automotive",
+      "app_name": "Automotive",
+      "app_path": "01_apps/automotive",
+      "timestamp": "2026-10-14T06:46:18.819980+00:00",
+      "files_scanned": 33,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 80.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (pro, tier). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "biometrics": {
+      "app_id": "biometrics",
+      "app_name": "Biometrics",
+      "app_path": "01_apps/biometrics",
+      "timestamp": "2026-10-14T06:46:18.891930+00:00",
+      "files_scanned": 64,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 95.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [
+        "Missing `<meta name='viewport'>` tag in HTML templates; mobile rendering unoptimized."
+      ],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "canonical_port": {
+      "app_id": "canonical_port",
+      "app_name": "Canonical Port",
+      "app_path": "01_apps/canonical_port",
+      "timestamp": "2026-10-14T06:46:19.631592+00:00",
+      "files_scanned": 200,
+      "zero_mock_score": 100.0,
+      "functionality_score": 88.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [
+        "index.html \u2014 Missing local script asset: `/src/main.jsx`"
+      ],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "canonical_tui_prototypes": {
+      "app_id": "canonical_tui_prototypes",
+      "app_name": "Canonical Tui Prototypes",
+      "app_path": "01_apps/canonical_tui_prototypes",
+      "timestamp": "2026-10-14T06:46:19.676289+00:00",
+      "files_scanned": 10,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 80.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (pro, tier). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "commerce": {
+      "app_id": "commerce",
+      "app_name": "Commerce",
+      "app_path": "01_apps/commerce",
+      "timestamp": "2026-10-14T06:46:19.698836+00:00",
+      "files_scanned": 3,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 95.0,
+      "overall_score": 97.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "commerce_and_business": {
+      "app_id": "commerce_and_business",
+      "app_name": "Commerce And Business",
+      "app_path": "01_apps/commerce_and_business",
+      "timestamp": "2026-10-14T06:46:19.732012+00:00",
+      "files_scanned": 21,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 70.0,
+      "sellability_score": 95.0,
+      "overall_score": 93.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a).",
+        "Missing `<meta name='viewport'>` tag in HTML templates; mobile rendering unoptimized."
+      ],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "data": {
+      "app_id": "data",
+      "app_name": "Data",
+      "app_path": "01_apps/data",
+      "timestamp": "2026-10-14T06:46:19.737262+00:00",
+      "files_scanned": 1,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 65.0,
+      "overall_score": 91.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "deprecated_archive": {
+      "app_id": "deprecated_archive",
+      "app_name": "Deprecated Archive",
+      "app_path": "01_apps/deprecated_archive",
+      "timestamp": "2026-10-14T06:46:19.981838+00:00",
+      "files_scanned": 130,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 95.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a)."
+      ],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "edge_compute_and_ai": {
+      "app_id": "edge_compute_and_ai",
+      "app_name": "Edge Compute And Ai",
+      "app_path": "01_apps/edge_compute_and_ai",
+      "timestamp": "2026-10-14T06:46:20.139531+00:00",
+      "files_scanned": 48,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 95.0,
+      "overall_score": 97.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "experimental_pwas": {
+      "app_id": "experimental_pwas",
+      "app_name": "Experimental Pwas",
+      "app_path": "01_apps/experimental_pwas",
+      "timestamp": "2026-10-14T06:46:20.596002+00:00",
+      "files_scanned": 200,
+      "zero_mock_score": 100.0,
+      "functionality_score": 52.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 95.0,
+      "overall_score": 84.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [
+        "404.html \u2014 Missing local script asset: `/static/resource-after-e13fffa1.js`",
+        "404.html \u2014 Missing local script asset: `/static/resource-after-8b336f9a.js`",
+        "404.html \u2014 Missing local script asset: `/static/resource-after-baba652b.js`",
+        "404.html \u2014 Missing local script asset: `/static/resource-after-5eb75950.js`"
+      ],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a)."
+      ],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "glinet_web_optimizer": {
+      "app_id": "glinet_web_optimizer",
+      "app_name": "Glinet Web Optimizer",
+      "app_path": "01_apps/glinet_web_optimizer",
+      "timestamp": "2026-10-14T06:46:20.631296+00:00",
+      "files_scanned": 21,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 80.0,
+      "overall_score": 94.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (pro, tier). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "lauburu_cable_analyzer": {
+      "app_id": "lauburu_cable_analyzer",
+      "app_name": "Lauburu Cable Analyzer",
+      "app_path": "01_apps/lauburu_cable_analyzer",
+      "timestamp": "2026-10-14T06:46:20.833380+00:00",
+      "files_scanned": 54,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 99.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "lauburu_lens": {
+      "app_id": "lauburu_lens",
+      "app_name": "Lauburu Lens",
+      "app_path": "01_apps/lauburu_lens",
+      "timestamp": "2026-10-14T06:46:20.877601+00:00",
+      "files_scanned": 16,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 80.0,
+      "overall_score": 94.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (pro, tier). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "network_cable_analyzer": {
+      "app_id": "network_cable_analyzer",
+      "app_name": "Network Cable Analyzer",
+      "app_path": "01_apps/network_cable_analyzer",
+      "timestamp": "2026-10-14T06:46:21.189047+00:00",
+      "files_scanned": 54,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 99.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "notebooks": {
+      "app_id": "notebooks",
+      "app_name": "Notebooks",
+      "app_path": "01_apps/notebooks",
+      "timestamp": "2026-10-14T06:46:21.254829+00:00",
+      "files_scanned": 14,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 99.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "omniterminal_notebook_plugin": {
+      "app_id": "omniterminal_notebook_plugin",
+      "app_name": "Omniterminal Notebook Plugin",
+      "app_path": "01_apps/omniterminal_notebook_plugin",
+      "timestamp": "2026-10-14T06:46:21.267934+00:00",
+      "files_scanned": 10,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 80.0,
+      "overall_score": 94.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (tier, pro). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "operator_and_dev": {
+      "app_id": "operator_and_dev",
+      "app_name": "Operator And Dev",
+      "app_path": "01_apps/operator_and_dev",
+      "timestamp": "2026-10-14T06:46:21.287307+00:00",
+      "files_scanned": 43,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 80.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (pro, tier). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "pixel_app_reverse_engineer": {
+      "app_id": "pixel_app_reverse_engineer",
+      "app_name": "Pixel App Reverse Engineer",
+      "app_path": "01_apps/pixel_app_reverse_engineer",
+      "timestamp": "2026-10-14T06:46:21.292019+00:00",
+      "files_scanned": 5,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 80.0,
+      "overall_score": 94.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (pro, enterprise). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "port_4000_flutter_rust": {
+      "app_id": "port_4000_flutter_rust",
+      "app_name": "Port 4000 Flutter Rust",
+      "app_path": "01_apps/port_4000_flutter_rust",
+      "timestamp": "2026-10-14T06:46:21.418512+00:00",
+      "files_scanned": 99,
+      "zero_mock_score": 100.0,
+      "functionality_score": 88.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 95.0,
+      "overall_score": 93.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [
+        "index.html \u2014 Missing local script asset: `flutter_bootstrap.js`"
+      ],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a)."
+      ],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "prima_tui": {
+      "app_id": "prima_tui",
+      "app_name": "Prima Tui",
+      "app_path": "01_apps/prima_tui",
+      "timestamp": "2026-10-14T06:46:21.435796+00:00",
+      "files_scanned": 8,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 80.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (pro). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "reverse_engineering": {
+      "app_id": "reverse_engineering",
+      "app_name": "Reverse Engineering",
+      "app_path": "01_apps/reverse_engineering",
+      "timestamp": "2026-10-14T06:46:21.444375+00:00",
+      "files_scanned": 4,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 65.0,
+      "overall_score": 91.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "rust_arena_tui": {
+      "app_id": "rust_arena_tui",
+      "app_name": "Rust Arena Tui",
+      "app_path": "01_apps/rust_arena_tui",
+      "timestamp": "2026-10-14T06:46:21.461288+00:00",
+      "files_scanned": 5,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 80.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (shopify, pro). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "rust_network_analyzer": {
+      "app_id": "rust_network_analyzer",
+      "app_name": "Rust Network Analyzer",
+      "app_path": "01_apps/rust_network_analyzer",
+      "timestamp": "2026-10-14T06:46:21.508669+00:00",
+      "files_scanned": 21,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 95.0,
+      "overall_score": 97.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "rust_project_monitor": {
+      "app_id": "rust_project_monitor",
+      "app_name": "Rust Project Monitor",
+      "app_path": "01_apps/rust_project_monitor",
+      "timestamp": "2026-10-14T06:46:21.521689+00:00",
+      "files_scanned": 8,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 95.0,
+      "overall_score": 97.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "rust_swarm_training_tui": {
+      "app_id": "rust_swarm_training_tui",
+      "app_name": "Rust Swarm Training Tui",
+      "app_path": "01_apps/rust_swarm_training_tui",
+      "timestamp": "2026-10-14T06:46:21.532288+00:00",
+      "files_scanned": 4,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 80.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (pro, tier). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "scaffolded_ui": {
+      "app_id": "scaffolded_ui",
+      "app_name": "Scaffolded Ui",
+      "app_path": "01_apps/scaffolded_ui",
+      "timestamp": "2026-10-14T06:46:21.534681+00:00",
+      "files_scanned": 5,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 65.0,
+      "overall_score": 90.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [
+        "Missing `<meta name='viewport'>` tag in HTML templates; mobile rendering unoptimized."
+      ],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "screen_lens": {
+      "app_id": "screen_lens",
+      "app_name": "Screen Lens",
+      "app_path": "01_apps/screen_lens",
+      "timestamp": "2026-10-14T06:46:22.052590+00:00",
+      "files_scanned": 200,
+      "zero_mock_score": 85.0,
+      "functionality_score": 88.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 90.8,
+      "zero_mock_issues": [
+        "continuous_lens_sovereign_auditor_trainer.py:236 \u2014 Unfinished placeholder or mock TODO (`(re.compile(r'TODO:.*(mock|hardcoded|fake)', re.I), \"Unresolved mock placeholder in prod`)"
+      ],
+      "functionality_issues": [
+        "lens_ctf_training_engine.py:159 \u2014 Syntax Error: invalid syntax. Is this intended to be part of the string?"
+      ],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "spatial_and_3d": {
+      "app_id": "spatial_and_3d",
+      "app_name": "Spatial And 3D",
+      "app_path": "01_apps/spatial_and_3d",
+      "timestamp": "2026-10-14T06:46:22.358361+00:00",
+      "files_scanned": 97,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 95.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a)."
+      ],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "spatial_grappling": {
+      "app_id": "spatial_grappling",
+      "app_name": "Spatial Grappling",
+      "app_path": "01_apps/spatial_grappling",
+      "timestamp": "2026-10-14T06:46:22.362302+00:00",
+      "files_scanned": 1,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 65.0,
+      "overall_score": 91.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "spatial_grappling_3d": {
+      "app_id": "spatial_grappling_3d",
+      "app_name": "Spatial Grappling 3D",
+      "app_path": "01_apps/spatial_grappling_3d",
+      "timestamp": "2026-10-14T06:46:22.367895+00:00",
+      "files_scanned": 6,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 65.0,
+      "overall_score": 93.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "unified_portal": {
+      "app_id": "unified_portal",
+      "app_name": "Unified Portal",
+      "app_path": "01_apps/unified_portal",
+      "timestamp": "2026-10-14T06:46:22.402720+00:00",
+      "files_scanned": 14,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 99.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "user_facing_and_scaling": {
+      "app_id": "user_facing_and_scaling",
+      "app_name": "User Facing And Scaling",
+      "app_path": "01_apps/user_facing_and_scaling",
+      "timestamp": "2026-10-14T06:46:22.426385+00:00",
+      "files_scanned": 45,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 99.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "videos": {
+      "app_id": "videos",
+      "app_name": "Videos",
+      "app_path": "01_apps/videos",
+      "timestamp": "2026-10-14T06:46:22.427097+00:00",
+      "files_scanned": 1,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 65.0,
+      "overall_score": 91.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "web_arena_visualizer": {
+      "app_id": "web_arena_visualizer",
+      "app_name": "Web Arena Visualizer",
+      "app_path": "01_apps/web_arena_visualizer",
+      "timestamp": "2026-10-14T06:46:22.434246+00:00",
+      "files_scanned": 6,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 99.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "web_tui_portal": {
+      "app_id": "web_tui_portal",
+      "app_name": "Web Tui Portal",
+      "app_path": "01_apps/web_tui_portal",
+      "timestamp": "2026-10-14T06:46:22.453374+00:00",
+      "files_scanned": 5,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 99.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "zone2_endurance": {
+      "app_id": "zone2_endurance",
+      "app_name": "Zone2 Endurance",
+      "app_path": "01_apps/zone2_endurance",
+      "timestamp": "2026-10-14T06:46:22.455262+00:00",
+      "files_scanned": 4,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 65.0,
+      "overall_score": 91.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "bluetooth_terminal_ide": {
+      "app_id": "bluetooth_terminal_ide",
+      "app_name": "Bluetooth Terminal Ide",
+      "app_path": "01_apps/bluetooth_terminal_ide",
+      "timestamp": "2026-10-14T06:46:19.009952+00:00",
+      "files_scanned": 47,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 99.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "lora_synthesizer_worker": {
+      "app_id": "lora_synthesizer_worker",
+      "app_name": "Lora Synthesizer Worker",
+      "app_path": "01_apps/lora_synthesizer_worker",
+      "timestamp": "2026-10-14T06:46:20.972809+00:00",
+      "files_scanned": 4,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 65.0,
+      "overall_score": 91.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "lauburu_showrunner": {
+      "app_id": "lauburu_showrunner",
+      "app_name": "Lauburu Showrunner",
+      "app_path": "01_apps/lauburu_showrunner",
+      "timestamp": "2026-10-14T06:46:20.970711+00:00",
+      "files_scanned": 35,
+      "zero_mock_score": 100.0,
+      "functionality_score": 88.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 80.0,
+      "overall_score": 93.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [
+        "index.html \u2014 Missing local script asset: `flutter_bootstrap.js`"
+      ],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (tier, pro). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "common": {
+      "app_id": "common",
+      "app_name": "Common",
+      "app_path": "01_apps/common",
+      "timestamp": "2026-10-14T06:46:19.736312+00:00",
+      "files_scanned": 4,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 80.0,
+      "overall_score": 94.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (tier, pro). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "docs": {
+      "app_id": "docs",
+      "app_name": "Docs",
+      "app_path": "01_apps/docs",
+      "timestamp": "2026-10-14T06:46:19.983931+00:00",
+      "files_scanned": 4,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 95.0,
+      "overall_score": 97.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "rust_apps_orchestrator": {
+      "app_id": "rust_apps_orchestrator",
+      "app_name": "Rust Apps Orchestrator",
+      "app_path": "01_apps/rust_apps_orchestrator",
+      "timestamp": "2026-10-14T06:46:21.454061+00:00",
+      "files_scanned": 4,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 95.0,
+      "overall_score": 97.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "opengo_bt_ide": {
+      "app_id": "opengo_bt_ide",
+      "app_name": "Opengo Bt Ide",
+      "app_path": "01_apps/opengo_bt_ide",
+      "timestamp": "2026-10-14T06:46:21.268496+00:00",
+      "files_scanned": 0,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 65.0,
+      "overall_score": 91.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "cloud_run_gateway": {
+      "app_id": "cloud_run_gateway",
+      "app_name": "Cloud Run Gateway",
+      "app_path": "01_apps/cloud_run_gateway",
+      "timestamp": "2026-10-14T06:46:19.678048+00:00",
+      "files_scanned": 1,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 80.0,
+      "overall_score": 94.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (tier, shopify). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "movesense_terminal": {
+      "app_id": "movesense_terminal",
+      "app_name": "Movesense Terminal",
+      "app_path": "01_apps/movesense_terminal",
+      "timestamp": "2026-10-14T06:46:20.990823+00:00",
+      "files_scanned": 5,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 65.0,
+      "overall_score": 90.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a)."
+      ],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "movesense_terminal_flutter": {
+      "app_id": "movesense_terminal_flutter",
+      "app_name": "Movesense Terminal Flutter",
+      "app_path": "01_apps/movesense_terminal_flutter",
+      "timestamp": "2026-10-14T06:46:21.002226+00:00",
+      "files_scanned": 22,
+      "zero_mock_score": 100.0,
+      "functionality_score": 88.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 95.0,
+      "overall_score": 93.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [
+        "index.html \u2014 Missing local script asset: `flutter_bootstrap.js`"
+      ],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a)."
+      ],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "combat_lab_lauburu": {
+      "app_id": "combat_lab_lauburu",
+      "app_name": "Combat Lab Lauburu",
+      "app_path": "01_apps/combat_lab_lauburu",
+      "timestamp": "2026-10-14T06:46:19.691032+00:00",
+      "files_scanned": 5,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 95.0,
+      "overall_score": 99.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "port_4000_hub": {
+      "app_id": "port_4000_hub",
+      "app_name": "Port 4000 Hub",
+      "app_path": "01_apps/port_4000_hub",
+      "timestamp": "2026-10-14T06:46:21.422062+00:00",
+      "files_scanned": 3,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 95.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a)."
+      ],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "zone_2": {
+      "app_id": "zone_2",
+      "app_name": "Zone 2",
+      "app_path": "01_apps/zone_2",
+      "timestamp": "2026-10-14T06:46:22.457910+00:00",
+      "files_scanned": 2,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 65.0,
+      "overall_score": 93.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "bt_ide_ab_test": {
+      "app_id": "bt_ide_ab_test",
+      "app_name": "Bt Ide Ab Test",
+      "app_path": "01_apps/bt_ide_ab_test",
+      "timestamp": "2026-10-14T06:46:19.117814+00:00",
+      "files_scanned": 56,
+      "zero_mock_score": 100.0,
+      "functionality_score": 88.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 95.0,
+      "overall_score": 93.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [
+        "index.html \u2014 Missing local script asset: `flutter_bootstrap.js`"
+      ],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a)."
+      ],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "nexus_sovereign_extension": {
+      "app_id": "nexus_sovereign_extension",
+      "app_name": "Nexus Sovereign Extension",
+      "app_path": "01_apps/nexus_sovereign_extension",
+      "timestamp": "2026-10-14T06:46:21.192327+00:00",
+      "files_scanned": 3,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 70.0,
+      "sellability_score": 65.0,
+      "overall_score": 87.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a).",
+        "Missing `<meta name='viewport'>` tag in HTML templates; mobile rendering unoptimized."
+      ],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "movesense_lauburu": {
+      "app_id": "movesense_lauburu",
+      "app_name": "Movesense Lauburu",
+      "app_path": "01_apps/movesense_lauburu",
+      "timestamp": "2026-10-14T06:46:20.981446+00:00",
+      "files_scanned": 0,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 65.0,
+      "overall_score": 91.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "all_in_one_messenger_lauburu": {
+      "app_id": "all_in_one_messenger_lauburu",
+      "app_name": "All In One Messenger Lauburu",
+      "app_path": "01_apps/all_in_one_messenger_lauburu",
+      "timestamp": "2026-10-14T06:46:18.779958+00:00",
+      "files_scanned": 7,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 95.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a)."
+      ],
+      "sellability_critiques": [],
+      "recommended_enhancements": [
+        "Maintain 100% Zero-Mock sensor streaming and sub-15ms rendering latency."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "movesense_biometrics_dashboard": {
+      "app_id": "movesense_biometrics_dashboard",
+      "app_name": "Movesense Biometrics Dashboard",
+      "app_path": "01_apps/movesense_biometrics_dashboard",
+      "timestamp": "2026-10-14T06:46:20.981021+00:00",
+      "files_scanned": 4,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 65.0,
+      "overall_score": 91.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "tinylm_lauburu": {
+      "app_id": "tinylm_lauburu",
+      "app_name": "Tinylm Lauburu",
+      "app_path": "01_apps/tinylm_lauburu",
+      "timestamp": "2026-10-14T06:46:22.376876+00:00",
+      "files_scanned": 1,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 92.0,
+      "sellability_score": 65.0,
+      "overall_score": 91.4,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "No explicit commercialization or monetization hooks detected (freemium/subscription tiers, API token gating, or Shopify Storefront integration)."
+      ],
+      "recommended_enhancements": [
+        "Integrate token-gating or tiered access model (Starter, Pro, Gym Master) linked to Shopify Storefront."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "meditation_lauburu": {
+      "app_id": "meditation_lauburu",
+      "app_name": "Meditation Lauburu",
+      "app_path": "01_apps/meditation_lauburu",
+      "timestamp": "2026-10-14T06:46:20.978419+00:00",
+      "files_scanned": 1,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 80.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (pro). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "keyring_finder_lauburu": {
+      "app_id": "keyring_finder_lauburu",
+      "app_name": "Keyring Finder Lauburu",
+      "app_path": "01_apps/keyring_finder_lauburu",
+      "timestamp": "2026-10-14T06:46:20.637492+00:00",
+      "files_scanned": 1,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 100.0,
+      "sellability_score": 80.0,
+      "overall_score": 96.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [],
+      "sellability_critiques": [
+        "Limited monetization hooks present (pro). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    },
+    "terminal_ide_lauburu": {
+      "app_id": "terminal_ide_lauburu",
+      "app_name": "Terminal Ide Lauburu",
+      "app_path": "01_apps/terminal_ide_lauburu",
+      "timestamp": "2026-10-14T06:46:22.373661+00:00",
+      "files_scanned": 2,
+      "zero_mock_score": 100.0,
+      "functionality_score": 100.0,
+      "ui_ux_score": 85.0,
+      "sellability_score": 80.0,
+      "overall_score": 93.0,
+      "zero_mock_issues": [],
+      "functionality_issues": [],
+      "ui_ux_critiques": [
+        "Lacks canonical Lauburu dark cyberspace background (#090d16 / #0f172a)."
+      ],
+      "sellability_critiques": [
+        "Limited monetization hooks present (pro). Needs clearer Call-To-Action (CTA) and conversion funnels."
+      ],
+      "recommended_enhancements": [
+        "Add prominent interactive CTA and transparent feature differentiation tier table."
+      ],
+      "dpo_triplets_generated": 2
+    }
+  }
+}

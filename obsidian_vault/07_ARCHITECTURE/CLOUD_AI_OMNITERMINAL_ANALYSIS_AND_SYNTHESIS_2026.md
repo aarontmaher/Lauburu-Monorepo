@@ -28,7 +28,7 @@ consensus_score: 0.992
 
 The **Omni Terminal** (`unified_resilient_serial_terminal_ide` / `omniterminal`) is a mission-critical, multi-transport, out-of-band resilient operating environment and terminal multiplexer designed specifically for the 7-layer Lauburu physical mesh ecosystem. 
 
-Unlike traditional terminal emulators (e.g. iTerm2, Kitty, tmux, Alacritty) which require an active, healthy IP networking stack and OS GUI session, the Omni Terminal functions as an **autonomous, self-healing sovereign console**. It bridges physical serial lines (`/dev/rfcomm0`, USB CDC-ACM), local IPC Unix sockets (`/tmp/omniterminal.sock`), 10Gbps Thunderbolt 4 DMA, 2.5GbE/Wi-Fi 7 MLO, and WireGuard Tailscale tunnels into a unified, uninterrupted virtual PTY session.
+Unlike traditional terminal emulators (e.g. iTerm2, Kitty, tmux, Alacritty) which require an active, healthy IP networking stack and OS GUI session, the Omni Terminal functions as an **autonomous, self-healing sovereign console**. It bridges physical serial lines (`/dev/rfcomm0`, USB CDC-ACM), local IPC Unix sockets (`/tmp/omniterminal.sock`), 40Gbps Thunderbolt 4 DMA, 2.5GbE/Wi-Fi 7 MLO, and WireGuard Tailscale tunnels into a unified, uninterrupted virtual PTY session.
 
 ---
 
@@ -126,7 +126,7 @@ The core operational breakthrough of the Omni Terminal is its ability to heal co
 │ #2   │ Bluetooth BNEP (PAN Subnet)     │ ~35 ms   │ 1–2 Mbps           │
 │ #3   │ USB CDC-ACM / ADB Mobile Bridge │ < 0.5 ms │ 480 Mbps (USB 2.0) │
 │ #4   │ LAN / Wi-Fi 7 MLO Gateway       │ 2–5 ms   │ 1.0 – 2.5 Gbps     │
-│ #5   │ 10Gbps Thunderbolt 4 DMA Bridge │ 0.28 ms  │ 20 – 40 Gbps       │
+│ #5   │ 40Gbps Thunderbolt 4 DMA Bridge │ 0.28 ms  │ 20 – 40 Gbps       │
 │ #6   │ Tailscale 7-Layer WireGuard     │ 30–40 ms │ Encrypted WAN/LAN  │
 │ #7   │ AI Inference Mesh (:8081-:8083) │ < 45 ms  │ Pooled 85GB VRAM   │
 └──────┴─────────────────────────────────┴──────────┴────────────────────┘

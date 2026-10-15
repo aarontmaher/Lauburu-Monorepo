@@ -3,7 +3,7 @@ import React from 'react';
 const DEFAULT_FLEET_NODES = [
   { nodeId: 'L1_Mac_Node', name: 'Mac_Node', role: 'Host', ip: '192.168.8.230', status: 'ONLINE', tempC: 38.4, usedVramGb: 19.8, aiVramCapGb: 21.6 },
   { nodeId: 'L2_MacBook_Pro', name: 'MacBook_Pro', role: 'Metal RPC', ip: '192.168.8.127', status: 'ONLINE', tempC: 41.2, usedVramGb: 13.5, aiVramCapGb: 14.0 },
-  { nodeId: 'L3_Linux_Head_Node', name: 'Linux_Head_Node', role: 'Compute Hub', ip: '192.168.8.224', status: 'ONLINE', tempC: 44.1, usedVramGb: 12.0, aiVramCapGb: 13.8 },
+  { nodeId: 'L3_Linux_Mini', name: 'Linux_Mini', role: 'Compute Hub', ip: '192.168.8.224', status: 'ONLINE', tempC: 44.1, usedVramGb: 12.0, aiVramCapGb: 13.8 },
   { nodeId: 'L4_Linux_Tablet', name: 'Linux_Tablet', role: 'Mobile Compute', ip: '192.168.8.173', status: 'ONLINE', tempC: 36.8, usedVramGb: 4.8, aiVramCapGb: 6.5 },
   { nodeId: 'L5_MacBook_Air', name: 'MacBook_Air', role: 'LoRA Worker', ip: '192.168.8.222', status: 'ONLINE', tempC: 39.5, usedVramGb: 11.3, aiVramCapGb: 14.0 },
   { nodeId: 'L6_Pixel_10_Pro_XL', name: 'Pixel_10_Pro_XL', role: 'Edge TPU', ip: '192.168.8.160', status: 'ONLINE', tempC: 34.2, usedVramGb: 0.0, aiVramCapGb: 12.5 },

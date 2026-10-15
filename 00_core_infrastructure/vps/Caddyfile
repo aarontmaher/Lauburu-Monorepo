@@ -1,0 +1,13 @@
+{
+    email admin@lauburu.local
+}
+
+# Headscale VPN Control Plane
+vpn.lauburu.mesh {
+    reverse_proxy headscale:8080
+}
+
+# Sovereign Model Context Protocol (MCP) over TLS / SSE
+mcp.lauburu.mesh {
+    reverse_proxy mcp_gateway:8090
+}

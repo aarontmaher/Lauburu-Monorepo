@@ -7,8 +7,8 @@ from aiohttp import web
 from astral import LocationInfo
 from astral.sun import sun
 
-CONFIG_PATH = '/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/dark_mode/config.json'
-FITNESS_PATH = '/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/dark_mode/fitness_scores.json'
+CONFIG_PATH = '/Volumes/Lauburu-Monorepo/data/dark_mode/config.json'
+FITNESS_PATH = '/Volumes/Lauburu-Monorepo/data/dark_mode/fitness_scores.json'
 
 MESH_NODES = {
     'Mac_Node': '192.168.8.230',
@@ -17,7 +17,7 @@ MESH_NODES = {
     'Linux_Tablet': '100.81.92.125',
     'MacBook_Air': '100.93.158.96',
     'Pixel_10_Pro_XL': '100.73.38.87',
-    'Samsung_S20': '100.84.40.95'
+    'Samsung_S20': '100.78.206.96'
 }
 
 def load_config():

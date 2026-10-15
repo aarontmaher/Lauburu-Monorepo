@@ -18,7 +18,7 @@ from datetime import datetime
 
 console = Console()
 
-SWARM_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port/.agents/orchestrator_tui_specialist"
+SWARM_DIR = "/Volumes/Lauburu-Monorepo/01_apps/canonical_port/.agents/orchestrator_tui_specialist"
 DOWNLOAD_LOG = "/tmp/qwen_download.log"
 
 def get_swarm_progress():
@@ -48,7 +48,7 @@ def get_download_status():
 def get_git_diff():
     try:
         result = subprocess.run(
-            ["git", "-C", "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo", "status", "--short"],
+            ["git", "-C", "/Volumes/Lauburu-Monorepo", "status", "--short"],
             capture_output=True, text=True
         )
         if result.returncode == 0 and result.stdout.strip():

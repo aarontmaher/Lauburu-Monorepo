@@ -1,0 +1,815 @@
+{
+  "adapter" : {
+    "source" : "AC"
+  },
+  "builtInDisplayPorts" : [
+    {
+      "displays" : [
+        {
+          "bottleneck" : "fine",
+          "branchDevice" : "pHDMIg",
+          "cableAssessment" : "inconclusive",
+          "currentMode" : {
+            "bitsPerComponent" : 8,
+            "height" : 1080,
+            "refreshHz" : 144,
+            "width" : 1920
+          },
+          "deliveredGbps" : 25.92,
+          "detail" : "Your MP245 E14VL is connected and the link has the bandwidth for its top mode. Nothing is holding the picture back.",
+          "isWarning" : false,
+          "lanes" : 4,
+          "maxLanes" : 4,
+          "maxMode" : {
+            "height" : 1080,
+            "refreshHz" : 144,
+            "width" : 1920
+          },
+          "monitorName" : "MP245 E14VL",
+          "neededGbps" : 8.16,
+          "rate" : "8.1 Gbps (HBR3)",
+          "summary" : "Display running at full quality"
+        }
+      ],
+      "name" : "Port-HDMI@1",
+      "portNumber" : 1,
+      "type" : "HDMI"
+    }
+  ],
+  "isDesktopMac" : true,
+  "ports" : [
+    {
+      "billboardDevicePresent" : false,
+      "bullets" : [
+        "Linked at up to 20 Gb\/s × 2",
+        "Connected device: USB Peripheral, Apple (0x05AC) (PD 3.0)",
+        "Cable has an e-marker chip (advertises its capabilities)",
+        "Cable speed: USB4 Gen 3 (40 Gbps, Thunderbolt 4 class)",
+        "Cable rated to 50V \/ 5 A, delivers up to 240W (USB-PD caps at 48V)",
+        "Controller confirms Thunderbolt cable (40 Gbps capable)",
+        "E-marker reports passive. This is normal for Thunderbolt cables where the active electronics handle Thunderbolt, not USB.",
+        "Cable made by Lintes Technology Co., Ltd. (0x2B1D)"
+      ],
+      "cable" : {
+        "activeLayoutContradiction" : false,
+        "currentRating" : "5 A",
+        "endpoint" : "SOP'",
+        "maxVolts" : 50,
+        "maxWatts" : 240,
+        "speed" : "USB4 Gen 3 (40 Gbps, Thunderbolt 4 class)",
+        "type" : "passive",
+        "vendorID" : 11037,
+        "vendorName" : "Lintes Technology Co., Ltd."
+      },
+      "cio" : {
+        "asymmetricModeSupported" : true,
+        "cableGeneration" : 1,
+        "cableSpeed" : 3,
+        "generation" : 2,
+        "legacyAdapter" : false,
+        "linkTrainingMode" : 1
+      },
+      "className" : "AppleHPMInterfaceType10",
+      "connectionActive" : true,
+      "dataLink" : {
+        "bottleneck" : "cableLimit",
+        "cableSignalConflict" : false,
+        "detail" : "The Mac and device can do 80 Gbps, but the cable only carries 40 Gbps. A faster cable would unlock full speed.",
+        "isWarning" : true,
+        "summary" : "Cable is limiting data speed"
+      },
+      "device" : {
+        "kind" : "USB Peripheral",
+        "pdRevision" : "PD 3.0",
+        "productID" : 5744,
+        "vendorID" : 1452,
+        "vendorName" : "Apple"
+      },
+      "headline" : "Thunderbolt \/ USB4",
+      "name" : "Port-USB-C@1",
+      "pdCapable" : true,
+      "powerSources" : [
+
+      ],
+      "rawProperties" : {
+        "AccessoryMode" : "0",
+        "ActiveCable" : "0",
+        "AppLoaded Count" : "1",
+        "AuthorizationRequired" : "0",
+        "AutoMatched" : "0",
+        "Boot Flags" : "41 02 10 00 01 80 03 1E 00 00 00 00",
+        "BuiltIn" : "1",
+        "CFBundleIdentifier" : "com.apple.driver.AppleHPM",
+        "CFBundleIdentifierKernel" : "com.apple.driver.AppleHPM",
+        "ConnectionActive" : "1",
+        "ConnectionCount" : "2",
+        "Description" : "Port-USB-C@1",
+        "DisplayPortPinAssignment" : "0",
+        "FW Version" : "00 78 30 00",
+        "FeaturesEnabled" : "[]",
+        "FeaturesSupported" : "[]",
+        "HChk" : "63 00 00 00 00 00",
+        "HPDAsserted" : "0",
+        "HPM Mode Block Active" : "0",
+        "IOAccessoryActivePowerMode" : "1",
+        "IOAccessoryDetect" : "1",
+        "IOAccessoryID" : "89",
+        "IOAccessoryManagerSleepPower" : "0",
+        "IOAccessoryManagerType" : "3",
+        "IOAccessoryPowerCurrentLimits" : "[0, 0, 0, 0, 0]",
+        "IOAccessoryPowerMode" : "1",
+        "IOAccessoryPrimaryDevicePort" : "1",
+        "IOAccessorySleepPowerCurrentLimit" : "0",
+        "IOAccessorySupportedPowerModes" : "[1, 3]",
+        "IOAccessoryUSBActive" : "1",
+        "IOAccessoryUSBConnectType" : "0",
+        "IOAccessoryUSBConnectTypePublished" : "0",
+        "IOAccessoryUSBModeType" : "4",
+        "IOClass" : "AppleHPMInterfaceType10",
+        "IOFunctionParent000001AD" : "",
+        "IOGeneralInterest" : "IOCommand is not serializable",
+        "IOMatchCategory" : "IODefaultMatchCategory",
+        "IOMatchedAtBoot" : "1",
+        "IOPersonalityPublisher" : "com.apple.driver.AppleHPM",
+        "IOPowerManagement" : "{CapabilityFlags: 32768, ChildrenPowerState: 1, CurrentPowerState: 1, DevicePowerState: 1, MaxPowerState: 1}",
+        "IOProbeScore" : "110",
+        "IOProviderClass" : "AppleHPMDeviceHAL",
+        "Metadata" : "{}",
+        "OpticalCable" : "0",
+        "Overcurrent Count" : "0",
+        "Pin Configuration" : "{rx1: 12, rx2: 10, sbu1: 3, sbu2: 4, tx1: 11, tx2: 9}",
+        "Plug Event Count" : "4",
+        "PlugOrientation" : "2",
+        "PortDescription" : "Port-USB-C@1",
+        "PortNumber" : "1",
+        "PortType" : "2",
+        "PortTypeDescription" : "USB-C",
+        "SOP UVDM Update Count" : "0",
+        "SOPMfgString" : "Macintosh",
+        "SOPPID" : "16 70",
+        "SOPVID" : "05 AC",
+        "TransportsActive" : "[CC, CIO]",
+        "TransportsProvisioned" : "[CC, CIO]",
+        "TransportsSupported" : "[CC, USB2, USB3, CIO, DisplayPort]",
+        "UserAuthorizationStatus" : "0",
+        "UserAuthorizationStatusDescription" : "Not Required"
+      },
+      "status" : "thunderboltCable",
+      "subtitle" : "Supports high-speed data, smart cable.",
+      "thunderboltSwitchIndex" : 0,
+      "transports" : {
+        "active" : [
+          "CC",
+          "CIO"
+        ],
+        "provisioned" : [
+          "CC",
+          "CIO"
+        ],
+        "supported" : [
+          "CC",
+          "USB2",
+          "USB3",
+          "CIO",
+          "DisplayPort"
+        ]
+      },
+      "trust" : {
+        "confirmedBy" : [
+          "data"
+        ],
+        "contradiction" : false,
+        "tier" : "green"
+      },
+      "type" : "USB-C"
+    },
+    {
+      "billboardDevicePresent" : false,
+      "bullets" : [
+        "Linked at up to 10 Gb\/s × 2",
+        "Connected device: USB Peripheral, Apple (0x05AC) (PD 3.0)",
+        "Cable has an e-marker chip, not read on this connection (needs above 3A or Thunderbolt, or try reconnecting the cable)"
+      ],
+      "cable" : {
+        "activeLayoutContradiction" : false,
+        "endpoint" : "SOP'",
+        "vendorID" : 0,
+        "vendorName" : "No vendor reported"
+      },
+      "cio" : {
+        "asymmetricModeSupported" : true,
+        "cableGeneration" : 1,
+        "cableSpeed" : 2,
+        "generation" : 2,
+        "legacyAdapter" : false,
+        "linkTrainingMode" : 1
+      },
+      "className" : "AppleHPMInterfaceType10",
+      "connectionActive" : true,
+      "dataLink" : {
+        "bottleneck" : "cableLimit",
+        "cableSignalConflict" : false,
+        "detail" : "The Mac and device can do 80 Gbps, but the cable only carries 20 Gbps. A faster cable would unlock full speed.",
+        "isWarning" : true,
+        "summary" : "Cable is limiting data speed"
+      },
+      "device" : {
+        "kind" : "USB Peripheral",
+        "pdRevision" : "PD 3.0",
+        "productID" : 5735,
+        "vendorID" : 1452,
+        "vendorName" : "Apple"
+      },
+      "headline" : "Thunderbolt \/ USB4",
+      "name" : "Port-USB-C@2",
+      "pdCapable" : true,
+      "powerSources" : [
+
+      ],
+      "rawProperties" : {
+        "AccessoryMode" : "0",
+        "ActiveCable" : "0",
+        "AppLoaded Count" : "1",
+        "AuthorizationRequired" : "0",
+        "AutoMatched" : "0",
+        "Boot Flags" : "81 04 00 00 01 00 10 1E 00 00 00 00",
+        "BuiltIn" : "1",
+        "CFBundleIdentifier" : "com.apple.driver.AppleHPM",
+        "CFBundleIdentifierKernel" : "com.apple.driver.AppleHPM",
+        "ConnectionActive" : "1",
+        "ConnectionCount" : "1",
+        "Description" : "Port-USB-C@2",
+        "DisplayPortPinAssignment" : "0",
+        "FW Version" : "00 78 30 00",
+        "FeaturesEnabled" : "[]",
+        "FeaturesSupported" : "[]",
+        "HChk" : "00 00 00 00 00 00",
+        "HPDAsserted" : "0",
+        "HPM Mode Block Active" : "0",
+        "IOAccessoryActivePowerMode" : "1",
+        "IOAccessoryDetect" : "1",
+        "IOAccessoryID" : "89",
+        "IOAccessoryManagerSleepPower" : "0",
+        "IOAccessoryManagerType" : "3",
+        "IOAccessoryPowerCurrentLimits" : "[0, 0, 0, 0, 0]",
+        "IOAccessoryPowerMode" : "1",
+        "IOAccessoryPrimaryDevicePort" : "258",
+        "IOAccessorySleepPowerCurrentLimit" : "0",
+        "IOAccessorySupportedPowerModes" : "[1, 3]",
+        "IOAccessoryUSBActive" : "1",
+        "IOAccessoryUSBConnectType" : "0",
+        "IOAccessoryUSBConnectTypePublished" : "0",
+        "IOAccessoryUSBModeType" : "4",
+        "IOClass" : "AppleHPMInterfaceType10",
+        "IOFunctionParent000001AE" : "",
+        "IOGeneralInterest" : "IOCommand is not serializable",
+        "IOMatchCategory" : "IODefaultMatchCategory",
+        "IOMatchedAtBoot" : "1",
+        "IOPersonalityPublisher" : "com.apple.driver.AppleHPM",
+        "IOPowerManagement" : "{CapabilityFlags: 32768, ChildrenPowerState: 1, CurrentPowerState: 1, DevicePowerState: 1, MaxPowerState: 1}",
+        "IOProbeScore" : "110",
+        "IOProviderClass" : "AppleHPMDeviceHAL",
+        "Metadata" : "{}",
+        "OpticalCable" : "0",
+        "Overcurrent Count" : "0",
+        "Pin Configuration" : "{rx1: 10, rx2: 12, sbu1: 3, sbu2: 4, tx1: 9, tx2: 11}",
+        "Plug Event Count" : "2",
+        "PlugOrientation" : "1",
+        "PortDescription" : "Port-USB-C@2",
+        "PortNumber" : "2",
+        "PortType" : "2",
+        "PortTypeDescription" : "USB-C",
+        "SOP UVDM Update Count" : "0",
+        "SOPMfgString" : "",
+        "SOPPID" : "16 67",
+        "SOPVID" : "05 AC",
+        "TransportsActive" : "[CC, CIO]",
+        "TransportsProvisioned" : "[CC, CIO]",
+        "TransportsSupported" : "[CC, USB2, USB3, CIO, DisplayPort]",
+        "UserAuthorizationStatus" : "0",
+        "UserAuthorizationStatusDescription" : "Not Required"
+      },
+      "status" : "thunderboltCable",
+      "subtitle" : "Supports high-speed data, smart cable.",
+      "thunderboltSwitchIndex" : 1,
+      "transports" : {
+        "active" : [
+          "CC",
+          "CIO"
+        ],
+        "provisioned" : [
+          "CC",
+          "CIO"
+        ],
+        "supported" : [
+          "CC",
+          "USB2",
+          "USB3",
+          "CIO",
+          "DisplayPort"
+        ]
+      },
+      "trust" : {
+        "confirmedBy" : [
+          "data"
+        ],
+        "contradiction" : false,
+        "tier" : "green"
+      },
+      "type" : "USB-C"
+    },
+    {
+      "billboardDevicePresent" : false,
+      "bullets" : [
+        "Linked at up to 20 Gb\/s × 2",
+        "Connected device: USB Peripheral, Apple (0x05AC) (PD 3.0)",
+        "Cable has an e-marker chip (advertises its capabilities)",
+        "Cable speed: USB4 Gen 3 (40 Gbps, Thunderbolt 4 class)",
+        "Cable rated to 50V \/ 5 A, delivers up to 240W (USB-PD caps at 48V)",
+        "Controller confirms Thunderbolt cable (40 Gbps capable)",
+        "E-marker reports passive. This is normal for Thunderbolt cables where the active electronics handle Thunderbolt, not USB.",
+        "Cable made by Tankya Developing Co., Limited (0x2D2C)"
+      ],
+      "cable" : {
+        "activeLayoutContradiction" : false,
+        "currentRating" : "5 A",
+        "endpoint" : "SOP'",
+        "maxVolts" : 50,
+        "maxWatts" : 240,
+        "speed" : "USB4 Gen 3 (40 Gbps, Thunderbolt 4 class)",
+        "type" : "passive",
+        "vendorID" : 11564,
+        "vendorName" : "Tankya Developing Co., Limited"
+      },
+      "cio" : {
+        "asymmetricModeSupported" : true,
+        "cableGeneration" : 2,
+        "cableSpeed" : 3,
+        "generation" : 3,
+        "legacyAdapter" : false,
+        "linkTrainingMode" : 2
+      },
+      "className" : "AppleHPMInterfaceType10",
+      "connectionActive" : true,
+      "dataLink" : {
+        "bottleneck" : "cableLimit",
+        "cableSignalConflict" : false,
+        "detail" : "The Mac and device can do 80 Gbps, but the cable only carries 40 Gbps. A faster cable would unlock full speed.",
+        "isWarning" : true,
+        "summary" : "Cable is limiting data speed"
+      },
+      "device" : {
+        "kind" : "USB Peripheral",
+        "pdRevision" : "PD 3.0",
+        "productID" : 29467,
+        "vendorID" : 1452,
+        "vendorName" : "Apple"
+      },
+      "headline" : "Thunderbolt \/ USB4",
+      "name" : "Port-USB-C@3",
+      "pdCapable" : true,
+      "powerSources" : [
+
+      ],
+      "rawProperties" : {
+        "AccessoryMode" : "0",
+        "ActiveCable" : "0",
+        "AppLoaded Count" : "1",
+        "AuthorizationRequired" : "0",
+        "AutoMatched" : "0",
+        "Boot Flags" : "81 04 00 00 01 00 10 1E 00 00 00 00",
+        "BuiltIn" : "1",
+        "CFBundleIdentifier" : "com.apple.driver.AppleHPM",
+        "CFBundleIdentifierKernel" : "com.apple.driver.AppleHPM",
+        "ConnectionActive" : "1",
+        "ConnectionCount" : "2",
+        "Description" : "Port-USB-C@3",
+        "DisplayPortPinAssignment" : "0",
+        "FW Version" : "00 78 30 00",
+        "FeaturesEnabled" : "[]",
+        "FeaturesSupported" : "[]",
+        "HChk" : "00 00 00 00 00 00",
+        "HPDAsserted" : "0",
+        "HPM Mode Block Active" : "0",
+        "IOAccessoryActivePowerMode" : "1",
+        "IOAccessoryDetect" : "1",
+        "IOAccessoryID" : "89",
+        "IOAccessoryManagerSleepPower" : "0",
+        "IOAccessoryManagerType" : "3",
+        "IOAccessoryPowerCurrentLimits" : "[0, 0, 0, 0, 0]",
+        "IOAccessoryPowerMode" : "1",
+        "IOAccessoryPrimaryDevicePort" : "259",
+        "IOAccessorySleepPowerCurrentLimit" : "0",
+        "IOAccessorySupportedPowerModes" : "[1, 3]",
+        "IOAccessoryUSBActive" : "1",
+        "IOAccessoryUSBConnectString" : "Device",
+        "IOAccessoryUSBConnectType" : "4",
+        "IOAccessoryUSBConnectTypePublished" : "4",
+        "IOAccessoryUSBModeType" : "2",
+        "IOAccessoryUSBSuperSpeedActive" : "0",
+        "IOClass" : "AppleHPMInterfaceType10",
+        "IOFunctionParent000001AF" : "",
+        "IOGeneralInterest" : "IOCommand is not serializable",
+        "IOMatchCategory" : "IODefaultMatchCategory",
+        "IOMatchedAtBoot" : "1",
+        "IOPersonalityPublisher" : "com.apple.driver.AppleHPM",
+        "IOPowerManagement" : "{CapabilityFlags: 32768, ChildrenPowerState: 1, CurrentPowerState: 1, DevicePowerState: 1, MaxPowerState: 1}",
+        "IOProbeScore" : "110",
+        "IOProviderClass" : "AppleHPMDeviceHAL",
+        "Metadata" : "{}",
+        "OpticalCable" : "0",
+        "Overcurrent Count" : "0",
+        "Pin Configuration" : "{rx1: 10, rx2: 12, sbu1: 3, sbu2: 4, tx1: 9, tx2: 11}",
+        "Plug Event Count" : "3",
+        "PlugOrientation" : "1",
+        "PortDescription" : "Port-USB-C@3",
+        "PortNumber" : "3",
+        "PortType" : "2",
+        "PortTypeDescription" : "USB-C",
+        "SOP UVDM Update Count" : "0",
+        "SOPMfgString" : "Macintosh",
+        "SOPPID" : "73 1B",
+        "SOPVID" : "05 AC",
+        "TransportsActive" : "[CC, CIO]",
+        "TransportsProvisioned" : "[CC, USB2, CIO]",
+        "TransportsSupported" : "[CC, USB2, USB3, CIO, DisplayPort]",
+        "UserAuthorizationStatus" : "0",
+        "UserAuthorizationStatusDescription" : "Not Required"
+      },
+      "status" : "thunderboltCable",
+      "subtitle" : "Supports high-speed data, smart cable.",
+      "thunderboltSwitchIndex" : 2,
+      "transports" : {
+        "active" : [
+          "CC",
+          "CIO"
+        ],
+        "provisioned" : [
+          "CC",
+          "USB2",
+          "CIO"
+        ],
+        "supported" : [
+          "CC",
+          "USB2",
+          "USB3",
+          "CIO",
+          "DisplayPort"
+        ]
+      },
+      "trust" : {
+        "confirmedBy" : [
+          "data"
+        ],
+        "contradiction" : false,
+        "tier" : "green"
+      },
+      "type" : "USB-C"
+    },
+    {
+      "billboardDevicePresent" : false,
+      "bullets" : [
+        "USB 2.0 only (480 Mbps), no high-speed data",
+        "This port can't read cable details (USB-only port, no Power Delivery)"
+      ],
+      "className" : "IOPort",
+      "connectionActive" : true,
+      "devices" : [
+        {
+          "locationID" : "0x03120000",
+          "name" : "2.4G Wireless Receiver",
+          "productID" : 24,
+          "serialNumber" : "No.161-0047-5",
+          "speed" : "Full Speed (12 Mbps)",
+          "usbVersion" : "1.1",
+          "vendorID" : 12994,
+          "vendorName" : "HS6209"
+        }
+      ],
+      "headline" : "Slow USB device or charge-only cable",
+      "name" : "Port-USB-C@6",
+      "pdCapable" : false,
+      "powerSources" : [
+
+      ],
+      "rawProperties" : {
+        "AuthorizationRequired" : "0",
+        "AutoMatched" : "1",
+        "BuiltIn" : "1",
+        "CFBundleIdentifier" : "com.apple.iokit.IOAccessoryManager",
+        "CFBundleIdentifierKernel" : "com.apple.iokit.IOAccessoryManager",
+        "ConnectionActive" : "1",
+        "ConnectionCount" : "1",
+        "Description" : "Port-USB-C@6",
+        "FeaturesEnabled" : "[]",
+        "FeaturesSupported" : "[]",
+        "IOClass" : "IOPort",
+        "IOGeneralInterest" : "IOCommand is not serializable",
+        "IOMatchCategory" : "IODefaultMatchCategory",
+        "IOMatchedAtBoot" : "1",
+        "IONameMatch" : "[port]",
+        "IONameMatched" : "port",
+        "IOPersonalityPublisher" : "com.apple.iokit.IOAccessoryManager",
+        "IOProbeScore" : "0",
+        "IOProviderClass" : "IOPlatformDevice",
+        "Metadata" : "{}",
+        "PortDescription" : "Port-USB-C@6",
+        "PortNumber" : "6",
+        "PortType" : "2",
+        "PortTypeDescription" : "USB-C",
+        "TransportsActive" : "[USB2]",
+        "TransportsProvisioned" : "[USB2, USB3]",
+        "TransportsSupported" : "[USB2, USB3]",
+        "UserAuthorizationStatus" : "0",
+        "UserAuthorizationStatusDescription" : "Not Required"
+      },
+      "status" : "dataDevice",
+      "subtitle" : "Only USB 2.0 is active. If you expected high speed, the cable may not support it.",
+      "transports" : {
+        "active" : [
+          "USB2"
+        ],
+        "provisioned" : [
+          "USB2",
+          "USB3"
+        ],
+        "supported" : [
+          "USB2",
+          "USB3"
+        ]
+      },
+      "type" : "USB-C"
+    },
+    {
+      "billboardDevicePresent" : false,
+      "bullets" : [
+
+      ],
+      "className" : "IOPort",
+      "connectionActive" : false,
+      "headline" : "Nothing connected",
+      "name" : "Port-USB-C@5",
+      "pdCapable" : false,
+      "powerSources" : [
+
+      ],
+      "rawProperties" : {
+        "AuthorizationRequired" : "0",
+        "AutoMatched" : "1",
+        "BuiltIn" : "1",
+        "CFBundleIdentifier" : "com.apple.iokit.IOAccessoryManager",
+        "CFBundleIdentifierKernel" : "com.apple.iokit.IOAccessoryManager",
+        "ConnectionActive" : "0",
+        "ConnectionCount" : "2",
+        "Description" : "Port-USB-C@5",
+        "FeaturesEnabled" : "[]",
+        "FeaturesSupported" : "[]",
+        "IOClass" : "IOPort",
+        "IOGeneralInterest" : "IOCommand is not serializable",
+        "IOMatchCategory" : "IODefaultMatchCategory",
+        "IOMatchedAtBoot" : "1",
+        "IONameMatch" : "[port]",
+        "IONameMatched" : "port",
+        "IOPersonalityPublisher" : "com.apple.iokit.IOAccessoryManager",
+        "IOProbeScore" : "0",
+        "IOProviderClass" : "IOPlatformDevice",
+        "Metadata" : "{}",
+        "PortDescription" : "Port-USB-C@5",
+        "PortNumber" : "5",
+        "PortType" : "2",
+        "PortTypeDescription" : "USB-C",
+        "TransportsActive" : "[]",
+        "TransportsProvisioned" : "[USB2, USB3]",
+        "TransportsSupported" : "[USB2, USB3]",
+        "UserAuthorizationStatus" : "0",
+        "UserAuthorizationStatusDescription" : "Not Required"
+      },
+      "status" : "empty",
+      "subtitle" : "Plug a cable into Port-USB-C@5 to see what it can do.",
+      "transports" : {
+        "active" : [
+
+        ],
+        "provisioned" : [
+          "USB2",
+          "USB3"
+        ],
+        "supported" : [
+          "USB2",
+          "USB3"
+        ]
+      },
+      "type" : "USB-C"
+    }
+  ],
+  "thunderboltSwitches" : [
+    {
+      "className" : "IOThunderboltSwitchType7",
+      "depth" : 0,
+      "index" : 0,
+      "maxPortNumber" : 7,
+      "modelName" : "iOS",
+      "ports" : [
+        {
+          "adapterType" : "lane",
+          "generation" : "usb4Tb4",
+          "linkActive" : true,
+          "linkBandwidthRaw" : 400,
+          "linkLabel" : "Up to 20 Gb\/s × 2",
+          "perLaneGbps" : 20,
+          "portNumber" : 1,
+          "rawSpeedCode" : 4,
+          "rawTargetSpeed" : 14,
+          "rawWidthCode" : 2,
+          "rxLanes" : 2,
+          "socketID" : "1",
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "usb4Tb4",
+          "linkActive" : true,
+          "linkBandwidthRaw" : 0,
+          "linkLabel" : "Up to 20 Gb\/s × 2",
+          "perLaneGbps" : 20,
+          "portNumber" : 2,
+          "rawSpeedCode" : 4,
+          "rawTargetSpeed" : 14,
+          "rawWidthCode" : 2,
+          "rxLanes" : 2,
+          "socketID" : "1",
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "pcieDown",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 3
+        },
+        {
+          "adapterType" : "usb3Down",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 4
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 5
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 6
+        }
+      ],
+      "routeString" : 0,
+      "routerID" : 0,
+      "supportedSpeedMask" : 14,
+      "upstreamPortNumber" : 7,
+      "vendorID" : 1452,
+      "vendorName" : "Apple Inc."
+    },
+    {
+      "className" : "IOThunderboltSwitchType7",
+      "depth" : 0,
+      "index" : 1,
+      "maxPortNumber" : 7,
+      "modelName" : "iOS",
+      "ports" : [
+        {
+          "adapterType" : "lane",
+          "generation" : "tb3",
+          "linkActive" : true,
+          "linkBandwidthRaw" : 200,
+          "linkLabel" : "Up to 10 Gb\/s × 2",
+          "perLaneGbps" : 10,
+          "portNumber" : 1,
+          "rawSpeedCode" : 8,
+          "rawTargetSpeed" : 14,
+          "rawWidthCode" : 2,
+          "rxLanes" : 2,
+          "socketID" : "2",
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "tb3",
+          "linkActive" : true,
+          "linkBandwidthRaw" : 0,
+          "linkLabel" : "Up to 10 Gb\/s × 2",
+          "perLaneGbps" : 10,
+          "portNumber" : 2,
+          "rawSpeedCode" : 8,
+          "rawTargetSpeed" : 14,
+          "rawWidthCode" : 2,
+          "rxLanes" : 2,
+          "socketID" : "2",
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "pcieDown",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 3
+        },
+        {
+          "adapterType" : "usb3Down",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 4
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 5
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 6
+        }
+      ],
+      "routeString" : 0,
+      "routerID" : 1,
+      "supportedSpeedMask" : 14,
+      "upstreamPortNumber" : 7,
+      "vendorID" : 1452,
+      "vendorName" : "Apple Inc."
+    },
+    {
+      "className" : "IOThunderboltSwitchType7",
+      "depth" : 0,
+      "index" : 2,
+      "maxPortNumber" : 7,
+      "modelName" : "iOS",
+      "ports" : [
+        {
+          "adapterType" : "lane",
+          "generation" : "usb4Tb4",
+          "linkActive" : true,
+          "linkBandwidthRaw" : 400,
+          "linkLabel" : "Up to 20 Gb\/s × 2",
+          "perLaneGbps" : 20,
+          "portNumber" : 1,
+          "rawSpeedCode" : 4,
+          "rawTargetSpeed" : 14,
+          "rawWidthCode" : 2,
+          "rxLanes" : 2,
+          "socketID" : "3",
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "usb4Tb4",
+          "linkActive" : true,
+          "linkBandwidthRaw" : 0,
+          "linkLabel" : "Up to 20 Gb\/s × 2",
+          "perLaneGbps" : 20,
+          "portNumber" : 2,
+          "rawSpeedCode" : 4,
+          "rawTargetSpeed" : 14,
+          "rawWidthCode" : 2,
+          "rxLanes" : 2,
+          "socketID" : "3",
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "pcieDown",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 3
+        },
+        {
+          "adapterType" : "usb3Down",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 4
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 5
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 1200,
+          "portNumber" : 6
+        }
+      ],
+      "routeString" : 0,
+      "routerID" : 2,
+      "supportedSpeedMask" : 14,
+      "upstreamPortNumber" : 7,
+      "vendorID" : 1452,
+      "vendorName" : "Apple Inc."
+    }
+  ],
+  "version" : "1.4.0"
+}

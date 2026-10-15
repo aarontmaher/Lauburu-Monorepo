@@ -1,0 +1,68 @@
+{
+  "timestamp": "2026-09-03T13:30:10Z",
+  "pillars": {
+    "pillar_1_repository": {
+      "name": "SWE-bench Verified / Aider",
+      "focus": "Multi-file repository bug resolution & AST git diff patching",
+      "redundancy_eliminated": "Replaces static HumanEval / MBPP (which are saturated at 90%+)",
+      "signal_weight": 0.35,
+      "status": "INTEGRATED & ACTIVE (via swe_bench_harness.py)"
+    },
+    "pillar_2_terminal_agent": {
+      "name": "Terminal-Bench / Tau-bench",
+      "focus": "Live Linux CLI commands, sysadmin, tool-calling & error recovery",
+      "redundancy_eliminated": "Replaces theoretical prompt-only tests with real bash execution",
+      "signal_weight": 0.25,
+      "status": "INTEGRATED & ACTIVE (via terminal sandbox runner)"
+    },
+    "pillar_3_fresh_logic": {
+      "name": "LiveCodeBench",
+      "focus": "Dynamic competitive coding problems published after model training cutoffs",
+      "redundancy_eliminated": "Eliminates contamination and memorization illusions",
+      "signal_weight": 0.2,
+      "status": "INTEGRATED & ACTIVE (via dynamic problem ingester)"
+    },
+    "pillar_4_adversarial_arena": {
+      "name": "CodeClash & Corewar Native",
+      "focus": "Real-time competitive tournaments & adversarial self-play battles",
+      "redundancy_eliminated": "Replaces passive evaluation with active game-theoretic warfare",
+      "signal_weight": 0.2,
+      "status": "INTEGRATED & ACTIVE (02_ai_models_and_inference/benchmarks/codeclash/)"
+    }
+  },
+  "leaderboard": [
+    {
+      "key": "qwen25_coder_32b",
+      "name": "Qwen 2.5 Coder 32B Instruct",
+      "composite_score": 57.53,
+      "pillar_breakdown": {
+        "pillar_1_repository": 51.4,
+        "pillar_2_terminal_agent": 62.8,
+        "pillar_3_fresh_logic": 45.2,
+        "pillar_4_adversarial_arena": 74.0
+      }
+    },
+    {
+      "key": "deepseek_coder_v2_lite",
+      "name": "DeepSeek Coder V2 Lite MoE (16B)",
+      "composite_score": 52.11,
+      "pillar_breakdown": {
+        "pillar_1_repository": 44.6,
+        "pillar_2_terminal_agent": 58.0,
+        "pillar_3_fresh_logic": 41.5,
+        "pillar_4_adversarial_arena": 68.5
+      }
+    },
+    {
+      "key": "qwen25_coder_7b",
+      "name": "Qwen 2.5 Coder 7B Instruct",
+      "composite_score": 43.16,
+      "pillar_breakdown": {
+        "pillar_1_repository": 37.8,
+        "pillar_2_terminal_agent": 48.5,
+        "pillar_3_fresh_logic": 34.0,
+        "pillar_4_adversarial_arena": 55.0
+      }
+    }
+  ]
+}

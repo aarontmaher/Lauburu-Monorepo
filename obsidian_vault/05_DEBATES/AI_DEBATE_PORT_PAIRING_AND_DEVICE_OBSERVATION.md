@@ -31,7 +31,7 @@ status: RESOLVED & CODIFIED
 > **Position: Continuous Passive Device Watcher & Cloud Quota Ingestion Confirmed.**
 > "We deployed and verified two critical background daemons:
 > 1. `lens_continuous_device_watcher.py` (task-2074):
->    Passively samples active window focus, connected ADB hardware (Pixel 10 Pro XL `5B080DLCQ001LQ` and Samsung S20 `100.84.40.95:5555`), and Mach kernel RAM headroom, streaming observations directly into `obsidian_vault/APPS_AND_FEATURES/SCREEN_LENS_LIVE_OBSERVATIONS.md`.
+>    Passively samples active window focus, connected ADB hardware (Pixel 10 Pro XL `5B080DLCQ001LQ` and Samsung S20 `100.78.206.96:5555`), and Mach kernel RAM headroom, streaming observations directly into `obsidian_vault/APPS_AND_FEATURES/SCREEN_LENS_LIVE_OBSERVATIONS.md`.
 > 2. `lens_cloud_quota_utilization_daemon.py` (task-2068):
 >    Actively harvests the 4,820 remaining free queries at 56.93 RPM, distilling monorepo C11 and Python ASTs into synthetic instruction pairs in `lora_datasets/cloud_quota_utilization_stream.jsonl`."
 

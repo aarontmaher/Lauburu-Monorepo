@@ -72,21 +72,21 @@ DEBATE_TOPICS = [
         "topic": "Dynamic RAM Governor Invariant: Enforcing <= 21.6GB AI Cap on M4 Pro 24GB",
         "context": "Apple M4 Pro Mac Mini Host has 24.0 GB unified RAM. OS and system daemons require >= 2.4 GB reserve.",
         "cloud_thesis": "Gemini 2.5 Flash: Allocate 90% dynamic ceiling (21.6 GB) to tensor buffers and force proactive GC when headroom drops below 2.5 GB.",
-        "local_thesis": "Local AI Orchestrator: Offload 32B/70B secondary shards to Worker Mac over 10Gbps Thunderbolt 4 bridge (0.277ms latency) to guarantee 0 swap activity.",
+        "local_thesis": "Local AI Orchestrator: Offload 32B/70B secondary shards to L8 lauburu over 40Gbps Thunderbolt 4 bridge (0.38ms latency) to guarantee 0 swap activity.",
         "genetic_thesis": "Genetic MoE: Fitness reward +48.5 for zero-swap policy. Prioritize sharded RPC over local VRAM overcommitment.",
-        "consensus": "Enforce strict <= 21.6GB AI VRAM cap with automatic MPS cache eviction and secondary tensor offloading."
+        "consensus": "Enforce strict <= 19.2GB AI VRAM cap with automatic MPS cache eviction and secondary tensor offloading."
     },
     {
-        "topic": "7-Way llama.cpp RPC Sharding and Q4_K_M Zero-Swap Standard",
-        "context": "Large local models (Qwen 2.5 32B / DeepSeek-R1-32B) pooled across 82.8 GB usable AI VRAM across 7 physical hardware layers.",
+        "topic": "8-Node llama.cpp RPC Sharding and Q4_K_M Zero-Swap Standard",
+        "context": "Large local models (Qwen 2.5 32B / DeepSeek-R1-32B) pooled across 108.4 GB usable AI VRAM across 8 physical hardware nodes.",
         "cloud_thesis": "Gemini 2.5 Flash: Ingest latest-generation quantized checkpoints (Qwen 2.5 Coder 32B / Gemma 2). Never regress to unquantized FP16 on memory-constrained nodes.",
-        "local_thesis": "Local AI Orchestrator: Layer 2 (MacBook Pro) over 10Gbps Thunderbolt 4 bridge delivers 0.277ms RTT, optimal for intermediate layer RPC tensor parallelism.",
+        "local_thesis": "Local AI Orchestrator: Layer 8 (Linux Mini lauburu) over 40Gbps Thunderbolt 4 bridge delivers 0.38ms RTT, optimal for intermediate layer RPC tensor parallelism.",
         "genetic_thesis": "Genetic MoE: Sharding balance score 98.4%. Route prompt eval to M4 Pro Mac Mini and token generation to sharded cluster.",
         "consensus": "Maintain strict Q4_K_M quantization and 5-way RPC server keepalive across Ports 8081-8086 and 50052."
     },
     {
         "topic": "Multi-Transport Latency Jitter Mitigation via Inverse-Variance Bandwidth Striping",
-        "context": "Physical mesh connects via TB4 (0.27ms), WireGuard (1.85ms), and Wi-Fi 7 (4.2ms).",
+        "context": "Physical mesh connects via TB4 (0.38ms), WireGuard (1.85ms), and Wi-Fi 7 (4.2ms).",
         "cloud_thesis": "Gemini 2.5 Flash: Equal packet round-robin causes head-of-line blocking on slower Wi-Fi 7 links.",
         "local_thesis": "Local AI Orchestrator: Weight packet distribution by inverse-variance w_i = (1/RTT_i^2) / sum(1/RTT_j^2) yielding 97.5% TB4, 2.1% WireGuard, 0.4% Wi-Fi 7.",
         "genetic_thesis": "Genetic MoE: Closed-loop latency jitter reduced by 84.6% under inverse-variance striping.",

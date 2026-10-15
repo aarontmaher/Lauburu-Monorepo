@@ -18,10 +18,10 @@ import math
 from pathlib import Path
 from typing import Dict, List, Any, Tuple
 
-MOVESENSE_LIVE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/movesense_live_stream.json")
-TRANSPORT_STATS_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/live_transport_stats.json")
-QUANTUM_STATE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/quantum_optimization_state.json")
-OUTPUT_3D_LIVE_PATH = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/spatial_3d_unified_live.json")
+MOVESENSE_LIVE_PATH = Path("/Volumes/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/movesense_live_stream.json")
+TRANSPORT_STATS_PATH = Path("/Volumes/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/live_transport_stats.json")
+QUANTUM_STATE_PATH = Path("/Volumes/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/quantum_optimization_state.json")
+OUTPUT_3D_LIVE_PATH = Path("/Volumes/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/spatial_3d_unified_live.json")
 
 # Physical 3D Coordinates for 7-Layer Mesh Nodes
 NETWORK_3D_NODES = [

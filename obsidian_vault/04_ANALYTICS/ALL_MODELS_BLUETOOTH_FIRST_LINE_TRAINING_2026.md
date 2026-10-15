@@ -35,8 +35,8 @@ All models were aligned with the verified physical Bluetooth hardware table:
 | Node Layer | Physical Target Node | Bluetooth MAC Address | Primary Transport & Role |
 | :--- | :--- | :--- | :--- |
 | **L1** | Mac Mini M4 Pro Host | `1c:f6:4c:81:0b:28` | Primary Bluetooth Host Controller & Dynamic RAM Governor |
-| **L2** | MacBook Pro Vault | `2c:ca:16:08:c0:27` | 10Gbps TB4 Bridge (`0.27ms` RTT) & 285GB SSD Model Vault |
-| **L5** | MacBook Air M4 | `ca:6b:75:9d:8e:92` | Secondary Metal Performance Shaders Worker |
+| **L2** | MacBook Pro Vault | `2c:ca:16:08:c0:27` | 40Gbps TB4 Bridge (`0.27ms` RTT) & 285GB SSD Model Vault |
+| **L5** | MacBook Pro (Node L2) | `ca:6b:75:9d:8e:92` | Secondary Metal Performance Shaders Worker |
 | **L6** | Pixel 10 Pro XL | `30:e0:44:6d:18:ec` | Google Tensor G5 Edge TPU, 8K Vision Stream & UWB |
 | **L7** | Samsung Galaxy S20+ | `5c:cb:99:05:81:41` | Dedicated Automated UI Tester & OpenClaw Target |
 | **GW** | GL.iNet Travel Router | `8C:86:DD:00:26:41` | Core Gateway & Hardware USB/Bluetooth Bridge |

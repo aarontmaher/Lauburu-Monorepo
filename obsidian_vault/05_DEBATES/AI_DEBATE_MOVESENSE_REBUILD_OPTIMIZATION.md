@@ -54,6 +54,6 @@ status: RESOLVED
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 3. 24/7 LORA INGESTION:                                                     │
 │    • Log authentic R-peak intervals, HRV metrics, and Pan-Tompkins latency  │
-│      to `/Users/aaron/DFS_UNIFIED/lora_datasets/` for continuous learning.  │
+│      to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/` for continuous learning.  │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

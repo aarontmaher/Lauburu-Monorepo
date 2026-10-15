@@ -60,7 +60,7 @@ All 17 JSON schemas and comprehensive `instructions.md` are synchronized across:
 "neo": {
   "command": "/Users/aaron/.local/bin/neo-mcp-launcher",
   "args": [
-    "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+    "/Volumes/Lauburu-Monorepo"
   ],
   "trust": true,
   "description": "Neo MCP Server for AI/ML training, model fine-tuning, RAG, agents, and GPU workloads"

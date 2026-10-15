@@ -12,11 +12,26 @@ Distributed tensor parallel execution spanning Apple Silicon Metal GPUs (M4 Mini
 
 ---
 
+## PyCharm mesh integration
+
+Use the **Distributed Mesh Preflight** run configuration before launching an RPC
+or PRP workload. It runs `mesh_preflight.py`, which reads the canonical
+`06_scripts_and_tooling/network/mesh_ip_matrix.json` inventory and performs
+TCP-connect checks only. It writes no telemetry, changes no network state, and
+returns a nonzero exit code when any selected node has no reachable advertised
+service.
+
+Run a focused audit from PyCharm by adding, for example, `--node L8_Linux_Mini`
+to the configuration parameters. The JSON report lists every attempted private
+mesh transport and port, so a sharding launch can use only verified workers.
+
+---
+
 ## Kimi Tandem Sharding Specification (80 Layers)
 
 | Node | Physical Specs | Dynamic Cap | Usable VRAM | Kimi Shard | Layers | Footprint |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Linux Head Node** (`100.101.39.98`) | AMD Ryzen 7 (16GB RAM) | **80.0%** | **12.8 GB** | Shard 1 (CPU/Vulkan) | 28 layers (0..27) | 13.5 GB |
+| **Linux Head Node** (`100.101.39.98`) | AMD Intel 2018 Mac Mini (16GB RAM) | **80.0%** | **12.8 GB** | Shard 1 (CPU/Vulkan) | 28 layers (0..27) | 13.5 GB |
 | **MacBook Pro TB4** (`169.254.187.138`) | M1 Max (16GB RAM) | **90.0%** | **14.4 GB** | Shard 2 (Metal MPS) | 28 layers (28..55) | 13.5 GB |
 | **Host Mac Mini M4** (`127.0.0.1`) | M4 Pro (24GB RAM) | **90.0%** | **21.6 GB** | Shard 3 (Metal MPS) + Kimi-VL | 24 layers (56..79) + 9.8GB VL | 22.6 GB |
 | **TOTALS** | **3 Primary Nodes** | — | **48.8 GB / 82.8 GB Pooled** | **Tandem Model** | **80 Layers (-ts 28,28,24)** | **48.8 GB** |
@@ -108,7 +123,7 @@ python mesh_benchmarks/prima_vs_rpc_benchmark.py --shots 50
 
 | Node | Physical Specs | Dynamic Cap | Usable VRAM | Kimi Shard | Layers | Footprint |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Linux Head Node** (`100.101.39.98`) | AMD Ryzen 7 (16GB RAM) | **80.0%** | **12.8 GB** | Shard 1 (CPU/Vulkan) | 28 layers (0..27) | 13.5 GB |
+| **Linux Head Node** (`100.101.39.98`) | AMD Intel 2018 Mac Mini (16GB RAM) | **80.0%** | **12.8 GB** | Shard 1 (CPU/Vulkan) | 28 layers (0..27) | 13.5 GB |
 | **MacBook Pro TB4** (`169.254.187.138`) | M1 Max (16GB RAM) | **90.0%** | **14.4 GB** | Shard 2 (Metal MPS) | 28 layers (28..55) | 13.5 GB |
 | **Host Mac Mini M4** (`127.0.0.1`) | M4 Pro (24GB RAM) | **90.0%** | **21.6 GB** | Shard 3 (Metal MPS) + Kimi-VL | 24 layers (56..79) + 9.8GB VL | 22.6 GB |
 | **TOTALS** | **3 Primary Nodes** | — | **48.8 GB / 82.8 GB Pooled** | **Tandem Model** | **80 Layers (-ts 28,28,24)** | **48.8 GB** |

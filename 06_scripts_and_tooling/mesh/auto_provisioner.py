@@ -35,7 +35,7 @@ DEFAULT_KNOWN_NODES = {
         {"name": "Linux_Tablet",    "ip": "100.81.92.125",   "type": "linux",   "tailscale_ip": "100.81.92.125", "rpc_port": 50052, "status": "known"},
         {"name": "MacBook_Air",     "ip": "100.93.158.96",   "type": "mac",     "tailscale_ip": "100.93.158.96", "rpc_port": 50052, "status": "known"},
         {"name": "Pixel",           "ip": "100.73.38.87",    "type": "android", "tailscale_ip": "100.73.38.87",  "rpc_port": 50052, "status": "known"},
-        {"name": "Samsung_S20",     "ip": "100.84.40.95",    "type": "android", "tailscale_ip": "100.84.40.95",  "rpc_port": 50052, "status": "known"},
+        {"name": "Samsung_S20",     "ip": "100.78.206.96",    "type": "android", "tailscale_ip": "100.78.206.96",  "rpc_port": 50052, "status": "known"},
     ],
     "last_updated_utc": None,
     "mesh_subnet": TARGET_SUBNET,

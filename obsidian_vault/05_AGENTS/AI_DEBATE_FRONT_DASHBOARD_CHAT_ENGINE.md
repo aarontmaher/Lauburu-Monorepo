@@ -35,7 +35,7 @@ On September 5, 2026, the **Tri-Orchestrator AI Debate Council** convened under 
 │    • Retained 100% intact; launches on demand without blocking landing TTI. │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 3. NETWORK & DEVICE ANALYSIS FOR COMPUTE PAYMENT                            │
-│    • 7-Layer physical node telemetry (L1-L7 + GW), TB4 10Gbps DMA RTT meter.│
+│    • 7-Layer physical node telemetry (L1-L7 + GW), TB4 40Gbps DMA RTT meter.│
 │    • Token credit ledger: Contributed tokens earn AUD credits; inference    │
 │      debits offset against Shopify membership subscription dues.            │
 ├─────────────────────────────────────────────────────────────────────────────┤

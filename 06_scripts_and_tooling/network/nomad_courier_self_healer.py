@@ -7,7 +7,7 @@ Lauburu 7-Layer Mesh Governor — Autonomous 6-Tier Self-Healing, Tri-Vault & Da
 
 Tiers:
   1. Service Port & Daemon Health (Ports 8080-8086, 18802 WoL API, 50052 Metal GPU RPC, 8088, 3000 Web UI, 4000 Hub)
-  2. RPC Mesh & TP-Link Extender Probe (Tailscale + Multi-WAN bonded paths)
+  2. RPC Mesh & Multi-Transport Probe (Thunderbolt 4 + Direct Ethernet/Wi-Fi 7 + Tailscale)
   3. AI Model Status & Auto-Restart (llama-server health, model vault configs)
   4. Tri-Vault Storage Auto-Healing (Obsidian Index.md, PySpark Data Lake, Git lock, >=5.0GB headroom)
   5. Antigravity Skills & MCP Guardian (Skills sync, MCP health)
@@ -24,12 +24,20 @@ import shutil
 import argparse
 import subprocess
 import urllib.request
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 
+logger = logging.getLogger("NomadCourierSelfHealer")
+
 # ── Paths ─────────────────────────────────────────────────────────────────────
-REPO = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+_CANDIDATE_REPOS = [
+    Path(__file__).resolve().parent.parent.parent,
+    Path("/Volumes/Lauburu-Monorepo"),
+    Path("/Volumes/Lauburu-Monorepo"),
+]
+REPO = next((p for p in _CANDIDATE_REPOS if p.exists()), Path(__file__).resolve().parent.parent.parent)
 DATA = REPO / "data/network"
 LORA = REPO / "data/lora_datasets"
 STATUS_FILE = DATA / "nomad_self_healer_status.json"
@@ -49,41 +57,36 @@ MODEL_VAULT = REPO / "02_ai_models_and_inference/model_vault_gguf"
 
 MANAGED_MODELS = {
     8081: {
-        "name": "llama_3_8b",
-        "model": MODEL_VAULT / "Meta-Llama-3.1-8B-Instruct-Q5_K_M.gguf",
+        "name": "qwen25_coder_syntax_worker",
+        "model": MODEL_VAULT / "qwen2.5-coder-7b-instruct-q4_k_m.gguf",
         "args": ["-ngl", "99", "-c", "4096", "--no-jinja"],
         "rpc": [],
     },
     8082: {
-        "name": "mistral_nemo_12b",
-        "model": MODEL_VAULT / "Mistral-Nemo-Instruct-2407-abliterated.Q4_K_M.gguf",
-        "args": ["-ngl", "99", "-c", "4096", "--no-jinja"],
+        "name": "qwen_38_max",
+        "model": MODEL_VAULT / "Qwen3.8-Max-Instruct-Q4_K_M.gguf",
+        "args": ["-ngl", "99", "-c", "8192"],
         "rpc": [],
     },
     8083: {
-        "name": "qwen_coder_7b",
-        "model": MODEL_VAULT / "qwen2.5-coder-7b-instruct-q4_k_m.gguf",
-        "args": ["-ngl", "99", "-c", "4096", "--no-jinja"],
+        "name": "qwen38_27b_abliterated",
+        "model": MODEL_VAULT / "Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
+        "args": ["-ngl", "0", "-c", "2048", "-b", "256", "-t", "8", "--no-jinja"],
         "rpc": [],
     },
     8084: {
         "name": "nemotron_70b",
         "model": MODEL_VAULT / "Llama-3.1-Nemotron-70B-Instruct-HF-abliterated-Q4_K_M.gguf",
         "args": ["-ngl", "99", "-c", "4096", "-ts", "43,28,29", "--no-jinja"],
-        "rpc": ["100.121.202.34:50052", "100.73.38.87:50052"],  # MacBook Air + Pixel
-    },
-    8085: {
-        "name": "qwen38_27b_abliterated",
-        "model": MODEL_VAULT / "Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
-        "args": ["-ngl", "0", "-c", "2048", "-b", "256", "-t", "8", "--no-jinja"],
-        "rpc": [],
+        "rpc": ["100.121.202.34:50052", "192.168.8.242:50052"],
     },
     8086: {
         "name": "smollm_1.7b",
-        "model": MODEL_VAULT / "smollm-1.7b-instruct-q4_k_m.gguf",
+        "model": MODEL_VAULT / "smollm2-1.7b-instruct-q4_k_m.gguf",
         "args": ["-ngl", "99", "-c", "2048", "--no-jinja"],
         "rpc": [],
     }
+
 }
 
 
@@ -164,7 +167,7 @@ def verify_and_heal_tri_vault() -> Dict[str, Any]:
     except Exception:
         obsidian_ok = (REPO / "obsidian_vault").is_dir()
         pyspark_ok = (REPO / "04_data_and_memory").is_dir()
-        stat = shutil.disk_usage("/Users/aaron")
+        stat = shutil.disk_usage(str(REPO))
         free_gb = round(stat.free / (1024 ** 3), 2)
         return {
             "healthy": obsidian_ok and pyspark_ok and (free_gb >= 5.0),
@@ -187,14 +190,19 @@ def check_and_heal_daemons() -> Dict[str, Any]:
         return engine.check_and_heal_daemons()
 
 
-def check_router_ram(router_ip: str = ROUTER_IP, critical_threshold_mb: float = ROUTER_CRITICAL_RAM_MB) -> float:
+class RouterTelemetryUnavailableError(Exception):
+    """Raised when GL.iNet router memory telemetry is unreachable or offline."""
+    pass
+
+
+def check_router_ram(router_ip: str = ROUTER_IP, critical_threshold_mb: float = ROUTER_CRITICAL_RAM_MB) -> Optional[float]:
     """Direct module-level Router RAM monitor with automatic drop_caches."""
     sys.path.insert(0, str(REPO / "06_scripts_and_tooling/network"))
     try:
         import daemon_manager
         return daemon_manager.check_router_ram(router_ip=router_ip, critical_threshold_mb=critical_threshold_mb)
     except Exception:
-        return 88.5
+        return None
 
 
 # ── Nomad Autonomous Engine Class ─────────────────────────────────────────────
@@ -210,39 +218,16 @@ class NomadAutonomousEngine:
     def is_port_listening(self, port: int, host: str = "127.0.0.1", timeout: float = 0.2) -> bool:
         return is_port_listening(port, host=host, timeout=timeout)
 
-    def heal_tplink_extender_mesh(self) -> Dict[str, Any]:
-        """Tiers multi-WAN link status and TP-Link extender carrier."""
-        carrier_ok = False
-        gateway_ok = probe_tcp("192.168.8.1", 80, timeout=0.3) or probe_tcp("192.168.8.1", 22, timeout=0.3)
-        
-        # Check carrier on enx or active eth
-        try:
-            res = subprocess.run("ifconfig enx98fc84e6e212 2>/dev/null | grep 'status: active'", shell=True, capture_output=True, text=True)
-            carrier_ok = res.returncode == 0
-        except Exception:
-            carrier_ok = False
-
-        status = "TPLINK_EXTENDER_HEALTHY_AND_BONDED" if (carrier_ok and gateway_ok) else (
-            "TPLINK_EXTENDER_HEALED_ONLINE" if gateway_ok else "TPLINK_EXTENDER_STANDBY"
-        )
-        return {
-            "status": status,
-            "interface": "enx98fc84e6e212",
-            "carrier": "ACTIVE" if carrier_ok else "STANDBY",
-            "gateway_192_168_8_1": "REACHABLE" if gateway_ok else "OFFLINE",
-            "policy_table_200": "ACTIVE" if gateway_ok else "MISSING",
-        }
-
     def heal_ai_compute(self) -> Dict[str, Any]:
         """Probes Port 50052 RPC endpoints across local and distributed mesh."""
         endpoints = {
             "localhost": ("127.0.0.1", 50052),
-            "macbook_pro_ts": ("100.103.212.21", 50052),
-            "linux_head_node_lan": ("192.168.8.224", 50052),
-            "linux_head_node_ts": ("100.101.39.98", 50052),
+            "mac_mini_l1_lan": ("192.168.8.143", 50052),
+            "linux_mini_l8_lan": ("192.168.8.242", 50052),
+            "macbook_pro_l2_lan": ("192.168.8.127", 50052),
+            "linux_head_node_lan": ("192.168.8.225", 50052),
             "macbook_air_ts": ("100.121.202.34", 50052),
-            "mac_mini_host_ts": ("100.119.199.76", 50052),
-            "pixel_10_pro_xl_ts": ("100.73.38.87", 50052),
+            "pixel_10_pro_xl_lan": ("192.168.8.213", 50052),
         }
         matrix = {}
         active_list = []
@@ -270,7 +255,12 @@ class NomadAutonomousEngine:
         }
 
     def heal_antigravity_skills(self) -> Dict[str, Any]:
-        skills_dir = Path("/Users/aaron/.gemini/config/skills")
+        candidate_dirs = [
+            Path("/Users/aaron/.gemini/config/skills"),
+            Path("/Volumes/.gemini/config/skills"),
+            REPO / "05_agents_and_swarms",
+        ]
+        skills_dir = next((d for d in candidate_dirs if d.is_dir()), candidate_dirs[0])
         skills_ok = skills_dir.is_dir()
         return {
             "status": "SKILLS_SYNCED" if skills_ok else "SKILLS_STANDBY",
@@ -278,10 +268,40 @@ class NomadAutonomousEngine:
         }
 
     def heal_mcp_servers(self) -> Dict[str, Any]:
-        return {
-            "status": "MCP_SERVERS_ACTIVE",
-            "servers": ["obsidian", "cloudflare", "filesystem", "memory"]
-        }
+        """Probes live running MCP processes on the host rather than returning static dict."""
+        try:
+            out = subprocess.run(
+                ["ps", "aux"],
+                capture_output=True, text=True, timeout=3.0
+            )
+            active_mcp = []
+            if out.returncode == 0:
+                for line in out.stdout.splitlines():
+                    if "grep" in line:
+                        continue
+                    low = line.lower()
+                    if "mcp" in low or "lauburu_project_mcp" in low or "openrouter-mcp" in low:
+                        parts = line.split(None, 10)
+                        cmd = parts[10] if len(parts) > 10 else line
+                        active_mcp.append(cmd[:80].strip())
+            if active_mcp:
+                return {
+                    "status": "MCP_SERVERS_ACTIVE",
+                    "servers_count": len(active_mcp),
+                    "servers": active_mcp[:8]
+                }
+            return {
+                "status": "MCP_SERVERS_OFFLINE",
+                "servers_count": 0,
+                "servers": []
+            }
+        except Exception as e:
+            return {
+                "status": "MCP_SERVERS_PROBE_ERROR",
+                "error": str(e),
+                "servers_count": 0,
+                "servers": []
+            }
 
     def heal_obsidian_docs(self) -> Dict[str, Any]:
         vault = REPO / "obsidian_vault"
@@ -301,10 +321,53 @@ class NomadAutonomousEngine:
         }
 
     def heal_cron_daemons(self) -> Dict[str, Any]:
-        return {
-            "status": "CRON_GOVERNANCE_OPTIMAL",
-            "active_routines": 7
-        }
+        """Probes active crontab routines and cron daemon process."""
+        try:
+            cron_res = subprocess.run(
+                ["crontab", "-l"],
+                capture_output=True, text=True, timeout=2.0
+            )
+            routines = []
+            if cron_res.returncode == 0:
+                for line in cron_res.stdout.splitlines():
+                    s = line.strip()
+                    if s and not s.startswith("#"):
+                        routines.append(s)
+            
+            ps_res = subprocess.run(
+                ["pgrep", "-f", "cron"],
+                capture_output=True, text=True, timeout=2.0
+            )
+            cron_running = (ps_res.returncode == 0 and bool(ps_res.stdout.strip()))
+            
+            if cron_running and routines:
+                return {
+                    "status": "CRON_GOVERNANCE_OPTIMAL",
+                    "cron_daemon_running": True,
+                    "active_routines": len(routines),
+                    "routines": routines[:5]
+                }
+            elif cron_running:
+                return {
+                    "status": "CRON_DAEMON_EMPTY",
+                    "cron_daemon_running": True,
+                    "active_routines": 0,
+                    "routines": []
+                }
+            else:
+                return {
+                    "status": "CRON_DAEMON_OFFLINE",
+                    "cron_daemon_running": False,
+                    "active_routines": len(routines),
+                    "routines": routines[:5]
+                }
+        except Exception as e:
+            return {
+                "status": "CRON_PROBE_ERROR",
+                "cron_daemon_running": False,
+                "active_routines": 0,
+                "error": str(e)
+            }
 
     def heal_macos_permission_popups(self) -> Dict[str, Any]:
         """Detects and clears accumulated macOS modal alerts (UserNotificationCenter) caused by rapid capture loops."""
@@ -323,9 +386,9 @@ class NomadAutonomousEngine:
     def check_and_heal_daemons(self) -> Dict[str, Any]:
         ports = {
             "ai_proxy_8080": 8080,
-            "llama_server_8081": 8081,
-            "mistral_nemo_8082": 8082,
-            "qwen_coder_8083": 8083,
+            "qwen_25_coder_8081": 8081,
+            "qwen_38_max_8082": 8082,
+            "qwen_38_max_abliterated_8083": 8083,
             "nemotron_70b_8084": 8084,
             "qwen38_8085": 8085,
             "edge_model_8086": 8086,
@@ -336,7 +399,11 @@ class NomadAutonomousEngine:
         res = {}
         actions = []
         for name, port in ports.items():
-            live = probe_tcp("127.0.0.1", port, timeout=0.15)
+            live = (
+                probe_tcp("127.0.0.1", port, timeout=0.15)
+                or probe_tcp("192.168.8.143", port, timeout=0.15)
+                or probe_tcp("192.168.8.242", port, timeout=0.15)
+            )
             res[name] = "ONLINE" if live else "OFFLINE"
             if not live:
                 actions.append(f"RESTART_DAEMON_{name}")
@@ -346,7 +413,21 @@ class NomadAutonomousEngine:
             "status": "SUPERVISION_HEALTHY"
         }
 
-    def check_router_ram(self) -> float:
+    def heal_mesh_nodes_bluetooth_first(self) -> Dict[str, Any]:
+        """
+        Awakens sleeping or standby mesh nodes with fast-path carrier check and
+        Bluetooth Proximity fallback for unreachable nodes.
+        """
+        try:
+            import sys
+            sys.path.insert(0, str(REPO / "06_scripts_and_tooling"))
+            from mesh.wol_manager import WoLEngine
+            engine = WoLEngine()
+            return engine.heal_all(fast_path=True, strict_recovery=False)
+        except Exception as e:
+            return {"status": "SKIPPED", "error": str(e)}
+
+    def check_router_ram(self) -> Optional[float]:
         return check_router_ram()
 
     def verify_and_heal_tri_vault(self) -> Dict[str, Any]:
@@ -355,12 +436,28 @@ class NomadAutonomousEngine:
     def run_full_cycle(self) -> Dict[str, Any]:
         ts = datetime.now(timezone.utc).isoformat()
         
-        # 1. Probes
-        web_ui_active = probe_tcp("127.0.0.1", 4000, 0.15) or probe_tcp("127.0.0.1", 3000, 0.15)
-        wol_api_18802 = probe_tcp("127.0.0.1", 18802, 0.15)
-        rpc_50052 = probe_tcp("127.0.0.1", 50052, 0.15)
+        # 0. Fast-path + Bluetooth Resurrection for Standby Nodes
+        bt_wake = self.heal_mesh_nodes_bluetooth_first()
+
+        # 1. Probes across local and primary mesh hubs (L1 / L8 / L3)
+        web_ui_active = (
+            probe_tcp("127.0.0.1", 4000, 0.15)
+            or probe_tcp("127.0.0.1", 3000, 0.15)
+            or probe_tcp("127.0.0.1", 4003, 0.15)
+            or probe_tcp("192.168.8.242", 4001, 0.15)
+            or probe_tcp("192.168.8.225", 3000, 0.15)
+        )
+        wol_api_18802 = (
+            probe_tcp("127.0.0.1", 18802, 0.15)
+            or probe_tcp("192.168.8.143", 18802, 0.15)
+            or probe_tcp("192.168.8.143", 8085, 0.15)
+        )
+        rpc_50052 = (
+            probe_tcp("127.0.0.1", 50052, 0.15)
+            or probe_tcp("192.168.8.143", 50052, 0.15)
+            or probe_tcp("192.168.8.242", 50052, 0.15)
+        )
         
-        tplink = self.heal_tplink_extender_mesh()
         rpc_compute = self.heal_ai_compute()
 
         # Automated D-Link AP Mode Self-Healing
@@ -385,10 +482,31 @@ class NomadAutonomousEngine:
         # 2. Multi-Transport 7-Layer Mesh Visibility & Router Micro LM Sync
         mesh_layers = {}
         try:
+            sys.path.insert(0, str(REPO / "06_scripts_and_tooling/network"))
             from configure_mesh_router_topology import verify_mesh_connectivity
             mesh_layers = verify_mesh_connectivity()
         except Exception as e:
-            mesh_layers = {"error": str(e)}
+            logger.warning(f"verify_mesh_connectivity encountered error: {e}, populating resilient fallback matrix")
+            mesh_layers = {}
+            fallback_nodes = [
+                ("GL.iNet Gateway (GW)", "GW", "192.168.8.1"),
+                ("Mac Mini Host (L1)", "L1", "192.168.8.143"),
+                ("MacBook Pro (L2)", "L2", "192.168.8.127"),
+                ("Linux Head Node (L3)", "L3", "192.168.8.225"),
+                ("MacBook Air (L5)", "L5", "192.168.8.248"),
+                ("Pixel 10 Pro XL (L6)", "L6", "192.168.8.213"),
+                ("Samsung S20 (L7)", "L7", "192.168.8.101"),
+            ]
+            for name, layer, ip in fallback_nodes:
+                mesh_layers[name] = {
+                    "name": name,
+                    "layer": layer,
+                    "online": False,
+                    "active_ip": None,
+                    "active_path": None,
+                    "rtt_ms": None,
+                    "status": "⚪ STANDBY"
+                }
 
         router_micro_lm = {
             "kmwan_mode": "failover",
@@ -397,9 +515,14 @@ class NomadAutonomousEngine:
         }
         try:
             res = subprocess.run(
-                ["sshpass", "-p", "goldfighting1", "ssh", "-o", "ConnectTimeout=2", "-o", "StrictHostKeyChecking=no", "root@192.168.8.1", "cat /proc/loadavg; uci get kmwan.global.mode 2>/dev/null"],
+                ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=2", "-o", "StrictHostKeyChecking=no", "root@192.168.8.1", "cat /proc/loadavg; uci get kmwan.global.mode 2>/dev/null"],
                 capture_output=True, text=True, timeout=5
             )
+            if res.returncode != 0:
+                res = subprocess.run(
+                    ["sshpass", "-p", "goldfighting1", "ssh", "-o", "ConnectTimeout=2", "-o", "StrictHostKeyChecking=no", "root@192.168.8.1", "cat /proc/loadavg; uci get kmwan.global.mode 2>/dev/null"],
+                    capture_output=True, text=True, timeout=5
+                )
             if res.returncode == 0:
                 lines = res.stdout.strip().splitlines()
                 if len(lines) >= 1:
@@ -414,16 +537,16 @@ class NomadAutonomousEngine:
 
         report = {
             "timestamp_utc": ts,
+            "localhost_3000_web_ui": "ONLINE" if web_ui_active else "STANDBY",
             "localhost_web_ui": "ONLINE" if web_ui_active else "STANDBY",
             "wol_api_port_18802": "ONLINE" if wol_api_18802 else "STANDBY",
-            "tplink_extender_mesh": tplink["status"],
             "llama_rpc_port_50052": "ONLINE" if rpc_50052 else "STANDBY",
             "antigravity_skills_guardian": skills["status"],
             "mcp_server_health_guardian": mcp["status"],
             "obsidian_documentation_engine": obs_docs["status"],
             "genetic_storage_optimizer": gen_storage["status"],
             "cron_daemon_governance": cron["status"],
-            "router_ram_watchdog": f"{router_ram} MB Available",
+            "router_ram_watchdog": f"{router_ram} MB Available" if router_ram is not None else "ROUTER_RAM_UNAVAILABLE",
             "storage_tri_vault": storage["status"],
             "macos_permission_popups": macos_popups["status"],
             "router_micro_lm": router_micro_lm,
@@ -458,7 +581,9 @@ class NomadAutonomousEngine:
         with open(LORA_LOG, "a", encoding="utf-8") as f:
             f.write(json.dumps(lora_entry) + "\n")
 
-        STATUS_FILE.write_text(json.dumps(report, indent=2), encoding="utf-8")
+        tmp_status = STATUS_FILE.with_suffix(".tmp")
+        tmp_status.write_text(json.dumps(report, indent=2), encoding="utf-8")
+        tmp_status.replace(STATUS_FILE)
         return report
 
 
@@ -472,8 +597,15 @@ def main():
     parser = argparse.ArgumentParser(description="Nomad Courier Self-Healer")
     parser.add_argument("--once", action="store_true", help="Run one cycle and exit")
     parser.add_argument("--daemon", action="store_true", help="Run continuously every interval seconds")
+    parser.add_argument("--full-build", action="store_true", help="Execute single terminal command C/C++ & Rust full build, self-heal and 7-layer health check")
     parser.add_argument("--interval", type=int, default=60, help="Daemon interval seconds (default: 60)")
     args = parser.parse_args()
+
+    if args.full_build:
+        build_sh = REPO / "06_scripts_and_tooling/network/mesh_full_heal_build_check.sh"
+        if build_sh.exists():
+            subprocess.run(["bash", str(build_sh)], check=True)
+            return
 
     engine = NomadAutonomousEngine()
     if args.once or not args.daemon:
@@ -486,7 +618,8 @@ def main():
             if isinstance(data, dict):
                 st = data.get("status", "⚪ STANDBY")
                 if data.get("online"):
-                    rtt_str = f"{data.get('rtt_ms', 0):.2f} ms" if data.get('rtt_ms') is not None else "--"
+                    rtt_val = data.get('rtt_ms')
+                    rtt_str = f"{rtt_val:.2f} ms" if rtt_val is not None else "--"
                     print(f"   {st} {data['name']:<24} ({data.get('active_path', 'LAN')}: {data.get('active_ip', '--'):<15}) RTT: {rtt_str}")
                 else:
                     print(f"   {st} {data['name']:<24} (Standby / Sleeping)")
@@ -498,7 +631,6 @@ def main():
         print("\n🏛️ Core Services & Tri-Vault:")
         print(f"   Web UI (4000/3000): {report['localhost_web_ui']}")
         print(f"   WoL API (18802) : {report['wol_api_port_18802']}")
-        print(f"   TP-Link Mesh    : {report['tplink_extender_mesh']}")
         print(f"   llama.cpp RPC   : {report['llama_rpc_port_50052']}")
         print(f"   Tri-Vault       : {report['storage_tri_vault']}")
         print(f"================================================================================\n")

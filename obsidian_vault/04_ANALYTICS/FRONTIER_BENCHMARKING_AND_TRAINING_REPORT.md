@@ -1,7 +1,7 @@
 ---
 title: "Frontier AI Benchmarking & Training Methodologies Report (2025/2026)"
 tags: [lauburu, benchmark, training, simpo, rlvr, ttc, mcts, fastv, swe_bench]
-date: 2026-09-09T07:45:30Z
+date: 2026-10-14T22:25:36Z
 consensus_rating: 0.992
 ---
 

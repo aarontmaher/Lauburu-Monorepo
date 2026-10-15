@@ -26,5 +26,5 @@ The download daemon is running with PID `22877` streaming at 11+ MB/s:
 1. **Target 1:** `DeepSeek-Coder-V2-Lite-Instruct-Q4_K_M.gguf` (9.8 GB) $\to$ High-speed MoE coding (82.5 tok/s).
 2. **Target 2:** `qwen2.5-coder-32b-instruct-q4_k_m.gguf` (19.8 GB) $\to$ Frontier dense coding (51.4% SWE-bench Verified).
 
-- **Destination:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/`
+- **Destination:** `/Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/`
 - **Disk Safety Invariant:** Verified 59.0 GB free $\to$ leaves ~30.0 GB free headroom upon completion (exceeding our $\ge 10\text{GB}$ Tri-Vault requirement).

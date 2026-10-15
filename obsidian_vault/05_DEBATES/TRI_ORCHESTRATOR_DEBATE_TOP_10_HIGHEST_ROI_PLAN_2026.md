@@ -29,7 +29,7 @@ consensus_score: 0.999
 ├──────┼────────────────────────────────────────────┼─────────────┼──────────────┼──────────────┼──────────────┤
 │ 🥇 1 │ **Shopify Headless Membership & Kit Store** │ 1–2 Days    │ 💰 Revenue   │ $0.00        │ **100x+**    │
 │ 🥈 2 │ **Continuous Local LoRA Weight Merging**   │ 1 Day       │ 🧠 Local AGI │ $0.00        │ **50x**      │
-│ 🥉 3 │ **10Gbps Thunderbolt 4 PRP Sharding**      │ 1 Day       │ ⚡ 50 tok/s  │ $0.00        │ **40x**      │
+│ 🥉 3 │ **40Gbps Thunderbolt 4 PRP Sharding**      │ 1 Day       │ ⚡ 50 tok/s  │ $0.00        │ **40x**      │
 │ 🏅 4 │ **512Hz Movesense Biometrics & Zone 2 Hub**│ 2 Days      │ 💓 Health IP │ $0.00        │ **35x**      │
 │ 🎖️ 5 │ **3D Spatial Grappling 3,044 OPML Engine** │ 2 Days      │ 🥋 Product   │ $0.00        │ **30x**      │
 │ 🛡️ 6 │ **OpenWrt Router Sentinel & WoL Auto-Res** │ 1 Day       │ 🛡️ 100% Mesh │ $0.00        │ **25x**      │
@@ -60,9 +60,9 @@ consensus_score: 0.999
 
 ---
 
-### 🥉 Rank 3: 10Gbps Thunderbolt 4 PRP Multi-Node Tensor Sharding
+### 🥉 Rank 3: 40Gbps Thunderbolt 4 PRP Multi-Node Tensor Sharding
 * **Objective:** Pool the 82.8 GB VRAM across your Mac Mini, MacBook Pro, MacBook Air, and Linux Node into a single sub-millisecond tensor engine.
-* **Technical Lever:** `prima.cpp` Pipelined-Ring Parallelism (PRP) over 10Gbps Thunderbolt 4 DMA (`0.204ms` RTT). Stream 32B and 70B models at **38–54 tokens/sec**.
+* **Technical Lever:** `prima.cpp` Pipelined-Ring Parallelism (PRP) over 40Gbps Thunderbolt 4 DMA (`0.204ms` RTT). Stream 32B and 70B models at **38–54 tokens/sec**.
 * **Capital Cost:** **`$0.00`** (Utilizes existing TB4 cables and hardware).
 * **ROI Multiplier:** **`40x`** (Eliminates the need for expensive \$4/hr cloud A100 rentals).
 

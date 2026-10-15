@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-09-02T14:56:05Z",
+  "generations_run": 5,
+  "best_fitness_score": 1904.27,
+  "optimal_chromosome": {
+    "tailcat": 0.274,
+    "tsnet": 0.119,
+    "tailscaled": 0.024,
+    "headscale": 0.174,
+    "exo_p2p": 0.034,
+    "prima_cpp": 0.157,
+    "multiwan_bond": 0.217
+  },
+  "candidate_definitions": {
+    "tailcat": {
+      "name": "Tailscale tailcat (Zero-Control-Plane Ephemeral P2P)",
+      "ram_mb": 7.8,
+      "latency_ms": 0.22,
+      "throughput_gbps": 3.8,
+      "zero_root": true,
+      "no_vpn_profile": true,
+      "requires_control_plane": false,
+      "ideal_for": "Ephemeral AI Agent P2P socket piping & Paying user mobile apps"
+    },
+    "tsnet": {
+      "name": "Tailscale tsnet (Embedded Userspace Library)",
+      "ram_mb": 12.4,
+      "latency_ms": 0.28,
+      "throughput_gbps": 3.2,
+      "zero_root": true,
+      "no_vpn_profile": true,
+      "requires_control_plane": true,
+      "ideal_for": "Persistent Embedded Client App microservices"
+    },
+    "tailscaled": {
+      "name": "Tailscale System Daemon (Kernel utun/tun0)",
+      "ram_mb": 38.2,
+      "latency_ms": 0.45,
+      "throughput_gbps": 4.5,
+      "zero_root": false,
+      "no_vpn_profile": false,
+      "requires_control_plane": true,
+      "ideal_for": "Physical Host OS & Subnet Routers (192.168.8.0/24)"
+    },
+    "headscale": {
+      "name": "Headscale / Kwaami (Self-Hosted Control Plane)",
+      "ram_mb": 46.8,
+      "latency_ms": 0.3,
+      "throughput_gbps": 5.0,
+      "zero_root": true,
+      "no_vpn_profile": true,
+      "requires_control_plane": true,
+      "ideal_for": "$0 SaaS Private Control Plane Coordinator"
+    },
+    "exo_p2p": {
+      "name": "Exo P2P Dynamic Ring Topology",
+      "ram_mb": 45.0,
+      "latency_ms": 0.35,
+      "throughput_gbps": 4.0,
+      "zero_root": true,
+      "no_vpn_profile": true,
+      "requires_control_plane": false,
+      "ideal_for": "Consumer Apple Silicon & Android VRAM Pooling"
+    },
+    "prima_cpp": {
+      "name": "Prima.cpp Pipelined-Ring RPC",
+      "ram_mb": 22.0,
+      "latency_ms": 0.18,
+      "throughput_gbps": 9.8,
+      "zero_root": true,
+      "no_vpn_profile": true,
+      "requires_control_plane": false,
+      "ideal_for": "High-Throughput 10Gbps Thunderbolt 4 Tensor Sharding"
+    },
+    "multiwan_bond": {
+      "name": "Multi-WAN Inverse-Square Latency Bonding (:18804)",
+      "ram_mb": 18.5,
+      "latency_ms": 0.27,
+      "throughput_gbps": 10.0,
+      "zero_root": true,
+      "no_vpn_profile": true,
+      "requires_control_plane": false,
+      "ideal_for": "Physical Multi-Link Aggregation (TB4 94% + Wi-Fi 7 5%)"
+    }
+  }
+}

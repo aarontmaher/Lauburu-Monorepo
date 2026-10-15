@@ -36,7 +36,7 @@ This whitepaper presents the comprehensive architectural blueprint for the **Han
 │                     │                          │ • Zero visual dependency — 100% voice feedback via TTS│
 ├─────────────────────┼──────────────────────────┼───────────────────────────────────────────────────────┤
 │ **Qwen MoE**        │ Mesh Hardware Sharding   │ • Offloads voice STT/TTS buffer to Layer L6 (Pixel 10)│
-│ (Sovereign Core)    │ & Zero-Mock Invariant    │   and compiles diffs over 10Gbps TB4 DMA to Mac Mini. │
+│ (Sovereign Core)    │ & Zero-Mock Invariant    │   and compiles diffs over 40Gbps TB4 DMA to Mac Mini. │
 └─────────────────────┴──────────────────────────┴───────────────────────────────────────────────────────┘
 ```
 

@@ -44,7 +44,7 @@ Following a formal, 3-round live deliberative debate conducted under the **Tri-O
 │    • Dropbear SSH bridge to hardware USB ADB (Samsung S20+ @ R3CN40CJJ1R).   │
 │    • Sub-200ms failover to standalone Metal / Linux models on host dropouts.│
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ 2. DIRECT HIGH-SPEED DATA PLANE (10Gbps TB4 DMA @ 169.254.187.138:50052)   │
+│ 2. DIRECT HIGH-SPEED DATA PLANE (40Gbps TB4 DMA @ 10.0.0.8:50052 to L8)     │
 │    • 128K context activation tensors (2.00 GB per boundary) bypass router   │
 │      1Gbps LAN entirely, achieving 0.80s per boundary (vs 17.85s LAN).      │
 │    • Cluster-wide KV Cache quantization (--cache-type-k/v q4_0, 10.0 GB).   │
@@ -104,12 +104,13 @@ The Lauburu Mesh pools **108.0 GB RAM (82.8 GB Usable AI VRAM)** across 8 physic
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **GW** | `GL.iNet Router` | MediaTek MT7986 Quad-Core ARM64, 330MB Flash | LAN: `192.168.8.1`<br>TS: `100.122.185.123` | 1.0 GB RAM / Embedded (0.0 GB AI) | Reverse Proxy (:8080), WoL Watchdog, USB ADB (:22) | Tier-0 Ingress, Gateway Watchdog, Hardware Out-of-Band Resurrection |
 | **L1** | `Mac_Node` | Apple M4 Pro (12C CPU / 16C GPU), Apple Neural Engine | LAN: `192.168.8.230`<br>TB4: `169.254.80.69`<br>TS: `100.119.199.76` | 24.0 GB RAM / 21.6 GB AI (Cap: 90%) | llama.cpp Master (:8081), Prompt Ingestion, Shard 3 (24L) | Prompt Ingestion, Master Memory Governor, Thunderbolt 4 Initiator |
-| **L2** | `MacBook_Pro` | Apple M1 Max (10C CPU / 32C GPU), 285 GB SSD Vault | LAN: `192.168.8.127`<br>TB4: `169.254.187.138`<br>TS: `100.103.212.21` | 16.0 GB RAM / 14.0 GB AI (Cap: 90%) | llama.cpp RPC Worker (:50052), Shard 2 (28L), GGUF Vault | 10Gbps TB4 DMA Bridge Anchor (0.277ms RTT), GGUF Model Storage |
-| **L3** | `Linux_Head_Node` | AMD Ryzen 7 5700U (8C/16T), Radeon Vega 8 GPU | LAN: `192.168.8.224`<br>TS: `100.101.39.98` | 16.0 GB RAM / 12.8 GB AI (Cap: 80%) | SeaweedFS Filer (:8888), PySpark (:9999), Shard 1 (28L) | Distributed Storage Engine, PySpark Data Lake, Compute Ingress Hub |
+| **L8** | `Linux_Mini (lauburu)` | Intel Core i7-8700B (12T), Ubuntu 24.04, 32GB RAM | TB4: `10.0.0.8`<br>LAN: `192.168.8.242`<br>TS: `100.121.247.8` | 32.0 GB RAM / 25.6 GB AI (Cap: 80%) | Model Vault Hub, High-RAM Compute | **40Gbps TB4 DMA Bridge Anchor (0.38ms RTT)**, GGUF Storage |
+| **L2** | `MacBook_Pro` | Intel Core i7-9750H, 285 GB SSD Vault | LAN: `192.168.8.127`<br>TB4: `10.0.0.4`<br>TS: `100.103.212.21` | 16.0 GB RAM / 14.0 GB AI (Cap: 90%) | Screen Lens Teacher Target | 40 Gbps TB4 Receptacle 3 (`10.0.0.4`, MTU 9000), LAN Wi-Fi (4.67ms) |
+| **L3** | `Linux_Mini` | Intel 2018 Mac Mini (Linux) (8C/16T), Radeon Vega 8 GPU | LAN: `192.168.8.224`<br>TS: `100.101.39.98` | 16.0 GB RAM / 12.8 GB AI (Cap: 80%) | SeaweedFS Filer (:8888), PySpark (:9999), Shard 1 (28L) | Distributed Storage Engine, PySpark Data Lake, Compute Ingress Hub |
 | **L4** | `Linux_Tablet` | Debian Linux ARM64 Tablet, Touch DSP | Wi-Fi 7 MLO (DHCP)<br>TS: `100.81.92.125` | 8.0 GB RAM / 6.0 GB AI (Cap: 75%) | Petals Worker, Biometrics DSP, MoveSense BLE Ingest | Mobile Linux Compute, Lightweight Signal Processing |
 | **L5** | `MacBook_Air` | Apple M4 (8C CPU / 10C GPU), Metal Engine | Wi-Fi 7 MLO (`192.168.8.222`)<br>TS: `100.93.158.96` | 16.0 GB RAM / 14.0 GB AI (Cap: 90%) | Continuous LoRA Distillation, Metal Worker (:8084) | Standby Inference Worker, Background DPO / PEFT Evolution |
 | **L6** | `Pixel_10_Pro_XL`| Google Tensor G5, Edge TPU, 8K Camera Array | Wi-Fi 7 MLO (DHCP)<br>TS: `100.73.38.87` | 16.0 GB RAM / 13.6 GB AI (Cap: 85%) | 8K Vision Stream, Edge TPU Projector, UWB 3D Tracker | High-Resolution Vision Stream, UWB Positioning, Mobile Sensor Hub |
-| **L7** | `Samsung_S20` | Samsung Exynos 990, Router USB 3.0 Bus | Direct USB ADB<br>TS: `100.84.40.95` | 12.0 GB RAM / 9.0 GB AI (Cap: 75%) | OpenClaw UI Automation, ADB Test Runner (`R3CN40CJJ1R`) | Dedicated Automated UI Testing Target, Hardware USB ADB Receiver |
+| **L7** | `Samsung_S20` | Samsung Exynos 990, Router USB 3.0 Bus | Direct USB ADB<br>TS: `100.78.206.96` | 12.0 GB RAM / 9.0 GB AI (Cap: 75%) | OpenClaw UI Automation, ADB Test Runner (`R3CN40CJJ1R`) | Dedicated Automated UI Testing Target, Hardware USB ADB Receiver |
 
 ---
 
@@ -133,10 +134,10 @@ The Lauburu Mesh pools **108.0 GB RAM (82.8 GB Usable AI VRAM)** across 8 physic
                      ▼                            ▼                                                   ▼
        ┌──────────────────────────────┐ ┌────────────────────────────────┐            ┌───────────────────────────────┐
        │   L3: Linux Head Node        │ │ L4: Linux Tablet (8GB)         │            │ L7: Samsung S20+ (12GB)       │
-       │   AMD Ryzen 7 5700U (16GB)   │ │ • Petals Worker                │            │ • Device ID: R3CN40CJJ1R      │
+       │   Intel 2018 Mac Mini (Linux) (16GB)   │ │ • Petals Worker                │            │ • Device ID: R3CN40CJJ1R      │
        │   IP: 192.168.8.224          │ │ • TS: 100.81.92.125            │            │ • Out-of-Band UI Automation   │
-       │   • SeaweedFS Filer (:8888)  │ ├────────────────────────────────┤            │ • TS: 100.84.40.95            │
-       │   • PySpark Streaming (:9999)│ │ L5: MacBook Air M4 (16GB)      │            └───────────────────────────────┘
+       │   • SeaweedFS Filer (:8888)  │ ├────────────────────────────────┤            │ • TS: 100.78.206.96            │
+       │   • PySpark Streaming (:9999)│ │ L5: MacBook Pro (Node L2) (16GB)      │            └───────────────────────────────┘
        │   • Shard 1 (28 Layers)      │ │ • Continuous LoRA Training     │
        └──────────────┬───────────────┘ │ • TS: 100.93.158.96            │
                       │                 ├────────────────────────────────┤
@@ -147,7 +148,7 @@ The Lauburu Mesh pools **108.0 GB RAM (82.8 GB Usable AI VRAM)** across 8 physic
 ┌────────────────────────────────────────────────────────┐
 │         HIGH-SPEED METAL AI INFERENCE ENGINE           │
 │                                                        │
-│  ┌────────────────────────┐    10Gbps PCIe DMA Bridge  │
+│  ┌────────────────────────┐    40Gbps PCIe DMA Bridge  │
 │  │ L1: Mac Mini M4 Pro    │    (2,500 MB/s, 0.277ms)   │
 │  │ 24GB RAM / 21.6GB AI   │◄──────────────────────────►│
 │  │ IP: 192.168.8.230      │                            │
@@ -188,7 +189,7 @@ The Lauburu Mesh pools **108.0 GB RAM (82.8 GB Usable AI VRAM)** across 8 physic
 | **6333** | HTTP / REST | Mac Mini / Linux Node | Qdrant Vector DB Semantic Search Engine | Localhost / Mesh Internal |
 | **18802** | HTTP / REST | Core Infrastructure | Self-Healing Daemon & Mesh Health Status API | Internal Mesh Watchdog |
 | **22** | SSH / Dropbear | GL.iNet Router (`192.168.8.1`) | Dropbear SSH Server & Hardware USB ADB Tunnel | Key-based Auth Only |
-| **5555** | TCP / ADB | Samsung S20+ (`100.84.40.95`) | Android Debug Bridge Wireless/USB Interface | Loopback / Router Bridged |
+| **5555** | TCP / ADB | Samsung S20+ (`100.78.206.96`) | Android Debug Bridge Wireless/USB Interface | Loopback / Router Bridged |
 | **9 / 7** | UDP | Subnet Broadcast (`192.168.8.255`)| Wake-on-LAN (RFC 792 Magic Packet Broadcast) | Internal LAN Broadcast |
 
 ---
@@ -262,7 +263,7 @@ The router maintains an in-memory health table in volatile RAM (`/tmp/mesh_statu
 ┌───────────────────────┐    ┌───────────────────────┐    ┌───────────────────────┐
 │ Target 1: Vision Model│    │ Target 2: Linux Node  │    │ Target 3: Cloud Spark │
 │ Metal Port 8084       │    │ Gemma-2-9B Port 8082  │    │ Cloud Gateway Port 8088
-│ (MacBook Air / Mini)  │    │ (Ryzen 7 5700U)       │    │ (Gemini 1.5 / CF AI)  │
+│ (MacBook Air / Mini)  │    │ (Intel 2018 Mac Mini (Linux))       │    │ (Gemini 1.5 / CF AI)  │
 └───────────────────────┘    └───────────────────────┘    └───────────────────────┘
 ```
 
@@ -345,7 +346,7 @@ $$\text{Activation Tensor Size} = 1 \times 131,072 \times 8,192 \times 2\text{ b
 │    • 3-Shard Cluster Total (2 Boundaries): 2 × 17.857s = 35.714 seconds     │
 │    • Status: ❌ UNUSABLE FOR INTERACTIVE INFERENCE (High Latency Bottleneck) │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ 2. 10Gbps Thunderbolt 4 PCIe DMA Bridge (Mac Mini ◄─► MacBook Pro)          │
+│ 2. 40Gbps Thunderbolt 4 PCIe DMA Bridge (Mac Mini ◄─► MacBook Pro)          │
 │    • Max Practical Bandwidth: 2,500 MB/s | RTT: 0.277 ms                    │
 │    • Transfer Time per Boundary: 2,000 MB / 2,500 MB/s = 0.800 seconds      │
 │    • 3-Shard Cluster Total (2 Boundaries): 2 × 0.800s = 1.600 seconds       │
@@ -360,7 +361,7 @@ $$\text{Speedup Factor} = \frac{T_{\text{LAN}}}{T_{\text{TB4}}} = \frac{17.857\t
 - **Raw Prompt Text (128K tokens)**:
   $$\text{Text Size} = 131,072\text{ tokens} \times 4.2\text{ bytes/token} = 550,502\text{ bytes} \approx 537.6\text{ KB}$$
   $$\text{Transfer Time over 1Gbps LAN} = \frac{537.6\text{ KB}}{112,000\text{ KB/s}} = \mathbf{4.80\text{ ms}} \quad (< 6.0\text{ ms})$$
-- **Payload Splitting Rule**: Prompt text is lightweight and routes over 1Gbps LAN through the router. Intermediate 2.0GB activation tensors route strictly point-to-point over the 10Gbps TB4 DMA link.
+- **Payload Splitting Rule**: Prompt text is lightweight and routes over 1Gbps LAN through the router. Intermediate 2.0GB activation tensors route strictly point-to-point over the 40Gbps TB4 DMA link.
 
 ---
 
@@ -498,9 +499,9 @@ The deliberative debate deliberations, mathematical proofs, and architectural tr
 │    • Chosen: Split-plane routing, TB4 DMA bypass, tmpfs zero-flash streaming│
 │    • Rejected: Naive LAN tensor routing, persistent flash writes, no WoL    │
 │ 3. Tri-Vault Mirror Targets:                                                │
-│    • Data Lake: /Users/aaron/DFS_UNIFIED/lora_datasets/                    │
-│    • Monorepo Memory: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data.../ │
-│    • Knowledge Vault: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian... │
+│    • Data Lake: /Volumes/Lauburu-Monorepo/04_data_and_memory/data/                    │
+│    • Monorepo Memory: /Volumes/Lauburu-Monorepo/04_data.../ │
+│    • Knowledge Vault: /Volumes/Lauburu-Monorepo/obsidian... │
 │ 4. Training Engine: localhost:3000 (HuggingFace trl.DPOTrainer / peft)      │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

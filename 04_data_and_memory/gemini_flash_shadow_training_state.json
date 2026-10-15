@@ -1,0 +1,9 @@
+{
+  "epoch": 1586,
+  "total_shadowed_samples": 24112,
+  "strongest_models_tested": 10628,
+  "weakest_link_models_tested": 13484,
+  "average_coi": 0.9181,
+  "last_sweep_utc": "2026-09-14T04:52:05Z",
+  "model_records": {}
+}

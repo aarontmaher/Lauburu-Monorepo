@@ -38,7 +38,7 @@ graph TD
     MacMini["Mac_Node (Apple M4 Pro Mac Mini)<br/>24GB RAM / Control Plane"] --- TB4["10Gbps Thunderbolt 4<br/>(0.277ms RTT)"]
     TB4 --- MBP["MacBook_Pro<br/>16GB RAM / Metal GPU Vault"]
     MacMini --- Tailscale["Tailscale Mesh<br/>(100.x.y.z)"]
-    Tailscale --- LinuxNode["Linux_Head_Node<br/>AMD Ryzen 7 / Ray Head"]
+    Tailscale --- LinuxNode["Linux_Mini<br/>AMD Intel 2018 Mac Mini / Ray Head"]
     Tailscale --- Pixel["Pixel 10 Pro XL<br/>Tensor G5 Edge TPU"]
     Tailscale --- S20["Samsung S20+<br/>OpenClaw UI Tester"]
     Tailscale --- Tablet["Linux Tablet<br/>Bedside DSP Display"]

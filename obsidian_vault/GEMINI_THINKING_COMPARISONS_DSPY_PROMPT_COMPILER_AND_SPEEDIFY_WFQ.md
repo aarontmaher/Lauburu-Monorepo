@@ -70,7 +70,7 @@ compiler = dspy.ChainOfThought(VoicePromptCompilerSignature)
 ## ⚡ 3. Speedify WFQ: Real Feature Audit & Multi-WAN AI Sharding Feasibility
 
 ### Is Speedify WFQ Real and Fully Functional?
-**YES!** It is actively implemented in [`speedify_multipath_engine.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/multi_wan/speedify_multipath_engine.py) and running 24/7 as a background daemon on **Port 18804**.
+**YES!** It is actively implemented in [`speedify_multipath_engine.py`](file:///Volumes/Lauburu-Monorepo/00_core_infrastructure/multi_wan/speedify_multipath_engine.py) and running 24/7 as a background daemon on **Port 18804**.
 
 ### What is WFQ?
 **WFQ stands for Weighted Fair Queuing.** Unlike basic round-robin (which sends packets equally and chokes on slow links), our engine uses **Inverse-Square Latency Weighted Fair Queuing**:

@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  router-classifier-ai:
+    build:
+      context: ..
+      dockerfile: 00_core_infrastructure/Dockerfile.router-ai
+    container_name: lauburu-router-ai-1m
+    restart: unless-stopped
+    ports:
+      - "8089:8089"
+    volumes:
+      # Mount monorepo so the script is live and editable
+      - /Volumes/Lauburu-Monorepo:/app
+      # Mount the dataset volume so it can read/write the telemetry jsonl
+      - /Volumes/Lauburu-Monorepo/04_data_and_memory/data:/Volumes/Lauburu-Monorepo/04_data_and_memory/data
+      # Mount data and memory for state and genetic population tracking
+      - /Volumes/Lauburu-Monorepo/04_data_and_memory:/app/04_data_and_memory
+    deploy:
+      resources:
+        limits:
+          memory: 512M # Strict RAM Governance: The ~1M model uses <100MB
+    environment:
+      - PYTHONUNBUFFERED=1

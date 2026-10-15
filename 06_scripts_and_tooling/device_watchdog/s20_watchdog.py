@@ -5,8 +5,8 @@
 Lauburu Samsung S20+ Dedicated Watchdog & Auto-Recovery Daemon (v2.0)
 --------------------------------------------------------------------
 Monitors Samsung Galaxy S20+ (Layer 7 Dedicated UI Tester) across:
-1. Tailscale IP (100.84.40.95)
-2. Wireless ADB (100.84.40.95:5555 / 100.99.123.58:5555)
+1. Tailscale IP (100.78.206.96)
+2. Wireless ADB (100.78.206.96:5555 / 100.99.123.58:5555)
 3. GL.iNet Router USB ADB Bridge (root@192.168.8.1 'adb devices')
 
 Auto-Recovery Sequences:
@@ -35,12 +35,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger("S20Watchdog")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 FAILURES_LOG = REPO_ROOT / "data/device_events/s20_failures.jsonl"
 LOGCAT_DIR = REPO_ROOT / "data/device_events/s20_pre_failure_logs"
 LORA_LOG = REPO_ROOT / "data/lora_datasets/device_failure_decisions.jsonl"
 
-PRIMARY_IP = "100.84.40.95:5555"
+PRIMARY_IP = "100.78.206.96:5555"
 ALT_IP = "100.99.123.58:5555"
 ROUTER_IP = "192.168.8.1"
 
@@ -74,7 +74,7 @@ class S20DeviceWatchdog:
         
         # Test Tailscale ping
         try:
-            ts_res = subprocess.run("ping -c 1 -W 500 100.84.40.95", shell=True, capture_output=True, timeout=1.5)
+            ts_res = subprocess.run("ping -c 1 -W 500 100.78.206.96", shell=True, capture_output=True, timeout=1.5)
             if ts_res.returncode == 0:
                 return False, "TAILSCALE_UP_ADB_DOWN"
         except Exception:
@@ -136,7 +136,7 @@ class S20DeviceWatchdog:
         event = {
             "timestamp_utc": datetime.utcnow().isoformat() + "Z",
             "device": "Samsung_S20",
-            "tailscale_ip": "100.84.40.95",
+            "tailscale_ip": "100.78.206.96",
             "state": state,
             "strike_count": self.strike_count,
             "recovery_attempted": recovery_result,
@@ -147,7 +147,7 @@ class S20DeviceWatchdog:
         # LoRA training pair
         lora_pair = {
             "instruction": "Samsung S20+ device dropped from mesh telemetry. Execute root cause analysis and recovery protocol.",
-            "input": f"Detected state: {state}, IP: 100.84.40.95, Strikes: {self.strike_count}.",
+            "input": f"Detected state: {state}, IP: 100.78.206.96, Strikes: {self.strike_count}.",
             "output": f"Triggered recovery sequence. Result: {recovery_result}. Checked GL.iNet router USB bridge and bounced adbd tcpip 5555."
         }
         with open(LORA_LOG, "a") as f:

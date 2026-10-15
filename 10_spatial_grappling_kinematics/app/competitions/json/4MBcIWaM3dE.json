@@ -1,0 +1,37 @@
+{
+  "video_id": "4MBcIWaM3dE",
+  "url": "https://youtu.be/4MBcIWaM3dE",
+  "division": "Freestyle Wrestling",
+  "title": "Aaron Maher (AUS) vs unknown (AUS) [1:44]",
+  "duration_sec": 103.2,
+  "resolution": "256x144",
+  "sampled_frames": 35,
+  "poses_detected_frames": 31,
+  "dual_athlete_frames": 7,
+  "standing_phase_pct": 29.0,
+  "ground_scramble_phase_pct": 71.0,
+  "level_change_shots_detected": 2,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 57.9,
+    "left_elbow": 134.8,
+    "right_elbow": 125.7,
+    "left_hip": 122.0,
+    "right_hip": 120.8,
+    "left_knee": 130.9,
+    "right_knee": 133.5
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/4MBcIWaM3dE_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match is characterized by a high level of standing and ground/scrumble, with a significant mean spine lean and elbow flexion L/R. The knee flexion L/R is also notable, indicating a strong balance and stability in the legs. This combination of techniques suggests a well-rounded and balanced wrestler with a strong foundation in both standing and grappling.",
+  "processing_sec": 2.07,
+  "vision_model_opinions": {
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "READY_BATCH",
+      "latency_sec": 0.8,
+      "analysis": "Aaron Maher's grappling in this match is characterized by a high level of standing and ground/scrumble, with a significant mean spine lean and elbow flexion L/R. The knee flexion L/R is also notable, indicating a strong balance and stability in the legs. This combination of techniques suggests a well-rounded and balanced wrestler with a strong foundation in both standing and grappling."
+    }
+  }
+}

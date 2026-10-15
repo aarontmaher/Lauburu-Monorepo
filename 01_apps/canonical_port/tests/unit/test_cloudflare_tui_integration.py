@@ -15,10 +15,11 @@ from datetime import datetime, timezone
 # Ensure project paths are in sys.path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
 SCRIPTS_DIR = os.path.join(PROJECT_ROOT, "06_scripts_and_tooling")
+CLOUD_QUOTA_DIR = os.path.join(SCRIPTS_DIR, "cloud_and_quota")
 CANONICAL_PORT_DIR = os.path.join(PROJECT_ROOT, "01_apps", "canonical_port")
 TUI_DIR = os.path.join(CANONICAL_PORT_DIR, "tui")
 
-for p in [PROJECT_ROOT, SCRIPTS_DIR, CANONICAL_PORT_DIR, TUI_DIR]:
+for p in [PROJECT_ROOT, SCRIPTS_DIR, CLOUD_QUOTA_DIR, CANONICAL_PORT_DIR, TUI_DIR]:
     if p not in sys.path:
         sys.path.insert(0, p)
 

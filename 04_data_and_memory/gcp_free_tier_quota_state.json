@@ -1,0 +1,30 @@
+{
+  "current_date": "2026-09-20",
+  "current_month": "2026-09",
+  "ai_studio": {
+    "requests_today": 14,
+    "timestamps_last_minute": [
+      1789857507.2162209
+    ],
+    "total_requests": 782
+  },
+  "bigquery": {
+    "bytes_processed_this_month": 38,
+    "queries_executed": 2,
+    "tables_created": 0
+  },
+  "gcs": {
+    "current_bytes_stored": 0,
+    "class_a_ops_this_month": 0,
+    "class_b_ops_this_month": 0
+  },
+  "pubsub": {
+    "bytes_published_this_month": 238,
+    "messages_published": 1
+  },
+  "secret_manager": {
+    "active_secrets_count": 1,
+    "access_ops_this_month": 1
+  },
+  "last_updated": "2026-09-19T22:38:27.216256+00:00"
+}

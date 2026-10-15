@@ -21,7 +21,7 @@ biometric content is strictly confined to Local Mesh Sovereign Compute
 
 Continuous LoRA Distillation:
 All generated code pairs are logged atomically to Tri-Vault LoRA datasets:
-- /Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl
+- /Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl
 - 04_data_and_memory/lora_datasets/continuous_lora_dataset.jsonl
 """
 

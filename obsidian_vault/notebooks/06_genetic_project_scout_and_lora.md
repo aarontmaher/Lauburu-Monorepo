@@ -47,7 +47,7 @@ except ImportError:
 from IPython.display import display, HTML, Markdown
 
 # Auto-path resolution across monorepo and teamwork trees
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 for path_str in [str(REPO_ROOT), str(REPO_ROOT / "01_apps"), "/Users/aaron/teamwork_projects"]:
     if os.path.isdir(path_str) and path_str not in sys.path:
         sys.path.insert(0, path_str)
@@ -138,7 +138,7 @@ sample_dpo_pairs = [
         "id": "DPO-070652",
         "domain": "Mesh Transports",
         "prompt": "Explain TB4 DMA bridging vs Tailscale WireGuard overlay for tensor sharding.",
-        "chosen": "10Gbps Thunderbolt 4 DMA delivers 0.277ms RTT with 40Gbps physical bandwidth across L1-L2, ideal for zero-latency layer ring passing. Tailscale WireGuard serves as L3 WAN fallback.",
+        "chosen": "40Gbps Thunderbolt 4 DMA delivers 0.277ms RTT with 40Gbps physical bandwidth across L1-L2, ideal for zero-latency layer ring passing. Tailscale WireGuard serves as L3 WAN fallback.",
         "rejected": "Both connections send data over IP. Tailscale is always preferred because it has a GUI.",
         "consensus": 0.978
     }
@@ -158,7 +158,7 @@ for pair in sample_dpo_pairs:
 swarm_models = [
     {"model": "Qwen 2.5 Coder 32B (Q4_K_M)", "host": "L1 Mac Mini / prima.cpp", "elo": 1685, "win_rate": "78.4%", "role": "Lead Code Specialist"},
     {"model": "Qwen 30B MoE (A3B)",            "host": "L2 MacBook Pro / RPC",    "elo": 1640, "win_rate": "74.1%", "role": "General Reasoning Hub"},
-    {"model": "DeepSeek-R1-32B Distill",      "host": "L5 MacBook Air",         "elo": 1610, "win_rate": "71.8%", "role": "Math & Logic Auditor"},
+    {"model": "DeepSeek-R1-32B Distill",      "host": "L2 MacBook Pro",         "elo": 1610, "win_rate": "71.8%", "role": "Math & Logic Auditor"},
     {"model": "Qwen 3.8 Max Abliterated",     "host": "L3 Linux Head Node",     "elo": 1595, "win_rate": "69.5%", "role": "Adversarial Devil's Advocate"},
     {"model": "Gemini 3.7 Flash High",        "host": "Cloud Overseer ($0)",    "elo": 1740, "win_rate": "86.2%", "role": "Frontier Benchmark Benchmark"},
 ]

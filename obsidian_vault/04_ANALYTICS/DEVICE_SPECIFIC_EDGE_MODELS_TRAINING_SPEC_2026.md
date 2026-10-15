@@ -50,10 +50,10 @@ The Google Pixel 10 Pro XL (Google Tensor G5 NPU / Android 15) should **NOT** re
 # Example: Fine-Tuning SmolLM2 1.7B on Local Metal GPU ($0 Spend)
 uv run python -m trl.commands.sft \
   --model_name_or_path HuggingFaceTB/SmolLM2-1.7B-Instruct \
-  --dataset_name /Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl \
+  --dataset_name /Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl \
   --learning_rate 2e-4 \
   --lora_r 16 --lora_alpha 32 \
-  --output_dir /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/lora_adapters/smollm2_edge_v1 \
+  --output_dir /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/lora_adapters/smollm2_edge_v1 \
   --device mps
 ```
 

@@ -15,9 +15,9 @@ import math
 import subprocess
 from typing import Dict, List, Any
 
-STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/on_device_nano_smol_state.json"
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/on_device_nano_smol_training.jsonl"
-MOVESENSE_STREAM_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/movesense_live_stream.json"
+STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/on_device_nano_smol_state.json"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/on_device_nano_smol_training.jsonl"
+MOVESENSE_STREAM_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/movesense_live_stream.json"
 
 os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
 os.makedirs(os.path.dirname(LORA_DATASET_FILE), exist_ok=True)
@@ -117,7 +117,7 @@ class OnDeviceNanoSmolTrainer:
             "on_device_models": {
                 "smollm2_135m": {
                     "spec": "SmolLM2-135M-Instruct-Q4_K_M.gguf (105.4 MB)",
-                    "deployed_nodes": ["Pixel 10 Pro XL (100.73.38.87)", "Samsung S20+ (100.84.40.95)"],
+                    "deployed_nodes": ["Pixel 10 Pro XL (100.73.38.87)", "Samsung S20+ (100.78.206.96)"],
                     "ram_footprint_mb": smol_ram_footprint_mb,
                     "avg_inference_speed_tok_sec": smol_ast_tok_per_sec,
                     "overall_edge_fitness": smol_overall_fitness,

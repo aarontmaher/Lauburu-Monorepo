@@ -10,7 +10,7 @@ tags: [rf_spectrum, wifi7, lora, halow, 5g, bluetooth, edge_ai, device_specific_
 
 This architecture establishes two foundational pillars for the Lauburu Ecosystem:
 1. **Omni-Spectrum Multi-Transport Self-Healing Engine:** Opportunistically establishes, bonds, and hot-migrates connections across every available electromagnetic and physical channel—from Sub-1 GHz LoRa/HaLow to 6 GHz Wi-Fi 7 and 40 Gbps Thunderbolt DMA.
-2. **Layer-Specific Local AI Training Matrix:** Trains dedicated Small Language Models (SLMs) and Frontier MoE shards tailored to the exact RAM, compute hardware (Metal, Tensor G5 TPU, Exynos, AMD Ryzen), and operational responsibilities of each of the 7 mesh layers.
+2. **Layer-Specific Local AI Training Matrix:** Trains dedicated Small Language Models (SLMs) and Frontier MoE shards tailored to the exact RAM, compute hardware (Metal, Tensor G5 TPU, Exynos, Intel 2018 Mac Mini), and operational responsibilities of each of the 7 mesh layers.
 
 ---
 
@@ -80,7 +80,7 @@ graph TD
         M4 -->|Role| R4[512Hz Pan-Tompkins ECG, DFA-alpha1, Sleep Ops]
     end
 
-    subgraph Layer 5: MacBook Air M4 [Secondary Metal Worker - 16GB]
+    subgraph Layer 5: MacBook Pro (Node L2) [Secondary Metal Worker - 16GB]
         M5[MLX QLoRA Trainer - Qwen 14B]
         M5 -->|Role| R5[24/7 LoRA Distillation, JupyterLab Hub :8889]
     end
@@ -102,7 +102,7 @@ graph TD
 | :--- | :--- | :--- | :--- | :--- | :---: |
 | **L1 (Mac Mini)** | Apple M4 Pro (24 GB) | `Qwen/Qwen2.5-Coder-32B-Instruct` | `GGUF Q4_K_M` / Metal MPS | `TRACK_01_SWARM_ORCHESTRATION` | **2240** |
 | **L2 (MBP 16")** | Intel i9 + AMD dGPU (16 GB) | `deepseek-ai/DeepSeek-Coder-V2-Lite` | `GGUF Q4_K_M` / llama-server | `TRACK_02_AST_REFACTORING` | **2190** |
-| **L3 (Dell Linux)** | AMD Ryzen 7 5700U (16 GB) | `Qwen/Qwen2.5-7B-Instruct` | `GGUF Q4_K_M` / prima.cpp | `TRACK_03_SYSFS_KERNEL_GOVERNOR` | **2080** |
+| **L3 (Dell Linux)** | Intel 2018 Mac Mini (Linux) (16 GB) | `Qwen/Qwen2.5-7B-Instruct` | `GGUF Q4_K_M` / prima.cpp | `TRACK_03_SYSFS_KERNEL_GOVERNOR` | **2080** |
 | **L4 (Linux Tablet)**| Debian Mobile (8 GB) | `HuggingFaceTB/SmolLM2-1.7B-Instruct` | `GGUF Q4_K_M` / llama-server | `TRACK_04_ECG_DSP_BIOMETRICS` | **1980** |
 | **L5 (MBA M4)** | Apple M4 (16 GB) | `Qwen/Qwen2.5-Coder-14B-Instruct` | `MLX 4-bit` / mlx-lm | `TRACK_05_CONTINUOUS_QLORA` | **2120** |
 | **L6 (Pixel 10)** | Google Tensor G5 (16 GB) | `Qwen/Qwen2.5-VL-3B-Instruct` | `LiteRT .tflite` / TPU Delegate | `TRACK_06_VLA_SCREEN_LENS` | **2060** |
@@ -114,12 +114,12 @@ graph TD
 
 To train these models continuously at **$0 cloud cost**:
 1. **Instruction Harvesting:** All live debate consensus verdicts, terminal commands, sysfs unthrottling events, and ECG peaks are serialized to:
-   `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`
+   `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`
 2. **Overnight MLX Distillation on MacBook Air (L5):**
    ```bash
    python3 -m mlx_lm.lora \
      --model Qwen/Qwen2.5-Coder-14B-Instruct \
-     --data /Users/aaron/DFS_UNIFIED/lora_datasets/ \
+     --data /Volumes/Lauburu-Monorepo/04_data_and_memory/data/ \
      --train \
      --iters 1000 \
      --batch-size 4 \

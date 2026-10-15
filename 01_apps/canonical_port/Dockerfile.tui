@@ -1,5 +1,5 @@
 # ==============================================================================
-# Lauburu Canonical TUI & Mesh Cockpit - Multi-Arch OCI Container
+# Lauburu Canonical TUI & Mesh Console - Multi-Arch OCI Container
 # Supported Architectures: linux/arm64 (Apple Silicon, Raspberry Pi, Termux), linux/amd64 (Linux Head Node)
 # Subsystem: 01_apps/canonical_port/Dockerfile.tui
 # ==============================================================================

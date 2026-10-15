@@ -25,10 +25,10 @@ try:
 except ImportError:
     HAS_PYSPARK = False
 
-STATE_LOG_PATH = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/pyspark_moe_pipeline_state.json"
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
-TELEMETRY_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
-WORKSPACE_ROOT = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+STATE_LOG_PATH = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/pyspark_moe_pipeline_state.json"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+TELEMETRY_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
+WORKSPACE_ROOT = "/Volumes/Lauburu-Monorepo"
 
 class GeneticPySparkPipeline:
     def __init__(self):
@@ -149,7 +149,7 @@ class GeneticPySparkPipeline:
         
         return {
             "stream_name": "Monorepo Codebase & AST Structures",
-            "source": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo",
+            "source": "/Volumes/Lauburu-Monorepo",
             "record_count": total_files * 18, # Estimated AST token branches
             "file_counts": {
                 "python": py_files,

@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-10-11T22:50:08Z",
+  "links": [
+    {
+      "name": "Thunderbolt 4 Bridge (L1 <-> L8)",
+      "ip": "10.0.0.8",
+      "type": "TB4_DMA",
+      "ping": {
+        "reachable": true,
+        "loss_pct": 0.0,
+        "rtt_avg_ms": 0.342,
+        "duration_sec": 4.026
+      },
+      "wireguard_udp_51820": {
+        "open": true,
+        "latency_probe_ms": 0.181
+      }
+    },
+    {
+      "name": "Tailscale Mesh Overlay (L1 <-> L8)",
+      "ip": "100.121.247.8",
+      "type": "TAILSCALE_DERP",
+      "ping": {
+        "reachable": true,
+        "loss_pct": 0.0,
+        "rtt_avg_ms": 14.754,
+        "duration_sec": 4.02
+      },
+      "wireguard_udp_51820": {
+        "open": true,
+        "latency_probe_ms": 0.182
+      }
+    }
+  ]
+}

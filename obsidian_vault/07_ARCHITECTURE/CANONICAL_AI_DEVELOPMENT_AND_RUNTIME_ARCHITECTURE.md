@@ -49,7 +49,7 @@ To resolve disk and RAM exhaustion across peripheral nodes while maximizing deve
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ TIER 1: DEFAULT PRODUCTION RUNTIME (Rust & C++ — 95% of Operations)                             │
 │ • Stack: prima.cpp, llama.cpp GGML-RPC, wgpu-rust, Ratatui, POSIX C Sentinels.                  │
-│ • Responsibilities: 24/7 background telemetry, 10Gbps TB4 DMA tensor streaming, ADB keepalives,│
+│ • Responsibilities: 24/7 background telemetry, 40Gbps TB4 DMA tensor streaming, ADB keepalives,│
 │   Movesense 512Hz ECG DSP, OpenWrt nftables firewall defense, and high-frequency routing.       │
 │ • Storage & RAM Impact: < 50 MB total disk space per node · < 15 MB RAM per daemon.             │
 │ • Edge Policy: Peripheral nodes (L4 Tablet, L6/L7 Android, GW Router) contain ZERO Python venvs.│
@@ -73,14 +73,14 @@ All mesh devices simultaneously support both **`prima.cpp`** and **`llama.cpp`**
 │                           DUAL-ENGINE CO-EXISTENCE ARCHITECTURE                                 │
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 1. SINGLE PHYSICAL GGUF SOURCE OF TRUTH:                                                        │
-│    • Weights Path: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault │
+│    • Weights Path: /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault │
 │    • Zero Duplicate Disk Space: Both prima.cpp and llama.cpp map to identical GGUF inodes via    │
 │      POSIX mmap(PROT_READ, MAP_SHARED). Delta disk storage = 0 MB.                              │
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 2. RUNTIME MEMORY DYNAMICS:                                                                     │
 │    • Kernel Page Cache: The OS loads weight pages into unified memory once. Both engines share  │
 │      the exact same physical pages.                                                             │
-│    • prima.cpp (Active Primary): Holds active KV cache for 10Gbps TB4 DMA streaming & Metal.    │
+│    • prima.cpp (Active Primary): Holds active KV cache for 40Gbps TB4 DMA streaming & Metal.    │
 │    • llama.cpp (Hot-Standby Fallback): Listens on Port 50052 with idle RSS <= 35 MB RAM.        │
 └─────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -90,8 +90,8 @@ All mesh devices simultaneously support both **`prima.cpp`** and **`llama.cpp`**
 | Layer | Physical Node | Available AI VRAM | Primary Inference Engine | Fallback Engine | Role & Wire Protocol |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **L1** | `Mac_Node` (M4 Pro) | 21.6 GB AI | **`prima.cpp` (Metal)** | `llama.cpp` (:8081) | Host Ring Master · TB4 DMA Coordinator |
-| **L2** | `MacBook_Pro` (M3) | 14.0 GB AI | **`prima.cpp` (Metal)** | `llama.cpp` (:8082) | 10Gbps TB4 Bridge · 285GB SSD Vault |
-| **L3** | `Linux_Head_Node` | 13.8 GB AI | **`prima.cpp` (Vulkan/C++)** | `llama.cpp` (:8083) | Docker Hub · Apache Ray Head |
+| **L2** | `MacBook_Pro` (Intel i7) | 14.0 GB AI | **`prima.cpp` (Metal)** | `llama.cpp` (:8082) | 40Gbps TB4 Bridge · 285GB SSD Vault |
+| **L3** | `Linux_Mini` | 13.8 GB AI | **`prima.cpp` (Vulkan/C++)** | `llama.cpp` (:8083) | Docker Hub · Apache Ray Head |
 | **L4** | `Linux_Tablet` | 6.5 GB AI | `llama.cpp` (:50052) | Direct C Sentinel | Edge Worker (No Metal) -> GGML-RPC |
 | **L5** | `MacBook_Air` (M4) | 14.0 GB AI | **`prima.cpp` (Metal)** | `llama.cpp` (:8084) | Secondary Metal Shard · LoRA Distiller |
 | **L6** | `Pixel_10_Pro_XL` | 12.5 GB AI | `llama.cpp` (NPU/OpenCL) | Termux C Daemon | Google Tensor G5 TPU · ADB Shard |
@@ -121,7 +121,7 @@ All mesh devices simultaneously support both **`prima.cpp`** and **`llama.cpp`**
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 3. 3-MAC THUNDERBOLT SHARDING POLICY:                                                           │
 │    • It is always better to shard models across ALL 3 Apple Silicon Macs (L1 + L2 + L5) over    │
-│      the 10Gbps Thunderbolt 4 DMA bridge (0.204ms RTT) to pool 56.0 GB Real Metal RAM.           │
+│      the 40Gbps Thunderbolt 4 DMA bridge (0.204ms RTT) to pool 56.0 GB Real Metal RAM.           │
 │    • 2-Mac Prohibition: NEVER shard across only 2 Macs unless the model fits VERY EASILY        │
 │      (<= 40% memory capacity of each node). Otherwise auto-escalate to 3-Mac sharding.          │
 └─────────────────────────────────────────────────────────────────────────────────────────────────┘
@@ -181,7 +181,7 @@ The **Network Health AI** runs continuously across `prima.cpp`, executing tailor
 │                     DEVICE-SPECIFIC NETWORK HEALTH AI MAINTENANCE                               │
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ L1/L2 (Mac Mini M4 + MacBook Pro TB4):                                                          │
-│ • Governs 10Gbps Thunderbolt 4 DMA packet aggregation (<0.20ms RTT).                             │
+│ • Governs 40Gbps Thunderbolt 4 DMA packet aggregation (<0.20ms RTT).                             │
 │ • Dynamically balances Metal GPU tensor sharding pipelines across TB4 links.                    │
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ L3 (Linux Head Node AMD):                                                                       │
@@ -204,12 +204,12 @@ The **Network Health AI** runs continuously across `prima.cpp`, executing tailor
 
 The system enforces continuous background learning across the three synchronized storage vaults:
 
-1. **Obsidian Vault (`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/`):**
+1. **Obsidian Vault (`/Volumes/Lauburu-Monorepo/obsidian_vault/`):**
    * Stores human-readable architectural whitepapers, AI debate consensus records, network topology matrices, and system telemetry feeds.
-2. **PySpark Data Lake & LoRA Vault (`/Users/aaron/DFS_UNIFIED/lora_datasets/`):**
+2. **PySpark Data Lake & LoRA Vault (`/Volumes/Lauburu-Monorepo/04_data_and_memory/data/`):**
    * Real-time append target for all validated `<think>...</think>` debate turns, AgentWorld trajectories, and AST diffs (`continuous_lora_dataset.jsonl` — 125MB+).
    * Scheduled for staged HuggingFace `trl`/`peft` LoRA updates during idle VRAM windows.
-3. **GitHub Monorepo (`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo`):**
+3. **GitHub Monorepo (`/Volumes/Lauburu-Monorepo`):**
    * Production source code, Git worktrees for isolated subagent code modifications, and multi-tier automated test suites.
 
 ---

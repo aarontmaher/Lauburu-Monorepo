@@ -29,7 +29,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("AISupervisor")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 STATUS_FILE = REPO_ROOT / "data/mesh/ai_supervisor_status.json"
 LORA_LOG = REPO_ROOT / "data/lora_datasets/mesh_provisioning.jsonl"
 

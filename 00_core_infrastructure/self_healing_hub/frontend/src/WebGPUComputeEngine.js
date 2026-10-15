@@ -103,17 +103,12 @@ class WebGPUComputeEngine {
     }
 
     if (!this.device) {
-      // Fallback JS benchmark if WebGPU is unavailable
-      const t0 = performance.now();
-      let sum = 0;
-      for (let i = 0; i < size * size; i++) sum += Math.sin(i) * Math.cos(i);
-      const latencyMs = Math.max(0.1, performance.now() - t0);
       return {
-        backend: 'CPU_FALLBACK',
+        backend: 'UNAVAILABLE',
         matrixSize: `${size}x${size}`,
-        latencyMs: Number(latencyMs.toFixed(2)),
-        gflops: Number(((2 * size * size * size) / (latencyMs * 1e6)).toFixed(2)),
-        status: 'CPU Simulated Fallback'
+        latencyMs: null,
+        gflops: null,
+        status: 'DISCONNECTED'
       };
     }
 

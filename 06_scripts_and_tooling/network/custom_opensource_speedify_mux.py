@@ -36,7 +36,7 @@ Key Features:
 4. Single-Port Protocol Multiplexer (Port 443 / Port 4000):
    - Sniffs incoming byte stream preambles & TLS ALPN to transparently demultiplex:
      * SSH-2.0 / SSH- -> Port 22 (SSH)
-     * GET / POST / HTTP/ / HEAD / PUT / DELETE -> Port 4000 (FastAPI Cockpit / WebSockets)
+     * GET / POST / HTTP/ / HEAD / PUT / DELETE -> Port 4000 (FastAPI Console / WebSockets)
      * PRI * HTTP/2.0 / 0x00001204 -> Port 50051 (Ray Cluster Hub / gRPC)
      * GGML_RPC / RPC -> Port 50052 (llama.cpp Tensor Sharder)
      * SPDF / LAUB -> Process via 44-byte Speedify channel bonding engine
@@ -118,15 +118,6 @@ RING_BUFFER_SIZE = 1024        # 1024 static slots (~1.48 MB footprint)
 
 # ─── Physical Links & Routing Configuration ──────────────────────────────────
 PHYSICAL_LINKS: List[Dict[str, Any]] = [
-    {
-        "subflow_id": 0,
-        "name": "Thunderbolt 4 DMA",
-        "iface": "bridge0",
-        "nominal_gbps": 40.0,
-        "base_rtt_ms": 0.27,
-        "weight": 0.60,
-        "role": "PRIMARY_HIGH_SPEED_DMA"
-    },
     {
         "subflow_id": 1,
         "name": "Wi-Fi 7 MLO",
@@ -435,7 +426,7 @@ class SinglePortProtocolMultiplexer:
         if preamble.startswith(b"GGML_RPC") or preamble.startswith(b"RPC"):
             return "llama_rpc"
 
-        # Default fallback to HTTP Cockpit
+        # Default fallback to HTTP Console
         return "http"
 
     async def _pipe_streams(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):

@@ -29,7 +29,7 @@ date: "2026-09-03"
 │ 3. [13.2%] Native WFQ Multi-WAN (:18804): Hardware latency weight scheduler│
 │ 4. [11.5%] Headscale / Kwaami: $0 SaaS private control plane coordinator    │
 │ 5. [10.1%] Glorytun (C UDP): High-throughput sub-millisecond UDP tunnel     │
-│ 6. [10.0%] Prima.cpp: Pipelined-ring tensor sharding over 10Gbps TB4        │
+│ 6. [10.0%] Prima.cpp: Pipelined-ring tensor sharding over 40Gbps TB4        │
 │ 7. [ 6.2%] NetBird: Self-hosted Zero-Trust WireGuard + WebRTC ICE           │
 │ 8. [ 5.8%] Tailscale tsnet: Embedded userspace client binary microservices  │
 │ 9. [ 4.1%] Nebula (Slack): Lightweight static server cluster mesh           │
@@ -42,6 +42,6 @@ date: "2026-09-03"
 ---
 
 ## 🏛️ 3. Execution Integration
-- **Physical Link Aggregation:** **`Aggligator` + Native WFQ Engine (:18804)** aggregates 10Gbps TB4 DMA + Wi-Fi 7 + 5G into a unified, zero-drop pipe.
+- **Physical Link Aggregation:** **`Aggligator` + Native WFQ Engine (:18804)** aggregates 40Gbps TB4 DMA + Wi-Fi 7 + 5G into a unified, zero-drop pipe.
 - **Biometrics Telemetry:** **`Engarde` packet duplication** guarantees Movesense 512Hz ECG stream never drops a single QRS peak during gym movement.
 - **Dynamic Swarm Piping:** **`tailcat`** provides instantaneous encrypted P2P tokens for autonomous AI subagent clusters.

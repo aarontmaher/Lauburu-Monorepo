@@ -1,0 +1,92 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Lens: Sovereign Unified Overview",
+      "type": "shell",
+      "command": "/opt/homebrew/bin/python3",
+      "args": [
+        "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lens_sovereign_unified_system.py",
+        "overview"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Lens: Multi-Tier AI Debate (3x 30B + Astra/Fable + 2x Free Tier)",
+      "type": "shell",
+      "command": "/opt/homebrew/bin/python3",
+      "args": [
+        "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lens_sovereign_unified_system.py",
+        "debate"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Lens: Benchmark 70B & 100B+ Sharded Models",
+      "type": "shell",
+      "command": "/opt/homebrew/bin/python3",
+      "args": [
+        "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lens_sovereign_unified_system.py",
+        "benchmark-70b-100b"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Lens: Self-Optimize ELO & Task Routing",
+      "type": "shell",
+      "command": "/opt/homebrew/bin/python3",
+      "args": [
+        "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lens_sovereign_unified_system.py",
+        "self-optimize"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Lens: Unified 2TB Storage & Rooted Podman Spec",
+      "type": "shell",
+      "command": "/opt/homebrew/bin/python3",
+      "args": [
+        "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lens_sovereign_unified_system.py",
+        "podman-storage"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Lens: 4-Stage Network Self-Healing Cascade",
+      "type": "shell",
+      "command": "/opt/homebrew/bin/python3",
+      "args": [
+        "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lens_sovereign_unified_system.py",
+        "heal-cascade"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Lens: Qwen 3D VLA & Coding Telemetry Audit",
+      "type": "shell",
+      "command": "/opt/homebrew/bin/python3",
+      "args": [
+        "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lens_sovereign_unified_system.py",
+        "vla"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Lens: Run Full Verification Test Suite",
+      "type": "shell",
+      "command": "/opt/homebrew/bin/python3",
+      "args": [
+        "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/tests/test_lens_sovereign_unified_system.py"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    }
+  ]
+}

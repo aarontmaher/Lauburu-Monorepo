@@ -11,7 +11,7 @@
 ## 🔵 Panel Deliberations
 
 ### 🤖 Participant 1: Cloud AI Teacher (Gemini 3.1 Pro / 3.8 Flash High)
-- **40Gbps Thunderbolt Allocation:** In distributed tensor sharding (`prima.cpp` PRP), activation tensors flow continuously across the ring. However, the computation workload is heavily asymmetric: the Apple Silicon nodes (Mac Mini M4 Pro with 21.6 GB AI VRAM and MacBook Air M4 with 14 GB AI VRAM) execute the heavy matrix multiplications over unified memory (150–273 GB/s bandwidth). The 2019 Intel MacBook Pro (4 GB AMD GPU) serves as an NVMe storage cache and secondary CPU worker. Therefore, having a full 40 Gbps link directly between the two Apple Silicon nodes (Mac Mini $\longleftrightarrow$ MacBook Air) is mathematically superior to capping it at 20 Gbps.
+- **40Gbps Thunderbolt Allocation:** In distributed tensor sharding (`prima.cpp` PRP), activation tensors flow continuously across the ring. However, the computation workload is heavily asymmetric: the Apple Silicon nodes (Mac Mini M4 Pro with 21.6 GB AI VRAM and MacBook Pro (Node L2) with 14 GB AI VRAM) execute the heavy matrix multiplications over unified memory (150–273 GB/s bandwidth). The 2019 Intel MacBook Pro (4 GB AMD GPU) serves as an NVMe storage cache and secondary CPU worker. Therefore, having a full 40 Gbps link directly between the two Apple Silicon nodes (Mac Mini $\longleftrightarrow$ MacBook Air) is mathematically superior to capping it at 20 Gbps.
 - **NBN vs 10GbE Reality Check:** Direct-plugging an NBN modem/NTD into a 10GbE dock is an anti-pattern in Australian network architecture. Residential NBN FTTP speeds max out at 1,000 Mbps (1 Gbps). Plugging an NTD directly into a Mac forces the Mac to act as an unhardened gateway router, collapses NAT for all other mesh devices, and provides 0% additional internet bandwidth. 10GbE belongs strictly on the **local intranet/LAN backbone** for inter-node dataset streaming.
 
 ### 🤖 Participant 2: Local AI Orchestrator (Qwen 3.8 Max / Prima.cpp Master)
@@ -29,6 +29,6 @@
 
 ## 🏆 Unanimous Consensus Verdict (Score: 0.992)
 
-1. **Cable Swapping / 40Gbps Allocation:** The two Apple Silicon compute engines (Mac Mini M4 Pro and MacBook Air M4) MUST be linked via a 40 Gbps cable.
+1. **Cable Swapping / 40Gbps Allocation:** The two Apple Silicon compute engines (Mac Mini M4 Pro and MacBook Pro (Node L2)) MUST be linked via a 40 Gbps cable.
 2. **NBN Modem Topology:** The NBN connection box MUST remain plugged into the GL.iNet router's 2.5G WAN port. The Thunderbolt dock or adapter belongs on the LAN side for inter-Mac and Linux cluster communications.
 3. **Hardware Spending Rule:** Prioritize multi-gigabit LAN switches (AU$65) and certified cables (AU$43) over expensive Thunderbolt 5 docks.

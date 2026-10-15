@@ -1,0 +1,115 @@
+services:
+  # ── 1. Polyglot TUI Specialist (Python, Go, Rust, C, ttyd Port 8088) ────────
+  lauburu-specialist-tui:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.specialist_tui
+    image: lauburu/specialist-tui:latest
+    container_name: lauburu_specialist_tui
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "8088:8088"
+      - "8089:8089"
+    environment:
+      - TERM=xterm-256color
+      - COLORTERM=truecolor
+      - MONOREPO_ROOT=/workspace
+      - OBSIDIAN_VAULT=/obsidian_vault
+      - LORA_DATASETS=/lora_datasets
+    volumes:
+      - /Volumes/Lauburu-Monorepo:/workspace:rw
+      - /Volumes/Lauburu-Monorepo/obsidian_vault:/obsidian_vault:rw
+      - /Volumes/Lauburu-Monorepo/04_data_and_memory/data:/lora_datasets:rw
+      - /Volumes/Lauburu-Monorepo/data:/data:rw
+    networks:
+      - lauburu-mesh-net
+
+  # ── 2. Flutter & Swift Mobile/Web Specialist (Port 4000 & 4001) ─────────────
+  lauburu-specialist-flutter-swift:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.specialist_flutter_swift
+    image: lauburu/specialist-flutter-swift:latest
+    container_name: lauburu_specialist_flutter_swift
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+      - "4001:4001"
+    environment:
+      - PORT=4000
+      - MONOREPO_ROOT=/workspace
+    volumes:
+      - /Volumes/Lauburu-Monorepo:/workspace:rw
+      - /Volumes/Lauburu-Monorepo/obsidian_vault:/obsidian_vault:rw
+      - /Volumes/Lauburu-Monorepo/04_data_and_memory/data:/lora_datasets:rw
+      - /Volumes/Lauburu-Monorepo/data:/data:rw
+    networks:
+      - lauburu-mesh-net
+
+  # ── 3. WebGPU & Rust 3D Spatial Specialist (Port 8090) ──────────────────────
+  lauburu-specialist-webgpu:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.specialist_webgpu
+    image: lauburu/specialist-webgpu:latest
+    container_name: lauburu_specialist_webgpu
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    environment:
+      - PORT=8090
+      - MONOREPO_ROOT=/workspace
+    volumes:
+      - /Volumes/Lauburu-Monorepo:/workspace:rw
+      - /Volumes/Lauburu-Monorepo/obsidian_vault:/obsidian_vault:rw
+      - /Volumes/Lauburu-Monorepo/04_data_and_memory/data:/lora_datasets:rw
+    networks:
+      - lauburu-mesh-net
+
+  # ── 4. Master Notebook & Data Science Specialist (Jupyter: 8888, Marimo: 2718) 
+  lauburu-specialist-notebook:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.specialist_notebook
+    image: lauburu/specialist-notebook:latest
+    container_name: lauburu_specialist_notebook
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+      - "2718:2718"
+    environment:
+      - MONOREPO_ROOT=/workspace
+      - OBSIDIAN_VAULT=/obsidian_vault
+      - LORA_DATASETS=/lora_datasets
+    volumes:
+      - /Volumes/Lauburu-Monorepo:/workspace:rw
+      - /Volumes/Lauburu-Monorepo/obsidian_vault:/obsidian_vault:rw
+      - /Volumes/Lauburu-Monorepo/04_data_and_memory/data:/lora_datasets:rw
+      - /Volumes/Lauburu-Monorepo/data:/data:rw
+    networks:
+      - lauburu-mesh-net
+
+  # ── 5. Biometrics & Medical DSP Specialist (Port 4005) ───────────────────────
+  lauburu-specialist-biometrics-dsp:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.specialist_biometrics_dsp
+    image: lauburu/specialist-biometrics-dsp:latest
+    container_name: lauburu_specialist_biometrics_dsp
+    restart: unless-stopped
+    ports:
+      - "4005:4005"
+    environment:
+      - MONOREPO_ROOT=/workspace
+    volumes:
+      - /Volumes/Lauburu-Monorepo:/workspace:rw
+      - /Volumes/Lauburu-Monorepo/04_data_and_memory/data:/lora_datasets:rw
+    networks:
+      - lauburu-mesh-net
+
+networks:
+  lauburu-mesh-net:
+    name: lauburu-mesh-net
+    driver: bridge

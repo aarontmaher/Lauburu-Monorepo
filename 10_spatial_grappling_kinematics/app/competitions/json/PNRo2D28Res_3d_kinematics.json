@@ -1,0 +1,26 @@
+{
+  "video_id": "PNRo2D28Res",
+  "url": "https://youtu.be/PNRo2D28Res",
+  "division": "Freestyle Wrestling",
+  "title": "South East Asian championship (AUS) vs (SGP)",
+  "duration_sec": 238.7,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 14,
+  "dual_athlete_frames": 1,
+  "standing_phase_pct": 14.3,
+  "ground_scramble_phase_pct": 85.7,
+  "level_change_shots_detected": 2,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 39.5,
+    "left_elbow": 143.7,
+    "right_elbow": 124.3,
+    "left_hip": 113.0,
+    "right_hip": 107.8,
+    "left_knee": 143.4,
+    "right_knee": 130.1
+  },
+  "keyframe_grid_path": null,
+  "tactical_note": "Aaron Maher's grappling in the South East Asian championship (AUS) against SGP (Freestyle Wrestling, 238.7s) involves a combination of standing, ground/scrumble, and level change shots, with a mean spine lean of 39.5\u00b0. The elbow flexion L/R is 143.7\u00b0, and the knee flexion L/R is 143.4\u00b0. This setup suggests a balanced, high-intensity, and potentially explosive move by Maher.",
+  "processing_sec": 2.22
+}

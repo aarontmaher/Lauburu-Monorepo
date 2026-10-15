@@ -44,7 +44,7 @@ try:
 except ImportError:
     HAS_RICH = False
 
-MONOREPO = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+MONOREPO = Path("/Volumes/Lauburu-Monorepo")
 TUI_ROOT  = MONOREPO / "01_apps/canonical_port/tui"
 SCREENS   = TUI_ROOT / "screens"
 WIDGETS   = TUI_ROOT / "widgets"

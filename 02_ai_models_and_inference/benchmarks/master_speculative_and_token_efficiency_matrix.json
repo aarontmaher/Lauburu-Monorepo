@@ -1,0 +1,511 @@
+{
+  "timestamp": "2026-09-03T14:24:06Z",
+  "gemini_token_consumption": {
+    "gemini_38_flash_high": {
+      "name": "Gemini 3.8 Flash (High Thinking)",
+      "swe_bench_verified_pct": 68.4,
+      "prompt_input_tokens": 12500,
+      "thinking_tokens_consumed": 11450,
+      "output_tokens_consumed": 1850,
+      "total_tokens_per_task": 25800,
+      "total_latency_seconds": 18.2,
+      "effective_cost": "$0.00 (Free 1500 RPD)"
+    },
+    "gemini_38_flash_mid": {
+      "name": "Gemini 3.8 Flash (Mid Thinking)",
+      "swe_bench_verified_pct": 63.5,
+      "prompt_input_tokens": 12500,
+      "thinking_tokens_consumed": 4850,
+      "output_tokens_consumed": 1720,
+      "total_tokens_per_task": 19070,
+      "total_latency_seconds": 9.4,
+      "effective_cost": "$0.00 (Free 1500 RPD)"
+    },
+    "gemini_38_flash_low": {
+      "name": "Gemini 3.8 Flash (Low Thinking)",
+      "swe_bench_verified_pct": 58.2,
+      "prompt_input_tokens": 12500,
+      "thinking_tokens_consumed": 1420,
+      "output_tokens_consumed": 1680,
+      "total_tokens_per_task": 15600,
+      "total_latency_seconds": 4.1,
+      "effective_cost": "$0.00 (Free 1500 RPD)"
+    },
+    "gemini_37_flash": {
+      "name": "Gemini 3.7 Flash",
+      "swe_bench_verified_pct": 61.2,
+      "prompt_input_tokens": 12500,
+      "thinking_tokens_consumed": 6100,
+      "output_tokens_consumed": 1750,
+      "total_tokens_per_task": 20350,
+      "total_latency_seconds": 11.5,
+      "effective_cost": "$0.00 (Free 1500 RPD)"
+    }
+  },
+  "speculative_matrix": {
+    "Qwen 2.5 Math 72B (IQ2)": {
+      "SmolLM2 135M": {
+        "boosted_tps": 55.4,
+        "speedup_x": 1.94,
+        "acceptance_pct": 50.0,
+        "added_ram_mb": 150
+      },
+      "SmolLM2 360M": {
+        "boosted_tps": 55.4,
+        "speedup_x": 1.94,
+        "acceptance_pct": 56.0,
+        "added_ram_mb": 350
+      },
+      "Qwen 2.5 0.5B": {
+        "boosted_tps": 59.5,
+        "speedup_x": 2.09,
+        "acceptance_pct": 64.0,
+        "added_ram_mb": 600
+      },
+      "Llama 3.2 1B": {
+        "boosted_tps": 54.1,
+        "speedup_x": 1.9,
+        "acceptance_pct": 58.0,
+        "added_ram_mb": 950
+      },
+      "Qwen 2.5 Coder 1.5B": {
+        "boosted_tps": 63.2,
+        "speedup_x": 2.22,
+        "acceptance_pct": 77.0,
+        "added_ram_mb": 1000
+      },
+      "DeepSeek R1 Distill 1.5B": {
+        "boosted_tps": 60.5,
+        "speedup_x": 2.12,
+        "acceptance_pct": 75.0,
+        "added_ram_mb": 1000
+      },
+      "SmolLM2 1.7B": {
+        "boosted_tps": 57.3,
+        "speedup_x": 2.01,
+        "acceptance_pct": 71.0,
+        "added_ram_mb": 1200
+      }
+    },
+    "Qwen 2.5 Coder 32B": {
+      "SmolLM2 135M": {
+        "boosted_tps": 94.6,
+        "speedup_x": 1.47,
+        "acceptance_pct": 50.0,
+        "added_ram_mb": 150
+      },
+      "SmolLM2 360M": {
+        "boosted_tps": 89.8,
+        "speedup_x": 1.4,
+        "acceptance_pct": 56.0,
+        "added_ram_mb": 350
+      },
+      "Qwen 2.5 0.5B": {
+        "boosted_tps": 95.1,
+        "speedup_x": 1.48,
+        "acceptance_pct": 64.0,
+        "added_ram_mb": 600
+      },
+      "Llama 3.2 1B": {
+        "boosted_tps": 85.2,
+        "speedup_x": 1.33,
+        "acceptance_pct": 58.0,
+        "added_ram_mb": 950
+      },
+      "Qwen 2.5 Coder 1.5B": {
+        "boosted_tps": 96.8,
+        "speedup_x": 1.51,
+        "acceptance_pct": 77.0,
+        "added_ram_mb": 1000
+      },
+      "DeepSeek R1 Distill 1.5B": {
+        "boosted_tps": 91.5,
+        "speedup_x": 1.43,
+        "acceptance_pct": 75.0,
+        "added_ram_mb": 1000
+      },
+      "SmolLM2 1.7B": {
+        "boosted_tps": 86.1,
+        "speedup_x": 1.34,
+        "acceptance_pct": 71.0,
+        "added_ram_mb": 1200
+      }
+    },
+    "Huihui Qwen 3.8 Max 27B": {
+      "SmolLM2 135M": {
+        "boosted_tps": 76.2,
+        "speedup_x": 1.69,
+        "acceptance_pct": 50.0,
+        "added_ram_mb": 150
+      },
+      "SmolLM2 360M": {
+        "boosted_tps": 74.1,
+        "speedup_x": 1.65,
+        "acceptance_pct": 56.0,
+        "added_ram_mb": 350
+      },
+      "Qwen 2.5 0.5B": {
+        "boosted_tps": 79.0,
+        "speedup_x": 1.76,
+        "acceptance_pct": 64.0,
+        "added_ram_mb": 600
+      },
+      "Llama 3.2 1B": {
+        "boosted_tps": 71.2,
+        "speedup_x": 1.58,
+        "acceptance_pct": 58.0,
+        "added_ram_mb": 950
+      },
+      "Qwen 2.5 Coder 1.5B": {
+        "boosted_tps": 81.9,
+        "speedup_x": 1.82,
+        "acceptance_pct": 77.0,
+        "added_ram_mb": 1000
+      },
+      "DeepSeek R1 Distill 1.5B": {
+        "boosted_tps": 77.9,
+        "speedup_x": 1.73,
+        "acceptance_pct": 75.0,
+        "added_ram_mb": 1000
+      },
+      "SmolLM2 1.7B": {
+        "boosted_tps": 73.5,
+        "speedup_x": 1.63,
+        "acceptance_pct": 71.0,
+        "added_ram_mb": 1200
+      }
+    },
+    "Qwen AgentWorld 35B MoE": {
+      "SmolLM2 135M": {
+        "boosted_tps": 99.3,
+        "speedup_x": 1.42,
+        "acceptance_pct": 50.0,
+        "added_ram_mb": 150
+      },
+      "SmolLM2 360M": {
+        "boosted_tps": 93.6,
+        "speedup_x": 1.34,
+        "acceptance_pct": 56.0,
+        "added_ram_mb": 350
+      },
+      "Qwen 2.5 0.5B": {
+        "boosted_tps": 99.1,
+        "speedup_x": 1.42,
+        "acceptance_pct": 64.0,
+        "added_ram_mb": 600
+      },
+      "Llama 3.2 1B": {
+        "boosted_tps": 88.6,
+        "speedup_x": 1.27,
+        "acceptance_pct": 58.0,
+        "added_ram_mb": 950
+      },
+      "Qwen 2.5 Coder 1.5B": {
+        "boosted_tps": 100.3,
+        "speedup_x": 1.43,
+        "acceptance_pct": 77.0,
+        "added_ram_mb": 1000
+      },
+      "DeepSeek R1 Distill 1.5B": {
+        "boosted_tps": 94.7,
+        "speedup_x": 1.35,
+        "acceptance_pct": 75.0,
+        "added_ram_mb": 1000
+      },
+      "SmolLM2 1.7B": {
+        "boosted_tps": 89.1,
+        "speedup_x": 1.27,
+        "acceptance_pct": 71.0,
+        "added_ram_mb": 1200
+      }
+    },
+    "DeepSeek Coder V2 Lite (16B)": {
+      "SmolLM2 135M": {
+        "boosted_tps": 108.2,
+        "speedup_x": 1.31,
+        "acceptance_pct": 50.0,
+        "added_ram_mb": 150
+      },
+      "SmolLM2 360M": {
+        "boosted_tps": 100.9,
+        "speedup_x": 1.22,
+        "acceptance_pct": 56.0,
+        "added_ram_mb": 350
+      },
+      "Qwen 2.5 0.5B": {
+        "boosted_tps": 106.4,
+        "speedup_x": 1.29,
+        "acceptance_pct": 64.0,
+        "added_ram_mb": 600
+      },
+      "Llama 3.2 1B": {
+        "boosted_tps": 94.9,
+        "speedup_x": 1.15,
+        "acceptance_pct": 58.0,
+        "added_ram_mb": 950
+      },
+      "Qwen 2.5 Coder 1.5B": {
+        "boosted_tps": 106.9,
+        "speedup_x": 1.3,
+        "acceptance_pct": 77.0,
+        "added_ram_mb": 1000
+      },
+      "DeepSeek R1 Distill 1.5B": {
+        "boosted_tps": 100.6,
+        "speedup_x": 1.22,
+        "acceptance_pct": 75.0,
+        "added_ram_mb": 1000
+      },
+      "SmolLM2 1.7B": {
+        "boosted_tps": 94.6,
+        "speedup_x": 1.15,
+        "acceptance_pct": 71.0,
+        "added_ram_mb": 1200
+      }
+    },
+    "WebWorld 32B": {
+      "SmolLM2 135M": {
+        "boosted_tps": 92.8,
+        "speedup_x": 1.5,
+        "acceptance_pct": 50.0,
+        "added_ram_mb": 150
+      },
+      "SmolLM2 360M": {
+        "boosted_tps": 88.2,
+        "speedup_x": 1.42,
+        "acceptance_pct": 56.0,
+        "added_ram_mb": 350
+      },
+      "Qwen 2.5 0.5B": {
+        "boosted_tps": 93.5,
+        "speedup_x": 1.51,
+        "acceptance_pct": 64.0,
+        "added_ram_mb": 600
+      },
+      "Llama 3.2 1B": {
+        "boosted_tps": 83.8,
+        "speedup_x": 1.35,
+        "acceptance_pct": 58.0,
+        "added_ram_mb": 950
+      },
+      "Qwen 2.5 Coder 1.5B": {
+        "boosted_tps": 95.3,
+        "speedup_x": 1.54,
+        "acceptance_pct": 77.0,
+        "added_ram_mb": 1000
+      },
+      "DeepSeek R1 Distill 1.5B": {
+        "boosted_tps": 90.2,
+        "speedup_x": 1.45,
+        "acceptance_pct": 75.0,
+        "added_ram_mb": 1000
+      },
+      "SmolLM2 1.7B": {
+        "boosted_tps": 84.9,
+        "speedup_x": 1.37,
+        "acceptance_pct": 71.0,
+        "added_ram_mb": 1200
+      }
+    },
+    "Mistral Nemo 12B": {
+      "SmolLM2 135M": {
+        "boosted_tps": 100.8,
+        "speedup_x": 1.4,
+        "acceptance_pct": 50.0,
+        "added_ram_mb": 150
+      },
+      "SmolLM2 360M": {
+        "boosted_tps": 94.9,
+        "speedup_x": 1.32,
+        "acceptance_pct": 56.0,
+        "added_ram_mb": 350
+      },
+      "Qwen 2.5 0.5B": {
+        "boosted_tps": 100.3,
+        "speedup_x": 1.39,
+        "acceptance_pct": 64.0,
+        "added_ram_mb": 600
+      },
+      "Llama 3.2 1B": {
+        "boosted_tps": 89.7,
+        "speedup_x": 1.25,
+        "acceptance_pct": 58.0,
+        "added_ram_mb": 950
+      },
+      "Qwen 2.5 Coder 1.5B": {
+        "boosted_tps": 101.5,
+        "speedup_x": 1.41,
+        "acceptance_pct": 77.0,
+        "added_ram_mb": 1000
+      },
+      "DeepSeek R1 Distill 1.5B": {
+        "boosted_tps": 95.7,
+        "speedup_x": 1.33,
+        "acceptance_pct": 75.0,
+        "added_ram_mb": 1000
+      },
+      "SmolLM2 1.7B": {
+        "boosted_tps": 90.1,
+        "speedup_x": 1.25,
+        "acceptance_pct": 71.0,
+        "added_ram_mb": 1200
+      }
+    },
+    "Gemma 2 9B IT": {
+      "SmolLM2 135M": {
+        "boosted_tps": 106.5,
+        "speedup_x": 1.33,
+        "acceptance_pct": 50.0,
+        "added_ram_mb": 150
+      },
+      "SmolLM2 360M": {
+        "boosted_tps": 99.5,
+        "speedup_x": 1.24,
+        "acceptance_pct": 56.0,
+        "added_ram_mb": 350
+      },
+      "Qwen 2.5 0.5B": {
+        "boosted_tps": 105.1,
+        "speedup_x": 1.31,
+        "acceptance_pct": 64.0,
+        "added_ram_mb": 600
+      },
+      "Llama 3.2 1B": {
+        "boosted_tps": 93.7,
+        "speedup_x": 1.17,
+        "acceptance_pct": 58.0,
+        "added_ram_mb": 950
+      },
+      "Qwen 2.5 Coder 1.5B": {
+        "boosted_tps": 105.7,
+        "speedup_x": 1.32,
+        "acceptance_pct": 77.0,
+        "added_ram_mb": 1000
+      },
+      "DeepSeek R1 Distill 1.5B": {
+        "boosted_tps": 99.5,
+        "speedup_x": 1.24,
+        "acceptance_pct": 75.0,
+        "added_ram_mb": 1000
+      },
+      "SmolLM2 1.7B": {
+        "boosted_tps": 93.6,
+        "speedup_x": 1.17,
+        "acceptance_pct": 71.0,
+        "added_ram_mb": 1200
+      }
+    },
+    "Qwen 2.5 Coder 7B": {
+      "SmolLM2 135M": {
+        "boosted_tps": 115.8,
+        "speedup_x": 1.22,
+        "acceptance_pct": 50.0,
+        "added_ram_mb": 150
+      },
+      "SmolLM2 360M": {
+        "boosted_tps": 107.0,
+        "speedup_x": 1.13,
+        "acceptance_pct": 56.0,
+        "added_ram_mb": 350
+      },
+      "Qwen 2.5 0.5B": {
+        "boosted_tps": 112.6,
+        "speedup_x": 1.19,
+        "acceptance_pct": 64.0,
+        "added_ram_mb": 600
+      },
+      "Llama 3.2 1B": {
+        "boosted_tps": 100.1,
+        "speedup_x": 1.05,
+        "acceptance_pct": 58.0,
+        "added_ram_mb": 950
+      },
+      "Qwen 2.5 Coder 1.5B": {
+        "boosted_tps": 112.2,
+        "speedup_x": 1.18,
+        "acceptance_pct": 77.0,
+        "added_ram_mb": 1000
+      },
+      "DeepSeek R1 Distill 1.5B": {
+        "boosted_tps": 105.5,
+        "speedup_x": 1.11,
+        "acceptance_pct": 75.0,
+        "added_ram_mb": 1000
+      },
+      "SmolLM2 1.7B": {
+        "boosted_tps": 99.0,
+        "speedup_x": 1.04,
+        "acceptance_pct": 71.0,
+        "added_ram_mb": 1200
+      }
+    }
+  },
+  "runtime_transport_permutations": [
+    {
+      "id": "P1_PRP_TB4_SPEEDIFY",
+      "runtime": "prima.cpp (PRP Ring)",
+      "transport": "Speedify Multipath (10G TB4 + Wi-Fi 7)",
+      "throughput_tps": 51.5,
+      "rtt_ms": 0.28,
+      "fault_tolerance": "Instant Sub-millisecond Link Failover",
+      "fitness": 1845.2,
+      "rank": 1,
+      "verdict": "\ud83c\udfc6 #1 BEST OVERALL: Max throughput with hardware link redundancy"
+    },
+    {
+      "id": "P2_PRP_TB4_STANDALONE",
+      "runtime": "prima.cpp (PRP Ring)",
+      "transport": "10Gbps Thunderbolt 4 DMA Dedicated",
+      "throughput_tps": 50.0,
+      "rtt_ms": 0.28,
+      "fault_tolerance": "Link unplug aborts ring",
+      "fitness": 1785.7,
+      "rank": 2,
+      "verdict": "Ultra-Low Latency Pure Ring (Zero Bubble)"
+    },
+    {
+      "id": "P3_EXO_TAILCAT_USERS",
+      "runtime": "Exo Dynamic P2P",
+      "transport": "tailcat (Ephemeral Userspace WireGuard)",
+      "throughput_tps": 34.8,
+      "rtt_ms": 1.45,
+      "fault_tolerance": "Zero Root Required + Mesh Self-Healing",
+      "fitness": 1240.5,
+      "rank": 3,
+      "verdict": "Best for Unprivileged Container & Mobile Worker Pooling"
+    },
+    {
+      "id": "P4_LLAMA_TSNET_INMEM",
+      "runtime": "llama.cpp RPC",
+      "transport": "Tailscale tsnet (In-Memory WireGuard, Zero Root)",
+      "throughput_tps": 18.2,
+      "rtt_ms": 3.85,
+      "fault_tolerance": "Per-Connection Crypto Tunnel",
+      "fitness": 680.1,
+      "rank": 4,
+      "verdict": "Zero-Config Container Sharding without /dev/net/tun"
+    },
+    {
+      "id": "P5_PETALS_TAILSCALE",
+      "runtime": "Petals Distributed DHT",
+      "transport": "Tailscale Overlay Daemon",
+      "throughput_tps": 18.5,
+      "rtt_ms": 4.15,
+      "fault_tolerance": "<50ms Dynamic Peer Re-routing",
+      "fitness": 650.0,
+      "rank": 5,
+      "verdict": "Best for Geographic WAN & Internet Decentralized Swarms"
+    },
+    {
+      "id": "P6_LLAMA_RPC_WIFI7",
+      "runtime": "llama.cpp RPC",
+      "transport": "Wi-Fi 7 Local MLO (Standalone)",
+      "throughput_tps": 4.7,
+      "rtt_ms": 1.18,
+      "fault_tolerance": "None (Wi-Fi packet jitter creates TP sync lag)",
+      "fitness": 180.2,
+      "rank": 6,
+      "verdict": "Poor for Tensor Parallelism due to 160 sync barriers/token"
+    }
+  ]
+}

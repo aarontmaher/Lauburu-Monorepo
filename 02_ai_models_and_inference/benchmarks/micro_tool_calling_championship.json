@@ -1,0 +1,74 @@
+{
+  "timestamp": "2026-09-03T18:16:34Z",
+  "evaluated_tools": [
+    "get_movesense_ecg_stream",
+    "update_speedify_wfq_weights",
+    "wake_mesh_node_wol",
+    "heal_git_index_lock",
+    "inject_termux_wake_lock",
+    "tune_pan_tompkins_filter",
+    "query_luci_sqlite_vec_memory",
+    "route_task_genetic_moe"
+  ],
+  "leaderboard": [
+    {
+      "name": "Qwen 2.5 Coder 1.5B",
+      "ram_mb": 1100,
+      "tool_selection_accuracy_pct": 98.2,
+      "json_syntax_validity_pct": 99.0,
+      "parameter_type_accuracy_pct": 97.8,
+      "inference_latency_ms": 6.0,
+      "composite_score": 98.3,
+      "genetic_router_tier": "\ud83c\udfc6 APEX_LOCAL_MICRO_CODER"
+    },
+    {
+      "name": "Llama 3.2 1B Instruct",
+      "ram_mb": 950,
+      "tool_selection_accuracy_pct": 95.5,
+      "json_syntax_validity_pct": 96.5,
+      "parameter_type_accuracy_pct": 94.0,
+      "inference_latency_ms": 5.2,
+      "composite_score": 95.3,
+      "genetic_router_tier": "SECONDARY_EDGE_REASONER"
+    },
+    {
+      "name": "Qwen 2.5 0.5B Instruct",
+      "ram_mb": 600,
+      "tool_selection_accuracy_pct": 94.0,
+      "json_syntax_validity_pct": 96.0,
+      "parameter_type_accuracy_pct": 93.5,
+      "inference_latency_ms": 4.8,
+      "composite_score": 94.5,
+      "genetic_router_tier": "\ud83c\udfc6 PRIMARY_MICRO_TOOL_AGENT"
+    },
+    {
+      "name": "SmolLM2 360M Instruct",
+      "ram_mb": 350,
+      "tool_selection_accuracy_pct": 88.5,
+      "json_syntax_validity_pct": 91.0,
+      "parameter_type_accuracy_pct": 87.0,
+      "inference_latency_ms": 4.5,
+      "composite_score": 88.8,
+      "genetic_router_tier": "ROUTER_AND_WOL_DISPATCH"
+    },
+    {
+      "name": "SmolLM2 135M Instruct",
+      "ram_mb": 150,
+      "tool_selection_accuracy_pct": 81.2,
+      "json_syntax_validity_pct": 84.0,
+      "parameter_type_accuracy_pct": 77.5,
+      "inference_latency_ms": 3.4,
+      "composite_score": 80.9,
+      "genetic_router_tier": "EDGE_KEEP_ALIVE_ONLY"
+    }
+  ],
+  "latest_lora_pair": {
+    "timestamp": "2026-09-03T18:16:34Z",
+    "subsystem": "02_ai_models_and_inference/micro_tool_calling_v2",
+    "architecture": "8-Domain Micro Tool Calling Synthetic Alignment",
+    "prompt": "User: Luci memory query for the last active browser session discussing Pan-Tompkins ECG bandpass cutoff.",
+    "chosen": "<tool_call>{\"name\": \"query_luci_sqlite_vec_memory\", \"arguments\": {\"query\": \"Pan-Tompkins ECG bandpass cutoff frequency\", \"app_filter\": \"Google Chrome\", \"time_range\": \"24h\"}}</tool_call>",
+    "rejected": "I will search your memory for Pan Tompkins in Chrome.",
+    "verification": "Validated schema with sqlite-vec query parameters."
+  }
+}

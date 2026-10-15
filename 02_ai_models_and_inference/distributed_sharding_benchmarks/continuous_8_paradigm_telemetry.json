@@ -1,0 +1,551 @@
+{
+  "timestamp": "2026-09-02T15:08:39Z",
+  "current_network_results": {
+    "tb4_dma": {
+      "network_meta": {
+        "name": "10Gbps Thunderbolt 4 DMA",
+        "bw_gbps": 10.0,
+        "rtt_ms": 0.28,
+        "packet_loss": 0.0
+      },
+      "paradigms": [
+        {
+          "paradigm": "1. Pipeline Parallelism (PP)",
+          "bytes_per_token": 16384,
+          "bubble_overhead_pct": 27.3,
+          "network_latency_ms": 0.29,
+          "tokens_per_second": 37.97,
+          "bottleneck": "Pipeline Bubble & Boundary Serialization"
+        },
+        {
+          "paradigm": "2. Tensor Parallelism (TP / llama.cpp RPC)",
+          "bytes_per_token": 3932160.0,
+          "sync_barriers_per_token": 160,
+          "sync_latency_ms": 44.8,
+          "tokens_per_second": 15.89,
+          "bottleneck": "Network RTT Synchronization Barriers"
+        },
+        {
+          "paradigm": "3. Pipelined-Ring Parallelism (PRP / Prima.cpp)",
+          "bytes_per_token": 65536,
+          "overlap_efficiency_pct": 5.9,
+          "tokens_per_second": 50.0,
+          "bottleneck": "Ring Link Bandwidth Balance"
+        },
+        {
+          "paradigm": "4. Decentralized Swarm DHT (Petals/Hivemind)",
+          "bytes_per_token": 65536,
+          "fault_tolerance": "Dynamic Reroute (<50ms failover)",
+          "tokens_per_second": 22.67,
+          "bottleneck": "DHT Overlay Routing Overhead"
+        },
+        {
+          "paradigm": "5. Dynamic Topology P2P (Exo)",
+          "topology_adaptation": "Dynamic Split Factor: 1.0",
+          "tokens_per_second": 46.95,
+          "bottleneck": "Heterogeneous Compute Slower Node"
+        },
+        {
+          "paradigm": "6. Expert Parallelism (EP / DeepSeek MoE)",
+          "active_expert_ratio_pct": 3.12,
+          "communication_reduction": "32.0x vs Dense",
+          "tokens_per_second": 81.38,
+          "bottleneck": "Expert Load Imbalance (Routing Skew)"
+        },
+        {
+          "paradigm": "7. Fully Sharded Data Parallel (FSDP2 / ZeRO-3)",
+          "vram_reduction": "4x VRAM Headroom",
+          "training_step_time_s": 24.8,
+          "samples_per_second": 0.04,
+          "bottleneck": "All-Gather Network Ingress Bandwidth"
+        },
+        {
+          "paradigm": "8. Sequence / Context Parallelism (RingAttention 1M+)",
+          "context_length": "1024K Tokens",
+          "chunk_per_node": "256K Tokens",
+          "ring_rotation_latency_ms": 53.97,
+          "effective_tps": 12.5,
+          "bottleneck": "KV Ring Rotation Speed"
+        }
+      ]
+    },
+    "wifi7_mlo": {
+      "network_meta": {
+        "name": "Wi-Fi 7 MLO (5GHz + 6GHz)",
+        "bw_gbps": 2.4,
+        "rtt_ms": 1.15,
+        "packet_loss": 0.001
+      },
+      "paradigms": [
+        {
+          "paradigm": "1. Pipeline Parallelism (PP)",
+          "bytes_per_token": 16384,
+          "bubble_overhead_pct": 27.3,
+          "network_latency_ms": 1.2,
+          "tokens_per_second": 34.4,
+          "bottleneck": "Pipeline Bubble & Boundary Serialization"
+        },
+        {
+          "paradigm": "2. Tensor Parallelism (TP / llama.cpp RPC)",
+          "bytes_per_token": 3932160.0,
+          "sync_barriers_per_token": 160,
+          "sync_latency_ms": 184.0,
+          "tokens_per_second": 4.71,
+          "bottleneck": "Network RTT Synchronization Barriers"
+        },
+        {
+          "paradigm": "3. Pipelined-Ring Parallelism (PRP / Prima.cpp)",
+          "bytes_per_token": 65536,
+          "overlap_efficiency_pct": 24.1,
+          "tokens_per_second": 50.0,
+          "bottleneck": "Ring Link Bandwidth Balance"
+        },
+        {
+          "paradigm": "4. Decentralized Swarm DHT (Petals/Hivemind)",
+          "bytes_per_token": 65536,
+          "fault_tolerance": "Dynamic Reroute (<50ms failover)",
+          "tokens_per_second": 21.01,
+          "bottleneck": "DHT Overlay Routing Overhead"
+        },
+        {
+          "paradigm": "5. Dynamic Topology P2P (Exo)",
+          "topology_adaptation": "Dynamic Split Factor: 0.24",
+          "tokens_per_second": 27.25,
+          "bottleneck": "Heterogeneous Compute Slower Node"
+        },
+        {
+          "paradigm": "6. Expert Parallelism (EP / DeepSeek MoE)",
+          "active_expert_ratio_pct": 3.12,
+          "communication_reduction": "32.0x vs Dense",
+          "tokens_per_second": 75.84,
+          "bottleneck": "Expert Load Imbalance (Routing Skew)"
+        },
+        {
+          "paradigm": "7. Fully Sharded Data Parallel (FSDP2 / ZeRO-3)",
+          "vram_reduction": "4x VRAM Headroom",
+          "training_step_time_s": 101.75,
+          "samples_per_second": 0.01,
+          "bottleneck": "All-Gather Network Ingress Bandwidth"
+        },
+        {
+          "paradigm": "8. Sequence / Context Parallelism (RingAttention 1M+)",
+          "context_length": "1024K Tokens",
+          "chunk_per_node": "256K Tokens",
+          "ring_rotation_latency_ms": 224.85,
+          "effective_tps": 4.45,
+          "bottleneck": "KV Ring Rotation Speed"
+        }
+      ]
+    },
+    "tailscale_mesh": {
+      "network_meta": {
+        "name": "Tailscale WireGuard Overlay",
+        "bw_gbps": 0.85,
+        "rtt_ms": 8.5,
+        "packet_loss": 0.005
+      },
+      "paradigms": [
+        {
+          "paradigm": "1. Pipeline Parallelism (PP)",
+          "bytes_per_token": 16384,
+          "bubble_overhead_pct": 27.3,
+          "network_latency_ms": 8.65,
+          "tokens_per_second": 19.45,
+          "bottleneck": "Pipeline Bubble & Boundary Serialization"
+        },
+        {
+          "paradigm": "2. Tensor Parallelism (TP / llama.cpp RPC)",
+          "bytes_per_token": 3932160.0,
+          "sync_barriers_per_token": 160,
+          "sync_latency_ms": 1360.0,
+          "tokens_per_second": 0.71,
+          "bottleneck": "Network RTT Synchronization Barriers"
+        },
+        {
+          "paradigm": "3. Pipelined-Ring Parallelism (PRP / Prima.cpp)",
+          "bytes_per_token": 65536,
+          "overlap_efficiency_pct": 57.8,
+          "tokens_per_second": 28.89,
+          "bottleneck": "Ring Link Bandwidth Balance"
+        },
+        {
+          "paradigm": "4. Decentralized Swarm DHT (Petals/Hivemind)",
+          "bytes_per_token": 65536,
+          "fault_tolerance": "Dynamic Reroute (<50ms failover)",
+          "tokens_per_second": 12.99,
+          "bottleneck": "DHT Overlay Routing Overhead"
+        },
+        {
+          "paradigm": "5. Dynamic Topology P2P (Exo)",
+          "topology_adaptation": "Dynamic Split Factor: 0.08",
+          "tokens_per_second": 15.5,
+          "bottleneck": "Heterogeneous Compute Slower Node"
+        },
+        {
+          "paradigm": "6. Expert Parallelism (EP / DeepSeek MoE)",
+          "active_expert_ratio_pct": 3.12,
+          "communication_reduction": "32.0x vs Dense",
+          "tokens_per_second": 48.54,
+          "bottleneck": "Expert Load Imbalance (Routing Skew)"
+        },
+        {
+          "paradigm": "7. Fully Sharded Data Parallel (FSDP2 / ZeRO-3)",
+          "vram_reduction": "4x VRAM Headroom",
+          "training_step_time_s": 286.38,
+          "samples_per_second": 0.003,
+          "bottleneck": "All-Gather Network Ingress Bandwidth"
+        },
+        {
+          "paradigm": "8. Sequence / Context Parallelism (RingAttention 1M+)",
+          "context_length": "1024K Tokens",
+          "chunk_per_node": "256K Tokens",
+          "ring_rotation_latency_ms": 640.11,
+          "effective_tps": 1.56,
+          "bottleneck": "KV Ring Rotation Speed"
+        }
+      ]
+    },
+    "lan_ethernet": {
+      "network_meta": {
+        "name": "1GbE Copper LAN",
+        "bw_gbps": 1.0,
+        "rtt_ms": 0.8,
+        "packet_loss": 0.0
+      },
+      "paradigms": [
+        {
+          "paradigm": "1. Pipeline Parallelism (PP)",
+          "bytes_per_token": 16384,
+          "bubble_overhead_pct": 27.3,
+          "network_latency_ms": 0.93,
+          "tokens_per_second": 35.4,
+          "bottleneck": "Pipeline Bubble & Boundary Serialization"
+        },
+        {
+          "paradigm": "2. Tensor Parallelism (TP / llama.cpp RPC)",
+          "bytes_per_token": 3932160.0,
+          "sync_barriers_per_token": 160,
+          "sync_latency_ms": 128.0,
+          "tokens_per_second": 5.73,
+          "bottleneck": "Network RTT Synchronization Barriers"
+        },
+        {
+          "paradigm": "3. Pipelined-Ring Parallelism (PRP / Prima.cpp)",
+          "bytes_per_token": 65536,
+          "overlap_efficiency_pct": 18.6,
+          "tokens_per_second": 50.0,
+          "bottleneck": "Ring Link Bandwidth Balance"
+        },
+        {
+          "paradigm": "4. Decentralized Swarm DHT (Petals/Hivemind)",
+          "bytes_per_token": 65536,
+          "fault_tolerance": "Dynamic Reroute (<50ms failover)",
+          "tokens_per_second": 21.65,
+          "bottleneck": "DHT Overlay Routing Overhead"
+        },
+        {
+          "paradigm": "5. Dynamic Topology P2P (Exo)",
+          "topology_adaptation": "Dynamic Split Factor: 0.1",
+          "tokens_per_second": 24.81,
+          "bottleneck": "Heterogeneous Compute Slower Node"
+        },
+        {
+          "paradigm": "6. Expert Parallelism (EP / DeepSeek MoE)",
+          "active_expert_ratio_pct": 3.12,
+          "communication_reduction": "32.0x vs Dense",
+          "tokens_per_second": 77.6,
+          "bottleneck": "Expert Load Imbalance (Routing Skew)"
+        },
+        {
+          "paradigm": "7. Fully Sharded Data Parallel (FSDP2 / ZeRO-3)",
+          "vram_reduction": "4x VRAM Headroom",
+          "training_step_time_s": 243.5,
+          "samples_per_second": 0.004,
+          "bottleneck": "All-Gather Network Ingress Bandwidth"
+        },
+        {
+          "paradigm": "8. Sequence / Context Parallelism (RingAttention 1M+)",
+          "context_length": "1024K Tokens",
+          "chunk_per_node": "256K Tokens",
+          "ring_rotation_latency_ms": 537.67,
+          "effective_tps": 1.86,
+          "bottleneck": "KV Ring Rotation Speed"
+        }
+      ]
+    }
+  },
+  "projected_network_results": {
+    "tb5_ring": {
+      "network_meta": {
+        "name": "80Gbps Thunderbolt 5 Dual Ring",
+        "bw_gbps": 80.0,
+        "rtt_ms": 0.08,
+        "packet_loss": 0.0
+      },
+      "paradigms": [
+        {
+          "paradigm": "1. Pipeline Parallelism (PP)",
+          "bytes_per_token": 16384,
+          "bubble_overhead_pct": 27.3,
+          "network_latency_ms": 0.08,
+          "tokens_per_second": 38.91,
+          "bottleneck": "Pipeline Bubble & Boundary Serialization"
+        },
+        {
+          "paradigm": "2. Tensor Parallelism (TP / llama.cpp RPC)",
+          "bytes_per_token": 3932160.0,
+          "sync_barriers_per_token": 160,
+          "sync_latency_ms": 12.8,
+          "tokens_per_second": 35.47,
+          "bottleneck": "Network RTT Synchronization Barriers"
+        },
+        {
+          "paradigm": "3. Pipelined-Ring Parallelism (PRP / Prima.cpp)",
+          "bytes_per_token": 65536,
+          "overlap_efficiency_pct": 1.6,
+          "tokens_per_second": 50.0,
+          "bottleneck": "Ring Link Bandwidth Balance"
+        },
+        {
+          "paradigm": "4. Decentralized Swarm DHT (Petals/Hivemind)",
+          "bytes_per_token": 65536,
+          "fault_tolerance": "Dynamic Reroute (<50ms failover)",
+          "tokens_per_second": 23.08,
+          "bottleneck": "DHT Overlay Routing Overhead"
+        },
+        {
+          "paradigm": "5. Dynamic Topology P2P (Exo)",
+          "topology_adaptation": "Dynamic Split Factor: 1.0",
+          "tokens_per_second": 47.69,
+          "bottleneck": "Heterogeneous Compute Slower Node"
+        },
+        {
+          "paradigm": "6. Expert Parallelism (EP / DeepSeek MoE)",
+          "active_expert_ratio_pct": 3.12,
+          "communication_reduction": "32.0x vs Dense",
+          "tokens_per_second": 82.77,
+          "bottleneck": "Expert Load Imbalance (Routing Skew)"
+        },
+        {
+          "paradigm": "7. Fully Sharded Data Parallel (FSDP2 / ZeRO-3)",
+          "vram_reduction": "4x VRAM Headroom",
+          "training_step_time_s": 3.54,
+          "samples_per_second": 0.283,
+          "bottleneck": "All-Gather Network Ingress Bandwidth"
+        },
+        {
+          "paradigm": "8. Sequence / Context Parallelism (RingAttention 1M+)",
+          "context_length": "1024K Tokens",
+          "chunk_per_node": "256K Tokens",
+          "ring_rotation_latency_ms": 6.79,
+          "effective_tps": 12.5,
+          "bottleneck": "KV Ring Rotation Speed"
+        }
+      ]
+    },
+    "aggligator_bond": {
+      "network_meta": {
+        "name": "Aggligator Rust Multi-Link Bond",
+        "bw_gbps": 12.5,
+        "rtt_ms": 0.19,
+        "packet_loss": 0.0
+      },
+      "paradigms": [
+        {
+          "paradigm": "1. Pipeline Parallelism (PP)",
+          "bytes_per_token": 16384,
+          "bubble_overhead_pct": 27.3,
+          "network_latency_ms": 0.2,
+          "tokens_per_second": 38.38,
+          "bottleneck": "Pipeline Bubble & Boundary Serialization"
+        },
+        {
+          "paradigm": "2. Tensor Parallelism (TP / llama.cpp RPC)",
+          "bytes_per_token": 3932160.0,
+          "sync_barriers_per_token": 160,
+          "sync_latency_ms": 30.4,
+          "tokens_per_second": 20.87,
+          "bottleneck": "Network RTT Synchronization Barriers"
+        },
+        {
+          "paradigm": "3. Pipelined-Ring Parallelism (PRP / Prima.cpp)",
+          "bytes_per_token": 65536,
+          "overlap_efficiency_pct": 4.0,
+          "tokens_per_second": 50.0,
+          "bottleneck": "Ring Link Bandwidth Balance"
+        },
+        {
+          "paradigm": "4. Decentralized Swarm DHT (Petals/Hivemind)",
+          "bytes_per_token": 65536,
+          "fault_tolerance": "Dynamic Reroute (<50ms failover)",
+          "tokens_per_second": 22.85,
+          "bottleneck": "DHT Overlay Routing Overhead"
+        },
+        {
+          "paradigm": "5. Dynamic Topology P2P (Exo)",
+          "topology_adaptation": "Dynamic Split Factor: 1.0",
+          "tokens_per_second": 47.28,
+          "bottleneck": "Heterogeneous Compute Slower Node"
+        },
+        {
+          "paradigm": "6. Expert Parallelism (EP / DeepSeek MoE)",
+          "active_expert_ratio_pct": 3.12,
+          "communication_reduction": "32.0x vs Dense",
+          "tokens_per_second": 81.99,
+          "bottleneck": "Expert Load Imbalance (Routing Skew)"
+        },
+        {
+          "paradigm": "7. Fully Sharded Data Parallel (FSDP2 / ZeRO-3)",
+          "vram_reduction": "4x VRAM Headroom",
+          "training_step_time_s": 19.94,
+          "samples_per_second": 0.05,
+          "bottleneck": "All-Gather Network Ingress Bandwidth"
+        },
+        {
+          "paradigm": "8. Sequence / Context Parallelism (RingAttention 1M+)",
+          "context_length": "1024K Tokens",
+          "chunk_per_node": "256K Tokens",
+          "ring_rotation_latency_ms": 43.14,
+          "effective_tps": 12.5,
+          "bottleneck": "KV Ring Rotation Speed"
+        }
+      ]
+    },
+    "tailcat_ephemeral": {
+      "network_meta": {
+        "name": "tailcat Direct In-Memory P2P",
+        "bw_gbps": 4.2,
+        "rtt_ms": 0.22,
+        "packet_loss": 0.0
+      },
+      "paradigms": [
+        {
+          "paradigm": "1. Pipeline Parallelism (PP)",
+          "bytes_per_token": 16384,
+          "bubble_overhead_pct": 27.3,
+          "network_latency_ms": 0.25,
+          "tokens_per_second": 38.16,
+          "bottleneck": "Pipeline Bubble & Boundary Serialization"
+        },
+        {
+          "paradigm": "2. Tensor Parallelism (TP / llama.cpp RPC)",
+          "bytes_per_token": 3932160.0,
+          "sync_barriers_per_token": 160,
+          "sync_latency_ms": 35.2,
+          "tokens_per_second": 17.33,
+          "bottleneck": "Network RTT Synchronization Barriers"
+        },
+        {
+          "paradigm": "3. Pipelined-Ring Parallelism (PRP / Prima.cpp)",
+          "bytes_per_token": 65536,
+          "overlap_efficiency_pct": 5.0,
+          "tokens_per_second": 50.0,
+          "bottleneck": "Ring Link Bandwidth Balance"
+        },
+        {
+          "paradigm": "4. Decentralized Swarm DHT (Petals/Hivemind)",
+          "bytes_per_token": 65536,
+          "fault_tolerance": "Dynamic Reroute (<50ms failover)",
+          "tokens_per_second": 22.79,
+          "bottleneck": "DHT Overlay Routing Overhead"
+        },
+        {
+          "paradigm": "5. Dynamic Topology P2P (Exo)",
+          "topology_adaptation": "Dynamic Split Factor: 0.42",
+          "tokens_per_second": 33.49,
+          "bottleneck": "Heterogeneous Compute Slower Node"
+        },
+        {
+          "paradigm": "6. Expert Parallelism (EP / DeepSeek MoE)",
+          "active_expert_ratio_pct": 3.12,
+          "communication_reduction": "32.0x vs Dense",
+          "tokens_per_second": 81.7,
+          "bottleneck": "Expert Load Imbalance (Routing Skew)"
+        },
+        {
+          "paradigm": "7. Fully Sharded Data Parallel (FSDP2 / ZeRO-3)",
+          "vram_reduction": "4x VRAM Headroom",
+          "training_step_time_s": 58.36,
+          "samples_per_second": 0.017,
+          "bottleneck": "All-Gather Network Ingress Bandwidth"
+        },
+        {
+          "paradigm": "8. Sequence / Context Parallelism (RingAttention 1M+)",
+          "context_length": "1024K Tokens",
+          "chunk_per_node": "256K Tokens",
+          "ring_rotation_latency_ms": 128.05,
+          "effective_tps": 7.81,
+          "bottleneck": "KV Ring Rotation Speed"
+        }
+      ]
+    },
+    "cloud_burst_mesh": {
+      "network_meta": {
+        "name": "40Gbps WAN WireGuard Mesh",
+        "bw_gbps": 40.0,
+        "rtt_ms": 12.0,
+        "packet_loss": 0.002
+      },
+      "paradigms": [
+        {
+          "paradigm": "1. Pipeline Parallelism (PP)",
+          "bytes_per_token": 16384,
+          "bubble_overhead_pct": 27.3,
+          "network_latency_ms": 12.0,
+          "tokens_per_second": 16.27,
+          "bottleneck": "Pipeline Bubble & Boundary Serialization"
+        },
+        {
+          "paradigm": "2. Tensor Parallelism (TP / llama.cpp RPC)",
+          "bytes_per_token": 3932160.0,
+          "sync_barriers_per_token": 160,
+          "sync_latency_ms": 1920.0,
+          "tokens_per_second": 0.52,
+          "bottleneck": "Network RTT Synchronization Barriers"
+        },
+        {
+          "paradigm": "3. Pipelined-Ring Parallelism (PRP / Prima.cpp)",
+          "bytes_per_token": 65536,
+          "overlap_efficiency_pct": 41.7,
+          "tokens_per_second": 20.83,
+          "bottleneck": "Ring Link Bandwidth Balance"
+        },
+        {
+          "paradigm": "4. Decentralized Swarm DHT (Petals/Hivemind)",
+          "bytes_per_token": 65536,
+          "fault_tolerance": "Dynamic Reroute (<50ms failover)",
+          "tokens_per_second": 10.99,
+          "bottleneck": "DHT Overlay Routing Overhead"
+        },
+        {
+          "paradigm": "5. Dynamic Topology P2P (Exo)",
+          "topology_adaptation": "Dynamic Split Factor: 1.0",
+          "tokens_per_second": 24.49,
+          "bottleneck": "Heterogeneous Compute Slower Node"
+        },
+        {
+          "paradigm": "6. Expert Parallelism (EP / DeepSeek MoE)",
+          "active_expert_ratio_pct": 3.12,
+          "communication_reduction": "32.0x vs Dense",
+          "tokens_per_second": 41.66,
+          "bottleneck": "Expert Load Imbalance (Routing Skew)"
+        },
+        {
+          "paradigm": "7. Fully Sharded Data Parallel (FSDP2 / ZeRO-3)",
+          "vram_reduction": "4x VRAM Headroom",
+          "training_step_time_s": 6.58,
+          "samples_per_second": 0.152,
+          "bottleneck": "All-Gather Network Ingress Bandwidth"
+        },
+        {
+          "paradigm": "8. Sequence / Context Parallelism (RingAttention 1M+)",
+          "context_length": "1024K Tokens",
+          "chunk_per_node": "256K Tokens",
+          "ring_rotation_latency_ms": 25.42,
+          "effective_tps": 12.5,
+          "bottleneck": "KV Ring Rotation Speed"
+        }
+      ]
+    }
+  }
+}

@@ -37,7 +37,7 @@
 - [ ] **[HIGH]** Test and debug Qwen Coder and Abliterated Devil's Advocate AI debate functionality *(Context: AI)*
 - [ ] **[HIGH]** Implement side-by-side terminal pane comparison *(Context: AI)*
 - [ ] **[HIGH]** Optimize hardware counter monitoring bridge *(Context: AI)*
-- [ ] **[HIGH]** Test and debug multi-WAN and 10Gbps Thunderbolt 4 connectivity *(Context: AI)*
+- [ ] **[HIGH]** Test and debug multi-WAN and 40Gbps Thunderbolt 4 connectivity *(Context: AI)*
 - [ ] **[HIGH]** Implement AI training for better accuracy *(Context: AI)*
 - [ ] **[HIGH]** Optimize NPU models for better performance *(Context: AI)*
 - [ ] **[HIGH]** Test and debug 5G cellular hotspot failover *(Context: AI)*

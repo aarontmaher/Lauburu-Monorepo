@@ -28,7 +28,7 @@ class SmolagentsToolRegistry:
         """Returns baseline latency between mesh nodes in milliseconds."""
         latencies = {
             ("Mac_Node", "MacBook_Pro"): 0.27,  # 10Gbps TB4 DMA
-            ("Mac_Node", "Linux_Head_Node"): 1.85,  # WireGuard
+            ("Mac_Node", "Linux_Mini"): 1.85,  # WireGuard
             ("Mac_Node", "GL.iNet Router"): 0.85,  # Wi-Fi 7
             ("Mac_Node", "Pixel_10_Pro_XL"): 3.40,  # Wi-Fi / ADB
             ("Mac_Node", "Samsung_S20"): 4.10,

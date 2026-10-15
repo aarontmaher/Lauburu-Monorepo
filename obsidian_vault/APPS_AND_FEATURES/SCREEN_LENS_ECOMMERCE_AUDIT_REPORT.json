@@ -1,0 +1,35 @@
+[
+  {
+    "name": "iPhone 16 Pro Front View",
+    "path": "/Volumes/Lauburu-Monorepo/08_business_and_commerce/iphone_16_pro_front.jpg",
+    "bytes": 140755,
+    "sha256": "cfbde3b7bcd288ae46cd7f7afdf9cc858653156576b6ae3a7cfee5ce71285451",
+    "resolution": "771x1024",
+    "format": "JPEG",
+    "color_mode": "RGB",
+    "verified": true,
+    "role": "Authenticates pristine front glass surface with zero scratch defect."
+  },
+  {
+    "name": "OLED Right Bezel Crescent Closeup",
+    "path": "/Volumes/Lauburu-Monorepo/08_business_and_commerce/iphone_16_pro_flaw_closeup.jpg",
+    "bytes": 173542,
+    "sha256": "53d30c0a46cfd729482dd270e2e8143b8d3fbdac8aa25dd96777913331cc98d0",
+    "resolution": "771x1024",
+    "format": "JPEG",
+    "color_mode": "RGB",
+    "verified": true,
+    "role": "Isolates the specific right OLED bezel crescent dead pixel cluster."
+  },
+  {
+    "name": "Live Gumtree Ad Screen Capture",
+    "path": "/Volumes/Lauburu-Monorepo/08_business_and_commerce/live_ad_gumtree.png",
+    "bytes": 15580,
+    "sha256": "c35bacdb98b522206335afa5b9baffd2e4e3352a40749bb747e469cd403af514",
+    "resolution": "1080x2400",
+    "format": "PNG",
+    "color_mode": "RGBA",
+    "verified": true,
+    "role": "Verifies live listing publication on mobile platform (1080x2400 Android framebuffer)."
+  }
+]

@@ -19,7 +19,7 @@ tags: [voila, studio, cyber_ide, 14_port_matrix, dsp, bjj_opml, corewar, ast, tr
 The **Voilà Master Cyber Studio** (`http://127.0.0.1:8890/`) is the Single Source of Truth (SSoT) master interactive execution environment of the Lauburu Monorepo. Built inside `01_apps/notebooks/00_lauburu_global_master_project.ipynb` and served via Voilà 0.5.8 on Tornado, it unifies the entire multi-surface ecosystem into 12 glassmorphic, interactive operational domains.
 
 - **Primary URL**: `http://127.0.0.1:8890/` (Local Host M4 Mini)
-- **Secondary Peer URL**: `http://100.93.158.96:8890/` (MacBook Air M4 remote worker)
+- **Secondary Peer URL**: `http://100.93.158.96:8890/` (MacBook Pro (Node L2) remote worker)
 - **Engine**: Python 3.13 ipykernel + Voilà + ipywidgets 8.1.5 + Plotly + Headless Matplotlib Agg
 - **Visual Design**: Master Cyber Dark Theme (`#020617`), cyan glassmorphic glow borders, responsive flex tabs.
 - **Rule #0 Zero-Mock Enforcement**: Every tab executes live system calls, POSIX file probes, socket connect tests, or OPML XML tree parses.
@@ -70,11 +70,11 @@ The **Voilà Master Cyber Studio** (`http://127.0.0.1:8890/`) is the Single Sour
 - **Hardware Topology**:
   - `L1 Mac_Node (Host M4 Mini)`: `100.119.199.76:8082` | 24G RAM (21.6G AI) | Cap: 90%
   - `L2 MacBook_Pro (x86_64)`: `100.103.212.21:50053` | 16G RAM (14.0G AI) | Cap: 90% | 40 Gbps TB4 PHY DMA (0.27ms RTT)
-  - `L3 Linux_Head_Node (Ryzen 7)`: `100.101.39.98:50052` | 16G RAM (13.8G AI) | Cap: 80%
+  - `L3 Linux_Mini (Intel 2018 Mac Mini)`: `100.101.39.98:50052` | 16G RAM (13.8G AI) | Cap: 80%
   - `L4 Linux_Tablet (Debian Touch)`: `100.81.92.125:22` | 8G RAM (6.5G AI) | Cap: 75%
   - `L5 MacBook_Air (M4 Metal)`: `100.93.158.96:8081` | 16G RAM (14.0G AI) | Cap: 90%
   - `L6 Pixel_10_Pro_XL (Tensor G5)`: `100.73.38.87:8022` | 16G RAM (12.5G AI) | Cap: 85%
-  - `L7 Samsung_S20 (Automated Tester)`: `100.84.40.95:8022` | 12G RAM (9.0G AI) | Cap: 75%
+  - `L7 Samsung_S20 (Automated Tester)`: `100.78.206.96:8022` | 12G RAM (9.0G AI) | Cap: 75%
   - `GW GL.iNet Router (Hardware Gateway)`: `100.122.185.123:80` | Embedded
 
 ### Tab 5: 🫀 5. 512Hz ECG DSP & Pan-Tompkins QRS Detector

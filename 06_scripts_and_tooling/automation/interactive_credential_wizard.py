@@ -17,7 +17,7 @@ import urllib.error
 import json
 from pathlib import Path
 
-ENV_FILE = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.env")
+ENV_FILE = Path("/Volumes/Lauburu-Monorepo/.env")
 
 def print_banner():
     print("\n" + "=" * 65)

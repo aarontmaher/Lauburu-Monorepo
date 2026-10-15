@@ -1,0 +1,10 @@
+Milestone Key,Title,Delivering Model,Automation Score,Capital Granted AUD,Credits Granted,ELO Granted,Evidence
+MOVESENSE_BICEP_BAND,Custom Movesense Bicep ECG Band,Qwen_3.8_Max,90.0%,$1350.00,22,450,Custom Bicep Band Strategy + BOM Cost Model + 512Hz Pan-Tompkins DSP
+COMBAT_PREWORKOUT,Combat Sports Preworkout Supplement Plan,Qwen_3.8_Max,88.0%,$1760.00,26,528,Combat Preworkout Formulation + FSANZ 2.9.4 Compliance + Co-Packer RFQ
+OPEN_SOURCE_SHOPIFY,Open Source Shopify Alternative (MedusaJS v2),Qwen_3.8_Max,95.0%,$3325.00,47,950,MedusaJS v2 Docker Compose + Stripe Element Checkout + Next.js Storefront
+APP_SALES_PLAN,App Sales & Subscription Monetization Suite,Qwen_3.8_Max,90.0%,$2250.00,36,675,Port 4000 SaaS Pricing Matrix + Movesense Hub Subscription + Stripe Portal
+AI_HIGH_ROI_INITIATIVES,AI-Suggested High-ROI Initiatives (Hardware Arbitrage & 3D Kinematics),Qwen_3.8_Max,85.0%,$1530.00,21,425,Hardware Arbitrage Engine + 3D Spatial Grappling Match Analysis Service
+PAY_BY_COMPUTE_INTEGRATION,Pay by Compute Functional Engine (Mesh Token Metering & API Monetization),Qwen_3.8_Max,95.0%,$3800.00,57,1140,Pay by Compute Metering Engine + Stripe Credit Intent + 7-Layer Token Pricing Model
+GLINET_EDGE_POS_GATEWAY,GL.iNet Edge POS Gateway & Hardware Mesh Infrastructure,Opus_Architect,92.0%,$950.00,15,280,GL.iNet OpenWrt Retail Gateway + USBIP ADB Hardware Bridge + Offline SQLite Buffer
+THUNDERBOLT4_DMA_NPU_ACCELERATION,Thunderbolt 4 DMA Networking & Edge NPU Acceleration Suite,Qwen_3.8_Max,95.0%,$1250.00,20,380,40Gbps TB4 DMA Bridge Specification + Tensor G5 LiteRT Scanner + Apple ANE CoreML Offload
+REVERSE_ENGINEERED_COMMERCE_SUITE,Shopify Reverse-Engineered Open-Source Commerce Suite,Dual_Team_Consensus,94.0%,$1100.00,18,340,Shopify GraphQL Reverse Engineering + MedusaJS v2 Offline-First POS + CRDT Sync

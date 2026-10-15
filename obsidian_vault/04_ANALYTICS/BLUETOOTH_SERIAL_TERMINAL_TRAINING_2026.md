@@ -23,7 +23,7 @@ Autonomous fine-tuning report for **Qwen 3.8 Max** to integrate and utilize the 
 - **Loss Reduction:** **`-34.57%`**
 - **Average Step Latency:** `18.11 ms`
 - **Throughput:** `13986.5 tokens/s`
-- **Trained Weights:** `/Users/aaron/DFS_UNIFIED/lora_datasets/adapters/qwen38_bluetooth_terminal_adapter/adapters.npz`
+- **Trained Weights:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/adapters/qwen38_bluetooth_terminal_adapter/adapters.npz`
 - **Cryptographic SHA256:** `f74701dd2bd4e353b23561e6df88400953a09d0fdc0f307e6b1e696305874851`
 
 ---

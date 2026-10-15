@@ -13,9 +13,9 @@ import json
 import time
 from typing import Dict, Any, List
 
-AUDIT_RESULTS_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/game_visual_and_accuracy_audit_results.json"
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
-GAME_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
+AUDIT_RESULTS_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/game_visual_and_accuracy_audit_results.json"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+GAME_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
 
 def run_visual_and_accuracy_audit() -> Dict[str, Any]:
     timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())

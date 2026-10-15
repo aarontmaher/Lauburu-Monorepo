@@ -60,7 +60,7 @@ where $\phi_1, \dots, \phi_K$ are dedicated linear projection and transformer la
 ### How Large is Our Entire Monorepo Context?
 - **Full Monorepo On Disk:** **40,265,006 lines of code across 132,755 files ($\approx 403.8\text{ MILLION tokens}$)**.
 - **Clean Core Codebase (excluding deep git history and data lakes):** **$\approx 435,000\text{ lines of code}$ across 3,100 files ($\approx 1.8\text{ to } 2.2\text{ MILLION tokens}$)**.
-- **Peripheral Offload Feasibility:** Inactive KV cache blocks can be paged to the **L3 Linux Head Node (16 GB)** or **L5 MacBook Air (16 GB)** over 1GbE/Wi-Fi 7, fetching only active attention landmarks to the Mac Mini!
+- **Peripheral Offload Feasibility:** Inactive KV cache blocks can be paged to the **L3 Linux Head Node (16 GB)** or **L2 MacBook Pro (16 GB)** over 1GbE/Wi-Fi 7, fetching only active attention landmarks to the Mac Mini!
 
 ---
 
@@ -77,8 +77,8 @@ We executed a live multi-socket socket aggregation benchmark across the real net
 
 ## 🏋️ 5. Continuous RAM-Governed Training & TUI Synchronization
 
-Our background trainer daemon ([`continuous_ram_governed_trainer.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/training_scripts/continuous_ram_governed_trainer.py)) is actively synchronizing live state:
+Our background trainer daemon ([`continuous_ram_governed_trainer.py`](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/training_scripts/continuous_ram_governed_trainer.py)) is actively synchronizing live state:
 - **Host RAM Utilization:** **74.0%** (6.25 GB free headroom, safely below the 90% dynamic cap of 21.6 GB).
 - **Dataset Scale:** **72,203 continuous LoRA pairs** ingested.
 - **Training Loss:** **0.4079** at Step #7,055.
-- **TUI Dashboard Feed:** Stream files [`tui_training_stream.json`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/tui_training_stream.json) and [`tui_live_implementation_stream.json`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/tui_live_implementation_stream.json) are updated in real-time.
+- **TUI Dashboard Feed:** Stream files [`tui_training_stream.json`](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/tui_training_stream.json) and [`tui_live_implementation_stream.json`](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/tui_live_implementation_stream.json) are updated in real-time.

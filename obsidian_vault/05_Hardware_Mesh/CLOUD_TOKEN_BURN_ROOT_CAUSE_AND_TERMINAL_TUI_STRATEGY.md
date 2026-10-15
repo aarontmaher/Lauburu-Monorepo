@@ -91,7 +91,7 @@ $$\text{Tier 1: Wi-Fi 7 / 2.5GbE (0.35ms)} \xrightarrow{\text{fallback}} \text{T
 ### 5.2 5 Canonical Self-Healing Pathways
 | Pathway | Target Hardware | Trigger Condition | Automated Self-Healing Action |
 | :--- | :--- | :--- | :--- |
-| **Path 1: BD PROCHOT** | Dell Ryzen 7 5700U (L3) | CPU Clamped to 400 MHz | Force `amd_pstate=active`, restore scaling governors to performance (>= 1.8 GHz). |
+| **Path 1: BD PROCHOT** | Dell Intel 2018 Mac Mini (Linux) (L3) | CPU Clamped to 400 MHz | Force `amd_pstate=active`, restore scaling governors to performance (>= 1.8 GHz). |
 | **Path 2: HCI Recovery** | Realtek RTL8761B USB | Bluetooth Daemon Stalled | Reset HCI controller via `hciconfig hci0 reset` & reload BlueZ without reboot. |
 | **Path 3: Daemon Resurrect** | Omniterminal Daemon (:4001) | Socket Disconnected | Auto-respawn Virtual PTY multiplexer preserving shell and editor buffers. |
 | **Path 4: Link Failover** | Multi-WAN Gateway | Packet Loss > 15% | Transparently demote transport from Wi-Fi to USB to Bluetooth in < 150ms. |

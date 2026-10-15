@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-09-11T13:44:05.847816+00:00",
+  "sensor": "Movesense Medical ECG-IMU (512Hz/208Hz)",
+  "martial_discipline": "Brazilian Jiu-Jitsu / Submission Grappling",
+  "heart_rate_bpm": null,
+  "hrv_rmssd_ms": null,
+  "dfa_alpha1": null,
+  "cardio_zone": "STANDBY",
+  "movement_phase": "STANDBY",
+  "total_acceleration_g": null,
+  "rotational_velocity_dps": null,
+  "valsalva_maneuver_detected": false,
+  "estimated_bp_systolic": null,
+  "estimated_bp_diastolic": null,
+  "hemodynamic_state": "STANDBY",
+  "takedown_impacts_count": 0,
+  "qrs_detection_rate_hz": 0,
+  "status": "STANDBY (-- WAITING FOR SENSOR --)"
+}

@@ -12,7 +12,7 @@ tags: [lauburu, testing, ai_training_tui, zero_mock, rich, textual, lora]
 
 ## 2. Zero-Mock & Truth Audit (Rule #0)
 - **Host RAM Sanctuary**: Queried Darwin Mach kernel via `vm_stat` and `sysctl hw.memsize`. Real measurement: **4.71 GB Free / 24.0 GB Total** (Sanctuary: WARN, actively guarding the 9.6 GB buffer).
-- **LoRA Dataset Cross-Reference**: Directly inspected `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`. Verified **425,181 authentic LoRA pairs** harvested across 163 generation cycles.
+- **LoRA Dataset Cross-Reference**: Directly inspected `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`. Verified **425,181 authentic LoRA pairs** harvested across 163 generation cycles.
 - **Pure-NPU Telemetry**: Evaluated ANE systolic routing latency (**277.00 µs**), Bradley-Terry ELO Rate (**915,646 updates/sec**), and active Apple Silicon NPU TOPS (**34.2 / 38.0 TOPS**).
 - **Synthetic Data Audit**: Audited `textual_training_tui.py` vs `training_tui.py`. Found that `textual_training_tui.py` contained hardcoded static lists, whereas canonical `training_tui.py` enforces authentic kernel syscalls and live LoRA JSONL file descriptors.
 

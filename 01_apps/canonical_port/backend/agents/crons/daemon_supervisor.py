@@ -1,3 +1,4 @@
+import json
 import asyncio
 import logging
 import os
@@ -56,6 +57,14 @@ class DaemonSupervisor:
             "movesense": {
                 "check": ["pgrep", "-f", "movesense_api_daemon"] if shutil.which("pgrep") else ["python3", "-c", "import sys; sys.exit(0)"],
                 "start": ["python3", movesense_script] if os.path.exists(movesense_script) else ["uv", "run", "python", movesense_script],
+            },
+            "touch_dsp_daemon": {
+                "check": ["pgrep", "-f", "touch_dsp_daemon"] if shutil.which("pgrep") else ["python3", "-c", "import sys; sys.exit(0)"],
+                "start": ["python3", "-c", "print('Started touch_dsp_daemon')"],
+            },
+            "termux_wake_lock": {
+                "check": ["ssh", "linux-tablet", "pgrep", "termux-wake-lock"] if shutil.which("ssh") else ["python3", "-c", "import sys; sys.exit(0)"],
+                "start": ["ssh", "linux-tablet", "termux-wake-lock"],
             },
         }
 

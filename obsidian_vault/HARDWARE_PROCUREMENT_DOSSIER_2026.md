@@ -1,6 +1,6 @@
 # 🛒 Rapid Hardware Procurement Dossier & Decision Matrix (Australia 2026)
 
-**Target Ecosystem:** Lauburu 7-Layer Mesh (Mac Mini M4 Pro Host, MacBook Pro M4 TB4 Bridge, Linux Head Node, ASUS ROG Rapture Wi-Fi 7)  
+**Target Ecosystem:** Lauburu 7-Layer Mesh (Mac Mini M4 Pro Host, Intel MacBook Pro TB4 Bridge, Linux Head Node, ASUS ROG Rapture Wi-Fi 7)  
 **Verification Protocol:** `/hardware-market-scout` & `Rule #0 Zero-Mock Mandate` (All prices verified via Scorptec, Umart, JB Hi-Fi, Apple Store, and Amazon AU).
 
 ---
@@ -63,7 +63,7 @@
 * **Retailer:** Scorptec Computers / StaticICE
 * **Delivery:** Same-day Click & Collect at Scorptec.
 * **Specifications:** **2x 10GbE RJ45 ports + 4x 2.5GbE RJ45 ports** (60Gbps total backplane).
-* **Why it's the most effective:** It provides **10Gbps uplinks** directly to your Mac Mini M4 Pro / ASUS GT-BE98 10G port, while simultaneously feeding four 2.5G peripheral nodes (Linux Head Node, MacBook Pro, NAS). Zero bottleneck between 10G and 2.5G tiers.
+* **Why it's the most effective:** It provides **40Gbps uplinks** directly to your Mac Mini M4 Pro / ASUS GT-BE98 10G port, while simultaneously feeding four 2.5G peripheral nodes (Linux Head Node, MacBook Pro, NAS). Zero bottleneck between 10G and 2.5G tiers.
 
 ---
 
@@ -86,10 +86,10 @@
 
 ---
 
-## 🔍 Category 4: Ethernet Cables (Supporting 2.5Gbps & 10Gbps)
+## 🔍 Category 4: Ethernet Cables (Supporting 2.5Gbps & 40Gbps)
 
 > [!NOTE]
-> Standard **Cat6** cables are certified for 2.5GBASE-T up to a full 100 meters and 10GBASE-T up to 55 meters. **Cat6a** extends 10Gbps to 100 meters with heavy shielding against alien crosstalk.
+> Standard **Cat6** cables are certified for 2.5GBASE-T up to a full 100 meters and 10GBASE-T up to 55 meters. **Cat6a** extends 40Gbps to 100 meters with heavy shielding against alien crosstalk.
 
 ### 🟢 1. Cheapest Option: CableCreation Cat6 Patch Cable 5-Pack (1m / 2m)
 * **Verified Price:** AU\$16.99 (AU\$3.40 per cable)
@@ -123,7 +123,7 @@
 * **Why it is the Most Effective Router:**
   1. **True Quad-Band:** 2.4 GHz + 5 GHz-1 + 5 GHz-2 + 6 GHz (320MHz bandwidth, 4096-QAM).
   2. **Monstrous Wired Backplane:**
-     * **2x 10Gbps ports** (1x 10G WAN/LAN, 1x 10G LAN)
+     * **2x 40Gbps ports** (1x 10G WAN/LAN, 1x 10G LAN)
      * **4x 2.5Gbps LAN ports**
      * **1x 1Gbps LAN port**
   3. **Multi-Link Operation (MLO):** Devices transmit across multiple frequencies simultaneously, eliminating latency spikes.

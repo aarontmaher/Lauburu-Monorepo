@@ -12,7 +12,7 @@ import time
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 
-LEDGER_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/crash_recovery_ledger.json"
+LEDGER_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/crash_recovery_ledger.json"
 
 FAILURE_TAXONOMY = {
     "ANDROID_DOZE_LMK": {
@@ -44,6 +44,16 @@ FAILURE_TAXONOMY = {
         "title": "Wi-Fi 7 / 5GHz AP Roaming Drop",
         "description": "Device temporarily lost packet link during AP band-steering or DHCP re-lease.",
         "prevention": "Static link-local TB4 direct routing (169.254.x.x) + Tailscale direct UDP tunnel."
+    },
+    "APPLE_ACIO2_RTKIT_PANIC": {
+        "title": "Apple Silicon ACIO2 / RTKit Mailbox Panic (assert_id=2167)",
+        "description": "Apple Converged I/O firmware coprocessor workloop timed out waiting for AP acknowledgment during high-speed USB CDC/TB4 transfers.",
+        "prevention": "Configure pmset -a tcpkeepalive 1, verify 40Gbps TB4 cabling, avoid aggressive USB-C power saving, and flush virtual bridge0 queues."
+    },
+    "ANDROID_LINKER_ELF_CORRUPTION": {
+        "title": "Android Termux Dynamic Linker Missing Library",
+        "description": "Android runtime failed to link native binary (e.g. libggml-base.so or invalid section header offset).",
+        "prevention": "Rebuild native binaries with static linkage (-DGGML_STATIC=ON) or execute non-destructive pkg upgrade."
     }
 }
 
@@ -173,7 +183,7 @@ class CrashTelemetryEngine:
                 "layer": 6,
                 "failure_type": "USB_C_PHY_SUSPEND",
                 "diagnostics": "USB-C Ethernet adapter dropped packet link; eth0 unmounted.",
-                "healing_action": "Auto-engaged Wi-Fi 7 + Tailscale WireGuard (100.84.40.95:8022) + Pinned Cortex-A55 Little Cores",
+                "healing_action": "Auto-engaged Wi-Fi 7 + Tailscale WireGuard (100.78.206.96:8022) + Pinned Cortex-A55 Little Cores",
                 "time_to_recover_ms": 320.0,
                 "success": True,
                 "what_it_adds": "Restored continuous OpenClaw UI testing & +9.0 GB ARM compute"

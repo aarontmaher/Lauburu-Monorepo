@@ -21,7 +21,7 @@ from typing import Dict, Any, Optional, List, Tuple
 
 MONOREPO_DIR = os.environ.get(
     "LAUBURU_PROJECT_ROOT",
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")) if os.path.exists(os.path.join(os.path.dirname(__file__), "../..", "data")) else "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")) if os.path.exists(os.path.join(os.path.dirname(__file__), "../..", "data")) else "/Volumes/Lauburu-Monorepo"
 )
 if MONOREPO_DIR not in sys.path:
     sys.path.insert(0, MONOREPO_DIR)

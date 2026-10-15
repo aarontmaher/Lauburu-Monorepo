@@ -28,11 +28,11 @@ Probe all 7 physical layers in real-time and compute pairwise round-trip times (
 ```python
 NODES = [
     {"layer": "L1", "name": "Mac Mini M4 Pro Host", "ip": "127.0.0.1", "port": 8088},
-    {"layer": "L5", "name": "MacBook Air M4 Worker", "ip": "100.93.158.96", "port": 22},
+    {"layer": "L5", "name": "MacBook Pro (Node L2) Worker", "ip": "100.93.158.96", "port": 22},
     {"layer": "L2", "name": "MacBook Pro TB4 Vault", "ip": "100.103.212.21", "port": 22},
     {"layer": "L3", "name": "Linux Head Node DFS", "ip": "100.101.39.98", "port": 22},
     {"layer": "L6", "name": "Pixel 10 Pro XL TPU", "ip": "100.73.38.87", "port": 8022},
-    {"layer": "L7", "name": "Samsung S20+ Termux", "ip": "100.84.40.95", "port": 8022},
+    {"layer": "L7", "name": "Samsung S20+ Termux", "ip": "100.78.206.96", "port": 8022},
     {"layer": "GW", "name": "GL.iNet Gateway Router", "ip": "192.168.8.1", "port": 80}
 ]
 

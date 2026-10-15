@@ -49,5 +49,5 @@ tags: [ai_debate, simpo, rlvr, ttc, fastv, devils_advocate, qwen_38_max]
 ---
 
 ## 🔒 Tri-Vault Storage Signature
-- **Obsidian Vault:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/05_SWARMS/debates/AI_DEBATE_FRONTIER_TRAINING_AND_BENCHMARKING.md`
+- **Obsidian Vault:** `/Volumes/Lauburu-Monorepo/obsidian_vault/05_SWARMS/debates/AI_DEBATE_FRONTIER_TRAINING_AND_BENCHMARKING.md`
 - **LoRA Memory Ingestion:** Verified instruction pair appended to `lora_datasets/devils_advocate_training.jsonl`.

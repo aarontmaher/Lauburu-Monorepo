@@ -7,7 +7,7 @@
 
 set -euo pipefail
 
-TARGET_DEVICE="${1:-100.84.40.95:5555}"
+TARGET_DEVICE="${1:-100.78.206.96:5555}"
 ADB_BIN="$(command -v adb || echo "/Users/aaron/.local/bin/adb")"
 
 echo "=================================================================="

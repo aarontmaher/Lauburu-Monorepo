@@ -21,7 +21,7 @@ import copy
 from pathlib import Path
 from typing import Dict, Any, List, Tuple
 
-WORKSPACE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+WORKSPACE_ROOT = Path("/Volumes/Lauburu-Monorepo")
 OBSIDIAN_VAULT = WORKSPACE_ROOT / "obsidian_vault"
 GDRIVE_VAULT = Path("/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/obsidian_vault")
 

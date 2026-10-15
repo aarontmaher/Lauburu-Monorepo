@@ -1,0 +1,59 @@
+{
+  "model": "qwen_38_max_27b",
+  "total_layers": 64,
+  "world_size": 7,
+  "timestamp": 1791879061,
+  "thermal_spike_active": true,
+  "trigger": "SIMULATED_THERMAL_SPIKE",
+  "nodes": {
+    "L1_mac_mini": {
+      "rank": 0,
+      "ip": "169.254.186.211",
+      "layers": 6,
+      "vram_mb": 14000,
+      "thermal_state": "SERIOUS"
+    },
+    "L1b_mac_mini_m2": {
+      "rank": 1,
+      "ip": "169.254.122.75",
+      "layers": 26,
+      "vram_mb": 12000,
+      "thermal_state": "NOMINAL"
+    },
+    "L5_mac_air_m4": {
+      "rank": 2,
+      "ip": "169.254.186.212",
+      "layers": 23,
+      "vram_mb": 10000,
+      "thermal_state": "NOMINAL"
+    },
+    "L2_macbook_intel": {
+      "rank": 3,
+      "ip": "100.103.212.21",
+      "layers": 2,
+      "vram_mb": 4000,
+      "thermal_state": "NOMINAL"
+    },
+    "L3_linux_amd": {
+      "rank": 4,
+      "ip": "100.101.39.98",
+      "layers": 5,
+      "vram_mb": 4000,
+      "thermal_state": "NOMINAL"
+    },
+    "L6_pixel_10": {
+      "rank": 5,
+      "ip": "100.73.38.87",
+      "layers": 1,
+      "vram_mb": 1500,
+      "thermal_state": "NOMINAL"
+    },
+    "L7_galaxy_s20": {
+      "rank": 6,
+      "ip": "100.78.206.96",
+      "layers": 1,
+      "vram_mb": 1500,
+      "thermal_state": "NOMINAL"
+    }
+  }
+}

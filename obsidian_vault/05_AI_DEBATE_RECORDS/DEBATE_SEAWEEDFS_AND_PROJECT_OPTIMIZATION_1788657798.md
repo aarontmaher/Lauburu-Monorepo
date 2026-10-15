@@ -21,7 +21,7 @@ tags: [lauburu, ai_debate, seaweedfs, tri_vault, architecture]
 ## 📋 Actionable Priorities Extracted
 - [x] Deploy AiDebateStorageEngine Dual-Write: Local SQLite/Parquet SSoT (<1ms) + async SeaweedFS IPv6 Filer replication.
 - [x] Bind SeaweedFS Filer strictly to IPv6 [::1]:8888 or WebDAV :7333 to permanently avoid IPv4 :8080 proxy collisions.
-- [x] Consolidate active coding into /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo using Git Worktrees instead of fragmented teamwork_projects.
+- [x] Consolidate active coding into /Volumes/Lauburu-Monorepo using Git Worktrees instead of fragmented teamwork_projects.
 - [x] Maintain Rule 4 sandbox isolation in 01_apps/screen_lens/sandbox_evolution/ for all reverse engineering and prototypes.
 - [x] Integrate SeaweedFS status HUD and hotkeys (S for Save, D for Debate) into bluetooth_terminal_ide.py.
 
@@ -30,7 +30,7 @@ tags: [lauburu, ai_debate, seaweedfs, tri_vault, architecture]
 ## 💬 Full Multi-Orchestrator Deliberation Record
 
 ### Turn 1: Qwen 3.8 Max (Sovereign Master Local Orchestrator (:8082))
-1. SSoT Monorepo Invariant: The canonical tree /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo must remain the sole SSoT. Having 85 independent directories in teamwork_projects fragments the AST index, duplicates dependencies, and causes severe topic drift. Parallel features must be managed via 'git worktree' anchored to the monorepo.
+1. SSoT Monorepo Invariant: The canonical tree /Volumes/Lauburu-Monorepo must remain the sole SSoT. Having 85 independent directories in teamwork_projects fragments the AST index, duplicates dependencies, and causes severe topic drift. Parallel features must be managed via 'git worktree' anchored to the monorepo.
 2. Dual-Write Storage Architecture: SeaweedFS provides distributed multi-node blob persistence across the 7 layers, but serial terminal I/O (115200 baud) cannot afford synchronous HTTP blocking. The architecture must write synchronously to the local SQLite ledger and Parquet Lakehouse (<1ms), while mirroring asynchronously to SeaweedFS Filer (IPv6 :8888).
 3. Rule 4 Isolation: All exploratory prototypes and reverse engineering belong in '01_apps/screen_lens/sandbox_evolution/' until validated via Stage 4 Sovereign Approval.
 
@@ -55,7 +55,7 @@ SYNTHESIZED ARCHITECTURAL DECREE:
    - Tier 2 (Semantic Knowledge): Obsidian Vault with bidirectional Wikilinks in 'obsidian_vault/05_AI_DEBATE_RECORDS/'.
 
 2. Canonical Monorepo vs Teamwork Projects Coding Optimization:
-   - Core Monorepo /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo is the sole canonical repository for production applications ('01_apps/'), models ('02_ai_models/'), and infrastructure.
+   - Core Monorepo /Volumes/Lauburu-Monorepo is the sole canonical repository for production applications ('01_apps/'), models ('02_ai_models/'), and infrastructure.
    - Feature Branching MUST use 'git worktree' (e.g. monorepo/.worktrees/feature-name) instead of cloning loose folders into teamwork_projects, preserving unified git history without workspace pollution.
    - Experimental mutations, reverse engineering, and model tests are strictly sandboxed inside '01_apps/screen_lens/sandbox_evolution/' per Rule 4, keeping production untouched.
    - Auto-heal stale '.git/index.lock' and prune '__pycache__' on launcher startup to preserve <50ms git status latency.

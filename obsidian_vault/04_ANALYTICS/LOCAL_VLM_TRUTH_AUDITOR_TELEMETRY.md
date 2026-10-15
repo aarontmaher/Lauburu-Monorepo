@@ -1,14 +1,14 @@
 ---
 title: "Local AI Visual Truth Auditor & Cloud Free Tier Maximizer Telemetry"
 tags: [visual_truth_audit, local_vlm, macbook_air, gcp_free, jules, cloudflare, lora, dpo]
-updated: "2026-09-06 16:05:54"
+updated: "2026-09-13 19:47:55"
 ---
 
 # 👁️ Local AI Visual Truth Auditor & Cloud Maximizer Ledger
 
 > **Default Audit Node:** `MacBook_Air (Layer L5: 192.168.8.222)`
-> **Total Audits Conducted:** `17` | **Gate 1 AST Passes:** `17`
-> **Gate 2 Visual Passes:** `17` | **LoRA Pairs Emitted:** `17`
+> **Total Audits Conducted:** `19` | **Gate 1 AST Passes:** `19`
+> **Gate 2 Visual Passes:** `19` | **LoRA Pairs Emitted:** `19`
 > **Cloud AI Cost:** `$0.00 / month` (100% Free Tier Utilization)
 
 ## 🛡️ Dual-Gate Verification Status (MacBook Air Offload)
@@ -28,6 +28,6 @@ updated: "2026-09-06 16:05:54"
 
 ## 💾 Active Multimodal Training Datasets
 
-- **Visual UI Audit LoRA Dataset:** `/Users/aaron/DFS_UNIFIED/lora_datasets/visual_ui_audit_lora.jsonl`
-- **Continuous Swarm Dataset:** `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`
-- **State File:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/local_vlm_truth_auditor_state.json`
+- **Visual UI Audit LoRA Dataset:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/visual_ui_audit_lora.jsonl`
+- **Continuous Swarm Dataset:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`
+- **State File:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/local_vlm_truth_auditor_state.json`

@@ -17,7 +17,7 @@ import sys
 import json
 from pathlib import Path
 
-MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+MONOREPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 sys.path.insert(0, str(MONOREPO_ROOT / "06_scripts_and_tooling/network"))
 
 from hybrid_router_mesh_governor import HybridMeshGovernor

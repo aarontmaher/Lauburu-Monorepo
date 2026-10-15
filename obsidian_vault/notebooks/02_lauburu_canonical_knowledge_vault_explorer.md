@@ -28,7 +28,7 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 
-REPO_ROOT = Path('/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo')
+REPO_ROOT = Path('/Volumes/Lauburu-Monorepo')
 OBSIDIAN_DIR = REPO_ROOT / 'obsidian_vault'
 SCREEN_LENS_DB = Path(os.path.expanduser('~/.lauburu/screen_lens.sqlite'))
 

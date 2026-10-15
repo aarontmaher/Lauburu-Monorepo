@@ -16,9 +16,9 @@ import time
 import math
 from typing import Dict, Any, List
 
-GAME_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
-SHOPIFY_MERCHANT_STATE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/shopify_merchant_state.json"
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+GAME_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
+SHOPIFY_MERCHANT_STATE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/shopify_merchant_state.json"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
 GDRIVE_LORA_FILE = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets/shopify_merchant_heuristics.jsonl"
 
 class ShopifyAIShopManager:
@@ -80,7 +80,7 @@ class ShopifyAIShopManager:
     def get_merchant_status(self) -> Dict[str, Any]:
         """Returns the live status, active promotions, and recommendations from the Shopify AI."""
         import sys
-        sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+        sys.path.insert(0, "/Volumes/Lauburu-Monorepo/multi_wan")
         try:
             from ai_mesh_battle_arena import DEFENSES_CATALOG
             catalog_count = len(DEFENSES_CATALOG)

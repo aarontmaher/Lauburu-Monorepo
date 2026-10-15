@@ -16,9 +16,9 @@ import subprocess
 
 logger = logging.getLogger("QuadConsensusEngine")
 
-CONSENSUS_LOG_PATH = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/quad_consensus_history.json"
+CONSENSUS_LOG_PATH = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/quad_consensus_history.json"
 GDRIVE_LORA_DIR = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets"
-LOCAL_LORA_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+LOCAL_LORA_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
 
 class QuadConsensusEngine:
     def __init__(self):

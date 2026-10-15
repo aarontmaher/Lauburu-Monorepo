@@ -66,6 +66,7 @@ class EngineSelectorWidget(Horizontal):
 
     ENGINES: List[str] = [
         "auto",
+        "prima",
         "llama_rpc",
         "exo",
         "accelerate",
@@ -77,6 +78,7 @@ class EngineSelectorWidget(Horizontal):
 
     ENGINE_OPTIONS: List[Tuple[str, str]] = [
         ("🤖 AUTO (Dynamic TTFT)", "auto"),
+        ("⚡ PRIMA.CPP (Pipelined-Ring TB4 DMA)", "prima"),
         ("🦙 LLAMA.CPP (GGML-RPC)", "llama_rpc"),
         ("🪐 EXO (Ring P2P)", "exo"),
         ("⚡ ACCELERATE (Multi-GPU)", "accelerate"),
@@ -88,6 +90,7 @@ class EngineSelectorWidget(Horizontal):
 
     ENGINE_NAMES: Dict[str, str] = {
         "auto": "🤖 AUTO (Dynamic TTFT)",
+        "prima": "⚡ PRIMA.CPP (Pipelined-Ring TB4 DMA)",
         "llama_rpc": "🦙 LLAMA.CPP (GGML-RPC)",
         "exo": "🪐 EXO (Ring P2P)",
         "accelerate": "⚡ ACCELERATE (Multi-GPU)",

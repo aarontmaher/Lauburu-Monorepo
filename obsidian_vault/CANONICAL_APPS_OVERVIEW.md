@@ -100,11 +100,11 @@ The **Port 4000 Unified Hub** serves as the consolidated command center for the 
   1. *Tab 1: 512Hz Biometrics & Zone 2*:
      Real-time readiness gauge ($0-100\%$), live heart rate (BPM), parasympathetic recovery index (HRV RMSSD), Zone 2 DFA-alpha1 LT1 indicator, high-resolution 512Hz oscilloscope, 33-landmark pose reticle, 3D tatami spatial canvas, and 5-minute phone camera PPG calibration test.
   2. *Tab 2: 7-Node Mesh Speedway*:
-     Monitors live ping latency across the physical mesh: Mac Mini M4 Pro Local ($0.0	ext{ ms}$), MacBook Pro M4 TB4 DMA ($0.28	ext{ ms}$), MacBook Air M4 ($1.2	ext{ ms}$), Linux Head Node Ryzen 7 ($1.8	ext{ ms}$), GL.iNet Router ($0.7	ext{ ms}$), TP-Link AP ($1.1	ext{ ms}$), Pixel 10 Pro XL ($32.6	ext{ ms}$), Samsung S20 ($28.4	ext{ ms}$), and Debian Tablet ($4.2	ext{ ms}$).
+     Monitors live ping latency across the physical mesh: Mac Mini M4 Pro Local ($0.0	ext{ ms}$), Intel MacBook Pro TB4 DMA ($0.28	ext{ ms}$), MacBook Pro (Node L2) ($1.2	ext{ ms}$), Linux Head Node Intel 2018 Mac Mini ($1.8	ext{ ms}$), GL.iNet Router ($0.7	ext{ ms}$), TP-Link AP ($1.1	ext{ ms}$), Pixel 10 Pro XL ($32.6	ext{ ms}$), Samsung S20 ($28.4	ext{ ms}$), and Debian Tablet ($4.2	ext{ ms}$).
   3. *Tab 3: 3D Tatami Kinematics*:
      Visualizes 3,044-node OPML BJJ technique tree and live joint torque indicators with danger warnings (Armbar 45.0 N·m, Heel Hook 38.0/55.0 N·m, Kimura 42.0/50.0 N·m).
   4. *Tab 4: In-App Edge AI & RAG*:
-     Routes on-device natural language queries to local llama.cpp endpoints (Port 8081 Qwen 2.5 7B Coder, Port 8083 Qwen 2.5 32B Instruct via 10Gbps TB4 DMA) and Obsidian vault search.
+     Routes on-device natural language queries to local llama.cpp endpoints (Port 8081 Qwen 2.5 7B Coder, Port 8083 Qwen 2.5 32B Instruct via 40Gbps TB4 DMA) and Obsidian vault search.
   5. *Tab 5: Shopify Membership*:
      Validates customer tiers (Free, Pro @ $29/mo, Gym Master @ $99/mo) and displays token quotas, hardware bundle eligibility, and entitlement status.
   6. *Tab 6: 17-App Monorepo Catalog & Dynamic Launchers*:
@@ -397,7 +397,7 @@ The **Android Termux Edge Daemons** (`02_ai_models_and_inference/sharding_daemon
 | 17 | Termux Thermal Sentinel | Battery/SoC temperature spikes to 41.6°C | Evaluates policy to `IMMEDIATE_EVACUATION`; signals daemon to drop layer shard instantly to prevent Android OS kernel kill. |
 | 18 | Termux Memory Governor | Shard allocation requested when free RAM < 500 MB | `check_allocation_headroom` returns `(False, "Requested ... exceeds remaining headroom")`, rejecting shard gracefully. |
 | 19 | Wireless ADB | Device Wi-Fi disconnects mid-session | `WiFiADBManager` detects socket failure, marks connection as unsuccessful, and logs failure with UTC timestamp. |
-| 20 | Host Sanctuary Headroom | Memory usage threatens 9.6 GB buffer | `lens_host_ram_evacuation_daemon.py` detects low headroom and offloads compute to Layer 2 (MacBook Pro TB4 DMA) or Layer 4 (Linux). |
+| 20 | Host Sanctuary Headroom | Memory usage threatens 4.8 GB buffer (80% cap) | `lens_host_ram_evacuation_daemon.py` detects low headroom and offloads compute to Layer 8 (Linux Mini lauburu 40Gbps TB4 DMA) or Layer 3 (Linux Head Node). |
 
 ---
 

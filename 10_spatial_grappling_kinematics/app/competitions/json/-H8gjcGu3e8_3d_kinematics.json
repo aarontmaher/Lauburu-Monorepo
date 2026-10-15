@@ -1,0 +1,26 @@
+{
+  "video_id": "-H8gjcGu3e8",
+  "url": "https://youtu.be/-H8gjcGu3e8",
+  "division": "IBJJF",
+  "title": "World championships (AUS) Vs (KAZ)",
+  "duration_sec": 410.7,
+  "resolution": "256x128",
+  "sampled_frames": 36,
+  "poses_detected_frames": 23,
+  "dual_athlete_frames": 8,
+  "standing_phase_pct": 34.8,
+  "ground_scramble_phase_pct": 65.2,
+  "level_change_shots_detected": 4,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 68.6,
+    "left_elbow": 131.1,
+    "right_elbow": 130.1,
+    "left_hip": 138.0,
+    "right_hip": 131.0,
+    "left_knee": 141.7,
+    "right_knee": 136.8
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/-H8gjcGu3e8_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in the World championships (AUS) vs (KAZ) (IBJJF, 410.7s) involves a strong, balanced approach with a focus on maintaining a high level of agility and control, especially in the standing and ground/scramble phases, where Maher's ability to maintain a high spine lean and elbow flexion allows him to execute precise and effective moves. His mean spine lean and elbow flexion are crucial for maintaining stability and power, while the knee flexion is essential for executing",
+  "processing_sec": 3.04
+}

@@ -1,0 +1,20 @@
+models:
+  - model: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/models/qwen2.5-3b-base
+    parameters:
+      weight: 1.0
+  - model: /Users/aaron/DFS_UNIFIED/lora_datasets/adapters/qwen38_reasoning_lora
+    parameters:
+      weight: 0.6
+      density: 0.65
+  - model: /Users/aaron/DFS_UNIFIED/lora_datasets/adapters/qwen38_code_audit_lora
+    parameters:
+      weight: 0.4
+      density: 0.55
+merge_method: dare_ties
+base_model: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/models/qwen2.5-3b-base
+parameters:
+  density: 0.65
+  weight: 0.5
+  int8_mask: true
+  normalize: true
+dtype: bfloat16

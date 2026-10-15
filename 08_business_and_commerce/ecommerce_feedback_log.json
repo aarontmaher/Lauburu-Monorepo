@@ -1,0 +1,12 @@
+[
+  {
+    "id": "FB-20260930-001",
+    "timestamp": "2026-09-30T04:10:16.272125+00:00",
+    "operator": "Aaron / Master Orchestrator",
+    "pillar": "CUSTOM_LAUBURU_BJJ_RASHGUARDS",
+    "category": "Inventory & Manufacturing Gate",
+    "priority": "P0 - Critical",
+    "directive": "Physical sample parcel EJ350397089AU gate active. Hold all B2B wholesale invoicing until Black Belt 1:1 fit and wash test is approved.",
+    "status": "LOGGED"
+  }
+]

@@ -11,14 +11,14 @@ from shopify_headless.config import ShopifyConfig, get_shopify_config
 
 def test_default_config():
     config = ShopifyConfig()
-    assert config.store_domain == "lauburugrappling.myshopify.com"
-    assert config.api_version == "2026-01"
+    assert config.store_domain == "lauburu-grappling.myshopify.com"
+    assert config.api_version == "2024-01"
     assert config.timeout_seconds == 8.0
     assert config.max_retries == 3
     assert config.backoff_factor == 1.5
-    assert "https://lauburugrappling.myshopify.com/api/2026-01/graphql.json" == config.storefront_endpoint
-    assert "https://lauburugrappling.myshopify.com/admin/api/2026-01/graphql.json" == config.admin_endpoint
-    assert "https://lauburugrappling.myshopify.com/account/customer/api/2026-01/graphql" == config.customer_account_endpoint
+    assert "https://lauburu-grappling.myshopify.com/api/2024-01/graphql.json" == config.storefront_endpoint
+    assert "https://lauburu-grappling.myshopify.com/admin/api/2024-01/graphql.json" == config.admin_endpoint
+    assert "https://lauburu-grappling.myshopify.com/account/customer/api/2024-01/graphql" == config.customer_account_endpoint
 
 
 def test_custom_config_overrides():

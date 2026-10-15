@@ -15,7 +15,7 @@ The engine simultaneously manages synchronized state across the Four Canonical S
 
 ## Installation & Path
 The source code was committed to Project Memory at:
-`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/canonical_sync_engine`
+`/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/canonical_sync_engine`
 
 The executable is mapped to `~/.local/bin/canonical-sync`.
 

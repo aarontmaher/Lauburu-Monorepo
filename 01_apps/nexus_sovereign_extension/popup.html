@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { width: 260px; padding: 12px; background: #0a0a12; color: #e0e0ff; font-family: monospace; font-size: 12px; }
+    h2 { color: #00ff88; font-size: 13px; margin-bottom: 8px; }
+    .status { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    button { width: 100%; padding: 6px; margin-top: 4px; background: #4040cc; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-family: monospace; }
+    button:hover { background: #5050ee; }
+    .red { background: #cc2222; }
+    .subtitle { font-size: 10px; color: #6060aa; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h2>🏛️ Nexus Sovereign</h2>
+  <div class="subtitle">Lauburu Mesh AI · Zero Cloud Cost</div>
+  <div class="status">
+    <div class="dot" id="dot" style="background:#888"></div>
+    <span id="status-text">Checking prima.cpp…</span>
+  </div>
+  <button onclick="openPanel()">📡 Open Mesh Panel</button>
+  <button onclick="openGUI()">🌐 Mesh GUI HUD</button>
+  <button onclick="openLuCI()">🔧 GL.iNet LuCI</button>
+  <script>
+    fetch('http://127.0.0.1:8082/health')
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById('dot').style.background = '#00ff88';
+        document.getElementById('status-text').textContent = 'prima.cpp ONLINE · ' + (d.mesh_nodes_count || '?') + ' nodes';
+      })
+      .catch(() => {
+        document.getElementById('dot').style.background = '#ff4444';
+        document.getElementById('status-text').textContent = 'prima.cpp OFFLINE';
+      });
+    function openPanel() { chrome.sidePanel.open({ windowId: chrome.windows.WINDOW_ID_CURRENT }); }
+    function openGUI() { chrome.tabs.create({ url: 'http://192.168.8.1/mesh_gui.html' }); }
+    function openLuCI() { chrome.tabs.create({ url: 'http://192.168.8.1/cgi-bin/luci' }); }
+  </script>
+</body>
+</html>

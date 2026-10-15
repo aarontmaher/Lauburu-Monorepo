@@ -1,0 +1,82 @@
+[
+  {
+    "seq_len": 32,
+    "mb_per_tensor": 0.25,
+    "mean_latency_ms": 0.7310816800000001,
+    "p95_latency_ms": 1.1325253999999998,
+    "min_latency_ms": 0.238042,
+    "max_latency_ms": 1.197083,
+    "throughput_mb_s": 341.9590544246711,
+    "tokens_per_sec": 43770.7589663579
+  },
+  {
+    "seq_len": 64,
+    "mb_per_tensor": 0.5,
+    "mean_latency_ms": 0.5368,
+    "p95_latency_ms": 0.8214503999999999,
+    "min_latency_ms": 0.138417,
+    "max_latency_ms": 0.994,
+    "throughput_mb_s": 931.4456035767511,
+    "tokens_per_sec": 119225.03725782414
+  },
+  {
+    "seq_len": 128,
+    "mb_per_tensor": 1.0,
+    "mean_latency_ms": 0.76573336,
+    "p95_latency_ms": 1.1037743999999998,
+    "min_latency_ms": 0.305583,
+    "max_latency_ms": 1.144875,
+    "throughput_mb_s": 1305.9376177629244,
+    "tokens_per_sec": 167160.01507365433
+  },
+  {
+    "seq_len": 256,
+    "mb_per_tensor": 2.0,
+    "mean_latency_ms": 1.3816317200000001,
+    "p95_latency_ms": 2.1642498,
+    "min_latency_ms": 0.601125,
+    "max_latency_ms": 2.188125,
+    "throughput_mb_s": 1447.563754543794,
+    "tokens_per_sec": 185288.16058160563
+  },
+  {
+    "seq_len": 512,
+    "mb_per_tensor": 4.0,
+    "mean_latency_ms": 2.8856734,
+    "p95_latency_ms": 4.2542168,
+    "min_latency_ms": 1.316708,
+    "max_latency_ms": 4.266333,
+    "throughput_mb_s": 1386.1582533906992,
+    "tokens_per_sec": 177428.2564340095
+  },
+  {
+    "seq_len": 1024,
+    "mb_per_tensor": 8.0,
+    "mean_latency_ms": 6.21463992,
+    "p95_latency_ms": 6.966674999999998,
+    "min_latency_ms": 5.947458,
+    "max_latency_ms": 7.213791,
+    "throughput_mb_s": 1287.2829484865795,
+    "tokens_per_sec": 164772.21740628217
+  },
+  {
+    "seq_len": 2048,
+    "mb_per_tensor": 16.0,
+    "mean_latency_ms": 12.38922816,
+    "p95_latency_ms": 14.941865999999996,
+    "min_latency_ms": 9.242959,
+    "max_latency_ms": 20.815792,
+    "throughput_mb_s": 1291.4444542766416,
+    "tokens_per_sec": 165304.89014741013
+  },
+  {
+    "seq_len": 4096,
+    "mb_per_tensor": 32.0,
+    "mean_latency_ms": 24.101504919999996,
+    "p95_latency_ms": 26.356491799999997,
+    "min_latency_ms": 21.89925,
+    "max_latency_ms": 26.718208,
+    "throughput_mb_s": 1327.7179207778702,
+    "tokens_per_sec": 169947.89385956738
+  }
+]

@@ -1,0 +1,6 @@
+#!/bin/sh
+exec 2>&1
+export PATH=$PATH:/data/data/com.termux/files/usr/bin:/system/bin:/system/xbin
+DATA_DIR="/data/local/tmp/seaweedfs_volume"
+mkdir -p "$DATA_DIR"
+exec weed volume -mserver=100.101.39.98:9333 -dir="$DATA_DIR" -port=8080

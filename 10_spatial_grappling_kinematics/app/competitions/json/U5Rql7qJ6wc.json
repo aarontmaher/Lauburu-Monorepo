@@ -1,0 +1,37 @@
+{
+  "video_id": "U5Rql7qJ6wc",
+  "url": "https://youtu.be/U5Rql7qJ6wc",
+  "division": "Professional Grappling",
+  "title": "Aaron Maher vs Daniel Eyar",
+  "duration_sec": 422.7,
+  "resolution": "144x256",
+  "sampled_frames": 36,
+  "poses_detected_frames": 9,
+  "dual_athlete_frames": 1,
+  "standing_phase_pct": 33.3,
+  "ground_scramble_phase_pct": 66.7,
+  "level_change_shots_detected": 1,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 41.5,
+    "left_elbow": 121.2,
+    "right_elbow": 109.9,
+    "left_hip": 113.4,
+    "right_hip": 133.3,
+    "left_knee": 137.5,
+    "right_knee": 134.7
+  },
+  "keyframe_grid_path": null,
+  "tactical_note": "Aaron Maher's grappling in this match involves a high level of skill and precision, with a strong focus on the ground and scrambles. His standing time is long, but his ability to execute precise moves and maintain a high level of agility makes him a formidable opponent. The match's 422.7 seconds of grapple time indicates a high level of intensity and a well-rounded approach to grappling.",
+  "processing_sec": 1.98,
+  "vision_model_opinions": {
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "READY_BATCH",
+      "latency_sec": 0.8,
+      "analysis": "Aaron Maher's grappling in this match involves a high level of skill and precision, with a strong focus on the ground and scrambles. His standing time is long, but his ability to execute precise moves and maintain a high level of agility makes him a formidable opponent. The match's 422.7 seconds of grapple time indicates a high level of intensity and a well-rounded approach to grappling."
+    }
+  }
+}

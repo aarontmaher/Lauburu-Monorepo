@@ -29,7 +29,7 @@ version: "4.0.0"
 | 🛡️ **Ring 0 Edge Keepalive** | **`SmolLM2 135M Instruct (Local)`** | **`2,292.0`** | 110 MB RAM Footprint • 24/7 Termux & Router Keepalive |
 
 ### Current Swarm Champions:
-- 🏠 **Local-Only Swarm Champion ($0):** **`Dual Local Metal Swarm`** — **`2,640.0 ELO`** (Qwen 3.8 Max + Mistral Nemo 12B over 10Gbps TB4 DMA Bridge)
+- 🏠 **Local-Only Swarm Champion ($0):** **`Dual Local Metal Swarm`** — **`2,640.0 ELO`** (Qwen 3.8 Max + Mistral Nemo 12B over 40Gbps TB4 DMA Bridge)
 - ☁️ **Cloud-Only Swarm Champion:** **`Cloud Frontier Debate Panel`** — **`2,710.0 ELO`** (Gemini 3.1 Pro High + DeepSeek R1 671B + Grok 2)
 - 🌐 **All-Time Apex Hybrid Swarm Champion:** **`Team Combined Hybrid Swarm`** — **`2,915.0 ELO`** (Local Metal Workers + Cloud Shadow Teacher • 99.5% Tournament Win Rate • $0 Cloud Spend)
 
@@ -97,7 +97,7 @@ Pure edge and Metal GPU swarms executing across the 7-layer physical mesh with z
 
 | Rank | Local Swarm Name | Participating Models | Interconnect & Transport | Swarm ELO | Win Rate % | Cloud Cost |
 | :---: | :--- | :--- | :--- | :---: | :---: | :---: |
-| **#1** | **`Dual Local Metal Swarm`** | Qwen 3.8 Max (16GB) + Mistral Nemo 12B (7GB) | 10Gbps TB4 DMA Bridge (0.277ms) | **`2,640.0`** | **96.5%** | **$0.00** |
+| **#1** | **`Dual Local Metal Swarm`** | Qwen 3.8 Max (16GB) + Mistral Nemo 12B (7GB) | 40Gbps TB4 DMA Bridge (0.277ms) | **`2,640.0`** | **96.5%** | **$0.00** |
 | **#2** | **`Decentralized prima.cpp PRP Ring`** | Qwen 3 Next 80B + Neo 12B Shard (Mac Mini L1 + MacBook Pro L2) | Pipelined-Ring Parallelism (85 GB pooled VRAM) | **`2,615.0`** | 94.0% | **$0.00** |
 | **#3** | **`Screen Lens Sovereign Local VLA Team`** | Qwen 2.5 VL 7B + AST Regex Transformer + Darwin Mach Inspector | Shared Memory IPC / Headless CDP | **`2,595.0`** | 95.2% | **$0.00** |
 | **#4** | **`Local Fast AST Coding Team`** | Qwen 2.5 Coder 32B + SmolLM2 135M Tokenizer + pytest-xdist | Local Unix Domain Sockets | **`2,560.0`** | 92.8% | **$0.00** |
@@ -133,4 +133,4 @@ The apex tier combining zero-latency local execution with cloud deep reasoning:
 - **The Swarm Multiplier Invariant:**
   Single frontier models plateau around ~2,614 ELO due to inherent single-context biases. A properly orchestrated swarm with specialized division of labor (e.g. Local Fast Drafter + Cloud Heavy Reasoner + Abliterated Auditor) achieves a $+300$ ELO jump ($2,915.0$ ELO) by canceling individual hallucination vectors.
 - **Local Separation Mandate:**
-  Separating local-only swarms from cloud swarms provides strict empirical auditing for $0 cloud spend, airgapped operational resilience, and verification of sub-millisecond 10Gbps TB4 DMA hardware acceleration.
+  Separating local-only swarms from cloud swarms provides strict empirical auditing for $0 cloud spend, airgapped operational resilience, and verification of sub-millisecond 40Gbps TB4 DMA hardware acceleration.

@@ -18,7 +18,7 @@ champion_confidence_score: 1.0
 - **Target Model Class:** **`Huihui-Qwen3.8-27B (Local Port 8083 Devil's Advocate)`** (Q3_K_M)
 - **Winning Sharding Protocol:** **`PRIMA_CPP_DISAGGREGATED`** (Disaggregated Metal Prefill + Cyclic PRP Ring)
 - **Speculative Draft Head:** **`smollm2-135m-instruct`** ($K=5$ Window)
-- **Optimal Transport Link:** **`THUNDERBOLT_4_10GBPS`** (10Gbps Thunderbolt 4 Bridge @ 0.27ms RTT)
+- **Optimal Transport Link:** **`THUNDERBOLT_4_10GBPS`** (40Gbps Thunderbolt 4 Bridge @ 0.27ms RTT)
 - **Time-To-First-Token (TTFT):** **`9.2 ms`**
 - **Output Throughput:** **`101.11 Tokens / Sec`**
 - **Qwen-Math Formal Accuracy:** **`92.5%`**

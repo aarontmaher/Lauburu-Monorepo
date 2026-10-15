@@ -49,7 +49,7 @@ consensus_score: 0.999
   > "What about SWE-bench evaluation? Running full multi-instance test containers can trigger heavy disk I/O costs on Google Cloud persistent disks."
 
 * **Cloud Shadow Orchestrator (Gemini 3.7 Flash High):**
-  > "We mandate local SWE-bench container execution on the AMD Ryzen Linux Head Node (`192.168.8.224`), using Google Cloud only as a headless reasoning oracle via free-tier API calls. No cloud disk provisioning is needed for benchmarks."
+  > "We mandate local SWE-bench container execution on the Intel 2018 Mac Mini Linux Head Node (`192.168.8.224`), using Google Cloud only as a headless reasoning oracle via free-tier API calls. No cloud disk provisioning is needed for benchmarks."
 
 ---
 
@@ -85,5 +85,5 @@ All 4 orchestrators unanimously ratified the **3-Tier Capital Allocation Bluepri
 
 1. **Hardware Self-Destruct Metadata:** All GCP Spot VMs launch with `shutdown -h +45` to prevent runaway billing.
 2. **Local Pre-Flight Validation:** No training script may be dispatched to GCP unless it has run for 1 full epoch locally on synthetic dummy batches with 0 syntax errors.
-3. **Automated Checkpoint Sync:** Checkpoints download over 10Gbps mesh and compute instances terminate immediately upon completion.
-4. **Ledger Synchronization:** Every micro-spend event is audited and recorded in `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/ai_gateway/spend_ledger.json`.
+3. **Automated Checkpoint Sync:** Checkpoints download over 40Gbps mesh and compute instances terminate immediately upon completion.
+4. **Ledger Synchronization:** Every micro-spend event is audited and recorded in `/Volumes/Lauburu-Monorepo/05_agents_and_swarms/ai_gateway/spend_ledger.json`.

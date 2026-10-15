@@ -1,12 +1,12 @@
 ---
 title: "Master Project-by-Project Test Suite & Multi-Model Leaderboard (Cloud, Local Giants, Small, NPU)"
 tags: [master_benchmark, project_by_project, cloud_models, local_giants, small_models, npu_models, ane, edge_tpu, xdna]
-updated: "2026-09-10 12:00:01"
+updated: "2026-10-14 18:00:04"
 ---
 
 # 🌐 Master Project-by-Project Test Suite & Comprehensive AI Leaderboard
 
-> **Generated:** `2026-09-10 12:00:01` | **Projects Tested:** `7` | **Models Evaluated:** `63`
+> **Generated:** `2026-10-14 18:00:04` | **Projects Tested:** `7` | **Models Evaluated:** `63`
 > **Coverage:** Cloud Frontier, Local Heavy/Giants, Mid-Weight Workhorses, Small/Edge, Sub-100M Nano/Micro, and Hardware NPU Accelerators.
 
 ---

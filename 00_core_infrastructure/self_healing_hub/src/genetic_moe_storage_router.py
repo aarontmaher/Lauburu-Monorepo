@@ -23,9 +23,9 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 
 NAS_ROOT = "/Volumes/NAS"
 GDRIVE_LORA_DIR = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets"
-LOCAL_LORA_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets"
+LOCAL_LORA_DIR = "/Volumes/Lauburu-Monorepo/lora_datasets"
 HEADLESS_IP = "100.103.212.21"
-ROUTING_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/genetic_moe_storage_routing_state.json"
+ROUTING_STATE_FILE = "/Volumes/Lauburu-Monorepo/data/genetic_moe_storage_routing_state.json"
 os.makedirs(os.path.dirname(ROUTING_STATE_FILE), exist_ok=True)
 
 class GeneticMoEStorageRouter:

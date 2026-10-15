@@ -41,4 +41,4 @@ The swarm evaluated the adoption of Alibaba's **Qwen CommerceAgent** benchmark f
 
 ## 4. Verification & Continuous LoRA Harvesting
 - **Benchmark Target:** CommerceAgent Bench (1,200 multi-turn shopping trajectories, 100% GraphQL schema accuracy).
-- **Training Output:** Serialized to `/Users/aaron/DFS_UNIFIED/lora_datasets/shopify_commerce_training.jsonl`.
+- **Training Output:** Serialized to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/shopify_commerce_training.jsonl`.

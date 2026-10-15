@@ -14,7 +14,7 @@ The Lauburu Mesh hardware topology operates with physical **40 Gbps and up to 12
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                        LIVE PHYSICAL THUNDERBOLT CONTROLLER TOPOLOGY                            │
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ • Bus 0: Apple Silicon Mac Mini M4 Pro <==== 40 Gb/s PHY ====> MacBook Air M4 (Mac16,12)       │
+│ • Bus 0: Apple Silicon Mac Mini M4 Pro <==== 40 Gb/s PHY ====> MacBook Pro (Node L2) (Mac16,12)       │
 │ • Bus 1: Apple Silicon Mac Mini M4 Pro <=== Up to 120 Gb/s PHY (Thunderbolt 5 Controller) ====> │
 │ • Bus 2: Apple Silicon Mac Mini M4 Pro <==== 40 Gb/s PHY ====> MacBook Pro (MacBookPro16,1)    │
 └─────────────────────────────────────────────────────────────────────────────────────────────────┘

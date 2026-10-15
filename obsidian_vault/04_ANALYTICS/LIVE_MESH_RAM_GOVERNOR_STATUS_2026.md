@@ -36,7 +36,7 @@ governor_tier: "TIER_3_RESTRICTIVE_OFFLOAD (85% - 90%)"
 
 | PID | Process Name | Resident Memory (RSS) | Command Snippet |
 | :--- | :--- | :--- | :--- |
-| `75641` | **`llama-server`** | **`2.02 GB`** | `/Users/aaron/.local/bin/llama-server --model /Users/aaron/DFS_UNIFIED/Lauburu-Mo` |
+| `75641` | **`llama-server`** | **`2.02 GB`** | `/Users/aaron/.local/bin/llama-server --model /Volumes/Lauburu-Monorepo/Lauburu-Mo` |
 | `18877` | **`Antigravity Helper (Renderer)`** | **`0.89 GB`** | `/Applications/Antigravity.app/Contents/Frameworks/Antigravity Helper (Renderer).` |
 | `10367` | **`language_server`** | **`0.49 GB`** | `/Applications/Antigravity.app/Contents/Resources/bin/language_server --standalon` |
 | `1558` | **`Code Helper (Renderer)`** | **`0.37 GB`** | `/Applications/Visual Studio Code.app/Contents/Frameworks/Code Helper (Renderer).` |

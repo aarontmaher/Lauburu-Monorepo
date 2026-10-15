@@ -1,0 +1,26 @@
+{
+  "video_id": "nFTJG3O0txc",
+  "url": "https://youtu.be/nFTJG3O0txc",
+  "division": "IBJJF",
+  "title": "Pan pacs - Aaron Maher vs Angus Tonkin",
+  "duration_sec": 564.7,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 19,
+  "dual_athlete_frames": 9,
+  "standing_phase_pct": 21.1,
+  "ground_scramble_phase_pct": 78.9,
+  "level_change_shots_detected": 4,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 70.4,
+    "left_elbow": 135.2,
+    "right_elbow": 126.4,
+    "left_hip": 119.5,
+    "right_hip": 123.7,
+    "left_knee": 127.5,
+    "right_knee": 133.8
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/nFTJG3O0txc_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match involves a combination of standing, ground/scrumble, and level-changes, with a significant amount of mean spine lean and elbow flexion on the right side.",
+  "processing_sec": 2.35
+}

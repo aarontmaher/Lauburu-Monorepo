@@ -1,0 +1,24 @@
+FROM python:3.11-slim
+
+# ==============================================================================
+# 🌐 Universal Mesh AI Container (Multi-Arch: AMD64 / ARM64)
+# ==============================================================================
+
+WORKDIR /app
+
+# Install system dependencies for network probing and compiling
+RUN apt-get update && apt-get install -y \
+    sshpass \
+    curl \
+    iputils-ping \
+    net-tools \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PyTorch (CPU-only version to guarantee it runs on any node without NVIDIA driver dependencies)
+# For Metal (MPS) on Mac, it uses the host GPU automatically if torch is installed via standard pip on arm64
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir psutil requests
+
+# The monorepo will be mounted, but we set a default command
+CMD ["python3", "-u", "/app/02_ai_models_and_inference/continuous_1m_router_classifier.py"]

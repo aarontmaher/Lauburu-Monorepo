@@ -12,8 +12,8 @@ In dynamic multi-device edge networks, IP assignments and debugging ports change
 - **Android Wireless Debugging Ports**: The Pixel 10 Pro XL dynamically shifts listening TCP ports (e.g. rotating from `:36815` to `:42601`).
 - **USB vs. TCP Transport Transitions**: Samsung Galaxy S20+ dynamically toggles between USB serial (`R3CN40CJJ1R`) and Wi-Fi ADB.
 - **Dynamic DHCP Leases**: The router (`192.168.8.1`) issues renewed IP leases to mobile nodes (e.g. Linux Tablet at `192.168.8.190`, Samsung S20 at `192.168.8.214`).
-- **Thunderbolt 4 Bridge Link-Local**: The high-speed 10Gbps TB4 DMA bridge assigns dynamic link-local IPv4 addresses on `bridge0` (`169.254.215.118`).
-- **Tailscale WireGuard Mesh**: Peers can authenticate on new overlay addresses (e.g. MacBook Air M4 on `100.121.202.34`, Linux Tablet on `100.118.79.63`).
+- **Thunderbolt 4 Bridge Link-Local**: The high-speed 40Gbps TB4 DMA bridge assigns dynamic link-local IPv4 addresses on `bridge0` (`169.254.215.118`).
+- **Tailscale WireGuard Mesh**: Peers can authenticate on new overlay addresses (e.g. MacBook Pro (Node L2) on `100.121.202.34`, Linux Tablet on `100.118.79.63`).
 
 To eliminate stale hardcoded fallback addresses and maintain continuous 100% authentic telemetry without mock data (Cardinal Rule #0), the **Dynamic IP Finder Engine** was designed and integrated into `01_apps/network_cable_analyzer`.
 
@@ -50,12 +50,12 @@ To eliminate stale hardcoded fallback addresses and maintain continuous 100% aut
 | Layer | Node Name | Dynamic LAN IP | Tailscale IP | TB4 / ADB Target | Discovery Source | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **L1** | `Mac Mini M4 Pro` | `192.168.8.155` | `100.119.199.76` | TB4: `169.254.195.35` | `kernel_darwin` | **ONLINE** |
-| **L2** | `MacBook Pro M4` | `192.168.8.128` | `100.103.212.21` | TB4: `169.254.215.118` | `arp_bridge0` | **ONLINE** |
+| **L2** | `Intel MacBook Pro` | `192.168.8.128` | `100.103.212.21` | TB4: `169.254.215.118` | `arp_bridge0` | **ONLINE** |
 | **L3** | `Linux Head Node` | `192.168.8.225` | `100.101.39.98` | SSH: `linux` | `tailscale_peer` | **ONLINE** |
 | **L4** | `Linux Tablet` | `192.168.8.190` | `100.118.79.63` | SSH: `tablet` | `tailscale_peer` | *STANDBY* |
-| **L5** | `MacBook Air M4` | `192.168.8.222` | `100.121.202.34` | TB4: `169.254.187.139`| `tailscale_peer` | *STANDBY* |
+| **L5** | `MacBook Pro (Node L2)` | `192.168.8.222` | `100.121.202.34` | TB4: `169.254.187.139`| `tailscale_peer` | *STANDBY* |
 | **L6** | `Pixel 10 Pro XL` | `192.168.8.145` | `100.73.38.87` | ADB: `192.168.8.145:42601` | `tailscale_peer` | **ONLINE** |
-| **L7** | `Samsung S20+` | `192.168.8.214` | `100.84.40.95` | ADB USB: `R3CN40CJJ1R` | `tailscale_peer` | **ONLINE** |
+| **L7** | `Samsung S20+` | `192.168.8.214` | `100.78.206.96` | ADB USB: `R3CN40CJJ1R` | `tailscale_peer` | **ONLINE** |
 | **GW** | `GL.iNet Router` | `192.168.8.1` | `100.122.185.123` | SSH: `root@192.168.8.1` | `tailscale_peer` | **ONLINE** |
 
 ---

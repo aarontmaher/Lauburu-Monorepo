@@ -13,7 +13,7 @@ status: LIVE
 |---|---|---|---|---|
 | Mac Mini M4 (`127.0.0.1`) | **Master** | `8082` | prima-server v4234 | Metal + HiGHS + ZMQ |
 | MacBook Pro x86_64 (`100.103.212.21`) | Worker | `50053` | prima-server v1 | Metal + ZMQ |
-| MacBook Air M4 (`100.93.158.96`) | Worker | `50053` | prima-server v1 | Metal + HiGHS + ZMQ |
+| MacBook Pro (Node L2) (`100.93.158.96`) | Worker | `50053` | prima-server v1 | Metal + HiGHS + ZMQ |
 | Linux Head Node (`100.101.39.98`) | Worker | `50053` | building (join pending) | CPU + ZMQ |
 
 ## Proven Functional

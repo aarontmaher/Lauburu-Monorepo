@@ -32,7 +32,7 @@ To achieve this without compute or capital waste ($0 paid cloud spend), the arch
 │    • Deterministic rewards: Exit Code 0, AST Syntax, 100% Assertions, Rule#0│
 │    ▼                                                                        │
 │ 3. 24/7 LoRA Distillation into PySpark Data Lake (97,000+ verified pairs)   │
-│    • Continuous training on 3-Mac 56GB Metal Cluster (10Gbps TB4 DMA)       │
+│    • Continuous training on 3-Mac 56GB Metal Cluster (40Gbps TB4 DMA)       │
 │    ▼                                                                        │
 │ 4. Frontier Benchmarking Arena (Local Student vs Cloud Teacher)             │
 │    • Empirical scoring across AST, Zero-Mock Truth, Serial PTY, and DSP     │

@@ -49,7 +49,7 @@ tags: [deep_research, notebooks, marimo, jupyterlab, lora, dpo, mergekit, mesh, 
 ### A. Active $7 \times 7$ Pairwise Probing Matrix
 - Distributed nano-agents on peripheral edge nodes (Router, Phone, Tablet, Air) emit sub-64-byte micro-pings every 2 seconds, constructing a live adjacency graph $G=(V, E, W)$ to track latency and packet jitter.
 
-### B. 10Gbps Thunderbolt 4 DMA Pipelined-Ring Parallelism (PRP)
+### B. 40Gbps Thunderbolt 4 DMA Pipelined-Ring Parallelism (PRP)
 - Distributes frontier 80B/72B models across the 3 Macs (Mini: 34L + Air: 23L + MBP: 23L) over sub-0.3ms TB4 DMA links (yielding $38.0–40.0\text{ tok/s}$).
 - Multipath dynamic failover redirects traffic to 1GbE Copper or Wi-Fi 7 MLO if TB4 jitter exceeds $2.0\text{ms}$.
 

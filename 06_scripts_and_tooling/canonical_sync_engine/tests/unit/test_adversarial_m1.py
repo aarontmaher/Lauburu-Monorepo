@@ -340,7 +340,7 @@ def test_adversarial_mesh_scanner_adb_device_offline_and_unauthorized():
         "node_id": "L7",
         "name": "Samsung_S20",
         "probe_method": NodeProbeMethod.ADB,
-        "adb_targets": ["100.84.40.95:5555"],
+        "adb_targets": ["100.78.206.96:5555"],
         "mount_point": "/storage/emulated",
     }
 

@@ -16,16 +16,16 @@ All resource-intensive background tasks, including:
 3. **Model Quantization & Tensor Compilations**
 4. **Autonomous Subagent Swarm Execution**
 
-**MUST BE OFFLOADED to the MacBook Air M4 (Layer 5)** or **Linux Head Node (Layer 3)**.
+**MUST BE OFFLOADED to the MacBook Pro (Node L2) (Layer 5)** or **Linux Head Node (Layer 3)**.
 
 ---
 
 ## 2. Universal CLI Offload Tooling
 
-Any AI agent or terminal session can execute commands on the MacBook Air M4 with zero friction:
+Any AI agent or terminal session can execute commands on the MacBook Pro (Node L2) with zero friction:
 
 ```bash
-# Direct execution on MacBook Air M4:
+# Direct execution on MacBook Pro (Node L2):
 mesh-air 'python3 -m pytest tests/'
 mesh-air 'python3 train_lora_mlx.py'
 
@@ -40,5 +40,5 @@ python3 06_scripts_and_tooling/mesh/workload_offload_router.py --node air 'COMMA
 | Node | Architecture | IP | Assigned Roles |
 | :--- | :--- | :--- | :--- |
 | **L1 Mac Mini** | Apple M4 Pro (24GB) | `127.0.0.1` | Router, Gating, Prompt Ingestion, DWD Gateway |
-| **L5 MacBook Air** | Apple M4 (16GB) | `100.93.158.96` | **Primary Heavy Compute, MLX LoRA, Subagents** |
-| **L3 Linux Head Node** | AMD Ryzen 7 (16GB) | `100.101.39.98` | Docker Hub, Ray Cluster, Petals DHT |
+| **L2 MacBook Pro** | Apple M4 (16GB) | `100.93.158.96` | **Primary Heavy Compute, MLX LoRA, Subagents** |
+| **L3 Linux Head Node** | AMD Intel 2018 Mac Mini (16GB) | `100.101.39.98` | Docker Hub, Ray Cluster, Petals DHT |

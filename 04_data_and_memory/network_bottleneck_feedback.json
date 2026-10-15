@@ -1,0 +1,61 @@
+{
+  "last_audit": "2026-09-07T05:54:00.821470+00:00Z",
+  "active_bottlenecks": [
+    {
+      "id": "BN-01-MACMINI-ETH",
+      "component": "Mac Mini M4 Pro (L1) Physical Ethernet",
+      "hardware_capability": "10GbE / 1GbE Physical NIC (10,000 Mbps capable)",
+      "current_negotiation": "1000baseT (1,000 Mbps Full Duplex)",
+      "bottleneck_source": "GL.iNet GL-MT3600BE LAN ports are 1.0 Gbps switches",
+      "mathematical_impact": "10x throughput reduction on wired LAN backup; 0.08ms RTT maintained",
+      "optimal_strategy": "Direct Thunderbolt 4 DMA to MacBook Pro/Air (40 Gbps) bypasses router entirely",
+      "severity": "LOW (TB4 DMA active)",
+      "actionable_feedback": "Use TB4 DMA for inter-Mac AI sharding; keep en0 for general Internet/LAN"
+    },
+    {
+      "id": "BN-02-MBP-TB4-SPEED",
+      "component": "MacBook Pro M4 (L2) Thunderbolt 4 Bridge",
+      "hardware_capability": "40 Gbps USB4 Gen 3 / Thunderbolt 4 (E-Marked 240W Cable)",
+      "current_negotiation": "10.0 Gbps Virtual Ethernet Bridge (en11)",
+      "bottleneck_source": "macOS Thunderbolt Bridge MTU / Software IP Stack limitation",
+      "mathematical_impact": "10 Gbps provides 1,250 MB/s at 0.27ms RTT (ample for 70B tensor streaming)",
+      "optimal_strategy": "Use PCIe DMA direct memory mapping (Prima.cpp) for full 40 Gbps line rate",
+      "severity": "OPTIMAL (0.27ms RTT verified)",
+      "actionable_feedback": "Hardware link is optimal; enable PCIe direct DMA for 40Gbps bursts"
+    },
+    {
+      "id": "BN-03-MBA-FALLBACK",
+      "component": "MacBook Air M4 (L3) Connection State",
+      "hardware_capability": "Dual Thunderbolt 4 Ports (40 Gbps / 0.27ms RTT)",
+      "current_negotiation": "Wi-Fi 6 AX Ch 149 (1,200 Mbps / 1.8ms RTT)",
+      "bottleneck_source": "Physical Thunderbolt 4 Cable not yet connected between Mac Mini and Mac Air",
+      "mathematical_impact": "6.7x higher latency (1.8ms vs 0.27ms) and 33x lower bandwidth (1.2Gbps vs 40Gbps)",
+      "optimal_strategy": "Plug TB4 cable into Mac Mini Port 1 or 2 for instant 40Gbps DMA",
+      "severity": "HIGH (Action Required)",
+      "actionable_feedback": "Plug in Thunderbolt 4 cable to transition MBA to L3 Ultra-Low Latency Worker"
+    },
+    {
+      "id": "BN-04-ROUTER-RAM-OFFLOAD",
+      "component": "GL.iNet GL-MT3600BE (512MB RAM) vs TP-Link VX230v (512MB RAM)",
+      "hardware_capability": "Combined 1.0 GB Router RAM + Dual Wi-Fi 6 AX Radios",
+      "current_negotiation": "GL.iNet handles AdGuard, Tailscale, ADB, and 2.4G Wi-Fi (72.4% RAM used)",
+      "bottleneck_source": "All services concentrated on primary gateway",
+      "optimal_strategy": "Offload all 5GHz AX high-bandwidth clients (L3, L6, L7) to TP-Link AP (Ch 149-161)",
+      "mathematical_impact": "Frees 40% CPU interrupts and 85MB buffer memory on GL.iNet gateway",
+      "severity": "RESOLVED (Split-Band Mesh Active)",
+      "actionable_feedback": "TP-Link handles UNII-3 5GHz; GL.iNet handles 2.4GHz + WAN Gateway"
+    },
+    {
+      "id": "BN-05-LINUX-WIFI-FALLBACK",
+      "component": "Linux Head Node (Ryzen 7 5700U / L4)",
+      "hardware_capability": "USB 3.0 Gigabit Ethernet (1000 Mbps / 0.8ms RTT)",
+      "current_negotiation": "Realtek 802.11ac Wi-Fi (866 Mbps / 7.56ms RTT)",
+      "bottleneck_source": "USB Ethernet adapter unplugged",
+      "mathematical_impact": "9.4x higher latency jitter for Petals DHT gradient synchronization",
+      "optimal_strategy": "Connect USB 3.0 Gigabit dongle to TP-Link LAN Port 2",
+      "severity": "MEDIUM",
+      "actionable_feedback": "Plug USB-to-Ethernet adapter into TP-Link LAN port for 0.8ms wired stability"
+    }
+  ],
+  "total_monitored_issues": 5
+}

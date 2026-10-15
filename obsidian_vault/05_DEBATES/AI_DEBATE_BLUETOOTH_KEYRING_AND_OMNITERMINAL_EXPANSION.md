@@ -32,7 +32,7 @@ status: CONSENSUS_ACHIEVED
      * **Rootless Android Shizuku Remote (`rish`):** Headless device control, battery longevity clamps, and wireless hotspot failover.
      * **Dual-Plane Local AI Co-Pilot:** Real-time hotkey debate between Port 8081 (Qwen Coder) and Port 8083 (Abliterated Devil's Advocate).
      * **Physical Proximity Auto-Lock:** Secure workspace session locking when keys leave RF perimeter.
-     * **Multi-WAN & 10Gbps Thunderbolt 4 Telemetry:** Real-time channel bonding console.
+     * **Multi-WAN & 40Gbps Thunderbolt 4 Telemetry:** Real-time channel bonding console.
 
 ---
 

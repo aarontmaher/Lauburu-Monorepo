@@ -1,0 +1,24 @@
+╭ 🌌 LAUBURU SOVEREIGN MESH • SIMPLE PROJECT MONITOR [82.8 GB VRAM] [RULE #0 ZE╮
+│  📊 1. Overview  │  🌐 2. 14-Port Matrix  │  📡 3. 7-Layer Mesh  │  📱 4. App│
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭ 🌐 14-Port Matrix (10/16 Online) ────╮╭ 📡 7-Layer Mesh Radar (7/8 Active Nod╮
+│Port    Service Name         Stat Late││Layer  Node Name          RAM Stat RTT│
+│:3000   Zone 2 Web Portal    ⚪ S --  ││L1     Mac Mini M4 Pro Ho 24G 🟢 O 0.1│
+│:4000   Movesense 512Hz Engi 🟢 L 0.2m││L2     MacBook Pro TB4 Va 16G 🟢 O 6.8│
+│:4001   Flutter Web Console  🟢 L 0.1m││L3     Linux_Mini (Intel  16G 🟢 O 7.4│
+│:4002   Marimo Port 4002     ⚪ S --  ││L4     Linux Tablet Mobil 8G  🔴 O -- │
+│:4003   Screen Lens Vision S 🟢 L 0.1m││L5     MacBook Air M4 Wor 16G 🟢 O 5.6│
+│:4004   Visual AI Training S ⚪ S --  ││L6     Pixel 10 Pro XL TP 16G 🟢 O 12.│
+│:4005   Bluetooth Serial Dae 🟢 L 0.1m││L7     Samsung S20+ Termu 12G 🟢 O 13.│
+╰──────────────────────────────────────╯╰──────────────────────────────────────╯
+╭ 📁 Monorepo AST (14726 Files | 176505╮╭ 💾 Tri-Vault Storage & 24/7 LoRA Trac╮
+│Subsystem              File Lines Stat││🏛️ TRI-VAULT STORAGE SYNCHRONIZATION: │
+│⚡ 00 Core Infra       295  42775 ● HE││ • Obsidian Knowledge Core: 8725 Notes│
+│📱 01 Apps Ecosystem   2768 73304 ● HE││ • PySpark Big Data Lake:   463585 24/│
+│🧠 02 AI Models & Infe 599  17893 ● HE││ • GitHub Monorepo Tree:    Branch [sa│
+│🫀 03 Biometrics & DSP 37 f 5365  ● HE││ • SeaweedFS POSIX Mount:   /Users/aar│
+│💾 04 Data & Memory    556  80620 ● HE││🧬 24/7 AUTONOMOUS SWARM & CLI EVOLUTI│
+│🤖 05 Agents & Swarms  240  34800 ● HE││ • Continuous Training:     1912 Cycle│
+╰──────────────────────────────────────╯╰──────────────────────────────────────╯
+────────────────────────────────────────────────────────────────────────────────
+🔄 Refreshed all socket probes in 224.3ms

@@ -1,0 +1,19 @@
+{
+  "models": [
+    {
+      "title": "Lauburu Lens Sovereign Router (Chat)",
+      "provider": "openai",
+      "model": "dynamic-mcts-chat",
+      "apiBase": "http://localhost:8085/",
+      "apiKey": "EMPTY"
+    }
+  ],
+  "tabAutocompleteModel": {
+    "title": "Lauburu Lens Sovereign Router (Autocomplete)",
+    "provider": "openai",
+    "model": "dynamic-mcts-autocomplete",
+    "apiBase": "http://localhost:8085/",
+    "apiKey": "EMPTY"
+  },
+  "allowAnonymousTelemetry": false
+}

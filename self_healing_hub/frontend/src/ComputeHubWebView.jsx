@@ -500,7 +500,7 @@ export default function ComputeHubWebView() {
               </ul>
             </div>
             <button
-              onClick={() => window.open('https://lauburugrappling.myshopify.com/cart?channel=buy_button&tier=paid_membership', '_blank')}
+              onClick={() => window.open('https://lauburu-grappling.myshopify.com/cart?channel=buy_button&tier=paid_membership', '_blank')}
               style={{
                 width: '100%',
                 background: 'linear-gradient(135deg, #0891b2, #06b6d4)',

@@ -1,0 +1,16 @@
+{
+  "current_date_utc": "2026-09-20",
+  "daily_requests_count": 0,
+  "daily_requests_limit": 1500,
+  "total_requests_all_time": 1,
+  "total_spend_usd": 0.0,
+  "last_request_timestamp": 1788220663.5561159,
+  "circuit_breaker_until": 1789909627.941421,
+  "consecutive_429_count": 2,
+  "provider_stats": {
+    "google_ai_studio_free": 0,
+    "cloudflare_workers_ai_free": 0,
+    "local_mesh_rpc": 1,
+    "offline_deterministic_engine": 0
+  }
+}

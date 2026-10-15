@@ -1,0 +1,27 @@
+{
+  "last_updated": "2026-10-05T20:09:06.986445",
+  "generation": 2,
+  "last_scenario": "SCEN_18_HYGIENE_EXCLUSION",
+  "last_dimension": "5. ACL \u00a754 & Defect Transparency",
+  "last_local_score": 100,
+  "last_cloud_score": 75,
+  "last_winner": "Local_Sovereign_Team",
+  "last_passed": true,
+  "deductions": [],
+  "tournament_standings": {
+    "local_wins": 1,
+    "cloud_wins": 0,
+    "ties": 1,
+    "total": 2
+  },
+  "all_apps_covered": [
+    "Lauburu Life Companion",
+    "Movesense Combat Kit & Hub",
+    "Spatial Grappling 3D",
+    "Showrunner Lauburu",
+    "Screen Lens Sovereign",
+    "Lauburu Grappling Apparel",
+    "Physical Hardware Re-Commerce",
+    "Shopify Headless Storefront"
+  ]
+}

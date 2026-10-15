@@ -144,13 +144,13 @@ Under `spec-11-security-red-blue-team` zero-leakage constraints, the empirical b
   - spec11_red_blue_tpu_benchmark.py (Exit Code 0, 7 subsystems)
 
 [PROOF 2: LINE-BY-LINE INSPECTION & CRYPTOGRAPHIC CHECKSUM]
-• Benchmark Report: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/tpu_monorepo_benchmark_report.json
+• Benchmark Report: /Volumes/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/tpu_monorepo_benchmark_report.json
   Size: 4,270 bytes | SHA256: cd6f0d9c53913682a20b08061cbf546a860ea6d2030282ee0a75c0293998b584
-• Document Written: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/APPS_AND_FEATURES/SPEC_11_SECURITY_AND_TPU_SUBSYSTEM_BENCHMARK_REPORT.md
+• Document Written: /Volumes/Lauburu-Monorepo/obsidian_vault/APPS_AND_FEATURES/SPEC_11_SECURITY_AND_TPU_SUBSYSTEM_BENCHMARK_REPORT.md
 
 [PROOF 3: TRI-VAULT SYNCHRONIZATION]
 • Obsidian Vault Index: Interlinked at [[Index]]
-• PySpark Data Lake: LoRA training pairs appended to /Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl
+• PySpark Data Lake: LoRA training pairs appended to /Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl
 ```
 
 ---

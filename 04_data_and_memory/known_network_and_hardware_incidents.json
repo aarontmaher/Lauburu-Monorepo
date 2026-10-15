@@ -1,0 +1,55 @@
+{
+  "incidents": [
+    {
+      "incident_id": "INC-001-RAM-GPU-CONTENTION",
+      "title": "Apple Silicon Unified Memory & WindowServer GPU Contention",
+      "symptoms": "Multiple duplicate llama-server instances (\u22654) and runaway TUI loops causing Wired RAM to spike >14GB, free RAM <200MB, WindowServer 60Hz stutter, and terminal UI lag.",
+      "root_cause": "Uncoordinated parallel model spawning without dynamic VRAM lock checks, exhausting macOS WindowServer render compositor buffers.",
+      "automated_remediation": [
+        "1. Run `ps aux | grep llama-server` and count active processes.",
+        "2. If active llama-server instances > 3 or wired RAM > 12GB, kill orphaned and non-primary instances.",
+        "3. Enforce maximum 2 active concurrent inference ports on Mac Mini (Primary: 8085, Sharded: 8081).",
+        "4. Prune runaway Python textual TUI event loops pegging CPU >80%."
+      ],
+      "training_lora_pair": {
+        "instruction": "Diagnose and resolve macOS WindowServer UI stuttering, mouse lag, and high Wired RAM on an Apple Silicon M4 Pro Mac Mini hosting local LLMs.",
+        "thought": "The Mac Mini M4 Pro features Unified Memory shared between the CPU and Metal GPU. When multiple llama-server instances and un-throttled TUI render loops run concurrently, Wired RAM expands past 14GB, leaving less than 200MB free. WindowServer is starved of compositing buffers. I must prune orphaned llama-server processes, terminate duplicate high-CPU TUI loops, and enforce the 2-model VRAM concurrency limit.",
+        "output": "1. Execute `ps aux | grep llama-server` to inspect active inference servers.\n2. Terminate orphaned instances with `pkill -f '<model_name>'`.\n3. Verify Wired RAM returns to safe operating headroom (<=8GB wired, >=4GB free).\n4. Restart the primary inference router on Port 8085 and ensure WindowServer recovers 120 FPS smooth rendering."
+      }
+    },
+    {
+      "incident_id": "INC-002-ROUTER-512MB-OOM",
+      "title": "OpenWrt 512MB Router Kernel OOM Crash on Heavy GGUF Load",
+      "symptoms": "GL.iNet travel router stops routing Wi-Fi packets, drops SSH, and triggers kernel panic when running local AI.",
+      "root_cause": "Attempting to load a standard Q4_K_M 1B model (770MB) onto a router with only 512MB physical RAM.",
+      "automated_remediation": [
+        "1. Restrict on-router native SLM weights to <=240MB RAM (SmolLM2 360M Q4_K_M or Qwen 0.5B IQ3_XXS).",
+        "2. Enable OpenWrt `zram-swap` kernel compression.",
+        "3. Offload all models >=1B to L3 Linux Node or L1 Mac Mini via GGML-RPC socket."
+      ],
+      "training_lora_pair": {
+        "instruction": "Configure local AI inference on an OpenWrt router with only 512MB total RAM without crashing the network stack.",
+        "thought": "An OpenWrt router with 512MB RAM reserves ~110MB for the Linux kernel, nftables firewall, and Wi-Fi hostapd radios. Max safe AI memory is 380MB. A 1B model in Q4_K_M requires 770MB and will crash the kernel. I must deploy SmolLM2 360M (220MB) or Qwen 0.5B (240MB), limit context to 512 tokens, and route heavier queries via GGML-RPC.",
+        "output": "1. Deploy SmolLM2 360M Instruct (220 MB RAM footprint) with `-c 512`.\n2. Install `zram-swap` via `opkg install zram-swap` to provide virtual compressed RAM.\n3. Forward complex reasoning queries over 1GbE LAN to the L3 Linux Head Node via GGML-RPC on Port 50052."
+      }
+    },
+    {
+      "incident_id": "INC-003-TB4-DMA-SOCKET-HANG",
+      "title": "Thunderbolt 4 10Gbps Bridge Socket Stale Lock",
+      "symptoms": "Inter-node RPC tensor latency spikes from 0.204ms to >50ms or drops connection between Mac Mini and MacBook Pro.",
+      "root_cause": "Thunderbolt DMA IP interface `169.254.187.138` stale ARP cache or sleeping display sleep state on target MacBook Pro.",
+      "automated_remediation": [
+        "1. Pulse Line 1 Bluetooth Proximity Wake (`blueutil --connect 2c-ca-16-08-c0-27`, zero IP dependency) to awaken sleeping MacBook Pro radio hardware.",
+        "2. Send Line 2 Out-of-Band UDP Wake-on-LAN Magic Packet via Port 18802.",
+        "3. Ping 169.254.187.138 with 1-second timeout; trigger `arp -d 169.254.187.138` if packet loss > 0%.",
+        "4. Restart `llama-rpc-server` on MacBook Pro via SSH."
+      ],
+      "training_lora_pair": {
+        "instruction": "Troubleshoot and restore sub-millisecond tensor latency on a 10Gbps Thunderbolt 4 bridge between macOS nodes.",
+        "thought": "When the TB4 DMA bridge drops packets, it is typically due to macOS sleep state on the target MacBook Pro or stale ARP cache. The sovereign rule dictates that Bluetooth proximity wake must always serve as Line 1 before IP-based WoL or SSH. I will pulse Line 1 Bluetooth wake, transmit Line 2 WoL magic packets, flush stale ARP entries, and restart the RPC worker daemon.",
+        "output": "1. Pulse Line 1 Bluetooth Proximity Wake: `blueutil --connect 2c-ca-16-08-c0-27`.\n2. Dispatch Line 2 Wake-on-LAN magic packet to MacBook Pro MAC address via Port 18802.\n3. Flush the ARP cache: `sudo arp -d 169.254.187.138`.\n4. Verify ping latency returns to <0.25ms RTT over the TB4 bridge."
+      }
+    }
+  ],
+  "last_updated": "2026-09-07T07:51:15Z"
+}

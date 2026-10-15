@@ -13,10 +13,10 @@ import time
 import math
 from typing import Dict, Any, List
 
-SWINGS_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/significant_metric_swings.json"
-GAME_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
-CRON_STATUS_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_pyspark_ray_cron_status.json"
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+SWINGS_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/significant_metric_swings.json"
+GAME_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
+CRON_STATUS_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_pyspark_ray_cron_status.json"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
 
 class GeneticMoEPySparkRayCron:
     def __init__(self):
@@ -59,7 +59,7 @@ class GeneticMoEPySparkRayCron:
 
         # 1. Load active game arena state and process respawn queue / autonomous self-decisions
         import sys
-        sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+        sys.path.insert(0, "/Volumes/Lauburu-Monorepo/multi_wan")
         try:
             from ai_mesh_battle_arena import MeshBattleArena
             arena_mgr = MeshBattleArena()
@@ -247,7 +247,7 @@ class GeneticMoEPySparkRayCron:
         and executes high-ROI auto-purchases of essential hardware and software upgrades.
         """
         import sys
-        sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+        sys.path.insert(0, "/Volumes/Lauburu-Monorepo/multi_wan")
         try:
             from ai_mesh_battle_arena import DEFENSES_CATALOG
         except Exception:

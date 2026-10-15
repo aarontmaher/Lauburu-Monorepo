@@ -1,0 +1,15 @@
+[Unit]
+Description=Chromium IDE Remote Debugging Engine (Pixel AVF Debian)
+After=network.target code-server.service
+
+[Service]
+Type=simple
+Environment=DISPLAY=:0
+ExecStart=/bin/bash %h/00_core_infrastructure/pixel_avf_ide/chromium/launch_chromium_ide.sh http://127.0.0.1:8443 9222
+Restart=always
+RestartSec=5
+MemoryHigh=1500M
+MemoryMax=2000M
+
+[Install]
+WantedBy=multi-user.target

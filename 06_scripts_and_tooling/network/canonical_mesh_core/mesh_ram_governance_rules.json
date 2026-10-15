@@ -1,0 +1,93 @@
+{
+  "governance_version": "2.0.0-SOVEREIGN-PRIORITY-FILL",
+  "policy_description": "Strict Peripheral-First RAM allocation with aggressive Mac Mini Host and Gateway Router sanctuaries.",
+  "devices": {
+    "L1_Mac_Host": {
+      "name": "Apple M4 Pro Mac Mini (L1)",
+      "total_ram_gb": 24.0,
+      "max_utilization_pct": 50.0,
+      "max_used_gb": 12.0,
+      "min_sanctuary_free_gb": 12.0,
+      "role": "Sovereign Master Local Orchestrator & User Desktop Sanctuary",
+      "allocation_priority": 999,
+      "policy": "PROTECTED_SANCTUARY_ONLY",
+      "prohibitions": [
+        "Heavy background Docker containers",
+        "Secondary auxiliary models (Coder, Abliterated, Vision encoders)",
+        "PySpark crawlers",
+        "Heavy vector database indexing"
+      ]
+    },
+    "GW_Router": {
+      "name": "GL.iNet GL-BE14000 Sovereign Gateway (GW)",
+      "total_ram_gb": 2.0,
+      "swap_gb": 2.0,
+      "max_utilization_pct": 50.0,
+      "max_used_mb": 1000,
+      "min_free_mb": 1000,
+      "role": "Core Network Routing, Wi-Fi 7 Switch Fabric & Health Sentinel",
+      "allocation_priority": 999,
+      "policy": "NETWORK_HEALTH_ONLY",
+      "prohibitions": [
+        "SeaweedFS master/filer/webdav storage daemons",
+        "LLM inference engines",
+        "Python batch jobs",
+        "Userland heavy compilers"
+      ]
+    },
+    "L8_Linux_Mini": {
+      "name": "Linux Mini Central Hub (i7-8700B / L8)",
+      "total_ram_gb": 32.0,
+      "max_utilization_pct": 85.0,
+      "max_used_gb": 27.2,
+      "role": "Ingress Hub, Docker Hub, Qdrant Vector DB, Ray Head",
+      "allocation_priority": 1,
+      "policy": "FILL_FIRST_PRIMARY"
+    },
+    "L3_Linux_Hub": {
+      "name": "Linux Head Node (Ryzen 7 5700U / L3)",
+      "total_ram_gb": 16.0,
+      "max_utilization_pct": 80.0,
+      "max_used_gb": 12.8,
+      "role": "Auxiliary Local AI Offload (Abliterated, Coder, FastAPI, Voila)",
+      "allocation_priority": 2,
+      "policy": "FILL_SECOND_SECONDARY_AI"
+    },
+    "L2_MacBook_Pro": {
+      "name": "MacBook Pro Vault (Core i7 / L2)",
+      "total_ram_gb": 16.0,
+      "max_utilization_pct": 85.0,
+      "max_used_gb": 13.6,
+      "role": "Metal GPU Vault, 285GB SSD GGUF Vault, Tensor Sharding",
+      "allocation_priority": 3,
+      "policy": "FILL_THIRD_MODEL_VAULT"
+    },
+    "L5_MacBook_Air": {
+      "name": "MacBook Air M4 (L5)",
+      "total_ram_gb": 16.0,
+      "max_utilization_pct": 80.0,
+      "max_used_gb": 12.8,
+      "role": "Metal Performance Shaders, LoRA Distillation Worker",
+      "allocation_priority": 4,
+      "policy": "FILL_FOURTH_METAL_WORKER"
+    },
+    "L6_Pixel_10_Edge": {
+      "name": "Google Pixel 10 Pro XL (L6)",
+      "total_ram_gb": 16.0,
+      "max_utilization_pct": 75.0,
+      "max_used_gb": 12.0,
+      "role": "Tensor G5 Edge TPU, 8K Vision Stream, Screen Lens VLA",
+      "allocation_priority": 5,
+      "policy": "FILL_FIFTH_EDGE_TPU"
+    },
+    "L7_Samsung_S20": {
+      "name": "Samsung Galaxy S20+ (L7)",
+      "total_ram_gb": 12.0,
+      "max_utilization_pct": 70.0,
+      "max_used_gb": 8.4,
+      "role": "Automated UI Testbench, ADB Edge Runner",
+      "allocation_priority": 6,
+      "policy": "FILL_SIXTH_UI_TESTBENCH"
+    }
+  }
+}

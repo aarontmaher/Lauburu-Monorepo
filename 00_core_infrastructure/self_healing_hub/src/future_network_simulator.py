@@ -296,7 +296,7 @@ class FutureNetworkSimulator:
                 "hardware": "Samsung Exynos 990 (10.6 GB RAM / 8.0 GB AI Cap)",
                 "accelerator": "ARM Mali-G77 MP11 GPU + Dual NPU",
                 "os": "Android 13 (Termux Linux)",
-                "internet_plan": "GL.iNet Router USB ADB Bus (100.84.40.95)",
+                "internet_plan": "GL.iNet Router USB ADB Bus (100.78.206.96)",
                 "connection_interface": "USB-C PD 3.0 Pass-Through Adapter + USB 2.0 ADB",
                 "power_profile": "Router USB-C Bus (+15W Net Charging with PD)",
                 "rtt_ms": 24.2,

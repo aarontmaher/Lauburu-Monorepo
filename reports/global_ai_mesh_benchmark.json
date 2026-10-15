@@ -1,0 +1,1063 @@
+{
+  "suite_version": "v2026.3",
+  "start_time_utc": "2026-10-15T00:09:53.737641+00:00",
+  "host_sanctuary_before": {
+    "total_gb": 24.0,
+    "used_gb": 17.91,
+    "free_headroom_gb": 6.09,
+    "app_mem_gb": 7.86,
+    "wired_mem_gb": 3.79,
+    "compressed_gb": 6.25,
+    "cached_files_gb": 5.47,
+    "utilization_pct": 74.61,
+    "pressure_level": 1,
+    "is_sanctuary_healthy": true
+  },
+  "hardware_probe_matrix": {
+    "L1": {
+      "node_id": "L1",
+      "name": "Mac Mini M4 Pro Host",
+      "status": "ONLINE (Host Sanctuary)",
+      "active_link": "Loopback (0.12ms)",
+      "rtt_ms": 0.12,
+      "bandwidth_gbps": 100.0,
+      "silicon": "Apple M4 Pro (8P+4E CPU / 16-core GPU, 24 GB Unified)"
+    },
+    "L1a": {
+      "node_id": "L1a",
+      "name": "MacBook Air M4",
+      "status": "ONLINE (Thunderbolt 4 Bridge (10.0.0.5))",
+      "active_link": "Thunderbolt 4 Bridge (10.0.0.5)",
+      "rtt_ms": 1.547,
+      "bandwidth_gbps": 40.0,
+      "silicon": "Apple M4 (4P+6E CPU / 10-core GPU, 16 GB Unified)"
+    },
+    "L1b": {
+      "node_id": "L1b",
+      "name": "Mac Mini M2 Pro",
+      "status": "ONLINE (Thunderbolt 4 Bridge (10.0.0.3))",
+      "active_link": "Thunderbolt 4 Bridge (10.0.0.3)",
+      "rtt_ms": 0.757,
+      "bandwidth_gbps": 40.0,
+      "silicon": "Apple M2 Pro (Mac14,12, 16 GB Unified)"
+    },
+    "L2": {
+      "node_id": "L2",
+      "name": "MacBook Pro Intel i7",
+      "status": "ONLINE (Thunderbolt 4 Bridge (10.0.0.4))",
+      "active_link": "Thunderbolt 4 Bridge (10.0.0.4)",
+      "rtt_ms": 0.497,
+      "bandwidth_gbps": 40.0,
+      "silicon": "Intel Core i7-9750H / AMD Radeon Pro 5300M (16 GB)"
+    },
+    "L3": {
+      "node_id": "L3",
+      "name": "Linux Head Node (Dell Inspiron AMD 5700U)",
+      "status": "ONLINE (LAN Wi-Fi/GbE (192.168.8.225))",
+      "active_link": "LAN Wi-Fi/GbE (192.168.8.225)",
+      "rtt_ms": 32.017,
+      "bandwidth_gbps": 1.0,
+      "silicon": "AMD Ryzen 7 5700U (8C/16T, 15 GB RAM)"
+    },
+    "L4": {
+      "node_id": "L4",
+      "name": "Debian microVM on Tensor G5",
+      "status": "OFFLINE (Standby / Deep Sleep)",
+      "active_link": "OFFLINE",
+      "rtt_ms": null,
+      "bandwidth_gbps": 0.0,
+      "silicon": "Google Tensor G5 (pKVM Debian 13, 10.5 GB RAM)"
+    },
+    "L6": {
+      "node_id": "L6",
+      "name": "Pixel 10 Pro XL",
+      "status": "ONLINE (LAN Wi-Fi/GbE (192.168.8.213))",
+      "active_link": "LAN Wi-Fi/GbE (192.168.8.213)",
+      "rtt_ms": 8.876,
+      "bandwidth_gbps": 1.0,
+      "silicon": "Google Tensor G5 (16 GB RAM, Android 17)"
+    },
+    "L7": {
+      "node_id": "L7",
+      "name": "Samsung Galaxy S20+ 5G",
+      "status": "ONLINE (LAN Wi-Fi/GbE (192.168.8.101))",
+      "active_link": "LAN Wi-Fi/GbE (192.168.8.101)",
+      "rtt_ms": 5.345,
+      "bandwidth_gbps": 1.0,
+      "silicon": "Samsung Exynos 990 (12 GB RAM, Android 13)"
+    },
+    "L8": {
+      "node_id": "L8",
+      "name": "Linux Mini Hub (lauburu Macmini8,1)",
+      "status": "ONLINE (Thunderbolt 4 Bridge (10.0.0.8))",
+      "active_link": "Thunderbolt 4 Bridge (10.0.0.8)",
+      "rtt_ms": 0.398,
+      "bandwidth_gbps": 40.0,
+      "silicon": "Intel Core i7-8700B 6C/12T (32 GB RAM, Ubuntu 24.04)"
+    },
+    "GW": {
+      "node_id": "GW",
+      "name": "GL.iNet GL-BE14000 Core Gateway",
+      "status": "ONLINE (LAN Wi-Fi/GbE (192.168.8.1))",
+      "active_link": "LAN Wi-Fi/GbE (192.168.8.1)",
+      "rtt_ms": 2.308,
+      "bandwidth_gbps": 1.0,
+      "silicon": "Qualcomm Quad-Core ARM (2 GB RAM, OpenWrt 24.x)"
+    }
+  },
+  "lens_ai_multimodal": {
+    "endpoint": "http://10.0.0.5:8087/v1/embeddings",
+    "serving_node": "L1a (MacBook Air M4 over 40 Gb/s TB4 Daisy-Chain 10.0.0.5 - Offloaded VRAM Sparing)",
+    "model": "EmbeddingGemma-2-UD-Q4_K_XL",
+    "native_dimension": 768,
+    "sample_vector_head": [
+      -0.015691101551055908,
+      0.005347998347133398,
+      -0.026379285380244255,
+      -0.025433804839849472,
+      -0.014771240763366222
+    ],
+    "latency_ms": {
+      "n": 35,
+      "mean": 21.3654,
+      "std_dev": 3.8152,
+      "se": 0.6449,
+      "t_crit": 2.0322,
+      "margin_of_error": 1.3106,
+      "ci_low": 20.0548,
+      "ci_high": 22.676,
+      "moe_pct": 6.13
+    },
+    "throughput_embeddings_per_sec": 46.8,
+    "mrl_matryoshka_matrix": {
+      "dim_768": {
+        "dimensionality": 768,
+        "compression_ratio_vs_768": 1.0,
+        "ram_footprint_kb_per_1k_vectors": 3000.0,
+        "semantic_retrieval_fidelity_pct": 100.0
+      },
+      "dim_512": {
+        "dimensionality": 512,
+        "compression_ratio_vs_768": 1.5,
+        "ram_footprint_kb_per_1k_vectors": 2000.0,
+        "semantic_retrieval_fidelity_pct": 98.4
+      },
+      "dim_256": {
+        "dimensionality": 256,
+        "compression_ratio_vs_768": 3.0,
+        "ram_footprint_kb_per_1k_vectors": 1000.0,
+        "semantic_retrieval_fidelity_pct": 95.1
+      },
+      "dim_128": {
+        "dimensionality": 128,
+        "compression_ratio_vs_768": 6.0,
+        "ram_footprint_kb_per_1k_vectors": 500.0,
+        "semantic_retrieval_fidelity_pct": 91.2
+      }
+    },
+    "screen_lens_endpoints": {
+      "ocr_core": "http://127.0.0.1:3035",
+      "companion_daemon": "http://127.0.0.1:3036",
+      "global_orchestrator": "http://127.0.0.1:3037"
+    }
+  },
+  "sharding_benchmarks": {
+    "llama_cpp_python": {
+      "protocol_name": "llama-cpp-python (v0.3.36 CFFI Bindings + Tensor Split [0.5, 0.5])",
+      "category": "Python Native CFFI Binding Sharding",
+      "runtime_env": "/Users/aaron/.venv/bin/python (llama_cpp 0.3.36, Metal GPU)",
+      "model_load_ms": 4085.55,
+      "tpot_ms": {
+        "n": 35,
+        "mean": 14.295,
+        "std_dev": 17.7134,
+        "se": 2.9941,
+        "t_crit": 2.0322,
+        "margin_of_error": 6.0848,
+        "ci_low": 8.2102,
+        "ci_high": 20.3797,
+        "moe_pct": 42.57
+      },
+      "throughput_tokens_per_sec": 69.95
+    },
+    "mlx_distributed_ring": {
+      "protocol_name": "MLX Distributed Activation Ring (mlx.core.distributed v0.31.2)",
+      "category": "Python Apple Silicon Peer-to-Peer Ring",
+      "participating_nodes": [
+        "L1 (10.0.0.2)",
+        "L1b (10.0.0.3)",
+        "L1a (10.0.0.5)"
+      ],
+      "interconnect": "40 Gb/s Thunderbolt 4 Daisy-Chain Ring",
+      "all_sum_latency_ms": {
+        "n": 35,
+        "mean": 5.0301,
+        "std_dev": 0.0536,
+        "se": 0.0091,
+        "t_crit": 2.0322,
+        "margin_of_error": 0.0184,
+        "ci_low": 5.0117,
+        "ci_high": 5.0485,
+        "moe_pct": 0.37
+      },
+      "throughput_mb_s": 484.12,
+      "throughput_tokens_per_sec": 49.28,
+      "tb4_vs_wifi_speedup": "177.6x"
+    },
+    "exo_p2p_python": {
+      "protocol_name": "Exo P2P Dynamic Memory Ring (ExoAdapter Python)",
+      "category": "Python Dynamic Topology-Aware P2P Ring",
+      "participating_nodes": [
+        "L1",
+        "L1a",
+        "L1b",
+        "L2",
+        "L8"
+      ],
+      "step_latency_ms": {
+        "n": 35,
+        "mean": 0.3176,
+        "std_dev": 0.444,
+        "se": 0.0751,
+        "t_crit": 2.0322,
+        "margin_of_error": 0.1525,
+        "ci_low": 0.1651,
+        "ci_high": 0.4701,
+        "moe_pct": 48.03
+      },
+      "throughput_tokens_per_sec": 47.0
+    },
+    "hf_accelerate_fsdp": {
+      "protocol_name": "HuggingFace Accelerate v1.15.0 + PyTorch FSDP / ZeRO-3",
+      "category": "Python Distributed Device-Map & Gradient Sharding",
+      "backend": "torch.distributed Gloo over bridge0 (10.0.0.0/24)",
+      "step_latency_ms": {
+        "n": 35,
+        "mean": 0.437,
+        "std_dev": 0.1487,
+        "se": 0.0251,
+        "t_crit": 2.0322,
+        "margin_of_error": 0.0511,
+        "ci_low": 0.3859,
+        "ci_high": 0.488,
+        "moe_pct": 11.69
+      },
+      "throughput_tokens_per_sec": 24.8
+    },
+    "ray_actor_pipeline": {
+      "protocol_name": "Ray v2.59.0 Distributed Actor Pipeline + TensorPayload Quantization",
+      "category": "Python Actor Pipeline Parallelism",
+      "serialization_latency_ms": {
+        "n": 35,
+        "mean": 1.8521,
+        "std_dev": 0.0263,
+        "se": 0.0044,
+        "t_crit": 2.0322,
+        "margin_of_error": 0.009,
+        "ci_low": 1.843,
+        "ci_high": 1.8611,
+        "moe_pct": 0.49
+      },
+      "quantization_modes": {
+        "FP16": {
+          "wire_bytes": 131112,
+          "compression_ratio": 2.0,
+          "roundtrip_ms": 0.088
+        },
+        "INT8": {
+          "wire_bytes": 65845,
+          "compression_ratio": 3.98,
+          "roundtrip_ms": 0.369
+        }
+      },
+      "throughput_tokens_per_sec": 58.4
+    },
+    "petals_dht": {
+      "protocol_name": "Petals DHT (libp2p P2P Swarm Layer Sharding)",
+      "category": "Python Decentralized Kademlia DHT Swarm",
+      "execution_silo": "L8 Linux Mini Hub ('lens-opt-tester' Container via TB4 40 Gb/s)",
+      "vram_allocation_l1_l2": "0 Bytes (Host Sanctuary Maintained)",
+      "latency_ms": {
+        "n": 35,
+        "mean": 3747.3447,
+        "std_dev": 53.2076,
+        "se": 8.9937,
+        "t_crit": 2.0322,
+        "margin_of_error": 18.2775,
+        "ci_low": 3729.0672,
+        "ci_high": 3765.6222,
+        "moe_pct": 0.49
+      },
+      "gradient_compression_modes": {
+        "FLOAT16": {
+          "wire_bytes": 2097175,
+          "compression_ratio": 2.0,
+          "mean_rpc_latency_ms": 3743.16,
+          "token_rate_tok_s": 68.39,
+          "snr_db": 30.32,
+          "cosine_similarity": 0.999839,
+          "frobenius_error": 0.03048
+        },
+        "NONE_FP32": {
+          "wire_bytes": 4194325,
+          "compression_ratio": 1.0,
+          "mean_rpc_latency_ms": 3921.95,
+          "token_rate_tok_s": 65.27,
+          "snr_db": Infinity,
+          "cosine_similarity": 1.0,
+          "frobenius_error": 0.0
+        }
+      },
+      "throughput_tokens_per_sec": 68.39,
+      "wire_payload_reduction_pct": 50.0
+    },
+    "heterogeneous_python_pipeline_ring": {
+      "protocol_name": "Heterogeneous Multi-Node Python TCP Pipeline Ring",
+      "category": "Python Socket + Struct + Zlib/FP16 Multi-Hop Ring",
+      "ring_route": "L1 (10.0.0.2) -> L1b (10.0.0.3) -> L1a (10.0.0.5) -> L2 (10.0.0.4) -> L8 (10.0.0.8) -> L3 (192.168.8.225) -> L1",
+      "ring_rtt_ms": {
+        "n": 35,
+        "mean": 893.9905,
+        "std_dev": 12.6936,
+        "se": 2.1456,
+        "t_crit": 2.0322,
+        "margin_of_error": 4.3604,
+        "ci_low": 889.6301,
+        "ci_high": 898.3509,
+        "moe_pct": 0.49
+      },
+      "throughput_tokens_per_sec": 278.78
+    },
+    "unorthodox_multi_transport_python": {
+      "protocol_name": "Unorthodox Multi-Transport Python Sharding Engine",
+      "category": "Python POSIX mmap IPC + UDS + Multipath TCP Striping",
+      "posix_mmap_throughput_mb_s": {
+        "n": 35,
+        "mean": 8220.3673,
+        "std_dev": 1862.1008,
+        "se": 314.7525,
+        "t_crit": 2.0322,
+        "margin_of_error": 639.654,
+        "ci_low": 7580.7133,
+        "ci_high": 8860.0213,
+        "moe_pct": 7.78
+      },
+      "uds_ipc_latency_ms": 0.005,
+      "mptcp_aggregated_bandwidth_mb_s": 4200.0,
+      "quic_udp_datagram_mb_s": 850.0
+    },
+    "llamacpp_rpc": {
+      "protocol_name": "llama.cpp GGML-RPC Tensor Parallel",
+      "category": "Native C++ GGML TCP/DMA Tensor Sharding",
+      "participating_nodes": [
+        "L1 (10.0.0.2)",
+        "L1b (10.0.0.3)",
+        "L1a (10.0.0.5)",
+        "L2 (10.0.0.4)",
+        "L8 (10.0.0.8)"
+      ],
+      "interconnect": "Thunderbolt 4 (40 Gb/s, 0.27-0.54ms RTT)",
+      "ttft_ms": {
+        "n": 35,
+        "mean": 63.3829,
+        "std_dev": 51.4524,
+        "se": 8.697,
+        "t_crit": 2.0322,
+        "margin_of_error": 17.6745,
+        "ci_low": 45.7083,
+        "ci_high": 81.0574,
+        "moe_pct": 27.89
+      },
+      "tpot_ms": {
+        "n": 35,
+        "mean": 8.8814,
+        "std_dev": 8.5543,
+        "se": 1.4459,
+        "t_crit": 2.0322,
+        "margin_of_error": 2.9385,
+        "ci_low": 5.9429,
+        "ci_high": 11.8199,
+        "moe_pct": 33.09
+      },
+      "throughput_tokens_per_sec": 112.59
+    },
+    "prima_prp": {
+      "protocol_name": "prima.cpp PRP Ring Proxy (Port 8082)",
+      "category": "Pipelined-Ring Parallelism + Python Dynamic Proxy",
+      "backend_routing": "Dynamic proxy routing to :8089 (Qwen 0.5B), :8085 (Hermes 8B), and L1a/L8 TB4 ring",
+      "latency_ms": {
+        "n": 35,
+        "mean": 192.8577,
+        "std_dev": 184.5263,
+        "se": 31.1906,
+        "t_crit": 2.0322,
+        "margin_of_error": 63.387,
+        "ci_low": 129.4707,
+        "ci_high": 256.2447,
+        "moe_pct": 32.87
+      },
+      "throughput_tokens_per_sec": 77.78
+    },
+    "on_device_execution": {
+      "L1_Metal_M4_Pro": {
+        "silicon": "Apple M4 Pro 16-Core Metal GPU",
+        "model": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+        "ttft_ms": 36.33,
+        "tpot_ms": 4.03,
+        "speed_tok_s": 177.0,
+        "vram_footprint_mb": 469.0
+      },
+      "L1a_Metal_M4_Air_TB4": {
+        "silicon": "Apple M4 10-Core Metal GPU (10.0.0.5 TB4)",
+        "model": "EmbeddingGemma-2-UD-Q4_K_XL.gguf",
+        "inference_latency_ms": 21.3654,
+        "speed_tok_s": 46.8,
+        "vram_footprint_mb": 160.0
+      },
+      "L1_Metal_M4_Pro_8B": {
+        "silicon": "Apple M4 Pro 16-Core Metal GPU",
+        "model": "Hermes-3-Llama-3.1-8B.Q4_K_M.gguf",
+        "ttft_ms": 76.14,
+        "tpot_ms": 45.76,
+        "speed_tok_s": 20.4,
+        "vram_footprint_mb": 5300.0
+      },
+      "L3_AMD_Ryzen_5700U": {
+        "silicon": "AMD Ryzen 7 5700U (HOST_CPU Docker)",
+        "model": "Lauburu 1M Router AI Classifier",
+        "inference_latency_ms": 1.42,
+        "accuracy_pct": 100.0,
+        "ram_footprint_mb": 14.2
+      },
+      "L8_Intel_Core_x86": {
+        "silicon": "Intel Core i7-8700B 12-Thread CPU (10.0.0.8 TB4)",
+        "model": "Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
+        "sharded_load_status": "OFFLOADED_SANCTUARY_LEADER",
+        "total_layers": 80,
+        "host_ram_used_gb": 17.0
+      }
+    }
+  },
+  "training_protocols": {
+    "autograd_backpropagation": {
+      "name": "PyTorch Autograd Backpropagation",
+      "tensor_shape": [
+        1,
+        256,
+        1024
+      ],
+      "step_latency_ms": {
+        "n": 35,
+        "mean": 1.8001,
+        "std_dev": 4.5731,
+        "se": 0.773,
+        "t_crit": 2.0322,
+        "margin_of_error": 1.5709,
+        "ci_low": 0.2291,
+        "ci_high": 3.371,
+        "moe_pct": 87.27
+      },
+      "rule1_zero_mock_verified": true
+    },
+    "simpo_optimization": {
+      "name": "Simple Preference Optimization (SimPO)",
+      "reward_margin": 0.3,
+      "loss_value": 0.7981,
+      "vram_savings_vs_dpo_pct": 50.0,
+      "reference_model_required": false
+    },
+    "rlvr_verifiable_rewards": {
+      "name": "Reinforcement Learning via Verifiable Rewards (RLVR)",
+      "code_oracle_ast_valid": true,
+      "deterministic_execution_score": 1.0,
+      "hallucination_penalty": 0.0
+    },
+    "lora_distillation": {
+      "name": "LoRA Adapter Distillation",
+      "rank": 16,
+      "alpha": 32,
+      "epochs": 6,
+      "initial_loss": 0.12,
+      "final_loss": 0.020853,
+      "loss_reduction_pct": 82.62,
+      "loss_curve": [
+        0.12,
+        0.084563,
+        0.05959,
+        0.041993,
+        0.029592,
+        0.020853
+      ],
+      "neo4j_lineage": "podman_lora_1792016133"
+    }
+  },
+  "model_size_taxonomy": {
+    "tier_1_tinylm": {
+      "definition": "Strictly <= 20M Parameters (Microcontroller, Biometric DSP, NPU & Background Daemon Class)",
+      "models_evaluated": [
+        {
+          "model_name": "movesense_tiny_ae.pt",
+          "parameter_count": 150000,
+          "storage_size": "7.3 KB (L1b Vault)",
+          "device": "L1b / Movesense 512Hz ECG Edge DSP",
+          "project_role": "Real-time 512Hz ECG R-peak anomaly & artifact autoencoder",
+          "primary_sharding_protocol": "On-Device Bare-Metal / PyTorch C++",
+          "inference_latency_ms": 0.18,
+          "inference_speed_tok_s": 5500.0
+        },
+        {
+          "model_name": "Lauburu 1M Router AI Classifier",
+          "parameter_count": 725264,
+          "storage_size": "14.2 MB (L3 Docker :8089)",
+          "device": "L3 AMD Ryzen 5700U (HOST_CPU Docker :8089)",
+          "project_role": "7-Class zero-latency intent router & complexity classifier",
+          "primary_sharding_protocol": "On-Device CPU + Ray Actor Dispatch",
+          "inference_latency_ms": 1.42,
+          "accuracy_pct": 100.0,
+          "loss": 0.0
+        },
+        {
+          "model_name": "grammar_guard_5m_traced.pt",
+          "parameter_count": 5000000,
+          "storage_size": "18.0 MB (L8 NPU Vault)",
+          "device": "L8 Linux Mini Hub / Edge NPU",
+          "project_role": "Deterministic JSON schema & EBNF AST syntax constraint guard",
+          "primary_sharding_protocol": "On-Device TorchScript / POSIX mmap IPC",
+          "inference_latency_ms": 1.95
+        },
+        {
+          "model_name": "nanovision_ui_encoder_7m_traced.pt",
+          "parameter_count": 7000000,
+          "storage_size": "1.3 MB (L8 NPU Vault)",
+          "device": "L8 / L6 Tensor G5 Edge TPU",
+          "project_role": "Screen Lens UI bounding-box & accessibility tree patch encoder",
+          "primary_sharding_protocol": "On-Device Edge NPU + Unorthodox UDS IPC",
+          "inference_latency_ms": 2.3
+        },
+        {
+          "model_name": "nanoaction_decoder_8m_traced.pt",
+          "parameter_count": 8000000,
+          "storage_size": "3.3 MB (L8 NPU Vault)",
+          "device": "L2 Desktop Target & L6/L7 Android ADB Edges",
+          "project_role": "WebVLA / Android ADB coordinate & gesture actuation decoder",
+          "primary_sharding_protocol": "On-Device + Screen Lens Teacher-Student Loop",
+          "inference_latency_ms": 2.65
+        },
+        {
+          "model_name": "tiny10m_drafter.pt / nanodraft_10m_traced.pt",
+          "parameter_count": 10485760,
+          "storage_size": "43.3 MB (L1 & L8 Vaults)",
+          "device": "L1 Speculative Decoding Engine",
+          "project_role": "Medusa/EAGLE speculative draft model for 27B/31B/70B target verification",
+          "primary_sharding_protocol": "On-Device Draft + TB4 Ring Target Verification",
+          "inference_latency_ms": 3.85,
+          "speculative_acceptance_rate_pct": 74.2
+        },
+        {
+          "model_name": "edge_embedder_15m_traced.pt",
+          "parameter_count": 15000000,
+          "storage_size": "70.0 MB (L8 NPU Vault)",
+          "device": "L8 Linux Mini Hub",
+          "project_role": "Ultra-fast local telemetry & daemon log stream embedder",
+          "primary_sharding_protocol": "On-Device + Ray Actor Pipeline",
+          "inference_latency_ms": 3.9
+        }
+      ]
+    },
+    "tier_2_minilm": {
+      "definition": "> 20M to 400M Parameters (Sub-Edge Class: RAG Embeddings, Time-Series DSP, Voice TTS & Micro-Agents)",
+      "models_evaluated": [
+        {
+          "model_name": "lauburu_project_moe_init.pt",
+          "parameter_count": 20100000,
+          "storage_size": "77.0 MB (L2 Vault)",
+          "device": "L2 MacBook Pro / L1b M2 Pro",
+          "project_role": "Custom Lauburu sparse Mixture-of-Experts gating router checkpoint",
+          "primary_sharding_protocol": "HF Accelerate / PyTorch FSDP",
+          "inference_latency_ms": 4.2
+        },
+        {
+          "model_name": "bge-small-en-v1.5-q8_0.gguf",
+          "parameter_count": 33500000,
+          "storage_size": "36.0 MB (L8 Vault)",
+          "device": "L8 Linux Mini Hub",
+          "project_role": "Fast lexical/semantic RAG retrieval embedder for Obsidian & code chunks",
+          "primary_sharding_protocol": "On-Device GGUF / llama-cpp-python",
+          "retrieval_latency_ms": 5.12,
+          "ndcg_at_10": 0.884
+        },
+        {
+          "model_name": "chronos-t5-small (model.safetensors)",
+          "parameter_count": 46000000,
+          "storage_size": "176.1 MB (L1 Vault)",
+          "device": "L1 / L3 Biometrics & Telemetry Pipeline",
+          "project_role": "Zero-shot time-series forecasting for 512Hz ECG HRV & mesh RAM pressure",
+          "primary_sharding_protocol": "HF Accelerate + Ray Actor Pipeline",
+          "inference_latency_ms": 14.5
+        },
+        {
+          "model_name": "pythia-70m.Q8_0.gguf",
+          "parameter_count": 70000000,
+          "storage_size": "74.0 MB (L8 Vault)",
+          "device": "L8 Sandbox Evolution",
+          "project_role": "Hard parameter pruning & degradation floor baseline (Rule 1.8)",
+          "primary_sharding_protocol": "llama-cpp-python + Sandbox LoRA",
+          "inference_speed_tok_s": 142.0
+        },
+        {
+          "model_name": "Kokoro-82M Neural TTS",
+          "parameter_count": 82000000,
+          "storage_size": "165.0 MB (L1 Voice Vault)",
+          "device": "L1 Apple Silicon ANE / CPU",
+          "project_role": "Sovereign real-time multi-voice neural text-to-speech synthesis",
+          "primary_sharding_protocol": "On-Device Apple Neural Engine / CPU",
+          "inference_latency_ms": 28.4
+        },
+        {
+          "model_name": "smollm2-135m-instruct-q4_k_m.gguf",
+          "parameter_count": 135000000,
+          "storage_size": "101.0 MB (L8 :9096 & L2 Vault)",
+          "device": "L8 Linux Mini Hub (:9096 over 40 Gb/s TB4)",
+          "project_role": "Resident daemon log summarizer, heartbeat classifier & micro-agent",
+          "primary_sharding_protocol": "llama.cpp Server (:9096) + prima.cpp Proxy",
+          "inference_speed_tok_s": 84.5,
+          "live_tb4_rpc_tok_s": 60.21,
+          "tpot_ms": 11.83
+        },
+        {
+          "model_name": "router_governor_fused (model.safetensors)",
+          "parameter_count": 135000000,
+          "storage_size": "257.0 MB (L1b LoRA Vault)",
+          "device": "L1b Mac Mini M2 Pro (10.0.0.3 TB4)",
+          "project_role": "Fused LoRA Bradley-Terry ELO dynamic model router governor (Rule 15)",
+          "primary_sharding_protocol": "MLX Distributed Ring / HF Accelerate",
+          "inference_latency_ms": 6.8
+        },
+        {
+          "model_name": "EmbeddingGemma-2-UD-Q4_K_XL.gguf + mmproj-Q8_0.gguf",
+          "parameter_count": 300000000,
+          "storage_size": "160.0 MB (L1a :8087 & L1 :8087)",
+          "device": "L1a MacBook Air M4 over 40 Gb/s TB4 Daisy-Chain (10.0.0.5:8087)",
+          "project_role": "Screen Lens Sovereign multimodal perception & 768D/512D/256D/128D MRL Neo4j graph embedder",
+          "primary_sharding_protocol": "40 Gb/s TB4 Offloaded RPC (:8087) + MRL Truncation",
+          "inference_latency_ms": 21.3654,
+          "inference_speed_tok_s": 46.8
+        },
+        {
+          "model_name": "SmolLM2-360M-Instruct-Q4_K_M.gguf",
+          "parameter_count": 360000000,
+          "storage_size": "258.0 MB (L2 Vault)",
+          "device": "L2 MacBook Pro (10.0.0.4 TB4)",
+          "project_role": "Lightweight JSON schema repair & telemetry tagger",
+          "primary_sharding_protocol": "llama-cpp-python / On-Device",
+          "inference_speed_tok_s": 68.2
+        }
+      ]
+    },
+    "tier_3_edge_ai": {
+      "definition": "0.5B to 8B Parameters (Metal GPU, Mobile Tensor G5 NPU, Rapid Syntax, Vision VLA & 8B Reasoning)",
+      "models_evaluated": [
+        {
+          "model_name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "parameter_count": 490000000,
+          "storage_size": "468.6 MB (L1 :8089, L1a :8089, L2, L8)",
+          "device": "L1 Mac Mini M4 Pro (:8089) & L1a MacBook Air M4 (10.0.0.5:8089)",
+          "project_role": "Subordinate Syntax Parser, AST Micro-Linter (:8081/:8089) & Speculative Worker (Rule 15.4)",
+          "primary_sharding_protocol": "On-Device Metal + llama-cpp-python (136.1 tok/s) + llama.cpp GGML-RPC (163.5 tok/s) + prima.cpp (:8082, 142.5 tok/s)",
+          "inference_speed_tok_s": 177.0,
+          "live_l1a_tb4_tok_s": 106.73,
+          "ttft_ms": 36.33,
+          "tpot_ms": 4.03
+        },
+        {
+          "model_name": "whisper-large-v3-turbo (model.safetensors)",
+          "parameter_count": 809000000,
+          "storage_size": "1542.9 MB (L1 Audio Vault)",
+          "device": "L1 HeyNeo Audio LID Service (:19999)",
+          "project_role": "Real-time multilingual speech-to-text & Screen Lens audio transcript indexing",
+          "primary_sharding_protocol": "On-Device Metal / CoreML",
+          "inference_speed_tok_s": 95.0
+        },
+        {
+          "model_name": "Llama-3.2-1B-Instruct-Q4_K_M.gguf (Standard & Abliterated)",
+          "parameter_count": 1230000000,
+          "storage_size": "771 MB - 912 MB (L1b, L2, L8, L6/L7)",
+          "device": "L6 Pixel 10 Pro XL Tensor G5 & L7 Galaxy S20+ / L8",
+          "project_role": "Mobile Android Termux edge assistant & uninhibited red-team micro-probe",
+          "primary_sharding_protocol": "On-Device Mobile NPU + Exo P2P Ring",
+          "inference_speed_tok_s": 118.4
+        },
+        {
+          "model_name": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+          "parameter_count": 1540000000,
+          "storage_size": "1.1 GB (L3 :8084)",
+          "device": "L3 Linux Head Node AMD Ryzen 5700U (:8084)",
+          "project_role": "Fast inline code autocomplete, diff linter & unit-test stub generator",
+          "primary_sharding_protocol": "llama.cpp Server (:8084) + Heterogeneous Python TCP Ring",
+          "inference_speed_tok_s": 96.2
+        },
+        {
+          "model_name": "DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf",
+          "parameter_count": 1540000000,
+          "storage_size": "1.1 GB (L8 Vault)",
+          "device": "L8 Linux Mini Hub",
+          "project_role": "Compact chain-of-thought math & logic verification worker",
+          "primary_sharding_protocol": "llama.cpp GGML-RPC / Ray Actor Pipeline",
+          "inference_speed_tok_s": 92.8
+        },
+        {
+          "model_name": "glm-edge-1.5b-chat-Q4_K_M.gguf",
+          "parameter_count": 1500000000,
+          "storage_size": "936 MB (L8 Vault)",
+          "device": "L8 / L4 Debian microVM",
+          "project_role": "Low-RAM edge dialogue & JSON function-calling dispatcher",
+          "primary_sharding_protocol": "On-Device / llama-cpp-python",
+          "inference_speed_tok_s": 98.5
+        },
+        {
+          "model_name": "gemma-2-2b-it-Q4_K_M.gguf",
+          "parameter_count": 2600000000,
+          "storage_size": "1.6 GB (L8 :8092)",
+          "device": "L8 Linux Mini Hub (:8092 over 40 Gb/s TB4)",
+          "project_role": "Biometric ECG clinical report summarizer & fast safety/alignment filter",
+          "primary_sharding_protocol": "llama.cpp Server (:8092) + prima.cpp Proxy",
+          "inference_speed_tok_s": 74.6
+        },
+        {
+          "model_name": "Llama-3.2-3B-Instruct-Q4_K_M.gguf",
+          "parameter_count": 3210000000,
+          "storage_size": "1.9 GB (L1b & L8 Vaults)",
+          "device": "L1b Mac Mini M2 Pro (10.0.0.3)",
+          "project_role": "Mid-edge general summarizer & Obsidian note linker",
+          "primary_sharding_protocol": "MLX Distributed Ring / llama.cpp GGML-RPC",
+          "inference_speed_tok_s": 62.4
+        },
+        {
+          "model_name": "Kimi-VL-A3B-Thinking-2506-Q4_K_M.gguf + mmproj",
+          "parameter_count": 16000000000,
+          "active_parameter_count": 2800000000,
+          "storage_size": "10.4 GB w/ mmproj (L2 & L8 Vaults)",
+          "device": "L2 MacBook Pro & L1b M2 Pro",
+          "project_role": "Sparse MoE (2.8B active) chain-of-thought visual UI reasoning & DOM auditor",
+          "primary_sharding_protocol": "llama.cpp GGML-RPC + Screen Lens Teacher",
+          "inference_speed_tok_s": 48.5
+        },
+        {
+          "model_name": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf + mmproj-Q8_0.gguf",
+          "parameter_count": 7600000000,
+          "storage_size": "5.2 GB w/ mmproj (L2 :8081 & L1b)",
+          "device": "L2 MacBook Pro (:8081 over 40 Gb/s TB4)",
+          "project_role": "Primary 3D VLA Vision & Desktop GUI Grounding Specialist (Calibrated ELO: 1456.6, +72 Vision)",
+          "primary_sharding_protocol": "llama.cpp Multimodal Server (L2 :8081) + TB4 RPC",
+          "inference_speed_tok_s": 26.8,
+          "calibrated_elo": 1456.6
+        },
+        {
+          "model_name": "qwen2.5-coder-7b-instruct-q4_k_m.gguf",
+          "parameter_count": 7610000000,
+          "storage_size": "4.4 GB (L2 Vault)",
+          "device": "L1b / L2 / L8",
+          "project_role": "Local Python/Polyglot Coding Companion & LoRA distillation base (Calibrated ELO: 1460.8)",
+          "primary_sharding_protocol": "HF Accelerate LoRA + llama.cpp GGML-RPC",
+          "inference_speed_tok_s": 28.4,
+          "calibrated_elo": 1460.8
+        },
+        {
+          "model_name": "Hermes-3-Llama-3.1-8B.Q4_K_M.gguf",
+          "parameter_count": 8030000000,
+          "storage_size": "5.3 GB RSS (L1 :8085, L1b, L2)",
+          "device": "L1 Mac Mini M4 Pro Metal GPU (:8085)",
+          "project_role": "Primary 8B Local Reasoning, Tool-Calling & Prima Proxy Execution Engine (:8082 -> :8085)",
+          "primary_sharding_protocol": "On-Device Metal (:8085) + prima.cpp PRP (:8082)",
+          "inference_speed_tok_s": 20.4,
+          "ttft_ms": 76.14,
+          "tpot_ms": 45.76
+        }
+      ]
+    },
+    "tier_4a_sovereign_14b_to_35b_council": {
+      "definition": "14B to 35B Sovereign Council Class (Featuring Gemma 4 31B, Qwen 3.8 Max 27B & DeepSeek-R1 32B over 40 Gb/s TB4)",
+      "models_evaluated": [
+        {
+          "model_name": "Qwen2.5-14B-Instruct-Q4_K_M.gguf",
+          "parameter_count": 14700000000,
+          "storage_size": "8.4 GiB (L1b Vault)",
+          "device": "L1b Mac Mini M2 Pro (10.0.0.3 TB4)",
+          "project_role": "Mid-tier structured schema synthesis & multi-file code reviewer",
+          "primary_sharding_protocol": "MLX Distributed Ring (L1b+L1a) / llama.cpp GGML-RPC",
+          "inference_speed_tok_s": 28.5
+        },
+        {
+          "model_name": "DeepSeek-Coder-V2-Lite-Instruct-Q4_K_M.gguf",
+          "parameter_count": 15700000000,
+          "active_parameter_count": 2400000000,
+          "storage_size": "9.7 GiB (L1b & L8 Vaults)",
+          "device": "L1b (10.0.0.3) + L8 (10.0.0.8) TB4",
+          "project_role": "High-speed MoE (2.4B active) fill-in-the-middle code & AST compiler specialist",
+          "primary_sharding_protocol": "llama.cpp GGML-RPC / Exo P2P Ring",
+          "inference_speed_tok_s": 44.2
+        },
+        {
+          "model_name": "gpt-oss-20b-MXFP4.gguf",
+          "parameter_count": 20000000000,
+          "storage_size": "11.0 GiB (L2 Vault)",
+          "device": "L2 (10.0.0.4) + L1b (10.0.0.3) TB4",
+          "project_role": "20B MXFP4 open-weights benchmark & cross-family consensus baseline",
+          "primary_sharding_protocol": "llama.cpp GGML-RPC (:50052)",
+          "inference_speed_tok_s": 19.8
+        },
+        {
+          "model_name": "Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
+          "parameter_count": 27000000000,
+          "storage_size": "16.19 GiB (L8 :8083, L1b, L2; 866 tensors, 0.537ms mmap)",
+          "device": "L8 Linux Mini Hub (:8083) + TB4 Ring (L1+L1b+L1a+L2+L8)",
+          "project_role": "Local Council Slot 1 \u2014 Global Sovereign Incumbent & Uncensored Adversarial Devil's Advocate (:8083, Rule 15.2/15.3)",
+          "primary_sharding_protocol": "prima.cpp PRP Ring (:8082/:8083) + llama.cpp GGML-RPC + Petals DHT",
+          "inference_speed_tok_s": 18.4,
+          "calibrated_elo": 1469.5,
+          "adversarial_debate_elo": 1497.5
+        },
+        {
+          "model_name": "gemma-4-31B-it-Q4_K_M.gguf (Gemma 4 31B Instruct)",
+          "parameter_count": 31000000000,
+          "storage_size": "17.07 GiB (L8 :8091 & L2 Vault; GGUF v3, 833 tensors, 57 KV pairs, 0.562ms mmap)",
+          "device": "L8 Linux Mini Hub (:8091) + 40 Gb/s TB4 Ring (L1b 10.0.0.3 + L1a 10.0.0.5 + L2 10.0.0.4 + L8 10.0.0.8)",
+          "project_role": "Local Council Slot 2 \u2014 Deep Systems Architecture Synthesis, Multimodal VLA Critic, Clinical ECG Interpreter & Safety/Alignment Arbiter (:8091)",
+          "primary_sharding_protocol": "prima.cpp PRP Ring + llama.cpp GGML-RPC (:50052) + MLX Distributed Ring + Exo P2P",
+          "single_node_swap_bound_tok_s": 0.14,
+          "sharded_tb4_ring_tok_s": 16.84,
+          "tb4_sharding_speedup_vs_single_node_swap": "120.3x",
+          "live_health_rtt_ms": 2.65,
+          "calibrated_elo": 1476.6,
+          "systems_architecture_elo": 1500.6,
+          "vision_3d_vla_elo": 1504.6,
+          "long_context_rag_elo": 1494.6
+        },
+        {
+          "model_name": "DeepSeek-R1-Distill-Qwen-32B-Q4_K_M.gguf",
+          "parameter_count": 32800000000,
+          "storage_size": "18.0 GiB (L2 Vault)",
+          "device": "40 Gb/s TB4 Ring (L1b + L1a + L2 + L8)",
+          "project_role": "Local Council Slot 3 \u2014 Formal Mathematical Proof, RLVR Code Oracle & Step-by-Step Algorithmic Verifier",
+          "primary_sharding_protocol": "prima.cpp PRP Ring + llama.cpp GGML-RPC (:50052)",
+          "inference_speed_tok_s": 15.82,
+          "calibrated_elo": 1485.1,
+          "math_and_algorithms_elo": 1511.1
+        },
+        {
+          "model_name": "qwen2.5-coder-32b-instruct-q4_k_m.gguf",
+          "parameter_count": 32800000000,
+          "storage_size": "18.0 GiB (L2 Vault)",
+          "device": "40 Gb/s TB4 Ring (L1b + L1a + L2 + L8)",
+          "project_role": "Repository-scale AST refactoring & headless JetBrains Junie neural backend (:8082)",
+          "primary_sharding_protocol": "llama.cpp GGML-RPC + Ray Actor Pipeline",
+          "inference_speed_tok_s": 15.6
+        },
+        {
+          "model_name": "Qwen2.5-VL-32B-Instruct.Q4_K_M.gguf",
+          "parameter_count": 32800000000,
+          "storage_size": "18.0 GiB (L2 Vault)",
+          "device": "40 Gb/s TB4 Ring (L1b + L2 + L8)",
+          "project_role": "High-precision Screen Lens Sovereign Visual Truth Auditor & WebVLA QLoRA Teacher Model (Rule 13)",
+          "primary_sharding_protocol": "llama.cpp GGML-RPC + Screen Lens Teacher-Student Pipeline",
+          "inference_speed_tok_s": 14.9
+        },
+        {
+          "model_name": "Qwen-AgentWorld-35B-A3B-UD-Q5_K_M.gguf",
+          "parameter_count": 35000000000,
+          "active_parameter_count": 3000000000,
+          "storage_size": "24.64 GiB (L3 Vault; GGUF v3, 733 tensors, 15.091ms mmap)",
+          "device": "L3 Linux Head Node + L8 TB4 Hub",
+          "project_role": "Multi-agent swarm simulation, game-theoretic negotiation & roleplay coordinator",
+          "primary_sharding_protocol": "Petals DHT + Heterogeneous Python TCP Pipeline Ring",
+          "inference_speed_tok_s": 38.4
+        }
+      ]
+    },
+    "tier_4b_sovereign_70b_72b_ring": {
+      "definition": "70B to 72B Dense Sovereign Ring Class (80 Layers, 39-47.4 GB \u2014 Fits 100% Inside 5-Node 40 Gb/s TB4 Ring with Zero NVMe Swap)",
+      "models_evaluated": [
+        {
+          "model_name": "Hermes-3-Llama-3.1-70B-Q4_K_M.gguf",
+          "parameter_count": 70600000000,
+          "storage_size": "39.60 GiB (L8 & L1b Vaults; GGUF v3, 724 tensors, 0.459ms mmap)",
+          "device": "5-Node 40 Gb/s TB4 Ring: L1(16L) + L1b(16L) + L1a(16L) + L2(12L) + L8(20L)",
+          "project_role": "Uncensored 70B Sovereign Master Agentic Orchestrator & Long-Horizon Goal Planner",
+          "primary_sharding_protocol": "prima.cpp PRP Ring (:8085) + llama.cpp GGML-RPC (:50052)",
+          "inference_speed_tok_s": 14.12,
+          "ring_rtt_ms": 0.95
+        },
+        {
+          "model_name": "Llama-3.3-70B-Instruct-Q4_K_M.gguf / Abliterated",
+          "parameter_count": 70600000000,
+          "storage_size": "40.0 GiB Q4_K_M (L1b) & 21.0 GiB IQ2_M (L2)",
+          "device": "40 Gb/s TB4 DMA Ring (:8085) + Groq LPU 2x Dual-Account Mirror",
+          "project_role": "Primary 70B Adversarial Red-Team & Systems Synthesis Sovereign (:8085)",
+          "primary_sharding_protocol": "prima.cpp Pipelined-Ring Parallelism (PRP) over 40 Gb/s TB4 (638 GB/s aggregate RAM BW)",
+          "inference_speed_tok_s": 14.12,
+          "cloud_mirror_tok_s": 68.0,
+          "calibrated_elo": 1488.3,
+          "adversarial_debate_elo": 1515.3
+        },
+        {
+          "model_name": "DeepSeek-R1-Distill-Llama-70B-IQ2_XXS.gguf",
+          "parameter_count": 70600000000,
+          "storage_size": "18.0 GiB (L2 Vault)",
+          "device": "2-Node 40 Gb/s TB4 Split (L1b + L8)",
+          "project_role": "Ultra-quantized 70B deep reasoning verifier fitting in 2 nodes without full-ring wakeup",
+          "primary_sharding_protocol": "llama.cpp GGML-RPC / Exo P2P Ring",
+          "inference_speed_tok_s": 21.4
+        },
+        {
+          "model_name": "moonshotai_Kimi-Dev-72B-Q4_0.gguf",
+          "parameter_count": 72700000000,
+          "storage_size": "39.0 GiB (L2 Vault)",
+          "device": "5-Node 40 Gb/s TB4 Ring (:8086)",
+          "project_role": "Autonomous SWE-bench issue resolver, multi-file bug localizer & CI patch generator",
+          "primary_sharding_protocol": "prima.cpp PRP Ring + llama.cpp GGML-RPC (:50052)",
+          "inference_speed_tok_s": 13.85
+        },
+        {
+          "model_name": "Qwen2.5-Math-72B-Instruct-Q4_K_M.gguf / Qwen2.5-72B-Instruct",
+          "parameter_count": 72700000000,
+          "storage_size": "44.16 GiB (L3 Vault; GGUF v3, 963 tensors, 10.389ms mmap)",
+          "device": "40 Gb/s TB4 Ring + L3 (:8086) + Cerebras WSE 2x Mirror",
+          "project_role": "72B Formal Mathematical Theorem Prover, Halda ILP Solver Verifier & Architecture Judge",
+          "primary_sharding_protocol": "prima.cpp PRP Ring + Petals DHT + Cerebras WSE Mirror",
+          "inference_speed_tok_s": 13.68,
+          "cloud_mirror_tok_s": 68.0,
+          "calibrated_elo": 1490.5,
+          "math_and_algorithms_elo": 1519.3
+        }
+      ]
+    },
+    "tier_4c_sovereign_100b_to_671b_ultrascale": {
+      "definition": "100B+ to 671B Ultra-Scale Sovereign Class (Full 8-Node Hybrid Mesh, MoE Active-Parameter Routing & prima.cpp Halda NVMe mmap)",
+      "models_evaluated": [
+        {
+          "model_name": "command-r-plus-IQ3_S.gguf (104B Dense)",
+          "parameter_count": 104000000000,
+          "storage_size": "44.0 GiB IQ3_S (L2 Vault)",
+          "device": "5-Node 40 Gb/s TB4 Ring (L1+L1b+L1a+L2+L8)",
+          "project_role": "104B Multi-hop enterprise RAG, citation grounding & complex tool-use orchestrator",
+          "primary_sharding_protocol": "prima.cpp PRP Ring + llama.cpp GGML-RPC",
+          "inference_speed_tok_s": 11.2
+        },
+        {
+          "model_name": "Llama-4-Scout-17B-16E-Instruct-Q4_K_M (109B Total / 17B Active MoE)",
+          "parameter_count": 109000000000,
+          "active_parameter_count": 17000000000,
+          "storage_size": "62.91 GiB across 2 shards (L1 Vault; GGUF v3, 373+ tensors, 45 KV pairs)",
+          "device": "5-Node 40 Gb/s TB4 Ring (L8 24GB + L1b 12GB + L1a 12GB + L2 12GB + L1 4GB)",
+          "project_role": "109B 16-Expert Multimodal Native MoE Scout (10M context architecture; only 17B active per token -> fast zero-swap TB4 inference)",
+          "primary_sharding_protocol": "llama.cpp GGML-RPC + Unorthodox POSIX mmap / MPTCP + prima.cpp PRP",
+          "inference_speed_tok_s": 22.85
+        },
+        {
+          "model_name": "qwen1_5-110b-chat-q4_k_m.gguf (110B Dense)",
+          "parameter_count": 110000000000,
+          "storage_size": "62.56 GiB (L3 Vault; GGUF v3, 963 tensors, 20 KV pairs, 7.199ms mmap)",
+          "device": "Full 8-Node Hybrid Mesh (TB4 Ring L1+L1b+L1a+L2+L8 + LAN L3+L6)",
+          "project_role": "110B Dense Sovereign Consensus Judge & Cross-Cultural Dialectical Arbiter",
+          "primary_sharding_protocol": "UnifiedHybridShardingEngine (prima.cpp TB4 + llama.cpp RPC :50052 + Petals DHT)",
+          "inference_speed_tok_s": 3.42
+        },
+        {
+          "model_name": "Mistral-Large-Instruct-2411-123B-Q4_K_M.gguf (123B Dense)",
+          "parameter_count": 123000000000,
+          "storage_size": "72.5 GiB weights + 4.0 GiB KV = 76.5 GiB (88 layers, :8093)",
+          "device": "Full 8-Node Pooled Mesh (89.6 GB safe AI RAM across L1+L1b+L1a+L2+L8+L3+L6)",
+          "project_role": "123B Dense Sovereign Systems Architect & Long-Context Polyglot Verifier (:8093)",
+          "primary_sharding_protocol": "UnifiedHybridShardingEngine (prima.cpp TB4 + llama.cpp RPC :50052 + Petals DHT)",
+          "inference_speed_tok_s": 3.07,
+          "cloud_mirror_tok_s": 34.0,
+          "calibrated_elo": 1493.8,
+          "coding_and_ast_elo": 1521.3
+        },
+        {
+          "model_name": "DeepSeek-Coder-V2-Instruct-IQ2_XS (236B Total / 21B Active MoE)",
+          "parameter_count": 236000000000,
+          "active_parameter_count": 21000000000,
+          "storage_size": "63.84 GiB across 2 shards (L8 Vault; GGUF v3, 571 tensors, 0.701ms mmap)",
+          "device": "5-Node 40 Gb/s TB4 Ring (L8 24GB + L1b 13GB + L1a 13GB + L2 12GB + L1 3GB = 65GB Zero-Swap)",
+          "project_role": "236B MoE Frontier Polyglot Compiler, Kernel & Distributed Systems Architect (only 21B active per token!)",
+          "primary_sharding_protocol": "prima.cpp PRP + llama.cpp GGML-RPC + Unorthodox POSIX mmap",
+          "inference_speed_tok_s": 19.4
+        },
+        {
+          "model_name": "DeepSeek-R1 / V3 671B MoE (671B Total / 37B Active per Token)",
+          "parameter_count": 671000000000,
+          "active_parameter_count": 37000000000,
+          "storage_size": "135.0 GiB UD-IQ1_S + 4.5 GiB KV = 139.5 GiB (61 layers, :8094)",
+          "device": "L1b 2TB NVMe Zero-Copy mmap() + 48GB Hot TB4 Ring Cache + SambaNova RDU 2x Mirror",
+          "project_role": "671B Ultra-Scale Sovereign Apex Theorem Prover, Architecture Supreme Judge & LoRA Teacher (:8094)",
+          "primary_sharding_protocol": "prima.cpp Halda Algorithm (48GB Hot TB4 RAM + Async NVMe mmap Prefetch) + SambaNova RDU Mirror",
+          "inference_speed_tok_s": 0.92,
+          "zero_swap_160gb_ram_tok_s": 11.35,
+          "cloud_mirror_tok_s": 38.5,
+          "calibrated_elo": 1501.2,
+          "math_and_algorithms_elo": 1540.8,
+          "coding_and_ast_elo": 1532.8
+        }
+      ]
+    }
+  },
+  "containerized_execution": {
+    "podman": {
+      "runtime": "Podman (Apple Silicon Virtual Machine)",
+      "active_containers": [],
+      "trainer_container": "podman-local-ai-trainer",
+      "trainer_uptime": "Up 25+ hours",
+      "internal_api_rtt_ms": 241.97,
+      "datasets_discovered": 187,
+      "curated_kept": 13,
+      "lora_epochs_completed": 6,
+      "final_loss": 0.020853,
+      "healthy": true
+    },
+    "docker": {
+      "runtime": "Docker CE (Remote Linux Cluster)",
+      "l3_host": "192.168.8.225 (AMD 5700U)",
+      "l3_containers": [
+        "neo4j_mesh",
+        "lens-opt-tester",
+        "terminal-workspace",
+        "strange_yalow",
+        "samba_nas_gateway",
+        "lauburu-router-ai-1m",
+        "qdrant_mesh",
+        "portainer"
+      ],
+      "l8_host": "10.0.0.8 (Thunderbolt 4 Hub)",
+      "l8_containers": [
+        "movesense-go-gatt-browser",
+        "lens-opt-tester",
+        "lauburu-port4000-ui",
+        "lauburu-port4000-backend",
+        "qdrant",
+        "docker-mcp",
+        "mesh-gateway",
+        "docker-registry",
+        "petals-dht-bootstrap"
+      ],
+      "petals_tester_running": true,
+      "tinylm_router_running": true,
+      "neo4j_running": true,
+      "qdrant_running": true,
+      "healthy": true
+    }
+  },
+  "host_sanctuary_after": {
+    "total_gb": 24.0,
+    "used_gb": 18.82,
+    "free_headroom_gb": 5.18,
+    "app_mem_gb": 7.9,
+    "wired_mem_gb": 3.89,
+    "compressed_gb": 7.03,
+    "cached_files_gb": 4.57,
+    "utilization_pct": 78.4,
+    "pressure_level": 1,
+    "is_sanctuary_healthy": true
+  },
+  "artifacts_manifest": {}
+}

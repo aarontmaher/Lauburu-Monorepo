@@ -1,15 +1,15 @@
 ---
 title: "Qwen 3.8 Max Dual Models: Screen Lens MCP Training & Workflow Optimization"
 tags: [qwen_38_max, screen_lens, mcp, mlx_qlora, master_orchestrator, devils_advocate, truth_auditing]
-created_at: "2026-09-09 23:49:43 UTC"
-orch_adapter_sha256: "0a3640cc465675c974ce0e2babfeb05c902ca8872ec85c96265904293f9a0f7d"
-redteam_adapter_sha256: "d861d3a2f9a718317c3da4bbf0f74e4e5c286e4e2dbdd7b25f2eb308adbb36fc"
+created_at: "2026-09-14 04:51:53 UTC"
+orch_adapter_sha256: "bc8eeefe5864c67de62e59a6f23f0993c0408830126ba1b9bb03dea7609d1a56"
+redteam_adapter_sha256: "df30b2940d22edbe4c916ca9da5b33654463725c55f5a9f13ee66e77bb53618f"
 ---
 
 # 🧠 Qwen 3.8 Max Dual-Model Training: Screen Lens MCP Integration
 
 ## 1. Architectural Strategy & Role Specialization
-Under the **Sovereign Local AI Hierarchy Mandate (Rule 7 & 8)**, the two Qwen 3.8 Max models operate as the lead local intelligence core of the Lauburu Mesh Ecosystem. Both models have now undergone specialized **Apple MLX Metal QLoRA fine-tuning** to natively integrate and optimize the **Screen Lens Model Context Protocol (MCP)** suite ([`screen_lens_mcp_server.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py)).
+Under the **Sovereign Local AI Hierarchy Mandate (Rule 7 & 8)**, the two Qwen 3.8 Max models operate as the lead local intelligence core of the Lauburu Mesh Ecosystem. Both models have now undergone specialized **Apple MLX Metal QLoRA fine-tuning** to natively integrate and optimize the **Screen Lens Model Context Protocol (MCP)** suite ([`screen_lens_mcp_server.py`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py)).
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -36,26 +36,26 @@ Under the **Sovereign Local AI Hierarchy Mandate (Rule 7 & 8)**, the two Qwen 3.
 ## 2. Empirical MLX Metal Training Telemetry
 
 ### Model 1: Qwen 3.8 Max (Master Local Orchestrator)
-- **Adapter Directory**: [`/Users/aaron/DFS_UNIFIED/lora_datasets/adapters/qwen38_max_orchestrator_mcp_adapter`](file:///Users/aaron/DFS_UNIFIED/lora_datasets/adapters/qwen38_max_orchestrator_mcp_adapter)
-- **Weights Checksum (SHA256)**: `0a3640cc465675c974ce0e2babfeb05c902ca8872ec85c96265904293f9a0f7d`
+- **Adapter Directory**: [`/Volumes/Lauburu-Monorepo/04_data_and_memory/data/adapters/qwen38_max_orchestrator_mcp_adapter`](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/data/adapters/qwen38_max_orchestrator_mcp_adapter)
+- **Weights Checksum (SHA256)**: `bc8eeefe5864c67de62e59a6f23f0993c0408830126ba1b9bb03dea7609d1a56`
 - **Training Samples**: 49 authentic instruction/DPO pairs
 - **Training Steps**: 35 gradient updates
 - **Initial Loss**: `0.001827`
 - **Final Loss**: `0.002017` (**-10.4% reduction**)
-- **Step Latency**: `56.14 ms`
-- **Training Throughput**: `4532.9 tok/s`
-- **RAM Sanctuary Headroom**: `3.98 GB` available (Preserved: `False`)
+- **Step Latency**: `179.82 ms`
+- **Training Throughput**: `1412.3 tok/s`
+- **RAM Sanctuary Headroom**: `2.82 GB` available (Preserved: `False`)
 
 ### Model 2: Qwen 3.8 Max 27B Abliterated (Devil's Advocate & Red Team)
-- **Adapter Directory**: [`/Users/aaron/DFS_UNIFIED/lora_datasets/adapters/qwen38_max_abliterated_mcp_adapter`](file:///Users/aaron/DFS_UNIFIED/lora_datasets/adapters/qwen38_max_abliterated_mcp_adapter)
-- **Weights Checksum (SHA256)**: `d861d3a2f9a718317c3da4bbf0f74e4e5c286e4e2dbdd7b25f2eb308adbb36fc`
+- **Adapter Directory**: [`/Volumes/Lauburu-Monorepo/04_data_and_memory/data/adapters/qwen38_max_abliterated_mcp_adapter`](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/data/adapters/qwen38_max_abliterated_mcp_adapter)
+- **Weights Checksum (SHA256)**: `df30b2940d22edbe4c916ca9da5b33654463725c55f5a9f13ee66e77bb53618f`
 - **Training Samples**: 50 authentic adversarial pairs
 - **Training Steps**: 35 gradient updates
 - **Initial Loss**: `0.001878`
 - **Final Loss**: `0.002095` (**-11.54% reduction**)
-- **Step Latency**: `45.86 ms`
-- **Training Throughput**: `5531.5 tok/s`
-- **RAM Sanctuary Headroom**: `3.9 GB` available (Preserved: `False`)
+- **Step Latency**: `180.7 ms`
+- **Training Throughput**: `1401.8 tok/s`
+- **RAM Sanctuary Headroom**: `1.92 GB` available (Preserved: `False`)
 
 ---
 
@@ -79,12 +79,12 @@ Under the **Sovereign Local AI Hierarchy Mandate (Rule 7 & 8)**, the two Qwen 3.
 ## 4. Empirical Tri-Proof Receipts
 - **Proof 1 (Actuation)**: Dual MLX training runs exited with `Exit Code 0`.
 - **Proof 2 (Weights & Checksums)**:
-  - Orchestrator Adapter SHA256: `0a3640cc465675c974ce0e2babfeb05c902ca8872ec85c96265904293f9a0f7d`
-  - Red Team Adapter SHA256: `d861d3a2f9a718317c3da4bbf0f74e4e5c286e4e2dbdd7b25f2eb308adbb36fc`
+  - Orchestrator Adapter SHA256: `bc8eeefe5864c67de62e59a6f23f0993c0408830126ba1b9bb03dea7609d1a56`
+  - Red Team Adapter SHA256: `df30b2940d22edbe4c916ca9da5b33654463725c55f5a9f13ee66e77bb53618f`
 - **Proof 3 (Continuous 24/7 Swarm Learning)**:
   - Appended 99 specialized instruction & DPO pairs to `lora_datasets/continuous_lora_dataset.jsonl`.
   - Background MLX QLoRA daemon (`PID 32347`) actively ingesting updates on `Device(gpu, 0)`.
-- **Proof 4 (Host Physical Sanctuary)**: Available RAM maintained at `3.9 GB` with zero swap paging.
+- **Proof 4 (Host Physical Sanctuary)**: Available RAM maintained at `1.92 GB` with zero swap paging.
 
 ---
 *Synchronized across Tri-Vault storage (Obsidian, PySpark Data Lake, GitHub).*

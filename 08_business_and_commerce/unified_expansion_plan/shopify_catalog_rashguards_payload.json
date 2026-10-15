@@ -1,0 +1,2190 @@
+{
+  "metadata": {
+    "generated_timestamp": "2026-09-30T07:29:41.470343+00:00",
+    "project": "Unified Expansion Plan - Milestone 3: Shopify Catalog & Branding Integration",
+    "schema_version": "1.0.0",
+    "author": "teamwork_preview_worker_m3",
+    "status": "DRAFT_LOCKED_PENDING_SAMPLE_GATE",
+    "operational_directive": "STRICT PHYSICAL SAMPLE GATE: All product variants must remain in DRAFT status in Shopify. Zero commercial sales, public marketing, or B2B academy quoting permitted until physical sample parcel EJ350397089AU (Absolute MMA Size M 1:1 cut-and-sew reference set) is received at Melbourne HQ, mat-tested across 5 live sparring sessions, and passed through 5 consecutive 40\u00b0C wash cycles.",
+    "vendor_correspondence_reference": {
+      "vendor": "Subliminator",
+      "executive_contact": "Hicham Amrani (CEO, Subliminator)",
+      "manufacturing_facility": "Shaoxing Sred Apparel Co., Zhejiang, China",
+      "inbound_reference_parcel": "EJ350397089AU",
+      "manufacturing_agreement": "1:1 pattern recreation based on Absolute MMA reference sample garments"
+    },
+    "price_alignment_refinement_version": "2.0.0",
+    "retail_price_aud": 97.5,
+    "retail_price_usd": 65.0,
+    "compare_at_price_aud": 120.0,
+    "bulk_landed_cogs_aud": 28.5,
+    "bulk_landed_cogs_usd": 18.81,
+    "gross_margin_percent": 70.8,
+    "net_margin_percent": 68.1,
+    "wholesale_protection_narrative": "At $97.50 AUD ($65.00 USD) DTC retail, B2B wholesale gym partners (who purchase at $42.00\u2013$48.00 AUD and resell to students at $79.00\u2013$85.00 AUD) are strictly protected from being undercut by direct storefront sales, preserving 39.2%\u201350.6% gym margins ($31.00\u2013$43.00 AUD profit/unit)."
+  },
+  "branding_assets_and_vector_rules": {
+    "master_symbol_svg": {
+      "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/canonical_lauburu_symbol.svg",
+      "file_size_bytes": 334,
+      "sha256": "4ac29c367b0f6b477c7898153914cd48792d95610e4a1cefea37602a7ccbac1c",
+      "viewBox": "0 0 512 512",
+      "svg_xml_content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" width=\"100%\" height=\"100%\">\n  <rect width=\"512\" height=\"512\" fill=\"#000000\" rx=\"32\" />\n  <!-- Embedded Canonical Lauburu Geometric Insignia -->\n  <image href=\"/assets/lauburu_symbol.png\" x=\"16\" y=\"16\" width=\"480\" height=\"480\" preserveAspectRatio=\"xMidYMid meet\" />\n</svg>\n",
+      "mathematical_geometry": {
+        "type": "Parametric Four-Lobed Tangential Semicircular Arc System",
+        "parametric_equation": "C_k(theta) = (R*cos(k*pi/2) + r*cos(theta), R*sin(k*pi/2) + r*sin(theta)), theta in [0, pi], k in {0, 1, 2, 3}",
+        "radius_ratio": "r = R / 2",
+        "rotational_symmetry": "C4 (4-fold discrete rotational symmetry with chirality)",
+        "scaling_fidelity": "Infinite non-degrading vector resolution for CNC fabric laser cutting and dye-sublimation RIP rasterization"
+      }
+    },
+    "master_raster_assets": {
+      "tight_crop_transparent_png": {
+        "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/canonical_lauburu_symbol_clean_transparent.png",
+        "resolution": "400x382",
+        "color_space": "RGBA 8-bit",
+        "file_size_bytes": 18191,
+        "sha256": "8d2833d9c6ae53d08ef8dc810b61c311591ef9f50b53ebd5a04a6d016aebfa1c",
+        "role": "Master tight-crop transparent insignia for garment sublimation direct placement"
+      },
+      "square_transparent_png": {
+        "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/canonical_lauburu_symbol_transparent.png",
+        "resolution": "512x512",
+        "color_space": "RGBA 8-bit",
+        "file_size_bytes": 19713,
+        "sha256": "6dedefb0cc4c0dd44e5c77ad9407bc8f9ae2e023aa5f4943626f478302058f85",
+        "role": "Square padded transparent insignia for UI decals and digital iconography"
+      },
+      "branded_tile_png": {
+        "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/canonical_lauburu_symbol.png",
+        "resolution": "512x512",
+        "color_space": "RGB 8-bit",
+        "file_size_bytes": 36920,
+        "sha256": "aad58ba33bb328e20dbe87b6b5fc2a95ae4afc2f6a14bc89521c99c5eb5fcd92",
+        "role": "Solid black tile branded asset for web metadata and OpenGraph social cards"
+      },
+      "brand_typography_logo_png": {
+        "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/branding/lauburu_canonical_brand_logo.png",
+        "resolution": "512x512",
+        "color_space": "RGBA 8-bit",
+        "file_size_bytes": 46397,
+        "sha256": "617691af2b68f4a0600544e09ae2ed7568dc14673ee5f4338e3483d7050d58fa",
+        "role": "Master typography lockup with LAUBURU wordmark"
+      },
+      "product_render_black_edition_png": {
+        "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/products/bjj_apparel/lauburu_rashguard_color_sym_black.png",
+        "resolution": "1024x1024",
+        "color_space": "RGBA 8-bit",
+        "file_size_bytes": 778431,
+        "sha256": "24cdcb4a07ddfaf0ba76d454bea413d36126f0a3ec748b882cd2650ab05cab4e",
+        "role": "Primary product image for Black Belt Edition rashguard front view"
+      },
+      "product_showcase_set_png": {
+        "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/products/bjj_apparel/lauburu_set_black_color_sym_showcase.png",
+        "resolution": "2200x1280",
+        "color_space": "RGBA 8-bit",
+        "file_size_bytes": 1013310,
+        "sha256": "c0ea43d07a17a1529a1d3c97210371dd33ad3f5aa6002cc635163510bd8b3861",
+        "role": "High-res full kit showcase (Rashguard + Pro Fight Shorts)"
+      },
+      "master_collection_banner_png": {
+        "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/assets/products/bjj_apparel/lauburu_master_5belt_color_sym_collection.png",
+        "resolution": "1200x750",
+        "color_space": "RGBA 8-bit",
+        "file_size_bytes": 280531,
+        "sha256": "3b7f16a49d0f546e086580461938b9301580acfa41c5d19aae2d342e18cc8190",
+        "role": "5-belt rank collection header banner"
+      }
+    },
+    "placement_dimensions_and_specifications": {
+      "rashguard_sternum_emblem": {
+        "target_garment": "Short Sleeve Competition Compression Rashguard",
+        "pixel_dimensions_1024_canvas": "80px wide",
+        "physical_metric_width": "6.5 cm (2.56 inches)",
+        "anchor_coordinates": "(x = 512 - w/2, y = 330 - h/2)",
+        "vertical_placement": "Centered across sternum, exactly 5.0 cm below collar dip",
+        "color_rule": "Dyed in assigned belt rank accent color (Option B)",
+        "scaling_across_sizes": "Uniform 6.5 cm emblem width across all sizes (S through 2XL) anchored to anatomical sternum center"
+      },
+      "shorts_quad_emblem": {
+        "target_garment": "No-Gi Pro Competition Fight Shorts",
+        "pixel_dimensions_canvas": "90px wide",
+        "physical_metric_width": "7.5 cm (2.95 inches)",
+        "position": "Lower right quadriceps panel",
+        "offsets": "4.0 cm above bottom hem, 3.0 cm forward of side mobility slit",
+        "color_rule": "Dyed in assigned belt rank accent color (Option B)"
+      },
+      "ibjjf_flank_panels": {
+        "surface_area_requirement": "Greater than or equal to 10% of total garment surface area in registered belt rank color",
+        "regulatory_standard": "IBJJF Rulebook Article 8.1.3 (No-Gi Competition Uniforms)",
+        "construction": "Continuous underarm-to-bottom-hem vertical flank compression panels dyed in pure rank colorway",
+        "visual_contrast": "Crisp boundary against pitch stealth black (#141414) front and back torso body panels"
+      },
+      "stitching_and_seam_architecture": {
+        "stitch_type": "4-needle 6-thread flatlock stitching",
+        "thread_color": "100% Tone-on-tone stealth black (#141414)",
+        "contrast_rule": "Strict prohibition of contrasting white thread or visible white lock-loops",
+        "tensile_strength": "Heavy-duty nylon core thread with >= 4.5 kgf seam break strength",
+        "seam_feel": "Completely flat against skin to eliminate friction burns during guard passing and wrestling ties"
+      },
+      "back_hem_lumbar_drop_tail": {
+        "curvature": "+2.0 cm extended posterior drop-tail hem",
+        "ergonomic_function": "Guarantees complete lumbar coverage and eliminates skin exposure during deep guard inversions, berimbolos, and turtle transitions"
+      },
+      "silicone_grip_waistband": {
+        "elastic_width": "25 mm (1.0 inch)",
+        "grip_material": "Medical-grade non-slip micro-ribbed continuous silicone band",
+        "placement": "Heat-fused to interior bottom circumference hem",
+        "performance_standard": "Zero waistband ride-up under heavy friction against fight shorts waistband"
+      }
+    }
+  },
+  "shopify_product_graphql_mutation_payload": {
+    "graphql_mutation": "mutation CreateRashguardProductWithVariants($input: ProductInput!) {\n  productCreate(input: $input) {\n    product {\n      id\n      title\n      handle\n      status\n      totalVariants\n      variants(first: 50) {\n        edges {\n          node {\n            id\n            title\n            sku\n            barcode\n            price\n          }\n        }\n      }\n    }\n    userErrors {\n      field\n      message\n    }\n  }\n}",
+    "input": {
+      "title": "Lauburu Belt-Ranked Competition Rashguard",
+      "handle": "lauburu-belt-ranked-competition-rashguard",
+      "vendor": "Lauburu Combat",
+      "productType": "BJJ Rashguard",
+      "status": "DRAFT",
+      "tags": [
+        "BJJ Rashguard",
+        "IBJJF Approved",
+        "Compression Wear",
+        "No-Gi",
+        "Lauburu Combat",
+        "Sublimation",
+        "Ranked Rashguard",
+        "Belt Rank",
+        "250 GSM",
+        "Option B",
+        "Draft Locked",
+        "Competition Cut"
+      ],
+      "descriptionHtml": "<h3>Lauburu Belt-Ranked Competition Rashguard</h3>\n<p><strong>Design Architecture: Option B (Belt-Rank Coloured Emblems & Flank Accents)</strong></p>\n<p>Engineered for elite submission grapplers, Brazilian Jiu-Jitsu competitors, and intense no-gi training. Developed directly from digitized tournament pattern blocks of the Absolute MMA competition standard (Parcel EJ350397089AU) with anatomical muscle compression sculpting.</p>\n<ul>\n  <li><strong>Fabric Density & Touch:</strong> Heavyweight 250 GSM competition-grade poly-spandex (82% Polyester / 18% Spandex) featuring true 4-way omnidirectional stretch, ultra-high tensile recovery, and a low-glare matte athletic finish.</li>\n  <li><strong>Tournament Proven Fit:</strong> Contoured raglan sleeve construction terminating at mid-bicep to eliminate armpit bunching; engineered curved drop-tail posterior hem (+2.0 cm) ensures complete lower back coverage during deep guard inversions.</li>\n  <li><strong>Anti-Ride Silicone Hem:</strong> Continuous 25mm medical-grade silicone micro-ribbed elastic band heat-fused inside the bottom circumference to lock the rashguard securely over fight shorts.</li>\n  <li><strong>Zero-Chafe Seam Architecture:</strong> Low-profile 1.2 cm crew neckband lined with soft 10mm herringbone reinforcement tape; heavy-duty 4-needle 6-thread flatlock stitching in 100% tone-on-tone stealth black (#141414) thread.</li>\n  <li><strong>IBJJF Rulebook Compliance:</strong> 100% legal for official IBJJF No-Gi championship competition under Article 8.1.3, featuring rank-specific dyed sternum insignia and continuous underarm flank panels providing over 10% belt rank color surface area.</li>\n</ul>\n<p><em>Note: Product status is currently locked in DRAFT mode pending final physical mat testing and wash validation of the initial prototype production run.</em></p>",
+      "options": [
+        {
+          "name": "Size",
+          "values": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "2XL"
+          ]
+        },
+        {
+          "name": "Edition",
+          "values": [
+            "Black & Gold Sovereign Master",
+            "IBJJF Ranked White",
+            "IBJJF Ranked Blue",
+            "IBJJF Ranked Purple",
+            "IBJJF Ranked Brown",
+            "IBJJF Ranked Black"
+          ]
+        }
+      ],
+      "metafields": [
+        {
+          "namespace": "custom",
+          "key": "fabric_gsm",
+          "type": "number_integer",
+          "value": "250",
+          "description": "Fabric density in grams per square meter"
+        },
+        {
+          "namespace": "custom",
+          "key": "composition",
+          "type": "single_line_text_field",
+          "value": "82% Polyester / 18% Spandex Competition Grade",
+          "description": "Material blend ratio and grade"
+        },
+        {
+          "namespace": "custom",
+          "key": "ibjjf_compliant",
+          "type": "boolean",
+          "value": "true",
+          "description": "IBJJF Article 8.1.3 No-Gi uniform legality"
+        },
+        {
+          "namespace": "custom",
+          "key": "silicone_gripper",
+          "type": "single_line_text_field",
+          "value": "Continuous 25mm inner medical-grade silicone micro-ribbed elastic band",
+          "description": "Waistband non-slip silicone gripper specification"
+        },
+        {
+          "namespace": "custom",
+          "key": "care_instructions",
+          "type": "multi_line_text_field",
+          "value": "Machine wash cold (30\u00b0C / 86\u00b0F) inside out. Do not bleach. Hang dry in shade recommended; tumble dry low if necessary. Do not iron directly on graphics. Avoid direct friction with abrasive Velcro surfaces.",
+          "description": "Laundering and garment maintenance directives"
+        },
+        {
+          "namespace": "custom",
+          "key": "seam_construction",
+          "type": "single_line_text_field",
+          "value": "4-needle 6-thread flatlock stitching in 100% tone-on-tone stealth black thread (#141414)",
+          "description": "Structural seam construction specification"
+        },
+        {
+          "namespace": "custom",
+          "key": "pattern_block_origin",
+          "type": "single_line_text_field",
+          "value": "Digitized Absolute MMA Reference Garment (Parcel EJ350397089AU, Shaoxing Facility)",
+          "description": "Pattern block origin and provenance"
+        },
+        {
+          "namespace": "custom",
+          "key": "wholesale_tier1_aud",
+          "type": "single_line_text_field",
+          "value": "48.00",
+          "description": "B2B Academy wholesale tier 1 price (20-49 units)"
+        },
+        {
+          "namespace": "custom",
+          "key": "wholesale_tier2_aud",
+          "type": "single_line_text_field",
+          "value": "42.00",
+          "description": "B2B Academy wholesale tier 2 price (50+ units)"
+        },
+        {
+          "namespace": "custom",
+          "key": "factory_bulk_cogs_aud",
+          "type": "single_line_text_field",
+          "value": "28.50",
+          "description": "Bulk landed cost of goods sold per unit via sea freight consolidation in AUD (.81 USD)"
+        },
+        {
+          "namespace": "custom",
+          "key": "retail_price_aud",
+          "type": "single_line_text_field",
+          "value": "97.50",
+          "description": "DTC storefront retail price in AUD (.00 USD)"
+        },
+        {
+          "namespace": "custom",
+          "key": "compare_at_price_aud",
+          "type": "single_line_text_field",
+          "value": "120.00",
+          "description": "Reference compare-at price in AUD"
+        },
+        {
+          "namespace": "custom",
+          "key": "bulk_landed_cogs_aud",
+          "type": "single_line_text_field",
+          "value": "28.50",
+          "description": "Bulk landed COGS per unit in AUD via sea freight consolidation (.81 USD)"
+        },
+        {
+          "namespace": "custom",
+          "key": "gross_margin_percent",
+          "type": "single_line_text_field",
+          "value": "70.8",
+          "description": "Gross margin percentage on .50 AUD landed bulk COGS"
+        },
+        {
+          "namespace": "custom",
+          "key": "net_margin_percent",
+          "type": "single_line_text_field",
+          "value": "68.1",
+          "description": "Net margin percentage after .60 AUD payment gateway processing"
+        },
+        {
+          "namespace": "custom",
+          "key": "wholesale_channel_protection",
+          "type": "multi_line_text_field",
+          "value": "At $97.50 AUD ($65.00 USD) DTC retail, B2B wholesale gym partners (who purchase at $42.00\u2013$48.00 AUD and resell to students at $79.00\u2013$85.00 AUD) are strictly protected from being undercut by direct storefront sales, preserving 39.2%\u201350.6% gym margins ($31.00\u2013$43.00 AUD profit/unit).",
+          "description": "B2B wholesale gym partner channel protection and margin defense policy"
+        },
+        {
+          "namespace": "custom",
+          "key": "sea_freight_logistics_model",
+          "type": "multi_line_text_field",
+          "value": "Bulk replenishment utilizes sea freight consolidation at $18.81 USD landed ($28.50 AUD at 0.66 FX), maintaining 67.8%\u201372.4% gross margin and defending profitability across 0.60\u20130.70 AUD/USD exchange rates.",
+          "description": "Sea freight consolidation bulk logistics model and FX margin defense"
+        }
+      ],
+      "variants": [
+        {
+          "variant_index": 1,
+          "title": "S / Black & Gold Sovereign Master",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "S"
+            },
+            {
+              "name": "Edition",
+              "value": "Black & Gold Sovereign Master"
+            }
+          ],
+          "sku": "LBR-RG-S-BLK-GLD",
+          "barcode": "9358123101014",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "BLK-GLD",
+            "edition_name": "Black & Gold Sovereign Master",
+            "body_hex": "#141414",
+            "accent_hex": "#D4AF37",
+            "pantone_reference": "Pantone 871 C Metallic Gold",
+            "flank_panel_color": "#D4AF37",
+            "ibjjf_compliance": "Master Edition (Non-IBJJF / Superfight Legal)"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 2,
+          "title": "M / Black & Gold Sovereign Master",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "M"
+            },
+            {
+              "name": "Edition",
+              "value": "Black & Gold Sovereign Master"
+            }
+          ],
+          "sku": "LBR-RG-M-BLK-GLD",
+          "barcode": "9358123101021",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "BLK-GLD",
+            "edition_name": "Black & Gold Sovereign Master",
+            "body_hex": "#141414",
+            "accent_hex": "#D4AF37",
+            "pantone_reference": "Pantone 871 C Metallic Gold",
+            "flank_panel_color": "#D4AF37",
+            "ibjjf_compliance": "Master Edition (Non-IBJJF / Superfight Legal)"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 3,
+          "title": "L / Black & Gold Sovereign Master",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "L"
+            },
+            {
+              "name": "Edition",
+              "value": "Black & Gold Sovereign Master"
+            }
+          ],
+          "sku": "LBR-RG-L-BLK-GLD",
+          "barcode": "9358123101038",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "BLK-GLD",
+            "edition_name": "Black & Gold Sovereign Master",
+            "body_hex": "#141414",
+            "accent_hex": "#D4AF37",
+            "pantone_reference": "Pantone 871 C Metallic Gold",
+            "flank_panel_color": "#D4AF37",
+            "ibjjf_compliance": "Master Edition (Non-IBJJF / Superfight Legal)"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 4,
+          "title": "XL / Black & Gold Sovereign Master",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "XL"
+            },
+            {
+              "name": "Edition",
+              "value": "Black & Gold Sovereign Master"
+            }
+          ],
+          "sku": "LBR-RG-XL-BLK-GLD",
+          "barcode": "9358123101045",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "BLK-GLD",
+            "edition_name": "Black & Gold Sovereign Master",
+            "body_hex": "#141414",
+            "accent_hex": "#D4AF37",
+            "pantone_reference": "Pantone 871 C Metallic Gold",
+            "flank_panel_color": "#D4AF37",
+            "ibjjf_compliance": "Master Edition (Non-IBJJF / Superfight Legal)"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 5,
+          "title": "2XL / Black & Gold Sovereign Master",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "2XL"
+            },
+            {
+              "name": "Edition",
+              "value": "Black & Gold Sovereign Master"
+            }
+          ],
+          "sku": "LBR-RG-2XL-BLK-GLD",
+          "barcode": "9358123101052",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "BLK-GLD",
+            "edition_name": "Black & Gold Sovereign Master",
+            "body_hex": "#141414",
+            "accent_hex": "#D4AF37",
+            "pantone_reference": "Pantone 871 C Metallic Gold",
+            "flank_panel_color": "#D4AF37",
+            "ibjjf_compliance": "Master Edition (Non-IBJJF / Superfight Legal)"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 6,
+          "title": "S / IBJJF Ranked White",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "S"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked White"
+            }
+          ],
+          "sku": "LBR-RG-S-IBJ-WHT",
+          "barcode": "9358123101069",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-WHT",
+            "edition_name": "IBJJF Ranked White",
+            "body_hex": "#141414",
+            "accent_hex": "#FFFFFF",
+            "pantone_reference": "White",
+            "flank_panel_color": "#FFFFFF",
+            "ibjjf_compliance": "White Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 7,
+          "title": "M / IBJJF Ranked White",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "M"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked White"
+            }
+          ],
+          "sku": "LBR-RG-M-IBJ-WHT",
+          "barcode": "9358123101076",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-WHT",
+            "edition_name": "IBJJF Ranked White",
+            "body_hex": "#141414",
+            "accent_hex": "#FFFFFF",
+            "pantone_reference": "White",
+            "flank_panel_color": "#FFFFFF",
+            "ibjjf_compliance": "White Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 8,
+          "title": "L / IBJJF Ranked White",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "L"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked White"
+            }
+          ],
+          "sku": "LBR-RG-L-IBJ-WHT",
+          "barcode": "9358123101083",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-WHT",
+            "edition_name": "IBJJF Ranked White",
+            "body_hex": "#141414",
+            "accent_hex": "#FFFFFF",
+            "pantone_reference": "White",
+            "flank_panel_color": "#FFFFFF",
+            "ibjjf_compliance": "White Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 9,
+          "title": "XL / IBJJF Ranked White",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "XL"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked White"
+            }
+          ],
+          "sku": "LBR-RG-XL-IBJ-WHT",
+          "barcode": "9358123101090",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-WHT",
+            "edition_name": "IBJJF Ranked White",
+            "body_hex": "#141414",
+            "accent_hex": "#FFFFFF",
+            "pantone_reference": "White",
+            "flank_panel_color": "#FFFFFF",
+            "ibjjf_compliance": "White Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 10,
+          "title": "2XL / IBJJF Ranked White",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "2XL"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked White"
+            }
+          ],
+          "sku": "LBR-RG-2XL-IBJ-WHT",
+          "barcode": "9358123101106",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-WHT",
+            "edition_name": "IBJJF Ranked White",
+            "body_hex": "#141414",
+            "accent_hex": "#FFFFFF",
+            "pantone_reference": "White",
+            "flank_panel_color": "#FFFFFF",
+            "ibjjf_compliance": "White Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 11,
+          "title": "S / IBJJF Ranked Blue",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "S"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Blue"
+            }
+          ],
+          "sku": "LBR-RG-S-IBJ-BLU",
+          "barcode": "9358123101113",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BLU",
+            "edition_name": "IBJJF Ranked Blue",
+            "body_hex": "#141414",
+            "accent_hex": "#0047AB",
+            "pantone_reference": "Pantone 286 C Cobalt",
+            "flank_panel_color": "#0047AB",
+            "ibjjf_compliance": "Blue Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 12,
+          "title": "M / IBJJF Ranked Blue",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "M"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Blue"
+            }
+          ],
+          "sku": "LBR-RG-M-IBJ-BLU",
+          "barcode": "9358123101120",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BLU",
+            "edition_name": "IBJJF Ranked Blue",
+            "body_hex": "#141414",
+            "accent_hex": "#0047AB",
+            "pantone_reference": "Pantone 286 C Cobalt",
+            "flank_panel_color": "#0047AB",
+            "ibjjf_compliance": "Blue Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 13,
+          "title": "L / IBJJF Ranked Blue",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "L"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Blue"
+            }
+          ],
+          "sku": "LBR-RG-L-IBJ-BLU",
+          "barcode": "9358123101137",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BLU",
+            "edition_name": "IBJJF Ranked Blue",
+            "body_hex": "#141414",
+            "accent_hex": "#0047AB",
+            "pantone_reference": "Pantone 286 C Cobalt",
+            "flank_panel_color": "#0047AB",
+            "ibjjf_compliance": "Blue Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 14,
+          "title": "XL / IBJJF Ranked Blue",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "XL"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Blue"
+            }
+          ],
+          "sku": "LBR-RG-XL-IBJ-BLU",
+          "barcode": "9358123101144",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BLU",
+            "edition_name": "IBJJF Ranked Blue",
+            "body_hex": "#141414",
+            "accent_hex": "#0047AB",
+            "pantone_reference": "Pantone 286 C Cobalt",
+            "flank_panel_color": "#0047AB",
+            "ibjjf_compliance": "Blue Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 15,
+          "title": "2XL / IBJJF Ranked Blue",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "2XL"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Blue"
+            }
+          ],
+          "sku": "LBR-RG-2XL-IBJ-BLU",
+          "barcode": "9358123101151",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BLU",
+            "edition_name": "IBJJF Ranked Blue",
+            "body_hex": "#141414",
+            "accent_hex": "#0047AB",
+            "pantone_reference": "Pantone 286 C Cobalt",
+            "flank_panel_color": "#0047AB",
+            "ibjjf_compliance": "Blue Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 16,
+          "title": "S / IBJJF Ranked Purple",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "S"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Purple"
+            }
+          ],
+          "sku": "LBR-RG-S-IBJ-PUR",
+          "barcode": "9358123101168",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-PUR",
+            "edition_name": "IBJJF Ranked Purple",
+            "body_hex": "#141414",
+            "accent_hex": "#5C068C",
+            "pantone_reference": "Pantone 268 C Imperial Purple",
+            "flank_panel_color": "#5C068C",
+            "ibjjf_compliance": "Purple Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 17,
+          "title": "M / IBJJF Ranked Purple",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "M"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Purple"
+            }
+          ],
+          "sku": "LBR-RG-M-IBJ-PUR",
+          "barcode": "9358123101175",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-PUR",
+            "edition_name": "IBJJF Ranked Purple",
+            "body_hex": "#141414",
+            "accent_hex": "#5C068C",
+            "pantone_reference": "Pantone 268 C Imperial Purple",
+            "flank_panel_color": "#5C068C",
+            "ibjjf_compliance": "Purple Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 18,
+          "title": "L / IBJJF Ranked Purple",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "L"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Purple"
+            }
+          ],
+          "sku": "LBR-RG-L-IBJ-PUR",
+          "barcode": "9358123101182",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-PUR",
+            "edition_name": "IBJJF Ranked Purple",
+            "body_hex": "#141414",
+            "accent_hex": "#5C068C",
+            "pantone_reference": "Pantone 268 C Imperial Purple",
+            "flank_panel_color": "#5C068C",
+            "ibjjf_compliance": "Purple Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 19,
+          "title": "XL / IBJJF Ranked Purple",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "XL"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Purple"
+            }
+          ],
+          "sku": "LBR-RG-XL-IBJ-PUR",
+          "barcode": "9358123101199",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-PUR",
+            "edition_name": "IBJJF Ranked Purple",
+            "body_hex": "#141414",
+            "accent_hex": "#5C068C",
+            "pantone_reference": "Pantone 268 C Imperial Purple",
+            "flank_panel_color": "#5C068C",
+            "ibjjf_compliance": "Purple Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 20,
+          "title": "2XL / IBJJF Ranked Purple",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "2XL"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Purple"
+            }
+          ],
+          "sku": "LBR-RG-2XL-IBJ-PUR",
+          "barcode": "9358123101205",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-PUR",
+            "edition_name": "IBJJF Ranked Purple",
+            "body_hex": "#141414",
+            "accent_hex": "#5C068C",
+            "pantone_reference": "Pantone 268 C Imperial Purple",
+            "flank_panel_color": "#5C068C",
+            "ibjjf_compliance": "Purple Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 21,
+          "title": "S / IBJJF Ranked Brown",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "S"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Brown"
+            }
+          ],
+          "sku": "LBR-RG-S-IBJ-BRN",
+          "barcode": "9358123101212",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BRN",
+            "edition_name": "IBJJF Ranked Brown",
+            "body_hex": "#141414",
+            "accent_hex": "#552D20",
+            "pantone_reference": "Pantone 4625 C Espresso Brown",
+            "flank_panel_color": "#552D20",
+            "ibjjf_compliance": "Brown Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 22,
+          "title": "M / IBJJF Ranked Brown",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "M"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Brown"
+            }
+          ],
+          "sku": "LBR-RG-M-IBJ-BRN",
+          "barcode": "9358123101229",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BRN",
+            "edition_name": "IBJJF Ranked Brown",
+            "body_hex": "#141414",
+            "accent_hex": "#552D20",
+            "pantone_reference": "Pantone 4625 C Espresso Brown",
+            "flank_panel_color": "#552D20",
+            "ibjjf_compliance": "Brown Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 23,
+          "title": "L / IBJJF Ranked Brown",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "L"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Brown"
+            }
+          ],
+          "sku": "LBR-RG-L-IBJ-BRN",
+          "barcode": "9358123101236",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BRN",
+            "edition_name": "IBJJF Ranked Brown",
+            "body_hex": "#141414",
+            "accent_hex": "#552D20",
+            "pantone_reference": "Pantone 4625 C Espresso Brown",
+            "flank_panel_color": "#552D20",
+            "ibjjf_compliance": "Brown Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 24,
+          "title": "XL / IBJJF Ranked Brown",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "XL"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Brown"
+            }
+          ],
+          "sku": "LBR-RG-XL-IBJ-BRN",
+          "barcode": "9358123101243",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BRN",
+            "edition_name": "IBJJF Ranked Brown",
+            "body_hex": "#141414",
+            "accent_hex": "#552D20",
+            "pantone_reference": "Pantone 4625 C Espresso Brown",
+            "flank_panel_color": "#552D20",
+            "ibjjf_compliance": "Brown Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 25,
+          "title": "2XL / IBJJF Ranked Brown",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "2XL"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Brown"
+            }
+          ],
+          "sku": "LBR-RG-2XL-IBJ-BRN",
+          "barcode": "9358123101250",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BRN",
+            "edition_name": "IBJJF Ranked Brown",
+            "body_hex": "#141414",
+            "accent_hex": "#552D20",
+            "pantone_reference": "Pantone 4625 C Espresso Brown",
+            "flank_panel_color": "#552D20",
+            "ibjjf_compliance": "Brown Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 26,
+          "title": "S / IBJJF Ranked Black",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "S"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Black"
+            }
+          ],
+          "sku": "LBR-RG-S-IBJ-BLK",
+          "barcode": "9358123101267",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BLK",
+            "edition_name": "IBJJF Ranked Black",
+            "body_hex": "#141414",
+            "accent_hex": "#C8102E",
+            "pantone_reference": "Pantone 186 C Crimson Red Bar",
+            "flank_panel_color": "#C8102E",
+            "ibjjf_compliance": "Black Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 27,
+          "title": "M / IBJJF Ranked Black",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "M"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Black"
+            }
+          ],
+          "sku": "LBR-RG-M-IBJ-BLK",
+          "barcode": "9358123101274",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BLK",
+            "edition_name": "IBJJF Ranked Black",
+            "body_hex": "#141414",
+            "accent_hex": "#C8102E",
+            "pantone_reference": "Pantone 186 C Crimson Red Bar",
+            "flank_panel_color": "#C8102E",
+            "ibjjf_compliance": "Black Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 28,
+          "title": "L / IBJJF Ranked Black",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "L"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Black"
+            }
+          ],
+          "sku": "LBR-RG-L-IBJ-BLK",
+          "barcode": "9358123101281",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BLK",
+            "edition_name": "IBJJF Ranked Black",
+            "body_hex": "#141414",
+            "accent_hex": "#C8102E",
+            "pantone_reference": "Pantone 186 C Crimson Red Bar",
+            "flank_panel_color": "#C8102E",
+            "ibjjf_compliance": "Black Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 29,
+          "title": "XL / IBJJF Ranked Black",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "XL"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Black"
+            }
+          ],
+          "sku": "LBR-RG-XL-IBJ-BLK",
+          "barcode": "9358123101298",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BLK",
+            "edition_name": "IBJJF Ranked Black",
+            "body_hex": "#141414",
+            "accent_hex": "#C8102E",
+            "pantone_reference": "Pantone 186 C Crimson Red Bar",
+            "flank_panel_color": "#C8102E",
+            "ibjjf_compliance": "Black Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        },
+        {
+          "variant_index": 30,
+          "title": "2XL / IBJJF Ranked Black",
+          "selectedOptions": [
+            {
+              "name": "Size",
+              "value": "2XL"
+            },
+            {
+              "name": "Edition",
+              "value": "IBJJF Ranked Black"
+            }
+          ],
+          "sku": "LBR-RG-2XL-IBJ-BLK",
+          "barcode": "9358123101304",
+          "price": "97.50",
+          "compareAtPrice": "120.00",
+          "currency": "AUD",
+          "inventoryPolicy": "DENY",
+          "inventoryManagement": "SHOPIFY",
+          "weight": 250,
+          "weightUnit": "GRAMS",
+          "requiresShipping": true,
+          "taxable": true,
+          "edition_metadata": {
+            "edition_code": "IBJ-BLK",
+            "edition_name": "IBJJF Ranked Black",
+            "body_hex": "#141414",
+            "accent_hex": "#C8102E",
+            "pantone_reference": "Pantone 186 C Crimson Red Bar",
+            "flank_panel_color": "#C8102E",
+            "ibjjf_compliance": "Black Belt"
+          },
+          "pricing_tiers": {
+            "dtc_retail_aud": 97.5,
+            "dtc_retail_usd": 65.0,
+            "dtc_compare_at_aud": 120.0,
+            "bulk_landed_cogs_aud": 28.5,
+            "bulk_landed_cogs_usd": 18.81,
+            "factory_base_cogs_usd": 24.0,
+            "gym_wholesale_tier1_aud": 48.0,
+            "gym_wholesale_tier2_aud": 42.0,
+            "dtc_gross_margin_aud": 69.0,
+            "dtc_gross_margin_percent": 70.8,
+            "shopify_payment_fee_aud": 2.6,
+            "dtc_net_margin_aud": 66.4,
+            "dtc_net_margin_percent": 68.1,
+            "wholesale_protection_narrative": "At $97.50 AUD DTC storefront price, B2B wholesale partner gyms (buying at $42\u2013$48 AUD and reselling at $79\u2013$85 AUD) are fully protected from being undercut.",
+            "wholesale_t1_margin_percent": 40.63,
+            "wholesale_t2_margin_percent": 32.14
+          }
+        }
+      ]
+    }
+  },
+  "subliminator_fulfillment_and_webhook_architecture": {
+    "ingress_webhook_endpoint": {
+      "route": "/api/webhooks/shopify/orders-paid",
+      "topic": "orders/paid",
+      "http_method": "POST",
+      "authentication": {
+        "header": "X-Shopify-Hmac-Sha256",
+        "algorithm": "HMAC-SHA256",
+        "secret_env_var": "SHOPIFY_WEBHOOK_SECRET",
+        "validation_logic": "crypto.timingSafeEqual or hmac.compare_digest(computed_hash, header_hash)"
+      },
+      "order_routing_filter": {
+        "sku_prefix": "LBR-RG-",
+        "action_match": "Trigger Subliminator automated order creation saga",
+        "action_non_match": "Route to local 3PL / Melbourne HQ inventory dispatcher",
+        "gate_circuit_breaker": {
+          "enforce_sample_approval_gate": true,
+          "gate_status_path": "inventory_governance.physical_sample_gate_invariants.gate_status",
+          "required_sample_gate_status": "APPROVED",
+          "action_if_gate_locked": "HOLD_ORDER_IN_QUARANTINE",
+          "action_if_gate_approved": "Trigger Subliminator automated order creation saga",
+          "quarantine_queue": "local_quarantine_queue",
+          "circuit_breaker_rule": "The webhook order routing handler MUST verify that physical_sample_gate_invariants.gate_status == \"APPROVED\" before dispatching line items to Subliminator API. If not approved (e.g. status is LOCKED_UNTIL_PHYSICAL_SAMPLE_APPROVAL), orders are quarantined in local_quarantine_queue and not dispatched to factory."
+        }
+      }
+    },
+    "subliminator_api_dispatch": {
+      "endpoint": "POST https://api.subliminator.com/v1/orders",
+      "auth_header": "Authorization: Bearer ${SUBLIMINATOR_API_KEY}",
+      "content_type": "application/json",
+      "blueprint_reference": {
+        "blueprint_id": 1428,
+        "title": "Subliminator Men's Short Sleeve Rashguard (Custom 1:1 Absolute MMA Block)",
+        "production_sla": "3-5 business days print-and-sew turnaround",
+        "facility": "Shaoxing Sred Apparel Co., Zhejiang, China"
+      },
+      "print_file_specifications": {
+        "resolution_dpi": 300,
+        "color_space": "CMYK (FOGRA39 / US Web Coated SWOP v2)",
+        "display_proofing": "sRGB IEC61966-2.1",
+        "bleed_margin_inches": 0.5,
+        "bleed_margin_pixels_300dpi": 150,
+        "inner_safe_margin_inches": 1.0,
+        "heat_press_parameters": {
+          "temperature_celsius": 200,
+          "temperature_fahrenheit": 392,
+          "pressure_bar": 4.5,
+          "dwell_time_seconds": 35
+        }
+      },
+      "panel_blueprint_templates": [
+        {
+          "panel_name": "Front Torso",
+          "dimensions_inches": "20.0 x 30.0",
+          "resolution_pixels": "6000 x 9000",
+          "description": "Pitch stealth black (#141414) base with 80px/6.5cm Lauburu emblem centered over sternum in rank color"
+        },
+        {
+          "panel_name": "Back Torso",
+          "dimensions_inches": "20.0 x 32.0",
+          "resolution_pixels": "6000 x 9600",
+          "description": "Pitch stealth black (#141414) base featuring +2.0 cm drop-tail curved lumbar hem"
+        },
+        {
+          "panel_name": "Left Raglan Sleeve",
+          "dimensions_inches": "15.0 x 15.0",
+          "resolution_pixels": "4500 x 4500",
+          "description": "Tapered mid-bicep raglan cut in pitch black with tone-on-tone stealth emblem"
+        },
+        {
+          "panel_name": "Right Raglan Sleeve",
+          "dimensions_inches": "15.0 x 15.0",
+          "resolution_pixels": "4500 x 4500",
+          "description": "Tapered mid-bicep raglan cut in pitch black with tone-on-tone stealth emblem"
+        },
+        {
+          "panel_name": "Underarm Flank Panels (2x)",
+          "dimensions_inches": "6.0 x 22.0",
+          "resolution_pixels": "1800 x 6600",
+          "description": "Left and Right vertical flank panels dyed in assigned Belt Rank colorway (IBJJF 10% rule)"
+        },
+        {
+          "panel_name": "Crew Neck Collar",
+          "dimensions_inches": "20.0 x 1.5",
+          "resolution_pixels": "6000 x 450",
+          "description": "Finished 1.2 cm self-fabric collar band in pitch stealth black"
+        },
+        {
+          "panel_name": "Inside Neck Label",
+          "dimensions_inches": "2.5 x 2.5",
+          "resolution_pixels": "750 x 750",
+          "description": "Sublimated heat-seal brand insignia, care icons, size marker, and fabric ratio"
+        }
+      ],
+      "payload_mapping_template": {
+        "external_id": "gid://shopify/Order/${shopify_order_id}",
+        "shipping_method": "EXPRESS_TRACKED",
+        "recipient": {
+          "name": "${shipping_address.name}",
+          "address1": "${shipping_address.address1}",
+          "address2": "${shipping_address.address2}",
+          "city": "${shipping_address.city}",
+          "province": "${shipping_address.province}",
+          "postal_code": "${shipping_address.zip}",
+          "country_code": "${shipping_address.country_code}",
+          "phone": "${shipping_address.phone}"
+        },
+        "items": [
+          {
+            "blueprint_id": 1428,
+            "sku": "${line_item.sku}",
+            "quantity": "${line_item.quantity}",
+            "print_files": {
+              "front": "https://storage.lauburu.mesh/assets/print_ready/${line_item.sku}_FRONT_300DPI.png",
+              "back": "https://storage.lauburu.mesh/assets/print_ready/${line_item.sku}_BACK_300DPI.png",
+              "left_sleeve": "https://storage.lauburu.mesh/assets/print_ready/${line_item.sku}_SLEEVE_L_300DPI.png",
+              "right_sleeve": "https://storage.lauburu.mesh/assets/print_ready/${line_item.sku}_SLEEVE_R_300DPI.png",
+              "flank_panels": "https://storage.lauburu.mesh/assets/print_ready/${line_item.sku}_FLANK_300DPI.png",
+              "neck_inner": "https://storage.lauburu.mesh/assets/print_ready/${line_item.sku}_LABEL_300DPI.png"
+            }
+          }
+        ]
+      }
+    },
+    "egress_shipment_webhook_handler": {
+      "source_event": "Subliminator Webhook (shipment:created)",
+      "http_method": "POST",
+      "shopify_graphql_mutation": "mutation FulfillmentCreateV2($fulfillment: FulfillmentV2Input!) {\n  fulfillmentCreateV2(fulfillment: $fulfillment) {\n    fulfillment {\n      id\n      status\n      trackingInfo {\n        company\n        number\n        url\n      }\n    }\n    userErrors {\n      field\n      message\n    }\n  }\n}",
+      "mutation_variables_mapping": {
+        "fulfillment": {
+          "lineItemsByFulfillmentOrder": [
+            {
+              "fulfillmentOrderId": "gid://shopify/FulfillmentOrder/${subliminator_event.shopify_fulfillment_order_id}"
+            }
+          ],
+          "trackingInfo": {
+            "company": "${subliminator_event.carrier_name}",
+            "number": "${subliminator_event.tracking_code}",
+            "url": "${subliminator_event.tracking_url}"
+          },
+          "notifyCustomer": true
+        }
+      }
+    }
+  },
+  "inventory_governance": {
+    "model_type": "Dual-Location Virtual POD vs Tracked Physical Sample Vault",
+    "locations": {
+      "location_virtual_pod": {
+        "location_name": "Subliminator POD Virtual Facility",
+        "shopify_location_gid": "gid://shopify/Location/9801234",
+        "role": "On-Demand Sublimation Production",
+        "inventory_policy": "DENY",
+        "tracked": false,
+        "available_stock": "0_LOCKED_PENDING_GATE_APPROVAL",
+        "fulfillment_service": "subliminator",
+        "governance_rule": "Virtual POD inventory is locked at 0 with DENY backorder policy until physical_sample_gate_invariants.gate_status transitions to APPROVED. Once approved, virtual inventory policy may transition to CONTINUE for on-demand fulfillment."
+      },
+      "location_tracked_sample_vault": {
+        "location_name": "Melbourne HQ Physical Sample Vault",
+        "shopify_location_gid": "gid://shopify/Location/9805678",
+        "role": "Physical Samples, Mat Testing & B2B In-Hand Inspection",
+        "inventory_policy": "DENY",
+        "tracked": true,
+        "available_stock": "EXACT_COUNT",
+        "initial_inventory_allocation": {
+          "LBR-RG-M-IBJ-BLK": 1
+        },
+        "fulfillment_service": "manual",
+        "governance_rule": "Physical samples are locked to prevent accidental sale; reserved strictly for mat-testing and tactile academy demonstration"
+      }
+    },
+    "physical_sample_gate_invariants": {
+      "gate_status": "LOCKED_UNTIL_PHYSICAL_SAMPLE_APPROVAL",
+      "physical_sample_in_hand": false,
+      "mat_testing_complete": false,
+      "laundry_wash_testing_complete": false,
+      "reference_parcel_tracking": "EJ350397089AU",
+      "shaoxing_facility_status": "Reference garments delivered; 1:1 Absolute MMA recreation confirmed workable by Hicham Amrani",
+      "mandatory_testing_protocol": [
+        {
+          "stage": "1. Tactile & Measurement Audit",
+          "acceptance_criteria": "Verify 250 GSM thickness, true 82/18 Poly-Spandex feel, +2.0 cm lumbar drop tail, and 25mm silicone inner elastic band"
+        },
+        {
+          "stage": "2. Live Sparring Mat Test",
+          "acceptance_criteria": "5 intensive live rolling rounds (minimum 6 minutes each) in full guard, half guard, and wrestling scrambles. Verify zero silicone waistband ride-up"
+        },
+        {
+          "stage": "3. Laundry & Durability Audit",
+          "acceptance_criteria": "5 consecutive 40\u00b0C machine wash cycles with standard detergent. Verify zero seam fraying, zero print fading (Grade 4.5+), and >= 98% tensile elastic recovery"
+        }
+      ]
+    },
+    "financial_unit_economics_and_margin_defense": {
+      "currency": "AUD",
+      "fx_aud_usd_benchmark": 0.66,
+      "dtc_channel": {
+        "retail_price_aud": 97.5,
+        "retail_price_usd": 65.0,
+        "compare_at_price_aud": 120.0,
+        "bulk_landed_cogs_aud": 28.5,
+        "bulk_landed_cogs_usd": 18.81,
+        "factory_base_cogs_usd": 24.0,
+        "gross_profit_aud": 69.0,
+        "gross_margin_percent": 70.8,
+        "payment_processing_fee_aud": 2.6,
+        "net_profit_aud": 66.4,
+        "net_margin_percent": 68.1,
+        "wholesale_protection_narrative": "At $97.50 AUD ($65.00 USD) DTC retail, B2B wholesale gym partners (who purchase at $42.00\u2013$48.00 AUD and resell to students at $79.00\u2013$85.00 AUD) are strictly protected from being undercut by direct storefront sales, preserving 39.2%\u201350.6% gym margins ($31.00\u2013$43.00 AUD profit/unit).",
+        "margin_defense_note": "Bulk landed COGS of $28.50 AUD yields 70.8% Gross Margin ($69.00 AUD) and 68.1% Net Margin ($66.40 AUD) after payment processing, satisfying Rule 108 margin defense.",
+        "factory_bulk_cogs_aud": 28.5
+      },
+      "b2b_wholesale_channel": {
+        "tier_1_wholesale": {
+          "moq_units": 20,
+          "wholesale_price_per_unit_aud": 48.0,
+          "academy_retail_price_range_aud": "79.00 - 85.00",
+          "academy_profit_per_unit_aud": "31.00 - 37.00",
+          "academy_margin_percent": "39.2% - 43.5%",
+          "lauburu_net_profit_per_unit_aud": 11.64,
+          "mandatory_deposit": "50% non-refundable upfront deposit required before production initiation"
+        },
+        "tier_2_wholesale": {
+          "moq_units": 50,
+          "wholesale_price_per_unit_aud": 42.0,
+          "academy_retail_price_range_aud": "79.00 - 85.00",
+          "academy_profit_per_unit_aud": "37.00 - 43.00",
+          "academy_margin_percent": "46.8% - 50.6%",
+          "lauburu_net_profit_per_unit_aud": 5.64,
+          "mandatory_deposit": "50% non-refundable upfront deposit required before production initiation"
+        }
+      },
+      "sea_freight_consolidation_logistics_model": {
+        "model_name": "Sea Freight Consolidation Bulk Replenishment (200+ Unit Batches)",
+        "landed_cost_usd": 18.81,
+        "landed_cost_aud_at_066_fx": 28.5,
+        "base_factory_fob_usd": 24.0,
+        "sea_freight_per_unit_usd": 1.0,
+        "customs_and_import_duty_usd": 1.375,
+        "consolidation_port": "Ningbo-Zhoushan / Shanghai Port to Port of Melbourne",
+        "transit_time_days": "18-24 days ocean voyage + 4 days customs clearance",
+        "fx_margin_defense_matrix_across_rates": {
+          "fx_0_60": {
+            "landed_cogs_aud": 31.35,
+            "gross_profit_aud": 66.15,
+            "gross_margin_percent": 67.85,
+            "payment_processing_fee_aud": 2.6,
+            "net_profit_aud": 63.55,
+            "net_margin_percent": 65.18,
+            "gate_compliance": "PASS (>=65.0% threshold maintained in extreme AUD depreciation)"
+          },
+          "fx_0_62": {
+            "landed_cogs_aud": 30.34,
+            "gross_profit_aud": 67.16,
+            "gross_margin_percent": 68.88,
+            "payment_processing_fee_aud": 2.6,
+            "net_profit_aud": 64.56,
+            "net_margin_percent": 66.22,
+            "gate_compliance": "PASS"
+          },
+          "fx_0_64": {
+            "landed_cogs_aud": 29.39,
+            "gross_profit_aud": 68.11,
+            "gross_margin_percent": 69.86,
+            "payment_processing_fee_aud": 2.6,
+            "net_profit_aud": 65.51,
+            "net_margin_percent": 67.19,
+            "gate_compliance": "PASS"
+          },
+          "fx_0_66": {
+            "landed_cogs_aud": 28.5,
+            "gross_profit_aud": 69.0,
+            "gross_margin_percent": 70.77,
+            "payment_processing_fee_aud": 2.6,
+            "net_profit_aud": 66.4,
+            "net_margin_percent": 68.1,
+            "gate_compliance": "PASS (Canonical Baseline: 70.8% Gross / 68.1% Net)"
+          },
+          "fx_0_68": {
+            "landed_cogs_aud": 27.66,
+            "gross_profit_aud": 69.84,
+            "gross_margin_percent": 71.63,
+            "payment_processing_fee_aud": 2.6,
+            "net_profit_aud": 67.24,
+            "net_margin_percent": 68.96,
+            "gate_compliance": "PASS"
+          },
+          "fx_0_70": {
+            "landed_cogs_aud": 26.87,
+            "gross_profit_aud": 70.63,
+            "gross_margin_percent": 72.44,
+            "payment_processing_fee_aud": 2.6,
+            "net_profit_aud": 68.03,
+            "net_margin_percent": 69.77,
+            "gate_compliance": "PASS"
+          }
+        },
+        "air_express_fallback_model": {
+          "landed_cost_usd": 28.875,
+          "landed_cost_aud_at_066_fx": 43.75,
+          "minimum_viable_retail_price_aud_for_65_pct_margin_at_060_fx": 137.5,
+          "operational_policy": "Air express reserved strictly for initial physical prototypes and emergency stockouts; sea freight consolidation mandatory for all commercial bulk replenishment runs."
+        }
+      }
+    }
+  },
+  "checkout_validation": {
+    "shopify_function_api": "cart_checkout_validation",
+    "wasm_target": "dist/cart_checkout_validation.wasm",
+    "enforce_sample_gate": true,
+    "gate_status_source": "inventory_governance.physical_sample_gate_invariants.gate_status",
+    "required_gate_status": "APPROVED",
+    "block_action": "REJECT_CHECKOUT",
+    "block_message": "Production is currently locked pending physical sample approval. Customer orders cannot be processed until physical mat validation is complete.",
+    "bypass_prevention": "Platform-level GraphQL checkout validation rule executes inside Shopify Core prior to payment authorization."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "step": 1741,
+  "loss": 0.0801,
+  "accuracy": 99.71,
+  "best_routing_weights": {
+    "tb4_dma_10g": 0.988,
+    "gbe_copper": 0.742,
+    "wifi7_mlo": 0.355,
+    "tailscale_wireguard": 0.395,
+    "ai_shard_routing_factors": {
+      "avg_tps": 25.94,
+      "shard_latency_ms": 125.95,
+      "bottleneck_penalty_applied": true
+    }
+  },
+  "last_updated": "2026-10-12T04:32:59Z"
+}

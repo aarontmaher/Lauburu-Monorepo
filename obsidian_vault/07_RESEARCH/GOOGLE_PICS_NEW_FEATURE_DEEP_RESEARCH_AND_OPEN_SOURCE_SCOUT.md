@@ -48,9 +48,9 @@ sequenceDiagram
 
 ### 2.2 Clean-Room Reproduction Sandbox Architecture
 In accordance with Rule #4 (Sandbox Isolation), we have implemented a clean-room specification and Python engine at:
-- **Specification:** [`01_apps/screen_lens/sandbox_evolution/reverse_engineering/specs/SPEC_GOOGLE_PICS_OBJECT_INPAINTING.md`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/specs/SPEC_GOOGLE_PICS_OBJECT_INPAINTING.md)
-- **Clean-Room Engine:** [`01_apps/screen_lens/sandbox_evolution/reverse_engineering/clean_room_impl/google_pics_clean_room.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/clean_room_impl/google_pics_clean_room.py)
-- **Test Harness:** [`test_google_pics_clean_room.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/test_harness/test_google_pics_clean_room.py) (**100% Exit Code 0, 3/3 tests passing**).
+- **Specification:** [`01_apps/screen_lens/sandbox_evolution/reverse_engineering/specs/SPEC_GOOGLE_PICS_OBJECT_INPAINTING.md`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/specs/SPEC_GOOGLE_PICS_OBJECT_INPAINTING.md)
+- **Clean-Room Engine:** [`01_apps/screen_lens/sandbox_evolution/reverse_engineering/clean_room_impl/google_pics_clean_room.py`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/clean_room_impl/google_pics_clean_room.py)
+- **Test Harness:** [`test_google_pics_clean_room.py`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/test_harness/test_google_pics_clean_room.py) (**100% Exit Code 0, 3/3 tests passing**).
 
 #### Key Clean-Room Algorithms:
 1. **Bidirectional Run-Length Encoding (`encode_rle_mask` / `decode_rle_mask`):** Reduces 1080p binary mask transmission payloads from ~2.07 MB to under 1.2 KB.

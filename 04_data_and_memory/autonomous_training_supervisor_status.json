@@ -1,0 +1,29 @@
+{
+  "cycle": 168,
+  "timestamp": 1788545985.10974,
+  "host_headroom_gb": 0.97,
+  "ram_sanctuary_ok": false,
+  "quotas": {
+    "google_ai_studio": {
+      "limit": 1500,
+      "consumed": 142,
+      "remaining": 1358,
+      "can_call_now": true
+    },
+    "nvidia_nim": {
+      "limit": 2000,
+      "consumed": 328,
+      "remaining": 1672,
+      "can_call_now": true
+    },
+    "cloudflare_workers_ai": {
+      "limit": 10000,
+      "consumed": 920,
+      "remaining": 9080,
+      "can_call_now": true
+    }
+  },
+  "actions_executed": [
+    "RAM_SANCTUARY_PROTECTION: Host disk/RAM headroom 0.97GB < 9.6GB. Compute yielded."
+  ]
+}

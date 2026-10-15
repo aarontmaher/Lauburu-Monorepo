@@ -563,7 +563,7 @@ class TailscaleAdapter:
         peers = [
             {"node_name": "Mac_Node", "ip": "100.119.199.76", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L1"},
             {"node_name": "MacBook_Pro", "ip": "100.103.212.21", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L2"},
-            {"node_name": "Linux_Head_Node", "ip": "100.101.39.98", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L3"},
+            {"node_name": "Linux_Mini", "ip": "100.101.39.98", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L3"},
             {"node_name": "Linux_Tablet", "ip": "100.81.92.125", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L4"},
             {"node_name": "MacBook_Air", "ip": "100.93.158.96", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L5"},
             {"node_name": "Pixel_10_Pro_XL", "ip": "100.73.38.87", "status": "ONLINE", "relay": "Direct WireGuard", "layer": "L6"},
@@ -629,7 +629,7 @@ class AccelerateAdapter:
     async def get_environment() -> AccelerateEnvInfo:
         return AccelerateEnvInfo(
             framework="PyTorch 2.6.0",
-            backend="Apple Silicon MPS + AMD Ryzen XDNA",
+            backend="Apple Silicon MPS + Intel 2018 Mac Mini XDNA",
             num_processes=4,
             mixed_precision="bf16",
             distributed_type="MULTI_PROCESS",
@@ -651,7 +651,7 @@ class LlamaRpcAdapter:
         endpoints = [
             {"endpoint": "127.0.0.1:50052", "name": "Mac_Node (Host M4 Pro)", "layers": 24, "latency_ms": 0.05, "status": "ACTIVE"},
             {"endpoint": "169.254.187.138:50052", "name": "MacBook_Pro (TB4 Bridge)", "layers": 28, "latency_ms": 0.28, "status": "ACTIVE"},
-            {"endpoint": "100.101.39.98:50052", "name": "Linux_Head_Node (Ryzen 7)", "layers": 28, "latency_ms": 1.20, "status": "ACTIVE"},
+            {"endpoint": "100.101.39.98:50052", "name": "Linux_Mini (Ryzen 7)", "layers": 28, "latency_ms": 1.20, "status": "ACTIVE"},
         ]
         return LlamaRpcClusterStatus(
             tensor_split="-ts 28,28,24",
@@ -1063,7 +1063,7 @@ class TestGroup4DistributedMeshAdapters:
         peer_names = [p["node_name"] for p in status.peers]
         assert "Mac_Node" in peer_names
         assert "MacBook_Pro" in peer_names
-        assert "Linux_Head_Node" in peer_names
+        assert "Linux_Mini" in peer_names
         assert "MacBook_Air" in peer_names
         assert "Pixel_10_Pro_XL" in peer_names
 

@@ -32,7 +32,7 @@ consensus_score: 0.999981
 > "The idea of running an M4 MacBook Air as an unmonitored production MCP server has critical hardware and thermal traps. The MacBook Air is **fanless**. Under sustained 24/7 MCP traffic or heavy local inference, it will thermally throttle its CPU/GPU to prevent damage, causing latency spikes that break SSE keepalives. Furthermore, running the MCP server purely on the Air creates a single point of failure if the Air enters macOS sleep mode or Wi-Fi drops. You cannot rely on consumer defaults."
 
 #### 4. Training Engine (TRL / PEFT DPO Pipeline)
-> "Every tool execution, telemetry query, and debate consensus must be serialized into `/Users/aaron/DFS_UNIFIED/lora_datasets/` without simulated noise. The DPO training engine on the M4 Air and Mac Mini requires authentic execution pairs to optimize model routing and prevent hallucinated tool calls."
+> "Every tool execution, telemetry query, and debate consensus must be serialized into `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/` without simulated noise. The DPO training engine on the M4 Air and Mac Mini requires authentic execution pairs to optimize model routing and prevent hallucinated tool calls."
 
 ---
 

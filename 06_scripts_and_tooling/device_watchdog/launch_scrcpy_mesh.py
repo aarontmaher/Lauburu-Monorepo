@@ -33,7 +33,7 @@ ROUTER_SSH = "root@192.168.8.1"
 DEVICE_CONFIGS: Dict[str, Dict[str, Any]] = {
     "s20": {
         "name": "Samsung Galaxy S20+ (Layer 7 UI Tester)",
-        "ip": "100.84.40.95",
+        "ip": "100.78.206.96",
         "port": 5555,
         "alt_ip": "192.168.8.11",
         "router_usb_serial": "R3CN40CJJ1R",

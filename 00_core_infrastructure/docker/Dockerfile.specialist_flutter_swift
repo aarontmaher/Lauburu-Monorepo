@@ -1,0 +1,49 @@
+# ==============================================================================
+# Lauburu Flutter & Swift Specialist Container
+# Builds and serves the production Port 4000 App with Rust FFI backend,
+# Dart / Flutter Web, and Swift tooling.
+# ==============================================================================
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+# Install dependencies & build tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    unzip \
+    xz-utils \
+    zip \
+    libglu1-mesa \
+    ca-certificates \
+    python3 \
+    python3-pip \
+    nodejs \
+    npm \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Rust toolchain
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:$PATH
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+
+# Install Flutter SDK
+ENV FLUTTER_HOME=/usr/local/flutter \
+    PATH=/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin:$PATH
+RUN git clone https://github.com/flutter/flutter.git -b stable --depth 1 $FLUTTER_HOME && \
+    flutter config --no-analytics && \
+    flutter precache --web
+
+WORKDIR /workspace
+
+# Copy launch script
+COPY 06_scripts_and_tooling/flutter_swift_container_entrypoint.sh /usr/local/bin/flutter_swift_container_entrypoint.sh
+RUN chmod +x /usr/local/bin/flutter_swift_container_entrypoint.sh
+
+EXPOSE 4000 4001
+
+ENTRYPOINT ["/usr/local/bin/flutter_swift_container_entrypoint.sh"]

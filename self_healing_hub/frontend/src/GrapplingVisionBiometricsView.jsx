@@ -314,7 +314,7 @@ export default function GrapplingVisionBiometricsView() {
       {activeTab === 'shopify' && (
         <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '1.2rem' }}>
           <div style={{ fontSize: '1rem', fontWeight: 'bold', color: '#38bdf8', marginBottom: '0.8rem' }}>
-            🛍️ Shopify Storefront Subscriptions (lauburugrappling.myshopify.com)
+            🛍️ Shopify Storefront Subscriptions (lauburu-grappling.myshopify.com)
           </div>
           <form onSubmit={handleVerifyShopify} style={{ display: 'flex', gap: '0.6rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
             <input

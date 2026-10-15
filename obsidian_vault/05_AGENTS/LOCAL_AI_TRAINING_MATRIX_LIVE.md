@@ -10,7 +10,7 @@ updated: "2026-09-05 20:32:51"
 > **Global Training Metrics:**
 > • **Training Iteration:** `#7675`
 > • **LoRA Pairs Harvested:** `30700` pairs -> `continuous_lora_dataset.jsonl`
-> • **Hardware Target:** Apple Silicon Metal (L1/L5) + Linux AMD Ryzen (L3)
+> • **Hardware Target:** Apple Silicon Metal (L1/L5) + Linux Intel 2018 Mac Mini (L3)
 > • **Rule 3 Host Sanctuary:** `Guarded (>= 3.0 GB Free RAM)`
 
 ---
@@ -27,7 +27,7 @@ updated: "2026-09-05 20:32:51"
 ---
 
 ## 🎯 2. Continuous LoRA Distillation Pipeline
-- **Dataset Sink:** `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`
+- **Dataset Sink:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`
 - **Total Master Lakehouse:** `30700` validated instruction/preference pairs.
 - **Synchronous MLX Gate:** Hot-swap triggered when Tri-Model Consensus $\ge 0.95$.
 

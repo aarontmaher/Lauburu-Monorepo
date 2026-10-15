@@ -68,5 +68,5 @@ Autonomous fine-tuning of device-specific Edge SLMs overseen by **Local Frontier
 
 ## 💰 4. Cost & Efficiency Analysis
 - **Cloud Spend:** **$0.00** ($1.00 hard budget limit preserved).
-- **Local Mesh Compute:** **100% on-device** across pooled Metal / Ryzen hardware.
-- **Dataset Lake:** **48096 pairs** indexed in `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`.
+- **Local Mesh Compute:** **100% on-device** across pooled Metal / Intel 2018 Mac Mini hardware.
+- **Dataset Lake:** **48096 pairs** indexed in `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`.

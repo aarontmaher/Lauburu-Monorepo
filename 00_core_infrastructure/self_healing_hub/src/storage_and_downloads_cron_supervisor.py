@@ -82,7 +82,7 @@ class StorageAndDownloadsSupervisor:
         bytes_reclaimed = 0
 
         # 1. Prune vite / node_modules caches if excessive
-        vite_cache = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/frontend/node_modules/.vite"
+        vite_cache = "/Volumes/Lauburu-Monorepo/self_healing_hub/frontend/node_modules/.vite"
         if os.path.exists(vite_cache):
             try:
                 shutil.rmtree(vite_cache)
@@ -90,8 +90,8 @@ class StorageAndDownloadsSupervisor:
             except Exception:
                 pass
 
-        # 2. Check /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/models/ and offload to Linux NVMe if needed
-        local_models_dir = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/models"
+        # 2. Check /Volumes/Lauburu-Monorepo/models/ and offload to Linux NVMe if needed
+        local_models_dir = "/Volumes/Lauburu-Monorepo/models"
         if os.path.exists(local_models_dir):
             for f in os.listdir(local_models_dir):
                 if f.endswith(".gguf") and "Qwen2.5-VL-72B" in f:

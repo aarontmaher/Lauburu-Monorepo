@@ -82,10 +82,10 @@ The Council unanimously ratified the **Shared-State Layered Triad Architecture**
 
 ## 🛠️ Implementation Plan Injected into Swarm Priorities
 
-1. **Core Engine:** [`hybrid_router_mesh_governor.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/hybrid_router_mesh_governor.py) serves as the authoritative engine.
+1. **Core Engine:** [`hybrid_router_mesh_governor.py`](file:///Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/hybrid_router_mesh_governor.py) serves as the authoritative engine.
 2. **CLI Commands:** `priority` and `governor` symlinked in `~/.zshrc`.
 3. **MCP Tool Integration:** Wrap the engine into the monorepo MCP toolset.
-4. **TUI HUD:** Live dynamic binding already verified in [`tui_live_arena_dev.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port/tui/tui_live_arena_dev.py).
+4. **TUI HUD:** Live dynamic binding already verified in [`tui_live_arena_dev.py`](file:///Volumes/Lauburu-Monorepo/01_apps/canonical_port/tui/tui_live_arena_dev.py).
 
 ---
 [[CANONICAL_PROJECT_AND_STORAGE_RULE]] | [[ROUTER_NETWORK_AND_STORAGE_GOVERNOR_BENCHMARK_2026]] | [[Index]]

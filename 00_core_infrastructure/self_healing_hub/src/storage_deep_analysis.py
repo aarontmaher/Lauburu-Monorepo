@@ -21,7 +21,7 @@ class StorageDeepAnalysisEngine:
     def __init__(self):
         self.gdrive_path = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory"
         self.nas_path = "/Volumes/NAS"
-        self.local_repo = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+        self.local_repo = "/Volumes/Lauburu-Monorepo"
         self.linux_internal = "/home/linux"
 
     def get_tier_metrics(self):

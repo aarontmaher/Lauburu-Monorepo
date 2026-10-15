@@ -10,15 +10,15 @@ tags: [lauburu, mesh_node, telemetry, live_sync]
 
 - **Master Index**: [[Index]]
 - **Deep Architecture Index**: [[LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX]]
-- **IP Address**: `192.168.8.222`
-- **Tailscale IP**: `100.93.158.96`
-- **Operating System**: macOS Darwin ARM64
+- **IP Address**: `192.168.8.248`
+- **Tailscale IP**: `100.121.202.34`
+- **Operating System**: macOS Darwin ARM64 (Apple M4, 16 GB Unified RAM)
 
 ## 📊 Live Resource Metrics
 | Metric | Value | Cap / Limit |
 | :--- | :--- | :--- |
 | CPU Load | 12.0% | 100.0% |
 | RAM Ingest | 8.00 GB | 16.00 GB |
-| AI VRAM Usage | 6.50 GB | 14.40 GB |
-| Latency RTT | 2.100 ms | -- |
+| AI VRAM Usage | 6.50 GB | 14.00 GB |
+| Latency RTT | ~11–13 ms (Tailscale) / ~3.5 ms (LAN) | <15.0 ms |
 | Packet Drop Rate | 0.0% | 0.0% |

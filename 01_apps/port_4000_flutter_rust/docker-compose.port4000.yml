@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  lauburu-port4000-backend:
+    build:
+      context: ./rust_backend
+      dockerfile: Dockerfile
+    container_name: lauburu-port4000-backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - RUST_LOG=info,lauburu_core=info
+    volumes:
+      - /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data:/app/data
+      - /Users/aaron/DFS_UNIFIED/lora_datasets:/app/lora_datasets
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - lauburu-mesh-net
+
+  lauburu-port4000-ui:
+    build:
+      context: ./flutter_ui
+      dockerfile: Dockerfile
+    container_name: lauburu-port4000-ui
+    restart: unless-stopped
+    ports:
+      - "4001:4001"
+    depends_on:
+      - lauburu-port4000-backend
+    networks:
+      - lauburu-mesh-net
+
+networks:
+  lauburu-mesh-net:
+    name: lauburu-mesh-net
+    driver: bridge

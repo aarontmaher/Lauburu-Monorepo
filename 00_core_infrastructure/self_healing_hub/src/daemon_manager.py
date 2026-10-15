@@ -53,7 +53,7 @@ class DaemonManager:
                 "primary": "Mac_Node",
                 "fallback": "Linux_Head_Node",
                 "check_cmd": "pgrep -f continuous_benchmark_training_daemon.py",
-                "start_cmd": "nohup python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/continuous_benchmark_training_daemon.py > /tmp/continuous_bench.log 2>&1 &",
+                "start_cmd": "nohup python3 /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/continuous_benchmark_training_daemon.py > /tmp/continuous_bench.log 2>&1 &",
                 "icon": "⚡"
             }
         }

@@ -1,0 +1,183 @@
+{
+  "project": "Lauburu Combat Apparel",
+  "document_id": "TECHPACK-LBR-BJJ-2026-V1",
+  "date": "2026-09-10",
+  "recipient": {
+    "company": "Subliminator / Shaoxing Sred Apparel Co.",
+    "contact_name": "Hicham Amrani",
+    "email": "hicham@subliminator.com",
+    "physical_parcel_reference": "EJ350397089AU",
+    "parcel_receipt_date": "2026-05-30"
+  },
+  "order_overview": {
+    "sample_size": "M (Aaron Maher Personal Fit Baseline)",
+    "design_edition": "Option B (Belt-Rank Coloured Emblems)",
+    "stitching_rule": "100% Tone-on-Tone Stealth Black Flatlock (Zero White Contrast Thread)",
+    "sample_fee_counter_proposal_usd": 200,
+    "sample_breakdown_usd": {
+      "rashguard": 100,
+      "shorts": 100
+    },
+    "sample_turnaround": "Express ~2 weeks",
+    "production_terms_confirmed": {
+      "moq_per_style": 200,
+      "rashguard_bulk_express_usd": 24,
+      "shorts_bulk_express_usd": 20,
+      "combined_set_express_usd": 44,
+      "belt_ranks_count_as_single_design": true
+    }
+  },
+  "garments": [
+    {
+      "garment_name": "Short Sleeve Compression Rashguard",
+      "style_code": "LBR-RG-SS-01",
+      "baseline_block": "Absolute MMA Short Sleeve Rashguard (Size M, Parcel EJ350397089AU)",
+      "fabric": {
+        "composition": "82% Polyester / 18% Spandex",
+        "weight_gsm": 250,
+        "finish": "Matte, UV50+, Moisture-Wicking, Anti-Microbial",
+        "color": "Pitch Black (#141414)"
+      },
+      "construction_deltas_vs_absolute_sample": {
+        "sleeve_length": "-2.5 cm to -3.0 cm shorter (terminates at mid/upper bicep)",
+        "bicep_opening_circumference": "-1.5 cm tighter flat circumference with compression hem",
+        "front_length": "Standard Absolute MMA baseline",
+        "back_length": "+2.0 cm curved drop-tail extension for inversion coverage",
+        "hem_gripper": "Continuous 25mm inner silicone gel micro-ribbed elastic band fused to hem",
+        "collar": "1.2 cm low-profile crew collar with 10mm interior black herringbone neck tape",
+        "seams": "4-needle 6-thread flatlock in 100% stealth black thread (#141414)"
+      },
+      "artwork_and_branding": {
+        "chest_emblem": "Canonical Lauburu emblem, 80px wide (6.5 cm), centered on sternum",
+        "chest_emblem_color": "Dyed in assigned belt rank colorway (Option B)",
+        "flank_panels": "Continuous underarm side compression panels dyed in belt rank colorway"
+      },
+      "grading_table_cm": {
+        "half_chest_pit_to_pit": {
+          "XS": 42.0,
+          "S": 44.5,
+          "M": 47.0,
+          "L": 49.5,
+          "XL": 52.0,
+          "2XL": 55.0
+        },
+        "back_length_drop_tail": {
+          "XS": 67.0,
+          "S": 69.5,
+          "M": 72.0,
+          "L": 74.5,
+          "XL": 77.0,
+          "2XL": 79.5
+        },
+        "sleeve_outseam": {
+          "XS": 31.0,
+          "S": 32.5,
+          "M": 34.0,
+          "L": 35.5,
+          "XL": 37.0,
+          "2XL": 38.5
+        },
+        "bicep_opening_flat": {
+          "XS": 13.0,
+          "S": 14.0,
+          "M": 15.0,
+          "L": 16.0,
+          "XL": 17.0,
+          "2XL": 18.0
+        }
+      }
+    },
+    {
+      "garment_name": "No-Gi Pro Grappling Shorts",
+      "style_code": "LBR-SH-PRO-01",
+      "baseline_block": "Absolute MMA Fight Shorts (Size M, Parcel EJ350397089AU)",
+      "fabric": {
+        "body_composition": "92% Polyester / 8% Spandex Micro-Ripstop",
+        "body_weight_gsm": 165,
+        "body_finish": "DWR Hydrophobic, 4-way stretch",
+        "gusset_composition": "82% Polyester / 18% Spandex 4-Way Stretch (250 GSM)",
+        "color": "Pitch Black (#141414)"
+      },
+      "construction_deltas_vs_absolute_sample": {
+        "inseam_length": "5.5 inches / 14.5 cm (-4.5 cm shorter than traditional 8 inch Absolute shorts)",
+        "fit_profile": "Athletic high-cut, resting 2.5 inches above patella for zero knee friction",
+        "side_slits": "3.5 inches / 9.0 cm curved scalloped mobility slits with heavy bartack at apex",
+        "waistband": "50mm quad-stitched elastic waistband with recessed internal flat drawstring",
+        "closure": "Non-abrasive low-profile micro-hook-and-loop tab (zero bulky scratchy velcro)",
+        "gusset": "Continuous diamond 4-way stretch crotch panel extending down inner thighs",
+        "seams": "High-tensile stealth black thread, triple-stitched center rise"
+      },
+      "artwork_and_branding": {
+        "quad_emblem": "Canonical Lauburu emblem, 90px wide (7.5 cm) on lower right quad",
+        "quad_emblem_color": "Dyed in assigned belt rank colorway (Option B)",
+        "slit_accent": "Interior slit lining accent in assigned belt rank colorway"
+      },
+      "grading_table_cm": {
+        "waistband_relaxed_flat": {
+          "XS": 34.0,
+          "S": 36.5,
+          "M": 39.0,
+          "L": 41.5,
+          "XL": 44.0,
+          "2XL": 47.0
+        },
+        "inseam_length": {
+          "XS": 12.5,
+          "S": 13.5,
+          "M": 14.5,
+          "L": 15.5,
+          "XL": 16.5,
+          "2XL": 17.5
+        },
+        "total_outseam": {
+          "XS": 35.0,
+          "S": 37.0,
+          "M": 39.0,
+          "L": 41.0,
+          "XL": 43.0,
+          "2XL": 45.0
+        },
+        "side_slit_height": {
+          "XS": 8.0,
+          "S": 8.5,
+          "M": 9.0,
+          "L": 9.5,
+          "XL": 10.0,
+          "2XL": 10.5
+        }
+      }
+    }
+  ],
+  "belt_rank_colorways": {
+    "white_belt": {
+      "hex": "#FFFFFF",
+      "pantone": "White",
+      "accent": "Pure White"
+    },
+    "blue_belt": {
+      "hex": "#0047AB",
+      "pantone": "Pantone 286 C",
+      "accent": "Royal Blue"
+    },
+    "purple_belt": {
+      "hex": "#5C068C",
+      "pantone": "Pantone 268 C",
+      "accent": "Competition Purple"
+    },
+    "brown_belt": {
+      "hex": "#552D20",
+      "pantone": "Pantone 4625 C",
+      "accent": "Earth Bronze"
+    },
+    "black_belt": {
+      "hex": "#141414",
+      "red_bar_hex": "#C8102E",
+      "pantone": "Pantone 186 C",
+      "accent": "Crimson Red Bar"
+    }
+  },
+  "regulatory_compliance": {
+    "ibjjf_uniform_rulebook": "100% Compliant (Article 8.1.3 No-Gi Uniforms)",
+    "adcc_professional_rules": "100% Compliant (Zero scratch velcro, high-mobility cut)"
+  }
+}

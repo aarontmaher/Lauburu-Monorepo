@@ -1,0 +1,61 @@
+{
+  "$schema": "https://jules.google.com/schemas/repo-config-v1.json",
+  "repository": {
+    "name": "Lauburu-Monorepo",
+    "owner": "aarontmaher",
+    "full_name": "aarontmaher/Lauburu-Monorepo",
+    "config_url": "https://jules.google.com/repo/github/aarontmaher/Lauburu-Monorepo/config"
+  },
+  "environment": {
+    "python_version": "3.12",
+    "node_version": "20.20.2",
+    "setup_script": ".jules/setup.sh",
+    "mcp_config": ".jules/mcp.json",
+    "ignore_file": ".julesignore"
+  },
+  "automation": {
+    "daily_task_limit": 300,
+    "max_concurrent_sessions": 10,
+    "cooldown_period_seconds": 1800,
+    "routing_threshold_tokens": 50000,
+    "local_first_speculation_mandatory": true
+  },
+  "execution": {
+    "test_command": "python3 -m pytest 06_scripts_and_tooling/gemini_lens_integration/tests/ -v",
+    "lint_command": "python3 -m flake8 --select=E,F 06_scripts_and_tooling/ || true",
+    "build_command": "python3 -m compileall 06_scripts_and_tooling/"
+  },
+  "custom_instructions": [
+    "Rule #0 Zero-Mock Truth Mandate: Never emit mocked telemetry or fake arrays. All hardware metrics must originate from authentic sensors or show waiting states '--'.",
+    "Rule #3 Host Sanctuary: Preserve >= 4.8 GB physical free RAM on L1 Mac Mini Pro host at all times.",
+    "Rule #10 Baseline Trinity: Maintain local master orchestrator engine, network healer daemons, and omnipresent Bluetooth graph.",
+    "Rule #11 Global Project Default Automation: Screen Lens Sovereign is the default E2E automation framework across the network.",
+    "Local AI Speculation Requirement: Complete and validate tasks locally using Screen Lens Sovereign before dispatching to remote Jules VMs."
+  ],
+  "mcps": [
+    {
+      "name": "screen_lens_mcp",
+      "command": "python3",
+      "args": ["01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py"],
+      "enabled": true
+    },
+    {
+      "name": "lauburu_project_mcp",
+      "command": "python3",
+      "args": ["06_scripts_and_tooling/integrations_and_mcp/lauburu_project_mcp.py"],
+      "enabled": true
+    },
+    {
+      "name": "jules_local_api_mcp",
+      "command": "python3",
+      "args": ["06_scripts_and_tooling/jules/jules_config_and_speculation_engine.py", "--mcp-server"],
+      "enabled": true
+    }
+  ],
+  "ci_app": {
+    "enabled": true,
+    "workflow_file": ".github/workflows/jules_ci_optimizer.yml",
+    "auto_pr_summary": true,
+    "benchmark_reporting": true
+  }
+}

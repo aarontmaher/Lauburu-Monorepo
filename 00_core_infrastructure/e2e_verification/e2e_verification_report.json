@@ -1,0 +1,100 @@
+{
+  "timestamp": "2026-09-07T04:13:01Z",
+  "tests_run": 16,
+  "tests_passed": 13,
+  "tests_failed": 3,
+  "details": {
+    "Tri-Vault": [
+      {
+        "test": "Obsidian Vault Index",
+        "status": "\u2705 PASS",
+        "detail": "Path: /Volumes/Lauburu-Monorepo/obsidian_vault/Index.md"
+      },
+      {
+        "test": "LoRA 24/7 Dataset",
+        "status": "\u2705 PASS",
+        "detail": "Entries size: 261811638 bytes"
+      },
+      {
+        "test": "Host Disk Headroom",
+        "status": "\u2705 PASS",
+        "detail": "Free: 114.5 GB (Req >= 10.0 GB)"
+      },
+      {
+        "test": "Git Monorepo Lock",
+        "status": "\u2705 PASS",
+        "detail": "No stale git index lock present"
+      }
+    ],
+    "Endpoints": [
+      {
+        "test": "Port 4000 Console Hub",
+        "status": "\u2705 PASS",
+        "detail": "Listening on 127.0.0.1:4000"
+      },
+      {
+        "test": "Port 8083 Devil's Advocate",
+        "status": "\u2705 PASS",
+        "detail": "Listening on 127.0.0.1:8083"
+      },
+      {
+        "test": "Port 8081 Qwen Coder Shard",
+        "status": "\u2705 PASS",
+        "detail": "Listening on 127.0.0.1:8081"
+      },
+      {
+        "test": "Port 18804 Speedify WFQ Engine",
+        "status": "\u274c FAIL",
+        "detail": "Port 18804 inactive (standby)"
+      }
+    ],
+    "Transports": [
+      {
+        "test": "Colima Docker Runtime",
+        "status": "\u274c FAIL",
+        "detail": "Socket: /Users/aaron/.colima/default/docker.sock"
+      },
+      {
+        "test": "12-Candidate Genetic MoE Blueprint",
+        "status": "\u2705 PASS",
+        "detail": "Path: /Volumes/Lauburu-Monorepo/00_core_infrastructure/genetic_moe/evolved_12_candidate_blueprint.json"
+      }
+    ],
+    "AI Sharding": [
+      {
+        "test": "8-Paradigm Mathematical Telemetry",
+        "status": "\u2705 PASS",
+        "detail": "Verified all 8 paradigms modeled"
+      }
+    ],
+    "SWE-bench": [
+      {
+        "test": "Genetic MoE Model Ranking Telemetry",
+        "status": "\u2705 PASS",
+        "detail": "Top model: qwen25_coder_7b"
+      }
+    ],
+    "Model Vault": [
+      {
+        "test": "Qwen 2.5 Coder 7B GGUF",
+        "status": "\u2705 PASS",
+        "detail": "Present in vault"
+      },
+      {
+        "test": "Qwen 2.5 Coder 1.5B Draft GGUF",
+        "status": "\u2705 PASS",
+        "detail": "Present in vault"
+      },
+      {
+        "test": "DeepSeek MoE Stream/Final",
+        "status": "\u274c FAIL",
+        "detail": "Active or Complete"
+      },
+      {
+        "test": "Qwen 32B Coder Stream/Final",
+        "status": "\u2705 PASS",
+        "detail": "Active or Complete"
+      }
+    ]
+  }
+}

@@ -61,5 +61,5 @@ The **Dual-Sandbox Arena** introduces side-by-side comparative execution of comp
 2. **Multi-Objective Fitness Scoring:**
    $$\text{Fitness}(\mathbf{g}) = 10.0 \cdot \text{Acc} + \frac{100.0}{\text{Lat}_{\text{ms}}} + \frac{10.0}{\text{RAM}_{\text{GB}} + 0.1} + 0.2 \cdot \text{TOPS}_{\%} + 5.0 \cdot \text{Qual}$$
 3. **Continuous LoRA Immortality:**
-   All tournament generation records are continuously appended to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl` for next-generation inheritance.
+   All tournament generation records are continuously appended to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl` for next-generation inheritance.
 

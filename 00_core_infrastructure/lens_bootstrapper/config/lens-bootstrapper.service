@@ -1,0 +1,17 @@
+[Unit]
+Description=Sovereign Lens Bootstrapper Daemon
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/lauburu/bin/lens_bootstrapper --foreground --config /etc/lauburu/lens_bootstrapper.json
+Restart=always
+RestartSec=5
+LimitNOFILE=65536
+KillMode=process
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

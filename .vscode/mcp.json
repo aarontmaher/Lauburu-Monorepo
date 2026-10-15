@@ -1,0 +1,102 @@
+{
+  "mcpServers": {
+    "lauburu-lens-sovereign": {
+      "command": "/opt/homebrew/bin/python3",
+      "args": [
+        "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lens_sovereign_unified_system.py",
+        "overview",
+        "--json"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "DEVELOPER_DIR": "/Library/Developer/CommandLineTools",
+        "PATH": "/Volumes/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "PYTHONPATH": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/storage:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/auth:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/sharding_daemon",
+        "LAUBURU_ROOT": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo",
+        "LAUBURU_CANONICAL_STORAGE_HOST": "L1b (10.0.0.3 / /Users/aaronmaher/DFS_UNIFIED)",
+        "LAUBURU_MODEL_VAULT": "/Users/aaronmaher/DFS_UNIFIED/AI_Models_Vault",
+        "LAUBURU_OBSIDIAN_VAULT": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault",
+        "LAUBURU_LORA_DATASETS": "/Volumes/Lauburu-Monorepo/04_data_and_memory/data",
+        "LAUBURU_WORKING_MEMORY_DB": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/data/lens_working_memory_kv.sqlite",
+        "GOOGLE_WORKSPACE_ACCOUNT": "lauburu@lauburugrappling.com",
+        "GOOGLE_STANDARD_GCP_ACCOUNT": "aaron.t.maher@gmail.com",
+        "OPENROUTER_BASE_URL": "https://openrouter.ai/api/v1",
+        "OPENAI_BASE_URL": "http://127.0.0.1:8082/v1",
+        "LAUBURU_TB4_70B_RING_URL": "http://10.0.0.1:8085/v1",
+        "LAUBURU_GEMMA2_MRL_URL": "http://127.0.0.1:8087/v1/embeddings",
+        "LAUBURU_QWEN_3D_VLA_URL": "http://127.0.0.1:8088/v1/chat/completions",
+        "LAUBURU_NVIDIA_VOICE_CODER_ON_DEMAND_URL": "http://127.0.0.1:8095/v1/chat/completions"
+      },
+      "trust": true,
+      "description": "Lauburu Screen Lens Sovereign Unified System (Storage, 4-Stage Heal, Memory, Debate, 70B/100B+ Benchmark, ELO)"
+    },
+    "lauburu-neo4j-gemma2-rag": {
+      "command": "/opt/homebrew/bin/python3",
+      "args": [
+        "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py",
+        "status"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "DEVELOPER_DIR": "/Library/Developer/CommandLineTools",
+        "PATH": "/Volumes/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "PYTHONPATH": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/storage:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/auth:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/sharding_daemon",
+        "LAUBURU_ROOT": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo",
+        "LAUBURU_CANONICAL_STORAGE_HOST": "L1b (10.0.0.3 / /Users/aaronmaher/DFS_UNIFIED)",
+        "LAUBURU_MODEL_VAULT": "/Users/aaronmaher/DFS_UNIFIED/AI_Models_Vault",
+        "LAUBURU_OBSIDIAN_VAULT": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault",
+        "LAUBURU_LORA_DATASETS": "/Volumes/Lauburu-Monorepo/04_data_and_memory/data",
+        "LAUBURU_WORKING_MEMORY_DB": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/data/lens_working_memory_kv.sqlite",
+        "GOOGLE_WORKSPACE_ACCOUNT": "lauburu@lauburugrappling.com",
+        "GOOGLE_STANDARD_GCP_ACCOUNT": "aaron.t.maher@gmail.com",
+        "OPENROUTER_BASE_URL": "https://openrouter.ai/api/v1",
+        "OPENAI_BASE_URL": "http://127.0.0.1:8082/v1",
+        "LAUBURU_TB4_70B_RING_URL": "http://10.0.0.1:8085/v1",
+        "LAUBURU_GEMMA2_MRL_URL": "http://127.0.0.1:8087/v1/embeddings",
+        "LAUBURU_QWEN_3D_VLA_URL": "http://127.0.0.1:8088/v1/chat/completions",
+        "LAUBURU_NVIDIA_VOICE_CODER_ON_DEMAND_URL": "http://127.0.0.1:8095/v1/chat/completions"
+      },
+      "trust": true,
+      "description": "Neo4j 5.26.32 + EmbeddingGemma 2 MRL (768d/256d/128d) + Qdrant GraphRAG"
+    },
+    "lauburu-master-mcp": {
+      "command": "/opt/homebrew/bin/python3",
+      "args": [
+        "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/lauburu_master_mcp/gemini_spark_mcp_daemon.py"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "DEVELOPER_DIR": "/Library/Developer/CommandLineTools",
+        "PATH": "/Volumes/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "PYTHONPATH": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/storage:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/auth:/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/sharding_daemon",
+        "LAUBURU_ROOT": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo",
+        "LAUBURU_CANONICAL_STORAGE_HOST": "L1b (10.0.0.3 / /Users/aaronmaher/DFS_UNIFIED)",
+        "LAUBURU_MODEL_VAULT": "/Users/aaronmaher/DFS_UNIFIED/AI_Models_Vault",
+        "LAUBURU_OBSIDIAN_VAULT": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault",
+        "LAUBURU_LORA_DATASETS": "/Volumes/Lauburu-Monorepo/04_data_and_memory/data",
+        "LAUBURU_WORKING_MEMORY_DB": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/data/lens_working_memory_kv.sqlite",
+        "GOOGLE_WORKSPACE_ACCOUNT": "lauburu@lauburugrappling.com",
+        "GOOGLE_STANDARD_GCP_ACCOUNT": "aaron.t.maher@gmail.com",
+        "OPENROUTER_BASE_URL": "https://openrouter.ai/api/v1",
+        "OPENAI_BASE_URL": "http://127.0.0.1:8082/v1",
+        "LAUBURU_TB4_70B_RING_URL": "http://10.0.0.1:8085/v1",
+        "LAUBURU_GEMMA2_MRL_URL": "http://127.0.0.1:8087/v1/embeddings",
+        "LAUBURU_QWEN_3D_VLA_URL": "http://127.0.0.1:8088/v1/chat/completions",
+        "LAUBURU_NVIDIA_VOICE_CODER_ON_DEMAND_URL": "http://127.0.0.1:8095/v1/chat/completions"
+      },
+      "trust": true,
+      "description": "Lauburu Sovereign Mesh Master MCP Server"
+    },
+    "browser-use": {
+      "command": "/Users/aaron/.local/bin/uvx",
+      "args": [
+        "--from",
+        "browser-use[cli]",
+        "browser-use",
+        "--mcp"
+      ],
+      "trust": true,
+      "description": "Browser Use MCP Server"
+    }
+  }
+}

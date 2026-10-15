@@ -30,7 +30,7 @@ consensus_score: 0.994
 > "The physical host Mac Mini (L1) has 24 GB of unified RAM and its main volume (`/dev/disk3s5`) maintains only **4.2 GB of free disk headroom**. A single 72B model in Q4_K_M is ~45 GB, and in IQ2_XXS it is ~24 GB. Attempting to download or host a 72B model on L1 directly would cause an instantaneous `ENOSPC` crash and violate **Rule 5.1** (mandating $\ge 10.0\text{ GB}$ free disk space) and **Rule 3.1** (mandating $\ge 9.6\text{ GB}$ free physical RAM buffer). The constraint was a hard physical reality on L1."
 
 #### ☁️ Cloud Shadow Orchestrator (Architecture & Sharding Specialist):
-> "The architectural error was attempting to treat L1 as the storage vault for 70B+ weights. Under the **7-Layer Physical Mesh Topology**, Layer 2 (**MacBook Pro M4**) has a dedicated **285 GB SSD Model Vault** connected to L1 via a **10Gbps Thunderbolt 4 DMA direct bridge (0.277ms latency, 40 Gbps PCIe DMA)**. Layer 3 (**Linux Head Node**) possesses a **400 GB NVMe** drive.
+> "The architectural error was attempting to treat L1 as the storage vault for 70B+ weights. Under the **7-Layer Physical Mesh Topology**, Layer 2 (**Intel MacBook Pro**) has a dedicated **285 GB SSD Model Vault** connected to L1 via a **40Gbps Thunderbolt 4 DMA direct bridge (0.277ms latency, 40 Gbps PCIe DMA)**. Layer 3 (**Linux Head Node**) possesses a **400 GB NVMe** drive.
 > 
 > The correct architecture is:
 > 1. **Zero-L1-Disk Footprint:** All GGUF models $>10\text{ GB}$ must be downloaded directly to L2 (`192.168.8.127:/Volumes/ModelVault/`) or L3 (`192.168.8.224:/var/lib/docker/models/`).
@@ -61,7 +61,7 @@ consensus_score: 0.994
 | Subsystem | Strategic Decision | Empirical Mechanism | Target Metric |
 | :--- | :--- | :--- | :--- |
 | **72B Model Ingestion** | Dedicated Offload to L2 MacBook Pro & L3 Linux NVMe | Download via TB4 bridge direct to 285 GB SSD Vault | Preserve $\ge 10.0\text{ GB}$ on L1 Host |
-| **Distributed Inference** | Pipelined-Ring Parallelism (PRP) & llama.cpp RPC | Stream activation vectors over 10Gbps TB4 DMA (0.277ms) | $>45\text{ tok/s}$, 0 bytes L1 SSD used |
+| **Distributed Inference** | Pipelined-Ring Parallelism (PRP) & llama.cpp RPC | Stream activation vectors over 40Gbps TB4 DMA (0.277ms) | $>45\text{ tok/s}$, 0 bytes L1 SSD used |
 | **Visual Task Verification** | Screen Lens Closed-Loop Fix Engine | `screen_lens_closed_loop_fix_engine.py` (5-Stage VLA) | 100% Defect Elimination ($\Delta = 0$) |
 | **Autonomous Tournament** | Multi-Candidate Code Repair Tournament | `e2e_closed_loop_screen_fix_tournament.py` | Bradley-Terry ELO Promotion |
 

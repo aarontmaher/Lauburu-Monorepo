@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "Nexus Sovereign",
+  "version": "1.0.0",
+  "description": "Routes browser AI requests through the Lauburu Sovereign Mesh (prima.cpp:8082). Live mesh telemetry, Screen Lens vision, and swarm control from any tab.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "sidePanel",
+    "notifications",
+    "contextMenus",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8082/*",
+    "http://127.0.0.1:8083/*",
+    "http://127.0.0.1:3035/*",
+    "http://10.1.0.1/*",
+    "http://192.168.8.1/*",
+    "http://192.168.8.225:8086/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/nexus16.png",
+      "48": "icons/nexus48.png",
+      "128": "icons/nexus128.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "commands": {
+    "invoke-sovereign": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+L",
+        "mac": "MacCtrl+Shift+L"
+      },
+      "description": "Invoke Lauburu Sovereign AI on selected text"
+    },
+    "open-mesh-panel": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+M",
+        "mac": "MacCtrl+Shift+M"
+      },
+      "description": "Open Mesh Control Panel"
+    }
+  }
+}

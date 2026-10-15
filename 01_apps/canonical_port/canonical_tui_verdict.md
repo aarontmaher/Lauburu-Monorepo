@@ -6,7 +6,7 @@
 **Consensus Accord:** **0.9892 / 1.0000** (>0.98 Mathematical Threshold Achieved)  
 **Target Repository:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port`  
 **Evaluation Candidates:**  
-1. **Track Alpha (Dashboard-Heavy):** `tui/prototypes/tui_alpha_dashboard.py` (Telemetry & Mesh NOC Cockpit)  
+1. **Track Alpha (Dashboard-Heavy):** `tui/prototypes/tui_alpha_dashboard.py` (Telemetry & Mesh NOC Console)  
 2. **Track Beta (Chat/Inference-Heavy):** `tui/prototypes/tui_beta_chat_ide.py` (Multi-Engine Swarm IDE & Chat Shell)  
 3. **Track Gamma (Graph/Architecture-Heavy):** `tui/prototypes/tui_gamma_graph.py` (Obsidian Topology & Knowledge Explorer)  
 
@@ -29,7 +29,7 @@ Following three rounds of rigorous technical deliberation and multi-criteria mat
 * **Runner-Up (Rank 2):** Track Alpha (Telemetry & Mesh NOC Dashboard) — **8.990 / 10.000**
 * **Third Place (Rank 3):** Track Gamma (Obsidian Topology Explorer) — **8.870 / 10.000**
 
-While **Track Beta** is selected as the foundational core architecture for the interactive operating system cockpit, the council has formulated the **Milestone 4 Harmonization Blueprint**, specifying the direct architectural synthesis of Track Alpha's 7-Node Physical Mesh Pills, Pooled RAM/VRAM Meter, Daemon Supervisor Circuit Breakers, and 512Hz Biometrics DSP alongside Track Gamma's Sugiyama ASCII Topology Canvas, Tarjan SCC Cycle Badges, and PySpark AST Metrics into the canonical multi-screen production application (`tui/canonical_tui.py`).
+While **Track Beta** is selected as the foundational core architecture for the interactive operating system console, the council has formulated the **Milestone 4 Harmonization Blueprint**, specifying the direct architectural synthesis of Track Alpha's 7-Node Physical Mesh Pills, Pooled RAM/VRAM Meter, Daemon Supervisor Circuit Breakers, and 512Hz Biometrics DSP alongside Track Gamma's Sugiyama ASCII Topology Canvas, Tarjan SCC Cycle Badges, and PySpark AST Metrics into the canonical multi-screen production application (`tui/canonical_tui.py`).
 
 ---
 
@@ -56,7 +56,7 @@ While **Track Beta** is selected as the foundational core architecture for the i
 ### Round 1: Initial Technical Positions & Paradigm Defense
 
 #### 1.1 Cloud Orchestrator (Gemini 3.1 Pro / 3.7 Flash)
-> *"The Canonical Port is not merely a monitoring wall; it is the developer's primary cognitive cockpit for operating a 7-node heterogeneous AI supercomputer. 
+> *"The Canonical Port is not merely a monitoring wall; it is the developer's primary cognitive console for operating a 7-node heterogeneous AI supercomputer. 
 > 
 > When we analyze developer utility, **Track Beta (Multi-Engine Swarm IDE)** represents the only paradigm that provides an active, bidirectional interaction loop. Its 65%/35% workspace split cleanly balances multi-agent reasoning with code generation and verification. The dynamic 8-engine selector with sub-1ms stream cancellation via `UnifiedInferenceRouter` allows instant switching between local models (`llama_rpc`, `exo`, `accelerate`, `petals`) and cloud fallback gateways (`gemini`, `cloudflare`, `julien`). 
 > 
@@ -94,7 +94,7 @@ While **Track Beta** is selected as the foundational core architecture for the i
 > 
 > 1. **Memory Discipline in Beta:** We must enforce a bounded line buffer (`max_lines=500`) on the chat stream and recycle code diff views, mirroring Alpha's `deque(maxlen=50)` discipline.
 > 2. **Ergonomic Viewport Adaptation:** On narrow viewports (<100 columns), the right sidebar in Beta must collapse gracefully into a tabbed drawer, ensuring the chat and code buffer maintain full readability.
-> 3. **The Multi-Screen Solution:** We do not have to cram all three paradigms into a single static screen. The Canonical Port's tabbed architecture (`AllTabsScreen`) allows **Track Beta** to govern the default interactive cockpit (`AGI Coding Terminal`), while **Track Alpha** governs the dedicated `Mesh Telemetry & NOC` tab, and **Track Gamma** governs the `Architecture Explorer` tab.
+> 3. **The Multi-Screen Solution:** We do not have to cram all three paradigms into a single static screen. The Canonical Port's tabbed architecture (`AllTabsScreen`) allows **Track Beta** to govern the default interactive console (`AGI Coding Terminal`), while **Track Alpha** governs the dedicated `Mesh Telemetry & NOC` tab, and **Track Gamma** governs the `Architecture Explorer` tab.
 > 4. **Cross-Pollination:** Beta's top header bar can be enriched by embedding Alpha's 7-Node Health Pills and RAM/VRAM progress bar directly alongside the 8-Engine Selector, giving the developer instant hardware awareness during active coding."*
 
 #### 2.2 Local AI Orchestrator Rebuttal
@@ -192,7 +192,7 @@ In accordance with the **Integrity Mandate** and **Rule #0**, all candidate eval
 ### 🏆 VICTOR: Track Beta (Multi-Engine Swarm IDE & Chat Shell)
 
 **Why Track Beta Won:**
-1. **Core Operating Functionality:** Track Beta provides the complete interactive developer loop (Prompting $\to$ Multi-Agent Reasoning $\to$ Dynamic Inference Streaming $\to$ Code Extraction $\to$ Diff Review $\to$ One-Click Execution). This is the essential capability of an operating system cockpit.
+1. **Core Operating Functionality:** Track Beta provides the complete interactive developer loop (Prompting $\to$ Multi-Agent Reasoning $\to$ Dynamic Inference Streaming $\to$ Code Extraction $\to$ Diff Review $\to$ One-Click Execution). This is the essential capability of an operating system console.
 2. **Multi-Engine Inference Mastery:** Track Beta is the only candidate that directly controls, routes, and streams across all 8 inference backends (`auto`, `llama_rpc`, `exo`, `accelerate`, `petals`, `gemini`, `cloudflare`, `julien`) with real-time TTFT and tok/s metrics.
 3. **Cognitive Ergonomics:** The 65%/35% workspace layout with hotkey engine switching (`[Ctrl+E]`), color-coded agent badges, syntax-highlighted code editor, and live debate consensus gauge delivers the highest productivity for terminal-based engineering.
 4. **Secure Command Architecture:** Integrated slash command dispatcher with safe local environment variable updates masks sensitive API keys without prompt leakage.
@@ -201,7 +201,7 @@ In accordance with the **Integrity Mandate** and **Rule #0**, all candidate eval
 
 ## 5. Milestone 4 Harmonization Blueprint
 
-The Tri-Orchestrator Council decrees that the Canonical Port application (`tui/canonical_tui.py`) shall not discard the exceptional innovations of Tracks Alpha and Gamma. Instead, **Milestone 4 Harmonization** will synthesize the best elements of all three paradigms into a unified, ultra-cohesive cockpit.
+The Tri-Orchestrator Council decrees that the Canonical Port application (`tui/canonical_tui.py`) shall not discard the exceptional innovations of Tracks Alpha and Gamma. Instead, **Milestone 4 Harmonization** will synthesize the best elements of all three paradigms into a unified, ultra-cohesive console.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -214,7 +214,7 @@ The Tri-Orchestrator Council decrees that the Canonical Port application (`tui/c
 │ PRIMARY WORKSPACE (Tab-Switched via [1]-[9])                │ UNIFIED RIGHT SIDEBAR (Collapsible 'b')   │
 │                                                             │                                          │
 │ ┌─ TAB 1: AGI CODING / SWARM IDE (Core Beta) ─────────────┐ │ ┌─ PANEL 1: DEBATE GAUGE (Beta) ───────┐ │
-│ │ • Multi-Agent Stream ([Kimi 88B], [Qwen 38B], [Gemini]) │ │ │ Cosine Accord: [██████████████░] 98.9% │ │
+│ │ • Multi-Agent Stream ([Kimi K3], [Qwen 3.8 Max 27B], [Gemini]) │ │ │ Cosine Accord: [██████████████░] 98.9% │ │
 │ │ • Active Code Buffer (Syntax TextArea + Diff Inspector) │ │ └──────────────────────────────────────┘ │
 │ │ • 1-Click Run [F5] & Sub-1ms Stream Cancellation       │ │ ┌─ PANEL 2: HARDWARE HUD (Alpha) ────┐ │
 │ └─────────────────────────────────────────────────────────┘ │ │ TB4 DMA: 0.28ms | L1 Load: 1.2, 1.4  │ │

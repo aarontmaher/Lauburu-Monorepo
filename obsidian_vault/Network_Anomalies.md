@@ -1,416 +1,243 @@
 
-- **Historical Note**: 1 repeated Heartbeat timeout entries observed due to BusyBox nc -u flag syntax mismatch on OpenWrt. Permanently resolved via python3 socket dispatch across Tailscale (`100.122.185.123` -> `100.119.199.76:18803`).
+- **2026-09-29T14:37:59Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T17:33:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-29T14:39:29Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T17:40:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-29T14:40:59Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T18:02:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:12:29Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T18:04:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:13:59Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T18:17:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:15:29Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T18:27:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:16:59Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T18:33:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:18:29Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T18:36:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:19:59Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T18:44:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:21:29Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T18:46:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:22:59Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T18:51:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:24:29Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T21:05:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:26:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T21:21:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:27:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T21:26:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-09-30T03:29:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T21:28:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+<!-- Rotated historical daemon telemetry entries to preserve Git diff performance -->
 
-- **2026-09-03T21:30:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T21:33:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:03:23Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T21:36:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:04:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T21:41:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:06:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T21:43:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:07:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T21:44:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:09:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T21:46:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:10:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T21:47:38Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:12:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T22:11:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:13:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T22:21:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:15:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T22:32:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:16:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T22:34:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:18:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T23:03:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:19:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T23:16:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:21:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-03T23:20:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:22:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T00:02:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:24:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T00:14:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:25:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T00:34:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:27:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T00:36:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:28:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T00:41:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:30:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T01:59:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:31:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T02:02:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:33:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T04:49:27Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:34:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T04:50:57Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:36:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T05:04:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:37:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T05:07:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:39:24Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T05:33:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:40:54Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T05:35:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:42:34Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T05:44:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:44:04Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T05:55:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:45:34Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T07:06:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:47:04Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T08:14:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:48:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T08:33:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:50:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T10:50:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:51:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T10:57:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:53:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:00:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:54:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:03:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:56:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:05:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:57:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:08:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T13:59:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:10:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:00:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:16:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:02:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:18:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:03:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:22:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:05:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:24:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:06:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:26:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:08:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:29:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:09:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:31:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:11:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:33:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:12:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:35:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:14:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:38:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:15:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T11:48:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:17:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T13:48:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:18:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T14:45:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:20:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T14:47:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:21:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T14:48:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:23:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T14:50:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:24:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T14:52:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:26:05Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T14:57:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:27:36Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:01:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:29:06Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:04:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:30:36Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:06:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:32:06Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:08:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:33:36Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:11:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:35:06Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:14:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:36:36Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:16:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:38:06Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:24:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:39:36Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:29:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:41:06Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:32:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:42:36Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:37:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:44:06Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:39:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:45:36Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:40:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:47:06Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:42:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:48:36Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:44:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:50:06Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:47:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:51:36Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:49:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:53:06Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:50:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:54:46Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:55:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:56:16Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T15:58:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:57:46Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:03:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T14:59:16Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:06:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:00:46Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:11:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:02:16Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:13:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:03:46Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:19:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:05:16Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:24:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:06:46Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:29:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:08:17Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:32:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:09:47Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:37:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:11:17Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:39:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:12:47Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:41:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:14:17Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:42:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:15:47Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:44:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:17:17Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:49:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:18:57Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:53:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:20:27Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T16:58:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:21:57Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:01:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:23:27Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:04:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:24:57Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:06:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:26:27Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:13:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:27:57Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:15:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:29:27Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:16:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:30:57Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:18:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:32:27Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:19:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:33:57Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:21:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:35:27Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:22:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:36:57Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:24:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:38:27Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
 
-- **2026-09-04T17:25:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T17:27:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T17:28:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T17:30:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T17:31:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T17:33:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T17:34:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T17:36:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T17:37:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T17:39:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T17:40:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T20:44:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T21:00:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T21:27:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T21:29:58Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T21:31:29Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T21:32:59Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T21:40:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T21:48:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T22:16:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-04T22:25:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T03:09:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T06:26:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T08:55:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T09:54:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T10:37:36Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T12:30:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T13:31:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T16:05:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T16:14:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T16:26:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T20:09:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T20:20:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T20:29:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T20:31:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T20:45:43Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T20:47:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T21:17:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-05T21:22:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T09:58:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T10:03:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T10:10:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T10:15:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T10:20:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T17:29:39Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T20:01:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T20:29:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T20:42:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T20:44:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T20:45:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T20:49:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-06T21:01:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:29:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:31:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:32:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:34:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:36:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:38:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:39:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:42:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:44:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:45:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:47:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:49:37Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T09:51:07Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:26:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:28:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:30:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:34:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:36:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:37:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:40:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:42:01Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:44:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:46:06Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:47:37Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:50:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:53:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:55:35Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T10:59:41Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T11:01:31Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T11:04:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T11:06:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T11:10:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T11:12:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T11:14:30Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
-
-- **2026-09-07T11:16:00Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.
+- **2026-10-15T15:39:57Z**: Router Health Issue. Reason: Heartbeat timeout (>90s), State: OFFLINE. Resuscitation initiated.

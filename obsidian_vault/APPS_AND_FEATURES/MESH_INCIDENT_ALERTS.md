@@ -73,7 +73,7 @@
 
 ### [🚨 2026-09-09 10:21:09] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -97,7 +97,7 @@
 
 ### [🚨 2026-09-09 10:32:10] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -121,7 +121,7 @@
 
 ### [🚨 2026-09-09 10:43:15] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -145,7 +145,7 @@
 
 ### [🚨 2026-09-09 10:54:22] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -169,7 +169,7 @@
 
 ### [🚨 2026-09-09 11:05:28] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -193,7 +193,7 @@
 
 ### [🚨 2026-09-09 11:16:27] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -217,7 +217,7 @@
 
 ### [🚨 2026-09-09 11:27:26] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -241,7 +241,7 @@
 
 ### [🚨 2026-09-09 11:38:33] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -361,7 +361,7 @@
 
 ### [🚨 2026-09-09 13:15:18] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -457,7 +457,7 @@
 
 ### [🚨 2026-09-09 14:27:07] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -481,7 +481,7 @@
 
 ### [🚨 2026-09-09 14:37:15] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -505,7 +505,7 @@
 
 ### [🚨 2026-09-09 14:48:06] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -529,7 +529,7 @@
 
 ### [🚨 2026-09-09 14:59:05] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -553,7 +553,7 @@
 
 ### [🚨 2026-09-09 15:10:08] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -577,7 +577,7 @@
 
 ### [🚨 2026-09-09 15:21:17] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -601,7 +601,7 @@
 
 ### [🚨 2026-09-09 15:32:21] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -649,7 +649,7 @@
 
 ### [🚨 2026-09-09 16:08:10] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -793,7 +793,7 @@
 
 ### [🚨 2026-09-09 17:58:12] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -817,7 +817,7 @@
 
 ### [🚨 2026-09-09 18:09:08] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -841,7 +841,7 @@
 
 ### [🚨 2026-09-09 18:20:15] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -865,7 +865,7 @@
 
 ### [🚨 2026-09-09 18:31:25] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -889,7 +889,7 @@
 
 ### [🚨 2026-09-09 18:42:32] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
 - **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
-- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.84.40.95`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `100.78.206.96`
 - **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
 - **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
 - **Self-Healing Actions Taken:**
@@ -2652,6 +2652,234 @@
 
 
 ### [🚨 2026-09-10 13:02:53] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-10 13:13:35] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-10 13:24:18] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-10 13:35:02] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-10 13:45:45] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-10 13:56:28] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-10 14:07:13] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-10 14:17:59] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-10 14:28:40] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-10 14:39:28] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-10 14:50:10] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-17 00:49:43] UNREACHABLE & UNHEALABLE NODE: Linux Head Node (L3)
+- **Device Key:** `linux_head_node` | **Role:** `Continuous AI Training & 72B Math Engine`
+- **Primary IP:** `100.101.39.98` | **Tailscale:** `100.101.39.98`
+- **MAC Address:** `00:41:0e:14:28:43` | **Bluetooth MAC:** `00:41:0e:14:28:44`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `00:41:0e:14:28:44`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:41:0e:14:28:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-17 00:50:02] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-18 03:23:38] UNREACHABLE & UNHEALABLE NODE: Linux Head Node (L3)
+- **Device Key:** `linux_head_node` | **Role:** `Continuous AI Training & 72B Math Engine`
+- **Primary IP:** `100.101.39.98` | **Tailscale:** `100.101.39.98`
+- **MAC Address:** `00:41:0e:14:28:43` | **Bluetooth MAC:** `00:41:0e:14:28:44`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `00:41:0e:14:28:44`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:41:0e:14:28:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-09-18 03:23:55] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
+- **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
+- **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
+- **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `None`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:03:7f:c2:00:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-10-01 14:58:23] UNREACHABLE & UNHEALABLE NODE: MacBook Pro Vault (L2)
+- **Device Key:** `macbook_pro_vault` | **Role:** `Storage & Compute Vault (16 GB Unified RAM)`
+- **Primary IP:** `10.1.0.11` | **Tailscale:** `10.1.0.11`
+- **MAC Address:** `a4:83:e7:d1:7c:82` | **Bluetooth MAC:** `2c:ca:16:08:c0:27`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `2c:ca:16:08:c0:27`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `a4:83:e7:d1:7c:82`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-10-01 14:58:40] UNREACHABLE & UNHEALABLE NODE: Linux Head Node (L3)
+- **Device Key:** `linux_head_node` | **Role:** `Continuous AI Training & 72B Math Engine`
+- **Primary IP:** `10.1.0.12` | **Tailscale:** `10.1.0.12`
+- **MAC Address:** `00:41:0e:14:28:43` | **Bluetooth MAC:** `00:41:0e:14:28:44`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `00:41:0e:14:28:44`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `00:41:0e:14:28:43`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-10-01 14:59:00] UNREACHABLE & UNHEALABLE NODE: Pixel 10 Pro XL (L6)
+- **Device Key:** `pixel_10` | **Role:** `Edge TPU & 8K Mobile Vision`
+- **Primary IP:** `10.1.0.13` | **Tailscale:** `10.1.0.13`
+- **MAC Address:** `30:e0:44:6d:18:ec` | **Bluetooth MAC:** `30:e0:44:6d:18:ec`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `30:e0:44:6d:18:ec`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `30:e0:44:6d:18:ec`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-10-01 14:59:18] UNREACHABLE & UNHEALABLE NODE: Samsung Galaxy S20+ (L7)
+- **Device Key:** `samsung_s20` | **Role:** `Dedicated Automated UI Tester & CAKE SQM`
+- **Primary IP:** `192.168.8.214` | **Tailscale:** `10.1.0.14`
+- **MAC Address:** `5c:cb:99:05:81:41` | **Bluetooth MAC:** `5c:cb:99:05:81:41`
+- **Failure Assessment:** Node remains unresponsive after Bluetooth, WoL, and ADB.
+- **Self-Healing Actions Taken:**
+  - Tier 1 Bluetooth Connect Pulse: Dispatched to `5c:cb:99:05:81:41`
+  - Tier 2 RFC 792 UDP 9/7 WoL: Magic Packets sent to `5c:cb:99:05:81:41`
+  - Tier 3 Mobile ADB / Wake-Lock: Injected
+- **Action Required:** Physical hardware inspection, charger check, or screen wake on device.
+
+
+### [🚨 2026-10-01 14:59:35] UNREACHABLE & UNHEALABLE NODE: Linux Tablet (L4)
 - **Device Key:** `linux_tablet` | **Role:** `Debian Touch & Mobile DSP`
 - **Primary IP:** `100.81.92.125` | **Tailscale:** `100.81.92.125`
 - **MAC Address:** `00:03:7f:c2:00:43` | **Bluetooth MAC:** `None`

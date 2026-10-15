@@ -23,7 +23,7 @@ To achieve the fastest possible AI training throughput, **Qwen-AgentWorld-35B-A3
 │ 2. TRAINING ENGINES & COMPUTE PIPELINES                                                │
 │    • Primary (Fastest): Apple MLX QLoRA (mlx-community/Qwen-AgentWorld-35B-A3B-4bit)  │
 │    • Secondary: HuggingFace SFTTrainer + PEFT (LoRA rank=64, alpha=128 on MPS)        │
-│    • Distributed Sharding: FSDP multi-Mac via 10Gbps Thunderbolt 4 (Mac Mini + Pro)    │
+│    • Distributed Sharding: FSDP multi-Mac via 40Gbps Thunderbolt 4 (Mac Mini + Pro)    │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │ 3. MULTI-DOMAIN TRAINING DATASET (63,385 Authentic Lauburu Samples)                   │
 │    • MCP Tool Calling: nomad_autonomous_actions.jsonl, cron_governor_decisions.jsonl  │
@@ -40,13 +40,13 @@ To achieve the fastest possible AI training throughput, **Qwen-AgentWorld-35B-A3
 
 ```bash
 # 1. Prepare multi-domain training dataset
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/fast_train_agentworld_mac.py --prepare-only
+python3 /Volumes/Lauburu-Monorepo/04_data_and_memory/fast_train_agentworld_mac.py --prepare-only
 
 # 2. Launch Apple MLX Metal QLoRA (Fastest on M4 Pro)
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/fast_train_agentworld_mac.py --backend mlx --stage 1 --iters 500
+python3 /Volumes/Lauburu-Monorepo/04_data_and_memory/fast_train_agentworld_mac.py --backend mlx --stage 1 --iters 500
 
 # 3. Launch PyTorch MPS SFT Pipeline
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/agentworld_train.py --model agentworld_35b --stage 1
+python3 /Volumes/Lauburu-Monorepo/04_data_and_memory/agentworld_train.py --model agentworld_35b --stage 1
 ```
 
 ---

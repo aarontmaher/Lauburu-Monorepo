@@ -1,0 +1,66 @@
+[
+  {
+    "id": "router_1m_1",
+    "learning_rate": 0.002,
+    "dropout": 0.092,
+    "action_k_tokens": 16,
+    "fitness": 625.81,
+    "measured_tps": 1258.1
+  },
+  {
+    "id": "router_1m_2",
+    "learning_rate": 0.002,
+    "dropout": 0.049,
+    "action_k_tokens": 32,
+    "fitness": 0.0,
+    "measured_tps": 0.0
+  },
+  {
+    "id": "router_1m_3",
+    "learning_rate": 0.002,
+    "dropout": 0.054,
+    "action_k_tokens": 8,
+    "fitness": 0.0,
+    "measured_tps": 0.0
+  },
+  {
+    "id": "router_1m_4",
+    "learning_rate": 0.002,
+    "dropout": 0.078,
+    "action_k_tokens": 32,
+    "fitness": 0.0,
+    "measured_tps": 0.0
+  },
+  {
+    "id": "router_1m_5",
+    "learning_rate": 0.002,
+    "dropout": 0.071,
+    "action_k_tokens": 32,
+    "fitness": 0.0,
+    "measured_tps": 0.0
+  },
+  {
+    "id": "router_1m_6",
+    "learning_rate": 0.002,
+    "dropout": 0.085,
+    "action_k_tokens": 32,
+    "fitness": 0.0,
+    "measured_tps": 0.0
+  },
+  {
+    "id": "router_1m_7",
+    "learning_rate": 0.002,
+    "dropout": 0.085,
+    "action_k_tokens": 16,
+    "fitness": 0.0,
+    "measured_tps": 0.0
+  },
+  {
+    "id": "router_1m_8",
+    "learning_rate": 0.002,
+    "dropout": 0.085,
+    "action_k_tokens": 16,
+    "fitness": 0.0,
+    "measured_tps": 0.0
+  }
+]

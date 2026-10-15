@@ -1,0 +1,6 @@
+-keep class androidx.car.app.** { *; }
+-keep interface androidx.car.app.** { *; }
+-keepclassmembers class * extends androidx.car.app.CarAppService { <init>(...); }
+-keepclassmembers class * extends androidx.car.app.Session { <init>(...); }
+-keepclassmembers class * extends androidx.car.app.Screen { <init>(...); }
+-keepclassmembers class com.lauburu.androidauto.agi.models.** { *; }

@@ -314,12 +314,12 @@ def run_pyspark_model_catalog(raw_models: List[Dict[str, Any]]) -> Dict[str, Any
     
     df_enriched = df.withColumn(
         "hardware_placement_tier",
-        F.when(F.col("file_size_gb") <= 21.6, "Tier 1: Mac Mini M4 Host (<=21.6 GB)")
-        .when(F.col("file_size_gb") <= 35.6, "Tier 2: Dual-Node TB4 Bridge (<=35.6 GB)")
-        .when(F.col("file_size_gb") <= 49.6, "Tier 3: Triple-Metal Pool (<=49.6 GB)")
-        .when(F.col("file_size_gb") <= 63.4, "Tier 4: Quad-Compute Cluster (<=63.4 GB)")
-        .when(F.col("file_size_gb") <= 82.8, "Tier 5: Full 7-Layer Mesh (<=82.8 GB)")
-        .otherwise("Tier 6: Requires Multi-Cluster Sharding (>82.8 GB)")
+        F.when(F.col("file_size_gb") <= 19.2, "Tier 1: Mac Mini M4 Host (<=19.2 GB)")
+        .when(F.col("file_size_gb") <= 44.8, "Tier 2: L1-L8 TB4 DMA Bridge (<=44.8 GB)")
+        .when(F.col("file_size_gb") <= 58.8, "Tier 3: Dual-Mac Vault + Hub (<=58.8 GB)")
+        .when(F.col("file_size_gb") <= 84.8, "Tier 4: Hexa-Compute Cluster (<=84.8 GB)")
+        .when(F.col("file_size_gb") <= 108.4, "Tier 5: Full 8-Node Mesh (<=108.4 GB)")
+        .otherwise("Tier 6: Requires Multi-Cluster Sharding (>108.4 GB)")
     )
     
     df_enriched.createOrReplaceTempView("models_view")
@@ -462,7 +462,7 @@ last_scanned: "{timestamp}"
 | **Total Model Storage Footprint** | `{summary['total_storage_gb']} GB` | PySpark Dataframe Aggregation |
 | **Distinct AI Model Families** | `{summary['total_model_families']}` families | PySpark SQL `COUNT(DISTINCT)` |
 | **Abliterated / Uncensored Models** | `{summary['abliterated_count']}` models | Refusal-Free Inode Filter |
-| **Mesh Pooled Usable VRAM** | `82.80 GB` (108 GB Physical RAM) | 7-Layer Dynamic RAM Matrix |
+| **Mesh Pooled Usable VRAM** | `108.40 GB` (139 GB Physical RAM) | 8-Node Dynamic RAM Matrix |
 | **Dataset Locations** | `model_inventory.parquet` & `.json` | `/Users/aaron/DFS_UNIFIED/04_data_and_memory/model_catalog/` |
 
 ---

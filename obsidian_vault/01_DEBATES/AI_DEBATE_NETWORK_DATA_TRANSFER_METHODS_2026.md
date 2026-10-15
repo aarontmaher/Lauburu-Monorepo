@@ -160,4 +160,4 @@ The Tri-Orchestrator Council unanimously ratifies the **4-Tier Network Data Tran
 - [x] **ACT-03:** Execute comprehensive test suite `test_network_transfer_mapping.py` with 100% pass rate.
 - [x] **ACT-04:** Record ratified debate accord in Obsidian Vault (`01_DEBATES/AI_DEBATE_NETWORK_DATA_TRANSFER_METHODS_2026.md`).
 - [x] **ACT-05:** Record architectural optimization note in Obsidian Vault (`07_ALGORITHMIC_OPTIMIZATION/ALGORITHMIC_OPTIMIZATION_NETWORK_DATA_TRANSFER.md`).
-- [x] **ACT-06:** Append verified instruction-tuning pairs to `/Users/aaron/DFS_UNIFIED/lora_datasets/truth_audit_debate.jsonl`.
+- [x] **ACT-06:** Append verified instruction-tuning pairs to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/truth_audit_debate.jsonl`.

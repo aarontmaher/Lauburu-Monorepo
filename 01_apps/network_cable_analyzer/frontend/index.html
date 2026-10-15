@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Network Analyzer Lauburu</title>
+  <link rel="stylesheet" href="/static/styles.css?v=5">
+</head>
+<body>
+
+  <!-- Compact Header (48px) -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">🌿</div>
+      <div>
+        <div class="brand-title">LAUBURU NETWORK ANALYZER</div>
+      </div>
+      <div class="badges-group">
+        <div class="live-badge">
+          <span class="live-dot"></span>
+          <span>KERNEL PROBES</span>
+        </div>
+        <div class="live-badge bt-stream-badge" id="badge-bt-stream" title="Authoritative Layer 0 IP-less Radio Truth directly pulled from device Bluetooth terminals">
+          <span class="live-dot" style="background: #00f0ff;"></span>
+          <span>BT TERMINAL STREAM (LAYER 0 TRUTH)</span>
+        </div>
+        <div class="live-badge ip-badge" id="badge-dynamic-ip">
+          <span>DYNAMIC IP : 8/8</span>
+        </div>
+        <div class="live-badge terminal-badge">
+          <span>BT TERMINAL :4005</span>
+        </div>
+        <div class="live-badge ai-badge" id="badge-prima-status" title="prima.cpp Pipelined-Ring Parallelism Master & Inference Mesh">
+          <span>PRIMA.CPP :8082</span>
+        </div>
+        <div class="live-badge lens-badge" id="badge-lens-status" title="Screen Lens Sovereign Live Perception & HID Hub (:4003)">
+          <span class="live-dot" style="background: #c084fc;"></span>
+          <span>LENS :4003</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segmented Navigation View Switcher -->
+    <div class="view-switcher" id="header-view-switcher">
+      <button class="view-tab-btn active" id="nav-view-topology" onclick="switchMainView('topology')">
+        <span>🌐</span> Mesh Topology
+      </button>
+      <button class="view-tab-btn" id="nav-view-ip-inspector" onclick="switchMainView('ip-inspector')">
+        <span>🔍</span> IP Inspector
+      </button>
+      <button class="view-tab-btn" id="nav-view-lens-sovereign" onclick="switchMainView('lens-sovereign')">
+        <span>👁️</span> Screen Lens
+      </button>
+      <button class="view-tab-btn" id="nav-view-whatcable" onclick="switchMainView('whatcable')">
+        <span>🔌</span> WhatCable
+      </button>
+      <button class="view-tab-btn" id="nav-view-sharkwire" onclick="switchMainView('sharkwire')">
+        <span>🦈</span> Shark Wire
+      </button>
+      <button class="view-tab-btn" id="nav-view-router-gateway" onclick="switchMainView('router-gateway')">
+        <span>📡</span> GL.iNet Gateway
+      </button>
+      <button class="view-tab-btn" id="nav-view-crash-stream" onclick="switchMainView('crash-stream')">
+        <span>🚨</span> Crash Stream
+      </button>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="summary-strip">
+      <div class="stat-chip">
+        <span class="val" id="stat-online-nodes">--</span>
+        <span class="lbl">Nodes</span>
+      </div>
+      <div class="stat-chip" title="Mesh nodes directly verified from authentic Bluetooth terminal stream">
+        <span class="val" id="stat-bt-verified-nodes" style="color: #00f0ff;">--</span>
+        <span class="lbl">BT Stream Verified</span>
+      </div>
+      <div class="stat-chip">
+        <span class="val" id="stat-prima-workers" style="color: #c084fc;" title="Active prima.cpp & RPC workers across physical mesh">--</span>
+        <span class="lbl">prima.cpp</span>
+      </div>
+      <div class="stat-chip">
+        <span class="val" id="stat-dynamic-ips" style="color: #00ff88;">--</span>
+        <span class="lbl">Dynamic IPs</span>
+      </div>
+      <div class="stat-chip">
+        <span class="val" id="stat-mesh-ram">-- GB</span>
+        <span class="lbl">RAM Pool</span>
+      </div>
+      <div class="stat-chip">
+        <span class="val" id="stat-npu-tops">-- TOPS</span>
+        <span class="lbl">NPU Compute</span>
+      </div>
+      <div class="stat-chip">
+        <span class="val" id="stat-active-cables">--</span>
+        <span class="lbl">Active Cables</span>
+      </div>
+      <div class="stat-chip" title="All active physical and logical network links (BT, SSH, Tailscale, Wi-Fi 7 MLO, USB, TB4)">
+        <span class="val" id="stat-active-conns" style="color: #38bdf8;">--</span>
+        <span class="lbl">Active Links</span>
+      </div>
+      <div class="stat-chip">
+        <span class="val" id="stat-tb4-latency" style="color: #ffb800;">-- ms</span>
+        <span class="lbl">TB4 Link RTT</span>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <button class="btn btn-bluetooth" id="btn-pull-bt" title="Directly pull fresh hardware, RAM, cable, and battery metrics from Bluetooth terminal stream">
+        <span>📡</span> Pull BT Terminal
+      </button>
+      <button class="btn btn-primary" id="btn-refresh">
+        <span>🔄</span> Rescan
+      </button>
+      <button class="btn" id="btn-local-ai">
+        <span>🧠</span> AI Identify
+      </button>
+      <button class="btn btn-bluetooth" id="btn-reconnect-bt" title="Line 1 Bluetooth Proximity Wake across all laptops (MBP L2, Linux L3, MBA L5), Mac Mini (L1 Host), and mobile mesh">
+        <span>📲</span> Reconnect via Bluetooth
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workspace (Fits Screen 100vh) -->
+  <div class="main-container">
+    
+    <!-- View 1: Mesh Topology Stage (SVG Graph + Multi-Tab Sidebar) -->
+    <div class="view-stage active" id="stage-topology">
+      <!-- Left / Center: Interactive SVG Mesh Topology & Cable Graph -->
+      <div class="topology-view">
+      <svg id="mesh-svg" viewBox="0 0 1000 580" preserveAspectRatio="xMidYMid meet"></svg>
+
+      <!-- Cable Type Legend -->
+      <div class="legend-overlay">
+        <div style="font-weight: 700; margin-bottom: 4px; color: #00f0ff;">CABLE LINK MATRIX</div>
+        <div class="legend-item">
+          <div class="legend-line" style="background: var(--color-tb4);"></div>
+          <span>Thunderbolt 4 / USB4 (40 Gbps Smart Cable)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-line" style="background: var(--color-eth);"></div>
+          <span>Cat6 RJ45 Gigabit Ethernet (1000Base-T)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-line" style="background: var(--color-hdmi);"></div>
+          <span>HDMI 2.1 Display Cable (25.9 Gbps)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-line" style="background: var(--color-usb3);"></div>
+          <span>USB 3.2 Gen 1/2 Type-C (5-10 Gbps)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-line" style="background: var(--color-usb2);"></div>
+          <span>USB 2.0 High Speed (480 Mbps)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-line" style="background: var(--color-virtual); border-top: 1px dashed white;"></div>
+          <span>Tailscale WireGuard Mesh (UDP 41641)</span>
+        </div>
+        <div class="legend-item" style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 4px; margin-top: 4px;">
+          <span style="font-size: 11px;">⚠️</span>
+          <span style="color: #fbbf24; font-weight: 600;">Link Bottleneck Detected</span>
+        </div>
+        <div class="legend-item">
+          <span style="font-size: 11px;">📲</span>
+          <span style="color: #00f0ff; font-weight: 600;">Bluetooth Foundation Anchor</span>
+        </div>
+      </div>
+
+      <!-- Expanded Screen Lens Center View Overlay -->
+      <div id="lens-expanded-container" class="lens-expanded-overlay" style="display: none;">
+        <div class="lens-expanded-header">
+          <div class="lens-expanded-title">
+            <span>👁️ SCREEN LENS SOVEREIGN — LIVE BROADCAST</span>
+            <span class="badge badge-active" id="lens-expanded-hud">STREAMING :4003</span>
+          </div>
+          <button class="btn btn-sm" onclick="toggleLensExpandedView(false)">✕ Close View</button>
+        </div>
+        <div class="lens-expanded-body">
+          <img id="lens-expanded-img" src="" alt="Live Expanded Stream" onclick="handleLensClick(event)" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Multi-Tab Sidebar (380px) -->
+    <div class="sidebar">
+      <div class="sidebar-tabs">
+        <button class="tab-btn active" id="tab-btn-cables" onclick="switchTab('cables')">🔌 Cables</button>
+        <button class="tab-btn" id="tab-btn-whatcable" onclick="switchTab('whatcable')">⚡ WhatCable</button>
+        <button class="tab-btn" id="tab-btn-sharkwire" onclick="switchTab('sharkwire')">🦈 SharkWire</button>
+        <button class="tab-btn" id="tab-btn-connections" onclick="switchTab('connections')">🔗 Links</button>
+        <button class="tab-btn" id="tab-btn-devices" onclick="switchTab('devices')">💻 RAM/NPU</button>
+        <button class="tab-btn" id="tab-btn-terminal" onclick="switchTab('terminal')">📟 BT Term</button>
+        <button class="tab-btn" id="tab-btn-ai" onclick="switchTab('ai')">🧠 Local AI</button>
+        <button class="tab-btn" id="tab-btn-ips" onclick="switchTab('ips')">🌐 Dyn IPs</button>
+        <button class="tab-btn" id="tab-btn-diag" onclick="switchTab('diag')">🩺 Diag</button>
+        <button class="tab-btn" id="tab-btn-lens" onclick="switchTab('lens')">👁️ Lens</button>
+      </div>
+
+      <!-- Tab 1: Cable Inspector -->
+      <div class="tab-content active" id="tab-content-cables">
+        <div id="cable-inspector-body">
+          <div class="card">
+            <div class="card-title">Select a Cable Link</div>
+            <div style="color: var(--text-muted); font-size: 11px; line-height: 1.4;">
+              Click any cable on the interactive graph to view authentic E-marker chip parameters, Power Delivery wattage, and physical link bottlenecks.
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 10px;">
+          <div class="card-title">All Connected Cables & Links</div>
+          <div id="cables-list-container">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: WhatCable Quick Inspector (Sidebar) -->
+      <div class="tab-content" id="tab-content-whatcable">
+        <div class="card">
+          <div class="card-title">
+            <span>⚡ WhatCable Hardware Status</span>
+            <button class="btn btn-sm btn-primary" onclick="switchMainView('whatcable')">⛶ Full Stage</button>
+          </div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            Authentic Darwin IOKit hardware inspection: E-marker chips, USB-PD power, and DP Alt Mode.
+          </div>
+          <div id="sidebar-whatcable-summary">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Shark Wire Quick Stream (Sidebar) -->
+      <div class="tab-content" id="tab-content-sharkwire">
+        <div class="card">
+          <div class="card-title">
+            <span>🦈 Shark Wire Quick Stream</span>
+            <button class="btn btn-sm btn-primary" onclick="switchMainView('sharkwire')">⛶ Full Stage</button>
+          </div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            Live packet stream on <span id="sidebar-sw-iface" style="color: #00f0ff; font-weight: bold;">en0</span>.
+          </div>
+          <div id="sidebar-sharkwire-quick-feed">
+            <!-- Populated dynamically with latest packets -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Active Connections Inspector -->
+      <div class="tab-content" id="tab-content-connections">
+        <div class="card">
+          <div class="card-title">
+            <span>Active Network Links</span>
+            <span class="badge badge-active" id="connections-total-badge">-- ACTIVE</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            Authentic live physical & logical links discovered via kernel probes: Bluetooth, SSH, Tailscale, Wi-Fi 2.4/5/6/7 MLO, USB, and Thunderbolt.
+          </div>
+
+          <!-- Category Filter Bar -->
+          <div class="connection-filters" id="connection-filter-bar">
+            <button class="filter-pill active" data-cat="all" onclick="filterConnections('all')">All (<span id="filter-cnt-all">0</span>)</button>
+            <button class="filter-pill" data-cat="bluetooth" onclick="filterConnections('bluetooth')">📶 BT (<span id="filter-cnt-bluetooth">0</span>)</button>
+            <button class="filter-pill" data-cat="ssh" onclick="filterConnections('ssh')">🔒 SSH (<span id="filter-cnt-ssh">0</span>)</button>
+            <button class="filter-pill" data-cat="tailscale" onclick="filterConnections('tailscale')">🛡️ Tailscale (<span id="filter-cnt-tailscale">0</span>)</button>
+            <button class="filter-pill" data-cat="wifi" onclick="filterConnections('wifi')">📡 Wi-Fi 7 (<span id="filter-cnt-wifi">0</span>)</button>
+            <button class="filter-pill" data-cat="usb" onclick="filterConnections('usb')">🔌 USB (<span id="filter-cnt-usb">0</span>)</button>
+            <button class="filter-pill" data-cat="thunderbolt" onclick="filterConnections('thunderbolt')">⚡ TB4 (<span id="filter-cnt-thunderbolt">0</span>)</button>
+          </div>
+        </div>
+
+        <div id="connections-list-container" style="margin-top: 10px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Tab 2: Device RAM & NPU Deep Dive -->
+      <div class="tab-content" id="tab-content-devices">
+        <div id="devices-list-container">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Tab 3: Live Bluetooth Serial Terminal Feed -->
+      <div class="tab-content" id="tab-content-terminal">
+        <div class="card">
+          <div class="card-title">
+            <span>Bluetooth Serial Stream</span>
+            <span class="badge badge-active" id="bt-terminal-status">CONNECTED :4005</span>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="terminal-quick-actions" style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
+            <button class="btn btn-bluetooth btn-sm" id="btn-tab-reconnect-bt" title="Line 1 Bluetooth Proximity Wake for all laptops (MBP L2, Linux L3, MBA L5), Mac Mini (L1), and mobile mesh">
+              <span>📲</span> Reconnect via Bluetooth
+            </button>
+            <button class="btn btn-sm" id="btn-tab-status">
+              <span>📊</span> Status
+            </button>
+            <button class="btn btn-sm" id="btn-tab-telemetry">
+              <span>⚡</span> Telemetry
+            </button>
+            <button class="btn btn-sm" id="btn-tab-clear">
+              <span>🧹</span> Clear
+            </button>
+          </div>
+
+          <div class="terminal-window" id="terminal-display">Connecting to Bluetooth serial stream...</div>
+          
+          <div class="terminal-prompt-box">
+            <input type="text" class="terminal-input" id="terminal-cmd-input" placeholder="Enter command (e.g. status, reconnect, telemetry, whatcable)..." />
+            <button class="btn btn-primary" id="btn-send-cmd">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Local AI Device & Function Synthesis -->
+      <div class="tab-content" id="tab-content-ai">
+        <div class="card">
+          <div class="card-title">
+            <span>Sovereign Local AI Hardware Synthesis</span>
+            <span class="badge badge-active">PORT 8082 COORDINATOR | PORT 8083 7.6B RED TEAM</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            Raw terminal streams classified by Local AI: Port 8082 Prima Mesh Coordinator & Port 8083 Qwen 2.5 7B Abliterated Worker (27B Local Model Standby pending TB4 sharding).
+          </div>
+          <div id="ai-synthesis-container">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 16px;">
+          <div class="card-title">
+            <span>Neo AI ML Backend Recommendations</span>
+            <span class="badge badge-active" style="background: #8b5cf6; color: white;">NEO BRIDGE</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            AI-driven cable bottleneck diagnostics and topology optimization via Neo.
+          </div>
+          <button class="action-btn" onclick="fetchNeoRecommendations()" style="margin-bottom: 12px; border-color: #8b5cf6;">Fetch Neo Recommendations</button>
+          <div id="neo-recommendations-container" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 5: Real-Time Dynamic IP Resolution Map -->
+      <div class="tab-content" id="tab-content-ips">
+        <div class="card">
+          <div class="card-title">
+            <span>Dynamic IP Finder Matrix</span>
+            <span class="badge badge-active" id="ip-finder-latency">-- ms</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            Authentic zero-mock IP endpoints discovered via live Darwin kernel ARP, Tailscale status, router DHCP leases, and ADB daemon.
+          </div>
+          <div id="dynamic-ips-list-container">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 6: Diagnostics Suite -->
+      <div class="tab-content" id="tab-content-diag">
+        <!-- 1. Ping & Jitter Latency (Ookla / TP-Link inspired) -->
+        <div class="card">
+          <div class="card-title">
+            <span>🏓 Ping & Jitter Diagnostics</span>
+            <span class="badge badge-active" id="diag-ping-status">READY</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            RFC 3550 interarrival jitter calculation and empirical ICMP packet loss audit.
+          </div>
+          <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+            <input type="text" class="terminal-input" id="diag-ping-host" value="192.168.8.1" style="flex: 1;" />
+            <button class="btn btn-sm btn-primary" id="btn-run-ping">Run Ping</button>
+          </div>
+          <div id="diag-ping-results" style="font-size: 11px; font-family: monospace; color: var(--text-muted);">
+            Click "Run Ping" to measure RTT variance.
+          </div>
+        </div>
+
+        <!-- 2. Mesh TCP Port Scanner (TP-Link inspired) -->
+        <div class="card" style="margin-top: 10px;">
+          <div class="card-title">
+            <span>🔍 Mesh Service Port Scanner</span>
+            <span class="badge badge-active" id="diag-scan-status">READY</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            Multi-threaded TCP connect scanner targeting SSH, Web Hubs, and Local AI RPC sockets.
+          </div>
+          <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+            <input type="text" class="terminal-input" id="diag-scan-host" value="127.0.0.1" style="flex: 1;" />
+            <button class="btn btn-sm btn-primary" id="btn-run-scan">Scan Ports</button>
+          </div>
+          <div id="diag-scan-results" style="font-size: 11px; font-family: monospace; color: var(--text-muted);">
+            Click "Scan Ports" to audit active services.
+          </div>
+        </div>
+
+        <!-- 3. CPDT Storage & Memory Benchmark -->
+        <div class="card" style="margin-top: 10px;">
+          <div class="card-title">
+            <span>⚡ CPDT Disk & RAM Benchmark</span>
+            <span class="badge badge-active" id="diag-bench-status">READY</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            Cache-purged unbuffered direct fsync disk I/O and Apple Silicon UMA memory copy throughput.
+          </div>
+          <div style="margin-bottom: 8px;">
+            <button class="btn btn-sm btn-primary" id="btn-run-bench" style="width: 100%;">Run CPDT Benchmark</button>
+          </div>
+          <div id="diag-bench-results" style="font-size: 11px; font-family: monospace; color: var(--text-muted);">
+            Click "Run CPDT Benchmark" to measure read/write & memory bandwidth.
+          </div>
+        </div>
+
+        <!-- 4. USB-C Power Delivery & Mobile Battery (USB-C Test inspired) -->
+        <div class="card" style="margin-top: 10px;">
+          <div class="card-title">
+            <span>🔋 USB-C Power Delivery & Battery</span>
+            <span class="badge badge-active" id="diag-power-status">READY</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            Live microamps, voltage, power dissipation, and thermal metrics polled via ADB.
+          </div>
+          <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+            <input type="text" class="terminal-input" id="diag-power-device" value="100.73.38.87:5555" style="flex: 1;" />
+            <button class="btn btn-sm btn-primary" id="btn-run-power">Read Battery</button>
+          </div>
+          <div id="diag-power-results" style="font-size: 11px; font-family: monospace; color: var(--text-muted);">
+            Click "Read Battery" to query charging telemetry.
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 7: Screen Lens Sovereign (Port 4003) -->
+      <div class="tab-content" id="tab-content-lens">
+        <div class="card">
+          <div class="card-title">
+            <span>Screen Lens Sovereign</span>
+            <span class="badge badge-active" id="lens-hud-status">STREAMING :4003</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            Zero-mock live screen perception & VLA remote control. Bounded Lane A/B/C concurrency with mathematical coordinate compensation.
+          </div>
+
+          <!-- Target Device Selector across all 9 canonical devices -->
+          <div style="margin-bottom: 8px;">
+            <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 600;">PERCEPTION TARGET (9 MESH NODES):</label>
+            <select id="lens-target-select" class="terminal-input" style="width: 100%; cursor: pointer;" onchange="handleLensTargetChange(this.value)">
+              <option value="l1_mac_mini">L1: Mac Mini M4 Pro Host (ScreenCaptureKit)</option>
+              <option value="l2_macbook_pro">L2: Intel MacBook Pro (TB4 SSH screencapture)</option>
+              <option value="l3_linux_head">L3: Linux Laptop Ryzen 7 (1GbE /dev/fb0)</option>
+              <option value="l8_linux_mini">L8: Linux Mini Ubuntu 'lauburu' (Intel i7 Compute)</option>
+              <option value="l4_linux_tablet">L4: Linux Tablet Debian (Touch DSP)</option>
+              <option value="l5_macbook_air">L5: MacBook Air M4 (Metal Worker SSH)</option>
+              <option value="l6_pixel_10">L6: Pixel 10 Pro XL (8K Vision / Termux)</option>
+              <option value="l7_samsung_s20">L7: Samsung S20+ (USB/ADB screencap)</option>
+              <option value="gw_router">GW: GL.iNet Router Beryl 7 (OpenWrt)</option>
+            </select>
+          </div>
+
+          <!-- Live Video Stream Viewport -->
+          <div class="lens-viewport-container" id="lens-viewport-box">
+            <img id="lens-stream-img" src="/api/lens/stream" alt="Screen Lens Stream" onclick="handleLensClick(event)" />
+            <div class="lens-viewport-hud" id="lens-overlay-hud">
+              <span id="lens-hud-fps">-- FPS</span> • 
+              <span id="lens-hud-res">1920x1080</span> • 
+              <span id="lens-hud-app">Antigravity</span>
+            </div>
+          </div>
+
+          <!-- Arming & Safety Control Pill -->
+          <div class="lens-arm-box" style="margin-top: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 10px; color: var(--text-muted); font-weight: 600;">SAFETY ARMING GATE:</span>
+              <span class="badge" id="lens-arm-badge" style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981;">🛡️ OBSERVE ONLY</span>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-sm" id="btn-lens-arm-toggle" onclick="toggleLensArming()" style="flex: 1;">
+                <span>⚡</span> Arm Control (30s)
+              </button>
+              <button class="btn btn-sm btn-primary" onclick="toggleLensExpandedView(true)" title="Expand live stream into center stage">
+                <span>🔍</span> Expand
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="lens-quick-actions" style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+            <button class="btn btn-sm" id="btn-lens-snapshot" onclick="takeLensSnapshot()">
+              <span>📸</span> Snapshot Proof
+            </button>
+            <button class="btn btn-sm" onclick="refreshLensStream()">
+              <span>🔄</span> Reload Stream
+            </button>
+            <button class="btn btn-sm" onclick="sendLensKey('enter')" title="Send Enter">
+              <span>↵</span> Enter
+            </button>
+            <button class="btn btn-sm" onclick="sendLensKey('escape')" title="Send Esc">
+              <span>⎋</span> Esc
+            </button>
+            <button class="btn btn-sm" onclick="sendLensKey('space')" title="Send Space">
+              <span>␣</span> Space
+            </button>
+          </div>
+
+          <div id="lens-snapshot-result" style="margin-top: 6px; font-size: 10px; font-family: monospace; color: var(--text-muted); display: none; background: rgba(0,0,0,0.4); padding: 6px; border-radius: 4px; border: 1px solid var(--border-color);"></div>
+        </div>
+      </div>
+
+      </div>
+    </div>
+    <!-- End of View 1: stage-topology -->
+
+    <!-- View 2: "🔌 WhatCable" Full Stage (F4.2) -->
+    <div class="view-stage" id="stage-whatcable" style="display: none;">
+      <div class="whatcable-container">
+        <!-- Top summary bar -->
+        <div class="whatcable-header-bar">
+          <div class="whatcable-title-group">
+            <span class="whatcable-title-icon">🔌</span>
+            <div>
+              <div class="whatcable-title">WHATCABLE HARDWARE & E-MARKER INSPECTOR</div>
+              <div class="whatcable-subtitle" id="wc-header-subtitle">9-Node Mesh Physical Cable Topology • Zero-Mock Hardware Probing</div>
+            </div>
+          </div>
+          <div class="whatcable-header-stats">
+            <div class="wc-stat-chip"><span class="wc-val" id="wc-total-ports">--</span><span class="wc-lbl">Ports</span></div>
+            <div class="wc-stat-chip"><span class="wc-val" id="wc-active-cables">--</span><span class="wc-lbl">Active Cables</span></div>
+            <div class="wc-stat-chip"><span class="wc-val" id="wc-emarkers">--</span><span class="wc-lbl">E-Markers</span></div>
+            <div class="wc-stat-chip"><span class="wc-val" id="wc-max-speed">--</span><span class="wc-lbl">Max Speed</span></div>
+            <div class="wc-stat-chip"><span class="wc-val" id="wc-max-watts" style="color: #10b981;">--</span><span class="wc-lbl">Max Power</span></div>
+            <button class="btn btn-sm btn-primary" id="btn-whatcable-rescan" onclick="fetchWhatCableDetails(true)">
+              <span>🔄</span> Rescan Hardware
+            </button>
+          </div>
+        </div>
+
+        <!-- WhatCable Multi-Device & Full Network Selector Bar -->
+        <div class="whatcable-device-bar">
+          <div class="wc-device-label">DEVICE VIEW:</div>
+          <div class="wc-device-pills" id="wc-device-pills">
+            <button class="wc-pill active" data-device="full_network" onclick="selectWhatCableDevice('full_network')">
+              <span class="wc-pill-icon">🌐</span> Full Network Matrix
+            </button>
+            <button class="wc-pill" data-device="l1_mac_mini" onclick="selectWhatCableDevice('l1_mac_mini')">
+              <span class="wc-pill-icon">🖥️</span> L1 Mac Mini
+            </button>
+            <button class="wc-pill" data-device="l2_macbook_pro" onclick="selectWhatCableDevice('l2_macbook_pro')">
+              <span class="wc-pill-icon">💻</span> L2 MBP Intel
+            </button>
+            <button class="wc-pill" data-device="l3_linux_head" onclick="selectWhatCableDevice('l3_linux_head')">
+              <span class="wc-pill-icon">🐧</span> L3 Linux Laptop
+            </button>
+            <button class="wc-pill" data-device="l8_linux_mini" onclick="selectWhatCableDevice('l8_linux_mini')">
+              <span class="wc-pill-icon">🖳</span> L8 Linux Mini
+            </button>
+            <button class="wc-pill" data-device="l4_linux_tablet" onclick="selectWhatCableDevice('l4_linux_tablet')">
+              <span class="wc-pill-icon">📱</span> L4 Tablet
+            </button>
+            <button class="wc-pill" data-device="l5_macbook_air" onclick="selectWhatCableDevice('l5_macbook_air')">
+              <span class="wc-pill-icon">💻</span> L5 MBA M4
+            </button>
+            <button class="wc-pill" data-device="l6_pixel_10" onclick="selectWhatCableDevice('l6_pixel_10')">
+              <span class="wc-pill-icon">📱</span> L6 Pixel 10
+            </button>
+            <button class="wc-pill" data-device="l7_samsung_s20" onclick="selectWhatCableDevice('l7_samsung_s20')">
+              <span class="wc-pill-icon">📱</span> L7 Samsung S20
+            </button>
+            <button class="wc-pill" data-device="gw_router" onclick="selectWhatCableDevice('gw_router')">
+              <span class="wc-pill-icon">📡</span> GW Router
+            </button>
+          </div>
+        </div>
+
+        <!-- Bottleneck Alert Banners Section -->
+        <div id="whatcable-bottleneck-banners" class="bottleneck-banners-container">
+          <!-- Dynamically populated alert cards with remedies -->
+        </div>
+
+        <!-- VIEW A: Full Network Aggregated View (Matrix & Cables) -->
+        <div id="whatcable-network-view" class="whatcable-network-view">
+          <!-- KPI strip -->
+          <div class="wc-network-kpi-grid">
+            <div class="wc-kpi-card">
+              <div class="wc-kpi-label">Mesh Nodes Monitored</div>
+              <div class="wc-kpi-val" id="wc-net-nodes">9 Nodes</div>
+              <div class="wc-kpi-sub" id="wc-net-nodes-sub">Live Hardware Polled</div>
+            </div>
+            <div class="wc-kpi-card">
+              <div class="wc-kpi-label">Active Physical Cables</div>
+              <div class="wc-kpi-val" id="wc-net-cables" style="color: #10b981;">--</div>
+              <div class="wc-kpi-sub">TB4, 10GbE, 2.5GbE, USB</div>
+            </div>
+            <div class="wc-kpi-card">
+              <div class="wc-kpi-label">E-Marker Verified Chips</div>
+              <div class="wc-kpi-val" id="wc-net-emarkers" style="color: #00f0ff;">--</div>
+              <div class="wc-kpi-sub">SOP' Chip Hardware Decoded</div>
+            </div>
+            <div class="wc-kpi-card">
+              <div class="wc-kpi-label">Aggregated Bandwidth Pool</div>
+              <div class="wc-kpi-val" id="wc-net-bw-pool" style="color: #38bdf8;">--</div>
+              <div class="wc-kpi-sub" id="wc-net-bw-sub">Peak line rate: 40.0 Gbps TB4</div>
+            </div>
+            <div class="wc-kpi-card">
+              <div class="wc-kpi-label">Active Cable Bottlenecks</div>
+              <div class="wc-kpi-val" id="wc-net-bottlenecks" style="color: #f59e0b;">--</div>
+              <div class="wc-kpi-sub" id="wc-net-btn-sub">Hardware Throttles Detected</div>
+            </div>
+            <div class="wc-kpi-card">
+              <div class="wc-kpi-label">Zero-Mock SHA-256</div>
+              <div class="wc-kpi-val" id="wc-net-sha" style="font-size: 11px; word-break: break-all; color: #a78bfa;">--</div>
+              <div class="wc-kpi-sub">Cryptographic Truth Proof</div>
+            </div>
+          </div>
+
+          <!-- 9x9 Physical Interconnect Matrix Card -->
+          <div class="wc-matrix-card">
+            <div class="wc-matrix-header">
+              <div class="wc-matrix-title">🕸️ 9-NODE PHYSICAL LINK ADJACENCY MATRIX (LAYER 1 PHYSICAL MEDIA)</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Click any cell to inspect link parameters • Green: Optimal • Amber: Bottleneck</div>
+            </div>
+            <div class="wc-matrix-wrapper">
+              <table class="wc-matrix-table" id="wc-matrix-table">
+                <!-- Dynamically populated 9x9 grid -->
+              </table>
+            </div>
+          </div>
+
+          <!-- Physical Cable Inventory Table Card -->
+          <div class="wc-cable-table-card">
+            <div class="wc-matrix-title">🔌 VERIFIED PHYSICAL CABLE INVENTORY & LINK NEGOTIATION</div>
+            <div class="wc-cable-table-wrapper">
+              <table class="wc-cable-table" id="wc-cables-inventory-table">
+                <thead>
+                  <tr>
+                    <th>Cable & Physical Media</th>
+                    <th>Source Endpoint</th>
+                    <th>Target Endpoint</th>
+                    <th>E-Marker Chip</th>
+                    <th>Power Delivery</th>
+                    <th>Rated Bandwidth</th>
+                    <th>Negotiated Speed</th>
+                    <th>RTT Latency</th>
+                    <th>Link Status</th>
+                  </tr>
+                </thead>
+                <tbody id="wc-cables-tbody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW B: Individual Device View (Chassis, Receptacles, E-Markers) -->
+        <div id="whatcable-device-view" class="whatcable-device-view" style="display: none;">
+          <!-- Chassis Schematic & Interactive Port Matrix -->
+          <div class="whatcable-main-grid">
+          <!-- Left Column: Chassis Schematics (Front & Rear Panels) -->
+          <div class="chassis-column">
+            <!-- Chassis Visual Box -->
+            <div class="chassis-card">
+              <div class="chassis-header">
+                <span id="chassis-title">🖥️ MAC MINI M4 PRO — PHYSICAL CHASSIS PORT SCHEMATIC</span>
+                <span class="badge badge-active" id="chassis-status-badge">6 ACTIVE PORTS</span>
+              </div>
+
+              <!-- Host Mac Mini Visual Panels -->
+              <div id="chassis-host-panels">
+                <!-- Rear Panel Visual -->
+                <div class="panel-section">
+                  <div class="panel-label">REAR IO PANEL (High-Bandwidth Bus)</div>
+                <div class="chassis-panel rear-panel">
+                  <!-- AC Power Inlet -->
+                  <div class="port-receptacle power-inlet" id="port-ac-power" title="AC Power In (100-240V 50/60Hz)">
+                    <div class="port-icon">⏻</div>
+                    <div class="port-name">AC IN</div>
+                    <div class="port-led led-green" title="Internal 150W PSU Active"></div>
+                  </div>
+
+                  <!-- 10GbE RJ45 -->
+                  <div class="port-receptacle rj45-port" id="port-rec-eth" onclick="selectWhatcablePort('eth0')" title="10GbE RJ45 (en0) -> GL.iNet Gateway eth2">
+                    <div class="port-icon">🌐</div>
+                    <div class="port-name">10GbE RJ45</div>
+                    <div class="port-meta">10 Gbps • en0</div>
+                    <div class="port-led led-green" id="led-port-eth"></div>
+                  </div>
+
+                  <!-- 3x Thunderbolt 4 / USB4 (Receptacles 1, 2, 3) -->
+                  <div class="tb4-cluster">
+                    <div class="port-receptacle tb4-port active-selected" id="port-rec-1" onclick="selectWhatcablePort('Port-USB-C@1')" title="Thunderbolt 4 / USB4 (Port 1) - Receptacle 1">
+                      <div class="port-icon">⚡</div>
+                      <div class="port-name">TB4 #1</div>
+                      <div class="port-meta">40G • L2 MBP</div>
+                      <div class="port-led led-green" id="led-port-1"></div>
+                    </div>
+
+                    <div class="port-receptacle tb4-port" id="port-rec-2" onclick="selectWhatcablePort('Port-USB-C@2')" title="Thunderbolt 4 / USB4 (Port 2) - Receptacle 2">
+                      <div class="port-icon">⚡</div>
+                      <div class="port-name">TB4 #2</div>
+                      <div class="port-meta">40G • 100W SPR</div>
+                      <div class="port-led led-yellow" id="led-port-2"></div>
+                    </div>
+
+                    <div class="port-receptacle tb4-port" id="port-rec-3" onclick="selectWhatcablePort('Port-USB-C@3')" title="Thunderbolt 4 / USB4 (Port 3) - Receptacle 3">
+                      <div class="port-icon">⚡</div>
+                      <div class="port-name">TB4 #3</div>
+                      <div class="port-meta">40G • Smart Cable</div>
+                      <div class="port-led led-green" id="led-port-3"></div>
+                    </div>
+                  </div>
+
+                  <!-- HDMI 2.1 Display -->
+                  <div class="port-receptacle hdmi-port" id="port-rec-hdmi" onclick="selectWhatcablePort('Port-HDMI@1')" title="HDMI 2.1 (Port-HDMI@1)">
+                    <div class="port-icon">🖥️</div>
+                    <div class="port-name">HDMI 2.1</div>
+                    <div class="port-meta">25.92G HBR3</div>
+                    <div class="port-led led-green" id="led-port-hdmi"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Front Panel Visual -->
+              <div class="panel-section" style="margin-top: 14px;">
+                <div class="panel-label">FRONT IO PANEL (Peripherals & Audio)</div>
+                <div class="chassis-panel front-panel">
+                  <!-- Front USB-C Port 1 (Receptacle 5) -->
+                  <div class="port-receptacle usbc-front-port" id="port-rec-5" onclick="selectWhatcablePort('Port-USB-C@5')" title="Front USB-C Port 1 (10 Gbps USB 3.2 Gen 2)">
+                    <div class="port-icon">🔌</div>
+                    <div class="port-name">Front USB-C #1</div>
+                    <div class="port-meta">USB 2.0 (480M)</div>
+                    <div class="port-led led-yellow" id="led-port-5"></div>
+                  </div>
+
+                  <!-- Front USB-C Port 2 (Receptacle 6) -->
+                  <div class="port-receptacle usbc-front-port" id="port-rec-6" onclick="selectWhatcablePort('Port-USB-C@6')" title="Front USB-C Port 2 (10 Gbps USB 3.2 Gen 2)">
+                    <div class="port-icon">🔌</div>
+                    <div class="port-name">Front USB-C #2</div>
+                    <div class="port-meta">USB 2.0 (480M)</div>
+                    <div class="port-led led-yellow" id="led-port-6"></div>
+                  </div>
+
+                  <!-- 3.5mm Headphone Jack -->
+                  <div class="port-receptacle audio-jack" id="port-rec-audio" title="3.5mm Headphone Jack with High-Impedance Load Sensing">
+                    <div class="port-icon">🎧</div>
+                    <div class="port-name">3.5mm Audio</div>
+                    <div class="port-meta">Stereo DAC</div>
+                    <div class="port-led led-green" id="led-port-audio"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Non-Host Hardware Panel -->
+            <div id="chassis-dynamic-panel" style="display: none; margin-bottom: 12px;">
+              <div class="panel-section">
+                <div class="panel-label" id="chassis-dynamic-label">HARDWARE INTERFACES & PORT RECEPTACLES</div>
+                <div class="chassis-panel dynamic-panel" id="chassis-dynamic-ports" style="display: flex; gap: 10px; flex-wrap: wrap; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                  <!-- Dynamically populated per device -->
+                </div>
+              </div>
+            </div>
+
+              <!-- Port Legend -->
+              <div class="chassis-legend">
+                <div class="chassis-legend-item"><span class="led-dot led-green"></span> Full Certified Rate</div>
+                <div class="chassis-legend-item"><span class="led-dot led-yellow"></span> Rate Bottleneck Detected</div>
+                <div class="chassis-legend-item"><span class="led-dot led-grey"></span> Empty / Unplugged</div>
+              </div>
+            </div>
+
+            <!-- Cable Connector Graphic -->
+            <div class="cable-graphic-card">
+              <div class="card-title">PHYSICAL CABLE CONNECTOR & SLEEVE</div>
+              <div class="cable-graphic-stage">
+                <div class="connector-housing">
+                  <div class="metallic-sleeve">
+                    <div class="tb-bolt-emblem">⚡</div>
+                    <div class="connector-label" id="connector-label">THUNDERBOLT 4 / 240W</div>
+                  </div>
+                  <div class="connector-pins">
+                    <div class="pin-contact"></div><div class="pin-contact"></div>
+                    <div class="pin-contact"></div><div class="pin-contact"></div>
+                  </div>
+                  <div class="cable-strain-relief"></div>
+                  <div class="cable-braided-body">
+                    <div class="braid-pattern"></div>
+                  </div>
+                </div>
+                <div class="connector-meta-info">
+                  <div class="conn-status" id="conn-plug-status">PLUGGED INTO PORT-USB-C@1 (RECEPTACLE 1)</div>
+                  <div class="conn-specs" id="conn-specs-text">USB4 Gen 3 (40 Gbps) • SOP' Passive Smart Cable • 50V / 5A (240W)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Deep-Dive Meters (E-Marker, USB-PD, DisplayPort Alt Mode) -->
+          <div class="meters-column">
+            <!-- E-Marker Chip Badge Card -->
+            <div class="card emarker-card">
+              <div class="card-title">
+                <span>IDENTIFIED E-MARKER SMART CHIP</span>
+                <span class="badge badge-active" id="emarker-chip-status">SOP' DETECTED</span>
+              </div>
+              <div class="emarker-badge-content" id="emarker-badge-container">
+                <!-- Dynamic E-Marker chip details -->
+              </div>
+            </div>
+
+            <!-- USB-PD Power Delivery Meters -->
+            <div class="card pd-meter-card">
+              <div class="card-title">
+                <span>USB-PD 3.1 POWER DELIVERY SPECIFICATION</span>
+                <span class="badge" id="pd-mode-badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981;">240W</span>
+              </div>
+
+              <div class="pd-meters-layout">
+                <!-- Semi-Circular Radial Gauge -->
+                <div class="radial-gauge-container">
+                  <svg class="radial-gauge-svg" viewBox="0 0 160 100">
+                    <path class="gauge-bg" d="M 20 90 A 60 60 0 0 1 140 90" fill="none" stroke="#1c263b" stroke-width="12" stroke-linecap="round" />
+                    <path class="gauge-fill" id="gauge-fill-arc" d="M 20 90 A 60 60 0 0 1 140 90" fill="none" stroke="url(#gauge-gradient)" stroke-width="12" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="0" />
+                    <defs>
+                      <linearGradient id="gauge-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="40%" stop-color="#00f0ff" />
+                        <stop offset="75%" stop-color="#ffb800" />
+                        <stop offset="100%" stop-color="#10b981" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div class="radial-gauge-center">
+                    <div class="gauge-value" id="radial-watts-val">240<span class="gauge-unit">W</span></div>
+                    <div class="gauge-label" id="radial-rating-label">EPR Range</div>
+                  </div>
+                  <div class="gauge-ticks">
+                    <span>0W</span>
+                    <span>60W</span>
+                    <span>100W</span>
+                    <span>240W</span>
+                  </div>
+                </div>
+
+                <!-- Voltage Ladder & PPS Badging -->
+                <div class="voltage-pps-container">
+                  <div class="voltage-label-bar-title">USB-PD VOLTAGE STEPS NEGOTIATION</div>
+                  <div class="voltage-steps-bar" id="voltage-steps-bar">
+                    <div class="v-step" data-volts="5">5V</div>
+                    <div class="v-step" data-volts="9">9V</div>
+                    <div class="v-step" data-volts="15">15V</div>
+                    <div class="v-step" data-volts="20">20V</div>
+                    <div class="v-step" data-volts="28">28V</div>
+                    <div class="v-step" data-volts="36">36V</div>
+                    <div class="v-step active" data-volts="48" id="v-step-48">48V EPR</div>
+                  </div>
+
+                  <div class="pps-badge-box" id="pps-badge-box">
+                    <div class="pps-title">⚡ PROGRAMMABLE POWER SUPPLY (PPS)</div>
+                    <div class="pps-desc" id="pps-desc-text">3.3V – 21.0V @ 5.0A Dynamic (20 mV step voltage regulation active)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DisplayPort Alt Mode Bandwidth Meters -->
+            <div class="card dp-meters-card">
+              <div class="card-title">
+                <span>DISPLAYPORT ALT MODE & VIDEO BANDWIDTH</span>
+                <span class="badge badge-active" id="dp-status-badge">OPTIMAL (100%)</span>
+              </div>
+
+              <div class="dp-content-layout">
+                <div class="dp-monitor-info">
+                  <div class="dp-sink-name" id="dp-sink-name">🖥️ MSI MP245 E14VL (via Port-HDMI@1)</div>
+                  <div class="dp-sink-mode" id="dp-sink-mode">Current: 1920 × 1080 @ 144 Hz (8-bit RGB, HBR3 4 Lanes)</div>
+                </div>
+
+                <!-- Dual-Bar Bandwidth Gauge -->
+                <div class="dual-bar-container">
+                  <!-- Delivered Bandwidth Bar -->
+                  <div class="bar-group">
+                    <div class="bar-label-row">
+                      <span>Delivered Video Bandwidth (HBR3 4 Lanes)</span>
+                      <span class="bar-val" id="dp-delivered-val" style="color: #00f0ff;">25.92 Gbps</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-fill" id="dp-delivered-bar" style="width: 100%; background: linear-gradient(90deg, #0284c7, #00f0ff);"></div>
+                    </div>
+                  </div>
+
+                  <!-- Needed Bandwidth Bar -->
+                  <div class="bar-group" style="margin-top: 8px;">
+                    <div class="bar-label-row">
+                      <span>Needed Pixel Bandwidth (1080p @ 60Hz)</span>
+                      <span class="bar-val" id="dp-needed-val" style="color: #c084fc;">3.20 Gbps</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-fill" id="dp-needed-bar" style="width: 31.5%; background: linear-gradient(90deg, #7c3aed, #c084fc);"></div>
+                    </div>
+                  </div>
+
+                  <!-- Headroom / Margin Indicator -->
+                  <div class="dp-margin-box" id="dp-margin-box">
+                    <span class="dp-margin-icon">🛡️</span>
+                    <span class="dp-margin-text" id="dp-margin-text">
+                      <strong>+17.76 Gbps Headroom (68% Margin)</strong> — Display running at full uncompressed refresh rate with zero dropped frames.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div> <!-- End whatcable-device-view -->
+    </div>
+  </div>
+  <!-- End of View 2: stage-whatcable -->
+
+    <!-- View 3: "🦈 Shark Wire" Full Stage (F4.3 - F4.7) -->
+    <div class="view-stage" id="stage-sharkwire" style="display: none;">
+      <div class="sharkwire-container">
+        <!-- Controls & Telemetry Bar (F4.3) -->
+        <div class="sharkwire-controls-bar">
+          <!-- Left: Capture controls -->
+          <div class="sw-control-group">
+            <div class="sw-iface-wrapper">
+              <label for="sw-iface-select" class="sw-ctrl-lbl">IFACE:</label>
+              <select id="sw-iface-select" class="sw-select" onchange="onSharkWireInterfaceChange(this.value)">
+                <option value="en0" selected>en0 (10GbE Apple M4 Pro)</option>
+                <option value="bridge0">bridge0 (40Gbps TB4 DMA)</option>
+                <option value="en1">en1 (Wi-Fi 7 MLO)</option>
+                <option value="utun3">utun3 (WireGuard Mesh 41641)</option>
+                <option value="lo0">lo0 (Local AI RPC 8081-8084)</option>
+                <option value="any">any (All Interfaces Multiplexer)</option>
+              </select>
+            </div>
+
+            <button class="btn btn-sm btn-capture-toggle" id="btn-sw-toggle-capture" onclick="toggleSharkWireCapture()">
+              <span class="capture-led active" id="sw-capture-led"></span>
+              <span id="sw-capture-btn-text">⏹ Stop Capture</span>
+            </button>
+
+            <button class="btn btn-sm" id="btn-sw-clear" onclick="clearSharkWireBuffer()" title="Clear ring buffer and reset table">
+              <span>🧹</span> Clear Buffer
+            </button>
+
+            <button class="btn btn-sm btn-primary" id="btn-sw-export" onclick="exportSharkWirePcap()" title="Download raw libpcap 2.4 capture file">
+              <span>💾</span> Export PCAP
+            </button>
+
+            <button class="btn btn-sm sw-autoscroll-btn active" id="btn-sw-autoscroll" onclick="toggleSharkWireAutoScroll()" title="Lock scroll to latest arriving packet">
+              <span>⇲</span> Auto-Scroll: ON
+            </button>
+          </div>
+
+          <!-- Right: Live Telemetry Counters -->
+          <div class="sw-telemetry-strip">
+            <div class="sw-stat-pill" title="Total packets captured by engine">
+              <span class="sw-stat-val" id="sw-cnt-captured">0</span>
+              <span class="sw-stat-lbl">Captured</span>
+            </div>
+            <div class="sw-stat-pill" title="Packets currently displayed matching filter">
+              <span class="sw-stat-val" id="sw-cnt-displayed" style="color: #00f0ff;">0</span>
+              <span class="sw-stat-lbl">Displayed</span>
+            </div>
+            <div class="sw-stat-pill" title="Live throughput rate">
+              <span class="sw-stat-val" id="sw-cnt-rate" style="color: #10b981;">0 pkts/s</span>
+              <span class="sw-stat-lbl" id="sw-cnt-bytes">0 KB/s</span>
+            </div>
+            <div class="sw-stat-pill" title="5,000 packet bounded ring buffer utilization">
+              <div class="sw-buffer-meter">
+                <div class="sw-buffer-bar" id="sw-buffer-bar" style="width: 0%;"></div>
+              </div>
+              <span class="sw-stat-val" id="sw-cnt-buffer">0%</span>
+              <span class="sw-stat-lbl">Ring Buffer</span>
+            </div>
+            <div class="sw-stat-pill" title="Packets dropped due to buffer overrun">
+              <span class="sw-stat-val" id="sw-cnt-drops" style="color: #536485;">0</span>
+              <span class="sw-stat-lbl">Drops</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Bar (F4.4) -->
+        <div class="sharkwire-filter-bar">
+          <div class="sw-filter-input-wrapper" id="sw-filter-wrapper">
+            <span class="sw-filter-icon">🔍</span>
+            <input type="text" id="sw-filter-input" class="sw-filter-input" placeholder="Apply a display filter ... (e.g. wireguard, tcp.port == 8082, ip.addr == 100.119.199.76, http.method == &quot;POST&quot;)" onkeydown="handleFilterKeyDown(event)" oninput="onFilterInputChange(this.value)" />
+            <button class="sw-filter-apply-btn" id="btn-sw-apply-filter" onclick="applySharkWireFilter()" title="Apply filter">➔</button>
+            <button class="sw-filter-clear-btn" id="btn-sw-clear-filter" onclick="clearSharkWireFilter()" title="Clear filter">✕</button>
+          </div>
+          <div class="sw-filter-chips">
+            <span class="sw-chip-label">QUICK:</span>
+            <button class="sw-chip active" onclick="setQuickFilter('')">All</button>
+            <button class="sw-chip" onclick="setQuickFilter('wireguard')">WireGuard 41641</button>
+            <button class="sw-chip" onclick="setQuickFilter('tcp.port >= 8081 && tcp.port <= 8084')">Local AI RPC 8081-8084</button>
+            <button class="sw-chip" onclick="setQuickFilter('tcp.port == 8082')">Prima PRP Ring (8082)</button>
+            <button class="sw-chip" onclick="setQuickFilter('ssh')">SSH (22/8022)</button>
+            <button class="sw-chip" onclick="setQuickFilter('tcp.flags.syn == 1 || tcp.flags.rst == 1')">TCP SYN/RST</button>
+            <button class="sw-chip" onclick="setQuickFilter('dns')">DNS (53)</button>
+          </div>
+          <div id="sw-filter-status-msg" class="sw-filter-msg" style="display: none;"></div>
+        </div>
+
+        <!-- 3-Pane Body Layout -->
+        <div class="sharkwire-panes-body">
+          <!-- Upper Pane: Virtualized 60 FPS Scrolling Packet Grid Table (40% height) (F4.5) -->
+          <div class="sw-pane sw-pane-grid">
+            <div class="sw-grid-header-row">
+              <div class="sw-col sw-col-no">No.</div>
+              <div class="sw-col sw-col-time">Time</div>
+              <div class="sw-col sw-col-src">Source</div>
+              <div class="sw-col sw-col-dst">Destination</div>
+              <div class="sw-col sw-col-proto">Protocol</div>
+              <div class="sw-col sw-col-len">Length</div>
+              <div class="sw-col sw-col-info">Info</div>
+            </div>
+            <div class="sw-grid-scroll-body" id="sw-grid-table-body">
+              <!-- Virtualized packet rows dynamically rendered -->
+            </div>
+          </div>
+
+          <!-- Resizer / Pane Divider -->
+          <div class="sw-pane-divider"></div>
+
+          <!-- Middle Pane: Interactive Collapsible Protocol Details Tree (30% height) (F4.6) -->
+          <div class="sw-pane sw-pane-tree">
+            <div class="sw-pane-header">
+              <span class="sw-pane-title" id="sw-tree-title">▼ PACKET DETAILS — Select a packet above</span>
+              <span class="sw-pane-subtitle" id="sw-tree-subtitle"></span>
+            </div>
+            <div class="sw-tree-body" id="sw-tree-content">
+              <div class="sw-empty-hint">Click any packet in the grid above to dissect Ethernet, IPv4/IPv6, TCP/UDP, and Mesh protocol layers.</div>
+            </div>
+          </div>
+
+          <!-- Resizer / Pane Divider -->
+          <div class="sw-pane-divider"></div>
+
+          <!-- Lower Pane: Synchronized 16-byte Hex & ASCII Dump Inspector (30% height) (F4.7) -->
+          <div class="sw-pane sw-pane-hex">
+            <div class="sw-pane-header">
+              <span class="sw-pane-title" id="sw-hex-title">HEX & ASCII DUMP (0 bytes)</span>
+              <span class="sw-hex-offset-hint" id="sw-hex-offset-hint">Click field in tree above to highlight exact byte payload</span>
+            </div>
+            <div class="sw-hex-body" id="sw-hex-content">
+              <div class="sw-empty-hint">Hexadecimal representation will appear here when a packet is selected.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End of View 3: stage-sharkwire -->
+
+    <!-- View 4: "🔍 IP Inspector & Data Populator" Stage -->
+    <div class="view-stage" id="stage-ip-inspector" style="display: none; flex-direction: column; width: 100%; height: 100%; overflow-y: auto; padding: 14px; gap: 14px;">
+      <!-- Target IP Input Bar -->
+      <div class="card" style="background: rgba(13, 20, 36, 0.95); border: 1px solid var(--border-color);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">🔍</span>
+            <span style="font-weight: 700; font-size: 14px; color: #00f0ff;">NETWORK CONNECTION IP INSPECTOR & DATA POPULATOR</span>
+          </div>
+          <span class="badge badge-active" id="ip-inspect-badge">READY</span>
+        </div>
+        
+        <!-- Quick Select Node Pills -->
+        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
+          <span style="font-size: 11px; color: var(--text-muted); align-self: center; margin-right: 4px;">QUICK TARGET:</span>
+          <button class="filter-pill active" onclick="setInspectorTarget('192.168.8.1')">📡 GW Router (192.168.8.1)</button>
+          <button class="filter-pill" onclick="setInspectorTarget('127.0.0.1')">🖥️ L1 Mac Mini (127.0.0.1)</button>
+          <button class="filter-pill" onclick="setInspectorTarget('192.168.2.3')">⚡ L8 Linux Mini TB4 (192.168.2.3)</button>
+          <button class="filter-pill" onclick="setInspectorTarget('192.168.8.28')">🐧 L3 Linux Mini LAN (192.168.8.28)</button>
+          <button class="filter-pill" onclick="setInspectorTarget('100.103.212.21')">💻 L2 MBP Intel (100.103.212.21)</button>
+          <button class="filter-pill" onclick="setInspectorTarget('100.121.202.34')">💻 L5 MBA M4 (100.121.202.34)</button>
+          <button class="filter-pill" onclick="setInspectorTarget('100.73.38.87')">📱 L6 Pixel 10 (100.73.38.87)</button>
+          <button class="filter-pill" onclick="setInspectorTarget('100.84.40.95')">📱 L7 Samsung S20 (100.84.40.95)</button>
+          <button class="filter-pill" onclick="setInspectorTarget('100.81.92.125')">📱 L4 Tablet (100.81.92.125)</button>
+        </div>
+
+        <!-- Input Form -->
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="ip-inspect-input" class="terminal-input" style="flex: 1; font-size: 13px;" placeholder="Enter IP address or hostname (e.g. 192.168.8.1, 100.101.39.98, 192.168.2.3)..." value="192.168.8.1" onkeydown="if(event.key==='Enter') runIpProbe()" />
+          <button class="btn btn-primary" id="btn-ip-probe" onclick="runIpProbe()">
+            <span>⚡</span> Probe & Populate App
+          </button>
+          <button class="btn" id="btn-ip-ping" onclick="runQuickPing()">
+            <span>🏓</span> Ping
+          </button>
+        </div>
+      </div>
+
+      <!-- Populated Live Telemetry Grid -->
+      <div id="ip-inspect-results-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px;">
+        <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 24px; color: var(--text-muted);">
+          Click "Probe & Populate App" or select a device above to pull authentic live network telemetry.
+        </div>
+      </div>
+    </div>
+
+    <!-- View 5: "👁️ Screen Lens Sovereign" Stage -->
+    <div class="view-stage" id="stage-lens-sovereign" style="display: none; flex-direction: column; width: 100%; height: 100%; padding: 14px; gap: 12px; overflow-y: auto;">
+      <!-- Lens Header Bar -->
+      <div class="card" style="display: flex; justify-content: space-between; align-items: center; background: rgba(13, 20, 36, 0.95);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">👁️</span>
+          <div>
+            <div style="font-weight: 700; font-size: 14px; color: #c084fc;">SCREEN LENS SOVEREIGN — ZERO-MOCK LIVE PERCEPTION & VLA HUB</div>
+            <div style="font-size: 11px; color: var(--text-muted);">Port 4003 Live Video Stream • 9-Device Telemetry • Bounded Safety Arming Gate</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span class="badge badge-active" id="lens-stage-fps">-- FPS</span>
+          <span class="badge" id="lens-stage-arm" style="background: rgba(16,185,129,0.2); border: 1px solid #10b981; color: #10b981;">🛡️ OBSERVE ONLY</span>
+          <button class="btn btn-sm btn-primary" onclick="takeLensSnapshot()">📸 Take Snapshot Proof</button>
+          <button class="btn btn-sm" onclick="toggleLensArming()">⚡ Arm Safety (30s)</button>
+        </div>
+      </div>
+
+      <!-- Main Viewport + Observation Sidebar Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 360px; gap: 12px; flex: 1; min-height: 480px;">
+        <!-- Left: Live MJPEG Video Stream Viewport -->
+        <div class="card" style="display: flex; flex-direction: column; padding: 8px; position: relative; background: #000;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding: 0 4px;">
+            <div style="font-size: 11px; font-weight: 600; color: #00f0ff;">
+              TARGET: <span id="lens-stage-target-name">L1: Mac Mini M4 Pro (ScreenCaptureKit)</span>
+            </div>
+            <select id="lens-stage-target-select" class="terminal-input" style="font-size: 11px; padding: 2px 6px; width: auto;" onchange="handleLensStageTargetChange(this.value)">
+              <option value="l1_mac_mini">L1: Mac Mini M4 Pro Host</option>
+              <option value="l2_macbook_pro">L2: Intel MacBook Pro (TB4)</option>
+              <option value="l3_linux_head">L3: Linux Laptop Ryzen 7</option>
+              <option value="l8_linux_mini">L8: Linux Mini Ubuntu 'lauburu'</option>
+              <option value="l4_linux_tablet">L4: Linux Tablet Debian</option>
+              <option value="l5_macbook_air">L5: MacBook Air M4</option>
+              <option value="l6_pixel_10">L6: Pixel 10 Pro XL (Android 15)</option>
+              <option value="l7_samsung_s20">L7: Samsung S20+ (ADB)</option>
+              <option value="gw_router">GW: GL-BE14000 Router</option>
+            </select>
+          </div>
+          <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 6px; position: relative; min-height: 380px;">
+            <img id="lens-stage-img" src="/api/lens/stream" alt="Live Screen Perception" style="width: 100%; height: 100%; max-height: 520px; object-fit: contain; cursor: crosshair;" onclick="handleLensClick(event)" />
+          </div>
+        </div>
+
+        <!-- Right: Telemetry, Memory Sanctuary & Observations -->
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Sanctuary Memory Gauge -->
+          <div class="card">
+            <div class="card-title">Host Sanctuary RAM Headroom</div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px;">
+              <span>Free RAM: <strong id="lens-stage-free-ram" style="color: #10b981;">-- GB</strong> / 24.0 GB</span>
+              <span id="lens-stage-sanctuary-status" style="color: #10b981;">HEADROOM OK</span>
+            </div>
+            <div class="sw-buffer-meter" style="height: 10px; border-radius: 5px;">
+              <div id="lens-stage-ram-bar" class="sw-buffer-bar" style="width: 75%; background: #10b981;"></div>
+            </div>
+          </div>
+
+          <!-- Live Perception Context -->
+          <div class="card">
+            <div class="card-title">Active Screen Context</div>
+            <div style="font-size: 11px; display: flex; flex-direction: column; gap: 4px;">
+              <div>Frontmost App: <strong id="lens-stage-app" style="color: #00f0ff;">--</strong></div>
+              <div>Window Title: <span id="lens-stage-title" style="color: var(--text-muted); font-family: monospace;">--</span></div>
+              <div>Native Resolution: <strong id="lens-stage-res">1920 × 1080</strong></div>
+              <div>Mouse Pointer: <span id="lens-stage-mouse" style="font-family: monospace;">--</span></div>
+            </div>
+          </div>
+
+          <!-- Live Observations Feed -->
+          <div class="card" style="flex: 1; display: flex; flex-direction: column; min-height: 180px;">
+            <div class="card-title">Perception Feed & Logs</div>
+            <div id="lens-stage-observations-log" style="flex: 1; overflow-y: auto; font-family: monospace; font-size: 11px; line-height: 1.4; color: var(--text-muted);">
+              Streaming live perception telemetry from Port 4003...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View 6: "📡 GL.iNet Gateway" Stage -->
+    <div class="view-stage" id="stage-router-gateway" style="display: none; flex-direction: column; width: 100%; height: 100%; padding: 14px; gap: 14px; overflow-y: auto;">
+      <!-- Router Header & Launch Button -->
+      <div class="card" style="display: flex; justify-content: space-between; align-items: center; background: rgba(13, 20, 36, 0.95);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">📡</span>
+          <div>
+            <div style="font-weight: 700; font-size: 14px; color: #00f0ff;">GL.iNet GL-BE14000 SOVEREIGN GATEWAY</div>
+            <div style="font-size: 11px; color: var(--text-muted);" id="router-fw-ver">OpenWrt 21.02-SNAPSHOT / QSDK • Wi-Fi 7 Sovereign Dictator of 192.168.8.x Subnet</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-sm btn-primary" onclick="loadRouterGateway(true)"><span>🔄</span> Refresh Gateway</button>
+          <a href="http://192.168.8.1/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-bluetooth" style="text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+            <span>🚀</span> Launch GL.iNet Admin GUI (192.168.8.1) ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Key Metrics Cards (Uptime, CPU, RAM, WAN IP) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+        <div class="card" style="padding: 10px 14px;">
+          <div style="font-size: 10px; color: var(--text-muted); font-weight: 600;">GATEWAY UPTIME</div>
+          <div style="font-size: 16px; font-weight: 700; color: #00f0ff; margin-top: 4px;" id="router-uptime">--</div>
+        </div>
+        <div class="card" style="padding: 10px 14px;">
+          <div style="font-size: 10px; color: var(--text-muted); font-weight: 600;">CPU LOAD (1m, 5m, 15m)</div>
+          <div style="font-size: 16px; font-weight: 700; color: #38bdf8; margin-top: 4px;" id="router-load">--</div>
+        </div>
+        <div class="card" style="padding: 10px 14px;">
+          <div style="font-size: 10px; color: var(--text-muted); font-weight: 600;">ROUTER RAM USAGE</div>
+          <div style="font-size: 16px; font-weight: 700; color: #10b981; margin-top: 4px;" id="router-ram">-- MB</div>
+        </div>
+        <div class="card" style="padding: 10px 14px;">
+          <div style="font-size: 10px; color: var(--text-muted); font-weight: 600;">NBN PUBLIC WAN IP</div>
+          <div style="font-size: 14px; font-weight: 700; color: #ffb800; margin-top: 4px;" id="router-wan-ip">--</div>
+        </div>
+      </div>
+
+      <!-- Physical Switch Ports & Radios Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <!-- Switch Port Diagram -->
+        <div class="card">
+          <div class="card-title">Physical Switch Ports & Wiring Map</div>
+          <div id="router-switch-ports-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+            <!-- Dynamically populated switch ports -->
+          </div>
+        </div>
+
+        <!-- Wi-Fi 7 MLO & Radio Status -->
+        <div class="card">
+          <div class="card-title">Wi-Fi 7 Clean Room & Radios</div>
+          <div id="router-radios-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+            <!-- Dynamically populated radios -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Connected Client Devices Table -->
+      <div class="card">
+        <div class="card-title">Connected ARP / DHCP Client Devices</div>
+        <div style="overflow-x: auto; margin-top: 8px;">
+          <table class="wc-cable-table" id="router-clients-table">
+            <thead>
+              <tr>
+                <th>Device Name</th>
+                <th>IP Address</th>
+                <th>MAC Address</th>
+                <th>Interface</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody id="router-clients-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- View 7: "🚨 Crash Stream" Stage -->
+    <div class="view-stage" id="stage-crash-stream" style="display: none; flex-direction: column; width: 100%; height: 100%; padding: 14px; gap: 14px; overflow-y: auto;">
+      <!-- Header Bar -->
+      <div class="card" style="display: flex; justify-content: space-between; align-items: center; background: rgba(13, 20, 36, 0.95);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">🚨</span>
+          <div>
+            <div style="font-weight: 700; font-size: 14px; color: #ef4444;">CRASH TELEMETRY & NETWORK HEALTH STREAM</div>
+            <div style="font-size: 11px; color: var(--text-muted);">Real-Time Darwin Kernel Panics, ACIO2 Telemetry, Process Exceptions & Service Drops</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span class="live-dot" style="background: #ef4444;" id="crash-live-dot"></span>
+          <span class="badge badge-active" id="crash-stream-status">STREAMING :4007</span>
+          <button class="btn btn-sm btn-primary" onclick="loadCrashStream(true)"><span>🔄</span> Refresh Log</button>
+        </div>
+      </div>
+
+      <!-- Incident Filter Bar -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="filter-pill active" id="crash-flt-all" onclick="filterCrashes('all')">All Incidents (<span id="cnt-crash-all">0</span>)</button>
+        <button class="filter-pill" id="crash-flt-critical" onclick="filterCrashes('CRITICAL')" style="color: #ef4444;">🚨 Critical / Panics (<span id="cnt-crash-critical">0</span>)</button>
+        <button class="filter-pill" id="crash-flt-error" onclick="filterCrashes('ERROR')" style="color: #f59e0b;">⚠️ Process Crashes (<span id="cnt-crash-error">0</span>)</button>
+        <button class="filter-pill" id="crash-flt-warning" onclick="filterCrashes('WARNING')" style="color: #fbbf24;">⚡ Memory / Jetsam (<span id="cnt-crash-warning">0</span>)</button>
+      </div>
+
+      <!-- Incident Cards Feed -->
+      <div id="crash-incident-feed" style="display: flex; flex-direction: column; gap: 8px;">
+        <!-- Dynamically populated crash incident cards -->
+      </div>
+    </div>
+
+    <!-- Practical Backend Development Path & Full Functionality Roadmap -->
+    <section class="card" style="margin-top: 16px; border: 1px solid rgba(0, 240, 255, 0.3); background: rgba(10, 15, 25, 0.95);">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 12px; margin-bottom: 16px;">
+        <div>
+          <span class="badge" style="background: rgba(0, 240, 255, 0.15); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.3); text-transform: uppercase; font-size: 10px; font-weight: 700;">
+            Engineering Blueprint & Architecture Path
+          </span>
+          <h2 style="font-size: 18px; font-weight: 900; color: #fff; margin-top: 6px;">Backend Development Path & Full Functionality Requirements</h2>
+        </div>
+        <span class="badge" style="background: rgba(255, 255, 255, 0.05); color: #ccc;">FastAPI Port 4007 • BPF Sniffer Active</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; font-size: 12px;">
+        <div style="background: rgba(0, 0, 0, 0.4); padding: 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+          <div style="font-weight: 700; color: #00f0ff; margin-bottom: 6px; font-size: 13px;">1. Logical Backend Path</div>
+          <div style="color: #cbd5e1; line-height: 1.6;">
+            • <strong>FastAPI Service:</strong> <code>backend/server.py</code> on Port 4007 with uvicorn async loop.<br>
+            • <strong>Kernel Telemetry:</strong> Polling Darwin Mach <code>netstat -I bridge0</code> and sysfs for 40Gbps DMA rates.<br>
+            • <strong>Shark Wire BPF:</strong> Raw socket packet capture filtering ARP, ICMP, and TB4 ring transfers.<br>
+            • <strong>Endpoints:</strong> <code>/api/cable_telemetry</code> (SSE), <code>/api/mesh/topology</code>, <code>/api/sharkwire/stream</code>.
+          </div>
+        </div>
+
+        <div style="background: rgba(0, 0, 0, 0.4); padding: 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+          <div style="font-weight: 700; color: #a855f7; margin-bottom: 6px; font-size: 13px;">2. E-Marker & Layer 0 Radio Path</div>
+          <div style="color: #cbd5e1; line-height: 1.6;">
+            • <strong>USB-PD VDM:</strong> Decodes E-marker silicon (Vendor ID, 240W 48V/5A, 40Gbps active/passive cable status).<br>
+            • <strong>Bluetooth Serial Terminal:</strong> Port 4005 RFCOMM serial bridge for zero-infrastructure out-of-band monitoring.<br>
+            • <strong>Local AI Verification:</strong> Port 8082 Local AI verifying physical MAC addresses against hardware matrix.
+          </div>
+        </div>
+
+        <div style="background: rgba(0, 0, 0, 0.4); padding: 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+          <div style="font-weight: 700; color: #f59e0b; margin-bottom: 6px; font-size: 13px;">3. Requirements for 100% Launch</div>
+          <div style="color: #cbd5e1; line-height: 1.6;">
+            • <strong>Physical Interconnect:</strong> Thunderbolt 4 40Gbps active cable connecting L1 (Mac Mini) to L2 (MacBook Pro).<br>
+            • <strong>Root Permissions:</strong> Raw BPF socket binding (<code>sudo /dev/bpf*</code>) for live packet inspection without root drop.<br>
+            • <strong>Daemon Service:</strong> <code>com.lauburu.cable-analyzer.plist</code> LaunchAgent for 24/7 background telemetry.<br>
+            • <strong>Offload Target (Rule 10):</strong> Offload heavy packet analysis buffering to Linux Head Node (L3).
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Compact Bottom Tray (42px) -->
+  <div class="bottom-tray">
+    <div class="tray-left">
+      <span style="color: var(--text-muted);">LOCAL AI VERDICT:</span>
+      <span class="tray-verdict" id="bottom-ai-verdict">
+        <span>⚡</span> Sub-millisecond TB4 link active; all 7 physical layers verified with dedicated NPU allocations.
+      </span>
+    </div>
+    <div style="color: var(--text-muted); font-size: 10px;">
+      PORT 4007 • ZERO-MOCK TELEMETRY • TRI-VAULT SYNCHRONIZED
+    </div>
+  </div>
+
+  <script src="/static/app.js?v=5"></script>
+</body>
+</html>

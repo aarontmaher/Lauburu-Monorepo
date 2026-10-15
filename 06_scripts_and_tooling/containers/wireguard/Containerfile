@@ -1,0 +1,80 @@
+# ==============================================================================
+# 🛰️ Lauburu Sovereign Development & WireGuard Mesh Container
+# Optimized for Pixel 10 Pro XL AVF Terminal (Debian 13 Trixie + Python 3.14)
+# Governed by Rule 0, Rule 1 (Zero-Mock Truth) & Rule 3 (Host Sanctuary)
+# ==============================================================================
+FROM debian:trixie-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV PATH="/root/.local/bin:/opt/venv/bin:$PATH"
+
+# Install system dependencies, networking, crypto, and build tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wireguard-tools \
+    iproute2 \
+    iptables \
+    nftables \
+    net-tools \
+    procps \
+    curl \
+    wget \
+    git \
+    rsync \
+    openssh-server \
+    openssh-client \
+    build-essential \
+    pkg-config \
+    libglib2.0-dev \
+    libdbus-1-dev \
+    bluez \
+    dbus \
+    podman \
+    cmake \
+    ninja-build \
+    golang \
+    git-lfs \
+    g++ \
+    iperf3 \
+    socat \
+    qrencode \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Setup SSH server for direct container access
+RUN mkdir -p /var/run/sshd /root/.ssh && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config && \
+    sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd
+
+# Install Astral uv and Python 3.14 (Debian 13 AVF Target Parity)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    /root/.local/bin/uv python install 3.14 && \
+    /root/.local/bin/uv venv --python 3.14 /opt/venv
+
+# Install project requirements into Python 3.14 venv
+COPY requirements.project.txt /tmp/requirements.project.txt
+RUN /root/.local/bin/uv pip install --python /opt/venv -r /tmp/requirements.project.txt google-auth google-genai && \
+    rm /tmp/requirements.project.txt && \
+    ln -sf /opt/venv/bin/* /usr/local/bin/
+
+# Install cloudflared (Cloudflare Tunnel client)
+RUN curl -L --output /usr/local/bin/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 && \
+    chmod +x /usr/local/bin/cloudflared
+
+# Verification test script
+COPY verify_project_deps.py /usr/local/bin/verify_project_deps.py
+RUN chmod +x /usr/local/bin/verify_project_deps.py && \
+    /opt/venv/bin/python3 /usr/local/bin/verify_project_deps.py
+
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+WORKDIR /workspace
+
+EXPOSE 51820/udp
+EXPOSE 2222/tcp
+EXPOSE 8000/tcp
+EXPOSE 8086/tcp
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

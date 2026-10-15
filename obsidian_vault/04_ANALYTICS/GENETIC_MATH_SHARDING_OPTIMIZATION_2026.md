@@ -27,15 +27,15 @@ Real-time continuous deep research combining closed-form Integer Linear Programm
 
 | Node Name | Sharded Layers | Dynamic VRAM Cap | Interconnect Transport |
 | :--- | :---: | :---: | :--- |
-| `L2_MacBook_Pro` | `20 layers` | `14.0 GB` | `10Gbps TB4 DMA Bridge (0.204ms RTT)` |
-| `L1_Mac_Node` | `29 layers` | `21.6 GB` | `10Gbps TB4 DMA Bridge (0.204ms RTT)` |
+| `L2_MacBook_Pro` | `20 layers` | `14.0 GB` | `40Gbps TB4 DMA Bridge (0.204ms RTT)` |
+| `L1_Mac_Node` | `29 layers` | `21.6 GB` | `40Gbps TB4 DMA Bridge (0.204ms RTT)` |
 | `L5_MacBook_Air` | `22 layers` | `14.0 GB` | `Wi-Fi 7 / Tailscale Mesh` |
 | `L3_Linux_Head` | `9 layers` | `12.8 GB` | `1GbE Gateway Subnet` |
 
 ---
 
 ## 🔬 Next-Gen Sharding Scouting Insights
-1. **Pipelined-Ring Parallelism (`prima.cpp`):** Holds highest fitness score due to zero-bubble pipeline execution over 10Gbps Thunderbolt 4 DMA.
+1. **Pipelined-Ring Parallelism (`prima.cpp`):** Holds highest fitness score due to zero-bubble pipeline execution over 40Gbps Thunderbolt 4 DMA.
 2. **WebWorld-32B & AgentWorld-35B Integration:** Web interaction trajectories and terminal state trees are simulated in-memory to benchmark network jitter resilience before deploying sharded weights.
 
 ---

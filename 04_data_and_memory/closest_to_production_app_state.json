@@ -1,0 +1,164 @@
+{
+  "timestamp": 1791240640.627445,
+  "closest_app_id": "sovereign_console",
+  "closest_app_name": "Lauburu Sovereign Console (Systolic NPU AI + Flutter UI + Rust Axum Core)",
+  "closest_app_path": "01_apps/port_4000_flutter_rust",
+  "readiness_score": 100.0,
+  "pixel_installed": true,
+  "mac_functional": true,
+  "adb_device": "192.168.8.213:5555",
+  "ranked_apps": [
+    {
+      "app_id": "sovereign_console",
+      "name": "Lauburu Sovereign Console (Systolic NPU AI + Flutter UI + Rust Axum Core)",
+      "relative_path": "01_apps/port_4000_flutter_rust",
+      "primary_language": "Flutter / Rust / Kotlin / NPU Systolic",
+      "target_platforms": [
+        "Mac Mini Host (Native Port :4000)",
+        "Pixel 10 Pro XL (Native APK)"
+      ],
+      "pixel_package_name": "com.lauburu.sovereign",
+      "mac_port": 4000,
+      "description": "Unified Lauburu Sovereign Console: Systolic NPU AI (38 TOPS ANE / Edge TPU), 512Hz Pan-Tompkins ECG, 3D Spatial Tatami Kinematics & Multi-WAN Mesh Control.",
+      "score": 100.0,
+      "code_health_score": 25.0,
+      "test_score": 25.0,
+      "pixel_installed": true,
+      "mac_functional": true,
+      "blockers": [],
+      "action_items": [
+        "Continuous production regression testing, telemetry monitoring, and WCAG AAA auditing"
+      ],
+      "last_audited": "2026-10-05T22:50:38Z"
+    },
+    {
+      "app_id": "screen_lens",
+      "name": "Screen Lens Autonomous VLA & Spatial Cortex",
+      "relative_path": "01_apps/screen_lens",
+      "primary_language": "Rust / Python / WebAssembly",
+      "target_platforms": [
+        "Mac Mini (Desktop Port 4003)",
+        "Pixel 10 Pro XL (Edge Vision)"
+      ],
+      "pixel_package_name": "com.lauburu.local_ai_watcher",
+      "mac_port": 4003,
+      "description": "Real-time 60 FPS visual grounding, screen understanding, and DOM coordinate detector.",
+      "score": 84.0,
+      "code_health_score": 9.0,
+      "test_score": 25.0,
+      "pixel_installed": true,
+      "mac_functional": true,
+      "blockers": [
+        "Missing standard build manifest (pubspec.yaml, Cargo.toml, or build.gradle.kts)"
+      ],
+      "action_items": [
+        "Continuous production regression testing, telemetry monitoring, and WCAG AAA auditing"
+      ],
+      "last_audited": "2026-10-05T22:50:38Z"
+    },
+    {
+      "app_id": "android_auto_voice_coder",
+      "name": "Android Auto Voice Coder",
+      "relative_path": "01_apps/automotive/android_auto_voice_coder",
+      "primary_language": "Kotlin / Android Auto",
+      "target_platforms": [
+        "Pixel 10 Pro XL (In-Vehicle)",
+        "Mac Mini (Daemon)"
+      ],
+      "pixel_package_name": "com.lauburu.androidauto.agi",
+      "mac_port": null,
+      "description": "Hands-free pair programming voice coding assistant with Jetpack Car App Library.",
+      "score": 67.0,
+      "code_health_score": 17.0,
+      "test_score": 0.0,
+      "pixel_installed": true,
+      "mac_functional": true,
+      "blockers": [
+        "Zero automated test files found"
+      ],
+      "action_items": [
+        "Generate automated unit and integration tests to ensure 100% test pass rate"
+      ],
+      "last_audited": "2026-10-05T22:50:38Z"
+    },
+    {
+      "app_id": "lauburu_zone2_endurance",
+      "name": "Zone 2 Endurance & Movesense ECG Hub",
+      "relative_path": "01_apps/biometrics/lauburu_zone2_endurance",
+      "primary_language": "Flutter / Dart",
+      "target_platforms": [
+        "Pixel 10 Pro XL (Android)",
+        "Mac Mini (Web/Port)"
+      ],
+      "pixel_package_name": "com.example.lauburu_zone2_endurance",
+      "mac_port": 8890,
+      "description": "Continuous 512Hz Movesense BLE biometric heart rate variability and DFA-alpha1 aerobic threshold tracker.",
+      "score": 67.0,
+      "code_health_score": 17.0,
+      "test_score": 0.0,
+      "pixel_installed": true,
+      "mac_functional": true,
+      "blockers": [
+        "Zero automated test files found"
+      ],
+      "action_items": [
+        "Generate automated unit and integration tests to ensure 100% test pass rate"
+      ],
+      "last_audited": "2026-10-05T22:50:38Z"
+    },
+    {
+      "app_id": "openclaw_app",
+      "name": "OpenClaw Autonomous UI Agent",
+      "relative_path": "01_apps/edge_compute_and_ai/openclaw/openclaw_app",
+      "primary_language": "Flutter / Dart",
+      "target_platforms": [
+        "Pixel 10 Pro XL (Android)",
+        "Mac Mini (macOS native)"
+      ],
+      "pixel_package_name": "com.openclaw.openclaw_app",
+      "mac_port": 18805,
+      "description": "Autonomous on-device accessibility and visual UI automation agent.",
+      "score": 57.0,
+      "code_health_score": 20.0,
+      "test_score": 0.0,
+      "pixel_installed": true,
+      "mac_functional": false,
+      "blockers": [
+        "Zero automated test files found",
+        "Mac Mini native build or Port service not verified active"
+      ],
+      "action_items": [
+        "Compile and launch Mac Mini native/web target (Port 18805)",
+        "Generate automated unit and integration tests to ensure 100% test pass rate"
+      ],
+      "last_audited": "2026-10-05T22:50:38Z"
+    },
+    {
+      "app_id": "lauburu_business_app",
+      "name": "Lauburu E-Commerce & Membership Storefront",
+      "relative_path": "01_apps/commerce_and_business/lauburu_business_app",
+      "primary_language": "Flutter / Dart / GraphQL",
+      "target_platforms": [
+        "Pixel 10 Pro XL (Android)",
+        "Mac Mini (macOS native)"
+      ],
+      "pixel_package_name": "com.lauburu.lauburu_business",
+      "mac_port": null,
+      "description": "Shopify Storefront GraphQL mobile client with subscription tiers and merchandise inventory.",
+      "score": 57.0,
+      "code_health_score": 20.0,
+      "test_score": 0.0,
+      "pixel_installed": true,
+      "mac_functional": false,
+      "blockers": [
+        "Zero automated test files found",
+        "Mac Mini native build or Port service not verified active"
+      ],
+      "action_items": [
+        "Compile and launch Mac Mini native/web target (Port 4000)",
+        "Generate automated unit and integration tests to ensure 100% test pass rate"
+      ],
+      "last_audited": "2026-10-05T22:50:38Z"
+    }
+  ]
+}

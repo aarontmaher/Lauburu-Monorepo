@@ -1,0 +1,52 @@
+{
+  "framework": "Lauburu Unified 22-Method Frontier AI Training & Distillation Framework",
+  "engine_type": "Zero-Dependency Universal Python Engine",
+  "version": "2.0.0-FRONTIER-22-CANONICAL",
+  "timestamp": "2026-10-14T22:25:36Z",
+  "total_methods": 22,
+  "families": {
+    "Family 1: Foundational Pretraining": [
+      "1. CLM (Causal Language Modeling)",
+      "2. MLM (Masked Language Modeling)",
+      "3. FIM (Fill-in-the-Middle)"
+    ],
+    "Family 2: SFT & Parameter-Efficient Fine-Tuning (PEFT)": [
+      "4. Full SFT",
+      "5. LoRA",
+      "6. QLoRA (NF4 Simulation)",
+      "7. DoRA (Weight-Decomposed)",
+      "8. LongLoRA / LoRA-FA"
+    ],
+    "Family 3: Preference Alignment & Direct Optimization": [
+      "9. RLHF / PPO",
+      "10. DPO (Direct Preference Optimization)",
+      "11. IPO / cDPO",
+      "12. KTO (Kahneman-Tversky)",
+      "13. ORPO (Odds Ratio)",
+      "14. GRPO (Group Relative Policy Optimization / DeepSeek-R1)",
+      "15. SimPO (Simple Preference Optimization \u2014 Reference-Free NeurIPS 2024)"
+    ],
+    "Family 4: Rule-Based Verifiable Rewards & Test-Time Compute (TTC)": [
+      "16. RLVR (Reinforcement Learning via Verifiable Rewards / Pytest Oracles)",
+      "17. TTC-Search (MCTS & Best-of-N with Process & Outcome Verifiers)"
+    ],
+    "Family 5: Distillation, Synthetic Reasoning & Self-Play": [
+      "18. CoT Reasoning Trace Distillation (<think>...</think>)",
+      "19. SPIN (Self-Play Fine-Tuning)",
+      "20. STaR / ReST (Self-Taught Reasoner)"
+    ],
+    "Family 6: Multimodal VLA, Vision Pruning & Weight Composition": [
+      "21. FastV & PyramidDrop (Dynamic Visual Token Pruning for Screen Perception)",
+      "22. Evolutionary Model Merging (SLERP, TIES, DARE)"
+    ]
+  },
+  "hardware_mesh_compatibility": {
+    "L1_Mac_Node": "M4 Pro (24 GB) \u2014 Master SimPO, RLVR Oracles, TTC MCTS Search",
+    "L2_MacBook_Pro": "M4 (16 GB) \u2014 Model Vault & 10Gbps TB4 Tensor DMA",
+    "L3_Linux_Head_Node": "Ryzen 7 5700U (16 GB) \u2014 Docker Sandboxed SWE-bench Evaluation",
+    "L4_Linux_Tablet": "8 GB \u2014 Lightweight RLVR oracles & Biometrics DSP",
+    "L5_MacBook_Air": "M4 (16 GB) \u2014 Metal GPU SimPO / FastV Visual Token Acceleration",
+    "L6_Pixel_10_Pro_XL": "Tensor G5 Edge TPU \u2014 FastV Screen Lens Perception",
+    "L7_Samsung_S20": "Exynos 990 \u2014 ADB Automated UI Verification"
+  }
+}

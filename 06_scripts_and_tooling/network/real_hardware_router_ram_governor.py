@@ -35,7 +35,7 @@ import subprocess
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+MONOREPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 OBSIDIAN_DIR = MONOREPO_ROOT / "obsidian_vault/04_ANALYTICS"
 DATA_DIR = MONOREPO_ROOT / "04_data_and_memory"
 TELEMETRY_LOG = MONOREPO_ROOT / "session_logs/router_governor_telemetry.json"

@@ -9,7 +9,7 @@ jupyter:
 ---
 
 # ⚡ Lauburu AI Swarm, 3D Kinematics & 512Hz DSP Interactive Lab
-**Hardware Environment:** Layer 5 MacBook Air M4 (`100.93.158.96:8889`)  
+**Hardware Environment:** Layer 5 MacBook Pro (Node L2) (`100.93.158.96:8889`)  
 **Ecosystem Integration:** Port 4000 Hub • Tri-Vault Obsidian Sync • `prima.cpp` 3-Mac Ring
 
 ```python
@@ -18,7 +18,7 @@ import os
 import sys
 from pathlib import Path
 
-MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+MONOREPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 if str(MONOREPO_ROOT) not in sys.path:
     sys.path.insert(0, str(MONOREPO_ROOT))
 

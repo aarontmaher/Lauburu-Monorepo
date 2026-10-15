@@ -1,0 +1,44 @@
+{
+  "total_revenue_aud": 150.0,
+  "settled_fiat_reserve_aud": 25.0,
+  "total_tokens_served": 5000000,
+  "active_accounts": {
+    "virtual_miner_account": {
+      "compute_token_balance_aud": 285.01,
+      "settled_fiat_balance_aud": 0.0,
+      "total_usage_aud": 0.0
+    },
+    "paying_client_account": {
+      "compute_token_balance_aud": 130.0,
+      "settled_fiat_balance_aud": 75.0,
+      "total_usage_aud": 0.0
+    }
+  },
+  "metering_events": [],
+  "redemption_history": [
+    {
+      "timestamp": "2026-09-15T07:15:09.218533",
+      "account_id": "virtual_miner_account",
+      "item_id": "movesense_hub_pro_saas",
+      "item_name": "Movesense Hub 512Hz SaaS (Monthly)",
+      "category": "VIRTUAL_SOFTWARE",
+      "tokens_burned_aud": 14.99,
+      "hard_cogs_cleared_aud": 0.0,
+      "remaining_compute_tokens_aud": 285.01,
+      "remaining_settled_fiat_aud": 0.0,
+      "solvency_status": "BREAK_EVEN_GUARANTEED"
+    },
+    {
+      "timestamp": "2026-09-15T07:15:09.218750",
+      "account_id": "paying_client_account",
+      "item_id": "movesense_medical_sensor",
+      "item_name": "Movesense MD+ Sensor Hardware",
+      "category": "HARD_PHYSICAL_ASSET",
+      "tokens_burned_aud": 170.0,
+      "hard_cogs_cleared_aud": 125.0,
+      "remaining_compute_tokens_aud": 130.0,
+      "remaining_settled_fiat_aud": 75.0,
+      "solvency_status": "BREAK_EVEN_GUARANTEED"
+    }
+  ]
+}

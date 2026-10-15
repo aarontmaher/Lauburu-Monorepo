@@ -10,8 +10,8 @@ import sys
 import json
 import time
 
-OUTPUT_ANALYSIS_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/network_hardware_optimization_report.json"
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+OUTPUT_ANALYSIS_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/network_hardware_optimization_report.json"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
 
 def run_network_optimization():
     timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
@@ -432,7 +432,7 @@ def run_gemini_free_tier_roi_delegator():
     }
 
     # Save to disk
-    roi_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/session_logs/gemini_free_tier_roi_delegation.json"
+    roi_file = "/Volumes/Lauburu-Monorepo/session_logs/gemini_free_tier_roi_delegation.json"
     with open(roi_file, "w") as f:
         json.dump(roi_summary, f, indent=2)
 

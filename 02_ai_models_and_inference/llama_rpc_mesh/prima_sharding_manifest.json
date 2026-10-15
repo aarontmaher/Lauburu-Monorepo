@@ -4,7 +4,11 @@
     "updated_utc": "2026-08-30T10:55:00Z",
     "description": "prima.cpp Pipelined-Ring Parallelism (PRP) cluster manifest for Kimi-Dev-72B and Llama-4-Scout-17B.",
     "mode": "pipelined_ring",
+    "default_sharding_engine": "prima.cpp",
+    "canonical_status": "DEFAULT_DISTRIBUTED_ENGINE",
     "prima_server_port": 8082,
+    "prima_red_team_port": 8083,
+    "prima_kimi_port": 8085,
     "legacy_rpc_port": 8081,
 
     "halda": {
@@ -73,6 +77,33 @@
     ],
 
     "models": {
+      "qwen_38_max": {
+        "model_id": "qwen_38_max",
+        "role": "Sovereign Master Local Orchestrator",
+        "is_default_master": true,
+        "total_layers": 80,
+        "context_window": 131072,
+        "prima_endpoint": "http://127.0.0.1:8082",
+        "note": "PRP Ring Master over 10Gbps TB4 DMA bridge. Directs local consensus and code generation."
+      },
+      "qwen_38_max_abliterated": {
+        "model_id": "qwen_38_max_abliterated",
+        "role": "Canonical Devil's Advocate & Adversarial Red Team",
+        "is_default_red_team": true,
+        "total_layers": 64,
+        "context_window": 65536,
+        "prima_endpoint": "http://127.0.0.1:8083",
+        "note": "Uncensored adversarial challenger; red-teams every PR and buffer audit."
+      },
+      "kimi_tandem_titan": {
+        "model_id": "kimi_tandem_titan",
+        "role": "Canonical Context Compression & Multimodal Specialist",
+        "is_default_context": true,
+        "total_layers": 80,
+        "context_window": 131072,
+        "prima_endpoint": "http://127.0.0.1:8085",
+        "note": "Lossless context compression & million-token attention mapping."
+      },
       "kimi_dev_72b": {
         "model_id": "kimi-dev-72b-instruct-q4_k_m",
         "total_layers": 80,

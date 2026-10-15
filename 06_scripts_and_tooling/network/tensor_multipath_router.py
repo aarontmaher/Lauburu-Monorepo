@@ -4,7 +4,7 @@
 =========================================================
 Lauburu Multipath Tensor Router & Bandwidth Bonding Engine (v3.0)
 ----------------------------------------------------------------
-Bonds TP-Link Extender Ethernet (enx98fc84e6e212 @ 1000 Mbps / 1.8ms RTT),
+Bonds Wired Gigabit Ethernet (enx98fc84e6e212 @ 1000 Mbps / 1.8ms RTT),
 Internal Wi-Fi (wlp2s0 @ 867 Mbps / 3.2ms RTT), and Mac/Swarm interfaces
 to achieve ~1.85x parallel tensor throughput for llama.cpp RPC sharding (Port 50052)
 and 24/7 LoRA gradient sync across the 7-device mesh.
@@ -13,7 +13,7 @@ Key Capabilities:
 1. Multi-Socket Interface Binding: Direct source IP binding and SO_BINDTODEVICE
    kernel pinning for enx98fc84e6e212 and wlp2s0 to force dual-pipe transmission.
 2. Dynamic Chunk Striping: Slices large tensor matrices (10MB - 1GB) into 64KB/128KB
-   chunks striped across PRIMARY (TP-Link Ethernet) and SECONDARY (Wi-Fi) links
+   chunks striped across PRIMARY (Wired Gigabit Ethernet) and SECONDARY (Wi-Fi) links
    weighted by real-time bandwidth & RTT metrics.
 3. 36-Byte Binary Framing Protocol ('LAUB'): Standard binary header with stream ID,
    chunk index, payload length, and dual CRC32 checksums.
@@ -63,11 +63,11 @@ HEADER_SIZE = struct.calcsize(HEADER_FORMAT)  # 36 bytes
 DEFAULT_CHUNK_SIZE = 64 * 1024  # 64 KB
 
 INTERFACES = {
-    # ── Linux Head Node Interfaces ──
-    "TPLink_Extender_Ethernet": {
+    # ── Linux Head Node / Wired Gigabit Interfaces ──
+    "Linux_Wired_Gigabit_Ethernet": {
         "device": "enx98fc84e6e212",
-        "ip": "192.168.8.224",
-        "alt_ips": ["192.168.8.225", "192.168.8.230"],
+        "ip": "192.168.8.225",
+        "alt_ips": ["192.168.8.176", "192.168.8.230"],
         "role": "PRIMARY_TENSOR_BRIDGE",
         "weight": 0.60,
         "theoretical_mbps": 1000.0,
@@ -88,7 +88,7 @@ INTERFACES = {
     },
     "Tailscale_WireGuard": {
         "device": "tailscale0",
-        "ip": "100.101.39.98",
+        "ip": "10.1.0.12",
         "role": "TERTIARY_OVERLAY",
         "weight": 0.20,
         "theoretical_mbps": 500.0,
@@ -182,7 +182,7 @@ def create_bound_socket(device: str = "", src_ip: str = "", tos: int = 0x88) -> 
 class MultipathTensorEngine:
     """High-throughput multi-socket multiplexer for distributed AI tensors."""
 
-    def __init__(self, target_host: str = "100.101.39.98", target_port: int = 50052):
+    def __init__(self, target_host: str = "10.1.0.12", target_port: int = 50052):
         self.target_host = target_host
         self.target_port = target_port
         self.active_paths: List[Dict[str, Any]] = []
@@ -591,7 +591,7 @@ class MultipathTensorEngine:
             entry = {
                 "timestamp_utc": datetime.now(timezone.utc).isoformat(),
                 "instruction": (
-                    "Given bonded network interfaces on a Linux head node (TP-Link Extender enx98fc84e6e212 and Wi-Fi wlp2s0), "
+                    "Given bonded network interfaces on a Linux head node (Wired Gigabit Ethernet enx98fc84e6e212 and Wi-Fi wlp2s0), "
                     "compute dynamic chunk striping weights and CRC32 framing parameters for llama.cpp RPC Port 50052."
                 ),
                 "input": path_summary,

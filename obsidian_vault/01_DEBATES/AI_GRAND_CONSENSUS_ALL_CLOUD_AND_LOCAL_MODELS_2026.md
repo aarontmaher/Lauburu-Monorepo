@@ -40,7 +40,7 @@ quorum_size: "10_MODELS"
 - **Finding:** The 8-device allocation accurately respects hardware RAM envelopes across **108.0 GB Pooled RAM (82.8 GB Usable AI VRAM)**:
   - Host Mac Mini M4 Pro: Dynamic RAM Cap **90%** (21.6 GB AI headroom preserved).
   - MacBook Pro: 10Gbps TB4 DMA Bridge provides **0.277 ms RTT** for distributed tensor sharding.
-  - Linux Head Node: AMD Ryzen 7 5700U dedicated to Docker Hub and SeaweedFS DFS (Cap **80%**).
+  - Linux Head Node: Intel 2018 Mac Mini (Linux) dedicated to Docker Hub and SeaweedFS DFS (Cap **80%**).
   - Samsung S20+ & Linux Tablet: Offloaded to dedicated background test runners and mobile DSP.
 
 ### Pillar III: Mathematical Invariants, Convexity & 120 FPS Pacing (Audited by Qwen Math & DeepSeek R1)
@@ -60,7 +60,7 @@ quorum_size: "10_MODELS"
 
 1. **Rule #0 Zero-Mock Mandate:** Telemetry and metrics must originate from authentic live hardware probes (`os.statvfs`, `shutil.disk_usage`, live socket measurements) or display an explicit waiting state (`--`).
 2. **Local AI First:** Prioritize local quantized models (`Q4_K_M`, `IQ2_XXS`) over 10Gbps Thunderbolt RPC.
-3. **Continuous LoRA Memory Sync:** All validated diffs and debate accords are continuously serialized to `/Users/aaron/DFS_UNIFIED/lora_datasets/truth_audit_debate.jsonl` for 24/7 background learning.
+3. **Continuous LoRA Memory Sync:** All validated diffs and debate accords are continuously serialized to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/truth_audit_debate.jsonl` for 24/7 background learning.
 
 ---
 

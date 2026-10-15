@@ -3,13 +3,13 @@
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                       LAUBURU MESH UNIFIED ARCHITECTURE                     │
-│               1.701 TB SeaweedFS DFS  •  108 GB Pooled RAM (82.8 GB VRAM)    │
-│            10Gbps Thunderbolt 4  •  Tri-Vault Synchronization Layer          │
+│               1.701 TB SeaweedFS DFS  •  139 GB Pooled RAM (108.4 GB VRAM)  │
+│            40Gbps Thunderbolt 4  •  Tri-Vault Synchronization Layer         │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## 📖 Overview
-The **Lauburu Monorepo** is the canonical source code, model inference, biometrics, and AI orchestration repository for the **Lauburu Mesh Ecosystem**. The workspace is distributed across a **7-layer physical hardware mesh** interconnected via a **10Gbps Thunderbolt 4 DMA bridge (0.277ms RTT)** and an encrypted **Tailscale WireGuard mesh**, unified on top of a **1.701 TB SeaweedFS Distributed Object & File System** mounted at `/Users/aaron/DFS_UNIFIED`.
+The **Lauburu Monorepo** is the canonical source code, model inference, biometrics, and AI orchestration repository for the **Lauburu Mesh Ecosystem**. The workspace is distributed across an **8-node heterogeneous physical hardware mesh + gateway** interconnected via a **40Gbps Thunderbolt 4 DMA bridge (0.38ms RTT)** to L8 `lauburu`, 2.5G wired NBN, and an encrypted **Tailscale WireGuard mesh**, unified on top of a **1.701 TB SeaweedFS Distributed Object & File System** mounted at `/Users/aaron/DFS_UNIFIED`.
 
 ---
 
@@ -41,20 +41,21 @@ All state, telemetry, training runs, and architectural whitepapers are synchroni
 
 ---
 
-## 🌐 2. 7-Layer Physical Mesh Hardware Matrix
+## 🌐 2. Physical Mesh Hardware Matrix (8 Nodes + Gateway)
 
-The distributed hardware mesh pools **108.0 GB RAM (82.8 GB Usable AI VRAM)** across 7 physical nodes:
+The distributed hardware mesh pools **139.0 GB RAM (108.4 GB Usable AI VRAM)** across 8 physical compute nodes and 1 dedicated gateway router:
 
 | Layer | Node Name | Network Role | Local IP | Tailscale / Bridge IP | RAM / AI Cap | Key Roles & Protocols |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **L1** | `Mac_Node` | Primary Host & Memory Governor | `192.168.8.230` | `100.119.199.76` | 24.0 GB (21.6 GB AI) | Apple M4 Pro Mac Mini. Prompt Ingestion & Memory Governor. Dynamic Cap: 90%. |
-| **L2** | `MacBook_Pro` | Metal GPU RPC & Storage Vault | `192.168.8.127` | `100.103.212.21` (TB4: `169.254.187.138`) | 16.0 GB (14.0 GB AI) | **10Gbps Thunderbolt 4 Bridge (0.277ms RTT)**, 285 GB SSD Model Vault. Dynamic Cap: 90%. |
-| **L3** | `Linux_Head_Node` | Gateway Ingress & Compute Hub | `192.168.8.224` | `100.101.39.98` | 16.0 GB (13.8 GB AI) | AMD Ryzen 7 5700U, Docker Hub, SeaweedFS Master/Filer & Ray. Dynamic Cap: 80%. |
-| **L4** | `Linux_Tablet` | Mobile Linux Compute & Touch DSP | DHCP | `100.81.92.125` | 8.0 GB (6.5 GB AI) | Debian Linux Tablet, secondary Petals worker, biometrics display. Dynamic Cap: 75%. |
-| **L5** | `MacBook_Air` | Secondary High-Speed Metal Worker | `192.168.8.222` | `100.93.158.96` | 16.0 GB (14.0 GB AI) | Apple M4 MacBook Air, Metal Performance Shaders, LoRA Distillation. Dynamic Cap: 90%. |
-| **L6** | `Pixel_10_Pro_XL` | 8K Vision Stream & Edge TPU | DHCP | `100.73.38.87` | 16.0 GB (12.5 GB AI) | Google Tensor G5, Edge TPU, 8K Digital PTZ, UWB 3D Positioning. Dynamic Cap: 85%. |
-| **L7** | `Samsung_S20` | Dedicated Automated UI Tester | DHCP | `100.84.40.95` | 12.0 GB (9.0 GB AI) | Samsung Exynos 990, Router USB ADB default target for OpenClaw UI. Dynamic Cap: 75%. |
-| **GW** | `GL.iNet Router` | Core Gateway & Hardware USB Bridge | `192.168.8.1` | `100.122.185.123` | Embedded | GL-MT3600BE-a0f-MLO. Hardware USB ADB daemon & kmwan multi-WAN failover. |
+| **L1** | `Mac_Node` | Primary Host & Memory Governor | `192.168.8.143` / `.230` | `100.119.199.76` (TB: `10.0.0.2`) | 24.0 GB (19.2 GB AI) | Apple M4 Pro Mac Mini. Prompt Ingestion, Screen Lens, & Memory Governor. Cap: 80% (>=4.8 GB free). |
+| **L8** | `Linux_Mini (lauburu)` | TB4 DMA Hub & Model Vault | `192.168.8.242` | `100.121.247.8` (TB: `10.0.0.8`) | 32.0 GB (25.6 GB AI) | **40Gbps Thunderbolt 4 Bridge (0.38ms RTT)**, GGUF Model Vault Hub, Glances v4 (:61208). Cap: 80%. |
+| **L2** | `MacBook_Pro` | Model Vault & Automation Target | `192.168.8.127` | `100.103.212.21` | 16.0 GB (14.0 GB AI) | Intel Core i7-9750H, 16 GB RAM (x86_64). UNLINKED from TB, LAN Wi-Fi / Tailscale link. Cap: 90%. |
+| **L3** | `Linux_Head_Node` | Gateway Ingress & Compute Hub | `192.168.8.225` | `100.101.39.98` | 15.0 GB (12.0 GB AI) | AMD Ryzen 7 5700U, Docker Hub, Ray Cluster, First-Offload Target (Rule 10). Cap: 80%. |
+| **L4** | `Linux_Tablet` | Mobile Linux Compute & Touch DSP | `192.168.8.116` (Port 2) | `100.80.64.5` | 8.0 GB (6.0 GB AI) | Debian Linux (`debian-1`), Bedside TUI, Router Port 2 Wired (0.95ms RTT). Cap: 75%. |
+| **L5** | `MacBook_Air` | Secondary Metal Worker & LoRA | `192.168.8.248` | `100.121.202.34` | 16.0 GB (14.0 GB AI) | Apple M4 MacBook Air, Metal Performance Shaders, LoRA Distillation. Cap: 90%. |
+| **L6** | `Pixel_10_Pro_XL` | 8K Vision Stream & Edge TPU | `192.168.8.213` | `100.114.215.68` | 16.0 GB (13.6 GB AI) | Google Tensor G5, Edge TPU, 8K Digital PTZ, Termux SSH (:8022). Cap: 85%. |
+| **L7** | `Samsung_S20` | Dedicated Automated UI Tester | `192.168.8.157` | `100.84.40.95` | 12.0 GB (9.0 GB AI) | Samsung Exynos 990, Router USB ADB default target for OpenClaw UI. Cap: 75%. |
+| **GW** | `GL.iNet Router` | Core Gateway & USB Bridge | `192.168.8.1` | `100.70.123.123` | 2.0 GB (1.38 GB free) | GL-BE14000 (OpenWrt), 2.5G NBN WAN (`eth2`, 12ms RTT), USB Hardware ADB Bus. |
 
 ---
 
@@ -104,27 +105,26 @@ To maintain backward compatibility while organizing the repository, legacy root 
 
 ---
 
-## 🤖 5. Designated Optimal Local AI Storage & Uptime Governor
+## 🤖 5. Sovereign Local AI Hierarchy & Uptime Governance
 
-Based on empirical benchmarks conducted on local model weights on Apple Silicon Metal GPU (see [07_AUTONOMOUS_STORAGE_GOVERNOR_AND_UPTIME_SPEC.md](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/07_docs_and_architecture/07_AUTONOMOUS_STORAGE_GOVERNOR_AND_UPTIME_SPEC.md)), the project employs a **Dual-Tier Local AI Model Architecture**:
+All local inference and orchestration across the 7-layer mesh strictly follows the **Sovereign Local AI Hierarchy Invariant**:
 
-### 5.1 Tier 1: Reflex Sentinel & Uptime Maintainer
-- **Assigned Model:** **`qwen2.5-coder-7b-instruct-q4_k_m.gguf`** (Port `8081`)
-- **VRAM Footprint:** 4.4 GB (<20% of Host M4 Pro AI VRAM, leaving 17+ GB for dev/inference)
-- **Performance:** **43.6 tok/s**, Time-to-First-Token **65ms**, native JSON tool-calling grammar.
-- **Continuous Tasks:**
-  1. 60s health pulse on SeaweedFS Master (`9333`), Filer (`8888`), Volume (`8080`), WebDAV (`7333`).
-  2. Proactive FUSE mount validation for `/Users/aaron/DFS_UNIFIED`.
-  3. Automatic process resurrection (`weed server`, `weed mount`) and Samba service restarts upon drop.
-  4. Tri-Vault disk headroom enforcement (maintaining $\ge$ 5.0 GB free disk).
+### 5.1 Sovereign Master Local Orchestrator: Qwen 3.8 Max (Port 8082)
+- **Target Architecture:** **`qwen_38_max`** (prima.cpp PRP over the 40Gbps TB4 DMA Bridge to L8 `lauburu`).
+- **Runtime Reality (Rule 0):** `decentralized_prima_daemon.py` proxy forwarding to `llama-server` on Port 8090 serving `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf`.
+- **Endpoint:** `http://127.0.0.1:8082/v1/models`
+- **Role:** Master Local Orchestrator leading all debate consensus, architectural decisions, and multi-agent coordination.
 
-### 5.2 Tier 2: Deep Semantic Reorganizer & AST Crawler
-- **Assigned Model:** **`qwen2.5-coder-32b-instruct-q4_k_m.gguf`** (19 GB) or **`Mistral-Nemo-Instruct-2407-abliterated`** (128k context)
-- **Topology Placement:** Offloaded across the **10Gbps Thunderbolt 4 bridge** to Layer 2 (`MacBook_Pro`) or executed on L1 during idle windows.
-- **Continuous Tasks:**
-  1. Semantic deduplication and SHA-256 integrity verification across the 1.701 TB store.
-  2. AST parsing of 3,100+ monorepo code files to update Wikilink graphs in `obsidian_vault`.
-  3. Generating self-documenting `.md` manifests for new directories.
+### 5.2 Canonical Devil's Advocate & Adversarial Red Team (Port 8083)
+- **Target Model:** **`qwen_38_max_abliterated`**
+- **Model Path:** `/home/linuxmini/model_vault_gguf/Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf` on L8 `lauburu`.
+- **Endpoint:** `http://127.0.0.1:8083/health`
+- **Role:** Uncensored adversarial challenger red-teaming every proposed change before sign-off. Zero prompts from this plane leak to external cloud APIs.
+
+### 5.3 Subordinate Syntax Worker ONLY (Port 8081)
+- **Model Runtime:** `mesh_multiport_bridge.py` proxy returning `Qwen2.5-VL-7B-Instruct-Q4_K_M`
+- **Endpoint:** `http://127.0.0.1:8081/health`
+- **Role:** Strictly subordinate single-file AST syntax parser, linter, and diff validator. PROHIBITED from acting as orchestrator or leading debates.
 
 ---
 
@@ -150,17 +150,43 @@ cat /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/network/nomad_self_healer_sta
 
 ---
 
-## 🛠️ 7. Operational Runbook & Common CLI Workflows
+## 🛠️ 7. Operational Runbook & Unified CLI Tooling
 
-### 7.1 Verify Mesh AI Inference Servers
+All primary tools are compiled native binaries located in `/Users/aaron/.local/bin/`:
+
+### 7.1 Master Network Orchestrator (`lauburu-network`)
 ```bash
-curl -s http://127.0.0.1:8081/health && echo "Qwen Coder 7B Sentinel (8081): ONLINE"
-curl -s http://127.0.0.1:8083/health && echo "DeepSeek Coder / Devil's Advocate (8083): ONLINE"
+lauburu-network --tree   # Prints full 6-tier transport & 7-layer hardware topology tree
+lauburu-network --test   # Headless network prober self-test (all 11 targets in <1.5s)
+lauburu-network --json   # Emits structured JSON network telemetry
+lauburu-network          # Launch interactive 120 FPS dual-pane network TUI
 ```
 
-### 7.2 Run Storage Headroom & Genetic Evolution Optimizer
+### 7.2 Master Applications Orchestrator (`lauburu-apps`)
 ```bash
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/storage/nomad_genetic_storage_optimizer.py
+lauburu-apps --tree      # Prints 6-domain 30-app organizational tree
+lauburu-apps --test      # Headless probe self-test across all 30 apps
+lauburu-apps --json      # Emits structured JSON applications state
+lauburu-apps             # Launch interactive 120 FPS application lifecycle manager
+```
+
+### 7.3 Master Monorepo Observability Workbench (`lauburu-monitor`)
+```bash
+lauburu-monitor --test   # Headless full-monorepo AST, mesh, and storage verification
+lauburu-monitor          # Launch interactive 6-tab system monitor (AST, Ports, Mesh, Apps, Pillars, Vault)
+```
+
+### 7.4 Live Swarm & Mach RAM Lens (`lauburu_health_tui`)
+```bash
+lauburu_health_tui --snapshot # One-shot authentic Mach RAM (16KB pages) & mesh probe
+lauburu_health_tui            # Interactive RAM and continuous training HUD
+```
+
+### 7.5 Verify Local AI Inference Endpoints
+```bash
+curl -s http://127.0.0.1:8082/v1/models && echo "Qwen 3.8 Max Master (8082): ONLINE"
+curl -s http://127.0.0.1:8083/health    && echo "Qwen 3.8 Max 27B Abliterated Red Team (8083): ONLINE"
+curl -s http://127.0.0.1:8081/health    && echo "Qwen 2.5 Coder 7B Syntax Worker (8081): ONLINE"
 ```
 
 ### 7.3 Execute Tri-Vault Pre-Flight Self-Healing
@@ -176,5 +202,5 @@ mkdir -p /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault /Users/aaron/D
 
 ## 📋 8. Compliance & Governance Invariants
 1. **Rule #0 Zero-Mock Mandate:** No simulated, mocked, or placeholder data. Telemetry originates exclusively from live BLE sensors, live network sockets, and authentic hardware.
-2. **Dynamic RAM Governance:** Host Mac Mini M4 Pro RAM allocation must remain $\le 90\%$ (21.6 GB AI cap).
+2. **Dynamic RAM Governance (Rule 3):** Host Mac Mini M4 Pro RAM allocation must remain $\le 80\%$ ($\ge 4.8\text{ GB}$ untouched physical RAM buffer at all times to prevent ACIO2 panics).
 3. **Continuous DPO LoRA Serialization:** All self-healing actions, debate verdicts, and storage reorganizations are serialized to `data/lora_datasets/` for 24/7 background learning.

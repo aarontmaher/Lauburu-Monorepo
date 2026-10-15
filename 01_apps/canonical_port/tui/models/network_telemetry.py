@@ -29,7 +29,7 @@ class WanRoute:
 @dataclass
 class TailscalePeer:
     """Represents a peer node in the 7-node Tailscale WireGuard overlay mesh."""
-    node_name: str           # e.g., "Mac_Node", "MacBook_Pro", "Linux_Head_Node"
+    node_name: str           # e.g., "Mac_Node", "MacBook_Pro", "Linux_Mini"
     ip: str                  # Tailscale 100.x.y.z IP
     status: str              # "ONLINE", "IDLE", "OFFLINE"
     relay: str               # "Direct WireGuard", "DERP Relay"
@@ -180,14 +180,14 @@ class RouterCommandResult:
 class SpeedtestState:
     """Live Speedtest State & Progress for TUI Card and Telemetry Store."""
     stage: str = "IDLE"           # "IDLE", "INITIALIZING", "DOWNLINK", "UPLINK", "RESPONSIVENESS", "COMPLETED", "ERROR", "CANCELLED"
-    download_mbps: float = 0.0
-    upload_mbps: float = 0.0
+    download_mbps: Optional[float] = None
+    upload_mbps: Optional[float] = None
     current_mbps: float = 0.0
     percent: float = 0.0
     responsiveness_rpm: Optional[int] = None
     base_rtt_ms: Optional[float] = None
-    peak_download_mbps: float = 0.0
-    peak_upload_mbps: float = 0.0
+    peak_download_mbps: Optional[float] = None
+    peak_upload_mbps: Optional[float] = None
     error_message: Optional[str] = None
     timestamp: str = ""
     is_running: bool = False
@@ -318,8 +318,8 @@ class NetworkTelemetrySnapshot:
         
         tailscale_peers = [
             TailscalePeer(node_name="Mac_Node", ip="100.119.199.76", status="ONLINE", relay="Direct WireGuard", layer="L1", os="macOS Darwin ARM64"),
-            TailscalePeer(node_name="MacBook_Pro", ip="100.103.212.21", status="ONLINE", relay="Direct WireGuard", layer="L2", os="macOS Darwin ARM64"),
-            TailscalePeer(node_name="Linux_Head_Node", ip="100.101.39.98", status="ONLINE", relay="Direct WireGuard", layer="L3", os="Debian Linux x86_64"),
+            TailscalePeer(node_name="MacBook_Pro", ip="100.103.212.21", status="ONLINE", relay="Direct WireGuard", layer="L2", os="macOS Darwin x86_64"),
+            TailscalePeer(node_name="Linux_Mini", ip="100.101.39.98", status="ONLINE", relay="Direct WireGuard", layer="L3", os="Debian Linux x86_64"),
             TailscalePeer(node_name="Linux_Tablet", ip="100.81.92.125", status="ONLINE", relay="Direct WireGuard", layer="L4", os="Debian Linux ARM64"),
             TailscalePeer(node_name="MacBook_Air", ip="100.93.158.96", status="ONLINE", relay="Direct WireGuard", layer="L5", os="macOS Darwin ARM64"),
             TailscalePeer(node_name="Pixel_10_Pro_XL", ip="100.73.38.87", status="ONLINE", relay="Direct WireGuard", layer="L6", os="Android 15 (Tensor G5)"),
@@ -353,7 +353,7 @@ class NetworkTelemetrySnapshot:
                 latency_ms=0.28
             ),
             LlamaRpcNode(
-                node_name="Linux_Head_Node (Ryzen 7)",
+                node_name="Linux_Mini (Ryzen 7)",
                 endpoint="100.101.39.98:50052",
                 layers_sharded=24,
                 vram_used_gb=12.0,
@@ -363,16 +363,16 @@ class NetworkTelemetrySnapshot:
         ]
         
         internet_speed = InternetSpeedMetrics(
-            download_mbps=482.0,
-            upload_mbps=48.0,
-            responsiveness_rpm=1420,
-            latency_ms=12.4,
-            timestamp=now,
-            last_tested_iso=now
+            download_mbps=None,
+            upload_mbps=None,
+            responsiveness_rpm=None,
+            latency_ms=None,
+            timestamp="--",
+            last_tested_iso=None
         )
         
         ssh_fleet = [
-            NodeSshStatus(node_id="L1", host="192.168.8.155", port=22, status="OPEN", banner="SSH-2.0-OpenSSH_9.8", key_type="ssh-ed25519", latency_ms=0.05),
+            NodeSshStatus(node_id="L1", host="192.168.8.230", port=22, status="OPEN", banner="SSH-2.0-OpenSSH_9.8", key_type="ssh-ed25519", latency_ms=0.05),
             NodeSshStatus(node_id="L2", host="192.168.8.127", port=22, status="OPEN", banner="SSH-2.0-OpenSSH_9.8", key_type="ssh-ed25519", latency_ms=0.28),
             NodeSshStatus(node_id="L3", host="192.168.8.224", port=22, status="OPEN", banner="SSH-2.0-OpenSSH_9.6p1", key_type="ssh-ed25519", latency_ms=1.20),
             NodeSshStatus(node_id="L4", host="192.168.8.173", port=22, status="OPEN", banner="SSH-2.0-OpenSSH_9.2p1", key_type="ssh-ed25519", latency_ms=4.10),
@@ -458,16 +458,16 @@ class NetworkTelemetrySnapshot:
         
         speedtest_state = SpeedtestState(
             stage="IDLE",
-            download_mbps=482.0,
-            upload_mbps=48.0,
+            download_mbps=None,
+            upload_mbps=None,
             current_mbps=0.0,
-            percent=100.0,
-            responsiveness_rpm=1420,
-            base_rtt_ms=12.4,
-            peak_download_mbps=512.0,
-            peak_upload_mbps=52.4,
+            percent=0.0,
+            responsiveness_rpm=None,
+            base_rtt_ms=None,
+            peak_download_mbps=None,
+            peak_upload_mbps=None,
             error_message=None,
-            timestamp=now,
+            timestamp="--",
             is_running=False
         )
         

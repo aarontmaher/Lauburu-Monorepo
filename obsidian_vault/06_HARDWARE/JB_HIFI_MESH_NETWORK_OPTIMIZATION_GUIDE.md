@@ -15,17 +15,17 @@ author: "Aaron Maher & Antigravity Sovereign Orchestrator"
 
 The **7-Layer Lauburu Physical Mesh** pools **108.0 GB RAM (82.8 GB usable AI VRAM)** across 7 distinct physical computing layers:
 1. **L1 (Mac Mini M4 Pro Host):** 24GB RAM, 10GbE NIC, Prompt Ingestion & Memory Governor.
-2. **L2 (MacBook Pro):** 16GB RAM, 10Gbps Thunderbolt 4 DMA Bridge (0.27ms RTT), 285 GB SSD Model Vault.
-3. **L3 (Linux Head Node):** AMD Ryzen 7 5700U, Docker Hub & Ray cluster, 1GbE/2.5GbE NIC.
+2. **L2 (MacBook Pro):** 16GB RAM, 40Gbps Thunderbolt 4 DMA Bridge (0.27ms RTT), 285 GB SSD Model Vault.
+3. **L3 (Linux Head Node):** Intel 2018 Mac Mini (Linux), Docker Hub & Ray cluster, 1GbE/2.5GbE NIC.
 4. **L4 (Linux Tablet):** Debian Touch DSP, Tailscale mesh node.
-5. **L5 (MacBook Air M4):** 16GB RAM, Metal Performance Shaders worker.
+5. **L5 (MacBook Pro (Node L2)):** 16GB RAM, Metal Performance Shaders worker.
 6. **L6 (Pixel 10 Pro XL):** Tensor G5 NPU, UWB 3D positioning, Wi-Fi 7 MLO.
 7. **L7 (Samsung S20):** Exynos 990, dedicated 24/7 ADB automated UI tester.
 8. **GW (GL.iNet Beryl 7 Router):** GL-MT3600BE, Wi-Fi 7 MLO, 1x 2.5G WAN, **only 1x 2.5G LAN**.
 
 ### The Three Critical Hardware Deficits Today:
 1. **The Single-Port LAN Bottleneck:** The Beryl 7 has only ONE physical 2.5GbE LAN port. The Mac Mini (10GbE) and Linux Head Node cannot both be wired at 2.5Gbps without an external multi-gig switch.
-2. **Wi-Fi Jitter on Peripheral Nodes:** MacBook Air M4 and Linux Tablet on Wi-Fi experience **3.5 ms – 15 ms latency jitter**, which slows down pipelined layer tensor streaming (`llama.cpp` RPC sharding and B-SHARD activations).
+2. **Wi-Fi Jitter on Peripheral Nodes:** MacBook Pro (Node L2) and Linux Tablet on Wi-Fi experience **3.5 ms – 15 ms latency jitter**, which slows down pipelined layer tensor streaming (`llama.cpp` RPC sharding and B-SHARD activations).
 3. **Phone Keepalive & BLE Ingestion:** The Pixel 10 Pro XL and Samsung S20 require dedicated, powered USB hubs so their batteries remain at 100% while running continuous ADB tests and Doze-mode bypass daemons. The Linux node also requires a clean Bluetooth 5.3 interface for 24/7 Movesense 512Hz ECG sensor reception.
 
 ---
@@ -34,7 +34,7 @@ The **7-Layer Lauburu Physical Mesh** pools **108.0 GB RAM (82.8 GB usable AI VR
 
 ### ⚠️ Warning #1: The Universal Laptop Charger Trap
 * **The Temptation:** Buying a Targus 90W Universal Charger (`APA30AU`, $114 retail / ~$68 staff) or Bonelk 65W GaN Charger ($99 retail / ~$55 staff) at JB Hi-Fi for the Dell Inspiron 15 3525.
-* **The Dallas 1-Wire Throttling Trap:** The Dell Inspiron 15 3525 utilizes a proprietary **Dallas DS2501 1-wire EEPROM protocol** communicated via the center pin inside the 4.5mm x 3.0mm barrel jack. Generic universal tips without the Dell Dallas IC cause the Dell BIOS to flag an unrecognized adapter, triggering `BD_PROCHOT` and hard-throttling the AMD Ryzen 7 5700U CPU to **400 MHz (0.4 GHz)**!
+* **The Dallas 1-Wire Throttling Trap:** The Dell Inspiron 15 3525 utilizes a proprietary **Dallas DS2501 1-wire EEPROM protocol** communicated via the center pin inside the 4.5mm x 3.0mm barrel jack. Generic universal tips without the Dell Dallas IC cause the Dell BIOS to flag an unrecognized adapter, triggering `BD_PROCHOT` and hard-throttling the Intel 2018 Mac Mini (Linux) CPU to **400 MHz (0.4 GHz)**!
 * **The Sane Alternative:**
   1. **Direct from Dell Australia:** Genuine OEM 65W AC Adapter (`MGJN9` / `492-BBTV`, 4.5mm small barrel with center pin) is **$25.30 – $51.34 AUD** with free delivery.
   2. **USB-C PD to Dell 4.5mm Trigger Cable:** An Amazon AU / eBay AU 20V trigger cable with the Dell center pin chip is **$12 – $15 AUD**. It allows you to use ANY existing 65W/100W USB-C PD charger you already own.
@@ -75,11 +75,11 @@ At JB Hi-Fi, employee staff discount gives **wholesale cost price + 5% to 10%**.
 | **Belkin 6-Outlet Surge Protector (2m Cord)** | Belkin SurgePlus | F9M600au2M | **$39.00 – $49.00** | **~$20 – $25** | 1 | Essential EMI/RFI power filtering and surge protection for Mac Mini, Linux Head Node, Beryl 7, RPi 5, and 2.5G switch. |
 | **Comsol USB-C to USB-A 3.0 Adapter (2-Pack)** | Comsol | CAD-CA02 | **$19.95** | **~$8.00 – $10.00** | 1 | Allows legacy USB peripherals, Flipper Zero, or UB500 Bluetooth dongles to connect to USB-C ports on Mac Mini or docks. |
 
-### Tier C: High-Speed 10Gbps USB-C Cables & Peripheral Links (Priority 3 — Total Staff Spend: ~$30 AUD)
+### Tier C: High-Speed 40Gbps USB-C Cables & Peripheral Links (Priority 3 — Total Staff Spend: ~$30 AUD)
 | Item | Brand / Model | SKU / Part | Verified Retail (AUD) | Est. Staff Price (AUD) | Qty | Mesh Role & Justification |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **Cygnett Unite Right Angle Braided USB-C 3.1 Cable (1m)** | Cygnett Unite | **785825** (Barcode: 848116045412) | **$34.95** | **~$12 – $15** | 1–2 | **10Gbps HIGH-SPEED DATA & 240W EPR.** Right-angle 90° connector prevents port fatigue. Essential for Pixel 10 Pro XL (Tensor G5 native 10Gbps PHY) for 1050 MB/s ADB frame streaming and unthrottled USB tethering (`en8`). |
-| **Sharge USB-C 240W 10Gbps Cable (20cm)** | Sharge USB-C | **10014723** (Barcode: 6973154658660) | **$29.95** | **~$15 – $18** | 1 | **10Gbps ULTRA-COMPACT INTERCONNECT.** 20cm length with 90° connector. Perfect for high-speed portable NVMe enclosures, RPi 5 fast gadget link, or short Flipper Zero / ESP-DVI serial link. |
+| **Cygnett Unite Right Angle Braided USB-C 3.1 Cable (1m)** | Cygnett Unite | **785825** (Barcode: 848116045412) | **$34.95** | **~$12 – $15** | 1–2 | **40Gbps HIGH-SPEED DATA & 240W EPR.** Right-angle 90° connector prevents port fatigue. Essential for Pixel 10 Pro XL (Tensor G5 native 40Gbps PHY) for 1050 MB/s ADB frame streaming and unthrottled USB tethering (`en8`). |
+| **Sharge USB-C 240W 40Gbps Cable (20cm)** | Sharge USB-C | **10014723** (Barcode: 6973154658660) | **$29.95** | **~$15 – $18** | 1 | **40Gbps ULTRA-COMPACT INTERCONNECT.** 20cm length with 90° connector. Perfect for high-speed portable NVMe enclosures, RPi 5 fast gadget link, or short Flipper Zero / ESP-DVI serial link. |
 | **Cygnett Armoured Pro 240W USB4 Cable (1m)** | Cygnett Armoured | `CY4604CPCCH` | **$59.95** | **~$20 – $25** | 1 | **40Gbps THUNDERBOLT 4 / USB4.** Inter-node PCIe DMA bridge (0.27ms RTT) between Mac Mini M4 Pro and MacBook Pro/Air for tensor sharding. |
 
 ---
@@ -202,9 +202,9 @@ Integrating specialized hardware tools into the Lauburu 7-layer physical mesh:
 | :--- | :--- | :--- | :--- |
 | **Mac Mini $\to$ Linux Head Node** | 3.547 ms (Wi-Fi hop) | **0.18 ms (2.5GbE switch)** | **19.7x Latency Drop** |
 | **Mac Mini $\to$ Raspberry Pi 5** | 4.12 ms (Wi-Fi 5) | **0.18 ms (Gigabit switch)** | **22.8x Latency Drop** |
-| **Mac Mini $\to$ MacBook Air M4** | 5.82 ms (Wi-Fi 6) | **0.22 ms (DUB-E255 2.5G)** | **26.4x Latency Drop** |
+| **Mac Mini $\to$ MacBook Pro (Node L2)** | 5.82 ms (Wi-Fi 6) | **0.22 ms (DUB-E255 2.5G)** | **26.4x Latency Drop** |
 | **Mac Mini $\to$ MacBook Pro Vault**| 3.12 ms (Wi-Fi) | **0.27 ms (Cygnett 40Gbps TB4)**| **11.5x Latency Drop** |
-| **Pixel 10 Pro XL ADB Throughput** | 38 MB/s (USB 2.0 cable) | **1050 MB/s (Cygnett 10Gbps)**| **27.6x Speedup** |
+| **Pixel 10 Pro XL ADB Throughput** | 38 MB/s (USB 2.0 cable) | **1050 MB/s (Cygnett 40Gbps)**| **27.6x Speedup** |
 | **Cross-Mesh Switching Backplane** | Shared 1-port 2.5 Gbps | **40 Gbps non-blocking backplane** | **16x Total Capacity** |
 | **Model Weight Transfer (7GB GGUF)**| 240 seconds | **24.5 seconds (2.5GbE)** | **9.8x Speedup** |
 | **B-SHARD Activation Streaming** | 56.99 tok/s | **324.44 tok/s (L2CAP / 2.5G)**| **5.7x Speedup** |
@@ -222,17 +222,17 @@ Integrating specialized hardware tools into the Lauburu 7-layer physical mesh:
     SKU: 4897003734468 | Retail: $99.00 | Staff: ~$65 - $72 | Qty: 1
     (If out of stock, substitute: Netgear GS308 8-Port Gigabit @ $59 / ~$35 staff)
 
-[ ] 2. Cygnett Unite Right Angle Braided USB-C 3.1 Cable (1m, 10Gbps, 240W)
+[ ] 2. Cygnett Unite Right Angle Braided USB-C 3.1 Cable (1m, 40Gbps, 240W)
     SKU: 785825 | Barcode: 848116045412 | Retail: $34.95 | Staff: ~$12 - $15 | Qty: 1-2
-    (Unlocks native 10Gbps USB 3.2 Gen 2 for Pixel 10 Pro XL ADB & high-speed tethering)
+    (Unlocks native 40Gbps USB 3.2 Gen 2 for Pixel 10 Pro XL ADB & high-speed tethering)
 
 [ ] 3. Cygnett Armoured Pro 240W USB-C to USB-C Cable (1m, 40Gbps)
     Model: CY4604CPCCH | Retail: $59.95 | Staff: ~$20 - $25 | Qty: 1
     (Thunderbolt 4 / USB4 high-speed PCIe DMA bridge for Mac-to-Mac RPC)
 
-[ ] 4. Sharge USB-C 240W 10Gbps Cable (20cm)
+[ ] 4. Sharge USB-C 240W 40Gbps Cable (20cm)
     SKU: 10014723 | Barcode: 6973154658660 | Retail: $29.95 | Staff/Online | Qty: 1
-    (Short 20cm 10Gbps cable for portable NVMe SSDs, RPi 5 fast link, or Flipper)
+    (Short 20cm 40Gbps cable for portable NVMe SSDs, RPi 5 fast link, or Flipper)
 
 [ ] 5. TP-Link UB500 Bluetooth 5.3 Nano USB Adapter
     Model: UB500 | Retail: $14.00 - $19.00 | Staff: ~$8 - $10 | Qty: 1

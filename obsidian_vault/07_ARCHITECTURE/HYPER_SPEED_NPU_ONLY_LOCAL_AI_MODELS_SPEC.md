@@ -20,10 +20,10 @@ status: canonical_approved
 │                   100.0 TOPS POOLED PHYSICAL NPU TOPOLOGY                              │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │ L1: Mac Mini M4 Pro     │ 16-Core Apple Neural Engine (ANE) │ 38.0 TOPS │ CoreML / MIL │
-│ L5: MacBook Air M4      │ 16-Core Apple Neural Engine (ANE) │ 38.0 TOPS │ CoreML / MIL │
+│ L5: MacBook Pro (Node L2)      │ 16-Core Apple Neural Engine (ANE) │ 38.0 TOPS │ CoreML / MIL │
 │ L6: Pixel 10 Pro XL     │ Google Tensor G5 Edge TPU         │ 14.0 TOPS │ LiteRT/NNAPI │
 │ L7: Samsung Galaxy S20  │ Samsung Exynos 990 Dual NPU       │ 10.0 TOPS │ Eden / NNAPI │
-│ L3: Linux Head Node     │ AMD Ryzen 7 5700U Zen 3 CPU ALU   │ CPU SIMD  │ AVX2 / Vector│
+│ L3: Linux Head Node     │ Intel 2018 Mac Mini (Linux) Zen 3 CPU ALU   │ CPU SIMD  │ AVX2 / Vector│
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │ TOTAL POOLED NPU COMPUTE│ 4 Dedicated NPU Silicon Layers    │100.0 TOPS │ $0 Cloud Cost│
 └────────────────────────────────────────────────────────────────────────────────────────┘
@@ -32,10 +32,10 @@ status: canonical_approved
 | Layer | Hardware Node | NPU Hardware Core | INT8 Compute | Runtime Engine | Target Specialization |
 | :--- | :--- | :--- | :---: | :--- | :--- |
 | **L1** | Apple Mac Mini M4 Pro | 16-Core Apple Neural Engine (ANE) | **38.0 TOPS** | CoreML (`.mlmodelc`) / `e5rt` | Speculative Drafter, Grammar Guard, Semantic Cache |
-| **L5** | Apple MacBook Air M4 | 16-Core Apple Neural Engine (ANE) | **38.0 TOPS** | CoreML (`.mlmodelc`) / `e5rt` | Streaming Whisper/Moonshine ASR, Secondary Drafter |
+| **L5** | Apple MacBook Pro (Node L2) | 16-Core Apple Neural Engine (ANE) | **38.0 TOPS** | CoreML (`.mlmodelc`) / `e5rt` | Streaming Whisper/Moonshine ASR, Secondary Drafter |
 | **L6** | Google Pixel 10 Pro XL | Google Tensor G5 Edge TPU | **14.0 TOPS** | LiteRT (TFLite) INT8 / NNAPI | Screen Lens 60 FPS Computer-Use UI Bounding Box |
 | **L7** | Samsung Galaxy S20 | Exynos 990 Dual NPU | **10.0 TOPS** | Samsung Eden NPU SDK / NNAPI | Automated ADB UI Tester & Telemetry Classifier |
-| **L3** | Linux Head Node | AMD Ryzen 7 5700U (Zen 3 CPU) | **CPU Vector** | AVX2 / C++ SIMD | 512Hz Movesense ECG Neural DSP & Link Sentinel |
+| **L3** | Linux Head Node | Intel 2018 Mac Mini (Linux) (Zen 3 CPU) | **CPU Vector** | AVX2 / C++ SIMD | 512Hz Movesense ECG Neural DSP & Link Sentinel |
 
 ---
 

@@ -1,0 +1,44 @@
+{
+  "timestamp": 1788295674.501278,
+  "target_model": "Qwen-MoE-Master-Orchestrator",
+  "priority_rank": "P0_ALPHA_HIGHEST_MONOREPO_TARGET",
+  "epoch": 1,
+  "distillation_loss_dpo": 0.134,
+  "aux_load_balance_loss": 0.00213,
+  "router_entropy": 0.95,
+  "corpus_records": {
+    "continuous_lora_dpo": 65457,
+    "nomad_loop_actions": 8378,
+    "lmarena_preference_battles": 879585,
+    "total_training_tokens_equiv": 32639290
+  },
+  "experts": {
+    "0": {
+      "name": "Expert_0_Swarm_Governor",
+      "domain": "agent_orchestration",
+      "weight": 0.25
+    },
+    "1": {
+      "name": "Expert_1_Debate_Arbiter",
+      "domain": "consensus_and_truth_audit",
+      "weight": 0.2
+    },
+    "2": {
+      "name": "Expert_2_AST_Polyglot_Coder",
+      "domain": "pyspark_ast_code_edit",
+      "weight": 0.25
+    },
+    "3": {
+      "name": "Expert_3_Biometrics_DSP",
+      "domain": "movesense_512hz_ecg",
+      "weight": 0.15
+    },
+    "4": {
+      "name": "Expert_4_Docker_Infrastructure",
+      "domain": "virtiofs_container_health",
+      "weight": 0.15
+    }
+  },
+  "adapter_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/lora_adapters/qwen_moe_orchestrator",
+  "status": "TRAINED_OPTIMIZED"
+}

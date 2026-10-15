@@ -1,0 +1,18 @@
+[package]
+name = "lauburu_apps_orchestrator"
+version = "0.1.0"
+edition = "2021"
+description = "Master Applications Organizational Structure TUI for the Lauburu Monorepo"
+authors = ["Lauburu Swarm <swarm@lauburu.ai>"]
+
+[dependencies]
+ratatui = "0.29.0"
+crossterm = "0.28.1"
+tokio = { version = "1.40", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = "0.4"
+
+[[bin]]
+name = "lauburu-apps"
+path = "src/main.rs"

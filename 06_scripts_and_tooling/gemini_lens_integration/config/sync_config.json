@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0.0",
+  "system_id": "gemini_lens_integration",
+  "description": "Canonical synchronization and isolation configuration for Gemini Lens & PyCharm bidirectional integration",
+  "accounts": {
+    "aaron.t.maher@gmail.com": {
+      "account_id": "aaron.t.maher@gmail.com",
+      "role": "personal_admin",
+      "primary_cred_type": "adc",
+      "cred_file_path": "~/.config/gcloud/legacy_credentials/aaron.t.maher@gmail.com/adc.json",
+      "api_key_env_var": "GEMINI_API_KEY",
+      "fallback_cred_type": "api_key",
+      "fallback_cred_file_path": null,
+      "scopes": [
+        "https://www.googleapis.com/auth/cloud-platform"
+      ],
+      "rate_limit_rpm": 14,
+      "rate_limit_rpd": 1400,
+      "is_active": true,
+      "metadata": {
+        "description": "Personal administrator account with ADC token, API key fallback, and Antigravity CLI (agy) OAuth binding",
+        "default_sender": "aaron.t.maher@gmail.com",
+        "cloud_project": "gen-lang-client-0982729216",
+        "cli_launcher": "agy",
+        "cli_oauth_token_path": "~/.gemini/antigravity-cli/antigravity-oauth-token",
+        "cli_vault_path": "~/.gemini/profiles/agy_aaron/antigravity-oauth-token"
+      }
+    },
+    "lauburu@lauburugrappling.com": {
+      "account_id": "lauburu@lauburugrappling.com",
+      "role": "workspace_business",
+      "primary_cred_type": "oauth2_token",
+      "cred_file_path": "/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/automation/workspace_token.json",
+      "api_key_env_var": "GEMINI_API_KEY_WORKSPACE",
+      "fallback_cred_type": "service_account_dwd",
+      "fallback_cred_file_path": "/Volumes/Lauburu-Monorepo/04_data_and_memory/service_account.json",
+      "scopes": [
+        "https://www.googleapis.com/auth/gmail.modify",
+        "https://www.googleapis.com/auth/gmail.send",
+        "https://www.googleapis.com/auth/calendar"
+      ],
+      "rate_limit_rpm": 14,
+      "rate_limit_rpd": 1400,
+      "is_active": true,
+      "metadata": {
+        "description": "Workspace business account with OAuth2 token, Domain-Wide Delegation fallback, and Gemini CLI (gemini) OAuth binding",
+        "canonical_business_identity": "lauburu@lauburugrappling.com",
+        "rule_14_invariant": true,
+        "cli_launcher": "gemini",
+        "cli_oauth_token_path": "~/.gemini/oauth_creds.json",
+        "cli_vault_path": "~/.gemini/profiles/gemini_lauburu/oauth_creds.json"
+      }
+    }
+  },
+  "endpoints": {
+    "screen_lens": {
+      "orchestrator_url": "http://127.0.0.1:3037",
+      "ocr_stream_url": "http://127.0.0.1:3035",
+      "hud_mjpeg_url": "http://127.0.0.1:4003",
+      "remote_orchestrator_url": "http://100.119.199.76:3037",
+      "remote_ocr_stream_url": "http://100.119.199.76:3035",
+      "remote_hud_mjpeg_url": "http://100.119.199.76:4003",
+      "db_fallback_path": "~/.lauburu/screen_lens.sqlite"
+    },
+    "gemini_spark": {
+      "mcp_project_health_url": "http://127.0.0.1:9999/mcp/project/health",
+      "mcp_sse_url": "http://127.0.0.1:9999/sse",
+      "mcp_messages_url": "http://127.0.0.1:9999/messages",
+      "mcp_health_url": "http://127.0.0.1:9999/health"
+    },
+    "local_fallbacks": {
+      "prima_endpoint": "http://127.0.0.1:8082/v1",
+      "llama_endpoint": "http://127.0.0.1:8083/v1"
+    }
+  },
+  "resilience": {
+    "http_timeout_seconds": 10.0,
+    "connect_timeout_seconds": 2.0,
+    "max_retry_backoff_seconds": 32.0,
+    "cooldown_period_seconds": 60.0,
+    "min_ram_sanctuary_gb": 4.8,
+    "offline_queue_path": "session_logs/pending_sync_queue.jsonl",
+    "status_manifest_path": "session_logs/gemini_lens_sync_status.json"
+  },
+  "ide_integration": {
+    "pycharm_port": 63342,
+    "notebook_target_path": "/Volumes/Lauburu-Monorepo/lens_global_orchestrator.ipynb",
+    "metadata_path": "/Volumes/Lauburu-Monorepo/.idea/lens_context.json"
+  },
+  "sidecar": {
+    "cron_schedule": "0 * * * *",
+    "timezone": "Australia/Sydney",
+    "mode": "hourly"
+  }
+}

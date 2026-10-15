@@ -27,7 +27,7 @@ $$\text{Universal AI Ingress} = \text{https://mcp.lauburu.mesh/v1}$$
 │    • Encrypted WireGuard/QUIC tunnel direct into Mac Mini M4 Pro (L1 Host).                                 │
 ├──────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 4. Lauburu Master MCP Server (:9999 / stdio) & 7-Layer Physical Mesh:                                        │
-│    • Dispatches tool execution to local GGUF models (:8081, :8085, :8086), 10Gbps TB4 DMA, or PySpark.      │
+│    • Dispatches tool execution to local GGUF models (:8081, :8085, :8086), 40Gbps TB4 DMA, or PySpark.      │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 

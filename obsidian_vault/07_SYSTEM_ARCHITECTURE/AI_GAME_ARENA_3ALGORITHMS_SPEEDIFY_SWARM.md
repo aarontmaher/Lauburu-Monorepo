@@ -30,7 +30,7 @@ This architecture unifies our gamified AI training arena with the 7-layer physic
 │    • RAM Invariant: Headroom = Cap (21.6GB) - [Base + KV + Act] = 3.20 GB >= 2.50 GB   │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │ 4. CUSTOM OPEN-SOURCE SPEEDIFY & SINGLE-PORT PROTOCOL MULTIPLEXER                      │
-│    • Channel Bonding: Wi-Fi 7 (en1) + 1GbE (en0) + 10Gbps TB4 (bridge0) + 5G Hotspot  │
+│    • Channel Bonding: Wi-Fi 7 (en1) + 1GbE (en0) + 40Gbps TB4 (bridge0) + 5G Hotspot  │
 │    • Single Port Ingress (Port 4000/443): Auto-demuxes SSH, HTTP/WS, gRPC, and RPC    │
 │    • Stream Purification: Movesense ECG stream 100% decoupled from the Game Arena     │
 └────────────────────────────────────────────────────────────────────────────────────────┘

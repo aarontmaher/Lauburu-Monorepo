@@ -36,7 +36,7 @@ status: CONSENSUS_ACHIEVED
 - **Abliterated Qwen Red Team (Port 8083)** gets **Abliterated Neo (Mistral Nemo 12B Abliterated)**:
   - Role: Unconstrained protocol reverse engineering, memory/DMA fuzzing, security vulnerability auditing, zero-refusal truth checks.
 - **Host Sanctuary Hardware Offloading:**
-  - To preserve the Mac Mini's $\ge 9.6\text{ GB}$ RAM buffer and prevent fan noise, **Abliterated Neo runs on Port 8082 offloaded across the 10Gbps Thunderbolt 4 bridge to the MacBook Pro (L2)** or Linux Head Node (L3).
+  - To preserve the Mac Mini's $\ge 9.6\text{ GB}$ RAM buffer and prevent fan noise, **Abliterated Neo runs on Port 8082 offloaded across the 40Gbps Thunderbolt 4 bridge to the MacBook Pro (L2)** or Linux Head Node (L3).
 
 ---
 
@@ -67,7 +67,7 @@ The Devil's Advocate stress-tests the hardware constraints:
    - If both Neos (7.5 GB VRAM each = 15 GB) and both Qwens (18 GB each = 36 GB) are launched on the Mac Mini M4 Pro host (24 GB physical RAM), the host will suffer immediate memory thrashing, high compressor activity, and the fan will scream at max RPM.
 2. **Mandatory Offloading Gate (Rule 3 & Rule 8 Compliance):**
    - Normal Neo is colocated with Normal Qwen on the Mac Mini (within the 21.6 GB AI VRAM cap).
-   - **Abliterated Neo MUST be hosted on MacBook Pro L2 (14.0 GB AI VRAM) or Linux Head Node L3 (12.0 GB available RAM)**, reachable via the 10Gbps Thunderbolt 4 bridge (0.45ms RTT).
+   - **Abliterated Neo MUST be hosted on MacBook Pro L2 (14.0 GB AI VRAM) or Linux Head Node L3 (12.0 GB available RAM)**, reachable via the 40Gbps Thunderbolt 4 bridge (0.45ms RTT).
    - With the Thunderbolt bridge verified at 40 Gb/s, remote RPC latency over TB4 is imperceptible ($<1\text{ ms}$).
 
 ---
@@ -87,7 +87,7 @@ The Devil's Advocate stress-tests the hardware constraints:
 │ 2. ABLITERATED ADVERSARIAL PLANE (PORT 8083 & 8082)                         │
 │    • Master Red Leader: Huihui-Qwen3.8-27B-Abliterated (Port 8083 / Port 8085)│
 │    • Red Tool Specialist: Abliterated Neo 12B (Port 8082 / MacBook Pro L2)  │
-│    • Transport: 10Gbps Thunderbolt 4 Bridge (0.45ms RTT via bridge0)        │
+│    • Transport: 40Gbps Thunderbolt 4 Bridge (0.45ms RTT via bridge0)        │
 │    • Domain: Decompilation, closed-source protocols, Doze bypass, rish IPC  │
 │    • Cloud Escalation: STRICTLY FORBIDDEN (100% Local Air-Gapped)           │
 └─────────────────────────────────────────────────────────────────────────────┘

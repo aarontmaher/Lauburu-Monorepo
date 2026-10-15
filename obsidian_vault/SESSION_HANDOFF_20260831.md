@@ -11,7 +11,7 @@
 During this session, we accomplished seven interconnected engineering initiatives spanning router telemetry verification, distributed AI inference, protocol reverse engineering, kernel memory optimization, and 24/7 continuous LoRA training dataset harvesting:
 
 1. **Automated Router CLI Fact-Checking Engine (`router_fact_checker.py`):**
-   - Built and deployed `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/scripts/router_fact_checker.py`.
+   - Built and deployed `/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/scripts/router_fact_checker.py`.
    - Directly asserts ground-truth hardware state from the GL.iNet router (`192.168.8.1`) over non-interactive SSH / JSON-RPC against the Canonical TUI display values (Rule #0 Zero-Mock Standard).
 2. **7-Layer Physical Mesh Device Discovery & Disambiguation:**
    - Mapped all live devices by combining the Linux kernel ARP table (`/proc/net/arp`) and the active DHCP lease ledger (`/tmp/dhcp.leases`).
@@ -41,8 +41,8 @@ During this session, we accomplished seven interconnected engineering initiative
 | Layer | Node Identity | Physical IP | MAC Address | Interface Transport | Live Hardware Role | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **`L1`** | **Mac_Node** | `192.168.8.230` | `1c:f6:4c:7d:d7:0a` | `br-lan` (TB4 / 1GbE) | Host M4 Pro, Prompt Ingestion, Governor | 🟢 Active |
-| **`L2`** | **MacBook_Pro** | `192.168.8.127` | `a4:83:e7:d1:7c:82` | `tb0` (10Gbps DMA Bridge) | Metal GPU Shard, Model Vault SSD | 🟡 WoL Dispatched |
-| **`L3`** | **Linux_Head_Node** | `192.168.8.224` | `00:41:0e:14:28:43` | `br-lan` (1GbE LAN) | AMD Ryzen 7, RPC Worker, Docker Hub | 🟢 Active (Port 50052) |
+| **`L2`** | **MacBook_Pro** | `192.168.8.127` | `a4:83:e7:d1:7c:82` | `tb0` (40Gbps DMA Bridge) | Metal GPU Shard, Model Vault SSD | 🟡 WoL Dispatched |
+| **`L3`** | **Linux_Mini** | `192.168.8.224` | `00:41:0e:14:28:43` | `br-lan` (1GbE LAN) | AMD Intel 2018 Mac Mini, RPC Worker, Docker Hub | 🟢 Active (Port 50052) |
 | **`L4`** | **Linux_Tablet** | `192.168.8.173` | `82:e6:6d:c0:a4:01` | `br-lan` (5GHz Wi-Fi) | Debian Linux Tablet, Touch DSP | 🟡 Standby |
 | **`L5`** | **MacBook_Air** | `192.168.8.222` | `66:74:75:d8:16:fb` | `br-lan` (Wi-Fi 7 / 5G) | Apple Silicon M4 Metal Inference | 🟢 Active (Port 50052) |
 | **`L6`** | **Pixel_10_Pro_XL** | `192.168.8.145` | `66:00:88:ca:e8:3b` | `br-lan` (Wi-Fi 7 6GHz) | Tensor G5 NPU, 8K Vision Stream | 🟢 Active (Port 50052) |
@@ -55,7 +55,7 @@ During this session, we accomplished seven interconnected engineering initiative
 ## 🛠️ 3. Key Scripts, Files & Datasets Created
 
 ### 3.1 Scripting & Tooling
-* **`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/scripts/router_fact_checker.py`**:
+* **`/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/scripts/router_fact_checker.py`**:
   - Live automated fact-checking script.
   - Queries `ubus call system info`, `ubus call network.interface.wan status`, `cat /tmp/dhcp.leases`, and `/proc/net/arp`.
   - Colorized Rich output verifying 100% hardware parity with the TUI.
@@ -66,8 +66,8 @@ During this session, we accomplished seven interconnected engineering initiative
 
 ### 3.2 Datasets & Storage Sync
 * **`data/lora_datasets/glinet_luci_dev_training.jsonl`** (1,000 verified records):
-  - Synced to PySpark Big Data Lake: `/Users/aaron/DFS_UNIFIED/lora_datasets/glinet_luci_dev_training.jsonl`.
-  - Synced to Monorepo: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/lora_datasets/glinet_luci_dev_training.jsonl`.
+  - Synced to PySpark Big Data Lake: `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/glinet_luci_dev_training.jsonl`.
+  - Synced to Monorepo: `/Volumes/Lauburu-Monorepo/04_data_and_memory/lora_datasets/glinet_luci_dev_training.jsonl`.
 
 ### 3.3 AI Debate Artifacts Archived
 * **[`router_cli_automation_factcheck_debate.md`](file:///Users/aaron/.gemini/antigravity/brain/29624d91-93d7-428a-bb93-9aea92ed1b94/router_cli_automation_factcheck_debate.md)**: Tri-Orchestrator debate on automated router CLI fact-checking.

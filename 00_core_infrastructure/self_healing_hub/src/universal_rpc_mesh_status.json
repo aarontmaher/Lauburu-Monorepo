@@ -98,7 +98,7 @@
       "name": "Samsung Galaxy S20+",
       "layer": 7,
       "status": "ONLINE",
-      "ip": "100.84.40.95",
+      "ip": "100.78.206.96",
       "port": 50052,
       "transport": "Router USB ADB / Tailscale",
       "latency_ms": 251.01,
@@ -207,7 +207,7 @@
       "status": "CONSENSUS_APPROVED"
     }
   ],
-  "rpc_command_flags": "--rpc 100.103.212.21:50052,100.101.39.98:50052,100.93.158.96:50052,100.73.38.87:50052,100.84.40.95:50052",
+  "rpc_command_flags": "--rpc 100.103.212.21:50052,100.101.39.98:50052,100.93.158.96:50052,100.73.38.87:50052,100.78.206.96:50052",
   "thermal_compliance": {
     "thermal_ceiling_c": 41.0,
     "all_nodes_compliant": true

@@ -1,0 +1,53 @@
+Screen {
+    align: center middle;
+}
+
+#main-grid {
+    layout: grid;
+    grid-size: 1 3;
+    grid-rows: 3 2fr 2fr;
+    grid-columns: 1fr;
+    width: 100%;
+    height: 100%;
+    margin: 1 2;
+    min-width: 80;
+    max-width: 160;
+}
+
+#controls {
+    height: 3;
+    align: center middle;
+}
+
+#devices-container {
+    height: 100%;
+    width: 100%;
+    layout: horizontal;
+    overflow-x: auto;
+}
+
+.device-pane {
+    width: 45;
+    height: 100%;
+    border: solid $accent;
+    padding: 0 1;
+    margin: 0 1;
+}
+
+.box {
+    height: 100%;
+    border: round $primary;
+    padding: 1 2;
+    background: $surface;
+}
+
+.title {
+    text-style: bold;
+    color: $accent;
+    margin-bottom: 1;
+}
+
+#log-box {
+    height: 100%;
+    width: 100%;
+}

@@ -29,7 +29,7 @@ These models are wired into the active 7-layer mesh runtime, daemons, and live d
 | :--- | :--- | :--- |
 | **`qwen2.5-coder-7b-instruct-q4_k_m.gguf`** | GGUF (4.36 GB) | **Live Master Local Orchestrator (Port 8081).** High-speed (45.8 tok/s) code editing and AST verification preserving host RAM sanctuary. |
 | **`Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf`** | GGUF (16.19 GB) | **Pinned Devil's Advocate / Red Team (Port 8083).** Uncensored adversarial reasoning, zero cloud prompt leakage. |
-| **`qwen2.5-coder-32b-instruct-q4_k_m.gguf`** | GGUF (19.10 GB) | **High-Context Heavy Coding Core.** Offloaded to L2 MacBook Pro 16" SSD over 10Gbps TB4 DMA (`100.103.212.21`). |
+| **`qwen2.5-coder-32b-instruct-q4_k_m.gguf`** | GGUF (19.10 GB) | **High-Context Heavy Coding Core.** Offloaded to L2 MacBook Pro 16" SSD over 40Gbps TB4 DMA (`100.103.212.21`). |
 | **`Qwen2.5-Math-72B-Instruct-IQ2_XXS.gguf`** | GGUF (23.74 GB) | **Distributed Mathematical & DSP Engine.** Full-mesh PRP ring sharded across 85 GB pooled VRAM. |
 | **`whisper-large-v3-turbo`** | SafeTensors (1.51 GB)| **Voice Coding & Automotive STT.** Sub-100ms local speech-to-AST parsing. |
 | **`smollm2-1.7b-instruct-q4_k_m.gguf`** | GGUF (1006 MB) | **In-App Edge AI Engine.** Native resident model for Port 4000 Console. |
@@ -74,8 +74,8 @@ Using **Gemini 3.8 Flash Low** reasoning within Antigravity (strictly $0.00 clou
 1. **DFA Determinism:** Flattened recursive epsilon non-terminals to eliminate parser backtracking in `llama_sampler_accept()`.
 2. **Compact Whitespace Folding:** Replaced greedy whitespace productions with compact regex character classes `ws ::= [ \t\n\r]*`.
 3. **Structured Schemas:** Generated domain-specific grammars in `02_ai_models_and_inference/prima_cpp/grammars/`:
-   - [`optimized_json_rpc.gbnf`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/grammars/optimized_json_rpc.gbnf) — Guarantees valid JSON-RPC telemetry with 0 invalid tokens.
-   - [`optimized_omni_ast.gbnf`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/grammars/optimized_omni_ast.gbnf) — Constrains 10M drafter to generate 100% syntactically valid AST patches (`action`, `target_file`, `line_start`, `line_end`, `payload`, `verified_zero_mock`).
+   - [`optimized_json_rpc.gbnf`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/grammars/optimized_json_rpc.gbnf) — Guarantees valid JSON-RPC telemetry with 0 invalid tokens.
+   - [`optimized_omni_ast.gbnf`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/prima_cpp/grammars/optimized_omni_ast.gbnf) — Constrains 10M drafter to generate 100% syntactically valid AST patches (`action`, `target_file`, `line_start`, `line_end`, `payload`, `verified_zero_mock`).
 
 ---
 

@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy_data:/data
+      - ./caddy_config:/config
+    networks:
+      - mesh_net
+
+  headscale:
+    image: headscale/headscale:latest
+    restart: unless-stopped
+    volumes:
+      - ./headscale/config:/etc/headscale
+      - ./headscale/data:/var/lib/headscale
+    command: headscale serve
+    networks:
+      - mesh_net
+
+  mcp_gateway:
+    image: python:3.11-slim
+    restart: unless-stopped
+    volumes:
+      - ./mcp:/app
+    working_dir: /app
+    command: bash -c "pip install fastapi uvicorn websockets && python -m uvicorn server:app --host 0.0.0.0 --port 8090"
+    networks:
+      - mesh_net
+
+networks:
+  mesh_net:
+    driver: bridge

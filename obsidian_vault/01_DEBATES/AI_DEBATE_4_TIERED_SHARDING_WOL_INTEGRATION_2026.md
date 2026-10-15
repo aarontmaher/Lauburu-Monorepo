@@ -33,7 +33,7 @@ Integrate the **4-Tiered AI Sharding Architecture** directly into the **Self-Hea
 │ • Role: High-bandwidth PCIe DMA tensor streaming for 32B/70B sharding.      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ TIER 3: TAILSCALE & WIREGUARD DISTRIBUTED RPC SHARD (Linux Head + Workers)  │
-│ • Endpoints: 100.101.39.98:50052 (Ryzen 5700U), 100.93.158.96, 100.73.38.87 │
+│ • Endpoints: 100.101.39.98:50052 (Intel 2018 Mac Mini 5700U), 100.93.158.96, 100.73.38.87 │
 │ • Capacity: +47.2 GB AI VRAM │ Latency: 1.40ms - 8.50ms                     │
 │ • Role: Heavy background batch processing, RLHF/DPO, and mobile TPU sharding│
 ├─────────────────────────────────────────────────────────────────────────────┤
@@ -51,7 +51,7 @@ Integrate the **4-Tiered AI Sharding Architecture** directly into the **Self-Hea
 1. **Pre-Flight Shard Health Check (`GET /api/sharding/status`):**
    * Scans Port 50052 on localhost and all physical nodes.
 2. **On-Demand Node Awakening (`POST /api/wol/wake`):**
-   * If a target node (e.g. `MacBook_Pro` or `Linux_Head_Node`) is unresponsive on Port 50052, WoL daemon transmits Magic Packets to its physical MAC address (`NODE_MAC_INVENTORY`).
+   * If a target node (e.g. `MacBook_Pro` or `Linux_Mini`) is unresponsive on Port 50052, WoL daemon transmits Magic Packets to its physical MAC address (`NODE_MAC_INVENTORY`).
 3. **Automated RPC Shard Resurrection (`POST /api/sharding/heal`):**
    * Injects SSH/ADB keepalive to start `/usr/local/bin/llama-rpc-server -H 0.0.0.0 -p 50052` or spawns the local Metal GPU RPC listener.
 4. **Zero-Latency Fallback Rule:**

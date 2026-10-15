@@ -1,0 +1,71 @@
+{
+  "timestamp_utc": "2026-10-10T09:29:50Z",
+  "total_nodes": 8,
+  "online_nodes": 3,
+  "node_states": {
+    "L1_Mac_Node": {
+      "name": "Apple Mac Mini M4 Pro (Host Master)",
+      "endpoint": "127.0.0.1:50052",
+      "status": "ONLINE",
+      "latency_ms": 1.35,
+      "transport": "Local Process Manager",
+      "last_healing_action": "NONE_REQUIRED"
+    },
+    "L2_MacBook_Pro": {
+      "name": "Apple Silicon MacBook Pro (TB4 Worker)",
+      "endpoint": "100.103.212.21:50052",
+      "status": "STANDBY",
+      "latency_ms": null,
+      "transport": "10Gbps TB4 DMA Bridge (0.204ms RTT)",
+      "last_healing_action": "SSH_FAILED: ssh: connect to host 192.168.8.127 port 22: Operation timed out\n"
+    },
+    "L3_Linux_Head": {
+      "name": "AMD Ryzen 7 5700U Compute Hub",
+      "endpoint": "100.101.39.98:50052",
+      "status": "ONLINE",
+      "latency_ms": 57.01,
+      "transport": "1GbE Gateway Subnet",
+      "last_healing_action": "NONE_REQUIRED"
+    },
+    "L4_Linux_Tablet": {
+      "name": "Debian Linux Tablet (Mobile Compute)",
+      "endpoint": "100.81.92.125:50052",
+      "status": "STANDBY",
+      "latency_ms": null,
+      "transport": "Wi-Fi 7 / Tailscale Overlay",
+      "last_healing_action": "SSH_FAILED: ssh: connect to host 100.81.92.125 port 22: Operation timed out\n"
+    },
+    "L5_MacBook_Air": {
+      "name": "Apple M4 MacBook Air (Metal Worker)",
+      "endpoint": "100.93.158.96:50052",
+      "status": "STANDBY",
+      "latency_ms": null,
+      "transport": "Wi-Fi 7 / Tailscale Mesh",
+      "last_healing_action": "SSH_FAILED: ssh: connect to host 100.93.158.96 port 22: Operation timed out\n"
+    },
+    "L6_Pixel_10_Pro": {
+      "name": "Google Pixel 10 Pro XL (Edge TPU)",
+      "endpoint": "100.73.38.87:50052",
+      "status": "STANDBY",
+      "latency_ms": null,
+      "transport": "Tailscale / TCP ADB",
+      "last_healing_action": "SSH_FAILED: ssh: connect to host 192.168.8.213 port 8022: Operation timed out\n"
+    },
+    "L7_Samsung_S20": {
+      "name": "Samsung S20+ (Dedicated UI Tester)",
+      "endpoint": "100.84.40.95:50052",
+      "status": "STANDBY",
+      "latency_ms": null,
+      "transport": "Router USB ADB / Tailscale",
+      "last_healing_action": "SSH_RESURRECT_DISPATCHED"
+    },
+    "GW_Router": {
+      "name": "GL.iNet Gateway & USB Hub",
+      "endpoint": "192.168.8.1:22",
+      "status": "ONLINE",
+      "latency_ms": 2.99,
+      "transport": "Physical USB 3.0 & Wi-Fi 7 MLO",
+      "last_healing_action": "NONE_REQUIRED"
+    }
+  }
+}

@@ -34,7 +34,7 @@ To test the 100% open-source NetBird overlay alongside Tailscale without routing
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **L1 Mac Mini (M4 Pro)** | **0.60 ms** | 1.80 ms | 1280 | 0.0% (Disjoint) | **DUAL_STACK_ACTIVE** |
 | **L2 MacBook Pro (TB4)** | **6.62 ms** | 7.82 ms | 1280 | 0.0% (Disjoint) | **DUAL_STACK_ACTIVE** |
-| **L5 MacBook Air (M4)**  | **12.79 ms**| 13.99 ms | 1280 | 0.0% (Disjoint) | **DUAL_STACK_ACTIVE** |
+| **L2 MacBook Pro (M4)**  | **12.79 ms**| 13.99 ms | 1280 | 0.0% (Disjoint) | **DUAL_STACK_ACTIVE** |
 | **L7 Samsung S20 (ADB)** | **13.02 ms**| 14.22 ms | 1280 | 0.0% (Disjoint) | **DUAL_STACK_ACTIVE** |
 | **L6 Pixel 10 Pro XL**   | **100.82 ms**| 102.02 ms | 1280 | 0.0% (Disjoint) | **DUAL_STACK_ACTIVE** |
 

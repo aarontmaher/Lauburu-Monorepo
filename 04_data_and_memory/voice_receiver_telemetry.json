@@ -1,0 +1,12 @@
+{
+  "timestamp": 1792039269.370948,
+  "status": "ONLINE",
+  "port": 19999,
+  "active_clients": 0,
+  "total_bytes_received": 0,
+  "total_utterances": 0,
+  "last_language": "en",
+  "last_confidence": 0.0,
+  "last_duration_sec": 0.0,
+  "current_rms": 0.0
+}

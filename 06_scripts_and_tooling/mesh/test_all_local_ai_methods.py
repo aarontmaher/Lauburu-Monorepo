@@ -31,17 +31,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger("LocalAITester")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
-OBSIDIAN_VAULT = Path("/Users/aaron/DFS_UNIFIED")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
+OBSIDIAN_VAULT = Path("/Volumes/Lauburu-Monorepo")
 REPORT_MD = OBSIDIAN_VAULT / "00_SYSTEM_DASHBOARDS/LOCAL_AI_BENCHMARK_REPORT.md"
 REPORT_JSON = REPO_ROOT / "data/mesh/local_ai_benchmark_report.json"
 LORA_LOG = REPO_ROOT / "data/lora_datasets/local_ai_benchmarks.jsonl"
 
 MODELS_DIR = REPO_ROOT / "02_ai_models_and_inference/models"
-MODEL_1B = Path("/Users/aaron/DFS_UNIFIED/AI_Models_Vault/qwen-vl-7b/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf")
-MODEL_7B = Path("/Users/aaron/DFS_UNIFIED/AI_Models_Vault/qwen-vl-7b/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf")
-MODEL_VL = Path("/Users/aaron/DFS_UNIFIED/AI_Models_Vault/qwen-vl-7b/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf")
-MMPROJ_VL = Path("/Users/aaron/DFS_UNIFIED/AI_Models_Vault/qwen-vl-7b/mmproj-Qwen2.5-VL-7B-Instruct-Q8_0.gguf")
+MODEL_1B = Path("/Volumes/Lauburu-Monorepo/AI_Models_Vault/qwen-vl-7b/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf")
+MODEL_7B = Path("/Volumes/Lauburu-Monorepo/AI_Models_Vault/qwen-vl-7b/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf")
+MODEL_VL = Path("/Volumes/Lauburu-Monorepo/AI_Models_Vault/qwen-vl-7b/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf")
+MMPROJ_VL = Path("/Volumes/Lauburu-Monorepo/AI_Models_Vault/qwen-vl-7b/mmproj-Qwen2.5-VL-7B-Instruct-Q8_0.gguf")
 LLAMA_CLI = Path("/Users/aaron/.local/bin/llama-cli")
 LLAMA_SERVER = Path("/Users/aaron/.local/bin/llama-server")
 EXO_BIN = Path("/Users/aaron/.local/bin/exo")
@@ -271,10 +271,10 @@ class MasterMeshLocalAITester:
 
 ```bash
 # Method 1 (Direct Metal GPU):
-llama-cli -m /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/models/Llama-3.2-1B-Instruct-Q4_K_M.gguf -p "Hello" -ngl 99
+llama-cli -m /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/models/Llama-3.2-1B-Instruct-Q4_K_M.gguf -p "Hello" -ngl 99
 
 # Method 2 (REST Server):
-llama-server -m /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/models/qwen2.5-coder-7b-instruct-q4_k_m.gguf --port 8081 -ngl 99
+llama-server -m /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/models/qwen2.5-coder-7b-instruct-q4_k_m.gguf --port 8081 -ngl 99
 
 # Method 3 (RPC Multi-Node Sharding):
 python3 06_scripts_and_tooling/mesh/ai_compute_supervisor.py --audit-once
@@ -283,7 +283,7 @@ python3 06_scripts_and_tooling/mesh/ai_compute_supervisor.py --audit-once
 exo run
 
 # Method 5 (Multimodal VLM):
-llama-cli -m /Users/aaron/DFS_UNIFIED/AI_Models_Vault/qwen-vl-7b/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf --mmproj /Users/aaron/DFS_UNIFIED/AI_Models_Vault/qwen-vl-7b/mmproj-Qwen2.5-VL-7B-Instruct-Q8_0.gguf --image test.png -p "Describe this image"
+llama-cli -m /Volumes/Lauburu-Monorepo/AI_Models_Vault/qwen-vl-7b/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf --mmproj /Volumes/Lauburu-Monorepo/AI_Models_Vault/qwen-vl-7b/mmproj-Qwen2.5-VL-7B-Instruct-Q8_0.gguf --image test.png -p "Describe this image"
 ```
 """
         with open(REPORT_MD, "w") as f:

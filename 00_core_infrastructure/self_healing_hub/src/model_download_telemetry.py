@@ -28,7 +28,7 @@ def get_live_download_telemetry():
         pass
 
     # Read from local live download stream if available
-    local_stream = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/live_ai_download_stream.json"
+    local_stream = "/Volumes/Lauburu-Monorepo/data/live_ai_download_stream.json"
     if os.path.exists(local_stream):
         try:
             with open(local_stream, "r") as f:

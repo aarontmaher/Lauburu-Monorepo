@@ -8,10 +8,10 @@ tags: [lauburu, router_settings, tplink, vx230v, glinet, openwrt, dhcp, mesh_top
 
 ## 🏛️ 1. Executive Summary & Architecture Consensus
 
-This canonical specification resolves the **TP-Link VX230v AX1800** and **GL.iNet GL-MT3600BE** routing, switching, and Wi-Fi configuration across the **7-Layer Lauburu Mesh Ecosystem**.
+This canonical specification resolves the **TP-Link VX230v AX1800** and **GL.iNet GL-BE14000** routing, switching, and Wi-Fi configuration across the **7-Layer Lauburu Mesh Ecosystem**.
 
 Based on empirical benchmarks and the **Tri-Orchestrator AI Debate Consensus** (`[[NBN_AND_MESH_TOPOLOGY_AI_DEBATE_ANALYSIS]]`), the network operates in a **Single Flat Subnet (`192.168.8.0/24`)**:
-* **GL.iNet GL-MT3600BE** (`192.168.8.1`, Tailscale `100.122.185.123`): **Primary OpenWrt Master Gateway**, WAN routing, DHCP Server, AdGuard Home DNS, Tailscale Subnet Router.
+* **GL.iNet GL-BE14000** (`192.168.8.1`, Tailscale `100.70.123.123`): **Primary OpenWrt Master Gateway**, 2.5G NBN WAN (`eth2`), DHCP Server, AdGuard Home DNS, Tailscale Subnet Router.
 * **TP-Link VX230v AX1800** (`192.168.8.2`): **Access Point (AP) / 4-Port 1Gbps Switch**, DHCP **DISABLED**, Wi-Fi 6 AX high-power coverage.
 
 ```
@@ -39,10 +39,10 @@ Based on empirical benchmarks and the **Tri-Orchestrator AI Debate Consensus** (
 From deep trajectory analysis across the Antigravity session transcripts and slash commands (`/goal`, `/boost`, `/loop`, `/ai-debate`):
 
 1. **Hardware Isolation Policy:**
-   - **Layer 5 (MacBook Air M4, `192.168.8.222` / `100.93.158.96`):** Dedicated manual AI execution node and UI/UX testing ground.
-   - All interactive Chrome browsing, Lens visual auditing, and manual AI tasks are routed to **MacBook Air** and **Samsung S20** to ensure the Mac Mini Host (`Mac_Node`, `192.168.8.230`) remains unblocked for high-throughput orchestration and governance.
+   - **Layer 5 (MacBook Air M4, `192.168.8.248` / `100.121.202.34`):** Dedicated manual AI execution node and UI/UX testing ground.
+   - All interactive Chrome browsing, Lens visual auditing, and manual AI tasks are routed to **MacBook Air** and **Samsung S20** to ensure the Mac Mini Host (`Mac_Node`, `192.168.8.143` / `.230`) remains unblocked for high-throughput orchestration and governance.
 2. **Local AI Model Hosting on Mac Air:**
-   - Runs local Apple Silicon Metal GPU inference (Qwen-VL, MLX LoRA distillation) and hosts web dashboards / JupyterLab notebooks at `http://100.93.158.96:8890` (and port `8889` / `8866`).
+   - Runs local Apple Silicon Metal GPU inference (Qwen-VL, MLX LoRA distillation) and hosts web dashboards / JupyterLab notebooks at `http://100.121.202.34:8889`.
 3. **Storage & Headroom:**
    - Cleared and verified for synchronous MLX LoRA weight hot-swapping under `/loop`.
 
@@ -108,13 +108,13 @@ The GL.iNet router hosts OpenWrt and manages all static IP allocations:
 | **TP-Link VX230v** | `AP/SW` | *Configured Static* | `192.168.8.2` | Wi-Fi 6 AP & 4x GbE Switch |
 | **Mac Mini M4 Pro** | `L1 (Eth)` | `1c:f6:4c:7d:d7:0a` | `192.168.8.230` | Host & Memory Governor |
 | **Mac Mini M4 Pro** | `L1 (Wi-Fi)` | `1c:f6:4c:7c:dc:5f` | `192.168.8.155` | Secondary Wi-Fi Link |
-| **MacBook Pro M4** | `L2` | `36:7e:4d:07:b2:c0` | `192.168.8.127` | Metal GPU RPC & Storage |
+| **Intel MacBook Pro** | `L2` | `36:7e:4d:07:b2:c0` | `192.168.8.127` | Metal GPU RPC & Storage |
 | **Linux Head Node** | `L3 (Eth)` | `00:e0:4c:68:03:c8` | `192.168.8.224` | Gateway Ingress & Compute |
 | **Linux Head Node** | `L3 (WoL)` | `00:41:0e:14:28:43` | `192.168.8.224` | Wake-on-LAN Hardware NIC |
-| **MacBook Air M4** | `L5` | `66:74:75:d8:16:fb` | `192.168.8.222` | Manual AI & UI/UX Specialist |
+| **MacBook Pro (Node L2)** | `L5` | `66:74:75:d8:16:fb` | `192.168.8.222` | Manual AI & UI/UX Specialist |
 | **Pixel 10 Pro XL** | `L6` | `66:00:88:ca:e8:3b` | `192.168.8.145` | Vision Stream & Edge TPU |
 | **Samsung S20** | `L7` | `0a:8f:1b:f1:c8:17` | `192.168.8.214` | Automated UI/UX Tester |
-| **TP-Link Extender** | `EXT` | `98:fc:84:e6:e2:12` | `192.168.8.116` | Layer 2 Client Bridge |
+| **TP-Link Extender** | `EXT` | `98:fc:84:e6:e2:12` | `192.168.8.176` | Layer 2 Client Bridge |
 
 ### 4.2 Dynamic DHCP Pool
 * **Start:** `192.168.8.100`
@@ -129,19 +129,19 @@ The configuration is synchronized and verified via automated monorepo scripts:
 
 ```bash
 # 1. Autonomous TP-Link Setup, Discovery & Verification Suite
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/autotplink_setup.py
+python3 /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/autotplink_setup.py
 
 # 2. Live HTTP Endpoint & Subnet Diagnostic Optimizer
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/tplink_modem_optimizer.py
+python3 /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/tplink_modem_optimizer.py
 
 # 3. Apply canonical DHCP reservations and verify mesh ping RTT
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/configure_mesh_router_topology.py
+python3 /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/configure_mesh_router_topology.py
 
 # 4. Run real-hardware router RAM and daemon governance
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/hybrid_router_mesh_governor.py
+python3 /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/hybrid_router_mesh_governor.py
 
 # 5. Run full network system settings benchmark
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/system_settings_optimizer.py --benchmark
+python3 /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/system_settings_optimizer.py --benchmark
 ```
 
 ---

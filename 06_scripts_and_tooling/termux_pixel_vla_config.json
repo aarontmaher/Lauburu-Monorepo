@@ -1,0 +1,8 @@
+{
+  "mode": "CONTINUOUS_MAX_STRENGTH",
+  "fps": 30,
+  "edge_tpu_enabled": true,
+  "wake_interrupt_override": true,
+  "thermal_throttling_override": true,
+  "target_node": "192.168.8.230:8082"
+}

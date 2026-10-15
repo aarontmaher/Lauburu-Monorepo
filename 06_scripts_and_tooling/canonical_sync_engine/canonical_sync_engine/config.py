@@ -127,7 +127,7 @@ DEFAULT_MESH_TOPOLOGY: Dict[str, MeshNodeConfig] = {
         name="Samsung_S20",
         layer="L7",
         local_ip="DHCP",
-        tailscale_ip="100.84.40.95",
+        tailscale_ip="100.78.206.96",
         adb_port=5555,
         probe_timeout_sec=3.0,
         is_critical=False,
@@ -153,25 +153,25 @@ class SyncConfig:
     obsidian_vault_path: Path = field(
         default_factory=lambda: Path(os.environ.get(
             "OBSIDIAN_VAULT_PATH",
-            "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault"
+            "/Volumes/Lauburu-Monorepo/obsidian_vault"
         )).expanduser().resolve()
     )
     pyspark_dataset_path: Path = field(
         default_factory=lambda: Path(os.environ.get(
             "PYSPARK_DATASET_PATH",
-            "/Users/aaron/DFS_UNIFIED/lora_datasets"
+            "/Volumes/Lauburu-Monorepo/04_data_and_memory/data"
         )).expanduser().resolve()
     )
     pyspark_memory_path: Path = field(
         default_factory=lambda: Path(os.environ.get(
             "PYSPARK_MEMORY_PATH",
-            "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory"
+            "/Volumes/Lauburu-Monorepo/04_data_and_memory"
         )).expanduser().resolve()
     )
     git_repo_path: Path = field(
         default_factory=lambda: Path(os.environ.get(
             "GIT_REPO_PATH",
-            "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+            "/Volumes/Lauburu-Monorepo"
         )).expanduser().resolve()
     )
     gdrive_mount_path: Path = field(
@@ -183,7 +183,7 @@ class SyncConfig:
     gdrive_fallback_cache_path: Path = field(
         default_factory=lambda: Path(os.environ.get(
             "GDRIVE_FALLBACK_PATH",
-            "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/gdrive_cache"
+            "/Volumes/Lauburu-Monorepo/data/gdrive_cache"
         )).expanduser().resolve()
     )
 

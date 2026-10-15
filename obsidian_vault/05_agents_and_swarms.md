@@ -13,7 +13,7 @@ Houses the autonomous multi-agent orchestration councils, debate consensus engin
 1. **Cloud Frontier Orchestrator (Gemini 3.7 Flash High / Gemini 3.1 Pro High):**
    - High-level architectural planning, deep reasoning, and multi-round debate leadership.
 2. **Local Frontier Specialist (Qwen 2.5 Coder 32B / DeepSeek R1 32B):**
-   - High-speed zero-cost local code synthesis and verification via 10Gbps RPC sharding.
+   - High-speed zero-cost local code synthesis and verification via 40Gbps RPC sharding.
 3. **Genetic MoE Synthesis Governor (Kimi Tandem / Qwen 3.8max):**
    - Cross-verifies competing model proposals, resolves edge-case debates, and computes consensus weightings.
 4. **Swarm Truth Audit & Verification Gates:**

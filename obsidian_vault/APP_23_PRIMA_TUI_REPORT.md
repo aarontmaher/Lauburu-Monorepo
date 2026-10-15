@@ -15,14 +15,15 @@ tags: [lauburu, testing, prima_tui, ratatui, prima_cpp, rust, zero_mock]
 
 ## 2. Zero-Mock & Truth Audit (Rule #0)
 - **Authentic Cluster Topology (`src/config.rs`)**:
-  - Full 7-Layer Physical Mesh monitored:
-    - L1 Mac Mini M4 Pro (Rank 0 Master, 18.0 GB VRAM, TB4 DMA 0.27ms)
-    - L2 MacBook Pro Intel Vault (Rank 1, 14.0 GB VRAM, TB4 DMA 0.27ms)
-    - L3 Linux Mini Gateway (Rank 2, 13.8 GB VRAM, 1GbE WireGuard)
-    - L4 Linux Tablet Mobile (Rank 3, 6.5 GB VRAM, Wi-Fi 7 / MLO)
-    - L5 MacBook Air Metal (Rank 4, 14.0 GB VRAM, Wi-Fi 7 / Tailscale)
-    - L6 Pixel 10 Pro XL (Rank 5, 12.5 GB VRAM, ggml-rpc Port 50052)
-    - L7 Samsung S20 ADB (Rank 6, 9.0 GB VRAM, USB / ADB Tunnel)
+  - Full Physical Mesh monitored:
+    - L1 Mac Mini M4 Pro (Rank 0 Master, 19.2 GB AI VRAM)
+    - L8 Linux Mini Hub `lauburu` (Rank 1, 25.6 GB AI VRAM, 40 Gbps TB4 DMA 0.38ms RTT)
+    - L2 MacBook Pro Intel Vault (Rank 2, 14.0 GB AI VRAM, LAN Wi-Fi / Tailscale 6.5ms RTT, Unlinked TB)
+    - L3 Linux Head Node Ryzen 5700U (Rank 3, 12.0 GB AI VRAM, 1GbE / Wi-Fi)
+    - L4 Linux Tablet Mobile (Rank 4, 6.0 GB AI VRAM, Router Port 2 Wired 0.95ms)
+    - L5 MacBook Air M4 Metal (Rank 5, 14.0 GB AI VRAM, Wi-Fi 7 / Tailscale)
+    - L6 Pixel 10 Pro XL (Rank 6, 13.6 GB AI VRAM, Edge TPU, Termux SSH :8022)
+    - L7 Samsung S20 ADB (Rank 7, 9.0 GB AI VRAM, USB ADB / Wi-Fi)
   - Zero simulated layer windows: Halda `-lw` layer assignments and PRP ring token prefetch pipeline correctly partitioned across 80 transformer layers.
 
 ## 3. Artifacts & Empirical Tri-Proof

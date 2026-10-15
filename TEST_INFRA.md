@@ -1,121 +1,129 @@
-# Test Infrastructure Specification: Dual Track Opaque-Box E2E Test Suite
+# Test Infrastructure & Test Philosophy: Frontier Swarm Consensus Engine
+## Omni-Lens Sovereign Mesh
 
-## 1. Executive Summary & Testing Philosophy
-
-This document defines the authoritative **Dual Track Opaque-Box E2E Testing Infrastructure** for the **Lauburu Mesh Ecosystem Sovereign Storage Pooling, Read-Only Governance & Project-Specific ELO Engine** project.
-
-### Testing Methodology
-The test suite is architected around formal, rigorous software engineering verification principles:
-1. **Opaque-Box Requirements-Driven Verification**: Test cases evaluate system behavior strictly against public interface contracts, functional requirements (R1, R2, R3), and acceptance criteria documented in `ORIGINAL_REQUEST.md` and `PROJECT.md`.
-2. **Cardinal Law #1 (Zero-Mock & Zero-Simulation Mandate)**: Absolute prohibition against fake/simulated telemetry, mock arrays, or dummy assertions. All tests interact with authentic filesystem inodes, real C11 shared libraries (`liblauburu_storage.dylib`), live SHA-256 cryptographic digests, genuine POSIX permission bits, and authentic Bradley-Terry mathematical computations.
-3. **Four-Tier Verification Matrix**:
-   - **Tier 1: Feature Coverage (Isolation)**: Exhaustive functional verification of each feature in isolation (minimum 5 tests per feature).
-   - **Tier 2: Boundary & Corner Cases (BVA & Robustness)**: Mathematical extremes, zero/empty inputs, oversized payloads, rate limits, exponent overflows, corruption injection, and permission rejections (minimum 5 tests per feature).
-   - **Tier 3: Cross-Feature Combinations (Pairwise Interaction)**: Pairwise integration across subsystems (e.g. C11 storage bitrot feeding ELO backend health trials, read-only governance protecting against corrupted configs, 7-layer ring allocation feeding ELO infrastructure scorecards).
-   - **Tier 4: Real-World Workload Scenarios**: End-to-end multi-step production pipelines simulating real mesh workloads (1,085 GB distributed storage dispersal across 7 layers, overnight ELO scorecard tracking, Tri-Vault health continuous auditing).
-4. **Sub-Millisecond SLA & Deterministic Invariants**: Explicit microsecond-level performance benchmarking asserting:
-   - C11 Dispersal latency $\le 2.0\text{ ms}$ (target $1.30\text{ ms}$)
-   - C11 Reassembly latency $\le 0.5\text{ ms}$ (target $0.22\text{ ms}$)
-   - ELO 3-Category Scorecard evaluation latency $\le 50.0\ \mu\text{s}$ (target $13.92\ \mu\text{s}$)
-   - 100% Bit-for-bit SHA-256 exact match across storage slice/reassemble cycles
-   - Zero undetected bitrot corruption via Fletcher32
+**Subsystem:** `frontier_swarm_consensus` (`/Users/aaron/teamwork_projects/frontier_swarm_consensus`)  
+**Governing Documents:** `PROJECT.md` & `ORIGINAL_REQUEST.md`  
+**Author:** E2E Testing Specialist (`teamwork_preview_test_writer_e2e_1`)  
+**Standard:** Python Standard Library `unittest`, `asyncio`, `pytest`
 
 ---
 
-## 2. Feature Inventory & Verification Mapping
+## 1. 4-Tier Requirement-Driven Test Architecture
 
-The test infrastructure maps directly to the three core requirements (R1, R2, R3) and features (F1 through F8) defined in `PROJECT.md`:
+The Frontier Swarm Consensus Engine is a continuous, autonomous multi-model deliberation framework integrating cloud frontier models (`agy` CLI, OpenRouter) and local sovereign mesh endpoints (Port 8082 Hermes-3 & Port 8083 Qwen 3.8 Max), 4-layer AI sharding across hardware nodes (L1, L8, L1b, L3), LoRA dataset distillation into `continuous_lora_dataset.jsonl` with SHA256 integrity hashes, and the Mandatory Tri-Proof Verification Gate (Proof 1 Exit Code 0, Proof 2 SHA256 Checksums, Proof 3 Screen Lens Sovereign Visual Capture).
 
-| Feature ID | Feature Name | Core Specifications & Constraints | Primary Test Target |
-|:---|:---|:---|:---|
-| **F1** | Consistent Hash Ring & Routing | 7 physical mesh layers; 16 virtual ring slots per node (112 total); sorted ring (`qsort`); clockwise binary search routing with circular wrap; zero node starvation across 10,000 hashes. | `lauburu_pooled_storage.c`, `liblauburu_storage.dylib` |
-| **F2** | 64KB Slicing & Fletcher32 Checksum | 64KB slicing (`DEFAULT_CHUNK_SIZE = 65536`); memory-alignment safe 16-bit word processing; odd-byte zero-padding; $< 10\text{ ns/KB}$ checksum throughput. | `compute_fletcher32`, `storage_pool_disperse_payload` |
-| **F3** | 7-Layer Mesh Sovereign Storage Pooling | 1.0 MB test payload dispersal $\le 2.0\text{ ms}$; reassembly $\le 0.5\text{ ms}$; bit-for-bit SHA-256 verification; bitrot fault injection detection. | `storage_pool_reassemble_payload`, `lauburu_storage_bench` |
-| **F4** | Canonical Context Map 0444 Mode | Mode `0444` (`-r--r--r--`) on primary (`07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md`) and Obsidian mirror; write bits stripped (`mode & 0o222 == 0`). | Filesystem `stat`, `os.access(..., os.W_OK) == False` |
-| **F5** | Context Map Write Rejection & Parity | Adversarial write rejection (`PermissionError`); 100% bit-for-bit SHA256 parity (`80e96726...0b02`); YAML frontmatter freeze declaration; Git index tracking; Tri-Vault health. | `tests/test_storage_architecture_governance.py`, `git status` |
-| **F6** | Bradley-Terry ELO Bounds & Overflow Guard | Ratings strictly bounded to $[1000.0, 3000.0]$; exponent clamped to $[-20.0, 20.0]$ in logistic expectation; $E_A + E_B = 1.0$ symmetry; underdog upset asymmetry. | `00_core_infrastructure/router_ai_daemon/src/elo/elo_engine.py` |
-| **F7** | 3-Category Scorecard & Wilson CI | Wilson score empirical confidence intervals for finite Bernoulli trials; $n=0, k=0, k=n$ robustness; `CategoryScorecard` across Frontend, Backend, AI Models; composite ELO weighting ($0.30, 0.35, 0.35$). | `evaluate_project_scorecard`, `calculate_wilson_confidence_interval` |
-| **F8** | ELO Engine Latency Verification | Mean scorecard evaluation latency $\le 50.0\ \mu\text{s}$ (target $13.92\ \mu\text{s}$); P99 $\le 50.0\ \mu\text{s}$ over 10,000 runs. | `time.perf_counter_ns`, `ProjectEloScorecard` |
+To guarantee 100% production reliability, zero-mock fidelity, and fault-tolerant continuous execution, testing is structured into a 4-Tier Test Architecture:
 
----
-
-## 3. Test Tier Specifications & Thresholds
-
-| Tier | File Name | Purpose | Minimum Required Tests |
-|:---|:---|:---|:---|
-| **Tier 1** | `test_tier1_feature_coverage.py` | Validates each feature (Storage Pooling, Governance, ELO Engine) in strict isolation against documented interface contracts | $\ge 5$ tests per feature ($\ge 15$ total) |
-| **Tier 2** | `test_tier2_boundary_corner.py` | Stresses extreme inputs, error paths, resource limits, 0-byte/huge payloads, rating bounds [1000, 3000], exponent overflows, bitrot flips, odd-byte padding | $\ge 5$ tests per feature ($\ge 15$ total) |
-| **Tier 3** | `test_tier3_pairwise_combinations.py` | Verifies cross-feature interactions and state transitions across 2-way combinations (Storage + ELO, Governance + Storage, ELO + Governance) | $\ge 6$ pairwise interaction tests |
-| **Tier 4** | `test_tier4_real_world_workload.py` | Executes full end-to-end mesh workloads (1,085 GB cluster dispersal simulation, continuous multi-epoch ELO tracking, Tri-Vault storage health verification) | $\ge 4$ complete application scenarios |
-| **Master** | `run_e2e_tests.py` | Orchestrates all tiers, generates JSON test reports, verifies 100% pass rate with zero mocks | Single-command unified execution |
-
-### Minimum Test Thresholds:
-- **Tier 1**: $\ge 15$ tests
-- **Tier 2**: $\ge 15$ tests
-- **Tier 3**: $\ge 6$ tests
-- **Tier 4**: $\ge 4$ tests
-- **Total Suite Target**: $\ge 40$ rigorous opaque-box tests
-
----
-
-## 4. Interface Contracts & Verification Schemas
-
-### 4.1 C11 Sovereign Storage Pooling Contract (`lauburu_pooled_storage.h`)
-```c
-void storage_pool_init_ring(void);
-bool storage_pool_add_node(const char *node_id, const char *role, uint64_t capacity_bytes);
-void storage_pool_sort_ring(void);
-int storage_pool_find_node(uint32_t chunk_hash);
-uint32_t compute_fletcher32(const uint8_t *data, size_t len);
-StoragePoolReport storage_pool_disperse_payload(
-    const uint8_t *payload,
-    size_t payload_len,
-    StorageChunkMeta *out_metas,
-    size_t max_chunks,
-    uint8_t **out_chunks
-);
-bool storage_pool_reassemble_payload(
-    const StorageChunkMeta *metas,
-    uint8_t **chunks,
-    size_t chunk_count,
-    uint8_t *out_buffer,
-    size_t expected_len
-);
 ```
-
-### 4.2 Storage Context Map Governance Contract
-- **Primary Path**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/07_docs_and_architecture/STORAGE_ARCHITECTURE_CONTEXT_MAP.md`
-- **Obsidian Mirror**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/07_STORAGE/CANONICAL_STORAGE_ARCHITECTURE_CONTEXT_MAP.md`
-- **Permissions**: Mode `0444` (`-r--r--r--`).
-- **Canonical SHA-256**: `80e96726403861ba55f8d9029442fb44e581bfb2da345adc0a27fce024ef0b02`
-- **Frontmatter**: `status: READ_ONLY_AWAITING_CLOUD_CONSENSUS`, `access_mode: READ_ONLY`
-
-### 4.3 ELO Engine Scorecard Contract (`elo_engine.py`)
-```python
-MIN_ELO_RATING: float = 1000.0
-MAX_ELO_RATING: float = 3000.0
-
-calculate_expected_score(rating_a: float, rating_b: float) -> Tuple[float, float]
-calculate_wilson_confidence_interval(successes: int, trials: int, confidence: float = 0.95) -> Tuple[float, float]
-evaluate_project_scorecard(
-    frontend_rating: float, frontend_trials: int, frontend_passes: int,
-    backend_rating: float, backend_trials: int, backend_passes: int,
-    ai_rating: float, ai_trials: int, ai_passes: int,
-    ...
-) -> ProjectEloScorecard
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       4-TIER TEST ARCHITECTURE                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TIER 1: FEATURE COVERAGE (R1, R2, R3)                                       │
+│ • R1: Continuous state persistence, process locking, signal handling, 4-node│
+│   mesh sharding & latency routing logic (>=5 tests per feature).            │
+│ • R2: Cloud (`agy`/OpenRouter) + Local (8082/8083) model debate, consensus │
+│   accord synthesis, LoRA reasoning trace distillation & SHA256 verification.│
+│ • R3: Tri-Proof Verification Gate (Exit code 0, SHA256 hashes, Screen Lens  │
+│   visual capture trigger) (>=5 tests per feature).                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TIER 2: BOUNDARY & CORNER CASES                                             │
+│ • Missing / invalid OPENROUTER_API_KEY resolution and fallback handling.    │
+│ • Unreachable local mesh ports (Port 8082/8083 connection timeouts).         │
+│ • Malformed / corrupted JSON lines in dataset files.                        │
+│ • Empty / zero-byte dataset files and disk space pressure assertions.       │
+│ • Process signal interruptions (SIGINT/SIGTERM) and lockfile release.       │
+│ • Extreme prompt payloads, empty prompt handling, and token limits.         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TIER 3: CROSS-FEATURE INTERACTIONS                                          │
+│ • Continuous execution loop + mesh sharding + LoRA dataset distillation.    │
+│ • Multi-model debate consensus + SHA256 checksumming + Tri-Proof gate.      │
+│ • State recovery across process restarts during active dataset writing.     │
+│ • Concurrent lock prevention + multi-node routing fallback.                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TIER 4: REAL-WORLD APPLICATION SCENARIOS                                    │
+│ • End-to-end single debate iteration (`--once`) with real/mocked model pool,│
+│   dataset crystallization, SHA256 verification, and HUD screenshot proof.  │
+│ • End-to-end continuous loop iteration (`--continuous`) verifying lock,      │
+│   state updates, signal handling, and clean shutdown.                       │
+│ • End-to-end verification gate (`--verify`) validating bit-for-bit mirrors. │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 5. Execution Command & Report Specification
+## 2. Test Tier Inventory & Coverage Matrix
 
+### Tier 1: Feature Coverage (Requirement Driven)
+- **R1. Continuous Execution & AI Sharding**:
+  - `test_continuous_loop_state_init`: Asserts state initialization in `frontier_swarm_state.json`.
+  - `test_process_file_locking`: Verifies single-instance lock file (`frontier_swarm.lock`) creation and release.
+  - `test_signal_handling`: Verifies SIGINT / SIGTERM graceful loop shutdown.
+  - `test_mesh_4_layer_node_registration`: Verifies 4 hardware nodes (L1 Mac Mini M4, L8 Linux Mini Hub, L1b Mac Mini M2 Pro, L3 Linux Head Node) registration.
+  - `test_sharding_routing_latency`: Verifies sharding decision based on node availability and latency.
+- **R2. Unified Model Integration & LoRA Distillation**:
+  - `test_cloud_model_openrouter_query`: Verifies OpenRouter API request structure and response extraction.
+  - `test_cloud_model_agy_cli`: Verifies `agy` CLI dispatch and stdout parsing.
+  - `test_local_sovereign_duo_query`: Verifies HTTP query to Port 8082 (Hermes-3) and Port 8083 (Qwen 3.8 Max).
+  - `test_consensus_synthesis`: Verifies multi-turn reasoning trace synthesis into unanimous accord.
+  - `test_lora_dataset_distillation`: Verifies jsonl writing with line-by-line SHA256 checksums to `continuous_lora_dataset.jsonl`.
+- **R3. Mandatory Tri-Proof Verification Gate**:
+  - `test_tri_proof_1_exit_code`: Asserts exit code 0 on successful debate and verification.
+  - `test_tri_proof_2_sha256_checksum`: Asserts cryptographic SHA256 calculation for string and file payloads.
+  - `test_tri_proof_3_screen_lens_capture`: Verifies Screen Lens Sovereign visual capture trigger (Port 4003 / screencapture / ADB).
+  - `test_tri_proof_gate_full_pass`: Verifies `verify_consensus_artifacts()` returns true when all artifacts match.
+  - `test_tri_proof_gate_failure_detect`: Asserts `verify_consensus_artifacts()` returns false on checksum mismatch or missing files.
+
+### Tier 2: Boundary & Corner Cases
+- `test_missing_openrouter_api_key_fallback`: Verifies graceful fallback to architectural reasoning when API key is missing or invalid.
+- `test_unreachable_mesh_ports_timeout`: Verifies timeout and fallback when Port 8082 or 8083 is offline.
+- `test_corrupted_jsonl_dataset_recovery`: Tests handling of malformed JSON lines in dataset during verification.
+- `test_empty_dataset_handling`: Verifies handling when dataset file exists but has zero lines.
+- `test_signal_interruption_cleanup`: Tests signal interruption during active debate loop and verifies lock release.
+- `test_empty_prompt_error_exit`: Verifies exit code 1 when prompt is empty or invalid.
+
+### Tier 3: Cross-Feature Interactions
+- `test_continuous_loop_sharding_distillation_integration`: Verifies continuous loop executes sharded queries and writes distilled entries.
+- `test_debate_consensus_sha256_tri_proof_pipeline`: Verifies full pipeline from multi-model debate to dataset writing, SHA256 calculation, and Tri-Proof gate pass.
+- `test_state_persistence_across_restarts`: Verifies state file is updated and reloaded on process restart.
+- `test_concurrent_execution_lock_rejection`: Verifies a second process attempt is rejected while lockfile is held.
+
+### Tier 4: Real-World Application Scenarios
+- `test_e2e_single_debate_iteration`: Executes full `--once` debate iteration producing dataset output and visual proof.
+- `test_e2e_continuous_loop_lifecycle`: Runs continuous loop for multiple cycles, validates state file updates, and triggers clean exit.
+- `test_e2e_verification_gate_command`: Executes `--verify` command and asserts zero exit code.
+
+---
+
+## 3. Test File Layout
+
+```
+/Users/aaron/teamwork_projects/frontier_swarm_consensus/tests/
+├── test_tier1_feature_coverage.py      # Tier 1: Requirements R1, R2, R3 feature test cases
+├── test_tier2_boundary_corner_cases.py  # Tier 2: Boundary, error handling & corner cases
+├── test_tier3_cross_feature.py          # Tier 3: Multi-component integration scenarios
+├── test_tier4_e2e_real_world.py        # Tier 4: Real-world E2E debate & verification scenarios
+└── run_e2e_tests.py                    # Master test runner script (exits 0 on pass)
+```
+
+---
+
+## 4. Test Execution Command
+
+To execute the full test suite:
 ```bash
-# Execute master test runner
-python3 tests/e2e_storage_elo/run_e2e_tests.py
-
-# Execute via pytest with full verbosity
-pytest -v tests/e2e_storage_elo/
+python3 /Users/aaron/teamwork_projects/frontier_swarm_consensus/tests/run_e2e_tests.py
 ```
 
-- **JSON Report**: `reports/e2e_storage_elo_report.json`
-- **Exit Code**: `0` on 100% pass; non-zero on any failure or mock violation.
+Expected Output:
+```
+======================================================================
+FRONTIER SWARM CONSENSUS ENGINE — 4-TIER E2E TEST SUITE
+======================================================================
+[TIER 1] Running Feature Coverage Tests (R1, R2, R3)... [PASS]
+[TIER 2] Running Boundary & Corner Case Tests...        [PASS]
+[TIER 3] Running Cross-Feature Interaction Tests...     [PASS]
+[TIER 4] Running Real-World E2E Application Tests...    [PASS]
+----------------------------------------------------------------------
+Ran 30 tests in X.XXXs — ALL PASSED (Exit Code 0)
+======================================================================
+```

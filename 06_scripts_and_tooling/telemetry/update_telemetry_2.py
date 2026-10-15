@@ -1,6 +1,6 @@
 import re
 
-with open("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/api_server.py", "r") as f:
+with open("/Volumes/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/api_server.py", "r") as f:
     content = f.read()
 
 new_func = """@app.route("/api/telemetry", methods=["GET"])
@@ -62,5 +62,5 @@ def get_telemetry():
 
 content = re.sub(r'@app\.route\("/api/telemetry", methods=\["GET"\]\)\ndef get_telemetry\(\):\n(?:    .*\n)*?(?=\n@app\.route)', new_func, content, flags=re.MULTILINE)
 
-with open("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/api_server.py", "w") as f:
+with open("/Volumes/Lauburu-Monorepo/00_core_infrastructure/self_healing_hub/src/api_server.py", "w") as f:
     f.write(content)

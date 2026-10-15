@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ShellLayout } from './components/layout/ShellLayout.jsx';
+import { FrontDashboardChatEngine } from './components/dashboard/FrontDashboardChatEngine.jsx';
+import { MembershipGateModal } from './components/commerce/MembershipGateModal.jsx';
 import { NetworkMetricsView } from './components/network/NetworkMetricsView.jsx';
 import { HardwareNodesView } from './components/hardware/HardwareNodesView.jsx';
 import { BiometricsDspView } from './components/biometrics/BiometricsDspView.jsx';
-import { AgiCodingTerminalView } from './components/terminal/AgiCodingTerminalView.jsx';
+import { BluetoothTerminalView } from './components/terminal/BluetoothTerminalView.jsx';
 import { AiInferenceView } from './components/inference/AiInferenceView.jsx';
 import { TrainingMultiTabView } from './components/training/TrainingMultiTabView.jsx';
 import { MasterAGIGovernanceView } from './components/governance/MasterAGIGovernanceView.jsx';
@@ -17,6 +19,7 @@ import { StorageOptimizationView } from './components/optimization/StorageOptimi
 import { useLiveTelemetry } from './hooks/useLiveTelemetry.js';
 import { useSwarmDebate } from './hooks/useSwarmDebate.js';
 import { useNetworkMetrics } from './hooks/useNetworkMetrics.js';
+import { useMembership } from './hooks/useMembership.js';
 import { canonicalApi } from './services/api.js';
 import { INFERENCE_ENGINES } from './components/governance/InferenceEngineSelector.jsx';
 
@@ -39,12 +42,25 @@ import { INFERENCE_ENGINES } from './components/governance/InferenceEngineSelect
  * Strict Rule #0 Zero-Mock fallbacks and non-blocking asynchronous telemetry streaming.
  */
 export function App() {
-  // Winning Default Primary Tab is Tab 1 [c] AGI Coding Terminal per canonical debate verdict
-  const [activeRoute, setActiveRoute] = useState('agi-terminal');
+  // Winning Default Primary View is Sovereign Chat Engine
+  const [activeRoute, setActiveRoute] = useState('front-dashboard');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [actionNotification, setActionNotification] = useState(null);
   const [activeEngine, setActiveEngine] = useState('auto');
   const [selectedNodeId, setSelectedNodeId] = useState(null);
+
+  // Shopify Membership & Token-Gated Feature State
+  const {
+    membership,
+    tiers: membershipTiers,
+    hasPermission,
+    triggerGate,
+    isGateModalOpen,
+    setIsGateModalOpen,
+    gateContext,
+    setTierOverride,
+    createCheckoutCart
+  } = useMembership();
 
   // Live Data States
   const [models, setModels] = useState([]);
@@ -101,8 +117,20 @@ export function App() {
       }
     }
     loadData();
+
+    // Poll biometrics data every 1s for live streaming
+    const intervalId = setInterval(async () => {
+      try {
+        const bio = await canonicalApi.getBiometricsState();
+        if (isMounted && bio) setBiometricsState(bio);
+      } catch (err) {
+        // ignore
+      }
+    }, 1000);
+
     return () => {
       isMounted = false;
+      clearInterval(intervalId);
     };
   }, []);
 
@@ -115,20 +143,41 @@ export function App() {
       }
 
       const key = e.key.toLowerCase();
-      if (key === 'c' || key === '1') setActiveRoute('agi-terminal');
-      else if (key === 'n' || key === '2') setActiveRoute('network-metrics');
-      else if (key === 'h' || key === '3') setActiveRoute('hardware-nodes');
-      else if (key === 'b' || key === '4') setActiveRoute('biometrics-dsp');
-      else if (key === 'i' || key === '5') setActiveRoute('ai-inference');
-      else if (key === 't' || key === '6') setActiveRoute('training-lora');
-      else if (key === 'g' || key === '7') setActiveRoute('governance');
-      else if (key === 'x' || key === '8') setActiveRoute('structural-graph');
-      else if (key === 'o' || key === '9') setActiveRoute('optimization-storage');
+      if (key === '1' || key === 'd') setActiveRoute('front-dashboard');
+      else if (key === 'c' || key === '2') {
+        if (!hasPermission('full_ide_compiler')) {
+          triggerGate('full_ide_compiler', 'Bluetooth Terminal & SPP Bridge', 'mesh_gym_master');
+        } else {
+          setActiveRoute('bluetooth-terminal');
+        }
+      }
+      else if (key === 'n' || key === '3') setActiveRoute('network-metrics');
+      else if (key === 'h' || key === '4') setActiveRoute('hardware-nodes');
+      else if (key === 'b' || key === '5') {
+        if (!hasPermission('movesense_512hz')) {
+          triggerGate('movesense_512hz', 'Movesense Medical 512Hz ECG DSP', 'athlete_starter');
+        } else {
+          setActiveRoute('biometrics-dsp');
+        }
+      }
+      else if (key === 'i' || key === '6') setActiveRoute('ai-inference');
+      else if (key === 't' || key === '7') setActiveRoute('training-lora');
+      else if (key === 'g' || key === '8') setActiveRoute('governance');
+      else if (key === 'x' || key === '9') setActiveRoute('structural-graph');
+      else if (key === 'o') setActiveRoute('optimization-storage');
     };
 
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, []);
+  }, [hasPermission, triggerGate]);
+
+  const handleOpenIdeFromChat = useCallback(() => {
+    if (!hasPermission('full_ide_compiler')) {
+      triggerGate('full_ide_compiler', 'Bluetooth Terminal & SPP Bridge', 'mesh_gym_master');
+    } else {
+      setActiveRoute('bluetooth-terminal');
+    }
+  }, [hasPermission, triggerGate]);
 
   // Hot-swap inference engine
   const handleCycleEngine = useCallback(() => {
@@ -154,7 +203,7 @@ export function App() {
         initiator: 'Operator Aaron (UI Trigger)',
         status: 'COMPLETED_SUCCESS',
         durationMs: measuredDuration,
-        nodesInvolved: ['Mac_Node', 'MacBook_Pro', 'Linux_Head_Node'],
+        nodesInvolved: ['Mac_Node', 'MacBook_Pro', 'Linux_Mini'],
         details: result.summary
       };
       setExecutionTraces(prev => [newTrace, ...prev]);
@@ -185,10 +234,23 @@ export function App() {
       onCycleEngine={handleCycleEngine}
       selectedNodeId={selectedNodeId}
       onSelectNode={setSelectedNodeId}
+      membership={membership}
+      onOpenMembershipModal={() => setIsGateModalOpen(true)}
     >
-      {/* Tab 1 [c]: Master AGI Coding & Synthesis Terminal (Track Beta Core Cockpit) */}
-      {activeRoute === 'agi-terminal' && (
-        <AgiCodingTerminalView
+      {/* Front Dashboard Default: Sovereign Chat Engine */}
+      {activeRoute === 'front-dashboard' && (
+        <FrontDashboardChatEngine
+          models={models}
+          membership={membership}
+          onOpenIde={handleOpenIdeFromChat}
+          onDispatchAction={handleDispatchAction}
+          onOpenMembershipModal={() => setIsGateModalOpen(true)}
+        />
+      )}
+
+      {/* Secondary Docked Tool: Bluetooth Terminal & Kai Morich SPP / BLE Interface */}
+      {(activeRoute === 'bluetooth-terminal' || activeRoute === 'agi-terminal') && (
+        <BluetoothTerminalView
           models={models}
           onDispatchAction={handleDispatchAction}
         />
@@ -309,6 +371,17 @@ export function App() {
           onDispatchAction={handleDispatchAction}
         />
       )}
+
+      {/* Shopify Membership Token-Gated Unlock Modal */}
+      <MembershipGateModal
+        isOpen={isGateModalOpen}
+        onClose={() => setIsGateModalOpen(false)}
+        gateContext={gateContext}
+        membership={membership}
+        tiers={membershipTiers}
+        onSelectTierOverride={setTierOverride}
+        onCreateCheckoutCart={createCheckoutCart}
+      />
     </ShellLayout>
   );
 }

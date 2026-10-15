@@ -17,7 +17,7 @@ tags: [agentworld, simulation, device_optimization, benchmarks, tri_vault, zero_
 |---|---|---|---|---|---|
 | **L1_Mac_Mini_M4_Pro** | Unified Memory & Watchdog Governor | `Hard-cap local model allocation to <=20.0 GB & set swap circuit breaker to 500 MB` | 100% RAM Saturation (31 swapfiles, 92s Watchdog Panic) | **60.0% RAM (9.61 GB used, 0.00 GB swap, 41.0 GB SSD Headroom)** | **+100.0%** |
 | **L5_MacBook_Air_M4** | 24/7 Headless Clamshell & Worker Offload | `pmset disablesleep 1, spawn JupyterLab (:8889) & stage 89.54 GB GGUF vault` | Intermittent Wi-Fi sleep, zero model staging | **100% Uptime (7h+), 44.5 GB Free Headroom, 80B & 72B Staged** | **+98.5%** |
-| **L2_MacBook_Pro_TB4** | PCIe DMA Tensor Sharding Bridge | `Bind 10Gbps Thunderbolt 4 DMA bridge (169.254.187.138) to prima.cpp Ring` | 30.0 ms Wi-Fi WAN tensor latency (21.4 tok/s) | **0.277 ms TB4 DMA PCIe latency (38.5 tok/s)** | **+79.9%** |
+| **L2_MacBook_Pro_TB4** | PCIe DMA Tensor Sharding Bridge | `Bind 40Gbps Thunderbolt 4 DMA bridge (169.254.187.138) to prima.cpp Ring` | 30.0 ms Wi-Fi WAN tensor latency (21.4 tok/s) | **0.277 ms TB4 DMA PCIe latency (38.5 tok/s)** | **+79.9%** |
 | **L7_Samsung_S20** | OpenWrt Co-Processor & Bufferbloat Control | `USB ADB Tethering + CAKE SQM layer_cake.qos + battery cap at 80%` | Bufferbloat under high load (+140ms ping spike) | **Sub-3ms ping under full gigabit tensor transfer** | **+94.2%** |
 | **L6_Pixel_10_Pro_XL** | Daily Driver Power Invariant | `Throttle background compute during battery usage; trigger TPU on AC charging` | 8.5% battery drain/hour during test loops | **1.2% battery drain/hour (Zero UI frame drops)** | **+85.8%** |
 

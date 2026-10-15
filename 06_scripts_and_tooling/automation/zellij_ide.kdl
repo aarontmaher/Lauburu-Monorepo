@@ -1,0 +1,45 @@
+layout {
+    tab name="IDE & Workspace" focus=true {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        pane split_direction="vertical" {
+            pane size="60%" {
+                pane name="Editor (Lauburu-Monorepo)" command="nvim" {
+                    args "."
+                }
+            }
+            pane split_direction="horizontal" {
+                pane name="JupyterLab / Cyber Studio" command="uv" {
+                    args "run" "jupyter" "lab" "--no-browser"
+                }
+                pane name="Orchestrator Logs (Obsidian)" command="tail" {
+                    args "-f" "obsidian_vault/04_ANALYTICS/lens_telemetry.md"
+                }
+                pane name="System Telemetry (Glances)" command="glances"
+            }
+        }
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    tab name="Local AI CLIs & Jules" {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        pane split_direction="vertical" {
+            pane name="Multiplexed AI Terminal Orchestrator" command="python3" {
+                args "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/automation/multiplexed_ai_terminal_orchestrator.py" "--status"
+            }
+            pane split_direction="horizontal" {
+                pane name="Google Jules API Client" command="python3" {
+                    args "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/automation/jules_api_client.py" "--status"
+                }
+                pane name="Pi & Junie Terminal Runner"
+            }
+        }
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+}

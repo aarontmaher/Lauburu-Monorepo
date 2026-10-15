@@ -20,12 +20,29 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 # ─── Constants ────────────────────────────────────────────────────────────────
-REPO_ROOT   = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+def _resolve_dir(candidates: list[Path]) -> Path:
+    for c in candidates:
+        if c.exists():
+            return c
+    return candidates[0]
+
+REPO_ROOT   = _resolve_dir([
+    Path("/Volumes/Lauburu-Monorepo"),
+    Path("/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
+    Path("/Volumes/Lauburu-Monorepo"),
+])
 SESSION_DIR = REPO_ROOT / "session_logs"
-LORA_DIR    = Path("/Users/aaron/DFS_UNIFIED/lora_datasets")
+LORA_DIR    = _resolve_dir([
+    Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data"),
+    Path("/Users/Shared/aaron/DFS_UNIFIED/lora_datasets"),
+    Path("/Volumes/DFS_UNIFIED/lora_datasets"),
+])
 LORA_FILE   = LORA_DIR / "continuous_lora_dataset.jsonl"
 OBSIDIAN    = REPO_ROOT / "obsidian_vault"
-GGUF_VAULT  = Path("/Volumes/MacBook_Pro_SSD/gguf_vault")
+GGUF_VAULT  = _resolve_dir([
+    Path("/Volumes/MacBook_Pro_SSD/gguf_vault"),
+    Path("/Users/aaron/model_vault_gguf"),
+])
 
 DAEMON_PORTS = {
     8080:  "llama.cpp RPC Primary",
@@ -513,7 +530,7 @@ def project_heal() -> dict:
             "timestamp": _now_iso(),
             "triggered": False,
             "reason":    "Port 18802 (Self-Healing Hub) is offline — cannot reach it.",
-            "fallback":  "Run: cd /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo && python3 00_core_infrastructure/self_healing_hub/src/start_self_healing_hub.py &",
+            "fallback":  "Run: cd /Volumes/Lauburu-Monorepo && python3 00_core_infrastructure/self_healing_hub/src/start_self_healing_hub.py &",
         }
 
     try:
@@ -524,7 +541,7 @@ def project_heal() -> dict:
             headers={"Content-Type": "application/json"},
             data=b'{"trigger": "lauburu_project_mcp", "reason": "AI-triggered self-heal"}',
         )
-        with urllib.request.urlopen(req, timeout=5) as resp:
+        with urllib.request.urlopen(req, timeout=35) as resp:
             body = resp.read().decode()
             return {
                 "timestamp": _now_iso(),

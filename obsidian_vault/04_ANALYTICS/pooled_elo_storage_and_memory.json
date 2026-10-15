@@ -1,0 +1,1231 @@
+{
+  "schema_version": "2.0.0-WIREGUARD-JUPYTER-ELO-POOL",
+  "timestamp_utc": "2026-10-15T00:44:58.138648+00:00",
+  "merkle_root_sha256": "04bd85e16c5224f08cabdbf860e39de0f16cffa09487415c3b9f8968da374a89",
+  "sqlite_wal_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/data/lens_working_memory_kv.sqlite",
+  "total_pooled_entities": 38,
+  "working_memory_kv_count": 6,
+  "wireguard_and_jupyter_fabric": {
+    "timestamp_utc": "2026-10-15T00:44:58.138668+00:00",
+    "wireguard_active": true,
+    "wireguard_topology": {
+      "gw_router_wg_server": {
+        "subnet": "10.1.0.1/24",
+        "lan_endpoint": "192.168.8.1:51820",
+        "reachable": true,
+        "rtt_ms": 4.51
+      },
+      "l8_lauburu_wg0": {
+        "assigned_ip": "10.1.0.17/24",
+        "tb4_bridge_ip": "10.0.0.8",
+        "podman_wireguard_mesh": "10.42.0.1/24",
+        "podman_container_up": false
+      },
+      "local_utun_wg_interfaces": [
+        "utun0",
+        "utun1",
+        "utun2",
+        "utun3",
+        "utun4",
+        "utun5",
+        "utun6",
+        "utun7",
+        "utun8",
+        "utun9"
+      ]
+    },
+    "jupyter_hub": {
+      "active_url": "http://10.0.0.8:8888",
+      "tb4_url": "http://10.0.0.8:8888",
+      "tb4_online": true,
+      "tb4_rtt_ms": 0.62,
+      "wireguard_url": "http://10.1.0.17:8888",
+      "wireguard_online": false,
+      "wireguard_rtt_ms": 0.62,
+      "tailscale_url": "http://100.121.247.8:8888",
+      "tailscale_online": true,
+      "tailscale_rtt_ms": 4.3,
+      "lan_url": "http://192.168.8.242:8888",
+      "lan_online": true,
+      "lan_rtt_ms": 4.02,
+      "root_dir": "/home/linuxmini/Lauburu-Monorepo"
+    },
+    "global_orchestrator_port_3037": {
+      "online": true,
+      "rtt_ms": 0.19,
+      "endpoint": "http://127.0.0.1:3037"
+    }
+  },
+  "source_store_counts": {
+    "canonical_elo_leaderboard": 1,
+    "swarm_elo_leaderboard": 7,
+    "generational_and_mesh_elo": 18,
+    "sqlite_6domain_leaderboard": 12,
+    "lora_promotion_history": 2
+  },
+  "elo_currency_governor": {
+    "global_default_model": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+    "error": "module 'elo_currency_governor' has no attribute 'EloCurrencyGovernor'"
+  },
+  "slash_command_routing": {
+    "/goal": {
+      "command": "/goal",
+      "domain": "systems_architecture",
+      "skill": "screen-lens-sovereign",
+      "description": "Autonomous goal decomposition & zero-mock VLA actuation via Global Orchestrator (:3037)",
+      "min_elo_floor": 1200.0,
+      "routed_champion_model": "mistral_large_2_123b_sharded",
+      "champion_elo": 1493.8,
+      "elo_gate_passed": true
+    },
+    "/boost": {
+      "command": "/boost",
+      "domain": "coding_and_ast",
+      "skill": "genetic-router-moe",
+      "description": "High-throughput parallel swarm acceleration & TB4/WireGuard L8 compute offload",
+      "min_elo_floor": 1350.0,
+      "routed_champion_model": "qwen_2_5_coder_7b_pypi",
+      "champion_elo": 1436.9,
+      "elo_gate_passed": true
+    },
+    "/notebook-specialist": {
+      "command": "/notebook-specialist",
+      "domain": "math_and_algorithms",
+      "skill": "notebook-specialist",
+      "description": "JupyterLab, Marimo, IPykernel & Pooled ELO Storage/Memory orchestration",
+      "min_elo_floor": 1300.0,
+      "routed_champion_model": "deepseek_v3_r1_671b_moe_halda",
+      "champion_elo": 1501.2,
+      "elo_gate_passed": true
+    },
+    "/teamwork-preview": {
+      "command": "/teamwork-preview",
+      "domain": "adversarial_debate",
+      "skill": "frontier-swarm-consensus",
+      "description": "Multi-agent collaborative preview, Red-Team dialectic audit & consensus sign-off",
+      "min_elo_floor": 1300.0,
+      "routed_champion_model": "llama_3_3_70b_abliterated",
+      "champion_elo": 1483.7,
+      "elo_gate_passed": true
+    }
+  },
+  "recent_lora_promotions": [
+    {
+      "timestamp": "2026-08-31T03:50:46Z",
+      "candidate_adapter": "02_ai_models_and_inference/lora_adapters/agentworld_35b",
+      "candidate_name": "agentworld_35b",
+      "win_rate": 0.0,
+      "min_win_rate": 0.65,
+      "promoted": false,
+      "symlink_target": null,
+      "challengers": [
+        "Genetic_MoE_Local_Flagship",
+        "DeepSeek-R1-32B",
+        "Qwen2.5-Coder-32B"
+      ],
+      "final_candidate_elo": 1686.82,
+      "matches_count": 15
+    },
+    {
+      "timestamp": "2026-08-31T03:50:56Z",
+      "candidate_adapter": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/lora_adapters/agentworld_35b",
+      "candidate_name": "agentworld_35b",
+      "win_rate": 0.0,
+      "min_win_rate": 0.65,
+      "promoted": false,
+      "symlink_target": null,
+      "challengers": [
+        "Genetic_MoE_Local_Flagship",
+        "DeepSeek-R1-32B",
+        "Qwen2.5-Coder-32B"
+      ],
+      "final_candidate_elo": 1619.76,
+      "matches_count": 15
+    }
+  ],
+  "top_champions": [
+    {
+      "entity_id": "cloud_teacher_composite",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2650.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "00ea4db7a5b19d688ca9f2cc91ea8af0afc7e26fa4ebfb2415b26b6d52aa33aa"
+    },
+    {
+      "entity_id": "gen_1_base_orchestrator",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2621.7,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "1ec2c602d066787437e858d4751a85e1134002f89663eaa246757900dfa477d2"
+    },
+    {
+      "entity_id": "qwen_38_max_abliterated",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2600.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "dynamic_mesh_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "302672ddf668f86c9dc636d5d6d115f33e14c6fbd009746538dcc5ccc18c7656"
+    },
+    {
+      "entity_id": "gemini-omni-1.1-flash",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2550.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "dynamic_mesh_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "4870b44b903a426a00689a97c599fe84449e83439da40a6bf5a4a04de0cfbaf4"
+    },
+    {
+      "entity_id": "smol_135m",
+      "entity_type": "generational_model",
+      "domain": "TinyLM_MiniLM_Generational",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "5be9694815ed8647822c088ffb19cacb038ccd1016e370cd8c5192da7594aa53"
+    },
+    {
+      "entity_id": "smol_360m",
+      "entity_type": "generational_model",
+      "domain": "TinyLM_MiniLM_Generational",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "e89ae6050a74c6fe43011723586055d13e71efa7f4e4f8d1a44cb13f7e8ccde3"
+    },
+    {
+      "entity_id": "qwen_0_5b",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "a01c2229fee59da8db31fe82213d2714097ea62b595341b857ec2bdd7082fbc5"
+    },
+    {
+      "entity_id": "llama_1b",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "8a1cf03b32795e408cf8b3f40fc00fb62d76c89d255b0a507f7c842784b8c3e1"
+    },
+    {
+      "entity_id": "qwen_3b_moe",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "a7389c96660a8c4f91f1949e7ac09a9545fad9830ad55147aa926fe33c0ada4e"
+    },
+    {
+      "entity_id": "tiny_10m",
+      "entity_type": "generational_model",
+      "domain": "TinyLM_MiniLM_Generational",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "67287bcfc9da2295861766a034e1f9b4d1cb4ac130597ec898d0008e66432cac"
+    },
+    {
+      "entity_id": "qwen_coder_7b",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2526.6,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "1e971280dfd240225e256bc780d24ed342a750d1ab7721819dc5a70dcdcc33a3"
+    },
+    {
+      "entity_id": "prima_ring_mesh",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2520.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "6f42508636e6489c0666e4d9f993297888f758ce8774d137201f28691a259a0f"
+    },
+    {
+      "entity_id": "qwen_3_vl_3d",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2500.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "dynamic_mesh_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "31c78c3d48504f39978451120c99bd96c4b741678c22e34bb9a7e60e1f4a297c"
+    },
+    {
+      "entity_id": "mistral_nemo_7b",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2423.4,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "35f9134c6a1bf5a9c42e1bc85ded8baeb1d01b7315ff2ae27c69a06d5d34a208"
+    },
+    {
+      "entity_id": "qwen_coder_1_5b",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2410.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "b57d498e02b765a693ba13e7d72b83fd34ea2d8cdc7a0054a11895f9baeb535e"
+    }
+  ],
+  "pooled_records": [
+    {
+      "entity_id": "cloud_teacher_composite",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2650.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "00ea4db7a5b19d688ca9f2cc91ea8af0afc7e26fa4ebfb2415b26b6d52aa33aa"
+    },
+    {
+      "entity_id": "gen_1_base_orchestrator",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2621.7,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "1ec2c602d066787437e858d4751a85e1134002f89663eaa246757900dfa477d2"
+    },
+    {
+      "entity_id": "qwen_38_max_abliterated",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2600.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "dynamic_mesh_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "302672ddf668f86c9dc636d5d6d115f33e14c6fbd009746538dcc5ccc18c7656"
+    },
+    {
+      "entity_id": "gemini-omni-1.1-flash",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2550.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "dynamic_mesh_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "4870b44b903a426a00689a97c599fe84449e83439da40a6bf5a4a04de0cfbaf4"
+    },
+    {
+      "entity_id": "smol_135m",
+      "entity_type": "generational_model",
+      "domain": "TinyLM_MiniLM_Generational",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "5be9694815ed8647822c088ffb19cacb038ccd1016e370cd8c5192da7594aa53"
+    },
+    {
+      "entity_id": "smol_360m",
+      "entity_type": "generational_model",
+      "domain": "TinyLM_MiniLM_Generational",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "e89ae6050a74c6fe43011723586055d13e71efa7f4e4f8d1a44cb13f7e8ccde3"
+    },
+    {
+      "entity_id": "qwen_0_5b",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "a01c2229fee59da8db31fe82213d2714097ea62b595341b857ec2bdd7082fbc5"
+    },
+    {
+      "entity_id": "llama_1b",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "8a1cf03b32795e408cf8b3f40fc00fb62d76c89d255b0a507f7c842784b8c3e1"
+    },
+    {
+      "entity_id": "qwen_3b_moe",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "a7389c96660a8c4f91f1949e7ac09a9545fad9830ad55147aa926fe33c0ada4e"
+    },
+    {
+      "entity_id": "tiny_10m",
+      "entity_type": "generational_model",
+      "domain": "TinyLM_MiniLM_Generational",
+      "elo_rating": 2540.1,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "67287bcfc9da2295861766a034e1f9b4d1cb4ac130597ec898d0008e66432cac"
+    },
+    {
+      "entity_id": "qwen_coder_7b",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2526.6,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "1e971280dfd240225e256bc780d24ed342a750d1ab7721819dc5a70dcdcc33a3"
+    },
+    {
+      "entity_id": "prima_ring_mesh",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2520.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "6f42508636e6489c0666e4d9f993297888f758ce8774d137201f28691a259a0f"
+    },
+    {
+      "entity_id": "qwen_3_vl_3d",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2500.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "dynamic_mesh_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "31c78c3d48504f39978451120c99bd96c4b741678c22e34bb9a7e60e1f4a297c"
+    },
+    {
+      "entity_id": "mistral_nemo_7b",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2423.4,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "35f9134c6a1bf5a9c42e1bc85ded8baeb1d01b7315ff2ae27c69a06d5d34a208"
+    },
+    {
+      "entity_id": "qwen_coder_1_5b",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2410.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "b57d498e02b765a693ba13e7d72b83fd34ea2d8cdc7a0054a11895f9baeb535e"
+    },
+    {
+      "entity_id": "gen_2_specialist_persona",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2398.3,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "d3e36e5eb3f1ef17e01dc1cd0a7f8641e79de5d5a6339fee81203657e470b247"
+    },
+    {
+      "entity_id": "smol_1_7b",
+      "entity_type": "generational_model",
+      "domain": "TinyLM_MiniLM_Generational",
+      "elo_rating": 2390.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "local_models_generational_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "a8bc044837e5564bf134128251e769feca7e744206dbcdb5d2bb3e5df0df5078"
+    },
+    {
+      "entity_id": "qwen2.5-coder-7b",
+      "entity_type": "generational_model",
+      "domain": "Dynamic_Mesh_AI",
+      "elo_rating": 2300.0,
+      "wins": 10,
+      "losses": 2,
+      "draws": 0,
+      "matches": 12,
+      "confidence_lower": 1441.57,
+      "confidence_upper": 1762.43,
+      "source_store": "dynamic_mesh_elo.json",
+      "metadata": {
+        "protected_from_deletion": true,
+        "generation": 1
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "c47a6cfa381ab68dc259b5507df86b23d8478ae5e4ea9d63f28ebe945bfb3f1d"
+    },
+    {
+      "entity_id": "sovereign_orchestrator_max",
+      "entity_type": "orchestrator",
+      "domain": "swarm_hierarchy",
+      "elo_rating": 1959.0,
+      "wins": 28,
+      "losses": 0,
+      "draws": 0,
+      "matches": 28,
+      "confidence_lower": 1703.48,
+      "confidence_upper": 1800.0,
+      "source_store": "elo_leaderboard.json",
+      "metadata": {
+        "success_rate": 0.9892857142857142,
+        "latency_avg_ms": 675.1625623021807
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "eb01956ea096c7aa39c622bb9e4176ffeca7e9fa3bc2478a99834ac76eb990f6"
+    },
+    {
+      "entity_id": "red_team_abliterated",
+      "entity_type": "worker",
+      "domain": "swarm_hierarchy",
+      "elo_rating": 1700.0,
+      "wins": 1,
+      "losses": 0,
+      "draws": 0,
+      "matches": 0,
+      "confidence_lower": 1165.23,
+      "confidence_upper": 1800.0,
+      "source_store": "elo_leaderboard.json",
+      "metadata": {
+        "success_rate": 1.0,
+        "latency_avg_ms": 0.0
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "ca0f2edd2a9760f8a848b001ed1c2dfa4cb824b77d8d3d6538c1a0db8502b7e1"
+    },
+    {
+      "entity_id": "syntax_worker_coder",
+      "entity_type": "worker",
+      "domain": "swarm_hierarchy",
+      "elo_rating": 1600.0,
+      "wins": 1,
+      "losses": 0,
+      "draws": 0,
+      "matches": 0,
+      "confidence_lower": 1165.23,
+      "confidence_upper": 1800.0,
+      "source_store": "elo_leaderboard.json",
+      "metadata": {
+        "success_rate": 1.0,
+        "latency_avg_ms": 0.0
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "3aa6638b9f3b9048c0b827ecd14c50e14fdadc0138e13a3dc8b12e67038878d1"
+    },
+    {
+      "entity_id": "deepseek_v3_r1_671b_moe_halda",
+      "entity_type": "domain_specialist",
+      "domain": "math_and_algorithms",
+      "elo_rating": 1501.2,
+      "wins": 19,
+      "losses": 1,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1611.09,
+      "confidence_upper": 1792.9,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "LOCAL_100B_PLUS_PRIMA_HALDA_MMAP",
+        "task_domain": "math_and_algorithms",
+        "standard_benchmark_score": 94.0,
+        "qwen_math_formal_score": 97.2,
+        "internal_algorithm_score": 96.0,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 96.0,
+        "cloud_ai_consensus_score": 95.8
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "980bcdfc4ea8ae989fdb98cc2f2943b3248f2c3a918b8974f7b2d6fa785d04ee"
+    },
+    {
+      "entity_id": "models",
+      "entity_type": "hardware_model",
+      "domain": "global_benchmark",
+      "elo_rating": 1500.0,
+      "wins": 0,
+      "losses": 0,
+      "draws": 0,
+      "matches": 0,
+      "confidence_lower": 1000.0,
+      "confidence_upper": 1634.77,
+      "source_store": "canonical_elo_leaderboard.json",
+      "metadata": {
+        "tier": "LOCAL_MODEL",
+        "avg_tps": 0.0,
+        "avg_ttft_ms": 0.0,
+        "avg_accuracy": 0.0
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "b239bca243dd31afd3e2b0949278554cd2d9a54f45f4dabb7dd06c98d38d4eb7"
+    },
+    {
+      "entity_id": "lens_vision_native",
+      "entity_type": "worker",
+      "domain": "swarm_hierarchy",
+      "elo_rating": 1500.0,
+      "wins": 1,
+      "losses": 0,
+      "draws": 0,
+      "matches": 0,
+      "confidence_lower": 1165.23,
+      "confidence_upper": 1800.0,
+      "source_store": "elo_leaderboard.json",
+      "metadata": {
+        "success_rate": 1.0,
+        "latency_avg_ms": 0.0
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "70b49c29fd688b5acb5be79da153570d09e0ec4863f47979bb8002d38a8679cd"
+    },
+    {
+      "entity_id": "skill_loop",
+      "entity_type": "skill",
+      "domain": "swarm_hierarchy",
+      "elo_rating": 1500.0,
+      "wins": 1,
+      "losses": 0,
+      "draws": 0,
+      "matches": 0,
+      "confidence_lower": 1165.23,
+      "confidence_upper": 1800.0,
+      "source_store": "elo_leaderboard.json",
+      "metadata": {
+        "success_rate": 1.0,
+        "latency_avg_ms": 0.0
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "9cf96462072b9096ab23ee33a20726a580e94f47531f516d5dbc0a5dca5d6a8d"
+    },
+    {
+      "entity_id": "skill_ai_debate",
+      "entity_type": "skill",
+      "domain": "swarm_hierarchy",
+      "elo_rating": 1500.0,
+      "wins": 1,
+      "losses": 0,
+      "draws": 0,
+      "matches": 0,
+      "confidence_lower": 1165.23,
+      "confidence_upper": 1800.0,
+      "source_store": "elo_leaderboard.json",
+      "metadata": {
+        "success_rate": 1.0,
+        "latency_avg_ms": 0.0
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "fb56de8564421850378c5b19e829b7520257d5d81629172d730459597d805ab0"
+    },
+    {
+      "entity_id": "mistral_large_2_123b_sharded",
+      "entity_type": "domain_specialist",
+      "domain": "systems_architecture",
+      "elo_rating": 1493.8,
+      "wins": 19,
+      "losses": 1,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1611.09,
+      "confidence_upper": 1792.9,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "LOCAL_100B_PLUS_FULL_MESH",
+        "task_domain": "systems_architecture",
+        "standard_benchmark_score": 93.0,
+        "qwen_math_formal_score": 93.8,
+        "internal_algorithm_score": 95.0,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 95.5,
+        "cloud_ai_consensus_score": 95.0
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "a3c8e15ca032df7c0732572c04f74687b31bc7d86255a931bd33f56480983421"
+    },
+    {
+      "entity_id": "qwen_2_5_72b_instruct",
+      "entity_type": "domain_specialist",
+      "domain": "systems_architecture",
+      "elo_rating": 1490.5,
+      "wins": 18,
+      "losses": 2,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1559.17,
+      "confidence_upper": 1777.71,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "LOCAL_70B_TB4_RING",
+        "task_domain": "systems_architecture",
+        "standard_benchmark_score": 92.4,
+        "qwen_math_formal_score": 94.8,
+        "internal_algorithm_score": 94.8,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 95.2,
+        "cloud_ai_consensus_score": 94.5
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "55d01469c3ad90f107277c00ebd7655c4274cdedeb7b13b5fbcceafc164cfccf"
+    },
+    {
+      "entity_id": "llama_3_3_70b_abliterated",
+      "entity_type": "domain_specialist",
+      "domain": "adversarial_debate",
+      "elo_rating": 1483.7,
+      "wins": 18,
+      "losses": 2,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1559.17,
+      "confidence_upper": 1777.71,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "LOCAL_70B_TB4_RING",
+        "task_domain": "adversarial_debate",
+        "standard_benchmark_score": 91.2,
+        "qwen_math_formal_score": 91.5,
+        "internal_algorithm_score": 93.5,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 94.5,
+        "cloud_ai_consensus_score": 93.5
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "e9ee312142e85d647b1b64310135a9fdc4571686ce0fe4b78f0ff55ed3db9e1b"
+    },
+    {
+      "entity_id": "deepseek_r1_distill_qwen_32b",
+      "entity_type": "domain_specialist",
+      "domain": "math_and_algorithms",
+      "elo_rating": 1479.6,
+      "wins": 18,
+      "losses": 2,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1559.17,
+      "confidence_upper": 1777.71,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "LOCAL_30B_DEBATE_AND_MATH_CODE",
+        "task_domain": "math_and_algorithms",
+        "standard_benchmark_score": 90.4,
+        "qwen_math_formal_score": 95.2,
+        "internal_algorithm_score": 94.5,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 95.0,
+        "cloud_ai_consensus_score": 94.0
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "4505021b9b11207833d629adc495ab1bd6c94d9651d08bae85b90e48885e584a"
+    },
+    {
+      "entity_id": "gemini_2_5_pro_dual_free_tier",
+      "entity_type": "domain_specialist",
+      "domain": "long_context_rag",
+      "elo_rating": 1464.2,
+      "wins": 18,
+      "losses": 2,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1559.17,
+      "confidence_upper": 1777.71,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "FREE_TIER_CLOUD_2X",
+        "task_domain": "long_context_rag",
+        "standard_benchmark_score": 90.5,
+        "qwen_math_formal_score": 92.0,
+        "internal_algorithm_score": 92.0,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 92.5,
+        "cloud_ai_consensus_score": 93.5
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "f6ed8329a8f79c15e73d24004816e5a3f8de4c040da61a0192bb1edb34138bd7"
+    },
+    {
+      "entity_id": "gemma_4_31b",
+      "entity_type": "domain_specialist",
+      "domain": "systems_architecture",
+      "elo_rating": 1463.6,
+      "wins": 18,
+      "losses": 2,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1559.17,
+      "confidence_upper": 1777.71,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "LOCAL_30B_DEBATE_AND_SYNTHESIS",
+        "task_domain": "systems_architecture",
+        "standard_benchmark_score": 88.2,
+        "qwen_math_formal_score": 90.0,
+        "internal_algorithm_score": 92.0,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 94.0,
+        "cloud_ai_consensus_score": 93.0
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "b9dcb2066b0e7f40b5a70bc4100f072d0bd7945510ba9349cac8f181ca8a4380"
+    },
+    {
+      "entity_id": "qwen_38_max_abliterated_27b",
+      "entity_type": "domain_specialist",
+      "domain": "adversarial_debate",
+      "elo_rating": 1451.9,
+      "wins": 17,
+      "losses": 3,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1511.66,
+      "confidence_upper": 1758.11,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "LOCAL_30B_DEBATE_AND_ORCHESTRATOR",
+        "task_domain": "adversarial_debate",
+        "standard_benchmark_score": 86.5,
+        "qwen_math_formal_score": 88.5,
+        "internal_algorithm_score": 91.5,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 93.0,
+        "cloud_ai_consensus_score": 91.0
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "3375b60889ebb211e4bb8f4c519848373cebc2922d4c2c36dd7785a96d60426e"
+    },
+    {
+      "entity_id": "qwen_2_5_math_72b_or_7b",
+      "entity_type": "domain_specialist",
+      "domain": "math_and_algorithms",
+      "elo_rating": 1448.9,
+      "wins": 18,
+      "losses": 2,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1559.17,
+      "confidence_upper": 1777.71,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "LOCAL_MATH_VERIFIER",
+        "task_domain": "math_and_algorithms",
+        "standard_benchmark_score": 87.5,
+        "qwen_math_formal_score": 96.5,
+        "internal_algorithm_score": 93.0,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 91.0,
+        "cloud_ai_consensus_score": 90.0
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "889093fd8a54a370b7107f629e3ac995f223743b8ce21f129cb5f9c8bd315799"
+    },
+    {
+      "entity_id": "qwen_2_5_coder_7b_pypi",
+      "entity_type": "domain_specialist",
+      "domain": "coding_and_ast",
+      "elo_rating": 1436.9,
+      "wins": 18,
+      "losses": 2,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1559.17,
+      "confidence_upper": 1777.71,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "LOCAL_PYTHON_COMPANION",
+        "task_domain": "coding_and_ast",
+        "standard_benchmark_score": 88.4,
+        "qwen_math_formal_score": 84.0,
+        "internal_algorithm_score": 92.0,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 92.0,
+        "cloud_ai_consensus_score": 91.0
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "25a2a2c31f16859e4f8961020c54507be074efeef0045049864da70bf8a261b1"
+    },
+    {
+      "entity_id": "nvidia_nemotron_voice_coder_7b",
+      "entity_type": "domain_specialist",
+      "domain": "coding_and_ast",
+      "elo_rating": 1434.5,
+      "wins": 18,
+      "losses": 2,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1559.17,
+      "confidence_upper": 1777.71,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "LOCAL_7B_VOICE_CODER_ON_DEMAND_EPHEMERAL",
+        "task_domain": "coding_and_ast",
+        "standard_benchmark_score": 88.0,
+        "qwen_math_formal_score": 83.5,
+        "internal_algorithm_score": 91.8,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 92.2,
+        "cloud_ai_consensus_score": 91.5
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "6889bb9a89900d982be40fe7afa6fa50183a5576f8b6decfdee5a33f7bcc2c16"
+    },
+    {
+      "entity_id": "qwen_3d_vla_7b",
+      "entity_type": "domain_specialist",
+      "domain": "vision_3d_vla",
+      "elo_rating": 1425.8,
+      "wins": 17,
+      "losses": 3,
+      "draws": 0,
+      "matches": 20,
+      "confidence_lower": 1511.66,
+      "confidence_upper": 1758.11,
+      "source_store": "lens_working_memory_kv.sqlite:project_elo_leaderboard",
+      "metadata": {
+        "tier": "LOCAL_3D_VLA_VISION",
+        "task_domain": "vision_3d_vla",
+        "standard_benchmark_score": 84.8,
+        "qwen_math_formal_score": 82.0,
+        "internal_algorithm_score": 89.5,
+        "user_opinion_score": 90.0,
+        "local_ai_consensus_score": 91.5,
+        "cloud_ai_consensus_score": 90.5
+      },
+      "updated_at": "2026-10-14T23:58:46.282056+00:00",
+      "sha256_hash": "4b1769211bf2deabcc3fb29a48b86116ff3e2e58310d305a55270f4e4e7fe1f9"
+    },
+    {
+      "entity_id": "cloud_agy_tools",
+      "entity_type": "worker",
+      "domain": "swarm_hierarchy",
+      "elo_rating": 1400.0,
+      "wins": 1,
+      "losses": 0,
+      "draws": 0,
+      "matches": 0,
+      "confidence_lower": 1165.23,
+      "confidence_upper": 1800.0,
+      "source_store": "elo_leaderboard.json",
+      "metadata": {
+        "success_rate": 1.0,
+        "latency_avg_ms": 0.0
+      },
+      "updated_at": "2026-10-15T00:44:58.561171+00:00",
+      "sha256_hash": "cfa5b156a7b12011f5282ee6599a107110822d279c29bf9f9187f7c93a479db5"
+    }
+  ]
+}

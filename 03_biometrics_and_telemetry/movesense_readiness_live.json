@@ -1,44 +1,88 @@
 {
-  "timestamp_utc": "2026-09-03T07:26:04Z",
+  "timestamp_utc": "2026-10-15T04:08:52.760677+00:00",
   "status": "WAITING_FOR_SENSOR",
+  "readiness_score": null,
   "sensor_telemetry": {
-    "device": "Movesense 261030002013",
     "connected": false,
+    "device_name": "Movesense 261030002013",
+    "device_address": "74:92:BA:11:36:D6",
+    "battery_pct": 78,
     "heart_rate_bpm": null,
     "rmssd_ms": null,
     "dfa_alpha1": null,
-    "stream_mode": "100% STRICT LOCAL AIRGAP BLE"
+    "blood_pressure": null,
+    "readiness_score": null,
+    "tinyml": {
+      "beat_type": "STANDBY",
+      "training_zone": "Standby (Waiting for Sensor)",
+      "ectopic_density_per_min": 0.0,
+      "cardiac_drift_pct": 0.0,
+      "parasympathetic_recovery_tau": 0.0,
+      "signal_quality_sqi_pct": 100.0,
+      "alpha1_slope_per_min": 0.0,
+      "total_beats_processed": 0
+    },
+    "kinematics": {
+      "accelerometer_g": null,
+      "gyroscope_dps": null,
+      "total_dynamic_g": null,
+      "instant_jerk_g": null,
+      "action_spikes_count": 0,
+      "recent_spikes": []
+    },
+    "workout_session": {
+      "active": false,
+      "session_id": null,
+      "start_time": null,
+      "duration_seconds": 0,
+      "zone2_minutes": 0.0,
+      "zone3_plus_minutes": 0.0
+    },
+    "last_recorded_session": {
+      "session_id": "gym_workout_1791107764",
+      "timestamp": "2026-10-04T09:56:04.830001+00:00",
+      "heart_rate_bpm": 128.0,
+      "rmssd_ms": 45.0,
+      "blood_pressure": "139/87 mmHg (MAP 104.3)",
+      "impact_g": 0.999,
+      "state": "LIVE_GYM_STANDALONE",
+      "accel": {
+        "x": 0.15,
+        "y": 0.82,
+        "z": -0.55
+      },
+      "gyro": {
+        "x": 3.2,
+        "y": -1.5,
+        "z": 0.8
+      },
+      "dfa_alpha1": 1.0,
+      "beat_classification": "PREMATURE_ATRIAL_CONTRACTION"
+    },
+    "stream_mode": "STANDBY (-- WAITING FOR SENSOR --)",
+    "rule_0_zero_mock": true,
+    "timestamp_utc": "2026-10-15T04:08:52.760677+00:00"
   },
-  "blood_pressure_ptt": {
-    "estimated_ptt_ms": null,
-    "systolic_bp_mmhg": null,
-    "diastolic_bp_mmhg": null,
-    "mean_arterial_pressure_mmhg": null,
-    "status": "STANDBY",
-    "method": "ECG-PTT Pulse Wave Inversion (100% Local DSP)"
-  },
-  "overnight_sleep_analysis": {
-    "status": "WAITING_FOR_SENSOR",
-    "sleep_score_pct": null,
-    "recovery_status": "Awaiting Nocturnal Stream",
-    "nocturnal_rmssd_ms": null,
-    "nocturnal_hr_bpm": null,
-    "nocturnal_dip_pct": null,
-    "sleep_stages_estimate": null
-  },
-  "activity_and_workout": {
-    "status": "WAITING_FOR_SENSOR",
-    "current_activity": null,
-    "training_zone": "Awaiting Sensor Stream",
-    "hr_pct_max": null
-  },
-  "cardiorespiratory_thresholds": {
-    "status": "WAITING_FOR_SENSOR",
-    "estimated_vo2max_ml_kg_min": null,
-    "lt1_aerobic_threshold_bpm": null,
-    "lt2_anaerobic_threshold_bpm": null,
-    "current_dfa_alpha1": null,
-    "physiological_domain": "Awaiting Live DFA-alpha1 Stream"
+  "last_recorded_session": {
+    "session_id": "gym_workout_1791107764",
+    "timestamp": "2026-10-04T09:56:04.830001+00:00",
+    "heart_rate_bpm": 128.0,
+    "rmssd_ms": 45.0,
+    "blood_pressure": "139/87 mmHg (MAP 104.3)",
+    "impact_g": 0.999,
+    "state": "LIVE_GYM_STANDALONE",
+    "accel": {
+      "x": 0.15,
+      "y": 0.82,
+      "z": -0.55
+    },
+    "gyro": {
+      "x": 3.2,
+      "y": -1.5,
+      "z": 0.8
+    },
+    "dfa_alpha1": 1.0,
+    "beat_classification": "PREMATURE_ATRIAL_CONTRACTION"
   },
   "rule_0_zero_mock": true
 }

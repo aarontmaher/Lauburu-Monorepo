@@ -1,0 +1,26 @@
+{
+  "video_id": "N_Tp7DNzDGY",
+  "url": "https://youtu.be/N_Tp7DNzDGY",
+  "division": "IBJJF",
+  "title": "Nationals - Aaron Maher vs Brady Hirst",
+  "duration_sec": 369.7,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 22,
+  "dual_athlete_frames": 4,
+  "standing_phase_pct": 45.5,
+  "ground_scramble_phase_pct": 54.5,
+  "level_change_shots_detected": 0,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 71.2,
+    "left_elbow": 131.5,
+    "right_elbow": 131.3,
+    "left_hip": 128.2,
+    "right_hip": 135.6,
+    "left_knee": 142.1,
+    "right_knee": 143.2
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/N_Tp7DNzDGY_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in the match involves a combination of standing and ground/scramble elements. Standing provides a solid base, while the ground/scramble area is crucial for maneuvering and positioning. The level change shots indicate a high level of agility and quick reflexes, which are essential for maintaining control and avoiding counterattacks. The mean spine lean suggests a balanced and stable spine, which is important for maintaining balance and stability during the match. The elbow flexion and knee flexion indicate good flexibility and strength, which are necessary for executing",
+  "processing_sec": 29.97
+}

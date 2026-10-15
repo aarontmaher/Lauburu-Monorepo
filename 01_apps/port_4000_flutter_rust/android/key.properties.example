@@ -1,0 +1,6 @@
+# Android Release Keystore Configuration
+# Copy this file to key.properties and configure with production credentials
+storePassword=LAUBURU_PRODUCTION_STORE_PASSWORD
+keyPassword=LAUBURU_PRODUCTION_KEY_PASSWORD
+keyAlias=upload
+storeFile=../upload-keystore.jks

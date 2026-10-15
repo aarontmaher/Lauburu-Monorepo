@@ -1,0 +1,216 @@
+{
+  "timestamp": "2026-09-10T22:48:26.762307+00:00",
+  "sanctuary": {
+    "total_ram_gb": 31.19,
+    "free_ram_gb": 16.71,
+    "psutil_available_gb": 16.71,
+    "mach_reclaimable_gb": 16.71,
+    "util_percent": 46.4,
+    "free_disk_gb": 236.13,
+    "sanctuary_target_gb": 4.0,
+    "sanctuary_status": "COMPLIANT"
+  },
+  "hardware": {
+    "l1_apple_ane": {
+      "node": "L1 Mac Mini M4 Pro",
+      "accelerator": "Apple Neural Engine (ANE) 16-Core",
+      "peak_tops": 38.0,
+      "unified_bandwidth_gbs": 273.0,
+      "status": "ONLINE"
+    },
+    "l6_pixel_tpu": {
+      "node": "L6 Pixel 10 Pro XL",
+      "accelerator": "Tensor G5 Edge TPU",
+      "local_ip": "192.168.8.145",
+      "tailscale_ip": "100.73.38.87",
+      "rpc_port": 50052,
+      "status": "ONLINE"
+    },
+    "model_servers": {
+      "llama_server_8081": "OFFLINE",
+      "prima_daemon_8082": "ONLINE",
+      "red_team_8083": "ONLINE"
+    }
+  },
+  "speculative_optimization": {
+    "optimized_k": 5,
+    "average_throughput_tps": 1162.24,
+    "average_quality_weighted_tps": 1122.75,
+    "average_speedup": 178.8,
+    "highest_speedup": 282.78,
+    "highest_effective_speedup": 278.26,
+    "average_effectiveness": 0.965,
+    "average_acceptance_rate": 1.0,
+    "average_syntax_validity": 0.928,
+    "average_semantic_coherence": 0.962,
+    "k_aggregates": {
+      "3": {
+        "avg_effectiveness": 0.964,
+        "avg_qwtps": 807.99,
+        "avg_tps": 840.02,
+        "avg_speedup": 129.23,
+        "avg_alpha": 1.0
+      },
+      "4": {
+        "avg_effectiveness": 0.969,
+        "avg_qwtps": 1199.99,
+        "avg_tps": 1239.91,
+        "avg_speedup": 190.75,
+        "avg_alpha": 1.0
+      },
+      "5": {
+        "avg_effectiveness": 0.963,
+        "avg_qwtps": 1360.26,
+        "avg_tps": 1406.79,
+        "avg_speedup": 216.43,
+        "avg_alpha": 1.0
+      }
+    },
+    "sweep_runs": [
+      {
+        "domain": "architecture",
+        "k": 3,
+        "tokens_generated": 20,
+        "steps": 7,
+        "overall_tps": 711.67,
+        "speedup_vs_dense": 109.49,
+        "acceptance_rate": 1.0,
+        "syntax_validity": 1.0,
+        "semantic_coherence": 1.0,
+        "effectiveness_score": 1.0,
+        "quality_weighted_tps": 711.67,
+        "effective_speedup": 109.49,
+        "effectiveness_compliant": true,
+        "latency_ms": 28.2
+      },
+      {
+        "domain": "architecture",
+        "k": 4,
+        "tokens_generated": 20,
+        "steps": 5,
+        "overall_tps": 1186.11,
+        "speedup_vs_dense": 182.48,
+        "acceptance_rate": 1.0,
+        "syntax_validity": 1.0,
+        "semantic_coherence": 1.0,
+        "effectiveness_score": 1.0,
+        "quality_weighted_tps": 1186.11,
+        "effective_speedup": 182.48,
+        "effectiveness_compliant": true,
+        "latency_ms": 16.97
+      },
+      {
+        "domain": "architecture",
+        "k": 5,
+        "tokens_generated": 20,
+        "steps": 4,
+        "overall_tps": 1222.34,
+        "speedup_vs_dense": 188.05,
+        "acceptance_rate": 1.0,
+        "syntax_validity": 1.0,
+        "semantic_coherence": 1.0,
+        "effectiveness_score": 1.0,
+        "quality_weighted_tps": 1222.34,
+        "effective_speedup": 188.05,
+        "effectiveness_compliant": true,
+        "latency_ms": 16.46
+      },
+      {
+        "domain": "coding",
+        "k": 3,
+        "tokens_generated": 20,
+        "steps": 7,
+        "overall_tps": 843.78,
+        "speedup_vs_dense": 129.81,
+        "acceptance_rate": 1.0,
+        "syntax_validity": 0.81,
+        "semantic_coherence": 1.0,
+        "effectiveness_score": 0.933,
+        "quality_weighted_tps": 787.25,
+        "effective_speedup": 121.12,
+        "effectiveness_compliant": true,
+        "latency_ms": 23.83
+      },
+      {
+        "domain": "coding",
+        "k": 4,
+        "tokens_generated": 20,
+        "steps": 5,
+        "overall_tps": 1306.47,
+        "speedup_vs_dense": 200.99,
+        "acceptance_rate": 1.0,
+        "syntax_validity": 0.81,
+        "semantic_coherence": 0.982,
+        "effectiveness_score": 0.929,
+        "quality_weighted_tps": 1213.71,
+        "effective_speedup": 186.72,
+        "effectiveness_compliant": true,
+        "latency_ms": 15.56
+      },
+      {
+        "domain": "coding",
+        "k": 5,
+        "tokens_generated": 20,
+        "steps": 4,
+        "overall_tps": 1159.93,
+        "speedup_vs_dense": 178.45,
+        "acceptance_rate": 1.0,
+        "syntax_validity": 0.73,
+        "semantic_coherence": 1.0,
+        "effectiveness_score": 0.905,
+        "quality_weighted_tps": 1049.74,
+        "effective_speedup": 161.5,
+        "effectiveness_compliant": true,
+        "latency_ms": 17.43
+      },
+      {
+        "domain": "rules",
+        "k": 3,
+        "tokens_generated": 20,
+        "steps": 7,
+        "overall_tps": 964.61,
+        "speedup_vs_dense": 148.4,
+        "acceptance_rate": 1.0,
+        "syntax_validity": 1.0,
+        "semantic_coherence": 0.834,
+        "effectiveness_score": 0.959,
+        "quality_weighted_tps": 925.06,
+        "effective_speedup": 142.32,
+        "effectiveness_compliant": true,
+        "latency_ms": 20.84
+      },
+      {
+        "domain": "rules",
+        "k": 4,
+        "tokens_generated": 20,
+        "steps": 5,
+        "overall_tps": 1227.16,
+        "speedup_vs_dense": 188.79,
+        "acceptance_rate": 1.0,
+        "syntax_validity": 1.0,
+        "semantic_coherence": 0.91,
+        "effectiveness_score": 0.978,
+        "quality_weighted_tps": 1200.16,
+        "effective_speedup": 184.64,
+        "effectiveness_compliant": true,
+        "latency_ms": 16.42
+      },
+      {
+        "domain": "rules",
+        "k": 5,
+        "tokens_generated": 20,
+        "steps": 4,
+        "overall_tps": 1838.1,
+        "speedup_vs_dense": 282.78,
+        "acceptance_rate": 1.0,
+        "syntax_validity": 1.0,
+        "semantic_coherence": 0.935,
+        "effectiveness_score": 0.984,
+        "quality_weighted_tps": 1808.69,
+        "effective_speedup": 278.26,
+        "effectiveness_compliant": true,
+        "latency_ms": 10.96
+      }
+    ]
+  }
+}

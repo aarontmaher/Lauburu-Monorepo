@@ -1,0 +1,81 @@
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.24.2",
+    "script_metadata_hash": null
+  },
+  "cells": [
+    {
+      "id": "Hbol",
+      "code_hash": "2d42326785c3c775bbe05bffa7e19e0c",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "MJUe",
+      "code_hash": "05ccf00b8e64affffc16291cff67d591",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "vblA",
+      "code_hash": "949e2b02a9855c6624c4469c40080d3a",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "bkHC",
+      "code_hash": "0e6ea31e6964c6c6a60fb6b55b70d4a1",
+      "outputs": [
+        {
+          "type": "error",
+          "ename": "exception",
+          "evalue": "module 'marimo._plugins.ui' has no attribute 'mpl'",
+          "traceback": null
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stderr",
+          "text": "<span class=\"codehilite\"><div class=\"highlight\"><pre><span></span><span class=\"gt\">Traceback (most recent call last):</span>\n  File <span class=\"nb\">\"/var/folders/9r/r4b6jcn14yjg330x442p8tlh0000gn/T/marimo_14819/__marimo__cell_bkHC_.py\"</span>, line <span class=\"m\">18</span>, in <span class=\"n\">&lt;module&gt;</span>\n<span class=\"w\">    </span><span class=\"n\">chart</span> <span class=\"o\">=</span> <span class=\"n\">mo</span><span class=\"o\">.</span><span class=\"n\">ui</span><span class=\"o\">.</span><span class=\"n\">mpl</span><span class=\"p\">(</span><span class=\"n\">fig</span><span class=\"p\">)</span>\n<span class=\"w\">            </span><span class=\"pm\">^^^^^^^^^</span>\n<span class=\"gr\">AttributeError</span>: <span class=\"n\">module 'marimo._plugins.ui' has no attribute 'mpl'</span>\n</pre></div>\n</span>",
+          "mimetype": "application/vnd.marimo+traceback"
+        }
+      ]
+    },
+    {
+      "id": "lEQa",
+      "code_hash": "b989528b35eebd2d46a664ad036a5327",
+      "outputs": [
+        {
+          "type": "error",
+          "ename": "exception",
+          "evalue": "An ancestor raised an exception (AttributeError): ",
+          "traceback": null
+        }
+      ],
+      "console": []
+    }
+  ]
+}

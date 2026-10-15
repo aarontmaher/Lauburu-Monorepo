@@ -28,7 +28,7 @@ services:
       -port.grpc=19333
       -mdir=/data/dfs_master
       -volumeSizeLimitMB=1024
-      -defaultReplication=000
+      -defaultReplication=010
     volumes:
       - /mnt/ssd_1tb/dfs_master:/data/dfs_master:rw
     ports:
@@ -73,7 +73,7 @@ services:
       -ip=100.101.39.98
       -port=8888
       -port.grpc=18888
-      -defaultReplicaPlacement=000
+      -defaultReplicaPlacement=010
     volumes:
       - /mnt/ssd_1tb/dfs_filer:/data/dfs_filer:rw
     ports:

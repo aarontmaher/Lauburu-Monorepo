@@ -1,0 +1,40 @@
+{
+  "credit_pool_total_aud": 455.00,
+  "credit_pool_remaining_aud": 455.00,
+  "free_trial_grant_usd": 300.00,
+  "deployment_window_days": 90,
+  "trial_activation_date": "2026-09-11",
+  "trial_expiry_date": "2026-12-10",
+  "consensus_score": 0.999,
+  "tranches": {
+    "tranche_1_free_baseline": {
+      "budget_aud": 0.00,
+      "purpose": "Routine 24/7 Agent Loops, e2-micro Sentinel Node, GCS 5GB Backup, BigQuery 10GB, AI Studio 15 RPM",
+      "providers": ["Google AI Studio Free 15 RPM", "Local 82.8 GB Mesh", "Compute Engine e2-micro", "GCS 5GB Regional"]
+    },
+    "tranche_2_lora_fine_tuning": {
+      "budget_aud": 120.00,
+      "max_burst_spend_aud": 10.00,
+      "burst_count": 12,
+      "target_hardware": "Spot NVIDIA L4 24GB ($0.22/hr)",
+      "auto_kill_minutes": 45
+    },
+    "tranche_3_frontier_distillation": {
+      "budget_aud": 150.00,
+      "max_burst_spend_aud": 25.00,
+      "burst_count": 6,
+      "target_hardware": "Gemini 2.5 Pro / Flash Teacher Distillation Batches",
+      "auto_kill_minutes": 60
+    },
+    "tranche_4_emergency_reserve": {
+      "budget_aud": 185.00,
+      "purpose": "Permanent sovereign safety buffer guaranteeing zero out-of-pocket spend"
+    }
+  },
+  "invariants": {
+    "zero_leak_self_destruct": "shutdown -h +45 metadata enforced",
+    "preflight_local_test": true,
+    "min_roi_elo_per_aud": 2.5
+  }
+}
+

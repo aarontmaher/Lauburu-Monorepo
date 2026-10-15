@@ -1,47 +1,52 @@
 {
-  "cycle": 277,
-  "elapsed_seconds": 14.596,
-  "timestamp_utc": "2026-09-01T22:11:02Z",
+  "cycle": 1,
+  "elapsed_seconds": 5.434,
+  "timestamp_utc": "2026-10-14T13:54:28Z",
   "tiers": {
     "P0": {
       "priority": "P0_INFRASTRUCTURE",
-      "host_ram_pct": 91.2,
-      "disk_free_gb": 2.43,
+      "host_ram_pct": 69.5,
+      "host_available_gb": 7.32,
+      "total_mesh_available_gb": 62.28,
+      "nodes_online": "10/10",
+      "overflow_guard": "NOMINAL_ZERO_OVERFLOW",
+      "disk_free_gb": 12.07,
       "router_online": true,
-      "status": "HEALED",
-      "action": "TRIGGERED: /nomad-autonomous-mesh-governor 5-tier self-healing"
+      "status": "HEALTHY",
+      "action": "NONE_REQUIRED (10-Node Mesh & Host Sanctuary Nominal)"
     },
     "P1": {
       "priority": "P1_MOVESENSE_READINESS",
-      "heart_rate_bpm": 75,
-      "blood_pressure": "121/76 mmHg",
-      "sleep_score": 88.5,
-      "vo2max": 52.4,
-      "status": "ACTIVE_512HZ_STREAM"
+      "heart_rate_bpm": "--",
+      "blood_pressure": "--",
+      "sleep_score": "--",
+      "vo2max": "--",
+      "status": "WAITING_FOR_BLE_SENSOR (--)"
     },
     "P2": {
       "priority": "P2_VISUAL_GPU_CANVAS",
       "mode": "NATIVE_METAL_GPU",
-      "gpu_engine": "Apple Silicon Metal Shaders (120 FPS Native Metal)",
-      "frame_time_ms": 0.34,
-      "target_fps": 120,
-      "status": "LOCKED_120FPS"
+      "gpu_engine": "Apple Silicon Metal + Screen Lens Stream Hub (:4003)",
+      "frame_time_ms": 8.43,
+      "stream_nodes_online": 4,
+      "status": "ONLINE (4/4 stream nodes)"
     },
     "P3": {
       "priority": "P3_LMARENA_BENCHMARK",
-      "leader": "Qwen 3.8 Max: ELO 1352.7 (Verified)",
+      "leader": "=== Running Local LMSYS Arena & Bradley-Terry ELO Benchmark ===",
       "dataset_sink": "04_data_and_memory/lmarena_human_preference_pairs.jsonl",
       "status": "TOURNAMENT_UPDATED"
     },
     "P4": {
       "priority": "P4_LORA_CONTINUOUS_HARVEST",
       "dataset_file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/nomad_autonomous_actions.jsonl",
-      "status": "SERIALIZED"
+      "status": "SERIALIZED",
+      "teacher_daemon_active": true
     },
     "P5": {
       "priority": "P5_DOCKER_MICROSERVICES",
-      "status": "ONLINE",
-      "server_version": "29.5.2",
+      "status": "STANDBY",
+      "server_version": "Unknown",
       "active_containers": 0,
       "socket": "/Users/aaron/.colima/default/docker.sock",
       "virtiofs_compliant": true

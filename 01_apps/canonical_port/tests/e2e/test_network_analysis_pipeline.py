@@ -40,8 +40,8 @@ class TestMultiNodeTelemetryIngestion:
     async def test_ingest_minimum_three_distinct_node_payloads(self, sample_mesh_node_payloads):
         pipeline = NetworkAnalysisPipeline()
         
-        # Ingest 3 distinct nodes: Mac_Node, Linux_Head_Node, MacBook_Pro
-        nodes_to_test = ["Mac_Node", "Linux_Head_Node", "MacBook_Pro"]
+        # Ingest 3 distinct nodes: Mac_Node, Linux_Mini, MacBook_Pro
+        nodes_to_test = ["Mac_Node", "Linux_Mini", "MacBook_Pro"]
         for node_id in nodes_to_test:
             payload = sample_mesh_node_payloads[node_id]
             anomalies = await pipeline.ingest_payload(node_id, payload)
@@ -84,7 +84,7 @@ class TestMultiNodeTelemetryIngestion:
         # Stream 5 nodes concurrently, 20 packets each = 100 packets total
         tasks = [
             asyncio.create_task(stream_node("Mac_Node", 20)),
-            asyncio.create_task(stream_node("Linux_Head_Node", 20)),
+            asyncio.create_task(stream_node("Linux_Mini", 20)),
             asyncio.create_task(stream_node("MacBook_Pro", 20)),
             asyncio.create_task(stream_node("Pixel_10_Pro_XL", 20)),
             asyncio.create_task(stream_node("MacBook_Air", 20)),
@@ -165,7 +165,7 @@ class TestAnomalyDetectionEngine:
 
     def test_packet_drop_burst_anomaly_detected(self, sample_mesh_node_payloads):
         detector = AnomalyDetector(drop_threshold_percent=2.0)
-        dropped_payload = dict(sample_mesh_node_payloads["Linux_Head_Node"])
+        dropped_payload = dict(sample_mesh_node_payloads["Linux_Mini"])
         dropped_payload["drop_rate"] = 7.5  # 7.5% drop rate
 
         anomalies = detector.evaluate_payload(dropped_payload)
@@ -216,16 +216,16 @@ class TestObsidianVaultSyncFormatting:
         assert "100.119.199.76" in note
 
     def test_atomic_vault_note_write(self, mock_obsidian_vault_dir, sample_mesh_node_payloads):
-        payload = sample_mesh_node_payloads["Linux_Head_Node"]
-        note = ObsidianVaultSyncFormatter.format_node_telemetry_note("Linux_Head_Node", payload)
+        payload = sample_mesh_node_payloads["Linux_Mini"]
+        note = ObsidianVaultSyncFormatter.format_node_telemetry_note("Linux_Mini", payload)
         
         file_path = ObsidianVaultSyncFormatter.write_atomic_vault_note(
-            mock_obsidian_vault_dir, "Linux_Head_Node.md", note
+            mock_obsidian_vault_dir, "Linux_Mini.md", note
         )
         assert os.path.exists(file_path)
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
-        assert "[[Linux_Head_Node]]" in content
+        assert "[[Linux_Mini]]" in content
         assert "100.101.39.98" in content
 
     @pytest.mark.asyncio
@@ -267,7 +267,7 @@ class TestEventLoopLatencyAndUIIsolation:
 
         async def flood_packets():
             for i in range(500):
-                node_id = "Mac_Node" if i % 2 == 0 else "Linux_Head_Node"
+                node_id = "Mac_Node" if i % 2 == 0 else "Linux_Mini"
                 p = dict(sample_mesh_node_payloads[node_id])
                 p["timestamp"] = time.time()
                 await pipeline.ingest_payload(node_id, p)

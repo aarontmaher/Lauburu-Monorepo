@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movesense Terminal Lauburu — 512Hz Clinical ECG DSP Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #06080e; color: #f3f4f6; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-card {
+      background: rgba(14, 18, 28, 0.88);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+    .ecg-grid {
+      background-size: 20px 20px;
+      background-image: 
+        linear-gradient(to right, rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="min-h-screen p-3 md:p-6 flex flex-col justify-between">
+  <div class="max-w-7xl mx-auto w-full space-y-5">
+    
+    <!-- Top Header -->
+    <header class="glass-card rounded-2xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-600 via-blue-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-xl font-black text-white">
+          ⚡
+        </div>
+        <div>
+          <div class="flex items-center space-x-3 mb-1">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+              Clinical Grade 512Hz DSP
+            </span>
+            <span class="mono text-xs text-zinc-400">GATT PMD 0x0001 • BLE 5.0</span>
+          </div>
+          <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Movesense Terminal Lauburu</h1>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Zero-Mock Status Indicators -->
+        <div class="mono text-xs px-3 py-1.5 rounded-lg bg-zinc-900/90 border border-white/10 flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse" id="ble-dot"></span>
+          <span class="text-zinc-400">Sensor Link:</span>
+          <span class="font-bold text-amber-400" id="ble-status">AWAITING SENSOR</span>
+        </div>
+        <div class="mono text-xs px-3 py-1.5 rounded-lg bg-zinc-900/90 border border-white/10 flex items-center space-x-2">
+          <span class="text-zinc-400">Sampling Rate:</span>
+          <span class="font-bold text-cyan-400">512 Hz</span>
+        </div>
+        <div class="mono text-xs px-3 py-1.5 rounded-lg bg-zinc-900/90 border border-white/10 flex items-center space-x-2">
+          <span class="text-zinc-400">WebSocket Bridge:</span>
+          <span class="font-bold text-zinc-300" id="ws-status">ws://127.0.0.1:8088</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Oscilloscope & Live Metrics Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      
+      <!-- Oscilloscope Viewport (8 cols) -->
+      <div class="lg:col-span-8 space-y-4">
+        <div class="glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-white/10 pb-3">
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+              <h2 class="text-base font-bold text-white">Pan-Tompkins QRS Live Oscilloscope</h2>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="mono text-[10px] px-2 py-0.5 rounded bg-blue-500/10 text-cyan-300 border border-cyan-500/30">
+                5–15Hz Bandpass + 50Hz Notch Filter
+              </span>
+              <span class="mono text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                91.9% EMG Rejection
+              </span>
+            </div>
+          </div>
+
+          <!-- Oscilloscope Canvas Box -->
+          <div class="relative h-72 rounded-xl bg-zinc-950 border border-white/10 ecg-grid overflow-hidden flex flex-col items-center justify-center">
+            <canvas id="ecgCanvas" width="800" height="280" class="absolute inset-0 w-full h-full"></canvas>
+            
+            <!-- Zero-Mock Waiting State Banner (Rule 0) -->
+            <div id="canvas-waiting-overlay" class="z-10 p-4 rounded-xl bg-zinc-900/90 border border-amber-500/30 text-center max-w-md shadow-2xl backdrop-blur-md">
+              <div class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-2 font-bold mono">
+                --
+              </div>
+              <span class="mono text-xs font-bold text-amber-400 block mb-1">AWAITING 512Hz SENSOR STREAM</span>
+              <p class="text-[11px] text-zinc-400 leading-relaxed">
+                No simulated ECG wave injected. Connect Movesense Medical MD+ sensor via CoreBluetooth GATT <code>0x180D</code> / PMD <code>0x0001</code> to stream authentic bio-potential voltages.
+              </p>
+            </div>
+          </div>
+
+          <!-- Canvas Controls & Lead Selector -->
+          <div class="flex flex-wrap justify-between items-center text-xs text-zinc-400 pt-1">
+            <div class="flex items-center space-x-2">
+              <span class="font-bold text-zinc-300">Lead Placement:</span>
+              <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-200">Bipolar Chest Lead II</span>
+              <span class="text-zinc-500">• Sensitivity: 10 mm/mV</span>
+            </div>
+            <div class="mono text-[11px] text-cyan-400">
+              Sweep Speed: 25 mm/s
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Clinical Telemetry Panels (4 cols) -->
+      <div class="lg:col-span-4 space-y-4">
+        
+        <!-- Primary Bio-Potential Cards -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="glass-card rounded-xl p-4 text-center space-y-1">
+            <span class="text-[10px] uppercase font-bold text-zinc-300 tracking-wider block">Heart Rate</span>
+            <span class="mono text-3xl font-black text-white" id="val-hr">--</span>
+            <span class="text-[10px] text-zinc-300 block">BPM (QRS Lock)</span>
+          </div>
+
+          <div class="glass-card rounded-xl p-4 text-center space-y-1">
+            <span class="text-[10px] uppercase font-bold text-zinc-300 tracking-wider block">DFA-alpha1</span>
+            <span class="mono text-3xl font-black text-emerald-400" id="val-dfa">--</span>
+            <span class="text-[10px] text-zinc-300 block">Zone 2 Aerobic Index</span>
+          </div>
+
+          <div class="glass-card rounded-xl p-4 text-center space-y-1">
+            <span class="text-[10px] uppercase font-bold text-zinc-300 tracking-wider block">HRV (RMSSD)</span>
+            <span class="mono text-2xl font-bold text-cyan-300" id="val-rmssd">--</span>
+            <span class="text-[10px] text-zinc-300 block">ms (Parasympathetic)</span>
+          </div>
+
+          <div class="glass-card rounded-xl p-4 text-center space-y-1">
+            <span class="text-[10px] uppercase font-bold text-zinc-300 tracking-wider block">9-Axis IMU Force</span>
+            <span class="mono text-2xl font-bold text-purple-300" id="val-imu">--</span>
+            <span class="text-[10px] text-zinc-300 block">G (Peak Impact)</span>
+          </div>
+        </div>
+
+        <!-- Signal Quality & Battery Gate -->
+        <div class="glass-card rounded-xl p-4 space-y-3">
+          <div class="flex justify-between items-center border-b border-white/10 pb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Sensor Signal Health</span>
+            <span class="mono text-[10px] px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-200" id="val-battery">Battery: --%</span>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between items-center">
+              <span class="text-zinc-300">Electrode Impedance:</span>
+              <span class="mono text-zinc-200" id="val-impedance">-- kΩ (Awaiting)</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-zinc-300">Signal-to-Noise Ratio:</span>
+              <span class="mono text-cyan-400" id="val-snr">+6.0 dB Gate Threshold</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-zinc-300">Dropped Packets:</span>
+              <span class="mono text-zinc-200" id="val-dropped">0 pkts (0.00%)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Textual Terminal Bridge Info -->
+        <div class="glass-card rounded-xl p-4 space-y-2 border-cyan-500/20">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-cyan-400">TUI Ecosystem Sync</span>
+            <span class="mono text-[10px] text-zinc-400">Port 8088 / TTY</span>
+          </div>
+          <p class="text-xs text-zinc-300 leading-relaxed">
+            Movesense Terminal syncs bi-directionally with the Textual TUI (`app.py`) via the Lauburu TUI MCP daemon on port 8088.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Practical Backend Development Path & Requirements Section -->
+    <section class="glass-card rounded-2xl p-6 space-y-5 border-cyan-500/30">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b border-white/10 pb-4">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+            Engineering Blueprint & Architecture Path
+          </span>
+          <h2 class="text-xl font-black text-white mt-1">Backend Development Path & Full Functionality Requirements</h2>
+        </div>
+        <span class="mono text-xs px-3 py-1 rounded-lg bg-zinc-900 text-zinc-300 border border-white/10">
+          Sensor Target: Movesense Medical MD+
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
+        
+        <!-- Pillar 1: Backend Architecture Path -->
+        <div class="p-4 rounded-xl bg-zinc-900/70 border border-white/5 space-y-2">
+          <h3 class="font-bold text-white text-sm flex items-center space-x-1.5">
+            <span class="text-cyan-400">1.</span> <span>Logical Backend Path</span>
+          </h3>
+          <p class="text-zinc-300 leading-relaxed">
+            • <strong>BLE Ingestion:</strong> Python <code>bleak</code> GATT client running on Mac Mini Host (L1) via CoreBluetooth.<br>
+            • <strong>GATT PMD Protocol:</strong> Subscribe to UUID <code>00000001-6174-4fac-9e50-25d289f32f88</code> and write path <code>/Meas/ECG/512</code>.<br>
+            • <strong>DSP Pipeline:</strong> Pan-Tompkins QRS algorithm in <code>movesense_dsp.py</code> filtering 50Hz mains hum and baseline wander.<br>
+            • <strong>Streaming Socket:</strong> High-throughput WebSocket server broadcasting binary packets to <code>ws://127.0.0.1:8088/api/biometrics/ecg_stream</code>.
+          </p>
+        </div>
+
+        <!-- Pillar 2: DSP & TinyLM Analysis -->
+        <div class="p-4 rounded-xl bg-zinc-900/70 border border-white/5 space-y-2">
+          <h3 class="font-bold text-white text-sm flex items-center space-x-1.5">
+            <span class="text-blue-400">2.</span> <span>Clinical DSP & TinyLM ML</span>
+          </h3>
+          <p class="text-zinc-300 leading-relaxed">
+            • <strong>DFA-$\alpha_1$ Computation:</strong> Detrended Fluctuation Analysis calculated over sliding 2-minute R-R interval windows.<br>
+            • <strong>Arrhythmia Classifier:</strong> INT8 TinyML MLP classifier detecting PVC (Premature Ventricular Contractions) and motion artifacts.<br>
+            • <strong>Kinematic Sensor Fusion:</strong> Synchronize 512Hz ECG with 104Hz 9-axis IMU accelerometer to calculate cardiac strain during maximum grappling exertion.
+          </p>
+        </div>
+
+        <!-- Pillar 3: Requirements for Full Functionality -->
+        <div class="p-4 rounded-xl bg-zinc-900/70 border border-white/5 space-y-2">
+          <h3 class="font-bold text-white text-sm flex items-center space-x-1.5">
+            <span class="text-amber-400">3.</span> <span>Requirements for 100% Launch</span>
+          </h3>
+          <p class="text-zinc-300 leading-relaxed">
+            • <strong>Hardware Sensor:</strong> Physical Movesense Medical MD+ sensor strap moistened and worn across lower sternum.<br>
+            • <strong>Host Execution Constraint (Rule 9):</strong> Must execute on Mac Mini Host (L1) or Linux Hub (L3) with native BlueZ/CoreBluetooth. Forbidden on Android Termux.<br>
+            • <strong>Daemon Service:</strong> <code>ai.lauburu.movesense-terminal.plist</code> LaunchAgent managing auto-reconnect upon BLE range loss.<br>
+            • <strong>Storage Sink (Rule 2):</strong> 512Hz raw telemetry stream logged to PySpark Parquet lake (<code>04_data_and_memory/biometrics/</code>).
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Real-Time Zero-Mock WebSocket Listener & Grid Canvas Engine -->
+  <script>
+    const canvas = document.getElementById('ecgCanvas');
+    const ctx = canvas.getContext('2d');
+    const overlay = document.getElementById('canvas-waiting-overlay');
+    const bleStatus = document.getElementById('ble-status');
+    const bleDot = document.getElementById('ble-dot');
+    const wsStatus = document.getElementById('ws-status');
+
+    let ws = null;
+    let isConnected = false;
+
+    // Zero-Mock Baseline Grid Renderer
+    function drawIdleGrid() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.15)';
+      ctx.lineWidth = 1;
+
+      // Draw horizontal baseline center line
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height / 2);
+      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.stroke();
+    }
+
+    drawIdleGrid();
+
+    // WebSocket Connection to Real Backend Socket
+    function connectBiometricsSocket() {
+      try {
+        ws = new WebSocket('ws://127.0.0.1:8088/api/biometrics/ecg_stream');
+
+        ws.onopen = function() {
+          isConnected = true;
+          overlay.style.display = 'none';
+          bleStatus.textContent = 'ONLINE (512Hz LOCKED)';
+          bleStatus.className = 'font-bold text-emerald-400';
+          bleDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+          wsStatus.textContent = 'ws://127.0.0.1:8088 (ACTIVE)';
+          wsStatus.className = 'font-bold text-emerald-400';
+        };
+
+        ws.onmessage = function(event) {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.hr) document.getElementById('val-hr').textContent = data.hr;
+            if (data.dfa) document.getElementById('val-dfa').textContent = data.dfa.toFixed(2);
+            if (data.rmssd) document.getElementById('val-rmssd').textContent = data.rmssd.toFixed(1);
+            if (data.imu) document.getElementById('val-imu').textContent = data.imu.toFixed(2);
+            if (data.battery) document.getElementById('val-battery').textContent = `Battery: ${data.battery}%`;
+          } catch(e) {}
+        };
+
+        ws.onclose = function() {
+          isConnected = false;
+          overlay.style.display = 'block';
+          bleStatus.textContent = 'AWAITING SENSOR';
+          bleStatus.className = 'font-bold text-amber-400';
+          bleDot.className = 'w-2 h-2 rounded-full bg-amber-400';
+          wsStatus.textContent = 'ws://127.0.0.1:8088 (WAITING)';
+          wsStatus.className = 'font-bold text-zinc-400';
+          drawIdleGrid();
+        };
+
+        ws.onerror = function() {
+          ws.close();
+        };
+      } catch (err) {
+        // Fallback to waiting state (Rule 0)
+        overlay.style.display = 'block';
+      }
+    }
+
+    // Attempt real connection, retry every 8 seconds
+    connectBiometricsSocket();
+    setInterval(() => {
+      if (!isConnected) {
+        connectBiometricsSocket();
+      }
+    }, 8000);
+  </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 **Document ID:** `LAUBURU-STRAT-2026-MESH-AGI-001`  
 **Classification:** Canonical Architectural Strategy & Master Specification  
 **Governing Node:** `Mac_Node` (Host Apple M4 Pro Mac Mini / Primary Memory Governor)  
-**Location:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/open_source_mesh/open_source_mesh_strategy.md`  
+**Location:** `/Volumes/Lauburu-Monorepo/00_core_infrastructure/open_source_mesh/open_source_mesh_strategy.md`  
 **Author:** Multi-Agent Engineering Council (`teamwork_preview_worker_m1`)  
 **Status:** Certified Canonical • Production-Grade • Zero-Mock Compliance  
 **Date:** 2026-08-27  
@@ -14,7 +14,7 @@
 
 This canonical strategy establishes a **100% self-hosted, sovereign, open-source networking and distributed AGI governance architecture** for the Lauburu 7-layer physical mesh ecosystem. It permanently eliminates all dependencies on proprietary cloud coordination layers (replacing SaaS Tailscale with **Headscale 0.23+**) and proprietary multi-WAN aggregation services (replacing Speedify with **OpenMPTCProuter + Glorytun Mud + Shadowsocks MPTCP**). 
 
-Simultaneously, this specification operationalizes an autonomous edge machine learning framework leveraging **HuggingFace TRL Direct Preference Optimization (DPO)** and **PEFT LoRA** fine-tuning on local silicon (Apple Silicon M4/Metal, AMD Ryzen XDNA, Google Tensor G5, and Qualcomm/Exynos NPUs). To crown a single, permanent AGI Sovereign Governor, this document defines a rigorous **4-turn multi-agent tournament protocol** evaluated across 4 empirical hardware benchmarking arenas, scored via a dynamic 6-factor ELO engine, attested with **Ed25519 digital signatures and Merkle inclusion proofs**, and constrained by strict **QEMU/Docker air-gapped firmware sandboxing** and immutable multi-layer circuit breakers.
+Simultaneously, this specification operationalizes an autonomous edge machine learning framework leveraging **HuggingFace TRL Direct Preference Optimization (DPO)** and **PEFT LoRA** fine-tuning on local silicon (Apple Silicon M4/Metal, Intel 2018 Mac Mini XDNA, Google Tensor G5, and Qualcomm/Exynos NPUs). To crown a single, permanent AGI Sovereign Governor, this document defines a rigorous **4-turn multi-agent tournament protocol** evaluated across 4 empirical hardware benchmarking arenas, scored via a dynamic 6-factor ELO engine, attested with **Ed25519 digital signatures and Merkle inclusion proofs**, and constrained by strict **QEMU/Docker air-gapped firmware sandboxing** and immutable multi-layer circuit breakers.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -30,8 +30,8 @@ Simultaneously, this specification operationalizes an autonomous edge machine le
 │         ║ Gigabit LAN (192.168.8.0/24)                         1GbE RJ45 Cat6     ║             │
 │         ╠═════════════════════════════════════════════════════════════════════════╣             │
 │         ║                                                                         ║             │
-│  [ L3: Linux_Head_Node ] ───────── [ L4: Linux_Tablet ] ────────── [ L5: MacBook_Air ]          │
-│  AMD Ryzen 7 5700U (16GB)          Debian Linux (8GB)              Apple M4 (16GB)              │
+│  [ L3: Linux_Mini ] ───────── [ L4: Linux_Tablet ] ────────── [ L5: MacBook_Air ]          │
+│  Intel 2018 Mac Mini (Linux) (16GB)          Debian Linux (8GB)              Apple M4 (16GB)              │
 │  • Headscale Control Plane         • Touch DSP / Biometrics        • Metal MPS Distillation     │
 │  • Embedded DERP (:8443/:3478)     • Secondary Petals Worker       • Background DPO Training    │
 │  • Docker Hub & PySpark Lake       • Low-Power Mobile Compute      • Dynamic RAM Cap: 90%       │
@@ -94,8 +94,8 @@ The Lauburu Mesh pools **108.0 GB Physical RAM (82.8 GB Usable AI VRAM)** across
 | Layer | Node Identifier | Architecture & OS | Physical IPv4 | Thunderbolt 4 DMA IPv4 | Headscale Overlay IPv4 (CGNAT) | AI VRAM Cap & Hardware Specs | Primary Ecosystem Roles |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **L1** | `Mac_Node` | Apple Silicon Darwin ARM64 (macOS 15) | `192.168.8.230` (en0/en1) | `169.254.80.69` (bridge0) | `100.64.0.1` | **24.0 GB (21.6 GB AI, 90%)**<br>Apple M4 Pro (14-Core CPU, 20-Core GPU, 16-Core ANE @ 38 TOPS) | Primary Swarm Memory Governor, Port 18802 Reflex Arc WoL API, Port 4000 Hub API, Port 3000 Web UI. |
-| **L2** | `MacBook_Pro` | Apple Silicon Darwin ARM64 (macOS 15) | `192.168.8.127` (en0) | `169.254.187.138` (0.277ms RTT @ 38.4 Gbps) | `100.64.0.2` | **16.0 GB (14.0 GB AI, 90%)**<br>Metal GPU Worker, 285 GB SSD Fast Model Vault | High-Speed Metal GPU RPC Worker (Port 50052), Distributed Tensor Shard Vault, TB4 DMA Bridge Endpoint. |
-| **L3** | `Linux_Head_Node` | AMD x86_64 Ubuntu 24.04 LTS (Kernel 6.8) | `192.168.8.224` (eth0/enx98fc84e6e212) | N/A | `100.64.0.3` | **16.0 GB (13.8 GB AI, 80%)**<br>AMD Ryzen 7 5700U (8C/16T, AMD XDNA NPU @ 16 TOPS) | Headscale Primary Control Plane, Embedded DERP Server, Docker Ingress Hub, Petals DHT, PySpark Lake. |
+| **L2** | `MacBook_Pro | Intel Core i7 Darwin x86_64 (macOS 15) | `192.168.8.127` (en0) | `169.254.187.138` (0.277ms RTT @ 38.4 Gbps) | `100.64.0.2` | **16.0 GB (14.0 GB AI, 90%)**<br>Metal GPU Worker, 285 GB SSD Fast Model Vault | High-Speed Metal GPU RPC Worker (Port 50052), Distributed Tensor Shard Vault, TB4 DMA Bridge Endpoint. |
+| **L3** | `Linux_Mini` | AMD x86_64 Ubuntu 24.04 LTS (Kernel 6.8) | `192.168.8.224` (eth0/enx98fc84e6e212) | N/A | `100.64.0.3` | **16.0 GB (13.8 GB AI, 80%)**<br>Intel 2018 Mac Mini (Linux) (8C/16T, AMD XDNA NPU @ 16 TOPS) | Headscale Primary Control Plane, Embedded DERP Server, Docker Ingress Hub, Petals DHT, PySpark Lake. |
 | **L4** | `Linux_Tablet` | Debian Linux 12 ARM64 (Kernel 6.1) | `192.168.8.173` (wlan0) | N/A | `100.64.0.4` | **8.0 GB (6.5 GB AI, 75%)**<br>ARM Cortex-A78 Octa-Core | Mobile Bedside DSP, Touch UI Telemetry, Secondary Petals Worker, Lightweight Continuous Probing. |
 | **L5** | `MacBook_Air` | Apple Silicon Darwin ARM64 (macOS 15) | `192.168.8.222` (en0) | N/A | `100.64.0.5` | **16.0 GB (14.0 GB AI, 90%)**<br>Apple M4 (10-Core CPU, 10-Core GPU, 38 TOPS ANE) | Metal Performance Shaders Worker, LoRA Continuous Distillation Engine, Background HuggingFace Trainer. |
 | **L6** | `Pixel_10_Pro_XL` | Android 15 (Kernel 6.6-android15) | `192.168.8.145` (Wi-Fi 7) / `169.254.60.151` (USB) | N/A | `100.64.0.6` | **16.0 GB (12.5 GB AI, 85%)**<br>Google Tensor G5 + Edge TPU v2 (22 TOPS, 0.28W) | 8K Digital PTZ Camera Ingestion, UWB 3D Radar Positioning, Primary 5G Cellular Multi-WAN Hotspot. |
@@ -109,7 +109,7 @@ The Lauburu Mesh pools **108.0 GB Physical RAM (82.8 GB Usable AI VRAM)** across
 2. **Subnet 2: Ultra-Low-Latency Thunderbolt 4 PCIe DMA Bridge (`169.254.0.0/16`)**  
    Direct point-to-point PCIe DMA link between `Mac_Node` (`169.254.80.69`) and `MacBook_Pro` (`169.254.187.138`). Verified line-rate throughput of **3,500 MB/s (38.4 Gbps)** with **0.277ms round-trip latency**, dedicated to zero-stall distributed tensor sharding (Port 50052).
 3. **Subnet 3: Headscale Sovereign WireGuard Overlay (`100.64.0.0/16`)**  
-   Strictly self-hosted Carrier-Grade NAT (CGNAT) overlay network governed by Headscale on `Linux_Head_Node`. Provides end-to-end ChaCha20-Poly1305 encrypted WireGuard tunnels across all 7 layers regardless of physical network attachment (LAN, Wi-Fi 7, Cellular 5G, or USB Tethering).
+   Strictly self-hosted Carrier-Grade NAT (CGNAT) overlay network governed by Headscale on `Linux_Mini`. Provides end-to-end ChaCha20-Poly1305 encrypted WireGuard tunnels across all 7 layers regardless of physical network attachment (LAN, Wi-Fi 7, Cellular 5G, or USB Tethering).
 
 ---
 
@@ -117,7 +117,7 @@ The Lauburu Mesh pools **108.0 GB Physical RAM (82.8 GB Usable AI VRAM)** across
 
 ### 2.1 Headscale Control Plane & Zero-Trust WireGuard Control Plane
 
-The proprietary Tailscale SaaS coordination server is replaced with a containerized, self-hosted **Headscale 0.23+** control plane deployed on L3 (`Linux_Head_Node`), backed by SQLite WAL mode and mirrored to L1 (`Mac_Node`) via SeaweedFS asynchronous replication.
+The proprietary Tailscale SaaS coordination server is replaced with a containerized, self-hosted **Headscale 0.23+** control plane deployed on L3 (`Linux_Mini`), backed by SQLite WAL mode and mirrored to L1 (`Mac_Node`) via SeaweedFS asynchronous replication.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -133,7 +133,7 @@ The proprietary Tailscale SaaS coordination server is replaced with a containeri
 │                 └───────────────────────┬───────────────────────┘                               │
 │                                         ▼                                                       │
 │                     ┌───────────────────────────────────────┐                                   │
-│                     │ L3: Linux_Head_Node (192.168.8.224)   │                                   │
+│                     │ L3: Linux_Mini (192.168.8.224)   │                                   │
 │                     │ ───────────────────────────────────── │                                   │
 │                     │ Headscale 0.23+ Container             │                                   │
 │                     │ • Listen: 0.0.0.0:8080 (REST / gRPC)  │                                   │
@@ -605,7 +605,7 @@ class Tb4DmaInterconnect:
 
 @dataclass
 class LlamaRpcNode:
-    node_name: str                   # "MacBook_Pro", "Linux_Head_Node"
+    node_name: str                   # "MacBook_Pro", "Linux_Mini"
     ip: str                          # "100.64.0.2:50052"
     backend: str                     # "Metal GPU", "AMD CPU / XDNA"
     tensor_layers: int               # Sharded layers (e.g. 28)
@@ -653,7 +653,7 @@ To autonomously optimize multipath routing policies across the 7-layer mesh, thi
 │                 │                                                                               │
 │                 ▼                                                                               │
 │  [ HuggingFace TRL DPOTrainer ] ───> Local Gradient Update (beta = 0.10, LoRA r=16-32)          │
-│  (PyTorch MPS / CUDA / Vulkan)       Executed on L1 Mac Mini M4 / L5 Mac Air / L3 Ryzen 7       │
+│  (PyTorch MPS / CUDA / Vulkan)       Executed on L1 Mac Mini M4 / L5 Mac Air / L3 Intel 2018 Mac Mini       │
 │                 │                                                                               │
 │                 ▼                                                                               │
 │  [ GGUF Export & Quantization ] ───> 4-Bit Quantized LoRA Merged to llama.cpp RPC (:50052)      │
@@ -750,7 +750,7 @@ $$\mathcal{R}_{energy} = 100.0 \cdot \min\left(1.0, \frac{T_{bonded} \text{ (Mbp
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **`L1 Mac_Node`** | Apple M4 Pro (14C CPU / 20C GPU) | 4.5 W | 38.0 W | $75.0^\circ\text{C}$ | 1.5 | High memory bandwidth sustain |
 | **`L2 MacBook_Pro`** | Intel / Metal GPU Worker | 8.0 W | 65.0 W | $80.0^\circ\text{C}$ | 1.2 | TB4 DMA line-rate sustain |
-| **`L3 Linux_Head`** | AMD Ryzen 7 5700U (8C/16T) | 6.0 W | 25.0 W | $78.0^\circ\text{C}$ | 1.8 | Linux kernel MPTCP packet forwarding |
+| **`L3 Linux_Head`** | Intel 2018 Mac Mini (Linux) (8C/16T) | 6.0 W | 25.0 W | $78.0^\circ\text{C}$ | 1.8 | Linux kernel MPTCP packet forwarding |
 | **`L5 MacBook_Air`** | Apple M4 (Fanless) | 3.0 W | 22.0 W | $70.0^\circ\text{C}$ | 2.5 | Thermal dissipation safety ceiling |
 | **`L6 Pixel_10`** | Google Tensor G5 (Edge TPU v2) | 0.8 W | 4.5 W | $38.0^\circ\text{C}$ | 5.0 | Sub-watt continuous NPU routing |
 | **`L7 Samsung_S20`** | Samsung Exynos 990 / NPU | 0.9 W | 5.0 W | $38.0^\circ\text{C}$ | 5.0 | Battery preservation on USB bus |
@@ -845,11 +845,11 @@ class ScriptArguments:
         metadata={"help": "Base model identifier or local checkpoint path"}
     )
     dataset_path: str = field(
-        default="/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/lora_datasets/mesh_dpo_preference_trajectories.jsonl",
+        default="/Volumes/Lauburu-Monorepo/04_data_and_memory/lora_datasets/mesh_dpo_preference_trajectories.jsonl",
         metadata={"help": "Path to JSONL preference trajectory dataset"}
     )
     output_dir: str = field(
-        default="/Users/aaron/DFS_UNIFIED/lora_datasets/checkpoints/mesh_dpo_governor",
+        default="/Volumes/Lauburu-Monorepo/04_data_and_memory/data/checkpoints/mesh_dpo_governor",
         metadata={"help": "Directory to save PEFT LoRA checkpoints"}
     )
     lora_rank: int = field(default=32, metadata={"help": "LoRA attention dimension rank"})
@@ -1292,8 +1292,8 @@ ENTRYPOINT ["make", "-j8", "V=s"]
 *Sandbox Execution Command:*
 ```bash
 docker run --rm --net=none --memory=8g --cpus=6 \
-  -v /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/open_source_mesh/sandboxes/src:/home/sandboxuser/openwrt/package/custom_patch:ro \
-  -v /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/open_source_mesh/sandboxes/bin:/home/sandboxuser/openwrt/bin \
+  -v /Volumes/Lauburu-Monorepo/00_core_infrastructure/open_source_mesh/sandboxes/src:/home/sandboxuser/openwrt/package/custom_patch:ro \
+  -v /Volumes/Lauburu-Monorepo/00_core_infrastructure/open_source_mesh/sandboxes/bin:/home/sandboxuser/openwrt/bin \
   lauburu/openwrt-sandbox:23.05
 ```
 
@@ -1420,15 +1420,15 @@ curl -Iv https://hs.lauburu.net:8443/derp
 nc -z -v -u 192.168.8.224 3478
 
 # 3. Verify OpenMPTCProuter Multipath & Glorytun UDP Aggregation
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/tensor_multipath_router.py --status
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/glorytun_multipath_bridge.py --test
+python3 /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/tensor_multipath_router.py --status
+python3 /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/glorytun_multipath_bridge.py --test
 
 # 4. Verify Thunderbolt 4 PCIe DMA Line Rate (Target: <0.3ms RTT @ 38.4 Gbps)
 ping -c 5 169.254.187.138
 
 # 5. Verify Canonical Port TUI Telemetry Store Snapshot
 python3 -c "
-import sys; sys.path.insert(0, '/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/canonical_port/tui')
+import sys; sys.path.insert(0, '/Volumes/Lauburu-Monorepo/01_apps/canonical_port/tui')
 from services.network_telemetry_store import network_telemetry_store
 snap = network_telemetry_store.get_current_snapshot(force_refresh=True)
 print('✅ Snapshot Generated:', snap.timestamp, '| Peers:', len(snap.headscale_peers))

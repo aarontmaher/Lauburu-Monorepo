@@ -4,7 +4,7 @@ Milestone 2 Verification Script: `verify_truth_audit.py`
 
 Independently probes all 4 target nodes:
   - Pixel_10 (via Termux SSH: ssh -p 8022 u0_a363@100.73.38.87)
-  - Samsung_S20 (via ADB TCP: adb -s 100.84.40.95:5555 shell)
+  - Samsung_S20 (via ADB TCP: adb -s 100.78.206.96:5555 shell)
   - Linux_Head_Node (via SSH relay: ssh root@100.122.185.123 dbclient -y linux@192.168.8.224)
   - Mac_Node (via local CLI: sysctl, vm_stat, pmset, netstat)
 

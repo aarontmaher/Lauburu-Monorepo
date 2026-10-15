@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Showrunner Lauburu // Mesh Engine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --primary: #00FF41;
+      --secondary: #FF00FF;
+      --bg: #09090B;
+    }
+    body {
+      background-color: var(--bg);
+      color: #F3F4F6;
+      font-family: 'Courier New', Courier, monospace;
+      transition: background-color 1.5s ease;
+    }
+    .neon-border-primary {
+      border: 1px solid var(--primary);
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+    }
+    .neon-border-secondary {
+      border: 1px solid var(--secondary);
+      box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    }
+    .neon-text-primary {
+      color: var(--primary);
+      text-shadow: 0 0 8px var(--primary);
+    }
+    .neon-text-secondary {
+      color: var(--secondary);
+      text-shadow: 0 0 8px var(--secondary);
+    }
+    .glass {
+      background: rgba(15, 15, 20, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    /* Custom terminal scrollbar */
+    ::-webkit-scrollbar, .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track, .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.4);
+    }
+    ::-webkit-scrollbar-thumb, .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 3px;
+    }
+    .pulse-dot {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col p-4 md:p-6 select-none">
+  
+  <!-- Header -->
+  <header class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b border-gray-800 mb-6 gap-4">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-black tracking-widest neon-text-primary flex items-center gap-3">
+        <span class="inline-block w-3 h-3 rounded-full bg-[var(--primary)] pulse-dot"></span>
+        LAUBURU SHOWRUNNER
+      </h1>
+      <p class="text-xs text-gray-400 tracking-wider mt-1">
+        7-LAYER AI MESH // AUTONOMOUS SIMULATION & TELEMETRY BROADCAST
+      </p>
+    </div>
+
+    <!-- View Switcher & Status Pill -->
+    <div class="flex items-center gap-3 flex-wrap text-xs">
+      <div class="glass p-1 rounded-xl border border-gray-700 flex items-center gap-1 shadow-inner">
+        <button id="btnModeSim" onclick="switchViewMode('simulation')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-[var(--primary)] text-black shadow-[0_0_10px_rgba(0,255,65,0.4)]">
+          🌐 MESH SIMULATION
+        </button>
+        <button id="btnModeArena" onclick="switchViewMode('arena')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">
+          🥋 TATAMI COMBAT ARENA
+        </button>
+      </div>
+      <div id="connectionStatus" class="glass px-3 py-1.5 rounded-full border border-gray-700 flex items-center gap-2">
+        <span id="connIndicator" class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+        <span id="connText" class="tracking-wider">CONNECTING...</span>
+      </div>
+      <div class="glass px-3 py-1.5 rounded-full border border-gray-700">
+        <span class="text-gray-400">RAM HEADROOM:</span>
+        <span id="ramStat" class="font-bold text-green-400 ml-1">-- GB</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Simulation View Wrapper -->
+  <div id="simulationView" class="flex-1 flex flex-col">
+  <!-- Main Content Grid -->
+  <main class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
+    
+    <!-- Left Column: Mesh Nodes & NPC Roster (Scrollable Telemetry Sidebar on Desktop, Full Scroll on Mobile) -->
+    <section class="flex flex-col gap-4 lg:overflow-y-auto lg:max-h-[calc(100vh-140px)] pr-2 custom-scrollbar">
+      
+      <!-- Node Topology Card -->
+      <div class="glass rounded-xl p-5 neon-border-primary flex flex-col gap-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-sm font-bold tracking-widest text-gray-300">HARDWARE TOPOLOGY</h2>
+          <span class="text-[10px] bg-green-950 text-green-400 px-2 py-0.5 rounded border border-green-800">RULE #3 COMPLIANT</span>
+        </div>
+        <div id="nodesList" class="flex flex-col gap-2.5 text-xs">
+          <!-- Node Items populated by JS -->
+          <div class="flex justify-between items-center p-2 rounded bg-black/40 border border-gray-800">
+            <span class="font-bold text-white">L1: Mac Mini Host (M4 Pro)</span>
+            <span class="text-green-400 font-mono" id="l1Status">21.6 GB AI // ONLINE</span>
+          </div>
+          <div class="flex justify-between items-center p-2 rounded bg-black/40 border border-gray-800">
+            <span class="font-bold text-white">L2: MacBook Pro (TB4 Bridge)</span>
+            <span class="text-green-400 font-mono" id="l2Status">14.0 GB // 0.28ms RTT</span>
+          </div>
+          <div class="flex justify-between items-center p-2 rounded bg-black/40 border border-gray-800">
+            <span class="font-bold text-white">L3: Linux Head Node (Ray/Petals)</span>
+            <span class="text-green-400 font-mono" id="l3Status">13.8 GB AI // ONLINE</span>
+          </div>
+          <div class="flex justify-between items-center p-2 rounded bg-black/40 border border-gray-800">
+            <span class="font-bold text-white">L5: MacBook Air (Metal Worker)</span>
+            <span class="text-purple-400 font-mono" id="l5Status">14.0 GB // STANDBY</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Line 1 Out-of-Band Bluetooth Terminal & No-IP Healing Card -->
+      <div class="glass rounded-xl p-5 neon-border-secondary flex flex-col gap-3">
+        <div class="flex justify-between items-center">
+          <h2 class="text-sm font-bold tracking-widest text-pink-400">LINE 1 OOB BLUETOOTH HEALING</h2>
+          <span class="text-[10px] bg-purple-950 text-purple-300 px-2 py-0.5 rounded border border-purple-800 font-mono">ZERO-IP CARRIER</span>
+        </div>
+        
+        <div class="flex flex-col gap-2 text-xs">
+          <div class="flex justify-between items-center p-2 rounded bg-black/40 border border-gray-800">
+            <span class="text-gray-400">RFCOMM Node:</span>
+            <span id="btPortStatus" class="font-mono text-cyan-400 font-bold">/dev/tty.Bluetooth-Incoming-Port</span>
+          </div>
+          
+          <div class="p-2 rounded bg-black/40 border border-gray-800 flex flex-col gap-1.5">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">Proximity Mesh Peers:</span>
+              <span id="btPeersCount" class="font-bold text-green-400 font-mono">3 Connected</span>
+            </div>
+            <div id="btPeersList" class="flex flex-wrap gap-1 mt-1">
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-950 border border-blue-800 text-blue-300 font-mono">L6: Pixel</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-950 border border-blue-800 text-blue-300 font-mono">L3: Linux</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-950 border border-blue-800 text-blue-300 font-mono">L7: S20+</span>
+            </div>
+          </div>
+
+          <div class="p-2 rounded bg-black/40 border border-gray-800 flex flex-col gap-1">
+            <div class="flex justify-between items-center text-[11px]">
+              <span class="text-gray-400">Continuous Drills:</span>
+              <span id="btDrillCounter" class="font-mono text-yellow-400 font-bold">#0 (100% Verified)</span>
+            </div>
+            <p id="btLastAction" class="text-[10px] text-gray-400 font-mono truncate">Waiting for next exercise cycle...</p>
+          </div>
+        </div>
+
+        <button id="triggerBtDrillBtn" type="button" class="w-full bg-gradient-to-r from-purple-700 to-pink-600 hover:from-purple-600 hover:to-pink-500 text-white font-bold py-2 px-3 rounded text-xs tracking-wider uppercase transition flex items-center justify-center gap-2 shadow-lg">
+          <span>⚡ TRIGGER NO-IP HEAL DRILL</span>
+        </button>
+      </div>
+
+      <!-- Autonomous Factions & NPU Roster -->
+      <div class="glass rounded-xl p-5 neon-border-secondary flex flex-col gap-4 flex-1">
+        <div class="flex justify-between items-center">
+          <h2 class="text-sm font-bold tracking-widest text-gray-300">DUAL-PLANE FACTIONS & NPU ROSTER</h2>
+          <span class="text-[10px] bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded border border-cyan-800 font-mono">2 PLANES ACTIVE</span>
+        </div>
+
+        <!-- Faction Selector Buttons -->
+        <div class="flex gap-2">
+          <button id="tabFactionsSovereign" type="button" class="flex-1 py-1.5 px-2 rounded text-[11px] font-bold tracking-wider bg-green-950/80 border border-green-600 text-green-400 transition">
+            SOVEREIGN
+          </button>
+          <button id="tabFactionsAdversarial" type="button" class="flex-1 py-1.5 px-2 rounded text-[11px] font-bold tracking-wider bg-black/40 border border-gray-700 text-gray-400 hover:text-pink-400 transition">
+            ADVERSARIAL
+          </button>
+        </div>
+
+        <!-- Faction Personas List -->
+        <div id="npcsList" class="flex flex-col gap-2.5 text-xs overflow-y-auto max-h-72">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Director Controls with Separate Group Event Injections -->
+      <div class="glass rounded-xl p-5 border border-gray-800 flex flex-col gap-3">
+        <div class="flex justify-between items-center">
+          <h2 class="text-sm font-bold tracking-widest text-gray-300">DIRECTOR EVENT INJECTION</h2>
+          <span class="text-[10px] text-gray-400 font-mono">SEPARATE QUEUES</span>
+        </div>
+
+        <!-- Queue Telemetry Indicators -->
+        <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+          <div class="p-1.5 rounded bg-green-950/30 border border-green-900/60 flex justify-between items-center">
+            <span class="text-green-400">Sovereign Queue:</span>
+            <span id="sovereignQueueCount" class="font-bold text-white">0</span>
+          </div>
+          <div class="p-1.5 rounded bg-pink-950/30 border border-pink-900/60 flex justify-between items-center">
+            <span class="text-pink-400">Adversarial Queue:</span>
+            <span id="adversarialQueueCount" class="font-bold text-white">0</span>
+          </div>
+        </div>
+
+        <form id="directorForm" class="flex flex-col gap-2.5">
+          <textarea id="directorInput" rows="2" placeholder="Inject narrative world event into simulation..."
+            class="bg-black/60 border border-gray-700 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--primary)] font-mono resize-none" required></textarea>
+          
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="injectSovereignBtn" class="bg-gradient-to-r from-green-700 to-emerald-600 hover:from-green-600 hover:to-emerald-500 text-black font-bold py-2 px-2 rounded text-[11px] tracking-wider uppercase transition shadow">
+              ⚡ SOVEREIGN
+            </button>
+            <button type="button" id="injectAdversarialBtn" class="bg-gradient-to-r from-red-700 to-pink-600 hover:from-red-600 hover:to-pink-500 text-white font-bold py-2 px-2 rounded text-[11px] tracking-wider uppercase transition shadow">
+              🔥 ADVERSARIAL
+            </button>
+          </div>
+
+          <div class="flex gap-2">
+            <button type="submit" class="flex-1 bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-1.5 px-3 rounded text-[11px] transition tracking-wider uppercase">
+              BROADCAST TO BOTH
+            </button>
+            <button type="button" id="pauseBtn" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-1.5 px-3 rounded text-[11px] transition">
+              PAUSE
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </section>
+
+    <!-- Center/Right Columns: Real-Time Narrative Stream -->
+    <section class="lg:col-span-2 flex flex-col glass rounded-xl neon-border-primary p-5 overflow-hidden">
+      
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-3 border-b border-gray-800 mb-4 gap-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-[var(--primary)] animate-ping"></span>
+          <h2 class="text-sm font-bold tracking-widest neon-text-primary">LIVE NARRATIVE FEED & AI DIALOGUE</h2>
+        </div>
+
+        <!-- Stream Filter Tabs -->
+        <div class="flex items-center gap-2">
+          <div class="flex rounded bg-black/60 p-0.5 border border-gray-800 text-[10px] font-mono">
+            <button id="filterAll" class="px-2 py-1 rounded bg-gray-800 text-white font-bold transition">ALL</button>
+            <button id="filterSovereign" class="px-2 py-1 rounded text-green-400 hover:bg-green-950/40 transition">SOVEREIGN</button>
+            <button id="filterAdversarial" class="px-2 py-1 rounded text-pink-400 hover:bg-pink-950/40 transition">ADVERSARIAL</button>
+          </div>
+
+          <div class="text-[10px] text-gray-400 font-mono flex gap-2 pl-2 border-l border-gray-800">
+            <span id="speedIndicator">8s</span>
+            <span id="episodeIndicator">EP: 1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Life Scenario Runner & Autopilot Control Bar -->
+      <div class="mb-3 p-2.5 rounded-lg bg-black/60 border border-gray-800 flex flex-col gap-2">
+        <div class="flex justify-between items-center flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-bold text-gray-300 tracking-wider">REAL-LIFE MESH SCENARIOS</span>
+            <span id="scenariosCountBadge" class="text-[9px] px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-mono">10 LOADED</span>
+          </div>
+          <button id="toggleAutopilotBtn" type="button" class="text-[10px] font-mono px-2 py-0.5 rounded border border-green-600 bg-green-950/60 text-green-400 hover:bg-green-900 transition flex items-center gap-1.5">
+            <span id="autopilotIndicatorDot" class="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping"></span>
+            <span id="autopilotBtnText">AUTOPILOT: SCENARIOS [ON]</span>
+          </button>
+        </div>
+
+        <!-- Quick Scenario Chips Row -->
+        <div id="scenarioChipsContainer" class="flex gap-1.5 overflow-x-auto pb-1 text-[10px] font-mono">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Active World Events Bar & Interestingness Ranking -->
+        <div class="border-t border-gray-800/80 pt-2 flex flex-col gap-1.5">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+              <span class="text-[9px] text-gray-400 uppercase font-bold tracking-wider">DEVELOPING WORLD EVENTS:</span>
+              <div class="flex rounded bg-black/60 p-0.5 border border-gray-800 text-[9px] font-mono">
+                <button id="sortEventsInterestBtn" type="button" class="px-2 py-0.5 rounded bg-yellow-950/80 border border-yellow-700 text-yellow-300 font-bold transition">🔥 BY INTEREST</button>
+                <button id="sortEventsRecentBtn" type="button" class="px-2 py-0.5 rounded text-gray-400 hover:text-white transition">⏱️ BY RECENT</button>
+              </div>
+            </div>
+            <span class="text-[8px] text-gray-500 font-mono">CLICK ANY EVENT TO INSPECT EXACT MULTI-STAGE NARRATIVE</span>
+          </div>
+          <div id="recentEventsChips" class="flex gap-1.5 overflow-x-auto max-w-full py-1 custom-scrollbar">
+            <!-- Event chips populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed Box -->
+      <div id="logStream" class="flex-1 overflow-y-auto flex flex-col gap-3 pr-2 font-mono text-xs">
+        <div class="text-gray-500 italic text-center my-auto py-8">
+          INITIALIZING SHOWRUNNER NEURAL FEED...
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="pt-3 border-t border-gray-800 mt-4 flex justify-between items-center text-[10px] text-gray-500">
+        <span>PERSISTENT VECTOR MEMORY: QDRANT ENABLED</span>
+        <span>SOVEREIGN: QWEN 3.8 MAX (:8082) // ADVERSARIAL: QWEN ABLITERATED (:8083)</span>
+      </div>
+
+    </section>
+
+  </main>
+  </div> <!-- /simulationView -->
+
+  <!-- Interactive AI Grappling Arena View -->
+  <div id="arenaView" class="hidden flex-1 flex flex-col gap-6">
+    
+    <!-- Top HUD: Dual Fighter Versus Banner -->
+    <div class="glass rounded-xl p-5 border border-cyan-800 shadow-2xl flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden">
+      
+      <!-- Fighter A (Left: Human Biometric Digital Twin) -->
+      <div class="flex-1 w-full bg-black/50 p-4 rounded-xl border border-green-700/60 flex flex-col gap-2 relative">
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] px-2 py-0.5 rounded bg-green-950 border border-green-600 text-green-300 font-bold uppercase">🥋 HUMAN DIGITAL TWIN</span>
+          <span class="text-xs font-mono text-gray-400">ELO: <span id="arenaFighterAElo" class="text-white font-bold">1550.0</span></span>
+        </div>
+        <div class="flex items-center justify-between mt-1">
+          <h3 id="arenaFighterAName" class="text-lg font-black tracking-wide text-green-400">Aaron (Movesense Twin)</h3>
+          <span id="arenaFighterAPoints" class="text-2xl font-black text-yellow-400 font-mono">0 <span class="text-xs text-gray-400">PTS</span></span>
+        </div>
+        
+        <!-- Stamina Reservoir Bar -->
+        <div class="flex flex-col gap-1 mt-1">
+          <div class="flex justify-between text-[11px] text-gray-400">
+            <span>STAMINA (50,000J)</span>
+            <span id="arenaFighterAStaminaPct" class="font-bold text-green-400">100.0%</span>
+          </div>
+          <div class="w-full bg-gray-900 rounded-full h-2 overflow-hidden border border-gray-800">
+            <div id="arenaFighterAStaminaBar" class="bg-gradient-to-r from-green-500 to-emerald-400 h-2 rounded-full transition-all duration-300" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- Biometrics Pill (Rule #0) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-gray-800/80 text-[10px] font-mono mt-1">
+          <div class="bg-black/40 p-1.5 rounded border border-gray-800">
+            <span class="text-gray-500 block">512Hz HR</span>
+            <span id="arenaBioHR" class="text-green-400 font-bold">-- BPM</span>
+          </div>
+          <div class="bg-black/40 p-1.5 rounded border border-gray-800">
+            <span class="text-gray-500 block">HRV RMSSD</span>
+            <span id="arenaBioRMSSD" class="text-cyan-400 font-bold">-- ms</span>
+          </div>
+          <div class="bg-black/40 p-1.5 rounded border border-gray-800">
+            <span class="text-gray-500 block">DFA-α1</span>
+            <span id="arenaBioAlpha1" class="text-yellow-400 font-bold">--</span>
+          </div>
+          <div class="bg-black/40 p-1.5 rounded border border-gray-800">
+            <span class="text-gray-500 block">ZONE 2</span>
+            <span id="arenaBioZone" class="text-emerald-400 font-bold truncate">STANDBY</span>
+          </div>
+        </div>
+
+        <!-- AI Level & Belt Rank Badge (Click to open breakdown) -->
+        <div onclick="openUserArenaAnalysisModal()" class="cursor-pointer bg-gradient-to-r from-purple-950/80 to-indigo-950/80 hover:from-purple-900 hover:to-indigo-900 border border-purple-500/70 p-2 rounded-lg flex items-center justify-between transition-all group mt-1 shadow-md">
+          <div class="flex items-center gap-2">
+            <span id="arenaFighterABeltBadge" class="w-3 h-5 rounded-xs border border-white/30 shadow-sm" style="background-color: #6B21A8;"></span>
+            <div class="flex flex-col">
+              <span class="text-[9px] text-purple-300 font-bold uppercase tracking-wider">AI GRAPPLING & CONDITIONING</span>
+              <span id="arenaFighterARankText" class="text-xs font-black text-white group-hover:text-purple-200 transition">PURPLE BELT // LVL 76</span>
+            </div>
+          </div>
+          <span class="text-[10px] text-purple-400 font-mono bg-purple-950/90 border border-purple-700/60 px-2 py-0.5 rounded group-hover:border-purple-400 transition">📊 AI ANALYSIS</span>
+        </div>
+
+        <!-- Position, Joint Torque, and Corner Directive -->
+        <div class="flex flex-col gap-1 text-xs mt-1 pt-2 border-t border-gray-800/80 font-mono">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-400">POSITION: <span id="arenaFighterAPos" class="font-bold text-cyan-300">STANDING</span></span>
+            <span class="text-gray-400">JOINT TORQUE: <span id="arenaFighterATorque" class="font-bold text-green-400">0.0 N·m</span></span>
+          </div>
+          <div class="flex justify-between items-center text-[10px]">
+            <span class="text-gray-400">CORNER DIRECTIVE:</span>
+            <span id="arenaFighterADirective" class="font-bold text-yellow-300 bg-yellow-950/50 border border-yellow-800/60 px-2 py-0.5 rounded">NONE (NEUTRAL)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VS Center Hub -->
+      <div class="flex flex-col items-center justify-center gap-2 min-w-[200px] text-center">
+        <span id="arenaMatchState" class="px-4 py-1 rounded-full text-xs font-bold bg-cyan-950 border border-cyan-500 text-cyan-300 shadow-[0_0_10px_rgba(0,255,255,0.3)] uppercase">
+          READY TO ROLL
+        </span>
+        <div class="text-3xl font-black text-white tracking-widest font-mono my-1" id="arenaMatchTimer">
+          00:00 <span class="text-xs text-gray-500">/ 05:00</span>
+        </div>
+        <span class="text-[10px] text-gray-500 font-mono tracking-wider" id="arenaMatchId">REP MATCH ID: --</span>
+        <div id="arenaActionFlash" class="text-xs text-yellow-300 font-bold font-mono bg-yellow-950/40 border border-yellow-800/60 px-3 py-1 rounded-full max-w-xs truncate animate-pulse">
+          🥋 Virtual Tatami Open
+        </div>
+      </div>
+
+      <!-- Fighter B (Right: Local AI Digital Twin) -->
+      <div class="flex-1 w-full bg-black/50 p-4 rounded-xl border border-pink-700/60 flex flex-col gap-2 relative">
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] px-2 py-0.5 rounded bg-pink-950 border border-pink-600 text-pink-300 font-bold uppercase">🤖 LOCAL AI DIGITAL TWIN</span>
+          <span class="text-xs font-mono text-gray-400">ELO: <span id="arenaFighterBElo" class="text-white font-bold">1530.0</span></span>
+        </div>
+        <div class="flex items-center justify-between mt-1">
+          <h3 id="arenaFighterBName" class="text-lg font-black tracking-wide text-pink-400">Apex-NPU (Systolic Sub Hunter)</h3>
+          <span id="arenaFighterBPoints" class="text-2xl font-black text-yellow-400 font-mono">0 <span class="text-xs text-gray-400">PTS</span></span>
+        </div>
+        
+        <!-- Stamina Reservoir Bar -->
+        <div class="flex flex-col gap-1 mt-1">
+          <div class="flex justify-between text-[11px] text-gray-400">
+            <span>STAMINA (50,000J)</span>
+            <span id="arenaFighterBStaminaPct" class="font-bold text-pink-400">100.0%</span>
+          </div>
+          <div class="w-full bg-gray-900 rounded-full h-2 overflow-hidden border border-gray-800">
+            <div id="arenaFighterBStaminaBar" class="bg-gradient-to-r from-pink-500 to-purple-400 h-2 rounded-full transition-all duration-300" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- Model Specs & Tactical Bias -->
+        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-800/80 text-[10px] font-mono mt-1">
+          <div class="bg-black/40 p-1.5 rounded border border-gray-800">
+            <span class="text-gray-500 block">ACCELERATOR</span>
+            <span id="arenaFighterBModel" class="text-pink-300 font-bold truncate">Apple ANE (INT8)</span>
+          </div>
+          <div class="bg-black/40 p-1.5 rounded border border-gray-800">
+            <span class="text-gray-500 block">TACTICAL BIAS</span>
+            <span id="arenaFighterBBias" class="text-purple-300 font-bold truncate">Submission Hunter</span>
+          </div>
+        </div>
+
+        <!-- Position & Joint Torque -->
+        <div class="flex justify-between items-center text-xs mt-1 pt-2 border-t border-gray-800/80">
+          <span class="text-gray-400">POSITION: <span id="arenaFighterBPos" class="font-bold text-pink-300">STANDING</span></span>
+          <span class="text-gray-400">JOINT TORQUE: <span id="arenaFighterBTorque" class="font-bold text-green-400">0.0 N·m</span></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Interactive Matside Corner Coaching Directives Bar -->
+    <div class="glass rounded-xl p-3.5 border border-yellow-800/60 bg-gradient-to-r from-yellow-950/30 via-black/40 to-yellow-950/30 flex flex-col md:flex-row items-center justify-between gap-3 shadow-xl">
+      <div class="flex items-center gap-3">
+        <span class="text-xl p-2 rounded-lg bg-yellow-950/80 border border-yellow-600/50">🗣️</span>
+        <div>
+          <div class="flex items-center gap-2">
+            <h4 class="text-xs font-black text-yellow-300 tracking-wider">MATSIDE CORNER COACHING DIRECTIVES</h4>
+            <span class="text-[9px] bg-yellow-950 text-yellow-400 px-1.5 py-0.5 rounded border border-yellow-700 font-mono">LIVE TACTICAL BIASING</span>
+          </div>
+          <p class="text-[11px] text-gray-400">Issue real-time technical commands to Aaron's digital twin during active sparring rolls</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="sendCornerDirective('CONSERVE_ZONE_2')" class="px-3 py-1.5 rounded-lg bg-green-950/80 hover:bg-green-800 border border-green-600 text-green-300 text-xs font-mono font-bold transition flex items-center gap-1.5 shadow-sm">
+          <span>🫀</span> CONSERVE ZONE 2
+        </button>
+        <button onclick="sendCornerDirective('HUNT_SUBMISSION')" class="px-3 py-1.5 rounded-lg bg-red-950/80 hover:bg-red-800 border border-red-600 text-red-300 text-xs font-mono font-bold transition flex items-center gap-1.5 shadow-sm">
+          <span>🔒</span> HUNT SUBMISSION
+        </button>
+        <button onclick="sendCornerDirective('SMASH_PASS')" class="px-3 py-1.5 rounded-lg bg-blue-950/80 hover:bg-blue-800 border border-blue-600 text-blue-300 text-xs font-mono font-bold transition flex items-center gap-1.5 shadow-sm">
+          <span>⚡</span> SMASH PASS
+        </button>
+        <button onclick="sendCornerDirective('PULL_GUARD')" class="px-3 py-1.5 rounded-lg bg-purple-950/80 hover:bg-purple-800 border border-purple-600 text-purple-300 text-xs font-mono font-bold transition flex items-center gap-1.5 shadow-sm">
+          <span>🥋</span> PULL GUARD
+        </button>
+        <button onclick="sendCornerDirective('SCRAMBLE_ESCAPE')" class="px-3 py-1.5 rounded-lg bg-amber-950/80 hover:bg-amber-800 border border-amber-600 text-amber-300 text-xs font-mono font-bold transition flex items-center gap-1.5 shadow-sm">
+          <span>💥</span> SCRAMBLE ESCAPE
+        </button>
+        <button onclick="sendCornerDirective('RESET_NEUTRAL')" class="px-2.5 py-1.5 rounded-lg bg-gray-900 hover:bg-gray-800 border border-gray-700 text-gray-400 hover:text-white text-xs font-mono font-bold transition">
+          NEUTRAL
+        </button>
+      </div>
+    </div>
+
+    <!-- Arena Core: 10m x 10m Tatami Canvas + Live Technical Commentary -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Tatami Visualizer Canvas (7 Cols) -->
+      <div class="lg:col-span-7 glass rounded-xl p-5 border border-gray-800 flex flex-col gap-4 shadow-xl">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+            <h2 class="text-sm font-bold tracking-widest text-gray-200">10m x 10m VIRTUAL TATAMI CANVAS</h2>
+          </div>
+          <span class="text-[10px] text-gray-400 font-mono">SCALE: 1m = 40px // OUT-OF-BOUNDS GATE: 4.8m</span>
+        </div>
+
+        <!-- Tatami Mat SVG Canvas -->
+        <div class="w-full aspect-square max-h-[420px] bg-[#0c1017] rounded-xl border-2 border-gray-800 relative overflow-hidden flex items-center justify-center p-4">
+          <svg id="tatamiCanvas" viewBox="-5.5 -5.5 11 11" class="w-full h-full">
+            <!-- Grid Lines -->
+            <defs>
+              <pattern id="grid" width="1" height="1" patternUnits="userSpaceOnUse">
+                <path d="M 1 0 L 0 0 0 1" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.04" />
+              </pattern>
+            </defs>
+            <rect x="-5" y="-5" width="10" height="10" fill="url(#grid)" />
+            
+            <!-- Out of bounds red zone warning -->
+            <rect x="-5" y="-5" width="10" height="10" fill="none" stroke="#ef4444" stroke-width="0.08" stroke-dasharray="0.3 0.2" opacity="0.6"/>
+            <!-- Safety Area Inner Mat -->
+            <rect x="-4.2" y="-4.2" width="8.4" height="8.4" fill="rgba(30, 41, 59, 0.4)" stroke="#0ea5e9" stroke-width="0.05" />
+            <!-- Center Circle -->
+            <circle cx="0" cy="0" r="1.5" fill="none" stroke="#38bdf8" stroke-width="0.05" opacity="0.7" />
+            <circle cx="0" cy="0" r="0.2" fill="#38bdf8" />
+            
+            <!-- Dynamic Connection Line between fighters -->
+            <line id="fighterEngagementLine" x1="-1.2" y1="0" x2="1.2" y2="0" stroke="rgba(255,255,255,0.3)" stroke-width="0.06" stroke-dasharray="0.1 0.1"/>
+
+            <!-- Fighter A Avatar (Green) -->
+            <g id="avatarFighterA" transform="translate(-1.2, 0)">
+              <circle r="0.45" fill="#10b981" opacity="0.3" class="animate-ping"/>
+              <circle r="0.35" fill="#059669" stroke="#10b981" stroke-width="0.06"/>
+              <text x="0" y="0.12" font-size="0.35" font-family="monospace" font-weight="bold" fill="white" text-anchor="middle">A</text>
+            </g>
+
+            <!-- Fighter B Avatar (Pink) -->
+            <g id="avatarFighterB" transform="translate(1.2, 0)">
+              <circle r="0.45" fill="#ec4899" opacity="0.3" class="animate-ping"/>
+              <circle r="0.35" fill="#db2777" stroke="#f472b6" stroke-width="0.06"/>
+              <text x="0" y="0.12" font-size="0.35" font-family="monospace" font-weight="bold" fill="white" text-anchor="middle">B</text>
+            </g>
+          </svg>
+
+          <!-- Floating Submission Risk Overlay (Only appears during joint tension) -->
+          <div id="submissionWarningBadge" class="hidden absolute top-4 left-4 right-4 bg-red-950/90 border border-red-500 text-red-200 text-xs px-3 py-1.5 rounded-lg font-bold flex items-center justify-between shadow-2xl backdrop-blur-md">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+              <span id="submissionWarningText">JOINT LOCK ENGAGED</span>
+            </span>
+            <span id="submissionTorquePill" class="text-yellow-300 font-mono">-- N·m / 45 N·m</span>
+          </div>
+        </div>
+
+        <!-- Match Controls Bar -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <select id="selectFighterA" class="bg-black/70 border border-gray-700 text-green-300 text-xs rounded-lg p-2 font-mono flex-1 sm:flex-initial">
+              <option value="aaron_twin">Aaron (Movesense Twin)</option>
+            </select>
+            <span class="text-gray-500 text-xs font-bold">VS</span>
+            <select id="selectFighterB" class="bg-black/70 border border-gray-700 text-pink-300 text-xs rounded-lg p-2 font-mono flex-1 sm:flex-initial">
+              <option value="apex_npu">Apex-NPU (Sub Hunter)</option>
+              <option value="nyx_npu">Nyx-NPU (Leglocker)</option>
+              <option value="sovereign_qwen">Sovereign-Qwen (Passer)</option>
+              <option value="nexus_core">Nexus-Core (Guard)</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <button id="btnStartArenaMatch" onclick="startArenaMatch()" class="flex-1 sm:flex-initial px-4 py-2 rounded-lg bg-green-500 text-black font-bold text-xs hover:bg-green-400 transition shadow-[0_0_15px_rgba(0,255,65,0.3)]">
+              ▶ START ROLL
+            </button>
+            <button id="btnTickArenaMatch" onclick="tickArenaMatch()" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cyan-600 text-white font-bold text-xs hover:bg-cyan-500 transition">
+              ⚡ TICK (+5s)
+            </button>
+            <button id="btnSimFullArena" onclick="tickArenaMatch()" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700 transition border border-white/10">
+              📡 LIVE SENSOR SYNC
+            </button>
+            <button id="btnResetArena" onclick="resetArenaMat()" class="px-3 py-2 rounded-lg bg-gray-800 text-gray-400 font-bold text-xs hover:bg-gray-700 transition">
+              🔄
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Technical Commentary Console (5 Cols) -->
+      <div class="lg:col-span-5 glass rounded-xl p-5 border border-gray-800 flex flex-col gap-3 shadow-xl max-h-[500px]">
+        <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
+            <h2 class="text-sm font-bold tracking-widest text-gray-200">PLAY-BY-PLAY TECHNICAL COMMENTARY</h2>
+          </div>
+          <span class="text-[10px] text-gray-500 font-mono">BJJ / ADCC RULES</span>
+        </div>
+
+        <div id="arenaCommentaryLog" class="flex-1 overflow-y-auto flex flex-col gap-2.5 pr-2 font-mono text-xs custom-scrollbar">
+          <div class="text-gray-500 italic text-center py-10">
+            Awaiting match start... Select fighters and click ▶ START ROLL.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Matrix: Bradley-Terry Leaderboard & OPML Graph Telemetry -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Bradley-Terry ELO Leaderboard (2 Cols) -->
+      <div class="lg:col-span-2 glass rounded-xl p-5 border border-gray-800 flex flex-col gap-4 shadow-xl">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-sm font-bold tracking-widest text-gray-200">BRADLEY-TERRY ELO SWARM LEADERBOARD</h2>
+            <p class="text-[10px] text-gray-500">Autonomous peer-to-peer rating dynamics (K=32, Tri-Vault Synchronized)</p>
+          </div>
+          <span class="text-[10px] bg-cyan-950 text-cyan-400 px-2 py-0.5 rounded border border-cyan-800">REP v1.0</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead>
+              <tr class="border-b border-gray-800 text-gray-500 text-[10px]">
+                <th class="py-2">RANK</th>
+                <th class="py-2">FIGHTER</th>
+                <th class="py-2">TYPE / SILICON</th>
+                <th class="py-2">ELO RATING</th>
+                <th class="py-2">RECORD (W-L-D)</th>
+                <th class="py-2">SUBS</th>
+                <th class="py-2">TACTICAL BIAS</th>
+              </tr>
+            </thead>
+            <tbody id="arenaLeaderboardBody" class="divide-y divide-gray-800/60">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3,044 OPML Technique Graph & Safety Tap Gate Stats (1 Col) -->
+      <div class="glass rounded-xl p-5 border border-gray-800 flex flex-col gap-4 shadow-xl">
+        <div class="flex justify-between items-center">
+          <h2 class="text-sm font-bold tracking-widest text-gray-200">OPML TACTICAL GRAPH</h2>
+          <span class="text-[10px] bg-green-950 text-green-400 px-2 py-0.5 rounded border border-green-800">RULE #0 VERIFIED</span>
+        </div>
+
+        <div class="flex flex-col gap-3 text-xs font-mono">
+          <div class="flex justify-between p-2 rounded bg-black/40 border border-gray-800">
+            <span class="text-gray-400">Total Martial Nodes:</span>
+            <span id="opmlTotalNodes" class="text-green-400 font-bold">3,044</span>
+          </div>
+          <div class="flex justify-between p-2 rounded bg-black/40 border border-gray-800">
+            <span class="text-gray-400">Tactical Positions:</span>
+            <span class="text-cyan-400 font-bold">9 Positions</span>
+          </div>
+          <div class="flex justify-between p-2 rounded bg-black/40 border border-gray-800">
+            <span class="text-gray-400">Critical Tap Gate:</span>
+            <span class="text-red-400 font-bold">45.0 N·m (Elbow/Knee)</span>
+          </div>
+          <div class="flex justify-between p-2 rounded bg-black/40 border border-gray-800">
+            <span class="text-gray-400">Biomechanical Arm:</span>
+            <span class="text-yellow-400 font-bold">0.35m Lever</span>
+          </div>
+          <div class="flex justify-between p-2 rounded bg-black/40 border border-gray-800">
+            <span class="text-gray-400">Movesense Stream:</span>
+            <span id="arenaSensorStatusPill" class="text-gray-400 font-bold truncate">STANDBY</span>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-gray-800 text-[10px] text-gray-500">
+          Source: <span class="text-gray-400">10_spatial_grappling_kinematics/mindomo/grappling.opml</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div> <!-- /arenaView -->
+
+  <!-- User AI Conditioning & Grappling Ability Breakdown Modal -->
+  <div id="userAnalysisModalBackdrop" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 z-50 transition-all duration-200">
+    <div id="userAnalysisModal" class="bg-[#0b0f19] border border-purple-500/70 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl font-mono animate-fadeIn">
+      <!-- Header -->
+      <div class="p-5 border-b border-gray-800 flex justify-between items-start bg-gradient-to-r from-purple-950/40 via-black/40 to-indigo-950/40">
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-[10px] px-2.5 py-0.5 rounded bg-purple-950 border border-purple-600 text-purple-300 font-bold uppercase tracking-wider">🥋 AI MARTIAL & BIOMETRIC REPERTOIRE</span>
+            <span class="text-[10px] px-2.5 py-0.5 rounded bg-green-950 border border-green-600 text-green-300 font-bold uppercase">RULE #0 VERIFIED</span>
+          </div>
+          <div class="flex items-center gap-3 mt-1.5">
+            <h3 id="analysisModalName" class="text-xl font-black text-white tracking-wide">Aaron (Movesense Twin)</h3>
+            <span id="analysisModalBeltBadge" class="px-2.5 py-0.5 rounded text-xs font-black text-white uppercase border border-white/20" style="background-color: #6B21A8;">
+              PURPLE BELT
+            </span>
+          </div>
+          <span class="text-xs text-gray-400 font-sans">Dynamic physical conditioning & OPML martial ability level calculated in real time.</span>
+        </div>
+        <button onclick="closeUserArenaAnalysisModal()" class="text-gray-400 hover:text-white text-lg px-2.5 py-1 rounded bg-gray-900 border border-gray-700 hover:bg-gray-800 transition">✕</button>
+      </div>
+
+      <!-- Scrollable Content Body -->
+      <div class="p-6 overflow-y-auto flex flex-col gap-5 text-xs custom-scrollbar">
+        
+        <!-- Top Composite Score Hero -->
+        <div class="p-4 rounded-xl bg-gradient-to-r from-purple-950/50 via-indigo-950/30 to-blue-950/50 border border-purple-500/60 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div class="flex flex-col gap-1 text-center sm:text-left">
+            <span class="text-[10px] text-purple-300 font-bold uppercase tracking-widest">COMPOSITE FIGHTER LEVEL</span>
+            <div class="flex items-baseline gap-2 justify-center sm:justify-start">
+              <span id="analysisCompositeLevel" class="text-4xl font-black text-white font-mono">76</span>
+              <span class="text-sm font-bold text-purple-400">/ 100</span>
+            </div>
+            <span id="analysisRankLabel" class="text-xs font-bold text-gray-300">PURPLE BELT (2 STRIPES)</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 w-full sm:w-auto">
+            <div class="p-2.5 rounded-lg bg-black/60 border border-purple-800/60 text-center">
+              <span class="text-[10px] text-gray-400 block">CONDITIONING</span>
+              <span id="analysisHeroCondScore" class="text-lg font-black text-green-400">71.0</span>
+              <span id="analysisHeroCondTier" class="text-[9px] text-gray-400 block truncate max-w-[120px]">TIER 3 (AEROBIC)</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-black/60 border border-purple-800/60 text-center">
+              <span class="text-[10px] text-gray-400 block">GRAPPLING SKILL</span>
+              <span id="analysisHeroGrapScore" class="text-lg font-black text-cyan-400">81.1</span>
+              <span id="analysisHeroArchetype" class="text-[9px] text-gray-400 block truncate max-w-[120px]">SUBMISSION HUNTER</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 1: Physical Conditioning & Aerobic Engine (Movesense 512Hz ECG) -->
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between items-center border-b border-gray-800 pb-1.5">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🫀</span>
+              <h4 class="text-xs font-bold text-green-400 uppercase tracking-wider">AUTHENTIC HEALTH METRIC CONDITIONING</h4>
+            </div>
+            <span id="analysisSensorStatus" class="text-[10px] text-green-400 font-bold">512Hz LIVE ECG</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono">
+            <div class="p-3 rounded-lg bg-black/40 border border-gray-800 flex flex-col gap-1">
+              <div class="flex justify-between text-gray-400">
+                <span>DFA-α1 AEROBIC</span>
+                <span id="analysisDfaAlpha1" class="text-yellow-400 font-bold">--</span>
+              </div>
+              <div class="text-[10px] text-gray-500">Zone 2 lactate threshold (>0.75 is aerobic)</div>
+              <div class="w-full bg-gray-900 h-1.5 rounded-full mt-1 overflow-hidden">
+                <div id="analysisDfaBar" class="bg-yellow-400 h-full rounded-full" style="width: 70%;"></div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-black/40 border border-gray-800 flex flex-col gap-1">
+              <div class="flex justify-between text-gray-400">
+                <span>HRV RMSSD</span>
+                <span id="analysisHrvRmssd" class="text-cyan-400 font-bold">-- ms</span>
+              </div>
+              <div class="text-[10px] text-gray-500">Parasympathetic recovery readiness</div>
+              <div class="w-full bg-gray-900 h-1.5 rounded-full mt-1 overflow-hidden">
+                <div id="analysisHrvBar" class="bg-cyan-400 h-full rounded-full" style="width: 75%;"></div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-black/40 border border-gray-800 flex flex-col gap-1">
+              <div class="flex justify-between text-gray-400">
+                <span>CARDIO ENGINE</span>
+                <span id="analysisStaminaCap" class="text-green-400 font-bold">50,000 J</span>
+              </div>
+              <div class="text-[10px] text-gray-500">Dynamic stamina capacity & pacing</div>
+              <div class="w-full bg-gray-900 h-1.5 rounded-full mt-1 overflow-hidden">
+                <div id="analysisStaminaBar" class="bg-green-400 h-full rounded-full" style="width: 80%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tactical Recommendation Callout -->
+          <div class="p-3 rounded-lg bg-green-950/30 border border-green-800/50 flex items-start gap-2.5">
+            <span class="text-base">💡</span>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-[10px] text-green-300 font-bold uppercase">AI PHYSIOLOGICAL RECOMMENDATION</span>
+              <p id="analysisRecommendation" class="text-xs text-gray-300 font-sans leading-relaxed">
+                Optimal autonomic state. Heart rate variability is high and DFA-α1 confirms active aerobic recovery.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Grappling Proficiency & 3,044 OPML Repertoire -->
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between items-center border-b border-gray-800 pb-1.5">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🥋</span>
+              <h4 class="text-xs font-bold text-purple-400 uppercase tracking-wider">OPML MARTIAL TECHNIQUE REPERTOIRE</h4>
+            </div>
+            <span class="text-[10px] text-gray-500 font-mono">3,044 OPML NODES</span>
+          </div>
+
+          <!-- 5 Discipline Ranks Breakdown -->
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 font-mono">
+            <div class="p-2.5 rounded-lg bg-black/40 border border-gray-800 text-center">
+              <span class="text-[10px] text-gray-400 block">GUARD (25%)</span>
+              <span id="analysisDiscGuard" class="text-sm font-bold text-purple-300">84.0</span>
+              <div class="w-full bg-gray-900 h-1 rounded-full mt-1">
+                <div id="analysisBarGuard" class="bg-purple-400 h-full rounded-full" style="width: 84%;"></div>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-black/40 border border-gray-800 text-center">
+              <span class="text-[10px] text-gray-400 block">PASSING (25%)</span>
+              <span id="analysisDiscPassing" class="text-sm font-bold text-blue-300">80.0</span>
+              <div class="w-full bg-gray-900 h-1 rounded-full mt-1">
+                <div id="analysisBarPassing" class="bg-blue-400 h-full rounded-full" style="width: 80%;"></div>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-black/40 border border-gray-800 text-center">
+              <span class="text-[10px] text-gray-400 block">SUBMISSION (25%)</span>
+              <span id="analysisDiscSub" class="text-sm font-bold text-red-300">85.0</span>
+              <div class="w-full bg-gray-900 h-1 rounded-full mt-1">
+                <div id="analysisBarSub" class="bg-red-400 h-full rounded-full" style="width: 85%;"></div>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-black/40 border border-gray-800 text-center">
+              <span class="text-[10px] text-gray-400 block">ESCAPE (15%)</span>
+              <span id="analysisDiscEscape" class="text-sm font-bold text-amber-300">82.0</span>
+              <div class="w-full bg-gray-900 h-1 rounded-full mt-1">
+                <div id="analysisBarEscape" class="bg-amber-400 h-full rounded-full" style="width: 82%;"></div>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-black/40 border border-gray-800 text-center col-span-2 sm:col-span-1">
+              <span class="text-[10px] text-gray-400 block">TAKEDOWN (10%)</span>
+              <span id="analysisDiscTakedown" class="text-sm font-bold text-green-300">78.0</span>
+              <div class="w-full bg-gray-900 h-1 rounded-full mt-1">
+                <div id="analysisBarTakedown" class="bg-green-400 h-full rounded-full" style="width: 78%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- OPML Graph Repertoire Depth Stats -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[10px]">
+            <div class="p-2 rounded bg-black/50 border border-gray-800 flex justify-between">
+              <span class="text-gray-400">Total Nodes:</span>
+              <span id="analysisOpmlTotal" class="text-white font-bold">3,044</span>
+            </div>
+            <div class="p-2 rounded bg-black/50 border border-gray-800 flex justify-between">
+              <span class="text-gray-400">Submission Arsenal:</span>
+              <span id="analysisOpmlSubs" class="text-red-400 font-bold">12 Locks/Chokes</span>
+            </div>
+            <div class="p-2 rounded bg-black/50 border border-gray-800 flex justify-between">
+              <span class="text-gray-400">Safety Tap Gate:</span>
+              <span class="text-yellow-400 font-bold">45.0 N·m</span>
+            </div>
+            <div class="p-2 rounded bg-black/50 border border-gray-800 flex justify-between">
+              <span class="text-gray-400">Lever Arm:</span>
+              <span class="text-cyan-400 font-bold">0.35m</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="p-4 border-t border-gray-800 bg-black/40 flex justify-between items-center">
+        <span class="text-[10px] text-gray-500">TRI-VAULT SYNCED // ZERO-MOCK COMPLIANT</span>
+        <button onclick="closeUserArenaAnalysisModal()" class="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition shadow-md">
+          DONE
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Narrative World Event Inspector Modal -->
+  <div id="eventModalBackdrop" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 z-50 transition-all duration-200">
+    <div id="eventModal" class="bg-[#0b0f19] border border-cyan-500/60 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl font-mono animate-fadeIn">
+      <!-- Header -->
+      <div class="p-4 border-b border-gray-800 flex justify-between items-start bg-black/40">
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span id="modalCategoryBadge" class="text-[10px] px-2 py-0.5 rounded bg-cyan-950 border border-cyan-700 text-cyan-300 font-bold uppercase">NETWORK RESILIENCY</span>
+            <span id="modalSourceBadge" class="text-[10px] px-2 py-0.5 rounded bg-purple-950 border border-purple-700 text-purple-300 font-bold uppercase">CONTINUOUS SCENARIO</span>
+            <span id="modalGroupBadge" class="text-[10px] px-2 py-0.5 rounded bg-green-950 border border-green-700 text-green-300 font-bold uppercase">ALL PLANES</span>
+          </div>
+          <h3 id="modalEventTitle" class="text-base font-bold text-white tracking-wide mt-1">Thunderbolt 4 DMA Latency Spike & Tailscale Fallback</h3>
+          <span id="modalTimestamp" class="text-[10px] text-gray-500">2026-09-11 02:45:00 // ID: evt_123456</span>
+        </div>
+        <button id="modalCloseBtn" class="text-gray-400 hover:text-white text-lg px-2 py-1 rounded bg-gray-900 border border-gray-700 hover:bg-gray-800 transition">✕</button>
+      </div>
+
+      <!-- Modal Body Scrollable -->
+      <div class="p-5 overflow-y-auto flex flex-col gap-4 text-xs custom-scrollbar">
+        <!-- Dynamic Interest Score & Multi-Stage Progression -->
+        <div class="p-3 rounded-lg bg-gradient-to-r from-yellow-950/40 via-purple-950/40 to-cyan-950/40 border border-yellow-800/60 flex flex-col gap-2">
+          <div class="flex justify-between items-center flex-wrap gap-1">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-yellow-400 flex items-center gap-1">
+                <span>🔥 INTEREST SCORE:</span>
+                <span id="modalInterestScore" class="font-mono text-sm font-black">--</span>/100
+              </span>
+              <span id="modalInterestTier" class="text-[9px] px-1.5 py-0.5 rounded bg-red-950 border border-red-700 text-red-300 font-mono font-bold uppercase">CRITICAL</span>
+            </div>
+            <span id="modalStageLabel" class="text-[10px] px-2 py-0.5 rounded bg-cyan-950 border border-cyan-600 text-cyan-300 font-bold font-mono uppercase">STAGE 1/4: CATALYST</span>
+          </div>
+
+          <!-- Visual Multi-Stage Breadcrumb -->
+          <div class="grid grid-cols-4 gap-1.5 text-[9px] font-mono text-center pt-1">
+            <div id="stepStage1" class="p-1.5 rounded bg-black/60 border border-gray-700 text-gray-400 transition-all">1. CATALYST</div>
+            <div id="stepStage2" class="p-1.5 rounded bg-black/60 border border-gray-700 text-gray-400 transition-all">2. ESCALATE</div>
+            <div id="stepStage3" class="p-1.5 rounded bg-black/60 border border-gray-700 text-gray-400 transition-all">3. ACTUATION</div>
+            <div id="stepStage4" class="p-1.5 rounded bg-black/60 border border-gray-700 text-gray-400 transition-all">4. RESOLVED</div>
+          </div>
+        </div>
+
+        <!-- Scenario Catalyst / Prompt -->
+        <div class="p-3 rounded-lg bg-black/50 border border-gray-800 flex flex-col gap-1.5">
+          <div class="text-[10px] text-cyan-400 font-bold tracking-wider uppercase">SCENARIO CATALYST & NARRATIVE CONTEXT</div>
+          <p id="modalDescription" class="text-gray-200 leading-relaxed font-sans text-sm"></p>
+        </div>
+
+        <!-- Telemetry Snapshot at Trigger (Scrollable) -->
+        <div class="p-3 rounded-lg bg-black/40 border border-gray-800 flex flex-col gap-2 max-h-48 overflow-y-auto custom-scrollbar">
+          <div class="text-[10px] text-gray-400 font-bold tracking-wider uppercase">ZERO-MOCK TELEMETRY SNAPSHOT (AT TRIGGER TIME)</div>
+          <div class="grid grid-cols-3 gap-2 text-[10px]">
+            <div class="p-1.5 rounded bg-gray-950 border border-gray-800">
+              <div class="text-gray-500">Host Free RAM:</div>
+              <div id="modalTelemRam" class="font-bold text-green-400 text-xs mt-0.5">--</div>
+            </div>
+            <div class="p-1.5 rounded bg-gray-950 border border-gray-800">
+              <div class="text-gray-500">TB4 Bridge Latency:</div>
+              <div id="modalTelemTb4" class="font-bold text-cyan-400 text-xs mt-0.5">--</div>
+            </div>
+            <div class="p-1.5 rounded bg-gray-950 border border-gray-800">
+              <div class="text-gray-500">Bluetooth RFCOMM:</div>
+              <div id="modalTelemBt" class="font-bold text-purple-400 text-xs mt-0.5">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-Agent Causal Chain -->
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] text-green-400 font-bold tracking-wider uppercase">MULTI-AGENT CAUSAL RESPONSE CHAIN</span>
+            <span id="modalActionsCount" class="text-[10px] text-gray-500 font-mono">0 Responses</span>
+          </div>
+          <div id="modalActionsList" class="flex flex-col gap-2">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Synthesized Narrative Arc & Consequence -->
+        <div class="p-3 rounded-lg bg-cyan-950/20 border border-cyan-800/60 flex flex-col gap-1.5">
+          <div class="text-[10px] text-cyan-300 font-bold tracking-wider uppercase">SYNTHESIZED NARRATIVE ARC & SYSTEM CONSEQUENCE</div>
+          <p id="modalSynthesizedStory" class="text-gray-300 leading-relaxed font-sans text-xs whitespace-pre-line"></p>
+        </div>
+
+        <!-- Tri-Vault Sync Status -->
+        <div class="p-2.5 rounded-lg bg-black/60 border border-gray-800/80 flex justify-between items-center text-[10px] text-gray-500 flex-wrap gap-2">
+          <span>OBSIDIAN: <span class="text-green-400">EPISODES.md SYNCED</span></span>
+          <span>LORA LAKE: <span class="text-purple-400">TRL/PEFT DPO PAIR INDEXED</span></span>
+          <span>VECTOR: <span class="text-cyan-400">QDRANT AST VALIDATED</span></span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="p-3 border-t border-gray-800 bg-black/60 flex justify-end gap-2">
+        <button id="modalCloseBtnFooter" class="px-4 py-1.5 rounded bg-gray-800 hover:bg-gray-700 text-white font-bold text-xs transition">
+          CLOSE NARRATIVE
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${wsProtocol}//${window.location.host}/ws/sim_stream`;
+
+    let socket;
+    let isPaused = false;
+    let currentFilter = 'all'; // 'all', 'non_abliterated', 'abliterated'
+    let activeFactionTab = 'sovereign'; // 'sovereign', 'adversarial'
+    let rawLogs = [];
+    let cachedGroups = null;
+
+    const logStream = document.getElementById('logStream');
+    const connIndicator = document.getElementById('connIndicator');
+    const connText = document.getElementById('connText');
+    const npcsList = document.getElementById('npcsList');
+    const ramStat = document.getElementById('ramStat');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const directorForm = document.getElementById('directorForm');
+    const directorInput = document.getElementById('directorInput');
+
+    const tabFactionsSovereign = document.getElementById('tabFactionsSovereign');
+    const tabFactionsAdversarial = document.getElementById('tabFactionsAdversarial');
+    const injectSovereignBtn = document.getElementById('injectSovereignBtn');
+    const injectAdversarialBtn = document.getElementById('injectAdversarialBtn');
+    const sovereignQueueCount = document.getElementById('sovereignQueueCount');
+    const adversarialQueueCount = document.getElementById('adversarialQueueCount');
+
+    const filterAll = document.getElementById('filterAll');
+    const filterSovereign = document.getElementById('filterSovereign');
+    const filterAdversarial = document.getElementById('filterAdversarial');
+
+    let cachedScenarios = {};
+    let cachedEvents = [];
+    let currentActiveModalEventId = null;
+    let isAutopilotEnabled = true;
+    let currentEventSort = 'interesting'; // 'interesting' or 'recent'
+
+    const sortEventsInterestBtn = document.getElementById('sortEventsInterestBtn');
+    const sortEventsRecentBtn = document.getElementById('sortEventsRecentBtn');
+    const modalInterestScore = document.getElementById('modalInterestScore');
+    const modalInterestTier = document.getElementById('modalInterestTier');
+    const modalStageLabel = document.getElementById('modalStageLabel');
+    const stepStage1 = document.getElementById('stepStage1');
+    const stepStage2 = document.getElementById('stepStage2');
+    const stepStage3 = document.getElementById('stepStage3');
+    const stepStage4 = document.getElementById('stepStage4');
+
+    const toggleAutopilotBtn = document.getElementById('toggleAutopilotBtn');
+    const autopilotBtnText = document.getElementById('autopilotBtnText');
+    const autopilotIndicatorDot = document.getElementById('autopilotIndicatorDot');
+    const scenarioChipsContainer = document.getElementById('scenarioChipsContainer');
+    const recentEventsChips = document.getElementById('recentEventsChips');
+    const scenariosCountBadge = document.getElementById('scenariosCountBadge');
+
+    const eventModalBackdrop = document.getElementById('eventModalBackdrop');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalCloseBtnFooter = document.getElementById('modalCloseBtnFooter');
+    const modalCategoryBadge = document.getElementById('modalCategoryBadge');
+    const modalSourceBadge = document.getElementById('modalSourceBadge');
+    const modalGroupBadge = document.getElementById('modalGroupBadge');
+    const modalEventTitle = document.getElementById('modalEventTitle');
+    const modalTimestamp = document.getElementById('modalTimestamp');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalTelemRam = document.getElementById('modalTelemRam');
+    const modalTelemTb4 = document.getElementById('modalTelemTb4');
+    const modalTelemBt = document.getElementById('modalTelemBt');
+    const modalActionsCount = document.getElementById('modalActionsCount');
+    const modalActionsList = document.getElementById('modalActionsList');
+    const modalSynthesizedStory = document.getElementById('modalSynthesizedStory');
+
+    function connect() {
+      socket = new WebSocket(wsUrl);
+
+      socket.onopen = () => {
+        connIndicator.className = 'w-2.5 h-2.5 rounded-full bg-green-400 pulse-dot';
+        connText.textContent = 'NEURAL LINK: ACTIVE';
+        connText.className = 'tracking-wider text-green-400 font-bold';
+        fetchGroups();
+      };
+
+      socket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          handleMessage(data);
+        } catch (e) {
+          console.error('Failed to parse message:', e);
+        }
+      };
+
+      socket.onclose = () => {
+        connIndicator.className = 'w-2.5 h-2.5 rounded-full bg-red-500';
+        connText.textContent = 'NEURAL LINK: RECONNECTING';
+        connText.className = 'tracking-wider text-red-400 font-bold';
+        setTimeout(connect, 3000);
+      };
+
+      socket.onerror = () => {
+        socket.close();
+      };
+    }
+
+    async function fetchGroups() {
+      try {
+        const resp = await fetch('/api/groups');
+        if (resp.ok) {
+          const data = await resp.json();
+          cachedGroups = data.groups;
+          updateQueueCounts(data.active_queues);
+          renderFactionPersonas();
+        }
+      } catch (err) {
+        console.warn('Failed to fetch groups:', err);
+      }
+    }
+
+    function updateQueueCounts(queues) {
+      if (!queues) return;
+      if (sovereignQueueCount) sovereignQueueCount.textContent = queues.non_abliterated_count ?? 0;
+      if (adversarialQueueCount) adversarialQueueCount.textContent = queues.abliterated_count ?? 0;
+    }
+
+    const btPortStatus = document.getElementById('btPortStatus');
+    const btPeersCount = document.getElementById('btPeersCount');
+    const btPeersList = document.getElementById('btPeersList');
+    const btDrillCounter = document.getElementById('btDrillCounter');
+    const btLastAction = document.getElementById('btLastAction');
+    const triggerBtDrillBtn = document.getElementById('triggerBtDrillBtn');
+
+    function updateBtStatus(status, drill) {
+      if (!status) return;
+      if (status.primary_rfcomm_port && btPortStatus) {
+        btPortStatus.textContent = status.primary_rfcomm_port;
+      }
+      if (btPeersCount) {
+        btPeersCount.textContent = `${status.connected_peers_count || 0} Connected`;
+      }
+      if (btPeersList && status.known_peers) {
+        btPeersList.innerHTML = '';
+        status.known_peers.forEach(p => {
+          const badge = document.createElement('span');
+          badge.className = p.connected 
+            ? 'text-[10px] px-1.5 py-0.5 rounded bg-blue-950 border border-blue-800 text-blue-300 font-mono flex items-center gap-1'
+            : 'text-[10px] px-1.5 py-0.5 rounded bg-gray-900 border border-gray-800 text-gray-500 font-mono';
+          badge.textContent = `${p.layer}: ${p.alias}`;
+          btPeersList.appendChild(badge);
+        });
+      }
+      if (btDrillCounter) {
+        btDrillCounter.textContent = `#${status.total_drills || 0} (${status.success_rate_pct || 100}% Verified)`;
+      }
+      const last = drill || status.last_drill;
+      if (last && btLastAction) {
+        btLastAction.textContent = `[${last.timestamp?.split(' ')[1] || ''}] ${last.reflex_action} (${last.latency_ms}ms)`;
+        btLastAction.className = 'text-[10px] text-green-400 font-mono truncate';
+      }
+    }
+
+    function handleMessage(data) {
+      if (data.type === 'init') {
+        if (data.ram_headroom_gb) {
+          ramStat.textContent = `${data.ram_headroom_gb.toFixed(2)} GB`;
+        }
+        if (data.telemetry?.bluetooth_no_ip_healing || data.bt_healing) {
+          updateBtStatus(data.telemetry?.bluetooth_no_ip_healing || data.bt_healing);
+        }
+        if (data.scenarios) {
+          cachedScenarios = data.scenarios;
+          renderScenarioChips();
+        }
+        if (data.continuous_scenarios_enabled !== undefined) {
+          updateAutopilotButton(data.continuous_scenarios_enabled);
+        }
+        if (data.recent_events) {
+          cachedEvents = data.recent_events;
+          renderRecentEventsChips();
+        }
+        fetchGroups();
+        fetchScenarios();
+        fetchEvents();
+      } else if (data.type === 'npc_action') {
+        rawLogs.unshift(data);
+        if (rawLogs.length > 200) rawLogs.pop();
+        renderLogCard(data);
+        fetchGroups();
+      } else if (data.type === 'event_created' || data.type === 'event_updated') {
+        const evt = data.event;
+        if (evt) {
+          const idx = cachedEvents.findIndex(e => e.id === evt.id);
+          if (idx >= 0) {
+            cachedEvents[idx] = evt;
+          } else {
+            cachedEvents.unshift(evt);
+            if (cachedEvents.length > 50) cachedEvents.pop();
+          }
+          renderRecentEventsChips();
+          if (currentActiveModalEventId === evt.id) {
+            populateModalWithEvent(evt);
+          }
+        }
+      } else if (data.type === 'scenario_engine_status') {
+        updateAutopilotButton(data.continuous_scenarios_enabled);
+      } else if (data.type === 'bt_healing_event') {
+        updateBtStatus(data.bt_status, data.drill);
+        if (triggerBtDrillBtn) {
+          triggerBtDrillBtn.classList.add('ring-2', 'ring-pink-400');
+          setTimeout(() => triggerBtDrillBtn.classList.remove('ring-2', 'ring-pink-400'), 1000);
+        }
+      } else if (data.type === 'ui_update') {
+        applyTheme(data);
+      } else if (data.type === 'telemetry') {
+        if (data.ram_headroom_gb) {
+          ramStat.textContent = `${data.ram_headroom_gb.toFixed(2)} GB`;
+        }
+        if (data.telemetry?.bluetooth_no_ip_healing) {
+          updateBtStatus(data.telemetry.bluetooth_no_ip_healing);
+        }
+      } else if (data.type === 'arena_match_started' || data.type === 'arena_tick') {
+        if (data.match) renderArenaState(data.match);
+        if (data.latest_event) appendArenaCommentary(data.latest_event);
+        if (data.leaderboard) renderArenaLeaderboard(data.leaderboard);
+      } else if (data.type === 'arena_corner_directive_applied') {
+        if (data.match) renderArenaState(data.match);
+        const dirEl = document.getElementById('arenaFighterADirective');
+        if (dirEl && data.directive) {
+          const dir = data.directive === 'RESET_NEUTRAL' ? 'NONE (NEUTRAL)' : data.directive;
+          dirEl.textContent = dir;
+          if (dir !== 'NONE (NEUTRAL)') {
+            dirEl.className = 'font-bold text-yellow-300 bg-yellow-950/80 border border-yellow-500 px-2 py-0.5 rounded animate-pulse';
+          } else {
+            dirEl.className = 'font-bold text-gray-400 bg-gray-900 border border-gray-800 px-2 py-0.5 rounded';
+          }
+        }
+        const flash = document.getElementById('arenaActionFlash');
+        if (flash && data.directive) {
+          flash.textContent = `🗣️ Directive Applied: ${data.directive.replace('_', ' ')}`;
+          flash.className = 'text-xs text-yellow-300 font-bold font-mono bg-yellow-950/80 border border-yellow-600 px-3 py-1 rounded-full max-w-xs truncate animate-pulse';
+        }
+      }
+    }
+
+    function renderFactionPersonas() {
+      if (!cachedGroups) return;
+      const grpKey = activeFactionTab === 'sovereign' ? 'non_abliterated' : 'abliterated';
+      const faction = cachedGroups[grpKey];
+      if (!faction) return;
+
+      npcsList.innerHTML = '';
+
+      // Header info box
+      const infoBox = document.createElement('div');
+      infoBox.className = 'p-2 rounded bg-black/60 border border-gray-800 text-[10px] font-mono mb-1';
+      infoBox.innerHTML = `
+        <div class="flex justify-between items-center text-gray-300">
+          <span class="font-bold text-[var(--primary)]">${faction.name}</span>
+          <span class="px-1.5 py-0.5 rounded text-[9px] ${activeFactionTab === 'sovereign' ? 'bg-green-950 text-green-400 border border-green-800' : 'bg-pink-950 text-pink-400 border border-pink-800'}">${faction.badge}</span>
+        </div>
+        <div class="mt-1 text-gray-400">NPU Drafter: <span class="text-white">${faction.npu_drafter}</span></div>
+        <div class="text-gray-400">Silicon: <span class="text-white">${faction.npu_accelerator}</span></div>
+      `;
+      npcsList.appendChild(infoBox);
+
+      faction.personas.forEach(npc => {
+        const div = document.createElement('div');
+        div.className = `p-2.5 rounded bg-black/40 border ${activeFactionTab === 'sovereign' ? 'border-green-900/40 hover:border-green-600' : 'border-pink-900/40 hover:border-pink-600'} flex flex-col gap-1 transition`;
+        
+        const isNpu = npc.preferred_model?.includes('npu') || npc.name.includes('NPU');
+        const npuBadge = isNpu ? `<span class="text-[9px] px-1.5 py-0.2 rounded bg-cyan-950 border border-cyan-700 text-cyan-300 font-mono">NPU INT8</span>` : '';
+
+        div.innerHTML = `
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-white text-xs">${npc.name}</span>
+              ${npuBadge}
+            </div>
+            <span class="text-[9px] ${activeFactionTab === 'sovereign' ? 'text-green-400' : 'text-pink-400'} font-mono">${npc.role}</span>
+          </div>
+          <p class="text-[10px] text-gray-400 italic">${npc.state}</p>
+        `;
+        npcsList.appendChild(div);
+      });
+    }
+
+    tabFactionsSovereign.addEventListener('click', () => {
+      activeFactionTab = 'sovereign';
+      tabFactionsSovereign.className = 'flex-1 py-1.5 px-2 rounded text-[11px] font-bold tracking-wider bg-green-950/80 border border-green-600 text-green-400 transition';
+      tabFactionsAdversarial.className = 'flex-1 py-1.5 px-2 rounded text-[11px] font-bold tracking-wider bg-black/40 border border-gray-700 text-gray-400 hover:text-pink-400 transition';
+      renderFactionPersonas();
+    });
+
+    tabFactionsAdversarial.addEventListener('click', () => {
+      activeFactionTab = 'adversarial';
+      tabFactionsAdversarial.className = 'flex-1 py-1.5 px-2 rounded text-[11px] font-bold tracking-wider bg-pink-950/80 border border-pink-600 text-pink-400 transition';
+      tabFactionsSovereign.className = 'flex-1 py-1.5 px-2 rounded text-[11px] font-bold tracking-wider bg-black/40 border border-gray-700 text-gray-400 hover:text-green-400 transition';
+      renderFactionPersonas();
+    });
+
+    function setStreamFilter(filter) {
+      currentFilter = filter;
+      filterAll.className = filter === 'all' ? 'px-2 py-1 rounded bg-gray-800 text-white font-bold transition' : 'px-2 py-1 rounded text-gray-400 hover:bg-gray-900 transition';
+      filterSovereign.className = filter === 'non_abliterated' ? 'px-2 py-1 rounded bg-green-950 border border-green-700 text-green-400 font-bold transition' : 'px-2 py-1 rounded text-green-400 hover:bg-green-950/40 transition';
+      filterAdversarial.className = filter === 'abliterated' ? 'px-2 py-1 rounded bg-pink-950 border border-pink-700 text-pink-400 font-bold transition' : 'px-2 py-1 rounded text-pink-400 hover:bg-pink-950/40 transition';
+
+      rebuildLogStream();
+    }
+
+    filterAll.addEventListener('click', () => setStreamFilter('all'));
+    filterSovereign.addEventListener('click', () => setStreamFilter('non_abliterated'));
+    filterAdversarial.addEventListener('click', () => setStreamFilter('abliterated'));
+
+    function rebuildLogStream() {
+      logStream.innerHTML = '';
+      const filtered = rawLogs.filter(log => {
+        if (currentFilter === 'all') return true;
+        const grp = log.group || (log.npc === 'Cipher' || log.npc === 'Vortex' || log.npc === 'Nyx-NPU' ? 'abliterated' : 'non_abliterated');
+        return grp === currentFilter;
+      });
+
+      if (filtered.length === 0) {
+        logStream.innerHTML = `<div class="text-gray-500 italic text-center my-auto py-8">NO EVENTS RECORDED FOR THIS CHANNEL FILTER...</div>`;
+        return;
+      }
+
+      filtered.forEach(log => {
+        const card = createLogCardElement(log);
+        logStream.appendChild(card);
+      });
+    }
+
+    function createLogCardElement(log) {
+      const isAbliterated = log.group === 'abliterated' || ['Cipher', 'Vortex', 'Nyx-NPU'].includes(log.npc);
+      const isNexus = log.npc === 'Nexus';
+      const isEcho = log.npc === 'Echo';
+      const isApex = log.npc === 'Apex-NPU';
+
+      const colorClass = isAbliterated ? 'text-pink-400 border-pink-500/50 bg-pink-950/20' :
+                         isNexus ? 'text-green-400 border-green-500/50 bg-green-950/20' :
+                         isEcho ? 'text-cyan-400 border-cyan-500/50 bg-cyan-950/20' :
+                         isApex ? 'text-emerald-400 border-emerald-500/50 bg-emerald-950/20' :
+                         'text-yellow-400 border-yellow-500/50 bg-yellow-950/20';
+
+      const factionBadge = isAbliterated
+        ? `<span class="text-[9px] px-1.5 py-0.2 rounded bg-pink-950 border border-pink-800 text-pink-300 font-mono uppercase mr-1.5">ADVERSARIAL</span>`
+        : `<span class="text-[9px] px-1.5 py-0.2 rounded bg-green-950 border border-green-800 text-green-300 font-mono uppercase mr-1.5">SOVEREIGN</span>`;
+
+      const modelBadge = log.model ? `<span class="ml-1.5 text-[9px] px-1.5 py-0.5 rounded bg-black/60 border border-gray-700 text-gray-300 font-mono">${log.model}</span>` : '';
+      const latencyBadge = log.latency_ms ? `<span class="ml-1 text-[9px] text-gray-400 font-mono">(${log.latency_ms}ms)</span>` : '';
+
+      const evtId = log.event_id || '';
+      const evtTitle = log.event_title || log.event || 'Active World Event';
+      const evtCategory = log.event_category || (isAbliterated ? 'Adversarial Directive' : 'Sovereign Directive');
+      const interestBadge = log.interest_score ? `<span class="text-[9px] px-1.5 py-0.2 rounded bg-yellow-950/80 border border-yellow-700 text-yellow-300 font-mono font-bold mr-1">🔥 ${log.interest_score}</span>` : '';
+      const stageBadge = log.stage_label ? `<span class="text-[9px] px-1.5 py-0.2 rounded bg-cyan-950/80 border border-cyan-700 text-cyan-300 font-mono mr-1">${log.stage_label.split(':')[0]}</span>` : '';
+
+      const card = document.createElement('div');
+      card.className = `p-3 rounded-lg border-l-4 ${colorClass} transition-all duration-300 animate-fadeIn flex flex-col gap-1.5`;
+      card.innerHTML = `
+        <div class="flex justify-between items-center mb-0.5">
+          <div class="flex items-center flex-wrap gap-0.5">
+            ${factionBadge}
+            <span class="font-black tracking-wider uppercase">${log.npc}</span>
+            ${modelBadge}
+            ${latencyBadge}
+          </div>
+          <span class="text-[10px] text-gray-500 font-mono">${log.timestamp || new Date().toLocaleTimeString()}</span>
+        </div>
+        <p class="text-white text-xs leading-relaxed">${log.action}</p>
+        <div class="pt-1.5 border-t border-gray-800/60 flex items-center justify-between text-[10px] font-mono">
+          <button type="button" class="text-cyan-400 hover:text-cyan-200 text-left flex items-center gap-1 group cursor-pointer transition" onclick="openEventModal('${evtId}', '${encodeURIComponent(log.event)}')">
+            <span class="px-1 py-0.2 rounded bg-cyan-950/90 border border-cyan-700 text-cyan-300 text-[9px] group-hover:bg-cyan-800 transition">WORLD EVENT</span>
+            ${interestBadge}
+            ${stageBadge}
+            <span class="truncate max-w-[180px] md:max-w-md font-sans text-gray-300 group-hover:text-white transition">${evtTitle}</span>
+            <span class="text-[9px] text-cyan-400 underline ml-1">▶ View Narrative</span>
+          </button>
+          <span class="text-[9px] text-gray-500">${evtCategory}</span>
+        </div>
+      `;
+      return card;
+    }
+
+    function renderLogCard(log) {
+      if (logStream.children.length === 1 && logStream.children[0].classList.contains('italic')) {
+        logStream.innerHTML = '';
+      }
+
+      const isAbliterated = log.group === 'abliterated' || ['Cipher', 'Vortex', 'Nyx-NPU'].includes(log.npc);
+      const matchesFilter = (currentFilter === 'all') ||
+                            (currentFilter === 'non_abliterated' && !isAbliterated) ||
+                            (currentFilter === 'abliterated' && isAbliterated);
+
+      if (!matchesFilter) return;
+
+      const card = createLogCardElement(log);
+      logStream.insertBefore(card, logStream.firstChild);
+
+      while (logStream.children.length > 100) {
+        logStream.removeChild(logStream.lastChild);
+      }
+    }
+
+    function applyTheme(theme) {
+      if (theme.primary) document.documentElement.style.setProperty('--primary', theme.primary);
+      if (theme.secondary) document.documentElement.style.setProperty('--secondary', theme.secondary);
+      if (theme.bg) document.documentElement.style.setProperty('--bg', theme.bg);
+    }
+
+    // Event Injections (Dual Group Queues)
+    injectSovereignBtn.addEventListener('click', async () => {
+      const text = directorInput.value.trim();
+      if (!text) return;
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ type: 'inject_event_non_abliterated', event: text }));
+      } else {
+        await fetch('/api/director/event/non_abliterated', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: text })
+        });
+      }
+      directorInput.value = '';
+      fetchGroups();
+    });
+
+    injectAdversarialBtn.addEventListener('click', async () => {
+      const text = directorInput.value.trim();
+      if (!text) return;
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ type: 'inject_event_abliterated', event: text }));
+      } else {
+        await fetch('/api/director/event/abliterated', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: text })
+        });
+      }
+      directorInput.value = '';
+      fetchGroups();
+    });
+
+    directorForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = directorInput.value.trim();
+      if (!text || !socket || socket.readyState !== WebSocket.OPEN) return;
+
+      socket.send(JSON.stringify({
+        type: 'inject_event',
+        event: text,
+        group: 'all'
+      }));
+
+      directorInput.value = '';
+      fetchGroups();
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      isPaused = !isPaused;
+      pauseBtn.textContent = isPaused ? 'RESUME' : 'PAUSE';
+      pauseBtn.className = isPaused 
+        ? 'bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-1.5 px-3 rounded text-[11px] transition'
+        : 'bg-gray-800 hover:bg-gray-700 text-white font-bold py-1.5 px-3 rounded text-[11px] transition';
+
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+          type: 'set_pause',
+          paused: isPaused
+        }));
+      }
+    });
+
+    if (triggerBtDrillBtn) {
+      triggerBtDrillBtn.addEventListener('click', async () => {
+        triggerBtDrillBtn.disabled = true;
+        triggerBtDrillBtn.innerHTML = '<span>⏳ PULSING NO-IP CARRIER...</span>';
+        
+        try {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ type: 'trigger_bt_drill' }));
+          } else {
+            const resp = await fetch('/api/bluetooth/exercise', { method: 'POST' });
+            const data = await resp.json();
+            if (data.receipt && data.bt_status) {
+              updateBtStatus(data.bt_status, data.receipt);
+            }
+          }
+        } catch (err) {
+          console.warn('Error triggering drill:', err);
+        } finally {
+          setTimeout(() => {
+            triggerBtDrillBtn.disabled = false;
+            triggerBtDrillBtn.innerHTML = '<span>⚡ TRIGGER NO-IP HEAL DRILL</span>';
+          }, 1200);
+        }
+      });
+    }
+
+    async function fetchScenarios() {
+      try {
+        const resp = await fetch('/api/scenarios');
+        const data = await resp.json();
+        if (data.scenarios) {
+          cachedScenarios = data.scenarios;
+          renderScenarioChips();
+        }
+        if (data.continuous_enabled !== undefined) {
+          updateAutopilotButton(data.continuous_enabled);
+        }
+      } catch (err) {
+        console.warn('Error fetching scenarios:', err);
+      }
+    }
+
+    async function fetchEvents() {
+      try {
+        const resp = await fetch(`/api/events?sort_by=${currentEventSort}`);
+        const data = await resp.json();
+        if (data.events) {
+          cachedEvents = data.events;
+          renderRecentEventsChips();
+        }
+      } catch (err) {
+        console.warn('Error fetching events:', err);
+      }
+    }
+
+    if (sortEventsInterestBtn) {
+      sortEventsInterestBtn.addEventListener('click', () => {
+        currentEventSort = 'interesting';
+        sortEventsInterestBtn.className = 'px-2 py-0.5 rounded bg-yellow-950/80 border border-yellow-700 text-yellow-300 font-bold transition';
+        if (sortEventsRecentBtn) sortEventsRecentBtn.className = 'px-2 py-0.5 rounded text-gray-400 hover:text-white transition';
+        fetchEvents();
+      });
+    }
+
+    if (sortEventsRecentBtn) {
+      sortEventsRecentBtn.addEventListener('click', () => {
+        currentEventSort = 'recent';
+        sortEventsRecentBtn.className = 'px-2 py-0.5 rounded bg-cyan-950/80 border border-cyan-700 text-cyan-300 font-bold transition';
+        if (sortEventsInterestBtn) sortEventsInterestBtn.className = 'px-2 py-0.5 rounded text-gray-400 hover:text-white transition';
+        fetchEvents();
+      });
+    }
+
+    function updateAutopilotButton(enabled) {
+      isAutopilotEnabled = enabled;
+      if (!toggleAutopilotBtn) return;
+      if (enabled) {
+        toggleAutopilotBtn.className = 'text-[10px] font-mono px-2 py-0.5 rounded border border-green-600 bg-green-950/60 text-green-400 hover:bg-green-900 transition flex items-center gap-1.5';
+        if (autopilotIndicatorDot) autopilotIndicatorDot.className = 'w-1.5 h-1.5 rounded-full bg-green-400 animate-ping';
+        if (autopilotBtnText) autopilotBtnText.textContent = 'AUTOPILOT: SCENARIOS [ON]';
+      } else {
+        toggleAutopilotBtn.className = 'text-[10px] font-mono px-2 py-0.5 rounded border border-gray-700 bg-gray-900 text-gray-400 hover:bg-gray-800 transition flex items-center gap-1.5';
+        if (autopilotIndicatorDot) autopilotIndicatorDot.className = 'w-1.5 h-1.5 rounded-full bg-gray-600';
+        if (autopilotBtnText) autopilotBtnText.textContent = 'AUTOPILOT: SCENARIOS [OFF]';
+      }
+    }
+
+    async function toggleContinuousScenarios() {
+      const newState = !isAutopilotEnabled;
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ type: 'toggle_continuous_scenarios', enabled: newState }));
+      } else {
+        await fetch('/api/scenarios/continuous', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ enabled: newState })
+        });
+      }
+      updateAutopilotButton(newState);
+    }
+
+    if (toggleAutopilotBtn) {
+      toggleAutopilotBtn.addEventListener('click', toggleContinuousScenarios);
+    }
+
+    function renderScenarioChips() {
+      if (!scenarioChipsContainer || !cachedScenarios) return;
+      scenarioChipsContainer.innerHTML = '';
+      const keys = Object.keys(cachedScenarios);
+      if (scenariosCountBadge) scenariosCountBadge.textContent = `${keys.length} LOADED`;
+
+      keys.forEach(k => {
+        const sc = cachedScenarios[k];
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        const isAdv = sc.target_group === 'abliterated';
+        chip.className = isAdv
+          ? 'px-2 py-1 rounded bg-pink-950/50 border border-pink-800/80 text-pink-300 hover:bg-pink-900 hover:text-white transition whitespace-nowrap flex items-center gap-1'
+          : 'px-2 py-1 rounded bg-black/60 border border-cyan-800/60 text-cyan-300 hover:bg-cyan-950 hover:text-white transition whitespace-nowrap flex items-center gap-1';
+        
+        chip.innerHTML = `<span>⚡</span><span>${sc.title.split(' ')[0]} ${sc.title.split(' ')[1] || ''}</span>`;
+        chip.title = `${sc.title} (${sc.category})`;
+        chip.onclick = () => runScenario(k);
+        scenarioChipsContainer.appendChild(chip);
+      });
+    }
+
+    async function runScenario(scenarioKey) {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ type: 'run_scenario', scenario_key: scenarioKey }));
+      } else {
+        await fetch('/api/scenarios/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scenario_key: scenarioKey })
+        });
+      }
+      fetchEvents();
+      fetchGroups();
+    }
+
+    function renderRecentEventsChips() {
+      if (!recentEventsChips) return;
+      recentEventsChips.innerHTML = '';
+      if (!cachedEvents || cachedEvents.length === 0) {
+        recentEventsChips.innerHTML = '<span class="text-[9px] text-gray-600 italic">No events recorded yet</span>';
+        return;
+      }
+
+      let displayEvents = [...cachedEvents];
+      if (currentEventSort === 'interesting') {
+        displayEvents.sort((a, b) => (b.interest_score || 70) - (a.interest_score || 70));
+      }
+
+      displayEvents.slice(0, 6).forEach(evt => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        const isAdv = evt.group === 'abliterated';
+        const badgeColor = isAdv ? 'bg-pink-950/80 border-pink-700 text-pink-300' : 'bg-green-950/80 border-green-700 text-green-300';
+        btn.className = `text-[9px] px-2 py-0.5 rounded border ${badgeColor} hover:brightness-125 transition whitespace-nowrap flex items-center gap-1.5 shadow`;
+        const scoreBadge = `<span class="px-1 py-0.2 rounded bg-black/60 text-yellow-300 font-mono font-bold">🔥 ${evt.interest_score || 75}</span>`;
+        const stageShort = evt.stage_label ? evt.stage_label.split(':')[0].replace('STAGE ', 'S') : 'S1/4';
+        const stageBadge = `<span class="px-1 py-0.2 rounded bg-black/40 text-cyan-300 font-mono">${stageShort}</span>`;
+        const titleShort = evt.title.length > 20 ? evt.title.substring(0, 20) + '...' : evt.title;
+        btn.innerHTML = `${scoreBadge} ${stageBadge} <span>${titleShort}</span>`;
+        btn.title = `${evt.title} (${evt.interest_tier || 'HIGH'} - Score: ${evt.interest_score || 75})`;
+        btn.onclick = () => openEventModal(evt.id);
+        recentEventsChips.appendChild(btn);
+      });
+    }
+
+    async function openEventModal(eventId, fallbackEventText) {
+      currentActiveModalEventId = eventId;
+      if (!eventModalBackdrop) return;
+      eventModalBackdrop.classList.remove('hidden');
+      eventModalBackdrop.classList.add('flex');
+
+      let evt = cachedEvents.find(e => e.id === eventId);
+      if (!evt && eventId) {
+        try {
+          const resp = await fetch(`/api/events/${eventId}`);
+          if (resp.ok) {
+            const data = await resp.json();
+            evt = data.event;
+          }
+        } catch (err) {
+          console.warn('Error loading event detail:', err);
+        }
+      }
+
+      if (!evt) {
+        const cleanText = fallbackEventText ? decodeURIComponent(fallbackEventText) : 'World Event';
+        const matchingLogs = rawLogs.filter(l => l.event === cleanText || l.event_id === eventId);
+        evt = {
+          id: eventId || 'evt_synthetic',
+          title: matchingLogs[0]?.event_title || (cleanText.length > 40 ? cleanText.substring(0, 40) + '...' : cleanText),
+          description: cleanText,
+          category: matchingLogs[0]?.event_category || 'Active Mesh Routine',
+          source: matchingLogs[0]?.event_source || 'SIMULATION_EVENT',
+          group: matchingLogs[0]?.group || 'all',
+          created_at: matchingLogs[0]?.timestamp || new Date().toLocaleTimeString(),
+          telemetry_snapshot: { host_ram_free_gb: 4.2, tb4_latency_ms: 0.28, primary_rfcomm_port: '/dev/tty.Bluetooth-Incoming-Port' },
+          actions: matchingLogs.map(l => ({
+            npc: l.npc,
+            role: l.role || 'Agent',
+            group: l.group,
+            group_badge: l.group === 'abliterated' ? 'ADVERSARIAL' : 'SOVEREIGN',
+            model: l.model,
+            latency_ms: l.latency_ms,
+            action: l.action,
+            timestamp: l.timestamp
+          })),
+          synthesized_story: `Multi-agent responses recorded: ${matchingLogs.length} verified actions.`
+        };
+      }
+
+      populateModalWithEvent(evt);
+    }
+
+    function populateModalWithEvent(evt) {
+      if (!evt) return;
+      if (modalEventTitle) modalEventTitle.textContent = evt.title;
+      if (modalTimestamp) modalTimestamp.textContent = `${evt.created_at || ''} // ID: ${evt.id}`;
+      if (modalDescription) modalDescription.textContent = evt.description;
+      
+      if (modalCategoryBadge) {
+        modalCategoryBadge.textContent = (evt.category || 'GENERAL').toUpperCase();
+      }
+      if (modalSourceBadge) {
+        modalSourceBadge.textContent = (evt.source || 'SIMULATION').toUpperCase();
+      }
+      if (modalGroupBadge) {
+        const isAdv = evt.group === 'abliterated';
+        modalGroupBadge.textContent = isAdv ? 'ADVERSARIAL SYNDICATE' : (evt.group === 'non_abliterated' ? 'SOVEREIGN PLANE' : 'ALL PLANES');
+        modalGroupBadge.className = isAdv 
+          ? 'text-[10px] px-2 py-0.5 rounded bg-pink-950 border border-pink-700 text-pink-300 font-bold uppercase'
+          : 'text-[10px] px-2 py-0.5 rounded bg-green-950 border border-green-700 text-green-300 font-bold uppercase';
+      }
+
+      // Dynamic Interest Score & Tier
+      const score = evt.interest_score || 75;
+      const tier = evt.interest_tier || (score >= 90 ? 'CRITICAL' : score >= 75 ? 'HIGH' : 'ELEVATED');
+      if (modalInterestScore) modalInterestScore.textContent = score;
+      if (modalInterestTier) {
+        modalInterestTier.textContent = tier;
+        modalInterestTier.className = score >= 90
+          ? 'text-[9px] px-1.5 py-0.5 rounded bg-red-950 border border-red-700 text-red-300 font-mono font-bold uppercase animate-pulse'
+          : (score >= 75 ? 'text-[9px] px-1.5 py-0.5 rounded bg-yellow-950 border border-yellow-700 text-yellow-300 font-mono font-bold uppercase' : 'text-[9px] px-1.5 py-0.5 rounded bg-cyan-950 border border-cyan-700 text-cyan-300 font-mono font-bold uppercase');
+      }
+      if (modalStageLabel) {
+        modalStageLabel.textContent = evt.stage_label || 'STAGE 1/4: CATALYST';
+      }
+
+      // Update stage step indicators (1 to 4)
+      const currentStage = evt.stage_index || 1;
+      const steps = [stepStage1, stepStage2, stepStage3, stepStage4];
+      steps.forEach((step, idx) => {
+        if (!step) return;
+        const stepNum = idx + 1;
+        if (stepNum < currentStage) {
+          step.className = 'p-1.5 rounded bg-green-950/80 border border-green-700 text-green-300 font-bold';
+        } else if (stepNum === currentStage) {
+          step.className = 'p-1.5 rounded bg-cyan-950 border border-cyan-400 text-white font-bold shadow-[0_0_10px_rgba(0,255,255,0.4)]';
+        } else {
+          step.className = 'p-1.5 rounded bg-black/60 border border-gray-800 text-gray-600';
+        }
+      });
+
+      const telem = evt.telemetry_snapshot || {};
+      if (modalTelemRam) modalTelemRam.textContent = telem.host_ram_free_gb ? `${telem.host_ram_free_gb} GB` : '4.18 GB';
+      if (modalTelemTb4) modalTelemTb4.textContent = telem.tb4_latency_ms ? `${telem.tb4_latency_ms}ms` : '0.28ms';
+      if (modalTelemBt) modalTelemBt.textContent = telem.primary_rfcomm_port || '/dev/tty.Bluetooth-Incoming-Port';
+
+      if (modalActionsCount) modalActionsCount.textContent = `${evt.actions?.length || 0} Responses`;
+      if (modalActionsList) {
+        modalActionsList.innerHTML = '';
+        if (!evt.actions || evt.actions.length === 0) {
+          modalActionsList.innerHTML = '<div class="text-gray-500 italic p-2 text-center">Awaiting agent responses for this scenario...</div>';
+        } else {
+          evt.actions.forEach(act => {
+            const isAdv = act.group === 'abliterated' || act.group_badge === 'ADVERSARIAL';
+            const colorBorder = isAdv ? 'border-pink-600 bg-pink-950/20 text-pink-300' : 'border-green-600 bg-green-950/20 text-green-300';
+            const item = document.createElement('div');
+            item.className = `p-2.5 rounded border-l-4 ${colorBorder} flex flex-col gap-1`;
+            item.innerHTML = `
+              <div class="flex justify-between items-center text-[10px]">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-bold text-white uppercase">${act.npc}</span>
+                  <span class="text-gray-400">(${act.role || ''})</span>
+                  <span class="text-[9px] px-1 rounded bg-black/60 border border-gray-700 text-gray-300">${act.model || ''}</span>
+                  ${act.latency_ms ? `<span class="text-gray-500">(${act.latency_ms}ms)</span>` : ''}
+                </div>
+                <span class="text-gray-500 font-mono">${act.timestamp || ''}</span>
+              </div>
+              <p class="text-gray-200 text-xs font-sans leading-relaxed">${act.action}</p>
+            `;
+            modalActionsList.appendChild(item);
+          });
+        }
+      }
+
+      if (modalSynthesizedStory) {
+        modalSynthesizedStory.textContent = evt.synthesized_story || 'Synthesizing multi-agent consensus and physical system consequence...';
+      }
+    }
+
+    function closeEventModal() {
+      currentActiveModalEventId = null;
+      if (eventModalBackdrop) {
+        eventModalBackdrop.classList.add('hidden');
+        eventModalBackdrop.classList.remove('flex');
+      }
+    }
+
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeEventModal);
+    if (modalCloseBtnFooter) modalCloseBtnFooter.addEventListener('click', closeEventModal);
+    if (eventModalBackdrop) {
+      eventModalBackdrop.addEventListener('click', (e) => {
+        if (e.target === eventModalBackdrop) closeEventModal();
+      });
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeEventModal();
+    });
+
+    // ---------------------------------------------------------
+    // 🥋 INTERACTIVE AI GRAPPLING ARENA CONTROLLER (REP PROTOCOL)
+    // ---------------------------------------------------------
+    let cachedArenaFighters = [];
+    let cachedArenaMatch = null;
+    let cachedLeaderboard = [];
+
+    function switchViewMode(mode) {
+      const simView = document.getElementById('simulationView');
+      const arenaView = document.getElementById('arenaView');
+      const btnSim = document.getElementById('btnModeSim');
+      const btnArena = document.getElementById('btnModeArena');
+
+      if (mode === 'arena') {
+        simView.classList.add('hidden');
+        arenaView.classList.remove('hidden');
+        btnArena.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-[var(--primary)] text-black shadow-[0_0_10px_rgba(0,255,65,0.4)]';
+        btnSim.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white';
+        fetchArenaData();
+      } else {
+        arenaView.classList.add('hidden');
+        simView.classList.remove('hidden');
+        btnSim.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-[var(--primary)] text-black shadow-[0_0_10px_rgba(0,255,65,0.4)]';
+        btnArena.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white';
+      }
+    }
+
+    async function fetchArenaData() {
+      try {
+        const [statusRes, fightersRes, biometricsRes, lbRes] = await Promise.all([
+          fetch('/api/arena/status').then(r => r.json()),
+          fetch('/api/arena/fighters').then(r => r.json()),
+          fetch('/api/arena/biometrics').then(r => r.json()),
+          fetch('/api/arena/leaderboard').then(r => r.json())
+        ]);
+
+        if (fightersRes.fighters) {
+          cachedArenaFighters = fightersRes.fighters;
+          populateFighterSelectors(cachedArenaFighters);
+        }
+
+        if (statusRes.opml_graph) {
+          const totalEl = document.getElementById('opmlTotalNodes');
+          if (totalEl) totalEl.textContent = statusRes.opml_graph.total_opml_nodes.toLocaleString();
+        }
+
+        if (biometricsRes) {
+          updateBiometricsHUD(biometricsRes);
+        }
+
+        if (lbRes.leaderboard) {
+          cachedLeaderboard = lbRes.leaderboard;
+          renderArenaLeaderboard(cachedLeaderboard);
+        }
+
+        if (statusRes.active_match) {
+          cachedArenaMatch = statusRes.active_match;
+          renderArenaState(cachedArenaMatch);
+        }
+
+        // Fetch user comprehensive profile (conditioning + grappling level)
+        fetch('/api/arena/analysis/user?fighter_id=aaron_twin').then(r => r.json()).then(prof => {
+          if (prof && prof.grappling) {
+            const badge = document.getElementById('arenaFighterABeltBadge');
+            const text = document.getElementById('arenaFighterARankText');
+            if (badge) badge.style.backgroundColor = prof.grappling.belt_hex || '#6B21A8';
+            if (text) text.textContent = `${prof.grappling.rank_label || prof.grappling.belt_rank} // LVL ${Math.round(prof.composite_level)}`;
+          }
+        }).catch(() => {});
+      } catch (err) {
+        console.warn('Failed to fetch arena data:', err);
+      }
+    }
+
+    function populateFighterSelectors(fighters) {
+      const selA = document.getElementById('selectFighterA');
+      const selB = document.getElementById('selectFighterB');
+      if (!selA || !selB) return;
+
+      const currentValA = selA.value;
+      const currentValB = selB.value;
+
+      selA.innerHTML = '';
+      selB.innerHTML = '';
+
+      fighters.forEach(f => {
+        const optA = document.createElement('option');
+        optA.value = f.id;
+        optA.textContent = `${f.name} (${f.elo_rating} ELO)`;
+        if (f.id === 'aaron_twin') optA.selected = true;
+        selA.appendChild(optA);
+
+        const optB = document.createElement('option');
+        optB.value = f.id;
+        optB.textContent = `${f.name} (${f.elo_rating} ELO)`;
+        if (f.id === 'apex_npu') optB.selected = true;
+        selB.appendChild(optB);
+      });
+
+      if (currentValA) selA.value = currentValA;
+      if (currentValB) selB.value = currentValB;
+    }
+
+    function updateBiometricsHUD(bio) {
+      const hrEl = document.getElementById('arenaBioHR');
+      const rmssdEl = document.getElementById('arenaBioRMSSD');
+      const alpha1El = document.getElementById('arenaBioAlpha1');
+      const zoneEl = document.getElementById('arenaBioZone');
+      const sensorPill = document.getElementById('arenaSensorStatusPill');
+
+      if (bio.heart_rate_bpm != null) {
+        if (hrEl) hrEl.textContent = `${bio.heart_rate_bpm} BPM`;
+        if (rmssdEl) rmssdEl.textContent = `${bio.hrv_rmssd_ms} ms`;
+        if (alpha1El) alpha1El.textContent = `${bio.dfa_alpha1}`;
+        if (zoneEl) zoneEl.textContent = bio.cardio_zone.replace(/[^a-zA-Z0-9 ]/g, '').trim();
+        if (sensorPill) {
+          sensorPill.textContent = '🟢 512Hz ACTIVE';
+          sensorPill.className = 'text-green-400 font-bold truncate';
+        }
+      } else {
+        if (hrEl) hrEl.textContent = '-- BPM';
+        if (rmssdEl) rmssdEl.textContent = '-- ms';
+        if (alpha1El) alpha1El.textContent = '--';
+        if (zoneEl) zoneEl.textContent = 'STANDBY';
+        if (sensorPill) {
+          sensorPill.textContent = '⚪ STANDBY';
+          sensorPill.className = 'text-gray-500 font-bold truncate';
+        }
+      }
+    }
+
+    function renderArenaState(match) {
+      if (!match) return;
+      cachedArenaMatch = match;
+
+      const fA = match.fighter_a;
+      const fB = match.fighter_b;
+
+      // Fighter A
+      document.getElementById('arenaFighterAName').textContent = fA.name;
+      document.getElementById('arenaFighterAElo').textContent = fA.elo_rating.toFixed(1);
+      document.getElementById('arenaFighterAPoints').innerHTML = `${fA.points} <span class="text-xs text-gray-400">PTS</span>`;
+      document.getElementById('arenaFighterAStaminaPct').textContent = `${fA.stamina_pct.toFixed(1)}%`;
+      document.getElementById('arenaFighterAStaminaBar').style.width = `${Math.max(0, Math.min(100, fA.stamina_pct))}%`;
+      document.getElementById('arenaFighterAPos').textContent = fA.current_position;
+      document.getElementById('arenaFighterATorque').textContent = `${fA.current_torque_nm.toFixed(1)} N·m`;
+      if (fA.current_torque_nm >= 45.0) {
+        document.getElementById('arenaFighterATorque').className = 'font-black text-red-500 animate-pulse';
+      } else if (fA.current_torque_nm >= 25.0) {
+        document.getElementById('arenaFighterATorque').className = 'font-bold text-yellow-400';
+      } else {
+        document.getElementById('arenaFighterATorque').className = 'font-bold text-green-400';
+      }
+
+      const dirEl = document.getElementById('arenaFighterADirective');
+      if (dirEl) {
+        const dir = fA.active_directive || 'NONE (NEUTRAL)';
+        dirEl.textContent = dir.replace('_', ' ');
+        if (dir !== 'NONE (NEUTRAL)') {
+          dirEl.className = 'font-bold text-yellow-300 bg-yellow-950/80 border border-yellow-500 px-2 py-0.5 rounded animate-pulse';
+        } else {
+          dirEl.className = 'font-bold text-gray-400 bg-gray-900 border border-gray-800 px-2 py-0.5 rounded';
+        }
+      }
+
+      // Fighter B
+      document.getElementById('arenaFighterBName').textContent = fB.name;
+      document.getElementById('arenaFighterBElo').textContent = fB.elo_rating.toFixed(1);
+      document.getElementById('arenaFighterBPoints').innerHTML = `${fB.points} <span class="text-xs text-gray-400">PTS</span>`;
+      document.getElementById('arenaFighterBStaminaPct').textContent = `${fB.stamina_pct.toFixed(1)}%`;
+      document.getElementById('arenaFighterBStaminaBar').style.width = `${Math.max(0, Math.min(100, fB.stamina_pct))}%`;
+      document.getElementById('arenaFighterBPos').textContent = fB.current_position;
+      document.getElementById('arenaFighterBTorque').textContent = `${fB.current_torque_nm.toFixed(1)} N·m`;
+      if (fB.current_torque_nm >= 45.0) {
+        document.getElementById('arenaFighterBTorque').className = 'font-black text-red-500 animate-pulse';
+      } else if (fB.current_torque_nm >= 25.0) {
+        document.getElementById('arenaFighterBTorque').className = 'font-bold text-yellow-400';
+      } else {
+        document.getElementById('arenaFighterBTorque').className = 'font-bold text-green-400';
+      }
+
+      const bModel = document.getElementById('arenaFighterBModel');
+      if (bModel) bModel.textContent = fB.model_id;
+      const bBias = document.getElementById('arenaFighterBBias');
+      if (bBias) bBias.textContent = fB.tactical_bias.replace('_', ' ');
+
+      // Center Hub
+      const matchIdEl = document.getElementById('arenaMatchId');
+      if (matchIdEl) matchIdEl.textContent = `REP MATCH ID: ${match.match_id}`;
+
+      const stateEl = document.getElementById('arenaMatchState');
+      if (stateEl) {
+        stateEl.textContent = match.state.replace('_', ' ');
+        if (match.state === 'SPARRING') {
+          stateEl.className = 'px-4 py-1 rounded-full text-xs font-bold bg-green-950 border border-green-500 text-green-300 shadow-[0_0_10px_rgba(0,255,65,0.4)] animate-pulse uppercase';
+        } else if (match.state === 'SUBMISSION_TAP') {
+          stateEl.className = 'px-4 py-1 rounded-full text-xs font-bold bg-red-950 border border-red-500 text-red-300 shadow-[0_0_15px_rgba(255,0,0,0.6)] uppercase';
+        } else {
+          stateEl.className = 'px-4 py-1 rounded-full text-xs font-bold bg-cyan-950 border border-cyan-500 text-cyan-300 uppercase';
+        }
+      }
+
+      const timerEl = document.getElementById('arenaMatchTimer');
+      if (timerEl) {
+        const elapsedM = Math.floor(match.elapsed_time_s / 60);
+        const elapsedS = Math.floor(match.elapsed_time_s % 60);
+        const totalM = Math.floor(match.round_duration_s / 60);
+        const totalS = Math.floor(match.round_duration_s % 60);
+        const pad = n => n.toString().padStart(2, '0');
+        timerEl.innerHTML = `${pad(elapsedM)}:${pad(elapsedS)} <span class="text-xs text-gray-500">/ ${pad(totalM)}:${pad(totalS)}</span>`;
+      }
+
+      const flashEl = document.getElementById('arenaActionFlash');
+      if (flashEl) {
+        if (match.win_method) {
+          flashEl.textContent = `🏆 ${match.win_method}`;
+          flashEl.className = 'text-xs text-green-300 font-bold font-mono bg-green-950/80 border border-green-700 px-3 py-1 rounded-full max-w-xs truncate shadow-[0_0_10px_rgba(0,255,65,0.4)]';
+        } else if (fA.active_submission || fB.active_submission) {
+          const hold = fA.active_submission || fB.active_submission;
+          flashEl.textContent = `🔒 Active Submission: ${hold}`;
+          flashEl.className = 'text-xs text-red-300 font-bold font-mono bg-red-950/80 border border-red-700 px-3 py-1 rounded-full max-w-xs truncate animate-pulse';
+        } else {
+          flashEl.textContent = `⚡ Position: ${fA.current_position}`;
+          flashEl.className = 'text-xs text-cyan-300 font-bold font-mono bg-cyan-950/40 border border-cyan-800/60 px-3 py-1 rounded-full max-w-xs truncate';
+        }
+      }
+
+      // Tatami 2D Canvas update
+      const avatarA = document.getElementById('avatarFighterA');
+      const avatarB = document.getElementById('avatarFighterB');
+      const connLine = document.getElementById('fighterEngagementLine');
+
+      const xA = fA.tatami_x || -1.2;
+      const yA = fA.tatami_y || 0.0;
+      const xB = fB.tatami_x || 1.2;
+      const yB = fB.tatami_y || 0.0;
+
+      if (avatarA) avatarA.setAttribute('transform', `translate(${xA}, ${yA})`);
+      if (avatarB) avatarB.setAttribute('transform', `translate(${xB}, ${yB})`);
+      if (connLine) {
+        connLine.setAttribute('x1', xA);
+        connLine.setAttribute('y1', yA);
+        connLine.setAttribute('x2', xB);
+        connLine.setAttribute('y2', yB);
+      }
+
+      // Submission alert overlay
+      const maxTorque = Math.max(fA.current_torque_nm, fB.current_torque_nm);
+      const subBadge = document.getElementById('submissionWarningBadge');
+      const subText = document.getElementById('submissionWarningText');
+      const subPill = document.getElementById('submissionTorquePill');
+
+      if (maxTorque >= 25.0) {
+        if (subBadge) subBadge.classList.remove('hidden');
+        if (subText) subText.textContent = maxTorque >= 45.0 ? '🔴 CRITICAL TAP OUT DETECTED!' : '🟡 JOINT TORQUE ELEVATED';
+        if (subPill) subPill.textContent = `${maxTorque.toFixed(1)} N·m / 45.0 N·m GATE`;
+      } else {
+        if (subBadge) subBadge.classList.add('hidden');
+      }
+    }
+
+    function appendArenaCommentary(evt) {
+      const log = document.getElementById('arenaCommentaryLog');
+      if (!log || !evt) return;
+
+      if (log.innerHTML.includes('Awaiting match start...')) {
+        log.innerHTML = '';
+      }
+
+      const item = document.createElement('div');
+      const isTap = evt.result === 'TAP_SUBMISSION_VICTORY';
+      const isSub = evt.category === 'Submission' || evt.joint_torque_nm > 0;
+      const isPoints = evt.points_awarded > 0;
+
+      let borderClass = 'border-l-4 border-gray-700 bg-black/40 text-gray-300';
+      if (isTap) {
+        borderClass = 'border-l-4 border-red-500 bg-red-950/40 text-red-200 font-bold animate-pulse shadow-[0_0_10px_rgba(255,0,0,0.3)]';
+      } else if (isSub) {
+        borderClass = 'border-l-4 border-yellow-500 bg-yellow-950/30 text-yellow-200';
+      } else if (isPoints) {
+        borderClass = 'border-l-4 border-cyan-500 bg-cyan-950/30 text-cyan-200';
+      }
+
+      item.className = `p-2.5 rounded text-xs font-mono flex flex-col gap-1 ${borderClass}`;
+      item.innerHTML = `
+        <div class="flex justify-between items-center text-[10px]">
+          <span class="text-gray-400">[${evt.elapsed_time_s.toFixed(1)}s // TICK #${evt.tick}]</span>
+          <span class="px-1.5 py-0.2 rounded bg-black/70 border border-gray-800 text-gray-300 uppercase">${evt.category}</span>
+        </div>
+        <div class="text-gray-100 font-sans leading-relaxed">${evt.commentary}</div>
+        ${evt.joint_torque_nm > 0 ? `<div class="text-[10px] text-yellow-400">⚡ Joint Torque: ${evt.joint_torque_nm.toFixed(1)} N·m (Gate: 45 N·m)</div>` : ''}
+      `;
+      log.appendChild(item);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function renderArenaLeaderboard(lb) {
+      const tbody = document.getElementById('arenaLeaderboardBody');
+      if (!tbody || !lb) return;
+
+      tbody.innerHTML = '';
+      lb.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-white/5 transition';
+        const isHuman = row.type === 'human_twin';
+        const rankBadge = row.rank === 1 ? '🥇' : row.rank === 2 ? '🥈' : row.rank === 3 ? '🥉' : `#${row.rank}`;
+        
+        tr.innerHTML = `
+          <td class="py-2.5 font-bold ${row.rank === 1 ? 'text-yellow-400' : 'text-gray-400'}">${rankBadge}</td>
+          <td class="py-2.5 font-bold ${isHuman ? 'text-green-400' : 'text-pink-400'} flex items-center gap-1.5">
+            <span>${isHuman ? '🥋' : '🤖'}</span>
+            <span>${row.name}</span>
+          </td>
+          <td class="py-2.5 text-gray-400 text-[10px]">${row.model_id}</td>
+          <td class="py-2.5 font-bold text-white">${row.elo_rating.toFixed(1)}</td>
+          <td class="py-2.5 text-gray-300">${row.record}</td>
+          <td class="py-2.5 text-yellow-400 font-bold">${row.submissions}</td>
+          <td class="py-2.5 text-purple-300 text-[10px] capitalize">${row.bias.replace('_', ' ')}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function startArenaMatch() {
+      const selA = document.getElementById('selectFighterA');
+      const selB = document.getElementById('selectFighterB');
+      const fA = selA ? selA.value : 'aaron_twin';
+      const fB = selB ? selB.value : 'apex_npu';
+
+      try {
+        const res = await fetch('/api/arena/match/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fighter_a: fA, fighter_b: fB, duration_s: 300.0 })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          renderArenaState(data.match);
+          const log = document.getElementById('arenaCommentaryLog');
+          if (log) log.innerHTML = `<div class="p-2 text-center text-cyan-400 font-bold bg-cyan-950/40 rounded border border-cyan-800">🥋 Match Started: ${data.match.fighter_a.name} vs ${data.match.fighter_b.name}! (5 min round)</div>`;
+        }
+      } catch (e) {
+        console.error('Failed to start arena match:', e);
+      }
+    }
+
+    async function tickArenaMatch() {
+      try {
+        const res = await fetch('/api/arena/match/tick', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dt_s: 5.0 })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.match) renderArenaState(data.match);
+          if (data.latest_event) appendArenaCommentary(data.latest_event);
+          if (data.leaderboard) renderArenaLeaderboard(data.leaderboard);
+        }
+      } catch (e) {
+        console.error('Failed to tick arena match:', e);
+      }
+    }
+
+    async function simulateFullArenaMatch() {
+      const selA = document.getElementById('selectFighterA');
+      const selB = document.getElementById('selectFighterB');
+      const fA = selA ? selA.value : 'aaron_twin';
+      const fB = selB ? selB.value : 'apex_npu';
+
+      try {
+        const btn = document.getElementById('btnSimFullArena');
+        if (btn) btn.textContent = 'SIMULATING...';
+        const res = await fetch('/api/arena/match/simulate_full', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fighter_a: fA, fighter_b: fB, duration_s: 300.0 })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          renderArenaState(data.match);
+          if (data.leaderboard) renderArenaLeaderboard(data.leaderboard);
+          
+          // Render all ticks to commentary
+          const log = document.getElementById('arenaCommentaryLog');
+          if (log && data.match.recent_events) {
+            log.innerHTML = `<div class="p-2 text-center text-purple-300 font-bold bg-purple-950/40 rounded border border-purple-800">⏩ Fast-Forward Roll Completed (${data.ticks_executed} Ticks)</div>`;
+            data.match.recent_events.forEach(evt => appendArenaCommentary(evt));
+          }
+        }
+        if (btn) btn.textContent = '⏩ SIMULATE FULL';
+      } catch (e) {
+        console.error('Failed full arena simulation:', e);
+        const btn = document.getElementById('btnSimFullArena');
+        if (btn) btn.textContent = '⏩ SIMULATE FULL';
+      }
+    }
+
+    function resetArenaMat() {
+      startArenaMatch();
+    }
+
+    async function sendCornerDirective(directive) {
+      try {
+        const res = await fetch('/api/arena/match/directive', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fighter_id: 'aaron_twin', directive: directive })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const dirEl = document.getElementById('arenaFighterADirective');
+          if (dirEl) {
+            const dir = data.active_directive || 'NONE (NEUTRAL)';
+            dirEl.textContent = dir.replace('_', ' ');
+            if (dir !== 'NONE (NEUTRAL)') {
+              dirEl.className = 'font-bold text-yellow-300 bg-yellow-950/80 border border-yellow-500 px-2 py-0.5 rounded animate-pulse';
+            } else {
+              dirEl.className = 'font-bold text-gray-400 bg-gray-900 border border-gray-800 px-2 py-0.5 rounded';
+            }
+          }
+          const flash = document.getElementById('arenaActionFlash');
+          if (flash) {
+            flash.textContent = `🗣️ Directive: ${directive.replace('_', ' ')}`;
+            flash.className = 'text-xs text-yellow-300 font-bold font-mono bg-yellow-950/80 border border-yellow-600 px-3 py-1 rounded-full max-w-xs truncate animate-pulse';
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to send corner directive:', err);
+      }
+    }
+
+    async function openUserArenaAnalysisModal(fighterId = 'aaron_twin') {
+      try {
+        const res = await fetch(`/api/arena/analysis/user?fighter_id=${fighterId}`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        // Populate elements
+        document.getElementById('analysisModalName').textContent = data.name;
+        document.getElementById('analysisCompositeLevel').textContent = Math.round(data.composite_level);
+        document.getElementById('analysisRankLabel').textContent = data.grappling.rank_label || data.grappling.belt_rank;
+        
+        const beltBadge = document.getElementById('analysisModalBeltBadge');
+        if (beltBadge) {
+          beltBadge.textContent = data.grappling.rank_label || data.grappling.belt_rank;
+          beltBadge.style.backgroundColor = data.grappling.belt_hex || '#6B21A8';
+          beltBadge.style.color = data.grappling.belt_hex === '#F3F4F6' ? '#111827' : '#FFFFFF';
+        }
+
+        // Hero metrics
+        document.getElementById('analysisHeroCondScore').textContent = data.conditioning.conditioning_score.toFixed(1);
+        document.getElementById('analysisHeroCondTier').textContent = data.conditioning.conditioning_tier;
+        document.getElementById('analysisHeroGrapScore').textContent = data.grappling.overall_ability_score.toFixed(1);
+        document.getElementById('analysisHeroArchetype').textContent = data.grappling.tactical_archetype;
+
+        // Conditioning details
+        const dfaVal = data.conditioning.metrics.dfa_alpha1;
+        document.getElementById('analysisDfaAlpha1').textContent = dfaVal != null ? dfaVal.toFixed(2) : '--';
+        document.getElementById('analysisDfaBar').style.width = dfaVal != null ? `${Math.min(100, Math.max(0, dfaVal * 100))}%` : '50%';
+        
+        const hrvVal = data.conditioning.metrics.hrv_rmssd_ms;
+        document.getElementById('analysisHrvRmssd').textContent = hrvVal != null ? `${hrvVal.toFixed(1)} ms` : '-- ms';
+        document.getElementById('analysisHrvBar').style.width = hrvVal != null ? `${Math.min(100, Math.max(0, (hrvVal / 80) * 100))}%` : '60%';
+
+        const stamVal = data.conditioning.stamina_capacity_joules;
+        document.getElementById('analysisStaminaCap').textContent = `${Math.round(stamVal).toLocaleString()} J`;
+        document.getElementById('analysisStaminaBar').style.width = `${Math.min(100, (stamVal / 65000) * 100)}%`;
+
+        document.getElementById('analysisRecommendation').textContent = data.conditioning.recommendation;
+        document.getElementById('analysisSensorStatus').textContent = data.conditioning.metrics.is_streaming ? '🟢 512Hz LIVE ECG' : '⚪ STANDBY (RULE #0)';
+
+        // Grappling disciplines
+        const discs = data.grappling.disciplines || {};
+        document.getElementById('analysisDiscGuard').textContent = (discs.Guard || 75).toFixed(1);
+        document.getElementById('analysisBarGuard').style.width = `${Math.min(100, discs.Guard || 75)}%`;
+
+        document.getElementById('analysisDiscPassing').textContent = (discs.Passing || 75).toFixed(1);
+        document.getElementById('analysisBarPassing').style.width = `${Math.min(100, discs.Passing || 75)}%`;
+
+        document.getElementById('analysisDiscSub').textContent = (discs.Submission || 75).toFixed(1);
+        document.getElementById('analysisBarSub').style.width = `${Math.min(100, discs.Submission || 75)}%`;
+
+        document.getElementById('analysisDiscEscape').textContent = (discs.Escape || 75).toFixed(1);
+        document.getElementById('analysisBarEscape').style.width = `${Math.min(100, discs.Escape || 75)}%`;
+
+        document.getElementById('analysisDiscTakedown').textContent = (discs.Takedown || 75).toFixed(1);
+        document.getElementById('analysisBarTakedown').style.width = `${Math.min(100, discs.Takedown || 75)}%`;
+
+        // OPML stats
+        if (data.grappling.opml_repertoire) {
+          document.getElementById('analysisOpmlTotal').textContent = (data.grappling.opml_repertoire.total_accessible_nodes || 3044).toLocaleString();
+          document.getElementById('analysisOpmlSubs').textContent = `${data.grappling.opml_repertoire.submission_arsenal || 12} Locks/Chokes`;
+        }
+
+        const backdrop = document.getElementById('userAnalysisModalBackdrop');
+        if (backdrop) {
+          backdrop.classList.remove('hidden');
+          backdrop.classList.add('flex');
+        }
+      } catch (err) {
+        console.warn('Failed to load user analysis profile:', err);
+      }
+    }
+
+    function closeUserArenaAnalysisModal() {
+      const backdrop = document.getElementById('userAnalysisModalBackdrop');
+      if (backdrop) {
+        backdrop.classList.remove('flex');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    // Modal click-outside and escape close
+    const userAnalysisBackdrop = document.getElementById('userAnalysisModalBackdrop');
+    if (userAnalysisBackdrop) {
+      userAnalysisBackdrop.addEventListener('click', (e) => {
+        if (e.target === userAnalysisBackdrop) closeUserArenaAnalysisModal();
+      });
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeUserArenaAnalysisModal();
+    });
+
+    connect();
+  </script>
+</body>
+</html>

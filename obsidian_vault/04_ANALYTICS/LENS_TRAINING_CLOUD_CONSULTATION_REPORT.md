@@ -46,7 +46,7 @@ status: "APPROVED_FOR_EXECUTION"
 [PERSPECTIVE 4: CLOUDFLARE WORKERS AI — EDGE EFFICIENCY & TELEMETRY COMPACTION]
 1. Edge Mobile & Peripheral Node Offloading:
    • Peripheral mesh nodes (Linux Head Node L3, MacBook Air L5, Pixel 10 Pro XL L6) require low-footprint adapter checkpoints ($\le 25\text{ MB}$).
-   • Quantize trained LoRA adapter weights using FP8/INT8 serialization (`npz` compression) for instant sub-millisecond distribution across the 10Gbps Thunderbolt 4 bridge.
+   • Quantize trained LoRA adapter weights using FP8/INT8 serialization (`npz` compression) for instant sub-millisecond distribution across the 40Gbps Thunderbolt 4 bridge.
 2. KV Cache & Context Pruning:
    • Implement SnapKV / Context Pruning to compress long screen observation histories into condensed observation tokens, saving 70% inference RAM on edge workers.
 

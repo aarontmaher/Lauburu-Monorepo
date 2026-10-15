@@ -3,7 +3,7 @@
 Multi-WAN Speedify-Like Bond Manager
 Lauburu Immortal Swarm — Generation 75
 Scores and ranks all available WAN transport paths for optimal llama.cpp tensor shard routing.
-Includes TP-Link Extender Ethernet (enx98fc84e6e212) dynamic fitness scoring and sysfs link probing.
+Includes Pixel L6 USB-C Gigabit Ethernet (enx98fc84e6e212) dynamic fitness scoring and sysfs link probing.
 """
 
 import argparse
@@ -30,18 +30,18 @@ LORA_DIR.mkdir(parents=True, exist_ok=True)
 # ─── Known WAN transport paths ───────────────────────────────────────────────
 WAN_PATHS = [
     {
-        "name": "TPLink_Extender_Ethernet",
+        "name": "Pixel_L6_USB_Gigabit_Ethernet",
         "interface": "enx98fc84e6e212",
         "interface_candidates": ["enx98fc84e6e212", "eth0", "en0"],
         "mac_address": "98:fc:84:e6:e2:12",
-        "type": "extender_ethernet",
+        "type": "usb_gigabit_ethernet",
         "max_theoretical_mbps": 1000,
         "fallback_mbps": 100,
         "probe_host": "192.168.8.1",
         "route_metric": 100,
         "routing_table": 200,
-        "table_name": "tplink_mesh",
-        "description": "TP-Link Range Extender Layer 2 Client Bridge Ethernet on enx98fc84e6e212",
+        "table_name": "pixel_l6_usb_eth",
+        "description": "Pixel 10 Pro XL (L6) Wired USB-C Gigabit Ethernet on enx98fc84e6e212 (192.168.8.176)",
     },
     {
         "name": "Ethernet",
@@ -88,19 +88,19 @@ WAN_PATHS = [
     },
     {
         "name": "Pixel_Hotspot_5GHz",
-        "host": "100.73.38.87",
+        "host": "10.1.0.13",
         "type": "hotspot",
         "band": "5GHz",
         "max_theoretical_mbps": 600,
-        "probe_host": "100.73.38.87",
+        "probe_host": "10.1.0.13",
     },
     {
         "name": "Pixel_Hotspot_6GHz",
-        "host": "100.73.38.87",
+        "host": "10.1.0.13",
         "type": "hotspot",
         "band": "6GHz",
         "max_theoretical_mbps": 1200,
-        "probe_host": "100.73.38.87",
+        "probe_host": "10.1.0.13",
     },
 ]
 
@@ -261,7 +261,7 @@ def build_test_command(path: dict, resolved_iface: Optional[str] = None) -> str:
     host = path.get("probe_host") or path.get("host") or path.get("gateway", "")
     if path["type"] in ("hotspot",):
         return f"ping -c 5 {host} && curl -s --interface <hotspot_iface> http://speedtest.net"
-    if path["type"] in ("wired", "extender_ethernet"):
+    if path["type"] in ("wired", "usb_gigabit_ethernet"):
         iface = resolved_iface or path.get("interface", "enx98fc84e6e212")
         return f"ip link show {iface} && ping -c 5 -I {iface} {host}"
     ssid = path.get("ssid", "")

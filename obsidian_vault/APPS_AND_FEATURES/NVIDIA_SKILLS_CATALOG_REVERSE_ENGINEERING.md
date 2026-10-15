@@ -156,11 +156,11 @@ The open CLI `npx skills add <repo> --skill <name>` operates by:
 
 ## 🌐 4. Cross-System Synthesis with the Lauburu Mesh
 
-The Lauburu Mesh Ecosystem (`/Users/aaron/DFS_UNIFIED`) already implements an equivalent, sovereign multi-agent architecture:
+The Lauburu Mesh Ecosystem (`/Volumes/Lauburu-Monorepo`) already implements an equivalent, sovereign multi-agent architecture:
 
 | Capability | NVIDIA Architecture | Lauburu Sovereign Architecture |
 | :--- | :--- | :--- |
-| **Catalog Repository** | `github.com/NVIDIA/skills` (350 skills) | `/Users/aaron/DFS_UNIFIED/.agents/skills/` (55+ skills) |
+| **Catalog Repository** | `github.com/NVIDIA/skills` (350 skills) | `/Volumes/Lauburu-Monorepo/.agents/skills/` (55+ skills) |
 | **Meta Router** | `nvidia-skill-finder` | `loop` (Omnipresent Skill Router & Generational Optimizer) |
 | **Durable Session Memory** | `nemo-rl-session-memory` (`./session/`) | Tri-Vault Storage (`obsidian_vault/`, `lora_datasets/`, Git) |
 | **Context Isolation** | `nemo-relay-instrument-context-isolation` | Antigravity Subagent Isolation & Task Management |

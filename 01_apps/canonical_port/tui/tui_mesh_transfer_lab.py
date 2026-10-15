@@ -3,7 +3,7 @@
 Mesh Transfer Lab TUI — Continuous Multi-Transport Benchmarker & Statistical Confidence Engine
 Lauburu Mesh Ecosystem — 2026
 
-Interactive Textual Cockpit for:
+Interactive Textual Console for:
 1. Real-time multi-transport sampling (Thunderbolt 4, Tailscale, Wi-Fi 7/LAN, Loopback)
 2. Live Gaussian/Student-t 95% Confidence Interval (CI) Calculation & Convergence
 3. Live Multi-Daemon Speed Estimation (llama.cpp RPC vs Exo MLX vs Petals DHT vs Accelerate)
@@ -119,7 +119,7 @@ class MeshTransferLabApp(App):
 
     def compose(self) -> ComposeResult:
         yield Static(
-            "⚡ LAUBURU MESH TRANSFER LAB — CONTINUOUS STATISTICAL CONFIDENCE & CHAOS INJECTION COCKPIT",
+            "⚡ LAUBURU MESH TRANSFER LAB — CONTINUOUS STATISTICAL CONFIDENCE & CHAOS INJECTION CONSOLE",
             id="lab-header"
         )
         with Horizontal(id="hud-panel"):
@@ -164,7 +164,7 @@ class MeshTransferLabApp(App):
         )
 
         log = self.query_one("#lab-log", RichLog)
-        log.write("[bold green]🚀 Mesh Transfer Lab Cockpit initialized.[/bold green]")
+        log.write("[bold green]🚀 Mesh Transfer Lab Console initialized.[/bold green]")
         log.write("[dim]Starting continuous sampling & 95% CI calculation loop...[/dim]")
 
         self.set_interval(0.5, self._update_telemetry)

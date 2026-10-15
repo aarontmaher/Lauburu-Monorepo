@@ -1,0 +1,37 @@
+{
+  "video_id": "qCeqmKzBcj8",
+  "url": "https://youtu.be/qCeqmKzBcj8",
+  "division": "Other Competitions",
+  "title": "Aaron Maher (AUS) vs Ali Ali (NL)",
+  "duration_sec": 383.5,
+  "resolution": "144x256",
+  "sampled_frames": 36,
+  "poses_detected_frames": 27,
+  "dual_athlete_frames": 7,
+  "standing_phase_pct": 0.0,
+  "ground_scramble_phase_pct": 100.0,
+  "level_change_shots_detected": 4,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 81.3,
+    "left_elbow": 132.4,
+    "right_elbow": 123.7,
+    "left_hip": 98.7,
+    "right_hip": 98.7,
+    "left_knee": 106.7,
+    "right_knee": 93.4
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/qCeqmKzBcj8_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's 383.5s performance indicates a strong stance with a high level of stability and control, with a significant amount of ground/scrabble work. His 400% level change shots suggest a high level of agility and quick reflexes, while the 81.3\u00b0 spine lean indicates a well-developed core and upper body strength. The 132.4\u00b0 and 123.7\u00b0 elbow flexions and 106.7\u00b0 and 93.4\u00b0",
+  "processing_sec": 6.2,
+  "vision_model_opinions": {
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "READY_BATCH",
+      "latency_sec": 0.8,
+      "analysis": "Aaron Maher's 383.5s performance indicates a strong stance with a high level of stability and control, with a significant amount of ground/scrabble work. His 400% level change shots suggest a high level of agility and quick reflexes, while the 81.3\u00b0 spine lean indicates a well-developed core and upper body strength. The 132.4\u00b0 and 123.7\u00b0 elbow flexions and 106.7\u00b0 and 93.4\u00b0"
+    }
+  }
+}

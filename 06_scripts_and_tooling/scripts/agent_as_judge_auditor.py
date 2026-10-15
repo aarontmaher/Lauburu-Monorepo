@@ -22,7 +22,7 @@ import argparse
 import logging
 from typing import Dict, Any, List, Tuple, Optional, Union
 
-PROJECT_ROOT = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+PROJECT_ROOT = "/Volumes/Lauburu-Monorepo"
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 

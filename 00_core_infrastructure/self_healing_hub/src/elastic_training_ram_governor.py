@@ -92,7 +92,7 @@ NODE_PROFILES = {
     "L7_Samsung_S20": {
         "name": "Samsung Galaxy S20 (Exynos 990)",
         "ip": "192.168.8.158",
-        "ts": "100.84.40.95",
+        "ts": "100.78.206.96",
         "total_ram_gb": 12.0,
         "max_ai_cap_gb": 9.0,        # 75% dynamic cap
         "target_optimal_gb": 6.0,    # Optimal 24/7 training allocation

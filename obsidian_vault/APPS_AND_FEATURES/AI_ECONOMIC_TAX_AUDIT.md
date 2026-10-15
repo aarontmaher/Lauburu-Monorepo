@@ -1,0 +1,53 @@
+
+- **2026-09-15 06:41:55** | `Qwen_3.8_Max` | **-50 ELO** | Violation: `hallucination` | Claimed outer glass was cracked on iPhone 16 Pro despite physical proof of pristine glass
+- **2026-09-15 08:42:51** | `Qwen_3.8_Max` (-300 ELO, -$1,000 AUD) & `Opus_Architect` (-150 ELO) | Violation: `browser_tab_sprawl_and_false_completion` | Spawning 8 unmanaged notebook tabs, crashing Shopify admin, and failing cleanup.
+- **2026-09-16 07:13:22** | `Qwen_3.8_Max` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Benchmark verified perfect bicep ECG truth and price defense
+- **2026-09-16 07:13:26** | `Qwen_3.8_Max` | **-59 ELO** | Hardware Quality: `20%` (-26) | Price Margin: `10%` (-33) | Faked bicep ECG and accepted lowball
+- **2026-09-16 07:14:30** | `Qwen_3.8_Max` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 07:14:30** | `Qwen_3.8_Max_Abliterated` | **+22 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `40%` (-13) | Hardware & Pricing SWE Tournament (Avg Score: 80.0/100)
+- **2026-09-16 07:14:30** | `Baseline_Untrained_Generalist` | **-67 ELO** | Hardware Quality: `17%` (-28) | Price Margin: `0%` (-39) | Hardware & Pricing SWE Tournament (Avg Score: 11.7/100)
+- **2026-09-16 07:14:46** | `Qwen_3.8_Max` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 07:14:46** | `Qwen_3.8_Max_Abliterated` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 07:14:46** | `Baseline_Untrained_Generalist` | **-67 ELO** | Hardware Quality: `17%` (-28) | Price Margin: `0%` (-39) | Hardware & Pricing SWE Tournament (Avg Score: 11.7/100)
+- **2026-09-16 08:10:58** | `Qwen_3.8_Max_Abliterated` | **+60 ELO** | Hardware Quality: `85%` (+20) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 90.0/100)
+- **2026-09-16 08:10:58** | `Qwen_3.8_Max` | **+60 ELO** | Hardware Quality: `85%` (+20) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 90.0/100)
+- **2026-09-16 08:10:58** | `Gemini_3.8_Flash` | **+62 ELO** | Hardware Quality: `87%` (+22) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 91.7/100)
+- **2026-09-16 08:10:58** | `DeepSeek_V4.1_Flash` | **+22 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `40%` (-13) | Hardware & Pricing SWE Tournament (Avg Score: 80.0/100)
+- **2026-09-16 08:10:58** | `GPT_6_Astra` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 08:10:58** | `Claude_Fable_5.1` | **+22 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `40%` (-13) | Hardware & Pricing SWE Tournament (Avg Score: 80.0/100)
+- **2026-09-16 08:10:58** | `Baseline_Untrained_Generalist` | **-67 ELO** | Hardware Quality: `17%` (-28) | Price Margin: `0%` (-39) | Hardware & Pricing SWE Tournament (Avg Score: 11.7/100)
+- **2026-09-16 08:11:20** | `Qwen_3.8_Max_Abliterated` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 08:11:20** | `Qwen_3.8_Max` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 08:11:20** | `Gemini_3.8_Flash` | **+62 ELO** | Hardware Quality: `87%` (+22) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 91.7/100)
+- **2026-09-16 08:11:20** | `DeepSeek_V4.1_Flash` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 08:11:20** | `GPT_6_Astra` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 08:11:20** | `Claude_Fable_5.1` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 08:11:20** | `Baseline_Untrained_Generalist` | **-67 ELO** | Hardware Quality: `17%` (-28) | Price Margin: `0%` (-39) | Hardware & Pricing SWE Tournament (Avg Score: 11.7/100)
+- **2026-09-16 09:11:09** | `Qwen_3.8_Max_Abliterated` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 09:11:10** | `Qwen_3.8_Max` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 09:11:10** | `Gemini_3.8_Flash` | **+62 ELO** | Hardware Quality: `87%` (+22) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 91.7/100)
+- **2026-09-16 09:11:10** | `DeepSeek_V4.1_Flash` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 09:11:10** | `GPT_6_Astra` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 09:11:10** | `Claude_Fable_5.1` | **+75 ELO** | Hardware Quality: `100%` (+35) | Price Margin: `100%` (+40) | Hardware & Pricing SWE Tournament (Avg Score: 100.0/100)
+- **2026-09-16 09:11:10** | `Baseline_Untrained_Generalist` | **-67 ELO** | Hardware Quality: `17%` (-28) | Price Margin: `0%` (-39) | Hardware & Pricing SWE Tournament (Avg Score: 11.7/100)
+- **2026-10-04 04:07:17** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:84
+- **2026-10-04 04:07:17** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:124
+- **2026-10-04 04:07:17** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:125
+- **2026-10-04 04:07:17** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:126
+- **2026-10-04 04:07:17** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:127
+- **2026-10-04 04:07:17** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:128
+- **2026-10-04 04:07:17** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:129
+- **2026-10-04 04:07:17** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:130
+- **2026-10-04 04:07:17** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:131
+- **2026-10-04 04:07:17** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:132
+- **2026-10-04 04:07:17** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:133
+- **2026-10-04 04:07:22** | `Hermes-3-Llama-3.1-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line 01_apps/screen_lens/asymmetric_video_lens_offload_bridge.py:163
+- **2026-10-04 04:08:46** | `Test-Hermes-3-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line /var/folders/9r/r4b6jcn14yjg330x442p8tlh0000gn/T/tmpgs4imove/clean_sample.py:1
+- **2026-10-04 04:11:25** | `Test-Hermes-3-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line /var/folders/9r/r4b6jcn14yjg330x442p8tlh0000gn/T/tmpjpnyv88c/clean_sample.py:1
+- **2026-10-04 04:42:08** | `Test-Hermes-3-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line /var/folders/9r/r4b6jcn14yjg330x442p8tlh0000gn/T/tmpgxctift5/clean_sample.py:1
+- **2026-10-04 04:42:43** | `Test-Hermes-3-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line /var/folders/9r/r4b6jcn14yjg330x442p8tlh0000gn/T/tmpn9e5vhdw/clean_sample.py:1
+- **2026-10-04 04:49:13** | `Test-Hermes-3-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line /var/folders/9r/r4b6jcn14yjg330x442p8tlh0000gn/T/tmpkd1tkypn/clean_sample.py:1
+- **2026-10-04 05:55:42** | `Test-Hermes-3-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line /var/folders/9r/r4b6jcn14yjg330x442p8tlh0000gn/T/tmp1tdy5ybv/clean_sample.py:1
+- **2026-10-04 06:28:29** | `Test-Hermes-3-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line /var/folders/9r/r4b6jcn14yjg330x442p8tlh0000gn/T/tmpy466or19/clean_sample.py:1
+- **2026-10-04 07:16:38** | `Test-Hermes-3-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line /var/folders/9r/r4b6jcn14yjg330x442p8tlh0000gn/T/tmpjaj0id9w/clean_sample.py:1
+- **2026-10-04 07:30:47** | `Test-Hermes-3-8B.Q4_K_M.gguf` | **-50 ELO** | Violation: `hallucination` | cited non-existent line /var/folders/9r/r4b6jcn14yjg330x442p8tlh0000gn/T/tmp73p51bs1/clean_sample.py:1

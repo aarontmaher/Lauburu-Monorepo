@@ -15,7 +15,7 @@ timestamp: "2026-09-04T13:56:39.914572+00:00"
 | Node | Physical RAM | Available RAM | Total Disk | Free Disk | Storage Pressure | Live Inference Services |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Mac Mini M4 Pro (L1 Host)** | 24.0 GB | 12.1 GB | 460 GiB | **12.0 GiB** | 98% (Host Sanctuary Target $\ge 10$ GB) | `:8083` Qwen 3.8 Max Abliterated (Devil's Advocate) |
-| **MacBook Pro M4 (L2 Vault)** | 16.0 GB | 6.7 GB inactive | 466 GiB | **9.3 GiB** | 98% (Critical Storage Limit) | `:8081` Qwen2.5-VL-7B, `:50052` ggml-rpc-server |
+| **Intel MacBook Pro (L2 Vault)** | 16.0 GB | 6.7 GB inactive | 466 GiB | **9.3 GiB** | 98% (Critical Storage Limit) | `:8081` Qwen2.5-VL-7B, `:50052` ggml-rpc-server |
 | **Linux Head Node (L3 Compute)** | 16.0 GB | 13.1 GB | 468 GiB | **14.0 GiB** | 97% (Storage Constrained) | `:50052` ggml-rpc-server, `:8080` Qwen3-VL, Exo P2P |
 
 ---
@@ -29,7 +29,7 @@ timestamp: "2026-09-04T13:56:39.914572+00:00"
 - **`SmolVLM-Instruct-Q4_K_M.gguf` (1.0 GB - Mac Mini):** Sub-100ms ultra-low-latency edge OCR. **[KEEP]**
 
 ### 2.2 70B+ Frontier Weights & Heavy Reasoning
-- **`DeepSeek-R1-Distill-Llama-70B-Q4_K_M.gguf` (40 GB - MacBook Pro):** Canonical 70B Reasoning Teacher. Sharded over the 10Gbps Thunderbolt 4 bridge (0.54ms RTT) for whole-monorepo AST analysis, deep mathematical proofs, and synthetic LoRA distillation. **[KEEP]**
+- **`DeepSeek-R1-Distill-Llama-70B-Q4_K_M.gguf` (40 GB - MacBook Pro):** Canonical 70B Reasoning Teacher. Sharded over the 40Gbps Thunderbolt 4 bridge (0.54ms RTT) for whole-monorepo AST analysis, deep mathematical proofs, and synthetic LoRA distillation. **[KEEP]**
 - **`DeepSeek-R1-Distill-Llama-70B-IQ2_XXS.gguf` (18 GB - MacBook Pro):** Single-node emergency fallback for running 70B reasoning within a single 16GB–24GB node memory envelope. **[KEEP]**
 - **`Llama-3.3-70B-Instruct-abliterated-Q4_K_M.gguf` (40 GB - MacBook Pro):** Heavy Frontier Devil's Advocate for AI Debate and security boundary probing. **[KEEP]**
 - **`dbrx-instruct.Q3_K_M.gguf` (37 GB - MacBook Pro):** 16x MoE Engine (36B active out of 132B). Ultra-fast coding and multi-turn refactoring. **[KEEP]**
@@ -56,7 +56,7 @@ timestamp: "2026-09-04T13:56:39.914572+00:00"
    - Prompt Evaluation: 323.8 tok/s
    - Generation Speed: 25.7 tok/s
    - Status: Active and responsive
-2. **MacBook Pro VLM Inference (Port 8081 over 10Gbps TB4 Bridge):**
+2. **MacBook Pro VLM Inference (Port 8081 over 40Gbps TB4 Bridge):**
    - Target: `169.254.215.118:8081`
    - Latency: 0.54 ms RTT link latency
    - Model: `Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf`
@@ -64,7 +64,7 @@ timestamp: "2026-09-04T13:56:39.914572+00:00"
 3. **Linux Head Node Distributed RPC (Port 50052):**
    - Active daemon: `ggml-rpc-server -H 0.0.0.0 -p 50052`
    - Available System RAM: 13,072 MB
-   - CPU: AMD Ryzen 7 5700U (16 threads active)
+   - CPU: Intel 2018 Mac Mini (Linux) (16 threads active)
 
 ---
 

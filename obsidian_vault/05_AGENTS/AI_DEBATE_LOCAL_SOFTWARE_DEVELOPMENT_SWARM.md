@@ -9,7 +9,7 @@ consensus_score: 0.998
 # 🤖 AI Debate: Strongest Local Software Development Swarm & Mesh Training Architecture
 
 ## 1. Executive Summary
-The Tri-Orchestrator Council deliberated on forming the **Strongest Local Software Development Swarm** pooling our **108.0 GB RAM / 82.8 GB VRAM physical mesh**. We established how the **Linux Head Node (Ryzen 7)** acts as the 24/7 Referee, Test Harness & Data Coordinator, while the **Apple Silicon Macs (M4 Pro + M4 + M3)** execute high-speed Metal neural inference and continuous LoRA gradient updates.
+The Tri-Orchestrator Council deliberated on forming the **Strongest Local Software Development Swarm** pooling our **108.0 GB RAM / 82.8 GB VRAM physical mesh**. We established how the **Linux Head Node (Intel 2018 Mac Mini)** acts as the 24/7 Referee, Test Harness & Data Coordinator, while the **Apple Silicon Macs (M4 Pro + M4 + M3)** execute high-speed Metal neural inference and continuous LoRA gradient updates.
 
 ---
 
@@ -31,7 +31,7 @@ The Tri-Orchestrator Council deliberated on forming the **Strongest Local Softwa
 │                                │ (Mac Mini Host :8083)    │ detection, zero-hallucination review.      │
 ├────────────────────────────────┼──────────────────────────┼────────────────────────────────────────────┤
 │ 4. 🧪 Automated Test & Harness │ Linux Head Node          │ Sandboxed PyTest / Cargo execution,        │
-│                                │ (AMD Ryzen 7 5700U)      │ SWE-bench verification, ELO calibration.   │
+│                                │ (Intel 2018 Mac Mini (Linux))      │ SWE-bench verification, ELO calibration.   │
 └────────────────────────────────┴──────────────────────────┴────────────────────────────────────────────┘
 ```
 
@@ -41,7 +41,7 @@ The Tri-Orchestrator Council deliberated on forming the **Strongest Local Softwa
 
 1. **Task Ingestion & Dispatch (Linux Node $\to$ Apple Silicon Macs):**
    - The Linux Daemon pulls an open SWE-bench issue or monorepo feature ticket.
-   - It formats the multi-file codebase context into an AST prompt and sends an async HTTP POST request across the 10Gbps Thunderbolt 4 bridge / Tailscale mesh to `http://100.93.158.96:8081` (MacBook Air).
+   - It formats the multi-file codebase context into an AST prompt and sends an async HTTP POST request across the 40Gbps Thunderbolt 4 bridge / Tailscale mesh to `http://100.93.158.96:8081` (MacBook Air).
 
 2. **Hardware-Accelerated Code Generation (Apple Silicon Metal GPU):**
    - The M4/M3 Metal GPU executes neural inference at 35–45 tokens/sec, generating the multi-file git patch.

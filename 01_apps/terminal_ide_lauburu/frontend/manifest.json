@@ -1,0 +1,41 @@
+{
+  "name": "Terminal IDE Lauburu",
+  "short_name": "Terminal IDE",
+  "description": "Sovereign rootless terminal emulator, split-pane editor, git dashboard, Shizuku Binder IPC, and local LLM mesh integration.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0e14",
+  "theme_color": "#0d1117",
+  "categories": [
+    "developer",
+    "utilities",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Open Shell",
+      "url": "./index.html#terminal",
+      "description": "Direct jump to rootless terminal console"
+    },
+    {
+      "name": "Git Dashboard",
+      "url": "./index.html#git",
+      "description": "View active workspace commits and diffs"
+    },
+    {
+      "name": "Local LLM Hub",
+      "url": "./index.html#llm",
+      "description": "Query Sovereign Master Qwen 3.8 Max"
+    }
+  ]
+}

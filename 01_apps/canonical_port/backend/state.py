@@ -81,8 +81,8 @@ class BackendStateStore:
                     active_services=["llama_rpc_8082", "model_vault_285gb"],
                 ),
                 MeshNodeState(
-                    node_id="L3_Linux_Head_Node",
-                    name="AMD Ryzen 7 5700U Linux Compute Hub",
+                    node_id="L3_Linux_Mini",
+                    name="Intel 2018 Mac Mini (Linux) Linux Compute Hub",
                     layer="L3",
                     local_ip="192.168.8.224",
                     tailscale_ip="100.101.39.98",

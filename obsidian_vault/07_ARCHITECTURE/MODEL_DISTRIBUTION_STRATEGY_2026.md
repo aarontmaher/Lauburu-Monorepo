@@ -29,7 +29,7 @@ updated: 2026-08-30T13:00
 - Model size: 26 GB (IQ2_XXS quantization)
 - Solution: +20 GB swapfile2 → 14 GB RAM + 27 GB swap = **41 GB addressable**
 - mmap mode: OS pages hot layers into RAM, cold layers on NVMe via swap
-- Speed: ~8-12 tok/s (NVMe-backed, Ryzen 7 5700U, 14 threads)
+- Speed: ~8-12 tok/s (NVMe-backed, Intel 2018 Mac Mini (Linux), 14 threads)
 
 ## MBP AI_Models_Vault (Stored, Not Yet Served)
 - DeepSeek-R1-Distill-Llama-70B-IQ2_XXS (18 GB)

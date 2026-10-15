@@ -41,7 +41,7 @@ Verified live from authorized Australian distributors:
 - Implemented in `05_agents_and_swarms/reverse_engineering_training_harness.py`.
 - Disassembles tools into clean-room functional specifications.
 - Local models generate C11/Rust implementations evaluated against zero-mock test harnesses.
-- Verified solutions stream directly into `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_reverse_engineering_training.jsonl`.
+- Verified solutions stream directly into `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_reverse_engineering_training.jsonl`.
 
 ---
 

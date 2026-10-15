@@ -19,7 +19,7 @@ aliases: ["Algorithmic Optimization Paradigms", "BFS vs ACO vs GA Monograph", "M
 ## 1. Executive Summary & Problem Landscape
 
 In distributed heterogeneous edge-cloud architectures—such as the **Lauburu 7-Layer Mesh Ecosystem** (pooling 108.0 GB RAM / 82.8 GB AI VRAM across 7 physical tiers)—data transfer and high-dimensional analytics present conflicting mathematical and computational requirements:
-1. **Real-Time Data Transfer:** Packet routing across heterogeneous multi-WAN interfaces (10Gbps Thunderbolt 4 DMA @ 0.277ms, Wi-Fi 7 MLO @ 2.10ms, Tailscale WireGuard @ 1.85ms, and Bluetooth PAN) demands sub-millisecond route calculation, jitter adaptability, and strict QoS latency bounds.
+1. **Real-Time Data Transfer:** Packet routing across heterogeneous multi-WAN interfaces (40Gbps Thunderbolt 4 DMA @ 0.277ms, Wi-Fi 7 MLO @ 2.10ms, Tailscale WireGuard @ 1.85ms, and Bluetooth PAN) demands sub-millisecond route calculation, jitter adaptability, and strict QoS latency bounds.
 2. **High-Dimensional Analytics:** Signal processing on authentic 512Hz Pan-Tompkins ECG, PTT blood pressure, and DFA-$\alpha_1$ biometrics streams requires non-linear, multi-objective feature selection that maximizes classification accuracy while minimizing sensor cardinality under zero-mock invariants (Rule #0).
 
 ```
@@ -138,7 +138,7 @@ $$\beta^* = 2.0 \cdot \left(1.0 - \frac{\sigma}{\mu + \sigma + \epsilon}\right)$
 $$\rho^* = 0.10 + 0.40 \cdot \min\left(1.0, \frac{\sigma}{\mu + \epsilon}\right)$$
 
 *Physical Response:*
-- **Low Jitter Channels (10Gbps TB4 DMA, $\sigma \to 0$):** $\alpha^* \to 2.0$ (strong exploitation), $\beta^* \to 2.0$, $\rho^* \to 0.10$ (stable persistence).
+- **Low Jitter Channels (40Gbps TB4 DMA, $\sigma \to 0$):** $\alpha^* \to 2.0$ (strong exploitation), $\beta^* \to 2.0$, $\rho^* \to 0.10$ (stable persistence).
 - **High Jitter Volatile Channels (Wi-Fi / 5G, $\sigma \gg \mu$):** $\alpha^* \to 1.0$, $\beta^* \to 0.0$ (discounts noisy instantaneous delay), $\rho^* \to 0.50$ (rapid evaporation allowing agile rerouting).
 
 ---

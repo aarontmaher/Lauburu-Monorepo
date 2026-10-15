@@ -80,7 +80,7 @@ With Shizuku active (granting UID 2000 `shell` access, sub-2ms Binder IPC, `dump
 #### 🎙️ Evolution & Training Engine (TRL / PEFT / Genetic MoE)
 > "We must not neglect **Continuous LoRA Distillation (Spec-12) & OpenClaw UI Auditing (Spec-01)**:
 > 1. **OpenClaw Shizuku Lens**: By binding to `IInputManager` via Shizuku UserService, OpenClaw can run 24/7 background UI automation and accessibility audits at 120 FPS with sub-millisecond input injection.
-> 2. **24/7 Action & Telemetry Harvesting**: Serializing all device sensor telemetry, crash reports, and debate consensus states into Alpaca/ShareGPT formatted JSONL instruction pairs, continuously pushing them to `/Users/aaron/DFS_UNIFIED/lora_datasets/` for model fine-tuning."
+> 2. **24/7 Action & Telemetry Harvesting**: Serializing all device sensor telemetry, crash reports, and debate consensus states into Alpaca/ShareGPT formatted JSONL instruction pairs, continuously pushing them to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/` for model fine-tuning."
 
 ---
 
@@ -125,4 +125,4 @@ All three orchestrators ratify the 5-domain continuous workload architecture, go
 - [x] 2. **Distributed Swarm Compute**: Pin Petals DHT (Port 31330) and llama.cpp RPC on Pixel 10 Pro XL.
 - [x] 3. **OpenClaw UI Lens**: Deploy `IInputManager` Binder proxy for automated 120 FPS app testing.
 - [x] 4. **Dynamic Thermal Guard**: Throttle compute when battery temp exceeds 38°C.
-- [x] 5. **Tri-Vault Memory Sync**: Stream telemetry pairs to `/Users/aaron/DFS_UNIFIED/lora_datasets/`.
+- [x] 5. **Tri-Vault Memory Sync**: Stream telemetry pairs to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/`.

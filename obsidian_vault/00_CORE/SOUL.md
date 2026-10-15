@@ -90,7 +90,7 @@ Every interface generated in the monorepo must strictly adhere to the **Hybrid F
 
 ## 💰 4. Cloud vs. Local Sovereignty: Parasitic Distillation ($0 Ladder)
 
-- **Local AI First:** Local quantized models running across Apple Silicon Metal and distributed 10Gbps Thunderbolt 4 RPC are the primary reasoning engines.
+- **Local AI First:** Local quantized models running across Apple Silicon Metal and distributed 40Gbps Thunderbolt 4 RPC are the primary reasoning engines.
 - **Parasitic Distillation Strategy:**
   - Flat-rate cloud subscriptions (Claude Pro, Gemini Advanced) and free API tiers serve strictly as reasoning benchmarks and teacher models.
   - Screen Lens passively harvests frontier Chain-of-Thought (CoT) reasoning traces, decision trees, and code diffs into 24/7 LoRA datasets.
@@ -105,7 +105,7 @@ Every interface generated in the monorepo must strictly adhere to the **Hybrid F
   - The system MUST preserve **>= 9.6 GB of real free physical RAM** on the host at all times.
   - Massive unquantized KV caches (e.g. FP16 at 32K/128K context) are strictly forbidden on the host.
 - **Dynamic Peripheral Loading:**
-  - Heavy compute, model layers, and KV caches offload first across the 10Gbps Thunderbolt 4 bridge (0.204ms RTT) to the MacBook Pro (16 GB) and MacBook Air (16 GB), spilling over to the Linux Head Node (AMD Ryzen 7).
+  - Heavy compute, model layers, and KV caches offload first across the 40Gbps Thunderbolt 4 bridge (0.204ms RTT) to the MacBook Pro (16 GB) and MacBook Air (16 GB), spilling over to the Linux Head Node (AMD Intel 2018 Mac Mini).
 - **Autonomous Wake-on-LAN (WoL) Resurrection:**
   - When memory pressure or tensor sharding requires additional pooled VRAM, the system automatically transmits RFC 792 Magic Packets (UDP port 9/7) to resurrect sleeping peripheral nodes without waiting for manual power-on.
 
@@ -131,4 +131,4 @@ The AI soul natively executes the state-of-the-art algorithms distilled from ope
 4. **smolagents CodeAction Engine:** Direct executable Python code generation replacing bloated JSON tool calls (saving 30% tokens).
 5. **Bradley-Terry Multi-Factor ELO Engine:** Logistic tournament rating across AST syntax, zero-mock adherence, visual polish, and execution latency.
 6. **Fitts's Law Ergonomic Calculator:** Index of Difficulty ID = log2(2D/W + 1) enforcing >= 48dp mobile touch targets.
-7. **10Gbps TB4 Knapsack Sharding Solver:** Dynamic ILP sharding allocating layers across the 7 nodes while strictly preserving >= 9.6 GB headroom on the Mac Mini.
+7. **40Gbps TB4 Knapsack Sharding Solver:** Dynamic ILP sharding allocating layers across the 7 nodes while strictly preserving >= 9.6 GB headroom on the Mac Mini.

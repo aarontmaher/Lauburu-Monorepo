@@ -1,0 +1,21 @@
+{
+  "ratings": {
+    "qwen_moe_local": 2100.0,
+    "deepseek_v4_pro": 2036.0,
+    "gemini_2_0_flash_thinking": 2047.0,
+    "gemini_2_0_pro_exp": 1959.0,
+    "grok_2_xai": 1941.0,
+    "deepseek_v4_flash": 1985.0,
+    "cloudflare_llama_3_3": 1922.0,
+    "google_jules": 1866.0,
+    "devils_advocate_local": 1962.0
+  },
+  "total_matches_run": 120,
+  "last_benchmark_timestamp": 1789292877.74025,
+  "benchmarks_by_domain": {
+    "ast_scope_slicing": 30,
+    "knapsack_math_proof": 30,
+    "in_vehicle_audio_safety": 30,
+    "throughput_and_latency": 30
+  }
+}

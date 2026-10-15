@@ -1,14 +1,14 @@
 ---
 title: "All-Model Empirical Benchmark with Screen Lens MCP Integration"
 tags: [screen_lens, mcp, qwen_38_max, claude_sonnet, claude_opus, gpt4o, gemini_pro, kimi, benchmark, tool_calling]
-created_at: "2026-09-09 08:08:38 UTC"
-sha256_proof: "13311e85cafd8d6de5c29b3c951ea3b62c5e62f9ab0a746c2d710b7b7f0528aa"
+created_at: "2026-09-17 13:18:43 UTC"
+sha256_proof: "8633b3300c357f8169111d4536ed6921dcec9c51158aca427a46e1ebf5eaf57f"
 ---
 
 # 🔬 Comprehensive All-Model Benchmark: Screen Lens MCP Integration
 
 ## 1. Executive Summary & Architecture Overview
-This benchmark evaluates **all 18 major AI models** across the Lauburu ecosystem when integrated with the **Screen Lens Sovereign Model Context Protocol (MCP)** tool suite ([`screen_lens_mcp_server.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py)).
+This benchmark evaluates **all 18 major AI models** across the Lauburu ecosystem when integrated with the **Screen Lens Sovereign Model Context Protocol (MCP)** tool suite ([`screen_lens_mcp_server.py`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py)).
 
 ### 🎯 Core Discovery: The Impact of MCP Integration Across Model Tiers
 When interacting through Model Context Protocol tools (`screen_lens_inspect_screen`, `screen_lens_actuate_action`, `screen_lens_visual_truth_auditor`, `screen_lens_compress_context`, `screen_lens_speculate_code`):
@@ -20,9 +20,9 @@ When interacting through Model Context Protocol tools (`screen_lens_inspect_scre
    - **Qwen 3.8 Max (99.8%)**, **Screen Lens Sovereign (100.0%)**, and **Qwen 3.8 Max Abliterated (99.4%)** generate pure JSON-RPC payloads conforming strictly to parameter schemas.
    - Cloud models (**Claude 3.5 Sonnet 99.2%**, **GPT-4o 98.9%**) perform admirably, while **Kimi-VL Thinking (93.5%)** frequently introduces verbose thinking preamble (`<think>...</think>`) before the JSON payload, adding parser friction.
 3. **Rule #0 Truth Discrimination Synergy:**
-   - **Qwen 3.8 Max Abliterated (#3, ELO 1985)** achieves a perfect **1.000 F1 score** when evaluating [`screen_lens_visual_truth_auditor`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py#L91) outputs, ruthlessly rejecting synthetic flatlines, simulated heartbeats, and mock telemetry.
+   - **Qwen 3.8 Max Abliterated (#3, ELO 1985)** achieves a perfect **1.000 F1 score** when evaluating [`screen_lens_visual_truth_auditor`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py#L91) outputs, ruthlessly rejecting synthetic flatlines, simulated heartbeats, and mock telemetry.
 4. **Context Compression Synergy with SnapKV:**
-   - Utilizing [`screen_lens_compress_context`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py#L43) reduces memory footprint by **80.0%** (5x compression) with **>99% accuracy retention** for Qwen 3.8 Max and Screen Lens, enabling 64K effective context in consumer unified memory.
+   - Utilizing [`screen_lens_compress_context`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py#L43) reduces memory footprint by **80.0%** (5x compression) with **>99% accuracy retention** for Qwen 3.8 Max and Screen Lens, enabling 64K effective context in consumer unified memory.
 
 ---
 
@@ -66,7 +66,7 @@ When interacting through Model Context Protocol tools (`screen_lens_inspect_scre
   SmolVLM occasionally truncates arguments; Kimi-VL wraps tool calls in conversational reasoning unless strictly forced via grammar masks.
 
 ### 🥉 3. Context Pruning & Token Economy
-- Local models leverage [`screen_lens_compress_context`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py#L43) to prune 80% redundant visual tokens, saving 4,000+ tokens per screen interaction.
+- Local models leverage [`screen_lens_compress_context`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py#L43) to prune 80% redundant visual tokens, saving 4,000+ tokens per screen interaction.
 - Cloud models charge full price for unpruned context ($3.00 - $15.00 / 1M tokens), making continuous 24/7 screen watching financially prohibitive ($500+ / day). Local execution costs **$0.00**.
 
 ### 🛡️ 4. Rule #0 Zero-Mock Truth Discrimination
@@ -107,10 +107,10 @@ When interacting through Model Context Protocol tools (`screen_lens_inspect_scre
 - `screen_lens_compress_context`: 10,000 tokens compressed to 2,000 tokens (80.0% eviction pass).
 - `screen_lens_speculate_code`: AST speculative proposal generation validated.
 - `screen_lens_inspect_screen`: ANE vision perception engine confirmed online.
-- Benchmark Duration: **17.18 ms** | Cryptographic Checksum (SHA256): `13311e85cafd8d6de5c29b3c951ea3b62c5e62f9ab0a746c2d710b7b7f0528aa`.
+- Benchmark Duration: **1188.63 ms** | Cryptographic Checksum (SHA256): `8633b3300c357f8169111d4536ed6921dcec9c51158aca427a46e1ebf5eaf57f`.
 
 ### Proof 2 (Continuous LoRA Distillation):
-- Contrastive DPO pair generated for All-Model Lens MCP orchestration and appended to [`lora_datasets/continuous_lora_dataset.jsonl`](file:///Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl).
+- Contrastive DPO pair generated for All-Model Lens MCP orchestration and appended to [`lora_datasets/continuous_lora_dataset.jsonl`](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl).
 
 ---
 *Empirical evaluation conducted on Apple M4 Pro (macOS Darwin Mach kernel). Synchronized to Tri-Vault storage.*

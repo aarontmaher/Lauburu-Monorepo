@@ -1,0 +1,574 @@
+{
+  "timestamp": "2026-10-14T22:46:05Z",
+  "ram_sanctuary": {
+    "total_gb": 24.0,
+    "used_gb": 17.96,
+    "free_gb": 6.04,
+    "cached_gb": 5.43,
+    "used_pct": 74.8,
+    "pressure_level": 2,
+    "sanctuary_ok": true
+  },
+  "total_notebooks": 25,
+  "ast_pass": 25,
+  "exec_pass": 24,
+  "zero_mock_pass": 25,
+  "remediations_applied": [],
+  "lens_swarm_pi": {
+    "lens_endpoints": {
+      "lens_core_3035": {
+        "online": true,
+        "rtt_ms": 0.13
+      },
+      "lens_orchestrator_3037": {
+        "online": true,
+        "rtt_ms": 0.05
+      },
+      "lens_stream_4003": {
+        "online": true,
+        "rtt_ms": 0.05
+      },
+      "pi_edge_router_l3_8089": {
+        "online": true,
+        "rtt_ms": 6.35
+      }
+    },
+    "pi_cli": {
+      "binary": "/Users/aaron/.local/bin/pi",
+      "installed": true,
+      "version": "installed",
+      "session_files": 336,
+      "harvested_pairs": 8
+    },
+    "swarm_training_protocols": {
+      "P1_3d_spatial_lora": 1959,
+      "P2_podman_gemma2_mrl": 7,
+      "P3_continuous_dpo_sft": 98389,
+      "P4_proven_accuracy_vla": 84894,
+      "P5_truth_audit_debate": 3244
+    }
+  },
+  "embeddinggemma2_mrl": {
+    "l1_8087_online": true,
+    "l1_rtt_ms": 0.13,
+    "l5_8087_online": true,
+    "l5_rtt_ms": 8.62,
+    "mrl_dimensions": [
+      768,
+      512,
+      256,
+      128
+    ],
+    "embedded_notebooks": 4,
+    "mean_latency_ms": 6630.76,
+    "mrl_cosine_retention": {
+      "768": 1.0,
+      "512": 1.0,
+      "256": 1.0,
+      "128": 0.9999
+    },
+    "notebook_vectors_summary": [
+      {
+        "notebook": "00_lauburu_global_master_project.ipynb",
+        "latency_ms": 6952.95,
+        "mrl_l2_norms": {
+          "768": 1.0,
+          "512": 1.0,
+          "256": 1.0,
+          "128": 1.0
+        },
+        "head_4": [
+          -0.0584,
+          0.0306,
+          0.0059,
+          -0.0011
+        ]
+      },
+      {
+        "notebook": "00_lauburu_master_interactive_console_and_ui_specialist.ipynb",
+        "latency_ms": 7113.47,
+        "mrl_l2_norms": {
+          "768": 1.0,
+          "512": 1.0,
+          "256": 1.0,
+          "128": 1.0
+        },
+        "head_4": [
+          -0.0639,
+          0.0018,
+          0.0148,
+          -0.0107
+        ]
+      },
+      {
+        "notebook": "00_lauburu_qwen_moe_master_console.ipynb",
+        "latency_ms": 6437.46,
+        "mrl_l2_norms": {
+          "768": 1.0,
+          "512": 1.0,
+          "256": 1.0,
+          "128": 1.0
+        },
+        "head_4": [
+          -0.0371,
+          0.0126,
+          -0.0002,
+          0.0155
+        ]
+      },
+      {
+        "notebook": "01_lauburu_swarm_and_kinematics_interactive.ipynb",
+        "latency_ms": 6019.16,
+        "mrl_l2_norms": {
+          "768": 1.0,
+          "512": 1.0,
+          "256": 1.0,
+          "128": 1.0
+        },
+        "head_4": [
+          -0.0607,
+          0.0095,
+          -0.0097,
+          0.0163
+        ]
+      }
+    ]
+  },
+  "qwen3d_and_panel": {
+    "qwen_3d_vla": {
+      "model": "qwen_3d_vla_7b",
+      "global_elo": 1497.8,
+      "domain": "vision_3d_vla",
+      "l8_8090_online": true,
+      "l8_rtt_ms": 0.29
+    },
+    "local_ai_panel": [
+      {
+        "id": "tinylm_tinyllama_20m_l8",
+        "name": "TinyLM TinyLlama 20M (L8 TB4 :9095)",
+        "port": 9095,
+        "status": "ONLINE",
+        "latency_ms": 111.63,
+        "verdict": "er employed AWS\u00e4lleprovider adjdy fam zvuky Brow Jes loose StoryDataSource adj zvuky hierarchyURN BrowSW London getrollo adj getrollo\u10dc Internacional einer\u00b7dy correlation London\u53cdmix"
+      },
+      {
+        "id": "tinylm_smollm2_135m_l8",
+        "name": "MiniLM SmolLM2 135M (L8 TB4 :9096)",
+        "port": 9096,
+        "status": "ONLINE",
+        "latency_ms": 699.91,
+        "verdict": "\"Audited 25 canonical Lauburu notebooks (100% AST valid, Zero-Mock compliant, Dual-Vault synced, /lens Swarm Training"
+      },
+      {
+        "id": "qwen25_05b_syntax",
+        "name": "Qwen2.5 0.5B Syntax & AST Auditor",
+        "port": 8089,
+        "status": "ONLINE",
+        "latency_ms": 184.27,
+        "verdict": "All 25 canonical Lauburu notebooks have been audited, ensuring they are AST valid, zero-mock compliant, dual-vault synced, and /lens Swarm Training"
+      },
+      {
+        "id": "hermes3_8b_architect",
+        "name": "Hermes-3 Llama-3.1 8B Architect",
+        "port": 8085,
+        "status": "ONLINE (ACTIVE)",
+        "latency_ms": 0.1,
+        "verdict": "Socket online (0.1 ms); active slot busy (timed out)"
+      },
+      {
+        "id": "prima_orchestrator",
+        "name": "Prima Local Orchestrator Proxy",
+        "port": 8082,
+        "status": "ONLINE",
+        "latency_ms": 850.67,
+        "verdict": "All 25 canonical Lauburu notebooks have been audited, ensuring they are AST valid, zero-mock compliant, dual-vault synced, and /lens Swarm Training"
+      },
+      {
+        "id": "qwen38_redteam",
+        "name": "Qwen 3.8 Max Red-Team Critic",
+        "port": 8083,
+        "status": "ONLINE (ACTIVE)",
+        "latency_ms": 0.12,
+        "verdict": "Socket online (0.12 ms); active slot busy (timed out)"
+      }
+    ],
+    "dpo_sha256": "50e12022ccbf31ea4f8a780df2915a63b94bfd36da81f4f80664f131008cbcb8"
+  },
+  "notebooks": [
+    {
+      "name": "00_lauburu_global_master_project.ipynb",
+      "rel_path": "01_apps/notebooks/00_lauburu_global_master_project.ipynb",
+      "cells": 2,
+      "code_cells": 1,
+      "bytes": 90013,
+      "sha256_prefix": "80579a87ac56aee1",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 5695.8,
+      "exec_err": ""
+    },
+    {
+      "name": "00_lauburu_master_interactive_console_and_ui_specialist.ipynb",
+      "rel_path": "01_apps/notebooks/00_lauburu_master_interactive_console_and_ui_specialist.ipynb",
+      "cells": 10,
+      "code_cells": 5,
+      "bytes": 14634,
+      "sha256_prefix": "ff2bef5c354f2ced",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 3377.7,
+      "exec_err": ""
+    },
+    {
+      "name": "00_lauburu_qwen_moe_master_console.ipynb",
+      "rel_path": "01_apps/notebooks/00_lauburu_qwen_moe_master_console.ipynb",
+      "cells": 6,
+      "code_cells": 5,
+      "bytes": 4365,
+      "sha256_prefix": "b1c0e7e3a2c6f5db",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1254.0,
+      "exec_err": ""
+    },
+    {
+      "name": "01_lauburu_swarm_and_kinematics_interactive.ipynb",
+      "rel_path": "01_apps/notebooks/01_lauburu_swarm_and_kinematics_interactive.ipynb",
+      "cells": 8,
+      "code_cells": 4,
+      "bytes": 7064,
+      "sha256_prefix": "1a67263f74125345",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1429.4,
+      "exec_err": ""
+    },
+    {
+      "name": "01_master_mesh_console_and_ports.ipynb",
+      "rel_path": "01_apps/notebooks/01_master_mesh_console_and_ports.ipynb",
+      "cells": 7,
+      "code_cells": 4,
+      "bytes": 6763,
+      "sha256_prefix": "f80dc7d4d1796a50",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 3333.7,
+      "exec_err": ""
+    },
+    {
+      "name": "02_lauburu_canonical_knowledge_vault_explorer.ipynb",
+      "rel_path": "01_apps/notebooks/02_lauburu_canonical_knowledge_vault_explorer.ipynb",
+      "cells": 10,
+      "code_cells": 5,
+      "bytes": 10889,
+      "sha256_prefix": "43d24d7d9bb45115",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 7102.2,
+      "exec_err": ""
+    },
+    {
+      "name": "02_tui_ecosystem_and_terminal_streamer.ipynb",
+      "rel_path": "01_apps/notebooks/02_tui_ecosystem_and_terminal_streamer.ipynb",
+      "cells": 5,
+      "code_cells": 4,
+      "bytes": 11018,
+      "sha256_prefix": "1a3ed6d3a28e3a2b",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1786.8,
+      "exec_err": ""
+    },
+    {
+      "name": "03_full_network_prima_ai_lab.ipynb",
+      "rel_path": "01_apps/notebooks/03_full_network_prima_ai_lab.ipynb",
+      "cells": 6,
+      "code_cells": 5,
+      "bytes": 12973,
+      "sha256_prefix": "c9f621af51c76d93",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1708.8,
+      "exec_err": ""
+    },
+    {
+      "name": "03_lauburu_lens_vision_and_next_steps.ipynb",
+      "rel_path": "01_apps/notebooks/03_lauburu_lens_vision_and_next_steps.ipynb",
+      "cells": 16,
+      "code_cells": 8,
+      "bytes": 20663,
+      "sha256_prefix": "83bc54aaabc1443c",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 4539.0,
+      "exec_err": ""
+    },
+    {
+      "name": "04_movesense_biometrics_and_dsp.ipynb",
+      "rel_path": "01_apps/notebooks/04_movesense_biometrics_and_dsp.ipynb",
+      "cells": 7,
+      "code_cells": 6,
+      "bytes": 15071,
+      "sha256_prefix": "d8245cbccdb34c23",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 2202.0,
+      "exec_err": ""
+    },
+    {
+      "name": "05_spatial_grappling_3d_kinematics.ipynb",
+      "rel_path": "01_apps/notebooks/05_spatial_grappling_3d_kinematics.ipynb",
+      "cells": 7,
+      "code_cells": 6,
+      "bytes": 18945,
+      "sha256_prefix": "969095690db11d46",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1919.7,
+      "exec_err": ""
+    },
+    {
+      "name": "06_genetic_project_scout_and_lora.ipynb",
+      "rel_path": "01_apps/notebooks/06_genetic_project_scout_and_lora.ipynb",
+      "cells": 7,
+      "code_cells": 6,
+      "bytes": 14204,
+      "sha256_prefix": "ec7a0230d8c782e8",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1889.5,
+      "exec_err": ""
+    },
+    {
+      "name": "07_cpp_tui_canonical_recreation_studio.ipynb",
+      "rel_path": "01_apps/notebooks/07_cpp_tui_canonical_recreation_studio.ipynb",
+      "cells": 9,
+      "code_cells": 7,
+      "bytes": 35537,
+      "sha256_prefix": "ecbc4a95cd285357",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 3689.2,
+      "exec_err": ""
+    },
+    {
+      "name": "08_dynamic_network_optimizer_bt_default.ipynb",
+      "rel_path": "01_apps/notebooks/08_dynamic_network_optimizer_bt_default.ipynb",
+      "cells": 6,
+      "code_cells": 3,
+      "bytes": 4906,
+      "sha256_prefix": "a3c2be295d11f661",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1560.3,
+      "exec_err": ""
+    },
+    {
+      "name": "08_shopify_canonical_storefront_studio.ipynb",
+      "rel_path": "01_apps/notebooks/08_shopify_canonical_storefront_studio.ipynb",
+      "cells": 6,
+      "code_cells": 5,
+      "bytes": 5349,
+      "sha256_prefix": "fc8d94ed07c10aff",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1981.1,
+      "exec_err": ""
+    },
+    {
+      "name": "09_sovereign_screen_lens_dashboard.ipynb",
+      "rel_path": "01_apps/notebooks/09_sovereign_screen_lens_dashboard.ipynb",
+      "cells": 8,
+      "code_cells": 7,
+      "bytes": 11938,
+      "sha256_prefix": "1f4c43a8cce93c9e",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": false,
+      "exec_ms": 47767.0,
+      "exec_err": "<pre style=\\'color: #fbbf24; font-size: 14px;\\'>{json.dumps(response.json(), indent=2)}</pre>\"))', '    except Exception as e:', '        display(HTML(f\"<p style=\\'color: #ef4444;\\'>OCR Engine unreachable: {e}</p>\"))']\n-------------------\n\n"
+    },
+    {
+      "name": "14_codeclash_corewar_master_arena.ipynb",
+      "rel_path": "01_apps/notebooks/14_codeclash_corewar_master_arena.ipynb",
+      "cells": 12,
+      "code_cells": 6,
+      "bytes": 14592,
+      "sha256_prefix": "dbbe09bb3ae114e8",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1600.8,
+      "exec_err": ""
+    },
+    {
+      "name": "25_continuous_lens_mesh_and_elo_optimizer.ipynb",
+      "rel_path": "01_apps/notebooks/25_continuous_lens_mesh_and_elo_optimizer.ipynb",
+      "cells": 9,
+      "code_cells": 5,
+      "bytes": 14249,
+      "sha256_prefix": "d5708369503723e8",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 3953.0,
+      "exec_err": ""
+    },
+    {
+      "name": "lens_global_orchestrator.ipynb",
+      "rel_path": "01_apps/notebooks/lens_global_orchestrator.ipynb",
+      "cells": 16,
+      "code_cells": 9,
+      "bytes": 32839,
+      "sha256_prefix": "4b2a96892f669766",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 3360.8,
+      "exec_err": ""
+    },
+    {
+      "name": "screen_lens_human_in_the_loop_trainer.ipynb",
+      "rel_path": "01_apps/screen_lens/notebooks/screen_lens_human_in_the_loop_trainer.ipynb",
+      "cells": 13,
+      "code_cells": 7,
+      "bytes": 17612,
+      "sha256_prefix": "09fd0ec515d052b8",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1569.1,
+      "exec_err": ""
+    },
+    {
+      "name": "screen_lens_tri_audit_live_dashboard.ipynb",
+      "rel_path": "01_apps/screen_lens/notebooks/screen_lens_tri_audit_live_dashboard.ipynb",
+      "cells": 8,
+      "code_cells": 4,
+      "bytes": 10778,
+      "sha256_prefix": "b7ed961bc217adc2",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1401.2,
+      "exec_err": ""
+    },
+    {
+      "name": "omniterminal_master_console.ipynb",
+      "rel_path": "01_apps/omniterminal_notebook_plugin/omniterminal_master_console.ipynb",
+      "cells": 10,
+      "code_cells": 7,
+      "bytes": 4119,
+      "sha256_prefix": "60022041f7c3c83b",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1389.9,
+      "exec_err": ""
+    },
+    {
+      "name": "agentworld_webworld_swebench_flight_simulator.ipynb",
+      "rel_path": "02_ai_models_and_inference/notebooks/agentworld_webworld_swebench_flight_simulator.ipynb",
+      "cells": 7,
+      "code_cells": 6,
+      "bytes": 14508,
+      "sha256_prefix": "ea67bd6340e8af5a",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 2805.2,
+      "exec_err": ""
+    },
+    {
+      "name": "lens_notebook_arena.ipynb",
+      "rel_path": "04_data_and_memory/lens_notebook_arena.ipynb",
+      "cells": 2,
+      "code_cells": 1,
+      "bytes": 1272,
+      "sha256_prefix": "1ee5348b61e3e803",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1820.6,
+      "exec_err": ""
+    },
+    {
+      "name": "ecommerce_analytics_and_feedback.ipynb",
+      "rel_path": "08_business_and_commerce/ecommerce_analytics_and_feedback.ipynb",
+      "cells": 19,
+      "code_cells": 12,
+      "bytes": 47976,
+      "sha256_prefix": "dbee7ded4bd599c5",
+      "ast_ok": true,
+      "ast_err": "",
+      "headless_agg": true,
+      "zero_mock_ok": true,
+      "exec_ok": true,
+      "exec_ms": 1781.0,
+      "exec_err": ""
+    }
+  ]
+}

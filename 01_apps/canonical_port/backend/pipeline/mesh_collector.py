@@ -5,7 +5,7 @@ Version: 3.0.0-CANONICAL
 Ingests and polls live telemetry from all 7 physical mesh layers + Gateway node:
 1. L1: Mac_Node (192.168.8.230 / 100.119.199.76)
 2. L2: MacBook_Pro (192.168.8.127 / 100.103.212.21 / TB4 169.254.187.138)
-3. L3: Linux_Head_Node (192.168.8.224 / 100.101.39.98)
+3. L3: Linux_Mini (192.168.8.224 / 100.101.39.98)
 4. L4: Linux_Tablet (100.81.92.125)
 5. L5: MacBook_Air (192.168.8.222 / 100.93.158.96)
 6. L6: Pixel_10_Pro_XL (100.73.38.87)
@@ -45,10 +45,10 @@ CANONICAL_MESH_NODES: Dict[str, Dict[str, Any]] = {
         "os": "macOS Darwin ARM64",
         "probe_port": 50052,
     },
-    "Linux_Head_Node": {
-        "node_id": "Linux_Head_Node",
+    "Linux_Mini": {
+        "node_id": "Linux_Mini",
         "layer": "L3",
-        "name": "AMD Ryzen 7 5700U Linux Compute Hub",
+        "name": "Intel 2018 Mac Mini (Linux) Linux Compute Hub",
         "ip": "192.168.8.224",
         "tailscale_ip": "100.101.39.98",
         "ram_total_gb": 16.0,

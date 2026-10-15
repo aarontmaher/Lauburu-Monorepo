@@ -1,13 +1,22 @@
 {
-  "timestamp_utc": "2026-08-31T03:48:17Z",
-  "generation": 2,
+  "timestamp_utc": "2026-09-20T12:27:21Z",
+  "generation": 3,
   "expert_weights": {
-    "coder": 0.183,
-    "math": 0.167,
-    "hermes": 0.282,
-    "abliterated": 0.2,
-    "qwen27b": 0.168
+    "npu_layer0": 0.146,
+    "micro_metal": 0.175,
+    "coder_dense": 0.162,
+    "ablit_red": 0.176,
+    "tb4_sharded_moe": 0.177,
+    "cloud_stagnation": 0.164
   },
-  "fitness_score": 96.93,
-  "airgap_policy": "100% STRICT LOCAL HARDWARE ONLY"
+  "routing_stats": {
+    "npu_layer0": 0,
+    "micro_metal": 0,
+    "coder_dense": 0,
+    "ablit_red": 0,
+    "tb4_sharded_moe": 0,
+    "cloud_stagnation": 0
+  },
+  "fitness_score": 98.81,
+  "ram_governance": "ACTIVE (Host Sanctuary Preserved)"
 }

@@ -6,7 +6,7 @@ tags: [lauburu_lens, ui_ux, design_systems, lora_training, tri_vault, accessibil
 # 👁️ Lauburu Lens UI/UX Optimization & 24/7 Training Audit
 
 > **Verification Engine:** `Lauburu Lens Visual & Empirical Gate`  
-> **Training Sinks:** `/Users/aaron/DFS_UNIFIED/lora_datasets/lauburu_lens_ui_ux_training.jsonl` • `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/lora_datasets/ui_ux_improvements.jsonl`  
+> **Training Sinks:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/lauburu_lens_ui_ux_training.jsonl` • `/Volumes/Lauburu-Monorepo/04_data_and_memory/lora_datasets/ui_ux_improvements.jsonl`  
 > **Total Verified Audits:** 4 Interfaces Analyzed
 
 ---

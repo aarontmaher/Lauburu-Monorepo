@@ -53,4 +53,4 @@ Empirical benchmark testing to identify a **single universal smallest model** ca
 ## 💡 4. Strategic Architecture Decision: Single Model vs Sharded Mesh
 1. **Universal On-Device Standard:** **`SmolLM2 1.7B`** is certified as the single universal edge model across all client PWAs, mobile endpoints (Samsung S20, Pixel 10), and desktop apps, running at < 0.98 GB RAM with 118 tok/s.
 2. **Nano TPU Micro-Worker:** **`SmolLM2 360M`** (0.28 GB) is retained exclusively for background 512Hz continuous ECG stream filtering on ultra-low-power wearables.
-3. **Escalation Gateway:** If a prompt requires multi-file AST refactoring or deep mathematical reasoning, `SmolLM2 1.7B` autonomously escalates over Mesh RPC to the cluster master (`:8081`) and auto-distills the response into `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl` (Rule #8).
+3. **Escalation Gateway:** If a prompt requires multi-file AST refactoring or deep mathematical reasoning, `SmolLM2 1.7B` autonomously escalates over Mesh RPC to the cluster master (`:8081`) and auto-distills the response into `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl` (Rule #8).

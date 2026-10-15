@@ -1,14 +1,14 @@
 ---
 title: "Qwen MoE Sovereign Swarm Orchestrator, Supreme Auditor & TB4 Training Ledger"
 tags: [qwen_moe, 80b, supreme_auditor, thunderbolt4, dma_training, idle_expert_training, loop]
-updated: "2026-09-05 05:20:25"
+updated: "2026-09-20 22:49:40"
 ---
 
 # 🧠 Qwen MoE Sovereign Master Orchestrator Ledger
 
 > **Model Architecture:** `Qwen3-Next-80B-A3B MoE` (80B Parameters / 3B Active Routing)
-> **Victory Certificates Issued:** `49` | **Claims Rejected:** `0`
-> **TB4 Gradient Syncs:** `220` | **Idle Training Cycles:** `47`
+> **Victory Certificates Issued:** `53` | **Claims Rejected:** `0`
+> **TB4 Gradient Syncs:** `240` | **Idle Training Cycles:** `51`
 > **Monthly Cloud AI Spend:** `$0.00 / month` (100% Guaranteed $0 Spend Ceiling)
 
 ## ⚡ 10Gbps Thunderbolt 4 PCIe DMA Training Interconnect
@@ -49,5 +49,5 @@ updated: "2026-09-05 05:20:25"
 
 ## 💾 Active Datasets & Memory
 
-- **Master Dataset:** `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`
-- **State File:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/qwen_moe_state.json`
+- **Master Dataset:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`
+- **State File:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/qwen_moe_state.json`

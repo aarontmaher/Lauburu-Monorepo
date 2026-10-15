@@ -53,7 +53,7 @@ This canonical specification resolves the architectural dilemma debated in the *
 ## 💎 4. Commercialization & "Push-to-Sale" Framework
 
 1. **Community Tier ($0):** Full offline local model inference on Ports 8081–8084 and standard 9-screen operational dashboard.
-2. **Pro Hardware Tier ($29/mo):** Unlocks 10Gbps Thunderbolt 4 DMA tensor sharding (0.27ms RTT), 512Hz Movesense ECG recording, and 24/7 background LoRA training daemons.
+2. **Pro Hardware Tier ($29/mo):** Unlocks 40Gbps Thunderbolt 4 DMA tensor sharding (0.27ms RTT), 512Hz Movesense ECG recording, and 24/7 background LoRA training daemons.
 3. **Enterprise Mesh Tier ($299/mo):** Multi-WAN Speedify bonding, Shopify headless checkout sync, and autonomous Jules 300-session PR governors.
 4. **Trigger Mechanism:** Mapped globally to keystrokes **`$`** and **`F10`**, rendering a non-intrusive Capability Card with instant checkout deep-links.
 

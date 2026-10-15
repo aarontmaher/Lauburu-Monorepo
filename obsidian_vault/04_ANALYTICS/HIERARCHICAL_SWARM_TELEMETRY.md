@@ -52,7 +52,7 @@ updated: "2026-09-05 01:51:46"
 
 | Training Paradigm | Execution Engine | Cadence & Role | Data Sink |
 | :--- | :--- | :--- | :--- |
-| **Direct Preference Optimization** | `DPO Loss` | Real-time streaming sink | `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl` |
+| **Direct Preference Optimization** | `DPO Loss` | Real-time streaming sink | `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl` |
 | **MLX Apple Silicon LoRA Fine-Tuning** | `mlx_lm.lora` | Hourly checkpoint bursts | `lora_datasets/` |
 | **Hugging Face TRL & PEFT** | `trl.SFTTrainer` | Nightly batch synchronization | `lora_datasets/` |
 | **Proximal Policy Optimization & Reward Scoring** | `trl.PPOTrainer` | Post-benchmark evaluation loops | `lora_datasets/` |
@@ -61,7 +61,7 @@ updated: "2026-09-05 01:51:46"
 
 | Sharding Engine | Protocol / Target | Nodes / Ports | Latency Target |
 | :--- | :--- | :--- | :--- |
-| **llama.cpp RPC Distributed Tensor Sharding** | `[8081, 8082, 8083, 8084]` | L1 Mac_Node, L2 MacBook_Pro (10Gbps TB4 Bridge) | `0.28 ms` |
+| **llama.cpp RPC Distributed Tensor Sharding** | `[8081, 8082, 8083, 8084]` | L1 Mac_Node, L2 MacBook_Pro (40Gbps TB4 Bridge) | `0.28 ms` |
 | **Prima.cpp Pipelined-Ring Parallelism** | `P2P` | L1 Mac Mini, L2 MacBook Pro, L3 Linux Head Node | `< 5.0 ms` |
 | **Petals Distributed DHT Layer Swarming** | `P2P` | L3 Linux Head Node, L4 Linux Tablet, L7 Samsung S20+ | `< 5.0 ms` |
 | **Exo Peer-to-Peer Dynamic Ring Topology** | `Zero-configuration UDP/TCP discovery` | 7-Layer Physical Mesh | `< 5.0 ms` |

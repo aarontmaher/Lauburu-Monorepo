@@ -1,9 +1,9 @@
 ---
 title: "24/7 Continuous Multi-Modal VL Championship Leaderboard"
 tags: [screen_lens, claude_sonnet, claude_opus, gpt4o, gemini_pro, gemini_flash, continuous_competition, elo, tournament, monorepo]
-created_at: "2026-09-10 03:11:02 UTC"
-cycle: 586
-host_ram_free: "6.5 GB"
+created_at: "2026-09-10 22:50:14 UTC"
+cycle: 167
+host_ram_free: "5.0 GB"
 ---
 
 # 🏆 24/7 Continuous Multi-Modal VL Championship Leaderboard
@@ -22,24 +22,24 @@ Continuous real-time autonomous competition across **all 14 local and cloud Visi
 
 ---
 
-## 2. Live Master Standings & Empirical Scorecard (Cycle 586)
+## 2. Live Master Standings & Empirical Scorecard (Cycle 167)
 
 | Rank | Model Name | Hardware Node | Current ELO | Record | Composite ($Q$) | Grounding IoU | WCAG/APCA | Truth F1 | UI/UX Score | Click-Through % | Abstract Math | Long Video | Cross Refactor | Latency | TPS | Cloud Cost |
 | :---: | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **#1** | **Screen Lens Sovereign v2.0 (Apple MLX Metal)** | `Layer 1 (Mac Mini M4 Pro)` | **3828** | 7618-0 | **99.2** | **99.6%** | **99.8** | **1.000** | **99.1** | **99.4%** | **97.4** | **97.8** | **98.8** | 18.5ms | 24,800.0 | Free ($0.00) |
-| **#2** | **Claude 3.5 Sonnet (Anthropic Frontier)** | `Server H100 Cluster (Cloud API)` | **3357** | 7032-586 | **94.1** | **98.1%** | **98.6** | **0.920** | **96.0** | **92.0%** | **94.8** | **93.5** | **98.2** | 1850.0ms | 85.0 | $3.00 |
-| **#3** | **Gemini 3.1 Pro (Cloud Frontier Flagship)** | `Google TPU Cluster (Cloud API)` | **2981** | 6446-1172 | **93.9** | **98.5%** | **99.2** | **0.980** | **95.0** | **91.0%** | **94.0** | **95.5** | **96.0** | 2850.0ms | 65.0 | $2.50 |
-| **#4** | **GPT-4o (OpenAI Multimodal Flagship)** | `Azure H100 Cluster (Cloud API)` | **2628** | 5577-2041 | **93.5** | **97.8%** | **98.2** | **0.910** | **95.5** | **93.0%** | **93.2** | **89.0** | **94.5** | 1200.0ms | 110.0 | $2.50 |
-| **#5** | **Gemini 3.8 Flash (High Reasoning CoT)** | `Google Cloud API` | **2303** | 5557-2061 | **93.2** | **97.0%** | **97.5** | **0.940** | **92.5** | **93.0%** | **91.5** | **92.0** | **94.0** | 1450.0ms | 120.0 | $0.35 |
-| **#6** | **Qwen 2.5-VL 72B (Open-Source Flagship)** | `4x RTX 4090 / 2x A100 Cluster` | **1957** | 4688-2930 | **91.8** | **98.7%** | **97.5** | **0.890** | **91.5** | **91.5%** | **91.0** | **88.0** | **93.0** | 1650.0ms | 32.0 | $0.80 |
-| **#7** | **Claude 3 Opus (Anthropic Flagship)** | `Server H100 Cluster (Cloud API)` | **1635** | 4102-3516 | **91.7** | **97.4%** | **97.8** | **0.900** | **94.5** | **88.5%** | **96.2** | **92.0** | **95.0** | 3200.0ms | 45.0 | $15.00 |
-| **#8** | **DeepSeek-VL2 MoE (Open-Source)** | `Dual A100 / Mac Studio Cluster` | **1297** | 3516-4102 | **90.5** | **97.2%** | **96.8** | **0.870** | **90.0** | **90.0%** | **89.5** | **84.0** | **91.0** | 880.0ms | 58.0 | $0.50 |
-| **#9** | **Gemini 3.8 Flash (Medium Reasoning)** | `Google Cloud API` | **972** | 2930-4688 | **89.1** | **91.5%** | **91.0** | **0.890** | **88.0** | **90.0%** | **87.0** | **88.0** | **89.0** | 620.0ms | 165.0 | $0.20 |
-| **#10** | **Kimi-VL Thinking 2506 (PRP Ring)** | `Layer 1 + Layer 2 (10Gbps TB4 Ring)` | **628** | 2344-5274 | **86.5** | **89.0%** | **86.0** | **0.820** | **87.0** | **89.0%** | **86.0** | **88.5** | **87.0** | 540.0ms | 38.2 | Free ($0.00) |
-| **#11** | **Qwen 2.5 VL 3B Instruct (Metal GPU)** | `Layer 1 (Mac Mini M4 Pro)` | **302** | 1758-5860 | **82.4** | **80.5%** | **82.0** | **0.910** | **83.0** | **86.0%** | **78.0** | **75.0** | **80.0** | 287.5ms | 52.9 | Free ($0.00) |
-| **#12** | **Gemini 3.8 Flash (Low Reasoning Fast)** | `Google Cloud API` | **-57** | 1172-6446 | **80.3** | **82.5%** | **80.0** | **0.780** | **78.0** | **84.0%** | **76.0** | **82.0** | **82.0** | 210.0ms | 210.0 | $0.10 |
-| **#13** | **Qwen 2.5 VL 7B Instruct (MBP L2)** | `Layer 2 (MacBook Pro TB4 DMA)` | **-434** | 586-7032 | **80.2** | **78.5%** | **79.0** | **0.880** | **81.0** | **82.0%** | **80.0** | **76.0** | **83.0** | 1635.0ms | 14.5 | Free ($0.00) |
-| **#14** | **SmolVLM Instruct 2.2B (Metal GPU)** | `Layer 1 (Mac Mini M4 Pro)` | **-907** | 0-7618 | **69.8** | **64.0%** | **70.0** | **0.740** | **72.0** | **78.0%** | **65.0** | **60.0** | **70.0** | 120.0ms | 149.5 | Free ($0.00) |
+| **#1** | **Screen Lens Sovereign v2.0 (Apple MLX Metal)** | `Layer 1 (Mac Mini M4 Pro)` | **3100** | 2171-0 | **98.9** | **99.6%** | **99.8** | **1.000** | **99.1** | **99.4%** | **97.4** | **97.8** | **98.8** | 18.5ms | 24,800.0 | Free ($0.00) |
+| **#2** | **Gemini 3.1 Pro (Cloud Frontier Flagship)** | `Google TPU Cluster (Cloud API)` | **2715** | 1863-308 | **93.8** | **98.5%** | **99.2** | **0.980** | **95.0** | **91.0%** | **94.0** | **95.5** | **96.0** | 2850.0ms | 65.0 | $2.50 |
+| **#3** | **Claude 3.5 Sonnet (Anthropic Frontier)** | `Server H100 Cluster (Cloud API)` | **2489** | 1978-193 | **93.8** | **98.1%** | **98.6** | **0.920** | **96.0** | **92.0%** | **94.8** | **93.5** | **98.2** | 1850.0ms | 85.0 | $3.00 |
+| **#4** | **GPT-4o (OpenAI Multimodal Flagship)** | `Azure H100 Cluster (Cloud API)` | **2239** | 1670-501 | **93.4** | **97.8%** | **98.2** | **0.910** | **95.5** | **93.0%** | **93.2** | **89.0** | **94.5** | 1200.0ms | 110.0 | $2.50 |
+| **#5** | **Gemini 3.8 Flash (High Reasoning CoT)** | `Google Cloud API` | **2011** | 1503-668 | **93.2** | **97.0%** | **97.5** | **0.940** | **92.5** | **93.0%** | **91.5** | **92.0** | **94.0** | 1450.0ms | 120.0 | $0.35 |
+| **#6** | **Claude 3 Opus (Anthropic Flagship)** | `Server H100 Cluster (Cloud API)` | **1794** | 1336-835 | **91.6** | **97.4%** | **97.8** | **0.900** | **94.5** | **88.5%** | **96.2** | **92.0** | **95.0** | 3200.0ms | 45.0 | $15.00 |
+| **#7** | **Qwen 2.5-VL 72B (Open-Source Flagship)** | `4x RTX 4090 / 2x A100 Cluster` | **1577** | 1169-1002 | **91.5** | **98.7%** | **97.5** | **0.890** | **91.5** | **91.5%** | **91.0** | **88.0** | **93.0** | 1650.0ms | 32.0 | $0.80 |
+| **#8** | **DeepSeek-VL2 MoE (Open-Source)** | `Dual A100 / Mac Studio Cluster` | **1360** | 1002-1169 | **90.4** | **97.2%** | **96.8** | **0.870** | **90.0** | **90.0%** | **89.5** | **84.0** | **91.0** | 880.0ms | 58.0 | $0.50 |
+| **#9** | **Gemini 3.8 Flash (Medium Reasoning)** | `Google Cloud API` | **1144** | 835-1336 | **89.2** | **91.5%** | **91.0** | **0.890** | **88.0** | **90.0%** | **87.0** | **88.0** | **89.0** | 620.0ms | 165.0 | $0.20 |
+| **#10** | **Kimi-VL Thinking 2506 (PRP Ring)** | `Layer 1 + Layer 2 (40Gbps TB4 Ring)` | **927** | 668-1503 | **86.6** | **89.0%** | **86.0** | **0.820** | **87.0** | **89.0%** | **86.0** | **88.5** | **87.0** | 540.0ms | 38.2 | Free ($0.00) |
+| **#11** | **Qwen 2.5 VL 3B Instruct (Metal GPU)** | `Layer 1 (Mac Mini M4 Pro)` | **690** | 501-1670 | **82.6** | **80.5%** | **82.0** | **0.910** | **83.0** | **86.0%** | **78.0** | **75.0** | **80.0** | 287.5ms | 52.9 | Free ($0.00) |
+| **#12** | **Gemini 3.8 Flash (Low Reasoning Fast)** | `Google Cloud API` | **458** | 334-1837 | **80.6** | **82.5%** | **80.0** | **0.780** | **78.0** | **84.0%** | **76.0** | **82.0** | **82.0** | 210.0ms | 210.0 | $0.10 |
+| **#13** | **Qwen 2.5 VL 7B Instruct (MBP L2)** | `Layer 2 (MacBook Pro TB4 DMA)` | **182** | 167-2004 | **80.0** | **78.5%** | **79.0** | **0.880** | **81.0** | **82.0%** | **80.0** | **76.0** | **83.0** | 1635.0ms | 14.5 | Free ($0.00) |
+| **#14** | **SmolVLM Instruct 2.2B (Metal GPU)** | `Layer 1 (Mac Mini M4 Pro)` | **-196** | 0-2171 | **69.9** | **64.0%** | **70.0** | **0.740** | **72.0** | **78.0%** | **65.0** | **60.0** | **70.0** | 120.0ms | 149.5 | Free ($0.00) |
 
 ---
 
@@ -76,4 +76,4 @@ Continuous real-time autonomous competition across **all 14 local and cloud Visi
   Produce strong single-file diffs but require external orchestration to catch multi-file circular dependency regressions.
 
 ---
-*Generated autonomously by 24/7 Continuous VL Championship Daemon. Cycle 586 synchronized to Tri-Vault storage.*
+*Generated autonomously by 24/7 Continuous VL Championship Daemon. Cycle 167 synchronized to Tri-Vault storage.*

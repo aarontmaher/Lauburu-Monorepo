@@ -47,7 +47,7 @@ except ImportError:
 from IPython.display import display, HTML, Markdown
 
 # Auto-path resolution across monorepo and teamwork trees
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 for path_str in [str(REPO_ROOT), str(REPO_ROOT / "01_apps"), str(REPO_ROOT / "03_biometrics_and_telemetry"), "/Users/aaron/teamwork_projects"]:
     if os.path.isdir(path_str) and path_str not in sys.path:
         sys.path.insert(0, path_str)

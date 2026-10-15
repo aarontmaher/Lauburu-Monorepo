@@ -102,7 +102,9 @@ class ObsidianVaultParser:
                 else:
                     self.vault_path = self.DEFAULT_VAULT_PATH
 
-    def parse_vault(self) -> ArchitectureGraph:
+    EXCLUDE_DIRS = {"01_DEBATES", "handoffs", "05_TRAINING", ".trash", ".git", ".obsidian"}
+
+    def parse_vault(self, max_files: int = 500) -> ArchitectureGraph:
         """
         Crawls the vault directory, parses all markdown files, resolves bidirectional links,
         and constructs an ArchitectureGraph.
@@ -113,14 +115,18 @@ class ObsidianVaultParser:
 
         # 1. First Pass: Parse each markdown file into a VaultNode
         node_lookup: Dict[str, VaultNode] = {}
+        count = 0
         for md_path in sorted(self.vault_path.rglob("*.md")):
-            if md_path.name.startswith("."):
+            if md_path.name.startswith(".") or any(ex in md_path.parts for ex in self.EXCLUDE_DIRS):
                 continue
             node = self.parse_file(md_path)
             node_lookup[node.id] = node
             # Also register by lowercase and filename for alias resolution
             node_lookup[node.id.lower()] = node
             graph.add_node(node)
+            count += 1
+            if max_files and count >= max_files:
+                break
 
         # 2. Second Pass: Resolve Wikilinks and construct bidirectional edges
         for node in list(graph.nodes.values()):
@@ -340,7 +346,7 @@ class ObsidianVaultParser:
             # E.g. - **Feature Name**: Description
             # E.g. 1. **Feature Name:** Description
             # E.g. - [[Link]] — **Description**
-            feat_match = re.match(r"^(?:[\*\-\+]|\d+\.)\s+(?:\*\*|__)?([^\*\_:\—\-]+)(?:\*\*|__)?(?:\s*[:\—\-]\s*(.+))?$", stripped)
+            feat_match = re.match(r"^(?:[\*\-\+]|\d+\.)\s+(?:\*\*|__)?([^\*\\_:\—\-]+)(?:\*\*|__)?(?:\s*[:\—\-]\s*(.+))?$", stripped)
             if feat_match:
                 name = feat_match.group(1).strip()
                 desc = feat_match.group(2).strip() if feat_match.group(2) else ""
@@ -391,7 +397,14 @@ class ObsidianVaultParser:
                 return "Canonical Module"
 
         # 3. Keyword / Tag heuristic scoring
-        haystack = f"{node_id} {title} {' '.join(frontmatter.get('tags', []))} {path.name}".lower()
+        raw_tags = frontmatter.get("tags", [])
+        if isinstance(raw_tags, list):
+            tags_str = " ".join(str(t) for t in raw_tags)
+        elif isinstance(raw_tags, str):
+            tags_str = raw_tags
+        else:
+            tags_str = str(raw_tags or "")
+        haystack = f"{node_id} {title} {tags_str} {path.name}".lower()
 
         for category, keywords in self.CATEGORY_KEYWORDS.items():
             if category == "Canonical Module":

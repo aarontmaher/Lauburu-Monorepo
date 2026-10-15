@@ -15,7 +15,7 @@ tags: [google_workspace, gcloud, google_chat, 7_layer_mesh, automation, loop]
 - **Domain-Wide Delegation (Port 18802):** Centralized on L1 Mac Mini Host (0600 permissions, 300s TTL cache).
 - **Google Cloud SDK CLI (`gcloud` 583.0.0):** Operational on L1 Mac Mini and L6 Pixel 10 Pro XL Termux.
 - **Google Chat Bridge (Card v2):** Multi-device telemetry builders active for Debate, Mesh Pulse, 512Hz Biometrics.
-- **7-Layer Mesh Nodes:** L1 Host Mac, L2 MBP, L3 Linux Node, L5 MacBook Air, L6 Pixel 10 Pro XL, L7 Samsung S20+ all discovered.
+- **7-Layer Mesh Nodes:** L1 Host Mac, L2 MBP, L3 Linux Node, L2 MacBook Pro, L6 Pixel 10 Pro XL, L7 Samsung S20+ all discovered.
 
 ---
 

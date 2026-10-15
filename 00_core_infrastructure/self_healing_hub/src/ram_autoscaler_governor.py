@@ -25,8 +25,8 @@ import argparse
 import subprocess
 from typing import Dict, Any, List, Optional, Tuple
 
-LOG_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/session_logs"
-HUB_SRC_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src"
+LOG_DIR = "/Volumes/Lauburu-Monorepo/session_logs"
+HUB_SRC_DIR = "/Volumes/Lauburu-Monorepo/self_healing_hub/src"
 os.makedirs(LOG_DIR, exist_ok=True)
 os.makedirs(HUB_SRC_DIR, exist_ok=True)
 
@@ -64,7 +64,7 @@ HEADROOM_REQUIREMENTS = {
     "linux_tablet": {"min_free_gb": 2.0, "total_gb": 8.0, "target_ceiling_pct": 75.0, "usable_vram_gb": 6.0},
     "macbook_air": {"min_free_gb": 1.6, "total_gb": 16.0, "target_ceiling_pct": 90.0, "usable_vram_gb": 14.4},
     "pixel": {"min_free_gb": 2.4, "total_gb": 16.0, "target_ceiling_pct": 85.0, "usable_vram_gb": 13.6, "adb_ip": "100.73.38.87"},
-    "samsung": {"min_free_gb": 3.0, "total_gb": 12.0, "target_ceiling_pct": 75.0, "usable_vram_gb": 9.0, "adb_ip": "100.84.40.95"}
+    "samsung": {"min_free_gb": 3.0, "total_gb": 12.0, "target_ceiling_pct": 75.0, "usable_vram_gb": 9.0, "adb_ip": "100.78.206.96"}
 }
 
 
@@ -147,7 +147,7 @@ class MeshRAMAutoScalerSentinel:
             actions.append("proot_cleanup_invoked")
 
         elif node_id in ["Samsung_S20", "samsung", "layer_5_samsung_s20"]:
-            run_cmd("adb -s 100.84.40.95:5555 shell 'am trim-caches 1024M 2>/dev/null || pm trim-caches 1024M 2>/dev/null || true'", timeout=3.0)
+            run_cmd("adb -s 100.78.206.96:5555 shell 'am trim-caches 1024M 2>/dev/null || pm trim-caches 1024M 2>/dev/null || true'", timeout=3.0)
             run_cmd("ssh -o BatchMode=yes -o ConnectTimeout=2 root@192.168.8.1 'adb -s R3CN40CJJ1R shell \"am trim-caches 1024M\" 2>/dev/null || true'", timeout=3.0)
             actions.append("samsung_am_trim_caches_1024M")
             actions.append("am_trim_caches_executed")
@@ -220,7 +220,7 @@ class MeshRAMAutoScalerSentinel:
         """Evaluates live memory headroom compliance across all mesh nodes."""
         host_mem = self.get_host_memory()
         pixel_mem = self.query_node_memory_adb("100.73.38.87", HEADROOM_REQUIREMENTS["pixel"]["min_free_gb"], auto_trim=auto_trim)
-        samsung_mem = self.query_node_memory_adb("100.84.40.95", HEADROOM_REQUIREMENTS["samsung"]["min_free_gb"], auto_trim=auto_trim)
+        samsung_mem = self.query_node_memory_adb("100.78.206.96", HEADROOM_REQUIREMENTS["samsung"]["min_free_gb"], auto_trim=auto_trim)
 
         macbook_pro_mem = {
             "node_id": "MacBook_Pro",

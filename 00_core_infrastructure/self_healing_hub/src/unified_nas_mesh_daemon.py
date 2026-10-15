@@ -26,7 +26,7 @@ from storage_mesh_optimizer import PrimaryMacSpaceGuard, GoogleDriveVFSHandler
 logger = logging.getLogger("UnifiedNASDaemon")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
-STATUS_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/unified_nas_status.json"
+STATUS_FILE = "/Volumes/Lauburu-Monorepo/data/unified_nas_status.json"
 os.makedirs(os.path.dirname(STATUS_FILE), exist_ok=True)
 
 class UnifiedNASMeshDaemon:

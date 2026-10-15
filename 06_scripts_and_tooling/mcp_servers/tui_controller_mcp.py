@@ -7,7 +7,7 @@ Subsystem: 06_scripts_and_tooling/mcp_servers/tui_controller_mcp.py
 
 Adheres to Model Context Protocol (MCP) JSON-RPC 2.0 stdio protocol.
 Provides tools to start, stop, monitor, heal, and synchronize the entire
-TUI cockpit, Nomad Courier governor, AI debate council, and Open Wearables pipeline.
+TUI console, Nomad Courier governor, AI debate council, and Open Wearables pipeline.
 """
 
 import sys
@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 
 # Canonical monorepo paths
-MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+MONOREPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 TUI_DIR = MONOREPO_ROOT / "01_apps/canonical_port"
 TUI_APP = TUI_DIR / "tui/canonical_tui.py"
 RUN_SCRIPT = TUI_DIR / "run_live_tui.sh"
@@ -292,7 +292,6 @@ def query_wearable_telemetry(user_id: str = "default_user", include_raw_ecg: boo
             "garmin_body_battery": 82,
             "apple_health_steps": 11420
         },
-        "rule_0_verification": "Zero-Mock Verified",
         "timestamp": time.time()
     }
     if cache_path.exists():

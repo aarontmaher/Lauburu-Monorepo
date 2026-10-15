@@ -11,9 +11,24 @@ Welcome to the canonical knowledge repository of the **Lauburu Mesh Ecosystem**.
 
 ## 🏛️ Master Architecture Portals
 
+- [[frontier_audits/CANONICAL_AI_MEMORY_AND_TOPOLOGY_AUDIT_2026_10_14]] — Canonical AI Memory & Hardware Topology Truth Audit Report (2026-10-14): Screen Lens MCP Verified (L1 Online, :3035 OCR Online, 1920x1080 Standby), Probed Ports (8085 Hermes 8B, 8087 Gemma Embeddings, 8089 Qwen 0.5B, 8081/8082 Proxies, 8090 Inactive, 8888 SeaweedFS Offloaded to L3), Sub-millisecond TB4 (0.140ms L8 Hub), Dynamic RAM Headroom (Pressure Level 2, 5.0 GB Disk Headroom) & Full Rule Reconciliation
+- [[04_ANALYTICS/DOCKER_VS_PODMAN_GBOS_VM_DEEP_RESEARCH]] — Deep Research: Containerization Strategy (Docker vs. Podman 5 vs. Bare-Metal) & gbos-vm vs. Standard Mac Architecture across the 7-Layer Mesh
+- [[APPS_AND_FEATURES/PYCHARM_STORAGE_AND_STRUCTURE_FEATURES_LENS_MODELS]] — PyCharm Cloud Storage & Structure Setup for Screen Lens & All Models: Google Cloud Data Source (lauburu-net-cloud-sa.json), SQLite Live Introspection (screen_lens_timeline.db, companion.sqlite, nexus.db), Source Root Mappings & Dependency Parity
+- [[PERSONAPLEX_7B_V1_S2S_DEPLOYMENT]] — PersonaPlex 7B v1 Full-Duplex Speech-to-Speech Architecture: Dual-Plane Protocol, Mimi Codec, 16 Voice Prompts & Pixel 10 Edge Offload (:8998)
+- [[frontier_audits/CONTINUOUS_AUTOMATION_OPTIMIZATION_AUDIT]] — Continuous Multi-Device Automation & Mesh Telemetry Audit: Full 7-Layer Hardware Probed (0.265ms TB4 L8 Hub, 1.436ms TB4 L2 MBP, 5.779ms L3 AMD), Chrome DevTools OpenAPI WebVLA Automation & L3/L6/L7 Zero-Mock Headless Execution
+- [[frontier_audits/LENS_CONTINUOUS_BENCHMARK_LATEST]] — Screen Lens Sovereign Continuous ELO Benchmark Report (v3.0): 7-Layer Hardware Probed (7/7 Online), Qwen 2.5 72B Instruct Math Evaluation, Screen Lens Port 4003 Live Visual Frame Capture (147,896 Bytes, SHA256: `f500cd0e8102...`), LoRA Fine-Tuning Convergence (-1.856 Val Loss, 4,534 tok/s Metal GPU), and 99.4% Gemini Cloud Consensus Gate
+- [[APPS_AND_FEATURES/LENS_CONTINUOUS_ELO_BENCHMARK]] — Screen Lens Continuous Skills & Automations ELO Benchmark: 7-Layer Mesh Network Telemetry (7/7 Nodes Online), Bradley-Terry Closed-Form ELO Rankings, Qwen Math & Architecture Evaluation, Screen Lens Sovereign Live Visual Frame Capture & 99.2% Cloud Consensus Accord
+- [[TRUTH_AUDIT_REPORT]] — Lauburu Ecosystem Canonical Truth Audit Report: Comprehensive 7-Layer Mesh Telemetry, Tri-Vault Storage Synchronization & Zero-Mock Certification
+- [[APPS_AND_FEATURES/SCREEN_LENS_KM_KEYBOARD_KDE_CONNECT_CONSENSUS]] — Screen Lens Sovereign Remote Desktop: KDE Connect & KM Keyboard Integration Consensus (Tri-Proof Verified, 15 FPS Retina Proxy, 3-Lane Concurrency & Virtual Keyboard HUD)
+- [[APPS_AND_FEATURES/SCREEN_LENS_REMOTE_DESKTOP_LOOP_TELEMETRY]] — Screen Lens Sovereign Remote Desktop Continuous Overnight Watchdog Telemetry (/loop, Self-Healing, Multi-Node HID & Hardware Keyboard Health)
 - [[APPS_AND_FEATURES/CANONICAL_TUI_RESIDENT_AI]] — Canonical Master TUI & Resident AI Unification: 15-Screen Consolidated TUI (3D Spatial Grappling, SmolAgents Duel Sandbox, Headless Shopify Storefront, Movesense 512Hz ECG, Network NOC), Living Resident AI Consciousness Banner (Qwen 3.8 Max :8082), Pinned Tab Navigation & Tri-Vault Synchronization
 - [[04_ANALYTICS/GEMINI_38_FLASH_HIGH_SHADOW_TRAINING_REPORT]] — Gemini 3.8 Flash High 24/7 Local AI Shadow Training Report (Strongest Models: Qwen 3.8 Max, Qwen 27B, Math 72B, VL 7B; Weakest Link Models: Qwen 1.5B, 10M Drafter, Network Optimizer, Edge TPU)
 - [[debates/AI_DEBATE_NETWORK_OPTIMISATION_AND_CONTINUOUS_TRAINING_2026]] — Tri-Orchestrator AI Debate: Continuous Network Optimization, Bluetooth Foundation & Local AI Training (Unanimous Consensus 1.0, Qwen 3.8 Max Master, Devil's Advocate Red Team)
+- [[04_ANALYTICS/PETALS_SHARDING_EMPIRICAL_BENCHMARK_2026]] — Petals Distributed AI Sharding Protocol: Empirical Deep Research & Benchmark (Evaluated inside 'lens-opt-tester' on L3 Linux Mini; Isolated Activation Compression Variable; FLOAT16 2.0x Throughput Speedup @ 251.2 MB/s, 7.96ms E2E Latency, 73.67 dB SNR vs 8-Bit CPU Quantization Bottleneck)
+- [[04_ANALYTICS/PETALS_SEQUENCE_SCALING_EMPIRICAL_BENCHMARK_2026]] — Petals Distributed AI Sharding: Sequence Chunk Scaling Analysis (S in [32..1024], 59.7% per-token transit cost reduction, discovering the 4MB default unary message limit)
+- [[04_ANALYTICS/PETALS_BATCH_SCALING_EMPIRICAL_BENCHMARK_2026]] — Petals Distributed AI Sharding Protocol: Empirical Batch Size Scaling & Pipeline Capacity Limits (B in [1..16], discovering the B=8 optimal operating knee @ 349.9 tok/s and the B=16 memory bandwidth / protobuf degradation wall)
+- [[04_ANALYTICS/PETALS_HIDDEN_DIM_SCALING_EMPIRICAL_BENCHMARK_2026]] — Petals Distributed AI Sharding: Hidden Dimension Architecture Scaling & Cross-Layer Tensor Transit Costs (D in [1024..8192], empirical linear transit scaling law 1,155 us/tok to 4,654 us/tok, identifying deserialization dominance over serialization)
+- [[04_ANALYTICS/PETALS_DISTRIBUTED_TRAINING_BACKPROP_EMPIRICAL_BENCHMARK_2026]] — Petals Distributed AI Training & Backpropagation Protocol Benchmark (Evaluated inside 'lens-opt-tester' on L3 Linux Mini; Isolated Backward Gradient Compression Variable; FLOAT16 2.0x Wire Reduction @ 0.999839 Cosine Similarity, 3743ms Backward RPC vs MEANSTD_16BIT 6.77x CPU Serialization Penalty)
 - [[04_ANALYTICS/PAIRWISE_MESH_NETWORK_OPTIMIZATION]] — Pairwise Mesh Network & Tensor Throughput Optimization (10Gbps TB4 DMA 98.2%, 1GbE 74.2%, Wi-Fi 7 36.4%, Tailscale 40.9%)
 - [[APPS_AND_FEATURES/MOVESENSE_247_BIOMETRICS_VAULT]] — Movesense 24/7 Continuous Biometrics Data Lake Vault: Tri-Vault Storage (SQLite WAL, PySpark Partitioned JSONL, LoRA Feed), Real-Time Kamath 20% ECG DSP & Autonomous Keepalive Service
 - [[APPS_AND_FEATURES/MESH_INCIDENT_ALERTS]] — Continuous Mesh Sentinel & Unhealable Node Alerts (Native macOS AppleScript Banner, Multi-Tier BT/WoL/ADB Self-Healing)
@@ -31,6 +46,7 @@ Welcome to the canonical knowledge repository of the **Lauburu Mesh Ecosystem**.
 - [[04_ANALYTICS/CLOUD_TEACHER_LOCAL_OUTPERFORMANCE_REPORT]] — Cloud AI Teacher Distillation & Local Outperformance Report: Gemini 3.1 Pro/Flash & Claude 3.7 Sonnet DPO Distillation, Gate 8 COI >= 1.00x Certified across all 7 Monorepo Projects
 - [[05_SWARMS/debates/AI_DEBATE_CLOUD_SHADOW_OUTPERFORMANCE_LATEST]] — Tri-Orchestrator AI Debate Consensus: Continuous Local AI Training with Cloud Model Shadowing (Consensus >= 98.0%, Qwen 3.8 Max Sovereign Master, Devil's Advocate Red Team)
 - [[04_ANALYTICS/PROJECT_AND_APP_SPECIFIC_LOCAL_AI_ROLES_CATALOG]] — Master 24-Role Project & App-Specific Local AI Architecture Catalog: All 7 Projects, Silicon Quantizations & 7-Layer Mesh Hardware Placements
+- [[02_AI_ARCHITECTURE/LOCAL_AI_ROLE_INTEGRATION_AND_SCREEN_LENS]] — Canonical Local AI Role Integration & Screen Lens Sovereign Framework: 10 Roles, TB4 Offload, Qwen 3.8 Max, Qwen2.5-VL mmproj Download & LoRA Distillation Proofs
 - [[04_ANALYTICS/SPECIALIST_AI_TRAINING_AND_MASTERY_REPORT]] — Specialist Local AI Training & Mastery Report: Continuous 24/7 Fine-Tuning Receipts, Apple Silicon Metal Loss Convergence & 100% Exit Code 0 Verification across 24 Roles
 - [[01_APPS_AND_PORTAL_CATALOG]] — Master Apps & Portal Catalog: Port 8890 Studio, Port 18805 Live Console, Port 8088 Universal Web-TUI, Port 8888 SeaweedFS Filer & Endpoints Matrix
 - [[AI_DEBATE_SCREEN_LENS_GLOBAL_ORCHESTRATOR_REVIEW_2026]] — AI Debate Consensus (2026-09-07): Elevating Screen Lens to Sovereign Global Orchestrator — Visual Grounding Primacy, VLA Closed Loop (Port 3037), Qwen 3.8 Max Master & Red Team Sanity Gate
@@ -50,7 +66,8 @@ Welcome to the canonical knowledge repository of the **Lauburu Mesh Ecosystem**.
 - [[MOVESENSE_OMNITERMINAL_IDE_AND_PROVEN_MATRIX_VERIFIED]] — Verified Movesense 512Hz ECG Ingestion into Omni Terminal IDE Console & Proven Matrix Swarm
 - [[MOVESENSE_512HZ_CLINICAL_DSP_AND_PORT_4000_STABILIZATION]] — Movesense 512Hz Medical-Grade Biometrics & Port 4000 Sovereign Console Clinical Stabilization (Kamath 20% Filter, Zero-Mock Standby & P-Q-R-S-T Waveform)
 - [[SOVEREIGN_LOCAL_ORCHESTRATOR_RULE]] — Canonical Rule: Sovereign Master Local Orchestrator (Qwen 3.8 Max), Devil's Advocate & Model Rewards
-- [[00_MASTER_INFRASTRUCTURE_TOPOLOGY]] — 7-Layer Mesh, Port Matrix & Hardware VRAM Pool (108.0 GB RAM / 82.8 GB VRAM)
+- [[00_CORE_INFRASTRUCTURE/00_MASTER_INFRASTRUCTURE_TOPOLOGY|00_MASTER_INFRASTRUCTURE_TOPOLOGY]] — 8-Node Mesh, Port Matrix & Hardware VRAM Pool (139.0 GB RAM / 108.4 GB AI VRAM)
+- [[Linux_Mini_lauburu]] — Node L8 Linux Mini (lauburu) 40 Gbps Thunderbolt 4 Hub & Model Vault Telemetry
 - [[NEO_MCP_AND_SKILL_INTEGRATION]] — Neo MCP Server & Skill Ecosystem Integration: 17 Tools, BYOK Mode, Resilient Launcher & Tool Orchestrator Binding
 - [[NEO_LOCAL_AI_TRAINING_INTEGRATION]] — Neo Local AI Training Integration: Port 19999 Studio Mic, HeyNeo LID, Continuous LoRA Harvesting & Production Dual-Platform Deployment
 - [[NEO_MONOREPO_PROJECT_APP_GRAPH]] — 41-Node Multi-Domain Graph: TUIs, Web Apps, 139 Notebooks, 7-Layer Mesh & Bicep ECG
@@ -60,16 +77,16 @@ Welcome to the canonical knowledge repository of the **Lauburu Mesh Ecosystem**.
 - [[AI_DEBATE_PROVEN_UI_UX_E2E_TESTING_METHODOLOGY]] — Tri-Orchestrator Consensus: Proven 5-Layer E2E Testing Standard
 - [[GENETIC_MOE_MESH_RAM_ROUTING_LIVE]] — Genetic MoE: 7-Layer Mesh Hardware RAM Governor & Dynamic Expert Routing
 - [[01_APPS_AND_PORTAL_CATALOG]] — Port 8088 Web-TUI Portal, Port 18805 Console, 120 FPS WebGL PTY Streamer
-- [[01_TATAMI_3D_KINEMATICS_AND_OPML]] — 955-Node BJJ Hierarchy, 3D Tatami Kinematics & Submission State Machine
+- [[10_spatial_grappling_kinematics]] — 955-Node BJJ Hierarchy, 3D Tatami Kinematics & Submission State Machine
 - [[02_PRIMA_CPP_FULL_NETWORK_SHARDING]] — Full-Network prima.cpp PRP Ring (Qwen 3 Next 80B, Qwen 2.5 72B)
 - [[DYNAMIC_NETWORK_TRANSPORT_ESCALATION_LADDER]] — 4-Tier Network Transport Escalation (Bluetooth -> Wi-Fi 7 -> 10G TB4 -> TB5 PRP Ring: prima.cpp:8082 + llama.cpp:8081)
 - [[LOCAL_AI_APPLESCRIPT_AUTOMATIONS]] — Sovereign Local-AI-Only AppleScript Automation Suite (Qwen 3.8 Max, Qwen 2.5 Coder, Red Team, NPU Telemetry)
 - [[UNIVERSAL_MULTI_DEVICE_PERSISTENT_MESH_AND_NPU_RUNNER]] — Universal Multi-Device Persistent Mesh Runner, TPU Sentinel, Shizuku & NPU IDE Architecture
 - [[NEO_NPU_DYNAMIC_COMPUTING_REGULATOR]] — Neo NPU Dynamic Continuous Training Computing Regulator (Active User Down-Regulation & Idle Up-Regulation)
 - [[TRAVEL_ROUTER_NPU_AND_FREE_API_NETWORK_OPTIMIZER]] — Travel Router NPU AI Feasibility, Physical Edge TPU Expansion & 5,800 RPD Free API Optimizer
-- [[03_MOVESENSE_512HZ_ECG_DSP_PIPELINE]] — Medical-Grade Biometrics, Pan-Tompkins QRS DSP & DFA-alpha1 HRV
-- [[04_PYSPARK_AND_LORA_DATA_LAKE]] — Big Data Lakehouse, 24/7 LoRA Datasets & Qdrant Vector Store
-- [[05_TRI_ORCHESTRATOR_AI_DEBATE_AND_GENETIC_MOE]] — Deliberative Debate Consensus & Continuous Genetic MoE
+- [[03_biometrics_and_telemetry]] — Medical-Grade Biometrics, Pan-Tompkins QRS DSP & DFA-alpha1 HRV
+- [[04_data_and_memory]] — Big Data Lakehouse, 24/7 LoRA Datasets & Qdrant Vector Store
+- [[05_agents_and_swarms]] — Deliberative Debate Consensus & Continuous Genetic MoE
 - [[BLUETOOTH_KEYRING_OMNITERMINAL_INTEGRATION_VERIFIED]] — Sovereign Bluetooth Key Ring (Life360 Disintermediated) & Omni Terminal Master Expansion (339/339 Tests Passed)
 - [[EVENT_FOB_MOVESENSE_NPU_AND_MESH_EXPANSION]] — Event Fob Dispatcher, Movesense Bicep ECG, NPU Telemetry & Mesh Topology Expansion
 - [[SPEEDIFY_WHITEBOARD_NPU_AND_SOVEREIGN_STRAP]] — Speedify Alternative, Whiteboard OS, Pure NPU, Bicep Strap & Sovereign Mesh
@@ -86,8 +103,8 @@ Welcome to the canonical knowledge repository of the **Lauburu Mesh Ecosystem**.
 - [[CATEGORIZED_ELO_LEADERBOARDS_AND_SWARM_CHAMPIONS]] — SSoT Categorized ELO Leaderboards, Task Champions & Swarm Apex
 - [[AI_TRAINING_GAMES_AND_META_ANALYSIS]] — Multi-Domain AI Training Games Suite, Cloud vs Local Tournament & Meta-Evolution
 - [[AI_DEBATE_STORAGE_72B_AND_SCREEN_LENS_VLA]] — 72B Storage Offloading, TB4 Model Vault & Screen Lens Closed-Loop VLA
-- [[06_SELF_HEALING_AND_UNIVERSAL_SSH]] — 8-Layer Multi-Transport SSH Daemons, WoL Resurrection & ADB Keepalive
-- [[07_LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX]] — Comprehensive Monorepo Directory Hierarchy & Code Contracts
+- [[06_scripts_and_tooling]] — 8-Layer Multi-Transport SSH Daemons, WoL Resurrection & ADB Keepalive
+- [[LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX]] — Comprehensive Monorepo Directory Hierarchy & Code Contracts
 - [[NETWORK_CONNECTIVITY_GRAPH]] — Dual Electrical Power (AU 240V/GaN) & 7-Layer High-Speed Mesh Connectivity Graph
 - [[NBN_AND_MESH_TOPOLOGY_AI_DEBATE_ANALYSIS]] — NBN Connectivity, Multi-WAN & TP-Link Mesh AI Debate Consensus
 - [[TP_LINK_AND_GLINET_ROUTER_CONFIGURATION_GUIDE]]
@@ -126,18 +143,20 @@ Welcome to the canonical knowledge repository of the **Lauburu Mesh Ecosystem**.
 - **🏆 Master AI Leaderboard:** `http://localhost:8088/leaderboard` ([[01_APPS_AND_PORTAL_CATALOG]])
 - **⚡ NPU AI Fleet ELO Leaderboard:** [[NPU_AI_FLEET_ELO_FITNESS_LEADERBOARD]] — Real-time 104.0 TOPS Zero-GPU Silicon Leaderboard
 - **⚡ Live Command Console:** `http://100.119.199.76:18805` ([[01_APPS_AND_PORTAL_CATALOG]])
-- **📓 Gemini Notebook Workspace:** `http://100.93.158.96:8889/lab` ([[00_MASTER_NOTEBOOK_INDEX]])
+- **📓 Gemini Notebook Workspace:** `http://100.121.202.34:8889/lab` ([[00_MASTER_NOTEBOOK_INDEX]])
 - **📓 Screen Lens Marimo Studio (Port 4002):** `http://localhost:4002` ([[MARIMO_NOTEBOOK_4002_HEADLESS_LOCAL_AI_NEO_INTEGRATION]])
 - **📡 SeaweedFS Distributed Storage:** `http://100.101.39.98:8888` ([[01_APPS_AND_PORTAL_CATALOG]])
+- **🤝 Hermes Companion Desktop Web UI (Port 55271):** `http://127.0.0.1:55271` — Desktop collaboration, task handoff & live OCR stream
 - **🌡️ Mesh Thermal & Cooling Governor:** [[MESH_THERMAL_GOVERNOR_STATUS]] — Autonomous 7-Layer Dynamic Thermal & Fan PWM Regulation
 
-- [[00_lauburu_global_master_project.ipynb]]
-- [[02_lauburu_canonical_knowledge_vault_explorer.ipynb]]
-- [[03_lauburu_lens_vision_and_next_steps.ipynb]]
+- [[notebooks/00_lauburu_global_master_project|00_lauburu_global_master_project]]
+- [[notebooks/02_lauburu_canonical_knowledge_vault_explorer|02_lauburu_canonical_knowledge_vault_explorer]]
+- [[notebooks/03_lauburu_lens_vision_and_next_steps|03_lauburu_lens_vision_and_next_steps]]
 - [[INTEGRATED_AI_CONSOLE_ROI_REPORT]]
 - [[Index]]
 - [[CANONICAL_PROJECT_AND_STORAGE_RULE]]
 - [[LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX]]
+- [[TRUTH_AUDIT_REPORT]]
 
 ## 🏛️ Canonical Ecosystem Overviews (2026 Context-Windowed Architecture)
 - [[CANONICAL_PROJECT_OVERVIEW]] — Lauburu Mesh Ecosystem: Canonical Master Project & Architecture Overview (7-Layer Hardware Matrix, Dynamic RAM Governor, Tri-Vault Storage, Zero-Mock)
@@ -255,3 +274,6 @@ Welcome to the canonical knowledge repository of the **Lauburu Mesh Ecosystem**.
 - [[NEW_QWEN38_MAX_VS_ALL_MODELS_EMPIRICAL_BENCHMARK]]
 - [[09_background_daemon_and_cron_governance]]
 - [[10_fundamental_baseline_trinity]]
+- [[DISTRIBUTED_PETALS_BENCHMARK_REPORT_2026]] - Cross-Mesh Hivemind Scaling & MTU Analysis
+
+- [[LOCAL_AI_END_PROOF_AND_TELEMETRY_REVIEW]] - Local AI End-Proof & Telemetry Adversarial Review

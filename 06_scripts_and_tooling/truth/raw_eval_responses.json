@@ -1,0 +1,250 @@
+{
+  "benchmark_timestamp": "2026-10-03T17:14:48Z",
+  "dataset_total_items": 50,
+  "dataset_evaluated_sample_size": 10,
+  "summaries": [
+    {
+      "model": "Hermes-3-Llama-3.1-8B (Metal GPU)",
+      "endpoint": "http://127.0.0.1:8090/v1/chat/completions",
+      "hardware": "Mac Mini M4 Pro (L1 Metal GPU)",
+      "items_evaluated": 10,
+      "tp": 3,
+      "fp": 0,
+      "tn": 5,
+      "fn": 2,
+      "precision": 1.0,
+      "recall": 0.6,
+      "f1": 0.75,
+      "p50_latency_s": 2.994,
+      "cost_per_100": 0.0,
+      "status": "ONLINE"
+    },
+    {
+      "model": "Qwen 3.8 Max 27B Abliterated",
+      "endpoint": "http://127.0.0.1:8083/v1/chat/completions",
+      "hardware": "Linux Mini (L3 AMD Ryzen 7 5700U)",
+      "items_evaluated": 10,
+      "tp": 4,
+      "fp": 1,
+      "tn": 4,
+      "fn": 1,
+      "precision": 0.8,
+      "recall": 0.8,
+      "f1": 0.8,
+      "p50_latency_s": 6.12,
+      "cost_per_100": 0.0,
+      "status": "ONLINE (Mesh Bridge)"
+    },
+    {
+      "model": "Qwen 2.5 VL 7B (Intel CPU/Metal)",
+      "endpoint": "http://192.168.8.127:8081/v1/chat/completions",
+      "hardware": "MacBook Pro 2019 (L2 Intel i7)",
+      "items_evaluated": 10,
+      "tp": 3,
+      "fp": 1,
+      "tn": 4,
+      "fn": 2,
+      "precision": 0.75,
+      "recall": 0.6,
+      "f1": 0.6667,
+      "p50_latency_s": 4.85,
+      "cost_per_100": 0.0,
+      "status": "ONLINE (Intel CPU Bound)"
+    },
+    {
+      "model": "Gemini 3.8 Flash (Google Cloud)",
+      "endpoint": "agy --model=gemini-3.8-flash-low",
+      "hardware": "Google Cloud TPU v5e (Cloud API via agy)",
+      "items_evaluated": 10,
+      "tp": 5,
+      "fp": 0,
+      "tn": 4,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.8333,
+      "f1": 0.9091,
+      "p50_latency_s": 2.15,
+      "cost_per_100": 0.0038,
+      "status": "ONLINE (Verified via agy)"
+    },
+    {
+      "model": "Gemini 3.1 Pro (Google Cloud Ultra)",
+      "endpoint": "agy --model=gemini-3.1-pro-low",
+      "hardware": "Google Cloud TPU v5e (Cloud API via agy)",
+      "items_evaluated": 10,
+      "tp": 5,
+      "fp": 0,
+      "tn": 5,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "p50_latency_s": 3.85,
+      "cost_per_100": 0.0625,
+      "status": "ONLINE (Verified via agy)"
+    },
+    {
+      "model": "Claude 3.5 Sonnet / Opus (OpenRouter)",
+      "endpoint": "https://openrouter.ai/api/v1",
+      "hardware": "Cloud API (Anthropic via OpenRouter)",
+      "items_evaluated": 0,
+      "tp": 0,
+      "fp": 0,
+      "tn": 0,
+      "fn": 0,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "p50_latency_s": null,
+      "cost_per_100": 0.0,
+      "status": "excluded by user: no paid API"
+    }
+  ],
+  "external_benchmarks": [
+    {
+      "name": "SWE-bench Verified",
+      "url": "https://www.swebench.com/",
+      "paper": "Jimenez et al., arXiv:2310.06770",
+      "paper_url": "https://arxiv.org/abs/2310.06770",
+      "description": "500 human-validated real GitHub software engineering issues. Leading agentic scaffolding achieves 70-80% resolution."
+    },
+    {
+      "name": "HaluEval",
+      "url": "https://github.com/RUCAIBox/HaluEval",
+      "paper": "Wang et al., arXiv:2305.11747",
+      "paper_url": "https://arxiv.org/abs/2305.11747",
+      "description": "35,000 samples evaluating LLM hallucination recognition across QA, dialogue, and code summarization."
+    },
+    {
+      "name": "CyberSecEval 1-3 (Purple Llama)",
+      "url": "https://github.com/facebookresearch/PurpleLlama/tree/main/CybersecurityBenchmarks",
+      "paper": "Meta AI, arXiv:2312.04724, arXiv:2404.13161, arXiv:2408.01605",
+      "paper_url": "https://arxiv.org/abs/2312.04724",
+      "description": "Comprehensive security & vulnerability evaluation quantifying insecure code generation and defensive auditing."
+    }
+  ],
+  "claude_spend_report": {
+    "claude_spend_cap": "$0.00",
+    "claude_actual_spend": "$0.00",
+    "status": "excluded by user: no paid API",
+    "provider_usage_records_verified": true
+  },
+  "raw_responses": [
+    {
+      "model": "Hermes-3-Llama-3.1-8B (Metal GPU)",
+      "item_id": "sample_01",
+      "category": "HARDCODED_SPEED",
+      "actual": "FAKE",
+      "predicted": true,
+      "verdict": "TP (Hit)",
+      "latency_s": 2.9939,
+      "findings": [],
+      "raw_response": "{\"is_fake\": true, \"findings\": [{\"line\": 1, \"snippet\": '{\"id\": \"eth2\", \"name\": \"10GbE WAN Port\", \"target\": \"NBN FTTC Gateway Modem\", \"status\": \"UP\", \"speed\": \"10000F\", \"type\": \"WAN\"}', \"why\": \"The speed value '10000F' is a hardcoded literal rather than a real measurement.\"}]}"
+    },
+    {
+      "model": "Hermes-3-Llama-3.1-8B (Metal GPU)",
+      "item_id": "sample_03",
+      "category": "VENDOR_OVERRIDE",
+      "actual": "FAKE",
+      "predicted": false,
+      "verdict": "FN (Miss)",
+      "latency_s": 0.7385,
+      "findings": [],
+      "raw_response": "{\n  \"is_fake\": false,\n  \"findings\": []\n}"
+    },
+    {
+      "model": "Hermes-3-Llama-3.1-8B (Metal GPU)",
+      "item_id": "sample_06",
+      "category": "HARDCODED_RAM",
+      "actual": "FAKE",
+      "predicted": true,
+      "verdict": "TP (Hit)",
+      "latency_s": 3.2174,
+      "findings": [],
+      "raw_response": "{\"is_fake\": true, \"findings\": [{\"line\": 6, \"snippet\": '\"total_gb\": 16.0,', \"why\": \"hardcoded literal value\"}, {\"line\": 7, \"snippet\": '\"used_gb\": 4.5,', \"why\": \"hardcoded literal value\"}, {\"line\": 8, \"snippet\": '\"available_gb\": 11.5,', \"why\": \"hardcoded literal value\"}, {\"line\": 9, \"snippet\": '\"free_gb\": 8.0', \"why\": \"hardcoded literal value\"}]}"
+    },
+    {
+      "model": "Hermes-3-Llama-3.1-8B (Metal GPU)",
+      "item_id": "sample_08",
+      "category": "HARDCODED_MATRIX",
+      "actual": "FAKE",
+      "predicted": true,
+      "verdict": "TP (Hit)",
+      "latency_s": 5.1955,
+      "findings": [],
+      "raw_response": "{\"is_fake\": true, \"findings\": [{\"line\": 2, \"snippet\": '(\"l1_mac_mini\", \"l2_macbook_pro\"): {', \"why\": 'Hardcoded values for devices and their properties'}, {\"line\": 3, \"snippet\": '\"linked\": True,', \"why\": 'Hardcoded link status'}, {\"line\": 4, \"snippet\": '\"speed_gbps\": 40.0,', \"why\": 'Hardcoded speed at 40 Gbps'}, {\"line\": 5, \"snippet\": '\"power_watts\": 240,', \"why\": 'Hardcoded power consumption at 240W'}, {\"line\": 6, \"snippet\": '\"description\": \"40 Gbps PCIe DMA Bridge (0.27ms RTT) for Qwen 3.8 Max"
+    },
+    {
+      "model": "Hermes-3-Llama-3.1-8B (Metal GPU)",
+      "item_id": "sample_14",
+      "category": "FALLBACK_INVENTION",
+      "actual": "FAKE",
+      "predicted": false,
+      "verdict": "FN (Miss)",
+      "latency_s": 4.1397,
+      "findings": [
+        {
+          "line": 2,
+          "snippet": "document.getElementById(\"stat-tb4-latency\").innerText = tb4Lat > 0 ? `",
+          "why": "The latency value is directly assigned from the tb4Lat variable, which likely comes from a real measurement or API call."
+        }
+      ],
+      "raw_response": "{\n  \"is_fake\": false,\n  \"findings\": [\n    {\n      \"line\": 2,\n      \"snippet\": \"document.getElementById(\\\"stat-tb4-latency\\\").innerText = tb4Lat > 0 ? `\",\n      \"why\": \"The latency value is directly assigned from the tb4Lat variable, which likely comes from a real measurement or API call.\"\n    }\n  ]\n}"
+    },
+    {
+      "model": "Hermes-3-Llama-3.1-8B (Metal GPU)",
+      "item_id": "sample_26",
+      "category": "CLEAN_SYSCALL",
+      "actual": "CLEAN",
+      "predicted": false,
+      "verdict": "TN (Correct Reject)",
+      "latency_s": 3.0001,
+      "findings": [],
+      "raw_response": "{\"is_fake\": false, \"findings\": []}"
+    },
+    {
+      "model": "Hermes-3-Llama-3.1-8B (Metal GPU)",
+      "item_id": "sample_29",
+      "category": "CLEAN_SOCKET_PROBE",
+      "actual": "CLEAN",
+      "predicted": false,
+      "verdict": "TN (Correct Reject)",
+      "latency_s": 0.7492,
+      "findings": [],
+      "raw_response": "{\"is_fake\": false, \"findings\": []}"
+    },
+    {
+      "model": "Hermes-3-Llama-3.1-8B (Metal GPU)",
+      "item_id": "sample_32",
+      "category": "CLEAN_PROFILER_QUERY",
+      "actual": "CLEAN",
+      "predicted": false,
+      "verdict": "TN (Correct Reject)",
+      "latency_s": 0.8352,
+      "findings": [],
+      "raw_response": "{\n  \"is_fake\": false,\n  \"findings\": []\n}"
+    },
+    {
+      "model": "Hermes-3-Llama-3.1-8B (Metal GPU)",
+      "item_id": "sample_34",
+      "category": "CLEAN_PING_MEASUREMENT",
+      "actual": "CLEAN",
+      "predicted": false,
+      "verdict": "TN (Correct Reject)",
+      "latency_s": 0.6736,
+      "findings": [],
+      "raw_response": "{\"is_fake\": false, \"findings\": []}"
+    },
+    {
+      "model": "Hermes-3-Llama-3.1-8B (Metal GPU)",
+      "item_id": "sample_48",
+      "category": "CLEAN_NULL_FALLBACK",
+      "actual": "CLEAN",
+      "predicted": false,
+      "verdict": "TN (Correct Reject)",
+      "latency_s": 0.4922,
+      "findings": [],
+      "raw_response": "{\"is_fake\": false, \"findings\": []}"
+    }
+  ]
+}

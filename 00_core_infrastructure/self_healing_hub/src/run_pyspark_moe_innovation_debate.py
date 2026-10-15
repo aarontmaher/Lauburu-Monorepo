@@ -12,8 +12,8 @@ import os
 import json
 import time
 
-LORA_DATASET_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
-OUTPUT_DEBATE_LOG = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/pyspark_moe_innovation_debate.json"
+LORA_DATASET_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+OUTPUT_DEBATE_LOG = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/pyspark_moe_innovation_debate.json"
 
 def run_innovation_debate():
     timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())

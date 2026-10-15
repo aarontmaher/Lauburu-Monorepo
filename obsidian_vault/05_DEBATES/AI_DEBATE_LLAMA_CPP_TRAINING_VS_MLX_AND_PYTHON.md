@@ -38,7 +38,7 @@ status: CONSENSUS_ACHIEVED
 ### Round 2: Cloud Shadow Orchestrator (Gemini 3.8 Flash High)
 - **Assertion:** Training strategy must be partitioned by mesh layer and compute capability:
   1. **MacBook Pro L2 & MacBook Air L5 (Metal Nodes):** Run background overnight distillation using `mlx_lm.lora`. This achieves maximum tokens/second/watt on Apple unified memory.
-  2. **L3 Linux Head Node (AMD Ryzen 7) & Termux (Android):** Run `llama-finetune` or PyTorch/TRL for zero-dependency edge adaptation.
+  2. **L3 Linux Head Node (AMD Intel 2018 Mac Mini) & Termux (Android):** Run `llama-finetune` or PyTorch/TRL for zero-dependency edge adaptation.
   3. **Mac Mini Host (L1):** MUST NOT run heavy training runs locally during the day to preserve the 9.6 GB RAM sanctuary rule.
 
 ### Round 3: Real Devil's Advocate (Qwen 3.8 Max Abliterated — Port 8083)
@@ -80,9 +80,9 @@ Use bridge0 link-local addresses (169.254.x.x) with sub-0.5ms latency.<|im_end|>
 ### Step 2: Run `llama-finetune`
 ```bash
 /Users/aaron/llama.cpp/build/bin/llama-finetune \
-  --model-base /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen2.5-coder-7b-instruct-q4_k_m.gguf \
-  --train-data /Users/aaron/DFS_UNIFIED/lora_datasets/training_data.txt \
-  --lora-out /Users/aaron/DFS_UNIFIED/lora_datasets/qwen_custom_lora.gguf \
+  --model-base /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen2.5-coder-7b-instruct-q4_k_m.gguf \
+  --train-data /Volumes/Lauburu-Monorepo/04_data_and_memory/data/training_data.txt \
+  --lora-out /Volumes/Lauburu-Monorepo/04_data_and_memory/data/qwen_custom_lora.gguf \
   --threads 8 \
   --batch-size 4 \
   --epochs 3 \
@@ -93,15 +93,15 @@ Use bridge0 link-local addresses (169.254.x.x) with sub-0.5ms latency.<|im_end|>
 ### Step 3: Serve with the Trained LoRA Adapter
 ```bash
 llama-server \
-  -m /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen2.5-coder-7b-instruct-q4_k_m.gguf \
-  --lora /Users/aaron/DFS_UNIFIED/lora_datasets/qwen_custom_lora.gguf \
+  -m /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen2.5-coder-7b-instruct-q4_k_m.gguf \
+  --lora /Volumes/Lauburu-Monorepo/04_data_and_memory/data/qwen_custom_lora.gguf \
   --port 8081 -ngl 99
 ```
 
 ### Step 4: (Optional) Permanently Bake LoRA into Base Model
 ```bash
 /Users/aaron/llama.cpp/build/bin/llama-export-lora \
-  -m /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen2.5-coder-7b-instruct-q4_k_m.gguf \
-  -l /Users/aaron/DFS_UNIFIED/lora_datasets/qwen_custom_lora.gguf \
-  -o /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen-baked-lora.gguf
+  -m /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen2.5-coder-7b-instruct-q4_k_m.gguf \
+  -l /Volumes/Lauburu-Monorepo/04_data_and_memory/data/qwen_custom_lora.gguf \
+  -o /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen-baked-lora.gguf
 ```

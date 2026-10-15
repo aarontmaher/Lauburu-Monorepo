@@ -404,10 +404,11 @@ class PyAudioEngine(AudioIOEngine):
 
     def _ensure_fallback(self) -> AudioIOEngine:
         if self._fallback_engine is None:
-            logger.info("Instantiating SyntheticAudioEngine fallback driver.")
+            logger.info("Instantiating SyntheticAudioEngine fallback driver in SILENCE mode (Rule 0 Zero-Mock compliant).")
             self._fallback_engine = SyntheticAudioEngine(
                 sample_rate_in_hz=self.sample_rate_in_hz,
-                sample_rate_out_hz=self.sample_rate_out_hz
+                sample_rate_out_hz=self.sample_rate_out_hz,
+                waveform="silence"
             )
         return self._fallback_engine
 

@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  code-server:
+    image: codercom/code-server:latest
+    container_name: pixel-code-server
+    restart: unless-stopped
+    ports:
+      - "8443:8443"
+    environment:
+      - PASSWORD=
+      - SUDO_PASSWORD=
+    volumes:
+      - /mnt/shared:/home/coder/project
+      - ./code-server/settings.json:/home/coder/.local/share/code-server/User/settings.json:ro
+    deploy:
+      resources:
+        limits:
+          memory: 2500M
+
+  jupyterlab:
+    image: jupyter/minimal-notebook:latest
+    container_name: pixel-jupyterlab
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_TOKEN=
+      - JUPYTER_ENABLE_LAB=yes
+    volumes:
+      - /mnt/shared:/home/jovyan/work
+    deploy:
+      resources:
+        limits:
+          memory: 2000M
+
+  chromium-headless:
+    image: zenika/alpine-chrome:latest
+    container_name: pixel-chromium
+    restart: unless-stopped
+    ports:
+      - "9222:9222"
+    command:
+      - --no-sandbox
+      - --disable-gpu
+      - --remote-debugging-address=0.0.0.0
+      - --remote-debugging-port=9222
+    deploy:
+      resources:
+        limits:
+          memory: 1500M

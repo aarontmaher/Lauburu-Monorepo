@@ -1,0 +1,67 @@
+#!/bin/sh /etc/rc.common
+# Lauburu Mesh Autonomous Embedded Supervisor - OpenWrt procd Init Script
+# Target: GL.iNet GL-MT3000 / GL-MT3600 (Beryl AX)
+# MediaTek MT7981B Dual-Core ARM Cortex-A53 @ 1.3 GHz, 512 MB RAM (492 MB usable)
+
+START=95
+STOP=10
+USE_PROCD=1
+
+PROG_SENTINEL="/tmp/run/ai_supervisor/router_sentinel"
+PROG_LLAMA="/tmp/run/ai_supervisor/router_llama_engine"
+MODEL_PATH="/tmp/run/ai_supervisor/SmolLM2-135M-Instruct-Q4_K_M.gguf"
+CONFIG_DIR="/tmp/run/ai_supervisor"
+
+start_service() {
+    # 1. Pre-flight volatile directory setup (100% RAM disk - Zero Flash Wear)
+    mkdir -p /tmp/run/ai_supervisor
+    mkdir -p /tmp/run/ai_supervisor/ipc
+    mkdir -p /tmp/run/ai_supervisor/logs
+
+    # 2. Configure Linux cgroups resource ceiling (120 MB RAM Cap)
+    if [ -d "/sys/fs/cgroup" ]; then
+        mkdir -p /sys/fs/cgroup/ai_supervisor 2>/dev/null || true
+        [ -f "/sys/fs/cgroup/cgroup.subtree_control" ] && echo "+memory +cpuset" > /sys/fs/cgroup/cgroup.subtree_control 2>/dev/null || true
+        [ -f "/sys/fs/cgroup/ai_supervisor/memory.max" ] && echo "125829120" > /sys/fs/cgroup/ai_supervisor/memory.max 2>/dev/null || true
+        [ -f "/sys/fs/cgroup/ai_supervisor/memory.high" ] && echo "104857600" > /sys/fs/cgroup/ai_supervisor/memory.high 2>/dev/null || true
+        [ -f "/sys/fs/cgroup/ai_supervisor/memory.swap.max" ] && echo "0" > /sys/fs/cgroup/ai_supervisor/memory.swap.max 2>/dev/null || true
+        [ -f "/sys/fs/cgroup/ai_supervisor/memory.oom.group" ] && echo "1" > /sys/fs/cgroup/ai_supervisor/memory.oom.group 2>/dev/null || true
+        [ -f "/sys/fs/cgroup/ai_supervisor/cpuset.cpus" ] && echo "1" > /sys/fs/cgroup/ai_supervisor/cpuset.cpus 2>/dev/null || true
+    fi
+
+    # 3. Apply Cake SQM and Google BBR TCP optimizations
+    sysctl -w net.core.default_qdisc=cake >/dev/null 2>&1 || true
+    sysctl -w net.ipv4.tcp_congestion_control=bbr >/dev/null 2>&1 || true
+    sysctl -w net.ipv4.tcp_fastopen=3 >/dev/null 2>&1 || true
+
+    # 4. Launch Native Rust Sentinel Daemon via procd (if binary installed)
+    if [ -x "$PROG_SENTINEL" ]; then
+        procd_open_instance "sentinel"
+        procd_set_param command taskset -c 1 "$PROG_SENTINEL"
+        procd_set_param respawn 3600 5 0
+        procd_set_param stdout 1
+        procd_set_param stderr 1
+        procd_set_param limits core="0:0" as="130000000:130000000"
+        procd_close_instance
+    fi
+
+    # 5. Launch Embedded TinyLM Engine (if model & binary installed)
+    if [ -x "$PROG_LLAMA" ] && [ -f "$MODEL_PATH" ]; then
+        procd_open_instance "tinylm"
+        procd_set_param command taskset -c 1 "$PROG_LLAMA" --model "$MODEL_PATH" --port 8082 --threads 1 --ctx-size 512
+        procd_set_param respawn 3600 5 0
+        procd_set_param stdout 1
+        procd_set_param stderr 1
+        procd_set_param limits core="0:0" as="130000000:130000000"
+        procd_close_instance
+    fi
+}
+
+stop_service() {
+    # Clean up volatile IPC sockets
+    rm -rf /tmp/run/ai_supervisor/ipc/*.sock 2>/dev/null || true
+}
+
+service_triggers() {
+    procd_add_reload_trigger "network" "firewall" "tailscale"
+}

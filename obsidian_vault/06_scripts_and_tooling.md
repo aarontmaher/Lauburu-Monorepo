@@ -19,7 +19,7 @@ Houses battle-tested automation scripts, network self-healing sequences, remote 
 4. **Expect Script Automation (`06_scripts_and_tooling/exp/`):**
    - Non-interactive SSH, Samba, and ADB connection handlers for headless environments.
 5. **Global Storage Automations:**
-   - `global_mesh_mount.sh` script establishing automated SeaweedFS POSIX FUSE mounts and SMB shares.
+   - `global_mesh_mount.sh`: Canonical Gen 31 multi-node storage orchestrator establishing verified SeaweedFS POSIX FUSE mounts (`weed mount`) on Linux nodes (L3, L8), APFS master validation on L1, and authenticated WebDAV (`rclone`) on macOS and Android Termux edge devices (L5, L6, L7, GW). Supports `--mount`, `--status`, and single-node targeting. See [[CANONICAL_NETWORK_STORAGE_STRUCTURE]].
 
 ## 🤖 Assigned Subsystem Specialist AI
 - **Specialist Agent:** `spec-06-tooling-healing`

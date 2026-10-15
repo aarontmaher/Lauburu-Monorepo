@@ -17,7 +17,7 @@ consensus_score: "0.997"
 | Persona | Identity | Core Architectural Thesis |
 | :--- | :--- | :--- |
 | **Local AI Orchestrator** | `Qwen 3.8 Max (Apple Silicon Lead)` | "On Apple Silicon (M4 Pro / M-Series), PyTorch MPS is legacy overhead. Apple MLX provides native unified memory zero-copy LoRA training (3x faster, 45% less RAM), while prima.cpp eliminates Python inference jitter entirely." |
-| **Devil's Advocate** | `Qwen 3.8 Max Abliterated` | "MLX is strictly Apple-only and cannot run on Layer 3 (Linux AMD Ryzen) or Layer 6 (Android Tensor G5). Discarding PyTorch breaks cross-platform training parity, and dropping PySpark risks lakehouse standard incompatibility." |
+| **Devil's Advocate** | `Qwen 3.8 Max Abliterated` | "MLX is strictly Apple-only and cannot run on Layer 3 (Linux Intel 2018 Mac Mini) or Layer 6 (Android Tensor G5). Discarding PyTorch breaks cross-platform training parity, and dropping PySpark risks lakehouse standard incompatibility." |
 | **Cloud Shadow Orchestrator** | `Gemini 3.7 Flash High` | "The solution is a **Specialized Tiered Decoupling**: MLX for Apple Silicon local LoRA fine-tuning, prima.cpp for zero-latency ring inference, Polars/DuckDB for local data indexing, while retaining PyTorch/TRL as the heterogeneous cluster fallback." |
 
 ---
@@ -29,7 +29,7 @@ consensus_score: "0.997"
   1. Operates directly on contiguous unified memory with zero-copy Metal array buffers.
   2. Uses lazy evaluation and optimized Metal fused kernels for multi-head attention.
   3. Delivers **2.4x–3.8x higher throughput** during LoRA fine-tuning with **~45% lower peak memory usage**.
-- **Devil's Advocate Objection:** How do we train models on Layer 3 (AMD Ryzen Linux) if we adopt MLX?
+- **Devil's Advocate Objection:** How do we train models on Layer 3 (Intel 2018 Mac Mini Linux) if we adopt MLX?
 - **Consensus Accord:** Adopt **MLX as the Tier-1 Primary Training Engine on Apple Nodes (L1, L2, L5)** where 56 GB of our 82.8 GB VRAM resides. Use **PyTorch (`peft`/`trl`) strictly as the fallback on Linux/Android nodes (L3, L4, L6, L7)**.
 
 ### Deliberation 2: Python Inference vs. prima.cpp / GGML (C++/Metal)
@@ -69,7 +69,7 @@ consensus_score: "0.997"
 │                        RATIFIED LAUBURU AI & DATA ENGINE SPECIFICATION                                 │
 ├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 1. 24/7 CONTINUOUS LORA TRAINING ENGINE:                                                               │
-│    • Apple Silicon Nodes (L1 Mac Mini, L2 MacBook Pro, L5 MacBook Air): APPLE MLX (mlx_lm.lora).       │
+│    • Apple Silicon Nodes (L1 Mac Mini, L2 MacBook Pro, L2 MacBook Pro): APPLE MLX (mlx_lm.lora).       │
 │    • Heterogeneous Linux/Android Nodes (L3, L4, L6): PyTorch + HuggingFace TRL (peft / accelerate).    │
 ├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 2. ZERO-LATENCY DISTRIBUTED INFERENCE ENGINE:                                                          │

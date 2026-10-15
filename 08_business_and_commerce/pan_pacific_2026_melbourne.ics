@@ -1,0 +1,26 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Lauburu Monorepo//Pan Pacific 2026//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:pan-pacific-2026-aaron-maher-1807297@lauburugrappling.com
+DTSTAMP:20261001T070000Z
+DTSTART;TZID=Australia/Melbourne:20261016T080000
+DTEND;TZID=Australia/Melbourne:20261016T180000
+SUMMARY:Pan Pacific IBJJF Jiu-Jitsu No-Gi Championship 2026 (Black Belt Adult 67.5kg)
+DESCRIPTION:Pan Pacific IBJJF Jiu-Jitsu No-Gi Championship 2026\nAthlete: Aaron Thomas Maher\nAcademy: Absolute MMA Australia\nBelt: Black Belt\nDivision: Male / Adult / Featherweight (67.50 kg / 148.8 lbs max in No-Gi uniform)\nRegistration ID: 1807297\nWeigh-in: Conducted immediately before the first match in full competition attire (single attempt).\nRegistration link: https://app.ibjjfdb.com/athletes/championships/registrations/1807297
+LOCATION:Melbourne Sports and Aquatics Centre - Stadium 5, 30 Aughtie Dr, Albert Park VIC 3206, Australia
+STATUS:CONFIRMED
+BEGIN:VALARM
+TRIGGER:-PT24H
+ACTION:DISPLAY
+DESCRIPTION:Reminder: Pan Pacific No-Gi Weigh-in tomorrow! Target weight: 67.50 kg in uniform.
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT2H
+ACTION:DISPLAY
+DESCRIPTION:Pan Pacific No-Gi: Matches starting soon at MSAC Stadium 5.
+END:VALARM
+END:VEVENT
+END:VCALENDAR

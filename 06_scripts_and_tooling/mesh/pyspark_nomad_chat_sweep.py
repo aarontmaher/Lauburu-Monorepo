@@ -29,7 +29,7 @@ logging.basicConfig(
 logger = logging.getLogger("nomad_chat_sweep")
 
 BRAIN_DIR = Path.home() / ".gemini" / "antigravity" / "brain"
-MONOREPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+MONOREPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 DATA_DIR = MONOREPO_ROOT / "data" / "network"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 REPORT_FILE = DATA_DIR / "chat_sweep_report.json"

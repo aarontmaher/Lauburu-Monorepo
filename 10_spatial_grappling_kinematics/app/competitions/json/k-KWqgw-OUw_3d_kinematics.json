@@ -1,0 +1,26 @@
+{
+  "video_id": "k-KWqgw-OUw",
+  "url": "https://youtu.be/k-KWqgw-OUw",
+  "division": "Professional Grappling",
+  "title": "Subversion - Aaron Maher vs Tony Lo",
+  "duration_sec": 304.9,
+  "resolution": "144x254",
+  "sampled_frames": 36,
+  "poses_detected_frames": 24,
+  "dual_athlete_frames": 7,
+  "standing_phase_pct": 33.3,
+  "ground_scramble_phase_pct": 66.7,
+  "level_change_shots_detected": 7,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 46.8,
+    "left_elbow": 114.7,
+    "right_elbow": 124.3,
+    "left_hip": 113.8,
+    "right_hip": 110.9,
+    "left_knee": 116.8,
+    "right_knee": 103.2
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/k-KWqgw-OUw_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match involves a combination of subversion, with a significant amount of time spent on ground/scramble, which requires a strong balance and stability. The match also showcases a high level of change shots, indicating a high level of agility and quick reflexes. The mean spine lean and elbow flexion and knee flexion are all indicative of a well-tuned and balanced grappling style.",
+  "processing_sec": 2.4
+}

@@ -1,0 +1,10 @@
+{
+  "customer_id": "cust_aaron_sovereign_01",
+  "email": "aaron@lauburu.ai",
+  "name": "Aaron Maher",
+  "tier_id": "mesh_gym_master",
+  "override_active": false,
+  "subscribed_since": "2026-01-15T00:00:00Z",
+  "last_webhook_topic": "orders/paid",
+  "last_updated": "2026-09-05T22:54:42Z"
+}

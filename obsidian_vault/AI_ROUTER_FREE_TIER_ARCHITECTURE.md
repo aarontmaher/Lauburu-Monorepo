@@ -20,7 +20,7 @@ It establishes a deterministic multi-tier routing cascade that prioritizes free-
 │                    LAUBURU AI ROUTING PRIORITY MATRIX                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ TIER 0: LOCAL HARDWARE MESH (0ms Egress, $0.00 Cost, Infinite Quota)       │
-│ • llama.cpp RPC Mesh: Ports 8081-8084 sharded across TB4 10Gbps Bridge     │
+│ • llama.cpp RPC Mesh: Ports 8081-8084 sharded across TB4 40Gbps Bridge     │
 │ • Models: Kimi-88B Tandem, Qwen-27B, Mistral-Nemo-12B, Llama-3.1-8B       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ TIER 1: FREE CLOUD QUOTAS ($0.00 Cost, Rate-Limit Governed)                 │
@@ -75,13 +75,13 @@ During the AI Debate Protocol, the real abliterated model (**Llama-3.1-8B-Ablite
 | **Silent API Throttling** | Cloud providers degrading latency under load | Continuous latency tracking headers (`X-Lauburu-Latency-Ms`) and dynamic re-routing. |
 | **Data & Secret Leaks** | API keys persisted in transaction ledgers | Ephemeral header forwarding (`x-goog-api-key`, `Authorization`) without storing secrets. |
 | **Cascading Downstream Crashes** | Cloud provider outages bringing down mesh | Decentralized survival matrix; if all cloud links fail, local mesh operates 100% offline. |
-| **Opaque Black Boxes** | Model behavioral drift | Every interaction serialized to `/Users/aaron/DFS_UNIFIED/lora_datasets/api_interactions.jsonl` for continuous audit. |
+| **Opaque Black Boxes** | Model behavioral drift | Every interaction serialized to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/api_interactions.jsonl` for continuous audit. |
 
 ---
 
 ## 🔄 5. Continuous LoRA Dataset Harvesting & Tri-Vault Sync
 All transactions through the AI router (free and paid) generate structured instruction/response pairs logged to:
-- `/Users/aaron/DFS_UNIFIED/lora_datasets/api_interactions.jsonl`
+- `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/api_interactions.jsonl`
 - Synchronized to the PySpark Big Data Lake and Obsidian Knowledge Graph for 24/7 continuous distillation.
 
 ---

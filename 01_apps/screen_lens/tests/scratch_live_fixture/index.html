@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta charset="UTF-8">
+  <title>Live Screen Lens Console</title>
+</head>
+<body style="margin: 0; background: #0f172a; color: #f8fafc; font-family: sans-serif;">
+  <div class="header">
+    <h1>Lauburu Sovereign Console</h1>
+  </div>
+  
+  <!-- DEFECT 3: Unhandled Crash Toast -->
+  <div class="status-banner online">
+    Lauburu Sensor Ready (Probing BLE Movesense)
+  </div>
+
+  <!-- DEFECT 1: Rigid Desktop Width Overflows Container -->
+  <div class="telemetry-card" style="max-width: 100%; width: 100%; padding: 16px; background: #1e293b;">
+    <h2>Movesense 512Hz ECG Telemetry</h2>
+    
+    <!-- DEFECT 2: Mock -- BPM instead of authentic waiting state -->
+    <div class="metric">Heart Rate: <span id="hr">-- BPM</span></div>
+    <div class="metric">Channel RTT: <span id="rtt">-- ms</span></div>
+  </div>
+</body>
+</html>

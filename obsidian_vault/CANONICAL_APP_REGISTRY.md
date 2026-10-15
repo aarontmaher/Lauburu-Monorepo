@@ -49,3 +49,11 @@ It enforces **Spec-09 App Store Production Readiness** and **Mandatory Local AI 
 | **user_facing_and_scaling** | Python | 25% | ❌ No | No README, No Local AI Integration |
 | **spatial_grappling_3d** | Python | 20% | ❌ No | No README, No Local AI Integration, Raw prints found |
 | **pixel_app_reverse_engineer** | Python | 20% | ❌ No | No README, No Local AI Integration, Raw prints found |
+| **terminal_ide_lauburu** | Rust / Python | 85% | 🧠 Yes (Qwen/GGUF) | Ready for Production ✅ (Rule 9 Identifier-First) |
+| **combat_lab_lauburu** | Flutter / Dart | 80% | 🧠 Yes (Qwen/GGUF) | Ready for Production ✅ (Rule 9 Identifier-First) |
+| **keyring_finder_lauburu** | Flutter / Kotlin | 80% | 🧠 Yes (Qwen/GGUF) | Ready for Production ✅ (Rule 9 Identifier-First) |
+| **movesense_terminal_flutter** | Flutter / Rust | 85% | 🧠 Yes (Qwen/GGUF) | Ready for Production ✅ (Rule 9 Identifier-First) |
+| **movesense_biometrics_dashboard** | Next.js / React | 80% | 🧠 Yes (Qwen/GGUF) | Ready for Production ✅ (Rule 9 Identifier-First) |
+| **meditation_lauburu** | Flutter / Dart | 80% | 🧠 Yes (Qwen/GGUF) | Ready for Production ✅ (Rule 9 Identifier-First) |
+| **tinylm_lauburu** | C11 / Python | 85% | 🧠 Yes (Qwen/GGUF) | Ready for Production ✅ (Rule 9 Identifier-First) |
+| **all_in_one_messenger_lauburu** | Flutter / Dart | 80% | 🧠 Yes (Qwen/GGUF) | Ready for Production ✅ (Rule 9 Identifier-First) |

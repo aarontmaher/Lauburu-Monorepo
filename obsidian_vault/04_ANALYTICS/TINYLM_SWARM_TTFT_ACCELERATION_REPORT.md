@@ -1,7 +1,7 @@
 ---
 title: "TinyLM Swarm Speculative Decoding & TTFT Acceleration Report"
 tags: [tinylm_swarm, speculative_decoding, ttft_acceleration, smollm, qwen, phi, llama, deepseek, mistral, kimi]
-updated: "2026-09-04 07:25:23"
+updated: "2026-10-01 14:57:47"
 ---
 
 # ⚡ TinyLM Swarm Speculative Decoding & TTFT Acceleration
@@ -22,9 +22,9 @@ updated: "2026-09-04 07:25:23"
 
 ## 📊 2. Live Acceleration & Savings Telemetry
 
-- **Total Speculative Runs:** `8` passes
-- **Tokens Saved via Kimi Context Pruning:** `4` tokens eliminated
-- **Speculative Tokens Accepted:** `32` draft tokens validated in parallel
+- **Total Speculative Runs:** `9` passes
+- **Tokens Saved via Kimi Context Pruning:** `24` tokens eliminated
+- **Speculative Tokens Accepted:** `36` draft tokens validated in parallel
 - **Average TTFT Speedup:** `~3.1x` faster initial token rendering
 - **Draft Acceptance Rate:** `81.2%` accuracy match
 

@@ -11,7 +11,7 @@ tags: [speculative_decoding, npu, gpu, tree_attention, heterogeneous_mesh, qwen_
 **YES, exceptionally well.**  
 By combining them via **Tree-Speculative Decoding (Tree Attention)**, the NPU and GPU draft distinct, complementary candidate branches concurrently:
 - **NPU (Pixel 10 Pro XL Tensor G5 / ANE @ 120 tok/s):** Drafts Candidate Branch A (low-latency syntactic flow & vision tokens).
-- **Metal GPU (MacBook Air M4 @ 85 tok/s):** Drafts Candidate Branch B (deeper semantic & code reasoning).
+- **Metal GPU (MacBook Pro (Node L2) @ 85 tok/s):** Drafts Candidate Branch B (deeper semantic & code reasoning).
 - **Master 80B MoE (Mac Mini + MBP TB4 Ring):** Verifies the entire candidate tree in a **single parallel forward pass**.
 - **Result:** Acceptance rate surges from **$\sim 72\%$** (single sequence) to **$\mathbf{91.0\%}$** (tree candidates), yielding **$\ge 4.5$ accepted tokens per step**.
 
@@ -30,7 +30,7 @@ By combining them via **Tree-Speculative Decoding (Tree Attention)**, the NPU an
 │                                           │                                                      │
 │                       ┌───────────────────┴───────────────────┐                                  │
 │                       ▼                                       ▼                                  │
-│  📱 LAYER 6: Tensor G5 TPU (NPU)               💻 LAYER 5: MacBook Air M4 (GPU)                  │
+│  📱 LAYER 6: Tensor G5 TPU (NPU)               💻 LAYER 5: MacBook Pro (Node L2) (GPU)                  │
 │     • Fast Syntax / Vision Draft                     • Semantic / Reasoning Draft                │
 │     • 120 tokens/sec                                 • 85 tokens/sec                             │
 │     • Candidate Branch A                             • Candidate Branch B                        │

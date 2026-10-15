@@ -36,17 +36,28 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if not (REPO_ROOT / "06_scripts_and_tooling").exists():
+    for _cand in [Path("/Volumes/Lauburu-Monorepo"), Path("/Volumes/Lauburu-Monorepo")]:
+        if _cand.exists():
+            REPO_ROOT = _cand
+            break
 OBSIDIAN_VAULT = REPO_ROOT / "obsidian_vault"
 DATA_LAKE = REPO_ROOT / "04_data_and_memory"
-LORA_DATASET = Path("/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl")
+LORA_DATASET = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl")
 EXECUTION_LOG = DATA_LAKE / "data/speculative_cli_executions.jsonl"
 USER_ENV = Path.home() / ".env"
 MONO_ENV = REPO_ROOT / ".env"
 KEY_MANAGER_SCRIPT = REPO_ROOT / "06_scripts_and_tooling/lauburu_key_manager.py"
+UNIFIED_SCREEN_LENS = REPO_ROOT / "06_scripts_and_tooling/automation/unified_screen_lens.py"
+VERIFY_PROBES_SCRIPT = REPO_ROOT / "06_scripts_and_tooling/network/verify_probes.py"
+RESURRECT_SCRIPT = REPO_ROOT / "06_scripts_and_tooling/network/canonical_network_resurrection_engine.py"
+GEMINI_TELEMETRY_TRAINER = REPO_ROOT / "06_scripts_and_tooling/training/lens_gemini_telemetry_trainer.py"
+MESH_STORAGE_ORCHESTRATOR = REPO_ROOT / "06_scripts_and_tooling/storage/mesh_storage_and_syncthing_orchestrator.py"
+MESH_BOOT_PROVISIONER = REPO_ROOT / "06_scripts_and_tooling/automation/mesh_agy_gemini_boot_provisioner.py"
 
 PORT_SYNTAX = 8081  # Qwen 2.5 Coder
-PORT_MASTER = 8082  # Qwen 3.8 Max Sovereign Master
+PORT_MASTER = 8082  # Qwen 3.8 Max 27B Abliterated (Sovereign Master Local Orchestrator & Default Model)
 
 
 # -----------------------------------------------------------------------------
@@ -102,33 +113,260 @@ class SpeculativeCommandDrafter:
     """Speculatively generates and ranks candidate CLI commands before execution."""
 
     DANGEROUS_PATTERNS = [
-        r"\brm\s+-[rf]{1,2}\s+/\b",
-        r"\brm\s+-[rf]{1,2}\s+\*\b",
-        r"\bmkfs\b",
-        r"\bdd\s+if=.*of=/dev/sd[a-z]\b",
-        r"\b:()\s*\{\s*:\s*\|\s*:\s*&\s*\}\s*;\s*:\b",  # fork bomb
-        r">/dev/sda\b",
-        r"\bchmod\s+-R\s+777\s+/\b",
+        r"\brm\s+(?:-[rf]{1,2}\s+|-[rf]\s+-[rf]\s+|--no-preserve-root\s+)+/\*?(?:\s|$)",
+        r"\brm\s+(?:-[rf]{1,2}\s+|-[rf]\s+-[rf]\s+)+\*(?:\s|$)",
+        r"\bmkfs(?:\.[a-z0-9]+)?\b",
+        r"\bdd\s+if=.*of=/dev/(?:sd[a-z]|r?disk\d+|nvme\w+)\b",
+        r":\(\)\s*\{\s*:\s*\|\s*:\s*&\s*\}\s*;\s*:",  # fork bomb
+        r">\s*/dev/(?:sd[a-z]|r?disk\d+|nvme\w+)\b",
+        r"\bchmod\s+-R\s+777\s+/\*?(?:\s|$)",
     ]
 
     COMMON_SPECULATIVE_MAPPINGS = {
         "network status": "lauburu-network --test",
         "network test": "lauburu-network --test",
+        "network health": "lauburu-network --test",
         "mesh topology": "lauburu-network --tree",
         "network topology": "lauburu-network --tree",
         "network tree": "lauburu-network --tree",
         "network json": "lauburu-network --json",
+        "verify probes": f"python3 {VERIFY_PROBES_SCRIPT}",
+        "mesh probes": f"python3 {VERIFY_PROBES_SCRIPT}",
+        "hardware probes": f"python3 {VERIFY_PROBES_SCRIPT}",
+        "resurrect": f"python3 {RESURRECT_SCRIPT} --probe-only",
+        "resurrect mesh": f"python3 {RESURRECT_SCRIPT}",
+        "resurrect network": f"python3 {RESURRECT_SCRIPT}",
+        "train": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "continuous training": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "run continuous training": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "run continuous training of lauburu-lens-argon:latest": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "continuous training of lauburu-lens-argon:latest": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "train lauburu-lens-argon:latest": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "train lauburu-lens-argon": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "lauburu-lens-argon:latest": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "lauburu-lens-argon": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "training status": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --status",
+        "train status": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --status",
+        "train gemini telemetry": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "gemini telemetry training": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "train argontelemetry": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "argontelemetry": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "gemini argontelemetry": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "train local ai": f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+        "storage topology": f"python3 {MESH_STORAGE_ORCHESTRATOR} --status",
+        "storage matrix": f"python3 {MESH_STORAGE_ORCHESTRATOR} --status",
+        "model vault": f"python3 {MESH_STORAGE_ORCHESTRATOR} --status",
+        "sync storage": f"python3 {MESH_STORAGE_ORCHESTRATOR} --sync",
+        "syncthing": f"python3 {MESH_STORAGE_ORCHESTRATOR} --sync",
+        "federate storage": f"python3 {MESH_STORAGE_ORCHESTRATOR} --sync",
         "app list": "lauburu-apps --tree",
         "app tree": "lauburu-apps --tree",
         "app test": "lauburu-apps --test",
         "monitor tui": "lauburu-monitor",
-        "storage health": "python3 -c \"import shutil; print(f'Free: {shutil.disk_usage('/Users/aaron').free / 1073741824:.2f} GB')\"",
+        "status": "lauburu-network --test",
+        "network": "lauburu-network --test",
+        "heal": "heal",
+        "heal mesh": "heal",
+        "heal network": "heal",
+        "heal network health": "heal",
+        "network heal": "heal",
+        "network healing": "heal",
+        "self heal": "heal",
+        "kde heal": "kde heal",
+        "kde": "kde",
+        "automate": f"python3 {UNIFIED_SCREEN_LENS} mesh exec 'uname -n && uptime'",
+        "automate network": f"python3 {UNIFIED_SCREEN_LENS} mesh exec 'uname -n && uptime'",
+        "automate across network": f"python3 {UNIFIED_SCREEN_LENS} mesh exec 'uname -n && uptime'",
+        "automate across the network": f"python3 {UNIFIED_SCREEN_LENS} mesh exec 'uname -n && uptime'",
+        "network automation": f"python3 {UNIFIED_SCREEN_LENS} mesh exec 'uname -n && uptime'",
+        "mesh automation": f"python3 {UNIFIED_SCREEN_LENS} mesh exec 'uname -n && uptime'",
+        "mesh exec": f"python3 {UNIFIED_SCREEN_LENS} mesh exec 'uname -n && uptime'",
+        "storage": f"python3 {MESH_STORAGE_ORCHESTRATOR} --status",
+        "storage health": f"python3 {MESH_STORAGE_ORCHESTRATOR} --status",
+        "ram": "vm_stat",
         "ram status": "vm_stat",
         "key audit": f"python3 {KEY_MANAGER_SCRIPT} --audit",
         "api key": f"python3 {KEY_MANAGER_SCRIPT} --audit",
         "trainer eval": f"DEVELOPER_DIR=/Library/Developer/CommandLineTools {REPO_ROOT}/05_agents_and_swarms/continuous_polyglot_go_trainer/continuous_polyglot_go_trainer --eval-once",
         "git status": "git status --short",
         "git branch": "git branch -a",
+        # Mesh GUI & Sovereign Dashboard
+        "mesh gui": "mesh_gui",
+        "mesh_gui": "mesh_gui",
+        "mesh-gui": "mesh_gui",
+        "meshgui": "mesh_gui",
+        "mesh dashboard": "mesh_gui",
+        "open mesh gui": "mesh_gui",
+        "mesh hud": "mesh_gui",
+        "mesh top": "mesh_gui --tui",
+        "mesh status": "mesh_gui --status",
+        # Speedify / Channel Bonding Engine
+        "speedify e2e": "rust_bonding_engine test-e2e --payload-size-mb 5",
+        "speedify test": "rust_bonding_engine test-e2e --payload-size-mb 5",
+        "speedify": "rust_bonding_engine test-e2e --payload-size-mb 5",
+        "automate speedify": "rust_bonding_engine test-e2e --payload-size-mb 5",
+        "bonding test": "rust_bonding_engine test-e2e --payload-size-mb 5",
+        "bond test": "rust_bonding_engine test-e2e --payload-size-mb 5",
+        "channel bonding": "rust_bonding_engine test-e2e --payload-size-mb 5",
+        "speedify status": "rust_bonding_engine interfaces",
+        "speedify interfaces": "rust_bonding_engine interfaces",
+        "bond interfaces": "rust_bonding_engine interfaces",
+        "bond status": "rust_bonding_engine interfaces",
+        "inspect all physical bondable network interfaces": "rust_bonding_engine interfaces",
+        "route traffic through bonded connection": "curl -x socks5://127.0.0.1:1080 https://speed.cloudflare.com/__down?bytes=25000000 -o /dev/null",
+        "start bond client": "rust_bonding_engine client --target 127.0.0.1 --port 18804 --socks5-bind 127.0.0.1:1080",
+        "start bond server": "rust_bonding_engine server --port 18804 --bind 0.0.0.0",
+        # Screen Lens Sovereign Terminal Controller
+        "screen lens": "screen-lens status",
+        "screen-lens": "screen-lens status",
+        "screen lens status": "screen-lens status",
+        "screen-lens status": "screen-lens status",
+        "lens status": "screen-lens status",
+        "captures": "screen-lens latest",
+        "screen captures": "screen-lens latest",
+        "latest captures": "screen-lens latest",
+        "latest screen captures": "screen-lens latest",
+        "ocr": "screen-lens latest",
+        "ocr summary": "screen-lens latest",
+        "screen lens start": "screen-lens start",
+        "screen lens stop": "screen-lens stop",
+        "screen lens restart": "screen-lens restart",
+        # AGY, Gemini CLI, Dependencies & Start-on-Boot Provisioning
+        "configure agy and gemini": f"python3 {MESH_BOOT_PROVISIONER} --provision",
+        "configure agy": f"python3 {MESH_BOOT_PROVISIONER} --provision",
+        "configure gemini": f"python3 {MESH_BOOT_PROVISIONER} --provision",
+        "configure dependencies": f"python3 {MESH_BOOT_PROVISIONER} --provision",
+        "provision mesh": f"python3 {MESH_BOOT_PROVISIONER} --provision",
+        "audit dependencies": f"python3 {MESH_BOOT_PROVISIONER} --status",
+        "boot services": f"python3 {MESH_BOOT_PROVISIONER} --status",
+        "start on boot": f"python3 {MESH_BOOT_PROVISIONER} --status",
+        "agy status": f"python3 {MESH_BOOT_PROVISIONER} --status",
+        "gemini status": f"python3 {MESH_BOOT_PROVISIONER} --status",
+        "setup models": f"python3 {MESH_BOOT_PROVISIONER} --models",
+        "set up my models": f"python3 {MESH_BOOT_PROVISIONER} --models",
+        "set up models": f"python3 {MESH_BOOT_PROVISIONER} --models",
+        "models": f"python3 {MESH_BOOT_PROVISIONER} --models",
+        "page assist": f"python3 {MESH_BOOT_PROVISIONER} --models",
+        "ollama bridge": f"python3 {MESH_BOOT_PROVISIONER} --models",
+        # Neo4j Sovereign Graph + EmbeddingGemma 2 MRL RAG + Root Orchestrator
+        "neo4j": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py status",
+        "neo4j status": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py status",
+        "neo4j schema": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py schema",
+        "neo4j seed": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py seed",
+        "embeddinggemma": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py status",
+        "embeddinggemma 2": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py status",
+        "gemma 2": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py status",
+        "gemma2": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py status",
+        "root status": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py root --target all 'id'",
+        "root mesh": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py root --target all 'id'",
+        # Sovereign Unified System: Podman Storage, 4-Stage Self-Healing, Memory, Py-Pi, Protocols, IDE, Benchmark & Review
+        "podman storage": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py podman-storage",
+        "podman-storage": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py podman-storage",
+        "rooted podman": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py podman-storage",
+        "podman spec": f"python3 {MESH_STORAGE_ORCHESTRATOR} --podman-spec",
+        "heal cascade": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py heal-cascade",
+        "heal-cascade": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py heal-cascade",
+        "self healing cascade": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py heal-cascade",
+        "bluetooth serial to kdeconnect ssh": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py heal-cascade",
+        "bluetooth serial terminal": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py heal-cascade",
+        "bluetooth pan": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py heal-cascade",
+        "wol ethernet": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py heal-cascade",
+        "kdeconnect ssh": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py heal-cascade",
+        "memory": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py memory",
+        "cognitive memory": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py memory",
+        "memory architecture": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py memory",
+        "accounts": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py accounts",
+        "dual accounts": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py accounts",
+        "google workspace": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py accounts",
+        "py-pi": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py py-pi",
+        "pypi": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py py-pi",
+        "python companion": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py py-pi",
+        "python model": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py py-pi",
+        "deps": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py deps",
+        "dependencies": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py deps",
+        "protocols": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py protocols",
+        "sharding": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py sharding",
+        "sharding protocols": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py sharding",
+        "training protocols": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py protocols",
+        "ide": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py ide",
+        "integrate ides": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py integrate-ides",
+        "integrate-ides": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py integrate-ides",
+        "goland pycharm intellij": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py ide",
+        "cockpit": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py ide",
+        "benchmark network": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py benchmark-network",
+        "benchmark-network": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py benchmark-network",
+        "docker cloudflare vs tailscale": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py benchmark-network",
+        "cloudflare vs tailscale": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py benchmark-network",
+        "review project": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py review-project",
+        "review-project": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py review-project",
+        "what have i forgotten": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py review-project",
+        "overview": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py overview",
+        "debate": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py debate",
+        "ai debate": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py debate",
+        "ai-debate": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py debate",
+        "vla": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py vla",
+        "qwen 3d vla": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py vla",
+        "audit code": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py audit-code",
+        "audit-code": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py audit-code",
+        "coding telemetry": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py audit-code",
+        "elo": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py elo",
+        "elo benchmark": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py elo",
+        "self optimize": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py self-optimize",
+        "self-optimize": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py self-optimize",
+        "download model": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py download-model",
+        "download-model": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py download-model",
+        "download models": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py download-model",
+        "benchmark 70b": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py benchmark-70b-100b",
+        "benchmark 100b": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py benchmark-70b-100b",
+        "benchmark 70b 100b": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py benchmark-70b-100b",
+        "benchmark-70b-100b": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py benchmark-70b-100b",
+        "benchmark-heavy": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py benchmark-70b-100b",
+        # 24/7 Lens + Qwen 3D + Gemma 2 + Root/Shizuku/rish + Scrcpy 5.0 + Page Assist Automation Training Protocol
+        "automate-247": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py automate-247",
+        "automation-protocol": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py automate-247",
+        "24/7 lens automation training protocol": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py automate-247",
+        "run a 24/7 lens automation training protocol": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py automate-247",
+        "lens automation training protocol": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py automate-247",
+        "scrcpy 5.0": f"python3 {REPO_ROOT}/06_scripts_and_tooling/automation/smart_scrcpy_wrapper.py --scrcpy-5-status",
+        "deploy-network": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py deploy-network",
+        "deploy network": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py deploy-network",
+        "sync-network": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py deploy-network",
+        "sync network": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py deploy-network",
+        "fully configure the plan across the full network": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py deploy-network",
+        "configure across the full network": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py deploy-network",
+        "heal s20": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py heal-s20",
+        "heal-s20": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py heal-s20",
+        "movesense gatt": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py movesense-gatt",
+        "movesense-gatt": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py movesense-gatt",
+        "voice coder": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py voice-coder",
+        "voice-coder": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py voice-coder",
+        "junie mesh": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py junie-mesh",
+        "junie-mesh": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py junie-mesh",
+        # Polyglot Specialist IDE & Runtime Integration (GoLand/langgo, PyCharm, IntelliJ, Chromium, BT Serial)
+        "specialists": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists",
+        "specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists",
+        "polyglot specialists": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists",
+        "polyglot-specialists": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists",
+        "ide-specialists": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists",
+        "integrate-specialists": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists",
+        "langgo": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target langgo",
+        "goland": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target goland",
+        "pycharm": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target pycharm",
+        "intellij": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target intellij",
+        "chromium": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target chromium",
+        "bt-serial": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target bt-serial",
+        "polyglot-go-bubbletea-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target langgo",
+        "/polyglot-go-bubbletea-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target langgo",
+        "polyglot-python-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target pycharm",
+        "/polyglot-python-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target pycharm",
+        "polyglot-kotlin-android-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target intellij",
+        "/polyglot-kotlin-android-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target intellij",
+        "polyglot-c-cpp-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target bt-serial",
+        "/polyglot-c-cpp-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target bt-serial",
+        "polyglot-rust-wgpu-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target chromium",
+        "/polyglot-rust-wgpu-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target chromium",
+        "polyglot-typescript-web-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target chromium",
+        "/polyglot-typescript-web-specialist": f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target chromium",
     }
 
     def __init__(self, fallback_port: int = PORT_SYNTAX):
@@ -148,91 +386,262 @@ class SpeculativeCommandDrafter:
             return "CAUTION", "File or resource deletion operation"
         return "SAFE", "Standard non-destructive command"
 
+    def _create_draft(self, raw_prompt: str, cmd_str: str, rationale: str, t0: float) -> SpeculativeCommandDraft:
+        try:
+            parts = shlex.split(cmd_str)
+        except ValueError:
+            parts = cmd_str.split()
+        safety, safety_rat = self.validate_safety(cmd_str)
+        latency = round((time.perf_counter() - t0) * 1000, 2)
+        return SpeculativeCommandDraft(
+            raw_prompt=raw_prompt,
+            speculative_command=parts[0],
+            suggested_args=parts[1:],
+            confidence_score=0.98,
+            safety_rating=safety,
+            rationale=f"{rationale} ({safety_rat})",
+            latency_ms=latency,
+            drafter_model="Fast-Deterministic-AST",
+        )
+
     def draft(self, user_intent: str) -> SpeculativeCommandDraft:
         t0 = time.perf_counter()
-        cleaned_intent = user_intent.strip().lower()
+        
+        # Clean leading comments, markdown bullets, numberings, or prompt prefix
+        raw_cleaned = re.sub(r"^[\s#\d\.\-\*•:]+", "", user_intent).strip()
+        cleaned_intent = raw_cleaned.lower()
+
+        # Handle explicit comments or empty intents
+        if user_intent.strip().startswith("#") or not cleaned_intent:
+            return SpeculativeCommandDraft(
+                raw_prompt=user_intent,
+                speculative_command="echo",
+                suggested_args=["[Ignored shell comment]"],
+                confidence_score=1.0,
+                safety_rating="SAFE",
+                rationale="Ignored shell comment line",
+                latency_ms=round((time.perf_counter() - t0) * 1000, 2),
+                drafter_model="Fast-Deterministic-AST",
+            )
+
+        # Handle SSH shorthand: user@host or root@ip
+        if re.match(r"^[a-zA-Z0-9_\-]+@[a-zA-Z0-9_\-\.]+$", user_intent.strip()):
+            ssh_target = user_intent.strip()
+            return self._create_draft(user_intent, f"ssh {ssh_target}", f"Auto-translated SSH shorthand '{ssh_target}' to 'ssh {ssh_target}'", t0)
 
         # 1. Fast speculative deterministic match (<0.1ms)
-        for key, cmd in self.COMMON_SPECULATIVE_MAPPINGS.items():
-            if key in cleaned_intent or cleaned_intent in key:
-                try:
-                    parts = shlex.split(cmd)
-                except ValueError:
-                    parts = cmd.split()
-                safety, rationale = self.validate_safety(cmd)
-                latency = round((time.perf_counter() - t0) * 1000, 2)
-                return SpeculativeCommandDraft(
-                    raw_prompt=user_intent,
-                    speculative_command=parts[0],
-                    suggested_args=parts[1:],
-                    confidence_score=0.98,
-                    safety_rating=safety,
-                    rationale=f"Deterministic high-confidence mapping for '{key}'",
-                    latency_ms=latency,
-                    drafter_model="Fast-Deterministic-AST",
+        # Phase 1: Exact match
+        if cleaned_intent in self.COMMON_SPECULATIVE_MAPPINGS:
+            cmd = self.COMMON_SPECULATIVE_MAPPINGS[cleaned_intent]
+            return self._create_draft(user_intent, cmd, f"Deterministic exact mapping for '{cleaned_intent}'", t0)
+
+        # Priority composite intent check for Polyglot Specialist IDE & Runtime Integration
+        if any(
+            w in cleaned_intent
+            for w in [
+                "polyglot-go-bubbletea-specialist",
+                "polyglot-kotlin-android-specialist",
+                "polyglot-c-cpp-specialist",
+                "polyglot-python-specialist",
+                "polyglot-rust-wgpu-specialist",
+                "polyglot-typescript-web-specialist",
+                "polyglot specialist",
+                "specialist skill",
+                "langgo",
+            ]
+        ) and not any(w in cleaned_intent for w in ["automate-247", "automation-protocol", "/boost", "teamwork-preview"]):
+            target_arg = "all"
+            matched_targets = [
+                t for t in ("langgo", "goland", "pycharm", "intellij", "chromium", "bt-serial")
+                if t in cleaned_intent
+            ]
+            if len(matched_targets) == 1:
+                target_arg = matched_targets[0]
+            return self._create_draft(
+                user_intent,
+                f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py specialists --target {target_arg}",
+                f"Polyglot Specialist IDE & Runtime Integration (target={target_arg})",
+                t0,
+            )
+
+        # Priority composite intent check for 24/7 Lens + Qwen 3D + Gemma 2 + Root/Shizuku/rish + Scrcpy 5.0 + Page Assist protocol
+        if (
+            ("24/7" in cleaned_intent and ("automation" in cleaned_intent or "lens" in cleaned_intent))
+            or any(
+                w in cleaned_intent
+                for w in [
+                    "shizuku",
+                    "shiziku",
+                    "rish",
+                    "automate-247",
+                    "automation-protocol",
+                    "screen-lens-sovereign",
+                    "/boost",
+                    "--boost",
+                    "teamwork-preview",
+                    "teamwork_preview",
+                ]
+            )
+        ):
+            extra_flags: List[str] = []
+            if any(w in cleaned_intent for w in ["until", "converge", "/goal"]):
+                extra_flags.append("--until-converged")
+            if "teamwork-preview" in cleaned_intent or "teamwork_preview" in cleaned_intent:
+                extra_flags.append("--teamwork-preview")
+            if "boost" in cleaned_intent:
+                extra_flags.append("--boost")
+            flag_suffix = (" " + " ".join(extra_flags)) if extra_flags else ""
+            return self._create_draft(
+                user_intent,
+                f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_sovereign_unified_system.py automate-247{flag_suffix}",
+                "24/7 Lens + Qwen 3D + Gemma 2 + Root/Shizuku/rish + Scrcpy 5.0 + Page Assist Automation Training Protocol",
+                t0,
+            )
+
+        # Phase 2: Word-boundary phrase match (longer keys first to prevent short substrings hijacking intents)
+        sorted_mappings = sorted(self.COMMON_SPECULATIVE_MAPPINGS.items(), key=lambda item: len(item[0]), reverse=True)
+        for key, cmd in sorted_mappings:
+            pattern = r'(?:\b|^)' + re.escape(key) + r'(?:\b|$)'
+            if re.search(pattern, cleaned_intent):
+                return self._create_draft(user_intent, cmd, f"Deterministic mapping for '{key}'", t0)
+
+        # Smart keyword-based deterministic routing for Continuous Training of lauburu-lens-argon:latest
+        if any(w in cleaned_intent for w in ["lauburu-lens-argon", "argontelemetry", "continuous training", "telemetry trainer"]):
+            if "status" in cleaned_intent and "run" not in cleaned_intent:
+                return self._create_draft(
+                    user_intent,
+                    f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --status",
+                    "Lauburu Lens Argon Continuous Training Status",
+                    t0,
                 )
+            return self._create_draft(
+                user_intent,
+                f"/opt/homebrew/bin/python3 {GEMINI_TELEMETRY_TRAINER} --burst 3",
+                "Continuous Training of lauburu-lens-argon:latest (MLX Metal GPU SFT + DPO + MRL)",
+                t0,
+            )
 
-        # 2. Local AI Drafter via Port 8081 / 8082 (<25ms)
-        prompt_payload = {
-            "model": "qwen2.5-coder-7b",
-            "messages": [
-                {
-                    "role": "system",
-                    "content": "You are a specialized Unix/macOS CLI syntax drafter. Given user intent, output ONLY the single best shell command line. No markdown formatting, no explanations, no fences."
-                },
-                {"role": "user", "content": user_intent}
-            ],
-            "max_tokens": 64,
-            "temperature": 0.1
-        }
+        # Smart keyword-based deterministic routing for Neo4j, EmbeddingGemma 2, and Root Orchestration
+        orchestrator_py = f"python3 {REPO_ROOT}/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py"
+        if any(w in cleaned_intent for w in ["neo4j", "cypher", "embeddinggemma", "gemma 2", "gemma2", "mrl", "rag"]):
+            if "schema" in cleaned_intent:
+                return self._create_draft(user_intent, f"{orchestrator_py} schema", "Neo4j Schema & Vector Index Inspection", t0)
+            elif "seed" in cleaned_intent or "sync" in cleaned_intent:
+                return self._create_draft(user_intent, f"{orchestrator_py} seed", "Neo4j + Qdrant MRL Mesh Topology & Document Seed", t0)
+            elif cleaned_intent.startswith("cypher "):
+                q = raw_cleaned[7:].strip()
+                return self._create_draft(user_intent, f"{orchestrator_py} cypher {shlex.quote(q)}", "Neo4j Cypher Query Execution", t0)
+            elif cleaned_intent.startswith("rag "):
+                q = raw_cleaned[4:].strip()
+                return self._create_draft(user_intent, f"{orchestrator_py} rag {shlex.quote(q)}", "EmbeddingGemma 2 + Neo4j GraphRAG Query", t0)
+            else:
+                return self._create_draft(user_intent, f"{orchestrator_py} status", "Neo4j & EmbeddingGemma 2 Global Orchestrator Status", t0)
 
-        # Fast Socket Check for local models
+        # Smart keyword-based deterministic routing for Speedify & Channel Bonding
+        if any(w in cleaned_intent for w in ["speedify", "channel bonding", "bonding", "multipath"]):
+            if any(w in cleaned_intent for w in ["interface", "status", "list", "show", "inspect", "check"]):
+                cmd = "rust_bonding_engine interfaces"
+                return self._create_draft(user_intent, cmd, "Speedify/Bonding Interface Query", t0)
+            elif any(w in cleaned_intent for w in ["e2e", "test", "automate", "run", "benchmark"]):
+                cmd = "rust_bonding_engine test-e2e --payload-size-mb 5"
+                return self._create_draft(user_intent, cmd, "Automated Speedify Channel Bonding E2E Test", t0)
+            elif "server" in cleaned_intent:
+                cmd = "rust_bonding_engine server --port 18804 --bind 0.0.0.0"
+                return self._create_draft(user_intent, cmd, "Start Bonding Server", t0)
+            elif "client" in cleaned_intent:
+                cmd = "rust_bonding_engine client --target 127.0.0.1 --port 18804 --socks5-bind 127.0.0.1:1080"
+                return self._create_draft(user_intent, cmd, "Start Bonding Client", t0)
+            elif any(w in cleaned_intent for w in ["traffic", "curl", "route", "bandwidth"]):
+                cmd = "curl -x socks5://127.0.0.1:1080 https://speed.cloudflare.com/__down?bytes=25000000 -o /dev/null"
+                return self._create_draft(user_intent, cmd, "Test Bandwidth via Bonded SOCKS5 Proxy", t0)
+
+        if "route traffic" in cleaned_intent:
+            cmd = "curl -x socks5://127.0.0.1:1080 https://speed.cloudflare.com/__down?bytes=25000000 -o /dev/null"
+            return self._create_draft(user_intent, cmd, "Test Bandwidth via Bonded SOCKS5 Proxy", t0)
+
+        # Smart keyword-based deterministic routing for Screen Lens Sovereign
+        if any(w in cleaned_intent for w in ["screen lens", "screen-lens", "screen capture", "screen query", "screen search"]):
+            if any(w in cleaned_intent for w in ["start", "launch"]):
+                return self._create_draft(user_intent, "screen-lens start", "Screen Lens Sovereign Daemon Start", t0)
+            elif any(w in cleaned_intent for w in ["stop", "kill", "terminate"]):
+                return self._create_draft(user_intent, "screen-lens stop", "Screen Lens Sovereign Daemon Stop", t0)
+            elif any(w in cleaned_intent for w in ["restart", "reload"]):
+                return self._create_draft(user_intent, "screen-lens restart", "Screen Lens Sovereign Daemon Restart", t0)
+            elif any(w in cleaned_intent for w in ["query", "search", "find"]):
+                match = re.search(r'(?:query|search|find)\s+(?:screen\s+)?(.+)', cleaned_intent)
+                query_term = match.group(1).strip() if match else ""
+                if query_term:
+                    return self._create_draft(user_intent, f"screen-lens query {query_term}", f"Screen Lens Sovereign OCR Query '{query_term}'", t0)
+                return self._create_draft(user_intent, "screen-lens latest", "Screen Lens Sovereign OCR Latest", t0)
+            elif any(w in cleaned_intent for w in ["capture", "latest", "ocr", "recent"]):
+                return self._create_draft(user_intent, "screen-lens latest", "Screen Lens Sovereign Latest Captures", t0)
+            else:
+                return self._create_draft(user_intent, "screen-lens status", "Screen Lens Sovereign Status", t0)
+
+        # 2. Local AI Drafter via Port 8082 (Master) / 8081 (Syntax) across localhost or L1 (192.168.8.143)
         import socket
-        active_port = None
-        for port in [self.fallback_port, PORT_MASTER]:
-            try:
-                with socket.create_connection(("127.0.0.1", port), timeout=0.01):
-                    active_port = port
-                    break
-            except OSError:
-                continue
+        for host in ["127.0.0.1", "192.168.8.143"]:
+            for port in [PORT_MASTER, self.fallback_port]:
+                try:
+                    with socket.create_connection((host, port), timeout=0.05):
+                        pass
+                except OSError:
+                    continue
 
-        if active_port:
-            prompt_payload["model"] = "qwen2.5-coder-7b" if active_port == PORT_SYNTAX else "qwen_38_max"
-            try:
-                req = urllib.request.Request(
-                    f"http://127.0.0.1:{active_port}/v1/chat/completions",
-                    data=json.dumps(prompt_payload).encode("utf-8"),
-                    headers={"Content-Type": "application/json"}
-                )
-                with urllib.request.urlopen(req, timeout=0.20) as resp:
-                    data = json.loads(resp.read().decode("utf-8"))
-                    raw_cmd = data["choices"][0]["message"]["content"].strip()
-                    # Clean fences if any
-                    raw_cmd = raw_cmd.strip("`").replace("```bash", "").replace("```sh", "").strip()
-                    parts = raw_cmd.split()
-                    if parts:
-                        safety, rationale = self.validate_safety(raw_cmd)
-                        latency = round((time.perf_counter() - t0) * 1000, 2)
-                        return SpeculativeCommandDraft(
-                            raw_prompt=user_intent,
-                            speculative_command=parts[0],
-                            suggested_args=parts[1:],
-                            confidence_score=0.92,
-                            safety_rating=safety,
-                            rationale=rationale,
-                            latency_ms=latency,
-                            drafter_model=f"Local-Qwen-Port-{active_port}",
-                        )
-            except Exception:
-                pass
+                model_name = "qwen_38_max" if port == PORT_MASTER else "qwen2.5-coder-7b"
+                prompt_payload = {
+                    "model": model_name,
+                    "messages": [
+                        {
+                            "role": "system",
+                            "content": "You are a specialized Unix/macOS CLI syntax drafter. Given user intent, output ONLY the single best shell command line. No markdown formatting, no explanations, no fences."
+                        },
+                        {"role": "user", "content": user_intent}
+                    ],
+                    "max_tokens": 64,
+                    "temperature": 0.1
+                }
 
-        # 3. Fallback Heuristic Drafter (<0.5ms)
-        parts = user_intent.split()
+                try:
+                    req = urllib.request.Request(
+                        f"http://{host}:{port}/v1/chat/completions",
+                        data=json.dumps(prompt_payload).encode("utf-8"),
+                        headers={"Content-Type": "application/json"}
+                    )
+                    with urllib.request.urlopen(req, timeout=1.5) as resp:
+                        data = json.loads(resp.read().decode("utf-8"))
+                        raw_cmd = data["choices"][0]["message"]["content"].strip()
+                        # Clean fences if any
+                        raw_cmd = raw_cmd.strip("`").replace("```bash", "").replace("```sh", "").strip()
+                        parts = raw_cmd.split()
+                        if parts:
+                            safety, rationale = self.validate_safety(raw_cmd)
+                            latency = round((time.perf_counter() - t0) * 1000, 2)
+                            if safety == "REJECTED":
+                                conf = 0.05
+                            elif safety == "CAUTION":
+                                conf = 0.45
+                            else:
+                                conf = 0.92
+                            return SpeculativeCommandDraft(
+                                raw_prompt=user_intent,
+                                speculative_command=parts[0],
+                                suggested_args=parts[1:],
+                                confidence_score=conf,
+                                safety_rating=safety,
+                                rationale=rationale,
+                                latency_ms=latency,
+                                drafter_model=f"Local-Qwen-Port-{port}",
+                            )
+                except Exception:
+                    continue
+
+        # 3. Fallback Heuristic Drafter (Transparent fallback with realistic low confidence)
+        parts = raw_cleaned.split()
         cmd = parts[0] if parts else "echo"
         args = parts[1:] if len(parts) > 1 else []
-        safety, rationale = self.validate_safety(user_intent)
-        conf = 0.75 if safety == "SAFE" else (0.40 if safety == "CAUTION" else 0.10)
+        safety, rationale = self.validate_safety(raw_cleaned)
+        conf = 0.25 if safety == "SAFE" else 0.05
         latency = round((time.perf_counter() - t0) * 1000, 2)
         return SpeculativeCommandDraft(
             raw_prompt=user_intent,
@@ -240,7 +649,7 @@ class SpeculativeCommandDrafter:
             suggested_args=args,
             confidence_score=conf,
             safety_rating=safety,
-            rationale=rationale if safety != "SAFE" else "Pass-through heuristic tokenization",
+            rationale=rationale if safety != "SAFE" else "Pass-through heuristic tokenization (Local AI offline or timed out)",
             latency_ms=latency,
             drafter_model="Heuristic-Tokenizer",
         )
@@ -265,12 +674,32 @@ class StreamingSubprocessRunner:
         env_extra: Optional[Dict[str, str]] = None,
     ) -> CliExecutionReceipt:
         t0 = time.perf_counter()
-        full_args = [command] + (args or [])
+        if not args and " " in command:
+            try:
+                full_args = shlex.split(command)
+            except ValueError:
+                full_args = command.split()
+            command = full_args[0]
+            args = full_args[1:]
+        else:
+            full_args = [command] + (args or [])
+
         work_dir = cwd or REPO_ROOT
         timeout = timeout_sec or self.default_timeout_sec
 
         env = dict(os.environ)
         env["DEVELOPER_DIR"] = "/Library/Developer/CommandLineTools"
+        extra_paths = [
+            "/opt/homebrew/bin",
+            "/usr/local/bin",
+            "/Volumes/.local/bin",
+            str(Path.home() / ".local/bin"),
+            str(REPO_ROOT / "06_scripts_and_tooling"),
+            str(REPO_ROOT / "06_scripts_and_tooling/network"),
+            str(REPO_ROOT / "06_scripts_and_tooling/automation"),
+        ]
+        current_path = env.get("PATH", "/usr/bin:/bin")
+        env["PATH"] = ":".join(extra_paths + [current_path])
         if env_extra:
             env.update(env_extra)
 
@@ -316,6 +745,9 @@ class StreamingSubprocessRunner:
         sha256_hash = hashlib.sha256(raw_receipt.encode("utf-8")).hexdigest()
         ts = datetime.now(timezone.utc).isoformat()
 
+        # Rule #0 & Rule #1: zero_mock_certified is strictly True ONLY if execution actually succeeded with Exit Code 0
+        is_zero_mock = (exit_code == 0 and not any("Subprocess execution error" in l for l in stderr_lines))
+
         receipt = CliExecutionReceipt(
             command=command,
             args=args or [],
@@ -325,7 +757,7 @@ class StreamingSubprocessRunner:
             stderr_lines=stderr_lines,
             sha256_receipt=sha256_hash,
             timestamp=ts,
-            zero_mock_certified=True,
+            zero_mock_certified=is_zero_mock,
         )
 
         # Append to execution log
@@ -615,6 +1047,38 @@ class SpeculativeCliDataEngine:
 
         full_cmd = draft.speculative_command
         args = draft.suggested_args
+
+        search_path = ":".join([
+            "/opt/homebrew/bin",
+            "/usr/local/bin",
+            "/Volumes/.local/bin",
+            str(Path.home() / ".local/bin"),
+            str(REPO_ROOT / "06_scripts_and_tooling"),
+            str(REPO_ROOT / "06_scripts_and_tooling/network"),
+            str(REPO_ROOT / "06_scripts_and_tooling/automation"),
+            os.environ.get("PATH", "/usr/bin:/bin"),
+        ])
+
+        # Binary Existence & Sanity Gate:
+        # Check if binary exists in PATH before calling subprocess to prevent circular crashes on missing tools
+        if not shutil.which(full_cmd, path=search_path) and not full_cmd.startswith(("./", "/", "~")):
+            suggestion = f"brew install {full_cmd}"
+            if full_cmd == "mosh":
+                suggestion = "brew install mosh (or connect via 'ssh <host>')"
+            elif full_cmd == "winget":
+                suggestion = "winget is for Windows. Use 'brew install <package>' on macOS."
+            elif full_cmd in ("hi", "hello", "hey"):
+                suggestion = "Provide a CLI command or intent (e.g. 'network status', 'git status')."
+            elif full_cmd == "heal":
+                suggestion = "Use 'lauburu-network --test' or 'python3 06_scripts_and_tooling/network/nomad_courier_self_healer.py'."
+
+            return {
+                "draft": draft.to_dict(),
+                "executed": False,
+                "reason": f"Binary '{full_cmd}' not found in PATH.",
+                "suggestion": suggestion,
+            }
+
         receipt = self.runner.execute(full_cmd, args, timeout_sec=timeout_sec)
 
         return {

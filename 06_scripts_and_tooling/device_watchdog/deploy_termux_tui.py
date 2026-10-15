@@ -36,7 +36,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("TermuxDeployer")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 TUI_PROTOTYPES_DIR = REPO_ROOT / "01_apps/canonical_tui_prototypes"
 QUOTA_STATE_FILE = REPO_ROOT / "04_data_and_memory/data/cloud_api_quota_state.json"
 QUOTA_LOCK_FILE = REPO_ROOT / "04_data_and_memory/data/cloud_api_quota_state.lock"
@@ -46,12 +46,12 @@ DEVICE_CONFIGS: Dict[str, Dict[str, Any]] = {
     "s20": {
         "key": "s20",
         "name": "Samsung Galaxy S20+ (SM-G986B / Layer 7 Automated Tester)",
-        "ip_tailscale": "100.84.40.95",
+        "ip_tailscale": "100.78.206.96",
         "ip_tailscale_alt": "100.99.123.58",
         "ip_lan": "192.168.8.135",
         "ssh_port": 8022,
         "ssh_user": "u0_a420",
-        "adb_target": "100.84.40.95:5555",
+        "adb_target": "100.78.206.96:5555",
         "adb_target_lan": "192.168.8.135:5555",
         "router_usb_serial": "R3CN40CJJ1R",
         "router_ssh": "root@192.168.8.1",

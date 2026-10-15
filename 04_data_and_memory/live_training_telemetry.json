@@ -1,0 +1,53 @@
+{
+  "timestamp_utc": "2026-09-20T16:07:36Z",
+  "aggregate_current_loss": null,
+  "aggregate_loss_velocity": 0.025,
+  "global_plateau_detected": false,
+  "hardware": {
+    "ram_free_gb": 5.48,
+    "ram_used_pct": 78.7,
+    "disk_free_gb": 25.89,
+    "disk_used_pct": 94.8,
+    "disk_critical": false,
+    "ram_low": true
+  },
+  "active_trainer_pids": {
+    "qlora_trainer": 19789,
+    "free_tier_maximizer": 36025,
+    "genetic_drafter": null,
+    "lens_trainer": 36070,
+    "overnight_ecommerce": null
+  },
+  "source_telemetry": {
+    "qlora_trainer": {
+      "source": "qlora_trainer",
+      "log_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/logs/continuous_qlora_trainer.log",
+      "log_exists": true,
+      "loss_samples_extracted": 0,
+      "current_loss": null,
+      "loss_velocity": 0.0,
+      "plateau_detected": false,
+      "recent_losses": []
+    },
+    "free_tier_maximizer": {
+      "source": "free_tier_maximizer",
+      "log_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/logs/free_tier_maximizer.log",
+      "log_exists": true,
+      "loss_samples_extracted": 0,
+      "current_loss": null,
+      "loss_velocity": 0.0,
+      "plateau_detected": false,
+      "recent_losses": []
+    },
+    "genetic_drafter": {
+      "source": "genetic_drafter",
+      "log_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/logs/continuous_10m_genetic_drafter_trainer.log",
+      "log_exists": true,
+      "loss_samples_extracted": 0,
+      "current_loss": null,
+      "loss_velocity": 0.0,
+      "plateau_detected": false,
+      "recent_losses": []
+    }
+  }
+}

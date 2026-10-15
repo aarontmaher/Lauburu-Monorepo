@@ -33,7 +33,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("WCAGAuditor")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 OVERRIDES_DIR = REPO_ROOT / "data/dark_mode/site_overrides"
 AUDIT_LOG = REPO_ROOT / "data/dark_mode/wcag_audit_log.jsonl"
 FITNESS_FILE = REPO_ROOT / "data/dark_mode/fitness_scores.json"

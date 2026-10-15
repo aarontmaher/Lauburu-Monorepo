@@ -1,12 +1,12 @@
 # 🏛️ Canonical Monorepo Global Index
 > Managed by TinyLLM Global Project Oracle (Qwen 2.5 0.5B Instruct (Q4_K_M))
-> Last Synchronized: 2026-09-03T18:16:17Z
+> Last Synchronized: 2026-10-12T11:22:00Z
 
 ## 1. Project Invariants
 - **Rule #0:** Zero-Mock & Zero-Simulated Data. Telemetry is authentic or renders waiting states (`--`).
-- **Local AI First:** Distributed inference across 82.8 GB pooled VRAM via 10Gbps Thunderbolt 4 DMA (0.277ms RTT).
+- **Local AI First:** Distributed inference across 139.0 GB pooled RAM (108.4 GB AI VRAM) via 40Gbps Thunderbolt 4 DMA to L8 lauburu (0.38ms RTT).
 - **Tri-Vault Storage:** Obsidian Vault, PySpark Data Lake, and GitHub Git Tree synchronized 24/7.
-- **Dynamic RAM Governance:** Host Mac Mini capped at 90% (21.6 GB), Linux Head Node capped at 80% (13.8 GB).
+- **Dynamic RAM Governance:** Host Mac Mini capped at 80% (>= 4.8 GB free buffer), Linux nodes capped at 80%.
 
 ## 2. Core Architecture Subsystems
 - `00_core_infrastructure (SeaweedFS, Multi-WAN Speedify, Router Gateway Healer)`

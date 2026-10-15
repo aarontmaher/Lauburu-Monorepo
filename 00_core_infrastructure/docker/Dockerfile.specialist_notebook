@@ -1,0 +1,47 @@
+# ==============================================================================
+# Lauburu Master Notebook & Interactive Data Science Specialist Container
+# Houses JupyterLab (Port 8888) and Marimo (Port 2718) with PySpark, NumPy,
+# SciPy, Matplotlib, Plotly, and direct Tri-Vault shared volume integration.
+# ==============================================================================
+FROM python:3.11-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+# Install system dependencies & OpenJDK for PySpark
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    default-jre-headless \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Data Science, JupyterLab, Marimo, PySpark, and DSP libraries
+RUN pip install --no-cache-dir \
+    jupyterlab>=4.2.0 \
+    marimo>=0.8.0 \
+    ipykernel \
+    pyspark>=3.5.0 \
+    numpy \
+    scipy \
+    pandas \
+    matplotlib \
+    seaborn \
+    plotly \
+    httpx \
+    websockets \
+    pyyaml \
+    rich
+
+WORKDIR /workspace
+
+# Copy launch script
+COPY 06_scripts_and_tooling/notebook_container_entrypoint.sh /usr/local/bin/notebook_container_entrypoint.sh
+RUN chmod +x /usr/local/bin/notebook_container_entrypoint.sh
+
+EXPOSE 8888 2718
+
+ENTRYPOINT ["/usr/local/bin/notebook_container_entrypoint.sh"]

@@ -1,0 +1,232 @@
+[
+  {
+    "id": "jules_1791959744867_7",
+    "task": "Verify Rule #0 zero-mock compliance and add error boundaries in 00_core_infrastructure/self_healing_hub/src/game_arena_manager.py",
+    "type": "zero_mock_audit",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/game_arena_manager.py",
+    "priority": "high",
+    "priority_level": 4,
+    "created_at": 1791959744.86755
+  },
+  {
+    "id": "jules_1791959748315_10",
+    "task": "Verify Rule #0 zero-mock compliance and add error boundaries in 01_apps/screen_lens/src/sovereign_remote_desktop_server.py",
+    "type": "zero_mock_audit",
+    "subsystem": "01_apps",
+    "target_file": "01_apps/screen_lens/src/sovereign_remote_desktop_server.py",
+    "priority": "high",
+    "priority_level": 4,
+    "created_at": 1791959748.315715
+  },
+  {
+    "id": "jules_1791953294070_9",
+    "task": "Add microsecond latency benchmarks and telemetry logging in 01_apps/screen_lens/src/sovereign_remote_desktop_server.py",
+    "type": "benchmarks",
+    "subsystem": "01_apps",
+    "target_file": "01_apps/screen_lens/src/sovereign_remote_desktop_server.py",
+    "priority": "high",
+    "priority_level": 3,
+    "created_at": 1791953294.0700328
+  },
+  {
+    "id": "jules_1791953294070_10",
+    "task": "Add comprehensive unit tests with pytest for 01_apps/screen_lens/Screen Lens Lauburu.app/Contents/Resources/src/sovereign_remote_desktop_server.py",
+    "type": "unit_tests",
+    "subsystem": "01_apps",
+    "target_file": "01_apps/screen_lens/Screen Lens Lauburu.app/Contents/Resources/src/sovereign_remote_desktop_server.py",
+    "priority": "high",
+    "priority_level": 3,
+    "created_at": 1791953294.070047
+  },
+  {
+    "id": "jules_1791959744867_0",
+    "task": "Add comprehensive unit tests with pytest for 00_core_infrastructure/self_healing_hub/src/ai_mesh_battle_arena.py",
+    "type": "unit_tests",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/ai_mesh_battle_arena.py",
+    "priority": "high",
+    "priority_level": 3,
+    "created_at": 1791959744.867517
+  },
+  {
+    "id": "jules_1791959744867_2",
+    "task": "Add microsecond latency benchmarks and telemetry logging in 00_core_infrastructure/self_healing_hub/src/ai_mesh_battle_arena.py",
+    "type": "benchmarks",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/ai_mesh_battle_arena.py",
+    "priority": "high",
+    "priority_level": 3,
+    "created_at": 1791959744.867527
+  },
+  {
+    "id": "jules_1791959744867_3",
+    "task": "Add comprehensive unit tests with pytest for 00_core_infrastructure/self_healing_hub/src/api_server.py",
+    "type": "unit_tests",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/api_server.py",
+    "priority": "high",
+    "priority_level": 3,
+    "created_at": 1791959744.867539
+  },
+  {
+    "id": "jules_1791959744867_5",
+    "task": "Add microsecond latency benchmarks and telemetry logging in 00_core_infrastructure/self_healing_hub/src/api_server.py",
+    "type": "benchmarks",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/api_server.py",
+    "priority": "high",
+    "priority_level": 3,
+    "created_at": 1791959744.867541
+  },
+  {
+    "id": "jules_1791959744867_6",
+    "task": "Add comprehensive unit tests with pytest for 00_core_infrastructure/self_healing_hub/src/game_arena_manager.py",
+    "type": "unit_tests",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/game_arena_manager.py",
+    "priority": "high",
+    "priority_level": 3,
+    "created_at": 1791959744.867549
+  },
+  {
+    "id": "jules_1791959744867_8",
+    "task": "Add microsecond latency benchmarks and telemetry logging in 00_core_infrastructure/self_healing_hub/src/game_arena_manager.py",
+    "type": "benchmarks",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/game_arena_manager.py",
+    "priority": "high",
+    "priority_level": 3,
+    "created_at": 1791959744.867551
+  },
+  {
+    "id": "jules_1791959748315_9",
+    "task": "Add comprehensive unit tests with pytest for 01_apps/screen_lens/src/sovereign_remote_desktop_server.py",
+    "type": "unit_tests",
+    "subsystem": "01_apps",
+    "target_file": "01_apps/screen_lens/src/sovereign_remote_desktop_server.py",
+    "priority": "high",
+    "priority_level": 3,
+    "created_at": 1791959748.315708
+  },
+  {
+    "id": "jules_1790701902022_1",
+    "task": "Implement PEP 484 type annotations and docstrings for 00_core_infrastructure/self_healing_hub/src/ai_mesh_battle_arena.py",
+    "type": "typing_docs",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/ai_mesh_battle_arena.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1790701902.022787
+  },
+  {
+    "id": "jules_1790701902022_4",
+    "task": "Refactor into modular classes with clean separation of concerns in 00_core_infrastructure/self_healing_hub/src/ai_mesh_battle_arena.py",
+    "type": "refactor",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/ai_mesh_battle_arena.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1790701902.0227919
+  },
+  {
+    "id": "jules_1790701902022_6",
+    "task": "Implement PEP 484 type annotations and docstrings for 00_core_infrastructure/self_healing_hub/src/api_server.py",
+    "type": "typing_docs",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/api_server.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1790701902.022806
+  },
+  {
+    "id": "jules_1790701902022_9",
+    "task": "Refactor into modular classes with clean separation of concerns in 00_core_infrastructure/self_healing_hub/src/api_server.py",
+    "type": "refactor",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/api_server.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1790701902.022808
+  },
+  {
+    "id": "jules_1790701902022_11",
+    "task": "Implement PEP 484 type annotations and docstrings for 00_core_infrastructure/self_healing_hub/src/game_arena_manager.py",
+    "type": "typing_docs",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/game_arena_manager.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1790701902.022819
+  },
+  {
+    "id": "jules_1790701902022_14",
+    "task": "Refactor into modular classes with clean separation of concerns in 00_core_infrastructure/self_healing_hub/src/game_arena_manager.py",
+    "type": "refactor",
+    "subsystem": "00_core_infrastructure",
+    "target_file": "00_core_infrastructure/self_healing_hub/src/game_arena_manager.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1790701902.0228212
+  },
+  {
+    "id": "jules_1790701907226_16",
+    "task": "Implement PEP 484 type annotations and docstrings for 01_apps/network_cable_analyzer/backend/probes/whatcable_inspector.py",
+    "type": "typing_docs",
+    "subsystem": "01_apps",
+    "target_file": "01_apps/network_cable_analyzer/backend/probes/whatcable_inspector.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1790701907.2269802
+  },
+  {
+    "id": "jules_1790701907226_19",
+    "task": "Refactor into modular classes with clean separation of concerns in 01_apps/network_cable_analyzer/backend/probes/whatcable_inspector.py",
+    "type": "refactor",
+    "subsystem": "01_apps",
+    "target_file": "01_apps/network_cable_analyzer/backend/probes/whatcable_inspector.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1790701907.2269828
+  },
+  {
+    "id": "jules_1790701907226_21",
+    "task": "Implement PEP 484 type annotations and docstrings for 01_apps/bluetooth_terminal_ide/backend/server.py",
+    "type": "typing_docs",
+    "subsystem": "01_apps",
+    "target_file": "01_apps/bluetooth_terminal_ide/backend/server.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1790701907.226995
+  },
+  {
+    "id": "jules_1790701907226_24",
+    "task": "Refactor into modular classes with clean separation of concerns in 01_apps/bluetooth_terminal_ide/backend/server.py",
+    "type": "refactor",
+    "subsystem": "01_apps",
+    "target_file": "01_apps/bluetooth_terminal_ide/backend/server.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1790701907.226997
+  },
+  {
+    "id": "jules_1791054849910_10",
+    "task": "Implement PEP 484 type annotations and docstrings for 01_apps/screen_lens/src/sovereign_remote_desktop_server.py",
+    "type": "typing_docs",
+    "subsystem": "01_apps",
+    "target_file": "01_apps/screen_lens/src/sovereign_remote_desktop_server.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1791054849.9109728
+  },
+  {
+    "id": "jules_1791058798760_9",
+    "task": "Refactor into modular classes with clean separation of concerns in 01_apps/screen_lens/src/sovereign_remote_desktop_server.py",
+    "type": "refactor",
+    "subsystem": "01_apps",
+    "target_file": "01_apps/screen_lens/src/sovereign_remote_desktop_server.py",
+    "priority": "high",
+    "priority_level": 2,
+    "created_at": 1791058798.7609038
+  }
+]

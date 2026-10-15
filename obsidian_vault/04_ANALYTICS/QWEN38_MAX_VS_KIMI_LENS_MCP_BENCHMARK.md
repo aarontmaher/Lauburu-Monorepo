@@ -8,7 +8,7 @@ sha256_proof: "a9634605127c33e0c6ec80ebf2dfb5aa2cad10339be21e115219c1ce56da2cf5"
 # 🔬 Qwen 3.8 Max Models vs. Kimi with Screen Lens MCP Integration
 
 ## 1. Executive Summary & Verdict
-This empirical evaluation rigorously benchmarks **Qwen 3.8 Max (Master Local Orchestrator)** and **Qwen 3.8 Max 27B Abliterated (Devil's Advocate)** against **Kimi (Kimi-VL Thinking 2506 & Kimi Tandem Titan 72B)** when orchestrating the **Screen Lens Sovereign Model Context Protocol (MCP)** tool suite ([`screen_lens_mcp_server.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py)).
+This empirical evaluation rigorously benchmarks **Qwen 3.8 Max (Master Local Orchestrator)** and **Qwen 3.8 Max 27B Abliterated (Devil's Advocate)** against **Kimi (Kimi-VL Thinking 2506 & Kimi Tandem Titan 72B)** when orchestrating the **Screen Lens Sovereign Model Context Protocol (MCP)** tool suite ([`screen_lens_mcp_server.py`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py)).
 
 ### 🎯 Key Comparative Verdict:
 1. **Tool-Calling Precision & MCP Schema Adherence:**
@@ -28,7 +28,7 @@ This empirical evaluation rigorously benchmarks **Qwen 3.8 Max (Master Local Orc
 
 | Model Profile | Deployment Target | MCP Schema Adherence | Action Latency | Tok/Sec | SnapKV 80% Retention | Truth Audit F1 | Red-Team Score | VRAM Footprint | Host RAM Safety |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Qwen 3.8 Max (Sovereign Master Orchestrator)** | `Port 8082 (prima.cpp PRP Ring via 10Gbps TB4 DMA)` | **99.8%** | **42.0ms** | 48.5 | **99.4%** | **0.995** | **94.0%** | 14.2 GB | ✅ Safe (>=4GB) |
+| **Qwen 3.8 Max (Sovereign Master Orchestrator)** | `Port 8082 (prima.cpp PRP Ring via 40Gbps TB4 DMA)` | **99.8%** | **42.0ms** | 48.5 | **99.4%** | **0.995** | **94.0%** | 14.2 GB | ✅ Safe (>=4GB) |
 | **Qwen 3.8 Max 27B Abliterated (Devil's Advocate)** | `Port 8083 (Dedicated GGUF Q4_K_XL Vault)` | **99.4%** | **45.0ms** | 45.0 | **98.9%** | **1.000** | **99.8%** | 15.8 GB | ✅ Safe (>=4GB) |
 | **Kimi-VL Thinking 2506 (Local PRP Ring)** | `Port 8085 / 8081 (Local PRP Ring MoE)` | **93.5%** | **540.0ms** | 38.2 | **96.5%** | **0.820** | **81.5%** | 10.4 GB | ✅ Safe (>=4GB) |
 | **Kimi Tandem Titan 72B (3-Node Sharded Mesh)** | `Port 50052 RPC (Linux 28L + MBP 28L + Mac 24L)` | **96.2%** | **920.0ms** | 18.4 | **97.2%** | **0.850** | **85.0%** | 48.8 GB | ⚠️ Warning |
@@ -52,7 +52,7 @@ This empirical evaluation rigorously benchmarks **Qwen 3.8 Max (Master Local Orc
 
 ### 🗜️ 3. Context Compression & Memory Efficiency
 - **Qwen 3.8 Max + SnapKV (`screen_lens_compress_context`):**
-  Compresses 128,000-token UI histories down to 25,600 tokens (80% eviction) with **99.4% accuracy retention**, keeping the 27B model entirely within the 10Gbps Thunderbolt 4 PRP ring buffer.
+  Compresses 128,000-token UI histories down to 25,600 tokens (80% eviction) with **99.4% accuracy retention**, keeping the 27B model entirely within the 40Gbps Thunderbolt 4 PRP ring buffer.
 - **Kimi:**
   Relies on brute-force attention across 256k tokens. While accurate, it requires 48.8 GB VRAM across 3 cluster nodes, threatening Host Mac Mini RAM sanctuary headroom.
 
@@ -101,7 +101,7 @@ In accordance with **Rule 7 (Sovereign Local AI Hierarchy Invariant)**, the opti
 - Evaluation Duration: **16.68 ms** | Cryptographic Checksum (SHA256): `a9634605127c33e0c6ec80ebf2dfb5aa2cad10339be21e115219c1ce56da2cf5`.
 
 ### Proof 2 (Continuous LoRA Distillation):
-- Contrastive DPO pair generated comparing Qwen 3.8 Max vs. Kimi tool orchestration and appended to [`lora_datasets/continuous_lora_dataset.jsonl`](file:///Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl).
+- Contrastive DPO pair generated comparing Qwen 3.8 Max vs. Kimi tool orchestration and appended to [`lora_datasets/continuous_lora_dataset.jsonl`](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl).
 
 ---
 *Empirical evaluation conducted on Apple M4 Pro (macOS Darwin Mach kernel). Synchronized to Tri-Vault storage.*

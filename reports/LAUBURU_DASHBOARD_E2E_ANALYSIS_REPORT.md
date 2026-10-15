@@ -112,7 +112,7 @@ The distributed mesh pools **82.8 GB of active VRAM** and **124.0 GB of total ph
 |---|---|---|---|---|---|---|---|
 | **Layer 1** | Primary Host Mac | Apple M4 (macOS 15) | `192.168.8.100` | `100.119.199.76` | 24.0 GB | **13.5 GB** | Mission Control Dashboard, API Gateway, Master REPL |
 | **Layer 2** | MacBook Pro M1 Max | Apple M1 Max (macOS 14) | `192.168.8.102` | `100.103.212.21` | 32.0 GB | **14.0 GB** | llama.cpp Distributed RPC Worker, Metal Shaders |
-| **Layer 3** | Linux Workstation | AMD Ryzen 9 / Linux | `192.168.8.105` | `100.101.39.98` | 16.0 GB | **13.8 GB** | PySpark Master, SeaweedFS Lakehouse, Fast NVMe |
+| **Layer 3** | Linux Workstation | Intel 2018 Mac Mini / Linux | `192.168.8.105` | `100.101.39.98` | 16.0 GB | **13.8 GB** | PySpark Master, SeaweedFS Lakehouse, Fast NVMe |
 | **Layer 4** | MacBook Air | Apple M2 (macOS 14) | `192.168.8.108` | `100.93.158.96` | 16.0 GB | **13.5 GB** | Local Sovereign Worker, Continuous LoRA Worker |
 | **Layer 5** | Pixel 10 Pro XL | Tensor G5 / Android 15 | `192.168.8.115` | `100.73.38.87` | 16.0 GB | **12.5 GB** | 1.2W Edge MediaPipe Vision, Termux SSH Gateway |
 | **Layer 6** | Samsung Galaxy S20+ | Snapdragon 865 / Android 13 | `192.168.8.118` | `100.84.40.95` | 12.0 GB | **9.0 GB** | Standby NPU Shard, Cellular Fallback Hotspot |

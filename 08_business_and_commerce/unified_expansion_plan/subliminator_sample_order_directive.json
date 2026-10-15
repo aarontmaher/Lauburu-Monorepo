@@ -1,0 +1,544 @@
+{
+  "metadata": {
+    "document_id": "DIRECTIVE-SUBLIMINATOR-SAMPLE-2026-V1",
+    "title": "Subliminator BJJ Combat Apparel Sample Procurement & Commercial Directive",
+    "project": "Lauburu Combat Apparel - Unified Expansion Plan",
+    "milestone": "Milestone 2: Subliminator BJJ Sample Procurement & Economics",
+    "generated_at": "2026-09-30T07:25:00Z",
+    "status": "STAGED_FOR_INVOICE_ISSUANCE",
+    "author": "teamwork_preview_worker_m2",
+    "governing_authorities": [
+      "07_docs_and_architecture/LAUBURU_COMBAT_APPAREL_TECH_PACK.md (TECHPACK-LBR-BJJ-2026-V1)",
+      "08_business_and_commerce/business_ledger.json (Canonical Financial Ledger)",
+      "08_business_and_commerce/ai_debate_hicham_subliminator_response.py",
+      "08_business_and_commerce/iphone_and_rashguards_execution_engine.py",
+      "obsidian_vault/08_COMMERCE/CANONICAL_ECOMMERCE_MASTER_INDEX.md",
+      "obsidian_vault/APPS_AND_FEATURES/LAUBURU_BJJ_CANONICAL_UNIFORM_SETS.md"
+    ],
+    "tri_orchestrator_consensus": {
+      "consensus_score": 1.0,
+      "status": "UNANIMOUS_CONSENSUS",
+      "models_deliberated": [
+        "Qwen 3.8 Max (:8082 - Sovereign Master Local Orchestrator)",
+        "Qwen 3.8 Max 27B Abliterated (:8083 - Canonical Devil's Advocate)",
+        "Cloud Frontier Architect (Gemini 3.1 Pro / Claude Thinking)",
+        "Screen Lens Sovereign (Multimodal Grounding & Sample Physics)",
+        "Genetic MoE Optimizer (Commercial Margin & Sunk Cost Governor)"
+      ],
+      "strategic_resolution": "Authorize 1:1 pattern recreation of Absolute MMA reference garments (Parcel EJ350397089AU in Shaoxing) for Sample Set 1 to eliminate the physical sample deficit immediately. Defer bespoke V2 CAD pattern drafting (5.5-inch scalloped leg slits and curved drop-tails) to specialized combat apparel factories in Sialkot or Dongguan once initial cashflow is established."
+    }
+  },
+  "vendor_and_sunk_logistics": {
+    "vendor": {
+      "company": "Subliminator / Shaoxing Sred Apparel Co.",
+      "founder_and_ceo": "Hicham Amrani",
+      "email": "hicham@subliminator.com",
+      "facility_address": "Shaoxing Sred Apparel Co., Shaoxing, Zhejiang Province, China",
+      "account_holder": "Aaron Maher (Lauburu Grappling)",
+      "registered_email": "aaron.t.maher@gmail.com",
+      "store_domain": "lauburugrappling.com"
+    },
+    "sunk_logistics_baseline": {
+      "parcel_tracking": "EJ350397089AU",
+      "carrier": "Australia Post Express International / China Post EMS",
+      "delivery_date": "2026-05-30",
+      "location_status": "Physically secured inside Subliminator Shaoxing production facility",
+      "contents": [
+        "1x Absolute MMA Short Sleeve Compression Rashguard (Size M, manufactured by MA1 Combat)",
+        "1x Absolute MMA No-Gi Pro Fight Shorts (Size M, 32-inch waist, manufactured by MA1 Combat)"
+      ],
+      "purpose": "Digitized foundational fit block for Aaron Maher (Size M baseline personal fit)",
+      "fit_heritage": "Tournament-proven Australian combat cut utilized by Craig Jones and Lachlan Giles"
+    },
+    "operational_alignment": {
+      "ceo_correspondence_summary": "On 2026-09-16, CEO Hicham Amrani formally responded to the initial custom tech pack adjustments, stating that bespoke pattern adjustments exceeded their core competency as an automated print-and-sew POD house. Crucially, Hicham confirmed: 'The reference samples as you sent them would be workable for us.'",
+      "agreed_construction_methodology": "1:1 pattern recreation directly from the physical Absolute MMA reference garments currently in Shaoxing, coupled with Lauburu Option B all-over dye sublimation artwork.",
+      "two_track_procurement_strategy": {
+        "track_1_rapid_sourcing": "1:1 Absolute MMA recreation with Lauburu Option B sublimation artwork for immediate physical validation, photo assets, and rapid launch.",
+        "track_2_bespoke_v2": "Parallel-source specialized combat factory in Sialkot or Dongguan for bespoke CAD/DXF pattern development (5.5-inch high-cut shorts and curved drop-tail hems) once initial cashflow is established."
+      }
+    }
+  },
+  "sample_order_specification": {
+    "items": [
+      {
+        "item_id": 1,
+        "garment_name": "Short Sleeve Compression Rashguard",
+        "style_code": "LBR-RG-SS-01",
+        "quantity": 1,
+        "size": "Size M (Aaron Maher Personal Fit Baseline)",
+        "edition": "Black Belt Edition (Option B Canonical Rank)",
+        "base_fee_usd": 100.0,
+        "artwork_asset": "lauburu_rashguard_color_sym_black.png",
+        "construction_basis": "1:1 pattern recreation from Absolute MMA Size M Rashguard (Parcel EJ350397089AU)",
+        "key_specifications": "250 GSM 82/18 poly-spandex, 100% stealth black flatlock seams (#141414), low-profile 1.2cm collar with 10mm herringbone twill tape, +2.0cm drop-tail back hem, 25mm continuous silicone gel gripper, 80px sternum Lauburu mark in graphite with crimson red bar accents"
+      },
+      {
+        "item_id": 2,
+        "garment_name": "No-Gi Pro Fight Shorts",
+        "style_code": "LBR-SH-PRO-01",
+        "quantity": 1,
+        "size": "Size M (32-inch Waist / Aaron Maher Personal Fit Baseline)",
+        "edition": "Black Belt Edition (Option B Canonical Rank)",
+        "base_fee_usd": 100.0,
+        "artwork_asset": "lauburu_shorts_color_sym_black.png",
+        "construction_basis": "1:1 pattern recreation from Absolute MMA Size M Fight Shorts (Parcel EJ350397089AU)",
+        "key_specifications": "165 GSM 4-way stretch micro-ripstop body with 250 GSM poly-spandex crotch gusset, 50mm quad-stitched elastic waistband with recessed flat drawstring and micro-hook-and-loop closure, 3.5-inch scalloped side slits with bar-tack reinforcement, 90px lower right quad Lauburu mark in graphite with crimson red bar accents"
+      }
+    ],
+    "commercial_anchors_and_pricing": {
+      "sample_fee_per_style_usd": 100.0,
+      "sample_fee_citation": "Locked at $100.00 USD/style based on written confirmation from Subliminator Support (Corinne, Ticket #50573, May 4), countering Hicham's verbal $150/style estimate.",
+      "subtotal_samples_usd": 200.0,
+      "express_shipping_courier": "DHL / FedEx International Express",
+      "express_shipping_fee_usd": 30.0,
+      "total_sample_order_usd": 230.0,
+      "aud_usd_exchange_rate": 0.66,
+      "total_sample_order_aud": 348.5,
+      "turnaround_time": "Express ~2 weeks (10-14 calendar days from payment clearance to Melbourne delivery)",
+      "delivery_destination": {
+        "recipient": "Aaron Maher",
+        "location": "Melbourne, Victoria, Australia",
+        "delivery_type": "Direct Air Courier Delivery"
+      }
+    },
+    "funding_architecture": {
+      "funding_source": "Personal Cash Reserves (Aaron Maher)",
+      "funding_status": "DIRECT_SELF_FUNDED",
+      "capital_allocated_aud": 348.5,
+      "capital_allocated_usd": 230.0,
+      "hardware_arbitrage_status": "ARCHIVED_BY_SOVEREIGN_USER (iPhone 16 Pro 256GB with cracked bezel deemed not worth time/effort to liquidate for ~$100 residual)",
+      "liquidation_dependency": "DECOUPLED (100% self-funded directly out of cash reserves)",
+      "zero_debt_mandate": "SATISFIED ($0.00 personal debt or external credit required)"
+    }
+  },
+  "technical_product_tech_pack": {
+    "fabric_engineering": {
+      "compression_rashguard": {
+        "weight_gsm": 250,
+        "weight_tolerance_gsm": "±10 GSM",
+        "composition": "82% Polyester / 18% Spandex (High-Tensile Elastane)",
+        "knit_type": "Heavyweight competition-grade synthetic warp knit",
+        "surface_finish": "Matte micro-brushed non-sheen finish (zero glossy reflection under gymnasium lighting, optimized friction for armbar and triangle control)",
+        "treatments": [
+          "Hydrophilic capillary moisture-wicking treatment for rapid evaporative cooling",
+          "Bacteriostatic anti-microbial and anti-odor finish inhibiting Staphylococcus aureus and tinea corporis",
+          "UPF 50+ ultraviolet protection blocking >=98% UVA/UVB radiation"
+        ],
+        "stretch_dynamics": {
+          "cross_grain_elongation_percent": 280,
+          "with_grain_elongation_percent": 240,
+          "instantaneous_elastic_recovery_percent": 98.0,
+          "evaluation_vs_85_15": "82/18 delivers superior multi-axial recovery and prevents seam bursting during extreme shoulder locks and neck cranks compared to 85/15"
+        }
+      },
+      "fight_shorts": {
+        "body_weight_gsm": 165,
+        "body_composition": "92% Polyester / 8% Spandex 4-Way Stretch Micro-Ripstop",
+        "body_finish": "DWR (Durable Water Repellent) hydrophobic anti-sweat coating",
+        "crotch_gusset_weight_gsm": 250,
+        "crotch_gusset_composition": "82% Polyester / 18% Spandex 4-way stretch (matching rashguard)",
+        "durability": "High-tensile cross-weave ripstop preventing tears from toes, fingers, or abrasive canvas mats"
+      }
+    },
+    "seam_and_thread_construction": {
+      "stitch_type": "4-needle 6-thread reinforced flatlock stitching",
+      "thread_material": "High-tenacity 100% bonded filament polyester",
+      "thread_color_code": "#141414",
+      "thread_color_name": "Tone-on-Tone Stealth Black",
+      "color_invariant_rule": "STRICT_PROHIBITION_OF_CONTRAST_WHITE_THREAD. All looper threads, needle threads, and cover stitches must be 100% stealth black #141414. Absolutely zero factory white cones permitted.",
+      "seam_tensile_breaking_strength_n": 220,
+      "seam_testing_standard": "ASTM D5034 certified lateral tensile pull",
+      "shorts_reinforcement": "Triple-needle heavy chainstitch on center rise; double-needle flatlock topstitching on leg hems; bar-tacked apex at all side mobility slits"
+    },
+    "ergonomic_and_anatomical_features": {
+      "sleeve_architecture": "4-panel raglan shoulder sleeve construction eliminating top-of-shoulder seams, providing 360° uninhibited rotation for kimuras, omoplatas, and underhooks",
+      "bicep_compression_cuff": "Double-needle flatlock compression cuff clinging flush against bicep muscle belly, eliminating bell-bottom flare and preventing opponent finger/toe entrapment",
+      "collar_and_cervical_shield": "Low-profile 1.2cm crew neckband in self-fabric; interior neck seam lined with 10mm soft black herringbone twill tape extending shoulder-to-shoulder across cervical spine to prevent snap-down mat burn and guillotine chafing",
+      "lumbar_drop_tail": "+2.0cm curved drop-tail extension on posterior hem, ensuring continuous lower back coverage during deep guard inversion, seated guard, and turtle position",
+      "anti_ride_silicone_gripper": "Continuous 25mm medical-grade silicone micro-ribbed elastic band heat-fused and double-stitched to interior lower hem circumference, anchoring rashguard firmly to shorts waistband",
+      "shorts_waistband_and_closure": "Craig Jones inspired 50mm quad-stitched hybrid elastic waistband with recessed internal flat tubular drawstring (15mm) and non-abrasive 25mm micro-hook-and-loop tab (zero bulky scratchy velcro)",
+      "shorts_mobility": "3.5-inch (9.0cm) curved scalloped side slits with heavy bar-tack reinforcement at apex, terminating 2.5 inches above the patella for friction-free leglock entries and guard passing"
+    },
+    "grading_matrix": {
+      "grading_tolerance_cm": "±0.5 cm",
+      "rashguard_metric_cm": {
+        "half_chest_pit_to_pit": {
+          "XS": 42.0,
+          "S": 44.5,
+          "M": 47.0,
+          "L": 49.5,
+          "XL": 52.0,
+          "2XL": 55.0
+        },
+        "front_length_hsp_to_hem": {
+          "XS": 65.0,
+          "S": 67.5,
+          "M": 70.0,
+          "L": 72.5,
+          "XL": 75.0,
+          "2XL": 77.5
+        },
+        "back_length_drop_tail": {
+          "XS": 67.0,
+          "S": 69.5,
+          "M": 72.0,
+          "L": 74.5,
+          "XL": 77.0,
+          "2XL": 79.5
+        },
+        "sleeve_outseam_neck_to_cuff": {
+          "XS": 31.0,
+          "S": 32.5,
+          "M": 34.0,
+          "L": 35.5,
+          "XL": 37.0,
+          "2XL": 38.5
+        },
+        "bicep_opening_flat": {
+          "XS": 13.0,
+          "S": 14.0,
+          "M": 15.0,
+          "L": 16.0,
+          "XL": 17.0,
+          "2XL": 18.0
+        },
+        "bottom_hem_opening_flat": {
+          "XS": 38.0,
+          "S": 40.5,
+          "M": 43.0,
+          "L": 45.5,
+          "XL": 48.0,
+          "2XL": 51.0
+        }
+      },
+      "fight_shorts_metric_cm": {
+        "waistband_relaxed_flat": {
+          "XS": 34.0,
+          "S": 36.5,
+          "M": 39.0,
+          "L": 41.5,
+          "XL": 44.0,
+          "2XL": 47.0
+        },
+        "waistband_extended_flat": {
+          "XS": 44.0,
+          "S": 47.0,
+          "M": 50.0,
+          "L": 53.0,
+          "XL": 56.0,
+          "2XL": 60.0
+        },
+        "inseam_length": {
+          "XS": 12.5,
+          "S": 13.5,
+          "M": 14.5,
+          "L": 15.5,
+          "XL": 16.5,
+          "2XL": 17.5
+        },
+        "total_outseam_length": {
+          "XS": 35.0,
+          "S": 37.0,
+          "M": 39.0,
+          "L": 41.0,
+          "XL": 43.0,
+          "2XL": 45.0
+        },
+        "front_rise_incl_waistband": {
+          "XS": 27.0,
+          "S": 28.0,
+          "M": 29.0,
+          "L": 30.0,
+          "XL": 31.0,
+          "2XL": 32.5
+        },
+        "back_rise_incl_waistband": {
+          "XS": 36.0,
+          "S": 37.0,
+          "M": 38.5,
+          "L": 40.0,
+          "XL": 41.5,
+          "2XL": 43.0
+        },
+        "leg_opening_flat": {
+          "XS": 28.0,
+          "S": 29.5,
+          "M": 31.0,
+          "L": 32.5,
+          "XL": 34.0,
+          "2XL": 36.0
+        },
+        "mobility_slit_height": {
+          "XS": 8.0,
+          "S": 8.5,
+          "M": 9.0,
+          "L": 9.5,
+          "XL": 10.0,
+          "2XL": 10.5
+        }
+      }
+    },
+    "colorways_and_rank_editions": {
+      "ibjjf_article_8_1_3_compliance": "Verified compliant. Each ranked rashguard is >=10% assigned belt rank color on solid black base; tournament-legal for all IBJJF and ADCC events.",
+      "printing_technology": "100% All-Over High-Penetration Dye Sublimation (zero rubber print, zero peeling, zero cracking)",
+      "ranks": {
+        "white_belt": {
+          "rank": "White Belt",
+          "body_hex": "#141414",
+          "accent_hex": "#FFFFFF",
+          "pantone": "Pure White",
+          "application_zones": "Sternum Lauburu emblem, continuous flank panels, interior shorts slit piping"
+        },
+        "blue_belt": {
+          "rank": "Blue Belt",
+          "body_hex": "#141414",
+          "accent_hex": "#0047AB",
+          "pantone": "Pantone 286 C",
+          "application_zones": "Sternum Lauburu emblem, continuous flank panels, interior shorts slit piping"
+        },
+        "purple_belt": {
+          "rank": "Purple Belt",
+          "body_hex": "#141414",
+          "accent_hex": "#5C068C",
+          "pantone": "Pantone 268 C",
+          "application_zones": "Sternum Lauburu emblem, continuous flank panels, interior shorts slit piping"
+        },
+        "brown_belt": {
+          "rank": "Brown Belt",
+          "body_hex": "#141414",
+          "accent_hex": "#552D20",
+          "pantone": "Pantone 4625 C",
+          "application_zones": "Sternum Lauburu emblem, continuous flank panels, interior shorts slit piping"
+        },
+        "black_belt": {
+          "rank": "Black Belt (Sample Specification)",
+          "body_hex": "#141414",
+          "accent_hex": "#141414",
+          "red_bar_accent_hex": "#C8102E",
+          "pantone": "Pantone 186 C",
+          "application_zones": "Tone-on-tone graphite sternum emblem; Crimson Red Bar flank panels and interior shorts slit piping"
+        }
+      },
+      "custom_editions": {
+        "black_gold_sovereign_edition": {
+          "edition_name": "Sovereign Black / Gold Edition",
+          "target_tier": "Executive Coaches, Black Belts, and Master Tier Subscribers",
+          "body_hex": "#0B0B0C",
+          "accent_hex": "#D4AF37",
+          "pantone": "Pantone 7752 C (Metallic Antique Gold)",
+          "features": "Deep obsidian matte black body with rich antique gold sternum emblem, flank striping, and internal silicone gripper text; optional gold contrast shoulder flatlock stitching"
+        },
+        "basquiat_neo_tokyo_cyberpunk_edition": {
+          "edition_name": "Basquiat / Neo-Tokyo Cyberpunk Capsule",
+          "target_tier": "Limited Seasonal Streetwear & Grappling Crossover Capsule Drop",
+          "body_hex": "#0B0B0C",
+          "accent_palette": [
+            "#06B6D4 (Phosphor Cyan)",
+            "#10B981 (Laser Emerald)",
+            "#F59E0B (Cyber Amber)",
+            "#A855F7 (Neon Violet)"
+          ],
+          "features": "Fractured 3-point street crown ghosted behind canonical Lauburu sternum mark; cyber-tatami gridlines; asymmetric sleeve code linework; binary hash printed cervical lining"
+        }
+      }
+    },
+    "branding_and_artwork_placements": {
+      "rashguard_sternum_emblem": {
+        "asset": "canonical_lauburu_symbol.svg / clean_transparent.png",
+        "scale_width_px": 80,
+        "physical_width_cm": 6.5,
+        "placement": "Precisely centered over sternum, 7.0cm below collar seam",
+        "aesthetic": "Minimalist architectural geometry; dyed in rank accent; zero loud marketing text"
+      },
+      "fight_shorts_quad_emblem": {
+        "asset": "canonical_lauburu_symbol.svg / clean_transparent.png",
+        "scale_width_px": 90,
+        "physical_width_cm": 7.5,
+        "placement": "Lower right quad, 4.0cm above bottom hem and 3.0cm forward of side mobility slit",
+        "aesthetic": "Subtle tonal placement dyed in rank accent"
+      }
+    }
+  },
+  "unit_economics_and_margin_defense": {
+    "bulk_manufacturing_contract_terms": {
+      "vendor": "Subliminator / Shaoxing Sred Apparel Co.",
+      "minimum_order_quantity_per_style": 200,
+      "rashguard_bulk_express_usd": 24.0,
+      "shorts_bulk_express_usd": 20.0,
+      "combined_uniform_set_express_usd": 44.0,
+      "standard_freight_rates_usd": {
+        "rashguard_bulk_standard_usd": 22.0,
+        "shorts_bulk_standard_usd": 18.0,
+        "combined_set_standard_usd": 40.0
+      },
+      "unified_design_rule": {
+        "rule_description": "All 5 IBJJF belt ranks count as 1 SINGLE UNIFIED DESIGN toward the 200 MOQ threshold. Changing only the sublimation dye layers preserves unified design status without triggering separate 200-unit minimums per rank color.",
+        "operational_benefit": "Enables ordering across all 5 belt ranks and sizes XS-2XL within a single 200-unit run, completely avoiding a 1,000-unit factory MOQ barrier."
+      },
+      "all_over_sublimation_surcharge_usd": 0.0
+    },
+    "landed_cost_modeling_bulk_run_200_units": {
+      "base_factory_cost_usd": 4800.0,
+      "air_express_freight_usd": 700.0,
+      "freight_per_unit_usd": 3.5,
+      "customs_and_import_duty_usd": 275.0,
+      "total_landed_usd": 5775.0,
+      "exchange_rate_aud_usd": 0.66,
+      "total_landed_aud": 8750.0,
+      "landed_cogs_per_unit_aud_sea_consolidation": 28.5,
+      "landed_cogs_per_unit_aud_air_express": 36.0
+    },
+    "dtc_retail_channel_economics": {
+      "channel": "Shopify Storefront (Direct-to-Consumer / POD & Bulk Stocked)",
+      "retail_price_aud": 97.5,
+      "retail_price_usd": 65.0,
+      "bulk_stocked_model": {
+        "retail_price_aud": 97.5,
+        "landed_cogs_aud": 28.5,
+        "shopify_and_gateway_processing_fee_aud": 2.6,
+        "net_profit_per_unit_aud": 66.4,
+        "net_margin_percent": 70.8,
+        "rule_108_margin_defense_compliance": "PASS (70.8% net margin satisfies >=70.0% Rule 108 threshold)"
+      },
+      "pod_dropship_fallback_model": {
+        "retail_price_aud": 97.5,
+        "factory_pod_cost_aud": 36.36,
+        "epacket_direct_shipping_aud": 10.14,
+        "landed_pod_cogs_aud": 46.5,
+        "shopify_and_gateway_processing_fee_aud": 2.6,
+        "net_profit_per_unit_aud": 48.4,
+        "net_margin_percent": 49.6
+      },
+      "combat_bundle_dtc_model": {
+        "bundle_components": "1x Short Sleeve Rashguard + 1x No-Gi Fight Shorts",
+        "retail_bundle_price_aud": 172.5,
+        "retail_bundle_price_usd": 115.0,
+        "landed_cogs_both_items_aud": 57.0,
+        "shopify_and_gateway_fee_aud": 4.7,
+        "net_profit_per_bundle_aud": 110.8,
+        "net_margin_percent": 66.1
+      },
+      "break_even_metrics": {
+        "sample_order_break_even_units": 5.2,
+        "narrative": "Selling exactly 5.2 units at DTC retail ($97.50 AUD) fully recovers the entire $348.50 AUD physical sample procurement cost."
+      }
+    },
+    "b2b_academy_wholesale_economics": {
+      "channel": "Academy B2B Wholesale (Gym Bulk Uniform Orders: Melbourne BJJ, Absolute MMA Affiliates)",
+      "deposit_policy": "MANDATORY_50_PERCENT_NON_REFUNDABLE_DEPOSIT. A 50% upfront deposit is legally required and must clear into the business bank account prior to issuing the factory production cut order.",
+      "wholesale_tiers": {
+        "tier_1": {
+          "volume_range": "20 to 49 units",
+          "target_audience": "Boutique academies, competition team batches",
+          "wholesale_price_per_unit_aud": 48.0,
+          "recommended_retail_price_aud": 85.0,
+          "gym_profit_per_unit_aud": 37.0,
+          "gym_gross_margin_percent": 43.5,
+          "factory_bulk_express_cogs_aud": 36.0,
+          "lauburu_net_profit_per_unit_aud": 12.0,
+          "lauburu_net_margin_percent": 25.0,
+          "upfront_deposit_per_unit_aud": 24.0,
+          "deposit_coverage_of_factory_cost_percent": 66.7,
+          "sample_order_scenario_25_units": {
+            "total_invoice_aud": 1200.0,
+            "upfront_deposit_collected_aud": 600.0,
+            "factory_production_cogs_aud": 900.0,
+            "unrecovered_cogs_covered_upon_delivery_aud": 300.0,
+            "total_net_profit_aud": 300.0,
+            "capital_at_risk_aud": 300.0
+          }
+        },
+        "tier_2": {
+          "volume_range": "50+ units",
+          "target_audience": "Major academy rollouts, multi-location gym networks",
+          "wholesale_price_per_unit_aud": 42.0,
+          "recommended_retail_price_aud": 80.0,
+          "gym_profit_per_unit_aud": 38.0,
+          "gym_gross_margin_percent": 47.5,
+          "factory_bulk_express_cogs_aud": 36.0,
+          "lauburu_net_profit_per_unit_aud": 6.0,
+          "lauburu_net_margin_percent": 14.3,
+          "upfront_deposit_per_unit_aud": 21.0,
+          "deposit_coverage_of_factory_cost_percent": 58.3,
+          "sample_order_scenario_50_units": {
+            "total_invoice_aud": 2100.0,
+            "upfront_deposit_collected_aud": 1050.0,
+            "factory_production_cogs_aud": 1800.0,
+            "unrecovered_cogs_covered_upon_delivery_aud": 750.0,
+            "total_net_profit_aud": 300.0,
+            "capital_at_risk_aud": 750.0
+          }
+        }
+      },
+      "negative_dpo_protection_rule": "Strictly prohibit quoting standard retail discounts ($76.00 AUD/unit) to wholesale gym owners. Quoting $76.00 AUD triggers immediate academy rejection and model ELO penalties (-40 pts). Wholesale must always be priced against factory COGS ($36.00 AUD) to guarantee gym margins of 43% to 48% while securing positive Lauburu cashflow."
+    }
+  },
+  "quality_testing_battery_and_sample_gate": {
+    "physical_sample_gate": {
+      "gate_identifier": "LOCKED_UNTIL_PHYSICAL_SAMPLE_APPROVAL",
+      "gate_status": "ACTIVE_LOCKED",
+      "governing_law": "Rule 0 (Zero-Mock & Truth Verification Rule)",
+      "operational_restriction": "Outbound commercial outreach to academy coaches (e.g. Coach Dave at Melbourne BJJ), wholesale invoices, and public customer pre-orders remain STRICTLY LOCKED until Aaron Maher physically receives, inspects, rolls in, and launder-tests the physical Black Belt sample set."
+    },
+    "six_stage_quality_testing_protocol": [
+      {
+        "stage": 1,
+        "test_name": "Optical Macro Visual & Cryptographic Audit",
+        "tooling": "Screen Lens Sovereign (Port 3035 Apple Vision OCR / Macro Inspection)",
+        "target_inspection_zones": [
+          "Sternum Lauburu emblem border and dye penetration radius",
+          "Bicep flatlock seam junction and looper thread tension balance",
+          "Cervical collar herringbone tape junction and internal stitching",
+          "Silicone waistband bonding line and micro-ribbed bead integrity"
+        ],
+        "metrics_evaluated": "Stitch density (12-14 Stitches Per Inch), thread tension balance, zero thread loop protrusion, zero white looper thread show-through",
+        "pass_criteria": "Zero missed stitches, zero contrast white thread visible, SHA256 checksums logged to obsidian_vault/APPS_AND_FEATURES/SCREEN_LENS_LIVE_OBSERVATIONS.md"
+      },
+      {
+        "stage": 2,
+        "test_name": "5-Session Live Sparring Friction Test",
+        "environment": "Authentic BJJ academy tatami (Absolute MMA / Melbourne BJJ mats)",
+        "test_subject": "Aaron Maher (Size M baseline)",
+        "stress_mechanism": "5 separate 60-minute intense no-gi sparring sessions consisting of 5-minute continuous rounds with varied training partners (different body weights, guards, and grips)",
+        "evaluation_metrics": "Surface pilling against vinyl canvas and coarse cotton gis; seam bursting under torque during kimuras, omoplatas, and neck cranks; silicone waistband friction grip retention",
+        "pass_criteria": "Zero popped threads, zero seam structural failure, Martindale pilling resistance Grade 4+, zero waistband ride-up to ribcage during berimbolos or inverted guard play"
+      },
+      {
+        "stage": 3,
+        "test_name": "Neckline Stretch Recovery Test (Anti-Bacon Collar)",
+        "stress_mechanism": "Collar grasped firmly with two hands and stretched laterally to 200% of rest circumference, held for 15 seconds, repeated for 20 consecutive cycles simulating front headlock escapes and guillotine pulls",
+        "evaluation_metrics": "Permanent circumference deformation measured via digital calipers 60s post-test; herringbone twill tape anchor integrity; cervical skin abrasion",
+        "pass_criteria": ">= 98.0% instantaneous elastic recovery, <= 2.0% permanent deformation, zero collar waving ('bacon collar'), zero twill tape delamination"
+      },
+      {
+        "stage": 4,
+        "test_name": "Stretch Opacity White-Out Test",
+        "stress_mechanism": "Manual 250% horizontal elongation across chest and lumbar panel stretched over a 25cm test block under 1,000 lux illumination",
+        "evaluation_metrics": "Unprinted white polyester core show-through under high tensile elongation",
+        "pass_criteria": "Zero unprinted white polyester show-through; deep sublimation dye penetration maintaining pitch black ground color with Delta E < 1.5 color shift"
+      },
+      {
+        "stage": 5,
+        "test_name": "Evaporative Moisture Drying Rate Test",
+        "stress_mechanism": "100ml warm simulated sweat (0.9% saline at 37°C) saturation in ambient 22°C airflow chamber at 50% relative humidity",
+        "evaluation_metrics": "Time required to dissipate 90% of added liquid weight; retained weight when fully saturated",
+        "pass_criteria": "Dissipation of >= 90% water weight within <= 35 minutes; garment maintains lightweight, non-waterlogged profile"
+      },
+      {
+        "stage": 6,
+        "test_name": "3x 40°C Machine Wash & Silicone Delamination Test",
+        "stress_mechanism": "3 consecutive machine wash cycles at 40°C with commercial enzyme detergent (gentle spin, cold rinse) followed by natural ambient line drying",
+        "evaluation_metrics": "Color loss, shrinkage, and silicone micro-ribbed gripper band adhesion",
+        "pass_criteria": "ISO 105-C06 Colorfastness Grade 4.5+; zero silicone gripper lift, zero micro-cracking, zero adhesive failure"
+      }
+    ],
+    "invalidation_conditions": [
+      "Subliminator rejects the $100.00 USD/style sample fee and demands >$150.00 USD/style",
+      "Subliminator substitutes fabric below 240 GSM (e.g. standard 180-200 GSM blanks)",
+      "Subliminator uses white contrast looper thread instead of #141414 tone-on-tone stealth black",
+      "Sample garments exhibit seam popping or fabric white-out under 250% stretch",
+      "Silicone waistband peels, cracks, or loses adhesion after 3x 40°C laundering"
+    ]
+  }
+}

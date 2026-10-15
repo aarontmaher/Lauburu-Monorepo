@@ -1,0 +1,68 @@
+{
+  "timestamp": 1791344623.321416,
+  "updated": "2026-10-07 14:43:43",
+  "step_count": 7679,
+  "harvested_total": 30712,
+  "roles": {
+    "role_1_genetic_moe": {
+      "name": "Genetic MoE Router & Memory Governor",
+      "model_family": "Qwen-MoE-Routing-Gate",
+      "base_params": "3.8B / 14B MoE",
+      "target_device": "L1 Mac Mini / L2 TB4 Bridge",
+      "learning_rate": 0.0002,
+      "target_loss": 0.045,
+      "epochs_completed": 7679,
+      "current_loss": 0.045,
+      "samples_trained": 15362,
+      "zero_mock_enforced": true,
+      "metal_execution_ready": false
+    },
+    "role_2_edge_chat_movesense": {
+      "name": "Edge Chat & Movesense RAG Specialist",
+      "model_family": "Qwen 2.5 Coder 7B + SmolLM2-1.7B",
+      "base_params": "7B Workhorse / 1.7B Edge",
+      "target_device": "L1 Metal GPU (:8081) / L5 MBA (:50053)",
+      "learning_rate": 0.0001,
+      "target_loss": 0.052,
+      "epochs_completed": 7679,
+      "current_loss": 0.052,
+      "samples_trained": 15362,
+      "zero_mock_enforced": true,
+      "metal_execution_ready": false
+    },
+    "role_3_neo_scribe": {
+      "name": "Neo Chronicler & Knowledge Graph Scribe",
+      "model_family": "Qwen 2.5 7B Instruct / Mistral-Nemo-12B",
+      "base_params": "7B Dense / 12B Context",
+      "target_device": "L1 Mac Mini / L3 Linux Head Node",
+      "learning_rate": 0.00015,
+      "target_loss": 0.038,
+      "epochs_completed": 7679,
+      "current_loss": 0.038,
+      "samples_trained": 7687,
+      "zero_mock_enforced": true,
+      "metal_execution_ready": false
+    },
+    "role_4_proven_matrix_swarm": {
+      "name": "Proven Matrix Swarm Coder (Web/Mobile/TUI/Cross-Mesh)",
+      "model_family": "Qwen 2.5 Coder 7B + Huihui 27B Abliterated",
+      "base_params": "7B Dual-Plane / 27B Red Team",
+      "target_device": "Port 8081 / Port 8083 Dual-Plane",
+      "learning_rate": 0.00025,
+      "target_loss": 0.032,
+      "epochs_completed": 7679,
+      "current_loss": 0.032,
+      "samples_trained": 7687,
+      "zero_mock_enforced": true,
+      "metal_execution_ready": false
+    }
+  },
+  "last_run_telemetry": {
+    "execution_engine": "Neo Local AI Training Bridge (MPS + MLX)",
+    "batch_size": 3,
+    "step": 7679,
+    "vram_headroom_gb": 0.28,
+    "metal_available": false,
+    "timestamp": 1791344623.32141
+  }
+}

@@ -65,7 +65,7 @@ def resolve_workspace_root() -> Path:
         if parent.exists() and ((parent / "data").exists() or (parent / "04_data_and_memory").exists() or (parent / "PROJECT.md").exists()):
             return parent
 
-    return Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+    return Path("/Volumes/Lauburu-Monorepo")
 
 
 class AutonomousConsensusMergeEngine:

@@ -18,7 +18,7 @@ import random
 from pathlib import Path
 from typing import Dict, Any, List
 
-WORKSPACE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+WORKSPACE_ROOT = Path("/Volumes/Lauburu-Monorepo")
 UI_STATE_PATH = WORKSPACE_ROOT / "00_core_infrastructure/self_healing_hub/src/dynamic_ui_ux_state.json"
 LORA_OUTPUT_PATH = WORKSPACE_ROOT / "04_data_and_memory/lora_datasets/autonomous_game_ui_optimization.jsonl"
 MOVESENSE_LIVE_PATH = WORKSPACE_ROOT / "00_core_infrastructure/self_healing_hub/src/movesense_live_stream.json"

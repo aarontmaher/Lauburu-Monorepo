@@ -57,7 +57,7 @@ $$\text{Fitness} = \frac{(\text{SWE-bench Verified} \times 0.6 + \text{AST Accur
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                              CANONICAL 8-PARADIGM DISTRIBUTED SHARDING MATRIX                                          │
 ├────┬─────────────────────────────┬─────────────────────────┬──────────────┬──────────────┬─────────────────────────────┤
-│ #  │ Sharding Paradigm           │ Network Requirement     │ 10Gbps TB4   │ Wi-Fi 7 MLO  │ Canonical Mesh Role         │
+│ #  │ Sharding Paradigm           │ Network Requirement     │ 40Gbps TB4   │ Wi-Fi 7 MLO  │ Canonical Mesh Role         │
 ├────┼─────────────────────────────┼─────────────────────────┼──────────────┼──────────────┼─────────────────────────────┤
 │ 1  │ Pipeline Parallelism (PP)   │ Low (16 KB / token)     │ 38.0 tok/s   │ 34.4 tok/s   │ Depth Layer Splitting       │
 │ 2  │ Tensor Parallelism (TP)     │ Extreme (160 barriers)  │ 15.9 tok/s   │ 4.7 tok/s    │ Thunderbolt 4 DMA Exclusive │

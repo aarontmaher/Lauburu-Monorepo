@@ -24,7 +24,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any
 
-REPO_DIR = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_DIR = Path("/Volumes/Lauburu-Monorepo")
 SESSION_LOGS = REPO_DIR / "session_logs"
 SESSION_LOGS.mkdir(parents=True, exist_ok=True)
 
@@ -68,7 +68,7 @@ def execute_samsung_s20_exo_debate() -> Dict[str, Any]:
             "VRAM & SHARDING AUDIT: The Samsung S20+ is assigned 9.0 GB AI Capacity in our 7-Device Hardware Topology "
             "(Layer 7: Samsung S20+ Dedicated UI Tester & Compute Worker). In an Exo pipeline for models like Gemma 4 31B MoE, "
             "DeepSeek-R1 32B, or Llama 3.3 70B, the S20+ can host 8-16 transformer layers or act as a dedicated MoE gating "
-            "expert. When sharding over Tailscale (`100.84.40.95:52414`) or USB tether router bridge (`192.168.8.x`), "
+            "expert. When sharding over Tailscale (`100.78.206.96:52414`) or USB tether router bridge (`192.168.8.x`), "
             "the 10Gbps Thunderbolt host (M4 Mac Mini) handles the heavy initial prefill while the S20+ participates in "
             "sequential ring token generation with zero host VRAM overflow."
         ),

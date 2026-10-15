@@ -41,11 +41,11 @@ To achieve sub-millisecond local execution without eating GPU VRAM or burning po
 │                              7-LAYER HARDWARE NPU ACCELERATION MATRIX                                  │
 ├───────────────────────┬────────────────────────────┬─────────────────────┬─────────────────────────────┤
 │ **L1 Mac Mini**       │ 16-Core Apple Neural Engine│ CoreML / MLX (38 T) │ INT8 Token Embeddings & Ingest│
-│ **L2 MacBook Pro**    │ 16-Core Apple Neural Engine│ CoreML / 10Gbps TB4 │ Heavy Model Tensor Sharding │
+│ **L2 MacBook Pro**    │ 16-Core Apple Neural Engine│ CoreML / 40Gbps TB4 │ Heavy Model Tensor Sharding │
 │                       │ + Metal GPU (16GB RAM)     │ DMA (0.27ms RTT)    │ & Speculative Draft Verifier│
-│ **L3 Linux Node**     │ AMD Ryzen NPU / Vulkan     │ OpenVINO / GGML     │ Docker Subsystem MatMul     │
+│ **L3 Linux Node**     │ Intel 2018 Mac Mini NPU / Vulkan     │ OpenVINO / GGML     │ Docker Subsystem MatMul     │
 │ **L4 Linux Tablet**   │ Mali NPU / Vulkan GPU      │ OpenCL / LiteRT     │ Touch Sensor Buffer Guard   │
-│ **L5 MacBook Air**    │ 16-Core Apple Neural Engine│ CoreML / MLX (38 T) │ Background LoRA Gradient MPS│
+│ **L2 MacBook Pro**    │ 16-Core Apple Neural Engine│ CoreML / MLX (38 T) │ Background LoRA Gradient MPS│
 │ **L6 Pixel 10 Pro**   │ Google Tensor G5 Edge TPU  │ Android LiteRT/NNAPI│ 512Hz ECG DSP & Vision OCR  │
 │ **L7 Samsung S20**    │ Exynos NPU / GPU OpenCL    │ Termux / LiteRT     │ Dedicated OpenClaw UI Tester│
 └───────────────────────┴────────────────────────────┴─────────────────────┴─────────────────────────────┘

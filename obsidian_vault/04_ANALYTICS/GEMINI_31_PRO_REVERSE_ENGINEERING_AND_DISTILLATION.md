@@ -9,11 +9,11 @@ sandbox_path: "01_apps/screen_lens/sandbox_evolution/reverse_engineering/"
 
 ## 1. Executive Summary & Sandboxed Clean-Room Protocol
 Under the strict isolation requirements of the [`closed-source-reverse-engineering`](file:///Users/aaron/.gemini/config/skills/closed-source-reverse-engineering/SKILL.md) skill and **Rule #4 (Isolated Sandbox Invariant)**, we reverse-engineered the core multimodal reasoning and 2,000,000-token context mechanisms of **Google Gemini 3.1 Pro** inside:
-`/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/`
+`/Volumes/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/`
 
-- **Tier A Specification:** [`specs/SPEC_GEMINI_31_PRO_DEEP_MULTIMODAL_REASONING.md`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/specs/SPEC_GEMINI_31_PRO_DEEP_MULTIMODAL_REASONING.md)
-- **Tier B Clean-Room Implementation:** [`clean_room_impl/gemini_31_pro_clean_room_engine.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/clean_room_impl/gemini_31_pro_clean_room_engine.py)
-- **Specialized DPO Dataset:** [`lora_datasets/specialized/gemini_31_pro_reverse_engineered_dpo.jsonl`](file:///Users/aaron/DFS_UNIFIED/lora_datasets/specialized/gemini_31_pro_reverse_engineered_dpo.jsonl)
+- **Tier A Specification:** [`specs/SPEC_GEMINI_31_PRO_DEEP_MULTIMODAL_REASONING.md`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/specs/SPEC_GEMINI_31_PRO_DEEP_MULTIMODAL_REASONING.md)
+- **Tier B Clean-Room Implementation:** [`clean_room_impl/gemini_31_pro_clean_room_engine.py`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/sandbox_evolution/reverse_engineering/clean_room_impl/gemini_31_pro_clean_room_engine.py)
+- **Specialized DPO Dataset:** [`lora_datasets/specialized/gemini_31_pro_reverse_engineered_dpo.jsonl`](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/data/specialized/gemini_31_pro_reverse_engineered_dpo.jsonl)
 
 ---
 

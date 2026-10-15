@@ -43,7 +43,7 @@ class DarkFleetHTTPHandler(SimpleHTTPRequestHandler):
         # API: WoL Wake
         if path == "/api/wol/wake":
             device = params.get("device", [""])[0]
-            cmd = f"python3 '{REPO_ROOT}/06_scripts_and_tooling/mesh/wol_manager.py' --wake '{device}'"
+            cmd = f"python3 '{REPO_ROOT}/06_scripts_and_tooling/mesh/canonical_network_resurrection_engine.py' --wake '{device}'"
             res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -54,7 +54,7 @@ class DarkFleetHTTPHandler(SimpleHTTPRequestHandler):
 
         # API: WoL Wake All
         if path == "/api/wol/wake-all":
-            cmd = f"python3 '{REPO_ROOT}/06_scripts_and_tooling/mesh/wol_manager.py' --wake-all"
+            cmd = f"python3 '{REPO_ROOT}/06_scripts_and_tooling/mesh/canonical_network_resurrection_engine.py' --wake-all"
             res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -68,7 +68,7 @@ class DarkFleetHTTPHandler(SimpleHTTPRequestHandler):
             fleet_template = [
                 {"id": "Mac_Node_Local", "name": "Host Mac Mini M4", "role": "Local Neural Engine & Master Ingress", "os": "macOS 15.5", "ip": "192.168.8.230", "tailscale": "100.119.199.76", "can_wol": False, "wol_key": None},
                 {"id": "MacBook_Pro_Vault", "name": "MacBook Pro M1 Max Vault", "role": "NVMe Storage & 32GB Pooled VRAM", "os": "macOS 15.5", "ip": "192.168.8.127", "tailscale": "100.103.212.21", "can_wol": True, "wol_key": "macbook_pro_vault"},
-                {"id": "Linux_Head_Node", "name": "Linux Head Node (Ryzen 7)", "role": "Continuous AI Training Server (16 Threads)", "os": "Ubuntu 24.04 (GNOME)", "ip": "192.168.8.224", "tailscale": "100.101.39.98", "can_wol": True, "wol_key": "linux_head_node"},
+                {"id": "Linux_Mini", "name": "Linux Head Node (Ryzen 7)", "role": "Continuous AI Training Server (16 Threads)", "os": "Ubuntu 24.04 (GNOME)", "ip": "192.168.8.224", "tailscale": "100.101.39.98", "can_wol": True, "wol_key": "linux_head_node"},
                 {"id": "Pixel_10_Pro_XL", "name": "Google Pixel 10 Pro XL", "role": "Mobile Roaming Node (Tensor G5)", "os": "Android 15 (Night UI)", "ip": "100.73.38.87:5555", "tailscale": "100.73.38.87", "can_wol": False, "wol_key": None},
                 {"id": "MacBook_Air", "name": "MacBook Air M2 Node", "role": "Edge AI Worker (8 Cores)", "os": "macOS 15.5", "ip": "192.168.8.222", "tailscale": "100.93.158.96", "can_wol": True, "wol_key": "macbook_air"},
                 {"id": "Samsung_S20_Plus", "name": "Samsung Galaxy S20+", "role": "Mobile Tester & ADB Daemon", "os": "Android 13 (OneUI)", "ip": "100.84.40.95:5555", "tailscale": "100.84.40.95", "can_wol": False, "wol_key": None},

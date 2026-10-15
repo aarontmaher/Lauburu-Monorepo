@@ -1,18 +1,61 @@
 {
-  "timestamp_utc": "2026-09-01T08:08:22Z",
+  "connected": false,
   "device_name": "Movesense 261030002013",
-  "device_address": "C1DB5043-8F89-88E8-46A3-BBD4ED83FC88",
-  "connected": true,
-  "packet_count": 274,
-  "heart_rate_bpm": 97,
-  "rr_intervals_recent": [
-    1331.0546875,
-    257.8125,
-    1156.25,
-    414.0625,
-    338.8671875
-  ],
-  "rmssd_ms": 861.46,
-  "dfa_alpha1": 1.05,
-  "stream_mode": "LIVE_BLE_HARDWARE (Rule #0 Certified)"
+  "device_address": "74:92:BA:11:36:D6",
+  "battery_pct": 78,
+  "heart_rate_bpm": null,
+  "rmssd_ms": null,
+  "dfa_alpha1": null,
+  "blood_pressure": null,
+  "readiness_score": null,
+  "tinyml": {
+    "beat_type": "STANDBY",
+    "training_zone": "Standby (Waiting for Sensor)",
+    "ectopic_density_per_min": 0.0,
+    "cardiac_drift_pct": 0.0,
+    "parasympathetic_recovery_tau": 0.0,
+    "signal_quality_sqi_pct": 100.0,
+    "alpha1_slope_per_min": 0.0,
+    "total_beats_processed": 0
+  },
+  "kinematics": {
+    "accelerometer_g": null,
+    "gyroscope_dps": null,
+    "total_dynamic_g": null,
+    "instant_jerk_g": null,
+    "action_spikes_count": 0,
+    "recent_spikes": []
+  },
+  "workout_session": {
+    "active": false,
+    "session_id": null,
+    "start_time": null,
+    "duration_seconds": 0,
+    "zone2_minutes": 0.0,
+    "zone3_plus_minutes": 0.0
+  },
+  "last_recorded_session": {
+    "session_id": "gym_workout_1791107764",
+    "timestamp": "2026-10-04T09:56:04.830001+00:00",
+    "heart_rate_bpm": 128.0,
+    "rmssd_ms": 45.0,
+    "blood_pressure": "139/87 mmHg (MAP 104.3)",
+    "impact_g": 0.999,
+    "state": "LIVE_GYM_STANDALONE",
+    "accel": {
+      "x": 0.15,
+      "y": 0.82,
+      "z": -0.55
+    },
+    "gyro": {
+      "x": 3.2,
+      "y": -1.5,
+      "z": 0.8
+    },
+    "dfa_alpha1": 1.0,
+    "beat_classification": "PREMATURE_ATRIAL_CONTRACTION"
+  },
+  "stream_mode": "STANDBY (-- WAITING FOR SENSOR --)",
+  "rule_0_zero_mock": true,
+  "timestamp_utc": "2026-10-15T04:08:52.760677+00:00"
 }

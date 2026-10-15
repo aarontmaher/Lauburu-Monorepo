@@ -13,8 +13,8 @@ BOLD='\033[1m'
 NC='\033[0m'
 
 IDE_ROOT="/Users/aaron/teamwork_projects/unified_resilient_serial_terminal_ide"
-MONOREPO_ROOT="/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
-RUST_BIN="${IDE_ROOT}/src/cockpit/target/release/sovereign_cockpit"
+MONOREPO_ROOT="/Volumes/Lauburu-Monorepo"
+RUST_BIN="${IDE_ROOT}/src/console/target/release/sovereign_console"
 
 echo -e "${BOLD}${CYAN}================================================================================"
 echo -e "🛰️  LAUBURU PHYSICAL MESH: C/C++ & RUST FULL SELF-HEAL, BUILD & HEALTH CHECK"
@@ -25,16 +25,31 @@ echo -e "=======================================================================
 # ------------------------------------------------------------------------------
 echo -e "\n${BOLD}${BLUE}[STEP 1/4] Building Fundamental C/C++ & Rust Network Core...${NC}"
 
-if [ -f "${IDE_ROOT}/src/cockpit/Cargo.toml" ]; then
-    echo -e "  ⚙️  Compiling Native Rust Ratatui Cockpit & Network Core (Release Mode)..."
-    cargo build --release --manifest-path "${IDE_ROOT}/src/cockpit/Cargo.toml" --quiet
-    echo -e "  ${GREEN}✅ Rust Ratatui Sovereign Cockpit binary compiled successfully:${NC} ${RUST_BIN}"
+if [ -f "${IDE_ROOT}/src/console/Cargo.toml" ]; then
+    echo -e "  ⚙️  Compiling Native Rust Ratatui Console & Network Core (Release Mode)..."
+    cargo build --release --manifest-path "${IDE_ROOT}/src/console/Cargo.toml" --quiet
+    echo -e "  ${GREEN}✅ Rust Ratatui Sovereign Console binary compiled successfully:${NC} ${RUST_BIN}"
 fi
 
 # Verify C/C++ & Native Serial PTY Multiplexer
 if [ -f "${MONOREPO_ROOT}/00_core_infrastructure/omni_serial_terminal_and_layered_self_healer.py" ]; then
     echo -e "  ${GREEN}✅ Fundamental C/C++ POSIX Virtual PTY Multiplexer verified.${NC}"
 fi
+
+# Pre-flight Tri-Vault Storage Verification (Rule 2 & 5)
+echo -e "  🏛️  Verifying Tri-Vault Storage Health (Obsidian, PySpark, Git)..."
+python3 -c "
+import os, shutil, sys
+obs = os.path.exists('${MONOREPO_ROOT}/obsidian_vault/Index.md')
+lake = os.path.isdir('/Volumes/Lauburu-Monorepo/04_data_and_memory/data')
+free_gb = shutil.disk_usage('/Users/aaron').free / (1024**3)
+lock_file = '${MONOREPO_ROOT}/.git/index.lock'
+if os.path.exists(lock_file):
+    try: os.remove(lock_file)
+    except: pass
+healthy = obs and lake and free_gb >= 2.0
+print(f'     Obsidian Index: {\"✅ OK\" if obs else \"❌ MISSING\"} | Lake: {\"✅ OK\" if lake else \"❌ MISSING\"} | Free: {free_gb:.1f} GB | Tri-Vault: {\"✅ HEALTHY\" if healthy else \"⚠️ DEGRADED\"}')
+"
 
 # ------------------------------------------------------------------------------
 # STEP 2: AUTONOMOUS PHYSICAL SELF-HEALING
@@ -88,7 +103,28 @@ fi
 echo -e "\n${BOLD}${BLUE}[STEP 3/4] Running 7-Layer Physical Mesh Health Check Matrix...${NC}"
 
 python3 -c "
-import subprocess, re, platform
+import subprocess, re, socket
+
+def ping_host(ip, timeout=0.4):
+    try:
+        p = subprocess.run(['ping', '-c', '1', '-W', str(int(timeout*1000)), ip], capture_output=True, timeout=timeout+0.2)
+        if p.returncode == 0:
+            m = re.search(r'time=([0-9\.]+) ms', p.stdout.decode('utf-8', errors='ignore'))
+            rtt = f'{m.group(1)}ms' if m else '<1ms'
+            return True, rtt
+        return False, '--'
+    except:
+        return False, '--'
+
+def check_port(host, port, timeout=0.3):
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(timeout)
+        ok = (s.connect_ex((host, port)) == 0)
+        s.close()
+        return ok
+    except:
+        return False
 
 def get_darwin_ram():
     try:
@@ -105,67 +141,78 @@ def get_darwin_ram():
         return (free_p + inactive_p + spec_p) * page_size / (1024**3)
     except: return 0.0
 
+# GW: Core Router
+gw_ok, gw_rtt = ping_host('192.168.8.1', 0.3)
+print(f'  GW [GL.iNet_Router]:  IP 192.168.8.1 | Status: {\"✅ LIVE (\" + gw_rtt + \")\" if gw_ok else \"⚪ STANDBY\"}')
+
+# L1: Mac Mini Host
 ram_gb = get_darwin_ram()
-sanctuary_ok = ram_gb >= 2.0  # Dynamic sanity floor
-print(f'  L1 [Mac_Node]:        RAM Sanctuary: {ram_gb:.2f} GB Free | Status: {\"✅ SAFE\" if sanctuary_ok else \"⚠️ LOW\"}')
+sanctuary_ok = ram_gb >= 2.0
+print(f'  L1 [Mac_Node]:        Host RAM Sanctuary: {ram_gb:.2f} GB Free | Status: {\"✅ SAFE\" if sanctuary_ok else \"⚠️ LOW\"}')
 
-# Check Local Model Server Port 8081
-try:
-    p = subprocess.run(['curl', '-s', 'http://localhost:8081/health'], capture_output=True, timeout=1.0)
-    print('  L1 [Model_Engine]:    Port 8081 (Qwen 2.5/3.8 Coder GGUF): ✅ LIVE (0ms Local)')
-except:
-    print('  L1 [Model_Engine]:    Port 8081: ⚪ STANDBY')
-
-# Dynamic TB4 Bridge Peer Discovery on bridge0
+# L2: MacBook Pro (TB4 Bridge)
 tb4_status = '⚪ STANDBY'
-active_tb_ips = []
-try:
-    arp_p = subprocess.run(['arp', '-an'], capture_output=True, text=True, timeout=1.0)
-    for line in arp_p.stdout.splitlines():
-        if 'on bridge0' in line:
-            m = re.search(r'\((169\.254\.[0-9]+\.[0-9]+)\)', line)
-            if m:
-                active_tb_ips.append(m.group(1))
-    
-    for tip in active_tb_ips:
-        p = subprocess.run(['ping', '-c', '1', '-W', '400', tip], capture_output=True, timeout=0.6)
-        if p.returncode == 0:
-            m_time = re.search(r'time=([0-9\.]+) ms', p.stdout.decode('utf-8', errors='ignore'))
-            rtt = m_time.group(1) if m_time else '<1'
-            tb4_status = f'✅ LIVE (10Gbps TB4 {rtt}ms RTT via {tip})'
-            break
-except:
-    pass
-print(f'  L2 [MacBook_Pro]:     TB4 Bridge ({len(active_tb_ips)} peers) | Status: {tb4_status}')
+for tip in ['10.0.0.8', '10.1.0.11', '192.168.8.176']:
+    ok, rtt = ping_host(tip, 0.4)
+    if ok:
+        tb4_status = f'✅ LIVE (10Gbps TB4 {rtt} via {tip})' if tip.startswith('192.168.2') else f'✅ LIVE ({rtt} via {tip})'
+        break
+print(f'  L2 [MacBook_Pro]:     TB4 Bridge / LAN | Status: {tb4_status}')
 
-# Ping Linux Head Node L3
-try:
-    p = subprocess.run(['ping', '-c', '1', '-W', '300', '100.101.39.98'], capture_output=True, timeout=0.5)
-    l3_status = '✅ LIVE (Docker/Ray Hub)' if p.returncode == 0 else '⚪ STANDBY'
-except:
-    l3_status = '⚪ STANDBY'
-print(f'  L3 [Linux_Head_Node]: Tailscale 100.101.39.98 | Status: {l3_status}')
+# L3: Linux Head Node
+l3_ok, l3_rtt = ping_host('10.1.0.12', 0.4)
+print(f'  L3 [Linux_Head_Node]: Tailscale 10.1.0.12 | Status: {\"✅ LIVE (Docker Hub / \" + l3_rtt + \")\" if l3_ok else \"⚪ STANDBY\"}')
 
-# Ping Android L7 / S20
-try:
-    p = subprocess.run(['ping', '-c', '1', '-W', '300', '100.84.40.95'], capture_output=True, timeout=0.5)
-    s20_status = '✅ LIVE (Shizuku/ADB Target)' if p.returncode == 0 else '⚪ STANDBY'
-except:
-    s20_status = '⚪ STANDBY'
-print(f'  L7 [Samsung_S20]:     Tailscale 100.84.40.95 | Status: {s20_status}')
+# L4: Linux Tablet
+l4_ok, l4_rtt = ping_host('192.168.8.54', 0.4)
+if not l4_ok:
+    l4_ok, l4_rtt = ping_host('100.81.92.125', 0.4)
+print(f'  L4 [Linux_Tablet]:    Wi-Fi / Tailscale | Status: {\"✅ LIVE (\" + l4_rtt + \")\" if l4_ok else \"⚪ STANDBY\"}')
+
+# L5: MacBook Air
+l5_ok, l5_rtt = ping_host('10.0.0.5', 0.4)
+if not l5_ok:
+    l5_ok, l5_rtt = ping_host('100.121.202.34', 0.4)
+if not l5_ok:
+    l5_ok, l5_rtt = ping_host('192.168.8.34', 0.4)
+print(f'  L5 [MacBook_Air]:     TB4 / Tailscale 100.121.202.34 | Status: {\"✅ LIVE (Metal Node / \" + l5_rtt + \")\" if l5_ok else \"⚪ STANDBY\"}')
+
+# L6: Pixel 10 Pro XL
+l6_ok, l6_rtt = ping_host('10.1.0.13', 0.3)
+print(f'  L6 [Pixel_10_Pro]:    Tailscale 10.1.0.13  | Status: {\"✅ LIVE (Edge TPU / \" + l6_rtt + \")\" if l6_ok else \"⚪ STANDBY\"}')
+
+# L7: Samsung S20
+l7_ok, l7_rtt = ping_host('10.1.0.14', 0.4)
+print(f'  L7 [Samsung_S20]:     Tailscale 10.1.0.14  | Status: {\"✅ LIVE (Shizuku / \" + l7_rtt + \")\" if l7_ok else \"⚪ STANDBY\"}')
+
+# Local Model Server Engines Check
+p8081 = check_port('127.0.0.1', 8081)
+p8082 = check_port('127.0.0.1', 8082)
+p8083 = check_port('127.0.0.1', 8083)
+p8087 = check_port('127.0.0.1', 8087)
+p50052 = check_port('127.0.0.1', 50052)
+print(f'  AI [Port_8081]:       Qwen 3.8 Standard Master Orchestrator: {\"✅ LIVE (llama.cpp)\" if p8081 else \"⚪ STANDBY\"}')
+print(f'  AI [Port_8082]:       prima.cpp PRP Ring / Qwen MoE 80B:     {\"✅ LIVE (TB4 DMA Ring)\" if p8082 else \"⚪ STANDBY\"}')
+print(f'  AI [Port_8083]:       Qwen 3.8 Max Abliterated Adversary:    {\"✅ LIVE (Isolated)\" if p8083 else \"⚪ STANDBY\"}')
+print(f'  AI [Port_8087]:       Qwen Math / Flash-Next Fast Streamer:  {\"✅ LIVE (llama.cpp)\" if p8087 else \"⚪ STANDBY\"}')
+print(f'  AI [Port_50052]:      llama.cpp RPC Sharding Daemon:         {\"✅ LIVE (RPC Ready)\" if p50052 else \"⚪ STANDBY\"}')
 "
 
 # ------------------------------------------------------------------------------
-# STEP 4: LAUNCH / DISPLAY NATIVE RUST RATATUI COCKPIT
+# STEP 4: LAUNCH / DISPLAY NATIVE RUST RATATUI CONSOLE
 # ------------------------------------------------------------------------------
-echo -e "\n${BOLD}${BLUE}[STEP 4/4] Launching Sovereign Lens Native Rust Ratatui Cockpit...${NC}"
+echo -e "\n${BOLD}${BLUE}[STEP 4/4] Launching Sovereign Lens Native Rust Ratatui Console...${NC}"
 
-if [ "$1" == "--watch" ] || [ "$1" == "--tui" ] || [ "$1" == "-w" ]; then
-    echo -e "  🚀 Entering Live Interactive Ratatui Cockpit (Press 'q' or Esc to exit)..."
-    exec "${RUST_BIN}"
+if [ -f "${RUST_BIN}" ]; then
+    if [ "$1" == "--watch" ] || [ "$1" == "--tui" ] || [ "$1" == "-w" ]; then
+        echo -e "  🚀 Entering Live Interactive Ratatui Console (Press 'q' or Esc to exit)..."
+        exec "${RUST_BIN}"
+    else
+        echo -e "  📊 Rendering Release Snapshot..."
+        "${RUST_BIN}" --snapshot
+    fi
 else
-    echo -e "  📊 Rendering Release Snapshot..."
-    "${RUST_BIN}" --snapshot
+    echo -e "  ℹ️  Rust Ratatui Sovereign Console binary not found (${RUST_BIN}), health verification complete."
 fi
 
 echo -e "\n${BOLD}${GREEN}================================================================================"

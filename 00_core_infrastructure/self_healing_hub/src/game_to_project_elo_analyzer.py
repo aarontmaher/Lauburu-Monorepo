@@ -12,9 +12,9 @@ import time
 import math
 from typing import Dict, List, Any
 
-ARENA_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
-PROJECT_ELO_MAP_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/game_to_project_elo_map.json"
-LORA_TRAINING_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
+ARENA_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
+PROJECT_ELO_MAP_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/game_to_project_elo_map.json"
+LORA_TRAINING_FILE = "/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl"
 
 class GameToProjectELOAnalyzer:
     def __init__(self):
@@ -142,7 +142,7 @@ class GameToProjectELOAnalyzer:
         # (Moves best models into SeaweedFS Thunderbolt Datacenter)
         try:
             import subprocess
-            sync_script = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/champion_vault_sync.py"
+            sync_script = "/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/champion_vault_sync.py"
             if os.path.exists(sync_script):
                 print(f"Triggering Champion Vault Sync: {sync_script}")
                 subprocess.run([sync_script], check=True)

@@ -29,7 +29,7 @@ updated: "2026-09-07"
 │    • Ingestion: Screen Lens frame captures, ShowUI bounding box coordinates│
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 2. 80-LAYER 72B DENSE/HYBRID TRANSFORMER BACKBONE                           │
-│    • Sharding: Prima.cpp PRP (Pipelined-Ring Parallelism) over 10Gbps TB4   │
+│    • Sharding: Prima.cpp PRP (Pipelined-Ring Parallelism) over 40Gbps TB4   │
 │    • Nodes: Mac Mini Host (L1, 24 GB) <-> MacBook Pro (L2, 16 GB / 285 GB) │
 │    • Context Window: 131,072 tokens (128K) with 2-bit KIVI KV-Cache         │
 │    • Endpoints: Port 8085 (Direct Endpoint) | Port 8082 (Multiplexed Host)  │

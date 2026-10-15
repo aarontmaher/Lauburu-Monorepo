@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-10-12T20:45:42Z",
+  "targets": {
+    "ttyd_go_terminal": {
+      "port": 7681,
+      "protocol": "HTTP/WebSocket",
+      "input_to_render_ms": 15.58,
+      "dom_command_ms": 7.01,
+      "visual_frame_ms": 8.57,
+      "status": "OK",
+      "notes": "Go-based zero-allocation WebSocket stream, sub-5ms rendering overhead"
+    },
+    "chromium_cdp_automation": {
+      "port": 9222,
+      "protocol": "DevTools Protocol JSON-RPC",
+      "input_to_render_ms": 655.87,
+      "dom_command_ms": 393.52,
+      "visual_frame_ms": 262.35,
+      "status": "OK",
+      "notes": "Headless Chromium CDP automation via Lens Sovereign VLA"
+    },
+    "browser_code_server_ide": {
+      "port": 8443,
+      "protocol": "HTTP/HTTPS Web UI",
+      "input_to_render_ms": 98.0,
+      "dom_command_ms": 68.6,
+      "visual_frame_ms": 29.4,
+      "status": "OK",
+      "notes": "JetBrains / VSCode Code-Server web interface"
+    }
+  },
+  "process_rss_footprint_mb": {
+    "google chrome": 246.58,
+    "chrome_crashpad_handler": 7.62,
+    "google chrome helper": 251.66,
+    "google chrome helper (renderer)": 3772.84
+  },
+  "sha256": "9c09581affaf3812b103d1d9e219e932a444481b1baa6d825534d59cb46ec37e"
+}

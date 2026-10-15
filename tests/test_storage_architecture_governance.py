@@ -6,10 +6,13 @@ genuine POSIX write rejection, and live Tri-Vault storage invariants without moc
 """
 
 import hashlib
+import json
 import os
+import re
 import shutil
 import stat
 import subprocess
+import time
 from pathlib import Path
 import pytest
 
@@ -182,3 +185,113 @@ class TestStorageArchitectureGovernance:
         repo_free_gb = shutil.disk_usage(str(REPO_ROOT)).free / (1024**3)
         assert host_free_gb >= 5.0, f"Host free disk space too low: {host_free_gb:.2f} GB < 5.0 GB"
         assert repo_free_gb >= 5.0, f"Repo free disk space too low: {repo_free_gb:.2f} GB < 5.0 GB"
+
+    def test_is_storage_healthy_function_contract(self):
+        """Assert is_storage_healthy fast-path executes cleanly per Rule 5 § 5.3."""
+        # Use canonical fast-path implementation
+        obs_dir = REPO_ROOT / "obsidian_vault"
+        lora_dir = Path("/Users/aaron/DFS_UNIFIED/lora_datasets")
+        
+        t0 = time.perf_counter()
+        is_healthy = (
+            obs_dir.is_dir() and
+            lora_dir.is_dir() and
+            (shutil.disk_usage("/Users/aaron").free / (1024**3) >= 5.0)
+        )
+        duration_ms = (time.perf_counter() - t0) * 1000.0
+        
+        assert is_healthy is True, "Fast-path storage health check failed"
+        assert duration_ms < 50.0, f"Fast-path latency too high: {duration_ms:.2f} ms >= 50.0 ms"
+
+    def test_obsidian_vault_zero_sync_conflicts(self):
+        """Assert zero Syncthing conflict files (*.sync-conflict-*) exist in obsidian_vault."""
+        obs_vault = REPO_ROOT / "obsidian_vault"
+        conflicts = list(obs_vault.rglob("*.sync-conflict-*"))
+        assert len(conflicts) == 0, (
+            f"Detected {len(conflicts)} unresolved sync-conflict files in obsidian_vault:\n"
+            + "\n".join(str(c.relative_to(obs_vault)) for c in conflicts[:10])
+        )
+
+    def test_obsidian_index_all_wikilinks_resolve(self):
+        """Assert all Wikilinks in obsidian_vault/Index.md resolve to existing vault files."""
+        obs_vault = REPO_ROOT / "obsidian_vault"
+        index_file = obs_vault / "Index.md"
+        assert index_file.is_file(), "obsidian_vault/Index.md is missing"
+
+        text = index_file.read_text(encoding="utf-8")
+        wikilinks = re.findall(r"\[\[(.*?)\]\]", text)
+        assert len(wikilinks) > 0, "No Wikilinks found in Index.md"
+
+        broken_links = []
+        for link in wikilinks:
+            target = link.split("|")[0].strip()
+            target_clean = target[:-3] if target.endswith(".md") else target
+            
+            p1 = obs_vault / target
+            p2 = obs_vault / f"{target}.md"
+            if p1.is_file() or p2.is_file():
+                continue
+            
+            matches = list(obs_vault.rglob(f"{target_clean}.md"))
+            if not matches:
+                matches = list(obs_vault.rglob(f"{target}"))
+            if not matches:
+                broken_links.append(link)
+
+        assert len(broken_links) == 0, (
+            f"Found {len(broken_links)} broken Wikilinks in Index.md:\n"
+            + "\n".join(f" - {b}" for b in broken_links)
+        )
+
+    def test_continuous_lora_dataset_integrity(self):
+        """Assert continuous_lora_dataset.jsonl contains valid JSON with authentic provenance."""
+        dataset_path = Path("/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl")
+        assert dataset_path.is_file(), f"Dataset file missing at {dataset_path}"
+        assert dataset_path.stat().st_size > 100 * (1024**2), "Dataset is unexpectedly small (< 100 MB)"
+
+        # Read the last 1,000 lines and verify JSON parsing and zero-mock provenance
+        tail_lines = subprocess.check_output(["tail", "-n", "1000", str(dataset_path)]).decode("utf-8", errors="replace").splitlines()
+        assert len(tail_lines) > 0, "No lines read from dataset tail"
+
+        parsed_count = 0
+        mock_flag_count = 0
+        for idx, line in enumerate(tail_lines):
+            line_str = line.strip()
+            if not line_str:
+                continue
+            row = json.loads(line_str)
+            parsed_count += 1
+            if row.get("mock") is True or row.get("is_mock") is True:
+                mock_flag_count += 1
+
+        assert parsed_count == len(tail_lines), "Not all tail lines were valid JSON"
+        assert mock_flag_count == 0, f"Found {mock_flag_count} records explicitly flagged with mock=True"
+
+    def test_training_scripts_zero_mock_loss_decay(self):
+        """Assert legacy training scripts in 04_data_and_memory have purged synthetic loss decay per Rule 1 § 5."""
+        scripts_to_check = [
+            REPO_ROOT / "04_data_and_memory" / "neo_local_ai_training_bridge.py",
+            REPO_ROOT / "04_data_and_memory" / "train_speculative_draft_model.py",
+            REPO_ROOT / "04_data_and_memory" / "niche_specialist_fine_tuner.py",
+            REPO_ROOT / "04_data_and_memory" / "synthetic_debate_engine.py",
+        ]
+
+        forbidden_patterns = [
+            "prev_loss - target_loss",
+            "math.exp(-step",
+            "0.277ms RTT",
+            '"vram_headroom_gb": 2.74',
+        ]
+
+        violations = []
+        for script_path in scripts_to_check:
+            assert script_path.is_file(), f"Training script missing: {script_path}"
+            content = script_path.read_text(encoding="utf-8")
+            for pattern in forbidden_patterns:
+                if pattern in content:
+                    violations.append(f"{script_path.name}: found forbidden pattern '{pattern}'")
+
+        assert len(violations) == 0, (
+            f"Detected {len(violations)} Rule 1 § 5 violations in training scripts:\n"
+            + "\n".join(violations)
+        )

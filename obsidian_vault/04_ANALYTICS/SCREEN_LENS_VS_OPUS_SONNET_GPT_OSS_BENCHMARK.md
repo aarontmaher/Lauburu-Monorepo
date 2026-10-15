@@ -1,7 +1,7 @@
 ---
 title: "Screen Lens Sovereign vs. Frontier Giants & OSS Models Empirical Benchmark"
 tags: [screen_lens, claude_sonnet, claude_opus, gpt4o, qwen_vl, deepseek_vl, benchmark, truth_audit, reverse_engineering]
-created_at: "2026-09-09 07:39:11 UTC"
+created_at: "2026-09-17 13:19:07 UTC"
 sha256_proof: "fef9c9ce6ed0f78229f2d0684887e1d4cccef30d6872947cecf48769b49b83d4"
 ---
 

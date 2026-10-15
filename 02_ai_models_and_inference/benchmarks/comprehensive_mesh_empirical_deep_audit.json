@@ -1,0 +1,159 @@
+{
+  "timestamp": "2026-09-03T13:49:20Z",
+  "speculative_decoding_empowerment": {
+    "Qwen 2.5 Coder 32B": {
+      "SmolLM2 135M": {
+        "effective_tps": 97.1,
+        "speedup_multiplier": 1.51,
+        "acceptance_rate_pct": 52.0,
+        "extra_vram_mb": 150
+      },
+      "SmolLM2 360M": {
+        "effective_tps": 92.0,
+        "speedup_multiplier": 1.43,
+        "acceptance_rate_pct": 58.0,
+        "extra_vram_mb": 350
+      },
+      "Qwen 2.5 0.5B": {
+        "effective_tps": 93.0,
+        "speedup_multiplier": 1.45,
+        "acceptance_rate_pct": 62.0,
+        "extra_vram_mb": 600
+      },
+      "Qwen 2.5 Coder 1.5B": {
+        "effective_tps": 95.8,
+        "speedup_multiplier": 1.49,
+        "acceptance_rate_pct": 76.0,
+        "extra_vram_mb": 1000
+      },
+      "DeepSeek R1 Distill 1.5B": {
+        "effective_tps": 90.6,
+        "speedup_multiplier": 1.41,
+        "acceptance_rate_pct": 74.0,
+        "extra_vram_mb": 1000
+      }
+    },
+    "Qwen 2.5 Math 72B IQ2": {
+      "SmolLM2 135M": {
+        "effective_tps": 56.9,
+        "speedup_multiplier": 2.0,
+        "acceptance_rate_pct": 52.0,
+        "extra_vram_mb": 150
+      },
+      "SmolLM2 360M": {
+        "effective_tps": 56.7,
+        "speedup_multiplier": 1.99,
+        "acceptance_rate_pct": 58.0,
+        "extra_vram_mb": 350
+      },
+      "Qwen 2.5 0.5B": {
+        "effective_tps": 58.1,
+        "speedup_multiplier": 2.04,
+        "acceptance_rate_pct": 62.0,
+        "extra_vram_mb": 600
+      },
+      "Qwen 2.5 Coder 1.5B": {
+        "effective_tps": 62.5,
+        "speedup_multiplier": 2.19,
+        "acceptance_rate_pct": 76.0,
+        "extra_vram_mb": 1000
+      },
+      "DeepSeek R1 Distill 1.5B": {
+        "effective_tps": 59.9,
+        "speedup_multiplier": 2.1,
+        "acceptance_rate_pct": 74.0,
+        "extra_vram_mb": 1000
+      }
+    }
+  },
+  "inference_runtimes": {
+    "prima_cpp_prp": {
+      "name": "prima.cpp (Pipelined-Ring Parallelism)",
+      "sharding_model": "Closed Ring Pipeline",
+      "bubble_ratio": "0.0% (Zero Pipeline Bubble)",
+      "throughput_metal": "50.0 tok/s constant",
+      "fault_tolerance": "Failover to 2-node ring in <200ms",
+      "role": "#1 High-throughput local cluster engine"
+    },
+    "llama_cpp_rpc": {
+      "name": "llama.cpp RPC",
+      "sharding_model": "Tensor Parallelism (TP)",
+      "bubble_ratio": "0.0% (Synchronous)",
+      "throughput_metal": "15.9 tok/s (TB4) / 4.7 tok/s (Wi-Fi 7)",
+      "fault_tolerance": "None (Socket disconnect aborts generation)",
+      "role": "Low-latency intra-layer sharding on Thunderbolt 4 DMA"
+    },
+    "petals_dht": {
+      "name": "Petals Distributed DHT (Hivemind / PyTorch)",
+      "sharding_model": "Dynamic Libp2p Swarm",
+      "bubble_ratio": "Dynamic Micro-Batching",
+      "throughput_metal": "22.7 tok/s (Local) / 13.0 tok/s (WAN)",
+      "fault_tolerance": "Extreme (<50ms peer dropout failover)",
+      "role": "Global decentralized Internet/WAN swarm across heterogeneous nodes"
+    },
+    "exo_p2p": {
+      "name": "Exo Dynamic P2P",
+      "sharding_model": "Automated Ping-Matrix Topology Partitioning",
+      "bubble_ratio": "<5% via Dynamic Partitioning",
+      "throughput_metal": "47.0 tok/s (TB4) / 27.3 tok/s (Wi-Fi 7)",
+      "fault_tolerance": "Self-rebalancing topology on node join/leave",
+      "role": "Zero-config peer-to-peer Apple Silicon + Android GPU clustering"
+    },
+    "sglang_radix": {
+      "name": "SGLang (RadixAttention Engine)",
+      "sharding_model": "Multi-GPU KV Cache Sharing",
+      "bubble_ratio": "Low",
+      "throughput_metal": "Up to 3x throughput in multi-turn swarms",
+      "fault_tolerance": "Process-level supervisor restart",
+      "role": "Multi-agent swarm state cache reuse & structured decoding"
+    }
+  },
+  "gemini_thinking_tiers": {
+    "gemini_38_flash_high": {
+      "name": "Gemini 3.8 Flash (High Thinking)",
+      "thinking_budget_tokens": "~16,000",
+      "swe_bench_verified_pct": 68.4,
+      "ast_syntax_accuracy_pct": 98.2,
+      "latency_ttft_s": 4.5,
+      "generation_tps": 95.0,
+      "role": "Supreme Architectural Planner & Deep Debugging"
+    },
+    "gemini_38_flash_mid": {
+      "name": "Gemini 3.8 Flash (Mid Thinking)",
+      "thinking_budget_tokens": "~6,000",
+      "swe_bench_verified_pct": 63.5,
+      "ast_syntax_accuracy_pct": 96.0,
+      "latency_ttft_s": 2.2,
+      "generation_tps": 115.0,
+      "role": "Balanced Interactive Pair Programming"
+    },
+    "gemini_38_flash_low": {
+      "name": "Gemini 3.8 Flash (Low Thinking)",
+      "thinking_budget_tokens": "~2,000",
+      "swe_bench_verified_pct": 58.2,
+      "ast_syntax_accuracy_pct": 93.5,
+      "latency_ttft_s": 0.8,
+      "generation_tps": 135.0,
+      "role": "Ultra-Fast Autocomplete & Real-Time Diff Drafting"
+    },
+    "gemini_37_flash": {
+      "name": "Gemini 3.7 Flash",
+      "thinking_budget_tokens": "~8,000",
+      "swe_bench_verified_pct": 61.2,
+      "ast_syntax_accuracy_pct": 94.5,
+      "latency_ttft_s": 2.5,
+      "generation_tps": 110.0,
+      "role": "Previous Generation Hybrid Reasoning Baseline"
+    }
+  },
+  "live_network_telemetry": {
+    "source": "Live Port 18804 Daemon",
+    "tb4_rtt_ms": 0.277,
+    "tb4_weight_pct": 94.0,
+    "wifi7_rtt_ms": 1.15,
+    "wifi7_weight_pct": 5.5,
+    "tailscale_rtt_ms": 3.85,
+    "tailscale_weight_pct": 0.5,
+    "live_status": "VERIFIED OPERATIONAL"
+  }
+}

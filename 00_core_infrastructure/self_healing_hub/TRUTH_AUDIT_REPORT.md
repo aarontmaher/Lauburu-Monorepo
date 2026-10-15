@@ -5,7 +5,7 @@
 **Audit Title**: Self-Healing Hub Telemetry & Transport Truth Audit  
 **Overall Audit Status**: **PASSED (✅)**  
 **Audit Completion Timestamp**: `2026-08-13T14:29:39Z` (UTC)  
-**Total Target Nodes Audited**: 4 Nodes (`Pixel_10`, `Samsung_S20`, `Linux_Head_Node`, `Mac_Node`)  
+**Total Target Nodes Audited**: 4 Nodes (`Pixel_10`, `Samsung_S20`, `Linux_Mini`, `Mac_Node`)  
 **Lead Auditor**: `m4_worker_2` (Teamwork Preview Worker)  
 
 ### Audit Objectives & Goals
@@ -22,8 +22,8 @@ The Self-Healing Hub orchestrates four distinct hardware nodes across local LAN,
 | Node ID | Hardware / Device | Target IP / Host | Transport Protocol | Credentials / Port | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **`Pixel_10`** | Google Pixel 10 Pro XL (Tensor G5) | `100.73.38.87` | Termux SSH (`use_ssh: true`) | User `u0_a363`, Port `8022`, Key `~/.ssh/id_ed25519` | **ONLINE (✅)** |
-| **`Samsung_S20`** | Samsung Galaxy S20+ (Exynos 990) | `100.84.40.95:5555` | ADB over TCP / Termux SSH | Serial `100.84.40.95:5555`, Port `8022` / `5555` | **ONLINE (✅)** |
-| **`Linux_Head_Node`** | Linux Mini PC (Ryzen 7 5700U) | `192.168.8.224` | Double-Hop SSH Relay (`dbclient`) | SSH Relay `100.122.185.123` Dropbear -> `linux@192.168.8.224` | **ONLINE (✅)** |
+| **`Samsung_S20`** | Samsung Galaxy S20+ (Exynos 990) | `100.78.206.96:5555` | ADB over TCP / Termux SSH | Serial `100.78.206.96:5555`, Port `8022` / `5555` | **ONLINE (✅)** |
+| **`Linux_Mini`** | Linux Mini PC (Intel 2018 Mac Mini (Linux)) | `192.168.8.224` | Double-Hop SSH Relay (`dbclient`) | SSH Relay `100.122.185.123` Dropbear -> `linux@192.168.8.224` | **ONLINE (✅)** |
 | **`Mac_Node`** | Apple Mac mini / MacBook (M4) | `127.0.0.1` | Local macOS System Calls | User `aaronmaher`, Local SSH Port `22` | **ONLINE (✅)** |
 
 ---
@@ -38,7 +38,7 @@ During Milestone 1, the core backend codebase of the Self-Healing Hub was refact
    - **macOS**: `sysctl hw.memsize`, `vm_stat` (calculating free + speculative + inactive pages), `pmset -g batt`, `top -l 1`, `netstat -ib`.
    - **Linux / Android**: Direct parsing of `/proc/meminfo` (`MemTotal`, `MemAvailable`), `/sys/class/power_supply/BAT0/`, `termux-battery-status`, `dumpsys battery`, `/proc/net/dev`.
 3. **`src/adb_helper.py`**: Updated to route execution through `SSHHandler` when `use_ssh=True` or via `adb -s <device_id>` when using local ADB. Added automatic single-quote escaping (`safe_cmd = shell_cmd.replace("'", "'\\''")`) for root commands.
-4. **`src/ssh_handler.py`**: Added double-hop SSH relay handling. When executing commands against `Linux_Head_Node`, the command is proxied through router `100.122.185.123` via `dbclient -y` with Dropbear environment authentication.
+4. **`src/ssh_handler.py`**: Added double-hop SSH relay handling. When executing commands against `Linux_Mini`, the command is proxied through router `100.122.185.123` via `dbclient -y` with Dropbear environment authentication.
 5. **`src/device_registry.py` & `src/orchestrator.py`**: Modified polling loop to run every 10 seconds. In case of command failure or timeout, fields are explicitly set to `None` and written atomically to `telemetry_state.json`.
 
 ### Detailed SSH Single-Quote Escaping Logic
@@ -52,7 +52,7 @@ This guarantees that commands containing single quotes (e.g. `DROPBEAR_PASSWORD=
 
 ### Verification of No-Fake-Data Behavior
 The pollers in `src/metric_pollers.py` return `None` whenever command execution fails, process return codes are non-zero, or data cannot be parsed:
-- `get_battery_stats()` returns `None` on headless nodes (`Linux_Head_Node`) or failed reads.
+- `get_battery_stats()` returns `None` on headless nodes (`Linux_Mini`) or failed reads.
 - `get_memory_stats()` returns `None` if `/proc/meminfo` or `vm_stat` fails.
 - `get_network_interfaces()` returns `None` if interface stats cannot be read due to OS permissions.
 - `ping_test()` returns `None` if ping packets are dropped or timeout expires.
@@ -66,7 +66,7 @@ The standalone verification script `scripts/verify_truth_audit.py` was executed 
 ### Summary Metadata (`scripts/verification_results_m2.json`)
 - **Audit Execution Duration**: `16.193 seconds`
 - **Audit Timestamp**: `2026-08-13T15:07:05.829534+00:00`
-- **Telemetry State File**: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json`
+- **Telemetry State File**: `/Volumes/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json`
 - **State File Freshness Delta**: **`16.882s`** — well under the 75.0-second freshness limit (58.118s margin).
 - **All Nodes Verification Result**: **PASSED (✅)**
 
@@ -86,7 +86,7 @@ The standalone verification script `scripts/verify_truth_audit.py` was executed 
 | | **Battery Level** | `null` (no battery sensor / headless) | `null` (no battery sensor / headless) | `Exact match (null)` | **PASS (✅)** |
 | | **Network Stats** | `null` (restricted OS permissions) | `null` (restricted OS permissions) | `Exact match (null)` | **PASS (✅)** |
 | | **Ping Latency** | `33.210 ms` | `16.477 ms` | `16.733 ms` | **PASS (✅)** |
-| **`Linux_Head_Node`**| **Total RAM** | `null` (relay/permissions) | `null` (relay/permissions) | `Exact match (null)` | **PASS (✅)** |
+| **`Linux_Mini`**| **Total RAM** | `null` (relay/permissions) | `null` (relay/permissions) | `Exact match (null)` | **PASS (✅)** |
 | | **Available RAM** | `null` | `null` | `Exact match (null)` | **PASS (✅)** |
 | | **Used RAM %** | `null` | `null` | `Exact match (null)` | **PASS (✅)** |
 | | **Battery Level** | `null` (Headless server) | `null` (Headless server) | `Exact match (null)` | **PASS (✅)** |
@@ -202,7 +202,7 @@ v4-rmnet16: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1428
 ---
 
 ### 6.2 `Samsung_S20` (Samsung Galaxy S20+)
-**Command Executed**: `adb -s 100.84.40.95:5555 shell "dumpsys battery; cat /proc/meminfo; cat /proc/net/dev"`  
+**Command Executed**: `adb -s 100.78.206.96:5555 shell "dumpsys battery; cat /proc/meminfo; cat /proc/net/dev"`  
 **Timestamp**: `2026-08-14T00:12:30Z`
 
 ```text
@@ -369,7 +369,7 @@ Now drawing from 'AC Power'
 
 ---
 
-### 6.4 `Linux_Head_Node` (Ryzen 7 Mini PC via Double-Hop SSH Relay)
+### 6.4 `Linux_Mini` (Intel 2018 Mac Mini Mini PC via Double-Hop SSH Relay)
 **Command Executed**: `ssh root@100.122.185.123 "DROPBEAR_PASSWORD='goldfighting1' dbclient -y linux@192.168.8.224 'free -h; uptime; pgrep -a openclaw'"`  
 **Timestamp**: `2026-08-14T00:12:51Z`
 
@@ -393,7 +393,7 @@ Swap:          8.0Gi       8.0Gi       224Ki
 | :--- | :--- | :--- | :--- |
 | **R1** | **Independent Connectivity Verification** | Executed `scripts/verify_truth_audit.py` comparing direct CLI execution vs Hub API (`/api/telemetry` and `/api/devices`). Verified total memory matching within 1.0% tolerance, battery status matching, network interface matching, and time delta < 75.0s margin. | **PASSED (✅)** |
 | **R2** | **No-Fake-Data Policy Enforcement** | Audited backend extractors in `src/metric_pollers.py`, `src/device_registry.py`, `src/adb_helper.py`, `src/ssh_handler.py`. Executed `scripts/test_fault_injection.py` with blackhole IP `192.0.2.1`. Verified explicit propagation of `null` fields without fake data fallbacks. | **PASSED (✅)** |
-| **R3** | **Visual / Diagnostic Artifact Generation** | Synthesized `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/TRUTH_AUDIT_REPORT.md` featuring full node topology tables, M1/M2/M3 diagnostic matrices, and timestamped verbatim CLI output logs for all 4 target nodes. | **PASSED (✅)** |
+| **R3** | **Visual / Diagnostic Artifact Generation** | Synthesized `/Volumes/Lauburu-Monorepo/self_healing_hub/TRUTH_AUDIT_REPORT.md` featuring full node topology tables, M1/M2/M3 diagnostic matrices, and timestamped verbatim CLI output logs for all 4 target nodes. | **PASSED (✅)** |
 
 ---
 
@@ -407,7 +407,7 @@ Following adversarial audit review (`m4_challenger_1_r3`), three target remediat
 
 2. **SSH Relay Dropbear Timeout Hardening**:
    - In `src/ssh_handler.py` and `src/orchestrator.py`, command timeouts for relay nodes were increased from 5s to 12s minimum.
-   - Non-interactive `-n` flag and `sshpass` execution paths were integrated into `SSHHandler.run_cmd()` to prevent Dropbear socket contention timeouts on double-hop relays (`Linux_Head_Node`).
+   - Non-interactive `-n` flag and `sshpass` execution paths were integrated into `SSHHandler.run_cmd()` to prevent Dropbear socket contention timeouts on double-hop relays (`Linux_Mini`).
 
 3. **macOS Mount Warning Guard**:
    - In `src/orchestrator.py`, `/mnt` mount point creation calls in `evaluate_storage_mesh()` were guarded with `if platform.system() != "Darwin":`.
@@ -421,15 +421,15 @@ Following Round 4 adversarial and empirical audit reviews (`m4_reviewer_1_r4`, `
 
 1. **SSH Relay & Reachability Timeout Hardening**:
    - In `src/orchestrator.py` (`reachability_check` and `poll_timeout`) and `src/ssh_handler.py` (`SSHHandler.run_cmd`), double-hop SSH relay timeouts were increased to **20.0 seconds**.
-   - Rationale: High CPU load average on `Linux_Head_Node` during parallel `ThreadPoolExecutor` polling loops requires up to 13–16 seconds for double-hop Dropbear SSH relay handshakes (`100.122.185.123` -> `192.168.8.224`). The 20.0s timeout ensures double-hop SSH commands complete reliably.
+   - Rationale: High CPU load average on `Linux_Mini` during parallel `ThreadPoolExecutor` polling loops requires up to 13–16 seconds for double-hop Dropbear SSH relay handshakes (`100.122.185.123` -> `192.168.8.224`). The 20.0s timeout ensures double-hop SSH commands complete reliably.
 
 2. **OS-Aware Failover Command Guard**:
    - In `src/orchestrator.py`, Tailscale Intent failover execution (`am start -n com.tailscale.ipn/.ui.MainActivity`) was guarded with `if hardware and hardware.get("device_type") == "Android Device":`.
-   - Rationale: Prevents non-Android nodes (`Linux_Head_Node` Linux PCs and `Mac_Node` macOS systems) from executing invalid `am` Android commands during packet loss / latency degraded failover states.
+   - Rationale: Prevents non-Android nodes (`Linux_Mini` Linux PCs and `Mac_Node` macOS systems) from executing invalid `am` Android commands during packet loss / latency degraded failover states.
 
 3. **100% Passing Verification Suite Execution**:
    - `python3 scripts/verify_truth_audit.py` was executed with active Hub API server and orchestrator processes.
-   - Result: All 4 target nodes (`Linux_Head_Node`, `Mac_Node`, `Pixel_10`, `Samsung_S20`) passed 100% of checks (`all_nodes_passed: true`), and output was saved to `scripts/verification_results_m2.json`.
+   - Result: All 4 target nodes (`Linux_Mini`, `Mac_Node`, `Pixel_10`, `Samsung_S20`) passed 100% of checks (`all_nodes_passed: true`), and output was saved to `scripts/verification_results_m2.json`.
 
 4. **Empirical Alignment of Documentation & Verification Artifacts**:
    - Updated Sections 4 and 5 tables in `TRUTH_AUDIT_REPORT.md` so that every metric value, available/total RAM, battery status, network interface count, ping latency, audit duration (`16.193s`), and ISO timestamp (`2026-08-13T15:07:05.829534+00:00`) matches `verification_results_m2.json` and `fault_injection_results.json` with 100% precision.

@@ -103,6 +103,55 @@ def test_omniterminal_cli_subcommands():
     assert "SOVEREIGN AI TRAINING TERMINAL TUI" in cmd_train.stdout
 
 
+def test_bluetooth_step_by_step_ladder_execution():
+    """Verify step-by-step health confirmation across all 7 ladder tiers."""
+    app = BluetoothSerialSelfHealingTUI()
+    steps_checked = []
+    for step_idx in range(1, 8):
+        res = app.check_step_health(step_idx)
+        assert res["step"] == step_idx
+        assert "latency_ms" in res
+        assert "details" in res
+        assert res["status"] in ("HEALTHY", "DEGRADED")
+        steps_checked.append(res)
+
+    assert len(steps_checked) == 7
+    table = app.render_ladder_table(steps_checked)
+    assert table is not None
+
+
+def test_ram_sanctuary_healing_and_darwin_relief():
+    """Verify host RAM sanctuary audit and Darwin Mach pressure relief."""
+    app = BluetoothSerialSelfHealingTUI()
+    ram_audit = app.heal_ram_sanctuary()
+    assert ram_audit["total_gb"] >= 16.0
+    assert ram_audit["sanctuary_threshold_gb"] == 4.0
+    assert ram_audit["rpc_offloading_active"] is True
+    assert len(ram_audit["actions_taken"]) > 0
+    panel = app.render_ram_audit_panel(ram_audit)
+    assert panel is not None
+
+
+def test_dual_qwen_inference_and_chat_models():
+    """Verify live dual Qwen 3.8 Max inference over prima.cpp and llama.cpp."""
+    app = BluetoothSerialSelfHealingTUI()
+    qwen_audit = app.verify_dual_qwen_inference()
+    assert qwen_audit["qwen_38_max"]["status"] == "CONFIRMED"
+    assert qwen_audit["qwen_38_max_abliterated"]["status"] == "CONFIRMED"
+    panel = app.render_dual_qwen_panel(qwen_audit)
+    assert panel is not None
+
+
+def test_omniterminal_step_by_step_cli():
+    """Verify omniterminal bluetooth-heal executes the complete 7-step ladder and exits 0."""
+    res = subprocess.run(["omniterminal", "bluetooth-heal"], capture_output=True, text=True, timeout=20)
+    assert res.returncode == 0
+    assert "MULTI-TRANSPORT SELF-HEALING & HEALTH CONFIRMATION LADDER" in res.stdout
+    assert "CONFIRMED" in res.stdout
+    assert "Mac Mini M4 Pro Host RAM Sanctuary" in res.stdout
+    assert "Dual Qwen 3.8 Max Live Inference" in res.stdout
+
+
 def test_zero_mock_compliance():
     """Rule #0 enforcement: No mock library imports across new modules."""
     files_to_check = [

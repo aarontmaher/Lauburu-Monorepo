@@ -7,7 +7,7 @@ Executes continuous deliberative debates across project topics:
   - Multi-transport failover (LAN -> TB4 -> Tailscale -> USB ADB)
   - Strict Swarm Truth Audit invariants and zero fake data
 Generates rich instruction-thought-solution training records logged directly to
-/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl and Google Drive.
+/Volumes/Lauburu-Monorepo/lora_datasets/truth_audit_debate.jsonl and Google Drive.
 """
 
 import os
@@ -19,7 +19,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("ContinuousTrainingDebateDaemon")
 
-LOCAL_LORA_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets"
+LOCAL_LORA_DIR = "/Volumes/Lauburu-Monorepo/lora_datasets"
 LOCAL_LORA_FILE = os.path.join(LOCAL_LORA_DIR, "truth_audit_debate.jsonl")
 GDRIVE_LORA_DIR = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets"
 GDRIVE_LORA_FILE = os.path.join(GDRIVE_LORA_DIR, "truth_audit_debate.jsonl")

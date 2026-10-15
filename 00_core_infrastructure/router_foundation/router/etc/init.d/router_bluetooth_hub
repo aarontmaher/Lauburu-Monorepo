@@ -1,0 +1,125 @@
+#!/bin/sh /etc/rc.common
+# ==============================================================================
+# Lauburu Mesh - Router-Native Bluetooth Streaming Hub (R1)
+# Subsystem: 00_core_infrastructure/router_foundation
+# Hardware: GL.iNet GL-BE14000 (MediaTek MT7988 aarch64, Realtek RTL8761BU hci0)
+#
+# Streams raw HCI packets from kernel monitor channel via btmon UNIX domain socket
+# through socat TCP:9002 over the 10GbE network directly to the Mac Mini ingester.
+# Bypasses Android BLE constraints and Doze mode disconnects.
+# ==============================================================================
+
+USE_PROCD=1
+START=95
+STOP=10
+
+BT_INTERFACE="hci0"
+TCP_PORT=9002
+SOCK_FILE="/tmp/btmon.sock"
+SOCAT_BIN="/usr/bin/socat"
+BTMON_BIN="/usr/bin/btmon"
+HCICONFIG_BIN="/usr/bin/hciconfig"
+BLUETOOTHCTL_BIN="/usr/bin/bluetoothctl"
+HCITOOL_BIN="/usr/bin/hcitool"
+LOGGER_TAG="router_bluetooth_hub"
+
+init_bluetooth_interface() {
+    if [ -x "$HCICONFIG_BIN" ]; then
+        if ! "$HCICONFIG_BIN" "$BT_INTERFACE" 2>/dev/null | grep -q "UP RUNNING"; then
+            logger -t "$LOGGER_TAG" "Bringing up Bluetooth interface $BT_INTERFACE..."
+            "$HCICONFIG_BIN" "$BT_INTERFACE" up 2>/dev/null || true
+            sleep 1
+        fi
+
+        if "$HCICONFIG_BIN" "$BT_INTERFACE" 2>/dev/null | grep -q "UP RUNNING"; then
+            logger -t "$LOGGER_TAG" "Bluetooth interface $BT_INTERFACE is UP RUNNING."
+            if [ -x "$BLUETOOTHCTL_BIN" ]; then
+                "$BLUETOOTHCTL_BIN" power on 2>/dev/null || true
+            fi
+            return 0
+        else
+            logger -t "$LOGGER_TAG" "WARNING: Failed to bring up $BT_INTERFACE. Adapter may be missing."
+            return 1
+        fi
+    fi
+    return 0
+}
+
+start_service() {
+    # 1. Ensure Bluetooth controller is active
+    init_bluetooth_interface
+
+    # 2. Clean up any stale socket from previous run
+    rm -f "$SOCK_FILE"
+
+    # 3. Instance 1: btmon capturing kernel HCI monitor stream into UNIX socket
+    procd_open_instance btmon
+    procd_set_param command "$BTMON_BIN" -s "$SOCK_FILE"
+    procd_set_param respawn 3600 5 10
+    procd_set_param stdout 0
+    procd_set_param stderr 1
+    procd_close_instance
+
+    # 4. Wait for btmon socket to appear before launching socat bridge
+    local attempts=0
+    while [ ! -S "$SOCK_FILE" ] && [ "$attempts" -lt 5 ]; do
+        sleep 1
+        attempts=$((attempts + 1))
+    done
+
+    # 5. Instance 2: socat bridging UNIX socket to TCP port 9002
+    procd_open_instance socat_bridge
+    procd_set_param command "$SOCAT_BIN" "TCP-LISTEN:$TCP_PORT,fork,reuseaddr" "UNIX-CONNECT:$SOCK_FILE"
+    procd_set_param respawn 3600 5 10
+    procd_set_param stdout 0
+    procd_set_param stderr 1
+    procd_close_instance
+
+    # 6. Instance 3: Active background BLE discovery/scanning
+    # Activates background BLE discovery on hci0 so btmon captures live advertising reports
+    if [ -x "$BLUETOOTHCTL_BIN" ]; then
+        procd_open_instance ble_scanner
+        procd_set_param command "$BLUETOOTHCTL_BIN" scan on
+        procd_set_param respawn 3600 5 10
+        procd_set_param stdout 0
+        procd_set_param stderr 1
+        procd_close_instance
+    elif [ -x "$HCITOOL_BIN" ]; then
+        procd_open_instance ble_scanner
+        procd_set_param command "$HCITOOL_BIN" -i "$BT_INTERFACE" lescan --duplicates
+        procd_set_param respawn 3600 5 10
+        procd_set_param stdout 0
+        procd_set_param stderr 1
+        procd_close_instance
+    fi
+
+    # 7. Verification / fallback trigger for BLE discovery state
+    (
+        sleep 2
+        if [ -x "$BLUETOOTHCTL_BIN" ]; then
+            if ! "$BLUETOOTHCTL_BIN" show 2>/dev/null | grep -q "Discovering: yes"; then
+                logger -t "$LOGGER_TAG" "Activating BLE discovery via bluetoothctl scan on..."
+                "$BLUETOOTHCTL_BIN" scan on >/dev/null 2>&1 || true
+            fi
+            if "$BLUETOOTHCTL_BIN" show 2>/dev/null | grep -q "Discovering: yes"; then
+                logger -t "$LOGGER_TAG" "Bluetooth controller discovery verified active (Discovering: yes)."
+            else
+                logger -t "$LOGGER_TAG" "WARNING: Bluetooth controller not in discovery state."
+            fi
+        fi
+    ) &
+
+    logger -t "$LOGGER_TAG" "router_bluetooth_hub started: TCP port $TCP_PORT -> $SOCK_FILE with BLE discovery"
+}
+
+stop_service() {
+    logger -t "$LOGGER_TAG" "Stopping router_bluetooth_hub..."
+    if [ -x "$BLUETOOTHCTL_BIN" ]; then
+        "$BLUETOOTHCTL_BIN" scan off 2>/dev/null || true
+    fi
+    rm -f "$SOCK_FILE"
+}
+
+service_triggers() {
+    procd_add_reload_trigger "bluetooth"
+}

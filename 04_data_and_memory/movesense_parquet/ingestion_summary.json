@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-10-12T19:36:40.878582+00:00",
+  "showcase_csv_records": {
+    "linear_acceleration": {
+      "rows": 274,
+      "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/movesense_parquet/showcase_linear_acceleration.parquet"
+    },
+    "angular_velocity": {
+      "rows": 4,
+      "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/movesense_parquet/showcase_angular_velocity.parquet"
+    },
+    "magnetic_field": {
+      "rows": 15,
+      "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/movesense_parquet/showcase_magnetic_field.parquet"
+    },
+    "heart_rate": {
+      "rows": 1,
+      "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/movesense_parquet/showcase_heart_rate.parquet"
+    },
+    "temperature": {
+      "rows": 2,
+      "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/movesense_parquet/showcase_temperature.parquet"
+    }
+  },
+  "grappling_db_records": {
+    "grappling_imu": {
+      "rows": 355756,
+      "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/movesense_parquet/grappling_imu_telemetry.parquet"
+    },
+    "grappling_rr": {
+      "rows": 91272,
+      "valid_kamath": 74823,
+      "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/movesense_parquet/grappling_rr_intervals.parquet"
+    },
+    "ecg_calibration": {
+      "rows": 55746,
+      "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/movesense_parquet/grappling_ecg_calibration.parquet"
+    }
+  },
+  "unified_dataset": {
+    "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/movesense_parquet/movesense_training_dataset.parquet",
+    "epoch_records": 28403
+  }
+}

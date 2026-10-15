@@ -182,7 +182,7 @@ def test_t1_f3_tailscale_cli_json_parse_peers():
     node_names = [p.node_name for p in peers]
     assert "Mac_Node" in node_names
     assert "MacBook_Pro" in node_names
-    assert "Linux_Head_Node" in node_names
+    assert "Linux_Mini" in node_names
 
 def test_t1_f3_tailscale_cli_missing_command_fallback():
     """Verify missing/unreachable CLI produces fallback peers list without blocking event loop."""

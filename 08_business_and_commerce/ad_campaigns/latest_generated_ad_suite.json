@@ -1,0 +1,90 @@
+[
+  {
+    "timestamp": "2026-10-05T08:40:52.449244+00:00",
+    "source": "autonomous_ad_creation_trainer",
+    "scenario_type": "COMMERCIAL_AD_CREATIVE_DPO",
+    "platform": "tiktok_shorts",
+    "product_key": "fleece_shorts",
+    "instruction": "You are the Commercial Marketing Specialist for Lauburu Grappling. Write a high-converting, brand-authentic tiktok_shorts ad for the 'Lauburu Heavyweight Fleece Loose Fit Shorts' incorporating exact product specifications, Australian pricing ($59.99 AUD), and the The Flaw of Standard Gear hook angle. Adhere strictly to Rule #0 Zero-Mock truth.",
+    "chosen": "{\n  \"platform\": \"tiktok_shorts\",\n  \"product_key\": \"fleece_shorts\",\n  \"product_title\": \"Lauburu Heavyweight Fleece Loose Fit Shorts\",\n  \"hook_style\": \"The Flaw of Standard Gear\",\n  \"script\": \"[0:00-0:03 HOOK]: 'Stop buying 180 GSM hoodies that feel like cardboard.' (Close-up fabric stretch test under studio light)\\n[0:03-0:08 PROBLEM]: 'Most streetwear brands charge $120 for cheap poly blends that pill immediately.'\\n[0:08-0:18 SOLUTION]: 'This is the Lauburu Lauburu Heavyweight Fleece Loose Fit Shorts. 350 GSM heavyweight brushed fleece, architectural cut, and a subtle metallic silver mark that doesn't scream for attention.'\\n[0:18-0:25 CTA]: 'All sizes S to 2XL live on store right now for $59.99 AUD. Link in bio.'\",\n  \"sound_recommendation\": \"Phonk / Minimal Techno ambient riser (120 BPM)\",\n  \"on_screen_text\": [\n    \"350 GSM vs 180 GSM \\ud83e\\udd4a\",\n    \"Lauburu Heavyweight Fleece Loose Fit Shorts\",\n    \"$59.99 AUD | S\\u20132XL\"\n  ],\n  \"destination_url\": \"https://lauburugrappling.com/products/coloured-unisex-heavyweight-fleece-loose-fit-shorts\",\n  \"ad_format\": \"9:16 Vertical Video (30s)\"\n}",
+    "rejected": "\ud83d\udd25 HUGE SALE! Get the sickest Lauburu Heavyweight Fleece Loose Fit Shorts right now! Best in the world, 50% off for the next 10 minutes only! Click link in bio hurry before stock runs out!! \ud83d\ude80\ud83d\ude80 #bjj #sale",
+    "chosen_eval": {
+      "hook_stopping_power": 94.0,
+      "material_truth_score": 100.0,
+      "pricing_clarity": 100.0,
+      "roas_potential": 91.5
+    },
+    "rejected_eval": {
+      "hook_stopping_power": 42.0,
+      "material_truth_score": 20.0,
+      "pricing_clarity": 0.0,
+      "roas_potential": 28.0
+    }
+  },
+  {
+    "timestamp": "2026-10-05T08:40:52.450673+00:00",
+    "source": "autonomous_ad_creation_trainer",
+    "scenario_type": "COMMERCIAL_AD_CREATIVE_DPO",
+    "platform": "tiktok_shorts",
+    "product_key": "bjj_compression_rashguard",
+    "instruction": "You are the Commercial Marketing Specialist for Lauburu Grappling. Write a high-converting, brand-authentic tiktok_shorts ad for the 'Lauburu Canonical Short Sleeve Compression Rashguard' incorporating exact product specifications, Australian pricing ($85.00 AUD), and the Zero-Gimmick Minimalist Luxury hook angle. Adhere strictly to Rule #0 Zero-Mock truth.",
+    "chosen": "{\n  \"platform\": \"tiktok_shorts\",\n  \"product_key\": \"bjj_compression_rashguard\",\n  \"product_title\": \"Lauburu Canonical Short Sleeve Compression Rashguard\",\n  \"hook_style\": \"Zero-Gimmick Minimalist Luxury\",\n  \"script\": \"[0:00-0:03 HOOK]: 'Stop buying 180 GSM hoodies that feel like cardboard.' (Close-up fabric stretch test under studio light)\\n[0:03-0:08 PROBLEM]: 'Most streetwear brands charge $120 for cheap poly blends that pill immediately.'\\n[0:08-0:18 SOLUTION]: 'This is the Lauburu Lauburu Canonical Short Sleeve Compression Rashguard. 350 GSM heavyweight brushed fleece, architectural cut, and a subtle metallic silver mark that doesn't scream for attention.'\\n[0:18-0:25 CTA]: 'All sizes S to 2XL live on store right now for $85.00 AUD. Link in bio.'\",\n  \"sound_recommendation\": \"Phonk / Minimal Techno ambient riser (120 BPM)\",\n  \"on_screen_text\": [\n    \"350 GSM vs 180 GSM \\ud83e\\udd4a\",\n    \"Lauburu Canonical Short Sleeve Compression Rashguard\",\n    \"$85.00 AUD | S\\u20132XL\"\n  ],\n  \"destination_url\": \"https://lauburugrappling.com/products/lauburu-canonical-short-sleeve-compression-rashguard\",\n  \"ad_format\": \"9:16 Vertical Video (30s)\"\n}",
+    "rejected": "Unleash your inner beast with the ultimate combat outfit. Transform your game today with our premium items. Best price online.",
+    "chosen_eval": {
+      "hook_stopping_power": 94.0,
+      "material_truth_score": 100.0,
+      "pricing_clarity": 100.0,
+      "roas_potential": 91.5
+    },
+    "rejected_eval": {
+      "hook_stopping_power": 42.0,
+      "material_truth_score": 20.0,
+      "pricing_clarity": 0.0,
+      "roas_potential": 28.0
+    }
+  },
+  {
+    "timestamp": "2026-10-05T08:40:52.450780+00:00",
+    "source": "autonomous_ad_creation_trainer",
+    "scenario_type": "COMMERCIAL_AD_CREATIVE_DPO",
+    "platform": "tiktok_shorts",
+    "product_key": "bjj_compression_rashguard",
+    "instruction": "You are the Commercial Marketing Specialist for Lauburu Grappling. Write a high-converting, brand-authentic tiktok_shorts ad for the 'Lauburu Canonical Short Sleeve Compression Rashguard' incorporating exact product specifications, Australian pricing ($85.00 AUD), and the Material Physics & GSM Weight hook angle. Adhere strictly to Rule #0 Zero-Mock truth.",
+    "chosen": "{\n  \"platform\": \"tiktok_shorts\",\n  \"product_key\": \"bjj_compression_rashguard\",\n  \"product_title\": \"Lauburu Canonical Short Sleeve Compression Rashguard\",\n  \"hook_style\": \"Material Physics & GSM Weight\",\n  \"script\": \"[0:00-0:03 HOOK]: 'Stop buying 180 GSM hoodies that feel like cardboard.' (Close-up fabric stretch test under studio light)\\n[0:03-0:08 PROBLEM]: 'Most streetwear brands charge $120 for cheap poly blends that pill immediately.'\\n[0:08-0:18 SOLUTION]: 'This is the Lauburu Lauburu Canonical Short Sleeve Compression Rashguard. 350 GSM heavyweight brushed fleece, architectural cut, and a subtle metallic silver mark that doesn't scream for attention.'\\n[0:18-0:25 CTA]: 'All sizes S to 2XL live on store right now for $85.00 AUD. Link in bio.'\",\n  \"sound_recommendation\": \"Phonk / Minimal Techno ambient riser (120 BPM)\",\n  \"on_screen_text\": [\n    \"350 GSM vs 180 GSM \\ud83e\\udd4a\",\n    \"Lauburu Canonical Short Sleeve Compression Rashguard\",\n    \"$85.00 AUD | S\\u20132XL\"\n  ],\n  \"destination_url\": \"https://lauburugrappling.com/products/lauburu-canonical-short-sleeve-compression-rashguard\",\n  \"ad_format\": \"9:16 Vertical Video (30s)\"\n}",
+    "rejected": "\ud83d\udd25 HUGE SALE! Get the sickest Lauburu Canonical Short Sleeve Compression Rashguard right now! Best in the world, 50% off for the next 10 minutes only! Click link in bio hurry before stock runs out!! \ud83d\ude80\ud83d\ude80 #bjj #sale",
+    "chosen_eval": {
+      "hook_stopping_power": 94.0,
+      "material_truth_score": 100.0,
+      "pricing_clarity": 100.0,
+      "roas_potential": 91.5
+    },
+    "rejected_eval": {
+      "hook_stopping_power": 42.0,
+      "material_truth_score": 20.0,
+      "pricing_clarity": 0.0,
+      "roas_potential": 28.0
+    }
+  },
+  {
+    "timestamp": "2026-10-05T08:40:52.450848+00:00",
+    "source": "autonomous_ad_creation_trainer",
+    "scenario_type": "COMMERCIAL_AD_CREATIVE_DPO",
+    "platform": "tiktok_shorts",
+    "product_key": "bjj_compression_rashguard",
+    "instruction": "You are the Commercial Marketing Specialist for Lauburu Grappling. Write a high-converting, brand-authentic tiktok_shorts ad for the 'Lauburu Canonical Short Sleeve Compression Rashguard' incorporating exact product specifications, Australian pricing ($85.00 AUD), and the Material Physics & GSM Weight hook angle. Adhere strictly to Rule #0 Zero-Mock truth.",
+    "chosen": "{\n  \"platform\": \"tiktok_shorts\",\n  \"product_key\": \"bjj_compression_rashguard\",\n  \"product_title\": \"Lauburu Canonical Short Sleeve Compression Rashguard\",\n  \"hook_style\": \"Material Physics & GSM Weight\",\n  \"script\": \"[0:00-0:03 HOOK]: 'Stop buying 180 GSM hoodies that feel like cardboard.' (Close-up fabric stretch test under studio light)\\n[0:03-0:08 PROBLEM]: 'Most streetwear brands charge $120 for cheap poly blends that pill immediately.'\\n[0:08-0:18 SOLUTION]: 'This is the Lauburu Lauburu Canonical Short Sleeve Compression Rashguard. 350 GSM heavyweight brushed fleece, architectural cut, and a subtle metallic silver mark that doesn't scream for attention.'\\n[0:18-0:25 CTA]: 'All sizes S to 2XL live on store right now for $85.00 AUD. Link in bio.'\",\n  \"sound_recommendation\": \"Phonk / Minimal Techno ambient riser (120 BPM)\",\n  \"on_screen_text\": [\n    \"350 GSM vs 180 GSM \\ud83e\\udd4a\",\n    \"Lauburu Canonical Short Sleeve Compression Rashguard\",\n    \"$85.00 AUD | S\\u20132XL\"\n  ],\n  \"destination_url\": \"https://lauburugrappling.com/products/lauburu-canonical-short-sleeve-compression-rashguard\",\n  \"ad_format\": \"9:16 Vertical Video (30s)\"\n}",
+    "rejected": "Looking for clothes? Check out our brand! We make very good No-Gi Combat for everyone. High quality guaranteed. Shop today.",
+    "chosen_eval": {
+      "hook_stopping_power": 94.0,
+      "material_truth_score": 100.0,
+      "pricing_clarity": 100.0,
+      "roas_potential": 91.5
+    },
+    "rejected_eval": {
+      "hook_stopping_power": 42.0,
+      "material_truth_score": 20.0,
+      "pricing_clarity": 0.0,
+      "roas_potential": 28.0
+    }
+  }
+]

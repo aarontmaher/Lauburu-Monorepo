@@ -60,7 +60,7 @@ Every local AI model in the 7-Layer Lauburu Mesh Ecosystem is assigned a **dedic
 | `qwen_80b_moe` | **Qwen 80B MoE** | `07_docs_and_architecture` | Monorepo Deep Architecture & Cross-Subsystem Cohesion | Pipelined Ring Parallelism (PRP) Shard | Evolutionary System Prompt Optimization + DPO | `lora_datasets/specialized/qwen_80b_moe_dpo.jsonl` |
 | `qwen_25_coder_32b` | **Qwen 2.5 Coder 32B** | `02_ai_models_and_inference` | Polyglot Systems Engineering & Metal/Rust Kernels | MacBook Pro Vault L2 (TB4 DMA Bridge) | Gemini 3.8 Flash High Shadowing + Code AST LoRA | `lora_datasets/specialized/qwen_25_coder_32b_dpo.jsonl` |
 | `qwen_25_vl_7b_mbp` | **Qwen 2.5 VL 7B** | `lauburu_lens_vla` | 4K ShowUI Grounding & Visual Truth Auditing | MacBook Pro Vault L2 (Port 8081) | Apple MLX Metal QLoRA on GPU 0 + Gemini Flash | `lora_datasets/specialized/qwen_25_vl_7b_mbp_dpo.jsonl` |
-| `qwen_25_math_72b_linux` | **Qwen 2.5 Math 72B** | `03_biometrics_and_telemetry` | Symbolic Math, Pan-Tompkins DSP & Fractal HRV Scaling | Linux Head Node L3 (Port 8086, Ryzen 7) | Gemini 3.8 Flash High Shadowing + Math-RM-72B | `lora_datasets/specialized/qwen_25_math_72b_linux_dpo.jsonl` |
+| `qwen_25_math_72b_linux` | **Qwen 2.5 Math 72B** | `03_biometrics_and_telemetry` | Symbolic Math, Pan-Tompkins DSP & Fractal HRV Scaling | Linux Head Node L3 (Port 8086, Intel 2018 Mac Mini) | Gemini 3.8 Flash High Shadowing + Math-RM-72B | `lora_datasets/specialized/qwen_25_math_72b_linux_dpo.jsonl` |
 | `deepseek_r1_distill_15b` | **DeepSeek-R1-Distill-Qwen 1.5B** | `03_biometrics_and_telemetry` | Mathematical Chain-of-Thought (CoT) & Proof Derivation | Mac Mini M4 Pro (Port 8081) | Gemini 3.8 Flash High Shadowing + Math Pipeline | `lora_datasets/specialized/deepseek_r1_distill_15b_dpo.jsonl` |
 | `deepseek_coder_v2_lite` | **DeepSeek-Coder-V2 Lite (16B MoE)** | `01_apps` | Cross-Language Polyglot Interop (Dart/Kotlin/Swift/Rust/C) | Mac Mini M4 Pro (Port 8081) | Gemini 3.8 Flash High Shadowing + AST Distillation | `lora_datasets/specialized/deepseek_coder_v2_lite_dpo.jsonl` |
 | `mistral_nemo_abliterated_12b` | **Mistral-Nemo 12B (Neo)** | `08_business_and_commerce` | Uncensored Security Penetration & Anti-Tamper Verification | Mac Mini M4 Pro (Port 8083) | Neo ML Engine + Shopify GraphQL Curriculum | `lora_datasets/specialized/mistral_nemo_abliterated_12b_dpo.jsonl` |
@@ -85,7 +85,7 @@ Every local AI model in the 7-Layer Lauburu Mesh Ecosystem is assigned a **dedic
 │    • Generates gold-standard Chain-of-Thought reasoning + contrastive pairs.│
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 2. DEDICATED DATASET PARTITIONING                                           │
-│    • Streams triplets to /Users/aaron/DFS_UNIFIED/lora_datasets/specialized/│
+│    • Streams triplets to /Volumes/Lauburu-Monorepo/04_data_and_memory/data/specialized/│
 │    • Appends master pairs to continuous_lora_dataset.jsonl (280k+ pairs).   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 3. APPLE MLX METAL GPU QLORA TRAINER                                        │

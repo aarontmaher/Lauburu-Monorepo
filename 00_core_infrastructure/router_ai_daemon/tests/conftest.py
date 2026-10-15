@@ -275,7 +275,7 @@ def mock_mesh_matrix():
         "L4": {"name": "Linux_Tablet", "ip": "100.81.92.125", "ram_mb": 8192.0, "ai_cap_mb": 6144.0, "type": "x86_64"},
         "L5": {"name": "MacBook_Air", "ip": "192.168.8.222", "ram_mb": 16384.0, "ai_cap_mb": 14336.0, "type": "arm64"},
         "L6": {"name": "Pixel_10_Pro_XL", "ip": "100.73.38.87", "ram_mb": 16384.0, "ai_cap_mb": 12800.0, "type": "arm64"},
-        "L7": {"name": "Samsung_S20", "ip": "100.84.40.95", "ram_mb": 12288.0, "ai_cap_mb": 9216.0, "type": "arm64"},
+        "L7": {"name": "Samsung_S20", "ip": "100.78.206.96", "ram_mb": 12288.0, "ai_cap_mb": 9216.0, "type": "arm64"},
     }
 
 

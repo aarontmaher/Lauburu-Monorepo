@@ -1,0 +1,9 @@
+{
+  "sovereign_head": "Qwen_3.8_Max_Abliterated",
+  "challenger": "Qwen_3.8_Max",
+  "last_swap_timestamp": null,
+  "standard_elo": 1568,
+  "abliterated_elo": 1809,
+  "swap_count": 0,
+  "last_checked": "2026-09-16 09:37:26"
+}

@@ -18,7 +18,7 @@ graph TD
     subgraph SENSORS ["📡 Physical Layer & Wearables"]
         MS["💓 Movesense Medical Sensor<br/>(512Hz ECG / BLE GATT / Accel)"]
         MAC_MINI["🖥️ L1 Mac Mini M4 Pro<br/>(Primary Host / Memory Governor)"]
-        MBP["💻 L2 MacBook Pro M4<br/>(10Gbps TB4 DMA Bridge / Model Vault)"]
+        MBP["💻 L2 Intel MacBook Pro<br/>(40Gbps TB4 DMA Bridge / Model Vault)"]
         LINUX["🐧 L3 Linux Head Node<br/>(Gateway Ingress & Ray Cluster)"]
         ANDROID["📱 L6/L7 Pixel & Samsung<br/>(ADB 5555 / 8K Vision / Termux)"]
     end
@@ -90,7 +90,7 @@ graph TD
 | **4003** | **Screen Lens Live Stream** | `01_apps/screen_lens/src/` | HTTP Multipart MJPEG | 10–15 FPS continuous live screen monitor for VLA agents with Sequoia guard. |
 | **4004** | **Movesense BLE Bridge** | `03_biometrics_and_telemetry/` | WebSocket / REST | Subscribes to 512Hz MECG GATT packets and distributes parsed QRS intervals. |
 | **8081** | **llama.cpp Normal Plane** | `02_ai_models_and_inference/` | HTTP REST (`/v1/chat`) | Qwen 2.5 Coder 7B Dense unabliterated developer and local orchestration model. |
-| **8082** | **prima.cpp Ring Parallel** | `02_ai_models_and_inference/` | PRP Ring Protocol | Distributed 80B MoE sharded across 10Gbps Thunderbolt 4 cluster (56 GB unified RAM). |
+| **8082** | **prima.cpp Ring Parallel** | `02_ai_models_and_inference/` | PRP Ring Protocol | Distributed 80B MoE sharded across 40Gbps Thunderbolt 4 cluster (56 GB unified RAM). |
 | **8083** | **llama.cpp Red Team Plane**| `02_ai_models_and_inference/` | HTTP REST (`/v1/chat`) | Huihui Qwen 27B Abliterated model for unrestricted security audits and debate. |
 | **18802**| **Self-Healing Hub** | `00_core_infrastructure/self_healing_hub/`| HTTP REST | 24/7 background node resurrection, Wake-on-LAN Magic Packets, and storage crons. |
 | **50052**| **Metal GPU RPC Daemon** | `02_ai_models_and_inference/` | TCP RPC | Remote tensor offloading target on L2 MacBook Pro (0.27ms RTT via TB4). |

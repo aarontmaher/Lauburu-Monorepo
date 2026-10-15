@@ -187,6 +187,28 @@ class BidirectionalEloCalibrator:
             "governance_rule": "In-Game ELO ≡ Real Project Compatibility & Compute Efficiency"
         }
         
+        # Write to canonical ELO store
+        canonical_path = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/data/canonical_elo_leaderboard.json"
+        try:
+            if os.path.exists(canonical_path):
+                with open(canonical_path, "r") as cf:
+                    c_data = json.load(cf)
+            else:
+                c_data = {"version": "4.0.0", "schema": "CATEGORIZED_SSOT_MULTI_TIER_ELO", "models": {}}
+                
+            c_models = c_data.setdefault("models", {})
+            for m in calibrated_models:
+                name = m["name"].replace(" ", "_")
+                if name not in c_models:
+                    c_models[name] = {"tier": "LOCAL_MODEL", "tasks_scored": 0, "win_rate_pct": 50.0}
+                # Ground truth overrides other systems
+                c_models[name]["elo"] = m["real_project_elo"]
+                
+            with open(canonical_path, "w") as cf:
+                json.dump(c_data, cf, indent=4)
+        except Exception as e:
+            logger.error(f"Failed to sync canonical ELO: {e}")
+        
         try:
             with open(CALIBRATION_STATE_FILE, "w") as f:
                 json.dump(matrix_result, f, indent=2)

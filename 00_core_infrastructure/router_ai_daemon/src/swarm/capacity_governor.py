@@ -118,7 +118,7 @@ CANONICAL_MESH_MATRIX: Dict[str, MeshNodeSpec] = {
     "L7": MeshNodeSpec(
         layer="L7",
         name="Samsung_S20",
-        ip="100.84.40.95",
+        ip="100.78.206.96",
         ram_mb=12288.0,
         ai_cap_mb=9216.0,
         type="arm64",

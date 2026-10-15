@@ -64,7 +64,7 @@ The council formalizes the **Empirical Migration Gate** (`02_ai_models_and_infer
     • Native (llama-finetune/Candle): 18.5 MB bin · 24 MB RAM · 108.0ms/step · 99.4% Safety
     • Result: 99.9% Disk Reduction | 98.1% RAM Reduction | 1.32x Speedup -> [PASSED EMPIRICAL GATE]
 
-[2] 10Gbps TB4 DMA Tensor Sharding:
+[2] 40Gbps TB4 DMA Tensor Sharding:
     • Python (AsyncIO/gRPC): 640 MB env · 110 MB RAM · 1.45ms/chunk · 91.5% Safety
     • Native (prima.cpp): 14.8 MB bin · 11.5 MB RAM · 0.204ms/chunk · 99.8% Safety
     • Result: 97.7% Disk Reduction | 89.6% RAM Reduction | 7.11x Speedup -> [PASSED EMPIRICAL GATE]

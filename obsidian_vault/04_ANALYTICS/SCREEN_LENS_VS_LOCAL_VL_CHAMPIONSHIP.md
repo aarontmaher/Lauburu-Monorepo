@@ -33,7 +33,7 @@ An empirical, zero-mock head-to-head competition tournament was executed between
 | **#2** | **Qwen 2.5 VL 3B Instruct (Q4_K_M)** | `Layer 1 (Mac Mini M4 Pro)` | **1276** (+36) | 3-1 | **79.0%** | 6.02px | **1.000** | 52.9 | 287.5ms | **49.0x** |
 | **#3** | **Qwen 2.5 VL 7B Instruct (Q4_K_M)** | `Layer 2 (MacBook Pro TB4 DMA)` | **1226** (-34) | 1-3 | **73.1%** | 8.0px | **1.000** | 14.5 | 1635.0ms | **14.7x** |
 | **#4** | **SmolVLM Instruct 2.2B (Q4_K_M)** | `Layer 1 (Mac Mini M4 Pro)` | **1223** (+8) | 2-2 | **63.4%** | 11.05px | **1.000** | 149.5 | 120.0ms | **80.9x** |
-| **#5** | **Kimi-VL Thinking 2506 (PRP Ring)** | `Layer 1 + Layer 2 (10Gbps TB4 Ring)` | **1211** (-64) | 0-4 | **88.3%** | 3.0px | **0.000** | 38.2 | 539.9ms | **6.4x** |
+| **#5** | **Kimi-VL Thinking 2506 (PRP Ring)** | `Layer 1 + Layer 2 (40Gbps TB4 Ring)` | **1211** (-64) | 0-4 | **88.3%** | 3.0px | **0.000** | 38.2 | 539.9ms | **6.4x** |
 
 ---
 
@@ -45,7 +45,7 @@ $$
 $$
 - **Screen Lens Sovereign:** Attained **97.2% IoU** with sub-2px coordinate error. Its native ShowUI Visual Token Graph filters 80% of empty background patches, focusing exclusively on salient interactive UI nodes.
 - **Kimi-VL Thinking Titan:** Attained **94.8% IoU** through step-by-step spatial Chain-of-Thought (CoT) reasoning, but suffered a 1,150ms TTFT due to deep thinking trace generation.
-- **Qwen 2.5 VL 7B (MBP L2):** Attained **91.4% IoU** over the 10Gbps Thunderbolt 4 DMA bridge.
+- **Qwen 2.5 VL 7B (MBP L2):** Attained **91.4% IoU** over the 40Gbps Thunderbolt 4 DMA bridge.
 - **SmolVLM 2.2B:** Showed slight bounding box drift (13.6 px average coordinate error) due to low patch resolution.
 
 ### Dimension 2: Rule #0 Zero-Mock & Visual Truth Verification

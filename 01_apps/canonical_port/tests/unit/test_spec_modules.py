@@ -347,9 +347,9 @@ class TestSpec06ToolingHealing:
 
 class TestSpec07DocsArchitecture:
     def test_parse_obsidian_wikilinks(self):
-        md = "# Architecture\nSee [[Index]] and [[Mac_Node|L1 Host]] and [[Linux_Head_Node]]."
+        md = "# Architecture\nSee [[Index]] and [[Mac_Node|L1 Host]] and [[Linux_Mini]]."
         links = Spec07DocsArch.parse_obsidian_wikilinks(md)
-        assert links == ["Index", "Mac_Node", "Linux_Head_Node"]
+        assert links == ["Index", "Mac_Node", "Linux_Mini"]
 
 
 class TestSpec08Commerce:

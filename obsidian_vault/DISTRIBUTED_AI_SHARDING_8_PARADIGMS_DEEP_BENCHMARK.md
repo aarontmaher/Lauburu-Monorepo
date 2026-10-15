@@ -8,7 +8,7 @@ date: "2026-09-03"
 
 ## 📊 1. Master Paradigm Performance Matrix: Current vs Projected Networks
 
-| Sharding Paradigm | 10Gbps TB4 DMA (0.28ms RTT) | Wi-Fi 7 MLO (1.15ms RTT) | Tailscale WAN (8.5ms RTT) | Projected 80G TB5 (0.08ms RTT) | Aggligator Bond (0.19ms RTT) |
+| Sharding Paradigm | 40Gbps TB4 DMA (0.28ms RTT) | Wi-Fi 7 MLO (1.15ms RTT) | Tailscale WAN (8.5ms RTT) | Projected 80G TB5 (0.08ms RTT) | Aggligator Bond (0.19ms RTT) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **1. Pipeline Parallelism (PP)** | **38.0 tok/s** | **34.4 tok/s** | 19.5 tok/s | **38.9 tok/s** | **38.4 tok/s** |
 | **2. Tensor Parallelism (TP)** | **15.9 tok/s** | 4.7 tok/s | ❌ 0.7 tok/s | **35.5 tok/s** | **20.9 tok/s** |
@@ -30,7 +30,7 @@ date: "2026-09-03"
 
 ### 2. **Tensor Parallelism (TP) — Intra-Layer Matrix Slicing**
 - **Data Transfer:** Slices $Q,K,V$ column-wise and $W_O$ row-wise. Requires 160 All-Reduce barriers per token.
-- **Verdict:** **Strictly reserved for 10Gbps Thunderbolt 4 DMA / TB5 ring.** Never run TP over Wi-Fi or high-latency WAN.
+- **Verdict:** **Strictly reserved for 40Gbps Thunderbolt 4 DMA / TB5 ring.** Never run TP over Wi-Fi or high-latency WAN.
 
 ### 3. **Pipelined-Ring Parallelism (PRP) — Prima.cpp**
 - **Data Transfer:** Activations and KV tensors stream in a closed loop ($A \to B \to C \to A$).

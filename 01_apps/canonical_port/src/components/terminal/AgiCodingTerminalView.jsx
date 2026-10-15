@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { MultiAgentChatStream, INITIAL_CHAT_MESSAGES } from './MultiAgentChatStream.jsx';
 import { AstCodeBufferEditor, CODE_SNIPPET_PRESETS } from './AstCodeBufferEditor.jsx';
 import { LiveDiffInspector } from './LiveDiffInspector.jsx';
@@ -8,7 +8,7 @@ import { canonicalApi } from '../../services/api.js';
 import { frontierFallbackApi } from '../../services/frontierFallbackApi.js';
 
 export function AgiCodingTerminalView({ models = [], onDispatchAction }) {
-  const [selectedModel, setSelectedModel] = useState('kimi_tandem_titan');
+  const [selectedModel, setSelectedModel] = useState('qwen_38_max');
   const [activeTab, setActiveTab] = useState('split'); // 'split', 'editor', 'diff', 'chat', 'console'
   const [codeBuffer, setCodeBuffer] = useState(CODE_SNIPPET_PRESETS.tb4_dma.code);
   const [baselineCode, setBaselineCode] = useState(CODE_SNIPPET_PRESETS.tb4_dma.code);
@@ -22,6 +22,42 @@ Zero-Mock Rule #0: CERTIFIED`
   );
   const [isExecuting, setIsExecuting] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [seaweedStatus, setSeaweedStatus] = useState({
+    isMounted: true,
+    mountPoint: '/Users/aaron/DFS_UNIFIED',
+    masterStatus: 'ONLINE',
+    filerStatus: 'STANDBY',
+    syncMsg: null
+  });
+
+  useEffect(() => {
+    async function checkSeaweed() {
+      try {
+        const res = await fetch('/api/v1/storage/seaweed/status');
+        if (res.ok) {
+          const data = await res.json();
+          setSeaweedStatus(prev => ({
+            ...prev,
+            isMounted: data.is_mounted,
+            mountPoint: data.mount_point,
+            masterStatus: data.master?.status || 'ONLINE',
+            filerStatus: data.filer?.status || 'ONLINE'
+          }));
+        }
+      } catch (e) {}
+    }
+    checkSeaweed();
+  }, []);
+
+  const handleSyncSeaweed = async () => {
+    try {
+      const res = await fetch('/api/v1/storage/seaweed/heal', { method: 'POST' });
+      if (res.ok) {
+        setSeaweedStatus(prev => ({ ...prev, syncMsg: '✓ SeaweedFS FUSE Reflex Arc Healthy' }));
+        setTimeout(() => setSeaweedStatus(prev => ({ ...prev, syncMsg: null })), 3000);
+      }
+    } catch (e) {}
+  };
 
   const handleExecuteCode = useCallback(async (customCode) => {
     const codeToRun = customCode || codeBuffer;
@@ -143,6 +179,17 @@ func ExecuteSwarmConsensusStep() {
             </p>
           </div>
           <span className="badge badge-purple">Port 50052 RPC</span>
+          <span className="badge badge-emerald" title="SeaweedFS Distributed Filesystem Mount">
+            🌿 SeaweedFS: {seaweedStatus.isMounted ? 'MOUNTED' : 'STANDBY'} (:8888)
+          </span>
+          <button
+            onClick={handleSyncSeaweed}
+            className="cyber-btn"
+            style={{ fontSize: '0.68rem', padding: '2px 8px' }}
+            title="Trigger SeaweedFS FUSE Reflex Arc"
+          >
+            {seaweedStatus.syncMsg || '⚡ Sync DFS'}
+          </button>
         </div>
 
         {/* View Switcher & Model Controls */}
@@ -173,8 +220,9 @@ func ExecuteSwarmConsensusStep() {
             className="cyber-btn"
             style={{ padding: '6px 12px', fontSize: '0.76rem' }}
           >
+            <option value="qwen_38_max">Qwen 3.8 Max (prima.cpp :8082 / llama.cpp :8081)</option>
+            <option value="qwen_38_max_abliterated">Qwen 3.8 Max Abliterated (prima.cpp :8082 / llama.cpp :8083)</option>
             <option value="kimi_tandem_titan">Kimi 88B Titan (Dual-Node TB4 RPC)</option>
-            <option value="qwen_38_max">Qwen 3.8 Max (Edge Reasoner / Vision)</option>
             <option value="gemini_flash_cloud">Gemini 3.1 Pro / 3.7 Flash Cloud</option>
             <option value="genetic_moe_core">Genetic MoE 8x7B (24/7 Distilled)</option>
             <option value="llama_33_70b_abliterated">Llama 3.3 70B Abliterated (Uncensored)</option>

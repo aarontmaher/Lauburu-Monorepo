@@ -1,0 +1,17 @@
+{
+  "device": "HOST_CPU_NEURAL_ALU",
+  "processed_line_offset": 1210619,
+  "total_pairs_trained": 1154401,
+  "active_config": {
+    "id": "gen_spec_1",
+    "draft_k": 6,
+    "acceptance_tau": 0.75,
+    "temperature": 0.38,
+    "learning_rate": 0.00025,
+    "fitness": 66.54,
+    "measured_tps": 102.4,
+    "measured_alpha": 0.75,
+    "generations_survived": 24203
+  },
+  "timestamp": 1789831523.300063
+}

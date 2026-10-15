@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  medusa-backend:
+    image: medusajs/medusa:latest
+    container_name: lauburu-medusa-core
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    environment:
+      - DATABASE_URL=postgres://postgres:lauburu_secure_db_pass@medusa-db:5432/medusa_db
+      - REDIS_URL=redis://medusa-redis:6379
+      - JWT_SECRET=lauburu_super_secret_jwt_key_2026
+      - COOKIE_SECRET=lauburu_super_secret_cookie_key_2026
+      - STRIPE_API_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - STORE_CORS=http://localhost:8000,http://192.168.8.230:8000,https://lauburugrappling.com
+      - ADMIN_CORS=http://localhost:7001,http://192.168.8.230:7001
+      - DEFAULT_CURRENCY=aud
+    depends_on:
+      - medusa-db
+      - medusa-redis
+
+  medusa-admin:
+    image: medusajs/admin:latest
+    container_name: lauburu-medusa-admin
+    restart: unless-stopped
+    ports:
+      - "7001:7001"
+    environment:
+      - MEDUSA_BACKEND_URL=http://medusa-backend:9000
+
+  medusa-storefront:
+    image: node:20-alpine
+    container_name: lauburu-nextjs-storefront
+    working_dir: /app
+    command: sh -c "npm install && npm run build && npm run start"
+    ports:
+      - "8000:3000"
+    environment:
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://192.168.8.230:9000
+      - NEXT_PUBLIC_BASE_URL=https://lauburugrappling.com
+      - NEXT_PUBLIC_DEFAULT_REGION=au
+
+  medusa-db:
+    image: postgres:15-alpine
+    container_name: lauburu-medusa-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=lauburu_secure_db_pass
+      - POSTGRES_DB=medusa_db
+    volumes:
+      - medusa-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  medusa-redis:
+    image: redis:7-alpine
+    container_name: lauburu-medusa-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+
+volumes:
+  medusa-data:

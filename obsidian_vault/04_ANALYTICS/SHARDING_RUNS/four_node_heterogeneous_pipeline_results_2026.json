@@ -1,0 +1,250 @@
+{
+  "metadata": {
+    "title": "4-Node Heterogeneous Cross-Device Pipeline Sharding Benchmark",
+    "nodes": {
+      "Stage 0 (L1)": {
+        "model": "Apple M4 Mini Mac Mini",
+        "role": "Pipeline Source/Sink & Transformer Stage 0"
+      },
+      "Stage 1 (L1b)": {
+        "model": "Apple M2 Mini Mac Mini",
+        "role": "Transformer Stage 1 via 40 Gb/s TB4"
+      },
+      "Stage 2 (L2)": {
+        "model": "MacBook Pro Intel Pro",
+        "role": "Transformer Stage 2 via TB4 Bridge"
+      },
+      "Stage 3 (L3)": {
+        "model": "AMD Ryzen 7 5700U Linux",
+        "role": "Transformer Stage 3 + Head via LAN"
+      }
+    },
+    "timestamp": "2026-10-14 13:02:54 UTC",
+    "sanctuary_audit": {
+      "initial_memory": {
+        "total_gb": 24.0,
+        "mem_used_gb": 18.922,
+        "free_headroom_gb": 5.078,
+        "app_mem_gb": 6.885,
+        "wired_gb": 4.503,
+        "compressed_gb": 7.533,
+        "cached_gb": 4.4,
+        "util_pct": 78.84,
+        "pressure_level": 1
+      },
+      "final_memory": {
+        "total_gb": 24.0,
+        "mem_used_gb": 16.98,
+        "free_headroom_gb": 7.02,
+        "app_mem_gb": 5.241,
+        "wired_gb": 4.377,
+        "compressed_gb": 7.362,
+        "cached_gb": 6.41,
+        "util_pct": 70.75,
+        "pressure_level": 1
+      },
+      "net_delta_mb": -1988.61,
+      "sanctuary_preserved": true
+    }
+  },
+  "results": [
+    {
+      "test_matrix": "4node_hidden_dim_scaling",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 1024,
+      "wire_bytes": 262144,
+      "latency_stats": {
+        "mean_ms": 344.3362,
+        "std_ms": 187.7035,
+        "min_ms": 68.8075,
+        "median_ms": 453.0277,
+        "p95_ms": 522.6408,
+        "max_ms": 522.6408
+      },
+      "throughput_mb_s": 0.73,
+      "token_rate_tok_s": 371.73,
+      "transit_cost_us_per_token": 2690.13
+    },
+    {
+      "test_matrix": "4node_hidden_dim_scaling",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 2048,
+      "wire_bytes": 524288,
+      "latency_stats": {
+        "mean_ms": 523.8261,
+        "std_ms": 16.1695,
+        "min_ms": 500.6091,
+        "median_ms": 518.5001,
+        "p95_ms": 554.817,
+        "max_ms": 554.817
+      },
+      "throughput_mb_s": 0.95,
+      "token_rate_tok_s": 244.36,
+      "transit_cost_us_per_token": 4092.39
+    },
+    {
+      "test_matrix": "4node_hidden_dim_scaling",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 559.224,
+        "std_ms": 133.9245,
+        "min_ms": 467.0699,
+        "median_ms": 531.4348,
+        "p95_ms": 1049.1647,
+        "max_ms": 1049.1647
+      },
+      "throughput_mb_s": 1.79,
+      "token_rate_tok_s": 228.89,
+      "transit_cost_us_per_token": 4368.94
+    },
+    {
+      "test_matrix": "4node_hidden_dim_scaling",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 8192,
+      "wire_bytes": 2097152,
+      "latency_stats": {
+        "mean_ms": 720.7867,
+        "std_ms": 196.506,
+        "min_ms": 482.0482,
+        "median_ms": 662.7433,
+        "p95_ms": 1065.1004,
+        "max_ms": 1065.1004
+      },
+      "throughput_mb_s": 2.77,
+      "token_rate_tok_s": 177.58,
+      "transit_cost_us_per_token": 5631.15
+    },
+    {
+      "test_matrix": "4node_sequence_length_scaling",
+      "batch_size": 1,
+      "seq_len": 32,
+      "hidden_dim": 4096,
+      "wire_bytes": 262144,
+      "latency_stats": {
+        "mean_ms": 414.9789,
+        "std_ms": 167.4142,
+        "min_ms": 76.5875,
+        "median_ms": 487.3503,
+        "p95_ms": 550.9345,
+        "max_ms": 550.9345
+      },
+      "throughput_mb_s": 0.6,
+      "token_rate_tok_s": 77.11,
+      "transit_cost_us_per_token": 12968.09
+    },
+    {
+      "test_matrix": "4node_sequence_length_scaling",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 530.0168,
+        "std_ms": 32.4145,
+        "min_ms": 469.9253,
+        "median_ms": 525.5205,
+        "p95_ms": 590.7179,
+        "max_ms": 590.7179
+      },
+      "throughput_mb_s": 1.89,
+      "token_rate_tok_s": 241.5,
+      "transit_cost_us_per_token": 4140.76
+    },
+    {
+      "test_matrix": "4node_sequence_length_scaling",
+      "batch_size": 1,
+      "seq_len": 512,
+      "hidden_dim": 4096,
+      "wire_bytes": 4194304,
+      "latency_stats": {
+        "mean_ms": 1268.7034,
+        "std_ms": 762.4994,
+        "min_ms": 948.7142,
+        "median_ms": 1036.7537,
+        "p95_ms": 4103.2545,
+        "max_ms": 4103.2545
+      },
+      "throughput_mb_s": 3.15,
+      "token_rate_tok_s": 403.56,
+      "transit_cost_us_per_token": 2477.94
+    },
+    {
+      "test_matrix": "4node_sequence_length_scaling",
+      "batch_size": 1,
+      "seq_len": 1024,
+      "hidden_dim": 4096,
+      "wire_bytes": 8388608,
+      "latency_stats": {
+        "mean_ms": 2852.7739,
+        "std_ms": 548.7334,
+        "min_ms": 2306.2189,
+        "median_ms": 2686.051,
+        "p95_ms": 4545.185,
+        "max_ms": 4545.185
+      },
+      "throughput_mb_s": 2.8,
+      "token_rate_tok_s": 358.95,
+      "transit_cost_us_per_token": 2785.91
+    },
+    {
+      "test_matrix": "4node_batch_size_scaling",
+      "batch_size": 1,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "wire_bytes": 1048576,
+      "latency_stats": {
+        "mean_ms": 528.7334,
+        "std_ms": 77.5607,
+        "min_ms": 331.249,
+        "median_ms": 531.086,
+        "p95_ms": 731.9398,
+        "max_ms": 731.9398
+      },
+      "throughput_mb_s": 1.89,
+      "token_rate_tok_s": 242.09,
+      "transit_cost_us_per_token": 4130.73
+    },
+    {
+      "test_matrix": "4node_batch_size_scaling",
+      "batch_size": 2,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "wire_bytes": 2097152,
+      "latency_stats": {
+        "mean_ms": 920.1907,
+        "std_ms": 175.6166,
+        "min_ms": 578.539,
+        "median_ms": 919.6765,
+        "p95_ms": 1201.0507,
+        "max_ms": 1201.0507
+      },
+      "throughput_mb_s": 2.17,
+      "token_rate_tok_s": 278.2,
+      "transit_cost_us_per_token": 3594.49
+    },
+    {
+      "test_matrix": "4node_batch_size_scaling",
+      "batch_size": 4,
+      "seq_len": 128,
+      "hidden_dim": 4096,
+      "wire_bytes": 4194304,
+      "latency_stats": {
+        "mean_ms": 1159.3441,
+        "std_ms": 260.6035,
+        "min_ms": 901.7611,
+        "median_ms": 1092.046,
+        "p95_ms": 1975.8744,
+        "max_ms": 1975.8744
+      },
+      "throughput_mb_s": 3.45,
+      "token_rate_tok_s": 441.63,
+      "transit_cost_us_per_token": 2264.34
+    }
+  ]
+}

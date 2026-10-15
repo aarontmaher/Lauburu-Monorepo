@@ -199,7 +199,7 @@ class TailscaleAdapter:
         canonical_peers = [
             TailscalePeerInfo(name="Mac_Node", ip="100.119.199.76", status="ONLINE", relay="Direct WireGuard", os="macOS Darwin ARM64", layer="L1"),
             TailscalePeerInfo(name="MacBook_Pro", ip="100.103.212.21", status="ONLINE", relay="Direct WireGuard", os="macOS Darwin ARM64", layer="L2"),
-            TailscalePeerInfo(name="Linux_Head_Node", ip="100.101.39.98", status="ONLINE", relay="Direct WireGuard", os="Debian Linux x86_64", layer="L3"),
+            TailscalePeerInfo(name="Linux_Mini", ip="100.101.39.98", status="ONLINE", relay="Direct WireGuard", os="Debian Linux x86_64", layer="L3"),
             TailscalePeerInfo(name="Linux_Tablet", ip="100.81.92.125", status="ONLINE", relay="Direct WireGuard", os="Debian Linux ARM64", layer="L4"),
             TailscalePeerInfo(name="MacBook_Air", ip="100.93.158.96", status="ONLINE", relay="Direct WireGuard", os="macOS Darwin ARM64", layer="L5"),
             TailscalePeerInfo(name="Pixel_10_Pro_XL", ip="100.73.38.87", status="ONLINE", relay="Direct WireGuard", os="Android 15 (Tensor G5)", layer="L6"),

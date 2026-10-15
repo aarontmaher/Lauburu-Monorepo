@@ -17,9 +17,9 @@ generated: 2026-09-12 15:34 AEST
 - **Loss Progression:** `0.0000 -> 0.0000` (100% convergence)
 
 ## 📁 Artifact Receipts & Cryptographic Proofs
-- **Adapter Weights:** `/Users/aaron/DFS_UNIFIED/lora_datasets/adapters/qwen_screen_lens_adapter/adapters.npz` (2.0 MB)
+- **Adapter Weights:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/adapters/qwen_screen_lens_adapter/adapters.npz` (2.0 MB)
   - `SHA256`: `37b4fba203b34a885a640e0ad78bee76cdc87c707e7e254f0204033a65c5933d`
-- **Adapter Config:** `/Users/aaron/DFS_UNIFIED/lora_datasets/adapters/qwen_screen_lens_adapter/adapter_config.json` (796 B)
+- **Adapter Config:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/adapters/qwen_screen_lens_adapter/adapter_config.json` (796 B)
   - `SHA256`: `ca004f0e8f6e0292f10f05248ee35ed6c1d16cef479376af2eef91bce04ebc2c`
 
 ## 🏛️ Tri-Vault Wikilinks

@@ -34,7 +34,7 @@ export const INITIAL_NETWORK_METRICS = {
   wolTargets: [
     { name: 'L1_Mac_Mini_Host', mac: 'bc:d0:74:11:22:33', ip: '192.168.8.230', port: 9, status: 'ONLINE' },
     { name: 'L2_MacBook_Pro_Vault', mac: '3c:22:fb:44:55:66', ip: '192.168.8.127', port: 9, status: 'ONLINE' },
-    { name: 'L3_Linux_Head_Node', mac: 'e8:9c:25:77:88:99', ip: '192.168.8.224', port: 9, status: 'ONLINE' },
+    { name: 'L3_Linux_Mini', mac: 'e8:9c:25:77:88:99', ip: '192.168.8.224', port: 9, status: 'ONLINE' },
     { name: 'L4_Linux_Tablet', mac: '00:1e:06:aa:bb:cc', ip: '192.168.8.173', port: 9, status: 'ONLINE' },
     { name: 'L5_MacBook_Air', mac: 'f4:d4:88:dd:ee:ff', ip: '192.168.8.222', port: 9, status: 'ONLINE' }
   ],
@@ -96,7 +96,7 @@ export const INITIAL_NETWORK_METRICS = {
   tailscalePeers: [
     { nodeName: 'Mac_Node', ip: '100.119.199.76', status: 'ONLINE', relay: 'Direct WireGuard', layer: 'L1', os: 'macOS Darwin ARM64' },
     { nodeName: 'MacBook_Pro', ip: '100.103.212.21', status: 'ONLINE', relay: 'Direct WireGuard', layer: 'L2', os: 'macOS Darwin ARM64' },
-    { nodeName: 'Linux_Head_Node', ip: '100.101.39.98', status: 'ONLINE', relay: 'Direct WireGuard', layer: 'L3', os: 'Debian Linux x86_64' },
+    { nodeName: 'Linux_Mini', ip: '100.101.39.98', status: 'ONLINE', relay: 'Direct WireGuard', layer: 'L3', os: 'Debian Linux x86_64' },
     { nodeName: 'Linux_Tablet', ip: '100.81.92.125', status: 'ONLINE', relay: 'Direct WireGuard', layer: 'L4', os: 'Debian Linux ARM64' },
     { nodeName: 'MacBook_Air', ip: '100.93.158.96', status: 'ONLINE', relay: 'Direct WireGuard', layer: 'L5', os: 'macOS Darwin ARM64' },
     { nodeName: 'Pixel_10_Pro_XL', ip: '100.73.38.87', status: 'ONLINE', relay: 'Direct WireGuard', layer: 'L6', os: 'Android 15 (Tensor G5)' },
@@ -214,8 +214,8 @@ export const INITIAL_CLUSTER_VRAM = {
       sshPort: 22
     },
     {
-      nodeId: 'L3_Linux_Head_Node',
-      name: 'Linux_Head_Node (AMD Ryzen 7 5700U)',
+      nodeId: 'L3_Linux_Mini',
+      name: 'Linux_Mini (Intel 2018 Mac Mini (Linux))',
       role: 'Gateway Ingress & Compute Hub',
       ip: '192.168.8.224',
       tailscaleIp: '100.101.39.98',
@@ -394,7 +394,7 @@ export const INITIAL_AGI_MODELS = [
     id: 'qwen_38_max',
     name: 'Qwen 3.8 Max / 2.5-VL Edge',
     architecture: 'Dense Vision-Language Edge Transformer',
-    shardingStrategy: 'Local RPC GPU (Linux_Head_Node + Pixel_10 NPU)',
+    shardingStrategy: 'Local RPC GPU (Linux_Mini + Pixel_10 NPU)',
     contextWindow: 131072,
     ports: [8084, 8082],
     vramFootprintGb: 18.2,
@@ -456,6 +456,16 @@ export const INITIAL_AGI_MODELS = [
 ];
 
 export const INITIAL_ABLITERATED_MODELS = [
+  {
+    id: 'qwen_38_max_abliterated',
+    name: 'Qwen 3.8 Max 27B Abliterated',
+    quant: 'UD-Q4_K_XL',
+    vramFootprintGb: 16.0,
+    throughputTokPerSec: 36.8,
+    alignmentFilterBypassed: true,
+    safetyLevel: 'UNCENSORED_DEVILS_ADVOCATE',
+    role: 'Sovereign Red-Team Audit & Architectural Challenger (:8083/:8082)'
+  },
   {
     id: 'llama_33_70b_abliterated',
     name: 'Llama-3.3-70B-Instruct-Abliterated',
@@ -593,7 +603,7 @@ export const INITIAL_EXECUTION_TRACES = [
     initiator: 'Operator Aaron',
     status: 'COMPLETED_SUCCESS',
     durationMs: 142,
-    nodesInvolved: ['Mac_Node', 'MacBook_Pro', 'Linux_Head_Node'],
+    nodesInvolved: ['Mac_Node', 'MacBook_Pro', 'Linux_Mini'],
     details: 'Verified 3,100 AST nodes; 0 mock artifacts detected; Tri-Vault sync healthy.'
   },
   {

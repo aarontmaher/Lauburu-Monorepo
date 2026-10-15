@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # --- 1. SYSTEM PRIVILEGES & INTERNAL STORAGE PREP ---
-STORAGE_PATH="${STORAGE_PATH:-/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data}"
+STORAGE_PATH="${STORAGE_PATH:-/Volumes/Lauburu-Monorepo/data}"
 echo "Checking internal storage at $STORAGE_PATH..."
 mkdir -p "$STORAGE_PATH"
 
@@ -67,8 +67,15 @@ killall exo EXO 2>/dev/null || true
 sleep 2
 export EXO_ZENOH_NAMESPACE="lauburu"
 export UV_CACHE_DIR="$HOME/.cache/uv"
-cd ~/exo_mac
-uv run exo > ~/exo_mac/exo_node_live.log 2>&1 &
+mkdir -p "$HOME/exo_mac"
+cd "$HOME/exo_mac"
+if command -v exo >/dev/null 2>&1; then
+    exo > "$HOME/exo_mac/exo_node_live.log" 2>&1 &
+elif [ -x "$HOME/.local/bin/exo" ]; then
+    "$HOME/.local/bin/exo" > "$HOME/exo_mac/exo_node_live.log" 2>&1 &
+elif command -v uv >/dev/null 2>&1; then
+    uv run exo > "$HOME/exo_mac/exo_node_live.log" 2>&1 &
+fi
 echo "EXO Cluster active. Logs at: tail -f ~/exo_mac/exo_node_live.log"
 
 # --- 7. DOCKER & GL.iNET APP ---

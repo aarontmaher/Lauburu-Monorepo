@@ -17,6 +17,8 @@ export function ShellLayout({
   onCycleEngine,
   selectedNodeId,
   onSelectNode,
+  membership,
+  onOpenMembershipModal,
   children
 }) {
   return (
@@ -27,6 +29,8 @@ export function ShellLayout({
         setActiveRoute={setActiveRoute}
         isSidebarCollapsed={isSidebarCollapsed}
         toggleSidebar={toggleSidebar}
+        membership={membership}
+        onOpenMembershipModal={onOpenMembershipModal}
       />
 
       {/* Main Content Area */}

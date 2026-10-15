@@ -384,7 +384,7 @@
       "id": "Samsung_S20",
       "name": "Samsung Galaxy S20+",
       "role": "Headless Automated UI/UX Tester & RPC",
-      "ip_tailscale": "100.84.40.95",
+      "ip_tailscale": "100.78.206.96",
       "ip_tb4": null,
       "transport": "USB 2.0 ADB Virtual NIC (RNDIS)",
       "latency_ms": 0.82,

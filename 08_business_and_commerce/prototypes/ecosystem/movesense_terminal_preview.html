@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movesense 512Hz ECG Terminal — Stitch 2.0 (Gen 257)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #07090e; color: #f3f4f6; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-card {
+      background: rgba(15, 18, 28, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+  <div class="max-w-6xl mx-auto space-y-6">
+    <header class="glass-card rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <div class="flex items-center space-x-3 mb-1">
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/20 text-blue-400 border border-blue-500/30">
+            512Hz Clinical DSP
+          </span>
+          <span class="mono text-xs text-zinc-400">Movesense Terminal • Gen 257</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-black text-white">Movesense MD+ Real-Time Biometrics Hub</h1>
+      </div>
+      <div class="mono text-xs px-3 py-1.5 rounded-lg bg-zinc-900 border border-white/10 text-zinc-300">
+        GATT PMD 0x0001 • BLE 5.0
+      </div>
+    </header>
+
+    <!-- ECG Visualizer Screen -->
+    <div class="glass-card rounded-2xl p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-base font-bold text-white flex items-center space-x-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+          <span>Pan-Tompkins QRS Waveform (512 Samples/sec)</span>
+        </h2>
+        <span class="mono text-xs text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded border border-blue-500/20">
+          91.9% EMG Noise Rejection
+        </span>
+      </div>
+
+      <!-- ECG Canvas Viewport Mockup -->
+      <div class="h-64 rounded-xl bg-zinc-950 border border-white/5 flex flex-col items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent"></div>
+        <div class="mono text-xs text-zinc-500 mb-2">[512Hz Raw ECG Oscilloscope Canvas]</div>
+        <!-- Zero-Mock Backend Binding Flag -->
+        <div class="p-3 rounded-lg bg-zinc-900/80 border border-white/10 text-center max-w-md">
+          <span class="mono text-xs font-bold text-amber-400 block mb-1">BACKEND BINDING REQUIRED</span>
+          <span class="text-[11px] text-zinc-400 block">
+            Awaiting active sensor stream on <code>ws://127.0.0.1:8088/api/biometrics/ecg_stream</code>. 
+            Connect sensor via CoreBluetooth GATT 0x180D to populate live canvas.
+          </span>
+        </div>
+      </div>
+
+      <!-- Metric Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-white/5 text-center">
+          <span class="text-[10px] uppercase font-bold text-zinc-400 block">Heart Rate</span>
+          <span class="mono text-xl font-black text-white">-- BPM</span>
+          <span class="text-[10px] text-zinc-500">Awaiting QRS Lock</span>
+        </div>
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-white/5 text-center">
+          <span class="text-[10px] uppercase font-bold text-zinc-400 block">DFA-alpha1 (Zone 2)</span>
+          <span class="mono text-xl font-black text-emerald-400">--</span>
+          <span class="text-[10px] text-zinc-500">Target: 0.75 - 1.00</span>
+        </div>
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-white/5 text-center">
+          <span class="text-[10px] uppercase font-bold text-zinc-400 block">9-Axis IMU Force</span>
+          <span class="mono text-xl font-black text-white">-- G</span>
+          <span class="text-[10px] text-zinc-500">Rotational Torque</span>
+        </div>
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-white/5 text-center">
+          <span class="text-[10px] uppercase font-bold text-zinc-400 block">Signal SNR</span>
+          <span class="mono text-xl font-black text-blue-400">+6.0 dB Gate</span>
+          <span class="text-[10px] text-zinc-500">Threshold Pass</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+{% comment %}
+  Shopify OS 2.0 Liquid Section: section-network-cable-analyzer-pro.liquid
+  Stitch 2.0 Generative UI Prototyping Engine — E-Commerce Diagnostic Storefront
+{% endcomment %}
+
+<div class="network-analyzer-pro-section bg-[#07090e] text-slate-100 py-12 px-4 sm:px-6 lg:px-8 font-sans">
+  <div class="max-w-7xl mx-auto space-y-8">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+      <div>
+        <span class="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400">
+          {{ section.settings.badge_text | default: "Sovereign Mesh Diagnostic Suite" }}
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1">
+          {{ section.settings.heading | default: "Cable & Mesh Analyzer Lauburu Pro" }}
+        </h2>
+        <p class="text-sm text-slate-400 mt-1">
+          {{ section.settings.subheading | default: "Zero-Mock physical link audit, WhatCable E-marker decoding & automated router switch watchdog." }}
+        </p>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <a href="{{ section.settings.cta_link | default: "/cart/add?id=4007" }}" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/20 hover:opacity-90 transition">
+          {{ section.settings.cta_text | default: "Deploy Enterprise Sentinel ($199/mo)" }}
+        </a>
+      </div>
+    </div>
+
+    <!-- Live Telemetry KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="p-4 rounded-xl bg-slate-900/60 border border-white/10 space-y-2">
+        <span class="text-[11px] font-mono text-slate-400 uppercase">AI Pooled VRAM</span>
+        <div class="text-2xl font-black text-white">148.1 <span class="text-xs text-cyan-400">GB</span></div>
+        <p class="text-[11px] font-mono text-emerald-400">7/12 Nodes Online</p>
+      </div>
+
+      <div class="p-4 rounded-xl bg-slate-900/60 border border-white/10 space-y-2">
+        <span class="text-[11px] font-mono text-slate-400 uppercase">Thunderbolt 4 DMA</span>
+        <div class="text-2xl font-black text-white">40.0 <span class="text-xs text-emerald-400">Gbps</span></div>
+        <p class="text-[11px] font-mono text-emerald-400">0.27ms Latency • Line-Rate</p>
+      </div>
+
+      <div class="p-4 rounded-xl bg-slate-900/60 border border-white/10 space-y-2">
+        <span class="text-[11px] font-mono text-slate-400 uppercase">Verified Cables</span>
+        <div class="text-2xl font-black text-white">9 <span class="text-xs text-slate-400">Physical Links</span></div>
+        <p class="text-[11px] font-mono text-amber-400">8 Line-Rate • 1 USB 2.0 Throttled</p>
+      </div>
+
+      <div class="p-4 rounded-xl bg-slate-900/60 border border-cyan-500/30 space-y-2">
+        <span class="text-[11px] font-mono text-slate-400 uppercase">Downtime Averted</span>
+        <div class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">$3,480 <span class="text-xs text-slate-400">/ mo</span></div>
+        <p class="text-[11px] font-mono text-purple-400">99.999% SLA Uptime Guarantee</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Network Analyzer Pro",
+  "settings": [
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "Sovereign Mesh Diagnostic Suite"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Cable & Mesh Analyzer Lauburu Pro"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Zero-Mock physical link audit, WhatCable E-marker decoding & automated router switch watchdog."
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Button Text",
+      "default": "Deploy Enterprise Sentinel ($199/mo)"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Network Analyzer Pro Section"
+    }
+  ]
+}
+{% endschema %}

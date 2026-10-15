@@ -40,8 +40,8 @@ def _load_dotenv():
 
 _load_dotenv()
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
-LORA_DIR = Path("/Users/aaron/DFS_UNIFIED/lora_datasets")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
+LORA_DIR = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data")
 OBSIDIAN_DIR = REPO_ROOT / "obsidian_vault"
 LOG_FILE = REPO_ROOT / "session_logs" / "gemini_spark_maximizer_status.json"
 

@@ -1,0 +1,68 @@
+[
+  {
+    "id": "L1",
+    "name": "Mac Mini M4 Pro (L1)",
+    "direct_type": "Thunderbolt 4 (40 Gb/s)",
+    "tailscale_rtt_ms": 22.213,
+    "tailscale_loss_pct": 0.0,
+    "direct_rtt_ms": 0.428,
+    "direct_loss_pct": 0.0,
+    "wireguard_udp_51820": "OPEN",
+    "latency_advantage": "51.9x faster"
+  },
+  {
+    "id": "L3",
+    "name": "Linux Head Node AMD (L3)",
+    "direct_type": "Gigabit LAN Wi-Fi",
+    "tailscale_rtt_ms": 42.958,
+    "tailscale_loss_pct": 0.0,
+    "direct_rtt_ms": null,
+    "direct_loss_pct": 100.0,
+    "wireguard_udp_51820": "OPEN",
+    "latency_advantage": "N/A"
+  },
+  {
+    "id": "L2",
+    "name": "MacBook Pro Intel (L2)",
+    "direct_type": "Wi-Fi 5 (802.11ac)",
+    "tailscale_rtt_ms": 42.678,
+    "tailscale_loss_pct": 0.0,
+    "direct_rtt_ms": null,
+    "direct_loss_pct": 100.0,
+    "wireguard_udp_51820": "OPEN",
+    "latency_advantage": "N/A"
+  },
+  {
+    "id": "L1a",
+    "name": "MacBook Air M4 (L1a)",
+    "direct_type": "Wi-Fi 6E (802.11ax)",
+    "tailscale_rtt_ms": 16.562,
+    "tailscale_loss_pct": 0.0,
+    "direct_rtt_ms": null,
+    "direct_loss_pct": 100.0,
+    "wireguard_udp_51820": "OPEN",
+    "latency_advantage": "N/A"
+  },
+  {
+    "id": "GW",
+    "name": "GL-BE14000 Gateway (GW)",
+    "direct_type": "Wired LAN / Switch",
+    "tailscale_rtt_ms": 1.528,
+    "tailscale_loss_pct": 0.0,
+    "direct_rtt_ms": null,
+    "direct_loss_pct": 100.0,
+    "wireguard_udp_51820": "CLOSED",
+    "latency_advantage": "N/A"
+  },
+  {
+    "id": "L7",
+    "name": "Samsung Galaxy S20+ (L7)",
+    "direct_type": "USB Ethernet / Wi-Fi 6",
+    "tailscale_rtt_ms": 3.539,
+    "tailscale_loss_pct": 0.0,
+    "direct_rtt_ms": null,
+    "direct_loss_pct": 100.0,
+    "wireguard_udp_51820": "CLOSED",
+    "latency_advantage": "N/A"
+  }
+]

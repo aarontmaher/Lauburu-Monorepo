@@ -68,8 +68,8 @@ canonical_source: true
 | Device Node | Hardware Architecture | Total RAM | Live Used RAM | NPU Accelerator | NPU TOPS |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Mac Mini M4 Pro (L1)** | Apple M4 Pro (12C CPU / 16C GPU) | 24.0 GB | 20.01 GB (83.4%) | Apple Neural Engine (ANE, 16C) | 38.0 TOPS |
-| **MacBook Pro M4 (L2)** | Apple M4 / T2 Controller | 16.0 GB | 9.26 GB (57.9%) | Apple Neural Engine / Metal GPU | 38.0 TOPS |
-| **Linux Head Node (L3)** | AMD Ryzen 7 5700U (8C/16T, Lucienne) | 14.97 GB | 2.35 GB (15.7%) | AMD Ryzen AI / AVX2 SIMD | 10.0 TOPS |
+| **Intel MacBook Pro (L2)** | Intel i7-9750H (6C/12T) / T2 Controller | 16.0 GB | 9.26 GB (57.9%) | Intel UHD Graphics 630 / Metal GPU | 2.5 TOPS |
+| **Linux Head Node (L3)** | AMD Ryzen 7 5700U (8C/16T, Lucienne) | 15.0 GB | 2.35 GB (15.7%) | AMD Radeon Vega GPU / AVX2 SIMD | 10.0 TOPS |
 | **Pixel 10 Pro XL (L6)** | Google Tensor G5 (Edge TPU SoC) | 15.21 GB | 11.23 GB (73.8%) | Google Tensor G5 Edge TPU | 45.0 TOPS |
 | **Samsung S20+ (L7)** | Samsung Exynos 990 | 12.0 GB | 3.10 GB (25.8%) | Samsung Exynos Dual-Core NPU | 10.0 TOPS |
 | **GL.iNet Router (GW)** | MediaTek MT7981B Dual-Core ARM | 0.47 GB | 0.39 GB (83.0%) | Hardware Packet Engine (PPE) | 1.0 TOPS |

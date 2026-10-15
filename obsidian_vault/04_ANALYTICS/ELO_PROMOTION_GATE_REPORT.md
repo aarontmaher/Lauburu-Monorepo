@@ -15,7 +15,7 @@ Evaluation of fine-tuned adapter candidate **`agentworld_35b`** against tourname
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                       ELO PROMOTION GATE VERDICT                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ • Candidate Adapter:   /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/lora_adapters/agentworld_35b
+│ • Candidate Adapter:   /Volumes/Lauburu-Monorepo/02_ai_models_and_inference/lora_adapters/agentworld_35b
 │ • Tournament Win-Rate: 0.0% (Required: 65.0%)
 │ • Final Candidate ELO: 1619.8
 │ • Promotion Status:    🔴 **REJECTED (GATE UNMET)**

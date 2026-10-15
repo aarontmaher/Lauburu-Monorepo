@@ -16,12 +16,12 @@ echo "==========================================================================
 echo "⚡ LAUBURU MASTER CLI RUNNER & BENCHMARK SUITE"
 echo "=============================================================================="
 echo ""
-echo "📋 LIST 1: ALL-IN-ONE MULTI-WINDOW TMUX COCKPITS"
+echo "📋 LIST 1: ALL-IN-ONE MULTI-WINDOW TMUX CONSOLES"
 echo "  • [tmux]           - Full Polyglot TUI Session (Switch with Ctrl+b 0..3)"
 echo "  • [tmux-lab]       - Dedicated Mesh Transfer Lab Session (95% CI Tests)"
 echo ""
 echo "📋 LIST 2: DIRECT SINGLE-LANGUAGE TUI FRONTENDS"
-echo "  • [python]         - Python Textual Unified Mesh Cockpit (Port 4000 Integration)"
+echo "  • [python]         - Python Textual Unified Mesh Console (Port 4000 Integration)"
 echo "  • [rust]           - Rust Ratatui Native Immediate-Mode TUI (Sub-ms 120 FPS)"
 echo "  • [go]             - Go Bubble Tea Elm-Architecture TUI (Zero-Alloc Goroutines)"
 echo "  • [lab]            - Mesh Transfer Lab (Statistical 95% CI & Chaos Tests)"
@@ -41,12 +41,12 @@ case "${TARGET}" in
     single|polyglot|integrated|unified)
         echo "🚀 Launching Integrated Polyglot Single TUI (Rust + Go + Python + Metal)..."
         export PYTHONPATH="${SCRIPT_DIR}/tui:${SCRIPT_DIR}:${PYTHONPATH:-}"
-        exec "${PYTHON_VENV}" "${SCRIPT_DIR}/tui/polyglot_unified_cockpit.py"
+        exec "${PYTHON_VENV}" "${SCRIPT_DIR}/tui/polyglot_unified_console.py"
         ;;
     tmux|all)
-        echo "🚀 Spawning Polyglot Tmux Cockpit..."
+        echo "🚀 Spawning Polyglot Tmux Console..."
         tmux kill-session -t lauburu_polyglot_tui 2>/dev/null || true
-        tmux new-session -d -s lauburu_polyglot_tui -n "Python_Cockpit" -c "${SCRIPT_DIR}/tui" "${PYTHON_VENV} unified_mesh_cockpit_tui.py"
+        tmux new-session -d -s lauburu_polyglot_tui -n "Python_Console" -c "${SCRIPT_DIR}/tui" "${PYTHON_VENV} unified_mesh_console_tui.py"
         tmux new-window -t lauburu_polyglot_tui:1 -n "Mesh_Transfer_Lab" -c "${SCRIPT_DIR}/tui" "${PYTHON_VENV} tui_mesh_transfer_lab.py"
         tmux new-window -t lauburu_polyglot_tui:2 -n "Rust_Ratatui" -c "${MONOREPO_ROOT}/01_apps/canonical_tui_prototypes/rust_ratatui" "cargo run --release || ./bin/canonical_tui_rust"
         tmux new-window -t lauburu_polyglot_tui:3 -n "Go_BubbleTea" -c "${MONOREPO_ROOT}/01_apps/canonical_tui_prototypes/go_bubbletea" "go run main.go || ./bin/tui_go"
@@ -66,12 +66,12 @@ case "${TARGET}" in
 
     # ── LIST 2: SINGLE-LANGUAGE TUI FRONTENDS ───────────────────────────────────
     python|textual)
-        echo "🚀 Launching Python Textual Unified Cockpit..."
+        echo "🚀 Launching Python Textual Unified Console..."
         export PYTHONPATH="${SCRIPT_DIR}/tui:${SCRIPT_DIR}:${PYTHONPATH:-}"
-        exec "${PYTHON_VENV}" "${SCRIPT_DIR}/tui/unified_mesh_cockpit_tui.py"
+        exec "${PYTHON_VENV}" "${SCRIPT_DIR}/tui/unified_mesh_console_tui.py"
         ;;
     rust|ratatui)
-        echo "🚀 Launching Rust Ratatui Cockpit..."
+        echo "🚀 Launching Rust Ratatui Console..."
         RUST_BIN="${MONOREPO_ROOT}/01_apps/canonical_tui_prototypes/rust_ratatui/bin/canonical_tui_rust"
         if [ -x "${RUST_BIN}" ]; then
             exec "${RUST_BIN}"
@@ -81,7 +81,7 @@ case "${TARGET}" in
         fi
         ;;
     go|bubbletea)
-        echo "🚀 Launching Go Bubble Tea Cockpit..."
+        echo "🚀 Launching Go Bubble Tea Console..."
         GO_BIN="${MONOREPO_ROOT}/01_apps/canonical_tui_prototypes/go_bubbletea/bin/tui_go"
         if [ -x "${GO_BIN}" ]; then
             exec "${GO_BIN}"

@@ -41,11 +41,11 @@ def is_storage_healthy(
     try:
         obs_p = str(obsidian_path or os.environ.get(
             "OBSIDIAN_VAULT_PATH",
-            "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault"
+            "/Volumes/Lauburu-Monorepo/obsidian_vault"
         ))
         pysp_p = str(pyspark_path or os.environ.get(
             "PYSPARK_DATASET_PATH",
-            "/Users/aaron/DFS_UNIFIED/lora_datasets"
+            "/Volumes/Lauburu-Monorepo/04_data_and_memory/data"
         ))
         disk_p = str(disk_check_path or os.environ.get("HEADROOM_CHECK_PATH", "/Users/aaron"))
         
@@ -73,11 +73,11 @@ def fast_path_check(
     t_start = time.perf_counter()
     obs_p = str(obsidian_path or os.environ.get(
         "OBSIDIAN_VAULT_PATH",
-        "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault"
+        "/Volumes/Lauburu-Monorepo/obsidian_vault"
     ))
     pysp_p = str(pyspark_path or os.environ.get(
         "PYSPARK_DATASET_PATH",
-        "/Users/aaron/DFS_UNIFIED/lora_datasets"
+        "/Volumes/Lauburu-Monorepo/04_data_and_memory/data"
     ))
     disk_p = str(disk_check_path or os.environ.get("HEADROOM_CHECK_PATH", "/Users/aaron"))
     

@@ -15,7 +15,7 @@ consensus_score: 0.995
 
 ### Round 1: Local Master Orchestrator (Qwen 3.8 Max / prima.cpp :8082)
 > "Jupyter Notebooks provide the ultimate interactive medium for data science, DSP filtering, and kinematics visual analytics. In the Lauburu Mesh, we should integrate Jupyter across 5 distinct axes:
-> 1. **Remote Kernel Sharding:** Run kernel daemons on peripheral nodes (e.g., MacBook Air M4 on `:8889` or Linux Head Node on `:8888`), preserving Mac Mini Host RAM for prompt ingestion and orchestrator swarms.
+> 1. **Remote Kernel Sharding:** Run kernel daemons on peripheral nodes (e.g., MacBook Pro (Node L2) on `:8889` or Linux Head Node on `:8888`), preserving Mac Mini Host RAM for prompt ingestion and orchestrator swarms.
 > 2. **Biometrics DSP & Kinematics Workbenches:** Interactive plotting of Movesense 512Hz ECG streams, Pan-Tompkins QRS wave detection, and 3D spatial grappling OPML trees.
 > 3. **Bidirectional AST Module Sync:** Automated extraction of notebook functions into production `.py` monorepo modules (`04_data_and_memory/extracted_modules/`).
 > 4. **CodeClash & Model Evaluation:** Real-time ELO tracking and loss curve visualization for 24/7 LoRA training runs.
@@ -43,7 +43,7 @@ consensus_score: 0.995
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
 │                 5 CANONICAL JUPYTER INTEGRATION TOPOLOGIES                                  │
 ├─────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 1. REMOTE KERNEL SHARDING (L5 MacBook Air / L3 Linux Head Node):                            │
+│ 1. REMOTE KERNEL SHARDING (L2 MacBook Pro / L3 Linux Head Node):                            │
 │    • Offloads interactive computation to MacBook Air (:8889) to protect L1 Mac Mini VRAM.  │
 ├─────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 2. INTERACTIVE BIOMETRICS & SPATIAL KINEMATICS WORKBENCHES:                                 │

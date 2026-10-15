@@ -6,7 +6,7 @@ import glob
 from pathlib import Path
 
 # Paths
-LEADERBOARD_PATH = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/data/ai_elo_leaderboard.json"
+LEADERBOARD_PATH = "/Volumes/Lauburu-Monorepo/04_data_and_memory/data/ai_elo_leaderboard.json"
 VAULT_PATH = "/Volumes/localhost/AI_Models/champions"
 MODEL_SEARCH_PATHS = [
     "/Volumes/localhost/AI_Models/gguf",

@@ -333,7 +333,7 @@ class SwarmShellSession:
 
         # Check Local & GDrive Datasets
         gdrive_path = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets"
-        local_path = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets"
+        local_path = "/Volumes/Lauburu-Monorepo/lora_datasets"
         
         gdrive_exists = os.path.exists(gdrive_path)
         gdrive_status = "\x1b[1;32m✔ MOUNTED & SYNCED\x1b[0m" if gdrive_exists else "\x1b[1;33m⚠ OFFLINE CACHE ONLY\x1b[0m"
@@ -369,7 +369,7 @@ class SwarmShellSession:
             ("Layer 2: MacBook Pro (i7)", "100.103.212.21 (TB4: 169.254.187.138)", "12.0 GB Cap", "10Gbps Thunderbolt 4 Bridge"),
             ("Layer 3: Linux Hub (Ryzen 7)", "192.168.8.224:50052", "11.25 GB Cap", "NVMe Cache & Gateway"),
             ("Layer 4: Pixel 10 Pro XL", "100.73.38.87:50052", "11.4 GB Cap", "Tensor G5 + Edge TPU"),
-            ("Layer 5: Samsung S20+", "100.84.40.95:50052", "8.0 GB Cap", "Exynos 990 Worker")
+            ("Layer 5: Samsung S20+", "100.78.206.96:50052", "8.0 GB Cap", "Exynos 990 Worker")
         ]
 
         for name, addr, vram, role in shards:
@@ -379,7 +379,7 @@ class SwarmShellSession:
     async def handle_skills_inspect(self):
         """Inspects active swarm skills, living .md rules, and lineage."""
         await self.send_text("\r\n\x1b[1;34m📜 [SWARM SKILLS, .MD RULES & PERSISTENT LINEAGE]\x1b[0m\r\n\r\n")
-        skills_dir = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/skills"
+        skills_dir = "/Volumes/Lauburu-Monorepo/.agents/skills"
         if os.path.exists(skills_dir):
             await self.send_text("  \x1b[1;37mAvailable Swarm Skills:\x1b[0m\r\n")
             for s in sorted(os.listdir(skills_dir)):
@@ -388,8 +388,8 @@ class SwarmShellSession:
                     await self.send_text(f"    • \x1b[1;36m{s}\x1b[0m (path: {spath})\r\n")
         
         # Check living rules
-        soul_p = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/state/orchestrator/SOUL.md"
-        gen_p = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.agents/state/orchestrator/generation.json"
+        soul_p = "/Volumes/Lauburu-Monorepo/.agents/state/orchestrator/SOUL.md"
+        gen_p = "/Volumes/Lauburu-Monorepo/.agents/state/orchestrator/generation.json"
         if os.path.exists(gen_p):
             try:
                 with open(gen_p, "r") as f:

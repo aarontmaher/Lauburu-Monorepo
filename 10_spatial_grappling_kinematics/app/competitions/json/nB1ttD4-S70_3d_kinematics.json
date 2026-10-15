@@ -1,0 +1,26 @@
+{
+  "video_id": "nB1ttD4-S70",
+  "url": "https://youtu.be/nB1ttD4-S70",
+  "division": "Other Competitions",
+  "title": "Grappling industries - Aaron Maher vs Jett fisher [Match 2]",
+  "duration_sec": 206.6,
+  "resolution": "144x256",
+  "sampled_frames": 36,
+  "poses_detected_frames": 22,
+  "dual_athlete_frames": 5,
+  "standing_phase_pct": 13.6,
+  "ground_scramble_phase_pct": 86.4,
+  "level_change_shots_detected": 4,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 70.3,
+    "left_elbow": 136.5,
+    "right_elbow": 124.1,
+    "left_hip": 129.6,
+    "right_hip": 117.8,
+    "left_knee": 140.1,
+    "right_knee": 121.7
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/nB1ttD4-S70_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match is characterized by a strong standing and ground/scrumble component, with a high spine lean and elbow flexion and knee flexion.",
+  "processing_sec": 3.7
+}

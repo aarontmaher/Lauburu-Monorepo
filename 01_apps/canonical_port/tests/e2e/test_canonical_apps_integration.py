@@ -489,7 +489,7 @@ class TestRealCanonicalBackendIntegration:
         state = get_backend_state()
         nodes = state.get_mesh_nodes()
         expected_nodes = [
-            "L1_Mac_Node", "L2_MacBook_Pro", "L3_Linux_Head_Node",
+            "L1_Mac_Node", "L2_MacBook_Pro", "L3_Linux_Mini",
             "L4_Linux_Tablet", "L5_MacBook_Air", "L6_Pixel_10_Pro_XL",
             "L7_Samsung_S20", "GW_GLiNet_Router"
         ]

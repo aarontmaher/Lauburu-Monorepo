@@ -26,7 +26,7 @@ consensus_score: 1.000
 #### 👑 Local Orchestrator (Qwen 3.8 Max · Prima.cpp Metal Host)
 > *"We must not choose one to the exclusion of the other. The Lauburu mesh has two fundamentally distinct workloads:
 > 1. **High-Level Control & Dynamic Governance:** Python is unbeatable for dynamic topology discovery, latency polling, HuggingFace `trl`/`peft` dataset ingestion, PySpark AST parsing, and SWE-bench harness execution.
-> 2. **Bare-Metal Tensor Streaming:** Python is crippled by the Global Interpreter Lock (GIL) and garbage collection pauses when streaming 40 Gbps tensor activations across the 10Gbps Thunderbolt 4 DMA bridge. C++/Rust is mandatory for zero-copy DMA buffers, Metal MPSGraph kernels, and sub-millisecond ring latency (<0.20ms RTT)."*
+> 2. **Bare-Metal Tensor Streaming:** Python is crippled by the Global Interpreter Lock (GIL) and garbage collection pauses when streaming 40 Gbps tensor activations across the 40Gbps Thunderbolt 4 DMA bridge. C++/Rust is mandatory for zero-copy DMA buffers, Metal MPSGraph kernels, and sub-millisecond ring latency (<0.20ms RTT)."*
 
 #### ☁️ Cloud Shadow Orchestrators (Gemini 3.1 Pro High & Gemini 3.7 Flash High)
 > *"Developing two isolated, duplicated protocols creates severe codebase drift and fragmentation. If the Python team writes custom gRPC sockets while the C++/Rust team writes raw TCP/DMA structs, the two will desynchronize.
@@ -39,7 +39,7 @@ consensus_score: 1.000
 > *(Excerpt from live turn on Port 8083)*
 > *"Developing both a Python and C++/Rust AI sharding protocol as separate standalone stacks is fraught with extreme pitfalls:
 > 1. **Overcomplication & Maintenance Multiplier:** Maintaining two parallel networking stacks quadruples debugging costs and release cycles.
-> 2. **Performance Gaps & Serialization Tax:** If Python attempts to marshal tensor arrays into JSON/Protobuf before handing them to C++, the serialization overhead destroys the 10Gbps TB4 speed.
+> 2. **Performance Gaps & Serialization Tax:** If Python attempts to marshal tensor arrays into JSON/Protobuf before handing them to C++, the serialization overhead destroys the 40Gbps TB4 speed.
 > 3. **Wire Protocol Mandate:** There can only be **ONE** wire protocol across the mesh: standard GGML-RPC and POSIX `mmap`. Python must never reinvent tensor serialization."*
 
 ---
@@ -64,7 +64,7 @@ The council unanimously resolves that **both Python and C++/Rust must be utilize
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 3. UNIFIED WIRE & IN-MEMORY CONTRACT                                                            │
 │    • On-Node: POSIX Shared Memory (mmap / /dev/dma_buf) -> Zero IPC copy overhead.              │
-│    • Inter-Node: Standard GGML-RPC Binary Wire Protocol over 10Gbps TB4 DMA & 1GbE WireGuard.  │
+│    • Inter-Node: Standard GGML-RPC Binary Wire Protocol over 40Gbps TB4 DMA & 1GbE WireGuard.  │
 └─────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -75,8 +75,8 @@ The council unanimously resolves that **both Python and C++/Rust must be utilize
 | Layer | Physical Node | Available VRAM | Primary Inference Engine | Fallback Engine | Role & Protocol |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **L1** | `Mac_Node` (M4 Pro) | 21.6 GB AI | **`prima.cpp` (Metal)** | `llama.cpp` (:8081) | Host Ring Master · TB4 DMA Coordinator |
-| **L2** | `MacBook_Pro` (M3) | 14.0 GB AI | **`prima.cpp` (Metal)** | `llama.cpp` (:8082) | 10Gbps TB4 Bridge · 285GB SSD Vault |
-| **L3** | `Linux_Head_Node` | 13.8 GB AI | **`prima.cpp` (Vulkan/C++)** | `llama.cpp` (:8083) | Docker Hub · Apache Ray Head |
+| **L2** | `MacBook_Pro` (Intel i7) | 14.0 GB AI | **`prima.cpp` (Metal)** | `llama.cpp` (:8082) | 40Gbps TB4 Bridge · 285GB SSD Vault |
+| **L3** | `Linux_Mini` | 13.8 GB AI | **`prima.cpp` (Vulkan/C++)** | `llama.cpp` (:8083) | Docker Hub · Apache Ray Head |
 | **L4** | `Linux_Tablet` | 6.5 GB AI | `llama.cpp` (:50052) | Direct C Sentinel | Edge Worker (No Metal) -> Uses GGML-RPC |
 | **L5** | `MacBook_Air` (M4) | 14.0 GB AI | **`prima.cpp` (Metal)** | `llama.cpp` (:8084) | Secondary Metal Shard · LoRA Distiller |
 | **L6** | `Pixel_10_Pro_XL` | 12.5 GB AI | `llama.cpp` (NPU/OpenCL) | Termux C Daemon | Google Tensor G5 TPU · ADB Shard |

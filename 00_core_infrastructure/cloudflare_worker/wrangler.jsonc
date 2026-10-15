@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lauburu-mcp",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-05-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "WORKER_MODE": "dev",
+    "RAILWAY_FALLBACK_URL": "https://lauburu-ai-backend-production.up.railway.app"
+  },
+  "env": {
+    "preview": {
+      "name": "lauburu-mcp-preview",
+      "vars": {
+        "WORKER_MODE": "preview",
+        "RAILWAY_FALLBACK_URL": "https://lauburu-ai-backend-production.up.railway.app"
+      }
+    },
+    "production": {
+      "name": "lauburu-mcp-production",
+      "vars": {
+        "WORKER_MODE": "production",
+        "RAILWAY_FALLBACK_URL": "https://lauburu-ai-backend-production.up.railway.app"
+      }
+    }
+  }
+}

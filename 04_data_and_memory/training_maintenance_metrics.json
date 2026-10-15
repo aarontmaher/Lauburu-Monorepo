@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-09-06T08:11:01.768877+00:00Z",
+  "maintenance_cycle": 1,
+  "status": "ACTIVE_TRAINING",
+  "allocated_training_vram_gb": 42.0,
+  "active_paradigms": [
+    {
+      "name": "Genetic MoE Weight Merging",
+      "node": "Mac Mini M4 Pro (L1)",
+      "status": "FUSED",
+      "loss": 0.379,
+      "elo": 1982
+    },
+    {
+      "name": "Bilateral DPO Alignment",
+      "node": "Mac Mini + MBP Vault (L1+L2)",
+      "status": "ALIGNED",
+      "loss": 0.419,
+      "elo": 1922
+    },
+    {
+      "name": "prima.cpp PRP Ring Training",
+      "node": "Three Macs Ring (L1-L3)",
+      "status": "SYNCED",
+      "loss": 0.509,
+      "elo": 1892
+    },
+    {
+      "name": "llama.cpp GGML LoRA Backprop",
+      "node": "MacBook Pro M4 (L2)",
+      "status": "TRAINING",
+      "loss": 0.669,
+      "elo": 1862
+    },
+    {
+      "name": "MLX 4-bit QLoRA",
+      "node": "MacBook Air M4 (L3)",
+      "status": "TRAINING",
+      "loss": 0.839,
+      "elo": 1842
+    }
+  ],
+  "total_tokens_trained": 1870600,
+  "current_best_loss": 0.379,
+  "current_best_elo": 1982,
+  "hourly_cloud_cost": "$0.00"
+}

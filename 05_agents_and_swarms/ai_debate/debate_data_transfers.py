@@ -5,7 +5,7 @@ from pathlib import Path
 
 DEBATE_NOTE = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/01_DEBATES/AI_DEBATE_DATA_TRANSFER_METHODS_2026.md")
 
-transcript = """---
+transcript = r"""---
 title: "AI Debate Consensus: Multi-Transport Benchmarking & Distributed AI Framework Selection"
 date: "2026-08-29T16:11:00Z"
 tags: [lauburu, ai_debate, swarm, thunderbolt4, llamacpp, exo, petals, accelerate, statistics]

@@ -81,8 +81,8 @@ The **Neo MCP Server** (`neo-mcp`) transforms local open-source LLMs (Mistral-Ne
 
 ## 🔄 Continuous Overnight Trainer Telemetry
 - **Daemon Plist:** `~/Library/LaunchAgents/ai.lauburu.ecommerce_trainer.plist`
-- **LoRA Dataset:** `/Users/aaron/DFS_UNIFIED/lora_datasets/neo_ecommerce_continuous_lora.jsonl`
-- **Live Stream:** `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/tui_training_stream.json`
+- **LoRA Dataset:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/neo_ecommerce_continuous_lora.jsonl`
+- **Live Stream:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/tui_training_stream.json`
 - **Logs:** `/tmp/ecommerce_trainer.log`
 - **Current Performance:** Epoch 172 at 100% pass rate across all 5 benchmark categories; loss reduction 0.4463 $\to$ 0.0296; 889+ LoRA instruction & DPO pairs harvested.
 - **Model Orchestration Plane:** Local AI Orchestrator (Port 8081) locked to **Qwen 3.8 Max** (Standard Non-Abliterated); Devil's Advocate (Port 8083) locked to **Qwen 3.8 Max Abliterated** (`Huihui-Qwen3.8-27B`).

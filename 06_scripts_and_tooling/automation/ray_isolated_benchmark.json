@@ -1,0 +1,13 @@
+{
+    "isolated": {
+        "duration_ms": 302.614,
+        "status": "OK",
+        "target": "Local CPU"
+    },
+    "ray": {
+        "avg_task_duration_ms": 42.792,
+        "status": "OK",
+        "target": "Ray Cluster"
+    },
+    "sha256": "0c3526a1632874af491214832d7ea4de79102ac91fbab72f9b03fd19a72f7b69"
+}

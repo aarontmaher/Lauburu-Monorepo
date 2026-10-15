@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-09-13T05:26:20Z",
+  "sentinel_version": "1.0.0-512MB-SAFE",
+  "router_ram_safety_status": "CERTIFIED_HEALTHY (<=28MB RAM footprint, 250MB+ free)",
+  "total_targets": 6,
+  "healthy_nodes": 3,
+  "overall_health_pct": 50.0,
+  "nodes": [
+    {
+      "name": "GW GL.iNet Router",
+      "ip": "192.168.8.1",
+      "role": "Gateway Ingress & USB ADB Daemon",
+      "online": true,
+      "rtt_ms": 2.65,
+      "packet_loss_pct": 0.0
+    },
+    {
+      "name": "L1 Mac Mini M4 Pro",
+      "ip": "192.168.8.230",
+      "role": "Primary Host & Memory Governor",
+      "online": false,
+      "rtt_ms": null,
+      "packet_loss_pct": 100.0
+    },
+    {
+      "name": "L2 MacBook Pro TB4",
+      "ip": "192.168.8.127",
+      "role": "Metal GPU Worker (0.204ms TB4)",
+      "online": false,
+      "rtt_ms": null,
+      "packet_loss_pct": 100.0
+    },
+    {
+      "name": "L3 Linux Head Node",
+      "ip": "192.168.8.224",
+      "role": "Docker Hub & Ray Cluster",
+      "online": false,
+      "rtt_ms": null,
+      "packet_loss_pct": 100.0
+    },
+    {
+      "name": "L5 MacBook Air M4",
+      "ip": "192.168.8.222",
+      "role": "Secondary Metal Worker",
+      "online": true,
+      "rtt_ms": 78.09,
+      "packet_loss_pct": 0.0
+    },
+    {
+      "name": "WAN Internet DNS",
+      "ip": "8.8.8.8",
+      "role": "Global WAN Upstream",
+      "online": true,
+      "rtt_ms": 16.78,
+      "packet_loss_pct": 0.0
+    }
+  ]
+}

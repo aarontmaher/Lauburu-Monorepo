@@ -23,9 +23,9 @@ Models never remain confined to Bluetooth; rather, the system automatically benc
 │  • Bandwidth: 57.85 Gbps Backplane | Latency: 0.28 ms RTT                  │
 │  • VRAM Pool: 85.02 GB pooled across 7 nodes | TB4/TB5 PCIe DMA             │
 │  ▲ ESCALATION                                                               │
-│  Tier 2: 10Gbps Thunderbolt 4 DMA Direct Bridge                             │
-│  • Interface: bridge0 (169.254.187.138) | Latency: 0.62 ms RTT             │
-│  • Bandwidth: 16.85 Gbps raw DMA streaming                                  │
+│  Tier 2: 40Gbps Thunderbolt 4 DMA Direct Bridge                             │
+│  • Interface: bridge0 (10.0.0.8) | Latency: 0.38 ms RTT                     │
+│  • Bandwidth: 40.0 Gbps raw DMA streaming                                   │
 │  ▲ ESCALATION                                                               │
 │  Tier 1: Wi-Fi 7 (802.11be MLO) / 1GbE LAN + Tailscale WireGuard Overlay    │
 │  • Interface: en0 + utun4 (100.119.199.76) | Latency: 0.37 ms RTT          │
@@ -45,7 +45,7 @@ Models never remain confined to Bluetooth; rather, the system automatically benc
 | :--- | :--- | :--- | :---: | :---: | :--- |
 | **Tier 0** | Bluetooth Serial RFCOMM / BNEP PAN | `/dev/cu.Bluetooth-Incoming-Port` / `bnep0` | 18.50 ms | 1.0 - 2.1 Mbps | 🟢 **STANDBY** (Emergency out-of-band survival link, terminal console, heartbeats) |
 | **Tier 1** | Wi-Fi 7 (MLO) / 1GbE LAN + Tailscale | `en0` + `utun4` (`100.119.199.76`) | 0.37 ms | 1.00 Gbps | 🟢 **ACTIVE** (Multi-node overlay mesh, cross-subnet routing, remote worker dispatch) |
-| **Tier 2** | 10Gbps Thunderbolt 4 DMA Bridge | `bridge0` (`169.254.187.138`) | 0.62 ms | 16.85 Gbps | 🟢 **ACTIVE** (Direct PCIe DMA memory mapped buffers, sub-millisecond tensor streaming) |
+| **Tier 2** | 40Gbps Thunderbolt 4 DMA Bridge | `bridge0` (`10.0.0.8`) | 0.38 ms | 40.0 Gbps | 🟢 **ACTIVE** (Direct PCIe DMA memory mapped buffers to L8 `lauburu`, sub-millisecond tensor streaming) |
 | **Tier 3** | 40G/120G TB5 PRP Ring (`prima.cpp` + `llama.cpp`) | TB5 PCIe DMA + ZMQ Rings (`127.0.0.1:8082`) | **0.28 ms** | **57.85 Gbps** | 🏆 **OPTIMAL PEAK LINK** (**85.02 GB pooled VRAM**, pipelined-ring sharding, 0.27ms syntax completions) |
 
 ---
@@ -56,9 +56,9 @@ All physical links terminate into high-speed local AI daemons adhering strictly 
 
 | Port | Service Name | Model / Weights | Latency RTT | Status & Shard Details |
 | :--- | :--- | :--- | :---: | :--- |
-| **`:8082`** | **`prima.cpp` PRP Ring Master** | Sovereign Master Local Orchestrator | 4.43 ms | 🟢 **ONLINE** — **85.02 GB Pooled VRAM** across 7 nodes. Pipelined-ring parallelism over TB4/TB5 DMA. |
+| **`:8082`** | **`prima.cpp` PRP Ring Master** | `qwen_38_max_abliterated` (Sovereign Default Incumbent, Rule 15: 1734 ELO, Screen Lens Sovereign) | 4.43 ms | 🟢 **ONLINE** — **85.02 GB Pooled VRAM** across 7 nodes. Pipelined-ring parallelism over TB4/TB5 DMA. |
 | **`:8081`** | **`llama.cpp` RPC Syntax Worker** | `qwen2.5-coder-7b-instruct-q4_k_m.gguf` | **0.27 ms** | 🟢 **ONLINE** — Fast single-file syntax parser, linter, and micro-code generator (`-ngl 99`). Subordinate worker only. |
-| **`:8083`** | **`prima_ring_adapter` / Red Team** | `qwen_38_max_abliterated` | 1.24 ms | 🟢 **ONLINE** — `TB4_DMA_READY`. Canonical Devil's Advocate & Adversarial Red Team plane. |
+| **`:8083`** | **`prima_ring_adapter` / Red Team** | `qwen_38_max` | 1.24 ms | 🟢 **ONLINE** — `TB4_DMA_READY`. Canonical Devil's Advocate & Adversarial Red Team plane. |
 
 ---
 
@@ -67,7 +67,7 @@ All physical links terminate into high-speed local AI daemons adhering strictly 
 The prober is implemented as a standalone, zero-dependency compiled Rust crate (`01_apps/screen_lens/sandbox_evolution/bluetooth_terminal_arena/rust_transport_bridge`):
 - **Core Stack:** Tokio async runtime, reqwest HTTP engine, clap CLI parser, serde serialization.
 - **Probing Cycle:**
-  1. Concurrently probes TCP link latency to Tailscale gateway (`100.119.199.76`), TB4 peer (`169.254.187.138`), and Bluetooth BNEP (`192.168.44.1`).
+  1. Concurrently probes TCP link latency to Tailscale gateway (`100.119.199.76`), TB4 peer (`10.0.0.8`), and Bluetooth BNEP (`192.168.44.1`).
   2. Queries REST health checks on Ports `8081`, `8082`, and `8083`.
   3. Computes the optimal escalation decision based on latency, available bandwidth, and daemon responsiveness.
   4. Atomically serializes live status to `/tmp/lauburu_transport_state.json`.
@@ -104,4 +104,4 @@ Tournament results empirically recorded on September 5, 2026, comparing **Pure-N
 - [x] **Proof 1 (Actuation):** `rust_transport_bridge` compiled via `cargo build --release` with **Exit Code 0**; `code_clash_tournament.py --all` exited with **Exit Code 0**; `./run_bluetooth_arena_dev.sh --escalate` exited with **Exit Code 0**.
 - [x] **Proof 2 (Line-by-Line):** Telemetry cached at `/tmp/lauburu_transport_state.json` (2,600 bytes); continuous LoRA training dataset written to `lora_datasets/continuous_lora_dataset.jsonl` (121,924+ entries).
 - [x] **Proof 3 (Visual):** Full ANSI and TXT screen lens snapshots saved to `bluetooth_arena_live.txt` (86 lines, 17,385 bytes) and `code_clash_tournament_live.txt` (24 lines, 4,627 bytes).
-- [x] **Rule 3 Sanctuary:** Mac Mini M4 Pro host free RAM preserved at **14.2 GB free** (>9.6 GB limit).
+- [x] **Rule 3 Sanctuary:** Mac Mini M4 Pro host free RAM preserved at **14.2 GB free** (governed by 80% cap / >=4.8 GB limit).

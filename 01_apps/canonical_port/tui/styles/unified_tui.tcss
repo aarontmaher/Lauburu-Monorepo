@@ -1,0 +1,32 @@
+/* Lauburu Mesh TUI - Unified Stylesheet */
+/* Lens Sovereign Autonomous Mutation Target */
+
+.action-row {
+    height: 3;
+    layout: horizontal;
+    align: left middle;
+}
+
+Screen {
+    background: #070b12;
+    color: #e2e8f0;
+}
+Header {
+    dock: top;
+    height: 1;
+    background: #0b111c;
+}
+Footer {
+    dock: bottom;
+    height: 1;
+    background: #070b12;
+    border-top: solid #1e293b;
+}
+
+/* Lens Dynamic Styles */
+#lens-optimizer {
+    border: round green;
+    border-title-color: green;
+    height: 100%;
+    width: 30%;
+}

@@ -1,0 +1,62 @@
+{
+  "suite_name": "Canonical Mesh Fallback Terminal E2E Suite",
+  "timestamp": "2026-09-17T21:24:05Z",
+  "total_tests": 87,
+  "total_passed": 87,
+  "total_failed": 0,
+  "duration_seconds": 8.35,
+  "all_passed": true,
+  "zero_mock_certified": true,
+  "acceptance_criteria": {
+    "AC1_objective_oob_routing": true,
+    "AC2_simulated_outage_escalation": true,
+    "AC3_subprocess_handoff_no_crash": true
+  },
+  "tier_breakdown": [
+    {
+      "tier_name": "Tier 0: Rule #0 Static AST & Actuation Audit",
+      "test_file": "test_zero_mock_compliance.py",
+      "total": 5,
+      "passed": 5,
+      "failed": 0,
+      "duration_seconds": 0.282,
+      "exit_code": 0
+    },
+    {
+      "tier_name": "Tier 1: Feature Coverage (F1\u2013F6 Isolation)",
+      "test_file": "test_tier1_feature_coverage.py",
+      "total": 36,
+      "passed": 36,
+      "failed": 0,
+      "duration_seconds": 2.197,
+      "exit_code": 0
+    },
+    {
+      "tier_name": "Tier 2: Boundary & Corner Limits",
+      "test_file": "test_tier2_boundary_corner.py",
+      "total": 34,
+      "passed": 34,
+      "failed": 0,
+      "duration_seconds": 1.792,
+      "exit_code": 0
+    },
+    {
+      "tier_name": "Tier 3: Pairwise Cross-Feature Interactions",
+      "test_file": "test_tier3_cross_feature.py",
+      "total": 7,
+      "passed": 7,
+      "failed": 0,
+      "duration_seconds": 2.323,
+      "exit_code": 0
+    },
+    {
+      "tier_name": "Tier 4: Real-World Acceptance Criteria (AC1-AC3)",
+      "test_file": "test_tier4_real_world.py",
+      "total": 5,
+      "passed": 5,
+      "failed": 0,
+      "duration_seconds": 1.753,
+      "exit_code": 0
+    }
+  ]
+}

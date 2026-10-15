@@ -1,0 +1,240 @@
+version: '3.8'
+
+# ==============================================================================
+# LAUBURU SOVEREIGN MESH - ROOTLESS PODMAN HEADLESS INFRASTRUCTURE & LOCAL AI TRAINING
+# ==============================================================================
+# Zero-Mock Invariant: Runs natively on Linux Mesh Engines (L8 100.121.247.8 & L3 100.101.39.98)
+# and controlled remotely from macOS Sanctuary Nodes (L5 & L1) via `podman --remote` (0 MB Mac VM RAM).
+# Full Access: Mounts the entire Lauburu-Monorepo, 20+ LoRA/WebVLA datasets, Obsidian Vault,
+# Model Adapters, and SSH keys, wired directly to EmbeddingGemma 2 (:8087), Neo4j 5.26.32 (:7474/:7687),
+# Qdrant MRL (:6333), and Chrome DevTools Local AI Sentinel Bridge (:9224).
+
+x-mesh-common-env: &mesh-common-env
+  LAUBURU_MONOREPO_ROOT: /workspace
+  EMBEDDINGGEMMA2_URL: ${EMBEDDINGGEMMA2_URL:-http://100.121.202.34:8087/v1/embeddings}
+  NEO4J_HTTP_URL: ${NEO4J_HTTP_URL:-http://100.101.39.98:7474/db/neo4j/tx/commit}
+  NEO4J_BOLT_URI: ${NEO4J_BOLT_URI:-bolt://100.101.39.98:7687}
+  NEO4J_USER: ${NEO4J_USER:-neo4j}
+  NEO4J_PASSWORD: ${NEO4J_PASSWORD:-lauburu-sovereign-2026}
+  QDRANT_URL: ${QDRANT_URL:-http://100.101.39.98:6333}
+  LENS_CHAT_URL: ${LENS_CHAT_URL:-http://100.121.202.34:8089/v1/chat/completions}
+  CHROME_DEVTOOLS_BRIDGE_URL: ${CHROME_DEVTOOLS_BRIDGE_URL:-http://100.121.202.34:9224}
+
+services:
+  # ----------------------------------------------------------------------------
+  # 0. PODMAN LOCAL AI TRAINER & EMBEDDINGGEMMA 2 MRL DISTILLER (:8096)
+  # ----------------------------------------------------------------------------
+  podman-local-ai-trainer:
+    image: docker.io/library/python:3.11-slim
+    container_name: podman-local-ai-trainer
+    restart: always
+    network_mode: host
+    environment:
+      <<: *mesh-common-env
+      LAUBURU_NODE_ID: ${LAUBURU_NODE_ID:-L8}
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/workspace:Z
+      - ${HOME}/.ssh:/root/.ssh:ro
+    working_dir: /workspace
+    command: >
+      python3 /workspace/06_scripts_and_tooling/podman_local_ai_trainer.py
+      --daemon --port 8096
+
+  # ----------------------------------------------------------------------------
+  # 1. CHROME DEVTOOLS LOCAL AI & WEBVLA SENTINEL BRIDGE (:9224)
+  # ----------------------------------------------------------------------------
+  chrome-devtools-ai-bridge:
+    image: docker.io/library/python:3.11-slim
+    container_name: chrome-devtools-ai-bridge
+    restart: always
+    network_mode: host
+    environment:
+      <<: *mesh-common-env
+      LAUBURU_NODE_ID: ${LAUBURU_NODE_ID:-L8}
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/workspace:Z
+      - ${HOME}/.ssh:/root/.ssh:ro
+    working_dir: /workspace
+    command: >
+      python3 /workspace/06_scripts_and_tooling/network/chrome_devtools_sentinel_bridge.py
+      --daemon --port 9224
+
+  # ----------------------------------------------------------------------------
+  # 2. HEADLESS CHROMIUM & CDP BROWSER ENGINE (:9222)
+  # ----------------------------------------------------------------------------
+  headless-chromium:
+    image: docker.io/chromedp/headless-shell:latest
+    container_name: headless-chromium
+    restart: always
+    ports:
+      - "9222:9222"
+    shm_size: "2gb"
+    environment:
+      <<: *mesh-common-env
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/workspace:Z
+    command: ["--no-sandbox", "--remote-debugging-address=0.0.0.0", "--remote-debugging-port=9222"]
+
+  # ----------------------------------------------------------------------------
+  # 3. HEADLESS JETBRAINS IDE SERVERS (IntelliJ & GoLand via Projector/CodeServer)
+  # ----------------------------------------------------------------------------
+  headless-ide-intellij:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: headless-ide-intellij
+    restart: always
+    ports:
+      - "8443:8443"
+    environment:
+      <<: *mesh-common-env
+      - PUID=1000
+      - PGID=1000
+      - TZ=Australia/Sydney
+      - DEFAULT_WORKSPACE=/workspace
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/workspace:Z
+
+  headless-ide-goland:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: headless-ide-goland
+    restart: always
+    ports:
+      - "8444:8443"
+    environment:
+      <<: *mesh-common-env
+      - PUID=1000
+      - PGID=1000
+      - TZ=Australia/Sydney
+      - DEFAULT_WORKSPACE=/workspace/05_agents_and_swarms
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/workspace:Z
+
+  # ----------------------------------------------------------------------------
+  # 4. ALL CLI & MCP TOOLS CONTAINER (Claude, Gemini, OpenCode, Codex, Cursor)
+  # ----------------------------------------------------------------------------
+  agent-cli-mcp-servers:
+    image: docker.io/library/node:22-bookworm
+    container_name: agent-cli-mcp-servers
+    restart: always
+    network_mode: host
+    environment:
+      <<: *mesh-common-env
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/workspace:Z
+      - ${HOME}/.ssh:/root/.ssh:ro
+    working_dir: /workspace
+    command: >
+      bash -c "npm install -g @modelcontextprotocol/server-filesystem @modelcontextprotocol/server-memory &&
+      tail -f /dev/null"
+
+  # ----------------------------------------------------------------------------
+  # 5. SOVEREIGN LOCAL COLAB & JUPYTERLAB WORKSPACE (:8889)
+  # ----------------------------------------------------------------------------
+  sovereign-colab-jupyter:
+    image: quay.io/jupyter/scipy-notebook:latest
+    container_name: sovereign-colab-jupyter
+    restart: always
+    ports:
+      - "8889:8888"
+    environment:
+      <<: *mesh-common-env
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=lauburu
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/home/jovyan/work:Z
+
+  # ----------------------------------------------------------------------------
+  # 6. PYSPARK DISTRIBUTED DATA LAKEHOUSE & BIOMETRIC DSP (:8089 / :4040)
+  # ----------------------------------------------------------------------------
+  pyspark-data-lake:
+    image: quay.io/jupyter/pyspark-notebook:latest
+    container_name: pyspark-data-lake
+    restart: always
+    ports:
+      - "8099:8888"
+      - "4040:4040"
+    environment:
+      <<: *mesh-common-env
+      - SPARK_OPTS=--driver-memory=4g --executor-memory=4g
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/home/jovyan/work:Z
+
+  # ----------------------------------------------------------------------------
+  # 7. NEO-GRAPHS & QDRANT VECTOR MEMORY VAULT (:6333 / :6334)
+  # ----------------------------------------------------------------------------
+  neo-graphs-qdrant:
+    image: docker.io/qdrant/qdrant:latest
+    container_name: neo-graphs-qdrant
+    restart: always
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}/04_data_and_memory/qdrant_storage:/qdrant/storage:Z
+
+  # ----------------------------------------------------------------------------
+  # 8. SCREEN LENS SOVEREIGN DAEMON & OCR ENGINE (:3035)
+  # ----------------------------------------------------------------------------
+  screen-lens-sovereign-daemon:
+    image: docker.io/library/python:3.11-slim
+    container_name: screen-lens-sovereign-daemon
+    restart: always
+    network_mode: host
+    environment:
+      <<: *mesh-common-env
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/workspace:Z
+      - ${HOME}/.ssh:/root/.ssh:ro
+    working_dir: /workspace
+    command: >
+      bash -c "python3 /workspace/06_scripts_and_tooling/lens_neo4j_gemma2_orchestrator.py status &&
+      tail -f /dev/null"
+
+  # ----------------------------------------------------------------------------
+  # 9. TTYD + GO BUBBLETEA TERMINAL SERVER (:7681)
+  # ----------------------------------------------------------------------------
+  ttyd-go-terminal:
+    image: docker.io/tsl0922/ttyd:latest
+    container_name: ttyd-go-terminal
+    restart: always
+    ports:
+      - "7681:7681"
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/workspace:Z
+    command: ["ttyd", "-p", "7681", "-W", "bash"]
+
+  # ----------------------------------------------------------------------------
+  # 10. CONTINUOUS LOOP & SELF-HEALING WATCHDOG
+  # ----------------------------------------------------------------------------
+  mesh-loop-watchdog:
+    image: docker.io/library/alpine:latest
+    container_name: mesh-loop-watchdog
+    restart: always
+    network_mode: host
+    environment:
+      <<: *mesh-common-env
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/workspace:Z
+    command: >
+      sh -c "apk add --no-cache curl openssh-client bash &&
+      while true; do
+        curl -s http://127.0.0.1:8096/status >/dev/null 2>&1 || true;
+        sleep 30;
+      done"
+
+  # ----------------------------------------------------------------------------
+  # 11. PI-AGENT (pi.dev) AUTONOMOUS EDGE WORKER
+  # ----------------------------------------------------------------------------
+  pi-agent-worker:
+    image: docker.io/library/python:3.11-slim
+    container_name: pi-agent-worker
+    restart: always
+    network_mode: host
+    environment:
+      <<: *mesh-common-env
+    volumes:
+      - ${MONOREPO_HOST_PATH:-..}:/workspace:Z
+    working_dir: /workspace
+    command: >
+      bash -c "tail -f /dev/null"

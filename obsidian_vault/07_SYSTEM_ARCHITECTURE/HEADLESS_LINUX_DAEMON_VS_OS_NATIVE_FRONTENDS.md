@@ -15,7 +15,7 @@ The Tri-Orchestrator AI Debate council reached unanimous consensus (**Score: 0.9
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │               DISTRIBUTED HEADLESS LINUX DAEMON + OS-SPECIFIC FRONTENDS                │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ 1. HEADLESS LINUX BACKEND DAEMON (Linux Head Node / AMD Ryzen / Docker Hub / Server)   │
+│ 1. HEADLESS LINUX BACKEND DAEMON (Linux Head Node / Intel 2018 Mac Mini / Docker Hub / Server)   │
 │    • 24/7 Persistent Ingestion: Movesense BLE gateway, Open Wearables Celery sync     │
 │    • High-Throughput Storage: PySpark / Delta Lake indexing, PostgreSQL, Redis PubSub  │
 │    • Local AI Cluster Hub: Petals DHT, llama.cpp RPC sharding (Ports 8081-8085)        │

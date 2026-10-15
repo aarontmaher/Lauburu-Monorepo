@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spatial Grappling Lauburu — 3D Biomechanical Kinematics & Tatami Arena</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #07090e; color: #f3f4f6; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-card {
+      background: rgba(15, 20, 32, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-6 flex flex-col space-y-6">
+
+  <!-- 1. Header Bar (Rule 9: App Name First) -->
+  <header class="glass-card rounded-2xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div class="flex items-center space-x-4">
+      <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-2xl shadow-lg shadow-emerald-500/20">
+        🥋
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-2xl font-black text-white tracking-tight">Spatial Grappling Lauburu</h1>
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+            3D Kinematics v2.0
+          </span>
+        </div>
+        <p class="text-xs text-slate-400 mt-0.5">WebGL/WebGPU 3D Tatami Arena, 955-Node Technique Tree, Joint Torque & Biometrics</p>
+      </div>
+    </div>
+
+    <!-- Live Connection & Control Badges -->
+    <div class="flex flex-wrap items-center gap-2.5">
+      <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-white/5">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" id="ws-indicator"></span>
+        <span class="text-xs font-mono text-slate-300" id="ws-status">IMU WS: Disconnected</span>
+      </div>
+      <button onclick="toggleWebcam()" id="btn-camera" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center space-x-1.5 shadow-sm">
+        <span>📹</span>
+        <span id="txt-cam-btn">Start Camera Pose</span>
+      </button>
+      <button onclick="toggleFullscreen()" class="px-3 py-1.5 rounded-lg text-xs font-mono text-slate-300 bg-slate-800 hover:bg-slate-700 transition border border-white/5">
+        ⛶ Mat Display Mode
+      </button>
+    </div>
+  </header>
+
+  <!-- 2. Main Arena Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+
+    <!-- Left 8 Cols: 3D Tatami Mat & Camera Viewport -->
+    <div class="lg:col-span-8 flex flex-col space-y-6">
+      
+      <!-- 3D Tatami WebGL Canvas -->
+      <div class="glass-card rounded-2xl p-5 flex flex-col space-y-3 relative overflow-hidden">
+        <div class="flex justify-between items-center z-10">
+          <div class="flex items-center space-x-2">
+            <span class="text-xs font-bold uppercase text-slate-400 tracking-wider">3D Competition Tatami Mat (10m × 10m)</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">Three.js R128</span>
+          </div>
+          <div class="flex items-center space-x-2 text-xs font-mono text-slate-400">
+            <button onclick="resetCameraView()" class="hover:text-white transition px-2 py-0.5 rounded bg-slate-800/60 border border-white/5">Reset View</button>
+            <span id="canvas-fps">-- FPS</span>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="w-full h-[400px] rounded-xl bg-slate-950/90 relative overflow-hidden border border-white/5" id="tatami-container">
+          <div id="loading-overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/80 z-20 transition-opacity duration-300">
+            <div class="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+            <span class="text-xs font-mono text-slate-400">Initializing 3D Tatami Mat & Shader Coordinates...</span>
+          </div>
+        </div>
+
+        <!-- Camera PIP / Pose Input Viewport -->
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-between pt-2 border-t border-white/5 text-xs text-slate-400">
+          <div class="flex items-center space-x-3">
+            <div class="w-32 h-20 bg-slate-950 rounded-lg border border-white/10 overflow-hidden relative flex items-center justify-center">
+              <video id="webcam-el" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
+              <div id="webcam-standby" class="text-[10px] text-slate-500 text-center px-1 font-mono">
+                Camera Standby<br>(Offline)
+              </div>
+            </div>
+            <div>
+              <span class="font-bold text-slate-300 block">Pose Estimation Feed</span>
+              <span class="font-mono text-[11px] text-slate-500" id="cam-resolution">Stream: Standby (0 FPS)</span>
+            </div>
+          </div>
+          <div class="text-right font-mono text-[11px]">
+            <span class="text-slate-500 block">Movesense 9-Axis IMU Link:</span>
+            <span class="text-amber-400" id="imu-link-status">ws://127.0.0.1:8084/imu_stream (Standby)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zero-Mock Biomechanical Telemetry Metrics -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <!-- Metric 1: Joint Torque -->
+        <div class="glass-card rounded-xl p-4 border border-white/5">
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Joint Torque & Tap Risk</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-400" id="badge-torque-risk">STANDBY</span>
+          </div>
+          <div class="text-2xl font-black text-slate-100 font-mono my-1" id="metric-torque">
+            -- <span class="text-xs font-normal text-slate-500">N·m</span>
+          </div>
+          <p class="text-[10px] text-slate-500 leading-tight">
+            Threshold: Elbow 45.0 N·m • Knee 38.0 N·m<br>
+            <span class="text-slate-400">[To Be Added on Live Sensor Link]</span>
+          </p>
+        </div>
+
+        <!-- Metric 2: Center of Mass & Base Stability -->
+        <div class="glass-card rounded-xl p-4 border border-white/5">
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Center of Mass (CoM)</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-400">3D VECTOR</span>
+          </div>
+          <div class="text-base font-bold text-slate-200 font-mono my-2 truncate" id="metric-com">
+            X: -- | Y: -- | Z: --
+          </div>
+          <p class="text-[10px] text-slate-500 leading-tight">
+            Base Polygonal Area: <span class="text-slate-400" id="metric-base-area">-- m²</span><br>
+            <span class="text-slate-400">[To Be Added on Live Pose Extraction]</span>
+          </p>
+        </div>
+
+        <!-- Metric 3: Movesense Biometric Strain -->
+        <div class="glass-card rounded-xl p-4 border border-white/5">
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Biometric Strain Index</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-400" id="badge-zone">ZONE: --</span>
+          </div>
+          <div class="text-2xl font-black text-slate-100 font-mono my-1" id="metric-hr">
+            -- <span class="text-xs font-normal text-slate-500">BPM</span>
+          </div>
+          <p class="text-[10px] text-slate-500 leading-tight">
+            DFA-α1: <span class="text-slate-400" id="metric-dfa">--</span> • RMSSD: <span class="text-slate-400" id="metric-rmssd">-- ms</span><br>
+            <span class="text-slate-400">[Awaiting Movesense BLE Connection]</span>
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Right 4 Cols: 955-Node Technique Hierarchy & Transitions -->
+    <div class="lg:col-span-4 flex flex-col space-y-6">
+
+      <!-- Active Technique Card -->
+      <div class="glass-card rounded-2xl p-5 flex flex-col space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold uppercase text-slate-400 tracking-wider">Active Technique Node</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">955 SSoT OPML</span>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-950/80 border border-white/5">
+          <div class="text-base font-black text-emerald-400 mb-1" id="tech-name">
+            [Awaiting Pose Classification]
+          </div>
+          <div class="text-xs text-slate-400 font-mono" id="tech-category">
+            Category: Standby • Position: Neutral Mat
+          </div>
+        </div>
+
+        <!-- Mechanical Vector Breakdown -->
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between py-1 border-b border-white/5">
+            <span class="text-slate-400">Primary Fulcrum:</span>
+            <span class="font-mono text-slate-200" id="tech-fulcrum">[To Be Added on Detection]</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-white/5">
+            <span class="text-slate-400">Lever Arm Length:</span>
+            <span class="font-mono text-slate-200" id="tech-lever">-- m</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-white/5">
+            <span class="text-slate-400">Submission Sub-Tree:</span>
+            <span class="font-mono text-slate-200" id="tech-submission">[To Be Added]</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-slate-400">Escape Counter Path:</span>
+            <span class="font-mono text-slate-200" id="tech-escape">[To Be Added]</span>
+          </div>
+        </div>
+
+        <!-- Technique Taxonomy Search & Browser -->
+        <div class="pt-2">
+          <div class="relative mb-2">
+            <input type="text" id="tree-search" placeholder="Search 955 technique nodes..." class="w-full bg-slate-950 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono" oninput="filterTechniques(this.value)">
+          </div>
+
+          <div class="max-h-60 overflow-y-auto space-y-1.5 pr-1 font-mono text-xs" id="technique-list">
+            <div class="p-2 rounded bg-slate-900/60 border border-white/5 cursor-pointer hover:border-emerald-500/50 transition" onclick="selectTechnique('Closed Guard', 'Guard System', 'Hip Elevation', '0.35m', 'Triangle / Armbar', 'Post & Stack')">
+              <span class="text-emerald-400 font-bold block">Closed Guard</span>
+              <span class="text-[10px] text-slate-500">Root Guard Node • High Sub Tree</span>
+            </div>
+            <div class="p-2 rounded bg-slate-900/60 border border-white/5 cursor-pointer hover:border-emerald-500/50 transition" onclick="selectTechnique('Ashi Garami (Single Leg X)', 'Leg Entanglements', 'Inside Heel Hook Vector', '0.42m', 'Straight Ankle / Heel Hook', 'Hand-Fight & Turn Out')">
+              <span class="text-blue-400 font-bold block">Ashi Garami (Single Leg X)</span>
+              <span class="text-[10px] text-slate-500">Entanglement Level 1 • Knee Reaping Boundary</span>
+            </div>
+            <div class="p-2 rounded bg-slate-900/60 border border-white/5 cursor-pointer hover:border-emerald-500/50 transition" onclick="selectTechnique('Cross-Body Side Control', 'Pins & Control', 'Sternum Pressure Point', '0.28m', 'Kimura / Americana', 'Underhook & Shrimp')">
+              <span class="text-amber-400 font-bold block">Cross-Body Side Control</span>
+              <span class="text-[10px] text-slate-500">Upper Pin Hierarchy • Heavy Pressure Matrix</span>
+            </div>
+            <div class="p-2 rounded bg-slate-900/60 border border-white/5 cursor-pointer hover:border-emerald-500/50 transition" onclick="selectTechnique('Mount Back Control', 'Dominant Terminal', 'Seatbelt Harness', '0.22m', 'Rear Naked Choke', 'Scoot to Weak Side')">
+              <span class="text-purple-400 font-bold block">Mount Back Control</span>
+              <span class="text-[10px] text-slate-500">Terminal Dominance • Rear Choke Sub Tree</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Zero-Mock API Contract Reference Card -->
+      <div class="glass-card rounded-2xl p-5 text-xs space-y-2.5">
+        <span class="font-bold text-slate-300 block uppercase tracking-wider text-[11px]">Authentic Data Pipeline Contracts</span>
+        <div class="p-2.5 rounded-lg bg-slate-950 font-mono text-[11px] text-slate-400 space-y-1">
+          <div>• <span class="text-emerald-400">WebSocket</span>: ws://127.0.0.1:8084/imu_stream (100 Hz)</div>
+          <div>• <span class="text-blue-400">REST API</span>: GET /api/kinematics/techniques.json</div>
+          <div>• <span class="text-purple-400">Biometrics</span>: Movesense BLE CoreBluetooth GATT 0x180D</div>
+        </div>
+        <p class="text-[10px] text-slate-500 leading-tight">
+          Adheres strictly to Rule #0: No synthetic telemetry or fake joint coordinates. Missing sensors maintain waiting state.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 3. Three.js Tatami Arena Script -->
+  <script>
+    let scene, camera, renderer, tatamiMesh, skeletonGroup;
+    let isWebcamActive = false;
+    let ws = null;
+
+    function init3DTatami() {
+      const container = document.getElementById('tatami-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x05070e);
+
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+      camera.position.set(0, 7, 9);
+      camera.lookAt(0, 0, 0);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      container.appendChild(renderer.domElement);
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0x00ffcc, 0.8);
+      dirLight.position.set(5, 12, 7);
+      scene.add(dirLight);
+
+      // Tatami Mat Surface (10m x 10m Competition Mat)
+      // Inner Contest Area: 8m x 8m (Yellow / Emerald), Outer Safety Zone: 1m border (Red / Amber)
+      const outerGeo = new THREE.PlaneGeometry(10, 10);
+      const outerMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
+      const outerPlane = new THREE.Mesh(outerGeo, outerMat);
+      outerPlane.rotation.x = -Math.PI / 2;
+      scene.add(outerPlane);
+
+      const innerGeo = new THREE.PlaneGeometry(8, 8);
+      const innerMat = new THREE.MeshStandardMaterial({ color: 0x064e3b, roughness: 0.7 });
+      const innerPlane = new THREE.Mesh(innerGeo, innerMat);
+      innerPlane.rotation.x = -Math.PI / 2;
+      innerPlane.position.y = 0.01;
+      scene.add(innerPlane);
+
+      // Center Combat Circle (Radius 1.5m)
+      const circleGeo = new THREE.RingGeometry(1.4, 1.5, 32);
+      const circleMat = new THREE.MeshBasicMaterial({ color: 0x00ffcc, side: THREE.DoubleSide });
+      const circleMesh = new THREE.Mesh(circleGeo, circleMat);
+      circleMesh.rotation.x = -Math.PI / 2;
+      circleMesh.position.y = 0.02;
+      scene.add(circleMesh);
+
+      // Mat Coordinate Grid
+      const grid = new THREE.GridHelper(10, 20, 0x00ffcc, 0x334155);
+      grid.position.y = 0.03;
+      scene.add(grid);
+
+      // Skeletal Avatar Container
+      skeletonGroup = new THREE.Group();
+      scene.add(skeletonGroup);
+
+      // Hide loading overlay
+      document.getElementById('loading-overlay').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('loading-overlay').style.display = 'none';
+      }, 300);
+
+      // Animation Loop
+      let lastTime = performance.now();
+      let frames = 0;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+
+        frames++;
+        const now = performance.now();
+        if (now - lastTime >= 1000) {
+          document.getElementById('canvas-fps').innerText = frames + ' FPS';
+          frames = 0;
+          lastTime = now;
+        }
+      }
+      animate();
+
+      // Handle Resize
+      window.addEventListener('resize', () => {
+        const newWidth = container.clientWidth;
+        const newHeight = container.clientHeight;
+        camera.aspect = newWidth / newHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(newWidth, newHeight);
+      });
+    }
+
+    function resetCameraView() {
+      if (camera) {
+        camera.position.set(0, 7, 9);
+        camera.lookAt(0, 0, 0);
+      }
+    }
+
+    // Camera Toggle
+    async function toggleWebcam() {
+      const videoEl = document.getElementById('webcam-el');
+      const standbyEl = document.getElementById('webcam-standby');
+      const btnTxt = document.getElementById('txt-cam-btn');
+      const resTxt = document.getElementById('cam-resolution');
+
+      if (!isWebcamActive) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: false });
+          videoEl.srcObject = stream;
+          videoEl.classList.remove('hidden');
+          standbyEl.classList.add('hidden');
+          btnTxt.innerText = 'Stop Camera';
+          resTxt.innerText = 'Stream: 1280×720 (Live)';
+          isWebcamActive = true;
+        } catch (err) {
+          alert('Webcam Access Failed: ' + (err.message || err));
+        }
+      } else {
+        if (videoEl.srcObject) {
+          videoEl.srcObject.getTracks().forEach(t => t.stop());
+        }
+        videoEl.classList.add('hidden');
+        standbyEl.classList.remove('hidden');
+        btnTxt.innerText = 'Start Camera Pose';
+        resTxt.innerText = 'Stream: Standby (0 FPS)';
+        isWebcamActive = false;
+      }
+    }
+
+    // Technique Selector Helper
+    function selectTechnique(name, category, fulcrum, lever, sub, escape) {
+      document.getElementById('tech-name').innerText = name;
+      document.getElementById('tech-category').innerText = 'Category: ' + category + ' • Status: Selected';
+      document.getElementById('tech-fulcrum').innerText = fulcrum;
+      document.getElementById('tech-lever').innerText = lever;
+      document.getElementById('tech-submission').innerText = sub;
+      document.getElementById('tech-escape').innerText = escape;
+    }
+
+    function filterTechniques(query) {
+      const q = query.toLowerCase();
+      const list = document.getElementById('technique-list');
+      const items = list.getElementsByTagName('div');
+      for (let i = 0; i < items.length; i++) {
+        const text = items[i].innerText.toLowerCase();
+        if (text.includes(q)) {
+          items[i].style.display = '';
+        } else {
+          items[i].style.display = 'none';
+        }
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Initialize on DOM load
+    window.addEventListener('DOMContentLoaded', init3DTatami);
+  </script>
+</body>
+</html>

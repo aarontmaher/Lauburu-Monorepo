@@ -23,12 +23,12 @@ status: "CONSENSUS_ACHIEVED"
 ## 🏛️ Round 1: Model Perspectives & Architectural Critiques
 
 ### 1. DeepSeek V4 Pro (1.6T MoE): Distributed Mathematical Scaling
-- **Gradient Synchronization on TB4 DMA:** The 10Gbps Thunderbolt 4 bridge (`bridge0`) at 0.277ms RTT and 40 Gbps PCIe DMA is a rare superpower for home lab setups. However, running full-parameter AllReduce across disparate architectures (Apple Silicon M4 Pro vs Intel Core i7 vs AMD Ryzen) introduces severe pipeline bubbles due to memory bandwidth asymmetries (Apple unified memory ~273 GB/s vs Intel dual-channel DDR4 ~40 GB/s).
+- **Gradient Synchronization on TB4 DMA:** The 40Gbps Thunderbolt 4 bridge (`bridge0`) at 0.277ms RTT and 40 Gbps PCIe DMA is a rare superpower for home lab setups. However, running full-parameter AllReduce across disparate architectures (Apple Silicon M4 Pro vs Intel Core i7 vs Intel 2018 Mac Mini) introduces severe pipeline bubbles due to memory bandwidth asymmetries (Apple unified memory ~273 GB/s vs Intel dual-channel DDR4 ~40 GB/s).
 - **Recommendation:** Do NOT perform synchronous tensor-parallel or pipeline-parallel backpropagation across heterogeneous CPUs/GPUs. Instead, utilize **Asynchronous Federated Adapter Averaging** (Federated LoRA) or assign the entire gradient computation of a specific MoE expert to a single node, communicating only sparse adapter weight deltas via TB4 DMA.
 
 ### 2. Gemini Flash 3.8 High (Google Ultra): Data Quality & Tokenizer Preservation
 - **Dataset Purity & Tokenizer Drift:** The current dataset of 72,490+ DPO pairs is substantial, but training across Qwen, Llama, and SmolLM models with differing tokenizers creates catastrophic vocabulary misalignment. If an adapter trained on Qwen token IDs is applied to Llama or SmolLM, perplexity explodes.
-- **Recommendation:** Enforce strict **Tokenizer Partitioning** in `/Users/aaron/DFS_UNIFIED/lora_datasets/`:
+- **Recommendation:** Enforce strict **Tokenizer Partitioning** in `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/`:
   - `lora_datasets/qwen_family/`
   - `lora_datasets/smollm_family/`
   - `lora_datasets/llama_family/`
@@ -65,7 +65,7 @@ status: "CONSENSUS_ACHIEVED"
 │ PHASE 2: HARDWARE-AWARE DYNAMIC WORKLOAD PARTITIONING                       │
 │ • Node L1 (M4 Pro 24GB): Master Coordinator + Qwen MoE 80B Inference (6GB). │
 │ • Node L5 (M4 Air 16GB) & L2 (MBP 16GB): Dedicated MLX LoRA Training Nodes.│
-│ • Offload backpropagation from host to peripheral nodes over 10Gbps TB4 DMA.│
+│ • Offload backpropagation from host to peripheral nodes over 40Gbps TB4 DMA.│
 │ • Dynamic RAM Governor caps Host at ≤75% to guarantee 0.0 MB SSD swap.      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ PHASE 3: MLX NATIVE FINE-TUNING & ADAPTER CHECKPOINTING                     │

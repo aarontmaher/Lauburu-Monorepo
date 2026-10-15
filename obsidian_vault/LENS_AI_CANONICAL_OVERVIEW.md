@@ -165,7 +165,7 @@ Screen Lens integrates an array of lightweight, non-intrusive background daemons
 │ 3. ACTIVE HOST RAM EVACUATION GUARDIAN (src/lens_host_ram_evacuation_daemon.py)                         │
 │    • Rule 7.1 Enforcement: Triggers when Free RAM < 5.0 GB OR Utilization > 85%.                        │
 │    • Action 1: Transmits RFC 792 Wake-on-LAN resurrection magic packets to sleeping cluster nodes.      │
-│    • Action 2: Shifts active KV cache layers across 10Gbps TB4 DMA bridge to MacBook Pro & Air.         │
+│    • Action 2: Shifts active KV cache layers across 40Gbps TB4 DMA bridge to MacBook Pro & Air.         │
 │    • Action 3: Appends Rule #8 Failure/Healing LoRA pair to continuous_lora_dataset.jsonl.              │
 ├─────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 4. TRI-PROOF INTERCEPTOR & ACCURACY-WEIGHTED GOVERNOR                                                   │
@@ -176,7 +176,7 @@ Screen Lens integrates an array of lightweight, non-intrusive background daemons
 ```
 
 ### 3.1 Empirical XNU Mach Kernel Memory Audit Output
-Direct execution of binary `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/c_core/darwin_ram_auditor` yields authentic kernel metrics:
+Direct execution of binary `/Volumes/Lauburu-Monorepo/01_apps/screen_lens/c_core/darwin_ram_auditor` yields authentic kernel metrics:
 
 ```text
 ================================================================================
@@ -188,15 +188,15 @@ Physical Used RAM:     23.83 GB (99.3%)
 Wired Down RAM:        3.35 GB
 Compressed RAM:        6.19 GB
 XNU Query Latency:     6.00 microseconds (0.0060 ms)
-Sanctuary Headroom:    EVACUATION_REQUIRED (Target: >= 9.6 GB)
+Sanctuary Headroom:    EVACUATION_REQUIRED (Target: >= 4.8 GB / 80% Cap)
 ================================================================================
 ```
 
 ### 3.2 Host RAM Evacuation Protocol (Rule 7.1 Sequence)
-When `lens_host_ram_evacuation_daemon.py` detects free physical RAM $< 5.0\text{ GB}$ or utilization $> 85\%$:
-1. **Node Resurrection**: Calls `06_scripts_and_tooling/mesh/canonical_network_resurrection_engine.py --wake-all`, sending broadcast UDP magic packets (RFC 792) to wake Layer 2 (MacBook Pro) and Layer 3 (Linux Head Node).
-2. **TB4 DMA Offload**: Instructs `prima.cpp` PRP coordinator to move KV-cache ring buffers from the Mac Mini host over the $10\text{Gbps}$ Thunderbolt 4 bridge (`169.254.187.138`) to MacBook Pro internal memory.
-3. **LoRA Dataset Logging (Rule #8)**: Formats an instruction-thought-action JSON record and appends it to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`.
+When `lens_host_ram_evacuation_daemon.py` detects free physical RAM $< 4.8\text{ GB}$ or utilization $> 80\%$:
+1. **Node Resurrection**: Calls `06_scripts_and_tooling/mesh/canonical_network_resurrection_engine.py --wake-all`, sending broadcast UDP magic packets (RFC 792) to wake Layer 8 (Linux Mini lauburu), Layer 2 (MacBook Pro), and Layer 3 (Linux Head Node).
+2. **TB4 DMA Offload**: Instructs `prima.cpp` PRP coordinator to move KV-cache ring buffers from the Mac Mini host over the $40\text{Gbps}$ Thunderbolt 4 bridge (`10.0.0.8`) to `lauburu` (L8) internal memory.
+3. **LoRA Dataset Logging (Rule #8)**: Formats an instruction-thought-action JSON record and appends it to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`.
 
 ---
 
@@ -300,7 +300,7 @@ Screen Lens drives continuous model improvement through the autonomous, 24/7 gen
 │                                   24/7 DPO DATASET HARVESTING PIPELINE                                  │
 ├─────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 1. DATA LAKE PRIMARY SINK:                                                                              │
-│    • Path: /Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl                             │
+│    • Path: /Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl                             │
 │    • Active Size: 154 MB (76,000+ verified training records).                                           │
 │    • Secondary Fallback: 04_data_and_memory/lora_datasets/continuous_lora_dataset.jsonl                  │
 ├─────────────────────────────────────────────────────────────────────────────────────────────────────────┤

@@ -16,7 +16,7 @@ def install_macos_launchd():
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>caffeinate -dimsu python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/nomad_courier_self_healer.py --daemon &amp; python3 /Users/aaron/DFS_UNIFIED/05_agents_and_swarms/teamwork_projects/swarm_dashboard_ai_training/backend/app.py</string>
+        <string>caffeinate -dimsu python3 /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/nomad_courier_self_healer.py --daemon &amp; python3 /Volumes/Lauburu-Monorepo/05_agents_and_swarms/teamwork_projects/swarm_dashboard_ai_training/backend/app.py</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
@@ -44,7 +44,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bin/bash -c "python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/nomad_courier_self_healer.py --daemon & python3 /Users/aaron/DFS_UNIFIED/05_agents_and_swarms/teamwork_projects/swarm_dashboard_ai_training/backend/app.py"
+ExecStart=/bin/bash -c "python3 /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/nomad_courier_self_healer.py --daemon & python3 /Volumes/Lauburu-Monorepo/05_agents_and_swarms/teamwork_projects/swarm_dashboard_ai_training/backend/app.py"
 Restart=always
 RestartSec=10
 
@@ -68,8 +68,8 @@ def install_android_termux():
     
     script_content = """#!/data/data/com.termux/files/usr/bin/sh
 termux-wake-lock
-nohup python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/nomad_courier_self_healer.py --daemon > /dev/null 2>&1 &
-nohup python3 /Users/aaron/DFS_UNIFIED/05_agents_and_swarms/teamwork_projects/swarm_dashboard_ai_training/backend/app.py > /dev/null 2>&1 &
+nohup python3 /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/nomad_courier_self_healer.py --daemon > /dev/null 2>&1 &
+nohup python3 /Volumes/Lauburu-Monorepo/05_agents_and_swarms/teamwork_projects/swarm_dashboard_ai_training/backend/app.py > /dev/null 2>&1 &
 """
     boot_script.write_text(script_content)
     subprocess.run(f"chmod +x {boot_script}", shell=True)

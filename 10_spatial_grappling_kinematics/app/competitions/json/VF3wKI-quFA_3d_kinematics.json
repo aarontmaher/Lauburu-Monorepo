@@ -1,0 +1,26 @@
+{
+  "video_id": "VF3wKI-quFA",
+  "url": "https://youtu.be/VF3wKI-quFA",
+  "division": "Freestyle Wrestling",
+  "title": "Aaron Maher vs Reece Mclaren (ONE fc mma fighter)",
+  "duration_sec": 426.9,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 34,
+  "dual_athlete_frames": 8,
+  "standing_phase_pct": 50.0,
+  "ground_scramble_phase_pct": 50.0,
+  "level_change_shots_detected": 3,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 55.6,
+    "left_elbow": 139.7,
+    "right_elbow": 141.5,
+    "left_hip": 125.6,
+    "right_hip": 126.9,
+    "left_knee": 142.0,
+    "right_knee": 143.0
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/VF3wKI-quFA_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match involves a combination of ground/scrabble, level change shots, and elbow flexion and knee flexion. His standing and mean spine lean indicate a balanced and disciplined approach, with a focus on maintaining balance and control. The elbow flexion and knee flexion indicate a strong, powerful movement pattern, with a focus on power and speed.",
+  "processing_sec": 2.32
+}

@@ -23,7 +23,7 @@ The system dynamically discovers, validates, and routes tool calls across 5 oper
 | **Network & Transport** | `net_sensor` | Network State Sensor | `TIER_LOCAL_MICRO` | $\le 500\text{ ms}$ | $12\text{ MB}$ | Empirical socket ping, RTT, and link classification. |
 | | `transport_ladder` | Multi-Transport Ladder | `TIER_LOCAL_MICRO` | $\le 150\text{ ms}$ | $15\text{ MB}$ | Seamless PTY migration (Wi-Fi 7 $\to$ USB $\to$ RFCOMM). |
 | | `router_cdp_tool` | Router Headless CDP & UCI | `TIER_POSIX_FALLBACK` | $\le 2500\text{ ms}$ | $45\text{ MB}$ | GL.iNet & TP-Link AP channel & SSID harmonization. |
-| **Hardware & Power** | `bd_prochot_unthrottler`| BD PROCHOT Unthrottler | `TIER_LOCAL_MICRO` | $\le 50\text{ ms}$ | $5\text{ MB}$ | Sysfs governor & AMD Ryzen 5700U clamp clearing. |
+| **Hardware & Power** | `bd_prochot_unthrottler`| BD PROCHOT Unthrottler | `TIER_LOCAL_MICRO` | $\le 50\text{ ms}$ | $5\text{ MB}$ | Sysfs governor & Intel 2018 Mac Mini 5700U clamp clearing. |
 | | `charger_power_auditor`| Charger & Power Auditor | `TIER_LOCAL_MICRO` | $\le 50\text{ ms}$ | $8\text{ MB}$ | Live AC adapter online & battery wattage tracking. |
 | | `host_ram_governor` | Host RAM Sanctuary Governor | `TIER_LOCAL_MICRO` | $\le 10\text{ ms}$ | $10\text{ MB}$ | Enforces mandatory $\ge 9.6\text{ GB}$ Mac Mini host headroom. |
 | **AI Inference & Training**| `tb4_rpc_bridge` | Thunderbolt 4 llama.cpp RPC | `TIER_LOCAL_METAL` | $\le 3000\text{ ms}$ | $250\text{ MB}$ | 56GB 3-Mac pooled memory distributed tensor sharding. |

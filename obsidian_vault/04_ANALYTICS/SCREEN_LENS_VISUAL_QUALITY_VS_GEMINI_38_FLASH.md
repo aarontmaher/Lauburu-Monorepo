@@ -37,7 +37,7 @@ $$Q_{\text{audit}} = 0.30 \cdot \text{Defect_Recall} + 0.25 \cdot \text{WCAG_A11
 
 ## 3. Recommended Sovereign Visual Actions for Screen Lens
 
-To elevate Screen Lens from passive visual auditing to fully proactive multimodal automation, the following **5 Sovereign Visual Actions** have been designed and implemented in [`01_apps/screen_lens/src/lens_visual_actions_suite.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/screen_lens/src/lens_visual_actions_suite.py):
+To elevate Screen Lens from passive visual auditing to fully proactive multimodal automation, the following **5 Sovereign Visual Actions** have been designed and implemented in [`01_apps/screen_lens/src/lens_visual_actions_suite.py`](file:///Volumes/Lauburu-Monorepo/01_apps/screen_lens/src/lens_visual_actions_suite.py):
 
 ### 1. `VisualDiffInterceptor` (Sub-Pixel SSIM & Golden Diffing)
 - **Problem:** Code refactors occasionally introduce subtle layout shifts, font baseline drift, or visual component regressions.

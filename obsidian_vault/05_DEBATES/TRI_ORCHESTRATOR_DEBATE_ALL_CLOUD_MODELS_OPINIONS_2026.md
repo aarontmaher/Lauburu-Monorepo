@@ -32,7 +32,7 @@ The council was convened to evaluate three fundamental architectural pillars:
 > 
 > *"From a large-scale distributed systems perspective, the Python runtime tax is mathematically indefensible on edge and constrained nodes:
 > 1. **The Inode & Virtualenv Multiplication Problem:** Having five `.venv` directories across macOS, Linux, and Android wastes 20 GB to 40 GB of disk. Replacing daemon runtimes with stripped Rust/C++ binaries shrinks the disk footprint by **$99.4\%$** (<50MB total), preserving the host NVMe for 82.8 GB pooled GGUF weights.
-> 2. **Process Lifecycle Governance:** Python's Global Interpreter Lock (GIL) and garbage collector introduce non-deterministic latency spikes during 512Hz Pan-Tompkins ECG biometrics and 10Gbps TB4 tensor transfers. Rust and C++ guarantee deterministic zero-copy memory buffers.
+> 2. **Process Lifecycle Governance:** Python's Global Interpreter Lock (GIL) and garbage collector introduce non-deterministic latency spikes during 512Hz Pan-Tompkins ECG biometrics and 40Gbps TB4 tensor transfers. Rust and C++ guarantee deterministic zero-copy memory buffers.
 > 3. **The Escalation Boundary:** Keep Python strictly as a **Batch Compute Worker** (PyTorch / HuggingFace `trl` / `peft`). When an overnight training epoch triggers, Python spins up, trains the adapter, writes `.safetensors`, and terminates immediately—releasing 100% of its RAM."*
 
 ---

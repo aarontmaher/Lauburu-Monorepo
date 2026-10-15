@@ -35,7 +35,7 @@ consensus_threshold: "100%"
 - **Consensus Accord:** The Rust optimizer computes bounding box envelope expansion: $W_{\min} = \text{Characters} \times \text{GlyphWidth} + 2 \times \text{Padding}$. Frame boxes dynamically expand to prevent text truncation.
 
 ### Deliberation 3: Continuous LoRA Memory Synchronization
-- **Local AI:** Every verified layout improvement and benchmark delta must be appended to `/Users/aaron/DFS_UNIFIED/lora_datasets/ui_ux_improvements.jsonl` for continuous 24/7 background learning.
+- **Local AI:** Every verified layout improvement and benchmark delta must be appended to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/ui_ux_improvements.jsonl` for continuous 24/7 background learning.
 - **Devil's Advocate:** Ensure no redundant or low-signal logs pollute the PySpark training corpus.
 - **Consensus Accord:** Only append entries that demonstrate measurable improvements: (1) contrast ratio increases, (2) zero-clipping invariants verified, or (3) benchmark speedup $\ge 5\%$.
 

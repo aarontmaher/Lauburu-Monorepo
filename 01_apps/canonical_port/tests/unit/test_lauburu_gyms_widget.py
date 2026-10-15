@@ -160,7 +160,7 @@ class ReferenceLauburuGymsCollector:
             "max_temperature_c": 42.5,  # <= 58C PC, <= 37C mobile
             "thermal_headroom_c": 15.5,
             "fan_noise_db": 0.0,  # 0 dB silent
-            "tensor_route": "Mac_Node (L1) -> MacBook_Pro (L2 / TB4) -> Linux_Head_Node (L3)",
+            "tensor_route": "Mac_Node (L1) -> MacBook_Pro (L2 / TB4) -> Linux_Mini (L3)",
             "doze_whitelisted_apps": [
                 "com.termux",
                 "com.tailscale.ipn",

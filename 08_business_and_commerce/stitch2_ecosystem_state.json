@@ -1,0 +1,72 @@
+{
+  "generation": 257,
+  "last_updated": "2026-10-02T20:10:15.283718+00:00",
+  "apps": {
+    "port_4000_hub": {
+      "current_elo": 1883.8,
+      "best_elo": 1883.8,
+      "iterations": 257,
+      "last_mutation": "Initial Stitch 2.0 Baseline Generation"
+    },
+    "movesense_terminal": {
+      "current_elo": 1883.8,
+      "best_elo": 1883.8,
+      "iterations": 257,
+      "last_mutation": "Initial Stitch 2.0 Baseline Generation"
+    },
+    "omni_messenger": {
+      "current_elo": 1933.9,
+      "best_elo": 1933.9,
+      "iterations": 257,
+      "last_mutation": "Initial Stitch 2.0 Baseline Generation"
+    },
+    "spatial_grappling_3d": {
+      "current_elo": 1883.8,
+      "best_elo": 1883.8,
+      "iterations": 257,
+      "last_mutation": "Initial Stitch 2.0 Baseline Generation"
+    },
+    "showrunner_lauburu": {
+      "current_elo": 1883.8,
+      "best_elo": 1883.8,
+      "iterations": 257,
+      "last_mutation": "Initial Stitch 2.0 Baseline Generation"
+    },
+    "screen_lens": {
+      "current_elo": 1883.8,
+      "best_elo": 1883.8,
+      "iterations": 257,
+      "last_mutation": "Initial Stitch 2.0 Baseline Generation"
+    },
+    "network_cable_analyzer": {
+      "current_elo": 1883.8,
+      "best_elo": 1883.8,
+      "iterations": 257,
+      "last_mutation": "Initial Stitch 2.0 Baseline Generation"
+    },
+    "combat_storefront": {
+      "current_elo": 1884.0,
+      "best_elo": 1884.0,
+      "iterations": 257,
+      "last_mutation": "Initial Stitch 2.0 Baseline Generation"
+    },
+    "automotive_voice_hub": {
+      "current_elo": 1507.3,
+      "best_elo": 1507.3,
+      "iterations": 2,
+      "last_mutation": "Initial Stitch 2.0 Baseline Generation"
+    },
+    "zone2_endurance": {
+      "current_elo": 1507.3,
+      "best_elo": 1507.3,
+      "iterations": 2,
+      "last_mutation": "Initial Stitch 2.0 Baseline Generation"
+    }
+  },
+  "weights": {
+    "cro": 0.35,
+    "ux": 0.25,
+    "zero_mock": 0.2,
+    "completeness": 0.2
+  }
+}

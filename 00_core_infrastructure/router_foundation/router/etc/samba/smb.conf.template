@@ -1,0 +1,56 @@
+[global]
+        netbios name = |NAME|
+        interfaces = |INTERFACES|
+        server string = |DESCRIPTION|
+        unix charset = |CHARSET|
+        workgroup = |WORKGROUP|
+
+        fruit:nfs_aces = no
+        fruit:aapl = yes
+        vfs objects = catia fruit streams_xattr
+
+        ## Protocol negotiation: SMB2 minimum for modern security & speed
+        client min protocol = SMB2
+        server min protocol = SMB2
+
+        deadtime = 15
+        enable core files = no
+        security = user
+
+        ## CRITICAL: Disable SMB encryption for guest compatibility (eliminates macOS login loop)
+        smb encrypt = disabled
+        server smb encrypt = disabled
+
+        ## Guest mapping: unauthenticated connections map to nobody without passwords
+        guest account = nobody
+        guest ok = yes
+        map to guest = Bad User
+        null passwords = yes
+
+        ## Local AI Subnet Security: Restrict strictly to 192.168.8.0/24, localhost, and Tailscale
+        hosts allow = 192.168.8.0/24 127.0.0.1 100.0.0.0/8
+        hosts deny = 0.0.0.0/0
+
+        passdb backend = smbpasswd
+
+        socket options = IPTOS_LOWDELAY TCP_NODELAY
+        use sendfile = yes
+        load printers = No
+        printcap name = /dev/null
+        disable spoolss = yes
+        printing = bsd
+
+        mdns name = mdns
+        local master = yes
+        preferred master = yes
+        domain master = yes
+
+        veto files = /Thumbs.db/.DS_Store/._.DS_Store/.apdisk/
+        delete veto files = yes
+
+        create mask = 0666
+        directory mask = 0777
+        server services = +smb
+
+        public = yes
+        browseable = yes

@@ -1,0 +1,76 @@
+{
+  "timestamp": "2026-10-15T04:40:43.292961+00:00",
+  "mesh_thermal_status": "NOMINAL_OPTIMAL",
+  "offload_required": false,
+  "throttled_nodes": [],
+  "recommended_compute_target": "L3_Linux_Head_Node",
+  "nodes": {
+    "L1_Mac_Node": {
+      "node": "L1_Mac_Node",
+      "device": "Apple M4 Pro Mac Mini",
+      "thermal_pressure_level": 0,
+      "thermal_pressure_desc": "NORMAL",
+      "cpu_scheduler_limit_pct": 100,
+      "pmset_warning": false,
+      "thermal_ceiling": "NORMAL (Level 0)",
+      "thermal_compliant": true,
+      "status": "ONLINE"
+    },
+    "L2_MacBook_Pro": {
+      "node": "L2_MacBook_Pro",
+      "device": "Apple M4 MacBook Pro",
+      "cpu_scheduler_limit_pct": 100,
+      "thermal_compliant": true,
+      "status": "OFFLINE"
+    },
+    "L3_Linux_Head_Node": {
+      "node": "L3_Linux_Head_Node",
+      "device": "AMD Ryzen 7 5700U Compute Hub",
+      "temp_c": 45.0,
+      "thermal_ceiling_c": 75.0,
+      "thermal_compliant": true,
+      "status": "ONLINE"
+    },
+    "L5_MacBook_Air": {
+      "node": "L5_MacBook_Air",
+      "device": "Apple M4 MacBook Air (Fanless)",
+      "cpu_scheduler_limit_pct": 100,
+      "thermal_ceiling": "100% (Fanless Duty Cycle)",
+      "thermal_compliant": true,
+      "status": "OFFLINE"
+    },
+    "GW_Router": {
+      "node": "GW_Router",
+      "device": "GL.iNet GL-MT3600BE (Beryl 7)",
+      "temp_c": 45.6,
+      "fan_pwm": 80,
+      "fan_pwm_pct": 31.4,
+      "fan_adjusted": false,
+      "target_pwm": 0,
+      "thermal_ceiling_c": 68.0,
+      "thermal_compliant": true,
+      "status": "ONLINE"
+    },
+    "L6_Pixel_10_Pro_XL": {
+      "node": "L6_Pixel_10_Pro_XL",
+      "temp_c": 0.0,
+      "battery_pct": 0,
+      "charging": false,
+      "bluetooth_connected": false,
+      "thermal_ceiling_c": 42.0,
+      "thermal_compliant": true,
+      "status": "OFFLINE / ASLEEP (Doze)"
+    },
+    "L7_Samsung_S20": {
+      "node": "L7_Samsung_S20",
+      "temp_c": 0.0,
+      "battery_pct": 0,
+      "charging": false,
+      "bluetooth_connected": false,
+      "thermal_ceiling_c": 40.0,
+      "thermal_compliant": true,
+      "status": "OFFLINE / ASLEEP (Doze)"
+    }
+  },
+  "summary": "Mesh thermal check completed. 0 node(s) flagged: []"
+}

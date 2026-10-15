@@ -55,11 +55,11 @@ The **Event Fob Dispatcher** (`KeyFobMacroDispatcher` in `src/omniterminal/macro
 
 ---
 
-## 3. NPU Telemetry Integration in the 10Gbps TB4 DMA Console
+## 3. NPU Telemetry Integration in the 40Gbps TB4 DMA Console
 NPU telemetry across the 7 mesh layers:
 1. **L1 (Mac Mini M4 Pro):** Apple Neural Engine (ANE) power (mW) and active duty cycle via Darwin `powermetrics` / `ioreg`.
 2. **L6 (Pixel 10 Pro XL):** Google Tensor G5 Edge TPU inference frequency and duty cycle via Shizuku `rish` sysfs nodes (`/sys/class/edgetpu/`).
-3. **L3 (Linux Head Node):** AMD Ryzen NPU driver metrics (`/sys/class/accel/`).
+3. **L3 (Linux Head Node):** Intel 2018 Mac Mini NPU driver metrics (`/sys/class/accel/`).
 Integrated directly into `omniterminal` Console TUI alongside the Multi-WAN bonded bandwidth gauges.
 
 ---
@@ -97,6 +97,6 @@ Integrated directly into `omniterminal` Console TUI alongside the Multi-WAN bond
 | `omniterminal telemetry`: `No module named 'src'` | Relative import resolution in `sentinel/__init__.py` | Fixed with `sys.path` bootstrap. Verified `Exit Code 0`. |
 | `pytest -v`: `No module named pytest` | Shell alias `pytest="python3 -m pytest"` invoked experimental `python@3.14` | Symlinked `/Users/aaron/.local/bin/python3` to `/Users/aaron/.venv/bin/python3`. Verified `pytest 9.1.1` `Exit Code 0`. |
 | `python3 -m src.omniterminal.main --console`: `No module named 'omniterminal'` | Absolute import in `omniterminal/__init__.py` & missing `main.py` | Converted to relative imports, created `main.py`, wired into wrapper. Verified `Exit Code 0`. |
-| `python tests/...`: `No such file or directory` | Executed from `$HOME` instead of monorepo root | Run from `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo`. |
+| `python tests/...`: `No such file or directory` | Executed from `$HOME` instead of monorepo root | Run from `/Volumes/Lauburu-Monorepo`. |
 | `npm run build`: `ENOENT: package.json` | Executed from `$HOME` instead of app folder | Run from specific app directory (`01_apps/...`). |
 

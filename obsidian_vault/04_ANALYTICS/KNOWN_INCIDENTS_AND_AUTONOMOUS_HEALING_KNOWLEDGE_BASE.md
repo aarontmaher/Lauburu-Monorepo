@@ -39,7 +39,7 @@ tags: [incidents, self_healing, knowledge_base, lora, root_cause, mesh_health]
 
 ---
 
-### ⚠️ `INC-003-TB4-DMA-SOCKET-HANG`: Thunderbolt 4 10Gbps Bridge Socket Stale Lock
+### ⚠️ `INC-003-TB4-DMA-SOCKET-HANG`: Thunderbolt 4 40Gbps Bridge Socket Stale Lock
 * **Symptoms:** Inter-node RPC tensor latency spikes from 0.204ms to >50ms or drops connection between Mac Mini and MacBook Pro.
 * **Root Cause:** Thunderbolt DMA IP interface `169.254.187.138` stale ARP cache or sleeping display sleep state on target MacBook Pro.
 * **Automated Self-Healing Actions:**
@@ -48,7 +48,7 @@ tags: [incidents, self_healing, knowledge_base, lora, root_cause, mesh_health]
   3. Ping 169.254.187.138 with 1-second timeout; trigger `arp -d 169.254.187.138` if packet loss > 0%.
   4. Restart `llama-rpc-server` on MacBook Pro via SSH.
 * **LoRA Distillation Instruction:**
-  > **Prompt:** *"Troubleshoot and restore sub-millisecond tensor latency on a 10Gbps Thunderbolt 4 bridge between macOS nodes."*
+  > **Prompt:** *"Troubleshoot and restore sub-millisecond tensor latency on a 40Gbps Thunderbolt 4 bridge between macOS nodes."*
   > **Learned Protocol:** *"1. Pulse Line 1 Bluetooth Proximity Wake: `blueutil --connect 2c-ca-16-08-c0-27`.
 2. Dispatch Line 2 Wake-on-LAN magic packet to MacBook Pro MAC addre..."*
 

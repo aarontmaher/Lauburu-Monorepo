@@ -1,0 +1,26 @@
+{
+  "video_id": "AkMyVb529LE",
+  "url": "https://youtu.be/AkMyVb529LE",
+  "division": "IBJJF",
+  "title": "World championships - Aaron Maher vs Vaomatua Keahi Mustafa",
+  "duration_sec": 406.7,
+  "resolution": "256x128",
+  "sampled_frames": 36,
+  "poses_detected_frames": 19,
+  "dual_athlete_frames": 1,
+  "standing_phase_pct": 36.8,
+  "ground_scramble_phase_pct": 63.2,
+  "level_change_shots_detected": 3,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 83.8,
+    "left_elbow": 129.5,
+    "right_elbow": 116.3,
+    "left_hip": 121.9,
+    "right_hip": 110.4,
+    "left_knee": 136.7,
+    "right_knee": 130.0
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/AkMyVb529LE_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match involves a strong stance with a 36.8% standing time, a 63.2% ground/scrumble time, and a mean spine lean of 83.8\u00b0. He also has 3 shots, 63.2% level change shots, and a mean spine lean of 129.5\u00b0/116.3\u00b0. His elbow flexion L/R is 129.5\u00b0/116.3\u00b0, and his",
+  "processing_sec": 3.98
+}

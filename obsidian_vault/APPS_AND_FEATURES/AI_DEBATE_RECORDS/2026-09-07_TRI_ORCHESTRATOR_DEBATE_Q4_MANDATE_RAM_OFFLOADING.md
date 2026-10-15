@@ -43,13 +43,13 @@ This debate resolves the architectural mandate issued by Sovereign Aaron: **Reje
 2. **Workload Offload Routing:**
    - **Workload A: Browser State (7.02 GB across 113 tabs):**
      - Execute non-destructive tab harvesting: Extract all 113 URLs and titles to `obsidian_vault/APPS_AND_FEATURES/CHROME_RESEARCH_KNOWLEDGE_BASE.md`.
-     - Activate Chrome Memory Saver to discard background renderer memory, or migrate browsing sessions to **L2 MacBook Pro M4** ($11.0\text{ GB}$ available RAM) or **L4 Linux Tablet**.
+     - Activate Chrome Memory Saver to discard background renderer memory, or migrate browsing sessions to **L2 Intel MacBook Pro** ($11.0\text{ GB}$ available RAM) or **L4 Linux Tablet**.
      - **Reclaims:** $+5.50\text{ GB}$.
    - **Workload B: Subordinate 7B Model (4.58 GB):**
      - Terminate Port 8081 `llama-server` prior to 27B launch under strict single-model mutual exclusivity.
      - **Reclaims:** $+4.58\text{ GB}$.
    - **Workload C: Continuous Drafter & Lens Trainers (1.13 GB):**
-     - Transfer `continuous_10m_genetic_drafter_trainer.py` and `lens_trainer` to **L3 Linux Head Node** (AMD Ryzen 7 5700U with 41 GB virtual memory).
+     - Transfer `continuous_10m_genetic_drafter_trainer.py` and `lens_trainer` to **L3 Linux Head Node** (Intel 2018 Mac Mini (Linux) with 41 GB virtual memory).
      - **Reclaims:** $+1.13\text{ GB}$.
    - **Workload D: SeaweedFS Master & Filer (0.19 GB):**
      - Transfer master volume daemons to L3 Linux Node (`/home/linux/seaweedfs_data`).
@@ -72,7 +72,7 @@ This debate resolves the architectural mandate issued by Sovereign Aaron: **Reje
      2. Keeping 5.0 GB of RAM free at the same time ($16.35 + 5.0 = 21.35\text{ GB}$).
      3. Running Antigravity IDE and macOS kernel in under $2.65\text{ GB}$.
    - **The Resolution:** For the Frontier Master Q4 model to run 100% locally on Mac Mini, the RAM Sanctuary Interceptor must be dynamically set to **$\ge 1.0\text{ GB}$ physical headroom** (preventing Mach kernel panic while allowing the full 16.35 GB Q4 model to utilize all available physical RAM).
-   - If the user strictly requires preserving $\ge 5.0\text{ GB}$ free RAM at all times, the 16.35 GB Q4 model MUST run on **L2 MacBook Pro M4** (which has 11 GB free and can shard the remainder) or utilize the TB4 PRP ring.
+   - If the user strictly requires preserving $\ge 5.0\text{ GB}$ free RAM at all times, the 16.35 GB Q4 model MUST run on **L2 Intel MacBook Pro** (which has 11 GB free and can shard the remainder) or utilize the TB4 PRP ring.
    - But when running purely on Mac Mini, host eviction is the ONLY path.
 
 ---

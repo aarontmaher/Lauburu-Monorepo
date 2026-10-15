@@ -28,7 +28,7 @@ tags: [lora, training, dataset, lmarena, elo, priority_loop, distillation]
 - **Rank ($r$):** 16
 - **Scaling Factor ($\alpha$):** 32
 - **Target Projection Matrices:** `q_proj`, `v_proj`
-- **Compiled SafeTensors:** `/Users/aaron/DFS_UNIFIED/lora_datasets/compiled_safetensors/adapter_model.safetensors`
+- **Compiled SafeTensors:** `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/compiled_safetensors/adapter_model.safetensors`
 - **Distillation Loss:** Converging ($L_{\text{DPO}} \le 0.142$, $\Delta L \approx -3.8\%$)
 
 ---

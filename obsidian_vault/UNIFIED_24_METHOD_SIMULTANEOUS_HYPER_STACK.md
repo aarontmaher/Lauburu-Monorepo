@@ -43,7 +43,7 @@ Rather than competing as mutually exclusive alternatives, these technologies ope
 │    • 20. Bluetooth Tethering: Emergency low-energy telemetry fallback       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ ⚡ TIER 1: PHYSICAL HARDWARE INTERCONNECTS                                   │
-│    • 21. 10Gbps Thunderbolt 4 DMA: Sub-0.28ms direct PCIe bridge            │
+│    • 21. 40Gbps Thunderbolt 4 DMA: Sub-0.28ms direct PCIe bridge            │
 │    • 22. Wi-Fi 7 (802.11be MLO): 5GHz + 6GHz Multi-Link Operation           │
 │    • 23. Gigabit Ethernet (1GbE/2.5GbE): Dedicated copper LAN               │
 │    • 24. 5G / LTE Mobile Hotspot: Cellular WAN failover link                │
@@ -59,7 +59,7 @@ Every workload in the Lauburu Monorepo is dynamically routed through the concurr
 
 | Workload Type | Physical Layer (Tier 1-2) | Bonding Layer (Tier 3) | Overlay Layer (Tier 4) | Compute Layer (Tier 5) |
 | :--- | :--- | :--- | :--- | :--- |
-| **32B/70B AI Tensor Shards** | 10Gbps TB4 DMA + Wi-Fi 7 | `Aggligator` (Rust) + WFQ (:18804) | `tsnet` in-memory | `Prima.cpp` Pipelined-Ring |
+| **32B/70B AI Tensor Shards** | 40Gbps TB4 DMA + Wi-Fi 7 | `Aggligator` (Rust) + WFQ (:18804) | `tsnet` in-memory | `Prima.cpp` Pipelined-Ring |
 | **Movesense 512Hz ECG Stream**| Bluetooth BLE + Wi-Fi 7 | `Engarde` (Redundant Duplicate) | `tailcat` ephemeral | Axum WebSocket (:4000) |
 | **Ephemeral AI Agent Debate**| Local Loopback + TB4 | Native WFQ (:18804) | `tailcat` token P2P | Qwen 32B Abliterated (:8083)|
 | **Paying Customer Mobile Apps**| 5G Cellular + Wi-Fi | `Aggligator` Userspace | `tsnet` (Zero-Root) | Headscale Cloud Backend |
@@ -70,5 +70,5 @@ Every workload in the Lauburu Monorepo is dynamically routed through the concurr
 
 ## 💡 3. Key Advantages of the Simultaneous Hyper-Stack
 1. **Zero Conflict:** Lower layers aggregate raw pipes; middle layers provide crypto and zero-trust identity; upper layers stream tensor weights and biometrics.
-2. **Dynamic Redundancy:** If the 10Gbps Thunderbolt cable is unplugged, `Aggligator` instantly fails over to Wi-Fi 7 and 5G with **0.0ms connection drop**.
+2. **Dynamic Redundancy:** If the 40Gbps Thunderbolt cable is unplugged, `Aggligator` instantly fails over to Wi-Fi 7 and 5G with **0.0ms connection drop**.
 3. **Zero-Root Compliance for End-Users:** Consumer apps on iOS/Android use `tsnet` + `tailcat` without triggering OS VPN popups, while the backend utilizes the full physical power of TB4 DMA and Headscale.

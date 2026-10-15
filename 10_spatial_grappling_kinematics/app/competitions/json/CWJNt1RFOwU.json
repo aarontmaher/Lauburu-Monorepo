@@ -1,0 +1,37 @@
+{
+  "video_id": "CWJNt1RFOwU",
+  "url": "https://youtu.be/CWJNt1RFOwU",
+  "division": "Freestyle Wrestling",
+  "title": "Aaron Maher (AUS) vs Patryk Domagala (POL)",
+  "duration_sec": 240.9,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 26,
+  "dual_athlete_frames": 5,
+  "standing_phase_pct": 53.8,
+  "ground_scramble_phase_pct": 46.2,
+  "level_change_shots_detected": 3,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 35.6,
+    "left_elbow": 132.2,
+    "right_elbow": 136.9,
+    "left_hip": 133.5,
+    "right_hip": 127.4,
+    "left_knee": 140.0,
+    "right_knee": 143.9
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/CWJNt1RFOwU_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match is characterized by a strong standing position, with a 53.8% chance of landing, followed by a 46.2% chance of being caught. The 3D MediaPipe telemetry shows a significant amount of ground/scrumble, indicating a high level of grappling. Maher's 35.6\u00b0 mean spine lean is indicative of a strong spine alignment, while his 332.2\u00b0 and 336.9\u00b0 elbow flexions and knee flexions are typical",
+  "processing_sec": 2.26,
+  "vision_model_opinions": {
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "READY_BATCH",
+      "latency_sec": 0.8,
+      "analysis": "Aaron Maher's grappling in this match is characterized by a strong standing position, with a 53.8% chance of landing, followed by a 46.2% chance of being caught. The 3D MediaPipe telemetry shows a significant amount of ground/scrumble, indicating a high level of grappling. Maher's 35.6\u00b0 mean spine lean is indicative of a strong spine alignment, while his 332.2\u00b0 and 336.9\u00b0 elbow flexions and knee flexions are typical"
+    }
+  }
+}

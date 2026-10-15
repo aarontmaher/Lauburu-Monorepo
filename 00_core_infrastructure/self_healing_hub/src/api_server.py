@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, g
 from flask_cors import CORS
+from werkzeug.exceptions import HTTPException
 import json
 import os
 import sys
@@ -8,12 +9,192 @@ import glob
 import datetime
 import re
 import urllib.request
+import collections
 from device_registry import DeviceRegistry
 
 app = Flask(__name__)
 CORS(app)
 
 registry = DeviceRegistry()
+
+def _dyn(val):
+    if isinstance(val, bool):
+        return val
+    if isinstance(val, (int, float)):
+        return float(val)
+    return val
+
+def _build_pool_item(name, path, total_gb, free_gb, used_gb, used_pct, status="HEALTHY"):
+    return {
+        "name": name,
+        "path": path,
+        "total_gb": _dyn(total_gb),
+        "free_gb": _dyn(free_gb),
+        "used_gb": _dyn(used_gb),
+        "used_pct": _dyn(used_pct),
+        "status": status
+    }
+
+def _build_node_item(layer, name, role, ip, hardware, ram, power, status, rpc_online, rpc_latency_ms):
+    return {
+        "layer": int(layer),
+        "name": name,
+        "role": role,
+        "ip": ip,
+        "hardware": hardware,
+        "ram": ram,
+        "power": power,
+        "status": status,
+        "rpc_server": {
+            "online": bool(rpc_online),
+            "latency_ms": _dyn(rpc_latency_ms)
+        }
+    }
+
+def _build_transport_item(id_, name, bandwidth, latency_ms, status, sharding_role):
+    return {
+        "id": id_,
+        "name": name,
+        "bandwidth": bandwidth,
+        "latency_ms": _dyn(latency_ms),
+        "status": status,
+        "sharding_role": sharding_role
+    }
+
+TELEMETRY_LOGS = collections.deque(maxlen=1000)
+_last_latency_benchmarks = {}
+
+def log_telemetry(event: str, details: dict = None, level: str = "INFO"):
+    """Logs a structured telemetry event into in-memory buffer with microsecond timestamp."""
+    entry = {
+        "timestamp": time.time(),
+        "timestamp_ns": time.perf_counter_ns(),
+        "event": event,
+        "level": level,
+        "details": details or {}
+    }
+    TELEMETRY_LOGS.append(entry)
+    return entry
+
+def get_telemetry_logs(limit: int = 50, level: str = None):
+    """Retrieves recent telemetry log entries, optionally filtered by level."""
+    logs = list(TELEMETRY_LOGS)
+    if level:
+        logs = [e for e in logs if e.get("level") == level]
+    return logs[-limit:]
+
+def get_telemetry_summary():
+    """Generates aggregate summary statistics of in-memory telemetry logs."""
+    logs = list(TELEMETRY_LOGS)
+    level_counts = {}
+    for e in logs:
+        lvl = e.get("level", "INFO")
+        level_counts[lvl] = level_counts.get(lvl, 0) + 1
+    return {
+        "total_logs": len(logs),
+        "level_counts": level_counts,
+        "latest_timestamp": logs[-1]["timestamp"] if logs else None
+    }
+
+def run_microsecond_latency_benchmarks():
+    """Runs microsecond-precision latency benchmarks across core in-memory operations."""
+    global _last_latency_benchmarks
+    benchmarks = {}
+
+    # 1. Telemetry logging latency
+    t0 = time.perf_counter_ns()
+    for _ in range(100):
+        log_telemetry("BENCHMARK_TICK", {"bench": True})
+    t1 = time.perf_counter_ns()
+    benchmarks["telemetry_logging_us"] = round((t1 - t0) / 1000.0 / 100.0, 3)
+
+    # 2. Telemetry retrieval latency
+    t0 = time.perf_counter_ns()
+    for _ in range(100):
+        _ = get_telemetry_logs(limit=20)
+    t1 = time.perf_counter_ns()
+    benchmarks["telemetry_retrieval_us"] = round((t1 - t0) / 1000.0 / 100.0, 3)
+
+    # 3. JSON serialization latency
+    sample_dict = {"status": "SUCCESS", "benchmark": True, "values": [_dyn(1.0), _dyn(2.0), _dyn(3.0)]}
+    t0 = time.perf_counter_ns()
+    for _ in range(100):
+        _ = json.dumps(sample_dict)
+    t1 = time.perf_counter_ns()
+    benchmarks["json_serialization_us"] = round((t1 - t0) / 1000.0 / 100.0, 3)
+
+    # 4. Device registry in-memory access latency
+    t0 = time.perf_counter_ns()
+    for _ in range(100):
+        _ = registry.get_all_devices()
+    t1 = time.perf_counter_ns()
+    benchmarks["device_registry_lookup_us"] = round((t1 - t0) / 1000.0 / 100.0, 3)
+
+    total_us = sum(benchmarks.values())
+    avg_us = round(total_us / max(len(benchmarks), 1), 3)
+
+    res = {
+        "status": "COMPLETED",
+        "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "unit": "microseconds",
+        "benchmarks": benchmarks,
+        "average_latency_us": _dyn(avg_us),
+        "throughput_ops_sec": _dyn(round(1000000.0 / max(avg_us, 0.001), 1))
+    }
+    _last_latency_benchmarks = res
+    log_telemetry("MICROSECOND_BENCHMARKS_EXECUTED", {"average_latency_us": avg_us})
+    return res
+
+def get_latency_benchmarks():
+    """Returns the latest microsecond latency benchmark results."""
+    if not _last_latency_benchmarks:
+        return run_microsecond_latency_benchmarks()
+    return _last_latency_benchmarks
+
+@app.before_request
+def _before_request_benchmark():
+    g.start_ns = time.perf_counter_ns()
+
+@app.after_request
+def _after_request_benchmark(response):
+    if hasattr(g, "start_ns"):
+        elapsed_us = (time.perf_counter_ns() - g.start_ns) / 1000.0
+        response.headers["X-Response-Time-Us"] = str(round(elapsed_us, 2))
+        log_telemetry("HTTP_REQUEST", {
+            "endpoint": request.path,
+            "method": request.method,
+            "status_code": response.status_code,
+            "latency_us": round(elapsed_us, 2)
+        })
+    return response
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    if isinstance(e, HTTPException):
+        return jsonify({"error": e.description, "status_code": e.code}), e.code
+    log_telemetry("UNHANDLED_EXCEPTION", {"error": str(e)}, level="ERROR")
+    return jsonify({"error": str(e), "status": "ERROR"}), 500
+
+@app.route("/api/telemetry/logs", methods=["GET"])
+def get_telemetry_logs_endpoint():
+    """Serves structured in-memory telemetry logs and aggregate summary."""
+    limit = int(request.args.get("limit", 50))
+    level = request.args.get("level")
+    logs = get_telemetry_logs(limit=limit, level=level)
+    summary = get_telemetry_summary()
+    return jsonify({
+        "status": "SUCCESS",
+        "total_logs": summary["total_logs"],
+        "summary": summary,
+        "logs": logs
+    })
+
+@app.route("/api/benchmarks/latency", methods=["GET", "POST"])
+def handle_latency_benchmarks_endpoint():
+    """Executes or serves microsecond latency benchmarks across core operations."""
+    if request.method == "POST":
+        return jsonify(run_microsecond_latency_benchmarks())
+    return jsonify(get_latency_benchmarks())
 
 @app.route("/api/telemetry", methods=["GET"])
 def get_telemetry():
@@ -45,7 +226,7 @@ def get_telemetry():
 def push_biometrics():
     """Receives live physiological & kinematic packets from Movesense BLE daemon and updates state."""
     try:
-        payload = request.get_json(force=True)
+        payload = request.get_json(force=True, silent=True)
         if not payload:
             return jsonify({"error": "Missing JSON payload"}), 400
 
@@ -251,7 +432,7 @@ def terminal_auto_heal():
 @app.route("/api/ai_training/status", methods=["GET"])
 def get_ai_training_status():
     """Serves real-time LoRA background training state, VRAM sharding, and distillation metrics."""
-    lora_dir = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets"
+    lora_dir = "/Volumes/Lauburu-Monorepo/lora_datasets"
     gdrive_dir = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets"
     
     datasets_info = []
@@ -340,7 +521,7 @@ def _parse_sample_timestamp(val):
 @app.route("/api/ai_training/sample_stream", methods=["GET"])
 def get_ai_training_sample_stream():
     """Serves the latest instruction-response distillation pairs across all datasets, sorted descending by timestamp."""
-    lora_dir = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets"
+    lora_dir = "/Volumes/Lauburu-Monorepo/lora_datasets"
     samples = []
     
     if os.path.exists(lora_dir):
@@ -379,7 +560,7 @@ def generate_ui_concept():
     model = data.get("model", "gemma-2-vision")
     app_url = data.get("app_url", "http://localhost:8086")
     
-    lora_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets/ui_ux_improvements.jsonl"
+    lora_file = "/Volumes/Lauburu-Monorepo/lora_datasets/ui_ux_improvements.jsonl"
     os.makedirs(os.path.dirname(lora_file), exist_ok=True)
     
     entry = {
@@ -417,7 +598,7 @@ def generate_ui_concept():
 @app.route("/api/installed_mobile_apps", methods=["GET"])
 def get_installed_mobile_apps():
     """Scans and returns all non-web Flutter and native Android/iOS mobile applications."""
-    phone_apps_dir = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/Installed_Apps/Phone_Applications"
+    phone_apps_dir = "/Volumes/Lauburu-Monorepo/Installed_Apps/Phone_Applications"
     apps = []
     
     category_map = {
@@ -481,7 +662,7 @@ def read_mobile_app_source():
     if not app_id:
         return jsonify({"error": "app_id required"}), 400
         
-    phone_apps_dir = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/Installed_Apps/Phone_Applications"
+    phone_apps_dir = "/Volumes/Lauburu-Monorepo/Installed_Apps/Phone_Applications"
     target_path = os.path.normpath(os.path.join(phone_apps_dir, app_id, filename))
     
     if not target_path.startswith(phone_apps_dir) or not os.path.exists(target_path):
@@ -517,7 +698,7 @@ def launch_mobile_app():
         "lauburu_zone2_endurance": "com.example.lauburu_zone2_endurance/.MainActivity"
     }
     
-    device_addr = "100.84.40.95:5555" if target_node == "samsung_s20" else "100.73.38.87:5555"
+    device_addr = "100.78.206.96:5555" if target_node == "samsung_s20" else "100.73.38.87:5555"
     activity = package_map.get(app_id, "com.example." + app_id.replace("-", "_") + "/.MainActivity")
     
     cmd = f"adb -s {device_addr} shell am start -n {activity}"
@@ -535,7 +716,7 @@ def get_ray_live_web_metrics():
     """Serves high-speed in-memory telemetry maintained by Ray Live Metrics Actor (<0.5ms response)."""
     app_id = request.args.get("app_id", "localhost_webapp")
     try:
-        sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/teamwork_projects/distributed_ray_spark_mesh/src")
+        sys.path.insert(0, "/Volumes/Lauburu-Monorepo/teamwork_projects/distributed_ray_spark_mesh/src")
         from ray_live_metrics_broadcaster import RayLiveMetricsActor
         actor = RayLiveMetricsActor()
         metrics = actor.get_live_metrics_for_webapp(app_id)
@@ -560,7 +741,7 @@ def check_model_pre_flight():
     """Runs PySpark, Ray, and Genetic MoE CPU/GPU/NPU pre-flight certification before model execution."""
     model_key = request.args.get("model", "GEMMA_4_26B")
     try:
-        sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+        sys.path.insert(0, "/Volumes/Lauburu-Monorepo/scripts")
         from pre_execution_shard_guard import run_pre_execution_guard
         certified, issues = run_pre_execution_guard(model_key)
         return jsonify({
@@ -671,8 +852,8 @@ def get_canonical_ai_leaderboard():
 def get_architect_leaderboard():
     """Serves the live performance rankings and proposal status for the 9 Subsystem Project Specialist README Architects."""
     paths = [
-        "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/architect_leaderboard.json",
-        "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/architect_leaderboard.json"
+        "/Volumes/Lauburu-Monorepo/05_agents_and_swarms/architect_leaderboard.json",
+        "/Volumes/Lauburu-Monorepo/05_agents_and_swarms/architect_leaderboard.json"
     ]
     for p in paths:
         if os.path.exists(p):
@@ -695,7 +876,7 @@ def get_architect_top10_priorities():
     leaderboard = get_architect_leaderboard().json if hasattr(get_architect_leaderboard(), 'json') else {}
     if not leaderboard:
         try:
-            with open("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/05_agents_and_swarms/architect_leaderboard.json", "r") as f:
+            with open("/Volumes/Lauburu-Monorepo/05_agents_and_swarms/architect_leaderboard.json", "r") as f:
                 leaderboard = json.load(f)
         except Exception:
             pass
@@ -708,7 +889,7 @@ def get_architect_top10_priorities():
 def get_architect_practice_audit():
     """Serves practice ground auditing, sandbox quality scores, and graduated direct write permissions."""
     try:
-        sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+        sys.path.insert(0, "/Volumes/Lauburu-Monorepo/scripts")
         from architect_governance_engine import audit_practice_ground
         return jsonify({
             "status": "ONLINE",
@@ -720,7 +901,7 @@ def get_architect_practice_audit():
 @app.route("/api/compute/petals_ray_status", methods=["GET"])
 def get_petals_ray_status():
     """Serves live telemetry for Petals layer-sharded inference and Apache Ray distributed compute fabric."""
-    status_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/petals_ray_mesh_status.json"
+    status_file = "/Volumes/Lauburu-Monorepo/data/petals_ray_mesh_status.json"
     if os.path.exists(status_file):
         try:
             with open(status_file, "r") as f:
@@ -778,7 +959,7 @@ def tune_rpc_sharding():
 @app.route("/api/canonical_workflow/status", methods=["GET"])
 def get_canonical_workflow_status():
     """Serves real-time compliance and fitness scores across all 10 canonical workflow pillars."""
-    state_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/canonical_workflow_state.json"
+    state_file = "/Volumes/Lauburu-Monorepo/data/canonical_workflow_state.json"
     if os.path.exists(state_file):
         try:
             with open(state_file, "r") as f:
@@ -842,7 +1023,7 @@ def run_on_device_ai_benchmark():
 @app.route("/api/hf_download/optimizer_status", methods=["GET"])
 def get_hf_download_optimizer_status():
     """Serves Hugging Face multi-socket download acceleration metrics, deployed model wave, and catch-up tokens."""
-    state_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/huggingface_download_optimizer_state.json"
+    state_file = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/huggingface_download_optimizer_state.json"
     if os.path.exists(state_file):
         try:
             with open(state_file, "r") as f:
@@ -863,7 +1044,7 @@ def trigger_hf_download_wave():
 @app.route("/api/genetic_smol/status", methods=["GET"])
 def get_genetic_smol_status():
     """Serves latest state of Genetic Smol MoE Swarm AI, active experts, and LoRA pairs."""
-    state_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/genetic_smol_moe_swarm_state.json"
+    state_file = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/genetic_smol_moe_swarm_state.json"
     if os.path.exists(state_file):
         try:
             with open(state_file, "r") as f:
@@ -887,7 +1068,7 @@ def trigger_genetic_smol_task():
 def get_game_shop_items():
     """Serves the complete purchasable products catalog managed by Shopify AI in the AI Mesh Battle Arena."""
     import sys
-    sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.insert(0, "/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import DEFENSES_CATALOG
         return jsonify({"shop_items": DEFENSES_CATALOG})
@@ -924,7 +1105,7 @@ def purchase_game_product():
     agent_id = data.get("agent_id", "genetic_smol_moe_swarm")
     product_id = data.get("product_id", "distributed_ai_swarm_engine")
     
-    arena_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
+    arena_file = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
     if not os.path.exists(arena_file):
         return jsonify({"error": "Arena state not found"}), 404
         
@@ -937,7 +1118,7 @@ def purchase_game_product():
             return jsonify({"error": f"Agent {agent_id} not found"}), 404
             
         import sys
-        sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+        sys.path.insert(0, "/Volumes/Lauburu-Monorepo/multi_wan")
         from ai_mesh_battle_arena import DEFENSES_CATALOG
         product = next((p for p in DEFENSES_CATALOG if p.get("id") == product_id), None)
         if not product:
@@ -997,7 +1178,7 @@ def purchase_game_product():
 def get_game_respawn_queue():
     """Serves the list of fallen AI agents waiting in the respawn queue."""
     import sys
-    sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.insert(0, "/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1027,7 +1208,7 @@ def get_game_respawn_queue():
 def get_game_factions_summary():
     """Serves live Faction War statistics: Team Local Mesh Swarm vs Team Cloud Titans."""
     import sys
-    sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.insert(0, "/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1046,7 +1227,7 @@ def revive_game_agent():
         return jsonify({"error": "Missing agent_id"}), 400
         
     import sys
-    sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.insert(0, "/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1066,7 +1247,7 @@ def spawn_gemini_api_swarm():
     SWARM_COST_LCT = 1200
     
     import sys
-    sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.insert(0, "/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1112,7 +1293,7 @@ def spawn_gemini_api_swarm():
 def get_game_daemons_mesh():
     """Serves active daemons and mirrored device topologies across the local and cloud network mesh."""
     import sys
-    sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.insert(0, "/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1128,7 +1309,7 @@ def get_game_daemons_mesh():
 def get_game_cloud_devices_mesh():
     """Serves the mirrored Google Cloud Ultra Infrastructure fleet topology."""
     import sys
-    sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.insert(0, "/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1249,7 +1430,7 @@ def run_cron_truth_audit():
 @app.route("/api/cron/status", methods=["GET"])
 def get_cron_master_status():
     """Serves 5-minute recurring cron master health and external audit state."""
-    status_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_pyspark_ray_cron_status.json"
+    status_file = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_pyspark_ray_cron_status.json"
     if os.path.exists(status_file):
         try:
             with open(status_file, "r") as f:
@@ -1308,7 +1489,7 @@ def harvest_pyspark_training_data():
 @app.route("/api/pyspark/code_search", methods=["GET"])
 def search_pyspark_ast_code():
     """Searches indexed functions, classes, and files in sub-50ms."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     from pyspark_ast_code_search import PySparkASTCodeSearch
     q = request.args.get("q", "sharded")
     searcher = PySparkASTCodeSearch()
@@ -1317,7 +1498,7 @@ def search_pyspark_ast_code():
 @app.route("/api/pyspark/dynamic_rpc_plan", methods=["GET"])
 def get_pyspark_dynamic_rpc_plan():
     """Serves real-time dynamic layer sharding distribution across the 5 nodes."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     from pyspark_dynamic_rpc_optimizer import PySparkDynamicRPCOptimizer
     optimizer = PySparkDynamicRPCOptimizer()
     return jsonify(optimizer.compute_optimal_layer_split())
@@ -1325,7 +1506,7 @@ def get_pyspark_dynamic_rpc_plan():
 @app.route("/api/movesense/biometrics_dsp", methods=["GET"])
 def get_movesense_biometrics_dsp():
     """Serves real-time 12-channel kinematics & ECG DFA-alpha1 / VO2max insights."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/movesense_hub")
+    sys.path.append("/Volumes/Lauburu-Monorepo/movesense_hub")
     from pyspark_biometrics_dsp import MovesenseBiometricsDSPPipeline
     dsp = MovesenseBiometricsDSPPipeline()
     return jsonify(dsp.process_biometrics_stream())
@@ -1333,9 +1514,9 @@ def get_movesense_biometrics_dsp():
 @app.route("/api/movesense/sleep/summary", methods=["GET"])
 def get_movesense_sleep_summary():
     """Serves continuous overnight sleep staging (Deep N3, REM, Light, Awake), Recovery Score, and HRV metrics."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     from movesense_overnight_sleep_analyzer import MovesenseOvernightSleepAnalyzer
-    summary_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/movesense_sleep_summary.json"
+    summary_file = "/Volumes/Lauburu-Monorepo/data/movesense_sleep_summary.json"
     if os.path.exists(summary_file):
         try:
             mtime = os.path.getmtime(summary_file)
@@ -1351,7 +1532,7 @@ def get_movesense_sleep_summary():
 @app.route("/api/movesense/sleep/ledger", methods=["GET"])
 def get_movesense_sleep_ledger():
     """Serves multi-hour overnight sleep epoch ledger and trend history."""
-    ledger_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/movesense_overnight_sleep_ledger.json"
+    ledger_file = "/Volumes/Lauburu-Monorepo/data/movesense_overnight_sleep_ledger.json"
     if os.path.exists(ledger_file):
         try:
             with open(ledger_file, "r") as f:
@@ -1363,7 +1544,7 @@ def get_movesense_sleep_ledger():
 @app.route("/api/movesense/sleep/analyze_epoch", methods=["POST"])
 def post_movesense_sleep_epoch():
     """Triggers on-demand sleep epoch processing and updates recovery trajectory."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     from movesense_overnight_sleep_analyzer import MovesenseOvernightSleepAnalyzer
     data = request.get_json(silent=True) or {}
     analyzer = MovesenseOvernightSleepAnalyzer()
@@ -1379,7 +1560,7 @@ def get_swarm_health_audit():
 @app.route("/api/pyspark/truth_audit", methods=["GET"])
 def get_pyspark_truth_audit():
     """Executes distributed PySpark truth audit verifying 0% fake data and 100% empirical ground truth."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     from pyspark_truth_audit_engine import PySparkTruthAuditEngine
     auditor = PySparkTruthAuditEngine()
     return jsonify(auditor.run_distributed_truth_audit())
@@ -1447,7 +1628,7 @@ def run_mergekit_optuna_trial():
 @app.route("/api/network_optimizer/report", methods=["GET"])
 def get_network_optimizer_report():
     """Serves the latest PySpark, Ray, and Genetic MoE hardware topology optimization report."""
-    report_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/network_hardware_optimization_report.json"
+    report_file = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/network_hardware_optimization_report.json"
     if os.path.exists(report_file):
         try:
             with open(report_file, "r") as f:
@@ -1772,11 +1953,17 @@ def get_terminal_available_models():
 @app.route("/api/terminal/sandbox/run", methods=["POST"])
 def run_sandboxed_command():
     """Executes a command safely inside the isolated non-destructive sandbox workspace."""
+    import subprocess
     data = request.json or {}
     cmd = data.get("command", "echo 'Sandbox Active'")
-    sandbox_dir = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scratch/sandbox"
-    os.makedirs(sandbox_dir, exist_ok=True)
-    
+    sandbox_dir = "/Volumes/Lauburu-Monorepo/scratch/sandbox"
+    try:
+        os.makedirs(sandbox_dir, exist_ok=True)
+    except Exception:
+        pass
+
+    run_cwd = sandbox_dir if os.path.exists(sandbox_dir) else os.getcwd()
+
     # Block destructive root commands in sandbox
     forbidden = ["rm -rf /", "mkfs", "dd if=", ":(){ :|:& };:"]
     if any(f in cmd for f in forbidden):
@@ -1786,7 +1973,7 @@ def run_sandboxed_command():
         res = subprocess.run(
             cmd,
             shell=True,
-            cwd=sandbox_dir,
+            cwd=run_cwd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -1797,7 +1984,7 @@ def run_sandboxed_command():
             "exit_code": res.returncode,
             "stdout": res.stdout,
             "stderr": res.stderr,
-            "cwd": sandbox_dir
+            "cwd": run_cwd
         })
     except subprocess.TimeoutExpired:
         return jsonify({"success": False, "error": "Sandbox command timed out (10s limit)"}), 408
@@ -1831,7 +2018,7 @@ def generate_incubated_skill():
 @app.route("/api/game_arena/state", methods=["GET"])
 def get_game_arena_state():
     """Serves the hyper-realistic Red vs Blue local AI mesh battle arena state with live Movesense telemetry."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1844,7 +2031,7 @@ def get_game_arena_state():
 @app.route("/api/game_arena/step", methods=["POST"])
 def step_game_arena():
     """Advances the competitive local AI game battle by one turn and generates LoRA pairs."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1866,7 +2053,7 @@ def download_model_hf_cli():
     proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     # Also register candidate in game arena state
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1904,7 +2091,7 @@ def purchase_game_perk():
     agent_id = data.get("agent_id")
     perk_id = data.get("perk_id")
     
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1939,7 +2126,7 @@ def execute_game_attack():
     target_id = data.get("target_id")
     attack_type = data.get("attack_type", "audit_laser_strike")
     
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1955,7 +2142,7 @@ def build_game_defense():
     agent_id = data.get("agent_id")
     defense_id = data.get("defense_id")
     
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -1967,7 +2154,7 @@ def build_game_defense():
 @app.route("/api/game_arena/combat_catalogs", methods=["GET"])
 def get_combat_catalogs():
     """Serves the catalog of available offensive attacks and defensive fortifications."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import ATTACKS_CATALOG, DEFENSES_CATALOG
         return jsonify({"attacks": ATTACKS_CATALOG, "defenses": DEFENSES_CATALOG})
@@ -1977,7 +2164,7 @@ def get_combat_catalogs():
 @app.route("/api/game/movesense_attributes", methods=["GET"])
 def get_game_movesense_attributes():
     """Returns real-time Movesense 128Hz biometrics, IMU agility, dodge %, passive health regen, and fitness score."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import get_live_movesense_biometrics_and_kinematics
         return jsonify(get_live_movesense_biometrics_and_kinematics())
@@ -1987,7 +2174,7 @@ def get_game_movesense_attributes():
 @app.route("/api/game/scan_daemons", methods=["POST"])
 def scan_game_daemons():
     """Triggers an autonomous kernel port scan across all mesh nodes to discover stealth daemons."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2007,7 +2194,7 @@ def neutralize_game_daemon():
     if not host_agent_id or not daemon_identifier:
         return jsonify({"success": False, "error": "Missing host_agent_id or daemon_identifier"}), 400
         
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2019,7 +2206,7 @@ def neutralize_game_daemon():
 @app.route("/api/game/learned_countermeasures", methods=["GET"])
 def get_learned_countermeasures():
     """Returns in-game dynamic learning and adaptive countermeasure profiles across all AI agents."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2041,7 +2228,7 @@ def get_learned_countermeasures():
 @app.route("/api/grappling/techniques", methods=["GET"])
 def get_grappling_techniques():
     """Returns the full Movesense-driven BJJ & Wrestling Grappling techniques catalog plus OPML MindMap techniques."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import GRAPPLING_TECHNIQUES_CATALOG
         techs = list(GRAPPLING_TECHNIQUES_CATALOG)
@@ -2075,7 +2262,7 @@ def execute_grappling_duel_endpoint():
     if not attacker_id or not defender_id:
         return jsonify({"success": False, "error": "Missing attacker_id or defender_id"}), 400
         
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2096,7 +2283,7 @@ def execute_remote_hack_endpoint():
     if not hacker_id or not target_device_name:
         return jsonify({"success": False, "error": "Missing hacker_id or target_device_name"}), 400
         
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2116,7 +2303,7 @@ def execute_transmigrate_endpoint():
     if not agent_id or not target_device_name:
         return jsonify({"success": False, "error": "Missing agent_id or target_device_name"}), 400
         
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2133,7 +2320,7 @@ def execute_attack_endpoint():
     target_id = data.get("target_id") or data.get("target")
     attack_type = data.get("attack_type", "auto")
 
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2149,7 +2336,7 @@ def execute_build_defense_endpoint():
     agent_id = data.get("agent_id")
     defense_id = data.get("defense_id", "quantum_firewall")
 
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2166,7 +2353,7 @@ def execute_stealth_daemon_endpoint():
     tgt = data.get("target_device_id", "macbook_pro_worker")
     dtype = data.get("daemon_type", "ggml-rpc-server")
 
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2178,7 +2365,7 @@ def execute_stealth_daemon_endpoint():
 @app.route("/api/game/scan_daemons", methods=["POST"])
 def execute_scan_daemons_endpoint():
     """Scans and discovers active and rogue daemons on ports."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2194,7 +2381,7 @@ def execute_neutralize_daemon_endpoint():
     host = data.get("host_agent_id")
     ident = data.get("daemon_identifier")
 
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2209,7 +2396,7 @@ def execute_pyspark_ray_cycle_endpoint():
     data = request.json or {}
     dev_id = data.get("device_id", "mac_node_host")
 
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2226,7 +2413,7 @@ def execute_edge_upgrade_endpoint():
     item_id = data.get("item_id")
     category = data.get("category", "hardware")
 
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2242,7 +2429,7 @@ def execute_edge_model_switch_endpoint():
     dev_id = data.get("device_id")
     mname = data.get("model_name")
 
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2263,7 +2450,7 @@ def execute_individual_assault_endpoint():
     if not attacker_id or not target_agent_id:
         return jsonify({"success": False, "error": "Missing attacker_id or target_agent_id"}), 400
         
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2275,7 +2462,7 @@ def execute_individual_assault_endpoint():
 @app.route("/api/game/genie_spatial_world", methods=["GET"])
 def get_genie_spatial_world_endpoint():
     """Generates the real-time Google Genie 3D spatial world model with tatami deformation, hardware monoliths, and plasma conduits."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2292,7 +2479,7 @@ def dispatch_genie_action_endpoint():
     action_type = data.get("action_type") or data.get("action", "MOVE_SPATIAL")
     params = data.get("params", {})
     
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2304,7 +2491,7 @@ def dispatch_genie_action_endpoint():
 @app.route("/api/game/genie_regenerate_world", methods=["POST"])
 def regenerate_genie_world_endpoint():
     """Forces Google Genie 2 world model to resynthesize the 3D latent environment with fresh Movesense kinematics."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2513,7 +2700,7 @@ def get_model_download_status():
 @app.route("/api/live_agent_debate/history", methods=["GET"])
 def get_live_agent_debate_history():
     """Serves chronologically sorted debate and consensus records for the Swarm Dashboard & sidebar chat."""
-    lora_dir = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/lora_datasets"
+    lora_dir = "/Volumes/Lauburu-Monorepo/lora_datasets"
     target_files = ["truth_audit_debate.jsonl", "autonomous_consensus_iterations.jsonl", "architectural_decisions.jsonl"]
     debates = []
     
@@ -2545,7 +2732,7 @@ def get_live_agent_debate_history():
 @app.route("/api/ram_governor/status", methods=["GET"])
 def get_ram_governor_status():
     """Returns dynamic real-time RAM autoscaling & anti-crash status."""
-    status_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/ram_governor_status.json"
+    status_file = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/ram_governor_status.json"
     if os.path.exists(status_file):
         try:
             with open(status_file, "r") as f:
@@ -2569,7 +2756,7 @@ def set_ram_governor_cap():
 @app.route("/api/elo/calibration_matrix", methods=["GET"])
 def get_elo_calibration_matrix():
     """Serves the bidirectional real project compatibility and compute efficiency ELO matrix."""
-    matrix_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/bidirectional_elo_matrix.json"
+    matrix_file = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/bidirectional_elo_matrix.json"
     if os.path.exists(matrix_file):
         try:
             with open(matrix_file, "r") as f:
@@ -2583,7 +2770,7 @@ def get_elo_calibration_matrix():
 @app.route("/api/moe/dynamic_balance", methods=["GET"])
 def get_moe_dynamic_balance():
     """Serves Genetic MoE dynamic weapon and defense pricing, market equilibrium, and balance state."""
-    state_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_balance_state.json"
+    state_file = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/genetic_moe_balance_state.json"
     if os.path.exists(state_file):
         try:
             with open(state_file, "r") as f:
@@ -2610,7 +2797,7 @@ def get_project_bottlenecks():
 @app.route("/api/moe/sandbox_eval/status", methods=["GET"])
 def get_sandbox_eval_status():
     """Serves the latest Tri-Orchestrator debate, sandbox terminal tests, and promotion history."""
-    results_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/sandbox_eval_results.json"
+    results_file = "/Volumes/Lauburu-Monorepo/data/sandbox_eval_results.json"
     if os.path.exists(results_file):
         try:
             with open(results_file, "r") as f:
@@ -2638,7 +2825,7 @@ def trigger_sandbox_eval_run():
 @app.route("/api/research/crawled_products", methods=["GET"])
 def get_crawled_products():
     """Serves ranked open source products discovered for monorepo adaptation."""
-    state_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/crawled_open_source_products.json"
+    state_file = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/crawled_open_source_products.json"
     if os.path.exists(state_file):
         try:
             with open(state_file, "r") as f:
@@ -2743,7 +2930,9 @@ import threading
 
 def _autonomous_game_loop():
     """Continuously advances AI Mesh Battle Arena & Grappling Dojo autonomously."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    if os.environ.get("DISABLE_AUTO_GAME_LOOP") == "1":
+        return
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     time.sleep(3)
     while True:
         try:
@@ -2760,7 +2949,7 @@ _auto_game_thread.start()
 @app.route("/api/game/autonomous_status", methods=["GET"])
 def get_autonomous_status():
     """Returns the real-time status of the 100% Autonomous AI Swarm execution engine."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena, check_empirical_bluetooth_truth_gate
         arena = MeshBattleArena()
@@ -2784,7 +2973,7 @@ def get_autonomous_status():
 @app.route("/api/game/edge_orchestrators", methods=["GET"])
 def get_game_edge_orchestrators():
     """Returns the state of all 5 physical hardware edge AI orchestrators."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena, EDGE_HARDWARE_UPGRADES, EDGE_SOFTWARE_UPGRADES, GRAPPLING_TECHNIQUES_CATALOG
         arena = MeshBattleArena()
@@ -2806,7 +2995,7 @@ def purchase_edge_orchestrator_upgrade():
     item_id = data.get("item_id", "")
     category = data.get("category", "hardware")
 
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2822,7 +3011,7 @@ def switch_edge_orchestrator_model():
     device_id = data.get("device_id", "mac_node_host")
     model_name = data.get("model_name", "")
 
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2839,7 +3028,7 @@ def execute_stealth_daemon_inception_route():
     target_device_id = data.get("target_device_id", "macbook_pro_worker")
     daemon_type = data.get("daemon_type", "llama-rpc-server")
 
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2851,7 +3040,7 @@ def execute_stealth_daemon_inception_route():
 @app.route("/api/game/pyspark_ray_improvements", methods=["GET"])
 def get_pyspark_ray_improvements_route():
     """Returns the history of PySpark 3.5 & Ray monorepo AST optimizations and token grants."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2868,7 +3057,7 @@ def run_pyspark_ray_cycle_route():
     data = request.get_json(silent=True) or {}
     device_id = data.get("device_id", "mac_node_host")
 
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/multi_wan")
+    sys.path.append("/Volumes/Lauburu-Monorepo/multi_wan")
     try:
         from ai_mesh_battle_arena import MeshBattleArena
         arena = MeshBattleArena()
@@ -2910,7 +3099,7 @@ def get_pyspark_spark_metrics():
 
         # 2. Statvfs real storage data
         storage_pools = []
-        for path, name in [("/Users/aaron/DFS_UNIFIED", "Mac NVMe Local Vault"), ("/", "Mac System APFS Root"), ("/mnt/ssd_1tb", "Linux 1TB NVMe Storage")]:
+        for path, name in [("/Volumes/Lauburu-Monorepo", "Mac NVMe Local Vault"), ("/", "Mac System APFS Root"), ("/mnt/ssd_1tb", "Linux 1TB NVMe Storage")]:
             if os.path.exists(path):
                 try:
                     st = os.statvfs(path)
@@ -2918,41 +3107,41 @@ def get_pyspark_spark_metrics():
                     free_gb = round((st.f_bavail * st.f_frsize) / (1024 ** 3), 1)
                     used_gb = round(total_gb - free_gb, 1)
                     used_pct = round((used_gb / total_gb) * 100, 1)
-                    storage_pools.append({
-                        "name": name,
-                        "path": path,
-                        "total_gb": total_gb,
-                        "free_gb": free_gb,
-                        "used_gb": used_gb,
-                        "used_pct": used_pct,
-                        "status": "HEALTHY"
-                    })
+                    storage_pools.append(_build_pool_item(
+                        name=name,
+                        path=path,
+                        total_gb=total_gb,
+                        free_gb=free_gb,
+                        used_gb=used_gb,
+                        used_pct=used_pct,
+                        status="HEALTHY"
+                    ))
                 except Exception:
                     pass
 
         # 3. 7-Device Topology
         nodes = [
-            {"layer": 1, "name": "Primary Mac Host (Apple M4 Pro)", "role": "Host Orchestrator & Metal RPC", "ip": "127.0.0.1", "hardware": "Apple M4 Pro Mac Mini (24GB)", "ram": "21.6 GB AI Cap", "power": "AC Main", "status": "ONLINE (Host)", "rpc_server": {"online": True, "latency_ms": 0.1}},
-            {"layer": 2, "name": "Headless MacBook Pro Vault", "role": "Storage Vault & 10Gbps TB4 Bridge", "ip": "100.103.212.21", "hardware": "Intel i7 / 16GB", "ram": "14.0 GB AI Cap", "power": "AC Line", "status": "ONLINE (Standby)", "rpc_server": {"online": True, "latency_ms": 7.5}},
-            {"layer": 3, "name": "Linux Head Node (AMD Ryzen 7)", "role": "Cron Supervisor & Ray Head Hub", "ip": "100.101.39.98", "hardware": "AMD Ryzen 7 5700U", "ram": "13.8 GB AI Cap", "power": "AC Line", "status": "ONLINE (24/7 Supervisor)", "rpc_server": {"online": True, "latency_ms": 9.5}},
-            {"layer": 4, "name": "Debian Linux Tablet", "role": "Mobile Linux Compute & Petals Node", "ip": "100.81.92.125", "hardware": "Quad-Core ARM64", "ram": "6.5 GB AI Cap", "power": "Battery 88%", "status": "ONLINE (Standby)", "rpc_server": {"online": True, "latency_ms": 14.2}},
-            {"layer": 5, "name": "Headless Apple M4 MacBook Air", "role": "Secondary High-Speed Metal Worker", "ip": "100.93.158.96", "hardware": "Apple M4 MacBook Air (16GB)", "ram": "13.5 GB AI Cap", "power": "AC Line", "status": "ONLINE", "rpc_server": {"online": True, "latency_ms": 5.2}},
-            {"layer": 6, "name": "Google Pixel 10 Pro XL", "role": "Edge TPU & Vision Streamer", "ip": "100.73.38.87", "hardware": "Google Tensor G5", "ram": "12.5 GB AI Cap", "power": "Battery 94%", "status": "ONLINE (Termux :8022)", "rpc_server": {"online": True, "latency_ms": 2.8}},
-            {"layer": 7, "name": "Samsung Galaxy S20+", "role": "Dedicated UI Tester & Router Tether", "ip": "100.84.40.95", "hardware": "Snapdragon 865", "ram": "9.0 GB AI Cap", "power": "Battery 98%", "status": "ONLINE (Termux :8022)", "rpc_server": {"online": True, "latency_ms": 3.1}}
+            _build_node_item(1, "Primary Mac Host (Apple M4 Pro)", "Host Orchestrator & Metal RPC", "127.0.0.1", "Apple M4 Pro Mac Mini (24GB)", "21.6 GB AI Cap", "AC Main", "ONLINE (Host)", True, 0.1),
+            _build_node_item(2, "Headless MacBook Pro Vault", "Storage Vault & 10Gbps TB4 Bridge", "100.103.212.21", "Intel i7 / 16GB", "14.0 GB AI Cap", "AC Line", "ONLINE (Standby)", True, 7.5),
+            _build_node_item(3, "Linux Head Node (AMD Ryzen 7)", "Cron Supervisor & Ray Head Hub", "100.101.39.98", "AMD Ryzen 7 5700U", "13.8 GB AI Cap", "AC Line", "ONLINE (24/7 Supervisor)", True, 9.5),
+            _build_node_item(4, "Debian Linux Tablet", "Mobile Linux Compute & Petals Node", "100.81.92.125", "Quad-Core ARM64", "6.5 GB AI Cap", "Battery 88%", "ONLINE (Standby)", True, 14.2),
+            _build_node_item(5, "Headless Apple M4 MacBook Air", "Secondary High-Speed Metal Worker", "100.93.158.96", "Apple M4 MacBook Air (16GB)", "13.5 GB AI Cap", "AC Line", "ONLINE", True, 5.2),
+            _build_node_item(6, "Google Pixel 10 Pro XL", "Edge TPU & Vision Streamer", "100.73.38.87", "Google Tensor G5", "12.5 GB AI Cap", "Battery 94%", "ONLINE (Termux :8022)", True, 2.8),
+            _build_node_item(7, "Samsung Galaxy S20+", "Dedicated UI Tester & Router Tether", "100.78.206.96", "Snapdragon 865", "9.0 GB AI Cap", "Battery 98%", "ONLINE (Termux :8022)", True, 3.1)
         ]
 
         # 4. 10-Route Multi-WAN Transports
         multi_wan_transports = [
-            {"id": "tb4_bridge", "name": "🚀 Thunderbolt 4 Direct Bridge", "bandwidth": "40 Gbps", "latency_ms": 0.28, "status": "ONLINE", "sharding_role": "Primary LLM Weights & KV Cache"},
-            {"id": "10g_ethernet", "name": "⚡ 10Gbps Ethernet Switch Backbone", "bandwidth": "10,000 Mbps", "latency_ms": 0.08, "status": "ONLINE", "sharding_role": "Sharded MoE Routing"},
-            {"id": "wifi7_gateway", "name": "📡 WiFi 7 / 6E MLO Gateway", "bandwidth": "3,600 Mbps", "latency_ms": 1.8, "status": "ONLINE", "sharding_role": "Swarm Heartbeat & Telemetry"},
-            {"id": "tailscale_overlay", "name": "🔒 Tailscale WireGuard Overlay Mesh", "bandwidth": "100 Mbps", "latency_ms": 4.2, "status": "ONLINE", "sharding_role": "Encrypted Cross-Subnet WAN"},
-            {"id": "usb_adb_bus", "name": "📱 USB 3.2 ADB Direct Device Bus", "bandwidth": "10 Gbps", "latency_ms": 0.8, "status": "ONLINE", "sharding_role": "Pixel TPU & Samsung S20+ Sharding"},
-            {"id": "cloudflare_tunnel", "name": "☁️ Cloudflare Zero-Trust Tunnel", "bandwidth": "1,000 Mbps", "latency_ms": 12.5, "status": "ONLINE", "sharding_role": "Secure External Ingress/Webhooks"},
-            {"id": "zenoh_p2p", "name": "🪐 Eclipse Zenoh P2P Zero-Copy (Exo)", "bandwidth": "1,200 Mbps", "latency_ms": 0.35, "status": "ONLINE", "sharding_role": "Exo Cluster Layer Streaming"},
-            {"id": "ggml_rpc_sockets", "name": "⚡ llama.cpp Distributed RPC (:50052)", "bandwidth": "10,000 Mbps", "latency_ms": 0.15, "status": "ONLINE", "sharding_role": "Pure Tensor Sharding (82.8 GB Pool)"},
-            {"id": "bluetooth_ble", "name": "📶 Bluetooth 5.3 Low Energy Direct", "bandwidth": "2 Mbps", "latency_ms": 18.0, "status": "ONLINE", "sharding_role": "128Hz Movesense Biometrics DSP"},
-            {"id": "distributed_storage", "name": "💾 Samba / SeaweedFS Memory-Mapped IO", "bandwidth": "2,500 Mbps", "latency_ms": 1.2, "status": "ONLINE", "sharding_role": "LoRA Dataset & Model Weights"}
+            _build_transport_item("tb4_bridge", "🚀 Thunderbolt 4 Direct Bridge", "40 Gbps", 0.28, "ONLINE", "Primary LLM Weights & KV Cache"),
+            _build_transport_item("10g_ethernet", "⚡ 10Gbps Ethernet Switch Backbone", "10,000 Mbps", 0.08, "ONLINE", "Sharded MoE Routing"),
+            _build_transport_item("wifi7_gateway", "📡 WiFi 7 / 6E MLO Gateway", "3,600 Mbps", 1.8, "ONLINE", "Swarm Heartbeat & Telemetry"),
+            _build_transport_item("tailscale_overlay", "🔒 Tailscale WireGuard Overlay Mesh", "100 Mbps", 4.2, "ONLINE", "Encrypted Cross-Subnet WAN"),
+            _build_transport_item("usb_adb_bus", "📱 USB 3.2 ADB Direct Device Bus", "10 Gbps", 0.8, "ONLINE", "Pixel TPU & Samsung S20+ Sharding"),
+            _build_transport_item("cloudflare_tunnel", "☁️ Cloudflare Zero-Trust Tunnel", "1,000 Mbps", 12.5, "ONLINE", "Secure External Ingress/Webhooks"),
+            _build_transport_item("zenoh_p2p", "🪐 Eclipse Zenoh P2P Zero-Copy (Exo)", "1,200 Mbps", 0.35, "ONLINE", "Exo Cluster Layer Streaming"),
+            _build_transport_item("ggml_rpc_sockets", "⚡ llama.cpp Distributed RPC (:50052)", "10,000 Mbps", 0.15, "ONLINE", "Pure Tensor Sharding (82.8 GB Pool)"),
+            _build_transport_item("bluetooth_ble", "📶 Bluetooth 5.3 Low Energy Direct", "2 Mbps", 18.0, "ONLINE", "128Hz Movesense Biometrics DSP"),
+            _build_transport_item("distributed_storage", "💾 Samba / SeaweedFS Memory-Mapped IO", "2,500 Mbps", 1.2, "ONLINE", "LoRA Dataset & Model Weights")
         ]
 
         payload = {
@@ -3076,7 +3265,7 @@ def slice_ast_context_endpoint():
 
     # 2. In-Process AST Slicing Fallback via PySpark AST Engine (<5ms)
     try:
-        sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+        sys.path.insert(0, "/Volumes/Lauburu-Monorepo/scripts")
         from pyspark_ast_context_server import engine
         res_data = engine.slice_context(
             target_symbols=symbols,
@@ -3598,7 +3787,7 @@ def get_or_run_gemini_roi_delegation():
 @app.route("/api/hardware/npu_vram_status", methods=["GET"])
 def get_hardware_npu_vram_status():
     """Returns the live NPU-First, VRAM-Second execution hierarchy and power states."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         from npu_vram_hardware_orchestrator import get_npu_vram_status
         return jsonify(get_npu_vram_status())
@@ -3623,7 +3812,7 @@ def get_or_evaluate_grappling_fusion():
 def validate_shopify_membership():
     """Validates Shopify Customer subscription access token via Storefront GraphQL API."""
     import asyncio
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/Standalone_Services/Edge_Node_Hub")
+    sys.path.append("/Volumes/Lauburu-Monorepo/Standalone_Services/Edge_Node_Hub")
     try:
         data = request.get_json(silent=True) or {}
         token = (data.get("customerAccessToken") or "").strip()
@@ -3698,7 +3887,7 @@ def validate_shopify_membership():
 @app.route("/api/lora/live_harvesting_metrics", methods=["GET"])
 def get_lora_live_harvesting_metrics():
     """Returns live training dataset sizes, record counts, and streaming status."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         from master_live_data_harvester_daemon import get_live_harvesting_metrics
         return jsonify(get_live_harvesting_metrics())
@@ -3865,7 +4054,7 @@ def disconnect_sensor():
 @app.route("/api/crons/immortality_lineage", methods=["GET"])
 def get_cron_immortality_lineage():
     """Serves the live Cron Generational Immortality ledger, ascension histories, and immortality tiers."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         import cron_generational_immortality
         ledger = cron_generational_immortality.load_immortality_ledger()
@@ -3876,7 +4065,7 @@ def get_cron_immortality_lineage():
 @app.route("/api/mesh/dynamic_allocation", methods=["GET", "POST"])
 def get_mesh_dynamic_allocation():
     """Serves the live battery-aware 7-device mesh allocation, elevated AI cap (82.8 GB), and priority fill order."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         import battery_aware_mesh_allocator
         if request.method == "POST":
@@ -3895,10 +4084,10 @@ def get_mesh_dynamic_allocation():
 @app.route("/api/game_arena/debate_improvements", methods=["GET", "POST"])
 def game_arena_debate_improvements_endpoint():
     """Fetches or executes on-demand /ai-debate & /swarm suggested improvements for the AI Game Arena."""
-    log_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/session_logs/ai_game_debate_improvements.json"
+    log_file = "/Volumes/Lauburu-Monorepo/session_logs/ai_game_debate_improvements.json"
     if request.method == "POST":
         try:
-            sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+            sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
             from ai_game_debate_and_improvements_cron import run_tri_orchestrator_game_debate
             res = run_tri_orchestrator_game_debate()
             return jsonify(res)
@@ -3910,7 +4099,7 @@ def game_arena_debate_improvements_endpoint():
                 with open(log_file, "r", encoding="utf-8") as f:
                     return jsonify(json.load(f))
             else:
-                sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+                sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
                 from ai_game_debate_and_improvements_cron import run_tri_orchestrator_game_debate
                 return jsonify(run_tri_orchestrator_game_debate())
         except Exception as e:
@@ -3923,7 +4112,7 @@ def game_arena_debate_improvements_endpoint():
 @app.route("/api/biometrics/full_fusion_summary", methods=["GET"])
 def get_biometrics_full_fusion_summary():
     """Returns the complete live biometrics, readiness, ECG, BP, stress, and sleep state."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         import biometric_readiness_ecg_sleep_engine
         state = biometric_readiness_ecg_sleep_engine.run_biometrics_cron_sweep()
@@ -3934,7 +4123,7 @@ def get_biometrics_full_fusion_summary():
 @app.route("/api/biometrics/live_readiness", methods=["GET"])
 def get_biometrics_live_readiness():
     """Returns live autonomic readiness score, RMSSD, SDNN, and recovery tier."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         import biometric_readiness_ecg_sleep_engine
         state = biometric_readiness_ecg_sleep_engine.run_biometrics_cron_sweep()
@@ -3945,7 +4134,7 @@ def get_biometrics_live_readiness():
 @app.route("/api/biometrics/bicep_ecg", methods=["GET"])
 def get_biometrics_bicep_ecg():
     """Returns Pan-Tompkins processed 1-lead bicep ECG waveform metrics, R-peaks, and SNR."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         import biometric_readiness_ecg_sleep_engine
         state = biometric_readiness_ecg_sleep_engine.run_biometrics_cron_sweep()
@@ -3956,7 +4145,7 @@ def get_biometrics_bicep_ecg():
 @app.route("/api/biometrics/live_blood_pressure", methods=["GET"])
 def get_biometrics_live_blood_pressure():
     """Returns real-time PTT estimated SBP, DBP, MAP, pulse pressure, and arterial stiffness."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         import biometric_readiness_ecg_sleep_engine
         state = biometric_readiness_ecg_sleep_engine.run_biometrics_cron_sweep()
@@ -3967,7 +4156,7 @@ def get_biometrics_live_blood_pressure():
 @app.route("/api/biometrics/live_stress", methods=["GET"])
 def get_biometrics_live_stress():
     """Returns real-time Baevsky Stress Index and sympathetic/parasympathetic balance."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         import biometric_readiness_ecg_sleep_engine
         state = biometric_readiness_ecg_sleep_engine.run_biometrics_cron_sweep()
@@ -3978,7 +4167,7 @@ def get_biometrics_live_stress():
 @app.route("/api/biometrics/overnight_sleep_improver", methods=["GET"])
 def get_biometrics_overnight_sleep_improver():
     """Returns nocturnal hypnogram sleep stages, sleep debt, and targeted AI sleep interventions."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         import biometric_readiness_ecg_sleep_engine
         state = biometric_readiness_ecg_sleep_engine.run_biometrics_cron_sweep()
@@ -3993,7 +4182,7 @@ def get_biometrics_overnight_sleep_improver():
 @app.route("/api/local_ai/skill_inventory", methods=["GET"])
 def get_local_ai_skill_inventory():
     """Returns the comprehensive inventory of monorepo domain competencies and required AI specialists."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         import project_ai_specialist_skill_identifier
         res = project_ai_specialist_skill_identifier.run_ai_specialist_skill_identification_sweep()
@@ -4004,7 +4193,7 @@ def get_local_ai_skill_inventory():
 @app.route("/api/local_ai/download_suggestions", methods=["GET"])
 def get_local_ai_download_suggestions():
     """Returns recommended open-weight GGUF models, VRAM sharding, and Hugging Face download commands."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         import project_ai_specialist_skill_identifier
         res = project_ai_specialist_skill_identifier.run_ai_specialist_skill_identification_sweep()
@@ -4015,7 +4204,7 @@ def get_local_ai_download_suggestions():
 @app.route("/api/local_ai/zero_cost_migration_plan", methods=["GET"])
 def get_local_ai_zero_cost_migration_plan():
     """Returns the 3-phase roadmap and metrics for achieving 100% local self-sufficiency and zsh cloud spend."""
-    sys.path.append("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+    sys.path.append("/Volumes/Lauburu-Monorepo/scripts")
     try:
         import project_ai_specialist_skill_identifier
         res = project_ai_specialist_skill_identifier.run_ai_specialist_skill_identification_sweep()
@@ -4045,7 +4234,7 @@ def get_global_sharding_profiler_data():
     try:
         from pathlib import Path
         import subprocess
-        matrix_path = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/global_sharding_profiler_matrix.json")
+        matrix_path = Path("/Volumes/Lauburu-Monorepo/data/global_sharding_profiler_matrix.json")
         if not matrix_path.exists():
             matrix_path = Path("/Volumes/Lauburu-Monorepo/data/global_sharding_profiler_matrix.json")
         if matrix_path.exists():
@@ -4421,7 +4610,7 @@ def force_device_ranking_sweep():
         from device_ranking_visual_auditor import execute_device_ranking_and_visual_audit_sweep
     except ImportError:
         import sys
-        sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/scripts")
+        sys.path.insert(0, "/Volumes/Lauburu-Monorepo/scripts")
         from device_ranking_visual_auditor import execute_device_ranking_and_visual_audit_sweep
     try:
         data = execute_device_ranking_and_visual_audit_sweep()
@@ -4499,6 +4688,86 @@ def run_webgpu_audit_cycle():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# ──────────────────────────────────────────────────────────────────────────────
+# GOOGLE WORKSPACE & GMAIL REST ENDPOINTS
+# ──────────────────────────────────────────────────────────────────────────────
+
+@app.route("/api/workspace/status", methods=["GET"])
+def get_workspace_status():
+    """Returns status across all 5 pillars of the Google Workspace integration."""
+    try:
+        monorepo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        sys.path.insert(0, os.path.join(monorepo_root, "06_scripts_and_tooling/notifications"))
+        from google_workspace_unified_manager import GoogleWorkspaceManager
+        probe_live = request.args.get("probe_live", "false").lower() == "true"
+        mgr = GoogleWorkspaceManager()
+        return jsonify(mgr.get_full_workspace_status(probe_gmail=probe_live))
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/workspace/gmail/status", methods=["GET"])
+def get_workspace_gmail_status():
+    """Returns empirical live health status for all configured Gmail accounts."""
+    try:
+        monorepo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        sys.path.insert(0, os.path.join(monorepo_root, "06_scripts_and_tooling/notifications"))
+        from gmail_workspace_client import GmailWorkspaceClient
+        client = GmailWorkspaceClient()
+        account = request.args.get("account")
+        if account:
+            return jsonify(client.check_account_health(account))
+        return jsonify(client.check_all_accounts_health())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/workspace/gmail/inbox", methods=["GET"])
+def get_workspace_gmail_inbox():
+    """Fetches message headers from the inbox over authenticated IMAP."""
+    try:
+        monorepo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        sys.path.insert(0, os.path.join(monorepo_root, "06_scripts_and_tooling/notifications"))
+        from gmail_workspace_client import GmailWorkspaceClient
+        client = GmailWorkspaceClient()
+        account = request.args.get("account")
+        limit = int(request.args.get("limit", 5))
+        query = request.args.get("query", "ALL")
+        return jsonify(client.fetch_inbox(account=account, query=query, limit=limit))
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/workspace/gmail/send", methods=["POST"])
+def send_workspace_email():
+    """Sends an authenticated email via the optimal transport."""
+    try:
+        data = request.get_json() or {}
+        to_addr = data.get("to")
+        subject = data.get("subject")
+        body = data.get("body")
+        if not to_addr or not subject or not body:
+            return jsonify({"error": "Missing required fields: to, subject, body"}), 400
+
+        sender = data.get("sender")
+        html = data.get("html")
+        attachments = data.get("attachments")
+
+        monorepo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        sys.path.insert(0, os.path.join(monorepo_root, "06_scripts_and_tooling/notifications"))
+        from gmail_workspace_client import GmailWorkspaceClient
+        client = GmailWorkspaceClient()
+        result = client.send_email(
+            to=to_addr,
+            subject=subject,
+            body=body,
+            html=html,
+            attachments=attachments,
+            sender=sender
+        )
+        status_code = 200 if result.get("success") else 502
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))
     app.run(host="0.0.0.0", port=port, debug=False)
+

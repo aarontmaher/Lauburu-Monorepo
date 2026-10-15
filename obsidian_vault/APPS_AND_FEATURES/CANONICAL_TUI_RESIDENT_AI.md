@@ -14,7 +14,7 @@ tags: [tui, canonical_tui, resident_ai, mesh_os, terminal_ui, ai_debate, zero_mo
 ## 🌟 1. System Vision & The "Living TUI" Philosophy
 The **Canonical TUI** is the single unified Terminal Operating System for the entire 7-layer Lauburu Mesh Ecosystem. Rather than running a disconnected fleet of standalone terminal scripts, all specialized applications and subsystems are natively synthesized into a high-performance, zero-mock, multi-pane terminal interface.
 
-The **Resident AI** (governed locally by **Qwen 3.8 Max** on Port 8082 via the 10Gbps Thunderbolt 4 DMA bridge) lives directly inside this environment. It acts as:
+The **Resident AI** (governed locally by **Qwen 3.8 Max** on Port 8082 via the 40Gbps Thunderbolt 4 DMA bridge) lives directly inside this environment. It acts as:
 1. **Omniscient Mesh Observer:** Continuously fusing cross-layer telemetry via the in-memory Blackboard Store (`blackboard_store.py`).
 2. **Autonomous Trend & Anomaly Sentinel:** Proactively monitoring host RAM sanctuary headroom ($\ge 4.0\text{ GB}$), TB4 DMA latency ($0.28\text{ ms}$), and biometric cardiac drift.
 3. **Infinite Consensus Moderator:** Conducting live adversarial Red/Blue AI debate rounds and injecting ratified P0 priorities directly into the system.
@@ -27,7 +27,7 @@ The **Resident AI** (governed locally by **Qwen 3.8 Max** on Port 8082 via the 1
 | Key / Index | Subsystem | Module / Source | Capabilities & Zero-Mock Invariant |
 | :---: | :--- | :--- | :--- |
 | **`1` / `c`** | **AGI Terminal** | `screens/agi_coding_terminal_screen.py` | Interactive terminal shell, REPL, Resident AI prompt bar, `/duel`, `/debate`. |
-| **`2` / `n`** | **Network NOC** | `screens/network_screen.py` | 7-layer topology, 10Gbps TB4 DMA bridge (0.28ms), Tailscale WireGuard, Wi-Fi 7. |
+| **`2` / `n`** | **Network NOC** | `screens/network_screen.py` | 7-layer topology, 40Gbps TB4 DMA bridge (0.28ms), Tailscale WireGuard, Wi-Fi 7. |
 | **`3` / `h`** | **Hardware NOC** | `screens/hardware_screen.py` | 7 physical nodes, Apple ANE 16-Core (38 TOPS), Tensor G5 TPU, RAM sanctuary. |
 | **`4` / `b`** | **Medical Biometrics** | `screens/biometrics_screen.py` | Movesense 512Hz ECG, Kamath 20% clinical filter, Zone 2 coach, PTT blood pressure. |
 | **`5` / `i`** | **Model Mesh** | `screens/ai_inference_screen.py` | llama.cpp RPC sharding (Ports 8081-8083), PRP ring parallelism, VRAM pooling. |

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.lauburu.lens.global.optimizer</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/screen_lens_global_optimizer.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Volumes/Lauburu-Monorepo</string>
+
+    <key>StartInterval</key>
+    <integer>3600</integer>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Volumes/Lauburu-Monorepo/logs/screen_lens_global_optimizer.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Volumes/Lauburu-Monorepo/logs/screen_lens_global_optimizer_err.log</string>
+</dict>
+</plist>

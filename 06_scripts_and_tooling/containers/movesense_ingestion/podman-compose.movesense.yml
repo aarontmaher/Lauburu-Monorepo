@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  chromium-web-bluetooth:
+    build:
+      context: ./chromium_web_bluetooth
+      dockerfile: Containerfile
+    container_name: movesense-chromium-web-bluetooth
+    network_mode: host
+    privileged: true
+    volumes:
+      - /run/dbus/system_bus_socket:/run/dbus/system_bus_socket:ro
+      - /sys/class/bluetooth:/sys/class/bluetooth:ro
+      - /dev:/dev
+      - /tmp/movesense_data:/data
+    environment:
+      - PORT=9223
+      - DATA_DIR=/data
+    restart: unless-stopped
+    profiles: ["chromium", "all"]
+
+  go-gatt-browser:
+    build:
+      context: ./go_gatt_browser
+      dockerfile: Containerfile
+    container_name: movesense-go-gatt-browser
+    network_mode: host
+    privileged: true
+    volumes:
+      - /run/dbus/system_bus_socket:/run/dbus/system_bus_socket:ro
+      - /sys/class/bluetooth:/sys/class/bluetooth:ro
+    environment:
+      - PORT=8084
+    restart: unless-stopped
+    profiles: ["go", "all"]
+
+  bluetooth-serial-rfcomm:
+    build:
+      context: ./bluetooth_serial_rfcomm
+      dockerfile: Containerfile
+    container_name: movesense-bluetooth-serial-rfcomm
+    network_mode: host
+    privileged: true
+    volumes:
+      - /run/dbus/system_bus_socket:/run/dbus/system_bus_socket:ro
+      - /dev:/dev
+    environment:
+      - PORT=8089
+      - RFCOMM_DEV=/dev/rfcomm0
+    restart: unless-stopped
+    profiles: ["rfcomm", "all"]

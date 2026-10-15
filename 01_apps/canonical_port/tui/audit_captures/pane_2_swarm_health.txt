@@ -1,0 +1,24 @@
+┌ LAUBURU AUTONOMOUS MESH & HEALTH DASHBOARD (2026) ───────────────────────────┐
+│  [1] 🏆 AI Swarm Leaderboard  │  [2] 🌐 7-Layer Mesh & Protected RAM  │  [3] │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌ 🌐 7-Layer Physical Mesh Hardware Matrix & Pr┐┌ ⚡ Active Network Health Inva┐
+│N  Role / P Temp     Cooling  Batt    RTT     ││Decentralized Consensus: Qwen │
+│L  PROTECTE --       --       --      0.20ms  ││prima.cpp Ring Topology: ONLIN│
+│L  WORKER   --       --       --      --      ││User Workstation (L1):   Host │
+│L  WORKER   --       --       --      8.50ms  ││User Phone (L6 Pixel):   Prote│
+│L  WORKER   --       --       --      --      ││GL.iNet Router (GW):     MT360│
+│L  WORKER   --       --       --      39.20ms ││Cake SQM / BBR Pacing:   Targe│
+│L  PROTECTE --       --       --      7.60ms  ││                              │
+│L  WORKER   --       --       --      12.10ms ││                              │
+│G  ROUTER-1 --       --       --      3.60ms  │└──────────────────────────────┘
+│                                              │┌ 🛠️ 5 Canonical Self-Healing P┐
+│                                              ││Path 0 (Out-of-band WoL): Resu│
+│                                              ││Path 1 (Tailscale Reload): Aut│
+│                                              ││Path 2 (Multi-WAN Radio):  TCP│
+│                                              ││Path 3 (KDE Connect):      Loc│
+│                                              ││Path 4.5/4.75 (USB ADB):   Dir│
+│                                              ││                              │
+│                                              ││                              │
+│                                              ││                              │
+└──────────────────────────────────────────────┘└──────────────────────────────┘
+ [Tab / 1,2,3] Switch Tab  ·  [q] Quit  ·  Leader: Qwen 3.8 Max Sovereign Master

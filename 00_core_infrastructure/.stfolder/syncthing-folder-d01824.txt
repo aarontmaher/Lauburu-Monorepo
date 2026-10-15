@@ -1,0 +1,5 @@
+# This directory is a Syncthing folder marker.
+# Do not delete.
+
+folderID: lauburu-core-infra
+created: 2026-09-30T13:28:28+10:00

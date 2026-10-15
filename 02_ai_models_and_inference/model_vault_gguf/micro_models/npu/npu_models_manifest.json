@@ -1,0 +1,99 @@
+{
+  "nanodraft_10m": {
+    "params_m": 10.3,
+    "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/micro_models/npu/nanodraft_10m_traced.pt",
+    "size_mb": 41.29,
+    "sha256": "85f51a3c214462de0e58525d168ae25b61cc1bc3320671aa35f7f3f14ce90ce0",
+    "input_shape": [
+      1,
+      128
+    ],
+    "output_shape": [
+      1,
+      128,
+      32000
+    ],
+    "target_silicon": [
+      "Apple ANE",
+      "Google Tensor G5 TPU"
+    ]
+  },
+  "grammar_guard_5m": {
+    "params_m": 4.5,
+    "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/micro_models/npu/grammar_guard_5m_traced.pt",
+    "size_mb": 18.08,
+    "sha256": "b32b79f5491878abd4eabebb61428c7e6ddfd6024e8decc247c8f3c356c30b7c",
+    "input_shape": [
+      1,
+      128
+    ],
+    "output_shape": [
+      1,
+      8
+    ],
+    "target_silicon": [
+      "Apple ANE"
+    ]
+  },
+  "edge_embedder_15m": {
+    "params_m": 18.21,
+    "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/micro_models/npu/edge_embedder_15m_traced.pt",
+    "size_mb": 72.94,
+    "sha256": "57a3af2ec323ea8ef304d8d793db9c002b8b902a6f6df97540a7afa96270ee65",
+    "input_shape": [
+      1,
+      128
+    ],
+    "output_shape": [
+      1,
+      384
+    ],
+    "target_silicon": [
+      "Apple ANE"
+    ]
+  },
+  "nanovision_ui_encoder_7m": {
+    "params_m": 0.28,
+    "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/micro_models/npu/nanovision_ui_encoder_7m_traced.pt",
+    "size_mb": 1.23,
+    "sha256": "30d163e0190c589c5c02e3d0737e551a53b405bc13c9857ca1be4ba00f714890",
+    "input_shape": [
+      1,
+      3,
+      256,
+      256
+    ],
+    "output_shape": [
+      1,
+      64,
+      128
+    ],
+    "target_silicon": [
+      "Google Tensor G5 TPU",
+      "Apple ANE"
+    ],
+    "rated_latency_ms": 7.4,
+    "gpu_load_pct": 0.0
+  },
+  "nanoaction_decoder_8m": {
+    "params_m": 0.81,
+    "file": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/micro_models/npu/nanoaction_decoder_8m_traced.pt",
+    "size_mb": 3.21,
+    "sha256": "cfbafeeda66757ddfa1a99d5ab3a5f1913e9477fbf6c9596bc94764a42116dc3",
+    "input_shape": [
+      1,
+      64,
+      128
+    ],
+    "output_shape": [
+      1,
+      12
+    ],
+    "target_silicon": [
+      "Apple ANE",
+      "Google Tensor G5 TPU"
+    ],
+    "rated_latency_ms": 0.72,
+    "gpu_load_pct": 0.0
+  }
+}

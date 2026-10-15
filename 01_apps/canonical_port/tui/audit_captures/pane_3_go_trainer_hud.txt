@@ -1,0 +1,24 @@
+╭───────────────────────────────────────────────────────────────────────────────
+│
+│   🌐 LAUBURU CONTINUOUS POLYGLOT TRAINER (TUI, CLI & POLYGLOT)
+│  ⣟  Cycle: 1909 | Samples: 38139 | TUI: 13980 | CLI: 4370 | Polyglot: 15869
+│  ELO Ratings: Qwen 3.8 Max: 1640 | Abliterated: 1625 | Qwen 2.5 Coder: 1580
+│
+│  TASK ID            DOMAIN               LANG     COMPILER     LATENCY
+│                                                                          ─────
+│  POLY_GO_SYSTEMS_02 polyglot_go_systems  go       PASSED         156.17ms
+│  POLY_DART_FLUTTER_01 polyglot_dart_flutter dart     PASSED         123.22ms
+│  POLY_KOTLIN_ANDROID_01 polyglot_kotlin_android kotlin   PASSED           0.00
+│  POLY_SWIFT_METAL_01 polyglot_swift_metal swift    PASSED         114.97ms
+│  POLY_TS_WEBSOCKET_01 polyglot_ts_web      typescript PASSED         684.60ms
+│  POLY_PYTHON_DSP_01 polyglot_python_dsp  python   PASSED          34.68ms
+│  POLY_C11_POSIX_NET_01 polyglot_c11_posix   c        PASSED          44.98ms
+│  POLY_RUST_WGPU_02  polyglot_rust_wgpu   wgsl     PASSED           0.00ms
+│  POLY_RUST_WGPU_01  polyglot_rust_wgpu   rust_wgpu PASSED         149.05ms
+│  TUI_KOTLIN_MORDANT_01 tui_kotlin_mordant   kotlin   PASSED           0.00ms
+│  TUI_SWIFT_TERMINAL_01 tui_swift_terminal   swift    PASSED         122.75ms
+│  TUI_DART_CONSOLE_01 tui_dart_console     dart     PASSED         129.70ms
+│
+│  Press 'q' or Ctrl+C to exit. Continuous training active across Tri-Vault stor
+│
+╰───────────────────────────────────────────────────────────────────────────────

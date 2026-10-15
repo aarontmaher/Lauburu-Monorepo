@@ -1,0 +1,74 @@
+# ==============================================================================
+# SeaweedFS Filer Hardware Affinity & Storage Configuration
+# Lauburu Monorepo — 7-Layer Mesh Ecosystem (Requirement R3)
+# ==============================================================================
+# Governs physical node affinity behind the scenes while maintaining a unified
+# conceptual project tree across the 7-Layer physical mesh:
+# - Heavy datasets (*.parquet, *.jsonl, lora_datasets/, biometrics_lake/)
+#     -> L3 Linux Hub (collection: heavy_datasets, dataCenter: L3_Linux)
+# - Vector context (qdrant_data/, *.lance, *.index, kv_cache/)
+#     -> L4/L6 Edge NPUs (collection: vector_context, dataCenter: L6_Edge)
+# - Active Git source & IDE buffers (.git/, 01_apps/, *.py, *.dart, *.rs)
+#     -> L1 Mac Host (collection: git_source, dataCenter: L1_Mac)
+# ==============================================================================
+
+[filer.options]
+# Recursive directory delete limit
+recursive_delete = true
+
+# ==============================================================================
+# Hardware Affinity Rules: Regex Path-to-DataCenter Placement
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Rule 1: Heavy Datasets -> L3 Linux Hub (AMD Ryzen 7 5700U, NVMe/SSD)
+# Preserves Mac Mini (L1) Sanctuary RAM (Rule 3) and offloads compute to L3 (Rule 10).
+# ------------------------------------------------------------------------------
+[rule.heavy_datasets]
+path = "^/(lora_datasets|biometrics_lake|delta_tables|pyspark_analytics|04_data_and_memory/(biometrics_lake|delta_tables|lora_datasets)|.*\\.(parquet|jsonl|arrow|feather|orc|tar\\.gz|h5|hdf5|bin))(/.*)?$"
+collection = "heavy_datasets"
+replication = "000"
+dataCenter = "L3_Linux"
+rack = "Rack1"
+
+# ------------------------------------------------------------------------------
+# Rule 2: Vector Context & Embedding Indices -> L4/L6 Edge NPUs (Pixel 10 Pro XL / Linux Tablet)
+# Accelerated systolic vector dot-products on Google Tensor G5 TPU & Edge NPU.
+# ------------------------------------------------------------------------------
+[rule.vector_context]
+path = "^/(qdrant_data|kv_cache|vector_db|embeddings|04_data_and_memory/qdrant_data|.*\\.(lance|index|faiss|hnsw|sqlite-wal|ann))(/.*)?$"
+collection = "vector_context"
+replication = "000"
+dataCenter = "L6_Edge"
+rack = "Rack_Mobile"
+
+# ------------------------------------------------------------------------------
+# Rule 3: Git Source Code & Active IDE Working Tree -> L1 Mac Host (Apple M4 Pro)
+# Sub-millisecond AST parsing, linting, and compile passes on local PCIe 4.0 NVMe.
+# ------------------------------------------------------------------------------
+[rule.git_source]
+path = "^/(Lauburu-Monorepo/)?(00_core_infrastructure|01_apps|02_ai_models_and_inference|03_biometrics_and_telemetry|05_agents_and_swarms|06_scripts_and_tooling|07_docs_and_architecture|teamwork_projects|\\.git|gateway|core|tests|.*\\.(py|dart|rs|ts|js|tsx|jsx|c|cpp|h|hpp|go|sh|bash|zsh|toml|json|yaml|yml|md|txt|html|css|swift|kt))(/.*)?$"
+collection = "git_source"
+replication = "000"
+dataCenter = "L1_Mac"
+rack = "Rack1"
+
+# ------------------------------------------------------------------------------
+# Rule 4: Default Fallback -> L1 Mac Host
+# Any unspecified file defaults to local workspace NVMe.
+# ------------------------------------------------------------------------------
+[rule.default_fallback]
+path = ".*"
+collection = "git_source"
+replication = "000"
+dataCenter = "L1_Mac"
+rack = "Rack1"
+
+# ==============================================================================
+# Filer Metadata Store Configuration
+# ==============================================================================
+
+# Embedded LevelDB2 for fast local metadata operations
+[leveldb2]
+enabled = true
+dir = "/Users/aaron/.local/var/seaweedfs/filerldb2"

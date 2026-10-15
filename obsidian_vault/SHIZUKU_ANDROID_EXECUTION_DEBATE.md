@@ -317,6 +317,6 @@ flowchart TD
   - Phantom Process Killer: `settings put global settings_enable_monitor_phantom_procs false` (CONFIRMED `false`).
   - AppOps Permissions: `cmd appops set com.termux RUN_IN_BACKGROUND allow` (CONFIRMED).
   - TCP/IP Mode Listener: `setprop service.adb.tcp.port 5555` (CONFIRMED).
-- **Device Telemetry**: Battery 90% (28.5°C, USB Powered: True), Uptime verified, IP routes `wlan0: 192.168.8.135`, `tun0: 100.84.40.95`, `rndis0: 10.183.224.166`.
-- **24/7 LoRA Memory Dataset**: Synced with Alpaca/ShareGPT/ChatML format in `/Users/aaron/DFS_UNIFIED/lora_datasets/` (`truth_audit_debate.jsonl`, `architectural_decisions.jsonl`, `continuous_lora_dataset.jsonl`).
+- **Device Telemetry**: Battery 90% (28.5°C, USB Powered: True), Uptime verified, IP routes `wlan0: 192.168.8.135`, `tun0: 100.78.206.96`, `rndis0: 10.183.224.166`.
+- **24/7 LoRA Memory Dataset**: Synced with Alpaca/ShareGPT/ChatML format in `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/` (`truth_audit_debate.jsonl`, `architectural_decisions.jsonl`, `continuous_lora_dataset.jsonl`).
 - **Zero-Mock Empirical Status**: VERIFIED LIVE 100% via programmatic Python test suite over router USB.

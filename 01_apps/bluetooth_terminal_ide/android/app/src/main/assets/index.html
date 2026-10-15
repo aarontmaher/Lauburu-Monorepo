@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>⚡ Lauburu Bluetooth Terminal IDE</title>
+  <style>
+    :root {
+      --bg-dark: #090C10;
+      --surface: #161B22;
+      --surface-border: #30363D;
+      --term-green: #00E676;
+      --term-cyan: #38BDF8;
+      --term-yellow: #FACC15;
+      --term-purple: #C084FC;
+      --term-red: #EF4444;
+      --text-main: #F0F6FC;
+      --text-muted: #8B949E;
+      --font-mono: "JetBrains Mono", "Roboto Mono", "Courier New", monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Top Action Bar (Kai Morich Style) */
+    .top-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--surface-border);
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 11px;
+    }
+    .top-bar-left, .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .app-title {
+      font-weight: 800;
+      color: var(--term-cyan);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      letter-spacing: 0.5px;
+    }
+    .status-badge {
+      background: #0D1117;
+      border: 1px solid var(--surface-border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+    .badge-green { color: var(--term-green); border-color: rgba(0, 230, 118, 0.4); }
+    .badge-cyan { color: var(--term-cyan); border-color: rgba(56, 189, 248, 0.4); }
+    .badge-yellow { color: var(--term-yellow); border-color: rgba(250, 204, 21, 0.4); }
+
+    .btn-top {
+      background: #21262D;
+      color: var(--text-main);
+      border: 1px solid var(--surface-border);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-top:active { background: #30363D; }
+
+    @keyframes pulseCyan {
+      0% { box-shadow: 0 0 4px rgba(56, 189, 248, 0.4); }
+      50% { box-shadow: 0 0 14px rgba(56, 189, 248, 0.85); }
+      100% { box-shadow: 0 0 4px rgba(56, 189, 248, 0.4); }
+    }
+    .btn-voice-active {
+      background: rgba(56, 189, 248, 0.15) !important;
+      border-color: var(--term-cyan) !important;
+      color: var(--term-cyan) !important;
+      animation: pulseCyan 1.4s infinite ease-in-out;
+    }
+    .btn-voice-executing {
+      background: rgba(250, 204, 21, 0.2) !important;
+      border-color: var(--term-yellow) !important;
+      color: var(--term-yellow) !important;
+    }
+
+    /* Nav Tabs */
+    .nav-tabs {
+      background: #0D1117;
+      border-bottom: 1px solid var(--surface-border);
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .nav-tab {
+      padding: 8px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-tab.active {
+      color: var(--term-cyan);
+      border-bottom: 2px solid var(--term-cyan);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    /* Main Viewport */
+    .viewport {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    .view-panel {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .view-panel.active {
+      display: flex;
+    }
+
+    /* View 1: Terminal Console */
+    #term-log {
+      flex: 1;
+      background: #000000;
+      color: #D1D5DB;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.45;
+      padding: 10px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .line-rx { color: var(--term-cyan); }
+    .line-tx { color: var(--term-green); }
+    .line-sys { color: var(--term-yellow); }
+    .line-err { color: var(--term-red); }
+    .line-time { color: #4B5563; font-size: 10px; margin-right: 6px; }
+
+    /* Macro Deck (M1-M10 Kai Morich Style) */
+    .macro-deck {
+      background: var(--surface);
+      border-top: 1px solid var(--surface-border);
+      border-bottom: 1px solid var(--surface-border);
+      padding: 4px 6px;
+      display: flex;
+      overflow-x: auto;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .btn-macro {
+      background: #21262D;
+      border: 1px solid var(--surface-border);
+      color: var(--term-cyan);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 4px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .btn-macro:active {
+      background: var(--term-cyan);
+      color: #000;
+    }
+
+    /* Bottom Input Bar */
+    .bottom-bar {
+      background: var(--surface);
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .input-cmd {
+      flex: 1;
+      background: #0D1117;
+      border: 1px solid var(--surface-border);
+      color: #FFF;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      outline: none;
+    }
+    .input-cmd:focus { border-color: var(--term-cyan); }
+    .btn-send {
+      background: var(--term-cyan);
+      color: #000;
+      border: none;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-send:active { background: #0284C7; }
+
+    /* View 2: AI Debate */
+    .debate-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .debate-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 6px;
+      padding: 12px;
+    }
+    .debate-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .debate-body {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #D1D5DB;
+      white-space: pre-wrap;
+      line-height: 1.4;
+      background: #0D1117;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #21262D;
+    }
+
+    /* View 3: Screen Lens */
+    .lens-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .camera-box {
+      width: 100%;
+      max-width: 500px;
+      background: #000;
+      border: 1px solid var(--surface-border);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+      min-height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #lens-video {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+    }
+
+    /* View 4: Offline IDE */
+    .ide-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 10px;
+      gap: 8px;
+    }
+    .ide-search-bar {
+      display: flex;
+      gap: 6px;
+    }
+    .ide-split {
+      flex: 1;
+      display: flex;
+      gap: 8px;
+      overflow: hidden;
+    }
+    .ide-results {
+      width: 38%;
+      background: #0D1117;
+      border: 1px solid var(--surface-border);
+      border-radius: 6px;
+      overflow-y: auto;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .rag-hit-card {
+      background: #161B22;
+      border: 1px solid #30363D;
+      padding: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .rag-hit-card:hover { border-color: var(--term-cyan); }
+    .rag-hit-title { font-weight: 700; color: var(--term-cyan); margin-bottom: 3px; }
+    .rag-hit-snippet { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); }
+    .ide-editor {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #0D1117;
+      border: 1px solid var(--surface-border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .editor-header {
+      background: #161B22;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--surface-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #editor-code {
+      flex: 1;
+      background: transparent;
+      color: #E6EDF3;
+      border: none;
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      resize: none;
+      outline: none;
+      white-space: pre;
+    }
+
+    /* View 5: Config */
+    .config-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action Bar (Kai Morich Inspired) -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span class="app-title">⚡ LAUBURU BT IDE</span>
+      <span class="status-badge badge-green" id="badge-bt">BT: READY</span>
+      <span class="status-badge badge-cyan" id="badge-engine">PRIMA: :8082</span>
+      <span class="status-badge badge-green" id="badge-db">DB: CONNECTED</span>
+      <span class="status-badge badge-green" id="badge-autoroute">AUTO-ROUTE: ACTIVE</span>
+      <span class="status-badge badge-yellow" id="badge-mode">TEXT (ASCII)</span>
+    </div>
+    <div class="top-bar-right">
+      <button class="btn-top" id="btn-voice-top" onclick="toggleVoice()" title="Toggle Hands-Free Voice Coding (Alt+V)">🎙️ VOICE: OFF</button>
+      <button class="btn-top" onclick="toggleHexMode()">HEX/TXT</button>
+      <button class="btn-top" onclick="toggleAutoScroll()" id="btn-scroll">SCROLL: ON</button>
+      <button class="btn-top" onclick="clearTerminal()">CLEAR</button>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="nav-tabs">
+    <div class="nav-tab active" data-tab="tab-terminal" onclick="switchTab('tab-terminal')">📟 TERMINAL</div>
+    <div class="nav-tab" data-tab="tab-canonical-tui" onclick="switchTab('tab-canonical-tui')">👑 CANONICAL TUI</div>
+    <div class="nav-tab" data-tab="tab-mesh" onclick="switchTab('tab-mesh')">🌐 MESH MAP</div>
+    <div class="nav-tab" data-tab="tab-storage" onclick="switchTab('tab-storage')">💾 STORAGE</div>
+    <div class="nav-tab" data-tab="tab-chat" onclick="switchTab('tab-chat')">💬 CHAT</div>
+    <div class="nav-tab" data-tab="tab-movesense" onclick="switchTab('tab-movesense')">🫀 MOVESENSE</div>
+    <div class="nav-tab" data-tab="tab-debate" onclick="switchTab('tab-debate')">🧠 AI DEBATE</div>
+    <div class="nav-tab" data-tab="tab-lens" onclick="switchTab('tab-lens')">👁️ SCREEN LENS</div>
+    <div class="nav-tab" data-tab="tab-config" onclick="switchTab('tab-config')">⚙️ ENGINES</div>
+  </div>
+
+  <!-- Viewport -->
+  <div class="viewport">
+
+    <!-- View 1: Terminal Console -->
+    <div class="view-panel active" id="tab-terminal">
+      <div id="term-log"></div>
+      
+      
+
+      <!-- Input Bar -->
+      <div class="bottom-bar">
+        <button id="btn-voice" class="btn-top" onclick="toggleVoice()" style="margin-right: 4px;" title="Toggle Hands-Free Voice Coding (Alt+V)">🎙️</button>
+        <input type="text" class="input-cmd" id="input-cmd" placeholder="Ask AI, speak directive (Alt+V), or run command..." onkeydown="handleKeyDown(event)">
+        <button class="btn-send" onclick="submitCommand()">SEND</button>
+      </div>
+    </div>
+
+    <!-- View: Canonical Master TUI & Living Resident AI -->
+    <div class="view-panel" id="tab-canonical-tui" style="display:none; flex-direction:column; flex:1; overflow:hidden; background:#070b12;">
+      <!-- Canonical Top HUD -->
+      <div style="background:#0d1117; border-bottom:1px solid var(--surface-border); padding:8px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-weight:800; color:var(--term-yellow); font-size:12px;">👑 CANONICAL MASTER TUI OS</span>
+          <span class="status-badge badge-green">16 SCREENS ACTIVE</span>
+          <span class="status-badge badge-cyan">RESIDENT AI: QWEN 3.8 MAX (:8082)</span>
+          <span class="status-badge badge-yellow">ACCORD: 99.98%</span>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-top" onclick="fetchCanonicalTuiState()">🔄 SYNC STATE</button>
+          <button class="btn-top" onclick="sendTerminalCommand('tui')">📜 TUI AUDIT</button>
+        </div>
+      </div>
+
+      <!-- Quick Screen Switcher -->
+      <div style="background:#161b22; border-bottom:1px solid var(--surface-border); padding:6px 10px; display:flex; overflow-x:auto; gap:6px; white-space:nowrap; font-size:11px;">
+        <button class="btn-macro" onclick="sendTerminalCommand('c')">[1] AGI Term</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('n')">[2] Net NOC</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('h')">[3] HW NOC</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('b')">[4] Biometrics</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('i')">[5] Model Mesh</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('t')">[6] LoRA Train</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('g')">[7] AI Debate</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('s')">[8] Tooling</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('o')">[9] Pareto Opt</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('k')">[K] 3D Grapple</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('d')">[D] SmolDuel</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('$')">[$] Store</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('v')">[L] Arena Dev</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('e')">[E] Vault</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('a')">[A] All Tabs</button>
+        <button class="btn-macro" onclick="sendTerminalCommand('B')" style="color:var(--term-yellow); border-color:var(--term-yellow);">[B] BT Term</button>
+      </div>
+
+      <!-- Live Canonical TUI Output / Terminal Frame Viewport -->
+      <div id="canonical-tui-viewport" style="flex:1; background:#000000; color:#00e676; font-family:var(--font-mono); font-size:11px; padding:12px; overflow-y:auto; white-space:pre-wrap; line-height:1.4;">
+=== 👑 LAUBURU CANONICAL TUI & LIVING RESIDENT AI OS ===
+• Physical Base: Sovereign Bluetooth Terminal (RFCOMM / BLE NUS / Virtual PTY)
+• Master Local Orchestrator: Qwen 3.8 Max (:8082) via 10Gbps TB4 DMA Bridge
+• Red Team Adversarial Sentinel: Qwen 3.8 Max 27B Abliterated (:8083)
+• Bluetooth Serial Wire: Strict CRLF (\r\n) • 128-Byte UART Slices • Anti-Staircasing
+• PTY Symlink: /tmp/bluetooth_terminal_pty
+• ANSI Stream: /tmp/bluetooth_terminal_stream.ansi
+
+Click any screen button above or type a command in the TERMINAL tab to interact directly.
+      </div>
+    </div>
+
+    <!-- View: Movesense -->
+    <div class="view-panel" id="tab-movesense">
+      <div style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:12px;">
+        
+        <!-- Header & Hardware Status Card -->
+        <div class="card" style="border: 1px solid var(--border-color); border-radius: 8px;">
+          <div style="background: var(--surface-hover); padding: 8px 12px; font-weight: bold; color: var(--term-red); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span>🫀 Movesense Medical ECG & Zone 2 Hub</span>
+              <span style="font-size:10px; background:rgba(0,255,136,0.15); color:var(--term-green); border:1px solid var(--term-green); border-radius:3px; padding:2px 6px;">ZERO-MOCK</span>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button onclick="startMovesense()" style="background:var(--term-green); border:none; color:black; padding:4px 10px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:11px;">CONNECT</button>
+              <button onclick="pollMovesense()" style="background:var(--surface); border:1px solid var(--border-color); color:var(--text); padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:11px;">REFRESH</button>
+            </div>
+          </div>
+          <div style="padding: 10px 12px; font-family: monospace; font-size: 12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <div>Status: <span id="ms-status" style="color:var(--term-yellow); font-weight:bold;">OFFLINE</span></div>
+              <div id="ms-stream-rate" style="color:var(--text-secondary); font-size:11px;">GATT 0x180D | 512 Hz Sampling</div>
+            </div>
+            <div style="color:var(--text-secondary); font-size:11px; display:flex; justify-content:space-between;">
+              <span>Device: <span id="ms-device-name" style="color:var(--term-cyan);">Movesense MD / Medical</span></span>
+              <span>Telemetry: <span id="ms-beats-total" style="color:var(--term-purple);">0 beats</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Anatomical Placement Auto-Detection Card -->
+        <div class="card" style="border: 1px solid var(--term-cyan); border-radius: 8px;">
+          <div style="background: rgba(0,229,255,0.08); padding: 8px 12px; font-weight: bold; color: var(--term-cyan); border-bottom: 1px solid var(--term-cyan); display: flex; justify-content: space-between; align-items: center;">
+            <span>📍 Dynamic Anatomical Placement Classifier</span>
+            <span id="ms-placement-badge" style="font-size:11px; background:var(--term-cyan); color:black; padding:2px 8px; border-radius:12px; font-weight:bold;">🫀 CHEST STRAP</span>
+          </div>
+          <div style="padding: 10px 12px; font-family: monospace; font-size: 12px; display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--text-secondary);">Classification Confidence:</span>
+              <span id="ms-placement-conf" style="color:var(--term-green); font-weight:bold;">94.2%</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--text-secondary);">Active DSP Filter Profile:</span>
+              <span id="ms-dsp-profile" style="color:var(--term-yellow); font-weight:bold;">Thoracic Sternal ECG (Lead II Vector)</span>
+            </div>
+            <div style="font-size:11px; color:var(--text-secondary); background:var(--surface); padding:6px 8px; border-radius:4px; border:1px solid var(--border-color);">
+              <span style="color:var(--text);">DSP Rationale:</span> <span id="ms-placement-rationale">High R-wave signal-to-noise ratio (>1.8mV), sternal axis orientation, standard Thoracic Lead II vector selected.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-Time Biometrics Grid -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div style="background: var(--surface); padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+            <div style="color:var(--text-secondary); font-size: 11px;">❤️ Heart Rate & Zone</div>
+            <div id="ms-hr" style="font-size: 22px; color:var(--term-purple); font-weight:bold; margin: 4px 0;">-- bpm</div>
+            <div id="ms-zone" style="font-size: 11px; color:var(--term-green); font-weight:bold;">Zone 2 (Aerobic Base)</div>
+          </div>
+          <div style="background: var(--surface); padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+            <div style="color:var(--text-secondary); font-size: 11px;">⚡ DFA-&alpha;1 (Threshold)</div>
+            <div id="ms-dfa" style="font-size: 22px; color:var(--term-blue); font-weight:bold; margin: 4px 0;">--</div>
+            <div id="ms-dfa-state" style="font-size: 11px; color:var(--text-secondary);">Target: 0.75 - 1.00</div>
+          </div>
+          <div style="background: var(--surface); padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+            <div style="color:var(--text-secondary); font-size: 11px;">🌿 RMSSD (Vagal Tone)</div>
+            <div id="ms-rmssd" style="font-size: 20px; color:var(--term-green); font-weight:bold; margin: 4px 0;">-- ms</div>
+            <div style="font-size: 11px; color:var(--text-secondary);">Parasympathetic index</div>
+          </div>
+          <div style="background: var(--surface); padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+            <div style="color:var(--text-secondary); font-size: 11px;">📡 Signal Quality (SQI)</div>
+            <div id="ms-sqi" style="font-size: 20px; color:var(--term-yellow); font-weight:bold; margin: 4px 0;">--%</div>
+            <div id="ms-sqi-status" style="font-size: 11px; color:var(--text-secondary);">Authentic 512Hz stream</div>
+          </div>
+        </div>
+
+        <!-- TinyML Trend Finding Panel -->
+        <div class="card" style="border: 1px solid var(--border-color); border-radius: 8px;">
+          <div style="background: var(--surface-hover); padding: 8px 12px; font-weight: bold; color: var(--term-yellow); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <span>📈 TinyML Physiological Trends & Recovery</span>
+            <span style="font-size:10px; color:var(--text-secondary);">60-Beat Window</span>
+          </div>
+          <div style="padding: 10px 12px; font-family: monospace; font-size: 12px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+              <div style="background: var(--surface); padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border-color);">
+                <div style="color:var(--text-secondary); font-size: 10px;">Cardiac Drift (PW:HR)</div>
+                <div id="ms-drift" style="color:var(--term-purple); font-weight:bold; font-size:14px;">0.00%</div>
+              </div>
+              <div style="background: var(--surface); padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border-color);">
+                <div style="color:var(--text-secondary); font-size: 10px;">Recovery Rate (&tau;)</div>
+                <div id="ms-tau" style="color:var(--term-green); font-weight:bold; font-size:14px;">-- s</div>
+              </div>
+              <div style="background: var(--surface); padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border-color);">
+                <div style="color:var(--text-secondary); font-size: 10px;">&alpha;1 Fatigue Slope</div>
+                <div id="ms-alpha-slope" style="color:var(--term-blue); font-weight:bold; font-size:14px;">0.0000 /min</div>
+              </div>
+              <div style="background: var(--surface); padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border-color);">
+                <div style="color:var(--text-secondary); font-size: 10px;">Ectopic Density</div>
+                <div id="ms-ectopic" style="color:var(--term-red); font-weight:bold; font-size:14px;">0.0 /min</div>
+              </div>
+            </div>
+            <div style="color:var(--text-secondary); font-size: 10px; margin-bottom: 4px;">Kamath 20% Filtered RR Intervals (ms):</div>
+            <div id="ms-rr" style="background: var(--surface); padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border-color); color:var(--text); word-wrap: break-word; font-size: 11px; max-height: 48px; overflow-y: auto;">[]</div>
+          </div>
+        </div>
+
+        <!-- Bio Local AI Model Integration Card -->
+        <div class="card" style="border: 1px solid var(--term-purple); border-radius: 8px;">
+          <div style="background: rgba(187,134,252,0.1); padding: 8px 12px; font-weight: bold; color: var(--term-purple); border-bottom: 1px solid var(--term-purple); display: flex; justify-content: space-between; align-items: center;">
+            <span>🧠 Sovereign Bio Local AI Consultation</span>
+            <button onclick="consultMovesenseAI()" style="background:var(--term-purple); border:none; color:black; padding:4px 10px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:11px;">CONSULT LOCAL AI</button>
+          </div>
+          <div style="padding: 10px 12px; font-family: monospace; font-size: 12px;">
+            <div id="ms-ai-status" style="color:var(--text-secondary); font-size:11px; margin-bottom:8px; display:flex; justify-content:space-between;">
+              <span>Model: <span id="ms-ai-model" style="color:var(--term-cyan);">Qwen 3.8 Max (PRP TB4 Ring :8082)</span></span>
+              <span id="ms-ai-cost" style="color:var(--term-green);">$0.00 Local (0 Cloud Tokens)</span>
+            </div>
+            <div id="ms-ai-assessment" style="background:var(--surface); border:1px solid var(--border-color); border-radius:6px; padding:10px; display:flex; flex-direction:column; gap:6px; line-height:1.4;">
+              <div style="color:var(--term-green); font-weight:bold;">🫀 Autonomous Biometric Interpretation:</div>
+              <div id="ms-ai-bullet-1">• Cardiac Rhythm: Normal Sinus Rhythm confirmed via Pan-Tompkins QRS peak morphology.</div>
+              <div id="ms-ai-bullet-2">• Autonomic Tone: Parasympathetic vagal tone stable; RMSSD within baseline endurance window.</div>
+              <div id="ms-ai-bullet-3">• Metabolic Zone: DFA-&alpha;1 in optimal aerobic Zone 2 recovery threshold.</div>
+              <div id="ms-ai-bullet-4">• Placement: Thoracic lead verified with high SNR; zero electrode contact artifacts.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    
+    <!-- View: Mesh Map -->
+    <div class="view-panel" id="tab-mesh" style="display:none; padding:12px; overflow-y:auto; height:calc(100vh - 120px);">
+      <div class="card" style="border: 1px solid var(--term-cyan); border-radius: 8px;">
+        <div style="background: var(--term-cyan); color: black; padding: 8px; font-weight: bold; display: flex; justify-content: space-between;">
+          <span>🌐 7-Layer Mesh Topology</span>
+          <button onclick="pollMesh()" style="background: black; color: var(--term-cyan); border: 1px solid var(--term-cyan); border-radius: 4px; cursor: pointer;">REFRESH</button>
+        </div>
+        <div id="mesh-nodes-container" style="padding: 10px; display: flex; flex-direction: column; gap: 8px; font-size: 12px; font-family: monospace;">
+          Loading topology...
+        </div>
+      </div>
+    </div>
+
+    <!-- View: Storage -->
+    <div class="view-panel" id="tab-storage" style="display:none; padding:12px; overflow-y:auto; height:calc(100vh - 120px);">
+      <div class="card" style="border: 1px solid var(--term-green); border-radius: 8px;">
+        <div style="background: var(--term-green); color: black; padding: 8px; font-weight: bold; display: flex; justify-content: space-between;">
+          <span>🏛️ Tri-Vault Storage Health</span>
+          <button onclick="healStorage()" style="background: var(--term-red); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">SELF-HEAL</button>
+        </div>
+        <div id="storage-status-container" style="padding: 10px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; font-family: monospace;">
+          Loading storage health...
+        </div>
+      </div>
+    </div>
+
+    <!-- View: Chat -->
+    <div class="view-panel" id="tab-chat">
+      <div id="chat-history" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;"></div>
+      <div class="bottom-bar">
+        <button id="btn-voice-chat" class="btn-top" onclick="toggleVoiceChat()" style="margin-right: 4px;">🎤</button>
+        <input type="text" class="input-cmd" id="input-chat" placeholder="Chat with AI..." onkeydown="if(event.key==='Enter') submitChat()">
+        <button class="btn-send" onclick="submitChat()">SEND</button>
+      </div>
+    </div>
+
+    <!-- View 2: AI Debate Council -->
+    <div class="view-panel" id="tab-debate">
+      <div class="debate-container">
+        <div class="debate-card">
+          <div class="debate-card-header">
+            <span>⚔️ TRI-ORCHESTRATOR DELIBERATION TOPIC</span>
+            <button class="btn-top" onclick="triggerDebateFromInput()">RUN DEBATE</button>
+          </div>
+          <input type="text" class="input-cmd" id="debate-topic-input" style="width: 100%;" value="Decentralized prima.cpp Pipelined-Ring Sharding vs llama.cpp RPC over 10Gbps Thunderbolt 4 DMA">
+        </div>
+
+        <div id="debate-results-container" style="display: flex; flex-direction: column; gap: 10px;">
+          <div class="debate-card">
+            <div class="debate-card-header" style="color: var(--term-cyan);">
+              <span>ROUND 1: LOCAL MASTER (QWEN 3.8 MAX @ PRIMA.CPP :8082)</span>
+            </div>
+            <div class="debate-body" id="debate-r1">Ready for debate initiation. Defaulting to local prima.cpp ring.</div>
+          </div>
+
+          <div class="debate-card">
+            <div class="debate-card-header" style="color: var(--term-red);">
+              <span>ROUND 2: DEVIL'S ADVOCATE (QWEN 3.8 MAX 27B ABLITERATED :8083)</span>
+            </div>
+            <div class="debate-body" id="debate-r2">Awaiting proposition to critique.</div>
+          </div>
+
+          <div class="debate-card">
+            <div class="debate-card-header" style="color: var(--term-yellow);">
+              <span>ROUND 3: CLOUD SHADOW ORCHESTRATOR (GEMINI 3.8 FLASH)</span>
+            </div>
+            <div class="debate-body" id="debate-r3">Standing by for synthesis.</div>
+          </div>
+
+          <div class="debate-card" style="border-color: var(--term-green);">
+            <div class="debate-card-header" style="color: var(--term-green);">
+              <span>🏆 SYNTHESIZED CONSENSUS VERDICT (THRESHOLD: >0.98)</span>
+              <button class="btn-top" onclick="injectDebateToTerminal()">INJECT TO TERMINAL</button>
+            </div>
+            <div class="debate-body" id="debate-consensus" style="color: #A7F3D0;">Consensus pending.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View 3: Screen Lens -->
+    <div class="view-panel" id="tab-lens">
+      <div class="lens-container">
+        <div class="camera-box">
+          <video id="lens-video" autoplay playsinline muted></video>
+        </div>
+        <div style="display: flex; gap: 8px; width: 100%; max-width: 500px;">
+          <button class="btn-send" style="flex: 1;" onclick="startLensCamera()">📷 START CAMERA</button>
+          <button class="btn-send" style="flex: 1; background: var(--term-yellow);" onclick="captureLensFrame()">⚡ CAPTURE OCR</button>
+        </div>
+        <div style="display: flex; gap: 6px; width: 100%; max-width: 500px;">
+          <button class="btn-top" style="flex: 1;" onclick="loadSampleLens('code')">💡 LOAD SAMPLE CODE</button>
+          <button class="btn-top" style="flex: 1;" onclick="loadSampleLens('error')">⚠️ LOAD SAMPLE ERROR</button>
+        </div>
+        <div class="debate-card" style="width: 100%; max-width: 500px;">
+          <div class="debate-card-header">
+            <span>👁️ EXTRACTED TERMINAL TEXT / DIAGNOSTIC</span>
+            <div style="display: flex; gap: 4px;">
+              <button class="btn-top" onclick="injectLensToTerminal()">TERMINAL</button>
+              <button class="btn-top" onclick="injectLensToScratchpad()">SCRATCHPAD</button>
+            </div>
+          </div>
+          <div class="debate-body" id="lens-output" style="max-height: 200px; overflow-y: auto;">
+            Lens standby. Point camera at code, screen, or error message to extract text.
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- View 5: Config & Engines -->
+    <div class="view-panel" id="tab-config">
+      <div class="config-container">
+        <div class="debate-card" style="margin-top: 10px;">
+          <div class="debate-card-header"><span>🌐 CLOUD ESCALATION GATEWAYS</span></div>
+          <div style="padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+             <label><input type="checkbox" id="chk-openrouter"> Enable OpenRouter Cloud Fallback</label>
+             <label><input type="checkbox" id="chk-cloudflare"> Enable Cloudflare AI Gateway</label>
+             
+          </div>
+        </div>
+
+        <div class="debate-card">
+          <div class="debate-card-header"><span>⚙️ SOVEREIGN INFERENCE ENGINE MATRIX</span></div>
+          <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">
+            Defaults to prima.cpp decentralized ring sharding over 10Gbps Thunderbolt 4 DMA.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px;">
+            <label><input type="radio" name="engine" value="prima" checked> prima.cpp Master Local (:8082) [DEFAULT]</label>
+            <label><input type="radio" name="engine" value="llama"> llama.cpp Syntax Worker (:8081)</label>
+            <label><input type="radio" name="engine" value="devils"> Qwen 27B Abliterated Red Team (:8083)</label>
+          </div>
+        </div>
+
+        <div class="debate-card">
+          <div class="debate-card-header"><span>📡 SERIAL BLUETOOTH / RFCOMM EMULATION</span></div>
+          <div style="display: flex; flex-direction: column; gap: 6px; font-size: 11px; color: var(--text-muted);">
+            <div>Baud Rate: <strong>115,200 baud (8N1)</strong></div>
+            <div>SPP Service UUID: <code>00001101-0000-1000-8000-00805F9B34FB</code></div>
+            <div>BLE NUS UUID: <code>6E400001-B5A3-F393-E0A9-E50E24DCCA9E</code></div>
+            <div>Host Headroom: <strong>Rule 3 Sanctuary Active</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // State Management
+    let ws = null;
+    let hexMode = false;
+    let autoScroll = true;
+    let commandHistory = [];
+    let historyIdx = -1;
+    let lensStream = null;
+
+    // Terminal Logging
+    const termLog = document.getElementById('term-log');
+    const inputCmd = document.getElementById('input-cmd');
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function ansiToHtml(text) {
+      if (!text) return '';
+      if (text.includes('\x1b[2J') || text.includes('\u001b[2J')) {
+        clearTerminal();
+        text = text.replace(/\x1b\[2J|\u001b\[2J|\x1b\[H|\u001b\[H/g, '');
+      }
+
+      let html = escapeHtml(text);
+      const ansiMap = {
+        '0': '</span>',
+        '1': '<span style="font-weight:bold;">',
+        '30': '<span style="color:#6b7280;">',
+        '31': '<span style="color:#ef4444;">',
+        '32': '<span style="color:#00e676;">',
+        '33': '<span style="color:#facc15;">',
+        '34': '<span style="color:#38bdf8;">',
+        '35': '<span style="color:#c084fc;">',
+        '36': '<span style="color:#38bdf8;">',
+        '37': '<span style="color:#f3f4f6;">',
+        '90': '<span style="color:#9ca3af;">',
+        '1;31': '<span style="color:#ef4444;font-weight:bold;">',
+        '1;32': '<span style="color:#00e676;font-weight:bold;">',
+        '1;33': '<span style="color:#facc15;font-weight:bold;">',
+        '1;34': '<span style="color:#38bdf8;font-weight:bold;">',
+        '1;35': '<span style="color:#c084fc;font-weight:bold;">',
+        '1;36': '<span style="color:#38bdf8;font-weight:bold;">',
+        '1;37': '<span style="color:#ffffff;font-weight:bold;">'
+      };
+
+      html = html.replace(/\u001b\[([0-9;]+)m|\x1b\[([0-9;]+)m/g, (match, p1, p2) => {
+        const code = p1 || p2;
+        if (ansiMap[code]) {
+          return ansiMap[code];
+        }
+        if (code === '0') return '</span>';
+        return '';
+      });
+
+      return html;
+    }
+
+    function appendTerm(text, type = 'rx') {
+      const line = document.createElement('div');
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+      
+      const content = (type === 'rx') ? ansiToHtml(text) : `<span class="line-${type}">${escapeHtml(text)}</span>`;
+      line.innerHTML = `<span class="line-time">[${timeStr}]</span>${content}`;
+      termLog.appendChild(line);
+
+      if (autoScroll) {
+        termLog.scrollTop = termLog.scrollHeight;
+      }
+    }
+
+    function clearTerminal() {
+      termLog.innerHTML = '';
+    }
+
+    function toggleAutoScroll() {
+      autoScroll = !autoScroll;
+      document.getElementById('btn-scroll').innerText = `SCROLL: ${autoScroll ? 'ON' : 'OFF'}`;
+    }
+
+    function toggleHexMode() {
+      hexMode = !hexMode;
+      document.getElementById('badge-mode').innerText = hexMode ? 'HEX DUMP' : 'TEXT (ASCII)';
+      appendTerm(`[MODE] Switched to ${hexMode ? 'HEX DUMP' : 'TEXT'} mode.`, 'sys');
+    }
+
+    // WebSocket Terminal Bridge
+    function initWebSocket() {
+      const host = window.location.host || '127.0.0.1:4050';
+      const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${proto}//${host}/ws/terminal`;
+
+      try {
+        ws = new WebSocket(wsUrl);
+        ws.onopen = () => {
+          document.getElementById('badge-bt').innerText = 'BT: CONNECTED';
+          document.getElementById('badge-bt').className = 'status-badge badge-green';
+        };
+        ws.onmessage = (e) => {
+          if (typeof e.data === 'string' && e.data.startsWith('{') && e.data.endsWith('}')) {
+            try {
+              const parsed = JSON.parse(e.data);
+              if (parsed.type === 'voice_response') {
+                if (parsed.spoken_summary && terminalVoiceActive) {
+                  speakTextUtterance(parsed.spoken_summary);
+                }
+                return;
+              }
+            } catch(ex) {}
+          }
+          appendTerm(e.data, 'rx');
+        };
+        ws.onclose = () => {
+          document.getElementById('badge-bt').innerText = 'BT: DISCONNECTED';
+          document.getElementById('badge-bt').className = 'status-badge badge-yellow';
+          setTimeout(initWebSocket, 3000);
+        };
+        ws.onerror = () => {
+          document.getElementById('badge-bt').innerText = 'BT: ERROR';
+        };
+      } catch (err) {
+        console.warn('WebSocket fallback to REST:', err);
+      }
+    }
+    initWebSocket();
+
+    // Command Submission
+    async function submitCommand(explicitCmd = null) {
+      const cmd = explicitCmd !== null ? explicitCmd : inputCmd.value.trim();
+      if (!cmd) return;
+
+      appendTerm(cmd, 'tx');
+      commandHistory.push(cmd);
+      historyIdx = commandHistory.length;
+      if (explicitCmd === null) inputCmd.value = '';
+
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(cmd);
+      } else {
+        // Fallback to REST API
+        try {
+          const res = await fetch('/api/terminal/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command: cmd })
+          });
+          const data = await res.json();
+          if (data.output) {
+            appendTerm(data.output, 'rx');
+          }
+        } catch (err) {
+          appendTerm(`[Error executing command]: ${err}`, 'err');
+        }
+      }
+    }
+
+    function runMacro(macroName) {
+      if (macroName === 'scratch') {
+        switchTab('tab-ide');
+        return;
+      }
+      if (macroName === 'debate') {
+        switchTab('tab-debate');
+        return;
+      }
+      if (macroName === 'lens') {
+        switchTab('tab-lens');
+        return;
+      }
+      submitCommand(macroName);
+    }
+
+    function handleKeyDown(e) {
+      if (e.key === 'Enter') {
+        submitCommand();
+      } else if (e.key === 'ArrowUp') {
+        if (historyIdx > 0) {
+          historyIdx--;
+          inputCmd.value = commandHistory[historyIdx] || '';
+        }
+      } else if (e.key === 'ArrowDown') {
+        if (historyIdx < commandHistory.length - 1) {
+          historyIdx++;
+          inputCmd.value = commandHistory[historyIdx] || '';
+        } else {
+          historyIdx = commandHistory.length;
+          inputCmd.value = '';
+        }
+      }
+    }
+
+    // Tabs Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.view-panel').forEach(p => {
+        p.classList.remove('active');
+        p.style.display = 'none';
+      });
+
+      const activeTabBtn = document.querySelector(`.nav-tab[data-tab="${tabId}"]`);
+      if (activeTabBtn) {
+        activeTabBtn.classList.add('active');
+      }
+      const targetPanel = document.getElementById(tabId);
+      if (targetPanel) {
+        targetPanel.classList.add('active');
+        targetPanel.style.display = 'flex';
+        if (tabId === 'tab-canonical-tui') {
+          fetchCanonicalTuiState();
+        }
+        if (tabId === 'tab-movesense') {
+          if (!movesenseInterval) {
+            movesenseInterval = setInterval(pollMovesense, 1500);
+          }
+          pollMovesense();
+        }
+      }
+    }
+
+    async function fetchCanonicalTuiState() {
+      try {
+        const res = await fetch('/api/command', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command: 'tui' })
+        });
+        const data = await res.json();
+        const vp = document.getElementById('canonical-tui-viewport');
+        if (vp && data.output) {
+          vp.innerText = data.output;
+        }
+      } catch (err) {
+        console.error('Error syncing Canonical TUI state:', err);
+      }
+    }
+
+    // AI Debate Execution
+    async function triggerDebateFromInput() {
+      const topic = document.getElementById('debate-topic-input').value.trim();
+      if (!topic) return;
+
+      document.getElementById('debate-r1').innerText = 'Deliberating via prima.cpp :8082...';
+      document.getElementById('debate-r2').innerText = 'Generating adversarial challenge...';
+      document.getElementById('debate-r3').innerText = 'Shadowing cloud synthesis...';
+      document.getElementById('debate-consensus').innerText = 'Calculating convergence coefficient...';
+
+      try {
+        const res = await fetch('/api/debate/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic: topic, rounds: 1 })
+        });
+        const data = await res.json();
+        document.getElementById('debate-r1').innerText = data.round1_master;
+        document.getElementById('debate-r2').innerText = data.round2_devils;
+        document.getElementById('debate-r3').innerText = data.round3_cloud;
+        document.getElementById('debate-consensus').innerText = `Convergence Score: ${data.convergence}\n\n${data.summary}`;
+      } catch (err) {
+        document.getElementById('debate-consensus').innerText = `Debate execution error: ${err}`;
+      }
+    }
+
+    function injectDebateToTerminal() {
+      const verdict = document.getElementById('debate-consensus').innerText;
+      switchTab('tab-terminal');
+      appendTerm(`=== INJECTED DEBATE VERDICT ===\n${verdict}`, 'sys');
+    }
+
+    // Screen Lens Camera & OCR
+    async function startLensCamera() {
+      try {
+        lensStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } }
+        });
+        document.getElementById('lens-video').srcObject = lensStream;
+      } catch (err) {
+        document.getElementById('lens-output').innerText = `Camera error: ${err}`;
+      }
+    }
+
+    async function captureLensFrame() {
+      const video = document.getElementById('lens-video');
+      if (!video || !lensStream) {
+        document.getElementById('lens-output').innerText = 'Camera not active. Tap START CAMERA first.';
+        return;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 320;
+      canvas.height = video.videoHeight || 240;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const b64 = canvas.toDataURL('image/png');
+
+      document.getElementById('lens-output').innerText = 'Analyzing frame with Screen Lens...';
+      try {
+        const res = await fetch('/api/lens/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image_base64: b64 })
+        });
+        const data = await res.json();
+        document.getElementById('lens-output').innerText = data.text || 'No text detected.';
+      } catch (err) {
+        document.getElementById('lens-output').innerText = `Analysis error: ${err}`;
+      }
+    }
+
+    function injectLensToTerminal() {
+      const text = document.getElementById('lens-output').innerText;
+      switchTab('tab-terminal');
+      appendTerm(`[SCREEN LENS OCR]\n${text}`, 'sys');
+    }
+
+    function injectLensToScratchpad() {
+      const text = document.getElementById('lens-output').innerText;
+      switchTab('tab-ide');
+      document.getElementById('editor-code').value = text;
+    }
+
+    function loadSampleLens(type) {
+      if (type === 'code') {
+        document.getElementById('lens-output').innerText = 
+`# Screen Lens Optical Code
+import psutil, shutil
+
+def mesh_check():
+    ram = psutil.virtual_memory().available / (1024**3)
+    disk = shutil.disk_usage("/").free / (1024**3)
+    print(f"[Mesh Check] Host Free RAM: {ram:.2f} GB | Free Disk: {disk:.2f} GB")
+
+mesh_check()`;
+      } else {
+        document.getElementById('lens-output').innerText = 
+`[Screen Lens Error Diagnostic]
+Traceback (most recent call last):
+  File "daemon.py", line 42, in <module>
+    socket.connect(('127.0.0.1', 8082))
+ConnectionRefusedError: [Errno 61] Connection refused
+Fix: Verify prima.cpp is running on Port 8082. Run 'prima' macro in terminal.`;
+      }
+    }
+
+    
+    // =========================================================================
+    // Hands-Free Continuous Voice Coding Engine (Web Speech STT & Local TTS)
+    // =========================================================================
+    let terminalVoiceActive = false;
+    let terminalRecognition = null;
+    let isSpeakingTts = false;
+    let shouldAutoRestart = true;
+
+    // Chat voice state
+    let chatVoiceActive = false;
+    let chatRecognition = null;
+
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRec) {
+      // 1. Terminal Hands-Free Voice Coding Engine
+      terminalRecognition = new SpeechRec();
+      terminalRecognition.continuous = true;
+      terminalRecognition.interimResults = false;
+      terminalRecognition.lang = 'en-US';
+
+      terminalRecognition.onstart = () => {
+        updateVoiceUiState("LISTENING");
+      };
+
+      terminalRecognition.onresult = async (event) => {
+        if (!terminalVoiceActive || isSpeakingTts) return;
+        const lastResultIndex = event.results.length - 1;
+        const transcript = event.results[lastResultIndex][0].transcript.trim();
+        if (!transcript) return;
+
+        // Display spoken directive in terminal log
+        appendTerm(`\x1b[1;36m[🎙️ Voice Directive]:\x1b[0m "${transcript}"`, 'rx');
+        updateVoiceUiState("EXECUTING");
+
+        try {
+          // Temporarily pause recognition to prevent acoustic feedback from TTS
+          if (terminalRecognition) {
+            try { terminalRecognition.stop(); } catch(e) {}
+          }
+
+          const response = await fetch('/api/voice/directive', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              directive: transcript,
+              caller: 'browser_hands_free_voice'
+            })
+          });
+          const result = await response.json();
+          
+          if (result.output) {
+            appendTerm(result.output, 'rx');
+          }
+          
+          // Audibly confirm directive via TTS with acoustic ducking
+          if (result.spoken_summary) {
+            await speakTextUtterance(result.spoken_summary);
+          }
+        } catch (err) {
+          appendTerm(`\x1b[1;31m[Voice Error]: ${err.message || err}\x1b[0m`, 'rx');
+        } finally {
+          // Seamlessly resume hands-free listening loop
+          if (terminalVoiceActive && shouldAutoRestart) {
+            setTimeout(() => {
+              if (terminalVoiceActive && !isSpeakingTts) {
+                try {
+                  terminalRecognition.start();
+                } catch(e) {}
+              }
+            }, 300);
+          } else {
+            updateVoiceUiState("OFF");
+          }
+        }
+      };
+
+      terminalRecognition.onerror = (event) => {
+        if (event.error === 'no-speech') {
+          return; // Normal idle speech timeout, continuous loop keeps running
+        }
+        console.warn('Voice recognition error:', event.error);
+        if (event.error === 'not-allowed') {
+          alert('Microphone permission required for hands-free voice coding.');
+          stopTerminalVoice();
+        }
+      };
+
+      terminalRecognition.onend = () => {
+        if (terminalVoiceActive && !isSpeakingTts && shouldAutoRestart) {
+          setTimeout(() => {
+            if (terminalVoiceActive && !isSpeakingTts) {
+              try { terminalRecognition.start(); } catch(e) {}
+            }
+          }, 250);
+        } else if (!terminalVoiceActive) {
+          updateVoiceUiState("OFF");
+        }
+      };
+
+      // 2. Chat Voice Engine
+      chatRecognition = new SpeechRec();
+      chatRecognition.continuous = false;
+      chatRecognition.interimResults = false;
+      chatRecognition.lang = 'en-US';
+      chatRecognition.onresult = (e) => {
+        const text = e.results[0][0].transcript.trim();
+        if (text) {
+          document.getElementById('input-chat').value = text;
+          submitChat();
+        }
+      };
+      chatRecognition.onend = () => {
+        if (chatVoiceActive) {
+          document.getElementById('btn-voice-chat').className = "btn-top";
+          chatVoiceActive = false;
+        }
+      };
+    }
+
+    function updateVoiceUiState(state) {
+      const btnTop = document.getElementById('btn-voice-top');
+      const btnInput = document.getElementById('btn-voice');
+      if (state === "LISTENING") {
+        if (btnTop) {
+          btnTop.innerText = "🎙️ VOICE: LISTENING";
+          btnTop.className = "btn-top btn-voice-active";
+        }
+        if (btnInput) {
+          btnInput.className = "btn-top btn-voice-active";
+        }
+      } else if (state === "EXECUTING") {
+        if (btnTop) {
+          btnTop.innerText = "⚡ VOICE: EXECUTING";
+          btnTop.className = "btn-top btn-voice-executing";
+        }
+        if (btnInput) {
+          btnInput.className = "btn-top btn-voice-executing";
+        }
+      } else {
+        if (btnTop) {
+          btnTop.innerText = "🎙️ VOICE: OFF";
+          btnTop.className = "btn-top";
+        }
+        if (btnInput) {
+          btnInput.className = "btn-top";
+        }
+      }
+    }
+
+    function toggleVoice() {
+      if (!terminalRecognition) {
+        alert("Speech Recognition is not supported by your browser. Please use Chrome, Edge, or a modern WebKit browser.");
+        return;
+      }
+      terminalVoiceActive = !terminalVoiceActive;
+      if (terminalVoiceActive) {
+        shouldAutoRestart = true;
+        
+        // Unlock TTS Audio Context on user gesture to prevent browser blocking async speech
+        if ('speechSynthesis' in window) {
+          const unlock = new SpeechSynthesisUtterance('Voice activated.');
+          unlock.volume = 1;
+          unlock.rate = 1.2;
+          window.speechSynthesis.speak(unlock);
+        }
+        
+        appendTerm("\x1b[1;36m🎙️ [Hands-Free Voice Coding Engaged]: Continuous listening active. Speak directives anytime (Alt+V to stop).\x1b[0m", "rx");
+        try {
+          terminalRecognition.start();
+        } catch(e) {
+          console.warn("Recognition start exception:", e);
+        }
+      } else {
+        stopTerminalVoice();
+      }
+    }
+    function stopTerminalVoice() {
+      terminalVoiceActive = false;
+      shouldAutoRestart = false;
+      updateVoiceUiState("OFF");
+      appendTerm("\x1b[90m🎙️ [Hands-Free Voice Coding Deactivated].\x1b[0m", "rx");
+      if (terminalRecognition) {
+        try { terminalRecognition.stop(); } catch(e) {}
+      }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function toggleVoiceChat() {
+      if (!chatRecognition) { alert("Speech Recognition not supported"); return; }
+      chatVoiceActive = !chatVoiceActive;
+      const btn = document.getElementById('btn-voice-chat');
+      if (chatVoiceActive) {
+        btn.className = "btn-top btn-voice-active";
+        try { chatRecognition.start(); } catch(e) {}
+      } else {
+        btn.className = "btn-top";
+        try { chatRecognition.stop(); } catch(e) {}
+      }
+    }
+
+    function speakTextUtterance(text) {
+      return new Promise((resolve) => {
+        if (!('speechSynthesis' in window) || !text) {
+          resolve();
+          return;
+        }
+        isSpeakingTts = true;
+        window.speechSynthesis.cancel();
+        
+        const cleanText = text.replace(/[\x1b\[][0-9;]*m/g, '').replace(/```.*?```/gs, ' [code block] ');
+        const utter = new SpeechSynthesisUtterance(cleanText);
+        utter.rate = 1.05;
+        utter.pitch = 1.0;
+        
+        // Failsafe timeout to prevent permanent lockup if TTS engine hangs
+        const lockTimeout = setTimeout(() => {
+          isSpeakingTts = false;
+          resolve();
+        }, 15000);
+
+        utter.onend = () => {
+          clearTimeout(lockTimeout);
+          isSpeakingTts = false;
+          resolve();
+        };
+        utter.onerror = () => {
+          clearTimeout(lockTimeout);
+          isSpeakingTts = false;
+          resolve();
+        };
+        window.speechSynthesis.speak(utter);
+      });
+    }
+
+    // Alt+V Hotkey to toggle hands-free voice coding anytime
+    window.addEventListener('keydown', (e) => {
+      if (e.altKey && (e.key === 'v' || e.key === 'V')) {
+        e.preventDefault();
+        toggleVoice();
+      }
+    });
+
+    // Chat Submission Logic
+    async function submitChat() {
+      const q = document.getElementById('input-chat').value.trim();
+      if(!q) return;
+      document.getElementById('input-chat').value = '';
+      const hist = document.getElementById('chat-history');
+      hist.innerHTML += `<div style="align-self: flex-end; background: var(--term-purple); color: white; padding: 8px; border-radius: 8px;">${escapeHtml(q)}</div>`;
+      
+      const use_or = document.getElementById('chk-openrouter')?.checked || false;
+      const use_cf = document.getElementById('chk-cloudflare')?.checked || false;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({prompt: q, use_openrouter: use_or, use_cloudflare: use_cf})
+        });
+        const data = await res.json();
+        hist.innerHTML += `<div style="align-self: flex-start; background: var(--surface); border: 1px solid var(--surface-border); padding: 8px; border-radius: 8px;">${escapeHtml(data.response)}</div>`;
+        hist.scrollTop = hist.scrollHeight;
+        if (chatVoiceActive && data.response) {
+          await speakTextUtterance(data.response);
+        }
+      } catch(e) {
+        hist.innerHTML += `<div style="align-self: flex-start; color: red;">Error: ${escapeHtml(String(e))}</div>`;
+      }
+    }
+
+    
+    // --- True Passive Background Screen Lens (Motion/Stability Detection) ---
+    let bgVideo = document.createElement('video');
+    bgVideo.setAttribute('autoplay', '');
+    bgVideo.setAttribute('playsinline', '');
+    bgVideo.setAttribute('muted', '');
+    let bgCanvas = document.createElement('canvas');
+    let bgCtx = bgCanvas.getContext('2d');
+    let lastImageData = null;
+    let stableFrames = 0;
+    let isAnalyzing = false;
+
+    async function initBackgroundLens() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 320 }, height: { ideal: 240 } }
+        });
+        bgVideo.srcObject = stream;
+        
+        // Also attach to the visible video element if the user navigates to the Lens tab
+        const visibleVideo = document.getElementById('lens-video');
+        if (visibleVideo) visibleVideo.srcObject = stream;
+
+        // Start passive watcher at ~2 fps
+        setInterval(processPassiveFrame, 500);
+      } catch (err) {
+        console.warn("Passive Lens could not start in background:", err);
+      }
+    }
+
+    function processPassiveFrame() {
+      if (!bgVideo.videoWidth || isAnalyzing) return;
+      bgCanvas.width = bgVideo.videoWidth;
+      bgCanvas.height = bgVideo.videoHeight;
+      bgCtx.drawImage(bgVideo, 0, 0, bgCanvas.width, bgCanvas.height);
+      const currentData = bgCtx.getImageData(0, 0, bgCanvas.width, bgCanvas.height).data;
+
+      if (lastImageData) {
+        let diff = 0;
+        // Sample every 4th pixel for speed
+        for (let i = 0; i < currentData.length; i += 16) {
+          diff += Math.abs(currentData[i] - lastImageData[i]);
+        }
+        
+        // If difference is low, camera is stable. If difference is high, user is moving.
+        const changeRatio = diff / (currentData.length / 16 * 255);
+        if (changeRatio < 0.05) {
+          stableFrames++;
+        } else {
+          stableFrames = 0; // Reset on movement
+        }
+
+        // If held stable on a new subject for ~2 seconds (4 frames), trigger analysis
+        if (stableFrames === 4) {
+          triggerPassiveAnalysis(bgCanvas.toDataURL('image/png'));
+          stableFrames = -10; // Prevent re-triggering immediately (wait for next movement)
+        }
+      }
+      lastImageData = new Uint8ClampedArray(currentData);
+    }
+
+    async function triggerPassiveAnalysis(b64) {
+      isAnalyzing = true;
+      const out = document.getElementById('lens-output');
+      if(out) out.innerText = "[Passive Lens]: Subject acquired. Analyzing...";
+      try {
+        const res = await fetch('/api/lens/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image_base64: b64, prompt: "Identify objects and context to calculate a highest ROI (Return on Investment) list of actionable next steps." })
+        });
+        const data = await res.json();
+        if(out) out.innerText = "[Passive Lens]: " + (data.text || 'No actionable context.');
+        
+        // If it found something highly relevant, optionally speak it or inject it
+        if (data.text && !data.text.includes("No text detected") && voiceActive) {
+           speakText("Lens detected: " + data.text.substring(0, 100));
+        }
+      } catch(e) {
+        console.warn(e);
+      }
+      isAnalyzing = false;
+    }
+
+    // Start immediately on load
+    window.addEventListener('load', () => {
+      initBackgroundLens();
+    });
+
+    // Inline RAG Chat
+    async function executeRagInlineChat() {
+      const q = document.getElementById('rag-chat-input').value.trim();
+      if (!q) return;
+      const container = document.getElementById('rag-results-list');
+      const chatCard = document.createElement('div');
+      chatCard.className = 'rag-hit-card';
+      chatCard.style.borderLeft = '3px solid var(--term-purple)';
+      chatCard.innerHTML = `<div class="rag-hit-title" style="color:var(--term-purple);">💬 You: ${escapeHtml(q)}</div>
+                            <div class="rag-hit-snippet" id="rag-inline-reply">Querying offline RAG model...</div>`;
+      container.prepend(chatCard);
+      document.getElementById('rag-chat-input').value = '';
+      try {
+        const res = await fetch('/api/rag/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: q })
+        });
+        const data = await res.json();
+        chatCard.querySelector('#rag-inline-reply').innerText = data.response;
+        if (data.sources && data.sources.length) {
+          const srcDiv = document.createElement('div');
+          srcDiv.style.fontSize = '9px';
+          srcDiv.style.color = 'var(--text-muted)';
+          srcDiv.style.marginTop = '4px';
+          srcDiv.innerText = `Sources: ${data.sources.map(s => s.title).join(', ')}`;
+          chatCard.appendChild(srcDiv);
+        }
+      } catch (err) {
+        chatCard.querySelector('#rag-inline-reply').innerText = `Error: ${err}`;
+      }
+    }
+
+    // Offline RAG Search
+    async function executeRagSearch() {
+      const q = document.getElementById('rag-search-input').value.trim();
+      if (!q) return;
+
+      const container = document.getElementById('rag-results-list');
+      container.innerHTML = '<div style="font-size:11px; color:var(--text-muted); padding:8px;">Searching 5,500+ documents...</div>';
+
+      try {
+        const res = await fetch('/api/rag/query', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 6 })
+        });
+        const data = await res.json();
+        container.innerHTML = '';
+        if (data.results.length === 0) {
+          container.innerHTML = '<div style="font-size:11px; color:var(--text-muted); padding:8px;">No matching offline docs found.</div>';
+          return;
+        }
+        data.results.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'rag-hit-card';
+          card.innerHTML = `<div class="rag-hit-title">${escapeHtml(item.title)} (${item.score} pts)</div>
+                            <div class="rag-hit-snippet">${escapeHtml(item.snippet)}...</div>`;
+          card.onclick = () => {
+            document.getElementById('editor-code').value = `# Source: ${item.title}\n# Path: ${item.path}\n\n${item.snippet}`;
+          };
+          container.appendChild(card);
+        });
+      } catch (err) {
+        container.innerHTML = `<div style="font-size:11px; color:var(--term-red); padding:8px;">Search error: ${err}</div>`;
+      }
+    }
+
+    
+    let movesenseInterval = null;
+
+    async function startMovesense() {
+      const statusEl = document.getElementById('ms-status');
+      if (statusEl) statusEl.innerText = "STARTING DAEMON...";
+      try {
+        await fetch('/api/movesense/connect', { method: 'POST' });
+      } catch (err) {
+        console.warn("Connect trigger error:", err);
+      }
+      if (!movesenseInterval) {
+        movesenseInterval = setInterval(pollMovesense, 1500);
+      }
+      pollMovesense();
+    }
+
+    async function pollMovesense() {
+      try {
+        // 1. Fetch live status
+        const statusRes = await fetch('/api/movesense/status');
+        const statusData = await statusRes.json();
+        
+        const statusEl = document.getElementById('ms-status');
+        if (statusEl) {
+          if (statusData.daemon_running) {
+            const stat = statusData.readiness?.status || (statusData.stream?.connected ? "LATCHED (STREAMING 512Hz)" : "SCANNING BLE...");
+            statusEl.innerText = stat;
+            statusEl.style.color = stat.includes("STREAMING") || stat.includes("LATCHED") ? "var(--term-green)" : "var(--term-yellow)";
+          } else {
+            statusEl.innerText = "OFFLINE (Daemon stopped)";
+            statusEl.style.color = "var(--term-red)";
+          }
+        }
+
+        // 2. Fetch TinyML Trends & Dynamic Placement
+        const trendsRes = await fetch('/api/movesense/trends');
+        const t = await trendsRes.json();
+
+        // Update Placement Card
+        const badgeEl = document.getElementById('ms-placement-badge');
+        const confEl = document.getElementById('ms-placement-conf');
+        const dspEl = document.getElementById('ms-dsp-profile');
+        const ratEl = document.getElementById('ms-placement-rationale');
+
+        if (badgeEl && t.placement) {
+          const isChest = t.placement.toLowerCase().includes('chest');
+          badgeEl.innerText = isChest ? "🫀 CHEST STRAP" : "💪 BICEP STRAP";
+          badgeEl.style.background = isChest ? "var(--term-cyan)" : "var(--term-purple)";
+        }
+        if (confEl && t.placement_confidence_pct !== undefined) {
+          confEl.innerText = `${t.placement_confidence_pct}%`;
+        }
+        if (dspEl && t.dsp_profile) {
+          dspEl.innerText = t.dsp_profile;
+        }
+        if (ratEl && t.placement_rationale) {
+          ratEl.innerText = t.placement_rationale;
+        }
+
+        // Update Real-Time Biometrics
+        const hrEl = document.getElementById('ms-hr');
+        const zoneEl = document.getElementById('ms-zone');
+        const dfaEl = document.getElementById('ms-dfa');
+        const rmssdEl = document.getElementById('ms-rmssd');
+        const sqiEl = document.getElementById('ms-sqi');
+        const beatsEl = document.getElementById('ms-beats-total');
+
+        if (hrEl) {
+          hrEl.innerText = t.heart_rate_bpm > 0 ? `${t.heart_rate_bpm} bpm` : "-- bpm";
+        }
+        if (zoneEl && t.training_zone) {
+          zoneEl.innerText = t.training_zone;
+        }
+        if (dfaEl) {
+          dfaEl.innerText = t.dfa_alpha1 !== undefined ? Number(t.dfa_alpha1).toFixed(3) : "--";
+        }
+        if (rmssdEl) {
+          rmssdEl.innerText = t.rmssd_ms !== undefined ? `${Number(t.rmssd_ms).toFixed(1)} ms` : "-- ms";
+        }
+        if (sqiEl) {
+          sqiEl.innerText = t.signal_quality_sqi_pct !== undefined ? `${Number(t.signal_quality_sqi_pct).toFixed(1)}%` : "--%";
+        }
+        if (beatsEl && t.total_beats_processed !== undefined) {
+          beatsEl.innerText = `${t.total_beats_processed} beats`;
+        }
+
+        // Update TinyML Trends
+        const driftEl = document.getElementById('ms-drift');
+        const tauEl = document.getElementById('ms-tau');
+        const slopeEl = document.getElementById('ms-alpha-slope');
+        const ectopicEl = document.getElementById('ms-ectopic');
+        const rrEl = document.getElementById('ms-rr');
+
+        if (driftEl && t.cardiac_drift_pct !== undefined) {
+          driftEl.innerText = `${t.cardiac_drift_pct > 0 ? '+' : ''}${Number(t.cardiac_drift_pct).toFixed(2)}%`;
+        }
+        if (tauEl) {
+          tauEl.innerText = t.parasympathetic_recovery_tau !== null && t.parasympathetic_recovery_tau !== undefined ? `${Number(t.parasympathetic_recovery_tau).toFixed(1)} s` : "-- s";
+        }
+        if (slopeEl && t.alpha1_slope_per_min !== undefined) {
+          slopeEl.innerText = `${Number(t.alpha1_slope_per_min).toFixed(4)} /min`;
+        }
+        if (ectopicEl && t.ectopic_density_per_min !== undefined) {
+          ectopicEl.innerText = `${Number(t.ectopic_density_per_min).toFixed(1)} /min`;
+        }
+
+        if (rrEl) {
+          const rrs = statusData.stream?.rr_intervals_recent || [];
+          rrEl.innerText = rrs.length > 0 ? JSON.stringify(rrs) : "[]";
+        }
+
+      } catch (err) {
+        console.warn("pollMovesense error:", err);
+      }
+    }
+
+    async function consultMovesenseAI() {
+      const b1 = document.getElementById('ms-ai-bullet-1');
+      const b2 = document.getElementById('ms-ai-bullet-2');
+      const b3 = document.getElementById('ms-ai-bullet-3');
+      const b4 = document.getElementById('ms-ai-bullet-4');
+      const statusEl = document.getElementById('ms-ai-status');
+
+      if (b1) b1.innerText = "• Querying Sovereign Local AI (Qwen 3.8 Max on :8082)...";
+      if (b2) b2.innerText = "• Analyzing 512Hz Pan-Tompkins QRS morphology & DFA-alpha1...";
+      if (b3) b3.innerText = "• Evaluating autonomic tone & metabolic threshold...";
+      if (b4) b4.innerText = "• Computing electrode placement kinematics...";
+
+      try {
+        const res = await fetch('/api/movesense/ai-analysis', { method: 'POST' });
+        const data = await res.json();
+
+        let bullets = [];
+        if (Array.isArray(data.analysis)) {
+          bullets = data.analysis;
+        } else if (typeof data.assessment === 'string') {
+          bullets = data.assessment.split('\n').filter(s => s.trim().length > 0);
+        }
+        if (bullets.length > 0) {
+          if (b1 && bullets[0]) b1.innerText = bullets[0].startsWith('•') ? bullets[0] : `• ${bullets[0]}`;
+          if (b2 && bullets[1]) b2.innerText = bullets[1].startsWith('•') ? bullets[1] : `• ${bullets[1]}`;
+          if (b3 && bullets[2]) b3.innerText = bullets[2].startsWith('•') ? bullets[2] : `• ${bullets[2]}`;
+          if (b4 && bullets[3]) b4.innerText = bullets[3].startsWith('•') ? bullets[3] : `• ${bullets[3]}`;
+        }
+        if (statusEl && data.model) {
+          const latency = data.latency_ms ? ` in ${(data.latency_ms / 1000).toFixed(1)}s` : '';
+          statusEl.innerHTML = `<span>Model: <span style="color:var(--term-cyan);">${data.model}</span>${latency}</span><span style="color:var(--term-green);">$0.00 Local (0 Cloud Tokens)</span>`;
+        }
+      } catch (err) {
+        if (b1) b1.innerText = `• Clinical AI Consultation Error: ${err.message}`;
+      }
+    }
+    
+    // Auto start polling if active tab
+
+    
+    async function pollMesh() {
+      const container = document.getElementById('mesh-nodes-container');
+      container.innerHTML = "Pinging nodes...";
+      try {
+        const res = await fetch('/api/mesh/status');
+        const data = await res.json();
+        let html = "";
+        for (const [key, node] of Object.entries(data.nodes)) {
+          const color = node.status === 'ONLINE' ? 'var(--term-green)' : 'var(--term-red)';
+          const pingStr = node.ping_ms !== null ? `${Number(node.ping_ms).toFixed(2)}ms` : 'TIMEOUT';
+          html += `
+            <div style="border: 1px solid var(--surface-border); padding: 8px; border-radius: 4px; background: var(--surface);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span style="font-weight:bold; color:var(--term-cyan);">${key}</span>
+                <span style="color:${color}; font-weight:bold;">[${node.status}] ${pingStr}</span>
+              </div>
+              <div style="color:var(--text-secondary);">IP: ${node.ts} | ${node.role}</div>
+              <div style="color:var(--text-secondary);">RAM: ${node.ram_cap}GB | AI VRAM: ${node.ai_cap}GB</div>
+            </div>
+          `;
+        }
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<span style="color:var(--term-red);">Error: ${err.message}</span>`;
+      }
+    }
+
+    async function pollStorage() {
+      const container = document.getElementById('storage-status-container');
+      try {
+        const res = await fetch('/api/storage/health');
+        const data = await res.json();
+        const hc = data.overall_health === 'HEALTHY' ? 'var(--term-green)' : 'var(--term-red)';
+        
+        container.innerHTML = `
+          <div style="margin-bottom:8px; font-size:16px;">System Health: <strong style="color:${hc};">${data.overall_health}</strong></div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--surface-border); padding-bottom:4px;">
+            <span>Obsidian Vault</span> <span style="color:${data.obsidian_vault==='OK'?'var(--term-green)':'var(--term-red)'}">${data.obsidian_vault}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--surface-border); padding-bottom:4px; margin-top:4px;">
+            <span>PySpark Data Lake</span> <span style="color:${data.pyspark_lake==='OK'?'var(--term-green)':'var(--term-red)'}">${data.pyspark_lake}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--surface-border); padding-bottom:4px; margin-top:4px;">
+            <span>GitHub Worktree</span> <span style="color:${data.github_tree==='OK'?'var(--term-green)':'var(--term-yellow)'}">${data.github_tree}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:4px;">
+            <span>Host Disk Free</span> <span>${data.host_free_gb} GB</span>
+          </div>
+        `;
+      } catch (err) {
+        container.innerHTML = `<span style="color:var(--term-red);">Error: ${err.message}</span>`;
+      }
+    }
+
+    async function healStorage() {
+      document.getElementById('storage-status-container').innerHTML = "Executing Pre-Flight Self-Healing...";
+      await fetch('/api/storage/heal', { method: 'POST' });
+      setTimeout(pollStorage, 1000);
+    }
+    
+    // Periodically poll if tabs are open, but let's just trigger on start
+    setTimeout(() => { pollMesh(); pollStorage(); }, 2000);
+
+    // Scratchpad Execution
+    function runScratchpadCode() {
+      const code = document.getElementById('editor-code').value;
+      switchTab('tab-terminal');
+      submitCommand(`python3 -c ${JSON.stringify(code)}`);
+    }
+
+    async function askAiAboutScratchpad() {
+      const code = document.getElementById('editor-code').value;
+      switchTab('tab-terminal');
+      appendTerm(`[AI Assistant Inquiry for Scratchpad Code]...`, 'sys');
+      try {
+        const res = await fetch('/api/rag/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: `Explain and optimize this code snippet:\n${code}` })
+        });
+        const data = await res.json();
+        appendTerm(data.response, 'rx');
+      } catch (err) {
+        appendTerm(`[AI Error]: ${err}`, 'err');
+      }
+    }
+
+    // Initial Engine Health Check
+    async function checkEngineStatus() {
+      try {
+        const res = await fetch('/api/engine/status');
+        const data = await res.json();
+        if (data.prima && data.prima.alive) {
+          document.getElementById('badge-engine').innerText = 'PRIMA: :8082 ONLINE';
+          document.getElementById('badge-engine').className = 'status-badge badge-green';
+        }
+      } catch (_) {}
+    }
+    checkEngineStatus();
+  </script>
+</body>
+</html>

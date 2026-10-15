@@ -70,9 +70,9 @@ func main() {
 	// Standalone headless Autonomous Mesh Worker & Bluetooth Terminal Daemon mode
 	if strings.Contains(args, "worker") || strings.Contains(args, "bt-daemon") || strings.Contains(args, "terminal-daemon") {
 		tcpBridge := bluetooth.NewTCPBridge(btTerminal, bioBuffer)
-		_ = tcpBridge.Start(4050)
+		_ = tcpBridge.Start(4051)
 		defer tcpBridge.Stop()
-		log.Printf("[HEADLESS-WORKER] OpenCode Go Autonomous Mesh Worker Running on %s (TCP :4050 / :4051)...", bluetooth.ResolveStreamPipePath())
+		log.Printf("[HEADLESS-WORKER] OpenCode Go Autonomous Mesh Worker Running on %s (TCP :4051)...", bluetooth.ResolveStreamPipePath())
 		select {}
 	}
 

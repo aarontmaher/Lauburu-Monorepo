@@ -18,7 +18,7 @@ import socket
 from pathlib import Path
 from typing import Dict, List, Any
 
-WORKSPACE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+WORKSPACE_ROOT = Path("/Volumes/Lauburu-Monorepo")
 OUTPUT_GRAPH_PATH = WORKSPACE_ROOT / "00_core_infrastructure/self_healing_hub/src/autonomous_project_feature_graph.json"
 MOVESENSE_LIVE_PATH = WORKSPACE_ROOT / "00_core_infrastructure/self_healing_hub/src/movesense_live_stream.json"
 TRANSPORT_STATS_PATH = WORKSPACE_ROOT / "02_ai_models_and_inference/benchmarks/live_transport_stats.json"

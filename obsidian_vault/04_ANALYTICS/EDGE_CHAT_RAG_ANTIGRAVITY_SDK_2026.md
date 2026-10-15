@@ -11,7 +11,7 @@ consensus: 0.9982
 ## 🏛️ Executive Summary
 
 This architecture establishes the sovereign **Edge Chat & Tri-Vault RAG Antigravity Agent SDK** ecosystem across the 7-layer Lauburu Mesh. It fuses the **Google Antigravity SDK** (`Agent`, `Conversation`, `SubagentConfig`, `CapabilitiesConfig`) with the **Cloudflare Agents SDK** durable execution model (`AgentState`, `durable_step`, `hand_off`, RPC callable), governed by the **Rule 8 Sovereign Local AI Hierarchy**:
-1. **Sovereign Master Local Orchestrator:** Qwen 3.8 Max (`http://127.0.0.1:8082` via `prima.cpp` PRP ring over 10Gbps TB4 DMA Bridge).
+1. **Sovereign Master Local Orchestrator:** Qwen 3.8 Max (`http://127.0.0.1:8082` via `prima.cpp` PRP ring over 40Gbps TB4 DMA Bridge).
 2. **Subordinate Syntax Worker:** Qwen 2.5 Coder 7B (`http://127.0.0.1:8081` via `llama.cpp` RPC).
 3. **Canonical Adversarial Red Team:** Qwen 3.8 Max 27B Abliterated (`http://127.0.0.1:8083`).
 4. **Pure-NPU Systolic Governor:** Layer 0/1 Apple Neural Engine (<100 µs, 0.0 MB RAM).
@@ -78,7 +78,7 @@ Executed via automated test suite `test_edge_chat_rag_agent_sdk.py` on 2026-09-0
 - **Sandboxed Implementation Directory:** `01_apps/screen_lens/sandbox_evolution/edge_chat_rag_agent_sdk/`
 - **Reverse Engineering Sandbox:** `01_apps/screen_lens/sandbox_evolution/reverse_engineering/`
 - **Clean-Room Spec:** `bluetooth_le_stack_clean_room_spec.json` (`SHA256: 169fae07d9...`)
-- **LoRA Dataset Entry:** Appended to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`
+- **LoRA Dataset Entry:** Appended to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`
 
 ---
 

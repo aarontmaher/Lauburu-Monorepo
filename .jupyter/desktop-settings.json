@@ -1,0 +1,8 @@
+{
+  "pythonPath": "/Users/aaron/Library/jupyterlab-desktop/jlab_server/bin/python",
+  "serverArgs": "--ServerApp.allow_origin='*' --ServerApp.allow_credentials=True --ServerApp.disable_check_xsrf=True",
+  "serverEnvVars": {
+    "PYTHONPATH": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo:/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory"
+  },
+  "uiMode": "managed-by-web-app"
+}

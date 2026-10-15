@@ -1,0 +1,227 @@
+{
+  "port_4000_hub": {
+    "title": "Port 4000 Unified Hub Dashboard",
+    "description": "Master nerve center displaying 7-layer physical mesh topology, 140.5 GB pooled RAM, 115.5 GB VRAM, hardware meters, and subagent swarm health.",
+    "canonical_path": "01_apps/port_4000_hub",
+    "port": 4000,
+    "frameworks": [
+      "html",
+      "react",
+      "flutter"
+    ],
+    "backend_dependencies": [
+      {
+        "endpoint": "GET http://127.0.0.1:4000/api/mesh/telemetry",
+        "type": "SSE",
+        "rate": "1 Hz",
+        "purpose": "Real-time 7-layer node health, CPU/RAM, and link latencies"
+      },
+      {
+        "endpoint": "GET http://127.0.0.1:8082/health",
+        "type": "HTTP",
+        "rate": "On-demand",
+        "purpose": "Master Local Orchestrator (prima.cpp) cluster state"
+      },
+      {
+        "endpoint": "GET http://100.119.199.76:3037/api/orchestrator/state",
+        "type": "HTTP",
+        "rate": "2 Hz",
+        "purpose": "Screen Lens global perception telemetry"
+      }
+    ]
+  },
+  "movesense_terminal": {
+    "title": "Movesense ECG & Biometrics Terminal",
+    "description": "Clinical 512Hz raw ECG graphing, Pan-Tompkins QRS peak detection, Zone 2 aerobic threshold alerts, and 9-axis IMU rotational impact telemetry.",
+    "canonical_path": "01_apps/movesense_terminal",
+    "port": 8088,
+    "frameworks": [
+      "html",
+      "react",
+      "flutter"
+    ],
+    "backend_dependencies": [
+      {
+        "endpoint": "BLE GATT 0x180D / PMD 0x0001",
+        "type": "CoreBluetooth / BlueZ",
+        "rate": "512 Hz",
+        "purpose": "Raw single-channel ECG int16 streams with timestamp counter"
+      },
+      {
+        "endpoint": "GET http://127.0.0.1:8088/api/biometrics/ecg_stream",
+        "type": "WebSocket",
+        "rate": "512 Hz",
+        "purpose": "Live ECG timeseries for real-time frontend canvas rendering"
+      },
+      {
+        "endpoint": "GET http://127.0.0.1:8088/api/biometrics/zone2_status",
+        "type": "HTTP",
+        "rate": "1 Hz",
+        "purpose": "DFA-alpha1 aerobic threshold calculation and audio alert dispatch"
+      }
+    ]
+  },
+  "omni_messenger": {
+    "title": "Omni Messenger Lauburu",
+    "description": "Unified communications inbox combining Google Workspace (lauburu@lauburugrappling.com), personal Gmail, Gumtree, FB Marketplace, and Subliminator.",
+    "canonical_path": "01_apps/all_in_one_messenger_lauburu",
+    "port": 5050,
+    "frameworks": [
+      "html",
+      "react",
+      "flutter"
+    ],
+    "backend_dependencies": [
+      {
+        "endpoint": "GET http://127.0.0.1:5050/api/messages/feed",
+        "type": "HTTP / SSE",
+        "rate": "Polling 5s",
+        "purpose": "Aggregated message feed across all 5 integrated channels"
+      },
+      {
+        "endpoint": "POST http://127.0.0.1:5050/api/messages/send",
+        "type": "REST",
+        "rate": "On-action",
+        "purpose": "Channel-agnostic message dispatcher with anti-scam validation"
+      },
+      {
+        "endpoint": "OAuth2 client_secret.json",
+        "type": "Local File / Key",
+        "rate": "Persistent",
+        "purpose": "Google Workspace API token authentication for business email"
+      }
+    ]
+  },
+  "spatial_grappling_3d": {
+    "title": "Spatial Grappling 3D Kinematics",
+    "description": "Interactive WebGL/WebGPU 3D submission kinematics, joint angle & torque vector telemetry, and mat-side academy TV presentation mode.",
+    "canonical_path": "01_apps/spatial_grappling_3d",
+    "port": 3000,
+    "frameworks": [
+      "html",
+      "react"
+    ],
+    "backend_dependencies": [
+      {
+        "endpoint": "GET /api/kinematics/techniques.json",
+        "type": "Static / Cache",
+        "rate": "Initial load",
+        "purpose": "955-node submission and positional transition tree with torque limits"
+      },
+      {
+        "endpoint": "ws://127.0.0.1:8084/imu_stream",
+        "type": "WebSocket",
+        "rate": "100 Hz",
+        "purpose": "Live Movesense 9-axis IMU quaternion feed for 3D avatar pose synchronization"
+      }
+    ]
+  },
+  "showrunner_lauburu": {
+    "title": "Showrunner Lauburu",
+    "description": "Automated multi-camera video switcher, intelligent speaker framing, background noise suppression, and 1-click vertical 9:16 clip extractor.",
+    "canonical_path": "01_apps/lauburu_showrunner",
+    "port": 8092,
+    "frameworks": [
+      "html",
+      "react",
+      "flutter"
+    ],
+    "backend_dependencies": [
+      {
+        "endpoint": "rtsp://100.73.38.87:8554/live",
+        "type": "RTSP / WebRTC",
+        "rate": "60 FPS",
+        "purpose": "Pixel 10 Pro XL 8K / 4K digital PTZ camera feed over 6GHz Wi-Fi 7"
+      },
+      {
+        "endpoint": "CoreAudio Input Index 0",
+        "type": "Local Device",
+        "rate": "48 kHz",
+        "purpose": "Mac Mini host audio capture for speech detection and noise gating"
+      }
+    ]
+  },
+  "screen_lens": {
+    "title": "Screen Lens Sovereign VLA & Companion",
+    "description": "Multimodal Vision-Language-Action companion providing 15 FPS live HUD stream, BT serial terminal, and CoreGraphics/ADB VLA touch actuation.",
+    "canonical_path": "01_apps/screen_lens",
+    "port": 4003,
+    "frameworks": [
+      "html",
+      "react",
+      "flutter"
+    ],
+    "backend_dependencies": [
+      {
+        "endpoint": "http://127.0.0.1:4003/stream.mjpg",
+        "type": "HTTP Multipart",
+        "rate": "15 FPS",
+        "purpose": "Live screen broadcast feed with ShowUI bounding box overlay"
+      },
+      {
+        "endpoint": "TCP 127.0.0.1:4005",
+        "type": "Raw TCP PTY",
+        "rate": "Continuous",
+        "purpose": "RFCOMM & TCP Bluetooth serial terminal console bridge"
+      },
+      {
+        "endpoint": "POST http://127.0.0.1:4006/api/actuate",
+        "type": "REST",
+        "rate": "On-action",
+        "purpose": "Pure C CoreGraphics mouse/keyboard actuation injection"
+      }
+    ]
+  },
+  "network_cable_analyzer": {
+    "title": "Network Cable & Mesh Analyzer",
+    "description": "40Gbps TB4 DMA link monitor, E-marker cable decoding, interactive link failure & auto-heal simulator, and B2B enterprise NOC packaging.",
+    "canonical_path": "01_apps/network_cable_analyzer",
+    "port": 4007,
+    "frameworks": [
+      "html",
+      "react",
+      "flutter",
+      "liquid"
+    ],
+    "backend_dependencies": [
+      {
+        "endpoint": "GET http://127.0.0.1:4007/api/cable_telemetry",
+        "type": "SSE",
+        "rate": "1 Hz",
+        "purpose": "Real-time TB4 line rate, jitter, and Shark Wire BPF packet telemetry"
+      },
+      {
+        "endpoint": "GET /sys/class/net/bridge0/speed",
+        "type": "Sysfs / Darwin Mach",
+        "rate": "Periodic",
+        "purpose": "Physical Thunderbolt 4 DMA 40,000 Mbps bandwidth negotiation"
+      }
+    ]
+  },
+  "combat_storefront": {
+    "title": "Lauburu Combat Storefront & Commercial Ops",
+    "description": "B2B & D2C combat rashguard product customizer, Movesense Combat Kit purchase page, and iPhone 16 Pro marketplace card with ACL \u00a754 flaw disclosure.",
+    "canonical_path": "08_business_and_commerce",
+    "port": 8080,
+    "frameworks": [
+      "html",
+      "react",
+      "flutter",
+      "liquid"
+    ],
+    "backend_dependencies": [
+      {
+        "endpoint": "POST https://lauburugrappling.com/api/2026-10/graphql.json",
+        "type": "GraphQL",
+        "rate": "On-action",
+        "purpose": "Shopify Storefront API cart lines add and customer checkout tokenization"
+      },
+      {
+        "endpoint": "08_business_and_commerce/business_ledger.json",
+        "type": "Local JSON",
+        "rate": "Read/Write",
+        "purpose": "Commercial transaction ledger, inventory counts, and ELO ledger"
+      }
+    ]
+  }
+}

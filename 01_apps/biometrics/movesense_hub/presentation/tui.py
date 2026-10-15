@@ -138,6 +138,19 @@ class MovesenseReadinessTUIApp(App):
     def update_hud(self) -> None:
         readiness, sensor = self._load_data()
 
+        def _get_snr(d: dict) -> Optional[float]:
+            if "snr_clean_db" in d: return d.get("snr_clean_db")
+            if "snr_db" in d: return d.get("snr_db")
+            for k, v in d.items():
+                if isinstance(v, dict):
+                    res = _get_snr(v)
+                    if res is not None: return res
+            return None
+
+        snr = _get_snr(sensor)
+        if snr is None:
+            snr = _get_snr(readiness)
+
         is_connected = sensor.get("connected", False) or readiness.get("status") == "STREAMING"
         hr = sensor.get("heart_rate_bpm") or sensor.get("heart_rate") or readiness.get("sensor_telemetry", {}).get("heart_rate_bpm")
         rmssd = sensor.get("rmssd_ms") or readiness.get("sensor_telemetry", {}).get("rmssd_ms")
@@ -160,6 +173,17 @@ class MovesenseReadinessTUIApp(App):
         workout = readiness.get("activity_and_workout", {})
         activity = workout.get("current_activity") or "RESTING"
         training_zone = workout.get("training_zone", "Awaiting Sensor Stream")
+
+        if snr is not None and snr < 6.0:
+            is_connected = False
+            hr = None
+            rmssd = None
+            dfa = None
+            sys_bp = None
+            dia_bp = None
+            bp_status = "WAITING_FOR_SENSOR"
+            activity = "WAITING_FOR_SENSOR"
+            training_zone = "WAITING_FOR_SENSOR"
 
         # 1. Heart Rate & Autonomic RMSSD Card
         t_hr = Text()
@@ -233,7 +257,14 @@ class MovesenseReadinessTUIApp(App):
         table_dsp.add_column("Subsystem", style="green", width=24)
         table_dsp.add_column("Status / Diagnostic Stream", style="white")
         table_dsp.add_row("Sensor Hardware", f"{self.config.device_name} (Serial {self.config.device_serial})")
-        table_dsp.add_row("Connection Status", "🟢 ACTIVE STREAMING" if is_connected else "🟡 WAITING_FOR_SENSOR (Rule #0 Certified)")
+        
+        conn_str = "🟢 ACTIVE STREAMING" if is_connected else "🟡 WAITING_FOR_SENSOR (Rule #0 Certified)"
+        if snr is not None and snr < 6.0:
+            conn_str = f"🔴 WAITING_FOR_SENSOR (Low SNR: {snr:.1f} dB)"
+        table_dsp.add_row("Connection Status", conn_str)
+        
+        snr_str = f"{snr:.1f} dB" if snr is not None else "N/A"
+        table_dsp.add_row("Bicep ECG SNR", snr_str)
         table_dsp.add_row("Pan-Tompkins DSP", f"{self.config.ecg_sample_rate_hz}Hz 4th-Order Bandpass + 150ms MWI")
         table_dsp.add_row("Kamath RR Filter", f"{self.config.kamath_threshold_pct:.0f}% Outlier Filter (Kamath et al. 2004)")
         table_dsp.add_row("Local Airgap Status", "🔒 100% AIRGAPPED (0% Biometrics Cloud Egress)")

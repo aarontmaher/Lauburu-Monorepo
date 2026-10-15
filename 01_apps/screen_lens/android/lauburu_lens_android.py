@@ -131,7 +131,7 @@ def get_active_app() -> Tuple[str, str]:
         cmd = ["adb"]
         if target:
             cmd.extend(["-s", target])
-        cmd.extend(["shell", "/data/local/tmp/rish -c 'dumpsys window displays' 2>/dev/null || dumpsys window displays"])
+        cmd.extend(["shell", "/data/local/tmp/rish -c 'dumpsys window displays' 2>&1 || dumpsys window displays"])
 
     try:
         res = subprocess.run(cmd, capture_output=True, text=True, timeout=2.0)

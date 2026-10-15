@@ -65,4 +65,4 @@ By running the decision loop directly on the **Apple Neural Engine (ANE)** and *
 - **Neo Healer Daemon:** Integrated into `neo_autonomous_mesh_healer.py` (Method: `regulate_continuous_training_compute()`).
 - **Telemetry State File:** Serialized to `/tmp/neo_npu_training_regulator.json` and mirrored in `/tmp/lauburu_npu_state.json`.
 - **Knowledge Vault:** Chronicle entries automatically appended to `obsidian_vault/05_AGENTS/NEO_CONTINUOUS_AI_TRAINING_CHRONICLE.md`.
-- **LoRA Distillation:** Action trajectories recorded into `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`.
+- **LoRA Distillation:** Action trajectories recorded into `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`.

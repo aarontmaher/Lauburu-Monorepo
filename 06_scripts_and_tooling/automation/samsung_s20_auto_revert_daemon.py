@@ -2,7 +2,7 @@
 """
 Samsung S20+ Dedicated Router Gateway Auto-Revert Watchdog Daemon
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Primary ADB path  : Tailscale TCP  → 100.84.40.95:5555
+• Primary ADB path  : Tailscale TCP  → 100.78.206.96:5555
 • Fallback ADB path : GL.iNet Router → SSH 192.168.8.1 (USB serial usb:1-1)
 • When Tailscale VPN drops the fallback breaks Doze and revives it.
 • NEVER force-stops com.tailscale.ipn or com.termux — always protects them.
@@ -15,7 +15,7 @@ import os
 import datetime
 
 # ── Config ─────────────────────────────────────────────────────────────────────
-TARGET_TAILSCALE   = os.environ.get("S20_ADB_TARGET", "100.84.40.95:5555")
+TARGET_TAILSCALE   = os.environ.get("S20_ADB_TARGET", "100.78.206.96:5555")
 ROUTER_SSH_HOST    = "192.168.8.1"
 ROUTER_ADB_SERIAL  = "usb:1-1"
 ADB_BIN            = "/Users/aaron/.local/bin/adb" if os.path.isfile("/Users/aaron/.local/bin/adb") else "adb"

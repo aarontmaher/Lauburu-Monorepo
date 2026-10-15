@@ -21,7 +21,7 @@ Physical interface layout is the primary differentiator between consumer-grade e
 
 | Model | Classification | Spectral Frequency Bands | Multi-Gigabit and Standard Physical Interface Allocation | Retail Price (AUD) & Identifier | Architectural Profile |
 | :--- | :--- | :--- | :--- | :---: | :--- |
-| **ASUS ROG Rapture GT-BE98** | Prosumer Gaming Router | Wi-Fi 7; Quad-Band (2.4 GHz, dual 5 GHz, 6 GHz) | **2x 10Gbps ports** (selectable WAN/LAN) + **4x 2.5Gbps ports** + 1x 1Gbps LAN (7 RJ45 total) | **$1,499 AUD** (SKU: 782071) | Symmetrical 10G routing, multi-gig link aggregation, and hardware-accelerated gaming queues |
+| **ASUS ROG Rapture GT-BE98** | Prosumer Gaming Router | Wi-Fi 7; Quad-Band (2.4 GHz, dual 5 GHz, 6 GHz) | **2x 40Gbps ports** (selectable WAN/LAN) + **4x 2.5Gbps ports** + 1x 1Gbps LAN (7 RJ45 total) | **$1,499 AUD** (SKU: 782071) | Symmetrical 10G routing, multi-gig link aggregation, and hardware-accelerated gaming queues |
 | **Netgear Nighthawk RS300** | High-Performance Router | Wi-Fi 7; Tri-Band (2.4 GHz, 5 GHz, 6 GHz) | **1x 2.5Gbps WAN** + **2x 2.5Gbps LAN** + 2x 1Gbps LAN (5 RJ45 total) | **$599 AUD** (SKU: 678200) | Balanced 2.5GbE port distribution, 320 MHz channel allocation on 6 GHz, and low interference |
 | **Netgear Nighthawk RS600** | Enthusiast Router | Wi-Fi 7; Tri-Band (2.4 GHz, 5 GHz, 6 GHz) | Multi-Gigabit WAN/LAN switching fabric | **$799 AUD** (SKU: 678206) | High-capacity wireless processing and intermediate multi-gigabit throughput scaling |
 | **TP-Link Archer GE400** | Dedicated Gaming Router | Wi-Fi 7; Dual-Band (2.4 GHz, 5 GHz) | **2x 2.5Gbps ports** (1x WAN/LAN + 1x Gaming LAN) + standard LAN | **$449 AUD** (SKU: 835367) | Cost-effective 2.5GbE upstream and downstream gaming pipeline with dedicated QoS prioritization |
@@ -36,7 +36,7 @@ The transition from dual-band to tri-band and quad-band topologies fundamentally
 - **Tri-Band Systems (e.g. Netgear Nighthawk RS300, TP-Link Deco BE65):** Introduces the clean 6 GHz band. This higher-frequency spectrum enables clean 320 MHz contiguous channels, insulated from legacy Wi-Fi 4, 5, and 6 client chatter and free from the Dynamic Frequency Selection (DFS) radar-sharing mandates that frequently disrupt 5 GHz transmissions.
 - **Quad-Band Radio Topologies (e.g. ASUS ROG Rapture GT-BE98):** Operates with 2.4 GHz, two independent 5 GHz bands, and a 6 GHz band, providing an aggregate theoretical capacity of up to 25 Gbps. This topology allows an administrator to isolate specific bands for specialized functions: one 5 GHz band can be reserved exclusively for wireless backhaul or high-priority gaming endpoints, while the remaining 5 GHz and 6 GHz spectra accommodate general high-throughput data processing and media distribution.
 
-Complementing its radio architecture, the GT-BE98's physical switching layout features **dual 10GbE interfaces alongside quad 2.5GbE ports**. This configuration enables true line-rate 10Gbps WAN termination from enterprise fiber connections, while concurrently bridging to a localized 10GbE network core or a high-performance all-flash storage array without introducing internal bus-level bottlenecks.
+Complementing its radio architecture, the GT-BE98's physical switching layout features **dual 10GbE interfaces alongside quad 2.5GbE ports**. This configuration enables true line-rate 40Gbps WAN termination from enterprise fiber connections, while concurrently bridging to a localized 10GbE network core or a high-performance all-flash storage array without introducing internal bus-level bottlenecks.
 
 ---
 
@@ -68,7 +68,7 @@ Connecting mobile workstations or compact desktop hosts (such as Apple Silicon h
 | :--- | :--- | :--- | :--- | :---: | :--- |
 | **OWC Thunderbolt 3 10G Ethernet Adapter** | Thunderbolt 3 (40 Gbps PCIe Tunnel) | Marvell/Aquantia AQC107S | 1x RJ45 (10G/5G/2.5G/1G/100M auto-negotiating) | **~$359.70 AUD** | Bus-powered operation; extruded aluminum chassis functions as a passive heat spreader; native macOS and Linux kernel driver integration. |
 | **OWC Thunderbolt 4 10G Ethernet Adapter** | Thunderbolt 4 (40 Gbps PCIe Tunnel) | Marvell AQC113CS | 1x RJ45 (10G/5G/2.5G/1G) | **~$445.00 AUD** | Refined PHY silicon reducing active thermal dissipation; enhanced sleep state energy management under low workloads. |
-| **OWC Thunderbolt 5 Dual 10GbE Network Dock** | Thunderbolt 5 (80–120 Gbps) | Dual Enterprise Multi-Gigabit PHYs | 2x 10GbE ports + 1x 2.5GbE port + downstream USB 10Gbps | **~$927.99 AUD** | Workstation deployment; supports 20 Gbps Link Aggregation (LACP) bonding directly to enterprise storage arrays. |
+| **OWC Thunderbolt 5 Dual 10GbE Network Dock** | Thunderbolt 5 (80–120 Gbps) | Dual Enterprise Multi-Gigabit PHYs | 2x 10GbE ports + 1x 2.5GbE port + downstream USB 40Gbps | **~$927.99 AUD** | Workstation deployment; supports 20 Gbps Link Aggregation (LACP) bonding directly to enterprise storage arrays. |
 | **Generic USB-C to 2.5GbE Dongle** | USB 3.2 Gen 1 (5 Gbps Packet Bus) | Realtek RTL8156B | 1x RJ45 (2.5G/1G/100M) | **~$40 – $75 AUD** | Low cost; high CPU interrupt overhead; susceptible to packet drop under sustained bidirectional load. |
 
 ---
@@ -113,7 +113,7 @@ Under `/mesh-transport-wake-on-lan`, remote power orchestration is coupled direc
 │    • Standby nodes maintain low-power PHY link (10/100 Mbps energy sleep).  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 3. NODE RESURRECTION TARGETS                                                │
-│    • Linux Head Node (AMD Ryzen 7 5700U): MAC 00:41:0e:14:28:43 (PCIe NIC)  │
+│    • Linux Head Node (Intel 2018 Mac Mini (Linux)): MAC 00:41:0e:14:28:43 (PCIe NIC)  │
 │    • Bedside Linux Tablet: MAC 00:03:7f:c2:00:43 (PCIe NIC)                 │
 │    • MacBook Pro Vault: MAC a4:83:e7:d1:7c:82 (womp 1 / Sleep Proxy)        │
 │    • MacBook Air: MAC 66:74:75:d8:16:fb (womp 1 / Sleep Proxy)              │
@@ -123,11 +123,11 @@ Under `/mesh-transport-wake-on-lan`, remote power orchestration is coupled direc
 ### Empirical CLI Dispatch Verification:
 ```bash
 # Dispatch WoL Magic Packet to Linux Head Node via wol_manager
-python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/mesh/canonical_network_resurrection_engine.py --wake linux_head_node
+python3 /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/mesh/canonical_network_resurrection_engine.py --wake linux_head_node
 
 # Output:
 # 2026-09-04 14:28:51 [INFO] [WoLManager]: ⚡ [WoL] 102-byte Magic Packet dispatched to MAC: 00:41:0e:14:28:43 (192.168.8.255:9)
-# 2026-09-04 14:28:51 [INFO] [WoLManager]: 📑 Obsidian WoL Dashboard updated -> /Users/aaron/DFS_UNIFIED/00_SYSTEM_DASHBOARDS/WAKE_ON_LAN_CLUSTER.md
+# 2026-09-04 14:28:51 [INFO] [WoLManager]: 📑 Obsidian WoL Dashboard updated -> /Volumes/Lauburu-Monorepo/00_SYSTEM_DASHBOARDS/WAKE_ON_LAN_CLUSTER.md
 ```
 
 ---

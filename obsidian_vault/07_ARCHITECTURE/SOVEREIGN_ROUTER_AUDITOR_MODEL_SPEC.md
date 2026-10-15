@@ -43,7 +43,7 @@ To maximize reasoning depth, visual perception speed, and zero-cost distributed 
 
 ### ⚡ Role C: Distributed Sharding Benchmark & Topology Governor
 - Autonomously tests and benchmarks the 4 canonical distributed inference protocols across 82.8 GB pooled VRAM:
-  1. **Prima.cpp Pipelined-Ring Parallelism (Port 8082):** Primary master across 10Gbps Thunderbolt 4 DMA bridge (0.27ms RTT).
+  1. **Prima.cpp Pipelined-Ring Parallelism (Port 8082):** Primary master across 40Gbps Thunderbolt 4 DMA bridge (0.27ms RTT).
   2. **llama.cpp RPC Sharding (Ports 8081-8084):** Distributed layer-by-layer tensor sharding across Mac, Linux, and Android.
   3. **Exo Decentralized Peer-to-Peer:** Ring-memory dynamic routing.
   4. **Petals Distributed DHT:** Resilient swarm layers for heterogeneous clusters.
@@ -51,4 +51,4 @@ To maximize reasoning depth, visual perception speed, and zero-cost distributed 
 
 ### 🏆 Role D: Dynamic Bradley-Terry ELO & LoRA Distillation Engine
 - Updates model ELO standings after every task.
-- Synthesizes Multimodal DPO (<prompt, chosen_diff, rejected_diff, visual_evidence>) pairs into `/Users/aaron/DFS_UNIFIED/lora_datasets/` for nightly Apple Silicon Metal fine-tuning.
+- Synthesizes Multimodal DPO (<prompt, chosen_diff, rejected_diff, visual_evidence>) pairs into `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/` for nightly Apple Silicon Metal fine-tuning.

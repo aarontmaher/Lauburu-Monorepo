@@ -8,7 +8,7 @@ status: verified_empirical
 # 📊 Training Methodology: Apple MLX vs. llama-finetune vs. DPO Lakehouse
 
 ## 1. Executive Summary & Verdict
-Following extensive empirical profiling across the 7-Layer Lauburu Mesh (specifically the **Thunderbolt Trio**: M4 Pro Mac Mini Host, M4 MacBook Pro L2, M4 MacBook Air L5), **MLX is strictly disqualified from live mesh serving and distributed orchestration**, and relegated strictly to isolated offline batch fine-tuning.
+Following extensive empirical profiling across the 7-Layer Lauburu Mesh (specifically the **Thunderbolt Trio**: M4 Pro Mac Mini Host, Intel Core i7 MacBook Pro L2, M4 MacBook Air L5), **MLX is strictly disqualified from live mesh serving and distributed orchestration**, and relegated strictly to isolated offline batch fine-tuning.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐

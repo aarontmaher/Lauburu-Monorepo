@@ -32,8 +32,8 @@ MESH_NODES: List[MeshNodeInfo] = [
     ),
     MeshNodeInfo(
         layer="L3",
-        node_name="Linux_Head_Node",
-        network_role="Gateway Ingress & Compute Hub (AMD Ryzen 7 5700U)",
+        node_name="Linux_Mini",
+        network_role="Gateway Ingress & Compute Hub (Intel 2018 Mac Mini (Linux))",
         local_ip="192.168.8.224",
         tailscale_ip="100.101.39.98",
         physical_ram_gb=16.0,

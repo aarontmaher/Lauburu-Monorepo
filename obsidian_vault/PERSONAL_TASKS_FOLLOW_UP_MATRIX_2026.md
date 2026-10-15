@@ -34,7 +34,7 @@ graph TD
 * **Context & Background**: Urgent inpatient surgical operation was scheduled for August 31, 2026. A pre-admission medical clearance form was generated and staged on Desktop.
 * **Associated Files**:
   - [Medical_Form_Submission.html](file:///Users/aaron/Desktop/Medical_Form_Submission.html)
-  - [LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md)
+  - [LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md](file:///Volumes/Lauburu-Monorepo/obsidian_vault/LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md)
 * **Key Declared Profile**:
   - **Medications**: Vyvanse 50 mg, Dexamphetamine 20 mg, Amitriptyline 10 mg, PPI 40 mg.
   - **Allergies**: No known drug or latex allergies.
@@ -49,7 +49,7 @@ graph TD
 * **Context & Background**: A parking infringement was incurred during the pre-surgical consultation period. An internal review appeal draft was staged on Desktop citing exceptional medical circumstances.
 * **Associated Files**:
   - [Parking_Ticket_Appeal.txt](file:///Users/aaron/Desktop/Parking_Ticket_Appeal.txt)
-  - [LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md)
+  - [LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md](file:///Volumes/Lauburu-Monorepo/obsidian_vault/LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md)
 * **Statutory Clock**: Strict **28-day window** under the *Infringements Act* before late penalty surcharges and enforcement fees apply.
 * **Immediate Follow-Up Actions**:
   1. **Insert Identifiers**: Populate the Notice Number, Vehicle Registration, and postal address into the review draft.
@@ -63,7 +63,7 @@ graph TD
 * **Context & Background**: An Irish passport application was lodged with the Department of Foreign Affairs (DFA). An inquiry draft was prepared to ensure processing does not stall due to witness verification or photo issues.
 * **Associated Files**:
   - [Irish_Passport_Query.txt](file:///Users/aaron/Desktop/Irish_Passport_Query.txt)
-  - [LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault/LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md)
+  - [LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md](file:///Volumes/Lauburu-Monorepo/obsidian_vault/LIFE_OPS_TRIAGE_MEDICAL_PARKING_PASSPORT_DEBATE.md)
 * **Immediate Follow-Up Actions**:
   1. **Query DFA Tracking Portal**: Check the 9-digit Application Number on the official [DFA Passport Tracking System](https://www.dfa.ie/passporttracking/).
   2. **Verify Physical Documents**: Confirm registered post delivery tracking for original identity / citizenship documents sent to the processing hub.
@@ -76,10 +76,10 @@ graph TD
 
 | Task | Core Focus | Location / Deliverable | Status |
 | :--- | :--- | :--- | :--- |
-| **Biometrics DSP** | 512Hz Pan-Tompkins QRS detection & PTT Blood Pressure | [04_movesense_biometrics_and_dsp.ipynb](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/notebooks/04_movesense_biometrics_and_dsp.ipynb) | Verified (68 Tests Passing) |
-| **Spatial Grappling** | 955-Node OPML BJJ tree & 3D Tatami kinematics | [05_spatial_grappling_3d_kinematics.ipynb](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/notebooks/05_spatial_grappling_3d_kinematics.ipynb) | Complete & Synchronized |
-| **Mesh Health Monitor** | Standalone Ratatui Rust TUI monitoring 14 ports & 7 nodes | [rust_project_monitor](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/rust_project_monitor/) | Built (`cargo run --release`) |
-| **24/7 LoRA Distillation** | Continuous instruction pair harvesting and model distillation | [continuous_lora_dataset.jsonl](file:///Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl) | Continuous sync |
+| **Biometrics DSP** | 512Hz Pan-Tompkins QRS detection & PTT Blood Pressure | [04_movesense_biometrics_and_dsp.ipynb](file:///Volumes/Lauburu-Monorepo/01_apps/notebooks/04_movesense_biometrics_and_dsp.ipynb) | Verified (68 Tests Passing) |
+| **Spatial Grappling** | 955-Node OPML BJJ tree & 3D Tatami kinematics | [05_spatial_grappling_3d_kinematics.ipynb](file:///Volumes/Lauburu-Monorepo/01_apps/notebooks/05_spatial_grappling_3d_kinematics.ipynb) | Complete & Synchronized |
+| **Mesh Health Monitor** | Standalone Ratatui Rust TUI monitoring 14 ports & 7 nodes | [rust_project_monitor](file:///Volumes/Lauburu-Monorepo/01_apps/rust_project_monitor/) | Built (`cargo run --release`) |
+| **24/7 LoRA Distillation** | Continuous instruction pair harvesting and model distillation | [continuous_lora_dataset.jsonl](file:///Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl) | Continuous sync |
 
 ---
 

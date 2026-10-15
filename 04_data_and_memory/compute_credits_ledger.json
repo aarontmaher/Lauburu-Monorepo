@@ -1,0 +1,101 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-09-06T07:19:11Z",
+  "total_tokens_contributed": 842100,
+  "total_tokens_consumed": 316226,
+  "credits_earned_aud": 1.68,
+  "credits_spent_aud": 0.32,
+  "net_balance_aud": 1.37,
+  "nodes_ledger": {
+    "Mac_Node": {
+      "contributed_tokens": 320000,
+      "consumed_tokens": 150826
+    },
+    "MacBook_Pro": {
+      "contributed_tokens": 280000,
+      "consumed_tokens": 65000
+    },
+    "Linux_Head_Node": {
+      "contributed_tokens": 145000,
+      "consumed_tokens": 40000
+    },
+    "MacBook_Air": {
+      "contributed_tokens": 97100,
+      "consumed_tokens": 60400
+    }
+  },
+  "recent_transactions": [
+    {
+      "id": "tx-1788679151670",
+      "timestamp": "2026-09-06T07:19:11Z",
+      "type": "CONSUMPTION",
+      "device": "Mac_Node",
+      "tokens": 106,
+      "credits_delta_aud": -0.0001,
+      "description": "Front Dashboard chat inference (qwen_38_max)"
+    },
+    {
+      "id": "tx-1788679118811",
+      "timestamp": "2026-09-06T07:18:38Z",
+      "type": "CONSUMPTION",
+      "device": "Mac_Node",
+      "tokens": 148,
+      "credits_delta_aud": -0.0001,
+      "description": "Front Dashboard chat inference (qwen_38_max)"
+    },
+    {
+      "id": "tx-1788679083866",
+      "timestamp": "2026-09-06T07:18:03Z",
+      "type": "CONSUMPTION",
+      "device": "Mac_Node",
+      "tokens": 156,
+      "credits_delta_aud": -0.0002,
+      "description": "Front Dashboard chat inference (qwen_38_max)"
+    },
+    {
+      "id": "tx-1788678832894",
+      "timestamp": "2026-09-06T07:13:52Z",
+      "type": "CONSUMPTION",
+      "device": "Mac_Node",
+      "tokens": 103,
+      "credits_delta_aud": -0.0001,
+      "description": "Front Dashboard chat inference (qwen_38_max)"
+    },
+    {
+      "id": "tx-1788678818350",
+      "timestamp": "2026-09-06T07:13:38Z",
+      "type": "CONSUMPTION",
+      "device": "Mac_Node",
+      "tokens": 10,
+      "credits_delta_aud": -0.0,
+      "description": "Front Dashboard chat inference (qwen_38_max)"
+    },
+    {
+      "id": "tx-1788561687005",
+      "timestamp": "2026-09-04T22:41:27Z",
+      "type": "CONSUMPTION",
+      "device": "Mac_Node",
+      "tokens": 106,
+      "credits_delta_aud": -0.0001,
+      "description": "Front Dashboard chat inference (qwen_38_max)"
+    },
+    {
+      "id": "tx-1788561661876",
+      "timestamp": "2026-09-04T22:41:01Z",
+      "type": "CONSUMPTION",
+      "device": "Mac_Node",
+      "tokens": 197,
+      "credits_delta_aud": -0.0002,
+      "description": "Front Dashboard chat inference (qwen_38_max)"
+    },
+    {
+      "id": "tx-init-01",
+      "timestamp": "2026-09-04T21:50:12Z",
+      "type": "CONTRIBUTION",
+      "device": "MacBook_Pro (TB4 RPC)",
+      "tokens": 45000,
+      "credits_delta_aud": 0.09,
+      "description": "Prima.cpp Layer Sharding RPC batch served"
+    }
+  ]
+}

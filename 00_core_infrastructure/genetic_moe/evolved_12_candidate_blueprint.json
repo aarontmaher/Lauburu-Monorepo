@@ -1,0 +1,129 @@
+{
+  "timestamp": "2026-09-02T15:00:15Z",
+  "generations": 10,
+  "max_fitness": 3841.61,
+  "optimal_topology": {
+    "tailcat": 0.173,
+    "tsnet": 0.058,
+    "tailscaled": 0.001,
+    "headscale": 0.115,
+    "netbird": 0.062,
+    "nebula": 0.041,
+    "aggligator_rust": 0.183,
+    "glorytun": 0.101,
+    "engarde_redundant": 0.033,
+    "multiwan_wfq": 0.132,
+    "prima_cpp": 0.1,
+    "exo_p2p": 0.001
+  },
+  "candidates": {
+    "tailcat": {
+      "name": "Tailscale tailcat (Zero-Control-Plane Ephemeral WireGuard)",
+      "category": "mesh_transport",
+      "ram_mb": 7.8,
+      "latency_ms": 0.22,
+      "throughput_gbps": 3.8,
+      "zero_root": true,
+      "ideal_for": "Ephemeral AI Agent P2P socket piping & Paying user mobile apps"
+    },
+    "tsnet": {
+      "name": "Tailscale tsnet (Embedded Userspace Library)",
+      "category": "mesh_transport",
+      "ram_mb": 12.4,
+      "latency_ms": 0.28,
+      "throughput_gbps": 3.2,
+      "zero_root": true,
+      "ideal_for": "Persistent Embedded Client App microservices"
+    },
+    "tailscaled": {
+      "name": "Tailscale System Daemon (Kernel utun/tun0)",
+      "category": "mesh_transport",
+      "ram_mb": 38.2,
+      "latency_ms": 0.45,
+      "throughput_gbps": 4.5,
+      "zero_root": false,
+      "ideal_for": "Physical Host OS & Subnet Routers (192.168.8.0/24)"
+    },
+    "headscale": {
+      "name": "Headscale / Kwaami (Self-Hosted Control Plane)",
+      "category": "mesh_transport",
+      "ram_mb": 46.8,
+      "latency_ms": 0.3,
+      "throughput_gbps": 5.0,
+      "zero_root": true,
+      "ideal_for": "$0 SaaS Private Control Plane Coordinator"
+    },
+    "netbird": {
+      "name": "NetBird (Open-Source WireGuard + WebRTC ICE)",
+      "category": "mesh_transport",
+      "ram_mb": 25.0,
+      "latency_ms": 0.32,
+      "throughput_gbps": 4.2,
+      "zero_root": true,
+      "ideal_for": "Self-hosted zero-trust mesh with Web UI"
+    },
+    "nebula": {
+      "name": "Nebula (Slack Noise Protocol)",
+      "category": "mesh_transport",
+      "ram_mb": 11.5,
+      "latency_ms": 0.25,
+      "throughput_gbps": 3.6,
+      "zero_root": true,
+      "ideal_for": "Ultra-lightweight static server clusters"
+    },
+    "aggligator_rust": {
+      "name": "Aggligator Rust (Pure Userspace Link Aggregation)",
+      "category": "channel_bonding",
+      "ram_mb": 9.2,
+      "latency_ms": 0.19,
+      "throughput_gbps": 9.5,
+      "zero_root": true,
+      "ideal_for": "Zero-root multi-link channel bonding (TB4 + Wi-Fi 7 + 5G) without kernel MPTCP"
+    },
+    "glorytun": {
+      "name": "Glorytun C (Multipath UDP Tunnel)",
+      "category": "channel_bonding",
+      "ram_mb": 6.5,
+      "latency_ms": 0.24,
+      "throughput_gbps": 7.2,
+      "zero_root": true,
+      "ideal_for": "Ultra-lightweight UDP link aggregation"
+    },
+    "engarde_redundant": {
+      "name": "Engarde (Redundant Packet Replication)",
+      "category": "channel_bonding",
+      "ram_mb": 8.0,
+      "latency_ms": 0.15,
+      "throughput_gbps": 4.0,
+      "zero_root": true,
+      "ideal_for": "Zero-packet-loss 512Hz ECG Biometrics & Real-Time Audio streams"
+    },
+    "multiwan_wfq": {
+      "name": "Native WFQ Multi-WAN Engine (:18804)",
+      "category": "channel_bonding",
+      "ram_mb": 18.5,
+      "latency_ms": 0.27,
+      "throughput_gbps": 10.0,
+      "zero_root": true,
+      "ideal_for": "Dynamic Inverse-Square RTT Weighting (TB4 94.1% + Wi-Fi 7 5.5%)"
+    },
+    "prima_cpp": {
+      "name": "Prima.cpp Pipelined-Ring RPC",
+      "category": "ai_sharding",
+      "ram_mb": 22.0,
+      "latency_ms": 0.18,
+      "throughput_gbps": 9.8,
+      "zero_root": true,
+      "ideal_for": "High-Throughput 10Gbps Thunderbolt 4 Tensor Sharding"
+    },
+    "exo_p2p": {
+      "name": "Exo P2P Dynamic Ring Topology",
+      "category": "ai_sharding",
+      "ram_mb": 45.0,
+      "latency_ms": 0.35,
+      "throughput_gbps": 4.0,
+      "zero_root": true,
+      "ideal_for": "Consumer Apple Silicon & Android VRAM Pooling"
+    }
+  }
+}

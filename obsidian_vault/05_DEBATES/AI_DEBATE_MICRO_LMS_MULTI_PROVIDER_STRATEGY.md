@@ -100,11 +100,11 @@ The council ratifies the **Universal 4-Dimensional Micro LM Verification Gate**:
 │ • Gemma-2-2B-It (1.59 GB) + Phi-3.5-Mini (2.23 GB)                          │
 │ • Fast macro-orchestration, prompt routing, sub-millisecond planning.       │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ L2: MacBook Pro M4 (Metal GPU Vault via 10Gbps TB4 Bridge)                  │
+│ L2: Intel MacBook Pro (Metal GPU Vault via 40Gbps TB4 Bridge)                  │
 │ • NVIDIA Nemotron-Mini-4B (2.51 GB) + Ministral-3B (2.0 GB)                 │
 │ • Heavy structured function calling, C11 code generation, LoRA teacher.     │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ L3: Linux Head Node (Ryzen 7 5700U Docker Hub)                              │
+│ L3: Linux Head Node (Intel 2018 Mac Mini (Linux) Docker Hub)                              │
 │ • DeepSeek-R1-Distill-Qwen-1.5B (1.0 GB) + Qwen2.5-Coder-1.5B (1.04 GB)     │
 │ • Continuous background code auditing, Ray tasks, and git validations.      │
 ├─────────────────────────────────────────────────────────────────────────────┤

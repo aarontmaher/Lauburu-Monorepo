@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0d14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Omniterminal">
+  <meta name="description" content="Sovereign Multi-Transport Resilient Terminal & Mesh Console">
+  <title>Omni Terminal — Sovereign Console</title>
+  
+  <link rel="manifest" href="/terminal/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/terminal/icon.svg">
+  <link rel="apple-touch-icon" href="/terminal/icon-192.png">
+  <link rel="stylesheet" href="/terminal/xterm.css">
+  
+  <style>
+    :root {
+      --bg-dark: #0a0d14;
+      --panel-bg: #121722;
+      --border-color: rgba(0, 229, 255, 0.2);
+      --accent-cyan: #00e5ff;
+      --accent-magenta: #ff007f;
+      --accent-green: #00e676;
+      --accent-amber: #ffab00;
+      --text-main: #e2e8f0;
+      --text-muted: #64748b;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Mono", "Fira Code", monospace;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--panel-bg);
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      height: 52px;
+      z-index: 10;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 1px;
+      color: var(--accent-cyan);
+    }
+    .brand img {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+    }
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+    }
+    .pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+    }
+    .pill.online {
+      border-color: rgba(0, 230, 118, 0.3);
+      color: var(--accent-green);
+    }
+    .pill.active-transport {
+      border-color: rgba(0, 229, 255, 0.3);
+      color: var(--accent-cyan);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+    .dot.connecting {
+      background-color: var(--accent-amber);
+      box-shadow: 0 0 8px var(--accent-amber);
+    }
+    .dot.offline {
+      background-color: var(--accent-magenta);
+      box-shadow: 0 0 8px var(--accent-magenta);
+    }
+    #install-btn {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--accent-cyan), #0077ff);
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    #install-btn:active {
+      transform: scale(0.96);
+    }
+    #terminal-container {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+      position: relative;
+    }
+    .xterm {
+      padding: 8px 12px;
+      height: 100%;
+    }
+    /* Mobile Touch Bar */
+    #mobile-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--panel-bg);
+      border-top: 1px solid var(--border-color);
+      overflow-x: auto;
+      flex-shrink: 0;
+      height: 48px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .touch-btn {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      background: #1a2233;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .touch-btn:active, .touch-btn.active {
+      background: var(--accent-cyan);
+      color: #000;
+      border-color: var(--accent-cyan);
+    }
+    .touch-btn.special {
+      border-color: rgba(255, 0, 127, 0.4);
+      color: var(--accent-magenta);
+    }
+    @media (max-width: 600px) {
+      header {
+        padding: 8px 12px;
+      }
+      .brand span {
+        font-size: 13px;
+      }
+      .pill.transport-pill {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <img src="/terminal/icon.svg" alt="Logo">
+      <span>OMNI TERMINAL</span>
+    </div>
+    <div class="status-bar">
+      <div class="pill transport-pill active-transport" id="transport-pill">⚡ TB4 / Wi-Fi 7</div>
+      <div class="pill online" id="bt-pill" title="Router Bluetooth SPP Gateway (8C:86:DD:00:26:41)" style="cursor: pointer;" onclick="checkBluetoothStatus()">📶 BT: Lauburu-Router-BT</div>
+      <div class="pill online" id="connection-pill">
+        <span class="dot" id="status-dot"></span>
+        <span id="status-text">LIVE</span>
+      </div>
+      <button id="install-btn" title="Install as App on this device">⬇️ INSTALL APP</button>
+    </div>
+  </header>
+
+  <main id="terminal-container"></main>
+
+  <nav id="mobile-bar">
+    <button class="touch-btn" onclick="sendSpecial('ESC')">ESC</button>
+    <button class="touch-btn" onclick="sendSpecial('TAB')">TAB</button>
+    <button class="touch-btn" id="ctrl-btn" onclick="toggleModifier('CTRL')">CTRL</button>
+    <button class="touch-btn" id="alt-btn" onclick="toggleModifier('ALT')">ALT</button>
+    <button class="touch-btn" onclick="sendSpecial('UP')">▲</button>
+    <button class="touch-btn" onclick="sendSpecial('DOWN')">▼</button>
+    <button class="touch-btn" onclick="sendSpecial('LEFT')">◀</button>
+    <button class="touch-btn" onclick="sendSpecial('RIGHT')">▶</button>
+    <button class="touch-btn special" onclick="sendQuickCommand('ask \"status\"')">🤖 ASK AI</button>
+    <button class="touch-btn special" onclick="sendQuickCommand('telemetry')">📊 TELEM</button>
+    <button class="touch-btn special" onclick="sendSpecial('CTRL_C')">^C</button>
+    <button class="touch-btn special" onclick="sendSpecial('CLEAR')">CLEAR</button>
+    <button class="touch-btn" onclick="reconnectWS()">🔄 RECONNECT</button>
+  </nav>
+
+  <script src="/terminal/xterm.min.js"></script>
+  <script src="/terminal/xterm-addon-fit.min.js"></script>
+  <script>
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/terminal/sw.js')
+          .then(reg => console.log('Omniterminal PWA SW registered:', reg.scope))
+          .catch(err => console.error('PWA SW registration failed:', err));
+      });
+    }
+
+    // PWA Install Prompt Handler
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('install-btn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      installBtn.style.display = 'none';
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to install prompt: ${outcome}`);
+      deferredPrompt = null;
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBtn.style.display = 'none';
+      console.log('Omni Terminal successfully installed on this device!');
+    });
+
+    // Terminal Initialization
+    const term = new Terminal({
+      theme: {
+        background: '#0a0d14',
+        foreground: '#e2e8f0',
+        cursor: '#00e5ff',
+        cursorAccent: '#0a0d14',
+        selectionBackground: 'rgba(0, 229, 255, 0.3)',
+        black: '#1f2430',
+        red: '#ff5f56',
+        green: '#00e676',
+        yellow: '#ffbd2e',
+        blue: '#00e5ff',
+        magenta: '#ff007f',
+        cyan: '#00e5ff',
+        white: '#ffffff',
+        brightBlack: '#64748b',
+        brightRed: '#ff5f56',
+        brightGreen: '#27c93f',
+        brightYellow: '#ffbd2e',
+        brightBlue: '#7928ca',
+        brightMagenta: '#ff007f',
+        brightCyan: '#00e5ff',
+        brightWhite: '#ffffff'
+      },
+      fontFamily: '"SF Mono", "Fira Code", "Menlo", monospace',
+      fontSize: window.innerWidth < 600 ? 12 : 14,
+      lineHeight: 1.25,
+      cursorBlink: true,
+      scrollback: 5000,
+      convertEol: true
+    });
+
+    const fitAddon = new FitAddon.FitAddon();
+    term.loadAddon(fitAddon);
+    const container = document.getElementById('terminal-container');
+    term.open(container);
+    fitAddon.fit();
+
+    window.addEventListener('resize', () => {
+      fitAddon.fit();
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ event: 'RESIZE', cols: term.cols, rows: term.rows }));
+      }
+    });
+
+    // WebSocket Management
+    let ws = null;
+    let reconnectTimeout = null;
+    let ctrlActive = false;
+    let altActive = false;
+
+    const statusDot = document.getElementById('status-dot');
+    const statusText = document.getElementById('status-text');
+
+    function updateStatus(state) {
+      if (state === 'connected') {
+        statusDot.className = 'dot';
+        statusText.textContent = 'CONNECTED';
+      } else if (state === 'connecting') {
+        statusDot.className = 'dot connecting';
+        statusText.textContent = 'CONNECTING...';
+      } else {
+        statusDot.className = 'dot offline';
+        statusText.textContent = 'OFFLINE';
+      }
+    }
+
+    function connectWebSocket() {
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      updateStatus('connecting');
+
+      const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${proto}//${window.location.host}/ws/terminal`;
+
+      try {
+        ws = new WebSocket(wsUrl);
+      } catch (err) {
+        console.error('WS init failed:', err);
+        updateStatus('offline');
+        reconnectTimeout = setTimeout(connectWebSocket, 3000);
+        return;
+      }
+
+      ws.onopen = () => {
+        updateStatus('connected');
+        term.write('\x1b[1;36m⚡ [Omni Terminal] Connected to Sovereign PTY Multiplexer\x1b[0m\r\n');
+        ws.send(JSON.stringify({ event: 'RESIZE', cols: term.cols, rows: term.rows }));
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.event === 'STDOUT' && data.payload) {
+            term.write(data.payload);
+          } else if (typeof data === 'string') {
+            term.write(data);
+          }
+        } catch (e) {
+          term.write(event.data);
+        }
+      };
+
+      ws.onclose = () => {
+        updateStatus('offline');
+        term.write('\r\n\x1b[1;31m⚠️  [Omni Terminal] Disconnected. Reconnecting...\x1b[0m\r\n');
+        reconnectTimeout = setTimeout(connectWebSocket, 2000);
+      };
+
+      ws.onerror = (err) => {
+        console.error('WS error:', err);
+        ws.close();
+      };
+    }
+
+    function reconnectWS() {
+      if (ws) ws.close();
+      connectWebSocket();
+    }
+
+    // Terminal Input
+    term.onData((data) => {
+      if (!ws || ws.readyState !== WebSocket.OPEN) return;
+
+      if (ctrlActive) {
+        ctrlActive = false;
+        document.getElementById('ctrl-btn').classList.remove('active');
+        if (data.length === 1) {
+          const code = data.toUpperCase().charCodeAt(0);
+          if (code >= 64 && code <= 95) {
+            data = String.fromCharCode(code - 64);
+          }
+        }
+      }
+      if (altActive) {
+        altActive = false;
+        document.getElementById('alt-btn').classList.remove('active');
+        data = '\x1b' + data;
+      }
+
+      ws.send(JSON.stringify({ event: 'STDIN', payload: data }));
+    });
+
+    // Mobile Modifier & Special Keys
+    function toggleModifier(mod) {
+      if (mod === 'CTRL') {
+        ctrlActive = !ctrlActive;
+        document.getElementById('ctrl-btn').classList.toggle('active', ctrlActive);
+      } else if (mod === 'ALT') {
+        altActive = !altActive;
+        document.getElementById('alt-btn').classList.toggle('active', altActive);
+      }
+    }
+
+    function sendSpecial(key) {
+      if (!ws || ws.readyState !== WebSocket.OPEN) return;
+      let payload = '';
+      switch (key) {
+        case 'ESC': payload = '\x1b'; break;
+        case 'TAB': payload = '\t'; break;
+        case 'UP': payload = '\x1b[A'; break;
+        case 'DOWN': payload = '\x1b[B'; break;
+        case 'RIGHT': payload = '\x1b[C'; break;
+        case 'LEFT': payload = '\x1b[D'; break;
+        case 'CTRL_C': payload = '\x03'; break;
+        case 'CLEAR': term.clear(); return;
+      }
+      if (payload) {
+        ws.send(JSON.stringify({ event: 'STDIN', payload: payload }));
+      }
+    }
+
+    function sendQuickCommand(cmd) {
+      if (!ws || ws.readyState !== WebSocket.OPEN) return;
+      ws.send(JSON.stringify({ event: 'STDIN', payload: cmd + '\r\n' }));
+    }
+
+    async function checkBluetoothStatus() {
+      try {
+        const res = await fetch('/api/v1/terminal/bluetooth/status');
+        const data = await res.json();
+        term.write('\r\n\x1b[1;33m═══════════════════════════════════════════════════════════\x1b[0m\r\n');
+        term.write(`\x1b[1;36m📶 Bluetooth Router Gateway:\x1b[0m ${data.router_dongle.adapter} (${data.router_dongle.mac})\r\n`);
+        term.write(`\x1b[1;32m• Protocol:\x1b[0m ${data.router_dongle.version} | RFCOMM Channel ${data.router_dongle.spp_channel}\r\n`);
+        term.write(`\x1b[1;32m• Daemon Port 4005:\x1b[0m ${data.serial_daemon.online ? 'ONLINE' : 'STANDBY'}\r\n`);
+        term.write(`\x1b[1;32m• Connected Clients:\x1b[0m ${data.connected_peripherals.map(p => p.name).join(', ')}\r\n`);
+        term.write('\x1b[1;33m═══════════════════════════════════════════════════════════\x1b[0m\r\n$ ');
+      } catch (err) {
+        term.write(`\r\n\x1b[1;31m❌ Failed to query Bluetooth status: ${err}\x1b[0m\r\n$ `);
+      }
+    }
+
+    // Initial Connect
+    connectWebSocket();
+  </script>
+</body>
+</html>

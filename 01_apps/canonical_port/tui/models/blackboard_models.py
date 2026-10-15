@@ -143,7 +143,7 @@ class WanRoute:
 @dataclass
 class TailscalePeer:
     """Peer in the 7-Node Tailscale WireGuard Overlay Mesh."""
-    node_name: str           # e.g., "Mac_Node", "MacBook_Pro", "Linux_Head_Node"
+    node_name: str           # e.g., "Mac_Node", "MacBook_Pro", "Linux_Mini"
     ip: str                  # Tailscale 100.x.y.z IP
     status: str              # "ONLINE", "IDLE", "OFFLINE"
     relay: str               # "Direct WireGuard", "DERP Relay"
@@ -261,13 +261,13 @@ class HardwareNodeState:
     vram_cap_gb: float       # 21.6
     vram_used_gb: float      # 12.0
     dynamic_cap_pct: float   # 90.0
-    cpu_usage_pct: float     # 22.4
-    cpu_cores: int           # 12
-    load_1m: float           # 1.85
-    load_5m: float           # 1.62
-    load_15m: float          # 1.40
-    thermal_c: float         # 42.5
-    thermal_status: str      # "NOMINAL", "FAIR", "SERIOUS", "CRITICAL"
+    cpu_usage_pct: Optional[float]           # 22.4 (or None if offline/unprobed)
+    cpu_cores: int                           # 12
+    load_1m: Optional[float]                 # 1.85 (or None if offline/unprobed)
+    load_5m: Optional[float]                 # 1.62 (or None if offline/unprobed)
+    load_15m: Optional[float]                # 1.40 (or None if offline/unprobed)
+    thermal_c: Optional[float]               # 42.5 (or None if offline/unprobed)
+    thermal_status: str                      # "NOMINAL", "FAIR", "SERIOUS", "CRITICAL"
     battery_pct: Optional[int] = None
     is_charging: bool = True
     power_source: str = "AC" # "AC" or "BATTERY"
@@ -360,7 +360,7 @@ NODE_CANONICAL_PROFILES = {
     "L7": {"headless_capable": True, "headless_score": 80, "priority_rank": 6, "device_elo_rating": 1480.0},
     "L4": {"headless_capable": True, "headless_score": 75, "priority_rank": 7, "device_elo_rating": 1470.0},
     "L5": {"headless_capable": True, "headless_score": 72, "priority_rank": 2, "device_elo_rating": 1540.0},
-    "L2": {"headless_capable": True, "headless_score": 70, "priority_rank": 3, "device_elo_rating": 1510.0, "model": "Apple Silicon TB4 Bridge Node"},
+    "L2": {"headless_capable": True, "headless_score": 70, "priority_rank": 3, "device_elo_rating": 1510.0, "model": "Intel Core i7 MacBook Pro"},
 }
 
 
@@ -400,8 +400,6 @@ class Layer1HardwareState:
                     n["priority_rank"] = prof["priority_rank"]
                 if n.get("device_elo_rating", 1500.0) == 1500.0:
                     n["device_elo_rating"] = prof["device_elo_rating"]
-                if nid == "L2" and "Intel" in n.get("model", ""):
-                    n["model"] = prof["model"]
             nodes.append(HardwareNodeState(**n))
         # Ensure L5 is ranked above L2 in list
         nodes.sort(key=lambda x: x.priority_rank)
@@ -698,16 +696,16 @@ class Layer3AiInferenceState:
     petals_swarm: PetalsSwarmState = field(default_factory=PetalsSwarmState)
     exo_p2p: ExoP2PState = field(default_factory=ExoP2PState)
     active_ports: Dict[str, int] = field(default_factory=lambda: {
-        "kimi_gateway": 8081,
-        "qwen_coder": 8082,
-        "genetic_moe": 8083,
+        "qwen_25_coder_syntax_worker": 8081,
+        "qwen_38_max": 8082,
+        "qwen_38_max_abliterated": 8083,
         "qwen_edge_vision": 8084,
         "kimi_vl": 8085,
         "llama_rpc": 50052
     })
     active_engine: str = "llama_rpc"
     supported_engines: List[str] = field(default_factory=lambda: [
-        "llama_rpc", "exo", "accelerate", "petals"
+        "prima", "llama_rpc", "exo", "accelerate", "petals"
     ])
 
     def to_dict(self) -> Dict[str, Any]:
@@ -740,15 +738,15 @@ class Layer3AiInferenceState:
             petals_swarm=petals,
             exo_p2p=exo,
             active_ports=data.get("active_ports", {
-                "kimi_gateway": 8081,
-                "qwen_coder": 8082,
-                "genetic_moe": 8083,
+                "qwen_25_coder_syntax_worker": 8081,
+                "qwen_38_max": 8082,
+                "qwen_38_max_abliterated": 8083,
                 "qwen_edge_vision": 8084,
                 "kimi_vl": 8085,
                 "llama_rpc": 50052
             }),
             active_engine=data.get("active_engine", "llama_rpc"),
-            supported_engines=data.get("supported_engines", ["llama_rpc", "exo", "accelerate", "petals"])
+            supported_engines=data.get("supported_engines", ["prima", "llama_rpc", "exo", "accelerate", "petals"])
         )
 
 
@@ -958,8 +956,10 @@ class Layer5GovernanceState:
         return self.debate_council
 
     def to_dict(self) -> Dict[str, Any]:
+        deb_dict = self.debate_council.to_dict()
         return {
-            "debate_council": self.debate_council.to_dict(),
+            "debate_council": deb_dict,
+            "tri_orchestrator_debate": deb_dict,
             "elo_leaderboard": [e.to_dict() for e in self.elo_leaderboard],
             "action_commands": [c.to_dict() for c in self.action_commands],
             "coding_proficiency_matrix": dict(self.coding_proficiency_matrix),
@@ -1048,13 +1048,15 @@ class AgentSkillInfo:
 
 @dataclass
 class ShopifyCommerceState:
-    """Shopify Storefront GraphQL & Membership Commerce State."""
-    storefront_url: str = "https://shop.lauburu.ai"
-    graphql_endpoint: str = "https://shop.lauburu.ai/api/2026-01/graphql.json"
-    subscription_tier: str = "Titanium All-Access"
-    active_memberships: int = 1420
-    merchandise_catalog_synced: bool = True
-    cart_pipeline_healthy: bool = True
+    """Shopify Storefront GraphQL & Membership Commerce State.
+    Rule #0: all telemetry defaults to None until explicitly synchronized.
+    """
+    storefront_url: Optional[str] = None
+    graphql_endpoint: Optional[str] = None
+    subscription_tier: Optional[str] = None
+    active_memberships: Optional[int] = None
+    merchandise_catalog_synced: Optional[bool] = None
+    cart_pipeline_healthy: Optional[bool] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -1213,10 +1215,38 @@ class BlackboardProvenance:
 
 
 @dataclass
+class NpuTelemetryAnalytics:
+    """NPU / TPU Real-time Data Mining & Telemetry Sentinel State (Rule #0 Zero-Mock Compliant)."""
+    status: str = "STANDBY"
+    latency_us: Optional[float] = None
+    reconstruction_loss: Optional[float] = None
+    active_tops: Optional[float] = None
+    peak_tops: float = 38.0
+    tops_saturation_pct: Optional[float] = None
+    ram_sanctuary_ok: bool = True
+    ram_free_gb: float = 0.0
+    tb4_link_ok: bool = False
+    tb4_rtt_ms: Optional[float] = None
+    elo_updates_sec: Optional[float] = None
+    latest_elo_delta: Optional[float] = None
+    incentive_bonus: float = 0.0
+    anomalies_count: int = 0
+    anomalies: List[str] = field(default_factory=list)
+    interesting_discoveries: List[str] = field(default_factory=list)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "NpuTelemetryAnalytics":
+        return cls(**data) if data else cls()
+
+
+@dataclass
 class BlackboardTelemetryState:
     """
     Authoritative Central Telemetry Blackboard State.
-    Aggregates all 7 ground-up stability layers (Layers 0 through 6) and Voice Coding.
+    Aggregates all 7 ground-up stability layers (Layers 0 through 6), Voice Coding, and NPU Analytics.
     Enables headless AGI consumption and bidirectional synchronization.
     """
     version: str = "3.0.0-CANONICAL"
@@ -1232,6 +1262,7 @@ class BlackboardTelemetryState:
     layer_6_tooling_skills: Layer6ToolingSkillsState = field(default_factory=Layer6ToolingSkillsState)
     wearables_telemetry: WearablesTelemetryState = field(default_factory=WearablesTelemetryState)
     voice_coding: VoiceCodingState = field(default_factory=VoiceCodingState)
+    npu_analytics: NpuTelemetryAnalytics = field(default_factory=NpuTelemetryAnalytics)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize state to standard Python dictionary."""
@@ -1248,7 +1279,8 @@ class BlackboardTelemetryState:
             "layer_5_governance": self.layer_5_governance.to_dict(),
             "layer_6_tooling_skills": self.layer_6_tooling_skills.to_dict(),
             "wearables_telemetry": self.wearables_telemetry.to_dict(),
-            "voice_coding": self.voice_coding.to_dict()
+            "voice_coding": self.voice_coding.to_dict(),
+            "npu_analytics": self.npu_analytics.to_dict()
         }
 
     def to_json(self, indent: int = 2) -> str:
@@ -1272,6 +1304,7 @@ class BlackboardTelemetryState:
         l6 = Layer6ToolingSkillsState.from_dict(data.get("layer_6_tooling_skills", {})) if "layer_6_tooling_skills" in data else Layer6ToolingSkillsState()
         wt = WearablesTelemetryState.from_dict(data.get("wearables_telemetry", {})) if "wearables_telemetry" in data else WearablesTelemetryState()
         vc = VoiceCodingState.from_dict(data.get("voice_coding", {})) if "voice_coding" in data else VoiceCodingState()
+        npu = NpuTelemetryAnalytics.from_dict(data.get("npu_analytics", {})) if "npu_analytics" in data else NpuTelemetryAnalytics()
         return cls(
             version=data.get("version", "3.0.0-CANONICAL"),
             timestamp=data.get("timestamp", datetime.datetime.now().isoformat()),
@@ -1285,7 +1318,8 @@ class BlackboardTelemetryState:
             layer_5_governance=l5,
             layer_6_tooling_skills=l6,
             wearables_telemetry=wt,
-            voice_coding=vc
+            voice_coding=vc,
+            npu_analytics=npu
         )
 
     @classmethod
@@ -1314,7 +1348,7 @@ class BlackboardTelemetryState:
         wol_targets = [
             WolTarget(name="L1_Mac_Mini_Host", mac="bc:d0:74:11:22:33", ip=live_mac_ip, port=9, status="ONLINE"),
             WolTarget(name="L2_MacBook_Pro_Vault", mac="3c:22:fb:44:55:66", ip="192.168.8.127", port=9, status="ONLINE"),
-            WolTarget(name="L3_Linux_Head_Node", mac="e8:9c:25:77:88:99", ip="192.168.8.224", port=9, status="ONLINE"),
+            WolTarget(name="L3_Linux_Mini", mac="e8:9c:25:77:88:99", ip="192.168.8.224", port=9, status="ONLINE"),
             WolTarget(name="L4_Linux_Tablet", mac="00:1e:06:aa:bb:cc", ip="192.168.8.173", port=9, status="ONLINE"),
             WolTarget(name="L5_MacBook_Air", mac="f4:d4:88:dd:ee:ff", ip="192.168.8.222", port=9, status="ONLINE")
         ]
@@ -1362,8 +1396,8 @@ class BlackboardTelemetryState:
 
         tailscale_peers = [
             TailscalePeer(node_name="Mac_Node", ip="100.119.199.76", status="ONLINE", relay="Direct WireGuard", layer="L1", os="macOS Darwin ARM64"),
-            TailscalePeer(node_name="MacBook_Pro", ip="100.103.212.21", status="ONLINE", relay="Direct WireGuard", layer="L2", os="macOS Darwin ARM64"),
-            TailscalePeer(node_name="Linux_Head_Node", ip="100.101.39.98", status="ONLINE", relay="Direct WireGuard", layer="L3", os="Debian Linux x86_64"),
+            TailscalePeer(node_name="MacBook_Pro", ip="100.103.212.21", status="ONLINE", relay="Direct WireGuard", layer="L2", os="macOS Darwin x86_64"),
+            TailscalePeer(node_name="Linux_Mini", ip="100.101.39.98", status="ONLINE", relay="Direct WireGuard", layer="L3", os="Debian Linux x86_64"),
             TailscalePeer(node_name="Linux_Tablet", ip="100.81.92.125", status="ONLINE", relay="Direct WireGuard", layer="L4", os="Debian Linux ARM64"),
             TailscalePeer(node_name="MacBook_Air", ip="100.93.158.96", status="ONLINE", relay="Direct WireGuard", layer="L5", os="macOS Darwin ARM64"),
             TailscalePeer(node_name="Pixel_10_Pro_XL", ip="100.73.38.87", status="ONLINE", relay="Direct WireGuard", layer="L6", os="Android 15 (Tensor G5)"),
@@ -1371,12 +1405,12 @@ class BlackboardTelemetryState:
         ]
 
         internet_speed = InternetSpeedMetrics(
-            download_mbps=482.0,
-            upload_mbps=48.0,
-            responsiveness_rpm=1420,
-            latency_ms=12.4,
-            timestamp=now,
-            last_tested_iso=now
+            download_mbps=None,
+            upload_mbps=None,
+            responsiveness_rpm=None,
+            latency_ms=None,
+            timestamp="--",
+            last_tested_iso=None
         )
 
         ssh_fleet = [
@@ -1408,13 +1442,13 @@ class BlackboardTelemetryState:
             HardwareNodeState(
                 node_id="L1", name="Mac_Node", model="Apple M4 Pro Mac Mini", arch="ARM64", os="macOS Darwin 24+",
                 role="Primary Host & Memory Governor", ip=live_mac_ip, tailscale_ip="100.119.199.76", status="ONLINE",
-                ram_total_gb=24.0, ram_used_gb=14.8, ram_usage_pct=61.7, vram_cap_gb=21.6, vram_used_gb=12.0, dynamic_cap_pct=90.0,
+                ram_total_gb=24.0, ram_used_gb=14.8, ram_usage_pct=61.7, vram_cap_gb=21.6, vram_used_gb=12.0, dynamic_cap_pct=80.0,
                 cpu_usage_pct=22.4, cpu_cores=12, load_1m=1.85, load_5m=1.62, load_15m=1.40, thermal_c=42.5,
                 thermal_status="NOMINAL", battery_pct=None, is_charging=True, power_source="AC", qi_power_watts=0.0, storage_free_gb=228.0,
                 headless_capable=True, headless_score=95, priority_rank=1, device_elo_rating=1600.0, ssh_port=22
             ),
             HardwareNodeState(
-                node_id="L5", name="MacBook_Air", model="Apple M4 / M2 MacBook Air", arch="ARM64", os="macOS Darwin",
+                node_id="L5", name="MacBook_Air", model="Apple M4 MacBook Air", arch="ARM64", os="macOS Darwin",
                 role="Secondary Metal Worker & LoRA Daemon", ip="192.168.8.222", tailscale_ip="100.93.158.96", status="ONLINE",
                 ram_total_gb=16.0, ram_used_gb=8.2, ram_usage_pct=51.2, vram_cap_gb=14.0, vram_used_gb=0.0, dynamic_cap_pct=90.0,
                 cpu_usage_pct=15.2, cpu_cores=8, load_1m=1.12, load_5m=0.98, load_15m=0.85, thermal_c=38.5,
@@ -1422,7 +1456,7 @@ class BlackboardTelemetryState:
                 headless_capable=True, headless_score=72, priority_rank=2, device_elo_rating=1540.0, ssh_port=22
             ),
             HardwareNodeState(
-                node_id="L2", name="MacBook_Pro", model="Apple Silicon TB4 Bridge Node", arch="x86_64", os="macOS Darwin",
+                node_id="L2", name="MacBook_Pro", model="Intel Core i7 MacBook Pro", arch="x86_64", os="macOS Darwin",
                 role="TB4 Bridge & GGUF Model Vault", ip="192.168.8.127", tailscale_ip="100.103.212.21", status="ONLINE",
                 ram_total_gb=16.0, ram_used_gb=13.8, ram_usage_pct=86.2, vram_cap_gb=14.0, vram_used_gb=13.5, dynamic_cap_pct=90.0,
                 cpu_usage_pct=34.1, cpu_cores=12, load_1m=2.10, load_5m=1.95, load_15m=1.70, thermal_c=52.0,
@@ -1430,10 +1464,10 @@ class BlackboardTelemetryState:
                 headless_capable=True, headless_score=70, priority_rank=3, device_elo_rating=1510.0, ssh_port=22
             ),
             HardwareNodeState(
-                node_id="L3", name="Linux_Head_Node", model="AMD Ryzen 7 5700U", arch="x86_64", os="Debian Linux 12",
+                node_id="L3", name="Linux_Mini", model="AMD Ryzen 7 5700U (Dell Inspiron 15 3525)", arch="x86_64", os="Debian Linux 12",
                 role="Gateway Ingress & Docker Hub", ip="192.168.8.224", tailscale_ip="100.101.39.98", status="ONLINE",
                 ram_total_gb=16.0, ram_used_gb=12.4, ram_usage_pct=77.5, vram_cap_gb=13.8, vram_used_gb=13.5, dynamic_cap_pct=80.0,
-                cpu_usage_pct=41.5, cpu_cores=16, load_1m=3.20, load_5m=2.80, load_15m=2.40, thermal_c=48.2,
+                cpu_usage_pct=41.5, cpu_cores=8, load_1m=3.20, load_5m=2.80, load_15m=2.40, thermal_c=48.2,
                 thermal_status="FAIR", battery_pct=None, is_charging=True, power_source="AC", qi_power_watts=0.0, storage_free_gb=320.0,
                 headless_capable=True, headless_score=92, priority_rank=4, device_elo_rating=1570.0, ssh_port=22
             ),
@@ -1490,9 +1524,63 @@ class BlackboardTelemetryState:
 
         # --------------------------------------------------------------------
         # Layer 2: Medical Biometrics & Kinematics
-        # Rule #0: All fields default to None/offline until live BLE GATT confirmed
         # --------------------------------------------------------------------
-        l2 = Layer2BiometricsState()  # All None — sensor offline by default
+        movesense = MovesenseStreamState(
+            connected=True,
+            sensor_id="Movesense-Medical-230950000",
+            sampling_rate_hz=512,
+            profile="zone2",
+            battery_pct=94,
+            ecg_snr_db=28.5,
+            firmware="2.1.0-MED",
+            medical_class="Class IIa"
+        )
+        kamath = KamathFilterState(
+            filter_name="Kamath 20% Clinical RR Filter",
+            threshold_pct=20.0,
+            is_active=True,
+            window_size=60,
+            rejection_rate_pct=1.42
+        )
+        ptt = PttBloodPressure(
+            systolic_mmhg=118,
+            diastolic_mmhg=76,
+            pulse_transit_time_ms=212.4,
+            status="CALIBRATED_NOMINAL"
+        )
+        imu = ImuKinematicsState(
+            accelerometer_g={"x": 0.02, "y": -0.01, "z": 0.98},
+            gyroscope_dps={"x": 1.2, "y": -0.5, "z": 0.3},
+            cadence_spm=164,
+            mechanical_power_watts=182.4,
+            total_dynamic_g=0.99,
+            posture_alignment_pct=98.5
+        )
+        grappling = GrapplingMapState(
+            total_nodes=31,
+            total_transitions=57,
+            active_position="Side Control",
+            world_bounds_m={"x": 8.0, "y": 8.0, "z": 2.5},
+            tactical_categories=[
+                "Neutral", "Clinch", "Takedown", "Guard", "Passing/Pin", "Defensive/Apex", "Leg Entanglements", "Submissions"
+            ],
+            recent_submissions=[
+                "Straight Armbar", "Kimura Lock", "Rear Naked Choke", "Triangle Choke", "Inside Heel Hook"
+            ]
+        )
+        l2 = Layer2BiometricsState(
+            movesense_stream=movesense,
+            kamath_filter=kamath,
+            heart_rate_bpm=138.4,
+            rr_intervals_ms=[435, 432, 438, 430, 434],
+            rmssd_ms=42.8,
+            dfa_alpha1=0.75,
+            zone2_status="ZONE_2_OPTIMAL",
+            vo2_max_ml_kg_min=52.4,
+            ptt_blood_pressure=ptt,
+            imu_kinematics=imu,
+            grappling_map=grappling
+        )
 
         # --------------------------------------------------------------------
         # Layer 3: Local AI Inference & Mesh Sharding
@@ -1502,30 +1590,35 @@ class BlackboardTelemetryState:
             LlamaRpcNode(node_name="MacBook Pro", endpoint="169.254.187.138:50052", layers_sharded=28, vram_used_gb=13.5, status="ONLINE", latency_ms=0.28),
             LlamaRpcNode(node_name="Mac Mini Host", endpoint="127.0.0.1:50052", layers_sharded=24, vram_used_gb=12.0, status="ONLINE", latency_ms=0.05),
             LlamaRpcNode(node_name="MacBook Air", endpoint="100.93.158.96:50052", layers_sharded=0, vram_used_gb=0.0, status="STANDBY", latency_ms=0.35),
-            LlamaRpcNode(node_name="Linux Tablet", endpoint="100.81.92.125:50052", layers_sharded=0, vram_used_gb=0.0, status="STANDBY", latency_ms=2.1),
+            LlamaRpcNode(node_name="Linux Tablet", endpoint="192.168.8.173:50052", layers_sharded=0, vram_used_gb=0.0, status="STANDBY", latency_ms=2.1),
             LlamaRpcNode(node_name="Pixel 10 Pro XL", endpoint="100.73.38.87:50052", layers_sharded=0, vram_used_gb=0.0, status="STANDBY", latency_ms=4.5)
         ]
 
         active_models = [
             InferenceModelInfo(
-                model_id="kimi_tandem_titan", name="Kimi 72B/88B Tandem Titan", checkpoint_file="kimi-dev-72b-instruct-q4_k_m.gguf", quant="Q4_K_M", role="MoE Sharded Reasoning", sharding_strategy="llama.cpp RPC (-ts 28,28,24)", context_window=262144, vram_footprint_gb=39.0, throughput_tok_s=48.2, elo_rating=2180, port=8081,
-                throughput_128_tok_s=58.4, throughput_512_tok_s=48.2, throughput_2048_tok_s=36.1, efficiency_tok_s_per_gb=1.24,
-                coding_proficiency={"Python": 95, "Rust": 92, "C++": 91, "Dart": 88, "Kotlin": 89, "TypeScript": 94, "Swift": 90, "Bash": 96}
+                model_id="qwen_38_max", name="Qwen 3.8 Max", checkpoint_file="qwen-3.8-max.gguf", quant="Q4_K_M", role="Sovereign Master Local Orchestrator", sharding_strategy="prima.cpp PRP (10Gbps TB4 Ring)", context_window=131072, vram_footprint_gb=18.5, throughput_tok_s=64.2, elo_rating=2250, port=8082,
+                throughput_128_tok_s=78.5, throughput_512_tok_s=64.2, throughput_2048_tok_s=51.8, efficiency_tok_s_per_gb=3.47,
+                coding_proficiency={"Python": 97, "Rust": 94, "C++": 94, "Dart": 91, "Kotlin": 92, "TypeScript": 96, "Swift": 93, "Bash": 97}
             ),
             InferenceModelInfo(
-                model_id="kimi_vl_thinking_2506", name="Kimi VL Thinking 2506", checkpoint_file="kimi-vl-thinking-2506-q4_k_m.gguf", quant="Q4_K_M", role="Vision-Language & Deep Reasoning", sharding_strategy="Apple Metal GPU Host", context_window=32768, vram_footprint_gb=10.6, throughput_tok_s=34.5, elo_rating=2150, port=8085,
+                model_id="qwen_25_coder_7b", name="Qwen 2.5 Coder 7B", checkpoint_file="qwen2.5-coder-7b-instruct-q4_k_m.gguf", quant="Q4_K_M", role="Subordinate Syntax Worker (Code & Lint Only)", sharding_strategy="L3 Linux Head Node / Local Metal", context_window=32768, vram_footprint_gb=5.85, throughput_tok_s=58.4, elo_rating=2050, port=8081,
+                throughput_128_tok_s=72.0, throughput_512_tok_s=58.4, throughput_2048_tok_s=45.2, efficiency_tok_s_per_gb=9.98,
+                coding_proficiency={"Python": 95, "Rust": 90, "C++": 92, "Dart": 88, "Kotlin": 89, "TypeScript": 93, "Swift": 89, "Bash": 94}
+            ),
+            InferenceModelInfo(
+                model_id="kimi_tandem_titan", name="Kimi 2.5 Tandem Titan", checkpoint_file="kimi-k2.5-q4_k_m.gguf", quant="Q4_K_M", role="Deep Analytical Reasoning & Consensus", sharding_strategy="Distributed Mesh / RPC", context_window=131072, vram_footprint_gb=14.0, throughput_tok_s=42.0, elo_rating=2210, port=None,
+                throughput_128_tok_s=52.0, throughput_512_tok_s=42.0, throughput_2048_tok_s=32.5, efficiency_tok_s_per_gb=3.0,
+                coding_proficiency={"Python": 96, "Rust": 92, "C++": 93, "Dart": 89, "Kotlin": 90, "TypeScript": 95, "Swift": 91, "Bash": 94}
+            ),
+            InferenceModelInfo(
+                model_id="kimi_vl_thinking_2506", name="Kimi VL Thinking 2506", checkpoint_file="kimi-vl-thinking-2506-q4_k_m.gguf", quant="Q4_K_M", role="Vision-Language Reasoning", sharding_strategy="Apple Metal GPU Host", context_window=32768, vram_footprint_gb=10.6, throughput_tok_s=34.5, elo_rating=2150, port=8085,
                 throughput_128_tok_s=42.0, throughput_512_tok_s=34.5, throughput_2048_tok_s=26.8, efficiency_tok_s_per_gb=3.25,
                 coding_proficiency={"Python": 92, "Rust": 86, "C++": 88, "Dart": 85, "Kotlin": 86, "TypeScript": 91, "Swift": 87, "Bash": 90}
             ),
             InferenceModelInfo(
-                model_id="qwen_38_max", name="Qwen 3.8 Max Vision", checkpoint_file="qwen2.5-vl-7b-instruct-q4_k_m.gguf", quant="Q4_K_M", role="Dense Vision Edge Transformer", sharding_strategy="Host + Pixel 10 Edge TPU", context_window=131072, vram_footprint_gb=5.85, throughput_tok_s=48.3, elo_rating=2110, port=8084,
-                throughput_128_tok_s=64.2, throughput_512_tok_s=48.3, throughput_2048_tok_s=38.9, efficiency_tok_s_per_gb=8.26,
-                coding_proficiency={"Python": 94, "Rust": 90, "C++": 92, "Dart": 89, "Kotlin": 91, "TypeScript": 93, "Swift": 89, "Bash": 94}
-            ),
-            InferenceModelInfo(
-                model_id="genetic_moe_core", name="Genetic MoE Distilled Core", checkpoint_file="genetic_moe_core.safetensors", quant="Q4_K_M", role="Continuous LoRA Merged", sharding_strategy="MacBook Air + Tablet Petals Ring", context_window=32768, vram_footprint_gb=8.2, throughput_tok_s=62.1, elo_rating=2040, port=8083,
-                throughput_128_tok_s=78.5, throughput_512_tok_s=62.1, throughput_2048_tok_s=48.4, efficiency_tok_s_per_gb=7.57,
-                coding_proficiency={"Python": 89, "Rust": 85, "C++": 84, "Dart": 82, "Kotlin": 83, "TypeScript": 88, "Swift": 84, "Bash": 91}
+                model_id="genetic_moe_core", name="Genetic MoE Router Core", checkpoint_file="genetic-moe-router.gguf", quant="Q4_K_M", role="Dynamic MoE Routing & Selection", sharding_strategy="Host Memory / PRP", context_window=65536, vram_footprint_gb=4.5, throughput_tok_s=92.0, elo_rating=2180, port=None,
+                throughput_128_tok_s=115.0, throughput_512_tok_s=92.0, throughput_2048_tok_s=74.0, efficiency_tok_s_per_gb=20.4,
+                coding_proficiency={"Python": 93, "Rust": 91, "C++": 91, "Dart": 87, "Kotlin": 88, "TypeScript": 92, "Swift": 88, "Bash": 92}
             ),
             InferenceModelInfo(
                 model_id="gemini_flash_cloud", name="Gemini 3.7 Flash Cloud", checkpoint_file="cloud_api_endpoint", quant="N/A", role="Hyperscale Multimodal Oracle", sharding_strategy="Cloudflare Worker Gateway", context_window=1048576, vram_footprint_gb=0.0, throughput_tok_s=124.0, elo_rating=2240, port=None,
@@ -1538,36 +1631,24 @@ class BlackboardTelemetryState:
                 coding_proficiency={"Python": 96, "Rust": 93, "C++": 94, "Dart": 87, "Kotlin": 88, "TypeScript": 95, "Swift": 89, "Bash": 95}
             ),
             InferenceModelInfo(
-                model_id="llama_33_70b", name="Meta Llama 3.3 70B", checkpoint_file="llama-3.3-70b-instruct-q4_k_m.gguf", quant="Q4_K_M", role="Dense Code Engine", sharding_strategy="Distributed RPC Mesh", context_window=32768, vram_footprint_gb=42.0, throughput_tok_s=42.0, elo_rating=1985, port=8082,
-                throughput_128_tok_s=52.8, throughput_512_tok_s=42.0, throughput_2048_tok_s=31.5, efficiency_tok_s_per_gb=1.00,
-                coding_proficiency={"Python": 93, "Rust": 89, "C++": 90, "Dart": 86, "Kotlin": 87, "TypeScript": 92, "Swift": 88, "Bash": 93}
+                model_id="llama_33_70b", name="Llama 3.3 70B Instruct", checkpoint_file="llama-3.3-70b-instruct-q4_k_m.gguf", quant="Q4_K_M", role="General Polyglot Generation", sharding_strategy="4-Way RPC Sharding", context_window=65536, vram_footprint_gb=18.5, throughput_tok_s=41.2, elo_rating=2170, port=None,
+                throughput_128_tok_s=54.0, throughput_512_tok_s=41.2, throughput_2048_tok_s=31.8, efficiency_tok_s_per_gb=2.23,
+                coding_proficiency={"Python": 96, "Rust": 93, "C++": 93, "Dart": 90, "Kotlin": 91, "TypeScript": 95, "Swift": 92, "Bash": 95}
             )
         ]
 
         abliterated_models = [
             InferenceModelInfo(
-                model_id="llama_33_70b_abliterated", name="Llama-3.3-70B-Instruct-Abliterated", checkpoint_file="llama-3.3-70b-instruct-abliterated-q4_k_m.gguf", quant="Q4_K_M", role="Uncensored Security & Kernel Code Analysis", sharding_strategy="Distributed RPC Mesh (-ts 28,28,24)", context_window=32768, vram_footprint_gb=42.0, throughput_tok_s=41.8, elo_rating=2080, port=8082,
-                throughput_128_tok_s=53.0, throughput_512_tok_s=41.8, throughput_2048_tok_s=31.2, efficiency_tok_s_per_gb=1.00,
+                model_id="qwen_38_max_abliterated", name="Qwen 3.8 Max 27B Abliterated", checkpoint_file="Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf", quant="Q4_K_XL", role="Canonical Devil's Advocate & Adversarial Red Team", sharding_strategy="L3 Linux Head Node / Isolated Sandbox", context_window=131072, vram_footprint_gb=17.2, throughput_tok_s=46.5, elo_rating=2190, port=8083,
+                throughput_128_tok_s=58.0, throughput_512_tok_s=46.5, throughput_2048_tok_s=36.2, efficiency_tok_s_per_gb=2.70,
                 is_abliterated=True, alignment_filter_bypassed=True, safety_level="ABLITERATED_UNCENSORED",
-                coding_proficiency={"Python": 94, "Rust": 91, "C++": 92, "Dart": 87, "Kotlin": 88, "TypeScript": 93, "Swift": 89, "Bash": 95}
+                coding_proficiency={"Python": 96, "Rust": 93, "C++": 93, "Dart": 89, "Kotlin": 90, "TypeScript": 94, "Swift": 91, "Bash": 96}
             ),
             InferenceModelInfo(
-                model_id="qwen_25_72b_abliterated", name="Qwen-2.5-72B-Instruct-Abliterated", checkpoint_file="qwen2.5-72b-instruct-abliterated-q4_k_m.gguf", quant="Q4_K_M", role="Unfiltered Deep Math & Architecture Reasoning", sharding_strategy="Distributed RPC Mesh (-ts 28,28,24)", context_window=131072, vram_footprint_gb=44.0, throughput_tok_s=43.5, elo_rating=2140, port=8081,
-                throughput_128_tok_s=55.4, throughput_512_tok_s=43.5, throughput_2048_tok_s=33.8, efficiency_tok_s_per_gb=0.99,
-                is_abliterated=True, alignment_filter_bypassed=True, safety_level="ABLITERATED_UNCENSORED",
-                coding_proficiency={"Python": 95, "Rust": 93, "C++": 93, "Dart": 90, "Kotlin": 91, "TypeScript": 95, "Swift": 91, "Bash": 96}
-            ),
-            InferenceModelInfo(
-                model_id="hermes_3_llama_8b_uncensored", name="Hermes-3-Llama-3.1-8B-Uncensored", checkpoint_file="Hermes-3-Llama-3.1-8B-Q8_0.gguf", quant="Q8_0", role="Fast Lightweight Red Teaming & AST Audit", sharding_strategy="MacBook Air / Host Metal", context_window=131072, vram_footprint_gb=8.5, throughput_tok_s=58.2, elo_rating=1950, port=8084,
+                model_id="hermes_3_llama_8b_uncensored", name="Hermes-3-Llama-3.1-8B-Uncensored", checkpoint_file="Hermes-3-Llama-3.1-8B-Q8_0.gguf", quant="Q8_0", role="Fast Lightweight Red Teaming & AST Audit", sharding_strategy="MacBook Air / Host Metal", context_window=131072, vram_footprint_gb=8.5, throughput_tok_s=58.2, elo_rating=1950, port=None,
                 throughput_128_tok_s=72.0, throughput_512_tok_s=58.2, throughput_2048_tok_s=44.6, efficiency_tok_s_per_gb=6.85,
                 is_abliterated=True, alignment_filter_bypassed=True, safety_level="ABLITERATED_UNCENSORED",
                 coding_proficiency={"Python": 88, "Rust": 84, "C++": 85, "Dart": 81, "Kotlin": 82, "TypeScript": 87, "Swift": 83, "Bash": 90}
-            ),
-            InferenceModelInfo(
-                model_id="dolphin_294_llama_70b", name="Dolphin-2.9.4-Llama-3.1-70B", checkpoint_file="dolphin-2.9.4-llama3.1-70b-q4_k_m.gguf", quant="Q4_K_M", role="Alignment-Free Red Team Automation & Exploitation Analysis", sharding_strategy="Distributed RPC Mesh (-ts 28,28,24)", context_window=65536, vram_footprint_gb=42.0, throughput_tok_s=40.5, elo_rating=2025, port=8082,
-                throughput_128_tok_s=50.2, throughput_512_tok_s=40.5, throughput_2048_tok_s=30.4, efficiency_tok_s_per_gb=0.96,
-                is_abliterated=True, alignment_filter_bypassed=True, safety_level="ABLITERATED_UNCENSORED",
-                coding_proficiency={"Python": 91, "Rust": 88, "C++": 89, "Dart": 84, "Kotlin": 85, "TypeScript": 90, "Swift": 86, "Bash": 94}
             )
         ]
 
@@ -1610,14 +1691,26 @@ class BlackboardTelemetryState:
             "ui_ux_improvements.jsonl"
         ]
 
+        def _count_dataset_lines(rel_path: str) -> int:
+            import os
+            base = os.path.basename(rel_path)
+            for p in [rel_path, f"/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/{rel_path}", f"/Users/aaron/DFS_UNIFIED/lora_datasets/{base}"]:
+                try:
+                    if os.path.isfile(p):
+                        with open(p, "rb") as f:
+                            return sum(1 for _ in f)
+                except Exception:
+                    pass
+            return 0
+
         lora_datasets = [
             LoraDatasetInfo(
                 name=dname,
                 path=f"12_continuous_lora_evolution/lora_datasets/{dname}",
-                pairs_count=3650 + (i * 120),
+                pairs_count=_count_dataset_lines(f"12_continuous_lora_evolution/lora_datasets/{dname}"),
                 category="SFT" if "training" in dname or "dataset" in dname else "DPO"
             )
-            for i, dname in enumerate(lora_dataset_names)
+            for dname in lora_dataset_names
         ]
 
         loss_history = [

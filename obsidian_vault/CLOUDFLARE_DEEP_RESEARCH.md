@@ -6,7 +6,7 @@ updated_at: "2026-09-02 04:13:42"
 
 # 🌐 Cloudflare Ecosystem Deep Technical Research
 
-> **Methodology:** Exhaustive line-by-line technical decomposition of all 17 Cloudflare core infrastructure domains. Executed via Local Edge AI (`meta-llama-3.1-8b-instruct-abliterated` @ Port 8083) shadowed and optimized by Frontier Teacher (`Gemini 3.7 Flash High`). All evaluation pairs distilled into `/Users/aaron/DFS_UNIFIED/lora_datasets/cloudflare_deep_research_distillation.jsonl`.
+> **Methodology:** Exhaustive line-by-line technical decomposition of all 17 Cloudflare core infrastructure domains. Executed via Local Edge AI (`meta-llama-3.1-8b-instruct-abliterated` @ Port 8083) shadowed and optimized by Frontier Teacher (`Gemini 3.7 Flash High`). All evaluation pairs distilled into `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/cloudflare_deep_research_distillation.jsonl`.
 
 ---
 
@@ -540,13 +540,13 @@ A purpose-built time-series telemetry store supporting high-cardinality data:
 │  • AI Gateway Proxy                → 100% Header Auth, $1.00 hard kill-switch│
 │                                    ↓                                        │
 │  [TIERED INFERENCE ROUTING]                                                 │
-│  1. Local llama.cpp RPC (Ports 8081-8084) → 10Gbps TB4 Bridge ($0.00 / 0ms) │
+│  1. Local llama.cpp RPC (Ports 8081-8084) → 40Gbps TB4 Bridge ($0.00 / 0ms) │
 │  2. Cloudflare Workers AI                 → 10,000 Neurons/day free ($0.00) │
 │  3. Cloudflare AI Gateway Proxy           → Google Gemini Free Tier ($0.00) │
 │  4. Paid Frontier Fallback                → Hard-capped at $1.00 max spend  │
 │                                    ↓                                        │
 │  [TRI-VAULT STORAGE SYNCHRONIZATION]                                        │
-│  • Obsidian Vault   → /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian/   │
+│  • Obsidian Vault   → /Volumes/Lauburu-Monorepo/obsidian/   │
 │  • SeaweedFS DFS    → Tier 1 NVMe Hot → Tier 2 HDD Warm → Tier 3 R2 Cold   │
 │  • GitHub Monorepo  → Canonical worktrees & CI truth verification gates     │
 └─────────────────────────────────────────────────────────────────────────────┘

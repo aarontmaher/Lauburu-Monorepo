@@ -1,0 +1,19 @@
+{
+  "name": "Meditation Lauburu",
+  "short_name": "Meditation",
+  "description": "0.1 Hz resonant frequency breathing trainer with live Movesense ECG HRV biofeedback.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#06090e",
+  "theme_color": "#0d1520",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

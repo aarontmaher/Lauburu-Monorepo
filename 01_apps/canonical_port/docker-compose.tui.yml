@@ -1,12 +1,12 @@
 version: "3.9"
 
 services:
-  canonical-tui-cockpit:
+  canonical-tui-console:
     build:
       context: .
       dockerfile: Dockerfile.tui
     image: lauburu/canonical-tui:latest
-    container_name: lauburu_tui_cockpit
+    container_name: lauburu_tui_console
     restart: unless-stopped
     stdin_open: true # docker run -i
     tty: true        # docker run -t

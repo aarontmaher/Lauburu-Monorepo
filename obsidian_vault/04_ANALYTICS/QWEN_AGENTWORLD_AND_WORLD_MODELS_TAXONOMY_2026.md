@@ -39,7 +39,7 @@ tags: [world_models, agentworld, webworld, qwen, simulation, mcts, mesh]
 │ **Qwen-AgentWorld-35B**  │ 35B MoE  │ Q4_K_M   │ 7-Domain Master Simulator:  │ L1 Mac Mini M4 Pro (Metal)    │
 │                          │ (20.6GB) │          │ MCP, Terminal, SWE, Android │ (Port :8086)                  │
 ├──────────────────────────┼──────────┼──────────┼─────────────────────────────┼───────────────────────────────┤
-│ **Qwen-AgentWorld-7B/8B**│ 7B / 8B  │ Q4_K_M   │ Fast Edge Tool Simulator:   │ L5 MacBook Air / L3 Linux     │
+│ **Qwen-AgentWorld-7B/8B**│ 7B / 8B  │ Q4_K_M   │ Fast Edge Tool Simulator:   │ L2 MacBook Pro / L3 Linux     │
 │                          │ (4.7GB)  │          │ High-speed local rollouts   │ (Port :8083 - 74 tok/s)       │
 ├──────────────────────────┼──────────┼──────────┼─────────────────────────────┼───────────────────────────────┤
 │ **WebWorld-32B**         │ 32B      │ Q4_K_M   │ Deep Browser Simulator:     │ L1 Mac Mini + L5 Air Shard    │
@@ -98,4 +98,4 @@ tags: [world_models, agentworld, webworld, qwen, simulation, mcts, mesh]
    - `autonomous_model_downloader_and_benchmarker.py` is configured to automatically download `Qwen-AgentWorld-7B` for fast edge rollouts on peripheral worker nodes.
 3. **Continuous LoRA Distillation:**
    - Every simulated trajectory that correctly matches real-world execution is converted into a positive DPO pair and saved to:
-     `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`
+     `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`

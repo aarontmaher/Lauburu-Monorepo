@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-10-04T04:46:42.867839",
+  "tier_selected": "all",
+  "total_tests": 138,
+  "passed": 138,
+  "failures": 0,
+  "errors": 0,
+  "duration_seconds": 9.153456211090088,
+  "claude_spend_usd": 0.0,
+  "host_memory": {
+    "total_gb": 24.0,
+    "free_gb": 0.1794281005859375,
+    "available_gb": 4.230377197265625,
+    "used_gb": 19.769622802734375
+  },
+  "failure_details": []
+}

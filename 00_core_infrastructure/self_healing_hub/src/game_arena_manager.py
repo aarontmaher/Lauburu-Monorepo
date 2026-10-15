@@ -28,7 +28,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Tuple, Optional
 
-WORKSPACE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+WORKSPACE_ROOT = Path("/Volumes/Lauburu-Monorepo")
 STATE_FILE = WORKSPACE_ROOT / "session_logs" / "game_arena_state.json"
 DRIVE_LORA_PATH = Path("/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets")
 LOCAL_LORA_PATH = WORKSPACE_ROOT / "data" / "lora_datasets"
@@ -1417,7 +1417,7 @@ class GameArenaManager:
         # Load live sharding telemetry & optimization boost
         sharding_speed_boost = 0.0
         sharding_technique = "Tensor Parallelism (TB4 0.27ms)"
-        stats_file = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/live_transport_stats.json")
+        stats_file = Path("/Volumes/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/live_transport_stats.json")
         if stats_file.exists():
             try:
                 with open(stats_file, "r", encoding="utf-8") as f:
@@ -2087,7 +2087,7 @@ class GameArenaManager:
                     "code_template": (
                         "from google.antigravity import Agent, LiteRTAgentConfig, LiteRTBackend, types\n\n"
                         "config = LiteRTAgentConfig(\n"
-                        "    model_path=\"/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/models/gemma4-26b.litertlm\",\n"
+                        "    model_path=\"/Volumes/Lauburu-Monorepo/models/gemma4-26b.litertlm\",\n"
                         "    backend=LiteRTBackend.GPU,\n"
                         "    max_context_tokens=65536,\n"
                         "    enable_speculative_decoding=True,\n"
@@ -2775,7 +2775,7 @@ class GameArenaManager:
             model_id = sorted_fighters[0].get("exact_model_id", sorted_fighters[0].get("model_id", sorted_fighters[0]["id"]))
             appointments["general"] = {"model": model_id, "rationale": f"Highest overall ELO: {sorted_fighters[0].get('name', 'General')}"}
             
-        out_path = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/auto_appointed_experts.json")
+        out_path = Path("/Volumes/Lauburu-Monorepo/data/auto_appointed_experts.json")
         out_path.parent.mkdir(parents=True, exist_ok=True)
         import json
         with open(out_path, "w") as f:

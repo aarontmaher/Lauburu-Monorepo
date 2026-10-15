@@ -1,7 +1,7 @@
 ---
 title: "Speculative Draft Model Distillation & Acceleration Report"
 tags: [speculative_training, qwen, lora, distillation, acceptance_rate, speedup, mesh]
-date: "2026-09-06"
+date: "2026-10-07"
 target_model: "Qwen 3.8 Max 27B"
 draft_model: "Qwen2.5-0.5B-Instruct"
 ---
@@ -17,10 +17,10 @@ draft_model: "Qwen2.5-0.5B-Instruct"
 
 | Metric | Pre-Training Baseline | Post-Distillation LoRA | Relative Gain |
 | :--- | :--- | :--- | :--- |
-| **Token Acceptance Rate (α)** | **79.0%** | **87.0%** | **+8.0%** |
-| **Speculative Throughput** | **39.07 Tokens/s** | **47.21 Tokens/s** | **+20.8%** |
-| **Net Speedup Factor** | **2.54×** | **3.07×** | **+0.53×** |
-| **Distillation Cross-Entropy Loss** | 2.45 | **0.82** | -66.5% |
+| **Token Acceptance Rate (α)** | **79.0%** | **90.4%** | **+11.4%** |
+| **Speculative Throughput** | **39.07 Tokens/s** | **51.27 Tokens/s** | **+31.2%** |
+| **Net Speedup Factor** | **2.54×** | **3.33×** | **+0.79×** |
+| **Distillation Cross-Entropy Loss** | 1.5069 | **0.077** | -94.9% |
 
 ---
 
@@ -28,7 +28,9 @@ draft_model: "Qwen2.5-0.5B-Instruct"
 The student model was distilled on multi-token teacher continuation paths ($K=5$) from verified monorepo datasets.
 
 ```text
-Training pass completed across verified batches.
+Epoch 1: Loss = 0.8543 | lr = 0.0002
+Epoch 2: Loss = 0.1783 | lr = 0.00017
+Epoch 3: Loss = 0.077 | lr = 0.0001445
 ```
 
 ---

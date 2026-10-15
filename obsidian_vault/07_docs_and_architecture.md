@@ -17,7 +17,7 @@ Contains comprehensive architectural specifications, scientific whitepapers, har
 3. **`browser_automation_vlm_audit_spec.md`:**
    - Autonomous UI/UX visual validation protocol using Vision-Language Models (VLMs) and Chrome DevTools MCP.
 4. **`mesh_storage_topology.md`:**
-   - Physical routing, 10Gbps Thunderbolt 4 bridge parameters, and SeaweedFS volume layout.
+   - Physical routing, 40Gbps Thunderbolt 4 bridge parameters, and SeaweedFS volume layout.
 5. **Core Architecture Index:**
    - Complete MapReduce AST extraction index of the entire monorepo.
 

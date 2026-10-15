@@ -31,5 +31,5 @@ updated: "2026-09-04 02:30:39 PM AEST"
 - **Tier 2 (distributed_ring_mesh_coordination):** **Decentralized prima.cpp Pipelined Ring Mesh** `ONLINE` (7 nodes, `85.02 GB pooled VRAM`, ELO: `2520.0`)
 
 ## 🔒 Financial & Truth Verification
-- **$0.00 Token Cost:** 100% compute executed locally on Mac Mini Apple Silicon Metal, 10Gbps TB4 DMA, and peripheral mesh nodes.
+- **$0.00 Token Cost:** 100% compute executed locally on Mac Mini Apple Silicon Metal, 40Gbps TB4 DMA, and peripheral mesh nodes.
 - **Rule #0 Zero-Mock:** All model files, byte counts, and execution metrics verified empirically from kernel syscalls.

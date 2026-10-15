@@ -21,7 +21,7 @@ date: "2026-09-03"
 | Subsystem Component | Evolved Weight | Core Role in Restructured Mesh | RAM / Latency |
 | :--- | :--- | :--- | :--- |
 | **Tailscale `tailcat`** | **27.4%** | **Ephemeral Agent-to-Agent Tensor Piping & Paying User Apps** | 7.8 MB / 0.22 ms |
-| **Multi-WAN Engine (:18804)** | **21.7%** | **TB4 10Gbps (94%) + Wi-Fi 7 (5%) Physical Multipath Bonding** | 18.5 MB / 0.27 ms |
+| **Multi-WAN Engine (:18804)** | **21.7%** | **TB4 40Gbps (94%) + Wi-Fi 7 (5%) Physical Multipath Bonding** | 18.5 MB / 0.27 ms |
 | **Headscale / Kwaami** | **17.4%** | **$0 SaaS Airgapped Master Coordination Control Plane** | 46.8 MB / 0.30 ms |
 | **Prima.cpp** | **15.7%** | **High-Throughput Pipelined-Ring llama.cpp Tensor Sharding** | 22.0 MB / 0.18 ms |
 | **Tailscale `tsnet`** | **11.9%** | **Persistent Microservices Embedded in Mobile/Desktop Client Binaries** | 12.4 MB / 0.28 ms |
@@ -33,4 +33,4 @@ date: "2026-09-03"
 ## 🏛️ 3. Master Restructured Execution Blueprint
 - **Ephemeral Worker Swarms:** Use **`tailcat`** for instantaneous zero-auth, zero-root encrypted channels between dynamic Docker containers.
 - **Client App Deployments:** Use **`tsnet`** for persistent zero-VPN-profile App Store and Google Play releases.
-- **Compute Backbone:** Bond 10Gbps Thunderbolt 4 DMA + Wi-Fi 7 via **Multi-WAN Engine (:18804)** driving **`Prima.cpp`** pipelined-ring inference across the 82.8 GB VRAM mesh.
+- **Compute Backbone:** Bond 40Gbps Thunderbolt 4 DMA + Wi-Fi 7 via **Multi-WAN Engine (:18804)** driving **`Prima.cpp`** pipelined-ring inference across the 82.8 GB VRAM mesh.

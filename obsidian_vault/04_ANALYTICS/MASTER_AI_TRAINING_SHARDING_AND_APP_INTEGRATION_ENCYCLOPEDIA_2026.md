@@ -103,7 +103,7 @@ To maximize the empirical return on investment (ROI) without wasting credits on 
    sudo shutdown -h +45
    ```
 2. **Pre-flight Local Verification:** Before any cloud burst is triggered, a micro-batch (5 steps) must run successfully on local Metal/Linux.
-3. **Automated GGUF Downloader:** Output weights are exported to Google Cloud Storage (GCS) and immediately pulled down to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/` before instances terminate.
+3. **Automated GGUF Downloader:** Output weights are exported to Google Cloud Storage (GCS) and immediately pulled down to `/Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/` before instances terminate.
 
 ---
 
@@ -157,7 +157,7 @@ graph TD
 
 ## 🔬 5. Next Actions & Automated Benchmarking Suite
 
-1. **Deploy the Governed Spot GPU Training Script:** In [`gcp_spot_gpu_governor.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/gcp_spot_gpu_governor.py) to test QLoRA on a Spot NVIDIA L4 instance ($0.35/hr).
+1. **Deploy the Governed Spot GPU Training Script:** In [`gcp_spot_gpu_governor.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/gcp_spot_gpu_governor.py) to test QLoRA on a Spot NVIDIA L4 instance ($0.35/hr).
 2. **Execute In-App FFI Benchmark:** Compile `libllama` for the Flutter canonical app in `01_apps/` to verify local token velocity on 4GB memory constraints.
 3. **Launch Distributed MoE Training Supervisor:** Verify that 70% cluster VRAM safety ($38.26\text{ GB}$ cap) remains enforced during local sharding runs.
 

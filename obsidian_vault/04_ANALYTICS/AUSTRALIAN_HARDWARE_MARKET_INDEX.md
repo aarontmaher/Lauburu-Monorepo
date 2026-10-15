@@ -16,7 +16,7 @@ updated: "2026-09-05 01:55:16"
 | **High-Throughput NVMe** | Crucial T700 / Samsung 990 PRO 4TB PCIe Gen4 NVMe | PC Case Gear / Umart | `$479.00 - $529.00` | L2 MacBook Pro TB4 Model Vault & PySpark Lakehouse |
 | **Apple Silicon Compute** | Apple Mac Mini M4 Pro (24GB Unified, 12-Core CPU, 16-Core GPU) | Apple Store Australia | `$2,199.00` | L1 Primary Host & Memory Governor (Active Sanctuary) |
 | **Wi-Fi 7 Multi-Link Bridge** | GL.iNet Beryl 7 (GL-MT3600BE) Wi-Fi 7 MLO Router | GL.iNet Direct / Amazon AU | `$169.00 - $199.00` | Core Hardware USB ADB & Wi-Fi 7 MLO Gateway |
-| **Thunderbolt 4 DMA Cable** | Apple Thunderbolt 4 Pro Cable (1.8m, 40 Gbps, 100W) | Apple Store Australia / JB Hi-Fi | `$199.00` | L1-L2 10Gbps TB4 Bridge (0.277ms RTT AI Tensor Pipeline) |
+| **Thunderbolt 4 DMA Cable** | Apple Thunderbolt 4 Pro Cable (1.8m, 40 Gbps, 100W) | Apple Store Australia / JB Hi-Fi | `$199.00` | L1-L2 40Gbps TB4 Bridge (0.277ms RTT AI Tensor Pipeline) |
 
 ## 🏪 Monitored Australian Retailers
 

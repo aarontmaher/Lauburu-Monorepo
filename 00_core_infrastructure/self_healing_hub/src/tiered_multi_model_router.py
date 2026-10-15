@@ -20,7 +20,7 @@ Features:
 - Automatic macro context failover (>100k tokens) to Gemini 3.1 Pro Preview (2M tokens).
 - Accurate cost calculation ($0 for local TB4 Metal/TPU models, real API rates for cloud).
 - Automatic multi-tier fallback cascades for disconnected nodes or failed requests.
-- 24/7 LoRA decision logging to `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/lora_datasets/tiered_router_decisions.jsonl`.
+- 24/7 LoRA decision logging to `/Volumes/Lauburu-Monorepo/data/lora_datasets/tiered_router_decisions.jsonl`.
 """
 
 import os
@@ -33,7 +33,7 @@ import urllib.error
 from typing import Dict, Any, List, Optional, Union
 from pathlib import Path
 
-WORKSPACE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+WORKSPACE_ROOT = Path("/Volumes/Lauburu-Monorepo")
 DEFAULT_LORA_DIR = WORKSPACE_ROOT / "data" / "lora_datasets"
 DEFAULT_LORA_LOG_FILE = DEFAULT_LORA_DIR / "tiered_router_decisions.jsonl"
 GDRIVE_LORA_DIR = Path("/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets")

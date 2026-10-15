@@ -276,11 +276,19 @@ class CanonicalPromptBar(Horizontal):
             tb4 = snapshot.layer_0_networking.tb4_dma
             msg = "[bold cyan]🖥️ 7-Layer Node Hardware Matrix Telemetry:[/bold cyan]\n"
             for n in l1.nodes:
-                st_color = "green" if n.status in ("ONLINE", "ACTIVE") else "yellow"
+                cpu_str = f"{n.cpu_usage_pct:.0f}%" if n.cpu_usage_pct is not None else "--%"
+                load_str = f"{n.load_1m:.1f}" if n.load_1m is not None else "--"
+                therm_str = f"{n.thermal_c:.0f}°C" if n.thermal_c is not None else "--°C"
+                vram_str = (
+                    f"{n.vram_used_gb:.1f}/{n.vram_cap_gb:.1f}GB"
+                    if (n.vram_used_gb is not None and n.vram_cap_gb is not None)
+                    else "--/--GB"
+                )
+                cap_str = f"{n.dynamic_cap_pct:.0f}% cap" if n.dynamic_cap_pct is not None else "--% cap"
                 msg += (
                     f"  • [{st_color}]●[/{st_color}] [bold white]{n.node_id}[/bold white] ({n.name}): "
-                    f"CPU: {n.cpu_usage_pct:.0f}% (L1m: {n.load_1m:.1f}) | Therm: {n.thermal_c:.0f}°C | "
-                    f"VRAM: {n.vram_used_gb:.1f}/{n.vram_cap_gb:.1f}GB ({n.dynamic_cap_pct:.0f}% cap)\n"
+                    f"CPU: {cpu_str} (L1m: {load_str}) | Therm: {therm_str} | "
+                    f"VRAM: {vram_str} ({cap_str})\n"
                 )
             tb4_status_color = "green" if tb4.status == "CONNECTED" else "red"
             tb4_rtt_str = f"{tb4.rtt_ms:.3f}ms" if tb4.rtt_ms is not None else "--"

@@ -1,0 +1,126 @@
+{
+  "accounts": {
+    "aaron.t.maher@gmail.com": {
+      "account_id": "aaron.t.maher@gmail.com",
+      "auth_method": "adc",
+      "error": null,
+      "has_client": true,
+      "is_authenticated": true,
+      "is_expired": false,
+      "last_refreshed": 1791981786.135238,
+      "metadata": {
+        "live_auth": true
+      },
+      "role": "personal_admin",
+      "token_expiry": 1791985385.13246,
+      "token_expiry_iso": "2026-10-14T13:43:05.132460+00:00"
+    },
+    "lauburu@lauburugrappling.com": {
+      "account_id": "lauburu@lauburugrappling.com",
+      "auth_method": "oauth2",
+      "error": null,
+      "has_client": true,
+      "is_authenticated": true,
+      "is_expired": false,
+      "last_refreshed": 1791981786.854162,
+      "metadata": {
+        "live_auth": true
+      },
+      "role": "workspace_business",
+      "token_expiry": 1791985385.853102,
+      "token_expiry_iso": "2026-10-14T13:43:05.853102+00:00"
+    }
+  },
+  "authenticated_accounts": 2,
+  "client_isolation_verified": true,
+  "dry_run": false,
+  "execution_time_seconds": 1.8053,
+  "gemini_spark": {
+    "connected": true,
+    "details": {
+      "daemon_ports": {
+        "18802": {
+          "name": "Self-Healing Hub REST API",
+          "online": true,
+          "port": 18802
+        },
+        "50052": {
+          "name": "gRPC Tensor Streaming Gateway",
+          "online": true,
+          "port": 50052
+        },
+        "8080": {
+          "name": "llama.cpp RPC Primary",
+          "online": true,
+          "port": 8080
+        },
+        "8082": {
+          "name": "llama.cpp RPC Node-2",
+          "online": true,
+          "port": 8082
+        },
+        "8084": {
+          "name": "llama.cpp RPC Node-3",
+          "online": true,
+          "port": 8084
+        },
+        "8086": {
+          "name": "llama.cpp RPC Node-4",
+          "online": false,
+          "port": 8086
+        },
+        "8088": {
+          "name": "Web-TUI / Dashboard Portal",
+          "online": false,
+          "port": 8088
+        }
+      },
+      "disk": {
+        "avail": "12Gi",
+        "filesystem": "/dev/disk3s5",
+        "size": "460Gi",
+        "use_percent": "98%",
+        "used": "421Gi"
+      },
+      "ram": {
+        "active_gb": 6.48,
+        "free_gb": 0.06,
+        "note": "Mac_Node (M4 Pro, 24 GB total)",
+        "wired_gb": 4.4
+      },
+      "timestamp": "2026-10-14T12:43:07.257757+00:00",
+      "tri_vault": {
+        "github_monorepo": {
+          "healthy": true,
+          "lock_exists": false,
+          "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"
+        },
+        "obsidian": {
+          "healthy": true,
+          "index_md_ok": true,
+          "path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault"
+        },
+        "pyspark_data_lake": {
+          "healthy": true,
+          "path": "/Users/aaron/DFS_UNIFIED/lora_datasets"
+        }
+      }
+    },
+    "endpoint": "http://127.0.0.1:9999/mcp/project/health",
+    "error": null,
+    "latency_ms": 117.86,
+    "status": "online",
+    "timestamp": "2026-10-14T12:43:07.297010+00:00"
+  },
+  "mode": "sidecar",
+  "notebook_sync": {
+    "cell_action": "updated",
+    "metadata_modified": true,
+    "notebook_modified": true,
+    "status": "success",
+    "sync_cell_index": 1
+  },
+  "perception_source": "live_api",
+  "timestamp_utc": "2026-10-14T12:43:07.372971+00:00",
+  "total_accounts": 2
+}

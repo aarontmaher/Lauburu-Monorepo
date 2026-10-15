@@ -65,9 +65,7 @@ class PetalsInferenceBridge(BaseInferenceBridge):
         self.latency_ms = self.client.latency_ms
         return res
 
-    def set_mock_tokens(self, tokens: Optional[List[str]]) -> None:
-        super().set_mock_tokens(tokens)
-        self.client.set_mock_tokens(tokens)
+
 
     def cancel_generation(self) -> None:
         """Instantly abort active token stream in <1ms without blocking the event loop."""
@@ -114,4 +112,4 @@ class PetalsInferenceBridge(BaseInferenceBridge):
         if self.client.is_connected:
             short = self.client.config.model_name.split("/")[-1]
             return f"[PETALS: ACTIVE ({short} 80 Blocks)]"
-        return "[PETALS: ACTIVE]"
+        return "[PETALS: STANDBY]"

@@ -39,13 +39,13 @@ consensus_score: 1.000
 ## 💾 2. Physical Disk Space & Memory Footprint Audit (llama.cpp vs. prima.cpp)
 
 ### 2.1 Disk Space Footprint (Binaries vs. Shared Model Weights)
-Both engines point to the **exact same physical GGUF files** in `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/` via POSIX `mmap`. **Zero extra disk space is consumed for weights.**
+Both engines point to the **exact same physical GGUF files** in `/Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/` via POSIX `mmap`. **Zero extra disk space is consumed for weights.**
 
 | Device Layer | Node Name | `llama.cpp` Binary Size | `prima.cpp` Binary Size | Shared GGUF Storage | Total Combined Binaries |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **L1** | `Mac_Node` (M4 Pro) | 24.2 MB (`llama-server`) | 14.8 MB (`prima-engine`) | Shared via `mmap` (0 MB extra) | **39.0 MB** |
-| **L2** | `MacBook_Pro` (M3) | 24.2 MB | 14.8 MB | Shared via `mmap` (0 MB extra) | **39.0 MB** |
-| **L3** | `Linux_Head_Node` (AMD) | 21.6 MB | 12.4 MB | Shared via `mmap` (0 MB extra) | **34.0 MB** |
+| **L2** | `MacBook_Pro` (Intel i7) | 24.2 MB | 14.8 MB | Shared via `mmap` (0 MB extra) | **39.0 MB** |
+| **L3** | `Linux_Mini` (AMD) | 21.6 MB | 12.4 MB | Shared via `mmap` (0 MB extra) | **34.0 MB** |
 | **L4** | `Linux_Tablet` (Debian) | 16.5 MB | 9.8 MB | Shared via `mmap` (0 MB extra) | **26.3 MB** |
 | **L5** | `MacBook_Air` (M4) | 24.2 MB | 14.8 MB | Shared via `mmap` (0 MB extra) | **39.0 MB** |
 | **L6** | `Pixel_10_Pro_XL` (Android) | 15.8 MB (Termux ARM64) | 11.2 MB | Shared via `mmap` (0 MB extra) | **27.0 MB** |
@@ -60,7 +60,7 @@ Both engines point to the **exact same physical GGUF files** in `/Users/aaron/DF
 1. **Zero-Copy Page Cache Sharing (`mmap`):**
    * The OS kernel loads weight pages into unified memory once. Both `prima.cpp` and `llama.cpp` map to the same physical memory pages.
 2. **Active vs. Standby KV Allocation:**
-   * **`prima.cpp` (Active Primary):** Holds the active context buffer for 10Gbps TB4 pipelined ring streaming and Apple Metal GPU acceleration.
+   * **`prima.cpp` (Active Primary):** Holds the active context buffer for 40Gbps TB4 pipelined ring streaming and Apple Metal GPU acceleration.
    * **`llama.cpp` (Hot-Standby Fallback):** Listens on Port 50052 (or 8081-8084) with an idle RAM footprint of **$\le 35\text{ MB}$**, ready to intercept queries instantly if a device lacks Metal support or drops a DMA packet.
 
 ---
@@ -93,12 +93,12 @@ graph TD
         N4[SmolLM2-135M C Sentinel<br/>Wire-Speed nftables Packet Defense]
     end
 
-    N1 <-->|10Gbps TB4 Ring| N2
+    N1 <-->|40Gbps TB4 Ring| N2
     N2 <-->|WireGuard Mesh| N3
     N3 <-->|Wi-Fi 7 Direct| N4
 ```
 
-* **L1/L2 (macOS Metal Host):** Governs 10Gbps Thunderbolt 4 DMA packet aggregation and sub-millisecond tensor pipeline synchronization.
+* **L1/L2 (macOS Metal Host):** Governs 40Gbps Thunderbolt 4 DMA packet aggregation and sub-millisecond tensor pipeline synchronization.
 * **L3 (Linux Head Node):** Monitors Docker container health, Apache Ray distributed worker states, and SeaweedFS DFS volume replication.
 * **L6/L7 (Android Edge):** Governs Termux background service keepalive, automated `dumpsys` battery optimization whitelisting, and BLE radio signal strength.
 * **GW (OpenWrt Router):** Executes `SmolLM2 135M` (105MB Q4_K_M) on Port 18802 for real-time nftables firewall synthesis and SYN flood defense.

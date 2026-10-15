@@ -1,0 +1,19 @@
+{
+  "name": "Keyring Finder Lauburu",
+  "short_name": "Keyring Finder",
+  "description": "Sovereign acoustic and BLE beacon locator reverse-engineered from Tile & Life360 protocols.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#070b10",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

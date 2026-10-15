@@ -1,0 +1,3133 @@
+{
+  "generated_at_utc": "2026-10-15T03:32:28.184704+00:00",
+  "source_opml": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/mindomo/Grappling Mind Map 2.opml",
+  "total_opml_outline_nodes": 3723,
+  "total_3d_visual_clusters": 48,
+  "total_3d_edges": 47,
+  "total_linked_technique_videos": 144,
+  "total_linked_competition_matches": 50,
+  "nodes": [
+    {
+      "id": "root_grappling_mind_map",
+      "label": "Grappling Mind Map (3,723 Nodes)",
+      "realm": "CORE",
+      "depth": 0,
+      "descendant_count": 3723,
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "color": "#10b981",
+      "size": 26,
+      "tactical_summary": "Master 3,723-node Mindomo Grappling Architecture unifying Wrestling, Guard, Dominant Positions, and Scrambles.",
+      "sub_branches": [
+        "Wrestling (704)",
+        "Guard (1,805)",
+        "Dominant Positions (1,003)",
+        "Scrambles (130)"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "Kf0wQ00FPBg",
+          "title": "Collar tie 2 on 1 entry to collar tie (4K Instructional)",
+          "source": "Instructional Footage"
+        },
+        {
+          "id": "VEA-J3sbRvY",
+          "title": "Arm Drag to Single Leg to Double Leg #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "XxiGNu8_HcU",
+          "title": "Arm Drag to Turtle Rear Body Lock #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "o-gLX-AjGTE",
+          "title": "Arm Drag to Rear Body Lock #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "6dGwR5iqGVw",
+          "title": "Front head lock to ankle pick #wrestling #jiujitsu #bjj #grappling",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "wKPBJlmITKE",
+          "title": "Front head lock sweep single go behind #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "ndupRyw3zfA",
+          "title": "Front headlock go behind #wrestling #jiujitsu #bjj #grappling",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "34OQix_kVQ8",
+          "title": "Pinch front headlock trouble shooting #jiujitsu #wrestling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk"
+      ]
+    },
+    {
+      "id": "realm_0_wrestling",
+      "label": "Wrestling (704)",
+      "realm": "Wrestling",
+      "depth": 1,
+      "descendant_count": 704,
+      "x": 140.0,
+      "y": 45.0,
+      "z": 0.0,
+      "color": "#10b981",
+      "size": 19,
+      "tactical_summary": "Wrestling macro-domain containing 704 tactical Mindomo nodes across 3 positional systems.",
+      "sub_branches": [
+        "Hand fighting (NEW)",
+        "Wrestling bodylock",
+        "Shots"
+      ],
+      "linked_technique_videos": [],
+      "linked_comp_matches": []
+    },
+    {
+      "id": "node_0_0_hand_fighting_(new)",
+      "label": "Hand fighting (NEW)",
+      "realm": "Wrestling",
+      "depth": 2,
+      "descendant_count": 355,
+      "x": 254.14,
+      "y": -31.0,
+      "z": -50.97,
+      "color": "#10b981",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Hand fighting (NEW)",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Hand fighting (NEW)' with 355 structured nodes.",
+      "sub_branches": [
+        "Outside tie (You)",
+        "Inside tie (You)",
+        "Collar tie (You)",
+        "Underhook (You)",
+        "Overhook (You)",
+        "2-on-1 (You)",
+        "Over/Under (You)"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "JmVVHZezysA",
+          "title": "Sucker Drag Escape for Hands Locked Front Headlock #wrestling #jiujits",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE",
+        "VF3wKI-quFA",
+        "B5_2mIA_CCU"
+      ]
+    },
+    {
+      "id": "sub_0_0_0_outside_tie_(you)",
+      "label": "Outside tie (You)",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 41,
+      "x": 289.45,
+      "y": -63.0,
+      "z": -139.17,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Disciplined low wrestling stance \u2014 head & hands in front of hips",
+        "control_mechanics": "Outside wrist/tricep control to angle around the corner",
+        "next_transitions": "Knee-pull sweep single \u2022 Brush-by / Throw-by \u2022 Collar-tie entry"
+      },
+      "tactical_summary": "Outside wrist/tricep tie used to set up knee-pull sweep singles, throw-bys, brush-bys, and collar-tie entries.",
+      "sub_branches": [
+        "Setups / Entries",
+        "Outside tie",
+        "knee pull sweep single",
+        "throw by",
+        "collar tie throw by",
+        "head inside single",
+        "double leg",
+        "brush by",
+        "Collar tie throw by to wrestling bodylock",
+        "2 on 1",
+        "Control",
+        "Offence",
+        "Brush by",
+        "Throw by"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "O9TK-n3ylVI",
+          "title": "Brush-By Takedown Tutorial",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6lXtLjBes-k",
+          "title": "Outside Tie Throw By to Snatch Single #wrestling #bjj #jiujitsu #grapp",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "ne2CQ9x_s54",
+          "title": "Brush by to read body lock #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "oc4ZsbYAVUs",
+          "title": "Brush by to single leg #wreslting #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Y61XcwycPZo",
+          "title": "outside tie collar tie uchi mata throw by #wrestling #jiiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "vtFw03xGlzc",
+          "title": "collar tie throw by #wrestling #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "e57BXSVxeek",
+          "title": "Inside tie collar tie throw by #wrestling #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "skZL093qD7E",
+          "title": "Wrestling throw by to rear body lock #wrestling #bjj #grappling #jiujitsu #wrestlingforbjj",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "sub_0_0_1_inside_tie_(you)",
+      "label": "Inside tie (You)",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 17,
+      "x": 307.84,
+      "y": -31.0,
+      "z": -129.33,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Loaded stance \u2014 elbows tight to ribs winning inside space",
+        "control_mechanics": "Inside bicep/collar-bone frame blocking opponent's underhook",
+        "next_transitions": "Level-change sweep single \u2022 Snapdown to Front Headlock \u2022 Inside trip"
+      },
+      "tactical_summary": "Inside bicep/collar-bone tie controlling inside space and setting up level-change sweep singles and snapdowns.",
+      "sub_branches": [
+        "Setups / Entries",
+        "Inside tie",
+        "Inside tie to sweep single",
+        "Control",
+        "Offence",
+        "Defence",
+        "Offensive transitions",
+        "Inside tie to sweep single \u00e2\u0086\u0092 Head inside single leg",
+        "Setups / Entries",
+        "Control",
+        "Offence",
+        "Defence",
+        "Offensive transitions"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "LlLNke7EEsc",
+          "title": "How to Use Feints to Set Up Snapdowns and Leg Attacks",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "S9pGFY33kDQ",
+          "title": "Inside Tie Underhook Double Leg Takedown #wrestling #jiujitsu #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "e57BXSVxeek",
+          "title": "Inside tie collar tie throw by #wrestling #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "sub_0_0_2_collar_tie_(you)",
+      "label": "Collar tie (You)",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 166,
+      "x": 323.65,
+      "y": 1.0,
+      "z": -115.73,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Heavy forehead-to-temple pressure \u2014 hips back behind head & hands",
+        "control_mechanics": "Ear-to-ear collar tie + forearm club on the crown of the neck",
+        "next_transitions": "2-on-1 Russian tie entry \u2022 Collar-tie throw-by \u2022 Knee-pull single \u2022 Snapdown to Front Headlock"
+      },
+      "tactical_summary": "166-node core hand-fighting hub: heavy neck/occiput pressure chaining into brush-bys, throw-bys, snapdowns, and 2-on-1 entries.",
+      "sub_branches": [
+        "Setups / Entries",
+        "Collar tie",
+        "Outside tie",
+        "Control",
+        "Offence",
+        "2 on 1",
+        "Offence",
+        "Climb to back",
+        "Snatch single",
+        "ankle pick",
+        "front headlock",
+        "Defence",
+        "Framing on head",
+        "Pulling far elbow"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "Kf0wQ00FPBg",
+          "title": "Collar tie 2 on 1 entry to collar tie (4K Instructional)",
+          "source": "Instructional Footage"
+        },
+        {
+          "id": "LlLNke7EEsc",
+          "title": "How to Use Feints to Set Up Snapdowns and Leg Attacks",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "ddpcPz3ankA",
+          "title": "Super duck throwback \ud83e\udd86 #wrestling #bjj #jiujitsu #grapping",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "rPOU4gZl6tQ",
+          "title": "Sweep Single Sprawl Counter to Super Duck #wrestling #bjj #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "e40NM2SQc6A",
+          "title": "Super Duck to the Back #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "x5M3T1nCmFQ",
+          "title": "Snap down to front headlock #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Y61XcwycPZo",
+          "title": "outside tie collar tie uchi mata throw by #wrestling #jiiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "vtFw03xGlzc",
+          "title": "collar tie throw by #wrestling #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "e57BXSVxeek",
+          "title": "Inside tie collar tie throw by #wrestling #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "1jfKdaMUG0s",
+          "title": "Super duck from failed scissor take down  #wrestling #jiujitsu #bjj",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "sub_0_0_3_underhook_(you)",
+      "label": "Underhook (You)",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 70,
+      "x": 336.11,
+      "y": -63.0,
+      "z": -99.0,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Hips close & chest upright \u2014 jacking opponent's shoulder vertically",
+        "control_mechanics": "Shallow-to-deep shoulder shelf + head wedged into opponent's jaw",
+        "next_transitions": "Far-side knee tap \u2022 Snatch single leg \u2022 Throw-by to rear bodylock \u2022 Snap to Front Headlock"
+      },
+      "tactical_summary": "70-node vertical elevation control system: high elbow shoulder jacking to expose snatch single, knee tap, throw-by, or front headlock.",
+      "sub_branches": [
+        "Setups / Entries",
+        "Underhook",
+        "Head inside double",
+        "run the pipe",
+        "foot lift",
+        "Side bodylock",
+        "Front side uchimata",
+        "Lift and dump",
+        "Rear bodylock throwby",
+        "Mat return",
+        "Cran ride entry",
+        "Back take",
+        "Knee staple",
+        "Lift and dump"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "tzNtGTrEJ9E",
+          "title": "Highest Percentage Underhook Game in 30 Seconds",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "ddpcPz3ankA",
+          "title": "Super duck throwback \ud83e\udd86 #wrestling #bjj #jiujitsu #grapping",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6lXtLjBes-k",
+          "title": "Outside Tie Throw By to Snatch Single #wrestling #bjj #jiujitsu #grapp",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6htg6GQZIvw",
+          "title": "Front Headlock Fireman Throw Counter #wrestling #bjj #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "A0cnIZioKCQ",
+          "title": "Front headlock fireman throw counter #wrestling #bjj #jiujitsu #grappl",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "-1F2ezsNPoU",
+          "title": "How to hit a fireman's throw takedown off a sprawl #wrestling#jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "2Aji8rk3RwU",
+          "title": "How to hit a fireman's throw takedown #wrestling #bjj #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "bJx1zGF5xxw",
+          "title": "Single Arm throw #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "S9pGFY33kDQ",
+          "title": "Inside Tie Underhook Double Leg Takedown #wrestling #jiujitsu #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Y61XcwycPZo",
+          "title": "outside tie collar tie uchi mata throw by #wrestling #jiiujitsu",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "sub_0_0_4_overhook_(you)",
+      "label": "Overhook (You)",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 12,
+      "x": 344.61,
+      "y": -31.0,
+      "z": -79.95,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Heavy whizzer shoulder pressure \u2014 hip angled into opponent's near thigh",
+        "control_mechanics": "Deep overhook clamping opponent's arm tight to ribs",
+        "next_transitions": "Uchi-mata elevation \u2022 Fireman's carry \u2022 Inside trip \u2022 Limp-arm counter"
+      },
+      "tactical_summary": "Overhook/whizzer control chaining into uchi-mata, fireman's carry, and single-leg counters.",
+      "sub_branches": [
+        "Setups / Entries",
+        "Control",
+        "Offence",
+        "Defence",
+        "Offensive transitions",
+        "Setups / Entries",
+        "Control",
+        "Offence",
+        "Defence",
+        "Offensive transitions"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "VQq4_etHypU",
+          "title": "Belly whizzer single leg counter #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "6iupC8dS0ew",
+          "title": "Rear bodylock offense to front/side uchi mata",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "j_0BvxgzsUg",
+          "title": "Rear bodylock counter uchimata to front headlock",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "SAFmDaLOpC8",
+          "title": "Rear bodylock uchimata counter",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "sPf6EH6QhE4",
+          "title": "Overhook Wrestling System in 30 Seconds #wrestling #bjj #jiujitsu #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "m_8L5EkTEc8",
+          "title": "Double Overhook Escape",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6htg6GQZIvw",
+          "title": "Front Headlock Fireman Throw Counter #wrestling #bjj #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "A0cnIZioKCQ",
+          "title": "Front headlock fireman throw counter #wrestling #bjj #jiujitsu #grappl",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "-1F2ezsNPoU",
+          "title": "How to hit a fireman's throw takedown off a sprawl #wrestling#jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "2Aji8rk3RwU",
+          "title": "How to hit a fireman's throw takedown #wrestling #bjj #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "sub_0_0_5_2-on-1_(you)",
+      "label": "2-on-1 (You)",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 12,
+      "x": 348.76,
+      "y": 1.0,
+      "z": -59.51,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Angled T-position on the flank \u2014 shoulder pressure driving into trapped arm",
+        "control_mechanics": "Russian 2-on-1 wrist + above-elbow grip isolating near shoulder",
+        "next_transitions": "Climb to rear bodylock \u2022 Same-side ankle pick \u2022 Snatch single \u2022 Snap to Front Headlock"
+      },
+      "tactical_summary": "Russian 2-on-1 wrist + tricep control: isolates near shoulder to climb to back, hit ankle pick, snatch single, or front headlock.",
+      "sub_branches": [
+        "Setups / Entries",
+        "Control",
+        "Offence",
+        "Defence",
+        "Offensive transitions",
+        "Setups / Entries",
+        "Control",
+        "Offence",
+        "Defence",
+        "Offensive transitions"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "Kf0wQ00FPBg",
+          "title": "Collar tie 2 on 1 entry to collar tie (4K Instructional)",
+          "source": "Instructional Footage"
+        },
+        {
+          "id": "6dGwR5iqGVw",
+          "title": "Front head lock to ankle pick #wrestling #jiujitsu #bjj #grappling",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "6T46tsW6Ayw",
+          "title": "Rear bodylock ankle pick counter",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "Fi_XUPh8Sqo",
+          "title": "2 on 1 to ankle pick to rear naked choke #wrestling #bjj #jiujitsu #grapping",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6dGwR5iqGVw",
+          "title": "Front head lock to ankle pick #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "bGDjW1iwsFU",
+          "title": "Far side ankle pick #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "hTmH-cCH9Yk",
+          "title": "Ankle pick #wrestling #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "oSg3iOY0y_o",
+          "title": "2 on 1 too snatch single leg pt3 #wrestling #bjj #jiujitsu #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "vthOl5aaJ_k",
+          "title": "2 on 1 too front headlock pt2 #wrestling #bjj #jiujitsu #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "ccpu5mXU6Ro",
+          "title": "2 on 1 too rear body lock pt1 #wrestling #bjj #jiujitsu #grappling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "sub_0_0_6_over_under_(you)",
+      "label": "Over/Under (You)",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 30,
+      "x": 348.34,
+      "y": -63.0,
+      "z": -38.65,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Ear-to-chest 50/50 clinch \u2014 hips loaded underneath for elevation or trip",
+        "control_mechanics": "Underhook side lifts while overhook side clamps the elbow",
+        "next_transitions": "Inside leg trip \u2022 Arm-drag to rear bodylock \u2022 Lateral drop counter \u2022 Bodylock entry"
+      },
+      "tactical_summary": "50/50 clinch symmetry broken via arm drags to rear bodylock, inside leg trips, and bodylock entries.",
+      "sub_branches": [
+        "Setups / Entries",
+        "Control",
+        "Offence",
+        "Sweep single",
+        "Arm drag",
+        "Inside leg trip",
+        "Inside leg trip to scissor takedown",
+        "Knee tap",
+        "Defence",
+        "Offensive transitions",
+        "Snap down from over/under \u00e2\u0086\u0092 Head inside single leg",
+        "Setups / Entries",
+        "Control",
+        "Offence"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "VEA-J3sbRvY",
+          "title": "Arm Drag to Single Leg to Double Leg #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "XxiGNu8_HcU",
+          "title": "Arm Drag to Turtle Rear Body Lock #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "o-gLX-AjGTE",
+          "title": "Arm Drag to Rear Body Lock #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "861WQFb8bTk",
+          "title": "Arm Drag Mat Return",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "7C-oLg8LdaE",
+          "title": "Arm Drag Rear Body Lock Tutorial",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "VEA-J3sbRvY",
+          "title": "Arm Drag to Single Leg to Double Leg #wrestling #jiujitsu #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "XxiGNu8_HcU",
+          "title": "Arm Drag to Turtle Rear Body Lock #wrestling #jiujitsu #grappling #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "o-gLX-AjGTE",
+          "title": "Arm Drag to Rear Body Lock #wrestling #jiujitsu #grappling #bjj",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "node_0_1_wrestling_bodylock",
+      "label": "Wrestling bodylock",
+      "realm": "Wrestling",
+      "depth": 2,
+      "descendant_count": 59,
+      "x": 263.78,
+      "y": 7.0,
+      "z": -17.44,
+      "color": "#10b981",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Hips tight & lower than opponent \u2014 ear glued to chest/back",
+        "control_mechanics": "Gable or S-grip around lower ribs/waist pulling hips in",
+        "next_transitions": "Lift & mat return \u2022 Inside trip \u2022 Polish throw \u2022 Transition to Crab Ride / Back Take"
+      },
+      "tactical_summary": "59-node rear/front bodylock matrix: hip-in clamping, mat returns, inside leg trips, uchi-mata counters, and crab-ride transitions.",
+      "sub_branches": [
+        "Attacker",
+        "Defender"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "XxiGNu8_HcU",
+          "title": "Arm Drag to Turtle Rear Body Lock #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "o-gLX-AjGTE",
+          "title": "Arm Drag to Rear Body Lock #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "6iupC8dS0ew",
+          "title": "Rear bodylock offense to front/side uchi mata",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "4wS1Bzf7RkY",
+          "title": "Rear bodylock counter to inside leg trip",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "vwag6TitTDk",
+          "title": "Rear bodylock counter to chin push",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "j_0BvxgzsUg",
+          "title": "Rear bodylock counter uchimata to front headlock",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "SAFmDaLOpC8",
+          "title": "Rear bodylock uchimata counter",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "6T46tsW6Ayw",
+          "title": "Rear bodylock ankle pick counter",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "qv6yTDBmgE8",
+          "title": "Countering hips coming forward rear body lock defense with crab ride",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "m_1MKKLwDLE",
+          "title": "Early stage rear bodylock defense",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE",
+        "VF3wKI-quFA",
+        "B5_2mIA_CCU"
+      ]
+    },
+    {
+      "id": "node_0_2_shots",
+      "label": "Shots",
+      "realm": "Wrestling",
+      "depth": 2,
+      "descendant_count": 287,
+      "x": 263.78,
+      "y": 45.0,
+      "z": 17.44,
+      "color": "#10b981",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Shots",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Shots' with 287 structured nodes.",
+      "sub_branches": [
+        "Head inside snatch single",
+        "Low ankle",
+        "Head outside single leg",
+        "Head inside single leg",
+        "Double leg"
+      ],
+      "linked_technique_videos": [],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE",
+        "VF3wKI-quFA",
+        "B5_2mIA_CCU"
+      ]
+    },
+    {
+      "id": "sub_0_2_0_head_inside_snatch_single",
+      "label": "Head inside snatch single",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 10,
+      "x": 350.91,
+      "y": 13.0,
+      "z": -20.43,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Disciplined low stance \u2014 head & hands in front of hips",
+        "control_mechanics": "Active tie-up & angle creation from Head inside snatch single",
+        "next_transitions": "Chain directly into Mind Map setups, shots, or go-behinds"
+      },
+      "tactical_summary": "Sub-system 'Head inside snatch single' (10 Mindomo nodes).",
+      "sub_branches": [
+        "Offence",
+        "Head inside double",
+        "Run the pipe",
+        "Foot lift"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "VEA-J3sbRvY",
+          "title": "Arm Drag to Single Leg to Double Leg #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "6dGwR5iqGVw",
+          "title": "Front head lock to ankle pick #wrestling #jiujitsu #bjj #grappling",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "wKPBJlmITKE",
+          "title": "Front head lock sweep single go behind #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "ndupRyw3zfA",
+          "title": "Front headlock go behind #wrestling #jiujitsu #bjj #grappling",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "34OQix_kVQ8",
+          "title": "Pinch front headlock trouble shooting #jiujitsu #wrestling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "roiCOn_Mn6o",
+          "title": "Pinch front headlock to anaconda #jiujitsu #wrestling #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "Qn0V4j-L3Z0",
+          "title": "Cradle counter to single leg #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "VQq4_etHypU",
+          "title": "Belly whizzer single leg counter #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "vcS1Omc9ids",
+          "title": "How to sprawl against a sweep single leg   #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "EfvTJAQS7Aw",
+          "title": "Wrestling sweep single defence in Absolute MMA Pro class Part 2#bjj #wrestling #grappling #jiujitsu",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "sub_0_2_1_low_ankle",
+      "label": "Low ankle",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 20,
+      "x": 357.07,
+      "y": 45.0,
+      "z": -0.5,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Disciplined low stance \u2014 head & hands in front of hips",
+        "control_mechanics": "Active tie-up & angle creation from Low ankle",
+        "next_transitions": "Chain directly into Mind Map setups, shots, or go-behinds"
+      },
+      "tactical_summary": "Sub-system 'Low ankle' (20 Mindomo nodes).",
+      "sub_branches": [
+        "Attacker",
+        "Setups / Entries",
+        "From: Outside tie (You)",
+        "From: Inside tie (You)",
+        "From: Over/Under (You)",
+        "Control",
+        "Offence",
+        "Defence / Escapes",
+        "Submissions",
+        "Offensive transitions",
+        "Defender",
+        "Setups / Entries",
+        "Control",
+        "Offence"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "6dGwR5iqGVw",
+          "title": "Front head lock to ankle pick #wrestling #jiujitsu #bjj #grappling",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "6T46tsW6Ayw",
+          "title": "Rear bodylock ankle pick counter",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "Fi_XUPh8Sqo",
+          "title": "2 on 1 to ankle pick to rear naked choke #wrestling #bjj #jiujitsu #grapping",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6dGwR5iqGVw",
+          "title": "Front head lock to ankle pick #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "bGDjW1iwsFU",
+          "title": "Far side ankle pick #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "hTmH-cCH9Yk",
+          "title": "Ankle pick #wrestling #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "HIR0_hBmEYA",
+          "title": "Duck under follow up from scissor takedown from Saturday wrestling class#wrestling #grappling #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6T46tsW6Ayw",
+          "title": "Rear bodylock ankle pick counter",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "sub_0_2_2_head_outside_single_leg",
+      "label": "Head outside single leg",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 61,
+      "x": 358.74,
+      "y": 77.0,
+      "z": 20.29,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Hips driven underneath shoulders \u2014 head up pressing into lateral hip",
+        "control_mechanics": "High-crotch tight wrap on near thigh + outside step to cut the corner",
+        "next_transitions": "Switch to double leg \u2022 Crackdown finish \u2022 Climb to rear bodylock \u2022 Dump finish"
+      },
+      "tactical_summary": "61-node high-crotch / head-outside single matrix: crackdowns, double-leg switches, and back-side exposure.",
+      "sub_branches": [
+        "Attacker",
+        "Setups / Entries",
+        "Example: Outside tie",
+        "Control",
+        "Example: Good posture",
+        "Example: Hip extension",
+        "Example: Knee on the ground on the inside",
+        "Example: Other leg stepped up, ready to transition",
+        "Example: Four grips",
+        "Example: One hand reinforces the other",
+        "Example: Control extended below the knee",
+        "Offence",
+        "Running the Pipe",
+        "Double leg"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "9_pLOddGguA",
+          "title": "Outside Single Leg Takedown",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6htg6GQZIvw",
+          "title": "Front Headlock Fireman Throw Counter #wrestling #bjj #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "A0cnIZioKCQ",
+          "title": "Front headlock fireman throw counter #wrestling #bjj #jiujitsu #grappl",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "-1F2ezsNPoU",
+          "title": "How to hit a fireman's throw takedown off a sprawl #wrestling#jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "2Aji8rk3RwU",
+          "title": "How to hit a fireman's throw takedown #wrestling #bjj #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "aLNAz-W-hHQ",
+          "title": "Fireman in bjj #bjj #combatsport #martialarts #mma #bjj #wrestlingforbjj #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "sub_0_2_3_head_inside_single_leg",
+      "label": "Head inside single leg",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 177,
+      "x": 355.83,
+      "y": 13.0,
+      "z": 40.94,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Deep penetration step \u2014 spine upright, ear glued tight to opponent's ribs",
+        "control_mechanics": "Pinch opponent's knee between thighs + lock hands behind knee/shin",
+        "next_transitions": "Run the pipe \u2022 Shelf the leg & finish \u2022 Cut corner to backside \u2022 Limp-arm out of heavy whizzer"
+      },
+      "tactical_summary": "177-node primary leg-attack system: ear-to-chest posture, running the pipe, shelf finishes, and anti-sprawl counters.",
+      "sub_branches": [
+        "Attacker",
+        "Setups / Entries",
+        "Control",
+        "Sweep single",
+        "Offence",
+        "Foot Lift Takedown",
+        "Shin Whizzer",
+        "Limp Arm counter to Shin Whizzer",
+        "Running the Pipe counter to Shin Whizzer",
+        "Head Inside Double Leg counter to Shin Whizzer",
+        "Collar Tie Ankle Tap counter to Shin Whizzer",
+        "Tripod Defence",
+        "Rear Bodylock counter to Tripod Defence",
+        "Near Side Block"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "VEA-J3sbRvY",
+          "title": "Arm Drag to Single Leg to Double Leg #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "wKPBJlmITKE",
+          "title": "Front head lock sweep single go behind #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "Qn0V4j-L3Z0",
+          "title": "Cradle counter to single leg #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "VQq4_etHypU",
+          "title": "Belly whizzer single leg counter #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "vcS1Omc9ids",
+          "title": "How to sprawl against a sweep single leg   #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "EfvTJAQS7Aw",
+          "title": "Wrestling sweep single defence in Absolute MMA Pro class Part 2#bjj #wrestling #grappling #jiujitsu",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "psbrPh81gp8",
+          "title": "Wrestling sweep single defence in Absolute MMA Pro class Part 1#bjj #wrestling #grappling #jiujitsu",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "dPeTNQpOfnA",
+          "title": "How To Not Get Sprawled On",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "blXDDRuwB4c",
+          "title": "This is how Frank Chamizo countered Jordan Burroughs Single Leg",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "8hgQTa3ZY-o",
+          "title": "This Is Why You\u2019re Running The Pipe Takedown Doesn\u2019t Work",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "sub_0_2_4_double_leg",
+      "label": "Double leg",
+      "realm": "Wrestling",
+      "depth": 3,
+      "descendant_count": 14,
+      "x": 348.48,
+      "y": 45.0,
+      "z": 60.46,
+      "color": "#34d399",
+      "size": 10,
+      "biomechanics_3d": {
+        "posture_cue": "Explosive level change \u2014 trail leg steps up & drives across on a diagonal corner angle",
+        "control_mechanics": "Hands cup behind both knees + ear tight to hip",
+        "next_transitions": "Cut the corner across knees \u2022 Blast double drive \u2022 Transition directly to Headquarters / J-Point"
+      },
+      "tactical_summary": "Penetration step + hip-under-shoulder drive cutting the corner across opponent's knees.",
+      "sub_branches": [
+        "Attacker",
+        "Setups / Entries",
+        "Control",
+        "Offence",
+        "Defence",
+        "Submissions",
+        "Offensive transitions",
+        "Defender",
+        "Setups / Entries",
+        "Control",
+        "Offence",
+        "Defence",
+        "Submissions",
+        "Offensive transitions"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "VEA-J3sbRvY",
+          "title": "Arm Drag to Single Leg to Double Leg #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "OsyMonY4LAU",
+          "title": "Entire Double Leg Offense System #wrestling #jiujitsu #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Ns-aEPcJyes",
+          "title": "Double Leg Takedown Tutorial",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "EvjWyVxdQYM",
+          "title": "Over Under to Sweep Single to Double Leg Finish #wrestling #jiujitsu #",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "HJHVxwIgq7g",
+          "title": "Double Leg Sprawl Counter to Rear Bodylock #wrestling #bjj #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "VEA-J3sbRvY",
+          "title": "Arm Drag to Single Leg to Double Leg #wrestling #jiujitsu #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "S9pGFY33kDQ",
+          "title": "Inside Tie Underhook Double Leg Takedown #wrestling #jiujitsu #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "PLdoKqpGVBk",
+          "title": "Double leg running the pipe #wrestling #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "D3qLrd3aw4s",
+          "title": "Single leg to double leg finish",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "zkWW7wDIsAk",
+          "title": "Single leg to double leg fundamentals with NZ wrestling Olympian Tayla Ford #wrestling #grappling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "pxEwrg4HaZg",
+        "fbCpcA1DyWg",
+        "1qHrHpUZ6qU",
+        "PNRo2D28Res",
+        "IjhhZ9ng7tY",
+        "dAn5CaR-bPE"
+      ]
+    },
+    {
+      "id": "realm_1_guard",
+      "label": "Guard (1805)",
+      "realm": "Guard",
+      "depth": 1,
+      "descendant_count": 1805,
+      "x": 0.0,
+      "y": -45.0,
+      "z": 140.0,
+      "color": "#38bdf8",
+      "size": 19,
+      "tactical_summary": "Guard macro-domain containing 1805 tactical Mindomo nodes across 19 positional systems.",
+      "sub_branches": [
+        "Shin pin",
+        "Supine Guard",
+        "J point",
+        "Closed Guard",
+        "Headquarters",
+        "Quarter guard",
+        "Half Guard Passing",
+        "Half guard",
+        "Butterfly guard",
+        "Half butterfly",
+        "Knee shield half guard",
+        "K guard",
+        "De la riva",
+        "Reverse de la riva",
+        "Butterfly ashi",
+        "Outside ashi",
+        "X guard",
+        "Single leg X",
+        "Seated Guard"
+      ],
+      "linked_technique_videos": [],
+      "linked_comp_matches": []
+    },
+    {
+      "id": "node_1_0_shin_pin",
+      "label": "Shin pin",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 56,
+      "x": 57.9,
+      "y": -121.0,
+      "z": 29.22,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Shin pin",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Shin pin' with 56 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "ecfK0_Jl5Cw",
+          "title": "Shin whizzer counter #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_1_supine_guard",
+      "label": "Supine Guard",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 193,
+      "x": 86.26,
+      "y": -83.0,
+      "z": 49.53,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Supine Guard",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Supine Guard' with 193 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "GhokRq_zbO8",
+          "title": "Closed guard escape #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_2_j_point",
+      "label": "J point",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 306,
+      "x": 107.9,
+      "y": -45.0,
+      "z": 76.89,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Flanking outside hip angle \u2014 heavy chest/hip pressure pinning opponent's knees away",
+        "control_mechanics": "Collar/neck tie + bottom-leg cuff forcing supine partner's hips to face away",
+        "next_transitions": "J-Point camping fatigue pass \u2022 Step over to Mount \u2022 Expose gift-wrap / Back Take"
+      },
+      "tactical_summary": "306-node flanking guard-pass hub: hip/shoulder pin forcing supine guard player away before mounting or taking the back.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "TCO9n3Pe7Pk",
+          "title": "Entire J point passing system in 30 seconds",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "i5sB3zN7F4U",
+          "title": "J Point Passing Lasso Counter #bjj #wrestling #nogi #grappling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_3_closed_guard",
+      "label": "Closed Guard",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 70,
+      "x": 121.14,
+      "y": -7.0,
+      "z": 109.17,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Closed Guard",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Closed Guard' with 70 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "GhokRq_zbO8",
+          "title": "Closed guard escape #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_4_headquarters",
+      "label": "Headquarters",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 80,
+      "x": 124.94,
+      "y": 31.0,
+      "z": 143.85,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Heavy hip weight anchored over opponent's trapped thigh \u2014 head over sternum",
+        "control_mechanics": "Pin one shin between your legs while controlling inside bicep/underhook space",
+        "next_transitions": "Knee-cut pass \u2022 Smash pass to J-Point \u2022 Floating pummel to Mount"
+      },
+      "tactical_summary": "80-node central passing hub stepping over one shin to launch knee-cuts, smash passes, and floating passes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "-rSsON9e9sk",
+          "title": "Knee Cut Pass from Headquarters #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "3J3TOH6PBK8",
+          "title": "Headquarters Passing to Smash pass De La Riva Counter #bjj #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_5_quarter_guard",
+      "label": "Quarter guard",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 186,
+      "x": 119.01,
+      "y": -121.0,
+      "z": 178.23,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Quarter guard",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Quarter guard' with 186 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "-rSsON9e9sk",
+          "title": "Knee Cut Pass from Headquarters #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "3J3TOH6PBK8",
+          "title": "Headquarters Passing to Smash pass De La Riva Counter #bjj #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "GhokRq_zbO8",
+          "title": "Closed guard escape #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_6_half_guard_passing",
+      "label": "Half Guard Passing",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 96,
+      "x": 103.81,
+      "y": -83.0,
+      "z": 209.63,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Half Guard Passing",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Half Guard Passing' with 96 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "TCO9n3Pe7Pk",
+          "title": "Entire J point passing system in 30 seconds",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "i5sB3zN7F4U",
+          "title": "J Point Passing Lasso Counter #bjj #wrestling #nogi #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "3J3TOH6PBK8",
+          "title": "Headquarters Passing to Smash pass De La Riva Counter #bjj #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "GhokRq_zbO8",
+          "title": "Closed guard escape #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_7_half_guard",
+      "label": "Half guard",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 14,
+      "x": 80.53,
+      "y": -45.0,
+      "z": 235.61,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Half guard",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Half guard' with 14 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "GhokRq_zbO8",
+          "title": "Closed guard escape #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_8_butterfly_guard",
+      "label": "Butterfly guard",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 92,
+      "x": 50.97,
+      "y": -7.0,
+      "z": 254.14,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Seated forward-leaning posture \u2014 head lower than opponent's chin",
+        "control_mechanics": "Inside butterfly hooks + overhook/shoulder-crunch or underhook control",
+        "next_transitions": "Shoulder-crunch sumi-gaeshi sweep \u2022 Arm-drag to back \u2022 Elevation into Ashi Garami"
+      },
+      "tactical_summary": "92-node seated inside-hook elevation system linking shoulder crunches, arm drags, and ashis.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "4m7zeftwDdA",
+          "title": "Butterfly Hook Takedown",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "EHVznR38YZA",
+          "title": "Double leg takedown butterfly hook defence counter #wrestling #bjj #jiujitsu #grappling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_9_half_butterfly",
+      "label": "Half butterfly",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 38,
+      "x": 17.44,
+      "y": 31.0,
+      "z": 263.78,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Half butterfly",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Half butterfly' with 38 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "4m7zeftwDdA",
+          "title": "Butterfly Hook Takedown",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "EHVznR38YZA",
+          "title": "Double leg takedown butterfly hook defence counter #wrestling #bjj #jiujitsu #grappling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_10_knee_shield_half_guard",
+      "label": "Knee shield half guard",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 42,
+      "x": -17.44,
+      "y": -121.0,
+      "z": 263.78,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Knee shield half guard",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Knee shield half guard' with 42 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "-rSsON9e9sk",
+          "title": "Knee Cut Pass from Headquarters #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "GhokRq_zbO8",
+          "title": "Closed guard escape #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "OCaQtLHJnO0",
+          "title": "Knee tap off failed front side uchimata #wrestling #jiujitsu #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "KBNy7j585GE",
+          "title": "Underhook knee tap wrestling takedown#wrestling #bjj #jiujitsu #grappling #martialarts #combatsports",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "M0AWUxcOUNo",
+          "title": "Knee pull sweep single takedown #bjj #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_11_k_guard",
+      "label": "K guard",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 58,
+      "x": -50.97,
+      "y": -83.0,
+      "z": 254.14,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in K guard",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'K guard' with 58 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "GhokRq_zbO8",
+          "title": "Closed guard escape #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_12_de_la_riva",
+      "label": "De la riva",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 64,
+      "x": -80.53,
+      "y": -45.0,
+      "z": 235.61,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Active outside hook tension \u2014 off-balancing passer's base before they settle",
+        "control_mechanics": "Deep DLR hook + ankle/far-sleeve control turning opponent's knee inward",
+        "next_transitions": "Off-balance to Baby Bolo / Crab Ride \u2022 Wrestle-up single leg \u2022 Matrix back exposure"
+      },
+      "tactical_summary": "64-node open guard & outside hook system chaining into off-balances, baby bolos, and crab rides.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "3J3TOH6PBK8",
+          "title": "Headquarters Passing to Smash pass De La Riva Counter #bjj #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_13_reverse_de_la_riva",
+      "label": "Reverse de la riva",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 43,
+      "x": -103.81,
+      "y": -7.0,
+      "z": 209.63,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Reverse de la riva",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Reverse de la riva' with 43 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "3J3TOH6PBK8",
+          "title": "Headquarters Passing to Smash pass De La Riva Counter #bjj #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_14_butterfly_ashi",
+      "label": "Butterfly ashi",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 46,
+      "x": -119.01,
+      "y": 31.0,
+      "z": 178.23,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Butterfly ashi",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Butterfly ashi' with 46 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "4m7zeftwDdA",
+          "title": "Butterfly Hook Takedown",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "EHVznR38YZA",
+          "title": "Double leg takedown butterfly hook defence counter #wrestling #bjj #jiujitsu #grappling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_15_outside_ashi",
+      "label": "Outside ashi",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 58,
+      "x": -124.94,
+      "y": -121.0,
+      "z": 143.85,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Outside ashi",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Outside ashi' with 58 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "9_pLOddGguA",
+          "title": "Outside Single Leg Takedown",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6lXtLjBes-k",
+          "title": "Outside Tie Throw By to Snatch Single #wrestling #bjj #jiujitsu #grapp",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Y61XcwycPZo",
+          "title": "outside tie collar tie uchi mata throw by #wrestling #jiiujitsu",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_16_x_guard",
+      "label": "X guard",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 38,
+      "x": -121.14,
+      "y": -83.0,
+      "z": 109.17,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in X guard",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'X guard' with 38 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "GhokRq_zbO8",
+          "title": "Closed guard escape #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_17_single_leg_x",
+      "label": "Single leg X",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 48,
+      "x": -107.9,
+      "y": -45.0,
+      "z": 76.89,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Single leg X",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Single leg X' with 48 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "VEA-J3sbRvY",
+          "title": "Arm Drag to Single Leg to Double Leg #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "wKPBJlmITKE",
+          "title": "Front head lock sweep single go behind #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "Qn0V4j-L3Z0",
+          "title": "Cradle counter to single leg #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "VQq4_etHypU",
+          "title": "Belly whizzer single leg counter #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "vcS1Omc9ids",
+          "title": "How to sprawl against a sweep single leg   #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "EfvTJAQS7Aw",
+          "title": "Wrestling sweep single defence in Absolute MMA Pro class Part 2#bjj #wrestling #grappling #jiujitsu",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "psbrPh81gp8",
+          "title": "Wrestling sweep single defence in Absolute MMA Pro class Part 1#bjj #wrestling #grappling #jiujitsu",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "blXDDRuwB4c",
+          "title": "This is how Frank Chamizo countered Jordan Burroughs Single Leg",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "xK69UyFdp-M",
+          "title": "Entire Single leg defence system  #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "9_pLOddGguA",
+          "title": "Outside Single Leg Takedown",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_1_18_seated_guard",
+      "label": "Seated Guard",
+      "realm": "Guard",
+      "depth": 2,
+      "descendant_count": 258,
+      "x": -86.26,
+      "y": -7.0,
+      "z": 49.53,
+      "color": "#38bdf8",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Seated Guard",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Seated Guard' with 258 structured nodes.",
+      "sub_branches": [
+        "Passer",
+        "Guard player"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "GhokRq_zbO8",
+          "title": "Closed guard escape #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "realm_2_dominant_positions",
+      "label": "Dominant Positions (1003)",
+      "realm": "Dominant Positions",
+      "depth": 1,
+      "descendant_count": 1003,
+      "x": -140.0,
+      "y": 45.0,
+      "z": 0.0,
+      "color": "#f59e0b",
+      "size": 19,
+      "tactical_summary": "Dominant Positions macro-domain containing 1003 tactical Mindomo nodes across 6 positional systems.",
+      "sub_branches": [
+        "Turtle",
+        "Front Headlock",
+        "Mount",
+        "Side Control",
+        "North South",
+        "Back Control"
+      ],
+      "linked_technique_videos": [],
+      "linked_comp_matches": []
+    },
+    {
+      "id": "node_2_0_turtle",
+      "label": "Turtle",
+      "realm": "Dominant Positions",
+      "depth": 2,
+      "descendant_count": 185,
+      "x": -223.43,
+      "y": -31.0,
+      "z": 93.08,
+      "color": "#f59e0b",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Heavy top hip pressure \u2014 knees off the mat driving forward at an angle",
+        "control_mechanics": "Tight-waist + far-ankle / claw-ride breakdown breaking flat to the mat",
+        "next_transitions": "Spiral ride breakdown \u2022 Gut wrench exposure \u2022 Leg lace \u2022 Seatbelt hooks to Back Control"
+      },
+      "tactical_summary": "185-node par-terre / turtle breakdown system: tight-waist spiral rides, gut wrenches, leg laces, and back exposure.",
+      "sub_branches": [
+        "Attacker",
+        "Defender"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "XxiGNu8_HcU",
+          "title": "Arm Drag to Turtle Rear Body Lock #wrestling #jiujitsu #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "Fy0tsjD-vAE",
+          "title": "Rear Bodylock takedown to turtle",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "GVkkfOf9q5M",
+          "title": "Escaping the Turtle Hold",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Wc8yjhPycfw",
+          "title": "Slick Back Take Takedown",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "XxiGNu8_HcU",
+          "title": "Arm Drag to Turtle Rear Body Lock #wrestling #jiujitsu #grappling #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6gdCQrcbrNo",
+          "title": "Cartwheel turtle defence #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "y3ZArXx8FFQ",
+          "title": "Inside switch turtle defence #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "s_8ZyVNJAos",
+          "title": "Fatman roll turtle defence #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "jIjH51q3KMw",
+          "title": "Pinch front headlock to turtle backtake #jiujitsu #wrestling #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_2_1_front_headlock",
+      "label": "Front Headlock",
+      "realm": "Dominant Positions",
+      "depth": 2,
+      "descendant_count": 356,
+      "x": -245.91,
+      "y": 7.0,
+      "z": 66.4,
+      "color": "#f59e0b",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Heavy chest-on-upper-back weight \u2014 hips sprawled back to block reshots",
+        "control_mechanics": "Deep chin-strap + tricep/elbow pinch keeping opponent's posture broken",
+        "next_transitions": "Circle & score Go-Behind \u2022 Knee-tap ankle pick \u2022 Pinch headlock exposure \u2022 Anaconda / Darce choke"
+      },
+      "tactical_summary": "356-node dominant control hub: chin-strap + tricep pinch chaining into go-behinds, ankle picks, cradles, and anaconda chokes.",
+      "sub_branches": [
+        "Attacker",
+        "Defender"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "6dGwR5iqGVw",
+          "title": "Front head lock to ankle pick #wrestling #jiujitsu #bjj #grappling",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "wKPBJlmITKE",
+          "title": "Front head lock sweep single go behind #wrestling #jiujitsu #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "ndupRyw3zfA",
+          "title": "Front headlock go behind #wrestling #jiujitsu #bjj #grappling",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "34OQix_kVQ8",
+          "title": "Pinch front headlock trouble shooting #jiujitsu #wrestling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "roiCOn_Mn6o",
+          "title": "Pinch front headlock to anaconda #jiujitsu #wrestling #grappling #bjj",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "j_0BvxgzsUg",
+          "title": "Rear bodylock counter uchimata to front headlock",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "dzk3rHpSahg",
+          "title": "Entire Front Headlock System #bjj #wrestling #jiujitsu #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6htg6GQZIvw",
+          "title": "Front Headlock Fireman Throw Counter #wrestling #bjj #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "A0cnIZioKCQ",
+          "title": "Front headlock fireman throw counter #wrestling #bjj #jiujitsu #grappl",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "BVqNWejCCVs",
+          "title": "Chin Strap Front Headlock Escape #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_2_2_mount",
+      "label": "Mount",
+      "realm": "Dominant Positions",
+      "depth": 2,
+      "descendant_count": 132,
+      "x": -260.13,
+      "y": 45.0,
+      "z": 34.54,
+      "color": "#f59e0b",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Mount",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Mount' with 132 structured nodes.",
+      "sub_branches": [
+        "Attacker",
+        "Defender"
+      ],
+      "linked_technique_videos": [],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_2_3_side_control",
+      "label": "Side Control",
+      "realm": "Dominant Positions",
+      "depth": 2,
+      "descendant_count": 136,
+      "x": -265.0,
+      "y": 83.0,
+      "z": 0.0,
+      "color": "#f59e0b",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Side Control",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Side Control' with 136 structured nodes.",
+      "sub_branches": [
+        "Attacker",
+        "Defender"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "6iupC8dS0ew",
+          "title": "Rear bodylock offense to front/side uchi mata",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "4wS1Bzf7RkY",
+          "title": "Rear bodylock counter to inside leg trip",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "tzITsDHcIf8",
+          "title": "Adam Saitiev\u2019s Inside Leg Trip Against Yoel Romero",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "9_pLOddGguA",
+          "title": "Outside Single Leg Takedown",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "6lXtLjBes-k",
+          "title": "Outside Tie Throw By to Snatch Single #wrestling #bjj #jiujitsu #grapp",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "tK7oaRW48as",
+          "title": "Over Under to Inside Leg Trip #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "y3ZArXx8FFQ",
+          "title": "Inside switch turtle defence #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "S9pGFY33kDQ",
+          "title": "Inside Tie Underhook Double Leg Takedown #wrestling #jiujitsu #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "bGDjW1iwsFU",
+          "title": "Far side ankle pick #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Y61XcwycPZo",
+          "title": "outside tie collar tie uchi mata throw by #wrestling #jiiujitsu",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_2_4_north_south",
+      "label": "North South",
+      "realm": "Dominant Positions",
+      "depth": 2,
+      "descendant_count": 155,
+      "x": -260.13,
+      "y": 121.0,
+      "z": -34.54,
+      "color": "#f59e0b",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in North South",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'North South' with 155 structured nodes.",
+      "sub_branches": [
+        "Attacker",
+        "Defender"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "_CFofHe_aEk",
+          "title": "Plunge pool recovery trying to survive wrestling training camp for south East Asian championships \u2620\ufe0f",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "248QPPMuVv4",
+          "title": "Tarikoplata from north south #bjj #jiujitsu #wrestling #grappling #Tarikoplata #legskimura #kimura",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "node_2_5_back_control",
+      "label": "Back Control",
+      "realm": "Dominant Positions",
+      "depth": 2,
+      "descendant_count": 33,
+      "x": -245.91,
+      "y": -31.0,
+      "z": -66.4,
+      "color": "#f59e0b",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Back Control",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Back Control' with 33 structured nodes.",
+      "sub_branches": [
+        "Attacker",
+        "Defender"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "ddpcPz3ankA",
+          "title": "Super duck throwback \ud83e\udd86 #wrestling #bjj #jiujitsu #grapping",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Wc8yjhPycfw",
+          "title": "Slick Back Take Takedown",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "e40NM2SQc6A",
+          "title": "Super Duck to the Back #wrestling #jiujitsu #bjj #grappling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "jIjH51q3KMw",
+          "title": "Pinch front headlock to turtle backtake #jiujitsu #wrestling #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "vaZHJWjmclA",
+          "title": "Escaping the back with 2 hooks #wrestling #jiujitsu #grappling #bjj",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "u2u4Jp83H2M",
+          "title": "Backside 50/50 counter crab ride to the back taught to me by Leavy Jones-Leary #bjj  #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "B8keSc7rilo",
+          "title": "Cutback Single Leg #wrestling #bjj #jiujitsu #wrestlingforbjj #grappling #mma",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "2hc53CkDWEQ",
+          "title": "Front headlock go behind to tripod breakdown to back take #bjj #wrestling #grappling #combatsport",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "dKuujzSo7LQ",
+        "thvDakSV9hs"
+      ]
+    },
+    {
+      "id": "realm_3_scrambles",
+      "label": "Scrambles (130)",
+      "realm": "Scrambles",
+      "depth": 1,
+      "descendant_count": 130,
+      "x": -0.0,
+      "y": -45.0,
+      "z": -140.0,
+      "color": "#a855f7",
+      "size": 19,
+      "tactical_summary": "Scrambles macro-domain containing 130 tactical Mindomo nodes across 3 positional systems.",
+      "sub_branches": [
+        "Berimbolo",
+        "Crab ride",
+        "Grounded 50/50"
+      ],
+      "linked_technique_videos": [],
+      "linked_comp_matches": []
+    },
+    {
+      "id": "node_3_0_berimbolo",
+      "label": "Berimbolo",
+      "realm": "Scrambles",
+      "depth": 2,
+      "descendant_count": 38,
+      "x": -50.97,
+      "y": -121.0,
+      "z": -254.14,
+      "color": "#a855f7",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Berimbolo",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Berimbolo' with 38 structured nodes.",
+      "sub_branches": [
+        "Initiative",
+        "Defensive"
+      ],
+      "linked_technique_videos": [],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "pxEwrg4HaZg",
+        "dKuujzSo7LQ"
+      ]
+    },
+    {
+      "id": "node_3_1_crab_ride",
+      "label": "Crab ride",
+      "realm": "Scrambles",
+      "depth": 2,
+      "descendant_count": 56,
+      "x": -17.44,
+      "y": -83.0,
+      "z": -263.78,
+      "color": "#a855f7",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Tight hip-to-hip attachment \u2014 active shins wedged behind opponent's knees",
+        "control_mechanics": "Waist/hip grips + double crab hooks steering opponent's hips to the mat",
+        "next_transitions": "Shuck hips to expose Back Control \u2022 Leg-drag pass \u2022 Twister hook climb"
+      },
+      "tactical_summary": "56-node hip-attachment scramble engine wedging hooks behind opponent's knees to expose the back.",
+      "sub_branches": [
+        "Defensive",
+        "Initiative"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "qv6yTDBmgE8",
+          "title": "Countering hips coming forward rear body lock defense with crab ride",
+          "duration": null,
+          "source": "Absolute MMA Pro Class Wrestling Techniques"
+        },
+        {
+          "id": "Wc8yjhPycfw",
+          "title": "Slick Back Take Takedown",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "Zd1dvKKMytU",
+          "title": "De la riva guard to crabride back take #jiujitsu #wrestling",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "u2u4Jp83H2M",
+          "title": "Backside 50/50 counter crab ride to the back taught to me by Leavy Jones-Leary #bjj  #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "2hc53CkDWEQ",
+          "title": "Front headlock go behind to tripod breakdown to back take #bjj #wrestling #grappling #combatsport",
+          "source": "YouTube Technique Shorts"
+        },
+        {
+          "id": "qv6yTDBmgE8",
+          "title": "Countering hips coming forward rear body lock defense with crab ride",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "pxEwrg4HaZg",
+        "dKuujzSo7LQ"
+      ]
+    },
+    {
+      "id": "node_3_2_grounded_50_50",
+      "label": "Grounded 50/50",
+      "realm": "Scrambles",
+      "depth": 2,
+      "descendant_count": 33,
+      "x": 17.44,
+      "y": -45.0,
+      "z": -263.78,
+      "color": "#a855f7",
+      "size": 13,
+      "biomechanics_3d": {
+        "posture_cue": "Balanced grappling stance \u2014 head & hands protecting inside space",
+        "control_mechanics": "Establish inside frames & grip leverage in Grounded 50/50",
+        "next_transitions": "Chain into high-percentage Mind Map setups, finishes, or transitions"
+      },
+      "tactical_summary": "Mindomo position system 'Grounded 50/50' with 33 structured nodes.",
+      "sub_branches": [
+        "Initiative",
+        "Defensive"
+      ],
+      "linked_technique_videos": [
+        {
+          "id": "u2u4Jp83H2M",
+          "title": "Backside 50/50 counter crab ride to the back taught to me by Leavy Jones-Leary #bjj  #jiujitsu",
+          "source": "YouTube Technique Shorts"
+        }
+      ],
+      "linked_comp_matches": [
+        "tctcktPTssA",
+        "jKkPyN-T1BE",
+        "k-KWqgw-OUw",
+        "U5Rql7qJ6wc",
+        "igh6l9wBsYg",
+        "ObBbqOcvbbk",
+        "pxEwrg4HaZg",
+        "dKuujzSo7LQ"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "root_grappling_mind_map",
+      "target": "realm_0_wrestling",
+      "color": "#10b981"
+    },
+    {
+      "source": "realm_0_wrestling",
+      "target": "node_0_0_hand_fighting_(new)",
+      "color": "#10b981"
+    },
+    {
+      "source": "node_0_0_hand_fighting_(new)",
+      "target": "sub_0_0_0_outside_tie_(you)",
+      "color": "#34d399"
+    },
+    {
+      "source": "node_0_0_hand_fighting_(new)",
+      "target": "sub_0_0_1_inside_tie_(you)",
+      "color": "#34d399"
+    },
+    {
+      "source": "node_0_0_hand_fighting_(new)",
+      "target": "sub_0_0_2_collar_tie_(you)",
+      "color": "#34d399"
+    },
+    {
+      "source": "node_0_0_hand_fighting_(new)",
+      "target": "sub_0_0_3_underhook_(you)",
+      "color": "#34d399"
+    },
+    {
+      "source": "node_0_0_hand_fighting_(new)",
+      "target": "sub_0_0_4_overhook_(you)",
+      "color": "#34d399"
+    },
+    {
+      "source": "node_0_0_hand_fighting_(new)",
+      "target": "sub_0_0_5_2-on-1_(you)",
+      "color": "#34d399"
+    },
+    {
+      "source": "node_0_0_hand_fighting_(new)",
+      "target": "sub_0_0_6_over_under_(you)",
+      "color": "#34d399"
+    },
+    {
+      "source": "realm_0_wrestling",
+      "target": "node_0_1_wrestling_bodylock",
+      "color": "#10b981"
+    },
+    {
+      "source": "realm_0_wrestling",
+      "target": "node_0_2_shots",
+      "color": "#10b981"
+    },
+    {
+      "source": "node_0_2_shots",
+      "target": "sub_0_2_0_head_inside_snatch_single",
+      "color": "#34d399"
+    },
+    {
+      "source": "node_0_2_shots",
+      "target": "sub_0_2_1_low_ankle",
+      "color": "#34d399"
+    },
+    {
+      "source": "node_0_2_shots",
+      "target": "sub_0_2_2_head_outside_single_leg",
+      "color": "#34d399"
+    },
+    {
+      "source": "node_0_2_shots",
+      "target": "sub_0_2_3_head_inside_single_leg",
+      "color": "#34d399"
+    },
+    {
+      "source": "node_0_2_shots",
+      "target": "sub_0_2_4_double_leg",
+      "color": "#34d399"
+    },
+    {
+      "source": "root_grappling_mind_map",
+      "target": "realm_1_guard",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_0_shin_pin",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_1_supine_guard",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_2_j_point",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_3_closed_guard",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_4_headquarters",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_5_quarter_guard",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_6_half_guard_passing",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_7_half_guard",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_8_butterfly_guard",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_9_half_butterfly",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_10_knee_shield_half_guard",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_11_k_guard",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_12_de_la_riva",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_13_reverse_de_la_riva",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_14_butterfly_ashi",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_15_outside_ashi",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_16_x_guard",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_17_single_leg_x",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "realm_1_guard",
+      "target": "node_1_18_seated_guard",
+      "color": "#38bdf8"
+    },
+    {
+      "source": "root_grappling_mind_map",
+      "target": "realm_2_dominant_positions",
+      "color": "#f59e0b"
+    },
+    {
+      "source": "realm_2_dominant_positions",
+      "target": "node_2_0_turtle",
+      "color": "#f59e0b"
+    },
+    {
+      "source": "realm_2_dominant_positions",
+      "target": "node_2_1_front_headlock",
+      "color": "#f59e0b"
+    },
+    {
+      "source": "realm_2_dominant_positions",
+      "target": "node_2_2_mount",
+      "color": "#f59e0b"
+    },
+    {
+      "source": "realm_2_dominant_positions",
+      "target": "node_2_3_side_control",
+      "color": "#f59e0b"
+    },
+    {
+      "source": "realm_2_dominant_positions",
+      "target": "node_2_4_north_south",
+      "color": "#f59e0b"
+    },
+    {
+      "source": "realm_2_dominant_positions",
+      "target": "node_2_5_back_control",
+      "color": "#f59e0b"
+    },
+    {
+      "source": "root_grappling_mind_map",
+      "target": "realm_3_scrambles",
+      "color": "#a855f7"
+    },
+    {
+      "source": "realm_3_scrambles",
+      "target": "node_3_0_berimbolo",
+      "color": "#a855f7"
+    },
+    {
+      "source": "realm_3_scrambles",
+      "target": "node_3_1_crab_ride",
+      "color": "#a855f7"
+    },
+    {
+      "source": "realm_3_scrambles",
+      "target": "node_3_2_grounded_50_50",
+      "color": "#a855f7"
+    }
+  ]
+}

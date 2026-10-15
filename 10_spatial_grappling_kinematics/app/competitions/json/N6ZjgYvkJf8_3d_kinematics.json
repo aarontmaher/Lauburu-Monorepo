@@ -1,0 +1,26 @@
+{
+  "video_id": "N6ZjgYvkJf8",
+  "url": "https://youtu.be/N6ZjgYvkJf8",
+  "division": "Freestyle Wrestling",
+  "title": "Aaron Maher (AUS) vs Georgii Okokorov (RUS)",
+  "duration_sec": 375.1,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 23,
+  "dual_athlete_frames": 2,
+  "standing_phase_pct": 8.7,
+  "ground_scramble_phase_pct": 91.3,
+  "level_change_shots_detected": 2,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 71.7,
+    "left_elbow": 138.7,
+    "right_elbow": 130.2,
+    "left_hip": 123.3,
+    "right_hip": 121.5,
+    "left_knee": 128.2,
+    "right_knee": 131.5
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/N6ZjgYvkJf8_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match involves a strong combination of ground/Scramble and standing, with a significant amount of elbow flexion and knee flexion. The biomechanics highlight a high level of spine lean, indicating a well-timed and executed move.",
+  "processing_sec": 2.15
+}

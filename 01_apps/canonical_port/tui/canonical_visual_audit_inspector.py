@@ -30,7 +30,7 @@ TUI_DIR = MONOREPO_ROOT / "01_apps/canonical_port/tui"
 SCREEN_MAP = {
     "1": "agi_terminal (AGI Swarm IDE & Chat Shell)",
     "2": "network (7-Layer Mesh Topology & Socket Tracer)",
-    "3": "hardware (108GB RAM Pool NOC Cockpit)",
+    "3": "hardware (108GB RAM Pool NOC Console)",
     "4": "biometrics (Movesense 512Hz ECG & PTT BP)",
     "5": "ai_inference (llama.cpp RPC & Petals Mesh)",
     "6": "training (24/7 Continuous LoRA Distillation)",

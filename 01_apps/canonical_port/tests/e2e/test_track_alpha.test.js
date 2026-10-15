@@ -62,15 +62,14 @@ suite.test('[F1][T3] SidebarNav renders 7-node footer and primary routing sectio
   });
 
   assertTextContains(html, 'LAUBURU MESH');
-  assertTextContains(html, '0. BARE-METAL NETWORKING (PRIMARY)');
-  assertTextContains(html, '1. HARDWARE & NODES');
-  assertTextContains(html, '2. MEDICAL BIOMETRICS & DSP');
-  assertTextContains(html, '3. LOCAL AI INFERENCE & SYNTHESIS');
-  assertTextContains(html, '4. LOCAL AI TRAINING & GAMES');
-  assertTextContains(html, '5. MASTER AGI GOVERNANCE');
-  assertTextContains(html, '6. TOOLING & COMMERCE');
-  assertTextContains(html, '7 / 7 NODES ONLINE');
-  assertTextContains(html, 'Mac_Node (L1 Host)');
+  assertTextContains(html, '0. SOVEREIGN FRONT DASHBOARD (PRIMARY)');
+  assertTextContains(html, '1. BARE-METAL NETWORKING');
+  assertTextContains(html, '2. HARDWARE & NODES');
+  assertTextContains(html, '3. MEDICAL BIOMETRICS & DSP');
+  assertTextContains(html, '4. SECONDARY TOOLS & INFERENCE');
+  assertTextContains(html, 'Bluetooth Terminal');
+  assertTextContains(html, '7 NODES');
+  assertTextContains(html, 'Mac_Node (L1)');
 });
 
 suite.test('[F1][T4] ShellLayout renders action notification banner when command is dispatched', async () => {
@@ -214,7 +213,7 @@ suite.test('[F3][T2] HardwareNodesView verifies all 7 physical node specificatio
   assertTextContains(html, 'Mac_Node');
   assertTextContains(html, 'MacBook_Air');
   assertTextContains(html, 'MacBook_Pro');
-  assertTextContains(html, 'Linux_Head_Node');
+  assertTextContains(html, 'Linux_Mini');
   assertTextContains(html, 'Pixel_10_Pro_XL');
   assertTextContains(html, 'Samsung_S20');
   assertTextContains(html, 'Linux_Tablet');

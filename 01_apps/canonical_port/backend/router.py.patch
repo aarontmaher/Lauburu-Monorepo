@@ -1,0 +1,10 @@
+--- router.py
++++ router.py
+@@ -16,6 +16,7 @@
+     message: str
+ 
+ @router.post("/biometrics/connect")
+ async def connect_bluetooth(request: Request):
++    import subprocess
++    subprocess.Popen(["/data/data/com.termux/files/home/rish", "-c", "am start -n de.kai_morich.serial_bluetooth_terminal/.MainActivity"])
+     return {"status": "success", "message": "Android OS restrictions prevent native bluetooth access in Termux. Please connect your Movesense and Whoop using the Kai Morich Serial Bluetooth Terminal app and bridge to TCP 19003. We have launched the app for you via Shizuku!"}

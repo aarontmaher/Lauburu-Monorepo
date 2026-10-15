@@ -23,8 +23,8 @@ import logging
 
 logger = logging.getLogger("ShardedTrainingSupervisor")
 
-TELEMETRY_PATH = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
-SUPERVISOR_STATE_PATH = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/sharded_training_state.json"
+TELEMETRY_PATH = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/telemetry_state.json"
+SUPERVISOR_STATE_PATH = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/sharded_training_state.json"
 
 NODE_PROFILES = [
     {

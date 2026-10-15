@@ -1,0 +1,9 @@
+Model Identifier,ELO Rating,Mesh Hierarchy Role,RAM Headroom Priority
+Qwen_3.8_Max_Abliterated,1754,Sovereign Master Local Orchestrator (Port 8082),Host Sanctuary Priority 1
+Opus_Architect,1733,Cloud Frontier Teacher AI (OpenRouter),Cloud Remote Only
+GPT_6_Astra,1725,Frontier Cloud Contender (OpenAI via OpenRouter),Cloud Remote Only
+Gemini_3.8_Flash,1686,Frontier Cloud Contender (Google DeepMind via OpenRouter),Cloud Remote Only
+DeepSeek_V4.1_Flash,1672,Frontier Cloud Contender (DeepSeek via OpenRouter),Cloud Remote Only
+Claude_Fable_5.1,1672,Frontier Cloud Contender (Anthropic via OpenRouter),Cloud Remote Only
+Qwen_3.8_Max,1467,Canonical Devil's Advocate / Red Team (Port 8083),Host Sanctuary Priority 2
+Baseline_Untrained_Generalist,1165,Novice Benchmark Baseline,Unallocated

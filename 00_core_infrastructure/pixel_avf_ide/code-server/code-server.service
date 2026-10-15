@@ -1,0 +1,15 @@
+[Unit]
+Description=Code Server Web IDE (Pixel AVF Debian)
+After=network.target
+
+[Service]
+Type=simple
+Environment=NODE_OPTIONS="--max-old-space-size=2048"
+ExecStart=/usr/bin/code-server --config %h/.config/code-server/config.yaml /mnt/shared
+Restart=always
+RestartSec=5
+MemoryHigh=2500M
+MemoryMax=3000M
+
+[Install]
+WantedBy=multi-user.target

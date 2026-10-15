@@ -284,7 +284,7 @@ export default function ExoClusterView() {
               <span>📱 Samsung S20+</span>
               <span style={{ color: '#34d399' }}>🟢 A55 Thermal</span>
             </div>
-            <div style={{ fontSize: '0.54rem', color: '#94a3b8' }}>9.0 GB • 100.84.40.95</div>
+            <div style={{ fontSize: '0.54rem', color: '#94a3b8' }}>9.0 GB • 100.78.206.96</div>
             <div style={{ fontSize: '0.52rem', color: '#38bdf8' }}>📱 🌐 📡 🔵 🪐 🦙</div>
           </div>
 

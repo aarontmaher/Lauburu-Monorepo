@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-14",
+  "providers": {
+    "google_jules": {
+      "used_today": 125,
+      "cap": 300,
+      "last_call": 0
+    },
+    "google_gemini": {
+      "used_today": 0,
+      "cap": 1500,
+      "last_call": 0,
+      "backoff_until": 1791959248.531222
+    },
+    "nvidia_nim": {
+      "used_today": 0,
+      "cap": 2000,
+      "last_call": 0
+    },
+    "xai_grok": {
+      "used_today": 0,
+      "cap": 1000,
+      "last_call": 0
+    },
+    "cloudflare_ai": {
+      "used_today": 0,
+      "cap": 800,
+      "last_call": 0,
+      "backoff_until": 1791960504.0300999
+    }
+  },
+  "total_free_tasks_today": 125,
+  "total_cloud_spend_usd": 0.0,
+  "last_updated": 1791960474.032717,
+  "harvest_cycle_count": 785
+}

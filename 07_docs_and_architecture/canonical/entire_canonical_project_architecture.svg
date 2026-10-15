@@ -1,0 +1,309 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 960" width="100%" height="100%" style="background: #090d16; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;">
+    <defs>
+        <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0b1120"/>
+            <stop offset="100%" stop-color="#030712"/>
+        </linearGradient>
+        <linearGradient id="tb4Grad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#38bdf8"/>
+            <stop offset="100%" stop-color="#ec4899"/>
+        </linearGradient>
+        <linearGradient id="vaultGrad1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#9333ea"/>
+            <stop offset="100%" stop-color="#6366f1"/>
+        </linearGradient>
+        <linearGradient id="vaultGrad2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0284c7"/>
+            <stop offset="100%" stop-color="#06b6d4"/>
+        </linearGradient>
+        <linearGradient id="vaultGrad3" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#059669"/>
+            <stop offset="100%" stop-color="#10b981"/>
+        </linearGradient>
+        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+    </defs>
+
+    <rect width="1400" height="960" fill="url(#bgGrad)"/>
+
+    <!-- HEADER -->
+    <text x="40" y="45" font-size="22" font-weight="bold" fill="#f8fafc">🏛️ LAUBURU MESH: ENTIRE CANONICAL PROJECT ARCHITECTURE</text>
+    <text x="40" y="70" font-size="13" fill="#94a3b8">7-Layer Physical Mesh • Tri-Vault Synchronization • Distributed AI Inference Ports • Real-Time Biometrics</text>
+    
+    <!-- TOP SUMMARY PILLS -->
+    <g transform="translate(820, 22)">
+        <rect x="0" y="0" width="165" height="52" rx="8" fill="#1e293b" stroke="#334155"/>
+        <text x="12" y="20" font-size="10" fill="#94a3b8">POOLED PHYSICAL RAM</text>
+        <text x="12" y="40" font-size="16" font-weight="bold" fill="#38bdf8">109.0 GB Total</text>
+    </g>
+    <g transform="translate(1000, 22)">
+        <rect x="0" y="0" width="175" height="52" rx="8" fill="#1e293b" stroke="#334155"/>
+        <text x="12" y="20" font-size="10" fill="#94a3b8">USABLE AI VRAM POOL</text>
+        <text x="12" y="40" font-size="16" font-weight="bold" fill="#10b981">91.4 GB Pooled</text>
+    </g>
+    <g transform="translate(1190, 22)">
+        <rect x="0" y="0" width="170" height="52" rx="8" fill="#1e293b" stroke="#334155"/>
+        <text x="12" y="20" font-size="10" fill="#94a3b8">THUNDERBOLT 4 RTT</text>
+        <text x="12" y="40" font-size="16" font-weight="bold" fill="#ec4899">0.277 ms (10Gbps)</text>
+    </g>
+
+    <!-- SECTION 1: TRI-VAULT STORAGE SYNCHRONIZATION -->
+    <rect x="40" y="90" width="1320" height="135" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+    <text x="60" y="115" font-size="14" font-weight="bold" fill="#f8fafc">🏛️ CANONICAL TRI-VAULT STORAGE SYNCHRONIZATION LAYER</text>
+    <text x="60" y="132" font-size="11" fill="#64748b">Continuous bidirectional persistence between human knowledge, PySpark compute lake, and version-controlled Git worktrees</text>
+
+        <g transform="translate(60, 145)">
+            <rect width="410" height="68" rx="8" fill="#182234" stroke="#a855f7" stroke-width="1.2"/>
+            <rect x="0" y="0" width="6" height="68" rx="3" fill="url(#vaultGrad1)"/>
+            <text x="16" y="20" font-size="12" font-weight="bold" fill="#a855f7">1. OBSIDIAN KNOWLEDGE VAULT</text>
+            <text x="16" y="38" font-size="10" fill="#94a3b8">Engine: Obsidian MCP Pro (41 tools, graph traversal, Wikil...</text>
+            <text x="16" y="54" font-size="10" fill="#cbd5e1">Architecture whitepapers, AI debate consensus, continuo...</text>
+        </g>
+        
+        <g transform="translate(490, 145)">
+            <rect width="410" height="68" rx="8" fill="#182234" stroke="#38bdf8" stroke-width="1.2"/>
+            <rect x="0" y="0" width="6" height="68" rx="3" fill="url(#vaultGrad2)"/>
+            <text x="16" y="20" font-size="12" font-weight="bold" fill="#38bdf8">2. PYSPARK & BIG DATA LAKE</text>
+            <text x="16" y="38" font-size="10" fill="#94a3b8">Engine: PySpark, Delta Lake / Parquet, Qdrant Vector DB...</text>
+            <text x="16" y="54" font-size="10" fill="#cbd5e1">73,984+ LoRA instruction pairs, 3,100+ AST crawls, 435K...</text>
+        </g>
+        
+        <g transform="translate(920, 145)">
+            <rect width="420" height="68" rx="8" fill="#182234" stroke="#10b981" stroke-width="1.2"/>
+            <rect x="0" y="0" width="6" height="68" rx="3" fill="url(#vaultGrad3)"/>
+            <text x="16" y="20" font-size="12" font-weight="bold" fill="#10b981">3. GITHUB MONOREPO & WORKTREES</text>
+            <text x="16" y="38" font-size="10" fill="#94a3b8">Engine: gh CLI, Git Worktrees, Automated Multi-Tier CI Tes...</text>
+            <text x="16" y="54" font-size="10" fill="#cbd5e1">Canonical production code, container manifests, microse...</text>
+        </g>
+        
+    <!-- SECTION 2: 7-LAYER PHYSICAL MESH MATRIX -->
+    <rect x="40" y="240" width="1320" height="390" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+    <text x="60" y="265" font-size="14" font-weight="bold" fill="#f8fafc">🌐 7-LAYER PHYSICAL MESH NETWORK TOPOLOGY &amp; HARDWARE MATRIX</text>
+    <text x="60" y="282" font-size="11" fill="#64748b">Dynamic RAM Governance: Host ≤90% (Preserve ≥9.6 GB RAM) • 10Gbps TB4 Bridge • WireGuard Mesh Tailscale</text>
+
+    <!-- THUNDERBOLT 4 INTERCONNECT HIGHLIGHT -->
+    <path d="M 330 380 L 370 380" stroke="url(#tb4Grad)" stroke-width="4" stroke-dasharray="6,3" filter="url(#glow)"/>
+    <text x="350" y="370" font-size="10" font-weight="bold" fill="#ec4899" text-anchor="middle">TB4 10Gbps (0.277ms)</text>
+    
+        <g transform="translate(60, 295)">
+            <rect width="310" height="145" rx="8" fill="#182234" stroke="#38bdf8" stroke-width="1.2"/>
+            <rect x="10" y="10" width="34" height="22" rx="4" fill="#0f172a" stroke="#38bdf8"/>
+            <text x="27" y="25" font-size="11" font-weight="bold" fill="#38bdf8" text-anchor="middle">L1</text>
+            <text x="52" y="26" font-size="13" font-weight="bold" fill="#f8fafc">Mac_Node (Host)</text>
+            
+            <text x="12" y="48" font-size="10" fill="#94a3b8">Hardware: <tspan fill="#f1f5f9">Apple M4 Pro Mac Mini</tspan></text>
+            <text x="12" y="64" font-size="10" fill="#94a3b8">LAN: <tspan fill="#38bdf8">192.168.8.230</tspan> | TS: <tspan fill="#818cf8">100.119.199.76</tspan></text>
+            <text x="12" y="80" font-size="10" fill="#94a3b8">RAM: <tspan fill="#10b981" font-weight="bold">24.0 GB</tspan> (AI Cap: 21.6 GB @ 90%)</text>
+            
+            <line x1="12" y1="88" x2="298" y2="88" stroke="#334155" stroke-width="0.8"/>
+            <text x="12" y="103" font-size="9" fill="#cbd5e1">Host Sanctuary, Memory Governor, Prompt Inges...</text>
+            <text x="12" y="120" font-size="9" fill="#e2e8f0"><tspan fill="#f59e0b">Ports:</tspan> 4000 (Console), 4002 (Screen Lens), 40</text>
+        </g>
+        
+        <g transform="translate(385, 295)">
+            <rect width="310" height="145" rx="8" fill="#182234" stroke="#38bdf8" stroke-width="1.2"/>
+            <rect x="10" y="10" width="34" height="22" rx="4" fill="#0f172a" stroke="#38bdf8"/>
+            <text x="27" y="25" font-size="11" font-weight="bold" fill="#38bdf8" text-anchor="middle">L2</text>
+            <text x="52" y="26" font-size="13" font-weight="bold" fill="#f8fafc">MacBook_Pro</text>
+            
+            <text x="12" y="48" font-size="10" fill="#94a3b8">Hardware: <tspan fill="#f1f5f9">Apple M4 Pro 16GB</tspan></text>
+            <text x="12" y="64" font-size="10" fill="#94a3b8">LAN: <tspan fill="#38bdf8">192.168.8.127</tspan> | TS: <tspan fill="#818cf8">100.103.212.21</tspan></text>
+            <text x="12" y="80" font-size="10" fill="#94a3b8">RAM: <tspan fill="#10b981" font-weight="bold">16.0 GB</tspan> (AI Cap: 14.0 GB @ 90%)</text>
+            
+            <line x1="12" y1="88" x2="298" y2="88" stroke="#334155" stroke-width="0.8"/>
+            <text x="12" y="103" font-size="9" fill="#cbd5e1">10Gbps TB4 Bridge (0.277ms), 285GB SSD Vault,...</text>
+            <text x="12" y="120" font-size="9" fill="#e2e8f0"><tspan fill="#f59e0b">Ports:</tspan> 8083 (Qwen 80B MoE), TB4 DMA (169.254.</text>
+        </g>
+        
+        <g transform="translate(710, 295)">
+            <rect width="310" height="145" rx="8" fill="#182234" stroke="#10b981" stroke-width="1.2"/>
+            <rect x="10" y="10" width="34" height="22" rx="4" fill="#0f172a" stroke="#10b981"/>
+            <text x="27" y="25" font-size="11" font-weight="bold" fill="#10b981" text-anchor="middle">L3</text>
+            <text x="52" y="26" font-size="13" font-weight="bold" fill="#f8fafc">Linux_Head_Node</text>
+            
+            <text x="12" y="48" font-size="10" fill="#94a3b8">Hardware: <tspan fill="#f1f5f9">AMD Ryzen 7 5700U</tspan></text>
+            <text x="12" y="64" font-size="10" fill="#94a3b8">LAN: <tspan fill="#38bdf8">192.168.8.224</tspan> | TS: <tspan fill="#818cf8">100.101.39.98</tspan></text>
+            <text x="12" y="80" font-size="10" fill="#94a3b8">RAM: <tspan fill="#10b981" font-weight="bold">16.0 GB</tspan> (AI Cap: 13.8 GB @ 80%)</text>
+            
+            <line x1="12" y1="88" x2="298" y2="88" stroke="#334155" stroke-width="0.8"/>
+            <text x="12" y="103" font-size="9" fill="#cbd5e1">Docker Hub, Petals DHT Bootstrap, Apache Ray ...</text>
+            <text x="12" y="120" font-size="9" fill="#e2e8f0"><tspan fill="#f59e0b">Ports:</tspan> 8086 (Petals DHT), Ray (6379), Docker </text>
+        </g>
+        
+        <g transform="translate(1035, 295)">
+            <rect width="310" height="145" rx="8" fill="#182234" stroke="#64748b" stroke-width="1.2"/>
+            <rect x="10" y="10" width="34" height="22" rx="4" fill="#0f172a" stroke="#64748b"/>
+            <text x="27" y="25" font-size="11" font-weight="bold" fill="#64748b" text-anchor="middle">L4</text>
+            <text x="52" y="26" font-size="13" font-weight="bold" fill="#f8fafc">Linux_Tablet</text>
+            
+            <text x="12" y="48" font-size="10" fill="#94a3b8">Hardware: <tspan fill="#f1f5f9">Debian Linux Touch</tspan></text>
+            <text x="12" y="64" font-size="10" fill="#94a3b8">LAN: <tspan fill="#38bdf8">DHCP</tspan> | TS: <tspan fill="#818cf8">100.81.92.125</tspan></text>
+            <text x="12" y="80" font-size="10" fill="#94a3b8">RAM: <tspan fill="#10b981" font-weight="bold">8.0 GB</tspan> (AI Cap: 6.5 GB @ 75%)</text>
+            
+            <line x1="12" y1="88" x2="298" y2="88" stroke="#334155" stroke-width="0.8"/>
+            <text x="12" y="103" font-size="9" fill="#cbd5e1">Mobile Linux Compute, Touch DSP, Lightweight ...</text>
+            <text x="12" y="120" font-size="9" fill="#e2e8f0"><tspan fill="#f59e0b">Ports:</tspan> Petals Worker, KDE Connect (1714-1764)</text>
+        </g>
+        
+        <g transform="translate(60, 455)">
+            <rect width="310" height="145" rx="8" fill="#182234" stroke="#10b981" stroke-width="1.2"/>
+            <rect x="10" y="10" width="34" height="22" rx="4" fill="#0f172a" stroke="#10b981"/>
+            <text x="27" y="25" font-size="11" font-weight="bold" fill="#10b981" text-anchor="middle">L5</text>
+            <text x="52" y="26" font-size="13" font-weight="bold" fill="#f8fafc">MacBook_Air</text>
+            
+            <text x="12" y="48" font-size="10" fill="#94a3b8">Hardware: <tspan fill="#f1f5f9">Apple M4 MacBook Air</tspan></text>
+            <text x="12" y="64" font-size="10" fill="#94a3b8">LAN: <tspan fill="#38bdf8">192.168.8.222</tspan> | TS: <tspan fill="#818cf8">100.93.158.96</tspan></text>
+            <text x="12" y="80" font-size="10" fill="#94a3b8">RAM: <tspan fill="#10b981" font-weight="bold">16.0 GB</tspan> (AI Cap: 14.0 GB @ 90%)</text>
+            
+            <line x1="12" y1="88" x2="298" y2="88" stroke="#334155" stroke-width="0.8"/>
+            <text x="12" y="103" font-size="9" fill="#cbd5e1">Metal Performance Shaders, LoRA Distillation,...</text>
+            <text x="12" y="120" font-size="9" fill="#e2e8f0"><tspan fill="#f59e0b">Ports:</tspan> MPS Worker, Headless Playwright</text>
+        </g>
+        
+        <g transform="translate(385, 455)">
+            <rect width="310" height="145" rx="8" fill="#182234" stroke="#f59e0b" stroke-width="1.2"/>
+            <rect x="10" y="10" width="34" height="22" rx="4" fill="#0f172a" stroke="#f59e0b"/>
+            <text x="27" y="25" font-size="11" font-weight="bold" fill="#f59e0b" text-anchor="middle">L6</text>
+            <text x="52" y="26" font-size="13" font-weight="bold" fill="#f8fafc">Pixel_10_Pro_XL</text>
+            
+            <text x="12" y="48" font-size="10" fill="#94a3b8">Hardware: <tspan fill="#f1f5f9">Google Tensor G5</tspan></text>
+            <text x="12" y="64" font-size="10" fill="#94a3b8">LAN: <tspan fill="#38bdf8">DHCP</tspan> | TS: <tspan fill="#818cf8">100.73.38.87</tspan></text>
+            <text x="12" y="80" font-size="10" fill="#94a3b8">RAM: <tspan fill="#10b981" font-weight="bold">16.0 GB</tspan> (AI Cap: 12.5 GB @ 85%)</text>
+            
+            <line x1="12" y1="88" x2="298" y2="88" stroke="#334155" stroke-width="0.8"/>
+            <text x="12" y="103" font-size="9" fill="#cbd5e1">8K Vision Stream, Edge TPU, Movesense BLE, UW...</text>
+            <text x="12" y="120" font-size="9" fill="#e2e8f0"><tspan fill="#f59e0b">Ports:</tspan> Termux (8022), Web Bluetooth GATT</text>
+        </g>
+        
+        <g transform="translate(710, 455)">
+            <rect width="310" height="145" rx="8" fill="#182234" stroke="#f59e0b" stroke-width="1.2"/>
+            <rect x="10" y="10" width="34" height="22" rx="4" fill="#0f172a" stroke="#f59e0b"/>
+            <text x="27" y="25" font-size="11" font-weight="bold" fill="#f59e0b" text-anchor="middle">L7</text>
+            <text x="52" y="26" font-size="13" font-weight="bold" fill="#f8fafc">Samsung_S20</text>
+            
+            <text x="12" y="48" font-size="10" fill="#94a3b8">Hardware: <tspan fill="#f1f5f9">Samsung Exynos 990</tspan></text>
+            <text x="12" y="64" font-size="10" fill="#94a3b8">LAN: <tspan fill="#38bdf8">DHCP</tspan> | TS: <tspan fill="#818cf8">100.84.40.95</tspan></text>
+            <text x="12" y="80" font-size="10" fill="#94a3b8">RAM: <tspan fill="#10b981" font-weight="bold">12.0 GB</tspan> (AI Cap: 9.0 GB @ 75%)</text>
+            
+            <line x1="12" y1="88" x2="298" y2="88" stroke="#334155" stroke-width="0.8"/>
+            <text x="12" y="103" font-size="9" fill="#cbd5e1">Dedicated Automated UI Tester, Router USB ADB...</text>
+            <text x="12" y="120" font-size="9" fill="#e2e8f0"><tspan fill="#f59e0b">Ports:</tspan> OpenClaw ADB (4004), Termux Keepalive</text>
+        </g>
+        
+        <g transform="translate(1035, 455)">
+            <rect width="310" height="145" rx="8" fill="#182234" stroke="#64748b" stroke-width="1.2"/>
+            <rect x="10" y="10" width="34" height="22" rx="4" fill="#0f172a" stroke="#64748b"/>
+            <text x="27" y="25" font-size="11" font-weight="bold" fill="#64748b" text-anchor="middle">GW</text>
+            <text x="52" y="26" font-size="13" font-weight="bold" fill="#f8fafc">GL.iNet Router</text>
+            
+            <text x="12" y="48" font-size="10" fill="#94a3b8">Hardware: <tspan fill="#f1f5f9">GL-MT3600BE Beryl 7</tspan></text>
+            <text x="12" y="64" font-size="10" fill="#94a3b8">LAN: <tspan fill="#38bdf8">192.168.8.1</tspan> | TS: <tspan fill="#818cf8">100.122.185.123</tspan></text>
+            <text x="12" y="80" font-size="10" fill="#94a3b8">RAM: <tspan fill="#10b981" font-weight="bold">1.0 GB</tspan> (AI Cap: 0.0 GB @ N/A)</text>
+            
+            <line x1="12" y1="88" x2="298" y2="88" stroke="#334155" stroke-width="0.8"/>
+            <text x="12" y="103" font-size="9" fill="#cbd5e1">Core Gateway, Wi-Fi 7 MLO, Subnet Router, Har...</text>
+            <text x="12" y="120" font-size="9" fill="#e2e8f0"><tspan fill="#f59e0b">Ports:</tspan> SSH (22), LuCI Web (80/443), Tailscale</text>
+        </g>
+        
+    <!-- SECTION 3: DISTRIBUTED AI INFERENCE & APPLICATION HUBS -->
+    <rect x="40" y="645" width="650" height="295" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+    <text x="60" y="670" font-size="14" font-weight="bold" fill="#f8fafc">🤖 DISTRIBUTED AI INFERENCE MESH (PORTS &amp; MODELS)</text>
+    <text x="60" y="687" font-size="11" fill="#64748b">llama.cpp RPC • prima.cpp Neo 12B • Qwen MoE 80B • Cloud Bursting</text>
+    
+        <g transform="translate(60, 700)">
+            <rect width="610" height="38" rx="6" fill="#182234" stroke="#334155"/>
+            <rect x="8" y="7" width="56" height="24" rx="4" fill="#0f172a" stroke="#10b981"/>
+            <text x="36" y="23" font-size="11" font-weight="bold" fill="#10b981" text-anchor="middle">:8081</text>
+            <text x="72" y="18" font-size="11" font-weight="bold" fill="#f8fafc">Qwen 2.5 Coder 7B Q4_K_M</text>
+            <text x="72" y="31" font-size="9" fill="#94a3b8">[llama.cpp RPC] Micro Coding, POSIX scripting, Fast Refactor</text>
+            <circle cx="590" cy="19" r="4" fill="#10b981"/>
+        </g>
+        
+        <g transform="translate(60, 744)">
+            <rect width="610" height="38" rx="6" fill="#182234" stroke="#334155"/>
+            <rect x="8" y="7" width="56" height="24" rx="4" fill="#0f172a" stroke="#10b981"/>
+            <text x="36" y="23" font-size="11" font-weight="bold" fill="#10b981" text-anchor="middle">:8082</text>
+            <text x="72" y="18" font-size="11" font-weight="bold" fill="#f8fafc">Mistral Nemo 12B Abliterated (Neo)</text>
+            <text x="72" y="31" font-size="9" fill="#94a3b8">[prima.cpp] Tool Calling, Storefront GraphQL, HMAC Verification</text>
+            <circle cx="590" cy="19" r="4" fill="#10b981"/>
+        </g>
+        
+        <g transform="translate(60, 788)">
+            <rect width="610" height="38" rx="6" fill="#182234" stroke="#334155"/>
+            <rect x="8" y="7" width="56" height="24" rx="4" fill="#0f172a" stroke="#10b981"/>
+            <text x="36" y="23" font-size="11" font-weight="bold" fill="#10b981" text-anchor="middle">:8083</text>
+            <text x="72" y="18" font-size="11" font-weight="bold" fill="#f8fafc">Qwen 3 MoE 80B Distributed Shard</text>
+            <text x="72" y="31" font-size="9" fill="#94a3b8">[llama-server RPC] Deep Architectural Reasoning, 146 tok/s MTP=2</text>
+            <circle cx="590" cy="19" r="4" fill="#10b981"/>
+        </g>
+        
+        <g transform="translate(60, 832)">
+            <rect width="610" height="38" rx="6" fill="#182234" stroke="#334155"/>
+            <rect x="8" y="7" width="56" height="24" rx="4" fill="#0f172a" stroke="#38bdf8"/>
+            <text x="36" y="23" font-size="11" font-weight="bold" fill="#38bdf8" text-anchor="middle">:8086</text>
+            <text x="72" y="18" font-size="11" font-weight="bold" fill="#f8fafc">Heterogeneous Swarm Hivemind</text>
+            <text x="72" y="31" font-size="9" fill="#94a3b8">[Petals DHT] Fault-tolerant P2P Layer Hopping over Tailscale</text>
+            <circle cx="590" cy="19" r="4" fill="#38bdf8"/>
+        </g>
+        
+        <g transform="translate(60, 876)">
+            <rect width="610" height="38" rx="6" fill="#182234" stroke="#334155"/>
+            <rect x="8" y="7" width="56" height="24" rx="4" fill="#0f172a" stroke="#ec4899"/>
+            <text x="36" y="23" font-size="11" font-weight="bold" fill="#ec4899" text-anchor="middle">:CLOUD</text>
+            <text x="72" y="18" font-size="11" font-weight="bold" fill="#f8fafc">Gemini 3.8 Flash (High Thinking)</text>
+            <text x="72" y="31" font-size="9" fill="#94a3b8">[Google AI Studio] Free-Tier Frontier Reasoning (1,500 RPD, 0.00 cost)</text>
+            <circle cx="590" cy="19" r="4" fill="#ec4899"/>
+        </g>
+        
+    <rect x="710" y="645" width="650" height="295" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+    <text x="730" y="670" font-size="14" font-weight="bold" fill="#f8fafc">🚀 CANONICAL APPLICATION HUBS &amp; DAEMONS</text>
+    <text x="730" y="687" font-size="11" fill="#64748b">Movesense Biometrics Console • Screen Lens Sovereign • Live Stream • OpenClaw</text>
+    
+        <g transform="translate(730, 700)">
+            <rect width="610" height="38" rx="6" fill="#182234" stroke="#334155"/>
+            <rect x="8" y="7" width="60" height="24" rx="4" fill="#0f172a" stroke="#38bdf8"/>
+            <text x="38" y="23" font-size="11" font-weight="bold" fill="#38bdf8" text-anchor="middle">:4000</text>
+            <text x="76" y="18" font-size="11" font-weight="bold" fill="#f8fafc">Movesense Console</text>
+            <text x="76" y="31" font-size="9" fill="#94a3b8">[Axum / WebSockets / WebGL] 512Hz Raw ECG & 3D Spatial Grappling Kinematics</text>
+            <text x="590" y="24" font-size="10" font-weight="bold" fill="#10b981" text-anchor="end">ONLINE</text>
+        </g>
+        
+        <g transform="translate(730, 744)">
+            <rect width="610" height="38" rx="6" fill="#182234" stroke="#334155"/>
+            <rect x="8" y="7" width="60" height="24" rx="4" fill="#0f172a" stroke="#38bdf8"/>
+            <text x="38" y="23" font-size="11" font-weight="bold" fill="#38bdf8" text-anchor="middle">:4002</text>
+            <text x="76" y="18" font-size="11" font-weight="bold" fill="#f8fafc">Screen Lens Sovereign</text>
+            <text x="76" y="31" font-size="9" fill="#94a3b8">[Marimo Reactive Notebook] Interactive Telemetry, Multi-Model ELO, 30 Diagnostic Panels</text>
+            <text x="590" y="24" font-size="10" font-weight="bold" fill="#10b981" text-anchor="end">ONLINE</text>
+        </g>
+        
+        <g transform="translate(730, 788)">
+            <rect width="610" height="38" rx="6" fill="#182234" stroke="#334155"/>
+            <rect x="8" y="7" width="60" height="24" rx="4" fill="#0f172a" stroke="#38bdf8"/>
+            <text x="38" y="23" font-size="11" font-weight="bold" fill="#38bdf8" text-anchor="middle">:4003</text>
+            <text x="76" y="18" font-size="11" font-weight="bold" fill="#f8fafc">Live Screen Broadcast</text>
+            <text x="76" y="31" font-size="9" fill="#94a3b8">[HTTP Multipart MJPEG] Continuous 10-15 FPS Live Screen Observation (Zero-Mock)</text>
+            <text x="590" y="24" font-size="10" font-weight="bold" fill="#10b981" text-anchor="end">ONLINE</text>
+        </g>
+        
+        <g transform="translate(730, 832)">
+            <rect width="610" height="38" rx="6" fill="#182234" stroke="#334155"/>
+            <rect x="8" y="7" width="60" height="24" rx="4" fill="#0f172a" stroke="#38bdf8"/>
+            <text x="38" y="23" font-size="11" font-weight="bold" fill="#38bdf8" text-anchor="middle">:4004</text>
+            <text x="76" y="18" font-size="11" font-weight="bold" fill="#f8fafc">OpenClaw UI Tester</text>
+            <text x="76" y="31" font-size="9" fill="#94a3b8">[ADB / Accessibility RPC] Automated Android UI Testing & Screen Navigation</text>
+            <text x="590" y="24" font-size="10" font-weight="bold" fill="#10b981" text-anchor="end">ONLINE</text>
+        </g>
+        
+        <g transform="translate(730, 876)">
+            <rect width="610" height="38" rx="6" fill="#182234" stroke="#334155"/>
+            <rect x="8" y="7" width="60" height="24" rx="4" fill="#0f172a" stroke="#38bdf8"/>
+            <text x="38" y="23" font-size="11" font-weight="bold" fill="#38bdf8" text-anchor="middle">:18802</text>
+            <text x="76" y="18" font-size="11" font-weight="bold" fill="#f8fafc">Self-Healing Hub</text>
+            <text x="76" y="31" font-size="9" fill="#94a3b8">[FastAPI / Wake-on-LAN] RFC 792 Magic Packet Resurrection & Service Health Daemon</text>
+            <text x="590" y="24" font-size="10" font-weight="bold" fill="#10b981" text-anchor="end">ONLINE</text>
+        </g>
+        
+</svg>

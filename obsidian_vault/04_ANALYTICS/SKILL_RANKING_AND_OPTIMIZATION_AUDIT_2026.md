@@ -15,7 +15,7 @@ Across the **56+ active agent skills** in the Lauburu mesh ecosystem, every skil
 ├──────┬──────────────────────────────────────────┬──────────┬──────────────┬──────────────────────────────────┤
 │ Tier │ Skill Identifier                         │ Score    │ Primary Role │ Hardware / Interconnect Target   │
 ├──────┼──────────────────────────────────────────┼──────────┼──────────────┼──────────────────────────────────┤
-│ **S**│ `specialist-unified-ai-sharding`         │ **99.8** │ Sharding Gov │ 10Gbps TB4 DMA / 82.8 GB VRAM    │
+│ **S**│ `specialist-unified-ai-sharding`         │ **99.8** │ Sharding Gov │ 40Gbps TB4 DMA / 82.8 GB VRAM    │
 │ **S**│ `ai-debate`                              │ **99.6** │ Consensus Gov│ Qwen 3.8 Max + Huihui Abliterated│
 │ **S**│ `swarm`                                  │ **99.5** │ PM & Lineage │ 7-Layer Physical Mesh Hardware   │
 │ **S**│ `lauburu-project-overview`               │ **99.2** │ Context Sync │ MCP Port 9999 / 8088 Live State  │
@@ -33,7 +33,7 @@ Across the **56+ active agent skills** in the Lauburu mesh ecosystem, every skil
 ## 2. Optimized Skills & Technical Enhancements
 
 ### 2.1 `specialist-unified-ai-sharding`
-* **Upgrade:** Integrated **`prima.cpp` Pipelined-Ring Parallelism (PRP)** achieving **14.2ms TPOT latency** (70.4 tok/s peak single-stream throughput) over the 10Gbps Thunderbolt 4 DMA bridge.
+* **Upgrade:** Integrated **`prima.cpp` Pipelined-Ring Parallelism (PRP)** achieving **14.2ms TPOT latency** (70.4 tok/s peak single-stream throughput) over the 40Gbps Thunderbolt 4 DMA bridge.
 * **Closed-Form ILP Allocation:** Partitions 80 transformer layers across all 7 nodes (Mac Mini 24L, MacBook Air 19L, MacBook Pro 17L, Linux 7L, Pixel 6L, Samsung 4L, Tablet 3L).
 
 ### 2.2 `tui` & Web TUI Portal

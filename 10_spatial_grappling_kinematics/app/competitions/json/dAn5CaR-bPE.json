@@ -1,0 +1,37 @@
+{
+  "video_id": "dAn5CaR-bPE",
+  "url": "https://youtu.be/dAn5CaR-bPE",
+  "division": "Freestyle Wrestling",
+  "title": "South East Asian championship intercamp match highlights",
+  "duration_sec": 233.1,
+  "resolution": "144x256",
+  "sampled_frames": 36,
+  "poses_detected_frames": 25,
+  "dual_athlete_frames": 3,
+  "standing_phase_pct": 0.0,
+  "ground_scramble_phase_pct": 100.0,
+  "level_change_shots_detected": 2,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 73.8,
+    "left_elbow": 136.2,
+    "right_elbow": 132.8,
+    "left_hip": 112.8,
+    "right_hip": 98.1,
+    "left_knee": 133.8,
+    "right_knee": 114.4
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/dAn5CaR-bPE_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this 233.1s South East Asian championship intercamp match showcases a well-timed and precise move, with a strong ground/Scramble component, leading to a high level of execution and control. The 3D MediaPipe telemetry indicates a well-balanced and efficient spine lean, with a significant Elbow Flexion L/R of 136.2\u00b0, and a knee flexion L/R of 133.8\u00b0, all contributing to a well-rounded and effective move.",
+  "processing_sec": 2.15,
+  "vision_model_opinions": {
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "READY_BATCH",
+      "latency_sec": 0.8,
+      "analysis": "Aaron Maher's grappling in this 233.1s South East Asian championship intercamp match showcases a well-timed and precise move, with a strong ground/Scramble component, leading to a high level of execution and control. The 3D MediaPipe telemetry indicates a well-balanced and efficient spine lean, with a significant Elbow Flexion L/R of 136.2\u00b0, and a knee flexion L/R of 133.8\u00b0, all contributing to a well-rounded and effective move."
+    }
+  }
+}

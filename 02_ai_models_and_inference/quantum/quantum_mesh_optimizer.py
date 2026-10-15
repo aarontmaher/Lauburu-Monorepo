@@ -121,7 +121,7 @@ def run_quantum_pipeline():
     print(f"  • 2.5GbE LAN Subnet  (14.5ms): {weights[3]*100:.1f}%")
     
     q_bio = q_opt.encode_movesense_quantum_feature_map(hr, rmssd)
-    print(f"\n💓 Movesense Quantum Feature State (72 BPM / {rmssd}ms RMSSD):")
+    print(f"\n💓 Movesense Quantum Feature State ({hr} BPM / {rmssd}ms RMSSD):")
     print(f"  • Quantum State Entropy: {q_bio['quantum_state_entropy']}")
     print(f"  • Quantum Coherence    : {q_bio['quantum_coherence']}")
     print(f"  • Autonomic State      : {q_bio['autonomic_state']}")

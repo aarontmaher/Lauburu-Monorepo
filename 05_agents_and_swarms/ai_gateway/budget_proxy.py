@@ -25,14 +25,38 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import httpx
+try:
+    import httpx
+except ImportError:
+    httpx = None
 try:
     import tiktoken
 except ImportError:
     tiktoken = None
-from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+try:
+    from fastapi import FastAPI, HTTPException, Request, Response
+    from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.responses import JSONResponse, StreamingResponse
+except ImportError:
+    class _StubApp:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            pass
+        def add_middleware(self, *args: Any, **kwargs: Any) -> None:
+            pass
+        def get(self, *args: Any, **kwargs: Any):
+            return lambda fn: fn
+        def post(self, *args: Any, **kwargs: Any):
+            return lambda fn: fn
+        def api_route(self, *args: Any, **kwargs: Any):
+            return lambda fn: fn
+
+    FastAPI = _StubApp  # type: ignore
+    HTTPException = Exception  # type: ignore
+    Request = Any  # type: ignore
+    Response = Any  # type: ignore
+    CORSMiddleware = object  # type: ignore
+    JSONResponse = dict  # type: ignore
+    StreamingResponse = object  # type: ignore
 
 # ── Config ────────────────────────────────────────────────────────────────────
 BUDGET_LIMIT      = float(os.getenv("BUDGET_LIMIT", "1.00"))
@@ -54,6 +78,10 @@ FREE_PROVIDERS = {
 
 # Free Tier Models (Calculated as $0.00 cost)
 FREE_MODELS_PREFIXES = (
+    "gemini-4-argon",
+    "gemini-3.8-flash",
+    "gemini-2.5-flash",
+    "gemini-2.5-pro",
     "gemini-2.0-flash",
     "gemini-1.5-flash",
     "gemini-1.5-pro",
@@ -75,39 +103,76 @@ FREE_MODELS_PREFIXES = (
     "gpt-oss-20b",
 )
 
-# ── Pricing table (per 1M tokens) for Paid Cloud APIs ─────────────────────────
-PRICING: dict[str, dict[str, float]] = {
-    # Free Tiers ($0.00)
-    "gemini-2.0-flash-free":       {"input": 0.00,  "output": 0.00},
-    "gemini-1.5-flash-free":       {"input": 0.00,  "output": 0.00},
-    "gemini-1.5-pro-free":         {"input": 0.00,  "output": 0.00},
-    "cloudflare-free":             {"input": 0.00,  "output": 0.00},
-    "huggingface-free":            {"input": 0.00,  "output": 0.00},
-    "groq-free":                   {"input": 0.00,  "output": 0.00},
-    "openrouter-free":             {"input": 0.00,  "output": 0.00},
-    "mistral-free":                {"input": 0.00,  "output": 0.00},
-    "pollinations-free":           {"input": 0.00,  "output": 0.00},
-    "local-mesh":                  {"input": 0.00,  "output": 0.00},
-    # Claude (Paid Fallback)
-    "claude-3-5-sonnet-20241022":  {"input": 3.00,  "output": 15.00},
-    "claude-3-5-sonnet":           {"input": 3.00,  "output": 15.00},
-    "claude-3-5-haiku-20241022":   {"input": 0.80,  "output": 4.00},
-    "claude-3-haiku-20240307":     {"input": 0.25,  "output": 1.25},
-    "claude-3-opus-20240229":      {"input": 15.00, "output": 75.00},
-    "claude-sonnet-4-5":           {"input": 3.00,  "output": 15.00},
-    # OpenAI (Paid Fallback)
-    "gpt-4o":                      {"input": 2.50,  "output": 10.00},
-    "gpt-4o-mini":                 {"input": 0.15,  "output": 0.60},
-    "gpt-4-turbo":                 {"input": 10.00, "output": 30.00},
-    "o1":                          {"input": 15.00, "output": 60.00},
-    "o1-mini":                     {"input": 3.00,  "output": 12.00},
-    # Gemini Paid Tier
-    "gemini-1.5-pro":              {"input": 1.25,  "output": 5.00},
-    "gemini-1.5-flash":            {"input": 0.075, "output": 0.30},
-    "gemini-2.0-flash":            {"input": 0.10,  "output": 0.40},
-    "gemini-2.5-pro":              {"input": 1.25,  "output": 10.00},
+# ── Pricing table (per 1M tokens) with Authoritative Source URLs ───────────────
+PRICING: dict[str, dict[str, Any]] = {
+    # Free Tiers & Google One Credit Parity ($0.00)
+    "gemini-4-argon":              {"input": 0.00,  "output": 0.00,  "source": "antigravity_g1_credits_parity", "notes": "1.0x Google One credit parity with Gemini 3.8 Flash"},
+    "gemini-4-argon-high":         {"input": 0.00,  "output": 0.00,  "source": "antigravity_g1_credits_parity", "notes": "1.0x Google One credit parity with Gemini 3.8 Flash"},
+    "gemini-4-argon-medium":       {"input": 0.00,  "output": 0.00,  "source": "antigravity_g1_credits_parity", "notes": "1.0x Google One credit parity with Gemini 3.8 Flash"},
+    "gemini-4-argon-low":          {"input": 0.00,  "output": 0.00,  "source": "antigravity_g1_credits_parity", "notes": "1.0x Google One credit parity with Gemini 3.8 Flash"},
+    "gemini-3.8-flash":            {"input": 0.00,  "output": 0.00,  "source": "antigravity_g1_credits_parity", "notes": "1.0x Google One credit baseline"},
+    "gemini-3.8-flash-high":       {"input": 0.00,  "output": 0.00,  "source": "antigravity_g1_credits_parity", "notes": "1.0x Google One credit baseline"},
+    "gemini-3.8-flash-medium":     {"input": 0.00,  "output": 0.00,  "source": "antigravity_g1_credits_parity", "notes": "1.0x Google One credit baseline"},
+    "gemini-3.8-flash-low":        {"input": 0.00,  "output": 0.00,  "source": "antigravity_g1_credits_parity", "notes": "1.0x Google One credit baseline"},
+    "gemini-2.5-flash-free":       {"input": 0.00,  "output": 0.00,  "source": "https://ai.google.dev/pricing", "notes": "Google AI Studio free tier (15 RPM / 1500 RPD)"},
+    "gemini-2.5-pro-free":         {"input": 0.00,  "output": 0.00,  "source": "https://ai.google.dev/pricing", "notes": "Google AI Studio free tier (2 RPM / 50 RPD)"},
+    "gemini-2.0-flash-free":       {"input": 0.00,  "output": 0.00,  "source": "https://ai.google.dev/pricing", "notes": "Google AI Studio free tier"},
+    "gemini-1.5-flash-free":       {"input": 0.00,  "output": 0.00,  "source": "https://ai.google.dev/pricing", "notes": "Google AI Studio free tier"},
+    "gemini-1.5-pro-free":         {"input": 0.00,  "output": 0.00,  "source": "https://ai.google.dev/pricing", "notes": "Google AI Studio free tier"},
+    "cloudflare-free":             {"input": 0.00,  "output": 0.00,  "source": "https://developers.cloudflare.com/workers-ai/platform/pricing/", "notes": "Workers AI 10k neurons/day free"},
+    "huggingface-free":            {"input": 0.00,  "output": 0.00,  "source": "https://huggingface.co/pricing", "notes": "Serverless Inference API free tier"},
+    "groq-free":                   {"input": 0.00,  "output": 0.00,  "source": "https://groq.com/pricing", "notes": "Groq free tier rate limits apply"},
+    "openrouter-free":             {"input": 0.00,  "output": 0.00,  "source": "https://openrouter.ai/models?max_price=0", "notes": "OpenRouter free model tier"},
+    "mistral-free":                {"input": 0.00,  "output": 0.00,  "source": "https://mistral.ai/pricing", "notes": "Mistral experimentation tier"},
+    "pollinations-free":           {"input": 0.00,  "output": 0.00,  "source": "https://pollinations.ai", "notes": "Pollinations public free API"},
+    "local-mesh":                  {"input": 0.00,  "output": 0.00,  "source": "local_hardware_execution", "notes": "Zero-cloud local inference on mesh nodes"},
+    "qwen2.5-coder-7b-local":      {"input": 0.00,  "output": 0.00,  "source": "local_hardware_execution", "notes": "Local llama-server on L1 Metal GPU"},
+    "hermes-3-8b-local":           {"input": 0.00,  "output": 0.00,  "source": "local_hardware_execution", "notes": "Local llama-server on Port 8090"},
+
+    # Google Gemini Paid Tier (per 1M tokens)
+    "gemini-2.5-flash":            {"input": 0.075, "output": 0.30,  "source": "https://ai.google.dev/pricing", "notes": "<=128k context ($0.15/$0.60 for >128k)"},
+    "gemini-2.5-pro":              {"input": 1.25,  "output": 5.00,  "source": "https://ai.google.dev/pricing", "notes": "<=128k context ($2.50/$10.00 for >128k)"},
+    "gemini-2.0-flash":            {"input": 0.10,  "output": 0.40,  "source": "https://ai.google.dev/pricing"},
+    "gemini-1.5-flash":            {"input": 0.075, "output": 0.30,  "source": "https://ai.google.dev/pricing"},
+    "gemini-1.5-pro":              {"input": 1.25,  "output": 5.00,  "source": "https://ai.google.dev/pricing"},
+
+    # Anthropic Claude Paid Tier (per 1M tokens)
+    "claude-3-5-sonnet-20241022":  {"input": 3.00,  "output": 15.00, "source": "https://www.anthropic.com/pricing"},
+    "claude-3-5-sonnet":           {"input": 3.00,  "output": 15.00, "source": "https://www.anthropic.com/pricing"},
+    "claude-3-5-haiku-20241022":   {"input": 0.80,  "output": 4.00,  "source": "https://www.anthropic.com/pricing"},
+    "claude-3-haiku-20240307":     {"input": 0.25,  "output": 1.25,  "source": "https://www.anthropic.com/pricing"},
+    "claude-3-opus-20240229":      {"input": 15.00, "output": 75.00, "source": "https://www.anthropic.com/pricing"},
+
+    # DeepSeek Paid Tier (per 1M tokens)
+    "deepseek-chat":               {"input": 0.14,  "output": 0.28,  "source": "https://api-docs.deepseek.com/quick_start/pricing", "notes": "DeepSeek-V3; cache hit input is $0.014/1M"},
+    "deepseek-reasoner":           {"input": 0.55,  "output": 2.19,  "source": "https://api-docs.deepseek.com/quick_start/pricing", "notes": "DeepSeek-R1; cache hit input is $0.14/1M"},
+    "deepseek-v3":                 {"input": 0.14,  "output": 0.28,  "source": "https://api-docs.deepseek.com/quick_start/pricing"},
+    "deepseek-r1":                 {"input": 0.55,  "output": 2.19,  "source": "https://api-docs.deepseek.com/quick_start/pricing"},
+
+    # Groq Cloud API / Llama (per 1M tokens)
+    "llama-3.3-70b-versatile":     {"input": 0.59,  "output": 0.79,  "source": "https://groq.com/pricing"},
+    "llama-3.3-70b":               {"input": 0.59,  "output": 0.79,  "source": "https://groq.com/pricing"},
+    "llama-3.1-8b-instant":        {"input": 0.05,  "output": 0.08,  "source": "https://groq.com/pricing"},
+    "llama-3.1-8b":                {"input": 0.05,  "output": 0.08,  "source": "https://groq.com/pricing"},
+    "llama-3.1-70b-versatile":     {"input": 0.59,  "output": 0.79,  "source": "https://groq.com/pricing"},
+
+    # OpenAI Paid Tier (per 1M tokens)
+    "gpt-4o":                      {"input": 2.50,  "output": 10.00, "source": "https://openai.com/api/pricing/"},
+    "gpt-4o-mini":                 {"input": 0.15,  "output": 0.60,  "source": "https://openai.com/api/pricing/"},
+    "gpt-4-turbo":                 {"input": 10.00, "output": 30.00, "source": "https://openai.com/api/pricing/"},
+    "o1":                          {"input": 15.00, "output": 60.00, "source": "https://openai.com/api/pricing/"},
+    "o1-mini":                     {"input": 3.00,  "output": 12.00, "source": "https://openai.com/api/pricing/"},
+
+    # Qwen / OpenRouter (per 1M tokens)
+    "qwen/qwen-2.5-72b-instruct":  {"input": 0.35,  "output": 0.40,  "source": "https://openrouter.ai/qwen/qwen-2.5-72b-instruct"},
+    "qwen-2.5-72b-instruct":       {"input": 0.35,  "output": 0.40,  "source": "https://openrouter.ai/qwen/qwen-2.5-72b-instruct"},
+    "qwen-2.5-72b":                {"input": 0.35,  "output": 0.40,  "source": "https://openrouter.ai/qwen/qwen-2.5-72b-instruct"},
+    "qwen/qwen-2.5-coder-32b-instruct": {"input": 0.20, "output": 0.20, "source": "https://openrouter.ai/qwen/qwen-2.5-coder-32b-instruct"},
+    "qwen-2.5-coder-32b-instruct": {"input": 0.20,  "output": 0.20,  "source": "https://openrouter.ai/qwen/qwen-2.5-coder-32b-instruct"},
+    "qwen-2.5-coder-32b":          {"input": 0.20,  "output": 0.20,  "source": "https://openrouter.ai/qwen/qwen-2.5-coder-32b-instruct"},
+
     # Default fallback
-    "_default":                    {"input": 5.00,  "output": 20.00},
+    "_default":                    {"input": 5.00,  "output": 20.00, "source": "internal_safety_ceiling"},
 }
 
 # ── Provider route mapping ─────────────────────────────────────────────────────
@@ -174,7 +239,7 @@ def save_ledger(ledger: dict) -> None:
 
 
 def estimate_cost(model: str, input_tokens: int, output_tokens: int = 0, is_free: bool = False) -> float:
-    if is_free:
+    if is_free or any(model.lower().startswith(p) for p in ("gemini-4-argon", "gemini-3.8-flash")):
         return 0.0
     pricing = PRICING.get(model, PRICING["_default"])
     return (input_tokens / 1_000_000 * pricing["input"] +

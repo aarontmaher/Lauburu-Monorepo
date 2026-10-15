@@ -9,9 +9,9 @@ echo "[Self-Healer] Flushing ARP cache and renewing DHCP lease on en0..."
 sleep 1
 echo "[Self-Healer] Checking link status on en0..."
 if ifconfig en0 2>/dev/null | grep -q "status: active"; then
-    echo "EN0_STATUS=ONLINE" > /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/.en0_state
+    echo "EN0_STATUS=ONLINE" > /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/.en0_state
     echo "[Self-Healer] en0 link detected active: ONLINE"
 else
-    echo "EN0_STATUS=INACTIVE" > /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/network/.en0_state
+    echo "EN0_STATUS=INACTIVE" > /Volumes/Lauburu-Monorepo/06_scripts_and_tooling/network/.en0_state
     echo "[Self-Healer] en0 link inactive (cable disconnected/unnegotiated): INACTIVE"
 fi

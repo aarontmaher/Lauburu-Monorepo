@@ -88,7 +88,7 @@ This comprehensive audit surveys the core infrastructure, operational tooling, a
 │ Layer 2: MacBook Pro M1 Max    │ │ Layer 3: Linux Head Node     │ │ Layer 5: MacBook Air M2/M4    │
 │ 100.103.212.21 / 192.168.8.127 │ │ 100.101.39.98 / 192.168.8.224│ │ 100.93.158.96 / 192.168.8.222│
 │ TB4: 169.254.187.138 (Port 22) │ │ Ray Head / Docker (Port 22)  │ │ Metal Shaders (Port 22)       │
-│ 14.0 GB VRAM / 285GB NVMe Vault│ │ 13.8 GB VRAM / Ryzen 7       │ │ 13.5 GB VRAM                  │
+│ 14.0 GB VRAM / 285GB NVMe Vault│ │ 13.8 GB VRAM / Intel 2018 Mac Mini       │ │ 13.5 GB VRAM                  │
 └────────────────────────────────┘ └──────────────┬───────────────┘ └───────────────────────────────┘
                                                   │
                  ┌────────────────────────────────┼────────────────────────────────┐
@@ -125,7 +125,7 @@ This comprehensive audit surveys the core infrastructure, operational tooling, a
 - **Function**: Reads ELO leaderboard data from `04_data_and_memory/data/ai_elo_leaderboard.json`, filters by non-cloud specialist tiers, finds physical `.gguf` binaries in `/Volumes/localhost/AI_Models/gguf`, `/Volumes/localhost/AI_Models/exo`, `/Users/aaron/models`, and symlinks the champion model into `/Volumes/localhost/AI_Models/champions/<role>/`. If missing, creates `<model>.gguf.pending` placeholder.
 
 ### 2.3 WoL Manager & Multi-Interface Broadcast
-- **Source File**: `06_scripts_and_tooling/mesh/wol_manager.py` & `00_core_infrastructure/self_healing_hub/src/universal_mesh_healer.py:38-58`
+- **Source File**: `06_scripts_and_tooling/mesh/canonical_network_resurrection_engine.py` & `00_core_infrastructure/self_healing_hub/src/universal_mesh_healer.py:38-58`
 - **Protocol**: Transmits RFC 792 UDP Magic Packets (`b"\xff"*6 + mac_bytes*16`) across broadcast addresses `192.168.8.255`, `255.255.255.255`, and `169.254.255.255` on UDP ports 9 and 7. Dispatches router-side `etherwake` over SSH to GL.iNet router (`192.168.8.1`).
 
 ---
@@ -586,7 +586,7 @@ The physical compute mesh consists of 7 heterogeneous hardware layers interconne
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Layer 1** | Apple M4 Pro Mac Mini Host | 24.0 GB | **21.6 GB** | Rank 4 | Local PCIe / Metal GPU (`127.0.0.1` / `100.119.199.76`) | Memory Governor, Prompt Ingestion, `qwen2-vl-7b`, `deepseek_r1_70b_shard_layer_1` |
 | **Layer 2** | MacBook Pro (Vault / Worker) | 16.0 GB | **14.0 GB** | Rank 2 | 10Gbps Thunderbolt 4 (`100.103.212.21` / `169.254.187.138`) | High-Speed Metal RPC, `qwen2.5_coder_32b_shard_a`, `deepseek_r1_70b_shard_layer_2` |
-| **Layer 3** | Linux Head Node (AMD Ryzen 7 5700U) | 15.3 GB | **13.8 GB** | Rank 1 | 2.5GbE LAN / Tailscale (`100.101.39.98`) | Ray Head, Docker Master, 1TB NVMe Fast Cache, `qwen2.5_coder_32b_shard_b`, `deepseek_r1_32b` |
+| **Layer 3** | Linux Head Node (Intel 2018 Mac Mini (Linux)) | 15.3 GB | **13.8 GB** | Rank 1 | 2.5GbE LAN / Tailscale (`100.101.39.98`) | Ray Head, Docker Master, 1TB NVMe Fast Cache, `qwen2.5_coder_32b_shard_b`, `deepseek_r1_32b` |
 | **Layer 4** | Linux Tablet (Debian Linux) | 8.0 GB | **6.5 GB** | Rank 1 | Bedside Wi-Fi / Tailscale (`100.81.92.125`) | Lightweight biometrics HUD, secondary Petals DHT worker |
 | **Layer 5** | MacBook Air (Apple M4 Headless) | 16.0 GB | **13.5 GB** | Rank 3 | 5-Port GbE Switch / LAN (`100.93.158.96` / `192.168.8.222`) | Metal Shaders, LoRA SFT fine-tuning, `kimi_tandem_shard` |
 | **Layer 6** | Google Pixel 10 Pro XL | 15.2 GB | **12.5 GB** | Rank 6 | Wi-Fi 7 MLO / USB 3.2 (`100.73.38.87`) | Tensor G5 Edge TPU (22 TOPS), Vision Projector, `llama-3.1-8b`, `qwen2.5-vl-7b` |

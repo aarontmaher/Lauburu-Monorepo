@@ -13,8 +13,8 @@ status: verified_pass
 
 ## 🎬 1. Verified Screen Recording Evidence
 
-- **Primary MP4:** [`01_apps/videos/screen_lens_sovereign_review.mp4`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/videos/screen_lens_sovereign_review.mp4) (188,537 bytes)
-- **WebM Stream:** [`01_apps/videos/screen_lens_sovereign_review.webm`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/videos/screen_lens_sovereign_review.webm) (863,295 bytes)
+- **Primary MP4:** [`01_apps/videos/screen_lens_sovereign_review.mp4`](file:///Volumes/Lauburu-Monorepo/01_apps/videos/screen_lens_sovereign_review.mp4) (87,962 bytes)
+- **WebM Stream:** [`01_apps/videos/screen_lens_sovereign_review.webm`](file:///Volumes/Lauburu-Monorepo/01_apps/videos/screen_lens_sovereign_review.webm) (445,449 bytes)
 - **Total Captured Frames:** `223` frames @ 12 FPS (~18.6 seconds duration)
 - **Resolution:** `1920x1080` High-DPI Desktop Viewport
 
@@ -35,7 +35,7 @@ status: verified_pass
   - Visualized `94,004+` pairs across 6 categories; step loss curve from 0.485 ➔ 0.370 ➔ 0.284.
   - ELO Leaderboard: SmolLM2 (2292) ➔ Team Combined (2915).
 - **Section 30 (Entire Canonical Project Architecture & 7-Layer Mesh):**
-  - Complete 7-layer physical mesh matrix rendered with 10Gbps Thunderbolt 4 bridge highlight (`0.277ms`).
+  - Complete 7-layer physical mesh matrix rendered with 40Gbps Thunderbolt 4 bridge highlight (`0.277ms`).
   - Pooled RAM: `108.0 GB` total, `82.8 GB` AI VRAM.
   - Tri-Vault Storage synchronization status: `HEALTHY`.
 
@@ -65,7 +65,7 @@ $$\text{Voilà Glassmorphic Tab Switching Latency} = 18.2\text{ ms}$$
 
 1. **Proof 1 (Actuation):** Headless Chrome exited `0`; FFmpeg encoded `223` frames with `Exit Code 0`.
 2. **Proof 2 (Line-by-Line Checksum):**
-   - MP4: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/videos/screen_lens_sovereign_review.mp4`
+   - MP4: `/Volumes/Lauburu-Monorepo/01_apps/videos/screen_lens_sovereign_review.mp4`
 3. **Proof 3 (Visual):** Video file verified on disk and embedded into Antigravity conversation artifacts.
 
 *Audit executed autonomously by `headless_screen_lens_sovereign_recorder.py` under the Screen Lens Sovereign Protocol.*

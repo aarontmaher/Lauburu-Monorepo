@@ -1,0 +1,115 @@
+{
+  "timestamp": 1789920254.68358,
+  "timestamp_utc": "2026-09-20 16:04:14 UTC",
+  "gateway": {
+    "name": "GL.iNet GL-BE14000 Sovereign Gateway",
+    "reachable": true,
+    "target": "192.168.8.1",
+    "uptime_seconds": 62732.38,
+    "loadavg": "2.44 2.48 2.53 1/243 15175",
+    "ram_total_mb": 2033996,
+    "ram_used_mb": 714816,
+    "ram_available_mb": 1176036,
+    "ram_utilization_pct": 35.1,
+    "ram_compliant_50pct": true,
+    "swap_total_mb": 2097148,
+    "swap_free_mb": 2097148,
+    "swap_active": true,
+    "timer_migration": "0",
+    "timer_migration_healthy": true,
+    "repeater_interval": "3600",
+    "repeater_healthy": true,
+    "forbidden_services_killed": [],
+    "self_healed_actions": [],
+    "rtt_ms": 1.24
+  },
+  "host_sanctuary": {
+    "name": "Apple M4 Pro Mac Mini Host (L1)",
+    "total_ram_gb": 24.0,
+    "used_ram_gb": 18.44,
+    "free_ram_gb": 5.56,
+    "utilization_pct": 76.8,
+    "ram_compliant_50pct": false,
+    "sanctuary_min_headroom_gb": 12.0,
+    "loadavg": "39.26, 22.31, 16.52"
+  },
+  "mesh_nodes": [
+    {
+      "node_id": "L1",
+      "name": "Mac Mini M4 Pro Host",
+      "role": "Master Local Orchestrator & Memory Governor",
+      "status": "ONLINE",
+      "transport": "localhost",
+      "rtt_ms": 0.1,
+      "ram_total_gb": 24.0,
+      "ram_used_gb": 18.44,
+      "ram_free_gb": 5.56,
+      "ram_utilization_pct": 76.8,
+      "ram_rule": "Capped <= 50% (12.0 GB Sanctuary Free)",
+      "ram_compliant": false,
+      "loadavg": "39.26, 22.31, 16.52"
+    },
+    {
+      "node_id": "L2",
+      "name": "MacBook Pro Vault",
+      "role": "Metal GPU Vault & Tensor Shards",
+      "status": "OFFLINE",
+      "rtt_ms": 0.0
+    },
+    {
+      "node_id": "L8",
+      "name": "Linux Mini Central Hub",
+      "role": "Ingress Hub & Ray Head (Fill First)",
+      "status": "ONLINE",
+      "rtt_ms": 0.56,
+      "transport": "TB3 Bridge",
+      "endpoint": "192.168.2.3:22",
+      "ram_total_gb": 31.19,
+      "ram_free_gb": 17.76
+    },
+    {
+      "node_id": "L3",
+      "name": "Linux Head Node",
+      "role": "Auxiliary Local AI Offload (Fill Second)",
+      "status": "ONLINE",
+      "rtt_ms": 1.9,
+      "transport": "LAN Ethernet",
+      "endpoint": "192.168.8.225:22",
+      "ram_total_gb": 14.97,
+      "ram_free_gb": 11.74
+    },
+    {
+      "node_id": "L5",
+      "name": "MacBook Air M4",
+      "role": "Metal Worker & Distillation",
+      "status": "ONLINE",
+      "rtt_ms": 4.57,
+      "transport": "LAN Wi-Fi 7",
+      "endpoint": "192.168.8.215:22",
+      "caffeinate_active": true
+    },
+    {
+      "node_id": "L6",
+      "name": "Pixel 10 Pro XL",
+      "role": "Tensor G5 Edge TPU & 186GB Storage",
+      "status": "OFFLINE",
+      "rtt_ms": 0.0
+    },
+    {
+      "node_id": "L7",
+      "name": "Samsung Galaxy S20+",
+      "role": "UI Testbench & 63GB Storage",
+      "status": "OFFLINE",
+      "rtt_ms": 0.0
+    }
+  ],
+  "online_nodes_count": 4,
+  "total_nodes_count": 7,
+  "manual_alerts": [
+    "\u26a0\ufe0f MANUAL ACTION REQUIRED: MacBook Pro Vault (L2) is OFFLINE across LAN, TB, and Tailscale. Please check physical power / open lid / verify Wi-Fi.",
+    "\u26a0\ufe0f MANUAL ACTION REQUIRED: Pixel 10 Pro XL (L6) is OFFLINE across LAN, TB, and Tailscale. Please check physical power / open lid / verify Wi-Fi.",
+    "\u26a0\ufe0f MANUAL ACTION REQUIRED: Samsung Galaxy S20+ (L7) is OFFLINE across LAN, TB, and Tailscale. Please check physical power / open lid / verify Wi-Fi."
+  ],
+  "mobile_storage_pooled_gb": 249.29,
+  "zero_mock_verified": true
+}

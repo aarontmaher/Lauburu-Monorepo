@@ -214,4 +214,4 @@ This code defines a `LensGlobalOrchestrator` class with methods to update percep
    - Pre-flight snapshot -> Actuation -> Post-flight verification loop (Rule #5 Tri-Proof Gate).
 3. **Synchronize Tri-Vault Storage:**
    - Link this debate in [[Index]] and [[CANONICAL_PROJECT_AND_STORAGE_RULE]].
-   - Append continuous LoRA instruction pair to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`.
+   - Append continuous LoRA instruction pair to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`.

@@ -15,7 +15,7 @@ import urllib.request
 from pathlib import Path
 from datetime import datetime, timezone
 
-REPO = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO = Path("/Volumes/Lauburu-Monorepo")
 LOG_FILE = REPO / "logs/mesh_rpc_petals.log"
 LORA_LOG = REPO / "data/lora_datasets/nomad_autonomous_actions.jsonl"
 
@@ -61,7 +61,7 @@ NODES = {
     },
     "linux_head": {
         "user": "linux",
-        "host": "100.101.39.98",
+        "host": "10.1.0.12",
         "port": 22,
         "jump": None,
         "rpc_bin": "/home/linux/llama.cpp/build/bin/ggml-rpc-server",
@@ -69,7 +69,7 @@ NODES = {
     },
     "pixel": {
         "user": "u0_a363",
-        "host": "100.73.38.87",
+        "host": "10.1.0.13",
         "port": 8022,
         "jump": None,
         "rpc_bin": "/data/data/com.termux/files/home/llama.cpp/build/bin/ggml-rpc-server",
@@ -121,107 +121,84 @@ def heal_local_models():
         subprocess.run(["launchctl", "load", "/Users/aaron/Library/LaunchAgents/ai.lauburu.unified.proxy.plist"], capture_output=True)
         log_lora("RESTART_PROXY_8080", "RELOADED")
 
-    # 2. Qwen 3.8 Max Abliterated (:8083)
-    if http_health("http://127.0.0.1:8083/health"):
-        log("✅ Qwen-3.8Max-Abliterated :8083 HEALTHY")
+    # 2. Local Model Heads (:8081)
+    if http_health("http://127.0.0.1:8081/health"):
+        log("✅ Qwen-Coder-7B Orchestrator :8081 HEALTHY")
     else:
-        log("⚠️ Qwen-3.8Max-Abliterated :8083 DOWN — restarting")
-        subprocess.run(["pkill", "-f", "Huihui-Qwen3.8-27B-abliterated"], capture_output=True)
-        time.sleep(1)
-        cmd = [
-            "/Users/aaron/.local/bin/llama-server",
-            "-m", "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf",
-            "--port", "8083",
-            "--host", "0.0.0.0",
-            "-ngl", "99",
-            "-c", "4096",
-            "-b", "512",
-            "-t", "8"
-        ]
-        with open(REPO / "logs/qwen_38max_abliterated_8083.log", "a") as out:
-            subprocess.Popen(cmd, stdout=out, stderr=out)
-        log("✅ Qwen-3.8Max-Abliterated :8083 restarted")
-        log_lora("RESTART_QWEN_38MAX_8083", "RESTARTED")
+        log("⚪ Qwen-Coder-7B :8081 Standby")
 
-    # 3. Qwen Coder 7B (:8083)
-    if http_health("http://127.0.0.1:8083/health"):
-        log("✅ Qwen-Coder-7B :8083 HEALTHY")
+    # Guard RAM Sanctuary: Strictly do NOT auto-spawn 27B/70B models or RPC on Host Mac Mini
+    log("🛡️ Sanctuary Invariant: Heavy 27B/70B models & Petals suppressed to preserve 9.6GB Host RAM.")
+
+
+def heal_bluetooth_terminals():
+    log("📶 [Tier 1: Bluetooth Terminal] Probing lowest network connectivity point...")
+    blueutil = "/Users/aaron/.local/bin/blueutil"
+    if os.path.exists(blueutil):
+        # Ensure radio on
+        p = subprocess.run([blueutil, "--power"], capture_output=True, text=True)
+        if p.stdout.strip() != "1":
+            log("⚠️ Bluetooth radio off — powering on")
+            subprocess.run([blueutil, "--power", "1"], capture_output=True)
+            time.sleep(1)
+
+        devices = {
+            "s20": ("5c-cb-99-05-81-41", "Aaron's S20+"),
+            "pixel": ("30-e0-44-6d-18-ec", "Pixel 10 Pro XL"),
+            "macbook_pro": ("2c-ca-16-08-c0-27", "MacBook Pro L2"),
+        }
+        for k, (addr, name) in devices.items():
+            check = subprocess.run([blueutil, "--is-connected", addr], capture_output=True, text=True)
+            if check.stdout.strip() == "1":
+                log(f"✅ Bluetooth Terminal: {name} ({addr}) CONNECTED")
+            else:
+                log(f"⚠️ Bluetooth Terminal: {name} disconnected — attempting reconnect")
+                res = subprocess.run([blueutil, "--connect", addr], capture_output=True, text=True)
+                log(f"  Result: {res.stdout.strip() or 'Attempted'}")
+                log_lora(f"HEAL_BT_TERMINAL_{k.upper()}", "RECONNECTED" if res.returncode == 0 else "STANDBY")
     else:
-        log("⚠️ Qwen-Coder-7B :8083 DOWN — restarting")
-        cmd = [
-            "/Users/aaron/.local/bin/llama-server",
-            "-m", "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/qwen2.5-coder-7b-instruct-q4_k_m.gguf",
-            "--port", "8083",
-            "--host", "0.0.0.0",
-            "-ngl", "99",
-            "-c", "4096"
-        ]
-        with open(REPO / "logs/qwen_coder_8083.log", "a") as out:
-            subprocess.Popen(cmd, stdout=out, stderr=out)
-        log("✅ Qwen-Coder-7B :8083 restarted")
-        log_lora("RESTART_QWEN_8083", "RESTARTED")
+        log("⚠️ blueutil CLI not installed")
 
-def heal_rpc(node_key: str):
-    cfg = NODES[node_key]
-    host = cfg["host"]
-    if tcp_probe(host, 50052):
-        log(f"✅ RPC {node_key} ({host}:50052) HEALTHY")
+def heal_hardware_bridges():
+    log("⚡ [Tier 2: Direct Hardware Bridge] Probing TB4 DMA and USB...")
+    tb = subprocess.run(["ifconfig", "bridge0"], capture_output=True, text=True)
+    if "status: active" in tb.stdout:
+        log("✅ TB4 PCIe DMA bridge0 ACTIVE")
     else:
-        log(f"⚠️ RPC {node_key} OFFLINE — restarting")
-        cmd = f"nohup {cfg['rpc_bin']} -H 0.0.0.0 -p 50052 > /tmp/llama_rpc_{node_key}.log 2>&1 & echo started"
-        res = ssh_exec(node_key, cmd)
-        log(f"  Result: {res}")
-        log_lora(f"HEAL_RPC_{node_key.upper()}", res)
+        log("⚪ TB4 PCIe DMA bridge0 standby")
 
-def heal_petals(node_key: str):
-    cfg = NODES[node_key]
-    if not cfg["petals_model"]:
-        return
-    res = ssh_exec(node_key, "pgrep -f petals | wc -l")
-    if res.isdigit() and int(res) > 0:
-        log(f"✅ Petals {node_key} RUNNING ({res} procs)")
+def heal_local_lan():
+    log("🌐 [Tier 3: Local LAN & Gateway] Probing Gateway 192.168.8.1...")
+    if tcp_probe("192.168.8.1", 22):
+        log("✅ Gateway 192.168.8.1:22 ONLINE")
     else:
-        log(f"⚠️ Petals {node_key} OFFLINE — launching server")
-        cmd = (
-            f"nohup python3 -m petals.cli.run_server {cfg['petals_model']} "
-            f"--device cpu --num_blocks 4 --throughput 1 --port 31337 "
-            f"> /tmp/petals_{node_key}.log 2>&1 & echo started"
-        )
-        out = ssh_exec(node_key, cmd)
-        log(f"  Result: {out}")
-        log_lora(f"HEAL_PETALS_{node_key.upper()}", out)
+        log("⚠️ Gateway unreachable")
+    
+    if tcp_probe("127.0.0.1", 18802):
+        log("✅ WoL Hub API :18802 HEALTHY")
 
-def run_ai_debate():
-    log("🗣️ Executing Continuous Free AI Debate Cycle...")
-    try:
-        script = REPO / "05_agents_and_swarms/ai_debate/continuous_free_ai_debate_cycle.py"
-        res = subprocess.run([sys.executable, str(script)], capture_output=True, text=True, timeout=60)
-        if res.returncode == 0:
-            log("✅ AI Debate Cycle completed successfully and recorded to Obsidian + JSONL")
-        else:
-            log(f"⚠️ AI Debate Cycle returned code {res.returncode}: {res.stderr[:200]}")
-    except Exception as e:
-        log(f"❌ AI Debate Cycle error: {e}")
-
-def run_agentworld_refresh():
-    log("🤖 Refreshing AgentWorld dataset conversion...")
-    try:
-        script = REPO / "04_data_and_memory/agentworld_train.py"
-        res = subprocess.run([sys.executable, str(script), "--stage", "1", "--dry-run"], capture_output=True, text=True, timeout=30)
-        if res.returncode == 0:
-            log("✅ AgentWorld dataset sync complete")
-    except Exception as e:
-        log(f"⚠️ AgentWorld sync error: {e}")
+def heal_tailscale():
+    log("🔒 [Tier 4: Tailscale WireGuard] Auditing Layer 3 encrypted overlay...")
+    ts = subprocess.run(["which", "tailscale"], capture_output=True)
+    if ts.returncode == 0:
+        stat = subprocess.run(["tailscale", "status"], capture_output=True, text=True)
+        active_lines = [l for l in stat.stdout.splitlines() if "active" in l]
+        log(f"📡 Tailscale active peers: {len(active_lines)}")
 
 def main():
-    log("════════ Mesh Self-Healing & AI Debate Governor Cycle ════════")
+    log("════════ Bottom-Up Bluetooth Terminal & Network Healer Cycle ════════")
+    # 1. Default to Bluetooth terminal lowest connectivity point first
+    heal_bluetooth_terminals()
+    # 2. Hardware links
+    heal_hardware_bridges()
+    # 3. Local LAN
+    heal_local_lan()
+    # 4. Tailscale overlay
+    heal_tailscale()
+    # 5. Lightweight local proxies (RAM sanctuary strictly protected)
     heal_local_models()
-    for n in ["macbook_pro", "linux_head", "pixel"]:
-        heal_rpc(n)
-    heal_petals("linux_head")
-    run_ai_debate()
-    run_agentworld_refresh()
     log("════════ Governor Cycle Complete ════════")
 
 if __name__ == "__main__":
     main()
+

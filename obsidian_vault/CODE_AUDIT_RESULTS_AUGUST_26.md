@@ -61,5 +61,5 @@ tags: [audit, security, code-quality, testing]
 ## LoRA Training Data
 
 12 instruction-tuning records exported to:
-`/Users/aaron/DFS_UNIFIED/lora_datasets/lora_datasets/code_audit_security_training.jsonl`
+`/Volumes/Lauburu-Monorepo/04_data_and_memory/data/lora_datasets/code_audit_security_training.jsonl`
 

@@ -13,8 +13,8 @@ import subprocess
 import tempfile
 from typing import Dict, List, Any
 
-SANDBOX_DIR = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/sandbox_workspace"
-SANDBOX_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/sandbox_terminal_state.json"
+SANDBOX_DIR = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/sandbox_workspace"
+SANDBOX_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/sandbox_terminal_state.json"
 os.makedirs(SANDBOX_DIR, exist_ok=True)
 os.makedirs(os.path.dirname(SANDBOX_STATE_FILE), exist_ok=True)
 

@@ -1,0 +1,39 @@
+{
+  "mcpServers": {
+    "screen_lens_mcp": {
+      "command": "python3",
+      "args": [
+        "01_apps/screen_lens/src/mcp/screen_lens_mcp_server.py"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    "lauburu_project_mcp": {
+      "command": "python3",
+      "args": [
+        "06_scripts_and_tooling/integrations_and_mcp/lauburu_project_mcp.py"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    "jules_local_api_mcp": {
+      "command": "python3",
+      "args": [
+        "06_scripts_and_tooling/jules/jules_config_and_speculation_engine.py",
+        "--mcp-server"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    "lens_browser": {
+      "command": "node",
+      "args": [
+        "00_core_infrastructure/mcp_servers/lens-mcp/dist/index.js"
+      ],
+      "env": {}
+    }
+  }
+}

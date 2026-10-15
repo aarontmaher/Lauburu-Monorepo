@@ -14,7 +14,7 @@ import math
 import subprocess
 from typing import Dict, List, Any
 
-OPTIMIZER_STATE_FILE = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/huggingface_download_optimizer_state.json"
+OPTIMIZER_STATE_FILE = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/huggingface_download_optimizer_state.json"
 NAS_MODELS_DIR = "/Volumes/NAS/AI_Models"
 HEADLESS_MAC_HOST = "100.93.158.96"
 HEADLESS_MAC_USER = "aaronmaher"
@@ -190,7 +190,7 @@ class HuggingFaceDownloadOptimizer:
 
     def _inject_new_wave_into_arena(self, new_models: List[Dict[str, Any]]):
         """Injects new wave models into game_arena_state.json with catch-up tokens and advanced strategies."""
-        arena_file = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
+        arena_file = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/game_arena_state.json"
         if not os.path.exists(arena_file):
             return
         try:

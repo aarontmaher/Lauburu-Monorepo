@@ -4,7 +4,7 @@ tags: [lauburu, master, voilà, widgets, 14-ports, cyber_ide, ecg_512hz]
 ---
 
 # 🌌 LAUBURU MASTER CONSOLE — TABBED CYBER STUDIO
-*Generated: 2026-09-09T11:11:37Z*
+*Generated: 2026-10-14T14:28:34Z*
 
 ## 🏛️ Architecture Overview
 The Master Console features a unified Tabbed Interface (`widgets.Tab`) served live via Voilà on Port 8890:
@@ -613,7 +613,7 @@ def create_tui_tab():
 MESH_NODES = [
     {"layer": "L1", "name": "Mac_Node (Host M4 Mini)", "ip": "100.119.199.76", "local_ip": "127.0.0.1", "port": 8082, "ram": "24G (21.6G AI)", "cap": "90%", "role": "Prompt Ingestion & Memory Governor"},
     {"layer": "L2", "name": "MacBook_Pro (x86_64)", "ip": "100.103.212.21", "local_ip": "169.254.187.138", "port": 50053, "ram": "16G (14.0G AI)", "cap": "90%", "role": "⚡ 40 Gbps TB4 PHY DMA (0.27ms RTT)"},
-    {"layer": "L3", "name": "Linux_Head_Node (Ryzen 7)", "ip": "100.101.39.98", "local_ip": "100.101.39.98", "port": 50052, "ram": "16G (13.8G AI)", "cap": "80%", "role": "Gateway Ingress & Compute Hub"},
+    {"layer": "L3", "name": "Linux_Mini (Ryzen 7)", "ip": "100.101.39.98", "local_ip": "100.101.39.98", "port": 50052, "ram": "16G (13.8G AI)", "cap": "80%", "role": "Gateway Ingress & Compute Hub"},
     {"layer": "L4", "name": "Linux_Tablet (Debian Mobile)", "ip": "100.81.92.125", "local_ip": "100.81.92.125", "port": 22, "ram": "8G (6.5G AI)", "cap": "75%", "role": "Touch DSP & Mobile Inference"},
     {"layer": "L5", "name": "MacBook_Air (M4 Metal Worker)", "ip": "100.93.158.96", "local_ip": "100.93.158.96", "port": 8081, "ram": "16G (14.0G AI)", "cap": "90%", "role": "Metal Performance Shaders & LoRA"},
     {"layer": "L6", "name": "Pixel_10_Pro_XL (Tensor G5)", "ip": "100.73.38.87", "local_ip": "100.73.38.87", "port": 8022, "ram": "16G (12.5G AI)", "cap": "85%", "role": "Edge TPU & 8K Digital PTZ"},
@@ -816,8 +816,16 @@ def create_corewar_tab():
     
     def run_duel(b=None):
         runner = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/codeclash_corewar/codeclash_corewar_runner.py"
+        summary_file = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/codeclash_corewar/logs/tournament_summary.json")
         res_text = ""
-        if os.path.exists(runner):
+        if b is None and summary_file.exists():
+            try:
+                sdata = json.loads(summary_file.read_text(encoding='utf-8'))
+                lb_lines = [f"  #{i+1} {w['warrior']:<24} ELO: {w['elo']} | Wins: {w['total_wins']} | Score: {w['total_score']}" for i, w in enumerate(sdata.get("leaderboard", []))]
+                res_text = "🏆 Cached Sovereign CoreWar Leaderboard (Click Run to execute live pMARS tournament):\n" + "\n".join(lb_lines)
+            except Exception:
+                res_text = ""
+        if not res_text and os.path.exists(runner):
             try:
                 res = subprocess.run([sys.executable, runner], capture_output=True, text=True, timeout=8)
                 res_text = res.stdout
@@ -919,16 +927,23 @@ def create_ast_tab():
         rows = ""
         total_f = 0
         total_loc = 0
+        excluded_dirs = {".venv", "venv", "quantum_env", "node_modules", "__pycache__", ".git", "site-packages", ".stversions", "dist", "build"}
         for name, path in subsystems:
             p = Path(path)
-            f_count = len(list(p.rglob("*.py"))) if p.exists() else 0
+            f_count = 0
             loc = 0
             if p.exists():
-                for py in p.rglob("*.py"):
-                    try:
-                        loc += sum(1 for line in py.open(encoding='utf-8', errors='ignore'))
-                    except Exception:
-                        pass
+                for root_dir, dirs, files in os.walk(p):
+                    dirs[:] = [d for d in dirs if d not in excluded_dirs and not d.endswith("_env")]
+                    for fname in files:
+                        if fname.endswith(".py"):
+                            f_count += 1
+                            py_path = Path(root_dir) / fname
+                            try:
+                                with py_path.open(encoding='utf-8', errors='ignore') as fh:
+                                    loc += sum(1 for _ in fh)
+                            except Exception:
+                                pass
             total_f += f_count
             total_loc += loc
             rows += f"<tr><td style='padding:8px 12px;'><b>{name}</b></td><td>{f_count} files</td><td style='color:#38bdf8; font-weight:600;'>{loc:,} LOC</td></tr>"
@@ -977,7 +992,100 @@ def create_life_companion_tab():
         display(HTML(iframe_html))
     return out
 
+def create_lens_swarm_pi_gemma2_qwen3d_tab():
+    lens_out = widgets.Output()
+    audit_btn = widgets.Button(description="👁️ Audit /lens + Swarm + pi + Gemma2 + Qwen3D", button_style='info', icon='eye')
+
+    def run_lens_swarm_audit(b=None):
+        # 1. Probe /lens & EmbeddingGemma 2 & Qwen 3D endpoints
+        endpoints = [
+            ("Screen Lens Core OCR", "127.0.0.1", 3035),
+            ("Lens Global Orchestrator", "127.0.0.1", 3037),
+            ("Screen MJPEG Stream", "127.0.0.1", 4003),
+            ("EmbeddingGemma 2 (MRL 768/512/256/128d)", "127.0.0.1", 8087),
+            ("Qwen2.5 0.5B Syntax Worker", "127.0.0.1", 8089),
+            ("Hermes-3 8B Reasoning Engine", "127.0.0.1", 8085),
+            ("Pi Edge Router 1M (L3)", "100.101.39.98", 8089),
+            ("Qwen 3D Spatial VLA (L1b)", "10.0.0.3", 8090)
+        ]
+        ep_rows = ""
+        for label, host, port in endpoints:
+            live = probe_port_quick(host, port)
+            badge = "<span style='color:#10b981; font-weight:700;'>● ONLINE</span>" if live else "<span style='color:#f59e0b;'>● STANDBY</span>"
+            ep_rows += f"<tr><td><b>{label}</b></td><td><code>{host}:{port}</code></td><td>{badge}</td></tr>"
+
+        # 2. Check pi coding agent & session harvest
+        pi_bin = Path("/Users/aaron/.local/bin/pi")
+        pi_sessions = list(Path.home().glob(".pi/agent/sessions/**/*.jsonl"))
+        pi_status = f"INSTALLED ({pi_bin}) • {len(pi_sessions)} session logs" if pi_bin.exists() else "STANDBY"
+
+        # 3. Check 5 Swarm Training JSONL Datasets
+        lora_dir = Path("/Users/aaron/DFS_UNIFIED/lora_datasets")
+        swarm_datasets = [
+            ("P1: 3D Spatial Instructional Map LoRA", "3d_spatial_instructional_map_lora.jsonl"),
+            ("P2: Podman Curated Gemma 2 MRL LoRA", "podman_curated_gemma2_mrl_lora.jsonl"),
+            ("P3: Continuous LoRA Distillation (DPO/SFT)", "continuous_lora_dataset.jsonl"),
+            ("P4: Proven Accuracy VLA Dataset", "proven_accuracy_vla_dataset.jsonl"),
+            ("P5: Adversarial Truth Audit Debate", "truth_audit_debate.jsonl")
+        ]
+        ds_rows = ""
+        for pname, fname in swarm_datasets:
+            fpath = lora_dir / fname
+            cnt = 0
+            if fpath.exists():
+                try:
+                    with fpath.open(encoding="utf-8", errors="ignore") as fh:
+                        cnt = sum(1 for line in fh if line.strip())
+                except Exception:
+                    cnt = 0
+            ds_rows += f"<tr><td><b>{pname}</b></td><td><code>{fname}</code></td><td style='color:#38bdf8; font-weight:700;'>{cnt:,} pairs</td></tr>"
+
+        # 4. Check Qwen 3D VLA ELO in project_elo_leaderboard.json
+        elo_file = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/project_elo_leaderboard.json")
+        qwen3d_elo = "1497.8"
+        if elo_file.exists():
+            try:
+                edata = json.loads(elo_file.read_text(encoding="utf-8"))
+                qwen3d_elo = str(edata.get("models", {}).get("qwen_3d_vla_7b", {}).get("global_elo", 1497.8))
+            except Exception:
+                pass
+
+        html = f"""
+        <div class='glass-card'>
+            <div class='section-header' style='display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px; margin-bottom:12px;'>
+                <div style='font-weight:700; color:#f8fafc; font-size:15px;'>👁️ /LENS SWARM TRAINING • PI AGENT • EMBEDDINGGEMMA 2 (MRL) • QWEN 3D VLA</div>
+                <span class='badge-chip' style='background:#064e3b; color:#6ee7b7;'>qwen_3d_vla_7b ELO: {qwen3d_elo} (#1 vision_3d_vla)</span>
+            </div>
+            <div style='margin-bottom:10px; font-family:monospace; font-size:12px; color:#c7d2fe;'>
+                <b>🤖 Pi Coding Agent (@earendil-works/pi-coding-agent):</b> {pi_status} &nbsp;|&nbsp;
+                <b>💎 EmbeddingGemma 2:</b> MRL [768, 512, 256, 128] L2-Normalized (:8087)
+            </div>
+            <div style='display:grid; grid-template-columns:repeat(auto-fit, minmax(360px, 1fr)); gap:12px;'>
+                <div>
+                    <table class='glass-table'>
+                        <thead><tr><th>Service / Model</th><th>Endpoint</th><th>Status</th></tr></thead>
+                        <tbody>{ep_rows}</tbody>
+                    </table>
+                </div>
+                <div>
+                    <table class='glass-table'>
+                        <thead><tr><th>Swarm Training Protocol</th><th>Dataset Artifact</th><th>Verified Pairs</th></tr></thead>
+                        <tbody>{ds_rows}</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        """
+        with lens_out:
+            clear_output()
+            display(HTML(html))
+
+    audit_btn.on_click(run_lens_swarm_audit)
+    run_lens_swarm_audit()
+    return widgets.VBox([audit_btn, lens_out], layout=widgets.Layout(padding='10px'))
+
 tab_life_companion = create_life_companion_tab()
+tab_lens_swarm = create_lens_swarm_pi_gemma2_qwen3d_tab()
 
 
 master_tab = widgets.Tab(children=[
@@ -990,7 +1098,8 @@ master_tab = widgets.Tab(children=[
     tab_corewar,
     tab_opt,
     tab_ast,
-    tab_life_companion
+    tab_life_companion,
+    tab_lens_swarm
 ])
 
 master_tab.set_title(0, "📂 1. Cyber IDE")
@@ -1003,6 +1112,7 @@ master_tab.set_title(6, "⚔️ 7. CoreWar Arena")
 master_tab.set_title(7, "⚡ 8. 1-Click Optimizer")
 master_tab.set_title(8, "📊 9. Monorepo AST")
 master_tab.set_title(9, "📓 10. Life Companion")
+master_tab.set_title(10, "👁️ 11. /lens • pi • Gemma2 • Qwen3D")
 
 display(master_tab)
 

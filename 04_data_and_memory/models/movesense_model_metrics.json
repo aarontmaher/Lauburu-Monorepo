@@ -1,0 +1,50 @@
+{
+  "timestamp": "2026-10-12T19:36:52Z",
+  "device": "mps",
+  "device_name": "Apple Silicon Metal (MPS)",
+  "training_duration_sec": 6.07,
+  "total_windows": 1873,
+  "epochs": 5,
+  "final_train_acc_pct": 75.57,
+  "final_val_acc_pct": 76.8,
+  "artifact_path": "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/models/movesense_kinematic_cardiac_net.pt",
+  "artifact_bytes": 273513,
+  "artifact_sha256": "565362df4b04da93b9dd11c49e34e5b8daebec2045ccf44276118387c91fb029",
+  "history": [
+    {
+      "epoch": 1,
+      "train_cls_loss": 0.9363390100654836,
+      "train_hr_mse": 6349.828220830899,
+      "train_acc_pct": 60.01335113484646,
+      "val_acc_pct": 76.8
+    },
+    {
+      "epoch": 2,
+      "train_cls_loss": 0.7311764009326737,
+      "train_hr_mse": 5372.871003786298,
+      "train_acc_pct": 75.56742323097463,
+      "val_acc_pct": 76.8
+    },
+    {
+      "epoch": 3,
+      "train_cls_loss": 0.6630986416451284,
+      "train_hr_mse": 4089.526952929427,
+      "train_acc_pct": 75.56742323097463,
+      "val_acc_pct": 76.8
+    },
+    {
+      "epoch": 4,
+      "train_cls_loss": 0.6448649544423031,
+      "train_hr_mse": 2873.8533451503044,
+      "train_acc_pct": 75.56742323097463,
+      "val_acc_pct": 76.8
+    },
+    {
+      "epoch": 5,
+      "train_cls_loss": 0.655890057497572,
+      "train_hr_mse": 1772.002567876961,
+      "train_acc_pct": 75.56742323097463,
+      "val_acc_pct": 76.8
+    }
+  ]
+}

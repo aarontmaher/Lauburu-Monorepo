@@ -1,0 +1,8 @@
+# ==============================================================================
+# 🚀 Position 2: Standard Tailscale Daemon (tailscaled with OS TUN & Root)
+# ==============================================================================
+FROM tailscale/tailscale:v1.70.0
+# Requires root and /dev/net/tun
+ENV TS_STATE_DIR=/var/lib/tailscale
+ENV TS_USERSPACE=false
+ENTRYPOINT ["/usr/local/bin/tailscaled"]

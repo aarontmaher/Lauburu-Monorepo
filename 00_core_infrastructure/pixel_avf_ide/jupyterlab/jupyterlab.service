@@ -1,0 +1,14 @@
+[Unit]
+Description=JupyterLab Data Science Server (Pixel AVF Debian)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/share/jupyter_venv/bin/jupyter lab --config %h/.jupyter/jupyter_lab_config.py
+Restart=always
+RestartSec=5
+MemoryHigh=2000M
+MemoryMax=2500M
+
+[Install]
+WantedBy=multi-user.target

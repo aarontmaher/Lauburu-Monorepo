@@ -30,10 +30,10 @@ import urllib.error
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
-REPO_ROOT   = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT   = Path("/Volumes/Lauburu-Monorepo")
 TUI_SCREENS = REPO_ROOT / "01_apps/canonical_port/tui/screens"
 WEB_PORTAL  = REPO_ROOT / "01_apps/web_tui_portal"
-LORA_DIR    = Path("/Users/aaron/DFS_UNIFIED/lora_datasets")
+LORA_DIR    = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data")
 LOG_DIR     = REPO_ROOT / "session_logs"
 
 # Live local model endpoints

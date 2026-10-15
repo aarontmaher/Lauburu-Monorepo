@@ -66,7 +66,7 @@
     {
       "layer": "L7",
       "name": "Samsung_S20 (Exynos)",
-      "ip": "100.84.40.95",
+      "ip": "100.78.206.96",
       "port": 8022,
       "online": false,
       "latency_ms": null,

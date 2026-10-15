@@ -6,7 +6,7 @@ Subsystem: 10_spatial_grappling_kinematics / 01_apps/spatial_and_3d
 Version: 4.0.0-CANONICAL
 
 Parses the complete, canonical 3,044-node OPML Grappling MindMap tree from:
-/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/spatial_and_3d/grapplingmap_web/grappling.opml
+/Volumes/Lauburu-Monorepo/01_apps/spatial_and_3d/grapplingmap_web/grappling.opml
 
 Integrates:
 1. 3,044 Hierarchical Positional & Technique Nodes across Wrestling, Guard, Pins, and Scrambles.
@@ -24,7 +24,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-WORKSPACE_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+WORKSPACE_ROOT = Path("/Volumes/Lauburu-Monorepo")
 OPML_CANONICAL_PATH = WORKSPACE_ROOT / "01_apps/spatial_and_3d/grapplingmap_web/grappling.opml"
 OPML_BACKUP_PATH = WORKSPACE_ROOT / "10_spatial_grappling_kinematics/opml_trees/grappling.opml"
 SESSION_LOG_PATH = WORKSPACE_ROOT / "session_logs/spatial_grappling_map.json"

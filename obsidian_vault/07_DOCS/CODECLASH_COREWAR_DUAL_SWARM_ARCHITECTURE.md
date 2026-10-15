@@ -75,5 +75,5 @@ In Round #1, **Ablit-r1 (QuickStone with Coprime Step 401)** achieved:
 - **Dev Studio Source:** `01_apps/screen_lens/sandbox_evolution/dual_tui_swarm_arena/corewar_codeclash_dev_studio.py`
 - **Launcher:** `run_corewar_codeclash_live.sh` (Linked in `$PATH` as `corewar`)
 - **Top Export:** `codeclash_submission_warrior.red` (Verified via `pmars -A`)
-- **DPO Trajectories:** `codeclash_corewar_dpo.jsonl` & `/Users/aaron/DFS_UNIFIED/lora_datasets/codeclash_corewar/`
+- **DPO Trajectories:** `codeclash_corewar_dpo.jsonl` & `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/codeclash_corewar/`
 - **Live Stream Text:** `corewar_live.txt` (Monitored via `watch -n 1 cat corewar_live.txt`)

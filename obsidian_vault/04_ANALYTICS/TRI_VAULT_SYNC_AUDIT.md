@@ -18,9 +18,9 @@ tags: [lauburu, tri_vault, storage_governor, git_sync, obsidian_graph, zero_mock
 
 | Storage Layer | Target Path | Integrity Status | Metrics |
 | :--- | :--- | :--- | :--- |
-| **Tier 1: Obsidian Vault** | `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/obsidian_vault` | 🟢 HEALTHY | `Index.md` Verified |
-| **Tier 2: LoRA Data Lake** | `/Users/aaron/DFS_UNIFIED/lora_datasets` | 🟢 HEALTHY | `97` JSONL Datasets |
-| **Tier 3: GitHub Monorepo** | `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo` | 🟢 HEALTHY | Lock Cleared: `False` |
+| **Tier 1: Obsidian Vault** | `/Volumes/Lauburu-Monorepo/obsidian_vault` | 🟢 HEALTHY | `Index.md` Verified |
+| **Tier 2: LoRA Data Lake** | `/Volumes/Lauburu-Monorepo/04_data_and_memory/data` | 🟢 HEALTHY | `97` JSONL Datasets |
+| **Tier 3: GitHub Monorepo** | `/Volumes/Lauburu-Monorepo` | 🟢 HEALTHY | Lock Cleared: `False` |
 | **Host Disk Headroom** | `/Users/aaron` | 🟢 HEALTHY | `107.07 GB` Available |
 
 ---

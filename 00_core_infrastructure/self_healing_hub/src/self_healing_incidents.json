@@ -668,5 +668,375 @@
     ],
     "verdict": "RECOVERY_ACTION_SYNTHESIZED_AND_DISPATCHED",
     "healed": true
+  },
+  {
+    "timestamp": "2026-10-05T23:40:08.776994+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:40:45.667358+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:40:51.825308+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:44:28.949705+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:44:34.760280+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:44:51.682740+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:45:06.384151+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:48:50.848791+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:51:36.945790+00:00",
+    "application": "network_cable_analyzer",
+    "port": 4007,
+    "action": "AUTONOMOUS_RESTART_EXECUTED",
+    "restart_count_15m": 2,
+    "details": {
+      "port": 4007
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:51:36.947652+00:00",
+    "application": "network_cable_analyzer",
+    "port": 4007,
+    "action": "AUTONOMOUS_RESTART_EXECUTED",
+    "restart_count_15m": 4,
+    "details": {
+      "port": 4007
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:53:00.695408+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:53:21.411897+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:56:27.921498+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:57:30.179340+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-05T23:57:38.331486+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:14:09.422552+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:14:34.013699+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:14:56.626992+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:14:59.311377+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:16:42.177423+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:16:59.549953+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:18:58.095269+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:20:53.485873+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:20:58.729956+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:24:21.021496+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:24:37.284435+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:24:56.536574+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:25:00.029333+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:25:26.747007+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:26:29.947430+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:28:38.381349+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:37:13.490421+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-06T00:37:36.010729+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "ADVERSARIAL_TEST_RESTART",
+    "restart_count_15m": 0,
+    "details": {
+      "test_run": true
+    }
+  },
+  {
+    "timestamp": "2026-10-14T09:30:47.340108+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-14T09:31:10.952575+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-14T09:44:07.272767+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
+  },
+  {
+    "timestamp": "2026-10-14T09:54:09.985503+00:00",
+    "application": "combat_lab_lauburu",
+    "port": 4010,
+    "action": "HEALTH_CHECK_TEST",
+    "restart_count_15m": 0,
+    "details": {
+      "test": true
+    }
   }
 ]

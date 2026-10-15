@@ -1,0 +1,45 @@
+{
+  "framework": "Lauburu Unified 18-Method AI Training Framework (SSOT Linked to 22-Method Frontier)",
+  "engine_type": "Zero-Dependency Universal Python Engine",
+  "ssot_source": "unified_22_method_frontier_training_engine.py",
+  "timestamp": "2026-09-09T07:26:33Z",
+  "total_methods": 18,
+  "frontier_extended_methods": 22,
+  "consensus_decree": "AI Debate Consensus 0.996 (SSOT Invariant)",
+  "families": {
+    "Family 1: Pretraining": [
+      "1. CLM",
+      "2. MLM",
+      "3. FIM"
+    ],
+    "Family 2: SFT & PEFT": [
+      "4. Full SFT",
+      "5. LoRA",
+      "6. QLoRA",
+      "7. DoRA",
+      "8. LongLoRA / LoRA-FA"
+    ],
+    "Family 3: Preference Alignment": [
+      "9. RLHF/PPO",
+      "10. DPO",
+      "11. IPO",
+      "12. KTO",
+      "13. ORPO",
+      "14. GRPO (DeepSeek-R1)",
+      "15. SimPO (NeurIPS 2024 Reference-Free)"
+    ],
+    "Family 4: Rule-Based Verifiable & TTC": [
+      "16. RLVR Oracles",
+      "17. TTC-Search MCTS"
+    ],
+    "Family 5: Distillation & Self-Play": [
+      "18. CoT Reasoning Distillation",
+      "19. SPIN",
+      "20. STaR / ReST"
+    ],
+    "Family 6: Multimodal VLA & Merging": [
+      "21. FastV Token Pruning",
+      "22. SLERP / TIES Model Merging"
+    ]
+  }
+}

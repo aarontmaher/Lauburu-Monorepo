@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-09-19 20:20:58",
+  "epoch": 1789813258.3344781,
+  "current_model": "NONE",
+  "overall_status": "COMPLETED",
+  "models": {
+    "biomistral_7b": {
+      "filename": "BioMistral-7B.Q4_K_M.gguf",
+      "downloaded_bytes": 4368439424,
+      "total_bytes": 4368439424,
+      "progress_pct": 100.0,
+      "speed_mb_s": 0.0,
+      "eta_seconds": 0,
+      "status": "COMPLETED",
+      "completed_at": 1789810036.77745
+    },
+    "openbiollm_70b": {
+      "filename": "Llama3-OpenBioLLM-70B.Q4_K_M.gguf",
+      "downloaded_bytes": 42520394592,
+      "total_bytes": 42520394592,
+      "progress_pct": 100.0,
+      "speed_mb_s": 0.0,
+      "eta_seconds": 0,
+      "status": "COMPLETED",
+      "completed_at": 1789813258.295341
+    }
+  }
+}

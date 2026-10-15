@@ -39,4 +39,4 @@ fitness_gain_pct: "+0.31%"
 1. 🔧 Adjusted speculative draft depth K from 7 -> 8 for Qwen-0.5B draft head
 1. 🔧 Clamped Ring buffer batch size to 64 tokens for sub-2ms prefill latency
 1. 🔧 Consolidated MobileLLM-125M & Danube-500M into Qwen2.5-0.5B saving 475MB RAM
-1. 🔧 Re-routed 10Gbps Thunderbolt 4 DMA chunks to 285GB SSD vault on MBP L2
+1. 🔧 Re-routed 40Gbps Thunderbolt 4 DMA chunks to 285GB SSD vault on MBP L2

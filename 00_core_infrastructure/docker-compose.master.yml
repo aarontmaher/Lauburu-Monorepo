@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  # 1. Lauburu Unified Portal (Hub UI, Cross-App RAG, Biometrics, Permissions)
+  unified-portal:
+    build:
+      context: ../01_apps/unified_portal
+      dockerfile: Dockerfile
+    container_name: lauburu-unified-portal
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - PORTAL_PORT=4000
+    volumes:
+      - ../obsidian_vault:/app/obsidian_vault:ro
+      - ../lora_datasets:/app/lora_datasets
+    networks:
+      - lauburu-mesh-net
+
+  # 2. Qdrant Vector DB (Vector Embeddings & Semantic Knowledge Graph)
+  qdrant-vectordb:
+    image: qdrant/qdrant:latest
+    container_name: lauburu-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-storage:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    networks:
+      - lauburu-mesh-net
+
+  # 3. SeaweedFS Distributed Storage Filer
+  seaweedfs-filer:
+    image: chrislusf/seaweedfs:latest
+    container_name: lauburu-seaweedfs
+    restart: unless-stopped
+    command: "server -dir=/data -filer=true"
+    ports:
+      - "9333:9333"
+      - "8888:8888"
+    volumes:
+      - seaweedfs-data:/data
+    networks:
+      - lauburu-mesh-net
+
+  # 4. Portainer CE (Visual Container Manager Dashboard)
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: lauburu-portainer
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+    networks:
+      - lauburu-mesh-net
+
+networks:
+  lauburu-mesh-net:
+    driver: bridge
+
+volumes:
+  qdrant-storage:
+  seaweedfs-data:
+  portainer-data:

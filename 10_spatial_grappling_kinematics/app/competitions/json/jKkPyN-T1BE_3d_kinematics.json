@@ -1,0 +1,26 @@
+{
+  "video_id": "jKkPyN-T1BE",
+  "url": "https://youtu.be/jKkPyN-T1BE",
+  "division": "Professional Grappling",
+  "title": "Sarman challenge - Aaron Maher vs Mykeltik klink",
+  "duration_sec": 348.9,
+  "resolution": "256x128",
+  "sampled_frames": 36,
+  "poses_detected_frames": 31,
+  "dual_athlete_frames": 11,
+  "standing_phase_pct": 35.5,
+  "ground_scramble_phase_pct": 64.5,
+  "level_change_shots_detected": 5,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 66.2,
+    "left_elbow": 134.5,
+    "right_elbow": 127.5,
+    "left_hip": 111.4,
+    "right_hip": 118.6,
+    "left_knee": 137.6,
+    "right_knee": 126.1
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/jKkPyN-T1BE_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match involves a strong stance with a high level of stability and control, with a significant amount of ground/scrabble work and a high spine lean. The mean spine lean is particularly noteworthy, with the elbow flexion being particularly strong, indicating a high level of control and power. The knee flexion is also notable, with a relatively high range of motion. This match showcases Maher's ability to execute a high level of grappling with a high degree of control and precision.",
+  "processing_sec": 2.44
+}

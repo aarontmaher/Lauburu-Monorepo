@@ -62,13 +62,13 @@ def _resolve_repo_root() -> Path:
     candidates = [
         Path(__file__).resolve().parent.parent.parent.parent,
         Path(__file__).resolve().parent.parent.parent,
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
+        Path("/Volumes/Lauburu-Monorepo"),
+        Path("/Volumes/Lauburu-Monorepo"),
     ]
     for c in candidates:
         if c.exists() and (c / "00_core_infrastructure").exists():
             return c
-    return Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+    return Path("/Volumes/Lauburu-Monorepo")
 
 REPO_ROOT = _resolve_repo_root()
 DATA_DIR = REPO_ROOT / "data"
@@ -77,7 +77,7 @@ TRUTH_AUDIT_LORA_FILE = LORA_DATASETS_DIR / "truth_audit_debate.jsonl"
 NOMAD_STATUS_FILE = DATA_DIR / "network" / "nomad_self_healer_status.json"
 CANONICAL_LEADERBOARD_FILE = REPO_ROOT / "00_core_infrastructure" / "self_healing_hub" / "src" / "canonical_ai_leaderboard.json"
 PROGRESS_FILE = REPO_ROOT / "progress.md"
-OBSIDIAN_VAULT_ROOT = Path("/Users/aaron/DFS_UNIFIED")
+OBSIDIAN_VAULT_ROOT = Path("/Volumes/Lauburu-Monorepo")
 
 
 # ============================================================================
@@ -531,7 +531,7 @@ class AutonomousSelfHealingGovernor:
     def verify_antigravity_skills_immunity(self) -> Dict[str, Any]:
         """Ensures all essential Antigravity skills are present and synchronized."""
         skills_dirs = [
-            Path("/Users/aaron/DFS_UNIFIED/.agents/skills"),
+            Path("/Volumes/Lauburu-Monorepo/.agents/skills"),
             REPO_ROOT / "05_agents_and_swarms" / "skills",
             Path.home() / ".gemini/config/skills"
         ]

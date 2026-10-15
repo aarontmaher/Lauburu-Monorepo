@@ -13,7 +13,7 @@ date: "2026-09-03"
 │                    SYNTHESIZED 6-TIER WORKFLOW ARCHITECTURE                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 1. 🌐 25-Method Simultaneous Hyper-Stack:                                   │
-│    • Integrates physical hardware links (10Gbps TB4 DMA, Wi-Fi 7 MLO, 5G),  │
+│    • Integrates physical hardware links (40Gbps TB4 DMA, Wi-Fi 7 MLO, 5G),  │
 │      userspace bonding (Aggligator Rust, Native WFQ, Glorytun C, Engarde),  │
 │      zero-trust overlays (tailcat, tsnet, Headscale), and AI sharding.      │
 ├─────────────────────────────────────────────────────────────────────────────┤
@@ -86,8 +86,8 @@ date: "2026-09-03"
 ## 🏛️ 3. Permanent Monorepo Implementation
 
 All verified workflows are permanently implemented and anchored into the monorepo:
-1. **Master E2E Verification Harness:** [`00_core_infrastructure/e2e_verification/test_lauburu_mesh_e2e_suite.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/e2e_verification/test_lauburu_mesh_e2e_suite.py)
-2. **Genetic MoE Optimization Engine:** [`00_core_infrastructure/genetic_moe/genetic_moe_mesh_orchestrator.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/00_core_infrastructure/genetic_moe/genetic_moe_mesh_orchestrator.py)
-3. **8-Paradigm Continuous AI Evaluator:** [`02_ai_models_and_inference/distributed_sharding_benchmarks/continuous_8_paradigm_evaluator.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/distributed_sharding_benchmarks/continuous_8_paradigm_evaluator.py)
-4. **SWE-bench Genetic MoE Ranker:** [`02_ai_models_and_inference/benchmarks/run_swe_bench_genetic_moe_ranking.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/run_swe_bench_genetic_moe_ranking.py)
-5. **Dual Model Stream Watcher & Finalizer:** [`02_ai_models_and_inference/model_vault_gguf/watch_and_finalize_downloads.py`](file:///Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/watch_and_finalize_downloads.py)
+1. **Master E2E Verification Harness:** [`00_core_infrastructure/e2e_verification/test_lauburu_mesh_e2e_suite.py`](file:///Volumes/Lauburu-Monorepo/00_core_infrastructure/e2e_verification/test_lauburu_mesh_e2e_suite.py)
+2. **Genetic MoE Optimization Engine:** [`00_core_infrastructure/genetic_moe/genetic_moe_mesh_orchestrator.py`](file:///Volumes/Lauburu-Monorepo/00_core_infrastructure/genetic_moe/genetic_moe_mesh_orchestrator.py)
+3. **8-Paradigm Continuous AI Evaluator:** [`02_ai_models_and_inference/distributed_sharding_benchmarks/continuous_8_paradigm_evaluator.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/distributed_sharding_benchmarks/continuous_8_paradigm_evaluator.py)
+4. **SWE-bench Genetic MoE Ranker:** [`02_ai_models_and_inference/benchmarks/run_swe_bench_genetic_moe_ranking.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/benchmarks/run_swe_bench_genetic_moe_ranking.py)
+5. **Dual Model Stream Watcher & Finalizer:** [`02_ai_models_and_inference/model_vault_gguf/watch_and_finalize_downloads.py`](file:///Volumes/Lauburu-Monorepo/02_ai_models_and_inference/model_vault_gguf/watch_and_finalize_downloads.py)

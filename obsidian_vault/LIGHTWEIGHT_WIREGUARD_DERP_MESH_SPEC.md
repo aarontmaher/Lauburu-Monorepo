@@ -47,8 +47,8 @@ The **Tailscale-Style Lightweight WireGuard Mesh** implements a decentralized, c
         │                 │                │                               │
         ▼                 ▼                ▼                               ▼
 +---------------+ +---------------+ +---------------+             +---------------+
-| Mac Mini M4   | | MBP M1 Max    | | Pixel 10 Pro  |             | Restrictive   |
-| 100.119.199.76| | 100.103.212.21| | 100.73.38.87  |             | Symmetric NAT |
+| Mac Mini M4   | | MBP Intel     | | Pixel 10 Pro  |             | Restrictive   |
+| 100.119.199.76| | 100.103.212.21| | 100.114.215.68|             | Symmetric NAT |
 +---------------+ +---------------+ +---------------+             +---------------+
 ```
 
@@ -60,14 +60,15 @@ Every physical and mobile node is assigned a permanent, cryptographically bound 
 
 | Node Hostname | Tailscale IPv4 | Physical Hardware & Chipset | Operating System | Default Port | Direct Path | DERP Fallback |
 |:---|:---:|:---|:---|:---:|:---:|:---:|
-| **mac-mini** | `100.119.199.76` | Apple M4 Pro (14C CPU / 20C GPU) | macOS Darwin 24 | `:41641` | TB4 / LAN | `syd` |
-| **macbook-pro** | `100.103.212.21` | Apple M1 Max (10C CPU / 32C GPU) | macOS Darwin 24 | `:41641` | TB4 / LAN | `syd` |
-| **macbook-air** | `100.93.158.96` | Apple M2 (8C CPU / 10C GPU) | macOS Darwin 24 | `:41641` | Wi-Fi 7 | `syd` |
-| **linux-head** | `100.101.39.98` | AMD Ryzen 9 7950X / RTX 4090 | Ubuntu 24.04 LTS | `:41641` | 10GbE LAN | `syd` |
-| **linux-tablet**| `100.91.85.70` | Intel Core i7-1260P / Iris Xe | Debian 12 (Linux)| `:41641` | 1GbE LAN | `syd` |
-| **pixel-10-pro**| `100.73.38.87` | Google Tensor G5 NPU (16GB) | Android 15 / Termux| `:41641` | Wi-Fi 6E | `syd` |
-| **galaxy-s20** | `100.84.40.95` | Qualcomm Snapdragon 865 | Android 13 / Termux| `:41641` | Wi-Fi 6 | `syd` |
-| **glinet-router**|`100.122.185.123`| MT7981 Filogic 820 OpenWrt | OpenWrt 23.05 | `:41641` | WAN/LAN | `syd` |
+| **mac-mini** (L1) | `100.119.199.76` | Apple M4 Pro (8P+4E CPU / 16C GPU, 24 GB) | macOS Darwin 24 | `:41641` | TB4 / LAN | `syd` |
+| **macbook-pro** (L2)| `100.103.212.21` | Intel Core i7-9750H (6C/12T, 16 GB) | macOS Darwin 24 | `:41641` | LAN Wi-Fi 5 (Unlinked TB) | `syd` |
+| **lauburu** (L8) | `100.121.247.8` | Intel Core i7-8700B (6C/12T, 32 GB RAM) | Ubuntu 24.04 LTS | `:41641` | TB4 Bridge `10.0.0.8` (40 Gb/s) | `syd` |
+| **macbook-air** (L1a)| `100.121.202.34` | Apple M4 (4P+6E CPU, 16 GB) | macOS Darwin 24 | `:41641` | LAN Wi-Fi `192.168.8.248` | `syd` |
+| **linux-head** (L3) | `100.101.39.98` | AMD Ryzen 7 5700U (8C/16T, 15 GB RAM) | Ubuntu Linux | `:41641` | LAN `192.168.8.225` | `syd` |
+| **linux-tablet** (L4)| `100.99.210.89` | Debian Linux (debian-1, 8 GB RAM) | Debian Linux | `:41641` | 1GbE LAN (Port 2 Router) | `syd` |
+| **pixel-10-pro** (L6)| `100.114.215.68` | Google Tensor G5 Edge TPU (16 GB) | Android 15 / Termux | `:41641` | LAN Wi-Fi `192.168.8.213` | `syd` |
+| **galaxy-s20** (L7) | `100.78.206.96` | Exynos 990 / 12 GB RAM | Android 13 | `:41641` | LAN Wi-Fi `192.168.8.130` | `syd` |
+| **glinet-router** (GW)|`100.70.123.123` | GL-BE14000 Core Gateway (2 GB RAM) | OpenWrt Linux | `:41641` | 2.5G NBN WAN / LAN | `syd` |
 
 ---
 
@@ -243,5 +244,5 @@ impl MagicsockRouter {
 - [[CUSTOM_AI_SHARDING_DAEMON_PETALS_DHT_SPEC]] — Kademlia DHT Layer Swarming
 - [[SPEEDIFY_MULTIPATH_TUN_TAP_BONDING_ENGINE]] — Multi-Interface Channel Bonding Engine
 - [[LAUBURU_MONOREPO_DEEP_ARCHITECTURE_INDEX]] — Distributed MapReduce Monorepo Index
-- [[7_DEVICE_MESH_AND_VRAM_POOL]] — 8-Node Pooled VRAM Matrix (82.8 GB)
+- [[7_DEVICE_MESH_AND_VRAM_POOL]] — 8-Node Pooled VRAM Matrix (139.0 GB RAM / 108.4 GB AI VRAM)
 - [[00_Overview/Hardware_Topology]] — Multi-Transport Physical Mesh Topology

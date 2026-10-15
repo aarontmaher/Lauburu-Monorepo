@@ -1161,7 +1161,7 @@ EDGE_DEVICES_CONFIG = {
         "id": "mac_node_host",
         "device_name": "Layer 1: Mac Host (M4 Max)",
         "orchestrator_name": "Host Orchestrator (Mac M4 Max)",
-        "ip_address": "192.168.8.116 / 100.103.212.21",
+        "ip_address": "192.168.8.176 / 100.103.212.21",
         "os": "macOS Sequoia (Darwin 24.6.0)",
         "hardware": "Apple M4 Max (16C CPU, 40C GPU, 16GB Unified RAM)",
         "role": "Central Swarm Orchestrator & OpenClaw Gateway :18789",
@@ -1253,7 +1253,7 @@ EDGE_DEVICES_CONFIG = {
         "id": "samsung_s20_node",
         "device_name": "Layer 5: Samsung Galaxy S20+ (Exynos 990)",
         "orchestrator_name": "Headless Test Orchestrator (Samsung S20)",
-        "ip_address": "100.84.40.95 / Termux :8022",
+        "ip_address": "100.78.206.96 / Termux :8022",
         "os": "Android 13 / Termux Headless",
         "hardware": "Samsung Exynos 990 (8C, 10.6GB RAM, 15W Qi)",
         "role": "Headless Automated UI/UX Tester :5555",
@@ -4266,7 +4266,7 @@ class MeshBattleArena:
         real_targets_map = {
             "mac_node_host": {
                 "name": "Layer 1: Mac Host (M4 Max)",
-                "ips": ["127.0.0.1", "100.103.212.21", "192.168.8.116"],
+                "ips": ["127.0.0.1", "100.103.212.21", "192.168.8.176"],
                 "port": 18789 if "openclaw" in daemon_type.lower() else (5001 if "hub" in daemon_type.lower() else 50052),
                 "deploy_cmd": "nohup /usr/local/bin/llama-rpc-server -H 0.0.0.0 -p 50052 > /tmp/mac_rpc.log 2>&1 &"
             },
@@ -4290,9 +4290,9 @@ class MeshBattleArena:
             },
             "samsung_s20_node": {
                 "name": "Layer 5: Samsung Galaxy S20+ (Exynos 990)",
-                "ips": ["100.84.40.95", "100.99.123.58"],
+                "ips": ["100.78.206.96", "100.99.123.58"],
                 "port": 8022 if "ssh" in daemon_type.lower() else 50052,
-                "deploy_cmd": "adb connect 100.84.40.95:5555 >/dev/null 2>&1; adb -s 100.84.40.95:5555 shell 'input keyevent KEYCODE_WAKEUP && am start -n com.termux/.app.TermuxActivity && sleep 1 && nohup /data/data/com.termux/files/usr/bin/ggml-rpc-server -H 0.0.0.0 -p 50052 > /dev/null 2>&1 &' >/dev/null 2>&1"
+                "deploy_cmd": "adb connect 100.78.206.96:5555 >/dev/null 2>&1; adb -s 100.78.206.96:5555 shell 'input keyevent KEYCODE_WAKEUP && am start -n com.termux/.app.TermuxActivity && sleep 1 && nohup /data/data/com.termux/files/usr/bin/ggml-rpc-server -H 0.0.0.0 -p 50052 > /dev/null 2>&1 &' >/dev/null 2>&1"
             }
         }
 

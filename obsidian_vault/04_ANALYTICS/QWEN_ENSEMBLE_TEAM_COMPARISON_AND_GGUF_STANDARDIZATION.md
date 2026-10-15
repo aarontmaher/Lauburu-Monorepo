@@ -17,12 +17,12 @@ status: CANONICAL_CONSENSUS
 ## 1. Executive Summary & Core Verdicts
 
 ### Why is one model MLX and the other not? (The Universal GGUF Mandate)
-> **The Problem:** Apple MLX only compiles and executes on Apple Silicon macOS. It creates an isolated Apple island that cannot communicate or shard model weights with the AMD Ryzen Linux Head Node (L3), the Linux Tablet (L4), or Android Edge devices (L6/L7).
+> **The Problem:** Apple MLX only compiles and executes on Apple Silicon macOS. It creates an isolated Apple island that cannot communicate or shard model weights with the Intel 2018 Mac Mini Linux Head Node (L3), the Linux Tablet (L4), or Android Edge devices (L6/L7).
 > 
 > **The Resolution:** We **standardize 100% of local models on GGUF format**. GGUF runs natively on `prima.cpp` (Pipelined-Ring Parallelism) and `llama.cpp` (RPC Distributed Sharding) across macOS Metal, Linux ROCm/Vulkan/CPU, and Android OpenCL. Both Qwen models are now canonical GGUF models.
 
 ### What model are we building up to?
-**Dual-Track Model Build-Up: (1) Production Workhorse Bedrock: Both Qwen 3.8 27B models (Standard Master Orchestrator on Port 8081, Abliterated Red Team Lead on Port 8083). Fits locally within single/dual node memory boundaries without network synchronization latency. (2) Apex Scale Target: Qwen MoE 80B (Qwen3-Next-80B-A3B / 3B Active), sharded across the 3 Macs (56 GB unified RAM pool) via prima.cpp Pipelined-Ring Parallelism over the 10Gbps Thunderbolt 4 bridge (0.27ms RTT).**
+**Dual-Track Model Build-Up: (1) Production Workhorse Bedrock: Both Qwen 3.8 27B models (Standard Master Orchestrator on Port 8081, Abliterated Red Team Lead on Port 8083). Fits locally within single/dual node memory boundaries without network synchronization latency. (2) Apex Scale Target: Qwen MoE 80B (Qwen3-Next-80B-A3B / 3B Active), sharded across the 3 Macs (56 GB unified RAM pool) via prima.cpp Pipelined-Ring Parallelism over the 40Gbps Thunderbolt 4 bridge (0.27ms RTT).**
 
 ---
 
@@ -31,7 +31,7 @@ status: CANONICAL_CONSENSUS
 | Model | Architecture | Format & Engine | Plane | Port | TTFT (ms) | Tok/s | GGUF Size (GB) | Actuation Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Qwen 3.8-Flash-Next (Quantized Fast Draft)** | Dense 7B/8B Instruct | GGUF (Q4_K_M / Q8_0) (prima.cpp / llama.cpp Metal (:8087)) | `NORMAL` | `8087` | 23.2ms | 37.6 | 1.53 GB | ✅ LIVE |
-| **Qwen MoE (Genetic MoE Sharded 80B)** | Sparse MoE (80B Total / 3B Active) | GGUF (UD-Q4_K_M) (prima.cpp PRP Ring / 10Gbps TB4 DMA (:8082)) | `NORMAL` | `8082` | 197.6ms | 24.0 | 20.61 GB | ✅ LIVE |
+| **Qwen MoE (Genetic MoE Sharded 80B)** | Sparse MoE (80B Total / 3B Active) | GGUF (UD-Q4_K_M) (prima.cpp PRP Ring / 40Gbps TB4 DMA (:8082)) | `NORMAL` | `8082` | 197.6ms | 24.0 | 20.61 GB | ✅ LIVE |
 | **Qwen 3.8 Max Standard (Master Orchestrator)** | Dense 27B/32B High-Reasoning | GGUF (Q4_K_M) (llama.cpp / prima.cpp (:8081)) | `NORMAL` | `8081` | 43.1ms | 18.0 | 4.36 GB | ✅ LIVE |
 | **Qwen 3.8 Max Abliterated (Huihui 27B)** | Abliterated Orthogonalized 27B | GGUF (UD-Q4_K_XL) (llama.cpp / prima.cpp (:8083)) | `ABLITERATED` | `8083` | 43.6ms | 24.0 | 16.19 GB | ✅ LIVE |
 

@@ -1,0 +1,105 @@
+{
+  "tracks": [
+    {
+      "track_id": "TRACK_01_QWEN_MOE_ORCHESTRATOR",
+      "name": "Qwen-MoE Master Swarm Governor & Local AI Orchestrator",
+      "domains": [
+        "Swarm Delegation",
+        "AI Debate Arbitration",
+        "AST Code Crawling",
+        "512Hz ECG DSP",
+        "Docker Virtio-FS"
+      ],
+      "local_target": "L1 Mac Mini M4 Pro (Unified Memory) + L5 MBA Metal",
+      "local_status": "P0_ALPHA_HIGHEST_PRIORITY",
+      "cloud_spillover_needed": false,
+      "cloud_spend_aud": 0.0,
+      "active_dataset_pairs": 65457,
+      "target_elo": 2150.0
+    },
+    {
+      "track_id": "TRACK_02_AGENTWORLD",
+      "name": "Qwen-AgentWorld Master Simulation",
+      "domains": [
+        "Terminal",
+        "MCP Tools",
+        "SWE Diffs",
+        "Android ADB",
+        "OS Syscalls"
+      ],
+      "local_target": "L1 Mac Mini M4 Pro (:8086) / L5 MacBook Air",
+      "local_status": "ACTIVE_TRAINING",
+      "cloud_spillover_needed": false,
+      "cloud_spend_aud": 0.0,
+      "active_dataset_pairs": 4820,
+      "target_elo": 2040.0
+    },
+    {
+      "track_id": "TRACK_02_WEBWORLD",
+      "name": "WebWorld Deep Browser Flight Simulator",
+      "domains": [
+        "DOM Trees",
+        "A11y Accessibility",
+        "CSS Bounding Boxes",
+        "Shopify Storefront"
+      ],
+      "local_target": "L2 MacBook Pro (Metal) / L1 Mac Mini (:8092)",
+      "local_status": "ACTIVE_TRAINING",
+      "cloud_spillover_needed": false,
+      "cloud_spend_aud": 0.0,
+      "active_dataset_pairs": 3950,
+      "target_elo": 2010.0
+    },
+    {
+      "track_id": "TRACK_03_TUI_SPECIALIST",
+      "name": "TUI Console & High-Speed Event Loop Specialist",
+      "domains": [
+        "Textual TCSS",
+        "3-Column AI Debate UI",
+        "120 FPS Metal/WebGL",
+        "MPSC Ring Buffers"
+      ],
+      "local_target": "L1 Mac Mini Metal GPU",
+      "local_status": "ACTIVE_TRAINING",
+      "cloud_spillover_needed": false,
+      "cloud_spend_aud": 0.0,
+      "active_dataset_pairs": 2840,
+      "target_elo": 1980.0
+    },
+    {
+      "track_id": "TRACK_04_NETWORK_SENTINEL",
+      "name": "Network Health & Self-Healing Sentinel",
+      "domains": [
+        "512MB RAM Safety",
+        "OpenWrt Nftables",
+        "TB4 DMA Latency",
+        "Stale ARP Healing"
+      ],
+      "local_target": "GW GL.iNet Router (SmolLM2 360M) + L3 Linux Head Node",
+      "local_status": "ACTIVE_TRAINING",
+      "cloud_spillover_needed": false,
+      "cloud_spend_aud": 0.0,
+      "active_dataset_pairs": 2410,
+      "target_elo": 1925.0
+    },
+    {
+      "track_id": "TRACK_05_BIOMETRICS_DSP",
+      "name": "Medical Biometrics & Spatial Kinematics DSP",
+      "domains": [
+        "512Hz MoveSense ECG",
+        "Pan-Tompkins QRS",
+        "PTT Blood Pressure",
+        "DFA-alpha1"
+      ],
+      "local_target": "L4 Debian Linux Tablet + L1 Mac Mini Rust Wasm",
+      "local_status": "ACTIVE_TRAINING",
+      "cloud_spillover_needed": false,
+      "cloud_spend_aud": 0.0,
+      "active_dataset_pairs": 3120,
+      "target_elo": 2020.0
+    }
+  ],
+  "total_local_pairs": 82597,
+  "cloud_spend_aud": 0.0,
+  "last_updated": "2026-09-11T12:09:48Z"
+}

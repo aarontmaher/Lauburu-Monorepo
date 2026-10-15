@@ -1,0 +1,46 @@
+[
+  {
+    "id": "rule_001",
+    "timestamp_utc": "2026-10-14T13:25:47Z",
+    "video_id": "GLOBAL_FREESTYLE_WRESTLING",
+    "video_timestamp_sec": 12.0,
+    "category": "Ruleset & Posture Biomechanics",
+    "coach_feedback": "It is due to wrestling having points score very easy compared to BJJ so its much more risky to not try and have your body in the way and rely on reflexes.",
+    "rejected_qwen_opinion": "Aaron Maher's spine forward lean appears to be most pronounced in Freestyle Wrestling matches (54.9\u00b0), suggesting a more aggressive, forward-leaning offensive posture.",
+    "chosen_revised_opinion": "In Freestyle Wrestling, points score much more easily (via step-outs, exposure, and quick leg attacks) than in BJJ/ADCC. Therefore, maintaining a ~a disciplined low wrestling stance (head and hands in front of hips) is a mandatory defensive structural barrier ('keeping your body in the way' with head, hands, and shoulders in front of the hips) rather than standing upright and relying purely on reactive reflexes.",
+    "model_used": "Hermes-3-Llama-3.1-8B.Q4_K_M.gguf + Coach RLHF",
+    "clip_start_sec": 9.5,
+    "clip_end_sec": 16.5,
+    "clip_video_url": "/api/video/GLOBAL_FREESTYLE_WRESTLING.mp4#t=9.5,16.5",
+    "clip_thumb_url": "/frames/GLOBAL_FREESTYLE_WRESTLING_3d_f0.jpg",
+    "mindmap_node": "Inside tie (You)",
+    "mindmap_breadcrumb": "Wrestling \u2794 Hand fighting \u2794 Inside tie (You)"
+  },
+  {
+    "id": "rule_002",
+    "timestamp_utc": "2026-10-14T13:29:24Z",
+    "video_id": "fbCpcA1DyWg",
+    "match_title": "South East Asian Championships (AUS) vs (VIE)",
+    "video_timestamp_sec": 22.7,
+    "category": "Ruleset & Scoring Risk",
+    "coach_feedback": "it is due to wrestling having points score very easy compared to bjj so its much more risky to not try and have your body in the way and rely on reflexes",
+    "rejected_qwen_opinion": "Aaron Maher's grappling in the South East Asian Championships (AUS) vs (VIE) (Freestyle Wrestling, 158.7s) involves a strong, balanced move that combines ground and aerial skills, with a well-timed move change to maintain a high level of competition. His 138.8\u00b0 elbow flexion and loaded athletic knee bend demonstrate a precise balance between ground and aerial elements, while a disciplined low wrestling stance (head and hands in front of hips) indicates a balanced approach to both levels.",
+    "chosen_revised_opinion": "Revised Tactical & Biomechanical Analysis:\nAaron Maher's grappling in the South East Asian Championships (AUS) vs (VIE) (Freestyle Wrestling, 158.7s) showcases a calculated approach that aligns with the sport's risk-reward dynamics. a disciplined low wrestling stance (head and hands in front of hips), while slightly less aggressive than ideal, still effectively 'keeps his body in the way' as per coaching rules, minimizing exposure and maintaining a defensive structural barrier. The 138.8\u00b0 elbow flexion and loaded athletic knee bend further demonstrate a balanced, proactive stance that balances offense and defense, crucial for scoring in Freestyle Wrestling's point-based system. Despite the risk of relying solely on reflexes, Maher's technique emphasizes a blend of positioning and movement that maximizes scoring opportunities while mitigating the inherent risks of Freestyle Wrestling.",
+    "model_used": "Hermes-3-Llama-3.1-8B.Q4_K_M.gguf",
+    "kinematics_3d": {
+      "spine_forward_lean": 38.3,
+      "left_elbow": 134.1,
+      "right_elbow": 138.8,
+      "left_hip": 156.1,
+      "right_hip": 154.1,
+      "left_knee": 159.3,
+      "right_knee": 155.1
+    },
+    "clip_start_sec": 20.2,
+    "clip_end_sec": 27.2,
+    "clip_video_url": "/api/video/fbCpcA1DyWg.mp4#t=20.2,27.2",
+    "clip_thumb_url": "/frames/fbCpcA1DyWg_3d_f0.jpg",
+    "mindmap_node": "Collar tie (You)",
+    "mindmap_breadcrumb": "Wrestling \u2794 Hand fighting \u2794 Collar tie (You)"
+  }
+]

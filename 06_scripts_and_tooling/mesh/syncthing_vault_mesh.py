@@ -5,7 +5,7 @@
 Lauburu Syncthing Decentralized Vault Mesh Orchestrator
 ------------------------------------------------------
 Configures and manages peer-to-peer encrypted synchronization
-for the master Obsidian vault (/Users/aaron/DFS_UNIFIED) across:
+for the master Obsidian vault (/Volumes/Lauburu-Monorepo) across:
 1. Host Mac Mini M4
 2. MacBook Pro M1 Max Vault
 3. Linux Head Node (AMD Ryzen 7)
@@ -29,9 +29,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger("SyncthingMesh")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 CONFIG_FILE = REPO_ROOT / "data/mesh/syncthing_mesh_config.json"
-VAULT_PATH = Path("/Users/aaron/DFS_UNIFIED")
+VAULT_PATH = Path("/Volumes/Lauburu-Monorepo")
 
 PEERS = [
     {"name": "Mac_Mini_Host", "role": "Master Vault Seed", "ip": "100.119.199.76", "status": "ONLINE"},

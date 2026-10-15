@@ -1,0 +1,173 @@
+{
+  "schema_version": "2026.10.2",
+  "updated_at": "2026-10-14T15:16:30+11:00",
+  "global_memory_summary": {
+    "compute_fleet_physical_ram_gb": 156.0,
+    "active_8_layer_physical_ram_gb": 140.0,
+    "true_unified_or_discrete_vram_gb": 53.5,
+    "normal_ram_only_zero_vram_gb": 68.0,
+    "critical_distinction": "NEVER treat total system RAM (140-156 GB) as homogeneous GPU VRAM. Only L1 (24GB M4 Pro), L5 (16GB M4 Air), and L1b (16GB M2 Pro) have high-bandwidth Apple Silicon Unified Metal VRAM (120-273 GB/s). L2 has 4GB discrete GDDR6 VRAM + 16GB DDR4 normal RAM. L3 (16GB DDR4 Ryzen 7 5700U), L8 (32GB DDR4 Intel i7-8700B), L4 (8GB Tablet), and L7 (12GB LPDDR5 S20+) have ZERO dedicated GPU VRAM (0 GB VRAM) and execute GGML_BACKEND_CPU over system RAM."
+  },
+  "non_overloading_telemetry_governance": {
+    "canonical_cli": "~/.local/bin/netmon (06_scripts_and_tooling/network/dual_network_monitor.py)",
+    "glances_rest_rules": {
+      "allowed_endpoints": ["/quicklook", "/mem", "/load", "/network", "/fs (60s TTL)"],
+      "forbidden_endpoints": ["/all", "/processlist", "/docker"],
+      "rationale": "Polling /api/3/all on L3 walked every PID in /proc and Docker container every 2s, consuming 449.3 MB RAM + 160.9 MB swap and blocking HTTP responses for 6.91s. Disabling heavy plugins and polling /quicklook + /mem + /load reduced L3 Glances RAM to 43.7 MB (-90.3%) and response latency to 73-82 ms (-98.8%)."
+    },
+    "polling_intervals": {
+      "ac_powered_desktop_server_nodes_L1_L2_L3_L5_L8": "5.0s - 15.0s (shared TTL cache)",
+      "battery_mobile_edge_nodes_L4_L6_L7": "30.0s - 60.0s (Doze-respecting passive /proc/meminfo)",
+      "high_frequency_biometrics_dsp": "Teleplot UDP ASCII (>metric:val@ts\\n, 6.0 us P50, 30 bytes/sample)"
+    },
+    "adaptive_overload_circuit_breaker": {
+      "cpu_threshold_pct": 80.0,
+      "ram_threshold_pct": 88.0,
+      "action": "Multiply poll interval by 3x, skip /network and /fs sub-queries, and reserve 1+ physical CPU core for OS/SSH/Glances."
+    }
+  },
+  "memory_classes": {
+    "CLASS_1_APPLE_UNIFIED_METAL_VRAM": {
+      "nodes": ["L1", "L5", "L1b"],
+      "description": "Apple Silicon LPDDR5X Unified Memory shared zero-copy between CPU, Metal GPU, and 16-core ANE (120-273 GB/s).",
+      "optimization_policy": "Set -ngl 99 (full Metal offload), FlashAttention enabled (-fa), mmap=true, mlock=false, keep 4-5 GB OS sanctuary reserve."
+    },
+    "CLASS_2_DISCRETE_VRAM_PLUS_NORMAL_RAM": {
+      "nodes": ["L2"],
+      "description": "4 GB discrete AMD Radeon Pro 5300M GDDR6 (192 GB/s) + 16 GB DDR4 Normal System RAM (38.4 GB/s) across PCIe 3.0.",
+      "optimization_policy": "Cap Metal GPU offload strictly to <= 3.2 GB (-ngl 12..16); place remaining assigned layers or KV cache in DDR4 Normal RAM via AVX2 CPU threads (max 6 threads)."
+    },
+    "CLASS_3_NORMAL_RAM_ONLY_ZERO_VRAM": {
+      "nodes": ["L3", "L8", "L4", "L7"],
+      "description": "Standard DDR4/LPDDR5 system RAM with 0 GB dedicated GPU VRAM (iGPU shares small BIOS aperture only; no CUDA/Metal compute).",
+      "optimization_policy": "Set -ngl 0 (CPU-only GGML_BACKEND_CPU AVX2/NEON). Cap threads to physical_cores - 1 (L3: 7 threads, L8: 5-10 threads, L7: 4 threads). Enforce quantized KV cache (-ctk q8_0 -ctv q8_0), mmap=true, mlock=false. Assign sparse MoE experts, speculative draft heads, EmbeddingGemma 2 MRL, Neo4j graph, or disaggregated KV-cache storage rather than heavy dense decode blocks."
+    },
+    "CLASS_4_EDGE_NPU_LPDDR5X": {
+      "nodes": ["L6"],
+      "description": "16 GB LPDDR5X unified mobile memory with Tensor G5 TPU + Mali GPU + 10.5 GB AVF Debian microVM.",
+      "optimization_policy": "Use LiteRT / MediaPipe / NEON i8mm kernels with MRL 256d/512d truncation and speculative draft heads."
+    }
+  },
+  "nodes": {
+    "L1": {
+      "layer": "L1",
+      "hostname": "Mac-mini",
+      "memory_class": "CLASS_1_APPLE_UNIFIED_METAL_VRAM",
+      "total_normal_ram_gb": 24.0,
+      "dedicated_or_unified_vram_gb": 20.0,
+      "bandwidth_gbps": 273.0,
+      "os_reserve_gb": 4.0,
+      "max_ai_shard_gb": 18.0,
+      "cpu_threads_cap": 10,
+      "llama_cpp_flags": "-ngl 99 -fa -ctk q8_0 -ctv q8_0 --no-mlock",
+      "allowed_daemons": ["llama-server", "rpc-server", "embeddinggemma2_8087", "glances_v4"]
+    },
+    "L1b": {
+      "layer": "L1b",
+      "hostname": "Mac-mini-M2-Pro",
+      "memory_class": "CLASS_1_APPLE_UNIFIED_METAL_VRAM",
+      "total_normal_ram_gb": 16.0,
+      "dedicated_or_unified_vram_gb": 12.0,
+      "bandwidth_gbps": 200.0,
+      "os_reserve_gb": 4.0,
+      "max_ai_shard_gb": 11.5,
+      "cpu_threads_cap": 8,
+      "llama_cpp_flags": "-ngl 99 -fa -ctk q8_0 -ctv q8_0 --no-mlock",
+      "allowed_daemons": ["rpc-server", "glances_v4"]
+    },
+    "L2": {
+      "layer": "L2",
+      "hostname": "MacBook-Pro",
+      "memory_class": "CLASS_2_DISCRETE_VRAM_PLUS_NORMAL_RAM",
+      "total_normal_ram_gb": 16.0,
+      "dedicated_or_unified_vram_gb": 4.0,
+      "bandwidth_gbps": 192.0,
+      "normal_ram_bandwidth_gbps": 38.4,
+      "os_reserve_gb": 4.0,
+      "max_vram_shard_gb": 3.2,
+      "max_normal_ram_shard_gb": 8.0,
+      "cpu_threads_cap": 6,
+      "llama_cpp_flags": "-ngl 14 -t 6 -ctk q8_0 -ctv q8_0 --no-mlock",
+      "allowed_daemons": ["rpc-server", "screen_lens_teacher", "glances_v4"]
+    },
+    "L3": {
+      "layer": "L3",
+      "hostname": "linux",
+      "memory_class": "CLASS_3_NORMAL_RAM_ONLY_ZERO_VRAM",
+      "cpu_model": "AMD Ryzen 7 5700U with Radeon Graphics (8C/16T)",
+      "total_normal_ram_gb": 16.0,
+      "usable_linux_ram_mib": 15329,
+      "dedicated_or_unified_vram_gb": 0.0,
+      "bandwidth_gbps": 25.6,
+      "os_and_db_reserve_gb": 6.5,
+      "max_normal_ram_shard_gb": 7.5,
+      "cpu_threads_cap": 7,
+      "llama_cpp_flags": "-ngl 0 -t 7 -ctk q8_0 -ctv q8_0 --no-mlock",
+      "allowed_daemons": ["neo4j_5_26_32", "qdrant", "rpc-server-cpu", "glances_v3_low_overhead"]
+    },
+    "L4": {
+      "layer": "L4",
+      "hostname": "Lenovo-TB351FU",
+      "memory_class": "CLASS_3_NORMAL_RAM_ONLY_ZERO_VRAM",
+      "total_normal_ram_gb": 8.0,
+      "dedicated_or_unified_vram_gb": 0.0,
+      "bandwidth_gbps": 17.0,
+      "os_reserve_gb": 5.0,
+      "max_normal_ram_shard_gb": 0.0,
+      "cpu_threads_cap": 4,
+      "allowed_daemons": ["kiosk_ui", "adb_telemetry"]
+    },
+    "L5": {
+      "layer": "L5",
+      "hostname": "Mac-Air-4.local",
+      "memory_class": "CLASS_1_APPLE_UNIFIED_METAL_VRAM",
+      "total_normal_ram_gb": 16.0,
+      "dedicated_or_unified_vram_gb": 11.0,
+      "bandwidth_gbps": 120.0,
+      "os_reserve_gb": 5.0,
+      "max_ai_shard_gb": 10.5,
+      "cpu_threads_cap": 8,
+      "llama_cpp_flags": "-ngl 99 -fa -ctk q8_0 -ctv q8_0 --no-mlock",
+      "allowed_daemons": ["embeddinggemma2_8087", "screen_lens_3035", "rpc-server", "glances_v4"]
+    },
+    "L6": {
+      "layer": "L6",
+      "hostname": "Pixel-10-Pro-XL",
+      "memory_class": "CLASS_4_EDGE_NPU_LPDDR5X",
+      "total_normal_ram_gb": 16.0,
+      "dedicated_or_unified_vram_gb": 6.5,
+      "bandwidth_gbps": 68.0,
+      "os_reserve_gb": 5.5,
+      "max_ai_shard_gb": 6.5,
+      "cpu_threads_cap": 6,
+      "allowed_daemons": ["avf_debian_vm", "litert_embeddinggemma2", "termux_sshd"]
+    },
+    "L7": {
+      "layer": "L7",
+      "hostname": "Galaxy-S20-Plus",
+      "memory_class": "CLASS_3_NORMAL_RAM_ONLY_ZERO_VRAM",
+      "total_normal_ram_gb": 12.0,
+      "dedicated_or_unified_vram_gb": 0.0,
+      "bandwidth_gbps": 44.0,
+      "os_reserve_gb": 5.0,
+      "max_normal_ram_shard_gb": 4.0,
+      "cpu_threads_cap": 4,
+      "allowed_daemons": ["termux_sshd", "shizuku_bridge", "embeddinggemma2_mrl_256d"]
+    },
+    "L8": {
+      "layer": "L8",
+      "hostname": "lauburu",
+      "memory_class": "CLASS_3_NORMAL_RAM_ONLY_ZERO_VRAM",
+      "cpu_model": "Intel Core i7-8700B @ 3.20GHz (6C/12T, Intel UHD 630 iGPU)",
+      "total_normal_ram_gb": 32.0,
+      "usable_ram_mib": 31941,
+      "dedicated_or_unified_vram_gb": 0.0,
+      "bandwidth_gbps": 34.1,
+      "os_reserve_gb": 4.5,
+      "max_normal_ram_shard_gb": 24.0,
+      "cpu_threads_cap": 10,
+      "llama_cpp_flags": "-ngl 0 -t 10 -ctk q8_0 -ctv q8_0 --no-mlock",
+      "allowed_daemons": ["rpc-server-cpu", "disaggregated_kvcache_store", "glances_v4"]
+    }
+  }
+}

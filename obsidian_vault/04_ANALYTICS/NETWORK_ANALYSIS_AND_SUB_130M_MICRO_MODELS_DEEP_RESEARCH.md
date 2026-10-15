@@ -20,9 +20,9 @@ Measured live via ICMP echo requests and TCP socket handshakes:
 | **L1** | `Mac_Node` (Host) | `127.0.0.1` / `100.119.199.76` | **0.056 ms** | 🟢 **ACTIVE** | Primary Host & Memory Governor (Headroom: 10.2 GB) |
 | **GW** | `GL.iNet Router` | `192.168.8.1` | **1.893 ms** | 🟢 **ACTIVE** | Gateway, Wi-Fi 7 MLO, USB ADB Bridge & BLE Sniffer |
 | **L6** | `Pixel_10_Pro_XL`| `100.73.38.87` (Tailscale) | **187.12 ms** | 🟢 **ACTIVE** | Edge TPU Vision Stream, UWB Spatial Positioning |
-| **L7** | `Samsung_S20` | `100.84.40.95:5555` (ADB) | **131.58 ms** | 🟢 **ACTIVE** | OpenClaw UI Automation & Termux Node |
-| **L2** | `MacBook_Pro` | `169.254.187.138` (TB4 DMA) | *Standby (WoL)* | 🟡 **STANDBY** | 10Gbps Metal GPU RPC Vault (Wakeable via Port 18802) |
-| **L3** | `Linux_Head_Node`| `192.168.8.224` | *Standby (WoL)* | 🟡 **STANDBY** | AMD Ryzen 7 5700U Docker Hub & Ray Cluster |
+| **L7** | `Samsung_S20` | `100.78.206.96:5555` (ADB) | **131.58 ms** | 🟢 **ACTIVE** | OpenClaw UI Automation & Termux Node |
+| **L2** | `MacBook_Pro` | `169.254.187.138` (TB4 DMA) | *Standby (WoL)* | 🟡 **STANDBY** | 40Gbps Metal GPU RPC Vault (Wakeable via Port 18802) |
+| **L3** | `Linux_Mini`| `192.168.8.224` | *Standby (WoL)* | 🟡 **STANDBY** | Intel 2018 Mac Mini (Linux) Docker Hub & Ray Cluster |
 | **L5** | `MacBook_Air` | `192.168.8.222` | *Standby (WoL)* | 🟡 **STANDBY** | Secondary Metal Worker & LoRA Distillation |
 
 ---
@@ -37,7 +37,7 @@ All 10 active ecosystem ports verified responsive via HTTP probes:
 | **4002** | Marimo Reactive Studio | **HTTP 200** | `task-3220` | Interactive biometrics & DSP notebook studio |
 | **4003** | Screen Stream & Tri-Audit | **HTTP 200** | `task-3212` | 10–15 FPS MJPEG live stream & kernel sentinel badges |
 | **4004** | Omnichannel Knowledge Hub | **HTTP 200** | `task-3214` | High-speed semantic search across Tri-Vault docs |
-| **8081** | llama.cpp RPC Sharding | **HTTP 415** | Active RPC | Distributed tensor sharding across 10Gbps TB4 bridge |
+| **8081** | llama.cpp RPC Sharding | **HTTP 415** | Active RPC | Distributed tensor sharding across 40Gbps TB4 bridge |
 | **8082** | Decentralized Prima PRP | **HTTP 200** | PID 3967 | Pipelined-Ring Parallelism self-healing daemon |
 | **8083** | Devil's Advocate RPC | **HTTP 415** | Active RPC | Dedicated abliterated model server for AI debates |
 | **8866** | Voila Interactive UI | **HTTP 200** | `task-3230` | Interactive Jupyter widgets & training dashboard |

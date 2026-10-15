@@ -63,7 +63,7 @@ export default function PySparkMeshControlCenterView() {
     { layer: 4, name: "Debian Linux Tablet", role: "Mobile Linux Compute & Petals Node", ip: "100.81.92.125", hardware: "Quad-Core ARM64", ram: "6.5 GB AI Cap", power: "Battery 88%", status: "ONLINE (Standby)", rpc_server: { online: true, latency_ms: 14.2 } },
     { layer: 5, name: "Mac Mini Compute Node", role: "Secondary High-Speed Metal Worker", ip: "100.93.158.96", hardware: "Apple Silicon M-Series", ram: "13.5 GB AI Cap", power: "AC Line", status: "ONLINE", rpc_server: { online: true, latency_ms: 5.2 } },
     { layer: 6, name: "Google Pixel 10 Pro XL", role: "Edge TPU & Vision Streamer", ip: "100.73.38.87", hardware: "Google Tensor G5", ram: "12.5 GB AI Cap", power: "Battery 94%", status: "ONLINE (Termux :8022)", rpc_server: { online: true, latency_ms: 2.8 } },
-    { layer: 7, name: "Samsung Galaxy S20+", role: "Dedicated UI Tester & Router Tether", ip: "100.84.40.95", hardware: "Snapdragon 865", ram: "9.0 GB AI Cap", power: "Battery 98%", status: "ONLINE (Termux :8022)", rpc_server: { online: true, latency_ms: 3.1 } }
+    { layer: 7, name: "Samsung Galaxy S20+", role: "Dedicated UI Tester & Router Tether", ip: "100.78.206.96", hardware: "Snapdragon 865", ram: "9.0 GB AI Cap", power: "Battery 98%", status: "ONLINE (Termux :8022)", rpc_server: { online: true, latency_ms: 3.1 } }
   ];
 
   const storagePools = (telemetry?.storage_pools && telemetry.storage_pools.length > 0) ? telemetry.storage_pools : [

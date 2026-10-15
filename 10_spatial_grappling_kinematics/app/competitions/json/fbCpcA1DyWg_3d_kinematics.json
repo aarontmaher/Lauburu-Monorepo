@@ -1,0 +1,27 @@
+{
+  "video_id": "fbCpcA1DyWg",
+  "url": "https://youtu.be/fbCpcA1DyWg",
+  "division": "Freestyle Wrestling",
+  "title": "South East Asian Championships (AUS) vs (VIE)",
+  "duration_sec": 158.7,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 25,
+  "dual_athlete_frames": 1,
+  "standing_phase_pct": 44.0,
+  "ground_scramble_phase_pct": 56.0,
+  "level_change_shots_detected": 1,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 38.3,
+    "left_elbow": 134.1,
+    "right_elbow": 138.8,
+    "left_hip": 156.1,
+    "right_hip": 154.1,
+    "left_knee": 159.3,
+    "right_knee": 155.1
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/fbCpcA1DyWg_3d_grid.jpg",
+  "tactical_note": "Revised Tactical & Biomechanical Analysis:\nAaron Maher's grappling in the South East Asian Championships (AUS) vs (VIE) (Freestyle Wrestling, 158.7s) showcases a calculated approach that aligns with the sport's risk-reward dynamics. His 38.3\u00b0 spine lean, while slightly less aggressive than ideal, still effectively 'keeps his body in the way' as per coaching rules, minimizing exposure and maintaining a defensive structural barrier. The 138.8\u00b0 elbow flexion and 155.1\u00b0 knee flexion further demonstrate a balanced, proactive stance that balances offense and defense, crucial for scoring in Freestyle Wrestling's point-based system. Despite the risk of relying solely on reflexes, Maher's technique emphasizes a blend of positioning and movement that maximizes scoring opportunities while mitigating the inherent risks of Freestyle Wrestling.",
+  "processing_sec": 2.12,
+  "coach_corrected": true
+}

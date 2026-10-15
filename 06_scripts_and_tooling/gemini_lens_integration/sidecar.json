@@ -1,0 +1,30 @@
+{
+  "builtin": "schedule",
+  "args": [
+    "CRON_TZ=Australia/Sydney 0 * * * *",
+    "agentapi",
+    "new-conversation",
+    "--",
+    "Run the python integration script located in ~/DFS_UNIFIED/Lauburu-Monorepo/06_scripts_and_tooling/gemini_lens_integration to synchronize context and telemetry between Gemini Spark, Gemini Notebook, Screen Lens Sovereign, and the JetBrains IDE (PyCharm) using: /opt/homebrew/bin/python3 sync_engine.py --sidecar --once"
+  ],
+  "restart_policy": "always",
+  "display_name": "Hourly Gemini Lens Sync",
+  "description": "Every hour (at minute 0), runs the bidirectional integration script (/opt/homebrew/bin/python3 sync_engine.py --sidecar --once) to synchronize context and telemetry between Gemini Spark, Notebooks, Lens, and PyCharm.",
+  "agent_permissions": {
+    "access_grants": [
+      "command(/opt/homebrew/bin/python3 sync_engine.py --sidecar --once)",
+      "command(/opt/homebrew/bin/python3 sync_engine.py --dry-run)",
+      "command(/opt/homebrew/bin/python3)",
+      "command(python3)",
+      "command(ls)",
+      "read_file(/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/gemini_lens_integration/config/sync_config.json)",
+      "write_file(/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/gemini_lens_integration/session_logs/gemini_lens_sync_status.json)",
+      "read_file(/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/gemini_lens_integration/session_logs/gemini_lens_sync_status.json)",
+      "write_file(/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/gemini_lens_integration/session_logs/pending_sync_queue.jsonl)",
+      "read_file(/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/gemini_lens_integration/session_logs/pending_sync_queue.jsonl)"
+    ],
+    "workspace_uris": [
+      "file:///Volumes/Lauburu-Monorepo/06_scripts_and_tooling/gemini_lens_integration"
+    ]
+  }
+}

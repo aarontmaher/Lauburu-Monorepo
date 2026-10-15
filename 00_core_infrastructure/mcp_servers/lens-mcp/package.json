@@ -1,0 +1,20 @@
+{
+  "name": "lens-mcp",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Lens MCP Server using Puppeteer Core",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.1",
+    "puppeteer-core": "^23.0.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.19",
+    "typescript": "^5.7.3"
+  }
+}

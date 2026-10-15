@@ -40,7 +40,7 @@ To permanently resolve this architectural bottleneck, we engineered the **NPU & 
 │    │ • Prefix: /projects/<domain> │ • continuous_lora_dataset    │ • Master Graph    │ │
 │    └──────────────────────────────┴──────────────────────────────┴───────────────────┘ │
 │ 5. NEO (/neo) WORKSPACE ROOT RESOLVER & LOCAL BYOK TASK BRIDGE                         │
-│    • Enforces Neo Rule: ALWAYS pass canonical root (/Users/aaron/DFS_UNIFIED/...)      │
+│    • Enforces Neo Rule: ALWAYS pass canonical root (/Volumes/Lauburu-Monorepo/...)      │
 │    • Local Fallback Engine: Qwen 3.8 Max (:8082) & Qwen 2.5 Coder (:8081)              │
 │    • Zero Cloud Downtime: Caches task state & DPO training pairs in ~/.neo/local_tasks/│
 └────────────────────────────────────────────────────────────────────────────────────────┘
@@ -106,10 +106,10 @@ Empirical testing was executed on the primary **Mac Mini M4 Pro** host using `te
 🏆 NPU Speed & Zero-RAM Invariant Verified!
 
 --- 3. Testing Deep Folder Analysis & SSoT Mapping ---
-  ✅ Canonical Subsystem Analyzed: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps
+  ✅ Canonical Subsystem Analyzed: /Volumes/Lauburu-Monorepo/01_apps
      • LOC: 225,111 │ Primary Lang: Python │ Manifests: ['package.json']
   ✅ Federated Folder Analyzed: software_dev
-     • Mapped SSoT Destination: Cross-Platform Applications & UI Hub (/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps)
+     • Mapped SSoT Destination: Cross-Platform Applications & UI Hub (/Volumes/Lauburu-Monorepo/01_apps)
      • Storage Sink: http://[::1]:8888/projects/01_apps
 🏆 Folder Analysis & SSoT Mapping Verified!
 
@@ -118,10 +118,10 @@ Empirical testing was executed on the primary **Mac Mini M4 Pro** host using `te
 🏆 Git Lock Self-Healing Verified!
 
 --- 5. Testing Neo (/neo) Native Integration & Local Bridge ---
-  ✅ Neo Workspace Root for 'Build a multi-agent system for ECG biometric telemetry...': /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
-  ✅ Neo Workspace Root for 'Fine-tune Qwen 3.8 Max with LoRA on continuous dataset...': /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo
+  ✅ Neo Workspace Root for 'Build a multi-agent system for ECG biometric telemetry...': /Volumes/Lauburu-Monorepo
+  ✅ Neo Workspace Root for 'Fine-tune Qwen 3.8 Max with LoRA on continuous dataset...': /Volumes/Lauburu-Monorepo
   ✅ Local Neo Task Dispatched & Persisted: neo-local-1788658374674
-     • Workspace: /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/03_biometrics_and_telemetry
+     • Workspace: /Volumes/Lauburu-Monorepo/03_biometrics_and_telemetry
      • Model Used: qwen_38_max (Port: 8082)
      • Status: COMPLETED
 🏆 Neo Workspace Resolution & Local Bridge Verified!
@@ -148,4 +148,4 @@ The Bluetooth Terminal IDE (`bluetooth_terminal_ide.py`) integrates the NPU Proj
 - **Obsidian Graph Master:** [[Index]], [[CANONICAL_PROJECT_AND_STORAGE_RULE]], [[DEBATE_SEAWEEDFS_AND_PROJECT_OPTIMIZATION_1788657798]]
 - **Subsystem Specs:** [[00_CORE_INFRASTRUCTURE]], [[01_APPS_ECOSYSTEM]], [[02_AI_INFERENCE_MESH]], [[03_BIOMETRICS_DSP]], [[04_DATA_MEMORY_SYNC]], [[05_SWARM_ORCHESTRATOR]]
 - **LoRA Dataset Sink:** All classification verdicts and Neo local task completions are serialized directly to:
-  `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`
+  `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`

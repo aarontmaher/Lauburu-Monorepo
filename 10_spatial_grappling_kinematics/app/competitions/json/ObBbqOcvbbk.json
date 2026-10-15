@@ -1,0 +1,37 @@
+{
+  "video_id": "ObBbqOcvbbk",
+  "url": "https://youtu.be/ObBbqOcvbbk",
+  "division": "ADCC",
+  "title": "ADCC nationals - Aaron Maher vs James Sarginson",
+  "duration_sec": 410.5,
+  "resolution": "254x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 26,
+  "dual_athlete_frames": 3,
+  "standing_phase_pct": 46.2,
+  "ground_scramble_phase_pct": 53.8,
+  "level_change_shots_detected": 2,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 49.9,
+    "left_elbow": 148.4,
+    "right_elbow": 137.5,
+    "left_hip": 133.6,
+    "right_hip": 129.9,
+    "left_knee": 140.3,
+    "right_knee": 133.7
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/ObBbqOcvbbk_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's ADCC nationals match showcased a strong opening with a standing time of 46.2%, indicating quick preparation. The ground/scrumble shot count was high at 53.8%, suggesting a high level of physical activity. Maher's level-Change shots were 2, indicating a high level of agility and quick changes in position. His mean spine lean was 49.9\u00b0, showing a good balance and stability. Elbow flexion and knee flexion were 148.4\u00b0 and 1",
+  "processing_sec": 2.79,
+  "vision_model_opinions": {
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "READY_BATCH",
+      "latency_sec": 0.8,
+      "analysis": "Aaron Maher's ADCC nationals match showcased a strong opening with a standing time of 46.2%, indicating quick preparation. The ground/scrumble shot count was high at 53.8%, suggesting a high level of physical activity. Maher's level-Change shots were 2, indicating a high level of agility and quick changes in position. His mean spine lean was 49.9\u00b0, showing a good balance and stability. Elbow flexion and knee flexion were 148.4\u00b0 and 1"
+    }
+  }
+}

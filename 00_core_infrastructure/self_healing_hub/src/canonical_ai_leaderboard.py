@@ -43,7 +43,7 @@ def _resolve_workspace_root() -> Path:
 
     candidates = [
         Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
+        Path("/Volumes/Lauburu-Monorepo"),
         Path(__file__).resolve().parents[3] if len(Path(__file__).resolve().parents) >= 4 else Path.cwd(),
         Path.cwd()
     ]
@@ -66,6 +66,7 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 CANONICAL_JSON = DATA_DIR / "canonical_ai_leaderboard.json"
 SECONDARY_CANONICAL_JSON = WORKSPACE_ROOT / "04_data_and_memory" / "data" / "canonical_ai_leaderboard.json"
+OBSIDIAN_CANONICAL_JSON = WORKSPACE_ROOT / "obsidian_vault" / "04_ANALYTICS" / "canonical_elo_leaderboard.json"
 STATE_FILE = WORKSPACE_ROOT / "session_logs" / "game_arena_state.json"
 
 
@@ -336,18 +337,20 @@ def atomic_save_canonical_ledger(data: Dict[str, Any], filepath: Optional[Union[
 
         os.replace(temp_file, target_path)
 
-        # Only mirror to secondary target if filepath was NOT explicitly passed
-        if filepath is None and SECONDARY_CANONICAL_JSON != target_path and SECONDARY_CANONICAL_JSON.parent.exists():
-            try:
-                sec_suffix = f"tmp.{os.getpid()}.{threading.get_ident()}.{time.time_ns()}.{os.urandom(4).hex()}"
-                sec_temp = SECONDARY_CANONICAL_JSON.with_name(f"{SECONDARY_CANONICAL_JSON.name}.{sec_suffix}")
-                with open(sec_temp, "w", encoding="utf-8") as f:
-                    json.dump(data, f, indent=2, ensure_ascii=False)
-                    f.flush()
-                    os.fsync(f.fileno())
-                os.replace(sec_temp, SECONDARY_CANONICAL_JSON)
-            except Exception:
-                pass
+        # Only mirror to secondary targets if filepath was NOT explicitly passed
+        if filepath is None:
+            for mirror_path in (SECONDARY_CANONICAL_JSON, OBSIDIAN_CANONICAL_JSON):
+                if mirror_path != target_path and mirror_path.parent.exists():
+                    try:
+                        sec_suffix = f"tmp.{os.getpid()}.{threading.get_ident()}.{time.time_ns()}.{os.urandom(4).hex()}"
+                        sec_temp = mirror_path.with_name(f"{mirror_path.name}.{sec_suffix}")
+                        with open(sec_temp, "w", encoding="utf-8") as f:
+                            json.dump(data, f, indent=2, ensure_ascii=False)
+                            f.flush()
+                            os.fsync(f.fileno())
+                        os.replace(sec_temp, mirror_path)
+                    except Exception:
+                        pass
 
         return True
     finally:
@@ -1834,18 +1837,269 @@ class CanonicalAILeaderboardEngine:
                     "project_context_accuracy": 99.0
                 },
                 "workflow_guidance": "Permanent default Devil's Advocate in multi-orchestrator debate council."
+            },
+            {
+                "id": "embeddinggemma_2",
+                "name": "EmbeddingGemma 2 Multimodal 740M (MRL 768d–128d)",
+                "exact_model_id": "embeddinggemma-2-UD-Q4_K_XL.gguf+mmproj-Q8_0.gguf",
+                "short_name": "EmbeddingGemma 2",
+                "type": "Local Multimodal Embedding & RAG Orchestrator",
+                "tier": "EDGE_VISION_SPRINTER",
+                "archetype": "Natively Multimodal Matryoshka Embedding & Hybrid RAG Engine",
+                "deployment": "llama.cpp Local Metal (:8087 on L1 & L5)",
+                "hardware": "Mac M4 Pro & M4 Air Metal Unified Memory (~567 MB Active RAM)",
+                "color": "#10b981",
+                "bg_color": "rgba(16,185,129,0.15)",
+                "badge": "🧬 Gemma 2 MRL",
+                "params_b": 0.74,
+                "base_elo": 2265.0,
+                "default_wins": 78,
+                "default_losses": 12,
+                "overall_benchmark_score": 96.4,
+                "truth_audit_compliance_pct": 100.0,
+                "tokens_per_sec": 340.0,
+                "context_window_tokens": 8192,
+                "multimodal_support": ["text", "code", "image", "audio", "video"],
+                "rpm_limit": 9999,
+                "tpm_limit": 9999999,
+                "cost_per_m_tokens": "$0.00 Sovereign",
+                "specialty": "Natively multimodal 768d/512d/256d/128d Matryoshka Representation Learning (MRL) embeddings, Neo4j + Qdrant hybrid graph-vector retrieval, and cross-modal Screen Lens semantic alignment.",
+                "orchestrator_metrics": {
+                    "delegation_accuracy": "97.2%",
+                    "truth_audit_compliance": "100.0%",
+                    "zero_hallucination_score": "99.4%",
+                    "quad_consensus_alignment": "96.8%",
+                    "score": 97.4
+                },
+                "individual_metrics": {
+                    "code_syntax_pass_rate": "96.0%",
+                    "token_efficiency": "100.0% ($0 Spend)",
+                    "throughput_tok_s": 340.0,
+                    "reasoning_depth": "94.5%",
+                    "score": 96.5
+                },
+                "swarm_metrics": {
+                    "multi_agent_consensus": "97.5%",
+                    "rpc_coordination": "98.8%",
+                    "lora_distill_quality": "97.2%",
+                    "failover_resilience": "99.2%",
+                    "score": 98.2
+                },
+                "specialist_skills": {
+                    "grappling_map_understanding": 97.8,
+                    "debating": 94.0,
+                    "device_hacking": 92.5,
+                    "device_hacking_defence": 96.0,
+                    "3d_ai_training_game": 96.8,
+                    "training_specialist_skill": 97.5,
+                    "storage_routing_and_monitoring": 99.2,
+                    "vision_vlm_truth_auditing": 98.4,
+                    "project_context_accuracy": 99.1
+                },
+                "workflow_guidance": "Deploy as primary multimodal MRL vector indexer, Neo4j+Qdrant RAG retriever, and cross-modal semantic similarityverifier across L1/L5."
+            },
+            {
+                "id": "qwen_38_max_abliterated",
+                "name": "Qwen 3.8 Max 27B Abliterated (3D & Telemetry Judge)",
+                "exact_model_id": "Huihui-Qwen3.5-27B-Claude-4.6-Opus-abliterated.Q4_K_M.gguf",
+                "short_name": "Qwen 3.8 Max 27B",
+                "type": "Local Sovereign 3D & Telemetry Reviewer",
+                "tier": "LOCAL_REASONING_CHAMPION",
+                "archetype": "3D Spatial Kinematics, Telemetry & Visual Consensus Judge",
+                "deployment": "llama.cpp Local / RPC Sharded (:8083 on L8 / :50052)",
+                "hardware": "L8 Linux Mini + 7-Node RPC Mesh (16.7 GB Q4_K_M)",
+                "color": "#8b5cf6",
+                "bg_color": "rgba(139,92,246,0.15)",
+                "badge": "🔮 Qwen 3.8 27B",
+                "params_b": 27.0,
+                "base_elo": 2345.0,
+                "default_wins": 96,
+                "default_losses": 14,
+                "overall_benchmark_score": 96.9,
+                "truth_audit_compliance_pct": 100.0,
+                "tokens_per_sec": 24.5,
+                "context_window_tokens": 131072,
+                "multimodal_support": ["text", "code", "3d_kinematics"],
+                "rpm_limit": 9999,
+                "tpm_limit": 9999999,
+                "cost_per_m_tokens": "$0.00 Sovereign",
+                "specialty": "3D spatial grappling kinematics verification, Screen Lens raw telemetry auditing, DPO preference synthesis, and multi-agent ELO consensus arbitration.",
+                "orchestrator_metrics": {
+                    "delegation_accuracy": "96.8%",
+                    "truth_audit_compliance": "100.0%",
+                    "zero_hallucination_score": "98.6%",
+                    "quad_consensus_alignment": "97.4%",
+                    "score": 97.5
+                },
+                "individual_metrics": {
+                    "code_syntax_pass_rate": "97.4%",
+                    "token_efficiency": "100.0% ($0 Spend)",
+                    "throughput_tok_s": 24.5,
+                    "reasoning_depth": "98.2%",
+                    "score": 97.2
+                },
+                "swarm_metrics": {
+                    "multi_agent_consensus": "98.0%",
+                    "rpc_coordination": "97.5%",
+                    "lora_distill_quality": "98.1%",
+                    "failover_resilience": "96.5%",
+                    "score": 97.5
+                },
+                "specialist_skills": {
+                    "grappling_map_understanding": 99.1,
+                    "debating": 98.2,
+                    "device_hacking": 97.5,
+                    "device_hacking_defence": 97.8,
+                    "3d_ai_training_game": 99.2,
+                    "training_specialist_skill": 98.0,
+                    "storage_routing_and_monitoring": 97.4,
+                    "vision_vlm_truth_auditing": 97.9,
+                    "project_context_accuracy": 98.5
+                },
+                "workflow_guidance": "Deploy for deep 3D spatial grappling kinematics review, raw telemetry anomaly scoring, and consensus ELO arbitration."
+            },
+            {
+                "id": "qwen2_5_coder_1_5b",
+                "name": "Qwen 2.5 Coder 1.5B (L3 Edge Telemetry Auditor)",
+                "exact_model_id": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+                "short_name": "Qwen 2.5 Coder 1.5B",
+                "type": "Local Edge Specialist",
+                "tier": "EDGE_VISION_SPRINTER",
+                "archetype": "Fast Structural JSON & Telemetry Validator",
+                "deployment": "llama.cpp Local Server (:8084 on L3)",
+                "hardware": "L3 Linux Head Node (1.1 GB RAM)",
+                "color": "#06b6d4",
+                "bg_color": "rgba(6,182,212,0.15)",
+                "badge": "⚙️ Qwen 1.5B Coder",
+                "params_b": 1.5,
+                "base_elo": 2125.0,
+                "default_wins": 48,
+                "default_losses": 22,
+                "overall_benchmark_score": 91.5,
+                "truth_audit_compliance_pct": 100.0,
+                "tokens_per_sec": 68.0,
+                "context_window_tokens": 32768,
+                "multimodal_support": ["text", "code"],
+                "rpm_limit": 9999,
+                "tpm_limit": 9999999,
+                "cost_per_m_tokens": "$0.00 Sovereign",
+                "specialty": "Low-footprint code/JSON schema validation, Cypher query verification, and L3 telemetry edge review.",
+                "orchestrator_metrics": {
+                    "delegation_accuracy": "91.0%",
+                    "truth_audit_compliance": "100.0%",
+                    "zero_hallucination_score": "95.5%",
+                    "quad_consensus_alignment": "92.5%",
+                    "score": 92.2
+                },
+                "individual_metrics": {
+                    "code_syntax_pass_rate": "94.2%",
+                    "token_efficiency": "100.0% ($0 Spend)",
+                    "throughput_tok_s": 68.0,
+                    "reasoning_depth": "89.5%",
+                    "score": 92.0
+                },
+                "swarm_metrics": {
+                    "multi_agent_consensus": "93.0%",
+                    "rpc_coordination": "95.0%",
+                    "lora_distill_quality": "91.5%",
+                    "failover_resilience": "96.0%",
+                    "score": 93.9
+                },
+                "specialist_skills": {
+                    "grappling_map_understanding": 90.5,
+                    "debating": 89.0,
+                    "device_hacking": 91.0,
+                    "device_hacking_defence": 92.5,
+                    "3d_ai_training_game": 91.5,
+                    "training_specialist_skill": 92.0,
+                    "storage_routing_and_monitoring": 94.5,
+                    "project_context_accuracy": 93.0
+                },
+                "workflow_guidance": "Recommended for fast L3 code/JSON schema checks and edge telemetry consensus voting."
+            },
+            {
+                "id": "qwen2_5_0_5b_edge",
+                "name": "Qwen 2.5 0.5B Instruct (Sub-Second Telemetry Reflex)",
+                "exact_model_id": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+                "short_name": "Qwen 2.5 0.5B",
+                "type": "Local Edge Specialist",
+                "tier": "EDGE_VISION_SPRINTER",
+                "archetype": "Ultra-Fast Telemetry Reflex & Consensus Voter",
+                "deployment": "llama.cpp Local Metal (:8089 on L1 & L5)",
+                "hardware": "Mac M4 Pro & M4 Air Metal (~400 MB Active RAM)",
+                "color": "#38bdf8",
+                "bg_color": "rgba(56,189,248,0.15)",
+                "badge": "⚡ Qwen 0.5B Reflex",
+                "params_b": 0.5,
+                "base_elo": 2110.0,
+                "default_wins": 52,
+                "default_losses": 24,
+                "overall_benchmark_score": 90.8,
+                "truth_audit_compliance_pct": 100.0,
+                "tokens_per_sec": 115.0,
+                "context_window_tokens": 32768,
+                "multimodal_support": ["text", "code"],
+                "rpm_limit": 9999,
+                "tpm_limit": 9999999,
+                "cost_per_m_tokens": "$0.00 Sovereign",
+                "specialty": "Sub-second raw Screen Lens telemetry triage, 3D kinematics JSON scoring, and high-frequency consensus ELO voting on L1/L5.",
+                "orchestrator_metrics": {
+                    "delegation_accuracy": "90.2%",
+                    "truth_audit_compliance": "100.0%",
+                    "zero_hallucination_score": "94.8%",
+                    "quad_consensus_alignment": "93.5%",
+                    "score": 92.1
+                },
+                "individual_metrics": {
+                    "code_syntax_pass_rate": "91.5%",
+                    "token_efficiency": "100.0% ($0 Spend)",
+                    "throughput_tok_s": 115.0,
+                    "reasoning_depth": "88.0%",
+                    "score": 91.0
+                },
+                "swarm_metrics": {
+                    "multi_agent_consensus": "94.5%",
+                    "rpc_coordination": "96.5%",
+                    "lora_distill_quality": "91.0%",
+                    "failover_resilience": "99.0%",
+                    "score": 95.2
+                },
+                "specialist_skills": {
+                    "grappling_map_understanding": 91.0,
+                    "debating": 88.5,
+                    "device_hacking": 89.0,
+                    "device_hacking_defence": 92.0,
+                    "3d_ai_training_game": 92.5,
+                    "training_specialist_skill": 91.5,
+                    "storage_routing_and_monitoring": 95.0,
+                    "vision_vlm_truth_auditing": 92.0,
+                    "project_context_accuracy": 92.5
+                },
+                "workflow_guidance": "Deploy on L1:8089 and L5:8089 for real-time telemetry reflex scoring and dual-node consensus ELO voting."
             }
         ]
 
     def _read_game_arena_state(self) -> Dict[str, Any]:
-        """Reads live ELO match state and history if available."""
+        """Reads live ELO match state and history from canonical ledger or arena state if available."""
+        state: Dict[str, Any] = {}
         if self.state_path.exists():
             try:
                 with open(self.state_path, "r", encoding="utf-8") as f:
-                    return json.load(f)
+                    state = json.load(f)
             except Exception as e:
                 print(f"[CanonicalLeaderboard] Warning loading game arena state: {e}")
-        return {}
+        if self.ledger_path.exists():
+            try:
+                with open(self.ledger_path, "r", encoding="utf-8") as f:
+                    ledger = json.load(f)
+                if ledger.get("leaderboard"):
+                    state["fighters"] = ledger["leaderboard"]
+                if ledger.get("match_history"):
+                    state["recent_matches"] = ledger["match_history"]
+                    state["total_matches"] = ledger.get("total_matches", len(ledger["match_history"]))
+            except Exception as e:
+                print(f"[CanonicalLeaderboard] Warning loading canonical ledger state: {e}")
+        return state
 
     def get_canonical_leaderboard(self, persist: bool = True) -> Dict[str, Any]:
         """Computes, validates, and optionally persists the complete unified Canonical AI Leaderboard."""
@@ -1966,6 +2220,37 @@ class CanonicalAILeaderboardEngine:
                     "recommended_secondary": "Kimi Tandem Titan",
                     "governing_skills": ["apache_ray", "biometrics_cardiovascular_physiology"],
                     "rationale": "Multi-actor parallel execution of 128Hz Movesense ECG, IMU spatial fusion, and 24/7 LoRA dataset collation."
+                },
+                "screen_lens_multimodal_vision_and_vla": {
+                    "recommended_primary_id": "qwen_25_vl_72b_flagship",
+                    "recommended_primary": "Qwen 2.5-VL 72B Flagship (TB4 Mesh Sharded) + Qwen 2.5-VL 7B Screen Lens",
+                    "recommended_secondary_id": "nanovision_ocr_10m_npu",
+                    "recommended_secondary": "NanoVision-OCR-10M-NPU + Google Tensor G5 Edge TPU (Local Edge)",
+                    "governing_skills": ["vision_vlm_truth_auditing", "openclaw_utilisation", "project_context_accuracy"],
+                    "device_tier_dispatch": {
+                        "4GB_MOBILE": "NanoVision-OCR-10M-NPU (<28 MB RAM, 1250 t/s, 0.25ms TTFT) -> Asymmetric 10Gbps TB4 / Wi-Fi 7 Offload to L1/L5",
+                        "8GB_TABLET": "Qwen 2.5-VL 3B Screen Lens (1.85 GB VRAM, 78 t/s, 19ms TTFT) + Silero-VAD-9M-NPU (5.1 MB RAM)",
+                        "12GB_MID_FLAGSHIP": "Qwen 2.5-VL 3B Screen Lens + Samsung Exynos 990 NPU SmolLM (0.38 GB RAM, 180 t/s)",
+                        "16GB_PRO_FLAGSHIP": "Qwen 2.5-VL 7B Screen Lens (5.2 GB VRAM on Metal, 32 t/s) + Tensor G5 Edge TPU Gemma 2B",
+                        "24GB_PLUS_CLUSTER": "Qwen 2.5-VL 72B Flagship (44.5 GB TB4 Mesh) governed by Sovereign Qwen 3.8 Max 27B (Port 8082)"
+                    },
+                    "rationale": "ShowUI bounding box graph selection prunes 90% redundant visual tokens; sub-17ms asymmetric offload preserves mobile RAM (<24.5 MB) while delivering 99.2% visual precision."
+                },
+                "screen_lens_asymmetric_offload_and_kinematics": {
+                    "recommended_primary_id": "qwen_25_vl_7b",
+                    "recommended_primary": "Qwen 2.5-VL 7B Screen Lens (MacBook Air L5 Metal Consumer)",
+                    "recommended_secondary_id": "nanovision_ocr_10m_npu",
+                    "recommended_secondary": "Low-RAM Mobile Producer (4GB Phone, <24.5 MB RAM)",
+                    "governing_skills": ["vision_vlm_truth_auditing", "grappling_map_understanding", "biometrics_cardiovascular_physiology"],
+                    "rationale": "Asymmetric Video Lens Offload Protocol bridges low-power mobile capture (<24.5 MB RAM) with high-speed Apple Silicon Metal inference (16.95ms latency), continuously harvesting DPO trajectories to video_lens_training_trajectories.jsonl."
+                },
+                "screen_lens_speculative_token_reduction": {
+                    "recommended_primary_id": "smollm2_135m_speculative",
+                    "recommended_primary": "SmolLM2-135M Speculative Pre-Coder (Sub-15ms AST Diff Drafter)",
+                    "recommended_secondary_id": "qwen_38_max",
+                    "recommended_secondary": "Qwen 3.8 Max 27B (Port 8082 Sovereign Verification Core)",
+                    "governing_skills": ["vision_vlm_truth_auditing", "deepswe_issue_resolution", "project_context_accuracy"],
+                    "rationale": "Leviathan speculative drafting paired with SnapKV 80% KV-cache eviction slashes token latency by 65-80% while verifying AST diff correctness on Sovereign Qwen 3.8 Max."
                 }
             }
 

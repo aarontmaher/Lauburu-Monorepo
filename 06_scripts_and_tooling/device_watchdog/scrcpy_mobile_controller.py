@@ -26,7 +26,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("ScrcpyMobile")
 
-REPO_ROOT = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo")
+REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
 SCREENSHOT_DIR = REPO_ROOT / "data/device_events/visual_audits"
 
 class ScrcpyMobileController:

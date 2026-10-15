@@ -1,0 +1,38 @@
+{
+  "failover": {
+    "mode": "failover",
+    "ping": {
+      "host": "1.1.1.1",
+      "samples": 9,
+      "loss_pct": 10.0,
+      "avg_rtt_ms": 31.5,
+      "jitter_ms": 18.54
+    },
+    "http": {
+      "dns_ms": 0.98,
+      "connect_ms": 26.94,
+      "ttfb_ms": 89.14,
+      "total_ms": 89.16,
+      "success": true
+    },
+    "usb_bounces": 4
+  },
+  "balance": {
+    "mode": "balance",
+    "ping": {
+      "host": "1.1.1.1",
+      "samples": 9,
+      "loss_pct": 10.0,
+      "avg_rtt_ms": 43.52,
+      "jitter_ms": 59.96
+    },
+    "http": {
+      "dns_ms": 1.1,
+      "connect_ms": 177.53,
+      "ttfb_ms": 290.63,
+      "total_ms": 290.65,
+      "success": true
+    },
+    "usb_bounces": 1
+  }
+}

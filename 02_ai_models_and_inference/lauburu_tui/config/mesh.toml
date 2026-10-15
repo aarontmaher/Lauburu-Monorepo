@@ -1,0 +1,128 @@
+# =============================================================================
+# Lauburu 7-Node Distributed AI Inference Mesh Configuration
+# Canonical Source of Truth for lauburu-tui
+# =============================================================================
+
+[mesh]
+name = "Lauburu Heterogeneous AI Mesh"
+version = "1.0.0"
+prima_endpoint = "http://127.0.0.1:8082/v1/chat/completions"
+fallback_endpoint = "http://127.0.0.1:8083/v1/chat/completions"
+master_url = "http://127.0.0.1:8082"
+default_model = "Huihui-Qwen3.8-27B-abliterated-UD-Q4_K_XL.gguf"
+pooled_vram_gb = 82.8
+pooled_ram_gb = 108.0
+tick_rate_ms = 16
+
+# ── Core PRP Ring (Pipelined-Ring Parallelism: 63.4 GB VRAM) ───────────────
+
+[[nodes]]
+id = "mac_host"
+name = "Mac Mini (M4 Pro)"
+layer = "L1"
+ip = "127.0.0.1"
+port = 8082
+role = "Master Coordinator & Prompt Ingestion"
+group = "core_ring"
+ram_gb = 24.0
+vram_gb = 21.6
+interconnect = "Local / TB4 DMA"
+backend = "Metal"
+tailscale_ip = "100.119.199.76"
+local_ip = "192.168.8.230"
+is_master = true
+
+[[nodes]]
+id = "macbook_pro"
+name = "MacBook Pro (M1 Max)"
+layer = "L2"
+ip = "100.103.212.21"
+port = 50053
+role = "Metal GPU RPC Worker & Model Vault"
+group = "core_ring"
+ram_gb = 16.0
+vram_gb = 14.0
+interconnect = "10Gbps TB4 Bridge (0.27ms)"
+backend = "Metal"
+tailscale_ip = "100.103.212.21"
+local_ip = "192.168.8.127"
+is_master = false
+
+[[nodes]]
+id = "macbook_air"
+name = "MacBook Air (M4)"
+layer = "L5"
+ip = "100.93.158.96"
+port = 50053
+role = "Secondary Metal Worker & LoRA Distillation"
+group = "core_ring"
+ram_gb = 16.0
+vram_gb = 14.0
+interconnect = "TB4 DMA / Wi-Fi 7 MLO"
+backend = "Metal"
+tailscale_ip = "100.93.158.96"
+local_ip = "192.168.8.222"
+is_master = false
+
+[[nodes]]
+id = "linux_head_node"
+name = "Linux Head Node (Ryzen 7)"
+layer = "L3"
+ip = "100.101.39.98"
+port = 50053
+role = "Gateway Ingress & Compute Hub"
+group = "core_ring"
+ram_gb = 16.0
+vram_gb = 13.8
+interconnect = "1GbE Copper LAN (0.90ms)"
+backend = "CPU + Vulkan"
+tailscale_ip = "100.101.39.98"
+local_ip = "192.168.8.224"
+is_master = false
+
+# ── Edge RPC Pool (Decentralized & Mobile Acceleration: 27.5 GB VRAM) ───────
+
+[[nodes]]
+id = "pixel_10"
+name = "Pixel 10 Pro XL (Tensor G5)"
+layer = "L6"
+ip = "100.73.38.87"
+port = 8084
+role = "Edge TPU & 8K Vision Stream"
+group = "edge_pool"
+ram_gb = 16.0
+vram_gb = 12.5
+interconnect = "Multipath Bond / USB"
+backend = "Edge TPU"
+tailscale_ip = "100.73.38.87"
+is_master = false
+
+[[nodes]]
+id = "samsung_s20"
+name = "Samsung S20 (Exynos 990)"
+layer = "L7"
+ip = "100.84.40.95"
+port = 8022
+role = "Automated UI Tester & Edge Worker"
+group = "edge_pool"
+ram_gb = 12.0
+vram_gb = 9.0
+interconnect = "Router USB Bridge"
+backend = "OpenClaw / Termux"
+tailscale_ip = "100.84.40.95"
+is_master = false
+
+[[nodes]]
+id = "linux_tablet"
+name = "Linux Tablet (Touch x86_64)"
+layer = "L4"
+ip = "100.81.92.125"
+port = 31330
+role = "Mobile Compute & Biometrics DSP"
+group = "edge_pool"
+ram_gb = 8.0
+vram_gb = 6.0
+interconnect = "Tailscale Direct"
+backend = "Petals DHT"
+tailscale_ip = "100.81.92.125"
+is_master = false

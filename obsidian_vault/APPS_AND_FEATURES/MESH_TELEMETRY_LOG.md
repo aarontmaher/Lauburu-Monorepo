@@ -1,33 +1,290 @@
+## 2026-09-29T04:37:52.096975+00:00
+- Node: `L7_Samsung_S20`
+- PHY: `10000 Mbps`
+- ⚠️ Anomalies: L7 Samsung S20+ ADB offline — all transports exhausted; WAN PHY link unexpected speed: 10000 Mbps
 
-### [2026-09-07 22:19 AEST] TB4 Peer Standby -> Rule 8.2 Pure-Local Metal Fallback Activated
-- **Trigger:** MacBook Pro L2 entered sleep mode; 10Gbps TB4 socket (`169.254.215.118:8081`) unreachable.
-- **Action Taken:** Executed Rule 8.2 pure-local fallback protocol. Launched Qwen 2.5 Coder 7B directly on Mac Mini M4 Pro Metal GPU (`-ngl 99 -c 1024 -np 1`).
-- **Telemetry Performance:**
-  - Prompt Processing Speed: **326.4 tok/s** (98ms TTFT)
-  - Token Generation Speed: **48.02 tok/s** (104ms completion)
-  - Exit Code: `0`
-- **Mesh Link Status:** WoL Magic Packet dispatched via Router `etherwake` (`2c:ca:16:08:c0:27`). When MacBook Pro awakens, `launch_llama_server.sh` will auto-migrate compute back to TB4 offload.
+## 2026-09-29T04:38:52.454125+00:00
+- Node: `L7_Samsung_S20`
+- PHY: `10000 Mbps`
+- ⚠️ Anomalies: L7 Samsung S20+ ADB offline — all transports exhausted; WAN PHY link unexpected speed: 10000 Mbps
 
-### [2026-09-09 09:40 AEST] Multi-Tier 7-Layer Mesh Network Auto-Healing Sweep
-- **Trigger:** User request `heal. the network`.
-- **Actuations & Protocols:**
-  - **Tier 1 (Bluetooth Proximity):** CoreBluetooth connection beacons dispatched across all registered nodes (`canonical_network_resurrection_engine.py`).
-  - **Tier 2 (RFC 792 UDP 9/7 WoL):** 102-byte Magic Packets broadcasted across `192.168.8.255:9` and `255.255.255.255:9`.
-  - **Tier 3 (ADB Keepalive):** Wake-lock and Doze mode bypass injected into Pixel 10 Pro XL (L6) and Samsung Galaxy S20+ (L7).
-  - **Comprehensive Mesh Auto-Healer:** Executed `universal_mesh_healer.py` (8 items healed, 0 fatal errors).
-- **Verified Link Latencies:**
-  - `GW` GL.iNet Beryl 7 (`192.168.8.1`): **0.73 ms**
-  - `L1` Host Mac Mini (`127.0.0.1`): **0.08 ms**
-  - `L3` Linux Head Node (`100.101.39.98`): **4.15 ms**
-  - `L5` MacBook Air M4 (`192.168.8.222`): **3.07 ms** (Re-established Apple Metal GPU worker session & Caffeinate Anti-Sleep)
-  - `L6` Pixel 10 Pro XL (`100.73.38.87`): **6.73 ms** (ADB transport 3585 connected, RPC 50052 listening)
-- **AI Inference Fleet Health:**
-  - `L1:8081` (Syntax Worker): `ONLINE` (Qwen 2.5 Coder 1.5B, 725–1038 tok/s prompt, 150–157 tok/s decode)
-  - `L1:8082` (Prima Coordinator): `ONLINE` (85.02 GB pooled VRAM)
-  - `L1:8083` (Red Team Plane): `HEALTHY` (TB4 DMA Ready)
-  - `L3:8086` (Qwen Math 72B): `ONLINE` (14 threads, IQ2_XS)
-  - `L3:8084` (Qwen Coder 1.5B): `ONLINE`
-  - `L3:50052` (RPC Shard): `LISTENING`
-  - `L6:50052` (Pixel TPU): `LISTENING`
-- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 9.47 GB available, 60.5% utilization. Exit Code: `0`.
+### [2026-09-29 14:39 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `STRICT RECOVERY`
+- **Nodes Responded:** **1 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 4.43 GB available, 81.5% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **DOWN** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **DOWN** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **DOWN** (Exit Code: `1`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **DOWN** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **DOWN** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **DOWN** (Exit Code: `0`)
 
+## 2026-09-29T04:39:56.199766+00:00
+- Node: `L7_Samsung_S20`
+
+<!-- Rotated historical daemon telemetry entries to preserve Git diff performance -->
+
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:10 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 5.05 GB available, 78.9% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:13 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 3.97 GB available, 83.5% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:15 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 4.27 GB available, 82.2% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:17 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 4.33 GB available, 82.0% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:20 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 4.05 GB available, 83.1% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:22 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 5.30 GB available, 77.9% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:25 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 5.69 GB available, 76.3% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:27 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 5.67 GB available, 76.4% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:29 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 4.09 GB available, 83.0% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:32 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 4.24 GB available, 82.3% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:34 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 4.84 GB available, 79.8% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:37 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 4.67 GB available, 80.6% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)
+
+### [2026-10-15 15:39 AEST] Canonical 6-Stage Network Resurrection & Cascading Daemon Sweep
+- **Trigger:** Engine execution (`--heal-all`)
+- **Fast-Path Status:** `ACTIVE (Bypassed Stages 1 & 2)`
+- **Nodes Responded:** **9 / 9** nodes verified reachable
+- **Host Sanctuary Headroom (Rule 3):** 24.00 GB total, 5.10 GB available, 78.8% used
+- **Cascading Daemons (Stage 6):**
+  - `ggml_rpc_server_l1` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l2` (Port 50052): **UP** (Exit Code: `0`)
+  - `ggml_rpc_server_l8` (Port 50052): **UP** (Exit Code: `0`)
+  - `qdrant_vectordb` (Port 6333): **UP** (Exit Code: `0`)
+  - `qdrant_grpc` (Port 6334): **UP** (Exit Code: `0`)
+  - `qwen2.5_coder_8081` (Port 8081): **UP** (Exit Code: `0`)
+  - `prima_daemon_8082` (Port 8082): **UP** (Exit Code: `0`)
+  - `devil_advocate_8083` (Port 8083): **UP** (Exit Code: `0`)
+  - `ide_gateway_8085` (Port 8085): **UP** (Exit Code: `0`)
+  - `screen_lens_4003` (Port 4003): **UP** (Exit Code: `0`)
+  - `router_rfcomm_getty` (Port 22): **UP** (Exit Code: `0`)
+  - `kdeconnect_daemon_1716` (Port 1716): **UP** (Exit Code: `0`)

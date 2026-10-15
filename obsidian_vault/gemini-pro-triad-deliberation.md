@@ -14,7 +14,7 @@ The **Hourly Triad Deliberation Engine** synthesizes strategic co-optimization a
    - Enforces objective programmatic test suites and agent-as-judge evaluation matrices.
    - Selects optimal subagent team scale (Small Focused Team vs Proof Pipeline vs Full Swarm).
 2. **Local AI Orchestrator (DeepSeek-R1-32B & Qwen 2.5 on 7-Device Mesh):**
-   - Provisions 82.8 GB pooled VRAM over 10Gbps Thunderbolt 4 / Tailscale RPC.
+   - Provisions 82.8 GB pooled VRAM over 40Gbps Thunderbolt 4 / Tailscale RPC.
    - Hosts zero-token-cost worker subagents locally on port 50052.
    - Replaces $775/mo cloud token spend with local mesh execution.
 3. **Genetic AI Orchestrator (Evolutionary Router & ELO Engine):**

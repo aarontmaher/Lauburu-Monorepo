@@ -33,7 +33,7 @@ strict_constraint: "<= 1.7B Ultra-Small Edge Models (Zero Escalation to 7B+)"
 
 ## 3. 🛡️ Invariant Compliance & Rule #8 Storage Ingestion
 
-* **Total Distillation Pairs Emitted:** `20` pairs streamed to `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`.
+* **Total Distillation Pairs Emitted:** `20` pairs streamed to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`.
 * **Memory Safety:** Every model runs in **$< 1.05\text{ GB}$ of RAM**, enabling 24/7 background residency on phones, tablets, and routers without memory eviction.
 
 ---

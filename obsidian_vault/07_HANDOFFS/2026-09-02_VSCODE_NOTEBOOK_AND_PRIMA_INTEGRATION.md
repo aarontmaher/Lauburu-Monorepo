@@ -11,7 +11,7 @@ tags: [vscode, jupyter, notebooks, prima_cpp, optimization, extensions, lora]
 
 ## 1. Registered Kernels
 - `🧠 Lauburu Canonical Studio (Python 3.13 - Widgets & DSP)` (`lauburu-notebooks`):
-  - Path: `/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps/notebooks/.venv/bin/python3`
+  - Path: `/Volumes/Lauburu-Monorepo/01_apps/notebooks/.venv/bin/python3`
   - Stack: `ipywidgets 8.1.9`, `scipy 1.18.1`, `voila 0.5.12`, `plotly 7.0.0`, `matplotlib 3.11.1`, `numpy 2.5.2`, `pandas 3.0.5`, `marimo 0.24.0`, `ruff`, `black`
 - `🧠 Lauburu UV Studio (Python 3.14)` (`lauburu-uv`):
   - Path: `/Users/aaron/.local/share/uv/tools/jupyterlab/bin/python`

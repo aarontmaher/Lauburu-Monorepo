@@ -1,0 +1,91 @@
+{
+  "video_id": "igh6l9wBsYg",
+  "url": "https://youtu.be/igh6l9wBsYg",
+  "division": "ADCC",
+  "title": "Adcc nationals - Aaron Maher vs Ali El Kheir",
+  "duration_sec": 372.0,
+  "resolution": "256x144",
+  "sampled_frames": 36,
+  "poses_detected_frames": 20,
+  "dual_athlete_frames": 5,
+  "standing_phase_pct": 40.0,
+  "ground_scramble_phase_pct": 60.0,
+  "level_change_shots_detected": 2,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 54.9,
+    "left_elbow": 143.6,
+    "right_elbow": 145.0,
+    "left_hip": 144.9,
+    "right_hip": 138.0,
+    "left_knee": 147.7,
+    "right_knee": 138.4
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/igh6l9wBsYg_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match involves a combination of standing and ground/scramble, with a significant level change shot. The mean spine lean is high, and the elbow flexion is moderate, while the knee flexion is also moderate. This indicates a strong balance and stability, with Maher using his legs and knees to control the grappling.",
+  "processing_sec": 1.94,
+  "vision_model_opinions": {
+    "cloud_qwen25_vl_72b": {
+      "model_id": "cloud_qwen25_vl_72b",
+      "model_name": "Qwen2.5-VL-72B-Instruct (Teacher)",
+      "tier": "Cloud Teacher VLM",
+      "slug": "qwen/qwen2.5-vl-72b-instruct",
+      "status": "LIVE_OPENROUTER_OK",
+      "latency_sec": 2.53,
+      "analysis": "In this match, Aaron Maher effectively utilizes a forward spine lean averaging around 54.9\u00b0 as a strategic defensive posture to impede takedowns, aligning with the ruleset where such angles serve as a protective barrier. His ground game demonstrates strong knee flexion and effective positioning, allowing him to maintain control and execute submissions efficiently during scrambles."
+    },
+    "local_gemma4_31b_vision": {
+      "model_id": "local_gemma4_31b_vision",
+      "model_name": "Gemma 4 31B Vision (Debater A)",
+      "tier": "Sovereign Debate VLM",
+      "slug": "google/gemma-3-27b-it",
+      "status": "LIVE_OPENROUTER_OK",
+      "latency_sec": 5.21,
+      "analysis": "Okay, here's a biomechanical and tactical assessment of Aaron Maher's performance in the provided ADCC Nationals match against Ali El Kheir, based on the data and rule set context provided.\n\n**Overall Assessment:**\n\nAaron Maher demonstrates a consistently forward-leaning posture (mean spine lean 54.9\u00b0), which, given the ADCC ruleset, appears to be a deliberate defensive strategy to impede takedowns and create a structural barrier. His high degree of elbow and knee flexion suggests a reactive, mobile stance optimized for guard retention and scrambling, rather than aggressive shooting or level changes \u2013 evidenced by only 2 level-change shots recorded.  The 60% ground/scramble time indicates a match heavily focused on positional battles and submission attempts, where Maher's"
+    },
+    "cloud_gemini_25_flash": {
+      "model_id": "cloud_gemini_25_flash",
+      "model_name": "Gemini 2.5 Flash Vision",
+      "tier": "Cloud Teacher VLM",
+      "slug": "google/gemini-2.5-flash",
+      "status": "LIVE_OPENROUTER_OK",
+      "latency_sec": 8.68,
+      "analysis": "Aaron Maher's biomechanics in this match show a tactical adaptation to the ADCC ruleset, prioritizing guard retention and submission entries over the defensive posture seen in freestyle wrestling. His average spine lean of 54.9\u00b0 and knee flexion of 147.7\u00b0/138.4\u00b0 suggest a readiness for dynamic ground engagements and guard play, rather than a rigid, upright wrestling stance. The high percentage of ground/scramble time (60.0%) further supports this, indicating a strategic focus on mat positioning and submission opportunities characteristic of submission grappling."
+    },
+    "cloud_gemini_25_pro": {
+      "model_id": "cloud_gemini_25_pro",
+      "model_name": "Gemini 2.5 Pro Vision",
+      "tier": "Cloud Frontier VLM",
+      "slug": "google/gemini-2.5-pro",
+      "status": "LIVE_OPENROUTER_OK",
+      "latency_sec": 11.33,
+      "analysis": "As an elite grappling"
+    },
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "ERROR (<urlopen error [Errno 61] Connection ref)",
+      "latency_sec": 15.03,
+      "analysis": "3D Telemetry (ADCC): Standing 40.0%, Ground 60.0%, Spine Lean 54.9\u00b0."
+    },
+    "cloud_claude_35_sonnet": {
+      "model_id": "cloud_claude_35_sonnet",
+      "model_name": "Claude 3.5 Sonnet Vision",
+      "tier": "Cloud Frontier VLM",
+      "slug": "anthropic/claude-3.5-sonnet",
+      "status": "ERROR (HTTP Error 404: Not Found)",
+      "latency_sec": 15.36,
+      "analysis": "3D Telemetry (ADCC): Standing 40.0%, Ground 60.0%, Spine Lean 54.9\u00b0."
+    },
+    "cloud_llama_32_90b_vision": {
+      "model_id": "cloud_llama_32_90b_vision",
+      "model_name": "Llama 3.2 90B Vision (NVIDIA/OR)",
+      "tier": "Cloud Teacher VLM",
+      "slug": "meta-llama/llama-3.2-90b-vision-instruct",
+      "status": "ERROR (HTTP Error 404: Not Found)",
+      "latency_sec": 35.74,
+      "analysis": "3D Telemetry (ADCC): Standing 40.0%, Ground 60.0%, Spine Lean 54.9\u00b0."
+    }
+  }
+}

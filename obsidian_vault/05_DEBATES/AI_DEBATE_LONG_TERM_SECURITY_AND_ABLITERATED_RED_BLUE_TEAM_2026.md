@@ -20,4 +20,4 @@ verdict: "DEFENSIVE_SECURITY_FRAMEWORK_STANDARDIZED"
 
 ## 📦 2. Multi-Node Storage Vault Tiering
 - **Host Mac Mini L1 (24GB RAM, NVMe):** Prioritize high-frequency active models (<19.0 GB) and speculative heads.
-- **MacBook Pro L2 TB4 (16GB RAM, 285 GB SSD Vault):** Serves as the primary heavy model vault for 70B–100B+ models, streaming layers over 10Gbps Thunderbolt 4 (0.27ms RTT) without filling the host disk.
+- **MacBook Pro L2 TB4 (16GB RAM, 285 GB SSD Vault):** Serves as the primary heavy model vault for 70B–100B+ models, streaming layers over 40Gbps Thunderbolt 4 (0.27ms RTT) without filling the host disk.

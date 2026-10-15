@@ -9,13 +9,13 @@ and interface bandwidth across all active Tailscale and physical interfaces.
 Performs dynamic interface and socket discovery without hardcoded IP bindings.
 
 Publishes live zero-mock telemetry snapshots to:
-  /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/data/network/mesh_telemetry_live.json
+  /Volumes/Lauburu-Monorepo/data/network/mesh_telemetry_live.json
 
 CLI Usage:
   python3 mesh_network_probe.py --once
   python3 mesh_network_probe.py --daemon --interval 5
   python3 mesh_network_probe.py --status
-  python3 mesh_network_probe.py --probe 100.73.38.87
+  python3 mesh_network_probe.py --probe 10.1.0.13
 """
 
 import os

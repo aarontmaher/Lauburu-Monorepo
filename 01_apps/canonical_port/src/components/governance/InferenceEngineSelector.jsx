@@ -38,16 +38,28 @@ export const INFERENCE_ENGINES = [
     desc: 'Apple Silicon Metal Performance Shaders cluster.'
   },
   {
-    id: 'qwen_local',
-    name: 'Qwen 3.8 Max (Edge Vision/GGUF)',
-    tag: 'EDGE TPU',
-    layer: 'L6 (Pixel 10 Pro XL)',
-    port: '8082',
-    vram: '12.5 GB AI Cap',
-    context: '32K tokens',
-    latencyClass: '1.8ms (NPU)',
+    id: 'qwen_38_max',
+    name: 'Qwen 3.8 Max (prima.cpp / llama.cpp)',
+    tag: 'MASTER REASONER',
+    layer: 'L1 Mac Mini + L2 MBP',
+    port: '8082 / 8081',
+    vram: '18.2 GB (TB4 Sharded)',
+    context: '131K tokens',
+    latencyClass: '0.277ms (TB4 DMA)',
+    color: 'badge-cyan',
+    desc: 'Dense Vision-Language Reasoner running over prima.cpp and llama.cpp with multi-node RPC sharding.'
+  },
+  {
+    id: 'qwen_38_max_abliterated',
+    name: 'Qwen 3.8 Max Abliterated (Devil\'s Advocate)',
+    tag: 'UNCENSORED AUDIT',
+    layer: 'L1 Mac Mini + L3 Linux',
+    port: '8083 / 8082',
+    vram: '16.0 GB (UD-Q4_K_XL)',
+    context: '131K tokens',
+    latencyClass: '1.4ms (Metal / RPC)',
     color: 'badge-amber',
-    desc: 'Tensor G5 Edge TPU vision & biometrics critic.'
+    desc: 'Uncensored Devil\'s Advocate and red-teaming coordinator running over prima.cpp and llama.cpp.'
   },
   {
     id: 'exo',

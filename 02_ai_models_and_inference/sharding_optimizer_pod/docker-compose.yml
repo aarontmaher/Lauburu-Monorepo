@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  sharding_optimizer_pod:
+    build: .
+    container_name: network_healer_sharding_pod
+    network_mode: "host" # Required to access real interface telemetry (iproute2) and mesh routing
+    volumes:
+      # Mount the model vault so llama_cpp can read the SmolLM2 weights natively
+      - /home/linuxmini/model_vault_gguf:/home/linuxmini/model_vault_gguf:ro
+    privileged: true # Allow network interface manipulation if the Healer needs to reset interfaces
+    restart: always

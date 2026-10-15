@@ -29,7 +29,7 @@ def _resolve_workspace_root() -> Path:
     """Discovers the active workspace root across environment variations."""
     candidates = [
         Path("/Volumes/Lauburu-Monorepo"),
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo"),
+        Path("/Volumes/Lauburu-Monorepo"),
         Path(__file__).resolve().parents[2]
     ]
     for candidate in candidates:

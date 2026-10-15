@@ -185,8 +185,10 @@ async def create_customer_access_token(
     """
     email_clean = email.strip()
 
-    # Dev bypass check
-    if client.is_dev_token(email_clean) or email_clean.startswith("dev") or email_clean.startswith("tok_dev_") or "dev_aaron" in email_clean:
+    # Dev bypass check (strictly gated behind environment flag; disabled in production)
+    allow_dev_bypass = os.environ.get("ALLOW_DEV_BYPASS", "").lower() in ("true", "1")
+    if allow_dev_bypass and (client.is_dev_token(email_clean) or email_clean.startswith("dev") or email_clean.startswith("tok_dev_") or "dev_aaron" in email_clean):
+        logger.warning("DEV_BYPASS active: issuing offline test token. STRICTLY FORBIDDEN IN PRODUCTION.")
         token_str = f"tok_dev_{abs(hash(email_clean)) % 1000000:06d}"
         return CustomerAccessToken(
             access_token=token_str,

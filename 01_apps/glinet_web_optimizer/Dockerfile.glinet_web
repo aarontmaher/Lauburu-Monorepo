@@ -1,0 +1,23 @@
+# Containerized GL.iNet OpenWrt Web Optimizer Staging Sandbox
+# MediaTek MT7986 ARM / x86_64 Multi-Arch OpenWrt Simulation
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl iproute2 procps ubus libubus-lua \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir httpx pydantic pytest
+
+# Copy web server and optimizer agent
+COPY glinet_admin_web_server.py /app/
+COPY glinet_web_optimizer_agent.py /app/
+
+# Strict 500 MB (492 MB) RAM and CPU constraint declaration
+ENV ROUTER_RAM_LIMIT_MB=492
+ENV AI_CGROUP_LIMIT_MB=120
+
+EXPOSE 8090
+
+CMD ["python3", "-c", "import subprocess, time; p1 = subprocess.Popen(['python3', 'glinet_admin_web_server.py', '8090']); time.sleep(1); p2 = subprocess.Popen(['python3', 'glinet_web_optimizer_agent.py']); p1.wait()"]

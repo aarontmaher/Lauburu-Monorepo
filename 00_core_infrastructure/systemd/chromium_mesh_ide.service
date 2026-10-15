@@ -1,0 +1,22 @@
+[Unit]
+Description=Chromium Mesh IDE WebSocket Backend (Lauburu Mesh)
+After=network.target tailscaled.service
+
+[Service]
+Type=simple
+User=linux
+WorkingDirectory=/home/linux/teamwork_projects/chromium_mesh_ide
+# Assumes Node.js is installed on the Linux Hub
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+# Port 4007 was mentioned in a previous chat for the backend data pull
+Environment=PORT=4007
+Environment=NODE_ENV=production
+
+# Security & Sandboxing (Optional but recommended)
+NoNewPrivileges=yes
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

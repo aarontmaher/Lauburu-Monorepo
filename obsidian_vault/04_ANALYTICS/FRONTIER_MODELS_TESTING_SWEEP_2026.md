@@ -1,6 +1,6 @@
 ---
 title: "Master Frontier Evaluation Sweep: All Local & Cloud AI Models (2026)"
-date: 2026-09-09 07:45:33 UTC
+date: 2026-10-14 22:26:04 UTC
 status: "EVALUATED_AND_VERIFIED"
 tags: [lauburu, benchmark, sweep, simpo, rlvr, ttc, fastv, swe_bench, leaderboard]
 ---
@@ -30,14 +30,14 @@ This master empirical benchmark evaluated **all 8 primary models** (4 local mesh
 
 | Model & Specialization | Tier | ELO | Frontier Score | COI | RLVR Reward | TTC MCTS Gain | FastV Speedup | SWE Gate |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 👑 Kimi Tandem Titan (VL+72B) | `LOCAL_SOVEREIGN` | **3124.2** | **104.17** | `1.090x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
-| 🦾 Qwen 3.8 Max (Master Orchestrator) | `LOCAL_ORCHESTRATOR` | **3075.0** | **103.63** | `0.716x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
-| 🥈 Qwen 3.8 Max 27B Abliterated (Red Team) | `LOCAL_REDTEAM` | **3050.0** | **103.36** | `0.725x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
-| #4 Qwen 2.5 Coder 7B (Syntax Worker) | `LOCAL_SYNTAX` | **2925.0** | **101.99** | `0.726x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
-| #5 Gemini 3.1 Pro High (Reasoning Teacher) | `CLOUD_TEACHER` | **3120.0** | **99.12** | `1.000x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
-| #6 Claude 3.7 Sonnet (Hybrid CoT Teacher) | `CLOUD_TEACHER` | **3110.0** | **99.02** | `1.000x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
-| #7 DeepSeek R1 (Open-Weights Frontier Teacher) | `CLOUD_TEACHER` | **3105.0** | **98.96** | `1.000x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
-| #8 Gemini 3.8 Flash (Shadow Teacher) | `CLOUD_TEACHER` | **3075.0** | **98.63** | `1.000x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
+| 👑 Kimi Tandem Titan (VL+72B) | `LOCAL_SOVEREIGN` | **3089.2** | **103.79** | `1.090x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
+| 🦾 Qwen 3.8 Max 27B Abliterated (Red Team) | `LOCAL_REDTEAM` | **3015.0** | **102.98** | `1.304x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
+| 🥈 Gemini 3.1 Pro High (Reasoning Teacher) | `CLOUD_TEACHER` | **3120.0** | **99.12** | `1.000x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
+| #4 Claude 3.7 Sonnet (Hybrid CoT Teacher) | `CLOUD_TEACHER` | **3110.0** | **99.02** | `1.000x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
+| #5 DeepSeek R1 (Open-Weights Frontier Teacher) | `CLOUD_TEACHER` | **3105.0** | **98.96** | `1.000x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
+| #6 Gemini 3.8 Flash (Shadow Teacher) | `CLOUD_TEACHER` | **3075.0** | **98.63** | `1.000x` | `1.50` | `+20%` | `44.9x` | `PASSED` |
+| #7 Qwen 3.8 Max (Master Orchestrator) | `LOCAL_ORCHESTRATOR` | **3040.0** | **89.92** | `0.354x` | `0.50` | `+20%` | `44.9x` | `PASSED` |
+| #8 Qwen 2.5 Coder 7B (Syntax Worker) | `LOCAL_SYNTAX` | **2890.0** | **88.28** | `0.367x` | `0.50` | `+20%` | `44.9x` | `PASSED` |
 
 ---
 

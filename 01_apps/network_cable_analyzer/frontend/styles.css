@@ -1,0 +1,2527 @@
+/* Lauburu Cable & Mesh Analyzer - High-Performance Responsive UI */
+:root {
+  --bg-primary: #080b11;
+  --bg-secondary: #0e131d;
+  --bg-card: rgba(16, 22, 34, 0.9);
+  --bg-card-hover: rgba(24, 34, 52, 0.98);
+  --border-color: #1c263b;
+  --border-active: #00f0ff;
+  --text-primary: #f0f4fc;
+  --text-secondary: #8da0c0;
+  --text-muted: #536485;
+  
+  --color-tb4: #ffb800;
+  --color-eth: #00f0ff;
+  --color-hdmi: #c084fc;
+  --color-usb3: #10b981;
+  --color-usb2: #ef4444;
+  --color-virtual: #a855f7;
+  
+  --ram-accent: #3b82f6;
+  --npu-accent: #ec4899;
+  --ai-accent: #10b981;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, monospace;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header - Ultra Compact (48px) */
+header {
+  height: 48px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  font-size: 20px;
+  filter: drop-shadow(0 0 6px #00f0ff);
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #00f0ff, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.badges-group {
+  display: flex;
+  gap: 6px;
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid #10b981;
+  color: #10b981;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.terminal-badge {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid #3b82f6;
+  color: #60a5fa;
+}
+
+.ai-badge {
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid #a855f7;
+  color: #c084fc;
+}
+
+.bt-stream-badge {
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid #00f0ff;
+  color: #00f0ff;
+}
+
+.ip-badge {
+  background: rgba(0, 255, 136, 0.12);
+  border: 1px solid #00ff88;
+  color: #00ff88;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.summary-strip {
+  display: flex;
+  gap: 8px;
+}
+
+.stat-chip {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.stat-chip .val {
+  font-size: 13px;
+  font-weight: 700;
+  color: #00f0ff;
+}
+
+.stat-chip .lbl {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn:hover {
+  background: var(--bg-card-hover);
+  border-color: #00f0ff;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #00f0ff22, #10b98122);
+  border-color: #00f0ff;
+  color: #00f0ff;
+}
+
+.btn-bluetooth {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(59, 130, 246, 0.2));
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+}
+
+.btn-bluetooth:hover {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(59, 130, 246, 0.35));
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-bluetooth:active {
+  transform: translateY(0);
+}
+
+.btn-sm {
+  padding: 3px 8px;
+  font-size: 10px;
+}
+
+/* Main Workspace */
+.main-container {
+  display: flex;
+  flex: 1;
+  min-height: 0; /* Prevents overflow */
+  position: relative;
+}
+
+/* Topology Canvas - Perfectly Auto-Scaled */
+.topology-view {
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+  background: radial-gradient(circle at 50% 50%, #0d1320 0%, #06080d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#mesh-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Cable path styles */
+.cable-path {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-width 0.2s, filter 0.2s;
+  cursor: pointer;
+}
+
+.cable-path:hover {
+  stroke-width: 5;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+.cable-tb4 { stroke: var(--color-tb4); }
+.cable-eth { stroke: var(--color-eth); }
+.cable-hdmi { stroke: var(--color-hdmi); }
+.cable-usb3 { stroke: var(--color-usb3); }
+.cable-usb2 { stroke: var(--color-usb2); }
+.cable-virtual { stroke: var(--color-virtual); stroke-dasharray: 5 5; }
+
+/* Inspector Sidebar - Sleek Tabbed Drawer */
+.sidebar {
+  width: 380px;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  flex-shrink: 0;
+}
+
+.sidebar-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(0,0,0,0.2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sidebar-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 3px;
+  text-align: center;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab-btn.active {
+  color: #00f0ff;
+  border-bottom-color: #00f0ff;
+  background: rgba(0, 240, 255, 0.04);
+}
+
+.tab-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Card components */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #00f0ff;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.badge {
+  font-size: 9px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-active { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
+.badge-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; }
+.badge-standby { background: rgba(100, 116, 139, 0.2); color: #94a3b8; border: 1px solid #64748b; }
+
+.spec-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.spec-label { color: var(--text-muted); }
+.spec-val { color: var(--text-primary); font-weight: 500; }
+
+/* Live Terminal Window */
+.terminal-window {
+  background: #040609;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  padding: 10px;
+  font-family: "SF Mono", Monaco, Consolas, monospace;
+  font-size: 10px;
+  color: #10b981;
+  height: 380px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.terminal-prompt-box {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.terminal-input {
+  flex: 1;
+  background: #080b11;
+  border: 1px solid var(--border-color);
+  color: #f0f4fc;
+  padding: 6px 8px;
+  font-size: 11px;
+  border-radius: 4px;
+}
+
+/* Local AI Device Identification Cards */
+.ai-device-card {
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.ai-device-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #10b981;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ai-device-role {
+  font-size: 11px;
+  color: var(--text-primary);
+  margin-top: 3px;
+  line-height: 1.3;
+}
+
+.ai-device-meta {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Bottom Status Tray - Compact 42px */
+.bottom-tray {
+  height: 42px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+.tray-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tray-verdict {
+  color: #10b981;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Legend */
+.legend-overlay {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(14, 19, 29, 0.88);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 10px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.legend-line {
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+/* Dynamic IP Styles */
+.dynamic-ip-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  transition: all 0.2s ease;
+}
+
+.dynamic-ip-card:hover {
+  background: var(--bg-card-hover);
+  border-color: #00ff88;
+}
+
+.ip-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.ip-pill-lan {
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+}
+
+.ip-pill-ts {
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #c084fc;
+}
+
+.ip-pill-tb4 {
+  background: rgba(255, 184, 0, 0.1);
+  border: 1px solid rgba(255, 184, 0, 0.3);
+  color: #ffb800;
+}
+
+.ip-pill-adb {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.ip-source-badge {
+  font-size: 8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* Bottleneck & Capabilities Badges */
+.badge-critical {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid #ef4444;
+  color: #f87171;
+}
+
+.badge-warning {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid #f59e0b;
+  color: #fbbf24;
+}
+
+.badge-optimal {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid #10b981;
+  color: #34d399;
+}
+
+.badge-info {
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid #00f0ff;
+  color: #00f0ff;
+}
+
+/* Bottleneck Banners */
+.bottleneck-banner {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+
+.bottleneck-banner-critical {
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid #ef4444;
+  color: #fca5a5;
+}
+
+.bottleneck-banner-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 3px solid #f59e0b;
+  color: #fcd34d;
+}
+
+.bottleneck-banner-optimal {
+  background: rgba(16, 185, 129, 0.08);
+  border-left: 3px solid #10b981;
+  color: #6ee7b7;
+}
+
+/* Bluetooth Foundation Anchor Card */
+.bt-foundation-box {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: rgba(0, 240, 255, 0.04);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 6px;
+}
+
+.bt-foundation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #00f0ff;
+  margin-bottom: 4px;
+}
+
+/* Best Transfer Method Card */
+.best-method-box {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: rgba(168, 85, 247, 0.06);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 6px;
+}
+
+.best-method-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #c084fc;
+  margin-bottom: 4px;
+}
+
+/* Capabilities Tag Cloud */
+.capabilities-tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.capability-tag {
+  font-size: 8.5px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+/* Active Connections Tab */
+.connection-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.filter-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+.filter-pill.active {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: #00f0ff;
+  color: #00f0ff;
+  font-weight: 700;
+}
+
+.connection-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.connection-card:hover {
+  border-color: rgba(0, 240, 255, 0.3);
+  background: rgba(18, 26, 43, 0.9);
+}
+
+.conn-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.conn-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.conn-cat-tag {
+  font-size: 8.5px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.conn-cat-bluetooth { background: rgba(0, 240, 255, 0.15); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.3); }
+.conn-cat-ssh { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+.conn-cat-tailscale { background: rgba(129, 140, 248, 0.15); color: #818cf8; border: 1px solid rgba(129, 140, 248, 0.3); }
+.conn-cat-wifi { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+.conn-cat-usb { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+.conn-cat-thunderbolt { background: rgba(255, 184, 0, 0.15); color: #ffb800; border: 1px solid rgba(255, 184, 0, 0.3); }
+
+.conn-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px 8px;
+  font-size: 9.5px;
+  margin-top: 4px;
+}
+
+.conn-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.conn-lbl {
+  color: var(--text-muted);
+}
+
+.conn-val {
+  color: var(--text-secondary);
+  font-family: monospace;
+}
+
+.conn-desc {
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  line-height: 1.3;
+}
+
+/* ==========================================================================
+   Screen Lens Sovereign UI Styling
+   ========================================================================== */
+.lens-badge {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid #a855f7;
+  color: #c084fc;
+}
+
+.lens-viewport-container {
+  position: relative;
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: #000;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lens-viewport-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  cursor: crosshair;
+}
+
+.lens-viewport-hud {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background: rgba(8, 11, 17, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 9.5px;
+  color: #00f0ff;
+  font-family: monospace;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
+.lens-arm-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.lens-expanded-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(8, 11, 17, 0.96);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  backdrop-filter: blur(8px);
+}
+
+.lens-expanded-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.lens-expanded-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #00f0ff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lens-expanded-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.lens-expanded-body img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  cursor: crosshair;
+}
+
+/* ==========================================================================
+   Header View Switcher & Stage Management (F4.1)
+   ========================================================================== */
+
+.view-switcher {
+  display: flex;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 3px;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.view-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.view-tab-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.view-tab-btn.active {
+  color: #00f0ff;
+  background: rgba(0, 240, 255, 0.12);
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+.view-stage {
+  display: none;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+}
+
+.view-stage.active {
+  display: flex;
+}
+
+#stage-topology.active {
+  display: flex;
+  flex-direction: row;
+}
+
+#stage-whatcable.active {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--bg-primary);
+}
+
+#stage-sharkwire.active {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+/* ==========================================================================
+   "🔌 WhatCable" Full Stage (F4.2)
+   ========================================================================== */
+
+.whatcable-container {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 14px;
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.whatcable-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.whatcable-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.whatcable-title-icon {
+  font-size: 28px;
+  filter: drop-shadow(0 0 8px #00f0ff);
+}
+
+.whatcable-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #00f0ff;
+  letter-spacing: 0.5px;
+}
+
+.whatcable-subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.whatcable-header-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.wc-stat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 4px 10px;
+  min-width: 70px;
+}
+
+.wc-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: monospace;
+}
+
+.wc-lbl {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+/* Bottleneck Alert Banners */
+.bottleneck-banners-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bn-alert-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.bn-alert-card.critical {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+
+.bn-alert-card.warning {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: #f59e0b;
+  color: #fde047;
+}
+
+.bn-alert-card.info {
+  background: rgba(14, 165, 233, 0.12);
+  border-color: #0284c7;
+  color: #7dd3fc;
+}
+
+.bn-alert-card.optimal {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: #10b981;
+  color: #86efac;
+}
+
+.bn-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.bn-content {
+  flex: 1;
+}
+
+.bn-title {
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.bn-remedy {
+  margin-top: 4px;
+  font-size: 11px;
+  opacity: 0.9;
+}
+
+/* WhatCable Multi-Device & Full Network Selector */
+.whatcable-device-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 14px;
+  overflow-x: auto;
+}
+
+.wc-device-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.wc-device-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.wc-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.wc-pill:hover {
+  border-color: #00f0ff;
+  color: #fff;
+  background: rgba(0, 240, 255, 0.08);
+}
+
+.wc-pill.active {
+  border-color: #00f0ff;
+  background: rgba(0, 240, 255, 0.18);
+  color: #00f0ff;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+}
+
+.wc-pill-icon {
+  font-size: 14px;
+}
+
+/* Full Network View Components */
+.whatcable-network-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wc-network-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.wc-kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wc-kpi-label {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wc-kpi-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: monospace;
+}
+
+.wc-kpi-sub {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+/* 9x9 Physical Interconnect Matrix */
+.wc-matrix-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.wc-matrix-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.wc-matrix-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #00f0ff;
+  letter-spacing: 0.5px;
+}
+
+.wc-matrix-wrapper {
+  overflow-x: auto;
+}
+
+.wc-matrix-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 4px;
+  font-size: 11px;
+}
+
+.wc-matrix-table th {
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--text-secondary);
+  font-weight: 600;
+  border-radius: 4px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.wc-matrix-table th.row-hdr {
+  text-align: left;
+  min-width: 105px;
+}
+
+.wc-matrix-table td {
+  padding: 6px 8px;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+.wc-matrix-table td:hover {
+  filter: brightness(1.25);
+  transform: scale(1.02);
+}
+
+.wc-cell-badge {
+  display: inline-block;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: monospace;
+  letter-spacing: 0.2px;
+}
+
+.wc-cell-badge.tb4 {
+  background: rgba(16, 185, 129, 0.25);
+  border: 1px solid #10b981;
+  color: #6ee7b7;
+}
+
+.wc-cell-badge.eth10g {
+  background: rgba(6, 182, 212, 0.25);
+  border: 1px solid #06b6d4;
+  color: #67e8f9;
+}
+
+.wc-cell-badge.eth25g {
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid #3b82f6;
+  color: #93c5fd;
+}
+
+.wc-cell-badge.eth1g {
+  background: rgba(99, 102, 241, 0.25);
+  border: 1px solid #6366f1;
+  color: #a5b4fc;
+}
+
+.wc-cell-badge.usb2 {
+  background: rgba(245, 158, 11, 0.25);
+  border: 1px solid #f59e0b;
+  color: #fde047;
+}
+
+.wc-cell-badge.wifi7 {
+  background: rgba(168, 85, 247, 0.25);
+  border: 1px solid #a855f7;
+  color: #d8b4fe;
+}
+
+.wc-cell-badge.none {
+  color: #475569;
+  font-weight: normal;
+}
+
+.wc-cell-badge.self {
+  background: rgba(255, 255, 255, 0.05);
+  color: #64748b;
+}
+
+/* Cable Inventory Table */
+.wc-cable-table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.wc-cable-table-wrapper {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+.wc-cable-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+}
+
+.wc-cable-table th {
+  text-align: left;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.wc-cable-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+}
+
+.wc-cable-table tr:hover td {
+  background: rgba(0, 240, 255, 0.03);
+}
+
+.wc-status-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.wc-status-pill.optimal {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid #10b981;
+  color: #86efac;
+}
+
+.wc-status-pill.warning {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid #f59e0b;
+  color: #fde047;
+}
+
+.wc-status-pill.standby {
+  background: rgba(100, 116, 139, 0.15);
+  border: 1px solid #64748b;
+  color: #94a3b8;
+}
+
+/* WhatCable Main 2-Column Grid */
+.whatcable-main-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .whatcable-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chassis-column, .meters-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Chassis Schematic Visual */
+.chassis-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.chassis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.panel-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.chassis-panel {
+  background: #05070a;
+  border: 2px solid #1c263b;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 8px;
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.8);
+  flex-wrap: wrap;
+}
+
+.tb4-cluster {
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 184, 0, 0.04);
+  border: 1px dashed rgba(255, 184, 0, 0.3);
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.port-receptacle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0d121c;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 6px;
+  min-width: 64px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.port-receptacle:hover {
+  border-color: #00f0ff;
+  background: #141c2b;
+  transform: translateY(-2px);
+}
+
+.port-receptacle.active-selected {
+  border-color: #00f0ff;
+  background: rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+}
+
+.port-icon {
+  font-size: 16px;
+  margin-bottom: 3px;
+}
+
+.port-name {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.port-meta {
+  font-size: 8.5px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 1px;
+}
+
+.port-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-top: 5px;
+}
+
+.led-green {
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+  animation: pulse 2s infinite;
+}
+
+.led-yellow {
+  background: #f59e0b;
+  box-shadow: 0 0 6px #f59e0b;
+  animation: pulse 1.5s infinite;
+}
+
+.led-grey {
+  background: #475569;
+}
+
+.chassis-legend {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.chassis-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.led-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Cable Connector Graphic */
+.cable-graphic-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.cable-graphic-stage {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px;
+  background: #05070a;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.connector-housing {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.metallic-sleeve {
+  width: 120px;
+  height: 38px;
+  background: linear-gradient(180deg, #64748b 0%, #334155 40%, #1e293b 70%, #475569 100%);
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.4), 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.tb-bolt-emblem {
+  font-size: 14px;
+  color: #ffb800;
+  filter: drop-shadow(0 0 4px #ffb800);
+}
+
+.connector-label {
+  font-size: 8px;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: 0.3px;
+  font-family: monospace;
+}
+
+.connector-pins {
+  width: 14px;
+  height: 24px;
+  background: #0284c7;
+  border: 1px solid #00f0ff;
+  border-left: none;
+  border-radius: 0 3px 3px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 2px 1px;
+}
+
+.pin-contact {
+  width: 100%;
+  height: 2px;
+  background: #fbbf24;
+}
+
+.cable-strain-relief {
+  width: 14px;
+  height: 28px;
+  background: #1e293b;
+  border-radius: 3px 0 0 3px;
+  border-left: 2px solid #0f172a;
+}
+
+.cable-braided-body {
+  width: 60px;
+  height: 18px;
+  background: repeating-linear-gradient(45deg, #1e293b, #1e293b 3px, #0f172a 3px, #0f172a 6px);
+  border-top: 1px solid #334155;
+  border-bottom: 1px solid #334155;
+  border-radius: 2px 0 0 2px;
+}
+
+.connector-meta-info {
+  flex: 1;
+}
+
+.conn-status {
+  font-size: 11px;
+  font-weight: 700;
+  color: #00f0ff;
+  margin-bottom: 3px;
+  font-family: monospace;
+}
+
+.conn-specs {
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* E-Marker Card */
+.emarker-card {
+  border-left: 3px solid #00f0ff;
+}
+
+.emarker-badge-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emarker-param-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.emarker-field {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+
+.emarker-field-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.emarker-field-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 2px;
+  font-family: monospace;
+}
+
+/* USB-PD Power Meters */
+.pd-meter-card {
+  border-left: 3px solid #10b981;
+}
+
+.pd-meters-layout {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.radial-gauge-container {
+  width: 140px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.radial-gauge-svg {
+  width: 100%;
+  height: auto;
+}
+
+.radial-gauge-center {
+  position: absolute;
+  top: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gauge-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #10b981;
+  font-family: monospace;
+  line-height: 1;
+}
+
+.gauge-unit {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.gauge-label {
+  font-size: 8.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.gauge-ticks {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 8.5px;
+  color: var(--text-muted);
+  font-family: monospace;
+  margin-top: 2px;
+}
+
+.voltage-pps-container {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.voltage-label-bar-title {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.voltage-steps-bar {
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.v-step {
+  flex: 1;
+  text-align: center;
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 4px 2px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  background: transparent;
+  transition: all 0.2s;
+  font-family: monospace;
+}
+
+.v-step.active {
+  background: #10b981;
+  color: #080b11;
+  font-weight: 700;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.pps-badge-box {
+  background: rgba(0, 240, 255, 0.05);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+.pps-title {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #00f0ff;
+}
+
+.pps-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* DisplayPort Alt Mode Meters */
+.dp-meters-card {
+  border-left: 3px solid #c084fc;
+}
+
+.dp-content-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dp-monitor-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dp-sink-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f0f4fc;
+}
+
+.dp-sink-mode {
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  font-family: monospace;
+}
+
+.dual-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bar-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.bar-val {
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.bar-track {
+  width: 100%;
+  height: 8px;
+  background: #0d121c;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.dp-margin-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 10.5px;
+  color: #86efac;
+}
+
+/* ==========================================================================
+   "🦈 Shark Wire" Full Stage (F4.3 - F4.7)
+   ========================================================================== */
+
+.sharkwire-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Controls Bar */
+.sharkwire-controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.sw-control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sw-iface-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.sw-ctrl-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.sw-select {
+  background: transparent;
+  border: none;
+  color: #00f0ff;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: monospace;
+  outline: none;
+  cursor: pointer;
+}
+
+.sw-select option {
+  background: #0e131d;
+  color: #f0f4fc;
+}
+
+.btn-capture-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.capture-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #475569;
+}
+
+.capture-led.active {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+  animation: pulse 1s infinite;
+}
+
+.sw-autoscroll-btn.active {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: #00f0ff;
+  color: #00f0ff;
+}
+
+.sw-telemetry-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sw-stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+.sw-stat-val {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: monospace;
+}
+
+.sw-stat-lbl {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.sw-buffer-meter {
+  width: 32px;
+  height: 6px;
+  background: #1c263b;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.sw-buffer-bar {
+  height: 100%;
+  background: #10b981;
+  transition: width 0.3s;
+}
+
+/* Filter Bar */
+.sharkwire-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #0a0e17;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.sw-filter-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 3px 8px;
+  transition: all 0.2s ease;
+}
+
+.sw-filter-input-wrapper.valid {
+  background: rgba(6, 78, 59, 0.2);
+  border-color: #10b981;
+}
+
+.sw-filter-input-wrapper.invalid {
+  background: rgba(69, 10, 10, 0.25);
+  border-color: #ef4444;
+}
+
+.sw-filter-icon {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.sw-filter-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 11.5px;
+  font-family: monospace;
+}
+
+.sw-filter-apply-btn, .sw-filter-clear-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 11px;
+  border-radius: 3px;
+}
+
+.sw-filter-apply-btn:hover {
+  color: #00f0ff;
+  background: rgba(0, 240, 255, 0.1);
+}
+
+.sw-filter-clear-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.sw-filter-chips {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sw-filter-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.sw-chip-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sw-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 9.5px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: monospace;
+  transition: all 0.15s;
+}
+
+.sw-chip:hover {
+  color: #f0f4fc;
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+.sw-chip.active {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: #00f0ff;
+  color: #00f0ff;
+  font-weight: 600;
+}
+
+.sw-filter-msg {
+  font-size: 10px;
+  font-family: monospace;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* 3-Pane Body Layout */
+.sharkwire-panes-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sw-pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.sw-pane-grid {
+  height: 40%;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sw-pane-tree {
+  height: 30%;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sw-pane-hex {
+  height: 30%;
+}
+
+.sw-pane-divider {
+  height: 2px;
+  background: #1c263b;
+  flex-shrink: 0;
+}
+
+.sw-pane-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 10px;
+  background: #0d121c;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.sw-pane-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #00f0ff;
+  letter-spacing: 0.3px;
+}
+
+.sw-pane-subtitle, .sw-hex-offset-hint {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+/* Upper Pane: Virtualized Grid Table */
+.sw-grid-header-row {
+  display: flex;
+  align-items: center;
+  background: #0e131d;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding: 4px 8px;
+  flex-shrink: 0;
+}
+
+.sw-grid-scroll-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Mono", Monaco, Menlo, Consolas, monospace;
+  font-size: 11px;
+}
+
+.sw-row {
+  display: flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: background 0.1s ease;
+  user-select: none;
+}
+
+.sw-row:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.sw-row.selected {
+  background: rgba(0, 240, 255, 0.18) !important;
+  border-left: 4px solid #00f0ff !important;
+  box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.3);
+}
+
+.sw-col {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+
+.sw-col-no { width: 55px; text-align: right; color: var(--text-muted); }
+.sw-col-time { width: 90px; color: var(--text-secondary); }
+.sw-col-src { width: 175px; }
+.sw-col-dst { width: 175px; }
+.sw-col-proto { width: 95px; font-weight: 600; text-align: center; }
+.sw-col-len { width: 65px; text-align: right; color: var(--text-muted); }
+.sw-col-info { flex: 1; min-width: 200px; color: var(--text-primary); }
+
+/* Wireshark-standard Dark Theme Color Coding */
+.sw-proto-wireguard {
+  background: rgba(168, 85, 247, 0.08);
+  border-left: 3px solid #a855f7;
+  color: #c084fc;
+}
+
+.sw-proto-airpc {
+  background: rgba(14, 165, 233, 0.08);
+  border-left: 3px solid #0284c7;
+  color: #38bdf8;
+}
+
+.sw-proto-aisse {
+  background: rgba(45, 212, 191, 0.08);
+  border-left: 3px solid #14b8a6;
+  color: #2dd4bf;
+}
+
+.sw-proto-ssh {
+  background: rgba(99, 102, 241, 0.08);
+  border-left: 3px solid #6366f1;
+  color: #818cf8;
+}
+
+.sw-proto-tcpsyn {
+  background: rgba(59, 130, 246, 0.08);
+  border-left: 3px solid #3b82f6;
+  color: #93c5fd;
+}
+
+.sw-proto-tcprst {
+  background: rgba(239, 68, 68, 0.15);
+  border-left: 3px solid #ef4444;
+  color: #fca5a5;
+}
+
+.sw-proto-udp {
+  background: rgba(192, 132, 252, 0.07);
+  border-left: 3px solid #c084fc;
+  color: #e9d5ff;
+}
+
+.sw-proto-icmp {
+  background: rgba(245, 158, 11, 0.10);
+  border-left: 3px solid #f59e0b;
+  color: #fde047;
+}
+
+.sw-proto-dns {
+  background: rgba(16, 185, 129, 0.08);
+  border-left: 3px solid #10b981;
+  color: #86efac;
+}
+
+.sw-proto-default {
+  background: rgba(148, 163, 184, 0.05);
+  border-left: 3px solid #64748b;
+  color: #cbd5e1;
+}
+
+/* Middle Pane: Collapsible Protocol Details Tree */
+.sw-tree-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Mono", Monaco, Menlo, Consolas, monospace;
+  font-size: 11px;
+}
+
+.tree-layer {
+  margin-bottom: 6px;
+}
+
+.tree-layer-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  color: #e2e8f0;
+  user-select: none;
+}
+
+.tree-layer-header:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tree-chevron {
+  font-size: 9px;
+  color: #00f0ff;
+  width: 12px;
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.tree-fields-list {
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.tree-field {
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 8px;
+  transition: background 0.1s;
+}
+
+.tree-field:hover {
+  background: rgba(0, 240, 255, 0.08);
+  color: var(--text-primary);
+}
+
+.tree-field.active {
+  background: rgba(0, 240, 255, 0.2);
+  color: #00f0ff;
+  font-weight: 600;
+  border-left: 2px solid #00f0ff;
+}
+
+.tree-field-label {
+  color: var(--text-muted);
+  min-width: 140px;
+}
+
+.tree-field-val {
+  color: var(--text-primary);
+  font-family: monospace;
+}
+
+/* Lower Pane: 16-byte Synchronized Hex & ASCII Dump */
+.sw-hex-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+  font-family: "SF Mono", Monaco, Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.45;
+  background: #05070a;
+}
+
+.sw-hex-row {
+  display: flex;
+  align-items: center;
+}
+
+.sw-hex-offset {
+  color: var(--text-muted);
+  width: 50px;
+  user-select: none;
+}
+
+.sw-hex-bytes {
+  display: flex;
+  gap: 6px;
+  width: 380px;
+}
+
+.hex-group {
+  display: flex;
+  gap: 4px;
+}
+
+.hex-byte {
+  width: 18px;
+  text-align: center;
+  color: #94a3b8;
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+.hex-byte:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.sw-hex-ascii {
+  display: flex;
+  gap: 1px;
+  margin-left: 16px;
+}
+
+.ascii-byte {
+  width: 10px;
+  text-align: center;
+  color: #cbd5e1;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.ascii-byte:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* Synchronized Active Highlight Glow */
+.byte-highlight {
+  background: rgba(0, 240, 255, 0.45) !important;
+  color: #00f0ff !important;
+  border-radius: 2px;
+  font-weight: 700;
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.8);
+  text-shadow: 0 0 4px #00f0ff;
+}
+
+.sw-empty-hint {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-align: center;
+  margin-top: 24px;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   Stages: IP Inspector, Screen Lens, Router Gateway, Crash Stream
+   ========================================================================== */
+
+#stage-ip-inspector,
+#stage-lens-sovereign,
+#stage-router-gateway,
+#stage-crash-stream {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary);
+  overflow-y: auto;
+}
+
+.stat-card {
+  background: rgba(13, 20, 36, 0.95);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-card .stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card .stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #00f0ff;
+  font-family: monospace;
+}
+
+.badge-sm {
+  font-size: 9px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.lens-stage-viewport {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  border-radius: 4px;
+}
+
+
+
+

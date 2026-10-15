@@ -108,4 +108,4 @@ status: "RATIFIED_UNANIMOUS"
 - [x] **ACT-03:** Verify all formal proofs and Lyapunov derivations with `qwen_math_verifier.py` (0 errors).
 - [x] **ACT-04:** Synchronize Obsidian knowledge note (`07_ALGORITHMIC_OPTIMIZATION/ALGORITHMIC_OPTIMIZATION_PARADIGMS.md`).
 - [x] **ACT-05:** Archive debate consensus record to `01_DEBATES/TRI_ORCHESTRATOR_DEBATE_ALGORITHMIC_OPTIMIZATION_PARADIGMS.md`.
-- [x] **ACT-06:** Safely append training pairs to `/Users/aaron/DFS_UNIFIED/lora_datasets/truth_audit_debate.jsonl`.
+- [x] **ACT-06:** Safely append training pairs to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/truth_audit_debate.jsonl`.

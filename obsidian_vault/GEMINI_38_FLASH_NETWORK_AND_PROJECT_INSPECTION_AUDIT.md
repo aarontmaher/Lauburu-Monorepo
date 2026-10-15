@@ -52,7 +52,7 @@ Multiple critical hidden bugs, silent network failures, and configuration mismat
   - Nomad Governor now reports: `WoL API (18802) : ONLINE`.
 
 ### 5. Stale MacBook Air Tailscale IP & Multi-Node Compute Matrix
-- **Discovery**: Stale Tailscale IP `100.93.158.96` was referenced in multiple configs for L5 MacBook Air. MacBook Air's actual active Tailscale IP is `100.121.202.34`.
+- **Discovery**: Stale Tailscale IP `100.93.158.96` was referenced in multiple configs for L2 MacBook Pro. MacBook Air's actual active Tailscale IP is `100.121.202.34`.
 - **Resolution**:
   - Corrected `100.93.158.96` to `100.121.202.34` across `02_ai_models_and_inference/decentralized_prima_mesh_coordinator.py`, `00_core_infrastructure/self_healing_hub.py`, and `06_scripts_and_tooling/network/nomad_courier_self_healer.py`.
   - Expanded `heal_ai_compute` probe matrix in Nomad Courier to monitor all physical nodes (`localhost`, `macbook_pro_ts`, `linux_head_node`, `macbook_air_ts`, `mac_mini_host`, `pixel_10_pro_xl`).
@@ -68,22 +68,25 @@ Multiple critical hidden bugs, silent network failures, and configuration mismat
 
 ---
 
-## 🖥️ Live Physical Mesh Status Matrix
+## 🖥️ Live Physical Mesh Status Matrix (Canonical Probed Truth)
 
 | Node | Name | Hardware | Local / Bridge IP | Tailscale IP | SSH Status | Compute Role |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **L1** | `Mac_Node` | Apple M4 Pro (24 GB) | `192.168.8.230` | `100.119.199.76` | **ONLINE** (localhost) | Host Governor, Ports 8081, 8082, 8083, 18802, 18803, 4000 |
-| **L2** | `MacBook_Pro` | Apple M-Series (16 GB) | `192.168.8.127` (TB4: `169.254.187.138`) | `100.103.212.21` | **ONLINE** (`aaronmaher@100.103.212.21`) | 10Gbps TB4 DMA Bridge, Storage Vault |
-| **L3** | `Linux_Head_Node` | AMD Ryzen 7 5700U (16 GB) | `192.168.8.224` | `100.101.39.98` | **ONLINE** (`linux@100.101.39.98`) | Docker Hub, `ggml-rpc-server` Port 50052, OpenClaw |
-| **L5** | `MacBook_Air` | Apple M4 (16 GB) | `192.168.8.222` | `100.121.202.34` | **ONLINE** (`aaronmaher@100.121.202.34`) | Metal LoRA Worker, Secondary Compute |
-| **L6** | `Pixel_10_Pro_XL` | Google Tensor G5 (16 GB) | DHCP | `100.73.38.87` | **ONLINE** (Port 8022 + USB ADB) | Edge TPU, Vision Streams |
-| **L7** | `Samsung_S20` | Samsung Exynos 990 (12 GB) | DHCP | `100.84.40.95` | **ONLINE** (Port 8022 + TCP ADB :5555) | Dedicated UI Automation & Termux Edge |
-| **GW** | `GL.iNet Router` | MT3600AX OpenWrt | `192.168.8.1` | `100.122.185.123` | **ONLINE** (`root@100.122.185.123`) | Hardware USB Bridge, Python Heartbeat |
+| **L1** | `Mac_Node` | Apple M4 Pro (24 GB) | `192.168.8.143` / `192.168.8.230` | `100.119.199.76` | **ONLINE** (localhost) | Host Governor, Screen Lens Core (:3035/:4003), Ports 8081, 8082, 8083, 18802, 4000 |
+| **L8** | `Linux_Mini (lauburu)` | Intel Core i7-8700B (32 GB) | TB4: `10.0.0.8` / `192.168.8.242` | `100.121.247.8` | **ONLINE** (`linuxmini@100.121.247.8`) | **40Gbps TB4 DMA Bridge (0.38ms RTT)**, GGUF Model Vault Hub |
+| **L2** | `MacBook_Pro` | Intel Core i7-9750H (16 GB) | TB4: `10.0.0.4` / `192.168.8.127` | `100.103.212.21` | **ONLINE** (`aaronmaher@100.103.212.21`) | Screen Lens Teacher Target (osascript execution), TB4 40 Gb/s, Storage Vault |
+| **L1b** | `MacMini_M2` | Apple M2 Pro (16 GB) | TB4: `10.0.0.3` / `192.168.8.114` | `100.104.128.34` | **ONLINE** (`aaronmaher@10.0.0.3`) | Secondary Compute Worker, TB4 40 Gb/s (0.43ms RTT) |
+| **L3** | `Linux_Head_Node` | AMD Ryzen 7 5700U (15 GB) | `192.168.8.225` | `100.101.39.98` | **ONLINE** (`linux@100.101.39.98`) | Docker Hub, Ray Head, SeaweedFS DFS, First-Offload Target |
+| **L4** | `Linux_Tablet` | Debian Linux (`debian-1`, 8 GB) | `192.168.8.176` (Port 2 LAN) | `100.99.210.89` | **ONLINE** | Bedside TUI & Touch DSP (0.95ms LAN RTT) |
+| **L5** | `MacBook_Air` | Apple M4 (16 GB) | `192.168.8.248` | `100.121.202.34` | **ONLINE** (`aaronmaher@100.121.202.34`) | Metal LoRA Distillation Worker, Secondary Compute |
+| **L6** | `Pixel_10_Pro_XL` | Google Tensor G5 (16 GB) | `192.168.8.213` | `100.114.215.68` | **ONLINE** (Port 8022 + KDE Connect :1716) | Edge TPU, 8K PTZ Vision Stream, Shizuku rish |
+| **L7** | `Samsung_S20` | Samsung Exynos 990 (12 GB) | `192.168.8.130` | `100.78.206.96` | **ONLINE** (Port 8022 + TCP ADB :5039) | Dedicated UI Automation & Termux Edge |
+| **GW** | `GL.iNet Router` | GL-BE14000 OpenWrt (2 GB) | `192.168.8.1` (WAN `eth2`) | `100.70.123.123` | **ONLINE** (`root@100.70.123.123`) | 2.5G NBN WAN Uplink, Hardware USB Bridge |
 
 ---
 
 ## 📈 Next Suggestions for Long-Term Mesh Scaling
-1. **Automate TB4 DMA Re-binding**: Add an automated `arp -s 169.254.187.138` and `ifconfig bridge0` re-assert command in `self_healing_hub.py` when Thunderbolt cable is re-plugged.
+1. **Automate TB4 DMA Re-binding**: Verify `10.0.0.8` on `bridge0` via `self_healing_hub.py` when Thunderbolt cable is re-plugged.
 2. **OpenWrt Router ADB Daemon Keepalive**: Schedule an hourly check on the router to restart adb server (`adb kill-server && adb start-server`) if Samsung S20 USB connection drops.
 3. **Continuous Background LoRA Training Scheduling**: When host RAM usage falls below 85%, automatically trigger `mps_qlora_trainer.py` to ingest new diffs and debate consensus records.
 

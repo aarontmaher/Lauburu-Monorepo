@@ -51,7 +51,7 @@ status: UNANIMOUS CONSENSUS RATIFIED & CANONICALIZED
 
 ### 3. Local Frontier Orchestrator (Qwen 3.8 Max 27B / Prima.cpp)
 > **Position: Untouched Baseline & Physical Sandbox Isolation (Section 1.2).**
-> "From the perspective of the local sharded nodes (Mac Mini L1 and MacBook Pro L2 via 10Gbps TB4), the greatest risk of autonomous agents is unreviewed self-modification of production files.
+> "From the perspective of the local sharded nodes (Mac Mini L1 and MacBook Pro L2 via 40Gbps TB4), the greatest risk of autonomous agents is unreviewed self-modification of production files.
 > 
 > Therefore, our canonical rule set MUST enshrine **The Untouched Baseline & Isolated Sandbox Self-Evolution Invariant**:
 > - The production monorepo branches, core libraries, and canonical scripts remain 100% UNTOUCHED during autonomous exploration.

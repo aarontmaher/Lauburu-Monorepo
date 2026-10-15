@@ -49,7 +49,7 @@ This debate resolves the architectural optimization, physical memory allocation,
 2. **Mutual Exclusivity Enforcement:**
    - Standard and Abliterated models MUST NEVER run concurrently on the Mac Mini. The `lauburu_exclusive_model_switcher.py` script guarantees that port 8081 (standard) and port 8083 (abliterated) kill competing instances before launch.
 3. **Offloading Pinned Services:**
-   - Docker daemon, Qdrant Vector DB (`port 6333`), and Ray cluster belong permanently on the L3 Linux Head Node (AMD Ryzen 7 5700U with 41 GB total virtual memory).
+   - Docker daemon, Qdrant Vector DB (`port 6333`), and Ray cluster belong permanently on the L3 Linux Head Node (Intel 2018 Mac Mini (Linux) with 41 GB total virtual memory).
 
 ---
 

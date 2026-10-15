@@ -19,10 +19,10 @@ tags: [lauburu, mesh, storage, physical_audit, zero_mock]
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **L1** | `Mac_Node (Host)` | `127.0.0.1` / `100.119.199.76` | **460.0 GiB** | 392.0 GiB | **34.0 GiB** | 92% | Darwin `df -h /System/Volumes/Data` |
 | **L2** | `MacBook_Pro` | `169.254.187.138` (TB4) / `100.103.212.21` | **466.0 GiB** | 443.0 GiB | **9.3 GiB** | 98% | OpenSSH `macbook-pro` (`df -h`) |
-| **L3** | `Linux_Head_Node` | `100.101.39.98` / `192.168.8.225` | **468.0 GB** | 432.0 GB | **13.0 GB** | 98% | OpenSSH `linux-ts` (`df -h /`) |
+| **L3** | `Linux_Mini` | `100.101.39.98` / `192.168.8.225` | **468.0 GB** | 432.0 GB | **13.0 GB** | 98% | OpenSSH `linux-ts` (`df -h /`) |
 | **L5** | `MacBook_Air` | `169.254.34.53` (TB4) / `100.121.202.34` | *~256.0 GB* | *~210.0 GB* | *~46.0 GB* | *82%* | TB4 ARP `0.8ms` Ping Active |
 | **L6** | `Pixel_10_Pro_XL` | `100.73.38.87:5555` / `192.168.8.145` | **467.0 GB** | 277.0 GB | **190.0 GB** | 60% | ADB Shell `df -h /data` |
-| **L7** | `Samsung_S20` | `100.84.40.95` (Port 8022) | **108.0 GB** | 43.0 GB | **66.0 GB** | 40% | Termux OpenSSH `df -h /data` |
+| **L7** | `Samsung_S20` | `100.78.206.96` (Port 8022) | **108.0 GB** | 43.0 GB | **66.0 GB** | 40% | Termux OpenSSH `df -h /data` |
 | **GW** | `GL.iNet Router` | `192.168.8.1` / `100.122.185.123` | **0.34 GB** | 0.02 GB | **0.32 GB** | 6% | OpenWrt OpenSSH `df -h /overlay` |
 | **TOTAL** | **Pooled Physical Mesh** | **7 Physical Nodes** | **1,969.34 GB** | **1,587.02 GB** | **312.62 GB** | **80.6%** | **Empirically Probed & Verified** |
 
@@ -66,7 +66,7 @@ tags: [lauburu, mesh, storage, physical_audit, zero_mock]
 - **Free Headroom:** **190 GB**
 - **Role:** Largest free storage reservoir in the mesh; ideal for offloading intermediate dataset chunks and staging models via ADB.
 
-### 📱 L7: Samsung Galaxy S20 (`100.84.40.95`)
+### 📱 L7: Samsung Galaxy S20 (`100.78.206.96`)
 - **Total Capacity:** 108 GB
 - **Used Space:** 43 GB (40%)
 - **Free Headroom:** **66 GB**

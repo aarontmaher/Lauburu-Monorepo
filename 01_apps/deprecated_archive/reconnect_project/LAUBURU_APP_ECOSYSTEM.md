@@ -251,7 +251,7 @@ The Peripheral Nerves comprise autonomous, modular microservices running directl
 | :--- | :--- | :---: | :---: | :---: | :--- |
 | **Layer 1** | Apple M4 Pro Mac Mini Host | 24.0 GB | **21.6 GB** | Rank 4 | Prompt Ingestion, `qwen2-vl-7b`, `deepseek_r1_70b_shard_1` |
 | **Layer 2** | MacBook Pro M1 Max | 16.0 GB | **14.0 GB** | Rank 2 | Thunderbolt 4 RPC (3.6 GB/s), `qwen2.5_coder_32b_shard_a` |
-| **Layer 3** | Linux Head Node (Ryzen 7) | 15.3 GB | **13.8 GB** | Rank 1 | Ray Head, Docker Master, `qwen2.5_coder_32b_shard_b` |
+| **Layer 3** | Linux Head Node (Intel 2018 Mac Mini) | 15.3 GB | **13.8 GB** | Rank 1 | Ray Head, Docker Master, `qwen2.5_coder_32b_shard_b` |
 | **Layer 4** | Bedside Linux Tablet | 8.0 GB | **6.5 GB** | Rank 1 | Biometrics HUD, Petals DHT auxiliary worker |
 | **Layer 5** | MacBook Air (Apple M4) | 16.0 GB | **13.5 GB** | Rank 3 | Metal Shaders, LoRA SFT fine-tuning, `kimi_tandem_shard` |
 | **Layer 6** | Google Pixel 10 Pro XL | 15.2 GB | **12.5 GB** | Rank 6 | Tensor G5 Edge TPU (22 TOPS), Vision Projector, `llama-3.1-8b` |

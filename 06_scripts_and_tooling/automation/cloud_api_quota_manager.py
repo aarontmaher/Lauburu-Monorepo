@@ -21,7 +21,7 @@ Key Features:
    - Julien AI (@google/jules / REST) Client
    - Local Mesh Compute Adapter (Port 8081-8084 / Local Synthesis Engine)
 4. Continuous LoRA Distillation Dataset Pipeline (Alpaca / ChatML schema):
-   Target: /Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl
+   Target: /Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl
    Mirror: 04_data_and_memory/lora_datasets/continuous_lora_dataset.jsonl
 5. CLI & Cron Daemon Operations:
    --live, --task, --distill, --status, --benchmark, --daemon, --reset-quotas
@@ -55,7 +55,7 @@ import urllib.request
 # ---------------------------------------------------------------------------
 # Logging Configuration
 # ---------------------------------------------------------------------------
-LOG_DIR = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/session_logs")
+LOG_DIR = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/session_logs")
 LOG_FILE = LOG_DIR / "cloud_api_quota_manager.log"
 
 try:
@@ -91,9 +91,9 @@ except Exception:
 # ---------------------------------------------------------------------------
 # Canonical Paths & Defaults
 # ---------------------------------------------------------------------------
-DEFAULT_STATE_FILE = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/data/cloud_api_quota_state.json")
-DEFAULT_DATASET_FILE = Path("/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl")
-MIRROR_DATASET_FILE = Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/04_data_and_memory/lora_datasets/continuous_lora_dataset.jsonl")
+DEFAULT_STATE_FILE = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data/cloud_api_quota_state.json")
+DEFAULT_DATASET_FILE = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl")
+MIRROR_DATASET_FILE = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/lora_datasets/continuous_lora_dataset.jsonl")
 
 # Provider Limits & Baselines
 PROVIDER_CONFIGS = {
@@ -130,6 +130,37 @@ PROVIDER_CONFIGS = {
         "rpm_limit": 1000,
         "is_local": True,
         "description": "Lauburu 7-Layer Local AI Mesh Compute (Ports 8081-8086 / Sovereign Synthesis)",
+    },
+    "anthropic_claude": {
+        "daily_limit": 0,  # CRITICAL: Circuit broken to prevent paid token burn
+        "max_tokens": 200000,
+        "default_tps": 80.0,
+        "rpm_limit": 5,
+        "is_local": False,
+        "is_paid": True,
+        "description": "Anthropic Claude (Opus 4.6 / Sonnet 4.6) — Paid tier, use for adversarial validation only",
+        "tracking_mode": "openrouter_credits",  # Track via OpenRouter credit balance
+    },
+    "openai_chatgpt": {
+        "daily_limit": 0,  # CRITICAL: Circuit broken to prevent paid token burn
+        "max_tokens": 128000,
+        "default_tps": 120.0,
+        "rpm_limit": 10,
+        "is_local": False,
+        "is_paid": True,
+        "description": "OpenAI ChatGPT (GPT-4o / o1) — Paid tier, use for benchmark evaluation only",
+        "tracking_mode": "openrouter_credits",
+    },
+    "openrouter": {
+        "daily_limit": 0,  # CRITICAL: Circuit broken to prevent paid token burn
+        "max_tokens": 200000,
+        "default_tps": 100.0,
+        "rpm_limit": 20,
+        "is_local": False,
+        "is_paid": True,
+        "description": "OpenRouter Multi-Provider Credit Pool (tracks Claude, ChatGPT, and frontier model credits)",
+        "tracking_mode": "credit_balance",
+        "credit_check_url": "https://openrouter.ai/api/v1/auth/key",
     },
 }
 
@@ -195,6 +226,76 @@ def is_airgapped_data(payload: Any) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# OpenRouter Credit Balance & Adaptive Pacing
+# ---------------------------------------------------------------------------
+def check_openrouter_credit_balance() -> Dict[str, Any]:
+    """
+    Queries OpenRouter API for remaining credit balance.
+    Returns {"credits_remaining": float, "credits_used": float, "status": str}.
+    Uses OPENROUTER_API_KEY env var. Fails silently if unavailable.
+    """
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    if not api_key:
+        return {"credits_remaining": -1.0, "credits_used": 0.0, "status": "no_api_key"}
+    try:
+        req = urllib.request.Request(
+            "https://openrouter.ai/api/v1/auth/key",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=5.0) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            balance = data.get("data", {})
+            remaining = float(balance.get("limit", 0)) - float(balance.get("usage", 0))
+            return {
+                "credits_remaining": round(remaining, 4),
+                "credits_used": float(balance.get("usage", 0)),
+                "credits_limit": float(balance.get("limit", 0)),
+                "status": "healthy" if remaining > 0.5 else "low_balance",
+            }
+    except Exception as e:
+        logger.debug(f"OpenRouter credit check failed: {e}")
+        return {"credits_remaining": -1.0, "credits_used": 0.0, "status": f"error: {e}"}
+
+
+def compute_adaptive_pacing_multiplier() -> float:
+    """
+    Returns a consumption rate multiplier based on time-of-day and quota remaining.
+    - Before noon AEST: 1.0x (steady-state)
+    - After noon with >80% quota remaining: 2.0x (catch-up to avoid waste)
+    - After 6 PM with >60% remaining: 3.0x (aggressive evening catch-up)
+    - After midnight (overnight): 4.0x (maximum overnight distillation)
+    """
+    now_utc = datetime.now(timezone.utc)
+    aest_hour = (now_utc.hour + 10) % 24  # UTC+10
+
+    # Check overall quota remaining from state file
+    avg_remaining_pct = 1.0
+    try:
+        if DEFAULT_STATE_FILE.exists():
+            with open(DEFAULT_STATE_FILE, "r") as f:
+                state = json.load(f)
+            providers = state.get("providers", {})
+            free_providers = {k: v for k, v in providers.items()
+                           if isinstance(v, dict) and not v.get("is_paid", False) and not v.get("is_local", False)}
+            if free_providers:
+                avg_remaining_pct = sum(v.get("remaining_pct", 1.0) for v in free_providers.values()) / len(free_providers)
+    except Exception:
+        pass
+
+    if aest_hour >= 0 and aest_hour < 6:
+        return 4.0 if avg_remaining_pct > 0.5 else 2.0
+    elif aest_hour >= 18:
+        return 3.0 if avg_remaining_pct > 0.6 else 1.5
+    elif aest_hour >= 12:
+        return 2.0 if avg_remaining_pct > 0.8 else 1.0
+    else:
+        return 1.0
+
+
+# ---------------------------------------------------------------------------
 # Data Models
 # ---------------------------------------------------------------------------
 @dataclass
@@ -249,7 +350,7 @@ def resolve_api_key(var_name: str) -> Optional[str]:
         return val.strip()
 
     search_paths = [
-        Path("/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/.env"),
+        Path("/Volumes/Lauburu-Monorepo/.env"),
         Path("/Users/aaron/.env"),
         Path.cwd() / ".env",
     ]

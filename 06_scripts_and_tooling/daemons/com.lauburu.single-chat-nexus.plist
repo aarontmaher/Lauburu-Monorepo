@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.lauburu.single-chat-nexus</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Volumes/Lauburu-Monorepo/06_scripts_and_tooling/daemons/sovereign_single_chat_nexus_daemon.sh</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Volumes/Lauburu-Monorepo/01_apps/bluetooth_terminal_ide/backend</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/Volumes/Lauburu-Monorepo/04_data_and_memory/nexus_server.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Volumes/Lauburu-Monorepo/04_data_and_memory/nexus_server.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/aaron/.local/bin:/Users/aaron/.venv/bin</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+</dict>
+</plist>

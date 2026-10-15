@@ -42,7 +42,7 @@ Comprehensive verification of the full onboarding, edge AI initialization, autom
 │    • If user requests heavy multi-file AST refactoring or deep mathematical proofs:                    │
 │      - Edge model escalates query over local Mesh RPC to Port :8081 (`Qwen 3.8 Max 27B`).              │
 │      - Returns answer to user with zero cloud latency.                                                 │
-│      - Distills trajectory into `/Users/aaron/DFS_UNIFIED/lora_datasets/continuous_lora_dataset.jsonl`.│
+│      - Distills trajectory into `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl`.│
 └────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 

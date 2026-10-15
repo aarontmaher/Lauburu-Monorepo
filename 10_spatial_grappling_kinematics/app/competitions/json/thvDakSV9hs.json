@@ -1,0 +1,37 @@
+{
+  "video_id": "thvDakSV9hs",
+  "url": "https://youtu.be/thvDakSV9hs",
+  "division": "ADCC",
+  "title": "Adcc sydney - Aaron Maher vs Muhammad El Kheir",
+  "duration_sec": 649.5,
+  "resolution": "144x256",
+  "sampled_frames": 36,
+  "poses_detected_frames": 29,
+  "dual_athlete_frames": 3,
+  "standing_phase_pct": 13.8,
+  "ground_scramble_phase_pct": 86.2,
+  "level_change_shots_detected": 0,
+  "mean_3d_angles_deg": {
+    "spine_forward_lean": 46.3,
+    "left_elbow": 141.9,
+    "right_elbow": 146.8,
+    "left_hip": 150.5,
+    "right_hip": 146.1,
+    "left_knee": 149.9,
+    "right_knee": 143.7
+  },
+  "keyframe_grid_path": "/Users/Shared/aaron/DFS_UNIFIED/Lauburu-Monorepo/10_spatial_grappling_kinematics/app/competitions/keyframes/thvDakSV9hs_3d_grid.jpg",
+  "tactical_note": "Aaron Maher's grappling in this match showcases a strong, balanced technique with a focus on maintaining a high level of stability and control. His standing time was relatively short, indicating a quick and efficient move. Maher's ability to maintain a high level of spine lean and elbow flexion L/R suggests a well-timed and controlled move. His knee flexion L/R was also notable, indicating a balanced and effective move. The match's 649.5 seconds is a testament to Maher's skill and timing, making this a well-rounded and competitive",
+  "processing_sec": 2.56,
+  "vision_model_opinions": {
+    "local_qwen25_vl_7b": {
+      "model_id": "local_qwen25_vl_7b",
+      "model_name": "Qwen2.5-VL-7B (Local TB4 :8090)",
+      "tier": "Local Sovereign VLM",
+      "slug": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "status": "READY_BATCH",
+      "latency_sec": 0.8,
+      "analysis": "Aaron Maher's grappling in this match showcases a strong, balanced technique with a focus on maintaining a high level of stability and control. His standing time was relatively short, indicating a quick and efficient move. Maher's ability to maintain a high level of spine lean and elbow flexion L/R suggests a well-timed and controlled move. His knee flexion L/R was also notable, indicating a balanced and effective move. The match's 649.5 seconds is a testament to Maher's skill and timing, making this a well-rounded and competitive"
+    }
+  }
+}

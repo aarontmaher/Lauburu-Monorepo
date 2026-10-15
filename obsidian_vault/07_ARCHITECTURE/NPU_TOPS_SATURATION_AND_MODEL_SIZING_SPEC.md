@@ -17,7 +17,7 @@ pooled_npu_tops: 100.0
 
 ## 🏛️ 1. Empirical Hardware Audit: Coral Edge TPU Removal (Rule #0 Zero-Mock)
 
-In strict adherence to **Rule #0 (Zero-Mock & Zero-Simulated Data)**, an empirical hardware audit was executed against the **L3 Linux Head Node** (`AMD Ryzen 7 5700U`, `100.101.39.98` / `192.168.8.224`).
+In strict adherence to **Rule #0 (Zero-Mock & Zero-Simulated Data)**, an empirical hardware audit was executed against the **L3 Linux Head Node** (`Intel 2018 Mac Mini (Linux)`, `100.101.39.98` / `192.168.8.224`).
 
 ### Empirical Verification Record (Proof 1 - Actuation)
 ```bash
@@ -35,7 +35,7 @@ Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
   - The 4.0 Coral TOPS have been **permanently removed** from the active NPU fleet.
   - Corrected Pooled NPU Mesh capacity = **100.0 TOPS** across 4 dedicated NPU silicon layers:
     - **L1 Apple Mac Mini M4 Pro ANE:** 38.0 TOPS
-    - **L5 Apple MacBook Air M4 ANE:** 38.0 TOPS
+    - **L5 Apple MacBook Pro (Node L2) ANE:** 38.0 TOPS
     - **L6 Google Pixel 10 Pro XL Tensor G5 Edge TPU:** 14.0 TOPS
     - **L7 Samsung Galaxy S20 Exynos 990 Dual NPU:** 10.0 TOPS
   - Biosignal DSP (`ecgnet_1d_dsp`) has been dynamically routed to run on **Apple Neural Engine (ANE)** via CoreML and the Linux Zen 3 CPU vector ALU (`AVX2`).

@@ -1,0 +1,33 @@
+{
+  "status": "ONLINE_ACTIVE",
+  "current_task": "Overnight Shopify & E-Commerce Bench Training",
+  "epoch": 16,
+  "pass_rate_percent": 62.5,
+  "benchmark_accuracy": 0.625,
+  "free_ram_gb": 8.59,
+  "host_sanctuary_ok": true,
+  "total_dataset_pairs": 75514,
+  "timestamp": 1789842123.5595038,
+  "last_update_human": "2026-09-20 04:22:03 AEST",
+  "network_optimizer_ai": {
+    "status": "ONLINE_ACTIVE",
+    "task": "Continuous Local AI Network & Throughput Optimization",
+    "step": 1741,
+    "loss": 0.0801,
+    "routing_accuracy_pct": 99.71,
+    "dataset_pairs_harvested": 1383,
+    "optimal_weights": {
+      "tb4_dma_10g": 0.988,
+      "gbe_copper": 0.742,
+      "wifi7_mlo": 0.355,
+      "tailscale_wireguard": 0.395,
+      "ai_shard_routing_factors": {
+        "avg_tps": 25.94,
+        "shard_latency_ms": 125.95,
+        "bottleneck_penalty_applied": true
+      }
+    },
+    "timestamp": 1791779579.564489,
+    "last_update": "2026-10-12 15:32:59 AEST"
+  }
+}

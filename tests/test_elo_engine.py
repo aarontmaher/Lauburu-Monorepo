@@ -387,8 +387,8 @@ class TestRecordMatchVictoryAndRanking:
         assert record["winner_id"] == "kimi_tandem_titan"
         assert record["delta_elo_a"] > 0
         assert record["delta_elo_b"] < 0
-        assert model_a["elo"] == init_elo_kimi + record["delta_elo_a"]
-        assert model_b["elo"] == init_elo_claude + record["delta_elo_b"]
+        assert model_a["elo"] == pytest.approx(init_elo_kimi + record["delta_elo_a"])
+        assert model_b["elo"] == pytest.approx(init_elo_claude + record["delta_elo_b"])
         assert model_a["wins"] == init_wins_kimi + 1
         assert model_b["losses"] == init_losses_claude + 1
 

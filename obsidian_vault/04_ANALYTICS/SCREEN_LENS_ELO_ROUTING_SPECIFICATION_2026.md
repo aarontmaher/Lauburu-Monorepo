@@ -83,7 +83,7 @@ $$\\text{Memory Compression} = 80\\% \\quad \\Rightarrow \\quad \\text{Context R
 | **8GB Tier** | Debian Linux Tablet (L4), Mid Android Phones | `Qwen 2.5-VL 3B Screen Lens` + `Silero-VAD-9M` | **1.85 GB** | 2.65 GB (58.9%) | 78 t/s | **19.0ms** | High-accuracy mobile DOM parsing, touch coordinate targeting | 🟢 `OPTIMAL_CERTIFIED` |
 | **12GB Tier** | Samsung Galaxy S20+ (L7), Pixel 9 | `Qwen 2.5-VL 3B` + `Exynos 990 NPU SmolLM` | **2.23 GB** | 5.27 GB (70.3%) | 180 t/s | **1.8ms** | Dual-model speculative UI test execution & ADB keepalive | 🟢 `OPTIMAL_CERTIFIED` |
 | **16GB Tier** | Pixel 10 Pro XL (L6), M4 MacBook Air (L5) | `Google Tensor G5 Edge TPU` + `Qwen 2.5-VL 7B` | **5.20 GB** | 6.00 GB (53.6%) | 32 t/s | **22.0ms** | Full 7B Multimodal VLA, Metal compute consumer, 120 FPS UI | 🟢 `OPTIMAL_CERTIFIED` |
-| **24GB+ Tier** | Mac Mini M4 Pro (L1), 10Gbps TB4 Cluster | `Qwen 3.8 Max 27B` + `Qwen 2.5-VL 72B Flagship` | **16.35 GB** | 8.15 GB (33.3%) | 42 t/s | **120ms** | Sovereign Master consensus, 4K multi-window visual truth audit | 🟢 `OPTIMAL_CERTIFIED` |
+| **24GB+ Tier** | Mac Mini M4 Pro (L1), 40Gbps TB4 Cluster | `Qwen 3.8 Max 27B` + `Qwen 2.5-VL 72B Flagship` | **16.35 GB** | 8.15 GB (33.3%) | 42 t/s | **120ms** | Sovereign Master consensus, 4K multi-window visual truth audit | 🟢 `OPTIMAL_CERTIFIED` |
 
 ---
 
@@ -98,7 +98,7 @@ When low-power devices operate camera streams or high-framerate screen recording
 │    • Hardware TurboJPEG Keyframe Compression (12 KB)   │
 │    • 512Hz Movesense BLE Heart Rate Telemetry Inject   │
 └──────────────────────────┬─────────────────────────────┘
-                           │ 10Gbps TB4 / Wi-Fi 7 / Tailscale
+                           │ 40Gbps TB4 / Wi-Fi 7 / Tailscale
                            │ RTT: 0.27ms (TB4) / 4.5ms (LAN)
 ┌──────────────────────────▼─────────────────────────────┐
 │ 2. High-RAM Compute Consumer (MacBook Air L5 / M4 Pro) │

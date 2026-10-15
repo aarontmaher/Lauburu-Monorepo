@@ -55,7 +55,7 @@ Following the **Tri-Orchestrator AI Debate** between the Local AI Orchestrator (
 - **File:** `01_apps/omniterminal_notebook_plugin/hardware_hud.py`
 - **Mechanism:** Queries authentic Darwin Mach virtual memory (`vm_stat`), `sysctl hw.memsize`, and `pmset -g batt`.
 - **Rule 3 Sanctuary Check:** Dynamically computes `ram_sanctuary_headroom_gb` ($> 13.0\text{ GB}$), verifying compliance with the $\ge 9.6\text{ GB}$ physical headroom rule.
-- **Mesh Latency Matrix:** Displays sub-millisecond latencies across the 7 physical nodes (Mac Mini L1, MacBook Pro L2 via 10Gbps TB4 DMA at $0.28\text{ms}$, Linux Head Node L3 at $1.15\text{ms}$, GL.iNet Gateway at $0.62\text{ms}$).
+- **Mesh Latency Matrix:** Displays sub-millisecond latencies across the 7 physical nodes (Mac Mini L1, MacBook Pro L2 via 40Gbps TB4 DMA at $0.28\text{ms}$, Linux Head Node L3 at $1.15\text{ms}$, GL.iNet Gateway at $0.62\text{ms}$).
 
 ### 2. Polyglot Coding Practice & GRPO Rewards (`%%omni_polyglot <lang>`)
 - **File:** `01_apps/omniterminal_notebook_plugin/polyglot_runner.py`
@@ -98,7 +98,7 @@ Located at:
 ```python
 # Cell 1
 import sys
-sys.path.insert(0, "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/01_apps")
+sys.path.insert(0, "/Volumes/Lauburu-Monorepo/01_apps")
 %load_ext omniterminal_notebook_plugin
 
 # Cell 2: Check Omniterminal status

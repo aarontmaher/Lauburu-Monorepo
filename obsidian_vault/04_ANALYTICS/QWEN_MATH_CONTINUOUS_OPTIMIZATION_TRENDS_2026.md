@@ -1,17 +1,17 @@
 ---
 title: "Qwen Math Continuous Optimization Trends (Live Stream)"
-updated: "2026-09-06T09:06:09Z"
+updated: "2026-10-13T06:28:44Z"
 tags: [lauburu, qwen_math, optimization_trends, lora_dataset, live_analytics]
 ---
 
 # 🧮 Qwen Math Continuous Optimization Trends & RAM Headroom Proofs
 
-**Timestamp:** `2026-09-06T09:06:09Z`  
+**Timestamp:** `2026-10-13T06:28:44Z`  
 **TB4 RTT:** `0.27 ms` | **WireGuard RTT:** `1.85 ms` | **Wi-Fi 7 RTT:** `4.20 ms`
 
 ## 📊 Derived Mathematical Optimizations
-- **Current Training Step:** `100`
-- **Training Loss (Step 100):** `2.0447`
+- **Current Training Step:** `50`
+- **Training Loss (Step 50):** `2.1110`
 - **Learning Rate:** `1.00e-04`
 - **Optimal TB4 Striping Weight:** `97.5%`
 - **Optimal WireGuard Striping Weight:** `2.1%`

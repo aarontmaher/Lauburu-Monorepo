@@ -49,4 +49,4 @@ consensus_threshold: 0.99
 
 1. **Rule #0 Zero-Mock Verification:** 100% verified against live local models (`:8083`), Screen Lens SQLite (`~/.lauburu/screen_lens.sqlite`), and live pytest suites.
 2. **Storage Headroom:** Host maintains **38.8 GB Available Free Space** ($\ge 10.0\text{ GB}$ invariant satisfied).
-3. **Continuous LoRA Ingestion:** All debate transcripts serialized to `obsidian_vault/01_DEBATES/` and appended to `/Users/aaron/DFS_UNIFIED/lora_datasets/bilateral_swarm_debates.jsonl`.
+3. **Continuous LoRA Ingestion:** All debate transcripts serialized to `obsidian_vault/01_DEBATES/` and appended to `/Volumes/Lauburu-Monorepo/04_data_and_memory/data/bilateral_swarm_debates.jsonl`.

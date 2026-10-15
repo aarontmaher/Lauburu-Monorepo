@@ -13,13 +13,13 @@ import logging
 
 logger = logging.getLogger("SelfHealingAIDebate")
 
-INCIDENTS_PATH = "/Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/self_healing_incidents.json"
+INCIDENTS_PATH = "/Volumes/Lauburu-Monorepo/self_healing_hub/src/self_healing_incidents.json"
 GDRIVE_LORA_PATH = "/Volumes/Google Drive/My Drive/Lauburu_AI_Memory/lora_datasets/self_healing_debates.jsonl"
 
 NODE_RECOVERY_PLAYBOOKS = {
     "local_mac": {
         "name": "Primary Mac Mini (M4 Host)",
-        "recovery_cmd": "pgrep -f api_server.py || nohup python3 /Users/aaron/DFS_UNIFIED/Lauburu-Monorepo/self_healing_hub/src/api_server.py > /tmp/api_server.log 2>&1 &\n",
+        "recovery_cmd": "pgrep -f api_server.py || nohup python3 /Volumes/Lauburu-Monorepo/self_healing_hub/src/api_server.py > /tmp/api_server.log 2>&1 &\n",
         "description": "Restart local self-healing hub daemon and verify Port 5001 API."
     },
     "layer2_macbook_pro": {
@@ -44,7 +44,7 @@ NODE_RECOVERY_PLAYBOOKS = {
     },
     "samsung_s20": {
         "name": "Samsung Galaxy S20+ (Exynos 990)",
-        "recovery_cmd": "ssh -p 8022 -o ConnectTimeout=2 100.84.40.95 'termux-wake-lock; termux-open ~/termux-api.apk 2>/dev/null; nohup sh -c \"while true; do ping -c 1 -W 2 100.119.199.76 >/dev/null 2>&1; sleep 15; done\" >/dev/null 2>&1 &'\n",
+        "recovery_cmd": "ssh -p 8022 -o ConnectTimeout=2 100.78.206.96 'termux-wake-lock; termux-open ~/termux-api.apk 2>/dev/null; nohup sh -c \"while true; do ping -c 1 -W 2 100.119.199.76 >/dev/null 2>&1; sleep 15; done\" >/dev/null 2>&1 &'\n",
         "description": "Prompt companion Termux:API package installation for 8% battery telemetry and start 15s keepalive daemon."
     },
     "layer7_linux_tablet": {
@@ -144,7 +144,7 @@ class SelfHealingAIDebateEngine:
                 {
                     "device": "Samsung Galaxy S20+",
                     "action": "INSTALL_TERMUX_API_COMPANION",
-                    "cmd": "ssh -p 8022 100.84.40.95 'termux-open ~/termux-api.apk'",
+                    "cmd": "ssh -p 8022 100.78.206.96 'termux-open ~/termux-api.apk'",
                     "description": "Opens package installer on Samsung S20+ screen to complete Termux:API setup."
                 },
                 {
