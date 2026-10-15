@@ -10,7 +10,7 @@ import pytest
 from pathlib import Path
 
 # Add project root to sys.path
-MONOREPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
+MONOREPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(MONOREPO_ROOT / "06_scripts_and_tooling/jules"))
 
 from jules_config_and_speculation_engine import (

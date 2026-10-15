@@ -30,7 +30,7 @@ from typing import Dict, List, Any, Optional, Tuple
 # -----------------------------------------------------------------------------
 # Configuration & Paths
 # -----------------------------------------------------------------------------
-MONOREPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
+MONOREPO_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_API_URL = "https://jules.google.com/repo/github/aarontmaher/Lauburu-Monorepo/config"
 REPO_FULL_NAME = "aarontmaher/Lauburu-Monorepo"
 
@@ -45,7 +45,7 @@ BACKLOG_FILE = MONOREPO_ROOT / "teamwork_projects/jules_global_backlog.json"
 SESSIONS_FILE = MONOREPO_ROOT / "04_data_and_memory/jules_active_sessions.json"
 BENCHMARKS_LOG = MONOREPO_ROOT / "04_data_and_memory/jules_optimization_benchmarks.jsonl"
 STATUS_MANIFEST = MONOREPO_ROOT / "04_data_and_memory/jules_config_status.json"
-LORA_SINK = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl")
+LORA_SINK = MONOREPO_ROOT / "04_data_and_memory/data/continuous_lora_dataset.jsonl"
 
 # Ensure environment PATH includes Node/npx and local bin
 os.environ["PATH"] = f"/Users/aaron/.nvm/versions/node/v20.20.2/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:{os.environ.get('PATH', '')}"
