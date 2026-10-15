@@ -23,9 +23,9 @@ import subprocess
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
-REPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
+REPO_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = REPO_ROOT / "04_data_and_memory"
-LORA_DIR = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data")
+LORA_DIR = DATA_DIR / "data"
 OBSIDIAN_DIR = REPO_ROOT / "obsidian_vault" / "05_SWARMS"
 
 CONTINUOUS_LORA_DATASET = LORA_DIR / "continuous_lora_dataset.jsonl"

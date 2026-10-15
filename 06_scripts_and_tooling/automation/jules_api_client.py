@@ -25,8 +25,9 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 
 JULES_API_BASE = "https://jules.googleapis.com/v1alpha"
-LORA_DATASET_PATH = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl")
-IDE_TRACES_PATH = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data/ide_distillation_traces.jsonl")
+MONOREPO_ROOT = Path(__file__).resolve().parents[2]
+LORA_DATASET_PATH = MONOREPO_ROOT / "04_data_and_memory/data/continuous_lora_dataset.jsonl"
+IDE_TRACES_PATH = MONOREPO_ROOT / "04_data_and_memory/data/ide_distillation_traces.jsonl"
 GCLOUD_BIN = "/Users/aaron/google-cloud-sdk/bin/gcloud"
 DEFAULT_USER_PROJECT = "lauburu-net-cloud"
 
@@ -41,7 +42,7 @@ class JulesAuth:
             return val.strip()
 
         env_files = [
-            Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/.env"),
+            MONOREPO_ROOT / "04_data_and_memory/.env",
             Path.home() / ".env",
             Path.home() / ".config" / "jules" / "token",
         ]

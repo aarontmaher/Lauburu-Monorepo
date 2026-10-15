@@ -29,21 +29,30 @@ from typing import Dict, List, Any, Optional
 # -----------------------------------------------------------------------------
 # Configuration & Paths
 # -----------------------------------------------------------------------------
-MONOREPO_ROOT = Path("/Volumes/Lauburu-Monorepo")
+MONOREPO_ROOT = Path(__file__).resolve().parents[2]
 LOG_FILE = MONOREPO_ROOT / "04_data_and_memory/jules_dispatch_cron.log"
 BACKLOG_FILE = MONOREPO_ROOT / "teamwork_projects/jules_global_backlog.json"
 SESSIONS_FILE = MONOREPO_ROOT / "04_data_and_memory/jules_active_sessions.json"
-LORA_SINK = Path("/Volumes/Lauburu-Monorepo/04_data_and_memory/data/continuous_lora_dataset.jsonl")
+LORA_SINK = MONOREPO_ROOT / "04_data_and_memory/data/continuous_lora_dataset.jsonl"
 DISTILLATION_SINK = MONOREPO_ROOT / "04_data_and_memory/continuous_master_agi_distillation.jsonl"
 REPO_FLAG = "aarontmaher/Lauburu-Monorepo"
+JULES_BIN = "/Users/aaron/.local/bin/jules"
 
 # Active automation switch (Google AI Ultra Tier: 300 tasks/day)
 JULES_AUTOMATION_ENABLED = True
-MAX_CONCURRENT_SESSIONS = 10
+MAX_CONCURRENT_SESSIONS = 15
 DAILY_TASK_LIMIT = 300
+MAX_DISPATCHES_PER_CYCLE = 3
+COOLDOWN_SECONDS = 180  # 3-minute retry backoff on server concurrency cap
 
 # Environment PATH configuration for Node/npx and tools
-os.environ["PATH"] = f"/Users/aaron/.nvm/versions/node/v20.20.2/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:{os.environ.get('PATH', '')}"
+os.environ["PATH"] = f"/Users/aaron/.nvm/versions/node/v20.20.2/bin:/Users/aaron/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:{os.environ.get('PATH', '')}"
+
+
+def _jules_cmd(*args: str) -> List[str]:
+    if os.path.exists(JULES_BIN) and os.access(JULES_BIN, os.X_OK):
+        return [JULES_BIN, *args]
+    return ["npx", "-y", "@google/jules", *args]
 
 
 def log_event(msg: str):
@@ -97,32 +106,42 @@ def get_daily_dispatch_count() -> int:
 def ensure_backlog():
     """
     Scans the monorepo for real architectural and code improvement opportunities
-    to keep the Jules global backlog populated with high-value tasks.
+    to keep the Jules global backlog populated with diverse high-value tasks (up to 300/day).
     """
     backlog = load_json(BACKLOG_FILE, list)
-    if len(backlog) >= 15:
+    if len(backlog) >= 40:
         return
 
     log_event(f"Backlog has {len(backlog)} tasks. Scanning monorepo for candidate tasks...")
     candidate_subsystems = [
         ("00_core_infrastructure", "Core Infrastructure & Microservices", "high"),
         ("01_apps", "Client Applications & Flutter Hub", "high"),
+        ("02_ai_models_and_inference", "Local AI Models & Sharded Inference", "critical"),
         ("03_biometrics_and_telemetry", "Biometric DSP & Sensor Ingestion", "critical"),
         ("04_data_and_memory", "PySpark Big Data & Delta Lake Pipelines", "high"),
         ("05_agents_and_swarms", "Swarm Governance & Genetic MoE Engine", "critical"),
         ("06_scripts_and_tooling", "Automated Tooling & Self-Healing Daemons", "medium"),
         ("08_business_and_commerce", "Shopify Headless Commerce & Dropshipping", "high"),
         ("10_spatial_grappling_kinematics", "3D Biomechanics & Kinematics", "medium"),
+        ("12_continuous_lora_evolution", "Continuous QLoRA & DPO Distillation", "high"),
     ]
 
-    existing_task_names = {t.get("task", "") for t in backlog}
+    sessions_data = load_json(SESSIONS_FILE, dict)
+    today_str = time.strftime("%Y-%m-%d")
+    dispatched_today_tasks = set()
+    if isinstance(sessions_data, dict):
+        for s in sessions_data.get("active_sessions", []) + sessions_data.get("completed_sessions", []):
+            if time.strftime("%Y-%m-%d", time.localtime(s.get("dispatched_at", 0))) == today_str:
+                dispatched_today_tasks.add(s.get("task", ""))
+
+    existing_task_names = {t.get("task", "") for t in backlog} | dispatched_today_tasks
     new_tasks = []
 
     task_templates = [
-        ("Add comprehensive unit tests with pytest for {target_rel}", "unit_tests", 3),
-        ("Implement PEP 484 type annotations and docstrings for {target_rel}", "typing_docs", 2),
         ("Verify Rule #0 zero-mock compliance and add error boundaries in {target_rel}", "zero_mock_audit", 4),
+        ("Add comprehensive unit tests with pytest for {target_rel}", "unit_tests", 3),
         ("Add microsecond latency benchmarks and telemetry logging in {target_rel}", "benchmarks", 3),
+        ("Implement PEP 484 type annotations and docstrings for {target_rel}", "typing_docs", 2),
         ("Refactor into modular classes with clean separation of concerns in {target_rel}", "refactor", 2),
     ]
 
@@ -133,12 +152,20 @@ def ensure_backlog():
 
         py_files = sorted(
             [f for f in sub_path.glob("**/*.py")
-             if "test_" not in f.name and "node_modules" not in str(f) and "__pycache__" not in str(f) and ".venv" not in str(f) and "site-packages" not in str(f) and "venv" not in str(f) and ".git" not in str(f)],
+             if "test_" not in f.name
+             and ".app/" not in str(f)
+             and "node_modules" not in str(f)
+             and "__pycache__" not in str(f)
+             and ".venv" not in str(f)
+             and "site-packages" not in str(f)
+             and "venv" not in str(f)
+             and "scratch_archive" not in str(f)
+             and ".git" not in str(f)],
             key=lambda x: x.stat().st_size if x.exists() else 0,
             reverse=True
         )
 
-        for py_file in py_files[:3]:
+        for py_file in py_files[:25]:
             rel_path = str(py_file.relative_to(MONOREPO_ROOT))
             for tmpl, task_type, priority_level in task_templates:
                 task_desc = tmpl.format(target_rel=rel_path)
@@ -155,11 +182,11 @@ def ensure_backlog():
                     }
                     new_tasks.append(new_task)
                     existing_task_names.add(task_desc)
-                    if len(backlog) + len(new_tasks) >= 25:
+                    if len(backlog) + len(new_tasks) >= 80:
                         break
-            if len(backlog) + len(new_tasks) >= 25:
+            if len(backlog) + len(new_tasks) >= 80:
                 break
-        if len(backlog) + len(new_tasks) >= 25:
+        if len(backlog) + len(new_tasks) >= 80:
             break
 
     backlog.extend(new_tasks)
@@ -193,10 +220,10 @@ def dispatch_to_jules(task: Dict[str, Any]) -> Optional[str]:
     task_desc = task["task"]
     log_event(f"Dispatching task to Jules Cloud VM ({today_dispatches + 1}/{DAILY_TASK_LIMIT} today)...")
 
-    cmd = ["npx", "-y", "@google/jules", "remote", "new", "--repo", REPO_FLAG, "--session", task_desc]
+    cmd = _jules_cmd("remote", "new", "--repo", REPO_FLAG, "--session", task_desc)
     try:
         res = subprocess.run(cmd, capture_output=True, text=True, cwd=str(MONOREPO_ROOT), timeout=45)
-        out = res.stdout
+        out = (res.stdout or "") + ("\n" + res.stderr if res.stderr else "")
         log_event(f"Jules CLI Response:\n{out.strip()}")
 
         match = re.search(r"ID:\s*(\d+)", out)
@@ -229,14 +256,14 @@ def dispatch_to_jules(task: Dict[str, Any]) -> Optional[str]:
             log_event(f"✅ Successfully registered active Jules session: {session_id}")
             return session_id
         else:
-            log_event(f"Failed to parse session ID from Jules output: {out}")
+            log_event(f"Failed to parse session ID from Jules output: {out.strip()}")
             if "FAILED_PRECONDITION" in out or "failed to create" in out:
                 sessions_data = load_json(SESSIONS_FILE, dict)
                 if not isinstance(sessions_data, dict):
                     sessions_data = {"status": "ACTIVE_JULES_CLUSTER"}
-                sessions_data["cooldown_until"] = time.time() + 1800  # 30 minute cooldown
+                sessions_data["cooldown_until"] = time.time() + COOLDOWN_SECONDS
                 save_json(SESSIONS_FILE, sessions_data)
-                log_event("⚠️ Set 30-minute cooldown for Jules dispatch due to API precondition check or quota limit.")
+                log_event(f"⚠️ Set {COOLDOWN_SECONDS}s cooldown for Jules dispatch due to server concurrency precondition.")
             return None
     except Exception as e:
         log_event(f"Error executing Jules CLI dispatch: {e}")
@@ -263,7 +290,7 @@ def pull_and_audit_sessions():
         task_text = session.get("task", "")
         log_event(f"Auditing Jules session {session_id} ('{task_text[:40]}...')...")
 
-        cmd = ["npx", "-y", "@google/jules", "remote", "pull", "--session", session_id]
+        cmd = _jules_cmd("remote", "pull", "--session", str(session_id))
         try:
             res = subprocess.run(cmd, capture_output=True, text=True, cwd=str(MONOREPO_ROOT), timeout=30)
             out = res.stdout.strip()
@@ -313,51 +340,81 @@ def pull_and_audit_sessions():
             log_event(f"Error polling session {session_id}: {e}")
             remaining_active.append(session)
 
-    save_json(SESSIONS_FILE, {
+    updated_payload = {
         "status": "ACTIVE_JULES_CLUSTER",
         "active_sessions": remaining_active,
         "completed_sessions": completed_list,
         "last_updated": time.time()
-    })
+    }
+    if isinstance(sessions_data, dict) and "cooldown_until" in sessions_data:
+        updated_payload["cooldown_until"] = sessions_data["cooldown_until"]
+    save_json(SESSIONS_FILE, updated_payload)
 
 
 def run_cycle():
-    """Runs a complete Jules orchestration cycle."""
+    """Runs a complete Jules orchestration cycle to pace 300 tasks/day."""
     if not JULES_AUTOMATION_ENABLED:
         log_event("Jules automation is disabled by configuration.")
         return
 
-    log_event("=== Starting Jules Autonomous Orchestration Cycle ===")
-    
-    # 1. Audit and harvest all active sessions
-    pull_and_audit_sessions()
+    import fcntl
+    lock_file_path = Path("/tmp/jules_orchestrator_cycle.lock")
+    lock_fd = open(lock_file_path, "w")
+    try:
+        fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        log_event("Another JulesOrchestrator cycle is currently active. Skipping overlapping pass.")
+        lock_fd.close()
+        return
 
-    # 2. Check current concurrency against limits
-    sessions_data = load_json(SESSIONS_FILE, dict)
-    active_count = len(sessions_data.get("active_sessions", [])) if isinstance(sessions_data, dict) else len(sessions_data)
-    log_event(f"Active Jules sessions: {active_count}/{MAX_CONCURRENT_SESSIONS}")
+    try:
+        log_event("=== Starting Jules Autonomous Orchestration Cycle ===")
 
-    # 3. Ensure backlog has fresh candidate tasks
-    ensure_backlog()
-    backlog = load_json(BACKLOG_FILE, list)
+        # 1. Audit and harvest all active sessions
+        pull_and_audit_sessions()
 
-    # 4. Dispatch tasks if concurrency headroom is available and not in cooldown
-    dispatches_allowed = max(0, MAX_CONCURRENT_SESSIONS - active_count)
-    cooldown_until = sessions_data.get("cooldown_until", 0) if isinstance(sessions_data, dict) else 0
-    now_ts = time.time()
+        # 2. Check current concurrency & daily progress
+        sessions_data = load_json(SESSIONS_FILE, dict)
+        active_count = len(sessions_data.get("active_sessions", [])) if isinstance(sessions_data, dict) else len(sessions_data)
+        today_count = get_daily_dispatch_count()
+        log_event(f"Active Jules sessions: {active_count}/{MAX_CONCURRENT_SESSIONS} | Dispatched today: {today_count}/{DAILY_TASK_LIMIT}")
 
-    if now_ts < cooldown_until:
-        rem_s = int(cooldown_until - now_ts)
-        log_event(f"Jules dispatch in cooldown ({rem_s}s remaining). Skipping new dispatches.")
-    elif dispatches_allowed > 0 and backlog:
-        chosen = execute_tri_orchestrator_debate(backlog)
-        dispatch_to_jules(chosen)
-        backlog = [b for b in backlog if b.get("id") != chosen.get("id")]
-        save_json(BACKLOG_FILE, backlog)
-    else:
-        log_event("Concurrency limit reached or backlog empty. Maintaining active flight.")
+        # 3. Ensure backlog has fresh candidate tasks
+        ensure_backlog()
+        backlog = load_json(BACKLOG_FILE, list)
 
-    log_event("=== Jules Cycle Complete ===")
+        # 4. Dispatch up to MAX_DISPATCHES_PER_CYCLE tasks if concurrency headroom is available
+        dispatches_allowed = min(MAX_DISPATCHES_PER_CYCLE, max(0, MAX_CONCURRENT_SESSIONS - active_count))
+        cooldown_until = sessions_data.get("cooldown_until", 0) if isinstance(sessions_data, dict) else 0
+        now_ts = time.time()
+
+        if today_count >= DAILY_TASK_LIMIT:
+            log_event(f"Daily quota of {DAILY_TASK_LIMIT} reached ({today_count}/{DAILY_TASK_LIMIT}). Waiting for daily reset.")
+        elif now_ts < cooldown_until:
+            rem_s = int(cooldown_until - now_ts)
+            log_event(f"Jules dispatch in cooldown ({rem_s}s remaining). Skipping new dispatches.")
+        elif dispatches_allowed > 0 and backlog:
+            for _ in range(dispatches_allowed):
+                if not backlog:
+                    break
+                chosen = execute_tri_orchestrator_debate(backlog)
+                sid = dispatch_to_jules(chosen)
+                if sid:
+                    backlog = [b for b in backlog if b.get("id") != chosen.get("id")]
+                    save_json(BACKLOG_FILE, backlog)
+                else:
+                    # Stop dispatching further in this cycle if server concurrency precondition was hit
+                    break
+        else:
+            log_event("Concurrency limit reached or backlog empty. Maintaining active flight.")
+
+        log_event("=== Jules Cycle Complete ===")
+    finally:
+        try:
+            fcntl.flock(lock_fd, fcntl.LOCK_UN)
+            lock_fd.close()
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
